@@ -1,0 +1,16 @@
+[
+{
+  "modid": "ImmersiveEngineering",
+  "name": "Immersive Engineering",
+  "description": "",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["BluSunrize","Damien A.W. Hazard"],
+  "credits": "TTFTCUTS for the catenary rendering code",
+  "logoFile": "assets/immersiveengineering/logo.png",
+  "screenshots": [],
+  "dependencies": []
+}
+]
