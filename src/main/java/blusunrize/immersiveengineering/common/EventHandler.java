@@ -6,7 +6,6 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.oredict.OreDictionary;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
 
 import com.google.common.collect.ImmutableList;
@@ -47,8 +46,6 @@ public class EventHandler
 	@SubscribeEvent
 	public void onItemTooltip(ItemTooltipEvent event)
 	{
-		for(int oid : OreDictionary.getOreIDs(event.itemStack))
-			event.toolTip.add(OreDictionary.getOreName(oid));
 	}
 	
 	@SubscribeEvent

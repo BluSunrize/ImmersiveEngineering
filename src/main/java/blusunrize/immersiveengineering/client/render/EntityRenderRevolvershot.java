@@ -2,11 +2,7 @@ package blusunrize.immersiveengineering.client.render;
 
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.projectile.EntityFireball;
-import net.minecraft.init.Items;
-import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
@@ -20,23 +16,21 @@ public class EntityRenderRevolvershot extends Render
 
 	public void doRender(Entity entity, double x, double y, double z, float f0, float f1)
 	{
-		//		System.out.println("render");
 		GL11.glPushMatrix();
 		this.bindEntityTexture(entity);
 		GL11.glTranslated(x, y, z);
 		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-		IIcon iicon = Items.fire_charge.getIconFromDamage(0);
 		Tessellator tessellator = Tessellator.instance;
 
-		float f2 = 0.0F;
-		float f3 = 0.5F;
-		float f4 = 0/32f;
-		float f5 = 5/32f;
-		float f6 = 0.0F;
-		float f7 = 0.15625F;
-		float f8 = 5/32F;
-		float f9 = 10/32F;
-		float f10 = 0.05625F;
+		//		float f2 = 0.0F;
+		//		float f3 = 0.5F;
+		//		float f4 = 0/32f;
+		//		float f5 = 5/32f;
+		//		float f6 = 0.0F;
+		//		float f7 = 0.15625F;
+		//		float f8 = 5/32F;
+		//		float f9 = 10/32F;
+		//		float f10 = 0.05625F;
 		//		        GL11.glRotatef(180.0F - this.renderManager.playerViewY, 0.0F, 1.0F, 0.0F);
 		//		        GL11.glRotatef(-this.renderManager.playerViewX, 1.0F, 0.0F, 0.0F);
 		GL11.glDisable(GL11.GL_CULL_FACE);

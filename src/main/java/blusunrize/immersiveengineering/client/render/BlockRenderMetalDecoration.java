@@ -96,9 +96,20 @@ public class BlockRenderMetalDecoration implements ISimpleBlockRenderingHandler
 		else if(world.getBlockMetadata(x, y, z)==1)
 		{
 			renderer.setRenderBoundsFromBlock(block);
-			renderer.renderAllFaces=false;
 			renderer.renderFromInside=true;
+			renderer.renderMinX+=.015625;
+			renderer.renderMinY+=.015625;
+			renderer.renderMinZ+=.015625;
+			renderer.renderMaxX-=.015625;
+			renderer.renderMaxY-=.015625;
+			renderer.renderMaxZ-=.015625;
 			renderer.renderStandardBlock(block, x, y, z);
+			renderer.renderMinX-=.015625;
+			renderer.renderMinY-=.015625;
+			renderer.renderMinZ-=.015625;
+			renderer.renderMaxX+=.015625;
+			renderer.renderMaxY+=.015625;
+			renderer.renderMaxZ+=.015625;
 			renderer.renderFromInside=false;
 			return renderer.renderStandardBlock(block, x, y, z);
 		}

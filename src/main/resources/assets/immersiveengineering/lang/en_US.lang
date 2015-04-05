@@ -36,7 +36,6 @@ tile.ImmersiveEngineering.metalDecoration.lantern.name=Lantern
 tile.ImmersiveEngineering.woodenDevice.post.name=Wooden Post
 tile.ImmersiveEngineering.woodenDevice.watermill.name=Watermill
 tile.ImmersiveEngineering.woodenDevice.windmill.name=Windmill
-tile.ImmersiveEngineering.woodenDevice.scaffolding.name=Treated Wood Scaffolding
 tile.ImmersiveEngineering.woodenDevice.windmillAdvanced.name=Improved Windmill
 
 tile.ImmersiveEngineering.woodenDecoration.treatedWood.name=Treated Wood Planks
@@ -44,6 +43,7 @@ tile.ImmersiveEngineering.woodenDecoration.fence.name=Treated Wood Fence
 tile.ImmersiveEngineering.woodenDecoration.slab0.name=Treated Wood Slab
 tile.ImmersiveEngineering.woodenDecoration.slab1.name=Treated Wood Slab
 tile.ImmersiveEngineering.woodenDecoration.doubleSlab.name=Treated Wood Doubleslab
+tile.ImmersiveEngineering.woodenDecoration.scaffolding.name=Treated Wood Scaffolding
 
 tile.ImmersiveEngineering.woodenStairs.name=Treated Wood Stairs
 
@@ -122,9 +122,9 @@ desc.ImmersiveEngineering.info.attachedToDim=Linking from %1$s, %2$s, %3$s in Di
 desc.ImmersiveEngineering.info.energyStored=Energy stored: %1$s RF
 
 #CHAT
-chat.ImmersiveEngineering.warning.wrongCable=You cannot attach this cable here
+chat.ImmersiveEngineering.warning.wrongCable=You cannot attach this wire here
 chat.ImmersiveEngineering.warning.wrongDimension=You are in the wrong dimension
-chat.ImmersiveEngineering.warning.sameConnection=You cannot attach a cable to the same point
+chat.ImmersiveEngineering.warning.sameConnection=You cannot attach a wire to the same point
 chat.ImmersiveEngineering.warning.tooFar=You are too far away from the previous connection
 chat.ImmersiveEngineering.warning.cantSee=The connection is obstructed
 chat.ImmersiveEngineering.info.averageLoss=Average loss between points: %1$s RF
@@ -142,7 +142,7 @@ recipe.ImmersiveEngineering.hammerCrushing=Crushing
 ie.manual.entry.introduction.name=Introduction
 ie.manual.entry.introduction.subtext=Getting into Engineering
 ie.manual.entry.introduction0=Greetings, fellow engineer, and welcome to Immersive Engineering. This journal shall serve as your guide for setting up all the new machines and functions this mod has to offer.<br>Let's start with the basics first: Immersive Engineering is built around the concept of retrofuturistic generation and transfer of energy. The energy used in this mod is Redstone Flux, a trait shared with many other mods currently available.
-ie.manual.entry.introduction1=Energy is transmitted between §lConnectors§r by the use of §lWires§r. Wires can only bridge a distance of 16 blocks, so you will need to use more connectors as §lRelays§r between the cables.<br>You have the choice between three different types of wire, which differ in transferrates, <config:iA:cableTransferRate> RF/tick to switch between different types of wire, you will need to use transformers.
+ie.manual.entry.introduction1=Energy is transmitted between §lConnectors§r by the use of §lWires§r. Wires can only bridge a distance of 16 blocks, so you will need to use more connectors as §lRelays§r between the wires.<br>You have the choice between three different types of wire, which differ in transferrates, <config:iA:cableTransferRate> RF/tick to switch between different types of wire, you will need to use transformers.
 ie.manual.entry.introductionHammer=The Engineers Hammer is the most important tool at your disposal. It will be used to form multiblocks like the Coke Oven and Blast Furnace<config:b:crushingOreRecipe:, crushing ores into dust : >or configuring blocks like Wooden Posts.
 
 ie.manual.entry.ores.name=Ores
@@ -166,18 +166,21 @@ ie.manual.entry.treatedwoodPost1=using the hammer on the sides of the topmost pa
 
 ie.manual.entry.wiring.name=Basic Wiring
 ie.manual.entry.wiring.subtext=Bzzzt!
-ie.manual.entry.wiring0=The energy-net of Immersive Engineering has four important blocks: §lCapacitors§r to store energy, §lconnectors§r as inputs and outputs for the net, §lrelays§r to connect wires together and §ltransformers§r to switch between different levels of wire.<br>In low-voltage systems (copper and electrum cables), connectors and relays are the same block, but high-voltage connectors will only ever accept one wire.
-ie.manual.entry.wiring1=To connect two connectable blocks, simply click the first one with a wire coil, then use the same coil on the second block. The total transferrate between two points depends on the weakest type of cable between them.
-ie.manual.entry.wiring2=Note that restrictions apply based on blocks: Connectors and relays will only take cables of the same type that is already connected, transformers will only take two wires of a different type,<br>[cont]
-ie.manual.entry.wiring3=and high-voltage wires cannot be attached to low-voltage connectors or transformers.
-ie.manual.entry.wiringCapacitor=Capacitors serve as energy storage units. You can use the hammer to adjust the configuration of each side, with blue designating an input, orange an output and no colour marking preventing any connection at all.
+ie.manual.entry.wiring0=The energy-net of Immersive Engineering has four important blocks: §lCapacitors§r to store energy, §lconnectors§r as inputs and outputs for the net, §lrelays§r to connect wires together and §ltransformers§r to switch between different levels of wire.<br>In low- and medium-voltage systems (copper and electrum wires), connectors and relays are the same block, but high-voltage connectors will only ever accept one wire.
+ie.manual.entry.wiring1=To connect two blocks, simply click the first one with a wire coil, then use the same coil on the second block. The total transferrate between two points depends on the weakest type of wire between them.
+ie.manual.entry.wiring2=Note that restrictions apply based on blocks: Connectors and relays will only take wires of the same type that is already connected, transformers will only take two wires of a different type,<br>[cont]
+ie.manual.entry.wiring3=and wires can only connected to blocks that match the voltage.
+ie.manual.entry.wiringConnector=§lConnectors§r serve as in- and outputs to the IE Energy-Net. You can place them on capacitors or other RF handlers and they will transfer power through connected wires. HV Relays will still accept wires but can't in- or output, they serve as connection points between wires.
+ie.manual.entry.wiringCapacitor=§lCapacitors§r serve as energy storage units. You can use the hammer to adjust the configuration of each side, with blue designating an input, orange an output and no colour marking preventing any connection at all.
+ie.manual.entry.wiringTransformer0=§lTransformers§r allow you to transition between different types of wire. The weakest wire restricts the transfer rate. Note that HV Transformers can step down to LV or MV, so you do not need to chain two transformers.
+ie.manual.entry.wiringTransformer1=You can attach <link:wiring:transformers to wooden poles:3> as shown on the second image on page 4, however only non-HV Transformers can be placed like this.
 ie.manual.entry.wiringCutters=The §lWirecutters§r are used to removed all the wires connected to a block by simply rightclicking it.
 ie.manual.entry.wiringVoltmeter=The §lVoltmeter§r is used to measure connections. Rightclick a capacitor to read its current storage or sneak+rightclick two connectors to calculate the average loss between them.
 
 ie.manual.entry.generator.name=Power Generation
 ie.manual.entry.generator.subtext=
 ie.manual.entry.generator0=Transferring power is quite helpful provided you have power. To actually generate RF, you have the options of using kinetic forces of windmills and waterwheels or thermoelectric generators. The former are connected to a dynamo and generate power based on how fast they turn, the latter uses temperature gradients. placing a hot fluid on one side and a cold fluid or ice on the opposing side generates energy based on the difference between the two temperatures.
-ie.manual.entry.generatorWindmill=The windmill is a free and easy way of generating power, albeit not a very powerful one. Its rotation speed depends greatly on how high it is placed in the world and how obscured the space in front of it is. It's speed will also increase when it's raining, or storming.
+ie.manual.entry.generatorWindmill=The windmill is a free and easy way of generating power, albeit not a very powerful one. Its speed depends greatly on how high it is placed in the world and how obscured the space in front of it is. It will also run faster when it's raining or storming.
 ie.manual.entry.generatorWatermill=The watermill is a fairly easy way of powering a dynamo. It's turning speed is based on the water flowing around it, so for optimal results, you'll want to direct the water in a semi-circle from the top down one side and along the bottom. 
 ie.manual.entry.generatorWindmillImproved=The improved windmill is an upgrade to the windmills. While it has twice the output it's also more pricey to create, requiring tough fabric made from industrial hemp. Break tall grass to aquire hemp seeds.
 
@@ -188,4 +191,4 @@ ie.manual.entry.blastfurnaceBlock=To form a Coke Oven, arrange 27 of these block
 
 ie.manual.entry.highvoltage.name=High-Voltage
 ie.manual.entry.highvoltage.subtext=You can't shake the shock
-ie.manual.entry.highvoltage0=High-Voltage wires are have the highest available transferrate (<config:iA:cableTransferRate:2> RF/t) and will need special connectors. Note that on High voltage connections, Connectors and Relays are different blocks, Relays will not be able to in- or output to the energy net.<br>To transition from HV to normal connections, you will need High-Voltage Transformers, and keep in mind, the lowest tier of cable limits the transferrate of an entire connection.
+ie.manual.entry.highvoltage0=High-Voltage wires are have the highest available transferrate (<config:iA:cableTransferRate:2> RF/t) and will need special connectors. Note that on High voltage connections, Connectors and Relays are different blocks, Relays will not be able to in- or output to the energy net.<br>To transition from HV to LV or MV connections, you will need High-Voltage Transformers, and keep in mind, the lowest tier of wire limits the transferrate of an entire connection.

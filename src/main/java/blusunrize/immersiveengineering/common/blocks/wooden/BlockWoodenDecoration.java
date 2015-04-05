@@ -7,16 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockCompressedPowered;
-import net.minecraft.block.BlockFarmland;
-import net.minecraft.block.BlockHopper;
-import net.minecraft.block.BlockSlab;
-import net.minecraft.block.BlockSnow;
-import net.minecraft.block.BlockStairs;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -32,7 +27,7 @@ public class BlockWoodenDecoration extends BlockIEBase
 {
 	public BlockWoodenDecoration()
 	{
-		super("woodenDecoration", Material.wood,1, ItemBlockWoodenDecoration.class, "treatedWood","fence","slab0","slab1","doubleSlab");
+		super("woodenDecoration", Material.wood,2, ItemBlockWoodenDecoration.class, "treatedWood","fence","slab0","slab1","doubleSlab","scaffolding");
 	}
 
 	@Override
@@ -75,9 +70,11 @@ public class BlockWoodenDecoration extends BlockIEBase
 	@Override
 	public boolean shouldSideBeRendered(IBlockAccess world, int x, int y ,int z, int side)
 	{
-		int meta = world.getBlockMetadata(x, y, z);
+		int meta = world.getBlockMetadata(x+(side==4?1:side==5?-1:0),y+(side==0?1:side==1?-1:0),z+(side==2?1:side==3?-1:0));
 		if(meta==1||meta==2||meta==3)
 			return true;
+		if(meta==5)
+			return (world.getBlock(x, y, z)==this&&world.getBlockMetadata(x,y,z)==5)?false:true;
 		return super.shouldSideBeRendered(world, x, y, z, side);
 	}
 
@@ -92,7 +89,16 @@ public class BlockWoodenDecoration extends BlockIEBase
 	public void registerBlockIcons(IIconRegister iconRegister)
 	{
 		for(int i=0; i<subNames.length; i++)
-			icons[i][0] = iconRegister.registerIcon("immersiveengineering:treatedWood");
+			if(i==5)
+			{
+				icons[i][0] = iconRegister.registerIcon("immersiveengineering:scaffolding_top");
+				icons[i][1] = iconRegister.registerIcon("immersiveengineering:scaffolding_side");
+			}
+			else
+			{
+				icons[i][0] = iconRegister.registerIcon("immersiveengineering:treatedWood");
+				icons[i][1] = iconRegister.registerIcon("immersiveengineering:treatedWood");
+			}
 	}
 
 	@Override
@@ -129,6 +135,8 @@ public class BlockWoodenDecoration extends BlockIEBase
 	{
 		if(world.getBlockMetadata(x, y, z)==1)
 			this.setBlockBounds(canConnectFenceTo(world,x-1,y,z)?0:.375f,0,canConnectFenceTo(world,x,y,z-1)?0:.375f, canConnectFenceTo(world,x+1,y,z)?1:.625f,1.5f,canConnectFenceTo(world,x,y,z+1)?1:.625f);
+		else if(world.getBlockMetadata(x, y, z)==5)
+			this.setBlockBounds(.0625f,0,.0625f, .9375f,1,.9375f);
 		else
 			this.setBlockBoundsBasedOnState(world,x,y,z);
 		return super.getCollisionBoundingBoxFromPool(world, x, y, z);
@@ -141,6 +149,35 @@ public class BlockWoodenDecoration extends BlockIEBase
 	}
 
 	@Override
+	public void onEntityCollidedWithBlock(World world, int x, int y, int z, Entity ent)
+	{
+		if(world.getBlockMetadata(x, y, z)==5)
+		{
+			float f5 = 0.15F;
+			if (ent.motionX < (double)(-f5))
+				ent.motionX = (double)(-f5);
+			if (ent.motionX > (double)f5)
+				ent.motionX = (double)f5;
+			if (ent.motionZ < (double)(-f5))
+				ent.motionZ = (double)(-f5);
+			if (ent.motionZ > (double)f5)
+				ent.motionZ = (double)f5;
+
+			ent.fallDistance = 0.0F;
+			if (ent.motionY < -0.15D)
+				ent.motionY = -0.15D;
+
+			if(ent.motionY<0 && ent instanceof EntityPlayer && ent.isSneaking())
+			{
+				ent.motionY=.05;
+				return;
+			}
+			if(ent.isCollidedHorizontally)
+				ent.motionY=.2;
+		}
+	}
+
+	@Override
 	public TileEntity createNewTileEntity(World p_149915_1_, int p_149915_2_)
 	{
 		return null;
@@ -150,4 +187,5 @@ public class BlockWoodenDecoration extends BlockIEBase
 	{
 		return false;
 	}
+
 }

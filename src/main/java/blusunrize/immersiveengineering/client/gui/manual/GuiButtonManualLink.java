@@ -30,7 +30,7 @@ public class GuiButtonManualLink extends GuiButton
 			ClientUtils.font().setUnicodeFlag(true);
 			ClientUtils.font().drawString(localized, xPosition, yPosition+2, 0xffffff);
 			ClientUtils.font().setUnicodeFlag(false);
-			ClientUtils.drawHoveringText(Arrays.asList(StatCollector.translateToLocal("ie.manual.entry."+key+".name")+", "+pageLinked), mx+8,my+4, ClientUtils.font());
+			ClientUtils.drawHoveringText(Arrays.asList(StatCollector.translateToLocal("ie.manual.entry."+key+".name")+", "+(pageLinked+1)), mx+8,my+4, ClientUtils.font());
 			ClientUtils.font().setUnicodeFlag(uni);
 		}
 		

@@ -33,6 +33,14 @@ public class Utils
 				return true;
 		return false;
 	}
+	public static boolean stackMatchesObject(ItemStack stack, Object o)
+	{
+		if(o instanceof String)
+			return compareToOreName(stack, (String)o);
+		if(o instanceof ItemStack)
+			return OreDictionary.itemMatches((ItemStack)o, stack, false);
+		return false;
+	}
 	public static ItemStack copyStackWithAmount(ItemStack stack, int amount)
 	{
 		ItemStack s2 = stack.copy();

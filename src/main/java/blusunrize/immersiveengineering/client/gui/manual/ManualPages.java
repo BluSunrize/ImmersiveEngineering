@@ -14,7 +14,6 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.util.StatCollector;
-import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
@@ -24,6 +23,7 @@ import org.lwjgl.opengl.GL12;
 import blusunrize.immersiveengineering.api.IManualPage;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.Config;
+import blusunrize.immersiveengineering.common.Utils;
 
 import com.google.common.collect.ArrayListMultimap;
 
@@ -104,10 +104,30 @@ public abstract class ManualPages implements IManualPage
 		}
 
 		@Override
+		public void initPage(GuiScreen gui, int x, int y, List<GuiButton> pageButtons)
+		{
+			int yOff = 0;
+			for(int i=0; i<resources.length; i++)
+				if(resources[i]!=null&&!resources[i].isEmpty())
+					yOff += sizing[i][3]+4;
+			super.initPage(gui, x, y+yOff, pageButtons);
+		}
+
+		@Override
 		public void renderPage(GuiScreen gui, int x, int y, int mx, int my)
 		{
-			String lastResource="";
 			int yOff = 0;
+			ClientUtils.bindTexture("immersiveengineering:textures/models/white.png");
+			for(int i=0; i<resources.length; i++)
+				if(resources[i]!=null&&!resources[i].isEmpty())
+				{
+					int xOff = 60-sizing[i][2]/2;
+					ClientUtils.drawGradientRect(x+xOff-2,y+yOff-2,x+xOff+sizing[i][2]+2,y+yOff+sizing[i][3]+2, 0xffeaa74c,0xfff6b059);
+					ClientUtils.drawGradientRect(x+xOff-1,y+yOff-1,x+xOff+sizing[i][2]+1,y+yOff+sizing[i][3]+1, 0xffc68e46,0xffbe8844);
+					yOff += sizing[i][3]+5;
+				}
+			String lastResource="";
+			yOff = 0;
 			for(int i=0; i<resources.length; i++)
 				if(resources[i]!=null&&!resources[i].isEmpty())
 				{
@@ -115,7 +135,7 @@ public abstract class ManualPages implements IManualPage
 						ClientUtils.bindTexture(resources[i]);
 					int xOff = 60-sizing[i][2]/2;
 					ClientUtils.drawTexturedRect(x+xOff,y+yOff,sizing[i][2],sizing[i][3], 256f, sizing[i][0],sizing[i][0]+sizing[i][2], sizing[i][1],sizing[i][1]+sizing[i][3]);
-					yOff += sizing[i][3]+4;
+					yOff += sizing[i][3]+5;
 					lastResource = resources[i];
 				}
 
@@ -131,6 +151,12 @@ public abstract class ManualPages implements IManualPage
 		{
 			super(text);
 			this.stacks=stacks;
+		}
+
+		@Override
+		public void initPage(GuiScreen gui, int x, int y, List<GuiButton> pageButtons)
+		{
+			super.initPage(gui, x, y+44, pageButtons);
 		}
 
 		@Override
@@ -157,11 +183,11 @@ public abstract class ManualPages implements IManualPage
 
 	public static class Crafting extends ManualPages
 	{
-		ItemStack[] stacks;
-		ArrayListMultimap<ItemStack, PositionedItemStack[]> recipes = ArrayListMultimap.create();
+		Object[] stacks;
+		ArrayListMultimap<Object, PositionedItemStack[]> recipes = ArrayListMultimap.create();
 		int recipePage[];
 		int yOff[];
-		public Crafting(String text, ItemStack... stacks)
+		public Crafting(String text, Object... stacks)
 		{
 			super(text);
 			this.stacks=stacks;
@@ -175,8 +201,8 @@ public abstract class ManualPages implements IManualPage
 				{
 					for(int iStack=0; iStack<stacks.length; iStack++)
 					{
-						ItemStack stack = stacks[iStack];
-						if(((IRecipe)o).getRecipeOutput()!=null && OreDictionary.itemMatches(stack, ((IRecipe)o).getRecipeOutput(), false))
+						Object stack = stacks[iStack];
+						if(((IRecipe)o).getRecipeOutput()!=null && Utils.stackMatchesObject(((IRecipe)o).getRecipeOutput(), stack))
 						{
 							IRecipe r = (IRecipe)o;
 							Object[] ingredientsPre=null;
@@ -226,7 +252,6 @@ public abstract class ManualPages implements IManualPage
 							if(ingredients!=null)
 							{
 								PositionedItemStack[] pIngredients = new PositionedItemStack[ingredients.length+1];
-								//System.out.println(((IRecipe)o).getRecipeOutput());
 								int xBase = (120-(w+2)*18)/2;
 								for(int hh=0; hh<h; hh++)
 									for(int ww=0; ww<w; ww++)
@@ -245,20 +270,19 @@ public abstract class ManualPages implements IManualPage
 		@Override
 		public void initPage(GuiScreen gui, int x, int y, List<GuiButton> pageButtons)
 		{
-			super.initPage(gui, x, y, pageButtons);
-			//Load Recipes
 			int i=1;
 			int yyOff=0;
-			for(ItemStack stack : this.stacks)
+			for(Object stack : this.stacks)
 			{
 				if(this.recipes.get(stack).size()>1)
 				{
-					pageButtons.add(new GuiButtonArrow(100*i+0, x-2,y+yyOff+yOff[i-1]/2-3, 0));
-					pageButtons.add(new GuiButtonArrow(100*i+1, x+122-16,y+yyOff+yOff[i-1]/2-3, 1));
+					pageButtons.add(new GuiButtonArrow(100*i+0, x-2,y+yyOff+yOff[i-1]/2-3, 8,10, 0));
+					pageButtons.add(new GuiButtonArrow(100*i+1, x+122-16,y+yyOff+yOff[i-1]/2-3, 8,10, 1));
 				}
 				yyOff += yOff[i-1]+8;
 				i++;
 			}
+			super.initPage(gui, x, y+yyOff, pageButtons);
 		}
 
 		@Override
@@ -271,7 +295,7 @@ public abstract class ManualPages implements IManualPage
 			ItemStack highlighted = null;
 			for(int i=0; i<stacks.length; i++)
 			{
-				ItemStack stack = stacks[i];
+				Object stack = stacks[i];
 				List<PositionedItemStack[]> rList = this.recipes.get(stack);
 				if(!rList.isEmpty() && recipePage[i]>=0 && recipePage[i]<this.recipes.size())
 				{
@@ -296,7 +320,7 @@ public abstract class ManualPages implements IManualPage
 			ClientUtils.font().setUnicodeFlag(false);
 			for(int i=0; i<stacks.length; i++)
 			{
-				ItemStack stack = stacks[i];
+				Object stack = stacks[i];
 				List<PositionedItemStack[]> rList = this.recipes.get(stack);
 				if(!rList.isEmpty() && recipePage[i]>=0 && recipePage[i]<this.recipes.size())
 				{
@@ -341,6 +365,171 @@ public abstract class ManualPages implements IManualPage
 				if(recipePage[r]<0)
 					recipePage[r]=this.recipes.get(stacks[r]).size()-1;
 			}
+		}
+	}
+
+	public static class CraftingSingular extends ManualPages
+	{
+		ArrayList<PositionedItemStack[]> recipes = new ArrayList();
+		int recipePage;
+		int yOff;
+		public CraftingSingular(String text, Object... stacks)
+		{
+			super(text);
+
+			this.recipes.clear();
+			List cmRecipes = CraftingManager.getInstance().getRecipeList();
+			for(Object o : cmRecipes)
+				if(o!=null && o instanceof IRecipe)
+				{
+					for(int iStack=0; iStack<stacks.length; iStack++)
+					{
+						Object stack = stacks[iStack];
+						if(((IRecipe)o).getRecipeOutput()!=null && Utils.stackMatchesObject(((IRecipe)o).getRecipeOutput(), stack))
+						{
+							IRecipe r = (IRecipe)o;
+							Object[] ingredientsPre=null;
+							int w=0;
+							int h=0;
+							if(r instanceof ShapelessRecipes)
+							{
+								ingredientsPre = ((ShapelessRecipes)r).recipeItems.toArray();
+								w = ingredientsPre.length>6?3: ingredientsPre.length>1?2: 1;
+								h = ingredientsPre.length>4?3: ingredientsPre.length>2?2: 1;
+							}
+							else if(r instanceof ShapelessOreRecipe)
+							{
+								ingredientsPre = ((ShapelessOreRecipe)r).getInput().toArray();
+								w = ingredientsPre.length>6?3: ingredientsPre.length>1?2: 1;
+								h = ingredientsPre.length>4?3: ingredientsPre.length>2?2: 1;
+							}
+							else if(r instanceof ShapedOreRecipe)
+							{
+								ingredientsPre = ((ShapedOreRecipe)r).getInput();
+								w = ReflectionHelper.getPrivateValue(ShapedOreRecipe.class, (ShapedOreRecipe)r, "width");
+								h = ReflectionHelper.getPrivateValue(ShapedOreRecipe.class, (ShapedOreRecipe)r, "height");
+							}
+							else if(r instanceof ShapedRecipes)
+							{
+								ingredientsPre = ((ShapedRecipes)r).recipeItems;
+								w = ((ShapedRecipes)r).recipeWidth;
+								h = ((ShapedRecipes)r).recipeHeight;
+							}
+							Object[] ingredients = new Object[ingredientsPre.length];
+							for(int iO=0; iO<ingredientsPre.length; iO++)
+							{
+								if(ingredientsPre[iO] instanceof List)
+								{
+									ingredients[iO] = new ArrayList((List)ingredientsPre[iO]);
+									Iterator<ItemStack> itValidate = ((ArrayList<ItemStack>)ingredients[iO]).iterator();
+									while(itValidate.hasNext())
+									{
+										ItemStack stVal = itValidate.next();
+										if(stVal==null || stVal.getItem()==null || stVal.getDisplayName()==null)
+											itValidate.remove();
+									}
+								}
+								else
+									ingredients[iO] = ingredientsPre[iO];
+							}
+							if(ingredients!=null)
+							{
+								PositionedItemStack[] pIngredients = new PositionedItemStack[ingredients.length+1];
+								int xBase = (120-(w+2)*18)/2;
+								for(int hh=0; hh<h; hh++)
+									for(int ww=0; ww<w; ww++)
+										if(hh*w+ww<ingredients.length)
+											pIngredients[hh*w+ww] = new PositionedItemStack(ingredients[hh*w+ww], xBase+ww*18,hh*18);
+								pIngredients[pIngredients.length-1] = new PositionedItemStack(((IRecipe)o).getRecipeOutput(), xBase+w*18+18, (int)(h/2f*18)-8);
+								if(iStack<this.recipes.size())
+									this.recipes.add(iStack,pIngredients);
+								else
+									this.recipes.add(pIngredients);
+							}
+							if(h*18>yOff)
+								yOff=h*18;
+						}
+					}
+				}
+		}
+
+		@Override
+		public void initPage(GuiScreen gui, int x, int y, List<GuiButton> pageButtons)
+		{
+			if(this.recipes.size()>1)
+			{
+				pageButtons.add(new GuiButtonArrow(100+0, x-2,y+yOff/2-3, 8,10, 0));
+				pageButtons.add(new GuiButtonArrow(100+1, x+122-16,y+yOff/2-3, 8,10, 1));
+			}
+			super.initPage(gui, x, y+yOff+8, pageButtons);
+		}
+
+		@Override
+		public void renderPage(GuiScreen gui, int x, int y, int mx, int my)
+		{
+			GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+			RenderHelper.enableGUIStandardItemLighting();
+
+			ItemStack highlighted = null;
+
+			if(!recipes.isEmpty() && recipePage>=0 && recipePage<this.recipes.size())
+			{
+				ClientUtils.bindTexture("immersiveengineering:textures/models/white.png");
+				int maxX=0;
+				for(PositionedItemStack pstack : recipes.get(recipePage))
+					if(pstack!=null)
+					{
+						if(pstack.x>maxX)
+							maxX=pstack.x;
+						ClientUtils.drawColouredRect(x+pstack.x, y+pstack.y, 16,16, 0x33666666);
+					}
+				ClientUtils.bindTexture("immersiveengineering:textures/gui/manual.png");
+				ClientUtils.drawTexturedRect(x+maxX-17,y+yOff/2-5, 16,10, 256, 0,16, 226,236);
+
+			}
+
+			GL11.glTranslated(0, 0, 300);
+			boolean uni = ClientUtils.font().getUnicodeFlag();
+			ClientUtils.font().setUnicodeFlag(false);
+			
+			if(!recipes.isEmpty() && recipePage>=0 && recipePage<this.recipes.size())
+			{
+				for(PositionedItemStack pstack : recipes.get(recipePage))
+					if(pstack!=null)
+						if(pstack.getStack()!=null)
+						{
+							RenderItem.getInstance().renderItemIntoGUI(ClientUtils.font(), ClientUtils.mc().renderEngine, pstack.getStack(), x+pstack.x, y+pstack.y);
+							RenderItem.getInstance().renderItemOverlayIntoGUI(ClientUtils.font(), ClientUtils.mc().renderEngine, pstack.getStack(), x+pstack.x, y+pstack.y);
+							if(mx>=x+pstack.x&&mx<x+pstack.x+16 && my>=y+pstack.y&&my<y+pstack.y+16)
+								highlighted = pstack.getStack();
+						}
+			}
+
+			ClientUtils.font().setUnicodeFlag(uni);
+			GL11.glTranslated(0, 0, -300);
+			if(highlighted!=null)
+				ClientUtils.renderToolTip(highlighted, mx, my);
+			RenderHelper.disableStandardItemLighting();
+			GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+			GL11.glEnable(GL11.GL_BLEND);
+
+			if(localizedText!=null&&!localizedText.isEmpty())
+				ClientUtils.font().drawSplitString(localizedText, x,y+yOff+2, 110, 0x444444);
+		}
+
+		@Override
+		public void buttonPressed(GuiScreen gui, GuiButton button)
+		{
+			super.buttonPressed(gui, button);
+			if(button.id%100==0)
+				recipePage--;
+			else
+				recipePage++;
+
+			if(recipePage>=this.recipes.size())
+				recipePage=0;
+			if(recipePage<0)
+				recipePage=this.recipes.size()-1;
 		}
 	}
 

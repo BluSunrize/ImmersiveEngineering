@@ -81,10 +81,13 @@ public class GuiManual extends GuiScreen
 
 			boolean uni = ClientUtils.font().getUnicodeFlag();
 			ClientUtils.font().setUnicodeFlag(true);
-
-			float scale = 1f;
-			this.drawCenteredStringScaled(fontRendererObj, EnumChatFormatting.BOLD+StatCollector.translateToLocal("ie.manual.entry."+entry.name+".name"), guiLeft+xSize/2,guiTop+14, 0xd4804a, 1);
-			this.drawCenteredStringScaled(fontRendererObj, StatCollector.translateToLocal("ie.manual.entry."+entry.name+".subtext"), guiLeft+xSize/2,guiTop+22, 0xd4804a, scale);
+			
+			//Title
+			this.drawCenteredStringScaled(fontRendererObj, EnumChatFormatting.BOLD+StatCollector.translateToLocal("ie.manual.entry."+entry.name+".name"), guiLeft+xSize/2,guiTop+14, 0xd4804a, 1, true);
+			this.drawCenteredStringScaled(fontRendererObj, StatCollector.translateToLocal("ie.manual.entry."+entry.name+".subtext"), guiLeft+xSize/2,guiTop+22, 0xd4804a, 1, true);
+			//Page Number
+			this.drawCenteredStringScaled(fontRendererObj, EnumChatFormatting.BOLD.toString()+(page+1), guiLeft+xSize/2,guiTop+183, 0x9c917c, 1, false);
+			
 			GL11.glColor3f(1,1,1);
 			IManualPage mPage = (page<0||page>=entry.pages.length)?null: entry.pages[page];
 			if(mPage!=null)
@@ -118,13 +121,13 @@ public class GuiManual extends GuiScreen
 	}
 
 
-	public void drawCenteredStringScaled(FontRenderer fr, String s, int x, int y, int colour, float scale)
+	public void drawCenteredStringScaled(FontRenderer fr, String s, int x, int y, int colour, float scale, boolean shadow)
 	{
 		int xx = (int)Math.floor(x/scale - (fr.getStringWidth(s)/2));
 		int yy = (int)Math.floor(y/scale - (fr.FONT_HEIGHT/2));
 		if(scale!=1)
 			GL11.glScalef(scale, scale, scale);
-		fr.drawStringWithShadow(s, xx,yy, colour);
+		fr.drawString(s, xx,yy, colour, shadow);
 		if(scale!=1)
 			GL11.glScalef(1/scale, 1/scale, 1/scale);
 	}

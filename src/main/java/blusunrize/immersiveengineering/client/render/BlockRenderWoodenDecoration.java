@@ -48,6 +48,11 @@ public class BlockRenderWoodenDecoration implements ISimpleBlockRenderingHandler
 				renderer.setRenderBounds(0,0,0, 1,1,1);
 				ClientUtils.drawInventoryBlock(block, metadata, renderer);
 			}
+			else if(metadata==5)
+			{
+				renderer.setRenderBounds(0,0,0, 1,1,1);
+				ClientUtils.drawInventoryBlock(block, metadata, renderer);
+			}
 		}catch(Exception e)
 		{
 			e.printStackTrace();
@@ -94,6 +99,26 @@ public class BlockRenderWoodenDecoration implements ISimpleBlockRenderingHandler
 				renderer.renderStandardBlock(block, x, y, z);
 			}
 			return true;
+		}
+		else if(world.getBlockMetadata(x, y, z)==5)
+		{
+			renderer.setRenderBoundsFromBlock(block);
+			renderer.renderFromInside=true;
+			renderer.renderMinX+=block.shouldSideBeRendered(world,x-1,y,z,1)?.015625:0;
+			renderer.renderMinY+=block.shouldSideBeRendered(world,x,y-1,z,0)?.015625:0;
+			renderer.renderMinZ+=block.shouldSideBeRendered(world,x,y,z-1,1)?.015625:0;
+			renderer.renderMaxX-=block.shouldSideBeRendered(world,x+1,y,z,1)?.015625:0;
+			renderer.renderMaxY-=block.shouldSideBeRendered(world,x,y+1,z,1)?.015625:0;
+			renderer.renderMaxZ-=block.shouldSideBeRendered(world,x,y,z+1,1)?.015625:0;
+			renderer.renderStandardBlock(block, x, y, z);
+			renderer.renderMinX-=block.shouldSideBeRendered(world,x-1,y,z,1)?.015625:0;
+			renderer.renderMinY-=block.shouldSideBeRendered(world,x,y-1,z,0)?.015625:0;
+			renderer.renderMinZ-=block.shouldSideBeRendered(world,x,y,z-1,1)?.015625:0;
+			renderer.renderMaxX+=block.shouldSideBeRendered(world,x+1,y,z,1)?.015625:0;
+			renderer.renderMaxY+=block.shouldSideBeRendered(world,x,y+1,z,1)?.015625:0;
+			renderer.renderMaxZ+=block.shouldSideBeRendered(world,x,y,z+1,1)?.015625:0;
+			renderer.renderFromInside=false;
+			return renderer.renderStandardBlock(block, x, y, z);
 		}
 		else
 		{

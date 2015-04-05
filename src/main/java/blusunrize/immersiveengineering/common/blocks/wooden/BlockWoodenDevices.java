@@ -24,7 +24,7 @@ public class BlockWoodenDevices extends BlockIEBase
 {
 	public BlockWoodenDevices()
 	{
-		super("woodenDevice", Material.wood, 2, ItemBlockWoodenDevices.class, "post","watermill","windmill","scaffolding","windmillAdvanced");
+		super("woodenDevice", Material.wood, 1, ItemBlockWoodenDevices.class, "post","watermill","windmill","windmillAdvanced");
 		this.setHardness(2.0F);
 		this.setResistance(5.0F);
 	}
@@ -44,28 +44,13 @@ public class BlockWoodenDevices extends BlockIEBase
 	public void registerBlockIcons(IIconRegister iconRegister)
 	{
 		//Treated wood + post, fence, watermill, windmills
-		for(int i=0; i<2; i++)
-		{
-			icons[0][i] = iconRegister.registerIcon("immersiveengineering:treatedWood");
-			icons[1][i] = iconRegister.registerIcon("immersiveengineering:treatedWood");
-			icons[2][i] = iconRegister.registerIcon("immersiveengineering:treatedWood");
-			icons[4][i] = iconRegister.registerIcon("immersiveengineering:treatedWood");
-		}
-		//Scaffolding
-		icons[3][0] = iconRegister.registerIcon("immersiveengineering:scaffolding_top");
-		icons[3][1] = iconRegister.registerIcon("immersiveengineering:scaffolding_side");
+		for(int i=0; i<subNames.length; i++)
+			icons[i][0] = iconRegister.registerIcon("immersiveengineering:treatedWood");
 	}
 	@Override
 	public int getRenderType()
 	{
 		return BlockRenderWoodenDevices.renderID;
-	}
-	@Override
-	public boolean shouldSideBeRendered(IBlockAccess world, int x, int y ,int z, int side)
-	{
-		if(world.getBlockMetadata(x+(side==4?1:side==5?-1:0),y+(side==0?1:side==1?-1:0),z+(side==2?1:side==3?-1:0))==3)
-			return (world.getBlock(x, y, z)==this&&world.getBlockMetadata(x,y,z)==4)?false:true;
-		return super.shouldSideBeRendered(world, x, y, z, side);
 	}
 	@Override
 	public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
@@ -85,15 +70,17 @@ public class BlockWoodenDevices extends BlockIEBase
 				this.setBlockBounds(type==7?0:.3125f,.5f,type==5?0:.3125f,  type==6?1:.6875f,1f,type==4?1:.6875f);
 				break;
 			default:
-				this.setBlockBounds(isPost(world,x-1,y,z)?0:.3125f,0,isPost(world,x,y,z-1)?0:.3125f,  isPost(world,x+1,y,z)?1:.6875f,1f,isPost(world,x,y,z+1)?1:.6875f);
+				this.setBlockBounds(isPost(world,x-1,y,z,6)?0:.3125f,0,isPost(world,x,y,z-1,4)?0:.3125f,  isPost(world,x+1,y,z,7)?1:.6875f,1f,isPost(world,x,y,z+1,5)?1:.6875f);
 				break;
 			}
 		}
 		else
 			this.setBlockBounds(0,0,0,1,1,1);
 	}
-	boolean isPost(IBlockAccess world, int x, int y, int z)
+	boolean isPost(IBlockAccess world, int x, int y, int z, int type)
 	{
+		if(world.getTileEntity(x, y, z) instanceof TileEntityWoodenPost)
+			return ((TileEntityWoodenPost)world.getTileEntity(x, y, z)).type == type;
 		return world.getBlock(x,y,z)==this && world.getBlockMetadata(x, y, z)==0;
 	}
 
@@ -120,10 +107,13 @@ public class BlockWoodenDevices extends BlockIEBase
 			if(type==3)
 			{
 				ForgeDirection fd = ForgeDirection.getOrientation(side);
-				ForgeDirection rot = fd.getRotation(ForgeDirection.UP);
-				if((!world.isAirBlock(x+fd.offsetX,y+fd.offsetY,z+fd.offsetZ))
-						||(world.getTileEntity(x+rot.offsetX,y+rot.offsetY,z+rot.offsetZ) instanceof TileEntityWoodenPost)
-						||(world.getTileEntity(x+rot.getOpposite().offsetX,y+rot.getOpposite().offsetY,z+rot.getOpposite().offsetZ) instanceof TileEntityWoodenPost))
+				ForgeDirection rot0 = fd.getRotation(ForgeDirection.UP);
+				ForgeDirection rot1 = rot0.getOpposite();
+				if(!world.isAirBlock(x+fd.offsetX,y+fd.offsetY,z+fd.offsetZ))
+					return false;
+				if(world.getTileEntity(x+rot0.offsetX,y+rot0.offsetY,z+rot0.offsetZ) instanceof TileEntityWoodenPost && ((TileEntityWoodenPost)world.getTileEntity(x+rot0.offsetX,y+rot0.offsetY,z+rot0.offsetZ)).type-2==rot0.ordinal())
+					return false;
+				if(world.getTileEntity(x+rot1.offsetX,y+rot1.offsetY,z+rot1.offsetZ) instanceof TileEntityWoodenPost && ((TileEntityWoodenPost)world.getTileEntity(x+rot1.offsetX,y+rot1.offsetY,z+rot1.offsetZ)).type-2==rot1.ordinal())
 					return false;
 				world.setBlock(x+fd.offsetX, y, z+fd.offsetZ, this, 0, 0x3);
 				if(world.getTileEntity(x+fd.offsetX, y, z+fd.offsetZ) instanceof TileEntityWoodenPost)
@@ -228,7 +218,7 @@ public class BlockWoodenDevices extends BlockIEBase
 			return new TileEntityWatermill();
 		case 2:
 			return new TileEntityWindmill();
-		case 4:
+		case 3:
 			return new TileEntityWindmillAdvanced();
 		}
 		return null;

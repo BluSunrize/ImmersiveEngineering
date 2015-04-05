@@ -2,7 +2,6 @@ package blusunrize.immersiveengineering.client.gui.manual;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.util.StatCollector;
 

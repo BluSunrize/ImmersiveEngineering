@@ -30,6 +30,7 @@ import blusunrize.immersiveengineering.client.render.TileRenderWindmillAdvanced;
 import blusunrize.immersiveengineering.common.CommonProxy;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.Lib;
+import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDevices;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorHV;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorLV;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorMV;
@@ -72,7 +73,7 @@ public class ClientProxy extends CommonProxy
 		RenderingRegistry.registerBlockHandler(new BlockRenderWoodenDecoration());
 		//STONE
 		RenderingRegistry.registerBlockHandler(new BlockRenderStoneDevices());
-		
+
 		//REVOLVER
 		MinecraftForgeClient.registerItemRenderer(IEContent.itemRevolver, new ItemRenderRevolver());
 		RenderingRegistry.registerEntityRenderingHandler(EntityRevolvershot.class, new EntityRenderRevolvershot());
@@ -100,22 +101,21 @@ public class ClientProxy extends CommonProxy
 		GuiManual.addEntry("wiring", new ManualPages.Text("wiring0"), 
 				new ManualPages.Crafting("wiring1", new ItemStack(IEContent.itemWireCoil,1,OreDictionary.WILDCARD_VALUE)),
 				new ManualPages.Image("wiring2", "immersiveengineering:textures/misc/wiring.png;0;0;110;40", "immersiveengineering:textures/misc/wiring.png;0;40;110;30"),
-				new ManualPages.Image("wiring3", "immersiveengineering:textures/misc/wiring.png;0;70;110;60", "immersiveengineering:textures/misc/wiring.png;0;130;110;55"),
-				new ManualPages.Crafting("", new ItemStack(IEContent.blockMetalDevice,1,0),new ItemStack(IEContent.blockMetalDevice,1,3)),
-				new ManualPages.Crafting("wiringCapacitor", new ItemStack(IEContent.blockMetalDevice,1,1)),
+				new ManualPages.Image("wiring3", "immersiveengineering:textures/misc/wiring.png;0;70;110;60", "immersiveengineering:textures/misc/wiring.png;0;130;110;60"),
+				new ManualPages.CraftingSingular("wiringConnector", new ItemStack(IEContent.blockMetalDevice,1,BlockMetalDevices.META_connectorLV),new ItemStack(IEContent.blockMetalDevice,1,BlockMetalDevices.META_connectorMV),new ItemStack(IEContent.blockMetalDevice,1,BlockMetalDevices.META_relayHV),new ItemStack(IEContent.blockMetalDevice,1,BlockMetalDevices.META_connectorHV)),
+				new ManualPages.CraftingSingular("wiringCapacitor", new ItemStack(IEContent.blockMetalDevice,1,BlockMetalDevices.META_capacitorLV),new ItemStack(IEContent.blockMetalDevice,1,BlockMetalDevices.META_capacitorMV),new ItemStack(IEContent.blockMetalDevice,1,BlockMetalDevices.META_capacitorHV)),
+				new ManualPages.CraftingSingular("wiringTransformer0", new ItemStack(IEContent.blockMetalDevice,1,BlockMetalDevices.META_transformer),new ItemStack(IEContent.blockMetalDevice,1,BlockMetalDevices.META_transformerHV)),
+				new ManualPages.Text("wiringTransformer1"), 
 				new ManualPages.Crafting("wiringCutters", new ItemStack(IEContent.itemTool,1,1)),
 				new ManualPages.Crafting("wiringVoltmeter", new ItemStack(IEContent.itemTool,1,2)));
 		GuiManual.addEntry("generator",
 				new ManualPages.Text("generator0"),
-				new ManualPages.Crafting("", new ItemStack(IEContent.blockMetalDevice,1,6),new ItemStack(IEContent.blockMetalDevice,1,9)),
-				new ManualPages.Crafting("", new ItemStack(IEContent.itemMaterial,1,2),new ItemStack(IEContent.blockWoodenDevice,1,2)),
-				new ManualPages.Text("generatorWindmill"),
-				new ManualPages.Crafting("", new ItemStack(IEContent.itemMaterial,1,1),new ItemStack(IEContent.blockWoodenDevice,1,1)),
-				new ManualPages.Text("generatorWatermill"),
-				new ManualPages.Crafting("", new ItemStack(IEContent.itemMaterial,1,4),new ItemStack(IEContent.itemMaterial,1,5)),
-				new ManualPages.Crafting("generatorWindmillImproved", new ItemStack(IEContent.blockWoodenDevice,1,4))
-		);
-				
+				new ManualPages.Crafting("", new ItemStack(IEContent.blockMetalDevice,1,BlockMetalDevices.META_dynamo),new ItemStack(IEContent.blockMetalDevice,1,BlockMetalDevices.META_thermoelectricGen)),
+				new ManualPages.CraftingSingular("generatorWindmill", new ItemStack(IEContent.itemMaterial,1,2),new ItemStack(IEContent.blockWoodenDevice,1,2)),
+				new ManualPages.CraftingSingular("generatorWatermill", new ItemStack(IEContent.itemMaterial,1,1),new ItemStack(IEContent.blockWoodenDevice,1,1)),
+				new ManualPages.CraftingSingular("generatorWindmillImproved", new ItemStack(IEContent.itemMaterial,1,4),new ItemStack(IEContent.itemMaterial,1,5),new ItemStack(IEContent.blockWoodenDevice,1,3))
+				);
+
 
 		GuiManual.addEntry("blastfurnace", new ManualPages.Text("blastfurnace0"), new ManualPages.Crafting("blastfurnaceBlock", new ItemStack(IEContent.blockStoneDevice,1,2)));
 

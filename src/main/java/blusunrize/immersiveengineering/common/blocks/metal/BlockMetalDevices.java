@@ -180,15 +180,6 @@ public class BlockMetalDevices extends BlockIEBase
 	}
 
 	@Override
-	public int getLightValue(IBlockAccess world, int x, int y, int z)
-	{
-		if(world.getBlockMetadata(x, y, z)==2)
-		{
-			return 15;
-		}
-		return 0;
-	}
-	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
 	{
 		if(world.isRemote && world.getTileEntity(x, y, z) instanceof TileEntityCapacitorLV && Utils.isHammer(player.getCurrentEquippedItem()))
@@ -228,8 +219,6 @@ public class BlockMetalDevices extends BlockIEBase
 				break;
 			}
 		}
-		else if(world.getBlockMetadata(x, y, z)==2)
-			this.setBlockBounds(.25f,0,.25f, .75f,.8125f,.75f);
 		else if(world.getTileEntity(x, y, z) instanceof TileEntityTransformer)
 		{
 			TileEntityTransformer transf = (TileEntityTransformer)world.getTileEntity(x, y, z);
