@@ -368,12 +368,12 @@ public abstract class ManualPages implements IManualPage
 		}
 	}
 
-	public static class CraftingSingular extends ManualPages
+	public static class CraftingMulti extends ManualPages
 	{
 		ArrayList<PositionedItemStack[]> recipes = new ArrayList();
 		int recipePage;
 		int yOff;
-		public CraftingSingular(String text, Object... stacks)
+		public CraftingMulti(String text, Object... stacks)
 		{
 			super(text);
 
