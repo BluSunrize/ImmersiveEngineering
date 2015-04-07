@@ -8,9 +8,9 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraftforge.oredict.OreDictionary;
-import blusunrize.immersiveengineering.common.Utils;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.crafting.BlastFurnaceRecipe;
+import blusunrize.immersiveengineering.common.util.Utils;
 
 public class TileEntityBlastFurnace extends TileEntityIEBase implements ISidedInventory
 {

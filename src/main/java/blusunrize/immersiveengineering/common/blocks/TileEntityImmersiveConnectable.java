@@ -12,7 +12,7 @@ import blusunrize.immersiveengineering.api.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.api.TargetingInfo;
-import blusunrize.immersiveengineering.common.Utils;
+import blusunrize.immersiveengineering.common.util.Utils;
 
 public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase implements IImmersiveConnectable
 {
@@ -38,12 +38,12 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 		return true;
 	}
 	@Override
-	public boolean isRFInOutput()
+	public boolean isEnergyOutput()
 	{
 		return false;
 	}
 	@Override
-	public int outputRedstoneFlux(int amount, boolean simulate)
+	public int outputEnergy(int amount, boolean simulate, int energyType)
 	{
 		return 0;
 	}

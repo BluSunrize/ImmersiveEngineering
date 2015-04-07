@@ -7,8 +7,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
-import blusunrize.immersiveengineering.common.Lib;
-import blusunrize.immersiveengineering.common.Utils;
+import blusunrize.immersiveengineering.common.util.Lib;
+import blusunrize.immersiveengineering.common.util.Utils;
 
 public class RecipeOreCrushing implements IRecipe
 {

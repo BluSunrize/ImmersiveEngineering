@@ -23,7 +23,7 @@ import org.lwjgl.opengl.GL12;
 import blusunrize.immersiveengineering.api.IManualPage;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.Config;
-import blusunrize.immersiveengineering.common.Utils;
+import blusunrize.immersiveengineering.common.util.Utils;
 
 import com.google.common.collect.ArrayListMultimap;
 

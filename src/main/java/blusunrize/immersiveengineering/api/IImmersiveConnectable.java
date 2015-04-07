@@ -18,12 +18,15 @@ public interface IImmersiveConnectable
 	/**
 	 * @return if the tile can in or output energy from/to the network
 	 */
-	public boolean isRFInOutput();
+	public boolean isEnergyOutput();
 	
 	/**
+	 * @param amount The amount of power input, in RF
+	 * @param simulate whether to actually perform the action or just simulate energy consumption
+	 * @param energyType 0 for RF, 1 for EU
 	 * @return the amount of power that was output
 	 */
-	public int outputRedstoneFlux(int amount, boolean simulate);
+	public int outputEnergy(int amount, boolean simulate, int energyType);
 	
 	/**
 	 * @return wether you can connect the given CableType to the tile

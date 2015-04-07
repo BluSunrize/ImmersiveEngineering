@@ -1,6 +1,6 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import static blusunrize.immersiveengineering.common.Utils.toIIC;
+import static blusunrize.immersiveengineering.common.util.Utils.toIIC;
 
 import java.util.List;
 
@@ -12,8 +12,8 @@ import blusunrize.immersiveengineering.api.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.ImmersiveNetHandler.AbstractConnection;
 import blusunrize.immersiveengineering.api.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.common.Config;
-import blusunrize.immersiveengineering.common.Utils;
 import blusunrize.immersiveengineering.common.blocks.TileEntityImmersiveConnectable;
+import blusunrize.immersiveengineering.common.util.Utils;
 import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyHandler;
 import cofh.api.energy.IEnergyReceiver;
@@ -43,7 +43,7 @@ public class TileEntityCapacitorLV extends TileEntityImmersiveConnectable implem
 		else if(worldObj.getTileEntity(xCoord+fd.offsetX,yCoord+fd.offsetY,zCoord+fd.offsetZ) instanceof TileEntityConnectorLV)
 		{
 			IImmersiveConnectable node = (IImmersiveConnectable) worldObj.getTileEntity(xCoord+fd.offsetX,yCoord+fd.offsetY,zCoord+fd.offsetZ);
-			if(!node.isRFInOutput())
+			if(!node.isEnergyOutput())
 				return;
 			List<AbstractConnection> outputs = ImmersiveNetHandler.getIndirectEnergyConnections(Utils.toCC(node), worldObj);
 			int received = 0;
@@ -51,9 +51,9 @@ public class TileEntityCapacitorLV extends TileEntityImmersiveConnectable implem
 			for(AbstractConnection con : outputs)
 				if(con!=null && toIIC(con.end, worldObj)!=null)
 				{
-					int tempR = toIIC(con.end,worldObj).outputRedstoneFlux(Math.min(powerLeft,con.cableType.getTransferRate()), true);
+					int tempR = toIIC(con.end,worldObj).outputEnergy(Math.min(powerLeft,con.cableType.getTransferRate()), true, 0);
 					tempR -= (int) Math.floor(tempR*con.getAverageLossRate());
-					int r = toIIC(con.end, worldObj).outputRedstoneFlux(tempR, false);
+					int r = toIIC(con.end, worldObj).outputEnergy(tempR, false, 0);
 					received += r;
 					powerLeft -= r;
 					if(powerLeft<=0)
@@ -106,12 +106,12 @@ public class TileEntityCapacitorLV extends TileEntityImmersiveConnectable implem
 		return false;
 	}
 	@Override
-	public boolean isRFInOutput()
+	public boolean isEnergyOutput()
 	{
 		return true;
 	}
 	@Override
-	public int outputRedstoneFlux(int amount, boolean simulate)
+	public int outputEnergy(int amount, boolean simulate, int energyType)
 	{
 		return this.energyStorage.receiveEnergy(amount, simulate);
 	}

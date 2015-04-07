@@ -1,7 +1,7 @@
 package blusunrize.immersiveengineering.api;
 
-import static blusunrize.immersiveengineering.common.Utils.toCC;
-import static blusunrize.immersiveengineering.common.Utils.toIIC;
+import static blusunrize.immersiveengineering.common.util.Utils.toCC;
+import static blusunrize.immersiveengineering.common.util.Utils.toIIC;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -193,7 +193,7 @@ public class ImmersiveNetHandler
 			next = openList.get(0);
 			if(!checked.contains(toCC(next)))
 			{
-				if(next.isRFInOutput())
+				if(next.isEnergyOutput())
 				{
 					System.out.println();
 					System.out.println("found Output at "+((TileEntity)next).xCoord+","+((TileEntity)next).yCoord+","+((TileEntity)next).zCoord);
@@ -269,7 +269,7 @@ public class ImmersiveNetHandler
 			//			System.out.println(toCC(next));
 			if(!checked.contains(toCC(next)))
 			{
-				if(next.isRFInOutput())
+				if(next.isEnergyOutput())
 				{
 					//					System.out.println("Output found at "+toCC(next)+", retracing");
 					ChunkCoordinates last = toCC(next);

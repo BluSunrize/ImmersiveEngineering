@@ -14,9 +14,9 @@ import org.lwjgl.opengl.GL11;
 
 import blusunrize.immersiveengineering.api.WireType;
 import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.ItemNBTHelper;
-import blusunrize.immersiveengineering.common.Lib;
 import blusunrize.immersiveengineering.common.items.ItemRevolver;
+import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.util.Lib;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class ClientEventHandler

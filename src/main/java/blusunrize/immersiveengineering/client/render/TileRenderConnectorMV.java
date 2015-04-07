@@ -11,8 +11,8 @@ import blusunrize.immersiveengineering.api.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.ModelConnectorMV;
-import blusunrize.immersiveengineering.common.Utils;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorMV;
+import blusunrize.immersiveengineering.common.util.Utils;
 
 public class TileRenderConnectorMV extends TileEntitySpecialRenderer
 {

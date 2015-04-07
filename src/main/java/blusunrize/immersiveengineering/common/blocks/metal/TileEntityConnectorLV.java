@@ -1,6 +1,10 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import static blusunrize.immersiveengineering.common.Utils.toIIC;
+import static blusunrize.immersiveengineering.common.util.Utils.toIIC;
+import ic2.api.energy.event.EnergyTileLoadEvent;
+import ic2.api.energy.event.EnergyTileUnloadEvent;
+import ic2.api.energy.tile.IEnergySink;
+import ic2.api.energy.tile.IEnergyTile;
 
 import java.util.List;
 
@@ -8,28 +12,66 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Vec3;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
-import blusunrize.immersiveengineering.api.WireType;
 import blusunrize.immersiveengineering.api.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.ImmersiveNetHandler.AbstractConnection;
 import blusunrize.immersiveengineering.api.ImmersiveNetHandler.Connection;
+import blusunrize.immersiveengineering.api.WireType;
 import blusunrize.immersiveengineering.common.Config;
-import blusunrize.immersiveengineering.common.Utils;
 import blusunrize.immersiveengineering.common.blocks.TileEntityImmersiveConnectable;
+import blusunrize.immersiveengineering.common.util.Lib;
+import blusunrize.immersiveengineering.common.util.ModCompatability;
+import blusunrize.immersiveengineering.common.util.Utils;
 import cofh.api.energy.IEnergyHandler;
 import cofh.api.energy.IEnergyReceiver;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.Optional;
+import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implements IEnergyHandler
+@Optional.InterfaceList(value = { @Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "IC2") })
+public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implements IEnergyHandler, ic2.api.energy.tile.IEnergySink
 {
+	boolean inICNet=false;
+
+	@Override
+	public void updateEntity()
+	{
+		if(Lib.IC2 && !this.inICNet && !FMLCommonHandler.instance().getEffectiveSide().isClient())
+		{
+			MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent((IEnergyTile) this));
+			this.inICNet = true;
+		}
+	}
+	@Override
+	public void invalidate()
+	{
+		super.invalidate();
+		unload();
+	}
+	void unload()
+	{
+		if(Lib.IC2 && this.inICNet)
+		{
+			MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent((IEnergyTile)this));
+			this.inICNet = false;
+		}
+	}
+	@Override
+	public void onChunkUnload()
+	{
+		unload();
+	}
+
 	public int facing=0;
 	@Override
 	public boolean canUpdate()
 	{
-		return false;
+		return Lib.IC2;
 	}
-	
+
 	@Override
 	protected boolean canTakeLV()
 	{
@@ -37,18 +79,36 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 	}
 
 	@Override
-	public boolean isRFInOutput()
+	public boolean isEnergyOutput()
 	{
 		ForgeDirection fd = ForgeDirection.getOrientation(facing);
-		return worldObj.getTileEntity(xCoord+fd.offsetX, yCoord+fd.offsetY, zCoord+fd.offsetZ) instanceof IEnergyReceiver;
+		TileEntity tile = worldObj.getTileEntity(xCoord+fd.offsetX, yCoord+fd.offsetY, zCoord+fd.offsetZ);
+		return tile !=null && (tile instanceof IEnergyReceiver || (Lib.IC2 && tile instanceof IEnergySink) || (Lib.GREG && ModCompatability.gregtech_isEnergyConnected(tile)));
 	}
 	@Override
-	public int outputRedstoneFlux(int amount, boolean simulate)
+	public int outputEnergy(int amount, boolean simulate, int energyType)
 	{
 		ForgeDirection fd = ForgeDirection.getOrientation(facing);
 		TileEntity capacitor = worldObj.getTileEntity(xCoord+fd.offsetX, yCoord+fd.offsetY, zCoord+fd.offsetZ);
+
 		if(capacitor instanceof IEnergyReceiver && ((IEnergyReceiver)capacitor).canConnectEnergy(fd.getOpposite()))
-			return ((IEnergyReceiver)capacitor).receiveEnergy(fd.getOpposite(), amount, simulate);//.outputRedstoneFlux(amount, simulate);
+			return ((IEnergyReceiver)capacitor).receiveEnergy(fd.getOpposite(), amount, simulate);
+		else if(Lib.IC2 && capacitor instanceof IEnergySink && ((IEnergySink)capacitor).acceptsEnergyFrom(this, fd.getOpposite()))
+			if(simulate)
+				return amount;
+			else
+			{
+				double left = ((IEnergySink)capacitor).injectEnergy(fd.getOpposite(), ModCompatability.convertRFtoEU(amount, getIC2Tier()), canTakeHV()?(256*256): canTakeMV()?(128*128) : (32*32));
+				return amount-ModCompatability.convertEUtoRF(left);
+			}
+		else if(Lib.GREG && ModCompatability.gregtech_isEnergyConnected(capacitor))
+			if(simulate)
+				return amount;
+			else
+			{
+				ModCompatability.gregtech_outputGTPower(capacitor, (byte)fd.getOpposite().ordinal(), (long)ModCompatability.convertRFtoEU(amount, getIC2Tier()), 1L);
+				return amount;
+			}
 		return 0;
 	}
 
@@ -96,24 +156,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 	@Override
 	public int receiveEnergy(ForgeDirection from, int maxReceive,boolean simulate)
 	{
-		int received = 0;
-		if(!worldObj.isRemote)
-		{
-			List<AbstractConnection> outputs = ImmersiveNetHandler.getIndirectEnergyConnections(Utils.toCC(this), worldObj);
-			int powerLeft = Math.min(Math.min(getMaxOutput(),getMaxInput()), maxReceive);
-			for(AbstractConnection con : outputs)
-				if(con!=null && toIIC(con.end, worldObj)!=null)
-				{
-					int tempR = toIIC(con.end,worldObj).outputRedstoneFlux(Math.min(powerLeft,con.cableType.getTransferRate()), true);
-					tempR -= (int) Math.floor(tempR*con.getAverageLossRate());
-					int r = toIIC(con.end, worldObj).outputRedstoneFlux(tempR, simulate);
-					received += r;
-					powerLeft -= r;
-					if(powerLeft<=0)
-						break;
-				}
-		}
-		return received;
+		return transferEnergy(maxReceive, simulate, 0);
 	}
 	@Override
 	public int getEnergyStored(ForgeDirection from)
@@ -130,7 +173,30 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 	{
 		return 0;
 	}
-	
+
+	public int transferEnergy(int energy, boolean simulate, int energyType)
+	{
+		int received = 0;
+		if(!worldObj.isRemote)
+		{
+			List<AbstractConnection> outputs = ImmersiveNetHandler.getIndirectEnergyConnections(Utils.toCC(this), worldObj);
+			int powerLeft = Math.min(Math.min(getMaxOutput(),getMaxInput()), energy);
+			for(AbstractConnection con : outputs)
+				if(con!=null && toIIC(con.end, worldObj)!=null)
+				{
+					int tempR = toIIC(con.end,worldObj).outputEnergy(Math.min(powerLeft,con.cableType.getTransferRate()), true, energyType);
+					tempR -= (int) Math.floor(tempR*con.getAverageLossRate());
+					int r = toIIC(con.end, worldObj).outputEnergy(tempR, simulate, energyType);
+					received += r;
+					powerLeft -= r;
+					if(powerLeft<=0)
+						break;
+				}
+		}
+		return received;
+	}
+
+
 	public int getMaxInput()
 	{
 		return WireType.COPPER.getTransferRate();
@@ -140,5 +206,30 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 		return WireType.COPPER.getTransferRate();
 	}
 
-
+	@Optional.Method(modid = "IC2")
+	public boolean acceptsEnergyFrom(TileEntity emitter, ForgeDirection direction)
+	{
+		return Lib.IC2 && canConnectEnergy(direction);
+	}
+	@Optional.Method(modid = "IC2")
+	public double getDemandedEnergy()
+	{
+		return getMaxInput()/4;
+	}
+	@Optional.Method(modid = "IC2")
+	public int getSinkTier()
+	{
+		return getIC2Tier();
+	}
+	int getIC2Tier()
+	{
+		return this.canTakeHV()?3: this.canTakeMV()?2: 1;
+	}
+	@Optional.Method(modid = "IC2")
+	public double injectEnergy(ForgeDirection directionFrom, double amount, double voltage)
+	{
+		int r =  transferEnergy(ModCompatability.convertEUtoRF(amount), false, 1);
+		double left = amount-(r/4f);
+		return left;
+	}
 }

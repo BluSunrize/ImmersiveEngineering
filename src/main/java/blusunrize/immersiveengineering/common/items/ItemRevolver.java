@@ -13,8 +13,8 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IBullet;
-import blusunrize.immersiveengineering.common.ItemNBTHelper;
-import blusunrize.immersiveengineering.common.Lib;
+import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.util.Lib;
 
 import com.google.common.collect.Multimap;
 

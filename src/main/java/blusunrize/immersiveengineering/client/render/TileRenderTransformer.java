@@ -14,8 +14,8 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.ModelPostTransformer;
 import blusunrize.immersiveengineering.client.models.ModelTransformer;
 import blusunrize.immersiveengineering.client.models.ModelTransformerHV;
-import blusunrize.immersiveengineering.common.Utils;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTransformer;
+import blusunrize.immersiveengineering.common.util.Utils;
 
 public class TileRenderTransformer extends TileEntitySpecialRenderer
 {

@@ -36,7 +36,10 @@ public class Config
 		setIntArray("cableColouration", config.get("General", "Cable colouration", new int[]{0xd4804a,0xedad62,0x6f6f6f}, "").getIntList());
 		
 		setBoolean("increasedRenderboxes", config.get("General", "Increased Renderboxes", true, "By default all devices that accept cables have increased renderbounds to show cables even if hte block itself is not in view. Disablign this reduces them to their minimum sizes, which might improve FPS on low-power PCs").getBoolean());
-
+		
+		setBoolean("ic2compat", config.get("General", "IC2 Compatability", true, "Set this to false to prevent wires from accepting and outputting EU").getBoolean());
+		setBoolean("gregtechcompat", config.get("General", "GregTech Compatability", true, "Set this to false to prevent wires from outputting GregTech EU").getBoolean());
+		
 		setInt("capacitorLV_storage", config.get("Machines", "Capacitor LV: RF Storage", 100000, "The maximum amount of RF that can be stored in a low-voltage capacitor").getInt());
 		setInt("capacitorLV_input", config.get("Machines", "Capacitor LV: Input", 256, "The maximum amount of RF that can be input into a low-voltage capacitor (by IE net or other means)").getInt());
 		setInt("capacitorLV_output", config.get("Machines", "Capacitor LV: Output", 256, "The maximum amount of RF that can be output from a low-voltage capacitor (by IE net or other means)").getInt());

@@ -40,12 +40,12 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable
 		return false;
 	}
 	@Override
-	public boolean isRFInOutput()
+	public boolean isEnergyOutput()
 	{
 		return false;
 	}
 	@Override
-	public int outputRedstoneFlux(int amount, boolean simulate)
+	public int outputEnergy(int amount, boolean simulate, int energyType)
 	{
 		return 0;
 	}

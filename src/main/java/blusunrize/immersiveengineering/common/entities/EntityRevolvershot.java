@@ -2,7 +2,7 @@ package blusunrize.immersiveengineering.common.entities;
 
 import java.util.List;
 
-import blusunrize.immersiveengineering.common.IEDamageSources;
+import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;

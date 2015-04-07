@@ -9,7 +9,9 @@ import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.EventHandler;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.IEWorldGen;
+import blusunrize.immersiveengineering.common.util.Lib;
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -49,6 +51,10 @@ public class ImmersiveEngineering
 		FMLCommonHandler.instance().bus().register(new EventHandler());
 		NetworkRegistry.INSTANCE.registerGuiHandler(instance, proxy);
 		proxy.init();
+		
+		
+		Lib.IC2 = Loader.isModLoaded("IC2") && Config.getBoolean("ic2compat");
+		Lib.GREG = Loader.isModLoaded("gregtech") && Config.getBoolean("gregtechcompat");
 	}
 	@Mod.EventHandler
 	public void postInit(FMLPostInitializationEvent event)

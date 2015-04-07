@@ -1,4 +1,4 @@
-package blusunrize.immersiveengineering.common;
+package blusunrize.immersiveengineering.common.util;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;

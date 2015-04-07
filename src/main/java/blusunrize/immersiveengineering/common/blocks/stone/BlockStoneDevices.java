@@ -11,9 +11,9 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.client.render.BlockRenderStoneDevices;
-import blusunrize.immersiveengineering.common.Lib;
-import blusunrize.immersiveengineering.common.Utils;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
+import blusunrize.immersiveengineering.common.util.Lib;
+import blusunrize.immersiveengineering.common.util.Utils;
 
 public class BlockStoneDevices extends BlockIEBase
 {

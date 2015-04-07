@@ -17,7 +17,7 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.common.Lib;
+import blusunrize.immersiveengineering.common.util.Lib;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 public abstract class BlockIEBase extends BlockContainer

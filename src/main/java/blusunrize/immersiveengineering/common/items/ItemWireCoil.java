@@ -14,9 +14,9 @@ import blusunrize.immersiveengineering.api.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.common.IESaveData;
-import blusunrize.immersiveengineering.common.ItemNBTHelper;
-import blusunrize.immersiveengineering.common.Lib;
-import blusunrize.immersiveengineering.common.Utils;
+import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.util.Lib;
+import blusunrize.immersiveengineering.common.util.Utils;
 
 
 public class ItemWireCoil extends ItemIEBase

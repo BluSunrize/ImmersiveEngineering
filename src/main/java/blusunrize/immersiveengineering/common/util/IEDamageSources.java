@@ -1,4 +1,4 @@
-package blusunrize.immersiveengineering.common;
+package blusunrize.immersiveengineering.common.util;
 
 import blusunrize.immersiveengineering.common.entities.EntityRevolvershot;
 import net.minecraft.entity.Entity;

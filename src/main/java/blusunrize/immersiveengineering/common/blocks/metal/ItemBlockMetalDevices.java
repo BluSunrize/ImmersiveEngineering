@@ -11,10 +11,10 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-import blusunrize.immersiveengineering.common.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenPost;
+import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 
 public class ItemBlockMetalDevices extends ItemBlockIEBase
 {

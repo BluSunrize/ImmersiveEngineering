@@ -19,10 +19,10 @@ import net.minecraftforge.common.util.ForgeDirection;
 import blusunrize.immersiveengineering.api.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.client.render.BlockRenderMetalDevices;
-import blusunrize.immersiveengineering.common.ItemNBTHelper;
-import blusunrize.immersiveengineering.common.Utils;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenPost;
+import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.util.Utils;
 
 public class BlockMetalDevices extends BlockIEBase
 {

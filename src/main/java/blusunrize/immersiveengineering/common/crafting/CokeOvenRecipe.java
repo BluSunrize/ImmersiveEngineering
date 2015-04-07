@@ -2,7 +2,7 @@ package blusunrize.immersiveengineering.common.crafting;
 
 import java.util.ArrayList;
 
-import blusunrize.immersiveengineering.common.Utils;
+import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 

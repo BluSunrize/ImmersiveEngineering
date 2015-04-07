@@ -23,7 +23,7 @@ public class TileEntityRelayHV extends TileEntityConnectorHV
 		return limitType==null||limitType==cableType;
 	}
 	@Override
-	public boolean isRFInOutput()
+	public boolean isEnergyOutput()
 	{
 		return false;
 	}
