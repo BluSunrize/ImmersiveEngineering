@@ -195,9 +195,9 @@ public class ImmersiveNetHandler
 			{
 				if(next.isEnergyOutput())
 				{
-					System.out.println();
-					System.out.println("found Output at "+((TileEntity)next).xCoord+","+((TileEntity)next).yCoord+","+((TileEntity)next).zCoord);
-					System.out.println("Backtracking: ");
+					//					System.out.println();
+					//					System.out.println("found Output at "+((TileEntity)next).xCoord+","+((TileEntity)next).yCoord+","+((TileEntity)next).zCoord);
+					//					System.out.println("Backtracking: ");
 					ChunkCoordinates last = toCC(next);
 					WireType averageType = null;
 					int distance = 0;
@@ -219,11 +219,11 @@ public class ImmersiveNetHandler
 								}
 						}
 					}
-					System.out.println("Indirect connection has a length of "+distance);
-					System.out.println("The lowest level connection is "+averageType);
-					System.out.println("connection parts: ");
-					for(Connection part : connectionParts)
-						System.out.println("  "+part.length+"m of "+part.cableType);
+					//					System.out.println("Indirect connection has a length of "+distance);
+					//					System.out.println("The lowest level connection is "+averageType);
+					//					System.out.println("connection parts: ");
+					//					for(Connection part : connectionParts)
+					//						System.out.println("  "+part.length+"m of "+part.cableType);
 					closedList.add(next);
 				}
 

@@ -106,7 +106,6 @@ public class ItemNBTHelper
 //			System.out.println(nbtKey+", "+i+" post: "+delayedSounds[i]);
 			if(delayedSounds[i]<=0)
 			{
-				System.out.println("play sound "+getString(stack, "delayedSound_"+nbtKey+"_sound"));
 				ent.worldObj.playSoundAtEntity(ent, getString(stack, "delayedSound_"+nbtKey+"_sound"), getFloat(stack, "delayedSound_"+nbtKey+"_volume"), getFloat(stack, "delayedSound_"+nbtKey+"_pitch"));
 			}
 			else

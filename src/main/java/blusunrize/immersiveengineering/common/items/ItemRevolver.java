@@ -62,10 +62,7 @@ public class ItemRevolver extends ItemIEBase
 				ItemNBTHelper.setDelayedSoundsForStack(stack, "cylinderSpin", "note.hat",.1f,5, 5,8,1);
 			l = ItemNBTHelper.handleDelayedSoundsForStack(stack, "cylinderSpin", ent);
 			if(l==0)
-			{
-				System.out.println("unblock!");
 				ItemNBTHelper.remove(stack, "blocked");
-			}
 		}
 	}
 	@Override
