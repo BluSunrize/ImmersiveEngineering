@@ -33,6 +33,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorLV
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorMV;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityDynamo;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityRelayHV;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityStructuralArm;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityThermoelectricGen;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTransformer;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTransformerHV;
@@ -182,6 +183,9 @@ public class IEContent
 		registerTile(TileEntityTransformerHV.class);
 		registerTile(TileEntityDynamo.class);
 		registerTile(TileEntityThermoelectricGen.class);
+		
+		registerTile(TileEntityStructuralArm.class);
+
 
 		registerTile(TileEntityCokeOven.class);
 		registerTile(TileEntityBlastFurnace.class);
@@ -297,7 +301,8 @@ public class IEContent
 		addOredictRecipe(new ItemStack(blockMetalDecoration,16,0), "III","III", 'I',"ingotSteel");
 		addOredictRecipe(new ItemStack(blockMetalDecoration,6,1), "III"," S ","S S", 'I',"ingotSteel",'S',new ItemStack(blockMetalDecoration,1,0));
 		addOredictRecipe(new ItemStack(blockMetalDecoration,4,2), " I ","PGP"," I ", 'G',"glowstone",'I',"ingotIron",'P',"paneGlass");
-		
+		addOredictRecipe(new ItemStack(blockMetalDecoration,4,3), "B  ","BB ","BBB", 'B',new ItemStack(blockMetalDecoration,1,1)).setMirrored(true);
+
 		//		addOredictRecipe(new ItemStack(blockMetalDevice,8,0), "BIB"," I ","BIB", 'I',"ingotCopper",'B',Blocks.hardened_clay);
 		//		addOredictRecipe(new ItemStack(blockMetalDevice,1,1), "III","RLR","WLW", 'L',"ingotLead",'I',"ingotIron",'R',"dustRedstone",'W',treatedWood);
 		//		addOredictRecipe(new ItemStack(blockMetalDevice,4,2), " I ","PGP"," I ", 'G',"glowstone",'I',"ingotIron",'P',"paneGlass");
@@ -392,11 +397,11 @@ public class IEContent
 	public static List<String> validCrushingOres = new ArrayList();
 	public static void addHammerCrushingRecipe(String oreName)
 	{
-		if(OreDictionary.getOres("dust"+oreName).size()<2)
-		{
+//		if(OreDictionary.getOres("dust"+oreName).size()<2)
+//		{
 			GameRegistry.addRecipe(new RecipeOreCrushing(oreName));
 			validCrushingOres.add(oreName);
-		}
+//		}
 	}
 	public static void addBulletRecipes(int meta, Object load, int casingType)
 	{

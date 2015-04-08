@@ -28,6 +28,8 @@ public class BlockWoodenDecoration extends BlockIEBase
 	public BlockWoodenDecoration()
 	{
 		super("woodenDecoration", Material.wood,2, ItemBlockWoodenDecoration.class, "treatedWood","fence","slab0","slab1","doubleSlab","scaffolding");
+		this.setHardness(2.0F);
+		this.setResistance(5.0F);
 	}
 
 	@Override
