@@ -1,16 +1,22 @@
 package blusunrize.immersiveengineering.client;
 
+import java.util.ArrayList;
+
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.oredict.OreDictionary;
+import blusunrize.immersiveengineering.api.IManualPage;
 import blusunrize.immersiveengineering.client.gui.GuiBlastFurnace;
 import blusunrize.immersiveengineering.client.gui.GuiCokeOven;
 import blusunrize.immersiveengineering.client.gui.GuiRevolver;
 import blusunrize.immersiveengineering.client.gui.manual.GuiManual;
 import blusunrize.immersiveengineering.client.gui.manual.ManualPages;
+import blusunrize.immersiveengineering.client.gui.manual.ManualPages.PositionedItemStack;
 import blusunrize.immersiveengineering.client.render.BlockRenderMetalDecoration;
 import blusunrize.immersiveengineering.client.render.BlockRenderMetalDevices;
 import blusunrize.immersiveengineering.client.render.BlockRenderStoneDevices;
@@ -28,6 +34,7 @@ import blusunrize.immersiveengineering.client.render.TileRenderWatermill;
 import blusunrize.immersiveengineering.client.render.TileRenderWindmill;
 import blusunrize.immersiveengineering.client.render.TileRenderWindmillAdvanced;
 import blusunrize.immersiveengineering.common.CommonProxy;
+import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDevices;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorHV;
@@ -87,11 +94,51 @@ public class ClientProxy extends CommonProxy
 		GuiManual.manualContents.clear();
 		GuiManual.addEntry("introduction", new ManualPages.Text("introduction0"),new ManualPages.Text("introduction1"),new ManualPages.Crafting("introductionHammer", new ItemStack(IEContent.itemTool,1,0)));
 		GuiManual.addEntry("ores", 
-				new ManualPages.Items("oresCopper", new ItemStack(IEContent.blockOres,1,0),new ItemStack(IEContent.itemMetal,1,0)),
-				new ManualPages.Items("oresBauxite", new ItemStack(IEContent.blockOres,1,1),new ItemStack(IEContent.itemMetal,1,1)),
-				new ManualPages.Items("oresLead", new ItemStack(IEContent.blockOres,1,2),new ItemStack(IEContent.itemMetal,1,2)),
-				new ManualPages.Items("oresSilver", new ItemStack(IEContent.blockOres,1,3),new ItemStack(IEContent.itemMetal,1,3)),
-				new ManualPages.Items("oresNickel", new ItemStack(IEContent.blockOres,1,4),new ItemStack(IEContent.itemMetal,1,4)));
+				new ManualPages.ItemDisplay("oresCopper", new ItemStack(IEContent.blockOres,1,0),new ItemStack(IEContent.itemMetal,1,0)),
+				new ManualPages.ItemDisplay("oresBauxite", new ItemStack(IEContent.blockOres,1,1),new ItemStack(IEContent.itemMetal,1,1)),
+				new ManualPages.ItemDisplay("oresLead", new ItemStack(IEContent.blockOres,1,2),new ItemStack(IEContent.itemMetal,1,2)),
+				new ManualPages.ItemDisplay("oresSilver", new ItemStack(IEContent.blockOres,1,3),new ItemStack(IEContent.itemMetal,1,3)),
+				new ManualPages.ItemDisplay("oresNickel", new ItemStack(IEContent.blockOres,1,4),new ItemStack(IEContent.itemMetal,1,4)));
+		ArrayList<IManualPage> pages = new ArrayList();
+//		if(Config.getBoolean("crushingOreRecipe"))
+		{
+			PositionedItemStack[][] recipes = new PositionedItemStack[16][3];
+			for(int i=0; i<7; i++)
+			{
+				ItemStack ore = i==0?new ItemStack(Blocks.iron_ore): i==1?new ItemStack(Blocks.gold_ore): new ItemStack(IEContent.blockOres,1,i-2);
+				ItemStack ingot = i==0?new ItemStack(Items.iron_ingot): i==1?new ItemStack(Items.gold_ingot): new ItemStack(IEContent.itemMetal,1,i-2);
+				recipes[i*2][0] = new PositionedItemStack(ore, 24, 0);
+				recipes[i*2][1] = new PositionedItemStack(new ItemStack(IEContent.itemTool,1,0), 42, 0);
+				recipes[i*2][2] = new PositionedItemStack(new ItemStack(IEContent.itemMetal,2,8+i), 78, 0);
+				recipes[i*2+1][0] = new PositionedItemStack(ingot, 24, 0);
+				recipes[i*2+1][1] = new PositionedItemStack(new ItemStack(IEContent.itemTool,1,0), 42, 0);
+				recipes[i*2+1][2] = new PositionedItemStack(new ItemStack(IEContent.itemMetal,1,8+i), 78, 0);
+				//				"ingotCopper"
+				//				"ingotAluminum"
+				//				"ingotLead"
+				//				"ingotSilver"
+				//				"ingotNickel"
+				//				"ingotConstantan"
+				//				"ingotElectrum"
+				//				"ingotSteel"
+				//
+				//				"dustIron"
+				//				"dustGold"
+				//				"dustCopper"
+				//				"dustAluminum"
+				//				"dustLead"
+				//				"dustSilver"
+				//				"dustNickel"
+				//				"dustConstantan"
+				//				"dustElectrum"
+						
+			}
+			pages.add(new ManualPages.CraftingMulti("oreProcessing", (Object[])recipes));
+		}
+		pages.add(new ManualPages.CraftingMulti("oreProcessing_blend", (Object[])new PositionedItemStack[][]{
+				new PositionedItemStack[]{new PositionedItemStack(OreDictionary.getOres("dustCopper"),24,0), new PositionedItemStack(OreDictionary.getOres("dustNickel"),42,0), new PositionedItemStack(new ItemStack(IEContent.itemMetal,2,15),78,0)},
+				new PositionedItemStack[]{new PositionedItemStack(OreDictionary.getOres("dustGold"),24,0), new PositionedItemStack(OreDictionary.getOres("dustSilver"),42,0), new PositionedItemStack(new ItemStack(IEContent.itemMetal,2,16),78,0)}}));
+		GuiManual.addEntry("oreProcessing", pages.toArray(new IManualPage[0]));
 		GuiManual.addEntry("cokeoven", new ManualPages.Text("cokeoven0"), new ManualPages.Crafting("cokeovenBlock", new ItemStack(IEContent.blockStoneDevice,1,1)));
 		GuiManual.addEntry("treatedwood", new ManualPages.Text("treatedwood0"), 
 				new ManualPages.Crafting("", new ItemStack(IEContent.blockWoodenDecoration,1,0),new ItemStack(IEContent.blockWoodenDecoration,1,2),new ItemStack(IEContent.blockWoodenStair)),

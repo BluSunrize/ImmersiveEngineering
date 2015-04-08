@@ -37,6 +37,11 @@ public class GuiManual extends GuiScreen
 			headers[i] = StatCollector.translateToLocal(manualContents.get(i).name);
 		activeManual=this;
 	}
+	@Override
+    public boolean doesGuiPauseGame()
+    {
+        return false;
+    }
 
 	@Override
 	public void initGui()

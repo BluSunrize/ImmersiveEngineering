@@ -109,7 +109,7 @@ public abstract class ManualPages implements IManualPage
 			int yOff = 0;
 			for(int i=0; i<resources.length; i++)
 				if(resources[i]!=null&&!resources[i].isEmpty())
-					yOff += sizing[i][3]+4;
+					yOff += sizing[i][3]+5;
 			super.initPage(gui, x, y+yOff, pageButtons);
 		}
 
@@ -144,10 +144,10 @@ public abstract class ManualPages implements IManualPage
 		}
 	}
 
-	public static class Items extends ManualPages
+	public static class ItemDisplay extends ManualPages
 	{
 		ItemStack[] stacks;
-		public Items(String text, ItemStack... stacks)
+		public ItemDisplay(String text, ItemStack... stacks)
 		{
 			super(text);
 			this.stacks=stacks;
@@ -168,6 +168,7 @@ public abstract class ManualPages implements IManualPage
 			float scale = 2f;
 			int w = (105-stacks.length*16)/(stacks.length+1);
 			GL11.glScalef(scale,scale,scale);
+			RenderItem.getInstance().renderWithColor=true;
 			for(int i=0; i<stacks.length; i++)
 				RenderItem.getInstance().renderItemIntoGUI(ClientUtils.font(), ClientUtils.mc().renderEngine, stacks[i], (int)((x+w+(18+w)*i)/scale), (int)((y+4)/scale));
 			GL11.glScalef(1/scale,1/scale,1/scale);
@@ -177,7 +178,7 @@ public abstract class ManualPages implements IManualPage
 			GL11.glEnable(GL11.GL_BLEND);
 
 			if(localizedText!=null&&!localizedText.isEmpty())
-				ClientUtils.font().drawSplitString(localizedText, x,y+44, 110, 0x444444);
+				ClientUtils.font().drawSplitString(localizedText, x,y+44, 120, 0x444444);
 		}
 	}
 
@@ -318,6 +319,7 @@ public abstract class ManualPages implements IManualPage
 			GL11.glTranslated(0, 0, 300);
 			boolean uni = ClientUtils.font().getUnicodeFlag();
 			ClientUtils.font().setUnicodeFlag(false);
+			RenderItem.getInstance().renderWithColor=true;
 			for(int i=0; i<stacks.length; i++)
 			{
 				Object stack = stacks[i];
@@ -345,7 +347,7 @@ public abstract class ManualPages implements IManualPage
 			GL11.glEnable(GL11.GL_BLEND);
 
 			if(localizedText!=null&&!localizedText.isEmpty())
-				ClientUtils.font().drawSplitString(localizedText, x,y+totalYOff+2, 110, 0x444444);
+				ClientUtils.font().drawSplitString(localizedText, x,y+totalYOff+2, 120, 0x444444);
 		}
 
 		@Override
@@ -376,81 +378,93 @@ public abstract class ManualPages implements IManualPage
 		public CraftingMulti(String text, Object... stacks)
 		{
 			super(text);
-
 			this.recipes.clear();
-			List cmRecipes = CraftingManager.getInstance().getRecipeList();
-			for(Object o : cmRecipes)
-				if(o!=null && o instanceof IRecipe)
+			if(stacks!=null&&stacks.length>0&&stacks[0] instanceof PositionedItemStack[])
+			{
+				for(PositionedItemStack[] pisA : (PositionedItemStack[][])stacks)
 				{
-					for(int iStack=0; iStack<stacks.length; iStack++)
+					for(PositionedItemStack pis : pisA)
+						if(pis!=null && pis.y+18>yOff)
+							yOff=pis.y+18;
+					this.recipes.add(pisA);
+				}
+			}
+			else
+			{
+				List cmRecipes = CraftingManager.getInstance().getRecipeList();
+				for(Object o : cmRecipes)
+					if(o!=null && o instanceof IRecipe)
 					{
-						Object stack = stacks[iStack];
-						if(((IRecipe)o).getRecipeOutput()!=null && Utils.stackMatchesObject(((IRecipe)o).getRecipeOutput(), stack))
+						for(int iStack=0; iStack<stacks.length; iStack++)
 						{
-							IRecipe r = (IRecipe)o;
-							Object[] ingredientsPre=null;
-							int w=0;
-							int h=0;
-							if(r instanceof ShapelessRecipes)
+							Object stack = stacks[iStack];
+							if(((IRecipe)o).getRecipeOutput()!=null && Utils.stackMatchesObject(((IRecipe)o).getRecipeOutput(), stack))
 							{
-								ingredientsPre = ((ShapelessRecipes)r).recipeItems.toArray();
-								w = ingredientsPre.length>6?3: ingredientsPre.length>1?2: 1;
-								h = ingredientsPre.length>4?3: ingredientsPre.length>2?2: 1;
-							}
-							else if(r instanceof ShapelessOreRecipe)
-							{
-								ingredientsPre = ((ShapelessOreRecipe)r).getInput().toArray();
-								w = ingredientsPre.length>6?3: ingredientsPre.length>1?2: 1;
-								h = ingredientsPre.length>4?3: ingredientsPre.length>2?2: 1;
-							}
-							else if(r instanceof ShapedOreRecipe)
-							{
-								ingredientsPre = ((ShapedOreRecipe)r).getInput();
-								w = ReflectionHelper.getPrivateValue(ShapedOreRecipe.class, (ShapedOreRecipe)r, "width");
-								h = ReflectionHelper.getPrivateValue(ShapedOreRecipe.class, (ShapedOreRecipe)r, "height");
-							}
-							else if(r instanceof ShapedRecipes)
-							{
-								ingredientsPre = ((ShapedRecipes)r).recipeItems;
-								w = ((ShapedRecipes)r).recipeWidth;
-								h = ((ShapedRecipes)r).recipeHeight;
-							}
-							Object[] ingredients = new Object[ingredientsPre.length];
-							for(int iO=0; iO<ingredientsPre.length; iO++)
-							{
-								if(ingredientsPre[iO] instanceof List)
+								IRecipe r = (IRecipe)o;
+								Object[] ingredientsPre=null;
+								int w=0;
+								int h=0;
+								if(r instanceof ShapelessRecipes)
 								{
-									ingredients[iO] = new ArrayList((List)ingredientsPre[iO]);
-									Iterator<ItemStack> itValidate = ((ArrayList<ItemStack>)ingredients[iO]).iterator();
-									while(itValidate.hasNext())
-									{
-										ItemStack stVal = itValidate.next();
-										if(stVal==null || stVal.getItem()==null || stVal.getDisplayName()==null)
-											itValidate.remove();
-									}
+									ingredientsPre = ((ShapelessRecipes)r).recipeItems.toArray();
+									w = ingredientsPre.length>6?3: ingredientsPre.length>1?2: 1;
+									h = ingredientsPre.length>4?3: ingredientsPre.length>2?2: 1;
 								}
-								else
-									ingredients[iO] = ingredientsPre[iO];
+								else if(r instanceof ShapelessOreRecipe)
+								{
+									ingredientsPre = ((ShapelessOreRecipe)r).getInput().toArray();
+									w = ingredientsPre.length>6?3: ingredientsPre.length>1?2: 1;
+									h = ingredientsPre.length>4?3: ingredientsPre.length>2?2: 1;
+								}
+								else if(r instanceof ShapedOreRecipe)
+								{
+									ingredientsPre = ((ShapedOreRecipe)r).getInput();
+									w = ReflectionHelper.getPrivateValue(ShapedOreRecipe.class, (ShapedOreRecipe)r, "width");
+									h = ReflectionHelper.getPrivateValue(ShapedOreRecipe.class, (ShapedOreRecipe)r, "height");
+								}
+								else if(r instanceof ShapedRecipes)
+								{
+									ingredientsPre = ((ShapedRecipes)r).recipeItems;
+									w = ((ShapedRecipes)r).recipeWidth;
+									h = ((ShapedRecipes)r).recipeHeight;
+								}
+								Object[] ingredients = new Object[ingredientsPre.length];
+								for(int iO=0; iO<ingredientsPre.length; iO++)
+								{
+									if(ingredientsPre[iO] instanceof List)
+									{
+										ingredients[iO] = new ArrayList((List)ingredientsPre[iO]);
+										Iterator<ItemStack> itValidate = ((ArrayList<ItemStack>)ingredients[iO]).iterator();
+										while(itValidate.hasNext())
+										{
+											ItemStack stVal = itValidate.next();
+											if(stVal==null || stVal.getItem()==null || stVal.getDisplayName()==null)
+												itValidate.remove();
+										}
+									}
+									else
+										ingredients[iO] = ingredientsPre[iO];
+								}
+								if(ingredients!=null)
+								{
+									PositionedItemStack[] pIngredients = new PositionedItemStack[ingredients.length+1];
+									int xBase = (120-(w+2)*18)/2;
+									for(int hh=0; hh<h; hh++)
+										for(int ww=0; ww<w; ww++)
+											if(hh*w+ww<ingredients.length)
+												pIngredients[hh*w+ww] = new PositionedItemStack(ingredients[hh*w+ww], xBase+ww*18,hh*18);
+									pIngredients[pIngredients.length-1] = new PositionedItemStack(((IRecipe)o).getRecipeOutput(), xBase+w*18+18, (int)(h/2f*18)-8);
+									if(iStack<this.recipes.size())
+										this.recipes.add(iStack,pIngredients);
+									else
+										this.recipes.add(pIngredients);
+								}
+								if(h*18>yOff)
+									yOff=h*18;
 							}
-							if(ingredients!=null)
-							{
-								PositionedItemStack[] pIngredients = new PositionedItemStack[ingredients.length+1];
-								int xBase = (120-(w+2)*18)/2;
-								for(int hh=0; hh<h; hh++)
-									for(int ww=0; ww<w; ww++)
-										if(hh*w+ww<ingredients.length)
-											pIngredients[hh*w+ww] = new PositionedItemStack(ingredients[hh*w+ww], xBase+ww*18,hh*18);
-								pIngredients[pIngredients.length-1] = new PositionedItemStack(((IRecipe)o).getRecipeOutput(), xBase+w*18+18, (int)(h/2f*18)-8);
-								if(iStack<this.recipes.size())
-									this.recipes.add(iStack,pIngredients);
-								else
-									this.recipes.add(pIngredients);
-							}
-							if(h*18>yOff)
-								yOff=h*18;
 						}
 					}
-				}
+			}
 		}
 
 		@Override
@@ -461,7 +475,7 @@ public abstract class ManualPages implements IManualPage
 				pageButtons.add(new GuiButtonArrow(100+0, x-2,y+yOff/2-3, 8,10, 0));
 				pageButtons.add(new GuiButtonArrow(100+1, x+122-16,y+yOff/2-3, 8,10, 1));
 			}
-			super.initPage(gui, x, y+yOff+8, pageButtons);
+			super.initPage(gui, x, y+yOff+2, pageButtons);
 		}
 
 		@Override
@@ -491,13 +505,15 @@ public abstract class ManualPages implements IManualPage
 			GL11.glTranslated(0, 0, 300);
 			boolean uni = ClientUtils.font().getUnicodeFlag();
 			ClientUtils.font().setUnicodeFlag(false);
-			
+			RenderItem.getInstance().renderWithColor=true;
 			if(!recipes.isEmpty() && recipePage>=0 && recipePage<this.recipes.size())
 			{
 				for(PositionedItemStack pstack : recipes.get(recipePage))
 					if(pstack!=null)
 						if(pstack.getStack()!=null)
 						{
+							int col = pstack.getStack().getItem().getColorFromItemStack(pstack.getStack(), -1);
+							//				            System.out.println(pstack.getStack().getDisplayName()+" "+Integer.toHexString(col));
 							RenderItem.getInstance().renderItemIntoGUI(ClientUtils.font(), ClientUtils.mc().renderEngine, pstack.getStack(), x+pstack.x, y+pstack.y);
 							RenderItem.getInstance().renderItemOverlayIntoGUI(ClientUtils.font(), ClientUtils.mc().renderEngine, pstack.getStack(), x+pstack.x, y+pstack.y);
 							if(mx>=x+pstack.x&&mx<x+pstack.x+16 && my>=y+pstack.y&&my<y+pstack.y+16)
@@ -514,7 +530,7 @@ public abstract class ManualPages implements IManualPage
 			GL11.glEnable(GL11.GL_BLEND);
 
 			if(localizedText!=null&&!localizedText.isEmpty())
-				ClientUtils.font().drawSplitString(localizedText, x,y+yOff+2, 110, 0x444444);
+				ClientUtils.font().drawSplitString(localizedText, x,y+yOff+2, 120, 0x444444);
 		}
 
 		@Override

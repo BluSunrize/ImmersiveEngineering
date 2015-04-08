@@ -10,11 +10,13 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -26,7 +28,9 @@ public class BlockMetalDecoration extends BlockIEBase
 {
 	public BlockMetalDecoration()
 	{
-		super("metalDecoration", Material.iron,3, ItemBlockIEBase.class, "fence","scaffolding","lantern");
+		super("metalDecoration", Material.iron,3, ItemBlockIEBase.class, "fence","scaffolding","lantern","structuralArm");
+		setHardness(3.0F);
+		setResistance(15.0F);
 	}
 
 	@Override
@@ -54,7 +58,7 @@ public class BlockMetalDecoration extends BlockIEBase
 			return 15;
 		return 0;
 	}
-	
+
 	@Override
 	public void onEntityCollidedWithBlock(World world, int x, int y, int z, Entity ent)
 	{
@@ -101,8 +105,8 @@ public class BlockMetalDecoration extends BlockIEBase
 		//		if(meta==1||meta==2||meta==3)
 		//			return true;
 		int meta = world.getBlockMetadata(x+(side==4?1:side==5?-1:0),y+(side==0?1:side==1?-1:0),z+(side==2?1:side==3?-1:0));
-		if(meta==2)
-			return (world.getBlock(x, y, z)==this&&world.getBlockMetadata(x,y,z)==2)?false:true;
+		if(meta==1)
+			return (world.getBlock(x, y, z)==this&&world.getBlockMetadata(x,y,z)==1)?false:true;
 
 		return super.shouldSideBeRendered(world, x, y, z, side);
 	}
@@ -110,20 +114,34 @@ public class BlockMetalDecoration extends BlockIEBase
 	@Override
 	public void registerBlockIcons(IIconRegister iconRegister)
 	{
-		for(int i=0; i<subNames.length; i++)
+		//Fence
+		icons[0][0] = iconRegister.registerIcon("immersiveengineering:storage_Steel");
+		icons[0][1] = iconRegister.registerIcon("immersiveengineering:storage_Steel");
+		icons[0][2] = iconRegister.registerIcon("immersiveengineering:storage_Steel");
+		//Scaffolding
+		icons[1][0] = iconRegister.registerIcon("immersiveengineering:metalDeco_scaffolding_top");
+		icons[1][1] = iconRegister.registerIcon("immersiveengineering:metalDeco_scaffolding_top");
+		icons[1][2] = iconRegister.registerIcon("immersiveengineering:metalDeco_scaffolding_side");
+		//Lantern
+		icons[2][0] = iconRegister.registerIcon("immersiveengineering:metalDeco_lantern_bottom");
+		icons[2][1] = iconRegister.registerIcon("immersiveengineering:metalDeco_lantern_top");
+		icons[2][2] = iconRegister.registerIcon("immersiveengineering:metalDeco_lantern_side");
+		//Arm
+		icons[3][0] = iconRegister.registerIcon("immersiveengineering:metalDeco_scaffolding_top");
+		icons[3][1] = iconRegister.registerIcon("immersiveengineering:metalDeco_scaffolding_top");
+		icons[3][2] = iconRegister.registerIcon("immersiveengineering:metalDeco_scaffolding_side");
+	}
+	@Override
+	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase player, ItemStack stack)
+	{
+		if(world.getTileEntity(x, y, z) instanceof TileEntityStructuralArm)
 		{
-			icons[i][0] = iconRegister.registerIcon("immersiveengineering:metalDeco_"+subNames[i]+"_bottom");
-			icons[i][1] = iconRegister.registerIcon("immersiveengineering:metalDeco_"+subNames[i]+"_top");
-			icons[i][2] = iconRegister.registerIcon("immersiveengineering:metalDeco_"+subNames[i]+"_side");
+			int playerViewQuarter = MathHelper.floor_double(player.rotationYaw * 4.0F / 360.0F + 0.5D) & 3;
+			int f = playerViewQuarter==0 ? 2:playerViewQuarter==1 ? 5:playerViewQuarter==2 ? 3: 4;
+			((TileEntityStructuralArm)world.getTileEntity(x, y, z)).facing = f;
 		}
 	}
-
-	@Override
-	public int onBlockPlaced(World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int meta)
-	{
-		return meta;
-	}
-
+	
 	@Override
 	public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
 	{
@@ -164,8 +182,10 @@ public class BlockMetalDecoration extends BlockIEBase
 	}
 
 	@Override
-	public TileEntity createNewTileEntity(World p_149915_1_, int p_149915_2_)
+	public TileEntity createNewTileEntity(World world, int meta)
 	{
+		if(meta==3)
+			return new TileEntityStructuralArm();
 		return null;
 	}
 	@Override
