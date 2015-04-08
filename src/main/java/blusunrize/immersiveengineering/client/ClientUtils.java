@@ -228,7 +228,6 @@ public class ClientUtils
 	public static String formatDouble(double d, String s)
 	{
 		DecimalFormat df = new DecimalFormat(s);
-		System.out.println("d="+d+", df="+s);
 		return df.format(d);
 	}
 	public static String toCamelCase(String s)
