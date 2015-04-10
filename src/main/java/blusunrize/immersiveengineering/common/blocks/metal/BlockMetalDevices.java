@@ -73,7 +73,7 @@ public class BlockMetalDevices extends BlockIEBase
 	@Override
 	public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int metadata, int fortune)
 	{
-		if(metadata==1||metadata==7)
+		if(metadata==META_capacitorLV||metadata==META_capacitorMV||metadata==META_capacitorHV)
 			return new ArrayList();
 		ArrayList<ItemStack> ret = super.getDrops(world, x, y, z, metadata, fortune);
 		return ret;

@@ -47,6 +47,7 @@ import blusunrize.immersiveengineering.common.blocks.wooden.BlockWoodenDevices;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWatermill;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWindmill;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWindmillAdvanced;
+import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenCrate;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenPost;
 import blusunrize.immersiveengineering.common.crafting.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.common.crafting.CokeOvenRecipe;
@@ -171,6 +172,7 @@ public class IEContent
 		registerTile(TileEntityWatermill.class);
 		registerTile(TileEntityWindmill.class);
 		registerTile(TileEntityWindmillAdvanced.class);
+		registerTile(TileEntityWoodenCrate.class);
 
 		registerTile(TileEntityConnectorLV.class);
 		registerTile(TileEntityCapacitorLV.class);
@@ -266,6 +268,7 @@ public class IEContent
 		addOredictRecipe(new ItemStack(blockWoodenDevice,1,1), " P ","PWP"," P ", 'P',new ItemStack(itemMaterial,1,1),'W',treatedWood);
 		addOredictRecipe(new ItemStack(blockWoodenDevice,1,2), " P ","PIP"," P ", 'P',new ItemStack(itemMaterial,1,2),'I',"ingotIron");
 		addOredictRecipe(new ItemStack(blockWoodenDevice,1,3), "PPP","PIP","PPP", 'P',new ItemStack(itemMaterial,1,5),'I',"ingotSteel");
+		addOredictRecipe(new ItemStack(blockWoodenDevice,1,4), "WWW","W W","WWW", 'W',treatedWood);
 
 		addOredictRecipe(new ItemStack(blockStoneDevice,6,0), "CCC","HHH","CCC", 'C',Blocks.clay,'H',new ItemStack(itemMaterial,1,3));
 		addOredictRecipe(new ItemStack(blockStoneDevice,2,1), "CBC","BSB","CBC", 'S',"sandstone",'C',Items.clay_ball,'B',"ingotBrick");

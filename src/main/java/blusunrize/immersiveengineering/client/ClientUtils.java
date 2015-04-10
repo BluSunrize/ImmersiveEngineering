@@ -6,7 +6,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockGrass;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -27,9 +26,9 @@ import net.minecraftforge.fluids.Fluid;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
-import blusunrize.immersiveengineering.api.WireType;
 import blusunrize.immersiveengineering.api.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.ImmersiveNetHandler;
+import blusunrize.immersiveengineering.api.WireType;
 
 public class ClientUtils
 {
@@ -511,7 +510,6 @@ public class ClientUtils
 	}
 	public static BlockLightingInfo calculateBlockLighting(int side, IBlockAccess world, Block block, int x, int y, int z, float colR, float colG, float colB)
 	{
-		boolean flag = false;
 		float f3 = 0.0F;
 		float f4 = 0.0F;
 		float f5 = 0.0F;
@@ -631,7 +629,6 @@ public class ClientUtils
 			lightingInfo.colorRedTopRight *= f6;
 			lightingInfo.colorGreenTopRight *= f6;
 			lightingInfo.colorBlueTopRight *= f6;
-			flag = true;
 		}
 
 		if(side==1)
@@ -735,7 +732,6 @@ public class ClientUtils
 			lightingInfo.colorRedTopRight *= f6;
 			lightingInfo.colorGreenTopRight *= f6;
 			lightingInfo.colorBlueTopRight *= f6;
-			flag = true;
 		}
 
 		float f8;
@@ -746,7 +742,6 @@ public class ClientUtils
 		int k1;
 		int l1;
 		int i2;
-		IIcon iicon;
 
 		if(side==2)
 			//			if (lightingInfo.renderAllFaces || block.shouldSideBeRendered(world, x, y, z - 1, 2))
@@ -859,7 +854,6 @@ public class ClientUtils
 			lightingInfo.colorRedTopRight *= f6;
 			lightingInfo.colorGreenTopRight *= f6;
 			lightingInfo.colorBlueTopRight *= f6;
-			flag = true;
 		}
 
 		if(side==3)
@@ -973,7 +967,6 @@ public class ClientUtils
 			lightingInfo.colorRedTopRight *= f6;
 			lightingInfo.colorGreenTopRight *= f6;
 			lightingInfo.colorBlueTopRight *= f6;
-			flag = true;
 		}
 
 		if(side==4)
@@ -1087,7 +1080,6 @@ public class ClientUtils
 			lightingInfo.colorRedTopRight *= f6;
 			lightingInfo.colorGreenTopRight *= f6;
 			lightingInfo.colorBlueTopRight *= f6;
-			flag = true;
 		}
 
 		if(side==5)
@@ -1201,7 +1193,6 @@ public class ClientUtils
 			lightingInfo.colorRedTopRight *= f6;
 			lightingInfo.colorGreenTopRight *= f6;
 			lightingInfo.colorBlueTopRight *= f6;
-			flag = true;
 		}
 		return lightingInfo;
 	}

@@ -15,7 +15,8 @@ public class Lib
 	public static final int GUIID_CokeOven = 0;
 	public static final int GUIID_BlastFurnace = 1;
 	public static final int GUIID_Revolver = 2;
-	public static final int GUIID_Manual = 2;
+	public static final int GUIID_Manual = 3;
+	public static final int GUIID_WoodenCrate = 4;
 	
 	public static boolean IC2 = false;
 	public static boolean GREG = false;

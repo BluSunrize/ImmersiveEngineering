@@ -4,8 +4,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import blusunrize.immersiveengineering.common.blocks.stone.TileEntityBlastFurnace;
 import blusunrize.immersiveengineering.common.blocks.stone.TileEntityCokeOven;
+import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenCrate;
 import blusunrize.immersiveengineering.common.gui.ContainerBlastFurnace;
 import blusunrize.immersiveengineering.common.gui.ContainerCokeOven;
+import blusunrize.immersiveengineering.common.gui.ContainerCrate;
 import blusunrize.immersiveengineering.common.gui.ContainerRevolver;
 import blusunrize.immersiveengineering.common.items.ItemRevolver;
 import blusunrize.immersiveengineering.common.util.Lib;
@@ -24,6 +26,8 @@ public class CommonProxy implements IGuiHandler
 			return new ContainerBlastFurnace(player.inventory, (TileEntityBlastFurnace) world.getTileEntity(x, y, z));
 		if(ID==Lib.GUIID_Revolver && player.getCurrentEquippedItem()!=null && player.getCurrentEquippedItem().getItem() instanceof ItemRevolver)
 			return new ContainerRevolver(player.inventory, world);
+		if(ID==Lib.GUIID_WoodenCrate && world.getTileEntity(x, y, z) instanceof TileEntityWoodenCrate)
+			return new ContainerCrate(player.inventory, (TileEntityWoodenCrate) world.getTileEntity(x, y, z));
 		return null;
 	}
 

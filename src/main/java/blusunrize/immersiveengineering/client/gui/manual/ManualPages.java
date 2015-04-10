@@ -512,8 +512,6 @@ public abstract class ManualPages implements IManualPage
 					if(pstack!=null)
 						if(pstack.getStack()!=null)
 						{
-							int col = pstack.getStack().getItem().getColorFromItemStack(pstack.getStack(), -1);
-							//				            System.out.println(pstack.getStack().getDisplayName()+" "+Integer.toHexString(col));
 							RenderItem.getInstance().renderItemIntoGUI(ClientUtils.font(), ClientUtils.mc().renderEngine, pstack.getStack(), x+pstack.x, y+pstack.y);
 							RenderItem.getInstance().renderItemOverlayIntoGUI(ClientUtils.font(), ClientUtils.mc().renderEngine, pstack.getStack(), x+pstack.x, y+pstack.y);
 							if(mx>=x+pstack.x&&mx<x+pstack.x+16 && my>=y+pstack.y&&my<y+pstack.y+16)
