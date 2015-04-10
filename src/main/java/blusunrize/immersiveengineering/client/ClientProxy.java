@@ -13,6 +13,7 @@ import net.minecraftforge.oredict.OreDictionary;
 import blusunrize.immersiveengineering.api.IManualPage;
 import blusunrize.immersiveengineering.client.gui.GuiBlastFurnace;
 import blusunrize.immersiveengineering.client.gui.GuiCokeOven;
+import blusunrize.immersiveengineering.client.gui.GuiCrate;
 import blusunrize.immersiveengineering.client.gui.GuiRevolver;
 import blusunrize.immersiveengineering.client.gui.manual.GuiManual;
 import blusunrize.immersiveengineering.client.gui.manual.ManualPages;
@@ -34,7 +35,6 @@ import blusunrize.immersiveengineering.client.render.TileRenderWatermill;
 import blusunrize.immersiveengineering.client.render.TileRenderWindmill;
 import blusunrize.immersiveengineering.client.render.TileRenderWindmillAdvanced;
 import blusunrize.immersiveengineering.common.CommonProxy;
-import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDevices;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorHV;
@@ -48,6 +48,7 @@ import blusunrize.immersiveengineering.common.blocks.stone.TileEntityCokeOven;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWatermill;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWindmill;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWindmillAdvanced;
+import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenCrate;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenPost;
 import blusunrize.immersiveengineering.common.entities.EntityRevolvershot;
 import blusunrize.immersiveengineering.common.items.ItemRevolver;
@@ -182,6 +183,8 @@ public class ClientProxy extends CommonProxy
 			return new GuiRevolver(player.inventory, world);
 		if(ID==Lib.GUIID_Manual && player.getCurrentEquippedItem()!=null && OreDictionary.itemMatches(new ItemStack(IEContent.itemTool,1,3), player.getCurrentEquippedItem(), false))
 			return new GuiManual(player);
+		if(ID==Lib.GUIID_WoodenCrate && world.getTileEntity(x, y, z) instanceof TileEntityWoodenCrate)
+			return new GuiCrate(player.inventory, (TileEntityWoodenCrate) world.getTileEntity(x, y, z));
 		return null;
 	}
 

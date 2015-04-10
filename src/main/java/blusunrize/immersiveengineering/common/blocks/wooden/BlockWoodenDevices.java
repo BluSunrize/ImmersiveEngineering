@@ -11,20 +11,23 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.client.render.BlockRenderWoodenDevices;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
+import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.Utils;
 
 public class BlockWoodenDevices extends BlockIEBase
 {
 	public BlockWoodenDevices()
 	{
-		super("woodenDevice", Material.wood, 1, ItemBlockWoodenDevices.class, "post","watermill","windmill","windmillAdvanced");
+		super("woodenDevice", Material.wood, 1, ItemBlockWoodenDevices.class, "post","watermill","windmill","windmillAdvanced","crate");
 		this.setHardness(2.0F);
 		this.setResistance(5.0F);
 	}
@@ -45,7 +48,7 @@ public class BlockWoodenDevices extends BlockIEBase
 	{
 		//Treated wood + post, fence, watermill, windmills
 		for(int i=0; i<subNames.length; i++)
-			icons[i][0] = iconRegister.registerIcon("immersiveengineering:treatedWood");
+			icons[i][0] = iconRegister.registerIcon("immersiveengineering:"+(i==4?"woodenCrate":"treatedWood"));
 	}
 	@Override
 	public int getRenderType()
@@ -133,14 +136,32 @@ public class BlockWoodenDevices extends BlockIEBase
 				player.getCurrentEquippedItem().stackSize--;
 			return true;
 		}
+		if(!player.isSneaking()&& world.getTileEntity(x, y, z) instanceof TileEntityWoodenCrate )
+		{
+			player.openGui(ImmersiveEngineering.instance, Lib.GUIID_WoodenCrate, world, x,y,z);
+			return true;
+		}
 		return false;
+	}
+	
+	@Override
+	public void onBlockHarvested(World world, int x, int y, int z, int meta, EntityPlayer player)
+	{
+		if(!world.isRemote && world.getTileEntity(x, y, z) instanceof TileEntityWoodenCrate)
+		{
+			ItemStack stack = new ItemStack(this,1,meta);
+			NBTTagCompound tag = new NBTTagCompound();
+			((TileEntityWoodenCrate)world.getTileEntity(x, y, z)).writeInv(tag);
+			stack.setTagCompound(tag);
+			world.spawnEntityInWorld(new EntityItem(world,x+.5,y+.5,z+.5,stack));
+		}
 	}
 
 	@Override
 	public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int metadata, int fortune)
 	{
 		ArrayList<ItemStack> ret = new ArrayList<ItemStack>();
-		if(metadata==0)
+		if(metadata==0 || metadata==4)
 			return ret;
 
 		int count = quantityDropped(metadata, fortune, world.rand);
@@ -220,6 +241,8 @@ public class BlockWoodenDevices extends BlockIEBase
 			return new TileEntityWindmill();
 		case 3:
 			return new TileEntityWindmillAdvanced();
+		case 4:
+			return new TileEntityWoodenCrate();
 		}
 		return null;
 	}

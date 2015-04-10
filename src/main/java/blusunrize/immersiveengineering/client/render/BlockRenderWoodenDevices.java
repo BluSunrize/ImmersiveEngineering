@@ -7,6 +7,7 @@ import net.minecraft.world.IBlockAccess;
 
 import org.lwjgl.opengl.GL11;
 
+import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWatermill;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWindmill;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWindmillAdvanced;
@@ -44,6 +45,11 @@ public class BlockRenderWoodenDevices implements ISimpleBlockRenderingHandler
 				GL11.glScalef(.125f, .125f, .125f);
 				TileEntityRendererDispatcher.instance.renderTileEntityAt(new TileEntityWindmillAdvanced(), 0.0D, 0.0D, 0.0D, 0.0F);
 			}
+			else if(metadata==4)
+			{
+				renderer.setRenderBounds(0,0,0, 1,1,1);
+				ClientUtils.drawInventoryBlock(block, metadata, renderer);
+			}
 		}catch(Exception e)
 		{
 			e.printStackTrace();
@@ -55,6 +61,11 @@ public class BlockRenderWoodenDevices implements ISimpleBlockRenderingHandler
 	@Override
 	public boolean renderWorldBlock(IBlockAccess world, int x, int y, int z, Block block, int modelId, RenderBlocks renderer)
 	{
+		if(world.getBlockMetadata(x, y, z) == 4)
+		{
+			renderer.setRenderBoundsFromBlock(block);
+			return renderer.renderStandardBlock(block, x, y, z);
+		}
 		return false;
 	}
 
