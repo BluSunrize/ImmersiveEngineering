@@ -53,6 +53,8 @@ public class Config
 		setInt("capacitorHV_output", config.get("Machines", "Capacitor HV: Output", 4096, "The maximum amount of RF that can be output from a high-voltage capacitor (by IE net or other means)").getInt());
 
 		setInt("dynamo_output", config.get("Machines", "Dynamo: Output", 3, "The base RF that is output by the dynamo. This will be modified by the rotation modifier of the attached water- or windmill").getInt());
+		
+		setInt("lightning_output", config.get("Machines", "Lightning Rod: Output", 4*4000000, "The RF that will be output by the ightning rod when it is struck").getInt());
 
 		
 		setIntArray("ore_copper", config.get("OreGen", "Copper", new int[]{8, 40,72, 8,100}, "Generation config for Copper Ore. Parameters: Blocks per vein, lowest possible Y, highest possible Y, veins per chunk, chance for vein to spawn (out of 100)").getIntList());

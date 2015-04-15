@@ -155,7 +155,7 @@ public class BlockStoneDevices extends BlockIEBase
 				for(int yy=-1;yy<=1;yy++)
 					for(int xx=xMin;xx<=xMax;xx++)
 						for(int zz=zMin;zz<=zMax;zz++)
-							if((yy!=0||xx!=0||zz!=0) && !(world.getTileEntity(x+xx, y+yy, z+zz) instanceof TileEntityCokeOven))
+							if((yy!=0||xx!=0||zz!=0) && !(world.getTileEntity(x+xx, y+yy, z+zz) instanceof TileEntityCokeOven && !((TileEntityCokeOven)world.getTileEntity(x+xx, y+yy, z+zz)).formed))
 								return false;
 
 				for(int yy=-1;yy<=1;yy++)
@@ -193,7 +193,7 @@ public class BlockStoneDevices extends BlockIEBase
 				for(int yy=-1;yy<=1;yy++)
 					for(int xx=xMin;xx<=xMax;xx++)
 						for(int zz=zMin;zz<=zMax;zz++)
-							if((yy!=0||xx!=0||zz!=0) && !(world.getTileEntity(x+xx, y+yy, z+zz) instanceof TileEntityBlastFurnace))
+							if((yy!=0||xx!=0||zz!=0) && !(world.getTileEntity(x+xx, y+yy, z+zz) instanceof TileEntityBlastFurnace && !((TileEntityBlastFurnace)world.getTileEntity(x+xx, y+yy, z+zz)).formed))
 								return false;
 
 				for(int yy=-1;yy<=1;yy++)

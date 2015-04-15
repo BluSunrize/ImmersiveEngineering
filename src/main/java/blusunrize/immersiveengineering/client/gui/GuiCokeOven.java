@@ -52,7 +52,7 @@ public class GuiCokeOven extends GuiContainer
 		if(tile.tank.getFluid()!=null && tile.tank.getFluid().getFluid()!=null)
 		{
 			int h = (int)(47*(tile.tank.getFluid().amount/(float)tile.tank.getCapacity()));
-			ClientUtils.drawRepeatedFluidIcon(tile.tank.getFluid().getFluid(), guiLeft+129,guiTop+20+48-h, 16, h);
+			ClientUtils.drawRepeatedFluidIcon(tile.tank.getFluid().getFluid(), guiLeft+129,guiTop+20+47-h, 16, h);
 			ClientUtils.bindTexture("immersiveengineering:textures/gui/cokeOven.png");
 		}
 		this.drawTexturedModalRect(guiLeft+127,guiTop+18, 175,31, 20,51);

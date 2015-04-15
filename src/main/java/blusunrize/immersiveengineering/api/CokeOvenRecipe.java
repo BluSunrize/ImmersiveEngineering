@@ -1,4 +1,4 @@
-package blusunrize.immersiveengineering.common.crafting;
+package blusunrize.immersiveengineering.api;
 
 import java.util.ArrayList;
 
@@ -26,7 +26,7 @@ public class CokeOvenRecipe
 	{
 		recipeList.add(new CokeOvenRecipe(input, output, time, creosoteOutput));
 	}
-	public static CokeOvenRecipe fineRecipe(ItemStack input)
+	public static CokeOvenRecipe findRecipe(ItemStack input)
 	{
 		for(CokeOvenRecipe recipe : recipeList)
 			if(recipe.input instanceof ItemStack && OreDictionary.itemMatches((ItemStack)recipe.input, input, false))

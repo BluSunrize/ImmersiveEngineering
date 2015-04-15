@@ -14,6 +14,7 @@ public class GuiCrate extends GuiContainer
 	public GuiCrate(InventoryPlayer inventoryPlayer, TileEntityWoodenCrate tile )
 	{
 		super(new ContainerCrate(inventoryPlayer, tile));
+		this.ySize=168;
 	}
 
 	protected void drawGuiContainerForegroundLayer(int mx, int my)
@@ -25,7 +26,7 @@ public class GuiCrate extends GuiContainer
 	protected void drawGuiContainerBackgroundLayer(float f, int mx, int my)
 	{
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		ClientUtils.bindTexture("immersiveengineering:textures/gui/cokeOven.png");
+		ClientUtils.bindTexture("immersiveengineering:textures/gui/crate.png");
 		this.drawTexturedModalRect(guiLeft,guiTop, 0, 0, xSize, ySize);
 	}
 }

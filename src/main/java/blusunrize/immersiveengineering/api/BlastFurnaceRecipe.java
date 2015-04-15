@@ -1,10 +1,12 @@
-package blusunrize.immersiveengineering.common.crafting;
+package blusunrize.immersiveengineering.api;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
-import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
+import blusunrize.immersiveengineering.common.util.Utils;
 
 public class BlastFurnaceRecipe
 {
@@ -24,7 +26,7 @@ public class BlastFurnaceRecipe
 	{
 		recipeList.add(new BlastFurnaceRecipe(input, output, time));
 	}
-	public static BlastFurnaceRecipe fineRecipe(ItemStack input)
+	public static BlastFurnaceRecipe findRecipe(ItemStack input)
 	{
 		for(BlastFurnaceRecipe recipe : recipeList)
 		{
@@ -34,5 +36,23 @@ public class BlastFurnaceRecipe
 				return recipe;
 		}
 		return null;
+	}
+
+	public static HashMap<Object, Integer> blastFuels = new HashMap<Object, Integer>();
+	public static void addBlastFuel(Object fuel, int burnTime)
+	{
+		if(fuel instanceof ItemStack || fuel instanceof String)
+			blastFuels.put(fuel, burnTime);
+	}
+	public static int getBlastFuelTime(ItemStack stack)
+	{
+		for(Map.Entry<Object,Integer> e : blastFuels.entrySet())
+			if(Utils.stackMatchesObject(stack, e.getKey()))
+				return e.getValue();
+		return 0;
+	}
+	public static boolean isValidBlastFuel(ItemStack stack)
+	{
+		return getBlastFuelTime(stack)>0;
 	}
 }

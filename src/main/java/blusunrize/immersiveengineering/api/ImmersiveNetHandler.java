@@ -107,7 +107,8 @@ public class ImmersiveNetHandler
 	{
 		getMultimap(world.provider.dimensionId).removeAll(node);
 		IImmersiveConnectable iic = toIIC(node, world);
-		iic.removeCable(null);
+		if(iic!=null)
+			iic.removeCable(null);
 		Iterator<Connection> it = getMultimap(world.provider.dimensionId).values().iterator();
 		while(it.hasNext())
 		{
@@ -116,9 +117,13 @@ public class ImmersiveNetHandler
 			{
 				it.remove();
 				//if(node.equals(con.start) && toIIC(con.end, world)!=null && getConnections(world,con.end).isEmpty())
-				toIIC(con.end, world).removeCable(con.cableType);
+				iic = toIIC(con.end, world);
+				if(iic!=null)
+					iic.removeCable(con.cableType);
 				//if(node.equals(con.end) && toIIC(con.start, world)!=null && getConnections(world,con.start).isEmpty())
-				toIIC(con.start, world).removeCable(con.cableType);
+				iic = toIIC(con.start, world);
+				if(iic!=null)
+					iic.removeCable(con.cableType);
 
 				if(node.equals(con.end))
 				{

@@ -19,6 +19,8 @@ import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.BlastFurnaceRecipe;
+import blusunrize.immersiveengineering.api.CokeOvenRecipe;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase.BlockIESimple;
 import blusunrize.immersiveengineering.common.blocks.BlockStorage;
@@ -32,6 +34,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorHV
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorLV;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorMV;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityDynamo;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityLightningRod;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityRelayHV;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityStructuralArm;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityThermoelectricGen;
@@ -49,8 +52,6 @@ import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWindmill;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWindmillAdvanced;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenCrate;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenPost;
-import blusunrize.immersiveengineering.common.crafting.BlastFurnaceRecipe;
-import blusunrize.immersiveengineering.common.crafting.CokeOvenRecipe;
 import blusunrize.immersiveengineering.common.crafting.IEFuelHandler;
 import blusunrize.immersiveengineering.common.crafting.RecipeOreCrushing;
 import blusunrize.immersiveengineering.common.entities.EntityRevolvershot;
@@ -185,6 +186,7 @@ public class IEContent
 		registerTile(TileEntityTransformerHV.class);
 		registerTile(TileEntityDynamo.class);
 		registerTile(TileEntityThermoelectricGen.class);
+		registerTile(TileEntityLightningRod.class);
 		
 		registerTile(TileEntityStructuralArm.class);
 
@@ -319,11 +321,15 @@ public class IEContent
 
 
 		CokeOvenRecipe.addRecipe(new ItemStack(Items.coal), new ItemStack(itemMaterial,1,6), 1800, 500);
-		CokeOvenRecipe.addRecipe("blockCoal", new ItemStack(blockStoneDevice,1,4), 1800*9, 5000);
+		CokeOvenRecipe.addRecipe("blockCoal", new ItemStack(blockStoneDevice,1,1), 1800*9, 5000);
 		CokeOvenRecipe.addRecipe("logWood", new ItemStack(Items.coal,1,1), 900, 250);
 		BlastFurnaceRecipe.addRecipe("ingotIron", new ItemStack(itemMetal,1,7), 1200);
 		BlastFurnaceRecipe.addRecipe("blockIron", new ItemStack(blockStorage,1,7), 1200*9);
 
+		BlastFurnaceRecipe.addBlastFuel("fuelCoke", 3200);
+		BlastFurnaceRecipe.addBlastFuel("blockFuelCoke", 3200*10);
+		BlastFurnaceRecipe.addBlastFuel("charcoal", 1600);
+		BlastFurnaceRecipe.addBlastFuel("blockCharcoal", 1600*10);
 		GameRegistry.registerFuelHandler(new IEFuelHandler());
 
 		//Railcraft Compat

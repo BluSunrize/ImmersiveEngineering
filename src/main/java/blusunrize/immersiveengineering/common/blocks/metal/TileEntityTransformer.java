@@ -18,6 +18,11 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable
 	public boolean dummy=false;
 	public int postAttached=0;
 
+	public static boolean _Immovable()
+	{
+		return true;
+	}
+	
 	@Override
 	protected boolean canTakeLV()
 	{
