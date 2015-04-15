@@ -1,92 +1,94 @@
 package blusunrize.immersiveengineering.client.nei;
 
+import static codechicken.lib.gui.GuiDraw.changeTexture;
+import static codechicken.lib.gui.GuiDraw.drawTexturedModalRect;
+
+import java.awt.Point;
 import java.awt.Rectangle;
-import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
+
+import org.lwjgl.opengl.GL11;
+
+import blusunrize.immersiveengineering.api.CokeOvenRecipe;
+import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.Utils;
+import codechicken.lib.gui.GuiDraw;
 import codechicken.nei.PositionedStack;
+import codechicken.nei.recipe.GuiCraftingRecipe;
+import codechicken.nei.recipe.GuiRecipe;
+import codechicken.nei.recipe.GuiUsageRecipe;
 import codechicken.nei.recipe.TemplateRecipeHandler;
 
 public class NEICokeOvenHandler extends TemplateRecipeHandler
 {
-	public class CachedHammerCrushingRecipe extends CachedRecipe
+	public class CachedCokeOvenRecipe extends CachedRecipe
 	{
-		PositionedStack[][] inputs;
-		PositionedStack[] output;
-		public CachedHammerCrushingRecipe(String inputType, String oreName)
+		PositionedStack input;
+		PositionedStack output;
+		public int creosote;
+		public int time;
+		public CachedCokeOvenRecipe(CokeOvenRecipe recipe)
 		{
-			inputs = new PositionedStack[8][];
-			output = new PositionedStack[8];
-			for(int i=0;i<8;i++)
-			{
-				inputs[i] = new PositionedStack[i+2];
-				for(int j=0;j<inputs[i].length;j++)
-					inputs[i]
-							[j]
-									= new PositionedStack(j==0?new ItemStack(IEContent.itemTool):OreDictionary.getOres(inputType+oreName) ,25+(j%3)*18, 6+(j/3)*18, j!=0);
-				ItemStack dust = Utils.copyStackWithAmount(OreDictionary.getOres("dust"+oreName).get(0), (i+1)*("ore".equals(inputType)?2:1));
-
-				output[i] = new PositionedStack(dust, 119,24);
-			}
-		}
-		@Override
-		public List<PositionedStack> getIngredients()
-		{
-			return this.getCycledIngredients(NEICokeOvenHandler.this.cycleticks/20, Arrays.asList(inputs[(NEICokeOvenHandler.this.cycleticks/20)%inputs.length]));
+			Object in = recipe.input;
+			if(in instanceof String)
+				in = OreDictionary.getOres((String)in);
+			input = new PositionedStack(in, 25,27);
+			output = new PositionedStack(recipe.output, 80,27);
+			creosote = recipe.creosoteOutput;
+			time = recipe.time;
 		}
 		@Override
 		public PositionedStack getIngredient()
 		{
-			return null;
+			return input;
 		}
 		@Override
 		public PositionedStack getResult()
 		{
-			return output[(NEICokeOvenHandler.this.cycleticks/20)%output.length];
+			return output;
 		}
 	}
 
 	@Override
 	public void loadTransferRects()
 	{
-		transferRects.add(new RecipeTransferRect(new Rectangle(84,23, 24,18), "ieHammerCrushing"));
+		transferRects.add(new RecipeTransferRect(new Rectangle(48,21, 21,28), "ieCokeOven"));
 	}
 	@Override
 	public void loadCraftingRecipes(String outputId, Object... results)
 	{
-		if(outputId == getOverlayIdentifier())
+		boolean b = false;
+		if(outputId == "liquid" && results!=null && results.length>0 && results[0] instanceof FluidStack)
+			b = ((FluidStack)results[0]).getFluid().equals(IEContent.fluidCreosote);
+		if(b || outputId == getOverlayIdentifier())
 		{
-			for(String oreName : IEContent.validCrushingOres)
-			{
-				this.arecipes.add(new CachedHammerCrushingRecipe("ore",oreName));
-				this.arecipes.add(new CachedHammerCrushingRecipe("ingot",oreName));
-			}
+			for(CokeOvenRecipe r : CokeOvenRecipe.recipeList)
+				if(r!=null)
+					this.arecipes.add(new CachedCokeOvenRecipe(r));
 		}
 		else
-		{
 			super.loadCraftingRecipes(outputId, results);
-		}
 	}
 	@Override
 	public String getRecipeName()
 	{
-		return StatCollector.translateToLocal("recipe.ImmersiveEngineering.hammerCrushing");
+		return StatCollector.translateToLocal("tile.ImmersiveEngineering.stoneDevice.cokeOven.name");
 	}
 	@Override
 	public String getGuiTexture()
 	{
-		return "textures/gui/container/crafting_table.png";
+		return "immersiveengineering:textures/gui/cokeOven.png";
 	}
 	@Override
 	public String getOverlayIdentifier()
 	{
-		return "ieHammerCrushing";
+		return "ieCokeOven";
 	}
 	@Override
 	public int recipiesPerPage()
@@ -97,37 +99,84 @@ public class NEICokeOvenHandler extends TemplateRecipeHandler
 	public void loadCraftingRecipes(ItemStack result)
 	{
 		if(result!=null)
-			for(String oreName : IEContent.validCrushingOres)
-				if(Utils.compareToOreName(result, "dust"+oreName))
-				{
-					this.arecipes.add(new CachedHammerCrushingRecipe("ore",oreName));
-					this.arecipes.add(new CachedHammerCrushingRecipe("ingot",oreName));
-				}
+			for(CokeOvenRecipe r : CokeOvenRecipe.recipeList)
+				if(r!=null && Utils.stackMatchesObject(result, r.output))
+					this.arecipes.add(new CachedCokeOvenRecipe(r));
 	}
 	@Override
 	public void loadUsageRecipes(ItemStack ingredient)
 	{
 		if(ingredient!=null)
-			if(ingredient.getItem().getToolClasses(ingredient).contains(Lib.TOOL_HAMMER))
-				for(String oreName : IEContent.validCrushingOres)
-				{
-					this.arecipes.add(new CachedHammerCrushingRecipe("ore",oreName));
-					this.arecipes.add(new CachedHammerCrushingRecipe("ingot",oreName));
-				}
-			else
-			{
-				for(String oreName : IEContent.validCrushingOres)
-					if(Utils.compareToOreName(ingredient, "ore"+oreName))
-						this.arecipes.add(new CachedHammerCrushingRecipe("ore",oreName));
-					else if(Utils.compareToOreName(ingredient, "ingot"+oreName))
-						this.arecipes.add(new CachedHammerCrushingRecipe("ingot",oreName));
-			}
-
+		{
+			CokeOvenRecipe r = CokeOvenRecipe.findRecipe(ingredient);
+			if(r!=null)
+				this.arecipes.add(new CachedCokeOvenRecipe(r));
+		}
 	}
+
+	@Override
+	public boolean mouseClicked(GuiRecipe gui, int button, int recipe)
+	{
+		CachedCokeOvenRecipe r = (CachedCokeOvenRecipe) this.arecipes.get(recipe%arecipes.size());
+		if(r!=null)
+		{
+			Point localPoint = GuiDraw.getMousePosition();
+			int gl = (gui.width-176)/2;
+			int gt = (gui.height-176)/2;
+			if(localPoint.x>gl+124 && localPoint.x<=gl+124+16  &&  localPoint.y>gt+12 && localPoint.y<=gt+12+47)
+			{
+				FluidStack fs = new FluidStack(IEContent.fluidCreosote,r.creosote);
+				if(button==0)
+				{
+					if(GuiCraftingRecipe.openRecipeGui("liquid", new Object[] { fs }))
+						return true;
+				}
+				else if(button==1)
+				{
+					if(GuiUsageRecipe.openRecipeGui("liquid", new Object[] { fs }))
+						return true;
+				}
+			}
+		}
+		return super.mouseClicked(gui, button, recipe);
+	}
+
+	@Override
+	public List<String> handleTooltip(GuiRecipe gui, List<String> list, int recipe)
+	{
+		CachedCokeOvenRecipe r = (CachedCokeOvenRecipe) this.arecipes.get(recipe%arecipes.size());
+		if(r!=null)
+		{
+			Point localPoint = GuiDraw.getMousePosition();
+			int gl = (gui.width-176)/2;
+			int gt = (gui.height-134)/2;
+			if(localPoint.x>gl+124 && localPoint.x<=gl+124+16  &&  localPoint.y>gt+(64*(recipe%2))+12 && localPoint.y<=gt+(64*(recipe%2))+12+47)
+			{
+				list.add(IEContent.fluidCreosote.getLocalizedName(new FluidStack(IEContent.fluidCreosote,r.creosote)));
+				list.add(r.creosote+" mB");
+			}
+		}
+		return super.handleTooltip(gui, list, recipe);
+	}
+
+
 	@Override
 	public void drawBackground(int recipe)
 	{
-		super.drawBackground(recipe);
+		GL11.glColor4f(1, 1, 1, 1);
+		changeTexture(getGuiTexture());
+		drawTexturedModalRect(-5,0, 0,8, 176, 68);
+		CachedCokeOvenRecipe r = (CachedCokeOvenRecipe) this.arecipes.get(recipe%arecipes.size());
+		if(r!=null)
+		{
+			String s = r.time+" Ticks";
+			ClientUtils.font().drawString(s, 50-ClientUtils.font().getStringWidth(s)/2,53, 0xaaaaaa, true);
+
+			int h = (int)Math.max(1,47*(r.creosote/(float)12000));
+			ClientUtils.drawRepeatedFluidIcon(IEContent.fluidCreosote, 124,12+47-h, 16, h);
+			ClientUtils.bindTexture("immersiveengineering:textures/gui/cokeOven.png");
+		}
+		drawTexturedModalRect(122,10, 175,31, 20,51);
 	}
 
 }

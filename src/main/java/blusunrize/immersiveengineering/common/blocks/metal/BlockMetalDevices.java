@@ -11,13 +11,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-import blusunrize.immersiveengineering.api.IImmersiveConnectable;
-import blusunrize.immersiveengineering.api.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.client.render.BlockRenderMetalDevices;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenPost;
@@ -41,10 +38,11 @@ public class BlockMetalDevices extends BlockIEBase
 	public static int META_transformerHV=8;
 	public static int META_dynamo=9;
 	public static int META_thermoelectricGen=10;
+	public static int META_lightningRod=11;
 	public BlockMetalDevices()
 	{
 		super("metalDevice", Material.iron, 4, ItemBlockMetalDevices.class,
-				"connectorLV","capacitorLV","connectorMV","capacitorMV","transformer","relayHV","connectorHV","capacitorHV","transformerHV", "dynamo","thermoelectricGen");
+				"connectorLV","capacitorLV","connectorMV","capacitorMV","transformer","relayHV","connectorHV","capacitorHV","transformerHV", "dynamo","thermoelectricGen","lightningRod");
 		setHardness(3.0F);
 		setResistance(15.0F);
 	}
@@ -65,8 +63,8 @@ public class BlockMetalDevices extends BlockIEBase
 			if(((TileEntityCapacitorLV)world.getTileEntity(x,y,z)).energyStorage.getEnergyStored()>0)
 				ItemNBTHelper.setInt(stack, "energyStorage", ((TileEntityCapacitorLV)world.getTileEntity(x,y,z)).energyStorage.getEnergyStored());
 			int[] sides = ((TileEntityCapacitorLV)world.getTileEntity(x,y,z)).sideConfig;
-			if(sides[0]!=-1 || sides[1]!=0||sides[2]!=0||sides[3]!=0||sides[4]!=0||sides[5]!=0)
-				ItemNBTHelper.setIntArray(stack, "sideConfig", sides);
+			//			if(sides[0]!=-1 || sides[1]!=0||sides[2]!=0||sides[3]!=0||sides[4]!=0||sides[5]!=0)
+			ItemNBTHelper.setIntArray(stack, "sideConfig", sides);
 			world.spawnEntityInWorld(new EntityItem(world,x+.5,y+.5,z+.5,stack));
 		}
 	}
@@ -129,12 +127,17 @@ public class BlockMetalDevices extends BlockIEBase
 		icons[10][1] = iconRegister.registerIcon("immersiveengineering:metal_thermogen_top");
 		icons[10][2] = iconRegister.registerIcon("immersiveengineering:metal_thermogen_side");
 		icons[10][3] = iconRegister.registerIcon("immersiveengineering:metal_thermogen_side");
+		//11 lightningRod
+		icons[11][0] = iconRegister.registerIcon("immersiveengineering:metal_lightningrod_top");
+		icons[11][1] = iconRegister.registerIcon("immersiveengineering:metal_lightningrod_top");
+		icons[11][2] = iconRegister.registerIcon("immersiveengineering:metal_lightningrod_side");
+		icons[11][3] = iconRegister.registerIcon("immersiveengineering:metal_lightningrod_side");
 
-//		//Lantern
-//		icons[2][0] = iconRegister.registerIcon("immersiveengineering:metal_lantern_bottom");
-//		icons[2][1] = iconRegister.registerIcon("immersiveengineering:metal_lantern_top");
-//		icons[2][2] = iconRegister.registerIcon("immersiveengineering:metal_lantern_side");
-//		icons[2][3] = iconRegister.registerIcon("immersiveengineering:metal_lantern_side");
+		//		//Lantern
+		//		icons[2][0] = iconRegister.registerIcon("immersiveengineering:metal_lantern_bottom");
+		//		icons[2][1] = iconRegister.registerIcon("immersiveengineering:metal_lantern_top");
+		//		icons[2][2] = iconRegister.registerIcon("immersiveengineering:metal_lantern_side");
+		//		icons[2][3] = iconRegister.registerIcon("immersiveengineering:metal_lantern_side");
 
 
 		//0 connectorLV
@@ -182,9 +185,41 @@ public class BlockMetalDevices extends BlockIEBase
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
 	{
-		if(world.isRemote && world.getTileEntity(x, y, z) instanceof TileEntityCapacitorLV && Utils.isHammer(player.getCurrentEquippedItem()))
+		if(world.getTileEntity(x, y, z) instanceof TileEntityCapacitorLV && Utils.isHammer(player.getCurrentEquippedItem()))
 		{
-			((TileEntityCapacitorLV)world.getTileEntity(x, y, z)).toggleSide(side);
+			System.out.println("Gimme a "+world);
+			if(!world.isRemote)
+			{
+				((TileEntityCapacitorLV)world.getTileEntity(x, y, z)).toggleSide(side);
+				world.getTileEntity(x, y, z).markDirty();
+				world.func_147451_t(x, y, z);
+			}
+			//			world.markAndNotifyBlock(x, y, z, world.getChunkFromBlockCoords(x, z), world.getBlock(x, y, z), world.getBlock(x, y, z), 3);
+			//			
+			//			world.markBlockForUpdate(x, y, z);
+			//			if(world.isRemote)
+			//				world.markBlockRangeForRenderUpdate(x, y, z, x,y,z);
+			//			else
+			//			{
+			//				world.notifyBlocksOfNeighborChange(x, y, z, IEContent.blockMetalDevice);
+			//				world.markBlockForUpdate(x, y, z);
+			//			}
+			return true;
+		}
+		if(world.getTileEntity(x, y, z) instanceof TileEntityLightningRod && Utils.isHammer(player.getCurrentEquippedItem()))
+		{
+			for(int xx=-1;xx<=1;xx++)
+				for(int zz=-1;zz<=1;zz++)
+					if(!(world.getTileEntity(x+xx, y+0, z+zz) instanceof TileEntityLightningRod && !((TileEntityLightningRod)world.getTileEntity(x+xx, y+0, z+zz)).formed))
+						return false;
+			for(int xx=-1;xx<=1;xx++)
+				for(int zz=-1;zz<=1;zz++)
+				{
+					((TileEntityLightningRod)world.getTileEntity(x+xx, y+0, z+zz)).type=(byte) ((xx+1)+(zz+1)*3);
+					((TileEntityLightningRod)world.getTileEntity(x+xx, y+0, z+zz)).formed=true;
+					world.getTileEntity(x+xx, y+0, z+zz).markDirty();
+					world.markBlockForUpdate(x+xx,y+0,z+zz);
+				}
 			return true;
 		}
 		return false;
@@ -293,6 +328,8 @@ public class BlockMetalDevices extends BlockIEBase
 			return new TileEntityDynamo();
 		case 10://10 thermoelectricGen
 			return new TileEntityThermoelectricGen();
+		case 11://11 lightningRod
+			return new TileEntityLightningRod();
 		}
 		return null;
 	}
@@ -300,8 +337,22 @@ public class BlockMetalDevices extends BlockIEBase
 	@Override
 	public void breakBlock(World world, int x, int y, int z, Block par5, int par6)
 	{
-		if(world.getTileEntity(x, y, z) instanceof IImmersiveConnectable)
-			ImmersiveNetHandler.clearAllConnectionsFor(new ChunkCoordinates(x, y, z),world);
+		if(world.getTileEntity(x, y, z) instanceof TileEntityLightningRod)
+		{
+			byte off = ((TileEntityLightningRod)world.getTileEntity(x, y, z)).type;
+			int xx = x- (off%3-1);
+			int zz = z- (off/3-1);
+
+			for(int ix=-1;ix<=1;ix++)
+				for(int iz=-1;iz<=1;iz++)
+					if(world.getTileEntity(xx+ix, y, zz+iz) instanceof TileEntityLightningRod)
+					{
+						((TileEntityLightningRod)world.getTileEntity(xx+ix, y, zz+iz)).formed=false;
+						((TileEntityLightningRod)world.getTileEntity(xx+ix, y, zz+iz)).type=4;
+						world.getTileEntity(xx+ix, y, zz+iz).markDirty();
+						world.markBlockForUpdate(xx+ix, y, zz+iz);
+					}
+		}
 		super.breakBlock(world, x, y, z, par5, par6);
 	}
 

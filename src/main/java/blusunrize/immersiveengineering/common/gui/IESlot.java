@@ -4,8 +4,8 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidContainerRegistry;
+import blusunrize.immersiveengineering.api.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.api.IBullet;
-import blusunrize.immersiveengineering.common.blocks.stone.TileEntityBlastFurnace;
 
 public abstract class IESlot extends Slot
 {
@@ -55,7 +55,7 @@ public abstract class IESlot extends Slot
 		}
 		public boolean isItemValid(ItemStack itemStack)
 		{
-			return TileEntityBlastFurnace.isValidFuel(itemStack);
+			return BlastFurnaceRecipe.isValidBlastFuel(itemStack);
 		}
 	}
 	public static class Bullet extends IESlot

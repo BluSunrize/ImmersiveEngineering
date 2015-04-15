@@ -1,21 +1,16 @@
 package blusunrize.immersiveengineering.client.render;
 
-import java.util.Iterator;
-
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 
 import org.lwjgl.opengl.GL11;
 
-import blusunrize.immersiveengineering.api.IImmersiveConnectable;
-import blusunrize.immersiveengineering.api.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.WireType;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.ModelPostTransformer;
 import blusunrize.immersiveengineering.client.models.ModelTransformer;
 import blusunrize.immersiveengineering.client.models.ModelTransformerHV;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTransformer;
-import blusunrize.immersiveengineering.common.util.Utils;
 
 public class TileRenderTransformer extends TileEntitySpecialRenderer
 {
@@ -76,19 +71,8 @@ public class TileRenderTransformer extends TileEntitySpecialRenderer
 		}
 		GL11.glPopMatrix();
 
-
-		if(tile.getWorldObj()!=null)
-		{
-			ClientUtils.bindTexture("immersiveengineering:textures/models/white.png");
-			Iterator<ImmersiveNetHandler.Connection> itCon = ImmersiveNetHandler.getConnections(transf.getWorldObj(), Utils.toCC(transf)).iterator();
-			while(itCon.hasNext())
-			{
-				ImmersiveNetHandler.Connection con = itCon.next();
-				TileEntity tileEnd = transf.getWorldObj().getTileEntity(con.end.posX,con.end.posY,con.end.posZ);
-				if(tileEnd instanceof IImmersiveConnectable)
-					ClientUtils.drawConnection(con, transf, Utils.toIIC(tileEnd, transf.getWorldObj()));
-			}
-		}
+		ClientUtils.renderAttachedConnections(transf);
+		
 		GL11.glPopMatrix();
 	}
 

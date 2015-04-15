@@ -6,10 +6,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraftforge.oredict.OreDictionary;
+import blusunrize.immersiveengineering.api.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
-import blusunrize.immersiveengineering.common.crafting.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.common.util.Utils;
 
 public class TileEntityBlastFurnace extends TileEntityIEBase implements ISidedInventory
@@ -32,11 +31,11 @@ public class TileEntityBlastFurnace extends TileEntityIEBase implements ISidedIn
 		return te instanceof TileEntityBlastFurnace?(TileEntityBlastFurnace)te : null;
 	}
 
-	public static boolean isValidFuel(ItemStack stack)
+	public static boolean _Immovable()
 	{
-		return stack!=null && (Utils.compareToOreName(stack,"fuelCoke")||Utils.compareToOreName(stack,"blockFuelCoke")||Utils.compareToOreName(stack,"charcoal")||Utils.compareToOreName(stack,"blockCharcoal"));
+		return true;
 	}
-
+	
 	@Override
 	public void updateEntity()
 	{
@@ -45,10 +44,10 @@ public class TileEntityBlastFurnace extends TileEntityIEBase implements ISidedIn
 			boolean a = active;
 			if(burnTime<=10 && getRecipe()!=null)
 			{
-				if(isValidFuel(inventory[1]))
+				if(BlastFurnaceRecipe.isValidBlastFuel(inventory[1]))
 				{
-					burnTime += TileEntityFurnace.getItemBurnTime(inventory[1]);
-					lastBurnTime = TileEntityFurnace.getItemBurnTime(inventory[1]);
+					burnTime += BlastFurnaceRecipe.getBlastFuelTime(inventory[1]);
+					lastBurnTime = BlastFurnaceRecipe.getBlastFuelTime(inventory[1]);
 					this.decrStackSize(1, 1);
 					worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 				}
@@ -118,7 +117,7 @@ public class TileEntityBlastFurnace extends TileEntityIEBase implements ISidedIn
 	}
 	public BlastFurnaceRecipe getRecipe()
 	{
-		BlastFurnaceRecipe recipe = BlastFurnaceRecipe.fineRecipe(inventory[0]);
+		BlastFurnaceRecipe recipe = BlastFurnaceRecipe.findRecipe(inventory[0]);
 		if(recipe==null)
 			return null;
 		if(inventory[2]==null || (OreDictionary.itemMatches(inventory[2],recipe.output,true) && inventory[2].stackSize+recipe.output.stackSize<getInventoryStackLimit()) )

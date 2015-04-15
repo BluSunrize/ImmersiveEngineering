@@ -14,9 +14,9 @@ import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.oredict.OreDictionary;
+import blusunrize.immersiveengineering.api.CokeOvenRecipe;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
-import blusunrize.immersiveengineering.common.crafting.CokeOvenRecipe;
 
 public class TileEntityCokeOven extends TileEntityIEBase implements ISidedInventory, IFluidHandler
 {
@@ -37,6 +37,11 @@ public class TileEntityCokeOven extends TileEntityIEBase implements ISidedInvent
 		return te instanceof TileEntityCokeOven?(TileEntityCokeOven)te : null;
 	}
 
+	public static boolean _Immovable()
+	{
+		return true;
+	}
+	
 	@Override
 	public void updateEntity()
 	{
@@ -121,7 +126,7 @@ public class TileEntityCokeOven extends TileEntityIEBase implements ISidedInvent
 	}
 	public CokeOvenRecipe getRecipe()
 	{
-		CokeOvenRecipe recipe = CokeOvenRecipe.fineRecipe(inventory[0]);
+		CokeOvenRecipe recipe = CokeOvenRecipe.findRecipe(inventory[0]);
 		if(recipe==null)
 			return null;
 
@@ -240,7 +245,7 @@ public class TileEntityCokeOven extends TileEntityIEBase implements ISidedInvent
 		if(master()!=null)
 			return master().isItemValidForSlot(slot,stack);
 		if(slot==0)
-			return stack!=null && CokeOvenRecipe.fineRecipe(stack)!=null;
+			return stack!=null && CokeOvenRecipe.findRecipe(stack)!=null;
 		if(slot==1)
 			return stack!=null && FluidContainerRegistry.isEmptyContainer(stack);
 		return false;

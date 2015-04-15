@@ -2,11 +2,14 @@ package blusunrize.immersiveengineering.common;
 
 import java.util.List;
 
+import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityLightningRod;
 import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.Utils;
 
@@ -44,12 +47,41 @@ public class EventHandler
 		}
 
 	}
+	@SubscribeEvent
+	public void entitySpawn(EntityJoinWorldEvent event)
+	{
+//		System.out.println("Spawned Something "+event.entity.getClass());
+		if(event.entity instanceof EntityLightningBolt&&!event.world.isRemote)
+		{
+			System.out.println("Spawned Lightning");
+			for(int xx=-1; xx<=1; xx++)
+				for(int zz=-1; zz<=1; zz++)
+					if(event.world.getBlock((int)event.entity.posX+xx, (int)event.entity.posY-1, (int)event.entity.posZ+zz).equals(IEContent.blockMetalDecoration) && event.world.getBlockMetadata((int)event.entity.posX+xx, (int)event.entity.posY-1, (int)event.entity.posZ+zz)==0)
+					{
+						System.out.println("hit rod!");
+						for(int y=(int) event.entity.posY; y>0; y--)
+						{
+							if( event.world.getTileEntity((int)event.entity.posX+xx, y, (int)event.entity.posZ+zz) instanceof TileEntityLightningRod)
+							{
+								System.out.println("found base");
+								((TileEntityLightningRod) event.world.getTileEntity((int)event.entity.posX+xx, y, (int)event.entity.posZ+zz)).outputEnergy(Config.getInt("lightning_output"));
+								return;
+							}
+							else if(!(event.world.getBlock((int)event.entity.posX+xx, y, (int)event.entity.posZ+zz).equals(IEContent.blockMetalDecoration) && event.world.getBlockMetadata((int)event.entity.posX+xx, y, (int)event.entity.posZ+zz)==0))
+							{
+								System.out.println("enecountered problem");
+								return;							
+							}
+						}
+					}
+		}
+	}
 
 	@SubscribeEvent
 	public void onItemTooltip(ItemTooltipEvent event)
 	{
 	}
-	
+
 	@SubscribeEvent
 	public void onItemCrafted(ItemCraftedEvent event)
 	{

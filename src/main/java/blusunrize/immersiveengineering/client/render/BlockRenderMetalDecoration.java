@@ -53,7 +53,6 @@ public class BlockRenderMetalDecoration implements ISimpleBlockRenderingHandler
 			}
 			else if(metadata==3)
 			{
-				//				System.out.println("test");
 				Tessellator tes = ClientUtils.tes();
 				IIcon iSide = block.getIcon(2, 3);
 				IIcon iTop = block.getIcon(0, 3);
