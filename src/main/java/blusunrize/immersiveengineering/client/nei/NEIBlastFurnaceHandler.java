@@ -7,7 +7,9 @@ import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -19,6 +21,7 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import codechicken.nei.PositionedStack;
 import codechicken.nei.recipe.GuiRecipe;
 import codechicken.nei.recipe.TemplateRecipeHandler;
+import cpw.mods.fml.common.registry.GameData;
 
 public class NEIBlastFurnaceHandler extends TemplateRecipeHandler
 {
@@ -37,12 +40,25 @@ public class NEIBlastFurnaceHandler extends TemplateRecipeHandler
 			output = new PositionedStack(recipe.output, 107,27);
 			time = recipe.time;
 
-			Object[] oA = BlastFurnaceRecipe.blastFuels.keySet().toArray(new Object[0]);
-			for(Object o : oA)
-				if(o instanceof String && !OreDictionary.getOres((String)o).isEmpty())
-					fuels.add( new PositionedStack(OreDictionary.getOres((String)o), 47,45) );
-				else if(o instanceof ItemStack)
-					fuels.add( new PositionedStack((ItemStack)o, 47,45) );
+			for(String s : BlastFurnaceRecipe.blastFuels.keySet())
+			{
+				if(!OreDictionary.getOres(s).isEmpty())
+					fuels.add( new PositionedStack(OreDictionary.getOres(s), 47,45) );
+				else
+				{
+					int lIndx = s.lastIndexOf("::");
+					if(lIndx>0)
+					{
+						String key = s.substring(0,lIndx);
+						try{
+							int reqMeta = Integer.parseInt(s.substring(lIndx+2));
+							Item item = GameData.getItemRegistry().getObject(key);
+							if(item!=null)
+								fuels.add( new PositionedStack(new ItemStack(item,1,reqMeta), 47,45) );
+						}catch(Exception e){}
+					}
+				}
+			}
 		}
 		@Override
 		public PositionedStack getOtherStack()
@@ -126,8 +142,8 @@ public class NEIBlastFurnaceHandler extends TemplateRecipeHandler
 	@Override
 	public List<String> handleItemTooltip(GuiRecipe gui, ItemStack stack, List<String> currenttip, int recipe)
 	{
-		if(BlastFurnaceRecipe.isValidBlastFuel(stack))
-			currenttip.add(StatCollector.translateToLocalFormatted("desc.ImmersiveEngineering.info.blastFuelTime", BlastFurnaceRecipe.getBlastFuelTime(stack)));
+		if(recipe%2==0 && BlastFurnaceRecipe.isValidBlastFuel(stack))
+			currenttip.add(EnumChatFormatting.GRAY+StatCollector.translateToLocalFormatted("desc.ImmersiveEngineering.info.blastFuelTime", BlastFurnaceRecipe.getBlastFuelTime(stack)));
 		return currenttip;
 	}
 	@Override

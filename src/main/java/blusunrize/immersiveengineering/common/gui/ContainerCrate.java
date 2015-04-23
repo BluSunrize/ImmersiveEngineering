@@ -48,10 +48,8 @@ public class ContainerCrate extends Container
 			}
 			else
 			{
-//				for(int i=0;i<slotCount;i++)
-//					if(this.getSlot(i).isItemValid(stackInSlot))
-						if(!this.mergeItemStack(stackInSlot, 0,slotCount, false))
-							return null;
+				if(!this.mergeItemStack(stackInSlot, 0,slotCount, false))
+					return null;
 			}
 
 			if (stackInSlot.stackSize == 0)

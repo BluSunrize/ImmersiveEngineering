@@ -3,11 +3,18 @@ package blusunrize.immersiveengineering.common;
 import java.util.List;
 
 import net.minecraft.entity.effect.EntityLightningBolt;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.StatCollector;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidRegistry;
+import blusunrize.immersiveengineering.api.BlastFurnaceRecipe;
+import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.client.gui.GuiBlastFurnace;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityLightningRod;
 import blusunrize.immersiveengineering.common.util.Lib;
@@ -15,8 +22,10 @@ import blusunrize.immersiveengineering.common.util.Utils;
 
 import com.google.common.collect.ImmutableList;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.ItemCraftedEvent;
+import cpw.mods.fml.relauncher.Side;
 
 public class EventHandler
 {
@@ -50,7 +59,7 @@ public class EventHandler
 	@SubscribeEvent
 	public void entitySpawn(EntityJoinWorldEvent event)
 	{
-//		System.out.println("Spawned Something "+event.entity.getClass());
+		//		System.out.println("Spawned Something "+event.entity.getClass());
 		if(event.entity instanceof EntityLightningBolt&&!event.world.isRemote)
 		{
 			System.out.println("Spawned Lightning");
@@ -80,6 +89,18 @@ public class EventHandler
 	@SubscribeEvent
 	public void onItemTooltip(ItemTooltipEvent event)
 	{
+		if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT
+				&& ClientUtils.mc().currentScreen != null
+				&& ClientUtils.mc().currentScreen instanceof GuiBlastFurnace
+				&& BlastFurnaceRecipe.isValidBlastFuel(event.itemStack))
+			event.toolTip.add(EnumChatFormatting.GRAY+StatCollector.translateToLocalFormatted("desc.ImmersiveEngineering.info.blastFuelTime", BlastFurnaceRecipe.getBlastFuelTime(event.itemStack)));
+
+		if(FluidContainerRegistry.isFilledContainer(event.itemStack))
+		{
+			event.toolTip.add("F1: "+FluidRegistry.getFluidName(FluidContainerRegistry.getFluidForFilledItem(event.itemStack)));
+			event.toolTip.add("F2: "+FluidContainerRegistry.getFluidForFilledItem(event.itemStack).getFluid().getName());
+		}
+		//event.toolTip.add(Utils.nameFromStack(event.itemStack));
 	}
 
 	@SubscribeEvent

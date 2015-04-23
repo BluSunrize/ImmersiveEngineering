@@ -21,14 +21,24 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import blusunrize.immersiveengineering.client.render.BlockRenderMetalDecoration;
+import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
+import blusunrize.immersiveengineering.common.util.Utils;
 
 public class BlockMetalDecoration extends BlockIEBase
 {
+	public static int META_fence=0;
+	public static int META_scaffolding=1;
+	public static int META_lantern=2;
+	public static int META_structuralArm=3;
+	public static int META_radiator=4;
+	public static int META_engine=5;
+	public static int META_generator=6;
+
 	public BlockMetalDecoration()
 	{
-		super("metalDecoration", Material.iron,3, ItemBlockIEBase.class, "fence","scaffolding","lantern","structuralArm");
+		super("metalDecoration", Material.iron,3, ItemBlockIEBase.class, "fence","scaffolding","lantern","structuralArm","radiator","engine","generator");
 		setHardness(3.0F);
 		setResistance(15.0F);
 	}
@@ -54,7 +64,7 @@ public class BlockMetalDecoration extends BlockIEBase
 	@Override
 	public int getLightValue(IBlockAccess world, int x, int y, int z)
 	{
-		if(world.getBlockMetadata(x, y, z)==2)
+		if(world.getBlockMetadata(x, y, z)==META_lantern)
 			return 15;
 		return 0;
 	}
@@ -62,7 +72,7 @@ public class BlockMetalDecoration extends BlockIEBase
 	@Override
 	public void onEntityCollidedWithBlock(World world, int x, int y, int z, Entity ent)
 	{
-		if(world.getBlockMetadata(x, y, z)==1)
+		if(world.getBlockMetadata(x, y, z)==META_scaffolding)
 		{
 			float f5 = 0.15F;
 			if (ent.motionX < (double)(-f5))
@@ -92,7 +102,7 @@ public class BlockMetalDecoration extends BlockIEBase
 	public boolean isSideSolid(IBlockAccess world, int x, int y, int z, ForgeDirection side)
 	{
 		int meta = world.getBlockMetadata(x, y, z);
-		if(meta==1)
+		if(meta==META_scaffolding)
 			return side==UP || side==DOWN;
 
 		return super.isSideSolid(world, x, y, z, side);
@@ -105,7 +115,7 @@ public class BlockMetalDecoration extends BlockIEBase
 		//		if(meta==1||meta==2||meta==3)
 		//			return true;
 		int meta = world.getBlockMetadata(x+(side==4?1:side==5?-1:0),y+(side==0?1:side==1?-1:0),z+(side==2?1:side==3?-1:0));
-		if(meta==1)
+		if(meta==META_scaffolding)
 			return (world.getBlock(x, y, z)==this&&world.getBlockMetadata(x,y,z)==1)?false:true;
 
 		return super.shouldSideBeRendered(world, x, y, z, side);
@@ -115,21 +125,27 @@ public class BlockMetalDecoration extends BlockIEBase
 	public void registerBlockIcons(IIconRegister iconRegister)
 	{
 		//Fence
-		icons[0][0] = iconRegister.registerIcon("immersiveengineering:storage_Steel");
-		icons[0][1] = iconRegister.registerIcon("immersiveengineering:storage_Steel");
-		icons[0][2] = iconRegister.registerIcon("immersiveengineering:storage_Steel");
+		icons[META_fence][0] = iconRegister.registerIcon("immersiveengineering:storage_Steel");
+		icons[META_fence][1] = iconRegister.registerIcon("immersiveengineering:storage_Steel");
+		icons[META_fence][2] = iconRegister.registerIcon("immersiveengineering:storage_Steel");
 		//Scaffolding
-		icons[1][0] = iconRegister.registerIcon("immersiveengineering:metalDeco_scaffolding_top");
-		icons[1][1] = iconRegister.registerIcon("immersiveengineering:metalDeco_scaffolding_top");
-		icons[1][2] = iconRegister.registerIcon("immersiveengineering:metalDeco_scaffolding_side");
+		icons[META_scaffolding][0] = iconRegister.registerIcon("immersiveengineering:metalDeco_scaffolding_top");
+		icons[META_scaffolding][1] = iconRegister.registerIcon("immersiveengineering:metalDeco_scaffolding_top");
+		icons[META_scaffolding][2] = iconRegister.registerIcon("immersiveengineering:metalDeco_scaffolding_side");
 		//Lantern
-		icons[2][0] = iconRegister.registerIcon("immersiveengineering:metalDeco_lantern_bottom");
-		icons[2][1] = iconRegister.registerIcon("immersiveengineering:metalDeco_lantern_top");
-		icons[2][2] = iconRegister.registerIcon("immersiveengineering:metalDeco_lantern_side");
+		icons[META_lantern][0] = iconRegister.registerIcon("immersiveengineering:metalDeco_lantern_bottom");
+		icons[META_lantern][1] = iconRegister.registerIcon("immersiveengineering:metalDeco_lantern_top");
+		icons[META_lantern][2] = iconRegister.registerIcon("immersiveengineering:metalDeco_lantern_side");
 		//Arm
-		icons[3][0] = iconRegister.registerIcon("immersiveengineering:metalDeco_scaffolding_top");
-		icons[3][1] = iconRegister.registerIcon("immersiveengineering:metalDeco_scaffolding_top");
-		icons[3][2] = iconRegister.registerIcon("immersiveengineering:metalDeco_scaffolding_side");
+		icons[META_structuralArm][0] = iconRegister.registerIcon("immersiveengineering:metalDeco_scaffolding_top");
+		icons[META_structuralArm][1] = iconRegister.registerIcon("immersiveengineering:metalDeco_scaffolding_top");
+		icons[META_structuralArm][2] = iconRegister.registerIcon("immersiveengineering:metalDeco_scaffolding_side");
+		for(int i=0;i<3;i++)
+		{
+			icons[META_radiator][i] = iconRegister.registerIcon("immersiveengineering:metalDeco_radiator");
+			icons[META_engine][i] = iconRegister.registerIcon("immersiveengineering:metalDeco_engine");
+			icons[META_generator][i] = iconRegister.registerIcon("immersiveengineering:metalDeco_generator");
+		}
 	}
 	@Override
 	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase player, ItemStack stack)
@@ -141,13 +157,13 @@ public class BlockMetalDecoration extends BlockIEBase
 			((TileEntityStructuralArm)world.getTileEntity(x, y, z)).facing = f;
 		}
 	}
-	
+
 	@Override
 	public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
 	{
-		if(world.getBlockMetadata(x, y, z)==0)
+		if(world.getBlockMetadata(x, y, z)==META_fence)
 			this.setBlockBounds(canConnectFenceTo(world,x-1,y,z)?0:.375f,0,canConnectFenceTo(world,x,y,z-1)?0:.375f, canConnectFenceTo(world,x+1,y,z)?1:.625f,1,canConnectFenceTo(world,x,y,z+1)?1:.625f);
-		else if(world.getBlockMetadata(x, y, z)==2)
+		else if(world.getBlockMetadata(x, y, z)==META_lantern)
 			this.setBlockBounds(.25f,0,.25f, .75f,.8125f,.75f);
 		else
 			this.setBlockBounds(0,0,0,1,1,1);
@@ -166,9 +182,9 @@ public class BlockMetalDecoration extends BlockIEBase
 	@Override
 	public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z)
 	{
-		if(world.getBlockMetadata(x, y, z)==0)
+		if(world.getBlockMetadata(x, y, z)==META_fence)
 			this.setBlockBounds(canConnectFenceTo(world,x-1,y,z)?0:.375f,0,canConnectFenceTo(world,x,y,z-1)?0:.375f, canConnectFenceTo(world,x+1,y,z)?1:.625f,1.5f,canConnectFenceTo(world,x,y,z+1)?1:.625f);
-		else if(world.getBlockMetadata(x, y, z)==1)
+		else if(world.getBlockMetadata(x, y, z)==META_scaffolding)
 			this.setBlockBounds(.0625f,0,.0625f, .9375f,1,.9375f);
 		else
 			this.setBlockBoundsBasedOnState(world,x,y,z);
@@ -184,13 +200,101 @@ public class BlockMetalDecoration extends BlockIEBase
 	@Override
 	public TileEntity createNewTileEntity(World world, int meta)
 	{
-		if(meta==3)
+		if(meta==META_structuralArm)
 			return new TileEntityStructuralArm();
 		return null;
 	}
 	@Override
 	public boolean allowHammerHarvest(int metadata)
 	{
+		return false;
+	}
+
+
+	@Override
+	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
+	{
+		if(Utils.isHammer(player.getCurrentEquippedItem()) && (world.getBlockMetadata(x, y, z)==META_radiator||/**world.getBlockMetadata(x, y, z)==META_generator||*/world.getBlockMetadata(x, y, z)==META_generator) )
+		{	
+			diselGen:
+			{
+			int f = ForgeDirection.getOrientation(side).getOpposite().ordinal();
+			if(f==0||f==1)
+				return false;
+			
+			int startX=x;
+			int startY=y;
+			int startZ=z;
+			//System.out.println("check from "+startX+","+startY+","+startZ+", facing "+f+"-"+ForgeDirection.getOrientation(f));
+			if(world.getBlockMetadata(x, y, z)==META_generator)
+			{
+				startX += (f==5?4: f==4?-4: 0);
+				startZ += (f==3?4: f==2?-4: 0);
+
+				f= (f==2?3: f==3?2: f==4?5: 4);
+			}
+			//System.out.println("confirm: "+startX+","+startY+","+startZ+", facing "+f+"-"+ForgeDirection.getOrientation(f));
+
+			for(int l=0;l<5;l++)
+				for(int w=-1;w<=1;w++)
+					for(int h=-1;h<=(l==4?0:1);h++)
+					{
+						int xx = startX+ (f==5?l: f==4?-l: w);
+						int yy = startY+ h;
+						int zz = startZ+ (f==3?l: f==2?-l: w);
+						if(l==0)
+						{
+							if(!(world.getBlock(xx, yy, zz).equals(IEContent.blockMetalDecoration) && world.getBlockMetadata(xx, yy, zz)==BlockMetalDecoration.META_radiator))
+							{
+//								System.out.println("break: radiator "+xx+","+yy+","+zz);
+								break diselGen;
+							}
+						}
+						else if(l==4)
+						{
+							if(!(world.getBlock(xx, yy, zz).equals(IEContent.blockMetalDecoration) && world.getBlockMetadata(xx, yy, zz)==BlockMetalDecoration.META_generator))
+							{
+//								System.out.println("break: generator "+xx+","+yy+","+zz);
+								break diselGen;
+							}
+						}
+						else
+						{
+							if(!(world.getBlock(xx, yy, zz).equals(IEContent.blockMetalDecoration) && world.getBlockMetadata(xx, yy, zz)==BlockMetalDecoration.META_engine))
+							{
+//								System.out.println("break: engine "+xx+","+yy+","+zz);
+								break diselGen;
+							}
+						}
+					}
+
+
+			for(int l=0;l<5;l++)
+				for(int w=-1;w<=1;w++)
+					for(int h=-1;h<=(l==4?0:1);h++)
+					{
+						//31
+						//R M M M
+						//R M M C G
+						//R M M M G
+						
+						int xx = (f==5?l: f==4?-l: w);
+						int yy = h;
+						int zz = (f==3?l: f==2?-l: w);
+
+						world.setBlock(startX+xx, startY+yy, startZ+zz, IEContent.blockMetalDevice, BlockMetalDevices.META_dieselGenerator, 3);
+						if(world.getTileEntity(startX+xx, startY+yy, startZ+zz) instanceof TileEntityDieselGenerator)
+						{
+							TileEntityDieselGenerator tile = (TileEntityDieselGenerator)world.getTileEntity(startX+xx,startY+yy,startZ+zz);
+							tile.facing=f;
+							tile.formed=true;
+							tile.pos = l*9 + (h+1)*3 + (w+1);
+							tile.offset = new int[]{(f==5?(l-3): f==4?(3-l): w),h,(f==3?(l-3): f==2?(3-l): w)};
+						}
+					}
+			return true;
+			}
+		}
 		return false;
 	}
 }

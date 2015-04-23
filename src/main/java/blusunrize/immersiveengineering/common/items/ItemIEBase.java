@@ -27,7 +27,7 @@ public class ItemIEBase extends Item
 		this.subNames = subNames;
 		this.icons = new IIcon[subNames!=null?subNames.length:1];
 
-		GameRegistry.registerItem(this, ImmersiveEngineering.MODID+"."+name);
+		GameRegistry.registerItem(this, name);
 	}
 
 	

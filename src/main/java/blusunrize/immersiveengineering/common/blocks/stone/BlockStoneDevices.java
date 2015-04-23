@@ -30,7 +30,7 @@ public class BlockStoneDevices extends BlockIEBase
 	@Override
 	public int getRenderType()
 	{
-        return BlockRenderStoneDevices.renderID;
+		return BlockRenderStoneDevices.renderID;
 	}
 	@Override
 	public boolean canRenderInPass(int pass)
@@ -38,7 +38,7 @@ public class BlockStoneDevices extends BlockIEBase
 		BlockRenderStoneDevices.renderPass=pass;
 		return true;
 	}
-	
+
 	@Override
 	public void registerBlockIcons(IIconRegister iconRegister)
 	{
@@ -175,7 +175,8 @@ public class BlockStoneDevices extends BlockIEBase
 				TileEntityCokeOven te = ((TileEntityCokeOven)world.getTileEntity(x, y, z)).master();
 				if(te==null)
 					te = ((TileEntityCokeOven)world.getTileEntity(x, y, z));
-				player.openGui(ImmersiveEngineering.instance, Lib.GUIID_CokeOven, world, te.xCoord, te.yCoord, te.zCoord);
+				if(!world.isRemote)
+					player.openGui(ImmersiveEngineering.instance, Lib.GUIID_CokeOven, world, te.xCoord, te.yCoord, te.zCoord);
 				return true;
 			}
 

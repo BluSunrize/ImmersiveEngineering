@@ -23,6 +23,7 @@ import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
 import blusunrize.immersiveengineering.api.IImmersiveConnectable;
+import cpw.mods.fml.common.registry.GameData;
 
 public class Utils
 {
@@ -214,5 +215,17 @@ public class Utils
 			if(data.fluid.containsFluid(fluidStack))
 				containers.add(data.filledContainer);
 		return containers;
+	}
+
+	public static String nameFromStack(ItemStack stack)
+	{
+		if(stack==null)
+			return "";
+		try
+		{
+			return GameData.getItemRegistry().getNameForObject(stack.getItem());
+		}
+		catch (NullPointerException e) {}
+		return "";
 	}
 }

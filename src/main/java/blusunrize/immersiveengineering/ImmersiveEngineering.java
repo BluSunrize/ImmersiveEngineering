@@ -9,6 +9,7 @@ import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.EventHandler;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.IEWorldGen;
+import blusunrize.immersiveengineering.common.minetweaker.IEMinetweaker;
 import blusunrize.immersiveengineering.common.util.Lib;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
@@ -59,6 +60,8 @@ public class ImmersiveEngineering
 	@Mod.EventHandler
 	public void postInit(FMLPostInitializationEvent event)
 	{
+		if(Loader.isModLoaded("MineTweaker3"))
+			IEMinetweaker.init();
 	}
 	@Mod.EventHandler
 	public void loadComplete(FMLLoadCompleteEvent event)

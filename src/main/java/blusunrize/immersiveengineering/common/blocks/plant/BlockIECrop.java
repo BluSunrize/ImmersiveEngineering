@@ -36,7 +36,7 @@ public class BlockIECrop extends BlockBush implements IGrowable
 		this.setHardness(0.0F);
 		this.setStepSound(soundTypeGrass);
 		this.disableStats();
-		GameRegistry.registerBlock(this, ImmersiveEngineering.MODID+"."+name);
+		GameRegistry.registerBlock(this, name);
 	}
 	@Override
 	public int getRenderType()

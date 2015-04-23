@@ -39,6 +39,8 @@ public class TileEntityBlastFurnace extends TileEntityIEBase implements ISidedIn
 	@Override
 	public void updateEntity()
 	{
+//		if(formed&&master()==null)
+//			System.out.println(worldObj+" "+processMax);
 		if(!worldObj.isRemote&&formed&&master()==null)
 		{
 			boolean a = active;
@@ -111,6 +113,7 @@ public class TileEntityBlastFurnace extends TileEntityIEBase implements ISidedIn
 				int xMax= facing==5? 0: facing==4?2: 1;
 				int zMin= facing==3?-2: facing==2?0:-1;
 				int zMax= facing==3? 0: facing==2?2: 1;
+				worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 				worldObj.markBlockRangeForRenderUpdate(xCoord+xMin,yCoord-1,zCoord+zMin, xCoord+xMax,yCoord+1,zCoord+zMax);
 			}
 		}

@@ -45,7 +45,7 @@ public class ClientUtils
 				ImmersiveNetHandler.Connection con = itCon.next();
 				TileEntity tileEnd = tile.getWorldObj().getTileEntity(con.end.posX,con.end.posY,con.end.posZ);
 				if(tileEnd instanceof IImmersiveConnectable)
-					ClientUtils.drawConnection(con, (IImmersiveConnectable)tile, Utils.toIIC(tileEnd, tile.getWorldObj()));
+					drawConnection(con, (IImmersiveConnectable)tile, Utils.toIIC(tileEnd, tile.getWorldObj()));
 			}
 		}
 	}
@@ -71,8 +71,8 @@ public class ClientUtils
 		double k = Math.sqrt(dx*dx + dy*dy + dz*dz) * 1.005;
 		double l = 0;
 		int limiter = 0;
-		boolean vertical = Math.abs(dx)<.05&&Math.abs(dz)<.05;
-//		boolean vertical = Math.abs(dx)==0&&Math.abs(dz)==0;
+//		boolean vertical = Math.abs(dx)<.05&&Math.abs(dz)<.05;
+		boolean vertical = connection.end.posX==connection.start.posX && connection.end.posZ==connection.start.posZ;
 		while(!vertical && true && limiter<100)
 		{
 			limiter++;

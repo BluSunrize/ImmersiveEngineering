@@ -32,7 +32,7 @@ public class Config
 
 
 		setIntArray("cableTransferRate", config.get("General", "Cable transfer rates", new int[]{256,1024,4096}, "The transfer rates in RF/t for the cable tiers (copper, electrum, HV)").getIntList());
-		setDoubleArray("cableLossRatio", config.get("General", "Cable loss", new double[]{.1,.05,.2 }, "The percentage of power lost every 16 blocks of distancefor the cable tiers (copper, electrum, HV)").getDoubleList());
+		setDoubleArray("cableLossRatio", config.get("General", "Cable loss", new double[]{.05,.025,.1 }, "The percentage of power lost every 16 blocks of distancefor the cable tiers (copper, electrum, HV)").getDoubleList());
 		setIntArray("cableColouration", config.get("General", "Cable colouration", new int[]{0xd4804a,0xedad62,0x6f6f6f}, "").getIntList());
 		
 		setBoolean("increasedRenderboxes", config.get("General", "Increased Renderboxes", true, "By default all devices that accept cables have increased renderbounds to show cables even if hte block itself is not in view. Disablign this reduces them to their minimum sizes, which might improve FPS on low-power PCs").getBoolean());
@@ -53,8 +53,8 @@ public class Config
 		setInt("capacitorHV_output", config.get("Machines", "Capacitor HV: Output", 4096, "The maximum amount of RF that can be output from a high-voltage capacitor (by IE net or other means)").getInt());
 
 		setInt("dynamo_output", config.get("Machines", "Dynamo: Output", 3, "The base RF that is output by the dynamo. This will be modified by the rotation modifier of the attached water- or windmill").getInt());
-		
-		setInt("lightning_output", config.get("Machines", "Lightning Rod: Output", 4*4000000, "The RF that will be output by the ightning rod when it is struck").getInt());
+		setInt("lightning_output", config.get("Machines", "Lightning Rod: Output", 4*4000000, "The RF that will be output by the lightning rod when it is struck").getInt());
+		setInt("dieselGen_output", config.get("Machines", "Diesel Generator: Output", 4096, "The RF per tick that the Diesel Generator will output. The burn time of the fuel determines the total output").getInt());
 
 		
 		setIntArray("ore_copper", config.get("OreGen", "Copper", new int[]{8, 40,72, 8,100}, "Generation config for Copper Ore. Parameters: Blocks per vein, lowest possible Y, highest possible Y, veins per chunk, chance for vein to spawn (out of 100)").getIntList());
