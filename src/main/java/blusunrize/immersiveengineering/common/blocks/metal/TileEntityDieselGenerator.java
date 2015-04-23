@@ -78,10 +78,18 @@ public class TileEntityDieselGenerator extends TileEntityIEBase implements IFlui
 						sound.setPos(xCoord, yCoord, zCoord);
 				}
 			}
-			if(active && (sound==null || sound.isDonePlaying()))
+			if(active)
 			{
-				sound = new IESound(new ResourceLocation("immersiveengineering:dieselGenerator"), 1f,1f, true,0, xCoord,yCoord,zCoord, AttenuationType.LINEAR);
-				ClientUtils.mc().getSoundHandler().playSound(sound);
+				if(worldObj.getTotalWorldTime()%4==0)
+				{
+					ForgeDirection fd = ForgeDirection.getOrientation(facing).getOpposite();
+					worldObj.spawnParticle("largesmoke", xCoord+.5+fd.offsetX*1.25, yCoord+2.25, zCoord+.5+fd.offsetZ*1.25, 0,0,0);
+				}
+				if(sound==null || sound.isDonePlaying())
+				{
+					sound = new IESound(new ResourceLocation("immersiveengineering:dieselGenerator"), 1f,1f, true,0, xCoord,yCoord,zCoord, AttenuationType.LINEAR);
+					ClientUtils.mc().getSoundHandler().playSound(sound);
+				}
 			}
 		}
 		else
