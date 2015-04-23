@@ -21,6 +21,7 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.api.CokeOvenRecipe;
+import blusunrize.immersiveengineering.api.DieselGeneratorHandler;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase.BlockIESimple;
 import blusunrize.immersiveengineering.common.blocks.BlockStorage;
@@ -33,6 +34,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCapacitorMV
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorHV;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorLV;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorMV;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityDieselGenerator;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityDynamo;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityLightningRod;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityRelayHV;
@@ -187,6 +189,7 @@ public class IEContent
 		registerTile(TileEntityDynamo.class);
 		registerTile(TileEntityThermoelectricGen.class);
 		registerTile(TileEntityLightningRod.class);
+		registerTile(TileEntityDieselGenerator.class);
 		
 		registerTile(TileEntityStructuralArm.class);
 
@@ -320,17 +323,19 @@ public class IEContent
 		//		addOredictRecipe(new ItemStack(blockMetalDevice,1,9), "III","CBC","CCC", 'I',"ingotSteel",'C',"ingotConstantan",'B',copperCoil);
 
 
-		CokeOvenRecipe.addRecipe(new ItemStack(Items.coal), new ItemStack(itemMaterial,1,6), 1800, 500);
-		CokeOvenRecipe.addRecipe("blockCoal", new ItemStack(blockStoneDevice,1,1), 1800*9, 5000);
-		CokeOvenRecipe.addRecipe("logWood", new ItemStack(Items.coal,1,1), 900, 250);
-		BlastFurnaceRecipe.addRecipe("ingotIron", new ItemStack(itemMetal,1,7), 1200);
-		BlastFurnaceRecipe.addRecipe("blockIron", new ItemStack(blockStorage,1,7), 1200*9);
+		CokeOvenRecipe.addRecipe(new ItemStack(itemMaterial,1,6), new ItemStack(Items.coal), 1800, 500);
+		CokeOvenRecipe.addRecipe(new ItemStack(blockStoneDevice,1,1), "blockCoal", 1800*9, 5000);
+		CokeOvenRecipe.addRecipe(new ItemStack(Items.coal,1,1), "logWood", 900, 250);
+		BlastFurnaceRecipe.addRecipe(new ItemStack(itemMetal,1,7), "ingotIron", 1200);
+		BlastFurnaceRecipe.addRecipe(new ItemStack(blockStorage,1,7), "blockIron", 1200*9);
 
 		BlastFurnaceRecipe.addBlastFuel("fuelCoke", 3200);
 		BlastFurnaceRecipe.addBlastFuel("blockFuelCoke", 3200*10);
 		BlastFurnaceRecipe.addBlastFuel("charcoal", 1600);
 		BlastFurnaceRecipe.addBlastFuel("blockCharcoal", 1600*10);
 		GameRegistry.registerFuelHandler(new IEFuelHandler());
+		
+		DieselGeneratorHandler.registerFuel(FluidRegistry.getFluid("fuel"), 125);
 
 		//Railcraft Compat
 		if(Loader.isModLoaded("Railcraft"))

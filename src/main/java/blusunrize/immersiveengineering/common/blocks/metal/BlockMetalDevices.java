@@ -1,13 +1,16 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
@@ -39,10 +42,14 @@ public class BlockMetalDevices extends BlockIEBase
 	public static int META_dynamo=9;
 	public static int META_thermoelectricGen=10;
 	public static int META_lightningRod=11;
+	public static int META_dieselGenerator=12;
 	public BlockMetalDevices()
 	{
 		super("metalDevice", Material.iron, 4, ItemBlockMetalDevices.class,
-				"connectorLV","capacitorLV","connectorMV","capacitorMV","transformer","relayHV","connectorHV","capacitorHV","transformerHV", "dynamo","thermoelectricGen","lightningRod");
+				"connectorLV","capacitorLV",
+				"connectorMV","capacitorMV","transformer",
+				"relayHV","connectorHV","capacitorHV","transformerHV",
+				"dynamo","thermoelectricGen","lightningRod","dieselGenerator");
 		setHardness(3.0F);
 		setResistance(15.0F);
 	}
@@ -71,12 +78,19 @@ public class BlockMetalDevices extends BlockIEBase
 	@Override
 	public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int metadata, int fortune)
 	{
-		if(metadata==META_capacitorLV||metadata==META_capacitorMV||metadata==META_capacitorHV)
+		if(metadata==META_capacitorLV||metadata==META_capacitorMV||metadata==META_capacitorHV||metadata==META_dieselGenerator)
 			return new ArrayList();
 		ArrayList<ItemStack> ret = super.getDrops(world, x, y, z, metadata, fortune);
 		return ret;
 	}
 
+	@Override
+	public void getSubBlocks(Item item, CreativeTabs tab, List list)
+	{
+		for(int i=0; i<subNames.length; i++)
+			if(i!=META_dieselGenerator)
+			list.add(new ItemStack(item, 1, i));
+	}
 
 	@Override
 	public void registerBlockIcons(IIconRegister iconRegister)
@@ -154,6 +168,7 @@ public class BlockMetalDevices extends BlockIEBase
 			icons[5][i] = iconRegister.registerIcon("immersiveengineering:storage_steel");
 			icons[6][i] = iconRegister.registerIcon("immersiveengineering:storage_steel");
 			icons[8][i] = iconRegister.registerIcon("immersiveengineering:storage_steel");
+			icons[12][i] = iconRegister.registerIcon("immersiveengineering:storage_steel");
 		}
 	}
 	@Override
@@ -222,6 +237,14 @@ public class BlockMetalDevices extends BlockIEBase
 				}
 			return true;
 		}
+		//		if(world.getTileEntity(x, y, z) instanceof TileEntityDieselGenerator && !player.isSneaking()&& ((TileEntityDieselGenerator)world.getTileEntity(x, y, z)).formed )
+		//			{
+		//			TileEntityDieselGenerator te = ((TileEntityDieselGenerator)world.getTileEntity(x, y, z)).master();
+		//				if(te==null)
+		//					te = ((TileEntityDieselGenerator)world.getTileEntity(x, y, z));
+		//				player.openGui(ImmersiveEngineering.instance, Lib.GUIID_CokeOven, world, te.xCoord, te.yCoord, te.zCoord);
+		//				return true;
+		//			}
 		return false;
 	}
 
@@ -256,10 +279,10 @@ public class BlockMetalDevices extends BlockIEBase
 		}
 		else if(world.getTileEntity(x, y, z) instanceof TileEntityTransformer)
 		{
-			TileEntityTransformer transf = (TileEntityTransformer)world.getTileEntity(x, y, z);
-			if(transf.postAttached>0)
+			TileEntityTransformer tile = (TileEntityTransformer)world.getTileEntity(x, y, z);
+			if(tile.postAttached>0)
 			{
-				switch(transf.postAttached)
+				switch(tile.postAttached)
 				{
 				case 2://SOUTH
 					this.setBlockBounds(.25f,0,.6875f,  .75f,1,1.3125f);
@@ -273,6 +296,23 @@ public class BlockMetalDevices extends BlockIEBase
 				case 5://WEST
 					this.setBlockBounds(-.3125f,0,.25f,  .3125f,1,.75f);
 				}
+			}
+			else
+				this.setBlockBounds(0,0,0,1,1,1);
+		}
+		else if(world.getTileEntity(x, y, z) instanceof TileEntityDieselGenerator)
+		{
+			TileEntityDieselGenerator tile = (TileEntityDieselGenerator)world.getTileEntity(x, y, z);
+			int pos = tile.pos;
+			if(pos>=3 && pos<36)
+			{
+				float height = pos%9>=6&&pos>9?.625f:1;
+				if(pos%9==0||pos%9==3||pos%9==6)
+					this.setBlockBounds((tile.facing<4?.25f:0),0,(tile.facing>3?.25f:0),  1,height,1);
+				else if(pos%9==2||pos%9==5||pos%9==8)
+					this.setBlockBounds(0,0,0,  (tile.facing<4?.75f:1),height,(tile.facing>3?.75f:1));
+				else
+					this.setBlockBounds(0,0,0,  1,height,1);
 			}
 			else
 				this.setBlockBounds(0,0,0,1,1,1);
@@ -330,6 +370,8 @@ public class BlockMetalDevices extends BlockIEBase
 			return new TileEntityThermoelectricGen();
 		case 11://11 lightningRod
 			return new TileEntityLightningRod();
+		case 12://12 dieselGenerator
+			return new TileEntityDieselGenerator();
 		}
 		return null;
 	}

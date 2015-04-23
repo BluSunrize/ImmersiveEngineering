@@ -28,11 +28,15 @@ tile.ImmersiveEngineering.metalDevice.transformerHV.name=HV Transformer
 tile.ImmersiveEngineering.metalDevice.dynamo.name=Kinetic Dynamo
 tile.ImmersiveEngineering.metalDevice.thermoelectricGen.name=Thermoelectric Generator
 tile.ImmersiveEngineering.metalDevice.lightningRod.name=Lightning Rod Base
+tile.ImmersiveEngineering.metalDevice.dieselGenerator.name=Diesel Generator
 
 tile.ImmersiveEngineering.metalDecoration.fence.name=Steel Fence
 tile.ImmersiveEngineering.metalDecoration.scaffolding.name=Steel Scaffolding
 tile.ImmersiveEngineering.metalDecoration.lantern.name=Lantern
 tile.ImmersiveEngineering.metalDecoration.structuralArm.name=Structural Arm
+tile.ImmersiveEngineering.metalDecoration.radiator.name=Radiator Block
+tile.ImmersiveEngineering.metalDecoration.engine.name=Engine Block
+tile.ImmersiveEngineering.metalDecoration.generator.name=Generator Block
 
 
 tile.ImmersiveEngineering.woodenDevice.post.name=Wooden Post

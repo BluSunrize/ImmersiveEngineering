@@ -25,7 +25,7 @@ public class BlockRenderMetalDecoration implements ISimpleBlockRenderingHandler
 		GL11.glPushMatrix();
 		try{
 
-			if(metadata==0)
+			if(metadata==BlockMetalDecoration.META_fence)
 			{
 				GL11.glTranslatef(-.5f,-.5f,-.5f);
 				renderer.setRenderBounds(0,0,.375, .25,1,.625);
@@ -38,20 +38,20 @@ public class BlockRenderMetalDecoration implements ISimpleBlockRenderingHandler
 				ClientUtils.drawInventoryBlock(block, metadata, renderer);
 				GL11.glTranslatef(.5f,.5f,.5f);
 			}
-			else if(metadata==1)
+			else if(metadata==BlockMetalDecoration.META_scaffolding)
 			{
 				block.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
 				renderer.setRenderBoundsFromBlock(block);
 				ClientUtils.drawInventoryBlock(block, metadata, renderer);
 			}
-			else if(metadata==2)
+			else if(metadata==BlockMetalDecoration.META_lantern)
 			{
 				renderer.setRenderBounds(.3125f,0,.3125f, .6875f,.125f,.6875f);
 				ClientUtils.drawInventoryBlock(block, metadata, renderer);
 				renderer.setRenderBounds(.25f,.125f,.25f, .75f,.8125f,.75f);
 				ClientUtils.drawInventoryBlock(block, metadata, renderer);
 			}
-			else if(metadata==3)
+			else if(metadata==BlockMetalDecoration.META_structuralArm)
 			{
 				Tessellator tes = ClientUtils.tes();
 				IIcon iSide = block.getIcon(2, 3);
@@ -107,6 +107,12 @@ public class BlockRenderMetalDecoration implements ISimpleBlockRenderingHandler
 				tes.addVertexWithUV(1, 0, 0, iSide.getMinU(), iSide.getMinV());
 				tes.draw();
 			}
+			else
+			{
+				block.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
+				renderer.setRenderBoundsFromBlock(block);
+				ClientUtils.drawInventoryBlock(block, metadata, renderer);
+			}
 		}catch(Exception e)
 		{
 			e.printStackTrace();
@@ -117,7 +123,7 @@ public class BlockRenderMetalDecoration implements ISimpleBlockRenderingHandler
 	@Override
 	public boolean renderWorldBlock(IBlockAccess world, int x, int y, int z, Block block, int modelId, RenderBlocks renderer)
 	{
-		if(world.getBlockMetadata(x, y, z)==0)
+		if(world.getBlockMetadata(x, y, z)==BlockMetalDecoration.META_fence)
 		{
 			renderer.setRenderBounds(.375,0,.375, .625,1,.625);
 			renderer.renderStandardBlock(block, x, y, z);
@@ -153,7 +159,7 @@ public class BlockRenderMetalDecoration implements ISimpleBlockRenderingHandler
 			}
 			return true;
 		}
-		else if(world.getBlockMetadata(x, y, z)==1)
+		else if(world.getBlockMetadata(x, y, z)==BlockMetalDecoration.META_scaffolding)
 		{
 			renderer.setRenderBoundsFromBlock(block);
 			renderer.renderFromInside=true;
@@ -173,7 +179,7 @@ public class BlockRenderMetalDecoration implements ISimpleBlockRenderingHandler
 			renderer.renderFromInside=false;
 			return renderer.renderStandardBlock(block, x, y, z);
 		}
-		else if(world.getBlockMetadata(x, y, z)==2)
+		else if(world.getBlockMetadata(x, y, z)==BlockMetalDecoration.META_lantern)
 		{
 			if(world.isAirBlock(x,y-1,z)&&!world.isAirBlock(x,y+1,z))
 			{
@@ -199,7 +205,7 @@ public class BlockRenderMetalDecoration implements ISimpleBlockRenderingHandler
 			}
 			return true;
 		}
-		else if(world.getBlockMetadata(x, y, z)==3)
+		else if(world.getBlockMetadata(x, y, z)==BlockMetalDecoration.META_structuralArm)
 		{
 			Tessellator tes = ClientUtils.tes();
 			IIcon iSide = block.getIcon(2, 3);
@@ -411,8 +417,11 @@ public class BlockRenderMetalDecoration implements ISimpleBlockRenderingHandler
 			
 			return true;
 		}
-
-		return false;
+		else
+		{
+			renderer.setRenderBounds(0,0,0,1,1,1);
+			return renderer.renderStandardBlock(block, x, y, z);
+		}
 	}
 
 	@Override

@@ -14,7 +14,7 @@ public class BlockIEWoodenStairs extends BlockStairs
 	{
 		super(IEContent.blockWoodenDecoration,0);
 		this.setBlockName(ImmersiveEngineering.MODID+".woodenStairs");
-		GameRegistry.registerBlock(this, ImmersiveEngineering.MODID+".woodenStairs");
+		GameRegistry.registerBlock(this, "woodenStairs");
 		this.setCreativeTab(ImmersiveEngineering.creativeTab);
 	}
 

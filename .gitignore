@@ -16,6 +16,7 @@
 /resourcepacks
 /saves
 /screenshots
+/scripts
 /.classpath
 /.project
 /copy
@@ -34,3 +35,4 @@ servers.dat
 config.cfg
 GregTech.cfg
 GregTech.lang
+minetweaker.log

@@ -9,6 +9,7 @@ import java.util.List;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
+import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -66,6 +67,9 @@ public class NEICokeOvenHandler extends TemplateRecipeHandler
 		boolean b = false;
 		if(outputId == "liquid" && results!=null && results.length>0 && results[0] instanceof FluidStack)
 			b = ((FluidStack)results[0]).getFluid().equals(IEContent.fluidCreosote);
+		if(outputId == "item" && results!=null && results.length>0 && results[0] instanceof ItemStack && FluidContainerRegistry.isFilledContainer((ItemStack) results[0]))
+			b = FluidContainerRegistry.getFluidForFilledItem((ItemStack) results[0]).getFluid().equals(IEContent.fluidCreosote);
+		
 		if(b || outputId == getOverlayIdentifier())
 		{
 			for(CokeOvenRecipe r : CokeOvenRecipe.recipeList)

@@ -5,6 +5,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import blusunrize.immersiveengineering.api.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.common.blocks.stone.TileEntityBlastFurnace;
 
 public class ContainerBlastFurnace extends Container
@@ -52,10 +53,17 @@ public class ContainerBlastFurnace extends Container
 			}
 			else
 			{
-				for(int i=0;i<slotCount;i++)
-					if(this.getSlot(i).isItemValid(stackInSlot))
-						if(!this.mergeItemStack(stackInSlot, i,i+1, false))
-							return null;
+				int i = -1;
+				if(BlastFurnaceRecipe.findRecipe(stackInSlot)!=null)
+					i=0;
+				else if(BlastFurnaceRecipe.isValidBlastFuel(stackInSlot))
+					i=1;
+				if(i!=-1)
+					if(!this.mergeItemStack(stackInSlot, i,i+1, false))
+						return null;
+
+				//				for(int i=0;i<slotCount;i++)
+				//					if(this.getSlot(i).isItemValid(stackInSlot))
 			}
 
 			if (stackInSlot.stackSize == 0)

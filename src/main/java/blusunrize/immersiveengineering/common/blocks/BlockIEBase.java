@@ -35,7 +35,7 @@ public abstract class BlockIEBase extends BlockContainer
 		this.iconDimensions = iconDimensions;
 		this.icons = new IIcon[subNames.length][iconDimensions];
 		this.setBlockName(ImmersiveEngineering.MODID+"."+name);
-		GameRegistry.registerBlock(this, itemBlock, ImmersiveEngineering.MODID+"."+name);
+		GameRegistry.registerBlock(this, itemBlock, name);
 		this.setCreativeTab(ImmersiveEngineering.creativeTab);
 	}
 

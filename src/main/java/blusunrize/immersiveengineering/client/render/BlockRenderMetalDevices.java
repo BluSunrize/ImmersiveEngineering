@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDevices;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorHV;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorLV;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorMV;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityDieselGenerator;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityLightningRod;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityRelayHV;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTransformer;
@@ -163,6 +164,16 @@ public class BlockRenderMetalDevices implements ISimpleBlockRenderingHandler
 				tes.addVertexWithUV(1, 0, 1, iSide.getMinU()+w*2, iSide.getMinV());
 				tes.addVertexWithUV(1, 0, 0, iSide.getMinU()+w, iSide.getMinV());
 				tes.draw();
+			}
+			else if(metadata==BlockMetalDevices.META_dieselGenerator)
+			{
+				GL11.glTranslatef(1.5f, 1.125F, 1.1875f);
+				GL11.glScalef(.25f, .25f, .25f);
+				TileEntityDieselGenerator gen = new TileEntityDieselGenerator();
+				gen.pos=31;
+				gen.formed=true;
+				TileEntityRendererDispatcher.instance.renderTileEntityAt(gen, 0.0D, 0.0D, 0.0D, 0.0F);
+				GL11.glEnable(32826);
 			}
 		}catch(Exception e)
 		{

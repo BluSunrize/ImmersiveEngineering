@@ -23,7 +23,6 @@ import com.google.common.collect.ArrayListMultimap;
 
 public class ImmersiveNetHandler
 {
-	//	private static HashMultimap<IImmersiveConnectable,Connection> directConnections = HashMultimap.create();
 	private static HashMap<Integer, ArrayListMultimap<ChunkCoordinates,Connection>> directConnections = new HashMap<Integer, ArrayListMultimap<ChunkCoordinates,Connection>>();
 	private static ArrayListMultimap<ChunkCoordinates,Connection> getMultimap(int dimension)
 	{
@@ -48,24 +47,12 @@ public class ImmersiveNetHandler
 		indirectConnections.clear();
 		IESaveData.setDirty(world.provider.dimensionId);
 	}
-	//	public static Set<Connection> getConnections(IImmersiveConnectable node)
-	//	{
-	//		return directConnections.get(node);
-	//	}
 	public static Set<Integer> getRelevantDimensions()
 	{
 		return directConnections.keySet();
 	}
 	public static Collection<Connection> getAllConnections(World world)
 	{
-		//		ArrayList<Connection> list = new ArrayList();
-		//		for(Entry<Integer, ArrayListMultimap<ChunkCoordinates, Connection>> col : directConnections.entrySet())
-		//		{
-		//			System.out.println("key: "+col.getKey());
-		//			for(Collection<Connection> col2 : col.getValue().asMap().values())
-		//				list.addAll(col2);
-		//		}
-		//		return list;
 		return getMultimap(world.provider.dimensionId).values();
 	}
 	public static List<Connection> getConnections(World world, ChunkCoordinates node)
@@ -79,24 +66,6 @@ public class ImmersiveNetHandler
 	public static void clearConnectionsOriginatingFrom(ChunkCoordinates node, World world)
 	{
 		getMultimap(world.provider.dimensionId).removeAll(node);
-		//		Iterator<Connection> it = getMultimap(world.provider.dimensionId).values().iterator();
-		//		while(it.hasNext())
-		//		{
-		//			Connection con = it.next();
-		//			if(node.equals(con.start) || node.equals(con.end))
-		//			{
-		//				it.remove();
-		////				if(toCC(node).equals(con.start))
-		////				{
-		////					world.markBlockForUpdate(con.start.posX, con.start.posY, con.start.posZ);
-		////				}
-		////				else
-		////				{
-		////					world.markBlockForUpdate(con.end.posX, con.end.posY, con.end.posZ);
-		////				}
-		//			}
-		//		}
-		//		IESaveData.setDirty(world.provider.dimensionId);
 		indirectConnections.clear();
 	}
 
@@ -144,7 +113,6 @@ public class ImmersiveNetHandler
 	 */
 	public static void clearAllConnectionsFor(ChunkCoordinates node, World world, TargetingInfo target)
 	{
-		//		getMultimap(world.provider.dimensionId).removeAll(node);
 		IImmersiveConnectable iic = toIIC(node, world);
 		WireType type = target==null?null : iic.getCableLimiter(target);
 		if(type==null)
@@ -173,7 +141,7 @@ public class ImmersiveNetHandler
 		indirectConnections.clear();
 	}
 
-
+	/*
 	public static List<IImmersiveConnectable> getValidEnergyOutputs(ChunkCoordinates node, World world)
 	{
 		List<IImmersiveConnectable> openList = new ArrayList<IImmersiveConnectable>();
@@ -199,9 +167,6 @@ public class ImmersiveNetHandler
 			{
 				if(next.isEnergyOutput())
 				{
-					//					System.out.println();
-					//					System.out.println("found Output at "+((TileEntity)next).xCoord+","+((TileEntity)next).yCoord+","+((TileEntity)next).zCoord);
-					//					System.out.println("Backtracking: ");
 					ChunkCoordinates last = toCC(next);
 					WireType averageType = null;
 					int distance = 0;
@@ -223,11 +188,6 @@ public class ImmersiveNetHandler
 								}
 						}
 					}
-					//					System.out.println("Indirect connection has a length of "+distance);
-					//					System.out.println("The lowest level connection is "+averageType);
-					//					System.out.println("connection parts: ");
-					//					for(Connection part : connectionParts)
-					//						System.out.println("  "+part.length+"m of "+part.cableType);
 					closedList.add(next);
 				}
 
@@ -244,13 +204,10 @@ public class ImmersiveNetHandler
 
 		return closedList;
 	}
-
+	 */
 	static ArrayListMultimap<ChunkCoordinates, AbstractConnection> indirectConnections = ArrayListMultimap.create();
 	public static List<AbstractConnection> getIndirectEnergyConnections(ChunkCoordinates node, World world)
 	{
-		//		if(indirectConnections.containsKey(node))
-		//			return indirectConnections.get(node);
-
 		List<IImmersiveConnectable> openList = new ArrayList<IImmersiveConnectable>();
 		List<AbstractConnection> closedList = new ArrayList<AbstractConnection>();
 		List<ChunkCoordinates> checked = new ArrayList<ChunkCoordinates>();
@@ -270,12 +227,10 @@ public class ImmersiveNetHandler
 		while(closedList.size()<closedListMax && !openList.isEmpty())
 		{
 			next = openList.get(0);
-			//			System.out.println(toCC(next));
 			if(!checked.contains(toCC(next)))
 			{
 				if(next.isEnergyOutput())
 				{
-					//					System.out.println("Output found at "+toCC(next)+", retracing");
 					ChunkCoordinates last = toCC(next);
 					WireType averageType = null;
 					int distance = 0;
@@ -284,7 +239,6 @@ public class ImmersiveNetHandler
 					{
 						ChunkCoordinates prev = last;
 						last = backtracker.get(last);
-						//						System.out.println(prev+">"+last);
 						if(last!=null)
 						{
 							for(Connection conB : getConnections(world, prev))
@@ -298,8 +252,6 @@ public class ImmersiveNetHandler
 								}
 						}
 					}
-					//					for(Connection conBack : connectionParts)
-					//						System.out.println("   "+conBack.start+" to "+conBack.end+", type: "+conBack.cableType);
 					closedList.add(new AbstractConnection(toCC(node), toCC(next), averageType, distance, connectionParts.toArray(new Connection[0])));
 				}
 

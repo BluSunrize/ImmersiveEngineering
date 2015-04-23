@@ -30,6 +30,6 @@ public class ItemBlockIEBase extends ItemBlock
 	@Override
 	public String getUnlocalizedName(ItemStack itemstack)
 	{
-		return getUnlocalizedName()+"."+((BlockIEBase)field_150939_a).subNames[itemstack.getItemDamage()];
+		return getUnlocalizedName()+"."+((BlockIEBase)field_150939_a).subNames[ Math.min(((BlockIEBase)field_150939_a).subNames.length-1, itemstack.getItemDamage())];
 	}
 }
