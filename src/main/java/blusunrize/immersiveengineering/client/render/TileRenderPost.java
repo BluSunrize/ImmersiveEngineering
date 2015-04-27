@@ -21,33 +21,7 @@ public class TileRenderPost extends TileEntitySpecialRenderer
 			return;
 
 		GL11.glPushMatrix();
-		GL11.glTranslated(x+.5, y+1.5, z+.5);
-		//		switch(relay.facing)
-		//		{
-		//		case 0:
-		//			GL11.glTranslated(0,-.4375,0);
-		GL11.glRotatef(180, 1, 0, 0);
-		//			break;
-		//		case 1:
-		//			GL11.glTranslated(0,.4375,0);
-		//			break;
-		//		case 2:
-		//			GL11.glTranslated(0,0,-.4375);
-		//			GL11.glRotatef(-90, 1, 0, 0);
-		//			break;
-		//		case 3:
-		//			GL11.glTranslated(0,0,.4375);
-		//			GL11.glRotatef(90, 1, 0, 0);
-		//			break;
-		//		case 4:
-		//			GL11.glTranslated(-.4375,0,0);
-		//			GL11.glRotatef(90, 0, 0, 1);
-		//			break;
-		//		case 5:
-		//			GL11.glTranslated(.4375,0,0);
-		//			GL11.glRotatef(-90, 0, 0, 1);
-		//			break;
-		//		}
+		GL11.glTranslated(x+.5, y+.5, z+.5);
 
 		boolean armLeft = false;
 		boolean armRight = false;
@@ -59,26 +33,29 @@ public class TileRenderPost extends TileEntitySpecialRenderer
 			TileEntity tileZ0 = tile.getWorldObj().getTileEntity(tile.xCoord,tile.yCoord+3,tile.zCoord-1);
 			TileEntity tileZ1 = tile.getWorldObj().getTileEntity(tile.xCoord,tile.yCoord+3,tile.zCoord+1);
 			if(tileX0 instanceof TileEntityWoodenPost && ((TileEntityWoodenPost)tileX0).type==6)
-				armRight = true;
-			if(tileX1 instanceof TileEntityWoodenPost && ((TileEntityWoodenPost)tileX1).type==7)
 				armLeft = true;
+			if(tileX1 instanceof TileEntityWoodenPost && ((TileEntityWoodenPost)tileX1).type==7)
+				armRight = true;
 			if(tileZ0 instanceof TileEntityWoodenPost && ((TileEntityWoodenPost)tileZ0).type==4)
 			{
-				armRight = true;
+				armLeft = true;
 				rotate = true;
 			}
 			if(tileZ1 instanceof TileEntityWoodenPost && ((TileEntityWoodenPost)tileZ1).type==5)
 			{
-				armLeft = true;
+				armRight = true;
 				rotate = true;
 			}
 		}
 		else
-			armLeft=true;
+			armRight=true;
+		
 		ClientUtils.bindTexture("immersiveengineering:textures/models/post.png");
-		if(rotate)
-			GL11.glRotatef(90, 0, 1, 0);
-		model.render(armLeft, armRight);
+		model.Arm_left.isHidden=!armLeft;
+		model.Arm_left.rotateAngleY=rotate?1.57079f:0;
+		model.Arm_right.isHidden=!armRight;
+		model.Arm_right.rotateAngleY=rotate?1.57079f:0;
+		model.render(null, 0, 0, 0, 0, 0, .0625f);
 		GL11.glPopMatrix();
 	}
 

@@ -21,12 +21,8 @@ public class TileRenderRelayHV extends TileEntitySpecialRenderer
 		GL11.glPushMatrix();
 
 		GL11.glTranslated(x, y, z);
-		GL11.glPushMatrix();
-		GL11.glTranslated(.5, 1, .5);
-		GL11.glRotated(180, 1, 0, 0);
 		ClientUtils.bindTexture("immersiveengineering:textures/models/relayHV.png");
 		model.render(null, 0, 0, 0, 0, 0, .0625f);
-		GL11.glPopMatrix();
 
 		ClientUtils.renderAttachedConnections(connector);
 		

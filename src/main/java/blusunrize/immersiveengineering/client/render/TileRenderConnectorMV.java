@@ -21,37 +21,29 @@ public class TileRenderConnectorMV extends TileEntitySpecialRenderer
 		GL11.glPushMatrix();
 
 		GL11.glTranslated(x, y, z);
-		GL11.glPushMatrix();
-		GL11.glTranslated(.5, .5, .5);
 		switch(connector.facing)
 		{
 		case 0:
-			GL11.glTranslated(0,-.4375,0);
-			GL11.glRotatef(180, 1, 0, 0);
+			model.setRotateAngle(model.MVtop, 0, 0, (float)Math.toRadians(180));
 			break;
 		case 1:
-			GL11.glTranslated(0,.4375,0);
+			model.setRotateAngle(model.MVtop, 0, 0, 0);
 			break;
 		case 2:
-			GL11.glTranslated(0,0,-.4375);
-			GL11.glRotatef(-90, 1, 0, 0);
+			model.setRotateAngle(model.MVtop, (float)Math.toRadians(-90), 0, 0);
 			break;
 		case 3:
-			GL11.glTranslated(0,0,.4375);
-			GL11.glRotatef(90, 1, 0, 0);
+			model.setRotateAngle(model.MVtop, (float)Math.toRadians(90), 0, 0);
 			break;
 		case 4:
-			GL11.glTranslated(-.4375,0,0);
-			GL11.glRotatef(90, 0, 0, 1);
+			model.setRotateAngle(model.MVtop, 0, 0, (float)Math.toRadians(90));
 			break;
 		case 5:
-			GL11.glTranslated(.4375,0,0);
-			GL11.glRotatef(-90, 0, 0, 1);
+			model.setRotateAngle(model.MVtop, 0, 0, (float)Math.toRadians(-90));
 			break;
 		}
 		ClientUtils.bindTexture("immersiveengineering:textures/models/connectorHV.png");
 		model.render(null, 0, 0, 0, 0, 0, .0625f);
-		GL11.glPopMatrix();
 
 		ClientUtils.renderAttachedConnections(connector);
 		

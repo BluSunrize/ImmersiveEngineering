@@ -33,33 +33,17 @@ public class TileRenderTransformer extends TileEntitySpecialRenderer
 		GL11.glPushMatrix();
 
 		GL11.glTranslated(x, y, z);
-		GL11.glPushMatrix();
-		GL11.glTranslated(.5, .5, .5);
-		switch(transf.facing)
-		{
-		case 2:
-			GL11.glRotatef(180, 0, 1, 0);
-			break;
-		case 3:
-			break;
-		case 4:
-			GL11.glRotatef(-90, 0, 1, 0);
-			break;
-		case 5:
-			GL11.glRotatef(90, 0, 1, 0);
-			break;
-		}
-		GL11.glRotatef(180, 1, 0, 0);
 		if(!hv)
 		{
 			if(transf.postAttached!=0)
 			{
-				GL11.glTranslated(0,-1,1);
+				modelTransformer.Transformer.rotateAngleY=(float)Math.toRadians(transf.facing==2?180: transf.facing==3?0: transf.facing==4?-90: 90);
 				ClientUtils.bindTexture("immersiveengineering:textures/models/transformer_post.png");
 				modelTransformer.render(null, 0,0,0,0,0, .0625f);
 			}
 			else
 			{
+				model.Transformer.rotateAngleY=(float)Math.toRadians(transf.facing==2?180: transf.facing==3?0: transf.facing==4?-90: 90);
 				ClientUtils.bindTexture("immersiveengineering:textures/models/transformer.png");
 				model.render(null, 0, 0, 0, 0, 0, .0625f);
 			}
@@ -67,9 +51,13 @@ public class TileRenderTransformer extends TileEntitySpecialRenderer
 		else
 		{
 			ClientUtils.bindTexture("immersiveengineering:textures/models/transformerHV.png");
-			modelHV.render(transf.getLimiter(0)==WireType.STEEL, transf.getLimiter(1)==WireType.STEEL);
+			modelHV.Transformer.rotateAngleY=(float)Math.toRadians(transf.facing==2?180: transf.facing==3?0: transf.facing==4?-90: 90);
+			modelHV.ceramicL.isHidden=transf.getLimiter(0)==WireType.STEEL;
+			modelHV.ceramicL_HV.isHidden=transf.getLimiter(0)!=WireType.STEEL;
+			modelHV.ceramicR.isHidden=transf.getLimiter(1)==WireType.STEEL;
+			modelHV.ceramicR_HV.isHidden=transf.getLimiter(1)!=WireType.STEEL;
+			modelHV.render(null, 0, 0, 0, 0, 0, .0625f);
 		}
-		GL11.glPopMatrix();
 
 		ClientUtils.renderAttachedConnections(transf);
 		

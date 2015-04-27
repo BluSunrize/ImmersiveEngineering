@@ -1,4 +1,4 @@
-package blusunrize.immersiveengineering.client.gui.manual;
+package blusunrize.lib.manual.gui;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
@@ -6,24 +6,25 @@ import net.minecraft.client.renderer.OpenGlHelper;
 
 import org.lwjgl.opengl.GL11;
 
-import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.lib.manual.ManualUtils;
 
 public class GuiButtonArrow extends GuiButton
 {
 	int type;
-	public GuiButtonArrow(int id, int x, int y, int w, int h, int type)
+	GuiManual gui;
+	public GuiButtonArrow(GuiManual gui, int id, int x, int y, int w, int h, int type)
 	{
 		super(id, x, y, Math.min(type<2?16:10, w), Math.min(type<2?10:16, h), "");
-		this.type=type;
+		this.gui = gui;
+		this.type = type;
 	}
 
-	
 	@Override
 	public void drawButton(Minecraft mc, int mx, int my)
 	{
 		if (this.visible)
 		{
-			ClientUtils.bindTexture("immersiveengineering:textures/gui/manual.png");
+			ManualUtils.bindTexture(gui.texture);
 			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 			this.field_146123_n = mx >= this.xPosition && my >= this.yPosition && mx < this.xPosition + this.width && my < this.yPosition + this.height;
 			GL11.glEnable(GL11.GL_BLEND);

@@ -1,14 +1,11 @@
-package blusunrize.immersiveengineering.client.gui.manual;
+package blusunrize.lib.manual.gui;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.util.StatCollector;
 
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
-
-import blusunrize.immersiveengineering.client.ClientUtils;
 
 public class GuiClickableList extends GuiButton
 {
@@ -17,16 +14,16 @@ public class GuiClickableList extends GuiButton
 	int offset;
 	int maxOffset;
 	int perPage;
-	String localPrefix;
-	String localPostfix;
-
-	public GuiClickableList(int id, int x, int y, int w, int h, String localPrefix, String localPostfix, float textScale, String... entries)
+	int translationType;
+	GuiManual gui;
+	
+	public GuiClickableList(GuiManual gui, int id, int x, int y, int w, int h, float textScale, int translationType, String... entries)
 	{
 		super(id, x, y, w, h, "");
-		this.textScale=textScale;
-		this.entries=entries;
-		this.localPrefix=localPrefix;
-		this.localPostfix=localPostfix;
+		this.gui = gui;
+		this.textScale = textScale;
+		this.entries = entries;
+		this.translationType = translationType;
 
 		perPage = (h-8)/getFontHeight();
 		if(perPage<entries.length)
@@ -35,14 +32,14 @@ public class GuiClickableList extends GuiButton
 
 	int getFontHeight()
 	{
-		return (int) (ClientUtils.font().FONT_HEIGHT*textScale);
+		return (int) (gui.manual.fontRenderer.FONT_HEIGHT*textScale);
 	}
 	@Override
 	public void drawButton(Minecraft mc, int mx, int my)
 	{
-		FontRenderer fr = ClientUtils.font();
+		FontRenderer fr = gui.manual.fontRenderer;
 		boolean uni = fr.getUnicodeFlag();
-		ClientUtils.font().setUnicodeFlag(true);
+		fr.setUnicodeFlag(true);
 
 		int mmY = my-this.yPosition;
 		GL11.glPushMatrix();
@@ -50,18 +47,21 @@ public class GuiClickableList extends GuiButton
 		GL11.glTranslatef(xPosition/textScale, yPosition/textScale, 0);
 		for(int i=offset; i<Math.min(perPage, entries.length); i++)
 		{
-			int col = 0x555555;
+			int col = gui.manual.getTextColour();
 			if(mmY>=i*getFontHeight() && mmY<(i+1)*getFontHeight())
-				col = 0xd4804a;
+				col = gui.manual.getHighlightColour();
 			if(i!=0)
 				GL11.glTranslatef(0, getFontHeight(), 0);
-			fr.drawString(StatCollector.translateToLocal(localPrefix+entries[i]+localPostfix), 0,0, col, false);
+			String s = translationType==0?gui.manual.formatCategoryName(entries[i]):gui.manual.formatEntryName(entries[i]);
+
+//			System.out.println(entries[i]+" -> "+s);
+			fr.drawString(s, 0,0, col, false);
 		}
 
 		GL11.glScalef(1/textScale,1/textScale,1/textScale);
 		GL11.glPopMatrix();
 
-		ClientUtils.font().setUnicodeFlag(uni);
+		fr.setUnicodeFlag(uni);
 
 		//Handle DWheel
 		int mouseWheel = Mouse.getEventDWheel();

@@ -236,6 +236,11 @@ public class BlockRenderMetalDevices implements ISimpleBlockRenderingHandler
 			}
 			return ClientUtils.drawWorldBlock(world, block, x, y, z, uv);
 		}
+		else if(metadata==BlockMetalDevices.META_industrialSqueezer)
+		{
+			renderer.setRenderBounds(-1,-1,-1, 2,2,2);
+			return renderer.renderStandardBlock(block, x, y, z);
+		}
 		return false;
 	}
 

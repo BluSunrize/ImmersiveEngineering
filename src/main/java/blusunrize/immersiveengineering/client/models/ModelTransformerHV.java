@@ -11,124 +11,119 @@ import net.minecraft.entity.Entity;
 public class ModelTransformerHV extends ModelBase
 {
 	public ModelRenderer Transformer;
-	public ModelRenderer ceramicHV;
-	public ModelRenderer ceramic;
-	public ModelRenderer ceramicHV_1;
-	public ModelRenderer ceramic_1;
-	public ModelRenderer ceramic0;
-	public ModelRenderer ceramic2;
-	public ModelRenderer Connectortop;
-	public ModelRenderer ceramic1;
-	public ModelRenderer ceramic1_1;
-	public ModelRenderer ceramic2_1;
-	public ModelRenderer Connectortop_1;
-	public ModelRenderer ceramic0_1;
-	public ModelRenderer ceramic1_2;
-	public ModelRenderer ceramic2_2;
-	public ModelRenderer Connectortop_2;
-	public ModelRenderer ceramic1_3;
-	public ModelRenderer ceramic2_3;
-	public ModelRenderer Connectortop_3;
+	public ModelRenderer ceramicL_HV;
+	public ModelRenderer ceramicR;
+	public ModelRenderer ceramicR_HV;
+	public ModelRenderer ceramicL;
+	public ModelRenderer ceramicL_HV0;
+	public ModelRenderer ceramicL_HV2;
+	public ModelRenderer ConnectorTopL_HV;
+	public ModelRenderer ceramicL_HV1;
+	public ModelRenderer ceramicR1;
+	public ModelRenderer ceramicR2;
+	public ModelRenderer ConnectorTopR;
+	public ModelRenderer ceramicR_HV0;
+	public ModelRenderer ceramicR_HV1;
+	public ModelRenderer ceramicR_HV2;
+	public ModelRenderer ConnectorTopR_HV;
+	public ModelRenderer ceramicL1;
+	public ModelRenderer ceramicL2;
+	public ModelRenderer ConnectorTopL;
 
 	public ModelTransformerHV() {
 		this.textureWidth = 128;
 		this.textureHeight = 64;
-		this.ceramic1_1 = new ModelRenderer(this, 16, 38);
-		this.ceramic1_1.setRotationPoint(0.0F, 0.0F, 0.0F);
-		this.ceramic1_1.addBox(2.0F, -11.0F, -3.0F, 6, 2, 6, 0.0F);
-		this.Connectortop = new ModelRenderer(this, 16, 18);
-		this.Connectortop.setRotationPoint(0.0F, 0.0F, 0.0F);
-		this.Connectortop.addBox(-6.5F, -20.0F, -1.5F, 3, 1, 3, 0.0F);
-		this.ceramic_1 = new ModelRenderer(this, 16, 23);
-		this.ceramic_1.setRotationPoint(0.0F, 0.0F, 0.0F);
-		this.ceramic_1.addBox(-7.0F, -15.0F, -2.0F, 4, 7, 4, 0.0F);
-		this.ceramic1_3 = new ModelRenderer(this, 16, 38);
-		this.ceramic1_3.setRotationPoint(0.0F, 0.0F, 0.0F);
-		this.ceramic1_3.addBox(-8.0F, -11.0F, -3.0F, 6, 2, 6, 0.0F);
-		this.ceramic2 = new ModelRenderer(this, 16, 38);
-		this.ceramic2.setRotationPoint(0.0F, 0.0F, 0.0F);
-		this.ceramic2.addBox(-8.0F, -18.0F, -3.0F, 6, 2, 6, 0.0F);
-		this.ceramic2_1 = new ModelRenderer(this, 16, 38);
-		this.ceramic2_1.setRotationPoint(0.0F, 0.0F, 0.0F);
-		this.ceramic2_1.addBox(2.0F, -14.0F, -3.0F, 6, 2, 6, 0.0F);
-		this.ceramic = new ModelRenderer(this, 16, 23);
-		this.ceramic.setRotationPoint(0.0F, 0.0F, 0.0F);
-		this.ceramic.addBox(3.0F, -15.0F, -2.0F, 4, 7, 4, 0.0F);
-		this.ceramic2_2 = new ModelRenderer(this, 16, 38);
-		this.ceramic2_2.setRotationPoint(0.0F, 0.0F, 0.0F);
-		this.ceramic2_2.addBox(2.0F, -18.0F, -3.0F, 6, 2, 6, 0.0F);
-		this.ceramicHV = new ModelRenderer(this, 16, 23);
-		this.ceramicHV.setRotationPoint(0.0F, 0.0F, 0.0F);
-		this.ceramicHV.addBox(-7.0F, -19.0F, -2.0F, 4, 11, 4, 0.0F);
-		this.ceramic0 = new ModelRenderer(this, 16, 38);
-		this.ceramic0.setRotationPoint(0.0F, 0.0F, 0.0F);
-		this.ceramic0.addBox(-8.0F, -12.0F, -3.0F, 6, 2, 6, 0.0F);
-		this.Connectortop_1 = new ModelRenderer(this, 16, 14);
-		this.Connectortop_1.setRotationPoint(0.0F, 0.0F, 0.0F);
-		this.Connectortop_1.addBox(3.5F, -16.0F, -1.5F, 3, 1, 3, 0.0F);
-		this.Connectortop_2 = new ModelRenderer(this, 16, 14);
-		this.Connectortop_2.setRotationPoint(0.0F, 0.0F, 0.0F);
-		this.Connectortop_2.addBox(3.5F, -20.0F, -1.5F, 3, 1, 3, 0.0F);
-		this.ceramicHV_1 = new ModelRenderer(this, 16, 23);
-		this.ceramicHV_1.setRotationPoint(0.0F, 0.0F, 0.0F);
-		this.ceramicHV_1.addBox(3.0F, -19.0F, -2.0F, 4, 11, 4, 0.0F);
-		this.ceramic0_1 = new ModelRenderer(this, 16, 38);
-		this.ceramic0_1.setRotationPoint(0.0F, 0.0F, 0.0F);
-		this.ceramic0_1.addBox(2.0F, -12.0F, -3.0F, 6, 2, 6, 0.0F);
-		this.ceramic2_3 = new ModelRenderer(this, 16, 38);
-		this.ceramic2_3.setRotationPoint(0.0F, 0.0F, 0.0F);
-		this.ceramic2_3.addBox(-8.0F, -14.0F, -3.0F, 6, 2, 6, 0.0F);
-		this.ceramic1_2 = new ModelRenderer(this, 16, 38);
-		this.ceramic1_2.setRotationPoint(0.0F, 0.0F, 0.0F);
-		this.ceramic1_2.addBox(2.0F, -15.0F, -3.0F, 6, 2, 6, 0.0F);
-		this.ceramic1 = new ModelRenderer(this, 16, 38);
-		this.ceramic1.setRotationPoint(0.0F, 0.0F, 0.0F);
-		this.ceramic1.addBox(-8.0F, -15.0F, -3.0F, 6, 2, 6, 0.0F);
-		this.Transformer = new ModelRenderer(this, 64, 0);
-		this.Transformer.setRotationPoint(0.0F, 0.0F, 0.0F);
-		this.Transformer.addBox(-8.0F, -8.0F, -8.0F, 16, 32, 16, 0.0F);
-		this.Connectortop_3 = new ModelRenderer(this, 16, 18);
-		this.Connectortop_3.setRotationPoint(0.0F, 0.0F, 0.0F);
-		this.Connectortop_3.addBox(-6.5F, -16.0F, -1.5F, 3, 1, 3, 0.0F);
-
-		this.ceramic.addChild(this.Connectortop_1);
-		this.ceramic.addChild(this.ceramic1_1);
-		this.ceramic.addChild(this.ceramic2_1);
 		
-		this.ceramicHV.addChild(this.Connectortop);
-		this.ceramicHV.addChild(this.ceramic2);
-		this.ceramicHV.addChild(this.ceramic0);
-		this.ceramicHV.addChild(this.ceramic1);
+		this.Transformer = new ModelRenderer(this, 64, 0);
+		this.Transformer.setRotationPoint(8.0F, 16.0F, 8.0F);
+		this.Transformer.addBox(-8.0F, 0.0F, -8.0F, 16, 32, 16, 0.0F);
+		this.Transformer.rotateAngleX = 3.14159f;
 
-		this.ceramicHV_1.addChild(this.Connectortop_2);
-		this.ceramicHV_1.addChild(this.ceramic2_2);
-		this.ceramicHV_1.addChild(this.ceramic0_1);
-		this.ceramicHV_1.addChild(this.ceramic1_2);
+		//ceramicL
+		this.ceramicL = new ModelRenderer(this, 16, 23);
+		this.ceramicL.setRotationPoint(0.0F, 0.0F, 0.0F);
+		this.ceramicL.addBox(-7.0F, -7.0F, -2.0F, 4, 7, 4, 0.0F);
+		this.ConnectorTopL = new ModelRenderer(this, 16, 18);
+		this.ConnectorTopL.setRotationPoint(0.0F, 0.0F, 0.0F);
+		this.ConnectorTopL.addBox(-6.5F, -8.0F, -1.5F, 3, 1, 3, 0.0F);
+		this.ceramicL1 = new ModelRenderer(this, 16, 38);
+		this.ceramicL1.setRotationPoint(0.0F, 0.0F, 0.0F);
+		this.ceramicL1.addBox(-8.0F, -3.0F, -3.0F, 6, 2, 6, 0.0F);
+		this.ceramicL2 = new ModelRenderer(this, 16, 38);
+		this.ceramicL2.setRotationPoint(0.0F, 0.0F, 0.0F);
+		this.ceramicL2.addBox(-8.0F, -6.0F, -3.0F, 6, 2, 6, 0.0F);
+		//ceramicLHV
+		this.ceramicL_HV = new ModelRenderer(this, 16, 23);
+		this.ceramicL_HV.setRotationPoint(0.0F, 0.0F, 0.0F);
+		this.ceramicL_HV.addBox(-7.0F, -11.0F, -2.0F, 4, 11, 4, 0.0F);
+		this.ConnectorTopL_HV = new ModelRenderer(this, 16, 18);
+		this.ConnectorTopL_HV.setRotationPoint(0.0F, 0.0F, 0.0F);
+		this.ConnectorTopL_HV.addBox(-6.5F, -12.0F, -1.5F, 3, 1, 3, 0.0F);
+		this.ceramicL_HV0 = new ModelRenderer(this, 16, 38);
+		this.ceramicL_HV0.setRotationPoint(0.0F, 0.0F, 0.0F);
+		this.ceramicL_HV0.addBox(-8.0F, -4.0F, -3.0F, 6, 2, 6, 0.0F);
+		this.ceramicL_HV1 = new ModelRenderer(this, 16, 38);
+		this.ceramicL_HV1.setRotationPoint(0.0F, 0.0F, 0.0F);
+		this.ceramicL_HV1.addBox(-8.0F, -7.0F, -3.0F, 6, 2, 6, 0.0F);
+		this.ceramicL_HV2 = new ModelRenderer(this, 16, 38);
+		this.ceramicL_HV2.setRotationPoint(0.0F, 0.0F, 0.0F);
+		this.ceramicL_HV2.addBox(-8.0F, -10.0F, -3.0F, 6, 2, 6, 0.0F);
+		
+		//ceramicR
+		this.ceramicR = new ModelRenderer(this, 16, 23);
+		this.ceramicR.setRotationPoint(0.0F, 0.0F, 0.0F);
+		this.ceramicR.addBox(3.0F, -7.0F, -2.0F, 4, 7, 4, 0.0F);
+		this.ConnectorTopR = new ModelRenderer(this, 16, 14);
+		this.ConnectorTopR.setRotationPoint(0.0F, 0.0F, 0.0F);
+		this.ConnectorTopR.addBox(3.5F, -8.0F, -1.5F, 3, 1, 3, 0.0F);
+		this.ceramicR1 = new ModelRenderer(this, 16, 38);
+		this.ceramicR1.setRotationPoint(0.0F, 0.0F, 0.0F);
+		this.ceramicR1.addBox(2.0F, -3.0F, -3.0F, 6, 2, 6, 0.0F);
+		this.ceramicR2 = new ModelRenderer(this, 16, 38);
+		this.ceramicR2.setRotationPoint(0.0F, 0.0F, 0.0F);
+		this.ceramicR2.addBox(2.0F, -6.0F, -3.0F, 6, 2, 6, 0.0F);
+		//ceramicRHV
+		this.ceramicR_HV = new ModelRenderer(this, 16, 23);
+		this.ceramicR_HV.setRotationPoint(0.0F, 0.0F, 0.0F);
+		this.ceramicR_HV.addBox(3.0F, -11.0F, -2.0F, 4, 11, 4, 0.0F);
+		this.ConnectorTopR_HV = new ModelRenderer(this, 16, 14);
+		this.ConnectorTopR_HV.setRotationPoint(0.0F, 0.0F, 0.0F);
+		this.ConnectorTopR_HV.addBox(3.5F, -12.0F, -1.5F, 3, 1, 3, 0.0F);
+		this.ceramicR_HV0 = new ModelRenderer(this, 16, 38);
+		this.ceramicR_HV0.setRotationPoint(0.0F, 0.0F, 0.0F);
+		this.ceramicR_HV0.addBox(2.0F, -4.0F, -3.0F, 6, 2, 6, 0.0F);
+		this.ceramicR_HV1 = new ModelRenderer(this, 16, 38);
+		this.ceramicR_HV1.setRotationPoint(0.0F, 0.0F, 0.0F);
+		this.ceramicR_HV1.addBox(2.0F, -7.0F, -3.0F, 6, 2, 6, 0.0F);
+		this.ceramicR_HV2 = new ModelRenderer(this, 16, 38);
+		this.ceramicR_HV2.setRotationPoint(0.0F, 0.0F, 0.0F);
+		this.ceramicR_HV2.addBox(2.0F, -10.0F, -3.0F, 6, 2, 6, 0.0F);
 
-		this.ceramic_1.addChild(this.Connectortop_3);
-		this.ceramic_1.addChild(this.ceramic1_3);
-		this.ceramic_1.addChild(this.ceramic2_3);
+		this.ceramicL.addChild(this.ConnectorTopL);
+		this.ceramicL.addChild(this.ceramicL1);
+		this.ceramicL.addChild(this.ceramicL2);
+		this.ceramicL_HV.addChild(this.ConnectorTopL_HV);
+		this.ceramicL_HV.addChild(this.ceramicL_HV0);
+		this.ceramicL_HV.addChild(this.ceramicL_HV1);
+		this.ceramicL_HV.addChild(this.ceramicL_HV2);
+
+		this.ceramicR.addChild(this.ConnectorTopR);
+		this.ceramicR.addChild(this.ceramicR1);
+		this.ceramicR.addChild(this.ceramicR2);
+		this.ceramicR_HV.addChild(this.ConnectorTopR_HV);
+		this.ceramicR_HV.addChild(this.ceramicR_HV0);
+		this.ceramicR_HV.addChild(this.ceramicR_HV1);
+		this.ceramicR_HV.addChild(this.ceramicR_HV2);
+
+		this.Transformer.addChild(ceramicL);
+		this.Transformer.addChild(ceramicL_HV);
+		this.Transformer.addChild(ceramicR);
+		this.Transformer.addChild(ceramicR_HV);
 	}
 
 	@Override
 	public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
-		this.ceramic_1.render(f5);
-		this.ceramic.render(f5);
-		this.ceramicHV.render(f5);
-		this.ceramicHV_1.render(f5);
 		this.Transformer.render(f5);
-	}
-	public void render(boolean hvLeft, boolean hvRight)
-	{
-		this.Transformer.render(.0625f);
-		if(hvLeft)
-			this.ceramicHV.render(.0625f);
-		else
-			this.ceramic_1.render(.0625f);
-		if(hvRight)
-			this.ceramicHV_1.render(.0625f);
-		else
-			this.ceramic.render(.0625f);
 	}
 
 	/**
