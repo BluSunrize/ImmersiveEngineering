@@ -63,6 +63,9 @@ tile.ImmersiveEngineering.stoneDevice.insulatorGlass.name=Insulating Glass
 tile.ImmersiveEngineering.hemp.name=Industrial Hemp
 
 fluid.creosote=Creosote Oil
+fluid.plantoil=Plant Oil
+fluid.ethanol=Ethanol
+fluid.biodiesel=Bio Diesel
 
 
 # ITEMS
@@ -92,13 +95,20 @@ item.ImmersiveEngineering.material.hempFiber.name=Industrial Hemp Fiber
 item.ImmersiveEngineering.material.fabric.name=Tough Fabric
 item.ImmersiveEngineering.material.windmillBladeAdvanced.name=Improved Windmill Blade
 item.ImmersiveEngineering.material.coalCoke.name=Coal Coke
-item.ImmersiveEngineering.material.bottleCreosote.name=Bottle of Creosote Oil
-item.ImmersiveEngineering.material.bucketCreosote.name=Bucket of Creosote Oil
 item.ImmersiveEngineering.material.gunpartBarrel.name=Revolver Barrel
 item.ImmersiveEngineering.material.gunpartDrum.name=Revolver Drum
 item.ImmersiveEngineering.material.gunpartGrip.name=Revolver Grip
 item.ImmersiveEngineering.material.gunpartHammer.name=Revolver Hammer
 item.ImmersiveEngineering.seed.hemp.name=Industrial Hemp Seed
+
+item.ImmersiveEngineering.fluidContainers.bottleCreosote.name=Bottle of Creosote Oil
+item.ImmersiveEngineering.fluidContainers.bucketCreosote.name=Bucket of Creosote Oil
+item.ImmersiveEngineering.fluidContainers.bottlePlantoil.name=Bottle of Plant Oil
+item.ImmersiveEngineering.fluidContainers.bucketPlantoil.name=Bucket of Plant Oil
+item.ImmersiveEngineering.fluidContainers.bottleEthanol.name=Bottle of Ethanol
+item.ImmersiveEngineering.fluidContainers.bucketEthanol.name=Bucket of Ethanol
+item.ImmersiveEngineering.fluidContainers.bottleBiodiesel.name=Bottle of Bio Diesel
+item.ImmersiveEngineering.fluidContainers.bucketBiodiesel.name=Bucket of Bio Diesel
 
 item.ImmersiveEngineering.coil.copper.name=Copper Wire Coil
 item.ImmersiveEngineering.coil.electrum.name=Electrum Wire Coil
@@ -153,7 +163,7 @@ recipe.ImmersiveEngineering.hammerCrushing=Crushing
 ie.manual.entry.introduction.name=Introduction
 ie.manual.entry.introduction.subtext=Getting into Engineering
 ie.manual.entry.introduction0=Greetings, fellow engineer, and welcome to Immersive Engineering. This journal shall serve as your guide for setting up all the new machines and functions this mod has to offer.<br>Let's start with the basics first: Immersive Engineering is built around the concept of retrofuturistic generation and transfer of energy. The energy used in this mod is Redstone Flux, a trait shared with many other mods currently available.
-ie.manual.entry.introduction1=Energy is transmitted between §lconnectors§r by the use of §lwires§r. Wires can only bridge a distance of 16 blocks, so you will need to use more connectors as §lrelays§r between the wires.<br>You have the choice between three different types of wire, which differ in transferrates, <config:iA:cableTransferRate> RF/tick. To switch between different types of wire, you will need to use §ltransformersr§r.
+ie.manual.entry.introduction1=Energy is transmitted between §lconnectors§r by the use of §lwires§r. Wires can only bridge a distance of 16 blocks, so you will need to use more connectors as §lrelays§r between the wires.<br>You have the choice between three different types of wire, which differ in transferrates, <config:iA:cableTransferRate> RF/tick. To switch between different types of wire, you will need to use §ltransformers§r.
 ie.manual.entry.introductionHammer=The Engineers Hammer is the most important tool at your disposal. It will be used to form multiblocks like the Coke Oven and Blast Furnace<config:b:crushingOreRecipe:, crushing ores into dust : >or configuring blocks like Wooden Posts.
 
 ie.manual.entry.ores.name=Ores
@@ -203,8 +213,12 @@ ie.manual.entry.generatorWindmillImproved=The improved windmill is an upgrade to
 ie.manual.entry.blastfurnace.name=Blast Furnace
 ie.manual.entry.blastfurnace.subtext=Even hotter topic!
 ie.manual.entry.blastfurnace0=The Blast Furnace is used to increase the carbon contents in iron, turning it into steel. To achieve this, only pure, high-carbon fuels may be used for the furnace, specifically coal coke and charcoal.<br>The steel created in the blast furnace is an integral part of high-voltage architecture. 
-ie.manual.entry.blastfurnaceBlock=To form a Coke Oven, arrange 27 of these blocks in a 3x3x3 cube, and rightclick one of the sides' center blocks with an Engineers Hammer.
+ie.manual.entry.blastfurnaceBlock=To form a Blast Furnace, arrange 27 of these blocks in a 3x3x3 cube, and rightclick one of the sides' center blocks with an Engineers Hammer.
 
 ie.manual.entry.highvoltage.name=High-Voltage
 ie.manual.entry.highvoltage.subtext=You can't shake the shock
 ie.manual.entry.highvoltage0=High-Voltage wires are have the highest available transferrate (<config:iA:cableTransferRate:2> RF/t) and will need special connectors. Note that on High voltage connections, Connectors and Relays are different blocks, Relays will not be able to in- or output to the energy net.<br>To transition from HV to LV or MV connections, you will need High-Voltage Transformers, and keep in mind, the lowest tier of wire limits the transferrate of an entire connection.
+
+ie.manual.entry.dieselGen.name=Diesel Generator
+ie.manual.entry.dieselGen.subtext=
+ie.manual.entry.dieselGen=

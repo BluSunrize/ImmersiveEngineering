@@ -18,20 +18,20 @@ public class ModelConnectorMV extends ModelBase
     public ModelConnectorMV() {
         this.textureWidth = 64;
         this.textureHeight = 32;
+        this.MVtop = new ModelRenderer(this, 16, 9);
+        this.MVtop.setRotationPoint(8.0F, 8.0F, 8.0F);
+        this.MVtop.addBox(-1.5F, -1.0F, -1.5F, 3, 1, 3, 0.0F);
         this.ceramicMV2 = new ModelRenderer(this, 16, 23);
         this.ceramicMV2.setRotationPoint(0.0F, 0.0F, 0.0F);
-        this.ceramicMV2.addBox(-3.0F, -6.0F, -3.0F, 6, 2, 6, 0.0F);
-        this.MVtop = new ModelRenderer(this, 16, 9);
-        this.MVtop.setRotationPoint(0.0F, 0.0F, 0.0F);
-        this.MVtop.addBox(-1.5F, -8.0F, -1.5F, 3, 1, 3, 0.0F);
+        this.ceramicMV2.addBox(-3.0F, 1.0F, -3.0F, 6, 2, 6, 0.0F);
         this.ceramicMV = new ModelRenderer(this, 0, 19);
         this.ceramicMV.setRotationPoint(0.0F, 0.0F, 0.0F);
-        this.ceramicMV.addBox(-2.0F, -7.0F, -2.0F, 4, 4, 4, 0.0F);
+        this.ceramicMV.addBox(-2.0F, 0.0F, -2.0F, 4, 4, 4, 0.0F);
         this.ceramicMV3 = new ModelRenderer(this, 16, 13);
         this.ceramicMV3.setRotationPoint(0.0F, 0.0F, 0.0F);
-        this.ceramicMV3.addBox(-3.0F, -3.0F, -3.0F, 6, 4, 6, 0.0F);
-        this.MVtop.addChild(this.ceramicMV2);
+        this.ceramicMV3.addBox(-3.0F, 4.0F, -3.0F, 6, 4, 6, 0.0F);
         this.MVtop.addChild(this.ceramicMV);
+        this.MVtop.addChild(this.ceramicMV2);
         this.MVtop.addChild(this.ceramicMV3);
     }
 

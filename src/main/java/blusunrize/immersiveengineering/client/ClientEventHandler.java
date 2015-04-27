@@ -24,8 +24,17 @@ public class ClientEventHandler
 	@SubscribeEvent()
 	public void textureStich(TextureStitchEvent.Pre event)
 	{
-		if(event.map.getTextureType()==0 && IEContent.IECreosote)
-			IEContent.fluidCreosote.setIcons(event.map.registerIcon("immersiveengineering:creosote_still"), event.map.registerIcon("immersiveengineering:creosote_flow"));
+		if(event.map.getTextureType()==0)
+		{
+			if(IEContent.IECreosote)
+				IEContent.fluidCreosote.setIcons(event.map.registerIcon("immersiveengineering:fluid/creosote_still"), event.map.registerIcon("immersiveengineering:fluid/creosote_flow"));
+			if(IEContent.IEPlantoil)
+				IEContent.fluidPlantoil.setIcons(event.map.registerIcon("immersiveengineering:fluid/plantoil_still"), event.map.registerIcon("immersiveengineering:fluid/plantoil_flow"));
+			if(IEContent.IEEthanol)
+				IEContent.fluidEthanol.setIcons(event.map.registerIcon("immersiveengineering:fluid/ethanol_still"), event.map.registerIcon("immersiveengineering:fluid/ethanol_flow"));
+			if(IEContent.IEBiodiesel)
+				IEContent.fluidBiodiesel.setIcons(event.map.registerIcon("immersiveengineering:fluid/biodiesel_still"), event.map.registerIcon("immersiveengineering:fluid/biodiesel_flow"));
+		}
 	}
 
 	@SubscribeEvent()

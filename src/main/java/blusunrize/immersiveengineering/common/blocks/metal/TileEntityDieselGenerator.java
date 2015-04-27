@@ -30,8 +30,12 @@ public class TileEntityDieselGenerator extends TileEntityIEBase implements IFlui
 	public int pos;
 	public FluidTank tank = new FluidTank(12000);
 	public boolean active = false;
-
 	public int[] offset = {0,0,0};
+
+	public float fanRotation=0;
+	public int fanFadeIn=0;
+	public int fanFadeOut=0;
+
 	public TileEntityDieselGenerator master()
 	{
 		if(offset[0]==0&&offset[1]==0&&offset[2]==0)
@@ -54,6 +58,34 @@ public class TileEntityDieselGenerator extends TileEntityIEBase implements IFlui
 	{
 		if(!formed || pos!=31)
 			return;
+
+		if(active || fanFadeIn>0 || fanFadeOut>0)
+		{
+			float base = 18f;
+			float step = active?base:0;
+			if(fanFadeIn>0)
+			{
+				step -= (fanFadeIn/80f)*base;
+				fanFadeIn--;
+//				if(worldObj.isRemote)
+//				{
+//					System.out.println("INfade: "+fanFadeOut);
+//					System.out.println("step modified: "+step);
+//				}
+			}
+			if(fanFadeOut>0)
+			{
+				step += (fanFadeOut/80f)*base;
+				fanFadeOut--;
+//				if(worldObj.isRemote)
+//				{
+//					System.out.println("OUTfade: "+fanFadeOut);
+//					System.out.println("step modified: "+step);
+//				}
+			}
+			fanRotation += step;
+			fanRotation %= 360;
+		}
 
 		if(worldObj.isRemote)
 		{
@@ -110,7 +142,10 @@ public class TileEntityDieselGenerator extends TileEntityIEBase implements IFlui
 				if(connected>0 && tank.getFluidAmount()>=fluidConsumed)
 				{
 					if(!active)
+					{
 						active=true;
+						fanFadeIn = 80;
+					}
 					tank.drain(fluidConsumed, true);
 					int splitOutput = output/connected;
 					for(int i=0; i<3; i++)
@@ -123,9 +158,16 @@ public class TileEntityDieselGenerator extends TileEntityIEBase implements IFlui
 
 				}
 				else if(active)
+				{
 					active=false;
-			}else if(active)
+					fanFadeOut=80;
+				}
+			}
+			else if(active)
+			{
 				active=false;
+				fanFadeOut=80;
+			}
 
 			if(prevActive != active)
 				worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
@@ -148,6 +190,10 @@ public class TileEntityDieselGenerator extends TileEntityIEBase implements IFlui
 		active = nbt.getBoolean("active");
 		offset = nbt.getIntArray("offset");
 
+		fanRotation = nbt.getFloat("fanRotation");
+		fanFadeIn = nbt.getInteger("fanFadeIn");
+		fanFadeOut = nbt.getInteger("fanFadeOut");
+
 		tank.readFromNBT(nbt.getCompoundTag("tank"));
 	}
 	@Override
@@ -158,6 +204,10 @@ public class TileEntityDieselGenerator extends TileEntityIEBase implements IFlui
 		nbt.setInteger("pos", pos);
 		nbt.setBoolean("active", active);
 		nbt.setIntArray("offset", offset);
+
+		nbt.setFloat("fanRotation", fanRotation);
+		nbt.setInteger("fanFadeIn", fanFadeIn);
+		nbt.setInteger("fanFadeOut", fanFadeOut);
 
 		NBTTagCompound tankTag = tank.writeToNBT(new NBTTagCompound());
 		nbt.setTag("tank", tankTag);

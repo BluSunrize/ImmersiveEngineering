@@ -43,13 +43,17 @@ public class BlockMetalDevices extends BlockIEBase
 	public static int META_thermoelectricGen=10;
 	public static int META_lightningRod=11;
 	public static int META_dieselGenerator=12;
+	public static int META_industrialSqueezer=13;
+	public static int META_fermenter=14;
+	public static int META_esterificationPlant=15;
 	public BlockMetalDevices()
 	{
 		super("metalDevice", Material.iron, 4, ItemBlockMetalDevices.class,
 				"connectorLV","capacitorLV",
 				"connectorMV","capacitorMV","transformer",
 				"relayHV","connectorHV","capacitorHV","transformerHV",
-				"dynamo","thermoelectricGen","lightningRod","dieselGenerator");
+				"dynamo","thermoelectricGen","lightningRod","dieselGenerator",
+				"industrialSqueezer","fermenter","esterificationPlant");
 		setHardness(3.0F);
 		setResistance(15.0F);
 	}
@@ -147,11 +151,12 @@ public class BlockMetalDevices extends BlockIEBase
 		icons[11][2] = iconRegister.registerIcon("immersiveengineering:metal_lightningrod_side");
 		icons[11][3] = iconRegister.registerIcon("immersiveengineering:metal_lightningrod_side");
 
-		//		//Lantern
-		//		icons[2][0] = iconRegister.registerIcon("immersiveengineering:metal_lantern_bottom");
-		//		icons[2][1] = iconRegister.registerIcon("immersiveengineering:metal_lantern_top");
-		//		icons[2][2] = iconRegister.registerIcon("immersiveengineering:metal_lantern_side");
-		//		icons[2][3] = iconRegister.registerIcon("immersiveengineering:metal_lantern_side");
+		//13 industrialSqueezer
+		icons[13][0] = iconRegister.registerIcon("immersiveengineering:metal_multiblockTop");
+		icons[13][1] = iconRegister.registerIcon("immersiveengineering:metal_multiblockTop");
+		icons[13][2] = iconRegister.registerIcon("immersiveengineering:metal_multiblockSqueezer0");
+		icons[13][3] = iconRegister.registerIcon("immersiveengineering:metal_multiblockSqueezer1");
+
 
 
 		//0 connectorLV
@@ -202,7 +207,6 @@ public class BlockMetalDevices extends BlockIEBase
 	{
 		if(world.getTileEntity(x, y, z) instanceof TileEntityCapacitorLV && Utils.isHammer(player.getCurrentEquippedItem()))
 		{
-			System.out.println("Gimme a "+world);
 			if(!world.isRemote)
 			{
 				((TileEntityCapacitorLV)world.getTileEntity(x, y, z)).toggleSide(side);

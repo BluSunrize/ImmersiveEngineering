@@ -17,6 +17,8 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.ImmersiveNetHandler.AbstractConnection;
+import blusunrize.immersiveengineering.api.MultiblockHandler;
+import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.IESaveData;
@@ -51,7 +53,13 @@ public class ItemIETool extends ItemIEBase
 	{
 		if(!world.isRemote)
 		{
-			if(stack.getItemDamage()==1 && world.getTileEntity(x, y, z) instanceof IImmersiveConnectable)
+			if(stack.getItemDamage()==0)
+			{
+				for(IMultiblock mb : MultiblockHandler.getMultiblocks())
+					if(mb.isBlockTrigger(world.getBlock(x, y, z), world.getBlockMetadata(x, y, z)))
+						return mb.createStructure(world, x, y, z, side, player);
+			}
+			else if(stack.getItemDamage()==1 && world.getTileEntity(x, y, z) instanceof IImmersiveConnectable)
 			{
 				IImmersiveConnectable nodeHere = (IImmersiveConnectable)world.getTileEntity(x, y, z);
 				ImmersiveNetHandler.clearAllConnectionsFor(Utils.toCC(nodeHere),world, new TargetingInfo(side,hitX,hitY,hitZ));
@@ -64,9 +72,9 @@ public class ItemIETool extends ItemIEBase
 				if(ModCompatability.gregtech_isEnergyConnected(t))
 				{
 					long l = ModCompatability.gregtech_outputGTPower(t, (byte)side, 32, 1L);	
-//					System.out.println(""+l);
+					//					System.out.println(""+l);
 				}
-				
+
 				if(!player.isSneaking() && world.getTileEntity(x, y, z) instanceof IEnergyHandler)
 				{
 					int stored = ((IEnergyHandler)world.getTileEntity(x, y, z)).getEnergyStored(ForgeDirection.getOrientation(side));
