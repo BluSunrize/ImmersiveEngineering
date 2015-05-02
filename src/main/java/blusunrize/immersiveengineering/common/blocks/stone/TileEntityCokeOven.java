@@ -28,7 +28,7 @@ public class TileEntityCokeOven extends TileEntityIEBase implements ISidedInvent
 	public int processMax = 0;
 	public boolean active = false;
 
-	int[] offset = {0,0,0};
+	public int[] offset = {0,0,0};
 	public TileEntityCokeOven master()
 	{
 		if(offset[0]==0&&offset[1]==0&&offset[2]==0)

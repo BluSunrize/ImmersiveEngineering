@@ -22,7 +22,7 @@ public class TileEntityBlastFurnace extends TileEntityIEBase implements ISidedIn
 	public int burnTime = 0;
 	public int lastBurnTime = 0;
 
-	int[] offset = {0,0,0};
+	public int[] offset = {0,0,0};
 	public TileEntityBlastFurnace master()
 	{
 		if(offset[0]==0&&offset[1]==0&&offset[2]==0)
@@ -39,8 +39,6 @@ public class TileEntityBlastFurnace extends TileEntityIEBase implements ISidedIn
 	@Override
 	public void updateEntity()
 	{
-//		if(formed&&master()==null)
-//			System.out.println(worldObj+" "+processMax);
 		if(!worldObj.isRemote&&formed&&master()==null)
 		{
 			boolean a = active;

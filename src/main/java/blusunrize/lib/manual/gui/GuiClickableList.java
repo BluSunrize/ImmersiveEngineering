@@ -54,7 +54,6 @@ public class GuiClickableList extends GuiButton
 				GL11.glTranslatef(0, getFontHeight(), 0);
 			String s = translationType==0?gui.manual.formatCategoryName(entries[i]):gui.manual.formatEntryName(entries[i]);
 
-//			System.out.println(entries[i]+" -> "+s);
 			fr.drawString(s, 0,0, col, false);
 		}
 

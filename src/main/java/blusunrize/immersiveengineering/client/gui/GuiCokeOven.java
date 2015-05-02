@@ -42,7 +42,6 @@ public class GuiCokeOven extends GuiContainer
 		ClientUtils.bindTexture("immersiveengineering:textures/gui/cokeOven.png");
 		this.drawTexturedModalRect(guiLeft,guiTop, 0, 0, xSize, ySize);
 
-		//		System.out.println("process! "+tile.process+"/"+tile.processMax);
 		if(tile.processMax>0&&tile.process>0)
 		{
 			int h = (int)(12*(tile.process/(float)tile.processMax));

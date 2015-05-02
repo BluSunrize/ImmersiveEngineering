@@ -18,7 +18,7 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
-import blusunrize.lib.manual.gui.GuiButtonArrow;
+import blusunrize.lib.manual.gui.GuiButtonManualNavigation;
 import blusunrize.lib.manual.gui.GuiButtonManualLink;
 import blusunrize.lib.manual.gui.GuiManual;
 
@@ -28,9 +28,9 @@ import cpw.mods.fml.relauncher.ReflectionHelper;
 
 public abstract class ManualPages implements IManualPage
 {
-	ManualInstance manual;
-	String text;
-	String localizedText;
+	protected ManualInstance manual;
+	protected String text;
+	protected String localizedText;
 	public ManualPages(ManualInstance manual, String text)
 	{
 		this.manual=manual;
@@ -74,8 +74,6 @@ public abstract class ManualPages implements IManualPage
 		@Override
 		public void renderPage(GuiManual gui, int x, int y, int mx, int my)
 		{
-//			System.out.println(text);
-			//			System.out.println("\\o/ "+(localizedText!=null)+" "+(localizedText.isEmpty()));
 			if(localizedText!=null&&!localizedText.isEmpty())
 				manual.fontRenderer.drawSplitString(localizedText, x,y, 120, manual.getTextColour());
 		}
@@ -281,8 +279,8 @@ public abstract class ManualPages implements IManualPage
 			{
 				if(this.recipes.get(stack).size()>1)
 				{
-					pageButtons.add(new GuiButtonArrow(gui, 100*i+0, x-2,y+yyOff+yOff[i-1]/2-3, 8,10, 0));
-					pageButtons.add(new GuiButtonArrow(gui, 100*i+1, x+122-16,y+yyOff+yOff[i-1]/2-3, 8,10, 1));
+					pageButtons.add(new GuiButtonManualNavigation(gui, 100*i+0, x-2,y+yyOff+yOff[i-1]/2-3, 8,10, 0));
+					pageButtons.add(new GuiButtonManualNavigation(gui, 100*i+1, x+122-16,y+yyOff+yOff[i-1]/2-3, 8,10, 1));
 				}
 				yyOff += yOff[i-1]+8;
 				i++;
@@ -475,8 +473,8 @@ public abstract class ManualPages implements IManualPage
 		{
 			if(this.recipes.size()>1)
 			{
-				pageButtons.add(new GuiButtonArrow(gui, 100+0, x-2,y+yOff/2-3, 8,10, 0));
-				pageButtons.add(new GuiButtonArrow(gui, 100+1, x+122-16,y+yOff/2-3, 8,10, 1));
+				pageButtons.add(new GuiButtonManualNavigation(gui, 100+0, x-2,y+yOff/2-3, 8,10, 0));
+				pageButtons.add(new GuiButtonManualNavigation(gui, 100+1, x+122-16,y+yOff/2-3, 8,10, 1));
 			}
 			super.initPage(gui, x, y+yOff+2, pageButtons);
 		}

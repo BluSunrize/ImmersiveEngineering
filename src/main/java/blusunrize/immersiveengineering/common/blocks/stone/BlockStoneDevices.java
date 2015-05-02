@@ -6,14 +6,12 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
-import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.client.render.BlockRenderStoneDevices;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
 import blusunrize.immersiveengineering.common.util.Lib;
-import blusunrize.immersiveengineering.common.util.Utils;
 
 public class BlockStoneDevices extends BlockIEBase
 {
@@ -144,33 +142,7 @@ public class BlockStoneDevices extends BlockIEBase
 	{
 		if(world.getTileEntity(x, y, z) instanceof TileEntityCokeOven)
 		{
-			if(Utils.isHammer(player.getCurrentEquippedItem()))
-			{
-				int playerViewQuarter = MathHelper.floor_double(player.rotationYaw * 4.0F / 360.0F + 0.5D) & 3;
-				int f = playerViewQuarter==0 ? 2:playerViewQuarter==1 ? 5:playerViewQuarter==2 ? 3: 4;
-				int xMin= f==5?-2: f==4?0: -1;
-				int xMax= f==5?0: f==4?2: 1;
-				int zMin= f==3?-2: f==2?0: -1;
-				int zMax= f==3?0: f==2?2: 1;
-				for(int yy=-1;yy<=1;yy++)
-					for(int xx=xMin;xx<=xMax;xx++)
-						for(int zz=zMin;zz<=zMax;zz++)
-							if((yy!=0||xx!=0||zz!=0) && !(world.getTileEntity(x+xx, y+yy, z+zz) instanceof TileEntityCokeOven && !((TileEntityCokeOven)world.getTileEntity(x+xx, y+yy, z+zz)).formed))
-								return false;
-
-				for(int yy=-1;yy<=1;yy++)
-					for(int xx=xMin;xx<=xMax;xx++)
-						for(int zz=zMin;zz<=zMax;zz++)
-						{
-							((TileEntityCokeOven)world.getTileEntity(x+xx, y+yy, z+zz)).offset=new int[]{xx,yy,zz};
-							((TileEntityCokeOven)world.getTileEntity(x+xx, y+yy, z+zz)).facing=f;
-							((TileEntityCokeOven)world.getTileEntity(x+xx, y+yy, z+zz)).formed=true;
-							world.getTileEntity(x+xx, y+yy, z+zz).markDirty();
-							world.markBlockForUpdate(x+xx,y+yy,z+zz);
-						}
-				return true;
-			}
-			else if(!player.isSneaking()&& ((TileEntityCokeOven)world.getTileEntity(x, y, z)).formed )
+			if(!player.isSneaking() && ((TileEntityCokeOven)world.getTileEntity(x, y, z)).formed )
 			{
 				TileEntityCokeOven te = ((TileEntityCokeOven)world.getTileEntity(x, y, z)).master();
 				if(te==null)
@@ -183,33 +155,7 @@ public class BlockStoneDevices extends BlockIEBase
 		}
 		if(world.getTileEntity(x, y, z) instanceof TileEntityBlastFurnace)
 		{	
-			if(Utils.isHammer(player.getCurrentEquippedItem()))
-			{
-				int playerViewQuarter = MathHelper.floor_double(player.rotationYaw * 4.0F / 360.0F + 0.5D) & 3;
-				int f = playerViewQuarter==0 ? 2:playerViewQuarter==1 ? 5:playerViewQuarter==2 ? 3: 4;
-				int xMin= f==5?-2: f==4?0: -1;
-				int xMax= f==5?0: f==4?2: 1;
-				int zMin= f==3?-2: f==2?0: -1;
-				int zMax= f==3?0: f==2?2: 1;
-				for(int yy=-1;yy<=1;yy++)
-					for(int xx=xMin;xx<=xMax;xx++)
-						for(int zz=zMin;zz<=zMax;zz++)
-							if((yy!=0||xx!=0||zz!=0) && !(world.getTileEntity(x+xx, y+yy, z+zz) instanceof TileEntityBlastFurnace && !((TileEntityBlastFurnace)world.getTileEntity(x+xx, y+yy, z+zz)).formed))
-								return false;
-
-				for(int yy=-1;yy<=1;yy++)
-					for(int xx=xMin;xx<=xMax;xx++)
-						for(int zz=zMin;zz<=zMax;zz++)
-						{
-							((TileEntityBlastFurnace)world.getTileEntity(x+xx, y+yy, z+zz)).offset=new int[]{xx,yy,zz};
-							((TileEntityBlastFurnace)world.getTileEntity(x+xx, y+yy, z+zz)).facing=f;
-							((TileEntityBlastFurnace)world.getTileEntity(x+xx, y+yy, z+zz)).formed=true;
-							world.getTileEntity(x+xx, y+yy, z+zz).markDirty();
-							world.markBlockForUpdate(x+xx,y+yy,z+zz);
-						}
-				return true;
-			}
-			else if( ((TileEntityBlastFurnace)world.getTileEntity(x, y, z)).formed )
+			if(!player.isSneaking() && ((TileEntityBlastFurnace)world.getTileEntity(x, y, z)).formed )
 			{
 				TileEntityBlastFurnace te = ((TileEntityBlastFurnace)world.getTileEntity(x, y, z)).master();
 				if(te==null)

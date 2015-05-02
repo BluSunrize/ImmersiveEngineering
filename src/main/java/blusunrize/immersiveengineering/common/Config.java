@@ -55,7 +55,11 @@ public class Config
 		setInt("dynamo_output", config.get("Machines", "Dynamo: Output", 3, "The base RF that is output by the dynamo. This will be modified by the rotation modifier of the attached water- or windmill").getInt());
 		setInt("lightning_output", config.get("Machines", "Lightning Rod: Output", 4*4000000, "The RF that will be output by the lightning rod when it is struck").getInt());
 		setInt("dieselGen_output", config.get("Machines", "Diesel Generator: Output", 4096, "The RF per tick that the Diesel Generator will output. The burn time of the fuel determines the total output").getInt());
-
+		
+		setInt("squeezer_consumption", config.get("Machines", "Squeezer: Consumed", 10, "The RF per tick per item that the Squeezer will consume to create Plant Oil").getInt());
+		setInt("fermenter_consumption", config.get("Machines", "Fermenter: Consumed", 10, "The RF per tick per item that the Fermenter will consume to create Ethanol").getInt());
+		setInt("refinery_consumption", config.get("Machines", "Refinery: Consumed", 80, "The RF per tick the Fermenter will consume to mix two fluids").getInt());
+		
 		
 		setIntArray("ore_copper", config.get("OreGen", "Copper", new int[]{8, 40,72, 8,100}, "Generation config for Copper Ore. Parameters: Blocks per vein, lowest possible Y, highest possible Y, veins per chunk, chance for vein to spawn (out of 100)").getIntList());
 		setIntArray("ore_bauxite", config.get("OreGen", "Bauxite", new int[]{8, 40,85, 8,100}, "Generation config for Bauxite Ore. Parameters: Blocks per vein, lowest possible Y, highest possible Y, veins per chunk, chance for vein to spawn (out of 100)").getIntList());

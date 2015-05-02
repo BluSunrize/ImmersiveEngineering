@@ -7,7 +7,6 @@ import java.util.Set;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
@@ -24,7 +23,6 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.IESaveData;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Lib;
-import blusunrize.immersiveengineering.common.util.ModCompatability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import cofh.api.energy.IEnergyHandler;
 
@@ -56,8 +54,8 @@ public class ItemIETool extends ItemIEBase
 			if(stack.getItemDamage()==0)
 			{
 				for(IMultiblock mb : MultiblockHandler.getMultiblocks())
-					if(mb.isBlockTrigger(world.getBlock(x, y, z), world.getBlockMetadata(x, y, z)))
-						return mb.createStructure(world, x, y, z, side, player);
+					if(mb.isBlockTrigger(world.getBlock(x, y, z), world.getBlockMetadata(x, y, z)) && mb.createStructure(world, x, y, z, side, player))
+						return true;
 			}
 			else if(stack.getItemDamage()==1 && world.getTileEntity(x, y, z) instanceof IImmersiveConnectable)
 			{
@@ -68,13 +66,6 @@ public class ItemIETool extends ItemIEBase
 			}
 			else if(stack.getItemDamage()==2)
 			{
-				TileEntity t = world.getTileEntity(x, y, z);
-				if(ModCompatability.gregtech_isEnergyConnected(t))
-				{
-					long l = ModCompatability.gregtech_outputGTPower(t, (byte)side, 32, 1L);	
-					//					System.out.println(""+l);
-				}
-
 				if(!player.isSneaking() && world.getTileEntity(x, y, z) instanceof IEnergyHandler)
 				{
 					int stored = ((IEnergyHandler)world.getTileEntity(x, y, z)).getEnergyStored(ForgeDirection.getOrientation(side));

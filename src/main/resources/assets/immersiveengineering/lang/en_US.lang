@@ -27,16 +27,22 @@ tile.ImmersiveEngineering.metalDevice.capacitorHV.name=HV Capacitor
 tile.ImmersiveEngineering.metalDevice.transformerHV.name=HV Transformer
 tile.ImmersiveEngineering.metalDevice.dynamo.name=Kinetic Dynamo
 tile.ImmersiveEngineering.metalDevice.thermoelectricGen.name=Thermoelectric Generator
-tile.ImmersiveEngineering.metalDevice.lightningRod.name=Lightning Rod Base
-tile.ImmersiveEngineering.metalDevice.dieselGenerator.name=Diesel Generator
+
+tile.ImmersiveEngineering.metalMultiblock.lightningRod.name=Lightning Rod Base
+tile.ImmersiveEngineering.metalMultiblock.dieselGenerator.name=Diesel Generator
+tile.ImmersiveEngineering.metalMultiblock.industrialSqueezer.name=Industrial Squeezer
+tile.ImmersiveEngineering.metalMultiblock.fermenter.name=Fermenter
+tile.ImmersiveEngineering.metalMultiblock.refinery.name=Refinery
+tile.ImmersiveEngineering.metalMultiblock.crusher.name=Crusher
 
 tile.ImmersiveEngineering.metalDecoration.fence.name=Steel Fence
 tile.ImmersiveEngineering.metalDecoration.scaffolding.name=Steel Scaffolding
 tile.ImmersiveEngineering.metalDecoration.lantern.name=Lantern
 tile.ImmersiveEngineering.metalDecoration.structuralArm.name=Structural Arm
 tile.ImmersiveEngineering.metalDecoration.radiator.name=Radiator Block
-tile.ImmersiveEngineering.metalDecoration.engine.name=Engine Block
+tile.ImmersiveEngineering.metalDecoration.heavyEngineering.name=Heavy Engineering Block
 tile.ImmersiveEngineering.metalDecoration.generator.name=Generator Block
+tile.ImmersiveEngineering.metalDecoration.lightEngineering.name=Light Engineering Block
 
 
 tile.ImmersiveEngineering.woodenDevice.post.name=Wooden Post
@@ -99,6 +105,8 @@ item.ImmersiveEngineering.material.gunpartBarrel.name=Revolver Barrel
 item.ImmersiveEngineering.material.gunpartDrum.name=Revolver Drum
 item.ImmersiveEngineering.material.gunpartGrip.name=Revolver Grip
 item.ImmersiveEngineering.material.gunpartHammer.name=Revolver Hammer
+item.ImmersiveEngineering.material.componentIron.name=Iron Mechanical Component
+item.ImmersiveEngineering.material.componentSteel.name=Steel Mechanical Component
 item.ImmersiveEngineering.seed.hemp.name=Industrial Hemp Seed
 
 item.ImmersiveEngineering.fluidContainers.bottleCreosote.name=Bottle of Creosote Oil
@@ -182,7 +190,7 @@ ie.manual.entry.oreProcessing_blend=By mixing the respective metal dusts, you ca
 ie.manual.entry.cokeoven.name=Coke Oven
 ie.manual.entry.cokeoven.subtext=Hot topic!
 ie.manual.entry.cokeoven0=The Coke Oven is the first important machine you will need to create in order to proceed with Immersive Engineering. It's functionality is simple, it will heat up coal or blocks of coal without supplying it with oxygen, creating Coal Coke, a carbon rich fuel. More importantly, this process creates §lCreosote Oil§r, which is used as a <link:treatedwood:preservative for wood>. Similarly you can also burn wooden logs into charcoal with this oven, albeit with a smaller yield of creosote.
-ie.manual.entry.cokeovenBlock=To form a Coke Oven, arrange 27 of these blocks in a 3x3x3 cube, and rightclick one of the sides' center blocks with an Engineers Hammer.
+ie.manual.entry.cokeovenBlock=To form a Coke Oven, arrange 27 of these blocks in a 3x3x3 cube, and rightclick one of the sides' center blocks with an Engineers Hammer.<br>See the following page for a diagram.
 
 ie.manual.entry.treatedwood.name=Treated Wood
 ie.manual.entry.treatedwood.subtext=Highly Durable
@@ -212,13 +220,36 @@ ie.manual.entry.generatorWindmillImproved=The improved windmill is an upgrade to
 
 ie.manual.entry.blastfurnace.name=Blast Furnace
 ie.manual.entry.blastfurnace.subtext=Even hotter topic!
-ie.manual.entry.blastfurnace0=The Blast Furnace is used to increase the carbon contents in iron, turning it into steel. To achieve this, only pure, high-carbon fuels may be used for the furnace, specifically coal coke and charcoal.<br>The steel created in the blast furnace is an integral part of high-voltage architecture. 
-ie.manual.entry.blastfurnaceBlock=To form a Blast Furnace, arrange 27 of these blocks in a 3x3x3 cube, and rightclick one of the sides' center blocks with an Engineers Hammer.
+ie.manual.entry.blastfurnace0=The Blast Furnace is used to increase the carbon contents in iron, turning it into steel. To achieve this, only pure, high-carbon fuels may be used for the furnace, specifically coal coke and charcoal.<br>The steel created in the blast furnace is an integral part of high-voltage architecture.
+ie.manual.entry.blastfurnaceBlock=To form a Blast Furnace, arrange 27 of these blocks in a 3x3x3 cube, and rightclick one of the sides' center blocks with an Engineers Hammer.<br>See the following page for a diagram.
+
+ie.manual.entry.steelconstruction.name=Steel Constructions
+ie.manual.entry.steelconstruction.subtext=Riveting
+ie.manual.entry.steelconstruction0=Steel is not only an integral part of high-voltage architectures, it is also quite useful in, well, architecture. Steel scaffolding can be used to quickly create climbable structures, steel fencing keeps baddies at bay and structural arms make for great attachment points for your HV relays. 
 
 ie.manual.entry.highvoltage.name=High-Voltage
 ie.manual.entry.highvoltage.subtext=You can't shake the shock
-ie.manual.entry.highvoltage0=High-Voltage wires are have the highest available transferrate (<config:iA:cableTransferRate:2> RF/t) and will need special connectors. Note that on High voltage connections, Connectors and Relays are different blocks, Relays will not be able to in- or output to the energy net.<br>To transition from HV to LV or MV connections, you will need High-Voltage Transformers, and keep in mind, the lowest tier of wire limits the transferrate of an entire connection.
+ie.manual.entry.highvoltage0=High-Voltage wires are have the highest available transfer rate (<config:iA:cableTransferRate:2> RF/t) and will need special connectors. Note that on High voltage connections, Connectors and Relays are different blocks, Relays will not be able to in- or output to the energy net.<br>To transition from HV to LV or MV connections, you will need High-Voltage Transformers, and keep in mind, the lowest tier of wire limits the transferrate of an entire connection.
 
-ie.manual.entry.dieselGen.name=Diesel Generator
-ie.manual.entry.dieselGen.subtext=
-ie.manual.entry.dieselGen=
+ie.manual.entry.multiblocks.name=Multiblock Constructions
+ie.manual.entry.multiblocks.subtext=Where's my Allen Wrench?
+ie.manual.entry.multiblocks0=Fitting complex machinery into a single 1x1x1 cube seems to be a task unmanageable without the use of magic or possibly shrink rays. So in order to create more complex machines, you will need component blocks. The most common ones have been listed on the following pages.
+
+ie.manual.entry.dieselgen.name=Diesel Generator
+ie.manual.entry.dieselgen.subtext=Better than volume: More volume.
+ie.manual.entry.dieselgen0=High-Voltage architecture might be fascinating, but it's not very useful unless you have a generator that can actually create the required output for it.<br>The Diesel Generator is one of the few ways of generating this sort of energy. It is created as a complex multiblock structure and will run off of <link:biodiesel:Bio Diesel> or other types of combustible fuel. Due to its high output, it will work through fuel very quickly, so make sure you have a sufficient fuel production to run it.
+ie.manual.entry.dieselgen1=The structure is built from Engine, Generator and Radiator blocks. Arrange them in the shape shown on the following side and hit either the central generator or central radiator with an Engineer's Hammer.
+ie.manual.entry.dieselgen2=Fuel is to be input at the bottom corners of the generator, whereas energy will be output to up to three connection on the top. The <config:i:dieselGen_output>RF/t the generator outputs will be split between all connected points.
+
+ie.manual.entry.biodiesel.name=Bio Diesel
+ie.manual.entry.biodiesel.subtext=Green power!
+ie.manual.entry.biodiesel0=Combustible fuels are an easy to use and efficient fuel source. But with oil being a depleteable resource, something renewable would  be much preferable. Bio Diesel is the solution! By combining plant oil and ethanol, you can create a combustible fluid that will burn in the <link:dieselgen:Diesel Generator>.
+ie.manual.entry.biodiesel1=Plant Oil is created by processing various seeds in the industrial squeezer. Create the structure pictured above and click one of the sides with an Engineer's Hammer to form it. Power is input at the top or bottom, fluids are output through any of the ports at the bottom of each side.
+ie.manual.entry.biodiesel2=Ethanol is gained by fermenting sugarcane. The fermenter's structure is created in a similar manner to that of the squeezer, as such power in- and fluid outputs are identical.
+ie.manual.entry.biodiesel3=Lastly, in order to refine plant oil and ethnaol into bio diesel, you will need to insert both fluids into a refinery and supply it with power. The structure is created as shown above and formed by clicking the center of the front with an Engineer's Hammer.
+ie.manual.entry.biodiesel4=The front of the refinery serves as fluid output, whereas the inputs are found on the smaller sides. Energy is supplied through the connector at the back. Applying a redstone signal to the control panel on the left will halt the refinery's process.
+
+ie.manual.entry.crusher.name=Crusher
+ie.manual.entry.crusher.subtext=Keep your hands out!
+ie.manual.entry.crusher0=Crushing an ore is an effective way of increasing their yield, for each ore creates two dusts which you can then smelt. This industrial-size crusher is a quick way of doing so. The machine will consume up to 80 RF/t, and its processing speed depends on the power supplied.
+ie.manual.entry.crusher1=However, it is not only used for crushing ores. Every living being to fall into the machine will take grave damage and the crusher will output the relevant drops.<br>Applying a redstone signal to the control panel on the left will halt the crushers process.

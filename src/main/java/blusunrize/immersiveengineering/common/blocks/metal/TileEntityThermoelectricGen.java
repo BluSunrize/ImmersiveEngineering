@@ -39,10 +39,8 @@ public class TileEntityThermoelectricGen extends TileEntityIEBase
 		for(ForgeDirection fd : ForgeDirection.VALID_DIRECTIONS)
 			if(worldObj.getTileEntity(xCoord+fd.offsetX, yCoord+fd.offsetY, zCoord+fd.offsetZ) instanceof IEnergyReceiver)
 			{
-//				System.out.println("amount pre: "+amount);
 				IEnergyReceiver ier = (IEnergyReceiver)worldObj.getTileEntity(xCoord+fd.offsetX, yCoord+fd.offsetY, zCoord+fd.offsetZ);
 				amount -= ier.receiveEnergy(fd.getOpposite(), amount, false);
-//				System.out.println("amount post: "+amount);
 			}
 	}
 

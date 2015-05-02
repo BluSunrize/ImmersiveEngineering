@@ -1,11 +1,17 @@
 package blusunrize.immersiveengineering.client;
 
+import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.client.GuiIngameForge;
+import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.oredict.OreDictionary;
@@ -17,6 +23,9 @@ import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.items.ItemRevolver;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Lib;
+
+import com.google.common.collect.ArrayListMultimap;
+
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class ClientEventHandler
@@ -86,5 +95,48 @@ public class ClientEventHandler
 				GL11.glPopMatrix();
 			}
 		}
+	}
+
+	public static ArrayListMultimap<ChunkCoordinates, AxisAlignedBB> additionalBlockBounds = ArrayListMultimap.create();
+	public static void addAdditionalBlockBounds(ChunkCoordinates cc, AxisAlignedBB aabb)
+	{
+		for(AxisAlignedBB aabb1 : additionalBlockBounds.get(cc))
+			if(aabb1.toString().equals(aabb.toString()))
+				return;
+		additionalBlockBounds.put(cc, aabb);
+	}
+	@SubscribeEvent()
+	public void renderAdditionalBlockBounds(DrawBlockHighlightEvent event)
+	{
+		if(event.subID==0 && event.target.typeOfHit==MovingObjectPosition.MovingObjectType.BLOCK && additionalBlockBounds.containsKey(new ChunkCoordinates(event.target.blockX,event.target.blockY,event.target.blockZ)))
+		{
+			ChunkCoordinates cc = new ChunkCoordinates(event.target.blockX,event.target.blockY,event.target.blockZ);
+			if(!(event.player.worldObj.getTileEntity(event.target.blockX,event.target.blockY,event.target.blockZ) instanceof ICustomBoundingboxes))
+			{
+				additionalBlockBounds.removeAll(cc);
+				return;
+			}
+				
+			GL11.glEnable(GL11.GL_BLEND);
+			OpenGlHelper.glBlendFunc(770, 771, 1, 0);
+			GL11.glColor4f(0.0F, 0.0F, 0.0F, 0.4F);
+			GL11.glLineWidth(2.0F);
+			GL11.glDisable(GL11.GL_TEXTURE_2D);
+			GL11.glDepthMask(false);
+			float f1 = 0.002F;
+			double d0 = event.player.lastTickPosX + (event.player.posX - event.player.lastTickPosX) * (double)event.partialTicks;
+			double d1 = event.player.lastTickPosY + (event.player.posY - event.player.lastTickPosY) * (double)event.partialTicks;
+			double d2 = event.player.lastTickPosZ + (event.player.posZ - event.player.lastTickPosZ) * (double)event.partialTicks;
+			for(AxisAlignedBB aabb : additionalBlockBounds.get(cc))
+				RenderGlobal.drawOutlinedBoundingBox(aabb.getOffsetBoundingBox(cc.posX,cc.posY,cc.posZ).expand((double)f1, (double)f1, (double)f1).getOffsetBoundingBox(-d0, -d1, -d2), -1);
+
+			GL11.glDepthMask(true);
+			GL11.glEnable(GL11.GL_TEXTURE_2D);
+			GL11.glDisable(GL11.GL_BLEND);
+			event.setCanceled(true);
+		}
+	}
+	public static interface ICustomBoundingboxes
+	{
 	}
 }

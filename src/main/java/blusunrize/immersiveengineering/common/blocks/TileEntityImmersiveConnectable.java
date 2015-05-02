@@ -94,10 +94,8 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 		this.writeToNBT(nbttagcompound);
 		if(worldObj!=null && !worldObj.isRemote)
 		{
-			//			System.out.println("SERVER sending descinfo for "+this.xCoord+", "+this.yCoord+", "+this.zCoord);
 			NBTTagList connectionList = new NBTTagList();
 			List<Connection> conL = ImmersiveNetHandler.getConnections(worldObj, Utils.toCC(this));
-			//			System.out.println("SERVER sending descinfo for "+this.xCoord+", "+this.yCoord+", "+this.zCoord+" L:"+conL.size());
 			for(Connection con : conL)
 				connectionList.appendTag(con.writeToNBT());
 			nbttagcompound.setTag("connectionList", connectionList);
@@ -112,7 +110,6 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 		if(worldObj!=null && worldObj.isRemote)
 		{
 			NBTTagList connectionList = nbt.getTagList("connectionList", 10);
-			//			System.out.println("CLIENT reading connections, "+connectionList.tagCount());
 			ImmersiveNetHandler.clearConnectionsOriginatingFrom(Utils.toCC(this), worldObj);
 			for(int i=0; i<connectionList.tagCount(); i++)
 			{
