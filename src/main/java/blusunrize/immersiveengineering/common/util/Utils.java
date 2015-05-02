@@ -10,6 +10,8 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
@@ -227,5 +229,71 @@ public class Utils
 		}
 		catch (NullPointerException e) {}
 		return "";
+	}
+
+	public static ItemStack insertStackIntoInventory(IInventory inventory, ItemStack stack, int side)
+	{
+		if (stack == null || inventory == null)
+			return null;
+		int stackSize = stack.stackSize;
+		if (inventory instanceof ISidedInventory)
+		{
+			ISidedInventory sidedInv = (ISidedInventory) inventory;
+			int slots[] = sidedInv.getAccessibleSlotsFromSide(side);
+			if (slots == null)
+				return stack;
+			for (int i=0; i<slots.length && stack!=null; i++)
+			{
+				if (sidedInv.canInsertItem(slots[i], stack, side))
+				{
+					ItemStack existingStack = inventory.getStackInSlot(slots[i]);
+					if(OreDictionary.itemMatches(existingStack, stack, true)&&ItemStack.areItemStackTagsEqual(stack, existingStack))
+						stack = addToOccupiedSlot(sidedInv, slots[i], stack, existingStack);
+				}
+			}
+			for (int i=0; i<slots.length && stack!=null; i++)
+				if (inventory.getStackInSlot(slots[i]) == null && sidedInv.canInsertItem(slots[i], stack, side))
+					stack = addToEmptyInventorySlot(sidedInv, slots[i], stack);
+		}
+		else
+		{
+			int invSize = inventory.getSizeInventory();
+			for (int i=0; i<invSize && stack!=null; i++)
+			{
+				ItemStack existingStack = inventory.getStackInSlot(i);
+				if (OreDictionary.itemMatches(existingStack, stack, true)&&ItemStack.areItemStackTagsEqual(stack, existingStack))
+					stack = addToOccupiedSlot(inventory, i, stack, existingStack);
+			}
+			for (int i=0; i<invSize && stack!=null; i++)
+				if (inventory.getStackInSlot(i) == null)
+					stack = addToEmptyInventorySlot(inventory, i, stack);
+		}
+		if (stack == null || stack.stackSize != stackSize)
+			inventory.markDirty();
+		return stack;
+	}
+
+	public static ItemStack addToEmptyInventorySlot(IInventory inventory, int slot, ItemStack stack)
+	{
+		if (!inventory.isItemValidForSlot(slot, stack)) {
+			return stack;
+		}
+		int stackLimit = inventory.getInventoryStackLimit();
+		inventory.setInventorySlotContents(slot, copyStackWithAmount(stack, Math.min(stack.stackSize, stackLimit)));
+		return stackLimit >= stack.stackSize ? null : stack.splitStack(stack.stackSize - stackLimit);
+	}
+	public static ItemStack addToOccupiedSlot(IInventory inventory, int slot, ItemStack stack, ItemStack existingStack)
+	{
+		int stackLimit = Math.min(inventory.getInventoryStackLimit(), stack.getMaxStackSize());
+		if (stack.stackSize + existingStack.stackSize > stackLimit) {
+			int stackDiff = stackLimit - existingStack.stackSize;
+			existingStack.stackSize = stackLimit;
+			stack.stackSize -= stackDiff;
+			inventory.setInventorySlotContents(slot, existingStack);
+			return stack;
+		}
+		existingStack.stackSize += Math.min(stack.stackSize, stackLimit);
+		inventory.setInventorySlotContents(slot, existingStack);
+		return stackLimit >= stack.stackSize ? null : stack.splitStack(stack.stackSize - stackLimit);
 	}
 }

@@ -88,7 +88,6 @@ public class IESound implements ITickableSound
 	@Override
 	public void update()
 	{
-		//		System.out.println("ticking!");
 	}
 
 	public boolean donePlaying=false;

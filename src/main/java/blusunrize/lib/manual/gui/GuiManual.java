@@ -145,17 +145,10 @@ public class GuiManual extends GuiScreen
 			int sel = ((GuiClickableList)button).selectedOption;
 			if(sel>=0&&sel<headers.length)
 			{
-				System.out.println("sel: "+sel);
 				if(manual.manualContents.keySet().size()==1 || manual.manualContents.containsKey(selectedCategory))
-				{
-					System.out.println("set Entry "+headers[sel]);
 					selectedEntry = headers[sel];
-				}
 				else
-				{
 					selectedCategory = headers[sel];
-					System.out.println("set Cat "+headers[sel]);
-				}
 			}
 			((GuiClickableList)button).selectedOption=-1;
 			this.initGui();

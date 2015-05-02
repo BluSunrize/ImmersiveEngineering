@@ -18,7 +18,6 @@ public class TileEntityDynamo extends TileEntityIEBase
 	public void inputRotation(double rotation)
 	{
 		int output = (int) (Config.getInt("dynamo_output") * rotation);
-		//System.out.println(output);
 		for(int i=0; i<6; i++)
 		{
 			ForgeDirection fd = ForgeDirection.VALID_DIRECTIONS[i];

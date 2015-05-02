@@ -1,21 +1,25 @@
 package blusunrize.immersiveengineering.common;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 import net.minecraft.entity.effect.EntityLightningBolt;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.fluids.FluidContainerRegistry;
-import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.oredict.OreDictionary;
 import blusunrize.immersiveengineering.api.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.GuiBlastFurnace;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityLightningRod;
 import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -23,6 +27,7 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
 
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.ItemCraftedEvent;
 import cpw.mods.fml.relauncher.Side;
@@ -59,26 +64,21 @@ public class EventHandler
 	@SubscribeEvent
 	public void entitySpawn(EntityJoinWorldEvent event)
 	{
-		//		System.out.println("Spawned Something "+event.entity.getClass());
 		if(event.entity instanceof EntityLightningBolt&&!event.world.isRemote)
 		{
-			System.out.println("Spawned Lightning");
 			for(int xx=-1; xx<=1; xx++)
 				for(int zz=-1; zz<=1; zz++)
 					if(event.world.getBlock((int)event.entity.posX+xx, (int)event.entity.posY-1, (int)event.entity.posZ+zz).equals(IEContent.blockMetalDecoration) && event.world.getBlockMetadata((int)event.entity.posX+xx, (int)event.entity.posY-1, (int)event.entity.posZ+zz)==0)
 					{
-						System.out.println("hit rod!");
 						for(int y=(int) event.entity.posY; y>0; y--)
 						{
 							if( event.world.getTileEntity((int)event.entity.posX+xx, y, (int)event.entity.posZ+zz) instanceof TileEntityLightningRod)
 							{
-								System.out.println("found base");
 								((TileEntityLightningRod) event.world.getTileEntity((int)event.entity.posX+xx, y, (int)event.entity.posZ+zz)).outputEnergy(Config.getInt("lightning_output"));
 								return;
 							}
 							else if(!(event.world.getBlock((int)event.entity.posX+xx, y, (int)event.entity.posZ+zz).equals(IEContent.blockMetalDecoration) && event.world.getBlockMetadata((int)event.entity.posX+xx, y, (int)event.entity.posZ+zz)==0))
 							{
-								System.out.println("enecountered problem");
 								return;							
 							}
 						}
@@ -86,21 +86,35 @@ public class EventHandler
 		}
 	}
 
+	public static HashMap<UUID, TileEntityCrusher> crusherMap = new HashMap<UUID, TileEntityCrusher>();
+	@SubscribeEvent(priority=EventPriority.LOWEST)
+	public void onLivingDrops(LivingDropsEvent event)
+	{
+		if(!event.isCanceled() && Lib.DMG_Grinder.equals(event.source.getDamageType()))
+		{
+			TileEntityCrusher crusher = crusherMap.get(event.entityLiving.getUniqueID());
+			if(crusher!=null)
+			{
+				for(EntityItem item: event.drops)
+					if(item!=null && item.getEntityItem()!=null)
+						crusher.outputItem(item.getEntityItem());
+				crusherMap.remove(event.entityLiving.getUniqueID());
+				event.setCanceled(true);
+			}
+		}
+	}
+
 	@SubscribeEvent
 	public void onItemTooltip(ItemTooltipEvent event)
 	{
+		for(int oid : OreDictionary.getOreIDs(event.itemStack))
+			event.toolTip.add(OreDictionary.getOreName(oid));
+		
 		if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT
 				&& ClientUtils.mc().currentScreen != null
 				&& ClientUtils.mc().currentScreen instanceof GuiBlastFurnace
 				&& BlastFurnaceRecipe.isValidBlastFuel(event.itemStack))
 			event.toolTip.add(EnumChatFormatting.GRAY+StatCollector.translateToLocalFormatted("desc.ImmersiveEngineering.info.blastFuelTime", BlastFurnaceRecipe.getBlastFuelTime(event.itemStack)));
-
-		if(FluidContainerRegistry.isFilledContainer(event.itemStack))
-		{
-			event.toolTip.add("F1: "+FluidRegistry.getFluidName(FluidContainerRegistry.getFluidForFilledItem(event.itemStack)));
-			event.toolTip.add("F2: "+FluidContainerRegistry.getFluidForFilledItem(event.itemStack).getFluid().getName());
-		}
-		//event.toolTip.add(Utils.nameFromStack(event.itemStack));
 	}
 
 	@SubscribeEvent

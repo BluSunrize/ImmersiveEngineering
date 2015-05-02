@@ -96,14 +96,11 @@ public class ItemNBTHelper
 	{
 		if(!hasKey(stack, "delayedSound_"+nbtKey+"_delay"))
 			return -1;
-//				System.out.println("sounds "+nbtKey);
 		int[] delayedSounds = ItemNBTHelper.getIntArray(stack, "delayedSound_"+nbtKey+"_delay");
 		int l = 0;
 		for(int i=0; i<delayedSounds.length; i++)
 		{
-//			System.out.println(nbtKey+", "+i+" pre: "+delayedSounds[i]);
 			--delayedSounds[i];
-//			System.out.println(nbtKey+", "+i+" post: "+delayedSounds[i]);
 			if(delayedSounds[i]<=0)
 			{
 				ent.worldObj.playSoundAtEntity(ent, getString(stack, "delayedSound_"+nbtKey+"_sound"), getFloat(stack, "delayedSound_"+nbtKey+"_volume"), getFloat(stack, "delayedSound_"+nbtKey+"_pitch"));
@@ -111,11 +108,8 @@ public class ItemNBTHelper
 			else
 				++l;
 		}
-//		for(int i:delayedSounds)
-//			System.out.println(" new "+i);
 		if(l>0)
 		{
-//			System.out.println(nbtKey+" resetArray");
 			ItemNBTHelper.setIntArray(stack, "delayedSound_"+nbtKey+"_delay", delayedSounds);
 		}
 		else

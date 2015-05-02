@@ -21,27 +21,41 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.api.CokeOvenRecipe;
-import blusunrize.immersiveengineering.api.DieselGeneratorHandler;
+import blusunrize.immersiveengineering.api.CrusherRecipe;
+import blusunrize.immersiveengineering.api.DieselHandler;
+import blusunrize.immersiveengineering.api.MultiblockHandler;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase.BlockIESimple;
 import blusunrize.immersiveengineering.common.blocks.BlockStorage;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDecoration;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDevices;
+import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCapacitorHV;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCapacitorLV;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCapacitorMV;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorHV;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorLV;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorMV;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityDieselGenerator;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityDynamo;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFermenter;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityLightningRod;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityRefinery;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityRelayHV;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySqueezer;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityStructuralArm;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityThermoelectricGen;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTransformer;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTransformerHV;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockBlastFurnace;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockCokeOven;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockCrusher;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockDieselGenerator;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockFermenter;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockRefinery;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockSqueezer;
 import blusunrize.immersiveengineering.common.blocks.plant.BlockIECrop;
 import blusunrize.immersiveengineering.common.blocks.stone.BlockStoneDevices;
 import blusunrize.immersiveengineering.common.blocks.stone.TileEntityBlastFurnace;
@@ -74,6 +88,7 @@ public class IEContent
 	public static BlockIEBase blockStorage;
 	public static BlockIEBase blockMetalDevice;
 	public static BlockIEBase blockMetalDecoration;
+	public static BlockIEBase blockMetalMultiblocks;
 	public static BlockIEBase blockWoodenDevice;
 	public static BlockIEBase blockWoodenDecoration;
 	public static Block blockWoodenStair;
@@ -102,6 +117,7 @@ public class IEContent
 		blockStorage = (BlockIEBase) new BlockStorage("Copper","Aluminum","Lead","Silver","Nickel","Constantan","Electrum","Steel", "CoilCopper","CoilElectrum","CoilHV").setHardness(4f).setResistance(5f);
 		blockMetalDevice = new BlockMetalDevices();
 		blockMetalDecoration = new BlockMetalDecoration();
+		blockMetalMultiblocks = new BlockMetalMultiblocks();
 		blockWoodenDevice = new BlockWoodenDevices();
 		blockWoodenDecoration = new BlockWoodenDecoration();
 		blockWoodenStair = new BlockIEWoodenStairs();
@@ -109,7 +125,7 @@ public class IEContent
 		blockCrop = new BlockIECrop("hemp", "0B","1B","2B","3B","4B","0T");
 
 		itemMetal = new ItemIEBase("metal", 64, "ingotCopper","ingotAluminum","ingotLead","ingotSilver","ingotNickel","ingotConstantan","ingotElectrum","ingotSteel",   "dustIron","dustGold","dustCopper","dustAluminum","dustLead","dustSilver","dustNickel","dustConstantan","dustElectrum");
-		itemMaterial = new ItemIEBase("material", 64, "treatedStick","waterwheelSegment","windmillBlade","hempFiber","fabric","windmillBladeAdvanced","coalCoke","gunpartBarrel","gunpartDrum","gunpartGrip","gunpartHammer");
+		itemMaterial = new ItemIEBase("material", 64, "treatedStick","waterwheelSegment","windmillBlade","hempFiber","fabric","windmillBladeAdvanced","coalCoke","gunpartBarrel","gunpartDrum","gunpartGrip","gunpartHammer","componentIron","componentSteel");
 		itemSeeds = new ItemIESeed(blockCrop,"hemp");
 		MinecraftForge.addGrassSeed(new ItemStack(itemSeeds), 5);
 		itemWireCoil = new ItemWireCoil();
@@ -117,8 +133,8 @@ public class IEContent
 		itemRevolver = new ItemRevolver();
 		itemBullet = new ItemBullet();
 		itemFluidContainers = new ItemIEBase("fluidContainers", 64, "bottleCreosote","bucketCreosote",  "bottlePlantoil","bucketPlantoil",  "bottleEthanol","bucketEthanol", "bottleBiodiesel","bucketBiodiesel");
-		
-		
+
+
 		fluidCreosote = FluidRegistry.getFluid("creosote");
 		if(fluidCreosote==null)
 		{
@@ -224,9 +240,14 @@ public class IEContent
 		registerTile(TileEntityTransformerHV.class);
 		registerTile(TileEntityDynamo.class);
 		registerTile(TileEntityThermoelectricGen.class);
+
 		registerTile(TileEntityLightningRod.class);
 		registerTile(TileEntityDieselGenerator.class);
-		
+		registerTile(TileEntitySqueezer.class);
+		registerTile(TileEntityFermenter.class);
+		registerTile(TileEntityRefinery.class);
+		registerTile(TileEntityCrusher.class);
+
 		registerTile(TileEntityStructuralArm.class);
 
 
@@ -260,6 +281,8 @@ public class IEContent
 		ItemStack copperCoil = new ItemStack(blockStorage,1,8);
 		ItemStack electrumCoil = new ItemStack(blockStorage,1,9);
 		ItemStack hvCoil = new ItemStack(blockStorage,1,10);
+		ItemStack componentIron = new ItemStack(itemMaterial,1,11);
+		ItemStack componentSteel = new ItemStack(itemMaterial,1,12);
 
 		addOredictRecipe(new ItemStack(itemTool,1,0), " IF"," SI","S  ", 'I',"ingotIron", 'S',"stickWood", 'F',new ItemStack(Items.string));
 		addOredictRecipe(new ItemStack(itemTool,1,1), "SI"," S", 'I',"ingotIron", 'S',"treatedStick").setMirrored(true);
@@ -293,6 +316,9 @@ public class IEContent
 		addOredictRecipe(new ItemStack(itemMaterial,1,8), " I ","III"," I ", 'I',"ingotSteel");
 		addOredictRecipe(new ItemStack(itemMaterial,1,9), "SS","IS","SS", 'I',"ingotCopper",'S',"treatedStick");
 		addOredictRecipe(new ItemStack(itemMaterial,1,10), "I  ","II "," II", 'I',"ingotSteel");
+		addOredictRecipe(new ItemStack(itemMaterial,1,10), "I  ","II "," II", 'I',"ingotSteel");
+		addOredictRecipe(componentIron, " I ","ICI"," I ", 'I',"ingotIron",'C',"ingotCopper");
+		addOredictRecipe(componentSteel, " I ","ICI"," I ", 'I',"ingotSteel",'C',"ingotCopper");
 
 		addOredictRecipe(new ItemStack(itemWireCoil,4,0), " I ","ISI"," I ", 'I',"ingotCopper", 'S',"stickWood");
 		addOredictRecipe(new ItemStack(itemWireCoil,4,1), " I ","ISI"," I ", 'I',"ingotElectrum", 'S',"stickWood");
@@ -341,11 +367,18 @@ public class IEContent
 		addOredictRecipe(new ItemStack(blockMetalDevice,1, BlockMetalDevices.META_transformerHV), "M H","IBI","III", 'H',new ItemStack(blockMetalDevice,1,BlockMetalDevices.META_connectorHV),'M',new ItemStack(blockMetalDevice,1,BlockMetalDevices.META_connectorMV),'I',"ingotIron",'B',hvCoil).setMirrored(true);
 		addOredictRecipe(new ItemStack(blockMetalDevice,1, BlockMetalDevices.META_dynamo), "RCR","III", 'C',copperCoil,'I',"ingotIron",'R',"dustRedstone");
 		addOredictRecipe(new ItemStack(blockMetalDevice,1, BlockMetalDevices.META_thermoelectricGen), "III","CBC","CCC", 'I',"ingotSteel",'C',"ingotConstantan",'B',copperCoil);
-		
-		addOredictRecipe(new ItemStack(blockMetalDecoration,16,0), "III","III", 'I',"ingotSteel");
-		addOredictRecipe(new ItemStack(blockMetalDecoration,6,1), "III"," S ","S S", 'I',"ingotSteel",'S',new ItemStack(blockMetalDecoration,1,0));
-		addOredictRecipe(new ItemStack(blockMetalDecoration,4,2), " I ","PGP"," I ", 'G',"glowstone",'I',"ingotIron",'P',"paneGlass");
-		addOredictRecipe(new ItemStack(blockMetalDecoration,4,3), "B  ","BB ","BBB", 'B',new ItemStack(blockMetalDecoration,1,1)).setMirrored(true);
+
+		addOredictRecipe(new ItemStack(blockMetalDecoration,16,BlockMetalDecoration.META_fence), "III","III", 'I',"ingotSteel");
+		addOredictRecipe(new ItemStack(blockMetalDecoration, 6,BlockMetalDecoration.META_scaffolding), "III"," S ","S S", 'I',"ingotSteel",'S',new ItemStack(blockMetalDecoration,1,0));
+		addOredictRecipe(new ItemStack(blockMetalDecoration, 4,BlockMetalDecoration.META_lantern), " I ","PGP"," I ", 'G',"glowstone",'I',"ingotIron",'P',"paneGlass");
+		addOredictRecipe(new ItemStack(blockMetalDecoration, 4,BlockMetalDecoration.META_structuralArm), "B  ","BB ","BBB", 'B',new ItemStack(blockMetalDecoration,1,1));
+		addOredictRecipe(new ItemStack(blockMetalDecoration, 2,BlockMetalDecoration.META_radiator), "ICI","CBC","ICI", 'I',"ingotSteel",'C',"ingotCopper",'B',Items.water_bucket);
+		addOredictRecipe(new ItemStack(blockMetalDecoration, 2,BlockMetalDecoration.META_heavyEngineering), "IGI","PEP","IGI", 'I',"ingotSteel",'E',"ingotElectrum",'G',componentSteel,'P',Blocks.piston);
+		addOredictRecipe(new ItemStack(blockMetalDecoration, 2,BlockMetalDecoration.META_generator), "III","EDE","III", 'I',"ingotSteel",'E',"ingotElectrum",'D',new ItemStack(blockMetalDevice,1, BlockMetalDevices.META_dynamo));
+		addOredictRecipe(new ItemStack(blockMetalDecoration, 2,BlockMetalDecoration.META_lightEngineering), "IGI","CCC","IGI", 'I',"ingotIron",'C',"ingotCopper",'G',componentIron);
+
+		addOredictRecipe(new ItemStack(blockMetalMultiblocks, 2,BlockMetalMultiblocks.META_squeezer), "IPI","GDG","IPI", 'I',"ingotIron",'D',"dyeGreen",'G',componentIron,'P',Blocks.piston);
+		addOredictRecipe(new ItemStack(blockMetalMultiblocks, 2,BlockMetalMultiblocks.META_fermenter), "IPI","GDG","IPI", 'I',"ingotIron",'D',"dyeBlue",'G',componentIron,'P',Blocks.piston);
 
 		CokeOvenRecipe.addRecipe(new ItemStack(itemMaterial,1,6), new ItemStack(Items.coal), 1800, 500);
 		CokeOvenRecipe.addRecipe(new ItemStack(blockStoneDevice,1,1), "blockCoal", 1800*9, 5000);
@@ -358,9 +391,52 @@ public class IEContent
 		BlastFurnaceRecipe.addBlastFuel("charcoal", 1600);
 		BlastFurnaceRecipe.addBlastFuel("blockCharcoal", 1600*10);
 		GameRegistry.registerFuelHandler(new IEFuelHandler());
+
+		addCrusherRecipe( 8, "Iron");
+		addCrusherRecipe( 9, "Gold");
+		addCrusherRecipe(10, "Copper");
+		addCrusherRecipe(11, "Aluminum");
+		addCrusherRecipe(12, "Lead");
+		addCrusherRecipe(13, "Silver");
+		addCrusherRecipe(14, "Nickel");
+		addCrusherRecipe(15, "Constantan");
+		addCrusherRecipe(16, "Electrum");
+		CrusherRecipe.addRecipe(new ItemStack(Items.dye,9,4), "oreLapis", 4000);
+		CrusherRecipe.addRecipe(new ItemStack(Items.diamond,2), "oreDiamond", 4000);
+		CrusherRecipe.addRecipe(new ItemStack(Items.redstone,8), "oreRedstone", 4000);
+		CrusherRecipe.addRecipe(new ItemStack(Items.emerald,2), "oreEmerald", 4000);
+		CrusherRecipe.addRecipe(new ItemStack(Items.quartz,3), "oreQuartz", 4000);
+		CrusherRecipe.addRecipe(new ItemStack(Items.coal,4), "oreCoal", 4000);
+		CrusherRecipe.addRecipe(new ItemStack(Blocks.sand), "cobblestone", 3200);
+		CrusherRecipe.addRecipe(new ItemStack(Blocks.sand), "blockGlass", 3200);
+		CrusherRecipe.addRecipe(new ItemStack(Items.quartz,4), "blockQuartz", 3200);
+		addOreDictCrusherRecipe("Tin");
+		addOreDictCrusherRecipe("Bronze");
+		addOreDictCrusherRecipe("Enderium");
+		addOreDictCrusherRecipe("Lumium");
+		addOreDictCrusherRecipe("Signalum");
+		addOreDictCrusherRecipe("Invar");
+		addOreDictCrusherRecipe("Mithril");
+		addOreDictCrusherRecipe("Platinum");
 		
-		DieselGeneratorHandler.registerFuel(fluidBiodiesel, 125);
-		DieselGeneratorHandler.registerFuel(FluidRegistry.getFluid("fuel"), 375);
+
+		DieselHandler.registerFuel(fluidBiodiesel, 125);
+		DieselHandler.registerFuel(FluidRegistry.getFluid("fuel"), 375);
+
+		DieselHandler.registerPlantoilSource(Items.wheat_seeds, 80);
+		DieselHandler.registerPlantoilSource(Items.pumpkin_seeds, 80);
+		DieselHandler.registerPlantoilSource(Items.melon_seeds, 80);
+		DieselHandler.registerPlantoilSource(itemSeeds, 80);
+
+		DieselHandler.registerEthanolSource(Items.reeds, 80);
+
+		MultiblockHandler.registerMultiblock(MultiblockCokeOven.instance);
+		MultiblockHandler.registerMultiblock(MultiblockBlastFurnace.instance);
+		MultiblockHandler.registerMultiblock(MultiblockDieselGenerator.instance);
+		MultiblockHandler.registerMultiblock(MultiblockSqueezer.instance);
+		MultiblockHandler.registerMultiblock(MultiblockFermenter.instance);
+		MultiblockHandler.registerMultiblock(MultiblockRefinery.instance);
+		MultiblockHandler.registerMultiblock(MultiblockCrusher.instance);
 
 		//Railcraft Compat
 		if(Loader.isModLoaded("Railcraft"))
@@ -436,17 +512,36 @@ public class IEContent
 	public static List<String> validCrushingOres = new ArrayList();
 	public static void addHammerCrushingRecipe(String oreName)
 	{
-//		if(OreDictionary.getOres("dust"+oreName).size()<2)
-//		{
+		if(OreDictionary.getOres("dust"+oreName).size()<2)
+		{
 			GameRegistry.addRecipe(new RecipeOreCrushing(oreName));
 			validCrushingOres.add(oreName);
-//		}
+		}
 	}
 	public static void addBulletRecipes(int meta, Object load, int casingType)
 	{
 		addOredictRecipe(new ItemStack(itemBullet,3,meta), "III","CCC","GGG", 'I',load,'C',new ItemStack(itemBullet,1,casingType),'G',Items.gunpowder);
 		addOredictRecipe(new ItemStack(itemBullet,2,meta), "II","CC","GG", 'I',load,'C',new ItemStack(itemBullet,1,casingType),'G',Items.gunpowder);
 		addOredictRecipe(new ItemStack(itemBullet,1,meta), "I","C","G", 'I',load,'C',new ItemStack(itemBullet,1,casingType),'G',Items.gunpowder);
+	}
+	public static void addCrusherRecipe(int dustMeta, String ore)
+	{
+		if(!OreDictionary.getOres("ore"+ore).isEmpty())
+			CrusherRecipe.addRecipe(new ItemStack(itemMetal,2,dustMeta), "ore"+ore, 4000);
+		if(!OreDictionary.getOres("ingot"+ore).isEmpty())
+			CrusherRecipe.addRecipe(new ItemStack(itemMetal,1,dustMeta), "ingot"+ore, 2400);
+	}
+	public static void addOreDictCrusherRecipe(String ore)
+	{
+		if(OreDictionary.getOres("dust"+ore).isEmpty())
+			return;
+		ItemStack dust = OreDictionary.getOres("dust"+ore).get(0);
+		if(dust==null)
+			return;
+		if(!OreDictionary.getOres("ore"+ore).isEmpty())
+			CrusherRecipe.addRecipe(Utils.copyStackWithAmount(dust, 2), "ore"+ore, 4000);
+		if(!OreDictionary.getOres("ingot"+ore).isEmpty())
+			CrusherRecipe.addRecipe(Utils.copyStackWithAmount(dust, 1), "ingot"+ore, 2400);
 	}
 
 }

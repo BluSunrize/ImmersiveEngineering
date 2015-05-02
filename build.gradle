@@ -17,12 +17,12 @@ buildscript {
 
 apply plugin: 'forge'
 
-version = "0.0.7"
+version = "0.1.0"
 group= "blusunrize" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "ImmersiveEngineering"
 
 minecraft {
-    version = "1.7.10-10.13.2.1291"
+    version = "1.7.10-10.13.3.1389-1710ls"
 	replace '${version}', project.version
     runDir = "eclipse"
 }

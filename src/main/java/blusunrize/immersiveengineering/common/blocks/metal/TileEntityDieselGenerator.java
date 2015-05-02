@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import net.minecraft.block.Block;
 import net.minecraft.client.audio.ISound.AttenuationType;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
@@ -13,24 +14,21 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
-import blusunrize.immersiveengineering.api.DieselGeneratorHandler;
+import blusunrize.immersiveengineering.api.DieselHandler;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockDieselGenerator;
 import blusunrize.immersiveengineering.common.util.IESound;
 import cofh.api.energy.IEnergyReceiver;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class TileEntityDieselGenerator extends TileEntityIEBase implements IFluidHandler
+public class TileEntityDieselGenerator extends TileEntityMultiblockPart implements IFluidHandler
 {
 	public int facing = 2;
-	public boolean formed = false;
-	public int pos;
 	public FluidTank tank = new FluidTank(12000);
 	public boolean active = false;
-	public int[] offset = {0,0,0};
 
 	public float fanRotation=0;
 	public int fanFadeIn=0;
@@ -40,18 +38,22 @@ public class TileEntityDieselGenerator extends TileEntityIEBase implements IFlui
 	{
 		if(offset[0]==0&&offset[1]==0&&offset[2]==0)
 			return null;
-		System.out.println("searching for master at "+(xCoord-offset[0])+", "+(yCoord-offset[1])+", "+(zCoord-offset[2]));
 		TileEntity te = worldObj.getTileEntity(xCoord-offset[0], yCoord-offset[1], zCoord-offset[2]);
 		return te instanceof TileEntityDieselGenerator?(TileEntityDieselGenerator)te : null;
 	}
-
 	public static boolean _Immovable()
 	{
 		return true;
 	}
 
+	@Override
+	public ItemStack getOriginalBlock()
+	{
+		ItemStack s = MultiblockDieselGenerator.instance.getStructureManual()[pos%9/3][4-pos/9][pos%3];
+		return s!=null?s.copy():null;
+	}
 
-	//409.600
+
 	static IESound sound;
 	@Override
 	public void updateEntity()
@@ -67,21 +69,11 @@ public class TileEntityDieselGenerator extends TileEntityIEBase implements IFlui
 			{
 				step -= (fanFadeIn/80f)*base;
 				fanFadeIn--;
-//				if(worldObj.isRemote)
-//				{
-//					System.out.println("INfade: "+fanFadeOut);
-//					System.out.println("step modified: "+step);
-//				}
 			}
 			if(fanFadeOut>0)
 			{
 				step += (fanFadeOut/80f)*base;
 				fanFadeOut--;
-//				if(worldObj.isRemote)
-//				{
-//					System.out.println("OUTfade: "+fanFadeOut);
-//					System.out.println("step modified: "+step);
-//				}
 			}
 			fanRotation += step;
 			fanRotation %= 360;
@@ -105,8 +97,6 @@ public class TileEntityDieselGenerator extends TileEntityIEBase implements IFlui
 					double dy1 = (yCoord-ClientUtils.mc().renderViewEntity.posY)*(yCoord-ClientUtils.mc().renderViewEntity.posY);
 					double dz1 = (zCoord-ClientUtils.mc().renderViewEntity.posZ)*(zCoord-ClientUtils.mc().renderViewEntity.posZ);
 					if((dx1+dy1+dz1)<(dx+dy+dz))
-						//System.out.println(xCoord+","+yCoord+","+zCoord+" is closer");
-						//System.out.println("orig pos "+sound.origPos[0]+sound.origPos[1]+sound.origPos[2] );
 						sound.setPos(xCoord, yCoord, zCoord);
 				}
 			}
@@ -129,7 +119,7 @@ public class TileEntityDieselGenerator extends TileEntityIEBase implements IFlui
 			boolean prevActive = active;
 			if(tank.getFluid()!=null && tank.getFluid().getFluid()!=null)
 			{
-				int burnTime = DieselGeneratorHandler.getBurnTime(tank.getFluid().getFluid());
+				int burnTime = DieselHandler.getBurnTime(tank.getFluid().getFluid());
 				int fluidConsumed = 1000/burnTime;
 				int output = Config.getInt("dieselGen_output");
 				int connected = 0;
@@ -153,7 +143,6 @@ public class TileEntityDieselGenerator extends TileEntityIEBase implements IFlui
 						IEnergyReceiver receiver = getOutput(i==1?-1:i==2?1:0);
 						if(receiver!=null && receiver.canConnectEnergy(ForgeDirection.DOWN))
 							receiver.receiveEnergy(ForgeDirection.DOWN,splitOutput,false);
-						//System.out.println("put out power to "+Utils.toCC(receiver)+", fuel left: "+tank.getFluidAmount());
 					}
 
 				}
@@ -184,11 +173,9 @@ public class TileEntityDieselGenerator extends TileEntityIEBase implements IFlui
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt)
 	{
+		super.readCustomNBT(nbt);
 		facing = nbt.getInteger("facing");
-		formed = nbt.getBoolean("formed");
-		pos = nbt.getInteger("pos");
 		active = nbt.getBoolean("active");
-		offset = nbt.getIntArray("offset");
 
 		fanRotation = nbt.getFloat("fanRotation");
 		fanFadeIn = nbt.getInteger("fanFadeIn");
@@ -199,12 +186,10 @@ public class TileEntityDieselGenerator extends TileEntityIEBase implements IFlui
 	@Override
 	public void writeCustomNBT(NBTTagCompound nbt)
 	{
+		super.writeCustomNBT(nbt);
 		nbt.setInteger("facing", facing);
-		nbt.setBoolean("formed", formed);
-		nbt.setInteger("pos", pos);
 		nbt.setBoolean("active", active);
-		nbt.setIntArray("offset", offset);
-
+		
 		nbt.setFloat("fanRotation", fanRotation);
 		nbt.setInteger("fanFadeIn", fanFadeIn);
 		nbt.setInteger("fanFadeOut", fanFadeOut);
@@ -218,24 +203,19 @@ public class TileEntityDieselGenerator extends TileEntityIEBase implements IFlui
 	@Override
 	public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
 	{
-		System.out.println("attempt fill");
 		if(!formed)
 			return 0;
 		if(master()!=null)
 		{
 			if(pos!=36&&pos!=38)
 				return 0;
-			System.out.println("redirecting!");
 			return master().fill(from,resource,doFill);
 		}
-		else if(resource!=null && DieselGeneratorHandler.isValidFuel(resource.getFluid()))
+		else if(resource!=null && DieselHandler.isValidFuel(resource.getFluid()))
 		{
-			System.out.println("filling at master "+pos+">"+offset[0]+","+offset[1]+","+offset[2]+":"+resource+" - "+doFill);
 			int f = tank.fill(resource, doFill);
-			System.out.println("contained: "+tank.getFluidAmount());
 			return f;
 		}
-		System.out.println("IT BROKE D:");
 		return 0;
 	}
 	@Override
@@ -270,7 +250,7 @@ public class TileEntityDieselGenerator extends TileEntityIEBase implements IFlui
 	@Override
 	public boolean canFill(ForgeDirection from, Fluid fluid)
 	{
-		if(!formed||(pos!=36&&pos!=38)||!DieselGeneratorHandler.isValidFuel(fluid))
+		if(!formed||(pos!=36&&pos!=38)||!DieselHandler.isValidFuel(fluid))
 			return false;
 		return true;
 	}
@@ -322,14 +302,28 @@ public class TileEntityDieselGenerator extends TileEntityIEBase implements IFlui
 						int xx = (f==5?l: f==4?-l: w);
 						int yy = h;
 						int zz = (f==3?l: f==2?-l: w);
-						if((startX+xx!=xCoord) || (startY+yy!=yCoord) || (startZ+zz!=zCoord))
+						
+						ItemStack s = null;
+						if(worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz) instanceof TileEntityDieselGenerator)
 						{
-							if(worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz) instanceof TileEntityDieselGenerator)
-								((TileEntityDieselGenerator)worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz)).formed=false;
-							worldObj.setBlock(startX+xx,startY+yy,startZ+zz, IEContent.blockMetalDecoration, l==4?BlockMetalDecoration.META_generator: l==0?BlockMetalDecoration.META_radiator: BlockMetalDecoration.META_engine, 0x3);
+							s = ((TileEntityDieselGenerator)worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz)).getOriginalBlock();
+							((TileEntityDieselGenerator)worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz)).formed=false;
 						}
-						else
-							worldObj.spawnEntityInWorld(new EntityItem(worldObj, xCoord+.5,yCoord+.5,zCoord+.5, new ItemStack(IEContent.blockMetalDecoration, 1, l==4?BlockMetalDecoration.META_generator: l==0?BlockMetalDecoration.META_radiator: BlockMetalDecoration.META_engine)));
+						if(startX+xx==xCoord && startY+yy==yCoord && startZ+zz==zCoord)
+							s = this.getOriginalBlock();
+						if(s!=null && Block.getBlockFromItem(s.getItem())!=null)
+						{
+							if(startX+xx==xCoord && startY+yy==yCoord && startZ+zz==zCoord)
+								worldObj.spawnEntityInWorld(new EntityItem(worldObj, xCoord+.5,yCoord+.5,zCoord+.5, s));
+							else
+							{
+								if(Block.getBlockFromItem(s.getItem())==IEContent.blockMetalMultiblocks)
+									worldObj.setBlockToAir(startX+xx,startY+yy,startZ+zz);
+								worldObj.setBlock(startX+xx,startY+yy,startZ+zz, Block.getBlockFromItem(s.getItem()), s.getItemDamage(), 0x3);
+							}
+						}
+						else if(s==null)
+							worldObj.setBlockToAir(startX+xx,startY+yy,startZ+zz);
 					}
 		}
 	}

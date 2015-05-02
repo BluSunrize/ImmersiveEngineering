@@ -12,12 +12,12 @@ public class TileEntityLightningRod extends TileEntityIEBase
 	public boolean formed = false;
 	public byte type = 4;
 	int powerStored=0;
-	
+
 	public static boolean _Immovable()
 	{
 		return true;
 	}
-	
+
 	@Override
 	public void updateEntity()
 	{
@@ -32,8 +32,7 @@ public class TileEntityLightningRod extends TileEntityIEBase
 		}
 
 		if(!worldObj.isRemote && formed && type==4)
-			if(worldObj.getTotalWorldTime()%256==0 )
-				//&& ( worldObj.isThundering() || (worldObj.isRaining()&&worldObj.rand.nextInt(10)==0) ))
+			if(worldObj.getTotalWorldTime()%256==0 && ( worldObj.isThundering() || (worldObj.isRaining()&&worldObj.rand.nextInt(10)==0) ))
 			{
 				int height = 0;
 				boolean broken = false;
@@ -49,14 +48,9 @@ public class TileEntityLightningRod extends TileEntityIEBase
 							broken=true;
 					}
 				}
-				//				if(GuiScreen.isShiftKeyDown())
-				//				System.out.println(xCoord+","+zCoord+": "+height);
 
-				//				if(!worldObj.isThundering()&&yCoord+rodvalue<128) rodvalue=0;
-
-								if (worldObj.rand.nextInt(4096*worldObj.getHeight())<height*(yCoord+height))
-				//					worldObj.addWeatherEffect(new EntityLightningBolt(worldObj, xCoord, yCoord+height, zCoord));
-				worldObj.spawnEntityInWorld(new EntityLightningBolt(worldObj, xCoord, yCoord+height, zCoord));
+				if (worldObj.rand.nextInt(4096*worldObj.getHeight())<height*(yCoord+height))
+					worldObj.spawnEntityInWorld(new EntityLightningBolt(worldObj, xCoord, yCoord+height, zCoord));
 			}
 	}
 

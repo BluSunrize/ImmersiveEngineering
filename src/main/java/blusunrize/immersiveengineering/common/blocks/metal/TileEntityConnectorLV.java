@@ -1,10 +1,6 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import static blusunrize.immersiveengineering.common.util.Utils.toIIC;
-import ic2.api.energy.event.EnergyTileLoadEvent;
-import ic2.api.energy.event.EnergyTileUnloadEvent;
-import ic2.api.energy.tile.IEnergySink;
-import ic2.api.energy.tile.IEnergyTile;
 
 import java.util.List;
 
@@ -12,7 +8,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Vec3;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
 import blusunrize.immersiveengineering.api.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.ImmersiveNetHandler.AbstractConnection;
@@ -20,6 +15,7 @@ import blusunrize.immersiveengineering.api.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.api.WireType;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.blocks.TileEntityImmersiveConnectable;
+import blusunrize.immersiveengineering.common.util.IC2Helper;
 import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.ModCompatability;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -27,11 +23,10 @@ import cofh.api.energy.IEnergyHandler;
 import cofh.api.energy.IEnergyReceiver;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Optional;
-import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-@Optional.InterfaceList(value = { @Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "IC2") })
+@Optional.Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "IC2")
 public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implements IEnergyHandler, ic2.api.energy.tile.IEnergySink
 {
 	boolean inICNet=false;
@@ -41,7 +36,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 	{
 		if(Lib.IC2 && !this.inICNet && !FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
-			MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent((IEnergyTile) this));
+			IC2Helper.loadIC2Tile(this);
 			this.inICNet = true;
 		}
 	}
@@ -55,7 +50,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 	{
 		if(Lib.IC2 && this.inICNet)
 		{
-			MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent((IEnergyTile)this));
+			IC2Helper.unloadIC2Tile(this);
 			this.inICNet = false;
 		}
 	}
@@ -83,7 +78,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 	{
 		ForgeDirection fd = ForgeDirection.getOrientation(facing);
 		TileEntity tile = worldObj.getTileEntity(xCoord+fd.offsetX, yCoord+fd.offsetY, zCoord+fd.offsetZ);
-		return tile !=null && (tile instanceof IEnergyReceiver || (Lib.IC2 && tile instanceof IEnergySink) || (Lib.GREG && ModCompatability.gregtech_isEnergyConnected(tile)));
+		return tile !=null && (tile instanceof IEnergyReceiver || (Lib.IC2 && IC2Helper.isEnergySink(tile)) || (Lib.GREG && ModCompatability.gregtech_isEnergyConnected(tile)));
 	}
 	@Override
 	public int outputEnergy(int amount, boolean simulate, int energyType)
@@ -93,12 +88,12 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 
 		if(capacitor instanceof IEnergyReceiver && ((IEnergyReceiver)capacitor).canConnectEnergy(fd.getOpposite()))
 			return ((IEnergyReceiver)capacitor).receiveEnergy(fd.getOpposite(), amount, simulate);
-		else if(Lib.IC2 && capacitor instanceof IEnergySink && ((IEnergySink)capacitor).acceptsEnergyFrom(this, fd.getOpposite()))
+		else if(Lib.IC2 && IC2Helper.isAcceptingEnergySink(capacitor, this, fd.getOpposite()))
 			if(simulate)
 				return amount;
 			else
 			{
-				double left = ((IEnergySink)capacitor).injectEnergy(fd.getOpposite(), ModCompatability.convertRFtoEU(amount, getIC2Tier()), canTakeHV()?(256*256): canTakeMV()?(128*128) : (32*32));
+				double left = IC2Helper.injectEnergy(capacitor, fd.getOpposite(), ModCompatability.convertRFtoEU(amount, getIC2Tier()), canTakeHV()?(256*256): canTakeMV()?(128*128) : (32*32));
 				return amount-ModCompatability.convertEUtoRF(left);
 			}
 		else if(Lib.GREG && ModCompatability.gregtech_isEnergyConnected(capacitor))

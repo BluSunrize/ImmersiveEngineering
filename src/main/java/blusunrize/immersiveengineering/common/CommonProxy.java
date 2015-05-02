@@ -2,13 +2,17 @@ package blusunrize.immersiveengineering.common;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFermenter;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySqueezer;
 import blusunrize.immersiveengineering.common.blocks.stone.TileEntityBlastFurnace;
 import blusunrize.immersiveengineering.common.blocks.stone.TileEntityCokeOven;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenCrate;
 import blusunrize.immersiveengineering.common.gui.ContainerBlastFurnace;
 import blusunrize.immersiveengineering.common.gui.ContainerCokeOven;
 import blusunrize.immersiveengineering.common.gui.ContainerCrate;
+import blusunrize.immersiveengineering.common.gui.ContainerFermenter;
 import blusunrize.immersiveengineering.common.gui.ContainerRevolver;
+import blusunrize.immersiveengineering.common.gui.ContainerSqueezer;
 import blusunrize.immersiveengineering.common.items.ItemRevolver;
 import blusunrize.immersiveengineering.common.util.Lib;
 import cpw.mods.fml.common.network.IGuiHandler;
@@ -28,6 +32,10 @@ public class CommonProxy implements IGuiHandler
 			return new ContainerRevolver(player.inventory, world);
 		if(ID==Lib.GUIID_WoodenCrate && world.getTileEntity(x, y, z) instanceof TileEntityWoodenCrate)
 			return new ContainerCrate(player.inventory, (TileEntityWoodenCrate) world.getTileEntity(x, y, z));
+		if(ID==Lib.GUIID_Squeezer && world.getTileEntity(x, y, z) instanceof TileEntitySqueezer)
+			return new ContainerSqueezer(player.inventory, (TileEntitySqueezer) world.getTileEntity(x, y, z));
+		if(ID==Lib.GUIID_Fermenter && world.getTileEntity(x, y, z) instanceof TileEntityFermenter)
+			return new ContainerFermenter(player.inventory, (TileEntityFermenter) world.getTileEntity(x, y, z));
 		return null;
 	}
 

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 /**
@@ -14,7 +15,7 @@ import net.minecraft.world.World;
 public class MultiblockHandler
 {
 	static ArrayList<IMultiblock> multiblocks = new ArrayList<IMultiblock>();
-	
+
 	public static void registerMultiblock(IMultiblock multiblock)
 	{
 		multiblocks.add(multiblock);
@@ -23,7 +24,7 @@ public class MultiblockHandler
 	{
 		return multiblocks;
 	}
-	
+
 
 	public static interface IMultiblock
 	{
@@ -32,11 +33,16 @@ public class MultiblockHandler
 		 * Basically, a less resource-intensive preliminary check to avoid checking every structure.
 		 */
 		public boolean isBlockTrigger(Block b, int meta);
-		
+
 		/**
 		 * This method checks the structure and sets the new one.
 		 * @return if the structure was valid and transformed
 		 */
 		public boolean createStructure(World world, int x, int y, int z, int side, EntityPlayer player);
+
+		/**
+		 * A three-dimensional array (height, length, width) of the structure to be rendered in the Engineers Manual
+		 */
+		public ItemStack[][][] getStructureManual();
 	}
 }
