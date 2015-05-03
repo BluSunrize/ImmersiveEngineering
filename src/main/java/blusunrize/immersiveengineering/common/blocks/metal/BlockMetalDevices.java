@@ -186,6 +186,8 @@ public class BlockMetalDevices extends BlockIEBase
 	{
 		if(world.getTileEntity(x, y, z) instanceof TileEntityCapacitorLV && Utils.isHammer(player.getCurrentEquippedItem()))
 		{
+			if(player.isSneaking())
+				side = ForgeDirection.OPPOSITES[side];
 			if(!world.isRemote)
 			{
 				((TileEntityCapacitorLV)world.getTileEntity(x, y, z)).toggleSide(side);

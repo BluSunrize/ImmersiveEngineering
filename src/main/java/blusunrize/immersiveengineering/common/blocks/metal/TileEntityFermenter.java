@@ -321,8 +321,6 @@ public class TileEntityFermenter extends TileEntityMultiblockPart implements IFl
 								worldObj.setBlock(startX+xx,startY+yy,startZ+zz, Block.getBlockFromItem(s.getItem()), s.getItemDamage(), 0x3);
 							}
 						}
-						else if(s==null)
-							worldObj.setBlockToAir(startX+xx,startY+yy,startZ+zz);
 					}
 		}
 	}

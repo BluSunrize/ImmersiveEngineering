@@ -101,6 +101,14 @@ public class ItemIETool extends ItemIEBase
 	}
 
 	@Override
+    public boolean doesSneakBypassUse(World world, int x, int y, int z, EntityPlayer player)
+    {
+		if(player.getCurrentEquippedItem()!=null && this.equals(player.getCurrentEquippedItem().getItem()))
+			return player.getCurrentEquippedItem().getItemDamage()==0;
+        return false;
+    }
+
+	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
 	{
 		if(world.isRemote && stack.getItemDamage()==3)

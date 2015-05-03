@@ -51,14 +51,14 @@ public class ItemBlockWoodenDecoration extends ItemBlockIEBase
 		int metaStack = this.getMetadata(stack.getItemDamage());
 		int meta = this.field_150939_a.onBlockPlaced(world, x, y, z, side, hitX, hitY, hitZ, metaStack);
 		boolean metaMod=false;
-		if(this.field_150939_a.equals(world.getBlock(x1,y1,z1)) && (world.getBlockMetadata(x,y,z)==1||world.getBlockMetadata(x,y,z)==2))
-			metaMod = world.setBlockMetadataWithNotify(x, y, z, 3, 0x3);
+		if(this.field_150939_a.equals(world.getBlock(x1,y1,z1)) && (world.getBlockMetadata(x,y,z)==2||world.getBlockMetadata(x,y,z)==3))
+			metaMod = world.setBlockMetadataWithNotify(x, y, z, 4, 0x3);
 
 		if(this.field_150939_a.equals(world.getBlock(x0,y0,z0)))
-			if(side==1&&world.getBlockMetadata(x0,y0,z0)==1)
-				metaMod = world.setBlockMetadataWithNotify(x0, y0, z0, 3, 0x3);
-			else if(side==0&&world.getBlockMetadata(x0,y0,z0)==2)
-				metaMod = world.setBlockMetadataWithNotify(x0, y0, z0, 3, 0x3);
+			if(side==1&&world.getBlockMetadata(x0,y0,z0)==2)
+				metaMod = world.setBlockMetadataWithNotify(x0, y0, z0, 4, 0x3);
+			else if(side==0&&world.getBlockMetadata(x0,y0,z0)==3)
+				metaMod = world.setBlockMetadataWithNotify(x0, y0, z0, 4, 0x3);
 		if(metaMod)
 		{
 			world.playSoundEffect((double)((float)x + 0.5F), (double)((float)y + 0.5F), (double)((float)z + 0.5F), this.field_150939_a.stepSound.func_150496_b(), (this.field_150939_a.stepSound.getVolume() + 1.0F) / 2.0F, this.field_150939_a.stepSound.getPitch() * 0.8F);
@@ -66,7 +66,7 @@ public class ItemBlockWoodenDecoration extends ItemBlockIEBase
 			return true;
 		}
 		if(side==0 || (side!=1&&hitY>=.5))
-			meta=2;
+			meta=3;
 
 		if (stack.stackSize == 0)
 			return false;

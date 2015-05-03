@@ -24,6 +24,7 @@ import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import blusunrize.immersiveengineering.common.util.Utils;
 import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyReceiver;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -31,8 +32,8 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 {
 	public int facing = 2;
 	public EnergyStorage energyStorage = new EnergyStorage(32000);
-	List<ItemStack> inputs = new ArrayList();
-	int process = 0;
+	public List<ItemStack> inputs = new ArrayList();
+	public int process = 0;
 
 	public float barrelRotation=0;
 	public boolean active = false;
@@ -63,7 +64,7 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 		if(!formed || pos!=17)
 			return;
 
-		if(active||mobGrinding)
+		if((active&&process>0)||mobGrinding)
 		{
 			barrelRotation += 18f;
 			barrelRotation %= 360f;
@@ -82,10 +83,10 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 						ItemStack input = ((EntityItem)e).getEntityItem();
 						if(CrusherRecipe.findRecipe(input)==null)
 						{
-							e.setDead();
 							continue;
 						}
 						addStackToInputs(input);
+						update = true;
 						e.setDead();
 					}
 				List<EntityLivingBase> livingList = worldObj.getEntitiesWithinAABB(EntityLivingBase.class, aabb);
@@ -106,7 +107,7 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 					mobGrinding = false;
 					update = true;
 				}
-						
+
 
 				if(process>0)
 				{
@@ -155,6 +156,7 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 			}
 			if(update)
 			{
+				System.out.println("So I should send an update, right?");
 				this.markDirty();
 				worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 			}
@@ -221,6 +223,7 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 		inputs.clear();
 		for(int i=0;i<invList.tagCount();i++)
 			inputs.add( ItemStack.loadItemStackFromNBT(invList.getCompoundTagAt(i)));
+//	System.out.println("Read! "+FMLCommonHandler.instance().getEffectiveSide()+" - "+inputs.size());
 	}
 	@Override
 	public void writeCustomNBT(NBTTagCompound nbt)
@@ -242,6 +245,8 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 		for(ItemStack s : inputs)
 			invList.appendTag(s.writeToNBT(new NBTTagCompound()));
 		nbt.setTag("inputs", invList);
+//		if(FMLCommonHandler.instance().getEffectiveSide()!=Side.CLIENT)
+//		System.out.println("Write! "+" - "+invList.tagCount());
 	}
 
 
@@ -250,7 +255,7 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 	public AxisAlignedBB getRenderBoundingBox()
 	{
 		if(pos==17)
-			return AxisAlignedBB.getBoundingBox(xCoord-(facing==2||facing==3?2:1),yCoord,zCoord-(facing==4||facing==5?2:1), xCoord+(facing==2||facing==3?3:2),yCoord+2,zCoord+(facing==4||facing==5?3:2));
+			return AxisAlignedBB.getBoundingBox(xCoord-(facing==2||facing==3?2:1),yCoord,zCoord-(facing==4||facing==5?2:1), xCoord+(facing==2||facing==3?3:2),yCoord+3,zCoord+(facing==4||facing==5?3:2));
 		return AxisAlignedBB.getBoundingBox(xCoord,yCoord,zCoord, xCoord,yCoord,zCoord);
 	}
 
@@ -303,65 +308,32 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 	@Override
 	public int getSizeInventory()
 	{
-		if(!formed)
+		if(!formed || pos!=27)
 			return 0;
-		return inputs.size();
+		return 1;
 	}
 	@Override
 	public ItemStack getStackInSlot(int slot)
 	{
-		if(!formed)
-			return null;
-		if(master()!=null)
-			return master().getStackInSlot(slot);
-		if(slot<inputs.size())
-			return inputs.get(slot);
 		return null;
 	}
 	@Override
 	public ItemStack decrStackSize(int slot, int amount)
 	{
-		if(!formed)
-			return null;
-		if(master()!=null)
-			return master().decrStackSize(slot,amount);
-		ItemStack stack = getStackInSlot(slot);
-		if(stack != null)
-			if(stack.stackSize <= amount)
-				setInventorySlotContents(slot, null);
-			else
-			{
-				stack = stack.splitStack(amount);
-				if(stack.stackSize == 0)
-					setInventorySlotContents(slot, null);
-			}
-		return stack;
+		return null;
 	}
 	@Override
 	public ItemStack getStackInSlotOnClosing(int slot)
 	{
-		if(!formed)
-			return null;
-		if(master()!=null)
-			return master().getStackInSlotOnClosing(slot);
-		ItemStack stack = getStackInSlot(slot);
-		if (stack != null)
-			setInventorySlotContents(slot, null);
-		return stack;
+		return null;
 	}
 	@Override
 	public void setInventorySlotContents(int slot, ItemStack stack)
 	{
-		if(!formed)
+		if(!formed || pos!=27)
 			return;
 		if(master()!=null)
-		{
-			master().setInventorySlotContents(slot,stack);
-			return;
-		}
-		inputs.set(slot, stack);
-		if (stack != null && stack.stackSize > getInventoryStackLimit())
-			stack.stackSize = getInventoryStackLimit();
+			master().addStackToInputs(stack);
 	}
 	@Override
 	public String getInventoryName()
@@ -394,38 +366,24 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack stack)
 	{
-		if(!formed)
+		if(!formed || pos!=27)
 			return false;
-		if(master()!=null)
-			return master().isItemValidForSlot(slot,stack);
-		return true;
+		return CrusherRecipe.findRecipe(stack)!=null;
 	}
 	@Override
 	public int[] getAccessibleSlotsFromSide(int side)
 	{
-		if(!formed)
-			return new int[0];
-		if(master()!=null)
-			return master().getAccessibleSlotsFromSide(side);
-		return new int[]{0,1,2,3,4,5,6,7,8};
+		return formed&&pos==27&&side==ForgeDirection.UP.ordinal()?new int[]{0}: new int[0];
 	}
 	@Override
 	public boolean canInsertItem(int slot, ItemStack stack, int side)
 	{
-		if(!formed)
-			return false;
-		if(master()!=null)
-			return master().canInsertItem(slot,stack,side);
-		return isItemValidForSlot(slot,stack);
+		return formed&&pos==27&&side==ForgeDirection.UP.ordinal();
 	}
 	@Override
 	public boolean canExtractItem(int slot, ItemStack stack, int side)
 	{
-		if(!formed)
-			return false;
-		if(master()!=null)
-			return master().canExtractItem(slot,stack,side);
-		return true;
+		return false;
 	}
 
 	@Override

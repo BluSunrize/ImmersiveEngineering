@@ -41,8 +41,7 @@ public class MultiblockDieselGenerator implements IMultiblock
 	@Override
 	public boolean createStructure(World world, int x, int y, int z, int side, EntityPlayer player)
 	{
-		int f = ForgeDirection.getOrientation(side).getOpposite().ordinal();
-		if(f==0||f==1)
+		if(side==0||side==1)
 			return false;
 
 		int startX=x;
@@ -50,10 +49,10 @@ public class MultiblockDieselGenerator implements IMultiblock
 		int startZ=z;
 		if(world.getBlockMetadata(x, y, z)==BlockMetalDecoration.META_generator)
 		{
-			startX += (f==5?4: f==4?-4: 0);
-			startZ += (f==3?4: f==2?-4: 0);
+			startX += (side==4?4: side==5?-4: 0);
+			startZ += (side==2?4: side==3?-4: 0);
 
-			f= (f==2?3: f==3?2: f==4?5: 4);
+			side = ForgeDirection.OPPOSITES[side];
 		}
 
 		for(int l=0;l<5;l++)
@@ -66,17 +65,26 @@ public class MultiblockDieselGenerator implements IMultiblock
 					if(l==0)
 					{
 						if(!(world.getBlock(xx, yy, zz).equals(IEContent.blockMetalDecoration) && world.getBlockMetadata(xx, yy, zz)==BlockMetalDecoration.META_radiator))
+						{
+							System.out.println("break: "+xx+","+yy+","+zz+", no radiator");
 							return false;
+						}
 					}
 					else if(l==4)
 					{
 						if(!(world.getBlock(xx, yy, zz).equals(IEContent.blockMetalDecoration) && world.getBlockMetadata(xx, yy, zz)==BlockMetalDecoration.META_generator))
+						{
+							System.out.println("break: "+xx+","+yy+","+zz+", no generator");
 							return false;
+						}
 					}
 					else
 					{
 						if(!(world.getBlock(xx, yy, zz).equals(IEContent.blockMetalDecoration) && world.getBlockMetadata(xx, yy, zz)==BlockMetalDecoration.META_heavyEngineering))
+						{
+							System.out.println("break: "+xx+","+yy+","+zz+", no engine");
 							return false;
+						}
 					}
 				}
 
@@ -93,10 +101,10 @@ public class MultiblockDieselGenerator implements IMultiblock
 					if(world.getTileEntity(startX+xx, startY+yy, startZ+zz) instanceof TileEntityDieselGenerator)
 					{
 						TileEntityDieselGenerator tile = (TileEntityDieselGenerator)world.getTileEntity(startX+xx,startY+yy,startZ+zz);
-						tile.facing=f;
+						tile.facing=ForgeDirection.OPPOSITES[side];
 						tile.formed=true;
 						tile.pos = l*9 + (h+1)*3 + (w+1);
-						tile.offset = new int[]{(f==5?(l-3): f==4?(3-l): w),h,(f==3?(l-3): f==2?(3-l): w)};
+						tile.offset = new int[]{(side==5?(l-3): side==4?(3-l): w),h,(side==3?(l-3): side==2?(3-l): w)};
 					}
 				}
 		return true;

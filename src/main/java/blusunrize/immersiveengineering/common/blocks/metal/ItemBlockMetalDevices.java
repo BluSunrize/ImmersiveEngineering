@@ -53,7 +53,10 @@ public class ItemBlockMetalDevices extends ItemBlockIEBase
 	{
 		if(meta==BlockMetalDevices.META_transformer)
 		{
-			if(world.getTileEntity(x+(side==4?1: side==5?-1: 0), y, z+(side==2?1: side==3?-1: 0)) instanceof TileEntityWoodenPost && ((TileEntityWoodenPost)world.getTileEntity(x+(side==4?1: side==5?-1: 0), y, z+(side==2?1: side==3?-1: 0))).type>0 );
+			int playerViewQuarter = MathHelper.floor_double(player.rotationYaw * 4.0F / 360.0F + 0.5D) & 3;
+			int f = playerViewQuarter==0 ? 2:playerViewQuarter==1 ? 5:playerViewQuarter==2 ? 3: 4;
+			if(side==f && world.getTileEntity(x+(side==4?1: side==5?-1: 0), y, z+(side==2?1: side==3?-1: 0)) instanceof TileEntityWoodenPost && ((TileEntityWoodenPost)world.getTileEntity(x+(side==4?1: side==5?-1: 0), y, z+(side==2?1: side==3?-1: 0))).type>0 )
+				;
 			else if(!world.isAirBlock(x,y+1,z))
 				return false;
 		}
@@ -83,7 +86,7 @@ public class ItemBlockMetalDevices extends ItemBlockIEBase
 		else if(world.getTileEntity(x, y, z) instanceof TileEntityTransformer)
 		{
 			((TileEntityTransformer)world.getTileEntity(x,y,z)).facing=f;
-			if(meta==BlockMetalDevices.META_transformer && side==f && world.getTileEntity(x+(side==4?1: side==5?-1: 0), y, z+(side==2?1: side==3?-1: 0)) instanceof TileEntityWoodenPost && ((TileEntityWoodenPost)world.getTileEntity(x+(side==4?1: side==5?-1: 0), y, z+(side==2?1: side==3?-1: 0))).type>0 )
+			if(side==f && world.getTileEntity(x+(side==4?1: side==5?-1: 0), y, z+(side==2?1: side==3?-1: 0)) instanceof TileEntityWoodenPost && ((TileEntityWoodenPost)world.getTileEntity(x+(side==4?1: side==5?-1: 0), y, z+(side==2?1: side==3?-1: 0))).type>0 )
 				((TileEntityTransformer)world.getTileEntity(x,y,z)).postAttached=side;
 			else
 			{
