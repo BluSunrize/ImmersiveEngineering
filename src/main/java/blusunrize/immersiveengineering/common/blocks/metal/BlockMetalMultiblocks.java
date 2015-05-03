@@ -243,9 +243,9 @@ public class BlockMetalMultiblocks extends BlockIEBase
 			{
 				float height = pos%9>=6&&pos>9?.53f:1;
 				if(pos%9==0||pos%9==3||pos%9==6)
-					this.setBlockBounds((tile.facing<4?.25f:0),0,(tile.facing>3?.25f:0),  1,height,1);
+					this.setBlockBounds((tile.facing==2?.25f:0),0,(tile.facing==5?.25f:0),  (tile.facing==3?.75f:1),height,(tile.facing==4?.75f:1));
 				else if(pos%9==2||pos%9==5||pos%9==8)
-					this.setBlockBounds(0,0,0,  (tile.facing<4?.75f:1),height,(tile.facing>3?.75f:1));
+					this.setBlockBounds((tile.facing==3?.25f:0),0,(tile.facing==4?.25f:0),  (tile.facing==2?.75f:1),height,(tile.facing==5?.75f:1));
 				else
 					this.setBlockBounds(0,0,0,  1,height,1);
 			}

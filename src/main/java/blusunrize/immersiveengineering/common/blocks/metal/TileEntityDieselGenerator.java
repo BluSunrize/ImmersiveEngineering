@@ -285,23 +285,64 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockPart implemen
 	public void invalidate()
 	{
 		super.invalidate();
-
+//
+//		if(formed && !worldObj.isRemote)
+//		{
+//			int f = facing;
+//			int il = pos/9;
+//			int ih = (pos%9/3)-1;
+//			int iw = (pos%3)-1;
+//			int startX = xCoord-(f==4?il: f==5?-il: f==2?-iw: iw);
+//			int startY = yCoord-ih;
+//			int startZ = zCoord-(f==2?il: f==3?-il: f==5?-iw: iw);
+//			for(int l=0;l<3;l++)
+//				for(int w=-1;w<=1;w++)
+//					for(int h=-1;h<=1;h++)
+//					{
+//						int xx = (f==4?l: f==5?-l: f==2?-w: w);
+//						int yy = h;
+//						int zz = (f==2?l: f==3?-l: f==5?-w: w);
+//
+//						ItemStack s = null;
+//						if(worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz) instanceof TileEntityFermenter)
+//						{
+//							s = ((TileEntityFermenter)worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz)).getOriginalBlock();
+//							((TileEntityFermenter)worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz)).formed=false;
+//						}
+//						if(startX+xx==xCoord && startY+yy==yCoord && startZ+zz==zCoord)
+//							s = this.getOriginalBlock();
+//						if(s!=null && Block.getBlockFromItem(s.getItem())!=null)
+//						{
+//							if(startX+xx==xCoord && startY+yy==yCoord && startZ+zz==zCoord)
+//								worldObj.spawnEntityInWorld(new EntityItem(worldObj, xCoord+.5,yCoord+.5,zCoord+.5, s));
+//							else
+//							{
+//								if(Block.getBlockFromItem(s.getItem())==IEContent.blockMetalMultiblocks)
+//									worldObj.setBlockToAir(startX+xx,startY+yy,startZ+zz);
+//								worldObj.setBlock(startX+xx,startY+yy,startZ+zz, Block.getBlockFromItem(s.getItem()), s.getItemDamage(), 0x3);
+//							}
+//						}
+//					}
+//		}
+		
+		
 		if(formed && !worldObj.isRemote)
 		{
 			int f = facing;
 			int il = pos/9;
 			int ih = (pos%9/3)-1;
 			int iw = (pos%3)-1;
-			int startX = xCoord-(f==5?il: f==4?-il: iw);
+			int startX = xCoord-(f==5?il: f==4?-il: f==2?iw: -iw);
 			int startY = yCoord-ih;
-			int startZ = zCoord-(f==3?il: f==2?-il: iw);
+			int startZ = zCoord-(f==3?il: f==2?-il: f==5?iw: -iw);
+			System.out.println("break start: "+startX+","+startY+","+startZ);
 			for(int l=0;l<5;l++)
 				for(int w=-1;w<=1;w++)
 					for(int h=-1;h<=(l==4?0:1);h++)
 					{
-						int xx = (f==5?l: f==4?-l: w);
+						int xx = (f==5?l: f==4?-l: f==2?-w: w);
 						int yy = h;
-						int zz = (f==3?l: f==2?-l: w);
+						int zz = (f==3?l: f==2?-l: f==5?-w: w);
 						
 						ItemStack s = null;
 						if(worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz) instanceof TileEntityDieselGenerator)
@@ -322,8 +363,6 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockPart implemen
 								worldObj.setBlock(startX+xx,startY+yy,startZ+zz, Block.getBlockFromItem(s.getItem()), s.getItemDamage(), 0x3);
 							}
 						}
-						else if(s==null)
-							worldObj.setBlockToAir(startX+xx,startY+yy,startZ+zz);
 					}
 		}
 	}

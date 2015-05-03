@@ -322,8 +322,6 @@ public class TileEntitySqueezer extends TileEntityMultiblockPart implements IFlu
 								worldObj.setBlock(startX+xx,startY+yy,startZ+zz, Block.getBlockFromItem(s.getItem()), s.getItemDamage(), 0x3);
 							}
 						}
-						else if(s==null)
-							worldObj.setBlockToAir(startX+xx,startY+yy,startZ+zz);
 					}
 		}
 	}

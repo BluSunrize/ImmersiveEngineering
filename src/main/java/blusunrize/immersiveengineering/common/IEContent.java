@@ -412,12 +412,14 @@ public class IEContent
 		CrusherRecipe.addRecipe(new ItemStack(Items.quartz,4), "blockQuartz", 3200);
 		addOreDictCrusherRecipe("Tin");
 		addOreDictCrusherRecipe("Bronze");
+		addOreDictCrusherRecipe("Steel");
 		addOreDictCrusherRecipe("Enderium");
 		addOreDictCrusherRecipe("Lumium");
 		addOreDictCrusherRecipe("Signalum");
 		addOreDictCrusherRecipe("Invar");
 		addOreDictCrusherRecipe("Mithril");
 		addOreDictCrusherRecipe("Platinum");
+		addItemToOreDictCrusherRecipe("dustCoal",1, new ItemStack(Items.coal), 2400);
 		
 
 		DieselHandler.registerFuel(fluidBiodiesel, 125);
@@ -542,6 +544,15 @@ public class IEContent
 			CrusherRecipe.addRecipe(Utils.copyStackWithAmount(dust, 2), "ore"+ore, 4000);
 		if(!OreDictionary.getOres("ingot"+ore).isEmpty())
 			CrusherRecipe.addRecipe(Utils.copyStackWithAmount(dust, 1), "ingot"+ore, 2400);
+	}
+	public static void addItemToOreDictCrusherRecipe(String oreName, int outSize, Object input, int energy)
+	{
+		if(OreDictionary.getOres(oreName).isEmpty())
+			return;
+		ItemStack out = OreDictionary.getOres(oreName).get(0);
+		if(out==null)
+			return;
+		CrusherRecipe.addRecipe(Utils.copyStackWithAmount(out, outSize), input, energy);
 	}
 
 }
