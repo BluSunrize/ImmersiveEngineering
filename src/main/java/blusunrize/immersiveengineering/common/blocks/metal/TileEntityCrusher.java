@@ -24,7 +24,6 @@ import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import blusunrize.immersiveengineering.common.util.Utils;
 import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyReceiver;
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -210,7 +209,7 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 		facing = nbt.getInteger("facing");
 		barrelRotation = nbt.getFloat("barrelRotation");
 		active = nbt.getBoolean("active");
-		mobGrinding = nbt.getBoolean("modGrinding");
+		mobGrinding = nbt.getBoolean("mobGrinding");
 		process = nbt.getInteger("process");
 		energyStorage.readFromNBT(nbt);
 	}
@@ -232,7 +231,7 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 		nbt.setInteger("facing", facing);
 		nbt.setFloat("barrelRotation", barrelRotation);
 		nbt.setBoolean("active", active);
-		nbt.setBoolean("modGrinding", mobGrinding);
+		nbt.setBoolean("mobGrinding", mobGrinding);
 		nbt.setInteger("process", process);
 		energyStorage.writeToNBT(nbt);
 	}
