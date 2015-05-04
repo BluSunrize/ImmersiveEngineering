@@ -21,6 +21,8 @@ public abstract class ManualInstance
 	public abstract String formatEntryName(String s);
 	public abstract String formatEntrySubtext(String s);
 	public abstract String formatText(String s);
+	public abstract boolean showCategoryInList(String category);
+	public abstract boolean showEntryInList(ManualEntry entry);
 	
 	public abstract int getTitleColour();
 	public abstract int getSubTitleColour();

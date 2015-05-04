@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDevices;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorHV;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorLV;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorMV;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConveyorBelt;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityRelayHV;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTransformer;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTransformerHV;
@@ -96,6 +97,12 @@ public class BlockRenderMetalDevices implements ISimpleBlockRenderingHandler
 				renderer.setRenderBoundsFromBlock(block);
 				ClientUtils.drawInventoryBlock(block, metadata, renderer);
 			}
+			else if(metadata==BlockMetalDevices.META_conveyorBelt)
+			{
+				block.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.125F, 1.0F);
+				renderer.setRenderBoundsFromBlock(block);
+				ClientUtils.drawInventoryBlock(block, metadata, renderer);
+			}
 		}catch(Exception e)
 		{
 			e.printStackTrace();
@@ -131,6 +138,18 @@ public class BlockRenderMetalDevices implements ISimpleBlockRenderingHandler
 		{
 			renderer.setRenderBounds(0,0,0, 1,1,1);
 			return renderer.renderStandardBlock(block, x, y, z);
+		}
+		else if(metadata==BlockMetalDevices.META_conveyorBelt)
+		{
+			renderer.setRenderBounds(0,0,0, 1,.125f,1);
+			if(world.getTileEntity(x, y, z) instanceof TileEntityConveyorBelt)
+			{
+				TileEntityConveyorBelt tile = (TileEntityConveyorBelt)world.getTileEntity(x, y, z);
+				renderer.uvRotateTop = tile.facing==2?0: tile.facing==3?3: tile.facing==4?2: 1;
+			}
+			boolean b = renderer.renderStandardBlock(block, x, y, z);
+			renderer.uvRotateTop = 0;
+			return b;
 		}
 		return false;
 	}

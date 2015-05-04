@@ -51,7 +51,7 @@ public abstract class ManualPages implements IManualPage
 	@Override
 	public void buttonPressed(GuiManual gui, GuiButton button)
 	{
-		if(button instanceof GuiButtonManualLink && GuiManual.activeManual!=null)
+		if(button instanceof GuiButtonManualLink && GuiManual.activeManual!=null && manual.showEntryInList(manual.getEntry(((GuiButtonManualLink)button).key)))
 		{
 			GuiManual.selectedEntry = ((GuiButtonManualLink)button).key;
 			GuiManual.page = ((GuiButtonManualLink)button).pageLinked;
@@ -524,7 +524,7 @@ public abstract class ManualPages implements IManualPage
 			RenderHelper.disableStandardItemLighting();
 			GL11.glDisable(GL12.GL_RESCALE_NORMAL);
 			GL11.glEnable(GL11.GL_BLEND);
-			
+
 			manual.fontRenderer.setUnicodeFlag(uni);
 			if(localizedText!=null&&!localizedText.isEmpty())
 				manual.fontRenderer.drawSplitString(localizedText, x,y+yOff+2, 120, manual.getTextColour());

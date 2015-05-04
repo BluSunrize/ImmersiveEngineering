@@ -58,6 +58,13 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockPart implemen
 	@Override
 	public void updateEntity()
 	{
+//		if(pos==0)
+//		{
+//			System.out.println("My pos: "+pos+", master: "+master());
+//			worldObj.spawnParticle("smoke", xCoord, yCoord, zCoord, 0, 0, 0);
+//			System.out.println("Master search: "+offset[0]+","+offset[1]+","+offset[2]);
+			
+//		}
 		if(!formed || pos!=31)
 			return;
 
@@ -189,7 +196,7 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockPart implemen
 		super.writeCustomNBT(nbt);
 		nbt.setInteger("facing", facing);
 		nbt.setBoolean("active", active);
-		
+
 		nbt.setFloat("fanRotation", fanRotation);
 		nbt.setInteger("fanFadeIn", fanFadeIn);
 		nbt.setInteger("fanFadeOut", fanFadeOut);
@@ -250,16 +257,12 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockPart implemen
 	@Override
 	public boolean canFill(ForgeDirection from, Fluid fluid)
 	{
-		if(!formed||(pos!=36&&pos!=38)||!DieselHandler.isValidFuel(fluid))
-			return false;
-		return true;
+		return formed && pos==36||pos==38 && DieselHandler.isValidFuel(fluid);
 	}
 	@Override
 	public boolean canDrain(ForgeDirection from, Fluid fluid)
 	{
-		if(!formed||(pos!=36&&pos!=38))
-			return false;
-		return true;
+		return formed && pos==36||pos==38;
 	}
 	@Override
 	public FluidTankInfo[] getTankInfo(ForgeDirection from)
@@ -285,47 +288,47 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockPart implemen
 	public void invalidate()
 	{
 		super.invalidate();
-//
-//		if(formed && !worldObj.isRemote)
-//		{
-//			int f = facing;
-//			int il = pos/9;
-//			int ih = (pos%9/3)-1;
-//			int iw = (pos%3)-1;
-//			int startX = xCoord-(f==4?il: f==5?-il: f==2?-iw: iw);
-//			int startY = yCoord-ih;
-//			int startZ = zCoord-(f==2?il: f==3?-il: f==5?-iw: iw);
-//			for(int l=0;l<3;l++)
-//				for(int w=-1;w<=1;w++)
-//					for(int h=-1;h<=1;h++)
-//					{
-//						int xx = (f==4?l: f==5?-l: f==2?-w: w);
-//						int yy = h;
-//						int zz = (f==2?l: f==3?-l: f==5?-w: w);
-//
-//						ItemStack s = null;
-//						if(worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz) instanceof TileEntityFermenter)
-//						{
-//							s = ((TileEntityFermenter)worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz)).getOriginalBlock();
-//							((TileEntityFermenter)worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz)).formed=false;
-//						}
-//						if(startX+xx==xCoord && startY+yy==yCoord && startZ+zz==zCoord)
-//							s = this.getOriginalBlock();
-//						if(s!=null && Block.getBlockFromItem(s.getItem())!=null)
-//						{
-//							if(startX+xx==xCoord && startY+yy==yCoord && startZ+zz==zCoord)
-//								worldObj.spawnEntityInWorld(new EntityItem(worldObj, xCoord+.5,yCoord+.5,zCoord+.5, s));
-//							else
-//							{
-//								if(Block.getBlockFromItem(s.getItem())==IEContent.blockMetalMultiblocks)
-//									worldObj.setBlockToAir(startX+xx,startY+yy,startZ+zz);
-//								worldObj.setBlock(startX+xx,startY+yy,startZ+zz, Block.getBlockFromItem(s.getItem()), s.getItemDamage(), 0x3);
-//							}
-//						}
-//					}
-//		}
-		
-		
+		//
+		//		if(formed && !worldObj.isRemote)
+		//		{
+		//			int f = facing;
+		//			int il = pos/9;
+		//			int ih = (pos%9/3)-1;
+		//			int iw = (pos%3)-1;
+		//			int startX = xCoord-(f==4?il: f==5?-il: f==2?-iw: iw);
+		//			int startY = yCoord-ih;
+		//			int startZ = zCoord-(f==2?il: f==3?-il: f==5?-iw: iw);
+		//			for(int l=0;l<3;l++)
+		//				for(int w=-1;w<=1;w++)
+		//					for(int h=-1;h<=1;h++)
+		//					{
+		//						int xx = (f==4?l: f==5?-l: f==2?-w: w);
+		//						int yy = h;
+		//						int zz = (f==2?l: f==3?-l: f==5?-w: w);
+		//
+		//						ItemStack s = null;
+		//						if(worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz) instanceof TileEntityFermenter)
+		//						{
+		//							s = ((TileEntityFermenter)worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz)).getOriginalBlock();
+		//							((TileEntityFermenter)worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz)).formed=false;
+		//						}
+		//						if(startX+xx==xCoord && startY+yy==yCoord && startZ+zz==zCoord)
+		//							s = this.getOriginalBlock();
+		//						if(s!=null && Block.getBlockFromItem(s.getItem())!=null)
+		//						{
+		//							if(startX+xx==xCoord && startY+yy==yCoord && startZ+zz==zCoord)
+		//								worldObj.spawnEntityInWorld(new EntityItem(worldObj, xCoord+.5,yCoord+.5,zCoord+.5, s));
+		//							else
+		//							{
+		//								if(Block.getBlockFromItem(s.getItem())==IEContent.blockMetalMultiblocks)
+		//									worldObj.setBlockToAir(startX+xx,startY+yy,startZ+zz);
+		//								worldObj.setBlock(startX+xx,startY+yy,startZ+zz, Block.getBlockFromItem(s.getItem()), s.getItemDamage(), 0x3);
+		//							}
+		//						}
+		//					}
+		//		}
+
+
 		if(formed && !worldObj.isRemote)
 		{
 			int f = facing;
@@ -343,7 +346,7 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockPart implemen
 						int xx = (f==5?l: f==4?-l: f==2?-w: w);
 						int yy = h;
 						int zz = (f==3?l: f==2?-l: f==5?-w: w);
-						
+
 						ItemStack s = null;
 						if(worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz) instanceof TileEntityDieselGenerator)
 						{

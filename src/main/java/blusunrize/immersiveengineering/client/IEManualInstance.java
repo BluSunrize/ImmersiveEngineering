@@ -91,6 +91,16 @@ public class IEManualInstance extends ManualInstance
 	{
 		return StatCollector.translateToLocal("ie.manual.entry."+s+".subtext");
 	}
+	@Override
+	public boolean showEntryInList(ManualEntry entry)
+	{
+		return entry.getName()!="wiring";
+	}
+	@Override
+	public boolean showCategoryInList(String category)
+	{
+		return true;
+	}
 
 	@Override
 	public int getTitleColour()
@@ -117,5 +127,4 @@ public class IEManualInstance extends ManualInstance
 	{
 		return 0x9c917c;
 	}
-
 }

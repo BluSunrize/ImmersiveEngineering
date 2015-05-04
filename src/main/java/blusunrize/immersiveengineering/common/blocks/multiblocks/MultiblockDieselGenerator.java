@@ -104,7 +104,7 @@ public class MultiblockDieselGenerator implements IMultiblock
 						tile.facing=ForgeDirection.OPPOSITES[side];
 						tile.formed=true;
 						tile.pos = l*9 + (h+1)*3 + (w+1);
-						tile.offset = new int[]{(side==5?(l-3): side==4?(3-l): w),h,(side==3?(l-3): side==2?(3-l): w)};
+						tile.offset = new int[]{(side==4?(l-3): side==5?(3-l): side==2?-w: w),h,(side==2?(l-3): side==3?(3-l): side==5?-w: w)};
 					}
 				}
 		return true;
