@@ -27,6 +27,7 @@ tile.ImmersiveEngineering.metalDevice.capacitorHV.name=HV Capacitor
 tile.ImmersiveEngineering.metalDevice.transformerHV.name=HV Transformer
 tile.ImmersiveEngineering.metalDevice.dynamo.name=Kinetic Dynamo
 tile.ImmersiveEngineering.metalDevice.thermoelectricGen.name=Thermoelectric Generator
+tile.ImmersiveEngineering.metalDevice.conveyorBelt.name=Conveyor Belt [WIP]
 
 tile.ImmersiveEngineering.metalMultiblock.lightningRod.name=Lightning Rod Base
 tile.ImmersiveEngineering.metalMultiblock.dieselGenerator.name=Diesel Generator

@@ -100,6 +100,30 @@ public class ItemBlockMetalDevices extends ItemBlockIEBase
 		}
 		else if(world.getTileEntity(x, y, z) instanceof TileEntityDynamo)
 			((TileEntityDynamo)world.getTileEntity(x,y,z)).facing=f;
+		else if(world.getTileEntity(x, y, z) instanceof TileEntityConveyorBelt)
+		{
+			TileEntityConveyorBelt tile = (TileEntityConveyorBelt)world.getTileEntity(x,y,z);
+			tile.facing=f;
+
+			ForgeDirection fd = ForgeDirection.VALID_DIRECTIONS[side].getOpposite();
+			if(world.getTileEntity(x+fd.offsetX, y+1, z+fd.offsetZ) instanceof TileEntityConveyorBelt)
+			{
+				TileEntityConveyorBelt con = (TileEntityConveyorBelt)world.getTileEntity(x+fd.offsetX, y+1, z+fd.offsetZ);
+				if(ForgeDirection.VALID_DIRECTIONS[con.facing].equals(fd))
+				{
+					tile.transportDown = true;
+					side = fd.ordinal();
+				}
+				else
+					tile.transportUp = true;
+			}
+			else if(world.getTileEntity(x+fd.offsetX, y-1, z+fd.offsetZ) instanceof TileEntityConveyorBelt)
+			{
+				TileEntityConveyorBelt con = (TileEntityConveyorBelt)world.getTileEntity(x+fd.offsetX, y-1, z+fd.offsetZ);
+				if(ForgeDirection.VALID_DIRECTIONS[con.facing].getOpposite().equals(fd))
+					con.transportDown = true;
+			}
+		}
 
 		return ret;
 	}

@@ -20,11 +20,10 @@ public class MultiblockCrusher implements IMultiblock
 			for(int l=0;l<5;l++)
 				for(int w=0;w<3;w++)
 				{
+					if((l==0&&h==2)||(l==4&&h==2)||(l==4&&w==2&&h>0))
+						continue;
 					if(l==0)
-					{
-						if(h<2)
-							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration,1,BlockMetalDecoration.META_lightEngineering);
-					}
+						structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration,1,BlockMetalDecoration.META_lightEngineering);
 					else if(l==4)
 					{
 						if(h<1)
@@ -63,8 +62,11 @@ public class MultiblockCrusher implements IMultiblock
 
 		for(int l=0;l<3;l++)
 			for(int w=-2;w<=2;w++)
-				for(int h=-1;h<=(w==-2||w==2?0:1);h++)
+				for(int h=-1;h<=1;h++)
 				{
+					if((w==-2&&h==1)||(w==2&&h==1)||(w==2&&l==2&&h>-1))
+						continue;
+					
 					int xx = startX+ (side==4?l: side==5?-l: side==2?-w : w);
 					int yy = startY+ h;
 					int zz = startZ+ (side==2?l: side==3?-l: side==5?-w : w);
@@ -98,9 +100,9 @@ public class MultiblockCrusher implements IMultiblock
 
 		for(int l=0;l<3;l++)
 			for(int w=-2;w<=2;w++)
-				for(int h=-1;h<=(w==-2||w==2?0:1);h++)
+				for(int h=-1;h<=1;h++)
 				{
-					if(h==0&&w==2&&l==2)
+					if((w==-2&&h==1)||(w==2&&h==1)||(w==2&&l==2&&h>-1))
 						continue;
 					int xx = startX+ (side==4?l: side==5?-l: side==2?-w : w);
 					int yy = startY+ h;

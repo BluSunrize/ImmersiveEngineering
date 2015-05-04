@@ -67,26 +67,29 @@ public class GuiManual extends GuiScreen
 		}
 		else if(manual.manualContents.keySet().size()==1)
 		{
-			ManualEntry[] entries = manual.manualContents.values().toArray(new ManualEntry[0]);
-			headers = new String[entries.length];
-			for(int i=0;i<entries.length;i++)
-				headers[i] = entries[i].getName();
+			ArrayList<String> lHeaders = new ArrayList<String>();
+			for(ManualEntry e : manual.manualContents.values())
+				if(manual.showEntryInList(e))
+					lHeaders.add(e.getName());
+			headers = lHeaders.toArray(new String[0]);
 			this.buttonList.add(new GuiClickableList(this, 0, guiLeft+40,guiTop+20, 100,148, 1f, 1, headers));
 		}
 		else if(manual.manualContents.containsKey(selectedCategory))
 		{
-			headers = new String[manual.manualContents.get(selectedCategory).size()];
-			for(int i=0;i<manual.manualContents.get(selectedCategory).size();i++)
-				headers[i] = manual.manualContents.get(selectedCategory).get(i).getName() ;//manual.formatEntryName();
+			ArrayList<String> lHeaders = new ArrayList<String>();
+			for(ManualEntry e : manual.manualContents.get(selectedCategory))
+				if(manual.showEntryInList(e))
+					lHeaders.add(e.getName());
+			headers = lHeaders.toArray(new String[0]);
 			this.buttonList.add(new GuiClickableList(this, 0, guiLeft+40,guiTop+20, 100,148, 1f, 1, headers));
 		}
 		else
 		{
-			headers = manual.manualContents.keySet().toArray(new String[0]);
-			//			List<String> ll = new ArrayList();
-			//			for(String s : )
-			//				ll.add( manual.formatCategoryName(s) );
-			//			Collections.sort(ll);
+			ArrayList<String> lHeaders = new ArrayList<String>();
+			for(String cat : manual.manualContents.keySet())
+				if(manual.showCategoryInList(cat))
+					lHeaders.add(cat);
+			headers = lHeaders.toArray(new String[0]);
 			this.buttonList.add(new GuiClickableList(this, 0, guiLeft+40,guiTop+20, 100,148, 1f, 0, headers));
 		}
 	}

@@ -37,6 +37,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCapacitorMV
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorHV;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorLV;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorMV;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConveyorBelt;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityDieselGenerator;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityDynamo;
@@ -170,18 +171,6 @@ public class IEContent
 		registerToOreDict("", itemMetal);
 		registerOre("Cupronickel",	null,new ItemStack(itemMetal,1,5),new ItemStack(itemMetal,1,15),new ItemStack(blockStorage,1,5));
 
-		//		registerOre("Iron", 	null,null,new ItemStack(itemMetal,1,7),null);
-		//		registerOre("Gold", 	null,null,new ItemStack(itemMetal,1,8),null);
-		//		registerOre("Copper",	new ItemStack(blockOres,1,0),new ItemStack(itemMetal,1,0),new ItemStack(itemMetal,1,9),new ItemStack(blockStorage,1,0));
-		//		registerOre("Aluminum",	new ItemStack(blockOres,1,1),new ItemStack(itemMetal,1,1),new ItemStack(itemMetal,1,10),new ItemStack(blockStorage,1,1));
-		//		registerOre("Lead",		new ItemStack(blockOres,1,2),new ItemStack(itemMetal,1,2),new ItemStack(itemMetal,1,11),new ItemStack(blockStorage,1,2));
-		//		registerOre("Silver",	new ItemStack(blockOres,1,3),new ItemStack(itemMetal,1,3),new ItemStack(itemMetal,1,12),new ItemStack(blockStorage,1,3));
-		//		registerOre("Nickel",	new ItemStack(blockOres,1,4),new ItemStack(itemMetal,1,4),new ItemStack(itemMetal,1,13),new ItemStack(blockStorage,1,3));
-		//		registerOre("Constantan",null,new ItemStack(itemMetal,1,5),new ItemStack(itemMetal,1,13),new ItemStack(blockStorage,1,3));
-		//		registerOre("Electrum",	null,new ItemStack(itemMetal,1,5),new ItemStack(itemMetal,1,14),new ItemStack(blockStorage,1,5));
-		//		registerOre("Steel",	null,new ItemStack(itemMetal,1,6),null,new ItemStack(blockStorage,1,6));
-
-
 		OreDictionary.registerOre("treatedStick", new ItemStack(itemMaterial,1,0));
 		OreDictionary.registerOre("fuelCoke", new ItemStack(itemMaterial,1,6));
 		OreDictionary.registerOre("blockFuelCoke", new ItemStack(blockStoneDevice,1,3));
@@ -213,11 +202,13 @@ public class IEContent
 		blockStorage.setHarvestLevel("pickaxe", 2, 8);//CoilCopper
 		blockStorage.setHarvestLevel("pickaxe", 2, 9);//CoilElectrum
 		blockStorage.setHarvestLevel("pickaxe", 2,10);//CoilHV
-		IEWorldGen.addOreGen(blockOres, 0,8, 40,72, 8,100);
-		IEWorldGen.addOreGen(blockOres, 1,8, 40,85, 8,100);
-		IEWorldGen.addOreGen(blockOres, 2,8,  8,36, 4,100);
-		IEWorldGen.addOreGen(blockOres, 3,8,  8,40, 4,80);
-		IEWorldGen.addOreGen(blockOres, 4,4,  8,24, 2,100);
+
+
+		addConfiguredWorldgen(blockOres,0, "ore_copper");
+		addConfiguredWorldgen(blockOres,1, "ore_bauxite");
+		addConfiguredWorldgen(blockOres,2, "ore_lead");
+		addConfiguredWorldgen(blockOres,3, "ore_silver");
+		addConfiguredWorldgen(blockOres,4, "ore_nickel");
 	}
 
 	public static void init()
@@ -240,6 +231,7 @@ public class IEContent
 		registerTile(TileEntityTransformerHV.class);
 		registerTile(TileEntityDynamo.class);
 		registerTile(TileEntityThermoelectricGen.class);
+		registerTile(TileEntityConveyorBelt.class);
 
 		registerTile(TileEntityLightningRod.class);
 		registerTile(TileEntityDieselGenerator.class);
@@ -420,7 +412,7 @@ public class IEContent
 		addOreDictCrusherRecipe("Mithril");
 		addOreDictCrusherRecipe("Platinum");
 		addItemToOreDictCrusherRecipe("dustCoal",1, new ItemStack(Items.coal), 2400);
-		
+
 
 		DieselHandler.registerFuel(fluidBiodiesel, 125);
 		DieselHandler.registerFuel(FluidRegistry.getFluid("fuel"), 375);
@@ -499,6 +491,13 @@ public class IEContent
 		String s = tile.getSimpleName();
 		s = s.substring(s.indexOf("TileEntity")+"TileEntity".length());
 		GameRegistry.registerTileEntity(tile, ImmersiveEngineering.MODID+":"+ s);
+	}
+
+	public static void addConfiguredWorldgen(Block block, int meta, String config)
+	{
+		int[] values = Config.getIntArray(config);
+		if(values!=null && values.length>=5 && values[0]>0)
+			IEWorldGen.addOreGen(block, meta, values[0],values[1],values[2], values[3],values[4]);
 	}
 
 	public static ShapedOreRecipe addOredictRecipe(ItemStack output, Object... recipe)

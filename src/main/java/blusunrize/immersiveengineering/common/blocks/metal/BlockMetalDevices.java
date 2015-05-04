@@ -7,6 +7,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -40,13 +41,15 @@ public class BlockMetalDevices extends BlockIEBase
 	public static int META_transformerHV=8;
 	public static int META_dynamo=9;
 	public static int META_thermoelectricGen=10;
+	public static int META_conveyorBelt=11;
 	public BlockMetalDevices()
 	{
 		super("metalDevice", Material.iron, 4, ItemBlockMetalDevices.class,
 				"connectorLV","capacitorLV",
 				"connectorMV","capacitorMV","transformer",
 				"relayHV","connectorHV","capacitorHV","transformerHV",
-				"dynamo","thermoelectricGen");
+				"dynamo","thermoelectricGen",
+				"conveyorBelt");
 		setHardness(3.0F);
 		setResistance(15.0F);
 	}
@@ -137,6 +140,11 @@ public class BlockMetalDevices extends BlockIEBase
 		icons[10][1] = iconRegister.registerIcon("immersiveengineering:metal_thermogen_top");
 		icons[10][2] = iconRegister.registerIcon("immersiveengineering:metal_thermogen_side");
 		icons[10][3] = iconRegister.registerIcon("immersiveengineering:metal_thermogen_side");
+		//11 thermoelectricGen
+		icons[11][0] = iconRegister.registerIcon("immersiveengineering:metal_conveyor_top");
+		icons[11][1] = iconRegister.registerIcon("immersiveengineering:metal_conveyor_top");
+		icons[11][2] = iconRegister.registerIcon("immersiveengineering:metal_conveyor_side");
+		icons[11][3] = iconRegister.registerIcon("immersiveengineering:metal_conveyor_side");
 
 
 		//0 connectorLV
@@ -170,9 +178,7 @@ public class BlockMetalDevices extends BlockIEBase
 				return icon_capacitorSide[t][cap.sideConfig[side]+1];
 		}
 		if(world.getTileEntity(x, y, z) instanceof TileEntityDynamo && ((TileEntityDynamo)world.getTileEntity(x,y,z)).facing>3 && side>1)
-		{
 			return icons[META_dynamo][side<4?3:2];
-		}
 		return super.getIcon(world, x, y, z, side);
 	}
 	@Override
@@ -251,6 +257,10 @@ public class BlockMetalDevices extends BlockIEBase
 			else
 				this.setBlockBounds(0,0,0,1,1,1);
 		}
+		else if(world.getTileEntity(x, y, z) instanceof TileEntityConveyorBelt)
+		{
+			this.setBlockBounds(0,0,0,1,.125f,1);
+		}
 		else
 			this.setBlockBounds(0,0,0,1,1,1);
 	}
@@ -294,6 +304,8 @@ public class BlockMetalDevices extends BlockIEBase
 			return new TileEntityDynamo();
 		case 10://10 thermoelectricGen
 			return new TileEntityThermoelectricGen();
+		case 11://11 conveyorBelt
+			return new TileEntityConveyorBelt();
 		}
 		return null;
 	}
@@ -327,6 +339,50 @@ public class BlockMetalDevices extends BlockIEBase
 			}
 			else if(transf.postAttached<=0 && ((transf.dummy && world.isAirBlock(x,y+1,z))|| (!transf.dummy && world.isAirBlock(x,y-1,z))))
 				world.setBlockToAir(x, y, z);
+		}
+	}
+	
+	@Override
+	public void onEntityCollidedWithBlock(World world, int x, int y, int z, Entity par5Entity)
+	{
+		if(world.getTileEntity(x, y, z) instanceof TileEntityConveyorBelt)
+		{
+			if(world.isBlockIndirectlyGettingPowered(x, y, z))
+				return;
+			TileEntityConveyorBelt tile = (TileEntityConveyorBelt) world.getTileEntity(x, y, z);
+			ForgeDirection fd = ForgeDirection.getOrientation(tile.facing);
+			double vBase = 1.15;
+			double vX = -0.1 * vBase*fd.offsetX;
+			double vY = par5Entity.motionY;
+			double vZ = -0.1 * vBase*fd.offsetZ;
+
+			if (tile.transportUp)
+			{
+				vY = 0.17D * vBase;
+			}
+			else if (tile.transportDown)
+				vY = -0.07000000000000001D * vBase;
+
+			if (tile.transportUp||tile.transportDown)
+				par5Entity.onGround = false;
+
+
+			if (fd == ForgeDirection.WEST || fd == ForgeDirection.EAST)
+			{
+				if (par5Entity.posZ > z + 0.55D)
+					vZ = -0.1D * vBase;
+				else if (par5Entity.posZ < z + 0.45D)
+					vZ = 0.1D * vBase;
+			}
+			else if (fd == ForgeDirection.NORTH || fd == ForgeDirection.SOUTH) {
+				if (par5Entity.posX > x + 0.55D)
+					vX = -0.1D * vBase;
+				else if (par5Entity.posX < x + 0.45D)
+					vX = 0.1D * vBase;
+			}
+			par5Entity.motionX = vX;
+			par5Entity.motionY = vY;
+			par5Entity.motionZ = vZ;
 		}
 	}
 }

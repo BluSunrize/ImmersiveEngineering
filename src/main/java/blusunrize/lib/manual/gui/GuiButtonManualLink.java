@@ -20,10 +20,18 @@ public class GuiButtonManualLink extends GuiButton
 		this.localized = localized;
 		this.pageLinked = pageLinked;
 	}
-	
+
+	@Override
+    public boolean mousePressed(Minecraft mc, int mx, int my)
+    {
+        return super.mousePressed(mc, mx, my) && gui.manual.showEntryInList(gui.manual.getEntry(key));
+    }
+
 	@Override
 	public void drawButton(Minecraft mc, int mx, int my)
 	{
+		if(!gui.manual.showEntryInList(gui.manual.getEntry(key)))
+			return;
 		this.field_146123_n = mx >= this.xPosition && my >= this.yPosition && mx < this.xPosition + this.width && my < this.yPosition + this.height;
 		if(field_146123_n)
 		{
