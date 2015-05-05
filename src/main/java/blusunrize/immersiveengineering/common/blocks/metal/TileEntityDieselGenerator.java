@@ -328,6 +328,8 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockPart implemen
 		//					}
 		//		}
 
+//		if(sound!=null && sound.getXPosF()==xCoord && sound.getYPosF()==yCoord && sound.getZPosF()==zCoord)
+//			sound.donePlaying=true;
 
 		if(formed && !worldObj.isRemote)
 		{

@@ -162,20 +162,22 @@ public class BlockRenderMetalDecoration implements ISimpleBlockRenderingHandler
 		else if(world.getBlockMetadata(x, y, z)==BlockMetalDecoration.META_scaffolding)
 		{
 			renderer.setRenderBoundsFromBlock(block);
+			float f = .015625f;
+			float f1 = 0;
 			renderer.renderFromInside=true;
-			renderer.renderMinX+=block.shouldSideBeRendered(world,x-1,y,z,1)?.015625:0;
-			renderer.renderMinY+=block.shouldSideBeRendered(world,x,y-1,z,0)?.015625:0;
-			renderer.renderMinZ+=block.shouldSideBeRendered(world,x,y,z-1,1)?.015625:0;
-			renderer.renderMaxX-=block.shouldSideBeRendered(world,x+1,y,z,1)?.015625:0;
-			renderer.renderMaxY-=block.shouldSideBeRendered(world,x,y+1,z,1)?.015625:0;
-			renderer.renderMaxZ-=block.shouldSideBeRendered(world,x,y,z+1,1)?.015625:0;
+			renderer.renderMinX+=block.shouldSideBeRendered(world,x-1,y,z,4)?f:f1;
+			renderer.renderMinY+=block.shouldSideBeRendered(world,x,y-1,z,0)?f:f1;
+			renderer.renderMinZ+=block.shouldSideBeRendered(world,x,y,z-1,2)?f:f1;
+			renderer.renderMaxX-=block.shouldSideBeRendered(world,x+1,y,z,5)?f:f1;
+			renderer.renderMaxY-=block.shouldSideBeRendered(world,x,y+1,z,1)?f:f1;
+			renderer.renderMaxZ-=block.shouldSideBeRendered(world,x,y,z+1,3)?f:f1;
 			renderer.renderStandardBlock(block, x, y, z);
-			renderer.renderMinX-=block.shouldSideBeRendered(world,x-1,y,z,1)?.015625:0;
-			renderer.renderMinY-=block.shouldSideBeRendered(world,x,y-1,z,0)?.015625:0;
-			renderer.renderMinZ-=block.shouldSideBeRendered(world,x,y,z-1,1)?.015625:0;
-			renderer.renderMaxX+=block.shouldSideBeRendered(world,x+1,y,z,1)?.015625:0;
-			renderer.renderMaxY+=block.shouldSideBeRendered(world,x,y+1,z,1)?.015625:0;
-			renderer.renderMaxZ+=block.shouldSideBeRendered(world,x,y,z+1,1)?.015625:0;
+			renderer.renderMinX-=block.shouldSideBeRendered(world,x-1,y,z,4)?f:f1;
+			renderer.renderMinY-=block.shouldSideBeRendered(world,x,y-1,z,0)?f:f1;
+			renderer.renderMinZ-=block.shouldSideBeRendered(world,x,y,z-1,2)?f:f1;
+			renderer.renderMaxX+=block.shouldSideBeRendered(world,x+1,y,z,5)?f:f1;
+			renderer.renderMaxY+=block.shouldSideBeRendered(world,x,y+1,z,1)?f:f1;
+			renderer.renderMaxZ+=block.shouldSideBeRendered(world,x,y,z+1,3)?f:f1;
 			renderer.renderFromInside=false;
 			return renderer.renderStandardBlock(block, x, y, z);
 		}

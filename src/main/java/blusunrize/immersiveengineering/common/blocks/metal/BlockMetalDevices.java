@@ -10,6 +10,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -88,7 +89,7 @@ public class BlockMetalDevices extends BlockIEBase
 	public void getSubBlocks(Item item, CreativeTabs tab, List list)
 	{
 		for(int i=0; i<subNames.length; i++)
-				list.add(new ItemStack(item, 1, i));
+			list.add(new ItemStack(item, 1, i));
 	}
 
 	@Override
@@ -140,11 +141,11 @@ public class BlockMetalDevices extends BlockIEBase
 		icons[10][1] = iconRegister.registerIcon("immersiveengineering:metal_thermogen_top");
 		icons[10][2] = iconRegister.registerIcon("immersiveengineering:metal_thermogen_side");
 		icons[10][3] = iconRegister.registerIcon("immersiveengineering:metal_thermogen_side");
-		//11 thermoelectricGen
+		//11 conveyorBelt
 		icons[11][0] = iconRegister.registerIcon("immersiveengineering:metal_conveyor_top");
 		icons[11][1] = iconRegister.registerIcon("immersiveengineering:metal_conveyor_top");
-		icons[11][2] = iconRegister.registerIcon("immersiveengineering:metal_conveyor_side");
-		icons[11][3] = iconRegister.registerIcon("immersiveengineering:metal_conveyor_side");
+		icons[11][2] = iconRegister.registerIcon("immersiveengineering:metal_dynamo_bottom");
+		icons[11][3] = iconRegister.registerIcon("immersiveengineering:metal_dynamo_bottom");
 
 
 		//0 connectorLV
@@ -179,6 +180,8 @@ public class BlockMetalDevices extends BlockIEBase
 		}
 		if(world.getTileEntity(x, y, z) instanceof TileEntityDynamo && ((TileEntityDynamo)world.getTileEntity(x,y,z)).facing>3 && side>1)
 			return icons[META_dynamo][side<4?3:2];
+		if(world.getTileEntity(x, y, z) instanceof TileEntityConveyorBelt && (((TileEntityConveyorBelt)world.getTileEntity(x,y,z)).facing==side || ((TileEntityConveyorBelt)world.getTileEntity(x,y,z)).facing==ForgeDirection.OPPOSITES[side]))
+			return icons[META_conveyorBelt][1];
 		return super.getIcon(world, x, y, z, side);
 	}
 	@Override
@@ -186,6 +189,7 @@ public class BlockMetalDevices extends BlockIEBase
 	{
 		return BlockRenderMetalDevices.renderID;
 	}
+	
 
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
@@ -200,6 +204,28 @@ public class BlockMetalDevices extends BlockIEBase
 				world.getTileEntity(x, y, z).markDirty();
 				world.func_147451_t(x, y, z);
 			}
+			return true;
+		}
+		if(world.getTileEntity(x, y, z) instanceof TileEntityConveyorBelt && Utils.isHammer(player.getCurrentEquippedItem()))
+		{
+			TileEntityConveyorBelt tile = (TileEntityConveyorBelt)world.getTileEntity(x, y, z);
+			if(player.isSneaking())
+			{
+				if(tile.transportUp)
+				{
+					tile.transportUp=false;
+					tile.transportDown=true;
+				}
+				else if(tile.transportDown)
+				{
+					tile.transportDown=false;
+				}
+				else
+					tile.transportUp=true;
+			}
+			else
+				tile.facing = ForgeDirection.ROTATION_MATRIX[1][tile.facing];
+			world.markBlockForUpdate(x, y, z);
 			return true;
 		}
 		return false;
@@ -259,7 +285,8 @@ public class BlockMetalDevices extends BlockIEBase
 		}
 		else if(world.getTileEntity(x, y, z) instanceof TileEntityConveyorBelt)
 		{
-			this.setBlockBounds(0,0,0,1,.125f,1);
+			TileEntityConveyorBelt tile = (TileEntityConveyorBelt) world.getTileEntity(x, y, z);
+			this.setBlockBounds(0F, 0F, 0F, 1F, tile.transportDown||tile.transportUp?1.125f:0.125F, 1F);
 		}
 		else
 			this.setBlockBounds(0,0,0,1,1,1);
@@ -267,6 +294,8 @@ public class BlockMetalDevices extends BlockIEBase
 	@Override
 	public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z)
 	{
+		if(world.getBlockMetadata(x, y, z) == META_conveyorBelt)
+			return AxisAlignedBB.getBoundingBox(x, y, z, x+1, y+.03125, z + 1);
 		this.setBlockBoundsBasedOnState(world,x,y,z);
 		return super.getCollisionBoundingBoxFromPool(world, x, y, z);
 	}
@@ -341,32 +370,31 @@ public class BlockMetalDevices extends BlockIEBase
 				world.setBlockToAir(x, y, z);
 		}
 	}
-	
+
 	@Override
 	public void onEntityCollidedWithBlock(World world, int x, int y, int z, Entity par5Entity)
 	{
-		if(world.getTileEntity(x, y, z) instanceof TileEntityConveyorBelt)
+		if(par5Entity!=null && world.getTileEntity(x, y, z) instanceof TileEntityConveyorBelt && !(par5Entity instanceof EntityPlayer && ((EntityPlayer)par5Entity).isSneaking()) && par5Entity.posY-y<.4f)
 		{
 			if(world.isBlockIndirectlyGettingPowered(x, y, z))
 				return;
 			TileEntityConveyorBelt tile = (TileEntityConveyorBelt) world.getTileEntity(x, y, z);
-			ForgeDirection fd = ForgeDirection.getOrientation(tile.facing);
+			int f = tile.facing;
+			ForgeDirection fd = ForgeDirection.getOrientation(f).getOpposite();
 			double vBase = 1.15;
-			double vX = -0.1 * vBase*fd.offsetX;
+			double vX = 0.1 * vBase*fd.offsetX;
 			double vY = par5Entity.motionY;
-			double vZ = -0.1 * vBase*fd.offsetZ;
+			double vZ = 0.1 * vBase*fd.offsetZ;
 
 			if (tile.transportUp)
-			{
-				vY = 0.17D * vBase;
-			}
+				vY = 0.2D * vBase;
 			else if (tile.transportDown)
 				vY = -0.07000000000000001D * vBase;
 
 			if (tile.transportUp||tile.transportDown)
 				par5Entity.onGround = false;
 
-
+			//			if(par5Entity instanceof EntityItem)
 			if (fd == ForgeDirection.WEST || fd == ForgeDirection.EAST)
 			{
 				if (par5Entity.posZ > z + 0.55D)
@@ -374,15 +402,39 @@ public class BlockMetalDevices extends BlockIEBase
 				else if (par5Entity.posZ < z + 0.45D)
 					vZ = 0.1D * vBase;
 			}
-			else if (fd == ForgeDirection.NORTH || fd == ForgeDirection.SOUTH) {
+			else if (fd == ForgeDirection.NORTH || fd == ForgeDirection.SOUTH)
+			{
 				if (par5Entity.posX > x + 0.55D)
 					vX = -0.1D * vBase;
 				else if (par5Entity.posX < x + 0.45D)
 					vX = 0.1D * vBase;
 			}
+
 			par5Entity.motionX = vX;
 			par5Entity.motionY = vY;
 			par5Entity.motionZ = vZ;
+			if(par5Entity instanceof EntityItem)
+			{
+				((EntityItem)par5Entity).age=0;
+				boolean contact = f==3?(par5Entity.posZ-z<=.2): f==2?(par5Entity.posZ-z>=.8): f==5?(par5Entity.posX-x<=.2): (par5Entity.posX-x>=.8);
+				
+				if(contact && world.getTileEntity(x+fd.offsetX,y+(tile.transportUp?1: tile.transportDown?-1: 0),z+fd.offsetZ) instanceof IInventory)
+				{
+					IInventory inv = (IInventory)world.getTileEntity(x+fd.offsetX,y+(tile.transportUp?1: tile.transportDown?-1: 0),z+fd.offsetZ);
+					if(!(inv instanceof TileEntityConveyorBelt))
+					{
+						ItemStack stack = ((EntityItem)par5Entity).getEntityItem();
+						if(stack!=null)
+						{
+							ItemStack ret = Utils.insertStackIntoInventory(inv, ((EntityItem)par5Entity).getEntityItem(), fd.getOpposite().ordinal());
+							if(ret==null)
+								par5Entity.setDead();
+							else if(ret.stackSize<stack.stackSize)
+								((EntityItem)par5Entity).setEntityItemStack(ret);
+						}
+					}
+				}
+			}
 		}
 	}
 }

@@ -27,7 +27,7 @@ tile.ImmersiveEngineering.metalDevice.capacitorHV.name=HV Capacitor
 tile.ImmersiveEngineering.metalDevice.transformerHV.name=HV Transformer
 tile.ImmersiveEngineering.metalDevice.dynamo.name=Kinetic Dynamo
 tile.ImmersiveEngineering.metalDevice.thermoelectricGen.name=Thermoelectric Generator
-tile.ImmersiveEngineering.metalDevice.conveyorBelt.name=Conveyor Belt [WIP]
+tile.ImmersiveEngineering.metalDevice.conveyorBelt.name=Conveyor Belt
 
 tile.ImmersiveEngineering.metalMultiblock.lightningRod.name=Lightning Rod Base
 tile.ImmersiveEngineering.metalMultiblock.dieselGenerator.name=Diesel Generator
@@ -169,6 +169,10 @@ recipe.ImmersiveEngineering.hammerCrushing=Crushing
 #ie.manual.entry..subtext=
 #ie.manual.entry.=
 
+ie.manual.category.general.name=Overview and Resources
+ie.manual.category.energy.name=Power, wires, generators
+ie.manual.category.machines.name=Machinery
+
 ie.manual.entry.introduction.name=Introduction
 ie.manual.entry.introduction.subtext=Getting into Engineering
 ie.manual.entry.introduction0=Greetings, fellow engineer, and welcome to Immersive Engineering. This journal shall serve as your guide for setting up all the new machines and functions this mod has to offer.<br>Let's start with the basics first: Immersive Engineering is built around the concept of retrofuturistic generation and transfer of energy. The energy used in this mod is Redstone Flux, a trait shared with many other mods currently available.
@@ -249,6 +253,11 @@ ie.manual.entry.biodiesel1=Plant Oil is created by processing various seeds in t
 ie.manual.entry.biodiesel2=Ethanol is gained by fermenting sugarcane. The fermenter's structure is created in a similar manner to that of the squeezer, as such power in- and fluid outputs are identical.
 ie.manual.entry.biodiesel3=Lastly, in order to refine plant oil and ethnaol into bio diesel, you will need to insert both fluids into a refinery and supply it with power. The structure is created as shown above and formed by clicking the center of the front with an Engineer's Hammer.
 ie.manual.entry.biodiesel4=The front of the refinery serves as fluid output, whereas the inputs are found on the smaller sides. Energy is supplied through the connector at the back. Applying a redstone signal to the control panel on the left will halt the refinery's process.
+
+ie.manual.entry.conveyor.name=Conveyor Belts
+ie.manual.entry.conveyor.subtext=Who needs rails anyway?
+ie.manual.entry.conveyor0=Conveyor Belts are an easy way of transporting all sorts of things around your base. While they are strong enough to move livign creatures like cows or sheep, their true strength lies in transporting items.<br>Throwing items atop them will have the items move along the belt. Should the belt lead into an inventory, the item will be inserted.
+ie.manual.entry.conveyor1=Blocks like hoppers will be able to drop items onto the belts. Use an Engineers Hammer to rotate the belts (rightclick) or adjust whether they should run up- or downwards (sneak + rightclick).
 
 ie.manual.entry.crusher.name=Crusher
 ie.manual.entry.crusher.subtext=Keep your hands out!

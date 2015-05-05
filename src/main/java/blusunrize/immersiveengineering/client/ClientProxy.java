@@ -160,7 +160,25 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.Crafting(manual, "", new ItemStack(IEContent.itemMaterial,1,0),new ItemStack(IEContent.blockWoodenDecoration,1,1)),
 				new ManualPages.Crafting(manual, "treatedwoodPost0", new ItemStack(IEContent.blockWoodenDevice,1,0)),
 				new ManualPages.Text(manual, "treatedwoodPost1"));
-		manual.addEntry("wiring", "general",
+		manual.addEntry("blastfurnace", "general",
+				new ManualPages.Text(manual, "blastfurnace0"),
+				new ManualPages.Crafting(manual, "blastfurnaceBlock", new ItemStack(IEContent.blockStoneDevice,1,2)),
+				new ManualPageMultiblock(manual, "", MultiblockBlastFurnace.instance));
+		manual.addEntry("steelconstruction", "general",
+				new ManualPages.Text(manual, "steelconstruction0"),
+				new ManualPages.Crafting(manual, "", new ItemStack(IEContent.blockMetalDecoration,1,0),new ItemStack(IEContent.blockMetalDecoration,1,1),new ItemStack(IEContent.blockMetalDecoration,1,3)));
+		manual.addEntry("multiblocks", "general",
+				new ManualPages.Text(manual, "multiblocks0"),
+				new ManualPages.Crafting(manual, "", new ItemStack(IEContent.blockMetalDecoration,1,BlockMetalDecoration.META_lightEngineering),new ItemStack(IEContent.blockMetalDecoration,1,BlockMetalDecoration.META_heavyEngineering)),
+				new ManualPages.Crafting(manual, "", new ItemStack(IEContent.blockMetalDecoration,1,BlockMetalDecoration.META_generator),new ItemStack(IEContent.blockMetalDecoration,1,BlockMetalDecoration.META_radiator)));
+		manual.addEntry("biodiesel", "general",
+				new ManualPages.Text(manual, "biodiesel0"),
+				new ManualPages.Crafting(manual, "", new ItemStack(IEContent.blockMetalMultiblocks,1,BlockMetalMultiblocks.META_squeezer),new ItemStack(IEContent.blockMetalMultiblocks,1,BlockMetalMultiblocks.META_fermenter)),
+				new ManualPageMultiblock(manual, "biodiesel1", MultiblockSqueezer.instance),
+				new ManualPageMultiblock(manual, "biodiesel2", MultiblockFermenter.instance),
+				new ManualPageMultiblock(manual, "biodiesel3", MultiblockRefinery.instance),
+				new ManualPages.Text(manual, "biodiesel4"));
+		manual.addEntry("wiring", "energy",
 				new ManualPages.Text(manual, "wiring0"), 
 				new ManualPages.Crafting(manual, "wiring1", new ItemStack(IEContent.itemWireCoil,1,OreDictionary.WILDCARD_VALUE)),
 				new ManualPages.Image(manual, "wiring2", "immersiveengineering:textures/misc/wiring.png;0;0;110;40", "immersiveengineering:textures/misc/wiring.png;0;40;110;30"),
@@ -171,39 +189,24 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.Text(manual, "wiringTransformer1"), 
 				new ManualPages.Crafting(manual, "wiringCutters", new ItemStack(IEContent.itemTool,1,1)),
 				new ManualPages.Crafting(manual, "wiringVoltmeter", new ItemStack(IEContent.itemTool,1,2)));
-		manual.addEntry("generator", "general", 
+		manual.addEntry("generator", "energy", 
 				new ManualPages.Text(manual, "generator0"),
 				new ManualPages.Crafting(manual, "", new ItemStack(IEContent.blockMetalDevice,1,BlockMetalDevices.META_dynamo),new ItemStack(IEContent.blockMetalDevice,1,BlockMetalDevices.META_thermoelectricGen)),
 				new ManualPages.CraftingMulti(manual, "generatorWindmill", new ItemStack(IEContent.itemMaterial,1,2),new ItemStack(IEContent.blockWoodenDevice,1,2)),
 				new ManualPages.CraftingMulti(manual, "generatorWatermill", new ItemStack(IEContent.itemMaterial,1,1),new ItemStack(IEContent.blockWoodenDevice,1,1)),
 				new ManualPages.CraftingMulti(manual, "generatorWindmillImproved", new ItemStack(IEContent.itemMaterial,1,4),new ItemStack(IEContent.itemMaterial,1,5),new ItemStack(IEContent.blockWoodenDevice,1,3)));
-		manual.addEntry("blastfurnace", "general",
-				new ManualPages.Text(manual, "blastfurnace0"),
-				new ManualPages.Crafting(manual, "blastfurnaceBlock", new ItemStack(IEContent.blockStoneDevice,1,2)),
-				new ManualPageMultiblock(manual, "", MultiblockBlastFurnace.instance));
-		manual.addEntry("steelconstruction", "general",
-				new ManualPages.Text(manual, "steelconstruction0"),
-				new ManualPages.Crafting(manual, "", new ItemStack(IEContent.blockMetalDecoration,1,0),new ItemStack(IEContent.blockMetalDecoration,1,1),new ItemStack(IEContent.blockMetalDecoration,1,3)));
-		manual.addEntry("highvoltage", "general",
+		manual.addEntry("highvoltage", "energy",
 				new ManualPages.Text(manual, "highvoltage0"),
 				new ManualPages.Crafting(manual, "", new ItemStack(IEContent.blockMetalDevice,1,8),new ItemStack(IEContent.blockMetalDevice,1,4)),
 				new ManualPages.Crafting(manual, "", new ItemStack(IEContent.blockMetalDevice,1,5),new ItemStack(IEContent.blockMetalDevice,1,7)));
-		manual.addEntry("multiblocks", "general",
-				new ManualPages.Text(manual, "multiblocks0"),
-				new ManualPages.Crafting(manual, "", new ItemStack(IEContent.blockMetalDecoration,1,BlockMetalDecoration.META_lightEngineering),new ItemStack(IEContent.blockMetalDecoration,1,BlockMetalDecoration.META_heavyEngineering)),
-				new ManualPages.Crafting(manual, "", new ItemStack(IEContent.blockMetalDecoration,1,BlockMetalDecoration.META_generator),new ItemStack(IEContent.blockMetalDecoration,1,BlockMetalDecoration.META_radiator)));
-		manual.addEntry("dieselgen", "general",
+		manual.addEntry("dieselgen", "energy",
 				new ManualPages.Text(manual, "dieselgen0"),
 				new ManualPageMultiblock(manual, "dieselgen1", MultiblockDieselGenerator.instance),
 				new ManualPages.Text(manual, "dieselgen2"));
-		manual.addEntry("biodiesel", "general",
-				new ManualPages.Text(manual, "biodiesel0"),
-				new ManualPages.Crafting(manual, "", new ItemStack(IEContent.blockMetalMultiblocks,1,BlockMetalMultiblocks.META_squeezer),new ItemStack(IEContent.blockMetalMultiblocks,1,BlockMetalMultiblocks.META_fermenter)),
-				new ManualPageMultiblock(manual, "biodiesel1", MultiblockSqueezer.instance),
-				new ManualPageMultiblock(manual, "biodiesel2", MultiblockFermenter.instance),
-				new ManualPageMultiblock(manual, "biodiesel3", MultiblockRefinery.instance),
-				new ManualPages.Text(manual, "biodiesel4"));
-		manual.addEntry("crusher", "general",
+		manual.addEntry("conveyor", "machines",
+				new ManualPages.Crafting(manual, "conveyor0", new ItemStack(IEContent.blockMetalDevice,1,BlockMetalDevices.META_conveyorBelt)),
+				new ManualPages.Text(manual, "conveyor1"));
+		manual.addEntry("crusher", "machines",
 				new ManualPageMultiblock(manual, "crusher0", MultiblockCrusher.instance),
 				new ManualPages.Text(manual, "crusher1"));
 	}

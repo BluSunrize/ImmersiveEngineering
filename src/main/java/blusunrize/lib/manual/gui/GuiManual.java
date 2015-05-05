@@ -88,10 +88,12 @@ public class GuiManual extends GuiScreen
 			ArrayList<String> lHeaders = new ArrayList<String>();
 			for(String cat : manual.manualContents.keySet())
 				if(manual.showCategoryInList(cat))
-					lHeaders.add(cat);
+					lHeaders.add(0, cat);
 			headers = lHeaders.toArray(new String[0]);
 			this.buttonList.add(new GuiClickableList(this, 0, guiLeft+40,guiTop+20, 100,148, 1f, 0, headers));
 		}
+		if(manual.manualContents.containsKey(selectedCategory) || manual.getEntry(selectedEntry)!=null)
+			this.buttonList.add(new GuiButtonManualNavigation(this, 1, guiLeft+24,guiTop+10, 10,10, 0));
 	}
 
 	@Override
@@ -154,6 +156,14 @@ public class GuiManual extends GuiScreen
 					selectedCategory = headers[sel];
 			}
 			((GuiClickableList)button).selectedOption=-1;
+			this.initGui();
+		}
+		if(button.id == 1)
+		{
+			if(manual.getEntry(selectedEntry)!=null)
+				selectedEntry = null;
+			else if(manual.manualContents.containsKey(selectedCategory))
+				selectedCategory = null;
 			this.initGui();
 		}
 		if(pageButtons.contains(button) && manual.getEntry(selectedEntry)!=null)
