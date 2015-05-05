@@ -107,8 +107,8 @@ public class EventHandler
 	@SubscribeEvent
 	public void onItemTooltip(ItemTooltipEvent event)
 	{
-		for(int oid : OreDictionary.getOreIDs(event.itemStack))
-			event.toolTip.add(OreDictionary.getOreName(oid));
+//		for(int oid : OreDictionary.getOreIDs(event.itemStack))
+//			event.toolTip.add(OreDictionary.getOreName(oid));
 		
 		if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT
 				&& ClientUtils.mc().currentScreen != null
