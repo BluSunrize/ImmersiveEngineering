@@ -3,7 +3,9 @@ package blusunrize.immersiveengineering.client.render;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
+import net.minecraftforge.common.util.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
 
@@ -141,15 +143,115 @@ public class BlockRenderMetalDevices implements ISimpleBlockRenderingHandler
 		}
 		else if(metadata==BlockMetalDevices.META_conveyorBelt)
 		{
-			renderer.setRenderBounds(0,0,0, 1,.125f,1);
+			renderer.enableAO = true;
+			int f = 2;
+			double y00=0;
+			double y01=0;
+			double y11=0;
+			double y10=0;
 			if(world.getTileEntity(x, y, z) instanceof TileEntityConveyorBelt)
 			{
 				TileEntityConveyorBelt tile = (TileEntityConveyorBelt)world.getTileEntity(x, y, z);
 				renderer.uvRotateTop = tile.facing==2?0: tile.facing==3?3: tile.facing==4?2: 1;
+				renderer.uvRotateBottom = tile.facing==2?3: tile.facing==3?0: tile.facing==4?2: 1;
+				f = tile.facing;
+				y00= tile.transportUp?(f==5||f==3?1: 0): tile.transportDown?(f==4||f==2?1: 0): 0;
+				y01= tile.transportUp?(f==5||f==2?1: 0): tile.transportDown?(f==4||f==3?1: 0): 0;
+				y11= tile.transportUp?(f==4||f==2?1: 0): tile.transportDown?(f==5||f==3?1: 0): 0;
+				y10= tile.transportUp?(f==4||f==3?1: 0): tile.transportDown?(f==5||f==2?1: 0): 0;
 			}
-			boolean b = renderer.renderStandardBlock(block, x, y, z);
+
+			boolean[] connectedBelts = new boolean[4];
+			for(int i=0; i<connectedBelts.length; i++)
+			{
+				ForgeDirection fd = ForgeDirection.getOrientation(2+i);
+				if(world.getTileEntity(x+fd.offsetX,y,z+fd.offsetZ) instanceof TileEntityConveyorBelt && ((TileEntityConveyorBelt)world.getTileEntity(x+fd.offsetX,y,z+fd.offsetZ)).facing == i+2)
+					connectedBelts[i] = true;
+				else if(world.getTileEntity(x+fd.offsetX,y-1,z+fd.offsetZ) instanceof TileEntityConveyorBelt && ((TileEntityConveyorBelt)world.getTileEntity(x+fd.offsetX,y-1,z+fd.offsetZ)).facing == i+2 && ((TileEntityConveyorBelt)world.getTileEntity(x+fd.offsetX,y-1,z+fd.offsetZ)).transportUp)
+					connectedBelts[i] = true;
+				else if(world.getTileEntity(x+fd.offsetX,y+1,z+fd.offsetZ) instanceof TileEntityConveyorBelt && ((TileEntityConveyorBelt)world.getTileEntity(x+fd.offsetX,y+1,z+fd.offsetZ)).facing == i+2 && ((TileEntityConveyorBelt)world.getTileEntity(x+fd.offsetX,y+1,z+fd.offsetZ)).transportDown)
+					connectedBelts[i] = true;
+			}
+
+			Vec3[] vs = {
+					Vec3.createVectorHelper(f==4||f==5||connectedBelts[2]?0:.0625, y00+.000, f==2||f==3||connectedBelts[0]?0:.0625),
+					Vec3.createVectorHelper(f==4||f==5||connectedBelts[2]?0:.0625, y01+.000, f==2||f==3||connectedBelts[1]?1:.9375),
+					Vec3.createVectorHelper(f==4||f==5||connectedBelts[3]?1:.9375, y10+.000, f==2||f==3||connectedBelts[0]?0:.0625),
+					Vec3.createVectorHelper(f==4||f==5||connectedBelts[3]?1:.9375, y11+.000, f==2||f==3||connectedBelts[1]?1:.9375),
+					Vec3.createVectorHelper(f==4||f==5||connectedBelts[2]?0:.0625, y00+.125, f==2||f==3||connectedBelts[0]?0:.0625),
+					Vec3.createVectorHelper(f==4||f==5||connectedBelts[2]?0:.0625, y01+.125, f==2||f==3||connectedBelts[1]?1:.9375),
+					Vec3.createVectorHelper(f==4||f==5||connectedBelts[3]?1:.9375, y10+.125, f==2||f==3||connectedBelts[0]?0:.0625),
+					Vec3.createVectorHelper(f==4||f==5||connectedBelts[3]?1:.9375, y11+.125, f==2||f==3||connectedBelts[1]?1:.9375)
+			};
+			ClientUtils.drawWorldSubBlock(renderer, world, block, x, y, z, vs);
+			
+			renderer.setOverrideBlockTexture(block.getIcon(f==2||f==3?2:4,BlockMetalDevices.META_conveyorBelt));
+			if(f==2||f==3)
+			{
+				if(!connectedBelts[2])
+				{
+					vs = new Vec3[]{
+							Vec3.createVectorHelper(0	 , y00, 0),
+							Vec3.createVectorHelper(0	 , y01, 1),
+							Vec3.createVectorHelper(.0625, y10, 0),
+							Vec3.createVectorHelper(.0625, y11, 1),
+							Vec3.createVectorHelper(0	 , y00+.1875, 0),
+							Vec3.createVectorHelper(0	 , y01+.1875, 1),
+							Vec3.createVectorHelper(.0625, y10+.1875, 0),
+							Vec3.createVectorHelper(.0625, y11+.1875, 1)
+					};
+					ClientUtils.drawWorldSubBlock(renderer, world, block, x, y, z, vs);
+				}
+				if(!connectedBelts[3])
+				{
+					vs = new Vec3[]{
+							Vec3.createVectorHelper(.9375, y00, 0),
+							Vec3.createVectorHelper(.9375, y01, 1),
+							Vec3.createVectorHelper(1	 , y10, 0),
+							Vec3.createVectorHelper(1	 , y11, 1),
+							Vec3.createVectorHelper(.9375, y00+.1875, 0),
+							Vec3.createVectorHelper(.9375, y01+.1875, 1),
+							Vec3.createVectorHelper(1	 , y10+.1875, 0),
+							Vec3.createVectorHelper(1	 , y11+.1875, 1)
+					};
+					ClientUtils.drawWorldSubBlock(renderer, world, block, x, y, z, vs);
+				}
+			}
+			else if(f==4||f==5)
+			{
+				if(!connectedBelts[0])
+				{
+					vs = new Vec3[]{
+							Vec3.createVectorHelper(0, y00, 0),
+							Vec3.createVectorHelper(0, y01, .0625),
+							Vec3.createVectorHelper(1, y10, 0),
+							Vec3.createVectorHelper(1, y11, .0625),
+							Vec3.createVectorHelper(0, y00+.1875, 0),
+							Vec3.createVectorHelper(0, y01+.1875, .0625),
+							Vec3.createVectorHelper(1, y10+.1875, 0),
+							Vec3.createVectorHelper(1, y11+.1875, .0625)
+					};
+					ClientUtils.drawWorldSubBlock(renderer, world, block, x, y, z, vs);
+				}
+				if(!connectedBelts[1])
+				{
+					vs = new Vec3[]{
+							Vec3.createVectorHelper(0, y00, .9375),
+							Vec3.createVectorHelper(0, y01, 1),
+							Vec3.createVectorHelper(1, y10, .9375),
+							Vec3.createVectorHelper(1, y11, 1),
+							Vec3.createVectorHelper(0, y00+.1875, .9375),
+							Vec3.createVectorHelper(0, y01+.1875, 1),
+							Vec3.createVectorHelper(1, y10+.1875, .9375),
+							Vec3.createVectorHelper(1, y11+.1875, 1)
+					};
+					ClientUtils.drawWorldSubBlock(renderer, world, block, x, y, z, vs);
+				}
+			}
+			renderer.clearOverrideBlockTexture();
 			renderer.uvRotateTop = 0;
-			return b;
+			renderer.uvRotateBottom = 0;
+			return true;
 		}
 		return false;
 	}

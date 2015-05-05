@@ -155,7 +155,6 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 			}
 			if(update)
 			{
-				System.out.println("So I should send an update, right?");
 				this.markDirty();
 				worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 			}

@@ -606,17 +606,17 @@ public class ClientUtils
 				lightingInfo.aoBrightnessXYZPNP = block.getMixedBrightnessForBlock(world, x + 1, y, z + 1);
 			}
 
-			//            if (RenderBlocks.getInstance().renderMinY <= 0.0D)
-			//            {
-			//                ++y;
-			//            }
+			if (RenderBlocks.getInstance().renderMinY <= 0.0D)
+			{
+				++y;
+			}
 
 			i1 = l;
 
-			//            if (RenderBlocks.getInstance().renderMinY <= 0.0D || !world.getBlock(x, y - 1, z).isOpaqueCube())
-			//            {
-			i1 = block.getMixedBrightnessForBlock(world, x, y - 1, z);
-			//            }
+			if (RenderBlocks.getInstance().renderMinY <= 0.0D || !world.getBlock(x, y - 1, z).isOpaqueCube())
+			{
+				i1 = block.getMixedBrightnessForBlock(world, x, y - 1, z);
+			}
 
 			f7 = world.getBlock(x, y - 1, z).getAmbientOcclusionLightValue();
 			f3 = (lightingInfo.aoLightValueScratchXYZNNP + lightingInfo.aoLightValueScratchXYNN + lightingInfo.aoLightValueScratchYZNP + f7) / 4.0F;
@@ -711,17 +711,17 @@ public class ClientUtils
 				lightingInfo.aoBrightnessXYZPPP = block.getMixedBrightnessForBlock(world, x + 1, y, z + 1);
 			}
 
-			//			if (RenderBlocks.getInstance().renderMaxY >= 1.0D)
-			//			{
-			//				--y;
-			//			}
+			if (RenderBlocks.getInstance().renderMaxY >= 1.0D)
+			{
+				--y;
+			}
 
 			i1 = l;
 
-			//			if (RenderBlocks.getInstance().renderMaxY >= 1.0D || !world.getBlock(x, y + 1, z).isOpaqueCube())
-			//			{
-			i1 = block.getMixedBrightnessForBlock(world, x, y + 1, z);
-			//			}
+			if (RenderBlocks.getInstance().renderMaxY >= 1.0D || !world.getBlock(x, y + 1, z).isOpaqueCube())
+			{
+				i1 = block.getMixedBrightnessForBlock(world, x, y + 1, z);
+			}
 
 			f7 = world.getBlock(x, y + 1, z).getAmbientOcclusionLightValue();
 			f6 = (lightingInfo.aoLightValueScratchXYZNPP + lightingInfo.aoLightValueScratchXYNP + lightingInfo.aoLightValueScratchYZPP + f7) / 4.0F;
@@ -823,17 +823,17 @@ public class ClientUtils
 				lightingInfo.aoBrightnessXYZPPN = block.getMixedBrightnessForBlock(world, x + 1, y + 1, z);
 			}
 
-			//			if (RenderBlocks.getInstance().renderMinZ <= 0.0D)
-			//			{
-			//				++z;
-			//			}
+			if (RenderBlocks.getInstance().renderMinZ <= 0.0D)
+			{
+				++z;
+			}
 
 			i1 = l;
 
-			//			if (RenderBlocks.getInstance().renderMinZ <= 0.0D || !world.getBlock(x, y, z - 1).isOpaqueCube())
-			//			{
-			i1 = block.getMixedBrightnessForBlock(world, x, y, z - 1);
-			//			}
+			if (RenderBlocks.getInstance().renderMinZ <= 0.0D || !world.getBlock(x, y, z - 1).isOpaqueCube())
+			{
+				i1 = block.getMixedBrightnessForBlock(world, x, y, z - 1);
+			}
 
 			f7 = world.getBlock(x, y, z - 1).getAmbientOcclusionLightValue();
 			f8 = (lightingInfo.aoLightValueScratchXZNN + lightingInfo.aoLightValueScratchXYZNPN + f7 + lightingInfo.aoLightValueScratchYZPN) / 4.0F;
@@ -1323,6 +1323,491 @@ public class ClientUtils
 			tes.setColorOpaque_F(info.colorRedTopRight, info.colorGreenTopRight, info.colorBlueTopRight);
 			tes.setBrightness(info.brightnessTopRight);
 			tes.addVertexWithUV(x+1, y+1, z+1, uv[5][1], uv[5][3]);
+			flag=true;
+		}
+		return flag;
+	}
+
+	/**
+	 * @param vs 000,001,100,101, 010,011,110,111 
+	 */
+	public static boolean drawWorldSubBlock(RenderBlocks renderer, IBlockAccess world, Block block, int x, int y, int z, Vec3[] vs)
+	{
+		Tessellator tes = tes();
+		boolean flag = false;
+		BlockLightingInfo info;
+		IIcon icon;
+		// SIDE 0
+		if(block.shouldSideBeRendered(world, x, y, z, 0))
+		{
+			icon = renderer.hasOverrideBlockTexture()?renderer.overrideBlockTexture: block.getIcon(world,x,y,z,0);
+			info = calculateBlockLighting(0, world, block, x,y,z, 1,1,1);
+			
+			double d3 = icon.getInterpolatedU(Math.min(16,Math.max(0, vs[0].xCoord * 16)));
+			double d4 = icon.getInterpolatedU(Math.min(16,Math.max(0, vs[3].xCoord * 16)));
+			double d5 = icon.getInterpolatedV(Math.min(16,Math.max(0, vs[0].zCoord * 16)));
+			double d6 = icon.getInterpolatedV(Math.min(16,Math.max(0, vs[3].zCoord * 16)));
+			double d7 = icon.getInterpolatedU(Math.min(16,Math.max(0, vs[2].xCoord * 16)));
+			double d8 = icon.getInterpolatedU(Math.min(16,Math.max(0, vs[1].xCoord * 16)));
+			double d9 = icon.getInterpolatedV(Math.min(16,Math.max(0, vs[2].zCoord * 16)));
+			double d10 = icon.getInterpolatedV(Math.min(16,Math.max(0, vs[1].zCoord * 16)));
+
+			if(renderer.uvRotateBottom == 2)
+			{
+				d3 = icon.getInterpolatedU(Math.min(16,Math.max(0, vs[0].zCoord * 16)));
+				d5 = icon.getInterpolatedV(16 - Math.min(16,Math.max(0, vs[3].xCoord * 16)));
+				d4 = icon.getInterpolatedU(Math.min(16,Math.max(0, vs[3].zCoord * 16)));
+				d6 = icon.getInterpolatedV(16 - Math.min(16,Math.max(0, vs[0].xCoord * 16)));
+				d9 = d5;
+				d10 = d6;
+				d7 = d3;
+				d8 = d4;
+				d5 = d6;
+				d6 = d9;
+			}
+			else if(renderer.uvRotateBottom == 1)
+			{
+				d3 = icon.getInterpolatedU(16 - Math.min(16,Math.max(0, vs[3].zCoord * 16)));
+				d5 = icon.getInterpolatedV(Math.min(16,Math.max(0, vs[0].xCoord * 16)));
+				d4 = icon.getInterpolatedU(16 - Math.min(16,Math.max(0, vs[0].zCoord * 16)));
+				d6 = icon.getInterpolatedV(Math.min(16,Math.max(0, vs[3].xCoord * 16)));
+				d7 = d4;
+				d8 = d3;
+				d3 = d4;
+				d4 = d8;
+				d9 = d6;
+				d10 = d5;
+			}
+			else if(renderer.uvRotateBottom == 3)
+			{
+				d3 = icon.getInterpolatedU(16 - Math.min(16,Math.max(0, vs[0].xCoord * 16)));
+				d4 = icon.getInterpolatedU(16 - Math.min(16,Math.max(0, vs[3].xCoord * 16)));
+				d5 = icon.getInterpolatedV(16 - Math.min(16,Math.max(0, vs[0].zCoord * 16)));
+				d6 = icon.getInterpolatedV(16 - Math.min(16,Math.max(0, vs[3].zCoord * 16)));
+				d7 = d4;
+				d8 = d3;
+				d9 = d5;
+				d10 = d6;
+			}
+
+			if(renderer.enableAO)
+			{
+				tes.setColorOpaque_F(info.colorRedTopLeft, info.colorGreenTopLeft, info.colorBlueTopLeft);
+				tes.setBrightness(info.brightnessTopLeft);
+				tes.addVertexWithUV(x+vs[1].xCoord, y+vs[1].yCoord, z+vs[1].zCoord, d8,d10);
+				tes.setColorOpaque_F(info.colorRedBottomLeft, info.colorGreenBottomLeft, info.colorBlueBottomLeft);
+				tes.setBrightness(info.brightnessBottomLeft);
+				tes.addVertexWithUV(x+vs[0].xCoord, y+vs[0].yCoord, z+vs[0].zCoord, d3,d5);
+				tes.setColorOpaque_F(info.colorRedBottomRight, info.colorGreenBottomRight, info.colorBlueBottomRight);
+				tes.setBrightness(info.brightnessBottomRight);
+				tes.addVertexWithUV(x+vs[2].xCoord, y+vs[2].yCoord, z+vs[2].zCoord, d7,d9);
+				tes.setColorOpaque_F(info.colorRedTopRight, info.colorGreenTopRight, info.colorBlueTopRight);
+				tes.setBrightness(info.brightnessTopRight);
+				tes.addVertexWithUV(x+vs[3].xCoord, y+vs[3].yCoord, z+vs[3].zCoord, d4,d6);
+			}
+			else
+			{
+				tes.setColorOpaque_I(0xffffff);
+				tes.addVertexWithUV(x+vs[1].xCoord, y+vs[1].yCoord, z+vs[1].zCoord, d8,d10);
+				tes.addVertexWithUV(x+vs[0].xCoord, y+vs[0].yCoord, z+vs[0].zCoord, d3,d5);
+				tes.addVertexWithUV(x+vs[2].xCoord, y+vs[2].yCoord, z+vs[2].zCoord, d7,d9);
+				tes.addVertexWithUV(x+vs[3].xCoord, y+vs[3].yCoord, z+vs[3].zCoord, d4,d6);
+			}
+			flag=true;
+		}
+		// SIDE 1
+		if(block.shouldSideBeRendered(world, x, y, z, 1))
+		{
+			icon = renderer.hasOverrideBlockTexture()?renderer.overrideBlockTexture: block.getIcon(world,x,y,z,1);
+			info = calculateBlockLighting(1, world, block, x,y,z, 1,1,1);
+			tes.setBrightness(983055);
+
+			double d3 = icon.getInterpolatedU(Math.min(16,Math.max(0, vs[4].xCoord * 16)));
+			double d4 = icon.getInterpolatedU(Math.min(16,Math.max(0, vs[7].xCoord * 16)));
+			double d5 = icon.getInterpolatedV(Math.min(16,Math.max(0, vs[4].zCoord * 16)));
+			double d6 = icon.getInterpolatedV(Math.min(16,Math.max(0, vs[7].zCoord * 16)));
+			double d7 = icon.getInterpolatedU(Math.min(16,Math.max(0, vs[6].xCoord * 16)));
+			double d8 = icon.getInterpolatedU(Math.min(16,Math.max(0, vs[5].xCoord * 16)));
+			double d9 = icon.getInterpolatedV(Math.min(16,Math.max(0, vs[6].zCoord * 16)));
+			double d10 = icon.getInterpolatedV(Math.min(16,Math.max(0, vs[5].zCoord * 16)));
+
+			if(renderer.uvRotateTop == 1)
+			{
+				d3 = icon.getInterpolatedU(Math.min(16,Math.max(0, vs[4].zCoord * 16)));
+				d5 = icon.getInterpolatedV(16 - Math.min(16,Math.max(0, vs[7].xCoord * 16)));
+				d4 = icon.getInterpolatedU(Math.min(16,Math.max(0, vs[7].zCoord * 16)));
+				d6 = icon.getInterpolatedV(16 - Math.min(16,Math.max(0, vs[4].xCoord * 16)));
+				d9 = d5;
+				d10 = d6;
+				d7 = d3;
+				d8 = d4;
+				d5 = d6;
+				d6 = d9;
+			}
+			else if(renderer.uvRotateTop == 2)
+			{
+				d3 = icon.getInterpolatedU(16 - Math.min(16,Math.max(0, vs[7].zCoord * 16)));
+				d5 = icon.getInterpolatedV(Math.min(16,Math.max(0, vs[4].xCoord * 16)));
+				d4 = icon.getInterpolatedU(16 - Math.min(16,Math.max(0, vs[4].zCoord * 16)));
+				d6 = icon.getInterpolatedV(Math.min(16,Math.max(0, vs[7].xCoord * 16)));
+				d7 = d4;
+				d8 = d3;
+				d3 = d4;
+				d4 = d8;
+				d9 = d6;
+				d10 = d5;
+			}
+			else if(renderer.uvRotateTop == 3)
+			{
+				d3 = icon.getInterpolatedU(16 - Math.min(16,Math.max(0, vs[4].xCoord * 16)));
+				d4 = icon.getInterpolatedU(16 - Math.min(16,Math.max(0, vs[7].xCoord * 16)));
+				d5 = icon.getInterpolatedV(16 - Math.min(16,Math.max(0, vs[4].zCoord * 16)));
+				d6 = icon.getInterpolatedV(16 - Math.min(16,Math.max(0, vs[7].zCoord * 16)));
+				d7 = d4;
+				d8 = d3;
+				d9 = d5;
+				d10 = d6;
+			}
+
+			if(renderer.enableAO)
+			{
+				tes.setColorOpaque_F(info.colorRedTopLeft, info.colorGreenTopLeft, info.colorBlueTopLeft);
+				tes.setBrightness(info.brightnessTopLeft);
+				tes.addVertexWithUV(x+vs[7].xCoord, y+vs[7].yCoord, z+vs[7].zCoord, d4, d6);
+				tes.setColorOpaque_F(info.colorRedBottomLeft, info.colorGreenBottomLeft, info.colorBlueBottomLeft);
+				tes.setBrightness(info.brightnessBottomLeft);
+				tes.addVertexWithUV(x+vs[6].xCoord, y+vs[6].yCoord, z+vs[6].zCoord, d7, d9);
+				tes.setColorOpaque_F(info.colorRedBottomRight, info.colorGreenBottomRight, info.colorBlueBottomRight);
+				tes.setBrightness(info.brightnessBottomRight);
+				tes.addVertexWithUV(x+vs[4].xCoord, y+vs[4].yCoord, z+vs[4].zCoord, d3, d5);
+				tes.setColorOpaque_F(info.colorRedTopRight, info.colorGreenTopRight, info.colorBlueTopRight);
+				tes.setBrightness(info.brightnessTopRight);
+				tes.addVertexWithUV(x+vs[5].xCoord, y+vs[5].yCoord, z+vs[5].zCoord, d8, d10);
+			}
+			else
+			{
+				tes.setColorOpaque_I(0xffffff);
+				tes.addVertexWithUV(x+vs[7].xCoord, y+vs[7].yCoord, z+vs[7].zCoord, d4, d6);
+				tes.addVertexWithUV(x+vs[6].xCoord, y+vs[6].yCoord, z+vs[6].zCoord, d7, d9);
+				tes.addVertexWithUV(x+vs[4].xCoord, y+vs[4].yCoord, z+vs[4].zCoord, d3, d5);
+				tes.addVertexWithUV(x+vs[5].xCoord, y+vs[5].yCoord, z+vs[5].zCoord, d8, d10);
+			}
+			flag=true;
+		}
+		// SIDE 2
+		if(block.shouldSideBeRendered(world, x, y, z, 2))
+		{
+			icon = renderer.hasOverrideBlockTexture()?renderer.overrideBlockTexture: block.getIcon(world,x,y,z,2);
+			info = calculateBlockLighting(2, world, block, x,y,z, 1,1,1);
+			tes.setBrightness(983055);
+
+			double d3 = icon.getInterpolatedU(Math.min(16,Math.max(0, vs[0].xCoord * 16)));
+			double d4 = icon.getInterpolatedU(Math.min(16,Math.max(0, vs[6].xCoord * 16)));
+			double d5 = icon.getInterpolatedV(16.0D - Math.min(16,Math.max(0, vs[6].yCoord * 16)));
+			double d6 = icon.getInterpolatedV(16.0D - Math.min(16,Math.max(0, vs[0].yCoord * 16)));
+			double d7 = icon.getInterpolatedU(Math.min(16,Math.max(0, vs[2].xCoord * 16)));
+			double d8 = icon.getInterpolatedU(Math.min(16,Math.max(0, vs[4].xCoord * 16)));
+			double d9 = icon.getInterpolatedV(16.0D - Math.min(16,Math.max(0, vs[4].yCoord * 16)));
+			double d10 = icon.getInterpolatedV(16.0D - Math.min(16,Math.max(0, vs[2].yCoord * 16)));
+
+			if(renderer.uvRotateEast == 2)
+			{
+				d3 = icon.getInterpolatedU(Math.min(16,Math.max(0, vs[0].yCoord * 16)));
+				d4 = icon.getInterpolatedU(Math.min(16,Math.max(0, vs[6].yCoord * 16)));
+				d5 = icon.getInterpolatedV(16 - Math.min(16,Math.max(0, vs[6].xCoord * 16)));
+				d6 = icon.getInterpolatedV(16 - Math.min(16,Math.max(0, vs[0].xCoord * 16)));
+				d9 = d5;
+				d10 = d6;
+				d7 = d3;
+				d8 = d4;
+				d5 = d6;
+				d6 = d9;
+			}
+			else if(renderer.uvRotateEast == 1)
+			{
+				d3 = icon.getInterpolatedU(16 - Math.min(16,Math.max(0, vs[6].yCoord * 16)));
+				d4 = icon.getInterpolatedU(16 - Math.min(16,Math.max(0, vs[0].yCoord * 16)));
+				d5 = icon.getInterpolatedV(Math.min(16,Math.max(0, vs[0].xCoord * 16)));
+				d6 = icon.getInterpolatedV(Math.min(16,Math.max(0, vs[6].xCoord * 16)));
+				d7 = d4;
+				d8 = d3;
+				d3 = d4;
+				d4 = d8;
+				d9 = d6;
+				d10 = d5;
+			}
+			else if(renderer.uvRotateEast == 3)
+			{
+				d3 = icon.getInterpolatedU(16 - Math.min(16,Math.max(0, vs[6].xCoord * 16)));
+				d4 = icon.getInterpolatedU(16 - Math.min(16,Math.max(0, vs[0].xCoord * 16)));
+				d5 = icon.getInterpolatedV(Math.min(16,Math.max(0, vs[0].yCoord * 16)));
+				d6 = icon.getInterpolatedV(Math.min(16,Math.max(0, vs[6].yCoord * 16)));
+				d7 = d4;
+				d8 = d3;
+				d9 = d5;
+				d10 = d6;
+			}
+
+			if(renderer.enableAO)
+			{
+				tes.setColorOpaque_F(info.colorRedTopLeft, info.colorGreenTopLeft, info.colorBlueTopLeft);
+				tes.setBrightness(info.brightnessTopLeft);
+				tes.addVertexWithUV(x+vs[4].xCoord, y+vs[4].yCoord, z+vs[4].zCoord, d7, d9);
+				tes.setColorOpaque_F(info.colorRedBottomLeft, info.colorGreenBottomLeft, info.colorBlueBottomLeft);
+				tes.setBrightness(info.brightnessBottomLeft);
+				tes.addVertexWithUV(x+vs[6].xCoord, y+vs[6].yCoord, z+vs[6].zCoord, d3, d5);
+				tes.setColorOpaque_F(info.colorRedBottomRight, info.colorGreenBottomRight, info.colorBlueBottomRight);
+				tes.setBrightness(info.brightnessBottomRight);
+				tes.addVertexWithUV(x+vs[2].xCoord, y+vs[2].yCoord, z+vs[2].zCoord, d8, d10);
+				tes.setColorOpaque_F(info.colorRedTopRight, info.colorGreenTopRight, info.colorBlueTopRight);
+				tes.setBrightness(info.brightnessTopRight);
+				tes.addVertexWithUV(x+vs[0].xCoord, y+vs[0].yCoord, z+vs[0].zCoord, d4, d6);
+			}
+			else
+			{
+				tes.setColorOpaque_I(0xffffff);
+				tes.addVertexWithUV(x+vs[4].xCoord, y+vs[4].yCoord, z+vs[4].zCoord, d7, d9);
+				tes.addVertexWithUV(x+vs[6].xCoord, y+vs[6].yCoord, z+vs[6].zCoord, d3, d5);
+				tes.addVertexWithUV(x+vs[2].xCoord, y+vs[2].yCoord, z+vs[2].zCoord, d8, d10);
+				tes.addVertexWithUV(x+vs[0].xCoord, y+vs[0].yCoord, z+vs[0].zCoord, d4, d6);
+			}
+
+			flag=true;
+		}
+		// SIDE 3
+		if(block.shouldSideBeRendered(world, x, y, z, 3))
+		{
+			icon = renderer.hasOverrideBlockTexture()?renderer.overrideBlockTexture: block.getIcon(world,x,y,z,3);
+			info = calculateBlockLighting(3, world, block, x,y,z, 1,1,1);
+			tes.setBrightness(983055);
+
+			double d3 = icon.getInterpolatedU(Math.min(16,Math.max(0, vs[5].xCoord * 16)));
+			double d4 = icon.getInterpolatedU(Math.min(16,Math.max(0, vs[3].xCoord * 16)));
+			double d5 = icon.getInterpolatedV(16 - Math.min(16,Math.max(0, vs[5].yCoord * 16)));
+			double d6 = icon.getInterpolatedV(16 - Math.min(16,Math.max(0, vs[3].yCoord * 16)));
+			double d7 = icon.getInterpolatedU(Math.min(16,Math.max(0, vs[7].xCoord * 16)));
+			double d8 = icon.getInterpolatedU(Math.min(16,Math.max(0, vs[1].xCoord * 16)));
+			double d9 = icon.getInterpolatedV(16 - Math.min(16,Math.max(0, vs[7].yCoord * 16)));
+			double d10 = icon.getInterpolatedV(16 - Math.min(16,Math.max(0, vs[1].yCoord * 16)));
+
+			if(renderer.uvRotateWest == 1)
+			{
+				d3 = icon.getInterpolatedU(Math.min(16,Math.max(0, vs[3].yCoord * 16)));
+				d6 = icon.getInterpolatedV(16 - Math.min(16,Math.max(0, vs[5].xCoord * 16)));
+				d4 = icon.getInterpolatedU(Math.min(16,Math.max(0, vs[5].yCoord * 16)));
+				d5 = icon.getInterpolatedV(16 - Math.min(16,Math.max(0, vs[3].xCoord * 16)));
+				d9 = d5;
+				d10 = d6;
+				d7 = d3;
+				d8 = d4;
+				d5 = d6;
+				d6 = d9;
+			}
+			else if(renderer.uvRotateWest == 2)
+			{
+				d3 = icon.getInterpolatedU(16 - Math.min(16,Math.max(0, vs[5].yCoord * 16)));
+				d5 = icon.getInterpolatedV(Math.min(16,Math.max(0, vs[5].xCoord * 16)));
+				d4 = icon.getInterpolatedU(16 - Math.min(16,Math.max(0, vs[3].yCoord * 16)));
+				d6 = icon.getInterpolatedV(Math.min(16,Math.max(0, vs[3].xCoord * 16)));
+				d7 = d4;
+				d8 = d3;
+				d3 = d4;
+				d4 = d8;
+				d9 = d6;
+				d10 = d5;
+			}
+			else if(renderer.uvRotateWest == 3)
+			{
+				d3 = icon.getInterpolatedU(16 - Math.min(16,Math.max(0, vs[5].xCoord * 16)));
+				d4 = icon.getInterpolatedU(16 - Math.min(16,Math.max(0, vs[3].xCoord * 16)));
+				d5 = icon.getInterpolatedV(Math.min(16,Math.max(0, vs[5].yCoord * 16)));
+				d6 = icon.getInterpolatedV(Math.min(16,Math.max(0, vs[3].yCoord * 16)));
+				d7 = d4;
+				d8 = d3;
+				d9 = d5;
+				d10 = d6;
+			}
+
+			if(renderer.enableAO)
+			{
+				tes.setColorOpaque_F(info.colorRedTopLeft, info.colorGreenTopLeft, info.colorBlueTopLeft);
+				tes.setBrightness(info.brightnessTopLeft);
+				tes.addVertexWithUV(x+vs[5].xCoord, y+vs[5].yCoord, z+vs[5].zCoord, d3, d5);
+				tes.setColorOpaque_F(info.colorRedBottomLeft, info.colorGreenBottomLeft, info.colorBlueBottomLeft);
+				tes.setBrightness(info.brightnessBottomLeft);
+				tes.addVertexWithUV(x+vs[1].xCoord, y+vs[1].yCoord, z+vs[1].zCoord, d8, d10);
+				tes.setColorOpaque_F(info.colorRedBottomRight, info.colorGreenBottomRight, info.colorBlueBottomRight);
+				tes.setBrightness(info.brightnessBottomRight);
+				tes.addVertexWithUV(x+vs[3].xCoord, y+vs[3].yCoord, z+vs[3].zCoord, d4, d6);
+				tes.setColorOpaque_F(info.colorRedTopRight, info.colorGreenTopRight, info.colorBlueTopRight);
+				tes.setBrightness(info.brightnessTopRight);
+				tes.addVertexWithUV(x+vs[7].xCoord, y+vs[7].yCoord, z+vs[7].zCoord, d7, d9);
+			}
+			else
+			{
+				tes.setColorOpaque_I(0xffffff);
+				tes.addVertexWithUV(x+vs[5].xCoord, y+vs[5].yCoord, z+vs[5].zCoord, d3, d5);
+				tes.addVertexWithUV(x+vs[1].xCoord, y+vs[1].yCoord, z+vs[1].zCoord, d8, d10);
+				tes.addVertexWithUV(x+vs[3].xCoord, y+vs[3].yCoord, z+vs[3].zCoord, d4, d6);
+				tes.addVertexWithUV(x+vs[7].xCoord, y+vs[7].yCoord, z+vs[7].zCoord, d7, d9);
+			}
+			flag=true;
+		}
+		// SIDE 4
+		if(block.shouldSideBeRendered(world, x, y, z, 4))
+		{
+			icon = renderer.hasOverrideBlockTexture()?renderer.overrideBlockTexture: block.getIcon(world,x,y,z,4);
+			info = calculateBlockLighting(4, world, block, x,y,z, 1,1,1);
+			tes.setBrightness(983055);
+
+			double d3 = icon.getInterpolatedU(Math.min(16,Math.max(0, vs[4].zCoord * 16)));
+			double d4 = icon.getInterpolatedU(Math.min(16,Math.max(0, vs[1].zCoord * 16)));
+			double d5 = icon.getInterpolatedV(16 - Math.min(16,Math.max(0, vs[4].yCoord * 16)));
+			double d6 = icon.getInterpolatedV(16 - Math.min(16,Math.max(0, vs[1].yCoord * 16)));
+			double d7 = icon.getInterpolatedU(Math.min(16,Math.max(0, vs[5].zCoord * 16)));
+			double d8 = icon.getInterpolatedU(Math.min(16,Math.max(0, vs[0].zCoord * 16)));
+			double d9 = icon.getInterpolatedV(16 - Math.min(16,Math.max(0, vs[5].yCoord * 16)));
+			double d10 = icon.getInterpolatedV(16 - Math.min(16,Math.max(0, vs[0].yCoord * 16)));
+
+			if(renderer.uvRotateNorth == 1)
+			{
+				d3 = icon.getInterpolatedU(Math.min(16,Math.max(0, vs[1].yCoord * 16)));
+				d5 = icon.getInterpolatedV(16 - Math.min(16,Math.max(0, vs[1].zCoord * 16)));
+				d4 = icon.getInterpolatedU(Math.min(16,Math.max(0, vs[4].yCoord * 16)));
+				d6 = icon.getInterpolatedV(16 - Math.min(16,Math.max(0, vs[4].zCoord * 16)));
+				d9 = d5;
+				d10 = d6;
+				d7 = d3;
+				d8 = d4;
+				d5 = d6;
+				d6 = d9;
+			}
+			else if(renderer.uvRotateNorth == 2)
+			{
+				d3 = icon.getInterpolatedU(16 - Math.min(16,Math.max(0, vs[4].yCoord * 16)));
+				d5 = icon.getInterpolatedV(Math.min(16,Math.max(0, vs[4].zCoord * 16)));
+				d4 = icon.getInterpolatedU(16 - Math.min(16,Math.max(0, vs[1].yCoord * 16)));
+				d6 = icon.getInterpolatedV(Math.min(16,Math.max(0, vs[1].zCoord * 16)));
+				d7 = d4;
+				d8 = d3;
+				d3 = d4;
+				d4 = d8;
+				d9 = d6;
+				d10 = d5;
+			}
+			else if(renderer.uvRotateNorth == 3)
+			{
+				d3 = icon.getInterpolatedU(16 - Math.min(16,Math.max(0, vs[4].zCoord * 16)));
+				d4 = icon.getInterpolatedU(16 - Math.min(16,Math.max(0, vs[1].zCoord * 16)));
+				d5 = icon.getInterpolatedV(Math.min(16,Math.max(0, vs[4].yCoord * 16)));
+				d6 = icon.getInterpolatedV(Math.min(16,Math.max(0, vs[1].yCoord * 16)));
+				d7 = d4;
+				d8 = d3;
+				d9 = d5;
+				d10 = d6;
+			}
+
+			if(renderer.enableAO)
+			{
+				tes.setColorOpaque_F(info.colorRedTopLeft, info.colorGreenTopLeft, info.colorBlueTopLeft);
+				tes.setBrightness(info.brightnessTopLeft);
+				tes.addVertexWithUV(x+vs[5].xCoord, y+vs[5].yCoord, z+vs[5].zCoord, d7, d9);
+				tes.setColorOpaque_F(info.colorRedBottomLeft, info.colorGreenBottomLeft, info.colorBlueBottomLeft);
+				tes.setBrightness(info.brightnessBottomLeft);
+				tes.addVertexWithUV(x+vs[4].xCoord, y+vs[4].yCoord, z+vs[4].zCoord, d3, d5);
+				tes.setColorOpaque_F(info.colorRedBottomRight, info.colorGreenBottomRight, info.colorBlueBottomRight);
+				tes.setBrightness(info.brightnessBottomRight);
+				tes.addVertexWithUV(x+vs[0].xCoord, y+vs[0].yCoord, z+vs[0].zCoord, d8, d10);
+				tes.setColorOpaque_F(info.colorRedTopRight, info.colorGreenTopRight, info.colorBlueTopRight);
+				tes.setBrightness(info.brightnessTopRight);
+				tes.addVertexWithUV(x+vs[1].xCoord, y+vs[1].yCoord, z+vs[1].zCoord, d4, d6);
+			}
+			else
+			{
+				tes.setColorOpaque_I(0xffffff);
+				tes.addVertexWithUV(x+vs[5].xCoord, y+vs[5].yCoord, z+vs[5].zCoord, d7, d9);
+				tes.addVertexWithUV(x+vs[4].xCoord, y+vs[4].yCoord, z+vs[4].zCoord, d3, d5);
+				tes.addVertexWithUV(x+vs[0].xCoord, y+vs[0].yCoord, z+vs[0].zCoord, d8, d10);
+				tes.addVertexWithUV(x+vs[1].xCoord, y+vs[1].yCoord, z+vs[1].zCoord, d4, d6);
+			}
+			flag=true;
+		}
+		// SIDE 5
+		if(block.shouldSideBeRendered(world, x, y, z, 5))
+		{
+			icon = renderer.hasOverrideBlockTexture()?renderer.overrideBlockTexture: block.getIcon(world,x,y,z,5);
+			info = calculateBlockLighting(5, world, block, x,y,z, 1,1,1);
+			tes.setBrightness(983055);
+
+			double d3 = icon.getInterpolatedU(Math.min(16,Math.max(0, vs[7].zCoord * 16)));
+			double d4 = icon.getInterpolatedU(Math.min(16,Math.max(0, vs[2].zCoord * 16)));
+			double d5 = icon.getInterpolatedV(16 - Math.min(16,Math.max(0, vs[7].yCoord * 16)));
+			double d6 = icon.getInterpolatedV(16 - Math.min(16,Math.max(0, vs[2].yCoord * 16)));
+			double d7 = icon.getInterpolatedU(Math.min(16,Math.max(0, vs[6].zCoord * 16)));
+			double d8 = icon.getInterpolatedU(Math.min(16,Math.max(0, vs[3].zCoord * 16)));
+			double d9 = icon.getInterpolatedV(16 - Math.min(16,Math.max(0, vs[6].yCoord * 16)));
+			double d10 = icon.getInterpolatedV(16 - Math.min(16,Math.max(0, vs[3].yCoord * 16)));
+
+			if(renderer.uvRotateSouth == 2)
+			{
+				d3 = icon.getInterpolatedU(Math.min(16,Math.max(0, vs[2].yCoord * 16)));
+				d5 = icon.getInterpolatedV(16 - Math.min(16,Math.max(0, vs[7].zCoord * 16)));
+				d4 = icon.getInterpolatedU(Math.min(16,Math.max(0, vs[7].yCoord * 16)));
+				d6 = icon.getInterpolatedV(16 - Math.min(16,Math.max(0, vs[2].zCoord * 16)));
+				d9 = d5;
+				d10 = d6;
+				d7 = d3;
+				d8 = d4;
+				d5 = d6;
+				d6 = d9;
+			}
+			else if(renderer.uvRotateSouth == 1)
+			{
+				d3 = icon.getInterpolatedU(16 - Math.min(16,Math.max(0, vs[7].yCoord * 16)));
+				d5 = icon.getInterpolatedV(Math.min(16,Math.max(0, vs[2].zCoord * 16)));
+				d4 = icon.getInterpolatedU(16 - Math.min(16,Math.max(0, vs[2].yCoord * 16)));
+				d6 = icon.getInterpolatedV(Math.min(16,Math.max(0, vs[7].zCoord * 16)));
+				d7 = d4;
+				d8 = d3;
+				d3 = d4;
+				d4 = d8;
+				d9 = d6;
+				d10 = d5;
+			}
+			else if(renderer.uvRotateSouth == 3)
+			{
+				d3 = icon.getInterpolatedU(16 - Math.min(16,Math.max(0, vs[7].zCoord * 16)));
+				d4 = icon.getInterpolatedU(16 - Math.min(16,Math.max(0, vs[2].zCoord * 16)));
+				d5 = icon.getInterpolatedV(Math.min(16,Math.max(0, vs[7].yCoord * 16)));
+				d6 = icon.getInterpolatedV(Math.min(16,Math.max(0, vs[2].yCoord * 16)));
+				d7 = d4;
+				d8 = d3;
+				d9 = d5;
+				d10 = d6;
+			}
+			if(renderer.enableAO)
+			{
+				tes.setColorOpaque_F(info.colorRedTopLeft, info.colorGreenTopLeft, info.colorBlueTopLeft);
+				tes.setBrightness(info.brightnessTopLeft);
+				tes.addVertexWithUV(x+vs[3].xCoord, y+vs[3].yCoord, z+vs[3].zCoord, d8, d10);
+				tes.setColorOpaque_F(info.colorRedBottomLeft, info.colorGreenBottomLeft, info.colorBlueBottomLeft);
+				tes.setBrightness(info.brightnessBottomLeft);
+				tes.addVertexWithUV(x+vs[2].xCoord, y+vs[2].yCoord, z+vs[2].zCoord, d4, d6);
+				tes.setColorOpaque_F(info.colorRedBottomRight, info.colorGreenBottomRight, info.colorBlueBottomRight);
+				tes.setBrightness(info.brightnessBottomRight);
+				tes.addVertexWithUV(x+vs[6].xCoord, y+vs[6].yCoord, z+vs[6].zCoord, d7, d9);
+				tes.setColorOpaque_F(info.colorRedTopRight, info.colorGreenTopRight, info.colorBlueTopRight);
+				tes.setBrightness(info.brightnessTopRight);
+				tes.addVertexWithUV(x+vs[7].xCoord, y+vs[7].yCoord, z+vs[7].zCoord, d3, d5);
+			}
+			else
+			{
+				tes.setColorOpaque_I(0xffffff);
+				tes.addVertexWithUV(x+vs[3].xCoord, y+vs[3].yCoord, z+vs[3].zCoord, d8, d10);
+				tes.addVertexWithUV(x+vs[2].xCoord, y+vs[2].yCoord, z+vs[2].zCoord, d4, d6);
+				tes.addVertexWithUV(x+vs[6].xCoord, y+vs[6].yCoord, z+vs[6].zCoord, d7, d9);
+				tes.addVertexWithUV(x+vs[7].xCoord, y+vs[7].yCoord, z+vs[7].zCoord, d3, d5);
+			}
 			flag=true;
 		}
 		return flag;
