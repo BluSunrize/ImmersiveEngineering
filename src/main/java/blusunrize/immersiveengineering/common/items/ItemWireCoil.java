@@ -56,13 +56,14 @@ public class ItemWireCoil extends ItemIEBase
 			}
 			else
 			{
+				WireType type = WireType.getValue(stack.getItemDamage());
 				int[] pos = ItemNBTHelper.getIntArray(stack, "linkingPos");
 				int distance = (int) Math.sqrt( (pos[1]-x)*(pos[1]-x) + (pos[2]-y)*(pos[2]-y) + (pos[3]-z)*(pos[3]-z) );
 				if(pos[0]!=world.provider.dimensionId)
 					player.addChatMessage(new ChatComponentTranslation(Lib.CHAT_WARN+"wrongDimension"));
 				else if(pos[1]==x&&pos[2]==y&&pos[3]==z)
 					player.addChatMessage(new ChatComponentTranslation(Lib.CHAT_WARN+"sameConnection"));
-				else if( distance > 16)
+				else if( distance > type.getMaxLength())
 					player.addChatMessage(new ChatComponentTranslation(Lib.CHAT_WARN+"tooFar"));
 				else
 				{
@@ -76,7 +77,6 @@ public class ItemWireCoil extends ItemIEBase
 						if(canSee)
 						{
 							TargetingInfo targetLink = TargetingInfo.readFromNBT(stack.getTagCompound());
-							WireType type = WireType.getValue(stack.getItemDamage());
 							ImmersiveNetHandler.addConnection(world, Utils.toCC(nodeHere), Utils.toCC(nodeLink), distance, type);
 							nodeHere.connectCable(type, target);
 							nodeLink.connectCable(type, targetLink);

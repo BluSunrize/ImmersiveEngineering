@@ -32,4 +32,8 @@ public enum WireType
 	{
 		return Config.getIntArray("cableColouration")[ordinal()];
 	}
+	public int getMaxLength()
+	{
+		return Config.getIntArray("cableLength")[ordinal()];
+	}
 }

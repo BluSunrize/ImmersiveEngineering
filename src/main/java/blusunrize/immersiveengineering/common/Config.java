@@ -34,6 +34,7 @@ public class Config
 		setIntArray("cableTransferRate", config.get("General", "Cable transfer rates", new int[]{256,1024,4096}, "The transfer rates in RF/t for the cable tiers (copper, electrum, HV)").getIntList());
 		setDoubleArray("cableLossRatio", config.get("General", "Cable loss", new double[]{.05,.025,.1 }, "The percentage of power lost every 16 blocks of distancefor the cable tiers (copper, electrum, HV)").getDoubleList());
 		setIntArray("cableColouration", config.get("General", "Cable colouration", new int[]{0xd4804a,0xedad62,0x6f6f6f}, "").getIntList());
+		setIntArray("cableLength", config.get("General", "Cable length", new int[]{16,16,32}, "The maximum length calbes can have. Copper and Electrum should be similar, Steel is meant for long range transport.").getIntList());
 		
 		setBoolean("increasedRenderboxes", config.get("General", "Increased Renderboxes", true, "By default all devices that accept cables have increased renderbounds to show cables even if hte block itself is not in view. Disablign this reduces them to their minimum sizes, which might improve FPS on low-power PCs").getBoolean());
 		

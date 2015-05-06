@@ -345,7 +345,7 @@ public class ImmersiveNetHandler
 		{
 			float f = 0;
 			for(Connection c : subConnections)
-				f += (c.length/16f)*c.cableType.getLossRatio();
+				f += (c.length/c.cableType.getMaxLength())*c.cableType.getLossRatio();
 			return f;
 		}
 	}

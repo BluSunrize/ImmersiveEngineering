@@ -81,7 +81,7 @@ public class TileEntitySqueezer extends TileEntityMultiblockPart implements IFlu
 							{
 								int f = DieselHandler.getPlantoilOutput(stack);
 								if(f>0)
-									if(tank.getFluidAmount()+f<tank.getCapacity())
+									if(tank.getFluidAmount()+f<=tank.getCapacity())
 									{
 										tank.fill(new FluidStack(IEContent.fluidPlantoil,f), true);
 										this.decrStackSize(i, 1);

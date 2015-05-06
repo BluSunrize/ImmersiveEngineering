@@ -133,7 +133,13 @@ public class IEContent
 		itemTool = new ItemIETool();
 		itemRevolver = new ItemRevolver();
 		itemBullet = new ItemBullet();
-		itemFluidContainers = new ItemIEBase("fluidContainers", 64, "bottleCreosote","bucketCreosote",  "bottlePlantoil","bucketPlantoil",  "bottleEthanol","bucketEthanol", "bottleBiodiesel","bucketBiodiesel");
+		itemFluidContainers = new ItemIEBase("fluidContainers", 64, "bottleCreosote","bucketCreosote",  "bottlePlantoil","bucketPlantoil",  "bottleEthanol","bucketEthanol", "bottleBiodiesel","bucketBiodiesel")
+		{
+		    public ItemStack getContainerItem(ItemStack itemStack)
+		    {
+		        return itemStack.getItemDamage()%2==0?new ItemStack(Items.glass_bottle): new ItemStack(Items.bucket);
+		    }
+		};
 
 
 		fluidCreosote = FluidRegistry.getFluid("creosote");
@@ -374,7 +380,7 @@ public class IEContent
 		addOredictRecipe(new ItemStack(blockMetalMultiblocks, 2,BlockMetalMultiblocks.META_fermenter), "IPI","GDG","IPI", 'I',"ingotIron",'D',"dyeBlue",'G',componentIron,'P',Blocks.piston);
 
 		CokeOvenRecipe.addRecipe(new ItemStack(itemMaterial,1,6), new ItemStack(Items.coal), 1800, 500);
-		CokeOvenRecipe.addRecipe(new ItemStack(blockStoneDevice,1,1), "blockCoal", 1800*9, 5000);
+		CokeOvenRecipe.addRecipe(new ItemStack(blockStoneDevice,1,3), "blockCoal", 1800*9, 5000);
 		CokeOvenRecipe.addRecipe(new ItemStack(Items.coal,1,1), "logWood", 900, 250);
 		BlastFurnaceRecipe.addRecipe(new ItemStack(itemMetal,1,7), "ingotIron", 1200);
 		BlastFurnaceRecipe.addRecipe(new ItemStack(blockStorage,1,7), "blockIron", 1200*9);
@@ -421,7 +427,7 @@ public class IEContent
 		DieselHandler.registerPlantoilSource(Items.wheat_seeds, 80);
 		DieselHandler.registerPlantoilSource(Items.pumpkin_seeds, 80);
 		DieselHandler.registerPlantoilSource(Items.melon_seeds, 80);
-		DieselHandler.registerPlantoilSource(itemSeeds, 80);
+		DieselHandler.registerPlantoilSource(itemSeeds, 120);
 
 		DieselHandler.registerEthanolSource(Items.reeds, 80);
 

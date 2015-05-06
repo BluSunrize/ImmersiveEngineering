@@ -374,7 +374,7 @@ public class BlockMetalDevices extends BlockIEBase
 	@Override
 	public void onEntityCollidedWithBlock(World world, int x, int y, int z, Entity par5Entity)
 	{
-		if(par5Entity!=null && world.getTileEntity(x, y, z) instanceof TileEntityConveyorBelt && !(par5Entity instanceof EntityPlayer && ((EntityPlayer)par5Entity).isSneaking()) && par5Entity.posY-y<.4f)
+		if(par5Entity!=null && world.getTileEntity(x, y, z) instanceof TileEntityConveyorBelt && !(par5Entity instanceof EntityPlayer && ((EntityPlayer)par5Entity).isSneaking()))
 		{
 			if(world.isBlockIndirectlyGettingPowered(x, y, z))
 				return;
