@@ -116,7 +116,7 @@ public class ClientProxy extends CommonProxy
 	}
 
 	@Override
-	public void serverStart()
+	public void loadComplete()
 	{
 		manual = new IEManualInstance();
 		manual.addEntry("introduction", "general",
@@ -150,6 +150,8 @@ public class ClientProxy extends CommonProxy
 			new PositionedItemStack[]{new PositionedItemStack(OreDictionary.getOres("dustCopper"),24,0), new PositionedItemStack(OreDictionary.getOres("dustNickel"),42,0), new PositionedItemStack(new ItemStack(IEContent.itemMetal,2,15),78,0)},
 			new PositionedItemStack[]{new PositionedItemStack(OreDictionary.getOres("dustGold"),24,0), new PositionedItemStack(OreDictionary.getOres("dustSilver"),42,0), new PositionedItemStack(new ItemStack(IEContent.itemMetal,2,16),78,0)}}));
 		manual.addEntry("oreProcessing", "general", pages.toArray(new IManualPage[0]));
+		manual.addEntry("hemp", "general", 
+				new ManualPages.ItemDisplay(manual, "hemp0", new ItemStack(IEContent.blockCrop,1,5),new ItemStack(IEContent.itemSeeds)));
 		manual.addEntry("cokeoven", "general",
 				new ManualPages.Text(manual, "cokeoven0"),
 				new ManualPages.Crafting(manual, "cokeovenBlock", new ItemStack(IEContent.blockStoneDevice,1,1)),
@@ -220,7 +222,7 @@ public class ClientProxy extends CommonProxy
 			return new GuiBlastFurnace(player.inventory, (TileEntityBlastFurnace) world.getTileEntity(x, y, z));
 		if(ID==Lib.GUIID_Revolver && player.getCurrentEquippedItem()!=null && player.getCurrentEquippedItem().getItem() instanceof ItemRevolver)
 			return new GuiRevolver(player.inventory, world);
-		if(ID==Lib.GUIID_Manual && player.getCurrentEquippedItem()!=null && OreDictionary.itemMatches(new ItemStack(IEContent.itemTool,1,3), player.getCurrentEquippedItem(), false))
+		if(ID==Lib.GUIID_Manual && manual!=null && player.getCurrentEquippedItem()!=null && OreDictionary.itemMatches(new ItemStack(IEContent.itemTool,1,3), player.getCurrentEquippedItem(), false))
 			return manual.getGui();
 		if(ID==Lib.GUIID_WoodenCrate && world.getTileEntity(x, y, z) instanceof TileEntityWoodenCrate)
 			return new GuiCrate(player.inventory, (TileEntityWoodenCrate) world.getTileEntity(x, y, z));

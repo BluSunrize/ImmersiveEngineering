@@ -192,6 +192,10 @@ ie.manual.entry.oreProcessing.subtext=
 ie.manual.entry.oreProcessing=Crushing ores is the easiest way of doubling their output. One ore breaks into two dusts and each dust smelts into one ingot.
 ie.manual.entry.oreProcessing_blend=By mixing the respective metal dusts, you can create an alloy used for an entirely different purpose. Constantan has thermo-electric properties and is used in creating the <link:generator:thermoelectric generator:1> and electrum is an excellent electric conductor used in <link:wiring:medium-voltage architecture>.
 
+ie.manual.entry.hemp.name=Industrial Hemp
+ie.manual.entry.hemp.subtext=530 fabric it
+ie.manual.entry.hemp0=Industrial Hemp is a remarkable plant! Not only are its seeds useful for the the creation of <link:biodiesel:bio diesel>, the hemp fibers are also vital in the creation of <link:generator:Improved Windmills:4>. The seeds can be gathered by breaking tall grass.
+
 ie.manual.entry.cokeoven.name=Coke Oven
 ie.manual.entry.cokeoven.subtext=Hot topic!
 ie.manual.entry.cokeoven0=The Coke Oven is the first important machine you will need to create in order to proceed with Immersive Engineering. It's functionality is simple, it will heat up coal or blocks of coal without supplying it with oxygen, creating Coal Coke, a carbon rich fuel. More importantly, this process creates §lCreosote Oil§r, which is used as a <link:treatedwood:preservative for wood>. Similarly you can also burn wooden logs into charcoal with this oven, albeit with a smaller yield of creosote.
