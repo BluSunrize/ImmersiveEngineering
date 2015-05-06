@@ -45,7 +45,7 @@ public class CommonProxy implements IGuiHandler
 		return null;
 	}
 
-	public void serverStart()
+	public void loadComplete()
 	{
 	}
 }

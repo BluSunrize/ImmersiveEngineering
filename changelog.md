@@ -1,3 +1,8 @@
+#####Version 0.1.5 - BUILT
+- NPE fix. Really should have had it in the previous
+#####Version 0.1.4 - BUILT
+- fixed the manual. Pls no crash anymore D:
+- added documentation to the hemp
 #####Version 0.1.3 - BUILT
 - finished conveyor belts
 - fixed various bugs
