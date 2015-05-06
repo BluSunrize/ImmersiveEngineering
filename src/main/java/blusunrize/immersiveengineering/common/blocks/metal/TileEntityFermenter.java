@@ -79,7 +79,7 @@ public class TileEntityFermenter extends TileEntityMultiblockPart implements IFl
 							if(stack!=null)
 							{
 								int f = DieselHandler.getEthanolOutput(stack);
-								if(f>0 && tank.getFluidAmount()+f<tank.getCapacity())
+								if(f>0 && tank.getFluidAmount()+f<=tank.getCapacity())
 								{
 									tank.fill(new FluidStack(IEContent.fluidEthanol,f), true);
 									this.decrStackSize(i, 1);

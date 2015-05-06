@@ -160,10 +160,11 @@ public class GuiManual extends GuiScreen
 		}
 		if(button.id == 1)
 		{
-			if(manual.getEntry(selectedEntry)!=null)
-				selectedEntry = null;
-			else if(manual.manualContents.containsKey(selectedCategory))
-				selectedCategory = null;
+			if(selectedEntry!=null)
+				selectedEntry=null;
+			else if(selectedCategory!=null)
+				selectedCategory=null;
+			page=0;
 			this.initGui();
 		}
 		if(pageButtons.contains(button) && manual.getEntry(selectedEntry)!=null)

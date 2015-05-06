@@ -131,7 +131,7 @@ public class TileEntityCokeOven extends TileEntityIEBase implements ISidedInvent
 			return null;
 
 		if(inventory[1]==null || (OreDictionary.itemMatches(inventory[1],recipe.output,false) && inventory[1].stackSize+recipe.output.stackSize<getInventoryStackLimit()) )
-			if(tank.getFluidAmount()+recipe.creosoteOutput<tank.getCapacity())
+			if(tank.getFluidAmount()+recipe.creosoteOutput<=tank.getCapacity())
 				return recipe;
 		return null;
 	}
