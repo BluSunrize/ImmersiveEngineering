@@ -29,8 +29,8 @@ public class TileRenderCrusher extends TileEntitySpecialRenderer
 
 		ClientUtils.bindTexture("immersiveengineering:textures/models/crusher.png");
 
-		model.axle1.rotateAngleX = (float) Math.toRadians(crusher.barrelRotation);
-		model.axle2.rotateAngleX = (float) Math.toRadians(-crusher.barrelRotation);
+		model.axle1.rotateAngleX = (float) Math.toRadians(crusher.barrelRotation + (crusher.barrelRotation == 0? 0 :  f));
+		model.axle2.rotateAngleX = (float) Math.toRadians(-crusher.barrelRotation - (crusher.barrelRotation == 0? 0 :  f));
 
 		model.render(null, 0, 0, 0, 0, 0, .0625f);
 		GL11.glTranslated(0,-1,0);
