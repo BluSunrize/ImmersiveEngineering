@@ -114,6 +114,7 @@ public class GuiManual extends GuiScreen
 			boolean b0 = mx>32&&mx<32+17 && my>179&&my<179+10;
 			boolean b1 = mx>135&&mx<135+17 && my>179&&my<179+10;
 
+			GL11.glEnable(GL11.GL_BLEND);
 			if(page>0)
 				this.drawTexturedModalRect(guiLeft+ 32,guiTop+179, 0,216+(b0?20:0), 16,10);
 			if(page<entry.getPages().length-1)

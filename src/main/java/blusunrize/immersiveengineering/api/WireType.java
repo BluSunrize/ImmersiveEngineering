@@ -1,7 +1,5 @@
 package blusunrize.immersiveengineering.api;
 
-import blusunrize.immersiveengineering.common.Config;
-
 /**
  * @author BluSunrize - 08.03.2015
  *
@@ -9,31 +7,36 @@ import blusunrize.immersiveengineering.common.Config;
  */
 public enum WireType
 {
-	COPPER(),
-	ELECTRUM(),
-	STEEL();
-	
-	
+	COPPER,
+	ELECTRUM,
+	STEEL,
+	STRUCTURE_ROPE,
+	STRUCTURE_STEEL;
+
 	public static WireType getValue(int i)
 	{
 		if(i>=0 && i<values().length)
 			return values()[i];
 		return COPPER;
 	}
+	public static double[] cableLossRatio;
 	public double getLossRatio()
 	{
-		return Config.getDoubleArray("cableLossRatio")[ordinal()];
+		return cableLossRatio[ordinal()];
 	}
+	public static int[] cableTransferRate;
 	public int getTransferRate()
 	{
-		return Config.getIntArray("cableTransferRate")[ordinal()];
+		return cableTransferRate[ordinal()];
 	}
+	public static int[] cableColouration;
 	public int getColour()
 	{
-		return Config.getIntArray("cableColouration")[ordinal()];
+		return cableColouration[ordinal()];
 	}
+	public static int[] cableLength;
 	public int getMaxLength()
 	{
-		return Config.getIntArray("cableLength")[ordinal()];
+		return cableLength[ordinal()];
 	}
 }

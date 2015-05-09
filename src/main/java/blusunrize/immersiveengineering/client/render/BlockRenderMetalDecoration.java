@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.client.render;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -11,6 +12,7 @@ import org.lwjgl.opengl.GL11;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDecoration;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorStructural;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityStructuralArm;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;
@@ -106,6 +108,12 @@ public class BlockRenderMetalDecoration implements ISimpleBlockRenderingHandler
 				tes.addVertexWithUV(1, 0, 1, iSide.getMaxU(), iSide.getMinV());
 				tes.addVertexWithUV(1, 0, 0, iSide.getMinU(), iSide.getMinV());
 				tes.draw();
+			}
+			else if(metadata==BlockMetalDecoration.META_connectorStrutural)
+			{
+				GL11.glTranslatef(-.5f, -.5F, -.5f);
+				TileEntityRendererDispatcher.instance.renderTileEntityAt(new TileEntityConnectorStructural(), 0.0D, 0.0D, 0.0D, 0.0F);
+				GL11.glEnable(32826);
 			}
 			else
 			{
@@ -419,11 +427,12 @@ public class BlockRenderMetalDecoration implements ISimpleBlockRenderingHandler
 			
 			return true;
 		}
-		else
+		else if(world.getBlockMetadata(x, y, z) != BlockMetalDecoration.META_connectorStrutural)
 		{
 			renderer.setRenderBounds(0,0,0,1,1,1);
 			return renderer.renderStandardBlock(block, x, y, z);
 		}
+		return false;
 	}
 
 	@Override

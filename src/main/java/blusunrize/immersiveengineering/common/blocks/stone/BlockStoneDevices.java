@@ -99,33 +99,37 @@ public class BlockStoneDevices extends BlockIEBase
 			int[] off = ((TileEntityBlastFurnace)world.getTileEntity(x, y, z)).offset;
 			if(off[1]!=0)
 				return super.getIcon(world, x, y, z, side);
+			TileEntityBlastFurnace tebf = ((TileEntityBlastFurnace)world.getTileEntity(x, y, z)).master();
+			if(tebf==null)
+				tebf=((TileEntityBlastFurnace)world.getTileEntity(x, y, z));
+			int j = tebf.active?1:0;
 			if(off[0]==0&&off[2]==0)
-				return iconsBlastFurnace[0];
+				return iconsBlastFurnace[j];
 			switch(((TileEntityBlastFurnace)world.getTileEntity(x, y, z)).facing)
 			{
 			case 2:
 				if(off[0]==0&&off[2]==2)
-					return iconsBlastFurnace[0];
+					return iconsBlastFurnace[j];
 				else if(off[0]!=0&&off[2]==1)
-					return iconsBlastFurnace[0];
+					return iconsBlastFurnace[j];
 				return super.getIcon(world, x, y, z, side);
 			case 3:
 				if(off[0]==0&&off[2]==-2)
-					return iconsBlastFurnace[0];
+					return iconsBlastFurnace[j];
 				else if(off[0]!=0&&off[2]==-1)
-					return iconsBlastFurnace[0];
+					return iconsBlastFurnace[j];
 				return super.getIcon(world, x, y, z, side);
 			case 4:
 				if(off[0]==1&&off[2]!=0)
-					return iconsBlastFurnace[0];
+					return iconsBlastFurnace[j];
 				else if(off[0]==2&&off[2]==0)
-					return iconsBlastFurnace[0];
+					return iconsBlastFurnace[j];
 				return super.getIcon(world, x, y, z, side);
 			case 5:
 				if(off[0]==-1&&off[2]!=0)
-					return iconsBlastFurnace[0];
+					return iconsBlastFurnace[j];
 				else if(off[0]==-2&&off[2]==0)
-					return iconsBlastFurnace[0];
+					return iconsBlastFurnace[j];
 				return super.getIcon(world, x, y, z, side);
 			}
 		}
@@ -170,7 +174,7 @@ public class BlockStoneDevices extends BlockIEBase
 	@Override
 	public void breakBlock(World world, int x, int y, int z, Block par5, int par6)
 	{
-		if(world.getTileEntity(x, y, z) instanceof TileEntityCokeOven)
+		if(world.getTileEntity(x, y, z) instanceof TileEntityCokeOven && ((TileEntityCokeOven)world.getTileEntity(x, y, z)).formed)
 		{
 			int[] off = ((TileEntityCokeOven)world.getTileEntity(x, y, z)).offset;
 			int xx = x - off[0];
@@ -193,9 +197,10 @@ public class BlockStoneDevices extends BlockIEBase
 							((TileEntityCokeOven)world.getTileEntity(xx+ix, yy+iy, zz+iz)).offset=new int[3];
 							world.getTileEntity(xx+ix, yy+iy, zz+iz).markDirty();
 							world.markBlockForUpdate(xx+ix, yy+iy, zz+iz);
+							world.addBlockEvent(xx+ix, yy+iy, zz+iz, this, 0,0);
 						}
 		}
-		if(world.getTileEntity(x, y, z) instanceof TileEntityBlastFurnace)
+		if(world.getTileEntity(x, y, z) instanceof TileEntityBlastFurnace && ((TileEntityBlastFurnace)world.getTileEntity(x, y, z)).formed)
 		{
 			int[] off = ((TileEntityBlastFurnace)world.getTileEntity(x, y, z)).offset;
 			int xx = x - off[0];
@@ -218,6 +223,7 @@ public class BlockStoneDevices extends BlockIEBase
 							((TileEntityBlastFurnace)world.getTileEntity(xx+ix, yy+iy, zz+iz)).offset=new int[3];
 							world.getTileEntity(xx+ix, yy+iy, zz+iz).markDirty();
 							world.markBlockForUpdate(xx+ix, yy+iy, zz+iz);
+							world.addBlockEvent(xx+ix, yy+iy, zz+iz, this, 0,0);
 						}
 		}
 		super.breakBlock(world, x, y, z, par5, par6);

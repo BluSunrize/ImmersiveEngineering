@@ -19,10 +19,14 @@ import net.minecraftforge.oredict.OreDictionary;
 import org.lwjgl.opengl.GL11;
 
 import blusunrize.immersiveengineering.api.WireType;
+import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
 import blusunrize.immersiveengineering.common.items.ItemRevolver;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Lib;
+import blusunrize.immersiveengineering.common.util.Utils;
 
 import com.google.common.collect.ArrayListMultimap;
 
@@ -61,6 +65,19 @@ public class ClientEventHandler
 						String s = StatCollector.translateToLocalFormatted(Lib.DESC_INFO+"attachedTo", link[1],link[2],link[3]);
 						ClientUtils.font().drawString(s, event.resolution.getScaledWidth()/2 - ClientUtils.font().getStringWidth(s)/2, event.resolution.getScaledHeight()-GuiIngameForge.left_height-10, WireType.ELECTRUM.getColour(), true);
 					}
+				}
+
+			}
+			else if( Config.getBoolean("colourblindSupport") && Utils.isHammer(ClientUtils.mc().thePlayer.getCurrentEquippedItem()))
+			{
+				MovingObjectPosition mop = ClientUtils.mc().objectMouseOver;
+				if(mop!=null && ClientUtils.mc().thePlayer.worldObj.getTileEntity(mop.blockX, mop.blockY, mop.blockZ) instanceof IEBlockInterfaces.IBlockOverlayText)
+				{
+					IEBlockInterfaces.IBlockOverlayText overlayBlock = (IBlockOverlayText) ClientUtils.mc().thePlayer.worldObj.getTileEntity(mop.blockX, mop.blockY, mop.blockZ);
+					String[] s = overlayBlock.getOverlayText(mop);
+					if(s!=null && s.length>0)
+						for(int is=0; is<s.length; is++)
+							ClientUtils.font().drawString(s[is], event.resolution.getScaledWidth()/2+8, event.resolution.getScaledHeight()/2+8+is*ClientUtils.font().FONT_HEIGHT, 0xcccccc, true);
 				}
 
 			}
@@ -111,12 +128,12 @@ public class ClientEventHandler
 		if(event.subID==0 && event.target.typeOfHit==MovingObjectPosition.MovingObjectType.BLOCK && additionalBlockBounds.containsKey(new ChunkCoordinates(event.target.blockX,event.target.blockY,event.target.blockZ)))
 		{
 			ChunkCoordinates cc = new ChunkCoordinates(event.target.blockX,event.target.blockY,event.target.blockZ);
-			if(!(event.player.worldObj.getTileEntity(event.target.blockX,event.target.blockY,event.target.blockZ) instanceof ICustomBoundingboxes))
+			if(!(event.player.worldObj.getTileEntity(event.target.blockX,event.target.blockY,event.target.blockZ) instanceof IEBlockInterfaces.ICustomBoundingboxes))
 			{
 				additionalBlockBounds.removeAll(cc);
 				return;
 			}
-				
+
 			GL11.glEnable(GL11.GL_BLEND);
 			OpenGlHelper.glBlendFunc(770, 771, 1, 0);
 			GL11.glColor4f(0.0F, 0.0F, 0.0F, 0.4F);
@@ -135,8 +152,5 @@ public class ClientEventHandler
 			GL11.glDisable(GL11.GL_BLEND);
 			event.setCanceled(true);
 		}
-	}
-	public static interface ICustomBoundingboxes
-	{
 	}
 }

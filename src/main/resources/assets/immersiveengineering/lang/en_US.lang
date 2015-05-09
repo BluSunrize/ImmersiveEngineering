@@ -44,7 +44,7 @@ tile.ImmersiveEngineering.metalDecoration.radiator.name=Radiator Block
 tile.ImmersiveEngineering.metalDecoration.heavyEngineering.name=Heavy Engineering Block
 tile.ImmersiveEngineering.metalDecoration.generator.name=Generator Block
 tile.ImmersiveEngineering.metalDecoration.lightEngineering.name=Light Engineering Block
-
+tile.ImmersiveEngineering.metalDecoration.connectorStructural.name=Structural Cable Connector
 
 tile.ImmersiveEngineering.woodenDevice.post.name=Wooden Post
 tile.ImmersiveEngineering.woodenDevice.watermill.name=Watermill
@@ -122,6 +122,8 @@ item.ImmersiveEngineering.fluidContainers.bucketBiodiesel.name=Bucket of Bio Die
 item.ImmersiveEngineering.coil.copper.name=Copper Wire Coil
 item.ImmersiveEngineering.coil.electrum.name=Electrum Wire Coil
 item.ImmersiveEngineering.coil.HV.name=High-Voltage Wire Coil
+item.ImmersiveEngineering.coil.rope.name=Hemp Rope Coil
+item.ImmersiveEngineering.coil.structural.name=Steel Cable Coil
 item.ImmersiveEngineering.tool.hammer.name=Engineers Hammer
 item.ImmersiveEngineering.tool.wirecutter.name=Engineers Wirecutters
 item.ImmersiveEngineering.tool.voltmeter.name=Engineers Voltmeter
@@ -130,6 +132,10 @@ item.ImmersiveEngineering.tool.manual.name=Engineers Manual
 item.ImmersiveEngineering.revolver.normal.name=Revolver
 item.ImmersiveEngineering.revolver.elite.name=Elite Revolver
 item.ImmersiveEngineering.revolver.speedloader.name=Revolver Speedloader
+item.ImmersiveEngineering.revolver.sns.name=Elite Revolver
+item.ImmersiveEngineering.revolver.nerf.name=Nerf'd Revolver
+item.ImmersiveEngineering.revolver.oblivion.name=Oblivion
+item.ImmersiveEngineering.revolver.bee.name=Beevolver
 
 item.ImmersiveEngineering.bullet.emptyCasing.name=Empty Casing
 item.ImmersiveEngineering.bullet.emptyShell.name=Empty Shell
@@ -146,10 +152,24 @@ itemGroup.ImmersiveEngineering=Immersive Engineering
 desc.ImmersiveEngineering.info.attachedTo=Linking from %1$s, %2$s, %3$s
 desc.ImmersiveEngineering.info.attachedToDim=Linking from %1$s, %2$s, %3$s in Dimension %4$s
 desc.ImmersiveEngineering.info.energyStored=Energy stored: %1$s RF
+desc.ImmersiveEngineering.info.blastFuelTime=Blast Fuel: %1$s Ticks
+desc.ImmersiveEngineering.info.capacitorSide.facing=Facing Side:
+desc.ImmersiveEngineering.info.capacitorSide.opposite=Opposite Side:
+desc.ImmersiveEngineering.info.capacitorSide.-1=No Connection
+desc.ImmersiveEngineering.info.capacitorSide.0=Energy Input
+desc.ImmersiveEngineering.info.capacitorSide.1=Energy Output
 
 desc.ImmersiveEngineering.flavour.crate=Will keep its inventory when broken!
+desc.ImmersiveEngineering.flavour.coil.construction0=For decoration purposes only
+desc.ImmersiveEngineering.flavour.coil.construction1=Will not transmit power
+desc.ImmersiveEngineering.flavour.revolver.normal=Go ahead, make my day!
+desc.ImmersiveEngineering.flavour.revolver.elite=Exclusive DLC Content
+desc.ImmersiveEngineering.flavour.revolver.sns=Blood, Sweat, Steam and Steel
+desc.ImmersiveEngineering.flavour.revolver.nerf=Safe for kids
+desc.ImmersiveEngineering.flavour.revolver.oblivion=Passing Memories
+desc.ImmersiveEngineering.flavour.revolver.bee=The Pain
 
-desc.ImmersiveEngineering.info.blastFuelTime=Blast Fuel: %1$s Ticks
+gui.ImmersiveEngineering.empty=Empty
 
 #CHAT
 chat.ImmersiveEngineering.warning.wrongCable=You cannot attach this wire here
@@ -163,6 +183,12 @@ chat.ImmersiveEngineering.info.energyStorage=Energy Stored: %1$s/%2$s RF
 #RECIPES
 recipe.ImmersiveEngineering.hammerCrushing=Crushing
 
+#DEATH
+death.attack.ieRevolver_casull=%1$s was shot by %2$s
+death.attack.ieRevolver_armorPiercing=%1$s was shot by %2$s
+death.attack.ieRevolver_buckshot=%1$s was shotgunned by %2$s
+death.attack.ieRevolver_dragonsbreath=%1$s was incinerated by %2$s
+death.attack.ieCrushed=%1$s was crushed
 
 #MANUAL
 #ie.manual.entry..name=
@@ -222,10 +248,15 @@ ie.manual.entry.wiringVoltmeter=The §lVoltmeter§r is used to measure connectio
 
 ie.manual.entry.generator.name=Power Generation
 ie.manual.entry.generator.subtext=
-ie.manual.entry.generator0=Transferring power is quite helpful provided you have power. To actually generate RF, you have the options of using kinetic forces of windmills and waterwheels or thermoelectric generators. The former are connected to a dynamo and generate power based on how fast they turn, the latter uses temperature gradients. placing a hot fluid on one side and a cold fluid or ice on the opposing side generates energy based on the difference between the two temperatures.
+ie.manual.entry.generator0=Transferring power is quite helpful provided you have power. To actually generate RF, you can use the kinetic forces of windmills and waterwheels. Connecting these to a dynamo will generate power based on how fast they turn.
 ie.manual.entry.generatorWindmill=The windmill is a free and easy way of generating power, albeit not a very powerful one. Its speed depends greatly on how high it is placed in the world and how obscured the space in front of it is. It will also run faster when it's raining or storming.
-ie.manual.entry.generatorWatermill=The watermill is a fairly easy way of powering a dynamo. It's turning speed is based on the water flowing around it, so for optimal results, you'll want to direct the water in a semi-circle from the top down one side and along the bottom. 
+ie.manual.entry.generatorWatermill=The watermill is a fairly easy way of powering a dynamo. It's turning speed is based on the water flowing around it, so for optimal results, you'll want to direct the water in a semi-circle from the top down one side and along the bottom. Up to three watermills can be placed against each other.
 ie.manual.entry.generatorWindmillImproved=The improved windmill is an upgrade to the windmills. While it has twice the output it's also more pricey to create, requiring tough fabric made from industrial hemp. Break tall grass to aquire hemp seeds.
+
+ie.manual.entry.thermoElectric.name=Thermoelectric Generator
+ie.manual.entry.thermoElectric.subtext=Hot and Cold
+ie.manual.entry.thermoElectric0=Thermoelectric Generators are another option of power generation and work without the use of any mechanical parts, instead they use the temperature gradients between two sources.
+ie.manual.entry.thermoElectric1=Placing a hot fluid on one side and a colder fluid on the opposing side generates energy based on the difference between the two temperatures. Other valid sources of heat and cold include uranium or plutonium blocks and ice.
 
 ie.manual.entry.blastfurnace.name=Blast Furnace
 ie.manual.entry.blastfurnace.subtext=Even hotter topic!

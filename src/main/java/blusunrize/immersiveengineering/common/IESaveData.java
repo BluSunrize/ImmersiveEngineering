@@ -77,4 +77,5 @@ public class IESaveData extends WorldSavedData
 		if(FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER)
 			INSTANCE = in;
 	}
+
 }

@@ -8,7 +8,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.oredict.OreDictionary;
-import blusunrize.immersiveengineering.common.util.Utils;
 
 /**
  * @author BluSunrize - 23.04.2015
@@ -56,15 +55,15 @@ public class DieselHandler
 				input = new ItemStack((Item)input);
 			if(input instanceof Block)
 				input = new ItemStack((Block)input);
-			if(input instanceof ItemStack && !Utils.nameFromStack((ItemStack)input).isEmpty())
-				plantoilOutput.put(Utils.nameFromStack((ItemStack)input)+"::"+((ItemStack)input).getItemDamage(), output);
+			if(input instanceof ItemStack && !ApiUtils.nameFromStack((ItemStack)input).isEmpty())
+				plantoilOutput.put(ApiUtils.nameFromStack((ItemStack)input)+"::"+((ItemStack)input).getItemDamage(), output);
 		}
 	}
 	public static int getPlantoilOutput(ItemStack stack)
 	{
 		for(Map.Entry<String,Integer> e : plantoilOutput.entrySet())
 		{
-			if(Utils.compareToOreName(stack, e.getKey()))
+			if(ApiUtils.compareToOreName(stack, e.getKey()))
 				return e.getValue();
 			else
 			{
@@ -74,7 +73,7 @@ public class DieselHandler
 					String key = e.getKey().substring(0,lIndx);
 					try{
 						int reqMeta = Integer.parseInt(e.getKey().substring(lIndx+2));
-						if(key.equals(Utils.nameFromStack(stack)) && (reqMeta==OreDictionary.WILDCARD_VALUE || reqMeta==stack.getItemDamage()))
+						if(key.equals(ApiUtils.nameFromStack(stack)) && (reqMeta==OreDictionary.WILDCARD_VALUE || reqMeta==stack.getItemDamage()))
 							return e.getValue();
 					}catch(Exception exception){}
 				}
@@ -99,14 +98,14 @@ public class DieselHandler
 				input = new ItemStack((Item)input);
 			if(input instanceof Block)
 				input = new ItemStack((Block)input);
-			if(input instanceof ItemStack && !Utils.nameFromStack((ItemStack)input).isEmpty())
-				ethanolOutput.put(Utils.nameFromStack((ItemStack)input)+"::"+((ItemStack)input).getItemDamage(), output);
+			if(input instanceof ItemStack && !ApiUtils.nameFromStack((ItemStack)input).isEmpty())
+				ethanolOutput.put(ApiUtils.nameFromStack((ItemStack)input)+"::"+((ItemStack)input).getItemDamage(), output);
 		}
 	}
 	public static int getEthanolOutput(ItemStack stack)
 	{
 		for(Map.Entry<String,Integer> e : ethanolOutput.entrySet())
-			if(Utils.compareToOreName(stack, e.getKey()))
+			if(ApiUtils.compareToOreName(stack, e.getKey()))
 				return e.getValue();
 			else
 			{
@@ -116,7 +115,7 @@ public class DieselHandler
 					String key = e.getKey().substring(0,lIndx);
 					try{
 						int reqMeta = Integer.parseInt(e.getKey().substring(lIndx+2));
-						if(key.equals(Utils.nameFromStack(stack)) && (reqMeta==OreDictionary.WILDCARD_VALUE || reqMeta==stack.getItemDamage()))
+						if(key.equals(ApiUtils.nameFromStack(stack)) && (reqMeta==OreDictionary.WILDCARD_VALUE || reqMeta==stack.getItemDamage()))
 							return e.getValue();
 					}catch(Exception exception){}
 				}

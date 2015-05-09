@@ -66,7 +66,6 @@ public class MultiblockDieselGenerator implements IMultiblock
 					{
 						if(!(world.getBlock(xx, yy, zz).equals(IEContent.blockMetalDecoration) && world.getBlockMetadata(xx, yy, zz)==BlockMetalDecoration.META_radiator))
 						{
-							System.out.println("break: "+xx+","+yy+","+zz+", no radiator");
 							return false;
 						}
 					}
@@ -74,7 +73,6 @@ public class MultiblockDieselGenerator implements IMultiblock
 					{
 						if(!(world.getBlock(xx, yy, zz).equals(IEContent.blockMetalDecoration) && world.getBlockMetadata(xx, yy, zz)==BlockMetalDecoration.META_generator))
 						{
-							System.out.println("break: "+xx+","+yy+","+zz+", no generator");
 							return false;
 						}
 					}
@@ -82,7 +80,6 @@ public class MultiblockDieselGenerator implements IMultiblock
 					{
 						if(!(world.getBlock(xx, yy, zz).equals(IEContent.blockMetalDecoration) && world.getBlockMetadata(xx, yy, zz)==BlockMetalDecoration.META_heavyEngineering))
 						{
-							System.out.println("break: "+xx+","+yy+","+zz+", no engine");
 							return false;
 						}
 					}

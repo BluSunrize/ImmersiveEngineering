@@ -1,15 +1,24 @@
 package blusunrize.immersiveengineering.common.items;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumAction;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IBullet;
@@ -18,11 +27,14 @@ import blusunrize.immersiveengineering.common.util.Lib;
 
 import com.google.common.collect.Multimap;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 public class ItemRevolver extends ItemIEBase
 {
 	public ItemRevolver()
 	{
-		super("revolver", 1, "normal","elite","speedloader");
+		super("revolver", 1, "normal","elite","speedloader","speed","nerf");
 	}
 
 	@Override
@@ -30,13 +42,52 @@ public class ItemRevolver extends ItemIEBase
 	{
 		this.icons[2] = ir.registerIcon("immersiveengineering:"+itemName+"_"+"speedloader");
 	}
-	
+
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void getSubItems(Item item, CreativeTabs tab, List list)
+	{
+		for(int i=0;i<3;i++)
+			list.add(new ItemStack(this,1,i));
+		//		for(SpecialRevolver r : eliteGunmen.values())
+		//		{
+		//			ItemStack s = new ItemStack(this,1,r.meta);
+		//			if(r.tag!=null && !r.tag.isEmpty())
+		//			{
+		//				s.setTagCompound(new NBTTagCompound());
+		//				s.getTagCompound().setString("elite",r.tag);
+		//			}
+		//			list.add(s);
+		//		}
+	}
+	@Override
+	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean adv)
+	{
+		if(stack.hasTagCompound() && stack.getTagCompound().hasKey("elite"))
+			list.add(StatCollector.translateToLocal(Lib.DESC+"flavour.revolver."+stack.getTagCompound().getString("elite")));
+		else if(stack.getItemDamage()==1)
+			list.add(StatCollector.translateToLocal(Lib.DESC+"flavour.revolver.elite"));
+	}
+	@Override
+	public String getUnlocalizedName(ItemStack stack)
+	{
+		if(stack.hasTagCompound() && stack.getTagCompound().hasKey("elite"))
+			return this.getUnlocalizedName()+"."+stack.getTagCompound().getString("elite");
+		return super.getUnlocalizedName(stack);
+	}
+
 	@Override
 	public Multimap getAttributeModifiers(ItemStack stack)
 	{
 		Multimap multimap = super.getAttributeModifiers(stack);
 		if(stack.getItemDamage()==1)
 			multimap.put(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName(), new AttributeModifier(field_111210_e, "Weapon modifier", (double)8, 0));
+		if(stack.getItemDamage()==3)
+			multimap.put(SharedMonsterAttributes.movementSpeed.getAttributeUnlocalizedName(), new AttributeModifier(field_111210_e, "Weapon modifier", 0.3, 1));
+		if(stack.getItemDamage()==4)
+			multimap.put(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName(), new AttributeModifier(field_111210_e, "Weapon modifier", (double)-1, 0));
+
 		return multimap;
 	}
 
@@ -49,7 +100,7 @@ public class ItemRevolver extends ItemIEBase
 	@Override
 	public void onUpdate(ItemStack stack, World world, Entity ent, int slot, boolean inHand)
 	{
-		if(!world.isRemote && stack.getItemDamage()<2 && ent!=null && ItemNBTHelper.hasKey(stack, "blocked"))
+		if(!world.isRemote && stack.getItemDamage()!=2 && ent!=null && ItemNBTHelper.hasKey(stack, "blocked"))
 		{
 			int l = ItemNBTHelper.handleDelayedSoundsForStack(stack, "casings", ent);
 			if(l==0)
@@ -72,6 +123,8 @@ public class ItemRevolver extends ItemIEBase
 		{
 			if(player.isSneaking() || revolver.getItemDamage()==2)
 				player.openGui(ImmersiveEngineering.instance, Lib.GUIID_Revolver, world, (int)player.posX,(int)player.posY,(int)player.posZ);
+			else if(revolver.getItemDamage()==4)
+				player.addChatMessage(new ChatComponentText("*plop*"));
 			else
 			{
 				ItemStack[] bullets = getBullets(revolver);
@@ -99,13 +152,13 @@ public class ItemRevolver extends ItemIEBase
 						}
 					}
 				}
-				
+
 				if(!ItemNBTHelper.getBoolean(revolver, "blocked"))
 				{
 					if(bullets[0]!=null && bullets[0].getItem() instanceof IBullet && ((IBullet)bullets[0].getItem()).canSpawnBullet(bullets[0]))
 					{
-						((ItemBullet)bullets[0].getItem()).spawnBullet(player, bullets[0]);
-						bullets[0]= ((ItemBullet)bullets[0].getItem()).getCasing(bullets[0]);
+						((IBullet)bullets[0].getItem()).spawnBullet(player, bullets[0]);
+						bullets[0]= ((IBullet)bullets[0].getItem()).getCasing(bullets[0]);
 						world.playSoundAtEntity(player, "fireworks.blast", .6f, 1);
 						world.playSoundAtEntity(player, "mob.wither.shoot", .3f, 5f);
 					}
@@ -162,5 +215,66 @@ public class ItemRevolver extends ItemIEBase
 		if(!revolver.hasTagCompound())
 			revolver.setTagCompound(new NBTTagCompound());
 		revolver.getTagCompound().setTag("Bullets",inv);
+	}
+
+	public String getRevolverTexture(ItemStack revolver)
+	{
+		if(revolver.hasTagCompound() && revolver.getTagCompound().hasKey("elite"))
+			return "immersiveengineering:textures/models/revolver_"+revolver.getTagCompound().getString("elite")+".png";
+		if(revolver.getItemDamage()==1)
+			return "immersiveengineering:textures/models/revolver_dev.png";
+		else if(revolver.getItemDamage()==4)
+			return "immersiveengineering:textures/models/revolver_nerf.png";
+		else
+			return "immersiveengineering:textures/models/revolver.png";
+	}
+
+
+	@Override
+	public void onCreated(ItemStack stack, World world, EntityPlayer player)
+	{
+		if(stack!=null && player!=null && eliteGunmen.containsKey(player.getUniqueID().toString()))
+		{
+			SpecialRevolver r = eliteGunmen.get(player.getUniqueID().toString());
+			stack.setItemDamage(r.meta);
+			if(r.tag!=null && !r.tag.isEmpty())
+			{
+				if(!stack.hasTagCompound())
+					stack.setTagCompound(new NBTTagCompound());
+				stack.getTagCompound().setString("elite", r.tag);
+			}
+		}
+	}
+
+	static final Map<String, SpecialRevolver> eliteGunmen;
+	static
+	{
+		HashMap<String, SpecialRevolver> map = new HashMap<String, SpecialRevolver>();
+		SpecialRevolver r = new SpecialRevolver(1,"");
+		map.put("f34afdfb-996b-4020-b8a2-b740e2937b29", r);
+		map.put("07c11943-628b-4671-a331-84899d08e538", r);
+		map.put("48a16fc8-bc1f-4e72-84e9-7ec73b7d8ea1", r);
+		r = new SpecialRevolver(3,"sns");
+		map.put("e8b46b33-3e17-4b64-8d07-9af116df7d3b", r);
+		map.put("58d506e2-7ee7-4774-8b22-c7a57eda488b", r);
+		//Foudroyant Factotum
+		map.put("b72d87ce-fa98-4a5a-b5a0-5db51a018d09", r);
+		r = new SpecialRevolver(4,"nerf");
+		map.put("4f3a8d1e-33c1-44e7-bce8-e683027c7dac", r);
+		r = new SpecialRevolver(1,"oblivion");
+		map.put("c2024e2a-dd76-4bc9-9ea3-b771f18f23b6", r);
+		r = new SpecialRevolver(1,"bee");
+		map.put("ca5a40eb-9f48-4b40-bb94-3e0f2d18c9a7", r);
+		eliteGunmen = Collections.unmodifiableMap(map);
+	}
+	static class SpecialRevolver
+	{
+		final int meta;
+		final String tag;
+		public SpecialRevolver(int meta, String tag)
+		{
+			this.meta=meta;
+			this.tag=tag;
+		}
 	}
 }

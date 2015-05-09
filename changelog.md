@@ -1,4 +1,22 @@
-#####Version 0.1.6
+#####Version 0.1.7 - BUILT
+- fixed blending on the text on the manual
+- fixed the crash caused by calculating loss
+- added a colourblind config so people can still see what capacitors sides are configured too
+- added secondary outputs for the crusher
+- crusher destroys items again
+- took partial tick time into consideration when rendering the windmill...at least I think I did?
+- fixed the spawning of revolver bullets...maybe
+- added a NPE check to connection rendering. As for how Myst managed to produce it: No idea.
+- EDIT: might have found out how it happened. Hopefully fixed it
+- added Railcraft's RockCrusher recipe as a fallback for the crusher
+- removed the catenary warning log
+- watermills should stack up to three now
+- improved Blastfurnace and Cokeoven updating upon structure creation
+- fixed clientside gui of the wooden crate
+- added structural cables and structural connectors for decorational purposes
+- did fancy things with the revolvers
+
+#####Version 0.1.6 - BUILT
 - added container items to fluid containers
 - cokeoven will now properly smelt coal blocks into coke blocks
 - the arrow to leave entries in the manual now resets the page number again

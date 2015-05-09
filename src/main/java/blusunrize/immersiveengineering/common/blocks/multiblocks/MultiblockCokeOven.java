@@ -94,6 +94,7 @@ public class MultiblockCokeOven implements IMultiblock
 					((TileEntityCokeOven)world.getTileEntity(x+xx, y+yy, z+zz)).formed=true;
 					world.getTileEntity(x+xx, y+yy, z+zz).markDirty();
 					world.markBlockForUpdate(x+xx,y+yy,z+zz);
+					world.addBlockEvent(x+xx, y+yy, z+zz, IEContent.blockStoneDevice, 0,1);
 				}
 		return true;
 	}

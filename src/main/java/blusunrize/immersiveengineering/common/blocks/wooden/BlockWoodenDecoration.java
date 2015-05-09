@@ -58,7 +58,6 @@ public class BlockWoodenDecoration extends BlockIEBase
 	public boolean isSideSolid(IBlockAccess world, int x, int y, int z, ForgeDirection side)
 	{
 		int meta = world.getBlockMetadata(x, y, z);
-
 		if(meta==1)
 			return side==UP || side==DOWN;
 		if(meta==2)

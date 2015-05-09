@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.common.util;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -82,6 +83,16 @@ public class Utils
 		return null;
 	}
 
+	public static String formatDouble(double d, String s)
+	{
+		DecimalFormat df = new DecimalFormat(s);
+		return df.format(d);
+	}
+	public static String toCamelCase(String s)
+	{
+		return s.substring(0,1).toUpperCase() + s.substring(1).toLowerCase();
+	}
+	
 	public static boolean tilePositionMatch(TileEntity tile0, TileEntity tile1)
 	{
 		return tile0.xCoord==tile1.xCoord && tile0.yCoord==tile1.yCoord && tile0.zCoord==tile1.zCoord;

@@ -4,6 +4,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
+import blusunrize.immersiveengineering.api.WireType;
 import blusunrize.immersiveengineering.common.CommonProxy;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.EventHandler;
@@ -39,7 +40,12 @@ public class ImmersiveEngineering
 	{
 		Config.init(event);
 		IEContent.preInit();
-
+		
+		
+		WireType.cableLossRatio=Config.getDoubleArray("cableLossRatio");
+		WireType.cableTransferRate=Config.getIntArray("cableTransferRate");
+		WireType.cableColouration=Config.getIntArray("cableColouration");
+		WireType.cableLength=Config.getIntArray("cableLength");
 	}
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent event)

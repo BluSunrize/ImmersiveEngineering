@@ -5,6 +5,8 @@ import static blusunrize.immersiveengineering.common.util.Utils.toIIC;
 import java.util.List;
 
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.StatCollector;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.common.util.ForgeDirection;
 import blusunrize.immersiveengineering.api.IImmersiveConnectable;
@@ -12,13 +14,15 @@ import blusunrize.immersiveengineering.api.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.ImmersiveNetHandler.AbstractConnection;
 import blusunrize.immersiveengineering.api.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.common.Config;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
 import blusunrize.immersiveengineering.common.blocks.TileEntityImmersiveConnectable;
+import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.Utils;
 import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyHandler;
 import cofh.api.energy.IEnergyReceiver;
 
-public class TileEntityCapacitorLV extends TileEntityImmersiveConnectable implements IEnergyHandler
+public class TileEntityCapacitorLV extends TileEntityImmersiveConnectable implements IEnergyHandler, IBlockOverlayText
 {
 	int[] sideConfig={-1,0,-1,-1,-1,-1};
 	EnergyStorage energyStorage = new EnergyStorage(getMaxStorage(),getMaxInput(),getMaxOutput());
@@ -202,5 +206,17 @@ public class TileEntityCapacitorLV extends TileEntityImmersiveConnectable implem
 		if(worldObj.isRemote || fd.ordinal()>=sideConfig.length || sideConfig[fd.ordinal()]!=0)
 			return 0;
 		return energyStorage.receiveEnergy(amount, simulate);
+	}
+	@Override
+	public String[] getOverlayText(MovingObjectPosition mop)
+	{
+		int i = sideConfig[Math.min(sideConfig.length-1, mop.sideHit)];
+		int j = sideConfig[Math.min(sideConfig.length-1, ForgeDirection.OPPOSITES[mop.sideHit])];
+		return new String[]{
+				StatCollector.translateToLocal(Lib.DESC_INFO+"capacitorSide.facing")
+				+StatCollector.translateToLocal(Lib.DESC_INFO+"capacitorSide."+i),
+				StatCollector.translateToLocal(Lib.DESC_INFO+"capacitorSide.opposite")
+				+StatCollector.translateToLocal(Lib.DESC_INFO+"capacitorSide."+j)
+		};
 	}
 }

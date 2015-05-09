@@ -6,7 +6,6 @@ import java.util.List;
 
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
-import blusunrize.immersiveengineering.common.util.Utils;
 
 /**
  * @author BluSunrize - 01.05.2015
@@ -18,18 +17,28 @@ public class CrusherRecipe
 	public final Object input;
 	public final ItemStack output;
 	public final int energy;
+	public ItemStack secondaryOutput;
+	public float secondaryChance;
 
 	public CrusherRecipe(ItemStack output, Object input, int energy)
 	{
-		this.input=input;
-		this.output=output;
-		this.energy=energy;
+		this.input = input;
+		this.output = output;
+		this.energy = energy;
+	}
+	public CrusherRecipe addSecondaryOutput(ItemStack output, float chance)
+	{
+		this.secondaryOutput = output;
+		this.secondaryChance = chance;
+		return this;
 	}
 
 	public static ArrayList<CrusherRecipe> recipeList = new ArrayList<CrusherRecipe>();
-	public static void addRecipe(ItemStack output, Object input, int energy)
+	public static CrusherRecipe addRecipe(ItemStack output, Object input, int energy)
 	{
-		recipeList.add(new CrusherRecipe(output, input, energy));
+		CrusherRecipe r = new CrusherRecipe(output, input, energy);
+		recipeList.add(r);
+		return r;
 	}
 	public static CrusherRecipe findRecipe(ItemStack input)
 	{
@@ -37,7 +46,7 @@ public class CrusherRecipe
 		{
 			if(recipe.input instanceof ItemStack && OreDictionary.itemMatches((ItemStack)recipe.input, input, false))
 				return recipe;
-			else if(recipe.input instanceof String && Utils.compareToOreName(input, (String)recipe.input))
+			else if(recipe.input instanceof String && ApiUtils.compareToOreName(input, (String)recipe.input))
 				return recipe;
 		}
 		return null;

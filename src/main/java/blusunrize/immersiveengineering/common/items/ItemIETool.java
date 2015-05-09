@@ -19,7 +19,6 @@ import blusunrize.immersiveengineering.api.ImmersiveNetHandler.AbstractConnectio
 import blusunrize.immersiveengineering.api.MultiblockHandler;
 import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.api.TargetingInfo;
-import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.IESaveData;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Lib;
@@ -88,7 +87,7 @@ public class ItemIETool extends ItemIEBase
 								List<AbstractConnection> connections = ImmersiveNetHandler.getIndirectEnergyConnections(Utils.toCC(nodeLink), world);
 								for(AbstractConnection con : connections)
 									if(Utils.toCC(nodeHere).equals(con.end))
-										player.addChatMessage(new ChatComponentTranslation(Lib.CHAT_INFO+"averageLoss", ClientUtils.formatDouble(con.getAverageLossRate()*100, "###.000")));
+										player.addChatComponentMessage(new ChatComponentTranslation(Lib.CHAT_INFO+"averageLoss",Utils.formatDouble(con.getAverageLossRate()*100, "###.000")));
 							}
 						}
 						ItemNBTHelper.remove(stack, "linkingPos");

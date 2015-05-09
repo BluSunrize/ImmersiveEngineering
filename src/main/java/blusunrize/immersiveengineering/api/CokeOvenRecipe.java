@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -38,7 +37,7 @@ public class CokeOvenRecipe
 		for(CokeOvenRecipe recipe : recipeList)
 			if(recipe.input instanceof ItemStack && OreDictionary.itemMatches((ItemStack)recipe.input, input, false))
 				return recipe;
-			else if(recipe.input instanceof String && Utils.compareToOreName(input, (String)recipe.input))
+			else if(recipe.input instanceof String && ApiUtils.compareToOreName(input, (String)recipe.input))
 				return recipe;
 		return null;
 	}

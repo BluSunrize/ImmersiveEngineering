@@ -25,6 +25,12 @@ public class TileEntityConnectorMV extends TileEntityConnectorLV
 		double conRadius = con.cableType==WireType.STEEL?.03125:.015625;
 		return Vec3.createVectorHelper(.5+fd.offsetX*(.0625-conRadius), .5+fd.offsetY*(.0625-conRadius), .5+fd.offsetZ*(.0625-conRadius));
 	}
+
+	@Override
+	int getRenderRadiusIncrease()
+	{
+		return WireType.ELECTRUM.getMaxLength();
+	}
 	
 	@Override
 	public int getMaxInput()

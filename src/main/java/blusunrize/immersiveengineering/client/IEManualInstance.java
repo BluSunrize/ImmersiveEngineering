@@ -2,6 +2,7 @@ package blusunrize.immersiveengineering.client;
 
 import net.minecraft.util.StatCollector;
 import blusunrize.immersiveengineering.common.Config;
+import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.lib.manual.ManualInstance;
 
 public class IEManualInstance extends ManualInstance
@@ -57,13 +58,13 @@ public class IEManualInstance extends ManualInstance
 				if(segment.length>3)
 					try{
 						int idx = Integer.parseInt(segment[3]);
-						result = ""+ClientUtils.formatDouble(iD[idx], "#.***");
+						result = ""+Utils.formatDouble(iD[idx], "#.***");
 					}catch(Exception ex){
 						break;
 					}
 				else
 					for(int i=0; i<iD.length; i++)
-						result += (i>0?", ":"")+ClientUtils.formatDouble(iD[i], "#.***");
+						result += (i>0?", ":"")+Utils.formatDouble(iD[i], "#.***");
 			}
 
 			s = s.replaceFirst(rep, result);
@@ -94,7 +95,7 @@ public class IEManualInstance extends ManualInstance
 	@Override
 	public boolean showEntryInList(ManualEntry entry)
 	{
-		return entry.getName()!="wiring";
+		return true;
 	}
 	@Override
 	public boolean showCategoryInList(String category)

@@ -8,7 +8,6 @@ import java.util.Map;
 
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
-import blusunrize.immersiveengineering.common.util.Utils;
 
 /**
  * @author BluSunrize - 23.03.2015
@@ -39,7 +38,7 @@ public class BlastFurnaceRecipe
 		{
 			if(recipe.input instanceof ItemStack && OreDictionary.itemMatches((ItemStack)recipe.input, input, false))
 				return recipe;
-			else if(recipe.input instanceof String && Utils.compareToOreName(input, (String)recipe.input))
+			else if(recipe.input instanceof String && ApiUtils.compareToOreName(input, (String)recipe.input))
 				return recipe;
 		}
 		return null;
@@ -65,14 +64,14 @@ public class BlastFurnaceRecipe
 	{
 		if(fuel instanceof String)
 			blastFuels.put((String)fuel, burnTime);
-		else if(fuel instanceof ItemStack && !Utils.nameFromStack((ItemStack)fuel).isEmpty())
-			blastFuels.put(Utils.nameFromStack((ItemStack)fuel)+"::"+((ItemStack)fuel).getItemDamage(), burnTime);
+		else if(fuel instanceof ItemStack && !ApiUtils.nameFromStack((ItemStack)fuel).isEmpty())
+			blastFuels.put(ApiUtils.nameFromStack((ItemStack)fuel)+"::"+((ItemStack)fuel).getItemDamage(), burnTime);
 	}
 	public static int getBlastFuelTime(ItemStack stack)
 	{
 		for(Map.Entry<String,Integer> e : blastFuels.entrySet())
 		{
-			if(Utils.compareToOreName(stack, e.getKey()))
+			if(ApiUtils.compareToOreName(stack, e.getKey()))
 				return e.getValue();
 			else
 			{
@@ -82,7 +81,7 @@ public class BlastFurnaceRecipe
 					String key = e.getKey().substring(0,lIndx);
 					try{
 						int reqMeta = Integer.parseInt(e.getKey().substring(lIndx+2));
-						if(key.equals(Utils.nameFromStack(stack)) && (reqMeta==OreDictionary.WILDCARD_VALUE || reqMeta==stack.getItemDamage()))
+						if(key.equals(ApiUtils.nameFromStack(stack)) && (reqMeta==OreDictionary.WILDCARD_VALUE || reqMeta==stack.getItemDamage()))
 						{
 							return e.getValue();
 						}

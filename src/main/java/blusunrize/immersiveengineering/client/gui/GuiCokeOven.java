@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.util.StatCollector;
 
 import org.lwjgl.opengl.GL11;
 
@@ -23,15 +24,17 @@ public class GuiCokeOven extends GuiContainer
 
 	protected void drawGuiContainerForegroundLayer(int mx, int my)
 	{
-		if(tile.tank.getFluid()!=null && tile.tank.getFluid().getFluid()!=null)
-			if(mx>guiLeft+129&&mx<guiLeft+129+16 && my>guiTop+20&&my<guiTop+20+47)
-			{
-				ArrayList<String> tooltip = new ArrayList<String>();
+		if(mx>guiLeft+129&&mx<guiLeft+129+16 && my>guiTop+20&&my<guiTop+20+47)
+		{
+			ArrayList<String> tooltip = new ArrayList<String>();
+			if(tile.tank.getFluid()!=null && tile.tank.getFluid().getFluid()!=null)
 				tooltip.add(tile.tank.getFluid().getLocalizedName());
-				tooltip.add(tile.tank.getFluidAmount()+"/"+tile.tank.getCapacity()+"mB");
-				this.drawHoveringText(tooltip, mx-guiLeft-110, my-guiTop, fontRendererObj);
-				RenderHelper.enableGUIStandardItemLighting();
-			}
+			else
+				tooltip.add(StatCollector.translateToLocal("gui.ImmersiveEngineering.empty"));
+			tooltip.add(tile.tank.getFluidAmount()+"/"+tile.tank.getCapacity()+"mB");
+			this.drawHoveringText(tooltip, mx-guiLeft, my-guiTop, fontRendererObj);
+			RenderHelper.enableGUIStandardItemLighting();
+		}
 	}
 
 

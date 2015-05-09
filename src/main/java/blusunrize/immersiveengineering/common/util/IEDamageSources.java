@@ -9,7 +9,7 @@ public class IEDamageSources extends EntityDamageSourceIndirect
 {
 	public IEDamageSources(String tag, Entity shot, Entity shooter)
 	{
-		super(tag, shooter, shot);
+		super(tag, shot, shooter);
 	}
 	
 	
@@ -30,8 +30,8 @@ public class IEDamageSources extends EntityDamageSourceIndirect
         return (new IEDamageSources(Lib.DMG_RevolverDragon, shot, shooter)).setFireDamage().setProjectile();
     }
 	
-	public static DamageSource causeGrinderDamage()
+	public static DamageSource causeCrusherDamage()
     {
-        return new DamageSource(Lib.DMG_Grinder);
+        return new DamageSource(Lib.DMG_Crusher);
     }
 }

@@ -1,3 +1,4 @@
 {
-	"dieselGenerator": { "category": "block", "sounds":["dieselGenerator"] }
+	"dieselGenerator": { "category": "block", "sounds":["dieselGenerator"] },
+	"crusher": { "category": "block", "sounds":["crusher"] }
 }

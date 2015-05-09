@@ -30,17 +30,17 @@ public class Config
 		Configuration config = new Configuration(event.getSuggestedConfigurationFile());
 		config.load();
 
+		setIntArray("cableTransferRate", config.get("General", "Cable transfer rates", new int[]{256,1024,4096,0,0}, "The transfer rates in RF/t for the cable tiers (copper, electrum, HV, Strutural Rope & Cable(no transfer) )").getIntList());
+		setDoubleArray("cableLossRatio", config.get("General", "Cable loss", new double[]{.05,.025,.1,1,1}, "The percentage of power lost every 16 blocks of distance for the cable tiers (copper, electrum, HV, Strutural Rope & Cable(no transfer) )").getDoubleList());
+		setIntArray("cableColouration", config.get("General", "Cable colouration", new int[]{0xd4804a,0xedad62,0x6f6f6f, 0x967e6d,0x6f6f6f}, "").getIntList());
+		setIntArray("cableLength", config.get("General", "Cable length", new int[]{16,16,32,32,32}, "The maximum length cables can have. Copper and Electrum should be similar, Steel is meant for long range transport, Structural Rope & Cables are purely decorational").getIntList());
 
-		setIntArray("cableTransferRate", config.get("General", "Cable transfer rates", new int[]{256,1024,4096}, "The transfer rates in RF/t for the cable tiers (copper, electrum, HV)").getIntList());
-		setDoubleArray("cableLossRatio", config.get("General", "Cable loss", new double[]{.05,.025,.1 }, "The percentage of power lost every 16 blocks of distancefor the cable tiers (copper, electrum, HV)").getDoubleList());
-		setIntArray("cableColouration", config.get("General", "Cable colouration", new int[]{0xd4804a,0xedad62,0x6f6f6f}, "").getIntList());
-		setIntArray("cableLength", config.get("General", "Cable length", new int[]{16,16,32}, "The maximum length calbes can have. Copper and Electrum should be similar, Steel is meant for long range transport.").getIntList());
-		
-		setBoolean("increasedRenderboxes", config.get("General", "Increased Renderboxes", true, "By default all devices that accept cables have increased renderbounds to show cables even if hte block itself is not in view. Disablign this reduces them to their minimum sizes, which might improve FPS on low-power PCs").getBoolean());
-		
+		setBoolean("increasedRenderboxes", config.get("General", "Increased Renderboxes", true, "By default all devices that accept cables have increased renderbounds to show cables even if the block itself is not in view. Disabling this reduces them to their minimum sizes, which might improve FPS on low-power PCs").getBoolean());
+		setBoolean("colourblindSupport", config.get("General", "Support for colourblind people, gives a text-based output on capacitor sides", false).getBoolean());
+
 		setBoolean("ic2compat", config.get("General", "IC2 Compatability", true, "Set this to false to prevent wires from accepting and outputting EU").getBoolean());
 		setBoolean("gregtechcompat", config.get("General", "GregTech Compatability", true, "Set this to false to prevent wires from outputting GregTech EU").getBoolean());
-		
+
 		setInt("capacitorLV_storage", config.get("Machines", "Capacitor LV: RF Storage", 100000, "The maximum amount of RF that can be stored in a low-voltage capacitor").getInt());
 		setInt("capacitorLV_input", config.get("Machines", "Capacitor LV: Input", 256, "The maximum amount of RF that can be input into a low-voltage capacitor (by IE net or other means)").getInt());
 		setInt("capacitorLV_output", config.get("Machines", "Capacitor LV: Output", 256, "The maximum amount of RF that can be output from a low-voltage capacitor (by IE net or other means)").getInt());
@@ -56,12 +56,12 @@ public class Config
 		setInt("dynamo_output", config.get("Machines", "Dynamo: Output", 3, "The base RF that is output by the dynamo. This will be modified by the rotation modifier of the attached water- or windmill").getInt());
 		setInt("lightning_output", config.get("Machines", "Lightning Rod: Output", 4*4000000, "The RF that will be output by the lightning rod when it is struck").getInt());
 		setInt("dieselGen_output", config.get("Machines", "Diesel Generator: Output", 4096, "The RF per tick that the Diesel Generator will output. The burn time of the fuel determines the total output").getInt());
-		
+
 		setInt("squeezer_consumption", config.get("Machines", "Squeezer: Consumed", 10, "The RF per tick per item that the Squeezer will consume to create Plant Oil").getInt());
 		setInt("fermenter_consumption", config.get("Machines", "Fermenter: Consumed", 10, "The RF per tick per item that the Fermenter will consume to create Ethanol").getInt());
 		setInt("refinery_consumption", config.get("Machines", "Refinery: Consumed", 80, "The RF per tick the Fermenter will consume to mix two fluids").getInt());
-		
-		
+
+
 		setIntArray("ore_copper", config.get("OreGen", "Copper", new int[]{8, 40,72, 8,100}, "Generation config for Copper Ore. Parameters: Blocks per vein, lowest possible Y, highest possible Y, veins per chunk, chance for vein to spawn (out of 100). Set vein size to 0 to disable the generation").getIntList());
 		setIntArray("ore_bauxite", config.get("OreGen", "Bauxite", new int[]{8, 40,85, 8,100}, "Generation config for Bauxite Ore. Parameters: Blocks per vein, lowest possible Y, highest possible Y, veins per chunk, chance for vein to spawn (out of 100). Set vein size to 0 to disable the generation").getIntList());
 		setIntArray("ore_lead", config.get("OreGen", "Lead", new int[]{6,  8,36, 4,100}, "Generation config for Lead Ore. Parameters: Blocks per vein, lowest possible Y, highest possible Y, veins per chunk, chance for vein to spawn (out of 100). Set vein size to 0 to disable the generation").getIntList());

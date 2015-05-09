@@ -8,8 +8,8 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.oredict.OreDictionary;
 import blusunrize.immersiveengineering.api.BlastFurnaceRecipe;
+import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
-import blusunrize.immersiveengineering.common.util.Utils;
 
 public class TileEntityBlastFurnace extends TileEntityIEBase implements ISidedInventory
 {
@@ -68,6 +68,7 @@ public class TileEntityBlastFurnace extends TileEntityIEBase implements ISidedIn
 						if(!active)
 							active=true;
 					}
+					burnTime--;
 					worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 				}
 				else
@@ -91,13 +92,13 @@ public class TileEntityBlastFurnace extends TileEntityIEBase implements ISidedIn
 						BlastFurnaceRecipe recipe = getRecipe();
 						if(recipe!=null)
 						{
+							System.out.println("STartng recipe");
 							this.process=recipe.time;
 							this.processMax=process;
 							this.active=true;
 						}
 					}
 				}
-				burnTime--;
 			}
 			else
 			{
@@ -106,13 +107,21 @@ public class TileEntityBlastFurnace extends TileEntityIEBase implements ISidedIn
 			}
 			if(a!=active)
 			{
+
 				this.markDirty();
 				int xMin= facing==5?-2: facing==4?0:-1;
 				int xMax= facing==5? 0: facing==4?2: 1;
 				int zMin= facing==3?-2: facing==2?0:-1;
 				int zMax= facing==3? 0: facing==2?2: 1;
-				worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-				worldObj.markBlockRangeForRenderUpdate(xCoord+xMin,yCoord-1,zCoord+zMin, xCoord+xMax,yCoord+1,zCoord+zMax);
+				for(int yy=-1;yy<=1;yy++)
+					for(int xx=xMin;xx<=xMax;xx++)
+						for(int zz=zMin;zz<=zMax;zz++)
+						{
+							if(worldObj.getTileEntity(xCoord+xx, yCoord+yy, zCoord+zz)!=null)
+								worldObj.getTileEntity(xCoord+xx, yCoord+yy, zCoord+zz).markDirty();
+							worldObj.markBlockForUpdate(xCoord+xx, yCoord+yy, zCoord+zz);
+							worldObj.addBlockEvent(xCoord+xx, yCoord+yy, zCoord+zz, IEContent.blockStoneDevice, 1,active?1:0);
+						}
 			}
 		}
 	}
@@ -126,6 +135,17 @@ public class TileEntityBlastFurnace extends TileEntityIEBase implements ISidedIn
 		return null;
 	}
 
+	@Override
+	public boolean receiveClientEvent(int id, int arg)
+	{
+		if(id==0)
+			this.formed = arg==1;
+		else if(id==1)
+			this.active = arg==1;
+		markDirty();
+		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+		return true;
+	}
 
 	@Override
 	public int getSizeInventory()
@@ -197,7 +217,7 @@ public class TileEntityBlastFurnace extends TileEntityIEBase implements ISidedIn
 	@Override
 	public String getInventoryName()
 	{
-		return "IECokeOven";
+		return "IEBlastFurnace";
 	}
 
 	@Override
@@ -234,10 +254,10 @@ public class TileEntityBlastFurnace extends TileEntityIEBase implements ISidedIn
 			return false;
 		if(master()!=null)
 			return master().isItemValidForSlot(slot,stack);
+		if(BlastFurnaceRecipe.isValidBlastFuel(stack))
+			return slot==1;
 		if(slot==0)
 			return stack!=null;
-		if(slot==1)
-			return Utils.compareToOreName(stack, "");
 
 		return false;
 	}

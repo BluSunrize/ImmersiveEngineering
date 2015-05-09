@@ -1,12 +1,12 @@
 package blusunrize.immersiveengineering.client;
 
-import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.ISound.AttenuationType;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderBlocks;
@@ -29,6 +29,7 @@ import org.lwjgl.opengl.GL12;
 import blusunrize.immersiveengineering.api.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.WireType;
+import blusunrize.immersiveengineering.common.util.IESound;
 import blusunrize.immersiveengineering.common.util.Utils;
 
 public class ClientUtils
@@ -52,6 +53,8 @@ public class ClientUtils
 
 	public static void drawConnection(ImmersiveNetHandler.Connection connection, IImmersiveConnectable start, IImmersiveConnectable end)
 	{
+		if(connection==null || start==null || end==null)
+			return;
 		Vec3 startOffset = start.getConnectionOffset(connection);
 		Vec3 endOffset = end.getConnectionOffset(connection);
 		double dx = (connection.end.posX+endOffset.xCoord)-(connection.start.posX+startOffset.xCoord);
@@ -61,7 +64,7 @@ public class ClientUtils
 
 		GL11.glDisable(GL11.GL_CULL_FACE);
 		int col = connection.cableType.getColour();
-		double r = connection.cableType==WireType.STEEL?.03125:.015625;
+		double r = connection.cableType==WireType.STEEL||connection.cableType==WireType.STRUCTURE_STEEL||connection.cableType==WireType.STRUCTURE_ROPE?.03125:.015625;
 		double rmodx = dz/dw;
 		double rmodz = dx/dw;
 		GL11.glTranslated(startOffset.xCoord,startOffset.yCoord,startOffset.zCoord);
@@ -241,14 +244,27 @@ public class ClientUtils
 		return mc().fontRenderer;
 	}
 
-	public static String formatDouble(double d, String s)
+	public static IESound generatePositionedIESound(World world, String soundName, float volume, float pitch, boolean repeat, int delay, double x, double y, double z)
 	{
-		DecimalFormat df = new DecimalFormat(s);
-		return df.format(d);
-	}
-	public static String toCamelCase(String s)
-	{
-		return s.substring(0,1).toUpperCase() + s.substring(1).toLowerCase();
+		IESound sound = new IESound(new ResourceLocation(soundName), volume,pitch, repeat,delay, x,y,z, AttenuationType.LINEAR);
+		for(int dx = (int)Math.floor(x-8)>>4; dx<=(int)Math.floor(x+8)>>4; dx++)
+			for(int dz = (int)Math.floor(z-8)>>4; dz<=(int)Math.floor(z+8)>>4; dz++)
+			{
+				Iterator it = world.getChunkFromChunkCoords(dx, dz).chunkTileEntityMap.values().iterator();
+				while (it.hasNext())
+				{
+					TileEntity tile = (TileEntity)it.next();
+					if(tile!=null && tile.getClass().getName().endsWith("TileEntitySoundMuffler"))
+						if(tile.getBlockMetadata()!=1)
+						{
+							double d = (tile.xCoord+.5-x)*(tile.xCoord+.5-x) + (tile.yCoord+.5-y)*(tile.yCoord+.5-y) + (tile.zCoord+.5-z)*(tile.zCoord+.5-z);
+							if(d<=64 && d>0)
+								sound.volumeAjustment=.1f;
+						}
+				}
+			}
+		ClientUtils.mc().getSoundHandler().playSound(sound);
+		return sound;
 	}
 
 	public static void drawInventoryBlock(Block block, int metadata, RenderBlocks renderer)
@@ -545,9 +561,9 @@ public class ClientUtils
 		if(side==0)
 		{
 			//            if (RenderBlocks.getInstance().renderMinY <= 0.0D)
-			//            {
-			//                --y;
-			//            }
+				//            {
+				//                --y;
+				//            }
 
 			lightingInfo.aoBrightnessXYNN = block.getMixedBrightnessForBlock(world, x - 1, y, z);
 			lightingInfo.aoBrightnessYZNN = block.getMixedBrightnessForBlock(world, x, y, z - 1);
@@ -1342,7 +1358,7 @@ public class ClientUtils
 		{
 			icon = renderer.hasOverrideBlockTexture()?renderer.overrideBlockTexture: block.getIcon(world,x,y,z,0);
 			info = calculateBlockLighting(0, world, block, x,y,z, 1,1,1);
-			
+
 			double d3 = icon.getInterpolatedU(Math.min(16,Math.max(0, vs[0].xCoord * 16)));
 			double d4 = icon.getInterpolatedU(Math.min(16,Math.max(0, vs[3].xCoord * 16)));
 			double d5 = icon.getInterpolatedV(Math.min(16,Math.max(0, vs[0].zCoord * 16)));

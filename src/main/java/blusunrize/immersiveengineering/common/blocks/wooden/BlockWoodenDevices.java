@@ -127,23 +127,46 @@ public class BlockWoodenDevices extends BlockIEBase
 
 			return true;
 		}
-		if(world.getTileEntity(x, y, z) instanceof TileEntityWindmillAdvanced && Utils.getDye(player.getCurrentEquippedItem())>=0)
+		if(world.getTileEntity(x, y, z) instanceof TileEntityWindmillAdvanced && Utils.getDye(player.getCurrentEquippedItem())>=0 && ((TileEntityWindmillAdvanced)world.getTileEntity(x, y, z)).facing==side)
 		{
-			if(((TileEntityWindmillAdvanced)world.getTileEntity(x, y, z)).dye == Utils.getDye(player.getCurrentEquippedItem()))
+			int f = ((TileEntityWindmillAdvanced)world.getTileEntity(x, y, z)).facing;
+			float w = f==2?1-hitX: f==3?hitX: f==4?hitZ: 1-hitZ;
+			double r = Math.sqrt( (w-.5)*(w-.5) + (hitY-.5)*(hitY-.5) );
+			double ax = Math.toDegrees( Math.acos( (w-.5)/r ));
+			double ay = Math.toDegrees( Math.asin( (hitY-.5)/r ));
+			double a = (ay<0?360-ax:ax)+22.25; 
+			int sel = ((4-(int)(a/45f)+6)%8);
+
+			if(((TileEntityWindmillAdvanced)world.getTileEntity(x, y, z)).dye[sel] == Utils.getDye(player.getCurrentEquippedItem()))
 				return false;
-			((TileEntityWindmillAdvanced)world.getTileEntity(x, y, z)).dye = Utils.getDye(player.getCurrentEquippedItem());
+			((TileEntityWindmillAdvanced)world.getTileEntity(x, y, z)).dye[sel] = (byte) Utils.getDye(player.getCurrentEquippedItem());
 			if(!player.capabilities.isCreativeMode)
 				player.getCurrentEquippedItem().stackSize--;
 			return true;
 		}
-		if(!player.isSneaking()&& world.getTileEntity(x, y, z) instanceof TileEntityWoodenCrate )
+		if(!player.isSneaking() && !world.isRemote && world.getTileEntity(x, y, z) instanceof TileEntityWoodenCrate )
 		{
 			player.openGui(ImmersiveEngineering.instance, Lib.GUIID_WoodenCrate, world, x,y,z);
 			return true;
 		}
 		return false;
 	}
-	
+
+	@Override
+	public void onNeighborBlockChange(World world, int x, int y, int z, Block block)
+	{
+		if(world.getTileEntity(x, y, z) instanceof TileEntityWatermill)
+		{
+			int f = ((TileEntityWatermill)world.getTileEntity(x, y, z)).facing;
+			int[] off = ((TileEntityWatermill)world.getTileEntity(x, y, z)).offset;
+			int xx = x - ((f==2||f==3)?off[0]:0);
+			int yy = y - off[1];
+			int zz = z - ((f==2||f==3)?0:off[0]);
+			if(world.getTileEntity(xx,yy,zz) instanceof TileEntityWatermill)
+				((TileEntityWatermill)world.getTileEntity(xx,yy,zz)).resetRotationVec();
+		}
+	}
+
 	@Override
 	public void onBlockHarvested(World world, int x, int y, int z, int meta, EntityPlayer player)
 	{

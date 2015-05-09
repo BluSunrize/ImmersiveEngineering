@@ -9,6 +9,7 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
+import blusunrize.immersiveengineering.common.util.Lib;
 
 public class ItemBlockWoodenDevices extends ItemBlockIEBase
 {
@@ -21,7 +22,7 @@ public class ItemBlockWoodenDevices extends ItemBlockIEBase
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean advInfo)
 	{
 		if(stack.getItemDamage()==4)
-			list.add(StatCollector.translateToLocal("desc.ImmersiveEngineering.flavour.crate"));
+			list.add(StatCollector.translateToLocal(Lib.DESC+"flavour.crate"));
 	}
 
 	@Override
