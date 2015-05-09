@@ -33,6 +33,12 @@ public class TileEntityConnectorHV extends TileEntityConnectorMV
 	}
 	
 	@Override
+	int getRenderRadiusIncrease()
+	{
+		return WireType.STEEL.getMaxLength();
+	}
+	
+	@Override
 	public int getMaxInput()
 	{
 		return WireType.STEEL.getTransferRate();

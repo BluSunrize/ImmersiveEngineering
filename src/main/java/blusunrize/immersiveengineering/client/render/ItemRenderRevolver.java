@@ -8,6 +8,7 @@ import org.lwjgl.opengl.GL11;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.ModelRevolver;
+import blusunrize.immersiveengineering.common.items.ItemRevolver;
 
 public class ItemRenderRevolver implements IItemRenderer
 {
@@ -16,12 +17,12 @@ public class ItemRenderRevolver implements IItemRenderer
 	@Override
 	public boolean handleRenderType(ItemStack item, ItemRenderType type)
 	{
-		return item.getItemDamage()<2;
+		return item.getItemDamage()!=2;
 	}
 	@Override
 	public boolean shouldUseRenderHelper(ItemRenderType type, ItemStack item, ItemRendererHelper helper)
 	{
-		return item.getItemDamage()<2;
+		return item.getItemDamage()!=2;
 	}
 
 	@Override
@@ -62,9 +63,10 @@ public class ItemRenderRevolver implements IItemRenderer
 			GL11.glScalef(.4375f,.4375f,.4375f);
 		}
 		
-		
-		ClientUtils.bindTexture("immersiveengineering:textures/models/revolver"+(item.getItemDamage()==1?"_dev":"")+".png");
-		model.render(item.getItemDamage()==1);
+		ClientUtils.bindTexture(((ItemRevolver)item.getItem()).getRevolverTexture(item));
+		GL11.glEnable(3042);
+		model.render(true);
+		GL11.glDisable(3042);
 		GL11.glPopMatrix();
 	}
 

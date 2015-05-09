@@ -14,6 +14,7 @@ public class IESound implements ITickableSound
 	public float z;
 	public boolean canRepeat;
 	public int repeatDelay;
+	public float volumeAjustment=1;
 
 	public IESound(ResourceLocation sound, float volume, float pitch, boolean repeat, int repeatDelay, double x, double y, double z, AttenuationType attenuation)
 	{
@@ -44,7 +45,7 @@ public class IESound implements ITickableSound
 	@Override
 	public float getVolume()
 	{
-		return volume;
+		return volume*volumeAjustment;
 	}
 	@Override
 	public float getPitch()

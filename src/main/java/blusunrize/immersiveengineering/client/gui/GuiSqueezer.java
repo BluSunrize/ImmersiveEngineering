@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.util.StatCollector;
 
 import org.lwjgl.opengl.GL11;
 
@@ -24,22 +25,24 @@ public class GuiSqueezer extends GuiContainer
 	protected void drawGuiContainerForegroundLayer(int mx, int my)
 	{
 		ArrayList<String> tooltip = null;
-		if(tile.tank.getFluid()!=null && tile.tank.getFluid().getFluid()!=null)
-			if(mx>guiLeft+98&&mx<guiLeft+98+16 && my>guiTop+21&&my<guiTop+21+47)
-			{
-				tooltip = new ArrayList<String>();
+		if(mx>guiLeft+98&&mx<guiLeft+98+16 && my>guiTop+21&&my<guiTop+21+47)
+		{
+			tooltip = new ArrayList<String>();
+			if(tile.tank.getFluid()!=null && tile.tank.getFluid().getFluid()!=null)
 				tooltip.add(tile.tank.getFluid().getLocalizedName());
-				tooltip.add(tile.tank.getFluidAmount()+"/"+tile.tank.getCapacity()+"mB");
-			}
+			else
+				tooltip.add(StatCollector.translateToLocal("gui.ImmersiveEngineering.empty"));
+			tooltip.add(tile.tank.getFluidAmount()+"/"+tile.tank.getCapacity()+"mB");
+		}
 		if(mx>guiLeft+157&&mx<guiLeft+164 && my>guiTop+22&&my<guiTop+68)
 		{
 			tooltip = new ArrayList<String>();
 			tooltip.add(tile.energyStorage.getEnergyStored()+"/"+tile.energyStorage.getMaxEnergyStored()+" RF");
 		}
-		
+
 		if(tooltip!=null)
 		{
-			this.drawHoveringText(tooltip, mx-guiLeft-110, my-guiTop, fontRendererObj);
+			this.drawHoveringText(tooltip, mx-guiLeft, my-guiTop, fontRendererObj);
 			RenderHelper.enableGUIStandardItemLighting();
 		}
 	}
@@ -60,7 +63,7 @@ public class GuiSqueezer extends GuiContainer
 
 		int stored = (int)(46*(tile.energyStorage.getEnergyStored()/(float)tile.energyStorage.getMaxEnergyStored()));
 		ClientUtils.drawGradientRect(guiLeft+157,guiTop+22+(46-stored), guiLeft+164,guiTop+68, 0xffb51500, 0xff600b00);
-				
+
 		if(tile.tank.getFluid()!=null && tile.tank.getFluid().getFluid()!=null)
 		{
 			int h = (int)(47*(tile.tank.getFluid().amount/(float)tile.tank.getCapacity()));

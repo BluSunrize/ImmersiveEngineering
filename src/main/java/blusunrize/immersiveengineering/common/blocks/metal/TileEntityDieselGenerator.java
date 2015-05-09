@@ -1,13 +1,11 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.audio.ISound.AttenuationType;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -58,13 +56,6 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockPart implemen
 	@Override
 	public void updateEntity()
 	{
-//		if(pos==0)
-//		{
-//			System.out.println("My pos: "+pos+", master: "+master());
-//			worldObj.spawnParticle("smoke", xCoord, yCoord, zCoord, 0, 0, 0);
-//			System.out.println("Master search: "+offset[0]+","+offset[1]+","+offset[2]);
-			
-//		}
 		if(!formed || pos!=31)
 			return;
 
@@ -93,7 +84,10 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockPart implemen
 				if(sound.getXPosF()==xCoord && sound.getYPosF()==yCoord && sound.getZPosF()==zCoord)
 				{
 					if(!active)
-						sound.donePlaying=true;
+					{
+						ClientUtils.mc().getSoundHandler().stopSound(sound);
+						sound = null;
+					}
 				}
 				else
 				{
@@ -114,11 +108,8 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockPart implemen
 					ForgeDirection fd = ForgeDirection.getOrientation(facing).getOpposite();
 					worldObj.spawnParticle("largesmoke", xCoord+.5+fd.offsetX*1.25, yCoord+2.25, zCoord+.5+fd.offsetZ*1.25, 0,0,0);
 				}
-				if(sound==null || sound.isDonePlaying())
-				{
-					sound = new IESound(new ResourceLocation("immersiveengineering:dieselGenerator"), 1f,1f, true,0, xCoord,yCoord,zCoord, AttenuationType.LINEAR);
-					ClientUtils.mc().getSoundHandler().playSound(sound);
-				}
+				if(sound==null || !ClientUtils.mc().getSoundHandler().isSoundPlaying(sound))
+					sound = ClientUtils.generatePositionedIESound(worldObj, "immersiveengineering:dieselGenerator", .5f,1, false,0, xCoord,yCoord,zCoord);
 			}
 		}
 		else
@@ -329,7 +320,10 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockPart implemen
 		//		}
 
 		if(sound!=null && sound.getXPosF()==xCoord && sound.getYPosF()==yCoord && sound.getZPosF()==zCoord)
-			sound.donePlaying=true;
+		{
+			ClientUtils.mc().getSoundHandler().stopSound(sound);
+			sound = null;
+		}
 
 		if(formed && !worldObj.isRemote)
 		{

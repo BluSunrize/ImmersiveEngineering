@@ -139,8 +139,15 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 	public AxisAlignedBB getRenderBoundingBox()
 	{
 		if(Config.getBoolean("increasedRenderboxes"))
-			return AxisAlignedBB.getBoundingBox(xCoord-16,yCoord-16,zCoord-16, xCoord+17,yCoord+17,zCoord+17);
+		{
+			int inc = getRenderRadiusIncrease();
+			return AxisAlignedBB.getBoundingBox(xCoord-inc,yCoord-inc,zCoord-inc, xCoord+inc+1,yCoord+inc+1,zCoord+inc+1);
+		}
 		return super.getRenderBoundingBox();
+	}
+	int getRenderRadiusIncrease()
+	{
+		return WireType.COPPER.getMaxLength();
 	}
 
 	@Override

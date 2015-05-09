@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
+import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Vec3;
@@ -15,30 +16,59 @@ public class TileEntityWatermill extends TileEntityIEBase
 	public int facing = 2;
 	public int[] offset={0,0};
 	public float rotation=0;
+	private Vec3 rotationVec = null;
+	public boolean canTurn = false;
+	public boolean multiblock = false;
 
 	@Override
 	public void updateEntity()
 	{
 		if(offset[0]!=0||offset[1]!=0)
 			return;
-		if( !(worldObj.getBlock(xCoord-(facing<=3?2:0), yCoord+2, zCoord-(facing<=3?0:2)).isReplaceable(worldObj, xCoord-(facing<=3?2:0), yCoord+2, zCoord-(facing<=3?0:2)))
-				|| !(worldObj.getBlock(xCoord+(facing<=3?2:0), yCoord+2, zCoord+(facing<=3?0:2)).isReplaceable(worldObj, xCoord+(facing<=3?2:0), yCoord+2, zCoord+(facing<=3?0:2)))
-				|| !(worldObj.getBlock(xCoord-(facing<=3?2:0), yCoord-2, zCoord-(facing<=3?0:2)).isReplaceable(worldObj, xCoord-(facing<=3?2:0), yCoord-2, zCoord-(facing<=3?0:2)))
-				|| !(worldObj.getBlock(xCoord+(facing<=3?2:0), yCoord-2, zCoord+(facing<=3?0:2)).isReplaceable(worldObj, xCoord+(facing<=3?2:0), yCoord-2, zCoord+(facing<=3?0:2))))
-			return;
-
-		Vec3 dir = Vec3.createVectorHelper(0, 0, 0);
-		dir = Utils.addVectors(dir, getHorizontalVec());
-		dir = Utils.addVectors(dir, getVerticalVec());
-
-		double power = facing<=3?-dir.xCoord:dir.zCoord;
-		double perTick = 360f/1440 * (1/360f) * power;
-		rotation += perTick;
-		rotation %= 1;
-		if(!worldObj.isRemote)
+		if( 
+				//				!(worldObj.getBlock(xCoord-(facing<=3?2:0), yCoord+2, zCoord-(facing<=3?0:2)).isReplaceable(worldObj, xCoord-(facing<=3?2:0), yCoord+2, zCoord-(facing<=3?0:2)))
+				//				|| !(worldObj.getBlock(xCoord+(facing<=3?2:0), yCoord+2, zCoord+(facing<=3?0:2)).isReplaceable(worldObj, xCoord+(facing<=3?2:0), yCoord+2, zCoord+(facing<=3?0:2)))
+				//				|| !(worldObj.getBlock(xCoord-(facing<=3?2:0), yCoord-2, zCoord-(facing<=3?0:2)).isReplaceable(worldObj, xCoord-(facing<=3?2:0), yCoord-2, zCoord-(facing<=3?0:2)))
+				//				|| !(worldObj.getBlock(xCoord+(facing<=3?2:0), yCoord-2, zCoord+(facing<=3?0:2)).isReplaceable(worldObj, xCoord+(facing<=3?2:0), yCoord-2, zCoord+(facing<=3?0:2))))
+				isBlocked())
 		{
-			ForgeDirection fd = ForgeDirection.getOrientation(facing);
-			if(worldObj.getTileEntity(xCoord-fd.offsetX,yCoord-fd.offsetY,zCoord-fd.offsetZ) instanceof TileEntityDynamo)
+			canTurn=false;
+			return;
+		}
+		else
+			canTurn=getRotationVec().lengthVector()!=0;
+
+		rotationVec=null;
+
+		ForgeDirection fd = ForgeDirection.getOrientation(facing);
+		if(worldObj.getTileEntity(xCoord-fd.offsetX,yCoord,zCoord-fd.offsetZ) instanceof TileEntityDynamo)
+		{
+			double power = getPower();
+			int l=1;
+			for(; l<3
+					&& worldObj.getTileEntity(xCoord+fd.offsetX*l,yCoord,zCoord+fd.offsetZ*l) instanceof TileEntityWatermill
+					&& ((TileEntityWatermill)worldObj.getTileEntity(xCoord+fd.offsetX*l,yCoord,zCoord+fd.offsetZ*l)).offset[0]==0
+					&& ((TileEntityWatermill)worldObj.getTileEntity(xCoord+fd.offsetX*l,yCoord,zCoord+fd.offsetZ*l)).offset[1]==0
+					&& ((TileEntityWatermill)worldObj.getTileEntity(xCoord+fd.offsetX*l,yCoord,zCoord+fd.offsetZ*l)).facing==facing
+					&& !((TileEntityWatermill)worldObj.getTileEntity(xCoord+fd.offsetX*l,yCoord,zCoord+fd.offsetZ*l)).isBlocked(); l++)
+			{
+				power += ((TileEntityWatermill)worldObj.getTileEntity(xCoord+fd.offsetX*l,yCoord,zCoord+fd.offsetZ*l)).getPower(); 
+			}
+
+			double perTick = 360f/1440 * (1/360f) * power/l;
+			for(int l2=1; l2<l; l2++)
+				if(worldObj.getTileEntity(xCoord+fd.offsetX*l2,yCoord,zCoord+fd.offsetZ*l2) instanceof TileEntityWatermill)
+				{
+					((TileEntityWatermill)worldObj.getTileEntity(xCoord+fd.offsetX*l2,yCoord,zCoord+fd.offsetZ*l2)).rotation += perTick;
+					((TileEntityWatermill)worldObj.getTileEntity(xCoord+fd.offsetX*l2,yCoord,zCoord+fd.offsetZ*l2)).rotation %= 1;
+					((TileEntityWatermill)worldObj.getTileEntity(xCoord+fd.offsetX*l2,yCoord,zCoord+fd.offsetZ*l2)).canTurn = perTick!=0;
+					((TileEntityWatermill)worldObj.getTileEntity(xCoord+fd.offsetX*l2,yCoord,zCoord+fd.offsetZ*l2)).multiblock = true;
+				}
+			canTurn = perTick!=0;
+			rotation += perTick;
+			rotation %= 1;
+
+			if(!worldObj.isRemote)
 			{
 				TileEntityDynamo dynamo = (TileEntityDynamo)worldObj.getTileEntity(xCoord-fd.offsetX,yCoord-fd.offsetY,zCoord-fd.offsetZ);
 				if((facing==2||facing==3)&&dynamo.facing!=2&&dynamo.facing!=3)
@@ -48,6 +78,48 @@ public class TileEntityWatermill extends TileEntityIEBase
 				dynamo.inputRotation(Math.abs(power));
 			}
 		}
+		else if(!multiblock)
+		{
+			double perTick = 360f/1440 * (1/360f) * getPower();
+			canTurn = perTick!=0;
+			rotation += perTick;
+			rotation %= 1;
+		}
+		if(multiblock)
+			multiblock=false;
+	}
+
+	public boolean isBlocked()
+	{
+		for(ForgeDirection fdY : new ForgeDirection[]{ForgeDirection.UP,ForgeDirection.DOWN})
+			for(ForgeDirection fdW : facing<=3?new ForgeDirection[]{ForgeDirection.EAST,ForgeDirection.WEST}: new ForgeDirection[]{ForgeDirection.SOUTH,ForgeDirection.NORTH})
+			{
+				Block b = worldObj.getBlock(xCoord+fdW.offsetX*2, yCoord+fdY.offsetY*2, zCoord+fdW.offsetZ*2);
+				if(b.isSideSolid(worldObj, xCoord+fdW.offsetX*2,yCoord+fdY.offsetY*2,zCoord+fdW.offsetZ*2, fdW.getOpposite()))
+					return true;
+				if(b.isSideSolid(worldObj, xCoord+fdW.offsetX*2,yCoord+fdY.offsetY*2,zCoord+fdW.offsetZ*2, fdY.getOpposite()))
+					return true;
+			}
+		return false;
+	}
+
+	public double getPower()
+	{
+		return facing<=3?-getRotationVec().xCoord:getRotationVec().zCoord;
+	}
+	public void resetRotationVec()
+	{
+		rotationVec=null;
+	}
+	public Vec3 getRotationVec()
+	{
+		if(rotationVec==null)
+		{
+			rotationVec = Vec3.createVectorHelper(0, 0, 0);
+			rotationVec = Utils.addVectors(rotationVec, getHorizontalVec());
+			rotationVec = Utils.addVectors(rotationVec, getVerticalVec());
+		}
+		return rotationVec;
 	}
 
 	Vec3 getHorizontalVec()

@@ -41,7 +41,7 @@ public class TileEntityCokeOven extends TileEntityIEBase implements ISidedInvent
 	{
 		return true;
 	}
-	
+
 	@Override
 	public void updateEntity()
 	{
@@ -101,6 +101,7 @@ public class TileEntityCokeOven extends TileEntityIEBase implements ISidedInvent
 							if(worldObj.getTileEntity(xCoord+xx, yCoord+yy, zCoord+zz)!=null)
 								worldObj.getTileEntity(xCoord+xx, yCoord+yy, zCoord+zz).markDirty();
 							worldObj.markBlockForUpdate(xCoord+xx, yCoord+yy, zCoord+zz);
+							worldObj.addBlockEvent(xCoord+xx, yCoord+yy, zCoord+zz, IEContent.blockStoneDevice, 1,active?1:0);
 						}
 			}
 
@@ -134,6 +135,18 @@ public class TileEntityCokeOven extends TileEntityIEBase implements ISidedInvent
 			if(tank.getFluidAmount()+recipe.creosoteOutput<=tank.getCapacity())
 				return recipe;
 		return null;
+	}
+
+	@Override
+	public boolean receiveClientEvent(int id, int arg)
+	{
+		if(id==0)
+			this.formed = arg==1;
+		else if(id==1)
+			this.active = arg==1;
+		markDirty();
+		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+		return true;
 	}
 
 

@@ -13,18 +13,18 @@ import net.minecraft.entity.Entity;
 public class ModelWindmillAdvanced extends ModelBase
 {
 	public ModelRenderer axel;
-	public ModelRenderer sail2;
 	public ModelRenderer rod3;
 	public ModelRenderer rod2;
-	public ModelRenderer sail3;
 	public ModelRenderer rod4;
-	public ModelRenderer sail4;
-	public ModelRenderer sail1;
 	public ModelRenderer rod1;
 	public ModelRenderer rod5;
 	public ModelRenderer rod6;
 	public ModelRenderer rod7;
 	public ModelRenderer rod8;
+	public ModelRenderer sail1;
+	public ModelRenderer sail2;
+	public ModelRenderer sail3;
+	public ModelRenderer sail4;
 	public ModelRenderer sail5;
 	public ModelRenderer sail6;
 	public ModelRenderer sail7;
@@ -37,23 +37,23 @@ public class ModelWindmillAdvanced extends ModelBase
 		this.sail7.setRotationPoint(0.0F, 0.0F, 0.0F);
 		this.sail7.addBox(29.0F, -0.5F, -5.0F, 67, 20, 2, 0.0F);
 		this.setRotateAngle(sail7, 0.2617993877991494F, -0.0F, 0.7853981633974483F);
-		this.sail3 = new ModelRenderer(this, 0, 130);
-		this.sail3.setRotationPoint(0.0F, 0.0F, 0.0F);
-		this.sail3.addBox(-19.5F, 29.0F, -5.0F, 20, 67, 2, 0.0F);
-		this.setRotateAngle(sail3, 0.0F, 0.2617993877991494F, 0.0F);
+		this.sail1 = new ModelRenderer(this, 0, 130);
+		this.sail1.setRotationPoint(0.0F, 0.0F, 0.0F);
+		this.sail1.addBox(-19.5F, 29.0F, -5.0F, 20, 67, 2, 0.0F);
+		this.setRotateAngle(sail1, 0.0F, 0.2617993877991494F, 0.0F);
 		this.rod8 = new ModelRenderer(this, 0, 8);
 		this.rod8.setRotationPoint(0.0F, 0.0F, 0.0F);
 		this.rod8.addBox(-1.5F, 2.0F, -5.5F, 3, 96, 3, 0.0F);
 		this.setRotateAngle(rod8, 0.0F, -0.0F, 0.7853981633974483F);
-		this.sail6 = new ModelRenderer(this, 0, 130);
-		this.sail6.mirror = true;
-		this.sail6.setRotationPoint(0.0F, 0.0F, 0.0F);
-		this.sail6.addBox(-0.5F, -96.0F, -5.0F, 20, 67, 2, 0.0F);
-		this.setRotateAngle(sail6, 0.0F, -0.2617993877991494F, 0.7853981633974483F);
-		this.sail5 = new ModelRenderer(this, 0, 108);
-		this.sail5.setRotationPoint(0.0F, 0.0F, 0.0F);
-		this.sail5.addBox(-96.0F, -19.5F, -5.0F, 67, 20, 2, 0.0F);
-		this.setRotateAngle(sail5, -0.2617993877991494F, -0.0F, 0.7853981633974483F);
+		this.sail4 = new ModelRenderer(this, 0, 130);
+		this.sail4.mirror = true;
+		this.sail4.setRotationPoint(0.0F, 0.0F, 0.0F);
+		this.sail4.addBox(-0.5F, -96.0F, -5.0F, 20, 67, 2, 0.0F);
+		this.setRotateAngle(sail4, 0.0F, -0.2617993877991494F, 0.7853981633974483F);
+		this.sail3 = new ModelRenderer(this, 0, 108);
+		this.sail3.setRotationPoint(0.0F, 0.0F, 0.0F);
+		this.sail3.addBox(-96.0F, -19.5F, -5.0F, 67, 20, 2, 0.0F);
+		this.setRotateAngle(sail3, -0.2617993877991494F, -0.0F, 0.7853981633974483F);
 		this.rod1 = new ModelRenderer(this, 0, 8);
 		this.rod1.setRotationPoint(0.0F, 0.0F, 0.0F);
 		this.rod1.addBox(-1.5F, -98.0F, -5.5F, 3, 96, 3, 0.0F);
@@ -71,10 +71,10 @@ public class ModelWindmillAdvanced extends ModelBase
 		this.rod5.setRotationPoint(0.0F, 0.0F, 0.0F);
 		this.rod5.addBox(-98.0F, -1.5F, -5.5F, 96, 3, 3, 0.0F);
 		this.setRotateAngle(rod5, 0.0F, 0.0F, 0.7853981633974483F);
-		this.sail2 = new ModelRenderer(this, 0, 108);
-		this.sail2.setRotationPoint(0.0F, 0.0F, 0.0F);
-		this.sail2.addBox(29.0F, -0.5F, -5.0F, 67, 20, 2, 0.0F);
-		this.setRotateAngle(sail2, 0.2617993877991494F, -0.0F, 0.0F);
+		this.sail6 = new ModelRenderer(this, 0, 108);
+		this.sail6.setRotationPoint(0.0F, 0.0F, 0.0F);
+		this.sail6.addBox(29.0F, -0.5F, -5.0F, 67, 20, 2, 0.0F);
+		this.setRotateAngle(sail6, 0.2617993877991494F, -0.0F, 0.0F);
 		this.rod2 = new ModelRenderer(this, 0, 0);
 		this.rod2.setRotationPoint(0.0F, 0.0F, 0.0F);
 		this.rod2.addBox(2.0F, -1.5F, -5.5F, 96, 3, 3, 0.0F);
@@ -89,15 +89,15 @@ public class ModelWindmillAdvanced extends ModelBase
 		this.rod6.setRotationPoint(0.0F, 0.0F, 0.0F);
 		this.rod6.addBox(-1.5F, -98.0F, -5.5F, 3, 96, 3, 0.0F);
 		this.setRotateAngle(rod6, 0.0F, -0.0F, 0.7853981633974483F);
-		this.sail4 = new ModelRenderer(this, 0, 108);
-		this.sail4.setRotationPoint(0.0F, 0.0F, 0.0F);
-		this.sail4.addBox(-96.0F, -19.5F, -5.0F, 67, 20, 2, 0.0F);
-		this.setRotateAngle(sail4, -0.2617993877991494F, -0.0F, 0.0F);
-		this.sail1 = new ModelRenderer(this, 0, 130);
-		this.sail1.mirror = true;
-		this.sail1.setRotationPoint(0.0F, 0.0F, 0.0F);
-		this.sail1.addBox(-0.5F, -96.0F, -5.0F, 20, 67, 2, 0.0F);
-		this.setRotateAngle(sail1, 0.0F, -0.2617993877991494F, 0.0F);
+		this.sail2 = new ModelRenderer(this, 0, 108);
+		this.sail2.setRotationPoint(0.0F, 0.0F, 0.0F);
+		this.sail2.addBox(-96.0F, -19.5F, -5.0F, 67, 20, 2, 0.0F);
+		this.setRotateAngle(sail2, -0.2617993877991494F, -0.0F, 0.0F);
+		this.sail5 = new ModelRenderer(this, 0, 130);
+		this.sail5.mirror = true;
+		this.sail5.setRotationPoint(0.0F, 0.0F, 0.0F);
+		this.sail5.addBox(-0.5F, -96.0F, -5.0F, 20, 67, 2, 0.0F);
+		this.setRotateAngle(sail5, 0.0F, -0.2617993877991494F, 0.0F);
 
 		this.axel.addChild(this.rod8);
 		this.axel.addChild(this.rod1);
@@ -115,27 +115,25 @@ public class ModelWindmillAdvanced extends ModelBase
 
 	}
 
-	public void render(float[]rgb, float f5) { 
+	public void render(float[][]rgb, float f5)
+	{ 
 		this.axel.render(f5);
-
-		//		this.rod1.render(f5);
-		//		this.rod4.render(f5);
-		//		this.rod7.render(f5);
-		//		this.rod5.render(f5);
-		//		this.rod2.render(f5);
-		//		this.rod3.render(f5);
-		//		this.rod6.render(f5);
-		//		this.rod8.render(f5);
-		GL11.glColor3f(rgb[0],rgb[1],rgb[2]);
-		this.sail7.render(f5);
-		this.sail3.render(f5);
-		this.sail6.render(f5);
-		this.sail5.render(f5);
-		this.sail2.render(f5);
-		this.sail8.render(f5);
-		this.sail4.render(f5);
+		GL11.glColor3f(rgb[0][0],rgb[0][1],rgb[0][2]);
 		this.sail1.render(f5);
-		GL11.glColor3f(1, 1, 1);
+		GL11.glColor3f(rgb[1][0],rgb[1][1],rgb[1][2]);
+		this.sail2.render(f5);
+		GL11.glColor3f(rgb[2][0],rgb[2][1],rgb[2][2]);
+		this.sail3.render(f5);
+		GL11.glColor3f(rgb[3][0],rgb[3][1],rgb[3][2]);
+		this.sail4.render(f5);
+		GL11.glColor3f(rgb[4][0],rgb[4][1],rgb[4][2]);
+		this.sail5.render(f5);
+		GL11.glColor3f(rgb[5][0],rgb[5][1],rgb[5][2]);
+		this.sail6.render(f5);
+		GL11.glColor3f(rgb[6][0],rgb[6][1],rgb[6][2]);
+		this.sail7.render(f5);
+		GL11.glColor3f(rgb[7][0],rgb[7][1],rgb[7][2]);
+		this.sail8.render(f5);
 	}
 
 	/**

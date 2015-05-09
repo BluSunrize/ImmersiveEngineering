@@ -28,6 +28,7 @@ import blusunrize.immersiveengineering.client.render.ItemRenderRevolver;
 import blusunrize.immersiveengineering.client.render.TileRenderConnectorHV;
 import blusunrize.immersiveengineering.client.render.TileRenderConnectorLV;
 import blusunrize.immersiveengineering.client.render.TileRenderConnectorMV;
+import blusunrize.immersiveengineering.client.render.TileRenderConnectorStructural;
 import blusunrize.immersiveengineering.client.render.TileRenderCrusher;
 import blusunrize.immersiveengineering.client.render.TileRenderDieselGenerator;
 import blusunrize.immersiveengineering.client.render.TileRenderPost;
@@ -46,6 +47,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalMultiblocks
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorHV;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorLV;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorMV;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorStructural;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityDieselGenerator;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFermenter;
@@ -97,6 +99,7 @@ public class ClientProxy extends CommonProxy
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityDieselGenerator.class, new TileRenderDieselGenerator());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityRefinery.class, new TileRenderRefinery());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityCrusher.class, new TileRenderCrusher());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityConnectorStructural.class, new TileRenderConnectorStructural());
 		//WOOD
 		RenderingRegistry.registerBlockHandler(new BlockRenderWoodenDevices());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityWoodenPost.class, new TileRenderPost());
@@ -192,11 +195,13 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.Crafting(manual, "wiringCutters", new ItemStack(IEContent.itemTool,1,1)),
 				new ManualPages.Crafting(manual, "wiringVoltmeter", new ItemStack(IEContent.itemTool,1,2)));
 		manual.addEntry("generator", "energy", 
-				new ManualPages.Text(manual, "generator0"),
-				new ManualPages.Crafting(manual, "", new ItemStack(IEContent.blockMetalDevice,1,BlockMetalDevices.META_dynamo),new ItemStack(IEContent.blockMetalDevice,1,BlockMetalDevices.META_thermoelectricGen)),
-				new ManualPages.CraftingMulti(manual, "generatorWindmill", new ItemStack(IEContent.itemMaterial,1,2),new ItemStack(IEContent.blockWoodenDevice,1,2)),
-				new ManualPages.CraftingMulti(manual, "generatorWatermill", new ItemStack(IEContent.itemMaterial,1,1),new ItemStack(IEContent.blockWoodenDevice,1,1)),
-				new ManualPages.CraftingMulti(manual, "generatorWindmillImproved", new ItemStack(IEContent.itemMaterial,1,4),new ItemStack(IEContent.itemMaterial,1,5),new ItemStack(IEContent.blockWoodenDevice,1,3)));
+				new ManualPages.Crafting(manual, "generator0", new ItemStack(IEContent.blockMetalDevice,1,BlockMetalDevices.META_dynamo)),
+				new ManualPages.CraftingMulti(manual, "generatorWindmill", new ItemStack(IEContent.blockWoodenDevice,1,2),new ItemStack(IEContent.itemMaterial,1,2)),
+				new ManualPages.CraftingMulti(manual, "generatorWatermill", new ItemStack(IEContent.blockWoodenDevice,1,1),new ItemStack(IEContent.itemMaterial,1,1)),
+				new ManualPages.CraftingMulti(manual, "generatorWindmillImproved", new ItemStack(IEContent.blockWoodenDevice,1,3),new ItemStack(IEContent.itemMaterial,1,4),new ItemStack(IEContent.itemMaterial,1,5)));
+		manual.addEntry("thermoElectric", "energy", 
+				new ManualPages.Crafting(manual, "thermoElectric0", new ItemStack(IEContent.blockMetalDevice,1,BlockMetalDevices.META_thermoelectricGen)),
+				new ManualPages.Text(manual, "thermoElectric1"));
 		manual.addEntry("highvoltage", "energy",
 				new ManualPages.Text(manual, "highvoltage0"),
 				new ManualPages.Crafting(manual, "", new ItemStack(IEContent.blockMetalDevice,1,8),new ItemStack(IEContent.blockMetalDevice,1,4)),

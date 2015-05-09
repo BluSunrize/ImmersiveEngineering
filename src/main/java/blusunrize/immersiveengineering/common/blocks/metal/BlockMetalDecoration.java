@@ -22,7 +22,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import blusunrize.immersiveengineering.client.render.BlockRenderMetalDecoration;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
-import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
+import blusunrize.immersiveengineering.common.util.Utils;
 
 public class BlockMetalDecoration extends BlockIEBase
 {
@@ -34,10 +34,13 @@ public class BlockMetalDecoration extends BlockIEBase
 	public static int META_heavyEngineering=5;
 	public static int META_generator=6;
 	public static int META_lightEngineering=7;
+	public static int META_connectorStrutural=8;
 
 	public BlockMetalDecoration()
 	{
-		super("metalDecoration", Material.iron,3, ItemBlockIEBase.class, "fence","scaffolding","lantern","structuralArm","radiator","heavyEngineering","generator","lightEngineering");
+		super("metalDecoration", Material.iron,3, ItemBlockMetalDecorations.class, "fence","scaffolding","lantern","structuralArm",
+				"radiator","heavyEngineering","generator","lightEngineering",
+				"connectorStructural");
 		setHardness(3.0F);
 		setResistance(15.0F);
 	}
@@ -145,6 +148,7 @@ public class BlockMetalDecoration extends BlockIEBase
 			icons[META_heavyEngineering][i] = iconRegister.registerIcon("immersiveengineering:metalDeco_engine");
 			icons[META_generator][i] = iconRegister.registerIcon("immersiveengineering:metalDeco_generator");
 			icons[META_lightEngineering][i] = iconRegister.registerIcon("immersiveengineering:metalDeco_electricMachine");
+			icons[META_connectorStrutural][i] = iconRegister.registerIcon("immersiveengineering:storage_Steel");
 		}
 	}
 	@Override
@@ -165,6 +169,31 @@ public class BlockMetalDecoration extends BlockIEBase
 			this.setBlockBounds(canConnectFenceTo(world,x-1,y,z)?0:.375f,0,canConnectFenceTo(world,x,y,z-1)?0:.375f, canConnectFenceTo(world,x+1,y,z)?1:.625f,1,canConnectFenceTo(world,x,y,z+1)?1:.625f);
 		else if(world.getBlockMetadata(x, y, z)==META_lantern)
 			this.setBlockBounds(.25f,0,.25f, .75f,.8125f,.75f);
+		else if(world.getTileEntity(x, y, z) instanceof TileEntityConnectorStructural)
+		{
+			float length = .5f;
+			switch(((TileEntityConnectorStructural)world.getTileEntity(x, y, z)).facing )
+			{
+			case 0://UP
+				this.setBlockBounds(.25f,0,.25f,  .75f,length,.75f);
+				break;
+			case 1://DOWN
+				this.setBlockBounds(.25f,1-length,.25f,  .75f,1,.75f);
+				break;
+			case 2://SOUTH
+				this.setBlockBounds(.25f,.25f,0,  .75f,.75f,length);
+				break;
+			case 3://NORTH
+				this.setBlockBounds(.25f,.25f,1-length,  .75f,.75f,1);
+				break;
+			case 4://EAST
+				this.setBlockBounds(0,.25f,.25f,  length,.75f,.75f);
+				break;
+			case 5://WEST
+				this.setBlockBounds(1-length,.25f,.25f,  1,.75f,.75f);
+				break;
+			}
+		}
 		else
 			this.setBlockBounds(0,0,0,1,1,1);
 	}
@@ -202,6 +231,8 @@ public class BlockMetalDecoration extends BlockIEBase
 	{
 		if(meta==META_structuralArm)
 			return new TileEntityStructuralArm();
+		if(meta==META_connectorStrutural)
+			return new TileEntityConnectorStructural();
 		return null;
 	}
 	@Override
@@ -214,10 +245,12 @@ public class BlockMetalDecoration extends BlockIEBase
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
 	{
-		//		if(Utils.isHammer(player.getCurrentEquippedItem()) && (world.getBlockMetadata(x, y, z)==META_radiator||/**world.getBlockMetadata(x, y, z)==META_generator||*/world.getBlockMetadata(x, y, z)==META_generator) )
-		//		{	
-		//			
-		//		}
+		if(Utils.isHammer(player.getCurrentEquippedItem()) && (world.getTileEntity(x,y,z) instanceof TileEntityConnectorStructural) )
+		{	
+			((TileEntityConnectorStructural)world.getTileEntity(x,y,z)).rotation += 22.5f;
+			((TileEntityConnectorStructural)world.getTileEntity(x,y,z)).rotation %= 360;
+			return true;
+		}
 		return false;
 	}
 }

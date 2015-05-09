@@ -3,12 +3,18 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import java.util.ArrayList;
 import java.util.List;
 
+import mods.railcraft.api.crafting.IRockCrusherRecipe;
+import mods.railcraft.api.crafting.RailcraftCraftingManager;
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.particle.EntityFX;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -16,14 +22,18 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
 import blusunrize.immersiveengineering.api.CrusherRecipe;
-import blusunrize.immersiveengineering.client.ClientEventHandler.ICustomBoundingboxes;
+import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.client.fx.EntityFXItemParts;
 import blusunrize.immersiveengineering.common.EventHandler;
 import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ICustomBoundingboxes;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockCrusher;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
+import blusunrize.immersiveengineering.common.util.IESound;
 import blusunrize.immersiveengineering.common.util.Utils;
 import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyReceiver;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -37,6 +47,9 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 	public float barrelRotation=0;
 	public boolean active = false;
 	public boolean mobGrinding = false;
+	public int grindingTimer = 0;
+	@SideOnly(Side.CLIENT)
+	ItemStack particleStack;
 
 	public TileEntityCrusher master()
 	{
@@ -57,19 +70,71 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 		return s!=null?s.copy():null;
 	}
 
+	static IESound sound;
 	@Override
 	public void updateEntity()
 	{
 		if(!formed || pos!=17)
 			return;
 
-		if((active&&process>0)||mobGrinding)
+
+		if((active&&process>0)||mobGrinding||grindingTimer>0)
 		{
+			if(grindingTimer>0)
+				grindingTimer--;
 			barrelRotation += 18f;
 			barrelRotation %= 360f;
 		}
 
-		if(!worldObj.isRemote)
+		if(worldObj.isRemote)
+		{
+			if(sound!=null)
+			{
+				if(sound.getXPosF()==xCoord && sound.getYPosF()==yCoord && sound.getZPosF()==zCoord)
+				{
+					if(!((active&&process>0)||mobGrinding||grindingTimer>0))
+					{
+						ClientUtils.mc().getSoundHandler().stopSound(sound);
+						sound = null;
+					}
+				}
+				else
+				{
+					double dx = (sound.getXPosF()-ClientUtils.mc().renderViewEntity.posX)*(sound.getXPosF()-ClientUtils.mc().renderViewEntity.posX);
+					double dy = (sound.getYPosF()-ClientUtils.mc().renderViewEntity.posY)*(sound.getYPosF()-ClientUtils.mc().renderViewEntity.posY);
+					double dz = (sound.getZPosF()-ClientUtils.mc().renderViewEntity.posZ)*(sound.getZPosF()-ClientUtils.mc().renderViewEntity.posZ);
+					double dx1 = (xCoord-ClientUtils.mc().renderViewEntity.posX)*(xCoord-ClientUtils.mc().renderViewEntity.posX);
+					double dy1 = (yCoord-ClientUtils.mc().renderViewEntity.posY)*(yCoord-ClientUtils.mc().renderViewEntity.posY);
+					double dz1 = (zCoord-ClientUtils.mc().renderViewEntity.posZ)*(zCoord-ClientUtils.mc().renderViewEntity.posZ);
+					if((dx1+dy1+dz1)<(dx+dy+dz))
+						sound.setPos(xCoord, yCoord, zCoord);
+				}
+			}
+			if((active&&process>0)||mobGrinding||grindingTimer>0)
+			{
+				if(sound==null || !ClientUtils.mc().getSoundHandler().isSoundPlaying(sound))
+					sound = ClientUtils.generatePositionedIESound(worldObj, "immersiveengineering:crusher", 1,1, false,0, xCoord,yCoord,zCoord);
+			}
+			if(active&&process>0)
+			{
+//				ItemStack ss = this.inputs.get(0);
+				if(particleStack!=null)
+					for(int i=0; i<3; i++)
+					{
+						double x = xCoord+.5+.5*(facing<4?worldObj.rand.nextGaussian()-.5:0);
+						double y = yCoord+2 + worldObj.rand.nextGaussian()/2;
+						double z = zCoord+.5+.5*(facing>3?worldObj.rand.nextGaussian()-.5:0);
+						double mX = worldObj.rand.nextGaussian() * 0.01D;
+						double mY = worldObj.rand.nextGaussian() * 0.05D;
+						double mZ = worldObj.rand.nextGaussian() * 0.01D;
+						EntityFX particleMysterious = new EntityFXItemParts(worldObj, particleStack, worldObj.rand.nextInt(16), x,y,z, mX,mY,mZ);
+						Minecraft.getMinecraft().effectRenderer.addEffect(particleMysterious);
+					}
+			}
+			else if(particleStack!=null)
+				particleStack=null;
+		}
+		else
 		{
 			boolean update = false;
 			if(worldObj.getBlockPowerInput(xCoord+(facing==4?-1:facing==5?1:facing==2?-2:2),yCoord+1,zCoord+(facing==2?-1:facing==3?1:facing==4?2:-2))<=0)
@@ -80,11 +145,21 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 					for(EntityItem e : itemList)
 					{
 						ItemStack input = ((EntityItem)e).getEntityItem();
-						if(CrusherRecipe.findRecipe(input)==null)
+						if(!isValidInput(input))
 						{
+							e.setDead();
+							grindingTimer = 10;
+							update = true;
 							continue;
 						}
 						addStackToInputs(input);
+						if(input!=null)
+						{
+							Block b = Block.getBlockFromItem(input.getItem());
+							int id = (b!=null&&b!=Blocks.air)?Block.getIdFromBlock(b): Item.getIdFromItem(input.getItem());
+							int meta = input.getItemDamage()+((b!=null&&b!=Blocks.air)?0:16);
+							worldObj.addBlockEvent(xCoord,yCoord,zCoord, this.getBlockType(), id,meta);
+						}
 						update = true;
 						e.setDead();
 					}
@@ -95,7 +170,7 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 						if(!e.isDead && e.getHealth()>0)
 						{
 							int consumed = this.energyStorage.extractEnergy(80, true);
-							e.attackEntityFrom(IEDamageSources.causeGrinderDamage(), consumed/20f);
+							e.attackEntityFrom(IEDamageSources.causeCrusherDamage(), consumed/20f);
 							EventHandler.crusherMap.put(e.getUniqueID(), this);
 							mobGrinding = true;
 							update = true;
@@ -119,22 +194,43 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 					{
 						ItemStack inputStack = inputs.get(0);
 						CrusherRecipe recipe = CrusherRecipe.findRecipe(inputStack);
-						if(recipe==null)
+						if(recipe!=null)
+						{
+							ItemStack outputStack = recipe.output;
+							if(outputStack!=null)
+								outputItem(outputStack.copy());
+							if(recipe.secondaryOutput!=null && worldObj.rand.nextFloat()<recipe.secondaryChance)
+								outputItem(recipe.secondaryOutput);
+
+							inputStack.stackSize-= (recipe.input instanceof String)? 1: ((ItemStack)recipe.input).stackSize;
+							if(inputStack.stackSize>0)
+								inputs.set(0, inputStack);
+							else
+								inputs.remove(0);
+							active = false;
+							update = true;
+						}
+						else if(RailcraftCraftingManager.rockCrusher!=null && RailcraftCraftingManager.rockCrusher.getRecipe(inputStack)!=null)
+						{
+							IRockCrusherRecipe rcrecipe = RailcraftCraftingManager.rockCrusher.getRecipe(inputStack);
+							List<ItemStack> outputs = rcrecipe.getRandomizedOuputs();
+							for(ItemStack out : outputs)
+								if(out!=null)
+									outputItem(out.copy());
+							inputStack.stackSize-= rcrecipe.getInput().stackSize;
+							if(inputStack.stackSize>0)
+								inputs.set(0, inputStack);
+							else
+								inputs.remove(0);
+							active = false;
+							update = true;
+						}
+						else
 						{
 							inputs.remove(0);
 							active = false;
 							return;
 						}
-						ItemStack outputStack = recipe.output;
-						outputItem(outputStack);
-
-						inputStack.stackSize-= (recipe.input instanceof String)? 1: ((ItemStack)recipe.input).stackSize;
-						if(inputStack.stackSize>0)
-							inputs.set(0, inputStack);
-						else
-							inputs.remove(0);
-						active = false;
-						update = true;
 					}
 					else
 					{
@@ -142,6 +238,8 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 						CrusherRecipe recipe = CrusherRecipe.findRecipe(inputStack);
 						if(recipe!=null)
 							this.process = recipe.energy;
+						else if(RailcraftCraftingManager.rockCrusher!=null && RailcraftCraftingManager.rockCrusher.getRecipe(inputStack)!=null)
+							this.process = 2400;
 						else
 							inputs.remove(0);
 						active = true;
@@ -162,6 +260,10 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 		}
 	}
 
+	boolean isValidInput(ItemStack stack)
+	{
+		return CrusherRecipe.findRecipe(stack)!=null || (RailcraftCraftingManager.rockCrusher!=null && RailcraftCraftingManager.rockCrusher.getRecipe(stack)!=null);
+	}
 	public boolean addStackToInputs(ItemStack stack)
 	{
 		for(int i=0;i<inputs.size();i++)
@@ -209,6 +311,7 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 		barrelRotation = nbt.getFloat("barrelRotation");
 		active = nbt.getBoolean("active");
 		mobGrinding = nbt.getBoolean("mobGrinding");
+		grindingTimer = nbt.getInteger("grindingTimer");
 		process = nbt.getInteger("process");
 		energyStorage.readFromNBT(nbt);
 	}
@@ -221,7 +324,7 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 		inputs.clear();
 		for(int i=0;i<invList.tagCount();i++)
 			inputs.add( ItemStack.loadItemStackFromNBT(invList.getCompoundTagAt(i)));
-//	System.out.println("Read! "+FMLCommonHandler.instance().getEffectiveSide()+" - "+inputs.size());
+		//	System.out.println("Read! "+FMLCommonHandler.instance().getEffectiveSide()+" - "+inputs.size());
 	}
 	@Override
 	public void writeCustomNBT(NBTTagCompound nbt)
@@ -231,6 +334,7 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 		nbt.setFloat("barrelRotation", barrelRotation);
 		nbt.setBoolean("active", active);
 		nbt.setBoolean("mobGrinding", mobGrinding);
+		nbt.setInteger("grindingTimer", grindingTimer);
 		nbt.setInteger("process", process);
 		energyStorage.writeToNBT(nbt);
 	}
@@ -243,8 +347,8 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 		for(ItemStack s : inputs)
 			invList.appendTag(s.writeToNBT(new NBTTagCompound()));
 		nbt.setTag("inputs", invList);
-//		if(FMLCommonHandler.instance().getEffectiveSide()!=Side.CLIENT)
-//		System.out.println("Write! "+" - "+invList.tagCount());
+		//		if(FMLCommonHandler.instance().getEffectiveSide()!=Side.CLIENT)
+		//		System.out.println("Write! "+" - "+invList.tagCount());
 	}
 
 
@@ -255,6 +359,34 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 		if(pos==17)
 			return AxisAlignedBB.getBoundingBox(xCoord-(facing==2||facing==3?2:1),yCoord,zCoord-(facing==4||facing==5?2:1), xCoord+(facing==2||facing==3?3:2),yCoord+3,zCoord+(facing==4||facing==5?3:2));
 		return AxisAlignedBB.getBoundingBox(xCoord,yCoord,zCoord, xCoord,yCoord,zCoord);
+	}
+
+	@Override
+	public boolean receiveClientEvent(int id, int arg)
+	{
+		try{
+			if(FMLCommonHandler.instance().getEffectiveSide()==Side.CLIENT)
+			{
+				ItemStack ss = arg<16?new ItemStack(Block.getBlockById(id),1,arg): new ItemStack(Item.getItemById(id),1,arg-16);
+				if(ss!=null)
+					particleStack = ss;
+			}
+			//				for(int i=0; i<16; i++)
+			//				{
+			//					double x = xCoord+.5 + worldObj.rand.nextGaussian()/2-.25;
+			//					double y = yCoord + worldObj.rand.nextGaussian()/2;
+			//					double z = zCoord+.5 + worldObj.rand.nextGaussian()/2-.25;
+			//					double mX = worldObj.rand.nextGaussian() * 0.01D;
+			//					double mY = worldObj.rand.nextGaussian() * 0.05D;
+			//					double mZ = worldObj.rand.nextGaussian() * 0.01D;
+			//					EntityFX particleMysterious = new EntityFXItemParts(worldObj, ss, i, x,y,z, mX,mY,mZ);
+			//					Minecraft.getMinecraft().effectRenderer.addEffect(particleMysterious);
+			//				}
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		return true;
 	}
 
 	@Override

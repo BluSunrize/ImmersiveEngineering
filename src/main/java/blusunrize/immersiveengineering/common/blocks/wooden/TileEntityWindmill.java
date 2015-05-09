@@ -11,10 +11,11 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class TileEntityWindmill extends TileEntityIEBase
 {
 	public int facing = 2;
+	//public float prevRotation=0;
 	public float rotation=0;
 	public float turnSpeed=0;
 
-	boolean canTurn = false;
+	public boolean canTurn = false;
 
 	@Override
 	public void updateEntity()
@@ -38,6 +39,7 @@ public class TileEntityWindmill extends TileEntityIEBase
 		else if(yCoord<70)
 			mod *= .33;
 		mod*=getSpeedModifier();
+		//prevRotation = (float) (turnSpeed*mod);
 		rotation += turnSpeed*mod;
 		rotation %= 1;
 
@@ -102,6 +104,7 @@ public class TileEntityWindmill extends TileEntityIEBase
 	public void readCustomNBT(NBTTagCompound nbt)
 	{
 		facing = nbt.getInteger("facing");
+		//prevRotation = nbt.getFloat("prevRotation");
 		rotation = nbt.getFloat("rotation");
 		turnSpeed = nbt.getFloat("turnSpeed");
 	}
@@ -109,6 +112,7 @@ public class TileEntityWindmill extends TileEntityIEBase
 	public void writeCustomNBT(NBTTagCompound nbt)
 	{
 		nbt.setInteger("facing", facing);
+		//nbt.setFloat("prevRotation", prevRotation);
 		nbt.setFloat("rotation", rotation);
 		nbt.setFloat("turnSpeed", turnSpeed);
 	}

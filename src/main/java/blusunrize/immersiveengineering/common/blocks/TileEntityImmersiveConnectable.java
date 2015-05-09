@@ -63,6 +63,10 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 			return false;
 		if(cableType==WireType.COPPER&&!canTakeLV())
 			return false;
+		if(cableType==WireType.STRUCTURE_ROPE)
+			return false;
+		if(cableType==WireType.STRUCTURE_STEEL)
+			return false;
 		return limitType==null||limitType==cableType;
 	}
 	@Override
@@ -82,9 +86,9 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 		{
 			if(type==limitType || type==null)
 				this.limitType = null;
-			this.markDirty();
-			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 		}
+		this.markDirty();
+		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 	}
 
 	@Override

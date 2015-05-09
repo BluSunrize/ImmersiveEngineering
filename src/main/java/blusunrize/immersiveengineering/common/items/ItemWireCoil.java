@@ -23,12 +23,17 @@ public class ItemWireCoil extends ItemIEBase
 {
 	public ItemWireCoil()
 	{
-		super("coil", 64, "copper","electrum","HV");
+		super("coil", 64, "copper","electrum","HV","rope","structural");
 	}
 
 	@Override
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean adv)
 	{
+		if(stack.getItemDamage()>2)
+		{
+			list.add(StatCollector.translateToLocal(Lib.DESC+"flavour.coil.construction0"));
+			list.add(StatCollector.translateToLocal(Lib.DESC+"flavour.coil.construction1"));
+		}
 		if(stack.getTagCompound()!=null && stack.getTagCompound().hasKey("linkingPos"))
 		{
 			int[] link = stack.getTagCompound().getIntArray("linkingPos");

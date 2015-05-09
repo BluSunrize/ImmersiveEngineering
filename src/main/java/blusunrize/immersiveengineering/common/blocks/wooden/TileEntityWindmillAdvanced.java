@@ -5,7 +5,7 @@ import net.minecraft.nbt.NBTTagCompound;
 
 public class TileEntityWindmillAdvanced extends TileEntityWindmill
 {
-	public int dye = 15;
+	public byte[] dye = new byte[]{15,15,15,15,15,15,15,15};
 	@Override
 	protected float getSpeedModifier()
 	{
@@ -17,12 +17,12 @@ public class TileEntityWindmillAdvanced extends TileEntityWindmill
 	public void readCustomNBT(NBTTagCompound nbt)
 	{
 		super.readCustomNBT(nbt);
-		dye = nbt.getInteger("dye");
+		dye = nbt.getByteArray("dye");
 	}
 	@Override
 	public void writeCustomNBT(NBTTagCompound nbt)
 	{
 		super.writeCustomNBT(nbt);
-		nbt.setInteger("dye", dye);
+		nbt.setByteArray("dye", dye);
 	}
 }

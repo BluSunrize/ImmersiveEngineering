@@ -73,25 +73,26 @@ public class TileEntitySqueezer extends TileEntityMultiblockPart implements IFlu
 				}
 				if(tick>=80)
 				{
-					while(inputs>0)
+					while(inputs>0 && tank.getFluidAmount()<tank.getCapacity())
 						for(int i=0; i<9; i++)
-						{
-							ItemStack stack = this.getStackInSlot(i);
-							if(stack!=null)
+							if(tank.getFluidAmount()<tank.getCapacity())
 							{
-								int f = DieselHandler.getPlantoilOutput(stack);
-								if(f>0)
-									if(tank.getFluidAmount()+f<=tank.getCapacity())
-									{
-										tank.fill(new FluidStack(IEContent.fluidPlantoil,f), true);
-										this.decrStackSize(i, 1);
-										inputs--;
-										update = true;
-									}
-									else
-										break;
+								ItemStack stack = this.getStackInSlot(i);
+								if(stack!=null)
+								{
+									int f = DieselHandler.getPlantoilOutput(stack);
+									if(f>0)
+										if(tank.getFluidAmount()+f<=tank.getCapacity())
+										{
+											tank.fill(new FluidStack(IEContent.fluidPlantoil,f), true);
+											this.decrStackSize(i, 1);
+											inputs--;
+											update = true;
+										}
+										else
+											break;
+								}
 							}
-						}
 					tick=0;
 				}
 			}

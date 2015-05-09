@@ -1,7 +1,7 @@
 package blusunrize.immersiveengineering.api;
 
-import static blusunrize.immersiveengineering.common.util.Utils.toCC;
-import static blusunrize.immersiveengineering.common.util.Utils.toIIC;
+import static blusunrize.immersiveengineering.api.ApiUtils.toCC;
+import static blusunrize.immersiveengineering.api.ApiUtils.toIIC;
 
 import java.util.ArrayList;
 import java.util.Collection;

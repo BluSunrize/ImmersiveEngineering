@@ -2,10 +2,10 @@ package blusunrize.immersiveengineering.common.entities;
 
 import java.util.List;
 
-import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.AxisAlignedBB;
@@ -14,6 +14,7 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
+import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -27,7 +28,7 @@ public class EntityRevolvershot extends Entity
 	public EntityLivingBase shootingEntity;
 	private int ticksAlive;
 	private int ticksInAir;
-	
+
 	private int tickLimit=40;
 	int bulletType = 0;
 
@@ -44,24 +45,24 @@ public class EntityRevolvershot extends Entity
 		this.setPosition(x, y, z);
 		this.bulletType = type;
 	}
-	public EntityRevolvershot(World world, EntityLivingBase living, double ax, double ay, double az, int type)
+	public EntityRevolvershot(World world, EntityLivingBase living, double ax, double ay, double az, int type, ItemStack stack)
 	{
 		super(world);
 		this.shootingEntity = living;
 		this.setSize(0.125F, 0.125F);
-		this.setLocationAndAngles(living.posX, living.posY, living.posZ, living.rotationYaw, living.rotationPitch);
+		this.setLocationAndAngles(living.posX+ax, living.posY+living.getEyeHeight()+ay, living.posZ+az, living.rotationYaw, living.rotationPitch);
 		this.setPosition(this.posX, this.posY, this.posZ);
 		this.yOffset = 0.0F;
 		this.motionX = this.motionY = this.motionZ = 0.0D;
 		this.bulletType = type;
 	}
 	protected void entityInit() {}
-	
+
 	public void setTickLimit(int limit)
 	{
 		this.tickLimit=limit;
 	}
-	
+
 
 	@SideOnly(Side.CLIENT)
 	@Override
@@ -106,10 +107,11 @@ public class EntityRevolvershot extends Entity
 
 			if(ticksInAir>=tickLimit)
 			{
+				this.onExpire();
 				this.setDead();
 				return;
 			}
-			
+
 			Vec3 vec3 = Vec3.createVectorHelper(this.posX, this.posY, this.posZ);
 			Vec3 vec31 = Vec3.createVectorHelper(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
 			MovingObjectPosition movingobjectposition = this.worldObj.rayTraceBlocks(vec3, vec31);
@@ -184,7 +186,7 @@ public class EntityRevolvershot extends Entity
 
 	protected void onImpact(MovingObjectPosition mop)
 	{
-		if (!this.worldObj.isRemote)
+		if(!this.worldObj.isRemote)
 		{
 			if(mop.entityHit != null)
 			{
@@ -208,13 +210,15 @@ public class EntityRevolvershot extends Entity
 			}
 			if(bulletType==3)
 				worldObj.createExplosion(shootingEntity, posX, posY, posZ, 2, false);
-
-
 			this.secondaryImpact(mop);
 			this.setDead();
 		}
 	}
 	public void secondaryImpact(MovingObjectPosition mop)
+	{
+
+	}
+	public void onExpire()
 	{
 
 	}
@@ -225,8 +229,10 @@ public class EntityRevolvershot extends Entity
 	}
 
 	@Override
-	public void writeEntityToNBT(NBTTagCompound nbt)
+//	public void writeToNBT(NBTTagCompound nbt)
+	protected void writeEntityToNBT(NBTTagCompound nbt)
 	{
+//		super.writeToNBT(nbt);
 		nbt.setShort("xTile", (short)this.field_145795_e);
 		nbt.setShort("yTile", (short)this.field_145793_f);
 		nbt.setShort("zTile", (short)this.field_145794_g);
@@ -237,8 +243,10 @@ public class EntityRevolvershot extends Entity
 	}
 
 	@Override
-	public void readEntityFromNBT(NBTTagCompound nbt)
+//	public void readFromNBT(NBTTagCompound nbt)
+	protected void readEntityFromNBT(NBTTagCompound nbt)
 	{
+//		super.readFromNBT(nbt);
 		this.field_145795_e = nbt.getShort("xTile");
 		this.field_145793_f = nbt.getShort("yTile");
 		this.field_145794_g = nbt.getShort("zTile");
@@ -291,4 +299,14 @@ public class EntityRevolvershot extends Entity
 	{
 		return false;
 	}
+//	@Override
+//	protected void readEntityFromNBT(NBTTagCompound p_70037_1_) {
+//		// TODO Auto-generated method stub
+//		
+//	}
+//	@Override
+//	protected void writeEntityToNBT(NBTTagCompound p_70014_1_) {
+//		// TODO Auto-generated method stub
+//		
+//	}
 }

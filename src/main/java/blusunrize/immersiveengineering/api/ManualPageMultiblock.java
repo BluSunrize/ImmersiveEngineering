@@ -128,7 +128,8 @@ public class ManualPageMultiblock extends ManualPages
 			manual.fontRenderer.setUnicodeFlag(false);
 			if(highlighted!=null)
 				gui.renderToolTip(highlighted, mx, my);
-
+			RenderHelper.disableStandardItemLighting();
+            
 			manual.fontRenderer.setUnicodeFlag(true);
 			if(localizedText!=null&&!localizedText.isEmpty())
 				manual.fontRenderer.drawSplitString(localizedText, x,y+yOffTotal, 120, manual.getTextColour());
