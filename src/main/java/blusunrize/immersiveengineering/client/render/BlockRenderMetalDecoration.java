@@ -222,11 +222,12 @@ public class BlockRenderMetalDecoration implements ISimpleBlockRenderingHandler
 			IIcon iTop = block.getIcon(0, 3);
 
 			int f = (world.getTileEntity(x, y, z) instanceof TileEntityStructuralArm)? ((TileEntityStructuralArm)world.getTileEntity(x, y, z)).facing : 0;
+			boolean inv = (world.getTileEntity(x, y, z) instanceof TileEntityStructuralArm)? ((TileEntityStructuralArm)world.getTileEntity(x, y, z)).inverted : false;
 			ForgeDirection fd = ForgeDirection.getOrientation(f);
 			int rowTop = 0;
 			while(rowTop<8)
 			{
-				if(world.getTileEntity(x-fd.offsetX*(rowTop+1),y,z-fd.offsetZ*(rowTop+1)) instanceof TileEntityStructuralArm && ((TileEntityStructuralArm)world.getTileEntity(x-fd.offsetX*(rowTop+1),y,z-fd.offsetZ*(rowTop+1))).facing==f)
+				if(world.getTileEntity(x-fd.offsetX*(rowTop+1),y,z-fd.offsetZ*(rowTop+1)) instanceof TileEntityStructuralArm && ((TileEntityStructuralArm)world.getTileEntity(x-fd.offsetX*(rowTop+1),y,z-fd.offsetZ*(rowTop+1))).facing==f && ((TileEntityStructuralArm)world.getTileEntity(x-fd.offsetX*(rowTop+1),y,z-fd.offsetZ*(rowTop+1))).inverted==inv)
 					rowTop++;
 				else
 					break;
@@ -234,7 +235,7 @@ public class BlockRenderMetalDecoration implements ISimpleBlockRenderingHandler
 			int rowBot = 0;
 			while(rowBot<8)
 			{
-				if(world.getTileEntity(x+fd.offsetX*(rowBot+1),y,z+fd.offsetZ*(rowBot+1)) instanceof TileEntityStructuralArm && ((TileEntityStructuralArm)world.getTileEntity(x+fd.offsetX*(rowBot+1),y,z+fd.offsetZ*(rowBot+1))).facing==f)
+				if(world.getTileEntity(x+fd.offsetX*(rowBot+1),y,z+fd.offsetZ*(rowBot+1)) instanceof TileEntityStructuralArm && ((TileEntityStructuralArm)world.getTileEntity(x+fd.offsetX*(rowBot+1),y,z+fd.offsetZ*(rowBot+1))).facing==f && ((TileEntityStructuralArm)world.getTileEntity(x+fd.offsetX*(rowBot+1),y,z+fd.offsetZ*(rowBot+1))).inverted==inv)
 					rowBot++;
 				else
 					break;
@@ -257,173 +258,174 @@ public class BlockRenderMetalDecoration implements ISimpleBlockRenderingHandler
 			double y00 = f==4||f==2?yBot : yTop;
 			double y01 = f==4||f==3?yBot : yTop; 
 
+			
 			// SIDE 0
 			ClientUtils.BlockLightingInfo info = ClientUtils.calculateBlockLighting(0, world, block, x,y,z, 1,1,1);
 			tes.setColorOpaque_F(info.colorRedTopLeft, info.colorGreenTopLeft, info.colorBlueTopLeft);
 			tes.setBrightness(info.brightnessTopLeft);
-			tes.addVertexWithUV(x+0, y+0, z+1, d8, d10);
+			tes.addVertexWithUV(x+0, y+(inv?1-y01:0), z+1, d8, d10);
 			tes.setColorOpaque_F(info.colorRedBottomLeft, info.colorGreenBottomLeft, info.colorBlueBottomLeft);
 			tes.setBrightness(info.brightnessBottomLeft);
-			tes.addVertexWithUV(x+0, y+0, z+0, d3, d5);
+			tes.addVertexWithUV(x+0, y+(inv?1-y00:0), z+0, d3, d5);
 			tes.setColorOpaque_F(info.colorRedBottomRight, info.colorGreenBottomRight, info.colorBlueBottomRight);
 			tes.setBrightness(info.brightnessBottomRight);
-			tes.addVertexWithUV(x+1, y+0, z+0, d7, d9);
+			tes.addVertexWithUV(x+1, y+(inv?1-y10:0), z+0, d7, d9);
 			tes.setColorOpaque_F(info.colorRedTopRight, info.colorGreenTopRight, info.colorBlueTopRight);
 			tes.setBrightness(info.brightnessTopRight);
-			tes.addVertexWithUV(x+1, y+0, z+1, d4, d6);
+			tes.addVertexWithUV(x+1, y+(inv?1-y11:0), z+1, d4, d6);
 			
 			tes.setColorOpaque_F(info.colorRedBottomLeft, info.colorGreenBottomLeft, info.colorBlueBottomLeft);
 			tes.setBrightness(info.brightnessBottomLeft);
-			tes.addVertexWithUV(x+0, y+0, z+0, d3, d5);
+			tes.addVertexWithUV(x+0, y+(inv?1-y00:0)+.0001, z+0, d3, d5);
 			tes.setColorOpaque_F(info.colorRedTopLeft, info.colorGreenTopLeft, info.colorBlueTopLeft);
 			tes.setBrightness(info.brightnessTopLeft);
-			tes.addVertexWithUV(x+0, y+0, z+1, d8, d10);
+			tes.addVertexWithUV(x+0, y+(inv?1-y01:0)+.0001, z+1, d8, d10);
 			tes.setColorOpaque_F(info.colorRedTopRight, info.colorGreenTopRight, info.colorBlueTopRight);
 			tes.setBrightness(info.brightnessTopRight);
-			tes.addVertexWithUV(x+1, y+0, z+1, d4, d6);
+			tes.addVertexWithUV(x+1, y+(inv?1-y11:0)+.0001, z+1, d4, d6);
 			tes.setColorOpaque_F(info.colorRedBottomRight, info.colorGreenBottomRight, info.colorBlueBottomRight);
 			tes.setBrightness(info.brightnessBottomRight);
-			tes.addVertexWithUV(x+1, y+0, z+0, d7, d9);
+			tes.addVertexWithUV(x+1, y+(inv?1-y10:0)+.0001, z+0, d7, d9);
 			
 			// SIDE 1
 			info = ClientUtils.calculateBlockLighting(1, world, block, x,y,z, 1,1,1);
 			tes.setColorOpaque_F(info.colorRedTopLeft, info.colorGreenTopLeft, info.colorBlueTopLeft);
 			tes.setBrightness(info.brightnessTopLeft);
-			tes.addVertexWithUV(x+1, y+y11, z+1, d4, d6);
+			tes.addVertexWithUV(x+1, y+(inv?1:y11), z+1, d4, d6);
 			tes.setColorOpaque_F(info.colorRedBottomLeft, info.colorGreenBottomLeft, info.colorBlueBottomLeft);
 			tes.setBrightness(info.brightnessBottomLeft);
-			tes.addVertexWithUV(x+1, y+y10, z+0, d7, d9);
+			tes.addVertexWithUV(x+1, y+(inv?1:y10), z+0, d7, d9);
 			tes.setColorOpaque_F(info.colorRedBottomRight, info.colorGreenBottomRight, info.colorBlueBottomRight);
 			tes.setBrightness(info.brightnessBottomRight);
-			tes.addVertexWithUV(x+0, y+y00, z+0, d3, d5);
+			tes.addVertexWithUV(x+0, y+(inv?1:y00), z+0, d3, d5);
 			tes.setColorOpaque_F(info.colorRedTopRight, info.colorGreenTopRight, info.colorBlueTopRight);
 			tes.setBrightness(info.brightnessTopRight);
-			tes.addVertexWithUV(x+0, y+y01, z+1, d8, d10);
+			tes.addVertexWithUV(x+0, y+(inv?1:y01), z+1, d8, d10);
 			
 			tes.setColorOpaque_F(info.colorRedBottomLeft, info.colorGreenBottomLeft, info.colorBlueBottomLeft);
 			tes.setBrightness(info.brightnessBottomLeft);
-			tes.addVertexWithUV(x+1, y+y10, z+0, d7, d9);
+			tes.addVertexWithUV(x+1, y+(inv?1:y10)-.0001, z+0, d7, d9);
 			tes.setColorOpaque_F(info.colorRedTopLeft, info.colorGreenTopLeft, info.colorBlueTopLeft);
 			tes.setBrightness(info.brightnessTopLeft);
-			tes.addVertexWithUV(x+1, y+y11, z+1, d4, d6);
+			tes.addVertexWithUV(x+1, y+(inv?1:y11)-.0001, z+1, d4, d6);
 			tes.setColorOpaque_F(info.colorRedTopRight, info.colorGreenTopRight, info.colorBlueTopRight);
 			tes.setBrightness(info.brightnessTopRight);
-			tes.addVertexWithUV(x+0, y+y01, z+1, d8, d10);
+			tes.addVertexWithUV(x+0, y+(inv?1:y01)-.0001, z+1, d8, d10);
 			tes.setColorOpaque_F(info.colorRedBottomRight, info.colorGreenBottomRight, info.colorBlueBottomRight);
 			tes.setBrightness(info.brightnessBottomRight);
-			tes.addVertexWithUV(x+0, y+y00, z+0, d3, d5);
+			tes.addVertexWithUV(x+0, y+(inv?1:y00)-.0001, z+0, d3, d5);
 			
 			// SIDE 2
 			info = ClientUtils.calculateBlockLighting(2, world, block, x,y,z, 1,1,1);
 			tes.setColorOpaque_F(info.colorRedTopLeft, info.colorGreenTopLeft, info.colorBlueTopLeft);
 			tes.setBrightness(info.brightnessTopLeft);
-			tes.addVertexWithUV(x+0, y+y00, z+0, iSide.getMinU(), iSide.getInterpolatedV(y00*16));
+			tes.addVertexWithUV(x+0, y+(inv?1-y00:y00), z+0, iSide.getMinU(), iSide.getInterpolatedV(y00*16));
 			tes.setColorOpaque_F(info.colorRedBottomLeft, info.colorGreenBottomLeft, info.colorBlueBottomLeft);
 			tes.setBrightness(info.brightnessBottomLeft);
-			tes.addVertexWithUV(x+1, y+y10, z+0, iSide.getMaxU(), iSide.getInterpolatedV(y10*16));
+			tes.addVertexWithUV(x+1, y+(inv?1-y10:y10), z+0, iSide.getMaxU(), iSide.getInterpolatedV(y10*16));
 			tes.setColorOpaque_F(info.colorRedBottomRight, info.colorGreenBottomRight, info.colorBlueBottomRight);
 			tes.setBrightness(info.brightnessBottomRight);
-			tes.addVertexWithUV(x+1, y+0, z+0, iSide.getMaxU(), iSide.getMinV());
+			tes.addVertexWithUV(x+1, y+(inv?1:0), z+0, iSide.getMaxU(), iSide.getMinV());
 			tes.setColorOpaque_F(info.colorRedTopRight, info.colorGreenTopRight, info.colorBlueTopRight);
 			tes.setBrightness(info.brightnessTopRight);
-			tes.addVertexWithUV(x+0, y+0, z+0, iSide.getMinU(), iSide.getMinV());
+			tes.addVertexWithUV(x+0, y+(inv?1:0), z+0, iSide.getMinU(), iSide.getMinV());
 
 			tes.setColorOpaque_F(info.colorRedBottomLeft, info.colorGreenBottomLeft, info.colorBlueBottomLeft);
 			tes.setBrightness(info.brightnessBottomLeft);
-			tes.addVertexWithUV(x+1, y+y10, z+0, iSide.getMaxU(), iSide.getInterpolatedV(y10*16));
+			tes.addVertexWithUV(x+1, y+(inv?1-y10:y10), z+0+.0001, iSide.getMaxU(), iSide.getInterpolatedV(y10*16));
 			tes.setColorOpaque_F(info.colorRedTopLeft, info.colorGreenTopLeft, info.colorBlueTopLeft);
 			tes.setBrightness(info.brightnessTopLeft);
-			tes.addVertexWithUV(x+0, y+y00, z+0, iSide.getMinU(), iSide.getInterpolatedV(y00*16));
+			tes.addVertexWithUV(x+0, y+(inv?1-y00:y00), z+0+.0001, iSide.getMinU(), iSide.getInterpolatedV(y00*16));
 			tes.setColorOpaque_F(info.colorRedTopRight, info.colorGreenTopRight, info.colorBlueTopRight);
 			tes.setBrightness(info.brightnessTopRight);
-			tes.addVertexWithUV(x+0, y+0, z+0, iSide.getMinU(), iSide.getMinV());
+			tes.addVertexWithUV(x+0, y+(inv?1:0), z+0+.0001, iSide.getMinU(), iSide.getMinV());
 			tes.setColorOpaque_F(info.colorRedBottomRight, info.colorGreenBottomRight, info.colorBlueBottomRight);
 			tes.setBrightness(info.brightnessBottomRight);
-			tes.addVertexWithUV(x+1, y+0, z+0, iSide.getMaxU(), iSide.getMinV());
+			tes.addVertexWithUV(x+1, y+(inv?1:0), z+0+.0001, iSide.getMaxU(), iSide.getMinV());
 			
 			// SIDE 3
 			info = ClientUtils.calculateBlockLighting(3, world, block, x,y,z, 1,1,1);
 			tes.setColorOpaque_F(info.colorRedTopLeft, info.colorGreenTopLeft, info.colorBlueTopLeft);
 			tes.setBrightness(info.brightnessTopLeft);
-			tes.addVertexWithUV(x+0, y+y01, z+1, iSide.getMinU(), iSide.getInterpolatedV(y01*16));
+			tes.addVertexWithUV(x+0, y+(inv?1-y01:y01), z+1, iSide.getMinU(), iSide.getInterpolatedV(y01*16));
 			tes.setColorOpaque_F(info.colorRedBottomLeft, info.colorGreenBottomLeft, info.colorBlueBottomLeft);
 			tes.setBrightness(info.brightnessBottomLeft);
-			tes.addVertexWithUV(x+0, y+0, z+1, iSide.getMinU(), iSide.getMinV());
+			tes.addVertexWithUV(x+0, y+(inv?1:0), z+1, iSide.getMinU(), iSide.getMinV());
 			tes.setColorOpaque_F(info.colorRedBottomRight, info.colorGreenBottomRight, info.colorBlueBottomRight);
 			tes.setBrightness(info.brightnessBottomRight);
-			tes.addVertexWithUV(x+1, y+0, z+1, iSide.getMaxU(), iSide.getMinV());
+			tes.addVertexWithUV(x+1, y+(inv?1:0), z+1, iSide.getMaxU(), iSide.getMinV());
 			tes.setColorOpaque_F(info.colorRedTopRight, info.colorGreenTopRight, info.colorBlueTopRight);
 			tes.setBrightness(info.brightnessTopRight);
-			tes.addVertexWithUV(x+1, y+y11, z+1, iSide.getMaxU(), iSide.getInterpolatedV(y11*16));
+			tes.addVertexWithUV(x+1, y+(inv?1-y11:y11), z+1, iSide.getMaxU(), iSide.getInterpolatedV(y11*16));
 
 			tes.setColorOpaque_F(info.colorRedBottomLeft, info.colorGreenBottomLeft, info.colorBlueBottomLeft);
 			tes.setBrightness(info.brightnessBottomLeft);
-			tes.addVertexWithUV(x+0, y+0, z+1, iSide.getMinU(), iSide.getMinV());
+			tes.addVertexWithUV(x+0, y+(inv?1:0), z+1-.0001, iSide.getMinU(), iSide.getMinV());
 			tes.setColorOpaque_F(info.colorRedTopLeft, info.colorGreenTopLeft, info.colorBlueTopLeft);
 			tes.setBrightness(info.brightnessTopLeft);
-			tes.addVertexWithUV(x+0, y+y01, z+1, iSide.getMinU(), iSide.getInterpolatedV(y01*16));
+			tes.addVertexWithUV(x+0, y+(inv?1-y01:y01), z+1-.0001, iSide.getMinU(), iSide.getInterpolatedV(y01*16));
 			tes.setColorOpaque_F(info.colorRedTopRight, info.colorGreenTopRight, info.colorBlueTopRight);
 			tes.setBrightness(info.brightnessTopRight);
-			tes.addVertexWithUV(x+1, y+y11, z+1, iSide.getMaxU(), iSide.getInterpolatedV(y11*16));
+			tes.addVertexWithUV(x+1, y+(inv?1-y11:y11), z+1-.0001, iSide.getMaxU(), iSide.getInterpolatedV(y11*16));
 			tes.setColorOpaque_F(info.colorRedBottomRight, info.colorGreenBottomRight, info.colorBlueBottomRight);
 			tes.setBrightness(info.brightnessBottomRight);
-			tes.addVertexWithUV(x+1, y+0, z+1, iSide.getMaxU(), iSide.getMinV());
+			tes.addVertexWithUV(x+1, y+(inv?1:0), z+1-.0001, iSide.getMaxU(), iSide.getMinV());
 		
 			// SIDE 4
 			info = ClientUtils.calculateBlockLighting(4, world, block, x,y,z, 1,1,1);
 			tes.setColorOpaque_F(info.colorRedTopLeft, info.colorGreenTopLeft, info.colorBlueTopLeft);
 			tes.setBrightness(info.brightnessTopLeft);
-			tes.addVertexWithUV(x+0, y+y01, z+1, iSide.getMaxU(), iSide.getInterpolatedV(y01*16));
+			tes.addVertexWithUV(x+0, y+(inv?1-y01:y01), z+1, iSide.getMaxU(), iSide.getInterpolatedV(y01*16));
 			tes.setColorOpaque_F(info.colorRedBottomLeft, info.colorGreenBottomLeft, info.colorBlueBottomLeft);
 			tes.setBrightness(info.brightnessBottomLeft);
-			tes.addVertexWithUV(x+0, y+y00, z+0, iSide.getMinU(), iSide.getInterpolatedV(y00*16));
+			tes.addVertexWithUV(x+0, y+(inv?1-y00:y00), z+0, iSide.getMinU(), iSide.getInterpolatedV(y00*16));
 			tes.setColorOpaque_F(info.colorRedBottomRight, info.colorGreenBottomRight, info.colorBlueBottomRight);
 			tes.setBrightness(info.brightnessBottomRight);
-			tes.addVertexWithUV(x+0, y+0, z+0, iSide.getMinU(), iSide.getMinV());
+			tes.addVertexWithUV(x+0, y+(inv?1:0), z+0, iSide.getMinU(), iSide.getMinV());
 			tes.setColorOpaque_F(info.colorRedTopRight, info.colorGreenTopRight, info.colorBlueTopRight);
 			tes.setBrightness(info.brightnessTopRight);
-			tes.addVertexWithUV(x+0, y+0, z+1, iSide.getMaxU(), iSide.getMinV());
+			tes.addVertexWithUV(x+0, y+(inv?1:0), z+1, iSide.getMaxU(), iSide.getMinV());
 
 			tes.setColorOpaque_F(info.colorRedBottomLeft, info.colorGreenBottomLeft, info.colorBlueBottomLeft);
 			tes.setBrightness(info.brightnessBottomLeft);
-			tes.addVertexWithUV(x+0, y+y00, z+0, iSide.getMinU(), iSide.getInterpolatedV(y00*16));
+			tes.addVertexWithUV(x+0+.0001, y+(inv?1-y00:y00), z+0, iSide.getMinU(), iSide.getInterpolatedV(y00*16));
 			tes.setColorOpaque_F(info.colorRedTopLeft, info.colorGreenTopLeft, info.colorBlueTopLeft);
 			tes.setBrightness(info.brightnessTopLeft);
-			tes.addVertexWithUV(x+0, y+y01, z+1, iSide.getMaxU(), iSide.getInterpolatedV(y01*16));
+			tes.addVertexWithUV(x+0+.0001, y+(inv?1-y01:y01), z+1, iSide.getMaxU(), iSide.getInterpolatedV(y01*16));
 			tes.setColorOpaque_F(info.colorRedTopRight, info.colorGreenTopRight, info.colorBlueTopRight);
 			tes.setBrightness(info.brightnessTopRight);
-			tes.addVertexWithUV(x+0, y+0, z+1, iSide.getMaxU(), iSide.getMinV());
+			tes.addVertexWithUV(x+0+.0001, y+(inv?1:0), z+1, iSide.getMaxU(), iSide.getMinV());
 			tes.setColorOpaque_F(info.colorRedBottomRight, info.colorGreenBottomRight, info.colorBlueBottomRight);
 			tes.setBrightness(info.brightnessBottomRight);
-			tes.addVertexWithUV(x+0, y+0, z+0, iSide.getMinU(), iSide.getMinV());
+			tes.addVertexWithUV(x+0+.0001, y+(inv?1:0), z+0, iSide.getMinU(), iSide.getMinV());
 			
 			// SIDE 5
 			info = ClientUtils.calculateBlockLighting(5, world, block, x,y,z, 1,1,1);
 			tes.setColorOpaque_F(info.colorRedTopLeft, info.colorGreenTopLeft, info.colorBlueTopLeft);
 			tes.setBrightness(info.brightnessTopLeft);
-			tes.addVertexWithUV(x+1, y+0, z+1, iSide.getMaxU(), iSide.getMinV());
+			tes.addVertexWithUV(x+1, y+(inv?1:0), z+1, iSide.getMaxU(), iSide.getMinV());
 			tes.setColorOpaque_F(info.colorRedBottomLeft, info.colorGreenBottomLeft, info.colorBlueBottomLeft);
 			tes.setBrightness(info.brightnessBottomLeft);
-			tes.addVertexWithUV(x+1, y+0, z+0, iSide.getMinU(), iSide.getMinV());
+			tes.addVertexWithUV(x+1, y+(inv?1:0), z+0, iSide.getMinU(), iSide.getMinV());
 			tes.setColorOpaque_F(info.colorRedBottomRight, info.colorGreenBottomRight, info.colorBlueBottomRight);
 			tes.setBrightness(info.brightnessBottomRight);
-			tes.addVertexWithUV(x+1, y+y10, z+0, iSide.getMinU(), iSide.getInterpolatedV(y10*16));
+			tes.addVertexWithUV(x+1, y+(inv?1-y10:y10), z+0, iSide.getMinU(), iSide.getInterpolatedV(y10*16));
 			tes.setColorOpaque_F(info.colorRedTopRight, info.colorGreenTopRight, info.colorBlueTopRight);
 			tes.setBrightness(info.brightnessTopRight);
-			tes.addVertexWithUV(x+1, y+y11, z+1, iSide.getMaxU(), iSide.getInterpolatedV(y11*16));
+			tes.addVertexWithUV(x+1, y+(inv?1-y11:y11), z+1, iSide.getMaxU(), iSide.getInterpolatedV(y11*16));
 
 			tes.setColorOpaque_F(info.colorRedBottomLeft, info.colorGreenBottomLeft, info.colorBlueBottomLeft);
 			tes.setBrightness(info.brightnessBottomLeft);
-			tes.addVertexWithUV(x+1, y+0, z+0, iSide.getMinU(), iSide.getMinV());
+			tes.addVertexWithUV(x+1-.0001, y+(inv?1:0), z+0, iSide.getMinU(), iSide.getMinV());
 			tes.setColorOpaque_F(info.colorRedTopLeft, info.colorGreenTopLeft, info.colorBlueTopLeft);
 			tes.setBrightness(info.brightnessTopLeft);
-			tes.addVertexWithUV(x+1, y+0, z+1, iSide.getMaxU(), iSide.getMinV());
+			tes.addVertexWithUV(x+1-.0001, y+(inv?1:0), z+1, iSide.getMaxU(), iSide.getMinV());
 			tes.setColorOpaque_F(info.colorRedTopRight, info.colorGreenTopRight, info.colorBlueTopRight);
 			tes.setBrightness(info.brightnessTopRight);
-			tes.addVertexWithUV(x+1, y+y11, z+1, iSide.getMaxU(), iSide.getInterpolatedV(y11*16));
+			tes.addVertexWithUV(x+1-.0001, y+(inv?1-y11:y11), z+1, iSide.getMaxU(), iSide.getInterpolatedV(y11*16));
 			tes.setColorOpaque_F(info.colorRedBottomRight, info.colorGreenBottomRight, info.colorBlueBottomRight);
 			tes.setBrightness(info.brightnessBottomRight);
-			tes.addVertexWithUV(x+1, y+y10, z+0, iSide.getMinU(), iSide.getInterpolatedV(y10*16));
+			tes.addVertexWithUV(x+1-.0001, y+(inv?1-y10:y10), z+0, iSide.getMinU(), iSide.getInterpolatedV(y10*16));
 			
 			return true;
 		}

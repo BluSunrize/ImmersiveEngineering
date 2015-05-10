@@ -26,7 +26,7 @@ public class TileRenderWatermill extends TileEntitySpecialRenderer
 		if(wheel.facing==4||wheel.facing==5)
 			GL11.glRotated(90, 0, 1, 0);
 
-		float rot = 360*wheel.rotation-(!wheel.canTurn||wheel.rotation==0?0:wheel.facing>3?-f:f);
+		float rot = 360*wheel.rotation-(!wheel.canTurn||wheel.rotation==0||wheel.rotation-wheel.prevRotation<4?0:wheel.facing>3?-f:f);
 		model.setRotateAngle(model.Axle, 0, 0, (float)Math.toRadians(rot));
 		ClientUtils.bindTexture("immersiveengineering:textures/models/watermill.png");
 		model.render(null, 0, 0, 0, 0, 0, .0625f);

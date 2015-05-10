@@ -28,6 +28,7 @@ tile.ImmersiveEngineering.metalDevice.transformerHV.name=HV Transformer
 tile.ImmersiveEngineering.metalDevice.dynamo.name=Kinetic Dynamo
 tile.ImmersiveEngineering.metalDevice.thermoelectricGen.name=Thermoelectric Generator
 tile.ImmersiveEngineering.metalDevice.conveyorBelt.name=Conveyor Belt
+tile.ImmersiveEngineering.metalDevice.furnaceHeater.name=External Heater
 
 tile.ImmersiveEngineering.metalMultiblock.lightningRod.name=Lightning Rod Base
 tile.ImmersiveEngineering.metalMultiblock.dieselGenerator.name=Diesel Generator
@@ -58,6 +59,7 @@ tile.ImmersiveEngineering.woodenDecoration.slab0.name=Treated Wood Slab
 tile.ImmersiveEngineering.woodenDecoration.slab1.name=Treated Wood Slab
 tile.ImmersiveEngineering.woodenDecoration.doubleSlab.name=Treated Wood Doubleslab
 tile.ImmersiveEngineering.woodenDecoration.scaffolding.name=Treated Wood Scaffolding
+tile.ImmersiveEngineering.woodenDecoration.wallMount.name=Wooden Wall Mount [WIP]
 
 tile.ImmersiveEngineering.woodenStairs.name=Treated Wood Stairs
 
@@ -135,7 +137,9 @@ item.ImmersiveEngineering.revolver.speedloader.name=Revolver Speedloader
 item.ImmersiveEngineering.revolver.sns.name=Elite Revolver
 item.ImmersiveEngineering.revolver.nerf.name=Nerf'd Revolver
 item.ImmersiveEngineering.revolver.oblivion.name=Oblivion
+item.ImmersiveEngineering.revolver.oathkeeper.name=Oathkeeper
 item.ImmersiveEngineering.revolver.bee.name=Beevolver
+item.ImmersiveEngineering.revolver.fenrir.name=Fenrir
 
 item.ImmersiveEngineering.bullet.emptyCasing.name=Empty Casing
 item.ImmersiveEngineering.bullet.emptyShell.name=Empty Shell
@@ -162,12 +166,14 @@ desc.ImmersiveEngineering.info.capacitorSide.1=Energy Output
 desc.ImmersiveEngineering.flavour.crate=Will keep its inventory when broken!
 desc.ImmersiveEngineering.flavour.coil.construction0=For decoration purposes only
 desc.ImmersiveEngineering.flavour.coil.construction1=Will not transmit power
-desc.ImmersiveEngineering.flavour.revolver.normal=Go ahead, make my day!
+desc.ImmersiveEngineering.flavour.revolver=Go ahead, make my day!
 desc.ImmersiveEngineering.flavour.revolver.elite=Exclusive DLC Content
 desc.ImmersiveEngineering.flavour.revolver.sns=Blood, Sweat, Steam and Steel
 desc.ImmersiveEngineering.flavour.revolver.nerf=Safe for kids
 desc.ImmersiveEngineering.flavour.revolver.oblivion=Passing Memories
+desc.ImmersiveEngineering.flavour.revolver.oathkeeper=Wayfinder
 desc.ImmersiveEngineering.flavour.revolver.bee=The Pain
+desc.ImmersiveEngineering.flavour.revolver.fenrir=There's nothing I don't cherish!
 
 gui.ImmersiveEngineering.empty=Empty
 
@@ -291,8 +297,14 @@ ie.manual.entry.biodiesel4=The front of the refinery serves as fluid output, whe
 
 ie.manual.entry.conveyor.name=Conveyor Belts
 ie.manual.entry.conveyor.subtext=Who needs rails anyway?
-ie.manual.entry.conveyor0=Conveyor Belts are an easy way of transporting all sorts of things around your base. While they are strong enough to move livign creatures like cows or sheep, their true strength lies in transporting items.<br>Throwing items atop them will have the items move along the belt. Should the belt lead into an inventory, the item will be inserted.
+ie.manual.entry.conveyor0=Conveyor Belts are an easy way of transporting all sorts of things around your base. While they are strong enough to move living creatures like cows or sheep, their true strength lies in transporting items.<br>Throwing items atop them will have the items move along the belt. Should the belt lead into an inventory, the item will be inserted.
 ie.manual.entry.conveyor1=Blocks like hoppers will be able to drop items onto the belts. Use an Engineers Hammer to rotate the belts (rightclick) or adjust whether they should run up- or downwards (sneak + rightclick).
+
+ie.manual.entry.furnaceHeater.name=External Heater
+ie.manual.entry.furnaceHeater.subtext=Now you're cooking with flux!
+ie.manual.entry.furnaceHeater0=The External Heater does exactly what its name implies, it generates thermal energy from RF. When placed next to a normal furnace, this thermal energy will power the furnace, allowing it to smelt without any fuel inside it.
+ie.manual.entry.furnaceHeater1=Click a side of the heater with a hammer to make it an energy acceptor, sneak to target the opposing side.<br>The heater will consume §o<config:i:heater_consumption> RF/t§r for each heat unit added. During the initial phase of the furnace, the heater will produce up to §o4§r units of heat per tick, but as soon as the furnace reaches maximum temperature, it will only require §o1§r unit of heat to keep it going.
+ie.manual.entry.furnaceHeater2=Even better, while the furnace is at maximum temperature, the heater will consume an additional §o<config:i:heater_speedupConsumption> RF/t§r to increase the furnaces processing speed.<br>The heater will only affect a furnace with a valid input and space in the output slot, in order to conserve energy. However, you can apply a redstone signal to the heater to disable that functionality and have it keep the furnace at full heat.
 
 ie.manual.entry.crusher.name=Crusher
 ie.manual.entry.crusher.subtext=Keep your hands out!

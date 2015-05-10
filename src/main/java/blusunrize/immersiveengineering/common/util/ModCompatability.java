@@ -2,6 +2,7 @@ package blusunrize.immersiveengineering.common.util;
 
 import java.lang.reflect.Method;
 
+import blusunrize.immersiveengineering.common.Config;
 import net.minecraft.tileentity.TileEntity;
 
 
@@ -43,10 +44,10 @@ public class ModCompatability
 	
 	public static double convertRFtoEU(int rf, int maxTier)
 	{
-		return Math.min(rf/4, maxTier==1?32:maxTier==2?128:maxTier==3?512: 2048);
+		return Math.min(rf/Config.getInt("euConversion"), maxTier==1?32:maxTier==2?128:maxTier==3?512: 2048);
 	}
 	public static int convertEUtoRF(double eu)
 	{
-		return (int)eu*4;
+		return (int)eu*Config.getInt("euConversion");
 	}
 }

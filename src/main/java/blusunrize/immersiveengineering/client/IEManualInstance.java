@@ -78,6 +78,11 @@ public class IEManualInstance extends ManualInstance
 		return StatCollector.translateToLocal("item.ImmersiveEngineering.tool.manual.name");
 	}
 	@Override
+	public String[] getSortedCategoryList()
+	{
+		return new String[]{"general","energy","machines"};
+	}
+	@Override
 	public String formatCategoryName(String s)
 	{
 		return StatCollector.translateToLocal("ie.manual.category."+s+".name");

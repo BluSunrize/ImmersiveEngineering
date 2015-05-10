@@ -3,7 +3,6 @@ package blusunrize.immersiveengineering.client;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
@@ -84,28 +83,47 @@ public class ClientEventHandler
 			else if(ClientUtils.mc().thePlayer.getCurrentEquippedItem().getItem() instanceof ItemRevolver)
 			{
 				ClientUtils.bindTexture("immersiveengineering:textures/gui/revolver.png");
-				float dx = event.resolution.getScaledWidth()-32;
+				ItemStack[] bullets = ((ItemRevolver)ClientUtils.mc().thePlayer.getCurrentEquippedItem().getItem()).getBullets(ClientUtils.mc().thePlayer.getCurrentEquippedItem());
+				float dx = event.resolution.getScaledWidth()-32-(bullets.length>8?32:0);
 				float dy = event.resolution.getScaledHeight()-32;
 				GL11.glPushMatrix();
 				GL11.glTranslated(dx, dy, 0);
-				Tessellator tes = ClientUtils.tes();
-				tes.startDrawingQuads();
-				tes.addVertexWithUV( 20, 20, 0,126/256f, 104/256f);
-				tes.addVertexWithUV( 20,-20, 0,126/256f, 28/256f);
-				tes.addVertexWithUV(-20,-20, 0, 50/256f, 28/256f);
-				tes.addVertexWithUV(-20, 20, 0, 50/256f, 104/256f);
-				tes.draw();
+				ClientUtils.drawTexturedRect(-20,-20,40,40, 50/256f,126/256f, 28/256f,104/256f);
+				boolean b = ((ItemRevolver)IEContent.itemRevolver).getBulletSlotAmount(ClientUtils.mc().thePlayer.getCurrentEquippedItem())>8;
+				if(b)
+				{
+					GL11.glTranslated(40*(56/76f), 0, 0);
+					ClientUtils.drawTexturedRect(-20,-20,40,40, 176/256f,256/256f, 28/256f,104/256f);
+					GL11.glTranslated(-40*(56/76f), 0, 0);
+				}
+				//				Tessellator tes = ClientUtils.tes();
+				//				tes.startDrawingQuads();
+				//				tes.addVertexWithUV( 20, 20, 0,126/256f, 104/256f);
+				//				tes.addVertexWithUV( 20,-20, 0,126/256f, 28/256f);
+				//				tes.addVertexWithUV(-20,-20, 0, 50/256f, 28/256f);
+				//				tes.addVertexWithUV(-20, 20, 0, 50/256f, 104/256f);
+				//				tes.draw();
 
-				ItemStack[] bullets = ((ItemRevolver)ClientUtils.mc().thePlayer.getCurrentEquippedItem().getItem()).getBullets(ClientUtils.mc().thePlayer.getCurrentEquippedItem());
 				RenderItem ir = RenderItem.getInstance();
 				GL11.glScalef(.5f, .5f, .5f);
 				for(int i=0; i<bullets.length; i++)
 				{
 					if(bullets[i]!=null)
 					{
-						int x = i==0||i==4?0 : i==1||i==3?21: i==2?27: i==5||i==7?-21: -27;
-						int y = i==0? -28: i==1||i==7?-22: i==2||i==6?0 : i==3||i==5?22: 28;
+						int x = 0; 
+						int y = 0;
+						if(!b)
+						{
+							x = i==0||i==4?0 : i==1||i==3?22: i==2?28: i==5||i==7?-23: -29;
+							y = i==0? -29: i==1||i==7?-23: i==2||i==6?0 : i==3||i==5?22: 28;
+						}
+						else
+						{
+							x = i==0||i==10?0 : i==1||i==9?22: i==2||i==8?41: i==3||i==7?62: i==4||i==6?83: i==5?89: i==11||i==13?-23: -29;
+							y = i==0||i==3?-29: i==1||i==2||i==4||i==13?-23: i==5||i==12?0 : i==6||i==8||i==9||i==11?22: 28;
+						}
 						ir.renderItemIntoGUI(ClientUtils.mc().fontRenderer, ClientUtils.mc().renderEngine, bullets[i], x-8,y-8);
+//						ir.renderItemIntoGUI(ClientUtils.mc().fontRenderer, ClientUtils.mc().renderEngine, new ItemStack(Blocks.stained_glass_pane,1,3), x-8,y-8);
 					}
 				}
 				RenderHelper.disableStandardItemLighting();

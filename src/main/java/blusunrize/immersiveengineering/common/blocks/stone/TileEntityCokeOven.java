@@ -259,7 +259,7 @@ public class TileEntityCokeOven extends TileEntityIEBase implements ISidedInvent
 			return master().isItemValidForSlot(slot,stack);
 		if(slot==0)
 			return stack!=null && CokeOvenRecipe.findRecipe(stack)!=null;
-		if(slot==1)
+		if(slot==2)
 			return stack!=null && FluidContainerRegistry.isEmptyContainer(stack);
 		return false;
 	}

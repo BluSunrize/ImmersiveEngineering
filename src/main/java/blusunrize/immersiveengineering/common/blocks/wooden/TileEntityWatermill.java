@@ -19,6 +19,7 @@ public class TileEntityWatermill extends TileEntityIEBase
 	private Vec3 rotationVec = null;
 	public boolean canTurn = false;
 	public boolean multiblock = false;
+	public float prevRotation = 0;
 
 	@Override
 	public void updateEntity()
@@ -39,6 +40,7 @@ public class TileEntityWatermill extends TileEntityIEBase
 			canTurn=getRotationVec().lengthVector()!=0;
 
 		rotationVec=null;
+		prevRotation = rotation;
 
 		ForgeDirection fd = ForgeDirection.getOrientation(facing);
 		if(worldObj.getTileEntity(xCoord-fd.offsetX,yCoord,zCoord-fd.offsetZ) instanceof TileEntityDynamo)
@@ -81,6 +83,7 @@ public class TileEntityWatermill extends TileEntityIEBase
 		else if(!multiblock)
 		{
 			double perTick = 360f/1440 * (1/360f) * getPower();
+//			System.out.println("perTick "+perTick);
 			canTurn = perTick!=0;
 			rotation += perTick;
 			rotation %= 1;
@@ -179,6 +182,7 @@ public class TileEntityWatermill extends TileEntityIEBase
 	public void readCustomNBT(NBTTagCompound nbt)
 	{
 		facing = nbt.getInteger("facing");
+		prevRotation = nbt.getFloat("prevRotation");
 		offset = nbt.getIntArray("offset");
 		rotation = nbt.getFloat("rotation");
 
@@ -189,6 +193,7 @@ public class TileEntityWatermill extends TileEntityIEBase
 	public void writeCustomNBT(NBTTagCompound nbt)
 	{
 		nbt.setInteger("facing", facing);
+		nbt.setFloat("prevRotation", prevRotation);
 		nbt.setIntArray("offset", offset);
 		nbt.setFloat("rotation", rotation);
 	}

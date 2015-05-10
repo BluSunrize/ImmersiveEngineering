@@ -16,7 +16,14 @@ public class ContainerBlastFurnace extends Container
 	{
 		this.tile=tile;
 
-		this.addSlotToContainer(new Slot(tile, 0, 52, 17));
+		this.addSlotToContainer(new IESlot(tile, 0, 52, 17)
+		{
+			@Override
+			public boolean isItemValid(ItemStack itemStack)
+			{
+				return BlastFurnaceRecipe.findRecipe(itemStack)!=null;
+			}
+		});
 		this.addSlotToContainer(new IESlot.BlastFuel(tile, 1, 52, 53));
 		this.addSlotToContainer(new IESlot.Output(tile, 2,112, 35));
 		slotCount=3;

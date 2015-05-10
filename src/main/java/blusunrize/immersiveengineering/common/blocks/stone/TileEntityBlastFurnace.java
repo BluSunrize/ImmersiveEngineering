@@ -92,7 +92,6 @@ public class TileEntityBlastFurnace extends TileEntityIEBase implements ISidedIn
 						BlastFurnaceRecipe recipe = getRecipe();
 						if(recipe!=null)
 						{
-							System.out.println("STartng recipe");
 							this.process=recipe.time;
 							this.processMax=process;
 							this.active=true;
@@ -257,7 +256,7 @@ public class TileEntityBlastFurnace extends TileEntityIEBase implements ISidedIn
 		if(BlastFurnaceRecipe.isValidBlastFuel(stack))
 			return slot==1;
 		if(slot==0)
-			return stack!=null;
+			return BlastFurnaceRecipe.findRecipe(stack)!=null;
 
 		return false;
 	}

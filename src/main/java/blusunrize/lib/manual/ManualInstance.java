@@ -16,7 +16,8 @@ public abstract class ManualInstance
 	}
 
 	public abstract String getManualName();
-	
+
+	public abstract String[] getSortedCategoryList();
 	public abstract String formatCategoryName(String s);
 	public abstract String formatEntryName(String s);
 	public abstract String formatEntrySubtext(String s);

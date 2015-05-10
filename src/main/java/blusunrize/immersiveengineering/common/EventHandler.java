@@ -3,10 +3,10 @@ package blusunrize.immersiveengineering.common;
 import java.util.HashMap;
 import java.util.UUID;
 
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.StatCollector;
@@ -23,6 +23,7 @@ import blusunrize.immersiveengineering.client.gui.GuiBlastFurnace;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityLightningRod;
+import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.Utils;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -106,43 +107,56 @@ public class EventHandler
 	@SubscribeEvent
 	public void onEntityInteract(EntityInteractEvent event)
 	{
-		if(OreDictionary.itemMatches(new ItemStack(IEContent.itemRevolver,1,OreDictionary.WILDCARD_VALUE), event.entityPlayer.getCurrentEquippedItem(), false))
+		if(event.target instanceof EntityLivingBase && OreDictionary.itemMatches(new ItemStack(IEContent.itemRevolver,1,OreDictionary.WILDCARD_VALUE), event.entityPlayer.getCurrentEquippedItem(), false))
 			event.setCanceled(true);
 	}
 
 	@SubscribeEvent
 	public void onItemCrafted(ItemCraftedEvent event)
 	{
-		if( OreDictionary.itemMatches(new ItemStack(IEContent.itemRevolver,1,OreDictionary.WILDCARD_VALUE),event.crafting,false) && event.player!=null && event.player.getUniqueID().toString().equals("f34afdfb-996b-4020-b8a2-b740e2937b29"))	
+		if( OreDictionary.itemMatches(new ItemStack(IEContent.itemRevolver,1,OreDictionary.WILDCARD_VALUE),event.crafting,false) && event.player!=null)	
 		{
-			NBTTagCompound tag = event.crafting.hasTagCompound()?event.crafting.getTagCompound(): new NBTTagCompound();
-			String s = tag.getString("elite");
-			if(s==null||s.isEmpty())
+			String s = ItemNBTHelper.getString(event.crafting, "elite");
+			if(event.player.getUniqueID().toString().equals("f34afdfb-996b-4020-b8a2-b740e2937b29"))
 			{
-				if(event.crafting.getItemDamage()==0)
-					event.crafting.setItemDamage(1);
-				else if(event.crafting.getItemDamage()==1)
+				if(s==null||s.isEmpty())
+				{
+					if(event.crafting.getItemDamage()==0)
+						event.crafting.setItemDamage(1);
+					else if(event.crafting.getItemDamage()==1)
+						ItemNBTHelper.setString(event.crafting, "elite", "fenrir");
+				}
+				else if(s.equals("fenrir"))
 				{
 					event.crafting.setItemDamage(3);
-					tag.setString("elite", "sns");
+					ItemNBTHelper.setString(event.crafting, "elite", "sns");
+				}
+				else if(s.equals("sns"))
+				{
+					event.crafting.setItemDamage(1);
+					ItemNBTHelper.setString(event.crafting, "elite", "oblivion");
+				}
+				else if(s.equals("oblivion"))
+				{
+					event.crafting.setItemDamage(4);
+					ItemNBTHelper.setString(event.crafting, "elite", "nerf");
+				}
+				else if(s.equals("nerf"))
+				{
+					event.crafting.setItemDamage(0);
+					ItemNBTHelper.remove(event.crafting, "elite");
 				}
 			}
-			else if(s.equals("sns"))
+			else if(event.player.getUniqueID().toString().equals("c2024e2a-dd76-4bc9-9ea3-b771f18f23b6"))
 			{
-				event.crafting.setItemDamage(1);
-				tag.setString("elite", "oblivion");
+				if(s.equals("earthshaker"))
+					ItemNBTHelper.setString(event.crafting, "elite", "oblivion");
+				else if(s.equals("oblivion"))
+					ItemNBTHelper.setString(event.crafting, "elite", "oathkeeper");
+				else if(s.equals("oathkeeper"))
+					ItemNBTHelper.setString(event.crafting, "elite", "earthshaker");
 			}
-			else if(s.equals("oblivion"))
-			{
-				event.crafting.setItemDamage(4);
-				tag.setString("elite", "nerf");
-			}
-			else if(s.equals("nerf"))
-			{
-				event.crafting.setItemDamage(0);
-				tag.removeTag("elite");
-			}
-			event.crafting.setTagCompound(tag);
+
 		}
 	}
 

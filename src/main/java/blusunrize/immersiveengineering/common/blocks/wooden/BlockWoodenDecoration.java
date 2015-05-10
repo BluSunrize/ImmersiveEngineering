@@ -27,7 +27,10 @@ public class BlockWoodenDecoration extends BlockIEBase
 {
 	public BlockWoodenDecoration()
 	{
-		super("woodenDecoration", Material.wood,2, ItemBlockWoodenDecoration.class, "treatedWood","fence","slab0","slab1","doubleSlab","scaffolding");
+		super("woodenDecoration", Material.wood,2, ItemBlockWoodenDecoration.class, 
+				"treatedWood","fence",
+				"slab0","slab1","doubleSlab",
+				"scaffolding","wallMount");
 		this.setHardness(2.0F);
 		this.setResistance(5.0F);
 	}
@@ -64,7 +67,15 @@ public class BlockWoodenDecoration extends BlockIEBase
 			return side==DOWN;
 		if(meta==3)
 			return side==UP;
-
+		if(world.getTileEntity(x,y,z) instanceof TileEntityWallMount)
+		{
+			if(side==UP)
+				return ((TileEntityWallMount)world.getTileEntity(x,y,z)).inverted;
+			else if(side==DOWN)
+				return !((TileEntityWallMount)world.getTileEntity(x,y,z)).inverted;
+			else
+				return true;
+		}
 		return true;
 	}
 
@@ -76,6 +87,8 @@ public class BlockWoodenDecoration extends BlockIEBase
 			return true;
 		if(meta==5)
 			return (world.getBlock(x, y, z)==this&&world.getBlockMetadata(x,y,z)==5)?false:true;
+		if(meta==6)
+			return true;
 		return super.shouldSideBeRendered(world, x, y, z, side);
 	}
 
@@ -117,6 +130,8 @@ public class BlockWoodenDecoration extends BlockIEBase
 			this.setBlockBounds(0,0,0, 1,.5f,1);
 		else if(world.getBlockMetadata(x, y, z)==3)
 			this.setBlockBounds(0,.5f,0, 1,1,1);
+		else if(world.getBlockMetadata(x, y, z)==6)
+			this.setBlockBounds(.25f,0,.25f,.75f,.75f,.75f);
 		else
 			this.setBlockBounds(0,0,0,1,1,1);
 	}
@@ -179,8 +194,13 @@ public class BlockWoodenDecoration extends BlockIEBase
 	}
 
 	@Override
-	public TileEntity createNewTileEntity(World p_149915_1_, int p_149915_2_)
+	public TileEntity createNewTileEntity(World world, int meta)
 	{
+		switch(meta)
+		{
+		case 6:
+			new TileEntityWallMount();
+		}
 		return null;
 	}
 	@Override

@@ -1,9 +1,9 @@
-package blusunrize.immersiveengineering.common.blocks.metal;
+package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import net.minecraft.nbt.NBTTagCompound;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 
-public class TileEntityStructuralArm extends TileEntityIEBase
+public class TileEntityWallMount extends TileEntityIEBase
 {
 	public int facing = 2;
 	public boolean inverted = false;
@@ -27,5 +27,4 @@ public class TileEntityStructuralArm extends TileEntityIEBase
 		nbt.setInteger("facing", facing);
 		nbt.setBoolean("inverted", inverted);
 	}
-
 }

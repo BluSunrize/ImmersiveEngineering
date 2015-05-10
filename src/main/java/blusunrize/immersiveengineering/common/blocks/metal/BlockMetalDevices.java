@@ -43,6 +43,7 @@ public class BlockMetalDevices extends BlockIEBase
 	public static int META_dynamo=9;
 	public static int META_thermoelectricGen=10;
 	public static int META_conveyorBelt=11;
+	public static int META_furnaceHeater=12;
 	public BlockMetalDevices()
 	{
 		super("metalDevice", Material.iron, 4, ItemBlockMetalDevices.class,
@@ -50,7 +51,7 @@ public class BlockMetalDevices extends BlockIEBase
 				"connectorMV","capacitorMV","transformer",
 				"relayHV","connectorHV","capacitorHV","transformerHV",
 				"dynamo","thermoelectricGen",
-				"conveyorBelt");
+				"conveyorBelt","furnaceHeater");
 		setHardness(3.0F);
 		setResistance(15.0F);
 	}
@@ -146,7 +147,11 @@ public class BlockMetalDevices extends BlockIEBase
 		icons[11][1] = iconRegister.registerIcon("immersiveengineering:metal_conveyor_top");
 		icons[11][2] = iconRegister.registerIcon("immersiveengineering:metal_dynamo_bottom");
 		icons[11][3] = iconRegister.registerIcon("immersiveengineering:metal_dynamo_bottom");
-
+		//12 furnaceHeater
+		icons[12][0] = iconRegister.registerIcon("immersiveengineering:metal_furnaceHeater_socket");
+		icons[12][1] = iconRegister.registerIcon("immersiveengineering:metal_furnaceHeater_inactive");
+		icons[12][2] = iconRegister.registerIcon("immersiveengineering:metal_furnaceHeater_active");
+		icons[12][3] = iconRegister.registerIcon("immersiveengineering:metal_furnaceHeater_active");
 
 		//0 connectorLV
 		//2 connectorMV
@@ -182,6 +187,14 @@ public class BlockMetalDevices extends BlockIEBase
 			return icons[META_dynamo][side<4?3:2];
 		if(world.getTileEntity(x, y, z) instanceof TileEntityConveyorBelt && (((TileEntityConveyorBelt)world.getTileEntity(x,y,z)).facing==side || ((TileEntityConveyorBelt)world.getTileEntity(x,y,z)).facing==ForgeDirection.OPPOSITES[side]))
 			return icons[META_conveyorBelt][1];
+		if(world.getTileEntity(x, y, z) instanceof TileEntityFurnaceHeater)
+		{
+			if( ((TileEntityFurnaceHeater)world.getTileEntity(x, y, z)).sockets[side]==1)
+				return icons[META_furnaceHeater][0];
+			else
+				return icons[META_furnaceHeater][ ((TileEntityFurnaceHeater)world.getTileEntity(x, y, z)).showActiveTexture()?2:1 ];
+		}
+
 		return super.getIcon(world, x, y, z, side);
 	}
 	@Override
@@ -189,7 +202,7 @@ public class BlockMetalDevices extends BlockIEBase
 	{
 		return BlockRenderMetalDevices.renderID;
 	}
-	
+
 
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
@@ -228,6 +241,18 @@ public class BlockMetalDevices extends BlockIEBase
 			world.markBlockForUpdate(x, y, z);
 			return true;
 		}
+		if(world.getTileEntity(x, y, z) instanceof TileEntityFurnaceHeater && Utils.isHammer(player.getCurrentEquippedItem()))
+		{
+			if(player.isSneaking())
+				side = ForgeDirection.OPPOSITES[side];
+			if(!world.isRemote)
+			{
+				((TileEntityFurnaceHeater)world.getTileEntity(x, y, z)).toggleSide(side);
+				world.getTileEntity(x, y, z).markDirty();
+				world.func_147451_t(x, y, z);
+			}
+			return true;
+		}
 		return false;
 	}
 
@@ -263,7 +288,7 @@ public class BlockMetalDevices extends BlockIEBase
 		else if(world.getTileEntity(x, y, z) instanceof TileEntityTransformer)
 		{
 			TileEntityTransformer tile = (TileEntityTransformer)world.getTileEntity(x, y, z);
-			if(tile.postAttached>0)
+			if( !(tile instanceof TileEntityTransformerHV) && tile.postAttached>0)
 			{
 				switch(tile.postAttached)
 				{
@@ -307,6 +332,17 @@ public class BlockMetalDevices extends BlockIEBase
 	}
 
 	@Override
+	public boolean isSideSolid(IBlockAccess world, int x, int y, int z, ForgeDirection side)
+	{
+		int meta = world.getBlockMetadata(x, y, z);
+		if(meta==META_capacitorLV||meta==META_capacitorMV||meta==META_capacitorHV)
+			return true;
+		if(meta==META_dynamo||meta==META_thermoelectricGen||meta==META_furnaceHeater)
+			return true;
+		return false;
+	}
+	
+	@Override
 	public TileEntity createNewTileEntity(World world, int meta)
 	{
 		switch(meta)
@@ -335,6 +371,8 @@ public class BlockMetalDevices extends BlockIEBase
 			return new TileEntityThermoelectricGen();
 		case 11://11 conveyorBelt
 			return new TileEntityConveyorBelt();
+		case 12://12 furnaceHeater
+			return new TileEntityFurnaceHeater();
 		}
 		return null;
 	}
@@ -417,7 +455,7 @@ public class BlockMetalDevices extends BlockIEBase
 			{
 				((EntityItem)par5Entity).age=0;
 				boolean contact = f==3?(par5Entity.posZ-z<=.2): f==2?(par5Entity.posZ-z>=.8): f==5?(par5Entity.posX-x<=.2): (par5Entity.posX-x>=.8);
-				
+
 				if(contact && world.getTileEntity(x+fd.offsetX,y+(tile.transportUp?1: tile.transportDown?-1: 0),z+fd.offsetZ) instanceof IInventory)
 				{
 					IInventory inv = (IInventory)world.getTileEntity(x+fd.offsetX,y+(tile.transportUp?1: tile.transportDown?-1: 0),z+fd.offsetZ);

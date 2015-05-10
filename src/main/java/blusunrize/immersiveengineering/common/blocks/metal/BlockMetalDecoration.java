@@ -10,13 +10,11 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -104,9 +102,22 @@ public class BlockMetalDecoration extends BlockIEBase
 	public boolean isSideSolid(IBlockAccess world, int x, int y, int z, ForgeDirection side)
 	{
 		int meta = world.getBlockMetadata(x, y, z);
-		if(meta==META_scaffolding)
+		if(meta==META_fence)
 			return side==UP || side==DOWN;
-
+		if(meta==META_scaffolding)
+			return true;
+		if(world.getTileEntity(x,y,z) instanceof TileEntityStructuralArm)
+		{
+			if(side==UP)
+				return ((TileEntityStructuralArm)world.getTileEntity(x,y,z)).inverted;
+			else if(side==DOWN)
+				return !((TileEntityStructuralArm)world.getTileEntity(x,y,z)).inverted;
+			else
+				return ((TileEntityStructuralArm)world.getTileEntity(x,y,z)).facing==side.getOpposite().ordinal();
+		}
+		if(meta==META_radiator||meta==META_heavyEngineering||meta==META_generator||meta==META_lightEngineering)
+			return true;
+			
 		return super.isSideSolid(world, x, y, z, side);
 	}
 
@@ -149,16 +160,6 @@ public class BlockMetalDecoration extends BlockIEBase
 			icons[META_generator][i] = iconRegister.registerIcon("immersiveengineering:metalDeco_generator");
 			icons[META_lightEngineering][i] = iconRegister.registerIcon("immersiveengineering:metalDeco_electricMachine");
 			icons[META_connectorStrutural][i] = iconRegister.registerIcon("immersiveengineering:storage_Steel");
-		}
-	}
-	@Override
-	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase player, ItemStack stack)
-	{
-		if(world.getTileEntity(x, y, z) instanceof TileEntityStructuralArm)
-		{
-			int playerViewQuarter = MathHelper.floor_double(player.rotationYaw * 4.0F / 360.0F + 0.5D) & 3;
-			int f = playerViewQuarter==0 ? 2:playerViewQuarter==1 ? 5:playerViewQuarter==2 ? 3: 4;
-			((TileEntityStructuralArm)world.getTileEntity(x, y, z)).facing = f;
 		}
 	}
 

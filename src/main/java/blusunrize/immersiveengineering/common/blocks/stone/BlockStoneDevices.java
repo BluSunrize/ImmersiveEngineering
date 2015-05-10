@@ -8,6 +8,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.client.render.BlockRenderStoneDevices;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
@@ -36,7 +37,28 @@ public class BlockStoneDevices extends BlockIEBase
 		BlockRenderStoneDevices.renderPass=pass;
 		return true;
 	}
+	@Override
+	public boolean isOpaqueCube()
+	{
+		return false;
+	}
+	@Override
+	public boolean renderAsNormalBlock()
+	{
+		return false;
+	}
+	@Override
+    public int getRenderBlockPass()
+    {
+        return 1;
+    }
 
+	@Override
+	public boolean isSideSolid(IBlockAccess world, int x, int y, int z, ForgeDirection side)
+	{
+		return true;
+	}
+	
 	@Override
 	public void registerBlockIcons(IIconRegister iconRegister)
 	{

@@ -1,6 +1,10 @@
 package blusunrize.immersiveengineering.common.util;
 
+import java.util.Iterator;
+
+import blusunrize.immersiveengineering.client.ClientUtils;
 import net.minecraft.client.audio.ITickableSound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 
 public class IESound implements ITickableSound
@@ -29,7 +33,7 @@ public class IESound implements ITickableSound
 		this.repeatDelay = repeatDelay;
 		origPos = new float[]{(float)x,(float)y,(float)z};
 	}
-	
+
 	public float[] origPos;
 
 	@Override
@@ -85,10 +89,33 @@ public class IESound implements ITickableSound
 		this.z=z;
 	}
 
+	public void evaluateVolume()
+	{
+		volumeAjustment=1f;
+		for(int dx = (int)Math.floor(x-8)>>4; dx<=(int)Math.floor(x+8)>>4; dx++)
+			for(int dz = (int)Math.floor(z-8)>>4; dz<=(int)Math.floor(z+8)>>4; dz++)
+			{
+				Iterator it = ClientUtils.mc().thePlayer.worldObj.getChunkFromChunkCoords(dx, dz).chunkTileEntityMap.values().iterator();
+				while (it.hasNext())
+				{
+					TileEntity tile = (TileEntity)it.next();
+					if(tile!=null && tile.getClass().getName().endsWith("TileEntitySoundMuffler"))
+						if(tile.getBlockMetadata()!=1)
+						{
+							double d = (tile.xCoord+.5-x)*(tile.xCoord+.5-x) + (tile.yCoord+.5-y)*(tile.yCoord+.5-y) + (tile.zCoord+.5-z)*(tile.zCoord+.5-z);
+							if(d<=64 && d>0)
+								volumeAjustment=.1f;
+						}
+				}
+			}
+	}
+
 
 	@Override
 	public void update()
 	{
+		if(ClientUtils.mc().thePlayer.worldObj.getTotalWorldTime()%40==0)
+			evaluateVolume();
 	}
 
 	public boolean donePlaying=false;
