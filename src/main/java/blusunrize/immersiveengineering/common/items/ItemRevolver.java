@@ -64,16 +64,18 @@ public class ItemRevolver extends ItemIEBase
 	@Override
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean adv)
 	{
-		if(stack.hasTagCompound() && stack.getTagCompound().hasKey("elite"))
-			list.add(StatCollector.translateToLocal(Lib.DESC+"flavour.revolver."+stack.getTagCompound().getString("elite")));
+		if(ItemNBTHelper.hasKey(stack, "elite"))
+			list.add(StatCollector.translateToLocal(Lib.DESC+"flavour.revolver."+ItemNBTHelper.getString(stack, "elite")));
 		else if(stack.getItemDamage()==1)
 			list.add(StatCollector.translateToLocal(Lib.DESC+"flavour.revolver.elite"));
+		else
+			list.add(StatCollector.translateToLocal(Lib.DESC+"flavour.revolver"));
 	}
 	@Override
 	public String getUnlocalizedName(ItemStack stack)
 	{
-		if(stack.hasTagCompound() && stack.getTagCompound().hasKey("elite"))
-			return this.getUnlocalizedName()+"."+stack.getTagCompound().getString("elite");
+		if(ItemNBTHelper.hasKey(stack, "elite"))
+			return this.getUnlocalizedName()+"."+ItemNBTHelper.getString(stack, "elite");
 		return super.getUnlocalizedName(stack);
 	}
 
@@ -165,10 +167,10 @@ public class ItemRevolver extends ItemIEBase
 					else
 						world.playSoundAtEntity(player, "note.hat", .6f, 3);
 
-					ItemStack[] cycled = new ItemStack[8];
+					ItemStack[] cycled = new ItemStack[getBulletSlotAmount(revolver)];
 					for(int i=1; i<cycled.length; i++)
 						cycled[i-1] = bullets[i];
-					cycled[7] = bullets[0];
+					cycled[cycled.length-1] = bullets[0];
 					setBullets(revolver, cycled);
 				}
 			}
@@ -187,7 +189,7 @@ public class ItemRevolver extends ItemIEBase
 	}
 	public ItemStack[] getBullets(ItemStack revolver)
 	{
-		ItemStack[] stackList = new ItemStack[8];
+		ItemStack[] stackList = new ItemStack[getBulletSlotAmount(revolver)];
 		if(revolver.hasTagCompound())
 		{
 			NBTTagList inv = revolver.getTagCompound().getTagList("Bullets",10);
@@ -216,6 +218,11 @@ public class ItemRevolver extends ItemIEBase
 			revolver.setTagCompound(new NBTTagCompound());
 		revolver.getTagCompound().setTag("Bullets",inv);
 	}
+	public int getBulletSlotAmount(ItemStack revolver)
+	{
+//		System.out.println(ItemNBTHelper.getInt(revolver, "upgrade")&1);
+		return (ItemNBTHelper.getInt(revolver, "upgrade")&1)==1?14:8;
+	}
 
 	public String getRevolverTexture(ItemStack revolver)
 	{
@@ -229,7 +236,7 @@ public class ItemRevolver extends ItemIEBase
 			return "immersiveengineering:textures/models/revolver.png";
 	}
 
-
+	
 	@Override
 	public void onCreated(ItemStack stack, World world, EntityPlayer player)
 	{
@@ -238,11 +245,8 @@ public class ItemRevolver extends ItemIEBase
 			SpecialRevolver r = eliteGunmen.get(player.getUniqueID().toString());
 			stack.setItemDamage(r.meta);
 			if(r.tag!=null && !r.tag.isEmpty())
-			{
-				if(!stack.hasTagCompound())
-					stack.setTagCompound(new NBTTagCompound());
-				stack.getTagCompound().setString("elite", r.tag);
-			}
+				ItemNBTHelper.setString(stack, "elite", r.tag);
+			ItemNBTHelper.setInt(stack, "upgrade", r.upgrades);
 		}
 	}
 
@@ -250,31 +254,36 @@ public class ItemRevolver extends ItemIEBase
 	static
 	{
 		HashMap<String, SpecialRevolver> map = new HashMap<String, SpecialRevolver>();
-		SpecialRevolver r = new SpecialRevolver(1,"");
+		SpecialRevolver r = new SpecialRevolver(1,"fenrir",0);
 		map.put("f34afdfb-996b-4020-b8a2-b740e2937b29", r);
+		r = new SpecialRevolver(1,"",1);
 		map.put("07c11943-628b-4671-a331-84899d08e538", r);
 		map.put("48a16fc8-bc1f-4e72-84e9-7ec73b7d8ea1", r);
-		r = new SpecialRevolver(3,"sns");
+		r = new SpecialRevolver(3,"sns",0);
 		map.put("e8b46b33-3e17-4b64-8d07-9af116df7d3b", r);
 		map.put("58d506e2-7ee7-4774-8b22-c7a57eda488b", r);
-		//Foudroyant Factotum
+		map.put("df0f4696-8a55-4777-b49d-6b38d6e1b501", r);
 		map.put("b72d87ce-fa98-4a5a-b5a0-5db51a018d09", r);
-		r = new SpecialRevolver(4,"nerf");
+		r = new SpecialRevolver(4,"nerf",0);
 		map.put("4f3a8d1e-33c1-44e7-bce8-e683027c7dac", r);
-		r = new SpecialRevolver(1,"oblivion");
+		r = new SpecialRevolver(1,"earthshaker",0);
 		map.put("c2024e2a-dd76-4bc9-9ea3-b771f18f23b6", r);
-		r = new SpecialRevolver(1,"bee");
+		r = new SpecialRevolver(1,"bee",0);
 		map.put("ca5a40eb-9f48-4b40-bb94-3e0f2d18c9a7", r);
+		r = new SpecialRevolver(0,"warlord",0);
+		map.put("c2e83bd4-e8df-40d6-a639-58ba8b05401e", r);
 		eliteGunmen = Collections.unmodifiableMap(map);
 	}
 	static class SpecialRevolver
 	{
 		final int meta;
 		final String tag;
-		public SpecialRevolver(int meta, String tag)
+		final int upgrades;
+		public SpecialRevolver(int meta, String tag, int upgrades)
 		{
 			this.meta=meta;
 			this.tag=tag;
+			this.upgrades=upgrades;
 		}
 	}
 }

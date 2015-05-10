@@ -5,6 +5,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import blusunrize.immersiveengineering.api.CokeOvenRecipe;
 import blusunrize.immersiveengineering.common.blocks.stone.TileEntityCokeOven;
 
 public class ContainerCokeOven extends Container
@@ -15,7 +16,14 @@ public class ContainerCokeOven extends Container
 	{
 		this.tile=tile;
 
-		this.addSlotToContainer(new Slot(tile, 0, 30, 35));
+		this.addSlotToContainer(new IESlot(tile, 0, 30, 35)
+		{
+			@Override
+			public boolean isItemValid(ItemStack itemStack)
+			{
+				return CokeOvenRecipe.findRecipe(itemStack)!=null;
+			}
+		});
 		this.addSlotToContainer(new IESlot.Output(tile, 1, 85, 35));
 		this.addSlotToContainer(new IESlot.FluidContainer(tile, 2,152, 17, true));
 		this.addSlotToContainer(new IESlot.Output(tile, 3,152, 53));

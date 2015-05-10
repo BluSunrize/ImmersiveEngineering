@@ -7,12 +7,13 @@ import net.minecraftforge.client.IItemRenderer;
 import org.lwjgl.opengl.GL11;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.client.models.ModelRevolver;
+import blusunrize.immersiveengineering.client.models.ModelRevolverVariable;
 import blusunrize.immersiveengineering.common.items.ItemRevolver;
+import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 
 public class ItemRenderRevolver implements IItemRenderer
 {
-	static ModelRevolver model = new ModelRevolver();
+	static ModelRevolverVariable model = new ModelRevolverVariable();
 
 	@Override
 	public boolean handleRenderType(ItemStack item, ItemRenderType type)
@@ -65,7 +66,13 @@ public class ItemRenderRevolver implements IItemRenderer
 		
 		ClientUtils.bindTexture(((ItemRevolver)item.getItem()).getRevolverTexture(item));
 		GL11.glEnable(3042);
-		model.render(true);
+		boolean b = (ItemNBTHelper.getInt(item, "upgrade")&1)==1;
+		model.Cylinder.isHidden = b;
+		model.CylinderAuto.isHidden = !b;
+		model.CylinderAuto_1.isHidden = !b;
+		model.CylinderAuto_2.isHidden = !b;
+		
+		model.render(null, 0, 0, 0, 0, 0, .0625f);
 		GL11.glDisable(3042);
 		GL11.glPopMatrix();
 	}

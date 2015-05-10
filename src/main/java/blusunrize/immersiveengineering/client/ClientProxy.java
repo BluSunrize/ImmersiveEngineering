@@ -1,16 +1,21 @@
 package blusunrize.immersiveengineering.client;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.particle.EntityFX;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.oredict.OreDictionary;
 import blusunrize.immersiveengineering.api.ManualPageMultiblock;
+import blusunrize.immersiveengineering.client.fx.EntityFXItemParts;
 import blusunrize.immersiveengineering.client.gui.GuiBlastFurnace;
 import blusunrize.immersiveengineering.client.gui.GuiCokeOven;
 import blusunrize.immersiveengineering.client.gui.GuiCrate;
@@ -72,6 +77,7 @@ import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenCrat
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenPost;
 import blusunrize.immersiveengineering.common.entities.EntityRevolvershot;
 import blusunrize.immersiveengineering.common.items.ItemRevolver;
+import blusunrize.immersiveengineering.common.util.IESound;
 import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.lib.manual.IManualPage;
 import blusunrize.lib.manual.ManualPages;
@@ -213,6 +219,10 @@ public class ClientProxy extends CommonProxy
 		manual.addEntry("conveyor", "machines",
 				new ManualPages.Crafting(manual, "conveyor0", new ItemStack(IEContent.blockMetalDevice,1,BlockMetalDevices.META_conveyorBelt)),
 				new ManualPages.Text(manual, "conveyor1"));
+		manual.addEntry("furnaceHeater", "machines",
+				new ManualPages.Crafting(manual, "furnaceHeater0", new ItemStack(IEContent.blockMetalDevice,1,BlockMetalDevices.META_furnaceHeater)),
+				new ManualPages.Text(manual, "furnaceHeater1"),
+				new ManualPages.Text(manual, "furnaceHeater2"));
 		manual.addEntry("crusher", "machines",
 				new ManualPageMultiblock(manual, "crusher0", MultiblockCrusher.instance),
 				new ManualPages.Text(manual, "crusher1"));
@@ -238,4 +248,70 @@ public class ClientProxy extends CommonProxy
 		return null;
 	}
 
+	HashMap<String, IESound> soundMap = new HashMap<String, IESound>();
+	@Override
+	public void handleTileSound(String soundName, TileEntity tile, boolean tileActive, float volume, float pitch)
+	{
+		IESound sound = soundMap.get(soundName);
+		if(sound!=null)
+		{
+			if(sound.getXPosF()==tile.xCoord && sound.getYPosF()==tile.yCoord && sound.getZPosF()==tile.zCoord)
+			{
+				if(!tileActive)
+				{
+					ClientUtils.mc().getSoundHandler().stopSound(sound);
+					sound = null;
+					soundMap.put(soundName, sound);
+				}
+			}
+			else
+			{
+				double dx = (sound.getXPosF()-ClientUtils.mc().renderViewEntity.posX)*(sound.getXPosF()-ClientUtils.mc().renderViewEntity.posX);
+				double dy = (sound.getYPosF()-ClientUtils.mc().renderViewEntity.posY)*(sound.getYPosF()-ClientUtils.mc().renderViewEntity.posY);
+				double dz = (sound.getZPosF()-ClientUtils.mc().renderViewEntity.posZ)*(sound.getZPosF()-ClientUtils.mc().renderViewEntity.posZ);
+				double dx1 = (tile.xCoord-ClientUtils.mc().renderViewEntity.posX)*(tile.xCoord-ClientUtils.mc().renderViewEntity.posX);
+				double dy1 = (tile.yCoord-ClientUtils.mc().renderViewEntity.posY)*(tile.yCoord-ClientUtils.mc().renderViewEntity.posY);
+				double dz1 = (tile.zCoord-ClientUtils.mc().renderViewEntity.posZ)*(tile.zCoord-ClientUtils.mc().renderViewEntity.posZ);
+				if((dx1+dy1+dz1)<(dx+dy+dz))
+				{
+					sound.setPos(tile.xCoord, tile.yCoord, tile.zCoord);
+					soundMap.put(soundName, sound);
+				}
+			}
+		}
+		if(tileActive)
+		{
+			if(sound==null || !ClientUtils.mc().getSoundHandler().isSoundPlaying(sound))
+			{
+				sound = ClientUtils.generatePositionedIESound("immersiveengineering:"+soundName, volume,pitch, true,0, tile.xCoord,tile.yCoord,tile.zCoord);
+				soundMap.put(soundName, sound);
+			}
+		}
+	}
+	@Override
+	public void stopTileSound(String soundName, TileEntity tile)
+	{
+		IESound sound = soundMap.get(soundName);
+		if(sound!=null && sound.getXPosF()==tile.xCoord && sound.getYPosF()==tile.yCoord && sound.getZPosF()==tile.zCoord)
+		{
+			ClientUtils.mc().getSoundHandler().stopSound(sound);
+			sound = null;
+		}
+	}
+	@Override
+	public void spawnCrusherFX(TileEntityCrusher tile, ItemStack stack)
+	{
+		if(stack!=null)
+			for(int i=0; i<3; i++)
+			{
+				double x = tile.xCoord+.5+.5*(tile.facing<4?tile.getWorldObj().rand.nextGaussian()-.5:0);
+				double y = tile.yCoord+2 + tile.getWorldObj().rand.nextGaussian()/2;
+				double z = tile.zCoord+.5+.5*(tile.facing>3?tile.getWorldObj().rand.nextGaussian()-.5:0);
+				double mX = tile.getWorldObj().rand.nextGaussian() * 0.01D;
+				double mY = tile.getWorldObj().rand.nextGaussian() * 0.05D;
+				double mZ = tile.getWorldObj().rand.nextGaussian() * 0.01D;
+				EntityFX particleMysterious = new EntityFXItemParts(tile.getWorldObj(), stack, tile.getWorldObj().rand.nextInt(16), x,y,z, mX,mY,mZ);
+				Minecraft.getMinecraft().effectRenderer.addEffect(particleMysterious);
+			}
+	}
 }

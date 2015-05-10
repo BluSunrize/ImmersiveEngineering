@@ -6,8 +6,6 @@ import java.util.List;
 import mods.railcraft.api.crafting.IRockCrusherRecipe;
 import mods.railcraft.api.crafting.RailcraftCraftingManager;
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.EntityFX;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -21,9 +19,8 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.CrusherRecipe;
-import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.client.fx.EntityFXItemParts;
 import blusunrize.immersiveengineering.common.EventHandler;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ICustomBoundingboxes;
@@ -88,48 +85,23 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 
 		if(worldObj.isRemote)
 		{
-			if(sound!=null)
-			{
-				if(sound.getXPosF()==xCoord && sound.getYPosF()==yCoord && sound.getZPosF()==zCoord)
-				{
-					if(!((active&&process>0)||mobGrinding||grindingTimer>0))
-					{
-						ClientUtils.mc().getSoundHandler().stopSound(sound);
-						sound = null;
-					}
-				}
-				else
-				{
-					double dx = (sound.getXPosF()-ClientUtils.mc().renderViewEntity.posX)*(sound.getXPosF()-ClientUtils.mc().renderViewEntity.posX);
-					double dy = (sound.getYPosF()-ClientUtils.mc().renderViewEntity.posY)*(sound.getYPosF()-ClientUtils.mc().renderViewEntity.posY);
-					double dz = (sound.getZPosF()-ClientUtils.mc().renderViewEntity.posZ)*(sound.getZPosF()-ClientUtils.mc().renderViewEntity.posZ);
-					double dx1 = (xCoord-ClientUtils.mc().renderViewEntity.posX)*(xCoord-ClientUtils.mc().renderViewEntity.posX);
-					double dy1 = (yCoord-ClientUtils.mc().renderViewEntity.posY)*(yCoord-ClientUtils.mc().renderViewEntity.posY);
-					double dz1 = (zCoord-ClientUtils.mc().renderViewEntity.posZ)*(zCoord-ClientUtils.mc().renderViewEntity.posZ);
-					if((dx1+dy1+dz1)<(dx+dy+dz))
-						sound.setPos(xCoord, yCoord, zCoord);
-				}
-			}
-			if((active&&process>0)||mobGrinding||grindingTimer>0)
-			{
-				if(sound==null || !ClientUtils.mc().getSoundHandler().isSoundPlaying(sound))
-					sound = ClientUtils.generatePositionedIESound(worldObj, "immersiveengineering:crusher", 1,1, false,0, xCoord,yCoord,zCoord);
-			}
+			ImmersiveEngineering.proxy.handleTileSound("crusher", this, ((active&&process>0)||mobGrinding||grindingTimer>0), 1,1);
 			if(active&&process>0)
 			{
-//				ItemStack ss = this.inputs.get(0);
-				if(particleStack!=null)
-					for(int i=0; i<3; i++)
-					{
-						double x = xCoord+.5+.5*(facing<4?worldObj.rand.nextGaussian()-.5:0);
-						double y = yCoord+2 + worldObj.rand.nextGaussian()/2;
-						double z = zCoord+.5+.5*(facing>3?worldObj.rand.nextGaussian()-.5:0);
-						double mX = worldObj.rand.nextGaussian() * 0.01D;
-						double mY = worldObj.rand.nextGaussian() * 0.05D;
-						double mZ = worldObj.rand.nextGaussian() * 0.01D;
-						EntityFX particleMysterious = new EntityFXItemParts(worldObj, particleStack, worldObj.rand.nextInt(16), x,y,z, mX,mY,mZ);
-						Minecraft.getMinecraft().effectRenderer.addEffect(particleMysterious);
-					}
+				//				ItemStack ss = this.inputs.get(0);
+				ImmersiveEngineering.proxy.spawnCrusherFX(this, particleStack);
+				//				if(particleStack!=null)
+				//					for(int i=0; i<3; i++)
+				//					{
+				//						double x = xCoord+.5+.5*(facing<4?worldObj.rand.nextGaussian()-.5:0);
+				//						double y = yCoord+2 + worldObj.rand.nextGaussian()/2;
+				//						double z = zCoord+.5+.5*(facing>3?worldObj.rand.nextGaussian()-.5:0);
+				//						double mX = worldObj.rand.nextGaussian() * 0.01D;
+				//						double mY = worldObj.rand.nextGaussian() * 0.05D;
+				//						double mZ = worldObj.rand.nextGaussian() * 0.01D;
+				//						EntityFX particleMysterious = new EntityFXItemParts(worldObj, particleStack, worldObj.rand.nextInt(16), x,y,z, mX,mY,mZ);
+				//						Minecraft.getMinecraft().effectRenderer.addEffect(particleMysterious);
+				//					}
 			}
 			else if(particleStack!=null)
 				particleStack=null;
@@ -170,9 +142,12 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 						if(!e.isDead && e.getHealth()>0)
 						{
 							int consumed = this.energyStorage.extractEnergy(80, true);
-							e.attackEntityFrom(IEDamageSources.causeCrusherDamage(), consumed/20f);
-							EventHandler.crusherMap.put(e.getUniqueID(), this);
-							mobGrinding = true;
+							if(consumed>0)
+							{
+								e.attackEntityFrom(IEDamageSources.causeCrusherDamage(), consumed/20f);
+								EventHandler.crusherMap.put(e.getUniqueID(), this);
+								mobGrinding = true;
+							}
 							update = true;
 						}
 				}

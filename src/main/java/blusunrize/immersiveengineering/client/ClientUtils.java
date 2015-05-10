@@ -244,25 +244,10 @@ public class ClientUtils
 		return mc().fontRenderer;
 	}
 
-	public static IESound generatePositionedIESound(World world, String soundName, float volume, float pitch, boolean repeat, int delay, double x, double y, double z)
+	public static IESound generatePositionedIESound(String soundName, float volume, float pitch, boolean repeat, int delay, double x, double y, double z)
 	{
 		IESound sound = new IESound(new ResourceLocation(soundName), volume,pitch, repeat,delay, x,y,z, AttenuationType.LINEAR);
-		for(int dx = (int)Math.floor(x-8)>>4; dx<=(int)Math.floor(x+8)>>4; dx++)
-			for(int dz = (int)Math.floor(z-8)>>4; dz<=(int)Math.floor(z+8)>>4; dz++)
-			{
-				Iterator it = world.getChunkFromChunkCoords(dx, dz).chunkTileEntityMap.values().iterator();
-				while (it.hasNext())
-				{
-					TileEntity tile = (TileEntity)it.next();
-					if(tile!=null && tile.getClass().getName().endsWith("TileEntitySoundMuffler"))
-						if(tile.getBlockMetadata()!=1)
-						{
-							double d = (tile.xCoord+.5-x)*(tile.xCoord+.5-x) + (tile.yCoord+.5-y)*(tile.yCoord+.5-y) + (tile.zCoord+.5-z)*(tile.zCoord+.5-z);
-							if(d<=64 && d>0)
-								sound.volumeAjustment=.1f;
-						}
-				}
-			}
+		sound.evaluateVolume();
 		ClientUtils.mc().getSoundHandler().playSound(sound);
 		return sound;
 	}
@@ -561,9 +546,9 @@ public class ClientUtils
 		if(side==0)
 		{
 			//            if (RenderBlocks.getInstance().renderMinY <= 0.0D)
-				//            {
-				//                --y;
-				//            }
+			//            {
+			//                --y;
+			//            }
 
 			lightingInfo.aoBrightnessXYNN = block.getMixedBrightnessForBlock(world, x - 1, y, z);
 			lightingInfo.aoBrightnessYZNN = block.getMixedBrightnessForBlock(world, x, y, z - 1);

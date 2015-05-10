@@ -1,7 +1,10 @@
 package blusunrize.immersiveengineering.common;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFermenter;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySqueezer;
 import blusunrize.immersiveengineering.common.blocks.stone.TileEntityBlastFurnace;
@@ -46,6 +49,16 @@ public class CommonProxy implements IGuiHandler
 	}
 
 	public void loadComplete()
+	{
+	}
+	
+	public void handleTileSound(String soundName, TileEntity tile, boolean tileActive, float volume, float pitch)
+	{
+	}
+	public void stopTileSound(String soundName, TileEntity tile)
+	{
+	}
+	public void spawnCrusherFX(TileEntityCrusher tile, ItemStack stack)
 	{
 	}
 }

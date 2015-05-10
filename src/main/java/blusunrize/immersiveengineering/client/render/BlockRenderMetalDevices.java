@@ -105,6 +105,12 @@ public class BlockRenderMetalDevices implements ISimpleBlockRenderingHandler
 				renderer.setRenderBoundsFromBlock(block);
 				ClientUtils.drawInventoryBlock(block, metadata, renderer);
 			}
+			else if(metadata==BlockMetalDevices.META_furnaceHeater)
+			{
+				block.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
+				renderer.setRenderBoundsFromBlock(block);
+				ClientUtils.drawInventoryBlock(block, metadata, renderer);
+			}
 		}catch(Exception e)
 		{
 			e.printStackTrace();
@@ -252,6 +258,11 @@ public class BlockRenderMetalDevices implements ISimpleBlockRenderingHandler
 			renderer.uvRotateTop = 0;
 			renderer.uvRotateBottom = 0;
 			return true;
+		}
+		else if(metadata==BlockMetalDevices.META_furnaceHeater)
+		{
+			renderer.setRenderBounds(0,0,0, 1,1,1);
+			return renderer.renderStandardBlock(block, x, y, z);
 		}
 		return false;
 	}

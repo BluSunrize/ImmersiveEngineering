@@ -1,3 +1,18 @@
+#####Version 0.1.8
+- fixed sounds. Should not crash the server anymore and also loop fine
+- fixed the rendering of insulating glass
+- structural arms can be inverted
+- fixed slots and items valid for Coke Oven and Blast Furnace
+- more revolver fancyness
+- made RF>EU conversion rate configureable
+- improved watermill render. Hopefully less jittery.
+- nerfed blast furnace fuel
+- fixed cable lengths. Thanks Tahg =P
+- added External Heater, a block that will consume RF to power adjacent vanilla furnaces
+- added the lacking smelting recipe for electrum grit
+- made various block sides solid, where necessary
+- started work on wall mounts
+
 #####Version 0.1.7 - BUILT
 - fixed blending on the text on the manual
 - fixed the crash caused by calculating loss

@@ -44,6 +44,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityDieselGenerator;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityDynamo;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFermenter;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFurnaceHeater;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityLightningRod;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityRefinery;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityRelayHV;
@@ -66,6 +67,7 @@ import blusunrize.immersiveengineering.common.blocks.stone.TileEntityCokeOven;
 import blusunrize.immersiveengineering.common.blocks.wooden.BlockIEWoodenStairs;
 import blusunrize.immersiveengineering.common.blocks.wooden.BlockWoodenDecoration;
 import blusunrize.immersiveengineering.common.blocks.wooden.BlockWoodenDevices;
+import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWallMount;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWatermill;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWindmill;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWindmillAdvanced;
@@ -229,6 +231,7 @@ public class IEContent
 		registerTile(TileEntityWindmill.class);
 		registerTile(TileEntityWindmillAdvanced.class);
 		registerTile(TileEntityWoodenCrate.class);
+		registerTile(TileEntityWallMount.class);
 
 		registerTile(TileEntityConnectorLV.class);
 		registerTile(TileEntityCapacitorLV.class);
@@ -242,6 +245,7 @@ public class IEContent
 		registerTile(TileEntityDynamo.class);
 		registerTile(TileEntityThermoelectricGen.class);
 		registerTile(TileEntityConveyorBelt.class);
+		registerTile(TileEntityFurnaceHeater.class);
 
 		registerTile(TileEntityLightningRod.class);
 		registerTile(TileEntityDieselGenerator.class);
@@ -277,6 +281,7 @@ public class IEContent
 		FurnaceRecipes.smelting().func_151394_a(new ItemStack(itemMetal,1,13), new ItemStack(itemMetal,1,3), 1.0F);
 		FurnaceRecipes.smelting().func_151394_a(new ItemStack(itemMetal,1,14), new ItemStack(itemMetal,1,4), 0.5F);
 		FurnaceRecipes.smelting().func_151394_a(new ItemStack(itemMetal,1,15), new ItemStack(itemMetal,1,5), 0.5F);
+		FurnaceRecipes.smelting().func_151394_a(new ItemStack(itemMetal,1,16), new ItemStack(itemMetal,1,6), 0.5F);
 
 
 		/**CRAFTING*/
@@ -383,6 +388,7 @@ public class IEContent
 		addOredictRecipe(new ItemStack(blockMetalDevice,1, BlockMetalDevices.META_dynamo), "RCR","III", 'C',copperCoil,'I',"ingotIron",'R',"dustRedstone");
 		addOredictRecipe(new ItemStack(blockMetalDevice,1, BlockMetalDevices.META_thermoelectricGen), "III","CBC","CCC", 'I',"ingotSteel",'C',"ingotConstantan",'B',copperCoil);
 		addOredictRecipe(new ItemStack(blockMetalDevice,8, BlockMetalDevices.META_conveyorBelt), "LLL","IRI", 'I',"ingotIron",'R',"dustRedstone",'L',Items.leather);
+		addOredictRecipe(new ItemStack(blockMetalDevice,1, BlockMetalDevices.META_furnaceHeater), "ICI","CBC","IRI", 'I',"ingotIron",'R',"dustRedstone",'C',"ingotCopper",'B',copperCoil);
 
 		addOredictRecipe(new ItemStack(blockMetalDecoration,16,BlockMetalDecoration.META_fence), "III","III", 'I',"ingotSteel");
 		addOredictRecipe(new ItemStack(blockMetalDecoration, 6,BlockMetalDecoration.META_scaffolding), "III"," S ","S S", 'I',"ingotSteel",'S',new ItemStack(blockMetalDecoration,1,0));
@@ -403,10 +409,10 @@ public class IEContent
 		BlastFurnaceRecipe.addRecipe(new ItemStack(itemMetal,1,7), "ingotIron", 1200);
 		BlastFurnaceRecipe.addRecipe(new ItemStack(blockStorage,1,7), "blockIron", 1200*9);
 
-		BlastFurnaceRecipe.addBlastFuel("fuelCoke", 3200);
-		BlastFurnaceRecipe.addBlastFuel("blockFuelCoke", 3200*10);
-		BlastFurnaceRecipe.addBlastFuel("charcoal", 1600);
-		BlastFurnaceRecipe.addBlastFuel("blockCharcoal", 1600*10);
+		BlastFurnaceRecipe.addBlastFuel("fuelCoke", 1200);
+		BlastFurnaceRecipe.addBlastFuel("blockFuelCoke", 1200*10);
+		BlastFurnaceRecipe.addBlastFuel("charcoal", 300);
+		BlastFurnaceRecipe.addBlastFuel("blockCharcoal", 300*10);
 		GameRegistry.registerFuelHandler(new IEFuelHandler());
 
 		CrusherRecipe r = addCrusherRecipe( 8, "Iron");

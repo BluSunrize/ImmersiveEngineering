@@ -2,6 +2,7 @@ package blusunrize.immersiveengineering.client.render;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
 
 import org.lwjgl.opengl.GL11;
@@ -119,6 +120,30 @@ public class BlockRenderWoodenDecoration implements ISimpleBlockRenderingHandler
 			renderer.renderMaxZ+=block.shouldSideBeRendered(world,x,y,z+1,1)?.015625:0;
 			renderer.renderFromInside=false;
 			return renderer.renderStandardBlock(block, x, y, z);
+		}
+		else if(world.getBlockMetadata(x, y, z)==6)
+		{
+			renderer.setRenderBounds(.3125,0,.3125, .6875,.125,.6875);
+			renderer.renderStandardBlock(block, x, y, z);
+
+			renderer.setRenderBounds(0,.125,.3125, .125,.625,.6875);
+			renderer.renderStandardBlock(block, x, y, z);
+			
+			renderer.setRenderBounds(.125,.125,.375, .625,.25,.625);
+			renderer.renderStandardBlock(block, x, y, z);
+			Vec3[] vs = {
+					Vec3.createVectorHelper(.4375,.25,.4375),
+					Vec3.createVectorHelper(.4375,.25,.5625),
+					Vec3.createVectorHelper(.5625,.25,.4375),
+					Vec3.createVectorHelper(.5625,.25,.5625),
+					Vec3.createVectorHelper(.125,.4375,.4375),
+					Vec3.createVectorHelper(.125,.4375,.5625),
+					Vec3.createVectorHelper(.125,.5625,.4375),
+					Vec3.createVectorHelper(.125,.5625,.5625)
+			};
+			ClientUtils.drawWorldSubBlock(renderer, world, block, x, y, z, vs);
+			
+			return true;
 		}
 		else
 		{

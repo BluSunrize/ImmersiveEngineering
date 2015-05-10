@@ -15,6 +15,7 @@ public abstract class IESlot extends Slot
 		super(inv, id, x, y);
 	}
 
+	@Override
 	public boolean isItemValid(ItemStack itemStack)
 	{
 		return true;

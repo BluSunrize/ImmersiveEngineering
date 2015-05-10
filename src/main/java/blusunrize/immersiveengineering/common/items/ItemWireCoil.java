@@ -63,7 +63,7 @@ public class ItemWireCoil extends ItemIEBase
 			{
 				WireType type = WireType.getValue(stack.getItemDamage());
 				int[] pos = ItemNBTHelper.getIntArray(stack, "linkingPos");
-				int distance = (int) Math.sqrt( (pos[1]-x)*(pos[1]-x) + (pos[2]-y)*(pos[2]-y) + (pos[3]-z)*(pos[3]-z) );
+				int distance = (int) Math.ceil(Math.sqrt( (pos[1]-x)*(pos[1]-x) + (pos[2]-y)*(pos[2]-y) + (pos[3]-z)*(pos[3]-z) ));
 				if(pos[0]!=world.provider.dimensionId)
 					player.addChatMessage(new ChatComponentTranslation(Lib.CHAT_WARN+"wrongDimension"));
 				else if(pos[1]==x&&pos[2]==y&&pos[3]==z)

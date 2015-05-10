@@ -12,8 +12,8 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.DieselHandler;
-import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockDieselGenerator;
@@ -79,37 +79,11 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockPart implemen
 
 		if(worldObj.isRemote)
 		{
-			if(sound!=null)
+			ImmersiveEngineering.proxy.handleTileSound("dieselGenerator", this, active, .5f,1);
+			if(active && worldObj.getTotalWorldTime()%4==0)
 			{
-				if(sound.getXPosF()==xCoord && sound.getYPosF()==yCoord && sound.getZPosF()==zCoord)
-				{
-					if(!active)
-					{
-						ClientUtils.mc().getSoundHandler().stopSound(sound);
-						sound = null;
-					}
-				}
-				else
-				{
-					double dx = (sound.getXPosF()-ClientUtils.mc().renderViewEntity.posX)*(sound.getXPosF()-ClientUtils.mc().renderViewEntity.posX);
-					double dy = (sound.getYPosF()-ClientUtils.mc().renderViewEntity.posY)*(sound.getYPosF()-ClientUtils.mc().renderViewEntity.posY);
-					double dz = (sound.getZPosF()-ClientUtils.mc().renderViewEntity.posZ)*(sound.getZPosF()-ClientUtils.mc().renderViewEntity.posZ);
-					double dx1 = (xCoord-ClientUtils.mc().renderViewEntity.posX)*(xCoord-ClientUtils.mc().renderViewEntity.posX);
-					double dy1 = (yCoord-ClientUtils.mc().renderViewEntity.posY)*(yCoord-ClientUtils.mc().renderViewEntity.posY);
-					double dz1 = (zCoord-ClientUtils.mc().renderViewEntity.posZ)*(zCoord-ClientUtils.mc().renderViewEntity.posZ);
-					if((dx1+dy1+dz1)<(dx+dy+dz))
-						sound.setPos(xCoord, yCoord, zCoord);
-				}
-			}
-			if(active)
-			{
-				if(worldObj.getTotalWorldTime()%4==0)
-				{
-					ForgeDirection fd = ForgeDirection.getOrientation(facing).getOpposite();
-					worldObj.spawnParticle("largesmoke", xCoord+.5+fd.offsetX*1.25, yCoord+2.25, zCoord+.5+fd.offsetZ*1.25, 0,0,0);
-				}
-				if(sound==null || !ClientUtils.mc().getSoundHandler().isSoundPlaying(sound))
-					sound = ClientUtils.generatePositionedIESound(worldObj, "immersiveengineering:dieselGenerator", .5f,1, false,0, xCoord,yCoord,zCoord);
+				ForgeDirection fd = ForgeDirection.getOrientation(facing).getOpposite();
+				worldObj.spawnParticle("largesmoke", xCoord+.5+fd.offsetX*1.25, yCoord+2.25, zCoord+.5+fd.offsetZ*1.25, 0,0,0);
 			}
 		}
 		else
@@ -124,7 +98,7 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockPart implemen
 				for(int i=0; i<3; i++)
 				{
 					IEnergyReceiver receiver = getOutput(i==1?-1:i==2?1:0);
-					if(receiver!=null && receiver.canConnectEnergy(ForgeDirection.DOWN))
+					if(receiver!=null && receiver.canConnectEnergy(ForgeDirection.DOWN) && receiver.receiveEnergy(ForgeDirection.DOWN,4096,true)>0)
 						connected++;
 				}
 				if(connected>0 && tank.getFluidAmount()>=fluidConsumed)
@@ -319,11 +293,7 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockPart implemen
 		//					}
 		//		}
 
-		if(sound!=null && sound.getXPosF()==xCoord && sound.getYPosF()==yCoord && sound.getZPosF()==zCoord)
-		{
-			ClientUtils.mc().getSoundHandler().stopSound(sound);
-			sound = null;
-		}
+		ImmersiveEngineering.proxy.stopTileSound("dieselGenerator", this);
 
 		if(formed && !worldObj.isRemote)
 		{

@@ -65,7 +65,7 @@ public class GuiManual extends GuiScreen
 				mPage.initPage(this, guiLeft+32,guiTop+28, pageButtons);
 			buttonList.addAll(pageButtons);
 		}
-		else if(manual.manualContents.keySet().size()==1)
+		else if(manual.getSortedCategoryList()==null||manual.getSortedCategoryList().length<=1)
 		{
 			ArrayList<String> lHeaders = new ArrayList<String>();
 			for(ManualEntry e : manual.manualContents.values())
@@ -86,9 +86,9 @@ public class GuiManual extends GuiScreen
 		else
 		{
 			ArrayList<String> lHeaders = new ArrayList<String>();
-			for(String cat : manual.manualContents.keySet())
+			for(String cat : manual.getSortedCategoryList())
 				if(manual.showCategoryInList(cat))
-					lHeaders.add(0, cat);
+					lHeaders.add(cat);
 			headers = lHeaders.toArray(new String[0]);
 			this.buttonList.add(new GuiClickableList(this, 0, guiLeft+40,guiTop+20, 100,148, 1f, 0, headers));
 		}

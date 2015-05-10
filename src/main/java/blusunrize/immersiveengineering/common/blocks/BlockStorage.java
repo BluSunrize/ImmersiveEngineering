@@ -3,7 +3,9 @@ package blusunrize.immersiveengineering.common.blocks;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 
 public class BlockStorage extends BlockIEBase
 {
@@ -28,6 +30,12 @@ public class BlockStorage extends BlockIEBase
 			}
 	}
 
+	@Override
+	public boolean isSideSolid(IBlockAccess world, int x, int y, int z, ForgeDirection side)
+	{
+		return true;
+	}
+	
 	@Override
 	public TileEntity createNewTileEntity(World p_149915_1_, int p_149915_2_)
 	{
