@@ -140,6 +140,12 @@ public class IEContent
 		itemBullet = new ItemBullet();
 		itemFluidContainers = new ItemIEBase("fluidContainers", 64, "bottleCreosote","bucketCreosote",  "bottlePlantoil","bucketPlantoil",  "bottleEthanol","bucketEthanol", "bottleBiodiesel","bucketBiodiesel")
 		{
+			@Override
+		    public boolean hasContainerItem(ItemStack stack)
+			{
+				return true;
+			}
+			@Override
 			public ItemStack getContainerItem(ItemStack itemStack)
 			{
 				return itemStack.getItemDamage()%2==0?new ItemStack(Items.glass_bottle): new ItemStack(Items.bucket);
