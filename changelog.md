@@ -1,4 +1,7 @@
-#####Version 0.1.8
+#####Version 0.1.9 - BUILT
+- added container items to creosote buckets+bottles
+
+#####Version 0.1.8 - BUILT
 - fixed sounds. Should not crash the server anymore and also loop fine
 - fixed the rendering of insulating glass
 - structural arms can be inverted
