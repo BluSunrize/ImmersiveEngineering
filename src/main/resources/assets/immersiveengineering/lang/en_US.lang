@@ -1,11 +1,11 @@
 # BLOCKS
 tile.ImmersiveEngineering.ore.Copper.name=Copper Ore
-tile.ImmersiveEngineering.ore.Aluminum.name=Bauxite Ore
+tile.ImmersiveEngineering.ore.Aluminium.name=Bauxite Ore
 tile.ImmersiveEngineering.ore.Lead.name=Lead Ore
 tile.ImmersiveEngineering.ore.Silver.name=Silver Ore
 tile.ImmersiveEngineering.ore.Nickel.name=Nickel Ore
 tile.ImmersiveEngineering.storage.Copper.name=Block of Copper
-tile.ImmersiveEngineering.storage.Aluminum.name=Block of Aluminium
+tile.ImmersiveEngineering.storage.Aluminium.name=Block of Aluminium
 tile.ImmersiveEngineering.storage.Lead.name=Block of Lead
 tile.ImmersiveEngineering.storage.Silver.name=Block of Silver
 tile.ImmersiveEngineering.storage.Nickel.name=Block of Nickel
@@ -74,7 +74,7 @@ tile.ImmersiveEngineering.hemp.name=Industrial Hemp
 fluid.creosote=Creosote Oil
 fluid.plantoil=Plant Oil
 fluid.ethanol=Ethanol
-fluid.biodiesel=Bio Diesel
+fluid.biodiesel=Biodiesel
 
 
 # ITEMS
@@ -118,8 +118,8 @@ item.ImmersiveEngineering.fluidContainers.bottlePlantoil.name=Bottle of Plant Oi
 item.ImmersiveEngineering.fluidContainers.bucketPlantoil.name=Bucket of Plant Oil
 item.ImmersiveEngineering.fluidContainers.bottleEthanol.name=Bottle of Ethanol
 item.ImmersiveEngineering.fluidContainers.bucketEthanol.name=Bucket of Ethanol
-item.ImmersiveEngineering.fluidContainers.bottleBiodiesel.name=Bottle of Bio Diesel
-item.ImmersiveEngineering.fluidContainers.bucketBiodiesel.name=Bucket of Bio Diesel
+item.ImmersiveEngineering.fluidContainers.bottleBiodiesel.name=Bottle of Biodiesel
+item.ImmersiveEngineering.fluidContainers.bucketBiodiesel.name=Bucket of Biodiesel
 
 item.ImmersiveEngineering.coil.copper.name=Copper Wire Coil
 item.ImmersiveEngineering.coil.electrum.name=Electrum Wire Coil
@@ -127,7 +127,7 @@ item.ImmersiveEngineering.coil.HV.name=High-Voltage Wire Coil
 item.ImmersiveEngineering.coil.rope.name=Hemp Rope Coil
 item.ImmersiveEngineering.coil.structural.name=Steel Cable Coil
 item.ImmersiveEngineering.tool.hammer.name=Engineers Hammer
-item.ImmersiveEngineering.tool.wirecutter.name=Engineers Wirecutters
+item.ImmersiveEngineering.tool.wirecutter.name=Engineers Wire Cutters
 item.ImmersiveEngineering.tool.voltmeter.name=Engineers Voltmeter
 item.ImmersiveEngineering.tool.manual.name=Engineers Manual
 
@@ -135,7 +135,7 @@ item.ImmersiveEngineering.revolver.normal.name=Revolver
 item.ImmersiveEngineering.revolver.elite.name=Elite Revolver
 item.ImmersiveEngineering.revolver.speedloader.name=Revolver Speedloader
 item.ImmersiveEngineering.revolver.sns.name=Elite Revolver
-item.ImmersiveEngineering.revolver.nerf.name=Nerf'd Revolver
+item.ImmersiveEngineering.revolver.nerf.name=Nerfed Revolver
 item.ImmersiveEngineering.revolver.oblivion.name=Oblivion
 item.ImmersiveEngineering.revolver.oathkeeper.name=Oathkeeper
 item.ImmersiveEngineering.revolver.bee.name=Beevolver
@@ -231,7 +231,7 @@ ie.manual.entry.hemp0=Industrial Hemp is a remarkable plant! Not only are its se
 ie.manual.entry.cokeoven.name=Coke Oven
 ie.manual.entry.cokeoven.subtext=Hot topic!
 ie.manual.entry.cokeoven0=The Coke Oven is the first important machine you will need to create in order to proceed with Immersive Engineering. It's functionality is simple, it will heat up coal or blocks of coal without supplying it with oxygen, creating Coal Coke, a carbon rich fuel. More importantly, this process creates §lCreosote Oil§r, which is used as a <link:treatedwood:preservative for wood>. Similarly you can also burn wooden logs into charcoal with this oven, albeit with a smaller yield of creosote.
-ie.manual.entry.cokeovenBlock=To form a Coke Oven, arrange 27 of these blocks in a 3x3x3 cube, and rightclick one of the sides' center blocks with an Engineers Hammer.<br>See the following page for a diagram.
+ie.manual.entry.cokeovenBlock=To form a Coke Oven, arrange 27 of these blocks in a 3x3x3 cube, and right click one of the sides' center blocks with an Engineers Hammer.<br>See the following page for a diagram.
 
 ie.manual.entry.treatedwood.name=Treated Wood
 ie.manual.entry.treatedwood.subtext=Highly Durable
@@ -242,15 +242,15 @@ ie.manual.entry.treatedwoodPost1=using the hammer on the sides of the topmost pa
 ie.manual.entry.wiring.name=Basic Wiring
 ie.manual.entry.wiring.subtext=Bzzzt!
 ie.manual.entry.wiring0=The energy-net of Immersive Engineering has four important blocks: §lCapacitors§r to store energy, §lconnectors§r as inputs and outputs for the net, §lrelays§r to connect wires together and §ltransformers§r to switch between different levels of wire.<br>In low- and medium-voltage systems (copper and electrum wires), connectors and relays are the same block, but high-voltage connectors will only ever accept one wire.
-ie.manual.entry.wiring1=To connect two blocks, simply click the first one with a wire coil, then use the same coil on the second block. The total transferrate between two points depends on the weakest type of wire between them.
+ie.manual.entry.wiring1=To connect two blocks, simply click the first one with a wire coil, then use the same coil on the second block. The total transfer rate between two points depends on the weakest type of wire between them.
 ie.manual.entry.wiring2=Note that restrictions apply based on blocks: Connectors and relays will only take wires of the same type that is already connected, transformers will only take two wires of a different type,<br>[cont]
 ie.manual.entry.wiring3=and wires can only connected to blocks that match the voltage.
 ie.manual.entry.wiringConnector=§lConnectors§r serve as in- and outputs to the IE Energy-Net. You can place them on capacitors or other RF handlers and they will transfer power through connected wires. HV Relays will still accept wires but can't in- or output, they serve as connection points between wires.
 ie.manual.entry.wiringCapacitor=§lCapacitors§r serve as energy storage units. You can use the hammer to adjust the configuration of each side, with blue designating an input, orange an output and no colour marking preventing any connection at all. Sneak while using the hammer to configure the side opposite of the one you clicked.
 ie.manual.entry.wiringTransformer0=§lTransformers§r allow you to transition between different types of wire. The weakest wire restricts the transfer rate. Note that HV Transformers can step down to LV or MV, so you do not need to chain two transformers.
 ie.manual.entry.wiringTransformer1=You can attach <link:wiring:transformers to wooden poles:3> as shown on the second image on page 4, however only non-HV Transformers can be placed like this.
-ie.manual.entry.wiringCutters=The §lWirecutters§r are used to removed all the wires connected to a block by simply rightclicking it.
-ie.manual.entry.wiringVoltmeter=The §lVoltmeter§r is used to measure connections. Rightclick a capacitor to read its current storage or sneak+rightclick two connectors to calculate the average loss between them.
+ie.manual.entry.wiringCutters=The §lWirecutters§r are used to removed all the wires connected to a block by simply right clicking it.
+ie.manual.entry.wiringVoltmeter=The §lVoltmeter§r is used to measure connections. Right click a capacitor to read its current storage or sneak+right click two connectors to calculate the average loss between them.
 
 ie.manual.entry.generator.name=Power Generation
 ie.manual.entry.generator.subtext=
@@ -267,7 +267,7 @@ ie.manual.entry.thermoElectric1=Placing a hot fluid on one side and a colder flu
 ie.manual.entry.blastfurnace.name=Blast Furnace
 ie.manual.entry.blastfurnace.subtext=Even hotter topic!
 ie.manual.entry.blastfurnace0=The Blast Furnace is used to increase the carbon contents in iron, turning it into steel. To achieve this, only pure, high-carbon fuels may be used for the furnace, specifically coal coke and charcoal.<br>The steel created in the blast furnace is an integral part of high-voltage architecture.
-ie.manual.entry.blastfurnaceBlock=To form a Blast Furnace, arrange 27 of these blocks in a 3x3x3 cube, and rightclick one of the sides' center blocks with an Engineers Hammer.<br>See the following page for a diagram.
+ie.manual.entry.blastfurnaceBlock=To form a Blast Furnace, arrange 27 of these blocks in a 3x3x3 cube, and right click one of the sides' center blocks with an Engineers Hammer.<br>See the following page for a diagram.
 
 ie.manual.entry.steelconstruction.name=Steel Constructions
 ie.manual.entry.steelconstruction.subtext=Riveting
@@ -287,12 +287,12 @@ ie.manual.entry.dieselgen0=High-Voltage architecture might be fascinating, but i
 ie.manual.entry.dieselgen1=The structure is built from Engine, Generator and Radiator blocks. Arrange them in the shape shown on the following side and hit either the central generator or central radiator with an Engineer's Hammer.
 ie.manual.entry.dieselgen2=Fuel is to be input at the bottom corners of the generator, whereas energy will be output to up to three connection on the top. The <config:i:dieselGen_output>RF/t the generator outputs will be split between all connected points.
 
-ie.manual.entry.biodiesel.name=Bio Diesel
+ie.manual.entry.biodiesel.name=Biodiesel
 ie.manual.entry.biodiesel.subtext=Green power!
-ie.manual.entry.biodiesel0=Combustible fuels are an easy to use and efficient fuel source. But with oil being a depleteable resource, something renewable would  be much preferable. Bio Diesel is the solution! By combining plant oil and ethanol, you can create a combustible fluid that will burn in the <link:dieselgen:Diesel Generator>.
+ie.manual.entry.biodiesel0=Combustible fuels are an easy to use and efficient fuel source. But with oil being a depletable resource, something renewable would  be much preferable. Bio Diesel is the solution! By combining plant oil and ethanol, you can create a combustible fluid that will burn in the <link:dieselgen:Diesel Generator>.
 ie.manual.entry.biodiesel1=Plant Oil is created by processing various seeds in the industrial squeezer. Create the structure pictured above and click one of the sides with an Engineer's Hammer to form it. Power is input at the top or bottom, fluids are output through any of the ports at the bottom of each side.
 ie.manual.entry.biodiesel2=Ethanol is gained by fermenting sugarcane. The fermenter's structure is created in a similar manner to that of the squeezer, as such power in- and fluid outputs are identical.
-ie.manual.entry.biodiesel3=Lastly, in order to refine plant oil and ethnaol into bio diesel, you will need to insert both fluids into a refinery and supply it with power. The structure is created as shown above and formed by clicking the center of the front with an Engineer's Hammer.
+ie.manual.entry.biodiesel3=Lastly, in order to refine plant oil and ethanol into biodiesel, you will need to insert both fluids into a refinery and supply it with power. The structure is created as shown above and formed by clicking the center of the front with an Engineer's Hammer.
 ie.manual.entry.biodiesel4=The front of the refinery serves as fluid output, whereas the inputs are found on the smaller sides. Energy is supplied through the connector at the back. Applying a redstone signal to the control panel on the left will halt the refinery's process.
 
 ie.manual.entry.conveyor.name=Conveyor Belts
