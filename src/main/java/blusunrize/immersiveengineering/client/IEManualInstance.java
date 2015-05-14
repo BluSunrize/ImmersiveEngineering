@@ -43,8 +43,17 @@ public class IEManualInstance extends ManualInstance
 				int[] iA = Config.getIntArray(segment[2]);
 				if(segment.length>3)
 					try{
-						int idx = Integer.parseInt(segment[3]);
-						result = ""+iA[idx];
+						if(segment[3].startsWith("l"))
+						{
+							int limiter = Integer.parseInt(segment[3].substring(1));
+							for(int i=0; i<limiter; i++)
+								result += (i>0?", ":"")+iA[i];
+						}
+						else
+						{
+							int idx = Integer.parseInt(segment[3]);
+							result = ""+iA[idx];
+						}
 					}catch(Exception ex){
 						break;
 					}

@@ -21,9 +21,14 @@ import blusunrize.immersiveengineering.common.IESaveData;
 
 import com.google.common.collect.ArrayListMultimap;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.relauncher.Side;
+
 public class ImmersiveNetHandler
 {
 	private static HashMap<Integer, ArrayListMultimap<ChunkCoordinates,Connection>> directConnections = new HashMap<Integer, ArrayListMultimap<ChunkCoordinates,Connection>>();
+	private static ArrayListMultimap<ChunkCoordinates, AbstractConnection> indirectConnections = ArrayListMultimap.create();
+
 	private static ArrayListMultimap<ChunkCoordinates,Connection> getMultimap(int dimension)
 	{
 		if(directConnections.get(dimension)==null)
@@ -38,13 +43,15 @@ public class ImmersiveNetHandler
 	{
 		getMultimap(world.provider.dimensionId).get(node).add(new Connection(node, connection, cableType, distance));
 		getMultimap(world.provider.dimensionId).get(connection).add(new Connection(connection, node, cableType, distance));
-		indirectConnections.clear();
+		if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
+			indirectConnections.clear();
 		IESaveData.setDirty(world.provider.dimensionId);
 	}
 	public static void addConnection(World world, ChunkCoordinates node, Connection con)
 	{
 		getMultimap(world.provider.dimensionId).put(node, con);
-		indirectConnections.clear();
+		if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
+			indirectConnections.clear();
 		IESaveData.setDirty(world.provider.dimensionId);
 	}
 	public static Set<Integer> getRelevantDimensions()
@@ -66,7 +73,8 @@ public class ImmersiveNetHandler
 	public static void clearConnectionsOriginatingFrom(ChunkCoordinates node, World world)
 	{
 		getMultimap(world.provider.dimensionId).removeAll(node);
-		indirectConnections.clear();
+		if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
+			indirectConnections.clear();
 	}
 
 	/**
@@ -104,7 +112,8 @@ public class ImmersiveNetHandler
 			}
 		}
 		IESaveData.setDirty(world.provider.dimensionId);
-		indirectConnections.clear();
+		if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
+			indirectConnections.clear();
 	}
 
 	/**
@@ -138,7 +147,8 @@ public class ImmersiveNetHandler
 				}
 		}
 		IESaveData.setDirty(world.provider.dimensionId);
-		indirectConnections.clear();
+		if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
+			indirectConnections.clear();
 	}
 
 	/*
@@ -205,7 +215,6 @@ public class ImmersiveNetHandler
 		return closedList;
 	}
 	 */
-	static ArrayListMultimap<ChunkCoordinates, AbstractConnection> indirectConnections = ArrayListMultimap.create();
 	public static List<AbstractConnection> getIndirectEnergyConnections(ChunkCoordinates node, World world)
 	{
 		List<IImmersiveConnectable> openList = new ArrayList<IImmersiveConnectable>();
@@ -266,7 +275,8 @@ public class ImmersiveNetHandler
 			openList.remove(0);
 		}
 		Collections.sort(closedList);
-		indirectConnections.putAll(node, closedList);
+		if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
+			indirectConnections.putAll(node, closedList);
 		return closedList;
 	}
 
@@ -345,10 +355,7 @@ public class ImmersiveNetHandler
 		{
 			float f = 0;
 			for(Connection c : subConnections)
-			{
-//				System.out.println("subCon");
 				f += (c.length/(float)c.cableType.getMaxLength())*c.cableType.getLossRatio();
-			}
 			return f;
 		}
 	}

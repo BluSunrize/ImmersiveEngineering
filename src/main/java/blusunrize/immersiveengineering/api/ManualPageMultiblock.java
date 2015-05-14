@@ -39,6 +39,7 @@ public class ManualPageMultiblock extends ManualPages
 	@Override
 	public void initPage(GuiManual gui, int x, int y, List<GuiButton> pageButtons)
 	{
+		int yOff = 0;
 		if(multiblock.getStructureManual()!=null)
 		{
 			ItemStack[][][] structure = multiblock.getStructureManual();
@@ -64,12 +65,16 @@ public class ManualPageMultiblock extends ManualPages
 				blockCount += perLvl; 
 			}
 			tick= (showLayer==-1?blockCount:countPerLevel[showLayer])*40;
-			int yOff = (structureHeight-1)*12+structureWidth*5+structureLength*5+16;
+			yOff = (structureHeight-1)*12+structureWidth*5+structureLength*5+16;
+			yOff = Math.max(48, yOff);
 			pageButtons.add(new GuiButtonManualNavigation(gui, 100, x+4,y+yOff/2-5, 10,10, 4));
-			pageButtons.add(new GuiButtonManualNavigation(gui, 101, x+4,y+yOff/2-8-16, 10,16, 3));
-			pageButtons.add(new GuiButtonManualNavigation(gui, 102, x+4,y+yOff/2+8, 10,16, 2));
+			if(structureHeight>1)
+			{
+				pageButtons.add(new GuiButtonManualNavigation(gui, 101, x+4,y+yOff/2-8-16, 10,16, 3));
+				pageButtons.add(new GuiButtonManualNavigation(gui, 102, x+4,y+yOff/2+8, 10,16, 2));
+			}
 		}
-		super.initPage(gui, x, y, pageButtons);
+		super.initPage(gui, x, y+yOff, pageButtons);
 	}
 
 	@Override
@@ -89,7 +94,7 @@ public class ManualPageMultiblock extends ManualPages
 
 			int xHalf = (structureWidth*5 - structureLength*5);
 			int yOffPartial = (structureHeight-1)*12+structureWidth*5+structureLength*5;
-			int yOffTotal = yOffPartial+16;
+			int yOffTotal = Math.max(48, yOffPartial+16);
 
 			GL11.glDisable(GL11.GL_DEPTH_TEST);
 			GL11.glEnable(GL12.GL_RESCALE_NORMAL);
@@ -129,7 +134,7 @@ public class ManualPageMultiblock extends ManualPages
 			if(highlighted!=null)
 				gui.renderToolTip(highlighted, mx, my);
 			RenderHelper.disableStandardItemLighting();
-            
+
 			manual.fontRenderer.setUnicodeFlag(true);
 			if(localizedText!=null&&!localizedText.isEmpty())
 				manual.fontRenderer.drawSplitString(localizedText, x,y+yOffTotal, 120, manual.getTextColour());

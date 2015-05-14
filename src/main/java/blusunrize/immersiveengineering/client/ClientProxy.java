@@ -2,19 +2,28 @@ package blusunrize.immersiveengineering.client;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
+import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
+import blusunrize.immersiveengineering.api.DieselHandler;
 import blusunrize.immersiveengineering.api.ManualPageMultiblock;
+import blusunrize.immersiveengineering.api.ThermoelectricHandler;
 import blusunrize.immersiveengineering.client.fx.EntityFXItemParts;
 import blusunrize.immersiveengineering.client.gui.GuiBlastFurnace;
 import blusunrize.immersiveengineering.client.gui.GuiCokeOven;
@@ -40,6 +49,7 @@ import blusunrize.immersiveengineering.client.render.TileRenderPost;
 import blusunrize.immersiveengineering.client.render.TileRenderRefinery;
 import blusunrize.immersiveengineering.client.render.TileRenderRelayHV;
 import blusunrize.immersiveengineering.client.render.TileRenderTransformer;
+import blusunrize.immersiveengineering.client.render.TileRenderWallMount;
 import blusunrize.immersiveengineering.client.render.TileRenderWatermill;
 import blusunrize.immersiveengineering.client.render.TileRenderWindmill;
 import blusunrize.immersiveengineering.client.render.TileRenderWindmillAdvanced;
@@ -66,10 +76,12 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockCokeO
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockCrusher;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockDieselGenerator;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockFermenter;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockLightningRod;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockRefinery;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockSqueezer;
 import blusunrize.immersiveengineering.common.blocks.stone.TileEntityBlastFurnace;
 import blusunrize.immersiveengineering.common.blocks.stone.TileEntityCokeOven;
+import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWallMount;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWatermill;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWindmill;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWindmillAdvanced;
@@ -79,11 +91,12 @@ import blusunrize.immersiveengineering.common.entities.EntityRevolvershot;
 import blusunrize.immersiveengineering.common.items.ItemRevolver;
 import blusunrize.immersiveengineering.common.util.IESound;
 import blusunrize.immersiveengineering.common.util.Lib;
-import blusunrize.lib.manual.IManualPage;
+import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.lib.manual.ManualPages;
 import blusunrize.lib.manual.ManualPages.PositionedItemStack;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
+import cpw.mods.fml.common.registry.GameData;
 
 public class ClientProxy extends CommonProxy
 {
@@ -112,6 +125,7 @@ public class ClientProxy extends CommonProxy
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityWatermill.class, new TileRenderWatermill());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityWindmill.class, new TileRenderWindmill());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityWindmillAdvanced.class, new TileRenderWindmillAdvanced());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityWallMount.class, new TileRenderWallMount());
 
 		RenderingRegistry.registerBlockHandler(new BlockRenderWoodenDecoration());
 		//STONE
@@ -138,27 +152,22 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.ItemDisplay(manual, "oresLead", new ItemStack(IEContent.blockOres,1,2),new ItemStack(IEContent.itemMetal,1,2)),
 				new ManualPages.ItemDisplay(manual, "oresSilver", new ItemStack(IEContent.blockOres,1,3),new ItemStack(IEContent.itemMetal,1,3)),
 				new ManualPages.ItemDisplay(manual, "oresNickel", new ItemStack(IEContent.blockOres,1,4),new ItemStack(IEContent.itemMetal,1,4)));
-		ArrayList<IManualPage> pages = new ArrayList();
-		if(Config.getBoolean("crushingOreRecipe"))
+		ArrayList<PositionedItemStack[]> recipes = new ArrayList();
+		for(int i=0; i<7; i++)
 		{
-			PositionedItemStack[][] recipes = new PositionedItemStack[16][3];
-			for(int i=0; i<7; i++)
-			{
-				ItemStack ore = i==0?new ItemStack(Blocks.iron_ore): i==1?new ItemStack(Blocks.gold_ore): new ItemStack(IEContent.blockOres,1,i-2);
-				ItemStack ingot = i==0?new ItemStack(Items.iron_ingot): i==1?new ItemStack(Items.gold_ingot): new ItemStack(IEContent.itemMetal,1,i-2);
-				recipes[i*2][0] = new PositionedItemStack(ore, 24, 0);
-				recipes[i*2][1] = new PositionedItemStack(new ItemStack(IEContent.itemTool,1,0), 42, 0);
-				recipes[i*2][2] = new PositionedItemStack(new ItemStack(IEContent.itemMetal,2,8+i), 78, 0);
-				recipes[i*2+1][0] = new PositionedItemStack(ingot, 24, 0);
-				recipes[i*2+1][1] = new PositionedItemStack(new ItemStack(IEContent.itemTool,1,0), 42, 0);
-				recipes[i*2+1][2] = new PositionedItemStack(new ItemStack(IEContent.itemMetal,1,8+i), 78, 0);
-			}
-			pages.add(new ManualPages.CraftingMulti(manual, "oreProcessing", (Object[])recipes));
+			ItemStack ore = i==0?new ItemStack(Blocks.iron_ore): i==1?new ItemStack(Blocks.gold_ore): new ItemStack(IEContent.blockOres,1,i-2);
+			ItemStack ingot = i==0?new ItemStack(Items.iron_ingot): i==1?new ItemStack(Items.gold_ingot): new ItemStack(IEContent.itemMetal,1,i-2);
+			if(Config.getBoolean("crushingOreRecipe"))
+				recipes.add(new PositionedItemStack[]{ new PositionedItemStack(ore, 24, 0), new PositionedItemStack(new ItemStack(IEContent.itemTool,1,0), 42, 0), new PositionedItemStack(new ItemStack(IEContent.itemMetal,2,8+i), 78, 0)});
+			recipes.add(new PositionedItemStack[]{ new PositionedItemStack(ingot, 24, 0), new PositionedItemStack(new ItemStack(IEContent.itemTool,1,0), 42, 0), new PositionedItemStack(new ItemStack(IEContent.itemMetal,1,8+i), 78, 0)});
 		}
-		pages.add(new ManualPages.CraftingMulti(manual, "oreProcessing_blend", (Object[])new PositionedItemStack[][]{
-			new PositionedItemStack[]{new PositionedItemStack(OreDictionary.getOres("dustCopper"),24,0), new PositionedItemStack(OreDictionary.getOres("dustNickel"),42,0), new PositionedItemStack(new ItemStack(IEContent.itemMetal,2,15),78,0)},
-			new PositionedItemStack[]{new PositionedItemStack(OreDictionary.getOres("dustGold"),24,0), new PositionedItemStack(OreDictionary.getOres("dustSilver"),42,0), new PositionedItemStack(new ItemStack(IEContent.itemMetal,2,16),78,0)}}));
-		manual.addEntry("oreProcessing", "general", pages.toArray(new IManualPage[0]));
+		PositionedItemStack[][] recA = recipes.toArray(new PositionedItemStack[0][0]);
+		manual.addEntry("oreProcessing", "general", 
+				new ManualPages.CraftingMulti(manual, "oreProcessing0", (Object[])recA),
+				new ManualPages.CraftingMulti(manual, "oreProcessing1", (Object[])new PositionedItemStack[][]{
+					new PositionedItemStack[]{new PositionedItemStack(OreDictionary.getOres("dustCopper"),24,0), new PositionedItemStack(OreDictionary.getOres("dustNickel"),42,0), new PositionedItemStack(new ItemStack(IEContent.itemMetal,2,15),78,0)},
+					new PositionedItemStack[]{new PositionedItemStack(OreDictionary.getOres("dustGold"),24,0), new PositionedItemStack(OreDictionary.getOres("dustSilver"),42,0), new PositionedItemStack(new ItemStack(IEContent.itemMetal,2,16),78,0)}}));
+
 		manual.addEntry("hemp", "general", 
 				new ManualPages.ItemDisplay(manual, "hemp0", new ItemStack(IEContent.blockCrop,1,5),new ItemStack(IEContent.itemSeeds)));
 		manual.addEntry("cokeoven", "general",
@@ -168,7 +177,7 @@ public class ClientProxy extends CommonProxy
 		manual.addEntry("treatedwood", "general",
 				new ManualPages.Text(manual, "treatedwood0"), 
 				new ManualPages.Crafting(manual, "", new ItemStack(IEContent.blockWoodenDecoration,1,0),new ItemStack(IEContent.blockWoodenDecoration,1,2),new ItemStack(IEContent.blockWoodenStair)),
-				new ManualPages.Crafting(manual, "", new ItemStack(IEContent.itemMaterial,1,0),new ItemStack(IEContent.blockWoodenDecoration,1,1)),
+				new ManualPages.Crafting(manual, "", new ItemStack(IEContent.itemMaterial,1,0),new ItemStack(IEContent.blockWoodenDecoration,1,1),new ItemStack(IEContent.blockWoodenDecoration,1,6)),
 				new ManualPages.Crafting(manual, "treatedwoodPost0", new ItemStack(IEContent.blockWoodenDevice,1,0)),
 				new ManualPages.Text(manual, "treatedwoodPost1"));
 		manual.addEntry("blastfurnace", "general",
@@ -177,18 +186,26 @@ public class ClientProxy extends CommonProxy
 				new ManualPageMultiblock(manual, "", MultiblockBlastFurnace.instance));
 		manual.addEntry("steelconstruction", "general",
 				new ManualPages.Text(manual, "steelconstruction0"),
-				new ManualPages.Crafting(manual, "", new ItemStack(IEContent.blockMetalDecoration,1,0),new ItemStack(IEContent.blockMetalDecoration,1,1),new ItemStack(IEContent.blockMetalDecoration,1,3)));
+				new ManualPages.Crafting(manual, "", new ItemStack(IEContent.blockMetalDecoration,1,0),new ItemStack(IEContent.blockMetalDecoration,1,1),new ItemStack(IEContent.blockMetalDecoration,1,3)),
+				new ManualPages.Crafting(manual, "", new ItemStack(IEContent.blockMetalDecoration,1,9)));
 		manual.addEntry("multiblocks", "general",
 				new ManualPages.Text(manual, "multiblocks0"),
 				new ManualPages.Crafting(manual, "", new ItemStack(IEContent.blockMetalDecoration,1,BlockMetalDecoration.META_lightEngineering),new ItemStack(IEContent.blockMetalDecoration,1,BlockMetalDecoration.META_heavyEngineering)),
 				new ManualPages.Crafting(manual, "", new ItemStack(IEContent.blockMetalDecoration,1,BlockMetalDecoration.META_generator),new ItemStack(IEContent.blockMetalDecoration,1,BlockMetalDecoration.META_radiator)));
+		Map<String,Integer> sortedMap = DieselHandler.getPlantoilValuesSorted(true);
+		String[][] table = formatToTable_ItemIntHashmap(sortedMap,"mB");	
+		sortedMap = DieselHandler.getEthanolValuesSorted(true);
+		String[][] table2 = formatToTable_ItemIntHashmap(sortedMap,"mB");
 		manual.addEntry("biodiesel", "general",
 				new ManualPages.Text(manual, "biodiesel0"),
 				new ManualPages.Crafting(manual, "", new ItemStack(IEContent.blockMetalMultiblocks,1,BlockMetalMultiblocks.META_squeezer),new ItemStack(IEContent.blockMetalMultiblocks,1,BlockMetalMultiblocks.META_fermenter)),
 				new ManualPageMultiblock(manual, "biodiesel1", MultiblockSqueezer.instance),
+				new ManualPages.Table(manual, "biodiesel1T", table),
 				new ManualPageMultiblock(manual, "biodiesel2", MultiblockFermenter.instance),
+				new ManualPages.Table(manual, "biodiesel2T", table2),
 				new ManualPageMultiblock(manual, "biodiesel3", MultiblockRefinery.instance),
 				new ManualPages.Text(manual, "biodiesel4"));
+
 		manual.addEntry("wiring", "energy",
 				new ManualPages.Text(manual, "wiring0"), 
 				new ManualPages.Crafting(manual, "wiring1", new ItemStack(IEContent.itemWireCoil,1,OreDictionary.WILDCARD_VALUE)),
@@ -205,17 +222,37 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.CraftingMulti(manual, "generatorWindmill", new ItemStack(IEContent.blockWoodenDevice,1,2),new ItemStack(IEContent.itemMaterial,1,2)),
 				new ManualPages.CraftingMulti(manual, "generatorWatermill", new ItemStack(IEContent.blockWoodenDevice,1,1),new ItemStack(IEContent.itemMaterial,1,1)),
 				new ManualPages.CraftingMulti(manual, "generatorWindmillImproved", new ItemStack(IEContent.blockWoodenDevice,1,3),new ItemStack(IEContent.itemMaterial,1,4),new ItemStack(IEContent.itemMaterial,1,5)));
+		sortedMap = ThermoelectricHandler.getThermalValuesSorted(true);
+		table = formatToTable_ItemIntHashmap(sortedMap,"K");	
 		manual.addEntry("thermoElectric", "energy", 
 				new ManualPages.Crafting(manual, "thermoElectric0", new ItemStack(IEContent.blockMetalDevice,1,BlockMetalDevices.META_thermoelectricGen)),
-				new ManualPages.Text(manual, "thermoElectric1"));
+				new ManualPages.Table(manual, "thermoElectric1", table));
 		manual.addEntry("highvoltage", "energy",
 				new ManualPages.Text(manual, "highvoltage0"),
 				new ManualPages.Crafting(manual, "", new ItemStack(IEContent.blockMetalDevice,1,8),new ItemStack(IEContent.blockMetalDevice,1,4)),
 				new ManualPages.Crafting(manual, "", new ItemStack(IEContent.blockMetalDevice,1,5),new ItemStack(IEContent.blockMetalDevice,1,7)));
+		sortedMap = DieselHandler.getFuelValuesSorted(true);
+		Map.Entry<String,Integer>[] dieselFuels = sortedMap.entrySet().toArray(new Map.Entry[0]);
+		table = new String[dieselFuels.length][2];
+		for(int i=0; i<table.length; i++)
+		{
+			Fluid f = FluidRegistry.getFluid(dieselFuels[i].getKey());
+			String sf = f!=null?new FluidStack(f,1000).getUnlocalizedName():"";
+			int bt = dieselFuels[i].getValue();
+			String am = Utils.formatDouble(bt/20f, "0.###")+" ("+bt+")";
+			table[i] = new String[]{sf,am};
+		}
 		manual.addEntry("dieselgen", "energy",
 				new ManualPages.Text(manual, "dieselgen0"),
 				new ManualPageMultiblock(manual, "dieselgen1", MultiblockDieselGenerator.instance),
-				new ManualPages.Text(manual, "dieselgen2"));
+				new ManualPages.Text(manual, "dieselgen2"),
+				new ManualPages.Table(manual, "dieselgen3", table)
+				);
+
+		manual.addEntry("lightningrod", "energy",
+				new ManualPages.Crafting(manual, "lightningrod0",  new ItemStack(IEContent.blockMetalMultiblocks,1,BlockMetalMultiblocks.META_lightningRod)),
+				new ManualPageMultiblock(manual, "lightningrod1", MultiblockLightningRod.instance));
+
 		manual.addEntry("conveyor", "machines",
 				new ManualPages.Crafting(manual, "conveyor0", new ItemStack(IEContent.blockMetalDevice,1,BlockMetalDevices.META_conveyorBelt)),
 				new ManualPages.Text(manual, "conveyor1"));
@@ -261,7 +298,7 @@ public class ClientProxy extends CommonProxy
 				{
 					ClientUtils.mc().getSoundHandler().stopSound(sound);
 					sound = null;
-					soundMap.put(soundName, sound);
+					soundMap.remove(soundName);
 				}
 			}
 			else
@@ -313,5 +350,51 @@ public class ClientProxy extends CommonProxy
 				EntityFX particleMysterious = new EntityFXItemParts(tile.getWorldObj(), stack, tile.getWorldObj().rand.nextInt(16), x,y,z, mX,mY,mZ);
 				Minecraft.getMinecraft().effectRenderer.addEffect(particleMysterious);
 			}
+	}
+
+	static String[][] formatToTable_ItemIntHashmap(Map<String, Integer> map, String valueType)
+	{
+		Map.Entry<String,Integer>[] sortedMapArray = map.entrySet().toArray(new Map.Entry[0]);
+		ArrayList<String[]> list = new ArrayList();
+		try{
+			for(int i=0; i<sortedMapArray.length; i++)
+			{
+				String item = null;
+				if(!OreDictionary.getOres(sortedMapArray[i].getKey()).isEmpty() && OreDictionary.getOres(sortedMapArray[i].getKey()).size()>0)
+				{
+					ItemStack is = OreDictionary.getOres(sortedMapArray[i].getKey()).get(0);
+					if(is!=null)
+						item = is.getDisplayName();
+				}
+				else
+				{
+					int lIndx = sortedMapArray[i].getKey().lastIndexOf("::");
+					if(lIndx>0)
+					{
+						String key = sortedMapArray[i].getKey().substring(0,lIndx);
+						Item keyItem = GameData.getItemRegistry().getObject(key);
+						Block keyBlock = keyItem instanceof ItemBlock?Block.getBlockFromName(key):null;
+						if(keyBlock!=null && !Blocks.air.equals(keyBlock))
+						{
+							int reqMeta = Integer.parseInt(sortedMapArray[i].getKey().substring(lIndx+2));
+							item = new ItemStack(keyBlock,1,reqMeta).getDisplayName();
+						}
+						else if(keyItem!=null)
+						{
+							int reqMeta = Integer.parseInt(sortedMapArray[i].getKey().substring(lIndx+2));
+							item = new ItemStack(keyItem,1,reqMeta).getDisplayName();
+						}
+					}
+				}
+				if(item!=null)
+				{
+					int bt = sortedMapArray[i].getValue();
+					String am = bt+" "+valueType;
+					list.add(new String[]{item,am});
+				}
+			}
+		}catch(Exception e)	{}
+		String[][] table = list.toArray(new String[0][]);
+		return table;
 	}
 }

@@ -6,6 +6,7 @@ import java.util.Set;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.StatCollector;
@@ -23,7 +24,8 @@ import blusunrize.immersiveengineering.common.IESaveData;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.Utils;
-import cofh.api.energy.IEnergyHandler;
+import cofh.api.energy.IEnergyProvider;
+import cofh.api.energy.IEnergyReceiver;
 
 import com.google.common.collect.ImmutableSet;
 
@@ -46,6 +48,17 @@ public class ItemIETool extends ItemIEBase
 	}
 
 	@Override
+	public boolean hasContainerItem(ItemStack stack)
+	{
+		return false;
+	}
+	@Override
+	public ItemStack getContainerItem(ItemStack itemStack)
+	{
+		return itemStack.getItemDamage()%2==0?new ItemStack(Items.glass_bottle): new ItemStack(Items.bucket);
+	}
+
+	@Override
 	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
 	{
 		if(!world.isRemote)
@@ -65,11 +78,22 @@ public class ItemIETool extends ItemIEBase
 			}
 			else if(stack.getItemDamage()==2)
 			{
-				if(!player.isSneaking() && world.getTileEntity(x, y, z) instanceof IEnergyHandler)
+				if(!player.isSneaking() && (world.getTileEntity(x, y, z) instanceof IEnergyReceiver || world.getTileEntity(x, y, z) instanceof IEnergyProvider))
 				{
-					int stored = ((IEnergyHandler)world.getTileEntity(x, y, z)).getEnergyStored(ForgeDirection.getOrientation(side));
-					int max = ((IEnergyHandler)world.getTileEntity(x, y, z)).getMaxEnergyStored(ForgeDirection.getOrientation(side));
-					player.addChatMessage(new ChatComponentTranslation(Lib.CHAT_INFO+"energyStorage", stored,max));
+					int max = 0;
+					int stored = 0;
+					if(world.getTileEntity(x, y, z) instanceof IEnergyReceiver)
+					{
+						max = ((IEnergyReceiver)world.getTileEntity(x, y, z)).getMaxEnergyStored(ForgeDirection.getOrientation(side));
+						stored = ((IEnergyReceiver)world.getTileEntity(x, y, z)).getEnergyStored(ForgeDirection.getOrientation(side));
+					}
+					else if(world.getTileEntity(x, y, z) instanceof IEnergyProvider)
+					{
+						max = ((IEnergyProvider)world.getTileEntity(x, y, z)).getMaxEnergyStored(ForgeDirection.getOrientation(side));
+						stored = ((IEnergyProvider)world.getTileEntity(x, y, z)).getEnergyStored(ForgeDirection.getOrientation(side));
+					}
+					if(max>0)
+						player.addChatMessage(new ChatComponentTranslation(Lib.CHAT_INFO+"energyStorage", stored,max));
 				}
 				if(player.isSneaking() && world.getTileEntity(x, y, z) instanceof IImmersiveConnectable)
 				{
@@ -100,12 +124,12 @@ public class ItemIETool extends ItemIEBase
 	}
 
 	@Override
-    public boolean doesSneakBypassUse(World world, int x, int y, int z, EntityPlayer player)
-    {
+	public boolean doesSneakBypassUse(World world, int x, int y, int z, EntityPlayer player)
+	{
 		if(player.getCurrentEquippedItem()!=null && this.equals(player.getCurrentEquippedItem().getItem()))
 			return player.getCurrentEquippedItem().getItemDamage()==0;
-        return false;
-    }
+		return false;
+	}
 
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)

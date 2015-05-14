@@ -7,6 +7,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.IIcon;
 
 public class ItemBlockIECrop extends ItemBlock
 {
@@ -31,5 +32,10 @@ public class ItemBlockIECrop extends ItemBlock
 	public String getUnlocalizedName(ItemStack itemstack)
 	{
 		return getUnlocalizedName()+"."+((BlockIECrop)field_150939_a).subNames[itemstack.getItemDamage()];
+	}
+	@Override
+    public IIcon getIconFromDamage(int p_77617_1_)
+	{
+		return this.field_150939_a.getIcon(1, p_77617_1_);
 	}
 }

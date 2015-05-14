@@ -1,4 +1,4 @@
-package blusunrize.immersiveengineering.common.minetweaker;
+package blusunrize.immersiveengineering.common.util.compat.minetweaker;
 
 import java.util.List;
 
@@ -18,11 +18,11 @@ public class BlastFurnace
 	@ZenMethod
 	public static void addRecipe(IItemStack output, IIngredient input, int time)
 	{
-		Object oInput = IEMinetweaker.toObject(input);
+		Object oInput = MTHelper.toObject(input);
 		if(oInput==null)
 			return;
 
-		BlastFurnaceRecipe r = new BlastFurnaceRecipe(IEMinetweaker.toStack(output), oInput, time);
+		BlastFurnaceRecipe r = new BlastFurnaceRecipe(MTHelper.toStack(output), oInput, time);
 		MineTweakerAPI.apply(new Add(r));
 	}
 
@@ -68,7 +68,7 @@ public class BlastFurnace
 	@ZenMethod
 	public static void removeRecipe(IItemStack output)
 	{
-		MineTweakerAPI.apply(new Remove(IEMinetweaker.toStack(output)));
+		MineTweakerAPI.apply(new Remove(MTHelper.toStack(output)));
 	}
 	private static class Remove implements IUndoableAction
 	{
@@ -118,7 +118,7 @@ public class BlastFurnace
 	@ZenMethod
 	public static void addFuel(IIngredient input, int time)
 	{
-		Object oInput = IEMinetweaker.toObject(input);
+		Object oInput = MTHelper.toObject(input);
 		if(oInput==null)
 			return;
 
@@ -170,7 +170,7 @@ public class BlastFurnace
 	@ZenMethod
 	public static void removeFuel(IItemStack output)
 	{
-		MineTweakerAPI.apply(new RemoveFuel(IEMinetweaker.toStack(output)));
+		MineTweakerAPI.apply(new RemoveFuel(MTHelper.toStack(output)));
 	}
 	private static class RemoveFuel implements IUndoableAction
 	{

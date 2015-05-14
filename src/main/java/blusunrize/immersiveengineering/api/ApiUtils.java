@@ -1,11 +1,15 @@
 package blusunrize.immersiveengineering.api;
 
-import cpw.mods.fml.common.registry.GameData;
+import java.util.Comparator;
+import java.util.Map;
+import java.util.TreeMap;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
+import cpw.mods.fml.common.registry.GameData;
 
 public class ApiUtils
 {
@@ -24,7 +28,7 @@ public class ApiUtils
 			return OreDictionary.itemMatches((ItemStack)o, stack, false);
 		return false;
 	}
-	
+
 	public static String nameFromStack(ItemStack stack)
 	{
 		if(stack==null)
@@ -36,7 +40,7 @@ public class ApiUtils
 		catch (NullPointerException e) {}
 		return "";
 	}
-	
+
 	public static ChunkCoordinates toCC(Object object)
 	{
 		if(object instanceof ChunkCoordinates)
@@ -54,5 +58,42 @@ public class ApiUtils
 			return (IImmersiveConnectable)world.getTileEntity( ((ChunkCoordinates)object).posX, ((ChunkCoordinates)object).posY, ((ChunkCoordinates)object).posZ);
 		}
 		return null;
+	}
+
+
+	public static Map<String, Integer> sortMap(Map<String, Integer> map, boolean inverse)
+	{
+		TreeMap<String,Integer> sortedMap = new TreeMap<String,Integer>(new ValueComparator(map, inverse));
+		sortedMap.putAll(map);
+		return sortedMap;
+	}
+	static class ValueComparator implements Comparator<String>
+	{
+		Map<String, Integer> base;
+		boolean inverse;
+		public ValueComparator(Map<String, Integer> base, boolean inverse)
+		{
+			this.base = base;
+			this.inverse = inverse;
+		}
+		@Override
+		//Cant return equal to keys separate
+		public int compare(String s0, String s1)
+		{
+			if(inverse)
+			{
+				if (base.get(s0) <= base.get(s1))
+					return -1;
+				else
+					return 1;
+			}
+			else
+			{
+				if (base.get(s0) >= base.get(s1))
+					return -1;
+				else
+					return 1;
+			}
+		}
 	}
 }

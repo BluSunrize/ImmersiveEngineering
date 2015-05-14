@@ -1,3 +1,26 @@
+
+#####Version 0.1.10
+- added wooden and steel wall mounts
+- improved squeezer and fermenter, no more while loops. Hopefully lag-preventing
+- made watermills sync their rotation when stack against eachother
+- tried to improve conveyor belts
+- melons work in the fermenter to produces ethanol now
+- fixed some localization derps
+- buckets of fluid no longer stack, and bottles are limited to 16
+- IE's fences no longer block chests from opening
+- Structural Arms now invert if the aim is above half the block, not above two thirds
+- IE multiblocks now show their energy stored in WAILA
+- Crusher actually consumes power
+- Diesel Generator has Redstone control now
+- changed vector calculations on watermill. Should reduce lag
+- reduced vein size from Bauxite (at least the default config for it). It's apparently quite abundant 
+- add pickBlock support for capacitors, to make creative testing easier
+- crusher particles no longer break all the things and also spawn according to currently processed item
+- wires actually do lose energy now!
+- added partial tick time to windmills, dieselgen's fan and crusher
+- added table to the DieselGen entry, showing possible fuels
+- renamed watermills to water wheels
+
 #####Version 0.1.9 - BUILT
 - added container items to creosote buckets+bottles
 

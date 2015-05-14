@@ -75,15 +75,15 @@ public class ClientUtils
 		double l = 0;
 		int limiter = 0;
 		boolean vertical = connection.end.posX==connection.start.posX && connection.end.posZ==connection.start.posZ;
-		while(!vertical && true && limiter<100)
+		while(!vertical && true && limiter<300)
 		{
 			limiter++;
 			l += 0.01;
 			if (Math.sinh(l)/l >= Math.sqrt(k*k - dy*dy)/dw)
 				break;
 		}
-		if(limiter>=100)
-			System.out.println("Catenary loop greatly exceeded its maximum at "+limiter);
+		//		if(limiter>=100)
+		//			System.out.println("Catenary loop greatly exceeded its maximum at "+limiter);
 		double a = dw/2/l;
 		double p = (0+dw-a*Math.log((k+dy)/(k-dy)))*0.5;
 		double q = (dy+0-k*Math.cosh(l)/Math.sinh(l))*0.5;
@@ -287,6 +287,11 @@ public class ClientUtils
 
 	public static void drawColouredRect(int x, int y, int w, int h, int colour)
 	{
+		GL11.glDisable(GL11.GL_TEXTURE_2D);
+		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glDisable(GL11.GL_ALPHA_TEST);
+		OpenGlHelper.glBlendFunc(770, 771, 1, 0);
+		GL11.glShadeModel(GL11.GL_SMOOTH);
 		tes().startDrawingQuads();
 		tes().setColorRGBA_I(colour, colour>>24&255);
 		tes().addVertex(x, y+h, 0);
@@ -294,6 +299,10 @@ public class ClientUtils
 		tes().addVertex(x+w, y, 0 );
 		tes().addVertex(x, y, 0);
 		tes().draw();
+		GL11.glShadeModel(GL11.GL_FLAT);
+		GL11.glDisable(GL11.GL_BLEND);
+		GL11.glEnable(GL11.GL_ALPHA_TEST);
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
 	}
 	public static void drawGradientRect(int x0, int y0, int x1, int y1, int colour0, int colour1)
 	{

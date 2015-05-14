@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDecoration;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorStructural;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityStructuralArm;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityWallMountSteel;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 
@@ -113,6 +114,12 @@ public class BlockRenderMetalDecoration implements ISimpleBlockRenderingHandler
 			{
 				GL11.glTranslatef(-.5f, -.5F, -.5f);
 				TileEntityRendererDispatcher.instance.renderTileEntityAt(new TileEntityConnectorStructural(), 0.0D, 0.0D, 0.0D, 0.0F);
+				GL11.glEnable(32826);
+			}
+			else if(metadata==BlockMetalDecoration.META_wallMount)
+			{
+				GL11.glScalef(1.5f,1.5f,1.5f);
+				TileEntityRendererDispatcher.instance.renderTileEntityAt(new TileEntityWallMountSteel(), 0.0D, 0.0D, 0.0D, 0.0F);
 				GL11.glEnable(32826);
 			}
 			else
@@ -243,7 +250,7 @@ public class BlockRenderMetalDecoration implements ISimpleBlockRenderingHandler
 			double rowTotal = rowTop+rowBot+1;
 			double yTop = 1-rowTop/rowTotal;
 			double yBot = rowBot/rowTotal;
-			
+
 			double d3 = iTop.getInterpolatedU(0);
 			double d4 = iTop.getInterpolatedU(16);
 			double d5 = iTop.getInterpolatedV(0);
@@ -258,7 +265,7 @@ public class BlockRenderMetalDecoration implements ISimpleBlockRenderingHandler
 			double y00 = f==4||f==2?yBot : yTop;
 			double y01 = f==4||f==3?yBot : yTop; 
 
-			
+
 			// SIDE 0
 			ClientUtils.BlockLightingInfo info = ClientUtils.calculateBlockLighting(0, world, block, x,y,z, 1,1,1);
 			tes.setColorOpaque_F(info.colorRedTopLeft, info.colorGreenTopLeft, info.colorBlueTopLeft);
@@ -273,7 +280,7 @@ public class BlockRenderMetalDecoration implements ISimpleBlockRenderingHandler
 			tes.setColorOpaque_F(info.colorRedTopRight, info.colorGreenTopRight, info.colorBlueTopRight);
 			tes.setBrightness(info.brightnessTopRight);
 			tes.addVertexWithUV(x+1, y+(inv?1-y11:0), z+1, d4, d6);
-			
+
 			tes.setColorOpaque_F(info.colorRedBottomLeft, info.colorGreenBottomLeft, info.colorBlueBottomLeft);
 			tes.setBrightness(info.brightnessBottomLeft);
 			tes.addVertexWithUV(x+0, y+(inv?1-y00:0)+.0001, z+0, d3, d5);
@@ -286,7 +293,7 @@ public class BlockRenderMetalDecoration implements ISimpleBlockRenderingHandler
 			tes.setColorOpaque_F(info.colorRedBottomRight, info.colorGreenBottomRight, info.colorBlueBottomRight);
 			tes.setBrightness(info.brightnessBottomRight);
 			tes.addVertexWithUV(x+1, y+(inv?1-y10:0)+.0001, z+0, d7, d9);
-			
+
 			// SIDE 1
 			info = ClientUtils.calculateBlockLighting(1, world, block, x,y,z, 1,1,1);
 			tes.setColorOpaque_F(info.colorRedTopLeft, info.colorGreenTopLeft, info.colorBlueTopLeft);
@@ -301,7 +308,7 @@ public class BlockRenderMetalDecoration implements ISimpleBlockRenderingHandler
 			tes.setColorOpaque_F(info.colorRedTopRight, info.colorGreenTopRight, info.colorBlueTopRight);
 			tes.setBrightness(info.brightnessTopRight);
 			tes.addVertexWithUV(x+0, y+(inv?1:y01), z+1, d8, d10);
-			
+
 			tes.setColorOpaque_F(info.colorRedBottomLeft, info.colorGreenBottomLeft, info.colorBlueBottomLeft);
 			tes.setBrightness(info.brightnessBottomLeft);
 			tes.addVertexWithUV(x+1, y+(inv?1:y10)-.0001, z+0, d7, d9);
@@ -314,7 +321,7 @@ public class BlockRenderMetalDecoration implements ISimpleBlockRenderingHandler
 			tes.setColorOpaque_F(info.colorRedBottomRight, info.colorGreenBottomRight, info.colorBlueBottomRight);
 			tes.setBrightness(info.brightnessBottomRight);
 			tes.addVertexWithUV(x+0, y+(inv?1:y00)-.0001, z+0, d3, d5);
-			
+
 			// SIDE 2
 			info = ClientUtils.calculateBlockLighting(2, world, block, x,y,z, 1,1,1);
 			tes.setColorOpaque_F(info.colorRedTopLeft, info.colorGreenTopLeft, info.colorBlueTopLeft);
@@ -342,7 +349,7 @@ public class BlockRenderMetalDecoration implements ISimpleBlockRenderingHandler
 			tes.setColorOpaque_F(info.colorRedBottomRight, info.colorGreenBottomRight, info.colorBlueBottomRight);
 			tes.setBrightness(info.brightnessBottomRight);
 			tes.addVertexWithUV(x+1, y+(inv?1:0), z+0+.0001, iSide.getMaxU(), iSide.getMinV());
-			
+
 			// SIDE 3
 			info = ClientUtils.calculateBlockLighting(3, world, block, x,y,z, 1,1,1);
 			tes.setColorOpaque_F(info.colorRedTopLeft, info.colorGreenTopLeft, info.colorBlueTopLeft);
@@ -370,7 +377,7 @@ public class BlockRenderMetalDecoration implements ISimpleBlockRenderingHandler
 			tes.setColorOpaque_F(info.colorRedBottomRight, info.colorGreenBottomRight, info.colorBlueBottomRight);
 			tes.setBrightness(info.brightnessBottomRight);
 			tes.addVertexWithUV(x+1, y+(inv?1:0), z+1-.0001, iSide.getMaxU(), iSide.getMinV());
-		
+
 			// SIDE 4
 			info = ClientUtils.calculateBlockLighting(4, world, block, x,y,z, 1,1,1);
 			tes.setColorOpaque_F(info.colorRedTopLeft, info.colorGreenTopLeft, info.colorBlueTopLeft);
@@ -398,7 +405,7 @@ public class BlockRenderMetalDecoration implements ISimpleBlockRenderingHandler
 			tes.setColorOpaque_F(info.colorRedBottomRight, info.colorGreenBottomRight, info.colorBlueBottomRight);
 			tes.setBrightness(info.brightnessBottomRight);
 			tes.addVertexWithUV(x+0+.0001, y+(inv?1:0), z+0, iSide.getMinU(), iSide.getMinV());
-			
+
 			// SIDE 5
 			info = ClientUtils.calculateBlockLighting(5, world, block, x,y,z, 1,1,1);
 			tes.setColorOpaque_F(info.colorRedTopLeft, info.colorGreenTopLeft, info.colorBlueTopLeft);
@@ -426,10 +433,10 @@ public class BlockRenderMetalDecoration implements ISimpleBlockRenderingHandler
 			tes.setColorOpaque_F(info.colorRedBottomRight, info.colorGreenBottomRight, info.colorBlueBottomRight);
 			tes.setBrightness(info.brightnessBottomRight);
 			tes.addVertexWithUV(x+1-.0001, y+(inv?1-y10:y10), z+0, iSide.getMinU(), iSide.getInterpolatedV(y10*16));
-			
+
 			return true;
 		}
-		else if(world.getBlockMetadata(x, y, z) != BlockMetalDecoration.META_connectorStrutural)
+		else if(world.getBlockMetadata(x, y, z) != BlockMetalDecoration.META_connectorStrutural && world.getBlockMetadata(x, y, z) != BlockMetalDecoration.META_wallMount)
 		{
 			renderer.setRenderBounds(0,0,0,1,1,1);
 			return renderer.renderStandardBlock(block, x, y, z);

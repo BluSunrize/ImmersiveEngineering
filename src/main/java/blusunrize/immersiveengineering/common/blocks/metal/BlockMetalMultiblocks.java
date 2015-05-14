@@ -26,7 +26,6 @@ import blusunrize.immersiveengineering.client.render.BlockRenderMetalMultiblocks
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
 import blusunrize.immersiveengineering.common.util.Lib;
-import blusunrize.immersiveengineering.common.util.Utils;
 
 public class BlockMetalMultiblocks extends BlockIEBase
 {
@@ -129,24 +128,6 @@ public class BlockMetalMultiblocks extends BlockIEBase
 			if(!tile.formed && tile.pos==-1)
 				world.spawnEntityInWorld(new EntityItem(world, x+.5,y+.5,z+.5, tile.getOriginalBlock()));
 		}
-
-		if(world.getTileEntity(x, y, z) instanceof TileEntityLightningRod)
-		{
-			byte off = ((TileEntityLightningRod)world.getTileEntity(x, y, z)).type;
-			int xx = x- (off%3-1);
-			int zz = z- (off/3-1);
-
-			for(int ix=-1;ix<=1;ix++)
-				for(int iz=-1;iz<=1;iz++)
-					if(world.getTileEntity(xx+ix, y, zz+iz) instanceof TileEntityLightningRod)
-					{
-						((TileEntityLightningRod)world.getTileEntity(xx+ix, y, zz+iz)).formed=false;
-						((TileEntityLightningRod)world.getTileEntity(xx+ix, y, zz+iz)).type=4;
-						world.getTileEntity(xx+ix, y, zz+iz).markDirty();
-						world.markBlockForUpdate(xx+ix, y, zz+iz);
-					}
-		}
-
 		super.breakBlock(world, x, y, z, par5, par6);
 	}
 	@Override
@@ -170,22 +151,6 @@ public class BlockMetalMultiblocks extends BlockIEBase
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
 	{
-		if(world.getTileEntity(x, y, z) instanceof TileEntityLightningRod && Utils.isHammer(player.getCurrentEquippedItem()))
-		{
-			for(int xx=-1;xx<=1;xx++)
-				for(int zz=-1;zz<=1;zz++)
-					if(!(world.getTileEntity(x+xx, y+0, z+zz) instanceof TileEntityLightningRod && !((TileEntityLightningRod)world.getTileEntity(x+xx, y+0, z+zz)).formed))
-						return false;
-			for(int xx=-1;xx<=1;xx++)
-				for(int zz=-1;zz<=1;zz++)
-				{
-					((TileEntityLightningRod)world.getTileEntity(x+xx, y+0, z+zz)).type=(byte) ((xx+1)+(zz+1)*3);
-					((TileEntityLightningRod)world.getTileEntity(x+xx, y+0, z+zz)).formed=true;
-					world.getTileEntity(x+xx, y+0, z+zz).markDirty();
-					world.markBlockForUpdate(x+xx,y+0,z+zz);
-				}
-			return true;
-		}
 		if(world.getTileEntity(x, y, z) instanceof TileEntitySqueezer)
 		{
 			if(!player.isSneaking() && ((TileEntitySqueezer)world.getTileEntity(x, y, z)).formed )
@@ -217,6 +182,12 @@ public class BlockMetalMultiblocks extends BlockIEBase
 	@Override
 	public boolean isSideSolid(IBlockAccess world, int x, int y, int z, ForgeDirection side)
 	{
+		if(world.getTileEntity(x, y, z) instanceof TileEntityDieselGenerator)
+		{
+			TileEntityDieselGenerator tile = (TileEntityDieselGenerator)world.getTileEntity(x, y, z);
+			if(tile.pos==39||tile.pos==40||tile.pos==41)
+				return true;
+		}
 		if(world.getTileEntity(x, y, z) instanceof TileEntityRefinery)
 		{
 			TileEntityRefinery tile = (TileEntityRefinery)world.getTileEntity(x, y, z);

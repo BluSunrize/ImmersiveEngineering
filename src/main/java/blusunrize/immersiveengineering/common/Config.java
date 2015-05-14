@@ -3,6 +3,8 @@ package blusunrize.immersiveengineering.common;
 import java.util.HashMap;
 
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.config.Property;
+import blusunrize.immersiveengineering.api.WireType;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 
 public class Config
@@ -30,14 +32,30 @@ public class Config
 		Configuration config = new Configuration(event.getSuggestedConfigurationFile());
 		config.load();
 
-		setIntArray("cableTransferRate", config.get("General", "Cable transfer rates", new int[]{256,1024,4096,0,0}, "The transfer rates in RF/t for the cable tiers (copper, electrum, HV, Strutural Rope & Cable(no transfer) )").getIntList());
-		setDoubleArray("cableLossRatio", config.get("General", "Cable loss", new double[]{.05,.025,.1,1,1}, "The percentage of power lost every 16 blocks of distance for the cable tiers (copper, electrum, HV, Strutural Rope & Cable(no transfer) )").getDoubleList());
-		setIntArray("cableColouration", config.get("General", "Cable colouration", new int[]{0xd4804a,0xedad62,0x6f6f6f, 0x967e6d,0x6f6f6f}, "").getIntList());
-		setIntArray("cableLength", config.get("General", "Cable length", new int[]{16,16,32,32,32}, "The maximum length cables can have. Copper and Electrum should be similar, Steel is meant for long range transport, Structural Rope & Cables are purely decorational").getIntList());
+		Property cableProperty = config.get("General", "Cable transfer rates", new int[]{256,1024,4096,0,0}, "The transfer rates in RF/t for the cable tiers (copper, electrum, HV, Strutural Rope & Cable(no transfer) )");
+		if(cableProperty.getIntList().length<WireType.values().length)
+			cableProperty.set(new int[]{256,1024,4096,0,0});
+		setIntArray("cableTransferRate", cableProperty.getIntList());
+
+		cableProperty = config.get("General", "Cable loss", new double[]{.05,.025,.1,1,1}, "The percentage of power lost every 16 blocks of distance for the cable tiers (copper, electrum, HV, Strutural Rope & Cable(no transfer) )");
+		if(cableProperty.getDoubleList().length<WireType.values().length)
+			cableProperty.set(new double[]{.05,.025,.1,1,1});
+		setDoubleArray("cableLossRatio", cableProperty.getDoubleList());
+
+		cableProperty = config.get("General", "Cable colouration", new int[]{0xd4804a,0xedad62,0x6f6f6f, 0x967e6d,0x6f6f6f}, "");
+		if(cableProperty.getIntList().length<WireType.values().length)
+			cableProperty.set(new int[]{0xd4804a,0xedad62,0x6f6f6f, 0x967e6d,0x6f6f6f});
+		setIntArray("cableColouration", cableProperty.getIntList());
+
+		cableProperty = config.get("General", "Cable length", new int[]{16,16,32,32,32}, "The maximum length cables can have. Copper and Electrum should be similar, Steel is meant for long range transport, Structural Rope & Cables are purely decorational");
+		if(cableProperty.getIntList().length<WireType.values().length)
+			cableProperty.set(new int[]{16,16,32,32,32});
+		setIntArray("cableLength", cableProperty.getIntList());
 
 		setBoolean("increasedRenderboxes", config.get("General", "Increased Renderboxes", true, "By default all devices that accept cables have increased renderbounds to show cables even if the block itself is not in view. Disabling this reduces them to their minimum sizes, which might improve FPS on low-power PCs").getBoolean());
 		setBoolean("colourblindSupport", config.get("General", "Support for colourblind people, gives a text-based output on capacitor sides", false).getBoolean());
-
+		setBoolean("increasedTileRenderdistance", config.get("General", "Increased Tile Renderdistance", false, "Increase the distance at which certain TileEntities (specifically windmills) are still visible. Disable this to increase performance on weaker PCs").getBoolean());
+		
 		setBoolean("ic2compat", config.get("General", "IC2 Compatability", true, "Set this to false to prevent wires from accepting and outputting EU").getBoolean());
 		setBoolean("gregtechcompat", config.get("General", "GregTech Compatability", true, "Set this to false to prevent wires from outputting GregTech EU").getBoolean());
 		setInt("euConversion", config.get("General", "EU Conversion", 4, "The amount of RF that equal 1 EU. 4 by default, so 4RF == 1EU and .25EU == 1RF").getInt());
@@ -65,10 +83,14 @@ public class Config
 		setInt("refinery_consumption", config.get("Machines", "Refinery: Consumed", 80, "The RF per tick the Fermenter will consume to mix two fluids").getInt());
 
 		setIntArray("ore_copper", config.get("OreGen", "Copper", new int[]{8, 40,72, 8,100}, "Generation config for Copper Ore. Parameters: Blocks per vein, lowest possible Y, highest possible Y, veins per chunk, chance for vein to spawn (out of 100). Set vein size to 0 to disable the generation").getIntList());
-		setIntArray("ore_bauxite", config.get("OreGen", "Bauxite", new int[]{8, 40,85, 8,100}, "Generation config for Bauxite Ore. Parameters: Blocks per vein, lowest possible Y, highest possible Y, veins per chunk, chance for vein to spawn (out of 100). Set vein size to 0 to disable the generation").getIntList());
+		setIntArray("ore_bauxite", config.get("OreGen", "Bauxite", new int[]{4, 40,85, 8,100}, "Generation config for Bauxite Ore. Parameters: Blocks per vein, lowest possible Y, highest possible Y, veins per chunk, chance for vein to spawn (out of 100). Set vein size to 0 to disable the generation").getIntList());
 		setIntArray("ore_lead", config.get("OreGen", "Lead", new int[]{6,  8,36, 4,100}, "Generation config for Lead Ore. Parameters: Blocks per vein, lowest possible Y, highest possible Y, veins per chunk, chance for vein to spawn (out of 100). Set vein size to 0 to disable the generation").getIntList());
 		setIntArray("ore_silver", config.get("OreGen", "Silver", new int[]{8,  8,40, 4,80}, "Generation config for Silver Ore. Parameters: Blocks per vein, lowest possible Y, highest possible Y, veins per chunk, chance for vein to spawn (out of 100). Set vein size to 0 to disable the generation").getIntList());
 		setIntArray("ore_nickel", config.get("OreGen", "Nickel", new int[]{6,  8,24, 2,100}, "Generation config for Nickel Ore. Parameters: Blocks per vein, lowest possible Y, highest possible Y, veins per chunk, chance for vein to spawn (out of 100). Set vein size to 0 to disable the generation").getIntList());
+
+		//		Property propReGen = config.get("TESTING", "ReGen", false);
+		//		System.out.println("IE REGEN PROPERTY: "+propReGen+" value: "+propReGen.getBoolean());
+		//		propReGen.set(false);
 
 		config.save();
 	}

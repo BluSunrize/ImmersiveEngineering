@@ -163,7 +163,9 @@ public class BlockWoodenDevices extends BlockIEBase
 			int yy = y - off[1];
 			int zz = z - ((f==2||f==3)?0:off[0]);
 			if(world.getTileEntity(xx,yy,zz) instanceof TileEntityWatermill)
+			{
 				((TileEntityWatermill)world.getTileEntity(xx,yy,zz)).resetRotationVec();
+			}
 		}
 	}
 

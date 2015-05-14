@@ -196,7 +196,7 @@ public abstract class BlockIEBase extends BlockContainer
 		{
 			super(name, mat, 1, itemBlock, subNames);
 		}
-
+		
 		@Override
 		public void registerBlockIcons(IIconRegister iconRegister)
 		{

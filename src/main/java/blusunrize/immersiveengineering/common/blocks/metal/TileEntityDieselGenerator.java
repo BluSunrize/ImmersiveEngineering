@@ -25,9 +25,10 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class TileEntityDieselGenerator extends TileEntityMultiblockPart implements IFluidHandler
 {
 	public int facing = 2;
-	public FluidTank tank = new FluidTank(12000);
+	public FluidTank tank = new FluidTank(8000);
 	public boolean active = false;
 
+	public float fanRotationStep=0;
 	public float fanRotation=0;
 	public int fanFadeIn=0;
 	public int fanFadeOut=0;
@@ -73,6 +74,7 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockPart implemen
 				step += (fanFadeOut/80f)*base;
 				fanFadeOut--;
 			}
+			fanRotationStep = step;
 			fanRotation += step;
 			fanRotation %= 360;
 		}
@@ -89,7 +91,11 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockPart implemen
 		else
 		{
 			boolean prevActive = active;
-			if(tank.getFluid()!=null && tank.getFluid().getFluid()!=null)
+			boolean rs =
+					worldObj.isBlockIndirectlyGettingPowered(xCoord+(facing==4?-1:facing==5?1: -1), yCoord, zCoord+(facing==2?-1:facing==3?1: -1))
+					|| worldObj.isBlockIndirectlyGettingPowered(xCoord+(facing==4?-1:facing==5?1: 1), yCoord, zCoord+(facing==2?-1:facing==3?1: 1));
+
+			if(!rs && tank.getFluid()!=null && tank.getFluid().getFluid()!=null)
 			{
 				int burnTime = DieselHandler.getBurnTime(tank.getFluid().getFluid());
 				int fluidConsumed = 1000/burnTime;
@@ -304,7 +310,6 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockPart implemen
 			int startX = xCoord-(f==5?il: f==4?-il: f==2?iw: -iw);
 			int startY = yCoord-ih;
 			int startZ = zCoord-(f==3?il: f==2?-il: f==5?iw: -iw);
-			System.out.println("break start: "+startX+","+startY+","+startZ);
 			for(int l=0;l<5;l++)
 				for(int w=-1;w<=1;w++)
 					for(int h=-1;h<=(l==4?0:1);h++)

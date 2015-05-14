@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.api;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
@@ -39,5 +40,9 @@ public class ThermoelectricHandler
 		if(temperatureMap.containsKey(ApiUtils.nameFromStack(new ItemStack(block, 1, meta))+"::"+meta))
 			return temperatureMap.get(ApiUtils.nameFromStack(new ItemStack(block, 1, meta))+"::"+meta);
 		return -1;
+	}
+	public static Map<String, Integer> getThermalValuesSorted(boolean inverse)
+	{
+		return ApiUtils.sortMap(temperatureMap, inverse);
 	}
 }

@@ -38,6 +38,14 @@ public class DieselHandler
 			return dieselGenBurnTime.containsKey(fuel.getName());
 		return false;
 	}
+	public static HashMap<String, Integer> getFuelValues()
+	{
+		return dieselGenBurnTime;
+	}
+	public static Map<String, Integer> getFuelValuesSorted(boolean inverse)
+	{
+		return ApiUtils.sortMap(dieselGenBurnTime, inverse);
+	}
 
 
 	static HashMap<String, Integer> plantoilOutput = new HashMap<String, Integer>();
@@ -81,6 +89,14 @@ public class DieselHandler
 		}
 		return 0;
 	}
+	public static HashMap<String, Integer> getPlantoilValues()
+	{
+		return plantoilOutput;
+	}
+	public static Map<String, Integer> getPlantoilValuesSorted(boolean inverse)
+	{
+		return ApiUtils.sortMap(plantoilOutput, inverse);
+	}
 
 
 	static HashMap<String, Integer> ethanolOutput = new HashMap<String, Integer>();
@@ -121,5 +137,13 @@ public class DieselHandler
 				}
 			}
 		return 0;
+	}
+	public static HashMap<String, Integer> getEthanolValues()
+	{
+		return ethanolOutput;
+	}
+	public static Map<String, Integer> getEthanolValuesSorted(boolean inverse)
+	{
+		return ApiUtils.sortMap(ethanolOutput, inverse);
 	}
 }

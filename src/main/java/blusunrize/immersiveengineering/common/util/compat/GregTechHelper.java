@@ -1,12 +1,11 @@
-package blusunrize.immersiveengineering.common.util;
+package blusunrize.immersiveengineering.common.util.compat;
 
 import java.lang.reflect.Method;
 
-import blusunrize.immersiveengineering.common.Config;
 import net.minecraft.tileentity.TileEntity;
+import blusunrize.immersiveengineering.common.util.Lib;
 
-
-public class ModCompatability
+public class GregTechHelper
 {
 	static Class c_IEnergyConnected;
 	static Method m_IEnergyConnected;
@@ -40,14 +39,5 @@ public class ModCompatability
 			e.printStackTrace();
 		}
 		return 0;
-	}
-	
-	public static double convertRFtoEU(int rf, int maxTier)
-	{
-		return Math.min(rf/Config.getInt("euConversion"), maxTier==1?32:maxTier==2?128:maxTier==3?512: 2048);
-	}
-	public static int convertEUtoRF(double eu)
-	{
-		return (int)eu*Config.getInt("euConversion");
 	}
 }

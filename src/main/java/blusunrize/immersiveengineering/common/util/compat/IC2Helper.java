@@ -1,4 +1,4 @@
-package blusunrize.immersiveengineering.common.util;
+package blusunrize.immersiveengineering.common.util.compat;
 
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;

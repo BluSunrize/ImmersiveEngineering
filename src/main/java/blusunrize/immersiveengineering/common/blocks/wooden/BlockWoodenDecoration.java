@@ -62,7 +62,7 @@ public class BlockWoodenDecoration extends BlockIEBase
 	{
 		int meta = world.getBlockMetadata(x, y, z);
 		if(meta==1)
-			return side==UP || side==DOWN;
+			return side==UP;
 		if(meta==2)
 			return side==DOWN;
 		if(meta==3)
@@ -87,8 +87,6 @@ public class BlockWoodenDecoration extends BlockIEBase
 			return true;
 		if(meta==5)
 			return (world.getBlock(x, y, z)==this&&world.getBlockMetadata(x,y,z)==5)?false:true;
-		if(meta==6)
-			return true;
 		return super.shouldSideBeRendered(world, x, y, z, side);
 	}
 
@@ -116,12 +114,6 @@ public class BlockWoodenDecoration extends BlockIEBase
 	}
 
 	@Override
-	public int onBlockPlaced(World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int meta)
-	{
-		return meta;
-	}
-
-	@Override
 	public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
 	{
 		if(world.getBlockMetadata(x, y, z)==1)
@@ -130,8 +122,12 @@ public class BlockWoodenDecoration extends BlockIEBase
 			this.setBlockBounds(0,0,0, 1,.5f,1);
 		else if(world.getBlockMetadata(x, y, z)==3)
 			this.setBlockBounds(0,.5f,0, 1,1,1);
-		else if(world.getBlockMetadata(x, y, z)==6)
-			this.setBlockBounds(.25f,0,.25f,.75f,.75f,.75f);
+		else if(world.getTileEntity(x, y, z) instanceof TileEntityWallMount)
+		{
+			TileEntityWallMount arm = (TileEntityWallMount)world.getTileEntity(x, y, z);
+			int f = arm.facing;
+			this.setBlockBounds(f==5?0:.3125f,arm.inverted?.375f:0,f==3?0:.3125f, f==4?1:.6875f,arm.inverted?1:.625f,f==2?1:.6875f);
+		}
 		else
 			this.setBlockBounds(0,0,0,1,1,1);
 	}
@@ -199,7 +195,7 @@ public class BlockWoodenDecoration extends BlockIEBase
 		switch(meta)
 		{
 		case 6:
-			new TileEntityWallMount();
+			return new TileEntityWallMount();
 		}
 		return null;
 	}
