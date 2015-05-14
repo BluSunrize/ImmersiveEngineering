@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import net.minecraft.block.Block;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -54,7 +55,7 @@ public class TileEntityRefinery extends TileEntityMultiblockPart implements IFlu
 		if(!formed || pos!=17)
 			return;
 
-		if(!worldObj.isRemote && worldObj.getBlockPowerInput(xCoord+(facing==4?-1:facing==5?1:facing==2?-2:2),yCoord+1,zCoord+(facing==2?-1:facing==3?1:facing==4?2:-2))<=0)
+		if(!worldObj.isRemote && worldObj.isBlockIndirectlyGettingPowered(xCoord+(facing==4?-1:facing==5?1:facing==2?-2:2),yCoord+1,zCoord+(facing==2?-1:facing==3?1:facing==4?2:-2)))
 		{
 			boolean update = false;
 			if(tank0.getFluidAmount()>=8 && tank1.getFluidAmount()>=8)
@@ -107,11 +108,6 @@ public class TileEntityRefinery extends TileEntityMultiblockPart implements IFlu
 			}
 		}
 	}
-	boolean hasTankSpace()
-	{
-		return false;
-	}
-
 
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt)
@@ -244,21 +240,45 @@ public class TileEntityRefinery extends TileEntityMultiblockPart implements IFlu
 						int xx = (f==4?l: f==5?-l: f==2?-w : w);
 						int yy = h;
 						int zz = (f==2?l: f==3?-l: f==5?-w : w);
-						if((startX+xx!=xCoord) || (startY+yy!=yCoord) || (startZ+zz!=zCoord))
+						
+						
+
+						ItemStack s = null;
+						if(worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz) instanceof TileEntityRefinery)
 						{
-							ItemStack s = null;
-							if(worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz) instanceof TileEntityRefinery)
+							s = ((TileEntityRefinery)worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz)).getOriginalBlock();
+							((TileEntityRefinery)worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz)).formed=false;
+						}
+						if(startX+xx==xCoord && startY+yy==yCoord && startZ+zz==zCoord)
+							s = this.getOriginalBlock();
+						if(s!=null && Block.getBlockFromItem(s.getItem())!=null)
+						{
+							if(startX+xx==xCoord && startY+yy==yCoord && startZ+zz==zCoord)
+								worldObj.spawnEntityInWorld(new EntityItem(worldObj, xCoord+.5,yCoord+.5,zCoord+.5, s));
+							else
 							{
-								((TileEntityRefinery)worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz)).formed=false;
-								s = ((TileEntityRefinery)worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz)).getOriginalBlock();
-							}
-							if(s!=null && Block.getBlockFromItem(s.getItem())!=null)
-							{
-								if(Block.getBlockFromItem(s.getItem())==this.getBlockType() && s.getItemDamage()==this.getBlockMetadata())
+								if(Block.getBlockFromItem(s.getItem())==IEContent.blockMetalMultiblocks)
 									worldObj.setBlockToAir(startX+xx,startY+yy,startZ+zz);
 								worldObj.setBlock(startX+xx,startY+yy,startZ+zz, Block.getBlockFromItem(s.getItem()), s.getItemDamage(), 0x3);
 							}
 						}
+//						
+//						
+//						if((startX+xx!=xCoord) || (startY+yy!=yCoord) || (startZ+zz!=zCoord))
+//						{
+//							ItemStack s = null;
+//							if(worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz) instanceof TileEntityRefinery)
+//							{
+//								((TileEntityRefinery)worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz)).formed=false;
+//								s = ((TileEntityRefinery)worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz)).getOriginalBlock();
+//							}
+//							if(s!=null && Block.getBlockFromItem(s.getItem())!=null)
+//							{
+//								if(Block.getBlockFromItem(s.getItem())==this.getBlockType() && s.getItemDamage()==this.getBlockMetadata())
+//									worldObj.setBlockToAir(startX+xx,startY+yy,startZ+zz);
+//								worldObj.setBlock(startX+xx,startY+yy,startZ+zz, Block.getBlockFromItem(s.getItem()), s.getItemDamage(), 0x3);
+//							}
+//						}
 					}
 		}
 	}
@@ -285,14 +305,14 @@ public class TileEntityRefinery extends TileEntityMultiblockPart implements IFlu
 	public int getEnergyStored(ForgeDirection from)
 	{
 		if(this.master()!=null)
-			this.master().energyStorage.getEnergyStored();
+			return this.master().energyStorage.getEnergyStored();
 		return energyStorage.getEnergyStored();
 	}
 	@Override
 	public int getMaxEnergyStored(ForgeDirection from)
 	{
 		if(this.master()!=null)
-			this.master().energyStorage.getMaxEnergyStored();
+			return this.master().energyStorage.getMaxEnergyStored();
 		return energyStorage.getMaxEnergyStored();
 	}
 }

@@ -39,7 +39,8 @@ public class TileEntityWatermill extends TileEntityIEBase
 		else
 			canTurn=getRotationVec().lengthVector()!=0;
 
-		rotationVec=null;
+		if(worldObj.getTotalWorldTime()%200==((xCoord^zCoord)&200))
+			rotationVec=null;
 		prevRotation = rotation;
 
 		ForgeDirection fd = ForgeDirection.getOrientation(facing);
@@ -58,17 +59,16 @@ public class TileEntityWatermill extends TileEntityIEBase
 			}
 
 			double perTick = 360f/1440 * (1/360f) * power/l;
-			for(int l2=1; l2<l; l2++)
-				if(worldObj.getTileEntity(xCoord+fd.offsetX*l2,yCoord,zCoord+fd.offsetZ*l2) instanceof TileEntityWatermill)
-				{
-					((TileEntityWatermill)worldObj.getTileEntity(xCoord+fd.offsetX*l2,yCoord,zCoord+fd.offsetZ*l2)).rotation += perTick;
-					((TileEntityWatermill)worldObj.getTileEntity(xCoord+fd.offsetX*l2,yCoord,zCoord+fd.offsetZ*l2)).rotation %= 1;
-					((TileEntityWatermill)worldObj.getTileEntity(xCoord+fd.offsetX*l2,yCoord,zCoord+fd.offsetZ*l2)).canTurn = perTick!=0;
-					((TileEntityWatermill)worldObj.getTileEntity(xCoord+fd.offsetX*l2,yCoord,zCoord+fd.offsetZ*l2)).multiblock = true;
-				}
 			canTurn = perTick!=0;
 			rotation += perTick;
 			rotation %= 1;
+			for(int l2=1; l2<l; l2++)
+				if(worldObj.getTileEntity(xCoord+fd.offsetX*l2,yCoord,zCoord+fd.offsetZ*l2) instanceof TileEntityWatermill)
+				{
+					((TileEntityWatermill)worldObj.getTileEntity(xCoord+fd.offsetX*l2,yCoord,zCoord+fd.offsetZ*l2)).rotation = rotation;
+					((TileEntityWatermill)worldObj.getTileEntity(xCoord+fd.offsetX*l2,yCoord,zCoord+fd.offsetZ*l2)).canTurn = canTurn;
+					((TileEntityWatermill)worldObj.getTileEntity(xCoord+fd.offsetX*l2,yCoord,zCoord+fd.offsetZ*l2)).multiblock = true;
+				}
 
 			if(!worldObj.isRemote)
 			{
@@ -83,7 +83,6 @@ public class TileEntityWatermill extends TileEntityIEBase
 		else if(!multiblock)
 		{
 			double perTick = 360f/1440 * (1/360f) * getPower();
-//			System.out.println("perTick "+perTick);
 			canTurn = perTick!=0;
 			rotation += perTick;
 			rotation %= 1;
@@ -121,6 +120,7 @@ public class TileEntityWatermill extends TileEntityIEBase
 			rotationVec = Vec3.createVectorHelper(0, 0, 0);
 			rotationVec = Utils.addVectors(rotationVec, getHorizontalVec());
 			rotationVec = Utils.addVectors(rotationVec, getVerticalVec());
+			worldObj.addBlockEvent(xCoord, yCoord, zCoord, getBlockType(), (int)(rotationVec.xCoord*10000), (int)(rotationVec.zCoord*10000));
 		}
 		return rotationVec;
 	}
@@ -178,6 +178,12 @@ public class TileEntityWatermill extends TileEntityIEBase
 		return true;
 	}
 
+	@Override
+	public boolean receiveClientEvent(int id, int arg)
+	{
+		rotationVec = Vec3.createVectorHelper(id/10000f, 0, arg/10000f);
+		return true;
+	}
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt)
 	{

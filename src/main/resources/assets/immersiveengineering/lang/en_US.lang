@@ -46,9 +46,10 @@ tile.ImmersiveEngineering.metalDecoration.heavyEngineering.name=Heavy Engineerin
 tile.ImmersiveEngineering.metalDecoration.generator.name=Generator Block
 tile.ImmersiveEngineering.metalDecoration.lightEngineering.name=Light Engineering Block
 tile.ImmersiveEngineering.metalDecoration.connectorStructural.name=Structural Cable Connector
+tile.ImmersiveEngineering.metalDecoration.wallMount.name=Steel Wall Mount
 
 tile.ImmersiveEngineering.woodenDevice.post.name=Wooden Post
-tile.ImmersiveEngineering.woodenDevice.watermill.name=Watermill
+tile.ImmersiveEngineering.woodenDevice.watermill.name=Water Wheel
 tile.ImmersiveEngineering.woodenDevice.windmill.name=Windmill
 tile.ImmersiveEngineering.woodenDevice.windmillAdvanced.name=Improved Windmill
 tile.ImmersiveEngineering.woodenDevice.crate.name=Wooden Storage Crate
@@ -59,7 +60,7 @@ tile.ImmersiveEngineering.woodenDecoration.slab0.name=Treated Wood Slab
 tile.ImmersiveEngineering.woodenDecoration.slab1.name=Treated Wood Slab
 tile.ImmersiveEngineering.woodenDecoration.doubleSlab.name=Treated Wood Doubleslab
 tile.ImmersiveEngineering.woodenDecoration.scaffolding.name=Treated Wood Scaffolding
-tile.ImmersiveEngineering.woodenDecoration.wallMount.name=Wooden Wall Mount [WIP]
+tile.ImmersiveEngineering.woodenDecoration.wallMount.name=Wooden Wall Mount
 
 tile.ImmersiveEngineering.woodenStairs.name=Treated Wood Stairs
 
@@ -74,7 +75,7 @@ tile.ImmersiveEngineering.hemp.name=Industrial Hemp
 fluid.creosote=Creosote Oil
 fluid.plantoil=Plant Oil
 fluid.ethanol=Ethanol
-fluid.biodiesel=Bio Diesel
+fluid.biodiesel=Biodiesel
 
 
 # ITEMS
@@ -110,7 +111,7 @@ item.ImmersiveEngineering.material.gunpartGrip.name=Revolver Grip
 item.ImmersiveEngineering.material.gunpartHammer.name=Revolver Hammer
 item.ImmersiveEngineering.material.componentIron.name=Iron Mechanical Component
 item.ImmersiveEngineering.material.componentSteel.name=Steel Mechanical Component
-item.ImmersiveEngineering.seed.hemp.name=Industrial Hemp Seed
+item.ImmersiveEngineering.seed.hemp.name=Industrial Hemp Seeds
 
 item.ImmersiveEngineering.fluidContainers.bottleCreosote.name=Bottle of Creosote Oil
 item.ImmersiveEngineering.fluidContainers.bucketCreosote.name=Bucket of Creosote Oil
@@ -118,18 +119,18 @@ item.ImmersiveEngineering.fluidContainers.bottlePlantoil.name=Bottle of Plant Oi
 item.ImmersiveEngineering.fluidContainers.bucketPlantoil.name=Bucket of Plant Oil
 item.ImmersiveEngineering.fluidContainers.bottleEthanol.name=Bottle of Ethanol
 item.ImmersiveEngineering.fluidContainers.bucketEthanol.name=Bucket of Ethanol
-item.ImmersiveEngineering.fluidContainers.bottleBiodiesel.name=Bottle of Bio Diesel
-item.ImmersiveEngineering.fluidContainers.bucketBiodiesel.name=Bucket of Bio Diesel
+item.ImmersiveEngineering.fluidContainers.bottleBiodiesel.name=Bottle of Biodiesel
+item.ImmersiveEngineering.fluidContainers.bucketBiodiesel.name=Bucket of Biodiesel
 
 item.ImmersiveEngineering.coil.copper.name=Copper Wire Coil
 item.ImmersiveEngineering.coil.electrum.name=Electrum Wire Coil
 item.ImmersiveEngineering.coil.HV.name=High-Voltage Wire Coil
 item.ImmersiveEngineering.coil.rope.name=Hemp Rope Coil
 item.ImmersiveEngineering.coil.structural.name=Steel Cable Coil
-item.ImmersiveEngineering.tool.hammer.name=Engineers Hammer
-item.ImmersiveEngineering.tool.wirecutter.name=Engineers Wirecutters
-item.ImmersiveEngineering.tool.voltmeter.name=Engineers Voltmeter
-item.ImmersiveEngineering.tool.manual.name=Engineers Manual
+item.ImmersiveEngineering.tool.hammer.name=Engineer's Hammer
+item.ImmersiveEngineering.tool.wirecutter.name=Engineer's Wire Cutters
+item.ImmersiveEngineering.tool.voltmeter.name=Engineer's Voltmeter
+item.ImmersiveEngineering.tool.manual.name=Engineer's Manual
 
 item.ImmersiveEngineering.revolver.normal.name=Revolver
 item.ImmersiveEngineering.revolver.elite.name=Elite Revolver
@@ -140,6 +141,8 @@ item.ImmersiveEngineering.revolver.oblivion.name=Oblivion
 item.ImmersiveEngineering.revolver.oathkeeper.name=Oathkeeper
 item.ImmersiveEngineering.revolver.bee.name=Beevolver
 item.ImmersiveEngineering.revolver.fenrir.name=Fenrir
+item.ImmersiveEngineering.revolver.earthshaker.name=Earthshaker
+item.ImmersiveEngineering.revolver.warlord.name=The Repulsor
 
 item.ImmersiveEngineering.bullet.emptyCasing.name=Empty Casing
 item.ImmersiveEngineering.bullet.emptyShell.name=Empty Shell
@@ -174,6 +177,8 @@ desc.ImmersiveEngineering.flavour.revolver.oblivion=Passing Memories
 desc.ImmersiveEngineering.flavour.revolver.oathkeeper=Wayfinder
 desc.ImmersiveEngineering.flavour.revolver.bee=The Pain
 desc.ImmersiveEngineering.flavour.revolver.fenrir=There's nothing I don't cherish!
+desc.ImmersiveEngineering.flavour.revolver.earthshaker=Lingering Will
+desc.ImmersiveEngineering.flavour.revolver.warlord=Don't take my toys away!
 
 gui.ImmersiveEngineering.empty=Empty
 
@@ -208,8 +213,8 @@ ie.manual.category.machines.name=Machinery
 ie.manual.entry.introduction.name=Introduction
 ie.manual.entry.introduction.subtext=Getting into Engineering
 ie.manual.entry.introduction0=Greetings, fellow engineer, and welcome to Immersive Engineering. This journal shall serve as your guide for setting up all the new machines and functions this mod has to offer.<br>Let's start with the basics first: Immersive Engineering is built around the concept of retrofuturistic generation and transfer of energy. The energy used in this mod is Redstone Flux, a trait shared with many other mods currently available.
-ie.manual.entry.introduction1=Energy is transmitted between §lconnectors§r by the use of §lwires§r. Wires can only bridge a limited distance of blocks, so you will need to use more connectors as §lrelays§r between the wires.<br>You have the choice between three different types of wire, which differ in transferrates, <config:iA:cableTransferRate> RF/tick. To switch between different types of wire, you will need to use §ltransformers§r.
-ie.manual.entry.introductionHammer=The Engineers Hammer is the most important tool at your disposal. It will be used to form multiblocks like the Coke Oven and Blast Furnace<config:b:crushingOreRecipe:, crushing ores into dust : >or configuring blocks like Wooden Posts.
+ie.manual.entry.introduction1=Energy is transmitted between §lconnectors§r by the use of §lwires§r. Wires can only bridge a limited distance of blocks, so you will need to use more connectors as §lrelays§r between the wires.<br>You have the choice between three different types of wire, which differ in transferrates, <config:iA:cableTransferRate:l3> RF/tick. To switch between different types of wire, you will need to use §ltransformers§r.
+ie.manual.entry.introductionHammer=The Engineer's Hammer is the most important tool at your disposal. It will be used to form multiblocks like the Coke Oven and Blast Furnace<config:b:crushingOreRecipe:, crushing ores into dust : >or configuring blocks like Wooden Posts.
 
 ie.manual.entry.ores.name=Ores
 ie.manual.entry.ores.subtext=Diggy diggy hole
@@ -221,17 +226,17 @@ ie.manual.entry.oresNickel=§lNickel Ore§r is found in the world between layers
 
 ie.manual.entry.oreProcessing.name=Ore Processing
 ie.manual.entry.oreProcessing.subtext=
-ie.manual.entry.oreProcessing=Crushing ores is the easiest way of doubling their output. One ore breaks into two dusts and each dust smelts into one ingot.
-ie.manual.entry.oreProcessing_blend=By mixing the respective metal dusts, you can create an alloy used for an entirely different purpose. Constantan has thermo-electric properties and is used in creating the <link:generator:thermoelectric generator:1> and electrum is an excellent electric conductor used in <link:wiring:medium-voltage architecture>.
+ie.manual.entry.oreProcessing0=Crafting ores and alloys with a hammer allows you to crush them into dusts. This dust can be resmelted into ingots, but even more importantly, is used to create alloys.<config:b:crushingOreRecipe:<br>Crushing ores with the hammer will yield two dusts, effectively doubling your gain of ingots from ore.: >
+ie.manual.entry.oreProcessing1=Mixing dusts creates an alloy blend that can then be smelted into alloyed ingots. Constantan has thermo-electric properties and is used in creating the <link:generator:thermoelectric generator:1> and electrum is an excellent electric conductor used in <link:wiring:medium-voltage architecture>.
 
 ie.manual.entry.hemp.name=Industrial Hemp
 ie.manual.entry.hemp.subtext=530 fabric it
-ie.manual.entry.hemp0=Industrial Hemp is a remarkable plant! Not only are its seeds useful for the the creation of <link:biodiesel:bio diesel>, the hemp fibers are also vital in the creation of <link:generator:Improved Windmills:4>. The seeds can be gathered by breaking tall grass.
+ie.manual.entry.hemp0=Industrial Hemp is a remarkable plant! Not only are its seeds useful for the the creation of <link:biodiesel:Diodiesel>, the hemp fibers are also vital in the creation of <link:generator:Improved Windmills:4>. The seeds can be gathered by breaking tall grass.
 
 ie.manual.entry.cokeoven.name=Coke Oven
 ie.manual.entry.cokeoven.subtext=Hot topic!
 ie.manual.entry.cokeoven0=The Coke Oven is the first important machine you will need to create in order to proceed with Immersive Engineering. It's functionality is simple, it will heat up coal or blocks of coal without supplying it with oxygen, creating Coal Coke, a carbon rich fuel. More importantly, this process creates §lCreosote Oil§r, which is used as a <link:treatedwood:preservative for wood>. Similarly you can also burn wooden logs into charcoal with this oven, albeit with a smaller yield of creosote.
-ie.manual.entry.cokeovenBlock=To form a Coke Oven, arrange 27 of these blocks in a 3x3x3 cube, and rightclick one of the sides' center blocks with an Engineers Hammer.<br>See the following page for a diagram.
+ie.manual.entry.cokeovenBlock=To form a Coke Oven, arrange 27 of these blocks in a 3x3x3 cube, and rightclick one of the sides' center blocks with an Engineer's Hammer.<br>See the following page for a diagram.
 
 ie.manual.entry.treatedwood.name=Treated Wood
 ie.manual.entry.treatedwood.subtext=Highly Durable
@@ -249,25 +254,25 @@ ie.manual.entry.wiringConnector=§lConnectors§r serve as in- and outputs to the
 ie.manual.entry.wiringCapacitor=§lCapacitors§r serve as energy storage units. You can use the hammer to adjust the configuration of each side, with blue designating an input, orange an output and no colour marking preventing any connection at all. Sneak while using the hammer to configure the side opposite of the one you clicked.
 ie.manual.entry.wiringTransformer0=§lTransformers§r allow you to transition between different types of wire. The weakest wire restricts the transfer rate. Note that HV Transformers can step down to LV or MV, so you do not need to chain two transformers.
 ie.manual.entry.wiringTransformer1=You can attach <link:wiring:transformers to wooden poles:3> as shown on the second image on page 4, however only non-HV Transformers can be placed like this.
-ie.manual.entry.wiringCutters=The §lWirecutters§r are used to removed all the wires connected to a block by simply rightclicking it.
+ie.manual.entry.wiringCutters=The §lWire Cutters§r are used to removed all the wires connected to a block by simply rightclicking it.
 ie.manual.entry.wiringVoltmeter=The §lVoltmeter§r is used to measure connections. Rightclick a capacitor to read its current storage or sneak+rightclick two connectors to calculate the average loss between them.
 
 ie.manual.entry.generator.name=Power Generation
 ie.manual.entry.generator.subtext=
 ie.manual.entry.generator0=Transferring power is quite helpful provided you have power. To actually generate RF, you can use the kinetic forces of windmills and waterwheels. Connecting these to a dynamo will generate power based on how fast they turn.
 ie.manual.entry.generatorWindmill=The windmill is a free and easy way of generating power, albeit not a very powerful one. Its speed depends greatly on how high it is placed in the world and how obscured the space in front of it is. It will also run faster when it's raining or storming.
-ie.manual.entry.generatorWatermill=The watermill is a fairly easy way of powering a dynamo. It's turning speed is based on the water flowing around it, so for optimal results, you'll want to direct the water in a semi-circle from the top down one side and along the bottom. Up to three watermills can be placed against each other.
+ie.manual.entry.generatorWatermill=The water wheel is a fairly easy way of powering a dynamo. It's turning speed is based on the water flowing around it, so for optimal results, you'll want to direct the water in a semi-circle from the top down one side and along the bottom. Up to three water wheels can be placed against each other.
 ie.manual.entry.generatorWindmillImproved=The improved windmill is an upgrade to the windmills. While it has twice the output it's also more pricey to create, requiring tough fabric made from industrial hemp. Break tall grass to aquire hemp seeds.
 
 ie.manual.entry.thermoElectric.name=Thermoelectric Generator
 ie.manual.entry.thermoElectric.subtext=Hot and Cold
 ie.manual.entry.thermoElectric0=Thermoelectric Generators are another option of power generation and work without the use of any mechanical parts, instead they use the temperature gradients between two sources.
-ie.manual.entry.thermoElectric1=Placing a hot fluid on one side and a colder fluid on the opposing side generates energy based on the difference between the two temperatures. Other valid sources of heat and cold include uranium or plutonium blocks and ice.
+ie.manual.entry.thermoElectric1=Placing a hot fluid on one side and a colder fluid on the opposing side generates energy based on the difference between the two temperatures.<br>The following list contains other, non-fluid, blocks, which can be used as sources of temperature.
 
 ie.manual.entry.blastfurnace.name=Blast Furnace
 ie.manual.entry.blastfurnace.subtext=Even hotter topic!
 ie.manual.entry.blastfurnace0=The Blast Furnace is used to increase the carbon contents in iron, turning it into steel. To achieve this, only pure, high-carbon fuels may be used for the furnace, specifically coal coke and charcoal.<br>The steel created in the blast furnace is an integral part of high-voltage architecture.
-ie.manual.entry.blastfurnaceBlock=To form a Blast Furnace, arrange 27 of these blocks in a 3x3x3 cube, and rightclick one of the sides' center blocks with an Engineers Hammer.<br>See the following page for a diagram.
+ie.manual.entry.blastfurnaceBlock=To form a Blast Furnace, arrange 27 of these blocks in a 3x3x3 cube, and rightclick one of the sides' center blocks with an Engineer's Hammer.<br>See the following page for a diagram.
 
 ie.manual.entry.steelconstruction.name=Steel Constructions
 ie.manual.entry.steelconstruction.subtext=Riveting
@@ -283,22 +288,25 @@ ie.manual.entry.multiblocks0=Fitting complex machinery into a single 1x1x1 cube 
 
 ie.manual.entry.dieselgen.name=Diesel Generator
 ie.manual.entry.dieselgen.subtext=Better than volume: More volume.
-ie.manual.entry.dieselgen0=High-Voltage architecture might be fascinating, but it's not very useful unless you have a generator that can actually create the required output for it.<br>The Diesel Generator is one of the few ways of generating this sort of energy. It is created as a complex multiblock structure and will run off of <link:biodiesel:Bio Diesel> or other types of combustible fuel. Due to its high output, it will work through fuel very quickly, so make sure you have a sufficient fuel production to run it.
+ie.manual.entry.dieselgen0=High-Voltage architecture might be fascinating, but it's not very useful unless you have a generator that can actually create the required output for it.<br>The Diesel Generator is one of the few ways of generating this sort of energy. It is created as a complex multiblock structure and will run off of <link:biodiesel:Biodiesel> or other types of combustible fuel. Due to its high output, it will work through fuel very quickly, so make sure you have a sufficient fuel production to run it.
 ie.manual.entry.dieselgen1=The structure is built from Engine, Generator and Radiator blocks. Arrange them in the shape shown on the following side and hit either the central generator or central radiator with an Engineer's Hammer.
 ie.manual.entry.dieselgen2=Fuel is to be input at the bottom corners of the generator, whereas energy will be output to up to three connection on the top. The <config:i:dieselGen_output>RF/t the generator outputs will be split between all connected points.
+ie.manual.entry.dieselgen3=The following table lists all valid fuels for the Diesel Generator and for how long in seconds (ticks) they burn. 
 
-ie.manual.entry.biodiesel.name=Bio Diesel
+ie.manual.entry.biodiesel.name=Biodiesel
 ie.manual.entry.biodiesel.subtext=Green power!
-ie.manual.entry.biodiesel0=Combustible fuels are an easy to use and efficient fuel source. But with oil being a depleteable resource, something renewable would  be much preferable. Bio Diesel is the solution! By combining plant oil and ethanol, you can create a combustible fluid that will burn in the <link:dieselgen:Diesel Generator>.
+ie.manual.entry.biodiesel0=Combustible fuels are an easy to use and efficient fuel source. But with oil being a depletable resource, something renewable would  be much preferable. Biodiesel is the solution! By combining plant oil and ethanol, you can create a combustible fluid that will burn in the <link:dieselgen:Diesel Generator>.
 ie.manual.entry.biodiesel1=Plant Oil is created by processing various seeds in the industrial squeezer. Create the structure pictured above and click one of the sides with an Engineer's Hammer to form it. Power is input at the top or bottom, fluids are output through any of the ports at the bottom of each side.
+ie.manual.entry.biodiesel1T=The following list shows various items that can be squeezed into plant oil, and the amount they produce.
 ie.manual.entry.biodiesel2=Ethanol is gained by fermenting sugarcane. The fermenter's structure is created in a similar manner to that of the squeezer, as such power in- and fluid outputs are identical.
-ie.manual.entry.biodiesel3=Lastly, in order to refine plant oil and ethnaol into bio diesel, you will need to insert both fluids into a refinery and supply it with power. The structure is created as shown above and formed by clicking the center of the front with an Engineer's Hammer.
-ie.manual.entry.biodiesel4=The front of the refinery serves as fluid output, whereas the inputs are found on the smaller sides. Energy is supplied through the connector at the back. Applying a redstone signal to the control panel on the left will halt the refinery's process.
+ie.manual.entry.biodiesel2T=The following list shows various items that can be fermented into ethanol, and the amount they produce.
+ie.manual.entry.biodiesel3=Lastly, in order to refine plant oil and ethanol into Biodiesel, you will need to insert both fluids into a refinery and supply it with power. The structure is created as shown above and formed by clicking the center of the front with an Engineer's Hammer.
+ie.manual.entry.biodiesel4=The front of the refinery serves as fluid output, whereas the inputs are found on the smaller sides. Energy is supplied through the connector at the back. Applying a redstone signal to the control panel on the left will halt the refinery's process.<br>The surfaces above the fluid inputs will turn off the generator if supplied with a redstone signal.
 
 ie.manual.entry.conveyor.name=Conveyor Belts
 ie.manual.entry.conveyor.subtext=Who needs rails anyway?
 ie.manual.entry.conveyor0=Conveyor Belts are an easy way of transporting all sorts of things around your base. While they are strong enough to move living creatures like cows or sheep, their true strength lies in transporting items.<br>Throwing items atop them will have the items move along the belt. Should the belt lead into an inventory, the item will be inserted.
-ie.manual.entry.conveyor1=Blocks like hoppers will be able to drop items onto the belts. Use an Engineers Hammer to rotate the belts (rightclick) or adjust whether they should run up- or downwards (sneak + rightclick).
+ie.manual.entry.conveyor1=Blocks like hoppers will be able to drop items onto the belts. Use an Engineer's Hammer to rotate the belts (rightclick) or adjust whether they should run up- or downwards (sneak + rightclick).
 
 ie.manual.entry.furnaceHeater.name=External Heater
 ie.manual.entry.furnaceHeater.subtext=Now you're cooking with flux!
@@ -309,4 +317,9 @@ ie.manual.entry.furnaceHeater2=Even better, while the furnace is at maximum temp
 ie.manual.entry.crusher.name=Crusher
 ie.manual.entry.crusher.subtext=Keep your hands out!
 ie.manual.entry.crusher0=Crushing an ore is an effective way of increasing their yield, for each ore creates two dusts which you can then smelt. This industrial-size crusher is a quick way of doing so. The machine will consume up to 80 RF/t, and its processing speed depends on the power supplied.
-ie.manual.entry.crusher1=However, it is not only used for crushing ores. Every living being to fall into the machine will take grave damage and the crusher will output the relevant drops.<br>Applying a redstone signal to the control panel on the left will halt the crushers process.
+ie.manual.entry.crusher1=However, it is not only used for crushing ores. Every living being to fall into the machine will take grave damage and the crusher will output the relevant drops.<br>Applying a redstone signal to the control panel on the left will halt the crushers process.<br>The structure is formed by right clicking the central block of the front. The front is the wide side of the structure which has a light engineering block at the bottom.
+
+ie.manual.entry.lightningrod.name=Lightning Rod
+ie.manual.entry.lightningrod.subtext=Thunderstruck!
+ie.manual.entry.lightningrod0=Lightning is a phenomenon of nature. It contains a huge amount of raw power, and this lightningrod is able to harness that power.<br>By stacking a lot of steel fences on this multiblock, you increase the chance of a lightning bolt striking it during rain or thunderstorms. 
+ie.manual.entry.lightningrod1=When the steel pole is struck, the huge amounts of energy created are stored in the base of the lightrod and is then slowly distributed to energy connections at the sides.<br><br>The structure is created as shown above, and formed by clicking the central block with an Engineer's Hammer. 

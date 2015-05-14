@@ -3,11 +3,9 @@ package blusunrize.immersiveengineering.client.fx;
 import net.minecraft.block.Block;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
-import blusunrize.immersiveengineering.client.ClientUtils;
 
 public class EntityFXItemParts extends EntityFX
 {
@@ -20,13 +18,25 @@ public class EntityFXItemParts extends EntityFX
 		this.part = part;
 		this.particleMaxAge = 8;
 		if(item!=null && item.getItem()!=null)
+		{
 			if(item.getItem() instanceof ItemBlock)
 				this.particleIcon = Block.getBlockFromItem(item.getItem()).getIcon(0, item.getItemDamage());
 			else
 				this.particleIcon = item.getItem().getIcon(item, 0);
+		}
+		this.posX = x;
+		this.posY = y;
+		this.posZ = z;
 		this.motionX = mx;
 		this.motionY = my;
 		this.motionZ = mz;
+	}
+	@Override
+	public int getFXLayer()
+	{
+		if(item!=null && item.getItem()!=null)
+			return item.getItemSpriteNumber()+1;
+		return 0;
 	}
 
 	@Override
@@ -34,11 +44,6 @@ public class EntityFXItemParts extends EntityFX
 	{
 		if(item!=null && item.getItem()!=null && this.particleIcon!=null)
 		{
-			if(item.getItemSpriteNumber()==0)
-				ClientUtils.bindTexture(TextureMap.locationBlocksTexture.toString());
-			else
-				ClientUtils.bindTexture(TextureMap.locationItemsTexture.toString());
-
 			float f10 = 0.025F * this.particleScale;
 
 			float f6 = this.particleIcon.getInterpolatedU((part%4)*4);

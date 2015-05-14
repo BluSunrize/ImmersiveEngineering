@@ -15,10 +15,11 @@ import blusunrize.immersiveengineering.api.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.api.WireType;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.blocks.TileEntityImmersiveConnectable;
-import blusunrize.immersiveengineering.common.util.IC2Helper;
 import blusunrize.immersiveengineering.common.util.Lib;
-import blusunrize.immersiveengineering.common.util.ModCompatability;
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.compat.GregTechHelper;
+import blusunrize.immersiveengineering.common.util.compat.IC2Helper;
+import blusunrize.immersiveengineering.common.util.compat.ModCompatability;
 import cofh.api.energy.IEnergyHandler;
 import cofh.api.energy.IEnergyReceiver;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -78,7 +79,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 	{
 		ForgeDirection fd = ForgeDirection.getOrientation(facing);
 		TileEntity tile = worldObj.getTileEntity(xCoord+fd.offsetX, yCoord+fd.offsetY, zCoord+fd.offsetZ);
-		return tile !=null && (tile instanceof IEnergyReceiver || (Lib.IC2 && IC2Helper.isEnergySink(tile)) || (Lib.GREG && ModCompatability.gregtech_isEnergyConnected(tile)));
+		return tile !=null && (tile instanceof IEnergyReceiver || (Lib.IC2 && IC2Helper.isEnergySink(tile)) || (Lib.GREG && GregTechHelper.gregtech_isEnergyConnected(tile)));
 	}
 	@Override
 	public int outputEnergy(int amount, boolean simulate, int energyType)
@@ -96,12 +97,12 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 				double left = IC2Helper.injectEnergy(capacitor, fd.getOpposite(), ModCompatability.convertRFtoEU(amount, getIC2Tier()), canTakeHV()?(256*256): canTakeMV()?(128*128) : (32*32));
 				return amount-ModCompatability.convertEUtoRF(left);
 			}
-		else if(Lib.GREG && ModCompatability.gregtech_isEnergyConnected(capacitor))
+		else if(Lib.GREG && GregTechHelper.gregtech_isEnergyConnected(capacitor))
 			if(simulate)
 				return amount;
 			else
 			{
-				ModCompatability.gregtech_outputGTPower(capacitor, (byte)fd.getOpposite().ordinal(), (long)ModCompatability.convertRFtoEU(amount, getIC2Tier()), 1L);
+				GregTechHelper.gregtech_outputGTPower(capacitor, (byte)fd.getOpposite().ordinal(), (long)ModCompatability.convertRFtoEU(amount, getIC2Tier()), 1L);
 				return amount;
 			}
 		return 0;
@@ -187,8 +188,9 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 				if(con!=null && toIIC(con.end, worldObj)!=null)
 				{
 					int tempR = toIIC(con.end,worldObj).outputEnergy(Math.min(powerLeft,con.cableType.getTransferRate()), true, energyType);
+					int r = tempR;
 					tempR -= (int) Math.floor(tempR*con.getAverageLossRate());
-					int r = toIIC(con.end, worldObj).outputEnergy(tempR, simulate, energyType);
+					toIIC(con.end, worldObj).outputEnergy(tempR, simulate, energyType);
 					received += r;
 					powerLeft -= r;
 					if(powerLeft<=0)

@@ -220,7 +220,6 @@ public class ItemRevolver extends ItemIEBase
 	}
 	public int getBulletSlotAmount(ItemStack revolver)
 	{
-//		System.out.println(ItemNBTHelper.getInt(revolver, "upgrade")&1);
 		return (ItemNBTHelper.getInt(revolver, "upgrade")&1)==1?14:8;
 	}
 

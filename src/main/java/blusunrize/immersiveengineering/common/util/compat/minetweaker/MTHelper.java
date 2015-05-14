@@ -1,4 +1,4 @@
-package blusunrize.immersiveengineering.common.minetweaker;
+package blusunrize.immersiveengineering.common.util.compat.minetweaker;
 
 import static minetweaker.api.minecraft.MineTweakerMC.getItemStack;
 import minetweaker.MineTweakerAPI;
@@ -9,7 +9,7 @@ import minetweaker.api.oredict.IOreDictEntry;
 import net.minecraft.item.ItemStack;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 
-public class IEMinetweaker
+public class MTHelper
 {
 	public static void init()
 	{

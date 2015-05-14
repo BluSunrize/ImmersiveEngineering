@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.common.blocks.wooden;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
+import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityDynamo;
 import cpw.mods.fml.relauncher.Side;
@@ -11,7 +12,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class TileEntityWindmill extends TileEntityIEBase
 {
 	public int facing = 2;
-	//public float prevRotation=0;
+	public float prevRotation=0;
 	public float rotation=0;
 	public float turnSpeed=0;
 
@@ -20,7 +21,7 @@ public class TileEntityWindmill extends TileEntityIEBase
 	@Override
 	public void updateEntity()
 	{
-		if(worldObj.getTotalWorldTime()%100==0)
+		if(worldObj.getTotalWorldTime()%100==((xCoord^zCoord)&100))
 			canTurn = checkArea();
 		if(!canTurn)
 			return;
@@ -39,7 +40,7 @@ public class TileEntityWindmill extends TileEntityIEBase
 		else if(yCoord<70)
 			mod *= .33;
 		mod*=getSpeedModifier();
-		//prevRotation = (float) (turnSpeed*mod);
+		prevRotation = (float) (turnSpeed*mod);
 		rotation += turnSpeed*mod;
 		rotation %= 1;
 
@@ -122,5 +123,12 @@ public class TileEntityWindmill extends TileEntityIEBase
 	public AxisAlignedBB getRenderBoundingBox()
 	{
 		return AxisAlignedBB.getBoundingBox(xCoord-(facing<=3?6:0),yCoord-6,zCoord-(facing<=3?0:6), xCoord+(facing<=3?7:0),yCoord+7,zCoord+(facing<=3?0:7));
+	}
+	@Override
+	public double getMaxRenderDistanceSquared()
+	{
+		if(Config.getBoolean("increasedTileRenderdistance"))
+			return super.getMaxRenderDistanceSquared()*1.5;
+		return super.getMaxRenderDistanceSquared();
 	}
 }

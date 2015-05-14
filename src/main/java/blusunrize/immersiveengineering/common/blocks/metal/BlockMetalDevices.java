@@ -16,6 +16,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.IIcon;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -64,9 +65,23 @@ public class BlockMetalDevices extends BlockIEBase
 	}
 
 	@Override
+	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z, EntityPlayer player)
+	{
+		if(world.getTileEntity(x, y, z) instanceof TileEntityCapacitorLV)
+		{
+			ItemStack stack = new ItemStack(this,1,world.getBlockMetadata(x, y, z));
+			if(((TileEntityCapacitorLV)world.getTileEntity(x,y,z)).energyStorage.getEnergyStored()>0)
+				ItemNBTHelper.setInt(stack, "energyStorage", ((TileEntityCapacitorLV)world.getTileEntity(x,y,z)).energyStorage.getEnergyStored());
+			int[] sides = ((TileEntityCapacitorLV)world.getTileEntity(x,y,z)).sideConfig;
+			ItemNBTHelper.setIntArray(stack, "sideConfig", sides);
+			return stack;
+		}
+		return super.getPickBlock(target, world, x, y, z, player);
+	}
+	@Override
 	public void onBlockHarvested(World world, int x, int y, int z, int meta, EntityPlayer player)
 	{
-		if(!world.isRemote && world.getTileEntity(x, y, z) instanceof TileEntityCapacitorLV)
+		if(!world.isRemote && world.getTileEntity(x, y, z) instanceof TileEntityCapacitorLV && player!=null && !player.capabilities.isCreativeMode)
 		{
 			ItemStack stack = new ItemStack(this,1,meta);
 			if(((TileEntityCapacitorLV)world.getTileEntity(x,y,z)).energyStorage.getEnergyStored()>0)
@@ -320,7 +335,7 @@ public class BlockMetalDevices extends BlockIEBase
 	public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z)
 	{
 		if(world.getBlockMetadata(x, y, z) == META_conveyorBelt)
-			return AxisAlignedBB.getBoundingBox(x, y, z, x+1, y+.03125, z + 1);
+			return AxisAlignedBB.getBoundingBox(x, y, z, x+1, y, z + 1);
 		this.setBlockBoundsBasedOnState(world,x,y,z);
 		return super.getCollisionBoundingBoxFromPool(world, x, y, z);
 	}
@@ -341,7 +356,7 @@ public class BlockMetalDevices extends BlockIEBase
 			return true;
 		return false;
 	}
-	
+
 	@Override
 	public TileEntity createNewTileEntity(World world, int meta)
 	{
@@ -425,7 +440,7 @@ public class BlockMetalDevices extends BlockIEBase
 			double vZ = 0.1 * vBase*fd.offsetZ;
 
 			if (tile.transportUp)
-				vY = 0.2D * vBase;
+				vY = 0.17D * vBase;
 			else if (tile.transportDown)
 				vY = -0.07000000000000001D * vBase;
 
@@ -435,17 +450,27 @@ public class BlockMetalDevices extends BlockIEBase
 			//			if(par5Entity instanceof EntityItem)
 			if (fd == ForgeDirection.WEST || fd == ForgeDirection.EAST)
 			{
-				if (par5Entity.posZ > z + 0.55D)
+				if (par5Entity.posZ > z + 0.65D)
 					vZ = -0.1D * vBase;
-				else if (par5Entity.posZ < z + 0.45D)
+				else if (par5Entity.posZ < z + 0.35D)
 					vZ = 0.1D * vBase;
+				//				else
+				//				{
+				//					vZ = 0;
+				//					par5Entity.posZ=z+.5;
+				//				}
 			}
 			else if (fd == ForgeDirection.NORTH || fd == ForgeDirection.SOUTH)
 			{
-				if (par5Entity.posX > x + 0.55D)
+				if (par5Entity.posX > x + 0.65D)
 					vX = -0.1D * vBase;
-				else if (par5Entity.posX < x + 0.45D)
+				else if (par5Entity.posX < x + 0.35D)
 					vX = 0.1D * vBase;
+				//				else
+				//				{
+				//					vX = 0;
+				//					par5Entity.posX=x+.5;
+				//				}
 			}
 
 			par5Entity.motionX = vX;

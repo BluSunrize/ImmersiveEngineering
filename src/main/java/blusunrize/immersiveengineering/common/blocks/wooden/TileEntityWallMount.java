@@ -5,7 +5,7 @@ import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 
 public class TileEntityWallMount extends TileEntityIEBase
 {
-	public int facing = 2;
+	public int facing = 3;
 	public boolean inverted = false;
 
 	@Override

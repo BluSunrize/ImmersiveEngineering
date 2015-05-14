@@ -10,8 +10,9 @@ import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.EventHandler;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.IEWorldGen;
-import blusunrize.immersiveengineering.common.minetweaker.IEMinetweaker;
 import blusunrize.immersiveengineering.common.util.Lib;
+import blusunrize.immersiveengineering.common.util.compat.EE3Helper;
+import blusunrize.immersiveengineering.common.util.compat.minetweaker.MTHelper;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
@@ -41,7 +42,7 @@ public class ImmersiveEngineering
 		Config.init(event);
 		IEContent.preInit();
 		
-		
+			
 		WireType.cableLossRatio=Config.getDoubleArray("cableLossRatio");
 		WireType.cableTransferRate=Config.getIntArray("cableTransferRate");
 		WireType.cableColouration=Config.getIntArray("cableColouration");
@@ -66,7 +67,9 @@ public class ImmersiveEngineering
 	public void postInit(FMLPostInitializationEvent event)
 	{
 		if(Loader.isModLoaded("MineTweaker3"))
-			IEMinetweaker.init();
+			MTHelper.init();
+		if(Loader.isModLoaded("EE3"))
+			EE3Helper.init();
 	}
 	@Mod.EventHandler
 	public void loadComplete(FMLLoadCompleteEvent event)

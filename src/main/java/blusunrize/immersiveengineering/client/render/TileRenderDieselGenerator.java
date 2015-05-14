@@ -29,11 +29,10 @@ public class TileRenderDieselGenerator extends TileEntitySpecialRenderer
 
 		ClientUtils.bindTexture("immersiveengineering:textures/models/dieselGenerator.png");
 
-		model.Fan_axle3.rotateAngleZ = (float) Math.toRadians(gen.fanRotation);
+		model.Fan_axle3.rotateAngleZ = (float) Math.toRadians(gen.fanRotation+(gen.fanRotationStep*f));
 
 		model.render(null, 0, 0, 0, 0, 0, .0625f);
 
 		GL11.glPopMatrix();
 	}
-
 }

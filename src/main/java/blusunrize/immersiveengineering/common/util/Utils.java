@@ -92,7 +92,7 @@ public class Utils
 	{
 		return s.substring(0,1).toUpperCase() + s.substring(1).toLowerCase();
 	}
-	
+
 	public static boolean tilePositionMatch(TileEntity tile0, TileEntity tile1)
 	{
 		return tile0.xCoord==tile1.xCoord && tile0.yCoord==tile1.yCoord && tile0.zCoord==tile1.zCoord;

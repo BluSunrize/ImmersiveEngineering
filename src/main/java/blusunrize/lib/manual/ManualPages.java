@@ -12,14 +12,15 @@ import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
+import net.minecraft.util.StatCollector;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
-import blusunrize.lib.manual.gui.GuiButtonManualNavigation;
 import blusunrize.lib.manual.gui.GuiButtonManualLink;
+import blusunrize.lib.manual.gui.GuiButtonManualNavigation;
 import blusunrize.lib.manual.gui.GuiManual;
 
 import com.google.common.collect.ArrayListMultimap;
@@ -143,6 +144,92 @@ public abstract class ManualPages implements IManualPage
 
 			if(localizedText!=null&&!localizedText.isEmpty())
 				manual.fontRenderer.drawSplitString(localizedText, x,y+yOff, 120, manual.getTextColour());
+		}
+	}
+
+	public static class Table extends ManualPages
+	{
+		String[][] table;
+		String[][] localizedTable;
+		int textHeight;
+		int[] bars;
+		public Table(ManualInstance manual, String text, String[][] table)
+		{
+			super(manual,text);
+			this.table = table;
+		}
+
+		@Override
+		public void initPage(GuiManual gui, int x, int y, List<GuiButton> pageButtons)
+		{
+			super.initPage(gui, x, y, pageButtons);
+			manual.fontRenderer.setUnicodeFlag(true);
+			int l = manual.fontRenderer.listFormattedStringToWidth(localizedText, 120).size();
+			textHeight = l*manual.fontRenderer.FONT_HEIGHT+6;
+			try{
+				if(table!=null)
+				{
+					localizedTable = new String[table.length][];
+
+					bars = new int[1];
+					for(int i=0; i<table.length; i++)
+					{
+						localizedTable[i] = new String[table[i].length];
+						for(int j=0; j<table[i].length; j++)
+							localizedTable[i][j] = StatCollector.translateToLocal(table[i][j]);
+
+						if(table[i].length-1 > bars.length)
+						{
+							int[] newBars = new int[table[i].length-1];
+							System.arraycopy(bars,0, newBars,0, bars.length);
+							bars = newBars;
+						}
+						for(int j=0; j<table[i].length-1; j++)
+						{
+							int fl = manual.fontRenderer.getStringWidth(localizedTable[i][j]);
+							if(fl>bars[j])
+								bars[j]=fl;
+						}
+					}
+				}
+			}catch(Exception e)
+			{
+				e.printStackTrace();
+			}
+			manual.fontRenderer.setUnicodeFlag(false);
+		}
+
+		@Override
+		public void renderPage(GuiManual gui, int x, int y, int mx, int my)
+		{	
+			if(localizedText!=null&&!localizedText.isEmpty())
+				manual.fontRenderer.drawSplitString(localizedText, x,y, 120, manual.getTextColour());
+
+			if(localizedTable!=null)
+			{
+				int col = manual.getHighlightColour()|0xff000000;
+				gui.drawGradientRect(x,y+textHeight-2,x+120,y+textHeight-1, col,col);
+				int[] textOff = new int[bars!=null?bars.length:0];
+				if(bars!=null)
+				{
+					int xx = x;
+					for(int i=0; i<bars.length; i++)
+					{
+						xx += bars[i]+4;
+						gui.drawGradientRect(xx,y+textHeight-4,xx+1,y+textHeight+(manual.fontRenderer.FONT_HEIGHT+1)*localizedTable.length, col,col);
+						xx+=4;
+						textOff[i] = xx;
+					}
+				}
+				for(int i=0; i<localizedTable.length; i++)
+				{
+					for(int j=0; j<localizedTable[i].length; j++)
+					{
+						int xx = textOff.length>0&&j>0?textOff[j-1]:x;
+						manual.fontRenderer.drawString(localizedTable[i][j], xx,y+textHeight+(manual.fontRenderer.FONT_HEIGHT+1)*i, manual.getTextColour());
+					}
+				}
+			}
 		}
 	}
 

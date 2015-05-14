@@ -2,13 +2,14 @@ package blusunrize.immersiveengineering.client.render;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.util.Vec3;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.world.IBlockAccess;
 
 import org.lwjgl.opengl.GL11;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.wooden.BlockWoodenDecoration;
+import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWallMount;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 
@@ -54,11 +55,16 @@ public class BlockRenderWoodenDecoration implements ISimpleBlockRenderingHandler
 				renderer.setRenderBounds(0,0,0, 1,1,1);
 				ClientUtils.drawInventoryBlock(block, metadata, renderer);
 			}
+			else if(metadata==6)
+			{
+				GL11.glScalef(1.5f,1.5f,1.5f);
+				TileEntityRendererDispatcher.instance.renderTileEntityAt(new TileEntityWallMount(), 0.0D, 0.0D, 0.0D, 0.0F);
+				GL11.glEnable(32826);
+			}
 		}catch(Exception e)
 		{
 			e.printStackTrace();
 		}
-		GL11.glEnable(32826);
 		GL11.glPopMatrix();
 	}
 
@@ -103,48 +109,29 @@ public class BlockRenderWoodenDecoration implements ISimpleBlockRenderingHandler
 		}
 		else if(world.getBlockMetadata(x, y, z)==5)
 		{
+
 			renderer.setRenderBoundsFromBlock(block);
+			float f = .015625f;
+			float f1 = 0;
 			renderer.renderFromInside=true;
-			renderer.renderMinX+=block.shouldSideBeRendered(world,x-1,y,z,1)?.015625:0;
-			renderer.renderMinY+=block.shouldSideBeRendered(world,x,y-1,z,0)?.015625:0;
-			renderer.renderMinZ+=block.shouldSideBeRendered(world,x,y,z-1,1)?.015625:0;
-			renderer.renderMaxX-=block.shouldSideBeRendered(world,x+1,y,z,1)?.015625:0;
-			renderer.renderMaxY-=block.shouldSideBeRendered(world,x,y+1,z,1)?.015625:0;
-			renderer.renderMaxZ-=block.shouldSideBeRendered(world,x,y,z+1,1)?.015625:0;
+			renderer.renderMinX+=block.shouldSideBeRendered(world,x-1,y,z,4)?f:f1;
+			renderer.renderMinY+=block.shouldSideBeRendered(world,x,y-1,z,0)?f:f1;
+			renderer.renderMinZ+=block.shouldSideBeRendered(world,x,y,z-1,2)?f:f1;
+			renderer.renderMaxX-=block.shouldSideBeRendered(world,x+1,y,z,5)?f:f1;
+			renderer.renderMaxY-=block.shouldSideBeRendered(world,x,y+1,z,1)?f:f1;
+			renderer.renderMaxZ-=block.shouldSideBeRendered(world,x,y,z+1,3)?f:f1;
 			renderer.renderStandardBlock(block, x, y, z);
-			renderer.renderMinX-=block.shouldSideBeRendered(world,x-1,y,z,1)?.015625:0;
-			renderer.renderMinY-=block.shouldSideBeRendered(world,x,y-1,z,0)?.015625:0;
-			renderer.renderMinZ-=block.shouldSideBeRendered(world,x,y,z-1,1)?.015625:0;
-			renderer.renderMaxX+=block.shouldSideBeRendered(world,x+1,y,z,1)?.015625:0;
-			renderer.renderMaxY+=block.shouldSideBeRendered(world,x,y+1,z,1)?.015625:0;
-			renderer.renderMaxZ+=block.shouldSideBeRendered(world,x,y,z+1,1)?.015625:0;
+			renderer.renderMinX-=block.shouldSideBeRendered(world,x-1,y,z,4)?f:f1;
+			renderer.renderMinY-=block.shouldSideBeRendered(world,x,y-1,z,0)?f:f1;
+			renderer.renderMinZ-=block.shouldSideBeRendered(world,x,y,z-1,2)?f:f1;
+			renderer.renderMaxX+=block.shouldSideBeRendered(world,x+1,y,z,5)?f:f1;
+			renderer.renderMaxY+=block.shouldSideBeRendered(world,x,y+1,z,1)?f:f1;
+			renderer.renderMaxZ+=block.shouldSideBeRendered(world,x,y,z+1,3)?f:f1;
 			renderer.renderFromInside=false;
 			return renderer.renderStandardBlock(block, x, y, z);
 		}
 		else if(world.getBlockMetadata(x, y, z)==6)
-		{
-			renderer.setRenderBounds(.3125,0,.3125, .6875,.125,.6875);
-			renderer.renderStandardBlock(block, x, y, z);
-
-			renderer.setRenderBounds(0,.125,.3125, .125,.625,.6875);
-			renderer.renderStandardBlock(block, x, y, z);
-			
-			renderer.setRenderBounds(.125,.125,.375, .625,.25,.625);
-			renderer.renderStandardBlock(block, x, y, z);
-			Vec3[] vs = {
-					Vec3.createVectorHelper(.4375,.25,.4375),
-					Vec3.createVectorHelper(.4375,.25,.5625),
-					Vec3.createVectorHelper(.5625,.25,.4375),
-					Vec3.createVectorHelper(.5625,.25,.5625),
-					Vec3.createVectorHelper(.125,.4375,.4375),
-					Vec3.createVectorHelper(.125,.4375,.5625),
-					Vec3.createVectorHelper(.125,.5625,.4375),
-					Vec3.createVectorHelper(.125,.5625,.5625)
-			};
-			ClientUtils.drawWorldSubBlock(renderer, world, block, x, y, z, vs);
-			
-			return true;
-		}
+			return false;
 		else
 		{
 			renderer.setRenderBoundsFromBlock(block);

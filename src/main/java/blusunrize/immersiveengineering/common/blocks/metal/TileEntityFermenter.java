@@ -72,25 +72,30 @@ public class TileEntityFermenter extends TileEntityMultiblockPart implements IFl
 				}
 				if(tick>=80)
 				{
-					while(inputs>0 && tank.getFluidAmount()<tank.getCapacity())
-						for(int i=0; i<9; i++)
-							if(tank.getFluidAmount()<tank.getCapacity())
+					for(int i=0; i<9; i++)
+					{
+						ItemStack stack = this.getStackInSlot(i);
+						if(stack!=null)
+						{
+							int f = DieselHandler.getEthanolOutput(stack);
+							if(f>0)
 							{
-								ItemStack stack = this.getStackInSlot(i);
-								if(stack!=null)
+								int fSpace = tank.getCapacity()-tank.getFluidAmount();
+								int taken = Math.min(inputs, Math.min(stack.stackSize, fSpace/f));
+								if(taken>0)
 								{
-									int f = DieselHandler.getEthanolOutput(stack);
-									if(f>0 && tank.getFluidAmount()+f<=tank.getCapacity())
-									{
-										tank.fill(new FluidStack(IEContent.fluidEthanol,f), true);
-										this.decrStackSize(i, 1);
-										inputs--;
-										update = true;
-									}
-									else
-										break;
+									tank.fill(new FluidStack(IEContent.fluidEthanol,f*taken), true);
+									this.decrStackSize(i, taken);
+									inputs-=taken;
+									update = true;
 								}
+								else
+									continue;
 							}
+							if(inputs<=0 || tank.getFluidAmount()>=tank.getCapacity())
+								break;
+						}
+					}
 					tick=0;
 				}
 			}
@@ -476,14 +481,14 @@ public class TileEntityFermenter extends TileEntityMultiblockPart implements IFl
 	public int getEnergyStored(ForgeDirection from)
 	{
 		if(this.master()!=null)
-			this.master().energyStorage.getEnergyStored();
+			return this.master().energyStorage.getEnergyStored();
 		return energyStorage.getEnergyStored();
 	}
 	@Override
 	public int getMaxEnergyStored(ForgeDirection from)
 	{
 		if(this.master()!=null)
-			this.master().energyStorage.getMaxEnergyStored();
+			return this.master().energyStorage.getMaxEnergyStored();
 		return energyStorage.getMaxEnergyStored();
 	}
 }

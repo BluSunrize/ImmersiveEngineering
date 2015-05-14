@@ -1,4 +1,4 @@
-package blusunrize.immersiveengineering.common.minetweaker;
+package blusunrize.immersiveengineering.common.util.compat.minetweaker;
 
 import java.util.List;
 
@@ -17,11 +17,11 @@ public class CokeOven
 	@ZenMethod
 	public static void addRecipe(IItemStack output, IIngredient input, int time, int fuelOutput)
 	{
-		Object oInput = IEMinetweaker.toObject(input);
+		Object oInput = MTHelper.toObject(input);
 		if(oInput==null)
 			return;
 
-		CokeOvenRecipe r = new CokeOvenRecipe(IEMinetweaker.toStack(output), oInput, time, fuelOutput);
+		CokeOvenRecipe r = new CokeOvenRecipe(MTHelper.toStack(output), oInput, time, fuelOutput);
 		MineTweakerAPI.apply(new Add(r));
 	}
 
@@ -67,7 +67,7 @@ public class CokeOven
 	@ZenMethod
 	public static void removeRecipe(IItemStack output)
 	{
-		MineTweakerAPI.apply(new Remove(IEMinetweaker.toStack(output)));
+		MineTweakerAPI.apply(new Remove(MTHelper.toStack(output)));
 	}
 	private static class Remove implements IUndoableAction
 	{

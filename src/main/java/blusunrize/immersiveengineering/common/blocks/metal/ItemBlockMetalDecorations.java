@@ -7,6 +7,7 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
+import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWallMount;
 
 public class ItemBlockMetalDecorations extends ItemBlockIEBase
 {
@@ -29,7 +30,14 @@ public class ItemBlockMetalDecorations extends ItemBlockIEBase
 			int playerViewQuarter = MathHelper.floor_double(player.rotationYaw * 4.0F / 360.0F + 0.5D) & 3;
 			int f = playerViewQuarter==0 ? 2:playerViewQuarter==1 ? 5:playerViewQuarter==2 ? 3: 4;
 			((TileEntityStructuralArm)world.getTileEntity(x, y, z)).facing = f;
-			((TileEntityStructuralArm)world.getTileEntity(x, y, z)).inverted = side==1?false: side==0?true: hitY>.6875;
+			((TileEntityStructuralArm)world.getTileEntity(x, y, z)).inverted = side==1?false: side==0?true: hitY>.5;
+		}
+		if(ret && world.getTileEntity(x, y, z) instanceof TileEntityWallMount)
+		{
+			int playerViewQuarter = MathHelper.floor_double(player.rotationYaw * 4.0F / 360.0F + 0.5D) & 3;
+			int f = playerViewQuarter==0 ? 2:playerViewQuarter==1 ? 5:playerViewQuarter==2 ? 3: 4;
+			((TileEntityWallMount)world.getTileEntity(x, y, z)).facing = f;
+			((TileEntityWallMount)world.getTileEntity(x, y, z)).inverted = side==1?false: side==0?true: hitY>.5;
 		}
 		return ret;
 	}

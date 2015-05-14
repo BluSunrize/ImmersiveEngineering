@@ -134,20 +134,20 @@ public class BlockRenderMetalMultiblocks implements ISimpleBlockRenderingHandler
 		{
 			IIcon iTop = block.getIcon(0, metadata);
 			IIcon iSide = block.getIcon(2, metadata);
-			byte type = 4;
-			if(world.getTileEntity(x,y,z) instanceof TileEntityLightningRod)
-				type = ((TileEntityLightningRod)world.getTileEntity(x,y,z)).type;
+			int pos = 4;
+			if(world.getTileEntity(x,y,z) instanceof TileEntityLightningRod && ((TileEntityLightningRod)world.getTileEntity(x,y,z)).formed )
+				pos = ((TileEntityLightningRod)world.getTileEntity(x,y,z)).pos;
 			double[][] uv = new double[6][4];
 			for(int i=0; i<2; i++)
 			{
-				uv[i][0]=iTop.getMinU()+((iTop.getMaxU()-iTop.getMinU())/3f)*(type%3);
-				uv[i][1]=iTop.getMinU()+((iTop.getMaxU()-iTop.getMinU())/3f)*(type%3+1);
-				uv[i][2]=iTop.getMinV()+((iTop.getMaxV()-iTop.getMinV())/3f)*(type/3);
-				uv[i][3]=iTop.getMinV()+((iTop.getMaxV()-iTop.getMinV())/3f)*(type/3+1);
+				uv[i][0]=iTop.getMinU()+((iTop.getMaxU()-iTop.getMinU())/3f)*(pos%3);
+				uv[i][1]=iTop.getMinU()+((iTop.getMaxU()-iTop.getMinU())/3f)*(pos%3+1);
+				uv[i][2]=iTop.getMinV()+((iTop.getMaxV()-iTop.getMinV())/3f)*(pos/3);
+				uv[i][3]=iTop.getMinV()+((iTop.getMaxV()-iTop.getMinV())/3f)*(pos/3+1);
 			}
 			for(int i=2; i<6; i++)
 			{
-				int off = type==1||type==3||type==4||type==5||type==7?1: i==2||i==3?(type==0||type==6?0:2): (type==0||type==2?0:2);
+				int off = pos==1||pos==3||pos==4||pos==5||pos==7?1: i==2||i==3?(pos==0||pos==6?0:2): (pos==0||pos==2?0:2);
 				uv[i][0]=iSide.getMinU()+((iSide.getMaxU()-iSide.getMinU())/3f)*(off);
 				uv[i][1]=iSide.getMinU()+((iSide.getMaxU()-iSide.getMinU())/3f)*(off+1);
 				uv[i][2]=iSide.getMinV();

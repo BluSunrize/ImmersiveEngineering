@@ -30,6 +30,7 @@ public class ItemRenderRevolver implements IItemRenderer
 	public void renderItem(ItemRenderType type, ItemStack item, Object... data)
 	{
 		GL11.glPushMatrix();
+		GL11.glDisable(3042);
 		GL11.glRotatef(180, 0, 0, 1);
 		if(type==ItemRenderType.EQUIPPED_FIRST_PERSON)
 			GL11.glRotatef(45, 0, 1, 0);
@@ -65,7 +66,7 @@ public class ItemRenderRevolver implements IItemRenderer
 		}
 		
 		ClientUtils.bindTexture(((ItemRevolver)item.getItem()).getRevolverTexture(item));
-		GL11.glEnable(3042);
+		GL11.glColor4f(1, 1, 1, 1);
 		boolean b = (ItemNBTHelper.getInt(item, "upgrade")&1)==1;
 		model.Cylinder.isHidden = b;
 		model.CylinderAuto.isHidden = !b;
@@ -73,7 +74,6 @@ public class ItemRenderRevolver implements IItemRenderer
 		model.CylinderAuto_2.isHidden = !b;
 		
 		model.render(null, 0, 0, 0, 0, 0, .0625f);
-		GL11.glDisable(3042);
 		GL11.glPopMatrix();
 	}
 

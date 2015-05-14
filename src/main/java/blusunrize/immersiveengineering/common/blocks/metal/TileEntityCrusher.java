@@ -86,22 +86,9 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 		if(worldObj.isRemote)
 		{
 			ImmersiveEngineering.proxy.handleTileSound("crusher", this, ((active&&process>0)||mobGrinding||grindingTimer>0), 1,1);
-			if(active&&process>0)
+			if(particleStack!=null && active&&process>0)
 			{
-				//				ItemStack ss = this.inputs.get(0);
 				ImmersiveEngineering.proxy.spawnCrusherFX(this, particleStack);
-				//				if(particleStack!=null)
-				//					for(int i=0; i<3; i++)
-				//					{
-				//						double x = xCoord+.5+.5*(facing<4?worldObj.rand.nextGaussian()-.5:0);
-				//						double y = yCoord+2 + worldObj.rand.nextGaussian()/2;
-				//						double z = zCoord+.5+.5*(facing>3?worldObj.rand.nextGaussian()-.5:0);
-				//						double mX = worldObj.rand.nextGaussian() * 0.01D;
-				//						double mY = worldObj.rand.nextGaussian() * 0.05D;
-				//						double mZ = worldObj.rand.nextGaussian() * 0.01D;
-				//						EntityFX particleMysterious = new EntityFXItemParts(worldObj, particleStack, worldObj.rand.nextInt(16), x,y,z, mX,mY,mZ);
-				//						Minecraft.getMinecraft().effectRenderer.addEffect(particleMysterious);
-				//					}
 			}
 			else if(particleStack!=null)
 				particleStack=null;
@@ -125,13 +112,6 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 							continue;
 						}
 						addStackToInputs(input);
-						if(input!=null)
-						{
-							Block b = Block.getBlockFromItem(input.getItem());
-							int id = (b!=null&&b!=Blocks.air)?Block.getIdFromBlock(b): Item.getIdFromItem(input.getItem());
-							int meta = input.getItemDamage()+((b!=null&&b!=Blocks.air)?0:16);
-							worldObj.addBlockEvent(xCoord,yCoord,zCoord, this.getBlockType(), id,meta);
-						}
 						update = true;
 						e.setDead();
 					}
@@ -160,7 +140,7 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 
 				if(process>0)
 				{
-					int consumed = this.energyStorage.extractEnergy(80, true);
+					int consumed = this.energyStorage.extractEnergy(80, false);
 					process -= consumed;
 				}
 
@@ -168,6 +148,15 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 					if(active)
 					{
 						ItemStack inputStack = inputs.get(0);
+						
+						if(inputStack!=null)
+						{
+							Block b = Block.getBlockFromItem(inputStack.getItem());
+							int id = (b!=null&&b!=Blocks.air)?Block.getIdFromBlock(b): Item.getIdFromItem(inputStack.getItem());
+							int meta = inputStack.getItemDamage()+((b!=null&&b!=Blocks.air)?0:16);
+							worldObj.addBlockEvent(xCoord,yCoord,zCoord, this.getBlockType(), id,meta);
+						}
+						
 						CrusherRecipe recipe = CrusherRecipe.findRecipe(inputStack);
 						if(recipe!=null)
 						{
@@ -299,7 +288,6 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 		inputs.clear();
 		for(int i=0;i<invList.tagCount();i++)
 			inputs.add( ItemStack.loadItemStackFromNBT(invList.getCompoundTagAt(i)));
-		//	System.out.println("Read! "+FMLCommonHandler.instance().getEffectiveSide()+" - "+inputs.size());
 	}
 	@Override
 	public void writeCustomNBT(NBTTagCompound nbt)
@@ -322,8 +310,6 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 		for(ItemStack s : inputs)
 			invList.appendTag(s.writeToNBT(new NBTTagCompound()));
 		nbt.setTag("inputs", invList);
-		//		if(FMLCommonHandler.instance().getEffectiveSide()!=Side.CLIENT)
-		//		System.out.println("Write! "+" - "+invList.tagCount());
 	}
 
 
@@ -344,19 +330,13 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 			{
 				ItemStack ss = arg<16?new ItemStack(Block.getBlockById(id),1,arg): new ItemStack(Item.getItemById(id),1,arg-16);
 				if(ss!=null)
+				{
 					particleStack = ss;
+					active=true;
+					process=1;
+				}
+				
 			}
-			//				for(int i=0; i<16; i++)
-			//				{
-			//					double x = xCoord+.5 + worldObj.rand.nextGaussian()/2-.25;
-			//					double y = yCoord + worldObj.rand.nextGaussian()/2;
-			//					double z = zCoord+.5 + worldObj.rand.nextGaussian()/2-.25;
-			//					double mX = worldObj.rand.nextGaussian() * 0.01D;
-			//					double mY = worldObj.rand.nextGaussian() * 0.05D;
-			//					double mZ = worldObj.rand.nextGaussian() * 0.01D;
-			//					EntityFX particleMysterious = new EntityFXItemParts(worldObj, ss, i, x,y,z, mX,mY,mZ);
-			//					Minecraft.getMinecraft().effectRenderer.addEffect(particleMysterious);
-			//				}
 		}catch(Exception e)
 		{
 			e.printStackTrace();
@@ -513,14 +493,14 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 	public int getEnergyStored(ForgeDirection from)
 	{
 		if(this.master()!=null)
-			this.master().energyStorage.getEnergyStored();
+			return this.master().energyStorage.getEnergyStored();
 		return energyStorage.getEnergyStored();
 	}
 	@Override
 	public int getMaxEnergyStored(ForgeDirection from)
 	{
 		if(this.master()!=null)
-			this.master().energyStorage.getMaxEnergyStored();
+			return this.master().energyStorage.getMaxEnergyStored();
 		return energyStorage.getMaxEnergyStored();
 	}
 }

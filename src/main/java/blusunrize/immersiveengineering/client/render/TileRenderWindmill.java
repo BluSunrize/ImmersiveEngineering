@@ -23,7 +23,7 @@ public class TileRenderWindmill extends TileEntitySpecialRenderer
 
 		GL11.glRotated(mill.facing==2?0: mill.facing==3?180: mill.facing==4?90: -90, 0, 1, 0);
 
-		float rot = 360*mill.rotation+(!mill.canTurn||mill.rotation==0?0:f);
+		float rot = 360*(mill.rotation+(!mill.canTurn||mill.rotation==0?0:f*mill.prevRotation));
 		model.setRotateAngle(model.axel, 0, 0, -(float)Math.toRadians(rot));
 
 		ClientUtils.bindTexture("immersiveengineering:textures/models/windmill.png");
