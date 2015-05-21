@@ -26,10 +26,11 @@ import cpw.mods.fml.relauncher.Side;
 
 public class ImmersiveNetHandler
 {
-	private static HashMap<Integer, ArrayListMultimap<ChunkCoordinates,Connection>> directConnections = new HashMap<Integer, ArrayListMultimap<ChunkCoordinates,Connection>>();
-	private static ArrayListMultimap<ChunkCoordinates, AbstractConnection> indirectConnections = ArrayListMultimap.create();
+	public static ImmersiveNetHandler INSTANCE;
+	public HashMap<Integer, ArrayListMultimap<ChunkCoordinates,Connection>> directConnections = new HashMap<Integer, ArrayListMultimap<ChunkCoordinates,Connection>>();
+	public ArrayListMultimap<ChunkCoordinates, AbstractConnection> indirectConnections = ArrayListMultimap.create();
 
-	private static ArrayListMultimap<ChunkCoordinates,Connection> getMultimap(int dimension)
+	private ArrayListMultimap<ChunkCoordinates,Connection> getMultimap(int dimension)
 	{
 		if(directConnections.get(dimension)==null)
 		{
@@ -39,7 +40,7 @@ public class ImmersiveNetHandler
 		return directConnections.get(dimension);
 	}
 
-	public static void addConnection(World world, ChunkCoordinates node, ChunkCoordinates connection, int distance, WireType cableType)
+	public void addConnection(World world, ChunkCoordinates node, ChunkCoordinates connection, int distance, WireType cableType)
 	{
 		getMultimap(world.provider.dimensionId).get(node).add(new Connection(node, connection, cableType, distance));
 		getMultimap(world.provider.dimensionId).get(connection).add(new Connection(connection, node, cableType, distance));
@@ -47,30 +48,30 @@ public class ImmersiveNetHandler
 			indirectConnections.clear();
 		IESaveData.setDirty(world.provider.dimensionId);
 	}
-	public static void addConnection(World world, ChunkCoordinates node, Connection con)
+	public void addConnection(World world, ChunkCoordinates node, Connection con)
 	{
 		getMultimap(world.provider.dimensionId).put(node, con);
 		if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
 			indirectConnections.clear();
 		IESaveData.setDirty(world.provider.dimensionId);
 	}
-	public static Set<Integer> getRelevantDimensions()
+	public Set<Integer> getRelevantDimensions()
 	{
 		return directConnections.keySet();
 	}
-	public static Collection<Connection> getAllConnections(World world)
+	public Collection<Connection> getAllConnections(World world)
 	{
 		return getMultimap(world.provider.dimensionId).values();
 	}
-	public static List<Connection> getConnections(World world, ChunkCoordinates node)
+	public List<Connection> getConnections(World world, ChunkCoordinates node)
 	{
 		return getMultimap(world.provider.dimensionId).get(node);
 	}
-	public static void clearAllConnections(World world)
+	public void clearAllConnections(World world)
 	{
 		getMultimap(world.provider.dimensionId).clear();
 	}
-	public static void clearConnectionsOriginatingFrom(ChunkCoordinates node, World world)
+	public void clearConnectionsOriginatingFrom(ChunkCoordinates node, World world)
 	{
 		getMultimap(world.provider.dimensionId).removeAll(node);
 		if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
@@ -80,7 +81,7 @@ public class ImmersiveNetHandler
 	/**
 	 * Clears all connections to and from this node.
 	 */
-	public static void clearAllConnectionsFor(ChunkCoordinates node, World world)
+	public void clearAllConnectionsFor(ChunkCoordinates node, World world)
 	{
 		getMultimap(world.provider.dimensionId).removeAll(node);
 		IImmersiveConnectable iic = toIIC(node, world);
@@ -120,7 +121,7 @@ public class ImmersiveNetHandler
 	 * Clears all connections to and from this node.
 	 * The TargetingInfo must not be null!
 	 */
-	public static void clearAllConnectionsFor(ChunkCoordinates node, World world, TargetingInfo target)
+	public void clearAllConnectionsFor(ChunkCoordinates node, World world, TargetingInfo target)
 	{
 		IImmersiveConnectable iic = toIIC(node, world);
 		WireType type = target==null?null : iic.getCableLimiter(target);
@@ -215,8 +216,11 @@ public class ImmersiveNetHandler
 		return closedList;
 	}
 	 */
-	public static List<AbstractConnection> getIndirectEnergyConnections(ChunkCoordinates node, World world)
+	public List<AbstractConnection> getIndirectEnergyConnections(ChunkCoordinates node, World world)
 	{
+		if(indirectConnections.containsKey(node))
+			return indirectConnections.get(node);
+
 		List<IImmersiveConnectable> openList = new ArrayList<IImmersiveConnectable>();
 		List<AbstractConnection> closedList = new ArrayList<AbstractConnection>();
 		List<ChunkCoordinates> checked = new ArrayList<ChunkCoordinates>();

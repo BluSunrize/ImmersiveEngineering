@@ -129,7 +129,7 @@ public class TileEntityBlastFurnace extends TileEntityIEBase implements ISidedIn
 		BlastFurnaceRecipe recipe = BlastFurnaceRecipe.findRecipe(inventory[0]);
 		if(recipe==null)
 			return null;
-		if(inventory[2]==null || (OreDictionary.itemMatches(inventory[2],recipe.output,true) && inventory[2].stackSize+recipe.output.stackSize<getInventoryStackLimit()) )
+		if(inventory[2]==null || (OreDictionary.itemMatches(inventory[2],recipe.output,true) && inventory[2].stackSize+recipe.output.stackSize<=getInventoryStackLimit()) )
 			return recipe;
 		return null;
 	}

@@ -9,10 +9,10 @@ import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.StatCollector;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
-import blusunrize.immersiveengineering.api.WireType;
 import blusunrize.immersiveengineering.api.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.TargetingInfo;
+import blusunrize.immersiveengineering.api.WireType;
 import blusunrize.immersiveengineering.common.IESaveData;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Lib;
@@ -74,7 +74,28 @@ public class ItemWireCoil extends ItemIEBase
 				{
 					IImmersiveConnectable nodeHere = (IImmersiveConnectable)world.getTileEntity(x, y, z);
 					IImmersiveConnectable nodeLink = (IImmersiveConnectable)world.getTileEntity(pos[1], pos[2], pos[3]);
+					boolean connectionExists = false;
 					if(nodeHere!=null && nodeLink!=null)
+					{
+						for(ImmersiveNetHandler.Connection con : ImmersiveNetHandler.INSTANCE.getConnections(world, Utils.toCC(nodeHere)))
+						{
+							if(con.end.equals(Utils.toCC(nodeLink)))
+								connectionExists = true;
+						}
+						//						if(ImmersiveNetHandler.getConnections(world, Utils.toCC(nodeLink)).contains(new ImmersiveNetHandler.Connection(Utils.toCC(nodeHere), Utils.toCC(nodeLink), type, distance)))
+						//						{
+						//							System.out.println("connection exists 0");
+						//							connectionExists = true;
+						//						}
+						//						if(ImmersiveNetHandler.getConnections(world, Utils.toCC(nodeHere)).contains(new ImmersiveNetHandler.Connection(Utils.toCC(nodeLink), Utils.toCC(nodeHere), type, distance)))
+						//						{
+						//							System.out.println("connection exists 1");
+						//							connectionExists = true;
+						//						}
+					}
+					if(connectionExists)
+						player.addChatMessage(new ChatComponentTranslation(Lib.CHAT_WARN+"connectionExists"));
+					else
 					{
 						Vec3 rtOff0 = nodeHere.getRaytraceOffset().addVector(x, y, z);
 						Vec3 rtOff1 = nodeLink.getRaytraceOffset().addVector(pos[1], pos[2], pos[3]);
@@ -82,7 +103,7 @@ public class ItemWireCoil extends ItemIEBase
 						if(canSee)
 						{
 							TargetingInfo targetLink = TargetingInfo.readFromNBT(stack.getTagCompound());
-							ImmersiveNetHandler.addConnection(world, Utils.toCC(nodeHere), Utils.toCC(nodeLink), distance, type);
+							ImmersiveNetHandler.INSTANCE.addConnection(world, Utils.toCC(nodeHere), Utils.toCC(nodeLink), distance, type);
 							nodeHere.connectCable(type, target);
 							nodeLink.connectCable(type, targetLink);
 							IESaveData.setDirty(world.provider.dimensionId);

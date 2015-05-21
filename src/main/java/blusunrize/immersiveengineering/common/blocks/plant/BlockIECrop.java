@@ -9,11 +9,13 @@ import net.minecraft.block.BlockFarmland;
 import net.minecraft.block.IGrowable;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.EnumPlantType;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.IEContent;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -119,10 +121,10 @@ public class BlockIECrop extends BlockBush implements IGrowable
 			int meta = world.getBlockMetadata(x, y, z);
 			if(meta>4)
 				return;
-			if(this.getMaxMeta(meta) != meta)
+			float growth = this.getGrowthSpeed(world, x, y, z, meta, light);
+			if (random.nextInt((int)(50F/growth)+1) == 0)
 			{
-				float growth = this.getGrowthSpeed(world, x, y, z, meta, light);
-				if (random.nextInt((int)(50F/growth)+1) == 0)
+				if(this.getMaxMeta(meta) != meta)
 				{
 					meta++;
 					world.setBlockMetadataWithNotify(x, y, z, meta, 0x3);
@@ -145,22 +147,32 @@ public class BlockIECrop extends BlockBush implements IGrowable
 	@Override
 	protected boolean canPlaceBlockOn(Block block)
 	{
-		return block!=null && (block==this || block instanceof BlockFarmland);
+		return block!=null && (block==this || block.equals(Blocks.farmland) || block instanceof BlockFarmland);
 	}
 
-
+    @Override
+    public EnumPlantType getPlantType(IBlockAccess world, int x, int y, int z)
+    {
+    	return EnumPlantType.Crop;
+    }
+    
 	//isNotGrown
 	@Override
 	public boolean func_149851_a(World world, int x, int y, int z, boolean client)
 	{
-		int meta = world.getBlockMetadata(x, y, z);
-		return meta!=getMaxMeta(meta);
+		if(world.getBlockMetadata(x, y, z)<getMaxMeta(world.getBlockMetadata(x, y, z)))
+			return true;
+		else 
+			return world.getBlockMetadata(x, y, z)==4 && !world.getBlock(x, y+1, z).equals(this);
 	}
 	//canBonemeal
 	@Override
 	public boolean func_149852_a(World world, Random rand, int x, int y, int z)
 	{
-		return world.getBlockMetadata(x, y, z)<getMaxMeta(world.getBlockMetadata(x, y, z));
+		if(world.getBlockMetadata(x, y, z)<getMaxMeta(world.getBlockMetadata(x, y, z)))
+			return true;
+		else 
+			return world.getBlockMetadata(x, y, z)==4 && !world.getBlock(x, y+1, z).equals(this);
 	}
 	//useBonemeal
 	@Override
@@ -173,8 +185,9 @@ public class BlockIECrop extends BlockBush implements IGrowable
 			int newMeta = meta+rand.nextInt(span)+1;
 			if(newMeta!=meta)
 				world.setBlockMetadataWithNotify(x, y, z, newMeta, 0x3);
-			if(newMeta>3 && world.isAirBlock(x, y+1, z))
-				world.setBlock(x, y+1, z, this, newMeta+1, 0x3);
+			meta = newMeta;
 		}
+		if(meta>3 && world.isAirBlock(x, y+1, z))
+			world.setBlock(x, y+1, z, this, meta+1, 0x3);
 	}
 }

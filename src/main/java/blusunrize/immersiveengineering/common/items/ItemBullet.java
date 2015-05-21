@@ -34,7 +34,7 @@ public class ItemBullet extends ItemIEBase implements IBullet
 	@Override
 	public ItemStack getCasing(ItemStack stack)
 	{
-		return new ItemStack(this, 1, stack.getItemDamage()==4||stack.getItemDamage()==6||stack.getItemDamage()==7?1:0);
+		return new ItemStack(this, 1, stack.getItemDamage()==1||stack.getItemDamage()==4||stack.getItemDamage()==6?1:0);
 	}
 	@Override
 	public boolean canSpawnBullet(ItemStack bulletStack)

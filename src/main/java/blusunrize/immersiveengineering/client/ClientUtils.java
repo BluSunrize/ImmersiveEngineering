@@ -13,6 +13,8 @@ import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumChatFormatting;
@@ -21,6 +23,12 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.client.model.AdvancedModelLoader;
+import net.minecraftforge.client.model.obj.Face;
+import net.minecraftforge.client.model.obj.GroupObject;
+import net.minecraftforge.client.model.obj.TextureCoordinate;
+import net.minecraftforge.client.model.obj.Vertex;
+import net.minecraftforge.client.model.obj.WavefrontObject;
 import net.minecraftforge.fluids.Fluid;
 
 import org.lwjgl.opengl.GL11;
@@ -29,18 +37,27 @@ import org.lwjgl.opengl.GL12;
 import blusunrize.immersiveengineering.api.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.WireType;
+import blusunrize.immersiveengineering.client.render.TileRenderIE;
 import blusunrize.immersiveengineering.common.util.IESound;
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 
 public class ClientUtils
 {
 	// MOD SPECIFIC METHODS
 	public static void renderAttachedConnections(TileEntity tile)
 	{
+		GL11.glDisable(GL11.GL_TEXTURE_2D);
+		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glDisable(GL11.GL_ALPHA_TEST);
+		OpenGlHelper.glBlendFunc(770, 771, 1, 0);
+		GL11.glShadeModel(GL11.GL_SMOOTH);
 		if(tile.getWorldObj()!=null && tile instanceof IImmersiveConnectable)
 		{
 			ClientUtils.bindTexture("immersiveengineering:textures/models/white.png");
-			Iterator<ImmersiveNetHandler.Connection> itCon = ImmersiveNetHandler.getConnections(tile.getWorldObj(), Utils.toCC(tile)).iterator();
+			Iterator<ImmersiveNetHandler.Connection> itCon = ImmersiveNetHandler.INSTANCE.getConnections(tile.getWorldObj(), Utils.toCC(tile)).iterator();
+			//			if(!ImmersiveNetHandler.isModifyingMaps())
+			//			{
 			while(itCon.hasNext())
 			{
 				ImmersiveNetHandler.Connection con = itCon.next();
@@ -48,7 +65,12 @@ public class ClientUtils
 				if(tileEnd instanceof IImmersiveConnectable)
 					drawConnection(con, (IImmersiveConnectable)tile, Utils.toIIC(tileEnd, tile.getWorldObj()));
 			}
+
+			//			}
 		}
+		GL11.glDisable(GL11.GL_BLEND);
+		GL11.glEnable(GL11.GL_ALPHA_TEST);
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
 	}
 
 	public static void drawConnection(ImmersiveNetHandler.Connection connection, IImmersiveConnectable start, IImmersiveConnectable end)
@@ -67,7 +89,8 @@ public class ClientUtils
 		double r = connection.cableType==WireType.STEEL||connection.cableType==WireType.STRUCTURE_STEEL||connection.cableType==WireType.STRUCTURE_ROPE?.03125:.015625;
 		double rmodx = dz/dw;
 		double rmodz = dx/dw;
-		GL11.glTranslated(startOffset.xCoord,startOffset.yCoord,startOffset.zCoord);
+		//		GL11.glTranslated(startOffset.xCoord,startOffset.yCoord,startOffset.zCoord);
+		Tessellator.instance.addTranslation((float)startOffset.xCoord,(float)startOffset.yCoord,(float)startOffset.zCoord);
 		Tessellator tes = tes();
 		World world = ((TileEntity)start).getWorldObj();
 
@@ -91,7 +114,7 @@ public class ClientUtils
 		int vertices = 16;
 		if(vertical)
 		{
-			tes.startDrawing(GL11.GL_QUADS);
+			//			tes.startDrawing(GL11.GL_QUADS);
 			tes.setColorOpaque_I(col);
 			tes.setBrightness(calcBrightness(world, connection.start.posX-r,connection.start.posY,connection.start.posZ));
 			tes.addVertex(0-r, 0, 0);
@@ -101,8 +124,8 @@ public class ClientUtils
 			tes.addVertex(dx+r, dy, dz);
 			tes.setBrightness(calcBrightness(world, connection.start.posX+r,connection.start.posY,connection.start.posZ));
 			tes.addVertex(0+r, 0, 0);
-			tes.draw();
-			tes.startDrawing(GL11.GL_QUADS);
+			//			tes.draw();
+			//			tes.startDrawing(GL11.GL_QUADS);
 			tes.setColorOpaque_I(col);
 			tes.setBrightness(calcBrightness(world, connection.start.posX,connection.start.posY,connection.start.posZ-r));
 			tes.addVertex(0, 0, 0-r);
@@ -112,9 +135,11 @@ public class ClientUtils
 			tes.addVertex(dx, dy, dz+r);
 			tes.setBrightness(calcBrightness(world, connection.start.posX,connection.start.posY,connection.start.posZ+r));
 			tes.addVertex(0, 0, 0+r);
-			tes.draw();
+			//			tes.draw();
 		}
 		else
+		{
+			//			tes.startDrawing(GL11.GL_QUADS);
 			for(int i=0; i<vertices; i++)
 			{
 				float n0 = i/(float)vertices;
@@ -127,7 +152,7 @@ public class ClientUtils
 				double z1 = 0 + dz * n1;
 				double y1 = a * Math.cosh((( Math.sqrt(x1*x1+z1*z1) )-p)/a)+q;
 
-				tes.startDrawing(GL11.GL_QUADS);
+				//				tes.startDrawing(GL11.GL_QUADS);
 				tes.setColorOpaque_I(col);
 				tes.setBrightness(calcBrightness(world, connection.start.posX+x0, connection.start.posY+y0+r, connection.start.posZ+z0));
 				tes.addVertex(x0, y0+r, z0);
@@ -137,8 +162,8 @@ public class ClientUtils
 				tes.addVertex(x1, y1-r, z1);
 				tes.setBrightness(calcBrightness(world, connection.start.posX+x0, connection.start.posY+y0-r, connection.start.posZ+z0));
 				tes.addVertex(x0, y0-r, z0);
-				tes.draw();
-				tes.startDrawing(GL11.GL_QUADS);
+				//				tes.draw();
+				//				tes.startDrawing(GL11.GL_QUADS);
 				tes.setColorOpaque_I(col);
 				tes.setBrightness(calcBrightness(world, connection.start.posX+x0-r*rmodx, connection.start.posY+y0, connection.start.posZ+z0+r*rmodz));
 				tes.addVertex(x0-r*rmodx, y0, z0+r*rmodz);
@@ -148,68 +173,14 @@ public class ClientUtils
 				tes.addVertex(x1+r*rmodx, y1, z1-r*rmodz);
 				tes.setBrightness(calcBrightness(world, connection.start.posX+x0+r*rmodx, connection.start.posY+y0, connection.start.posZ+z0-r*rmodz));
 				tes.addVertex(x0+r*rmodx, y0, z0-r*rmodz);
-				tes.draw();
+				//				tes.draw();
 			}
+			//			tes.draw();
+		}
 		GL11.glEnable(GL11.GL_CULL_FACE);
-		//		boolean invert = connection.start.posY>=connection.end.posY;
-		//
-		//		for(int i=0; i<vertices; ++i)
-		//		{
-		//			float f12I = (float)i / (float)vertices;
-		//			float f12J = (float)(i+1) / (float)vertices;
-		//			double yModI = 0;
-		//			double yModJ = 0;
-		//			if(dy==0)
-		//			{
-		//				yModI = Math.abs(f12I-.5);
-		//				yModI *= yModI*modW;
-		//				yModI -= .25*modW;
-		//				yModJ = Math.abs(f12J-.5);
-		//				yModJ *= yModJ*modW;
-		//				yModJ -= .25*modW;
-		//			}
-		//
-		//			double y0 = dy*(f12I*f12I+f12I)*.5-yModI;
-		//			double y1 = dy*(f12J*f12J+f12J)*.5-yModJ;
-		//			if(!invert)
-		//			{
-		//				tes.startDrawing(GL11.GL_QUADS);
-		//				tes.setColorOpaque_I(col);
-		//				tes.addVertex(0+dx*f12I, y0+r, 0+dz*f12I);
-		//				tes.addVertex(0+dx*f12J, y1+r, 0+dz*f12J);
-		//				tes.addVertex(0+dx*f12J, y1-r, 0+dz*f12J);
-		//				tes.addVertex(0+dx*f12I, y0-r, 0+dz*f12I);
-		//				tes.draw();
-		//
-		//				tes.startDrawing(GL11.GL_QUADS);
-		//				tes.setColorOpaque_I(col);
-		//				tes.addVertex(0+dx*f12I+r, y0, 0+dz*f12I);
-		//				tes.addVertex(0+dx*f12J+r, y1, 0+dz*f12J);
-		//				tes.addVertex(0+dx*f12J-r, y1, 0+dz*f12J);
-		//				tes.addVertex(0+dx*f12I-r, y0, 0+dz*f12I);
-		//				tes.draw();
-		//			}
-		//			else
-		//			{
-		//				tes.startDrawing(GL11.GL_QUADS);
-		//				tes.setColorOpaque_I(col);
-		//				tes.addVertex(dx-dx*f12I, dy-y0+r, dz-dz*f12I);
-		//				tes.addVertex(dx-dx*f12J, dy-y1+r, dz-dz*f12J);
-		//				tes.addVertex(dx-dx*f12J, dy-y1-r, dz-dz*f12J);
-		//				tes.addVertex(dx-dx*f12I, dy-y0-r, dz-dz*f12I);
-		//				tes.draw();
-		//				//				
-		//				tes.startDrawing(GL11.GL_QUADS);
-		//				tes.setColorOpaque_I(col);
-		//				tes.addVertex(dx-dx*f12I+r, dy-y0, dz-dz*f12I);
-		//				tes.addVertex(dx-dx*f12J+r, dy-y1, dz-dz*f12J);
-		//				tes.addVertex(dx-dx*f12J-r, dy-y1, dz-dz*f12J);
-		//				tes.addVertex(dx-dx*f12I-r, dy-y0, dz-dz*f12I);
-		//				tes.draw();
-		//			}
-		//		}
 
-		GL11.glTranslated(-startOffset.xCoord,-startOffset.yCoord,-startOffset.zCoord);
+		//		GL11.glTranslated(-startOffset.xCoord,-startOffset.yCoord,-startOffset.zCoord);
+		Tessellator.instance.addTranslation((float)-startOffset.xCoord,(float)-startOffset.yCoord,(float)-startOffset.zCoord);
 	}
 	public static int calcBrightness(IBlockAccess world, double x, double y, double z)
 	{
@@ -239,6 +210,13 @@ public class ClientUtils
 			resourceMap.put(path, rl);
 		return rl;
 	}
+	public static WavefrontObject getModel(String path)
+	{
+		ResourceLocation rl = resourceMap.containsKey(path) ? resourceMap.get(path) : new ResourceLocation(path);
+		if(!resourceMap.containsKey(path))
+			resourceMap.put(path, rl);
+		return (WavefrontObject)AdvancedModelLoader.loadModel(rl);
+	}
 	public static FontRenderer font()
 	{
 		return mc().fontRenderer;
@@ -250,6 +228,107 @@ public class ClientUtils
 		sound.evaluateVolume();
 		ClientUtils.mc().getSoundHandler().playSound(sound);
 		return sound;
+	}
+
+	public static void handleStaticTileRenderer(TileEntity tile)
+	{
+		TileEntitySpecialRenderer tesr = TileEntityRendererDispatcher.instance.getSpecialRenderer(tile);
+		if(tesr instanceof TileRenderIE)
+			((TileRenderIE)tesr).renderStatic(tile, Tessellator.instance, new Matrix4().translate(tile.xCoord, tile.yCoord, tile.zCoord), new Matrix4());
+	}
+
+	/**
+	 * A big "Thank you!" to AtomicBlom and Rorax for helping me figure this one out =P
+	 */
+	public static void renderStaticWavefrontModel(TileEntity tile, WavefrontObject model, Tessellator tes, Matrix4 translationMatrix, Matrix4 rotationMatrix, boolean offsetLighting, String... renderedParts)
+	{
+		tes.setColorRGBA_F(1F, 1F, 1F, 1F);
+
+		if(tile.getWorldObj()!=null)
+		{
+			int lb = tile.getWorldObj().getLightBrightnessForSkyBlocks(tile.xCoord, tile.yCoord, tile.zCoord, 0);
+			int lb_j = lb % 65536;
+			int lb_k = lb / 65536;
+			OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)lb_j / 1.0F, (float)lb_k / 1.0F);
+		}
+		Vertex vertexCopy = new Vertex(0,0,0);
+		Vertex normalCopy = new Vertex(0,0,0);
+
+		for(GroupObject groupObject : model.groupObjects)
+		{
+			boolean render = false;
+			if(renderedParts==null || renderedParts.length<1)
+				render = true;
+			else
+				for(String s : renderedParts)
+					if(groupObject.name.equalsIgnoreCase(s))
+						render = true;
+			if(render)
+				for(Face face : groupObject.faces)
+				{
+					if(face.faceNormal == null)
+						face.faceNormal = face.calculateFaceNormal();
+
+					normalCopy.x = face.faceNormal.x;
+					normalCopy.y = face.faceNormal.y;
+					normalCopy.z = face.faceNormal.z;
+					rotationMatrix.apply(normalCopy);
+					float biggestNormal = Math.max(Math.abs(normalCopy.y), Math.max(Math.abs(normalCopy.x),Math.abs(normalCopy.z)));
+					int side = biggestNormal==Math.abs(normalCopy.y)?(normalCopy.y<0?0:1): biggestNormal==Math.abs(normalCopy.z)?(normalCopy.z<0?2:3): (normalCopy.x<0?4:5);
+
+					float xx=0;
+					float yy=0;
+					float zz=0;
+					if(offsetLighting)
+					{
+						for(int i=0; i<face.vertices.length; ++i)
+						{
+							xx += face.vertices[i].x;
+							yy += face.vertices[i].y;
+							zz += face.vertices[i].z;
+						}
+						xx /= face.vertices.length;
+						yy /= face.vertices.length;
+						zz /= face.vertices.length;
+					}
+
+					BlockLightingInfo info = null;
+					if(tile.getWorldObj()!=null)
+						info = calculateBlockLighting(side, tile.getWorldObj(), tile.getBlockType(), Math.round(tile.xCoord+xx),Math.round(tile.yCoord+yy),Math.round(tile.zCoord+zz), 1,1,1);
+
+					tes.setNormal(face.faceNormal.x, face.faceNormal.y, face.faceNormal.z);
+					for(int i=0; i<face.vertices.length; ++i)
+					{
+						int corner = (int)(i/(float)face.vertices.length*4);
+
+						Vertex vertex = face.vertices[i];
+						vertexCopy.x = vertex.x;
+						vertexCopy.y = vertex.y;
+						vertexCopy.z = vertex.z;
+						rotationMatrix.apply(vertexCopy);
+						translationMatrix.apply(vertexCopy);
+
+						if(info!=null)
+						{
+							tes.setBrightness(corner==0?info.brightnessTopLeft: corner==1?info.brightnessBottomLeft: corner==2?info.brightnessBottomRight: info.brightnessTopRight);
+							float r = corner==0?info.colorRedTopLeft: corner==1?info.colorRedBottomLeft: corner==2?info.colorRedBottomRight: info.colorRedTopRight;
+							float g = corner==0?info.colorGreenTopLeft: corner==1?info.colorGreenBottomLeft: corner==2?info.colorGreenBottomRight: info.colorGreenTopRight;
+							float b = corner==0?info.colorBlueTopLeft: corner==1?info.colorBlueBottomLeft: corner==2?info.colorBlueBottomRight: info.colorBlueTopRight;
+							tes.setColorOpaque_F(r, g, b);
+						}
+
+						if((face.textureCoordinates != null) && (face.textureCoordinates.length > 0))
+						{
+							TextureCoordinate textureCoordinate = face.textureCoordinates[i];
+							tes.addVertexWithUV(vertexCopy.x, vertexCopy.y, vertexCopy.z, textureCoordinate.u, textureCoordinate.v);
+						}
+						else
+						{
+							tes.addVertex(vertexCopy.x, vertexCopy.y, vertexCopy.z);
+						}
+					}
+				}
+		}
 	}
 
 	public static void drawInventoryBlock(Block block, int metadata, RenderBlocks renderer)

@@ -61,8 +61,22 @@ public class ItemIETool extends ItemIEBase
 	@Override
 	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
 	{
+//		System.out.println(ImmersiveNetHandler.INSTANCE);
 		if(!world.isRemote)
 		{
+//			ArrayListMultimap<ChunkCoordinates, AbstractConnection> map = ImmersiveNetHandler.indirectConnections;
+//			System.out.println("indirect map contains: "+map.size()+" connections");
+//			System.out.println("keys: "+map.keySet().size());
+//			System.out.println("total values: "+map.values().size());
+//			for(ChunkCoordinates key : map.keySet())
+//			{
+//				System.out.println(" connections from : "+key+": "+map.get(key).size());
+//				for(AbstractConnection con : map.get(key))
+//					System.out.println("  "+con.start+" to "+con.end);
+//					
+//				
+//			}
+			
 			if(stack.getItemDamage()==0)
 			{
 				for(IMultiblock mb : MultiblockHandler.getMultiblocks())
@@ -72,7 +86,7 @@ public class ItemIETool extends ItemIEBase
 			else if(stack.getItemDamage()==1 && world.getTileEntity(x, y, z) instanceof IImmersiveConnectable)
 			{
 				IImmersiveConnectable nodeHere = (IImmersiveConnectable)world.getTileEntity(x, y, z);
-				ImmersiveNetHandler.clearAllConnectionsFor(Utils.toCC(nodeHere),world, new TargetingInfo(side,hitX,hitY,hitZ));
+				ImmersiveNetHandler.INSTANCE.clearAllConnectionsFor(Utils.toCC(nodeHere),world, new TargetingInfo(side,hitX,hitY,hitZ));
 				IESaveData.setDirty(world.provider.dimensionId);
 				return true;
 			}
@@ -108,7 +122,7 @@ public class ItemIETool extends ItemIEBase
 							IImmersiveConnectable nodeLink = (IImmersiveConnectable)world.getTileEntity(pos[1], pos[2], pos[3]);
 							if(nodeHere!=null && nodeLink!=null)
 							{
-								List<AbstractConnection> connections = ImmersiveNetHandler.getIndirectEnergyConnections(Utils.toCC(nodeLink), world);
+								List<AbstractConnection> connections = ImmersiveNetHandler.INSTANCE.getIndirectEnergyConnections(Utils.toCC(nodeLink), world);
 								for(AbstractConnection con : connections)
 									if(Utils.toCC(nodeHere).equals(con.end))
 										player.addChatComponentMessage(new ChatComponentTranslation(Lib.CHAT_INFO+"averageLoss",Utils.formatDouble(con.getAverageLossRate()*100, "###.000")));

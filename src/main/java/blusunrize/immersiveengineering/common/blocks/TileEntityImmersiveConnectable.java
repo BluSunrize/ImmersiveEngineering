@@ -36,7 +36,7 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 	{
 		super.invalidate();
 		if(worldObj!=null && !worldObj.isRemote)
-			ImmersiveNetHandler.clearAllConnectionsFor(Utils.toCC(this),worldObj);
+			ImmersiveNetHandler.INSTANCE.clearAllConnectionsFor(Utils.toCC(this),worldObj);
 	}
 
 	@Override
@@ -82,7 +82,7 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 	@Override
 	public void removeCable(WireType type)
 	{
-		if(ImmersiveNetHandler.getConnections(worldObj,Utils.toCC(this)).isEmpty())
+		if(ImmersiveNetHandler.INSTANCE.getConnections(worldObj,Utils.toCC(this)).isEmpty())
 		{
 			if(type==limitType || type==null)
 				this.limitType = null;
@@ -99,7 +99,7 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 		if(worldObj!=null && !worldObj.isRemote)
 		{
 			NBTTagList connectionList = new NBTTagList();
-			List<Connection> conL = ImmersiveNetHandler.getConnections(worldObj, Utils.toCC(this));
+			List<Connection> conL = ImmersiveNetHandler.INSTANCE.getConnections(worldObj, Utils.toCC(this));
 			for(Connection con : conL)
 				connectionList.appendTag(con.writeToNBT());
 			nbttagcompound.setTag("connectionList", connectionList);
@@ -114,14 +114,14 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 		if(worldObj!=null && worldObj.isRemote)
 		{
 			NBTTagList connectionList = nbt.getTagList("connectionList", 10);
-			ImmersiveNetHandler.clearConnectionsOriginatingFrom(Utils.toCC(this), worldObj);
+			ImmersiveNetHandler.INSTANCE.clearConnectionsOriginatingFrom(Utils.toCC(this), worldObj);
 			for(int i=0; i<connectionList.tagCount(); i++)
 			{
 				NBTTagCompound conTag = connectionList.getCompoundTagAt(i);
 				Connection con = Connection.readFromNBT(conTag);
 				if(con!=null)
 				{
-					ImmersiveNetHandler.addConnection(worldObj, Utils.toCC(this), con);
+					ImmersiveNetHandler.INSTANCE.addConnection(worldObj, Utils.toCC(this), con);
 				}
 				else
 					System.out.println("CLIENT read connection as null");

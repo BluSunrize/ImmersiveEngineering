@@ -30,7 +30,6 @@ public class ItemRenderRevolver implements IItemRenderer
 	public void renderItem(ItemRenderType type, ItemStack item, Object... data)
 	{
 		GL11.glPushMatrix();
-		GL11.glDisable(3042);
 		GL11.glRotatef(180, 0, 0, 1);
 		if(type==ItemRenderType.EQUIPPED_FIRST_PERSON)
 			GL11.glRotatef(45, 0, 1, 0);
@@ -63,6 +62,7 @@ public class ItemRenderRevolver implements IItemRenderer
 			GL11.glRotatef(-45, 1, 0, 0);
 			GL11.glTranslatef(0,-.1f,.3f);
 			GL11.glScalef(.4375f,.4375f,.4375f);
+			GL11.glEnable(3042);
 		}
 		
 		ClientUtils.bindTexture(((ItemRevolver)item.getItem()).getRevolverTexture(item));
@@ -74,6 +74,8 @@ public class ItemRenderRevolver implements IItemRenderer
 		model.CylinderAuto_2.isHidden = !b;
 		
 		model.render(null, 0, 0, 0, 0, 0, .0625f);
+		if(type==ItemRenderType.INVENTORY)
+			GL11.glDisable(3042);
 		GL11.glPopMatrix();
 	}
 

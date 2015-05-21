@@ -182,10 +182,10 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 		int received = 0;
 		if(!worldObj.isRemote)
 		{
-			List<AbstractConnection> outputs = ImmersiveNetHandler.getIndirectEnergyConnections(Utils.toCC(this), worldObj);
+			List<AbstractConnection> outputs = ImmersiveNetHandler.INSTANCE.getIndirectEnergyConnections(Utils.toCC(this), worldObj);
 			int powerLeft = Math.min(Math.min(getMaxOutput(),getMaxInput()), energy);
 			for(AbstractConnection con : outputs)
-				if(con!=null && toIIC(con.end, worldObj)!=null)
+				if(con!=null && con.cableType!=null && toIIC(con.end, worldObj)!=null)
 				{
 					int tempR = toIIC(con.end,worldObj).outputEnergy(Math.min(powerLeft,con.cableType.getTransferRate()), true, energyType);
 					int r = tempR;

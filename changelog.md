@@ -1,5 +1,28 @@
+#####Version 0.1.14
+- crusher multiblock can be mirrored now. Also structure can be initiated from the opposing side
+- changed rendering of wires, moved from TESR to RenderWorldLastEvent
+- fixed a possible NPE on power transfer
+- fixed CokeOven and BlastFurnace only allowing 63 items in the output
+- revolver shenanigans everywhere
+- moved all the connectors, wooden poles and the transformers from TESRs to ISRBHs
+- most other models are also .obj now
 
-#####Version 0.1.10
+#####Version 0.1.13 - BUILT
+- revolvers now expel the right casings
+- coke oven, fermenter and squeezer now check if they can use a filled fluid container before creating one. No more fluid voiding
+- HV transformers no longer delete blocks on placement
+- water wheels should stop stopping all the time
+- changed windmills to check lines in the innermost loop
+- added MFR support for hemp plants
+- stopped the energy system from being derped
+
+#####Version 0.1.12 - BUILT
+- ores should now work with BC quarries
+
+#####Version 0.1.11 - BUILT
+- fixed a bug with table pages initializing with empty OreDict lists
+
+#####Version 0.1.10 - BUILT
 - added wooden and steel wall mounts
 - improved squeezer and fermenter, no more while loops. Hopefully lag-preventing
 - made watermills sync their rotation when stack against eachother

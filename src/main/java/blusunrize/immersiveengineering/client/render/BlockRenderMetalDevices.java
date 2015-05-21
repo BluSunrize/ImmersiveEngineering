@@ -2,7 +2,7 @@ package blusunrize.immersiveengineering.client.render;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -33,9 +33,10 @@ public class BlockRenderMetalDevices implements ISimpleBlockRenderingHandler
 
 			if(metadata==BlockMetalDevices.META_connectorLV)
 			{
-				GL11.glTranslatef(-.5f, -.5F, -.5f);
-				TileEntityRendererDispatcher.instance.renderTileEntityAt(new TileEntityConnectorLV(), 0.0D, 0.0D, 0.0D, 0.0F);
-				GL11.glEnable(32826);
+				GL11.glScalef(1.25f, 1.25f, 1.25f);
+				Tessellator.instance.startDrawingQuads();
+				ClientUtils.handleStaticTileRenderer(new TileEntityConnectorLV());
+				Tessellator.instance.draw();
 			}
 			else if(metadata==BlockMetalDevices.META_capacitorLV)
 			{
@@ -45,9 +46,10 @@ public class BlockRenderMetalDevices implements ISimpleBlockRenderingHandler
 			}
 			else if(metadata==BlockMetalDevices.META_connectorMV)
 			{
-				GL11.glTranslatef(-.5f, -.5F, -.5f);
-				TileEntityRendererDispatcher.instance.renderTileEntityAt(new TileEntityConnectorMV(), 0.0D, 0.0D, 0.0D, 0.0F);
-				GL11.glEnable(32826);
+				GL11.glScalef(1.25f, 1.25f, 1.25f);
+				Tessellator.instance.startDrawingQuads();
+				ClientUtils.handleStaticTileRenderer(new TileEntityConnectorMV());
+				Tessellator.instance.draw();
 			}
 			else if(metadata==BlockMetalDevices.META_capacitorMV)
 			{
@@ -57,22 +59,24 @@ public class BlockRenderMetalDevices implements ISimpleBlockRenderingHandler
 			}
 			else if(metadata==BlockMetalDevices.META_transformer)
 			{
-				GL11.glTranslatef(-.5f, -.25F, -.5f);
-				GL11.glScalef(.5f, .5f, .5f);
-				TileEntityRendererDispatcher.instance.renderTileEntityAt(new TileEntityTransformer(), 0.0D, 0.0D, 0.0D, 0.0F);
-				GL11.glEnable(32826);
+				GL11.glScalef(.5f,.5f,.5f);
+				Tessellator.instance.startDrawingQuads();
+				ClientUtils.handleStaticTileRenderer(new TileEntityTransformer());
+				Tessellator.instance.draw();
 			}
 			else if(metadata==BlockMetalDevices.META_relayHV)
 			{
-				GL11.glTranslatef(-.5f, -.5F, -.5f);
-				TileEntityRendererDispatcher.instance.renderTileEntityAt(new TileEntityRelayHV(), 0.0D, 0.0D, 0.0D, 0.0F);
-				GL11.glEnable(32826);
+				GL11.glScalef(1f, 1f, 1f);
+				Tessellator.instance.startDrawingQuads();
+				ClientUtils.handleStaticTileRenderer(new TileEntityRelayHV());
+				Tessellator.instance.draw();
 			}
 			else if(metadata==BlockMetalDevices.META_connectorHV)
 			{
-				GL11.glTranslatef(-.5f, -.5F, -.5f);
-				TileEntityRendererDispatcher.instance.renderTileEntityAt(new TileEntityConnectorHV(), 0.0D, 0.0D, 0.0D, 0.0F);
-				GL11.glEnable(32826);
+				GL11.glScalef(1.25f, 1.25f, 1.25f);
+				Tessellator.instance.startDrawingQuads();
+				ClientUtils.handleStaticTileRenderer(new TileEntityConnectorHV());
+				Tessellator.instance.draw();
 			}
 			else if(metadata==BlockMetalDevices.META_capacitorHV)
 			{
@@ -82,10 +86,10 @@ public class BlockRenderMetalDevices implements ISimpleBlockRenderingHandler
 			}
 			else if(metadata==BlockMetalDevices.META_transformerHV)
 			{
-				GL11.glTranslatef(-.5f, -.25F, -.5f);
-				GL11.glScalef(.5f, .5f, .5f);
-				TileEntityRendererDispatcher.instance.renderTileEntityAt(new TileEntityTransformerHV(), 0.0D, 0.0D, 0.0D, 0.0F);
-				GL11.glEnable(32826);
+				GL11.glScalef(.5f,.5f,.5f);
+				Tessellator.instance.startDrawingQuads();
+				ClientUtils.handleStaticTileRenderer(new TileEntityTransformerHV());
+				Tessellator.instance.draw();
 			}
 			else if(metadata==BlockMetalDevices.META_dynamo)
 			{
@@ -122,20 +126,62 @@ public class BlockRenderMetalDevices implements ISimpleBlockRenderingHandler
 	public boolean renderWorldBlock(IBlockAccess world, int x, int y, int z, Block block, int modelId, RenderBlocks renderer)
 	{
 		int metadata = world.getBlockMetadata(x, y, z);
-		if(metadata==BlockMetalDevices.META_capacitorLV)
+		if(metadata==BlockMetalDevices.META_connectorLV)
+		{
+			TileEntityConnectorLV tile = (TileEntityConnectorLV)world.getTileEntity(x, y, z);
+			ClientUtils.handleStaticTileRenderer(tile);
+			return true;
+		}
+		else if(metadata==BlockMetalDevices.META_capacitorLV)
 		{
 			renderer.setRenderBounds(0,0,0, 1,1,1);
 			return renderer.renderStandardBlock(block, x, y, z);
+		}
+		else if(metadata==BlockMetalDevices.META_transformer)
+		{
+			TileEntityTransformer tile = (TileEntityTransformer)world.getTileEntity(x, y, z);
+			if(!tile.dummy)
+			{
+				ClientUtils.handleStaticTileRenderer(tile);
+				return true;
+			}
+		}
+		else if(metadata==BlockMetalDevices.META_connectorMV)
+		{
+			TileEntityConnectorMV tile = (TileEntityConnectorMV)world.getTileEntity(x, y, z);
+			ClientUtils.handleStaticTileRenderer(tile);
+			return true;
 		}
 		else if(metadata==BlockMetalDevices.META_capacitorMV)
 		{
 			renderer.setRenderBounds(0,0,0, 1,1,1);
 			return renderer.renderStandardBlock(block, x, y, z);
 		}
+		else if(metadata==BlockMetalDevices.META_relayHV)
+		{
+			TileEntityRelayHV tile = (TileEntityRelayHV)world.getTileEntity(x, y, z);
+			ClientUtils.handleStaticTileRenderer(tile);
+			return true;
+		}
+		else if(metadata==BlockMetalDevices.META_connectorHV)
+		{
+			TileEntityConnectorHV tile = (TileEntityConnectorHV)world.getTileEntity(x, y, z);
+			ClientUtils.handleStaticTileRenderer(tile);
+			return true;
+		}
 		else if(metadata==BlockMetalDevices.META_capacitorHV)
 		{
 			renderer.setRenderBounds(0,0,0, 1,1,1);
 			return renderer.renderStandardBlock(block, x, y, z);
+		}
+		else if(metadata==BlockMetalDevices.META_transformerHV)
+		{
+			TileEntityTransformer tile = (TileEntityTransformer)world.getTileEntity(x, y, z);
+			if(!tile.dummy)
+			{
+				ClientUtils.handleStaticTileRenderer(tile);
+				return true;
+			}
 		}
 		else if(metadata==BlockMetalDevices.META_dynamo)
 		{
@@ -190,7 +236,7 @@ public class BlockRenderMetalDevices implements ISimpleBlockRenderingHandler
 					Vec3.createVectorHelper(f==4||f==5||connectedBelts[3]?1:.9375, y11+.125, f==2||f==3||connectedBelts[1]?1:.9375)
 			};
 			ClientUtils.drawWorldSubBlock(renderer, world, block, x, y, z, vs);
-			
+
 			renderer.setOverrideBlockTexture(block.getIcon(f==2||f==3?2:4,BlockMetalDevices.META_conveyorBelt));
 			if(f==2||f==3)
 			{

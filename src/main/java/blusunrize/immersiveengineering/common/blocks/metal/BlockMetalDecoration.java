@@ -20,7 +20,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import blusunrize.immersiveengineering.client.render.BlockRenderMetalDecoration;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
-import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWallMount;
+import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWallmount;
 import blusunrize.immersiveengineering.common.util.Utils;
 
 public class BlockMetalDecoration extends BlockIEBase
@@ -119,12 +119,12 @@ public class BlockMetalDecoration extends BlockIEBase
 		}
 		if(meta==META_radiator||meta==META_heavyEngineering||meta==META_generator||meta==META_lightEngineering)
 			return true;
-		if(world.getTileEntity(x,y,z) instanceof TileEntityWallMount)
+		if(world.getTileEntity(x,y,z) instanceof TileEntityWallmount)
 		{
 			if(side==UP)
-				return ((TileEntityWallMount)world.getTileEntity(x,y,z)).inverted;
+				return ((TileEntityWallmount)world.getTileEntity(x,y,z)).inverted;
 			else if(side==DOWN)
-				return !((TileEntityWallMount)world.getTileEntity(x,y,z)).inverted;
+				return !((TileEntityWallmount)world.getTileEntity(x,y,z)).inverted;
 			else
 				return true;
 		}
@@ -169,8 +169,8 @@ public class BlockMetalDecoration extends BlockIEBase
 			icons[META_heavyEngineering][i] = iconRegister.registerIcon("immersiveengineering:metalDeco_engine");
 			icons[META_generator][i] = iconRegister.registerIcon("immersiveengineering:metalDeco_generator");
 			icons[META_lightEngineering][i] = iconRegister.registerIcon("immersiveengineering:metalDeco_electricMachine");
-			icons[META_connectorStrutural][i] = iconRegister.registerIcon("immersiveengineering:storage_Steel");
-			icons[META_wallMount][i] = iconRegister.registerIcon("immersiveengineering:storage_Steel");
+			icons[META_connectorStrutural][i] = iconRegister.registerIcon("immersiveengineering:metalDeco_connectorStructural");
+			icons[META_wallMount][i] = iconRegister.registerIcon("immersiveengineering:metalDeco_wallmount");
 		}
 	}
 
@@ -206,9 +206,9 @@ public class BlockMetalDecoration extends BlockIEBase
 				break;
 			}
 		}
-		else if(world.getTileEntity(x, y, z) instanceof TileEntityWallMount)
+		else if(world.getTileEntity(x, y, z) instanceof TileEntityWallmount)
 		{
-			TileEntityWallMount arm = (TileEntityWallMount)world.getTileEntity(x, y, z);
+			TileEntityWallmount arm = (TileEntityWallmount)world.getTileEntity(x, y, z);
 			int f = arm.facing;
 			this.setBlockBounds(f==5?0:.3125f,arm.inverted?.375f:0,f==3?0:.3125f, f==4?1:.6875f,arm.inverted?1:.625f,f==2?1:.6875f);
 		}
@@ -252,7 +252,7 @@ public class BlockMetalDecoration extends BlockIEBase
 		if(meta==META_connectorStrutural)
 			return new TileEntityConnectorStructural();
 		if(meta==META_wallMount)
-			return new TileEntityWallMountSteel();
+			return new TileEntityWallmountMetal();
 		return null;
 	}
 	@Override

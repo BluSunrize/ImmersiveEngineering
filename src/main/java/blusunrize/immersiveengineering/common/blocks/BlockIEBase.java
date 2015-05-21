@@ -196,6 +196,21 @@ public abstract class BlockIEBase extends BlockContainer
 		{
 			super(name, mat, 1, itemBlock, subNames);
 		}
+		@Override
+		public boolean canCreatureSpawn(EnumCreatureType type, IBlockAccess world, int x, int y, int z)
+		{
+			return true;
+		}
+		@Override
+		public boolean isOpaqueCube()
+		{
+			return true;
+		}
+		@Override
+		public boolean renderAsNormalBlock()
+		{
+			return true;
+		}
 		
 		@Override
 		public void registerBlockIcons(IIconRegister iconRegister)

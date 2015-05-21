@@ -227,36 +227,39 @@ public class BlockMetalMultiblocks extends BlockIEBase
 		{
 			TileEntityCrusher tile = (TileEntityCrusher)world.getTileEntity(x, y, z);
 			int pos = tile.pos;
-			int f = tile.facing;
+			int fl = tile.facing;
+			int fw = tile.facing;
+			if(tile.mirrored)
+				fw = ForgeDirection.OPPOSITES[fw];
 
 			if(pos%15>=6&&pos%15<=8)
 			{
 				if(pos/15==0)
 				{
 					if(pos%5==1)
-						this.setBlockBounds(f==3||f==4?.1875f:0, .5f, f==2||f==4?.1875f:0, f==2||f==5?.8125f:1, 1, f==3||f==5?.8125f:1);
+						this.setBlockBounds(fw==3||fl==4?.1875f:0, .5f, fl==2||fw==4?.1875f:0, fw==2||fl==5?.8125f:1, 1, fl==3||fw==5?.8125f:1);
 					else if(pos%5==2)
-						this.setBlockBounds(f==4?.1875f:0, .5f, f==2?.1875f:0, f==5?.8125f:1, 1, f==3?.8125f:1);
+						this.setBlockBounds(fl==4?.1875f:0, .5f, fl==2?.1875f:0, fl==5?.8125f:1, 1, fl==3?.8125f:1);
 					else if(pos%5==3)
-						this.setBlockBounds(f==2||f==4?.1875f:0, .5f, f==2||f==5?.1875f:0, f==3||f==5?.8125f:1, 1, f==3||f==4?.8125f:1);
+						this.setBlockBounds(fw==2||fl==4?.1875f:0, .5f, fl==2||fw==5?.1875f:0, fw==3||fl==5?.8125f:1, 1, fl==3||fw==4?.8125f:1);
 				}
 				else if(pos/15==1)
 				{
 					if(pos%5==1)
-						this.setBlockBounds(f==3?.1875f:0, .5f, f==4?.1875f:0, f==2?.8125f:1, 1, f==5?.8125f:1);
+						this.setBlockBounds(fw==3?.1875f:0, .5f, fw==4?.1875f:0, fw==2?.8125f:1, 1, fw==5?.8125f:1);
 					else if(pos%5==2)
 						this.setBlockBounds(0,0,0, 1,1,1);
 					else if(pos%5==3)
-						this.setBlockBounds(f==2?.1875f:0, .5f, f==5?.1875f:0, f==3?.8125f:1, 1, f==4?.8125f:1);
+						this.setBlockBounds(fw==2?.1875f:0, .5f, fw==5?.1875f:0, fw==3?.8125f:1, 1, fw==4?.8125f:1);
 				}
 				else if(pos/15==2)
 				{
 					if(pos%5==1)
-						this.setBlockBounds(f==3||f==5?.1875f:0, .5f, f==3||f==4?.1875f:0, f==2||f==4?.8125f:1, 1, f==2||f==5?.8125f:1);
+						this.setBlockBounds(fw==3||fl==5?.1875f:0, .5f, fl==3||fw==4?.1875f:0, fw==2||fl==4?.8125f:1, 1, fl==2||fw==5?.8125f:1);
 					else if(pos%5==2)
-						this.setBlockBounds(f==5?.1875f:0, .5f, f==3?.1875f:0, f==4?.8125f:1, 1, f==2?.8125f:1);
+						this.setBlockBounds(fl==5?.1875f:0, .5f, fl==3?.1875f:0, fl==4?.8125f:1, 1, fl==2?.8125f:1);
 					else if(pos%5==3)
-						this.setBlockBounds(f==2||f==5?.1875f:0, .5f, f==3||f==5?.1875f:0, f==3||f==4?.8125f:1, 1, f==2||f==4?.8125f:1);
+						this.setBlockBounds(fw==2||fl==5?.1875f:0, .5f, fl==3||fw==5?.1875f:0, fw==3||fl==4?.8125f:1, 1, fl==2||fw==4?.8125f:1);
 				}
 			}
 			else if(pos%15>=11&&pos%15<=13) 
@@ -264,25 +267,25 @@ public class BlockMetalMultiblocks extends BlockIEBase
 				if(pos/15==0)
 				{
 					if(pos%5==2)
-						this.setBlockBounds(f==4?.1875f:f==5?.5625f:0, 0, f==2?.1875f:f==3?.5625f:0, f==5?.8125f:f==4?.4375f:1, 1, f==3?.8125f:f==2?.4375f:1);
+						this.setBlockBounds(fl==4?.1875f:fl==5?.5625f:0, 0, fl==2?.1875f:fl==3?.5625f:0, fl==5?.8125f:fl==4?.4375f:1, 1, fl==3?.8125f:fl==2?.4375f:1);
 				}
 				else if(pos/15==1)
 				{
 					if(pos%5==1)
-						this.setBlockBounds(f==3?.1875f:f==2?.5625f:0, 0, f==4?.1875f:f==5?.5625f:0, f==2?.8125f:f==3?.4375f:1, 1, f==5?.8125f:f==4?.4375f:1);
+						this.setBlockBounds(fw==3?.1875f:fw==2?.5625f:0, 0, fw==4?.1875f:fw==5?.5625f:0, fw==2?.8125f:fw==3?.4375f:1, 1, fw==5?.8125f:fw==4?.4375f:1);
 					else if(pos%5==2)
 						this.setBlockBounds(0,0,0, 0,0,0);
 					else if(pos%5==3)
-						this.setBlockBounds(f==2?.1875f:f==3?.5625f:0, 0, f==5?.1875f:f==4?.5625f:0, f==3?.8125f:f==2?.4375f:1, 1, f==4?.8125f:f==5?.4375f:1);
+						this.setBlockBounds(fw==2?.1875f:fw==3?.5625f:0, 0, fw==5?.1875f:fw==4?.5625f:0, fw==3?.8125f:fw==2?.4375f:1, 1, fw==4?.8125f:fw==5?.4375f:1);
 				}
 				else if(pos/15==2)
 				{
 					if(pos%5==2)
-						this.setBlockBounds(f==5?.1875f:f==4?.5625f:0, 0, f==3?.1875f:f==2?.5625f:0, f==4?.8125f:f==5?.4375f:1, 1, f==2?.8125f:f==3?.4375f:1);
+						this.setBlockBounds(fl==5?.1875f:fl==4?.5625f:0, 0, fl==3?.1875f:fl==2?.5625f:0, fl==4?.8125f:fl==5?.4375f:1, 1, fl==2?.8125f:fl==3?.4375f:1);
 				}
 			}
 			else if(pos==9)
-				this.setBlockBounds(f==5?.5f:0,0,f==3?.5f:0,  f==4?.5f:1,1,f==2?.5f:1);
+				this.setBlockBounds(fl==5?.5f:0,0,fl==3?.5f:0,  fl==4?.5f:1,1,fl==2?.5f:1);
 			else if(pos==1||pos==3 || pos==16||pos==18||pos==24 || (pos>=31&&pos<=34))
 				this.setBlockBounds(0,0,0,1,.5f,1);
 			else
@@ -350,35 +353,38 @@ public class BlockMetalMultiblocks extends BlockIEBase
 			if(tile.pos%15>=11&&tile.pos%15<=13)
 			{	
 				int pos = tile.pos;
-				int f = tile.facing;
+				int fl = tile.facing;
+				int fw = tile.facing;
+				if(tile.mirrored)
+					fw = ForgeDirection.OPPOSITES[fw];
 				if(pos/15==0 && (pos%5==1||pos%5==3))
 				{
 					if(pos%5==1)
 					{
-						this.setBlockBounds(f==4||f==3?.1875f:f==2?.5625f:0, 0, f==2||f==4?.1875f:f==5?.5625f:0, f==5||f==2?.8125f:f==3?.4375f:1, 1, f==3||f==5?.8125f:f==4?.4375f:1);
+						this.setBlockBounds(fl==4||fw==3?.1875f:fw==2?.5625f:0, 0, fl==2||fw==4?.1875f:fw==5?.5625f:0, fl==5||fw==2?.8125f:fw==3?.4375f:1, 1, fl==3||fw==5?.8125f:fw==4?.4375f:1);
 						super.addCollisionBoxesToList(world, x, y, z, aabb, list, ent);
-						this.setBlockBounds(f==4||f==3?.1875f:f==5?.5625f:0, 0, f==2||f==4?.1875f:f==3?.5625f:0, f==5||f==2?.8125f:f==4?.4375f:1, 1, f==3||f==5?.8125f:f==2?.4375f:1);
+						this.setBlockBounds(fl==4||fw==3?.1875f:fl==5?.5625f:0, 0, fl==2||fw==4?.1875f:fl==3?.5625f:0, fl==5||fw==2?.8125f:fl==4?.4375f:1, 1, fl==3||fw==5?.8125f:fl==2?.4375f:1);
 					}
 					else
 					{
-						this.setBlockBounds(f==4||f==2?.1875f:f==3?.5625f:0, 0, f==2||f==5?.1875f:f==4?.5625f:0, f==5||f==3?.8125f:f==2?.4375f:1, 1, f==3||f==4?.8125f:f==5?.4375f:1);
+						this.setBlockBounds(fl==4||fw==2?.1875f:fw==3?.5625f:0, 0, fl==2||fw==5?.1875f:fw==4?.5625f:0, fl==5||fw==3?.8125f:fw==2?.4375f:1, 1, fl==3||fw==4?.8125f:fw==5?.4375f:1);
 						super.addCollisionBoxesToList(world, x, y, z, aabb, list, ent);
-						this.setBlockBounds(f==4||f==2?.1875f:f==5?.5625f:0, 0, f==2||f==5?.1875f:f==3?.5625f:0, f==5||f==3?.8125f:f==4?.4375f:1, 1, f==3||f==4?.8125f:f==2?.4375f:1);
+						this.setBlockBounds(fl==4||fw==2?.1875f:fl==5?.5625f:0, 0, fl==2||fw==5?.1875f:fl==3?.5625f:0, fl==5||fw==3?.8125f:fl==4?.4375f:1, 1, fl==3||fw==4?.8125f:fl==2?.4375f:1);
 					}
 				}
 				else if(pos/15==2 && (pos%5==1||pos%5==3))
 				{
 					if(pos%5==1)
 					{
-						this.setBlockBounds(f==5||f==3?.1875f:f==2?.5625f:0, 0, f==3||f==4?.1875f:f==5?.5625f:0, f==4||f==2?.8125f:f==3?.4375f:1, 1, f==2||f==5?.8125f:f==4?.4375f:1);
+						this.setBlockBounds(fl==5||fw==3?.1875f:fw==2?.5625f:0, 0, fl==3||fw==4?.1875f:fw==5?.5625f:0, fl==4||fw==2?.8125f:fw==3?.4375f:1, 1, fl==2||fw==5?.8125f:fw==4?.4375f:1);
 						super.addCollisionBoxesToList(world, x, y, z, aabb, list, ent);
-						this.setBlockBounds(f==5||f==3?.1875f:f==4?.5625f:0, 0, f==3||f==4?.1875f:f==2?.5625f:0, f==4||f==2?.8125f:f==5?.4375f:1, 1, f==2||f==5?.8125f:f==3?.4375f:1);
+						this.setBlockBounds(fl==5||fw==3?.1875f:fl==4?.5625f:0, 0, fl==3||fw==4?.1875f:fl==2?.5625f:0, fl==4||fw==2?.8125f:fl==5?.4375f:1, 1, fl==2||fw==5?.8125f:fl==3?.4375f:1);
 					}
 					else
 					{
-						this.setBlockBounds(f==5||f==2?.1875f:f==3?.5625f:0, 0, f==3||f==5?.1875f:f==4?.5625f:0, f==4||f==3?.8125f:f==2?.4375f:1, 1, f==2||f==4?.8125f:f==5?.4375f:1);
+						this.setBlockBounds(fl==5||fw==2?.1875f:fw==3?.5625f:0, 0, fl==3||fw==5?.1875f:fw==4?.5625f:0, fl==4||fw==3?.8125f:fw==2?.4375f:1, 1, fl==2||fw==4?.8125f:fw==5?.4375f:1);
 						super.addCollisionBoxesToList(world, x, y, z, aabb, list, ent);
-						this.setBlockBounds(f==5||f==2?.1875f:f==4?.5625f:0, 0, f==3||f==5?.1875f:f==2?.5625f:0, f==4||f==3?.8125f:f==5?.4375f:1, 1, f==2||f==4?.8125f:f==3?.4375f:1);
+						this.setBlockBounds(fl==5||fw==2?.1875f:fl==4?.5625f:0, 0, fl==3||fw==5?.1875f:fl==2?.5625f:0, fl==4||fw==3?.8125f:fl==5?.4375f:1, 1, fl==2||fw==4?.8125f:fl==3?.4375f:1);
 					}
 				}
 
@@ -403,21 +409,24 @@ public class BlockMetalMultiblocks extends BlockIEBase
 			{		
 				ChunkCoordinates cc = new ChunkCoordinates(x,y,z);
 				ClientEventHandler.additionalBlockBounds.removeAll(cc);
-				int f = tile.facing;
+				int fl = tile.facing;
+				int fw = tile.facing;
+				if(tile.mirrored)
+					fw = ForgeDirection.OPPOSITES[fw];
 				if(pos/15==0 && (pos%5==1||pos%5==3))
 				{
 					if(pos%5==1)
 					{	
-						AxisAlignedBB aabb = AxisAlignedBB.getBoundingBox(f==4?.4375f:f==3?.1875f:f==2?.5625f:0, 0, f==2?.4375f:f==4?.1875f:f==5?.5625f:0, f==5?.5625f:f==2?.8125f:f==3?.4375f:1, 1, f==3?.5625f:f==5?.8125f:f==4?.4375f:1);
+						AxisAlignedBB aabb = AxisAlignedBB.getBoundingBox(fl==4?.4375f:fw==3?.1875f:fw==2?.5625f:0, 0, fl==2?.4375f:fw==4?.1875f:fw==5?.5625f:0, fl==5?.5625f:fw==2?.8125f:fw==3?.4375f:1, 1, fl==3?.5625f:fw==5?.8125f:fw==4?.4375f:1);
 						ClientEventHandler.addAdditionalBlockBounds(cc, aabb);
-						aabb = AxisAlignedBB.getBoundingBox(f==4||f==3?.1875f:f==5?.5625f:0, 0, f==2||f==4?.1875f:f==3?.5625f:0, f==5||f==2?.8125f:f==4?.4375f:1, 1, f==3||f==5?.8125f:f==2?.4375f:1);
+						aabb = AxisAlignedBB.getBoundingBox(fl==4||fw==3?.1875f:fl==5?.5625f:0, 0, fl==2||fw==4?.1875f:fl==3?.5625f:0, fl==5||fw==2?.8125f:fl==4?.4375f:1, 1, fl==3||fw==5?.8125f:fl==2?.4375f:1);
 						ClientEventHandler.addAdditionalBlockBounds(cc, aabb);
 					}
 					else
 					{
-						AxisAlignedBB aabb = AxisAlignedBB.getBoundingBox(f==4?.4375f:f==2?.1875f:f==3?.5625f:0, 0, f==2?.4375f:f==5?.1875f:f==4?.5625f:0, f==5?.5625f:f==3?.8125f:f==2?.4375f:1, 1, f==3?.5625f:f==4?.8125f:f==5?.4375f:1);
+						AxisAlignedBB aabb = AxisAlignedBB.getBoundingBox(fl==4?.4375f:fw==2?.1875f:fw==3?.5625f:0, 0, fl==2?.4375f:fw==5?.1875f:fw==4?.5625f:0, fl==5?.5625f:fw==3?.8125f:fw==2?.4375f:1, 1, fl==3?.5625f:fw==4?.8125f:fw==5?.4375f:1);
 						ClientEventHandler.addAdditionalBlockBounds(cc, aabb);
-						aabb = AxisAlignedBB.getBoundingBox(f==4||f==2?.1875f:f==5?.5625f:0, 0, f==2||f==5?.1875f:f==3?.5625f:0, f==5||f==3?.8125f:f==4?.4375f:1, 1, f==3||f==4?.8125f:f==2?.4375f:1);
+						aabb = AxisAlignedBB.getBoundingBox(fl==4||fw==2?.1875f:fl==5?.5625f:0, 0, fl==2||fw==5?.1875f:fl==3?.5625f:0, fl==5||fw==3?.8125f:fl==4?.4375f:1, 1, fl==3||fw==4?.8125f:fl==2?.4375f:1);
 						ClientEventHandler.addAdditionalBlockBounds(cc, aabb);
 					}
 				}
@@ -425,16 +434,16 @@ public class BlockMetalMultiblocks extends BlockIEBase
 				{
 					if(pos%5==1)
 					{
-						AxisAlignedBB aabb = AxisAlignedBB.getBoundingBox(f==5?.4375f:f==3?.1875f:f==2?.5625f:0, 0, f==3?.4375f:f==4?.1875f:f==5?.5625f:0, f==4?.5625f:f==2?.8125f:f==3?.4375f:1, 1, f==2?.5625f:f==5?.8125f:f==4?.4375f:1);
+						AxisAlignedBB aabb = AxisAlignedBB.getBoundingBox(fl==5?.4375f:fw==3?.1875f:fw==2?.5625f:0, 0, fl==3?.4375f:fw==4?.1875f:fw==5?.5625f:0, fl==4?.5625f:fw==2?.8125f:fw==3?.4375f:1, 1, fl==2?.5625f:fw==5?.8125f:fw==4?.4375f:1);
 						ClientEventHandler.addAdditionalBlockBounds(cc, aabb);
-						aabb = AxisAlignedBB.getBoundingBox(f==5||f==3?.1875f:f==4?.5625f:0, 0, f==3||f==4?.1875f:f==2?.5625f:0, f==4||f==2?.8125f:f==5?.4375f:1, 1, f==2||f==5?.8125f:f==3?.4375f:1);
+						aabb = AxisAlignedBB.getBoundingBox(fl==5||fw==3?.1875f:fl==4?.5625f:0, 0, fl==3||fw==4?.1875f:fl==2?.5625f:0, fl==4||fw==2?.8125f:fl==5?.4375f:1, 1, fl==2||fw==5?.8125f:fl==3?.4375f:1);
 						ClientEventHandler.addAdditionalBlockBounds(cc, aabb);
 					}
 					else
 					{
-						AxisAlignedBB aabb = AxisAlignedBB.getBoundingBox(f==5?.4375f:f==2?.1875f:f==3?.5625f:0, 0, f==3?.4375f:f==5?.1875f:f==4?.5625f:0, f==4?.5625f:f==3?.8125f:f==2?.4375f:1, 1, f==2?.5625f:f==4?.8125f:f==5?.4375f:1);
+						AxisAlignedBB aabb = AxisAlignedBB.getBoundingBox(fl==5?.4375f:fw==2?.1875f:fw==3?.5625f:0, 0, fl==3?.4375f:fw==5?.1875f:fw==4?.5625f:0, fl==4?.5625f:fw==3?.8125f:fw==2?.4375f:1, 1, fl==2?.5625f:fw==4?.8125f:fw==5?.4375f:1);
 						ClientEventHandler.addAdditionalBlockBounds(cc, aabb);
-						aabb = AxisAlignedBB.getBoundingBox(f==5||f==2?.1875f:f==4?.5625f:0, 0, f==3||f==5?.1875f:f==2?.5625f:0, f==4||f==3?.8125f:f==5?.4375f:1, 1, f==2||f==4?.8125f:f==3?.4375f:1);
+						aabb = AxisAlignedBB.getBoundingBox(fl==5||fw==2?.1875f:fl==4?.5625f:0, 0, fl==3||fw==5?.1875f:fl==2?.5625f:0, fl==4||fw==3?.8125f:fl==5?.4375f:1, 1, fl==2||fw==4?.8125f:fl==3?.4375f:1);
 						ClientEventHandler.addAdditionalBlockBounds(cc, aabb);
 					}
 				}
@@ -443,11 +452,14 @@ public class BlockMetalMultiblocks extends BlockIEBase
 			{
 				ChunkCoordinates cc = new ChunkCoordinates(x,y,z);
 				ClientEventHandler.additionalBlockBounds.get(cc).clear();
-				int f = tile.facing;
+				int fl = tile.facing;
+				int fw = tile.facing;
+				if(tile.mirrored)
+					fw = ForgeDirection.OPPOSITES[fw];
 				AxisAlignedBB aabb = AxisAlignedBB.getBoundingBox(0,0,0, 1,.5,1);
 				ClientEventHandler.addAdditionalBlockBounds(cc, aabb);
 
-				aabb = AxisAlignedBB.getBoundingBox(f==(pos%30==1?2:3)||f==(pos<30?5:4)?.5:.25,  .5,  f==(pos<30?3:2)||f==(pos%30==1?5:4)?.5:.25,    f==(pos%30==1?2:3)||f==(pos<30?5:4)?.75:.5,  1.5,  f==(pos<30?3:2)||f==(pos%30==1?5:4)?.75:.5);
+				aabb = AxisAlignedBB.getBoundingBox(fw==(pos%30==1?2:3)||fl==(pos<30?5:4)?.5:.25,  .5,  fl==(pos<30?3:2)||fw==(pos%30==1?5:4)?.5:.25,    fw==(pos%30==1?2:3)||fl==(pos<30?5:4)?.75:.5,  1.5,  fl==(pos<30?3:2)||fw==(pos%30==1?5:4)?.75:.5);
 				ClientEventHandler.addAdditionalBlockBounds(cc, aabb);
 			}
 		}

@@ -30,13 +30,13 @@ public class IESaveData extends WorldSavedData
 			World world = MinecraftServer.getServer().worldServerForDimension(dim);
 			if(world!=null)
 			{
-				ImmersiveNetHandler.clearAllConnections(world);
+				ImmersiveNetHandler.INSTANCE.clearAllConnections(world);
 				for(int i=0; i<connectionList.tagCount(); i++)
 				{
 					NBTTagCompound conTag = connectionList.getCompoundTagAt(i);
 					Connection con = Connection.readFromNBT(conTag);
 					if(con!=null)
-						ImmersiveNetHandler.addConnection(world, con.start, con);
+						ImmersiveNetHandler.INSTANCE.addConnection(world, con.start, con);
 				}
 			}
 		}
@@ -45,7 +45,7 @@ public class IESaveData extends WorldSavedData
 	@Override
 	public void writeToNBT(NBTTagCompound nbt)
 	{
-		Integer[] relDim = ImmersiveNetHandler.getRelevantDimensions().toArray(new Integer[0]);
+		Integer[] relDim = ImmersiveNetHandler.INSTANCE.getRelevantDimensions().toArray(new Integer[0]);
 		int[] savedDimensions = new int[relDim.length];
 		for(int ii=0; ii<relDim.length; ii++)
 			savedDimensions[ii] = relDim[ii];
@@ -57,7 +57,7 @@ public class IESaveData extends WorldSavedData
 			if(world!=null)
 			{
 				NBTTagList connectionList = new NBTTagList();
-				for(Connection con : ImmersiveNetHandler.getAllConnections(world))
+				for(Connection con : ImmersiveNetHandler.INSTANCE.getAllConnections(world))
 				{
 					connectionList.appendTag(con.writeToNBT());
 				}

@@ -3,21 +3,34 @@ package blusunrize.immersiveengineering.client;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.client.GuiIngameForge;
+import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
+import net.minecraftforge.client.model.obj.Face;
+import net.minecraftforge.client.model.obj.GroupObject;
+import net.minecraftforge.client.model.obj.TextureCoordinate;
+import net.minecraftforge.client.model.obj.WavefrontObject;
 import net.minecraftforge.oredict.OreDictionary;
 
 import org.lwjgl.opengl.GL11;
 
+import blusunrize.immersiveengineering.api.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.WireType;
+import blusunrize.immersiveengineering.client.models.ModelIEObj;
+import blusunrize.immersiveengineering.client.render.TileRenderIE;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces;
@@ -47,6 +60,72 @@ public class ClientEventHandler
 			if(IEContent.IEBiodiesel)
 				IEContent.fluidBiodiesel.setIcons(event.map.registerIcon("immersiveengineering:fluid/biodiesel_still"), event.map.registerIcon("immersiveengineering:fluid/biodiesel_flow"));
 		}
+	}
+	@SubscribeEvent()
+	public void textureStich(TextureStitchEvent.Post event)
+	{
+		for(ModelIEObj modelIE : ModelIEObj.existingStaticRenders)
+		{
+			WavefrontObject model = modelIE.rebindModel();
+			rebindUVsToIcon(model, modelIE.getBlockIcon());
+		}
+	}
+
+	void rebindUVsToIcon(WavefrontObject model, IIcon icon)
+	{
+		float minU = icon.getInterpolatedU(0);
+		float sizeU = icon.getInterpolatedU(16) - minU;
+		float minV = icon.getInterpolatedV(0);
+		float sizeV = icon.getInterpolatedV(16) - minV;
+
+		for(GroupObject groupObject : model.groupObjects)
+			for(Face face : groupObject.faces)
+				for (int i = 0; i < face.vertices.length; ++i)
+				{
+					TextureCoordinate textureCoordinate = face.textureCoordinates[i];
+					face.textureCoordinates[i] = new TextureCoordinate(
+							minU + sizeU * textureCoordinate.u,
+							minV + sizeV * textureCoordinate.v
+							);
+				}
+	}
+
+	@SubscribeEvent()
+	public void onChatMessage(ClientChatReceivedEvent event)
+	{
+		//		I should probably try to catch that thing here sometime...meh
+		//		String loc = StatCollector.translateToLocal("death.attack.ieCrushed").substring(5);
+		//		if(event.message.getUnformattedTextForChat().contains(loc))
+	}
+
+	@SubscribeEvent()
+	public void postWorldRender(RenderWorldLastEvent event)
+	{
+		GL11.glPushMatrix();
+		Tessellator.instance.startDrawing(GL11.GL_QUADS);
+		for(Object o : event.context.tileEntities)
+			if(o instanceof IImmersiveConnectable)
+			{
+				TileEntity tile = (TileEntity)o;
+				int lb = tile.getWorldObj().getLightBrightnessForSkyBlocks(tile.xCoord, tile.yCoord, tile.zCoord, 0);
+				int lb_j = lb % 65536;
+				int lb_k = lb / 65536;
+				OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)lb_j / 1.0F, (float)lb_k / 1.0F);
+
+				
+				EntityLivingBase viewer = ClientUtils.mc().renderViewEntity;
+				double dx = viewer.lastTickPosX + (viewer.posX - viewer.lastTickPosX) * (double)event.partialTicks;
+				double dy = viewer.lastTickPosY + (viewer.posY - viewer.lastTickPosY) * (double)event.partialTicks;
+				double dz = viewer.lastTickPosZ + (viewer.posZ - viewer.lastTickPosZ) * (double)event.partialTicks;
+
+				Tessellator.instance.setTranslation(tile.xCoord-dx, tile.yCoord-dy, tile.zCoord-dz);
+//				GL11.glTranslated((tile.xCoord+.5-dx), (tile.yCoord+.5-dy), (tile.zCoord+.5-dz));
+				ClientUtils.renderAttachedConnections((TileEntity)tile);
+//				GL11.glTranslated(-(tile.xCoord+.5-dx), -(tile.yCoord+.5-dy), -(tile.zCoord+.5-dz));
+				Tessellator.instance.setTranslation(0,0,0);
+			}
+		Tessellator.instance.draw();
+		GL11.glPopMatrix();
 	}
 
 	@SubscribeEvent()
@@ -80,7 +159,7 @@ public class ClientEventHandler
 				}
 
 			}
-			else if(ClientUtils.mc().thePlayer.getCurrentEquippedItem().getItem() instanceof ItemRevolver)
+			else if(ClientUtils.mc().thePlayer.getCurrentEquippedItem().getItem() instanceof ItemRevolver && ClientUtils.mc().thePlayer.getCurrentEquippedItem().getItemDamage()!=2)
 			{
 				ClientUtils.bindTexture("immersiveengineering:textures/gui/revolver.png");
 				ItemStack[] bullets = ((ItemRevolver)ClientUtils.mc().thePlayer.getCurrentEquippedItem().getItem()).getBullets(ClientUtils.mc().thePlayer.getCurrentEquippedItem());
@@ -123,7 +202,7 @@ public class ClientEventHandler
 							y = i==0||i==3?-29: i==1||i==2||i==4||i==13?-23: i==5||i==12?0 : i==6||i==8||i==9||i==11?22: 28;
 						}
 						ir.renderItemIntoGUI(ClientUtils.mc().fontRenderer, ClientUtils.mc().renderEngine, bullets[i], x-8,y-8);
-//						ir.renderItemIntoGUI(ClientUtils.mc().fontRenderer, ClientUtils.mc().renderEngine, new ItemStack(Blocks.stained_glass_pane,1,3), x-8,y-8);
+						//						ir.renderItemIntoGUI(ClientUtils.mc().fontRenderer, ClientUtils.mc().renderEngine, new ItemStack(Blocks.stained_glass_pane,1,3), x-8,y-8);
 					}
 				}
 				RenderHelper.disableStandardItemLighting();

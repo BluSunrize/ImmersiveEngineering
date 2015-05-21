@@ -53,7 +53,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityStructuralA
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityThermoelectricGen;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTransformer;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTransformerHV;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityWallMountSteel;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityWallmountMetal;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockBlastFurnace;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockCokeOven;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockCrusher;
@@ -69,7 +69,7 @@ import blusunrize.immersiveengineering.common.blocks.stone.TileEntityCokeOven;
 import blusunrize.immersiveengineering.common.blocks.wooden.BlockIEWoodenStairs;
 import blusunrize.immersiveengineering.common.blocks.wooden.BlockWoodenDecoration;
 import blusunrize.immersiveengineering.common.blocks.wooden.BlockWoodenDevices;
-import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWallMount;
+import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWallmount;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWatermill;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWindmill;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWindmillAdvanced;
@@ -245,7 +245,7 @@ public class IEContent
 		registerTile(TileEntityWindmill.class);
 		registerTile(TileEntityWindmillAdvanced.class);
 		registerTile(TileEntityWoodenCrate.class);
-		registerTile(TileEntityWallMount.class);
+		registerTile(TileEntityWallmount.class);
 
 		registerTile(TileEntityConnectorLV.class);
 		registerTile(TileEntityCapacitorLV.class);
@@ -270,7 +270,7 @@ public class IEContent
 
 		registerTile(TileEntityStructuralArm.class);
 		registerTile(TileEntityConnectorStructural.class);
-		registerTile(TileEntityWallMountSteel.class);
+		registerTile(TileEntityWallmountMetal.class);
 
 
 		registerTile(TileEntityCokeOven.class);

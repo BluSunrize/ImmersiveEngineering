@@ -73,8 +73,7 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 	{
 		if(!formed || pos!=17)
 			return;
-
-
+		
 		if((active&&process>0)||mobGrinding||grindingTimer>0)
 		{
 			if(grindingTimer>0)
@@ -96,7 +95,7 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 		else
 		{
 			boolean update = false;
-			if(worldObj.getBlockPowerInput(xCoord+(facing==4?-1:facing==5?1:facing==2?-2:2),yCoord+1,zCoord+(facing==2?-1:facing==3?1:facing==4?2:-2))<=0)
+			if(!worldObj.isBlockIndirectlyGettingPowered(xCoord+(facing==4?-1:facing==5?1:facing==(mirrored?2:3)?2:-2),yCoord+1,zCoord+(facing==2?-1:facing==3?1:facing==(mirrored?5:4)?2:-2)))
 			{
 				AxisAlignedBB aabb = AxisAlignedBB.getBoundingBox(xCoord-.5625,yCoord+1.5,zCoord-.5625, xCoord+1.5625,yCoord+2.875,zCoord+1.5625);
 				List<EntityItem> itemList = worldObj.getEntitiesWithinAABB(EntityItem.class, aabb);
@@ -355,6 +354,8 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 			int il = pos/15;
 			int ih = (pos%15/5)-1;
 			int iw = (pos%5)-2;
+			if(mirrored)
+				iw = -iw;
 			int startX = xCoord-(f==4?il: f==5?-il: f==2?-iw : iw);
 			int startY = yCoord-ih;
 			int startZ = zCoord-(f==2?il: f==3?-il: f==5?-iw : iw);
@@ -363,9 +364,10 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 				for(int w=-2;w<=2;w++)
 					for(int h=-1;h<=1;h++)
 					{
-						int xx = (f==4?l: f==5?-l: f==2?-w : w);
+						int ww = mirrored?-w:w;
+						int xx = (f==4?l: f==5?-l: f==2?-ww : ww);
 						int yy = h;
-						int zz = (f==2?l: f==3?-l: f==5?-w : w);
+						int zz = (f==2?l: f==3?-l: f==5?-ww : ww);
 
 						ItemStack s = null;
 						if(worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz) instanceof TileEntityCrusher)

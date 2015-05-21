@@ -75,13 +75,13 @@ public class TileEntityWindmill extends TileEntityIEBase
 					return false;
 		}
 
-		for(int dd=1;dd<8;dd++)
+		for(int hh=-6;hh<=6;hh++)
 		{
 			int blocked = 0;
-			for(int hh=-6;hh<=6;hh++)
+			int r=Math.abs(hh)==6?1: Math.abs(hh)==5?3: Math.abs(hh)==4?4: Math.abs(hh)>1?5: 6;
+			for(int ww=-r;ww<=r;ww++)
 			{
-				int r=Math.abs(hh)==6?1: Math.abs(hh)==5?3: Math.abs(hh)==4?4: Math.abs(hh)>1?5: 6;
-				for(int ww=-r;ww<=r;ww++)
+				for(int dd=1;dd<8;dd++)
 				{
 					int xx = xCoord+(facing<=3?ww:0)+(facing==4?-dd: facing==5?dd: 0);
 					int yy = yCoord+hh;

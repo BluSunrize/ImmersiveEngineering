@@ -3,7 +3,6 @@ package blusunrize.immersiveengineering.client.render;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -14,7 +13,7 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDecoration;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorStructural;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityStructuralArm;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityWallMountSteel;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityWallmountMetal;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 
@@ -112,15 +111,15 @@ public class BlockRenderMetalDecoration implements ISimpleBlockRenderingHandler
 			}
 			else if(metadata==BlockMetalDecoration.META_connectorStrutural)
 			{
-				GL11.glTranslatef(-.5f, -.5F, -.5f);
-				TileEntityRendererDispatcher.instance.renderTileEntityAt(new TileEntityConnectorStructural(), 0.0D, 0.0D, 0.0D, 0.0F);
-				GL11.glEnable(32826);
+				Tessellator.instance.startDrawingQuads();
+				ClientUtils.handleStaticTileRenderer(new TileEntityConnectorStructural());
+				Tessellator.instance.draw();
 			}
 			else if(metadata==BlockMetalDecoration.META_wallMount)
 			{
-				GL11.glScalef(1.5f,1.5f,1.5f);
-				TileEntityRendererDispatcher.instance.renderTileEntityAt(new TileEntityWallMountSteel(), 0.0D, 0.0D, 0.0D, 0.0F);
-				GL11.glEnable(32826);
+				Tessellator.instance.startDrawingQuads();
+				ClientUtils.handleStaticTileRenderer(new TileEntityWallmountMetal());
+				Tessellator.instance.draw();
 			}
 			else
 			{
@@ -434,6 +433,18 @@ public class BlockRenderMetalDecoration implements ISimpleBlockRenderingHandler
 			tes.setBrightness(info.brightnessBottomRight);
 			tes.addVertexWithUV(x+1-.0001, y+(inv?1-y10:y10), z+0, iSide.getMinU(), iSide.getInterpolatedV(y10*16));
 
+			return true;
+		}
+		else if(world.getBlockMetadata(x, y, z)==BlockMetalDecoration.META_connectorStrutural)
+		{
+			TileEntityConnectorStructural tile = (TileEntityConnectorStructural)world.getTileEntity(x, y, z);
+			ClientUtils.handleStaticTileRenderer(tile);
+			return true;
+		}
+		else if(world.getBlockMetadata(x, y, z)==BlockMetalDecoration.META_wallMount)
+		{
+			TileEntityWallmountMetal tile = (TileEntityWallmountMetal)world.getTileEntity(x, y, z);
+			ClientUtils.handleStaticTileRenderer(tile);
 			return true;
 		}
 		else if(world.getBlockMetadata(x, y, z) != BlockMetalDecoration.META_connectorStrutural && world.getBlockMetadata(x, y, z) != BlockMetalDecoration.META_wallMount)

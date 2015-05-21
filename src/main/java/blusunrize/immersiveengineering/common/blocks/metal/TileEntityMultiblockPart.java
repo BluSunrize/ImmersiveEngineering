@@ -6,10 +6,10 @@ import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 
 public abstract class TileEntityMultiblockPart extends TileEntityIEBase
 {
-
 	public boolean formed = false;
 	public int pos=-1;
 	public int[] offset = {0,0,0};
+	public boolean mirrored = false;
 	
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt)
@@ -17,6 +17,7 @@ public abstract class TileEntityMultiblockPart extends TileEntityIEBase
 		formed = nbt.getBoolean("formed");
 		pos = nbt.getInteger("pos");
 		offset = nbt.getIntArray("offset");
+		mirrored = nbt.getBoolean("mirrored");
 	}
 
 	@Override
@@ -25,6 +26,7 @@ public abstract class TileEntityMultiblockPart extends TileEntityIEBase
 		nbt.setBoolean("formed", formed);
 		nbt.setInteger("pos", pos);
 		nbt.setIntArray("offset", offset);
+		nbt.setBoolean("mirrored", mirrored);
 	}
 
 	public abstract ItemStack getOriginalBlock();
