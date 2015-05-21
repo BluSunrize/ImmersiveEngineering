@@ -135,6 +135,11 @@ public class BlockMetalDevices extends BlockIEBase
 			icon_capacitorTop[1][i]= iconRegister.registerIcon("immersiveengineering:metal_capacitorMV_top_"+s);
 			icon_capacitorSide[1][i]= iconRegister.registerIcon("immersiveengineering:metal_capacitorMV_side_"+s);
 		}
+		//4 transformer
+		icons[META_transformer][0] = iconRegister.registerIcon("immersiveengineering:metal_transformerHV");
+		icons[META_transformer][1] = iconRegister.registerIcon("immersiveengineering:metal_transformerPost");
+		icons[META_transformer][2] = iconRegister.registerIcon("immersiveengineering:metal_transformerHV");
+		icons[META_transformer][3] = iconRegister.registerIcon("immersiveengineering:metal_transformerHV");
 		//7 capacitorHV
 		icons[7][0] = iconRegister.registerIcon("immersiveengineering:metal_capacitorHV_bottom_none");
 		icons[7][1] = iconRegister.registerIcon("immersiveengineering:metal_capacitorHV_top_none");
@@ -176,12 +181,11 @@ public class BlockMetalDevices extends BlockIEBase
 		//8 transformerHV
 		for(int i=0;i<4;i++)
 		{
-			icons[0][i] = iconRegister.registerIcon("immersiveengineering:storage_Steel");
-			icons[2][i] = iconRegister.registerIcon("immersiveengineering:storage_Steel");
-			icons[4][i] = iconRegister.registerIcon("immersiveengineering:storage_Steel");
-			icons[5][i] = iconRegister.registerIcon("immersiveengineering:storage_Steel");
-			icons[6][i] = iconRegister.registerIcon("immersiveengineering:storage_Steel");
-			icons[8][i] = iconRegister.registerIcon("immersiveengineering:storage_Steel");
+			icons[META_connectorLV][i] = iconRegister.registerIcon("immersiveengineering:metal_connectorLV");
+			icons[META_connectorMV][i] = iconRegister.registerIcon("immersiveengineering:metal_connectorHV");
+			icons[META_relayHV][i] = iconRegister.registerIcon("immersiveengineering:metal_relayHV");
+			icons[META_connectorHV][i] = iconRegister.registerIcon("immersiveengineering:metal_connectorHV");
+			icons[META_transformerHV][i] = iconRegister.registerIcon("immersiveengineering:metal_transformerHV");
 		}
 	}
 	@Override
@@ -217,6 +221,11 @@ public class BlockMetalDevices extends BlockIEBase
 	{
 		return BlockRenderMetalDevices.renderID;
 	}
+	@Override
+    public int getRenderBlockPass()
+    {
+        return 0;
+    }
 
 
 	@Override

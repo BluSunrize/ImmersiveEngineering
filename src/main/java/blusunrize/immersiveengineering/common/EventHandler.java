@@ -18,6 +18,7 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.oredict.OreDictionary;
 import blusunrize.immersiveengineering.api.BlastFurnaceRecipe;
+import blusunrize.immersiveengineering.api.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.GuiBlastFurnace;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
@@ -37,15 +38,21 @@ public class EventHandler
 	@SubscribeEvent
 	public void onLoad(WorldEvent.Load event)
 	{
-		if(!event.world.isRemote && event.world.provider.dimensionId==0)
+		if(event.world.provider.dimensionId==0)
 		{
-			IESaveData worldData = (IESaveData) event.world.loadItemData(IESaveData.class, IESaveData.dataName);
-			if(worldData==null)
+			System.out.println("world load!");
+			if(ImmersiveNetHandler.INSTANCE==null)
+				ImmersiveNetHandler.INSTANCE = new ImmersiveNetHandler();
+			if(!event.world.isRemote)
 			{
-				worldData = new IESaveData(IESaveData.dataName);
-				event.world.setItemData(IESaveData.dataName, worldData);
+				IESaveData worldData = (IESaveData) event.world.loadItemData(IESaveData.class, IESaveData.dataName);
+				if(worldData==null)
+				{
+					worldData = new IESaveData(IESaveData.dataName);
+					event.world.setItemData(IESaveData.dataName, worldData);
+				}
+				IESaveData.setInstance(worldData);
 			}
-			IESaveData.setInstance(worldData);
 		}
 	}
 
@@ -157,8 +164,8 @@ public class EventHandler
 	@SubscribeEvent
 	public void onItemTooltip(ItemTooltipEvent event)
 	{
-		//		for(int oid : OreDictionary.getOreIDs(event.itemStack))
-		//			event.toolTip.add(OreDictionary.getOreName(oid));
+		for(int oid : OreDictionary.getOreIDs(event.itemStack))
+			event.toolTip.add(OreDictionary.getOreName(oid));
 
 		if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT
 				&& ClientUtils.mc().currentScreen != null

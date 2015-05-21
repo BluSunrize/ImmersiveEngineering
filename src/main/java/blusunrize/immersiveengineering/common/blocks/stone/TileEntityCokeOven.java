@@ -111,7 +111,7 @@ public class TileEntityCokeOven extends TileEntityIEBase implements ISidedInvent
 				if(filledContainer!=null)
 				{
 					FluidStack fs = FluidContainerRegistry.getFluidForFilledItem(filledContainer);
-					if(fs.amount<=tank.getFluidAmount())
+					if(fs.amount<=tank.getFluidAmount() && (inventory[3]==null || OreDictionary.itemMatches(inventory[3], filledContainer, true)))
 					{
 						this.tank.drain(fs.amount, true);
 						if(inventory[3]!=null && OreDictionary.itemMatches(inventory[3], filledContainer, true))
@@ -131,7 +131,7 @@ public class TileEntityCokeOven extends TileEntityIEBase implements ISidedInvent
 		if(recipe==null)
 			return null;
 
-		if(inventory[1]==null || (OreDictionary.itemMatches(inventory[1],recipe.output,false) && inventory[1].stackSize+recipe.output.stackSize<getInventoryStackLimit()) )
+		if(inventory[1]==null || (OreDictionary.itemMatches(inventory[1],recipe.output,false) && inventory[1].stackSize+recipe.output.stackSize<=getInventoryStackLimit()) )
 			if(tank.getFluidAmount()+recipe.creosoteOutput<=tank.getCapacity())
 				return recipe;
 		return null;

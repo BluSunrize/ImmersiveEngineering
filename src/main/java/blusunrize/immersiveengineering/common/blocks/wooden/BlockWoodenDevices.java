@@ -48,7 +48,7 @@ public class BlockWoodenDevices extends BlockIEBase
 	{
 		//Treated wood + post, fence, watermill, windmills
 		for(int i=0; i<subNames.length; i++)
-			icons[i][0] = iconRegister.registerIcon("immersiveengineering:"+(i==4?"woodenCrate":"treatedWood"));
+			icons[i][0] = iconRegister.registerIcon("immersiveengineering:"+(i==0?"woodenPost":i==4?"woodenCrate":"treatedWood"));
 	}
 	@Override
 	public int getRenderType()

@@ -85,7 +85,7 @@ public class TileEntityCapacitorLV extends TileEntityImmersiveConnectable implem
 			IImmersiveConnectable node = (IImmersiveConnectable) worldObj.getTileEntity(xCoord+fd.offsetX,yCoord+fd.offsetY,zCoord+fd.offsetZ);
 			if(!node.isEnergyOutput())
 				return;
-			List<AbstractConnection> outputs = ImmersiveNetHandler.getIndirectEnergyConnections(Utils.toCC(node), worldObj);
+			List<AbstractConnection> outputs = ImmersiveNetHandler.INSTANCE.getIndirectEnergyConnections(Utils.toCC(node), worldObj);
 			int received = 0;
 			int powerLeft = Math.min(getMaxOutput(), this.energyStorage.getEnergyStored());
 			for(AbstractConnection con : outputs)

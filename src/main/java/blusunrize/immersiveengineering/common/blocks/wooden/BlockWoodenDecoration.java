@@ -42,6 +42,12 @@ public class BlockWoodenDecoration extends BlockIEBase
 	}
 
 	@Override
+	public boolean renderAsNormalBlock()
+	{
+		return false;
+	}
+	
+	@Override
 	public int damageDropped(int meta)
 	{
 		if(meta==3||meta==4)
@@ -67,12 +73,12 @@ public class BlockWoodenDecoration extends BlockIEBase
 			return side==DOWN;
 		if(meta==3)
 			return side==UP;
-		if(world.getTileEntity(x,y,z) instanceof TileEntityWallMount)
+		if(world.getTileEntity(x,y,z) instanceof TileEntityWallmount)
 		{
 			if(side==UP)
-				return ((TileEntityWallMount)world.getTileEntity(x,y,z)).inverted;
+				return ((TileEntityWallmount)world.getTileEntity(x,y,z)).inverted;
 			else if(side==DOWN)
-				return !((TileEntityWallMount)world.getTileEntity(x,y,z)).inverted;
+				return !((TileEntityWallmount)world.getTileEntity(x,y,z)).inverted;
 			else
 				return true;
 		}
@@ -106,6 +112,11 @@ public class BlockWoodenDecoration extends BlockIEBase
 				icons[i][0] = iconRegister.registerIcon("immersiveengineering:scaffolding_top");
 				icons[i][1] = iconRegister.registerIcon("immersiveengineering:scaffolding_side");
 			}
+			else if(i==6)
+			{
+				icons[i][0] = iconRegister.registerIcon("immersiveengineering:wood_wallmount");
+				icons[i][1] = iconRegister.registerIcon("immersiveengineering:wood_wallmount");
+			}
 			else
 			{
 				icons[i][0] = iconRegister.registerIcon("immersiveengineering:treatedWood");
@@ -122,9 +133,9 @@ public class BlockWoodenDecoration extends BlockIEBase
 			this.setBlockBounds(0,0,0, 1,.5f,1);
 		else if(world.getBlockMetadata(x, y, z)==3)
 			this.setBlockBounds(0,.5f,0, 1,1,1);
-		else if(world.getTileEntity(x, y, z) instanceof TileEntityWallMount)
+		else if(world.getTileEntity(x, y, z) instanceof TileEntityWallmount)
 		{
-			TileEntityWallMount arm = (TileEntityWallMount)world.getTileEntity(x, y, z);
+			TileEntityWallmount arm = (TileEntityWallmount)world.getTileEntity(x, y, z);
 			int f = arm.facing;
 			this.setBlockBounds(f==5?0:.3125f,arm.inverted?.375f:0,f==3?0:.3125f, f==4?1:.6875f,arm.inverted?1:.625f,f==2?1:.6875f);
 		}
@@ -195,7 +206,7 @@ public class BlockWoodenDecoration extends BlockIEBase
 		switch(meta)
 		{
 		case 6:
-			return new TileEntityWallMount();
+			return new TileEntityWallmount();
 		}
 		return null;
 	}

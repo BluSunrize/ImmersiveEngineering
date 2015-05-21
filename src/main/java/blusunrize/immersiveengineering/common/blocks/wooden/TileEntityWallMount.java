@@ -3,7 +3,7 @@ package blusunrize.immersiveengineering.common.blocks.wooden;
 import net.minecraft.nbt.NBTTagCompound;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 
-public class TileEntityWallMount extends TileEntityIEBase
+public class TileEntityWallmount extends TileEntityIEBase
 {
 	public int facing = 3;
 	public boolean inverted = false;

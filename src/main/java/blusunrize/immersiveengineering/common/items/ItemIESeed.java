@@ -25,7 +25,7 @@ public class ItemIESeed extends ItemIEBase implements IPlantable
 			return false;
 		else if (player.canPlayerEdit(x, y, z, side, stack) && player.canPlayerEdit(x, y + 1, z, side, stack))
 		{
-			if(world.getBlock(x, y, z) instanceof BlockFarmland && world.getBlock(x, y, z).canSustainPlant(world, x, y, z, ForgeDirection.UP, this) && world.isAirBlock(x, y + 1, z))
+			if(world.getBlock(x, y, z).canSustainPlant(world, x, y, z, ForgeDirection.UP, this) && world.isAirBlock(x, y + 1, z))
 			{
 				world.setBlock(x, y + 1, z, this.cropBlock);
 				--stack.stackSize;

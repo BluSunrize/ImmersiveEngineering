@@ -49,7 +49,7 @@ import blusunrize.immersiveengineering.client.render.TileRenderPost;
 import blusunrize.immersiveengineering.client.render.TileRenderRefinery;
 import blusunrize.immersiveengineering.client.render.TileRenderRelayHV;
 import blusunrize.immersiveengineering.client.render.TileRenderTransformer;
-import blusunrize.immersiveengineering.client.render.TileRenderWallMount;
+import blusunrize.immersiveengineering.client.render.TileRenderWallmount;
 import blusunrize.immersiveengineering.client.render.TileRenderWatermill;
 import blusunrize.immersiveengineering.client.render.TileRenderWindmill;
 import blusunrize.immersiveengineering.client.render.TileRenderWindmillAdvanced;
@@ -81,7 +81,7 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockRefin
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockSqueezer;
 import blusunrize.immersiveengineering.common.blocks.stone.TileEntityBlastFurnace;
 import blusunrize.immersiveengineering.common.blocks.stone.TileEntityCokeOven;
-import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWallMount;
+import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWallmount;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWatermill;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWindmill;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWindmillAdvanced;
@@ -111,10 +111,10 @@ public class ClientProxy extends CommonProxy
 		RenderingRegistry.registerBlockHandler(new BlockRenderMetalMultiblocks());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityConnectorLV.class, new TileRenderConnectorLV());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityConnectorMV.class, new TileRenderConnectorMV());
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTransformer.class, new TileRenderTransformer(false));
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTransformer.class, new TileRenderTransformer());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityRelayHV.class, new TileRenderRelayHV());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityConnectorHV.class, new TileRenderConnectorHV());
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTransformerHV.class, new TileRenderTransformer(true));
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTransformerHV.class, new TileRenderTransformer());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityDieselGenerator.class, new TileRenderDieselGenerator());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityRefinery.class, new TileRenderRefinery());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityCrusher.class, new TileRenderCrusher());
@@ -125,7 +125,7 @@ public class ClientProxy extends CommonProxy
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityWatermill.class, new TileRenderWatermill());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityWindmill.class, new TileRenderWindmill());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityWindmillAdvanced.class, new TileRenderWindmillAdvanced());
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityWallMount.class, new TileRenderWallMount());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityWallmount.class, new TileRenderWallmount());
 
 		RenderingRegistry.registerBlockHandler(new BlockRenderWoodenDecoration());
 		//STONE

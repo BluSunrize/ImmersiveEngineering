@@ -1,56 +1,58 @@
 package blusunrize.immersiveengineering.client.render;
 
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.IIcon;
+import blusunrize.immersiveengineering.client.models.ModelIEObj;
+import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDecoration;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorLV;
+import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 
-import org.lwjgl.opengl.GL11;
-
-import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.client.models.ModelConnectorStructural;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorStructural;
-
-public class TileRenderConnectorStructural extends TileEntitySpecialRenderer
+public class TileRenderConnectorStructural extends TileRenderIE
 {
-	static ModelConnectorStructural model = new ModelConnectorStructural();
+	static ModelIEObj model = new ModelIEObj("immersiveengineering:models/connectorStructural.obj")
+	{
+		@Override
+		public IIcon getBlockIcon()
+		{
+			return IEContent.blockMetalDecoration.getIcon(0, BlockMetalDecoration.META_connectorStrutural);
+		}
+	};
 
 	@Override
-	public void renderTileEntityAt(TileEntity tile, double x, double y, double z, float f)
+	public void renderDynamic(TileEntity tile, double x, double y, double z, float f)
 	{
-		TileEntityConnectorStructural connector = (TileEntityConnectorStructural)tile;
-//		model = new ModelConnectorStructural();
-		
-		GL11.glPushMatrix();
+	}
 
-		GL11.glTranslated(x, y, z);
-		float yRot = (float)Math.toRadians(connector.rotation);
+	@Override
+	public void renderStatic(TileEntity tile, Tessellator tes, Matrix4 translationMatrix, Matrix4 rotationMatrix)
+	{
+		translationMatrix.translate(.5, .5, .5);
+
+		TileEntityConnectorLV connector = (TileEntityConnectorLV)tile;
 		switch(connector.facing)
 		{
 		case 0:
-			model.setRotateAngle(model.base, 0, yRot, (float)Math.toRadians(180));
 			break;
 		case 1:
-			model.setRotateAngle(model.base, 0, yRot, 0);
+			rotationMatrix.rotate(Math.toRadians(180), 0,0,1);
 			break;
 		case 2:
-			model.setRotateAngle(model.base, (float)Math.toRadians(-90), 0, yRot);
+			rotationMatrix.rotate(Math.toRadians(90), 1,0,0);
 			break;
 		case 3:
-			model.setRotateAngle(model.base, (float)Math.toRadians(90), 0, yRot);
+			rotationMatrix.rotate(Math.toRadians(-90), 1,0,0);
 			break;
 		case 4:
-			model.setRotateAngle(model.base, 0, yRot, (float)Math.toRadians(90));
+			rotationMatrix.rotate(Math.toRadians(-90), 0,0,1);
 			break;
 		case 5:
-			model.setRotateAngle(model.base, 0, yRot, (float)Math.toRadians(-90));
+			rotationMatrix.rotate(Math.toRadians(90), 0,0,1);
 			break;
 		}
-		
-		ClientUtils.bindTexture("immersiveengineering:textures/models/connectorStructural.png");
-		model.render(null, 0, 0, 0, 0, 0, .0625f);
-		
-		ClientUtils.renderAttachedConnections(connector);
-		
-		GL11.glPopMatrix();
+
+		model.render(tile, tes, translationMatrix, rotationMatrix, false);
 	}
 
 }

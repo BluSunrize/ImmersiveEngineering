@@ -44,7 +44,7 @@ public class Config
 
 		cableProperty = config.get("General", "Cable colouration", new int[]{0xd4804a,0xedad62,0x6f6f6f, 0x967e6d,0x6f6f6f}, "");
 		if(cableProperty.getIntList().length<WireType.values().length)
-			cableProperty.set(new int[]{0xd4804a,0xedad62,0x6f6f6f, 0x967e6d,0x6f6f6f});
+			cableProperty.set(new int[]{0xb36c3f,0xeda045,0x6f6f6f, 0x967e6d,0x6f6f6f});
 		setIntArray("cableColouration", cableProperty.getIntList());
 
 		cableProperty = config.get("General", "Cable length", new int[]{16,16,32,32,32}, "The maximum length cables can have. Copper and Electrum should be similar, Steel is meant for long range transport, Structural Rope & Cables are purely decorational");

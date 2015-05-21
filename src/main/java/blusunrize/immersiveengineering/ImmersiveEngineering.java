@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.IEWorldGen;
 import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.compat.EE3Helper;
+import blusunrize.immersiveengineering.common.util.compat.mfr.MFRHelper;
 import blusunrize.immersiveengineering.common.util.compat.minetweaker.MTHelper;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
@@ -35,13 +36,12 @@ public class ImmersiveEngineering
 	public static ImmersiveEngineering instance = new ImmersiveEngineering();
 	@SidedProxy(clientSide="blusunrize.immersiveengineering.client.ClientProxy", serverSide="blusunrize.immersiveengineering.common.CommonProxy")
 	public static CommonProxy proxy;
-
+	
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent event)
 	{
 		Config.init(event);
 		IEContent.preInit();
-		
 			
 		WireType.cableLossRatio=Config.getDoubleArray("cableLossRatio");
 		WireType.cableTransferRate=Config.getIntArray("cableTransferRate");
@@ -62,6 +62,8 @@ public class ImmersiveEngineering
 		
 		Lib.IC2 = Loader.isModLoaded("IC2") && Config.getBoolean("ic2compat");
 		Lib.GREG = Loader.isModLoaded("gregtech") && Config.getBoolean("gregtechcompat");
+		if(Loader.isModLoaded("MineFactoryReloaded"))
+			MFRHelper.init();
 	}
 	@Mod.EventHandler
 	public void postInit(FMLPostInitializationEvent event)

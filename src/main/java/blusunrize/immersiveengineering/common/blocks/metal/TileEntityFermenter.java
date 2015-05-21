@@ -109,7 +109,7 @@ public class TileEntityFermenter extends TileEntityMultiblockPart implements IFl
 					if(filledContainer!=null)
 					{
 						FluidStack fs = FluidContainerRegistry.getFluidForFilledItem(filledContainer);
-						if(fs.amount<=tank.getFluidAmount())
+						if(fs.amount<=tank.getFluidAmount() && (inventory[3]==null || OreDictionary.itemMatches(inventory[3], filledContainer, true)))
 						{
 							this.tank.drain(fs.amount, true);
 							if(inventory[10]!=null && OreDictionary.itemMatches(inventory[10], filledContainer, true))

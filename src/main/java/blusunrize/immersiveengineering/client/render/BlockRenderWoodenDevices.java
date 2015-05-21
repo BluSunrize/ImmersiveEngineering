@@ -2,6 +2,7 @@ package blusunrize.immersiveengineering.client.render;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.world.IBlockAccess;
 
@@ -28,7 +29,9 @@ public class BlockRenderWoodenDevices implements ISimpleBlockRenderingHandler
 			{
 				GL11.glScalef(.5f, .33f, .5f);
 				GL11.glTranslatef(-.5f, -2F, -.5f);
-				TileEntityRendererDispatcher.instance.renderTileEntityAt(new TileEntityWoodenPost(), 0.0D, 0.0D, 0.0D, 0.0F);
+				Tessellator.instance.startDrawingQuads();
+				ClientUtils.handleStaticTileRenderer(new TileEntityWoodenPost());
+				Tessellator.instance.draw();
 			}
 			else if(metadata==1)
 			{
@@ -61,6 +64,15 @@ public class BlockRenderWoodenDevices implements ISimpleBlockRenderingHandler
 	@Override
 	public boolean renderWorldBlock(IBlockAccess world, int x, int y, int z, Block block, int modelId, RenderBlocks renderer)
 	{
+		if(world.getBlockMetadata(x, y, z) == 0)
+		{
+			TileEntityWoodenPost tile = (TileEntityWoodenPost)world.getTileEntity(x, y, z);
+			if(tile.type==0)
+			{
+				ClientUtils.handleStaticTileRenderer(tile);
+				return true;
+			}
+		}
 		if(world.getBlockMetadata(x, y, z) == 4)
 		{
 			renderer.setRenderBoundsFromBlock(block);

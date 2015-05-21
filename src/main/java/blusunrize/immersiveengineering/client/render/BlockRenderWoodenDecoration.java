@@ -2,14 +2,14 @@ package blusunrize.immersiveengineering.client.render;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.world.IBlockAccess;
 
 import org.lwjgl.opengl.GL11;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.wooden.BlockWoodenDecoration;
-import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWallMount;
+import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWallmount;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 
@@ -57,9 +57,9 @@ public class BlockRenderWoodenDecoration implements ISimpleBlockRenderingHandler
 			}
 			else if(metadata==6)
 			{
-				GL11.glScalef(1.5f,1.5f,1.5f);
-				TileEntityRendererDispatcher.instance.renderTileEntityAt(new TileEntityWallMount(), 0.0D, 0.0D, 0.0D, 0.0F);
-				GL11.glEnable(32826);
+				Tessellator.instance.startDrawingQuads();
+				ClientUtils.handleStaticTileRenderer(new TileEntityWallmount());
+				Tessellator.instance.draw();
 			}
 		}catch(Exception e)
 		{
@@ -131,7 +131,11 @@ public class BlockRenderWoodenDecoration implements ISimpleBlockRenderingHandler
 			return renderer.renderStandardBlock(block, x, y, z);
 		}
 		else if(world.getBlockMetadata(x, y, z)==6)
-			return false;
+		{
+			TileEntityWallmount tile = (TileEntityWallmount)world.getTileEntity(x, y, z);
+			ClientUtils.handleStaticTileRenderer(tile);
+			return true;
+		}
 		else
 		{
 			renderer.setRenderBoundsFromBlock(block);

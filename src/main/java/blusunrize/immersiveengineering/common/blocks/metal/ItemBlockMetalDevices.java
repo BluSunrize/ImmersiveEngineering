@@ -51,11 +51,11 @@ public class ItemBlockMetalDevices extends ItemBlockIEBase
 	@Override
 	public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int meta)
 	{
-		if(meta==BlockMetalDevices.META_transformer)
+		if(meta==BlockMetalDevices.META_transformer||meta==BlockMetalDevices.META_transformerHV)
 		{
 			int playerViewQuarter = MathHelper.floor_double(player.rotationYaw * 4.0F / 360.0F + 0.5D) & 3;
 			int f = playerViewQuarter==0 ? 2:playerViewQuarter==1 ? 5:playerViewQuarter==2 ? 3: 4;
-			if(side==f && world.getTileEntity(x+(side==4?1: side==5?-1: 0), y, z+(side==2?1: side==3?-1: 0)) instanceof TileEntityWoodenPost && ((TileEntityWoodenPost)world.getTileEntity(x+(side==4?1: side==5?-1: 0), y, z+(side==2?1: side==3?-1: 0))).type>0 )
+			if(meta==BlockMetalDevices.META_transformer && side==f && world.getTileEntity(x+(side==4?1: side==5?-1: 0), y, z+(side==2?1: side==3?-1: 0)) instanceof TileEntityWoodenPost && ((TileEntityWoodenPost)world.getTileEntity(x+(side==4?1: side==5?-1: 0), y, z+(side==2?1: side==3?-1: 0))).type>0 )
 				;
 			else if(!world.isAirBlock(x,y+1,z))
 				return false;
