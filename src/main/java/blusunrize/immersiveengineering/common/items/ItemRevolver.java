@@ -17,7 +17,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
@@ -131,7 +130,8 @@ public class ItemRevolver extends ItemIEBase
 			if(player.isSneaking() || revolver.getItemDamage()==2)
 				player.openGui(ImmersiveEngineering.instance, Lib.GUIID_Revolver, world, (int)player.posX,(int)player.posY,(int)player.posZ);
 			else if(revolver.getItemDamage()==4)
-				player.addChatMessage(new ChatComponentText("*plop*"));
+				world.playSoundAtEntity(player, "random.pop", 1F, .6f);
+			//				player.addChatMessage(new ChatComponentText("*plop*"));
 			else
 			{
 				ItemStack[] bullets = getBullets(revolver);

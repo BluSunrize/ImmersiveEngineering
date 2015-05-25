@@ -24,6 +24,7 @@ import blusunrize.immersiveengineering.api.CrusherRecipe;
 import blusunrize.immersiveengineering.common.EventHandler;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ICustomBoundingboxes;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundTile;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockCrusher;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import blusunrize.immersiveengineering.common.util.IESound;
@@ -34,7 +35,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class TileEntityCrusher extends TileEntityMultiblockPart implements IEnergyReceiver, ISidedInventory, ICustomBoundingboxes
+public class TileEntityCrusher extends TileEntityMultiblockPart implements IEnergyReceiver, ISidedInventory, ICustomBoundingboxes, ISoundTile
 {
 	public int facing = 2;
 	public EnergyStorage energyStorage = new EnergyStorage(32000);
@@ -73,7 +74,7 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 	{
 		if(!formed || pos!=17)
 			return;
-		
+
 		if((active&&process>0)||mobGrinding||grindingTimer>0)
 		{
 			if(grindingTimer>0)
@@ -147,7 +148,7 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 					if(active)
 					{
 						ItemStack inputStack = inputs.get(0);
-						
+
 						if(inputStack!=null)
 						{
 							Block b = Block.getBlockFromItem(inputStack.getItem());
@@ -155,7 +156,7 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 							int meta = inputStack.getItemDamage()+((b!=null&&b!=Blocks.air)?0:16);
 							worldObj.addBlockEvent(xCoord,yCoord,zCoord, this.getBlockType(), id,meta);
 						}
-						
+
 						CrusherRecipe recipe = CrusherRecipe.findRecipe(inputStack);
 						if(recipe!=null)
 						{
@@ -241,9 +242,9 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 	public void outputItem(ItemStack stack)
 	{
 		TileEntity inventory = this.worldObj.getTileEntity(xCoord+(facing==4?-2:facing==5?2:0),yCoord,zCoord+(facing==2?-2:facing==3?2:0));
-		if(isInventory(inventory, facing))
+		if(isInventory(inventory, ForgeDirection.OPPOSITES[facing]))
 		{
-			stack = Utils.insertStackIntoInventory((IInventory)inventory, stack, facing);
+			stack = Utils.insertStackIntoInventory((IInventory)inventory, stack, ForgeDirection.OPPOSITES[facing]);
 		}
 
 		if(stack != null)
@@ -259,7 +260,7 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 	boolean isInventory(TileEntity tile, int side)
 	{
 		if(tile instanceof ISidedInventory && ((ISidedInventory)tile).getAccessibleSlotsFromSide(side).length>0)
-			return false;
+			return true;
 		if(tile instanceof IInventory && ((IInventory)tile).getSizeInventory()>0)
 			return true;
 		return false;
@@ -267,9 +268,9 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 
 
 	@Override
-	public void readCustomNBT(NBTTagCompound nbt)
+	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
-		super.readCustomNBT(nbt);
+		super.readCustomNBT(nbt, descPacket);
 		facing = nbt.getInteger("facing");
 		barrelRotation = nbt.getFloat("barrelRotation");
 		active = nbt.getBoolean("active");
@@ -277,21 +278,18 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 		grindingTimer = nbt.getInteger("grindingTimer");
 		process = nbt.getInteger("process");
 		energyStorage.readFromNBT(nbt);
+		if(!descPacket)
+		{
+			NBTTagList invList = nbt.getTagList("inputs", 10);
+			inputs.clear();
+			for(int i=0;i<invList.tagCount();i++)
+				inputs.add( ItemStack.loadItemStackFromNBT(invList.getCompoundTagAt(i)));
+		}
 	}
 	@Override
-	public void readFromNBT(NBTTagCompound nbt)
+	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
-		super.readFromNBT(nbt);
-
-		NBTTagList invList = nbt.getTagList("inputs", 10);
-		inputs.clear();
-		for(int i=0;i<invList.tagCount();i++)
-			inputs.add( ItemStack.loadItemStackFromNBT(invList.getCompoundTagAt(i)));
-	}
-	@Override
-	public void writeCustomNBT(NBTTagCompound nbt)
-	{
-		super.writeCustomNBT(nbt);
+		super.writeCustomNBT(nbt, descPacket);
 		nbt.setInteger("facing", facing);
 		nbt.setFloat("barrelRotation", barrelRotation);
 		nbt.setBoolean("active", active);
@@ -299,18 +297,14 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 		nbt.setInteger("grindingTimer", grindingTimer);
 		nbt.setInteger("process", process);
 		energyStorage.writeToNBT(nbt);
+		if(!descPacket)
+		{
+			NBTTagList invList = new NBTTagList();
+			for(ItemStack s : inputs)
+				invList.appendTag(s.writeToNBT(new NBTTagCompound()));
+			nbt.setTag("inputs", invList);
+		}
 	}
-	@Override
-	public void writeToNBT(NBTTagCompound nbt)
-	{
-		super.writeToNBT(nbt);
-
-		NBTTagList invList = new NBTTagList();
-		for(ItemStack s : inputs)
-			invList.appendTag(s.writeToNBT(new NBTTagCompound()));
-		nbt.setTag("inputs", invList);
-	}
-
 
 	@SideOnly(Side.CLIENT)
 	@Override
@@ -334,7 +328,7 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 					active=true;
 					process=1;
 				}
-				
+
 			}
 		}catch(Exception e)
 		{

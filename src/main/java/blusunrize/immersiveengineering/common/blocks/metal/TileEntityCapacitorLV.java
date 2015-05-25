@@ -134,16 +134,16 @@ public class TileEntityCapacitorLV extends TileEntityImmersiveConnectable implem
 	}
 
 	@Override
-	public void writeCustomNBT(NBTTagCompound nbt)
+	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
-		super.writeCustomNBT(nbt);
+		super.writeCustomNBT(nbt, descPacket);
 		nbt.setIntArray("sideConfig", sideConfig);
 		energyStorage.writeToNBT(nbt);
 	}
 	@Override
-	public void readCustomNBT(NBTTagCompound nbt)
+	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
-		super.readCustomNBT(nbt);
+		super.readCustomNBT(nbt, descPacket);
 		sideConfig = nbt.getIntArray("sideConfig");
 		if(sideConfig==null || sideConfig.length<6)
 			sideConfig = new int[6];
@@ -210,13 +210,17 @@ public class TileEntityCapacitorLV extends TileEntityImmersiveConnectable implem
 	@Override
 	public String[] getOverlayText(MovingObjectPosition mop)
 	{
-		int i = sideConfig[Math.min(sideConfig.length-1, mop.sideHit)];
-		int j = sideConfig[Math.min(sideConfig.length-1, ForgeDirection.OPPOSITES[mop.sideHit])];
-		return new String[]{
-				StatCollector.translateToLocal(Lib.DESC_INFO+"capacitorSide.facing")
-				+StatCollector.translateToLocal(Lib.DESC_INFO+"capacitorSide."+i),
-				StatCollector.translateToLocal(Lib.DESC_INFO+"capacitorSide.opposite")
-				+StatCollector.translateToLocal(Lib.DESC_INFO+"capacitorSide."+j)
-		};
+		if(Config.getBoolean("colourblindSupport"))
+		{
+			int i = sideConfig[Math.min(sideConfig.length-1, mop.sideHit)];
+			int j = sideConfig[Math.min(sideConfig.length-1, ForgeDirection.OPPOSITES[mop.sideHit])];
+			return new String[]{
+					StatCollector.translateToLocal(Lib.DESC_INFO+"capacitorSide.facing")
+					+StatCollector.translateToLocal(Lib.DESC_INFO+"capacitorSide."+i),
+					StatCollector.translateToLocal(Lib.DESC_INFO+"capacitorSide.opposite")
+					+StatCollector.translateToLocal(Lib.DESC_INFO+"capacitorSide."+j)
+			};
+		}
+		return null;
 	}
 }

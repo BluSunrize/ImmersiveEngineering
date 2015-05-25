@@ -12,7 +12,7 @@ public abstract class TileEntityMultiblockPart extends TileEntityIEBase
 	public boolean mirrored = false;
 	
 	@Override
-	public void readCustomNBT(NBTTagCompound nbt)
+	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		formed = nbt.getBoolean("formed");
 		pos = nbt.getInteger("pos");
@@ -21,7 +21,7 @@ public abstract class TileEntityMultiblockPart extends TileEntityIEBase
 	}
 
 	@Override
-	public void writeCustomNBT(NBTTagCompound nbt)
+	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		nbt.setBoolean("formed", formed);
 		nbt.setInteger("pos", pos);

@@ -2,10 +2,11 @@ package blusunrize.immersiveengineering.common.util;
 
 import java.util.Iterator;
 
-import blusunrize.immersiveengineering.client.ClientUtils;
 import net.minecraft.client.audio.ITickableSound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
+import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundTile;
 
 public class IESound implements ITickableSound
 {
@@ -108,6 +109,10 @@ public class IESound implements ITickableSound
 						}
 				}
 			}
+
+		TileEntity tile = ClientUtils.mc().thePlayer.worldObj.getTileEntity((int)Math.floor(x), (int)Math.floor(y), (int)Math.floor(z));
+		if(!(tile instanceof ISoundTile))
+			donePlaying=true;
 	}
 
 

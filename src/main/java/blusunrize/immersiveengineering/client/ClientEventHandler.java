@@ -30,8 +30,6 @@ import org.lwjgl.opengl.GL11;
 import blusunrize.immersiveengineering.api.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.WireType;
 import blusunrize.immersiveengineering.client.models.ModelIEObj;
-import blusunrize.immersiveengineering.client.render.TileRenderIE;
-import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
@@ -146,7 +144,7 @@ public class ClientEventHandler
 				}
 
 			}
-			else if( Config.getBoolean("colourblindSupport") && Utils.isHammer(ClientUtils.mc().thePlayer.getCurrentEquippedItem()))
+			else if( Utils.isHammer(ClientUtils.mc().thePlayer.getCurrentEquippedItem()))
 			{
 				MovingObjectPosition mop = ClientUtils.mc().objectMouseOver;
 				if(mop!=null && ClientUtils.mc().thePlayer.worldObj.getTileEntity(mop.blockX, mop.blockY, mop.blockZ) instanceof IEBlockInterfaces.IBlockOverlayText)

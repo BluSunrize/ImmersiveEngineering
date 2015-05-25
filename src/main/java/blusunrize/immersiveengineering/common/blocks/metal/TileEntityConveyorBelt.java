@@ -21,7 +21,7 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements ISidedIn
 	}
 
 	@Override
-	public void readCustomNBT(NBTTagCompound nbt)
+	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		transportUp = nbt.getBoolean("transportUp");
 		transportDown = nbt.getBoolean("transportDown");
@@ -29,7 +29,7 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements ISidedIn
 	}
 
 	@Override
-	public void writeCustomNBT(NBTTagCompound nbt)
+	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		nbt.setBoolean("transportUp", transportUp);
 		nbt.setBoolean("transportDown", transportDown);

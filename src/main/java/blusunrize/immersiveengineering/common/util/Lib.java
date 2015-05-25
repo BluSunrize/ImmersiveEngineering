@@ -20,6 +20,7 @@ public class Lib
 	public static final int GUIID_WoodenCrate = 4;
 	public static final int GUIID_Squeezer = 5;
 	public static final int GUIID_Fermenter = 6;
+	public static final int GUIID_Sorter = 7;
 	
 	public static String DMG_RevolverCasull="ieRevolver_casull";
 	public static String DMG_RevolverAP="ieRevolver_armorPiercing";

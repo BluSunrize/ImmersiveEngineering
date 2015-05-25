@@ -40,7 +40,7 @@ public class ItemBlockMetalDevices extends ItemBlockIEBase
 				String back = (s[2]==0?EnumChatFormatting.BLUE: s[2]==1?EnumChatFormatting.GOLD: EnumChatFormatting.DARK_GRAY) + sq;
 				String left = (s[4]==0?EnumChatFormatting.BLUE: s[4]==1?EnumChatFormatting.GOLD: EnumChatFormatting.DARK_GRAY) + sq;
 				String right = (s[5]==0?EnumChatFormatting.BLUE: s[5]==1?EnumChatFormatting.GOLD: EnumChatFormatting.DARK_GRAY) + sq;
-				
+
 				list.add( " "+top+" " );
 				list.add( left+front+right );
 				list.add( " "+bot+back );
@@ -51,10 +51,10 @@ public class ItemBlockMetalDevices extends ItemBlockIEBase
 	@Override
 	public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int meta)
 	{
+		int playerViewQuarter = MathHelper.floor_double(player.rotationYaw * 4.0F / 360.0F + 0.5D) & 3;
+		int f = playerViewQuarter==0 ? 2:playerViewQuarter==1 ? 5:playerViewQuarter==2 ? 3: 4;
 		if(meta==BlockMetalDevices.META_transformer||meta==BlockMetalDevices.META_transformerHV)
 		{
-			int playerViewQuarter = MathHelper.floor_double(player.rotationYaw * 4.0F / 360.0F + 0.5D) & 3;
-			int f = playerViewQuarter==0 ? 2:playerViewQuarter==1 ? 5:playerViewQuarter==2 ? 3: 4;
 			if(meta==BlockMetalDevices.META_transformer && side==f && world.getTileEntity(x+(side==4?1: side==5?-1: 0), y, z+(side==2?1: side==3?-1: 0)) instanceof TileEntityWoodenPost && ((TileEntityWoodenPost)world.getTileEntity(x+(side==4?1: side==5?-1: 0), y, z+(side==2?1: side==3?-1: 0))).type>0 )
 				;
 			else if(!world.isAirBlock(x,y+1,z))
@@ -62,11 +62,30 @@ public class ItemBlockMetalDevices extends ItemBlockIEBase
 		}
 		if(meta==BlockMetalDevices.META_relayHV&& world.isAirBlock(x,y+1,z))
 			return false;
+
+		int conveyorFacingPre=-1;
+		int conveyorModePre=-1;
+		if(meta==BlockMetalDevices.META_conveyorBelt && side!=0 && side!=1)
+		{
+			ForgeDirection fd = ForgeDirection.VALID_DIRECTIONS[side].getOpposite();
+			if(world.getTileEntity(x+fd.offsetX, y, z+fd.offsetZ) instanceof TileEntityConveyorBelt)
+			{
+				TileEntityConveyorBelt con = (TileEntityConveyorBelt)world.getTileEntity(x+fd.offsetX, y, z+fd.offsetZ);
+				if(con.transportUp && con.facing==ForgeDirection.OPPOSITES[side] && hitY>.75 && world.isAirBlock(x, y+1, z))
+					y++;
+				else if( ((con.transportUp && con.facing==side)||(con.transportDown && con.facing==ForgeDirection.OPPOSITES[side])) && hitY<=.125 && world.isAirBlock(x, y-1, z))
+				{
+					y--;
+					conveyorFacingPre = con.facing;
+					conveyorModePre = con.transportUp?1: con.transportDown?2: 0;
+				}
+			}
+		}
+
+
 		boolean ret = super.placeBlockAt(stack, player, world, x, y, z, side, hitX, hitY, hitZ, meta);
 		if(!ret)
 			return ret;
-		int playerViewQuarter = MathHelper.floor_double(player.rotationYaw * 4.0F / 360.0F + 0.5D) & 3;
-		int f = playerViewQuarter==0 ? 2:playerViewQuarter==1 ? 5:playerViewQuarter==2 ? 3: 4;
 		if(world.getTileEntity(x, y, z) instanceof TileEntityRelayHV)
 		{
 			if(ret && !world.isAirBlock(x,y+1,z))
@@ -103,9 +122,21 @@ public class ItemBlockMetalDevices extends ItemBlockIEBase
 		else if(world.getTileEntity(x, y, z) instanceof TileEntityConveyorBelt)
 		{
 			TileEntityConveyorBelt tile = (TileEntityConveyorBelt)world.getTileEntity(x,y,z);
-			
+
+			if(player.isSneaking())
+				f = ForgeDirection.OPPOSITES[f];
 			ForgeDirection fd = ForgeDirection.VALID_DIRECTIONS[f].getOpposite();
-			if(world.getTileEntity(x+fd.offsetX, y+1, z+fd.offsetZ) instanceof TileEntityConveyorBelt)
+			if(conveyorFacingPre!=-1 || conveyorModePre!=-1)
+			{
+				if(conveyorFacingPre!=-1)
+					f = conveyorFacingPre;
+				if(conveyorModePre!=-1)
+				{
+					tile.transportUp = conveyorModePre==1;
+					tile.transportDown = conveyorModePre==2;
+				}
+			}
+			else if(world.getTileEntity(x+fd.offsetX, y+1, z+fd.offsetZ) instanceof TileEntityConveyorBelt)
 			{
 				TileEntityConveyorBelt con = (TileEntityConveyorBelt)world.getTileEntity(x+fd.offsetX, y+1, z+fd.offsetZ);
 				if(ForgeDirection.VALID_DIRECTIONS[con.facing].equals(fd))

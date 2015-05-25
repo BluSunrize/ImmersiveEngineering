@@ -30,6 +30,7 @@ import blusunrize.immersiveengineering.client.gui.GuiCokeOven;
 import blusunrize.immersiveengineering.client.gui.GuiCrate;
 import blusunrize.immersiveengineering.client.gui.GuiFermenter;
 import blusunrize.immersiveengineering.client.gui.GuiRevolver;
+import blusunrize.immersiveengineering.client.gui.GuiSorter;
 import blusunrize.immersiveengineering.client.gui.GuiSqueezer;
 import blusunrize.immersiveengineering.client.render.BlockRenderMetalDecoration;
 import blusunrize.immersiveengineering.client.render.BlockRenderMetalDevices;
@@ -39,12 +40,14 @@ import blusunrize.immersiveengineering.client.render.BlockRenderWoodenDecoration
 import blusunrize.immersiveengineering.client.render.BlockRenderWoodenDevices;
 import blusunrize.immersiveengineering.client.render.EntityRenderRevolvershot;
 import blusunrize.immersiveengineering.client.render.ItemRenderRevolver;
+import blusunrize.immersiveengineering.client.render.TileRenderBucketWheel;
 import blusunrize.immersiveengineering.client.render.TileRenderConnectorHV;
 import blusunrize.immersiveengineering.client.render.TileRenderConnectorLV;
 import blusunrize.immersiveengineering.client.render.TileRenderConnectorMV;
 import blusunrize.immersiveengineering.client.render.TileRenderConnectorStructural;
 import blusunrize.immersiveengineering.client.render.TileRenderCrusher;
 import blusunrize.immersiveengineering.client.render.TileRenderDieselGenerator;
+import blusunrize.immersiveengineering.client.render.TileRenderExcavator;
 import blusunrize.immersiveengineering.client.render.TileRenderPost;
 import blusunrize.immersiveengineering.client.render.TileRenderRefinery;
 import blusunrize.immersiveengineering.client.render.TileRenderRelayHV;
@@ -59,12 +62,15 @@ import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDecoration;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDevices;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalMultiblocks;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBucketWheel;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorHV;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorLV;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorMV;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorStructural;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConveyorSorter;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityDieselGenerator;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityExcavator;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFermenter;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityRefinery;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityRelayHV;
@@ -119,6 +125,8 @@ public class ClientProxy extends CommonProxy
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityRefinery.class, new TileRenderRefinery());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityCrusher.class, new TileRenderCrusher());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityConnectorStructural.class, new TileRenderConnectorStructural());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityBucketWheel.class, new TileRenderBucketWheel());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityExcavator.class, new TileRenderExcavator());
 		//WOOD
 		RenderingRegistry.registerBlockHandler(new BlockRenderWoodenDevices());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityWoodenPost.class, new TileRenderPost());
@@ -260,6 +268,9 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.Crafting(manual, "furnaceHeater0", new ItemStack(IEContent.blockMetalDevice,1,BlockMetalDevices.META_furnaceHeater)),
 				new ManualPages.Text(manual, "furnaceHeater1"),
 				new ManualPages.Text(manual, "furnaceHeater2"));
+		manual.addEntry("sorter", "machines",
+				new ManualPages.Crafting(manual, "sorter0", new ItemStack(IEContent.blockMetalDevice,1,BlockMetalDevices.META_sorter)),
+				new ManualPages.Text(manual, "sorter1"));
 		manual.addEntry("crusher", "machines",
 				new ManualPageMultiblock(manual, "crusher0", MultiblockCrusher.instance),
 				new ManualPages.Text(manual, "crusher1"));
@@ -282,6 +293,8 @@ public class ClientProxy extends CommonProxy
 			return new GuiSqueezer(player.inventory, (TileEntitySqueezer) world.getTileEntity(x, y, z));
 		if(ID==Lib.GUIID_Fermenter && world.getTileEntity(x, y, z) instanceof TileEntityFermenter)
 			return new GuiFermenter(player.inventory, (TileEntityFermenter) world.getTileEntity(x, y, z));
+		if(ID==Lib.GUIID_Sorter && world.getTileEntity(x, y, z) instanceof TileEntityConveyorSorter)
+			return new GuiSorter(player.inventory, (TileEntityConveyorSorter) world.getTileEntity(x, y, z));
 		return null;
 	}
 

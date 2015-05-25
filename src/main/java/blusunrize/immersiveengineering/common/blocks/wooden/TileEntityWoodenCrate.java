@@ -93,14 +93,13 @@ public class TileEntityWoodenCrate extends TileEntityIEBase implements IInventor
 	}
 
 	@Override
-	public void readCustomNBT(NBTTagCompound nbt)
+	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
-	}
-	@Override
-	public void readFromNBT(NBTTagCompound nbt)
-	{
-		super.readFromNBT(nbt);
-		readInv(nbt);
+		if(!descPacket)
+		{
+			super.readFromNBT(nbt);
+			readInv(nbt);
+		}
 	}
 	public void readInv(NBTTagCompound nbt)
 	{
@@ -114,14 +113,13 @@ public class TileEntityWoodenCrate extends TileEntityIEBase implements IInventor
 		}
 	}
 	@Override
-	public void writeCustomNBT(NBTTagCompound nbt)
+	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
-	}
-	@Override
-	public void writeToNBT(NBTTagCompound nbt)
-	{
-		super.writeToNBT(nbt);
-		writeInv(nbt);
+		if(!descPacket)
+		{
+			super.writeToNBT(nbt);
+			writeInv(nbt);
+		}
 	}
 	public void writeInv(NBTTagCompound nbt)
 	{

@@ -56,9 +56,9 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable
 	}
 
 	@Override
-	public void writeCustomNBT(NBTTagCompound nbt)
+	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
-		super.writeCustomNBT(nbt);
+		super.writeCustomNBT(nbt, descPacket);
 		nbt.setInteger("facing", facing);
 		if(secondCable!=null)
 			nbt.setInteger("secondCable", secondCable.ordinal());
@@ -66,9 +66,9 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable
 		nbt.setInteger("postAttached", postAttached);
 	}
 	@Override
-	public void readCustomNBT(NBTTagCompound nbt)
+	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
-		super.readCustomNBT(nbt);
+		super.readCustomNBT(nbt, descPacket);
 		facing = nbt.getInteger("facing");
 		if(nbt.hasKey("secondCable"))
 			secondCable = WireType.getValue(nbt.getInteger("secondCable"));

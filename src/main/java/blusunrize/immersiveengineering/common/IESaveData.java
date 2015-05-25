@@ -12,9 +12,11 @@ import cpw.mods.fml.relauncher.Side;
 
 public class IESaveData extends WorldSavedData
 {
+//	private static HashMap<Integer, IESaveData> INSTANCE = new HashMap<Integer, IESaveData>();
 	private static IESaveData INSTANCE;
 	public static final String dataName = "ImmersiveEngineering-SaveData";
-
+	public static boolean loaded = false;
+	
 	public IESaveData(String s)
 	{
 		super(s);
@@ -69,13 +71,19 @@ public class IESaveData extends WorldSavedData
 
 	public static void setDirty(int dimension)
 	{
+//		if(FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER && INSTANCE.get(dimension)!=null)
+//		{
+//			INSTANCE.get(dimension).markDirty();
+//		}
 		if(FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER && INSTANCE!=null)
 			INSTANCE.markDirty();
 	}
-	public static void setInstance(IESaveData in)
+	public static void setInstance(int dimension, IESaveData in)
 	{
+//		if(FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER)
+//			INSTANCE.put(dimension, in);
 		if(FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER)
-			INSTANCE = in;
+			INSTANCE=in;
 	}
 
 }

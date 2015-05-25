@@ -20,10 +20,12 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.client.render.BlockRenderMetalDevices;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenPost;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.Utils;
 
 public class BlockMetalDevices extends BlockIEBase
@@ -31,6 +33,7 @@ public class BlockMetalDevices extends BlockIEBase
 	public IIcon[][] icon_capacitorTop = new IIcon[3][3];
 	public IIcon[][] icon_capacitorBot = new IIcon[3][3];
 	public IIcon[][] icon_capacitorSide = new IIcon[3][3];
+	public IIcon[] icons_sorter = new IIcon[6];
 
 	public static int META_connectorLV=0;
 	public static int META_capacitorLV=1;
@@ -45,6 +48,8 @@ public class BlockMetalDevices extends BlockIEBase
 	public static int META_thermoelectricGen=10;
 	public static int META_conveyorBelt=11;
 	public static int META_furnaceHeater=12;
+	public static int META_sorter=13;
+	
 	public BlockMetalDevices()
 	{
 		super("metalDevice", Material.iron, 4, ItemBlockMetalDevices.class,
@@ -52,7 +57,7 @@ public class BlockMetalDevices extends BlockIEBase
 				"connectorMV","capacitorMV","transformer",
 				"relayHV","connectorHV","capacitorHV","transformerHV",
 				"dynamo","thermoelectricGen",
-				"conveyorBelt","furnaceHeater");
+				"conveyorBelt","furnaceHeater","sorter");
 		setHardness(3.0F);
 		setResistance(15.0F);
 	}
@@ -172,6 +177,9 @@ public class BlockMetalDevices extends BlockIEBase
 		icons[12][1] = iconRegister.registerIcon("immersiveengineering:metal_furnaceHeater_inactive");
 		icons[12][2] = iconRegister.registerIcon("immersiveengineering:metal_furnaceHeater_active");
 		icons[12][3] = iconRegister.registerIcon("immersiveengineering:metal_furnaceHeater_active");
+		//13 sorter
+		for(int i=0; i<6; i++)
+			icons_sorter[i] = iconRegister.registerIcon("immersiveengineering:metal_sorter_"+i);
 
 		//0 connectorLV
 		//2 connectorMV
@@ -213,8 +221,17 @@ public class BlockMetalDevices extends BlockIEBase
 			else
 				return icons[META_furnaceHeater][ ((TileEntityFurnaceHeater)world.getTileEntity(x, y, z)).showActiveTexture()?2:1 ];
 		}
+		if(world.getBlockMetadata(x, y, z) == META_sorter)
+			return icons_sorter[side];
 
 		return super.getIcon(world, x, y, z, side);
+	}
+	@Override
+	public IIcon getIcon(int side, int meta)
+	{
+		if(meta == META_sorter)
+			return icons_sorter[side];
+		return super.getIcon(side, meta);
 	}
 	@Override
 	public int getRenderType()
@@ -222,10 +239,10 @@ public class BlockMetalDevices extends BlockIEBase
 		return BlockRenderMetalDevices.renderID;
 	}
 	@Override
-    public int getRenderBlockPass()
-    {
-        return 0;
-    }
+	public int getRenderBlockPass()
+	{
+		return 0;
+	}
 
 
 	@Override
@@ -277,6 +294,34 @@ public class BlockMetalDevices extends BlockIEBase
 			}
 			return true;
 		}
+		if(world.getTileEntity(x, y, z) instanceof TileEntityConveyorSorter)
+		{
+			//			if(world.getTileEntity(x, y, z) instanceof TileEntityCapacitorLV && )
+			//			{
+			//				if(player.isSneaking())
+			//					side = ForgeDirection.OPPOSITES[side];
+			//				if(!world.isRemote)
+			//				{
+			//					((TileEntityCapacitorLV)world.getTileEntity(x, y, z)).toggleSide(side);
+			//					world.getTileEntity(x, y, z).markDirty();
+			//					world.func_147451_t(x, y, z);
+			//				}
+			//				return true;
+			//			}
+			if(!player.isSneaking())
+			{
+				player.openGui(ImmersiveEngineering.instance, Lib.GUIID_Sorter, world, x, y, z);
+				return true;
+			}
+			else if(Utils.isHammer(player.getCurrentEquippedItem()))
+			{
+				((TileEntityConveyorSorter)world.getTileEntity(x, y, z)).toggleSide(side);
+				world.getTileEntity(x, y, z).markDirty();
+				world.func_147451_t(x, y, z);
+				return true;
+			}
+		}
+		
 		return false;
 	}
 
@@ -397,6 +442,8 @@ public class BlockMetalDevices extends BlockIEBase
 			return new TileEntityConveyorBelt();
 		case 12://12 furnaceHeater
 			return new TileEntityFurnaceHeater();
+		case 13://13 sorter
+			return new TileEntityConveyorSorter();
 		}
 		return null;
 	}

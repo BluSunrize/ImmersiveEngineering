@@ -55,7 +55,7 @@ public class TileEntityRefinery extends TileEntityMultiblockPart implements IFlu
 		if(!formed || pos!=17)
 			return;
 
-		if(!worldObj.isRemote && worldObj.isBlockIndirectlyGettingPowered(xCoord+(facing==4?-1:facing==5?1:facing==2?-2:2),yCoord+1,zCoord+(facing==2?-1:facing==3?1:facing==4?2:-2)))
+		if(!worldObj.isRemote && !worldObj.isBlockIndirectlyGettingPowered(xCoord+(facing==4?-1:facing==5?1:facing==2?-2:2),yCoord+1,zCoord+(facing==2?-1:facing==3?1:facing==4?2:-2)))
 		{
 			boolean update = false;
 			if(tank0.getFluidAmount()>=8 && tank1.getFluidAmount()>=8)
@@ -110,9 +110,9 @@ public class TileEntityRefinery extends TileEntityMultiblockPart implements IFlu
 	}
 
 	@Override
-	public void readCustomNBT(NBTTagCompound nbt)
+	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
-		super.readCustomNBT(nbt);
+		super.readCustomNBT(nbt, descPacket);
 		facing = nbt.getInteger("facing");
 		tank0.readFromNBT(nbt.getCompoundTag("tank0"));
 		tank1.readFromNBT(nbt.getCompoundTag("tank1"));
@@ -120,9 +120,9 @@ public class TileEntityRefinery extends TileEntityMultiblockPart implements IFlu
 		energyStorage.readFromNBT(nbt);
 	}
 	@Override
-	public void writeCustomNBT(NBTTagCompound nbt)
+	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
-		super.writeCustomNBT(nbt);
+		super.writeCustomNBT(nbt, descPacket);
 		nbt.setInteger("facing", facing);
 		NBTTagCompound tankTag = tank0.writeToNBT(new NBTTagCompound());
 		nbt.setTag("tank0", tankTag);
@@ -146,7 +146,7 @@ public class TileEntityRefinery extends TileEntityMultiblockPart implements IFlu
 				return 0;
 			return master().fill(from,resource,doFill);
 		}
-		else if(resource!=null)
+		else if(resource!=null && (resource.getFluid()==IEContent.fluidEthanol||resource.getFluid()==IEContent.fluidPlantoil))
 		{
 			if(from==ForgeDirection.NORTH||from==ForgeDirection.WEST)
 				return tank0.fill(resource, doFill);

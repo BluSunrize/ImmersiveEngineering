@@ -82,16 +82,6 @@ public class ItemWireCoil extends ItemIEBase
 							if(con.end.equals(Utils.toCC(nodeLink)))
 								connectionExists = true;
 						}
-						//						if(ImmersiveNetHandler.getConnections(world, Utils.toCC(nodeLink)).contains(new ImmersiveNetHandler.Connection(Utils.toCC(nodeHere), Utils.toCC(nodeLink), type, distance)))
-						//						{
-						//							System.out.println("connection exists 0");
-						//							connectionExists = true;
-						//						}
-						//						if(ImmersiveNetHandler.getConnections(world, Utils.toCC(nodeHere)).contains(new ImmersiveNetHandler.Connection(Utils.toCC(nodeLink), Utils.toCC(nodeHere), type, distance)))
-						//						{
-						//							System.out.println("connection exists 1");
-						//							connectionExists = true;
-						//						}
 					}
 					if(connectionExists)
 						player.addChatMessage(new ChatComponentTranslation(Lib.CHAT_WARN+"connectionExists"));

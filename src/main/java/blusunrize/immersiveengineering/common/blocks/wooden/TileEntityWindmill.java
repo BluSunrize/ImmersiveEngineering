@@ -102,7 +102,7 @@ public class TileEntityWindmill extends TileEntityIEBase
 	}
 
 	@Override
-	public void readCustomNBT(NBTTagCompound nbt)
+	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		facing = nbt.getInteger("facing");
 		//prevRotation = nbt.getFloat("prevRotation");
@@ -110,7 +110,7 @@ public class TileEntityWindmill extends TileEntityIEBase
 		turnSpeed = nbt.getFloat("turnSpeed");
 	}
 	@Override
-	public void writeCustomNBT(NBTTagCompound nbt)
+	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		nbt.setInteger("facing", facing);
 		//nbt.setFloat("prevRotation", prevRotation);

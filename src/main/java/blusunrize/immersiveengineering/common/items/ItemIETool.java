@@ -61,22 +61,8 @@ public class ItemIETool extends ItemIEBase
 	@Override
 	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
 	{
-//		System.out.println(ImmersiveNetHandler.INSTANCE);
 		if(!world.isRemote)
 		{
-//			ArrayListMultimap<ChunkCoordinates, AbstractConnection> map = ImmersiveNetHandler.indirectConnections;
-//			System.out.println("indirect map contains: "+map.size()+" connections");
-//			System.out.println("keys: "+map.keySet().size());
-//			System.out.println("total values: "+map.values().size());
-//			for(ChunkCoordinates key : map.keySet())
-//			{
-//				System.out.println(" connections from : "+key+": "+map.get(key).size());
-//				for(AbstractConnection con : map.get(key))
-//					System.out.println("  "+con.start+" to "+con.end);
-//					
-//				
-//			}
-			
 			if(stack.getItemDamage()==0)
 			{
 				for(IMultiblock mb : MultiblockHandler.getMultiblocks())

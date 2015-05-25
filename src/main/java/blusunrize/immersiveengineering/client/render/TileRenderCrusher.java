@@ -11,7 +11,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
 
 public class TileRenderCrusher extends TileEntitySpecialRenderer
 {
-	static IModelCustom objmodel = ClientUtils.getModel("immersiveengineering:models/crusher.obj");
+	static IModelCustom model = ClientUtils.getModel("immersiveengineering:models/crusher.obj");
 
 	@Override
 	public void renderTileEntityAt(TileEntity tile, double x, double y, double z, float f)
@@ -33,17 +33,17 @@ public class TileRenderCrusher extends TileEntitySpecialRenderer
 		ClientUtils.bindTexture("immersiveengineering:textures/models/crusher.png");
 
 		boolean b = (crusher.active&&crusher.process>0)||crusher.mobGrinding||crusher.grindingTimer>0;
-		objmodel.renderAllExcept("drum0","drum1");
+		model.renderAllExcept("drum0","drum1");
 
 		float angle = crusher.barrelRotation+(b?18*f:0);
 		
 		GL11.glTranslated(17/16f,14/16f,-8.5/16f);
 		GL11.glRotatef(angle, 1,0,0);
-		objmodel.renderOnly("drum1");
+		model.renderOnly("drum1");
 		GL11.glRotatef(-angle, 1,0,0);
 		GL11.glTranslated(0,0,17/16f);
 		GL11.glRotatef(-angle, 1,0,0);
-		objmodel.renderOnly("drum0");
+		model.renderOnly("drum0");
 		
 		if(crusher.mirrored)
 		{
