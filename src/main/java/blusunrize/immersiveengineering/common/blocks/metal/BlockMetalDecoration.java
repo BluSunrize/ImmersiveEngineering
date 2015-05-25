@@ -140,7 +140,8 @@ public class BlockMetalDecoration extends BlockIEBase
 		int meta = world.getBlockMetadata(x+(side==4?1:side==5?-1:0),y+(side==0?1:side==1?-1:0),z+(side==2?1:side==3?-1:0));
 		if(meta==META_scaffolding)
 			return (world.getBlock(x, y, z)==this&&world.getBlockMetadata(x,y,z)==1)?false:true;
-
+		if(meta==META_fence)
+			return true;
 		return super.shouldSideBeRendered(world, x, y, z, side);
 	}
 

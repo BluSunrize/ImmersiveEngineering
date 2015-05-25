@@ -12,4 +12,8 @@ public class IEBlockInterfaces
 	{
 		public String[] getOverlayText(MovingObjectPosition mop);
 	}
+	
+	public static interface ISoundTile
+	{
+	}
 }

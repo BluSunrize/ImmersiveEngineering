@@ -120,7 +120,6 @@ public class MultiblockCrusher implements IMultiblock
 					{
 						if(!(world.getBlock(xx, yy, zz).equals(IEContent.blockMetalDecoration) && world.getBlockMetadata(xx, yy, zz)==BlockMetalDecoration.META_lightEngineering))
 						{
-							System.out.println("break on "+xx+","+yy+","+zz+"; missing 0");
 							return false;
 						}
 					}
@@ -128,7 +127,6 @@ public class MultiblockCrusher implements IMultiblock
 					{
 						if(l<2 && !(world.getBlock(xx, yy, zz).equals(IEContent.blockMetalDecoration) && world.getBlockMetadata(xx, yy, zz)==BlockMetalDecoration.META_lightEngineering))
 						{
-							System.out.println("break on "+xx+","+yy+","+zz+"; missing 1");
 							return false;
 						}
 					}
@@ -136,7 +134,6 @@ public class MultiblockCrusher implements IMultiblock
 					{
 						if(!(world.getBlock(xx, yy, zz).equals(IEContent.blockMetalDecoration) && world.getBlockMetadata(xx, yy, zz)==((w==0&&(l==0||l==1))?BlockMetalDecoration.META_lightEngineering: BlockMetalDecoration.META_scaffolding) ))
 						{
-							System.out.println("break on "+xx+","+yy+","+zz+"; missing 2");
 							return false;
 						}
 					}
@@ -144,7 +141,6 @@ public class MultiblockCrusher implements IMultiblock
 					{
 						if(!(world.getBlock(xx, yy, zz).equals(IEContent.blockMetalDecoration) && world.getBlockMetadata(xx, yy, zz)==((l==1&&w==0)?BlockMetalDecoration.META_lightEngineering: BlockMetalDecoration.META_fence) ))
 						{
-							System.out.println("break on "+xx+","+yy+","+zz+"; missing 3");
 							return false;
 						}
 					}
@@ -152,7 +148,6 @@ public class MultiblockCrusher implements IMultiblock
 					{
 						if(!world.getBlock(xx, yy, zz).equals(Blocks.hopper))
 						{
-							System.out.println("break on "+xx+","+yy+","+zz+"; missing 4");
 							return false;
 						}
 					}

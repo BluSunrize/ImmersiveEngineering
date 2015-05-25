@@ -16,13 +16,14 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.DieselHandler;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundTile;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockDieselGenerator;
 import blusunrize.immersiveengineering.common.util.IESound;
 import cofh.api.energy.IEnergyReceiver;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class TileEntityDieselGenerator extends TileEntityMultiblockPart implements IFluidHandler
+public class TileEntityDieselGenerator extends TileEntityMultiblockPart implements IFluidHandler, ISoundTile
 {
 	public int facing = 2;
 	public FluidTank tank = new FluidTank(8000);
@@ -79,21 +80,19 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockPart implemen
 			fanRotation %= 360;
 		}
 
+//		worldObj.spawnParticle("reddust", xCoord+(facing==4||facing==3?1:-1)+.5, yCoord+.5, zCoord+(facing==2||facing==4?1:-1)+.5, 0,0,0);
+		
+		
 		if(worldObj.isRemote)
 		{
 			ImmersiveEngineering.proxy.handleTileSound("dieselGenerator", this, active, .5f,1);
 			if(active && worldObj.getTotalWorldTime()%4==0)
-			{
-				ForgeDirection fd = ForgeDirection.getOrientation(facing).getOpposite();
-				worldObj.spawnParticle("largesmoke", xCoord+.5+fd.offsetX*1.25, yCoord+2.25, zCoord+.5+fd.offsetZ*1.25, 0,0,0);
-			}
+				worldObj.spawnParticle("largesmoke", xCoord+.5+(facing==4?1.25:facing==5?-1.25: facing==3?.625:-.625), yCoord+2.25, zCoord+.5+(facing==2?1.25:facing==3?-1.25: facing==4?.625:-.625), 0,0,0);
 		}
 		else
 		{
 			boolean prevActive = active;
-			boolean rs =
-					worldObj.isBlockIndirectlyGettingPowered(xCoord+(facing==4?-1:facing==5?1: -1), yCoord, zCoord+(facing==2?-1:facing==3?1: -1))
-					|| worldObj.isBlockIndirectlyGettingPowered(xCoord+(facing==4?-1:facing==5?1: 1), yCoord, zCoord+(facing==2?-1:facing==3?1: 1));
+			boolean rs = worldObj.isBlockIndirectlyGettingPowered(xCoord+(facing==4||facing==3?1:-1), yCoord, zCoord+(facing==2||facing==4?1:-1));
 
 			if(!rs && tank.getFluid()!=null && tank.getFluid().getFluid()!=null)
 			{
@@ -149,9 +148,9 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockPart implemen
 	}
 
 	@Override
-	public void readCustomNBT(NBTTagCompound nbt)
+	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
-		super.readCustomNBT(nbt);
+		super.readCustomNBT(nbt, descPacket);
 		facing = nbt.getInteger("facing");
 		active = nbt.getBoolean("active");
 
@@ -162,9 +161,9 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockPart implemen
 		tank.readFromNBT(nbt.getCompoundTag("tank"));
 	}
 	@Override
-	public void writeCustomNBT(NBTTagCompound nbt)
+	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
-		super.writeCustomNBT(nbt);
+		super.writeCustomNBT(nbt, descPacket);
 		nbt.setInteger("facing", facing);
 		nbt.setBoolean("active", active);
 

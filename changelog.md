@@ -6,6 +6,10 @@
 - revolver shenanigans everywhere
 - moved all the connectors, wooden poles and the transformers from TESRs to ISRBHs
 - most other models are also .obj now
+- added the sorter
+- Diesel Generator has a new model
+- Refinery will no longer run off of water (whoops >_>)
+
 
 #####Version 0.1.13 - BUILT
 - revolvers now expel the right casings

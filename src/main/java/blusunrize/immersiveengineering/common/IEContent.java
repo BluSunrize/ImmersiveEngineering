@@ -32,6 +32,7 @@ import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDecoration;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDevices;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalMultiblocks;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBucketWheel;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCapacitorHV;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCapacitorLV;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCapacitorMV;
@@ -40,9 +41,11 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorLV
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorMV;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorStructural;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConveyorBelt;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConveyorSorter;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityDieselGenerator;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityDynamo;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityExcavator;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFermenter;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFurnaceHeater;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityLightningRod;
@@ -260,6 +263,7 @@ public class IEContent
 		registerTile(TileEntityThermoelectricGen.class);
 		registerTile(TileEntityConveyorBelt.class);
 		registerTile(TileEntityFurnaceHeater.class);
+		registerTile(TileEntityConveyorSorter.class);
 
 		registerTile(TileEntityLightningRod.class);
 		registerTile(TileEntityDieselGenerator.class);
@@ -267,7 +271,9 @@ public class IEContent
 		registerTile(TileEntityFermenter.class);
 		registerTile(TileEntityRefinery.class);
 		registerTile(TileEntityCrusher.class);
-
+		registerTile(TileEntityBucketWheel.class);
+		registerTile(TileEntityExcavator.class);
+		
 		registerTile(TileEntityStructuralArm.class);
 		registerTile(TileEntityConnectorStructural.class);
 		registerTile(TileEntityWallmountMetal.class);
@@ -406,6 +412,7 @@ public class IEContent
 		addOredictRecipe(new ItemStack(blockMetalDevice,1, BlockMetalDevices.META_thermoelectricGen), "III","CBC","CCC", 'I',"ingotSteel",'C',"ingotConstantan",'B',copperCoil);
 		addOredictRecipe(new ItemStack(blockMetalDevice,8, BlockMetalDevices.META_conveyorBelt), "LLL","IRI", 'I',"ingotIron",'R',"dustRedstone",'L',Items.leather);
 		addOredictRecipe(new ItemStack(blockMetalDevice,1, BlockMetalDevices.META_furnaceHeater), "ICI","CBC","IRI", 'I',"ingotIron",'R',"dustRedstone",'C',"ingotCopper",'B',copperCoil);
+		addOredictRecipe(new ItemStack(blockMetalDevice,1, BlockMetalDevices.META_sorter), "IRI","WBW","IRI", 'I',"ingotIron",'R',"dustRedstone",'W',treatedWood,'B',componentIron);
 
 		addOredictRecipe(new ItemStack(blockMetalDecoration,16,BlockMetalDecoration.META_fence), "III","III", 'I',"ingotSteel");
 		addOredictRecipe(new ItemStack(blockMetalDecoration, 6,BlockMetalDecoration.META_scaffolding), "III"," S ","S S", 'I',"ingotSteel",'S',new ItemStack(blockMetalDecoration,1,0));
@@ -498,6 +505,7 @@ public class IEContent
 
 		DieselHandler.registerEthanolSource(Items.reeds, 80);
 		DieselHandler.registerEthanolSource(Items.melon, 80);
+		DieselHandler.registerEthanolSource(Items.apple, 80);
 
 		ThermoelectricHandler.registerSourceInKelvin("blockIce", 273);
 		ThermoelectricHandler.registerSourceInKelvin(Utils.nameFromStack(new ItemStack(Blocks.packed_ice)), 200);

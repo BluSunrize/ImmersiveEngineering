@@ -24,7 +24,7 @@ public class IEHarvestable implements IFactoryHarvestable
 	public boolean canBeHarvested(World world, Map<String, Boolean> arg1, int x, int y, int z)
 	{
 		int meta = world.getBlockMetadata(x, y, z);
-		return ((BlockIECrop)IEContent.blockCrop).getMaxMeta(meta)>=meta;
+		return ((BlockIECrop)IEContent.blockCrop).getMaxMeta(meta)<=meta;
 	}
 
 	@Override

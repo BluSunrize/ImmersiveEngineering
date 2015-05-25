@@ -29,15 +29,15 @@ public class TileEntityConnectorStructural extends TileEntityConnectorLV
 	
 
 	@Override
-	public void writeCustomNBT(NBTTagCompound nbt)
+	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
-		super.writeCustomNBT(nbt);
+		super.writeCustomNBT(nbt, descPacket);
 		nbt.setFloat("rotation", rotation);
 	}
 	@Override
-	public void readCustomNBT(NBTTagCompound nbt)
+	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
-		super.readCustomNBT(nbt);
+		super.readCustomNBT(nbt, descPacket);
 		rotation = nbt.getFloat("rotation");
 	}
 	

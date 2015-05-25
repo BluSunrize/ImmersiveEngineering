@@ -180,51 +180,47 @@ public class TileEntityFermenter extends TileEntityMultiblockPart implements IFl
 
 
 	@Override
-	public void readCustomNBT(NBTTagCompound nbt)
+	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
-		super.readCustomNBT(nbt);
+		super.readCustomNBT(nbt, descPacket);
 		facing = nbt.getInteger("facing");
 		tank.readFromNBT(nbt.getCompoundTag("tank"));
 		energyStorage.readFromNBT(nbt);
 		tick = nbt.getInteger("tick");
-	}
-	@Override
-	public void readFromNBT(NBTTagCompound nbt)
-	{
-		super.readFromNBT(nbt);
-		NBTTagList invList = nbt.getTagList("inventory", 10);
-		for (int i=0; i<invList.tagCount(); i++)
+		if(!descPacket)
 		{
-			NBTTagCompound itemTag = invList.getCompoundTagAt(i);
-			int slot = itemTag.getByte("Slot") & 255;
-			if(slot>=0 && slot<this.inventory.length)
-				this.inventory[slot] = ItemStack.loadItemStackFromNBT(itemTag);
+			NBTTagList invList = nbt.getTagList("inventory", 10);
+			for (int i=0; i<invList.tagCount(); i++)
+			{
+				NBTTagCompound itemTag = invList.getCompoundTagAt(i);
+				int slot = itemTag.getByte("Slot") & 255;
+				if(slot>=0 && slot<this.inventory.length)
+					this.inventory[slot] = ItemStack.loadItemStackFromNBT(itemTag);
+			}
 		}
 	}
 	@Override
-	public void writeCustomNBT(NBTTagCompound nbt)
+	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
-		super.writeCustomNBT(nbt);
+		super.writeCustomNBT(nbt, descPacket);
 		nbt.setInteger("facing", facing);
 		NBTTagCompound tankTag = tank.writeToNBT(new NBTTagCompound());
 		nbt.setTag("tank", tankTag);
 		energyStorage.writeToNBT(nbt);
 		nbt.setInteger("tick", tick);
-	}
-	@Override
-	public void writeToNBT(NBTTagCompound nbt)
-	{
-		super.writeToNBT(nbt);
-		NBTTagList invList = new NBTTagList();
-		for(int i=0; i<this.inventory.length; i++)
-			if(this.inventory[i] != null)
-			{
-				NBTTagCompound itemTag = new NBTTagCompound();
-				itemTag.setByte("Slot", (byte)i);
-				this.inventory[i].writeToNBT(itemTag);
-				invList.appendTag(itemTag);
-			}
-		nbt.setTag("inventory", invList);
+		if(!descPacket)
+		{
+			NBTTagList invList = new NBTTagList();
+			for(int i=0; i<this.inventory.length; i++)
+				if(this.inventory[i] != null)
+				{
+					NBTTagCompound itemTag = new NBTTagCompound();
+					itemTag.setByte("Slot", (byte)i);
+					this.inventory[i].writeToNBT(itemTag);
+					invList.appendTag(itemTag);
+				}
+			nbt.setTag("inventory", invList);
+		}
 	}
 
 

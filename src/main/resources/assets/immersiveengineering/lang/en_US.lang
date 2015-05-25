@@ -29,6 +29,7 @@ tile.ImmersiveEngineering.metalDevice.dynamo.name=Kinetic Dynamo
 tile.ImmersiveEngineering.metalDevice.thermoelectricGen.name=Thermoelectric Generator
 tile.ImmersiveEngineering.metalDevice.conveyorBelt.name=Conveyor Belt
 tile.ImmersiveEngineering.metalDevice.furnaceHeater.name=External Heater
+tile.ImmersiveEngineering.metalDevice.sorter.name=Item Router
 
 tile.ImmersiveEngineering.metalMultiblock.lightningRod.name=Lightning Rod Base
 tile.ImmersiveEngineering.metalMultiblock.dieselGenerator.name=Diesel Generator
@@ -166,6 +167,16 @@ desc.ImmersiveEngineering.info.capacitorSide.-1=No Connection
 desc.ImmersiveEngineering.info.capacitorSide.0=Energy Input
 desc.ImmersiveEngineering.info.capacitorSide.1=Energy Output
 
+desc.ImmersiveEngineering.info.blockSide.UP=Top Side
+desc.ImmersiveEngineering.info.blockSide.DOWN=Bottom Side
+desc.ImmersiveEngineering.info.blockSide.NORTH=North Side
+desc.ImmersiveEngineering.info.blockSide.SOUTH=South Side
+desc.ImmersiveEngineering.info.blockSide.EAST=East Side
+desc.ImmersiveEngineering.info.blockSide.WEST=West Side
+
+desc.ImmersiveEngineering.info.oreDict.off=OreDictionary: Disabled
+desc.ImmersiveEngineering.info.oreDict.on=OreDictionary: Enabled
+
 desc.ImmersiveEngineering.flavour.crate=Will keep its inventory when broken!
 desc.ImmersiveEngineering.flavour.coil.construction0=For decoration purposes only
 desc.ImmersiveEngineering.flavour.coil.construction1=Will not transmit power
@@ -292,7 +303,7 @@ ie.manual.entry.dieselgen.name=Diesel Generator
 ie.manual.entry.dieselgen.subtext=Better than volume: More volume.
 ie.manual.entry.dieselgen0=High-Voltage architecture might be fascinating, but it's not very useful unless you have a generator that can actually create the required output for it.<br>The Diesel Generator is one of the few ways of generating this sort of energy. It is created as a complex multiblock structure and will run off of <link:biodiesel:Biodiesel> or other types of combustible fuel. Due to its high output, it will work through fuel very quickly, so make sure you have a sufficient fuel production to run it.
 ie.manual.entry.dieselgen1=The structure is built from Engine, Generator and Radiator blocks. Arrange them in the shape shown on the following side and hit either the central generator or central radiator with an Engineer's Hammer.
-ie.manual.entry.dieselgen2=Fuel is to be input at the bottom corners of the generator, whereas energy will be output to up to three connection on the top. The <config:i:dieselGen_output>RF/t the generator outputs will be split between all connected points.<br>The surfaces above the fluid inputs will turn off the generator if supplied with a redstone signal.
+ie.manual.entry.dieselgen2=Fuel is to be input at the bottom corners of the generator, whereas energy will be output to up to three connection on the top. The <config:i:dieselGen_output>RF/t the generator outputs will be split between all connected points.<br>The terminal on the right side will turn off the generator if supplied with a redstone signal.
 ie.manual.entry.dieselgen3=The following table lists all valid fuels for the Diesel Generator and for how long in seconds (ticks) they burn. 
 
 ie.manual.entry.biodiesel.name=Biodiesel
@@ -308,7 +319,7 @@ ie.manual.entry.biodiesel4=The front of the refinery serves as fluid output, whe
 ie.manual.entry.conveyor.name=Conveyor Belts
 ie.manual.entry.conveyor.subtext=Who needs rails anyway?
 ie.manual.entry.conveyor0=Conveyor Belts are an easy way of transporting all sorts of things around your base. While they are strong enough to move living creatures like cows or sheep, their true strength lies in transporting items.<br>Throwing items atop them will have the items move along the belt. Should the belt lead into an inventory, the item will be inserted.
-ie.manual.entry.conveyor1=Blocks like hoppers will be able to drop items onto the belts. Use an Engineer's Hammer to rotate the belts (rightclick) or adjust whether they should run up- or downwards (sneak + rightclick).
+ie.manual.entry.conveyor1=Blocks like hoppers will be able to drop items onto the belts. Use an Engineer's Hammer to rotate the belts (rightclick) or adjust whether they should run up- or downwards (sneak + rightclick).<br>By default, conveyors face the same way the player is facing. Sneaking while placing them will instead make them face towards the player.
 
 ie.manual.entry.furnaceHeater.name=External Heater
 ie.manual.entry.furnaceHeater.subtext=Now you're cooking with flux!
@@ -316,10 +327,15 @@ ie.manual.entry.furnaceHeater0=The External Heater does exactly what its name im
 ie.manual.entry.furnaceHeater1=Click a side of the heater with a hammer to make it an energy acceptor, sneak to target the opposing side.<br>The heater will consume §o<config:i:heater_consumption> RF/t§r for each heat unit added. During the initial phase of the furnace, the heater will produce up to §o4§r units of heat per tick, but as soon as the furnace reaches maximum temperature, it will only require §o1§r unit of heat to keep it going.
 ie.manual.entry.furnaceHeater2=Even better, while the furnace is at maximum temperature, the heater will consume an additional §o<config:i:heater_speedupConsumption> RF/t§r to increase the furnaces processing speed.<br>The heater will only affect a furnace with a valid input and space in the output slot, in order to conserve energy. However, you can apply a redstone signal to the heater to disable that functionality and have it keep the furnace at full heat.
 
+ie.manual.entry.sorter.name=Item Router
+ie.manual.entry.sorter.subtext=Left foot yellow, right hand green
+ie.manual.entry.sorter0=The Item Router is a block which will accept and redistribute items down filtered paths. Place it down and rightclick it to open the interface, which shows six different, colour and direction coordinated filters.
+ie.manual.entry.sorter1=When an item enters the router, it will be routed to an output whose filter matches the item, or, if no matching filter is found, it routes to an unfiltered output. If the router cannot route the item in the first place, it will not allow the item to enter the router. Items also can not be output to side it was inserted from.<br>Sneak and rightclick a side to switch its routing to respect the OreDictionary. Note that this routing is a bit more taxing on the game performance.
+
 ie.manual.entry.crusher.name=Crusher
 ie.manual.entry.crusher.subtext=Keep your hands out!
 ie.manual.entry.crusher0=Crushing an ore is an effective way of increasing their yield, for each ore creates two dusts which you can then smelt. This industrial-size crusher is a quick way of doing so. The machine will consume up to 80 RF/t, and its processing speed depends on the power supplied.
-ie.manual.entry.crusher1=However, it is not only used for crushing ores. Every living being to fall into the machine will take grave damage and the crusher will output the relevant drops.<br>Applying a redstone signal to the control panel on the left will halt the crushers process.<br>The structure is formed by right clicking the central block of the front. The front is the wide side of the structure which has a light engineering block at the bottom.
+ie.manual.entry.crusher1=However, it is not only used for crushing ores. Every living being to fall into the machine will take grave damage and the crusher will output the relevant drops.<br>Applying a redstone signal to the control panel at the front will halt the crushers process.<br>The structure is formed by right clicking the central block of the front. The front is the wide side of the structure which has a light engineering block at the bottom.
 
 ie.manual.entry.lightningrod.name=Lightning Rod
 ie.manual.entry.lightningrod.subtext=Thunderstruck!

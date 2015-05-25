@@ -39,9 +39,8 @@ public class TileEntityWatermill extends TileEntityIEBase
 		else
 			canTurn=getRotationVec().lengthVector()!=0;
 
-		if(!multiblock && !worldObj.isRemote && worldObj.getTotalWorldTime()%200==((xCoord^zCoord)&200))
+		if(!multiblock /*&& worldObj.isRemote*/ && worldObj.getTotalWorldTime()%200==((xCoord^zCoord)&200))
 		{
-//			System.out.	println("resetting rotation for "+xCoord+","+yCoord+","+zCoord);
 			rotationVec=null;
 		}
 		prevRotation = rotation;
@@ -123,7 +122,7 @@ public class TileEntityWatermill extends TileEntityIEBase
 			rotationVec = Vec3.createVectorHelper(0, 0, 0);
 			rotationVec = Utils.addVectors(rotationVec, getHorizontalVec());
 			rotationVec = Utils.addVectors(rotationVec, getVerticalVec());
-			worldObj.addBlockEvent(xCoord, yCoord, zCoord, getBlockType(), (int)(rotationVec.xCoord*10000), (int)(rotationVec.zCoord*10000));
+			worldObj.addBlockEvent(xCoord, yCoord, zCoord, getBlockType(), (int)((float)rotationVec.xCoord*10000f), (int)((float)rotationVec.zCoord*10000f));
 		}
 		return rotationVec;
 	}
@@ -184,11 +183,11 @@ public class TileEntityWatermill extends TileEntityIEBase
 	@Override
 	public boolean receiveClientEvent(int id, int arg)
 	{
-		rotationVec = Vec3.createVectorHelper(id/10000f, 0, arg/10000f);
+		//		rotationVec = Vec3.createVectorHelper(id/10000f, 0, arg/10000f);
 		return true;
 	}
 	@Override
-	public void readCustomNBT(NBTTagCompound nbt)
+	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		facing = nbt.getInteger("facing");
 		prevRotation = nbt.getFloat("prevRotation");
@@ -199,7 +198,7 @@ public class TileEntityWatermill extends TileEntityIEBase
 			offset=new int[]{0,0};
 	}
 	@Override
-	public void writeCustomNBT(NBTTagCompound nbt)
+	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		nbt.setInteger("facing", facing);
 		nbt.setFloat("prevRotation", prevRotation);

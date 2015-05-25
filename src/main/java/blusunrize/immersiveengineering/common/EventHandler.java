@@ -38,22 +38,31 @@ public class EventHandler
 	@SubscribeEvent
 	public void onLoad(WorldEvent.Load event)
 	{
-		if(event.world.provider.dimensionId==0)
+		if(ImmersiveNetHandler.INSTANCE==null)
+			ImmersiveNetHandler.INSTANCE = new ImmersiveNetHandler();
+		//		if(event.world.provider.dimensionId==0)
+		//		{
+		/**
+		if(ImmersiveNetHandler.INSTANCE==null)
+			ImmersiveNetHandler.INSTANCE = new ImmersiveNetHandler();
+		if(!event.world.isRemote && !IESaveData.loaded)
 		{
-			System.out.println("world load!");
-			if(ImmersiveNetHandler.INSTANCE==null)
-				ImmersiveNetHandler.INSTANCE = new ImmersiveNetHandler();
-			if(!event.world.isRemote)
+			System.out.println("[ImEng] - world data loading, dimension "+event.world.provider.dimensionId);
+			IESaveData worldData = (IESaveData) event.world.loadItemData(IESaveData.class, IESaveData.dataName);
+			if(worldData==null)
 			{
-				IESaveData worldData = (IESaveData) event.world.loadItemData(IESaveData.class, IESaveData.dataName);
-				if(worldData==null)
-				{
-					worldData = new IESaveData(IESaveData.dataName);
-					event.world.setItemData(IESaveData.dataName, worldData);
-				}
-				IESaveData.setInstance(worldData);
+				System.out.println("[ImEng] - No World Data Found");
+				worldData = new IESaveData(IESaveData.dataName);
+				//				worldData.dimension = event.world.provider.dimensionId;
+				event.world.setItemData(IESaveData.dataName, worldData);
 			}
+			else
+				System.out.println("[ImEng] - World Data Retrieved");
+			IESaveData.setInstance(event.world.provider.dimensionId, worldData);
+			IESaveData.loaded = true;
 		}
+		*/
+		//		}
 	}
 
 	@SubscribeEvent
@@ -164,8 +173,8 @@ public class EventHandler
 	@SubscribeEvent
 	public void onItemTooltip(ItemTooltipEvent event)
 	{
-		for(int oid : OreDictionary.getOreIDs(event.itemStack))
-			event.toolTip.add(OreDictionary.getOreName(oid));
+//		for(int oid : OreDictionary.getOreIDs(event.itemStack))
+//			event.toolTip.add(OreDictionary.getOreName(oid));
 
 		if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT
 				&& ClientUtils.mc().currentScreen != null

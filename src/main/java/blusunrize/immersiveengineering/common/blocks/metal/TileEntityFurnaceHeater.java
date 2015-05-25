@@ -110,7 +110,7 @@ public class TileEntityFurnaceHeater extends TileEntityIEBase implements IEnergy
 	}
 
 	@Override
-	public void readCustomNBT(NBTTagCompound nbt)
+	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		energyStorage.readFromNBT(nbt);
 		sockets = nbt.getIntArray("sockets");
@@ -119,7 +119,7 @@ public class TileEntityFurnaceHeater extends TileEntityIEBase implements IEnergy
 		active = nbt.getBoolean("active");
 	}
 	@Override
-	public void writeCustomNBT(NBTTagCompound nbt)
+	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		energyStorage.writeToNBT(nbt);
 		nbt.setIntArray("sockets", sockets);

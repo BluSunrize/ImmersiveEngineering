@@ -35,12 +35,14 @@ public class BlockMetalMultiblocks extends BlockIEBase
 	public static int META_fermenter=3;
 	public static int META_refinery=4;
 	public static int META_crusher=5;
+	public static int META_bucketWheel=6;
+	public static int META_excavator=7;
 	public BlockMetalMultiblocks()
 	{
 		super("metalMultiblock", Material.iron, 4, ItemBlockIEBase.class,
 				"lightningRod","dieselGenerator",
 				"industrialSqueezer","fermenter","refinery",
-				"crusher");
+				"crusher","bucketWheel","exacavtor");
 		setHardness(3.0F);
 		setResistance(15.0F);
 	}
@@ -56,7 +58,7 @@ public class BlockMetalMultiblocks extends BlockIEBase
 	public void getSubBlocks(Item item, CreativeTabs tab, List list)
 	{
 		for(int i=0; i<subNames.length; i++)
-			if(i!=META_dieselGenerator && i!=META_refinery && i!=META_crusher)
+			if(i!=META_dieselGenerator && i!=META_refinery && i!=META_crusher && i!=META_bucketWheel && i!=META_excavator)
 				list.add(new ItemStack(item, 1, i));
 	}
 
@@ -186,6 +188,10 @@ public class BlockMetalMultiblocks extends BlockIEBase
 		{
 			TileEntityDieselGenerator tile = (TileEntityDieselGenerator)world.getTileEntity(x, y, z);
 			if(tile.pos==39||tile.pos==40||tile.pos==41)
+				return side == ForgeDirection.UP;
+			else if(tile.pos==36||tile.pos==38)
+				return true;
+			else if(tile.pos==21)
 				return true;
 		}
 		if(world.getTileEntity(x, y, z) instanceof TileEntityRefinery)
@@ -212,14 +218,38 @@ public class BlockMetalMultiblocks extends BlockIEBase
 			int pos = tile.pos;
 			if(pos>=3 && pos<36)
 			{
-				float height = pos%9>=6&&pos>9?.53f:1;
-				if(pos%9==0||pos%9==3||pos%9==6)
-					this.setBlockBounds((tile.facing==2?.25f:0),0,(tile.facing==5?.25f:0),  (tile.facing==3?.75f:1),height,(tile.facing==4?.75f:1));
+				float height = pos==24||pos==26?1: pos%9>=6&&pos>9?.375f: 1;
+				if(pos==9||pos==11||pos==27||pos==29)
+					this.setBlockBounds(0,0,0,1,1,1);
+				else if(pos==34)
+					this.setBlockBounds((tile.facing==4?.375f:0),0,(tile.facing==2?.375f:0),  (tile.facing==5?.625f:1),height,(tile.facing==3?.625f:1));
+				else if(pos%9==0||pos%9==3||pos%9==6)
+				{
+					if(pos==33)
+						this.setBlockBounds((tile.facing==2?.5f:tile.facing==4?.375f:0),0,(tile.facing==5?.5f:tile.facing==2?.375f:0),  (tile.facing==3?.5f:tile.facing==5?.625f:1),height,(tile.facing==4?.5f:tile.facing==3?.625f:1));
+					else if(pos==18)
+						this.setBlockBounds((tile.facing==2?.4375f:0),0,(tile.facing==5?.4375f:0),  (tile.facing==3?.5625f:1),height,(tile.facing==4?.5625f:1));
+					else if(pos==21)
+						this.setBlockBounds(0,0,0, 1,1,1);
+					else
+						this.setBlockBounds((tile.facing==2?.5f:0),0,(tile.facing==5?.5f:0),  (tile.facing==3?.5f:1),height,(tile.facing==4?.5f:1));
+				}
 				else if(pos%9==2||pos%9==5||pos%9==8)
-					this.setBlockBounds((tile.facing==3?.25f:0),0,(tile.facing==4?.25f:0),  (tile.facing==2?.75f:1),height,(tile.facing==5?.75f:1));
+				{
+					if(pos==35)
+						this.setBlockBounds((tile.facing==3?.5f:tile.facing==4?.375f:0),0,(tile.facing==4?.5f:tile.facing==2?.375f:0),  (tile.facing==2?.5f:tile.facing==5?.625f:1),height,(tile.facing==5?.5f:tile.facing==3?.625f:1));
+					else if(pos==20)
+						this.setBlockBounds((tile.facing==3?.4375f:0),0,(tile.facing==4?.4375f:0),  (tile.facing==2?.5625f:1),height,(tile.facing==5?.5625f:1));
+					else
+						this.setBlockBounds((tile.facing==3?.5f:0),0,(tile.facing==4?.5f:0),  (tile.facing==2?.5f:1),height,(tile.facing==5?.5f:1));
+				}
 				else
 					this.setBlockBounds(0,0,0,  1,height,1);
 			}
+			else if(pos==36 || pos==38)
+				this.setBlockBounds((tile.facing==(pos==36?3:2)?.5f:0),0,(tile.facing==(pos==36?4:5)?.5f:0),  (tile.facing==(pos==36?2:3)?.5f:1),1,(tile.facing==(pos==36?5:4)?.5f:1));
+			else if(pos==37)
+				this.setBlockBounds(0,.5f,0, 1,1,1);
 			else
 				this.setBlockBounds(0,0,0,1,1,1);
 		}
@@ -484,6 +514,10 @@ public class BlockMetalMultiblocks extends BlockIEBase
 			return new TileEntityRefinery();
 		case 5://5 crusher
 			return new TileEntityCrusher();
+		case 6://6 bucketWheel
+			return new TileEntityBucketWheel();
+		case 7://7 excavator
+			return new TileEntityExcavator();
 		}
 		return null;
 	}
