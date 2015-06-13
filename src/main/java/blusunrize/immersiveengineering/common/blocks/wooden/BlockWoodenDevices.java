@@ -144,9 +144,12 @@ public class BlockWoodenDevices extends BlockIEBase
 				player.getCurrentEquippedItem().stackSize--;
 			return true;
 		}
-		if(!player.isSneaking() && !world.isRemote && world.getTileEntity(x, y, z) instanceof TileEntityWoodenCrate )
+		if(!player.isSneaking() && world.getTileEntity(x, y, z) instanceof TileEntityWoodenCrate )
 		{
-			player.openGui(ImmersiveEngineering.instance, Lib.GUIID_WoodenCrate, world, x,y,z);
+			if(!world.isRemote)
+			{
+				player.openGui(ImmersiveEngineering.instance, Lib.GUIID_WoodenCrate, world, x,y,z);
+			}
 			return true;
 		}
 		return false;
