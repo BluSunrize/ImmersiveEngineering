@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Set;
 
 import net.minecraft.block.Block;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.StatCollector;
@@ -48,16 +48,10 @@ public class ItemIETool extends ItemIEBase
 	}
 
 	@Override
-	public boolean hasContainerItem(ItemStack stack)
+	public void onUpdate(ItemStack stack, World world, Entity ent, int slot, boolean inHand)
 	{
-		return false;
 	}
-	@Override
-	public ItemStack getContainerItem(ItemStack itemStack)
-	{
-		return itemStack.getItemDamage()%2==0?new ItemStack(Items.glass_bottle): new ItemStack(Items.bucket);
-	}
-
+	
 	@Override
 	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
 	{

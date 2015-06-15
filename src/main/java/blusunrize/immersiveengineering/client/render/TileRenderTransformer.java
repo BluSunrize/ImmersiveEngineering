@@ -7,7 +7,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import blusunrize.immersiveengineering.api.WireType;
 import blusunrize.immersiveengineering.client.models.ModelIEObj;
-import blusunrize.immersiveengineering.client.models.ModelPostTransformer;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDevices;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTransformer;
@@ -18,7 +17,6 @@ public class TileRenderTransformer extends TileRenderIE
 {
 	//	static ModelTransformer model = new ModelTransformer();
 	//	static ModelTransformerHV modelHV = new ModelTransformerHV();
-	static ModelPostTransformer modelTransformer = new ModelPostTransformer();
 	static ModelIEObj model = new ModelIEObj("immersiveengineering:models/transformerHV.obj")
 	{
 		@Override

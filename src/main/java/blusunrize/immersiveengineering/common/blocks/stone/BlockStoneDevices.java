@@ -48,17 +48,17 @@ public class BlockStoneDevices extends BlockIEBase
 		return false;
 	}
 	@Override
-    public int getRenderBlockPass()
-    {
-        return 1;
-    }
+	public int getRenderBlockPass()
+	{
+		return 1;
+	}
 
 	@Override
 	public boolean isSideSolid(IBlockAccess world, int x, int y, int z, ForgeDirection side)
 	{
 		return true;
 	}
-	
+
 	@Override
 	public void registerBlockIcons(IIconRegister iconRegister)
 	{
@@ -88,6 +88,11 @@ public class BlockStoneDevices extends BlockIEBase
 			int j = teco.active?1:0;
 			if(off[0]==0&&off[2]==0)
 				return iconsCokeOven[j];
+			if(teco.facing<4 && off[0]==0 && Math.abs(off[2])==1)
+				return iconsCokeOven[j];
+			else if(teco.facing>3 && off[2]==0&&Math.abs(off[0])==1)
+				return iconsCokeOven[j];
+			
 			switch(teco.facing)
 			{
 			case 2:
@@ -127,6 +132,7 @@ public class BlockStoneDevices extends BlockIEBase
 			int j = tebf.active?1:0;
 			if(off[0]==0&&off[2]==0)
 				return iconsBlastFurnace[j];
+
 			switch(((TileEntityBlastFurnace)world.getTileEntity(x, y, z)).facing)
 			{
 			case 2:
@@ -161,6 +167,29 @@ public class BlockStoneDevices extends BlockIEBase
 		//		if(meta<icons.length)
 		//			return icons[meta][getSideForTexture(side)];
 		//		return null;
+	}
+
+	@Override
+	public boolean shouldSideBeRendered(IBlockAccess world, int x, int y ,int z, int side)
+	{
+		int xx = x+(side==4?1:side==5?-1:0);
+		int yy = y+(side==0?1:side==1?-1:0);
+		int zz = z+(side==2?1:side==3?-1:0);
+		if(world.getTileEntity(xx, yy, zz) instanceof TileEntityCokeOven && ((TileEntityCokeOven)world.getTileEntity(xx, yy, zz)).formed)
+		{
+			int[] off = ((TileEntityCokeOven)world.getTileEntity(xx, yy, zz)).offset;
+			int f = ((TileEntityCokeOven)world.getTileEntity(xx, yy, zz)).facing;
+			if(off[1]!=0)
+				return side==0||side==1;
+
+			if(f<4 && off[0]==0 && Math.abs(off[2])==1)
+				return side!=0&&side!=1;
+			else if(f>3 && off[2]==0&&Math.abs(off[0])==1)
+				return side!=0&&side!=1;
+			else
+				return false;
+		}
+		return super.shouldSideBeRendered(world, x, y, z, side);
 	}
 
 	@Override

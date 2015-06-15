@@ -29,5 +29,10 @@ public abstract class TileEntityMultiblockPart extends TileEntityIEBase
 		nbt.setBoolean("mirrored", mirrored);
 	}
 
+	public static boolean _Immovable()
+	{
+		return true;
+	}
+	
 	public abstract ItemStack getOriginalBlock();
 }

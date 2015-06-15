@@ -3,6 +3,8 @@ package blusunrize.immersiveengineering.common.util;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
 
 public class ItemNBTHelper
 {
@@ -81,6 +83,24 @@ public class ItemNBTHelper
 		return hasTag(stack) ? getTag(stack).getFloat(key) : 0;
 	}
 
+	public static void setBoolean(ItemStack stack, String key, boolean val)
+	{
+		getTag(stack).setBoolean(key, val);
+	}
+	public static boolean getBoolean(ItemStack stack, String key)
+	{
+		return hasTag(stack) ? getTag(stack).getBoolean(key) : false;
+	}
+
+	public static void setTagCompound(ItemStack stack, String key, NBTTagCompound val)
+	{
+		getTag(stack).setTag(key, val);
+	}
+	public static NBTTagCompound getTagCompound(ItemStack stack, String key)
+	{
+		return hasTag(stack) ? getTag(stack).getCompoundTag(key) : new NBTTagCompound();
+	}
+
 	public static void setDelayedSoundsForStack(ItemStack stack, String nbtKey, String sound, float volume, float pitch, int amount, int baseDelay, int iDelay)
 	{
 		int[] delayedSounds = new int[amount];
@@ -122,12 +142,26 @@ public class ItemNBTHelper
 		return l;
 	}
 
-	public static void setBoolean(ItemStack stack, String key, boolean val)
+	public static void setFluidStack(ItemStack stack, String key, FluidStack val)
 	{
-		getTag(stack).setBoolean(key, val);
+		if(val!=null && val.getFluid()!=null)
+		{
+			NBTTagCompound tag = getTagCompound(stack, key);
+			tag.setString("fluid", val.getFluid().getName());
+			tag.setInteger("amount", val.amount);
+			setTagCompound(stack, key, tag);
+		}
 	}
-	public static boolean getBoolean(ItemStack stack, String key)
+	public static FluidStack getFluidStack(ItemStack stack, String key)
 	{
-		return hasTag(stack) ? getTag(stack).getBoolean(key) : false;
+		if(hasTag(stack))
+		{
+			NBTTagCompound tag = getTagCompound(stack, key);
+			String name = tag.getString("fluid");
+			int amount = tag.getInteger("amount");
+			if(FluidRegistry.getFluid(name)!=null)
+				return new FluidStack(FluidRegistry.getFluid(name), amount);
+		}
+		return null;
 	}
 }

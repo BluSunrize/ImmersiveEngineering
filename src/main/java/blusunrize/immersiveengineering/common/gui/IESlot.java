@@ -1,18 +1,26 @@
 package blusunrize.immersiveengineering.common.gui;
 
+import java.util.List;
+
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.oredict.OreDictionary;
 import blusunrize.immersiveengineering.api.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.api.IBullet;
+import blusunrize.immersiveengineering.api.IDrillHead;
+import blusunrize.immersiveengineering.api.IUpgrade;
 
 public abstract class IESlot extends Slot
 {
-
-	public IESlot(IInventory inv, int id, int x, int y)
+	final Container container;
+	public IESlot(Container container, IInventory inv, int id, int x, int y)
 	{
 		super(inv, id, x, y);
+		this.container=container;
 	}
 
 	@Override
@@ -23,10 +31,11 @@ public abstract class IESlot extends Slot
 
 	public static class Output extends IESlot
 	{
-		public Output(IInventory inv, int id, int x, int y)
+		public Output(Container container, IInventory inv, int id, int x, int y)
 		{
-			super(inv, id, x, y);
+			super(container, inv, id, x, y);
 		}
+		@Override
 		public boolean isItemValid(ItemStack itemStack)
 		{
 			return false;
@@ -35,11 +44,12 @@ public abstract class IESlot extends Slot
 	public static class FluidContainer extends IESlot
 	{
 		boolean empty;
-		public FluidContainer(IInventory inv, int id, int x, int y, boolean empty)
+		public FluidContainer(Container container, IInventory inv, int id, int x, int y, boolean empty)
 		{
-			super(inv, id, x, y);
+			super(container, inv, id, x, y);
 			this.empty=empty;
 		}
+		@Override
 		public boolean isItemValid(ItemStack itemStack)
 		{
 			if(empty)
@@ -50,10 +60,11 @@ public abstract class IESlot extends Slot
 	}
 	public static class BlastFuel extends IESlot
 	{
-		public BlastFuel(IInventory inv, int id, int x, int y)
+		public BlastFuel(Container container, IInventory inv, int id, int x, int y)
 		{
-			super(inv, id, x, y);
+			super(container, inv, id, x, y);
 		}
+		@Override
 		public boolean isItemValid(ItemStack itemStack)
 		{
 			return BlastFurnaceRecipe.isValidBlastFuel(itemStack);
@@ -62,20 +73,87 @@ public abstract class IESlot extends Slot
 	public static class Bullet extends IESlot
 	{
 		int limit;
-		public Bullet(IInventory inv, int id, int x, int y, int limit)
+		public Bullet(Container container, IInventory inv, int id, int x, int y, int limit)
 		{
-			super(inv, id, x, y);
+			super(container, inv, id, x, y);
 			this.limit=limit;
 		}
+		@Override
 		public boolean isItemValid(ItemStack itemStack)
 		{
-//			return true;
+			//			return true;
 			return itemStack!=null && itemStack.getItem() instanceof IBullet;
 			//itemStack!=null && itemStack.getItem().equals(IEContent.itemBullet);
 		}
-	    public int getSlotStackLimit()
-	    {
-	    	return limit;
-	    }
+		@Override
+		public int getSlotStackLimit()
+		{
+			return limit;
+		}
+	}
+	public static class DrillHead extends IESlot
+	{
+		public DrillHead(Container container, IInventory inv, int id, int x, int y)
+		{
+			super(container, inv, id, x, y);
+		}
+		@Override
+		public boolean isItemValid(ItemStack itemStack)
+		{
+			return itemStack!=null && itemStack.getItem() instanceof IDrillHead;
+		}
+		@Override
+		public int getSlotStackLimit()
+		{
+			return 1;
+		}
+	}
+	public static class Upgrades extends IESlot
+	{
+		IUpgrade.UpgradeType type;
+		boolean preventDoubles;
+		public Upgrades(Container container, IInventory inv, int id, int x, int y, IUpgrade.UpgradeType type, boolean preventDoubles)
+		{
+			super(container, inv, id, x, y);
+			this.type = type;
+			this.preventDoubles = preventDoubles;
+		}
+		@Override
+		public boolean isItemValid(ItemStack itemStack)
+		{
+			if(preventDoubles)
+				for(Slot slot : (List<Slot>)container.inventorySlots)
+					if(slot instanceof IESlot.Upgrades && ((IESlot.Upgrades)slot).preventDoubles && OreDictionary.itemMatches(slot.getStack(), itemStack, true))
+						return false;
+			return itemStack!=null && itemStack.getItem() instanceof IUpgrade && ((IUpgrade)itemStack.getItem()).getUpgradeTypes(itemStack).contains(type);
+		}
+		@Override
+		public int getSlotStackLimit()
+		{
+			return 64;
+		}
+	}
+	public static class Ghost extends IESlot
+	{
+		public Ghost(Container container, IInventory inv, int id, int x, int y)
+		{
+			super(container, inv, id, x, y);
+		}
+
+		@Override
+		public void putStack(ItemStack itemStack)
+		{
+			super.putStack(itemStack);
+		}
+		@Override
+		public boolean canTakeStack(EntityPlayer player)
+		{
+			return false;
+		}
+		@Override
+		public int getSlotStackLimit()
+		{
+			return 1;
+		}
 	}
 }

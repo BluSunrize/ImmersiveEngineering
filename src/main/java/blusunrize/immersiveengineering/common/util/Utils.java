@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.common.util;
 
+import java.lang.reflect.Method;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -18,14 +19,18 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.StatCollector;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.BlockFluidBase;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.oredict.OreDictionary;
 import blusunrize.immersiveengineering.api.IImmersiveConnectable;
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.registry.GameData;
 
 public class Utils
@@ -91,6 +96,24 @@ public class Utils
 	public static String toCamelCase(String s)
 	{
 		return s.substring(0,1).toUpperCase() + s.substring(1).toLowerCase();
+	}
+	static Method m_getHarvestLevel = null;
+	public static String getHarvestLevelName(int lvl)
+	{
+		if(Loader.isModLoaded("TConstruct"))
+		{
+			try{
+				if(m_getHarvestLevel==null)
+				{
+					Class clazz = Class.forName("tconstruct.library.util");
+					if(clazz!=null)
+						m_getHarvestLevel = clazz.getDeclaredMethod("getHarvestLevelName", int.class);
+				}
+				if(m_getHarvestLevel!=null)
+					return (String)m_getHarvestLevel.invoke(null, lvl);
+			}catch(Exception e){}
+		}
+		return StatCollector.translateToLocal(Lib.DESC_INFO+"mininglvl."+Math.max(-1, Math.min(lvl, 6)));
 	}
 
 	public static boolean tilePositionMatch(TileEntity tile0, TileEntity tile1)
@@ -306,5 +329,110 @@ public class Utils
 		existingStack.stackSize += Math.min(stack.stackSize, stackLimit);
 		inventory.setInventorySlotContents(slot, existingStack);
 		return stackLimit >= stack.stackSize ? null : stack.splitStack(stack.stackSize - stackLimit);
+	}
+	
+
+	public static boolean canInsertStackIntoInventory(IInventory inventory, ItemStack stack, int side)
+	{
+		if (stack == null || inventory == null)
+			return false;
+		if (inventory instanceof ISidedInventory)
+		{
+			ISidedInventory sidedInv = (ISidedInventory) inventory;
+			int slots[] = sidedInv.getAccessibleSlotsFromSide(side);
+			if (slots == null)
+				return false;
+			for (int i=0; i<slots.length && stack!=null; i++)
+			{
+				if (sidedInv.canInsertItem(slots[i], stack, side))
+				{
+					ItemStack existingStack = inventory.getStackInSlot(slots[i]);
+					if(OreDictionary.itemMatches(existingStack, stack, true)&&ItemStack.areItemStackTagsEqual(stack, existingStack))
+						if(existingStack.stackSize+stack.stackSize<inventory.getInventoryStackLimit())
+							return true;
+				}
+			}
+			for (int i=0; i<slots.length && stack!=null; i++)
+				if (inventory.getStackInSlot(slots[i]) == null && sidedInv.canInsertItem(slots[i], stack, side))
+					return true;
+		}
+		else
+		{
+			int invSize = inventory.getSizeInventory();
+			for (int i=0; i<invSize && stack!=null; i++)
+			{
+				ItemStack existingStack = inventory.getStackInSlot(i);
+				if (OreDictionary.itemMatches(existingStack, stack, true)&&ItemStack.areItemStackTagsEqual(stack, existingStack))
+					if(existingStack.stackSize+stack.stackSize<inventory.getInventoryStackLimit())
+						return true;
+			}
+			for (int i=0; i<invSize && stack!=null; i++)
+				if (inventory.getStackInSlot(i) == null)
+					return true;
+		}
+		return false;
+	}
+
+	public static ItemStack fillFluidContainer(FluidTank tank, ItemStack containerIn, ItemStack containerOut)
+	{
+		if(tank.getFluidAmount()>0 && containerIn!=null)
+		{
+			if(FluidContainerRegistry.isEmptyContainer(containerIn))
+			{
+				ItemStack filledContainer = FluidContainerRegistry.fillFluidContainer(tank.getFluid(), containerIn);
+				if(filledContainer!=null)
+				{
+					FluidStack fs = FluidContainerRegistry.getFluidForFilledItem(filledContainer);
+					if(fs.amount<=tank.getFluidAmount() && (containerOut==null || OreDictionary.itemMatches(containerOut, filledContainer, true)))
+					{
+						tank.drain(fs.amount, true);
+						//						if(containerOut!=null && OreDictionary.itemMatches(containerOut, filledContainer, true))
+						//							containerOut.stackSize+=filledContainer.stackSize;
+						//						else if(containerOut==null)
+						//							containerOut = filledContainer.copy();
+						//						this.decrStackSize(9, filledContainer.stackSize);
+						//						update = true;
+						return filledContainer;
+					}
+				}
+			}
+			else if(containerIn.getItem() instanceof IFluidContainerItem)
+			{
+				IFluidContainerItem iContainer = (IFluidContainerItem)containerIn.getItem();
+				int available = tank.getFluidAmount();
+				int space = iContainer.getCapacity(containerIn)-(iContainer.getFluid(containerIn)==null?0:iContainer.getFluid(containerIn).amount);
+				if(available>=space && iContainer.fill(containerIn, tank.getFluid(), false)==space)//Fill in one go
+				{
+					ItemStack filledContainer = copyStackWithAmount(containerIn,1);
+					int filled = iContainer.fill(filledContainer, tank.getFluid(), true);
+					if(containerOut==null || (OreDictionary.itemMatches(containerOut, filledContainer, true) && ItemStack.areItemStackTagsEqual(filledContainer, containerOut) ))
+					{
+						tank.drain(filled, true);
+						return filledContainer;
+					}
+				}
+				else
+				{
+					int filled = iContainer.fill(containerIn, tank.getFluid(), true);
+					tank.drain(filled, true);
+				}
+			}
+		}
+		return null;
+	}
+	public static ItemStack drainFluidContainer(FluidTank tank, ItemStack containerIn, ItemStack containerOut)
+	{
+		if(containerIn!=null)
+			if(FluidContainerRegistry.isFilledContainer(containerIn))
+			{
+				FluidStack fs = FluidContainerRegistry.getFluidForFilledItem(containerIn);
+				if(fs!=null && tank.getFluidAmount()+fs.amount <= tank.getCapacity())
+				{
+					ItemStack emptyContainer = FluidContainerRegistry.drainFluidContainer(containerIn);
+					if(emptyContainer!=null && tank.fill(fs, true)==fs.amount)
+						return emptyContainer;
+				}
+			}
+		return null;
 	}
 }

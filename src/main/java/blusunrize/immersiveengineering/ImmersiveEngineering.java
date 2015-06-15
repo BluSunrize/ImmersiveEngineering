@@ -6,6 +6,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
+import blusunrize.immersiveengineering.api.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.WireType;
 import blusunrize.immersiveengineering.common.CommonProxy;
@@ -16,9 +17,7 @@ import blusunrize.immersiveengineering.common.IESaveData;
 import blusunrize.immersiveengineering.common.IEWorldGen;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.Lib;
-import blusunrize.immersiveengineering.common.util.compat.EE3Helper;
-import blusunrize.immersiveengineering.common.util.compat.mfr.MFRHelper;
-import blusunrize.immersiveengineering.common.util.compat.minetweaker.MTHelper;
+import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
@@ -69,16 +68,17 @@ public class ImmersiveEngineering
 
 		Lib.IC2 = Loader.isModLoaded("IC2") && Config.getBoolean("ic2compat");
 		Lib.GREG = Loader.isModLoaded("gregtech") && Config.getBoolean("gregtechcompat");
-		if(Loader.isModLoaded("MineFactoryReloaded"))
-			MFRHelper.init();
+		for(IECompatModule compat : IECompatModule.modules)
+			if(Loader.isModLoaded(compat.modId))
+				compat.init();
 	}
 	@Mod.EventHandler
 	public void postInit(FMLPostInitializationEvent event)
 	{
-		if(Loader.isModLoaded("MineTweaker3"))
-			MTHelper.init();
-		if(Loader.isModLoaded("EE3"))
-			EE3Helper.init();
+		for(IECompatModule compat : IECompatModule.modules)
+			if(Loader.isModLoaded(compat.modId))
+				compat.postInit();
+		ExcavatorHandler.recalculateChances();
 	}
 	@Mod.EventHandler
 	public void loadComplete(FMLLoadCompleteEvent event)

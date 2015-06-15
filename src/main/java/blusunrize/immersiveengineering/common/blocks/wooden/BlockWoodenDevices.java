@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.common.blocks.wooden;
 import java.util.ArrayList;
 import java.util.List;
 
+import cpw.mods.fml.common.Optional;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -23,7 +24,8 @@ import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
 import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.Utils;
 
-public class BlockWoodenDevices extends BlockIEBase
+@Optional.Interface(iface = "blusunrize.aquatweaks.api.IAquaConnectable", modid = "AquaTweaks")
+public class BlockWoodenDevices extends BlockIEBase implements blusunrize.aquatweaks.api.IAquaConnectable
 {
 	public BlockWoodenDevices()
 	{
@@ -144,9 +146,10 @@ public class BlockWoodenDevices extends BlockIEBase
 				player.getCurrentEquippedItem().stackSize--;
 			return true;
 		}
-		if(!player.isSneaking() && !world.isRemote && world.getTileEntity(x, y, z) instanceof TileEntityWoodenCrate )
+		if(!player.isSneaking() && world.getTileEntity(x, y, z) instanceof TileEntityWoodenCrate )
 		{
-			player.openGui(ImmersiveEngineering.instance, Lib.GUIID_WoodenCrate, world, x,y,z);
+			if(!world.isRemote)
+				player.openGui(ImmersiveEngineering.instance, Lib.GUIID_WoodenCrate, world, x,y,z);
 			return true;
 		}
 		return false;
@@ -176,8 +179,9 @@ public class BlockWoodenDevices extends BlockIEBase
 		{
 			ItemStack stack = new ItemStack(this,1,meta);
 			NBTTagCompound tag = new NBTTagCompound();
-			((TileEntityWoodenCrate)world.getTileEntity(x, y, z)).writeInv(tag);
-			stack.setTagCompound(tag);
+			((TileEntityWoodenCrate)world.getTileEntity(x, y, z)).writeInv(tag, true);
+			if(!tag.hasNoTags())
+				stack.setTagCompound(tag);
 			world.spawnEntityInWorld(new EntityItem(world,x+.5,y+.5,z+.5,stack));
 		}
 	}
@@ -270,5 +274,18 @@ public class BlockWoodenDevices extends BlockIEBase
 			return new TileEntityWoodenCrate();
 		}
 		return null;
+	}
+	
+	@Optional.Method(modid = "AquaTweaks")
+	public boolean shouldRenderFluid(IBlockAccess world, int x, int y, int z)
+	{
+		int meta = world.getBlockMetadata(x, y, z);
+		return meta==0;
+	}
+	@Optional.Method(modid = "AquaTweaks")
+	public boolean canConnectTo(IBlockAccess world, int x, int y, int z, int side)
+	{
+		int meta = world.getBlockMetadata(x, y, z);
+		return meta==0;
 	}
 }

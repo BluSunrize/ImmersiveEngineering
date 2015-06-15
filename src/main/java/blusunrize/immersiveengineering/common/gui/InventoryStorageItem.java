@@ -4,16 +4,23 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import blusunrize.immersiveengineering.common.items.ItemInternalStorage;
 
-public class InventoryRevolver implements IInventory
+public class InventoryStorageItem implements IInventory
 {
 	private Container container;
 	public ItemStack[] stackList;
+	private String name;
 
-	public InventoryRevolver(Container par1Container)
+	public InventoryStorageItem(Container par1Container, ItemStack stack)
 	{
 		this.container = par1Container;
-		this.stackList = new ItemStack[18];
+		if(stack!=null && stack.getItem() instanceof ItemInternalStorage)
+		{
+			int slots = ((ItemInternalStorage)stack.getItem()).getInternalSlots(stack);
+			this.stackList = new ItemStack[slots];
+			this.name = stack.getDisplayName();
+		}
 	}
 
 
@@ -86,7 +93,7 @@ public class InventoryRevolver implements IInventory
 
 	@Override
 	public String getInventoryName() {
-		return "container.IERevolver";
+		return "container."+name;
 	}
 
 	@Override

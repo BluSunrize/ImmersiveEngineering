@@ -12,6 +12,7 @@ public class Lib
 	
 	public static final String DESC = "desc.ImmersiveEngineering.";
 	public static final String DESC_INFO = DESC+"info.";
+	public static final String DESC_FLAVOUR = DESC+"flavour.";
 	
 	public static final int GUIID_CokeOven = 0;
 	public static final int GUIID_BlastFurnace = 1;
@@ -21,6 +22,8 @@ public class Lib
 	public static final int GUIID_Squeezer = 5;
 	public static final int GUIID_Fermenter = 6;
 	public static final int GUIID_Sorter = 7;
+	public static final int GUIID_Refinery = 8;
+	public static final int GUIID_Drill = 9;
 	
 	public static String DMG_RevolverCasull="ieRevolver_casull";
 	public static String DMG_RevolverAP="ieRevolver_armorPiercing";

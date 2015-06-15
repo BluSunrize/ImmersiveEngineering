@@ -46,6 +46,8 @@ public abstract class ManualPages implements IManualPage
 			manual.fontRenderer.setUnicodeFlag(true);
 			this.localizedText = manual.formatText(text);
 			this.localizedText = addLinks(manual, gui, this.localizedText, x,y, 120, pageButtons);
+			if(this.localizedText==null)
+				this.localizedText="";
 			manual.fontRenderer.setUnicodeFlag(uni);
 		}
 	}
@@ -153,10 +155,13 @@ public abstract class ManualPages implements IManualPage
 		String[][] localizedTable;
 		int textHeight;
 		int[] bars;
-		public Table(ManualInstance manual, String text, String[][] table)
+		//		int[] barsH;
+		boolean horizontalBars = false; 
+		public Table(ManualInstance manual, String text, String[][] table, boolean horizontalBars)
 		{
 			super(manual,text);
 			this.table = table;
+			this.horizontalBars=horizontalBars;
 		}
 
 		@Override
@@ -164,7 +169,7 @@ public abstract class ManualPages implements IManualPage
 		{
 			super.initPage(gui, x, y, pageButtons);
 			manual.fontRenderer.setUnicodeFlag(true);
-			int l = manual.fontRenderer.listFormattedStringToWidth(localizedText, 120).size();
+			int l = localizedText!=null?manual.fontRenderer.listFormattedStringToWidth(localizedText, 120).size():0;
 			textHeight = l*manual.fontRenderer.FONT_HEIGHT+6;
 			try{
 				if(table!=null)
@@ -221,13 +226,33 @@ public abstract class ManualPages implements IManualPage
 						textOff[i] = xx;
 					}
 				}
+
+				//				gui.drawGradientRect(x,y+textHeight+yOff-2,x+120,y+textHeight+yOff-1,  manual.getTextColour()|0xff000000, manual.getTextColour()|0xff000000);
+
+				int yOff = 0;
 				for(int i=0; i<localizedTable.length; i++)
 				{
 					for(int j=0; j<localizedTable[i].length; j++)
-					{
-						int xx = textOff.length>0&&j>0?textOff[j-1]:x;
-						manual.fontRenderer.drawString(localizedTable[i][j], xx,y+textHeight+(manual.fontRenderer.FONT_HEIGHT+1)*i, manual.getTextColour());
-					}
+						if(localizedTable[i][j]!=null)
+						{
+							int xx = textOff.length>0&&j>0?textOff[j-1]:x;
+							int w = Math.max(10, 120-(j>0?textOff[j-1]-x:0));
+							manual.fontRenderer.drawSplitString(localizedTable[i][j], xx,y+textHeight+yOff, w, manual.getTextColour());
+							if(j!=0)
+							{
+								int l = manual.fontRenderer.listFormattedStringToWidth(localizedTable[i][j], w).size();
+
+								if(horizontalBars)
+								{
+									float scale = .5f;
+									GL11.glScalef(1, scale, 1);
+									gui.drawGradientRect(x,(int)((y+textHeight+yOff+l*manual.fontRenderer.FONT_HEIGHT)/scale),x+120,(int)((y+textHeight+yOff+l*manual.fontRenderer.FONT_HEIGHT)/scale+1),  manual.getTextColour()|0xff000000, manual.getTextColour()|0xff000000);
+									GL11.glScalef(1, 1/scale, 1);
+								}
+
+								yOff += l*(manual.fontRenderer.FONT_HEIGHT+1);
+							}
+						}
 				}
 			}
 		}
@@ -259,7 +284,7 @@ public abstract class ManualPages implements IManualPage
 			GL11.glScalef(scale,scale,scale);
 			RenderItem.getInstance().renderWithColor=true;
 			for(int i=0; i<stacks.length; i++)
-				RenderItem.getInstance().renderItemIntoGUI(manual.fontRenderer, ManualUtils.mc().renderEngine, stacks[i], (int)((x+w+(18+w)*i)/scale), (int)((y+4)/scale));
+				RenderItem.getInstance().renderItemAndEffectIntoGUI(manual.fontRenderer, ManualUtils.mc().renderEngine, stacks[i], (int)((x+w+(18+w)*i)/scale), (int)((y+4)/scale));
 			GL11.glScalef(1/scale,1/scale,1/scale);
 
 			RenderHelper.disableStandardItemLighting();
@@ -418,7 +443,8 @@ public abstract class ManualPages implements IManualPage
 						if(pstack!=null)
 							if(pstack.getStack()!=null)
 							{
-								RenderItem.getInstance().renderItemIntoGUI(manual.fontRenderer, ManualUtils.mc().renderEngine, pstack.getStack(), x+pstack.x, y+totalYOff+pstack.y);
+								RenderItem.getInstance().renderItemAndEffectIntoGUI(manual.fontRenderer, ManualUtils.mc().renderEngine, pstack.getStack(), x+pstack.x, y+totalYOff+pstack.y);
+								//								RenderItem.getInstance().renderItemIntoGUI(manual.fontRenderer, ManualUtils.mc().renderEngine, pstack.getStack(), x+pstack.x, y+totalYOff+pstack.y);
 								RenderItem.getInstance().renderItemOverlayIntoGUI(manual.fontRenderer, ManualUtils.mc().renderEngine, pstack.getStack(), x+pstack.x, y+totalYOff+pstack.y);
 								if(mx>=x+pstack.x&&mx<x+pstack.x+16 && my>=y+totalYOff+pstack.y&&my<y+totalYOff+pstack.y+16)
 									highlighted = pstack.getStack();
@@ -598,7 +624,7 @@ public abstract class ManualPages implements IManualPage
 					if(pstack!=null)
 						if(pstack.getStack()!=null)
 						{
-							RenderItem.getInstance().renderItemIntoGUI(manual.fontRenderer, ManualUtils.mc().renderEngine, pstack.getStack(), x+pstack.x, y+pstack.y);
+							RenderItem.getInstance().renderItemAndEffectIntoGUI(manual.fontRenderer, ManualUtils.mc().renderEngine, pstack.getStack(), x+pstack.x, y+pstack.y);
 							RenderItem.getInstance().renderItemOverlayIntoGUI(manual.fontRenderer, ManualUtils.mc().renderEngine, pstack.getStack(), x+pstack.x, y+pstack.y);
 							if(mx>=x+pstack.x&&mx<x+pstack.x+16 && my>=y+pstack.y&&my<y+pstack.y+16)
 								highlighted = pstack.getStack();

@@ -10,16 +10,17 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.oredict.OreDictionary;
 import blusunrize.immersiveengineering.api.DieselHandler;
+import blusunrize.immersiveengineering.api.DieselHandler.SqueezerRecipe;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockSqueezer;
+import blusunrize.immersiveengineering.common.util.Utils;
 import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyReceiver;
 
@@ -28,8 +29,9 @@ public class TileEntitySqueezer extends TileEntityMultiblockPart implements IFlu
 	public int facing = 2;
 	public FluidTank tank = new FluidTank(12000);
 	public EnergyStorage energyStorage = new EnergyStorage(32000,256,32000);
-	ItemStack[] inventory = new ItemStack[11];
+	ItemStack[] inventory = new ItemStack[12];
 	public int tick=0;
+	int processMaxTime = 0;
 
 
 	public TileEntitySqueezer master()
@@ -62,8 +64,10 @@ public class TileEntitySqueezer extends TileEntityMultiblockPart implements IFlu
 		if(!worldObj.isRemote)
 		{
 			boolean update = false;
-			int inputs = Math.min(9, getValidInputs());
-			if(inputs>0 && hasTankSpace())
+			int[] valid = getValidInputs();
+			int inputs = Math.min(9, valid[0]);
+			this.processMaxTime = valid[1];
+			if(inputs>0 )//&& hasTankSpace())
 			{
 				int consumed = Config.getInt("squeezer_consumption");
 				if(energyStorage.extractEnergy(consumed, true)==consumed)
@@ -71,28 +75,55 @@ public class TileEntitySqueezer extends TileEntityMultiblockPart implements IFlu
 					energyStorage.extractEnergy(consumed, false);
 					tick++;
 				}
-				if(tick>=80)
+				if(tick>=valid[1])
 				{
+					SqueezerRecipe recipe=null;
 					for(int i=0; i<9; i++)
 					{
 						ItemStack stack = this.getStackInSlot(i);
 						if(stack!=null)
 						{
-							int f = DieselHandler.getPlantoilOutput(stack);
-							if(f>0)
+							SqueezerRecipe rr = getRecipe(stack);
+							if(recipe==null || rr==recipe || (rr.fluid!=null?rr.fluid.isFluidEqual(recipe.fluid): recipe.fluid!=null?recipe.fluid.isFluidEqual(rr.fluid): false) )
+								recipe=rr;
+							else
+								continue;
+
+							if(recipe!=null)
 							{
-								int fSpace = tank.getCapacity()-tank.getFluidAmount();
-								int taken = Math.min(inputs, Math.min(stack.stackSize, fSpace/f));
+								int outLimit = recipe.output==null?9: ((64-(inventory[11]!=null?inventory[11].stackSize:0))/recipe.output.stackSize);
+								int fluidLimit = recipe.fluid==null?9: ((tank.getCapacity()-tank.getFluidAmount())/recipe.fluid.amount);
+								int taken = Math.min(Math.min(inputs,stack.stackSize), Math.min(outLimit,fluidLimit));
+								//								
 								if(taken>0)
 								{
-									tank.fill(new FluidStack(IEContent.fluidPlantoil,f*taken), true);
-									this.decrStackSize(i, taken);
-									inputs-=taken;
+									this.decrStackSize(i, taken*(recipe.input instanceof ItemStack?((ItemStack)recipe.input).stackSize:1));
+									if(recipe.output!=null)
+										if(inventory[11]!=null)
+											inventory[11].stackSize+= taken*recipe.output.copy().stackSize;
+										else if(inventory[1]==null)
+											inventory[11] = Utils.copyStackWithAmount(recipe.output, taken*recipe.output.stackSize);
+									if(recipe.fluid!=null)
+										this.tank.fill( new FluidStack(recipe.fluid, taken*recipe.fluid.amount), true);
 									update = true;
 								}
-								else
-									continue;
 							}
+
+							//							int f = DieselHandler.getPlantoilOutput(stack);
+							//							if(f>0)
+							//							{
+							//								int fSpace = tank.getCapacity()-tank.getFluidAmount();
+							//								int taken = Math.min(inputs, Math.min(stack.stackSize, fSpace/f));
+							//								if(taken>0)
+							//								{
+							//									tank.fill(new FluidStack(IEContent.fluidPlantoil,f*taken), true);
+							//									this.decrStackSize(i, taken);
+							//									inputs-=taken;
+							//									update = true;
+							//								}
+							//								else
+							//									continue;
+							//							}
 							if(inputs<=0 || tank.getFluidAmount()>=tank.getCapacity())
 								break;
 						}
@@ -104,24 +135,34 @@ public class TileEntitySqueezer extends TileEntityMultiblockPart implements IFlu
 				tick=0;
 			if(tank.getFluidAmount()>0)
 			{
-				if(FluidContainerRegistry.isEmptyContainer(inventory[9]))
+				ItemStack filledContainer = Utils.fillFluidContainer(tank, inventory[9], inventory[10]);
+				if(filledContainer!=null)
 				{
-					ItemStack filledContainer = FluidContainerRegistry.fillFluidContainer(tank.getFluid(), inventory[9]);
-					if(filledContainer!=null)
-					{
-						FluidStack fs = FluidContainerRegistry.getFluidForFilledItem(filledContainer);
-						if(fs.amount<=tank.getFluidAmount() && (inventory[3]==null || OreDictionary.itemMatches(inventory[3], filledContainer, true)))
-						{
-							this.tank.drain(fs.amount, true);
-							if(inventory[10]!=null && OreDictionary.itemMatches(inventory[10], filledContainer, true))
-								inventory[10].stackSize+=filledContainer.stackSize;
-							else if(inventory[10]==null)
-								inventory[10] = filledContainer.copy();
-							this.decrStackSize(9, filledContainer.stackSize);
-							update = true;
-						}
-					}
+					if(inventory[10]!=null && OreDictionary.itemMatches(inventory[10], filledContainer, true))
+						inventory[10].stackSize+=filledContainer.stackSize;
+					else if(inventory[10]==null)
+						inventory[10] = filledContainer.copy();
+					this.decrStackSize(9, filledContainer.stackSize);
+					update = true;
 				}
+				//				if(FluidContainerRegistry.isEmptyContainer(inventory[9]))
+				//				{
+				//					ItemStack filledContainer = FluidContainerRegistry.fillFluidContainer(tank.getFluid(), inventory[9]);
+				//					if(filledContainer!=null)
+				//					{
+				//						FluidStack fs = FluidContainerRegistry.getFluidForFilledItem(filledContainer);
+				//						if(fs.amount<=tank.getFluidAmount() && (inventory[3]==null || OreDictionary.itemMatches(inventory[3], filledContainer, true)))
+				//						{
+				//							this.tank.drain(fs.amount, true);
+				//							if(inventory[10]!=null && OreDictionary.itemMatches(inventory[10], filledContainer, true))
+				//								inventory[10].stackSize+=filledContainer.stackSize;
+				//							else if(inventory[10]==null)
+				//								inventory[10] = filledContainer.copy();
+				//							this.decrStackSize(9, filledContainer.stackSize);
+				//							update = true;
+				//						}
+				//					}
+				//				}
 
 				int connected=0;
 				for(int f=2; f<6; f++)
@@ -153,31 +194,57 @@ public class TileEntitySqueezer extends TileEntityMultiblockPart implements IFlu
 			}
 		}
 	}
-	int getValidInputs()
+
+	public SqueezerRecipe getRecipe(ItemStack input)
+	{
+		SqueezerRecipe recipe = DieselHandler.findSqueezerRecipe(input);
+		if(recipe==null)
+			return null;
+
+		if(inventory[11]==null || recipe.output==null || (OreDictionary.itemMatches(inventory[11],recipe.output,false) && inventory[11].stackSize+recipe.output.stackSize<=getInventoryStackLimit()) )
+			if(tank.getFluid()==null || recipe.fluid==null || (tank.getFluid().isFluidEqual(recipe.fluid) && tank.getFluidAmount()+recipe.fluid.amount<=tank.getCapacity()))
+				return recipe;
+		return null;
+	}
+
+	int[] getValidInputs()
 	{
 		int in=0;
+		int time = 0;
 		for(int i=0; i<9; i++)
 		{
 			ItemStack stack = this.getStackInSlot(i);
-			if(stack!=null && DieselHandler.getPlantoilOutput(stack)>0)
-				in+=stack.stackSize;
-		}
-		return in;
-	}
-	boolean hasTankSpace()
-	{
-		for(int i=0; i<9; i++)
-		{
-			ItemStack stack = this.getStackInSlot(i);
-			if(stack!=null)
+			SqueezerRecipe r = getRecipe(stack);
+			if(r!=null)
 			{
-				int f = DieselHandler.getPlantoilOutput(stack);
-				if(f>0 && tank.getFluidAmount()+f<tank.getCapacity())
-					return true;
+				in+=stack.stackSize;
+				if(r.time>time)
+					time = r.time;
 			}
 		}
-		return false;
+		return new int[]{in,time};
 	}
+	public int getScaledProgress(int scale)
+	{
+		if(processMaxTime<=0)
+			return 0;
+		return (int) (scale*(tick/(float)processMaxTime));
+	}
+
+	//	boolean hasTankSpace()
+	//	{
+	//		for(int i=0; i<9; i++)
+	//		{
+	//			ItemStack stack = this.getStackInSlot(i);
+	//			if(stack!=null)
+	//			{
+	//				int f = DieselHandler.getPlantoilOutput(stack);
+	//				if(f>0 && tank.getFluidAmount()+f<tank.getCapacity())
+	//					return true;
+	//			}
+	//		}
+	//		return false;
+	//	}
 
 
 	@Override
@@ -188,6 +255,7 @@ public class TileEntitySqueezer extends TileEntityMultiblockPart implements IFlu
 		tank.readFromNBT(nbt.getCompoundTag("tank"));
 		energyStorage.readFromNBT(nbt);
 		tick = nbt.getInteger("tick");
+		processMaxTime = nbt.getInteger("processMaxTime");
 		if(!descPacket)
 		{
 			NBTTagList invList = nbt.getTagList("inventory", 10);
@@ -209,6 +277,7 @@ public class TileEntitySqueezer extends TileEntityMultiblockPart implements IFlu
 		nbt.setTag("tank", tankTag);
 		energyStorage.writeToNBT(nbt);
 		nbt.setInteger("tick", tick);
+		nbt.setInteger("processMaxTime", processMaxTime);
 		if(!descPacket)
 		{
 			NBTTagList invList = new NBTTagList();
@@ -257,7 +326,12 @@ public class TileEntitySqueezer extends TileEntityMultiblockPart implements IFlu
 			return master().drain(from,maxDrain,doDrain);
 		}
 		else
-			return tank.drain(maxDrain, doDrain);
+		{
+			FluidStack fs = tank.drain(maxDrain, doDrain);
+			markDirty();
+			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+			return fs;
+		}
 	}
 	@Override
 	public boolean canFill(ForgeDirection from, Fluid fluid)
@@ -424,7 +498,9 @@ public class TileEntitySqueezer extends TileEntityMultiblockPart implements IFlu
 			return false;
 		if(master()!=null)
 			return master().isItemValidForSlot(slot,stack);
-		return DieselHandler.getPlantoilOutput(stack)>0;
+		return true;
+		//		return slot<9?DieselHandler.getPlantoilOutput(stack)>0:
+		//			(slot==9 && FluidContainerRegistry.fillFluidContainer(new FluidStack(IEContent.fluidPlantoil,1000),stack)!=null);
 	}
 	@Override
 	public int[] getAccessibleSlotsFromSide(int side)
@@ -433,7 +509,7 @@ public class TileEntitySqueezer extends TileEntityMultiblockPart implements IFlu
 			return new int[0];
 		if(master()!=null)
 			return master().getAccessibleSlotsFromSide(side);
-		return new int[]{0,1,2,3,4,5,6,7,8};
+		return new int[]{0,1,2,3,4,5,6,7,8,9,10};
 	}
 	@Override
 	public boolean canInsertItem(int slot, ItemStack stack, int side)
@@ -451,7 +527,7 @@ public class TileEntitySqueezer extends TileEntityMultiblockPart implements IFlu
 			return false;
 		if(master()!=null)
 			return master().canExtractItem(slot,stack,side);
-		return true;
+		return slot!=9;
 	}
 
 	@Override

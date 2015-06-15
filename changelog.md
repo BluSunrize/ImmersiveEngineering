@@ -1,4 +1,32 @@
-#####Version 0.1.14
+#####Version 0.2.0
+- fixed CokeOven texture
+- added NEI Handler for the crusher
+- fixed RedstoneOre giving Platinum dust
+- Excavator and Bucket Wheel have been implemented
+- Refinery has a recipe system and a prettier GUI
+- Fermenter and Squeezer have recipes and an extra output slot
+- Item Router should no longer delete items. Hopefully this fix didn't increase the lag
+- Drills should no longer work well without fuel
+- Mineral Deposits should deplete over time
+- Added Core Sample Drill to determine minerals in chunks
+- Added some OreDictioanry support to structures, because compat
+- Changed Wire behaviour to be parallel rather than consecutive
+- Added AquaTweaks compat
+
+#####Version 0.1.16 - BUILT
+- fixed cyclic exception in NBT read/write on wooden crates
+- drills. 'nuff said.
+- buffed the hempcrete recipe, only requires clay, not full blocks now
+- wooden crates don't write unnecessary NBT on breaking, so empty crates can stack again
+- Coke Oven has a new texture
+
+#####Version 0.1.15 - BUILT
+- fixed dependency on CCLib
+- Refinery has a temporary gui
+- connections no longer glow in the dark but have some other weird lighting issues
+- dieselgen model doesn't reload when holding shift
+
+#####Version 0.1.14 - BUILT
 - crusher multiblock can be mirrored now. Also structure can be initiated from the opposing side
 - changed rendering of wires, moved from TESR to RenderWorldLastEvent
 - fixed a possible NPE on power transfer
@@ -9,7 +37,6 @@
 - added the sorter
 - Diesel Generator has a new model
 - Refinery will no longer run off of water (whoops >_>)
-
 
 #####Version 0.1.13 - BUILT
 - revolvers now expel the right casings

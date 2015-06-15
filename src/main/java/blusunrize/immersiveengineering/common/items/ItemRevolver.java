@@ -15,12 +15,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IBullet;
+import blusunrize.immersiveengineering.api.IUpgrade;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Lib;
 
@@ -29,11 +28,11 @@ import com.google.common.collect.Multimap;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class ItemRevolver extends ItemIEBase
+public class ItemRevolver extends ItemUpgradeableTool
 {
 	public ItemRevolver()
 	{
-		super("revolver", 1, "normal","elite","speedloader","speed","nerf");
+		super("revolver", 1, IUpgrade.UpgradeType.REVOLVER, "normal","elite","speedloader","speed","nerf");
 	}
 
 	@Override
@@ -41,7 +40,6 @@ public class ItemRevolver extends ItemIEBase
 	{
 		this.icons[2] = ir.registerIcon("immersiveengineering:"+itemName+"_"+"speedloader");
 	}
-
 
 	@Override
 	@SideOnly(Side.CLIENT)
@@ -66,14 +64,14 @@ public class ItemRevolver extends ItemIEBase
 		if(ItemNBTHelper.hasKey(stack, "elite") || ItemNBTHelper.hasKey(stack, "flavour"))
 		{
 			if(ItemNBTHelper.hasKey(stack, "elite"))
-				list.add(StatCollector.translateToLocal(Lib.DESC+"flavour.revolver."+ItemNBTHelper.getString(stack, "elite")));
+				list.add(StatCollector.translateToLocal(Lib.DESC_FLAVOUR+"revolver."+ItemNBTHelper.getString(stack, "elite")));
 			if(ItemNBTHelper.hasKey(stack, "flavour"))
-				list.add(StatCollector.translateToLocal(Lib.DESC+"flavour.revolver."+ItemNBTHelper.getString(stack, "flavour")));
+				list.add(StatCollector.translateToLocal(Lib.DESC_FLAVOUR+"revolver."+ItemNBTHelper.getString(stack, "flavour")));
 		}
 		else if(stack.getItemDamage()==1)
-			list.add(StatCollector.translateToLocal(Lib.DESC+"flavour.revolver.elite"));
+			list.add(StatCollector.translateToLocal(Lib.DESC_FLAVOUR+"revolver.elite"));
 		else
-			list.add(StatCollector.translateToLocal(Lib.DESC+"flavour.revolver"));
+			list.add(StatCollector.translateToLocal(Lib.DESC_FLAVOUR+"revolver"));
 	}
 	@Override
 	public String getUnlocalizedName(ItemStack stack)
@@ -197,38 +195,51 @@ public class ItemRevolver extends ItemIEBase
 	}
 	public ItemStack[] getBullets(ItemStack revolver)
 	{
-		ItemStack[] stackList = new ItemStack[getBulletSlotAmount(revolver)];
-		if(revolver.hasTagCompound())
-		{
-			NBTTagList inv = revolver.getTagCompound().getTagList("Bullets",10);
-			for (int i=0; i<inv.tagCount(); i++)
-			{
-				NBTTagCompound tag = inv.getCompoundTagAt(i);
-				int slot = tag.getByte("Slot") & 0xFF;
-				if ((slot >= 0) && (slot < stackList.length))
-					stackList[slot] = ItemStack.loadItemStackFromNBT(tag);
-			}
-		}
-		return stackList;
+		ItemStack[] stackList = this.getContainedItems(revolver);
+		ItemStack[] bullets = new ItemStack[getBulletSlotAmount(revolver)];
+		System.arraycopy(stackList,0, bullets,0, bullets.length);
+//		if(revolver.hasTagCompound())
+//		{
+//			NBTTagList inv = revolver.getTagCompound().getTagList("Bullets",10);
+//			for (int i=0; i<inv.tagCount(); i++)
+//			{
+//				NBTTagCompound tag = inv.getCompoundTagAt(i);
+//				int slot = tag.getByte("Slot") & 0xFF;
+//				if ((slot >= 0) && (slot < stackList.length))
+//					stackList[slot] = ItemStack.loadItemStackFromNBT(tag);
+//			}
+//		}
+//		return stackList;
+				return bullets;
 	}
-	public void setBullets(ItemStack revolver, ItemStack[] stackList)
+	public void setBullets(ItemStack revolver, ItemStack[] bullets)
 	{
-		NBTTagList inv = new NBTTagList();
-		for (int i = 0; i < stackList.length; i++)
-			if (stackList[i] != null)
-			{
-				NBTTagCompound tag = new NBTTagCompound();
-				tag.setByte("Slot", (byte)i);
-				stackList[i].writeToNBT(tag);
-				inv.appendTag(tag);
-			}
-		if(!revolver.hasTagCompound())
-			revolver.setTagCompound(new NBTTagCompound());
-		revolver.getTagCompound().setTag("Bullets",inv);
+		ItemStack[] stackList = this.getContainedItems(revolver);
+		for(int i=0; i<bullets.length; i++)
+			stackList[i] = bullets[i];
+		this.setContainedItems(revolver, stackList);
+		
+//		NBTTagList inv = new NBTTagList();
+//		for (int i = 0; i < stackList.length; i++)
+//			if (stackList[i] != null)
+//			{
+//				NBTTagCompound tag = new NBTTagCompound();
+//				tag.setByte("Slot", (byte)i);
+//				stackList[i].writeToNBT(tag);
+//				inv.appendTag(tag);
+//			}
+//		if(!revolver.hasTagCompound())
+//			revolver.setTagCompound(new NBTTagCompound());
+//		revolver.getTagCompound().setTag("Bullets",inv);
 	}
 	public int getBulletSlotAmount(ItemStack revolver)
 	{
 		return (ItemNBTHelper.getInt(revolver, "upgrade")&1)==1?14:8;
+	}
+	@Override
+	public int getInternalSlots(ItemStack stack)
+	{
+		return getBulletSlotAmount(stack)+2;
 	}
 
 	public String getRevolverTexture(ItemStack revolver)

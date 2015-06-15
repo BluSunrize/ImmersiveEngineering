@@ -20,12 +20,12 @@ public class ItemIEBase extends Item
 	public ItemIEBase(String name, int stackSize, String... subNames)
 	{
 		this.setUnlocalizedName(ImmersiveEngineering.MODID+"."+name);
-		this.setHasSubtypes(subNames!=null);
+		this.setHasSubtypes(subNames!=null&&subNames.length>0);
 		this.setCreativeTab(ImmersiveEngineering.creativeTab);
 		this.setMaxStackSize(stackSize);
 		this.itemName = name;
-		this.subNames = subNames;
-		this.icons = new IIcon[subNames!=null?subNames.length:1];
+		this.subNames = subNames!=null&&subNames.length<1?null:subNames;
+		this.icons = new IIcon[this.subNames!=null?this.subNames.length:1];
 
 		GameRegistry.registerItem(this, name);
 	}

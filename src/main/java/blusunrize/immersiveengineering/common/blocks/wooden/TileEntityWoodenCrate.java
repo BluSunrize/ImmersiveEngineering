@@ -97,7 +97,6 @@ public class TileEntityWoodenCrate extends TileEntityIEBase implements IInventor
 	{
 		if(!descPacket)
 		{
-			super.readFromNBT(nbt);
 			readInv(nbt);
 		}
 	}
@@ -117,22 +116,25 @@ public class TileEntityWoodenCrate extends TileEntityIEBase implements IInventor
 	{
 		if(!descPacket)
 		{
-			super.writeToNBT(nbt);
-			writeInv(nbt);
+			writeInv(nbt, false);
 		}
 	}
-	public void writeInv(NBTTagCompound nbt)
+	public void writeInv(NBTTagCompound nbt, boolean toItem)
 	{
+		boolean write = false;
 		NBTTagList invList = new NBTTagList();
 		for(int i=0; i<this.inventory.length; i++)
 			if(this.inventory[i] != null)
 			{
+				if(toItem)
+					write = true;
 				NBTTagCompound itemTag = new NBTTagCompound();
 				itemTag.setByte("Slot", (byte)i);
 				this.inventory[i].writeToNBT(itemTag);
 				invList.appendTag(itemTag);
 			}
-		nbt.setTag("inventory", invList);
+		if(!toItem || write)
+			nbt.setTag("inventory", invList);
 	}
 
 }

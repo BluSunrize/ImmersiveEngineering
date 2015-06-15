@@ -109,7 +109,7 @@ public class BlockRenderMetalDecoration implements ISimpleBlockRenderingHandler
 				tes.addVertexWithUV(1, 0, 0, iSide.getMinU(), iSide.getMinV());
 				tes.draw();
 			}
-			else if(metadata==BlockMetalDecoration.META_connectorStrutural)
+			else if(metadata==BlockMetalDecoration.META_connectorStructural)
 			{
 				Tessellator.instance.startDrawingQuads();
 				ClientUtils.handleStaticTileRenderer(new TileEntityConnectorStructural());
@@ -435,7 +435,7 @@ public class BlockRenderMetalDecoration implements ISimpleBlockRenderingHandler
 
 			return true;
 		}
-		else if(world.getBlockMetadata(x, y, z)==BlockMetalDecoration.META_connectorStrutural)
+		else if(world.getBlockMetadata(x, y, z)==BlockMetalDecoration.META_connectorStructural)
 		{
 			TileEntityConnectorStructural tile = (TileEntityConnectorStructural)world.getTileEntity(x, y, z);
 			ClientUtils.handleStaticTileRenderer(tile);
@@ -447,7 +447,7 @@ public class BlockRenderMetalDecoration implements ISimpleBlockRenderingHandler
 			ClientUtils.handleStaticTileRenderer(tile);
 			return true;
 		}
-		else if(world.getBlockMetadata(x, y, z) != BlockMetalDecoration.META_connectorStrutural && world.getBlockMetadata(x, y, z) != BlockMetalDecoration.META_wallMount)
+		else if(world.getBlockMetadata(x, y, z) != BlockMetalDecoration.META_connectorStructural && world.getBlockMetadata(x, y, z) != BlockMetalDecoration.META_wallMount)
 		{
 			renderer.setRenderBounds(0,0,0,1,1,1);
 			return renderer.renderStandardBlock(block, x, y, z);

@@ -4,6 +4,7 @@ import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.StatCollector;
@@ -31,8 +32,8 @@ public class ItemWireCoil extends ItemIEBase
 	{
 		if(stack.getItemDamage()>2)
 		{
-			list.add(StatCollector.translateToLocal(Lib.DESC+"flavour.coil.construction0"));
-			list.add(StatCollector.translateToLocal(Lib.DESC+"flavour.coil.construction1"));
+			list.add(StatCollector.translateToLocal(Lib.DESC_FLAVOUR+"coil.construction0"));
+			list.add(StatCollector.translateToLocal(Lib.DESC_FLAVOUR+"coil.construction1"));
 		}
 		if(stack.getTagCompound()!=null && stack.getTagCompound().hasKey("linkingPos"))
 		{
@@ -70,6 +71,8 @@ public class ItemWireCoil extends ItemIEBase
 					player.addChatMessage(new ChatComponentTranslation(Lib.CHAT_WARN+"sameConnection"));
 				else if( distance > type.getMaxLength())
 					player.addChatMessage(new ChatComponentTranslation(Lib.CHAT_WARN+"tooFar"));
+				else if(!(world.getTileEntity(x, y, z) instanceof IImmersiveConnectable) || !(world.getTileEntity(pos[1], pos[2], pos[3]) instanceof IImmersiveConnectable))
+					player.addChatMessage(new ChatComponentTranslation(Lib.CHAT_WARN+"invalidPoint"));
 				else
 				{
 					IImmersiveConnectable nodeHere = (IImmersiveConnectable)world.getTileEntity(x, y, z);
@@ -100,7 +103,9 @@ public class ItemWireCoil extends ItemIEBase
 
 							if(!player.capabilities.isCreativeMode)
 								stack.stackSize--;
+							((TileEntity)nodeHere).markDirty();
 							world.markBlockForUpdate(x, y, z);
+							((TileEntity)nodeLink).markDirty();
 							world.markBlockForUpdate(pos[1], pos[2], pos[3]);
 						}
 						else

@@ -5,7 +5,6 @@ import java.math.MathContext;
 import java.math.RoundingMode;
 
 import net.minecraftforge.client.model.obj.Vertex;
-import codechicken.lib.util.Copyable;
 
 /**
  * Copyright (C) 2013 Chicken-Bones
@@ -23,9 +22,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 //This file originally copied from CodeChickenLib, courtesy of Chicken-Bones.
 //This is a customized version created by Steven Blom (AtomicBlom) of the Steam and Steel development team.
-//All credit goes to them
+//Slight adjustments have been made to fit my code.
 
-public class Matrix4 implements Copyable<Matrix4>
+public class Matrix4
 {
 	//m<row><column>
 	public double m00, m01, m02, m03, m10, m11, m12, m13, m20, m21, m22, m23, m30, m31, m32, m33;

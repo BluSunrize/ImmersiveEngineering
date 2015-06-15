@@ -184,10 +184,13 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 		{
 			List<AbstractConnection> outputs = ImmersiveNetHandler.INSTANCE.getIndirectEnergyConnections(Utils.toCC(this), worldObj);
 			int powerLeft = Math.min(Math.min(getMaxOutput(),getMaxInput()), energy);
+			if(outputs.size()<1)
+				return 0;
+			int output = powerLeft/outputs.size();
 			for(AbstractConnection con : outputs)
 				if(con!=null && con.cableType!=null && toIIC(con.end, worldObj)!=null)
 				{
-					int tempR = toIIC(con.end,worldObj).outputEnergy(Math.min(powerLeft,con.cableType.getTransferRate()), true, energyType);
+					int tempR = toIIC(con.end,worldObj).outputEnergy(Math.min(output,con.cableType.getTransferRate()), true, energyType);
 					int r = tempR;
 					tempR -= (int) Math.floor(tempR*con.getAverageLossRate());
 					toIIC(con.end, worldObj).outputEnergy(tempR, simulate, energyType);
@@ -195,6 +198,15 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 					powerLeft -= r;
 					if(powerLeft<=0)
 						break;
+					
+//					int tempR = toIIC(con.end,worldObj).outputEnergy(Math.min(powerLeft,con.cableType.getTransferRate()), true, energyType);
+//					int r = tempR;
+//					tempR -= (int) Math.floor(tempR*con.getAverageLossRate());
+//					toIIC(con.end, worldObj).outputEnergy(tempR, simulate, energyType);
+//					received += r;
+//					powerLeft -= r;
+//					if(powerLeft<=0)
+//						break;
 				}
 		}
 		return received;

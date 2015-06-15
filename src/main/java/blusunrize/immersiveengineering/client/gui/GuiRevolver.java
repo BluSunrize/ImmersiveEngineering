@@ -8,13 +8,17 @@ import org.lwjgl.opengl.GL11;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.gui.ContainerRevolver;
+import blusunrize.immersiveengineering.common.items.ItemRevolver;
 
 public class GuiRevolver extends GuiContainer
 {
+	boolean extended = false;
 	public GuiRevolver(InventoryPlayer inventoryPlayer, World world)
 	{
 		super(new ContainerRevolver(inventoryPlayer, world));
-		if( ((ContainerRevolver)this.inventorySlots).revolverSlots>8)
+		if(inventoryPlayer.player.getCurrentEquippedItem()!=null && inventoryPlayer.player.getCurrentEquippedItem().getItem() instanceof ItemRevolver && ((ItemRevolver)inventoryPlayer.player.getCurrentEquippedItem().getItem()).getBulletSlotAmount(inventoryPlayer.player.getCurrentEquippedItem())>8)
+		extended = true;
+		if(extended)
 			this.xSize=189;
 		this.ySize=214;
 	}
@@ -25,7 +29,7 @@ public class GuiRevolver extends GuiContainer
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		ClientUtils.bindTexture("immersiveengineering:textures/gui/revolver.png");
 		this.drawTexturedModalRect(guiLeft,guiTop, 0,0, 176,ySize);
-		if( ((ContainerRevolver)this.inventorySlots).revolverSlots>8)
+		if(extended)
 			this.drawTexturedModalRect(guiLeft+106,guiTop+28, 176,28, 80,76);
 	}
 

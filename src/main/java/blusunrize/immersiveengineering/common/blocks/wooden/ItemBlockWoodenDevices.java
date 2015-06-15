@@ -22,7 +22,7 @@ public class ItemBlockWoodenDevices extends ItemBlockIEBase
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean advInfo)
 	{
 		if(stack.getItemDamage()==4)
-			list.add(StatCollector.translateToLocal(Lib.DESC+"flavour.crate"));
+			list.add(StatCollector.translateToLocal(Lib.DESC_FLAVOUR+"crate"));
 	}
 
 	@Override

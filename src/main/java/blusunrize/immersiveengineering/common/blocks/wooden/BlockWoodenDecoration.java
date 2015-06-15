@@ -22,8 +22,10 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import blusunrize.immersiveengineering.client.render.BlockRenderWoodenDecoration;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
+import cpw.mods.fml.common.Optional;
 
-public class BlockWoodenDecoration extends BlockIEBase
+@Optional.Interface(iface = "blusunrize.aquatweaks.api.IAquaConnectable", modid = "AquaTweaks")
+public class BlockWoodenDecoration extends BlockIEBase implements blusunrize.aquatweaks.api.IAquaConnectable
 {
 	public BlockWoodenDecoration()
 	{
@@ -216,4 +218,19 @@ public class BlockWoodenDecoration extends BlockIEBase
 		return false;
 	}
 
+
+	@Optional.Method(modid = "AquaTweaks")
+	public boolean shouldRenderFluid(IBlockAccess world, int x, int y, int z)
+	{
+		int meta = world.getBlockMetadata(x, y, z);
+		return meta==1
+		|| meta==6;
+	}
+	@Optional.Method(modid = "AquaTweaks")
+	public boolean canConnectTo(IBlockAccess world, int x, int y, int z, int side)
+	{
+		int meta = world.getBlockMetadata(x, y, z);
+		return meta==1
+		|| meta==6;
+	}
 }

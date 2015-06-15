@@ -22,8 +22,10 @@ import blusunrize.immersiveengineering.client.render.BlockRenderMetalDecoration;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWallmount;
 import blusunrize.immersiveengineering.common.util.Utils;
+import cpw.mods.fml.common.Optional;
 
-public class BlockMetalDecoration extends BlockIEBase
+@Optional.Interface(iface = "blusunrize.aquatweaks.api.IAquaConnectable", modid = "AquaTweaks")
+public class BlockMetalDecoration extends BlockIEBase implements blusunrize.aquatweaks.api.IAquaConnectable
 {
 	public static int META_fence=0;
 	public static int META_scaffolding=1;
@@ -33,7 +35,7 @@ public class BlockMetalDecoration extends BlockIEBase
 	public static int META_heavyEngineering=5;
 	public static int META_generator=6;
 	public static int META_lightEngineering=7;
-	public static int META_connectorStrutural=8;
+	public static int META_connectorStructural=8;
 	public static int META_wallMount=9;
 
 	public BlockMetalDecoration()
@@ -170,7 +172,7 @@ public class BlockMetalDecoration extends BlockIEBase
 			icons[META_heavyEngineering][i] = iconRegister.registerIcon("immersiveengineering:metalDeco_engine");
 			icons[META_generator][i] = iconRegister.registerIcon("immersiveengineering:metalDeco_generator");
 			icons[META_lightEngineering][i] = iconRegister.registerIcon("immersiveengineering:metalDeco_electricMachine");
-			icons[META_connectorStrutural][i] = iconRegister.registerIcon("immersiveengineering:metalDeco_connectorStructural");
+			icons[META_connectorStructural][i] = iconRegister.registerIcon("immersiveengineering:metalDeco_connectorStructural");
 			icons[META_wallMount][i] = iconRegister.registerIcon("immersiveengineering:metalDeco_wallmount");
 		}
 	}
@@ -250,7 +252,7 @@ public class BlockMetalDecoration extends BlockIEBase
 	{
 		if(meta==META_structuralArm)
 			return new TileEntityStructuralArm();
-		if(meta==META_connectorStrutural)
+		if(meta==META_connectorStructural)
 			return new TileEntityConnectorStructural();
 		if(meta==META_wallMount)
 			return new TileEntityWallmountMetal();
@@ -262,7 +264,6 @@ public class BlockMetalDecoration extends BlockIEBase
 		return true;
 	}
 
-
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
 	{
@@ -273,5 +274,25 @@ public class BlockMetalDecoration extends BlockIEBase
 			return true;
 		}
 		return false;
+	}
+
+	@Optional.Method(modid = "AquaTweaks")
+	public boolean shouldRenderFluid(IBlockAccess world, int x, int y, int z)
+	{
+		int meta = world.getBlockMetadata(x, y, z);
+		return meta==META_fence
+		|| meta==META_lantern
+		|| meta==META_connectorStructural
+		|| meta==META_wallMount;
+	}
+
+	@Optional.Method(modid = "AquaTweaks")
+	public boolean canConnectTo(IBlockAccess world, int x, int y, int z, int side)
+	{
+		int meta = world.getBlockMetadata(x, y, z);
+		return meta==META_fence
+		|| meta==META_lantern
+		|| meta==META_connectorStructural
+		|| meta==META_wallMount;
 	}
 }
