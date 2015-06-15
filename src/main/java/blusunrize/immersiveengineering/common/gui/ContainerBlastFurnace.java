@@ -16,7 +16,7 @@ public class ContainerBlastFurnace extends Container
 	{
 		this.tile=tile;
 
-		this.addSlotToContainer(new IESlot(tile, 0, 52, 17)
+		this.addSlotToContainer(new IESlot(this, tile, 0, 52, 17)
 		{
 			@Override
 			public boolean isItemValid(ItemStack itemStack)
@@ -24,8 +24,8 @@ public class ContainerBlastFurnace extends Container
 				return BlastFurnaceRecipe.findRecipe(itemStack)!=null;
 			}
 		});
-		this.addSlotToContainer(new IESlot.BlastFuel(tile, 1, 52, 53));
-		this.addSlotToContainer(new IESlot.Output(tile, 2,112, 35));
+		this.addSlotToContainer(new IESlot.BlastFuel(this, tile, 1, 52, 53));
+		this.addSlotToContainer(new IESlot.Output(this, tile, 2,112, 35));
 		slotCount=3;
 
 		for (int i = 0; i < 3; i++)

@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.client.render;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -16,6 +17,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorLV
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorMV;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConveyorBelt;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityRelayHV;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySampleDrill;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTransformer;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTransformerHV;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
@@ -120,6 +122,12 @@ public class BlockRenderMetalDevices implements ISimpleBlockRenderingHandler
 				block.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
 				renderer.setRenderBoundsFromBlock(block);
 				ClientUtils.drawInventoryBlock(block, metadata, renderer);
+			}
+			else if(metadata==BlockMetalDevices.META_sampleDrill)
+			{
+				GL11.glScalef(.5f,.5f,.5f);
+				GL11.glTranslatef(0,-1f,0);
+				TileEntityRendererDispatcher.instance.renderTileEntityAt(new TileEntitySampleDrill(), 0.0D, 0.0D, 0.0D, 0.0F);
 			}
 		}catch(Exception e)
 		{

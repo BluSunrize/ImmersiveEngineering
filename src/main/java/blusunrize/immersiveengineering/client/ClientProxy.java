@@ -2,6 +2,7 @@ package blusunrize.immersiveengineering.client;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import net.minecraft.block.Block;
@@ -22,13 +23,16 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
 import blusunrize.immersiveengineering.api.DieselHandler;
+import blusunrize.immersiveengineering.api.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.ManualPageMultiblock;
 import blusunrize.immersiveengineering.api.ThermoelectricHandler;
 import blusunrize.immersiveengineering.client.fx.EntityFXItemParts;
 import blusunrize.immersiveengineering.client.gui.GuiBlastFurnace;
 import blusunrize.immersiveengineering.client.gui.GuiCokeOven;
 import blusunrize.immersiveengineering.client.gui.GuiCrate;
+import blusunrize.immersiveengineering.client.gui.GuiDrill;
 import blusunrize.immersiveengineering.client.gui.GuiFermenter;
+import blusunrize.immersiveengineering.client.gui.GuiRefinery;
 import blusunrize.immersiveengineering.client.gui.GuiRevolver;
 import blusunrize.immersiveengineering.client.gui.GuiSorter;
 import blusunrize.immersiveengineering.client.gui.GuiSqueezer;
@@ -39,6 +43,7 @@ import blusunrize.immersiveengineering.client.render.BlockRenderStoneDevices;
 import blusunrize.immersiveengineering.client.render.BlockRenderWoodenDecoration;
 import blusunrize.immersiveengineering.client.render.BlockRenderWoodenDevices;
 import blusunrize.immersiveengineering.client.render.EntityRenderRevolvershot;
+import blusunrize.immersiveengineering.client.render.ItemRenderDrill;
 import blusunrize.immersiveengineering.client.render.ItemRenderRevolver;
 import blusunrize.immersiveengineering.client.render.TileRenderBucketWheel;
 import blusunrize.immersiveengineering.client.render.TileRenderConnectorHV;
@@ -51,6 +56,7 @@ import blusunrize.immersiveengineering.client.render.TileRenderExcavator;
 import blusunrize.immersiveengineering.client.render.TileRenderPost;
 import blusunrize.immersiveengineering.client.render.TileRenderRefinery;
 import blusunrize.immersiveengineering.client.render.TileRenderRelayHV;
+import blusunrize.immersiveengineering.client.render.TileRenderSampleDrill;
 import blusunrize.immersiveengineering.client.render.TileRenderTransformer;
 import blusunrize.immersiveengineering.client.render.TileRenderWallmount;
 import blusunrize.immersiveengineering.client.render.TileRenderWatermill;
@@ -74,13 +80,16 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityExcavator;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFermenter;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityRefinery;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityRelayHV;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySampleDrill;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySqueezer;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTransformer;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTransformerHV;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockBlastFurnace;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockBucketWheel;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockCokeOven;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockCrusher;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockDieselGenerator;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockExcavator;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockFermenter;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockLightningRod;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockRefinery;
@@ -94,14 +103,17 @@ import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWindmillAd
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenCrate;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenPost;
 import blusunrize.immersiveengineering.common.entities.EntityRevolvershot;
+import blusunrize.immersiveengineering.common.items.ItemDrill;
 import blusunrize.immersiveengineering.common.items.ItemRevolver;
 import blusunrize.immersiveengineering.common.util.IESound;
 import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.lib.manual.IManualPage;
 import blusunrize.lib.manual.ManualPages;
 import blusunrize.lib.manual.ManualPages.PositionedItemStack;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.registry.GameData;
 
 public class ClientProxy extends CommonProxy
@@ -121,6 +133,7 @@ public class ClientProxy extends CommonProxy
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityRelayHV.class, new TileRenderRelayHV());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityConnectorHV.class, new TileRenderConnectorHV());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTransformerHV.class, new TileRenderTransformer());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntitySampleDrill.class, new TileRenderSampleDrill());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityDieselGenerator.class, new TileRenderDieselGenerator());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityRefinery.class, new TileRenderRefinery());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityCrusher.class, new TileRenderCrusher());
@@ -142,8 +155,12 @@ public class ClientProxy extends CommonProxy
 		//REVOLVER
 		MinecraftForgeClient.registerItemRenderer(IEContent.itemRevolver, new ItemRenderRevolver());
 		RenderingRegistry.registerEntityRenderingHandler(EntityRevolvershot.class, new EntityRenderRevolvershot());
+		//DRILL
+		MinecraftForgeClient.registerItemRenderer(IEContent.itemDrill, new ItemRenderDrill());
 
-		MinecraftForge.EVENT_BUS.register(new ClientEventHandler());
+		ClientEventHandler handler = new ClientEventHandler();
+		MinecraftForge.EVENT_BUS.register(handler);
+		FMLCommonHandler.instance().bus().register(handler);
 	}
 
 	@Override
@@ -208,11 +225,19 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.Text(manual, "biodiesel0"),
 				new ManualPages.Crafting(manual, "", new ItemStack(IEContent.blockMetalMultiblocks,1,BlockMetalMultiblocks.META_squeezer),new ItemStack(IEContent.blockMetalMultiblocks,1,BlockMetalMultiblocks.META_fermenter)),
 				new ManualPageMultiblock(manual, "biodiesel1", MultiblockSqueezer.instance),
-				new ManualPages.Table(manual, "biodiesel1T", table),
+				new ManualPages.Table(manual, "biodiesel1T", table, false),
 				new ManualPageMultiblock(manual, "biodiesel2", MultiblockFermenter.instance),
-				new ManualPages.Table(manual, "biodiesel2T", table2),
+				new ManualPages.Table(manual, "biodiesel2T", table2, false),
 				new ManualPageMultiblock(manual, "biodiesel3", MultiblockRefinery.instance),
 				new ManualPages.Text(manual, "biodiesel4"));
+		String[][][] multiTables = formatToTable_ExcavatorMinerals();
+		ArrayList<IManualPage> pages = new ArrayList();
+		pages.add(new ManualPages.Text(manual, "minerals0"));
+		pages.add(new ManualPages.Crafting(manual, "minerals1", new ItemStack(IEContent.blockMetalDevice,1,BlockMetalDevices.META_sampleDrill)));
+		pages.add(new ManualPages.Text(manual, "minerals2"));
+		for(String[][] minTable : multiTables)
+			pages.add(new ManualPages.Table(manual, "", minTable,true));
+		manual.addEntry("minerals", "general", pages.toArray(new IManualPage[0]));
 
 		manual.addEntry("wiring", "energy",
 				new ManualPages.Text(manual, "wiring0"), 
@@ -234,7 +259,7 @@ public class ClientProxy extends CommonProxy
 		table = formatToTable_ItemIntHashmap(sortedMap,"K");	
 		manual.addEntry("thermoElectric", "energy", 
 				new ManualPages.Crafting(manual, "thermoElectric0", new ItemStack(IEContent.blockMetalDevice,1,BlockMetalDevices.META_thermoelectricGen)),
-				new ManualPages.Table(manual, "thermoElectric1", table));
+				new ManualPages.Table(manual, "thermoElectric1", table, false));
 		manual.addEntry("highvoltage", "energy",
 				new ManualPages.Text(manual, "highvoltage0"),
 				new ManualPages.Crafting(manual, "", new ItemStack(IEContent.blockMetalDevice,1,8),new ItemStack(IEContent.blockMetalDevice,1,4)),
@@ -254,7 +279,7 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.Text(manual, "dieselgen0"),
 				new ManualPageMultiblock(manual, "dieselgen1", MultiblockDieselGenerator.instance),
 				new ManualPages.Text(manual, "dieselgen2"),
-				new ManualPages.Table(manual, "dieselgen3", table)
+				new ManualPages.Table(manual, "dieselgen3", table, false)
 				);
 
 		manual.addEntry("lightningrod", "energy",
@@ -271,9 +296,19 @@ public class ClientProxy extends CommonProxy
 		manual.addEntry("sorter", "machines",
 				new ManualPages.Crafting(manual, "sorter0", new ItemStack(IEContent.blockMetalDevice,1,BlockMetalDevices.META_sorter)),
 				new ManualPages.Text(manual, "sorter1"));
+		manual.addEntry("drill", "machines",
+				new ManualPages.Crafting(manual, "drill0", new ItemStack(IEContent.itemDrill,1,0)),
+				new ManualPages.Crafting(manual, "drill1", new ItemStack(IEContent.itemDrillhead,1,0)),
+				new ManualPages.Crafting(manual, "drill2", new ItemStack(IEContent.itemToolUpgrades,1,0)),
+				new ManualPages.Crafting(manual, "drill3", new ItemStack(IEContent.itemToolUpgrades,1,1)),
+				new ManualPages.Crafting(manual, "drill4", new ItemStack(IEContent.itemToolUpgrades,1,2)));
 		manual.addEntry("crusher", "machines",
 				new ManualPageMultiblock(manual, "crusher0", MultiblockCrusher.instance),
 				new ManualPages.Text(manual, "crusher1"));
+		manual.addEntry("excavator", "machines",
+				new ManualPageMultiblock(manual, "excavator0", MultiblockExcavator.instance),
+				new ManualPageMultiblock(manual, "", MultiblockBucketWheel.instance),
+				new ManualPages.Text(manual, "excavator1"));
 	}
 
 	@Override
@@ -295,6 +330,10 @@ public class ClientProxy extends CommonProxy
 			return new GuiFermenter(player.inventory, (TileEntityFermenter) world.getTileEntity(x, y, z));
 		if(ID==Lib.GUIID_Sorter && world.getTileEntity(x, y, z) instanceof TileEntityConveyorSorter)
 			return new GuiSorter(player.inventory, (TileEntityConveyorSorter) world.getTileEntity(x, y, z));
+		if(ID==Lib.GUIID_Refinery && world.getTileEntity(x, y, z) instanceof TileEntityRefinery)
+			return new GuiRefinery(player.inventory, (TileEntityRefinery) world.getTileEntity(x, y, z));
+		if(ID==Lib.GUIID_Drill && player.getCurrentEquippedItem()!=null && player.getCurrentEquippedItem().getItem() instanceof ItemDrill)
+			return new GuiDrill(player.inventory, world);
 		return null;
 	}
 
@@ -364,6 +403,25 @@ public class ClientProxy extends CommonProxy
 				Minecraft.getMinecraft().effectRenderer.addEffect(particleMysterious);
 			}
 	}
+	@Override
+	public void spawnBucketWheelFX(TileEntityBucketWheel tile, ItemStack stack)
+	{
+		if(stack!=null && Config.getBoolean("excavator_particles"))
+			for(int i=0; i<16; i++)
+			{
+				double x = tile.xCoord+.5+.1*(tile.facing<4?2*(tile.getWorldObj().rand.nextGaussian()-.5):0);
+				double y = tile.yCoord+2.5;// + tile.getWorldObj().rand.nextGaussian()/2;
+				double z = tile.zCoord+.5+.1*(tile.facing>3?2*(tile.getWorldObj().rand.nextGaussian()-.5):0);
+				double mX = ((tile.facing==4?-.075:tile.facing==5?.075:0)*(tile.mirrored?-1:1)) + ((tile.getWorldObj().rand.nextDouble()-.5)*.01);
+				double mY = -.15D;//tile.getWorldObj().rand.nextGaussian() * -0.05D;
+				double mZ = ((tile.facing==2?-.075:tile.facing==3?.075:0)*(tile.mirrored?-1:1)) + ((tile.getWorldObj().rand.nextDouble()-.5)*.01);
+
+				EntityFX particleMysterious = new EntityFXItemParts(tile.getWorldObj(), stack, tile.getWorldObj().rand.nextInt(16), x,y,z, mX,mY,mZ);
+				particleMysterious.noClip=true;
+				particleMysterious.multipleParticleScaleBy(2);
+				Minecraft.getMinecraft().effectRenderer.addEffect(particleMysterious);
+			}
+	}
 
 	static String[][] formatToTable_ItemIntHashmap(Map<String, Integer> map, String valueType)
 	{
@@ -409,5 +467,43 @@ public class ClientProxy extends CommonProxy
 		}catch(Exception e)	{}
 		String[][] table = list.toArray(new String[0][]);
 		return table;
+	}
+
+	static String[][][] formatToTable_ExcavatorMinerals()
+	{
+		ExcavatorHandler.MineralMix[] minerals = ExcavatorHandler.mineralList.keySet().toArray(new ExcavatorHandler.MineralMix[0]);
+		String[][][] multiTables = new String[1][ExcavatorHandler.mineralList.size()][2];
+		int curTable = 0;
+		int totalLines = 0;
+		for(int i=0; i<minerals.length; i++)
+		{
+			multiTables[curTable][i][0] = Lib.DESC_INFO+"mineral."+minerals[i].name;
+			multiTables[curTable][i][1] = "";
+			for(int j=0; j<minerals[i].recalculatedOres.length; j++)
+				if(!OreDictionary.getOres(minerals[i].recalculatedOres[j]).isEmpty())
+				{
+					ItemStack stackOre = OreDictionary.getOres(minerals[i].recalculatedOres[j]).get(0);
+					multiTables[curTable][i][1] += stackOre.getDisplayName()+" "+( Utils.formatDouble(minerals[i].recalculatedChances[j]*100,"#.00")+"%" )+(j<minerals[i].recalculatedOres.length-1?"\n":""); 
+					totalLines++;
+				}
+			if(i<minerals.length-1 && totalLines+minerals[i+1].recalculatedOres.length>=13)
+			{
+				String[][][] newMultiTables = new String[multiTables.length+1][ExcavatorHandler.mineralList.size()][2];
+				System.arraycopy(multiTables,0, newMultiTables,0, multiTables.length);
+				multiTables = newMultiTables;
+				totalLines = 0;
+				curTable++;
+			}
+		}
+		return multiTables;
+	}
+
+
+
+
+	@Override
+	public String[] splitStringOnWidth(String s, int w)
+	{
+		return ((List<String>)ClientUtils.font().listFormattedStringToWidth(s, w)).toArray(new String[0]);
 	}
 }

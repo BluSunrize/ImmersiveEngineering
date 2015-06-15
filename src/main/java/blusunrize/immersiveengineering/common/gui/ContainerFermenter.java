@@ -16,8 +16,9 @@ public class ContainerFermenter extends Container
 		this.tile=tile;
 		for(int i=0; i<9; i++)
 			this.addSlotToContainer(new Slot(tile, i, 24+i%3*18, 17+i/3*18));
-		this.addSlotToContainer(new IESlot.FluidContainer(tile, 9, 133,19, true));
-		this.addSlotToContainer(new IESlot.Output(tile, 10, 133,55));
+		this.addSlotToContainer(new IESlot.Output(this, tile, 11, 91,35));
+		this.addSlotToContainer(new IESlot.FluidContainer(this, tile, 9, 133,19, true));
+		this.addSlotToContainer(new IESlot.Output(this, tile, 10, 133,55));
 		slotCount=11;
 
 		for (int i = 0; i < 3; i++)

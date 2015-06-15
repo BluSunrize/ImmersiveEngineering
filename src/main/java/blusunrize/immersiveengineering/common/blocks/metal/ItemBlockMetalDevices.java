@@ -60,6 +60,8 @@ public class ItemBlockMetalDevices extends ItemBlockIEBase
 			else if(!world.isAirBlock(x,y+1,z))
 				return false;
 		}
+		if(meta==BlockMetalDevices.META_sampleDrill && (!world.isAirBlock(x,y+1,z)||!world.isAirBlock(x,y+2,z)))
+			return false;
 		if(meta==BlockMetalDevices.META_relayHV&& world.isAirBlock(x,y+1,z))
 			return false;
 
@@ -167,7 +169,15 @@ public class ItemBlockMetalDevices extends ItemBlockIEBase
 			}
 			tile.facing=f;
 		}
-
+		else if(world.getTileEntity(x, y, z) instanceof TileEntitySampleDrill)
+		{
+			for(int i=1;i<=2;i++)
+			{
+				world.setBlock(x,y+i,z, field_150939_a,meta, 0x3);
+				if(world.getTileEntity(x, y+i, z) instanceof TileEntitySampleDrill)
+					((TileEntitySampleDrill)world.getTileEntity(x,y+i,z)).pos = i;
+			}
+		}
 		return ret;
 	}
 }

@@ -183,7 +183,7 @@ public class TileEntityWatermill extends TileEntityIEBase
 	@Override
 	public boolean receiveClientEvent(int id, int arg)
 	{
-		//		rotationVec = Vec3.createVectorHelper(id/10000f, 0, arg/10000f);
+		rotationVec = Vec3.createVectorHelper(id/10000f, 0, arg/10000f);
 		return true;
 	}
 	@Override

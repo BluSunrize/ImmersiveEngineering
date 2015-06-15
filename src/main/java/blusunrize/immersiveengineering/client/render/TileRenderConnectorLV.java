@@ -9,9 +9,9 @@ import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDevices;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorLV;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 
-public class TileRenderConnectorLV extends TileRenderIE
+public class TileRenderConnectorLV extends TileRenderImmersiveConnectable
 {
-	static ModelIEObj model = new ModelIEObj("immersiveengineering:models/connectorLV.obj")
+	ModelIEObj model = new ModelIEObj("immersiveengineering:models/connectorLV.obj")
 	{
 		@Override
 		public IIcon getBlockIcon()
@@ -19,11 +19,6 @@ public class TileRenderConnectorLV extends TileRenderIE
 			return IEContent.blockMetalDevice.getIcon(0, BlockMetalDevices.META_connectorLV);
 		}
 	};
-
-	@Override
-	public void renderDynamic(TileEntity tile, double x, double y, double z, float f)
-	{
-	}
 
 	@Override
 	public void renderStatic(TileEntity tile, Tessellator tes, Matrix4 translationMatrix, Matrix4 rotationMatrix)

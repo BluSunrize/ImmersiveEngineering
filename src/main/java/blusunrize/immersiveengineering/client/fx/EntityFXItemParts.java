@@ -16,7 +16,7 @@ public class EntityFXItemParts extends EntityFX
 		super(world, x,y,z, mx,my,mz);
 		this.item = item;
 		this.part = part;
-		this.particleMaxAge = 8;
+		this.particleMaxAge = 16;
 		if(item!=null && item.getItem()!=null)
 		{
 			if(item.getItem() instanceof ItemBlock)

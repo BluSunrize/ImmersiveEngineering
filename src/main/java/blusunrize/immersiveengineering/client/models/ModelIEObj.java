@@ -13,8 +13,8 @@ public abstract class ModelIEObj
 {
 	public static ArrayList<ModelIEObj> existingStaticRenders = new ArrayList();
 	
-	private final String path;
-	private WavefrontObject model;
+	public final String path;
+	public WavefrontObject model;
 	public ModelIEObj(String path)
 	{
 		this.path = path;

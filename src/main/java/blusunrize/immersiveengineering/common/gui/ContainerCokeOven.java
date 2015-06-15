@@ -16,7 +16,7 @@ public class ContainerCokeOven extends Container
 	{
 		this.tile=tile;
 
-		this.addSlotToContainer(new IESlot(tile, 0, 30, 35)
+		this.addSlotToContainer(new IESlot(this, tile, 0, 30, 35)
 		{
 			@Override
 			public boolean isItemValid(ItemStack itemStack)
@@ -24,9 +24,9 @@ public class ContainerCokeOven extends Container
 				return CokeOvenRecipe.findRecipe(itemStack)!=null;
 			}
 		});
-		this.addSlotToContainer(new IESlot.Output(tile, 1, 85, 35));
-		this.addSlotToContainer(new IESlot.FluidContainer(tile, 2,152, 17, true));
-		this.addSlotToContainer(new IESlot.Output(tile, 3,152, 53));
+		this.addSlotToContainer(new IESlot.Output(this, tile, 1, 85, 35));
+		this.addSlotToContainer(new IESlot.FluidContainer(this, tile, 2,152, 17, true));
+		this.addSlotToContainer(new IESlot.Output(this, tile, 3,152, 53));
 		slotCount=4;
 
 		for (int i = 0; i < 3; i++)

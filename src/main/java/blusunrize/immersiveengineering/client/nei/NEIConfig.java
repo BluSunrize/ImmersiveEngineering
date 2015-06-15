@@ -14,9 +14,18 @@ public class NEIConfig implements IConfigureNEI
 		
 		API.registerRecipeHandler(new NEICokeOvenHandler());
 		API.registerUsageHandler(new NEICokeOvenHandler());
-		
 		API.registerRecipeHandler(new NEIBlastFurnaceHandler());
 		API.registerUsageHandler(new NEIBlastFurnaceHandler());
+		
+		API.registerRecipeHandler(new NEICrusherHandler());
+		API.registerUsageHandler(new NEICrusherHandler());
+		
+		API.registerRecipeHandler(new NEISqueezerHandler());
+		API.registerUsageHandler(new NEISqueezerHandler());
+		API.registerRecipeHandler(new NEIFermenterHandler());
+		API.registerUsageHandler(new NEIFermenterHandler());
+		API.registerRecipeHandler(new NEIRefineryHandler());
+		API.registerUsageHandler(new NEIRefineryHandler());
 	}
 
 

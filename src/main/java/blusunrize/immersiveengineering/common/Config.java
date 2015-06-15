@@ -11,6 +11,7 @@ public class Config
 {
 	public static HashMap<String, Boolean> config_boolean = new HashMap();
 	public static HashMap<String, Integer> config_int = new HashMap();
+	public static HashMap<String, Double> config_double = new HashMap();
 	public static HashMap<String, double[]> config_doubleArray = new HashMap();
 	public static HashMap<String, int[]> config_intArray = new HashMap();
 
@@ -78,10 +79,21 @@ public class Config
 
 		setInt("heater_consumption", config.get("Machines", "Heater: RF per Heat", 8, "The RF per tick consumed to add one heat to a furnace. Creates up to 4 heat in the startup time and then 1 heat per tick to keep it running").getInt());
 		setInt("heater_speedupConsumption", config.get("Machines", "Heater: Speedup", 24, "The RF per tick consumed to double the speed of the furnace. Only happens if furnace is at maximum heat.").getInt());
+		setInt("crusher_consumption", config.get("Machines", "Crusher: Consumed", 80, "The RF per tick consumed by the Crusher. Will also directly influence the speed.").getInt());
 		setInt("squeezer_consumption", config.get("Machines", "Squeezer: Consumed", 10, "The RF per tick per item that the Squeezer will consume to create Plant Oil").getInt());
 		setInt("fermenter_consumption", config.get("Machines", "Fermenter: Consumed", 10, "The RF per tick per item that the Fermenter will consume to create Ethanol").getInt());
-		setInt("refinery_consumption", config.get("Machines", "Refinery: Consumed", 80, "The RF per tick the Fermenter will consume to mix two fluids").getInt());
-
+		setInt("refinery_consumption", config.get("Machines", "Refinery: Consumed", 80, "The RF per tick the Refinery will consume to mix two fluids").getInt());
+		
+		setInt("excavator_consumption", config.get("Machines", "Excavator: Consumed", 4096, "The RF per tick the Excavator will consume to dig").getInt());
+		setDouble("excavator_speed", config.get("Machines", "Excavator: Speed", 1f, "The speed of the Excavator. Basically translates to how many degrees per tick it will turn.").getDouble());
+		setDouble("excavator_chance", config.get("Machines", "Excavator: Chance", .05f, "The chance that the Excavator will not dig up an ore with the currently downward-facing bucket.").getDouble());
+		setBoolean("excavator_particles", config.get("Machines", "Excavator: Particles", true, "Set this to false to disable the ridiculous amounts of particles the Excavator spawns").getBoolean());
+		setInt("excavator_depletion", config.get("Machines", "Excavator: Mineral Depletion", 76800, "The maximum amount of yield one can get out of a chunk with the excavator. Set a number smaller than zero to make it infinite").getInt());
+		setInt("excavator_depletion_days", getInt("excavator_depletion")*45/24000);
+		
+		setInt("coredrill_time", config.get("Machines", "Core Sample Drill: Evaluation Time", 600, "The length in ticks it takes for the Core Sample Drill to figure out which mineral is found in a chunk").getInt());
+		setInt("coredrill_consumption", config.get("Machines", "Core Sample Drill: Consumption", 40, "The RF per tick consumed by the Core Sample Drill").getInt());
+		
 		setIntArray("ore_copper", config.get("OreGen", "Copper", new int[]{8, 40,72, 8,100}, "Generation config for Copper Ore. Parameters: Blocks per vein, lowest possible Y, highest possible Y, veins per chunk, chance for vein to spawn (out of 100). Set vein size to 0 to disable the generation").getIntList());
 		setIntArray("ore_bauxite", config.get("OreGen", "Bauxite", new int[]{4, 40,85, 8,100}, "Generation config for Bauxite Ore. Parameters: Blocks per vein, lowest possible Y, highest possible Y, veins per chunk, chance for vein to spawn (out of 100). Set vein size to 0 to disable the generation").getIntList());
 		setIntArray("ore_lead", config.get("OreGen", "Lead", new int[]{6,  8,36, 4,100}, "Generation config for Lead Ore. Parameters: Blocks per vein, lowest possible Y, highest possible Y, veins per chunk, chance for vein to spawn (out of 100). Set vein size to 0 to disable the generation").getIntList());
@@ -115,6 +127,16 @@ public class Config
 		return i!=null?i.intValue():0;
 	}
 
+	public static void setDouble(String key, double d)
+	{
+		config_double.put(key, d);
+	}
+	public static double getDouble(String key)
+	{
+		Double d = config_double.get(key);
+		return d!=null?d.floatValue():0;
+	}
+	
 	public static void setDoubleArray(String key, double[] dA)
 	{
 		config_doubleArray.put(key, dA);

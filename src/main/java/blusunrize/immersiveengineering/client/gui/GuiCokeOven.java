@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.util.StatCollector;
 
 import org.lwjgl.opengl.GL11;
 
@@ -24,17 +23,22 @@ public class GuiCokeOven extends GuiContainer
 
 	protected void drawGuiContainerForegroundLayer(int mx, int my)
 	{
-		if(mx>guiLeft+129&&mx<guiLeft+129+16 && my>guiTop+20&&my<guiTop+20+47)
+		ArrayList<String> tooltip = new ArrayList<String>();
+		ClientUtils.handleGuiTank(tile.tank, guiLeft+129,guiTop+20, 16,47, 176,31,20,51, mx,my, "immersiveengineering:textures/gui/cokeOven.png", tooltip);
+		if(!tooltip.isEmpty())
 		{
-			ArrayList<String> tooltip = new ArrayList<String>();
-			if(tile.tank.getFluid()!=null && tile.tank.getFluid().getFluid()!=null)
-				tooltip.add(tile.tank.getFluid().getLocalizedName());
-			else
-				tooltip.add(StatCollector.translateToLocal("gui.ImmersiveEngineering.empty"));
-			tooltip.add(tile.tank.getFluidAmount()+"/"+tile.tank.getCapacity()+"mB");
 			this.drawHoveringText(tooltip, mx-guiLeft, my-guiTop, fontRendererObj);
 			RenderHelper.enableGUIStandardItemLighting();
 		}
+//		if(mx>guiLeft+129&&mx<guiLeft+129+16 && my>guiTop+20&&my<guiTop+20+47)
+//		{
+//			if(tile.tank.getFluid()!=null && tile.tank.getFluid().getFluid()!=null)
+//				tooltip.add(tile.tank.getFluid().getLocalizedName());
+//			else
+//				tooltip.add(StatCollector.translateToLocal("gui.ImmersiveEngineering.empty"));
+//			tooltip.add(tile.tank.getFluidAmount()+"/"+tile.tank.getCapacity()+"mB");
+//
+//		}
 	}
 
 
@@ -51,13 +55,14 @@ public class GuiCokeOven extends GuiContainer
 			this.drawTexturedModalRect(guiLeft+59,guiTop+37+12-h, 179, 1+12-h, 9, h);
 		}
 
-		if(tile.tank.getFluid()!=null && tile.tank.getFluid().getFluid()!=null)
-		{
-			int h = (int)(47*(tile.tank.getFluid().amount/(float)tile.tank.getCapacity()));
-			ClientUtils.drawRepeatedFluidIcon(tile.tank.getFluid().getFluid(), guiLeft+129,guiTop+20+47-h, 16, h);
-			ClientUtils.bindTexture("immersiveengineering:textures/gui/cokeOven.png");
-		}
-		this.drawTexturedModalRect(guiLeft+127,guiTop+18, 175,31, 20,51);
-
+//		if(tile.tank.getFluid()!=null && tile.tank.getFluid().getFluid()!=null)
+//		{
+//			int h = (int)(47*(tile.tank.getFluid().amount/(float)tile.tank.getCapacity()));
+//			ClientUtils.drawRepeatedFluidIcon(tile.tank.getFluid().getFluid(), guiLeft+129,guiTop+20+47-h, 16, h);
+//			ClientUtils.bindTexture("immersiveengineering:textures/gui/cokeOven.png");
+//		}
+//		this.drawTexturedModalRect(guiLeft+127,guiTop+18, 176,31, 20,51);
+		ClientUtils.handleGuiTank(tile.tank, guiLeft+129,guiTop+20, 16,47, 176,31,20,51, mx,my, "immersiveengineering:textures/gui/cokeOven.png", null);
+		
 	}
 }

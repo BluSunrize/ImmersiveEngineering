@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.client;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -15,11 +16,13 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StatCollector;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -30,6 +33,7 @@ import net.minecraftforge.client.model.obj.TextureCoordinate;
 import net.minecraftforge.client.model.obj.Vertex;
 import net.minecraftforge.client.model.obj.WavefrontObject;
 import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidTank;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
@@ -52,6 +56,29 @@ public class ClientUtils
 		GL11.glDisable(GL11.GL_ALPHA_TEST);
 		OpenGlHelper.glBlendFunc(770, 771, 1, 0);
 		GL11.glShadeModel(GL11.GL_SMOOTH);
+
+
+		//				OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240f, 240f);
+		//        this.setupFog(0, p_78471_1_);
+		//        GL11.glEnable(GL11.GL_FOG)
+		RenderHelper.enableStandardItemLighting();
+		//        mc().getTextureManager().bindTexture(TextureMap.locationBlocksTexture);
+		//        RenderHelper.disableStandardItemLighting();
+		//        mc().mcProfiler.endStartSection("terrain");
+		//        GL11.glMatrixMode(GL11.GL_MODELVIEW);
+		//        GL11.glPushMatrix();
+		////        renderglobal.sortAndRender(entitylivingbase, 0, (double)p_78471_1_);
+		//        GL11.glShadeModel(GL11.GL_FLAT);
+		//        GL11.glAlphaFunc(GL11.GL_GREATER, 0.1F);
+		//        GL11.glPopMatrix();
+
+		//        GL11.glDisable(GL11.GL_CULL_FACE);
+		//        GL11.glEnable(GL11.GL_BLEND);
+		//        GL11.glEnable(GL11.GL_FOG);
+		//        GL11.glEnable(GL11.GL_LIGHT0);
+		//        GL11.glEnable(GL11.GL_LIGHT1);
+
+
 		if(tile.getWorldObj()!=null && tile instanceof IImmersiveConnectable)
 		{
 			ClientUtils.bindTexture("immersiveengineering:textures/models/white.png");
@@ -90,8 +117,10 @@ public class ClientUtils
 		double rmodx = dz/dw;
 		double rmodz = dx/dw;
 		//		GL11.glTranslated(startOffset.xCoord,startOffset.yCoord,startOffset.zCoord);
-		Tessellator.instance.addTranslation((float)startOffset.xCoord,(float)startOffset.yCoord,(float)startOffset.zCoord);
 		Tessellator tes = tes();
+
+
+		tes.addTranslation((float)startOffset.xCoord,(float)startOffset.yCoord,(float)startOffset.zCoord);
 		World world = ((TileEntity)start).getWorldObj();
 
 		double k = Math.sqrt(dx*dx + dy*dy + dz*dz) * 1.005;
@@ -114,7 +143,7 @@ public class ClientUtils
 		int vertices = 16;
 		if(vertical)
 		{
-			//			tes.startDrawing(GL11.GL_QUADS);
+			//						tes.startDrawing(GL11.GL_QUADS);
 			tes.setColorOpaque_I(col);
 			tes.setBrightness(calcBrightness(world, connection.start.posX-r,connection.start.posY,connection.start.posZ));
 			tes.addVertex(0-r, 0, 0);
@@ -151,7 +180,6 @@ public class ClientUtils
 				double x1 = 0 + dx * n1;
 				double z1 = 0 + dz * n1;
 				double y1 = a * Math.cosh((( Math.sqrt(x1*x1+z1*z1) )-p)/a)+q;
-
 				//				tes.startDrawing(GL11.GL_QUADS);
 				tes.setColorOpaque_I(col);
 				tes.setBrightness(calcBrightness(world, connection.start.posX+x0, connection.start.posY+y0+r, connection.start.posZ+z0));
@@ -203,6 +231,10 @@ public class ClientUtils
 	{
 		mc().getTextureManager().bindTexture(getResource(path));
 	}
+	public static void bindAtlas(int i)
+	{
+		mc().getTextureManager().bindTexture(i==0?TextureMap.locationBlocksTexture:TextureMap.locationItemsTexture);
+	}
 	public static ResourceLocation getResource(String path)
 	{
 		ResourceLocation rl = resourceMap.containsKey(path) ? resourceMap.get(path) : new ResourceLocation(path);
@@ -220,6 +252,35 @@ public class ClientUtils
 	public static FontRenderer font()
 	{
 		return mc().fontRenderer;
+	}
+
+	public static String getResourceNameForItemStack(ItemStack stack)
+	{
+		if(stack!=null)
+		{
+			IIcon ic = null;
+			Block b = Block.getBlockFromItem(stack.getItem());
+			if(b!=null&&b!=Blocks.air)
+				ic = b.getIcon(2, stack.getItemDamage());
+			else
+				ic = stack.getIconIndex();
+			if(ic!=null)
+			{
+				String name = ic.getIconName();
+				String resource = "";
+				String icon = "";
+				if(name.indexOf(":")>0)
+				{
+					String[] split = name.split(":",2);
+					resource = split[0]+":";
+					icon = split[1];
+				}
+				else
+					icon = name;
+				return resource + "textures/" + (stack.getItemSpriteNumber()==0?"blocks":"items") + "/" + icon+ ".png";
+			}
+		}
+		return "";
 	}
 
 	public static IESound generatePositionedIESound(String soundName, float volume, float pitch, boolean repeat, int delay, double x, double y, double z)
@@ -330,6 +391,53 @@ public class ClientUtils
 				}
 		}
 	}
+	public static void renderWavefrontModelWithModifications(WavefrontObject model, Tessellator tes, Matrix4 translationMatrix, Matrix4 rotationMatrix, boolean flipTextureU, String... renderedParts)
+	{
+		Vertex vertexCopy = new Vertex(0,0,0);
+		Vertex normalCopy = new Vertex(0,0,0);
+
+		for(GroupObject groupObject : model.groupObjects)
+		{
+			boolean render = false;
+			if(renderedParts==null || renderedParts.length<1)
+				render = true;
+			else
+				for(String s : renderedParts)
+					if(groupObject.name.equalsIgnoreCase(s))
+						render = true;
+			if(render)
+				for(Face face : groupObject.faces)
+				{
+					if(face.faceNormal == null)
+						face.faceNormal = face.calculateFaceNormal();
+
+					normalCopy.x = face.faceNormal.x;
+					normalCopy.y = face.faceNormal.y;
+					normalCopy.z = face.faceNormal.z;
+					rotationMatrix.apply(normalCopy);
+
+
+					tes.setNormal(face.faceNormal.x, face.faceNormal.y, face.faceNormal.z);
+					for(int i=0; i<face.vertices.length; ++i)
+					{
+						Vertex vertex = face.vertices[i];
+						vertexCopy.x = vertex.x;
+						vertexCopy.y = vertex.y;
+						vertexCopy.z = vertex.z;
+						rotationMatrix.apply(vertexCopy);
+						translationMatrix.apply(vertexCopy);
+
+						if((face.textureCoordinates != null) && (face.textureCoordinates.length > 0))
+						{
+							TextureCoordinate textureCoordinate = face.textureCoordinates[flipTextureU?(face.textureCoordinates.length-1)-i: i];
+							tes.addVertexWithUV(vertexCopy.x, vertexCopy.y, vertexCopy.z, textureCoordinate.u, textureCoordinate.v);
+						}
+						else
+							tes.addVertex(vertexCopy.x, vertexCopy.y, vertexCopy.z);
+					}
+				}
+		}
+	}
 
 	public static void drawInventoryBlock(Block block, int metadata, RenderBlocks renderer)
 	{
@@ -430,10 +538,13 @@ public class ClientUtils
 	{
 		bindTexture(TextureMap.locationBlocksTexture.toString());
 		IIcon icon = fluid.getIcon();
-		int iW = icon.getIconWidth();
-		int iH = icon.getIconHeight();
-		if(icon!=null && iW>0 && iH>0)
-			drawRepeatedIcon(x,y,w,h, iW, iH, icon.getMinU(),icon.getMaxU(), icon.getMinV(),icon.getMaxV());
+		if(icon != null)
+		{
+			int iW = icon.getIconWidth();
+			int iH = icon.getIconHeight();
+			if(iW>0 && iH>0)
+				drawRepeatedIcon(x,y,w,h, iW, iH, icon.getMinU(),icon.getMaxU(), icon.getMinV(),icon.getMaxV());
+		}
 	}
 	public static void drawRepeatedIcon(int x, int y, int w, int h, int iconWidth, int iconHeight, float uMin, float uMax, float vMin, float vMax)
 	{
@@ -532,6 +643,33 @@ public class ClientUtils
 		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 
 		ClientUtils.font().setUnicodeFlag(uni);
+		}
+	}
+
+	public static void handleGuiTank(FluidTank tank, int x, int y, int w, int h, int oX, int oY, int oW, int oH, int mX, int mY, String originalTexture, ArrayList<String> tooltip)
+	{
+		if(tooltip==null)
+		{
+			if(tank.getFluid()!=null && tank.getFluid().getFluid()!=null)
+			{
+				int fluidHeight = (int)(h*(tank.getFluid().amount/(float)tank.getCapacity()));
+				drawRepeatedFluidIcon(tank.getFluid().getFluid(), x,y+h-fluidHeight, w, fluidHeight);
+				bindTexture(originalTexture);
+			}
+			int xOff = (w-oW)/2;
+			int yOff = (h-oH)/2;
+			drawTexturedRect(x+xOff,y+yOff,oW,oH, 256f, oX,oX+oW,oY,oY+oH);
+		}
+		else
+		{
+			if(mX>x&&mX<x+w && mY>y&&mY<y+h)
+			{
+				if(tank.getFluid()!=null && tank.getFluid().getFluid()!=null)
+					tooltip.add(tank.getFluid().getLocalizedName());
+				else
+					tooltip.add(StatCollector.translateToLocal("gui.ImmersiveEngineering.empty"));
+				tooltip.add(tank.getFluidAmount()+"/"+tank.getCapacity()+"mB");
+			}
 		}
 	}
 

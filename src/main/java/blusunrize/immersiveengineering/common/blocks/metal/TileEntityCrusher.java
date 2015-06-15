@@ -21,9 +21,9 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.CrusherRecipe;
+import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.EventHandler;
 import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ICustomBoundingboxes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundTile;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockCrusher;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
@@ -35,7 +35,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class TileEntityCrusher extends TileEntityMultiblockPart implements IEnergyReceiver, ISidedInventory, ICustomBoundingboxes, ISoundTile
+public class TileEntityCrusher extends TileEntityMultiblockPart implements IEnergyReceiver, ISidedInventory, ISoundTile
 {
 	public int facing = 2;
 	public EnergyStorage energyStorage = new EnergyStorage(32000);
@@ -55,10 +55,6 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 			return null;
 		TileEntity te = worldObj.getTileEntity(xCoord-offset[0], yCoord-offset[1], zCoord-offset[2]);
 		return te instanceof TileEntityCrusher?(TileEntityCrusher)te : null;
-	}
-	public static boolean _Immovable()
-	{
-		return true;
 	}
 
 	@Override
@@ -98,9 +94,10 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 			boolean update = false;
 			if(!worldObj.isBlockIndirectlyGettingPowered(xCoord+(facing==4?-1:facing==5?1:facing==(mirrored?2:3)?2:-2),yCoord+1,zCoord+(facing==2?-1:facing==3?1:facing==(mirrored?5:4)?2:-2)))
 			{
+				int power = Config.getInt("crusher_consumption");
 				AxisAlignedBB aabb = AxisAlignedBB.getBoundingBox(xCoord-.5625,yCoord+1.5,zCoord-.5625, xCoord+1.5625,yCoord+2.875,zCoord+1.5625);
 				List<EntityItem> itemList = worldObj.getEntitiesWithinAABB(EntityItem.class, aabb);
-				if(!itemList.isEmpty())
+				if(!itemList.isEmpty() && this.energyStorage.getEnergyStored()>0)
 					for(EntityItem e : itemList)
 					{
 						ItemStack input = ((EntityItem)e).getEntityItem();
@@ -121,7 +118,7 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 					for(EntityLivingBase e : livingList)
 						if(!e.isDead && e.getHealth()>0)
 						{
-							int consumed = this.energyStorage.extractEnergy(80, true);
+							int consumed = this.energyStorage.extractEnergy(power, true);
 							if(consumed>0)
 							{
 								e.attackEntityFrom(IEDamageSources.causeCrusherDamage(), consumed/20f);
@@ -140,7 +137,7 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 
 				if(process>0)
 				{
-					int consumed = this.energyStorage.extractEnergy(80, false);
+					int consumed = this.energyStorage.extractEnergy(power, false);
 					process -= consumed;
 				}
 
@@ -313,6 +310,13 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 		if(pos==17)
 			return AxisAlignedBB.getBoundingBox(xCoord-(facing==2||facing==3?2:1),yCoord,zCoord-(facing==4||facing==5?2:1), xCoord+(facing==2||facing==3?3:2),yCoord+3,zCoord+(facing==4||facing==5?3:2));
 		return AxisAlignedBB.getBoundingBox(xCoord,yCoord,zCoord, xCoord,yCoord,zCoord);
+	}
+	@Override
+	public double getMaxRenderDistanceSquared()
+	{
+		if(Config.getBoolean("increasedTileRenderdistance"))
+			return super.getMaxRenderDistanceSquared()*1.5;
+		return super.getMaxRenderDistanceSquared();
 	}
 
 	@Override

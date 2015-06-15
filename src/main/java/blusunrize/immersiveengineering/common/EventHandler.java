@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.common;
 import java.util.HashMap;
 import java.util.UUID;
 
+import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.item.EntityItem;
@@ -10,6 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.StatCollector;
+import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
@@ -18,12 +20,14 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.oredict.OreDictionary;
 import blusunrize.immersiveengineering.api.BlastFurnaceRecipe;
+import blusunrize.immersiveengineering.api.IDrillHead;
 import blusunrize.immersiveengineering.api.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.GuiBlastFurnace;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityLightningRod;
+import blusunrize.immersiveengineering.common.items.ItemDrill;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -61,7 +65,7 @@ public class EventHandler
 			IESaveData.setInstance(event.world.provider.dimensionId, worldData);
 			IESaveData.loaded = true;
 		}
-		*/
+		 */
 		//		}
 	}
 
@@ -170,11 +174,88 @@ public class EventHandler
 		}
 	}
 
+	@SubscribeEvent()
+	public void digSpeedEvent(PlayerEvent.BreakSpeed event)
+	{
+		ItemStack current = event.entityPlayer.getCurrentEquippedItem();
+		//Stop the combustion drill from working underwater
+		if(current!=null && current.getItem().equals(IEContent.itemDrill) && current.getItemDamage()==0 && event.entityPlayer.isInsideOfMaterial(Material.water))
+			if( ((ItemDrill)IEContent.itemDrill).getUpgrades(current).getBoolean("waterproof"))
+				event.newSpeed*=5;
+			else
+				event.setCanceled(true);
+	}
+	@SubscribeEvent
+	public void onAnvilChange(AnvilUpdateEvent event)
+	{
+		if(event.left!=null && event.left.getItem() instanceof IDrillHead && ((IDrillHead)event.left.getItem()).getHeadDamage(event.left)>0)
+		{
+			if(event.right!=null && event.left.getItem().getIsRepairable(event.left, event.right))
+			{
+				event.output = event.left.copy();
+				int repair = Math.min(
+						((IDrillHead)event.output.getItem()).getHeadDamage(event.output),
+						((IDrillHead)event.output.getItem()).getMaximumHeadDamage(event.output)/4);
+				int cost = 0;
+				for(;repair>0&&cost<event.right.stackSize; ++cost)
+				{
+					((IDrillHead)event.output.getItem()).damageHead(event.output, -repair);
+					event.cost += Math.max(1, repair/100);
+					repair = Math.min(
+							((IDrillHead)event.output.getItem()).getHeadDamage(event.output),
+							((IDrillHead)event.output.getItem()).getMaximumHeadDamage(event.output)/4);
+				}
+				event.materialCost = cost;
+
+				if(event.name==null || event.name.isEmpty())
+				{
+					if(event.left.hasDisplayName())
+					{
+						event.cost += 5;
+						event.output.func_135074_t();
+					}
+				}
+				else if (!event.name.equals(event.left.getDisplayName()))
+				{
+					event.cost += 5;
+					if(event.left.hasDisplayName())
+						event.cost += 2;
+					event.output.setStackDisplayName(event.name);
+				}
+			}
+		}
+	}
+
+
 	@SubscribeEvent
 	public void onItemTooltip(ItemTooltipEvent event)
 	{
-//		for(int oid : OreDictionary.getOreIDs(event.itemStack))
-//			event.toolTip.add(OreDictionary.getOreName(oid));
+		//		for(int oid : OreDictionary.getOreIDs(event.itemStack))
+		//			event.toolTip.add(OreDictionary.getOreName(oid));
+
+		//		if(event.itemStack.getItem() instanceof ItemTool && event.showAdvancedItemTooltips)
+		//		{
+		//			String mat = ((ItemTool)event.itemStack.getItem()).getToolMaterialName();
+		//			String speed = "?";
+		//			String level = "?";
+		//			String enchantability = "?";
+		//			try{
+		//				speed = ""+ToolMaterial.valueOf(((ItemTool)event.itemStack.getItem()).getToolMaterialName()).getEfficiencyOnProperMaterial();
+		//				level = ""+ToolMaterial.valueOf(((ItemTool)event.itemStack.getItem()).getToolMaterialName()).getHarvestLevel();
+		//				enchantability = ""+ToolMaterial.valueOf(((ItemTool)event.itemStack.getItem()).getToolMaterialName()).getEnchantability();
+		//			}catch(Exception e)
+		//			{
+		//				try{
+		//					speed = ""+ToolMaterial.valueOf("TF:"+((ItemTool)event.itemStack.getItem()).getToolMaterialName()).getEfficiencyOnProperMaterial();
+		//					level = ""+ToolMaterial.valueOf("TF:"+((ItemTool)event.itemStack.getItem()).getToolMaterialName()).getHarvestLevel();
+		//					enchantability = ""+ToolMaterial.valueOf("TF:"+((ItemTool)event.itemStack.getItem()).getToolMaterialName()).getEnchantability();
+		//				}catch(Exception e2){}
+		//			}
+		//			event.toolTip.add("Tool Material: "+Utils.toCamelCase(mat));
+		//			event.toolTip.add(" Speed: "+speed);
+		//			event.toolTip.add(" MiningLevel: "+level);
+		//			event.toolTip.add(" Enchantability: "+enchantability);
+		//		}
 
 		if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT
 				&& ClientUtils.mc().currentScreen != null

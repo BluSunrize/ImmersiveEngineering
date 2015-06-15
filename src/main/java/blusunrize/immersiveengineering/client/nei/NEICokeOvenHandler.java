@@ -175,7 +175,8 @@ public class NEICokeOvenHandler extends TemplateRecipeHandler
 		{
 			String s = r.time+" Ticks";
 			ClientUtils.font().drawString(s, 50-ClientUtils.font().getStringWidth(s)/2,53, 0xaaaaaa, true);
-
+			GL11.glColor4f(1, 1, 1, 1);
+			
 			int h = (int)Math.max(1,47*(r.creosote/(float)12000));
 			ClientUtils.drawRepeatedFluidIcon(IEContent.fluidCreosote, 124,12+47-h, 16, h);
 			ClientUtils.bindTexture("immersiveengineering:textures/gui/cokeOven.png");

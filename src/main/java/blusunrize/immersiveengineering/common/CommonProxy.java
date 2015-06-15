@@ -4,9 +4,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBucketWheel;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConveyorSorter;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFermenter;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityRefinery;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySqueezer;
 import blusunrize.immersiveengineering.common.blocks.stone.TileEntityBlastFurnace;
 import blusunrize.immersiveengineering.common.blocks.stone.TileEntityCokeOven;
@@ -14,10 +16,13 @@ import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenCrat
 import blusunrize.immersiveengineering.common.gui.ContainerBlastFurnace;
 import blusunrize.immersiveengineering.common.gui.ContainerCokeOven;
 import blusunrize.immersiveengineering.common.gui.ContainerCrate;
+import blusunrize.immersiveengineering.common.gui.ContainerDrill;
 import blusunrize.immersiveengineering.common.gui.ContainerFermenter;
+import blusunrize.immersiveengineering.common.gui.ContainerRefinery;
 import blusunrize.immersiveengineering.common.gui.ContainerRevolver;
 import blusunrize.immersiveengineering.common.gui.ContainerSorter;
 import blusunrize.immersiveengineering.common.gui.ContainerSqueezer;
+import blusunrize.immersiveengineering.common.items.ItemDrill;
 import blusunrize.immersiveengineering.common.items.ItemRevolver;
 import blusunrize.immersiveengineering.common.util.Lib;
 import cpw.mods.fml.common.network.IGuiHandler;
@@ -43,6 +48,10 @@ public class CommonProxy implements IGuiHandler
 			return new ContainerFermenter(player.inventory, (TileEntityFermenter) world.getTileEntity(x, y, z));
 		if(ID==Lib.GUIID_Sorter && world.getTileEntity(x, y, z) instanceof TileEntityConveyorSorter)
 			return new ContainerSorter(player.inventory, (TileEntityConveyorSorter) world.getTileEntity(x, y, z));
+		if(ID==Lib.GUIID_Refinery && world.getTileEntity(x, y, z) instanceof TileEntityRefinery)
+			return new ContainerRefinery(player.inventory, (TileEntityRefinery) world.getTileEntity(x, y, z));
+		if(ID==Lib.GUIID_Drill && player.getCurrentEquippedItem()!=null && player.getCurrentEquippedItem().getItem() instanceof ItemDrill)
+			return new ContainerDrill(player.inventory, world);
 		return null;
 	}
 
@@ -55,7 +64,7 @@ public class CommonProxy implements IGuiHandler
 	public void loadComplete()
 	{
 	}
-	
+
 	public void handleTileSound(String soundName, TileEntity tile, boolean tileActive, float volume, float pitch)
 	{
 	}
@@ -64,5 +73,12 @@ public class CommonProxy implements IGuiHandler
 	}
 	public void spawnCrusherFX(TileEntityCrusher tile, ItemStack stack)
 	{
+	}
+	public void spawnBucketWheelFX(TileEntityBucketWheel tile, ItemStack stack)
+	{
+	}
+	public String[] splitStringOnWidth(String s, int w)
+	{
+		return new String[]{s};
 	}
 }

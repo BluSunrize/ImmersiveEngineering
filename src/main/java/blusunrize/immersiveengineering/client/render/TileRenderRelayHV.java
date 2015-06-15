@@ -8,9 +8,9 @@ import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDevices;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 
-public class TileRenderRelayHV extends TileRenderIE
+public class TileRenderRelayHV extends TileRenderImmersiveConnectable
 {
-	static ModelIEObj model = new ModelIEObj("immersiveengineering:models/relayHV.obj")
+	ModelIEObj model = new ModelIEObj("immersiveengineering:models/relayHV.obj")
 	{
 		@Override
 		public IIcon getBlockIcon()
@@ -18,11 +18,6 @@ public class TileRenderRelayHV extends TileRenderIE
 			return IEContent.blockMetalDevice.getIcon(0, BlockMetalDevices.META_relayHV);
 		}
 	};
-
-	@Override
-	public void renderDynamic(TileEntity tile, double x, double y, double z, float f)
-	{
-	}
 
 	@Override
 	public void renderStatic(TileEntity tile, Tessellator tes, Matrix4 translationMatrix, Matrix4 rotationMatrix)

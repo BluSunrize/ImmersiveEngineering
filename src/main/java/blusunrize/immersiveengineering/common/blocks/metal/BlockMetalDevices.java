@@ -15,20 +15,29 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.ChatStyle;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.DimensionChunkCoords;
+import blusunrize.immersiveengineering.api.ExcavatorHandler;
 import blusunrize.immersiveengineering.client.render.BlockRenderMetalDevices;
+import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenPost;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.Utils;
+import cpw.mods.fml.common.Optional;
 
-public class BlockMetalDevices extends BlockIEBase
+@Optional.Interface(iface = "blusunrize.aquatweaks.api.IAquaConnectable", modid = "AquaTweaks")
+public class BlockMetalDevices extends BlockIEBase implements blusunrize.aquatweaks.api.IAquaConnectable
 {
 	public IIcon[][] icon_capacitorTop = new IIcon[3][3];
 	public IIcon[][] icon_capacitorBot = new IIcon[3][3];
@@ -49,7 +58,8 @@ public class BlockMetalDevices extends BlockIEBase
 	public static int META_conveyorBelt=11;
 	public static int META_furnaceHeater=12;
 	public static int META_sorter=13;
-	
+	public static int META_sampleDrill=14;
+
 	public BlockMetalDevices()
 	{
 		super("metalDevice", Material.iron, 4, ItemBlockMetalDevices.class,
@@ -57,7 +67,8 @@ public class BlockMetalDevices extends BlockIEBase
 				"connectorMV","capacitorMV","transformer",
 				"relayHV","connectorHV","capacitorHV","transformerHV",
 				"dynamo","thermoelectricGen",
-				"conveyorBelt","furnaceHeater","sorter");
+				"conveyorBelt","furnaceHeater","sorter",
+				"sampleDrill");
 		setHardness(3.0F);
 		setResistance(15.0F);
 	}
@@ -194,6 +205,7 @@ public class BlockMetalDevices extends BlockIEBase
 			icons[META_relayHV][i] = iconRegister.registerIcon("immersiveengineering:metal_relayHV");
 			icons[META_connectorHV][i] = iconRegister.registerIcon("immersiveengineering:metal_connectorHV");
 			icons[META_transformerHV][i] = iconRegister.registerIcon("immersiveengineering:metal_transformerHV");
+			icons[META_sampleDrill][i] = iconRegister.registerIcon("immersiveengineering:metal_coreDrill");
 		}
 	}
 	@Override
@@ -321,7 +333,42 @@ public class BlockMetalDevices extends BlockIEBase
 				return true;
 			}
 		}
-		
+		if(world.getTileEntity(x, y, z) instanceof TileEntitySampleDrill)
+		{
+			int off = ((TileEntitySampleDrill)world.getTileEntity(x, y, z)).pos;
+			if(!world.isRemote && world.getTileEntity(x, y-off, z) instanceof TileEntitySampleDrill)
+			{
+				TileEntitySampleDrill drill = (TileEntitySampleDrill)world.getTileEntity(x, y-off, z);
+				int process = drill.process;
+				int chunkX = (x>>4);
+				int chunkZ = (z>>4);
+				String s0 = (chunkX*16)+", "+(chunkZ*16);
+				String s1 = (chunkX*16+16)+", "+(chunkZ*16+16);
+				player.addChatMessage(new ChatComponentTranslation(Lib.CHAT_INFO+"forChunk", s0,s1).setChatStyle(new ChatStyle().setColor(EnumChatFormatting.DARK_GRAY)));
+				if(process<Config.getInt("coredrill_time"))
+				{
+					float f = process/(float)Config.getInt("coredrill_time");
+					player.addChatMessage(new ChatComponentTranslation(Lib.CHAT_INFO+"coreDrill.progress",(int)(f*100)+"%").setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GRAY)));
+				}
+				else
+				{
+					ExcavatorHandler.MineralMix mineral = ExcavatorHandler.getRandomMineral(world, chunkX, chunkZ);
+					if(mineral==null)
+						player.addChatMessage(new ChatComponentTranslation(Lib.CHAT_INFO+"coreDrill.result.none").setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GRAY)));
+					else
+					{
+						String min = StatCollector.translateToLocal(Lib.DESC_INFO+"mineral."+mineral.name);
+						player.addChatMessage(new ChatComponentTranslation(Lib.CHAT_INFO+"coreDrill.result.mineral",min));
+
+						int dep = ExcavatorHandler.mineralDepletion.get(new DimensionChunkCoords(world.provider.dimensionId, chunkX,chunkZ));
+						String f = Utils.formatDouble((Config.getInt("excavator_depletion")-dep)/(float)Config.getInt("excavator_depletion")*100,"0.##")+"%";
+						player.addChatMessage(new ChatComponentTranslation(Lib.CHAT_INFO+"coreDrill.result.depl",f));
+					}
+				}
+			}
+			return true;
+		}
+
 		return false;
 	}
 
@@ -444,6 +491,8 @@ public class BlockMetalDevices extends BlockIEBase
 			return new TileEntityFurnaceHeater();
 		case 13://13 sorter
 			return new TileEntityConveyorSorter();
+		case 14://14 sample drill
+			return new TileEntitySampleDrill();
 		}
 		return null;
 	}
@@ -476,6 +525,14 @@ public class BlockMetalDevices extends BlockIEBase
 				world.setBlockToAir(x, y, z);
 			}
 			else if(transf.postAttached<=0 && ((transf.dummy && world.isAirBlock(x,y+1,z))|| (!transf.dummy && world.isAirBlock(x,y-1,z))))
+				world.setBlockToAir(x, y, z);
+		}
+		if(world.getTileEntity(x, y, z) instanceof TileEntitySampleDrill)
+		{
+			TileEntitySampleDrill drill = (TileEntitySampleDrill)world.getTileEntity(x, y, z);
+			if((drill.pos==0 && (world.isAirBlock(x,y+1,z)||world.isAirBlock(x,y+2,z)))
+					||(drill.pos==1 && (world.isAirBlock(x,y-1,z)||world.isAirBlock(x,y+1,z)))
+					||(drill.pos==2 && (world.isAirBlock(x,y-1,z)||world.isAirBlock(x,y-2,z))))
 				world.setBlockToAir(x, y, z);
 		}
 	}
@@ -555,5 +612,25 @@ public class BlockMetalDevices extends BlockIEBase
 				}
 			}
 		}
+	}
+	
+
+	@Optional.Method(modid = "AquaTweaks")
+	public boolean shouldRenderFluid(IBlockAccess world, int x, int y, int z)
+	{
+		int meta = world.getBlockMetadata(x, y, z);
+		return meta==META_connectorLV
+		|| meta==META_connectorMV
+		|| meta==META_relayHV
+		|| meta==META_connectorHV;
+	}
+	@Optional.Method(modid = "AquaTweaks")
+	public boolean canConnectTo(IBlockAccess world, int x, int y, int z, int side)
+	{
+		int meta = world.getBlockMetadata(x, y, z);
+		return meta==META_connectorLV
+		|| meta==META_connectorMV
+		|| meta==META_relayHV
+		|| meta==META_connectorHV;
 	}
 }
