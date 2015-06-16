@@ -318,8 +318,8 @@ ie.manual.entry.cokeovenBlock=To form a Coke Oven, arrange 27 of these blocks in
 ie.manual.entry.treatedwood.name=Treated Wood
 ie.manual.entry.treatedwood.subtext=Highly Durable
 ie.manual.entry.treatedwood0=Treated Wood is, quite simply, wooden planks covered in creosote oil. It is however, one of the most important materials you will be using in Immersive Engineering, so you'd better be prepared to create a lot of it.
-ie.manual.entry.treatedwoodPost0=Posts made from treated wood make for excellent attachment points for your Wire Connectors. They are 4 blocks high, so you won't be able to place them without the proper clearance, but<br>[cont]
-ie.manual.entry.treatedwoodPost1=using the hammer on the sides of the topmost part of the post will attach a diagonal arm to place another connector on. You can also place <link:wiring:transformers:3> on the pole, which makes it less obtrusive.
+ie.manual.entry.treatedwoodPost0=Posts made from treated wood make for excellent attachment points for your Wire Connectors. They are 4 blocks high, so you won't be able to place them without the proper clearance.<br>Using the hammer on the sides of the topmost block will attach an arm to the post. 
+ie.manual.entry.treatedwoodPost1=You can also place <link:wiring:transformers:3> on the pole, which makes it less obtrusive.
 
 ie.manual.entry.wiring.name=Basic Wiring
 ie.manual.entry.wiring.subtext=Bzzzt!
@@ -354,6 +354,7 @@ ie.manual.entry.blastfurnaceBlock=To form a Blast Furnace, arrange 27 of these b
 ie.manual.entry.steelconstruction.name=Steel Constructions
 ie.manual.entry.steelconstruction.subtext=Riveting
 ie.manual.entry.steelconstruction0=Steel is not only an integral part of high-voltage architectures, it is also quite useful in, well, architecture. Steel scaffolding can be used to quickly create climbable structures, steel fencing keeps baddies at bay and structural arms make for great attachment points for your HV relays. 
+ie.manual.entry.steelconstruction1=Structural Connectors work similarly to normal connectors, but instead of transferring energy, they are purely decorational.<br>They won't accept normal wires, but Hemp Rope and Steel Cable (see next page).<br>You can also rotate them by rightclicking them with an Engineer's Hammer.
 
 ie.manual.entry.highvoltage.name=High-Voltage
 ie.manual.entry.highvoltage.subtext=You can't shake the shock
@@ -417,10 +418,10 @@ ie.manual.entry.lightningrod1=When the steel pole is struck, the huge amounts of
 ie.manual.entry.minerals.name=Mineral Deposits
 ie.manual.entry.minerals.subtext=Oresome
 ie.manual.entry.minerals0=The deposits of Ore found around your world are nothing new to you. What have so far left out of consideration though are mineral veins, which contain a mix of different ores. Due to their wide and thin spread, the average miner can't find them, but a <link:excavator:special machine> might be able to assist with that.
-ie.manual.entry.minerals1=To find and determine minerals in the world, you will want to craft a Core Sample Drill. This machine, when powered, will drill into the chunk and determine whether and which a mineral vein can be found here. The Sample Core Drill consumes <config:i:coredrill_consumption> RF/t and takes <config:i:coredrill_time> ticks to fully retrieve a sample and analyze it.
+ie.manual.entry.minerals1=To find and determine minerals in the world, you will want to craft a Core Sample Drill. This machine, when powered, will drill into the chunk and determine which mineral can be found there. The Drill consumes <config:i:coredrill_consumption> RF/t and takes <config:i:coredrill_time> ticks to fully retrieve and analyze a sample.
 ie.manual.entry.minerals2=The following pages list every type of vein and the ores that can be retrieved from them.
 
 ie.manual.entry.excavator.name=Excavator
-ie.manual.entry.excavator.subtext=
+ie.manual.entry.excavator.subtext=Better than Dwarves
 ie.manual.entry.excavator0=The Excavator is one of the pinnacles of modern engineering. It is able to dig up <link:minerals:minerals:0> from veins inaccessible by normal mining. In return however, the excavator is a complex structure which requires <config:i:excavator_consumption> RF/t in order to operate.
 ie.manual.entry.excavator1=The structure is comprised of two pieces: The engine shown on the first page and the bucket wheel displayed on the previous, which fits into the 'braces' of the engine. The energy input for the engine is on its side, the back features a redstone control panel and the item output.<br>As the excavator digs up ores, the yield of the vein slowly decreases, but a vein of minerals can last for <config:i:excavator_depletion_days> days of consecutive digging.

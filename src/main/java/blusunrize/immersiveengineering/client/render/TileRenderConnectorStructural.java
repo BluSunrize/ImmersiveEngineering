@@ -6,7 +6,7 @@ import net.minecraft.util.IIcon;
 import blusunrize.immersiveengineering.client.models.ModelIEObj;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDecoration;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorLV;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorStructural;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 
 public class TileRenderConnectorStructural extends TileRenderImmersiveConnectable
@@ -25,7 +25,7 @@ public class TileRenderConnectorStructural extends TileRenderImmersiveConnectabl
 	{
 		translationMatrix.translate(.5, .5, .5);
 
-		TileEntityConnectorLV connector = (TileEntityConnectorLV)tile;
+		TileEntityConnectorStructural connector = (TileEntityConnectorStructural)tile;
 		switch(connector.facing)
 		{
 		case 0:
@@ -46,6 +46,8 @@ public class TileRenderConnectorStructural extends TileRenderImmersiveConnectabl
 			rotationMatrix.rotate(Math.toRadians(90), 0,0,1);
 			break;
 		}
+		rotationMatrix.rotate(Math.toRadians(connector.rotation), 0,1,0);
+		
 
 		model.render(tile, tes, translationMatrix, rotationMatrix, false);
 	}

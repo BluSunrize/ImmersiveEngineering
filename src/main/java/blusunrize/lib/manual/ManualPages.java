@@ -397,7 +397,7 @@ public abstract class ManualPages implements IManualPage
 				yyOff += yOff[i-1]+8;
 				i++;
 			}
-			super.initPage(gui, x, y+yyOff, pageButtons);
+			super.initPage(gui, x, y+yyOff-2, pageButtons);
 		}
 
 		@Override
@@ -461,7 +461,7 @@ public abstract class ManualPages implements IManualPage
 
 			manual.fontRenderer.setUnicodeFlag(uni);
 			if(localizedText!=null&&!localizedText.isEmpty())
-				manual.fontRenderer.drawSplitString(localizedText, x,y+totalYOff+2, 120, manual.getTextColour());
+				manual.fontRenderer.drawSplitString(localizedText, x,y+totalYOff-2, 120, manual.getTextColour());
 		}
 
 		@Override
