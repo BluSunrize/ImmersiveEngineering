@@ -271,6 +271,8 @@ public class BlockMetalDecoration extends BlockIEBase implements blusunrize.aqua
 		{	
 			((TileEntityConnectorStructural)world.getTileEntity(x,y,z)).rotation += 22.5f;
 			((TileEntityConnectorStructural)world.getTileEntity(x,y,z)).rotation %= 360;
+			world.getTileEntity(x,y,z).markDirty();
+			world.markBlockForUpdate(x, y, z);
 			return true;
 		}
 		return false;

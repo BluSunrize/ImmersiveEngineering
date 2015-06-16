@@ -62,12 +62,16 @@ public class ExcavatorHandler
 		{
 			weight -= e.getValue();
 			if(weight < 0)
-			{
-				mineralDepletion.put(new DimensionChunkCoords(world.provider.dimensionId, chunkX,chunkZ), dep+1);
 				return e.getKey();
-			}
 		}
 		return null;
+	}
+	public static void depleteMinerals(World world, int chunkX, int chunkZ)
+	{
+		if(!mineralDepletion.containsKey(new DimensionChunkCoords(world.provider.dimensionId, chunkX,chunkZ)))
+			mineralDepletion.put(new DimensionChunkCoords(world.provider.dimensionId, chunkX,chunkZ), 0);
+		int dep = mineralDepletion.get(new DimensionChunkCoords(world.provider.dimensionId, chunkX,chunkZ));
+		mineralDepletion.put(new DimensionChunkCoords(world.provider.dimensionId, chunkX,chunkZ), dep+1);
 	}
 
 	public static class MineralMix

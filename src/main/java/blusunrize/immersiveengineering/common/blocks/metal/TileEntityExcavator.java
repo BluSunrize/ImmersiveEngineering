@@ -149,6 +149,7 @@ public class TileEntityExcavator extends TileEntityMultiblockPart implements IEn
 									worldObj.addBlockEvent(wheel.xCoord,wheel.yCoord,wheel.zCoord, wheel.getBlockType(), ((target+4)%8)+2, Block.getIdFromBlock(Block.getBlockFromItem(output.getItem())) + (output.getItemDamage() << 12));
 									wheel.markDirty();
 								}
+								ExcavatorHandler.depleteMinerals(worldObj, wheelAxis[0]>>4, wheelAxis[2]>>4);
 							}
 						}
 						if(wheel.digStacks[target]!=null)

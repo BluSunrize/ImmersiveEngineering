@@ -1,4 +1,13 @@
-#####Version 0.2.0
+#####Version 0.2.2 - BUILT
+- possible fix for fermenter+squeezer crash
+- structural connectors rotate again
+- fixed up the manual on the excavator a little
+- added documentation to Structural Connectors
+
+#####Version 0.2.1 - BUILT
+- fixed mineral depletion on the excavator
+
+#####Version 0.2.0 - BUILT
 - fixed CokeOven texture
 - added NEI Handler for the crusher
 - fixed RedstoneOre giving Platinum dust

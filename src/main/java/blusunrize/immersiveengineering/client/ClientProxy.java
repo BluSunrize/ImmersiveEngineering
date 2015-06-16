@@ -211,8 +211,10 @@ public class ClientProxy extends CommonProxy
 				new ManualPageMultiblock(manual, "", MultiblockBlastFurnace.instance));
 		manual.addEntry("steelconstruction", "general",
 				new ManualPages.Text(manual, "steelconstruction0"),
-				new ManualPages.Crafting(manual, "", new ItemStack(IEContent.blockMetalDecoration,1,0),new ItemStack(IEContent.blockMetalDecoration,1,1),new ItemStack(IEContent.blockMetalDecoration,1,3)),
-				new ManualPages.Crafting(manual, "", new ItemStack(IEContent.blockMetalDecoration,1,9)));
+				new ManualPages.Crafting(manual, "", new ItemStack(IEContent.blockMetalDecoration,1,BlockMetalDecoration.META_fence),new ItemStack(IEContent.blockMetalDecoration,1,BlockMetalDecoration.META_scaffolding),new ItemStack(IEContent.blockMetalDecoration,1,BlockMetalDecoration.META_structuralArm)),
+				new ManualPages.Crafting(manual, "", new ItemStack(IEContent.blockMetalDecoration,1,BlockMetalDecoration.META_wallMount)),
+				new ManualPages.Crafting(manual, "steelconstruction1", new ItemStack(IEContent.blockMetalDecoration,1,BlockMetalDecoration.META_connectorStructural)),
+				new ManualPages.Crafting(manual, "", new ItemStack(IEContent.itemWireCoil,1,3),new ItemStack(IEContent.itemWireCoil,1,4)));
 		manual.addEntry("multiblocks", "general",
 				new ManualPages.Text(manual, "multiblocks0"),
 				new ManualPages.Crafting(manual, "", new ItemStack(IEContent.blockMetalDecoration,1,BlockMetalDecoration.META_lightEngineering),new ItemStack(IEContent.blockMetalDecoration,1,BlockMetalDecoration.META_heavyEngineering)),
