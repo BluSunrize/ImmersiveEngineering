@@ -45,9 +45,9 @@ public interface IImmersiveConnectable
 	
 	/**
 	 * used to reset the CableType limiter of the tile, provided it matches the given argument
-	 * null acts as a wildcard, meaning if null is parsed, you /always/ reset the limiter
+	 * acts as a wildcard, meaning if connection.CableType is null, you /always/ reset the limiter
 	 */
-	public void removeCable(WireType cableType);
+	public void removeCable(Connection connection);
 	
 	/**
 	 * @return the offset used when RayTracing to or from this block. This vector is based from the blocks /origin/
