@@ -4,9 +4,10 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
+import cofh.api.energy.IEnergyConnection;
 import cofh.api.energy.IEnergyReceiver;
 
-public class TileEntityDynamo extends TileEntityIEBase
+public class TileEntityDynamo extends TileEntityIEBase implements IEnergyConnection
 {
 	public int facing = 2;
 
@@ -40,4 +41,9 @@ public class TileEntityDynamo extends TileEntityIEBase
 		nbt.setInteger("facing", facing);
 	}
 
+	@Override
+	public boolean canConnectEnergy(ForgeDirection from)
+	{
+		return true;
+	}
 }

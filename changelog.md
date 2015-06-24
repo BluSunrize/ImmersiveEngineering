@@ -1,3 +1,8 @@
+#####Version 0.2.4
+- fixed various spelling error in the .lang
+- fixed HV Transformers fitting on wooden poles
+- fixed Revolver GUI, revolver is now locked in slot
+
 #####Version 0.2.3 - BUILT
 - added Engineer's Workbench
 - buffed FluidTank on the Drill
