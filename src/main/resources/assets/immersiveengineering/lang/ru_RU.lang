@@ -309,7 +309,7 @@ ie.manual.entry.introductionHammer=Инженерный Молот очень в
 
 ie.manual.entry.ores.name=Руды
 ie.manual.entry.ores.subtext=Diggy diggy hole
-ie.manual.entry.oresCopper=§lCopper Ore§r is found in the world between layers <config:iA:ore_copper:1> and <config:iA:ore_copper:2>, and requires a Stone Pickaxe to harvest.<br><br>The ore will smelt into copper ingots, which are used in crafting basic copper wires, coils, and other integral parts of the IE architecture.
+ie.manual.entry.oresCopper=§lCopper Ore§r находится в мире между слоями<config:iA:ore_copper:1> and <config:iA:ore_copper:2>, and requires a Stone Pickaxe to harvest.<br><br>The ore will smelt into copper ingots, which are used in crafting basic copper wires, coils, and other integral parts of the IE architecture.
 ie.manual.entry.oresBauxite=§lBauxite Ore§r is found in the world between layers <config:iA:ore_bauxite:1> and <config:iA:ore_bauxite:2>, and requires a Stone Pickaxe to harvest.<br><br>The ore will smelt into aluminium ingots, which, together with steel, are used to create high-voltage wires.
 ie.manual.entry.oresLead=§lLead Ore§r is found in the world between layers <config:iA:ore_lead:1> and <config:iA:ore_lead:2>, and requires an Iron Pickaxe to harvest.<br><br>The ore will smelt into lead ingots, which are used in creating capacitors.
 ie.manual.entry.oresSilver=§lSilver Ore§r is found in the world between layers <config:iA:ore_silver:1> and <config:iA:ore_silver:2>, and requires an Iron Pickaxe to harvest.<br><br>The ore will smelt into silver ingots, which alloy with gold to create electrum, a far more effective conductor.
