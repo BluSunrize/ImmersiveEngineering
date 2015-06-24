@@ -3,7 +3,6 @@ package blusunrize.immersiveengineering.common.blocks.wooden;
 import java.util.ArrayList;
 import java.util.List;
 
-import cpw.mods.fml.common.Optional;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -23,13 +22,14 @@ import blusunrize.immersiveengineering.client.render.BlockRenderWoodenDevices;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
 import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.Utils;
+import cpw.mods.fml.common.Optional;
 
 @Optional.Interface(iface = "blusunrize.aquatweaks.api.IAquaConnectable", modid = "AquaTweaks")
 public class BlockWoodenDevices extends BlockIEBase implements blusunrize.aquatweaks.api.IAquaConnectable
 {
 	public BlockWoodenDevices()
 	{
-		super("woodenDevice", Material.wood, 1, ItemBlockWoodenDevices.class, "post","watermill","windmill","windmillAdvanced","crate");
+		super("woodenDevice", Material.wood, 1, ItemBlockWoodenDevices.class, "post","watermill","windmill","windmillAdvanced","crate","modificationWorkbench");
 		this.setHardness(2.0F);
 		this.setResistance(5.0F);
 	}
@@ -50,7 +50,7 @@ public class BlockWoodenDevices extends BlockIEBase implements blusunrize.aquatw
 	{
 		//Treated wood + post, fence, watermill, windmills
 		for(int i=0; i<subNames.length; i++)
-			icons[i][0] = iconRegister.registerIcon("immersiveengineering:"+(i==0?"woodenPost":i==4?"woodenCrate":"treatedWood"));
+			icons[i][0] = iconRegister.registerIcon("immersiveengineering:"+(i==0?"woodenPost":i==4?"woodenCrate":i==5?"workbench":"treatedWood"));
 	}
 	@Override
 	public int getRenderType()
@@ -150,6 +150,22 @@ public class BlockWoodenDevices extends BlockIEBase implements blusunrize.aquatw
 		{
 			if(!world.isRemote)
 				player.openGui(ImmersiveEngineering.instance, Lib.GUIID_WoodenCrate, world, x,y,z);
+			return true;
+		}
+		if(!player.isSneaking() && world.getTileEntity(x, y, z) instanceof TileEntityModWorkbench)
+		{
+			TileEntityModWorkbench tile = (TileEntityModWorkbench)world.getTileEntity(x, y, z);
+			if(tile.dummy)
+			{
+				int f = tile.facing;
+				int off = tile.dummyOffset;
+				int xx = x-(f<4?off:0);
+				int zz = z-(f>3?off:0);
+				if(world.getTileEntity(xx, y, zz) instanceof TileEntityModWorkbench)
+					tile = (TileEntityModWorkbench)world.getTileEntity(xx, y, zz);
+			}
+			if(!world.isRemote)
+				player.openGui(ImmersiveEngineering.instance, Lib.GUIID_Workbench, world, tile.xCoord,tile.yCoord,tile.zCoord);
 			return true;
 		}
 		return false;
@@ -252,6 +268,37 @@ public class BlockWoodenDevices extends BlockIEBase implements blusunrize.aquatw
 					world.setBlockToAir(xx+((f==2||f==3)?ww:0), yy+hh, zz+((f==2||f==3)?0:ww));
 			}
 		}
+		if(world.getTileEntity(x, y, z) instanceof TileEntityModWorkbench)
+		{
+			TileEntityModWorkbench tile = (TileEntityModWorkbench)world.getTileEntity(x, y, z);
+			int f = tile.facing;
+			int off = tile.dummyOffset;
+			if(tile.dummy)
+				off *= -1;
+			int xx = x+(f<4?off:0);
+			int zz = z+(f>3?off:0);
+
+			if(world.getTileEntity(xx, y, zz) instanceof TileEntityModWorkbench)
+				world.setBlockToAir(xx, y, zz);
+			if(!world.isRemote && !tile.dummy)
+				for(int i=0; i<tile.getSizeInventory(); i++)
+				{
+					ItemStack stack = tile.getStackInSlot(i);
+					if(stack!=null)
+					{
+						float fx = world.rand.nextFloat() * 0.8F + 0.1F;
+						float fz = world.rand.nextFloat() * 0.8F + 0.1F;
+
+						EntityItem entityitem = new EntityItem(world, x+fx, y+.5, z+fz, stack);
+						entityitem.motionX = world.rand.nextGaussian()*.05;
+						entityitem.motionY = world.rand.nextGaussian()*.05+.2;
+						entityitem.motionZ = world.rand.nextGaussian()*.05;
+						if(stack.hasTagCompound())
+							entityitem.getEntityItem().setTagCompound((NBTTagCompound)stack.getTagCompound().copy());
+						world.spawnEntityInWorld(entityitem);
+					}
+				}
+		}
 		super.breakBlock(world, x, y, z, par5, par6);
 	}
 
@@ -272,10 +319,12 @@ public class BlockWoodenDevices extends BlockIEBase implements blusunrize.aquatw
 			return new TileEntityWindmillAdvanced();
 		case 4:
 			return new TileEntityWoodenCrate();
+		case 5:
+			return new TileEntityModWorkbench();
 		}
 		return null;
 	}
-	
+
 	@Optional.Method(modid = "AquaTweaks")
 	public boolean shouldRenderFluid(IBlockAccess world, int x, int y, int z)
 	{

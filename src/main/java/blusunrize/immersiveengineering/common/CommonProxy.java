@@ -12,17 +12,17 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityRefinery;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySqueezer;
 import blusunrize.immersiveengineering.common.blocks.stone.TileEntityBlastFurnace;
 import blusunrize.immersiveengineering.common.blocks.stone.TileEntityCokeOven;
+import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityModWorkbench;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenCrate;
 import blusunrize.immersiveengineering.common.gui.ContainerBlastFurnace;
 import blusunrize.immersiveengineering.common.gui.ContainerCokeOven;
 import blusunrize.immersiveengineering.common.gui.ContainerCrate;
-import blusunrize.immersiveengineering.common.gui.ContainerDrill;
 import blusunrize.immersiveengineering.common.gui.ContainerFermenter;
+import blusunrize.immersiveengineering.common.gui.ContainerModWorkbench;
 import blusunrize.immersiveengineering.common.gui.ContainerRefinery;
 import blusunrize.immersiveengineering.common.gui.ContainerRevolver;
 import blusunrize.immersiveengineering.common.gui.ContainerSorter;
 import blusunrize.immersiveengineering.common.gui.ContainerSqueezer;
-import blusunrize.immersiveengineering.common.items.ItemDrill;
 import blusunrize.immersiveengineering.common.items.ItemRevolver;
 import blusunrize.immersiveengineering.common.util.Lib;
 import cpw.mods.fml.common.network.IGuiHandler;
@@ -50,8 +50,10 @@ public class CommonProxy implements IGuiHandler
 			return new ContainerSorter(player.inventory, (TileEntityConveyorSorter) world.getTileEntity(x, y, z));
 		if(ID==Lib.GUIID_Refinery && world.getTileEntity(x, y, z) instanceof TileEntityRefinery)
 			return new ContainerRefinery(player.inventory, (TileEntityRefinery) world.getTileEntity(x, y, z));
-		if(ID==Lib.GUIID_Drill && player.getCurrentEquippedItem()!=null && player.getCurrentEquippedItem().getItem() instanceof ItemDrill)
-			return new ContainerDrill(player.inventory, world);
+		//		if(ID==Lib.GUIID_Workbench && player.getCurrentEquippedItem()!=null && player.getCurrentEquippedItem().getItem() instanceof ItemDrill)
+		//			return new ContainerDrill(player.inventory, world);
+		if(ID==Lib.GUIID_Workbench && world.getTileEntity(x, y, z) instanceof TileEntityModWorkbench)
+			return new ContainerModWorkbench(player.inventory, (TileEntityModWorkbench) world.getTileEntity(x, y, z));
 		return null;
 	}
 

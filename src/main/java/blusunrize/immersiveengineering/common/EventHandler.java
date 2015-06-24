@@ -28,7 +28,6 @@ import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityLightningRod;
 import blusunrize.immersiveengineering.common.items.ItemDrill;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.Utils;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -51,17 +50,17 @@ public class EventHandler
 			ImmersiveNetHandler.INSTANCE = new ImmersiveNetHandler();
 		if(!event.world.isRemote && !IESaveData.loaded)
 		{
-			System.out.println("[ImEng] - world data loading, dimension "+event.world.provider.dimensionId);
+			IELogger.info("[ImEng] - world data loading, dimension "+event.world.provider.dimensionId);
 			IESaveData worldData = (IESaveData) event.world.loadItemData(IESaveData.class, IESaveData.dataName);
 			if(worldData==null)
 			{
-				System.out.println("[ImEng] - No World Data Found");
+				IELogger.info("[ImEng] - No World Data Found");
 				worldData = new IESaveData(IESaveData.dataName);
 				//				worldData.dimension = event.world.provider.dimensionId;
 				event.world.setItemData(IESaveData.dataName, worldData);
 			}
 			else
-				System.out.println("[ImEng] - World Data Retrieved");
+				IELogger.info("World Data Retrieved");
 			IESaveData.setInstance(event.world.provider.dimensionId, worldData);
 			IESaveData.loaded = true;
 		}
@@ -128,50 +127,6 @@ public class EventHandler
 	@SubscribeEvent
 	public void onItemCrafted(ItemCraftedEvent event)
 	{
-		if( OreDictionary.itemMatches(new ItemStack(IEContent.itemRevolver,1,OreDictionary.WILDCARD_VALUE),event.crafting,false) && event.player!=null)	
-		{
-			String s = ItemNBTHelper.getString(event.crafting, "elite");
-			if(event.player.getUniqueID().toString().equals("f34afdfb-996b-4020-b8a2-b740e2937b29"))
-			{
-				if(s==null||s.isEmpty())
-				{
-					if(event.crafting.getItemDamage()==0)
-						event.crafting.setItemDamage(1);
-					else if(event.crafting.getItemDamage()==1)
-						ItemNBTHelper.setString(event.crafting, "elite", "fenrir");
-				}
-				else if(s.equals("fenrir"))
-				{
-					event.crafting.setItemDamage(3);
-					ItemNBTHelper.setString(event.crafting, "elite", "sns");
-				}
-				else if(s.equals("sns"))
-				{
-					event.crafting.setItemDamage(1);
-					ItemNBTHelper.setString(event.crafting, "elite", "oblivion");
-				}
-				else if(s.equals("oblivion"))
-				{
-					event.crafting.setItemDamage(4);
-					ItemNBTHelper.setString(event.crafting, "elite", "nerf");
-				}
-				else if(s.equals("nerf"))
-				{
-					event.crafting.setItemDamage(0);
-					ItemNBTHelper.remove(event.crafting, "elite");
-				}
-			}
-			else if(event.player.getUniqueID().toString().equals("c2024e2a-dd76-4bc9-9ea3-b771f18f23b6"))
-			{
-				if(s.equals("earthshaker"))
-					ItemNBTHelper.setString(event.crafting, "elite", "oblivion");
-				else if(s.equals("oblivion"))
-					ItemNBTHelper.setString(event.crafting, "elite", "oathkeeper");
-				else if(s.equals("oathkeeper"))
-					ItemNBTHelper.setString(event.crafting, "elite", "earthshaker");
-			}
-
-		}
 	}
 
 	@SubscribeEvent()

@@ -1,7 +1,7 @@
 package blusunrize.immersiveengineering.common.items;
 
-import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -12,17 +12,23 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Container;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IBullet;
 import blusunrize.immersiveengineering.api.IUpgrade;
+import blusunrize.immersiveengineering.common.gui.IESlot;
+import blusunrize.immersiveengineering.common.gui.InventoryStorageItem;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Lib;
 
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 
 import cpw.mods.fml.relauncher.Side;
@@ -32,52 +38,65 @@ public class ItemRevolver extends ItemUpgradeableTool
 {
 	public ItemRevolver()
 	{
-		super("revolver", 1, IUpgrade.UpgradeType.REVOLVER, "normal","elite","speedloader","speed","nerf");
+		super("revolver", 1, IUpgrade.UpgradeType.REVOLVER, "normal","speedloader");
 	}
 
 	@Override
 	public void registerIcons(IIconRegister ir)
 	{
-		this.icons[2] = ir.registerIcon("immersiveengineering:"+itemName+"_"+"speedloader");
+		this.icons[1] = ir.registerIcon("immersiveengineering:"+itemName+"_"+"speedloader");
+	}
+
+	@Override
+	public int getInternalSlots(ItemStack stack)
+	{
+		return 18+2;
+	}
+	@Override
+	public Slot[] getWorkbenchSlots(Container container, ItemStack stack, InventoryStorageItem invItem)
+	{
+		return new Slot[]
+				{
+				new IESlot.Upgrades(container, invItem,18+0, 102,32, IUpgrade.UpgradeType.REVOLVER, stack, true),
+				new IESlot.Upgrades(container, invItem,18+1, 122,32, IUpgrade.UpgradeType.REVOLVER, stack, true),
+				};
+	}
+	@Override
+	public boolean canModify(ItemStack stack)
+	{
+		return stack.getItemDamage()!=1;
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void getSubItems(Item item, CreativeTabs tab, List list)
 	{
-		for(int i=0;i<3;i++)
+		for(int i=0;i<2;i++)
 			list.add(new ItemStack(this,1,i));
-		//		for(SpecialRevolver r : eliteGunmen.values())
-		//		{
-		//			ItemStack s = new ItemStack(this,1,r.meta);
-		//			if(r.tag!=null && !r.tag.isEmpty())
-		//			{
-		//				s.setTagCompound(new NBTTagCompound());
-		//				s.getTagCompound().setString("elite",r.tag);
-		//			}
-		//			list.add(s);
-		//		}
 	}
 	@Override
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean adv)
 	{
-		if(ItemNBTHelper.hasKey(stack, "elite") || ItemNBTHelper.hasKey(stack, "flavour"))
+		if(stack.getItemDamage()!=1)
 		{
-			if(ItemNBTHelper.hasKey(stack, "elite"))
-				list.add(StatCollector.translateToLocal(Lib.DESC_FLAVOUR+"revolver."+ItemNBTHelper.getString(stack, "elite")));
-			if(ItemNBTHelper.hasKey(stack, "flavour"))
+			String tag = getRevolverDisplayTag(stack);
+			if(!tag.isEmpty())
+				list.add(StatCollector.translateToLocal(Lib.DESC_FLAVOUR+"revolver."+tag));
+			else if(ItemNBTHelper.hasKey(stack, "flavour"))
 				list.add(StatCollector.translateToLocal(Lib.DESC_FLAVOUR+"revolver."+ItemNBTHelper.getString(stack, "flavour")));
+			else if(stack.getItemDamage()==0)
+				list.add(StatCollector.translateToLocal(Lib.DESC_FLAVOUR+"revolver"));
 		}
-		else if(stack.getItemDamage()==1)
-			list.add(StatCollector.translateToLocal(Lib.DESC_FLAVOUR+"revolver.elite"));
-		else
-			list.add(StatCollector.translateToLocal(Lib.DESC_FLAVOUR+"revolver"));
 	}
 	@Override
 	public String getUnlocalizedName(ItemStack stack)
 	{
-		if(ItemNBTHelper.hasKey(stack, "elite"))
-			return this.getUnlocalizedName()+"."+ItemNBTHelper.getString(stack, "elite");
+		if(stack.getItemDamage()!=1)
+		{
+			String tag = getRevolverDisplayTag(stack);
+			if(!tag.isEmpty())
+				return this.getUnlocalizedName()+"."+tag;
+		}
 		return super.getUnlocalizedName(stack);
 	}
 
@@ -85,13 +104,12 @@ public class ItemRevolver extends ItemUpgradeableTool
 	public Multimap getAttributeModifiers(ItemStack stack)
 	{
 		Multimap multimap = super.getAttributeModifiers(stack);
-		if(stack.getItemDamage()==1)
-			multimap.put(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName(), new AttributeModifier(field_111210_e, "Weapon modifier", (double)8, 0));
-		if(stack.getItemDamage()==3)
-			multimap.put(SharedMonsterAttributes.movementSpeed.getAttributeUnlocalizedName(), new AttributeModifier(field_111210_e, "Weapon modifier", 0.3, 1));
-		if(stack.getItemDamage()==4)
-			multimap.put(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName(), new AttributeModifier(field_111210_e, "Weapon modifier", (double)-1, 0));
-
+		double melee = getUpgrades(stack).getDouble("melee");
+		if(melee!=0)
+			multimap.put(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName(), new AttributeModifier(field_111210_e, "Weapon modifier", melee, 0));
+		double speed = getUpgrades(stack).getDouble("speed");
+		if(speed!=0)
+			multimap.put(SharedMonsterAttributes.movementSpeed.getAttributeUnlocalizedName(), new AttributeModifier(field_111210_e, "Weapon modifier", speed, 1));
 		return multimap;
 	}
 
@@ -104,7 +122,7 @@ public class ItemRevolver extends ItemUpgradeableTool
 	@Override
 	public void onUpdate(ItemStack stack, World world, Entity ent, int slot, boolean inHand)
 	{
-		if(!world.isRemote && stack.getItemDamage()!=2 && ent!=null && ItemNBTHelper.hasKey(stack, "blocked"))
+		if(!world.isRemote && stack.getItemDamage()!=1 && ent!=null && ItemNBTHelper.hasKey(stack, "blocked"))
 		{
 			int l = ItemNBTHelper.handleDelayedSoundsForStack(stack, "casings", ent);
 			if(l==0)
@@ -125,11 +143,10 @@ public class ItemRevolver extends ItemUpgradeableTool
 	{
 		if(!world.isRemote)
 		{
-			if(player.isSneaking() || revolver.getItemDamage()==2)
+			if(player.isSneaking() || revolver.getItemDamage()==1)
 				player.openGui(ImmersiveEngineering.instance, Lib.GUIID_Revolver, world, (int)player.posX,(int)player.posY,(int)player.posZ);
-			else if(revolver.getItemDamage()==4)
+			else if(this.getUpgrades(revolver).getBoolean("nerf"))
 				world.playSoundAtEntity(player, "random.pop", 1F, .6f);
-			//				player.addChatMessage(new ChatComponentText("*plop*"));
 			else
 			{
 				ItemStack[] bullets = getBullets(revolver);
@@ -165,7 +182,7 @@ public class ItemRevolver extends ItemUpgradeableTool
 				{
 					if(bullets[0]!=null && bullets[0].getItem() instanceof IBullet && ((IBullet)bullets[0].getItem()).canSpawnBullet(bullets[0]))
 					{
-						((IBullet)bullets[0].getItem()).spawnBullet(player, bullets[0]);
+						((IBullet)bullets[0].getItem()).spawnBullet(player, bullets[0], getUpgrades(revolver).getBoolean("electro"));
 						bullets[0]= ((IBullet)bullets[0].getItem()).getCasing(bullets[0]);
 						world.playSoundAtEntity(player, "fireworks.blast", .6f, 1);
 						world.playSoundAtEntity(player, "mob.wither.shoot", .3f, 5f);
@@ -198,19 +215,7 @@ public class ItemRevolver extends ItemUpgradeableTool
 		ItemStack[] stackList = this.getContainedItems(revolver);
 		ItemStack[] bullets = new ItemStack[getBulletSlotAmount(revolver)];
 		System.arraycopy(stackList,0, bullets,0, bullets.length);
-//		if(revolver.hasTagCompound())
-//		{
-//			NBTTagList inv = revolver.getTagCompound().getTagList("Bullets",10);
-//			for (int i=0; i<inv.tagCount(); i++)
-//			{
-//				NBTTagCompound tag = inv.getCompoundTagAt(i);
-//				int slot = tag.getByte("Slot") & 0xFF;
-//				if ((slot >= 0) && (slot < stackList.length))
-//					stackList[slot] = ItemStack.loadItemStackFromNBT(tag);
-//			}
-//		}
-//		return stackList;
-				return bullets;
+		return bullets;
 	}
 	public void setBullets(ItemStack revolver, ItemStack[] bullets)
 	{
@@ -218,96 +223,164 @@ public class ItemRevolver extends ItemUpgradeableTool
 		for(int i=0; i<bullets.length; i++)
 			stackList[i] = bullets[i];
 		this.setContainedItems(revolver, stackList);
-		
-//		NBTTagList inv = new NBTTagList();
-//		for (int i = 0; i < stackList.length; i++)
-//			if (stackList[i] != null)
-//			{
-//				NBTTagCompound tag = new NBTTagCompound();
-//				tag.setByte("Slot", (byte)i);
-//				stackList[i].writeToNBT(tag);
-//				inv.appendTag(tag);
-//			}
-//		if(!revolver.hasTagCompound())
-//			revolver.setTagCompound(new NBTTagCompound());
-//		revolver.getTagCompound().setTag("Bullets",inv);
 	}
 	public int getBulletSlotAmount(ItemStack revolver)
 	{
-		return (ItemNBTHelper.getInt(revolver, "upgrade")&1)==1?14:8;
+		return 8+this.getUpgrades(revolver).getInteger("bullets");
 	}
-	@Override
-	public int getInternalSlots(ItemStack stack)
+	public NBTTagCompound getUpgradeBase(ItemStack stack)
 	{
-		return getBulletSlotAmount(stack)+2;
+		return ItemNBTHelper.getTagCompound(stack, "baseUpgrades");
+	}
+
+	public String getRevolverDisplayTag(ItemStack revolver)
+	{
+		String tag = ItemNBTHelper.getString(revolver, "elite");
+		if(!tag.isEmpty())
+		{
+			int split = tag.lastIndexOf("_");
+			if(split<0)
+				split = tag.length();
+			return tag.substring(0,split);
+		}
+		return "";
 	}
 
 	public String getRevolverTexture(ItemStack revolver)
 	{
-		if(revolver.hasTagCompound() && revolver.getTagCompound().hasKey("elite"))
-			return "immersiveengineering:textures/models/revolver_"+revolver.getTagCompound().getString("elite")+".png";
-		if(revolver.getItemDamage()==1)
-			return "immersiveengineering:textures/models/revolver_dev.png";
-		else if(revolver.getItemDamage()==4)
-			return "immersiveengineering:textures/models/revolver_nerf.png";
+		String tag = getRevolverDisplayTag(revolver);
+		if(!tag.isEmpty())
+			return "immersiveengineering:textures/models/revolver_"+tag+".png";
 		else
 			return "immersiveengineering:textures/models/revolver.png";
+	}
+
+	public String[] compileRender(ItemStack revolver)
+	{
+		HashSet<String> render = new HashSet<String>();
+		render.add("revolver_frame");
+		render.add("barrel");
+		render.add("cosmetic_compensator");
+		String tag = ItemNBTHelper.getString(revolver, "elite");
+		if(tag!=null &&  specialRevolversByTag.containsKey(tag))
+		{
+			SpecialRevolver r = specialRevolversByTag.get(tag);
+			if(r!=null && r.renderAdditions!=null)
+				for(String ss : r.renderAdditions)
+					render.add(ss);
+		}
+		NBTTagCompound upgrades = this.getUpgrades(revolver);
+		if(upgrades.getInteger("bullets")>0 && !render.contains("dev_mag"))
+			render.add("player_mag");
+		if(upgrades.getDouble("melee")>0 && !render.contains("dev_bayonet"))
+		{
+			render.add("bayonet_attachment");
+			render.add("player_bayonet");
+		}
+		if(upgrades.getBoolean("electro"))
+			render.add("player_electro");
+		return render.toArray(new String[0]);
 	}
 
 
 	@Override
 	public void onCreated(ItemStack stack, World world, EntityPlayer player)
 	{
-		if(stack!=null && player!=null && eliteGunmen.containsKey(player.getUniqueID().toString()) && ItemNBTHelper.getString(stack, "elite").isEmpty() )
+		if(stack==null || player==null)
+			return;
+		if(stack.getItemDamage()==1)
+			return;
+		String uuid = player.getUniqueID().toString();
+		if(specialRevolvers.containsKey(uuid))
 		{
-			SpecialRevolver r = eliteGunmen.get(player.getUniqueID().toString());
-			stack.setItemDamage(r.meta);
-			if(r.tag!=null && !r.tag.isEmpty())
-				ItemNBTHelper.setString(stack, "elite", r.tag);
-			if(r.flavour!=null && !r.flavour.isEmpty())
-				ItemNBTHelper.setString(stack, "flavour", r.flavour);
-			ItemNBTHelper.setInt(stack, "upgrade", r.upgrades);
+			List<SpecialRevolver> list = specialRevolvers.get(uuid);
+			if(!list.isEmpty())
+			{
+				String existingTag = ItemNBTHelper.getString(stack, "elite");
+				if(existingTag.isEmpty())
+					applySpecialCrafting(stack, list.get(0));
+				else
+				{
+					int i=0;
+					for(; i<list.size(); i++)
+						if(list.get(i)!=null && existingTag.equals(list.get(i).tag))
+							break;
+					int next = (i+1)%list.size();
+					applySpecialCrafting(stack, list.get(next));
+				}
+			}
 		}
+		this.recalculateUpgrades(stack);
+	}
+	public void applySpecialCrafting(ItemStack stack, SpecialRevolver r)
+	{
+		if(r==null)
+			return;
+		if(r.tag!=null && !r.tag.isEmpty())
+			ItemNBTHelper.setString(stack, "elite", r.tag);
+		if(r.flavour!=null && !r.flavour.isEmpty())
+			ItemNBTHelper.setString(stack, "flavour", r.flavour);
+		NBTTagCompound baseUpgrades = new NBTTagCompound();
+		for(Map.Entry<String, Object> e : r.baseUpgrades.entrySet())
+		{
+			if(e.getValue() instanceof Boolean)
+				baseUpgrades.setBoolean(e.getKey(), (Boolean)e.getValue());
+			else if(e.getValue() instanceof Integer)
+				baseUpgrades.setInteger(e.getKey(), (Integer)e.getValue());
+			else if(e.getValue() instanceof Float)
+				baseUpgrades.setDouble(e.getKey(), (Float)e.getValue());
+			else if(e.getValue() instanceof Double)
+				baseUpgrades.setDouble(e.getKey(), (Double)e.getValue());
+			else if(e.getValue() instanceof String)
+				baseUpgrades.setString(e.getKey(), (String)e.getValue());
+		}
+		ItemNBTHelper.setTagCompound(stack, "baseUpgrades", baseUpgrades);
 	}
 
-	static final Map<String, SpecialRevolver> eliteGunmen;
+	public static final ArrayListMultimap<String, SpecialRevolver> specialRevolvers = ArrayListMultimap.create();
+	public static final Map<String, SpecialRevolver> specialRevolversByTag = new HashMap<String, SpecialRevolver>();
 	static
 	{
-		HashMap<String, SpecialRevolver> map = new HashMap<String, SpecialRevolver>();
-		SpecialRevolver r = new SpecialRevolver(1,"fenrir",0,"");
-		map.put("f34afdfb-996b-4020-b8a2-b740e2937b29", r);
-		r = new SpecialRevolver(1,"",1,"");
-		map.put("07c11943-628b-4671-a331-84899d08e538", r);
-		map.put("48a16fc8-bc1f-4e72-84e9-7ec73b7d8ea1", r);
-		r = new SpecialRevolver(3,"sns",0,"");
-		map.put("e8b46b33-3e17-4b64-8d07-9af116df7d3b", r);
-		map.put("58d506e2-7ee7-4774-8b22-c7a57eda488b", r);
-		map.put("df0f4696-8a55-4777-b49d-6b38d6e1b501", r);
-		map.put("b72d87ce-fa98-4a5a-b5a0-5db51a018d09", r);
-		r = new SpecialRevolver(4,"nerf",0,"");
-		map.put("4f3a8d1e-33c1-44e7-bce8-e683027c7dac", r);
-		r = new SpecialRevolver(1,"earthshaker",0,"");
-		map.put("c2024e2a-dd76-4bc9-9ea3-b771f18f23b6", r);
-		r = new SpecialRevolver(1,"bee",0,"");
-		map.put("ca5a40eb-9f48-4b40-bb94-3e0f2d18c9a7", r);
-		r = new SpecialRevolver(0,"warlord",0,"");
-		map.put("c2e83bd4-e8df-40d6-a639-58ba8b05401e", r);
-		r = new SpecialRevolver(0,"",0,"rommie");
-		map.put("4f1b6e70-4a7d-45e0-a69e-3550d528cd89", r);
-		eliteGunmen = Collections.unmodifiableMap(map);
+		//		HashMap<String, SpecialRevolver> map = new HashMap<String, SpecialRevolver>();
+		//		SpecialRevolver r = new SpecialRevolver(1,"fenrir",0,"");
+		//		map.put("f34afdfb-996b-4020-b8a2-b740e2937b29", r);
+		//		r = new SpecialRevolver(1,"",1,"");
+		//		map.put("07c11943-628b-4671-a331-84899d08e538", r);
+		//		map.put("48a16fc8-bc1f-4e72-84e9-7ec73b7d8ea1", r);
+		//		r = new SpecialRevolver(3,"sns",0,"");
+		//		map.put("e8b46b33-3e17-4b64-8d07-9af116df7d3b", r);
+		//		map.put("58d506e2-7ee7-4774-8b22-c7a57eda488b", r);
+		//		map.put("df0f4696-8a55-4777-b49d-6b38d6e1b501", r);
+		//		map.put("b72d87ce-fa98-4a5a-b5a0-5db51a018d09", r);
+		//		r = new SpecialRevolver(4,"nerf",0,"");
+		//		map.put("4f3a8d1e-33c1-44e7-bce8-e683027c7dac", r);
+		//		r = new SpecialRevolver(1,"earthshaker",0,"");
+		//		map.put("c2024e2a-dd76-4bc9-9ea3-b771f18f23b6", r);
+		//		r = new SpecialRevolver(1,"bee",0,"");
+		//		map.put("ca5a40eb-9f48-4b40-bb94-3e0f2d18c9a7", r);
+		//		r = new SpecialRevolver(0,"warlord",0,"");
+		//		map.put("c2e83bd4-e8df-40d6-a639-58ba8b05401e", r);
+		//		r = new SpecialRevolver(0,"",0,"rommie");
+		//		map.put("4f1b6e70-4a7d-45e0-a69e-3550d528cd89", r);
+		//		eliteGunmen = Collections.unmodifiableMap(map);
+		//TODO Myst,Kihira
 	}
-	static class SpecialRevolver
+
+
+	public static class SpecialRevolver
 	{
-		final int meta;
-		final String tag;
-		final int upgrades;
-		final String flavour;
-		public SpecialRevolver(int meta, String tag, int upgrades, String flavour)
+		public final String[] uuid;
+		public final String tag;
+		public final String flavour;
+		public final HashMap<String, Object> baseUpgrades;
+		public final String[] renderAdditions;
+		public SpecialRevolver(String[] uuid, String tag, String flavour, HashMap<String, Object> baseUpgrades, String[] renderAdditions)
 		{
-			this.meta=meta;
+			this.uuid=uuid;
 			this.tag=tag;
-			this.upgrades=upgrades;
 			this.flavour=flavour;
+			this.baseUpgrades=baseUpgrades;
+			this.renderAdditions=renderAdditions;
 		}
 	}
 }

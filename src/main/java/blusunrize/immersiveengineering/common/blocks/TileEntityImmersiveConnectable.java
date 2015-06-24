@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.api.WireType;
+import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.Utils;
 
 public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase implements IImmersiveConnectable
@@ -124,7 +125,7 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 					ImmersiveNetHandler.INSTANCE.addConnection(worldObj, Utils.toCC(this), con);
 				}
 				else
-					System.out.println("CLIENT read connection as null");
+					IELogger.error("CLIENT read connection as null");
 			}
 		}
 	}
@@ -147,11 +148,11 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 			//				World worldTest = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(prevPos[0]);
 			//				if(xCoord!=prevPos[1] || yCoord!=prevPos[2] || zCoord!=prevPos[3])
 			//				{
-			//					System.out.println("I was moved! Attmpting to update connections...");
+			//					IELogger.info("Tile was moved! Attmpting to update connections...");
 			//					
 			//					if(worldTest.getTileEntity(prevPos[1],prevPos[2],prevPos[3]) instanceof IImmersiveConnectable)
 			//					{
-			//						System.out.println("Someone else has taken my place");
+			//						IELogger.info("Someone else has taken my place");
 			//					}
 			//					
 			//					Iterator<Connection> it = ImmersiveNetHandler.getAllConnections(worldTest).iterator();
@@ -190,7 +191,7 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 			//			}
 		}catch(Exception e)
 		{
-			System.out.println("MASSIVE ERROR. DOES NOT COMPUTE WRITE.");
+			IELogger.error("TileEntityImmersiveConenctable encountered MASSIVE error reading NBT. You shoudl probably report this.");
 		}
 	}
 	@Override
@@ -207,7 +208,7 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 			}
 		}catch(Exception e)
 		{
-			System.out.println("MASSIVE ERROR. DOES NOT COMPUTE WRITE.");
+			IELogger.error("TileEntityImmersiveConenctable encountered MASSIVE error writing NBT. You shoudl probably report this.");
 		}
 	}
 }

@@ -4,6 +4,9 @@ import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.api.energy.tile.IEnergySink;
 import ic2.api.energy.tile.IEnergyTile;
+import ic2.api.item.ElectricItem;
+import ic2.api.item.IElectricItem;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -31,5 +34,18 @@ public class IC2Helper
 	public static double injectEnergy(TileEntity sink, ForgeDirection fd, double amount, double voltage)
 	{
 		return ((IEnergySink)sink).injectEnergy(fd, amount, voltage);
+	}
+
+	public static double getMaxItemCharge(ItemStack stack)
+	{
+		if(stack!=null && stack.getItem() instanceof IElectricItem)
+			return ((IElectricItem)stack.getItem()).getMaxCharge(stack);
+		return 0;	
+	}
+	public static double dischargeItem(ItemStack stack, double amount)
+	{
+		if(stack!=null && stack.getItem() instanceof IElectricItem)
+			return ElectricItem.manager.discharge(stack, amount, 5, true, false, false);
+		return 0;
 	}
 }

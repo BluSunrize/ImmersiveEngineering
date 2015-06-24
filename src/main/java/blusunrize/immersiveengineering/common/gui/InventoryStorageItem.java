@@ -5,9 +5,11 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import blusunrize.immersiveengineering.common.items.ItemInternalStorage;
+import blusunrize.immersiveengineering.common.items.ItemUpgradeableTool;
 
 public class InventoryStorageItem implements IInventory
 {
+	private ItemStack itemStack;
 	private Container container;
 	public ItemStack[] stackList;
 	private String name;
@@ -17,6 +19,7 @@ public class InventoryStorageItem implements IInventory
 		this.container = par1Container;
 		if(stack!=null && stack.getItem() instanceof ItemInternalStorage)
 		{
+			this.itemStack=stack;
 			int slots = ((ItemInternalStorage)stack.getItem()).getInternalSlots(stack);
 			this.stackList = new ItemStack[slots];
 			this.name = stack.getDisplayName();
@@ -107,8 +110,12 @@ public class InventoryStorageItem implements IInventory
 	}
 
 	@Override
-	public void markDirty() {
-
+	public void markDirty()
+	{
+		if(itemStack!=null)
+			((ItemInternalStorage)this.itemStack.getItem()).setContainedItems(itemStack, stackList);
+		if(this.itemStack.getItem() instanceof ItemUpgradeableTool)
+			((ItemUpgradeableTool)this.itemStack.getItem()).recalculateUpgrades(itemStack);
 	}
 
 	@Override

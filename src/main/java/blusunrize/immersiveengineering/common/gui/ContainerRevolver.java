@@ -18,6 +18,37 @@ public class ContainerRevolver extends Container
 	EntityPlayer player = null;
 	public final int revolverSlots;
 
+	public static int[][][] slotPositions = {
+			{
+				{ 48, 11},
+				{ 56, 30}
+			},
+			{
+				{ 48, 11},
+				{ 68,  3},
+				{ 78, 22},
+				{ 88,  3},
+				{ 98, 22},
+				{108,  3},
+				{118, 22},
+				{ 56, 30}
+			},
+			{
+				{ 48,  3},
+				{ 67,  3},
+				{ 86,  3},
+				{105,  3},
+				{124, 11},
+				{132, 30},
+				{124, 49},
+				{105, 57},
+				{ 86, 49},
+				{ 86, 30},
+				{ 67, 30},
+				{ 48, 30},
+			}
+	};
+
 	public ContainerRevolver(InventoryPlayer iinventory, World world)
 	{
 		this.worldObj = world;
@@ -27,44 +58,91 @@ public class ContainerRevolver extends Container
 		this.input = new InventoryStorageItem(this, revolver);
 		this.blockedSlot = (iinventory.currentItem + 27 + revolverSlots);
 
-		int bulletSlots = ((ItemRevolver)revolver.getItem()).getBulletSlotAmount(revolver);
+		int bullets = ((ItemRevolver)revolver.getItem()).getBulletSlotAmount(revolver);
 		int i=0;
-		this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++, 80,31, 1));
-		this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++,101,37, 1));
-		if(bulletSlots>8)
+		//		this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++, 80,31, 1));
+		//		this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++,101,37, 1));
+		int w = bullets>=18?150: bullets>8?136: 74;
+		int off = (176-w)/2;
+
+		this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++, off+29, 3, 1));
+		int slots = bullets>=18?2: bullets>8?1: 0;
+		for(int[] slot : slotPositions[slots])
 		{
-			this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++,120,37, 1));
-			this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++,141,31, 1));
-			this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++,162,37, 1));
-			this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++,168,58, 1));
-			this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++,162,79, 1));
-			this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++,141,85, 1));
-			this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++,120,79, 1));
+			this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++, off+ slot[0],slot[1], 1));
+		}
+		if(bullets>=18)
+		{
+//			this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++, off+ 48,  3, 1));
+//			this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++, off+ 67,  3, 1));
+//			this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++, off+ 86,  3, 1));
+//			this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++, off+105,  3, 1));
+//			this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++, off+124, 11, 1));
+//			this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++, off+132, 30, 1));
+//			this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++, off+124, 49, 1));
+//			this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++, off+105, 57, 1));
+//			this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++, off+ 86, 49, 1));
+//			this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++, off+ 86, 30, 1));
+//			this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++, off+ 67, 30, 1));
+//			this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++, off+ 48, 30, 1));
+		}
+		else if(bullets>8)
+		{
+//			this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++, off+ 48, 11, 1));
+//			this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++, off+ 68,  3, 1));
+//			this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++, off+ 78, 22, 1));
+//			this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++, off+ 88,  3, 1));
+//			this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++, off+ 98, 22, 1));
+//			this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++, off+108,  3, 1));
+//			this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++, off+118, 22, 1));
+//			this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++, off+ 56, 30, 1));
 		}
 		else
-			this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++,107,58, 1));
-		this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++,101,79, 1));
-		this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++, 80,85, 1));
-		this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++, 59,79, 1));
-		this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++, 53,58, 1));
-		this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++, 59,37, 1));
+		{
+//			this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++, off+ 48, 11, 1));
+//			this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++, off+ 56, 30, 1));
+		}
+		this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++, off+ 48, 49, 1));
+		this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++, off+ 29, 57, 1));
+		this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++, off+ 10, 49, 1));
+		this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++, off+  2, 30, 1));
+		this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++, off+ 10, 11, 1));
 
-		
-//		this.addSlotToContainer(new IESlot.Bullet(this.input,0, 80,31, 1));
-//		this.addSlotToContainer(new IESlot.Bullet(this.input,1,101,37, 1));
-//		this.addSlotToContainer(new IESlot.Bullet(this.input,2,107,58, 1));
-//		this.addSlotToContainer(new IESlot.Bullet(this.input,3,101,79, 1));
-//		this.addSlotToContainer(new IESlot.Bullet(this.input,4, 80,85, 1));
-//		this.addSlotToContainer(new IESlot.Bullet(this.input,5, 59,79, 1));
-//		this.addSlotToContainer(new IESlot.Bullet(this.input,6, 53,58, 1));
-//		this.addSlotToContainer(new IESlot.Bullet(this.input,7, 59,37, 1));
-		
+
+		//		if(bulletSlots>8)
+		//		{
+		//			this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++,120,37, 1));
+		//			this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++,141,31, 1));
+		//			this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++,162,37, 1));
+		//			this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++,168,58, 1));
+		//			this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++,162,79, 1));
+		//			this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++,141,85, 1));
+		//			this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++,120,79, 1));
+		//		}
+		//		else
+		//			this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++,107,58, 1));
+		//		this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++,101,79, 1));
+		//		this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++, 80,85, 1));
+		//		this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++, 59,79, 1));
+		//		this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++, 53,58, 1));
+		//		this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++, 59,37, 1));
+
+
+		//		this.addSlotToContainer(new IESlot.Bullet(this.input,0, 80,31, 1));
+		//		this.addSlotToContainer(new IESlot.Bullet(this.input,1,101,37, 1));
+		//		this.addSlotToContainer(new IESlot.Bullet(this.input,2,107,58, 1));
+		//		this.addSlotToContainer(new IESlot.Bullet(this.input,3,101,79, 1));
+		//		this.addSlotToContainer(new IESlot.Bullet(this.input,4, 80,85, 1));
+		//		this.addSlotToContainer(new IESlot.Bullet(this.input,5, 59,79, 1));
+		//		this.addSlotToContainer(new IESlot.Bullet(this.input,6, 53,58, 1));
+		//		this.addSlotToContainer(new IESlot.Bullet(this.input,7, 59,37, 1));
+
 
 		bindPlayerInventory(iinventory);
 
 		if (!world.isRemote)
 			try {
-				((InventoryStorageItem)this.input).stackList = ((ItemRevolver)this.revolver.getItem()).getBullets(this.revolver);
+				((InventoryStorageItem)this.input).stackList = ((ItemRevolver)this.revolver.getItem()).getContainedItems(this.revolver);
 			}
 		catch (Exception e)
 		{
@@ -76,10 +154,10 @@ public class ContainerRevolver extends Container
 	protected void bindPlayerInventory(InventoryPlayer inventoryPlayer) {
 		for (int i = 0; i < 3; i++)
 			for (int j = 0; j < 9; j++)
-				this.addSlotToContainer(new Slot(inventoryPlayer, j+i*9+9, 8+j*18, 133+i*18));
+				this.addSlotToContainer(new Slot(inventoryPlayer, j+i*9+9, 8+j*18, 85+i*18));
 
 		for (int i = 0; i < 9; i++)
-			this.addSlotToContainer(new Slot(inventoryPlayer, i, 8+i*18, 191));
+			this.addSlotToContainer(new Slot(inventoryPlayer, i, 8+i*18, 143));
 	}
 
 	@Override
@@ -99,18 +177,18 @@ public class ContainerRevolver extends Container
 			}
 			else
 			{
-//				boolean b = true;
-//				for(int i=0;i<revolverSlots;i++)
-//					if(this.getSlot(i).isItemValid(stackInSlot))
-//						if(this.mergeItemStack(Utils.copyStackWithAmount(stackInSlot,1), i,i+1, false))
-//						{
-//							stackInSlot.stackSize--;
-//							stack.stackSize--;
-//							b=false;
-//							break;
-//						}
-//				if(b)
-					return null;
+				//				boolean b = true;
+				//				for(int i=0;i<revolverSlots;i++)
+				//					if(this.getSlot(i).isItemValid(stackInSlot))
+				//						if(this.mergeItemStack(Utils.copyStackWithAmount(stackInSlot,1), i,i+1, false))
+				//						{
+				//							stackInSlot.stackSize--;
+				//							stack.stackSize--;
+				//							b=false;
+				//							break;
+				//						}
+				//				if(b)
+				return null;
 			}
 
 			if (stackInSlot.stackSize == 0)
@@ -145,7 +223,6 @@ public class ContainerRevolver extends Container
 		if (!this.worldObj.isRemote)
 		{
 			((ItemRevolver)this.revolver.getItem()).setBullets(this.revolver, ((InventoryStorageItem)this.input).stackList);
-
 			if (!this.player.getCurrentEquippedItem().equals(this.revolver))
 				this.player.setCurrentItemOrArmor(0, this.revolver);
 			this.player.inventory.markDirty();

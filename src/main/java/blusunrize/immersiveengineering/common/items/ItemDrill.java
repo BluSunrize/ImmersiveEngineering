@@ -6,11 +6,14 @@ import java.util.Set;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.inventory.Container;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.S23PacketBlockChange;
@@ -26,6 +29,8 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IDrillHead;
 import blusunrize.immersiveengineering.api.IUpgrade;
 import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.gui.IESlot;
+import blusunrize.immersiveengineering.common.gui.InventoryStorageItem;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Lib;
 
@@ -44,6 +49,33 @@ public class ItemDrill extends ItemUpgradeableTool implements IFluidContainerIte
 	public int getInternalSlots(ItemStack stack)
 	{
 		return 4;
+	}
+	@Override
+	public Slot[] getWorkbenchSlots(Container container, ItemStack stack, InventoryStorageItem invItem)
+	{
+		return new Slot[]
+				{
+				new IESlot.DrillHead(container, invItem,0,122,22),
+				new IESlot.Upgrades(container, invItem,1, 102,42, IUpgrade.UpgradeType.DRILL, stack, true),
+				new IESlot.Upgrades(container, invItem,2, 122,52, IUpgrade.UpgradeType.DRILL, stack, true),
+				new IESlot.Upgrades(container, invItem,3, 142,42, IUpgrade.UpgradeType.DRILL, stack, true)
+				};
+	}
+	@Override
+	public boolean canModify(ItemStack stack)
+	{
+		return true;
+	}
+	@Override
+	public void recalculateUpgrades(ItemStack stack)
+	{
+		super.recalculateUpgrades(stack);
+		FluidStack fs = this.getFluid(stack);
+		if(fs!=null && fs.amount>this.getCapacity(stack))
+		{
+			fs.amount = this.getCapacity(stack);
+			ItemNBTHelper.setFluidStack(stack, "fuel",fs);
+		}
 	}
 
 	@Override
@@ -85,6 +117,10 @@ public class ItemDrill extends ItemUpgradeableTool implements IFluidContainerIte
 			return true;
 		}
 		return false;
+	}
+	@Override
+	public void registerIcons(IIconRegister ir)
+	{
 	}
 	@Override
 	public double getDurabilityForDisplay(ItemStack stack)
@@ -145,7 +181,7 @@ public class ItemDrill extends ItemUpgradeableTool implements IFluidContainerIte
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
 	{
 		if(player.isSneaking())
-			player.openGui(ImmersiveEngineering.instance, Lib.GUIID_Drill, world, (int)player.posX,(int)player.posY,(int)player.posZ);
+			player.openGui(ImmersiveEngineering.instance, Lib.GUIID_Workbench, world, (int)player.posX,(int)player.posY,(int)player.posZ);
 		return stack;
 	}
 
@@ -327,7 +363,6 @@ public class ItemDrill extends ItemUpgradeableTool implements IFluidContainerIte
 		return false;
 	}
 
-
 	/*FLUID STUFF*/
 	@Override
 	public FluidStack getFluid(ItemStack container)
@@ -337,7 +372,7 @@ public class ItemDrill extends ItemUpgradeableTool implements IFluidContainerIte
 	@Override
 	public int getCapacity(ItemStack container)
 	{
-		return 1000;
+		return 2000+getUpgrades(container).getInteger("capacity");
 	}
 	@Override
 	public int fill(ItemStack container, FluidStack resource, boolean doFill)

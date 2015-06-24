@@ -76,6 +76,7 @@ import blusunrize.immersiveengineering.common.blocks.stone.TileEntityCokeOven;
 import blusunrize.immersiveengineering.common.blocks.wooden.BlockIEWoodenStairs;
 import blusunrize.immersiveengineering.common.blocks.wooden.BlockWoodenDecoration;
 import blusunrize.immersiveengineering.common.blocks.wooden.BlockWoodenDevices;
+import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityModWorkbench;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWallmount;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWatermill;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWindmill;
@@ -149,13 +150,13 @@ public class IEContent
 				"ingotCopper","ingotAluminum","ingotLead","ingotSilver","ingotNickel","ingotConstantan","ingotElectrum","ingotSteel",  
 				"dustIron","dustGold","dustCopper","dustAluminum","dustLead","dustSilver","dustNickel","dustConstantan","dustElectrum",
 				"dustCoke","dustQuartz","dustHOPGraphite","ingotHOPGraphite");
-		
+
 		itemMaterial = new ItemIEBase("material", 64,
 				"treatedStick","waterwheelSegment","windmillBlade","hempFiber","fabric","windmillBladeAdvanced",
 				"coalCoke",
 				"gunpartBarrel","gunpartDrum","gunpartGrip","gunpartHammer",
 				"componentIron","componentSteel");
-		
+
 		itemSeeds = new ItemIESeed(blockCrop,"hemp");
 		MinecraftForge.addGrassSeed(new ItemStack(itemSeeds), 5);
 		itemWireCoil = new ItemWireCoil();
@@ -165,7 +166,7 @@ public class IEContent
 		itemFluidContainers = new ItemIEBase("fluidContainers", 64, "bottleCreosote","bucketCreosote",  "bottlePlantoil","bucketPlantoil",  "bottleEthanol","bucketEthanol", "bottleBiodiesel","bucketBiodiesel")
 		{
 			@Override
-		    public boolean hasContainerItem(ItemStack stack)
+			public boolean hasContainerItem(ItemStack stack)
 			{
 				return true;
 			}
@@ -175,7 +176,7 @@ public class IEContent
 				return stack.getItemDamage()%2==0?new ItemStack(Items.glass_bottle): new ItemStack(Items.bucket);
 			}
 			@Override
-		    public int getItemStackLimit(ItemStack stack)
+			public int getItemStackLimit(ItemStack stack)
 			{
 				return stack.getItemDamage()%2==0?16:1;
 			}
@@ -227,6 +228,7 @@ public class IEContent
 		//Vanilla OreDict
 		OreDictionary.registerOre("bricksStone", new ItemStack(Blocks.stonebrick));
 		OreDictionary.registerOre("blockIce", new ItemStack(Blocks.ice));
+		OreDictionary.registerOre("craftingTableWood", new ItemStack(Blocks.crafting_table));
 		//Fluid Containers
 		FluidContainerRegistry.registerFluidContainer(fluidCreosote, new ItemStack(itemFluidContainers,1,0), new ItemStack(Items.glass_bottle));
 		FluidContainerRegistry.registerFluidContainer(fluidCreosote, new ItemStack(itemFluidContainers,1,1), new ItemStack(Items.bucket));
@@ -270,6 +272,7 @@ public class IEContent
 		registerTile(TileEntityWindmill.class);
 		registerTile(TileEntityWindmillAdvanced.class);
 		registerTile(TileEntityWoodenCrate.class);
+		registerTile(TileEntityModWorkbench.class);
 		registerTile(TileEntityWallmount.class);
 
 		registerTile(TileEntityConnectorLV.class);
@@ -296,7 +299,7 @@ public class IEContent
 		registerTile(TileEntityCrusher.class);
 		registerTile(TileEntityBucketWheel.class);
 		registerTile(TileEntityExcavator.class);
-		
+
 		registerTile(TileEntityStructuralArm.class);
 		registerTile(TileEntityConnectorStructural.class);
 		registerTile(TileEntityWallmountMetal.class);
@@ -341,7 +344,7 @@ public class IEContent
 		addOredictRecipe(new ItemStack(itemTool,1,2), " P ","SCS", 'C',"ingotCopper", 'P',Items.compass, 'S',"treatedStick");
 		addShapelessOredictRecipe(new ItemStack(itemTool,1,3), Items.book,Blocks.lever);
 		addOredictRecipe(new ItemStack(itemRevolver,1,0), " I ","HDB","GIG", 'I',"ingotIron",'B',new ItemStack(itemMaterial,1,7),'D',new ItemStack(itemMaterial,1,8),'G',new ItemStack(itemMaterial,1,9),'H',new ItemStack(itemMaterial,1,10)).setMirrored(false);
-		addOredictRecipe(new ItemStack(itemRevolver,1,2), "  I","IIS","  I", 'I',"ingotIron",'S',"ingotSteel");
+		addOredictRecipe(new ItemStack(itemRevolver,1,1), "  I","IIS","  I", 'I',"ingotIron",'S',"ingotSteel");
 		GameRegistry.addRecipe(new RecipeRevolver());
 
 		addOredictRecipe(new ItemStack(itemBullet,3,0), "I I","I I"," I ", 'I',"ingotCopper");
@@ -359,11 +362,15 @@ public class IEContent
 		addOredictRecipe(new ItemStack(itemDrill,1,0), "  G"," EG","C  ", 'C',componentSteel,'E',new ItemStack(blockMetalDecoration,1,BlockMetalDecoration.META_heavyEngineering), 'G',new ItemStack(itemMaterial,1,9));
 		addOredictRecipe(new ItemStack(itemDrillhead,1,0), "SS ","BBS","SS ", 'B',"blockSteel", 'S',"ingotSteel");
 		addOredictRecipe(new ItemStack(itemDrillhead,1,1), "SS ","BBS","SS ", 'B',"blockIron", 'S',"ingotIron");
-		addOredictRecipe(new ItemStack(itemToolUpgrades,1,0), "BS ","SBS"," SC", 'B',Items.bucket, 'S',"ingotSteel", 'C',componentSteel);
+		addOredictRecipe(new ItemStack(itemToolUpgrades,1,0), "BI ","IBI"," IC", 'B',Items.bucket, 'I',"dyeBlue", 'C',componentIron);
 		for (ItemStack container : Utils.getContainersFilledWith(new FluidStack(fluidPlantoil,1000)))
-			addOredictRecipe(new ItemStack(itemToolUpgrades,1,1), "BS ","SBS"," SC", 'B',container, 'S',"ingotSteel", 'C',componentSteel);
+			addOredictRecipe(new ItemStack(itemToolUpgrades,1,1), "BI ","IBI"," IC", 'B',container, 'I',"ingotIron", 'C',componentIron);
 		addOredictRecipe(new ItemStack(itemToolUpgrades,1,2), "SSS"," C ", 'S',"ingotSteel", 'C',componentSteel);
-		
+		addOredictRecipe(new ItemStack(itemToolUpgrades,1,3), "CS ","SBO"," OB", 'C',componentIron, 'S',"ingotSteel", 'B',Items.bucket, 'O',"dyeRed");
+		addOredictRecipe(new ItemStack(itemToolUpgrades,1,4), "SI","IW", 'S',Items.iron_sword, 'I',"ingotSteel", 'W',treatedWood);
+		addOredictRecipe(new ItemStack(itemToolUpgrades,1,5), " CS","C C","IC ", 'I',componentIron, 'S',"ingotSteel", 'C',"ingotCopper");
+		addOredictRecipe(new ItemStack(itemToolUpgrades,1,6), " G ","GEG","GEG", 'E',electrumCoil, 'G',"blockGlass");
+
 		addShapelessOredictRecipe(new ItemStack(itemMetal,2,15), "dustCopper","dustNickel");
 		addShapelessOredictRecipe(new ItemStack(itemMetal,2,16), "dustSilver","dustGold");
 
@@ -375,7 +382,7 @@ public class IEContent
 		addShapelessOredictRecipe(new ItemStack(itemMaterial,1,5), new ItemStack(itemMaterial,1,2),new ItemStack(itemMaterial,1,4),new ItemStack(itemMaterial,1,4),new ItemStack(itemMaterial,1,4),new ItemStack(itemMaterial,1,4));
 		addShapelessOredictRecipe(new ItemStack(itemMaterial,9,6), new ItemStack(blockStoneDevice,1,3));
 		addOredictRecipe(new ItemStack(itemMaterial,1,7), "III", 'I',"ingotSteel");
-		addOredictRecipe(new ItemStack(itemMaterial,1,8), " I ","III"," I ", 'I',"ingotSteel");
+		addOredictRecipe(new ItemStack(itemMaterial,1,8), " I ","ICI"," I ", 'I',"ingotSteel",'C',componentIron);
 		addOredictRecipe(new ItemStack(itemMaterial,1,9), "SS","IS","SS", 'I',"ingotCopper",'S',"treatedStick");
 		addOredictRecipe(new ItemStack(itemMaterial,1,10), "I  ","II "," II", 'I',"ingotSteel");
 		addOredictRecipe(componentIron, " I ","ICI"," I ", 'I',"ingotIron",'C',"ingotCopper");
@@ -394,12 +401,13 @@ public class IEContent
 		addOredictRecipe(new ItemStack(blockWoodenDecoration,6,5), "WWW"," S ","S S", 'W',treatedWood,'S',new ItemStack(blockWoodenDecoration,1,1));
 		addOredictRecipe(new ItemStack(blockWoodenStair,4,0), "  W"," WW","WWW", 'W',treatedWood).setMirrored(true);
 		addOredictRecipe(new ItemStack(blockWoodenDecoration,4,6), "WW","WF","W ", 'W',treatedWood,'F',new ItemStack(blockWoodenDecoration,1,1));
-		
+
 		addOredictRecipe(new ItemStack(blockWoodenDevice,1,0), "F","F","S", 'F',new ItemStack(blockWoodenDecoration,1,1),'S',"bricksStone");
 		addOredictRecipe(new ItemStack(blockWoodenDevice,1,1), " P ","PWP"," P ", 'P',new ItemStack(itemMaterial,1,1),'W',treatedWood);
 		addOredictRecipe(new ItemStack(blockWoodenDevice,1,2), " P ","PIP"," P ", 'P',new ItemStack(itemMaterial,1,2),'I',"ingotIron");
 		addOredictRecipe(new ItemStack(blockWoodenDevice,1,3), "PPP","PIP","PPP", 'P',new ItemStack(itemMaterial,1,5),'I',"ingotSteel");
 		addOredictRecipe(new ItemStack(blockWoodenDevice,1,4), "WWW","W W","WWW", 'W',treatedWood);
+		addOredictRecipe(new ItemStack(blockWoodenDevice,1,5), "WWW","B F", 'W',new ItemStack(blockWoodenDecoration,1,2),'B',"craftingTableWood",'F',new ItemStack(blockWoodenDecoration,1,1));
 
 		addOredictRecipe(new ItemStack(blockStoneDevice,6,0), "CCC","HHH","CCC", 'C',Items.clay_ball,'H',new ItemStack(itemMaterial,1,3));
 		addOredictRecipe(new ItemStack(blockStoneDevice,2,1), "CBC","BSB","CBC", 'S',"sandstone",'C',Items.clay_ball,'B',"ingotBrick");
@@ -536,14 +544,15 @@ public class IEContent
 
 		DieselHandler.addRefineryRecipe(new FluidStack(fluidPlantoil,8), new FluidStack(fluidEthanol,8), new FluidStack(fluidBiodiesel,16));
 		DieselHandler.addRefineryRecipe(new FluidStack(FluidRegistry.WATER,1), new FluidStack(FluidRegistry.LAVA,1), new FluidStack(fluidCreosote,2));
-		
+
 		ThermoelectricHandler.registerSourceInKelvin("blockIce", 273);
 		ThermoelectricHandler.registerSourceInKelvin(Utils.nameFromStack(new ItemStack(Blocks.packed_ice)), 200);
 		ThermoelectricHandler.registerSourceInKelvin("blockPlutonium", 4000);
 		ThermoelectricHandler.registerSourceInKelvin("blockBlutonium", 4000);
 		ThermoelectricHandler.registerSourceInKelvin("blockUranium", 2000);
 		ThermoelectricHandler.registerSourceInKelvin("blockYellorium", 2000);
-		
+
+		ExcavatorHandler.mineralVeinCapacity = Config.getInt("excavator_depletion");
 		ExcavatorHandler.addMineral("Iron", 30, .1f, new String[]{"oreIron","oreNickel","oreTin","denseoreIron"}, new float[]{.5f,.25f,.20f,.05f});
 		ExcavatorHandler.addMineral("Magnetite", 30, .1f, new String[]{"oreIron","oreGold"}, new float[]{.85f,.15f});
 		ExcavatorHandler.addMineral("Pyrite", 20, .1f, new String[]{"oreIron","oreSulfur"}, new float[]{.5f,.5f});
@@ -559,7 +568,7 @@ public class IEContent
 		ExcavatorHandler.addMineral("Silver", 10, .2f, new String[]{"oreSilver","oreLead","denseoreSilver"}, new float[]{.55f,.4f,.05f});
 		ExcavatorHandler.addMineral("Lapis", 10, .2f, new String[]{"oreLapis","oreIron","oreSulfur","denseoreLapis"}, new float[]{.65f,.275f,.025f,.05f});
 
-		
+
 		MultiblockHandler.registerMultiblock(MultiblockCokeOven.instance);
 		MultiblockHandler.registerMultiblock(MultiblockBlastFurnace.instance);
 		MultiblockHandler.registerMultiblock(MultiblockDieselGenerator.instance);

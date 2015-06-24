@@ -33,7 +33,8 @@ public class ItemBlockWoodenDevices extends ItemBlockIEBase
 
 		if(meta==0)
 			for(int i=0;i<=3;i++)
-				if(!player.canPlayerEdit(x,y+1,z, side, stack) || !world.isAirBlock(x,y+i,z))
+				if(!player.canPlayerEdit(x,y+1,z, side, stack) || !world.getBlock(x,y+i,z).isReplaceable(world, x,y+i,z) )
+					//						|| !world.isAirBlock(x,y+i,z))
 					return false;
 		if(meta==1)
 			for(int yy=-2;yy<=2;yy++)
@@ -51,7 +52,19 @@ public class ItemBlockWoodenDevices extends ItemBlockIEBase
 					if(!world.getBlock(x+(f<=3?ww:0), y+yy, z+(f<=3?0:ww)).isReplaceable(world, x+(f<=3?ww:0), y+yy, z+(f<=3?0:ww)) )
 						return false;
 			}
-
+		if(meta==5)
+		{
+			if(f==2||f==3)
+			{
+				if(!world.getBlock(x+1,y,z).isReplaceable(world, x+1,y,z) && !world.getBlock(x-1,y,1).isReplaceable(world, x-1,y,z) )
+					return false;
+			}
+			else
+			{
+				if(!world.getBlock(x,y,z+1).isReplaceable(world, x,y,z+1) && !world.getBlock(x,y,z-1).isReplaceable(world, x,y,z-1) )
+					return false;
+			}
+		}
 
 		boolean ret = super.placeBlockAt(stack, player, world, x, y, z, side, hitX, hitY, hitZ, meta);
 		if(ret && world.getTileEntity(x, y, z) instanceof TileEntityWoodenPost)
@@ -88,6 +101,29 @@ public class ItemBlockWoodenDevices extends ItemBlockIEBase
 		{
 			if(stack.hasTagCompound())
 				((TileEntityWoodenCrate)world.getTileEntity(x, y, z)).readInv(stack.getTagCompound());
+		}
+
+		if(ret && world.getTileEntity(x, y, z) instanceof TileEntityModWorkbench)
+		{
+			int xOff = f>3?0:(hitX<.5?-1:1);
+			int zOff = f<4?0:(hitZ<.5?-1:1);
+			if(!world.getBlock(x+xOff,y,z+zOff).isReplaceable(world, x+xOff,y,z+zOff))
+			{
+				xOff = f>3?0:(hitX>=.5?-1:1);
+				zOff = f<4?0:(hitZ>=.5?-1:1);
+			}
+			int off = f>3?zOff:xOff;
+
+			((TileEntityModWorkbench)world.getTileEntity(x,y,z)).facing=f;
+			((TileEntityModWorkbench)world.getTileEntity(x,y,z)).dummyOffset=off;
+			world.setBlock(x+xOff,y,z+zOff, field_150939_a, meta, 0x3);
+			if(world.getTileEntity(x+xOff,y,z+zOff) instanceof TileEntityModWorkbench)
+			{
+				((TileEntityModWorkbench)world.getTileEntity(x+xOff,y,z+zOff)).facing =f;
+				((TileEntityModWorkbench)world.getTileEntity(x+xOff,y,z+zOff)).dummy = true;
+				((TileEntityModWorkbench)world.getTileEntity(x+xOff,y,z+zOff)).dummyOffset = off;
+			}
+
 		}
 		return ret;
 	}

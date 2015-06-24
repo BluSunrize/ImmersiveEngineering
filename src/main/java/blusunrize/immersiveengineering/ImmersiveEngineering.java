@@ -1,5 +1,8 @@
 package blusunrize.immersiveengineering;
 
+import java.io.InputStreamReader;
+import java.net.URL;
+
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -15,9 +18,15 @@ import blusunrize.immersiveengineering.common.EventHandler;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.IESaveData;
 import blusunrize.immersiveengineering.common.IEWorldGen;
+import blusunrize.immersiveengineering.common.items.ItemRevolver;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonStreamParser;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
@@ -85,6 +94,8 @@ public class ImmersiveEngineering
 	{
 		IEContent.loadComplete();
 		proxy.loadComplete();
+
+		new ThreadContributorSpecialsDownloader();
 	}
 
 	@Mod.EventHandler
@@ -127,4 +138,46 @@ public class ImmersiveEngineering
 			return new ItemStack(IEContent.blockMetalDevice,1,1);
 		}
 	};
+
+
+	public static class ThreadContributorSpecialsDownloader extends Thread
+	{
+		public ThreadContributorSpecialsDownloader()
+		{
+			setName("Immersive Engineering Contributors Thread");
+			setDaemon(true);
+			start();
+		}
+
+		@Override
+		public void run()
+		{
+			Gson gson = new Gson();
+			try {
+				IELogger.warn("Attempting to download special revolvers from GitHub");
+				URL url = new URL("https://raw.githubusercontent.com/BluSunrize/ImmersiveEngineering/master/contributorRevolvers.json");
+				JsonStreamParser parser = new JsonStreamParser(new InputStreamReader(url.openStream()));
+				while(parser.hasNext())
+				{
+					try{
+						JsonElement je = parser.next();
+						ItemRevolver.SpecialRevolver revolver = gson.fromJson(je, ItemRevolver.SpecialRevolver.class);
+						if(revolver!=null)
+						{
+							if(revolver.uuid!=null)
+								for(String uuid : revolver.uuid)
+									ItemRevolver.specialRevolvers.put(uuid, revolver);
+							ItemRevolver.specialRevolversByTag.put(revolver.tag, revolver);
+						}
+					}catch(Exception excepParse)
+					{
+						IELogger.warn("Error on parsing a SpecialRevolver");
+					}
+				}
+			} catch(Exception e) {
+				IELogger.info("Could not load contributor+special revolver list.");
+				e.printStackTrace();
+			}
+		}
+	}
 }

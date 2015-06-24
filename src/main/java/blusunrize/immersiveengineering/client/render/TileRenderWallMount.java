@@ -44,9 +44,9 @@ public class TileRenderWallmount extends TileRenderIE
 		rotationMatrix.rotate(arm.inverted?3.14159f:0, 1,0,0);
 
 		if(arm instanceof TileEntityWallmountMetal)
-			modelMetal.render(tile, tes, translationMatrix, rotationMatrix, false);
+			modelMetal.render(tile, tes, translationMatrix, rotationMatrix, true, false);
 		else
-			model.render(tile, tes, translationMatrix, rotationMatrix, false);
+			model.render(tile, tes, translationMatrix, rotationMatrix, true, false);
 	}
 	//	static ModelWallMount model = new ModelWallMount();
 	//

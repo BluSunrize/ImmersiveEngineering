@@ -135,7 +135,7 @@ public class ClientUtils
 				break;
 		}
 		//		if(limiter>=100)
-		//			System.out.println("Catenary loop greatly exceeded its maximum at "+limiter);
+		//			IELogger.warn("Catenary loop greatly exceeded its maximum at "+limiter);
 		double a = dw/2/l;
 		double p = (0+dw-a*Math.log((k+dy)/(k-dy)))*0.5;
 		double q = (dy+0-k*Math.cosh(l)/Math.sinh(l))*0.5;
@@ -301,7 +301,7 @@ public class ClientUtils
 	/**
 	 * A big "Thank you!" to AtomicBlom and Rorax for helping me figure this one out =P
 	 */
-	public static void renderStaticWavefrontModel(TileEntity tile, WavefrontObject model, Tessellator tes, Matrix4 translationMatrix, Matrix4 rotationMatrix, boolean offsetLighting, String... renderedParts)
+	public static void renderStaticWavefrontModel(TileEntity tile, WavefrontObject model, Tessellator tes, Matrix4 translationMatrix, Matrix4 rotationMatrix, boolean offsetLighting, boolean invertFaces, String... renderedParts)
 	{
 		tes.setColorRGBA_F(1F, 1F, 1F, 1F);
 
@@ -337,40 +337,29 @@ public class ClientUtils
 					float biggestNormal = Math.max(Math.abs(normalCopy.y), Math.max(Math.abs(normalCopy.x),Math.abs(normalCopy.z)));
 					int side = biggestNormal==Math.abs(normalCopy.y)?(normalCopy.y<0?0:1): biggestNormal==Math.abs(normalCopy.z)?(normalCopy.z<0?2:3): (normalCopy.x<0?4:5);
 
-					float xx=0;
-					float yy=0;
-					float zz=0;
-					if(offsetLighting)
-					{
-						for(int i=0; i<face.vertices.length; ++i)
-						{
-							xx += face.vertices[i].x;
-							yy += face.vertices[i].y;
-							zz += face.vertices[i].z;
-						}
-						xx /= face.vertices.length;
-						yy /= face.vertices.length;
-						zz /= face.vertices.length;
-					}
-
-					BlockLightingInfo info = null;
-					if(tile.getWorldObj()!=null)
-						info = calculateBlockLighting(side, tile.getWorldObj(), tile.getBlockType(), Math.round(tile.xCoord+xx),Math.round(tile.yCoord+yy),Math.round(tile.zCoord+zz), 1,1,1);
+					HashMap<String,BlockLightingInfo> light = new HashMap<String,BlockLightingInfo>();
 
 					tes.setNormal(face.faceNormal.x, face.faceNormal.y, face.faceNormal.z);
 					for(int i=0; i<face.vertices.length; ++i)
 					{
-						int corner = (int)(i/(float)face.vertices.length*4);
-
-						Vertex vertex = face.vertices[i];
+						int target = !invertFaces?i:(face.vertices.length-1-i);
+						int corner = (int)(target/(float)face.vertices.length*4);
+						Vertex vertex = face.vertices[target];
 						vertexCopy.x = vertex.x;
 						vertexCopy.y = vertex.y;
 						vertexCopy.z = vertex.z;
 						rotationMatrix.apply(vertexCopy);
 						translationMatrix.apply(vertexCopy);
 
-						if(info!=null)
-						{
+						if(offsetLighting && tile.getWorldObj()!=null)
+						{	
+							String key = Math.round(tile.xCoord+vertex.x)+";"+Math.round(tile.yCoord+vertex.y)+";"+Math.round(tile.zCoord+vertex.z);
+							BlockLightingInfo info = light.get(key);
+							if(info==null)
+							{
+								info = calculateBlockLighting(side, tile.getWorldObj(), tile.getBlockType(), (int)Math.round(tile.xCoord+vertex.x),(int)Math.round(tile.yCoord+vertex.y),(int)Math.round(tile.zCoord+vertex.z), 1,1,1);
+								light.put(key, info);
+							}
 							tes.setBrightness(corner==0?info.brightnessTopLeft: corner==1?info.brightnessBottomLeft: corner==2?info.brightnessBottomRight: info.brightnessTopRight);
 							float r = corner==0?info.colorRedTopLeft: corner==1?info.colorRedBottomLeft: corner==2?info.colorRedBottomRight: info.colorRedTopRight;
 							float g = corner==0?info.colorGreenTopLeft: corner==1?info.colorGreenBottomLeft: corner==2?info.colorGreenBottomRight: info.colorGreenTopRight;
@@ -380,7 +369,7 @@ public class ClientUtils
 
 						if((face.textureCoordinates != null) && (face.textureCoordinates.length > 0))
 						{
-							TextureCoordinate textureCoordinate = face.textureCoordinates[i];
+							TextureCoordinate textureCoordinate = face.textureCoordinates[target];
 							tes.addVertexWithUV(vertexCopy.x, vertexCopy.y, vertexCopy.z, textureCoordinate.u, textureCoordinate.v);
 						}
 						else

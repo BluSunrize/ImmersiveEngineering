@@ -7,7 +7,6 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
-import blusunrize.immersiveengineering.api.IUpgrade;
 import blusunrize.immersiveengineering.common.items.ItemDrill;
 
 public class ContainerDrill extends Container
@@ -30,10 +29,10 @@ public class ContainerDrill extends Container
 
 		int i=0;
 		this.addSlotToContainer(new IESlot.DrillHead(this, this.input,i++, 80,12));
-		
-		this.addSlotToContainer(new IESlot.Upgrades(this, this.input,i++, 60,44, IUpgrade.UpgradeType.DRILL, true));
-		this.addSlotToContainer(new IESlot.Upgrades(this, this.input,i++, 80,50, IUpgrade.UpgradeType.DRILL, true));
-		this.addSlotToContainer(new IESlot.Upgrades(this, this.input,i++,100,44, IUpgrade.UpgradeType.DRILL, true));
+//		
+//		this.addSlotToContainer(new IESlot.Upgrades(this, this.input,i++, 60,44, IUpgrade.UpgradeType.DRILL, true));
+//		this.addSlotToContainer(new IESlot.Upgrades(this, this.input,i++, 80,50, IUpgrade.UpgradeType.DRILL, true));
+//		this.addSlotToContainer(new IESlot.Upgrades(this, this.input,i++,100,44, IUpgrade.UpgradeType.DRILL, true));
 
 		bindPlayerInventory(iinventory);
 

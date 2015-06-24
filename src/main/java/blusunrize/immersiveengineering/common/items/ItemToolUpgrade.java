@@ -17,7 +17,8 @@ public class ItemToolUpgrade extends ItemIEBase implements IUpgrade {
 
 	public ItemToolUpgrade()
 	{
-		super("toolupgrade", 1, "drillWaterproof","drillSpeed","drillDamage");
+		super("toolupgrade", 1, "drillWaterproof","drillSpeed","drillDamage","drillCapacity",
+				"revolverBayonet","revolverMagazine","revolverElectro");
 	}
 
 	@Override
@@ -41,12 +42,14 @@ public class ItemToolUpgrade extends ItemIEBase implements IUpgrade {
 	@Override
 	public Set<UpgradeType> getUpgradeTypes(ItemStack upgrade)
 	{
-		return ImmutableSet.of(IUpgrade.UpgradeType.DRILL);
+		return ImmutableSet.of(upgrade.getItemDamage()<=3?IUpgrade.UpgradeType.DRILL: IUpgrade.UpgradeType.REVOLVER);
 	}
 
 	@Override
 	public boolean canApplyUpgrades(ItemStack target, ItemStack upgrade)
 	{
+		if(upgrade.getItemDamage()==5 && target.getItem() instanceof ItemUpgradeableTool)
+			return !((ItemUpgradeableTool)target.getItem()).getUpgrades(target).hasKey("bullets");
 		return true;
 	}
 
@@ -65,6 +68,22 @@ public class ItemToolUpgrade extends ItemIEBase implements IUpgrade {
 		case 2:
 			mod = (Integer)modifications.get("damage");
 			modifications.put("damage", (mod==null?0:mod)+upgrade.stackSize);
+			break;
+		case 3:
+			mod = (Integer)modifications.get("capacity");
+			modifications.put("capacity", (mod==null?0:mod)+1000);
+			break;
+
+		case 4:
+			Float melee = (Float)modifications.get("melee");
+			modifications.put("melee", (melee==null?0:melee)+6f);
+			break;
+		case 5:
+			mod = (Integer)modifications.get("bullets");
+			modifications.put("bullets", (mod==null?0:mod)+6);
+			break;
+		case 6:
+			modifications.put("electro", true);
 			break;
 		}
 	}

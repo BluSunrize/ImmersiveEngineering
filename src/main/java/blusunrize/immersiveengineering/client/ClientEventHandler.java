@@ -40,6 +40,7 @@ import blusunrize.immersiveengineering.client.models.ModelIEObj;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
+import blusunrize.immersiveengineering.common.gui.ContainerRevolver;
 import blusunrize.immersiveengineering.common.items.ItemDrill;
 import blusunrize.immersiveengineering.common.items.ItemRevolver;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
@@ -194,39 +195,45 @@ public class ClientEventHandler
 			{
 				ClientUtils.bindTexture("immersiveengineering:textures/gui/revolver.png");
 				ItemStack[] bullets = ((ItemRevolver)ClientUtils.mc().thePlayer.getCurrentEquippedItem().getItem()).getBullets(ClientUtils.mc().thePlayer.getCurrentEquippedItem());
-				float dx = event.resolution.getScaledWidth()-32-(bullets.length>8?32:0);
-				float dy = event.resolution.getScaledHeight()-32;
+				int bulletAmount = bullets.length;
+				float dx = event.resolution.getScaledWidth()-32-48;
+				float dy = event.resolution.getScaledHeight()-64;
 				GL11.glPushMatrix();
 				GL11.glTranslated(dx, dy, 0);
-				ClientUtils.drawTexturedRect(-20,-20,40,40, 50/256f,126/256f, 28/256f,104/256f);
-				boolean b = ((ItemRevolver)IEContent.itemRevolver).getBulletSlotAmount(ClientUtils.mc().thePlayer.getCurrentEquippedItem())>8;
-				if(b)
-				{
-					GL11.glTranslated(40*(56/76f), 0, 0);
-					ClientUtils.drawTexturedRect(-20,-20,40,40, 176/256f,256/256f, 28/256f,104/256f);
-					GL11.glTranslated(-40*(56/76f), 0, 0);
-				}
+				GL11.glScalef(.5f, .5f, 1);
+
+				ClientUtils.drawTexturedRect(0,1,74,74, 0/256f,74/256f, 51/256f,125/256f);
+				if(bulletAmount>=18)
+					ClientUtils.drawTexturedRect(47,1,103,74, 74/256f,177/256f, 51/256f,125/256f);
+				else if(bulletAmount>8)
+					ClientUtils.drawTexturedRect(57,1,79,39, 57/256f,136/256f, 12/256f,51/256f);
 
 				RenderItem ir = RenderItem.getInstance();
-				GL11.glScalef(.5f, .5f, .5f);
-				for(int i=0; i<bullets.length; i++)
+				int[][] slots = ContainerRevolver.slotPositions[bulletAmount>=18?2: bulletAmount>8?1: 0];
+				for(int i=0; i<bulletAmount; i++)
 				{
 					if(bullets[i]!=null)
 					{
 						int x = 0; 
 						int y = 0;
-						if(!b)
+						if(i==0)
 						{
-							x = i==0||i==4?0 : i==1||i==3?22: i==2?28: i==5||i==7?-23: -29;
-							y = i==0? -29: i==1||i==7?-23: i==2||i==6?0 : i==3||i==5?22: 28;
+							x = 29;
+							y = 3;
+						}
+						else if(i-1<slots.length)
+						{
+							x = slots[i-1][0];
+							y = slots[i-1][1];
 						}
 						else
 						{
-							x = i==0||i==10?0 : i==1||i==9?22: i==2||i==8?41: i==3||i==7?62: i==4||i==6?83: i==5?89: i==11||i==13?-23: -29;
-							y = i==0||i==3?-29: i==1||i==2||i==4||i==13?-23: i==5||i==12?0 : i==6||i==8||i==9||i==11?22: 28;
+							int ii = i-(slots.length+1);
+							x = ii==0?48: ii==1?29: ii==3?2: 10;
+							y = ii==1?57: ii==3?30: ii==4?11: 49;
 						}
-						ir.renderItemIntoGUI(ClientUtils.mc().fontRenderer, ClientUtils.mc().renderEngine, bullets[i], x-8,y-8);
-						//						ir.renderItemIntoGUI(ClientUtils.mc().fontRenderer, ClientUtils.mc().renderEngine, new ItemStack(Blocks.stained_glass_pane,1,3), x-8,y-8);
+
+						ir.renderItemIntoGUI(ClientUtils.mc().fontRenderer, ClientUtils.mc().renderEngine, bullets[i], x,y);
 					}
 				}
 				RenderHelper.disableStandardItemLighting();

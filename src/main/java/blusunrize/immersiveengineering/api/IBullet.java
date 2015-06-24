@@ -12,7 +12,7 @@ public interface IBullet
 {
 	public boolean canSpawnBullet(ItemStack bulletStack);
 
-	public void spawnBullet(EntityPlayer player, ItemStack bulletStack);
+	public void spawnBullet(EntityPlayer player, ItemStack bulletStack, boolean electro);
 	
 	public ItemStack getCasing(ItemStack stack);
 }
