@@ -107,7 +107,7 @@ public class ItemBlockMetalDevices extends ItemBlockIEBase
 		else if(world.getTileEntity(x, y, z) instanceof TileEntityTransformer)
 		{
 			((TileEntityTransformer)world.getTileEntity(x,y,z)).facing=f;
-			if(side==f && world.getTileEntity(x+(side==4?1: side==5?-1: 0), y, z+(side==2?1: side==3?-1: 0)) instanceof TileEntityWoodenPost && ((TileEntityWoodenPost)world.getTileEntity(x+(side==4?1: side==5?-1: 0), y, z+(side==2?1: side==3?-1: 0))).type>0 )
+			if(meta==4 && side==f && world.getTileEntity(x+(side==4?1: side==5?-1: 0), y, z+(side==2?1: side==3?-1: 0)) instanceof TileEntityWoodenPost && ((TileEntityWoodenPost)world.getTileEntity(x+(side==4?1: side==5?-1: 0), y, z+(side==2?1: side==3?-1: 0))).type>0 )
 				((TileEntityTransformer)world.getTileEntity(x,y,z)).postAttached=side;
 			else
 			{

@@ -10,9 +10,10 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.IFluidBlock;
 import blusunrize.immersiveengineering.api.ThermoelectricHandler;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
+import cofh.api.energy.IEnergyConnection;
 import cofh.api.energy.IEnergyReceiver;
 
-public class TileEntityThermoelectricGen extends TileEntityIEBase
+public class TileEntityThermoelectricGen extends TileEntityIEBase implements IEnergyConnection
 {
 	@Override
 	public void updateEntity()
@@ -76,4 +77,9 @@ public class TileEntityThermoelectricGen extends TileEntityIEBase
 	{
 	}
 
+	@Override
+	public boolean canConnectEnergy(ForgeDirection from)
+	{
+		return true;
+	}
 }

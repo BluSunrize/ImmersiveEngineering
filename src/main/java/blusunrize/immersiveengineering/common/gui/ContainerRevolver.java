@@ -56,52 +56,16 @@ public class ContainerRevolver extends Container
 		this.revolver = iinventory.getCurrentItem();
 		this.revolverSlots = ((ItemRevolver)revolver.getItem()).getInternalSlots(revolver);
 		this.input = new InventoryStorageItem(this, revolver);
-		this.blockedSlot = (iinventory.currentItem + 27 + revolverSlots);
 
 		int bullets = ((ItemRevolver)revolver.getItem()).getBulletSlotAmount(revolver);
 		int i=0;
-		//		this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++, 80,31, 1));
-		//		this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++,101,37, 1));
 		int w = bullets>=18?150: bullets>8?136: 74;
 		int off = (176-w)/2;
 
 		this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++, off+29, 3, 1));
 		int slots = bullets>=18?2: bullets>8?1: 0;
 		for(int[] slot : slotPositions[slots])
-		{
 			this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++, off+ slot[0],slot[1], 1));
-		}
-		if(bullets>=18)
-		{
-//			this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++, off+ 48,  3, 1));
-//			this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++, off+ 67,  3, 1));
-//			this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++, off+ 86,  3, 1));
-//			this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++, off+105,  3, 1));
-//			this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++, off+124, 11, 1));
-//			this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++, off+132, 30, 1));
-//			this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++, off+124, 49, 1));
-//			this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++, off+105, 57, 1));
-//			this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++, off+ 86, 49, 1));
-//			this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++, off+ 86, 30, 1));
-//			this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++, off+ 67, 30, 1));
-//			this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++, off+ 48, 30, 1));
-		}
-		else if(bullets>8)
-		{
-//			this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++, off+ 48, 11, 1));
-//			this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++, off+ 68,  3, 1));
-//			this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++, off+ 78, 22, 1));
-//			this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++, off+ 88,  3, 1));
-//			this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++, off+ 98, 22, 1));
-//			this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++, off+108,  3, 1));
-//			this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++, off+118, 22, 1));
-//			this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++, off+ 56, 30, 1));
-		}
-		else
-		{
-//			this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++, off+ 48, 11, 1));
-//			this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++, off+ 56, 30, 1));
-		}
 		this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++, off+ 48, 49, 1));
 		this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++, off+ 29, 57, 1));
 		this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++, off+ 10, 49, 1));
@@ -109,33 +73,7 @@ public class ContainerRevolver extends Container
 		this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++, off+ 10, 11, 1));
 
 
-		//		if(bulletSlots>8)
-		//		{
-		//			this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++,120,37, 1));
-		//			this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++,141,31, 1));
-		//			this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++,162,37, 1));
-		//			this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++,168,58, 1));
-		//			this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++,162,79, 1));
-		//			this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++,141,85, 1));
-		//			this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++,120,79, 1));
-		//		}
-		//		else
-		//			this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++,107,58, 1));
-		//		this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++,101,79, 1));
-		//		this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++, 80,85, 1));
-		//		this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++, 59,79, 1));
-		//		this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++, 53,58, 1));
-		//		this.addSlotToContainer(new IESlot.Bullet(this, this.input,i++, 59,37, 1));
-
-
-		//		this.addSlotToContainer(new IESlot.Bullet(this.input,0, 80,31, 1));
-		//		this.addSlotToContainer(new IESlot.Bullet(this.input,1,101,37, 1));
-		//		this.addSlotToContainer(new IESlot.Bullet(this.input,2,107,58, 1));
-		//		this.addSlotToContainer(new IESlot.Bullet(this.input,3,101,79, 1));
-		//		this.addSlotToContainer(new IESlot.Bullet(this.input,4, 80,85, 1));
-		//		this.addSlotToContainer(new IESlot.Bullet(this.input,5, 59,79, 1));
-		//		this.addSlotToContainer(new IESlot.Bullet(this.input,6, 53,58, 1));
-		//		this.addSlotToContainer(new IESlot.Bullet(this.input,7, 59,37, 1));
+		this.blockedSlot = (iinventory.currentItem + 27 + i);
 
 
 		bindPlayerInventory(iinventory);

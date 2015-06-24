@@ -19,11 +19,12 @@ import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundTile;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockDieselGenerator;
 import blusunrize.immersiveengineering.common.util.IESound;
+import cofh.api.energy.IEnergyConnection;
 import cofh.api.energy.IEnergyReceiver;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class TileEntityDieselGenerator extends TileEntityMultiblockPart implements IFluidHandler, ISoundTile
+public class TileEntityDieselGenerator extends TileEntityMultiblockPart implements IFluidHandler, ISoundTile, IEnergyConnection
 {
 	public int facing = 2;
 	public FluidTank tank = new FluidTank(8000);
@@ -338,5 +339,10 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockPart implemen
 						}
 					}
 		}
+	}
+	@Override
+	public boolean canConnectEnergy(ForgeDirection from)
+	{
+		return false;
 	}
 }
