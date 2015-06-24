@@ -1,9 +1,9 @@
 ﻿# BLOCKS
-tile.ImmersiveEngineering.ore.Copper.name=Kupfer Erz
-tile.ImmersiveEngineering.ore.Aluminum.name=Bauxit Erz
-tile.ImmersiveEngineering.ore.Lead.name=Blei Erz
-tile.ImmersiveEngineering.ore.Silver.name=Silber Erz
-tile.ImmersiveEngineering.ore.Nickel.name=Nickel Erz
+tile.ImmersiveEngineering.ore.Copper.name=Kupfererz
+tile.ImmersiveEngineering.ore.Aluminum.name=Bauxiterz
+tile.ImmersiveEngineering.ore.Lead.name=Bleierz
+tile.ImmersiveEngineering.ore.Silver.name=Silbererz
+tile.ImmersiveEngineering.ore.Nickel.name=Nickelerz
 tile.ImmersiveEngineering.storage.Copper.name=Kupferblock
 tile.ImmersiveEngineering.storage.Aluminum.name=Aluminiumblock
 tile.ImmersiveEngineering.storage.Lead.name=Bleiblock
@@ -12,9 +12,9 @@ tile.ImmersiveEngineering.storage.Nickel.name=Nickelblock
 tile.ImmersiveEngineering.storage.Constantan.name=Konstantanblock
 tile.ImmersiveEngineering.storage.Electrum.name=Elektrumblock
 tile.ImmersiveEngineering.storage.Steel.name=Stahlblock
-tile.ImmersiveEngineering.storage.CoilCopper.name=Kupfer Draht Spule
-tile.ImmersiveEngineering.storage.CoilElectrum.name=Elektrum Draht Spule
-tile.ImmersiveEngineering.storage.CoilHV.name=Stark-Strom Draht Spule
+tile.ImmersiveEngineering.storage.CoilCopper.name=Kupferdraht Spule
+tile.ImmersiveEngineering.storage.CoilElectrum.name=Elektrumdraht Spule
+tile.ImmersiveEngineering.storage.CoilHV.name=Stark-Stromdraht Spule
 
 tile.ImmersiveEngineering.metalDevice.connectorLV.name=Niedrigspannungs Kabel Verbinder
 tile.ImmersiveEngineering.metalDevice.capacitorLV.name=Niedrigspannungs Kondensator
@@ -28,14 +28,14 @@ tile.ImmersiveEngineering.metalDevice.transformerHV.name=Hochspannungs Transform
 tile.ImmersiveEngineering.metalDevice.dynamo.name=Kraft Generator
 tile.ImmersiveEngineering.metalDevice.thermoelectricGen.name=Thermoelektrischer Generator
 tile.ImmersiveEngineering.metalDevice.conveyorBelt.name=Fließband
-tile.ImmersiveEngineering.metalDevice.furnaceHeater.name=Externer Wärmer
+tile.ImmersiveEngineering.metalDevice.furnaceHeater.name=Ofen Heizer
 
-tile.ImmersiveEngineering.metalMultiblock.lightningRod.name=Blitz Stab Basis
+tile.ImmersiveEngineering.metalMultiblock.lightningRod.name=Blitzableiter
 tile.ImmersiveEngineering.metalMultiblock.dieselGenerator.name=Diesel Generator
 tile.ImmersiveEngineering.metalMultiblock.industrialSqueezer.name=Industrielle Presse
 tile.ImmersiveEngineering.metalMultiblock.fermenter.name=Fermenter
 tile.ImmersiveEngineering.metalMultiblock.refinery.name=Raffinerie
-tile.ImmersiveEngineering.metalMultiblock.crusher.name=Zerbrecher
+tile.ImmersiveEngineering.metalMultiblock.crusher.name=Zermahler
 
 tile.ImmersiveEngineering.metalDecoration.fence.name=Stahl Zaun
 tile.ImmersiveEngineering.metalDecoration.scaffolding.name=Stahl Gerüst
@@ -53,7 +53,7 @@ tile.ImmersiveEngineering.woodenDevice.windmill.name=Windmühle
 tile.ImmersiveEngineering.woodenDevice.windmillAdvanced.name=Verbesserte Windmühle
 tile.ImmersiveEngineering.woodenDevice.crate.name=Lagerungs Kiste
 
-tile.ImmersiveEngineering.woodenDecoration.treatedWood.name=Behandelte Holz Planken
+tile.ImmersiveEngineering.woodenDecoration.treatedWood.name=Behandelte Holz Bretter
 tile.ImmersiveEngineering.woodenDecoration.fence.name=Behandelter Holz Zaun
 tile.ImmersiveEngineering.woodenDecoration.slab0.name=Behandelte Holz Stufe
 tile.ImmersiveEngineering.woodenDecoration.slab1.name=Behandelte Holz Stufe
@@ -78,24 +78,24 @@ fluid.biodiesel=Bio Diesel
 
 
 # ITEMS
-item.ImmersiveEngineering.metal.ingotCopper.name=Kupfer Barren
-item.ImmersiveEngineering.metal.ingotAluminum.name=Aluminium Barren
-item.ImmersiveEngineering.metal.ingotLead.name=Blei Barren
-item.ImmersiveEngineering.metal.ingotSilver.name=Silber Barren
-item.ImmersiveEngineering.metal.ingotNickel.name=Nickel Barren
-item.ImmersiveEngineering.metal.ingotConstantan.name=Konstantan Barren
-item.ImmersiveEngineering.metal.ingotElectrum.name=Elektrum Barren
-item.ImmersiveEngineering.metal.ingotSteel.name=Stahl Barren
-item.ImmersiveEngineering.metal.dustIron.name=Eisen Kies
-item.ImmersiveEngineering.metal.dustGold.name=Gold Kies
-item.ImmersiveEngineering.metal.dustCopper.name=Kupfer Kies
-item.ImmersiveEngineering.metal.dustAluminum.name=Aluminium Kies
-item.ImmersiveEngineering.metal.dustLead.name=Blei Kies
-item.ImmersiveEngineering.metal.dustSilver.name=Silber Kies
-item.ImmersiveEngineering.metal.dustNickel.name=Nickel Kies
-item.ImmersiveEngineering.metal.dustConstantan.name=Konstantan Kies
-item.ImmersiveEngineering.metal.dustElectrum.name=Elektrum Kies
-item.ImmersiveEngineering.metal.dustSteel.name=Stahl Kies
+item.ImmersiveEngineering.metal.ingotCopper.name=Kupferbarren
+item.ImmersiveEngineering.metal.ingotAluminum.name=Aluminiumbarren
+item.ImmersiveEngineering.metal.ingotLead.name=Bleibarren
+item.ImmersiveEngineering.metal.ingotSilver.name=Silberbarren
+item.ImmersiveEngineering.metal.ingotNickel.name=Nickelbarren
+item.ImmersiveEngineering.metal.ingotConstantan.name=Konstantanbarren
+item.ImmersiveEngineering.metal.ingotElectrum.name=Elektrumbarren
+item.ImmersiveEngineering.metal.ingotSteel.name=Stahlbarren
+item.ImmersiveEngineering.metal.dustIron.name=Eisenstaub
+item.ImmersiveEngineering.metal.dustGold.name=Goldstaub
+item.ImmersiveEngineering.metal.dustCopper.name=Kupferstaub
+item.ImmersiveEngineering.metal.dustAluminum.name=Aluminiumstaub
+item.ImmersiveEngineering.metal.dustLead.name=Bleistaub
+item.ImmersiveEngineering.metal.dustSilver.name=Silberstaub
+item.ImmersiveEngineering.metal.dustNickel.name=Nickelstaub
+item.ImmersiveEngineering.metal.dustConstantan.name=Konstantanstaub
+item.ImmersiveEngineering.metal.dustElectrum.name=Elektrumstaub
+item.ImmersiveEngineering.metal.dustSteel.name=Stahlstaub
 
 item.ImmersiveEngineering.material.treatedStick.name=Behandelter Stock
 item.ImmersiveEngineering.material.waterwheelSegment.name=Wasserrad Teil
@@ -153,18 +153,18 @@ item.ImmersiveEngineering.bullet.dragonsbreath.name=Drachenatem Ladung
 itemGroup.ImmersiveEngineering=Immersive Engineering
 
 #DESCRIPTIONS
-desc.ImmersiveEngineering.info.attachedTo=Verbindet von %1$s, %2$s, %3$s
-desc.ImmersiveEngineering.info.attachedToDim=Verbindet von %1$s, %2$s, %3$s in Dimension %4$s
-desc.ImmersiveEngineering.info.energyStored=Energie gespeichert: %1$s RF
-desc.ImmersiveEngineering.info.blastFuelTime=Sprengstoff: %1$s Ticks
+desc.ImmersiveEngineering.info.attachedTo=Verbindet mit %1$s, %2$s, %3$s
+desc.ImmersiveEngineering.info.attachedToDim=Verbindet mit %1$s, %2$s, %3$s in Dimension %4$s
+desc.ImmersiveEngineering.info.energyStored=Gespeicherte Energie: %1$s RF
+desc.ImmersiveEngineering.info.blastFuelTime=Treibstoff Dauer: %1$s Ticks
 desc.ImmersiveEngineering.info.capacitorSide.facing=Front Seite:
 desc.ImmersiveEngineering.info.capacitorSide.opposite=Gegenüberliegende Seite:
 desc.ImmersiveEngineering.info.capacitorSide.-1=Keine Verbindung
 desc.ImmersiveEngineering.info.capacitorSide.0=Energie Eingang
 desc.ImmersiveEngineering.info.capacitorSide.1=Energie Ausgang
 
-desc.ImmersiveEngineering.flavour.crate=Behäalt sein Inventar wenn zerstört!
-desc.ImmersiveEngineering.flavour.coil.construction0=Nur als Dekoration  
+desc.ImmersiveEngineering.flavour.crate=Behält sein Inventar wenn zerstört!
+desc.ImmersiveEngineering.flavour.coil.construction0=Nur zur Dekoration  
 desc.ImmersiveEngineering.flavour.coil.construction1=Leitet keine Energie
 desc.ImmersiveEngineering.flavour.revolver=Go ahead, make my day!
 desc.ImmersiveEngineering.flavour.revolver.elite=Exclusive DLC Content
