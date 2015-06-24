@@ -1,8 +1,8 @@
 # BLOCKS
 tile.ImmersiveEngineering.ore.Copper.name=Медная Руда
 tile.ImmersiveEngineering.ore.Aluminum.name=Бакситовая Руда
-tile.ImmersiveEngineering.ore.Lead.name=Свинецовая Руда
-tile.ImmersiveEngineering.ore.Silver.name=Серебреная Руда
+tile.ImmersiveEngineering.ore.Lead.name=Свинцовая Руда
+tile.ImmersiveEngineering.ore.Silver.name=Серебряная Руда
 tile.ImmersiveEngineering.ore.Nickel.name=Никелевая Руда
 tile.ImmersiveEngineering.storage.Copper.name=Медный Блок
 tile.ImmersiveEngineering.storage.Aluminum.name=Алюминиевый Блок
@@ -14,7 +14,7 @@ tile.ImmersiveEngineering.storage.Electrum.nameЭлектрумовый Блок
 tile.ImmersiveEngineering.storage.Steel.name=Стальной Блок
 tile.ImmersiveEngineering.storage.CoilCopper.name=Медная Катушка
 tile.ImmersiveEngineering.storage.CoilElectrum.name=Электрумовая Катушка
-tile.ImmersiveEngineering.storage.CoilHV.name=Высоко-Вольтная Катушка
+tile.ImmersiveEngineering.storage.CoilHV.name=Высоковольтная Катушка
 
 tile.ImmersiveEngineering.metalDevice.connectorLV.name=Низковольтный Коннектор
 tile.ImmersiveEngineering.metalDevice.capacitorLV.name=Низковольтный Конденсатор
@@ -30,57 +30,57 @@ tile.ImmersiveEngineering.metalDevice.thermoelectricGen.name=Термоэлек�
 tile.ImmersiveEngineering.metalDevice.conveyorBelt.name=Конвеерная Лента
 tile.ImmersiveEngineering.metalDevice.furnaceHeater.name=Внешний нагреватель
 tile.ImmersiveEngineering.metalDevice.sorter.name=Предметный Роутер
-tile.ImmersiveEngineering.metalDevice.sampleDrill.name=Core Sample Drill
+tile.ImmersiveEngineering.metalDevice.sampleDrill.name=Core Sample Dril
 
-tile.ImmersiveEngineering.metalMultiblock.lightningRod.name=Lightning Rod Base
-tile.ImmersiveEngineering.metalMultiblock.dieselGenerator.name=Diesel Generator
-tile.ImmersiveEngineering.metalMultiblock.industrialSqueezer.name=Industrial Squeezer
-tile.ImmersiveEngineering.metalMultiblock.fermenter.name=Fermenter
-tile.ImmersiveEngineering.metalMultiblock.refinery.name=Refinery
-tile.ImmersiveEngineering.metalMultiblock.crusher.name=Crusher
-tile.ImmersiveEngineering.metalMultiblock.bucketWheel.name=Bucket Wheel
-tile.ImmersiveEngineering.metalMultiblock.excavator.name=Excavator
+tile.ImmersiveEngineering.metalMultiblock.lightningRod.name=Основание Громоотвода
+tile.ImmersiveEngineering.metalMultiblock.dieselGenerator.name=Дизельный Генератор
+tile.ImmersiveEngineering.metalMultiblock.industrialSqueezer.name=Промышленные Cоковыжималка
+tile.ImmersiveEngineering.metalMultiblock.fermenter.name=Ферментер
+tile.ImmersiveEngineering.metalMultiblock.refinery.name=Очистительный Завод
+tile.ImmersiveEngineering.metalMultiblock.crusher.name=Дробилка
+tile.ImmersiveEngineering.metalMultiblock.bucketWheel.name=Экскаваторный Ковш
+tile.ImmersiveEngineering.metalMultiblock.excavator.name=Экскаватор
 
-tile.ImmersiveEngineering.metalDecoration.fence.name=Steel Fence
-tile.ImmersiveEngineering.metalDecoration.scaffolding.name=Steel Scaffolding
-tile.ImmersiveEngineering.metalDecoration.lantern.name=Lantern
+tile.ImmersiveEngineering.metalDecoration.fence.name=Стальной Забор
+tile.ImmersiveEngineering.metalDecoration.scaffolding.name=Стальные Строительные Леса
+tile.ImmersiveEngineering.metalDecoration.lantern.name=Фонарь
 tile.ImmersiveEngineering.metalDecoration.structuralArm.name=Structural Arm
-tile.ImmersiveEngineering.metalDecoration.radiator.name=Radiator Block
-tile.ImmersiveEngineering.metalDecoration.heavyEngineering.name=Heavy Engineering Block
-tile.ImmersiveEngineering.metalDecoration.generator.name=Generator Block
-tile.ImmersiveEngineering.metalDecoration.lightEngineering.name=Light Engineering Block
-tile.ImmersiveEngineering.metalDecoration.connectorStructural.name=Structural Cable Connector
-tile.ImmersiveEngineering.metalDecoration.wallMount.name=Steel Wall Mount
+tile.ImmersiveEngineering.metalDecoration.radiator.name=Радиаторный Блок
+tile.ImmersiveEngineering.metalDecoration.heavyEngineering.name=Тяжелый Инженерный Блок
+tile.ImmersiveEngineering.metalDecoration.generator.name=Генераторный Блок
+tile.ImmersiveEngineering.metalDecoration.lightEngineering.name=Лёгкий Инженерный Блок
+tile.ImmersiveEngineering.metalDecoration.connectorStructural.name=Структурный Кабельный Коннектор
+tile.ImmersiveEngineering.metalDecoration.wallMount.name=Стальное Настенное Крепление
 
-tile.ImmersiveEngineering.woodenDevice.post.name=Wooden Post
-tile.ImmersiveEngineering.woodenDevice.watermill.name=Water Wheel
-tile.ImmersiveEngineering.woodenDevice.windmill.name=Windmill
-tile.ImmersiveEngineering.woodenDevice.windmillAdvanced.name=Improved Windmill
-tile.ImmersiveEngineering.woodenDevice.crate.name=Wooden Storage Crate
-tile.ImmersiveEngineering.woodenDevice.modificationWorkbench.name=Engineer's Workbench
+tile.ImmersiveEngineering.woodenDevice.post.name=Деревянные Сообщения
+tile.ImmersiveEngineering.woodenDevice.watermill.name=Водяное Колесо
+tile.ImmersiveEngineering.woodenDevice.windmill.name=Ветряная Мельница
+tile.ImmersiveEngineering.woodenDevice.windmillAdvanced.name=Улучшеная Ветряная Мельница
+tile.ImmersiveEngineering.woodenDevice.crate.name=Деревянный ящик
+tile.ImmersiveEngineering.woodenDevice.modificationWorkbench.name=Верстак Инженера
 
-tile.ImmersiveEngineering.woodenDecoration.treatedWood.name=Treated Wood Planks
-tile.ImmersiveEngineering.woodenDecoration.fence.name=Treated Wood Fence
-tile.ImmersiveEngineering.woodenDecoration.slab0.name=Treated Wood Slab
-tile.ImmersiveEngineering.woodenDecoration.slab1.name=Treated Wood Slab
-tile.ImmersiveEngineering.woodenDecoration.doubleSlab.name=Treated Wood Doubleslab
-tile.ImmersiveEngineering.woodenDecoration.scaffolding.name=Treated Wood Scaffolding
-tile.ImmersiveEngineering.woodenDecoration.wallMount.name=Wooden Wall Mount
+tile.ImmersiveEngineering.woodenDecoration.treatedWood.name=Обработаные Деревяные Доски
+tile.ImmersiveEngineering.woodenDecoration.fence.name=Обработаный Деревяный Забор
+tile.ImmersiveEngineering.woodenDecoration.slab0.name=Обработаная Деревяная Плита
+tile.ImmersiveEngineering.woodenDecoration.slab1.name=Обработаная Деревяная Плита
+tile.ImmersiveEngineering.woodenDecoration.doubleSlab.name=Обработаная Деревяная Сдвоеная Плита
+tile.ImmersiveEngineering.woodenDecoration.scaffolding.name=Обработаные Деревяные Строительные Леса
+tile.ImmersiveEngineering.woodenDecoration.wallMount.name=Деревяное Настеное Крепление
 
-tile.ImmersiveEngineering.woodenStairs.name=Treated Wood Stairs
+tile.ImmersiveEngineering.woodenStairs.name=Обработаные Деревяные Ступеньки
 
-tile.ImmersiveEngineering.stoneDevice.hempcrete.name=Hempcrete
-tile.ImmersiveEngineering.stoneDevice.cokeOven.name=Coke Oven
-tile.ImmersiveEngineering.stoneDevice.blastFurnace.name=Blast Furnace
-tile.ImmersiveEngineering.stoneDevice.coalCoke.name=Block of Coal Coke
-tile.ImmersiveEngineering.stoneDevice.insulatorGlass.name=Insulating Glass
+tile.ImmersiveEngineering.stoneDevice.hempcrete.name=Бетон
+tile.ImmersiveEngineering.stoneDevice.cokeOven.name=Коксовая Печь
+tile.ImmersiveEngineering.stoneDevice.blastFurnace.name=Доменная Печь
+tile.ImmersiveEngineering.stoneDevice.coalCoke.name=Блок Косового Угля
+tile.ImmersiveEngineering.stoneDevice.insulatorGlass.name=Стеклопакет
 
-tile.ImmersiveEngineering.hemp.name=Industrial Hemp
+tile.ImmersiveEngineering.hemp.name=Пенька
 
-fluid.creosote=Creosote Oil
-fluid.plantoil=Plant Oil
-fluid.ethanol=Ethanol
-fluid.biodiesel=Biodiesel
+fluid.creosote=Креозотовое Масло
+fluid.plantoil=Растительное Масло
+fluid.ethanol=Этанол
+fluid.biodiesel=Биодизель
 
 
 # ITEMS
