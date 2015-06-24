@@ -47,7 +47,7 @@ public class TileRenderConnectorMV extends TileRenderImmersiveConnectable
 			break;
 		}
 
-		model.render(tile, tes, translationMatrix, rotationMatrix, false);
+		model.render(tile, tes, translationMatrix, rotationMatrix, true, false);
 	}
 
 }

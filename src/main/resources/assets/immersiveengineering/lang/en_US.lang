@@ -57,6 +57,7 @@ tile.ImmersiveEngineering.woodenDevice.watermill.name=Water Wheel
 tile.ImmersiveEngineering.woodenDevice.windmill.name=Windmill
 tile.ImmersiveEngineering.woodenDevice.windmillAdvanced.name=Improved Windmill
 tile.ImmersiveEngineering.woodenDevice.crate.name=Wooden Storage Crate
+tile.ImmersiveEngineering.woodenDevice.modificationWorkbench.name=Engineer's Workbench
 
 tile.ImmersiveEngineering.woodenDecoration.treatedWood.name=Treated Wood Planks
 tile.ImmersiveEngineering.woodenDecoration.fence.name=Treated Wood Fence
@@ -142,16 +143,19 @@ item.ImmersiveEngineering.tool.voltmeter.name=Engineer's Voltmeter
 item.ImmersiveEngineering.tool.manual.name=Engineer's Manual
 
 item.ImmersiveEngineering.revolver.normal.name=Revolver
-item.ImmersiveEngineering.revolver.elite.name=Elite Revolver
 item.ImmersiveEngineering.revolver.speedloader.name=Revolver Speedloader
-item.ImmersiveEngineering.revolver.sns.name=Elite Revolver
+item.ImmersiveEngineering.revolver.dev.name=♛Royal Vanquisher♚
+item.ImmersiveEngineering.revolver.sns.name=Steamroller
 item.ImmersiveEngineering.revolver.nerf.name=Nerf'd Revolver
 item.ImmersiveEngineering.revolver.oblivion.name=Oblivion
 item.ImmersiveEngineering.revolver.oathkeeper.name=Oathkeeper
 item.ImmersiveEngineering.revolver.bee.name=Beevolver
 item.ImmersiveEngineering.revolver.fenrir.name=Fenrir
-item.ImmersiveEngineering.revolver.earthshaker.name=Earthshaker
+item.ImmersiveEngineering.revolver.earthshaker.name=§bEarthshaker§r
 item.ImmersiveEngineering.revolver.warlord.name=The Repulsor
+item.ImmersiveEngineering.revolver.patreonBlu.name=§6Last Word§r
+item.ImmersiveEngineering.revolver.patreonHazard.name=§4Twisted Phantom§r
+
 
 item.ImmersiveEngineering.bullet.emptyCasing.name=Empty Casing
 item.ImmersiveEngineering.bullet.emptyShell.name=Empty Shell
@@ -168,6 +172,10 @@ item.ImmersiveEngineering.drillhead.steel.name=Steel Drill Head
 item.ImmersiveEngineering.toolupgrade.drillWaterproof.name=Internal Oxidizer Tank
 item.ImmersiveEngineering.toolupgrade.drillSpeed.name=Advanced Lubrication System
 item.ImmersiveEngineering.toolupgrade.drillDamage.name=Additional Augers
+item.ImmersiveEngineering.toolupgrade.drillCapacity.name=Large Fuel Tank
+item.ImmersiveEngineering.toolupgrade.revolverBayonet.name=Bayonet
+item.ImmersiveEngineering.toolupgrade.revolverMagazine.name=Extended Magazine
+item.ImmersiveEngineering.toolupgrade.revolverElectro.name=Amplifier Electron Tubes
 
 
 #CREATIVE
@@ -225,7 +233,7 @@ desc.ImmersiveEngineering.flavour.crate=Will keep its inventory when broken!
 desc.ImmersiveEngineering.flavour.coil.construction0=For decoration purposes only
 desc.ImmersiveEngineering.flavour.coil.construction1=Will not transmit power
 desc.ImmersiveEngineering.flavour.revolver=Go ahead, make my day!
-desc.ImmersiveEngineering.flavour.revolver.elite=Exclusive DLC Content
+desc.ImmersiveEngineering.flavour.revolver.dev=Regicide!
 desc.ImmersiveEngineering.flavour.revolver.sns=Blood, Sweat, Steam and Steel
 desc.ImmersiveEngineering.flavour.revolver.nerf=Safe for kids
 desc.ImmersiveEngineering.flavour.revolver.oblivion=Passing Memories
@@ -235,6 +243,8 @@ desc.ImmersiveEngineering.flavour.revolver.fenrir=There's nothing I don't cheris
 desc.ImmersiveEngineering.flavour.revolver.earthshaker=Lingering Will
 desc.ImmersiveEngineering.flavour.revolver.warlord=Don't take my toys away!
 desc.ImmersiveEngineering.flavour.revolver.rommie=Targeting AI 'Rommie' included!
+desc.ImmersiveEngineering.flavour.revolver.patreonBlu=Hunter's Choice
+desc.ImmersiveEngineering.flavour.revolver.patreonHazard=Exclusive DLC Content
 
 desc.ImmersiveEngineering.flavour.drill.noHead=No Drill head equipped
 desc.ImmersiveEngineering.flavour.drill.headDamage=Drill head status:
@@ -247,7 +257,11 @@ desc.ImmersiveEngineering.flavour.drillhead.damage=Attack Damage: %1$s
 
 desc.ImmersiveEngineering.flavour.toolupgrade.drillWaterproof=Allows the Mining Drill to operate under water
 desc.ImmersiveEngineering.flavour.toolupgrade.drillSpeed=Increases the digging speed of the Mining Drill
-desc.ImmersiveEngineering.flavour.toolupgrade.drillDamage=Increases the attack damage of the Mining Drill. Stacks up to 3.
+desc.ImmersiveEngineering.flavour.toolupgrade.drillDamage=Increases the attack damage of the Mining Drill, stacks up to 3
+desc.ImmersiveEngineering.flavour.toolupgrade.drillCapacity=Increases the internal tank size of the Mining Drill
+desc.ImmersiveEngineering.flavour.toolupgrade.revolverBayonet=Adds melee damage to the Revolver
+desc.ImmersiveEngineering.flavour.toolupgrade.revolverMagazine=Increases the Revolver's magazine size
+desc.ImmersiveEngineering.flavour.toolupgrade.revolverElectro=Revolver shots inflict shock damage
 
 gui.ImmersiveEngineering.empty=Empty
 
@@ -285,7 +299,7 @@ death.attack.ieCrushed=%1$s was crushed
 
 ie.manual.category.general.name=Overview and Resources
 ie.manual.category.energy.name=Power, wires, generators
-ie.manual.category.machines.name=Machinery
+ie.manual.category.machines.name=Tools and Machinery
 
 ie.manual.entry.introduction.name=Introduction
 ie.manual.entry.introduction.subtext=Getting into Engineering
@@ -364,6 +378,10 @@ ie.manual.entry.multiblocks.name=Multiblock Constructions
 ie.manual.entry.multiblocks.subtext=Where's my Allen Wrench?
 ie.manual.entry.multiblocks0=Fitting complex machinery into a single 1x1x1 cube seems to be a task unmanageable without the use of magic or possibly shrink rays. So in order to create more complex machines, you will need component blocks. The most common ones have been listed on the following pages.
 
+ie.manual.entry.workbench.name=Engineer's Workbench
+ie.manual.entry.workbench.subtext=Overclocking
+ie.manual.entry.workbench0=Over the course of your Engineering career you may come to deal with some tools that can be optimized and modified. To apply these modifications, you should use a properly equipped Engineer's Workbench.<br>Rightclick the Workbench, insert the item into the slot and insert applicable upgrades into the new slots that appear.
+
 ie.manual.entry.dieselgen.name=Diesel Generator
 ie.manual.entry.dieselgen.subtext=Better than volume: More volume.
 ie.manual.entry.dieselgen0=High-Voltage architecture might be fascinating, but it's not very useful unless you have a generator that can actually create the required output for it.<br>The Diesel Generator is one of the few ways of generating this sort of energy. It is created as a complex multiblock structure and will run off of <link:biodiesel:Biodiesel> or other types of combustible fuel. Due to its high output, it will work through fuel very quickly, so make sure you have a sufficient fuel production to run it.
@@ -399,11 +417,22 @@ ie.manual.entry.sorter1=When an item enters the router, it will be routed to an 
 
 ie.manual.entry.drill.name=Mining Drill
 ie.manual.entry.drill.subtext=My drill will pierce the Bedrock!
-ie.manual.entry.drill0=The handheld, diesel-powered drill is a big advancement in mining. With exchangeable drill heads and upgrades, its properties are almost entirely modifyable. To modify it, sneak and right click.<br>The drill runs off of <link:biodiesel:Bio Diesel> and can be filled directly in the refinery.
+ie.manual.entry.drill0=The handheld, diesel-powered drill is a big advancement in mining. With exchangeable drill heads and upgrades, its properties are almost entirely modifyable. To modify it, place it in an <link:workbench:Engineer's Workbench>.<br>The drill runs off of <link:biodiesel:Bio Diesel> and can be filled directly in the refinery.
 ie.manual.entry.drill1=The Drill Head determines the base mining level, speed, and size, as well as the attack damage. As you dig blocks, the drill head takes damage, but it can be repaired in an anvil.
 ie.manual.entry.drill2=As the drill is powered by a combustion engine, it will not run underwater unless you equip it with the Internal Oxidizer Tank Upgrade. However, with this upgrade equipped, it will not only run while submerged, but also ignore the slowdown usually experienced when digging in water.
 ie.manual.entry.drill3=The Advanced Lubrication System applies additional lubricant to the drill at a regular basis, allowing it to run and dig faster.
 ie.manual.entry.drill4=By adding Additional Augers to the drill, it's destructive potential against living creatures is increased. The upgrade stacks up to three and each will add an additional point of attack damage.
+ie.manual.entry.drill5=The Large Fuel Tank allows the drill to store more fuel internally, extending the time you can use it before refilling.
+
+ie.manual.entry.revolver.name=Revolver
+ie.manual.entry.revolver.subtext=Wanted: Dead or Alive
+ie.manual.entry.revolver0=The Revolver, a more elegant weapon from a more civilized age, is an achievement of small mechanics. Small being relative here, since this weapon is chambered for 12-gauge.<br>Similar to the Mining Drill, the Revolver will allow for modification in the <link:workbench:Engineer's Workbench>.
+ie.manual.entry.revolver1=There are 5 different types of ammunition the Revolver will accept. To load it, sneak+rightclick the weapon, then place cartridges into the slots.<br>A loaded Speedloader in your inventory, will be used to refill the revolver after you've fired your last shot.
+ie.manual.entry.revolver2=Casull: Simple lead projectile, capable of inflicting medium damage.<br><br>Armor-Piercing: Dense metal projectile, penetrates the armor by sheer kinetic force.<br><br>High-Explosive: Creates small explosion on impact.
+ie.manual.entry.revolver3=Buckshot: Collection of small projectiles, spreading in a cone shape. Effective at short range.<br><br>Dragon's Breath: Flammable metal dust, creates a short-ranged inferno.
+ie.manual.entry.revolver4=By attaching a bayonet to the revolver, you outfit it with close-quarter-combat cabapilities, allowing for melee damage as powerful as an Iron Sword.
+ie.manual.entry.revolver5=The Extended Magazine allows loading 6 more cartridges into the revolver. This magazine does not get refilled by a speedloader.
+ie.manual.entry.revolver6=The Amplifying Electron Tubes apply an electric shock to fired projectiles. This shock persists till it hits the target (don't ask how it works) and is passed on. The target will be stunned for a fraction of a second and all powered equipment they may be using will suffer a slight discharge.
 
 ie.manual.entry.crusher.name=Crusher
 ie.manual.entry.crusher.subtext=Keep your hands out!

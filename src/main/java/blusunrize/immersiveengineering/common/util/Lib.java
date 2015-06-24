@@ -23,7 +23,7 @@ public class Lib
 	public static final int GUIID_Fermenter = 6;
 	public static final int GUIID_Sorter = 7;
 	public static final int GUIID_Refinery = 8;
-	public static final int GUIID_Drill = 9;
+	public static final int GUIID_Workbench = 9;
 	
 	public static String DMG_RevolverCasull="ieRevolver_casull";
 	public static String DMG_RevolverAP="ieRevolver_armorPiercing";

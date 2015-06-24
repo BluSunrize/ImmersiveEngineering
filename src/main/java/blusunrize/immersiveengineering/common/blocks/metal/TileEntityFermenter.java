@@ -86,7 +86,7 @@ public class TileEntityFermenter extends TileEntityMultiblockPart implements IFl
 							FermenterRecipe rr = getRecipe(stack);
 							if(rr==null)
 								continue;
-							if(recipe==null || rr==recipe || (rr.fluid!=null?rr.fluid.isFluidEqual(recipe.fluid): recipe.fluid!=null?recipe.fluid.isFluidEqual(rr.fluid): false) )
+							if(recipe==null || rr==recipe || (rr.fluid!=null?rr.fluid.isFluidEqual(recipe.fluid): (recipe.fluid!=null?recipe.fluid.isFluidEqual(rr.fluid):false)) )
 								recipe=rr;
 							else
 								continue;

@@ -30,8 +30,8 @@ import blusunrize.immersiveengineering.client.fx.EntityFXItemParts;
 import blusunrize.immersiveengineering.client.gui.GuiBlastFurnace;
 import blusunrize.immersiveengineering.client.gui.GuiCokeOven;
 import blusunrize.immersiveengineering.client.gui.GuiCrate;
-import blusunrize.immersiveengineering.client.gui.GuiDrill;
 import blusunrize.immersiveengineering.client.gui.GuiFermenter;
+import blusunrize.immersiveengineering.client.gui.GuiModWorkbench;
 import blusunrize.immersiveengineering.client.gui.GuiRefinery;
 import blusunrize.immersiveengineering.client.gui.GuiRevolver;
 import blusunrize.immersiveengineering.client.gui.GuiSorter;
@@ -62,6 +62,7 @@ import blusunrize.immersiveengineering.client.render.TileRenderWallmount;
 import blusunrize.immersiveengineering.client.render.TileRenderWatermill;
 import blusunrize.immersiveengineering.client.render.TileRenderWindmill;
 import blusunrize.immersiveengineering.client.render.TileRenderWindmillAdvanced;
+import blusunrize.immersiveengineering.client.render.TileRenderWorkbench;
 import blusunrize.immersiveengineering.common.CommonProxy;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.IEContent;
@@ -96,6 +97,7 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockRefin
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockSqueezer;
 import blusunrize.immersiveengineering.common.blocks.stone.TileEntityBlastFurnace;
 import blusunrize.immersiveengineering.common.blocks.stone.TileEntityCokeOven;
+import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityModWorkbench;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWallmount;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWatermill;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWindmill;
@@ -103,7 +105,6 @@ import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWindmillAd
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenCrate;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenPost;
 import blusunrize.immersiveengineering.common.entities.EntityRevolvershot;
-import blusunrize.immersiveengineering.common.items.ItemDrill;
 import blusunrize.immersiveengineering.common.items.ItemRevolver;
 import blusunrize.immersiveengineering.common.util.IESound;
 import blusunrize.immersiveengineering.common.util.Lib;
@@ -146,8 +147,9 @@ public class ClientProxy extends CommonProxy
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityWatermill.class, new TileRenderWatermill());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityWindmill.class, new TileRenderWindmill());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityWindmillAdvanced.class, new TileRenderWindmillAdvanced());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityModWorkbench.class, new TileRenderWorkbench());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityWallmount.class, new TileRenderWallmount());
-
+		
 		RenderingRegistry.registerBlockHandler(new BlockRenderWoodenDecoration());
 		//STONE
 		RenderingRegistry.registerBlockHandler(new BlockRenderStoneDevices());
@@ -240,7 +242,8 @@ public class ClientProxy extends CommonProxy
 		for(String[][] minTable : multiTables)
 			pages.add(new ManualPages.Table(manual, "", minTable,true));
 		manual.addEntry("minerals", "general", pages.toArray(new IManualPage[0]));
-
+		manual.addEntry("workbench", "general", new ManualPages.Crafting(manual, "workbench0", new ItemStack(IEContent.blockWoodenDevice,1,5)));
+		
 		manual.addEntry("wiring", "energy",
 				new ManualPages.Text(manual, "wiring0"), 
 				new ManualPages.Crafting(manual, "wiring1", new ItemStack(IEContent.itemWireCoil,1,OreDictionary.WILDCARD_VALUE)),
@@ -299,11 +302,20 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.Crafting(manual, "sorter0", new ItemStack(IEContent.blockMetalDevice,1,BlockMetalDevices.META_sorter)),
 				new ManualPages.Text(manual, "sorter1"));
 		manual.addEntry("drill", "machines",
-				new ManualPages.Crafting(manual, "drill0", new ItemStack(IEContent.itemDrill,1,0)),
+				new ManualPages.CraftingMulti(manual, "drill0", new ItemStack(IEContent.itemDrill,1,0), new ItemStack(IEContent.itemMaterial,1,9)),
 				new ManualPages.Crafting(manual, "drill1", new ItemStack(IEContent.itemDrillhead,1,0)),
 				new ManualPages.Crafting(manual, "drill2", new ItemStack(IEContent.itemToolUpgrades,1,0)),
 				new ManualPages.Crafting(manual, "drill3", new ItemStack(IEContent.itemToolUpgrades,1,1)),
-				new ManualPages.Crafting(manual, "drill4", new ItemStack(IEContent.itemToolUpgrades,1,2)));
+				new ManualPages.Crafting(manual, "drill4", new ItemStack(IEContent.itemToolUpgrades,1,2)),
+				new ManualPages.Crafting(manual, "drill5", new ItemStack(IEContent.itemToolUpgrades,1,3)));
+		manual.addEntry("revolver", "machines",
+				new ManualPages.CraftingMulti(manual, "revolver0", new ItemStack(IEContent.itemRevolver,1,0), new ItemStack(IEContent.itemMaterial,1,7),new ItemStack(IEContent.itemMaterial,1,8),new ItemStack(IEContent.itemMaterial,1,9),new ItemStack(IEContent.itemMaterial,1,10)),
+				new ManualPages.CraftingMulti(manual, "revolver1", new ItemStack(IEContent.itemBullet,1,0),new ItemStack(IEContent.itemBullet,1,1),new ItemStack(IEContent.itemRevolver,1,1)),
+				new ManualPages.CraftingMulti(manual, "revolver2", new ItemStack(IEContent.itemBullet,1,2),new ItemStack(IEContent.itemBullet,1,3), new ItemStack(IEContent.itemBullet,1,5)),
+				new ManualPages.CraftingMulti(manual, "revolver3", new ItemStack(IEContent.itemBullet,1,4),new ItemStack(IEContent.itemBullet,1,6)),
+				new ManualPages.Crafting(manual, "revolver4", new ItemStack(IEContent.itemToolUpgrades,1,4)),
+				new ManualPages.Crafting(manual, "revolver5", new ItemStack(IEContent.itemToolUpgrades,1,5)),
+				new ManualPages.Crafting(manual, "revolver6", new ItemStack(IEContent.itemToolUpgrades,1,6)));
 		manual.addEntry("crusher", "machines",
 				new ManualPageMultiblock(manual, "crusher0", MultiblockCrusher.instance),
 				new ManualPages.Text(manual, "crusher1"));
@@ -334,8 +346,10 @@ public class ClientProxy extends CommonProxy
 			return new GuiSorter(player.inventory, (TileEntityConveyorSorter) world.getTileEntity(x, y, z));
 		if(ID==Lib.GUIID_Refinery && world.getTileEntity(x, y, z) instanceof TileEntityRefinery)
 			return new GuiRefinery(player.inventory, (TileEntityRefinery) world.getTileEntity(x, y, z));
-		if(ID==Lib.GUIID_Drill && player.getCurrentEquippedItem()!=null && player.getCurrentEquippedItem().getItem() instanceof ItemDrill)
-			return new GuiDrill(player.inventory, world);
+		//		if(ID==Lib.GUIID_Workbench && player.getCurrentEquippedItem()!=null && player.getCurrentEquippedItem().getItem() instanceof ItemDrill)
+		//			return new GuiDrill(player.inventory, world);
+		if(ID==Lib.GUIID_Workbench && world.getTileEntity(x, y, z) instanceof TileEntityModWorkbench)
+			return new GuiModWorkbench(player.inventory, (TileEntityModWorkbench) world.getTileEntity(x, y, z));
 		return null;
 	}
 

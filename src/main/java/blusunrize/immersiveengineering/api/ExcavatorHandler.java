@@ -6,7 +6,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Random;
 
-import blusunrize.immersiveengineering.common.Config;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -23,6 +22,7 @@ public class ExcavatorHandler
 	public static LinkedHashMap<MineralMix, Integer> mineralList = new LinkedHashMap<MineralMix, Integer>();
 	public static HashMap<DimensionChunkCoords, Integer> mineralDepletion = new HashMap<DimensionChunkCoords, Integer>();
 	public static int totalWeight = 0;
+	public static int mineralVeinCapacity = 0;
 
 	public static void addMineral(String name, int mineralChance, float failChance, String[] ores, float[] chances)
 	{
@@ -48,11 +48,11 @@ public class ExcavatorHandler
 		if(!mineralDepletion.containsKey(new DimensionChunkCoords(world.provider.dimensionId, chunkX,chunkZ)))
 			mineralDepletion.put(new DimensionChunkCoords(world.provider.dimensionId, chunkX,chunkZ), 0);
 		int dep = mineralDepletion.get(new DimensionChunkCoords(world.provider.dimensionId, chunkX,chunkZ));
-		if(dep>Config.getInt("excavator_depletion"))
+		if(dep>mineralVeinCapacity)
 			return null;
 
 		long seed = world.getSeed();
-		boolean empty = ((seed+(chunkX*chunkX + chunkZ*chunkZ))^seed)%4!=0;
+		boolean empty = ((seed+(chunkX*chunkX + chunkZ*chunkZ))^seed)%8!=0; //Used to be 1 in 4
 		int query = (int) ((seed+((chunkX*chunkX*71862)+(chunkZ*chunkZ*31261)))^seed);
 		if(empty)
 			return null;

@@ -2,9 +2,12 @@ package blusunrize.immersiveengineering.common.items;
 
 import java.util.HashMap;
 
+import net.minecraft.inventory.Container;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import blusunrize.immersiveengineering.api.IUpgrade;
+import blusunrize.immersiveengineering.common.gui.InventoryStorageItem;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 
 public abstract class ItemUpgradeableTool extends ItemInternalStorage
@@ -40,7 +43,7 @@ public abstract class ItemUpgradeableTool extends ItemInternalStorage
 					upg.applyUpgrades(stack, u, map);	
 			}
 		}
-		NBTTagCompound upgradeTag = new NBTTagCompound();
+		NBTTagCompound upgradeTag = getUpgradeBase(stack);
 		for(String key : map.keySet())
 		{
 			Object o = map.get(key);
@@ -63,5 +66,12 @@ public abstract class ItemUpgradeableTool extends ItemInternalStorage
 		}
 		ItemNBTHelper.setTagCompound(stack, "upgrades", upgradeTag);
 	}
+	public NBTTagCompound getUpgradeBase(ItemStack stack)
+	{
+		return new NBTTagCompound();
+	}
+	
+	public abstract boolean canModify(ItemStack stack);
+	public abstract Slot[] getWorkbenchSlots(Container container, ItemStack stack, InventoryStorageItem invItem);
 
 }

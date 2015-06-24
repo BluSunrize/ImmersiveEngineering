@@ -9,6 +9,7 @@ import net.minecraft.world.IBlockAccess;
 import org.lwjgl.opengl.GL11;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityModWorkbench;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWatermill;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWindmill;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWindmillAdvanced;
@@ -53,6 +54,16 @@ public class BlockRenderWoodenDevices implements ISimpleBlockRenderingHandler
 				renderer.setRenderBounds(0,0,0, 1,1,1);
 				ClientUtils.drawInventoryBlock(block, metadata, renderer);
 			}
+			else if(metadata==5)
+			{
+				GL11.glScalef(.75f, .75f, .75f);
+				GL11.glTranslatef(-.75f, -.5F, -.25f);
+				Tessellator.instance.startDrawingQuads();
+				TileEntityModWorkbench tile = new TileEntityModWorkbench();
+				tile.facing=3;
+				ClientUtils.handleStaticTileRenderer(tile);
+				Tessellator.instance.draw();
+			}
 		}catch(Exception e)
 		{
 			e.printStackTrace();
@@ -73,10 +84,19 @@ public class BlockRenderWoodenDevices implements ISimpleBlockRenderingHandler
 				return true;
 			}
 		}
-		if(world.getBlockMetadata(x, y, z) == 4)
+		else if(world.getBlockMetadata(x, y, z) == 4)
 		{
 			renderer.setRenderBoundsFromBlock(block);
 			return renderer.renderStandardBlock(block, x, y, z);
+		}
+		else if(world.getBlockMetadata(x, y, z) == 5)
+		{
+			TileEntityModWorkbench tile = (TileEntityModWorkbench)world.getTileEntity(x, y, z);
+			if(!tile.dummy)
+			{
+				ClientUtils.handleStaticTileRenderer(tile);
+				return true;
+			}
 		}
 		return false;
 	}

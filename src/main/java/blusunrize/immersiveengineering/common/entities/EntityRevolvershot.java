@@ -8,6 +8,8 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
@@ -15,6 +17,9 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
+import blusunrize.immersiveengineering.common.util.Lib;
+import blusunrize.immersiveengineering.common.util.compat.IC2Helper;
+import cofh.api.energy.IEnergyContainerItem;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -31,6 +36,7 @@ public class EntityRevolvershot extends Entity
 
 	private int tickLimit=40;
 	int bulletType = 0;
+	public boolean bulletElectro = false;
 
 	public EntityRevolvershot(World world)
 	{
@@ -216,7 +222,24 @@ public class EntityRevolvershot extends Entity
 	}
 	public void secondaryImpact(MovingObjectPosition mop)
 	{
-
+		if(bulletElectro && mop.entityHit instanceof EntityLivingBase)
+		{
+			((EntityLivingBase)mop.entityHit).addPotionEffect(new PotionEffect(Potion.moveSlowdown.id,3,4));
+			for(int i=0; i<=4; i++)
+			{
+				ItemStack stack = ((EntityLivingBase)mop.entityHit).getEquipmentInSlot(i);
+				if(stack!=null && stack.getItem() instanceof IEnergyContainerItem)
+				{
+					int drain = (int)(((IEnergyContainerItem)stack.getItem()).getMaxEnergyStored(stack)*.10f);
+					((IEnergyContainerItem)stack.getItem()).extractEnergy(stack, drain, false);
+				}
+				if(stack!=null && Lib.IC2)
+				{
+					double charge = IC2Helper.getMaxItemCharge(stack);
+					IC2Helper.dischargeItem(stack, charge*.10f);
+				}
+			}
+		}
 	}
 	public void onExpire()
 	{
@@ -229,10 +252,10 @@ public class EntityRevolvershot extends Entity
 	}
 
 	@Override
-//	public void writeToNBT(NBTTagCompound nbt)
+	//	public void writeToNBT(NBTTagCompound nbt)
 	protected void writeEntityToNBT(NBTTagCompound nbt)
 	{
-//		super.writeToNBT(nbt);
+		//		super.writeToNBT(nbt);
 		nbt.setShort("xTile", (short)this.field_145795_e);
 		nbt.setShort("yTile", (short)this.field_145793_f);
 		nbt.setShort("zTile", (short)this.field_145794_g);
@@ -243,10 +266,10 @@ public class EntityRevolvershot extends Entity
 	}
 
 	@Override
-//	public void readFromNBT(NBTTagCompound nbt)
+	//	public void readFromNBT(NBTTagCompound nbt)
 	protected void readEntityFromNBT(NBTTagCompound nbt)
 	{
-//		super.readFromNBT(nbt);
+		//		super.readFromNBT(nbt);
 		this.field_145795_e = nbt.getShort("xTile");
 		this.field_145793_f = nbt.getShort("yTile");
 		this.field_145794_g = nbt.getShort("zTile");
@@ -299,14 +322,14 @@ public class EntityRevolvershot extends Entity
 	{
 		return false;
 	}
-//	@Override
-//	protected void readEntityFromNBT(NBTTagCompound p_70037_1_) {
-//		// TODO Auto-generated method stub
-//		
-//	}
-//	@Override
-//	protected void writeEntityToNBT(NBTTagCompound p_70014_1_) {
-//		// TODO Auto-generated method stub
-//		
-//	}
+	//	@Override
+	//	protected void readEntityFromNBT(NBTTagCompound p_70037_1_) {
+	//		// TODO Auto-generated method stub
+	//		
+	//	}
+	//	@Override
+	//	protected void writeEntityToNBT(NBTTagCompound p_70014_1_) {
+	//		// TODO Auto-generated method stub
+	//		
+	//	}
 }

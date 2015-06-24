@@ -1,3 +1,13 @@
+#####Version 0.2.3 - BUILT
+- added Engineer's Workbench
+- buffed FluidTank on the Drill
+- nerfed Mineral veins
+- added new Revolver models
+- added Revolver upgrades
+- added Internal Tank upgrade for Drill
+- rebalanced Drill Upgrade recipes
+- added manual entry for Revolver and Workbench
+
 #####Version 0.2.2 - BUILT
 - possible fix for fermenter+squeezer crash
 - structural connectors rotate again

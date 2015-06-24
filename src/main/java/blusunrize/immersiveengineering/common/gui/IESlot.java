@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.api.IBullet;
 import blusunrize.immersiveengineering.api.IDrillHead;
 import blusunrize.immersiveengineering.api.IUpgrade;
+import blusunrize.immersiveengineering.common.items.ItemUpgradeableTool;
 
 public abstract class IESlot extends Slot
 {
@@ -110,12 +111,14 @@ public abstract class IESlot extends Slot
 	}
 	public static class Upgrades extends IESlot
 	{
+		ItemStack upgradeableTool;
 		IUpgrade.UpgradeType type;
 		boolean preventDoubles;
-		public Upgrades(Container container, IInventory inv, int id, int x, int y, IUpgrade.UpgradeType type, boolean preventDoubles)
+		public Upgrades(Container container, IInventory inv, int id, int x, int y, IUpgrade.UpgradeType type, ItemStack upgradeableTool, boolean preventDoubles)
 		{
 			super(container, inv, id, x, y);
 			this.type = type;
+			this.upgradeableTool = upgradeableTool;
 			this.preventDoubles = preventDoubles;
 		}
 		@Override
@@ -125,13 +128,39 @@ public abstract class IESlot extends Slot
 				for(Slot slot : (List<Slot>)container.inventorySlots)
 					if(slot instanceof IESlot.Upgrades && ((IESlot.Upgrades)slot).preventDoubles && OreDictionary.itemMatches(slot.getStack(), itemStack, true))
 						return false;
-			return itemStack!=null && itemStack.getItem() instanceof IUpgrade && ((IUpgrade)itemStack.getItem()).getUpgradeTypes(itemStack).contains(type);
+			return itemStack!=null && itemStack.getItem() instanceof IUpgrade && ((IUpgrade)itemStack.getItem()).getUpgradeTypes(itemStack).contains(type) && ((IUpgrade)itemStack.getItem()).canApplyUpgrades(upgradeableTool, itemStack);
 		}
 		@Override
 		public int getSlotStackLimit()
 		{
 			return 64;
 		}
+	}
+	public static class UpgradeableItem extends IESlot
+	{
+		int size;
+		public UpgradeableItem(Container container, IInventory inv, int id, int x, int y, int size)
+		{
+			super(container, inv, id, x, y);
+			this.size = size;
+		}
+		@Override
+		public boolean isItemValid(ItemStack itemStack)
+		{
+			return itemStack!=null && itemStack.getItem() instanceof ItemUpgradeableTool && ((ItemUpgradeableTool)itemStack.getItem()).canModify(itemStack);
+		}
+		@Override
+		public int getSlotStackLimit()
+		{
+			return size;
+		}
+		@Override
+	    public void onSlotChanged()
+	    {
+			super.onSlotChanged();
+			if(container instanceof ContainerModWorkbench)
+				((ContainerModWorkbench)container).rebindSlots();
+	    }
 	}
 	public static class Ghost extends IESlot
 	{

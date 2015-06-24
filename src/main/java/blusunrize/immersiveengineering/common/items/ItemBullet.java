@@ -42,33 +42,33 @@ public class ItemBullet extends ItemIEBase implements IBullet
 		return bulletStack!=null && bulletStack.getItemDamage()>1;
 	}
 	@Override
-	public void spawnBullet(EntityPlayer player, ItemStack bulletStack)
+	public void spawnBullet(EntityPlayer player, ItemStack bulletStack, boolean electro)
 	{
 		Vec3 vec = player.getLookVec();
 		int type = bulletStack.getItemDamage()-2;
 		switch(type)
 		{
 		case 0://casull
-			doSpawnBullet(player, vec, vec, type, bulletStack);
+			doSpawnBullet(player, vec, vec, type, bulletStack, electro);
 			break;
 		case 1://armorPiercing
-			doSpawnBullet(player, vec, vec, type, bulletStack);
+			doSpawnBullet(player, vec, vec, type, bulletStack, electro);
 			break;
 		case 2://buckshot
 			for(int i=0; i<10; i++)
 			{
 				Vec3 vecDir = vec.addVector(player.getRNG().nextGaussian()*.1,player.getRNG().nextGaussian()*.1,player.getRNG().nextGaussian()*.1);
-				doSpawnBullet(player, vec, vecDir, type, bulletStack);
+				doSpawnBullet(player, vec, vecDir, type, bulletStack, electro);
 			}
 			break;
 		case 3://HE
-			doSpawnBullet(player, vec, vec, type, bulletStack);
+			doSpawnBullet(player, vec, vec, type, bulletStack, electro);
 			break;
 		case 4://dragonsbreath
 			for(int i=0; i<30; i++)
 			{
 				Vec3 vecDir = vec.addVector(player.getRNG().nextGaussian()*.1,player.getRNG().nextGaussian()*.1,player.getRNG().nextGaussian()*.1);
-				EntityRevolvershot shot = doSpawnBullet(player, vec, vecDir, type, bulletStack);
+				EntityRevolvershot shot = doSpawnBullet(player, vec, vecDir, type, bulletStack, electro);
 				shot.setTickLimit(10);
 				shot.setFire(3);
 			}
@@ -76,7 +76,7 @@ public class ItemBullet extends ItemIEBase implements IBullet
 		}
 	}
 
-	EntityRevolvershot doSpawnBullet(EntityPlayer player, Vec3 vecSpawn, Vec3 vecDir, int type, ItemStack stack)
+	EntityRevolvershot doSpawnBullet(EntityPlayer player, Vec3 vecSpawn, Vec3 vecDir, int type, ItemStack stack, boolean electro)
 	{
 		//		double dX = player.posX+vecSpawn.xCoord;
 		//		double dY = player.posY+player.getEyeHeight()+vecSpawn.yCoord;
@@ -85,6 +85,7 @@ public class ItemBullet extends ItemIEBase implements IBullet
 		bullet.motionX = vecDir.xCoord;
 		bullet.motionY = vecDir.yCoord;
 		bullet.motionZ = vecDir.zCoord;
+		bullet.bulletElectro = electro;
 		player.worldObj.spawnEntityInWorld(bullet);
 		return bullet;
 	}

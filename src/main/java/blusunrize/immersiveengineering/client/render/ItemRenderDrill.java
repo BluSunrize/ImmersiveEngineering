@@ -130,6 +130,7 @@ public class ItemRenderDrill implements IItemRenderer
 		if(upgrades.getInteger("speed")>0)
 			ClientUtils.renderWavefrontModelWithModifications(model, tes, new Matrix4(),new Matrix4(), false, "upgrade_speed");
 		//		model.renderPart("upgrade_waterproof");
+		
 		tes.draw();
 
 		if(head!=null)
