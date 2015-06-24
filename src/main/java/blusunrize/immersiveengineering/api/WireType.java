@@ -11,7 +11,8 @@ public enum WireType
 	ELECTRUM,
 	STEEL,
 	STRUCTURE_ROPE,
-	STRUCTURE_STEEL;
+	STRUCTURE_STEEL,
+	TELECOMMUNICATION;
 
 	public static WireType getValue(int i)
 	{

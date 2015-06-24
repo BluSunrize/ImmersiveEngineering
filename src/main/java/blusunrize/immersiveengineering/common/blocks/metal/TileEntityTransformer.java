@@ -129,8 +129,9 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable
 		return null;
 	}
 	@Override
-	public void removeCable(WireType type)
+	public void removeCable(Connection connection)
 	{
+		WireType type = connection.cableType;
 		if(type==null)
 		{
 			limitType=null;
