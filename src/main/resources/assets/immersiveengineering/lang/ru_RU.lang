@@ -30,7 +30,7 @@ tile.ImmersiveEngineering.metalDevice.thermoelectricGen.name=Термоэлек�
 tile.ImmersiveEngineering.metalDevice.conveyorBelt.name=Конвеерная Лента
 tile.ImmersiveEngineering.metalDevice.furnaceHeater.name=Внешний нагреватель
 tile.ImmersiveEngineering.metalDevice.sorter.name=Предметный Роутер
-tile.ImmersiveEngineering.metalDevice.sampleDrill.name=Core Sample Dril
+tile.ImmersiveEngineering.metalDevice.sampleDrill.name=Сердечник Дрели
 
 tile.ImmersiveEngineering.metalMultiblock.lightningRod.name=Основание Громоотвода
 tile.ImmersiveEngineering.metalMultiblock.dieselGenerator.name=Дизельный Генератор
@@ -44,7 +44,7 @@ tile.ImmersiveEngineering.metalMultiblock.excavator.name=Экскаватор
 tile.ImmersiveEngineering.metalDecoration.fence.name=Стальной Забор
 tile.ImmersiveEngineering.metalDecoration.scaffolding.name=Стальные Строительные Леса
 tile.ImmersiveEngineering.metalDecoration.lantern.name=Фонарь
-tile.ImmersiveEngineering.metalDecoration.structuralArm.name=Structural Arm
+tile.ImmersiveEngineering.metalDecoration.structuralArm.name=Структурный Блок
 tile.ImmersiveEngineering.metalDecoration.radiator.name=Радиаторный Блок
 tile.ImmersiveEngineering.metalDecoration.heavyEngineering.name=Тяжелый Инженерный Блок
 tile.ImmersiveEngineering.metalDecoration.generator.name=Генераторный Блок
@@ -84,65 +84,65 @@ fluid.biodiesel=Биодизель
 
 
 # ITEMS
-item.ImmersiveEngineering.metal.ingotCopper.name=Copper Ingot
-item.ImmersiveEngineering.metal.ingotAluminum.name=Aluminium Ingot
-item.ImmersiveEngineering.metal.ingotLead.name=Lead Ingot
-item.ImmersiveEngineering.metal.ingotSilver.name=Silver Ingot
-item.ImmersiveEngineering.metal.ingotNickel.name=Nickel Ingot
-item.ImmersiveEngineering.metal.ingotConstantan.name=Constantan Ingot
-item.ImmersiveEngineering.metal.ingotElectrum.name=Electrum Ingot
-item.ImmersiveEngineering.metal.ingotSteel.name=Steel Ingot
-item.ImmersiveEngineering.metal.dustIron.name=Iron Grit
-item.ImmersiveEngineering.metal.dustGold.name=Gold Grit
-item.ImmersiveEngineering.metal.dustCopper.name=Copper Grit
-item.ImmersiveEngineering.metal.dustAluminum.name=Aluminium Grit
-item.ImmersiveEngineering.metal.dustLead.name=Lead Grit
-item.ImmersiveEngineering.metal.dustSilver.name=Silver Grit
-item.ImmersiveEngineering.metal.dustNickel.name=Nickel Grit
-item.ImmersiveEngineering.metal.dustConstantan.name=Constantan Grit
-item.ImmersiveEngineering.metal.dustElectrum.name=Electrum Grit
-item.ImmersiveEngineering.metal.dustSteel.name=Steel Grit
-item.ImmersiveEngineering.metal.dustCoke.name=Coke Dust
-item.ImmersiveEngineering.metal.dustQuartz.name=Quartz Dust
-item.ImmersiveEngineering.metal.dustHOPGraphite.name=HOP Graphite Dust
-item.ImmersiveEngineering.metal.ingotHOPGraphite.name=HOP Graphite Ingot
+item.ImmersiveEngineering.metal.ingotCopper.name=Медный Слиток
+item.ImmersiveEngineering.metal.ingotAluminum.name=Алюминиевый Слиток
+item.ImmersiveEngineering.metal.ingotLead.name=Свинцовый Слиток
+item.ImmersiveEngineering.metal.ingotSilver.name=Серебряный Слиток
+item.ImmersiveEngineering.metal.ingotNickel.name=Никелевый Слиток
+item.ImmersiveEngineering.metal.ingotConstantan.name=Константановый Слиток
+item.ImmersiveEngineering.metal.ingotElectrum.name=Электрумовый Слиток
+item.ImmersiveEngineering.metal.ingotSteel.name=Стальной Слиток
+item.ImmersiveEngineering.metal.dustIron.name=Железная Пыль
+item.ImmersiveEngineering.metal.dustGold.name=Золотая Пыль
+item.ImmersiveEngineering.metal.dustCopper.name=Медная Пыль
+item.ImmersiveEngineering.metal.dustAluminum.name=Алюминиевая Пыль
+item.ImmersiveEngineering.metal.dustLead.name=Свинцовая Пыль
+item.ImmersiveEngineering.metal.dustSilver.name=Серебряная Пыль
+item.ImmersiveEngineering.metal.dustNickel.name=Никелевая Пыль
+item.ImmersiveEngineering.metal.dustConstantan.name=Константановая Пыль
+item.ImmersiveEngineering.metal.dustElectrum.name=Электрумовая Пыль
+item.ImmersiveEngineering.metal.dustSteel.name=Стальная Пыль
+item.ImmersiveEngineering.metal.dustCoke.name=Угольная Пыль
+item.ImmersiveEngineering.metal.dustQuartz.name=Кварцевая Пыль
+item.ImmersiveEngineering.metal.dustHOPGraphite.name=Графитовая Пыль
+item.ImmersiveEngineering.metal.ingotHOPGraphite.name=Графитовый Слиток
 
 
-item.ImmersiveEngineering.material.treatedStick.name=Treated Stick
-item.ImmersiveEngineering.material.waterwheelSegment.name=Waterwheel Segment
-item.ImmersiveEngineering.material.windmillBlade.name=Windmill Blade
-item.ImmersiveEngineering.material.hempFiber.name=Industrial Hemp Fiber
-item.ImmersiveEngineering.material.fabric.name=Tough Fabric
-item.ImmersiveEngineering.material.windmillBladeAdvanced.name=Improved Windmill Blade
-item.ImmersiveEngineering.material.coalCoke.name=Coal Coke
-item.ImmersiveEngineering.material.gunpartBarrel.name=Revolver Barrel
-item.ImmersiveEngineering.material.gunpartDrum.name=Revolver Drum
-item.ImmersiveEngineering.material.gunpartGrip.name=Wooden Grip
-item.ImmersiveEngineering.material.gunpartHammer.name=Revolver Hammer
-item.ImmersiveEngineering.material.componentIron.name=Iron Mechanical Component
-item.ImmersiveEngineering.material.componentSteel.name=Steel Mechanical Component
-item.ImmersiveEngineering.seed.hemp.name=Industrial Hemp Seeds
+item.ImmersiveEngineering.material.treatedStick.name=Обработаная Палка
+item.ImmersiveEngineering.material.waterwheelSegment.name=Сегмент Водного Колеса
+item.ImmersiveEngineering.material.windmillBlade.name=Ветреная Лопасть
+item.ImmersiveEngineering.material.hempFiber.name=Промышленое Пеньковое Волокно
+item.ImmersiveEngineering.material.fabric.name=Плотная Ткань
+item.ImmersiveEngineering.material.windmillBladeAdvanced.name=Улучшенная Ветреная Лопасть
+item.ImmersiveEngineering.material.coalCoke.name=Коксовый Уголь
+item.ImmersiveEngineering.material.gunpartBarrel.name=Револьверный Ствол
+item.ImmersiveEngineering.material.gunpartDrum.name=Револьверный барабан
+item.ImmersiveEngineering.material.gunpartGrip.name=Деревяная Рукоять
+item.ImmersiveEngineering.material.gunpartHammer.name=Боёк
+item.ImmersiveEngineering.material.componentIron.name=Железные Механические Запчасти
+item.ImmersiveEngineering.material.componentSteel.name=Стальные Механические Запчасти
+item.ImmersiveEngineering.seed.hemp.name=Промышленые Пеньковые Семена
 
-item.ImmersiveEngineering.fluidContainers.bottleCreosote.name=Bottle of Creosote Oil
-item.ImmersiveEngineering.fluidContainers.bucketCreosote.name=Bucket of Creosote Oil
-item.ImmersiveEngineering.fluidContainers.bottlePlantoil.name=Bottle of Plant Oil
-item.ImmersiveEngineering.fluidContainers.bucketPlantoil.name=Bucket of Plant Oil
-item.ImmersiveEngineering.fluidContainers.bottleEthanol.name=Bottle of Ethanol
-item.ImmersiveEngineering.fluidContainers.bucketEthanol.name=Bucket of Ethanol
-item.ImmersiveEngineering.fluidContainers.bottleBiodiesel.name=Bottle of Biodiesel
-item.ImmersiveEngineering.fluidContainers.bucketBiodiesel.name=Bucket of Biodiesel
+item.ImmersiveEngineering.fluidContainers.bottleCreosote.name=Бутылка Креозотового Масла
+item.ImmersiveEngineering.fluidContainers.bucketCreosote.name=Ведро Креозотового Масла
+item.ImmersiveEngineering.fluidContainers.bottlePlantoil.name=Бутылка Растительного Масла
+item.ImmersiveEngineering.fluidContainers.bucketPlantoil.name=Ведро Растительного Масла
+item.ImmersiveEngineering.fluidContainers.bottleEthanol.name=Бутылка Этанола
+item.ImmersiveEngineering.fluidContainers.bucketEthanol.name=Ведро Этанола
+item.ImmersiveEngineering.fluidContainers.bottleBiodiesel.name=Бутылка Биодизеля
+item.ImmersiveEngineering.fluidContainers.bucketBiodiesel.name=Ведро Биодизеля
 
-item.ImmersiveEngineering.coil.copper.name=Copper Wire Coil
-item.ImmersiveEngineering.coil.electrum.name=Electrum Wire Coil
-item.ImmersiveEngineering.coil.HV.name=High-Voltage Wire Coil
-item.ImmersiveEngineering.coil.rope.name=Hemp Rope Coil
-item.ImmersiveEngineering.coil.structural.name=Steel Cable Coil
-item.ImmersiveEngineering.tool.hammer.name=Engineer's Hammer
-item.ImmersiveEngineering.tool.wirecutter.name=Engineer's Wire Cutters
-item.ImmersiveEngineering.tool.voltmeter.name=Engineer's Voltmeter
-item.ImmersiveEngineering.tool.manual.name=Engineer's Manual
+item.ImmersiveEngineering.coil.copper.name=Медная Катушка
+item.ImmersiveEngineering.coil.electrum.name=Электрумовая Катушка
+item.ImmersiveEngineering.coil.HV.name=Высоковольтная Катушка
+item.ImmersiveEngineering.coil.rope.name=Пеньковая Катушка
+item.ImmersiveEngineering.coil.structural.name=Стальная Катушка
+item.ImmersiveEngineering.tool.hammer.name=Инженерный Молот
+item.ImmersiveEngineering.tool.wirecutter.name=Инженерные Кусачки
+item.ImmersiveEngineering.tool.voltmeter.name=Инженерный Вольтметр
+item.ImmersiveEngineering.tool.manual.name=Инженерный Мануал
 
-item.ImmersiveEngineering.revolver.normal.name=Revolver
+item.ImmersiveEngineering.revolver.normal.name=Револьвер
 item.ImmersiveEngineering.revolver.speedloader.name=Revolver Speedloader
 item.ImmersiveEngineering.revolver.dev.name=♛Royal Vanquisher♚
 item.ImmersiveEngineering.revolver.sns.name=Steamroller
@@ -157,81 +157,81 @@ item.ImmersiveEngineering.revolver.patreonBlu.name=§6Last Word§r
 item.ImmersiveEngineering.revolver.patreonHazard.name=§4Twisted Phantom§r
 
 
-item.ImmersiveEngineering.bullet.emptyCasing.name=Empty Casing
-item.ImmersiveEngineering.bullet.emptyShell.name=Empty Shell
-item.ImmersiveEngineering.bullet.casull.name=Casull Cartridge
-item.ImmersiveEngineering.bullet.armorPiercing.name=Armor-Piercing Cartridge
-item.ImmersiveEngineering.bullet.buckshot.name=Buckshot Cartridge
-item.ImmersiveEngineering.bullet.HE.name=High-Explosive Cartridge
-item.ImmersiveEngineering.bullet.dragonsbreath.name=Dragon's Breath Cartridge
+item.ImmersiveEngineering.bullet.emptyCasing.name=Пустой корпус
+item.ImmersiveEngineering.bullet.emptyShell.name=Пустая оболочка
+item.ImmersiveEngineering.bullet.casull.name=Простой Патрон
+item.ImmersiveEngineering.bullet.armorPiercing.name=Бронебойный Патрон
+item.ImmersiveEngineering.bullet.buckshot.name=Картечьный Патрон
+item.ImmersiveEngineering.bullet.HE.name=Взрывной Патрон
+item.ImmersiveEngineering.bullet.dragonsbreath.name=Патрон Дыхание Дракона
 
-item.ImmersiveEngineering.drill.diesel.name=Mining Drill
-item.ImmersiveEngineering.drillhead.iron.name=Iron Drill Head
-item.ImmersiveEngineering.drillhead.steel.name=Steel Drill Head
+item.ImmersiveEngineering.drill.diesel.name=Горная Дрель
+item.ImmersiveEngineering.drillhead.iron.name=Железная Буровая Головка
+item.ImmersiveEngineering.drillhead.steel.name=Стальная Буровая Головка
 
-item.ImmersiveEngineering.toolupgrade.drillWaterproof.name=Internal Oxidizer Tank
-item.ImmersiveEngineering.toolupgrade.drillSpeed.name=Advanced Lubrication System
-item.ImmersiveEngineering.toolupgrade.drillDamage.name=Additional Augers
-item.ImmersiveEngineering.toolupgrade.drillCapacity.name=Large Fuel Tank
-item.ImmersiveEngineering.toolupgrade.revolverBayonet.name=Bayonet
-item.ImmersiveEngineering.toolupgrade.revolverMagazine.name=Extended Magazine
-item.ImmersiveEngineering.toolupgrade.revolverElectro.name=Amplifier Electron Tubes
+item.ImmersiveEngineering.toolupgrade.drillWaterproof.name=Внутренний бак окислителя
+item.ImmersiveEngineering.toolupgrade.drillSpeed.name=Улучшенная Система смазки
+item.ImmersiveEngineering.toolupgrade.drillDamage.name=Дополнительные Буровые Головки
+item.ImmersiveEngineering.toolupgrade.drillCapacity.name=Большой топливный бак
+item.ImmersiveEngineering.toolupgrade.revolverBayonet.name=Штык-Нож
+item.ImmersiveEngineering.toolupgrade.revolverMagazine.name=Расширеный Магазин
+item.ImmersiveEngineering.toolupgrade.revolverElectro.name=Электрошокер
 
 
 #CREATIVE
 itemGroup.ImmersiveEngineering=Immersive Engineering
 
 #DESCRIPTIONS
-desc.ImmersiveEngineering.info.attachedTo=Linking from %1$s, %2$s, %3$s
-desc.ImmersiveEngineering.info.attachedToDim=Linking from %1$s, %2$s, %3$s in Dimension %4$s
-desc.ImmersiveEngineering.info.energyStored=Energy stored: %1$s RF
-desc.ImmersiveEngineering.info.blastFuelTime=Blast Fuel: %1$s Ticks
-desc.ImmersiveEngineering.info.capacitorSide.facing=Facing Side:
-desc.ImmersiveEngineering.info.capacitorSide.opposite=Opposite Side:
-desc.ImmersiveEngineering.info.capacitorSide.-1=No Connection
-desc.ImmersiveEngineering.info.capacitorSide.0=Energy Input
-desc.ImmersiveEngineering.info.capacitorSide.1=Energy Output
+desc.ImmersiveEngineering.info.attachedTo=Соединение с %1$s, %2$s, %3$s
+desc.ImmersiveEngineering.info.attachedToDim=Соединение с %1$s, %2$s, %3$s В измерении %4$s
+desc.ImmersiveEngineering.info.energyStored=Энергии Хранится: %1$s RF
+desc.ImmersiveEngineering.info.blastFuelTime=Доменного Топлива: %1$s Ticks
+desc.ImmersiveEngineering.info.capacitorSide.facing=Лицевая Сторона:
+desc.ImmersiveEngineering.info.capacitorSide.opposite=Противоположная сторона:
+desc.ImmersiveEngineering.info.capacitorSide.-1=Нет Соединения
+desc.ImmersiveEngineering.info.capacitorSide.0=Энерго Вход
+desc.ImmersiveEngineering.info.capacitorSide.1=Энерго Выход
 
-desc.ImmersiveEngineering.info.blockSide.UP=Top Side
-desc.ImmersiveEngineering.info.blockSide.DOWN=Bottom Side
-desc.ImmersiveEngineering.info.blockSide.NORTH=North Side
-desc.ImmersiveEngineering.info.blockSide.SOUTH=South Side
-desc.ImmersiveEngineering.info.blockSide.EAST=East Side
-desc.ImmersiveEngineering.info.blockSide.WEST=West Side
+desc.ImmersiveEngineering.info.blockSide.UP=Верхняя Сторона
+desc.ImmersiveEngineering.info.blockSide.DOWN=Нижняя Сторона
+desc.ImmersiveEngineering.info.blockSide.NORTH=Северная Сторона
+desc.ImmersiveEngineering.info.blockSide.SOUTH=Южная Сторона
+desc.ImmersiveEngineering.info.blockSide.EAST=Восточная Сторона
+desc.ImmersiveEngineering.info.blockSide.WEST=Западная Сторона
 
-desc.ImmersiveEngineering.info.oreDict.off=OreDictionary: Disabled
-desc.ImmersiveEngineering.info.oreDict.on=OreDictionary: Enabled
+desc.ImmersiveEngineering.info.oreDict.off=OreDictionary: Выключен
+desc.ImmersiveEngineering.info.oreDict.on=OreDictionary: Включен
 
-desc.ImmersiveEngineering.info.mininglvl.-1=None
-desc.ImmersiveEngineering.info.mininglvl.0=§7Stone
-desc.ImmersiveEngineering.info.mininglvl.1=§4Iron
-desc.ImmersiveEngineering.info.mininglvl.2=§cRedstone
-desc.ImmersiveEngineering.info.mininglvl.3=§dObsidian
-desc.ImmersiveEngineering.info.mininglvl.4=§9Cobalt
-desc.ImmersiveEngineering.info.mininglvl.5=§5Manyullyn
-desc.ImmersiveEngineering.info.mininglvl.6=§5Manyullyn§d+
+desc.ImmersiveEngineering.info.mininglvl.-1=Нет
+desc.ImmersiveEngineering.info.mininglvl.0=§7Камень
+desc.ImmersiveEngineering.info.mininglvl.1=§4Железо
+desc.ImmersiveEngineering.info.mininglvl.2=§cКрасный Камень
+desc.ImmersiveEngineering.info.mininglvl.3=§dОбсидиан
+desc.ImmersiveEngineering.info.mininglvl.4=§9Кобальт
+desc.ImmersiveEngineering.info.mininglvl.5=§5Манулин
+desc.ImmersiveEngineering.info.mininglvl.6=§5Манулин§d+
 
-desc.ImmersiveEngineering.info.durability=Durability: %1$s
+desc.ImmersiveEngineering.info.durability=Прочность: %1$s
 
-desc.ImmersiveEngineering.info.mineral.Iron=Iron
-desc.ImmersiveEngineering.info.mineral.Magnetite=Magnetite
-desc.ImmersiveEngineering.info.mineral.Pyrite=Pyrite
-desc.ImmersiveEngineering.info.mineral.Bauxite=Bauxite
-desc.ImmersiveEngineering.info.mineral.Copper=Copper
-desc.ImmersiveEngineering.info.mineral.Gold=Gold
-desc.ImmersiveEngineering.info.mineral.Nickel=Nickel
-desc.ImmersiveEngineering.info.mineral.Platinum=Platinum
-desc.ImmersiveEngineering.info.mineral.Uranium=Uranium
-desc.ImmersiveEngineering.info.mineral.Quartzite=Quarzite
-desc.ImmersiveEngineering.info.mineral.Galena=Galena
-desc.ImmersiveEngineering.info.mineral.Lead=Lead
-desc.ImmersiveEngineering.info.mineral.Silver=Silver
-desc.ImmersiveEngineering.info.mineral.Lapis=Lapis
+desc.ImmersiveEngineering.info.mineral.Iron=Железо
+desc.ImmersiveEngineering.info.mineral.Magnetite=Магнетит
+desc.ImmersiveEngineering.info.mineral.Pyrite=Перит
+desc.ImmersiveEngineering.info.mineral.Bauxite=Баксит
+desc.ImmersiveEngineering.info.mineral.Copper=Медь
+desc.ImmersiveEngineering.info.mineral.Gold=Золото
+desc.ImmersiveEngineering.info.mineral.Nickel=Никель
+desc.ImmersiveEngineering.info.mineral.Platinum=Платина
+desc.ImmersiveEngineering.info.mineral.Uranium=Ураниум
+desc.ImmersiveEngineering.info.mineral.Quartzite=Кварцит
+desc.ImmersiveEngineering.info.mineral.Galena=Галенит
+desc.ImmersiveEngineering.info.mineral.Lead=Свинец
+desc.ImmersiveEngineering.info.mineral.Silver=Серебро
+desc.ImmersiveEngineering.info.mineral.Lapis=Лазурит
 
 
-desc.ImmersiveEngineering.flavour.crate=Will keep its inventory when broken!
-desc.ImmersiveEngineering.flavour.coil.construction0=For decoration purposes only
-desc.ImmersiveEngineering.flavour.coil.construction1=Will not transmit power
+desc.ImmersiveEngineering.flavour.crate=Сохранит этот инвентарь когда сломается!
+desc.ImmersiveEngineering.flavour.coil.construction0=Только для декоративных целей
+desc.ImmersiveEngineering.flavour.coil.construction1=Не будет передавать мощь
 desc.ImmersiveEngineering.flavour.revolver=Go ahead, make my day!
 desc.ImmersiveEngineering.flavour.revolver.dev=Regicide!
 desc.ImmersiveEngineering.flavour.revolver.sns=Blood, Sweat, Steam and Steel
@@ -246,68 +246,68 @@ desc.ImmersiveEngineering.flavour.revolver.rommie=Targeting AI 'Rommie' included
 desc.ImmersiveEngineering.flavour.revolver.patreonBlu=Hunter's Choice
 desc.ImmersiveEngineering.flavour.revolver.patreonHazard=Exclusive DLC Content
 
-desc.ImmersiveEngineering.flavour.drill.noHead=No Drill head equipped
-desc.ImmersiveEngineering.flavour.drill.headDamage=Drill head status:
-desc.ImmersiveEngineering.flavour.drill.fuel=Fuel:
+desc.ImmersiveEngineering.flavour.drill.noHead=Не экипировано Буровой Головки
+desc.ImmersiveEngineering.flavour.drill.headDamage=Статус Буровой Головки:
+desc.ImmersiveEngineering.flavour.drill.fuel=Топливо:
 
-desc.ImmersiveEngineering.flavour.drillhead.size=Mining Area: %1$sx%1$sx%2$s 
-desc.ImmersiveEngineering.flavour.drillhead.level=Mining Level: %1$s
-desc.ImmersiveEngineering.flavour.drillhead.speed=Mining Speed: %1$s
-desc.ImmersiveEngineering.flavour.drillhead.damage=Attack Damage: %1$s
+desc.ImmersiveEngineering.flavour.drillhead.size=Зона Копания: %1$sx%1$sx%2$s 
+desc.ImmersiveEngineering.flavour.drillhead.level=Уровень Копания: %1$s
+desc.ImmersiveEngineering.flavour.drillhead.speed=Скорость Копания: %1$s
+desc.ImmersiveEngineering.flavour.drillhead.damage=Количество урона: %1$s
 
-desc.ImmersiveEngineering.flavour.toolupgrade.drillWaterproof=Allows the Mining Drill to operate under water
-desc.ImmersiveEngineering.flavour.toolupgrade.drillSpeed=Increases the digging speed of the Mining Drill
-desc.ImmersiveEngineering.flavour.toolupgrade.drillDamage=Increases the attack damage of the Mining Drill, stacks up to 3
-desc.ImmersiveEngineering.flavour.toolupgrade.drillCapacity=Increases the internal tank size of the Mining Drill
-desc.ImmersiveEngineering.flavour.toolupgrade.revolverBayonet=Adds melee damage to the Revolver
-desc.ImmersiveEngineering.flavour.toolupgrade.revolverMagazine=Increases the Revolver's magazine size
-desc.ImmersiveEngineering.flavour.toolupgrade.revolverElectro=Revolver shots inflict shock damage
+desc.ImmersiveEngineering.flavour.toolupgrade.drillWaterproof=Позволяет Горной Дрели работать под водой
+desc.ImmersiveEngineering.flavour.toolupgrade.drillSpeed=Увеличивает Копательную скорость Горной Дрели
+desc.ImmersiveEngineering.flavour.toolupgrade.drillDamage=Увеличивает кол-во урона Горной Дрели, Складывается до 3-х раз
+desc.ImmersiveEngineering.flavour.toolupgrade.drillCapacity=Увеличивает размер внутреннего бака Горной Дрели
+desc.ImmersiveEngineering.flavour.toolupgrade.revolverBayonet=Добавляет ближний урон Револьверу
+desc.ImmersiveEngineering.flavour.toolupgrade.revolverMagazine=Увеличивает размер магазина у Револьвера
+desc.ImmersiveEngineering.flavour.toolupgrade.revolverElectro=Револьвер стреляет электрическими разрядами
 
 gui.ImmersiveEngineering.empty=Empty
 
 #CHAT
-chat.ImmersiveEngineering.warning.wrongCable=You cannot attach this wire here
-chat.ImmersiveEngineering.warning.wrongDimension=You are in the wrong dimension
-chat.ImmersiveEngineering.warning.sameConnection=You cannot attach a wire to the same point
-chat.ImmersiveEngineering.warning.tooFar=You are too far away from the previous connection
-chat.ImmersiveEngineering.warning.cantSee=The connection is obstructed
-chat.ImmersiveEngineering.warning.connectionExists=The connection exists already
-chat.ImmersiveEngineering.warning.invalidPoint=One of the connection points is invalid
-chat.ImmersiveEngineering.info.averageLoss=Average loss between points: %1$s RF
-chat.ImmersiveEngineering.info.energyStorage=Energy Stored: %1$s/%2$s RF
+chat.ImmersiveEngineering.warning.wrongCable=Вы не можете прикреплять этот провод здесь
+chat.ImmersiveEngineering.warning.wrongDimension=Вы в неправильном измерении
+chat.ImmersiveEngineering.warning.sameConnection=Вы не можете прикреплять провод к той же точке
+chat.ImmersiveEngineering.warning.tooFar=Вы находитесь слишком далеко от предыдущего соединения
+chat.ImmersiveEngineering.warning.cantSee=Соединение затруднен
+chat.ImmersiveEngineering.warning.connectionExists=Соединение уже существует
+chat.ImmersiveEngineering.warning.invalidPoint=Один из пунктов подключения является недействительным
+chat.ImmersiveEngineering.info.averageLoss=Средняя потеря между точками: %1$s RF
+chat.ImmersiveEngineering.info.energyStorage=Энергии Хранится: %1$s/%2$s RF
 
-chat.ImmersiveEngineering.info.forChunk=§8For Chunk from %1$s to %2$s
-chat.ImmersiveEngineering.info.coreDrill.progress=Core Sample in progress: %1$s
-chat.ImmersiveEngineering.info.coreDrill.result.mineral=§7Core Sample evaluated, %1$s§7 vein found
-chat.ImmersiveEngineering.info.coreDrill.result.depl=§7Mineral vein at %1$s§7 integrity
-chat.ImmersiveEngineering.info.coreDrill.result.none=Core Sample evaluated, no minerals found
+chat.ImmersiveEngineering.info.forChunk=§8Для чанка от %1$s до %2$s
+chat.ImmersiveEngineering.info.coreDrill.progress=Прогресс сердечника дрели: %1$s
+chat.ImmersiveEngineering.info.coreDrill.result.mineral=§7Сердечник дрели оценивает, %1$s§7 жила найдена
+chat.ImmersiveEngineering.info.coreDrill.result.depl=§7Минеральная жила в %1$s§7 в целостности
+chat.ImmersiveEngineering.info.coreDrill.result.none=Сердечник дрели оценивает, Минералы не найдены
 
 #RECIPES
-recipe.ImmersiveEngineering.hammerCrushing=Crushing
+recipe.ImmersiveEngineering.hammerCrushing=Дробление
 
 #DEATH
-death.attack.ieRevolver_casull=%1$s was shot by %2$s
-death.attack.ieRevolver_armorPiercing=%1$s was shot by %2$s
-death.attack.ieRevolver_buckshot=%1$s was shotgunned by %2$s
-death.attack.ieRevolver_dragonsbreath=%1$s was incinerated by %2$s
-death.attack.ieCrushed=%1$s was crushed
+death.attack.ieRevolver_casull=%1$s Был застрелен %2$s
+death.attack.ieRevolver_armorPiercing=%1$s Был застрелен %2$s
+death.attack.ieRevolver_buckshot=%1$s Был растрелен %2$s
+death.attack.ieRevolver_dragonsbreath=%1$s сгорел в %2$s
+death.attack.ieCrushed=%1$s был раздроблен
 
 #MANUAL
 #ie.manual.entry..name=
 #ie.manual.entry..subtext=
 #ie.manual.entry.=
 
-ie.manual.category.general.name=Overview and Resources
-ie.manual.category.energy.name=Power, wires, generators
-ie.manual.category.machines.name=Tools and Machinery
+ie.manual.category.general.name=Обзор и ресурсы
+ie.manual.category.energy.name=Энергия, Провода, Генераторы
+ie.manual.category.machines.name=Инструменты и Машины
 
-ie.manual.entry.introduction.name=Introduction
-ie.manual.entry.introduction.subtext=Getting into Engineering
-ie.manual.entry.introduction0=Greetings, fellow engineer, and welcome to Immersive Engineering. This journal shall serve as your guide for setting up all the new machines and functions this mod has to offer.<br>Let's start with the basics first: Immersive Engineering is built around the concept of retrofuturistic generation and transfer of energy. The energy used in this mod is Redstone Flux, a trait shared with many other mods currently available.
-ie.manual.entry.introduction1=Energy is transmitted between §lconnectors§r by the use of §lwires§r. Wires can only bridge a limited distance of blocks, so you will need to use more connectors as §lrelays§r between the wires.<br>You have the choice between three different types of wire, which differ in transferrates, <config:iA:cableTransferRate:l3> RF/tick. To switch between different types of wire, you will need to use §ltransformers§r.
-ie.manual.entry.introductionHammer=The Engineer's Hammer is the most important tool at your disposal. It will be used to form multiblocks like the Coke Oven and Blast Furnace<config:b:crushingOreRecipe:, crushing ores into dust : >or configuring blocks like Wooden Posts.
+ie.manual.entry.introduction.name=Введение
+ie.manual.entry.introduction.subtext=Попадая в Инженеринг
+ie.manual.entry.introduction0=Привет, товарищ инженер, и добро пожаловать в Immersive инженерии . Этот журнал должен служить в качестве руководства для установки всех новых машин и функции этого мода может предложить . <br> Давайте начнем с первых основ: Immersive Engineering построен вокруг концепции ретро-футуристического поколения и передачи энергии . Энергия используется в этой моде является Redstone Flux ,черта разделяет со многими другими модами , доступных в настоящее время .
+ie.manual.entry.introduction1=Энергия передается между §lconnectors§r с использованием §lwires§r . Провода могут только преодолеть ограниченное расстояние блоков , так что вам нужно будет использовать больше разъемов , как §lrelays§r между проводами <br> вас есть выбор между тремя различными типами проволоки , которые отличаются в скорости передачи ,<config:iA:cableTransferRate:l3> РФ/тик . Для переключения между различными типами проволоки , вы должны будете использовать §ltransformers§r.
+ie.manual.entry.introductionHammer=Инженерный Молот очень важный инструмент в вашем распоряжении. Он будет использоваться для формирования Мультиблочных структур таких как Коксовая и Доменая печи <config:b:crushingOreRecipe:, crushing ores into dust : >или настройки блоков таких как  Деревяные сообщения.
 
-ie.manual.entry.ores.name=Ores
+ie.manual.entry.ores.name=Руды
 ie.manual.entry.ores.subtext=Diggy diggy hole
 ie.manual.entry.oresCopper=§lCopper Ore§r is found in the world between layers <config:iA:ore_copper:1> and <config:iA:ore_copper:2>, and requires a Stone Pickaxe to harvest.<br><br>The ore will smelt into copper ingots, which are used in crafting basic copper wires, coils, and other integral parts of the IE architecture.
 ie.manual.entry.oresBauxite=§lBauxite Ore§r is found in the world between layers <config:iA:ore_bauxite:1> and <config:iA:ore_bauxite:2>, and requires a Stone Pickaxe to harvest.<br><br>The ore will smelt into aluminium ingots, which, together with steel, are used to create high-voltage wires.
