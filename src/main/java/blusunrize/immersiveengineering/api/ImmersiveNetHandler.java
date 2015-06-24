@@ -97,11 +97,11 @@ public class ImmersiveNetHandler
 				//if(node.equals(con.start) && toIIC(con.end, world)!=null && getConnections(world,con.end).isEmpty())
 				iic = toIIC(con.end, world);
 				if(iic!=null)
-					iic.removeCable(con.cableType);
+					iic.removeCable(con);
 				//if(node.equals(con.end) && toIIC(con.start, world)!=null && getConnections(world,con.start).isEmpty())
 				iic = toIIC(con.start, world);
 				if(iic!=null)
-					iic.removeCable(con.cableType);
+					iic.removeCable(con);
 
 				if(node.equals(con.end))
 				{
@@ -135,8 +135,8 @@ public class ImmersiveNetHandler
 				if(node.equals(con.start) || node.equals(con.end))
 				{
 					it.remove();
-					toIIC(con.end, world).removeCable(con.cableType);
-					toIIC(con.start, world).removeCable(con.cableType);
+					toIIC(con.end, world).removeCable(con);
+					toIIC(con.start, world).removeCable(con);
 
 					if(node.equals(con.end))
 					{
