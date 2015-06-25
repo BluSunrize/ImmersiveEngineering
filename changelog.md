@@ -1,4 +1,4 @@
-#####Version 0.2.4
+#####Version 0.2.4 - BUILT
 - fixed various spelling error in the .lang
 - fixed HV Transformers fitting on wooden poles
 - fixed Revolver GUI, revolver is now locked in slot
@@ -6,6 +6,12 @@
 - cleaned up code in multiple places (like that Json testing in the config >_>)
 - added Minetweaker support for the Crusher. It's untested.
 - fixed the back button in the manual
+- fixed removeFuel Minetweaking on the Blast Furnace
+- possibly fixed winmills and watermilsl derping on certain chunk positions
+- also hopefully fixed lightningrods in that regard
+- tentative fix for that concurrent exception on rendering
+- added safety check on Bucket Wheel rendering
+
 
 #####Version 0.2.3 - BUILT
 - added Engineer's Workbench
@@ -17,14 +23,17 @@
 - rebalanced Drill Upgrade recipes
 - added manual entry for Revolver and Workbench
 
+
 #####Version 0.2.2 - BUILT
 - possible fix for fermenter+squeezer crash
 - structural connectors rotate again
 - fixed up the manual on the excavator a little
 - added documentation to Structural Connectors
 
+
 #####Version 0.2.1 - BUILT
 - fixed mineral depletion on the excavator
+
 
 #####Version 0.2.0 - BUILT
 - fixed CokeOven texture
@@ -41,6 +50,7 @@
 - Changed Wire behaviour to be parallel rather than consecutive
 - Added AquaTweaks compat
 
+
 #####Version 0.1.16 - BUILT
 - fixed cyclic exception in NBT read/write on wooden crates
 - drills. 'nuff said.
@@ -48,11 +58,13 @@
 - wooden crates don't write unnecessary NBT on breaking, so empty crates can stack again
 - Coke Oven has a new texture
 
+
 #####Version 0.1.15 - BUILT
 - fixed dependency on CCLib
 - Refinery has a temporary gui
 - connections no longer glow in the dark but have some other weird lighting issues
 - dieselgen model doesn't reload when holding shift
+
 
 #####Version 0.1.14 - BUILT
 - crusher multiblock can be mirrored now. Also structure can be initiated from the opposing side
@@ -66,6 +78,7 @@
 - Diesel Generator has a new model
 - Refinery will no longer run off of water (whoops >_>)
 
+
 #####Version 0.1.13 - BUILT
 - revolvers now expel the right casings
 - coke oven, fermenter and squeezer now check if they can use a filled fluid container before creating one. No more fluid voiding
@@ -75,11 +88,14 @@
 - added MFR support for hemp plants
 - stopped the energy system from being derped
 
+
 #####Version 0.1.12 - BUILT
 - ores should now work with BC quarries
 
+
 #####Version 0.1.11 - BUILT
 - fixed a bug with table pages initializing with empty OreDict lists
+
 
 #####Version 0.1.10 - BUILT
 - added wooden and steel wall mounts
@@ -103,8 +119,10 @@
 - added table to the DieselGen entry, showing possible fuels
 - renamed watermills to water wheels
 
+
 #####Version 0.1.9 - BUILT
 - added container items to creosote buckets+bottles
+
 
 #####Version 0.1.8 - BUILT
 - fixed sounds. Should not crash the server anymore and also loop fine
@@ -120,6 +138,7 @@
 - added the lacking smelting recipe for electrum grit
 - made various block sides solid, where necessary
 - started work on wall mounts
+
 
 #####Version 0.1.7 - BUILT
 - fixed blending on the text on the manual
@@ -139,6 +158,7 @@
 - added structural cables and structural connectors for decorational purposes
 - did fancy things with the revolvers
 
+
 #####Version 0.1.6 - BUILT
 - added container items to fluid containers
 - cokeoven will now properly smelt coal blocks into coke blocks
@@ -149,16 +169,20 @@
 - diesel generator sounds now stop when the generator is broken
 - windmills now face the right way
 
+
 #####Version 0.1.5 - BUILT
 - NPE fix. Really should have had it in the previous
+
 
 #####Version 0.1.4 - BUILT
 - fixed the manual. Pls no crash anymore D:
 - added documentation to the hemp
 
+
 #####Version 0.1.3 - BUILT
 - finished conveyor belts
 - fixed various bugs
+
 
 #####Version 0.1.2 - BUILT
 - updated textures
@@ -169,12 +193,14 @@
 - added a page+category hiding functionality to the manual Lib
 - laid out basics for conveyor belts
 
+
 #####Version 0.1.1 - BUILT
 - introduction of the public changelog
 - fixed placement of wooden slabs
 - finished crusher, added IInventory support
 - capacitors now update correctly and can have their opposite side changed
 - diesel generator should now break into components correctly and had its bounding boxes fixed
+
 
 #####Version 0.1.0 - BUILT
 - initial beta release 
