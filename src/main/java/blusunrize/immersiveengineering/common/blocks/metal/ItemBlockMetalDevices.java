@@ -141,7 +141,7 @@ public class ItemBlockMetalDevices extends ItemBlockIEBase
 			else if(world.getTileEntity(x+fd.offsetX, y+1, z+fd.offsetZ) instanceof TileEntityConveyorBelt)
 			{
 				TileEntityConveyorBelt con = (TileEntityConveyorBelt)world.getTileEntity(x+fd.offsetX, y+1, z+fd.offsetZ);
-				if(ForgeDirection.VALID_DIRECTIONS[con.facing].equals(fd))
+				if(ForgeDirection.getOrientation(con.facing).equals(fd))
 				{
 					tile.transportDown = true;
 					f = ForgeDirection.OPPOSITES[f];
@@ -152,7 +152,7 @@ public class ItemBlockMetalDevices extends ItemBlockIEBase
 			else if(world.getTileEntity(x+fd.offsetX, y-1, z+fd.offsetZ) instanceof TileEntityConveyorBelt)
 			{
 				TileEntityConveyorBelt con = (TileEntityConveyorBelt)world.getTileEntity(x+fd.offsetX, y-1, z+fd.offsetZ);
-				if(ForgeDirection.VALID_DIRECTIONS[con.facing].getOpposite().equals(fd))
+				if(ForgeDirection.getOrientation(con.facing).getOpposite().equals(fd))
 					con.transportDown = true;
 			}
 			else if(world.getTileEntity(x-fd.offsetX, y-1, z-fd.offsetZ) instanceof TileEntityConveyorBelt)
@@ -166,6 +166,15 @@ public class ItemBlockMetalDevices extends ItemBlockIEBase
 				TileEntityConveyorBelt con = (TileEntityConveyorBelt)world.getTileEntity(x-fd.offsetX, y+1, z-fd.offsetZ);
 				if(con.facing == f)
 					tile.transportDown = true;
+			}
+			if(world.getTileEntity(x-fd.offsetX, y, z-fd.offsetZ) instanceof TileEntityConveyorBelt)
+			{
+				TileEntityConveyorBelt con = (TileEntityConveyorBelt)world.getTileEntity(x-fd.offsetX, y, z-fd.offsetZ);
+				if(con.facing == f)
+				{
+					con.transportDown = false;
+					con.transportUp = false;
+				}
 			}
 			tile.facing=f;
 		}

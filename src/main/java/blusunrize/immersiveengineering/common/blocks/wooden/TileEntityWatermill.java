@@ -39,7 +39,7 @@ public class TileEntityWatermill extends TileEntityIEBase
 		else
 			canTurn=getRotationVec().lengthVector()!=0;
 
-		if(!multiblock /*&& worldObj.isRemote*/ && worldObj.getTotalWorldTime()%200==((xCoord^zCoord)&200))
+		if(!multiblock /*&& worldObj.isRemote*/ && worldObj.getTotalWorldTime()%201==((xCoord^zCoord)&200))
 		{
 			rotationVec=null;
 		}

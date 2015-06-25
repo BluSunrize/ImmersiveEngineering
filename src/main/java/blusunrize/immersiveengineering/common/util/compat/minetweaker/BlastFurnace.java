@@ -1,16 +1,21 @@
 package blusunrize.immersiveengineering.common.util.compat.minetweaker;
 
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import blusunrize.immersiveengineering.api.BlastFurnaceRecipe;
-import blusunrize.immersiveengineering.common.util.Utils;
 import minetweaker.IUndoableAction;
 import minetweaker.MineTweakerAPI;
 import minetweaker.api.item.IIngredient;
 import minetweaker.api.item.IItemStack;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.oredict.OreDictionary;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
+import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.BlastFurnaceRecipe;
+import blusunrize.immersiveengineering.common.util.Utils;
 
 @ZenClass("mods.immersiveengineering.BlastFurnace")
 public class BlastFurnace
@@ -174,19 +179,46 @@ public class BlastFurnace
 	}
 	private static class RemoveFuel implements IUndoableAction
 	{
-		private final String ident;
+		private final ItemStack stack;
+		String ident;
 		int removedTime;
-		public RemoveFuel(Object fuel)
+		public RemoveFuel(ItemStack fuel)
 		{
-			this.ident = (fuel instanceof ItemStack?Utils.nameFromStack((ItemStack)fuel) : (String)fuel);
+			this.stack = fuel;
 		}
 		@Override
 		public void apply()
 		{
-			if( BlastFurnaceRecipe.blastFuels.containsKey(ident))
+			Set<Map.Entry<String,Integer>> set = BlastFurnaceRecipe.blastFuels.entrySet();
+			Iterator<Map.Entry<String,Integer>> it = set.iterator();
+			while(it.hasNext())
 			{
-				removedTime = BlastFurnaceRecipe.blastFuels.get(ident);
-				BlastFurnaceRecipe.blastFuels.remove(ident);
+				Map.Entry<String,Integer> e = it.next();
+				if(ApiUtils.compareToOreName(stack, e.getKey()))
+				{
+					removedTime = e.getValue();
+					ident = e.getKey();
+					it.remove();
+					break;
+				}
+				else
+				{
+					int lIndx = e.getKey().lastIndexOf("::");
+					if(lIndx>0)
+					{
+						String key = e.getKey().substring(0,lIndx);
+						try{
+							int reqMeta = Integer.parseInt(e.getKey().substring(lIndx+2));
+							if(key.equals(ApiUtils.nameFromStack(stack)) && (reqMeta==OreDictionary.WILDCARD_VALUE || reqMeta==stack.getItemDamage()))
+							{
+								removedTime = e.getValue();
+								ident = e.getKey();
+								it.remove();
+								break;
+							}
+						}catch(Exception exception){}
+					}
+				}
 			}
 		}
 		@Override
@@ -197,12 +229,12 @@ public class BlastFurnace
 		@Override
 		public String describe()
 		{
-			return "Removing "+ident+" as Blast Furnace Fuel";
+			return "Removing "+stack+" as Blast Furnace Fuel";
 		}
 		@Override
 		public String describeUndo()
 		{
-			return "Re-Adding "+ident+" as Blast Furnace Fuel";
+			return "Re-Adding "+stack+" as Blast Furnace Fuel";
 		}
 		@Override
 		public Object getOverrideKey()
