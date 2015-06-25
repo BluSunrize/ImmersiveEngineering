@@ -121,7 +121,15 @@ public class BlockMetalDevices extends BlockIEBase implements blusunrize.aquatwe
 	public void getSubBlocks(Item item, CreativeTabs tab, List list)
 	{
 		for(int i=0; i<subNames.length; i++)
+		{
 			list.add(new ItemStack(item, 1, i));
+			if(i==META_capacitorLV||i==META_capacitorMV||i==META_capacitorHV)
+			{
+				ItemStack stack = new ItemStack(item, 1, i);
+				ItemNBTHelper.setInt(stack, "energyStorage", i==META_capacitorLV?Config.getInt("capacitorLV_storage"): i==META_capacitorMV?Config.getInt("capacitorMV_storage"): Config.getInt("capacitorHV_storage"));
+				list.add(stack);
+			}
+		}
 	}
 
 	@Override
@@ -613,24 +621,24 @@ public class BlockMetalDevices extends BlockIEBase implements blusunrize.aquatwe
 			}
 		}
 	}
-	
+
 
 	@Optional.Method(modid = "AquaTweaks")
 	public boolean shouldRenderFluid(IBlockAccess world, int x, int y, int z)
 	{
 		int meta = world.getBlockMetadata(x, y, z);
 		return meta==META_connectorLV
-		|| meta==META_connectorMV
-		|| meta==META_relayHV
-		|| meta==META_connectorHV;
+				|| meta==META_connectorMV
+				|| meta==META_relayHV
+				|| meta==META_connectorHV;
 	}
 	@Optional.Method(modid = "AquaTweaks")
 	public boolean canConnectTo(IBlockAccess world, int x, int y, int z, int side)
 	{
 		int meta = world.getBlockMetadata(x, y, z);
 		return meta==META_connectorLV
-		|| meta==META_connectorMV
-		|| meta==META_relayHV
-		|| meta==META_connectorHV;
+				|| meta==META_connectorMV
+				|| meta==META_relayHV
+				|| meta==META_connectorHV;
 	}
 }
