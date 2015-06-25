@@ -4,6 +4,8 @@
 - fixed Revolver GUI, revolver is now locked in slot
 - made changes to the API, to allow for OpenComputers integration
 - cleaned up code in multiple places (like that Json testing in the config >_>)
+- added Minetweaker support for the Crusher. It's untested.
+- fixed the back button in the manual
 
 #####Version 0.2.3 - BUILT
 - added Engineer's Workbench
