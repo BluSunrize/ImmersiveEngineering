@@ -102,24 +102,24 @@ public class Config
 		Configuration config = new Configuration(event.getSuggestedConfigurationFile());
 		config.load();
 
-		Property cableProperty = config.get("General", "Cable transfer rates", new int[]{256,1024,4096,0,0}, "The transfer rates in RF/t for the cable tiers (copper, electrum, HV, Strutural Rope & Cable(no transfer) )");
+		Property cableProperty = config.get("General", "Cable transfer rates", new int[]{256,1024,4096,0,0,0}, "The transfer rates in RF/t for the cable tiers (copper, electrum, HV, Strutural Rope & Cable(no transfer) )");
 		if(cableProperty.getIntList().length<WireType.values().length)
-			cableProperty.set(new int[]{256,1024,4096,0,0});
+			cableProperty.set(new int[]{256,1024,4096,0,0,0});
 		setIntArray("cableTransferRate", cableProperty.getIntList());
 
-		cableProperty = config.get("General", "Cable loss", new double[]{.05,.025,.1,1,1}, "The percentage of power lost every 16 blocks of distance for the cable tiers (copper, electrum, HV, Strutural Rope & Cable(no transfer) )");
+		cableProperty = config.get("General", "Cable loss", new double[]{.05,.025,.1,1,1,1}, "The percentage of power lost every 16 blocks of distance for the cable tiers (copper, electrum, HV, Strutural Rope & Cable(no transfer) )");
 		if(cableProperty.getDoubleList().length<WireType.values().length)
-			cableProperty.set(new double[]{.05,.025,.1,1,1});
+			cableProperty.set(new double[]{.05,.025,.1,1,1,1});
 		setDoubleArray("cableLossRatio", cableProperty.getDoubleList());
 
-		cableProperty = config.get("General", "Cable colouration", new int[]{0xd4804a,0xedad62,0x6f6f6f, 0x967e6d,0x6f6f6f}, "");
+		cableProperty = config.get("General", "Cable colouration", new int[]{0xd4804a,0xedad62,0x6f6f6f, 0x967e6d,0x6f6f6f,0x141D3C}, "");
 		if(cableProperty.getIntList().length<WireType.values().length)
-			cableProperty.set(new int[]{0xb36c3f,0xeda045,0x6f6f6f, 0x967e6d,0x6f6f6f});
+			cableProperty.set(new int[]{0xb36c3f,0xeda045,0x6f6f6f, 0x967e6d,0x6f6f6f,0x141D3C});
 		setIntArray("cableColouration", cableProperty.getIntList());
 
-		cableProperty = config.get("General", "Cable length", new int[]{16,16,32,32,32}, "The maximum length cables can have. Copper and Electrum should be similar, Steel is meant for long range transport, Structural Rope & Cables are purely decorational");
+		cableProperty = config.get("General", "Cable length", new int[]{16,16,32,32,32,32}, "The maximum length cables can have. Copper and Electrum should be similar, Steel is meant for long range transport, Structural Rope & Cables are purely decorational");
 		if(cableProperty.getIntList().length<WireType.values().length)
-			cableProperty.set(new int[]{16,16,32,32,32});
+			cableProperty.set(new int[]{16,16,32,32,32,32});
 		setIntArray("cableLength", cableProperty.getIntList());
 
 		setBoolean("increasedRenderboxes", config.get("General", "Increased Renderboxes", true, "By default all devices that accept cables have increased renderbounds to show cables even if the block itself is not in view. Disabling this reduces them to their minimum sizes, which might improve FPS on low-power PCs").getBoolean());
