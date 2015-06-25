@@ -33,6 +33,7 @@ public class GuiManual extends GuiScreen
 	ManualInstance manual;
 	String texture;
 	String[] headers;
+	boolean backButtonPressed = false;
 
 	public GuiManual(ManualInstance manual, String texture)
 	{
@@ -159,13 +160,14 @@ public class GuiManual extends GuiScreen
 			((GuiClickableList)button).selectedOption=-1;
 			this.initGui();
 		}
-		if(button.id == 1)
+		if(button.id == 1 && !backButtonPressed)
 		{
 			if(selectedEntry!=null)
 				selectedEntry=null;
 			else if(selectedCategory!=null)
 				selectedCategory=null;
 			page=0;
+			backButtonPressed=true;
 			this.initGui();
 		}
 		if(pageButtons.contains(button) && manual.getEntry(selectedEntry)!=null)
@@ -237,6 +239,12 @@ public class GuiManual extends GuiScreen
 			this.initGui();
 		}
 	}
-
+	@Override
+	protected void mouseMovedOrUp(int mx, int my, int action)
+	{
+		super.mouseMovedOrUp(mx, my, action);
+		if(backButtonPressed && (action==0||action==1))
+			backButtonPressed=false;
+	}
 
 }
