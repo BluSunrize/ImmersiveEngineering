@@ -57,7 +57,7 @@ public class TileEntityCokeOven extends TileEntityIEBase implements ISidedInvent
 					processMax=0;
 				}
 				else
-					process-=100;
+					process--;
 				worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 			}
 			else
