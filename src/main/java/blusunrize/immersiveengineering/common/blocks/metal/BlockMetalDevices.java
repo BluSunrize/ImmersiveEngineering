@@ -59,6 +59,7 @@ public class BlockMetalDevices extends BlockIEBase implements blusunrize.aquatwe
 	public static int META_furnaceHeater=12;
 	public static int META_sorter=13;
 	public static int META_sampleDrill=14;
+	public static int META_connectorTC=15;
 
 	public BlockMetalDevices()
 	{
@@ -68,7 +69,7 @@ public class BlockMetalDevices extends BlockIEBase implements blusunrize.aquatwe
 				"relayHV","connectorHV","capacitorHV","transformerHV",
 				"dynamo","thermoelectricGen",
 				"conveyorBelt","furnaceHeater","sorter",
-				"sampleDrill");
+				"sampleDrill","connectorTC");
 		setHardness(3.0F);
 		setResistance(15.0F);
 	}
@@ -206,6 +207,7 @@ public class BlockMetalDevices extends BlockIEBase implements blusunrize.aquatwe
 			icons[META_connectorHV][i] = iconRegister.registerIcon("immersiveengineering:metal_connectorHV");
 			icons[META_transformerHV][i] = iconRegister.registerIcon("immersiveengineering:metal_transformerHV");
 			icons[META_sampleDrill][i] = iconRegister.registerIcon("immersiveengineering:metal_coreDrill");
+			icons[META_connectorTC][i] = iconRegister.registerIcon("immersiveengineering:metal_connectorTC");
 		}
 	}
 	@Override
@@ -429,6 +431,30 @@ public class BlockMetalDevices extends BlockIEBase implements blusunrize.aquatwe
 			TileEntityConveyorBelt tile = (TileEntityConveyorBelt) world.getTileEntity(x, y, z);
 			this.setBlockBounds(0F, 0F, 0F, 1F, tile.transportDown||tile.transportUp?1.125f:0.125F, 1F);
 		}
+		else if(world.getTileEntity(x, y, z) instanceof TileEntityConnectorTelecommunication){
+			float length = .5f;
+			switch(((TileEntityConnectorTelecommunication)world.getTileEntity(x, y, z)).facing )
+			{
+			case 0://UP
+				this.setBlockBounds(.3125f,0,.3125f,  .6875f,length,.6875f);
+				break;
+			case 1://DOWN
+				this.setBlockBounds(.3125f,1-length,.3125f,  .6875f,1,.6875f);
+				break;
+			case 2://SOUTH
+				this.setBlockBounds(.3125f,.3125f,0,  .6875f,.6875f,length);
+				break;
+			case 3://NORTH
+				this.setBlockBounds(.3125f,.3125f,1-length,  .6875f,.6875f,1);
+				break;
+			case 4://EAST
+				this.setBlockBounds(0,.3125f,.3125f,  length,.6875f,.6875f);
+				break;
+			case 5://WEST
+				this.setBlockBounds(1-length,.3125f,.3125f,  1,.6875f,.6875f);
+				break;
+			}
+		}
 		else
 			this.setBlockBounds(0,0,0,1,1,1);
 	}
@@ -493,6 +519,8 @@ public class BlockMetalDevices extends BlockIEBase implements blusunrize.aquatwe
 			return new TileEntityConveyorSorter();
 		case 14://14 sample drill
 			return new TileEntitySampleDrill();
+		case 15://15 connector TC
+			return new TileEntityConnectorTelecommunication();
 		}
 		return null;
 	}
@@ -534,6 +562,15 @@ public class BlockMetalDevices extends BlockIEBase implements blusunrize.aquatwe
 					||(drill.pos==1 && (world.isAirBlock(x,y-1,z)||world.isAirBlock(x,y+1,z)))
 					||(drill.pos==2 && (world.isAirBlock(x,y-1,z)||world.isAirBlock(x,y-2,z))))
 				world.setBlockToAir(x, y, z);
+		}
+		if(world.getTileEntity(x, y, z) instanceof TileEntityConnectorTelecommunication){
+			TileEntityConnectorTelecommunication relay = (TileEntityConnectorTelecommunication)world.getTileEntity(x, y, z);
+			ForgeDirection fd = ForgeDirection.getOrientation(relay.facing);
+			if(world.isAirBlock(x+fd.offsetX, y+fd.offsetY, z+fd.offsetZ))
+			{
+				dropBlockAsItem(world, x, y, z, world.getBlockMetadata(x, y, z), 0);
+				world.setBlockToAir(x, y, z);
+			}
 		}
 	}
 
@@ -622,7 +659,8 @@ public class BlockMetalDevices extends BlockIEBase implements blusunrize.aquatwe
 		return meta==META_connectorLV
 		|| meta==META_connectorMV
 		|| meta==META_relayHV
-		|| meta==META_connectorHV;
+		|| meta==META_connectorHV
+		|| meta==META_connectorTC;
 	}
 	@Optional.Method(modid = "AquaTweaks")
 	public boolean canConnectTo(IBlockAccess world, int x, int y, int z, int side)
@@ -631,6 +669,7 @@ public class BlockMetalDevices extends BlockIEBase implements blusunrize.aquatwe
 		return meta==META_connectorLV
 		|| meta==META_connectorMV
 		|| meta==META_relayHV
-		|| meta==META_connectorHV;
+		|| meta==META_connectorHV
+		|| meta==META_connectorTC;
 	}
 }

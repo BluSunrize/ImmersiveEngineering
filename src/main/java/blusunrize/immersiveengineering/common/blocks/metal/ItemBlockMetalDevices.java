@@ -104,6 +104,8 @@ public class ItemBlockMetalDevices extends ItemBlockIEBase
 		}
 		else if(world.getTileEntity(x, y, z) instanceof TileEntityConnectorLV)
 			((TileEntityConnectorLV)world.getTileEntity(x, y, z)).facing = ForgeDirection.getOrientation(side).getOpposite().ordinal();
+		else if(world.getTileEntity(x, y, z) instanceof TileEntityConnectorTelecommunication)
+			((TileEntityConnectorTelecommunication)world.getTileEntity(x, y, z)).facing = ForgeDirection.getOrientation(side).getOpposite().ordinal();
 		else if(world.getTileEntity(x, y, z) instanceof TileEntityTransformer)
 		{
 			((TileEntityTransformer)world.getTileEntity(x,y,z)).facing=f;

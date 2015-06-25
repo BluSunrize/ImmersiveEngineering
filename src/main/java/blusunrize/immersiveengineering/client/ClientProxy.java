@@ -50,6 +50,7 @@ import blusunrize.immersiveengineering.client.render.TileRenderConnectorHV;
 import blusunrize.immersiveengineering.client.render.TileRenderConnectorLV;
 import blusunrize.immersiveengineering.client.render.TileRenderConnectorMV;
 import blusunrize.immersiveengineering.client.render.TileRenderConnectorStructural;
+import blusunrize.immersiveengineering.client.render.TileRenderConnectorTelecommunication;
 import blusunrize.immersiveengineering.client.render.TileRenderCrusher;
 import blusunrize.immersiveengineering.client.render.TileRenderDieselGenerator;
 import blusunrize.immersiveengineering.client.render.TileRenderExcavator;
@@ -74,6 +75,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorHV
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorLV;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorMV;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorStructural;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorTelecommunication;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConveyorSorter;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityDieselGenerator;
@@ -141,6 +143,7 @@ public class ClientProxy extends CommonProxy
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityConnectorStructural.class, new TileRenderConnectorStructural());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityBucketWheel.class, new TileRenderBucketWheel());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityExcavator.class, new TileRenderExcavator());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityConnectorTelecommunication.class, new TileRenderConnectorTelecommunication());
 		//WOOD
 		RenderingRegistry.registerBlockHandler(new BlockRenderWoodenDevices());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityWoodenPost.class, new TileRenderPost());

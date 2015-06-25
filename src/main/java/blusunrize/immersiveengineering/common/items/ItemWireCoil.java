@@ -24,7 +24,7 @@ public class ItemWireCoil extends ItemIEBase
 {
 	public ItemWireCoil()
 	{
-		super("coil", 64, "copper","electrum","HV","rope","structural");
+		super("coil", 64, "copper","electrum","HV","rope","structural","telecommunication");
 	}
 
 	@Override
@@ -32,7 +32,10 @@ public class ItemWireCoil extends ItemIEBase
 	{
 		if(stack.getItemDamage()>2)
 		{
-			list.add(StatCollector.translateToLocal(Lib.DESC_FLAVOUR+"coil.construction0"));
+			if(stack.getItemDamage()==5)
+				list.add(StatCollector.translateToLocal(Lib.DESC_FLAVOUR+"coil.construction2"));
+			else
+				list.add(StatCollector.translateToLocal(Lib.DESC_FLAVOUR+"coil.construction0"));
 			list.add(StatCollector.translateToLocal(Lib.DESC_FLAVOUR+"coil.construction1"));
 		}
 		if(stack.getTagCompound()!=null && stack.getTagCompound().hasKey("linkingPos"))
