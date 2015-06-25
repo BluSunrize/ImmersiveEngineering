@@ -156,7 +156,7 @@ public class ItemRevolver extends ItemUpgradeableTool
 					for(int i=0; i<player.inventory.getSizeInventory(); i++)
 					{
 						ItemStack loader = player.inventory.getStackInSlot(i);
-						if(loader!=null && loader.getItem() == this && loader.getItemDamage()==2 && !isEmpty(loader))
+						if(loader!=null && loader.getItem() == this && loader.getItemDamage()==1 && !isEmpty(loader))
 						{
 							int dc = 0;
 							for(ItemStack b : bullets)
