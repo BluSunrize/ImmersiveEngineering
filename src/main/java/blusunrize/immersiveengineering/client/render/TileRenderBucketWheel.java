@@ -48,7 +48,7 @@ public class TileRenderBucketWheel extends TileEntitySpecialRenderer
 			ItemStack stack = wheel.digStacks[i];
 			//			String ss = ClientUtils.getResourceNameForItemStack(stack);
 			//			if(!ss.isEmpty())
-			if(stack==null)
+			if(stack==null || stack.getItem()==null)
 				continue;
 			IIcon ic = null;
 			Block b = Block.getBlockFromItem(stack.getItem());
