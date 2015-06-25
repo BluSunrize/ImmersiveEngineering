@@ -343,6 +343,6 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockPart implemen
 	@Override
 	public boolean canConnectEnergy(ForgeDirection from)
 	{
-		return false;
+		return (pos>=38&&pos<=41) && from==ForgeDirection.UP;
 	}
 }

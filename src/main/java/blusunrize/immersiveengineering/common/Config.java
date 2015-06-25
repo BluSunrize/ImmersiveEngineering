@@ -1,20 +1,10 @@
 package blusunrize.immersiveengineering.common;
 
-import java.io.File;
-import java.io.FileReader;
 import java.util.HashMap;
-import java.util.Set;
 
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import blusunrize.immersiveengineering.api.WireType;
-import blusunrize.immersiveengineering.common.items.ItemRevolver;
-import blusunrize.immersiveengineering.common.util.IELogger;
-
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonStreamParser;
-
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 
 public class Config
@@ -27,78 +17,6 @@ public class Config
 
 	public static void init(FMLPreInitializationEvent event)
 	{
-		File fConfig = event.getModConfigurationDirectory();
-		File testjson = new File(fConfig,"testson.json");
-		try {
-			Gson gson = new Gson();
-			//			testjson.createNewFile();
-			//			JsonWriter writer = new JsonWriter(new FileWriter(testjson));
-			////			HashMap<String, ItemRevolver.SpecialRevolver> revMap = new HashMap();
-			//
-			//			HashMap<String,Object> basenbt = new HashMap<String,Object>();
-			//			basenbt.put("melee", 10f);
-			//			basenbt.put("nerf", true);
-			//			ItemRevolver.SpecialRevolver revolver = new ItemRevolver.SpecialRevolver(new String[]{"soaryn"},"nerf", "", basenbt, new String[]{"dev_knife"});
-			//			gson.toJson(revolver, ItemRevolver.SpecialRevolver.class, writer);
-			//			//			revMap.put("soaryn", revolver);
-			//
-			//			basenbt = new HashMap<String,Object>();
-			//			basenbt.put("melee", 5f);
-			//			basenbt.put("bullets", 10);
-			//			revolver = new ItemRevolver.SpecialRevolver(new String[]{"f34afdfb-996b-4020-b8a2-b740e2937b29"},"earthshaker", "", basenbt, new String[]{"dev_scope"});
-			//			gson.toJson(revolver, ItemRevolver.SpecialRevolver.class, writer);
-			//			//			revMap.put("f34afdfb-996b-4020-b8a2-b740e2937b29", revolver);
-			//
-			////			gson.toJson(revMap, HashMap.class, writer);
-			//			//			revolver = new ItemRevolver.SpecialRevolver("u2","testerino", "everyflavour", basenbt, new String[]{"dev_knife"});
-			//			//			gson.toJson(revolver, ItemRevolver.SpecialRevolver.class, writer);
-			//			writer.flush();
-
-			JsonStreamParser parser = new JsonStreamParser(new FileReader(testjson));
-			//			HashMap<String, ItemRevolver.SpecialRevolver> revMap = gson.fromJson(new FileReader(testjson), HashMap.class);
-			//for(Entry<String, ItemRevolver.SpecialRevolver> e : revMap.entrySet())
-			//{
-			//	System.out.println("found "+e);
-			//	ItemRevolver.specialRevolvers.put(e.getKey(), e.getValue());
-			//	ItemRevolver.specialRevolversByTag.put(e.getValue().tag, e.getValue());
-			//}
-			//			
-			while(parser.hasNext())
-			{
-				JsonElement je = parser.next();
-				ItemRevolver.SpecialRevolver revolver = gson.fromJson(je, ItemRevolver.SpecialRevolver.class);
-				if(revolver!=null)
-				{
-					IELogger.info("Found revolver!");
-					IELogger.info(" "+revolver.tag);
-					IELogger.info(" "+revolver.flavour);
-					IELogger.info(" "+revolver.baseUpgrades);
-					if(revolver.baseUpgrades!=null)
-					{
-						for(String ss : (Set<String>)revolver.baseUpgrades.keySet())
-						{
-							Object val = revolver.baseUpgrades.get(ss);
-							IELogger.info(" ~"+ss+" - "+val+" ("+val.getClass()+")");
-						}
-					}
-					if(revolver.renderAdditions!=null)
-					{
-						IELogger.info(" additions:");
-						for(String ss : revolver.renderAdditions)
-							IELogger.info("  "+ss);
-					}
-
-				}
-				for(String uuid : revolver.uuid)
-					ItemRevolver.specialRevolvers.put(uuid, revolver);
-				ItemRevolver.specialRevolversByTag.put(revolver.tag, revolver);
-			}
-		} catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-
-
 		Configuration config = new Configuration(event.getSuggestedConfigurationFile());
 		config.load();
 

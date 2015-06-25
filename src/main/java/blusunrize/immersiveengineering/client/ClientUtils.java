@@ -82,7 +82,7 @@ public class ClientUtils
 		if(tile.getWorldObj()!=null && tile instanceof IImmersiveConnectable)
 		{
 			ClientUtils.bindTexture("immersiveengineering:textures/models/white.png");
-			Iterator<ImmersiveNetHandler.Connection> itCon = ImmersiveNetHandler.INSTANCE.getConnections(tile.getWorldObj(), Utils.toCC(tile)).iterator();
+			Iterator<ImmersiveNetHandler.Connection> itCon = new ArrayList(ImmersiveNetHandler.INSTANCE.getConnections(tile.getWorldObj(), Utils.toCC(tile))).iterator();
 			//			if(!ImmersiveNetHandler.isModifyingMaps())
 			//			{
 			while(itCon.hasNext())
