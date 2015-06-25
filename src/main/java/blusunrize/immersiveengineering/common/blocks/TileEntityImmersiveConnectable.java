@@ -31,6 +31,10 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 	{
 		return false;
 	}
+	protected boolean canProvideOCPacket()
+	{
+		return false;
+	}
 
 	@Override
 	public void invalidate()
@@ -63,6 +67,8 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 		if(cableType==WireType.ELECTRUM&&!canTakeMV())
 			return false;
 		if(cableType==WireType.COPPER&&!canTakeLV())
+			return false;
+		if(cableType==WireType.TELECOMMUNICATION&&!canProvideOCPacket())
 			return false;
 		if(cableType==WireType.STRUCTURE_ROPE)
 			return false;

@@ -41,6 +41,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorHV
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorLV;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorMV;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorStructural;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorTelecommunication;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConveyorBelt;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConveyorSorter;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
@@ -290,6 +291,7 @@ public class IEContent
 		registerTile(TileEntityFurnaceHeater.class);
 		registerTile(TileEntityConveyorSorter.class);
 		registerTile(TileEntitySampleDrill.class);
+		registerTile(TileEntityConnectorTelecommunication.class);
 
 		registerTile(TileEntityLightningRod.class);
 		registerTile(TileEntityDieselGenerator.class);
@@ -393,7 +395,12 @@ public class IEContent
 		addOredictRecipe(new ItemStack(itemWireCoil,4,2), " I ","ASA"," I ", 'I',"ingotSteel", 'A',"ingotAluminum", 'S',"stickWood");
 		addOredictRecipe(new ItemStack(itemWireCoil,4,3), " I ","ISI"," I ", 'I',new ItemStack(itemMaterial,1,3), 'S',"stickWood");
 		addOredictRecipe(new ItemStack(itemWireCoil,4,4), " I ","ISI"," I ", 'I',"ingotSteel", 'S',"stickWood");
-
+		if(TileEntityConnectorTelecommunication.isOCLoaded){
+			addOredictRecipe(new ItemStack(itemWireCoil,4,5), " I ","ISI"," I ", 'I',li.cil.oc.api.Items.get("cable").createItemStack(1), 'S',"stickWood");
+		}else{
+			addOredictRecipe(new ItemStack(itemWireCoil,4,5), " I ","ISI"," I ", 'I',"ingotConstantan", 'S',"stickWood");
+		}
+		
 		for (ItemStack container : Utils.getContainersFilledWith(new FluidStack(fluidCreosote,1000)))
 			addOredictRecipe(new ItemStack(blockWoodenDecoration,8,0), "WWW","WCW","WWW", 'W',"plankWood",'C',container);
 		addOredictRecipe(new ItemStack(blockWoodenDecoration,2,1), "SSS","SSS", 'S',"treatedStick");
@@ -453,7 +460,8 @@ public class IEContent
 		addOredictRecipe(new ItemStack(blockMetalDevice,1, BlockMetalDevices.META_furnaceHeater), "ICI","CBC","IRI", 'I',"ingotIron",'R',"dustRedstone",'C',"ingotCopper",'B',copperCoil);
 		addOredictRecipe(new ItemStack(blockMetalDevice,1, BlockMetalDevices.META_sorter), "IRI","WBW","IRI", 'I',"ingotIron",'R',"dustRedstone",'W',treatedWood,'B',componentIron);
 		addOredictRecipe(new ItemStack(blockMetalDevice,1, BlockMetalDevices.META_sampleDrill), "SFS","SFS","BFB", 'F',new ItemStack(blockMetalDecoration,1,BlockMetalDecoration.META_fence),'S',new ItemStack(blockMetalDecoration,1,BlockMetalDecoration.META_scaffolding),'B',new ItemStack(blockMetalDecoration,1,BlockMetalDecoration.META_lightEngineering));
-
+		addOredictRecipe(new ItemStack(blockMetalDevice,8, BlockMetalDevices.META_connectorTC), "BIB"," I ","BIB", 'I',"ingotConstantan",'B',Blocks.hardened_clay);
+		
 		addOredictRecipe(new ItemStack(blockMetalDecoration,16,BlockMetalDecoration.META_fence), "III","III", 'I',"ingotSteel");
 		addOredictRecipe(new ItemStack(blockMetalDecoration, 6,BlockMetalDecoration.META_scaffolding), "III"," S ","S S", 'I',"ingotSteel",'S',new ItemStack(blockMetalDecoration,1,0));
 		addOredictRecipe(new ItemStack(blockMetalDecoration, 4,BlockMetalDecoration.META_lantern), " I ","PGP"," I ", 'G',"glowstone",'I',"ingotIron",'P',"paneGlass");

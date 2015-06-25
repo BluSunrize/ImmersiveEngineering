@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.common.EventHandler;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.IESaveData;
 import blusunrize.immersiveengineering.common.IEWorldGen;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorTelecommunication;
 import blusunrize.immersiveengineering.common.items.ItemRevolver;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.Lib;
@@ -57,7 +58,8 @@ public class ImmersiveEngineering
 	{
 		Config.init(event);
 		IEContent.preInit();
-
+		TileEntityConnectorTelecommunication.isOCLoaded = Loader.isModLoaded("OpenComputers");
+		
 		WireType.cableLossRatio=Config.getDoubleArray("cableLossRatio");
 		WireType.cableTransferRate=Config.getIntArray("cableTransferRate");
 		WireType.cableColouration=Config.getIntArray("cableColouration");

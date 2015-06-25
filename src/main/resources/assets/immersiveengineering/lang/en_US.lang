@@ -31,6 +31,7 @@ tile.ImmersiveEngineering.metalDevice.conveyorBelt.name=Conveyor Belt
 tile.ImmersiveEngineering.metalDevice.furnaceHeater.name=External Heater
 tile.ImmersiveEngineering.metalDevice.sorter.name=Item Router
 tile.ImmersiveEngineering.metalDevice.sampleDrill.name=Core Sample Drill
+tile.ImmersiveEngineering.metalDevice.connectorTC.name=Telecommunication Wire Connector
 
 tile.ImmersiveEngineering.metalMultiblock.lightningRod.name=Lightning Rod Base
 tile.ImmersiveEngineering.metalMultiblock.dieselGenerator.name=Diesel Generator
@@ -137,6 +138,8 @@ item.ImmersiveEngineering.coil.electrum.name=Electrum Wire Coil
 item.ImmersiveEngineering.coil.HV.name=High-Voltage Wire Coil
 item.ImmersiveEngineering.coil.rope.name=Hemp Rope Coil
 item.ImmersiveEngineering.coil.structural.name=Steel Cable Coil
+item.ImmersiveEngineering.coil.telecommunication.name=Telecommunication Wire Coil
+
 item.ImmersiveEngineering.tool.hammer.name=Engineer's Hammer
 item.ImmersiveEngineering.tool.wirecutter.name=Engineer's Wire Cutters
 item.ImmersiveEngineering.tool.voltmeter.name=Engineer's Voltmeter
@@ -232,6 +235,7 @@ desc.ImmersiveEngineering.info.mineral.Lapis=Lapis
 desc.ImmersiveEngineering.flavour.crate=Will keep its inventory when broken!
 desc.ImmersiveEngineering.flavour.coil.construction0=For decoration purposes only
 desc.ImmersiveEngineering.flavour.coil.construction1=Will not transmit power
+desc.ImmersiveEngineering.flavour.coil.construction2=For OpenComputers network only
 desc.ImmersiveEngineering.flavour.revolver=Go ahead, make my day!
 desc.ImmersiveEngineering.flavour.revolver.dev=Regicide!
 desc.ImmersiveEngineering.flavour.revolver.sns=Blood, Sweat, Steam and Steel

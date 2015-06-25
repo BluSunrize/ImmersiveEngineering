@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDevices;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorHV;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorLV;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorMV;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorTelecommunication;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConveyorBelt;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityRelayHV;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySampleDrill;
@@ -128,6 +129,11 @@ public class BlockRenderMetalDevices implements ISimpleBlockRenderingHandler
 				GL11.glScalef(.5f,.5f,.5f);
 				GL11.glTranslatef(0,-1f,0);
 				TileEntityRendererDispatcher.instance.renderTileEntityAt(new TileEntitySampleDrill(), 0.0D, 0.0D, 0.0D, 0.0F);
+			}else if(metadata==BlockMetalDevices.META_connectorTC){
+				GL11.glScalef(1.25f, 1.25f, 1.25f);
+				Tessellator.instance.startDrawingQuads();
+				ClientUtils.handleStaticTileRenderer(new TileEntityConnectorTelecommunication());
+				Tessellator.instance.draw();
 			}
 		}catch(Exception e)
 		{
@@ -328,6 +334,12 @@ public class BlockRenderMetalDevices implements ISimpleBlockRenderingHandler
 		{
 			renderer.setRenderBounds(0,0,0, 1,1,1);
 			return renderer.renderStandardBlock(block, x, y, z);
+		}
+		else if(metadata==BlockMetalDevices.META_connectorTC)
+		{
+			TileEntityConnectorTelecommunication tile = (TileEntityConnectorTelecommunication)world.getTileEntity(x, y, z);
+			ClientUtils.handleStaticTileRenderer(tile);
+			return true;
 		}
 		return false;
 	}
