@@ -1,4 +1,7 @@
 #####Version 0.2.4 - BUILT
+- fixed the ridiculously fast CokeOven
+
+#####Version 0.2.4 - BUILT
 - fixed various spelling error in the .lang
 - fixed HV Transformers fitting on wooden poles
 - fixed Revolver GUI, revolver is now locked in slot
