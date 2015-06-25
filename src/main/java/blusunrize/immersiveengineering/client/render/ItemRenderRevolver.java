@@ -68,15 +68,8 @@ public class ItemRenderRevolver implements IItemRenderer
 			GL11.glTranslatef(0,.2f,.4f);
 			GL11.glScalef(.3f,.3f,.3f);
 		}
-
+		
 		ClientUtils.bindTexture(((ItemRevolver)item.getItem()).getRevolverTexture(item));
-		//		boolean b = (ItemNBTHelper.getInt(item, "upgrade")&1)==1;
-		//		model.Cylinder.isHidden = b;
-		//		model.CylinderAuto.isHidden = !b;
-		//		model.CylinderAuto_1.isHidden = !b;
-		//		model.CylinderAuto_2.isHidden = !b;
-		//		
-		//		model.render(null, 0, 0, 0, 0, 0, .0625f);
 		GL11.glColor4f(1, 1, 1, 1);
 		GL11.glEnable(3042);
 		OpenGlHelper.glBlendFunc(770, 771, 0, 1);

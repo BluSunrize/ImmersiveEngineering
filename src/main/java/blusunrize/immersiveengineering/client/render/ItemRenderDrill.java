@@ -35,13 +35,6 @@ public class ItemRenderDrill implements IItemRenderer
 	@Override
 	public void renderItem(ItemRenderType type, ItemStack item, Object... data)
 	{
-//		if(GuiScreen.isShiftKeyDown())
-//			try{
-//				model = ClientUtils.getModel("immersiveengineering:models/drill_diesel.obj");
-//			}catch(Exception e)
-//			{
-//				e.printStackTrace();
-//			}
 		if(model==null)
 			return;
 		GL11.glPushMatrix();
