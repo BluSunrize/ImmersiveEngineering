@@ -5,6 +5,7 @@
 - added a @SideOnly to the icon stuff in the drill, might fix Railcraft derps
 - made the cokeoven sync when fluid is extracted
 - fixed the broken lightning rod
+- added some extra security in fluidoutputting on Fermenter and Squeezer
 
 #####Version 0.3.0 - BUILT
 - fixed the ridiculously fast CokeOven
