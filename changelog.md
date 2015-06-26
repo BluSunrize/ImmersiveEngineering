@@ -1,5 +1,14 @@
-#####Version 0.2.4 - BUILT
+#####Version 0.3.0 - BUILT
 - fixed the ridiculously fast CokeOven
+- added ru_RU.lang
+- fixed speedloaders not working
+- added filled capacitors to creative+NEI
+- fixed some broken crusher recipes
+- fixed slot-restrictions of Fermenter+Squeezer
+- fixed derpy conveyor placement
+- added config for Revolver damage
+- fixed a render derp with the workbench
+- added Minetweaker support for Crusher,Squeezer,Fermenter,Refinery
 
 #####Version 0.2.4 - BUILT
 - fixed various spelling error in the .lang
