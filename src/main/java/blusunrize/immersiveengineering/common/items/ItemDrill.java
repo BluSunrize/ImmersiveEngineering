@@ -37,6 +37,9 @@ import blusunrize.immersiveengineering.common.util.Lib;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 public class ItemDrill extends ItemUpgradeableTool implements IFluidContainerItem
 {
 	public static Material[] validMaterials = {Material.anvil,Material.clay,Material.glass,Material.ice,Material.iron,Material.packedIce,Material.piston,Material.rock};
@@ -118,7 +121,9 @@ public class ItemDrill extends ItemUpgradeableTool implements IFluidContainerIte
 		}
 		return false;
 	}
+	
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void registerIcons(IIconRegister ir)
 	{
 	}
