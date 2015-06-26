@@ -54,11 +54,6 @@ public class TileRenderWorkbench extends TileRenderIE
 				entityitem.hoverStart = 0.0F;
 				RenderItem.renderInFrame=true;
 				RenderManager.instance.renderEntityWithPosYaw(entityitem, 0.0D, 0.0D, 0.0D, 0.0F, 0.0F);
-				if (!Minecraft.isFancyGraphicsEnabled())
-				{
-					GL11.glRotatef(180.0F, 0.0F, 1.0F, 0.0F);
-					RenderManager.instance.renderEntityWithPosYaw(entityitem, 0.0D, 0.0D, 0.0D, 0.0F, 0.0F);
-				}
 				RenderItem.renderInFrame=false;
 			}catch(Exception e)
 			{
