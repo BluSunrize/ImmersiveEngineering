@@ -7,6 +7,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.ImmersiveNetHandler.Connection;
@@ -136,7 +137,7 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 	{
 		try{
 			if(nbt.hasKey("limitType"))
-				limitType = WireType.getValue(nbt.getInteger("limitType"));
+				limitType = ApiUtils.getWireTypeFromNBT(nbt, "limitType");
 
 			//			int[] prevPos = nbt.getIntArray("prevPos");
 			//			if(prevPos!=null && prevPos.length>3 && FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER)
@@ -201,7 +202,7 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 		try{
 
 			if(limitType!=null)
-				nbt.setInteger("limitType", limitType.ordinal());
+				nbt.setString("limitType", limitType.getUniqueName());
 
 			if(this.worldObj!=null)
 			{

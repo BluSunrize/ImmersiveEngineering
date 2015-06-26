@@ -5,6 +5,8 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
@@ -60,6 +62,17 @@ public class ApiUtils
 		return null;
 	}
 
+	public static WireType getWireTypeFromNBT(NBTTagCompound tag, String key)
+	{
+		//Legacy code for old save data, where types used to be integers
+		if(tag.getTag("cableType") instanceof NBTTagInt)
+		{
+			int i = tag.getInteger("cableType");
+			return i==1?WireType.ELECTRUM: i==2?WireType.STEEL: i==3?WireType.STRUCTURE_ROPE: i==4?WireType.STRUCTURE_STEEL: WireType.COPPER;
+		}
+		else
+			return WireType.getValue(tag.getString("cableType"));
+	}
 
 	public static Map<String, Integer> sortMap(Map<String, Integer> map, boolean inverse)
 	{

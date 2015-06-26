@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Vec3;
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.WireType;
 import blusunrize.immersiveengineering.api.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.api.TargetingInfo;
@@ -61,7 +62,7 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable
 		super.writeCustomNBT(nbt, descPacket);
 		nbt.setInteger("facing", facing);
 		if(secondCable!=null)
-			nbt.setInteger("secondCable", secondCable.ordinal());
+			nbt.setString("secondCable", secondCable.getUniqueName());
 		nbt.setBoolean("dummy", dummy);
 		nbt.setInteger("postAttached", postAttached);
 	}
@@ -71,7 +72,7 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable
 		super.readCustomNBT(nbt, descPacket);
 		facing = nbt.getInteger("facing");
 		if(nbt.hasKey("secondCable"))
-			secondCable = WireType.getValue(nbt.getInteger("secondCable"));
+			secondCable = ApiUtils.getWireTypeFromNBT(nbt, "secondCable");
 		dummy = nbt.getBoolean("dummy");
 		postAttached = nbt.getInteger("postAttached");
 	}

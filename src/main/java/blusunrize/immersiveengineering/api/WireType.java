@@ -1,43 +1,93 @@
 package blusunrize.immersiveengineering.api;
 
+import java.util.LinkedHashSet;
+
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+
 /**
  * @author BluSunrize - 08.03.2015
+ * Rewritten: 26.06.2015
  *
- * The three different Cable Types introduced by IE
+ * The WireTypes of IE. Extend this to make your own
  */
-public enum WireType
+public abstract class WireType
 {
-	COPPER,
-	ELECTRUM,
-	STEEL,
-	STRUCTURE_ROPE,
-	STRUCTURE_STEEL,
-	TELECOMMUNICATION;
-
-	public static WireType getValue(int i)
+	private static LinkedHashSet<WireType> values = new LinkedHashSet<WireType>();
+	public static LinkedHashSet<WireType> getValues()
 	{
-		if(i>=0 && i<values().length)
-			return values()[i];
+		return values;
+	}
+	public static WireType getValue(String name)
+	{
+		for(WireType type: values)
+			if(type!=null && type.getUniqueName().equals(name))
+				return type;
 		return COPPER;
 	}
+	
+	public abstract String getUniqueName();
+	public abstract double getLossRatio();
+	public abstract int getTransferRate();
+	public abstract int getColour();
+	public abstract int getMaxLength();
+	public abstract ItemStack getWireCoil();
+
+	//THESE VALUES ARE FOR IE's OWN CABLES!
+	public static String[] uniqueNames = {"COPPER","ELECTRUM","STEEL","STRUCTURE_ROPE","STRUCTURE_STEEL"};
 	public static double[] cableLossRatio;
-	public double getLossRatio()
-	{
-		return cableLossRatio[ordinal()];
-	}
 	public static int[] cableTransferRate;
-	public int getTransferRate()
-	{
-		return cableTransferRate[ordinal()];
-	}
 	public static int[] cableColouration;
-	public int getColour()
-	{
-		return cableColouration[ordinal()];
-	}
 	public static int[] cableLength;
-	public int getMaxLength()
+	public static Item ieWireCoil;
+
+	public static WireType COPPER = new WireType.IEBASE(0);
+	public static WireType ELECTRUM = new WireType.IEBASE(1);
+	public static WireType STEEL = new WireType.IEBASE(2);
+	public static WireType STRUCTURE_ROPE = new WireType.IEBASE(3);
+	public static WireType STRUCTURE_STEEL = new WireType.IEBASE(4);
+	
+	/**
+	 * DO NOT SUBCLASS THIS.
+	 * This is a core implementation as a base for IE's default wires
+	 * DO NOT SUBCLASS THIS.
+	 */
+	private static class IEBASE extends WireType
 	{
-		return cableLength[ordinal()];
+		final int ordinal;
+		public IEBASE(int ordinal)
+		{
+			this.ordinal = ordinal;
+		}
+		@Override
+		public double getLossRatio()
+		{
+			return cableLossRatio[ordinal];
+		}
+		@Override
+		public int getTransferRate()
+		{
+			return cableTransferRate[ordinal];
+		}
+		@Override
+		public int getColour()
+		{
+			return cableColouration[ordinal];
+		}
+		@Override
+		public int getMaxLength()
+		{
+			return cableLength[ordinal];
+		}
+		@Override
+		public ItemStack getWireCoil()
+		{
+			return new ItemStack(ieWireCoil,1,ordinal);
+		}
+		@Override
+		public String getUniqueName()
+		{
+			return uniqueNames[ordinal];
+		}
 	}
 }
