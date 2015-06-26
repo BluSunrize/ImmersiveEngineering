@@ -375,7 +375,12 @@ public class TileEntityCokeOven extends TileEntityIEBase implements ISidedInvent
 		if(master()!=null)
 			return master().drain(from,resource,doDrain);
 		if(resource!=null)
-			return drain(from, resource.amount, doDrain);
+		{
+			FluidStack fs = drain(from, resource.amount, doDrain);
+			markDirty();
+			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+			return fs;
+		}
 		return null;
 	}
 	@Override
