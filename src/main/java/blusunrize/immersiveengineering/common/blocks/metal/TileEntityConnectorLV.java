@@ -4,6 +4,7 @@ import static blusunrize.immersiveengineering.common.util.Utils.toIIC;
 
 import java.util.List;
 
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
@@ -14,6 +15,7 @@ import blusunrize.immersiveengineering.api.ImmersiveNetHandler.AbstractConnectio
 import blusunrize.immersiveengineering.api.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.api.WireType;
 import blusunrize.immersiveengineering.common.Config;
+import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.TileEntityImmersiveConnectable;
 import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -247,5 +249,10 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 		int r =  transferEnergy(ModCompatability.convertEUtoRF(amount), false, 1);
 		double left = amount-(r/4f);
 		return left;
+	}
+	
+	@Override
+	public ItemStack getWireItemStackToDrop(Connection connection) {
+		return new ItemStack(IEContent.itemWireCoil,1,connection.cableType.ordinal());
 	}
 }

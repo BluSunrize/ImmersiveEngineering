@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Vec3;
@@ -7,6 +8,7 @@ import blusunrize.immersiveengineering.api.WireType;
 import blusunrize.immersiveengineering.api.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.common.Config;
+import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.TileEntityImmersiveConnectable;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -229,5 +231,10 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable
 		if(!dummy)
 			return AxisAlignedBB.getBoundingBox(xCoord,yCoord-1,zCoord, xCoord+1,yCoord+1.5,zCoord+1);
 		return AxisAlignedBB.getBoundingBox(xCoord,yCoord,zCoord, xCoord,yCoord,zCoord);
+	}
+	
+	@Override
+	public ItemStack getWireItemStackToDrop(Connection connection) {
+		return new ItemStack(IEContent.itemWireCoil,1,connection.cableType.ordinal());
 	}
 }
