@@ -87,11 +87,11 @@ public class ImmersiveEngineering
 		for(IECompatModule compat : IECompatModule.modules)
 			if(Loader.isModLoaded(compat.modId))
 				compat.postInit();
-		ExcavatorHandler.recalculateChances();
 	}
 	@Mod.EventHandler
 	public void loadComplete(FMLLoadCompleteEvent event)
 	{
+		ExcavatorHandler.recalculateChances();
 		IEContent.loadComplete();
 		proxy.loadComplete();
 
