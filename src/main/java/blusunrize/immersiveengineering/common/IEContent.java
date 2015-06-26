@@ -229,6 +229,7 @@ public class IEContent
 		OreDictionary.registerOre("bricksStone", new ItemStack(Blocks.stonebrick));
 		OreDictionary.registerOre("blockIce", new ItemStack(Blocks.ice));
 		OreDictionary.registerOre("craftingTableWood", new ItemStack(Blocks.crafting_table));
+		OreDictionary.registerOre("rodBlaze", new ItemStack(Items.blaze_rod));
 		//Fluid Containers
 		FluidContainerRegistry.registerFluidContainer(fluidCreosote, new ItemStack(itemFluidContainers,1,0), new ItemStack(Items.glass_bottle));
 		FluidContainerRegistry.registerFluidContainer(fluidCreosote, new ItemStack(itemFluidContainers,1,1), new ItemStack(Items.bucket));
@@ -499,7 +500,7 @@ public class IEContent
 		CrusherRecipe.addRecipe(new ItemStack(Items.diamond,2), "oreDiamond", 4000);
 		r = CrusherRecipe.addRecipe(new ItemStack(Items.redstone,8), "oreRedstone", 4000);
 		if(!OreDictionary.getOres("crystalCinnabar").isEmpty())
-			r.addSecondaryOutput(OreDictionary.getOres("dustPlatinum").get(0), .25f);
+			r.addSecondaryOutput(OreDictionary.getOres("crystalCinnabar").get(0), .25f);
 		CrusherRecipe.addRecipe(new ItemStack(Items.emerald,2), "oreEmerald", 4000);
 		CrusherRecipe.addRecipe(new ItemStack(Items.quartz,3), "oreQuartz", 4000);
 		CrusherRecipe.addRecipe(new ItemStack(Items.coal,4), "oreCoal", 4000);
