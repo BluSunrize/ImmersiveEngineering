@@ -47,7 +47,7 @@ public class Config
 		setBoolean("ic2compat", config.get("General", "IC2 Compatability", true, "Set this to false to prevent wires from accepting and outputting EU").getBoolean());
 		setBoolean("gregtechcompat", config.get("General", "GregTech Compatability", true, "Set this to false to prevent wires from outputting GregTech EU").getBoolean());
 		setInt("euConversion", config.get("General", "EU Conversion", 4, "The amount of RF that equal 1 EU. 4 by default, so 4RF == 1EU and .25EU == 1RF").getInt());
-
+		
 		setInt("capacitorLV_storage", config.get("Machines", "Capacitor LV: RF Storage", 100000, "The maximum amount of RF that can be stored in a low-voltage capacitor").getInt());
 		setInt("capacitorLV_input", config.get("Machines", "Capacitor LV: Input", 256, "The maximum amount of RF that can be input into a low-voltage capacitor (by IE net or other means)").getInt());
 		setInt("capacitorLV_output", config.get("Machines", "Capacitor LV: Output", 256, "The maximum amount of RF that can be output from a low-voltage capacitor (by IE net or other means)").getInt());
@@ -87,6 +87,12 @@ public class Config
 		setIntArray("ore_silver", config.get("OreGen", "Silver", new int[]{8,  8,40, 4,80}, "Generation config for Silver Ore. Parameters: Blocks per vein, lowest possible Y, highest possible Y, veins per chunk, chance for vein to spawn (out of 100). Set vein size to 0 to disable the generation").getIntList());
 		setIntArray("ore_nickel", config.get("OreGen", "Nickel", new int[]{6,  8,24, 2,100}, "Generation config for Nickel Ore. Parameters: Blocks per vein, lowest possible Y, highest possible Y, veins per chunk, chance for vein to spawn (out of 100). Set vein size to 0 to disable the generation").getIntList());
 
+		setDouble("BulletDamage-Casull", config.get("Tools", "BulletDamage-Casull", 7, "The amount of base damage a Casull Cartridge inflicts").getDouble());
+		setDouble("BulletDamage-AP", config.get("Tools", "BulletDamage-AP", 7, "The amount of base damage an ArmorPiercing Cartridge inflicts").getDouble());
+		setDouble("BulletDamage-Buck", config.get("Tools", "BulletDamage-Buck", 1, "The amount of base damage a single part of Buckshot inflicts").getDouble());
+		setDouble("BulletDamage-Dragon", config.get("Tools", "BulletDamage-Dragon", 4, "The amount of base damage a DragonsBreath Cartridge inflicts").getDouble());
+
+		
 		//		Property propReGen = config.get("TESTING", "ReGen", false);
 		//		propReGen.set(false);
 

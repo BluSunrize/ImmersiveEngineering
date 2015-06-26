@@ -10,6 +10,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
@@ -500,9 +501,8 @@ public class TileEntityFermenter extends TileEntityMultiblockPart implements IFl
 			return false;
 		if(master()!=null)
 			return master().isItemValidForSlot(slot,stack);
-		return true;
-		//		return slot<9?DieselHandler.getPlantoilOutput(stack)>0:
-		//			(slot==9 && FluidContainerRegistry.fillFluidContainer(new FluidStack(IEContent.fluidPlantoil,1000),stack)!=null);
+		return slot<9?DieselHandler.findFermenterRecipe(stack)!=null:
+			(slot==9 && FluidContainerRegistry.isEmptyContainer(stack));
 	}
 	@Override
 	public int[] getAccessibleSlotsFromSide(int side)

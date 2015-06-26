@@ -170,11 +170,8 @@ public class ItemBlockMetalDevices extends ItemBlockIEBase
 			if(world.getTileEntity(x-fd.offsetX, y, z-fd.offsetZ) instanceof TileEntityConveyorBelt)
 			{
 				TileEntityConveyorBelt con = (TileEntityConveyorBelt)world.getTileEntity(x-fd.offsetX, y, z-fd.offsetZ);
-				if(con.facing == f)
-				{
-					con.transportDown = false;
+				if(con.facing == f && con.transportUp)
 					con.transportUp = false;
-				}
 			}
 			tile.facing=f;
 		}
