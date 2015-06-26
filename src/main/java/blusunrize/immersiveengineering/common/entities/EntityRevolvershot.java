@@ -16,6 +16,7 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
+import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.compat.IC2Helper;
@@ -199,17 +200,17 @@ public class EntityRevolvershot extends Entity
 				switch(bulletType)
 				{
 				case 0:
-					mop.entityHit.attackEntityFrom(IEDamageSources.causeCasullDamage(this, shootingEntity), 7);
+					mop.entityHit.attackEntityFrom(IEDamageSources.causeCasullDamage(this, shootingEntity), (float)Config.getDouble("BulletDamage-Casull"));
 					break;
 				case 1:
-					mop.entityHit.attackEntityFrom(IEDamageSources.causePiercingDamage(this, shootingEntity), 7);
+					mop.entityHit.attackEntityFrom(IEDamageSources.causePiercingDamage(this, shootingEntity), (float)Config.getDouble("BulletDamage-AP"));
 					break;
 				case 2:
-					mop.entityHit.attackEntityFrom(IEDamageSources.causeBuckshotDamage(this, shootingEntity), 1);
+					mop.entityHit.attackEntityFrom(IEDamageSources.causeBuckshotDamage(this, shootingEntity), (float)Config.getDouble("BulletDamage-Buck"));
 					mop.entityHit.hurtResistantTime=0;
 					break;
 				case 4:
-					if(mop.entityHit.attackEntityFrom(IEDamageSources.causeDragonsbreathDamage(this, shootingEntity), 4))
+					if(mop.entityHit.attackEntityFrom(IEDamageSources.causeDragonsbreathDamage(this, shootingEntity), (float)Config.getDouble("BulletDamage-Dragon")))
 						mop.entityHit.setFire(3);
 					break;
 				}
