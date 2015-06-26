@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.api;
 
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.Vec3;
 import blusunrize.immersiveengineering.api.ImmersiveNetHandler.Connection;
 
@@ -48,6 +49,8 @@ public interface IImmersiveConnectable
 	 * acts as a wildcard, meaning if connection.CableType is null, you /always/ reset the limiter
 	 */
 	public void removeCable(Connection connection);
+	
+	public ItemStack getWireItemStackToDrop(Connection connection);
 	
 	/**
 	 * @return the offset used when RayTracing to or from this block. This vector is based from the blocks /origin/

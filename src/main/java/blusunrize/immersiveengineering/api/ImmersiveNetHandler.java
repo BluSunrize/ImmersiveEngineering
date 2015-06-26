@@ -105,10 +105,11 @@ public class ImmersiveNetHandler
 
 				if(node.equals(con.end))
 				{
+					ItemStack stack = iic.getWireItemStackToDrop(con);
 					double dx = node.posX+.5+Math.signum(con.start.posX-con.end.posX);
 					double dy = node.posY+.5+Math.signum(con.start.posY-con.end.posY);
 					double dz = node.posZ+.5+Math.signum(con.start.posZ-con.end.posZ);
-					world.spawnEntityInWorld(new EntityItem(world, dx,dy,dz, new ItemStack(IEContent.itemWireCoil,1,con.cableType.ordinal())));
+					world.spawnEntityInWorld(new EntityItem(world, dx,dy,dz, stack));
 				}
 			}
 		}
@@ -140,10 +141,11 @@ public class ImmersiveNetHandler
 
 					if(node.equals(con.end))
 					{
+						ItemStack stack = toIIC(con.end, world).getWireItemStackToDrop(con);
 						double dx = node.posX+.5+Math.signum(con.start.posX-con.end.posX);
 						double dy = node.posY+.5+Math.signum(con.start.posY-con.end.posY);
 						double dz = node.posZ+.5+Math.signum(con.start.posZ-con.end.posZ);
-						world.spawnEntityInWorld(new EntityItem(world, dx,dy,dz, new ItemStack(IEContent.itemWireCoil,1,con.cableType.ordinal())));
+						world.spawnEntityInWorld(new EntityItem(world, dx,dy,dz, stack));
 					}
 				}
 		}
