@@ -26,6 +26,11 @@ public abstract class WireType
 		return COPPER;
 	}
 	
+	public WireType()
+	{
+		values.add(this);
+	}
+	
 	public abstract String getUniqueName();
 	public abstract double getLossRatio();
 	public abstract int getTransferRate();
@@ -57,6 +62,7 @@ public abstract class WireType
 		final int ordinal;
 		public IEBASE(int ordinal)
 		{
+			super();
 			this.ordinal = ordinal;
 		}
 		@Override

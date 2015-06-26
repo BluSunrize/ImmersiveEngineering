@@ -83,35 +83,6 @@ public class TileEntityRefinery extends TileEntityMultiblockPart implements IFlu
 			}
 			if(tank2.getFluidAmount()>0)
 			{
-				int connected=0;
-				ForgeDirection f = ForgeDirection.getOrientation(facing);
-				TileEntity te = worldObj.getTileEntity(xCoord+f.offsetX*2,yCoord,zCoord+f.offsetZ*2);
-				if(te!=null && te instanceof IFluidHandler && ((IFluidHandler)te).canFill(f.getOpposite(), tank2.getFluid().getFluid()))
-					connected++;
-				te = worldObj.getTileEntity(xCoord+f.getOpposite().offsetX*2,yCoord,zCoord+f.getOpposite().offsetZ*2);
-				if(te!=null && te instanceof IFluidHandler && ((IFluidHandler)te).canFill(f, tank2.getFluid().getFluid()))
-					connected++;
-
-				if(connected!=0)
-				{
-					int out = Math.min(144,tank2.getFluidAmount())/connected;
-					te = worldObj.getTileEntity(xCoord+f.offsetX*2,yCoord,zCoord+f.offsetZ*2);
-					if(te!=null && te instanceof IFluidHandler && ((IFluidHandler)te).canFill(f.getOpposite(), tank2.getFluid().getFluid()))
-					{
-						int accepted = ((IFluidHandler)te).fill(f.getOpposite(), new FluidStack(tank2.getFluid().getFluid(),out), false);
-						FluidStack drained = this.tank2.drain(accepted, true);
-						((IFluidHandler)te).fill(f.getOpposite(), drained, true);
-					}
-					te = worldObj.getTileEntity(xCoord+f.getOpposite().offsetX*2,yCoord,zCoord+f.getOpposite().offsetZ*2);
-					if(te!=null && te instanceof IFluidHandler && ((IFluidHandler)te).canFill(f, tank2.getFluid().getFluid()))
-					{
-						int accepted = ((IFluidHandler)te).fill(f, new FluidStack(tank2.getFluid().getFluid(),out), false);
-						FluidStack drained = this.tank2.drain(accepted, true);
-						((IFluidHandler)te).fill(f, drained, true);
-						update = true;
-					}
-				}
-
 				ItemStack filledContainer = Utils.fillFluidContainer(tank2, inventory[4], inventory[5]);
 				if(filledContainer!=null)
 				{
@@ -121,6 +92,19 @@ public class TileEntityRefinery extends TileEntityMultiblockPart implements IFlu
 						inventory[5] = filledContainer.copy();
 					this.decrStackSize(4, filledContainer.stackSize);
 					update = true;
+				}
+
+				if(tank2.getFluidAmount()>0)
+				{
+					ForgeDirection f = ForgeDirection.getOrientation(facing);
+					int out = Math.min(144,tank2.getFluidAmount());
+					TileEntity te = worldObj.getTileEntity(xCoord+f.offsetX*2,yCoord,zCoord+f.offsetZ*2);
+					if(te!=null && te instanceof IFluidHandler && ((IFluidHandler)te).canFill(f.getOpposite(), tank2.getFluid().getFluid()))
+					{
+						int accepted = ((IFluidHandler)te).fill(f.getOpposite(), new FluidStack(tank2.getFluid().getFluid(),out), false);
+						FluidStack drained = this.tank2.drain(accepted, true);
+						((IFluidHandler)te).fill(f.getOpposite(), drained, true);
+					}
 				}
 			}
 

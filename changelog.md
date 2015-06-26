@@ -1,3 +1,6 @@
+#####Version 0.3.1
+- packed ice fixed for thermoelectric gen
+
 #####Version 0.3.0 - BUILT
 - fixed the ridiculously fast CokeOven
 - added ru_RU.lang

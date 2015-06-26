@@ -230,6 +230,7 @@ public class IEContent
 		//Vanilla OreDict
 		OreDictionary.registerOre("bricksStone", new ItemStack(Blocks.stonebrick));
 		OreDictionary.registerOre("blockIce", new ItemStack(Blocks.ice));
+		OreDictionary.registerOre("blockPackedIce", new ItemStack(Blocks.packed_ice));
 		OreDictionary.registerOre("craftingTableWood", new ItemStack(Blocks.crafting_table));
 		OreDictionary.registerOre("rodBlaze", new ItemStack(Items.blaze_rod));
 		//Fluid Containers
@@ -549,7 +550,7 @@ public class IEContent
 		DieselHandler.addRefineryRecipe(new FluidStack(FluidRegistry.WATER,1), new FluidStack(FluidRegistry.LAVA,1), new FluidStack(fluidCreosote,2));
 
 		ThermoelectricHandler.registerSourceInKelvin("blockIce", 273);
-		ThermoelectricHandler.registerSourceInKelvin(Utils.nameFromStack(new ItemStack(Blocks.packed_ice)), 200);
+		ThermoelectricHandler.registerSourceInKelvin("blockPackedIce", 200);
 		ThermoelectricHandler.registerSourceInKelvin("blockPlutonium", 4000);
 		ThermoelectricHandler.registerSourceInKelvin("blockBlutonium", 4000);
 		ThermoelectricHandler.registerSourceInKelvin("blockUranium", 2000);
