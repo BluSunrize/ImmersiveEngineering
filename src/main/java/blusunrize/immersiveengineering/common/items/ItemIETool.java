@@ -6,6 +6,7 @@ import java.util.Set;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatComponentTranslation;
@@ -62,6 +63,9 @@ public class ItemIETool extends ItemIEBase
 				for(IMultiblock mb : MultiblockHandler.getMultiblocks())
 					if(mb.isBlockTrigger(world.getBlock(x, y, z), world.getBlockMetadata(x, y, z)) && mb.createStructure(world, x, y, z, side, player))
 						return true;
+				
+				world.spawnEntityInWorld(new EntityLightningBolt(world, x, y+1, z));
+				
 			}
 			else if(stack.getItemDamage()==1 && world.getTileEntity(x, y, z) instanceof IImmersiveConnectable)
 			{
