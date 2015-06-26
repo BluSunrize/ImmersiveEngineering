@@ -363,28 +363,28 @@ ie.manual.entry.thermoElectric1=Поместите горячую жтдкост
 ie.manual.entry.blastfurnace.name=Доменая Печь
 ie.manual.entry.blastfurnace.subtext=Более горячая штучка!
 ie.manual.entry.blastfurnace0=Доменая Печь используется для увеличения содержания карбона в железе, превращая его в сталь. Для достижения этого нужно использовать только чистое, высоко-карбонизированое топливо,коксовый и древесные угли.<br>Сталь, созданая в этой печи является неотъемлемой частью Высоковольтных технологий.
-ie.manual.entry.blastfurnaceBlock=Для формирования Доменной Печи , нужно 27 таких блоков в кубе 3x3x3 , и правый клик молотком инженера по одному из центральных блоков по сторонам . <br> Смотрите следующую страницу для схемы
+ie.manual.entry.blastfurnaceBlock=Для формирования Доменной Печи , нужно 27 таких блоков в кубе 3x3x3 , и правый клик молотком инженера по одному из центральных блоков по сторонам. <br> Смотрите следующую страницу для схемы
 
-ie.manual.entry.steelconstruction.name=Steel Constructions
-ie.manual.entry.steelconstruction.subtext=Riveting
-ie.manual.entry.steelconstruction0=Steel is not only an integral part of high-voltage architectures, it is also quite useful in, well, architecture. Steel scaffolding can be used to quickly create climbable structures, steel fencing keeps baddies at bay and structural arms make for great attachment points for your HV relays. 
-ie.manual.entry.steelconstruction1=Structural Connectors work similarly to normal connectors, but instead of transferring energy, they are purely decorational.<br>They won't accept normal wires, but Hemp Rope and Steel Cable (see next page).<br>You can also rotate them by rightclicking them with an Engineer's Hammer.
+ie.manual.entry.steelconstruction.name=Стальные Конструкции
+ie.manual.entry.steelconstruction.subtext=Клёпка
+ie.manual.entry.steelconstruction0=Сталь не только часть высоковольтных стркутур, это также полезно в обычной архитектуре.Стальные леса могут быть использованы для быстрой постройки и влезания на них, стальной забор не пропускает мобов и позволяет вместе с структурными блоками создать точки для креплений высоковольтных реле. 
+ie.manual.entry.steelconstruction1=Структурный коннектор работает так же как и обычные,но не будут передавать энергию,они чисто декоративные.<br>Они не будут принимать обычные провода,только Пеньковые верёвки и стальные кабели(смотри следующую страницу).<br>Вы также можете вращать их с помощью молота инженера путём правово клика по ним.
 
-ie.manual.entry.highvoltage.name=High-Voltage
-ie.manual.entry.highvoltage.subtext=You can't shake the shock
-ie.manual.entry.highvoltage0=High-Voltage wires have the highest available transfer rate (<config:iA:cableTransferRate:2> RF/t) and will need special connectors. Note that on High voltage connections, §oConnectors and Relays are different blocks§r, Relays will not be able to in- or output to the energy net. Furthermore, §oRelays can only be placed on the underside of the block.§r<br>To transition from HV to LV or MV connections, you will need High-Voltage Transformers, and keep in mind, the lowest tier of wire limits the transferrate of an entire connection.
+ie.manual.entry.highvoltage.name=Высоковолье технологии
+ie.manual.entry.highvoltage.subtext=
+ie.manual.entry.highvoltage0=Высоковольтные провода имеют высокую пропускную способность(<config:iA:cableTransferRate:2> RF/t) и требует специальные коннекторы. Обратите внимание что связи высокого напряжения , §oКоннекторы и реле разные блоки§r, Реле не позволяет создавать вход-выход в энерго сеть. Кроме того, §oРеле могут быть размещены только на нижней стороне блока.§r<br>Для перехода от Высокого напряжения к  низким или средним , вам нужны высоковольтные трансформаторы,имейте в виду что низкий тир проводов ограничивает проводимость целой цепи.
 
-ie.manual.entry.multiblocks.name=Multiblock Constructions
-ie.manual.entry.multiblocks.subtext=Where's my Allen Wrench?
-ie.manual.entry.multiblocks0=Fitting complex machinery into a single 1x1x1 cube seems to be a task unmanageable without the use of magic or possibly shrink rays. So in order to create more complex machines, you will need component blocks. The most common ones have been listed on the following pages.
+ie.manual.entry.multiblocks.name=Части мултибллока
+ie.manual.entry.multiblocks.subtext=Где мой инопланетный ключ?
+ie.manual.entry.multiblocks0=Создание сложного механизма в блок 1х1х1 кажется не посильна без использования маги или сжимающих лючей. Таким образом для создания сложных машин вам понадобятся компонентные блоки.Наиболее распространёные из них написаны на следующих страницах.
 
-ie.manual.entry.workbench.name=Engineer's Workbench
-ie.manual.entry.workbench.subtext=Overclocking
-ie.manual.entry.workbench0=Over the course of your Engineering career you may come to deal with some tools that can be optimized and modified. To apply these modifications, you should use a properly equipped Engineer's Workbench.<br>Rightclick the Workbench, insert the item into the slot and insert applicable upgrades into the new slots that appear.
+ie.manual.entry.workbench.name=Верстак Инженера
+ie.manual.entry.workbench.subtext=Апгрейды усилния
+ie.manual.entry.workbench0=За время вашей Инженерной карьеры вы будете иметь дело с инструментами которые можно будет оптимизировать и модифицировать.Для применения модификаций вы должны должным образом оснастить Верстак Инженера.<br>Правый клик по верстаку, поместите предмет в слот и поместите применимые апгрейды в слот обновления которые появляются.
 
-ie.manual.entry.dieselgen.name=Diesel Generator
-ie.manual.entry.dieselgen.subtext=Better than volume: More volume.
-ie.manual.entry.dieselgen0=High-Voltage architecture might be fascinating, but it's not very useful unless you have a generator that can actually create the required output for it.<br>The Diesel Generator is one of the few ways of generating this sort of energy. It is created as a complex multiblock structure and will run off of <link:biodiesel:Biodiesel> or other types of combustible fuel. Due to its high output, it will work through fuel very quickly, so make sure you have a sufficient fuel production to run it.
+ie.manual.entry.dieselgen.name=Биодизельный Генератор
+ie.manual.entry.dieselgen.subtext=
+ie.manual.entry.dieselgen0=Высоковольтная архитектура может быть увлекательным, но это не очень полезно, если у вас есть генератор, который может на самом деле создать необходимый выход для него.<br>The Diesel Generator is one of the few ways of generating this sort of energy. It is created as a complex multiblock structure and will run off of <link:biodiesel:Biodiesel> or other types of combustible fuel. Due to its high output, it will work through fuel very quickly, so make sure you have a sufficient fuel production to run it.
 ie.manual.entry.dieselgen1=The structure is built from Engine, Generator and Radiator blocks. Arrange them in the shape shown on the following side and hit either the central generator or central radiator with an Engineer's Hammer.
 ie.manual.entry.dieselgen2=Fuel is to be input at the bottom corners of the generator, whereas energy will be output to up to three connection on the top. The <config:i:dieselGen_output>RF/t the generator outputs will be split between all connected points.<br>The terminal on the right side will turn off the generator if supplied with a redstone signal.
 ie.manual.entry.dieselgen3=The following table lists all valid fuels for the Diesel Generator and for how long in seconds (ticks) they burn. 
