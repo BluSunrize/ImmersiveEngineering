@@ -1,5 +1,10 @@
 #####Version 0.3.1
 - packed ice fixed for thermoelectric gen
+- properly initialized WireTypes, connections shouldn't turn into copper anymore
+- fixed derpy refinery output, it also prioritizes internal storage items before outputting now
+- added a @SideOnly to the icon stuff in the drill, might fix Railcraft derps
+- made the cokeoven sync when fluid is extracted
+- fixed the broken lightning rod
 
 #####Version 0.3.0 - BUILT
 - fixed the ridiculously fast CokeOven
