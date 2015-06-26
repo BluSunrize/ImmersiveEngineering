@@ -26,6 +26,7 @@ import blusunrize.immersiveengineering.api.DieselHandler;
 import blusunrize.immersiveengineering.api.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.MultiblockHandler;
 import blusunrize.immersiveengineering.api.ThermoelectricHandler;
+import blusunrize.immersiveengineering.api.WireType;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase.BlockIESimple;
 import blusunrize.immersiveengineering.common.blocks.BlockStorage;
@@ -160,6 +161,7 @@ public class IEContent
 		itemSeeds = new ItemIESeed(blockCrop,"hemp");
 		MinecraftForge.addGrassSeed(new ItemStack(itemSeeds), 5);
 		itemWireCoil = new ItemWireCoil();
+		WireType.ieWireCoil = itemWireCoil;
 		itemTool = new ItemIETool();
 		itemRevolver = new ItemRevolver();
 		itemBullet = new ItemBullet();
