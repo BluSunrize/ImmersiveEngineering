@@ -11,6 +11,7 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import blusunrize.immersiveengineering.api.IImmersiveConnectable;
+import blusunrize.immersiveengineering.api.IWireCoil;
 import blusunrize.immersiveengineering.api.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.api.WireType;
@@ -20,11 +21,30 @@ import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.Utils;
 
 
-public class ItemWireCoil extends ItemIEBase
+public class ItemWireCoil extends ItemIEBase implements IWireCoil
 {
 	public ItemWireCoil()
 	{
 		super("coil", 64, "copper","electrum","HV","rope","structural");
+	}
+
+	@Override
+	public WireType getWireType(ItemStack stack)
+	{
+		switch(stack.getItemDamage())
+		{
+		case 0:
+		default:
+			return WireType.COPPER;
+		case 1:
+			return WireType.ELECTRUM;
+		case 2:
+			return WireType.STEEL;
+		case 3:
+			return WireType.STRUCTURE_ROPE;
+		case 4:
+			return WireType.STRUCTURE_STEEL;
+		}
 	}
 
 	@Override
@@ -49,7 +69,7 @@ public class ItemWireCoil extends ItemIEBase
 		if(!world.isRemote && world.getTileEntity(x, y, z) instanceof IImmersiveConnectable && ((IImmersiveConnectable)world.getTileEntity(x, y, z)).canConnect() )
 		{
 			TargetingInfo target = new TargetingInfo(side, hitX,hitY,hitZ);
-			if( !((IImmersiveConnectable)world.getTileEntity(x, y, z)).canConnectCable(WireType.getValue(stack.getItemDamage()), target))
+			if( !((IImmersiveConnectable)world.getTileEntity(x, y, z)).canConnectCable(getWireType(stack), target))
 			{
 				player.addChatMessage(new ChatComponentTranslation(Lib.CHAT_WARN+"wrongCable"));
 				return false;
@@ -62,7 +82,7 @@ public class ItemWireCoil extends ItemIEBase
 			}
 			else
 			{
-				WireType type = WireType.getValue(stack.getItemDamage());
+				WireType type = getWireType(stack);
 				int[] pos = ItemNBTHelper.getIntArray(stack, "linkingPos");
 				int distance = (int) Math.ceil(Math.sqrt( (pos[1]-x)*(pos[1]-x) + (pos[2]-y)*(pos[2]-y) + (pos[3]-z)*(pos[3]-z) ));
 				if(pos[0]!=world.provider.dimensionId)

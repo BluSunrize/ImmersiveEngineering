@@ -12,11 +12,10 @@ import java.util.List;
 import java.util.Set;
 
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
-import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.IESaveData;
 
 import com.google.common.collect.ArrayListMultimap;
@@ -108,7 +107,7 @@ public class ImmersiveNetHandler
 					double dx = node.posX+.5+Math.signum(con.start.posX-con.end.posX);
 					double dy = node.posY+.5+Math.signum(con.start.posY-con.end.posY);
 					double dz = node.posZ+.5+Math.signum(con.start.posZ-con.end.posZ);
-					world.spawnEntityInWorld(new EntityItem(world, dx,dy,dz, new ItemStack(IEContent.itemWireCoil,1,con.cableType.ordinal())));
+					world.spawnEntityInWorld(new EntityItem(world, dx,dy,dz, con.cableType.getWireCoil()));
 				}
 			}
 		}
@@ -143,7 +142,7 @@ public class ImmersiveNetHandler
 						double dx = node.posX+.5+Math.signum(con.start.posX-con.end.posX);
 						double dy = node.posY+.5+Math.signum(con.start.posY-con.end.posY);
 						double dz = node.posZ+.5+Math.signum(con.start.posZ-con.end.posZ);
-						world.spawnEntityInWorld(new EntityItem(world, dx,dy,dz, new ItemStack(IEContent.itemWireCoil,1,con.cableType.ordinal())));
+						world.spawnEntityInWorld(new EntityItem(world, dx,dy,dz, con.cableType.getWireCoil()));
 					}
 				}
 		}
@@ -259,7 +258,7 @@ public class ImmersiveNetHandler
 								{
 									connectionParts.add(conB);
 									distance += conB.length;
-									if(averageType==null || averageType.ordinal()>conB.cableType.ordinal())
+									if(averageType==null || conB.cableType.getTransferRate()<averageType.getTransferRate())
 										averageType = conB.cableType;
 									break;
 								}
@@ -317,7 +316,7 @@ public class ImmersiveNetHandler
 				tag.setIntArray("start", new int[]{start.posX,start.posY,start.posZ});
 			if(end!=null)
 				tag.setIntArray("end", new int[]{end.posX,end.posY,end.posZ});
-			tag.setInteger("cableType", cableType.ordinal());
+			tag.setString("cableType", cableType.getUniqueName());
 			tag.setInteger("length", length);
 			return tag;
 		}
@@ -331,8 +330,10 @@ public class ImmersiveNetHandler
 			int[] iEnd = tag.getIntArray("end");
 			ChunkCoordinates end = new ChunkCoordinates(iEnd[0],iEnd[1],iEnd[2]);
 
+			WireType type = ApiUtils.getWireTypeFromNBT(tag, "cableType");
+			
 			if(start!=null && end!=null)
-				return new Connection(start,end, WireType.getValue(tag.getInteger("cableType")), tag.getInteger("length"));
+				return new Connection(start,end, type, tag.getInteger("length"));
 			return null;
 		}
 	}
@@ -349,7 +350,7 @@ public class ImmersiveNetHandler
 		public int compareTo(AbstractConnection con)
 		{
 			int distComp = Integer.compare(length, con.length);
-			int cableComp = -1*Integer.compare(cableType.ordinal(), con.cableType.ordinal());
+			int cableComp = -1*Integer.compare(cableType.getTransferRate(), con.cableType.getTransferRate());
 			if(distComp==0)
 				return cableComp;
 			return distComp;
