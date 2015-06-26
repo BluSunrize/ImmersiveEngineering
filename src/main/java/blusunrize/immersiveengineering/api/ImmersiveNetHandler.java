@@ -13,7 +13,6 @@ import java.util.Set;
 
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
 import blusunrize.immersiveengineering.common.IESaveData;

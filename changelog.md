@@ -9,6 +9,9 @@
 - added config for Revolver damage
 - fixed a render derp with the workbench
 - added Minetweaker support for Crusher,Squeezer,Fermenter,Refinery
+- renamed WallMount stuff to Wallmount, because gradle is a derp
+- rewrote the API to accomodate custom WireTypes
+- possibly fixed the weird percentages on minerals 
 
 #####Version 0.2.4 - BUILT
 - fixed various spelling error in the .lang
