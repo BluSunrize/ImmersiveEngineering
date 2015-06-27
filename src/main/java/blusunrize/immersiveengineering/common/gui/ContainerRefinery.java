@@ -106,6 +106,24 @@ public class ContainerRefinery extends Container
 				if(!this.mergeItemStack(stackInSlot, slotCount, (slotCount + 36), true))
 					return null;
 			}
+			else
+			{
+				boolean b = true;
+				for(int i=0; i<slotCount; i++)
+				{
+					Slot s = this.getSlot(i);
+					if(s!=null && s.isItemValid(stackInSlot))
+						if(this.mergeItemStack(stackInSlot, i, i+1, true))
+						{
+							b = false;
+							break;
+						}
+						else
+							continue;
+				}
+				if(b)
+					return null;
+			}
 
 			if (stackInSlot.stackSize == 0)
 				slotObject.putStack(null);
