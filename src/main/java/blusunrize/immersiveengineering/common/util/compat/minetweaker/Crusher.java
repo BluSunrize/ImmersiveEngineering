@@ -15,7 +15,7 @@ import blusunrize.immersiveengineering.api.CrusherRecipe;
 public class Crusher
 {
 	@ZenMethod
-	public static void addRecipe(IItemStack output, IIngredient input, int energy, IItemStack secondaryOutput, float secondaryChance)
+	public static void addRecipe(IItemStack output, IIngredient input, int energy, IItemStack secondaryOutput, double secondaryChance)
 	{
 		Object oInput = MTHelper.toObject(input);
 		if(oInput==null)
@@ -23,7 +23,7 @@ public class Crusher
 
 		CrusherRecipe r = new CrusherRecipe(MTHelper.toStack(output), oInput, energy);
 		if(secondaryOutput!=null)
-			r.addSecondaryOutput(MTHelper.toStack(secondaryOutput), secondaryChance);
+			r.addSecondaryOutput(MTHelper.toStack(secondaryOutput), (float)secondaryChance);
 		MineTweakerAPI.apply(new Add(r));
 	}
 
