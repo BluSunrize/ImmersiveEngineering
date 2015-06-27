@@ -132,7 +132,15 @@ public class ClientEventHandler
 		if(connectionsRendered)
 			return;
 		GL11.glPushMatrix();
+		
 		GL11.glDisable(GL11.GL_CULL_FACE);
+		GL11.glDisable(GL11.GL_TEXTURE_2D);
+		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glDisable(GL11.GL_ALPHA_TEST);
+		OpenGlHelper.glBlendFunc(770, 771, 1, 0);
+		GL11.glShadeModel(GL11.GL_SMOOTH);
+		RenderHelper.enableStandardItemLighting();
+		
 		Tessellator.instance.startDrawing(GL11.GL_QUADS);
 
 		for(Object o : ClientUtils.mc().renderGlobal.tileEntities)
@@ -157,7 +165,12 @@ public class ClientEventHandler
 			}
 		Tessellator.instance.setTranslation(0,0,0);
 		Tessellator.instance.draw();
+		
+		GL11.glDisable(GL11.GL_BLEND);
+		GL11.glEnable(GL11.GL_ALPHA_TEST);
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		GL11.glEnable(GL11.GL_CULL_FACE);
+		
 		GL11.glPopMatrix();
 		connectionsRendered = true;
 	}

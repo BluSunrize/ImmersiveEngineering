@@ -1,3 +1,7 @@
+#####Version 0.3.3
+- started working on ziplining
+
+
 #####Version 0.3.2 - BUILT
 - updated ru_RU.lang
 - added shiftclicking to Workbench

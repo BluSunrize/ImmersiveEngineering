@@ -303,9 +303,9 @@ public class ImmersiveNetHandler
 			if(!(o instanceof Connection))
 				return false;
 			Connection con = (Connection)o;
-			boolean n0 = end.equals(con.start)||start.equals(con.end);
-			boolean n1 = end.equals(con.start)||start.equals(con.end);
-			return n0&&n1;
+			boolean n0 = start.equals(con.start)&&end.equals(con.end);
+			boolean n1  =start.equals(con.end)&&end.equals(con.start);
+			return n0||n1;
 		}
 
 		public NBTTagCompound writeToNBT()
