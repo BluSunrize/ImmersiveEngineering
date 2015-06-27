@@ -66,6 +66,7 @@ import blusunrize.immersiveengineering.client.render.TileRenderWorkbench;
 import blusunrize.immersiveengineering.common.CommonProxy;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundTile;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDecoration;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDevices;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalMultiblocks;
@@ -360,6 +361,13 @@ public class ClientProxy extends CommonProxy
 		IESound sound = soundMap.get(soundName);
 		if(sound!=null)
 		{
+			if(tile==null || !(tile.getWorldObj().getTileEntity((int)sound.getXPosF(), (int)sound.getYPosF(), (int)sound.getZPosF()) instanceof ISoundTile))
+			{
+				ClientUtils.mc().getSoundHandler().stopSound(sound);
+				sound = null;
+				soundMap.remove(soundName);
+			}
+			
 			if(sound.getXPosF()==tile.xCoord && sound.getYPosF()==tile.yCoord && sound.getZPosF()==tile.zCoord)
 			{
 				if(!tileActive)
