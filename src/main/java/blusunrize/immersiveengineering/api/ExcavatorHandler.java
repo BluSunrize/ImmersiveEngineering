@@ -44,7 +44,7 @@ public class ExcavatorHandler
 	{
 		if(world.isRemote)
 			return null;
-		
+
 		if(!mineralDepletion.containsKey(new DimensionChunkCoords(world.provider.dimensionId, chunkX,chunkZ)))
 			mineralDepletion.put(new DimensionChunkCoords(world.provider.dimensionId, chunkX,chunkZ), 0);
 		int dep = mineralDepletion.get(new DimensionChunkCoords(world.provider.dimensionId, chunkX,chunkZ));
@@ -98,7 +98,7 @@ public class ExcavatorHandler
 			float chanceSum = 0;
 			ArrayList<String> existing = new ArrayList();
 			for(int i=0; i<ores.length; i++)
-				if(OreDictionary.doesOreNameExist(ores[i]))
+				if(OreDictionary.getOres(ores[i]).size()>0)
 				{
 					existing.add(ores[i]);
 					chanceSum += chances[i];
@@ -107,7 +107,7 @@ public class ExcavatorHandler
 			recalculatedChances = new float[existing.size()];
 			int j=0;
 			for(int i=0; i<ores.length; i++)
-				if(OreDictionary.doesOreNameExist(ores[i]))
+				if(OreDictionary.getOres(ores[i]).size()>0)
 					this.recalculatedChances[j++] = chances[i]/chanceSum;
 		}
 
