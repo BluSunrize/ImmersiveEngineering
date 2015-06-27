@@ -20,7 +20,7 @@ import blusunrize.immersiveengineering.api.DieselHandler.FermenterRecipe;
 public class Fermenter
 {
 	@ZenMethod
-	public static void addRecipe(IIngredient input, IItemStack output, int time, ILiquidStack fluid)
+	public static void addRecipe(IItemStack output, ILiquidStack fluid, IIngredient input, int time)
 	{
 		if(MTHelper.toObject(input)==null)
 			return;
@@ -76,7 +76,7 @@ public class Fermenter
 	}
 
 	@ZenMethod
-	public static void removeRecipeForFluid(ILiquidStack fluid)
+	public static void removeFluidRecipe(ILiquidStack fluid)
 	{
 		if(MTHelper.toFluidStack(fluid)!=null)
 			MineTweakerAPI.apply(new RemoveFluid(MTHelper.toFluidStack(fluid)));
@@ -134,7 +134,7 @@ public class Fermenter
 	}
 	
 	@ZenMethod
-	public static void removeRecipeForStack(IItemStack stack)
+	public static void removeItemRecipe(IItemStack stack)
 	{
 		if(MTHelper.toStack(stack)!=null)
 			MineTweakerAPI.apply(new RemoveStack(MTHelper.toStack(stack)));
