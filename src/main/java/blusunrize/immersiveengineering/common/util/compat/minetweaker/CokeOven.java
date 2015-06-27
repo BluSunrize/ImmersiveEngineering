@@ -15,7 +15,7 @@ import stanhebben.zenscript.annotations.ZenMethod;
 public class CokeOven
 {
 	@ZenMethod
-	public static void addRecipe(IItemStack output, IIngredient input, int time, int fuelOutput)
+	public static void addRecipe(IItemStack output, int fuelOutput, IIngredient input, int time)
 	{
 		Object oInput = MTHelper.toObject(input);
 		if(oInput==null)
