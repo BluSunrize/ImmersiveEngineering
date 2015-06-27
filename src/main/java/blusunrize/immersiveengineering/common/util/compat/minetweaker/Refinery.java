@@ -16,7 +16,7 @@ import blusunrize.immersiveengineering.api.DieselHandler.RefineryRecipe;
 public class Refinery
 {
 	@ZenMethod
-	public static void addRecipe(ILiquidStack input0, ILiquidStack input1, ILiquidStack output)
+	public static void addRecipe(ILiquidStack output, ILiquidStack input0, ILiquidStack input1)
 	{
 		if(MTHelper.toFluidStack(input0)==null||MTHelper.toFluidStack(input0).getFluid()==null)
 			return;
