@@ -367,8 +367,7 @@ public class ClientProxy extends CommonProxy
 				sound = null;
 				soundMap.remove(soundName);
 			}
-			
-			if(sound.getXPosF()==tile.xCoord && sound.getYPosF()==tile.yCoord && sound.getZPosF()==tile.zCoord)
+			else if(sound.getXPosF()==tile.xCoord && sound.getYPosF()==tile.yCoord && sound.getZPosF()==tile.zCoord)
 			{
 				if(!tileActive)
 				{
