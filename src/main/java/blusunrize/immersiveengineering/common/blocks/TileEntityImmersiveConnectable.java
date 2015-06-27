@@ -200,7 +200,6 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		try{
-
 			if(limitType!=null)
 				nbt.setString("limitType", limitType.getUniqueName());
 

@@ -1,56 +1,32 @@
 package blusunrize.immersiveengineering.common.entities;
 
-import java.util.List;
-
-import blusunrize.immersiveengineering.common.Config;
-import blusunrize.immersiveengineering.common.util.IEDamageSources;
-import blusunrize.immersiveengineering.common.util.Lib;
-import blusunrize.immersiveengineering.common.util.compat.IC2Helper;
-import cofh.api.energy.IEnergyContainerItem;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionEffect;
-import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
+import blusunrize.immersiveengineering.api.ImmersiveNetHandler.Connection;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class EntityZiplineHook extends Entity
 {
-	private int ticksAlive;
-	private int ticksInAir;
-
-	//	private int tickLimit=40;
-
+	ChunkCoordinates target;
 	public EntityZiplineHook(World world)
 	{
 		super(world);
 		this.setSize(.125f,.125f);
+				this.noClip=true;
 	}
-	public EntityZiplineHook(World world, double x, double y, double z, double ax, double ay, double az, int type)
+	public EntityZiplineHook(World world, double x, double y, double z, ChunkCoordinates target)
 	{
 		super(world);
 		this.setSize(0.125F, 0.125F);
 		this.setLocationAndAngles(x, y, z, this.rotationYaw, this.rotationPitch);
 		this.setPosition(x, y, z);
-	}
-	public EntityZiplineHook(World world, EntityLivingBase living, double ax, double ay, double az, int type, ItemStack stack)
-	{
-		super(world);
-		this.setSize(0.125F, 0.125F);
-		this.setLocationAndAngles(living.posX+ax, living.posY+living.getEyeHeight()+ay, living.posZ+az, living.rotationYaw, living.rotationPitch);
-		this.setPosition(this.posX, this.posY, this.posZ);
-		this.yOffset = 0.0F;
-		this.motionX = this.motionY = this.motionZ = 0.0D;
+		this.target = target;
 	}
 	protected void entityInit() {}
 
@@ -69,25 +45,67 @@ public class EntityZiplineHook extends Entity
 	@Override
 	public void onUpdate()
 	{
+		super.onUpdate();
+		
+		if(this.ticksExisted>40)
+			this.setDead();
+//
 		if(this.riddenByEntity==null)
 			this.setDead();
-		super.onUpdate();
+		if(target!=null)
+		{
+			TileEntity goal = this.worldObj.getTileEntity(target.posX, target.posY, target.posZ);
+			if(goal!=null && goal.getDistanceFrom(posX, posY, posZ)<.5)
+			{
+				System.out.println("arrivign at Target");
+				this.setDead();
+				return;
+			}
+		}
+		
+		this.posX += this.motionX;
+		this.posY += this.motionY;
+		this.posZ += this.motionZ;
+		float f1 = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ);
+		this.rotationYaw = (float)(Math.atan2(this.motionZ, this.motionX) * 180.0D / Math.PI) + 90.0F;
 
-//
-//		if(ticksInAir>=tickLimit)
-//		{
-//			this.onExpire();
-//			this.setDead();
-//			return;
-//		}
+		for (this.rotationPitch = (float)(Math.atan2((double)f1, this.motionY) * 180.0D / Math.PI) - 90.0F; this.rotationPitch - this.prevRotationPitch < -180.0F; this.prevRotationPitch -= 360.0F);
+
+		while (this.rotationPitch - this.prevRotationPitch >= 180.0F)
+			this.prevRotationPitch += 360.0F;
+		while (this.rotationYaw - this.prevRotationYaw < -180.0F)
+			this.prevRotationYaw -= 360.0F;
+		while (this.rotationYaw - this.prevRotationYaw >= 180.0F)
+			this.prevRotationYaw += 360.0F;
+
+		this.rotationPitch = this.prevRotationPitch + (this.rotationPitch - this.prevRotationPitch) * 0.2F;
+		this.rotationYaw = this.prevRotationYaw + (this.rotationYaw - this.prevRotationYaw) * 0.2F;
+
+		if (this.isInWater())
+		{
+			for (int j = 0; j < 4; ++j)
+			{
+				float f3 = 0.25F;
+				this.worldObj.spawnParticle("bubble", this.posX - this.motionX * (double)f3, this.posY - this.motionY * (double)f3, this.posZ - this.motionZ * (double)f3, this.motionX, this.motionY, this.motionZ);
+			}
+		}
+
+		this.setPosition(this.posX, this.posY, this.posZ);
+		//
+		//		if(ticksInAir>=tickLimit)
+		//		{
+		//			this.onExpire();
+		//			this.setDead();
+		//			return;
+		//		}
 
 	}
 
 	@Override
-    public double getMountedYOffset()
-    {
-        return -1;
-    }
+	public double getMountedYOffset()
+	{
+		return -2;
+	}
 
 	@Override
 	protected void writeEntityToNBT(NBTTagCompound nbt)
