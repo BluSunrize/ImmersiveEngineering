@@ -4,6 +4,8 @@ import static codechicken.lib.gui.GuiDraw.changeTexture;
 import static codechicken.lib.gui.GuiDraw.drawTexturedModalRect;
 
 import java.awt.Rectangle;
+import java.util.Arrays;
+import java.util.List;
 
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.item.ItemStack;
@@ -50,9 +52,9 @@ public class NEICrusherHandler extends TemplateRecipeHandler
 			return secondary;
 		}
 		@Override
-		public PositionedStack getIngredient()
+		public List<PositionedStack> getIngredients()
 		{
-			return input;
+			return getCycledIngredients(cycleticks/20, Arrays.asList(input));
 		}
 		@Override
 		public PositionedStack getResult()

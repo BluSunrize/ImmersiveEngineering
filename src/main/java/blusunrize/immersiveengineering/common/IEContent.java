@@ -88,6 +88,7 @@ import blusunrize.immersiveengineering.common.crafting.IEFuelHandler;
 import blusunrize.immersiveengineering.common.crafting.RecipeOreCrushing;
 import blusunrize.immersiveengineering.common.crafting.RecipeRevolver;
 import blusunrize.immersiveengineering.common.entities.EntityRevolvershot;
+import blusunrize.immersiveengineering.common.entities.EntityZiplineHook;
 import blusunrize.immersiveengineering.common.items.ItemBullet;
 import blusunrize.immersiveengineering.common.items.ItemDrill;
 import blusunrize.immersiveengineering.common.items.ItemDrillhead;
@@ -314,6 +315,7 @@ public class IEContent
 
 		/**ENTITIES*/
 		EntityRegistry.registerModEntity(EntityRevolvershot.class, "revolverShot", 0, ImmersiveEngineering.instance, 64, 1, true);
+		EntityRegistry.registerModEntity(EntityZiplineHook.class, "ziplineHook", 1, ImmersiveEngineering.instance, 64, 1, true);
 
 
 		/**SMELTING*/
