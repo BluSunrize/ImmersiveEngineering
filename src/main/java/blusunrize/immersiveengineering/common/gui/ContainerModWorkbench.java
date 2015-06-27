@@ -79,8 +79,31 @@ public class ContainerModWorkbench extends Container
 				if(!this.mergeItemStack(stackInSlot, slotCount, (slotCount + 36), true))
 					return null;
 			}
-			else
+			else if(stackInSlot!=null)
 			{
+				if(stackInSlot.getItem() instanceof ItemUpgradeableTool && ((ItemUpgradeableTool)stackInSlot.getItem()).canModify(stackInSlot))
+				{
+					if(!this.mergeItemStack(stackInSlot, 0, 1, true))
+						return null;
+				}
+				else if(slotCount>1)
+				{
+					boolean b = true;
+					for(int i=1; i<slotCount; i++)
+					{
+						Slot s = this.getSlotFromInventory(toolInv, i-1);
+						if(s!=null && s.isItemValid(stackInSlot))
+							if(this.mergeItemStack(stackInSlot, i, i+1, true))
+							{
+								b = false;
+								break;
+							}
+							else
+								continue;
+					}
+					if(b)
+						return null;
+				}
 			}
 
 			if (stackInSlot.stackSize == 0)

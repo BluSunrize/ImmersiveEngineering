@@ -20,8 +20,9 @@ public class ItemDrillhead extends ItemIEBase implements IDrillHead
 	{
 		super("drillhead", 1, "steel","iron");
 		perms = new DrillHeadPerm[this.subNames.length];
-		addPerm(0, new DrillHeadPerm("ingotSteel",3,1,3,10,7,2000,"immersiveengineering:textures/models/drill_diesel.png"));
-		addPerm(1, new DrillHeadPerm("ingotIron",2,1,2,9,6,1500,"immersiveengineering:textures/models/drill_iron.png"));
+		//Maximal damage is slightly proportionate to pickaxes
+		addPerm(0, new DrillHeadPerm("ingotSteel",3,1,3,10,7,4000,"immersiveengineering:textures/models/drill_diesel.png"));
+		addPerm(1, new DrillHeadPerm("ingotIron",2,1,2,9,6,2000,"immersiveengineering:textures/models/drill_iron.png"));
 	}
 
 	DrillHeadPerm[] perms;
@@ -70,8 +71,7 @@ public class ItemDrillhead extends ItemIEBase implements IDrillHead
 	@Override
 	public boolean getIsRepairable(ItemStack stack, ItemStack material)
 	{
-		boolean b = Utils.compareToOreName(material, getHeadPerm(material).repairMaterial);
-		return b;
+		return Utils.compareToOreName(material, getHeadPerm(stack).repairMaterial);
 	}
 
 	@Override

@@ -1,4 +1,10 @@
-#####Version 0.3.1
+#####Version 0.3.2
+- updated ru_RU.lang
+- added shiftclicking to Workbench
+- made drillheads repairable again
+- buffed drillhead damage to match the material cost in comparisson to pickaxes
+
+#####Version 0.3.1 - BUILT
 - packed ice fixed for thermoelectric gen
 - properly initialized WireTypes, connections shouldn't turn into copper anymore
 - fixed derpy refinery output, it also prioritizes internal storage items before outputting now
