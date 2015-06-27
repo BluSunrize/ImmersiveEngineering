@@ -48,14 +48,13 @@ public class ContainerSorter extends Container
 		Slot slot = id<0?null: (Slot)this.inventorySlots.get(id);
 		if(!(slot instanceof IESlot.Ghost))
 			return super.slotClick(id, button, modifier, player);
-		
+
 		ItemStack stack = null;
 		ItemStack stackSlot = slot.getStack();
 		if(stackSlot!=null)
 			stack = stackSlot.copy();
-		
+
 		if (button==2)
-//			fillPhantomSlot(slot, null, button);
 			slot.putStack(null);
 		else if(button==0||button==1)
 		{
@@ -66,25 +65,15 @@ public class ContainerSorter extends Container
 				if(stackHeld != null && slot.isItemValid(stackHeld))
 				{
 					slot.putStack(Utils.copyStackWithAmount(stackHeld, 1));
-//					fillPhantomSlot(slot, stackHeld, button);
 				}
 			}
 			else if (stackHeld == null)
 			{
 				slot.putStack(null);
-//				adjustPhantomSlot(slot, button, modifier);
 			}
 			else if (slot.isItemValid(stackHeld))
 			{
-//				if (StackUtils.isIdenticalItem(stackSlot, stackHeld))
-//				{
-//					adjustPhantomSlot(slot, button, modifier);
-//				}
-//				else
-//				{
-//					fillPhantomSlot(slot, stackHeld, button);
-					slot.putStack(Utils.copyStackWithAmount(stackHeld, 1));
-//				}
+				slot.putStack(Utils.copyStackWithAmount(stackHeld, 1));
 			}
 		}
 		else if (button == 5)
@@ -94,46 +83,43 @@ public class ContainerSorter extends Container
 			if (!slot.getHasStack())
 			{
 				slot.putStack(Utils.copyStackWithAmount(stackHeld, 1));
-//				fillPhantomSlot(slot, stackHeld, button);
 			}
 		}
 		return stack;
-
-//		return super.slotClick(id, button, modifier, player);
 	}
 
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slot)
 	{
 		return null;
-//		ItemStack stack = null;
-//		Slot slotObject = (Slot) inventorySlots.get(slot);
-//
-//		if (slotObject != null && slotObject.getHasStack())
-//		{
-//			ItemStack stackInSlot = slotObject.getStack();
-//			stack = stackInSlot.copy();
-//
-//			if (slot < slotCount)
-//			{
-//				if(!this.mergeItemStack(stackInSlot, slotCount, (slotCount + 36), true))
-//					return null;
-//			}
-//			else
-//			{
-//				if(!this.mergeItemStack(stackInSlot, 0,9, false))
-//					return null;
-//			}
-//
-//			if (stackInSlot.stackSize == 0)
-//				slotObject.putStack(null);
-//			else
-//				slotObject.onSlotChanged();
-//
-//			if (stackInSlot.stackSize == stack.stackSize)
-//				return null;
-//			slotObject.onPickupFromSlot(player, stackInSlot);
-//		}
-//		return stack;
+		//		ItemStack stack = null;
+		//		Slot slotObject = (Slot) inventorySlots.get(slot);
+		//
+		//		if (slotObject != null && slotObject.getHasStack())
+		//		{
+		//			ItemStack stackInSlot = slotObject.getStack();
+		//			stack = stackInSlot.copy();
+		//
+		//			if (slot < slotCount)
+		//			{
+		//				if(!this.mergeItemStack(stackInSlot, slotCount, (slotCount + 36), true))
+		//					return null;
+		//			}
+		//			else
+		//			{
+		//				if(!this.mergeItemStack(stackInSlot, 0,9, false))
+		//					return null;
+		//			}
+		//
+		//			if (stackInSlot.stackSize == 0)
+		//				slotObject.putStack(null);
+		//			else
+		//				slotObject.onSlotChanged();
+		//
+		//			if (stackInSlot.stackSize == stack.stackSize)
+		//				return null;
+		//			slotObject.onPickupFromSlot(player, stackInSlot);
+		//		}
+		//		return stack;
 	}
 }
