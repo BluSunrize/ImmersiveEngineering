@@ -16,6 +16,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -286,24 +287,37 @@ public class BlockMetalDecoration extends BlockIEBase implements blusunrize.aqua
 				List<Connection> outputs = ImmersiveNetHandler.INSTANCE.getConnections(world, Utils.toCC(world.getTileEntity(x,y,z)));
 				if(outputs.size()>0)
 				{
-					Connection c = outputs.get(0);
+					Vec3 vec = player.getLookVec();
+					vec = vec.normalize();
+					Connection line = null;
+					for(Connection c : outputs)
+					{
+						if(line==null)
+							line = c;
+						else
+						{
+							Vec3 lineVec = Vec3.createVectorHelper(line.end.posX-line.start.posX, line.end.posY-line.start.posY, line.end.posZ-line.start.posZ).normalize();
+							Vec3 conVec = Vec3.createVectorHelper(c.end.posX-c.start.posX, c.end.posY-c.start.posY, c.end.posZ-c.start.posZ).normalize();
+							if(conVec.distanceTo(vec)<lineVec.distanceTo(vec))
+								line = c;
+						}
+					}
 
-					ChunkCoordinates cc0 = c.end==Utils.toCC(world.getTileEntity(x,y,z))?c.start:c.end;
-					ChunkCoordinates cc1 = c.end==Utils.toCC(world.getTileEntity(x,y,z))?c.end:c.start;
-					double dx = cc0.posX-cc1.posX;
-					double dy = cc0.posY-cc1.posY;
-					double dz = cc0.posZ-cc1.posZ;
+					if(line!=null)
+					{
+						ChunkCoordinates cc0 = line.end==Utils.toCC(world.getTileEntity(x,y,z))?line.start:line.end;
+						ChunkCoordinates cc1 = line.end==Utils.toCC(world.getTileEntity(x,y,z))?line.end:line.start;
+						double dx = cc0.posX-cc1.posX;
+						double dy = cc0.posY-cc1.posY;
+						double dz = cc0.posZ-cc1.posZ;
 
-					EntityZiplineHook zip = new EntityZiplineHook(world, x+.5,y+.5,z+.5, cc0);
-					zip.motionX = dx*.05f;
-					zip.motionY = dy*.05f;
-					zip.motionZ = dz*.05f;
-					world.spawnEntityInWorld(zip);
-					player.mountEntity(zip);
-					
-//					System.out.println("transporting to "+cc.posX+","+cc.posY+","+cc.posZ);
-//					player.setPosition(cc.posX,cc.posY,cc.posZ);
-//					player.addVelocity(dx/speed, dy/speed, dz/speed);
+						EntityZiplineHook zip = new EntityZiplineHook(world, x+.5,y+.5,z+.5, cc0);
+						zip.motionX = dx*.05f;
+						zip.motionY = dy*.05f;
+						zip.motionZ = dz*.05f;
+						world.spawnEntityInWorld(zip);
+						player.mountEntity(zip);
+					}
 				}
 				//				player.motionX
 			}
