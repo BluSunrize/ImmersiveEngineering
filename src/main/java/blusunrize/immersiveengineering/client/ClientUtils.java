@@ -56,28 +56,7 @@ public class ClientUtils
 		GL11.glDisable(GL11.GL_ALPHA_TEST);
 		OpenGlHelper.glBlendFunc(770, 771, 1, 0);
 		GL11.glShadeModel(GL11.GL_SMOOTH);
-
-
-		//				OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240f, 240f);
-		//        this.setupFog(0, p_78471_1_);
-		//        GL11.glEnable(GL11.GL_FOG)
 		RenderHelper.enableStandardItemLighting();
-		//        mc().getTextureManager().bindTexture(TextureMap.locationBlocksTexture);
-		//        RenderHelper.disableStandardItemLighting();
-		//        mc().mcProfiler.endStartSection("terrain");
-		//        GL11.glMatrixMode(GL11.GL_MODELVIEW);
-		//        GL11.glPushMatrix();
-		////        renderglobal.sortAndRender(entitylivingbase, 0, (double)p_78471_1_);
-		//        GL11.glShadeModel(GL11.GL_FLAT);
-		//        GL11.glAlphaFunc(GL11.GL_GREATER, 0.1F);
-		//        GL11.glPopMatrix();
-
-		//        GL11.glDisable(GL11.GL_CULL_FACE);
-		//        GL11.glEnable(GL11.GL_BLEND);
-		//        GL11.glEnable(GL11.GL_FOG);
-		//        GL11.glEnable(GL11.GL_LIGHT0);
-		//        GL11.glEnable(GL11.GL_LIGHT1);
-
 
 		if(tile.getWorldObj()!=null && tile instanceof IImmersiveConnectable)
 		{
@@ -111,7 +90,6 @@ public class ClientUtils
 		double dz = (connection.end.posZ+endOffset.zCoord)-(connection.start.posZ+startOffset.zCoord);
 		double dw = Math.sqrt(dx*dx + dz*dz);
 
-		GL11.glDisable(GL11.GL_CULL_FACE);
 		int col = connection.cableType.getColour();
 		double r = connection.cableType==WireType.STEEL||connection.cableType==WireType.STRUCTURE_STEEL||connection.cableType==WireType.STRUCTURE_ROPE?.03125:.015625;
 		double rmodx = dz/dw;
@@ -205,7 +183,6 @@ public class ClientUtils
 			}
 			//			tes.draw();
 		}
-		GL11.glEnable(GL11.GL_CULL_FACE);
 
 		//		GL11.glTranslated(-startOffset.xCoord,-startOffset.yCoord,-startOffset.zCoord);
 		Tessellator.instance.addTranslation((float)-startOffset.xCoord,(float)-startOffset.yCoord,(float)-startOffset.zCoord);
