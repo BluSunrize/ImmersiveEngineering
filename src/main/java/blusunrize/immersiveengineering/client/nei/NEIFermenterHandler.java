@@ -79,6 +79,8 @@ public class NEIFermenterHandler extends TemplateRecipeHandler
 					this.arecipes.add(new CachedFermenterRecipe(r));
 				else if(ff!=null && r.fluid!=null && r.fluid.getFluid()==ff)
 					this.arecipes.add(new CachedFermenterRecipe(r));
+		
+		super.loadCraftingRecipes(outputId, results);
 	}
 	@Override
 	public String getRecipeName()

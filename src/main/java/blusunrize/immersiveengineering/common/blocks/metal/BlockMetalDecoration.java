@@ -267,13 +267,16 @@ public class BlockMetalDecoration extends BlockIEBase implements blusunrize.aqua
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
 	{
-		if(Utils.isHammer(player.getCurrentEquippedItem()) && (world.getTileEntity(x,y,z) instanceof TileEntityConnectorStructural) )
+		if(world.getTileEntity(x,y,z) instanceof TileEntityConnectorStructural)
 		{	
-			((TileEntityConnectorStructural)world.getTileEntity(x,y,z)).rotation += 22.5f;
-			((TileEntityConnectorStructural)world.getTileEntity(x,y,z)).rotation %= 360;
-			world.getTileEntity(x,y,z).markDirty();
-			world.markBlockForUpdate(x, y, z);
-			return true;
+			if(Utils.isHammer(player.getCurrentEquippedItem()))
+			{
+				((TileEntityConnectorStructural)world.getTileEntity(x,y,z)).rotation += 22.5f;
+				((TileEntityConnectorStructural)world.getTileEntity(x,y,z)).rotation %= 360;
+				world.getTileEntity(x,y,z).markDirty();
+				world.markBlockForUpdate(x, y, z);
+				return true;
+			}
 		}
 		return false;
 	}
@@ -283,9 +286,9 @@ public class BlockMetalDecoration extends BlockIEBase implements blusunrize.aqua
 	{
 		int meta = world.getBlockMetadata(x, y, z);
 		return meta==META_fence
-		|| meta==META_lantern
-		|| meta==META_connectorStructural
-		|| meta==META_wallMount;
+				|| meta==META_lantern
+				|| meta==META_connectorStructural
+				|| meta==META_wallMount;
 	}
 
 	@Optional.Method(modid = "AquaTweaks")
@@ -293,8 +296,8 @@ public class BlockMetalDecoration extends BlockIEBase implements blusunrize.aqua
 	{
 		int meta = world.getBlockMetadata(x, y, z);
 		return meta==META_fence
-		|| meta==META_lantern
-		|| meta==META_connectorStructural
-		|| meta==META_wallMount;
+				|| meta==META_lantern
+				|| meta==META_connectorStructural
+				|| meta==META_wallMount;
 	}
 }
