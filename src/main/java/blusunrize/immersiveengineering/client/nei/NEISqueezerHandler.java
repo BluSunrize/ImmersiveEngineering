@@ -79,6 +79,8 @@ public class NEISqueezerHandler extends TemplateRecipeHandler
 					this.arecipes.add(new CachedSqueezerRecipe(r));
 				else if(ff!=null && r.fluid!=null && r.fluid.getFluid()==ff)
 					this.arecipes.add(new CachedSqueezerRecipe(r));
+		
+		super.loadCraftingRecipes(outputId, results);
 	}
 	@Override
 	public String getRecipeName()
