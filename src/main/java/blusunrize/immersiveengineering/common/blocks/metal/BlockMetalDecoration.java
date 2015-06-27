@@ -15,9 +15,13 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+import blusunrize.immersiveengineering.api.ImmersiveNetHandler;
+import blusunrize.immersiveengineering.api.ImmersiveNetHandler.AbstractConnection;
+import blusunrize.immersiveengineering.api.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.client.render.BlockRenderMetalDecoration;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWallmount;
@@ -277,6 +281,23 @@ public class BlockMetalDecoration extends BlockIEBase implements blusunrize.aqua
 				world.markBlockForUpdate(x, y, z);
 				return true;
 			}
+//			if(!world.isRemote)
+//			{
+				List<Connection> outputs = ImmersiveNetHandler.INSTANCE.getConnections(world, Utils.toCC(world.getTileEntity(x,y,z)));
+				if(outputs.size()>0)
+				{
+					Connection c = outputs.get(0);
+					float speed = c.length;
+					ChunkCoordinates cc = c.end==Utils.toCC(world.getTileEntity(x,y,z))?c.start:c.end;
+					double dx = cc.posX-player.posX;
+					double dy = cc.posY-player.posY;
+					double dz = cc.posZ-player.posZ;
+					System.out.println("transporting to "+cc.posX+","+cc.posY+","+cc.posZ);
+//					player.setPosition(cc.posX,cc.posY,cc.posZ);
+					player.addVelocity(dx/speed, dy/speed, dz/speed);
+				}
+				//				player.motionX
+//			}
 		}
 		return false;
 	}

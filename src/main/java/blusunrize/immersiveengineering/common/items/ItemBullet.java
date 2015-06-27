@@ -87,6 +87,7 @@ public class ItemBullet extends ItemIEBase implements IBullet
 		bullet.motionZ = vecDir.zCoord;
 		bullet.bulletElectro = electro;
 		player.worldObj.spawnEntityInWorld(bullet);
+		player.mountEntity(bullet);
 		return bullet;
 	}
 }
