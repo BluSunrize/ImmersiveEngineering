@@ -1,31 +1,40 @@
 package blusunrize.immersiveengineering.common.entities;
 
+import java.util.List;
+
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
+import blusunrize.immersiveengineering.api.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.ImmersiveNetHandler.Connection;
+import blusunrize.immersiveengineering.common.items.ItemSkyHook;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class EntityZiplineHook extends Entity
 {
+	Connection connection;
 	ChunkCoordinates target;
 	public EntityZiplineHook(World world)
 	{
 		super(world);
 		this.setSize(.125f,.125f);
-				this.noClip=true;
+		this.noClip=true;
 	}
-	public EntityZiplineHook(World world, double x, double y, double z, ChunkCoordinates target)
+	public EntityZiplineHook(World world, double x, double y, double z, Connection connection, ChunkCoordinates target)
 	{
 		super(world);
 		this.setSize(0.125F, 0.125F);
 		this.setLocationAndAngles(x, y, z, this.rotationYaw, this.rotationPitch);
 		this.setPosition(x, y, z);
+		this.connection = connection;
 		this.target = target;
 	}
 	protected void entityInit() {}
@@ -41,28 +50,78 @@ public class EntityZiplineHook extends Entity
 	}
 
 
+	@Override
+	public void setDead()
+	{
+		super.setDead();
+	}
 
 	@Override
 	public void onUpdate()
 	{
 		super.onUpdate();
-		
-		if(this.ticksExisted>40)
+
+		//		if(this.ticksExisted>40)
+		//			this.setDead();
+
+		if(!(this.riddenByEntity instanceof EntityPlayer))
+		{
 			this.setDead();
-//
-		if(this.riddenByEntity==null)
-			this.setDead();
+			return;
+		}
 		if(target!=null)
 		{
 			TileEntity goal = this.worldObj.getTileEntity(target.posX, target.posY, target.posZ);
-			if(goal!=null && goal.getDistanceFrom(posX, posY, posZ)<.5)
+			if(goal!=null && goal.getDistanceFrom(posX, posY, posZ)<.25)
 			{
-				System.out.println("arrivign at Target");
 				this.setDead();
+				ItemStack hook = ((EntityPlayer)this.riddenByEntity).getCurrentEquippedItem();
+				if(hook==null || !(hook.getItem() instanceof ItemSkyHook))
+					return;
+
+				List<Connection> outputs = ImmersiveNetHandler.INSTANCE.getConnections(worldObj, target);
+				if(outputs.size()>0)
+				{
+					Vec3 vec = this.riddenByEntity.getLookVec();
+					vec = vec.normalize();
+					Connection line = null;
+					for(Connection c : outputs)
+						if(!c.equals(connection))
+						{
+							if(line==null)
+								line = c;
+							else
+							{
+								Vec3 lineVec = Vec3.createVectorHelper(line.end.posX-line.start.posX, line.end.posY-line.start.posY, line.end.posZ-line.start.posZ).normalize();
+								Vec3 conVec = Vec3.createVectorHelper(c.end.posX-c.start.posX, c.end.posY-c.start.posY, c.end.posZ-c.start.posZ).normalize();
+								if(conVec.distanceTo(vec)<lineVec.distanceTo(vec))
+									line = c;
+							}
+						}
+
+					if(line!=null)
+					{
+						ChunkCoordinates cc0 = line.end==target?line.start:line.end;
+						ChunkCoordinates cc1 = line.end==target?line.end:line.start;
+						double dx = cc0.posX-cc1.posX;
+						double dy = cc0.posY-cc1.posY;
+						double dz = cc0.posZ-cc1.posZ;
+
+						EntityZiplineHook zip = new EntityZiplineHook(worldObj, target.posX+.5,target.posY+.5,target.posZ+.5, line, cc0);
+						zip.motionX = dx*.05f;
+						zip.motionY = dy*.05f;
+						zip.motionZ = dz*.05f;
+						if(!worldObj.isRemote)
+							worldObj.spawnEntityInWorld(zip);
+						ItemSkyHook.existingHooks.put(this.riddenByEntity.getCommandSenderName(), zip);
+						((EntityPlayer)this.riddenByEntity).setItemInUse(hook, hook.getItem().getMaxItemUseDuration(hook));
+						this.riddenByEntity.mountEntity(zip);
+					}
+				}
 				return;
 			}
 		}
-		
+
 		this.posX += this.motionX;
 		this.posY += this.motionY;
 		this.posZ += this.motionZ;
@@ -91,14 +150,12 @@ public class EntityZiplineHook extends Entity
 		}
 
 		this.setPosition(this.posX, this.posY, this.posZ);
-		//
-		//		if(ticksInAir>=tickLimit)
-		//		{
-		//			this.onExpire();
-		//			this.setDead();
-		//			return;
-		//		}
+	}
 
+	@Override
+	public boolean isInvisible()
+	{
+		return true;	
 	}
 
 	@Override

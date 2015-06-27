@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Set;
 
 import net.minecraft.block.Block;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatComponentTranslation;
@@ -47,11 +46,6 @@ public class ItemIETool extends ItemIEBase
 		}
 	}
 
-	@Override
-	public void onUpdate(ItemStack stack, World world, Entity ent, int slot, boolean inHand)
-	{
-	}
-	
 	@Override
 	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
 	{

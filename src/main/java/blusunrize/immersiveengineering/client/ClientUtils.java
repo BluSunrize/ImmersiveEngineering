@@ -42,6 +42,7 @@ import blusunrize.immersiveengineering.api.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.WireType;
 import blusunrize.immersiveengineering.client.render.TileRenderIE;
+import blusunrize.immersiveengineering.common.items.ItemSkyHook;
 import blusunrize.immersiveengineering.common.util.IESound;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
@@ -51,13 +52,6 @@ public class ClientUtils
 	// MOD SPECIFIC METHODS
 	public static void renderAttachedConnections(TileEntity tile)
 	{
-		GL11.glDisable(GL11.GL_TEXTURE_2D);
-		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glDisable(GL11.GL_ALPHA_TEST);
-		OpenGlHelper.glBlendFunc(770, 771, 1, 0);
-		GL11.glShadeModel(GL11.GL_SMOOTH);
-		RenderHelper.enableStandardItemLighting();
-
 		if(tile.getWorldObj()!=null && tile instanceof IImmersiveConnectable)
 		{
 			ClientUtils.bindTexture("immersiveengineering:textures/models/white.png");
@@ -74,9 +68,6 @@ public class ClientUtils
 
 			//			}
 		}
-		GL11.glDisable(GL11.GL_BLEND);
-		GL11.glEnable(GL11.GL_ALPHA_TEST);
-		GL11.glEnable(GL11.GL_TEXTURE_2D);
 	}
 
 	public static void drawConnection(ImmersiveNetHandler.Connection connection, IImmersiveConnectable start, IImmersiveConnectable end)
@@ -118,70 +109,85 @@ public class ClientUtils
 		double p = (0+dw-a*Math.log((k+dy)/(k-dy)))*0.5;
 		double q = (dy+0-k*Math.cosh(l)/Math.sinh(l))*0.5;
 
-		int vertices = 16;
-		if(vertical)
-		{
-			//						tes.startDrawing(GL11.GL_QUADS);
-			tes.setColorOpaque_I(col);
-			tes.setBrightness(calcBrightness(world, connection.start.posX-r,connection.start.posY,connection.start.posZ));
-			tes.addVertex(0-r, 0, 0);
-			tes.setBrightness(calcBrightness(world, connection.start.posX-r,connection.start.posY+dy,connection.start.posZ));
-			tes.addVertex(dx-r, dy, dz);
-			tes.setBrightness(calcBrightness(world, connection.start.posX+r,connection.start.posY+dy,connection.start.posZ));
-			tes.addVertex(dx+r, dy, dz);
-			tes.setBrightness(calcBrightness(world, connection.start.posX+r,connection.start.posY,connection.start.posZ));
-			tes.addVertex(0+r, 0, 0);
-			//			tes.draw();
-			//			tes.startDrawing(GL11.GL_QUADS);
-			tes.setColorOpaque_I(col);
-			tes.setBrightness(calcBrightness(world, connection.start.posX,connection.start.posY,connection.start.posZ-r));
-			tes.addVertex(0, 0, 0-r);
-			tes.setBrightness(calcBrightness(world, connection.start.posX,connection.start.posY+dy,connection.start.posZ-r));
-			tes.addVertex(dx, dy, dz-r);
-			tes.setBrightness(calcBrightness(world, connection.start.posX,connection.start.posY+dy,connection.start.posZ+r));
-			tes.addVertex(dx, dy, dz+r);
-			tes.setBrightness(calcBrightness(world, connection.start.posX,connection.start.posY,connection.start.posZ+r));
-			tes.addVertex(0, 0, 0+r);
-			//			tes.draw();
-		}
-		else
-		{
-			//			tes.startDrawing(GL11.GL_QUADS);
-			for(int i=0; i<vertices; i++)
-			{
-				float n0 = i/(float)vertices;
-				float n1 = (i+1)/(float)vertices;
 
-				double x0 = 0 + dx * n0;
-				double z0 = 0 + dz * n0;
-				double y0 = a * Math.cosh((( Math.sqrt(x0*x0+z0*z0) )-p)/a)+q;
-				double x1 = 0 + dx * n1;
-				double z1 = 0 + dz * n1;
-				double y1 = a * Math.cosh((( Math.sqrt(x1*x1+z1*z1) )-p)/a)+q;
-				//				tes.startDrawing(GL11.GL_QUADS);
-				tes.setColorOpaque_I(col);
-				tes.setBrightness(calcBrightness(world, connection.start.posX+x0, connection.start.posY+y0+r, connection.start.posZ+z0));
-				tes.addVertex(x0, y0+r, z0);
-				tes.setBrightness(calcBrightness(world, connection.start.posX+x1, connection.start.posY+y1+r, connection.start.posZ+z1));
-				tes.addVertex(x1, y1+r, z1);
-				tes.setBrightness(calcBrightness(world, connection.start.posX+x1, connection.start.posY+y1-r, connection.start.posZ+z1));
-				tes.addVertex(x1, y1-r, z1);
-				tes.setBrightness(calcBrightness(world, connection.start.posX+x0, connection.start.posY+y0-r, connection.start.posZ+z0));
-				tes.addVertex(x0, y0-r, z0);
-				//				tes.draw();
-				//				tes.startDrawing(GL11.GL_QUADS);
-				tes.setColorOpaque_I(col);
-				tes.setBrightness(calcBrightness(world, connection.start.posX+x0-r*rmodx, connection.start.posY+y0, connection.start.posZ+z0+r*rmodz));
-				tes.addVertex(x0-r*rmodx, y0, z0+r*rmodz);
-				tes.setBrightness(calcBrightness(world, connection.start.posX+x1-r*rmodx, connection.start.posY+y1, connection.start.posZ+z1+r*rmodz));
-				tes.addVertex(x1-r*rmodx, y1, z1+r*rmodz);
-				tes.setBrightness(calcBrightness(world, connection.start.posX+x1+r*rmodx, connection.start.posY+y1, connection.start.posZ+z1-r*rmodz));
-				tes.addVertex(x1+r*rmodx, y1, z1-r*rmodz);
-				tes.setBrightness(calcBrightness(world, connection.start.posX+x0+r*rmodx, connection.start.posY+y0, connection.start.posZ+z0-r*rmodz));
-				tes.addVertex(x0+r*rmodx, y0, z0-r*rmodz);
-				//				tes.draw();
+		int vertices = 16;
+		int passes = 1;
+		if(connection==ItemSkyHook.grabableConnection)
+			passes = 2;
+		int alpha = 255;
+		for(int pass=0; pass<passes; pass++)
+		{
+			if(pass>0)
+			{
+				col = 0x9900ff99;
+				r *= 1.75;
+				alpha = 128;
 			}
-			//			tes.draw();
+
+			if(vertical)
+			{
+				//						tes.startDrawing(GL11.GL_QUADS);
+				tes.setColorRGBA_I(col, alpha);
+				tes.setBrightness(calcBrightness(world, connection.start.posX-r,connection.start.posY,connection.start.posZ));
+				tes.addVertex(0-r, 0, 0);
+				tes.setBrightness(calcBrightness(world, connection.start.posX-r,connection.start.posY+dy,connection.start.posZ));
+				tes.addVertex(dx-r, dy, dz);
+				tes.setBrightness(calcBrightness(world, connection.start.posX+r,connection.start.posY+dy,connection.start.posZ));
+				tes.addVertex(dx+r, dy, dz);
+				tes.setBrightness(calcBrightness(world, connection.start.posX+r,connection.start.posY,connection.start.posZ));
+				tes.addVertex(0+r, 0, 0);
+				//			tes.draw();
+				//			tes.startDrawing(GL11.GL_QUADS);
+				tes.setColorRGBA_I(col, alpha);
+				tes.setBrightness(calcBrightness(world, connection.start.posX,connection.start.posY,connection.start.posZ-r));
+				tes.addVertex(0, 0, 0-r);
+				tes.setBrightness(calcBrightness(world, connection.start.posX,connection.start.posY+dy,connection.start.posZ-r));
+				tes.addVertex(dx, dy, dz-r);
+				tes.setBrightness(calcBrightness(world, connection.start.posX,connection.start.posY+dy,connection.start.posZ+r));
+				tes.addVertex(dx, dy, dz+r);
+				tes.setBrightness(calcBrightness(world, connection.start.posX,connection.start.posY,connection.start.posZ+r));
+				tes.addVertex(0, 0, 0+r);
+				//			tes.draw();
+			}
+			else
+			{
+				//			tes.startDrawing(GL11.GL_QUADS);
+				for(int i=0; i<vertices; i++)
+				{
+					float n0 = i/(float)vertices;
+					float n1 = (i+1)/(float)vertices;
+
+					double x0 = 0 + dx * n0;
+					double z0 = 0 + dz * n0;
+					double y0 = a * Math.cosh((( Math.sqrt(x0*x0+z0*z0) )-p)/a)+q;
+					double x1 = 0 + dx * n1;
+					double z1 = 0 + dz * n1;
+					double y1 = a * Math.cosh((( Math.sqrt(x1*x1+z1*z1) )-p)/a)+q;
+					//				tes.startDrawing(GL11.GL_QUADS);
+					tes.setColorRGBA_I(col, alpha);
+					tes.setBrightness(calcBrightness(world, connection.start.posX+x0, connection.start.posY+y0+r, connection.start.posZ+z0));
+					tes.addVertex(x0, y0+r, z0);
+					tes.setBrightness(calcBrightness(world, connection.start.posX+x1, connection.start.posY+y1+r, connection.start.posZ+z1));
+					tes.addVertex(x1, y1+r, z1);
+					tes.setBrightness(calcBrightness(world, connection.start.posX+x1, connection.start.posY+y1-r, connection.start.posZ+z1));
+					tes.addVertex(x1, y1-r, z1);
+					tes.setBrightness(calcBrightness(world, connection.start.posX+x0, connection.start.posY+y0-r, connection.start.posZ+z0));
+					tes.addVertex(x0, y0-r, z0);
+					//				tes.draw();
+					//				tes.startDrawing(GL11.GL_QUADS);
+					tes.setColorRGBA_I(col, alpha);
+					tes.setBrightness(calcBrightness(world, connection.start.posX+x0-r*rmodx, connection.start.posY+y0, connection.start.posZ+z0+r*rmodz));
+					tes.addVertex(x0-r*rmodx, y0, z0+r*rmodz);
+					tes.setBrightness(calcBrightness(world, connection.start.posX+x1-r*rmodx, connection.start.posY+y1, connection.start.posZ+z1+r*rmodz));
+					tes.addVertex(x1-r*rmodx, y1, z1+r*rmodz);
+					tes.setBrightness(calcBrightness(world, connection.start.posX+x1+r*rmodx, connection.start.posY+y1, connection.start.posZ+z1-r*rmodz));
+					tes.addVertex(x1+r*rmodx, y1, z1-r*rmodz);
+					tes.setBrightness(calcBrightness(world, connection.start.posX+x0+r*rmodx, connection.start.posY+y0, connection.start.posZ+z0-r*rmodz));
+					tes.addVertex(x0+r*rmodx, y0, z0-r*rmodz);
+					//				tes.draw();
+				}
+				//			tes.draw();
+			}
 		}
 
 		//		GL11.glTranslated(-startOffset.xCoord,-startOffset.yCoord,-startOffset.zCoord);
