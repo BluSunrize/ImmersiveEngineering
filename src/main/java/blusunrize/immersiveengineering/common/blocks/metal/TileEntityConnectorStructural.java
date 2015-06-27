@@ -69,8 +69,11 @@ public class TileEntityConnectorStructural extends TileEntityConnectorLV
 	@Override
 	public boolean canConnectCable(WireType cableType, TargetingInfo target)
 	{
+		System.out.println("Attempting attachment of "+cableType.getUniqueName());
 		if(cableType!=WireType.STRUCTURE_ROPE && cableType!=WireType.STRUCTURE_STEEL)
 			return false;
+		System.out.println("initial check passed");
+		System.out.println("limitType=="+(limitType==null?"null":limitType.getUniqueName()));
 		return limitType==null||limitType==cableType;
 	}
 	@Override

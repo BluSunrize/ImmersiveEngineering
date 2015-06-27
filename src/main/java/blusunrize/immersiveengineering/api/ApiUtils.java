@@ -65,13 +65,13 @@ public class ApiUtils
 	public static WireType getWireTypeFromNBT(NBTTagCompound tag, String key)
 	{
 		//Legacy code for old save data, where types used to be integers
-		if(tag.getTag("cableType") instanceof NBTTagInt)
+		if(tag.getTag(key) instanceof NBTTagInt)
 		{
-			int i = tag.getInteger("cableType");
+			int i = tag.getInteger(key);
 			return i==1?WireType.ELECTRUM: i==2?WireType.STEEL: i==3?WireType.STRUCTURE_ROPE: i==4?WireType.STRUCTURE_STEEL: WireType.COPPER;
 		}
 		else
-			return WireType.getValue(tag.getString("cableType"));
+			return WireType.getValue(tag.getString(key));
 	}
 
 	public static Map<String, Integer> sortMap(Map<String, Integer> map, boolean inverse)
