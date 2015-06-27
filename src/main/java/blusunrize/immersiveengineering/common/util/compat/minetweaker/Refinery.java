@@ -16,16 +16,16 @@ import blusunrize.immersiveengineering.api.DieselHandler.RefineryRecipe;
 public class Refinery
 {
 	@ZenMethod
-	public static void addRecipe(ILiquidStack input0, ILiquidStack input1, ILiquidStack output)
+	public static void addRecipe(ILiquidStack output, ILiquidStack input0, ILiquidStack input1)
 	{
+		if(MTHelper.toFluidStack(output)==null||MTHelper.toFluidStack(output).getFluid()==null)
+			return;
 		if(MTHelper.toFluidStack(input0)==null||MTHelper.toFluidStack(input0).getFluid()==null)
 			return;
 		if(MTHelper.toFluidStack(input1)==null||MTHelper.toFluidStack(input1).getFluid()==null)
 			return;
-		if(MTHelper.toFluidStack(output)==null||MTHelper.toFluidStack(output).getFluid()==null)
-			return;
 
-		RefineryRecipe r = new RefineryRecipe(MTHelper.toFluidStack(input0), MTHelper.toFluidStack(input1), MTHelper.toFluidStack(output));
+		RefineryRecipe r = new RefineryRecipe(MTHelper.toFluidStack(output), MTHelper.toFluidStack(input0), MTHelper.toFluidStack(input1));
 		MineTweakerAPI.apply(new Add(r));
 	}
 

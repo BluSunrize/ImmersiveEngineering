@@ -20,15 +20,15 @@ import blusunrize.immersiveengineering.api.DieselHandler.FermenterRecipe;
 public class Fermenter
 {
 	@ZenMethod
-	public static void addRecipe(IIngredient input, IItemStack output, int time, ILiquidStack fluid)
+	public static void addRecipe(IItemStack output, IIngredient input, int time, ILiquidStack fluid)
 	{
-		if(MTHelper.toObject(input)==null)
-			return;
 		//Either output or fluid must not be null. 
 		if(MTHelper.toStack(output)==null || (MTHelper.toFluidStack(fluid)==null||MTHelper.toFluidStack(fluid).getFluid()==null))
 			return;
+		if(MTHelper.toObject(input)==null)
+			return;
 
-		FermenterRecipe r = new FermenterRecipe(MTHelper.toObject(input), time, MTHelper.toFluidStack(fluid), MTHelper.toStack(output));
+		FermenterRecipe r = new FermenterRecipe(MTHelper.toStack(output), MTHelper.toObject(input), time, MTHelper.toFluidStack(fluid));
 		MineTweakerAPI.apply(new Add(r));
 	}
 
@@ -76,7 +76,7 @@ public class Fermenter
 	}
 
 	@ZenMethod
-	public static void removeRecipeForFluid(ILiquidStack fluid)
+	public static void removeFluidRecipe(ILiquidStack fluid)
 	{
 		if(MTHelper.toFluidStack(fluid)!=null)
 			MineTweakerAPI.apply(new RemoveFluid(MTHelper.toFluidStack(fluid)));
@@ -134,7 +134,7 @@ public class Fermenter
 	}
 	
 	@ZenMethod
-	public static void removeRecipeForStack(IItemStack stack)
+	public static void removeItemRecipe(IItemStack stack)
 	{
 		if(MTHelper.toStack(stack)!=null)
 			MineTweakerAPI.apply(new RemoveStack(MTHelper.toStack(stack)));
