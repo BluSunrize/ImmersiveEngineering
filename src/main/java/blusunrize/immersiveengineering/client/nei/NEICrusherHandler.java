@@ -103,7 +103,7 @@ public class NEICrusherHandler extends TemplateRecipeHandler
 	{
 		if(result!=null)
 			for(CrusherRecipe r : CrusherRecipe.recipeList)
-				if(r!=null && Utils.stackMatchesObject(result, r.output))
+				if(r!=null && (Utils.stackMatchesObject(result, r.output)||(r.secondaryOutput!=null&&Utils.stackMatchesObject(result, r.secondaryOutput))))
 					this.arecipes.add(new CachedCrusherRecipe(r));
 	}
 	@Override
