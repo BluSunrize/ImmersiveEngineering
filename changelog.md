@@ -1,8 +1,12 @@
-#####Version 0.3.2
+#####Version 0.3.2 - BUILT
 - updated ru_RU.lang
 - added shiftclicking to Workbench
 - made drillheads repairable again
-- buffed drillhead damage to match the material cost in comparisson to pickaxes
+- buffed drillhead damage to match the material cost in comparison to pickaxes
+- added shiftclicking to Refinery
+- changes to formatting in Minetweaker integration
+- fixed wire rendering
+- possibly fixed mineral calculation
 
 #####Version 0.3.1 - BUILT
 - packed ice fixed for thermoelectric gen
@@ -12,6 +16,7 @@
 - made the cokeoven sync when fluid is extracted
 - fixed the broken lightning rod
 - added some extra security in fluidoutputting on Fermenter and Squeezer
+
 
 #####Version 0.3.0 - BUILT
 - fixed the ridiculously fast CokeOven
@@ -28,6 +33,8 @@
 - rewrote the API to accomodate custom WireTypes
 - possibly fixed the weird percentages on minerals 
 
+##### 0.2 VERSIONS ######
+==============
 #####Version 0.2.4 - BUILT
 - fixed various spelling error in the .lang
 - fixed HV Transformers fitting on wooden poles
@@ -81,6 +88,8 @@
 - Added AquaTweaks compat
 
 
+##### 0.1 VERSIONS ######
+==============
 #####Version 0.1.16 - BUILT
 - fixed cyclic exception in NBT read/write on wooden crates
 - drills. 'nuff said.
