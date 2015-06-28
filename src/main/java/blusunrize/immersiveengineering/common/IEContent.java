@@ -393,8 +393,8 @@ public class IEContent
 		addOredictRecipe(new ItemStack(itemMaterial,1,8), " I ","ICI"," I ", 'I',"ingotSteel",'C',componentIron);
 		addOredictRecipe(new ItemStack(itemMaterial,1,9), "SS","IS","SS", 'I',"ingotCopper",'S',"treatedStick");
 		addOredictRecipe(new ItemStack(itemMaterial,1,10), "I  ","II "," II", 'I',"ingotSteel");
-		addOredictRecipe(componentIron, " I ","ICI"," I ", 'I',"ingotIron",'C',"ingotCopper");
-		addOredictRecipe(componentSteel, " I ","ICI"," I ", 'I',"ingotSteel",'C',"ingotCopper");
+		addOredictRecipe(componentIron, "I I"," C ","I I", 'I',"ingotIron",'C',"ingotCopper");
+		addOredictRecipe(componentSteel, "I I"," C ","I I", 'I',"ingotSteel",'C',"ingotCopper");
 
 		addOredictRecipe(new ItemStack(itemWireCoil,4,0), " I ","ISI"," I ", 'I',"ingotCopper", 'S',"stickWood");
 		addOredictRecipe(new ItemStack(itemWireCoil,4,1), " I ","ISI"," I ", 'I',"ingotElectrum", 'S',"stickWood");

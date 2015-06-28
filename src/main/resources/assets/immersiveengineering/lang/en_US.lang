@@ -156,7 +156,6 @@ item.ImmersiveEngineering.revolver.warlord.name=The Repulsor
 item.ImmersiveEngineering.revolver.patreonBlu.name=§6Last Word§r
 item.ImmersiveEngineering.revolver.patreonHazard.name=§4Twisted Phantom§r
 
-
 item.ImmersiveEngineering.bullet.emptyCasing.name=Empty Casing
 item.ImmersiveEngineering.bullet.emptyShell.name=Empty Shell
 item.ImmersiveEngineering.bullet.casull.name=Casull Cartridge
@@ -168,6 +167,8 @@ item.ImmersiveEngineering.bullet.dragonsbreath.name=Dragon's Breath Cartridge
 item.ImmersiveEngineering.drill.diesel.name=Mining Drill
 item.ImmersiveEngineering.drillhead.iron.name=Iron Drill Head
 item.ImmersiveEngineering.drillhead.steel.name=Steel Drill Head
+
+item.ImmersiveEngineering.skyhook.name=Engineer's Skyhook
 
 item.ImmersiveEngineering.toolupgrade.drillWaterproof.name=Internal Oxidizer Tank
 item.ImmersiveEngineering.toolupgrade.drillSpeed.name=Advanced Lubrication System
@@ -254,6 +255,8 @@ desc.ImmersiveEngineering.flavour.drillhead.size=Mining Area: %1$sx%1$sx%2$s
 desc.ImmersiveEngineering.flavour.drillhead.level=Mining Level: %1$s
 desc.ImmersiveEngineering.flavour.drillhead.speed=Mining Speed: %1$s
 desc.ImmersiveEngineering.flavour.drillhead.damage=Attack Damage: %1$s
+
+desc.ImmersiveEngineering.flavour.skyhook=Not fully implemented!
 
 desc.ImmersiveEngineering.flavour.toolupgrade.drillWaterproof=Allows the Mining Drill to operate under water
 desc.ImmersiveEngineering.flavour.toolupgrade.drillSpeed=Increases the digging speed of the Mining Drill

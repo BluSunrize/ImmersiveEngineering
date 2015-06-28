@@ -1,5 +1,5 @@
 #####Version 0.3.3
-- started working on ziplining
+- started working on skylines
 - fixed NEI handlers for squeezer+fermenter
 - removed a debug recipe I forgot about
 - updated ru_RU.lang
@@ -7,7 +7,12 @@
 - fixed the NBT reading for WireTypes
 - fixed crashing sounds
 - added another fluid check to fermenters and squeezers to avoid NPEs
-- 
+- added replacement system to excavator, can replace Uranium with Yellorium when necessary
+- added render-diameter to Wire-Types. This is an API update so it might break stuff
+- added a "complete" multiblock display of the excavator to the book
+- made links in the book more prominent
+- added support for nether ores
+- fixed connection-removal resulting in NPEs
 
 
 #####Version 0.3.2 - BUILT
