@@ -24,10 +24,12 @@ public class ExcavatorHandler
 	public static int totalWeight = 0;
 	public static int mineralVeinCapacity = 0;
 
-	public static void addMineral(String name, int mineralChance, float failChance, String[] ores, float[] chances)
+	public static MineralMix addMineral(String name, int mineralChance, float failChance, String[] ores, float[] chances)
 	{
 		assert ores.length == chances.length;
-		mineralList.put(new MineralMix(name, failChance, ores, chances), mineralChance);
+		MineralMix mix = new MineralMix(name, failChance, ores, chances);
+		mineralList.put(mix, mineralChance);
+		return mix;
 	}
 	public static void recalculateChances()
 	{
@@ -82,6 +84,8 @@ public class ExcavatorHandler
 		public float[] chances;
 		public String[] recalculatedOres;
 		public float[] recalculatedChances;
+		/**Should an ore given to this mix not be present in the dictionary, it will attempt to draw a replacement from this list*/
+		public HashMap<String,String> replacementOres;
 
 		public MineralMix(String name, float failChance, String[] ores, float[] chances)
 		{
@@ -92,23 +96,40 @@ public class ExcavatorHandler
 
 			recalculateChances();
 		}
+		public MineralMix addReplacement(String original, String replacement)
+		{
+			if(replacementOres==null)
+				replacementOres = new HashMap();
+			replacementOres.put(original, replacement);
+			return this;
+		}
 
 		public void recalculateChances()
 		{
 			float chanceSum = 0;
 			ArrayList<String> existing = new ArrayList();
 			for(int i=0; i<ores.length; i++)
-				if(OreDictionary.getOres(ores[i]).size()>0)
+			{
+				String ore = ores[i];
+				if(replacementOres!=null && OreDictionary.getOres(ore).size()<=0 && replacementOres.containsKey(ore))
+					ore = replacementOres.get(ore);
+				if(ore!=null && !ore.isEmpty() && OreDictionary.getOres(ore).size()>0)
 				{
-					existing.add(ores[i]);
+					existing.add(ore);
 					chanceSum += chances[i];
 				}
+			}
 			recalculatedOres = existing.toArray(new String[0]);
 			recalculatedChances = new float[existing.size()];
 			int j=0;
 			for(int i=0; i<ores.length; i++)
-				if(OreDictionary.getOres(ores[i]).size()>0)
+			{
+				String ore = ores[i];
+				if(replacementOres!=null && OreDictionary.getOres(ore).size()<=0 && replacementOres.containsKey(ore))
+					ore = replacementOres.get(ore);
+				if(ore!=null && !ore.isEmpty() && OreDictionary.getOres(ore).size()>0)
 					this.recalculatedChances[j++] = chances[i]/chanceSum;
+			}
 		}
 
 		public String getRandomOre(Random rand)

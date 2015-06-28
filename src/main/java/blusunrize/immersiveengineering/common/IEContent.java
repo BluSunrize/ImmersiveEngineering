@@ -489,28 +489,36 @@ public class IEContent
 		BlastFurnaceRecipe.addBlastFuel("blockCharcoal", 300*10);
 		GameRegistry.registerFuelHandler(new IEFuelHandler());
 
-		CrusherRecipe r = addCrusherRecipe( 8, "Iron").addSecondaryOutput(new ItemStack(itemMetal,1,14), .1f);
-		r = addCrusherRecipe( 9, "Gold");
-		if(!OreDictionary.getOres("crystalCinnabar").isEmpty())
-			r.addSecondaryOutput(OreDictionary.getOres("crystalCinnabar").get(0), .05f);
-		r = addCrusherRecipe(10, "Copper").addSecondaryOutput(new ItemStack(itemMetal,1,9), .1f);
-		r = addCrusherRecipe(11, "Aluminum");
-		r = addCrusherRecipe(12, "Lead").addSecondaryOutput(new ItemStack(itemMetal,1,13), .1f);
-		r = addCrusherRecipe(13, "Silver").addSecondaryOutput(new ItemStack(itemMetal,1,12), .1f);
-		r = addCrusherRecipe(14, "Nickel");
-		if(!OreDictionary.getOres("dustPlatinum").isEmpty())
-			r.addSecondaryOutput(OreDictionary.getOres("dustPlatinum").get(0), .1f);
+		//		CrusherRecipe r = addCrusherRecipe( 8, "Iron").addSecondaryOutput(new ItemStack(itemMetal,1,14), .1f);
+		addOreProcessingRecipe(new ItemStack(itemMetal,2,8), "Iron", 4000, true, new ItemStack(itemMetal,1,14),.1f);
+		ItemStack cinnabar = !OreDictionary.getOres("crystalCinnabar").isEmpty()?OreDictionary.getOres("crystalCinnabar").get(0):null;
+		addOreProcessingRecipe(new ItemStack(itemMetal,2,9), "Gold", 4000, true, cinnabar,.05f);
 
-		addCrusherRecipe(15, "Constantan");
-		addCrusherRecipe(16, "Electrum");
-		CrusherRecipe.addRecipe(new ItemStack(Items.dye,9,4), "oreLapis", 4000);
-		CrusherRecipe.addRecipe(new ItemStack(Items.diamond,2), "oreDiamond", 4000);
-		r = CrusherRecipe.addRecipe(new ItemStack(Items.redstone,8), "oreRedstone", 4000);
-		if(!OreDictionary.getOres("crystalCinnabar").isEmpty())
-			r.addSecondaryOutput(OreDictionary.getOres("crystalCinnabar").get(0), .25f);
-		CrusherRecipe.addRecipe(new ItemStack(Items.emerald,2), "oreEmerald", 4000);
-		CrusherRecipe.addRecipe(new ItemStack(Items.quartz,3), "oreQuartz", 4000);
-		CrusherRecipe.addRecipe(new ItemStack(Items.coal,4), "oreCoal", 4000);
+		addOreProcessingRecipe(new ItemStack(itemMetal,2,10), "Copper", 4000, true, new ItemStack(itemMetal,1,9),.1f);
+		addOreProcessingRecipe(new ItemStack(itemMetal,2,11), "Aluminum", 4000, true, null,0);
+		addOreProcessingRecipe(new ItemStack(itemMetal,2,12), "Lead", 4000, true, new ItemStack(itemMetal,1,13),.1f);
+		addOreProcessingRecipe(new ItemStack(itemMetal,2,13), "Silver", 4000, true, new ItemStack(itemMetal,1,12),.1f);
+		ItemStack platinum = !OreDictionary.getOres("dustPlatinum").isEmpty()?OreDictionary.getOres("dustPlatinum").get(0):null;
+		addOreProcessingRecipe(new ItemStack(itemMetal,2,14), "Nickel", 4000, true, platinum,.1f);
+
+		//		r = addCrusherRecipe(10, "Copper").addSecondaryOutput(new ItemStack(itemMetal,1,9), .1f);
+		//		r = addCrusherRecipe(11, "Aluminum");
+		//		r = addCrusherRecipe(12, "Lead").addSecondaryOutput(new ItemStack(itemMetal,1,13), .1f);
+		//		r = addCrusherRecipe(13, "Silver").addSecondaryOutput(new ItemStack(itemMetal,1,12), .1f);
+		//		r = addCrusherRecipe(14, "Nickel");
+		//		if(!OreDictionary.getOres("dustPlatinum").isEmpty())
+		//			r.addSecondaryOutput(OreDictionary.getOres("dustPlatinum").get(0), .1f);
+		addCrusherRecipe(new ItemStack(itemMetal,1,15), "ingotConstantan", 2400, null,0);
+		addCrusherRecipe(new ItemStack(itemMetal,1,16), "ingotElectrum", 2400, null,0);
+
+		addOreProcessingRecipe(new ItemStack(Items.dye,9,4), "Lapis", 4000, false, null,0);
+		addOreProcessingRecipe(new ItemStack(Items.diamond,2), "Diamond", 4000, false, null,0);
+		addOreProcessingRecipe(new ItemStack(Items.redstone,6), "Redstone", 4000, false, cinnabar,.25f);
+		addOreProcessingRecipe(new ItemStack(Items.emerald,2), "Emerald", 4000, false, null,0);
+		ItemStack sulfur = !OreDictionary.getOres("dustSulfur").isEmpty()?OreDictionary.getOres("dustSulfur").get(0):null;
+		addOreProcessingRecipe(new ItemStack(Items.quartz,3), "Quartz", 4000, false, sulfur,.15f);
+		addOreProcessingRecipe(new ItemStack(Items.coal,4), "Coal", 4000, false, null,0);
+		
 		CrusherRecipe.addRecipe(new ItemStack(Blocks.sand), "cobblestone", 3200);
 		CrusherRecipe.addRecipe(new ItemStack(Blocks.sand), "blockGlass", 3200);
 		CrusherRecipe.addRecipe(new ItemStack(Items.quartz,4), "blockQuartz", 3200);
@@ -530,11 +538,12 @@ public class IEContent
 		addOreDictCrusherRecipe("Yellorium", null,0);
 		addItemToOreDictCrusherRecipe("dustCoal",1, new ItemStack(Items.coal), 2400);
 		addItemToOreDictCrusherRecipe("dustWood",2, "logWood", 1600);
-		r = CrusherRecipe.addRecipe(new ItemStack(Items.blaze_powder,4), "rodBlaze", 1600);
-		if(!OreDictionary.getOres("dustSulfur").isEmpty())
-			r.addSecondaryOutput(OreDictionary.getOres("dustSulfur").get(0), .5f);
+		addCrusherRecipe(new ItemStack(Items.blaze_powder,4), "rodBlaze", 1600, sulfur,.5f);
 		CrusherRecipe.addRecipe(new ItemStack(itemMetal,1,17), "fuelCoke", 3200);
 		CrusherRecipe.addRecipe(new ItemStack(itemMetal,1,18), "gemQuartz", 3200);
+
+		//Nether Ores
+
 
 
 		DieselHandler.registerFuel(fluidBiodiesel, 125);
@@ -568,7 +577,7 @@ public class IEContent
 		ExcavatorHandler.addMineral("Gold", 20, .3f, new String[]{"oreGold","oreCopper","oreNickel","denseoreGold"}, new float[]{.65f,.25f,.05f,.05f});
 		ExcavatorHandler.addMineral("Nickel", 20, .3f, new String[]{"oreNickel","orePlatinum","oreIron","denseoreNickel"}, new float[]{.85f,.05f,.05f,.05f});
 		ExcavatorHandler.addMineral("Platinum", 5, .35f, new String[]{"orePlatinum","oreNickel","oreIridium","denseorePlatinum"}, new float[]{.45f,.35f,.1f,.05f});
-		ExcavatorHandler.addMineral("Uranium", 10, .35f, new String[]{"oreUranium","oreLead","orePlutonium","denseoreUranium"}, new float[]{.55f,.3f,.1f,.05f});
+		ExcavatorHandler.addMineral("Uranium", 10, .35f, new String[]{"oreUranium","oreLead","orePlutonium","denseoreUranium"}, new float[]{.55f,.3f,.1f,.05f}).addReplacement("oreUranium", "oreYellorium");
 		ExcavatorHandler.addMineral("Quartzite", 5, .3f, new String[]{"oreQuartz","oreCertusQuartz"}, new float[]{.6f,.4f});
 		ExcavatorHandler.addMineral("Galena", 15, .2f, new String[]{"oreLead","oreSilver","oreSulfur","denseoreLead","denseoreSilver"}, new float[]{.40f,.40f,.1f,.05f,.05f});
 		ExcavatorHandler.addMineral("Lead", 10, .15f, new String[]{"oreLead","oreSilver","denseoreLead"}, new float[]{.55f,.4f,.05f});
@@ -680,15 +689,21 @@ public class IEContent
 		addOredictRecipe(new ItemStack(itemBullet,2,meta), "II","CC","GG", 'I',load,'C',new ItemStack(itemBullet,1,casingType),'G',Items.gunpowder);
 		addOredictRecipe(new ItemStack(itemBullet,1,meta), "I","C","G", 'I',load,'C',new ItemStack(itemBullet,1,casingType),'G',Items.gunpowder);
 	}
-	public static CrusherRecipe addCrusherRecipe(int dustMeta, String ore)
+
+	public static void addCrusherRecipe(ItemStack output, Object input, int energy, ItemStack secondary, float chance)
 	{
-		if(!OreDictionary.getOres("ingot"+ore).isEmpty())
-			CrusherRecipe.addRecipe(new ItemStack(itemMetal,1,dustMeta), "ingot"+ore, 2400);
+		CrusherRecipe r = CrusherRecipe.addRecipe(output, input, energy);
+		if(secondary!=null)
+			r.addSecondaryOutput(secondary, chance);
+	}
+	public static void addOreProcessingRecipe(ItemStack output, String ore, int energy, boolean ingot, ItemStack secondary, float secChance)
+	{
+		if(ingot && !OreDictionary.getOres("ingot"+ore).isEmpty())
+			addCrusherRecipe(Utils.copyStackWithAmount(output, output.stackSize/2), "ingot"+ore, (int)(energy*.6f), null,0);
 		if(!OreDictionary.getOres("ore"+ore).isEmpty())
-			return CrusherRecipe.addRecipe(new ItemStack(itemMetal,2,dustMeta), "ore"+ore, 4000);
-		if(!OreDictionary.getOres("denseore"+ore).isEmpty())
-			return CrusherRecipe.addRecipe(new ItemStack(itemMetal,8,dustMeta), "ore"+ore, 4000);
-		return null;
+			addCrusherRecipe(output, "ore"+ore, energy, secondary,secChance);
+		if(!OreDictionary.getOres("oreNether"+ore).isEmpty())
+			addCrusherRecipe(Utils.copyStackWithAmount(output, output.stackSize*2), "oreNether"+ore, energy, new ItemStack(Blocks.netherrack),.15f);
 	}
 	public static void addOreDictCrusherRecipe(String ore, String secondaryDust, float chance)
 	{
@@ -705,6 +720,8 @@ public class IEContent
 		}
 		if(!OreDictionary.getOres("ingot"+ore).isEmpty())
 			CrusherRecipe.addRecipe(Utils.copyStackWithAmount(dust, 1), "ingot"+ore, 2400);
+		if(!OreDictionary.getOres("oreNether"+ore).isEmpty())
+			CrusherRecipe.addRecipe(Utils.copyStackWithAmount(dust, 4), "oreNether"+ore, 4000).addSecondaryOutput(new ItemStack(Blocks.netherrack),.15f);
 	}
 	public static CrusherRecipe addItemToOreDictCrusherRecipe(String oreName, int outSize, Object input, int energy)
 	{

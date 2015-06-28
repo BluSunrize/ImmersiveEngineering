@@ -1,8 +1,7 @@
 package blusunrize.immersiveengineering.common.entities;
 
-import java.util.List;
-
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -10,11 +9,10 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
-import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
-import blusunrize.immersiveengineering.api.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.common.items.ItemSkyHook;
+import blusunrize.immersiveengineering.common.util.ZiplineHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -74,49 +72,29 @@ public class EntityZiplineHook extends Entity
 			TileEntity goal = this.worldObj.getTileEntity(target.posX, target.posY, target.posZ);
 			if(goal!=null && goal.getDistanceFrom(posX, posY, posZ)<.25)
 			{
+				Connection line = ZiplineHelper.getTargetConnection(worldObj, target.posX,target.posY,target.posZ, (EntityLivingBase)this.riddenByEntity, connection);
 				this.setDead();
 				ItemStack hook = ((EntityPlayer)this.riddenByEntity).getCurrentEquippedItem();
 				if(hook==null || !(hook.getItem() instanceof ItemSkyHook))
 					return;
 
-				List<Connection> outputs = ImmersiveNetHandler.INSTANCE.getConnections(worldObj, target);
-				if(outputs.size()>0)
+				if(line!=null)
 				{
-					Vec3 vec = this.riddenByEntity.getLookVec();
-					vec = vec.normalize();
-					Connection line = null;
-					for(Connection c : outputs)
-						if(!c.equals(connection))
-						{
-							if(line==null)
-								line = c;
-							else
-							{
-								Vec3 lineVec = Vec3.createVectorHelper(line.end.posX-line.start.posX, line.end.posY-line.start.posY, line.end.posZ-line.start.posZ).normalize();
-								Vec3 conVec = Vec3.createVectorHelper(c.end.posX-c.start.posX, c.end.posY-c.start.posY, c.end.posZ-c.start.posZ).normalize();
-								if(conVec.distanceTo(vec)<lineVec.distanceTo(vec))
-									line = c;
-							}
-						}
+					ChunkCoordinates cc0 = line.end==target?line.start:line.end;
+					ChunkCoordinates cc1 = line.end==target?line.end:line.start;
+					double dx = cc0.posX-cc1.posX;
+					double dy = cc0.posY-cc1.posY;
+					double dz = cc0.posZ-cc1.posZ;
 
-					if(line!=null)
-					{
-						ChunkCoordinates cc0 = line.end==target?line.start:line.end;
-						ChunkCoordinates cc1 = line.end==target?line.end:line.start;
-						double dx = cc0.posX-cc1.posX;
-						double dy = cc0.posY-cc1.posY;
-						double dz = cc0.posZ-cc1.posZ;
-
-						EntityZiplineHook zip = new EntityZiplineHook(worldObj, target.posX+.5,target.posY+.5,target.posZ+.5, line, cc0);
-						zip.motionX = dx*.05f;
-						zip.motionY = dy*.05f;
-						zip.motionZ = dz*.05f;
-						if(!worldObj.isRemote)
-							worldObj.spawnEntityInWorld(zip);
-						ItemSkyHook.existingHooks.put(this.riddenByEntity.getCommandSenderName(), zip);
-						((EntityPlayer)this.riddenByEntity).setItemInUse(hook, hook.getItem().getMaxItemUseDuration(hook));
-						this.riddenByEntity.mountEntity(zip);
-					}
+					EntityZiplineHook zip = new EntityZiplineHook(worldObj, target.posX+.5,target.posY+.5,target.posZ+.5, line, cc0);
+					zip.motionX = dx*.05f;
+					zip.motionY = dy*.05f;
+					zip.motionZ = dz*.05f;
+					if(!worldObj.isRemote)
+						worldObj.spawnEntityInWorld(zip);
+					ItemSkyHook.existingHooks.put(this.riddenByEntity.getCommandSenderName(), zip);
+					((EntityPlayer)this.riddenByEntity).setItemInUse(hook, hook.getItem().getMaxItemUseDuration(hook));
+					this.riddenByEntity.mountEntity(zip);
 				}
 				return;
 			}
@@ -153,9 +131,25 @@ public class EntityZiplineHook extends Entity
 	}
 
 	@Override
+	public boolean shouldRiderSit()
+	{
+		return false;
+	}
+
+	@Override
 	public boolean isInvisible()
 	{
 		return true;	
+	}
+	@Override
+	public boolean canRenderOnFire()
+	{
+		return false;	
+	}
+	@Override
+	public boolean isPushedByWater()
+	{
+		return false;
 	}
 
 	@Override

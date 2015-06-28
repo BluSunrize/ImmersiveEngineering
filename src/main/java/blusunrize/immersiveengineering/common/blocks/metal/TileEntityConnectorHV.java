@@ -28,7 +28,7 @@ public class TileEntityConnectorHV extends TileEntityConnectorMV
 	public Vec3 getConnectionOffset(Connection con)
 	{
 		ForgeDirection fd = ForgeDirection.getOrientation(facing).getOpposite();
-		double conRadius = con.cableType==WireType.STEEL?.03125:.015625;
+		double conRadius = con.cableType.getRenderDiameter()/2;
 		return Vec3.createVectorHelper(.5+fd.offsetX*(.25-conRadius), .5+fd.offsetY*(.25-conRadius), .5+fd.offsetZ*(.25-conRadius));
 	}
 	

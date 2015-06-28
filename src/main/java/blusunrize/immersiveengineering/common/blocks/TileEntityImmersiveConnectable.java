@@ -84,7 +84,7 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 	@Override
 	public void removeCable(Connection connection)
 	{
-		WireType type = connection.cableType;
+		WireType type = connection!=null?connection.cableType:null;
 		if(ImmersiveNetHandler.INSTANCE.getConnections(worldObj,Utils.toCC(this)).isEmpty())
 		{
 			if(type==limitType || type==null)

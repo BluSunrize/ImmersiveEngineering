@@ -45,7 +45,7 @@ public class DenseOresHelper extends IECompatModule
 					String baseOre = (String)f_baseOreDictionary.get(o);
 					String denseOre = (String)f_oreDictionary.get(o);
 
-					IELogger.info("attempting DenseOre: "+denseOre+"("+baseOre+")");
+					IELogger.info("attempting to register crushing for DenseOre: "+denseOre+"("+baseOre+")");
 					for(CrusherRecipe recipe: CrusherRecipe.recipeList)
 						if(recipe.input instanceof String && ((String)recipe.input).equals(baseOre))
 						{
