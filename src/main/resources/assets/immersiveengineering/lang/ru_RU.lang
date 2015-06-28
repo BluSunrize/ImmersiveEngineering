@@ -25,7 +25,7 @@ tile.ImmersiveEngineering.metalDevice.relayHV.name=Реле Высокого Н�
 tile.ImmersiveEngineering.metalDevice.connectorHV.name=Высоковольтный Коннектор
 tile.ImmersiveEngineering.metalDevice.capacitorHV.name=Высоковольтный Конденсатор
 tile.ImmersiveEngineering.metalDevice.transformerHV.name=Высоковольтный Трансформатор
-tile.ImmersiveEngineering.metalDevice.dynamo.name=Кинетическое Динамо
+tile.ImmersiveEngineering.metalDevice.dynamo.name=Кинетический Генератор
 tile.ImmersiveEngineering.metalDevice.thermoelectricGen.name=Термоэлектрический Генератор
 tile.ImmersiveEngineering.metalDevice.conveyorBelt.name=Конвеерная Лента
 tile.ImmersiveEngineering.metalDevice.furnaceHeater.name=Внешний нагреватель
@@ -384,7 +384,7 @@ ie.manual.entry.workbench0=За время вашей Инженерной ка�
 
 ie.manual.entry.dieselgen.name=Биодизельный Генератор
 ie.manual.entry.dieselgen.subtext=
-ie.manual.entry.dieselgen0=Высоковольтная архитектура может быть увлекательным, но это не очень полезно, если у вас есть генератор, который может на самом деле создать необходимый выход для него.<br>The Diesel Generator is one of the few ways of generating this sort of energy. It is created as a complex multiblock structure and will run off of <link:biodiesel:Biodiesel> or other types of combustible fuel. Due to its high output, it will work through fuel very quickly, so make sure you have a sufficient fuel production to run it.
+ie.manual.entry.dieselgen0=Высоковольтная архитектура может быть увлекательна, но это не очень полезно, если у вас есть генератор, который может на самом деле создать необходимый выход для него.<br>Дизельный генератор является единственым источником высоковольного напряжения. Он создается как многоблочная структура и требует <link:biodiesel:Биодизельное> или любой другой вид горючего топлива для работы. Благодаря высокой производительности , он будет потреблять больше топлива , поэтому убедитесь, что у вас есть достаточное количество топлива для его запуска.
 ie.manual.entry.dieselgen1=The structure is built from Engine, Generator and Radiator blocks. Arrange them in the shape shown on the following side and hit either the central generator or central radiator with an Engineer's Hammer.
 ie.manual.entry.dieselgen2=Fuel is to be input at the bottom corners of the generator, whereas energy will be output to up to three connection on the top. The <config:i:dieselGen_output>RF/t the generator outputs will be split between all connected points.<br>The terminal on the right side will turn off the generator if supplied with a redstone signal.
 ie.manual.entry.dieselgen3=The following table lists all valid fuels for the Diesel Generator and for how long in seconds (ticks) they burn. 
