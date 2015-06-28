@@ -6,9 +6,9 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 /**
- * @author BluSunrize - 08.03.2015
+ * @author BluSunrize - 08.03.2015<br>
  * Rewritten: 26.06.2015
- *
+ * <br>
  * The WireTypes of IE. Extend this to make your own
  */
 public abstract class WireType
@@ -25,18 +25,19 @@ public abstract class WireType
 				return type;
 		return COPPER;
 	}
-	
+
 	public WireType()
 	{
 		values.add(this);
 	}
-	
+
 	public abstract String getUniqueName();
 	public abstract double getLossRatio();
 	public abstract int getTransferRate();
 	public abstract int getColour();
 	public abstract int getMaxLength();
 	public abstract ItemStack getWireCoil();
+	public abstract double getRenderDiameter();
 
 	//THESE VALUES ARE FOR IE's OWN CABLES!
 	public static String[] uniqueNames = {"COPPER","ELECTRUM","STEEL","STRUCTURE_ROPE","STRUCTURE_STEEL"};
@@ -45,13 +46,14 @@ public abstract class WireType
 	public static int[] cableColouration;
 	public static int[] cableLength;
 	public static Item ieWireCoil;
-
+	public static double[] renderDiameter = {.03125,.03125, .0625,.0625,.0625};
+	
 	public static WireType COPPER = new WireType.IEBASE(0);
 	public static WireType ELECTRUM = new WireType.IEBASE(1);
 	public static WireType STEEL = new WireType.IEBASE(2);
 	public static WireType STRUCTURE_ROPE = new WireType.IEBASE(3);
 	public static WireType STRUCTURE_STEEL = new WireType.IEBASE(4);
-	
+
 	/**
 	 * DO NOT SUBCLASS THIS.
 	 * This is a core implementation as a base for IE's default wires
@@ -94,6 +96,11 @@ public abstract class WireType
 		public String getUniqueName()
 		{
 			return uniqueNames[ordinal];
+		}
+		@Override
+		public double getRenderDiameter()
+		{
+			return renderDiameter[ordinal];
 		}
 	}
 }

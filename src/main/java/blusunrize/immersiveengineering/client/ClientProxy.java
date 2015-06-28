@@ -42,6 +42,7 @@ import blusunrize.immersiveengineering.client.render.BlockRenderMetalMultiblocks
 import blusunrize.immersiveengineering.client.render.BlockRenderStoneDevices;
 import blusunrize.immersiveengineering.client.render.BlockRenderWoodenDecoration;
 import blusunrize.immersiveengineering.client.render.BlockRenderWoodenDevices;
+import blusunrize.immersiveengineering.client.render.EntityRenderNone;
 import blusunrize.immersiveengineering.client.render.EntityRenderRevolvershot;
 import blusunrize.immersiveengineering.client.render.ItemRenderDrill;
 import blusunrize.immersiveengineering.client.render.ItemRenderRevolver;
@@ -92,6 +93,7 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockCokeO
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockCrusher;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockDieselGenerator;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockExcavator;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockExcavatorDemo;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockFermenter;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockLightningRod;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockRefinery;
@@ -106,6 +108,7 @@ import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWindmillAd
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenCrate;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenPost;
 import blusunrize.immersiveengineering.common.entities.EntityRevolvershot;
+import blusunrize.immersiveengineering.common.entities.EntityZiplineHook;
 import blusunrize.immersiveengineering.common.items.ItemRevolver;
 import blusunrize.immersiveengineering.common.util.IESound;
 import blusunrize.immersiveengineering.common.util.Lib;
@@ -160,7 +163,9 @@ public class ClientProxy extends CommonProxy
 		RenderingRegistry.registerEntityRenderingHandler(EntityRevolvershot.class, new EntityRenderRevolvershot());
 		//DRILL
 		MinecraftForgeClient.registerItemRenderer(IEContent.itemDrill, new ItemRenderDrill());
-
+		//ZIPLINE
+		RenderingRegistry.registerEntityRenderingHandler(EntityZiplineHook.class, new EntityRenderNone());
+		
 		ClientEventHandler handler = new ClientEventHandler();
 		MinecraftForge.EVENT_BUS.register(handler);
 		FMLCommonHandler.instance().bus().register(handler);
@@ -323,6 +328,7 @@ public class ClientProxy extends CommonProxy
 		manual.addEntry("excavator", "machines",
 				new ManualPageMultiblock(manual, "excavator0", MultiblockExcavator.instance),
 				new ManualPageMultiblock(manual, "", MultiblockBucketWheel.instance),
+				new ManualPageMultiblock(manual, "", MultiblockExcavatorDemo.instance),
 				new ManualPages.Text(manual, "excavator1"));
 	}
 

@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.common.util.Utils;
 public class MultiblockExcavator implements IMultiblock
 {
 	public static MultiblockExcavator instance = new MultiblockExcavator();
+	
 	static ItemStack[][][] structure = new ItemStack[3][6][3];
 	static{
 		for(int l=0;l<6;l++)

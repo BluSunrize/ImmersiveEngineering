@@ -1,5 +1,13 @@
 #####Version 0.3.3
 - started working on ziplining
+- fixed NEI handlers for squeezer+fermenter
+- removed a debug recipe I forgot about
+- updated ru_RU.lang
+- made NEI handler cycle though input-variations
+- fixed the NBT reading for WireTypes
+- fixed crashing sounds
+- added another fluid check to fermenters and squeezers to avoid NPEs
+- 
 
 
 #####Version 0.3.2 - BUILT

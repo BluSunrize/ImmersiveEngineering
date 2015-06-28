@@ -132,7 +132,7 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable
 	@Override
 	public void removeCable(Connection connection)
 	{
-		WireType type = connection.cableType;
+		WireType type = connection!=null?connection.cableType:null;
 		if(type==null)
 		{
 			limitType=null;
@@ -166,7 +166,7 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable
 		}
 		else
 		{
-			double conRadius = con.cableType==WireType.STEEL?.03125:.015625;
+			double conRadius = con.cableType.getRenderDiameter()/2;
 			if(facing==2)
 				return Vec3.createVectorHelper(b?.8125:.1875, 1.5-conRadius, .5);
 			if(facing==3)

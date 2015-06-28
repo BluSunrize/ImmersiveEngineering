@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.client;
 
+import java.util.Iterator;
 import java.util.Set;
 
 import net.minecraft.block.Block;
@@ -35,6 +36,8 @@ import org.lwjgl.opengl.GL11;
 
 import blusunrize.immersiveengineering.api.IDrillHead;
 import blusunrize.immersiveengineering.api.IImmersiveConnectable;
+import blusunrize.immersiveengineering.api.ImmersiveNetHandler;
+import blusunrize.immersiveengineering.api.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.api.WireType;
 import blusunrize.immersiveengineering.client.models.ModelIEObj;
 import blusunrize.immersiveengineering.common.IEContent;
@@ -43,9 +46,11 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOve
 import blusunrize.immersiveengineering.common.gui.ContainerRevolver;
 import blusunrize.immersiveengineering.common.items.ItemDrill;
 import blusunrize.immersiveengineering.common.items.ItemRevolver;
+import blusunrize.immersiveengineering.common.items.ItemSkyHook;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.ZiplineHelper;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 
@@ -106,6 +111,25 @@ public class ClientEventHandler
 	@SubscribeEvent
 	public void onPlayerTick(TickEvent.PlayerTickEvent event)
 	{
+		if(event.side.isClient() && event.phase==TickEvent.Phase.START && event.player!=null && event.player==ClientUtils.mc().renderViewEntity)
+		{
+			ZiplineHelper.grabableConnections.clear();
+			EntityPlayer player = event.player;
+			ItemStack stack = player.getCurrentEquippedItem();
+			Connection line;
+			if(stack!=null && stack.getItem() instanceof ItemSkyHook)
+				for(int xx=-2; xx<=2; xx++)
+					for(int zz=-2; zz<=2; zz++)
+						for(int yy=0; yy<=3; yy++)
+						{
+							line = ZiplineHelper.getTargetConnection(player.worldObj, (int)player.posX+xx,(int)player.posY+yy,(int)player.posZ+zz, (EntityLivingBase) player, null);
+							if(line!=null)
+							{
+								ZiplineHelper.grabableConnections.add(line);
+								break;
+							}
+						}
+		}
 		if(event.side.isClient() && event.phase == TickEvent.Phase.END && event.player!=null)
 		{
 			EntityPlayer player = event.player;
@@ -118,6 +142,7 @@ public class ClientEventHandler
 					player.setItemInUse(stack, 2147483647);
 				}
 			}
+
 		}
 	}
 
@@ -132,7 +157,7 @@ public class ClientEventHandler
 		if(connectionsRendered)
 			return;
 		GL11.glPushMatrix();
-		
+
 		GL11.glDisable(GL11.GL_CULL_FACE);
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		GL11.glEnable(GL11.GL_BLEND);
@@ -140,8 +165,13 @@ public class ClientEventHandler
 		OpenGlHelper.glBlendFunc(770, 771, 1, 0);
 		GL11.glShadeModel(GL11.GL_SMOOTH);
 		RenderHelper.enableStandardItemLighting();
-		
+
 		Tessellator.instance.startDrawing(GL11.GL_QUADS);
+
+		EntityLivingBase viewer = ClientUtils.mc().renderViewEntity;
+		double dx = viewer.lastTickPosX + (viewer.posX - viewer.lastTickPosX) * partial;//(double)event.partialTicks;
+		double dy = viewer.lastTickPosY + (viewer.posY - viewer.lastTickPosY) * partial;//(double)event.partialTicks;
+		double dz = viewer.lastTickPosZ + (viewer.posZ - viewer.lastTickPosZ) * partial;//(double)event.partialTicks;
 
 		for(Object o : ClientUtils.mc().renderGlobal.tileEntities)
 			if(o instanceof IImmersiveConnectable)
@@ -152,10 +182,6 @@ public class ClientEventHandler
 				//				int lb_k = lb / 65536;
 				//				OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)lb_j / 1.0F, (float)lb_k / 1.0F);
 
-				EntityLivingBase viewer = ClientUtils.mc().renderViewEntity;
-				double dx = viewer.lastTickPosX + (viewer.posX - viewer.lastTickPosX) * partial;//(double)event.partialTicks;
-				double dy = viewer.lastTickPosY + (viewer.posY - viewer.lastTickPosY) * partial;//(double)event.partialTicks;
-				double dz = viewer.lastTickPosZ + (viewer.posZ - viewer.lastTickPosZ) * partial;//(double)event.partialTicks;
 
 				Tessellator.instance.setTranslation(tile.xCoord-dx, tile.yCoord-dy, tile.zCoord-dz);
 				//				GL11.glTranslated((tile.xCoord+.5-dx), (tile.yCoord+.5-dy), (tile.zCoord+.5-dz));
@@ -163,14 +189,25 @@ public class ClientEventHandler
 				//				GL11.glTranslated(-(tile.xCoord+.5-dx), -(tile.yCoord+.5-dy), -(tile.zCoord+.5-dz));
 
 			}
+
+		Iterator<ImmersiveNetHandler.Connection> it = ZiplineHelper.grabableConnections.iterator();
+		World world = viewer.worldObj;
+		while(it.hasNext())
+		{
+			ImmersiveNetHandler.Connection con = it.next();
+			Tessellator.instance.setTranslation(con.start.posX-dx, con.start.posY-dy, con.start.posZ-dz);
+			double r = con.cableType.getRenderDiameter()/2;
+			ClientUtils.drawConnection(con, Utils.toIIC(con.start, world), Utils.toIIC(con.end, world),   0x00ff99,128,r*1.75);
+		}
+
 		Tessellator.instance.setTranslation(0,0,0);
 		Tessellator.instance.draw();
-		
+
 		GL11.glDisable(GL11.GL_BLEND);
 		GL11.glEnable(GL11.GL_ALPHA_TEST);
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		GL11.glEnable(GL11.GL_CULL_FACE);
-		
+
 		GL11.glPopMatrix();
 		connectionsRendered = true;
 	}

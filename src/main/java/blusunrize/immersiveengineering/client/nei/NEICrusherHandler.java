@@ -146,7 +146,8 @@ public class NEICrusherHandler extends TemplateRecipeHandler
 			ClientUtils.font().drawString(s, 140-ClientUtils.font().getStringWidth(s)/2,20, 0x777777, false);
 			if(r.secondary!=null)
 			{
-				String chance = r.secondaryChance*100+"%";
+				String chance = Utils.formatDouble(r.secondaryChance*100, "0.0")+"%";
+//				r.secondaryChance*100+"%";
 				ClientUtils.font().drawString(chance, 120,46, 0x777777, false);
 			}
 			GL11.glColor4f(1, 1, 1, 1);

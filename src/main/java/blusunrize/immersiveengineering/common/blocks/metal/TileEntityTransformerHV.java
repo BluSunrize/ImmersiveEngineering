@@ -17,7 +17,7 @@ public class TileEntityTransformerHV extends TileEntityTransformer
 	{
 		boolean b = con.cableType==limitType;
 		boolean c = con.cableType==WireType.STEEL;
-		double conRadius = con.cableType==WireType.STEEL?.03125:.015625;
+		double conRadius = con.cableType.getRenderDiameter()/2;
 		if(facing==2)
 			return Vec3.createVectorHelper(b?.8125:.1875, (c?1.75:1.5)-conRadius, .5);
 		if(facing==3)

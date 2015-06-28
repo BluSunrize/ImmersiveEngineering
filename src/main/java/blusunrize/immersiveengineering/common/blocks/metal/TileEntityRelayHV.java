@@ -11,7 +11,7 @@ public class TileEntityRelayHV extends TileEntityConnectorHV
 	@Override
 	public Vec3 getConnectionOffset(Connection con)
 	{
-		double conRadius = con.cableType==WireType.STEEL?.03125:.015625;
+		double conRadius = con.cableType.getRenderDiameter()/2;
 		return Vec3.createVectorHelper(.5, .125+conRadius, .5);
 	}
 

@@ -131,7 +131,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 	public Vec3 getConnectionOffset(Connection con)
 	{
 		ForgeDirection fd = ForgeDirection.getOrientation(facing).getOpposite();
-		double conRadius = con.cableType==WireType.STEEL?.03125:.015625;
+		double conRadius = con.cableType.getRenderDiameter()/2;
 		return Vec3.createVectorHelper(.5-conRadius*fd.offsetX, .5-conRadius*fd.offsetY, .5-conRadius*fd.offsetZ);
 	}
 
