@@ -1,4 +1,4 @@
-#####Version 0.3.3
+#####Version 0.3.3 - BUILT
 - started working on skylines
 - fixed NEI handlers for squeezer+fermenter
 - removed a debug recipe I forgot about
@@ -13,6 +13,8 @@
 - made links in the book more prominent
 - added support for nether ores
 - fixed connection-removal resulting in NPEs
+- Sample Drill needs blocks below it now
+- change recipe for mechanical components to fix a conflict
 
 
 #####Version 0.3.2 - BUILT
@@ -24,6 +26,7 @@
 - changes to formatting in Minetweaker integration
 - fixed wire rendering
 - possibly fixed mineral calculation
+
 
 #####Version 0.3.1 - BUILT
 - packed ice fixed for thermoelectric gen
@@ -49,6 +52,7 @@
 - renamed WallMount stuff to Wallmount, because gradle is a derp
 - rewrote the API to accomodate custom WireTypes
 - possibly fixed the weird percentages on minerals 
+
 
 ##### 0.2 VERSIONS ######
 ==============
