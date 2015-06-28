@@ -25,7 +25,7 @@ public class TileEntitySampleDrill extends TileEntityIEBase implements IEnergyRe
 	@Override
 	public void updateEntity()
 	{
-		if(pos!=0 || worldObj.isRemote)
+		if(pos!=0 || worldObj.isRemote || worldObj.isAirBlock(xCoord,yCoord-1,zCoord))
 			return;
 		if(process<Config.getInt("coredrill_time"))
 			if(energyStorage.extractEnergy(Config.getInt("coredrill_consumption"), false)==Config.getInt("coredrill_consumption"))

@@ -1,23 +1,30 @@
 package blusunrize.immersiveengineering.common.items;
 
 import java.util.HashMap;
+import java.util.List;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import blusunrize.immersiveengineering.api.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.common.entities.EntityZiplineHook;
-import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.ZiplineHelper;
 
 public class ItemSkyHook extends ItemIEBase
 {
 	public ItemSkyHook()
 	{
-		super("skyHook", 1);
+		super("skyhook", 1);
+	}
+
+	@Override
+	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean adv)
+	{
+		list.add(StatCollector.translateToLocal(Lib.DESC_FLAVOUR+"skyhook"));
 	}
 
 	@Override
