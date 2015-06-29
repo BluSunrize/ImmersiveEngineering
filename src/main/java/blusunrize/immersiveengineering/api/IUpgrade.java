@@ -15,7 +15,8 @@ public interface IUpgrade
 	public static enum UpgradeType
 	{
 		DRILL,
-		REVOLVER;
+		REVOLVER,
+		SKYHOOK;
 	}
 	
 	/**

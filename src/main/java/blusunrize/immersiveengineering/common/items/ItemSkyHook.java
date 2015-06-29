@@ -5,20 +5,26 @@ import java.util.List;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Container;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
+import blusunrize.immersiveengineering.api.IUpgrade;
+import blusunrize.immersiveengineering.api.IUpgrade.UpgradeType;
 import blusunrize.immersiveengineering.api.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.common.entities.EntityZiplineHook;
+import blusunrize.immersiveengineering.common.gui.IESlot;
+import blusunrize.immersiveengineering.common.gui.InventoryStorageItem;
 import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.ZiplineHelper;
 
-public class ItemSkyHook extends ItemIEBase
+public class ItemSkyHook extends ItemUpgradeableTool
 {
 	public ItemSkyHook()
 	{
-		super("skyhook", 1);
+		super("skyhook", 1, UpgradeType.SKYHOOK);
 	}
 
 	@Override
@@ -85,6 +91,28 @@ public class ItemSkyHook extends ItemIEBase
 			existingHooks.get(player.getCommandSenderName()).setDead();
 			existingHooks.remove(player.getCommandSenderName());
 		}
+	}
+
+	@Override
+	public boolean canModify(ItemStack stack)
+	{
+		return true;
+	}
+
+	@Override
+	public Slot[] getWorkbenchSlots(Container container, ItemStack stack, InventoryStorageItem invItem)
+	{
+		return new Slot[]
+				{
+				new IESlot.Upgrades(container, invItem,0, 102,42, IUpgrade.UpgradeType.SKYHOOK, stack, true),
+				new IESlot.Upgrades(container, invItem,1, 102,22, IUpgrade.UpgradeType.SKYHOOK, stack, true),
+				};
+	}
+
+	@Override
+	public int getInternalSlots(ItemStack stack)
+	{
+		return 2;
 	}
 
 }
