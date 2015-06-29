@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
@@ -87,8 +86,8 @@ public class ZiplineHelper
 		//		hook.motionY = (steps[0].yCoord-cc1.posY)*.5f;
 		//		hook.motionZ = (steps[0].zCoord-cc1.posZ)*.5f;
 
-		for(Vec3 v : steps)
-			living.worldObj.spawnParticle("smoke", v.xCoord,v.yCoord,v.zCoord, 0,0,0 );
+//		for(Vec3 v : steps)
+//			living.worldObj.spawnParticle("smoke", v.xCoord,v.yCoord,v.zCoord, 0,0,0 );
 
 				if(!living.worldObj.isRemote)
 					living.worldObj.spawnEntityInWorld(hook);
