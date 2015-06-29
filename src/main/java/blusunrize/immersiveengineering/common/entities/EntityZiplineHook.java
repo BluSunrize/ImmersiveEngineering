@@ -70,7 +70,7 @@ public class EntityZiplineHook extends Entity
 		if(target!=null)
 		{
 			TileEntity goal = this.worldObj.getTileEntity(target.posX, target.posY, target.posZ);
-			if(goal!=null && goal.getDistanceFrom(posX, posY, posZ)<.25)
+			if(goal!=null && goal.getDistanceFrom(posX, posY, posZ)<=.0625)
 			{
 				Connection line = ZiplineHelper.getTargetConnection(worldObj, target.posX,target.posY,target.posZ, (EntityLivingBase)this.riddenByEntity, connection);
 				this.setDead();
