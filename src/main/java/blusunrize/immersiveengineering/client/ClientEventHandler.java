@@ -116,19 +116,35 @@ public class ClientEventHandler
 			ZiplineHelper.grabableConnections.clear();
 			EntityPlayer player = event.player;
 			ItemStack stack = player.getCurrentEquippedItem();
-			Connection line;
 			if(stack!=null && stack.getItem() instanceof ItemSkyHook)
+			{
+				TileEntity connector = null;
+				double lastDist = 0;
+				Connection line = null;
+				double py = player.posY+player.getEyeHeight();
 				for(int xx=-2; xx<=2; xx++)
 					for(int zz=-2; zz<=2; zz++)
 						for(int yy=0; yy<=3; yy++)
 						{
-							line = ZiplineHelper.getTargetConnection(player.worldObj, (int)player.posX+xx,(int)player.posY+yy,(int)player.posZ+zz, (EntityLivingBase) player, null);
-							if(line!=null)
+							TileEntity tile = player.worldObj.getTileEntity((int)player.posX+xx, (int)py+yy, (int)player.posZ+zz);
+							if(tile!=null)
 							{
-								ZiplineHelper.grabableConnections.add(line);
-								break;
+								Connection con = ZiplineHelper.getTargetConnection(player.worldObj, tile.xCoord,tile.yCoord,tile.zCoord, player, null);
+								if(con!=null)
+								{
+									double d = tile.getDistanceFrom(player.posX,py,player.posZ);
+									if(connector==null || d<lastDist)
+									{
+										connector=tile;
+										lastDist=d;
+										line=con;
+									}
+								}
 							}
 						}
+				if(line!=null&&connector!=null)
+					ZiplineHelper.grabableConnections.add(line);
+			}
 		}
 		if(event.side.isClient() && event.phase == TickEvent.Phase.END && event.player!=null)
 		{

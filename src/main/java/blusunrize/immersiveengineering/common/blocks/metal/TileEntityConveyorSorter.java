@@ -258,13 +258,7 @@ public class TileEntityConveyorSorter extends TileEntityIEBase implements ISided
 	{
 		Integer[][] outputs = getValidOutputs(slot, stack, true, false);
 		if(outputs[0].length>0 || outputs[1].length>0 || outputs[2].length>0 || outputs[3].length>0)
-		{
-			ForgeDirection fd = ForgeDirection.getOrientation(slot);
-			TileEntity tile = worldObj.getTileEntity(xCoord+fd.offsetX,yCoord+fd.offsetY,zCoord+fd.offsetZ);
-			if(isInventory(tile, ForgeDirection.OPPOSITES[slot]))
-				return Utils.canInsertStackIntoInventory(((IInventory)tile), stack, ForgeDirection.OPPOSITES[slot]);
 			return true;
-		}
 
 		return false;
 	}

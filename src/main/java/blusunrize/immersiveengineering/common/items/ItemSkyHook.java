@@ -38,24 +38,38 @@ public class ItemSkyHook extends ItemIEBase
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
 	{
+		TileEntity connector = null;
+		double lastDist = 0;
+		Connection line = null;
+		double py = player.posY+player.getEyeHeight();
 		for(int xx=-2; xx<=2; xx++)
 			for(int zz=-2; zz<=2; zz++)
 				for(int yy=0; yy<=3; yy++)
 				{
-					TileEntity tile = world.getTileEntity((int)player.posX+xx, (int)player.posY+yy, (int)player.posZ+zz);
+					TileEntity tile = world.getTileEntity((int)player.posX+xx, (int)py+yy, (int)player.posZ+zz);
 					if(tile!=null)
 					{
-						Connection line = ZiplineHelper.getTargetConnection(world, tile.xCoord,tile.yCoord,tile.zCoord, player, null);
-						if(line!=null)
+						Connection con = ZiplineHelper.getTargetConnection(world, tile.xCoord,tile.yCoord,tile.zCoord, player, null);
+						if(con!=null)
 						{
-							ZiplineHelper.spawnHook(player, tile, line);
-							player.setItemInUse(stack, this.getMaxItemUseDuration(stack));
-							break;
+							double d = tile.getDistanceFrom(player.posX,py,player.posZ);
+							if(connector==null || d<lastDist)
+							{
+								connector=tile;
+								lastDist=d;
+								line=con;
+							}
 						}
 					}
 				}
+		if(line!=null&&connector!=null)
+		{
+			ZiplineHelper.spawnHook(player, connector, line);
+			player.setItemInUse(stack, this.getMaxItemUseDuration(stack));
+		}
 		return stack;
 	}
+
 
 	@Override
 	public int getMaxItemUseDuration(ItemStack stack)

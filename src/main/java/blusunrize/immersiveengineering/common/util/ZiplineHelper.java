@@ -57,14 +57,18 @@ public class ZiplineHelper
 	{
 		ChunkCoordinates cc0 = connection.end==Utils.toCC(start)?connection.start:connection.end;
 		ChunkCoordinates cc1 = connection.end==Utils.toCC(start)?connection.end:connection.start;
-		double dx = cc0.posX-cc1.posX;
-		double dy = cc0.posY-cc1.posY;
-		double dz = cc0.posZ-cc1.posZ;
+		double dx = (cc0.posX-cc1.posX);
+		double dy = (cc0.posY-cc1.posY);
+		double dz = (cc0.posZ-cc1.posZ);
+		double d = Math.sqrt(dx*dx+dz*dz+dy*dy);
+		
+		Vec3 moveVec = Vec3.createVectorHelper(dx/d,dy/d,dz/d);
 
 		EntityZiplineHook hook = new EntityZiplineHook(living.worldObj, start.xCoord+.5,start.yCoord+.5,start.zCoord+.5, connection, cc0);
-		hook.motionX = dx*.05f;
-		hook.motionY = dy*.05f;
-		hook.motionZ = dz*.05f;
+		
+		hook.motionX = moveVec.xCoord*.5f;
+		hook.motionY = moveVec.yCoord*.5f;
+		hook.motionZ = moveVec.zCoord*.5f;
 		if(!living.worldObj.isRemote)
 			living.worldObj.spawnEntityInWorld(hook);
 		ItemSkyHook.existingHooks.put(living.getCommandSenderName(), hook);
