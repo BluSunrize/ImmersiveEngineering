@@ -42,16 +42,6 @@ public class TileEntityBlastFurnace extends TileEntityIEBase implements ISidedIn
 		if(!worldObj.isRemote&&formed&&master()==null)
 		{
 			boolean a = active;
-			if(burnTime<=10 && getRecipe()!=null)
-			{
-				if(BlastFurnaceRecipe.isValidBlastFuel(inventory[1]))
-				{
-					burnTime += BlastFurnaceRecipe.getBlastFuelTime(inventory[1]);
-					lastBurnTime = BlastFurnaceRecipe.getBlastFuelTime(inventory[1]);
-					this.decrStackSize(1, 1);
-					worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-				}
-			}
 
 			if(burnTime>0)
 			{			
@@ -104,6 +94,18 @@ public class TileEntityBlastFurnace extends TileEntityIEBase implements ISidedIn
 				if(active)
 					active=false;
 			}
+			
+			if(burnTime<=10 && getRecipe()!=null)
+			{
+				if(BlastFurnaceRecipe.isValidBlastFuel(inventory[1]))
+				{
+					burnTime += BlastFurnaceRecipe.getBlastFuelTime(inventory[1]);
+					lastBurnTime = BlastFurnaceRecipe.getBlastFuelTime(inventory[1]);
+					this.decrStackSize(1, 1);
+					worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+				}
+			}
+			
 			if(a!=active)
 			{
 

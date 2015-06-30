@@ -96,7 +96,7 @@ import blusunrize.immersiveengineering.common.items.ItemIEBase;
 import blusunrize.immersiveengineering.common.items.ItemIESeed;
 import blusunrize.immersiveengineering.common.items.ItemIETool;
 import blusunrize.immersiveengineering.common.items.ItemRevolver;
-import blusunrize.immersiveengineering.common.items.ItemSkyHook;
+import blusunrize.immersiveengineering.common.items.ItemSkyhook;
 import blusunrize.immersiveengineering.common.items.ItemToolUpgrade;
 import blusunrize.immersiveengineering.common.items.ItemWireCoil;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -127,7 +127,7 @@ public class IEContent
 	public static ItemIEBase itemDrill;
 	public static ItemIEBase itemDrillhead;
 	public static ItemIEBase itemToolUpgrades;
-	public static ItemIEBase itemSkyHook;
+	public static ItemIEBase itemSkyhook;
 	public static Fluid fluidCreosote;
 	public static boolean IECreosote=false;
 	public static Fluid fluidPlantoil;
@@ -189,7 +189,7 @@ public class IEContent
 		itemDrill = new ItemDrill();
 		itemDrillhead = new ItemDrillhead();
 		itemToolUpgrades = new ItemToolUpgrade();
-		itemSkyHook = new ItemSkyHook();
+		itemSkyhook = new ItemSkyhook();
 
 		fluidCreosote = FluidRegistry.getFluid("creosote");
 		if(fluidCreosote==null)
@@ -236,6 +236,7 @@ public class IEContent
 		OreDictionary.registerOre("blockPackedIce", new ItemStack(Blocks.packed_ice));
 		OreDictionary.registerOre("craftingTableWood", new ItemStack(Blocks.crafting_table));
 		OreDictionary.registerOre("rodBlaze", new ItemStack(Items.blaze_rod));
+		OreDictionary.registerOre("charcoal", new ItemStack(Items.coal,1,1));
 		//Fluid Containers
 		FluidContainerRegistry.registerFluidContainer(fluidCreosote, new ItemStack(itemFluidContainers,1,0), new ItemStack(Items.glass_bottle));
 		FluidContainerRegistry.registerFluidContainer(fluidCreosote, new ItemStack(itemFluidContainers,1,1), new ItemStack(Items.bucket));

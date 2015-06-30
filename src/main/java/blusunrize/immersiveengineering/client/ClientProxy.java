@@ -46,6 +46,7 @@ import blusunrize.immersiveengineering.client.render.EntityRenderNone;
 import blusunrize.immersiveengineering.client.render.EntityRenderRevolvershot;
 import blusunrize.immersiveengineering.client.render.ItemRenderDrill;
 import blusunrize.immersiveengineering.client.render.ItemRenderRevolver;
+import blusunrize.immersiveengineering.client.render.ItemRenderSkyhook;
 import blusunrize.immersiveengineering.client.render.TileRenderBucketWheel;
 import blusunrize.immersiveengineering.client.render.TileRenderConnectorHV;
 import blusunrize.immersiveengineering.client.render.TileRenderConnectorLV;
@@ -165,7 +166,9 @@ public class ClientProxy extends CommonProxy
 		MinecraftForgeClient.registerItemRenderer(IEContent.itemDrill, new ItemRenderDrill());
 		//ZIPLINE
 		RenderingRegistry.registerEntityRenderingHandler(EntityZiplineHook.class, new EntityRenderNone());
-		
+		/** TODO when there is an actual model for it =P
+		MinecraftForgeClient.registerItemRenderer(IEContent.itemSkyhook, new ItemRenderSkyhook());
+		*/
 		ClientEventHandler handler = new ClientEventHandler();
 		MinecraftForge.EVENT_BUS.register(handler);
 		FMLCommonHandler.instance().bus().register(handler);
