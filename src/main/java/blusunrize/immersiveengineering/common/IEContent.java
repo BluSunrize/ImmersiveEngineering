@@ -50,6 +50,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityDynamo;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityExcavator;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFermenter;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFurnaceHeater;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityLantern;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityLightningRod;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityRefinery;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityRelayHV;
@@ -88,7 +89,7 @@ import blusunrize.immersiveengineering.common.crafting.IEFuelHandler;
 import blusunrize.immersiveengineering.common.crafting.RecipeOreCrushing;
 import blusunrize.immersiveengineering.common.crafting.RecipeRevolver;
 import blusunrize.immersiveengineering.common.entities.EntityRevolvershot;
-import blusunrize.immersiveengineering.common.entities.EntityZiplineHook;
+import blusunrize.immersiveengineering.common.entities.EntitySkylineHook;
 import blusunrize.immersiveengineering.common.items.ItemBullet;
 import blusunrize.immersiveengineering.common.items.ItemDrill;
 import blusunrize.immersiveengineering.common.items.ItemDrillhead;
@@ -311,6 +312,7 @@ public class IEContent
 		registerTile(TileEntityStructuralArm.class);
 		registerTile(TileEntityConnectorStructural.class);
 		registerTile(TileEntityWallmountMetal.class);
+		registerTile(TileEntityLantern.class);
 
 
 		registerTile(TileEntityCokeOven.class);
@@ -318,7 +320,7 @@ public class IEContent
 
 		/**ENTITIES*/
 		EntityRegistry.registerModEntity(EntityRevolvershot.class, "revolverShot", 0, ImmersiveEngineering.instance, 64, 1, true);
-		EntityRegistry.registerModEntity(EntityZiplineHook.class, "ziplineHook", 1, ImmersiveEngineering.instance, 64, 1, true);
+		EntityRegistry.registerModEntity(EntitySkylineHook.class, "ziplineHook", 1, ImmersiveEngineering.instance, 64, 1, true);
 
 
 		/**SMELTING*/
@@ -367,7 +369,9 @@ public class IEContent
 		addBulletRecipes(4, "dustIron", 1);
 		addBulletRecipes(5, Blocks.tnt, 0);
 		addBulletRecipes(6, "dustAluminum", 1);
-
+		
+		addOredictRecipe(new ItemStack(itemSkyhook,1,0), "II ","IC "," GG", 'C',componentIron,'I',"ingotSteel", 'G',new ItemStack(itemMaterial,1,9));
+		
 		addOredictRecipe(new ItemStack(itemDrill,1,0), "  G"," EG","C  ", 'C',componentSteel,'E',new ItemStack(blockMetalDecoration,1,BlockMetalDecoration.META_heavyEngineering), 'G',new ItemStack(itemMaterial,1,9));
 		addOredictRecipe(new ItemStack(itemDrillhead,1,0), "SS ","BBS","SS ", 'B',"blockSteel", 'S',"ingotSteel");
 		addOredictRecipe(new ItemStack(itemDrillhead,1,1), "SS ","BBS","SS ", 'B',"blockIron", 'S',"ingotIron");

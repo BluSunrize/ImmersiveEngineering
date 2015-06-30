@@ -25,6 +25,8 @@ public class ItemBlockMetalDecorations extends ItemBlockIEBase
 			return ret;
 		if(world.getTileEntity(x, y, z) instanceof TileEntityConnectorLV)
 			((TileEntityConnectorLV)world.getTileEntity(x, y, z)).facing = ForgeDirection.getOrientation(side).getOpposite().ordinal();
+		if(world.getTileEntity(x, y, z) instanceof TileEntityLantern)
+			((TileEntityLantern)world.getTileEntity(x, y, z)).facing = side;
 		if(world.getTileEntity(x, y, z) instanceof TileEntityStructuralArm)
 		{
 			int playerViewQuarter = MathHelper.floor_double(player.rotationYaw * 4.0F / 360.0F + 0.5D) & 3;

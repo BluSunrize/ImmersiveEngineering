@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.client;
 
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -50,7 +51,7 @@ import blusunrize.immersiveengineering.common.items.ItemSkyhook;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.Utils;
-import blusunrize.immersiveengineering.common.util.ZiplineHelper;
+import blusunrize.immersiveengineering.common.util.SkylineHelper;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 
@@ -108,12 +109,13 @@ public class ClientEventHandler
 		//		if(event.message.getUnformattedTextForChat().contains(loc))
 	}
 
+	public static Set<Connection> skyhookGrabableConnections = new HashSet();
 	@SubscribeEvent
 	public void onPlayerTick(TickEvent.PlayerTickEvent event)
 	{
 		if(event.side.isClient() && event.phase==TickEvent.Phase.START && event.player!=null && event.player==ClientUtils.mc().renderViewEntity)
 		{
-			ZiplineHelper.grabableConnections.clear();
+			skyhookGrabableConnections.clear();
 			EntityPlayer player = event.player;
 			ItemStack stack = player.getCurrentEquippedItem();
 			if(stack!=null && stack.getItem() instanceof ItemSkyhook)
@@ -129,7 +131,7 @@ public class ClientEventHandler
 							TileEntity tile = player.worldObj.getTileEntity((int)player.posX+xx, (int)py+yy, (int)player.posZ+zz);
 							if(tile!=null)
 							{
-								Connection con = ZiplineHelper.getTargetConnection(player.worldObj, tile.xCoord,tile.yCoord,tile.zCoord, player, null);
+								Connection con = SkylineHelper.getTargetConnection(player.worldObj, tile.xCoord,tile.yCoord,tile.zCoord, player, null);
 								if(con!=null)
 								{
 									double d = tile.getDistanceFrom(player.posX,py,player.posZ);
@@ -143,7 +145,7 @@ public class ClientEventHandler
 							}
 						}
 				if(line!=null&&connector!=null)
-					ZiplineHelper.grabableConnections.add(line);
+					skyhookGrabableConnections.add(line);
 			}
 		}
 		if(event.side.isClient() && event.phase == TickEvent.Phase.END && event.player!=null)
@@ -206,7 +208,7 @@ public class ClientEventHandler
 
 			}
 
-		Iterator<ImmersiveNetHandler.Connection> it = ZiplineHelper.grabableConnections.iterator();
+		Iterator<ImmersiveNetHandler.Connection> it = skyhookGrabableConnections.iterator();
 		World world = viewer.worldObj;
 		while(it.hasNext())
 		{

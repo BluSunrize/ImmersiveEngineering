@@ -46,7 +46,6 @@ import blusunrize.immersiveengineering.client.render.EntityRenderNone;
 import blusunrize.immersiveengineering.client.render.EntityRenderRevolvershot;
 import blusunrize.immersiveengineering.client.render.ItemRenderDrill;
 import blusunrize.immersiveengineering.client.render.ItemRenderRevolver;
-import blusunrize.immersiveengineering.client.render.ItemRenderSkyhook;
 import blusunrize.immersiveengineering.client.render.TileRenderBucketWheel;
 import blusunrize.immersiveengineering.client.render.TileRenderConnectorHV;
 import blusunrize.immersiveengineering.client.render.TileRenderConnectorLV;
@@ -55,6 +54,7 @@ import blusunrize.immersiveengineering.client.render.TileRenderConnectorStructur
 import blusunrize.immersiveengineering.client.render.TileRenderCrusher;
 import blusunrize.immersiveengineering.client.render.TileRenderDieselGenerator;
 import blusunrize.immersiveengineering.client.render.TileRenderExcavator;
+import blusunrize.immersiveengineering.client.render.TileRenderLantern;
 import blusunrize.immersiveengineering.client.render.TileRenderPost;
 import blusunrize.immersiveengineering.client.render.TileRenderRefinery;
 import blusunrize.immersiveengineering.client.render.TileRenderRelayHV;
@@ -82,6 +82,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityDieselGenerator;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityExcavator;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFermenter;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityLantern;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityRefinery;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityRelayHV;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySampleDrill;
@@ -109,7 +110,7 @@ import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWindmillAd
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenCrate;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenPost;
 import blusunrize.immersiveengineering.common.entities.EntityRevolvershot;
-import blusunrize.immersiveengineering.common.entities.EntityZiplineHook;
+import blusunrize.immersiveengineering.common.entities.EntitySkylineHook;
 import blusunrize.immersiveengineering.common.items.ItemRevolver;
 import blusunrize.immersiveengineering.common.util.IESound;
 import blusunrize.immersiveengineering.common.util.Lib;
@@ -146,6 +147,7 @@ public class ClientProxy extends CommonProxy
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityConnectorStructural.class, new TileRenderConnectorStructural());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityBucketWheel.class, new TileRenderBucketWheel());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityExcavator.class, new TileRenderExcavator());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityLantern.class, new TileRenderLantern());
 		//WOOD
 		RenderingRegistry.registerBlockHandler(new BlockRenderWoodenDevices());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityWoodenPost.class, new TileRenderPost());
@@ -165,15 +167,11 @@ public class ClientProxy extends CommonProxy
 		//DRILL
 		MinecraftForgeClient.registerItemRenderer(IEContent.itemDrill, new ItemRenderDrill());
 		//ZIPLINE
-		RenderingRegistry.registerEntityRenderingHandler(EntityZiplineHook.class, new EntityRenderNone());
-<<<<<<< HEAD
+		RenderingRegistry.registerEntityRenderingHandler(EntitySkylineHook.class, new EntityRenderNone());
 		/** TODO when there is an actual model for it =P
 		MinecraftForgeClient.registerItemRenderer(IEContent.itemSkyhook, new ItemRenderSkyhook());
 		*/
-=======
-		MinecraftForgeClient.registerItemRenderer(IEContent.itemSkyhook, new ItemRenderSkyhook());
 		
->>>>>>> 88764f8b1d81d853efe90854c844e99d0c479977
 		ClientEventHandler handler = new ClientEventHandler();
 		MinecraftForge.EVENT_BUS.register(handler);
 		FMLCommonHandler.instance().bus().register(handler);

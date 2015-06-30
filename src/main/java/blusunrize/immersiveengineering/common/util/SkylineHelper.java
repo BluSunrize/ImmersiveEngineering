@@ -1,8 +1,6 @@
 package blusunrize.immersiveengineering.common.util;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -13,18 +11,11 @@ import net.minecraft.world.World;
 import blusunrize.immersiveengineering.api.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.ImmersiveNetHandler.Connection;
-import blusunrize.immersiveengineering.common.entities.EntityZiplineHook;
+import blusunrize.immersiveengineering.common.entities.EntitySkylineHook;
 import blusunrize.immersiveengineering.common.items.ItemSkyhook;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
-public class ZiplineHelper
+public class SkylineHelper
 {
-
-
-	@SideOnly(Side.CLIENT)
-	public static Set<Connection> grabableConnections = new HashSet();
-
 	public static Connection getTargetConnection(World world, int x, int y, int z, EntityLivingBase living, Connection invalidCon)
 	{
 		if(!(world.getTileEntity(x,y,z) instanceof IImmersiveConnectable))
@@ -54,7 +45,7 @@ public class ZiplineHelper
 		return null;
 	}
 
-	public static EntityZiplineHook spawnHook(EntityPlayer player, TileEntity start, Connection connection)
+	public static EntitySkylineHook spawnHook(EntityPlayer player, TileEntity start, Connection connection)
 	{
 		ChunkCoordinates cc0 = connection.end==Utils.toCC(start)?connection.start:connection.end;
 		ChunkCoordinates cc1 = connection.end==Utils.toCC(start)?connection.end:connection.start;
@@ -79,8 +70,8 @@ public class ZiplineHelper
 		//		Vec3 moveVec = Vec3.createVectorHelper(dx/d,dy/d,dz/d);
 
 
-		EntityZiplineHook hook = new EntityZiplineHook(player.worldObj, vStart.xCoord,vStart.yCoord,vStart.zCoord, connection, cc0, steps);
-		float speed = .1f;
+		EntitySkylineHook hook = new EntitySkylineHook(player.worldObj, vStart.xCoord,vStart.yCoord,vStart.zCoord, connection, cc0, steps);
+		float speed = .2f;
 		if(player.getCurrentEquippedItem()!=null&&player.getCurrentEquippedItem().getItem() instanceof ItemSkyhook)
 			speed = ((ItemSkyhook)player.getCurrentEquippedItem().getItem()).getSkylineSpeed(player.getCurrentEquippedItem());
 		hook.motionX = moveVec.xCoord*speed;

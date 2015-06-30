@@ -55,6 +55,7 @@ public class ImmersiveEngineering
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent event)
 	{
+		IELogger.debug = VERSION.startsWith("${");
 		Config.init(event);
 		IEContent.preInit();
 

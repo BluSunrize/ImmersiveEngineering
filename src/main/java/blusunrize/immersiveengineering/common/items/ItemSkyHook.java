@@ -10,21 +10,20 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import blusunrize.immersiveengineering.api.IUpgrade;
 import blusunrize.immersiveengineering.api.IUpgrade.UpgradeType;
 import blusunrize.immersiveengineering.api.ImmersiveNetHandler.Connection;
-import blusunrize.immersiveengineering.common.entities.EntityZiplineHook;
+import blusunrize.immersiveengineering.common.entities.EntitySkylineHook;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.gui.InventoryStorageItem;
+import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Lib;
-import blusunrize.immersiveengineering.common.util.ZiplineHelper;
+import blusunrize.immersiveengineering.common.util.SkylineHelper;
 
-import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
 public class ItemSkyhook extends ItemUpgradeableTool
@@ -43,7 +42,11 @@ public class ItemSkyhook extends ItemUpgradeableTool
 	@Override
 	public void onUpdate(ItemStack stack, World world, Entity ent, int slot, boolean inHand)
 	{
-
+		if(getUpgrades(stack).getBoolean("fallBoost"))
+		{
+			float dmg = (float)Math.ceil(ent.fallDistance/5);
+			ItemNBTHelper.setFloat(stack, "fallDamageBoost", dmg);
+		}
 	}
 	@Override
 	public Multimap getAttributeModifiers(ItemStack stack)
@@ -54,7 +57,7 @@ public class ItemSkyhook extends ItemUpgradeableTool
 		return multimap;
 	}
 
-	public static HashMap<String, EntityZiplineHook> existingHooks = new HashMap<String, EntityZiplineHook>();
+	public static HashMap<String, EntitySkylineHook> existingHooks = new HashMap<String, EntitySkylineHook>();
 
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
@@ -70,7 +73,7 @@ public class ItemSkyhook extends ItemUpgradeableTool
 					TileEntity tile = world.getTileEntity((int)player.posX+xx, (int)py+yy, (int)player.posZ+zz);
 					if(tile!=null)
 					{
-						Connection con = ZiplineHelper.getTargetConnection(world, tile.xCoord,tile.yCoord,tile.zCoord, player, null);
+						Connection con = SkylineHelper.getTargetConnection(world, tile.xCoord,tile.yCoord,tile.zCoord, player, null);
 						if(con!=null)
 						{
 							double d = tile.getDistanceFrom(player.posX,py,player.posZ);
@@ -85,7 +88,7 @@ public class ItemSkyhook extends ItemUpgradeableTool
 				}
 		if(line!=null&&connector!=null)
 		{
-			ZiplineHelper.spawnHook(player, connector, line);
+			SkylineHelper.spawnHook(player, connector, line);
 			player.setItemInUse(stack, this.getMaxItemUseDuration(stack));
 		}
 		return stack;
@@ -107,7 +110,12 @@ public class ItemSkyhook extends ItemUpgradeableTool
 	{
 		if(existingHooks.containsKey(player.getCommandSenderName()))
 		{
-			existingHooks.get(player.getCommandSenderName()).setDead();
+			EntitySkylineHook hook = existingHooks.get(player.getCommandSenderName());
+			player.motionX = hook.motionX;
+			player.motionY = hook.motionY;
+			player.motionZ = hook.motionZ;
+			IELogger.debug("player motion: "+player.motionX+","+player.motionY+","+player.motionZ);
+			hook.setDead();
 			existingHooks.remove(player.getCommandSenderName());
 		}
 	}

@@ -31,6 +31,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implements IEnergyHandler, ic2.api.energy.tile.IEnergySink
 {
 	boolean inICNet=false;
+	public int facing=0;
 
 	@Override
 	public void updateEntity()
@@ -61,7 +62,6 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 		unload();
 	}
 
-	public int facing=0;
 	@Override
 	public boolean canUpdate()
 	{
