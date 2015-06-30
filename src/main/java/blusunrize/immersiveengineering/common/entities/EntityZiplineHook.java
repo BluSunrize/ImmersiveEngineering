@@ -79,7 +79,7 @@ public class EntityZiplineHook extends Entity
 		{
 			double dist = subPoints[targetPoint].distanceTo(Vec3.createVectorHelper(posX,posY,posZ));
 			System.out.println("dist: "+dist);
-			if(dist<=.375)
+			if(dist<=.3125)
 			{
 				this.posX = subPoints[targetPoint].xCoord;
 				this.posY = subPoints[targetPoint].yCoord;
