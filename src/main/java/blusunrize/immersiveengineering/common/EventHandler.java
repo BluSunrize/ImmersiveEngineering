@@ -5,7 +5,6 @@ import java.util.UUID;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
@@ -25,9 +24,7 @@ import blusunrize.immersiveengineering.api.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.GuiBlastFurnace;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
-import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDecoration;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityLightningRod;
 import blusunrize.immersiveengineering.common.items.ItemDrill;
 import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -84,20 +81,20 @@ public class EventHandler
 	@SubscribeEvent
 	public void entitySpawn(EntityJoinWorldEvent event)
 	{
-		if(event.entity instanceof EntityLightningBolt&&!event.world.isRemote)
-		{
-			for(int xx=-1; xx<=1; xx++)
-				for(int zz=-1; zz<=1; zz++)
-					if(event.world.getBlock((int)event.entity.posX+xx, (int)event.entity.posY-1, (int)event.entity.posZ+zz).equals(IEContent.blockMetalDecoration) && event.world.getBlockMetadata((int)event.entity.posX+xx, (int)event.entity.posY-1, (int)event.entity.posZ+zz)==BlockMetalDecoration.META_fence)
-						for(int y=(int) event.entity.posY-1; y>0; y--)
-							if( event.world.getTileEntity((int)event.entity.posX+xx, y, (int)event.entity.posZ+zz) instanceof TileEntityLightningRod)
-							{
-								((TileEntityLightningRod) event.world.getTileEntity((int)event.entity.posX+xx, y, (int)event.entity.posZ+zz)).energyStorage.setEnergyStored(Config.getInt("lightning_output"));
-								return;
-							}
-							else if(!(event.world.getBlock((int)event.entity.posX+xx, y, (int)event.entity.posZ+zz).equals(IEContent.blockMetalDecoration) && event.world.getBlockMetadata((int)event.entity.posX+xx, y, (int)event.entity.posZ+zz)==BlockMetalDecoration.META_fence))
-								return;		
-		}
+		//		if(event.entity instanceof EntityLightningBolt&&!event.world.isRemote)
+		//		{
+		//			for(int xx=-1; xx<=1; xx++)
+		//				for(int zz=-1; zz<=1; zz++)
+		//					if(event.world.getBlock((int)event.entity.posX+xx, (int)event.entity.posY-1, (int)event.entity.posZ+zz).equals(IEContent.blockMetalDecoration) && event.world.getBlockMetadata((int)event.entity.posX+xx, (int)event.entity.posY-1, (int)event.entity.posZ+zz)==BlockMetalDecoration.META_fence)
+		//						for(int y=(int) event.entity.posY-1; y>0; y--)
+		//							if( event.world.getTileEntity((int)event.entity.posX+xx, y, (int)event.entity.posZ+zz) instanceof TileEntityLightningRod)
+		//							{
+		//								((TileEntityLightningRod) event.world.getTileEntity((int)event.entity.posX+xx, y, (int)event.entity.posZ+zz)).energyStorage.setEnergyStored(Config.getInt("lightning_output"));
+		//								return;
+		//							}
+		//							else if(!(event.world.getBlock((int)event.entity.posX+xx, y, (int)event.entity.posZ+zz).equals(IEContent.blockMetalDecoration) && event.world.getBlockMetadata((int)event.entity.posX+xx, y, (int)event.entity.posZ+zz)==BlockMetalDecoration.META_fence))
+		//								return;		
+		//		}
 	}
 
 	public static HashMap<UUID, TileEntityCrusher> crusherMap = new HashMap<UUID, TileEntityCrusher>();

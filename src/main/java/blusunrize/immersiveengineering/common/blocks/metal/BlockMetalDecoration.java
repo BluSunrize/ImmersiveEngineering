@@ -159,7 +159,8 @@ public class BlockMetalDecoration extends BlockIEBase implements blusunrize.aqua
 		icons[META_scaffolding][1] = iconRegister.registerIcon("immersiveengineering:metalDeco_scaffolding_top");
 		icons[META_scaffolding][2] = iconRegister.registerIcon("immersiveengineering:metalDeco_scaffolding_side");
 		//Lantern
-		icons[META_lantern][0] = iconRegister.registerIcon("immersiveengineering:metalDeco_lantern_bottom");
+		icons[META_lantern][0] = iconRegister.registerIcon("immersiveengineering:lantern_0");
+		//		icons[META_lantern][0] = iconRegister.registerIcon("immersiveengineering:metalDeco_lantern_bottom");
 		icons[META_lantern][1] = iconRegister.registerIcon("immersiveengineering:metalDeco_lantern_top");
 		icons[META_lantern][2] = iconRegister.registerIcon("immersiveengineering:metalDeco_lantern_side");
 		//Arm
@@ -182,8 +183,14 @@ public class BlockMetalDecoration extends BlockIEBase implements blusunrize.aqua
 	{
 		if(world.getBlockMetadata(x, y, z)==META_fence)
 			this.setBlockBounds(canConnectFenceTo(world,x-1,y,z)?0:.375f,0,canConnectFenceTo(world,x,y,z-1)?0:.375f, canConnectFenceTo(world,x+1,y,z)?1:.625f,1,canConnectFenceTo(world,x,y,z+1)?1:.625f);
-		else if(world.getBlockMetadata(x, y, z)==META_lantern)
-			this.setBlockBounds(.25f,0,.25f, .75f,.8125f,.75f);
+		else if(world.getTileEntity(x, y, z) instanceof TileEntityLantern)
+		{
+			int f = ((TileEntityLantern)world.getTileEntity(x, y, z)).facing ;
+			if(f<2)
+				this.setBlockBounds(.25f,f==1?0:.125f,.25f, .75f,f==1?.875f:1f,.75f);
+			else
+				this.setBlockBounds(f==5?0:.25f,0,f==3?0:.25f, f==4?1:.75f,.875f,f==2?1:.75f);
+		}
 		else if(world.getTileEntity(x, y, z) instanceof TileEntityConnectorStructural)
 		{
 			float length = .5f;
@@ -250,6 +257,8 @@ public class BlockMetalDecoration extends BlockIEBase implements blusunrize.aqua
 	@Override
 	public TileEntity createNewTileEntity(World world, int meta)
 	{
+		if(meta==META_lantern)
+			return new TileEntityLantern();
 		if(meta==META_structuralArm)
 			return new TileEntityStructuralArm();
 		if(meta==META_connectorStructural)

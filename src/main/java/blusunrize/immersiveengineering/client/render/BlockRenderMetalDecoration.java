@@ -12,6 +12,7 @@ import org.lwjgl.opengl.GL11;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDecoration;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorStructural;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityLantern;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityStructuralArm;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityWallmountMetal;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
@@ -48,10 +49,9 @@ public class BlockRenderMetalDecoration implements ISimpleBlockRenderingHandler
 			}
 			else if(metadata==BlockMetalDecoration.META_lantern)
 			{
-				renderer.setRenderBounds(.3125f,0,.3125f, .6875f,.125f,.6875f);
-				ClientUtils.drawInventoryBlock(block, metadata, renderer);
-				renderer.setRenderBounds(.25f,.125f,.25f, .75f,.8125f,.75f);
-				ClientUtils.drawInventoryBlock(block, metadata, renderer);
+				Tessellator.instance.startDrawingQuads();
+				ClientUtils.handleStaticTileRenderer(new TileEntityLantern());
+				Tessellator.instance.draw();
 			}
 			else if(metadata==BlockMetalDecoration.META_structuralArm)
 			{
@@ -196,29 +196,34 @@ public class BlockRenderMetalDecoration implements ISimpleBlockRenderingHandler
 			return renderer.renderStandardBlock(block, x, y, z);
 		}
 		else if(world.getBlockMetadata(x, y, z)==BlockMetalDecoration.META_lantern)
+			//		{
+			//			if(world.isAirBlock(x,y-1,z)&&!world.isAirBlock(x,y+1,z))
+			//			{
+			//				renderer.uvRotateWest = 3;
+			//				renderer.uvRotateEast = 3;
+			//				renderer.uvRotateNorth = 3;
+			//				renderer.uvRotateSouth = 3;
+			//				renderer.setRenderBounds(.3125f,.875f,.3125f, .6875f,1,.6875f);
+			//				renderer.renderStandardBlock(block, x, y, z);
+			//				renderer.setRenderBounds(.25f,.1875f,.25f, .75f,.875f,.75f);
+			//				renderer.renderStandardBlock(block, x, y, z);
+			//				renderer.uvRotateWest = 0;
+			//				renderer.uvRotateEast = 0;
+			//				renderer.uvRotateNorth = 0;
+			//				renderer.uvRotateSouth = 0;
+			//			}
+			//			else
+			//			{
+			//				renderer.setRenderBounds(.3125f,0,.3125f, .6875f,.125f,.6875f);
+			//				renderer.renderStandardBlock(block, x, y, z);
+			//				renderer.setRenderBounds(.25f,.125f,.25f, .75f,.8125f,.75f);
+			//				renderer.renderStandardBlock(block, x, y, z);
+			//			}
+			//			return true;
+			//		}
 		{
-			if(world.isAirBlock(x,y-1,z)&&!world.isAirBlock(x,y+1,z))
-			{
-				renderer.uvRotateWest = 3;
-				renderer.uvRotateEast = 3;
-				renderer.uvRotateNorth = 3;
-				renderer.uvRotateSouth = 3;
-				renderer.setRenderBounds(.3125f,.875f,.3125f, .6875f,1,.6875f);
-				renderer.renderStandardBlock(block, x, y, z);
-				renderer.setRenderBounds(.25f,.1875f,.25f, .75f,.875f,.75f);
-				renderer.renderStandardBlock(block, x, y, z);
-				renderer.uvRotateWest = 0;
-				renderer.uvRotateEast = 0;
-				renderer.uvRotateNorth = 0;
-				renderer.uvRotateSouth = 0;
-			}
-			else
-			{
-				renderer.setRenderBounds(.3125f,0,.3125f, .6875f,.125f,.6875f);
-				renderer.renderStandardBlock(block, x, y, z);
-				renderer.setRenderBounds(.25f,.125f,.25f, .75f,.8125f,.75f);
-				renderer.renderStandardBlock(block, x, y, z);
-			}
+			TileEntityLantern tile = (TileEntityLantern)world.getTileEntity(x, y, z);
+			ClientUtils.handleStaticTileRenderer(tile);
 			return true;
 		}
 		else if(world.getBlockMetadata(x, y, z)==BlockMetalDecoration.META_structuralArm)
@@ -447,12 +452,11 @@ public class BlockRenderMetalDecoration implements ISimpleBlockRenderingHandler
 			ClientUtils.handleStaticTileRenderer(tile);
 			return true;
 		}
-		else if(world.getBlockMetadata(x, y, z) != BlockMetalDecoration.META_connectorStructural && world.getBlockMetadata(x, y, z) != BlockMetalDecoration.META_wallMount)
+		else
 		{
 			renderer.setRenderBounds(0,0,0,1,1,1);
 			return renderer.renderStandardBlock(block, x, y, z);
 		}
-		return false;
 	}
 
 	@Override

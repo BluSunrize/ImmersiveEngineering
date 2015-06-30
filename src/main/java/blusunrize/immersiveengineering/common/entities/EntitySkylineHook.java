@@ -13,24 +13,25 @@ import net.minecraft.world.World;
 import blusunrize.immersiveengineering.api.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.common.items.ItemSkyhook;
+import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.Utils;
-import blusunrize.immersiveengineering.common.util.ZiplineHelper;
+import blusunrize.immersiveengineering.common.util.SkylineHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class EntityZiplineHook extends Entity
+public class EntitySkylineHook extends Entity
 {
 	Connection connection;
 	ChunkCoordinates target;
 	Vec3[] subPoints;
 	int targetPoint=0;
-	public EntityZiplineHook(World world)
+	public EntitySkylineHook(World world)
 	{
 		super(world);
 		this.setSize(.125f,.125f);
 		this.noClip=true;
 	}
-	public EntityZiplineHook(World world, double x, double y, double z, Connection connection, ChunkCoordinates target, Vec3[] subPoints)
+	public EntitySkylineHook(World world, double x, double y, double z, Connection connection, ChunkCoordinates target, Vec3[] subPoints)
 	{
 		super(world);
 		this.setSize(0.125F, 0.125F);
@@ -62,8 +63,8 @@ public class EntityZiplineHook extends Entity
 	@Override
 	public void onUpdate()
 	{
-		//		if(this.ticksExisted==1&&!worldObj.isRemote)
-		//			System.out.println("init tick at "+System.currentTimeMillis());
+		if(this.ticksExisted==1&&!worldObj.isRemote)
+			IELogger.debug("init tick at "+System.currentTimeMillis());
 		super.onUpdate();
 		//		if(this.ticksExisted>40)
 		//			this.setDead();
@@ -78,19 +79,19 @@ public class EntityZiplineHook extends Entity
 		if(subPoints!=null && targetPoint<subPoints.length-1)
 		{
 			double dist = subPoints[targetPoint].distanceTo(Vec3.createVectorHelper(posX,posY,posZ));
-			System.out.println("dist: "+dist);
+			IELogger.debug("dist: "+dist);
 			if(dist<=.3125)
 			{
 				this.posX = subPoints[targetPoint].xCoord;
 				this.posY = subPoints[targetPoint].yCoord;
 				this.posZ = subPoints[targetPoint].zCoord;
 				targetPoint++;
-				System.out.println("next vertex: "+targetPoint);
+				IELogger.debug("next vertex: "+targetPoint);
 				double dx = (subPoints[targetPoint].xCoord-posX);
 				double dy = (subPoints[targetPoint].yCoord-posY);
 				double dz = (subPoints[targetPoint].zCoord-posZ);
 				Vec3 moveVec = Vec3.createVectorHelper(dx,dy,dz);
-				float speed = .1f;
+				float speed = .2f;
 				if(player.getCurrentEquippedItem()!=null&&player.getCurrentEquippedItem().getItem() instanceof ItemSkyhook)
 					speed = ((ItemSkyhook)player.getCurrentEquippedItem().getItem()).getSkylineSpeed(player.getCurrentEquippedItem());
 				motionX = moveVec.xCoord*speed;
@@ -110,20 +111,20 @@ public class EntityZiplineHook extends Entity
 
 
 			double gDist = vEnd.distanceTo(Vec3.createVectorHelper(posX, posY, posZ));
-			System.out.println("goal distance: "+gDist);
+			IELogger.debug("distance to goal: "+gDist);
 			if(gDist<=.3)
 			{
 				this.setDead();
-//									System.out.println("last tick at "+System.currentTimeMillis());
+				IELogger.debug("last tick at "+System.currentTimeMillis());
 				ItemStack hook = ((EntityPlayer)this.riddenByEntity).getCurrentEquippedItem();
 				if(hook==null || !(hook.getItem() instanceof ItemSkyhook))
 					return;
-				Connection line = ZiplineHelper.getTargetConnection(worldObj, target.posX,target.posY,target.posZ, (EntityLivingBase)this.riddenByEntity, connection);
+				Connection line = SkylineHelper.getTargetConnection(worldObj, target.posX,target.posY,target.posZ, (EntityLivingBase)this.riddenByEntity, connection);
 
 				if(line!=null)
 				{
 					((EntityPlayer)this.riddenByEntity).setItemInUse(hook, hook.getItem().getMaxItemUseDuration(hook));
-					EntityZiplineHook newHook = ZiplineHelper.spawnHook((EntityPlayer)this.riddenByEntity, end, line);
+					SkylineHelper.spawnHook((EntityPlayer)this.riddenByEntity, end, line);
 					//					ChunkCoordinates cc0 = line.end==target?line.start:line.end;
 					//					ChunkCoordinates cc1 = line.end==target?line.end:line.start;
 					//					double dx = cc0.posX-cc1.posX;
@@ -142,8 +143,6 @@ public class EntityZiplineHook extends Entity
 				return;
 			}
 		}
-		//if(!worldObj.isRemote)
-		//		System.out.println("tick: "+ticksExisted+", motion "+motionX+","+motionY+","+motionZ);
 		this.posX += this.motionX;
 		this.posY += this.motionY;
 		this.posZ += this.motionZ;
