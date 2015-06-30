@@ -31,9 +31,13 @@ public class IC2Helper
 		return sink instanceof IEnergySink && ((IEnergySink)sink).acceptsEnergyFrom(tile, fd);
 	}
 
-	public static double injectEnergy(TileEntity sink, ForgeDirection fd, double amount, double voltage)
+	public static double injectEnergy(TileEntity sink, ForgeDirection fd, double amount, double voltage, boolean simulate)
 	{
-		return ((IEnergySink)sink).injectEnergy(fd, amount, voltage);
+		double demanded = Math.max(0, ((IEnergySink)sink).getDemandedEnergy());
+		double accepted = Math.min(demanded, amount);
+		if(!simulate)
+			((IEnergySink)sink).injectEnergy(fd, amount, voltage);
+		return amount-accepted;
 	}
 
 	public static double getMaxItemCharge(ItemStack stack)

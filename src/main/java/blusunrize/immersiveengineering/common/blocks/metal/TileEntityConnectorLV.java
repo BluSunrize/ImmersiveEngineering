@@ -90,17 +90,19 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 		if(capacitor instanceof IEnergyReceiver && ((IEnergyReceiver)capacitor).canConnectEnergy(fd.getOpposite()))
 			return ((IEnergyReceiver)capacitor).receiveEnergy(fd.getOpposite(), amount, simulate);
 		else if(Lib.IC2 && IC2Helper.isAcceptingEnergySink(capacitor, this, fd.getOpposite()))
-			if(simulate)
-				return amount;
-			else
-			{
-				double left = IC2Helper.injectEnergy(capacitor, fd.getOpposite(), ModCompatability.convertRFtoEU(amount, getIC2Tier()), canTakeHV()?(256*256): canTakeMV()?(128*128) : (32*32));
+		{
+//			if(simulate)
+//				return amount;
+//			else
+//			{
+				double left = IC2Helper.injectEnergy(capacitor, fd.getOpposite(), ModCompatability.convertRFtoEU(amount, getIC2Tier()), canTakeHV()?(256*256): canTakeMV()?(128*128) : (32*32), simulate);
 				return amount-ModCompatability.convertEUtoRF(left);
-			}
+//			}
+		}
 		else if(Lib.GREG && GregTechHelper.gregtech_isEnergyConnected(capacitor))
-			if(simulate)
-				return amount;
-			else
+//			if(simulate)
+//				return amount;
+//			else
 			{
 				GregTechHelper.gregtech_outputGTPower(capacitor, (byte)fd.getOpposite().ordinal(), (long)ModCompatability.convertRFtoEU(amount, getIC2Tier()), 1L);
 				return amount;

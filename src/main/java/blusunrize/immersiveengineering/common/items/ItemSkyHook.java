@@ -20,9 +20,9 @@ import blusunrize.immersiveengineering.common.gui.InventoryStorageItem;
 import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.ZiplineHelper;
 
-public class ItemSkyHook extends ItemUpgradeableTool
+public class ItemSkyhook extends ItemUpgradeableTool
 {
-	public ItemSkyHook()
+	public ItemSkyhook()
 	{
 		super("skyhook", 1, UpgradeType.SKYHOOK);
 	}
@@ -38,6 +38,7 @@ public class ItemSkyHook extends ItemUpgradeableTool
 	{
 
 	}
+
 
 	public static HashMap<String, EntityZiplineHook> existingHooks = new HashMap<String, EntityZiplineHook>();
 
@@ -76,6 +77,10 @@ public class ItemSkyHook extends ItemUpgradeableTool
 		return stack;
 	}
 
+	public float getSkylineSpeed(ItemStack stack)
+	{
+		return .2f+this.getUpgrades(stack).getFloat("speed");
+	}
 
 	@Override
 	public int getMaxItemUseDuration(ItemStack stack)

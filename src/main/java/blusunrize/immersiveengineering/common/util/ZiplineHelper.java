@@ -4,8 +4,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.Vec3;
@@ -14,7 +14,7 @@ import blusunrize.immersiveengineering.api.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.common.entities.EntityZiplineHook;
-import blusunrize.immersiveengineering.common.items.ItemSkyHook;
+import blusunrize.immersiveengineering.common.items.ItemSkyhook;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -54,12 +54,12 @@ public class ZiplineHelper
 		return null;
 	}
 
-	public static EntityZiplineHook spawnHook(EntityLivingBase living, TileEntity start, Connection connection)
+	public static EntityZiplineHook spawnHook(EntityPlayer player, TileEntity start, Connection connection)
 	{
 		ChunkCoordinates cc0 = connection.end==Utils.toCC(start)?connection.start:connection.end;
 		ChunkCoordinates cc1 = connection.end==Utils.toCC(start)?connection.end:connection.start;
-		IImmersiveConnectable iicStart = Utils.toIIC(cc1, living.worldObj);
-		IImmersiveConnectable iicEnd = Utils.toIIC(cc0, living.worldObj);
+		IImmersiveConnectable iicStart = Utils.toIIC(cc1, player.worldObj);
+		IImmersiveConnectable iicEnd = Utils.toIIC(cc0, player.worldObj);
 		Vec3 vStart = Vec3.createVectorHelper(cc1.posX,cc1.posY,cc1.posZ);
 		Vec3 vEnd = Vec3.createVectorHelper(cc0.posX,cc0.posY,cc0.posZ);
 
@@ -67,33 +67,36 @@ public class ZiplineHelper
 			vStart = Utils.addVectors(vStart, iicStart.getConnectionOffset(connection));
 		if(iicEnd!=null)
 			vEnd = Utils.addVectors(vEnd, iicEnd.getConnectionOffset(connection));
-		
+
 		Vec3[] steps = getConnectionCatenary(connection,vStart,vEnd);
 
 		double dx = (steps[0].xCoord-vStart.xCoord);
 		double dy = (steps[0].yCoord-vStart.yCoord);
 		double dz = (steps[0].zCoord-vStart.zCoord);
-		double d = Math.sqrt(dx*dx+dz*dz+dy*dy);
+		//		double d = Math.sqrt(dx*dx+dz*dz+dy*dy);
 
-		Vec3 moveVec = Vec3.createVectorHelper(dx/d,dy/d,dz/d);
+		Vec3 moveVec = Vec3.createVectorHelper(dx,dy,dz);
+		//		Vec3 moveVec = Vec3.createVectorHelper(dx/d,dy/d,dz/d);
 
 
-		EntityZiplineHook hook = new EntityZiplineHook(living.worldObj, vStart.xCoord,vStart.yCoord,vStart.zCoord, connection, cc0, steps);
-
-		hook.motionX = moveVec.xCoord*.5f;
-		hook.motionY = moveVec.yCoord*.5f;
-		hook.motionZ = moveVec.zCoord*.5f;
+		EntityZiplineHook hook = new EntityZiplineHook(player.worldObj, vStart.xCoord,vStart.yCoord,vStart.zCoord, connection, cc0, steps);
+		float speed = .1f;
+		if(player.getCurrentEquippedItem()!=null&&player.getCurrentEquippedItem().getItem() instanceof ItemSkyhook)
+			speed = ((ItemSkyhook)player.getCurrentEquippedItem().getItem()).getSkylineSpeed(player.getCurrentEquippedItem());
+		hook.motionX = moveVec.xCoord*speed;
+		hook.motionY = moveVec.yCoord*speed;
+		hook.motionZ = moveVec.zCoord*speed;
 		//		hook.motionX = (steps[0].xCoord-cc1.posX)*.5f;
 		//		hook.motionY = (steps[0].yCoord-cc1.posY)*.5f;
 		//		hook.motionZ = (steps[0].zCoord-cc1.posZ)*.5f;
 
-		for(Vec3 v : steps)
-			living.worldObj.spawnParticle("smoke", v.xCoord,v.yCoord,v.zCoord, 0,0,0 );
+		//		for(Vec3 v : steps)
+		//			living.worldObj.spawnParticle("smoke", v.xCoord,v.yCoord,v.zCoord, 0,0,0 );
 
-				if(!living.worldObj.isRemote)
-					living.worldObj.spawnEntityInWorld(hook);
-				ItemSkyHook.existingHooks.put(living.getCommandSenderName(), hook);
-				living.mountEntity(hook);
+		if(!player.worldObj.isRemote)
+			player.worldObj.spawnEntityInWorld(hook);
+		ItemSkyhook.existingHooks.put(player.getCommandSenderName(), hook);
+		player.mountEntity(hook);
 		return hook;
 	}
 

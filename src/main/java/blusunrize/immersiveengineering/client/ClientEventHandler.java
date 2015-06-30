@@ -46,7 +46,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOve
 import blusunrize.immersiveengineering.common.gui.ContainerRevolver;
 import blusunrize.immersiveengineering.common.items.ItemDrill;
 import blusunrize.immersiveengineering.common.items.ItemRevolver;
-import blusunrize.immersiveengineering.common.items.ItemSkyHook;
+import blusunrize.immersiveengineering.common.items.ItemSkyhook;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -116,7 +116,7 @@ public class ClientEventHandler
 			ZiplineHelper.grabableConnections.clear();
 			EntityPlayer player = event.player;
 			ItemStack stack = player.getCurrentEquippedItem();
-			if(stack!=null && stack.getItem() instanceof ItemSkyHook)
+			if(stack!=null && stack.getItem() instanceof ItemSkyhook)
 			{
 				TileEntity connector = null;
 				double lastDist = 0;

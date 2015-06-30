@@ -12,7 +12,7 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import blusunrize.immersiveengineering.api.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.ImmersiveNetHandler.Connection;
-import blusunrize.immersiveengineering.common.items.ItemSkyHook;
+import blusunrize.immersiveengineering.common.items.ItemSkyhook;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.ZiplineHelper;
 import cpw.mods.fml.relauncher.Side;
@@ -74,28 +74,28 @@ public class EntityZiplineHook extends Entity
 			this.setDead();
 			return;
 		}
-		((EntityPlayer)this.riddenByEntity).motionX=0;
-		((EntityPlayer)this.riddenByEntity).motionY=0;
-		((EntityPlayer)this.riddenByEntity).motionZ=0;
+		EntityPlayer player = ((EntityPlayer)this.riddenByEntity);
 		if(subPoints!=null && targetPoint<subPoints.length-1)
 		{
 			double dist = subPoints[targetPoint].distanceTo(Vec3.createVectorHelper(posX,posY,posZ));
-//			System.out.println("dist: "+dist);
-			if(dist<=.3)
+			System.out.println("dist: "+dist);
+			if(dist<=.375)
 			{
 				this.posX = subPoints[targetPoint].xCoord;
 				this.posY = subPoints[targetPoint].yCoord;
 				this.posZ = subPoints[targetPoint].zCoord;
 				targetPoint++;
-//				System.out.println("next vertex: "+targetPoint);
+				System.out.println("next vertex: "+targetPoint);
 				double dx = (subPoints[targetPoint].xCoord-posX);
 				double dy = (subPoints[targetPoint].yCoord-posY);
 				double dz = (subPoints[targetPoint].zCoord-posZ);
-				double d = Math.sqrt(dx*dx+dz*dz);
-				Vec3 moveVec = Vec3.createVectorHelper(dx/d,dy/d,dz/d);
-				motionX = moveVec.xCoord*.5f;
-				motionY = moveVec.yCoord*.5f;
-				motionZ = moveVec.zCoord*.5f;
+				Vec3 moveVec = Vec3.createVectorHelper(dx,dy,dz);
+				float speed = .1f;
+				if(player.getCurrentEquippedItem()!=null&&player.getCurrentEquippedItem().getItem() instanceof ItemSkyhook)
+					speed = ((ItemSkyhook)player.getCurrentEquippedItem().getItem()).getSkylineSpeed(player.getCurrentEquippedItem());
+				motionX = moveVec.xCoord*speed;
+				motionY = moveVec.yCoord*speed;
+				motionZ = moveVec.zCoord*speed;
 			}
 		}
 
@@ -110,20 +110,20 @@ public class EntityZiplineHook extends Entity
 
 
 			double gDist = vEnd.distanceTo(Vec3.createVectorHelper(posX, posY, posZ));
-//			System.out.println("goal distance: "+gDist);
+			System.out.println("goal distance: "+gDist);
 			if(gDist<=.3)
 			{
 				this.setDead();
-				//					System.out.println("last tick at "+System.currentTimeMillis());
+//									System.out.println("last tick at "+System.currentTimeMillis());
 				ItemStack hook = ((EntityPlayer)this.riddenByEntity).getCurrentEquippedItem();
-				if(hook==null || !(hook.getItem() instanceof ItemSkyHook))
+				if(hook==null || !(hook.getItem() instanceof ItemSkyhook))
 					return;
 				Connection line = ZiplineHelper.getTargetConnection(worldObj, target.posX,target.posY,target.posZ, (EntityLivingBase)this.riddenByEntity, connection);
 
 				if(line!=null)
 				{
 					((EntityPlayer)this.riddenByEntity).setItemInUse(hook, hook.getItem().getMaxItemUseDuration(hook));
-					EntityZiplineHook newHook = ZiplineHelper.spawnHook((EntityLivingBase)this.riddenByEntity, end, line);
+					EntityZiplineHook newHook = ZiplineHelper.spawnHook((EntityPlayer)this.riddenByEntity, end, line);
 					//					ChunkCoordinates cc0 = line.end==target?line.start:line.end;
 					//					ChunkCoordinates cc1 = line.end==target?line.end:line.start;
 					//					double dx = cc0.posX-cc1.posX;
