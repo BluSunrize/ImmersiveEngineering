@@ -106,6 +106,8 @@ public class ItemBlockWoodenDecoration extends ItemBlockIEBase
 			int f = playerViewQuarter==0 ? 2:playerViewQuarter==1 ? 5:playerViewQuarter==2 ? 3: 4;
 			((TileEntityWallmount)world.getTileEntity(x, y, z)).facing = f;
 			((TileEntityWallmount)world.getTileEntity(x, y, z)).inverted = side==1?false: side==0?true: hitY>.5;
+			if(side<2)
+				((TileEntityWallmount)world.getTileEntity(x, y, z)).sideAttached = side+1;
 		}
 		return ret;
 	}

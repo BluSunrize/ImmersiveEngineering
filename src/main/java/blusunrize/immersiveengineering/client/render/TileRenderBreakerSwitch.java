@@ -1,0 +1,53 @@
+package blusunrize.immersiveengineering.client.render;
+
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.IIcon;
+import blusunrize.immersiveengineering.client.models.ModelIEObj;
+import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDevices2;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBreakerSwitch;
+import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
+
+public class TileRenderBreakerSwitch extends TileRenderImmersiveConnectable
+{
+	ModelIEObj model = new ModelIEObj("immersiveengineering:models/breakerSwitch.obj")
+	{
+		@Override
+		public IIcon getBlockIcon()
+		{
+			return IEContent.blockMetalDevice2.getIcon(0, BlockMetalDevices2.META_breakerSwitch);
+		}
+	};
+
+	@Override
+	public void renderStatic(TileEntity tile, Tessellator tes, Matrix4 translationMatrix, Matrix4 rotationMatrix)
+	{
+
+		TileEntityBreakerSwitch breaker = (TileEntityBreakerSwitch)tile;
+		int f = breaker.facing;
+		translationMatrix.translate(.5,.5,.5);
+
+		if(breaker.sideAttached==0)
+		{
+			rotationMatrix.rotate(Math.toRadians(f==3?180: f==4?90: f==5?-90: 0), 0,1,0);
+			rotationMatrix.rotate(Math.toRadians(90), 1,0,0);
+		}
+		else
+		{
+			rotationMatrix.rotate(Math.toRadians(f==3?180: f==4?90: f==5?-90: 0), 0,1,0);
+			if(breaker.sideAttached==2)
+				rotationMatrix.rotate(Math.toRadians(180), 0,0,1);
+		}
+
+		model.render(tile, tes, translationMatrix, rotationMatrix, false, false, "base");
+		if(breaker.sideAttached==0)
+		translationMatrix.translate(f==5?.3906:f==4?-.3906:0,0,f==3?.3906:f==2?-.3906:0);
+		else
+			translationMatrix.translate(0,breaker.sideAttached==1?-.3906:.3906,0);
+		if(breaker.active)
+			rotationMatrix.rotate(Math.toRadians(-76), 1,0,0);
+		model.render(tile, tes, translationMatrix, rotationMatrix, true, false, "lever");
+	}
+
+}

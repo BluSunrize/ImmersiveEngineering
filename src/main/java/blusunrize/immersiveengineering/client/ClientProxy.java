@@ -38,6 +38,7 @@ import blusunrize.immersiveengineering.client.gui.GuiSorter;
 import blusunrize.immersiveengineering.client.gui.GuiSqueezer;
 import blusunrize.immersiveengineering.client.render.BlockRenderMetalDecoration;
 import blusunrize.immersiveengineering.client.render.BlockRenderMetalDevices;
+import blusunrize.immersiveengineering.client.render.BlockRenderMetalDevices2;
 import blusunrize.immersiveengineering.client.render.BlockRenderMetalMultiblocks;
 import blusunrize.immersiveengineering.client.render.BlockRenderStoneDevices;
 import blusunrize.immersiveengineering.client.render.BlockRenderWoodenDecoration;
@@ -46,6 +47,7 @@ import blusunrize.immersiveengineering.client.render.EntityRenderNone;
 import blusunrize.immersiveengineering.client.render.EntityRenderRevolvershot;
 import blusunrize.immersiveengineering.client.render.ItemRenderDrill;
 import blusunrize.immersiveengineering.client.render.ItemRenderRevolver;
+import blusunrize.immersiveengineering.client.render.TileRenderBreakerSwitch;
 import blusunrize.immersiveengineering.client.render.TileRenderBucketWheel;
 import blusunrize.immersiveengineering.client.render.TileRenderConnectorHV;
 import blusunrize.immersiveengineering.client.render.TileRenderConnectorLV;
@@ -72,6 +74,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundTil
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDecoration;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDevices;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalMultiblocks;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBreakerSwitch;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBucketWheel;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorHV;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorLV;
@@ -132,6 +135,7 @@ public class ClientProxy extends CommonProxy
 	{
 		//METAL
 		RenderingRegistry.registerBlockHandler(new BlockRenderMetalDevices());
+		RenderingRegistry.registerBlockHandler(new BlockRenderMetalDevices2());
 		RenderingRegistry.registerBlockHandler(new BlockRenderMetalDecoration());
 		RenderingRegistry.registerBlockHandler(new BlockRenderMetalMultiblocks());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityConnectorLV.class, new TileRenderConnectorLV());
@@ -148,6 +152,7 @@ public class ClientProxy extends CommonProxy
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityBucketWheel.class, new TileRenderBucketWheel());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityExcavator.class, new TileRenderExcavator());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityLantern.class, new TileRenderLantern());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityBreakerSwitch.class, new TileRenderBreakerSwitch());
 		//WOOD
 		RenderingRegistry.registerBlockHandler(new BlockRenderWoodenDevices());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityWoodenPost.class, new TileRenderPost());
@@ -474,23 +479,7 @@ public class ClientProxy extends CommonProxy
 				}
 				else
 				{
-					int lIndx = sortedMapArray[i].getKey().lastIndexOf("::");
-					if(lIndx>0)
-					{
-						String key = sortedMapArray[i].getKey().substring(0,lIndx);
-						Item keyItem = GameData.getItemRegistry().getObject(key);
-						Block keyBlock = keyItem instanceof ItemBlock?Block.getBlockFromName(key):null;
-						if(keyBlock!=null && !Blocks.air.equals(keyBlock))
-						{
-							int reqMeta = Integer.parseInt(sortedMapArray[i].getKey().substring(lIndx+2));
-							item = new ItemStack(keyBlock,1,reqMeta).getDisplayName();
-						}
-						else if(keyItem!=null)
-						{
-							int reqMeta = Integer.parseInt(sortedMapArray[i].getKey().substring(lIndx+2));
-							item = new ItemStack(keyItem,1,reqMeta).getDisplayName();
-						}
-					}
+					item = sortedMapArray[i].getKey();
 				}
 				if(item!=null)
 				{

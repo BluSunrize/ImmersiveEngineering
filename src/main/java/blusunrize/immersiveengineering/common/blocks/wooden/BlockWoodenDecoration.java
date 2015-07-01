@@ -48,7 +48,7 @@ public class BlockWoodenDecoration extends BlockIEBase implements blusunrize.aqu
 	{
 		return false;
 	}
-	
+
 	@Override
 	public int damageDropped(int meta)
 	{
@@ -139,7 +139,10 @@ public class BlockWoodenDecoration extends BlockIEBase implements blusunrize.aqu
 		{
 			TileEntityWallmount arm = (TileEntityWallmount)world.getTileEntity(x, y, z);
 			int f = arm.facing;
-			this.setBlockBounds(f==5?0:.3125f,arm.inverted?.375f:0,f==3?0:.3125f, f==4?1:.6875f,arm.inverted?1:.625f,f==2?1:.6875f);
+			if(arm.sideAttached>0)
+				this.setBlockBounds(f==4?0:f==5?.375f:.3125f,arm.inverted?.3125f:0,f==2?0:f==3?.375f:.3125f, f==5?1:f==4?.625f:.6875f,arm.inverted?1:.6875f,f==3?1:f==2?.625f:.6875f);
+			else
+				this.setBlockBounds(f==5?0:.3125f,arm.inverted?.375f:0,f==3?0:.3125f, f==4?1:.6875f,arm.inverted?1:.625f,f==2?1:.6875f);
 		}
 		else
 			this.setBlockBounds(0,0,0,1,1,1);
@@ -224,13 +227,13 @@ public class BlockWoodenDecoration extends BlockIEBase implements blusunrize.aqu
 	{
 		int meta = world.getBlockMetadata(x, y, z);
 		return meta==1
-		|| meta==6;
+				|| meta==6;
 	}
 	@Optional.Method(modid = "AquaTweaks")
 	public boolean canConnectTo(IBlockAccess world, int x, int y, int z, int side)
 	{
 		int meta = world.getBlockMetadata(x, y, z);
 		return meta==1
-		|| meta==6;
+				|| meta==6;
 	}
 }

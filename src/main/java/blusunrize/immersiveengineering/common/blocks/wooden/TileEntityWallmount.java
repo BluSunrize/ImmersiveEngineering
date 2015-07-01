@@ -7,6 +7,7 @@ public class TileEntityWallmount extends TileEntityIEBase
 {
 	public int facing = 3;
 	public boolean inverted = false;
+	public int sideAttached = 0;
 
 	@Override
 	public boolean canUpdate()
@@ -19,6 +20,7 @@ public class TileEntityWallmount extends TileEntityIEBase
 	{
 		facing = nbt.getInteger("facing");
 		inverted = nbt.getBoolean("inverted");
+		sideAttached = nbt.getInteger("sideAttached");
 	}
 
 	@Override
@@ -26,5 +28,6 @@ public class TileEntityWallmount extends TileEntityIEBase
 	{
 		nbt.setInteger("facing", facing);
 		nbt.setBoolean("inverted", inverted);
+		nbt.setInteger("sideAttached", sideAttached);
 	}
 }

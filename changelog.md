@@ -1,3 +1,8 @@
+#####Version 0.3.4
+
+- added comparator output to capacitors 
+
+
 #####Version 0.3.3 - BUILT
 - started working on skylines
 - fixed NEI handlers for squeezer+fermenter

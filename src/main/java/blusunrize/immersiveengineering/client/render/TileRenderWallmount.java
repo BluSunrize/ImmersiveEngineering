@@ -40,8 +40,11 @@ public class TileRenderWallmount extends TileRenderIE
 		translationMatrix.translate(.5, .5, .5);
 
 		TileEntityWallmount arm = (TileEntityWallmount)tile;
+		
 		rotationMatrix.rotate(Math.toRadians(arm.facing==2?270: arm.facing==3?90: arm.facing==4?0: 180 ), 0,1,0);
 		rotationMatrix.rotate(arm.inverted?3.14159f:0, 1,0,0);
+		if(arm.sideAttached>0)
+			rotationMatrix.rotate(Math.toRadians(-90), 0,0,1);
 
 		if(arm instanceof TileEntityWallmountMetal)
 			modelMetal.render(tile, tes, translationMatrix, rotationMatrix, true, false);

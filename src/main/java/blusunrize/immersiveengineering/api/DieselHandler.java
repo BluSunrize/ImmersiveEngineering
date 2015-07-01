@@ -113,7 +113,7 @@ public class DieselHandler
 				if(recipe.input instanceof String)
 					map.put((String) recipe.input, recipe.fluid.amount);
 				else if(recipe.input instanceof ItemStack)
-					map.put(ApiUtils.nameFromStack((ItemStack)recipe.input)+"::"+((ItemStack)recipe.input).getItemDamage(), recipe.fluid.amount);
+					map.put(((ItemStack)recipe.input).getDisplayName(), recipe.fluid.amount);
 			}
 		return ApiUtils.sortMap(map, inverse);
 	}
@@ -179,7 +179,7 @@ public class DieselHandler
 				if(recipe.input instanceof String)
 					map.put((String) recipe.input, recipe.fluid.amount);
 				else if(recipe.input instanceof ItemStack)
-					map.put(ApiUtils.nameFromStack((ItemStack)recipe.input)+"::"+((ItemStack)recipe.input).getItemDamage(), recipe.fluid.amount);
+					map.put(((ItemStack)recipe.input).getDisplayName(), recipe.fluid.amount);
 			}
 		return ApiUtils.sortMap(map, inverse);
 	}

@@ -76,6 +76,12 @@ public class ImmersiveNetHandler
 			indirectConnections.clear();
 	}
 
+	public void resetCachedIndirectConnections()
+	{
+		if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
+			indirectConnections.clear();
+	}
+
 	/**
 	 * Clears all connections to and from this node.
 	 */
@@ -267,11 +273,12 @@ public class ImmersiveNetHandler
 				}
 
 				for(Connection con : getConnections(world, toCC(next)))
-					if(toIIC(con.end, world)!=null && !checked.contains(con.end) && !openList.contains(toIIC(con.end, world)))
-					{
-						openList.add(toIIC(con.end, world));
-						backtracker.put(con.end, toCC(next));
-					}
+					if(next.allowEnergyToPass(con))
+						if(toIIC(con.end, world)!=null && !checked.contains(con.end) && !openList.contains(toIIC(con.end, world)))
+						{
+							openList.add(toIIC(con.end, world));
+							backtracker.put(con.end, toCC(next));
+						}
 				checked.add(toCC(next));
 			}
 			openList.remove(0);
@@ -330,7 +337,7 @@ public class ImmersiveNetHandler
 			ChunkCoordinates end = new ChunkCoordinates(iEnd[0],iEnd[1],iEnd[2]);
 
 			WireType type = ApiUtils.getWireTypeFromNBT(tag, "cableType");
-			
+
 			if(start!=null && end!=null)
 				return new Connection(start,end, type, tag.getInteger("length"));
 			return null;

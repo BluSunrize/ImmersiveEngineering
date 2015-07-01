@@ -44,6 +44,11 @@ public interface IImmersiveConnectable
 	public WireType getCableLimiter(TargetingInfo target);
 	
 	/**
+	 * return false to stop checking for available outputs from this point onward
+	 */
+	public boolean allowEnergyToPass(Connection con);
+	
+	/**
 	 * used to reset the CableType limiter of the tile, provided it matches the given argument
 	 * acts as a wildcard, meaning if connection.CableType is null, you /always/ reset the limiter
 	 */

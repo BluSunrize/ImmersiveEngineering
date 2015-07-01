@@ -118,6 +118,23 @@ public class BlockMetalDevices extends BlockIEBase implements blusunrize.aquatwe
 	}
 
 	@Override
+	public boolean hasComparatorInputOverride()
+    {
+        return true;
+    }
+
+	@Override
+    public int getComparatorInputOverride(World world, int x, int y, int z, int side)
+    {
+    	if(world.getTileEntity(x, y, z) instanceof TileEntityCapacitorLV)
+        {
+    		TileEntityCapacitorLV capacitor = (TileEntityCapacitorLV)world.getTileEntity(x, y, z);
+    		return (int)(15*(capacitor.getEnergyStored(ForgeDirection.getOrientation(side))/(float)capacitor.getMaxEnergyStored(ForgeDirection.getOrientation(side))));
+        }
+    	return 0;
+    }
+
+	@Override
 	public void getSubBlocks(Item item, CreativeTabs tab, List list)
 	{
 		for(int i=0; i<subNames.length; i++)
