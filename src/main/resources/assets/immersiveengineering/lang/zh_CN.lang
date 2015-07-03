@@ -280,11 +280,11 @@ chat.ImmersiveEngineering.warning.invalidPoint=存在无效连接点
 chat.ImmersiveEngineering.info.averageLoss=两点间平均能量损耗: %1$s RF
 chat.ImmersiveEngineering.info.energyStorage=存储能量: %1$s/%2$s RF
 
-chat.ImmersiveEngineering.info.forChunk=§8For Chunk from %1$s to %2$s
+chat.ImmersiveEngineering.info.forChunk=§8对于位于 %1$s 至 %2$s 的区块
 chat.ImmersiveEngineering.info.coreDrill.progress=岩芯分析中: %1$s
-chat.ImmersiveEngineering.info.coreDrill.result.mineral=§7岩芯评估完毕,在 %1$s§7 发现矿脉
-chat.ImmersiveEngineering.info.coreDrill.result.depl=§7Mineral vein at %1$s§7 integrity
-chat.ImmersiveEngineering.info.coreDrill.result.none=岩芯评估完毕,未检测到矿物
+chat.ImmersiveEngineering.info.coreDrill.result.mineral=§7岩芯分析完毕,发现 %1$s§7 矿脉
+chat.ImmersiveEngineering.info.coreDrill.result.depl=§7矿脉完整度 %1$s§7 
+chat.ImmersiveEngineering.info.coreDrill.result.none=岩芯分析完毕,未检测到矿物
 
 #RECIPES
 recipe.ImmersiveEngineering.hammerCrushing=粉碎
@@ -453,7 +453,7 @@ ie.manual.entry.minerals0=在你的世界中发现的矿床分布对你来说并
 ie.manual.entry.minerals1=为了寻找并确定分布在世界中的矿产,你会想合成一个岩芯钻井.这台机器在通电时能够钻入区块并确定分布矿物的种类.钻井会消耗<config:i:coredrill_consumption>RF/t并需要<config:i:coredrill_time>ticks来完整的获取与检测样本.
 ie.manual.entry.minerals2=下面将会列出所有矿脉的种类以及在其中能够找到的矿石种类.
 
-ie.manual.entry.excavator.name=挖掘机
+ie.manual.entry.excavator.name=斗轮式挖掘机
 ie.manual.entry.excavator.subtext=比矮人更为高效
-ie.manual.entry.excavator0=挖掘机可谓是现代机械的巅峰之作.它能够将正常挖矿采集不到的<link:minerals:矿物:0>从矿脉中挖掘出来.作为代价,挖掘机拥有极为复杂的结构,并且需要消耗<config:i:excavator_consumption>RF/t来维持运作.
+ie.manual.entry.excavator0=斗轮式挖掘机可谓是现代机械的巅峰之作.它能够将正常挖矿采集不到的<link:minerals:矿物:0>从矿脉中挖掘出来.作为代价,斗轮式挖掘机拥有极为复杂的结构,并且需要消耗<config:i:excavator_consumption>RF/t来维持运作.
 ie.manual.entry.excavator1=结构由两部分组成:第一页中的机器和前一页展示的斗轮,它正好能够嵌入机器的"吊带"位置.能量输入端在机器的侧面,后面添加了红石控制面板以及物品输出口.<br>当挖掘机开采矿物时,矿脉的范围会缓慢减小,不过一个矿脉能够支撑<config:i:excavator_depletion_days>天的连续开采.
