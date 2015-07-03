@@ -39,3 +39,7 @@ minetweaker.log
 .DS_Store
 *.log
 hs_err*
+*iml
+*.ipr
+*.iws
+/.idea
