@@ -296,6 +296,7 @@ public class ItemRevolver extends ItemUpgradeableTool
 			List<SpecialRevolver> list = specialRevolvers.get(uuid);
 			if(!list.isEmpty())
 			{
+				list.add(null);
 				String existingTag = ItemNBTHelper.getString(stack, "elite");
 				if(existingTag.isEmpty())
 					applySpecialCrafting(stack, list.get(0));
@@ -315,7 +316,12 @@ public class ItemRevolver extends ItemUpgradeableTool
 	public void applySpecialCrafting(ItemStack stack, SpecialRevolver r)
 	{
 		if(r==null)
+		{
+			ItemNBTHelper.remove(stack, "elite");
+			ItemNBTHelper.remove(stack, "flavour");
+			ItemNBTHelper.remove(stack, "baseUpgrades");
 			return;
+		}
 		if(r.tag!=null && !r.tag.isEmpty())
 			ItemNBTHelper.setString(stack, "elite", r.tag);
 		if(r.flavour!=null && !r.flavour.isEmpty())

@@ -19,6 +19,7 @@
 - added zh_CN.lang
 - added a list of required blocks to every multiblock
 - attempted fix for the transfer of negative energy 
+- attempted fix on the sound system...again
  
 
 #####Version 0.3.3 - BUILT

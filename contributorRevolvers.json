@@ -34,14 +34,20 @@
 }
 
 {
-"uuid":["07c11943-628b-4671-a331-84899d08e538"],
+"uuid":["07c11943-628b-4671-a331-84899d08e538",
+"58d506e2-7ee7-4774-8b22-c7a57eda488b",4f1b6e70-4a7d-45e0-a69e-3550d528cd89
+],
 "tag":"patreonHazard","flavour":"","baseUpgrades":{},"renderAdditions":["dev_scope"]
 }
 {
-"uuid":["f34afdfb-996b-4020-b8a2-b740e2937b29"],
+"uuid":["f34afdfb-996b-4020-b8a2-b740e2937b29",
+4f1b6e70-4a7d-45e0-a69e-3550d528cd89
+],
 "tag":"patreonBlu_0","flavour":"","baseUpgrades":{},"renderAdditions":["bayonet_attachment"]
 }
 {
-"uuid":["f34afdfb-996b-4020-b8a2-b740e2937b29"],
+"uuid":["f34afdfb-996b-4020-b8a2-b740e2937b29",
+"58d506e2-7ee7-4774-8b22-c7a57eda488b"
+],
 "tag":"patreonBlu_1","flavour":"","baseUpgrades":{},"renderAdditions":["bayonet_attachment","dev_scope"]
 }
