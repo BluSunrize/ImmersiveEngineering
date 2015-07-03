@@ -88,7 +88,7 @@ public class ItemDrill extends ItemUpgradeableTool implements IFluidContainerIte
 		if(fs!=null)
 			list.add(StatCollector.translateToLocal("desc.ImmersiveEngineering.flavour.drill.fuel")+" "+fs.amount+"/"+getCapacity(stack)+"mB");
 		else
-			list.add("Empty");
+			list.add(StatCollector.translateToLocal("desc.ImmersiveEngineering.flavour.drill.empty"));
 		if(getHead(stack)==null)
 			list.add(StatCollector.translateToLocal("desc.ImmersiveEngineering.flavour.drill.noHead"));
 		else
