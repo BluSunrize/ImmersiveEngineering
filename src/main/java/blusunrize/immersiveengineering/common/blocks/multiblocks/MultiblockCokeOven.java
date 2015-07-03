@@ -99,4 +99,9 @@ public class MultiblockCokeOven implements IMultiblock
 		return true;
 	}
 
+	@Override
+	public ItemStack[] getTotalMaterials()
+	{
+		return new ItemStack[]{new ItemStack(IEContent.blockStoneDevice,27,1)};
+	}
 }

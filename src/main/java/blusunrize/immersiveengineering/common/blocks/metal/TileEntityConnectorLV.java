@@ -100,9 +100,9 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 //			}
 		}
 		else if(Lib.GREG && GregTechHelper.gregtech_isEnergyConnected(capacitor))
-//			if(simulate)
-//				return amount;
-//			else
+			if(simulate)
+				return amount;
+			else
 			{
 				GregTechHelper.gregtech_outputGTPower(capacitor, (byte)fd.getOpposite().ordinal(), (long)ModCompatability.convertRFtoEU(amount, getIC2Tier()), 1L);
 				return amount;
@@ -194,7 +194,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 				{
 					int tempR = toIIC(con.end,worldObj).outputEnergy(Math.min(output,con.cableType.getTransferRate()), true, energyType);
 					int r = tempR;
-					tempR -= (int) Math.floor(tempR*con.getAverageLossRate());
+					tempR -= (int) Math.max(0, Math.floor(tempR*con.getAverageLossRate()));
 					toIIC(con.end, worldObj).outputEnergy(tempR, simulate, energyType);
 					received += r;
 					powerLeft -= r;

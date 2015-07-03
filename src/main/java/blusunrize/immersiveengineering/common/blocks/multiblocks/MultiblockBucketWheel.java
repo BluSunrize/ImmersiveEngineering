@@ -108,4 +108,11 @@ public class MultiblockBucketWheel implements IMultiblock
 		return true;
 	}
 
+	@Override
+	public ItemStack[] getTotalMaterials()
+	{
+		return new ItemStack[]{
+				new ItemStack(IEContent.blockStorage,9,7),
+				new ItemStack(IEContent.blockMetalDecoration,20,BlockMetalDecoration.META_scaffolding)};
+	}
 }

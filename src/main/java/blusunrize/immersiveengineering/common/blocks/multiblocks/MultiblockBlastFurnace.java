@@ -61,4 +61,10 @@ public class MultiblockBlastFurnace implements IMultiblock
 				}
 		return true;
 	}
+
+	@Override
+	public ItemStack[] getTotalMaterials()
+	{
+		return new ItemStack[]{new ItemStack(IEContent.blockStoneDevice,9,7)};
+	}
 }

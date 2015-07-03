@@ -472,6 +472,8 @@ public class IEContent
 		addOredictRecipe(new ItemStack(blockMetalDevice,1, BlockMetalDevices.META_furnaceHeater), "ICI","CBC","IRI", 'I',"ingotIron",'R',"dustRedstone",'C',"ingotCopper",'B',copperCoil);
 		addOredictRecipe(new ItemStack(blockMetalDevice,1, BlockMetalDevices.META_sorter), "IRI","WBW","IRI", 'I',"ingotIron",'R',"dustRedstone",'W',treatedWood,'B',componentIron);
 		addOredictRecipe(new ItemStack(blockMetalDevice,1, BlockMetalDevices.META_sampleDrill), "SFS","SFS","BFB", 'F',new ItemStack(blockMetalDecoration,1,BlockMetalDecoration.META_fence),'S',new ItemStack(blockMetalDecoration,1,BlockMetalDecoration.META_scaffolding),'B',new ItemStack(blockMetalDecoration,1,BlockMetalDecoration.META_lightEngineering));
+		
+		addOredictRecipe(new ItemStack(blockMetalDevice2,1, BlockMetalDevices2.META_breakerSwitch), " L ","CIC", 'L',Blocks.lever,'C',Blocks.hardened_clay,'I',"ingotCopper");
 
 		addOredictRecipe(new ItemStack(blockMetalDecoration,16,BlockMetalDecoration.META_fence), "III","III", 'I',"ingotSteel");
 		addOredictRecipe(new ItemStack(blockMetalDecoration, 6,BlockMetalDecoration.META_scaffolding), "III"," S ","S S", 'I',"ingotSteel",'S',new ItemStack(blockMetalDecoration,1,0));

@@ -8,3 +8,4 @@ CODE
 
 LOCALIZATION
 - ru_RU.lang - Remeh84 & Adaptivity
+- zh_CN.lang - 3TUSK, crafteverywhere, bakaxyf, IamAchang, UUUii, CannonFotter & Joccob 

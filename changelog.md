@@ -11,9 +11,14 @@
 - Lightningrod now doesn't work for spawned lightning anymore
 - changed internal methods for the manual
 - added a new functions to the API, allowing a check if power can pass through a connector
-- added a breakerswitch to use that function
+- added methods to the API to determine whether a wire transfers power
+- added a breakerswitch to use those functions
 - added more placing options to wallmounts
+- added downwards-facing arms to wooden poles
 - added comparator output to capacitors
+- added zh_CN.lang
+- added a list of required blocks to every multiblock
+- attempted fix for the transfer of negative energy 
  
 
 #####Version 0.3.3 - BUILT

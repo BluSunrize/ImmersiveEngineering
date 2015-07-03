@@ -78,4 +78,14 @@ public class MultiblockExcavatorDemo implements IMultiblock
 	{
 		return false;
 	}
+	
+	@Override
+	public ItemStack[] getTotalMaterials()
+	{
+		return new ItemStack[]{
+				new ItemStack(IEContent.blockStorage,21,7),
+				new ItemStack(IEContent.blockMetalDecoration,9,BlockMetalDecoration.META_lightEngineering),
+				new ItemStack(IEContent.blockMetalDecoration,13,BlockMetalDecoration.META_heavyEngineering),
+				new ItemStack(IEContent.blockMetalDecoration,23,BlockMetalDecoration.META_scaffolding)};
+	}
 }

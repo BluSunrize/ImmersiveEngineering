@@ -105,4 +105,12 @@ public class MultiblockRefinery implements IMultiblock
 		return true;
 	}
 
+	@Override
+	public ItemStack[] getTotalMaterials()
+	{
+		return new ItemStack[]{
+				new ItemStack(IEContent.blockMetalDecoration,8,BlockMetalDecoration.META_scaffolding),
+				new ItemStack(IEContent.blockMetalDecoration,6,BlockMetalDecoration.META_lightEngineering),
+				new ItemStack(IEContent.blockMetalDecoration,27,BlockMetalDecoration.META_heavyEngineering)};
+	}
 }

@@ -107,4 +107,12 @@ public class MultiblockDieselGenerator implements IMultiblock
 		return true;
 	}
 
+	@Override
+	public ItemStack[] getTotalMaterials()
+	{
+		return new ItemStack[]{
+				new ItemStack(IEContent.blockMetalDecoration,6,BlockMetalDecoration.META_generator),
+				new ItemStack(IEContent.blockMetalDecoration,9,BlockMetalDecoration.META_radiator),
+				new ItemStack(IEContent.blockMetalDecoration,27,BlockMetalDecoration.META_heavyEngineering)};
+	}
 }

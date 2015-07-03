@@ -5,14 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -70,9 +67,9 @@ import blusunrize.immersiveengineering.client.render.TileRenderWorkbench;
 import blusunrize.immersiveengineering.common.CommonProxy;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundTile;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDecoration;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDevices;
+import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDevices2;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBreakerSwitch;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBucketWheel;
@@ -124,7 +121,6 @@ import blusunrize.lib.manual.ManualPages.PositionedItemStack;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.registry.GameData;
 
 public class ClientProxy extends CommonProxy
 {
@@ -277,6 +273,7 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.CraftingMulti(manual, "generatorWindmill", new ItemStack(IEContent.blockWoodenDevice,1,2),new ItemStack(IEContent.itemMaterial,1,2)),
 				new ManualPages.CraftingMulti(manual, "generatorWatermill", new ItemStack(IEContent.blockWoodenDevice,1,1),new ItemStack(IEContent.itemMaterial,1,1)),
 				new ManualPages.CraftingMulti(manual, "generatorWindmillImproved", new ItemStack(IEContent.blockWoodenDevice,1,3),new ItemStack(IEContent.itemMaterial,1,4),new ItemStack(IEContent.itemMaterial,1,5)));
+		manual.addEntry("breaker", "energy", new ManualPages.Crafting(manual, "breaker0", new ItemStack(IEContent.blockMetalDevice2,1,BlockMetalDevices2.META_breakerSwitch)));
 		sortedMap = ThermoelectricHandler.getThermalValuesSorted(true);
 		table = formatToTable_ItemIntHashmap(sortedMap,"K");	
 		manual.addEntry("thermoElectric", "energy", 
@@ -378,13 +375,7 @@ public class ClientProxy extends CommonProxy
 		IESound sound = soundMap.get(soundName);
 		if(sound!=null)
 		{
-			if(tile==null || !(tile.getWorldObj().getTileEntity((int)sound.getXPosF(), (int)sound.getYPosF(), (int)sound.getZPosF()) instanceof ISoundTile))
-			{
-				ClientUtils.mc().getSoundHandler().stopSound(sound);
-				sound = null;
-				soundMap.remove(soundName);
-			}
-			else if(sound.getXPosF()==tile.xCoord && sound.getYPosF()==tile.yCoord && sound.getZPosF()==tile.zCoord)
+			if(sound.getXPosF()==tile.xCoord && sound.getYPosF()==tile.yCoord && sound.getZPosF()==tile.zCoord)
 			{
 				if(!tileActive)
 				{
@@ -393,7 +384,7 @@ public class ClientProxy extends CommonProxy
 					soundMap.remove(soundName);
 				}
 			}
-			else
+			else if(tileActive)
 			{
 				double dx = (sound.getXPosF()-ClientUtils.mc().renderViewEntity.posX)*(sound.getXPosF()-ClientUtils.mc().renderViewEntity.posX);
 				double dy = (sound.getYPosF()-ClientUtils.mc().renderViewEntity.posY)*(sound.getYPosF()-ClientUtils.mc().renderViewEntity.posY);

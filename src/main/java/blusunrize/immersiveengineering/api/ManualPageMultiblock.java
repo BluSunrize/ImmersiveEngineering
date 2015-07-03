@@ -1,11 +1,14 @@
 package blusunrize.immersiveengineering.api;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.StatCollector;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
@@ -130,9 +133,34 @@ public class ManualPageMultiblock extends ManualPages
 			GL11.glEnable(GL11.GL_BLEND);
 			GL11.glEnable(GL11.GL_DEPTH_TEST);
 
+
 			manual.fontRenderer.setUnicodeFlag(false);
+			if(this.multiblock.getTotalMaterials()!=null)
+				manual.fontRenderer.drawString("?", x+116, y+yOffTotal/2-4, manual.getTextColour(), false);
 			if(highlighted!=null)
 				gui.renderToolTip(highlighted, mx, my);
+			else if(this.multiblock.getTotalMaterials()!=null && mx>=x+116&&mx<x+122 && my>=y+yOffTotal/2-4&&my<y+yOffTotal/2+4)
+			{
+				ArrayList<String> components = new ArrayList();
+				components.add(StatCollector.translateToLocal("desc.ImmersiveEngineering.info.reqMaterial"));
+				int maxOff = 1;
+				for(ItemStack ss : this.multiblock.getTotalMaterials())
+					if((""+ss.stackSize).length()>maxOff)
+						maxOff = (""+ss.stackSize).length();
+				for(ItemStack ss : this.multiblock.getTotalMaterials())
+					if(ss!=null)
+					{
+						int indent = 0;
+						if(maxOff>(""+ss.stackSize).length())
+							indent = maxOff-(""+ss.stackSize).length();
+						String sIndent = "";
+						if(indent>0)
+						for(int ii=0;ii<indent;ii++)
+							sIndent+="0";
+						components.add(""+EnumChatFormatting.GRAY+sIndent+ss.stackSize+"x "+EnumChatFormatting.RESET+ss.getRarity().rarityColor+ss.getDisplayName());
+					}
+				gui.drawHoveringText(components, mx, my, manual.fontRenderer);
+			}
 			RenderHelper.disableStandardItemLighting();
 
 			manual.fontRenderer.setUnicodeFlag(true);

@@ -21,9 +21,13 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable
 	{
 		return true;
 	}
-
 	@Override
 	protected boolean canTakeMV()
+	{
+		return true;
+	}
+	@Override
+	protected boolean canTakeHV()
 	{
 		return true;
 	}
@@ -37,7 +41,7 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable
 	@Override
 	public boolean canConnectCable(WireType cableType, TargetingInfo target)
 	{
-		if(cableType==WireType.STEEL&&!canTakeHV())
+		if(cableType!=null && !cableType.isEnergyWire())
 			return false;
 		if(wires>=2)
 			return false;

@@ -44,5 +44,10 @@ public class MultiblockHandler
 		 * A three-dimensional array (height, length, width) of the structure to be rendered in the Engineers Manual
 		 */
 		public ItemStack[][][] getStructureManual();
+		
+		/**
+		 * An array of ItemStacks that summarizes the total amount of materials needed for the structure. Will be rendered in the Engineer's Manual
+		 */
+		public ItemStack[] getTotalMaterials();
 	}
 }

@@ -38,6 +38,7 @@ public abstract class WireType
 	public abstract int getMaxLength();
 	public abstract ItemStack getWireCoil();
 	public abstract double getRenderDiameter();
+	public abstract boolean isEnergyWire();
 
 	//THESE VALUES ARE FOR IE's OWN CABLES!
 	public static String[] uniqueNames = {"COPPER","ELECTRUM","STEEL","STRUCTURE_ROPE","STRUCTURE_STEEL"};
@@ -101,6 +102,11 @@ public abstract class WireType
 		public double getRenderDiameter()
 		{
 			return renderDiameter[ordinal];
+		}
+		@Override
+		public boolean isEnergyWire()
+		{
+			return ordinal<3;
 		}
 	}
 }

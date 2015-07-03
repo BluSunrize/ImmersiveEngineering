@@ -231,6 +231,7 @@ desc.ImmersiveEngineering.info.mineral.Lead=Lead
 desc.ImmersiveEngineering.info.mineral.Silver=Silver
 desc.ImmersiveEngineering.info.mineral.Lapis=Lapis
 
+desc.ImmersiveEngineering.info.reqMaterial=Required Materials:
 
 desc.ImmersiveEngineering.flavour.crate=Will keep its inventory when broken!
 desc.ImmersiveEngineering.flavour.coil.construction0=For decoration purposes only
@@ -339,7 +340,7 @@ ie.manual.entry.treatedwood.name=Treated Wood
 ie.manual.entry.treatedwood.subtext=Highly Durable
 ie.manual.entry.treatedwood0=Treated Wood is, quite simply, wooden planks covered in creosote oil. It is however, one of the most important materials you will be using in Immersive Engineering, so you'd better be prepared to create a lot of it.
 ie.manual.entry.treatedwoodPost0=Posts made from treated wood make for excellent attachment points for your Wire Connectors. They are 4 blocks high, so you won't be able to place them without the proper clearance.<br>Using the hammer on the sides of the topmost block will attach an arm to the post. 
-ie.manual.entry.treatedwoodPost1=You can also place <link:wiring:§o§ntransformers§r:3> on the pole, which makes it less obtrusive.
+ie.manual.entry.treatedwoodPost1=You can also place <link:wiring:§o§ntransformers§r:3> on the pole, which makes it less obtrusive.<br>Placing blocks below the arms of the wooden post will flip the arms upside down.
 
 ie.manual.entry.wiring.name=Basic Wiring
 ie.manual.entry.wiring.subtext=Bzzzt!
@@ -357,9 +358,14 @@ ie.manual.entry.wiringVoltmeter=The §lVoltmeter§r is used to measure connectio
 ie.manual.entry.generator.name=Power Generation
 ie.manual.entry.generator.subtext=
 ie.manual.entry.generator0=Transferring power is quite helpful provided you have power. To actually generate RF, you can use the kinetic forces of windmills and waterwheels. Connecting these to a dynamo will generate power based on how fast they turn.
-ie.manual.entry.generatorWindmill=The windmill is a free and easy way of generating power, albeit not a very powerful one. Its speed depends greatly on how high it is placed in the world and how obscured the space in front of it is. It will also run faster when it's raining or storming.
-ie.manual.entry.generatorWatermill=The water wheel is a fairly easy way of powering a dynamo. It's turning speed is based on the water flowing around it, so for optimal results, you'll want to direct the water in a semi-circle from the top down one side and along the bottom. Up to three water wheels can be placed against each other.
-ie.manual.entry.generatorWindmillImproved=The improved windmill is an upgrade to the windmills. While it has twice the output it's also more pricey to create, requiring tough fabric made from industrial hemp. Break tall grass to aquire hemp seeds.
+ie.manual.entry.generatorWindmill=The Windmill is a free and easy way of generating power, albeit not a very powerful one. Its speed depends greatly on how high it is placed in the world and how obscured the space in front of it is. It will also run faster when it's raining or storming.
+ie.manual.entry.generatorWatermill=The Water Wheel is a fairly easy way of powering a dynamo. It's turning speed is based on the water flowing around it, so for optimal results, you'll want to direct the water in a semi-circle from the top down one side and along the bottom. Up to three water wheels can be placed against each other.
+ie.manual.entry.generatorWindmillImproved=The improved Windmill is an upgrade to the windmills. While it has twice the output it's also more pricey to create, requiring tough fabric made from industrial hemp. Break tall grass to aquire hemp seeds.
+
+ie.manual.entry.breaker.name=Breaker Switch
+ie.manual.entry.breaker.subtext=Clap on - Clap off
+ie.manual.entry.breaker0=Breaker Switches are simply switches that can stop the flow of power through wires. They can connect two wires of the same type and will only allow power to pass when activated. This can be used to seperate power-hungry machinery from the network or switch on an additional set of generators where needed!
+#When lights are added, these switches have another use ;D
 
 ie.manual.entry.thermoElectric.name=Thermoelectric Generator
 ie.manual.entry.thermoElectric.subtext=Hot and Cold

@@ -56,4 +56,9 @@ public class MultiblockLightningRod implements IMultiblock
 		return true;
 	}
 
+	@Override
+	public ItemStack[] getTotalMaterials()
+	{
+		return new ItemStack[]{new ItemStack(IEContent.blockMetalMultiblocks,9,BlockMetalMultiblocks.META_lightningRod)};
+	}
 }

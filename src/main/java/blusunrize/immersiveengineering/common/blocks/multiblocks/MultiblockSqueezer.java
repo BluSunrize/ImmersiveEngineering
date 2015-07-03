@@ -85,4 +85,9 @@ public class MultiblockSqueezer implements IMultiblock
 		return true;
 	}
 
+	@Override
+	public ItemStack[] getTotalMaterials()
+	{
+		return new ItemStack[]{new ItemStack(IEContent.blockMetalDecoration,19,BlockMetalDecoration.META_lightEngineering),new ItemStack(IEContent.blockMetalMultiblocks,8,BlockMetalMultiblocks.META_squeezer)};
+	}
 }
