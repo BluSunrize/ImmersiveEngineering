@@ -252,6 +252,7 @@ desc.ImmersiveEngineering.flavour.revolver.patreonHazard=Exclusive DLC Content
 desc.ImmersiveEngineering.flavour.drill.noHead=No Drill head equipped
 desc.ImmersiveEngineering.flavour.drill.headDamage=Drill head status:
 desc.ImmersiveEngineering.flavour.drill.fuel=Fuel:
+desc.ImmersiveEngineering.flavour.drill.empty=Empty
 
 desc.ImmersiveEngineering.flavour.drillhead.size=Mining Area: %1$sx%1$sx%2$s 
 desc.ImmersiveEngineering.flavour.drillhead.level=Mining Level: %1$s
