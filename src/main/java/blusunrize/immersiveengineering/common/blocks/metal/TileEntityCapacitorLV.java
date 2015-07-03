@@ -27,6 +27,7 @@ public class TileEntityCapacitorLV extends TileEntityImmersiveConnectable implem
 	int[] sideConfig={-1,0,-1,-1,-1,-1};
 	EnergyStorage energyStorage = new EnergyStorage(getMaxStorage(),getMaxInput(),getMaxOutput());
 
+	public int comparatorOutput=0;
 
 	@Override
 	public void updateEntity()
@@ -72,7 +73,22 @@ public class TileEntityCapacitorLV extends TileEntityImmersiveConnectable implem
 
 		for(int i=0; i<6; i++)
 			this.transferEnergy(i);
+
+		if(worldObj.getTotalWorldTime()%32==((xCoord^zCoord)&31))
+		{
+			int i = scaleStoredEnergyTo(15);
+			if(i!=this.comparatorOutput)
+			{
+				this.comparatorOutput=i;
+				worldObj.func_147453_f(xCoord, yCoord, zCoord, getBlockType());
+			}
+		}
 	}
+	public int scaleStoredEnergyTo(int scale)
+	{
+		return (int)(scale*(energyStorage.getEnergyStored()/(float)energyStorage.getMaxEnergyStored()));
+	}
+
 	protected void transferEnergy(int side)
 	{
 		if(this.sideConfig[side] != 1)

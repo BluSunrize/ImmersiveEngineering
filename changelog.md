@@ -1,7 +1,20 @@
 #####Version 0.3.4
-
-- added comparator output to capacitors 
-
+- fixed conveyor sorter not accepting items
+- players can no longer ride bullets, sorry =P
+- players now ride the catenaries of the wires instead of straight lines
+- added temporary render to the Skyhook...and cancelled it shortly afterwards
+- moved fuel-consumption in the blastfurnace behing smelting
+- apparently Charcoal isn't oredicted by default, it should now work in the blast furnace though
+- fixed IC2 machines voiding power
+- added damage-boost for skyhook when the payler is falling, this will be an upgrade
+- Lanterns got a new render
+- Lightningrod now doesn't work for spawned lightning anymore
+- changed internal methods for the manual
+- added a new functions to the API, allowing a check if power can pass through a connector
+- added a breakerswitch to use that function
+- added more placing options to wallmounts
+- added comparator output to capacitors
+ 
 
 #####Version 0.3.3 - BUILT
 - started working on skylines

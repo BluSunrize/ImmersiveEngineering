@@ -22,7 +22,7 @@ group= "blusunrize"
 archivesBaseName = "ImmersiveEngineering"
 
 minecraft {
-    version = "1.7.10-10.13.3.1389-1710ls"
+    version = "1.7.10-10.13.4.1448-1.7.10"
 	replace '${version}', project.version
     runDir = "eclipse"
 }

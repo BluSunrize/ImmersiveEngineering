@@ -72,7 +72,15 @@ public class BlockWoodenDevices extends BlockIEBase implements blusunrize.aquatw
 			case 5:
 			case 6:
 			case 7:
-				this.setBlockBounds(type==7?0:.3125f,.5f,type==5?0:.3125f,  type==6?1:.6875f,1f,type==4?1:.6875f);
+				float fd = .5f;
+				float fu = 1f;
+				if(!world.isAirBlock(x,y-1,z))
+				{
+					fd = 0;
+					if(world.isAirBlock(x,y+1,z))
+						fu = .5f;
+				}
+				this.setBlockBounds(type==7?0:.3125f,fd,type==5?0:.3125f,  type==6?1:.6875f,fu,type==4?1:.6875f);
 				break;
 			default:
 				this.setBlockBounds(isPost(world,x-1,y,z,6)?0:.3125f,0,isPost(world,x,y,z-1,4)?0:.3125f,  isPost(world,x+1,y,z,7)?1:.6875f,1f,isPost(world,x,y,z+1,5)?1:.6875f);

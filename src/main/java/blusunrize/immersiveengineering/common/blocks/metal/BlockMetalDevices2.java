@@ -143,7 +143,7 @@ public class BlockMetalDevices2 extends BlockIEBase implements blusunrize.aquatw
 	@Override
 	public boolean isSideSolid(IBlockAccess world, int x, int y, int z, ForgeDirection side)
 	{
-		int meta = world.getBlockMetadata(x, y, z);
+//		int meta = world.getBlockMetadata(x, y, z);
 		return false;
 	}
 

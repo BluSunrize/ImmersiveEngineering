@@ -1,5 +1,7 @@
 package blusunrize.immersiveengineering.client.render;
 
+import java.util.ArrayList;
+
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
@@ -25,39 +27,45 @@ public class TileRenderPost extends TileRenderIE
 	@Override
 	public void renderStatic(TileEntity tile, Tessellator tes, Matrix4 translationMatrix, Matrix4 rotationMatrix)
 	{
-		boolean armLeft = false;
-		boolean armRight = false;
-		boolean rotate = false;
+		ArrayList<String> parts = new ArrayList<String>();
+		parts.add("Base");
+		boolean rotate=false;
+		float fr = 0;
 		if(tile.getWorldObj()!=null)
 		{
-			TileEntity tileX0 = tile.getWorldObj().getTileEntity(tile.xCoord+1,tile.yCoord+3,tile.zCoord);
-			TileEntity tileX1 = tile.getWorldObj().getTileEntity(tile.xCoord-1,tile.yCoord+3,tile.zCoord);
-			TileEntity tileZ0 = tile.getWorldObj().getTileEntity(tile.xCoord,tile.yCoord+3,tile.zCoord+1);
-			TileEntity tileZ1 = tile.getWorldObj().getTileEntity(tile.xCoord,tile.yCoord+3,tile.zCoord-1);
-			if(tileX0 instanceof TileEntityWoodenPost && ((TileEntityWoodenPost)tileX0).type==7)
-				armLeft = true;
-			if(tileX1 instanceof TileEntityWoodenPost && ((TileEntityWoodenPost)tileX1).type==6)
-				armRight = true;
-			if(tileZ0 instanceof TileEntityWoodenPost && ((TileEntityWoodenPost)tileZ0).type==5)
+			for(int i=0; i<4; i++)
 			{
-				armLeft = true;
-				rotate = true;
-			}
-			if(tileZ1 instanceof TileEntityWoodenPost && ((TileEntityWoodenPost)tileZ1).type==4)
-			{
-				armRight = true;
-				rotate = true;
+				//	IELogger.debug("offset: "+(i==2?1:i==3?-1:0)+", "+(i==0?1:i==1?-1:0)+", check: "+(4+i));
+				rotate |= handleArms(tile.getWorldObj().getTileEntity(tile.xCoord+(i==2?-1:i==3?1:0),tile.yCoord+3,tile.zCoord+(i==0?-1:i==1?1:0)), 4+i, fr, parts);
 			}
 		}
 		else
-			armRight=true;
+			parts.add("Arm_right_u");
 
 		translationMatrix.translate(.5, 0, .5);
 		if(rotate)
 			rotationMatrix.rotate(Math.toRadians(-90), 0.0, 1.0, 0.0);
 
-		String[] parts = armRight&&armLeft?new String[]{"Base","Arm_right","Arm_left"}: armRight?new String[]{"Base","Arm_right"}: armLeft?new String[]{"Base","Arm_left"}: new String[]{"Base"};
-		
-		model.render(tile, tes, translationMatrix, rotationMatrix, true, false, parts);
+		model.render(tile, tes, translationMatrix, rotationMatrix, true, false, parts.toArray(new String[0]));
 	}
+
+
+	boolean handleArms(TileEntity arm, int checkType, float rotate, ArrayList<String> parts)
+	{
+		if(arm instanceof TileEntityWoodenPost && ((TileEntityWoodenPost)arm).type==checkType)
+		{
+			String dir = checkType%2==1?"left":"right";
+			if(!arm.getWorldObj().isAirBlock(arm.xCoord,arm.yCoord-1,arm.zCoord))
+			{
+				parts.add("Arm_"+dir+"_d");
+				if(!arm.getWorldObj().isAirBlock(arm.xCoord,arm.yCoord+1,arm.zCoord))
+					parts.add("Arm_"+dir+"_u");
+			}
+			else
+				parts.add("Arm_"+dir+"_u");
+			return checkType<6;
+		}
+		return false;
+	}
+
 }

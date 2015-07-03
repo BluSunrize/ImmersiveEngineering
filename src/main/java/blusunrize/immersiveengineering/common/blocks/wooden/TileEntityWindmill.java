@@ -40,6 +40,8 @@ public class TileEntityWindmill extends TileEntityIEBase
 		else if(yCoord<70)
 			mod *= .33;
 		mod*=getSpeedModifier();
+		
+		
 		prevRotation = (float) (turnSpeed*mod);
 		rotation += turnSpeed*mod;
 		rotation %= 1;
@@ -88,6 +90,12 @@ public class TileEntityWindmill extends TileEntityIEBase
 					int zz = zCoord+(facing<=3?0:ww)+(facing==2?-dd: facing==3?dd: 0);
 					if(worldObj.isAirBlock(xx,yy,zz))
 						turnSpeed ++;
+					else if(worldObj.getTileEntity(xx,yy,zz) instanceof TileEntityWindmill)
+					{
+						blocked+=20;
+						turnSpeed++;
+						turnSpeed-=180;
+					}
 					else
 						blocked++;
 				}

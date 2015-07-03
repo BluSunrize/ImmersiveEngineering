@@ -82,9 +82,9 @@ public class EntitySkylineHook extends Entity
 			IELogger.debug("dist: "+dist);
 			if(dist<=.3125)
 			{
-				this.posX = subPoints[targetPoint].xCoord;
-				this.posY = subPoints[targetPoint].yCoord;
-				this.posZ = subPoints[targetPoint].zCoord;
+//				this.posX = subPoints[targetPoint].xCoord;
+//				this.posY = subPoints[targetPoint].yCoord;
+//				this.posZ = subPoints[targetPoint].zCoord;
 				targetPoint++;
 				IELogger.debug("next vertex: "+targetPoint);
 				double dx = (subPoints[targetPoint].xCoord-posX);
