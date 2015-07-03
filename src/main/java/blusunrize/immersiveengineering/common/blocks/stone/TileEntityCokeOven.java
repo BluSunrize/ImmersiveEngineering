@@ -106,7 +106,7 @@ public class TileEntityCokeOven extends TileEntityIEBase implements ISidedInvent
 						}
 			}
 
-			if(tank.getFluidAmount()>0)
+			if(tank.getFluidAmount()>0 && tank.getFluid()!=null && (inventory[3]==null||inventory[3].stackSize+1<inventory[3].getMaxStackSize()))
 			{
 				ItemStack filledContainer = Utils.fillFluidContainer(tank, inventory[2], inventory[3]);
 				if(filledContainer!=null)
@@ -117,24 +117,6 @@ public class TileEntityCokeOven extends TileEntityIEBase implements ISidedInvent
 						inventory[3] = filledContainer.copy();
 					this.decrStackSize(2, filledContainer.stackSize);
 				}
-				//			if(FluidContainerRegistry.isEmptyContainer(inventory[2]))
-				//			{
-				//				ItemStack filledContainer = FluidContainerRegistry.fillFluidContainer(tank.getFluid(), inventory[2]);
-				//				if(filledContainer!=null)
-				//				{
-				//					FluidStack fs = FluidContainerRegistry.getFluidForFilledItem(filledContainer);
-				//					if(fs.amount<=tank.getFluidAmount() && (inventory[3]==null || OreDictionary.itemMatches(inventory[3], filledContainer, true)))
-				//					{
-				//						this.tank.drain(fs.amount, true);
-				//						if(inventory[3]!=null && OreDictionary.itemMatches(inventory[3], filledContainer, true))
-				//							inventory[3].stackSize+=filledContainer.stackSize;
-				//						else if(inventory[3]==null)
-				//							inventory[3] = filledContainer.copy();
-				//						this.decrStackSize(2, filledContainer.stackSize);
-				//						worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-				//					}
-				//				}
-				//			}
 			}
 		}
 	}

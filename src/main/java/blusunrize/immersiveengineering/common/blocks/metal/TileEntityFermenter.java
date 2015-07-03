@@ -136,7 +136,7 @@ public class TileEntityFermenter extends TileEntityMultiblockPart implements IFl
 			}
 			else if(tick>0)
 				tick=0;
-			if(tank.getFluidAmount()>0 && tank.getFluid()!=null)
+			if(tank.getFluidAmount()>0 && tank.getFluid()!=null && (inventory[10]==null||inventory[10].stackSize+1<inventory[10].getMaxStackSize()))
 			{
 				ItemStack filledContainer = Utils.fillFluidContainer(tank, inventory[9], inventory[10]);
 				if(filledContainer!=null)
