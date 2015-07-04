@@ -269,6 +269,7 @@ public class ClientEventHandler
 				float dx = event.resolution.getScaledWidth()-32-48;
 				float dy = event.resolution.getScaledHeight()-64;
 				GL11.glPushMatrix();
+				GL11.glEnable(GL11.GL_BLEND);
 				GL11.glTranslated(dx, dy, 0);
 				GL11.glScalef(.5f, .5f, 1);
 
@@ -307,6 +308,7 @@ public class ClientEventHandler
 					}
 				}
 				RenderHelper.disableStandardItemLighting();
+				GL11.glDisable(GL11.GL_BLEND);
 				GL11.glPopMatrix();
 			}
 			else if(ClientUtils.mc().thePlayer.getCurrentEquippedItem().getItem() instanceof ItemDrill && ClientUtils.mc().thePlayer.getCurrentEquippedItem().getItemDamage()==0)
