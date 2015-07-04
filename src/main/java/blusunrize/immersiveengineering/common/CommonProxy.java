@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.common;
 
+import blusunrize.immersiveengineering.client.IEManualInstance;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -65,6 +66,11 @@ public class CommonProxy implements IGuiHandler
 
 	public void loadComplete()
 	{
+	}
+
+	public IEManualInstance getManualInstance()
+	{
+		return null;
 	}
 
 	public void handleTileSound(String soundName, TileEntity tile, boolean tileActive, float volume, float pitch)
