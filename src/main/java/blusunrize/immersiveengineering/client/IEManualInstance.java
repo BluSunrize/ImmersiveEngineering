@@ -1,6 +1,6 @@
 package blusunrize.immersiveengineering.client;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 
 import net.minecraft.util.StatCollector;
 import blusunrize.immersiveengineering.common.Config;
@@ -96,7 +96,7 @@ public class IEManualInstance extends ManualInstance
 		if(!categorySet.contains(category))
 			categorySet.add(category);
 	}
-	HashSet<String> categorySet = new HashSet<String>();
+	LinkedHashSet<String> categorySet = new LinkedHashSet<String>();
 	@Override
 	public String[] getSortedCategoryList()
 	{
