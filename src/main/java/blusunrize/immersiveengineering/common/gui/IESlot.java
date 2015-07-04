@@ -10,9 +10,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 import blusunrize.immersiveengineering.api.BlastFurnaceRecipe;
-import blusunrize.immersiveengineering.api.IBullet;
-import blusunrize.immersiveengineering.api.IDrillHead;
-import blusunrize.immersiveengineering.api.IUpgrade;
+import blusunrize.immersiveengineering.api.tool.IBullet;
+import blusunrize.immersiveengineering.api.tool.IDrillHead;
+import blusunrize.immersiveengineering.api.tool.IUpgrade;
 import blusunrize.immersiveengineering.common.items.ItemUpgradeableTool;
 
 public abstract class IESlot extends Slot

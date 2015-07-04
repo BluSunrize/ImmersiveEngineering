@@ -1,8 +1,9 @@
-package blusunrize.immersiveengineering.api;
+package blusunrize.immersiveengineering.api.energy;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;

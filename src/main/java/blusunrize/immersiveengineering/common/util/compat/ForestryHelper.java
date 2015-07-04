@@ -4,7 +4,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
-import blusunrize.immersiveengineering.api.DieselHandler;
+import blusunrize.immersiveengineering.api.energy.DieselHandler;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 public class ForestryHelper extends IECompatModule

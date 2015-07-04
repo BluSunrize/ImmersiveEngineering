@@ -1,4 +1,4 @@
-package blusunrize.immersiveengineering.api;
+package blusunrize.immersiveengineering.api.energy;
 
 import java.util.LinkedHashSet;
 

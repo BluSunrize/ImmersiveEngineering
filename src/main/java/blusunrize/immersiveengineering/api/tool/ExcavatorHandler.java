@@ -1,4 +1,4 @@
-package blusunrize.immersiveengineering.api;
+package blusunrize.immersiveengineering.api.tool;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,6 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Random;
 
+import blusunrize.immersiveengineering.api.DimensionChunkCoords;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
 

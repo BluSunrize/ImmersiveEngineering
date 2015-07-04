@@ -16,8 +16,8 @@ import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.oredict.OreDictionary;
-import blusunrize.immersiveengineering.api.DieselHandler;
-import blusunrize.immersiveengineering.api.DieselHandler.SqueezerRecipe;
+import blusunrize.immersiveengineering.api.energy.DieselHandler;
+import blusunrize.immersiveengineering.api.energy.DieselHandler.SqueezerRecipe;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockSqueezer;
@@ -108,6 +108,7 @@ public class TileEntitySqueezer extends TileEntityMultiblockPart implements IFlu
 											inventory[11] = Utils.copyStackWithAmount(recipe.output, taken*recipe.output.stackSize);
 									if(recipe.fluid!=null)
 										this.tank.fill( new FluidStack(recipe.fluid, taken*recipe.fluid.amount), true);
+									inputs-=taken;
 									update = true;
 								}
 							}

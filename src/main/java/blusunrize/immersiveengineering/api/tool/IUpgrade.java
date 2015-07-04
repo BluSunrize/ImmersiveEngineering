@@ -1,4 +1,4 @@
-package blusunrize.immersiveengineering.api;
+package blusunrize.immersiveengineering.api.tool;
 
 import java.util.HashMap;
 import java.util.Set;

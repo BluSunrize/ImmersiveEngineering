@@ -7,7 +7,7 @@ import net.minecraft.item.ItemFireworkCharge;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.Vec3;
-import blusunrize.immersiveengineering.api.IBullet;
+import blusunrize.immersiveengineering.api.tool.IBullet;
 import blusunrize.immersiveengineering.common.entities.EntityRevolvershot;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;

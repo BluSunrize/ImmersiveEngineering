@@ -1,8 +1,11 @@
 package blusunrize.immersiveengineering.client;
 
+import java.util.HashSet;
+
 import net.minecraft.util.StatCollector;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.lib.manual.IManualPage;
 import blusunrize.lib.manual.ManualInstance;
 
 public class IEManualInstance extends ManualInstance
@@ -87,9 +90,17 @@ public class IEManualInstance extends ManualInstance
 		return StatCollector.translateToLocal("item.ImmersiveEngineering.tool.manual.name");
 	}
 	@Override
+	public void addEntry(String name, String category, IManualPage... pages)
+	{
+		super.addEntry(name, category, pages);
+		if(!categoriySet.contains(category))
+			categoriySet.add(category);
+	}
+	HashSet<String> categoriySet = new HashSet<String>();
+	@Override
 	public String[] getSortedCategoryList()
 	{
-		return new String[]{"general","energy","machines"};
+		return categoriySet.toArray(new String[0]);
 	}
 	@Override
 	public String formatCategoryName(String s)

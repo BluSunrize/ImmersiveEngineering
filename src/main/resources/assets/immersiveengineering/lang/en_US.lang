@@ -52,7 +52,7 @@ tile.ImmersiveEngineering.metalDecoration.lightEngineering.name=Light Engineerin
 tile.ImmersiveEngineering.metalDecoration.connectorStructural.name=Structural Cable Connector
 tile.ImmersiveEngineering.metalDecoration.wallMount.name=Steel Wall Mount
 
-tile.ImmersiveEngineering.metalDevice2.breakerSwitch.name=Beaker Switch
+tile.ImmersiveEngineering.metalDevice2.breakerSwitch.name=Breaker Switch
 
 tile.ImmersiveEngineering.woodenDevice.post.name=Wooden Post
 tile.ImmersiveEngineering.woodenDevice.watermill.name=Water Wheel

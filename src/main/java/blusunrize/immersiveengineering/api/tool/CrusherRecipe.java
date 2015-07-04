@@ -1,9 +1,10 @@
-package blusunrize.immersiveengineering.api;
+package blusunrize.immersiveengineering.api.tool;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 

@@ -2,8 +2,8 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import net.minecraft.util.Vec3;
 import net.minecraftforge.common.util.ForgeDirection;
-import blusunrize.immersiveengineering.api.WireType;
-import blusunrize.immersiveengineering.api.ImmersiveNetHandler.Connection;
+import blusunrize.immersiveengineering.api.energy.WireType;
+import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.api.TargetingInfo;
 
 public class TileEntityConnectorHV extends TileEntityConnectorMV
