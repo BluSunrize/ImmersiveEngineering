@@ -5,11 +5,19 @@ import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.lib.manual.ManualInstance;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class IEManualInstance extends ManualInstance
 {
+	private List<String> categories = new ArrayList<String>();
+
 	public IEManualInstance()
 	{
 		super(ClientUtils.font(), "immersiveengineering:textures/gui/manual.png");
+		addCategory("general");
+		addCategory("energy");
+		addCategory("machines");
 	}
 
 	@Override
@@ -89,7 +97,7 @@ public class IEManualInstance extends ManualInstance
 	@Override
 	public String[] getSortedCategoryList()
 	{
-		return new String[]{"general","energy","machines"};
+		return categories.toArray(new String[categories.size()]);
 	}
 	@Override
 	public String formatCategoryName(String s)
@@ -141,5 +149,10 @@ public class IEManualInstance extends ManualInstance
 	public int getPagenumberColour()
 	{
 		return 0x9c917c;
+	}
+
+	public void addCategory(String name)
+	{
+		categories.add(name);
 	}
 }

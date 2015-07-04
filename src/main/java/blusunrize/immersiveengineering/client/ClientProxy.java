@@ -126,6 +126,11 @@ public class ClientProxy extends CommonProxy
 {
 	IEManualInstance manual;
 
+	public IEManualInstance getManualInstance()
+	{
+		return manual;
+	}
+
 	@Override
 	public void init()
 	{
