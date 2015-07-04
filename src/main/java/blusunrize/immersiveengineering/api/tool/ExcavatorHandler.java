@@ -120,7 +120,7 @@ public class ExcavatorHandler
 					chanceSum += chances[i];
 				}
 			}
-			recalculatedOres = existing.toArray(new String[0]);
+			recalculatedOres = existing.toArray(new String[existing.size()]);
 			recalculatedChances = new float[existing.size()];
 			int j=0;
 			for(int i=0; i<ores.length; i++)

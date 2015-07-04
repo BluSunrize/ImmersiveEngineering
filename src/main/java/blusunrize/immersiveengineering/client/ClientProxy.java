@@ -254,7 +254,7 @@ public class ClientProxy extends CommonProxy
 		pages.add(new ManualPages.Text(ManualHelper.getManual(), "minerals2"));
 		for(String[][] minTable : multiTables)
 			pages.add(new ManualPages.Table(ManualHelper.getManual(), "", minTable,true));
-		ManualHelper.addEntry("minerals", ManualHelper.CAT_GENERAL, pages.toArray(new IManualPage[0]));
+		ManualHelper.addEntry("minerals", ManualHelper.CAT_GENERAL, pages.toArray(new IManualPage[pages.size()]));
 		ManualHelper.addEntry("workbench", ManualHelper.CAT_GENERAL, new ManualPages.Crafting(ManualHelper.getManual(), "workbench0", new ItemStack(IEContent.blockWoodenDevice,1,5)));
 		
 		ManualHelper.addEntry("wiring", ManualHelper.CAT_ENERGY,

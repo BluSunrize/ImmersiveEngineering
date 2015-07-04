@@ -83,7 +83,7 @@ public class TileRenderTransformer extends TileRenderIE
 				list.add("Connector_Left");
 				list.add("Connector_Right");
 			}
-			model.render(tile, tes, translationMatrix, rotationMatrix, true, false, list.toArray(new String[0]));
+			model.render(tile, tes, translationMatrix, rotationMatrix, true, false, list.toArray(new String[list.size()]));
 		}
 	}
 }

@@ -271,7 +271,7 @@ public class ImmersiveNetHandler
 								}
 						}
 					}
-					closedList.add(new AbstractConnection(toCC(node), toCC(next), averageType, distance, connectionParts.toArray(new Connection[0])));
+					closedList.add(new AbstractConnection(toCC(node), toCC(next), averageType, distance, connectionParts.toArray(new Connection[connectionParts.size()])));
 				}
 
 				for(Connection con : getConnections(world, toCC(next)))

@@ -152,10 +152,10 @@ public class TileEntityConveyorSorter extends TileEntityIEBase implements ISided
 				}
 			}
 		return new Integer[][]{ 
-				validFilteredInvOuts.toArray(new Integer[0]),
-				validFilteredEntityOuts.toArray(new Integer[0]),
-				validUnfilteredInvOuts.toArray(new Integer[0]),
-				validUnfilteredEntityOuts.toArray(new Integer[0])
+				validFilteredInvOuts.toArray(new Integer[validFilteredInvOuts.size()]),
+				validFilteredEntityOuts.toArray(new Integer[validFilteredEntityOuts.size()]),
+				validUnfilteredInvOuts.toArray(new Integer[validUnfilteredInvOuts.size()]),
+				validUnfilteredEntityOuts.toArray(new Integer[validUnfilteredEntityOuts.size()])
 		};
 	}
 

@@ -46,7 +46,7 @@ public class TileRenderPost extends TileRenderIE
 		if(rotate)
 			rotationMatrix.rotate(Math.toRadians(-90), 0.0, 1.0, 0.0);
 
-		model.render(tile, tes, translationMatrix, rotationMatrix, true, false, parts.toArray(new String[0]));
+		model.render(tile, tes, translationMatrix, rotationMatrix, true, false, parts.toArray(new String[parts.size()]));
 	}
 
 

@@ -72,7 +72,7 @@ public class GuiManual extends GuiScreen
 			for(ManualEntry e : manual.manualContents.values())
 				if(manual.showEntryInList(e))
 					lHeaders.add(e.getName());
-			headers = lHeaders.toArray(new String[0]);
+			headers = lHeaders.toArray(new String[lHeaders.size()]);
 			this.buttonList.add(new GuiClickableList(this, 0, guiLeft+40,guiTop+20, 100,148, 1f, 1, headers));
 		}
 		else if(manual.manualContents.containsKey(selectedCategory))
@@ -81,7 +81,7 @@ public class GuiManual extends GuiScreen
 			for(ManualEntry e : manual.manualContents.get(selectedCategory))
 				if(manual.showEntryInList(e))
 					lHeaders.add(e.getName());
-			headers = lHeaders.toArray(new String[0]);
+			headers = lHeaders.toArray(new String[lHeaders.size()]);
 			this.buttonList.add(new GuiClickableList(this, 0, guiLeft+40,guiTop+20, 100,148, 1f, 1, headers));
 		}
 		else
@@ -90,7 +90,7 @@ public class GuiManual extends GuiScreen
 			for(String cat : manual.getSortedCategoryList())
 				if(manual.showCategoryInList(cat))
 					lHeaders.add(cat);
-			headers = lHeaders.toArray(new String[0]);
+			headers = lHeaders.toArray(new String[lHeaders.size()]);
 			this.buttonList.add(new GuiClickableList(this, 0, guiLeft+40,guiTop+20, 100,148, 1f, 0, headers));
 		}
 		if(manual.manualContents.containsKey(selectedCategory) || manual.getEntry(selectedEntry)!=null)

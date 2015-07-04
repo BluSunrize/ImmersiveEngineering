@@ -279,7 +279,7 @@ public class ItemRevolver extends ItemUpgradeableTool
 		}
 		if(upgrades.getBoolean("electro"))
 			render.add("player_electro");
-		return render.toArray(new String[0]);
+		return render.toArray(new String[render.size()]);
 	}
 
 

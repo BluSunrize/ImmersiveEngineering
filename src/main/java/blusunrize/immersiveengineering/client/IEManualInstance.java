@@ -93,14 +93,14 @@ public class IEManualInstance extends ManualInstance
 	public void addEntry(String name, String category, IManualPage... pages)
 	{
 		super.addEntry(name, category, pages);
-		if(!categoriySet.contains(category))
-			categoriySet.add(category);
+		if(!categorySet.contains(category))
+			categorySet.add(category);
 	}
-	HashSet<String> categoriySet = new HashSet<String>();
+	HashSet<String> categorySet = new HashSet<String>();
 	@Override
 	public String[] getSortedCategoryList()
 	{
-		return categoriySet.toArray(new String[0]);
+		return categorySet.toArray(new String[categorySet.size()]);
 	}
 	@Override
 	public String formatCategoryName(String s)
