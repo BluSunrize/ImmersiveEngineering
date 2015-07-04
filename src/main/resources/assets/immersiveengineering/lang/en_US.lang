@@ -329,7 +329,7 @@ ie.manual.entry.oreProcessing1=Mixing dusts creates an alloy blend that can then
 
 ie.manual.entry.hemp.name=Industrial Hemp
 ie.manual.entry.hemp.subtext=530 fabric it
-ie.manual.entry.hemp0=Industrial Hemp is a remarkable plant! Not only are its seeds useful for the the creation of <link:biodiesel:§o§nBiodiesel§r>, the hemp fibers are also vital in the creation of <link:generator:§o§nImproved §o§nWindmills§r:4>. The seeds can be gathered by breaking tall grass.
+ie.manual.entry.hemp0=Industrial Hemp is a remarkable plant! Not only are its seeds useful for the the creation of <link:biodiesel:§o§nBiodiesel§r>, the hemp fibers are also vital in the creation of <link:generator:§o§nImproved §o§nWindmills§r:3>. The seeds can be gathered by breaking tall grass.
 
 ie.manual.entry.cokeoven.name=Coke Oven
 ie.manual.entry.cokeoven.subtext=Hot topic!
