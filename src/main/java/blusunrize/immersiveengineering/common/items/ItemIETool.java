@@ -15,10 +15,10 @@ import net.minecraftforge.common.util.ForgeDirection;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.MultiblockHandler;
 import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
+import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.api.energy.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler.AbstractConnection;
-import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.common.IESaveData;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Lib;
@@ -46,6 +46,17 @@ public class ItemIETool extends ItemIEBase
 		}
 	}
 
+	@Override
+	public boolean hasContainerItem(ItemStack stack)
+	{
+		return stack.getItemDamage()==0;
+	}
+	@Override
+	public ItemStack getContainerItem(ItemStack stack)
+	{
+		return stack.getItemDamage()==0?stack: null;
+	}
+	
 	@Override
 	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
 	{

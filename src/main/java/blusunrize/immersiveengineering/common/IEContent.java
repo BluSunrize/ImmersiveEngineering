@@ -621,13 +621,13 @@ public class IEContent
 	public static void loadComplete()
 	{
 		//Crushing
-		addHammerCrushingRecipe("Iron");
-		addHammerCrushingRecipe("Gold");
-		addHammerCrushingRecipe("Copper");
-		addHammerCrushingRecipe("Aluminum");
-		addHammerCrushingRecipe("Lead");
-		addHammerCrushingRecipe("Silver");
-		addHammerCrushingRecipe("Nickel");
+		addHammerCrushingRecipe("Iron",8);
+		addHammerCrushingRecipe("Gold",9);
+		addHammerCrushingRecipe("Copper",10);
+		addHammerCrushingRecipe("Aluminum",11);
+		addHammerCrushingRecipe("Lead",12);
+		addHammerCrushingRecipe("Silver",13);
+		addHammerCrushingRecipe("Nickel",14);
 		Config.setBoolean("crushingOreRecipe", !validCrushingOres.isEmpty());
 	}
 
@@ -688,11 +688,11 @@ public class IEContent
 		GameRegistry.addRecipe(new ShapelessOreRecipe(output, recipe));
 	}
 	public static List<String> validCrushingOres = new ArrayList();
-	public static void addHammerCrushingRecipe(String oreName)
+	public static void addHammerCrushingRecipe(String oreName, int dustMeta)
 	{
 		if(OreDictionary.getOres("dust"+oreName).size()<2)
 		{
-			GameRegistry.addRecipe(new RecipeOreCrushing(oreName));
+			GameRegistry.addRecipe(new RecipeOreCrushing(oreName,dustMeta));
 			validCrushingOres.add(oreName);
 		}
 	}

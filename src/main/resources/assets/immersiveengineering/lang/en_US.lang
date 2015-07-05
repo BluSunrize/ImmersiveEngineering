@@ -380,7 +380,7 @@ ie.manual.entry.blastfurnaceBlock=To form a Blast Furnace, arrange 27 of these b
 ie.manual.entry.steelconstruction.name=Steel Constructions
 ie.manual.entry.steelconstruction.subtext=Riveting
 ie.manual.entry.steelconstruction0=Steel is not only an integral part of high-voltage architectures, it is also quite useful in, well, architecture. Steel scaffolding can be used to quickly create climbable structures, steel fencing keeps baddies at bay and structural arms make for great attachment points for your HV relays. 
-ie.manual.entry.steelconstruction1=Structural Connectors work similarly to normal connectors, but instead of transferring energy, they are purely decorational.<br>They won't accept normal wires, but Hemp Rope and Steel Cable (see next page).<br>You can also rotate them by rightclicking them with an Engineer's Hammer.
+ie.manual.entry.steelconstruction1=Structural Connectors work similarly to normal connectors, but instead of transferring energy, they are purely decorative.<br>They won't accept normal wires, but Hemp Rope and Steel Cable (see next page).<br>You can also rotate them by rightclicking them with an Engineer's Hammer.
 
 ie.manual.entry.highvoltage.name=High-Voltage
 ie.manual.entry.highvoltage.subtext=You can't shake the shock
@@ -442,14 +442,14 @@ ie.manual.entry.revolver0=The Revolver, a more elegant weapon from a more civili
 ie.manual.entry.revolver1=There are 5 different types of ammunition the Revolver will accept. To load it, sneak+rightclick the weapon, then place cartridges into the slots.<br>A loaded Speedloader in your inventory, will be used to refill the revolver after you've fired your last shot.
 ie.manual.entry.revolver2=Casull: Simple lead projectile, capable of inflicting medium damage.<br><br>Armor-Piercing: Dense metal projectile, penetrates the armor by sheer kinetic force.<br><br>High-Explosive: Creates small explosion on impact.
 ie.manual.entry.revolver3=Buckshot: Collection of small projectiles, spreading in a cone shape. Effective at short range.<br><br>Dragon's Breath: Flammable metal dust, creates a short-ranged inferno.
-ie.manual.entry.revolver4=By attaching a bayonet to the revolver, you outfit it with close-quarter-combat cabapilities, allowing for melee damage as powerful as an Iron Sword.
+ie.manual.entry.revolver4=By attaching a bayonet to the revolver, you outfit it with close-quarter-combat capabilities, allowing for melee damage as powerful as an Iron Sword.
 ie.manual.entry.revolver5=The Extended Magazine allows loading 6 more cartridges into the revolver. This magazine does not get refilled by a speedloader.
 ie.manual.entry.revolver6=The Amplifying Electron Tubes apply an electric shock to fired projectiles. This shock persists till it hits the target (don't ask how it works) and is passed on. The target will be stunned for a fraction of a second and all powered equipment they may be using will suffer a slight discharge.
 
 ie.manual.entry.crusher.name=Crusher
 ie.manual.entry.crusher.subtext=Keep your hands out!
 ie.manual.entry.crusher0=Crushing an ore is an effective way of increasing their yield, for each ore creates two dusts which you can then smelt. This industrial-size crusher is a quick way of doing so. The machine will consume up to <config:i:crusher_consumption> RF/t, and its processing speed depends on the power supplied.
-ie.manual.entry.crusher1=However, it is not only used for crushing ores. Every living being to fall into the machine will take grave damage and the crusher will output the relevant drops.<br>Applying a redstone signal to the control panel at the front will halt the crushers process.<br>The structure is formed by right clicking the central block of the front. The front is the wide side of the structure which has a light engineering block at the bottom.
+ie.manual.entry.crusher1=However, it is not only used for crushing ores. Every living being to fall into the machine will take grave damage and the crusher will output the relevant drops. Likewise, all items that cannot be processed will be destroyed.<br>Applying a redstone signal to the control panel at the front will halt the crushers process.<br>The structure is formed by right clicking the central block of the front. The front is the wide side of the structure which has a light engineering block at the bottom.
 
 ie.manual.entry.lightningrod.name=Lightning Rod
 ie.manual.entry.lightningrod.subtext=Thunderstruck!

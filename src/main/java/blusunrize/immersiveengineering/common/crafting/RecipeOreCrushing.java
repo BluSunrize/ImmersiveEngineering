@@ -7,16 +7,19 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
+import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.Utils;
 
 public class RecipeOreCrushing implements IRecipe
 {
 	String oreName;
+	int dustMeta;
 
-	public RecipeOreCrushing(String oreName)
+	public RecipeOreCrushing(String oreName, int dustMeta)
 	{
 		this.oreName=oreName;
+		this.dustMeta=dustMeta;
 	}
 
 	@Override
@@ -66,6 +69,8 @@ public class RecipeOreCrushing implements IRecipe
 	@Override
 	public ItemStack getRecipeOutput()
 	{
+		if(dustMeta>=0)
+			return new ItemStack(IEContent.itemMetal,1,dustMeta);
 		return OreDictionary.getOres("dust"+oreName).isEmpty()?null:OreDictionary.getOres("dust"+oreName).get(0);
 	}
 
