@@ -330,45 +330,46 @@ public class Utils
 		inventory.setInventorySlotContents(slot, existingStack);
 		return stackLimit >= stack.stackSize ? null : stack.splitStack(stack.stackSize - stackLimit);
 	}
-	
+
 
 	public static boolean canInsertStackIntoInventory(IInventory inventory, ItemStack stack, int side)
 	{
-		if (stack == null || inventory == null)
+		if(stack == null || inventory == null)
 			return false;
-		if (inventory instanceof ISidedInventory)
+		if(inventory instanceof ISidedInventory)
 		{
 			ISidedInventory sidedInv = (ISidedInventory) inventory;
 			int slots[] = sidedInv.getAccessibleSlotsFromSide(side);
-			if (slots == null)
+			if(slots == null)
 				return false;
-			for (int i=0; i<slots.length && stack!=null; i++)
+			for(int i=0; i<slots.length && stack!=null; i++)
 			{
-				if (sidedInv.canInsertItem(slots[i], stack, side))
+				if(sidedInv.canInsertItem(slots[i], stack, side) && sidedInv.isItemValidForSlot(slots[i], stack))
 				{
 					ItemStack existingStack = inventory.getStackInSlot(slots[i]);
-					if(OreDictionary.itemMatches(existingStack, stack, true)&&ItemStack.areItemStackTagsEqual(stack, existingStack))
-						if(existingStack.stackSize+stack.stackSize<inventory.getInventoryStackLimit())
-							return true;
+					if(existingStack==null)
+						return true;
+					else
+						if(OreDictionary.itemMatches(existingStack, stack, true)&&ItemStack.areItemStackTagsEqual(stack, existingStack))
+							if(existingStack.stackSize+stack.stackSize<inventory.getInventoryStackLimit() && existingStack.stackSize+stack.stackSize<existingStack.getMaxStackSize())
+								return true;
 				}
 			}
-			for (int i=0; i<slots.length && stack!=null; i++)
-				if (inventory.getStackInSlot(slots[i]) == null && sidedInv.canInsertItem(slots[i], stack, side))
-					return true;
 		}
 		else
 		{
 			int invSize = inventory.getSizeInventory();
-			for (int i=0; i<invSize && stack!=null; i++)
-			{
-				ItemStack existingStack = inventory.getStackInSlot(i);
-				if (OreDictionary.itemMatches(existingStack, stack, true)&&ItemStack.areItemStackTagsEqual(stack, existingStack))
-					if(existingStack.stackSize+stack.stackSize<inventory.getInventoryStackLimit())
+			for(int i=0; i<invSize && stack!=null; i++)
+				if(inventory.isItemValidForSlot(i, stack))
+				{
+					ItemStack existingStack = inventory.getStackInSlot(i);
+					if(existingStack==null)
 						return true;
-			}
-			for (int i=0; i<invSize && stack!=null; i++)
-				if (inventory.getStackInSlot(i) == null)
-					return true;
+					else
+						if(OreDictionary.itemMatches(existingStack, stack, true)&&ItemStack.areItemStackTagsEqual(stack, existingStack))
+							if(existingStack.stackSize+stack.stackSize<inventory.getInventoryStackLimit() && existingStack.stackSize+stack.stackSize<existingStack.getMaxStackSize())
+								return true;
+				}
 		}
 		return false;
 	}

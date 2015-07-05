@@ -136,7 +136,7 @@ public class TileEntityConveyorSorter extends TileEntityIEBase implements ISided
 				{
 					ForgeDirection fd = ForgeDirection.getOrientation(side);
 					TileEntity inventory = this.worldObj.getTileEntity(xCoord+fd.offsetX, yCoord+fd.offsetY, zCoord+fd.offsetZ);
-					if(isInventory(inventory, ForgeDirection.OPPOSITES[side]))
+					if(isInventory(inventory, ForgeDirection.OPPOSITES[side]) && Utils.canInsertStackIntoInventory((IInventory)inventory, stack, ForgeDirection.OPPOSITES[side]))
 						validFilteredInvOuts.add(side);
 					else if(allowThrowing)
 						validFilteredEntityOuts.add(side);
@@ -145,7 +145,7 @@ public class TileEntityConveyorSorter extends TileEntityIEBase implements ISided
 				{
 					ForgeDirection fd = ForgeDirection.getOrientation(side);
 					TileEntity inventory = this.worldObj.getTileEntity(xCoord+fd.offsetX, yCoord+fd.offsetY, zCoord+fd.offsetZ);
-					if(isInventory(inventory, ForgeDirection.OPPOSITES[side]))
+					if(isInventory(inventory, ForgeDirection.OPPOSITES[side]) && Utils.canInsertStackIntoInventory((IInventory)inventory, stack, ForgeDirection.OPPOSITES[side]))
 						validUnfilteredInvOuts.add(side);
 					else if(allowThrowing)
 						validUnfilteredEntityOuts.add(side);
@@ -164,10 +164,8 @@ public class TileEntityConveyorSorter extends TileEntityIEBase implements ISided
 	{
 		ForgeDirection fd = ForgeDirection.getOrientation(side);
 		TileEntity inventory = this.worldObj.getTileEntity(xCoord+fd.offsetX, yCoord+fd.offsetY, zCoord+fd.offsetZ);
-		if(isInventory(inventory, ForgeDirection.OPPOSITES[side]))
-		{
+		if(isInventory(inventory, ForgeDirection.OPPOSITES[side]) && Utils.canInsertStackIntoInventory((IInventory)inventory, stack, ForgeDirection.OPPOSITES[side]))
 			stack = Utils.insertStackIntoInventory((IInventory)inventory, stack, ForgeDirection.OPPOSITES[side]);
-		}
 
 		if(stack != null)
 		{
