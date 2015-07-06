@@ -288,6 +288,7 @@ chat.ImmersiveEngineering.info.coreDrill.progress=Core Sample in progress: %1$s
 chat.ImmersiveEngineering.info.coreDrill.result.mineral=§7Core Sample evaluated, %1$s§7 vein found
 chat.ImmersiveEngineering.info.coreDrill.result.depl=§7Mineral vein at %1$s§7 integrity
 chat.ImmersiveEngineering.info.coreDrill.result.none=Core Sample evaluated, no minerals found
+chat.ImmersiveEngineering.info.coreDrill.infinite=Infinite
 
 #RECIPES
 recipe.ImmersiveEngineering.hammerCrushing=Crushing

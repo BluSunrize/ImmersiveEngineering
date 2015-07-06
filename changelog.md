@@ -1,4 +1,4 @@
-#####Version 0.3.4
+#####Version 0.4.0
 - fixed conveyor sorter not accepting items
 - players can no longer ride bullets, sorry =P
 - players now ride the catenaries of the wires instead of straight lines
@@ -20,7 +20,16 @@
 - added a list of required blocks to every multiblock
 - attempted fix for the transfer of negative energy 
 - attempted fix on the sound system...again
- 
+- changes to revolver crafting, even users of custom skins can now get the normal one
+- stopped fluid producers from stacking unstackables
+- fixed Industrail Hemp page linking to the wrong page
+- refactored the API
+- added manual support into the API, so addon devs can do custom entries&categories
+- Fermenter&Squeezers no longer consume 9 of every stack but 9 in total
+- fixed hammer recipes to no longer consume the hammer and priorizite IE dusts
+- fixed ItemRouter voiding more stuff
+- fixed excavator being unlimited for negative numbers
+
 
 #####Version 0.3.3 - BUILT
 - started working on skylines

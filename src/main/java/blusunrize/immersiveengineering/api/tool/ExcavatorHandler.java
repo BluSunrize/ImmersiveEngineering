@@ -48,12 +48,15 @@ public class ExcavatorHandler
 		if(world.isRemote)
 			return null;
 
-		if(!mineralDepletion.containsKey(new DimensionChunkCoords(world.provider.dimensionId, chunkX,chunkZ)))
-			mineralDepletion.put(new DimensionChunkCoords(world.provider.dimensionId, chunkX,chunkZ), 0);
-		int dep = mineralDepletion.get(new DimensionChunkCoords(world.provider.dimensionId, chunkX,chunkZ));
-		if(dep>mineralVeinCapacity)
-			return null;
-
+		if(mineralVeinCapacity>=0)
+		{
+			if(!mineralDepletion.containsKey(new DimensionChunkCoords(world.provider.dimensionId, chunkX,chunkZ)))
+				mineralDepletion.put(new DimensionChunkCoords(world.provider.dimensionId, chunkX,chunkZ), 0);
+			int dep = mineralDepletion.get(new DimensionChunkCoords(world.provider.dimensionId, chunkX,chunkZ));
+			if(dep>mineralVeinCapacity)
+				return null;
+		}
+		
 		long seed = world.getSeed();
 		boolean empty = ((seed+(chunkX*chunkX + chunkZ*chunkZ))^seed)%8!=0; //Used to be 1 in 4
 		int query = (int) ((seed+((chunkX*chunkX*71862)+(chunkZ*chunkZ*31261)))^seed);
