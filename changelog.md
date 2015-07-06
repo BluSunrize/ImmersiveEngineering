@@ -1,4 +1,4 @@
-#####Version 0.4.0
+#####Version 0.4.0 - BUILT
 - fixed conveyor sorter not accepting items
 - players can no longer ride bullets, sorry =P
 - players now ride the catenaries of the wires instead of straight lines
