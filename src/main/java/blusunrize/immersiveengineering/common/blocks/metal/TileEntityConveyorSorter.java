@@ -403,7 +403,7 @@ public class TileEntityConveyorSorter extends TileEntityIEBase implements ISided
 					if(this.filters[i][j] != null)
 					{
 						NBTTagCompound itemTag = new NBTTagCompound();
-						itemTag.setByte("Slot", (byte)(i*j));
+						itemTag.setByte("Slot", (byte)(i*filterSlotsPerSide+j));
 						this.filters[i][j].writeToNBT(itemTag);
 						list.appendTag(itemTag);
 					}

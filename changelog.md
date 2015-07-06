@@ -22,7 +22,7 @@
 - attempted fix on the sound system...again
 - changes to revolver crafting, even users of custom skins can now get the normal one
 - stopped fluid producers from stacking unstackables
-- fixed Industrail Hemp page linking to the wrong page
+- fixed Industrial Hemp page linking to the wrong page
 - refactored the API
 - added manual support into the API, so addon devs can do custom entries&categories
 - Fermenter&Squeezers no longer consume 9 of every stack but 9 in total
