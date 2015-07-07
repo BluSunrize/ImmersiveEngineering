@@ -54,7 +54,7 @@ tile.ImmersiveEngineering.metalDecoration.wallMount.name=钢制壁挂支架
 
 tile.ImmersiveEngineering.metalDevice2.breakerSwitch.name=断路刀闸
 
-tile.ImmersiveEngineering.woodenDevice.post.name=木桩
+tile.ImmersiveEngineering.woodenDevice.post.name=木杆
 tile.ImmersiveEngineering.woodenDevice.watermill.name=水车
 tile.ImmersiveEngineering.woodenDevice.windmill.name=风车
 tile.ImmersiveEngineering.woodenDevice.windmillAdvanced.name=改良风车
@@ -280,7 +280,7 @@ chat.ImmersiveEngineering.warning.tooFar=你离上一个连接点太远了
 chat.ImmersiveEngineering.warning.cantSee=连接被阻断
 chat.ImmersiveEngineering.warning.connectionExists=连接已存在
 chat.ImmersiveEngineering.warning.invalidPoint=存在无效连接点
-chat.ImmersiveEngineering.info.averageLoss=两点间平均能量损耗: %1$s RF
+chat.ImmersiveEngineering.info.averageLoss=两点间平均能量损耗: %1$s %
 chat.ImmersiveEngineering.info.energyStorage=存储能量: %1$s/%2$s RF
 
 chat.ImmersiveEngineering.info.forChunk=§8对于位于 %1$s 至 %2$s 的区块
@@ -313,7 +313,7 @@ ie.manual.entry.introduction.name=介绍
 ie.manual.entry.introduction.subtext=开始你的工程！
 ie.manual.entry.introduction0=诸位年轻的工程师,你们好!欢迎使用ImmersiveEngineering模组,这本手册将会作为你的向导,介绍本模组应提供的新型机器的建造流程和使用方法.<br>那就让我们从基础的事情开始吧:ImmersiveEngineering是围绕复古未来主义风格产生与能源运输两个要素而构建起来的.本模组使用红石通量(RF)作为能源,它能与现有的大部分模组的能源通用.
 ie.manual.entry.introduction1=能源是通过§l线缆§r在§l接线器§r间来传输的.线缆的长度是有限制的,因此在这些线缆之间你需要更多的接线器来作为§l中继§r.<br>你能在三种不同导线之间进行选择,它们的差异在于不同的传输速率,分别为:<config:iA:cableTransferRate:l3>RF/tick.你需要§l变压器§r实现对不同类型线缆间的切换.
-ie.manual.entry.introductionHammer=工程师锤是你当前最重要的工具.它可以用于搭建多方块结构,例如焦炉和高炉<config:b:crushingOreRecipe:,将矿石打碎成粉末: >或者是用来修改方块的设置,比如木桩.
+ie.manual.entry.introductionHammer=工程师锤是你当前最重要的工具.它可以用于搭建多方块结构,例如焦炉和高炉<config:b:crushingOreRecipe:,将矿石打碎成粉末: >或者是用来修改方块的设置,比如木杆.
 
 ie.manual.entry.ores.name=矿石
 ie.manual.entry.ores.subtext=挖吧挖吧挖洞吧
@@ -340,8 +340,8 @@ ie.manual.entry.cokeovenBlock=搭建一个高炉,首先需要27个这样的方�
 ie.manual.entry.treatedwood.name=防腐木
 ie.manual.entry.treatedwood.subtext=非常耐用
 ie.manual.entry.treatedwood0=防腐木实际上就是被杂酚油浸泡过的木板.然而,它是ImmersiveEngineering里用到最重要的材料之一,为此你需要大量制作.
-ie.manual.entry.treatedwoodPost0=你的线缆接线器需要有一个依附点,这时用防腐木做成的木桩将会是最好选择.它有四格高,所以你不能把将它放在空间不够的地方,但<br>
-ie.manual.entry.treatedwoodPost1=使用工程师锤子你也可以在木桩的顶端的侧面位置加装另一个<link:wiring:变压器:3>,这使得它不怎么显眼.
+ie.manual.entry.treatedwoodPost0=你的线缆接线器需要有一个依附点,这时用防腐木做成的木杆将会是最好选择.它有四格高,所以你不能把将它放在空间不够的地方
+ie.manual.entry.treatedwoodPost1=不过使用工程师锤子你也可以在木杆的顶端的侧面位置加装另一个<link:wiring:变压器:3>,这使得它不怎么显眼.<br>在木杆侧面支架下方放置方块会使支架改变朝向.
 
 ie.manual.entry.wiring.name=基础布线
 ie.manual.entry.wiring.subtext=滋滋滋!
@@ -352,7 +352,7 @@ ie.manual.entry.wiring3=并且线缆只能与之电压相匹配的方块相连.
 ie.manual.entry.wiringConnector=§l接线器§r是IE能源网络的输入输出端.你可以把它加装在电容器或者是其他支持RF的设备上,它们将通过连接的线缆传输能量. 高压继电器可以连接线缆但不支持输入输出,它仅仅只是作为导线间的连接点.
 ie.manual.entry.wiringCapacitor=§l电容器§r作为能量储存单元而存在.你可以用锤子调整每一面的配置,蓝色为输入,橙色为输出,若为无色则任何线缆都不会与其相连接.潜行时使用锤子将会调整相对于你所面向的一面的配置.
 ie.manual.entry.wiringTransformer0=§l变压器§r允许你在2种不同类型的线缆间运输能源.最弱的线缆会限制传输的速率.另外高压变压器可以变压为低压或中压,所以你并不需要接2个变压器.
-ie.manual.entry.wiringTransformer1=你可以把<link:wiring:变压器与木桩:3>像第四页的第二张图那样搭建,然而只有非高压变压器才能这样搭建.
+ie.manual.entry.wiringTransformer1=你可以把<link:wiring:变压器与木杆:3>像第四页的第二张图那样搭建,然而只有非高压变压器才能这样搭建.
 ie.manual.entry.wiringCutters=§l剪线钳§r用于移除已经被安装好的线缆.只需右击便可移除线缆.
 ie.manual.entry.wiringVoltmeter=§l电压表§r用于测量连接情况.右键右击一个电容器能读取当前的能量储存,按住shift+右击2个接线器还能计算它们之间的平均损耗.
 
@@ -450,7 +450,7 @@ ie.manual.entry.revolver6=加强电子管能够在弹药上附加电流.电击�
 ie.manual.entry.crusher.name=粉碎机
 ie.manual.entry.crusher.subtext=管好你的手!
 ie.manual.entry.crusher0=粉碎矿物是提高产量的有效途径,因为每个矿物都可以加工得到两份可以烧制的矿粉.这台工业级粉碎机让这个过程变得更加方便.机器的持续运作最大需要<config:i:crusher_consumption>RF/t的能量,其加工速度取决于能源供应量.
-ie.manual.entry.crusher1=然而粉碎机不仅仅是用于粉碎矿物.生物落入粉碎机将会受到持续的伤害而最终的掉落物会从粉碎机的输出端输出.<br>通过给前端的控制面板输入红石信号将暂停粉碎机的处理过程.<br>右击正前面中心方块以完成建造过程.它的前面是底部有一个轻型工程块的宽面.
+ie.manual.entry.crusher1=然而粉碎机不仅仅是用于粉碎矿物.生物落入粉碎机将会受到持续的伤害而最终的掉落物会从粉碎机的输出端输出.同样的，所有无法被处理的物品将会被销毁.<br>通过给前端的控制面板输入红石信号将暂停粉碎机的处理过程.<br>右击正前面中心方块以完成建造过程.它的前面是底部有一个轻型工程块的宽面.
 
 ie.manual.entry.lightningrod.name=避雷针
 ie.manual.entry.lightningrod.subtext=雷击!
