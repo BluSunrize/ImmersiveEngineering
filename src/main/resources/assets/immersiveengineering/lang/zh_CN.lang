@@ -52,6 +52,8 @@ tile.ImmersiveEngineering.metalDecoration.lightEngineering.name=轻型工程块
 tile.ImmersiveEngineering.metalDecoration.connectorStructural.name=钢制接线器
 tile.ImmersiveEngineering.metalDecoration.wallMount.name=钢制壁挂支架
 
+tile.ImmersiveEngineering.metalDevice2.breakerSwitch.name=断路刀闸
+
 tile.ImmersiveEngineering.woodenDevice.post.name=木桩
 tile.ImmersiveEngineering.woodenDevice.watermill.name=水车
 tile.ImmersiveEngineering.woodenDevice.windmill.name=风车
@@ -229,6 +231,7 @@ desc.ImmersiveEngineering.info.mineral.Lead=铅矿
 desc.ImmersiveEngineering.info.mineral.Silver=银矿
 desc.ImmersiveEngineering.info.mineral.Lapis=青金石矿
 
+desc.ImmersiveEngineering.info.reqMaterial=所需材料:
 
 desc.ImmersiveEngineering.flavour.crate=破坏时仍会保留其内物品!
 desc.ImmersiveEngineering.flavour.coil.construction0=仅装饰用途
@@ -285,6 +288,7 @@ chat.ImmersiveEngineering.info.coreDrill.progress=岩芯分析中: %1$s
 chat.ImmersiveEngineering.info.coreDrill.result.mineral=§7岩芯分析完毕,发现 %1$s§7 矿脉
 chat.ImmersiveEngineering.info.coreDrill.result.depl=§7矿脉完整度 %1$s§7 
 chat.ImmersiveEngineering.info.coreDrill.result.none=岩芯分析完毕,未检测到矿物
+chat.ImmersiveEngineering.info.coreDrill.infinite=无限
 
 #RECIPES
 recipe.ImmersiveEngineering.hammerCrushing=粉碎
@@ -358,6 +362,11 @@ ie.manual.entry.generator0=只有当你产出能源时,能源的运输才是有�
 ie.manual.entry.generatorWindmill=风车是一种免费而简单的发电方式,虽然功率并不高.它的速度很大程度上取决于它所处的高度以及前方运作空间,当下雨或者风暴降临时,它能运作的更快.
 ie.manual.entry.generatorWatermill=水车是相当简单的发电方式.它的转动速度是基于驱动它的流水,所以为了能达到最佳的效果,你将需要引导流水从半轮的上方流到下方直到流经底部.你最多可以将三个水车叠加在同一侧.
 ie.manual.entry.generatorWindmillImproved=改良风车是风车的升级版.虽然它有2倍的输出量但造价更昂贵,需要由工业大麻做成的坚硬布料.打草获得大麻种子.
+
+ie.manual.entry.breaker.name=断路刀闸
+ie.manual.entry.breaker.subtext=扳开-扣合
+ie.manual.entry.breaker0=断路刀闸是能够让线缆中的能量流动停止的一种简单闸门. 它们能够连接两种相同的线缆并仅有在激活时让能量通过. 它能够被用于将高能耗机器从电网中分离或者在需要时开启附加发电机组!
+#When lights are added, these switches have another use ;D
 
 ie.manual.entry.thermoElectric.name=温差电发电机
 ie.manual.entry.thermoElectric.subtext=冷和热
@@ -447,6 +456,7 @@ ie.manual.entry.lightningrod.name=避雷针
 ie.manual.entry.lightningrod.subtext=雷击!
 ie.manual.entry.lightningrod0=闪电是一种自然现象.它包含了大量的原始力量,而避雷针能够驾驭这种力量.<br>通过在多方块结构上堆叠大量钢栅栏,你增加了在雨天或雷暴天气闪电击中它的概率. 
 ie.manual.entry.lightningrod1=当钢柱被击中时,产生的大量能量会被储存在避雷针中然后缓慢的传输到侧面的能量连接点.<br><br>结构搭建如上图所示,手持工程师锤右键中央方块完成搭建. 
+
 ie.manual.entry.minerals.name=矿床
 ie.manual.entry.minerals.subtext=矿石相关
 ie.manual.entry.minerals0=在你的世界中发现的矿床分布对你来说并不新鲜.而如今我们一直忽略的是矿脉,其中混合着多种矿石的存在.由于它们细长的分布,普通的矿工难以发现它们,但一种<link:excavator:特殊机器>或许能够提供一些帮助.
