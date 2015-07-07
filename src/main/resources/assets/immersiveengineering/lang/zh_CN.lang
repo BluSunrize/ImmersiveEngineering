@@ -283,7 +283,7 @@ chat.ImmersiveEngineering.warning.invalidPoint=存在无效连接点
 chat.ImmersiveEngineering.info.averageLoss=两点间平均能量损耗: %1$s %
 chat.ImmersiveEngineering.info.energyStorage=存储能量: %1$s/%2$s RF
 
-chat.ImmersiveEngineering.info.forChunk=§8对于位于 %1$s 至 %2$s 的区块
+chat.ImmersiveEngineering.info.forChunk=§8对于位于 %1$s 至 %2$s 的区域
 chat.ImmersiveEngineering.info.coreDrill.progress=岩芯分析中: %1$s
 chat.ImmersiveEngineering.info.coreDrill.result.mineral=§7岩芯分析完毕,发现 %1$s§7 矿脉
 chat.ImmersiveEngineering.info.coreDrill.result.depl=§7矿脉完整度 %1$s§7 
