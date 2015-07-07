@@ -321,38 +321,38 @@ ie.manual.entry.oresCopper=§l铜矿石§r能在主世界<config:iA:ore_copper:1
 ie.manual.entry.oresBauxite=§l铝土矿石§r能在主世界<config:iA:ore_bauxite:1>到<config:iA:ore_bauxite:2>层找到,需要用石镐开采.<br><br>这种矿物能冶炼出铝锭,与钢一同加工能做出高压电线.
 ie.manual.entry.oresLead=§l铅矿石§r能在主世界<config:iA:ore_lead:1>到<config:iA:ore_lead:2>层找到,需要用铁镐开采.<br><br>这种矿物能冶炼出铅锭,用来制作电容.
 ie.manual.entry.oresSilver=§l银矿石§r能在主世界<config:iA:ore_silver:1>到<config:iA:ore_silver:2>层找到,需要用铁镐开采.<br><br>这种矿物能冶炼出银锭,与黄金一同加工能做出琥珀合金,它是一种更为高效的导体.
-ie.manual.entry.oresNickel=§l镍矿石§r能在主世界<config:iA:ore_nickel:1>到<config:iA:ore_nickel:2>层找到,需要用铁镐开采.<br><br>这种矿物能冶炼出镍锭,与铜锭一同加工能做出康铜合金,用于制作<link:thermoElectric:热传导发电机:0>中的耐热导线.
+ie.manual.entry.oresNickel=§l镍矿石§r能在主世界<config:iA:ore_nickel:1>到<config:iA:ore_nickel:2>层找到,需要用铁镐开采.<br><br>这种矿物能冶炼出镍锭,与铜锭一同加工能做出康铜合金,用于制作<link:thermoElectric:§o§n热传导发电机§r:0>中的耐热导线.
 
 ie.manual.entry.oreProcessing.name=矿物处理
 ie.manual.entry.oreProcessing.subtext=
 ie.manual.entry.oreProcessing0=将矿石或合金与锤子合成便可将其粉碎成粉末.这些粉末可以重新烧成锭,但更重要的是它们可以用于冶炼合金.<config:b:crushingOreRecipe:<br>用锤子粉碎矿物将会有双倍产量,是加倍产出的高效办法.: >
-ie.manual.entry.oreProcessing1=你可以通过混合金属粉末制造出各种不同用途的合金.具备温差发电特性的康铜能够用于制作<link:thermoElectric:热传导发电机:0>同时,琥珀合金制作的优质电导体被广泛用于<link:wiring:中压电器>中.
+ie.manual.entry.oreProcessing1=你可以通过混合金属粉末制造出各种不同用途的合金.具备温差发电特性的康铜能够用于制作<link:thermoElectric:§o§n热传导发电机§r:0>同时,琥珀合金制作的优质电导体被广泛用于<link:wiring:§o§n中压电器§r>中.
 
 ie.manual.entry.hemp.name=工业大麻
 ie.manual.entry.hemp.subtext=530纺织物
-ie.manual.entry.hemp0=工业大麻是一种备受瞩目的作物!不仅其种子可以用于加工<link:biodiesel:生物柴油>,工业大麻纤维对于<link:generator:改良风车:4>的制造也至关重要.种子可以通过清理草丛获得.
+ie.manual.entry.hemp0=工业大麻是一种备受瞩目的作物!不仅其种子可以用于加工<link:biodiesel:§o§n生 §o§n物柴油§r>,工业大麻纤维对于<link:generator:§o§n改良 §o§n风车§r:3>的制造也至关重要.种子可以通过清理草丛获得.
 
 ie.manual.entry.cokeoven.name=焦炉
 ie.manual.entry.cokeoven.subtext=热门话题!
-ie.manual.entry.cokeoven0=焦炉是你发展ImmersiveEngineering中所制作的第一台重要设备.它的功能十分简单,它能让煤以及煤块在无氧环境下进行燃烧,产出焦煤,一种能长时间燃烧的燃料.更重要的是,这一加工过程能产生出§l杂酚油§r,它被用于<link:treatedwood:防腐木>的制作. 同样你可以用原木在里面烧制得到木炭,同时得到少量的杂酚油.
+ie.manual.entry.cokeoven0=焦炉是你发展ImmersiveEngineering中所制作的第一台重要设备.它的功能十分简单,它能让煤以及煤块在无氧环境下进行燃烧,产出焦煤,一种能长时间燃烧的燃料.更重要的是,这一加工过程能产生出§l杂酚油§r,它被用于<link:treatedwood:§o§n防腐木§r>的制作. 同样你可以用原木在里面烧制得到木炭,同时得到少量的杂酚油.
 ie.manual.entry.cokeovenBlock=搭建一个高炉,首先需要27个这样的方块,搭建出一个3x3x3的正方体结构,用工程师锤右击侧面的中心来完成建造.<br>看接下来的图页
 
 ie.manual.entry.treatedwood.name=防腐木
 ie.manual.entry.treatedwood.subtext=非常耐用
 ie.manual.entry.treatedwood0=防腐木实际上就是被杂酚油浸泡过的木板.然而,它是ImmersiveEngineering里用到最重要的材料之一,为此你需要大量制作.
 ie.manual.entry.treatedwoodPost0=你的线缆接线器需要有一个依附点,这时用防腐木做成的木杆将会是最好选择.它有四格高,所以你不能把将它放在空间不够的地方
-ie.manual.entry.treatedwoodPost1=不过使用工程师锤子你也可以在木杆的顶端的侧面位置加装另一个<link:wiring:变压器:3>,这使得它不怎么显眼.<br>在木杆侧面支架下方放置方块会使支架改变朝向.
+ie.manual.entry.treatedwoodPost1=不过使用工程师锤子你也可以在木杆的顶端的侧面位置加装另一个<link:wiring:§o§n变压器§r:3>,这使得它不怎么显眼.<br>在木杆侧面支架下方放置方块会使支架改变朝向.
 
 ie.manual.entry.wiring.name=基础布线
 ie.manual.entry.wiring.subtext=滋滋滋!
 ie.manual.entry.wiring0=Immersive Engineering的能源网络主要有四个重要设备:§l电容器§r用于储存能量,§l接线器§r用于网络内能源的输入输出,§l继电器§r将线缆连接在一起,§l变压器§r用于不同线缆间的切换.<br>在低压中压能源网里(铜与琥珀金电线),接线器与继电器是同种方块,但高压的接线器只能用一种线缆.
 ie.manual.entry.wiring1=要连接两个方块,只需手持线圈右击一个方块,然后使用相同的线圈右击另一个.两点间总传输速率由最差的线缆决定.
-ie.manual.entry.wiring2=注意到这些方块还有一定的限制:接线器跟继电器只能与已经与其连接的同种导线相连接,而变压器只能连接两根不同种类的导线.<br>[cont]
+ie.manual.entry.wiring2=注意到这些方块还有一定的限制:接线器跟继电器只能与已经与其连接的同种导线相连接,而变压器只能连接两根不同种类的导线.
 ie.manual.entry.wiring3=并且线缆只能与之电压相匹配的方块相连.
 ie.manual.entry.wiringConnector=§l接线器§r是IE能源网络的输入输出端.你可以把它加装在电容器或者是其他支持RF的设备上,它们将通过连接的线缆传输能量. 高压继电器可以连接线缆但不支持输入输出,它仅仅只是作为导线间的连接点.
 ie.manual.entry.wiringCapacitor=§l电容器§r作为能量储存单元而存在.你可以用锤子调整每一面的配置,蓝色为输入,橙色为输出,若为无色则任何线缆都不会与其相连接.潜行时使用锤子将会调整相对于你所面向的一面的配置.
 ie.manual.entry.wiringTransformer0=§l变压器§r允许你在2种不同类型的线缆间运输能源.最弱的线缆会限制传输的速率.另外高压变压器可以变压为低压或中压,所以你并不需要接2个变压器.
-ie.manual.entry.wiringTransformer1=你可以把<link:wiring:变压器与木杆:3>像第四页的第二张图那样搭建,然而只有非高压变压器才能这样搭建.
+ie.manual.entry.wiringTransformer1=你可以把<link:wiring:§o§n变压器与木杆§r:3>像第四页的第二张图那样搭建,然而只有非高压变压器才能这样搭建.
 ie.manual.entry.wiringCutters=§l剪线钳§r用于移除已经被安装好的线缆.只需右击便可移除线缆.
 ie.manual.entry.wiringVoltmeter=§l电压表§r用于测量连接情况.右键右击一个电容器能读取当前的能量储存,按住shift+右击2个接线器还能计算它们之间的平均损耗.
 
@@ -368,7 +368,7 @@ ie.manual.entry.breaker.subtext=扳开-扣合
 ie.manual.entry.breaker0=断路刀闸是能够让线缆中的能量流动停止的一种简单闸门. 它们能够连接两种相同的线缆并仅有在激活时让能量通过. 它能够被用于将高能耗机器从电网中分离或者在需要时开启附加发电机组!
 #When lights are added, these switches have another use ;D
 
-ie.manual.entry.thermoElectric.name=温差电发电机
+ie.manual.entry.thermoElectric.name=热传导发电机
 ie.manual.entry.thermoElectric.subtext=冷和热
 ie.manual.entry.thermoElectric0=热传导发电机是另一种可用发电方式,它不依靠其他机械部件,而是借助两个温度差之间的梯度发电.
 ie.manual.entry.thermoElectric1=在发电机侧面放置热源和冷源各一,即可根据温差来产生能量.<br>下表中包括了其他可用作热源或冷源的非流体方块.
@@ -397,14 +397,14 @@ ie.manual.entry.workbench0=在你的工程师职业生涯当中,可能会涉及�
 
 ie.manual.entry.dieselgen.name=柴油发电机
 ie.manual.entry.dieselgen.subtext=比产量更重要的是: 更高的产量.
-ie.manual.entry.dieselgen0=高电压结构是令人着迷的,但要让它变得有用,你得有一个发电机来输出能源.<br>柴油发电机是其中一种产生这类能量的方式.它由复杂的多结构方式组成并且将要用到<link:biodiesel:生物柴油>或者是其他燃料.由于其产出高,它将会快速消耗燃料来运作,所以请确保你有足够的燃料来支撑它的运转.
+ie.manual.entry.dieselgen0=高电压结构是令人着迷的,但要让它变得有用,你得有一个发电机来输出能源.<br>柴油发电机是其中一种产生这类能量的方式.它由复杂的多结构方式组成并且将要用到<link:biodiesel:§o§n生物 §o§n柴油§r>或者是其他燃料.由于其产出高,它将会快速消耗燃料来运作,所以请确保你有足够的燃料来支撑它的运转.
 ie.manual.entry.dieselgen1=该装置由引擎,发电机及散热器块组建而成.将这些零件如下方所示形状放置好,接着用工程师锤子敲一下位于中央的任意发电机模块或散热器模块即可.
 ie.manual.entry.dieselgen2=燃料需要从发电机的底部位置输入,而能量的输出口允许增加至三个.它所拥有的<config:i:dieselGen_output>RF/t的输出量将会平均分散在各个连接点上.<br>用红石信号激活右侧的控制面板可以关闭发电机.
 ie.manual.entry.dieselgen3=下表列出了柴油发电机的所有有效燃料以及它们的燃烧时间(ticks). 
 
 ie.manual.entry.biodiesel.name=生物柴油
 ie.manual.entry.biodiesel.subtext=绿色能源!
-ie.manual.entry.biodiesel0=燃料需要一个方便且高效的来源,但石油是一种不可再生资源,为此生物柴油成为了最终的解决方案!由植物油和乙醇混合而成,你制造出了一种液体燃料供<link:dieselgen:柴油发电机>使用.
+ie.manual.entry.biodiesel0=燃料需要一个方便且高效的来源,但石油是一种不可再生资源,为此生物柴油成为了最终的解决方案!由植物油和乙醇混合而成,你制造出了一种液体燃料供<link:dieselgen:§o§n柴油发电机§r>使用.
 ie.manual.entry.biodiesel1=作物种子投入工业压榨机加工能得到植物油.根据图片搭建出相应的结构并使用工程师锤敲打其中一面以完成组装.能源可以从顶部或底部输入,流体则可以从底部任意一面的端口输出.
 ie.manual.entry.biodiesel1T=下方表格列出了多种能够被压榨为植物油的物品以及它们的产量.
 ie.manual.entry.biodiesel2=乙醇可以从发酵机那获得.发酵机的搭建方式类似工业压榨机,对功率的需求,能源接受以及流体输出的方式也与工业压榨机相同.
@@ -430,7 +430,7 @@ ie.manual.entry.sorter1=当物品进入到路由器后,它会被转至与其相�
 
 ie.manual.entry.drill.name=采矿机械钻
 ie.manual.entry.drill.subtext=我的钻头将打穿基岩!
-ie.manual.entry.drill0=这把手持的柴油动力机械钻是采矿领域的一次卓越进步.通过可更换的钻头和升级,它的性能几乎可以自由调整.想要改造它,只需将其放入<link:workbench:工程师装配台>.<br>如若机械钻的<link:biodiesel:生物柴油>耗尽,可以直接在炼油厂中填满.
+ie.manual.entry.drill0=这把手持的柴油动力机械钻是采矿领域的一次卓越进步.通过可更换的钻头和升级,它的性能几乎可以自由调整.想要改造它,只需将其放入<link:workbench:§o§n工程师装配台§r>.<br>如若机械钻的<link:biodiesel:§o§n生物柴油§r>耗尽,可以直接在炼油厂中填满.
 ie.manual.entry.drill1=钻头将决定基础采矿等级,速度,范围以及攻击伤害.当你在挖掘方块时,钻头会受到磨损,但它能够在铁砧中被修复.
 ie.manual.entry.drill2=因为机械钻由内燃机驱动,它无法在水下工作,除非你为它安装了内置氧化剂罐.然而,当装配这项升级后,它不仅能够在水下工作,水下挖掘所造成的迟缓也会消失不见.
 ie.manual.entry.drill3=高级润滑系统在正常基础上为机械钻提供了额外的润滑效果,使其运行与挖掘更加快速.
@@ -439,7 +439,7 @@ ie.manual.entry.drill5=大型燃料缸允许机械钻在内部存储更多燃料
 
 ie.manual.entry.revolver.name=左轮手枪
 ie.manual.entry.revolver.subtext=通缉:死或生
-ie.manual.entry.revolver0=左轮手枪,一把来自文明时代的优雅武器,可谓是小型机械的智慧结晶.小型仅仅是相对而言,毕竟这把武器填装的是12号弹药.<br>同采矿机械钻类似,左轮手枪同样能够在<link:workbench:工程师装配台>进行改造.
+ie.manual.entry.revolver0=左轮手枪,一把来自文明时代的优雅武器,可谓是小型机械的智慧结晶.小型仅仅是相对而言,毕竟这把武器填装的是12号弹药.<br>同采矿机械钻类似,左轮手枪同样能够在<link:workbench:§o§n工程师装配台§r>进行改造.
 ie.manual.entry.revolver1=左轮手枪能够接受五种不同的弹药.若想装填弹药,潜行右键武器,之后将弹药放入物品栏中.<br>若物品栏中有快速装弹器,装弹器将会在你发射出最后一颗子弹后对左轮进行装填.
 ie.manual.entry.revolver2=卡苏尔弹:简易的铅弹,能够造成中等的伤害.<br><br>穿甲弹:致密金属弹,通过纯动能力穿透护甲.<br><br>高爆弹: 击中后造成小型爆炸.
 ie.manual.entry.revolver3=鹿弹:内含大量小型弹丸,呈圆锥状散射.短距离有效.<br><br>龙息弹:易燃金属粉末,产生一束短距离火舌.
@@ -459,11 +459,11 @@ ie.manual.entry.lightningrod1=当钢柱被击中时,产生的大量能量会被�
 
 ie.manual.entry.minerals.name=矿床
 ie.manual.entry.minerals.subtext=矿石相关
-ie.manual.entry.minerals0=在你的世界中发现的矿床分布对你来说并不新鲜.而如今我们一直忽略的是矿脉,其中混合着多种矿石的存在.由于它们细长的分布,普通的矿工难以发现它们,但一种<link:excavator:特殊机器>或许能够提供一些帮助.
+ie.manual.entry.minerals0=在你的世界中发现的矿床分布对你来说并不新鲜.而如今我们一直忽略的是矿脉,其中混合着多种矿石的存在.由于它们细长的分布,普通的矿工难以发现它们,但一种<link:excavator:§o§n特殊机器§r>或许能够提供一些帮助.
 ie.manual.entry.minerals1=为了寻找并确定分布在世界中的矿产,你会想合成一个岩芯钻井.这台机器在通电时能够钻入区块并确定分布矿物的种类.钻井会消耗<config:i:coredrill_consumption>RF/t并需要<config:i:coredrill_time>ticks来完整的获取与检测样本.
 ie.manual.entry.minerals2=下面将会列出所有矿脉的种类以及在其中能够找到的矿石种类.
 
 ie.manual.entry.excavator.name=斗轮式挖掘机
 ie.manual.entry.excavator.subtext=比矮人更为高效
-ie.manual.entry.excavator0=斗轮式挖掘机可谓是现代机械的巅峰之作.它能够将正常挖矿采集不到的<link:minerals:矿物:0>从矿脉中挖掘出来.作为代价,斗轮式挖掘机拥有极为复杂的结构,并且需要消耗<config:i:excavator_consumption>RF/t来维持运作.
+ie.manual.entry.excavator0=斗轮式挖掘机可谓是现代机械的巅峰之作.它能够将正常挖矿采集不到的<link:minerals:§o§n矿物§r:0>从矿脉中挖掘出来.作为代价,斗轮式挖掘机拥有极为复杂的结构,并且需要消耗<config:i:excavator_consumption>RF/t来维持运作.
 ie.manual.entry.excavator1=结构由两部分组成:第一页中的机器和前一页展示的斗轮,它正好能够嵌入机器的"吊带"位置.能量输入端在机器的侧面,后面添加了红石控制面板以及物品输出口.<br>当挖掘机开采矿物时,矿脉的范围会缓慢减小,不过一个矿脉能够支撑<config:i:excavator_depletion_days>天的连续开采.
