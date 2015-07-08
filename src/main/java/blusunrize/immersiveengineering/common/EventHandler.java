@@ -185,7 +185,8 @@ public class EventHandler
 	{
 		//		for(int oid : OreDictionary.getOreIDs(event.itemStack))
 		//			event.toolTip.add(OreDictionary.getOreName(oid));
-
+		//		if(FluidContainerRegistry.getFluidForFilledItem(event.itemStack)!=null)
+		//			event.toolTip.add(FluidContainerRegistry.getFluidForFilledItem(event.itemStack).getUnlocalizedName());
 		//		if(event.itemStack.getItem() instanceof ItemTool && event.showAdvancedItemTooltips)
 		//		{
 		//			String mat = ((ItemTool)event.itemStack.getItem()).getToolMaterialName();

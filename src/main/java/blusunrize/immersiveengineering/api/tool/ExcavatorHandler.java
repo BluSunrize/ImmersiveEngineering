@@ -62,6 +62,7 @@ public class ExcavatorHandler
 		int query = (int) ((seed+((chunkX*chunkX*71862)+(chunkZ*chunkZ*31261)))^seed);
 		if(empty)
 			return null;
+		
 		int weight = Math.abs(query%totalWeight);
 		for(Map.Entry<MineralMix, Integer> e : mineralList.entrySet())
 		{
