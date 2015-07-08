@@ -40,8 +40,8 @@ public class Config
 		setIntArray("cableLength", cableProperty.getIntList());
 
 		setBoolean("increasedRenderboxes", config.get("General", "Increased Renderboxes", true, "By default all devices that accept cables have increased renderbounds to show cables even if the block itself is not in view. Disabling this reduces them to their minimum sizes, which might improve FPS on low-power PCs").getBoolean());
-		setBoolean("colourblindSupport", config.get("General", "Support for colourblind people, gives a text-based output on capacitor sides", false).getBoolean());
-		setBoolean("increasedTileRenderdistance", config.get("General", "Increased Tile Renderdistance", false, "Increase the distance at which certain TileEntities (specifically windmills) are still visible. Disable this to increase performance on weaker PCs").getBoolean());
+		setBoolean("colourblindSupport", config.get("General", "ColourblindSupport", false, "Support for colourblind people, gives a text-based output on capacitor sides").getBoolean());
+		setDouble("increasedTileRenderdistance", config.get("General", "Increased Tile Renderdistance", 1.5, "Increase the distance at which certain TileEntities (specifically windmills) are still visible. This is a modifier, so set it to 1 for default render distance, to 2 for doubled distance and so on.").getDouble());
 
 		setBoolean("ic2compat", config.get("General", "IC2 Compatability", true, "Set this to false to prevent wires from accepting and outputting EU").getBoolean());
 		setBoolean("gregtechcompat", config.get("General", "GregTech Compatability", true, "Set this to false to prevent wires from outputting GregTech EU").getBoolean());

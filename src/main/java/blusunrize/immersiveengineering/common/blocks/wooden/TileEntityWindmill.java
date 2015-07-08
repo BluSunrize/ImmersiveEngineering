@@ -135,8 +135,9 @@ public class TileEntityWindmill extends TileEntityIEBase
 	@Override
 	public double getMaxRenderDistanceSquared()
 	{
-		if(Config.getBoolean("increasedTileRenderdistance"))
-			return super.getMaxRenderDistanceSquared()*1.5;
-		return super.getMaxRenderDistanceSquared();
+		return super.getMaxRenderDistanceSquared()*Config.getDouble("increasedTileRenderdistance");
+//		if(Config.getBoolean("increasedTileRenderdistance"))
+//			return super.getMaxRenderDistanceSquared()*1.5;
+//		return super.getMaxRenderDistanceSquared();
 	}
 }

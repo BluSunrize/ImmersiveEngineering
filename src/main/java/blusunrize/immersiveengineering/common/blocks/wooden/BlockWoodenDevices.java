@@ -7,6 +7,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -96,6 +97,12 @@ public class BlockWoodenDevices extends BlockIEBase implements blusunrize.aquatw
 			return ((TileEntityWoodenPost)world.getTileEntity(x, y, z)).type == type;
 		return world.getBlock(x,y,z)==this && world.getBlockMetadata(x, y, z)==0;
 	}
+
+	@Override
+	public boolean isLadder(IBlockAccess world, int x, int y, int z, EntityLivingBase entity)
+    {
+		return (world.getTileEntity(x, y, z) instanceof TileEntityWoodenPost);
+    }
 
 	@Override
 	public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z)
