@@ -5,6 +5,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.common.util.ForgeDirection;
+import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityDynamo;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -122,7 +123,7 @@ public class TileEntityWatermill extends TileEntityIEBase
 			rotationVec = Vec3.createVectorHelper(0, 0, 0);
 			rotationVec = Utils.addVectors(rotationVec, getHorizontalVec());
 			rotationVec = Utils.addVectors(rotationVec, getVerticalVec());
-			worldObj.addBlockEvent(xCoord, yCoord, zCoord, getBlockType(), (int)((float)rotationVec.xCoord*10000f), (int)((float)rotationVec.zCoord*10000f));
+//			worldObj.addBlockEvent(xCoord, yCoord, zCoord, getBlockType(), (int)((float)rotationVec.xCoord*10000f), (int)((float)rotationVec.zCoord*10000f));
 		}
 		return rotationVec;
 	}
@@ -213,5 +214,13 @@ public class TileEntityWatermill extends TileEntityIEBase
 		if(offset[0]==0&&offset[1]==0)
 			return AxisAlignedBB.getBoundingBox(xCoord-(facing<=3?2:0),yCoord-2,zCoord-(facing<=3?0:2), xCoord+(facing<=3?3:0),yCoord+3,zCoord+(facing<=3?0:3));
 		return AxisAlignedBB.getBoundingBox(xCoord,yCoord,zCoord, xCoord,yCoord,zCoord);
+	}
+	@Override
+	public double getMaxRenderDistanceSquared()
+	{
+		return super.getMaxRenderDistanceSquared()*Config.getDouble("increasedTileRenderdistance");
+//		if(Config.getBoolean("increasedTileRenderdistance"))
+//			return super.getMaxRenderDistanceSquared()*1.5;
+//		return super.getMaxRenderDistanceSquared();
 	}
 }
