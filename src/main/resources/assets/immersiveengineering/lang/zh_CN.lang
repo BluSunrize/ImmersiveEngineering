@@ -410,7 +410,7 @@ ie.manual.entry.biodiesel1T=下方表格列出了多种能够被压榨为植物�
 ie.manual.entry.biodiesel2=乙醇可以从发酵机那获得.发酵机的搭建方式类似工业压榨机,对功率的需求,能源接受以及流体输出的方式也与工业压榨机相同.
 ie.manual.entry.biodiesel2T=下方表格列出了多种能够被压榨为乙醇的物品以及它们的产量.
 ie.manual.entry.biodiesel3=为了最终把植物油加工成生物柴油,你需要把流体灌入炼油厂并提供充足的能源.根据图片搭建相应的结构并用工程师锤右击其前面的中心位置.
-ie.manual.entry.biodiesel4=炼油厂的正前方位置是作为流体输出的,侧面的小孔为输入端,能源是通过组装在其上部的接线器导入,通过对右侧的控制面板输入红石信号可以停止其炼油过程.
+ie.manual.entry.biodiesel4=炼油厂的正前方位置是作为流体输出的,侧面的小孔为输入端,能源是通过组装在其后方的接线器导入,通过对右侧的控制面板输入红石信号可以停止其炼油过程.
 
 ie.manual.entry.conveyor.name=传送带
 ie.manual.entry.conveyor.subtext=谁还需要铁路?
