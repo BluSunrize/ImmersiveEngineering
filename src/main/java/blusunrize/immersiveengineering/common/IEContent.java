@@ -575,7 +575,8 @@ public class IEContent
 		DieselHandler.addFermenterRecipe(Items.reeds, 80, new FluidStack(fluidEthanol,80), null);
 		DieselHandler.addFermenterRecipe(Items.melon, 80, new FluidStack(fluidEthanol,80), null);
 		DieselHandler.addFermenterRecipe(Items.apple, 80, new FluidStack(fluidEthanol,80), null);
-
+		DieselHandler.addFermenterRecipe("cropPotato", 80, new FluidStack(fluidEthanol,80), null);
+		
 		DieselHandler.addRefineryRecipe(new FluidStack(fluidPlantoil,8), new FluidStack(fluidEthanol,8), new FluidStack(fluidBiodiesel,16));
 
 		ThermoelectricHandler.registerSourceInKelvin("blockIce", 273);
