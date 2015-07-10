@@ -2,7 +2,9 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import static blusunrize.immersiveengineering.common.util.Utils.toIIC;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -186,30 +188,39 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 		{
 			List<AbstractConnection> outputs = ImmersiveNetHandler.INSTANCE.getIndirectEnergyConnections(Utils.toCC(this), worldObj);
 			int powerLeft = Math.min(Math.min(getMaxOutput(),getMaxInput()), energy);
+
 			if(outputs.size()<1)
 				return 0;
-			int output = powerLeft/outputs.size();
-			for(AbstractConnection con : outputs)
+
+			long requiredEnergy = 0;
+			HashMap<AbstractConnection, Integer> order = new HashMap<AbstractConnection, Integer>();
+			for(AbstractConnection con : outputs){
 				if(con!=null && con.cableType!=null && toIIC(con.end, worldObj)!=null)
-				{
-					int tempR = toIIC(con.end,worldObj).outputEnergy(Math.min(output,con.cableType.getTransferRate()), true, energyType);
-					int r = tempR;
-					tempR -= (int) Math.max(0, Math.floor(tempR*con.getAverageLossRate()));
-					toIIC(con.end, worldObj).outputEnergy(tempR, simulate, energyType);
-					received += r;
-					powerLeft -= r;
-					if(powerLeft<=0)
-						break;
-					
-//					int tempR = toIIC(con.end,worldObj).outputEnergy(Math.min(powerLeft,con.cableType.getTransferRate()), true, energyType);
-//					int r = tempR;
-//					tempR -= (int) Math.floor(tempR*con.getAverageLossRate());
-//					toIIC(con.end, worldObj).outputEnergy(tempR, simulate, energyType);
-//					received += r;
-//					powerLeft -= r;
-//					if(powerLeft<=0)
-//						break;
+				{	
+					if(!ImmersiveNetHandler.INSTANCE.tickConnectorBuffer.containsKey(con)){
+						int temp = toIIC(con.end,worldObj).outputEnergy(con.cableType.getTransferRate(), true, energyType);
+						ImmersiveNetHandler.INSTANCE.tickConnectorBuffer.put(con, temp);
+					}
+					requiredEnergy += ImmersiveNetHandler.INSTANCE.tickConnectorBuffer.get(con);
+					order.put(con, ImmersiveNetHandler.INSTANCE.tickConnectorBuffer.get(con));
 				}
+			}
+			
+			double ratio = Math.min((double)powerLeft/(double)requiredEnergy,1);
+			
+			for(Entry<AbstractConnection, Integer> con : order.entrySet()){
+				int tempR = (int) (ratio*con.getValue());
+				int powerLoss = (int) Math.max(0, Math.floor(tempR*con.getKey().getAverageLossRate()));
+				int used = toIIC(con.getKey().end, worldObj).outputEnergy(tempR-powerLoss, simulate, energyType) + powerLoss;
+				if(!simulate){
+					ImmersiveNetHandler.INSTANCE.tickConnectorBuffer.put(con.getKey(), 
+							ImmersiveNetHandler.INSTANCE.tickConnectorBuffer.get(con.getKey()) - used);
+				}
+				received += used;
+				if(received>=powerLeft){
+					break;
+				}
+			}
 		}
 		return received;
 	}
