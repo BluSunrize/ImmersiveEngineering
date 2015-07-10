@@ -96,7 +96,7 @@ public class ItemSkyhook extends ItemUpgradeableTool
 
 	public float getSkylineSpeed(ItemStack stack)
 	{
-		return .2f+this.getUpgrades(stack).getFloat("speed");
+		return 3.4f+this.getUpgrades(stack).getFloat("speed");
 	}
 
 	@Override

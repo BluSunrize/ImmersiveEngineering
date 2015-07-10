@@ -31,6 +31,12 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable
 	{
 		return true;
 	}
+	
+	@Override
+	public boolean canUpdate()
+	{
+		return false;
+	}
 
 	@Override
 	public boolean allowEnergyToPass(Connection con)

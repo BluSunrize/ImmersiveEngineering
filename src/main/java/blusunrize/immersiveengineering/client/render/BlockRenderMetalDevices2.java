@@ -48,6 +48,11 @@ public class BlockRenderMetalDevices2 implements ISimpleBlockRenderingHandler
 			ClientUtils.handleStaticTileRenderer(tile);
 			return true;
 		}
+		else if(metadata==BlockMetalDevices2.META_skycrateDispenser)
+		{
+			renderer.setRenderBounds(0, 0, 0, 1, 1, 1);
+			return renderer.renderStandardBlock(block, x, y, z);
+		}
 		return false;
 	}
 

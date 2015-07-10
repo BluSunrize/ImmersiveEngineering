@@ -57,6 +57,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityLightningRo
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityRefinery;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityRelayHV;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySampleDrill;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySkycrateDispenser;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySqueezer;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityStructuralArm;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityThermoelectricGen;
@@ -91,6 +92,7 @@ import blusunrize.immersiveengineering.common.crafting.IEFuelHandler;
 import blusunrize.immersiveengineering.common.crafting.RecipeOreCrushing;
 import blusunrize.immersiveengineering.common.crafting.RecipeRevolver;
 import blusunrize.immersiveengineering.common.entities.EntityRevolvershot;
+import blusunrize.immersiveengineering.common.entities.EntitySkycrate;
 import blusunrize.immersiveengineering.common.entities.EntitySkylineHook;
 import blusunrize.immersiveengineering.common.items.ItemBullet;
 import blusunrize.immersiveengineering.common.items.ItemDrill;
@@ -319,6 +321,7 @@ public class IEContent
 		registerTile(TileEntityLantern.class);
 		
 		registerTile(TileEntityBreakerSwitch.class);
+		registerTile(TileEntitySkycrateDispenser.class);
 
 
 		registerTile(TileEntityCokeOven.class);
@@ -326,7 +329,8 @@ public class IEContent
 
 		/**ENTITIES*/
 		EntityRegistry.registerModEntity(EntityRevolvershot.class, "revolverShot", 0, ImmersiveEngineering.instance, 64, 1, true);
-		EntityRegistry.registerModEntity(EntitySkylineHook.class, "ziplineHook", 1, ImmersiveEngineering.instance, 64, 1, true);
+		EntityRegistry.registerModEntity(EntitySkylineHook.class, "skylineHook", 1, ImmersiveEngineering.instance, 64, 1, true);
+		EntityRegistry.registerModEntity(EntitySkycrate.class, "skylineCrate", 2, ImmersiveEngineering.instance, 64, 1, true);
 
 
 		/**SMELTING*/

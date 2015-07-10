@@ -31,6 +31,11 @@ public class TileEntityConveyorSorter extends TileEntityIEBase implements ISided
 		filter = new SorterInventory(this);
 	}
 
+	@Override
+	public boolean canUpdate()
+	{
+		return false;
+	}
 
 	public void routeItem(int inputSide, ItemStack stack)
 	{
@@ -276,8 +281,7 @@ public class TileEntityConveyorSorter extends TileEntityIEBase implements ISided
 	{
 		return false;
 	}
-
-
+	
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{

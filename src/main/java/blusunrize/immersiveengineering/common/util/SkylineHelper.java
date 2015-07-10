@@ -64,10 +64,11 @@ public class SkylineHelper
 		double dx = (steps[0].xCoord-vStart.xCoord);
 		double dy = (steps[0].yCoord-vStart.yCoord);
 		double dz = (steps[0].zCoord-vStart.zCoord);
-		//		double d = Math.sqrt(dx*dx+dz*dz+dy*dy);
+				double d = connection.length;
+//						Math.sqrt(dx*dx+dz*dz+dy*dy);
 
-		Vec3 moveVec = Vec3.createVectorHelper(dx,dy,dz);
-		//		Vec3 moveVec = Vec3.createVectorHelper(dx/d,dy/d,dz/d);
+//		Vec3 moveVec = Vec3.createVectorHelper(dx,dy,dz);
+				Vec3 moveVec = Vec3.createVectorHelper(dx/d,dy/d,dz/d);
 
 
 		EntitySkylineHook hook = new EntitySkylineHook(player.worldObj, vStart.xCoord,vStart.yCoord,vStart.zCoord, connection, cc0, steps);
@@ -102,6 +103,7 @@ public class SkylineHelper
 		double dy = (end.yCoord)-(start.yCoord);
 		double dz = (end.zCoord)-(start.zCoord);
 		double dw = Math.sqrt(dx*dx + dz*dz);
+//		double dw = Math.sqrt(dx*dx + dz*dz + dy*dy);
 		double k = Math.sqrt(dx*dx + dy*dy + dz*dz) * 1.005;
 		double l = 0;
 		int limiter = 0;
