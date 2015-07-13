@@ -22,6 +22,7 @@
 /copy
 /git
 /world
+/out
 options.txt
 eula.txt
 server.properties
