@@ -49,6 +49,7 @@ public class TileEntityCokeOven extends TileEntityIEBase implements ISidedInvent
 		if(!worldObj.isRemote&&formed&&master()==null)
 		{
 			boolean a = active;
+			boolean b = false;
 			if(process>0)
 			{
 				if(inventory[0]==null)
@@ -57,7 +58,17 @@ public class TileEntityCokeOven extends TileEntityIEBase implements ISidedInvent
 					processMax=0;
 				}
 				else
-					process--;
+				{
+					CokeOvenRecipe recipe = getRecipe();
+					if(recipe==null || recipe.time!=processMax)
+					{
+						process=0;
+						processMax=0;
+						active=false;
+					}
+					else
+						process--;
+				}
 				worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 			}
 			else
@@ -88,7 +99,22 @@ public class TileEntityCokeOven extends TileEntityIEBase implements ISidedInvent
 					}
 				}
 			}
-			if(a!=active)
+
+			if(tank.getFluidAmount()>0 && tank.getFluid()!=null && (inventory[3]==null||inventory[3].stackSize+1<inventory[3].getMaxStackSize()))
+			{
+				ItemStack filledContainer = Utils.fillFluidContainer(tank, inventory[2], inventory[3]);
+				if(filledContainer!=null)
+				{
+					if(inventory[3]!=null && OreDictionary.itemMatches(inventory[3], filledContainer, true))
+						inventory[3].stackSize+=filledContainer.stackSize;
+					else if(inventory[3]==null)
+						inventory[3] = filledContainer.copy();
+					this.decrStackSize(2, filledContainer.stackSize);
+					b=true;
+				}
+			}
+			
+			if(a!=active || b)
 			{
 				this.markDirty();
 				int xMin= facing==5?-2: facing==4?0:-1;
@@ -104,19 +130,6 @@ public class TileEntityCokeOven extends TileEntityIEBase implements ISidedInvent
 							worldObj.markBlockForUpdate(xCoord+xx, yCoord+yy, zCoord+zz);
 							worldObj.addBlockEvent(xCoord+xx, yCoord+yy, zCoord+zz, IEContent.blockStoneDevice, 1,active?1:0);
 						}
-			}
-
-			if(tank.getFluidAmount()>0 && tank.getFluid()!=null && (inventory[3]==null||inventory[3].stackSize+1<inventory[3].getMaxStackSize()))
-			{
-				ItemStack filledContainer = Utils.fillFluidContainer(tank, inventory[2], inventory[3]);
-				if(filledContainer!=null)
-				{
-					if(inventory[3]!=null && OreDictionary.itemMatches(inventory[3], filledContainer, true))
-						inventory[3].stackSize+=filledContainer.stackSize;
-					else if(inventory[3]==null)
-						inventory[3] = filledContainer.copy();
-					this.decrStackSize(2, filledContainer.stackSize);
-				}
 			}
 		}
 	}

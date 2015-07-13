@@ -15,6 +15,7 @@ public abstract class IECompatModule
 		modules.add(new DenseOresHelper());
 		modules.add(new EE3Helper());
 		modules.add(new ForestryHelper());
+		modules.add(new BacktoolsHelper());
 	}
 	
 	public String modId;

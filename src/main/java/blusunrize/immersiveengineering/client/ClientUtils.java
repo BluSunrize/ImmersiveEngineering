@@ -197,7 +197,7 @@ public class ClientUtils
 	}
 	public static void drawConnection(ImmersiveNetHandler.Connection connection, IImmersiveConnectable start, IImmersiveConnectable end, int colour,int alpha, double radius)
 	{
-		if(connection==null || start==null || end==null)
+		if(connection==null || start==null || end==null || connection.end==null || connection.start==null)
 			return;
 		Vec3 startOffset = start.getConnectionOffset(connection);
 		Vec3 endOffset = end.getConnectionOffset(connection);

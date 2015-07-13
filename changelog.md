@@ -1,3 +1,13 @@
+#####Version 0.4.1 - BUILT
+- updated zh_CN.lang
+- fixed randomness of the excavator for negative seeds
+- allowed customizeable renderdistance for windmills, watermills and a few others
+- made wooden posts climbable. Temporary feature, might be removed again.
+- fixed localization on voltmeter
+- added potatoes to the list of items to be fermented
+- started working on skycrates. Heavily WIP, be warned!
+
+
 #####Version 0.4.0 - BUILT
 - fixed conveyor sorter not accepting items
 - players can no longer ride bullets, sorry =P

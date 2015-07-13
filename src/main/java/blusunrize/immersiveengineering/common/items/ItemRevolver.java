@@ -99,6 +99,11 @@ public class ItemRevolver extends ItemUpgradeableTool
 		}
 		return super.getUnlocalizedName(stack);
 	}
+	@Override
+	public boolean isFull3D()
+	{
+		return true;
+	}
 
 	@Override
 	public Multimap getAttributeModifiers(ItemStack stack)

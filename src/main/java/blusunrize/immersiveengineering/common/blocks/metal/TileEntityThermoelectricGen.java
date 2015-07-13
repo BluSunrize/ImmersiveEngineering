@@ -9,6 +9,7 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.IFluidBlock;
 import blusunrize.immersiveengineering.api.energy.ThermoelectricHandler;
+import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import cofh.api.energy.IEnergyConnection;
 import cofh.api.energy.IEnergyReceiver;
@@ -27,7 +28,7 @@ public class TileEntityThermoelectricGen extends TileEntityIEBase implements IEn
 					if(temp0>-1&&temp1>-1)
 					{
 						int diff = Math.abs(temp0-temp1);
-						int energy = (int) (Math.sqrt(diff)/2);
+						int energy = (int) (Math.sqrt(diff)/2 *Config.getDouble("thermoelectric_output"));
 						outputEnergy(energy);
 					}
 				}
@@ -43,7 +44,7 @@ public class TileEntityThermoelectricGen extends TileEntityIEBase implements IEn
 			}
 	}
 
-	
+
 	int getTemperature(int x, int y, int z)
 	{
 		Fluid f = getFluid(x,y,z);

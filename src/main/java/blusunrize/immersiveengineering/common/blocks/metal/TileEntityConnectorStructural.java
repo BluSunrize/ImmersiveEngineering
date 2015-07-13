@@ -10,7 +10,7 @@ import blusunrize.immersiveengineering.api.TargetingInfo;
 public class TileEntityConnectorStructural extends TileEntityConnectorLV
 {
 	public float rotation = 0;
-	
+
 	@Override
 	protected boolean canTakeMV()
 	{
@@ -26,7 +26,6 @@ public class TileEntityConnectorStructural extends TileEntityConnectorLV
 	{
 		return false;
 	}
-	
 
 	@Override
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
@@ -40,7 +39,7 @@ public class TileEntityConnectorStructural extends TileEntityConnectorLV
 		super.readCustomNBT(nbt, descPacket);
 		rotation = nbt.getFloat("rotation");
 	}
-	
+
 	@Override
 	public Vec3 getConnectionOffset(Connection con)
 	{
@@ -54,7 +53,7 @@ public class TileEntityConnectorStructural extends TileEntityConnectorLV
 	{
 		return WireType.STRUCTURE_STEEL.getMaxLength();
 	}
-	
+
 	@Override
 	public int getMaxInput()
 	{

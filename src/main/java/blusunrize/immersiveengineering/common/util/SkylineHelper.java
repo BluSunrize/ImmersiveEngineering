@@ -64,7 +64,7 @@ public class SkylineHelper
 		double dx = (steps[0].xCoord-vStart.xCoord);
 		double dy = (steps[0].yCoord-vStart.yCoord);
 		double dz = (steps[0].zCoord-vStart.zCoord);
-				double d = connection.length;
+				double d = 1;//connection.length;
 //						Math.sqrt(dx*dx+dz*dz+dy*dy);
 
 //		Vec3 moveVec = Vec3.createVectorHelper(dx,dy,dz);
@@ -75,9 +75,9 @@ public class SkylineHelper
 		float speed = .2f;
 		if(player.getCurrentEquippedItem()!=null&&player.getCurrentEquippedItem().getItem() instanceof ItemSkyhook)
 			speed = ((ItemSkyhook)player.getCurrentEquippedItem().getItem()).getSkylineSpeed(player.getCurrentEquippedItem());
-		hook.motionX = moveVec.xCoord*speed;
-		hook.motionY = moveVec.yCoord*speed;
-		hook.motionZ = moveVec.zCoord*speed;
+		hook.motionX = moveVec.xCoord;//*speed;
+		hook.motionY = moveVec.yCoord;//*speed;
+		hook.motionZ = moveVec.zCoord;//*speed;
 		//		hook.motionX = (steps[0].xCoord-cc1.posX)*.5f;
 		//		hook.motionY = (steps[0].yCoord-cc1.posY)*.5f;
 		//		hook.motionZ = (steps[0].zCoord-cc1.posZ)*.5f;

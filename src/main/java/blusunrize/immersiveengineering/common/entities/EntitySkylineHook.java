@@ -87,23 +87,26 @@ public class EntitySkylineHook extends Entity
 		{
 			double dist = subPoints[targetPoint].distanceTo(Vec3.createVectorHelper(posX,posY,posZ));
 			IELogger.debug("dist: "+dist);
-			if(dist<=.3125)
+			if(dist<=.05)
 			{
-				//				this.posX = subPoints[targetPoint].xCoord;
-				//				this.posY = subPoints[targetPoint].yCoord;
-				//				this.posZ = subPoints[targetPoint].zCoord;
+				this.posX = subPoints[targetPoint].xCoord;
+				this.posY = subPoints[targetPoint].yCoord;
+				this.posZ = subPoints[targetPoint].zCoord;
 				targetPoint++;
 				IELogger.debug("next vertex: "+targetPoint);
-				double dx = (subPoints[targetPoint].xCoord-posX)/connection.length;
-				double dy = (subPoints[targetPoint].yCoord-posY)/connection.length;
-				double dz = (subPoints[targetPoint].zCoord-posZ)/connection.length;
-				Vec3 moveVec = Vec3.createVectorHelper(dx,dy,dz);
-				float speed = .2f;
-				if(player!=null && player.getCurrentEquippedItem()!=null&&player.getCurrentEquippedItem().getItem() instanceof ItemSkyhook)
-					speed = ((ItemSkyhook)player.getCurrentEquippedItem().getItem()).getSkylineSpeed(player.getCurrentEquippedItem());
-				motionX = moveVec.xCoord*speed;
-				motionY = moveVec.yCoord*speed;
-				motionZ = moveVec.zCoord*speed;
+				double dx = (subPoints[targetPoint].xCoord-posX);//connection.length;
+				double dy = (subPoints[targetPoint].yCoord-posY);//connection.length;
+				double dz = (subPoints[targetPoint].zCoord-posZ);//connection.length;
+//				Vec3 moveVec = Vec3.createVectorHelper(dx,dy,dz);
+//				float speed = .2f;
+//				if(player!=null && player.getCurrentEquippedItem()!=null&&player.getCurrentEquippedItem().getItem() instanceof ItemSkyhook)
+//					speed = ((ItemSkyhook)player.getCurrentEquippedItem().getItem()).getSkylineSpeed(player.getCurrentEquippedItem());
+//				motionX = moveVec.xCoord;//*speed;
+//				motionY = moveVec.yCoord;//*speed;
+//				motionZ = moveVec.zCoord;//*speed;
+				motionX = dx;
+				motionY = dy;
+				motionZ = dz;
 				return;
 			}
 		}
