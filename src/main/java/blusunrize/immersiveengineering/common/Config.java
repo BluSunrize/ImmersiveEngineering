@@ -62,6 +62,7 @@ public class Config
 		setInt("dynamo_output", config.get("Machines", "Dynamo: Output", 3, "The base RF that is output by the dynamo. This will be modified by the rotation modifier of the attached water- or windmill").getInt());
 		setInt("lightning_output", config.get("Machines", "Lightning Rod: Output", 4*4000000, "The RF that will be output by the lightning rod when it is struck").getInt());
 		setInt("dieselGen_output", config.get("Machines", "Diesel Generator: Output", 4096, "The RF per tick that the Diesel Generator will output. The burn time of the fuel determines the total output").getInt());
+		setDouble("thermoGen_multiplier", config.get("Machines", "Thermoelectric Generator: Output multiplier", 1, "Multiplier for Thermoelectric Generator RF output. 1 for normal output, 0 for no output.").getDouble());
 
 		setInt("heater_consumption", config.get("Machines", "Heater: RF per Heat", 8, "The RF per tick consumed to add one heat to a furnace. Creates up to 4 heat in the startup time and then 1 heat per tick to keep it running").getInt());
 		setInt("heater_speedupConsumption", config.get("Machines", "Heater: Speedup", 24, "The RF per tick consumed to double the speed of the furnace. Only happens if furnace is at maximum heat.").getInt());
@@ -105,7 +106,7 @@ public class Config
 	public static boolean getBoolean(String key)
 	{
 		Boolean b = config_boolean.get(key);
-		return b!=null?b.booleanValue():false;
+		return b != null ? b : false;
 	}
 
 	public static void setInt(String key, int i)
@@ -115,7 +116,7 @@ public class Config
 	public static int getInt(String key)
 	{
 		Integer i = config_int.get(key);
-		return i!=null?i.intValue():0;
+		return i != null ? i : 0;
 	}
 
 	public static void setDouble(String key, double d)
@@ -125,7 +126,7 @@ public class Config
 	public static double getDouble(String key)
 	{
 		Double d = config_double.get(key);
-		return d!=null?d.floatValue():0;
+		return d != null ? d : 0;
 	}
 
 	public static void setDoubleArray(String key, double[] dA)
