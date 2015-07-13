@@ -142,8 +142,12 @@ public class ExcavatorHandler
 			for(int i=0; i<chances.length; i++)
 			{
 				r -= chances[i];
-				if(r < 0)
+				if(r < 0){
+					if(OreDictionary.getOres(this.ores[i]).isEmpty() && replacementOres.containsKey(this.ores[i])){
+						return replacementOres.get(this.ores[i]);
+					}
 					return this.ores[i];
+				}
 			}
 			return "";
 		}
