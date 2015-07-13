@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import blusunrize.immersiveengineering.common.Config;
 import net.minecraft.block.BlockDynamicLiquid;
 import net.minecraft.block.BlockStaticLiquid;
 import net.minecraft.block.material.Material;
@@ -27,7 +28,7 @@ public class TileEntityThermoelectricGen extends TileEntityIEBase implements IEn
 					if(temp0>-1&&temp1>-1)
 					{
 						int diff = Math.abs(temp0-temp1);
-						int energy = (int) (Math.sqrt(diff)/2);
+						int energy = (int) (Math.sqrt(diff)/2 * Config.getDouble("thermoGen_multiplier"));
 						outputEnergy(energy);
 					}
 				}
