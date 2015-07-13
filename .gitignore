@@ -36,6 +36,7 @@ config.cfg
 GregTech.cfg
 GregTech.lang
 minetweaker.log
+BotaniaVars.dat
 .DS_Store
 *.log
 hs_err*

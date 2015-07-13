@@ -166,6 +166,8 @@ public class EntitySkylineHook extends Entity
 	{
 		this.setDead();
 		IELogger.debug("last tick at "+System.currentTimeMillis());
+		if(!(this.riddenByEntity instanceof EntityPlayer))
+			return;
 		ItemStack hook = ((EntityPlayer)this.riddenByEntity).getCurrentEquippedItem();
 		if(hook==null || !(hook.getItem() instanceof ItemSkyhook))
 			return;

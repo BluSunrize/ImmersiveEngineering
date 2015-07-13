@@ -130,7 +130,7 @@ public class ExcavatorHandler
 			{
 				String ore = ores[i];
 				if(replacementOres!=null && OreDictionary.getOres(ore).size()<=0 && replacementOres.containsKey(ore))
-					ore = replacementOres.get(ore);
+					ores[i] = ore = replacementOres.get(ore);
 				if(ore!=null && !ore.isEmpty() && OreDictionary.getOres(ore).size()>0)
 					this.recalculatedChances[j++] = chances[i]/chanceSum;
 			}

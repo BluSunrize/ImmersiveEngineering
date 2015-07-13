@@ -48,7 +48,8 @@ public class TileEntitySampleDrill extends TileEntityIEBase implements IEnergyRe
 	}
 	public String getVein()
 	{
-		return ExcavatorHandler.getRandomMineral(worldObj, (xCoord>>4), (zCoord>>4)).name;
+		ExcavatorHandler.MineralMix mineral = ExcavatorHandler.getRandomMineral(worldObj, (xCoord>>4), (zCoord>>4));
+		return mineral==null?null: mineral.name;
 	}
 	public float getVeinIntegrity()
 	{
