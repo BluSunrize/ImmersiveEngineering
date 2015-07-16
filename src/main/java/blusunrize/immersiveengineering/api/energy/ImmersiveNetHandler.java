@@ -2,6 +2,9 @@ package blusunrize.immersiveengineering.api.energy;
 
 import static blusunrize.immersiveengineering.api.ApiUtils.toCC;
 import static blusunrize.immersiveengineering.api.ApiUtils.toIIC;
+import static blusunrize.immersiveengineering.api.ApiUtils.addVectors;
+import static blusunrize.immersiveengineering.api.ApiUtils.getConnectionCatenary;
+
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -14,6 +17,7 @@ import java.util.Set;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.TargetingInfo;
@@ -297,6 +301,7 @@ public class ImmersiveNetHandler
 		public ChunkCoordinates end;
 		public WireType cableType;
 		public int length;
+		public Vec3[] catenaryVertices;
 
 		public Connection(ChunkCoordinates start, ChunkCoordinates end, WireType cableType, int length)
 		{
@@ -306,6 +311,24 @@ public class ImmersiveNetHandler
 			this.length=length;
 		}
 
+		public Vec3[] getSubVertices(World world)
+		{
+			if(catenaryVertices==null)
+			{
+				Vec3 vStart = Vec3.createVectorHelper(start.posX,start.posY,start.posZ);
+				Vec3 vEnd = Vec3.createVectorHelper(end.posX, end.posY, end.posZ);
+				Vec3.createVectorHelper(end.posX,end.posY,end.posZ);
+				IImmersiveConnectable iicStart = toIIC(start, world);
+				IImmersiveConnectable iicEnd = toIIC(end, world);
+				if(iicStart!=null)
+					vStart = addVectors(vStart, iicStart.getConnectionOffset(this));
+				if(iicEnd!=null)
+					vEnd = addVectors(vEnd, iicEnd.getConnectionOffset(this));
+				catenaryVertices = getConnectionCatenary(this, vStart, vEnd);
+			}
+			return catenaryVertices;
+		}
+		
 		@Override
 		public boolean equals(Object o)
 		{

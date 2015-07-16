@@ -60,7 +60,7 @@ public class Config
 		setInt("capacitorHV_output", config.get("Machines", "Capacitor HV: Output", 4096, "The maximum amount of RF that can be output from a high-voltage capacitor (by IE net or other means)").getInt());
 
 		setInt("dynamo_output", config.get("Machines", "Dynamo: Output", 3, "The base RF that is output by the dynamo. This will be modified by the rotation modifier of the attached water- or windmill").getInt());
-		setDouble("thermoelectric_output", config.get("Machines", "Thermoelectric: Output", 1, "Output modifier for the energy created by the Thermoelectric Generator").getDouble());
+		setDouble("thermoelectric_output", config.get("Machines", "Thermoelectric: Output", 1d, "Output modifier for the energy created by the Thermoelectric Generator").getDouble());
 		setInt("lightning_output", config.get("Machines", "Lightning Rod: Output", 4*4000000, "The RF that will be output by the lightning rod when it is struck").getInt());
 		setInt("dieselGen_output", config.get("Machines", "Diesel Generator: Output", 4096, "The RF per tick that the Diesel Generator will output. The burn time of the fuel determines the total output").getInt());
 
@@ -72,8 +72,8 @@ public class Config
 		setInt("refinery_consumption", config.get("Machines", "Refinery: Consumed", 80, "The RF per tick the Refinery will consume to mix two fluids").getInt());
 
 		setInt("excavator_consumption", config.get("Machines", "Excavator: Consumed", 4096, "The RF per tick the Excavator will consume to dig").getInt());
-		setDouble("excavator_speed", config.get("Machines", "Excavator: Speed", 1f, "The speed of the Excavator. Basically translates to how many degrees per tick it will turn.").getDouble());
-		setDouble("excavator_chance", config.get("Machines", "Excavator: Chance", .05f, "The chance that the Excavator will not dig up an ore with the currently downward-facing bucket.").getDouble());
+		setDouble("excavator_speed", config.get("Machines", "Excavator: Speed", 1d, "The speed of the Excavator. Basically translates to how many degrees per tick it will turn.").getDouble());
+		setDouble("excavator_chance", config.get("Machines", "Excavator: Chance", .05d, "The chance that the Excavator will not dig up an ore with the currently downward-facing bucket.").getDouble());
 		setBoolean("excavator_particles", config.get("Machines", "Excavator: Particles", true, "Set this to false to disable the ridiculous amounts of particles the Excavator spawns").getBoolean());
 		setInt("excavator_depletion", config.get("Machines", "Excavator: Mineral Depletion", 76800, "The maximum amount of yield one can get out of a chunk with the excavator. Set a number smaller than zero to make it infinite").getInt());
 		setInt("excavator_depletion_days", getInt("excavator_depletion")*45/24000);
@@ -87,10 +87,10 @@ public class Config
 		setIntArray("ore_silver", config.get("OreGen", "Silver", new int[]{8,  8,40, 4,80}, "Generation config for Silver Ore. Parameters: Blocks per vein, lowest possible Y, highest possible Y, veins per chunk, chance for vein to spawn (out of 100). Set vein size to 0 to disable the generation").getIntList());
 		setIntArray("ore_nickel", config.get("OreGen", "Nickel", new int[]{6,  8,24, 2,100}, "Generation config for Nickel Ore. Parameters: Blocks per vein, lowest possible Y, highest possible Y, veins per chunk, chance for vein to spawn (out of 100). Set vein size to 0 to disable the generation").getIntList());
 
-		setDouble("BulletDamage-Casull", config.get("Tools", "BulletDamage-Casull", 7, "The amount of base damage a Casull Cartridge inflicts").getDouble());
-		setDouble("BulletDamage-AP", config.get("Tools", "BulletDamage-AP", 7, "The amount of base damage an ArmorPiercing Cartridge inflicts").getDouble());
-		setDouble("BulletDamage-Buck", config.get("Tools", "BulletDamage-Buck", 1, "The amount of base damage a single part of Buckshot inflicts").getDouble());
-		setDouble("BulletDamage-Dragon", config.get("Tools", "BulletDamage-Dragon", 4, "The amount of base damage a DragonsBreath Cartridge inflicts").getDouble());
+		setDouble("BulletDamage-Casull", config.get("Tools", "BulletDamage-Casull", 7d, "The amount of base damage a Casull Cartridge inflicts").getDouble());
+		setDouble("BulletDamage-AP", config.get("Tools", "BulletDamage-AP", 7d, "The amount of base damage an ArmorPiercing Cartridge inflicts").getDouble());
+		setDouble("BulletDamage-Buck", config.get("Tools", "BulletDamage-Buck", 1d, "The amount of base damage a single part of Buckshot inflicts").getDouble());
+		setDouble("BulletDamage-Dragon", config.get("Tools", "BulletDamage-Dragon", 4d, "The amount of base damage a DragonsBreath Cartridge inflicts").getDouble());
 
 		
 		//		Property propReGen = config.get("TESTING", "ReGen", false);

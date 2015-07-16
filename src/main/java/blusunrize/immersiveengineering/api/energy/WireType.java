@@ -4,6 +4,7 @@ import java.util.LinkedHashSet;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler.Connection;
 
 /**
  * @author BluSunrize - 08.03.2015<br>
@@ -34,7 +35,11 @@ public abstract class WireType
 	public abstract String getUniqueName();
 	public abstract double getLossRatio();
 	public abstract int getTransferRate();
-	public abstract int getColour();
+	/**Try not to get to complex with determining colour here*/
+	public abstract int getColour(Connection connection);
+	/**Determines how saggy the wire is*/
+	public abstract double getSlack();
+	public abstract String getTexture(Connection connection);
 	public abstract int getMaxLength();
 	public abstract ItemStack getWireCoil();
 	public abstract double getRenderDiameter();
@@ -79,9 +84,19 @@ public abstract class WireType
 			return cableTransferRate[ordinal];
 		}
 		@Override
-		public int getColour()
+		public int getColour(Connection connection)
 		{
 			return cableColouration[ordinal];
+		}
+		@Override
+		public double getSlack()
+		{
+			return 1.005;
+		}
+		@Override
+		public String getTexture(Connection connection)
+		{
+			return "immersiveengineering:textures/misc/wire.png";
 		}
 		@Override
 		public int getMaxLength()

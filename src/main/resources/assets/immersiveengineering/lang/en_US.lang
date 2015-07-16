@@ -280,7 +280,7 @@ chat.ImmersiveEngineering.warning.tooFar=You are too far away from the previous 
 chat.ImmersiveEngineering.warning.cantSee=The connection is obstructed
 chat.ImmersiveEngineering.warning.connectionExists=The connection exists already
 chat.ImmersiveEngineering.warning.invalidPoint=One of the connection points is invalid
-chat.ImmersiveEngineering.info.averageLoss=Average loss between points: %1$s
+chat.ImmersiveEngineering.info.averageLoss=Average loss between points: %1$s%%
 chat.ImmersiveEngineering.info.energyStorage=Energy Stored: %1$s/%2$s RF
 
 chat.ImmersiveEngineering.info.forChunk=§8For Chunk from %1$s to %2$s
