@@ -1,3 +1,9 @@
+#####Version 0.4.2
+- more changes to the API, allowing for more specific colouring of wires, textures for them and customizeable slack
+- nerfed Kinetic Dynamos to only take power from one side now
+- optimized connections to cache catenaries. Improves rendering performance
+
+
 #####Version 0.4.1 - BUILT
 - updated zh_CN.lang
 - fixed randomness of the excavator for negative seeds

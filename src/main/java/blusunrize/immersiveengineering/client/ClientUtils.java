@@ -42,7 +42,6 @@ import blusunrize.immersiveengineering.api.energy.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.client.render.TileRenderIE;
 import blusunrize.immersiveengineering.common.util.IESound;
-import blusunrize.immersiveengineering.common.util.SkylineHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 
@@ -226,7 +225,9 @@ public class ClientUtils
 		Vec3 initPos = Vec3.createVectorHelper(connection.start.posX+startOffset.xCoord, connection.start.posY+startOffset.yCoord, connection.start.posZ+startOffset.zCoord);
 
 		double uMax = 0;
-		for(int i=0; i<vertex.length; i++)
+		double uMin = 0;
+		boolean b = (dx<0&&dz<=0)||(dz<0&&dx<=0)||(dz<0&&dx>0);
+		for(int i=b?(vertex.length-1):0; (b?(i>=0):(i<vertex.length)); i+=(b?-1:1))
 		{
 			Vec3 v0 = i>0?vertex[i-1]:initPos;
 			Vec3 v1 = vertex[i];
@@ -234,23 +235,22 @@ public class ClientUtils
 			v0 = initPos.subtract(v0);
 			v1 = initPos.subtract(v1);
 
-			double segmentLength = Math.sqrt((v1.xCoord-v0.xCoord)*(v1.xCoord-v0.xCoord) + (v1.yCoord-v0.yCoord)*(v1.yCoord-v0.yCoord) + (v1.zCoord-v0.zCoord)*(v1.zCoord-v0.zCoord));
+			double segmentLength = (connection.length)*Math.sqrt((v1.xCoord-v0.xCoord)*(v1.xCoord-v0.xCoord) + (v1.yCoord-v0.yCoord)*(v1.yCoord-v0.yCoord) + (v1.zCoord-v0.zCoord)*(v1.zCoord-v0.zCoord));
 
-			double uMin = uMax;
-			uMax += segmentLength/dTotal;
-
-			if((dx<0&&dz<=0)||(dz<0&&dx<=0)||(dz<0&&dx>0))
-			{
-				uMax = 1-uMax;
-				uMin = 1-uMin;
-			}
+			uMin = uMax;
+			uMax = uMin+segmentLength/dTotal;
 			double u0 = uMin;
 			double u1 = uMax;
+			if((dx<0&&dz<=0)||(dz<0&&dx<=0)||(dz<0&&dx>0))
+			{
+				u1 = uMin;
+				u0 = uMax;
+			}
 			//			tes.addVertexWithUV(v0.xCoord, v0.yCoord+radius, v0.zCoord, u0,1);
 			//			tes.addVertexWithUV(v1.xCoord, v1.yCoord+radius, v1.zCoord, u1,1);
 			//			tes.addVertexWithUV(v1.xCoord, v1.yCoord-radius, v1.zCoord, u1,1);
 			//			tes.addVertexWithUV(v0.xCoord, v0.yCoord-radius, v0.zCoord, u0,1);
-			//			
+
 			//			tes.addVertexWithUV(v0.xCoord-radius*rmodx, v0.yCoord, v0.zCoord+radius*rmodz, u0,1);
 			//			tes.addVertexWithUV(v1.xCoord-radius*rmodx, v1.yCoord, v1.zCoord+radius*rmodz, u1,1);
 			//			tes.addVertexWithUV(v1.xCoord+radius*rmodx, v1.yCoord, v1.zCoord-radius*rmodz, u1,1);
@@ -258,13 +258,13 @@ public class ClientUtils
 
 			tes.setColorRGBA_I(colour, alpha);
 			tes.setBrightness(calcBrightness(world, connection.start.posX+v0.xCoord, connection.start.posY+v0.yCoord+radius, connection.start.posZ+v0.zCoord));
-			tes.addVertexWithUV(v0.xCoord, v0.yCoord+radius, v0.zCoord, uMin,1);
+			tes.addVertexWithUV(v0.xCoord, v0.yCoord+radius, v0.zCoord, u0,1);
 			tes.setBrightness(calcBrightness(world, connection.start.posX+v1.xCoord, connection.start.posY+v1.yCoord+radius, connection.start.posZ+v1.zCoord));
-			tes.addVertexWithUV(v1.xCoord, v1.yCoord+radius, v1.zCoord, uMax,1);
+			tes.addVertexWithUV(v1.xCoord, v1.yCoord+radius, v1.zCoord, u1,1);
 			tes.setBrightness(calcBrightness(world, connection.start.posX+v1.xCoord, connection.start.posY+v1.yCoord-radius, connection.start.posZ+v1.zCoord));
-			tes.addVertexWithUV(v1.xCoord, v1.yCoord-radius, v1.zCoord, uMax,0);
+			tes.addVertexWithUV(v1.xCoord, v1.yCoord-radius, v1.zCoord, u1,0);
 			tes.setBrightness(calcBrightness(world, connection.start.posX+v0.xCoord, connection.start.posY+v0.yCoord-radius, connection.start.posZ+v0.zCoord));
-			tes.addVertexWithUV(v0.xCoord, v0.yCoord-radius, v0.zCoord, uMin,0);
+			tes.addVertexWithUV(v0.xCoord, v0.yCoord-radius, v0.zCoord, u0,0);
 
 			tes.setColorRGBA_I(colour, alpha);
 			tes.setBrightness(calcBrightness(world, connection.start.posX+v0.xCoord-radius*rmodx, connection.start.posY+v0.yCoord, connection.start.posZ+v0.zCoord+radius*rmodz));

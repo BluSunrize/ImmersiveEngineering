@@ -135,7 +135,6 @@ public class SkylineHelper
 	{
 		Vec3 movementVec = Vec3.createVectorHelper(target.xCoord-start.xCoord, target.yCoord-start.yCoord, target.zCoord-start.zCoord);
 		int lPixel = (int)Math.max(1, (movementVec.lengthVector()/(.125*speed)));
-		System.out.println("pixel length: "+lPixel);
 		return Vec3.createVectorHelper(movementVec.xCoord/lPixel, movementVec.yCoord/lPixel, movementVec.zCoord/lPixel);
 	}
 }

@@ -29,6 +29,7 @@ import blusunrize.immersiveengineering.api.DimensionChunkCoords;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.client.render.BlockRenderMetalDevices;
 import blusunrize.immersiveengineering.common.Config;
+import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenPost;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
@@ -247,8 +248,13 @@ public class BlockMetalDevices extends BlockIEBase implements blusunrize.aquatwe
 			else
 				return icon_capacitorSide[t][cap.sideConfig[side]+1];
 		}
-		if(world.getTileEntity(x, y, z) instanceof TileEntityDynamo && ((TileEntityDynamo)world.getTileEntity(x,y,z)).facing>3 && side>1)
-			return icons[META_dynamo][side<4?3:2];
+		if(world.getTileEntity(x, y, z) instanceof TileEntityDynamo)
+		{
+			if(((TileEntityDynamo)world.getTileEntity(x,y,z)).facing == ForgeDirection.OPPOSITES[side])
+				return IEContent.blockStorage.getIcon(0,7);
+			if(((TileEntityDynamo)world.getTileEntity(x,y,z)).facing>3 && side>1)
+				return icons[META_dynamo][side<4?3:2];
+		}
 		if(world.getTileEntity(x, y, z) instanceof TileEntityConveyorBelt && (((TileEntityConveyorBelt)world.getTileEntity(x,y,z)).facing==side || ((TileEntityConveyorBelt)world.getTileEntity(x,y,z)).facing==ForgeDirection.OPPOSITES[side]))
 			return icons[META_conveyorBelt][1];
 		if(world.getTileEntity(x, y, z) instanceof TileEntityFurnaceHeater)

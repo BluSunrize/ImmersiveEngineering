@@ -94,11 +94,11 @@ public class EntitySkylineHook extends Entity
 				this.posZ = subPoints[targetPoint].zCoord;
 				targetPoint++;
 				IELogger.debug("next vertex: "+targetPoint);
-//				double dx = (subPoints[targetPoint].xCoord-posX);//connection.length;
-//				double dy = (subPoints[targetPoint].yCoord-posY);//connection.length;
-//				double dz = (subPoints[targetPoint].zCoord-posZ);//connection.length;
-//				Vec3 moveVec = Vec3.createVectorHelper(dx,dy,dz);
-				float speed = 1f;
+				//				double dx = (subPoints[targetPoint].xCoord-posX);//connection.length;
+				//				double dy = (subPoints[targetPoint].yCoord-posY);//connection.length;
+				//				double dz = (subPoints[targetPoint].zCoord-posZ);//connection.length;
+				//				Vec3 moveVec = Vec3.createVectorHelper(dx,dy,dz);
+				float speed = 3f;
 				if(player!=null && player.getCurrentEquippedItem()!=null&&player.getCurrentEquippedItem().getItem() instanceof ItemSkyhook)
 					speed = ((ItemSkyhook)player.getCurrentEquippedItem().getItem()).getSkylineSpeed(player.getCurrentEquippedItem());
 				Vec3 moveVec = SkylineHelper.getSubMovementVector(Vec3.createVectorHelper(posX, posY, posZ), subPoints[targetPoint], speed);
@@ -127,6 +127,11 @@ public class EntitySkylineHook extends Entity
 			if(gDist<=.3)
 			{
 				reachedTarget(end);
+				return;
+			}
+			else if(gDist>5)
+			{
+				setDead();
 				return;
 			}
 		}
@@ -199,7 +204,33 @@ public class EntitySkylineHook extends Entity
 		}
 	}
 
+	@Override
+	public Vec3 getLookVec()
+	{
+		float f1;
+		float f2;
+		float f3;
+		float f4;
 
+		//		if (1 == 1.0F)
+		//		{
+		f1 = MathHelper.cos(-this.rotationYaw * 0.017453292F - (float)Math.PI);
+		f2 = MathHelper.sin(-this.rotationYaw * 0.017453292F - (float)Math.PI);
+		f3 = -MathHelper.cos(-this.rotationPitch * 0.017453292F);
+		f4 = MathHelper.sin(-this.rotationPitch * 0.017453292F);
+		return Vec3.createVectorHelper((double)(f2 * f3), (double)f4, (double)(f1 * f3));
+		//		}
+		//		else
+		//		{
+		//			f1 = this.prevRotationPitch + (this.rotationPitch - this.prevRotationPitch) * 1;
+		//			f2 = this.prevRotationYaw + (this.rotationYaw - this.prevRotationYaw) * 1;
+		//			f3 = MathHelper.cos(-f2 * 0.017453292F - (float)Math.PI);
+		//			f4 = MathHelper.sin(-f2 * 0.017453292F - (float)Math.PI);
+		//			float f5 = -MathHelper.cos(-f1 * 0.017453292F);
+		//			float f6 = MathHelper.sin(-f1 * 0.017453292F);
+		//			return Vec3.createVectorHelper((double)(f4 * f5), (double)f6, (double)(f3 * f5));
+		//		}
+	}
 
 	@Override
 	public boolean shouldRiderSit()
@@ -242,7 +273,7 @@ public class EntitySkylineHook extends Entity
 	@Override
 	public float getCollisionBorderSize()
 	{
-		return 1.0F;
+		return 0.0F;
 	}
 	@SideOnly(Side.CLIENT)
 	@Override

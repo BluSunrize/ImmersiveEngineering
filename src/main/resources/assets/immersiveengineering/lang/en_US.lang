@@ -155,6 +155,7 @@ item.ImmersiveEngineering.revolver.bee.name=Beevolver
 item.ImmersiveEngineering.revolver.fenrir.name=Fenrir
 item.ImmersiveEngineering.revolver.earthshaker.name=§bEarthshaker§r
 item.ImmersiveEngineering.revolver.warlord.name=The Repulsor
+item.ImmersiveEngineering.revolver.noName.name=No Name
 item.ImmersiveEngineering.revolver.patreonBlu.name=§6Last Word§r
 item.ImmersiveEngineering.revolver.patreonHazard.name=§4Twisted Phantom§r
 
@@ -247,6 +248,7 @@ desc.ImmersiveEngineering.flavour.revolver.fenrir=There's nothing I don't cheris
 desc.ImmersiveEngineering.flavour.revolver.earthshaker=Lingering Will
 desc.ImmersiveEngineering.flavour.revolver.warlord=Don't take my toys away!
 desc.ImmersiveEngineering.flavour.revolver.rommie=Targeting AI 'Rommie' included!
+desc.ImmersiveEngineering.flavour.revolver.noName=Peering Into Darkness
 desc.ImmersiveEngineering.flavour.revolver.patreonBlu=Hunter's Choice
 desc.ImmersiveEngineering.flavour.revolver.patreonHazard=Exclusive DLC Content
 
