@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import blusunrize.immersiveengineering.client.models.ModelIEObj;

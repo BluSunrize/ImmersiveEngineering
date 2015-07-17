@@ -75,10 +75,10 @@ public class BlockWoodenDevices extends BlockIEBase implements blusunrize.aquatw
 			case 7:
 				float fd = .5f;
 				float fu = 1f;
-				if(!world.isAirBlock(x,y-1,z))
+				if(canArmConnectToBlock(world, x,y-1,z, true))
 				{
 					fd = 0;
-					if(world.isAirBlock(x,y+1,z))
+					if(canArmConnectToBlock(world, x,y+1,z, false))
 						fu = .5f;
 				}
 				this.setBlockBounds(type==7?0:.3125f,fd,type==5?0:.3125f,  type==6?1:.6875f,fu,type==4?1:.6875f);
@@ -97,12 +97,19 @@ public class BlockWoodenDevices extends BlockIEBase implements blusunrize.aquatw
 			return ((TileEntityWoodenPost)world.getTileEntity(x, y, z)).type == type;
 		return world.getBlock(x,y,z)==this && world.getBlockMetadata(x, y, z)==0;
 	}
+	boolean canArmConnectToBlock(IBlockAccess world, int x, int y, int z, boolean down)
+	{
+		if(world.isAirBlock(x,y,z))
+			return false;
+		world.getBlock(x,y,z).setBlockBoundsBasedOnState(world, x, y, z);
+		return down?world.getBlock(x,y,z).getBlockBoundsMaxY()>=1: world.getBlock(x,y,z).getBlockBoundsMinY()<=0;
+	}
 
 	@Override
 	public boolean isLadder(IBlockAccess world, int x, int y, int z, EntityLivingBase entity)
-    {
+	{
 		return (world.getTileEntity(x, y, z) instanceof TileEntityWoodenPost);
-    }
+	}
 
 	@Override
 	public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z)

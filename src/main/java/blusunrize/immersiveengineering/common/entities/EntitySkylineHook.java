@@ -76,8 +76,8 @@ public class EntitySkylineHook extends Entity
 		super.onUpdate();
 		//		if(this.ticksExisted>40)
 		//			this.setDead();
-		if(worldObj.isRemote)
-			return;
+//		if(worldObj.isRemote)
+//			return;
 
 		EntityPlayer player = null;
 		if(this.riddenByEntity instanceof EntityPlayer)
@@ -98,7 +98,7 @@ public class EntitySkylineHook extends Entity
 				//				double dy = (subPoints[targetPoint].yCoord-posY);//connection.length;
 				//				double dz = (subPoints[targetPoint].zCoord-posZ);//connection.length;
 				//				Vec3 moveVec = Vec3.createVectorHelper(dx,dy,dz);
-				float speed = 3f;
+				float speed = 2f;
 				if(player!=null && player.getCurrentEquippedItem()!=null&&player.getCurrentEquippedItem().getItem() instanceof ItemSkyhook)
 					speed = ((ItemSkyhook)player.getCurrentEquippedItem().getItem()).getSkylineSpeed(player.getCurrentEquippedItem());
 				Vec3 moveVec = SkylineHelper.getSubMovementVector(Vec3.createVectorHelper(posX, posY, posZ), subPoints[targetPoint], speed);

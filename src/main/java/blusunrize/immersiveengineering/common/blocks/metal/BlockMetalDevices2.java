@@ -61,10 +61,11 @@ public class BlockMetalDevices2 extends BlockIEBase implements blusunrize.aquatw
 	@Override
 	public void getSubBlocks(Item item, CreativeTabs tab, List list)
 	{
-		for(int i=0; i<subNames.length; i++)
-		{
-			list.add(new ItemStack(item, 1, i));
-		}
+		list.add(new ItemStack(item, 1, 0));
+//		for(int i=0; i<subNames.length; i++)
+//		{
+//			list.add(new ItemStack(item, 1, i));
+//		}
 	}
 
 	@Override

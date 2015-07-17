@@ -1,7 +1,19 @@
-#####Version 0.4.2
+#####Version 0.4.2 - BUILT
+- fixed renderign derp with backtools
+- added config for energy output on the ThermoElectric Gen
+- fixed coke oven to reset timer on input change
+- added external access methods for the Sample Drill
+- added null check to wire rendering
+- still working on derpy skylines .-.
+- fixed replacement ores in the excavator
 - more changes to the API, allowing for more specific colouring of wires, textures for them and customizeable slack
 - nerfed Kinetic Dynamos to only take power from one side now
 - optimized connections to cache catenaries. Improves rendering performance
+- added No Name
+- ominous changelog is ominous.
+- fixed arms on wooden posts to only connect where apropriate (bounding boxes \o/)
+- added config option to disable hammer crushing
+- allowed revolver recipe to be mirrored
 
 
 #####Version 0.4.1 - BUILT

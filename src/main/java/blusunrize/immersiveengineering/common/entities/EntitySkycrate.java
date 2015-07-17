@@ -95,7 +95,6 @@ public class EntitySkycrate extends EntitySkylineHook
 
 		if(!(worldObj.getTileEntity(target.posX,target.posY,target.posZ) instanceof IImmersiveConnectable))
 		{
-			System.out.println("target invalid");
 			this.setDead();
 			return;
 		}
