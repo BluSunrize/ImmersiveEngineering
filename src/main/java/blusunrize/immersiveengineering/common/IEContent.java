@@ -319,7 +319,7 @@ public class IEContent
 		registerTile(TileEntityConnectorStructural.class);
 		registerTile(TileEntityWallmountMetal.class);
 		registerTile(TileEntityLantern.class);
-		
+
 		registerTile(TileEntityBreakerSwitch.class);
 		registerTile(TileEntitySkycrateDispenser.class);
 
@@ -364,7 +364,7 @@ public class IEContent
 		addOredictRecipe(new ItemStack(itemTool,1,1), "SI"," S", 'I',"ingotIron", 'S',"treatedStick").setMirrored(true);
 		addOredictRecipe(new ItemStack(itemTool,1,2), " P ","SCS", 'C',"ingotCopper", 'P',Items.compass, 'S',"treatedStick");
 		addShapelessOredictRecipe(new ItemStack(itemTool,1,3), Items.book,Blocks.lever);
-		addOredictRecipe(new ItemStack(itemRevolver,1,0), " I ","HDB","GIG", 'I',"ingotIron",'B',new ItemStack(itemMaterial,1,7),'D',new ItemStack(itemMaterial,1,8),'G',new ItemStack(itemMaterial,1,9),'H',new ItemStack(itemMaterial,1,10)).setMirrored(false);
+		addOredictRecipe(new ItemStack(itemRevolver,1,0), " I ","HDB","GIG", 'I',"ingotIron",'B',new ItemStack(itemMaterial,1,7),'D',new ItemStack(itemMaterial,1,8),'G',new ItemStack(itemMaterial,1,9),'H',new ItemStack(itemMaterial,1,10)).setMirrored(true);
 		addOredictRecipe(new ItemStack(itemRevolver,1,1), "  I","IIS","  I", 'I',"ingotIron",'S',"ingotSteel");
 		GameRegistry.addRecipe(new RecipeRevolver());
 
@@ -379,9 +379,9 @@ public class IEContent
 		addBulletRecipes(4, "dustIron", 1);
 		addBulletRecipes(5, Blocks.tnt, 0);
 		addBulletRecipes(6, "dustAluminum", 1);
-		
+
 		addOredictRecipe(new ItemStack(itemSkyhook,1,0), "II ","IC "," GG", 'C',componentIron,'I',"ingotSteel", 'G',new ItemStack(itemMaterial,1,9));
-		
+
 		addOredictRecipe(new ItemStack(itemDrill,1,0), "  G"," EG","C  ", 'C',componentSteel,'E',new ItemStack(blockMetalDecoration,1,BlockMetalDecoration.META_heavyEngineering), 'G',new ItemStack(itemMaterial,1,9));
 		addOredictRecipe(new ItemStack(itemDrillhead,1,0), "SS ","BBS","SS ", 'B',"blockSteel", 'S',"ingotSteel");
 		addOredictRecipe(new ItemStack(itemDrillhead,1,1), "SS ","BBS","SS ", 'B',"blockIron", 'S',"ingotIron");
@@ -476,7 +476,7 @@ public class IEContent
 		addOredictRecipe(new ItemStack(blockMetalDevice,1, BlockMetalDevices.META_furnaceHeater), "ICI","CBC","IRI", 'I',"ingotIron",'R',"dustRedstone",'C',"ingotCopper",'B',copperCoil);
 		addOredictRecipe(new ItemStack(blockMetalDevice,1, BlockMetalDevices.META_sorter), "IRI","WBW","IRI", 'I',"ingotIron",'R',"dustRedstone",'W',treatedWood,'B',componentIron);
 		addOredictRecipe(new ItemStack(blockMetalDevice,1, BlockMetalDevices.META_sampleDrill), "SFS","SFS","BFB", 'F',new ItemStack(blockMetalDecoration,1,BlockMetalDecoration.META_fence),'S',new ItemStack(blockMetalDecoration,1,BlockMetalDecoration.META_scaffolding),'B',new ItemStack(blockMetalDecoration,1,BlockMetalDecoration.META_lightEngineering));
-		
+
 		addOredictRecipe(new ItemStack(blockMetalDevice2,1, BlockMetalDevices2.META_breakerSwitch), " L ","CIC", 'L',Blocks.lever,'C',Blocks.hardened_clay,'I',"ingotCopper");
 
 		addOredictRecipe(new ItemStack(blockMetalDecoration,16,BlockMetalDecoration.META_fence), "III","III", 'I',"ingotSteel");
@@ -535,7 +535,7 @@ public class IEContent
 		ItemStack sulfur = !OreDictionary.getOres("dustSulfur").isEmpty()?OreDictionary.getOres("dustSulfur").get(0):null;
 		addOreProcessingRecipe(new ItemStack(Items.quartz,3), "Quartz", 4000, false, sulfur,.15f);
 		addOreProcessingRecipe(new ItemStack(Items.coal,4), "Coal", 4000, false, null,0);
-		
+
 		CrusherRecipe.addRecipe(new ItemStack(Blocks.sand), "cobblestone", 3200);
 		CrusherRecipe.addRecipe(new ItemStack(Blocks.sand), "blockGlass", 3200);
 		CrusherRecipe.addRecipe(new ItemStack(Items.quartz,4), "blockQuartz", 3200);
@@ -576,7 +576,7 @@ public class IEContent
 		DieselHandler.addFermenterRecipe(Items.melon, 80, new FluidStack(fluidEthanol,80), null);
 		DieselHandler.addFermenterRecipe(Items.apple, 80, new FluidStack(fluidEthanol,80), null);
 		DieselHandler.addFermenterRecipe("cropPotato", 80, new FluidStack(fluidEthanol,80), null);
-		
+
 		DieselHandler.addRefineryRecipe(new FluidStack(fluidPlantoil,8), new FluidStack(fluidEthanol,8), new FluidStack(fluidBiodiesel,16));
 
 		ThermoelectricHandler.registerSourceInKelvin("blockIce", 273);
@@ -626,16 +626,18 @@ public class IEContent
 	public static void loadComplete()
 	{
 		//Crushing
-		addHammerCrushingRecipe("Iron",8);
-		addHammerCrushingRecipe("Gold",9);
-		addHammerCrushingRecipe("Copper",10);
-		addHammerCrushingRecipe("Aluminum",11);
-		addHammerCrushingRecipe("Lead",12);
-		addHammerCrushingRecipe("Silver",13);
-		addHammerCrushingRecipe("Nickel",14);
-		Config.setBoolean("crushingOreRecipe", !validCrushingOres.isEmpty());
+		if(!Config.getBoolean("disableHammerCrushing"))
+		{
+			addHammerCrushingRecipe("Iron",8);
+			addHammerCrushingRecipe("Gold",9);
+			addHammerCrushingRecipe("Copper",10);
+			addHammerCrushingRecipe("Aluminum",11);
+			addHammerCrushingRecipe("Lead",12);
+			addHammerCrushingRecipe("Silver",13);
+			addHammerCrushingRecipe("Nickel",14);
+			Config.setBoolean("crushingOreRecipe", !validCrushingOres.isEmpty());
+		}
 	}
-
 
 
 	public static void registerToOreDict(String type, ItemIEBase item, int... metas)
