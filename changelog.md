@@ -1,3 +1,8 @@
+#####Version 0.4.4 - BUILT
+- fixed vertical wires not rendering
+- dynamo can now be rotated with the hammer
+
+
 #####Version 0.4.3 - BUILT
 - important hotfix for TileRenders. They should work now
 - fixed capacitors not syncing their energy storage

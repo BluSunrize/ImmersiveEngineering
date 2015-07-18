@@ -303,6 +303,17 @@ public class BlockMetalDevices extends BlockIEBase implements blusunrize.aquatwe
 			}
 			return true;
 		}
+		if(world.getTileEntity(x, y, z) instanceof TileEntityDynamo && Utils.isHammer(player.getCurrentEquippedItem()))
+		{
+			int f = ((TileEntityDynamo)world.getTileEntity(x, y, z)).facing;
+			f = ForgeDirection.ROTATION_MATRIX[player.isSneaking()?1:0][f];
+			((TileEntityDynamo)world.getTileEntity(x, y, z)).facing = f;
+			world.getTileEntity(x, y, z).markDirty();
+			world.func_147451_t(x, y, z);
+			world.markBlockForUpdate(x, y, z);
+			world.playSoundEffect(x+.5,y+.5,z+.5, "random.door_open", .5f,2f);
+			return !world.isRemote;
+		}
 		if(world.getTileEntity(x, y, z) instanceof TileEntityConveyorBelt && Utils.isHammer(player.getCurrentEquippedItem()))
 		{
 			TileEntityConveyorBelt tile = (TileEntityConveyorBelt)world.getTileEntity(x, y, z);
