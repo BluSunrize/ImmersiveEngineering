@@ -1,5 +1,9 @@
+#####Version 0.4.3
+- important hotfix for TileRenders. They should work now.
+
+
 #####Version 0.4.2 - BUILT
-- fixed renderign derp with backtools
+- fixed rendering derp with backtools
 - added config for energy output on the ThermoElectric Gen
 - fixed coke oven to reset timer on input change
 - added external access methods for the Sample Drill
@@ -11,7 +15,7 @@
 - optimized connections to cache catenaries. Improves rendering performance
 - added No Name
 - ominous changelog is ominous.
-- fixed arms on wooden posts to only connect where apropriate (bounding boxes \o/)
+- fixed arms on wooden posts to only connect where appropriate (bounding boxes \o/)
 - added config option to disable hammer crushing
 - allowed revolver recipe to be mirrored
 
