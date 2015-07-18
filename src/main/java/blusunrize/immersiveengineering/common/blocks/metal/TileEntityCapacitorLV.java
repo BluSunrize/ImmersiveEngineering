@@ -204,7 +204,9 @@ public class TileEntityCapacitorLV extends TileEntityImmersiveConnectable implem
 	{
 		if(worldObj.isRemote || fd.ordinal()>=sideConfig.length || sideConfig[fd.ordinal()]!=1)
 			return 0;
-		return energyStorage.extractEnergy(amount, simulate);
+		int r = energyStorage.extractEnergy(amount, simulate);
+		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+		return r;
 	}
 	@Override
 	public int getEnergyStored(ForgeDirection fd)
@@ -221,7 +223,9 @@ public class TileEntityCapacitorLV extends TileEntityImmersiveConnectable implem
 	{
 		if(worldObj.isRemote || fd.ordinal()>=sideConfig.length || sideConfig[fd.ordinal()]!=0)
 			return 0;
-		return energyStorage.receiveEnergy(amount, simulate);
+		int r = energyStorage.receiveEnergy(amount, simulate);
+		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+		return r;
 	}
 	@Override
 	public String[] getOverlayText(MovingObjectPosition mop)

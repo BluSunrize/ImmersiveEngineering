@@ -73,13 +73,13 @@ public class BlockWoodenDevices extends BlockIEBase implements blusunrize.aquatw
 			case 5:
 			case 6:
 			case 7:
-				float fd = .5f;
+				float fd = .4375f;
 				float fu = 1f;
 				if(canArmConnectToBlock(world, x,y-1,z, true))
 				{
 					fd = 0;
-					if(canArmConnectToBlock(world, x,y+1,z, false))
-						fu = .5f;
+					if(!canArmConnectToBlock(world, x,y+1,z, false))
+						fu = .5625f;
 				}
 				this.setBlockBounds(type==7?0:.3125f,fd,type==5?0:.3125f,  type==6?1:.6875f,fu,type==4?1:.6875f);
 				break;
