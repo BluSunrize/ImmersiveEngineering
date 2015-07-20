@@ -78,9 +78,6 @@ public class ItemBullet extends ItemIEBase implements IBullet
 
 	EntityRevolvershot doSpawnBullet(EntityPlayer player, Vec3 vecSpawn, Vec3 vecDir, int type, ItemStack stack, boolean electro)
 	{
-		//		double dX = player.posX+vecSpawn.xCoord;
-		//		double dY = player.posY+player.getEyeHeight()+vecSpawn.yCoord;
-		//		double dZ = player.posZ+vecSpawn.zCoord;
 		EntityRevolvershot bullet = new EntityRevolvershot(player.worldObj, player, vecDir.xCoord*1.5,vecDir.yCoord*1.5,vecDir.zCoord*1.5, type, stack);
 		bullet.motionX = vecDir.xCoord;
 		bullet.motionY = vecDir.yCoord;

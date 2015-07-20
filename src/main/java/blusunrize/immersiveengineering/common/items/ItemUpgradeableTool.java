@@ -43,7 +43,7 @@ public abstract class ItemUpgradeableTool extends ItemInternalStorage
 					upg.applyUpgrades(stack, u, map);	
 			}
 		}
-		NBTTagCompound upgradeTag = getUpgradeBase(stack);
+		NBTTagCompound upgradeTag = (NBTTagCompound)getUpgradeBase(stack).copy();
 		for(String key : map.keySet())
 		{
 			Object o = map.get(key);

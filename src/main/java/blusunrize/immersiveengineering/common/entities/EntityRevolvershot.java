@@ -42,6 +42,7 @@ public class EntityRevolvershot extends Entity
 	public EntityRevolvershot(World world)
 	{
 		super(world);
+		this.renderDistanceWeight=10;
 		this.setSize(.125f,.125f);
 	}
 	public EntityRevolvershot(World world, double x, double y, double z, double ax, double ay, double az, int type)
@@ -217,9 +218,10 @@ public class EntityRevolvershot extends Entity
 			}
 			if(bulletType==3)
 				worldObj.createExplosion(shootingEntity, posX, posY, posZ, 2, false);
+
 			this.secondaryImpact(mop);
-			this.setDead();
 		}
+		this.setDead();
 	}
 	public void secondaryImpact(MovingObjectPosition mop)
 	{
@@ -239,6 +241,30 @@ public class EntityRevolvershot extends Entity
 					double charge = IC2Helper.getMaxItemCharge(stack);
 					IC2Helper.dischargeItem(stack, charge*.10f);
 				}
+			}
+		}
+		
+		if(!(this instanceof EntityWolfpackShot))
+		{
+			Vec3 v = Vec3.createVectorHelper(-motionX, -motionY, -motionZ);
+			for(int i=0; i<8; i++)
+			{
+				//				float angleV = this.rand.nextFloat()*360f;
+				//			double my = Math.sin(angleV);
+				//			double md = Math.cos(angleV);
+				double d = Math.sqrt(motionX*motionX + motionZ*motionZ + motionY*motionY);
+				double modX = -motionZ/d;
+				double modZ = -motionX/d;
+				double randomized = (rand.nextDouble()-.5);
+
+				Vec3 vecDir = v.addVector((rand.nextDouble()-.5)*modX, (rand.nextDouble()-.5), (rand.nextDouble()-.5)*modZ).normalize();
+				EntityWolfpackShot bullet = new EntityWolfpackShot(worldObj, this.shootingEntity, vecDir.xCoord*1.5,vecDir.yCoord*1.5,vecDir.zCoord*1.5, this.bulletType, null);
+				bullet.setPosition(posX+vecDir.xCoord, posY+vecDir.yCoord, posZ+vecDir.zCoord);
+				bullet.motionX = vecDir.xCoord*.25;
+				bullet.motionY = vecDir.yCoord*.25;
+				bullet.motionZ = vecDir.zCoord*.25;
+				//			bullet.bulletElectro = electro;
+				worldObj.spawnEntityInWorld(bullet);
 			}
 		}
 	}

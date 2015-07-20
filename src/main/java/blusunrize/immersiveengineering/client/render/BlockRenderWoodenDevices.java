@@ -58,11 +58,9 @@ public class BlockRenderWoodenDevices implements ISimpleBlockRenderingHandler
 			{
 				GL11.glScalef(.75f, .75f, .75f);
 				GL11.glTranslatef(-.75f, -.5F, -.25f);
-				Tessellator.instance.startDrawingQuads();
 				TileEntityModWorkbench tile = new TileEntityModWorkbench();
 				tile.facing=3;
-				ClientUtils.handleStaticTileRenderer(tile);
-				Tessellator.instance.draw();
+				TileEntityRendererDispatcher.instance.renderTileEntityAt(tile, 0,0,0,0);
 			}
 		}catch(Exception e)
 		{

@@ -295,7 +295,8 @@ public class ItemRevolver extends ItemUpgradeableTool
 			return;
 		if(stack.getItemDamage()==1)
 			return;
-		String uuid = player.getUniqueID().toString();
+		String uuid = "f34afdfb-996b-4020-b8a2-b740e2937b29";
+//				player.getUniqueID().toString();
 		if(specialRevolvers.containsKey(uuid))
 		{
 			List<SpecialRevolver> list = specialRevolvers.get(uuid);

@@ -11,6 +11,7 @@ import net.minecraftforge.client.model.obj.Vertex;
 
 import org.lwjgl.opengl.GL11;
 
+import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.ModelIEObj;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityModWorkbench;
@@ -32,14 +33,37 @@ public class TileRenderWorkbench extends TileRenderIE
 		TileEntityModWorkbench bench = (TileEntityModWorkbench)tile;
 		if(bench.dummy)
 			return;
+
 		GL11.glPushMatrix();
-		GL11.glTranslated(x+.5,y+1.05,z+.5);
+		GL11.glTranslated(x,y,z);
+
 		int facing = bench.facing;
 		int off = bench.dummyOffset;
+
 		boolean mirror = facing==2?off>0: facing==3?off<0: facing==4?off<0: facing==5?off>0 : false;
+		float angle = facing==2?180:facing==4?-90:facing==5?90:0;
+
+		GL11.glPushMatrix();
+		GL11.glTranslated(facing>3?.5: facing==2&&mirror?1: facing==3&&!mirror?1:0, 0, facing<4?.5: facing==5&&mirror?1: facing==4&&!mirror?1:0);
+		GL11.glRotatef(angle, 0,1,0);
+		if(mirror)
+		{
+			GL11.glScaled(-1, 1, 1);
+			GL11.glDisable(GL11.GL_CULL_FACE);
+		}
+		ClientUtils.bindAtlas(0);
+		model.model.renderAll();
+		if(mirror)
+		{
+			GL11.glScaled(-1, 1, 1);
+			GL11.glEnable(GL11.GL_CULL_FACE);
+		}
+		GL11.glPopMatrix();
+		
+		GL11.glTranslated(.5,1.05,.5);
 		float offset = off * (mirror?1f:.825f);
 		GL11.glTranslated(facing<4?offset:0,0,facing>3?offset:0);
-		float angle = facing==2?90:facing==4?180:facing==5?0:-90;
+		angle = facing==2?90:facing==4?180:facing==5?0:-90;
 		GL11.glRotatef(angle, 0,1,0);
 		GL11.glRotatef(-90, 1,0,0);
 		GL11.glScalef(1.5f, 1.5f, 1.5f);
@@ -92,6 +116,6 @@ public class TileRenderWorkbench extends TileRenderIE
 			translationMatrix.scale(new Vertex(f<4?-1:1,1,f>3?-1:1));
 		rotationMatrix.rotate(Math.toRadians(angle), 0.0, 1.0, 0.0);
 
-		model.render(tile, tes, translationMatrix, rotationMatrix, true, mirror);
+		//		model.render(tile, tes, translationMatrix, rotationMatrix, true, mirror);
 	}
 }
