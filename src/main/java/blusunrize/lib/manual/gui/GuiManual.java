@@ -9,6 +9,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 import blusunrize.lib.manual.IManualPage;
@@ -208,6 +209,26 @@ public class GuiManual extends GuiScreen
 		super.drawHoveringText(text,x,y,font);
 	}
 
+	@Override
+	public void handleMouseInput()
+	{
+		super.handleMouseInput();
+		int wheel = Mouse.getEventDWheel();
+		if(wheel!=0 && manual.getEntry(selectedEntry)!=null)
+		{
+			ManualEntry entry = manual.getEntry(selectedEntry);
+			if(wheel>0 && page>0)
+			{
+				page--;
+				this.initGui();
+			}
+			else if(wheel<0 && page<entry.getPages().length-1)
+			{
+				page++;
+				this.initGui();
+			}
+		}
+	}
 	@Override
 	public void mouseClicked(int mx, int my, int button)
 	{

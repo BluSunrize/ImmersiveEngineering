@@ -156,7 +156,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 	@Override
 	public boolean canConnectEnergy(ForgeDirection from)
 	{
-		return true;
+		return from.ordinal()==facing;
 	}
 	@Override
 	public int receiveEnergy(ForgeDirection from, int maxReceive,boolean simulate)
