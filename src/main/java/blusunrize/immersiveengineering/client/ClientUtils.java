@@ -751,29 +751,29 @@ public class ClientUtils
 			drawGradientRect(j2 - 4, k2 - 3, j2 - 3, k2 + i1 + 3, j1, j1);
 			drawGradientRect(j2 + k + 3, k2 - 3, j2 + k + 4, k2 + i1 + 3, j1, j1);
 			int k1 = 1347420415;
-			int l1 = (k1 & 16711422) >> 1 | k1 & -16777216;
-		drawGradientRect(j2 - 3, k2 - 3 + 1, j2 - 3 + 1, k2 + i1 + 3 - 1, k1, l1);
-		drawGradientRect(j2 + k + 2, k2 - 3 + 1, j2 + k + 3, k2 + i1 + 3 - 1, k1, l1);
-		drawGradientRect(j2 - 3, k2 - 3, j2 + k + 3, k2 - 3 + 1, k1, k1);
-		drawGradientRect(j2 - 3, k2 + i1 + 2, j2 + k + 3, k2 + i1 + 3, l1, l1);
+			int l1 = ((k1 & 16711422) >> 1 | k1 & -16777216);
+			drawGradientRect(j2 - 3, k2 - 3 + 1, j2 - 3 + 1, k2 + i1 + 3 - 1, k1, l1);
+			drawGradientRect(j2 + k + 2, k2 - 3 + 1, j2 + k + 3, k2 + i1 + 3 - 1, k1, l1);
+			drawGradientRect(j2 - 3, k2 - 3, j2 + k + 3, k2 - 3 + 1, k1, k1);
+			drawGradientRect(j2 - 3, k2 + i1 + 2, j2 + k + 3, k2 + i1 + 3, l1, l1);
 
-		for (int i2 = 0; i2 < list.size(); ++i2)
-		{
-			String s1 = (String)list.get(i2);
-			font.drawStringWithShadow(s1, j2, k2, -1);
+			for (int i2 = 0; i2 < list.size(); ++i2)
+			{
+				String s1 = (String)list.get(i2);
+				font.drawStringWithShadow(s1, j2, k2, -1);
 
-			if (i2 == 0)
-				k2 += 2;
+				if (i2 == 0)
+					k2 += 2;
 
-			k2 += 10;
-		}
+				k2 += 10;
+			}
 
-		GL11.glEnable(GL11.GL_LIGHTING);
-		GL11.glEnable(GL11.GL_DEPTH_TEST);
-		RenderHelper.enableStandardItemLighting();
-		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+			GL11.glEnable(GL11.GL_LIGHTING);
+			GL11.glEnable(GL11.GL_DEPTH_TEST);
+			RenderHelper.enableStandardItemLighting();
+			GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 
-		ClientUtils.font().setUnicodeFlag(uni);
+			ClientUtils.font().setUnicodeFlag(uni);
 		}
 	}
 

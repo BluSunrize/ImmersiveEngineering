@@ -9,7 +9,7 @@ import minetweaker.api.item.IItemStack;
 import net.minecraft.item.ItemStack;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
-import blusunrize.immersiveengineering.api.tool.CrusherRecipe;
+import blusunrize.immersiveengineering.api.crafting.CrusherRecipe;
 
 @ZenClass("mods.immersiveengineering.Crusher")
 public class Crusher

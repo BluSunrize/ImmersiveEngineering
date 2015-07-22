@@ -19,13 +19,14 @@ import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.BlastFurnaceRecipe;
-import blusunrize.immersiveengineering.api.CokeOvenRecipe;
 import blusunrize.immersiveengineering.api.MultiblockHandler;
+import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
+import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
+import blusunrize.immersiveengineering.api.crafting.CokeOvenRecipe;
+import blusunrize.immersiveengineering.api.crafting.CrusherRecipe;
 import blusunrize.immersiveengineering.api.energy.DieselHandler;
 import blusunrize.immersiveengineering.api.energy.ThermoelectricHandler;
 import blusunrize.immersiveengineering.api.energy.WireType;
-import blusunrize.immersiveengineering.api.tool.CrusherRecipe;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase.BlockIESimple;
@@ -97,6 +98,7 @@ import blusunrize.immersiveengineering.common.entities.EntitySkylineHook;
 import blusunrize.immersiveengineering.common.items.ItemBullet;
 import blusunrize.immersiveengineering.common.items.ItemDrill;
 import blusunrize.immersiveengineering.common.items.ItemDrillhead;
+import blusunrize.immersiveengineering.common.items.ItemEngineersBlueprint;
 import blusunrize.immersiveengineering.common.items.ItemIEBase;
 import blusunrize.immersiveengineering.common.items.ItemIESeed;
 import blusunrize.immersiveengineering.common.items.ItemIETool;
@@ -108,6 +110,7 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.common.registry.VillagerRegistry;
 
 public class IEContent
 {
@@ -134,6 +137,7 @@ public class IEContent
 	public static ItemIEBase itemDrillhead;
 	public static ItemIEBase itemToolUpgrades;
 	public static ItemIEBase itemSkyhook;
+	public static ItemIEBase itemBlueprint;
 	public static Fluid fluidCreosote;
 	public static boolean IECreosote=false;
 	public static Fluid fluidPlantoil;
@@ -160,7 +164,8 @@ public class IEContent
 		itemMetal = new ItemIEBase("metal", 64,
 				"ingotCopper","ingotAluminum","ingotLead","ingotSilver","ingotNickel","ingotConstantan","ingotElectrum","ingotSteel",  
 				"dustIron","dustGold","dustCopper","dustAluminum","dustLead","dustSilver","dustNickel","dustConstantan","dustElectrum",
-				"dustCoke","dustQuartz","dustHOPGraphite","ingotHOPGraphite");
+				"dustCoke","dustQuartz","dustHOPGraphite","ingotHOPGraphite",
+				"nuggetIron","nuggetSteel");
 
 		itemMaterial = new ItemIEBase("material", 64,
 				"treatedStick","waterwheelSegment","windmillBlade","hempFiber","fabric","windmillBladeAdvanced",
@@ -197,6 +202,7 @@ public class IEContent
 		itemDrillhead = new ItemDrillhead();
 		itemToolUpgrades = new ItemToolUpgrade();
 		itemSkyhook = new ItemSkyhook();
+		itemBlueprint = new ItemEngineersBlueprint();
 
 		fluidCreosote = FluidRegistry.getFluid("creosote");
 		if(fluidCreosote==null)
@@ -271,7 +277,6 @@ public class IEContent
 		blockStorage.setHarvestLevel("pickaxe", 2, 9);//CoilElectrum
 		blockStorage.setHarvestLevel("pickaxe", 2,10);//CoilHV
 
-
 		addConfiguredWorldgen(blockOres,0, "ore_copper");
 		addConfiguredWorldgen(blockOres,1, "ore_bauxite");
 		addConfiguredWorldgen(blockOres,2, "ore_lead");
@@ -332,6 +337,10 @@ public class IEContent
 		EntityRegistry.registerModEntity(EntitySkylineHook.class, "skylineHook", 1, ImmersiveEngineering.instance, 64, 1, true);
 		EntityRegistry.registerModEntity(EntitySkycrate.class, "skylineCrate", 2, ImmersiveEngineering.instance, 64, 1, true);
 
+		int villagerId = Config.getInt("villager_engineer");
+		VillagerRegistry.instance().registerVillagerId(villagerId);
+		VillagerRegistry.instance().registerVillageTradeHandler(villagerId, new IEVillagerTradeHandler());
+		
 
 		/**SMELTING*/
 		//Ores
@@ -370,15 +379,26 @@ public class IEContent
 
 		addOredictRecipe(new ItemStack(itemBullet,3,0), "I I","I I"," I ", 'I',"ingotCopper");
 		addOredictRecipe(new ItemStack(itemBullet,3,1), "PDP","PDP"," I ", 'I',"ingotCopper",'P',Items.paper,'D',"dyeRed");
-		addBulletRecipes(2, "ingotIron", 0);
-		addBulletRecipes(3, "ingotSteel", 0);
-		if(!OreDictionary.getOres("ingotTungsten").isEmpty())
-			addBulletRecipes(3, "ingotTungsten", 0);
-		if(!OreDictionary.getOres("ingotCyanite").isEmpty())
-			addBulletRecipes(3, "ingotCyanite", 0);
-		addBulletRecipes(4, "dustIron", 1);
-		addBulletRecipes(5, Blocks.tnt, 0);
-		addBulletRecipes(6, "dustAluminum", 1);
+		//
+
+
+		addBulletRecipes(2, "nuggetIron","ingotIron",null, 0);
+
+		addBulletRecipes(3, "nuggetSteel","ingotSteel",null, 0);
+		addBulletRecipes(3, OreDictionary.getOres("nuggetTungsten").isEmpty()?null:"nuggetTungsten", OreDictionary.getOres("ingotTungsten").isEmpty()?null:"ingotTungsten",null, 0);
+		addBulletRecipes(3, OreDictionary.getOres("nuggetCyanite").isEmpty()?null:"nuggetCyanite", OreDictionary.getOres("ingotCyanite").isEmpty()?null:"ingotCyanite",null, 0);
+
+		addBulletRecipes(4, null,null,"dustIron", 1);
+		addBulletRecipes(5, null,null,Blocks.tnt, 0);
+		addBulletRecipes(6, null,null,"dustAluminum", 1);
+		if(Loader.isModLoaded("Botania"))
+		{
+			addBulletRecipes(7, "nuggetTerrasteel","ingotTerrasteel",null, 0);
+			addOredictRecipe(new ItemStack(itemBullet,2,8), "BBB","CBC","GBG", 'B',new ItemStack(itemBullet,1,7), 'C',new ItemStack(itemBullet,1,1),'G',Items.gunpowder);
+		}
+		BlueprintCraftingRecipe.addRecipe("bullet", new ItemStack(itemBullet,1,2), Items.gunpowder,new ItemStack(itemBullet,1,0),"nuggetIron");
+		BlueprintCraftingRecipe.addRecipe("bullet", new ItemStack(itemBullet,1,3), Items.gunpowder,new ItemStack(itemBullet,1,0),"nuggetSteel");
+		BlueprintCraftingRecipe.addRecipe("bullet", new ItemStack(itemBullet,1,4), Items.gunpowder,new ItemStack(itemBullet,1,1),"dustIron");
 
 		addOredictRecipe(new ItemStack(itemSkyhook,1,0), "II ","IC "," GG", 'C',componentIron,'I',"ingotSteel", 'G',new ItemStack(itemMaterial,1,9));
 
@@ -439,22 +459,27 @@ public class IEContent
 		addOredictRecipe(new ItemStack(blockStoneDevice,2,4), " I ","GDG"," I ", 'G',"blockGlass",'I',"dustIron",'D',"dyeGreen");
 		addOredictRecipe(new ItemStack(blockStoneDevice,2,4), " G ","IDI"," G ", 'G',"blockGlass",'I',"dustIron",'D',"dyeGreen");
 
-		addOredictRecipe(new ItemStack(blockStorage,1,0), "III","III","III", 'I',"ingotCopper");
-		addOredictRecipe(new ItemStack(blockStorage,1,1), "III","III","III", 'I',"ingotAluminum");
-		addOredictRecipe(new ItemStack(blockStorage,1,2), "III","III","III", 'I',"ingotLead");
-		addOredictRecipe(new ItemStack(blockStorage,1,3), "III","III","III", 'I',"ingotSilver");
-		addOredictRecipe(new ItemStack(blockStorage,1,4), "III","III","III", 'I',"ingotNickel");
-		addOredictRecipe(new ItemStack(blockStorage,1,5), "III","III","III", 'I',"ingotConstantan");
-		addOredictRecipe(new ItemStack(blockStorage,1,6), "III","III","III", 'I',"ingotElectrum");
-		addOredictRecipe(new ItemStack(blockStorage,1,7), "III","III","III", 'I',"ingotSteel");
-		addShapelessOredictRecipe(new ItemStack(itemMetal,9,0), "blockCopper");
-		addShapelessOredictRecipe(new ItemStack(itemMetal,9,1), "blockAluminum");
-		addShapelessOredictRecipe(new ItemStack(itemMetal,9,2), "blockLead");
-		addShapelessOredictRecipe(new ItemStack(itemMetal,9,3), "blockSilver");
-		addShapelessOredictRecipe(new ItemStack(itemMetal,9,4), "blockNickel");
-		addShapelessOredictRecipe(new ItemStack(itemMetal,9,5), "blockConstantan");
-		addShapelessOredictRecipe(new ItemStack(itemMetal,9,6), "blockElectrum");
-		addShapelessOredictRecipe(new ItemStack(itemMetal,9,7), "blockSteel");
+		String[] storage = {"III","III","III"};
+		addOredictRecipe(new ItemStack(Items.iron_ingot), storage, 'I',new ItemStack(itemMetal,1,21));
+		addOredictRecipe(new ItemStack(itemMetal,1,7), storage, 'I',new ItemStack(itemMetal,1,22));
+		addOredictRecipe(new ItemStack(blockStorage,1,0), storage, 'I',new ItemStack(itemMetal,1,0));
+		addOredictRecipe(new ItemStack(blockStorage,1,1), storage, 'I',new ItemStack(itemMetal,1,1));
+		addOredictRecipe(new ItemStack(blockStorage,1,2), storage, 'I',new ItemStack(itemMetal,1,2));
+		addOredictRecipe(new ItemStack(blockStorage,1,3), storage, 'I',new ItemStack(itemMetal,1,3));
+		addOredictRecipe(new ItemStack(blockStorage,1,4), storage, 'I',new ItemStack(itemMetal,1,4));
+		addOredictRecipe(new ItemStack(blockStorage,1,5), storage, 'I',new ItemStack(itemMetal,1,5));
+		addOredictRecipe(new ItemStack(blockStorage,1,6), storage, 'I',new ItemStack(itemMetal,1,6));
+		addOredictRecipe(new ItemStack(blockStorage,1,7), storage, 'I',new ItemStack(itemMetal,1,7));
+		addShapelessOredictRecipe(new ItemStack(itemMetal,9,21), new ItemStack(Items.iron_ingot));
+		addShapelessOredictRecipe(new ItemStack(itemMetal,9,22), new ItemStack(itemMetal,1,7));
+		addShapelessOredictRecipe(new ItemStack(itemMetal,9,0), new ItemStack(blockStorage,1,0));
+		addShapelessOredictRecipe(new ItemStack(itemMetal,9,1), new ItemStack(blockStorage,1,1));
+		addShapelessOredictRecipe(new ItemStack(itemMetal,9,2), new ItemStack(blockStorage,1,2));
+		addShapelessOredictRecipe(new ItemStack(itemMetal,9,3), new ItemStack(blockStorage,1,3));
+		addShapelessOredictRecipe(new ItemStack(itemMetal,9,4), new ItemStack(blockStorage,1,4));
+		addShapelessOredictRecipe(new ItemStack(itemMetal,9,5), new ItemStack(blockStorage,1,5));
+		addShapelessOredictRecipe(new ItemStack(itemMetal,9,6), new ItemStack(blockStorage,1,6));
+		addShapelessOredictRecipe(new ItemStack(itemMetal,9,7), new ItemStack(blockStorage,1,7));
 
 
 		addOredictRecipe(new ItemStack(blockStorage,1,8), "WWW","WIW","WWW", 'W',new ItemStack(itemWireCoil,1,0),'I',"ingotIron");
@@ -703,11 +728,24 @@ public class IEContent
 			validCrushingOres.add(oreName);
 		}
 	}
-	public static void addBulletRecipes(int meta, Object load, int casingType)
+	public static void addBulletRecipes(int meta, Object nuggetLoad, Object ingotLoad, Object singularLoad, int casingType)
 	{
-		addOredictRecipe(new ItemStack(itemBullet,3,meta), "III","CCC","GGG", 'I',load,'C',new ItemStack(itemBullet,1,casingType),'G',Items.gunpowder);
-		addOredictRecipe(new ItemStack(itemBullet,2,meta), "II","CC","GG", 'I',load,'C',new ItemStack(itemBullet,1,casingType),'G',Items.gunpowder);
-		addOredictRecipe(new ItemStack(itemBullet,1,meta), "I","C","G", 'I',load,'C',new ItemStack(itemBullet,1,casingType),'G',Items.gunpowder);
+		if(Config.getBoolean("hardmodeBulletRecipes") && (ingotLoad!=null||singularLoad!=null))
+		{
+			Object load = singularLoad!=null?singularLoad:ingotLoad;
+			addOredictRecipe(new ItemStack(itemBullet,3,meta), "III","CCC","GGG", 'I',load,'C',new ItemStack(itemBullet,1,casingType),'G',Items.gunpowder);
+			addOredictRecipe(new ItemStack(itemBullet,2,meta), "II","CC","GG", 'I',load,'C',new ItemStack(itemBullet,1,casingType),'G',Items.gunpowder);
+			addOredictRecipe(new ItemStack(itemBullet,1,meta), "I","C","G", 'I',load,'C',new ItemStack(itemBullet,1,casingType),'G',Items.gunpowder);
+		}
+		else
+		{
+			if(ingotLoad!=null)
+				addOredictRecipe(new ItemStack(itemBullet,3,meta), " I ","CCC","GGG", 'I',ingotLoad, 'C',new ItemStack(itemBullet,1,casingType),'G',Items.gunpowder);
+			if(nuggetLoad!=null)
+				addOredictRecipe(new ItemStack(itemBullet,1,meta), "III"," C "," G ", 'I',nuggetLoad, 'C',new ItemStack(itemBullet,1,casingType),'G',Items.gunpowder);
+			if(singularLoad!=null)
+				addOredictRecipe(new ItemStack(itemBullet,1,meta), "I","C","G", 'I',singularLoad, 'C',new ItemStack(itemBullet,1,casingType),'G',Items.gunpowder);
+		}
 	}
 
 	public static void addCrusherRecipe(ItemStack output, Object input, int energy, ItemStack secondary, float chance)

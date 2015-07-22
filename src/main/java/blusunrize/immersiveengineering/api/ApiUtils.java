@@ -1,12 +1,16 @@
 package blusunrize.immersiveengineering.api;
 
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
 import blusunrize.immersiveengineering.api.energy.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.WireType;
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler.Connection;
+import net.minecraft.block.Block;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagInt;
@@ -28,10 +32,16 @@ public class ApiUtils
 	}
 	public static boolean stackMatchesObject(ItemStack stack, Object o)
 	{
-		if(o instanceof String)
-			return compareToOreName(stack, (String)o);
 		if(o instanceof ItemStack)
 			return OreDictionary.itemMatches((ItemStack)o, stack, false);
+		else if(o instanceof ArrayList)
+		{
+			for(Object io : (ArrayList)o)
+				if(io instanceof ItemStack && OreDictionary.itemMatches((ItemStack)io, stack, false))
+					return true;
+		}
+		else if(o instanceof String)
+			return compareToOreName(stack, (String)o);
 		return false;
 	}
 
@@ -70,7 +80,7 @@ public class ApiUtils
 	{
 		return vec0.addVector(vec1.xCoord,vec1.yCoord,vec1.zCoord);
 	}
-	
+
 	public static Vec3[] getConnectionCatenary(Connection connection, Vec3 start, Vec3 end)
 	{
 		boolean vertical = connection.end.posX==connection.start.posX && connection.end.posZ==connection.start.posZ;
@@ -120,6 +130,26 @@ public class ApiUtils
 		}
 		else
 			return WireType.getValue(tag.getString(key));
+	}
+
+	public static Object convertToValidRecipeInput(Object input)
+	{
+		if(input instanceof ItemStack)
+			return input;
+		else if(input instanceof Item)
+			return new ItemStack((Item)input);
+		else if(input instanceof Block)
+			return new ItemStack((Block)input);
+		else if(input instanceof String)
+		{
+			List<ItemStack> l = OreDictionary.getOres((String)input);
+			if(!l.isEmpty())
+				return l;
+			else
+				return null;
+		}
+		else
+			throw new RuntimeException("Recipe Inputs must always be ItemStack, Item, Block or String (OreDictioanry name)");
 	}
 
 	public static Map<String, Integer> sortMap(Map<String, Integer> map, boolean inverse)

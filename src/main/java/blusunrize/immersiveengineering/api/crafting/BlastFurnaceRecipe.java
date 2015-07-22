@@ -1,4 +1,4 @@
-package blusunrize.immersiveengineering.api;
+package blusunrize.immersiveengineering.api.crafting;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,12 +6,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
 /**
  * @author BluSunrize - 23.03.2015
- *
+ * <br>
  * The recipe for the coke oven
  */
 public class BlastFurnaceRecipe
@@ -22,25 +23,23 @@ public class BlastFurnaceRecipe
 
 	public BlastFurnaceRecipe(ItemStack output, Object input, int time)
 	{
-		this.input=input;
 		this.output=output;
+		this.input=ApiUtils.convertToValidRecipeInput(input);
 		this.time=time;
 	}
 
 	public static ArrayList<BlastFurnaceRecipe> recipeList = new ArrayList<BlastFurnaceRecipe>();
 	public static void addRecipe(ItemStack output, Object input, int time)
 	{
-		recipeList.add(new BlastFurnaceRecipe(output, input, time));
+		BlastFurnaceRecipe recipe = new BlastFurnaceRecipe(output, input, time);
+		if(recipe.input!=null)
+			recipeList.add(recipe);
 	}
 	public static BlastFurnaceRecipe findRecipe(ItemStack input)
 	{
 		for(BlastFurnaceRecipe recipe : recipeList)
-		{
-			if(recipe.input instanceof ItemStack && OreDictionary.itemMatches((ItemStack)recipe.input, input, false))
+			if(ApiUtils.stackMatchesObject(input, recipe.input))
 				return recipe;
-			else if(recipe.input instanceof String && ApiUtils.compareToOreName(input, (String)recipe.input))
-				return recipe;
-		}
 		return null;
 	}
 	public static List<BlastFurnaceRecipe> removeRecipes(ItemStack stack)
@@ -59,36 +58,18 @@ public class BlastFurnaceRecipe
 		return list;
 	}
 
-	public static HashMap<String, Integer> blastFuels = new HashMap<String, Integer>();
+	public static HashMap<Object, Integer> blastFuels = new HashMap<Object, Integer>();
 	public static void addBlastFuel(Object fuel, int burnTime)
 	{
-		if(fuel instanceof String)
-			blastFuels.put((String)fuel, burnTime);
-		else if(fuel instanceof ItemStack && !ApiUtils.nameFromStack((ItemStack)fuel).isEmpty())
-			blastFuels.put(ApiUtils.nameFromStack((ItemStack)fuel)+"::"+((ItemStack)fuel).getItemDamage(), burnTime);
+		Object key = ApiUtils.convertToValidRecipeInput(fuel);
+		if(key!=null)
+			blastFuels.put(key, burnTime);
 	}
 	public static int getBlastFuelTime(ItemStack stack)
 	{
-		for(Map.Entry<String,Integer> e : blastFuels.entrySet())
-		{
-			if(ApiUtils.compareToOreName(stack, e.getKey()))
+		for(Map.Entry<Object,Integer> e : blastFuels.entrySet())
+			if(ApiUtils.stackMatchesObject(stack, e.getKey()))
 				return e.getValue();
-			else
-			{
-				int lIndx = e.getKey().lastIndexOf("::");
-				if(lIndx>0)
-				{
-					String key = e.getKey().substring(0,lIndx);
-					try{
-						int reqMeta = Integer.parseInt(e.getKey().substring(lIndx+2));
-						if(key.equals(ApiUtils.nameFromStack(stack)) && (reqMeta==OreDictionary.WILDCARD_VALUE || reqMeta==stack.getItemDamage()))
-						{
-							return e.getValue();
-						}
-					}catch(Exception exception){}
-				}
-			}
-		}
 		return 0;
 	}
 	public static boolean isValidBlastFuel(ItemStack stack)

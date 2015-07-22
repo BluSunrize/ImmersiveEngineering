@@ -1,15 +1,16 @@
-package blusunrize.immersiveengineering.api;
+package blusunrize.immersiveengineering.api.crafting;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
 /**
  * @author BluSunrize - 23.03.2015
- *
+ * <br>
  * The recipe for the coke oven
  */
 public class CokeOvenRecipe
@@ -21,8 +22,8 @@ public class CokeOvenRecipe
 
 	public CokeOvenRecipe(ItemStack output, Object input, int time, int creosoteOutput)
 	{
-		this.input=input;
 		this.output=output;
+		this.input=ApiUtils.convertToValidRecipeInput(input);
 		this.time=time;
 		this.creosoteOutput=creosoteOutput;
 	}
@@ -30,14 +31,14 @@ public class CokeOvenRecipe
 	public static ArrayList<CokeOvenRecipe> recipeList = new ArrayList<CokeOvenRecipe>();
 	public static void addRecipe(ItemStack output, Object input, int time, int creosoteOutput)
 	{
-		recipeList.add(new CokeOvenRecipe(output, input, time, creosoteOutput));
+		CokeOvenRecipe recipe = new CokeOvenRecipe(output, input, time, creosoteOutput);
+		if(recipe.input!=null)
+			recipeList.add(recipe);
 	}
 	public static CokeOvenRecipe findRecipe(ItemStack input)
 	{
 		for(CokeOvenRecipe recipe : recipeList)
-			if(recipe.input instanceof ItemStack && OreDictionary.itemMatches((ItemStack)recipe.input, input, false))
-				return recipe;
-			else if(recipe.input instanceof String && ApiUtils.compareToOreName(input, (String)recipe.input))
+			if(ApiUtils.stackMatchesObject(input, recipe.input))
 				return recipe;
 		return null;
 	}

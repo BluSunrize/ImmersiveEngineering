@@ -7,7 +7,6 @@ import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
@@ -15,13 +14,12 @@ import net.minecraftforge.oredict.OreDictionary;
 
 import org.lwjgl.opengl.GL11;
 
-import blusunrize.immersiveengineering.api.BlastFurnaceRecipe;
+import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import codechicken.nei.PositionedStack;
 import codechicken.nei.recipe.GuiRecipe;
 import codechicken.nei.recipe.TemplateRecipeHandler;
-import cpw.mods.fml.common.registry.GameData;
 
 public class NEIBlastFurnaceHandler extends TemplateRecipeHandler
 {
@@ -40,24 +38,11 @@ public class NEIBlastFurnaceHandler extends TemplateRecipeHandler
 			output = new PositionedStack(recipe.output, 107,27);
 			time = recipe.time;
 
-			for(String s : BlastFurnaceRecipe.blastFuels.keySet())
+
+			for(Object fuel : BlastFurnaceRecipe.blastFuels.keySet())
 			{
-				if(!OreDictionary.getOres(s).isEmpty())
-					fuels.add( new PositionedStack(OreDictionary.getOres(s), 47,45) );
-				else
-				{
-					int lIndx = s.lastIndexOf("::");
-					if(lIndx>0)
-					{
-						String key = s.substring(0,lIndx);
-						try{
-							int reqMeta = Integer.parseInt(s.substring(lIndx+2));
-							Item item = GameData.getItemRegistry().getObject(key);
-							if(item!=null)
-								fuels.add( new PositionedStack(new ItemStack(item,1,reqMeta), 47,45) );
-						}catch(Exception e){}
-					}
-				}
+				System.out.println("fuel add: "+fuel);
+				fuels.add( new PositionedStack(fuel, 47,45) );
 			}
 		}
 		@Override

@@ -70,6 +70,10 @@ public abstract class ItemUpgradeableTool extends ItemInternalStorage
 	{
 		return new NBTTagCompound();
 	}
+	public boolean canTakeFromWorkbench(ItemStack stack)
+	{
+		return true;
+	}
 	
 	public abstract boolean canModify(ItemStack stack);
 	public abstract Slot[] getWorkbenchSlots(Container container, ItemStack stack, InventoryStorageItem invItem);

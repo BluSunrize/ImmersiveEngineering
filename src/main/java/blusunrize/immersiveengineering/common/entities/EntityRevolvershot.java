@@ -187,7 +187,8 @@ public class EntityRevolvershot extends Entity
 				}
 			}
 
-			this.worldObj.spawnParticle("smoke", this.posX, this.posY, this.posZ, 0.0D, 0.0D, 0.0D);
+			if(ticksExisted%4==0)
+				this.worldObj.spawnParticle("smoke", this.posX, this.posY, this.posZ, 0.0D, 0.0D, 0.0D);
 			this.setPosition(this.posX, this.posY, this.posZ);
 		}
 	}
@@ -213,6 +214,11 @@ public class EntityRevolvershot extends Entity
 				case 4:
 					if(mop.entityHit.attackEntityFrom(IEDamageSources.causeDragonsbreathDamage(this, shootingEntity), (float)Config.getDouble("BulletDamage-Dragon")))
 						mop.entityHit.setFire(3);
+				case 5:
+					mop.entityHit.attackEntityFrom(IEDamageSources.causeHomingDamage(this, shootingEntity), (float)Config.getDouble("BulletDamage-Homing"));
+					break;
+				case 6:
+					mop.entityHit.attackEntityFrom(IEDamageSources.causeWolfpackDamage(this, shootingEntity), (float)Config.getDouble("BulletDamage-Wolfpack"));
 					break;
 				}
 			}
@@ -243,11 +249,11 @@ public class EntityRevolvershot extends Entity
 				}
 			}
 		}
-		
-		if(!(this instanceof EntityWolfpackShot))
+
+		if(bulletType==6)
 		{
 			Vec3 v = Vec3.createVectorHelper(-motionX, -motionY, -motionZ);
-			for(int i=0; i<8; i++)
+			for(int i=0; i<6; i++)
 			{
 				//				float angleV = this.rand.nextFloat()*360f;
 				//			double my = Math.sin(angleV);
@@ -255,15 +261,13 @@ public class EntityRevolvershot extends Entity
 				double d = Math.sqrt(motionX*motionX + motionZ*motionZ + motionY*motionY);
 				double modX = -motionZ/d;
 				double modZ = -motionX/d;
-				double randomized = (rand.nextDouble()-.5);
 
 				Vec3 vecDir = v.addVector((rand.nextDouble()-.5)*modX, (rand.nextDouble()-.5), (rand.nextDouble()-.5)*modZ).normalize();
 				EntityWolfpackShot bullet = new EntityWolfpackShot(worldObj, this.shootingEntity, vecDir.xCoord*1.5,vecDir.yCoord*1.5,vecDir.zCoord*1.5, this.bulletType, null);
 				bullet.setPosition(posX+vecDir.xCoord, posY+vecDir.yCoord, posZ+vecDir.zCoord);
-				bullet.motionX = vecDir.xCoord*.25;
-				bullet.motionY = vecDir.yCoord*.25;
-				bullet.motionZ = vecDir.zCoord*.25;
-				//			bullet.bulletElectro = electro;
+				bullet.motionX = vecDir.xCoord*.375;
+				bullet.motionY = vecDir.yCoord*.375;
+				bullet.motionZ = vecDir.zCoord*.375;
 				worldObj.spawnEntityInWorld(bullet);
 			}
 		}

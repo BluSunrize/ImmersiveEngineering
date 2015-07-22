@@ -34,7 +34,7 @@ public class ContainerModWorkbench extends Container
 	public void rebindSlots()
 	{
 		this.inventorySlots.clear();
-		this.addSlotToContainer(new IESlot.UpgradeableItem(this, tile, 0, 82, 24, 1));
+		this.addSlotToContainer(new IESlot.UpgradeableItem(this, tile, 0, 24, 22, 1));
 		slotCount=1;
 
 		ItemStack tool = this.getSlot(0).getStack();

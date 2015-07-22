@@ -58,10 +58,10 @@ public class ItemDrill extends ItemUpgradeableTool implements IFluidContainerIte
 	{
 		return new Slot[]
 				{
-				new IESlot.DrillHead(container, invItem,0,122,22),
-				new IESlot.Upgrades(container, invItem,1, 102,42, IUpgrade.UpgradeType.DRILL, stack, true),
-				new IESlot.Upgrades(container, invItem,2, 122,52, IUpgrade.UpgradeType.DRILL, stack, true),
-				new IESlot.Upgrades(container, invItem,3, 142,42, IUpgrade.UpgradeType.DRILL, stack, true)
+				new IESlot.DrillHead(container, invItem,0, 98,22),
+				new IESlot.Upgrades(container, invItem,1,  78,42, IUpgrade.UpgradeType.DRILL, stack, true),
+				new IESlot.Upgrades(container, invItem,2,  98,52, IUpgrade.UpgradeType.DRILL, stack, true),
+				new IESlot.Upgrades(container, invItem,3, 118,42, IUpgrade.UpgradeType.DRILL, stack, true)
 				};
 	}
 	@Override

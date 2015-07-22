@@ -83,12 +83,12 @@ public class IESaveData extends WorldSavedData
 
 		NBTTagList mineralList = new NBTTagList();
 		for(Map.Entry<DimensionChunkCoords,Integer> e: ExcavatorHandler.mineralDepletion.entrySet())
-		if(e.getKey()!=null && e.getValue()!=null)
-		{
-			NBTTagCompound tag = e.getKey().writeToNBT();
-			tag.setInteger("depletion", e.getValue());
-			mineralList.appendTag(tag);
-		}
+			if(e.getKey()!=null && e.getValue()!=null)
+			{
+				NBTTagCompound tag = e.getKey().writeToNBT();
+				tag.setInteger("depletion", e.getValue());
+				mineralList.appendTag(tag);
+			}
 		nbt.setTag("mineralDepletion", mineralList);
 	}
 

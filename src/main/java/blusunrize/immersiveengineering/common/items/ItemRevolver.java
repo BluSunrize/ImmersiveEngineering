@@ -57,8 +57,8 @@ public class ItemRevolver extends ItemUpgradeableTool
 	{
 		return new Slot[]
 				{
-				new IESlot.Upgrades(container, invItem,18+0, 102,32, IUpgrade.UpgradeType.REVOLVER, stack, true),
-				new IESlot.Upgrades(container, invItem,18+1, 122,32, IUpgrade.UpgradeType.REVOLVER, stack, true),
+				new IESlot.Upgrades(container, invItem,18+0, 80,32, IUpgrade.UpgradeType.REVOLVER, stack, true),
+				new IESlot.Upgrades(container, invItem,18+1,100,32, IUpgrade.UpgradeType.REVOLVER, stack, true),
 				};
 	}
 	@Override

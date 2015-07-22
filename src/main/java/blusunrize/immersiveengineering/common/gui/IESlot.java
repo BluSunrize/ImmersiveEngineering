@@ -2,6 +2,8 @@ package blusunrize.immersiveengineering.common.gui;
 
 import java.util.List;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
@@ -9,10 +11,12 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.oredict.OreDictionary;
-import blusunrize.immersiveengineering.api.BlastFurnaceRecipe;
+import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
+import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.tool.IBullet;
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
 import blusunrize.immersiveengineering.api.tool.IUpgrade;
+import blusunrize.immersiveengineering.common.items.ItemEngineersBlueprint;
 import blusunrize.immersiveengineering.common.items.ItemUpgradeableTool;
 
 public abstract class IESlot extends Slot
@@ -155,12 +159,19 @@ public abstract class IESlot extends Slot
 			return size;
 		}
 		@Override
-	    public void onSlotChanged()
-	    {
+		public void onSlotChanged()
+		{
 			super.onSlotChanged();
 			if(container instanceof ContainerModWorkbench)
 				((ContainerModWorkbench)container).rebindSlots();
-	    }
+		}
+		@Override
+		public boolean canTakeStack(EntityPlayer player)
+		{
+			if(this.getStack()!=null && getStack().getItem() instanceof ItemUpgradeableTool && !((ItemUpgradeableTool)getStack().getItem()).canTakeFromWorkbench(getStack()))
+				return false;
+			return true;
+		}
 	}
 	public static class Ghost extends IESlot
 	{
@@ -184,5 +195,66 @@ public abstract class IESlot extends Slot
 		{
 			return 1;
 		}
+	}
+	
+	public static class BlueprintInput extends IESlot
+	{
+		ItemStack upgradeableTool;
+		public BlueprintInput(Container container, IInventory inv, int id, int x, int y, ItemStack upgradeableTool)
+		{
+			super(container, inv, id, x, y);
+			this.upgradeableTool = upgradeableTool;
+		}
+		@Override
+	    public void onSlotChanged()
+	    {
+			this.inventory.markDirty();
+			if(upgradeableTool!=null && upgradeableTool.getItem() instanceof ItemEngineersBlueprint)
+				((ItemEngineersBlueprint)upgradeableTool.getItem()).updateOutputs(upgradeableTool);
+			if(container instanceof ContainerModWorkbench)
+				((ContainerModWorkbench)container).rebindSlots();
+			super.onSlotChanged();
+	    }
+		@Override
+		public int getSlotStackLimit()
+		{
+			return 64;
+		}
+	}
+	public static class BlueprintOutput extends IESlot
+	{
+		public BlueprintCraftingRecipe recipe;
+		ItemStack upgradeableTool;
+		public BlueprintOutput(Container container, IInventory inv, int id, int x, int y, ItemStack upgradeableTool, BlueprintCraftingRecipe recipe)
+		{
+			super(container, inv, id, x, y);
+			this.upgradeableTool = upgradeableTool;
+			this.recipe = recipe;
+		}
+		@Override
+		public boolean isItemValid(ItemStack itemStack)
+		{
+			return false;
+		}
+
+
+		@Override
+	    @SideOnly(Side.CLIENT)
+		/**Determines whether to render slot-highlighting*/
+	    public boolean func_111238_b()
+	    {
+	        return this.getHasStack();
+	    }
+		
+		@Override
+	    public void onPickupFromSlot(EntityPlayer player, ItemStack stack)
+	    {
+			this.inventory.markDirty();
+			if(upgradeableTool!=null && upgradeableTool.getItem() instanceof ItemEngineersBlueprint)
+				((ItemEngineersBlueprint)upgradeableTool.getItem()).reduceInputs(recipe, upgradeableTool, stack);
+			if(container instanceof ContainerModWorkbench)
+				((ContainerModWorkbench)container).rebindSlots();
+	    	super.onPickupFromSlot(player, stack);
+	    }
 	}
 }

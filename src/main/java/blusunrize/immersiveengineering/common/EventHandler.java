@@ -18,7 +18,7 @@ import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.oredict.OreDictionary;
-import blusunrize.immersiveengineering.api.BlastFurnaceRecipe;
+import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
 import blusunrize.immersiveengineering.client.ClientUtils;
@@ -65,6 +65,13 @@ public class EventHandler
 		 */
 		//		}
 	}
+
+	@SubscribeEvent
+	public void onSave(WorldEvent.Save event)
+	{
+		IESaveData.setDirty(0);
+	}
+	
 
 	@SubscribeEvent
 	public void harvestCheck(PlayerEvent.HarvestCheck event)

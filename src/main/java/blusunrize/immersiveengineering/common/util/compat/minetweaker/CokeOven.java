@@ -2,7 +2,7 @@ package blusunrize.immersiveengineering.common.util.compat.minetweaker;
 
 import java.util.List;
 
-import blusunrize.immersiveengineering.api.CokeOvenRecipe;
+import blusunrize.immersiveengineering.api.crafting.CokeOvenRecipe;
 import minetweaker.IUndoableAction;
 import minetweaker.MineTweakerAPI;
 import minetweaker.api.item.IIngredient;

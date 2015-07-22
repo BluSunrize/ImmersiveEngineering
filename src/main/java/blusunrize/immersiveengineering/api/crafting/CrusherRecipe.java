@@ -1,4 +1,4 @@
-package blusunrize.immersiveengineering.api.tool;
+package blusunrize.immersiveengineering.api.crafting;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -23,8 +23,8 @@ public class CrusherRecipe
 
 	public CrusherRecipe(ItemStack output, Object input, int energy)
 	{
-		this.input = input;
 		this.output = output;
+		this.input = ApiUtils.convertToValidRecipeInput(input);
 		this.energy = energy;
 	}
 	public CrusherRecipe addSecondaryOutput(ItemStack output, float chance)
@@ -38,18 +38,15 @@ public class CrusherRecipe
 	public static CrusherRecipe addRecipe(ItemStack output, Object input, int energy)
 	{
 		CrusherRecipe r = new CrusherRecipe(output, input, energy);
-		recipeList.add(r);
+		if(r.input!=null)
+			recipeList.add(r);
 		return r;
 	}
 	public static CrusherRecipe findRecipe(ItemStack input)
 	{
 		for(CrusherRecipe recipe : recipeList)
-		{
-			if(recipe.input instanceof ItemStack && OreDictionary.itemMatches((ItemStack)recipe.input, input, false))
+			if(ApiUtils.stackMatchesObject(input, recipe.input))
 				return recipe;
-			else if(recipe.input instanceof String && ApiUtils.compareToOreName(input, (String)recipe.input))
-				return recipe;
-		}
 		return null;
 	}
 	public static List<CrusherRecipe> removeRecipes(ItemStack stack)

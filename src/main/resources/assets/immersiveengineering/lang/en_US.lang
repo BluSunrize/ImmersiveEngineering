@@ -108,6 +108,8 @@ item.ImmersiveEngineering.metal.dustCoke.name=Coke Dust
 item.ImmersiveEngineering.metal.dustQuartz.name=Quartz Dust
 item.ImmersiveEngineering.metal.dustHOPGraphite.name=HOP Graphite Dust
 item.ImmersiveEngineering.metal.ingotHOPGraphite.name=HOP Graphite Ingot
+item.ImmersiveEngineering.metal.nuggetIron.name=Iron Nugget
+item.ImmersiveEngineering.metal.nuggetSteel.name=Steel Nugget
 
 
 item.ImmersiveEngineering.material.treatedStick.name=Treated Stick
@@ -166,6 +168,8 @@ item.ImmersiveEngineering.bullet.armorPiercing.name=Armor-Piercing Cartridge
 item.ImmersiveEngineering.bullet.buckshot.name=Buckshot Cartridge
 item.ImmersiveEngineering.bullet.HE.name=High-Explosive Cartridge
 item.ImmersiveEngineering.bullet.dragonsbreath.name=Dragon's Breath Cartridge
+item.ImmersiveEngineering.bullet.homing.name=Homing Cartridge
+item.ImmersiveEngineering.bullet.wolfpack.name=Wolfpack Cartridge
 
 item.ImmersiveEngineering.drill.diesel.name=Mining Drill
 item.ImmersiveEngineering.drillhead.iron.name=Iron Drill Head
@@ -300,6 +304,8 @@ death.attack.ieRevolver_casull=%1$s was shot by %2$s
 death.attack.ieRevolver_armorPiercing=%1$s was shot by %2$s
 death.attack.ieRevolver_buckshot=%1$s was shotgunned by %2$s
 death.attack.ieRevolver_dragonsbreath=%1$s was incinerated by %2$s
+death.attack.ieRevolver_homing=%1$s was shot by %2$s's homing bullet
+death.attack.ieRevolver_wolfpack=%1$s was shredded by %2$s's Wolfpack Rounds
 death.attack.ieCrushed=%1$s was crushed
 
 #MANUAL
@@ -350,7 +356,7 @@ ie.manual.entry.wiring.subtext=Bzzzt!
 ie.manual.entry.wiring0=The energy-net of Immersive Engineering has four important blocks: §lCapacitors§r to store energy, §lconnectors§r as inputs and outputs for the net, §lrelays§r to connect wires together and §ltransformers§r to switch between different levels of wire.<br>In low- and medium-voltage systems (copper and electrum wires), connectors and relays are the same block, but high-voltage connectors will only ever accept one wire.
 ie.manual.entry.wiring1=To connect two blocks, simply click the first one with a wire coil, then use the same coil on the second block. The total transferrate between two points depends on the weakest type of wire between them.
 ie.manual.entry.wiring2=Note that restrictions apply based on blocks: Connectors and relays will only take wires of the same type that is already connected, transformers will only take two wires of a different type,<br>[cont]
-ie.manual.entry.wiring3=and wires can only connected to blocks that match the voltage.
+ie.manual.entry.wiring3=and wires can only connect to blocks that match the voltage.
 ie.manual.entry.wiringConnector=§lConnectors§r serve as in- and outputs to the IE Energy-Net. You can place them on capacitors or other RF handlers and they will transfer power through connected wires. HV Relays will still accept wires but can't in- or output, they serve as connection points between wires.
 ie.manual.entry.wiringCapacitor=§lCapacitors§r serve as energy storage units. You can use the hammer to adjust the configuration of each side, with blue designating an input, orange an output and no colour marking preventing any connection at all. Sneak while using the hammer to configure the side opposite of the one you clicked.
 ie.manual.entry.wiringTransformer0=§lTransformers§r allow you to transition between different types of wire. The weakest wire restricts the transfer rate. Note that HV Transformers can step down to LV or MV, so you do not need to chain two transformers.

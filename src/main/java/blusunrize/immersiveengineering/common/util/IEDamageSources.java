@@ -31,7 +31,15 @@ public class IEDamageSources extends EntityDamageSourceIndirect
 	{
 		return (new IEDamageSources(Lib.DMG_RevolverDragon, shot, shooter)).setFireDamage().setProjectile();
 	}
-
+	public static DamageSource causeHomingDamage(EntityRevolvershot shot, Entity shooter)
+	{
+		return (new IEDamageSources(Lib.DMG_RevolverHoming, shot, shooter)).setProjectile();
+	}
+	public static DamageSource causeWolfpackDamage(EntityRevolvershot shot, Entity shooter)
+	{
+		return (new IEDamageSources(Lib.DMG_RevolverWolfpack, shot, shooter)).setProjectile();
+	}
+	
 	public static DamageSource causeCrusherDamage()
 	{
 		return new CrusherDamage();
