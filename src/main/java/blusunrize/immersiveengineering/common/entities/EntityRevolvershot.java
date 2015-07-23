@@ -233,19 +233,19 @@ public class EntityRevolvershot extends Entity
 	{
 		if(bulletElectro && mop.entityHit instanceof EntityLivingBase)
 		{
-			((EntityLivingBase)mop.entityHit).addPotionEffect(new PotionEffect(Potion.moveSlowdown.id,3,4));
+			((EntityLivingBase)mop.entityHit).addPotionEffect(new PotionEffect(Potion.moveSlowdown.id,15,4));
 			for(int i=0; i<=4; i++)
 			{
 				ItemStack stack = ((EntityLivingBase)mop.entityHit).getEquipmentInSlot(i);
 				if(stack!=null && stack.getItem() instanceof IEnergyContainerItem)
 				{
-					int drain = (int)(((IEnergyContainerItem)stack.getItem()).getMaxEnergyStored(stack)*.10f);
+					int drain = (int)(((IEnergyContainerItem)stack.getItem()).getMaxEnergyStored(stack)*.15f);
 					((IEnergyContainerItem)stack.getItem()).extractEnergy(stack, drain, false);
 				}
 				if(stack!=null && Lib.IC2)
 				{
 					double charge = IC2Helper.getMaxItemCharge(stack);
-					IC2Helper.dischargeItem(stack, charge*.10f);
+					IC2Helper.dischargeItem(stack, charge*.15f);
 				}
 			}
 		}

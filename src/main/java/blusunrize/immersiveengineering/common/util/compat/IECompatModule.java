@@ -5,6 +5,7 @@ import java.util.Set;
 
 import blusunrize.immersiveengineering.common.util.compat.mfr.MFRHelper;
 import blusunrize.immersiveengineering.common.util.compat.minetweaker.MTHelper;
+import blusunrize.immersiveengineering.common.util.compat.waila.WailaHelper;
 
 public abstract class IECompatModule
 {
@@ -16,6 +17,7 @@ public abstract class IECompatModule
 		modules.add(new EE3Helper());
 		modules.add(new ForestryHelper());
 		modules.add(new BacktoolsHelper());
+		modules.add(new WailaHelper());
 	}
 	
 	public String modId;
