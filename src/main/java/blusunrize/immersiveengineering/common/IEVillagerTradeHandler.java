@@ -10,6 +10,9 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.village.MerchantRecipe;
 import net.minecraft.village.MerchantRecipeList;
+import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
+import blusunrize.immersiveengineering.common.util.IELogger;
+import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import cpw.mods.fml.common.registry.VillagerRegistry.IVillageTradeHandler;
@@ -51,6 +54,21 @@ public class IEVillagerTradeHandler implements IVillageTradeHandler
 		addDeal(.4f, new ItemStack(IEContent.itemMaterial,1,11),2,6, Items.emerald,1,3);
 		addDeal(.4f, Items.emerald,2,4, new ItemStack(IEContent.itemMaterial,1,12),2,6);
 		addDeal(.4f, new ItemStack(IEContent.itemMaterial,1,12),2,6, Items.emerald,2,4);
+
+		String[] blueprintCategories = IEContent.itemBlueprint.getSubNames();
+		for(int i=0; i<blueprintCategories.length; i++)
+			if(BlueprintCraftingRecipe.villagerPrices.get(blueprintCategories[i])!=null)
+			{
+				IELogger.info("Adding villager trade for BLueprint: "+i);
+				ItemStack price = BlueprintCraftingRecipe.villagerPrices.get(blueprintCategories[i]);
+				int min = Math.max(1,price.stackSize-2);
+				int max = Math.min(64,price.stackSize+2);
+				addDeal(.4f, price,min,max, new ItemStack(IEContent.itemBlueprint,1,i));
+				ItemStack special = new ItemStack(IEContent.itemBlueprint,1,i);
+				special.setStackDisplayName("Super Special BluPrintz");
+				ItemNBTHelper.setLore(special, "Congratulations!","You have found an easter egg!");
+				addDeal(.05f, price,min,max, special);
+			}
 	}
 	void addDeal(float chance, Object... objects)
 	{

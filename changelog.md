@@ -1,3 +1,16 @@
+#####Version 0.5.0
+- moved Workbench back to TESR because of derpy lighting
+- fixed critical bug with revolvers
+- redid API stuff. Addons might break
+- changed OreDict handling in recipes. Should improve performance
+- added Blueprint crafting. This will be used for bullets and other things in future
+- added Homing and Wolfpack bullets
+- added Engineer Villager to sell IE items
+- added a world saving hook in the hopes of fixing that issue of wires vanishing on world reload
+- connectors only accept power from the correct side now
+- the mousewheel can be used to changed pages in the manual
+
+
 #####Version 0.4.4 - BUILT
 - fixed vertical wires not rendering
 - dynamo can now be rotated with the hammer

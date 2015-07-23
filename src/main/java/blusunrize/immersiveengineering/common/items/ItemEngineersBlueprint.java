@@ -1,15 +1,19 @@
 package blusunrize.immersiveengineering.common.items;
 
 import java.util.LinkedHashSet;
+import java.util.List;
 
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
+import net.minecraft.util.StatCollector;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.gui.InventoryStorageItem;
+import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.Utils;
 
 public class ItemEngineersBlueprint extends ItemUpgradeableTool
@@ -22,7 +26,7 @@ public class ItemEngineersBlueprint extends ItemUpgradeableTool
 	@Override
 	public String[] getSubNames()
 	{
-		return BlueprintCraftingRecipe.recipeList.keySet().toArray(new String[BlueprintCraftingRecipe.recipeList.keySet().size()]);
+		return BlueprintCraftingRecipe.blueprintCategories.toArray(new String[BlueprintCraftingRecipe.recipeList.keySet().size()]);
 	}
 	@Override
 	public void registerIcons(IIconRegister ir)
@@ -35,6 +39,19 @@ public class ItemEngineersBlueprint extends ItemUpgradeableTool
 		return icons[0];
 	}
 
+	@Override
+	public String getUnlocalizedName(ItemStack stack)
+	{
+		return this.getUnlocalizedName();
+	}
+	@Override
+	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean adv)
+	{
+		String[] sub = getSubNames();
+		if(stack.getItemDamage()<sub.length)
+			list.add(StatCollector.translateToLocalFormatted(Lib.DESC_INFO+"blueprint."+sub[stack.getItemDamage()]));
+	}
+	
 	@Override
 	public boolean canModify(ItemStack stack)
 	{

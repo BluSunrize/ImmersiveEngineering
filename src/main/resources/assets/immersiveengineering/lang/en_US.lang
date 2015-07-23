@@ -185,6 +185,8 @@ item.ImmersiveEngineering.toolupgrade.revolverBayonet.name=Bayonet
 item.ImmersiveEngineering.toolupgrade.revolverMagazine.name=Extended Magazine
 item.ImmersiveEngineering.toolupgrade.revolverElectro.name=Amplifier Electron Tubes
 
+item.ImmersiveEngineering.blueprint.name=Engineers Blueprint
+
 
 #CREATIVE
 itemGroup.ImmersiveEngineering=Immersive Engineering
@@ -237,6 +239,11 @@ desc.ImmersiveEngineering.info.mineral.Silver=Silver
 desc.ImmersiveEngineering.info.mineral.Lapis=Lapis
 
 desc.ImmersiveEngineering.info.reqMaterial=Required Materials:
+
+desc.ImmersiveEngineering.info.blueprint.bullet=Common Projectiles
+desc.ImmersiveEngineering.info.blueprint.specialBullet=Specialized Projectiles
+
+
 
 desc.ImmersiveEngineering.flavour.crate=Will keep its inventory when broken!
 desc.ImmersiveEngineering.flavour.coil.construction0=For decoration purposes only
@@ -402,6 +409,10 @@ ie.manual.entry.multiblocks0=Fitting complex machinery into a single 1x1x1 cube 
 ie.manual.entry.workbench.name=Engineer's Workbench
 ie.manual.entry.workbench.subtext=Overclocking
 ie.manual.entry.workbench0=Over the course of your Engineering career you may come to deal with some tools that can be optimized and modified. To apply these modifications, you should use a properly equipped Engineer's Workbench.<br>Rightclick the Workbench, insert the item into the slot and insert applicable upgrades into the new slots that appear.
+
+ie.manual.entry.blueprints.name=Engineer's Blueprints
+ie.manual.entry.blueprints.subtext=Put screw A into socket B and use crank C to tighten
+ie.manual.entry.blueprints=There are certain items which are very complex in their construction and require more than just a simple block of wood with a grid on it. These items will need to be created under the instructions of precise Blueprints on an <link:biodiesel:§o§nEngineer's §o§nWorkbench§r>.<br>Should you come across an Engineer's Blueprint (or maybe even create one yourself), you can place it in the slot of the Engineer's Workbench. You insert the required materials in the 6 slots and can then retrieve the assembled results from the output slots to the right. Hovering your mouse over these output slots will tell you exactly which materials are needed for what item. 
 
 ie.manual.entry.dieselgen.name=Diesel Generator
 ie.manual.entry.dieselgen.subtext=Better than volume: More volume.

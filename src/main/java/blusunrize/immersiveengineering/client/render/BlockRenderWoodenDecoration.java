@@ -29,7 +29,6 @@ public class BlockRenderWoodenDecoration implements ISimpleBlockRenderingHandler
 			}
 			else if(metadata==1)
 			{
-				GL11.glTranslatef(-.5f,-.5f,-.5f);
 				renderer.setRenderBounds(0,0,.375, .25,1,.625);
 				ClientUtils.drawInventoryBlock(block, metadata, renderer);
 				renderer.setRenderBounds(.75,0,.375, 1,1,.625);
@@ -38,7 +37,6 @@ public class BlockRenderWoodenDecoration implements ISimpleBlockRenderingHandler
 				ClientUtils.drawInventoryBlock(block, metadata, renderer);
 				renderer.setRenderBounds(-.125,.3125,.4375, 1.125,.4375,.5625);
 				ClientUtils.drawInventoryBlock(block, metadata, renderer);
-				GL11.glTranslatef(.5f,.5f,.5f);
 			}
 			else if(metadata==2)
 			{

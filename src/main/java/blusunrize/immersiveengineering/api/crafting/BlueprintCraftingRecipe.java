@@ -1,7 +1,9 @@
 package blusunrize.immersiveengineering.api.crafting;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
@@ -17,7 +19,9 @@ import com.google.common.collect.ArrayListMultimap;
  */
 public class BlueprintCraftingRecipe
 {
+	public static LinkedHashSet<String> blueprintCategories = new LinkedHashSet<String>();
 	public static ArrayListMultimap<String, BlueprintCraftingRecipe> recipeList = ArrayListMultimap.create();
+	public static HashMap<String, ItemStack> villagerPrices = new HashMap<String, ItemStack>();
 
 	public ItemStack output;
 	public Object[] inputs;
@@ -182,6 +186,7 @@ public class BlueprintCraftingRecipe
 	public static void addRecipe(String blueprintCategory, ItemStack output, Object... inputs)
 	{
 		recipeList.put(blueprintCategory, new BlueprintCraftingRecipe(output, inputs));
+		blueprintCategories.add(blueprintCategory);
 	}
 	public static BlueprintCraftingRecipe[] findRecipes(String blueprintCategory)
 	{
@@ -191,5 +196,13 @@ public class BlueprintCraftingRecipe
 			return list.toArray(new BlueprintCraftingRecipe[list.size()]);
 		}
 		return new BlueprintCraftingRecipe[0];
+	}
+	
+	/**
+	 * registers a type of blueprint to be up for sale at the IE villager. Stacksize of the price will be slightly randomized (+- 2)
+	 */
+	public static void addVillagerTrade(String blueprintCategory, ItemStack villagerPrice)
+	{
+		villagerPrices.put(blueprintCategory, villagerPrice);
 	}
 }

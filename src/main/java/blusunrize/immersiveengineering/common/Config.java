@@ -62,7 +62,7 @@ public class Config
 		setInt("capacitorHV_input", config.get("Machines", "Capacitor HV: Input", 4096, "The maximum amount of RF that can be input into a high-voltage capacitor (by IE net or other means)").getInt());
 		setInt("capacitorHV_output", config.get("Machines", "Capacitor HV: Output", 4096, "The maximum amount of RF that can be output from a high-voltage capacitor (by IE net or other means)").getInt());
 
-		setInt("dynamo_output", config.get("Machines", "Dynamo: Output", 3, "The base RF that is output by the dynamo. This will be modified by the rotation modifier of the attached water- or windmill").getInt());
+		setDouble("dynamo_output", config.get("Machines", "Dynamo: Output", 3d, "The base RF that is output by the dynamo. This will be modified by the rotation modifier of the attached water- or windmill").getDouble());
 		setDouble("thermoelectric_output", config.get("Machines", "Thermoelectric: Output", 1d, "Output modifier for the energy created by the Thermoelectric Generator").getDouble());
 		setInt("lightning_output", config.get("Machines", "Lightning Rod: Output", 4*4000000, "The RF that will be output by the lightning rod when it is struck").getInt());
 		setInt("dieselGen_output", config.get("Machines", "Diesel Generator: Output", 4096, "The RF per tick that the Diesel Generator will output. The burn time of the fuel determines the total output").getInt());
@@ -95,9 +95,9 @@ public class Config
 		setDouble("BulletDamage-AP", config.get("Tools", "BulletDamage-AP", 7d, "The amount of base damage an ArmorPiercing Cartridge inflicts").getDouble());
 		setDouble("BulletDamage-Buck", config.get("Tools", "BulletDamage-Buck", 1d, "The amount of base damage a single part of Buckshot inflicts").getDouble());
 		setDouble("BulletDamage-Dragon", config.get("Tools", "BulletDamage-Dragon", 4d, "The amount of base damage a DragonsBreath Cartridge inflicts").getDouble());
-		setDouble("BulletDamage-Homing", config.get("Tools", "BulletDamage-Homing", 5d, "The amount of base damage a Homing Cartridge inflicts").getDouble());
+		setDouble("BulletDamage-Homing", config.get("Tools", "BulletDamage-Homing", 8d, "The amount of base damage a Homing Cartridge inflicts").getDouble());
 		setDouble("BulletDamage-Wolfpack", config.get("Tools", "BulletDamage-Wolfpack", 6d, "The amount of base damage a Wolfpack Cartridge inflicts").getDouble());
-		setDouble("BulletDamage-WolfpackPart", config.get("Tools", "BulletDamage-WolfpackPart", 2d, "The amount of damage the sub-projectiles of the Wolfpack Cartridge inflict").getDouble());
+		setDouble("BulletDamage-WolfpackPart", config.get("Tools", "BulletDamage-WolfpackPart", 4d, "The amount of damage the sub-projectiles of the Wolfpack Cartridge inflict").getDouble());
 		
 
 		//		Property propReGen = config.get("TESTING", "ReGen", false);

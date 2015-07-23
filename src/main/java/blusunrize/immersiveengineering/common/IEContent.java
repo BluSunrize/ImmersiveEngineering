@@ -339,8 +339,7 @@ public class IEContent
 
 		int villagerId = Config.getInt("villager_engineer");
 		VillagerRegistry.instance().registerVillagerId(villagerId);
-		VillagerRegistry.instance().registerVillageTradeHandler(villagerId, new IEVillagerTradeHandler());
-		
+
 
 		/**SMELTING*/
 		//Ores
@@ -382,24 +381,53 @@ public class IEContent
 		//
 
 
-		addBulletRecipes(2, "nuggetIron","ingotIron",null, 0);
+		//		addBulletRecipes(2, "nuggetIron","ingotIron",null, 0);
+		//
+		//		addBulletRecipes(3, "nuggetSteel","ingotSteel",null, 0);
+		//		addBulletRecipes(3, OreDictionary.getOres("nuggetTungsten").isEmpty()?null:"nuggetTungsten", OreDictionary.getOres("ingotTungsten").isEmpty()?null:"ingotTungsten",null, 0);
+		//		addBulletRecipes(3, OreDictionary.getOres("nuggetCyanite").isEmpty()?null:"nuggetCyanite", OreDictionary.getOres("ingotCyanite").isEmpty()?null:"ingotCyanite",null, 0);
+		//
+		//		addBulletRecipes(4, null,null,"dustIron", 1);
+		//		addBulletRecipes(5, null,null,Blocks.tnt, 0);
+		//		addBulletRecipes(6, null,null,"dustAluminum", 1);
+		//		if(Loader.isModLoaded("Botania"))
+		//		{
+		//			addBulletRecipes(7, "nuggetTerrasteel","ingotTerrasteel",null, 0);
+		//			addOredictRecipe(new ItemStack(itemBullet,2,8), "BBB","CBC","GBG", 'B',new ItemStack(itemBullet,1,7), 'C',new ItemStack(itemBullet,1,1),'G',Items.gunpowder);
+		//		}
+		if(Config.getBoolean("hardmodeBulletRecipes"))
+		{
+			BlueprintCraftingRecipe.addRecipe("bullet", new ItemStack(itemBullet,1,2), Items.gunpowder,new ItemStack(itemBullet,1,0),"ingotIron");
+			BlueprintCraftingRecipe.addRecipe("bullet", new ItemStack(itemBullet,1,3), Items.gunpowder,new ItemStack(itemBullet,1,0),"inotSteel");
+		}
+		else
+		{
+			BlueprintCraftingRecipe.addRecipe("bullet", new ItemStack(itemBullet,1,2), Items.gunpowder,new ItemStack(itemBullet,1,0),"nuggetIron","nuggetIron");
+			BlueprintCraftingRecipe.addRecipe("bullet", new ItemStack(itemBullet,1,3), Items.gunpowder,new ItemStack(itemBullet,1,0),"nuggetSteel","nuggetSteel");
+		}
+		BlueprintCraftingRecipe.addRecipe("bullet", new ItemStack(itemBullet,1,4), Items.gunpowder,new ItemStack(itemBullet,1,1),"dustIron");
+		BlueprintCraftingRecipe.addRecipe("bullet", new ItemStack(itemBullet,1,5), Items.gunpowder,new ItemStack(itemBullet,1,0),Blocks.tnt);
 
-		addBulletRecipes(3, "nuggetSteel","ingotSteel",null, 0);
-		addBulletRecipes(3, OreDictionary.getOres("nuggetTungsten").isEmpty()?null:"nuggetTungsten", OreDictionary.getOres("ingotTungsten").isEmpty()?null:"ingotTungsten",null, 0);
-		addBulletRecipes(3, OreDictionary.getOres("nuggetCyanite").isEmpty()?null:"nuggetCyanite", OreDictionary.getOres("ingotCyanite").isEmpty()?null:"ingotCyanite",null, 0);
-
-		addBulletRecipes(4, null,null,"dustIron", 1);
-		addBulletRecipes(5, null,null,Blocks.tnt, 0);
-		addBulletRecipes(6, null,null,"dustAluminum", 1);
+		BlueprintCraftingRecipe.addRecipe("specialBullet", new ItemStack(itemBullet,1,6), Items.gunpowder,new ItemStack(itemBullet,1,1),"dustAluminum","dustAluminum");
 		if(Loader.isModLoaded("Botania"))
 		{
-			addBulletRecipes(7, "nuggetTerrasteel","ingotTerrasteel",null, 0);
-			addOredictRecipe(new ItemStack(itemBullet,2,8), "BBB","CBC","GBG", 'B',new ItemStack(itemBullet,1,7), 'C',new ItemStack(itemBullet,1,1),'G',Items.gunpowder);
+			if(Config.getBoolean("hardmodeBulletRecipes"))
+				BlueprintCraftingRecipe.addRecipe("specialBullet", new ItemStack(itemBullet,1,7), Items.gunpowder,new ItemStack(itemBullet,1,0),"nuggetTerrasteel","nuggetTerrasteel");
+			else
+				BlueprintCraftingRecipe.addRecipe("specialBullet", new ItemStack(itemBullet,1,7), Items.gunpowder,new ItemStack(itemBullet,1,0),"ingotTerrasteel");
+			BlueprintCraftingRecipe.addRecipe("specialBullet", new ItemStack(itemBullet,1,8), Items.gunpowder,new ItemStack(itemBullet,1,1), new ItemStack(itemBullet,6,7));
 		}
-		BlueprintCraftingRecipe.addRecipe("bullet", new ItemStack(itemBullet,1,2), Items.gunpowder,new ItemStack(itemBullet,1,0),"nuggetIron");
-		BlueprintCraftingRecipe.addRecipe("bullet", new ItemStack(itemBullet,1,3), Items.gunpowder,new ItemStack(itemBullet,1,0),"nuggetSteel");
-		BlueprintCraftingRecipe.addRecipe("bullet", new ItemStack(itemBullet,1,4), Items.gunpowder,new ItemStack(itemBullet,1,1),"dustIron");
+		BlueprintCraftingRecipe.addVillagerTrade("bullet", new ItemStack(Items.emerald,1,2));
+		BlueprintCraftingRecipe.addVillagerTrade("specialBullet", new ItemStack(Items.emerald,1,7));
 
+		String[] blueprintCategories = IEContent.itemBlueprint.getSubNames();
+		for(int i=0; i<blueprintCategories.length; i++)
+		{
+			if(blueprintCategories[i].equals("bullet"))
+				addOredictRecipe(new ItemStack(itemBlueprint,1,i), "JKL","DDD","PPP", 'J',Items.gunpowder,'K',"ingotCopper",'L',Items.gunpowder, 'D',"dyeBlue",'P',Items.paper);
+
+		}
+		
 		addOredictRecipe(new ItemStack(itemSkyhook,1,0), "II ","IC "," GG", 'C',componentIron,'I',"ingotSteel", 'G',new ItemStack(itemMaterial,1,9));
 
 		addOredictRecipe(new ItemStack(itemDrill,1,0), "  G"," EG","C  ", 'C',componentSteel,'E',new ItemStack(blockMetalDecoration,1,BlockMetalDecoration.META_heavyEngineering), 'G',new ItemStack(itemMaterial,1,9));
@@ -662,6 +690,11 @@ public class IEContent
 			addHammerCrushingRecipe("Nickel",14);
 			Config.setBoolean("crushingOreRecipe", !validCrushingOres.isEmpty());
 		}
+
+		//Villager Trades
+		//These are done so late to account for Blueprints added by addons
+		int villagerId = Config.getInt("villager_engineer");
+		VillagerRegistry.instance().registerVillageTradeHandler(villagerId, new IEVillagerTradeHandler());
 	}
 
 
