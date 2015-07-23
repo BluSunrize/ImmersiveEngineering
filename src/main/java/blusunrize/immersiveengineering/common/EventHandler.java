@@ -32,6 +32,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.ItemCraftedEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.relauncher.Side;
 
 public class EventHandler
@@ -223,5 +224,12 @@ public class EventHandler
 				&& ClientUtils.mc().currentScreen instanceof GuiBlastFurnace
 				&& BlastFurnaceRecipe.isValidBlastFuel(event.itemStack))
 			event.toolTip.add(EnumChatFormatting.GRAY+StatCollector.translateToLocalFormatted("desc.ImmersiveEngineering.info.blastFuelTime", BlastFurnaceRecipe.getBlastFuelTime(event.itemStack)));
+	}
+	
+	@SubscribeEvent
+	public void preTick(TickEvent.WorldTickEvent event){
+		if(event.phase == TickEvent.Phase.START){
+			ImmersiveNetHandler.INSTANCE.tickConnectorBuffer.clear();
+		}
 	}
 }

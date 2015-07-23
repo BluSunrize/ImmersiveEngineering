@@ -33,6 +33,7 @@ public class ImmersiveNetHandler
 	public static ImmersiveNetHandler INSTANCE;
 	public HashMap<Integer, ArrayListMultimap<ChunkCoordinates,Connection>> directConnections = new HashMap<Integer, ArrayListMultimap<ChunkCoordinates,Connection>>();
 	public ArrayListMultimap<ChunkCoordinates, AbstractConnection> indirectConnections = ArrayListMultimap.create();
+	public HashMap<AbstractConnection, Integer> tickConnectorBuffer= new HashMap<AbstractConnection, Integer>();
 
 	private ArrayListMultimap<ChunkCoordinates,Connection> getMultimap(int dimension)
 	{
