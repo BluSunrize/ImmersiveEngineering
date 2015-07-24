@@ -12,7 +12,7 @@
 - changed poweroutput config for dynamos to a double, to allow for more precise modifiers
 - fixed derpy in-hand rendering for fences
 - added WAILA compat for hemp
-- buffed electro upgrade for the revolver
+- buffed electro upgrade for the rev olver
 - added metal nuggets
 - changed bullets to be craftable with blueprints and added config for more costly bullets
 - changed Capacitors to no longer be ImmersiveConenctable. Dunno why I made them that in the first place...

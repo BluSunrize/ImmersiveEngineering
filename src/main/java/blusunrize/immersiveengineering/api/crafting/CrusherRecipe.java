@@ -15,6 +15,7 @@ import net.minecraftforge.oredict.OreDictionary;
  */
 public class CrusherRecipe
 {
+	public final String oreInputString;
 	public final Object input;
 	public final ItemStack output;
 	public final int energy;
@@ -25,6 +26,7 @@ public class CrusherRecipe
 	{
 		this.output = output;
 		this.input = ApiUtils.convertToValidRecipeInput(input);
+		this.oreInputString = input instanceof String?(String)input: null;
 		this.energy = energy;
 	}
 	public CrusherRecipe addSecondaryOutput(ItemStack output, float chance)

@@ -47,7 +47,7 @@ public class DenseOresHelper extends IECompatModule
 
 					IELogger.info("attempting to register crushing for DenseOre: "+denseOre+"("+baseOre+")");
 					for(CrusherRecipe recipe: CrusherRecipe.recipeList)
-						if(recipe.input instanceof String && ((String)recipe.input).equals(baseOre))
+						if(recipe.oreInputString!=null && ((String)recipe.oreInputString).equals(baseOre))
 						{
 							IELogger.info(" Crushing was registered");
 							ItemStack out = Utils.copyStackWithAmount(recipe.output, recipe.output.stackSize*4);

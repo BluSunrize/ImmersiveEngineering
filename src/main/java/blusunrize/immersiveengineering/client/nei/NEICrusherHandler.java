@@ -10,7 +10,6 @@ import java.util.List;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
-import net.minecraftforge.oredict.OreDictionary;
 
 import org.lwjgl.opengl.GL11;
 
@@ -34,8 +33,6 @@ public class NEICrusherHandler extends TemplateRecipeHandler
 		public CachedCrusherRecipe(CrusherRecipe recipe)
 		{
 			Object in = recipe.input;
-			if(in instanceof String)
-				in = OreDictionary.getOres((String)in);
 			input = new PositionedStack(in, 84, 0);
 			output = new PositionedStack(recipe.output, 84,40);
 			if(recipe.secondaryOutput!=null)

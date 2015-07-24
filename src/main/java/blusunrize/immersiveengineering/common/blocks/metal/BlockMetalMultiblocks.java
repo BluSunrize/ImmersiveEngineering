@@ -44,7 +44,7 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 		super("metalMultiblock", Material.iron, 4, ItemBlockIEBase.class,
 				"lightningRod","dieselGenerator",
 				"industrialSqueezer","fermenter","refinery",
-				"crusher","bucketWheel","excavator");
+				"crusher","bucketWheel","excavator","arcFurnace");
 		setHardness(3.0F);
 		setResistance(15.0F);
 	}
@@ -248,6 +248,7 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 		if(world.getTileEntity(x, y, z) instanceof TileEntityDieselGenerator)
 		{
 			TileEntityDieselGenerator tile = (TileEntityDieselGenerator)world.getTileEntity(x, y, z);
+			boolean mirror = tile.master()!=null?tile.master().mirrored:tile.mirrored;
 			int pos = tile.pos;
 			if(pos>=3 && pos<36)
 			{
@@ -262,7 +263,7 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 						this.setBlockBounds((tile.facing==2?.5f:tile.facing==4?.375f:0),0,(tile.facing==5?.5f:tile.facing==2?.375f:0),  (tile.facing==3?.5f:tile.facing==5?.625f:1),height,(tile.facing==4?.5f:tile.facing==3?.625f:1));
 					else if(pos==18)
 						this.setBlockBounds((tile.facing==2?.4375f:0),0,(tile.facing==5?.4375f:0),  (tile.facing==3?.5625f:1),height,(tile.facing==4?.5625f:1));
-					else if(pos==21)
+					else if(pos==21 && !mirror)
 						this.setBlockBounds(0,0,0, 1,1,1);
 					else
 						this.setBlockBounds((tile.facing==2?.5f:0),0,(tile.facing==5?.5f:0),  (tile.facing==3?.5f:1),height,(tile.facing==4?.5f:1));
@@ -273,6 +274,8 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 						this.setBlockBounds((tile.facing==3?.5f:tile.facing==4?.375f:0),0,(tile.facing==4?.5f:tile.facing==2?.375f:0),  (tile.facing==2?.5f:tile.facing==5?.625f:1),height,(tile.facing==5?.5f:tile.facing==3?.625f:1));
 					else if(pos==20)
 						this.setBlockBounds((tile.facing==3?.4375f:0),0,(tile.facing==4?.4375f:0),  (tile.facing==2?.5625f:1),height,(tile.facing==5?.5625f:1));
+					else if(pos==23 && mirror)
+						this.setBlockBounds(0,0,0, 1,1,1);
 					else
 						this.setBlockBounds((tile.facing==3?.5f:0),0,(tile.facing==4?.5f:0),  (tile.facing==2?.5f:1),height,(tile.facing==5?.5f:1));
 				}
@@ -674,6 +677,8 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 			return new TileEntityBucketWheel();
 		case 7://7 excavator
 			return new TileEntityExcavator();
+		case 8://8 arcFurnace
+			return new TileEntityArcFurnace();
 		}
 		return null;
 	}
