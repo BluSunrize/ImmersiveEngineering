@@ -10,11 +10,16 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
+
+import org.lwjgl.input.Keyboard;
+
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.gui.InventoryStorageItem;
 import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.Utils;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemEngineersBlueprint extends ItemUpgradeableTool
 {
@@ -26,7 +31,7 @@ public class ItemEngineersBlueprint extends ItemUpgradeableTool
 	@Override
 	public String[] getSubNames()
 	{
-		return BlueprintCraftingRecipe.blueprintCategories.toArray(new String[BlueprintCraftingRecipe.recipeList.keySet().size()]);
+		return BlueprintCraftingRecipe.blueprintCategories.toArray(new String[BlueprintCraftingRecipe.blueprintCategories.size()]);
 	}
 	@Override
 	public void registerIcons(IIconRegister ir)
@@ -45,13 +50,26 @@ public class ItemEngineersBlueprint extends ItemUpgradeableTool
 		return this.getUnlocalizedName();
 	}
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean adv)
 	{
 		String[] sub = getSubNames();
 		if(stack.getItemDamage()<sub.length)
+		{
 			list.add(StatCollector.translateToLocalFormatted(Lib.DESC_INFO+"blueprint."+sub[stack.getItemDamage()]));
+			if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)||Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
+			{
+				list.add(StatCollector.translateToLocal(Lib.DESC_INFO+"blueprint.creates1"));
+				BlueprintCraftingRecipe[] recipes = BlueprintCraftingRecipe.findRecipes(sub[stack.getItemDamage()]);
+				if(recipes.length>0)
+					for(int i=0; i<recipes.length; i++)
+						list.add(" "+recipes[i].output.getDisplayName());
+			}
+			else
+				list.add(StatCollector.translateToLocal(Lib.DESC_INFO+"blueprint.creates0"));
+		}
 	}
-	
+
 	@Override
 	public boolean canModify(ItemStack stack)
 	{

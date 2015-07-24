@@ -9,6 +9,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraftforge.oredict.OreDictionary;
 
 import org.lwjgl.opengl.GL11;
 
@@ -41,16 +42,26 @@ public class GuiModWorkbench extends GuiContainer
 					{
 						ArrayList<String> tooltip = new ArrayList<String>();
 						tooltip.add(recipe.output.getRarity().rarityColor+recipe.output.getDisplayName());
+						ArrayList<ItemStack> inputs = new ArrayList<ItemStack>();  
 						for(Object o : recipe.inputs)
 						{
-							if(o instanceof ItemStack)
-								tooltip.add(EnumChatFormatting.GRAY.toString()+((ItemStack)o).stackSize+"x "+ ((ItemStack)o).getDisplayName());
-							else if(o instanceof ArrayList)
-							{
-								int perm = ClientUtils.mc().thePlayer.ticksExisted/10 %((ArrayList)o).size();
-								tooltip.add(EnumChatFormatting.GRAY.toString()+"1x "+ ((ArrayList<ItemStack>)o).get(perm).getDisplayName());
-							}
+							ItemStack toAdd = (o instanceof ItemStack)?(ItemStack)o :(o instanceof ArrayList)?((ArrayList<ItemStack>)o).get(ClientUtils.mc().thePlayer.ticksExisted/10 %((ArrayList)o).size()): null;
+							if(toAdd==null)
+								continue;
+							boolean isNew = true;
+							for(ItemStack ss : inputs)
+								if(OreDictionary.itemMatches(ss, toAdd, true))
+								{
+									ss.stackSize += toAdd.stackSize;
+									isNew = false;
+									break;
+								}
+							if(isNew)
+								inputs.add(toAdd.copy());
 						}
+						for(ItemStack ss : inputs)
+							tooltip.add(EnumChatFormatting.GRAY.toString()+ss.stackSize+"x "+ ss.getDisplayName());
+
 						ClientUtils.drawHoveringText(tooltip, mx-guiLeft, my-guiTop, fontRendererObj);
 						RenderHelper.enableGUIStandardItemLighting();
 					}

@@ -19,7 +19,8 @@ public class IEManualInstance extends ManualInstance
 	public String formatText(String s)
 	{
 		s = StatCollector.translateToLocal("ie.manual.entry."+s);
-		
+		String splitKey = ";";
+
 		s = s.replaceAll("<br>", "\n");
 		int start;
 		int overflow=0;
@@ -28,14 +29,14 @@ public class IEManualInstance extends ManualInstance
 			overflow++;
 			int end = s.indexOf(">", start);
 			String rep = s.substring(start, end+1);
-			String[] segment = rep.substring(0,rep.length()-1).split(":");
+			String[] segment = rep.substring(0,rep.length()-1).split(splitKey);
 			if(segment.length<3)
 				break;
 			String result = "";
 			if(segment[1].equalsIgnoreCase("b"))
 			{
-				if(segment.length>4)
-					result = (Config.getBoolean(segment[2])?segment[3]:segment[4]);
+				if(segment.length>3)
+					result = (Config.getBoolean(segment[2])?segment[3]: segment.length>4?segment[4]:"");
 				else
 					result = ""+Config.getBoolean(segment[2]);
 			}

@@ -9,8 +9,14 @@
 - added a world saving hook in the hopes of fixing that issue of wires vanishing on world reload
 - connectors only accept power from the correct side now
 - the mousewheel can be used to changed pages in the manual
+- changed poweroutput config for dynamos to a double, to allow for more precise modifiers
+- fixed derpy in-hand rendering for fences
+- added WAILA compat for hemp
+- buffed electro upgrade for the revolver
 
 
+##### 0.4 VERSIONS ######
+==============
 #####Version 0.4.4 - BUILT
 - fixed vertical wires not rendering
 - dynamo can now be rotated with the hammer
@@ -83,6 +89,8 @@
 - fixed excavator being unlimited for negative numbers
 
 
+##### 0.3 VERSIONS ######
+==============
 #####Version 0.3.3 - BUILT
 - started working on skylines
 - fixed NEI handlers for squeezer+fermenter

@@ -669,7 +669,7 @@ public abstract class ManualPages implements IManualPage
 			overflow++;
 			int end = text.indexOf(">", start);
 			String rep = text.substring(start, end+1);
-			String[] segment = rep.substring(0,rep.length()-1).split(":");
+			String[] segment = rep.substring(0,rep.length()-1).split(";");
 			if(segment.length<3)
 				break;
 			String page = segment.length>3?segment[3]:"0";

@@ -11,7 +11,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.village.MerchantRecipe;
 import net.minecraft.village.MerchantRecipeList;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
-import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import cpw.mods.fml.common.ObfuscationReflectionHelper;
@@ -59,7 +58,6 @@ public class IEVillagerTradeHandler implements IVillageTradeHandler
 		for(int i=0; i<blueprintCategories.length; i++)
 			if(BlueprintCraftingRecipe.villagerPrices.get(blueprintCategories[i])!=null)
 			{
-				IELogger.info("Adding villager trade for BLueprint: "+i);
 				ItemStack price = BlueprintCraftingRecipe.villagerPrices.get(blueprintCategories[i]);
 				int min = Math.max(1,price.stackSize-2);
 				int max = Math.min(64,price.stackSize+2);

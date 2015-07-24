@@ -3,7 +3,6 @@ package blusunrize.immersiveengineering.api.crafting;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
@@ -19,7 +18,7 @@ import com.google.common.collect.ArrayListMultimap;
  */
 public class BlueprintCraftingRecipe
 {
-	public static LinkedHashSet<String> blueprintCategories = new LinkedHashSet<String>();
+	public static ArrayList<String> blueprintCategories = new ArrayList<String>();
 	public static ArrayListMultimap<String, BlueprintCraftingRecipe> recipeList = ArrayListMultimap.create();
 	public static HashMap<String, ItemStack> villagerPrices = new HashMap<String, ItemStack>();
 
@@ -37,69 +36,69 @@ public class BlueprintCraftingRecipe
 
 	public boolean matchesRecipe(ItemStack[] query)
 	{
-//		ArrayList<Object> inputList = new ArrayList();
-//		for(Object i : inputs)
-//			if(i!=null)
-//				inputList.add(i instanceof ItemStack? ((ItemStack)i).copy(): i);
-//		ArrayList<ItemStack> queryList = new ArrayList();
-//		for(ItemStack q : query)
-//			if(q!=null)
-//				queryList.add(q.copy());
-//
-//		Iterator inputIt = inputList.iterator();
-//		while(inputIt.hasNext())
-//		{
-//			boolean match = false;
-//			Object o = inputIt.next();
-//			//			System.out.println(" Look for: "+o+", available queries: "+queryList);
-//			Iterator<ItemStack> queryIt = queryList.iterator();
-//			while(queryIt.hasNext())
-//			{
-//				ItemStack stack = queryIt.next();
-//				//				System.out.println("  check against "+stack);
-//				if(ApiUtils.stackMatchesObject(stack, o))
-//				{
-//					//					System.out.println("  match,");
-//					if(o instanceof ItemStack)
-//					{
-//						int taken = Math.min(stack.stackSize, ((ItemStack)o).stackSize);
-//						//						System.out.println("  reducing by "+taken);
-//						stack.stackSize-=taken;
-//						if(stack.stackSize<=0)
-//						{
-//							//							System.out.println("  removing from query list");
-//							queryIt.remove();
-//						}
-//
-//						((ItemStack)o).stackSize-=taken;
-//						if(((ItemStack)o).stackSize<=0)
-//						{
-//							match = true;
-//							inputIt.remove();
-//							break;
-//						}
-//					}
-//					else
-//					{
-//						stack.stackSize--;
-//						if(stack.stackSize<=0)
-//							queryIt.remove();
-//
-//						match = true;
-//						inputIt.remove();
-//						break;
-//					}
-//
-//				}
-//			}
-//			if(!match)
-//			{
-//				//				System.out.println("While checkign the "+this.output+" recipe, "+o+" was missing");
-//				return false;
-//			}
-//		}
-//		if(inputList.isEmpty())
-//			return true;
+		//		ArrayList<Object> inputList = new ArrayList();
+		//		for(Object i : inputs)
+		//			if(i!=null)
+		//				inputList.add(i instanceof ItemStack? ((ItemStack)i).copy(): i);
+		//		ArrayList<ItemStack> queryList = new ArrayList();
+		//		for(ItemStack q : query)
+		//			if(q!=null)
+		//				queryList.add(q.copy());
+		//
+		//		Iterator inputIt = inputList.iterator();
+		//		while(inputIt.hasNext())
+		//		{
+		//			boolean match = false;
+		//			Object o = inputIt.next();
+		//			//			System.out.println(" Look for: "+o+", available queries: "+queryList);
+		//			Iterator<ItemStack> queryIt = queryList.iterator();
+		//			while(queryIt.hasNext())
+		//			{
+		//				ItemStack stack = queryIt.next();
+		//				//				System.out.println("  check against "+stack);
+		//				if(ApiUtils.stackMatchesObject(stack, o))
+		//				{
+		//					//					System.out.println("  match,");
+		//					if(o instanceof ItemStack)
+		//					{
+		//						int taken = Math.min(stack.stackSize, ((ItemStack)o).stackSize);
+		//						//						System.out.println("  reducing by "+taken);
+		//						stack.stackSize-=taken;
+		//						if(stack.stackSize<=0)
+		//						{
+		//							//							System.out.println("  removing from query list");
+		//							queryIt.remove();
+		//						}
+		//
+		//						((ItemStack)o).stackSize-=taken;
+		//						if(((ItemStack)o).stackSize<=0)
+		//						{
+		//							match = true;
+		//							inputIt.remove();
+		//							break;
+		//						}
+		//					}
+		//					else
+		//					{
+		//						stack.stackSize--;
+		//						if(stack.stackSize<=0)
+		//							queryIt.remove();
+		//
+		//						match = true;
+		//						inputIt.remove();
+		//						break;
+		//					}
+		//
+		//				}
+		//			}
+		//			if(!match)
+		//			{
+		//				//				System.out.println("While checkign the "+this.output+" recipe, "+o+" was missing");
+		//				return false;
+		//			}
+		//		}
+		//		if(inputList.isEmpty())
+		//			return true;
 		return getMaxCrafted(query)>0;
 	}
 	public int getMaxCrafted(ItemStack[] query)
@@ -186,7 +185,8 @@ public class BlueprintCraftingRecipe
 	public static void addRecipe(String blueprintCategory, ItemStack output, Object... inputs)
 	{
 		recipeList.put(blueprintCategory, new BlueprintCraftingRecipe(output, inputs));
-		blueprintCategories.add(blueprintCategory);
+		if(!blueprintCategories.contains(blueprintCategory))
+			blueprintCategories.add(blueprintCategory);
 	}
 	public static BlueprintCraftingRecipe[] findRecipes(String blueprintCategory)
 	{
@@ -197,7 +197,7 @@ public class BlueprintCraftingRecipe
 		}
 		return new BlueprintCraftingRecipe[0];
 	}
-	
+
 	/**
 	 * registers a type of blueprint to be up for sale at the IE villager. Stacksize of the price will be slightly randomized (+- 2)
 	 */
