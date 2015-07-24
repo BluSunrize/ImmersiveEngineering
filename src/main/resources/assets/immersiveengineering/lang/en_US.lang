@@ -145,7 +145,7 @@ item.ImmersiveEngineering.fluidContainers.bucketBiodiesel.name=Bucket of Biodies
 
 item.ImmersiveEngineering.coil.copper.name=Copper Wire Coil
 item.ImmersiveEngineering.coil.electrum.name=Electrum Wire Coil
-item.ImmersiveEngineering.coil.HV.name=High-Voltage Wire Coil
+item.ImmersiveEngineering.coil.HV.name=HV Wire Coil
 item.ImmersiveEngineering.coil.rope.name=Hemp Rope Coil
 item.ImmersiveEngineering.coil.structural.name=Steel Cable Coil
 item.ImmersiveEngineering.tool.hammer.name=Engineer's Hammer

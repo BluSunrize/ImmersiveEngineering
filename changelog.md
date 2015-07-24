@@ -13,6 +13,15 @@
 - fixed derpy in-hand rendering for fences
 - added WAILA compat for hemp
 - buffed electro upgrade for the revolver
+- added metal nuggets
+- changed bullets to be craftable with blueprints and added config for more costly bullets
+- changed Capacitors to no longer be ImmersiveConenctable. Dunno why I made them that in the first place...
+- prevented Multiblocks and Connectors from being teleposed by BloddMagic
+- updated Manual for new content added
+- changed formatting in manual, addon devs beware!
+- fixed Revolver, Drill and Core Sample Drill to have power of 2 textures
+- fixed raytracing on LV connectors
+- changed localization of High-Voltage Wire Coil to match its connector
 
 
 ##### 0.4 VERSIONS ######
