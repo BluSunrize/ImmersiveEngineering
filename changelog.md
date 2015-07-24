@@ -22,6 +22,7 @@
 - fixed Revolver, Drill and Core Sample Drill to have power of 2 textures
 - fixed raytracing on LV connectors
 - changed localization of High-Voltage Wire Coil to match its connector
+- enabled the Diesel Generator to be mirrored by clicking the center of the generator-block side 
 
 
 ##### 0.4 VERSIONS ######
