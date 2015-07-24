@@ -27,6 +27,7 @@ import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ICustomBoundingboxes;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
 import blusunrize.immersiveengineering.common.util.Lib;
+import blusunrize.immersiveengineering.common.util.Utils;
 
 public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundingboxes
 {
@@ -193,6 +194,15 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 					player.openGui(ImmersiveEngineering.instance, Lib.GUIID_Refinery, world, te.xCoord, te.yCoord, te.zCoord);
 				return true;
 			}
+		}
+		if(world.getTileEntity(x, y, z) instanceof TileEntityDieselGenerator && Utils.isHammer(player.getCurrentEquippedItem()) &&((TileEntityDieselGenerator)world.getTileEntity(x, y, z)).pos==40)
+		{
+			TileEntityDieselGenerator te = ((TileEntityDieselGenerator)world.getTileEntity(x, y, z)).master();
+			if(te==null)
+				te = ((TileEntityDieselGenerator)world.getTileEntity(x, y, z));
+			te.mirrored = !te.mirrored;
+			te.markDirty();
+			world.markBlockForUpdate(te.xCoord, te.yCoord, te.zCoord);
 		}
 		return false;
 	}

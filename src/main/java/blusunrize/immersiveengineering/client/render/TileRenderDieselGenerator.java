@@ -24,8 +24,14 @@ public class TileRenderDieselGenerator extends TileEntitySpecialRenderer
 
 		GL11.glTranslated(x, y, z);
 		GL11.glTranslated(+.5, +.5, +.5);
-		
 		GL11.glRotatef(gen.facing==3?180: gen.facing==4?90: gen.facing==5?-90: 0, 0,1,0);
+		
+		if(gen.mirrored)
+		{
+			GL11.glScalef(-1,1,1);
+			GL11.glDisable(GL11.GL_CULL_FACE);
+		}
+		
 		ClientUtils.bindTexture("immersiveengineering:textures/models/dieselGenerator.png");
 		objmodel.renderAllExcept("fan");
 
@@ -33,6 +39,11 @@ public class TileRenderDieselGenerator extends TileEntitySpecialRenderer
 		GL11.glRotatef(gen.fanRotation+(gen.fanRotationStep*f), 0,0,1);
 		objmodel.renderOnly("fan");
 		
+		if(gen.mirrored)
+		{
+			GL11.glScalef(-1,1,1);
+			GL11.glEnable(GL11.GL_CULL_FACE);
+		}
 
 		GL11.glPopMatrix();
 	}

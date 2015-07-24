@@ -81,19 +81,18 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockPart implemen
 			fanRotation %= 360;
 		}
 
-//		worldObj.spawnParticle("reddust", xCoord+(facing==4||facing==3?1:-1)+.5, yCoord+.5, zCoord+(facing==2||facing==4?1:-1)+.5, 0,0,0);
-		
+//		worldObj.spawnParticle("reddust", xCoord+(facing==4||facing==(mirrored?2:3)?1:-1)+.5, yCoord+.5, zCoord+(facing==2||facing==(mirrored?5:4)?1:-1)+.5, 0,0,0);
 		
 		if(worldObj.isRemote)
 		{
 			ImmersiveEngineering.proxy.handleTileSound("dieselGenerator", this, active, .5f,1);
 			if(active && worldObj.getTotalWorldTime()%4==0)
-				worldObj.spawnParticle("largesmoke", xCoord+.5+(facing==4?1.25:facing==5?-1.25: facing==3?.625:-.625), yCoord+2.25, zCoord+.5+(facing==2?1.25:facing==3?-1.25: facing==4?.625:-.625), 0,0,0);
+				worldObj.spawnParticle("largesmoke", xCoord+.5+(facing==4?1.25:facing==5?-1.25: facing==(mirrored?2:3)?.625:-.625), yCoord+2.25, zCoord+.5+(facing==2?1.25:facing==3?-1.25: facing==(mirrored?5:4)?.625:-.625), 0,0,0);
 		}
 		else
 		{
 			boolean prevActive = active;
-			boolean rs = worldObj.isBlockIndirectlyGettingPowered(xCoord+(facing==4||facing==3?1:-1), yCoord, zCoord+(facing==2||facing==4?1:-1));
+			boolean rs = worldObj.isBlockIndirectlyGettingPowered(xCoord+(facing==4||facing==(mirrored?2:3)?1:-1), yCoord, zCoord+(facing==2||facing==(mirrored?5:4)?1:-1));
 
 			if(!rs && tank.getFluid()!=null && tank.getFluid().getFluid()!=null)
 			{
