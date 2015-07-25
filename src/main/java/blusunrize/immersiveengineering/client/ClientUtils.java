@@ -209,6 +209,10 @@ public class ClientUtils
 			return;
 		Vec3 startOffset = start.getConnectionOffset(connection);
 		Vec3 endOffset = end.getConnectionOffset(connection);
+		if(startOffset==null)
+			startOffset=Vec3.createVectorHelper(.5,.5,.5);
+		if(endOffset==null)
+			endOffset=Vec3.createVectorHelper(.5,.5,.5);
 		double dx = (connection.end.posX+endOffset.xCoord)-(connection.start.posX+startOffset.xCoord);
 		double dy = (connection.end.posY+endOffset.yCoord)-(connection.start.posY+startOffset.yCoord);
 		double dz = (connection.end.posZ+endOffset.zCoord)-(connection.start.posZ+startOffset.zCoord);

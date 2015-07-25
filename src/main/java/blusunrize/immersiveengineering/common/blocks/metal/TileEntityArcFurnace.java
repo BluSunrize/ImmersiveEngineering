@@ -1,36 +1,27 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.minecraft.block.Block;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
-import net.minecraft.inventory.IInventory;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.ISidedInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.Config;
-import blusunrize.immersiveengineering.common.EventHandler;
 import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockArcFurnace;
 import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyReceiver;
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IEnergyReceiver, ISidedInventory
 {
-	public int facing = 2;
+	public int facing = 3;
 	public EnergyStorage energyStorage = new EnergyStorage(32000);
 
 	public TileEntityArcFurnace master()
@@ -44,9 +35,8 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 	@Override
 	public ItemStack getOriginalBlock()
 	{
-//		ItemStack s = MultiblockCrusher.instance.getStructureManual()[pos%15/5][pos%5][pos/15];
-//		return s!=null?s.copy():null;
-		return null;
+		ItemStack s = MultiblockArcFurnace.instance.getStructureManual()[pos/25][pos%5][pos%25/5];
+		return s!=null?s.copy():null;
 	}
 
 	@Override
@@ -77,17 +67,71 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 	@Override
 	public AxisAlignedBB getRenderBoundingBox()
 	{
-		if(pos==17)
-			return AxisAlignedBB.getBoundingBox(xCoord-(facing==2||facing==3?2:1),yCoord,zCoord-(facing==4||facing==5?2:1), xCoord+(facing==2||facing==3?3:2),yCoord+3,zCoord+(facing==4||facing==5?3:2));
+		if(pos==62)
+			return AxisAlignedBB.getBoundingBox(xCoord-2,yCoord-2,zCoord-2, xCoord+3,yCoord+3,zCoord+3);
 		return AxisAlignedBB.getBoundingBox(xCoord,yCoord,zCoord, xCoord,yCoord,zCoord);
 	}
 	@Override
 	public double getMaxRenderDistanceSquared()
 	{
 		return super.getMaxRenderDistanceSquared()*Config.getDouble("increasedTileRenderdistance");
-//		if(Config.getBoolean("increasedTileRenderdistance"))
-//			return super.getMaxRenderDistanceSquared()*1.5;
-//		return super.getMaxRenderDistanceSquared();
+		//		if(Config.getBoolean("increasedTileRenderdistance"))
+		//			return super.getMaxRenderDistanceSquared()*1.5;
+		//		return super.getMaxRenderDistanceSquared();
+	}
+	@Override
+	public float[] getBlockBounds()
+	{
+		int fl = facing;
+		int fw = facing;
+		if(mirrored)
+			fw = ForgeDirection.OPPOSITES[fw];
+
+		if(pos<25)
+		{
+			if(pos==1||pos==3)
+				return new float[]{fl==4?.4375f:0,0,fl==2?.4375f:0, fl==5?.5625f:1,.5f,fl==3?.5625f:1};
+			else if(pos!=0 && pos!=2 && pos<20 && (pos>9?(pos%5!=0&&pos%5!=4):true))
+				return new float[]{0,0,0,1,.5f,1};
+		}
+		else if(pos==25)
+			return new float[]{fl==5?.5f:0,0,fl==3?.5f:0, fl==4?.5f:1,1,fl==2?.5f:1};
+		else if(pos<50)
+		{
+			if(pos%5==0)
+				return new float[]{fw==3?.125f:0,0,fw==4?.125f:0, fw==2?.875f:1,pos%25/5==3?.5f:1,fw==5?.875f:1};
+			else if(pos%5==4)
+				return new float[]{fw==2?.125f:0,0,fw==5?.125f:0, fw==3?.875f:1,pos%25/5==3?.5f:1,fw==4?.875f:1};
+		}
+		else if(pos<75)
+		{
+			if(pos==52)
+				return new float[]{fl<4?-.5f:0,0,fl>3?-.5f:0, fl<4?1.5f:1,1,fl>3?1.5f:1};
+			else if(pos==60)
+				return new float[]{fw==3?.125f:0,0,fw==4?.125f:0, fw==2?.875f:1,1,fw==5?.875f:1};
+			else if(pos==64)
+				return new float[]{fw==2?.375f:0,0,fw==5?.375f:0, fw==3?.625f:1,1,fw==4?.625f:1};
+			else if(pos==70)
+				return new float[]{fw==3?.5f:0,0,fw==4?.5f:0, fw==2?.5f:1,1,fw==5?.5f:1};
+			else if(pos==74)
+				return new float[]{fw==2?.5f:0,0,fw==5?.5f:0, fw==3?.5f:1,1,fw==4?.5f:1};
+			else
+				return new float[]{0,0,0,1,1,1};
+		}
+		else if(pos==112)
+			return new float[]{fl==4?.0625f:0,0,fl==2?.0625f:0, fl==5?.9375f:1,1,fl==3?.9375f:1};
+		else if(pos==117)
+			return new float[]{0,.6875f,0,1,1,1};
+		else if(pos%25/5==4)
+		{
+			if(pos%5==1)
+				return new float[]{fw==3?.5f:0,0,fw==4?.5f:0, fw==2?.5f:1,1,fw==5?.5f:1};
+			else if(pos%5==2)
+				return new float[]{fl==5?.25f:0,0,fl==3?.25f:0, fl==4?.75f:1,1,fl==2?.75f:1};
+			else if(pos%5==3)
+				return new float[]{fw==2?.5f:0,0,fw==5?.5f:0, fw==3?.5f:1,1,fw==4?.5f:1};
+		}
+		return new float[]{0,0,0,1,1,1};
 	}
 
 	@Override
@@ -95,48 +139,51 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 	{
 		super.invalidate();
 
-//		if(formed && !worldObj.isRemote)
-//		{
-//			int f = facing;
-//			int il = pos/15;
-//			int ih = (pos%15/5)-1;
-//			int iw = (pos%5)-2;
-//			if(mirrored)
-//				iw = -iw;
-//			int startX = xCoord-(f==4?il: f==5?-il: f==2?-iw : iw);
-//			int startY = yCoord-ih;
-//			int startZ = zCoord-(f==2?il: f==3?-il: f==5?-iw : iw);
-//
-//			for(int l=0;l<3;l++)
-//				for(int w=-2;w<=2;w++)
-//					for(int h=-1;h<=1;h++)
-//					{
-//						int ww = mirrored?-w:w;
-//						int xx = (f==4?l: f==5?-l: f==2?-ww : ww);
-//						int yy = h;
-//						int zz = (f==2?l: f==3?-l: f==5?-ww : ww);
-//
-//						ItemStack s = null;
-//						if(worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz) instanceof TileEntityArcFurnace)
-//						{
-//							s = ((TileEntityArcFurnace)worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz)).getOriginalBlock();
-//							((TileEntityArcFurnace)worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz)).formed=false;
-//						}
-//						if(startX+xx==xCoord && startY+yy==yCoord && startZ+zz==zCoord)
-//							s = this.getOriginalBlock();
-//						if(s!=null && Block.getBlockFromItem(s.getItem())!=null)
-//						{
-//							if(startX+xx==xCoord && startY+yy==yCoord && startZ+zz==zCoord)
-//								worldObj.spawnEntityInWorld(new EntityItem(worldObj, xCoord+.5,yCoord+.5,zCoord+.5, s));
-//							else
-//							{
-//								if(Block.getBlockFromItem(s.getItem())==IEContent.blockMetalMultiblocks)
-//									worldObj.setBlockToAir(startX+xx,startY+yy,startZ+zz);
-//								worldObj.setBlock(startX+xx,startY+yy,startZ+zz, Block.getBlockFromItem(s.getItem()), s.getItemDamage(), 0x3);
-//							}
-//						}
-//					}
-//		}
+		if(formed && !worldObj.isRemote)
+		{
+			int f = facing;
+			TileEntity master = master();
+			if(master==null)
+				master = this;
+
+			int startX = master.xCoord;
+			int startY = master.yCoord;
+			int startZ = master.zCoord;
+
+			for(int h=-2;h<=2;h++)
+				for(int l=-2;l<=2;l++)
+					for(int w=-2;w<=2;w++)
+					{
+						int xx = (f==4?l: f==5?-l: f==2?-w : w);
+						int yy = h;
+						int zz = (f==2?l: f==3?-l: f==5?-w : w);
+
+						ItemStack s = null;
+						if(worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz) instanceof TileEntityArcFurnace)
+						{
+							s = ((TileEntityArcFurnace)worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz)).getOriginalBlock();
+							((TileEntityArcFurnace)worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz)).formed=false;
+						}
+						if(startX+xx==xCoord && startY+yy==yCoord && startZ+zz==zCoord)
+							s = this.getOriginalBlock();
+						if(s!=null && Block.getBlockFromItem(s.getItem())!=null)
+						{
+							if(startX+xx==xCoord && startY+yy==yCoord && startZ+zz==zCoord)
+								worldObj.spawnEntityInWorld(new EntityItem(worldObj, xCoord+.5,yCoord+.5,zCoord+.5, s));
+							else
+							{
+								if(s.getItem() == Items.cauldron)
+									worldObj.setBlock(startX+xx,startY+yy,startZ+zz, Blocks.cauldron);
+								else
+								{
+									if(Block.getBlockFromItem(s.getItem())==IEContent.blockMetalMultiblocks)
+										worldObj.setBlockToAir(startX+xx,startY+yy,startZ+zz);
+									worldObj.setBlock(startX+xx,startY+yy,startZ+zz, Block.getBlockFromItem(s.getItem()), s.getItemDamage(), 0x3);
+								}
+							}
+						}
+					}
+		}
 	}
 
 	@Override

@@ -30,8 +30,10 @@ import blusunrize.immersiveengineering.api.energy.WireType;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase.BlockIESimple;
+import blusunrize.immersiveengineering.common.blocks.BlockIESlabs;
 import blusunrize.immersiveengineering.common.blocks.BlockStorage;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
+import blusunrize.immersiveengineering.common.blocks.TileEntityIESlab;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDecoration;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDevices;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDevices2;
@@ -66,6 +68,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityThermoelect
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTransformer;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTransformerHV;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityWallmountMetal;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockArcFurnace;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockBlastFurnace;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockBucketWheel;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockCokeOven;
@@ -117,6 +120,7 @@ public class IEContent
 {
 	public static BlockIEBase blockOres;
 	public static BlockIEBase blockStorage;
+	public static BlockIEBase blockStorageSlabs;
 	public static BlockIEBase blockMetalDevice;
 	public static BlockIEBase blockMetalDevice2;
 	public static BlockIEBase blockMetalDecoration;
@@ -152,6 +156,7 @@ public class IEContent
 	{
 		blockOres = (BlockIEBase) new BlockIESimple("ore",Material.rock,ItemBlockIEBase.class, "Copper","Aluminum","Lead","Silver","Nickel").setHardness(3f).setResistance(5f);
 		blockStorage = (BlockIEBase) new BlockStorage("Copper","Aluminum","Lead","Silver","Nickel","Constantan","Electrum","Steel", "CoilCopper","CoilElectrum","CoilHV").setHardness(4f).setResistance(5f);
+		blockStorageSlabs = (BlockIEBase) new BlockIESlabs("storageSlab","storage_",Material.iron,"Copper","Aluminum","Lead","Silver","Nickel","Constantan","Electrum","Steel").setHardness(4f).setResistance(5f);
 		blockMetalDevice = new BlockMetalDevices();
 		blockMetalDevice2 = new BlockMetalDevices2();
 		blockMetalDecoration = new BlockMetalDecoration();
@@ -288,6 +293,8 @@ public class IEContent
 	public static void init()
 	{
 		/**TILEENTITIES*/
+		registerTile(TileEntityIESlab.class);
+
 		registerTile(TileEntityWoodenPost.class);
 		registerTile(TileEntityWatermill.class);
 		registerTile(TileEntityWindmill.class);
@@ -499,23 +506,13 @@ public class IEContent
 		addOredictRecipe(new ItemStack(blockStoneDevice,2,4), " G ","IDI"," G ", 'G',"blockGlass",'I',"dustIron",'D',"dyeGreen");
 
 		addTwoWayStorageRecipe(new ItemStack(Items.iron_ingot), new ItemStack(itemMetal,1,21));
-		addTwoWayStorageRecipe(new ItemStack(itemMetal,1,0), new ItemStack(itemMetal,1,22));
-		addTwoWayStorageRecipe(new ItemStack(itemMetal,1,1), new ItemStack(itemMetal,1,23));
-		addTwoWayStorageRecipe(new ItemStack(itemMetal,1,2), new ItemStack(itemMetal,1,24));
-		addTwoWayStorageRecipe(new ItemStack(itemMetal,1,3), new ItemStack(itemMetal,1,25));
-		addTwoWayStorageRecipe(new ItemStack(itemMetal,1,4), new ItemStack(itemMetal,1,26));
-		addTwoWayStorageRecipe(new ItemStack(itemMetal,1,5), new ItemStack(itemMetal,1,27));
-		addTwoWayStorageRecipe(new ItemStack(itemMetal,1,6), new ItemStack(itemMetal,1,28));
-		addTwoWayStorageRecipe(new ItemStack(itemMetal,1,7), new ItemStack(itemMetal,1,29));
-		addTwoWayStorageRecipe(new ItemStack(blockStorage,1,0), new ItemStack(itemMetal,1,0));
-		addTwoWayStorageRecipe(new ItemStack(blockStorage,1,1), new ItemStack(itemMetal,1,1));
-		addTwoWayStorageRecipe(new ItemStack(blockStorage,1,2), new ItemStack(itemMetal,1,2));
-		addTwoWayStorageRecipe(new ItemStack(blockStorage,1,3), new ItemStack(itemMetal,1,3));
-		addTwoWayStorageRecipe(new ItemStack(blockStorage,1,4), new ItemStack(itemMetal,1,4));
-		addTwoWayStorageRecipe(new ItemStack(blockStorage,1,5), new ItemStack(itemMetal,1,5));
-		addTwoWayStorageRecipe(new ItemStack(blockStorage,1,6), new ItemStack(itemMetal,1,6));
-		addTwoWayStorageRecipe(new ItemStack(blockStorage,1,7), new ItemStack(itemMetal,1,7));
-
+		for(int i=0; i<7; i++)
+		{
+			addTwoWayStorageRecipe(new ItemStack(itemMetal,1,i), new ItemStack(itemMetal,1,22+i));
+			addTwoWayStorageRecipe(new ItemStack(blockStorage,1,i), new ItemStack(itemMetal,1,i));
+			addOredictRecipe(new ItemStack(blockStorageSlabs,6,i), "III", 'I',new ItemStack(blockStorage,1,i));
+			addOredictRecipe(new ItemStack(blockStorage,1,i), "I","I", 'I',new ItemStack(blockStorageSlabs,1,i));
+		}
 
 		addOredictRecipe(new ItemStack(blockStorage,1,8), "WWW","WIW","WWW", 'W',new ItemStack(itemWireCoil,1,0),'I',"ingotIron");
 		addOredictRecipe(new ItemStack(blockStorage,1,9), "WWW","WIW","WWW", 'W',new ItemStack(itemWireCoil,1,1),'I',"ingotIron");
@@ -673,6 +670,7 @@ public class IEContent
 		MultiblockHandler.registerMultiblock(MultiblockLightningRod.instance);
 		MultiblockHandler.registerMultiblock(MultiblockExcavator.instance);
 		MultiblockHandler.registerMultiblock(MultiblockBucketWheel.instance);
+		MultiblockHandler.registerMultiblock(MultiblockArcFurnace.instance);
 
 		//Railcraft Compat
 		if(Loader.isModLoaded("Railcraft"))

@@ -56,6 +56,53 @@ public class TileEntityRefinery extends TileEntityMultiblockPart implements IFlu
 		ItemStack s = MultiblockRefinery.instance.getStructureManual()[pos%15/5][pos%5][pos/15];
 		return s!=null?s.copy():null;
 	}
+	@Override
+	public float[] getBlockBounds()
+	{
+		if(pos==7)
+			return new float[]{.0625f,0,.0625f, .9375f,1,.9375f};
+		else if(pos==37)
+			return new float[]{facing==4?.5f:0,0,facing==2?.5f:0, facing==5?.5f:1,1,facing==3?.5f:1};
+		else if(pos==20||pos==25)
+			return new float[]{facing==3?.1875f:0,0,facing==4?.1875f:0, facing==2?.8125f:1,1,facing==5?.8125f:1};
+		else if(pos==24||pos==29)
+			return new float[]{facing==2?.1875f:0,0,facing==5?.1875f:0, facing==3?.8125f:1,1,facing==4?.8125f:1};
+		else if((pos>=5&&pos<15&&pos!=9)||(pos>=35&&pos<45))
+		{
+			float minY= pos/5>1?0:.375f;
+			float maxY=1;
+			float minX= facing==3?.4375f: facing==4?.6875f: 0;
+			float maxX= facing==2?.5625f: facing==5?.3125f: 1;
+			float minZ= facing==4?.4375f: facing==2?.6875f: 0;
+			float maxZ= facing==5?.5625f: facing==3?.3125f: 1;
+			if(pos%5==4)
+			{
+				minX+=facing==3?-.4375f: facing==2?.4375f: 0;
+				maxX+=facing==3?-.4375f: facing==2?.4375f: 0;
+				minZ+=facing==4?-.4375f: facing==5?.4375f: 0;
+				maxZ+=facing==4?-.4375f: facing==5?.4375f: 0;
+			}
+			if(pos/15==2)
+			{
+				minX+=facing==4?-.6875f: facing==5?.6875f: 0;
+				maxX+=facing==4?-.6875f: facing==5?.6875f: 0;
+				minZ+=facing==3?.6875f: facing==2?-.6875f: 0;
+				maxZ+=facing==3?.6875f: facing==2?-.6875f: 0;
+			}
+			if(pos%5!=0&&pos%5!=4)
+			{
+				minX = facing==2||facing==3?0:minX;
+				maxX = facing==2||facing==3?1:maxX;
+				minZ = facing==4||facing==5?0:minZ;
+				maxZ = facing==4||facing==5?1:maxZ;
+			}
+			return new float[]{minX,minY,minZ, maxX,maxY,maxZ};
+		}
+		else if(pos==0||pos==1||pos==3 || pos==30||pos==31||pos==33||pos==34)
+			return new float[]{0,0,0,1,.5f,1};
+		else
+		return new float[]{0,0,0,1,1,1};
+	}
 
 	@Override
 	public void updateEntity()

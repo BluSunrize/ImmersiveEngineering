@@ -16,6 +16,15 @@ tile.ImmersiveEngineering.storage.CoilCopper.name=Copper Wire Coil
 tile.ImmersiveEngineering.storage.CoilElectrum.name=Electrum Wire Coil
 tile.ImmersiveEngineering.storage.CoilHV.name=High-Voltage Wire Coil
 
+tile.ImmersiveEngineering.storageSlab.Copper.name=Copper Slab
+tile.ImmersiveEngineering.storageSlab.Aluminum.name=Aluminium Slab
+tile.ImmersiveEngineering.storageSlab.Lead.name=Lead Slab
+tile.ImmersiveEngineering.storageSlab.Silver.name=Silver Slab
+tile.ImmersiveEngineering.storageSlab.Nickel.name=Nickel Slab
+tile.ImmersiveEngineering.storageSlab.Constantan.name=Constantan Slab
+tile.ImmersiveEngineering.storageSlab.Electrum.name=Electrum Slab
+tile.ImmersiveEngineering.storageSlab.Steel.name=Steel Slab
+
 tile.ImmersiveEngineering.metalDevice.connectorLV.name=LV Wire Connector
 tile.ImmersiveEngineering.metalDevice.capacitorLV.name=LV Capacitor
 tile.ImmersiveEngineering.metalDevice.connectorMV.name=MV Wire Connector

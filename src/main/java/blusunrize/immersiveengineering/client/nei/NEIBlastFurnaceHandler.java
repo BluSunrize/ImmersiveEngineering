@@ -38,12 +38,8 @@ public class NEIBlastFurnaceHandler extends TemplateRecipeHandler
 			output = new PositionedStack(recipe.output, 107,27);
 			time = recipe.time;
 
-
 			for(Object fuel : BlastFurnaceRecipe.blastFuels.keySet())
-			{
-				System.out.println("fuel add: "+fuel);
 				fuels.add( new PositionedStack(fuel, 47,45) );
-			}
 		}
 		@Override
 		public PositionedStack getOtherStack()

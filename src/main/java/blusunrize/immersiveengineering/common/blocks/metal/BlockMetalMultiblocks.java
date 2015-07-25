@@ -39,6 +39,7 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 	public static int META_crusher=5;
 	public static int META_bucketWheel=6;
 	public static int META_excavator=7;
+	public static int META_arcFurnace=8;
 	public BlockMetalMultiblocks()
 	{
 		super("metalMultiblock", Material.iron, 4, ItemBlockIEBase.class,
@@ -96,6 +97,7 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 			icons[5][i] = iconRegister.registerIcon("immersiveengineering:storage_Steel");
 			icons[6][i] = iconRegister.registerIcon("immersiveengineering:storage_Steel");
 			icons[7][i] = iconRegister.registerIcon("immersiveengineering:storage_Steel");
+			icons[8][i] = iconRegister.registerIcon("immersiveengineering:storage_Steel");
 		}
 	}
 	@Override
@@ -245,208 +247,11 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 	@Override
 	public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
 	{
-		if(world.getTileEntity(x, y, z) instanceof TileEntityDieselGenerator)
+		if(world.getTileEntity(x, y, z) instanceof TileEntityMultiblockPart)
 		{
-			TileEntityDieselGenerator tile = (TileEntityDieselGenerator)world.getTileEntity(x, y, z);
-			boolean mirror = tile.master()!=null?tile.master().mirrored:tile.mirrored;
-			int pos = tile.pos;
-			if(pos>=3 && pos<36)
-			{
-				float height = pos==24||pos==26?1: pos%9>=6&&pos>9?.375f: 1;
-				if(pos==9||pos==11||pos==27||pos==29)
-					this.setBlockBounds(0,0,0,1,1,1);
-				else if(pos==34)
-					this.setBlockBounds((tile.facing==4?.375f:0),0,(tile.facing==2?.375f:0),  (tile.facing==5?.625f:1),height,(tile.facing==3?.625f:1));
-				else if(pos%9==0||pos%9==3||pos%9==6)
-				{
-					if(pos==33)
-						this.setBlockBounds((tile.facing==2?.5f:tile.facing==4?.375f:0),0,(tile.facing==5?.5f:tile.facing==2?.375f:0),  (tile.facing==3?.5f:tile.facing==5?.625f:1),height,(tile.facing==4?.5f:tile.facing==3?.625f:1));
-					else if(pos==18)
-						this.setBlockBounds((tile.facing==2?.4375f:0),0,(tile.facing==5?.4375f:0),  (tile.facing==3?.5625f:1),height,(tile.facing==4?.5625f:1));
-					else if(pos==21 && !mirror)
-						this.setBlockBounds(0,0,0, 1,1,1);
-					else
-						this.setBlockBounds((tile.facing==2?.5f:0),0,(tile.facing==5?.5f:0),  (tile.facing==3?.5f:1),height,(tile.facing==4?.5f:1));
-				}
-				else if(pos%9==2||pos%9==5||pos%9==8)
-				{
-					if(pos==35)
-						this.setBlockBounds((tile.facing==3?.5f:tile.facing==4?.375f:0),0,(tile.facing==4?.5f:tile.facing==2?.375f:0),  (tile.facing==2?.5f:tile.facing==5?.625f:1),height,(tile.facing==5?.5f:tile.facing==3?.625f:1));
-					else if(pos==20)
-						this.setBlockBounds((tile.facing==3?.4375f:0),0,(tile.facing==4?.4375f:0),  (tile.facing==2?.5625f:1),height,(tile.facing==5?.5625f:1));
-					else if(pos==23 && mirror)
-						this.setBlockBounds(0,0,0, 1,1,1);
-					else
-						this.setBlockBounds((tile.facing==3?.5f:0),0,(tile.facing==4?.5f:0),  (tile.facing==2?.5f:1),height,(tile.facing==5?.5f:1));
-				}
-				else
-					this.setBlockBounds(0,0,0,  1,height,1);
-			}
-			else if(pos==36 || pos==38)
-				this.setBlockBounds((tile.facing==(pos==36?3:2)?.5f:0),0,(tile.facing==(pos==36?4:5)?.5f:0),  (tile.facing==(pos==36?2:3)?.5f:1),1,(tile.facing==(pos==36?5:4)?.5f:1));
-			else if(pos==37)
-				this.setBlockBounds(0,.5f,0, 1,1,1);
-			else
-				this.setBlockBounds(0,0,0,1,1,1);
-		}
-		else if(world.getTileEntity(x, y, z) instanceof TileEntityCrusher)
-		{
-			TileEntityCrusher tile = (TileEntityCrusher)world.getTileEntity(x, y, z);
-			int pos = tile.pos;
-			int fl = tile.facing;
-			int fw = tile.facing;
-			if(tile.mirrored)
-				fw = ForgeDirection.OPPOSITES[fw];
-
-			if(pos%15>=6&&pos%15<=8)
-			{
-				if(pos/15==0)
-				{
-					if(pos%5==1)
-						this.setBlockBounds(fw==3||fl==4?.1875f:0, .5f, fl==2||fw==4?.1875f:0, fw==2||fl==5?.8125f:1, 1, fl==3||fw==5?.8125f:1);
-					else if(pos%5==2)
-						this.setBlockBounds(fl==4?.1875f:0, .5f, fl==2?.1875f:0, fl==5?.8125f:1, 1, fl==3?.8125f:1);
-					else if(pos%5==3)
-						this.setBlockBounds(fw==2||fl==4?.1875f:0, .5f, fl==2||fw==5?.1875f:0, fw==3||fl==5?.8125f:1, 1, fl==3||fw==4?.8125f:1);
-				}
-				else if(pos/15==1)
-				{
-					if(pos%5==1)
-						this.setBlockBounds(fw==3?.1875f:0, .5f, fw==4?.1875f:0, fw==2?.8125f:1, 1, fw==5?.8125f:1);
-					else if(pos%5==2)
-						this.setBlockBounds(0,0,0, 1,1,1);
-					else if(pos%5==3)
-						this.setBlockBounds(fw==2?.1875f:0, .5f, fw==5?.1875f:0, fw==3?.8125f:1, 1, fw==4?.8125f:1);
-				}
-				else if(pos/15==2)
-				{
-					if(pos%5==1)
-						this.setBlockBounds(fw==3||fl==5?.1875f:0, .5f, fl==3||fw==4?.1875f:0, fw==2||fl==4?.8125f:1, 1, fl==2||fw==5?.8125f:1);
-					else if(pos%5==2)
-						this.setBlockBounds(fl==5?.1875f:0, .5f, fl==3?.1875f:0, fl==4?.8125f:1, 1, fl==2?.8125f:1);
-					else if(pos%5==3)
-						this.setBlockBounds(fw==2||fl==5?.1875f:0, .5f, fl==3||fw==5?.1875f:0, fw==3||fl==4?.8125f:1, 1, fl==2||fw==4?.8125f:1);
-				}
-			}
-			else if(pos%15>=11&&pos%15<=13) 
-			{
-				if(pos/15==0)
-				{
-					if(pos%5==2)
-						this.setBlockBounds(fl==4?.1875f:fl==5?.5625f:0, 0, fl==2?.1875f:fl==3?.5625f:0, fl==5?.8125f:fl==4?.4375f:1, 1, fl==3?.8125f:fl==2?.4375f:1);
-				}
-				else if(pos/15==1)
-				{
-					if(pos%5==1)
-						this.setBlockBounds(fw==3?.1875f:fw==2?.5625f:0, 0, fw==4?.1875f:fw==5?.5625f:0, fw==2?.8125f:fw==3?.4375f:1, 1, fw==5?.8125f:fw==4?.4375f:1);
-					else if(pos%5==2)
-						this.setBlockBounds(0,0,0, 0,0,0);
-					else if(pos%5==3)
-						this.setBlockBounds(fw==2?.1875f:fw==3?.5625f:0, 0, fw==5?.1875f:fw==4?.5625f:0, fw==3?.8125f:fw==2?.4375f:1, 1, fw==4?.8125f:fw==5?.4375f:1);
-				}
-				else if(pos/15==2)
-				{
-					if(pos%5==2)
-						this.setBlockBounds(fl==5?.1875f:fl==4?.5625f:0, 0, fl==3?.1875f:fl==2?.5625f:0, fl==4?.8125f:fl==5?.4375f:1, 1, fl==2?.8125f:fl==3?.4375f:1);
-				}
-			}
-			else if(pos==9)
-				this.setBlockBounds(fl==5?.5f:0,0,fl==3?.5f:0,  fl==4?.5f:1,1,fl==2?.5f:1);
-			else if(pos==1||pos==3 || pos==16||pos==18||pos==24 || (pos>=31&&pos<=34))
-				this.setBlockBounds(0,0,0,1,.5f,1);
-			else
-				this.setBlockBounds(0,0,0,1,1,1);
-		}
-		else if(world.getTileEntity(x, y, z) instanceof TileEntityRefinery)
-		{
-			TileEntityRefinery tile = (TileEntityRefinery)world.getTileEntity(x, y, z);
-			int pos = tile.pos;
-			int f = tile.facing;
-			if(pos==7)
-				this.setBlockBounds(.0625f,0,.0625f, .9375f,1,.9375f);
-			else if(pos==37)
-				this.setBlockBounds(f==4?.5f:0,0,f==2?.5f:0, f==5?.5f:1,1,f==3?.5f:1);
-			else if(pos==20||pos==25)
-				this.setBlockBounds(f==3?.1875f:0,0,f==4?.1875f:0, f==2?.8125f:1,1,f==5?.8125f:1);
-			else if(pos==24||pos==29)
-				this.setBlockBounds(f==2?.1875f:0,0,f==5?.1875f:0, f==3?.8125f:1,1,f==4?.8125f:1);
-			else if((pos>=5&&pos<15&&pos!=9)||(pos>=35&&pos<45))
-			{
-				this.minY= pos/5>1?0:.375f;
-				this.maxY=1;
-				this.minX= f==3?.4375f: f==4?.6875f: 0;
-				this.maxX= f==2?.5625f: f==5?.3125f: 1;
-				this.minZ= f==4?.4375f: f==2?.6875f: 0;
-				this.maxZ= f==5?.5625f: f==3?.3125f: 1;
-				if(pos%5==4)
-				{
-					this.minX+=f==3?-.4375f: f==2?.4375f: 0;
-					this.maxX+=f==3?-.4375f: f==2?.4375f: 0;
-					this.minZ+=f==4?-.4375f: f==5?.4375f: 0;
-					this.maxZ+=f==4?-.4375f: f==5?.4375f: 0;
-				}
-				if(pos/15==2)
-				{
-					this.minX+=f==4?-.6875f: f==5?.6875f: 0;
-					this.maxX+=f==4?-.6875f: f==5?.6875f: 0;
-					this.minZ+=f==3?.6875f: f==2?-.6875f: 0;
-					this.maxZ+=f==3?.6875f: f==2?-.6875f: 0;
-				}
-				if(pos%5!=0&&pos%5!=4)
-				{
-					this.minX = f==2||f==3?0:minX;
-					this.maxX = f==2||f==3?1:maxX;
-					this.minZ = f==4||f==5?0:minZ;
-					this.maxZ = f==4||f==5?1:maxZ;
-				}
-				//				if(pos%5==0)
-				//					this.setBlockBounds(f==3?.4375f:f==2?0:.6875f, 0, f==2?.6875f:f==3?0:.4375f,   f==2?.5625f:f==3?1:1, 1, f==2?1:f==3?.3125f:);
-			}
-			else if(pos==0||pos==1||pos==3 || pos==30||pos==31||pos==33||pos==34)
-				this.setBlockBounds(0,0,0,1,.5f,1);
-			else
-				this.setBlockBounds(0,0,0,1,1,1);
-		}
-		else if(world.getTileEntity(x, y, z) instanceof TileEntityBucketWheel)
-		{
-			TileEntityBucketWheel tile = (TileEntityBucketWheel)world.getTileEntity(x, y, z);
-			int pos = tile.pos;
-			int f = tile.facing;
-
-			if(pos==3||pos==9||pos==11)
-				this.setBlockBounds(0,.25f,0, 1,1,1);
-			else if(pos==45||pos==37||pos==39)
-				this.setBlockBounds(0,0,0, 1,.75f,1);
-			else if(pos==21)
-				this.setBlockBounds(f==2?.25f:0,0,f==4?.25f:0, f==3?.75f:1,1,f==5?.75f:1);
-			else if(pos==27)
-				this.setBlockBounds(f==3?.25f:0,0,f==5?.25f:0, f==2?.75f:1,1,f==4?.75f:1);
-			else if(pos==15||pos==29)
-				this.setBlockBounds(f==2?.25f:0,0,f==4?.25f:0, f==3?.75f:1,1,f==5?.75f:1);
-			else if(pos==19||pos==33)
-				this.setBlockBounds(f==3?.25f:0,0,f==5?.25f:0, f==2?.75f:1,1,f==4?.75f:1);
-			else
-				this.setBlockBounds(0,0,0,1,1,1);
-		}
-		else if(world.getTileEntity(x, y, z) instanceof TileEntityExcavator)
-		{
-			TileEntityExcavator tile = (TileEntityExcavator)world.getTileEntity(x, y, z);
-			int pos = tile.pos;
-			int fl = tile.facing;
-			int fw = tile.facing;
-			if(tile.mirrored)
-				fw = ForgeDirection.OPPOSITES[fw];
-
-			if(pos==42)
-				this.setBlockBounds(fl==4||fl==5?-.5f:0,0,fl==2||fl==3?-.5f:0,  fl==4||fl==5?1.5f:1,.5f,fl==2||fl==3?1.5f:1);
-			else if(pos==29||pos==38||pos==47)
-				this.setBlockBounds(fw==2?.25f:0,0,fw==5?.25f:0, fw==3?.75f:1,1,fw==4?.75f:1);
-			else if(pos==44)
-				this.setBlockBounds(fw==3?.875f:0,0,fw==4?.875f:0, fw==2?.125f:1,1,fw==5?.125f:1);
-			else if(pos==35)
-				this.setBlockBounds(fl==5?.375f:fl==4?.5f:0,0,fl==3?.375f:fl==2?.5f:0,  fl==5?.5f:fl==4?.625f:1,1,fl==3?.5f:fl==2?.625f:1);
-			else if(pos==53)
-				this.setBlockBounds(fl==4?.375f: fl==5?.5f:0,0,fl==2?.375f:fl==3?.5f:0,  fl==4?.5f:fl==5?.625f:1,1,fl==2?.5f:fl==3?.625f:1);
+			float[] bounds = ((TileEntityMultiblockPart)world.getTileEntity(x, y, z)).getBlockBounds();
+			if(bounds!=null && bounds.length>5)
+				this.setBlockBounds(bounds[0],bounds[1],bounds[2], bounds[3],bounds[4],bounds[5]);
 			else
 				this.setBlockBounds(0,0,0,1,1,1);
 		}

@@ -50,23 +50,18 @@ public class BlueprintCraftingRecipe
 		//		{
 		//			boolean match = false;
 		//			Object o = inputIt.next();
-		//			//			System.out.println(" Look for: "+o+", available queries: "+queryList);
 		//			Iterator<ItemStack> queryIt = queryList.iterator();
 		//			while(queryIt.hasNext())
 		//			{
 		//				ItemStack stack = queryIt.next();
-		//				//				System.out.println("  check against "+stack);
 		//				if(ApiUtils.stackMatchesObject(stack, o))
 		//				{
-		//					//					System.out.println("  match,");
 		//					if(o instanceof ItemStack)
 		//					{
 		//						int taken = Math.min(stack.stackSize, ((ItemStack)o).stackSize);
-		//						//						System.out.println("  reducing by "+taken);
 		//						stack.stackSize-=taken;
 		//						if(stack.stackSize<=0)
 		//						{
-		//							//							System.out.println("  removing from query list");
 		//							queryIt.remove();
 		//						}
 		//
@@ -93,7 +88,6 @@ public class BlueprintCraftingRecipe
 		//			}
 		//			if(!match)
 		//			{
-		//				//				System.out.println("While checkign the "+this.output+" recipe, "+o+" was missing");
 		//				return false;
 		//			}
 		//		}

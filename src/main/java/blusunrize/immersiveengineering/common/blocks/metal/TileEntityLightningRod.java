@@ -133,6 +133,11 @@ public class TileEntityLightningRod extends TileEntityMultiblockPart implements 
 	{
 		return new ItemStack(IEContent.blockMetalMultiblocks,1,BlockMetalMultiblocks.META_lightningRod);
 	}
+	@Override
+	public float[] getBlockBounds()
+	{
+		return new float[]{0,0,0,1,1,1};
+	}
 
 	@Override
 	public void invalidate()

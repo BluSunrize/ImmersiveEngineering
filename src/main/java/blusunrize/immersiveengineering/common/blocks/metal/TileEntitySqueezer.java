@@ -54,6 +54,11 @@ public class TileEntitySqueezer extends TileEntityMultiblockPart implements IFlu
 			return new ItemStack(IEContent.blockMetalMultiblocks,1,BlockMetalMultiblocks.META_squeezer);
 		return MultiblockSqueezer.instance.getStructureManual()[(pos%9/3)][pos/9][pos%3].copy();
 	}
+	@Override
+	public float[] getBlockBounds()
+	{
+		return new float[]{0,0,0,1,1,1};
+	}
 
 
 	@Override

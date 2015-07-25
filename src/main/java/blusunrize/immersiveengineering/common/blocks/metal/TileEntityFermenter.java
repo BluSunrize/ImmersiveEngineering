@@ -54,6 +54,11 @@ public class TileEntityFermenter extends TileEntityMultiblockPart implements IFl
 			return new ItemStack(IEContent.blockMetalMultiblocks,1,BlockMetalMultiblocks.META_fermenter);
 		return MultiblockFermenter.instance.getStructureManual()[(pos%9/3)][pos/9][pos%3].copy();
 	}
+	@Override
+	public float[] getBlockBounds()
+	{
+		return new float[]{0,0,0,1,1,1};
+	}
 
 
 	@Override
