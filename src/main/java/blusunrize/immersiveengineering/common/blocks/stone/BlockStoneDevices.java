@@ -215,7 +215,8 @@ public class BlockStoneDevices extends BlockIEBase
 				TileEntityBlastFurnace te = ((TileEntityBlastFurnace)world.getTileEntity(x, y, z)).master();
 				if(te==null)
 					te = ((TileEntityBlastFurnace)world.getTileEntity(x, y, z));
-				player.openGui(ImmersiveEngineering.instance, Lib.GUIID_BlastFurnace, world, te.xCoord, te.yCoord, te.zCoord);
+				if(!world.isRemote)
+					player.openGui(ImmersiveEngineering.instance, Lib.GUIID_BlastFurnace, world, te.xCoord, te.yCoord, te.zCoord);
 				return true;
 			}
 		}
