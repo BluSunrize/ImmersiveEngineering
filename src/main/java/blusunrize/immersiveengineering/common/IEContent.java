@@ -686,6 +686,20 @@ public class IEContent
 			if(rcCube!=null)
 				OreDictionary.registerOre("blockFuelCoke", new ItemStack(rcCube,1,0));
 		}
+		
+		//Multipart Compat
+		FMLInterModComms.sendMessage("ForgeMicroblock", "microMaterial", treatedWood);
+		FMLInterModComms.sendMessage("ForgeMicroblock", "microMaterial", new ItemStack(itemMetal, 9, 0));
+		FMLInterModComms.sendMessage("ForgeMicroblock", "microMaterial", new ItemStack(itemMetal, 9, 1));
+		FMLInterModComms.sendMessage("ForgeMicroblock", "microMaterial", new ItemStack(itemMetal, 9, 2));
+		FMLInterModComms.sendMessage("ForgeMicroblock", "microMaterial", new ItemStack(itemMetal, 9, 3));
+		FMLInterModComms.sendMessage("ForgeMicroblock", "microMaterial", new ItemStack(itemMetal, 9, 4));
+		FMLInterModComms.sendMessage("ForgeMicroblock", "microMaterial", new ItemStack(itemMetal, 9, 5));
+		FMLInterModComms.sendMessage("ForgeMicroblock", "microMaterial", new ItemStack(itemMetal, 9, 6));
+		FMLInterModComms.sendMessage("ForgeMicroblock", "microMaterial", new ItemStack(itemMetal, 9, 7));
+		FMLInterModComms.sendMessage("ForgeMicroblock", "microMaterial", new ItemStack(blockStoneDevice,6,0));
+		FMLInterModComms.sendMessage("ForgeMicroblock", "microMaterial", new ItemStack(blockStoneDevice,6,3));
+		FMLInterModComms.sendMessage("ForgeMicroblock", "microMaterial", new ItemStack(blockStoneDevice,6,4));
 	}
 
 	public static void loadComplete()
