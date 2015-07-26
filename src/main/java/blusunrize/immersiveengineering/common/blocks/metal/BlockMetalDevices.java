@@ -227,7 +227,7 @@ public class BlockMetalDevices extends BlockIEBase implements blusunrize.aquatwe
 		for(int i=0;i<4;i++)
 		{
 			icons[META_connectorLV][i] = iconRegister.registerIcon("immersiveengineering:metal_connectorLV");
-			icons[META_connectorMV][i] = iconRegister.registerIcon("immersiveengineering:metal_connectorHV");
+			icons[META_connectorMV][i] = iconRegister.registerIcon("immersiveengineering:metal_connectorMV");
 			icons[META_relayHV][i] = iconRegister.registerIcon("immersiveengineering:metal_relayHV");
 			icons[META_connectorHV][i] = iconRegister.registerIcon("immersiveengineering:metal_connectorHV");
 			icons[META_transformerHV][i] = iconRegister.registerIcon("immersiveengineering:metal_transformerHV");

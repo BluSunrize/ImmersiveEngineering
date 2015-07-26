@@ -206,6 +206,22 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 			te.markDirty();
 			world.markBlockForUpdate(te.xCoord, te.yCoord, te.zCoord);
 		}
+		if(world.getTileEntity(x, y, z) instanceof TileEntityArcFurnace)
+		{
+			if(!player.isSneaking() && ((TileEntityArcFurnace)world.getTileEntity(x, y, z)).formed )
+			{
+				TileEntityArcFurnace te = ((TileEntityArcFurnace)world.getTileEntity(x, y, z));
+				if(te.pos==2||te.pos==25|| (te.pos>25 && te.pos%5>0 && te.pos%5<4 && te.pos%25/5<4))
+				{
+					TileEntityArcFurnace master = te.master();
+					if(master==null)
+						master = te;
+					if(!world.isRemote)
+						player.openGui(ImmersiveEngineering.instance, Lib.GUIID_ArcFurnace, world, master.xCoord, master.yCoord, master.zCoord);
+					return true;
+				}
+			}
+		}
 		return false;
 	}
 
@@ -240,6 +256,16 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 			TileEntityExcavator tile = (TileEntityExcavator)world.getTileEntity(x, y, z);
 			if(tile.pos<27)
 				return true;
+		}
+		if(world.getTileEntity(x, y, z) instanceof TileEntityArcFurnace)
+		{
+			TileEntityArcFurnace tile = (TileEntityArcFurnace)world.getTileEntity(x, y, z);
+			if(tile.pos==2 || tile.pos==25 || tile.pos==52)
+				return side.ordinal()==tile.facing || (tile.pos==52?side==ForgeDirection.UP:false);
+			if(tile.pos==82 || tile.pos==86 || tile.pos==88 || tile.pos==112)
+				return side==ForgeDirection.UP;
+			if( (tile.pos>=21&&tile.pos<=23) || (tile.pos>=46&&tile.pos<=48) || (tile.pos>=71&&tile.pos<=73))
+				return side.getOpposite().ordinal()==tile.facing;
 		}
 		return super.isSideSolid(world, x, y, z, side);
 	}

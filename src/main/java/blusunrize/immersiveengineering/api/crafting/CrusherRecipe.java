@@ -11,7 +11,7 @@ import net.minecraftforge.oredict.OreDictionary;
 /**
  * @author BluSunrize - 01.05.2015
  *
- * The recipe for the coke oven
+ * The recipe for the crusher
  */
 public class CrusherRecipe
 {

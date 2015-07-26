@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.client;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -572,6 +573,47 @@ public class ClientUtils
 					}
 				}
 		}
+	}
+
+	public static void renderWavefrontWithIconUVs(WavefrontObject model, IIcon icon, String... parts)
+	{
+		renderWavefrontWithIconUVs(model, GL11.GL_QUADS, icon, parts);
+		renderWavefrontWithIconUVs(model, GL11.GL_TRIANGLES, icon, parts);
+	}
+	
+	public static void renderWavefrontWithIconUVs(WavefrontObject model, int glDrawingMode, IIcon icon, String... parts)
+	{
+		List<String> renderParts = Arrays.asList(parts);
+		tes().startDrawing(glDrawingMode);
+		for(GroupObject go : model.groupObjects)
+			if(go.glDrawingMode==glDrawingMode)
+			{
+				if(renderParts.contains(go.name))
+				{
+					for(Face face : go.faces)
+					{
+						float minU = icon.getMinU();
+						float sizeU = icon.getMaxU() - minU;
+						float minV = icon.getMinV();
+						float sizeV = icon.getMaxV() - minV;
+
+						TextureCoordinate[] oldUVs = new TextureCoordinate[face.textureCoordinates.length];
+						for(int v=0; v<face.vertices.length; ++v)
+						{
+							oldUVs[v] = face.textureCoordinates[v]; 
+							TextureCoordinate textureCoordinate = face.textureCoordinates[v];
+							face.textureCoordinates[v] = new TextureCoordinate(
+									minU + sizeU * textureCoordinate.u,
+									minV + sizeV * textureCoordinate.v
+									);
+						}
+						face.addFaceForRender(ClientUtils.tes());
+						for(int v=0; v<face.vertices.length; ++v)
+							face.textureCoordinates[v] = new TextureCoordinate(oldUVs[v].u,oldUVs[v].v);
+					}
+				}
+			}
+		tes().draw();
 	}
 
 	public static void drawInventoryBlock(Block block, int metadata, RenderBlocks renderer)

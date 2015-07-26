@@ -21,7 +21,7 @@ public class TileEntityWindmill extends TileEntityIEBase
 	@Override
 	public void updateEntity()
 	{
-		if(worldObj.getTotalWorldTime()%101==((xCoord^zCoord)&100))
+		if(worldObj.getTotalWorldTime()%128==((xCoord^zCoord)&127))
 			canTurn = checkArea();
 		if(!canTurn)
 			return;

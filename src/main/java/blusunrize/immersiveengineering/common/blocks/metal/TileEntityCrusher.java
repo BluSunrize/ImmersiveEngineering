@@ -83,9 +83,7 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 		{
 			ImmersiveEngineering.proxy.handleTileSound("crusher", this, ((active&&process>0)||mobGrinding||grindingTimer>0), 1,1);
 			if(particleStack!=null && active&&process>0)
-			{
 				ImmersiveEngineering.proxy.spawnCrusherFX(this, particleStack);
-			}
 			else if(particleStack!=null)
 				particleStack=null;
 		}

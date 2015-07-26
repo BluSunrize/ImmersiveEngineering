@@ -6,6 +6,7 @@ import net.minecraftforge.client.model.IModelCustom;
 
 import org.lwjgl.opengl.GL11;
 
+import blusunrize.immersiveengineering.client.ClientProxy;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityDieselGenerator;
 
@@ -44,6 +45,14 @@ public class TileRenderDieselGenerator extends TileEntitySpecialRenderer
 			GL11.glScalef(-1,1,1);
 			GL11.glEnable(GL11.GL_CULL_FACE);
 		}
+		
+		ClientUtils.mc().renderEngine.bindTexture(ClientProxy.revolverTextureResource);
+		ClientUtils.tes().startDrawingQuads();
+		ClientUtils.tes().addVertexWithUV(-2,2,0, 0,1);
+		ClientUtils.tes().addVertexWithUV( 2,2,0, 1,1);
+		ClientUtils.tes().addVertexWithUV( 2,6,0, 1,0);
+		ClientUtils.tes().addVertexWithUV(-2,6,0, 0,0);
+		ClientUtils.tes().draw();
 
 		GL11.glPopMatrix();
 	}

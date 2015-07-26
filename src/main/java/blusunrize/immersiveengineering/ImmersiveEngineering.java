@@ -40,7 +40,7 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 
-@Mod(modid=ImmersiveEngineering.MODID,name=ImmersiveEngineering.MODNAME,version = ImmersiveEngineering.VERSION, dependencies="after:Railcraft")
+@Mod(modid=ImmersiveEngineering.MODID,name=ImmersiveEngineering.MODNAME,version = ImmersiveEngineering.VERSION, dependencies="after:Railcraft;before:TConstruct")
 public class ImmersiveEngineering
 {
 	public static final String MODID = "ImmersiveEngineering";
@@ -155,7 +155,7 @@ public class ImmersiveEngineering
 		{
 			Gson gson = new Gson();
 			try {
-				IELogger.warn("Attempting to download special revolvers from GitHub");
+				IELogger.info("Attempting to download special revolvers from GitHub");
 				URL url = new URL("https://raw.githubusercontent.com/BluSunrize/ImmersiveEngineering/master/contributorRevolvers.json");
 				JsonStreamParser parser = new JsonStreamParser(new InputStreamReader(url.openStream()));
 				while(parser.hasNext())

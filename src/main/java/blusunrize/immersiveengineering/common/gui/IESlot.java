@@ -2,8 +2,6 @@ package blusunrize.immersiveengineering.common.gui;
 
 import java.util.List;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
@@ -11,13 +9,17 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.oredict.OreDictionary;
+import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.tool.IBullet;
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
 import blusunrize.immersiveengineering.api.tool.IUpgrade;
+import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.items.ItemEngineersBlueprint;
 import blusunrize.immersiveengineering.common.items.ItemUpgradeableTool;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public abstract class IESlot extends Slot
 {
@@ -256,5 +258,42 @@ public abstract class IESlot extends Slot
 				((ContainerModWorkbench)container).rebindSlots();
 	    	super.onPickupFromSlot(player, stack);
 	    }
+	}
+	
+	public static class ArcInput extends IESlot
+	{
+		public ArcInput(Container container, IInventory inv, int id, int x, int y)
+		{
+			super(container, inv, id, x, y);
+		}
+		@Override
+		public boolean isItemValid(ItemStack itemStack)
+		{
+			return itemStack!=null && ArcFurnaceRecipe.isValidInput(itemStack);
+		}
+	}
+	public static class ArcAdditive extends IESlot
+	{
+		public ArcAdditive(Container container, IInventory inv, int id, int x, int y)
+		{
+			super(container, inv, id, x, y);
+		}
+		@Override
+		public boolean isItemValid(ItemStack itemStack)
+		{
+			return itemStack!=null && ArcFurnaceRecipe.isValidAdditive(itemStack);
+		}
+	}
+	public static class ArcElectrode extends IESlot
+	{
+		public ArcElectrode(Container container, IInventory inv, int id, int x, int y)
+		{
+			super(container, inv, id, x, y);
+		}
+		@Override
+		public boolean isItemValid(ItemStack itemStack)
+		{
+			return itemStack!=null && IEContent.itemGraphiteElectrode.equals(itemStack.getItem());
+		}
 	}
 }

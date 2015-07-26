@@ -49,6 +49,7 @@ tile.ImmersiveEngineering.metalMultiblock.refinery.name=Refinery
 tile.ImmersiveEngineering.metalMultiblock.crusher.name=Crusher
 tile.ImmersiveEngineering.metalMultiblock.bucketWheel.name=Bucket Wheel
 tile.ImmersiveEngineering.metalMultiblock.excavator.name=Excavator
+tile.ImmersiveEngineering.metalMultiblock.arcFurnace.name=Arc Furnace
 
 tile.ImmersiveEngineering.metalDecoration.fence.name=Steel Fence
 tile.ImmersiveEngineering.metalDecoration.scaffolding.name=Steel Scaffolding
@@ -141,6 +142,7 @@ item.ImmersiveEngineering.material.gunpartGrip.name=Wooden Grip
 item.ImmersiveEngineering.material.gunpartHammer.name=Revolver Hammer
 item.ImmersiveEngineering.material.componentIron.name=Iron Mechanical Component
 item.ImmersiveEngineering.material.componentSteel.name=Steel Mechanical Component
+item.ImmersiveEngineering.material.slag.name=Slag
 item.ImmersiveEngineering.seed.hemp.name=Industrial Hemp Seeds
 
 item.ImmersiveEngineering.fluidContainers.bottleCreosote.name=Bottle of Creosote Oil
@@ -203,6 +205,8 @@ item.ImmersiveEngineering.toolupgrade.revolverElectro.name=Amplifier Electron Tu
 
 item.ImmersiveEngineering.blueprint.name=Engineers Blueprint
 
+item.ImmersiveEngineering.graphiteElectrode.name=Graphite Electrode
+
 
 #CREATIVE
 itemGroup.ImmersiveEngineering=Immersive Engineering
@@ -261,6 +265,7 @@ desc.ImmersiveEngineering.info.blueprint.creates1=Created Items:
 desc.ImmersiveEngineering.info.blueprint.bullet=Common Projectiles
 desc.ImmersiveEngineering.info.blueprint.specialBullet=Specialized Projectiles
 
+desc.ImmersiveEngineering.info.electrodeIntegrity=Integrity
 
 desc.ImmersiveEngineering.flavour.crate=Will keep its inventory when broken!
 desc.ImmersiveEngineering.flavour.coil.construction0=For decoration purposes only

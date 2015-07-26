@@ -13,7 +13,7 @@ import net.minecraftforge.oredict.OreDictionary;
 /**
  * @author BluSunrize - 23.03.2015
  * <br>
- * The recipe for the coke oven
+ * The recipe for the blast furnace
  */
 public class BlastFurnaceRecipe
 {

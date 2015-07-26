@@ -30,10 +30,13 @@ public class TileRenderArcFurnace extends TileEntitySpecialRenderer
 			GL11.glDisable(GL11.GL_CULL_FACE);
 		}
 
-		ClientUtils.bindTexture("immersiveengineering:textures/models/arcFurnace_inactive.png");
+		ClientUtils.bindTexture("immersiveengineering:textures/models/arcFurnace_"+(arc.active?"active":"inactive")+".png");
 
-		model.renderAll();
-
+		String[] electrodes = new String[3];
+		for(int i=0; i<3; i++)
+			electrodes[i] = !arc.electrodes[i]?"electrode"+(i+1):"";
+		model.renderAllExcept(electrodes);
+		
 		if(arc.mirrored)
 		{
 			GL11.glScalef(-1,1,1);

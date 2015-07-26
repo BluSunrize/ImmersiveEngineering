@@ -38,7 +38,7 @@ public class TileEntityLightningRod extends TileEntityMultiblockPart implements 
 						ier.receiveEnergy(fd.getOpposite(), extracted, false);
 					}
 			}
-			if(worldObj.getTotalWorldTime()%257==((xCoord^zCoord)&256) && ( worldObj.isThundering() || (worldObj.isRaining()&&worldObj.rand.nextInt(10)==0) ))
+			if(worldObj.getTotalWorldTime()%256==((xCoord^zCoord)&255) && ( worldObj.isThundering() || (worldObj.isRaining()&&worldObj.rand.nextInt(10)==0) ))
 			{
 				int height = 0;
 				boolean broken = false;

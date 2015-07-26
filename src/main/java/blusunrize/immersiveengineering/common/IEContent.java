@@ -20,6 +20,7 @@ import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.MultiblockHandler;
+import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.crafting.CokeOvenRecipe;
@@ -97,12 +98,15 @@ import blusunrize.immersiveengineering.common.crafting.IEFuelHandler;
 import blusunrize.immersiveengineering.common.crafting.RecipeOreCrushing;
 import blusunrize.immersiveengineering.common.crafting.RecipeRevolver;
 import blusunrize.immersiveengineering.common.entities.EntityRevolvershot;
+import blusunrize.immersiveengineering.common.entities.EntityRevolvershotHoming;
 import blusunrize.immersiveengineering.common.entities.EntitySkycrate;
 import blusunrize.immersiveengineering.common.entities.EntitySkylineHook;
+import blusunrize.immersiveengineering.common.entities.EntityWolfpackShot;
 import blusunrize.immersiveengineering.common.items.ItemBullet;
 import blusunrize.immersiveengineering.common.items.ItemDrill;
 import blusunrize.immersiveengineering.common.items.ItemDrillhead;
 import blusunrize.immersiveengineering.common.items.ItemEngineersBlueprint;
+import blusunrize.immersiveengineering.common.items.ItemGraphiteElectrode;
 import blusunrize.immersiveengineering.common.items.ItemIEBase;
 import blusunrize.immersiveengineering.common.items.ItemIESeed;
 import blusunrize.immersiveengineering.common.items.ItemIETool;
@@ -143,6 +147,7 @@ public class IEContent
 	public static ItemIEBase itemToolUpgrades;
 	public static ItemIEBase itemSkyhook;
 	public static ItemIEBase itemBlueprint;
+	public static ItemIEBase itemGraphiteElectrode;
 	public static Fluid fluidCreosote;
 	public static boolean IECreosote=false;
 	public static Fluid fluidPlantoil;
@@ -177,8 +182,8 @@ public class IEContent
 				"treatedStick","waterwheelSegment","windmillBlade","hempFiber","fabric","windmillBladeAdvanced",
 				"coalCoke",
 				"gunpartBarrel","gunpartDrum","gunpartGrip","gunpartHammer",
-				"componentIron","componentSteel");
-
+				"componentIron","componentSteel","slag");
+				
 		itemSeeds = new ItemIESeed(blockCrop,"hemp");
 		MinecraftForge.addGrassSeed(new ItemStack(itemSeeds), 5);
 		itemWireCoil = new ItemWireCoil();
@@ -209,6 +214,7 @@ public class IEContent
 		itemToolUpgrades = new ItemToolUpgrade();
 		itemSkyhook = new ItemSkyhook();
 		itemBlueprint = new ItemEngineersBlueprint();
+		itemGraphiteElectrode = new ItemGraphiteElectrode();
 
 		fluidCreosote = FluidRegistry.getFluid("creosote");
 		if(fluidCreosote==null)
@@ -345,7 +351,8 @@ public class IEContent
 		EntityRegistry.registerModEntity(EntityRevolvershot.class, "revolverShot", 0, ImmersiveEngineering.instance, 64, 1, true);
 		EntityRegistry.registerModEntity(EntitySkylineHook.class, "skylineHook", 1, ImmersiveEngineering.instance, 64, 1, true);
 		EntityRegistry.registerModEntity(EntitySkycrate.class, "skylineCrate", 2, ImmersiveEngineering.instance, 64, 1, true);
-
+		EntityRegistry.registerModEntity(EntityRevolvershotHoming.class, "revolverShotHoming", 3, ImmersiveEngineering.instance, 64, 1, true);
+		EntityRegistry.registerModEntity(EntityWolfpackShot.class, "revolverShotWolfpack", 4, ImmersiveEngineering.instance, 64, 1, true);		
 		int villagerId = Config.getInt("villager_engineer");
 		VillagerRegistry.instance().registerVillagerId(villagerId);
 
@@ -616,10 +623,10 @@ public class IEContent
 		CrusherRecipe.addRecipe(new ItemStack(itemMetal,1,17), "fuelCoke", 3200);
 		CrusherRecipe.addRecipe(new ItemStack(itemMetal,1,18), "gemQuartz", 3200);
 
-		//Nether Ores
-
-
-
+		ArcFurnaceRecipe.addRecipe(new ItemStack(itemMetal,1,7), "ingotIron", new ItemStack(itemMaterial,1,13), 400,512, "dustCoke");
+		ArcFurnaceRecipe.addRecipe(new ItemStack(itemMetal,1,7), "dustIron", new ItemStack(itemMaterial,1,13), 400,512, "dustCoke");
+		
+		
 		DieselHandler.registerFuel(fluidBiodiesel, 125);
 		DieselHandler.registerFuel(FluidRegistry.getFluid("fuel"), 375);
 		DieselHandler.registerFuel(FluidRegistry.getFluid("diesel"), 175);

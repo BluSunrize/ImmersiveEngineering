@@ -7,6 +7,7 @@ import java.util.Map;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityFX;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -27,6 +28,7 @@ import blusunrize.immersiveengineering.api.energy.DieselHandler;
 import blusunrize.immersiveengineering.api.energy.ThermoelectricHandler;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.client.fx.EntityFXItemParts;
+import blusunrize.immersiveengineering.client.gui.GuiArcFurnace;
 import blusunrize.immersiveengineering.client.gui.GuiBlastFurnace;
 import blusunrize.immersiveengineering.client.gui.GuiCokeOven;
 import blusunrize.immersiveengineering.client.gui.GuiCrate;
@@ -132,7 +134,9 @@ import cpw.mods.fml.common.registry.VillagerRegistry;
 
 public class ClientProxy extends CommonProxy
 {
-
+	public static TextureMap revolverTextureMap;
+	public static final ResourceLocation revolverTextureResource = new ResourceLocation("textures/atlas/immersiveengineering/revolvers.png");
+	
 	@Override
 	public void init()
 	{
@@ -171,6 +175,9 @@ public class ClientProxy extends CommonProxy
 		RenderingRegistry.registerBlockHandler(new BlockRenderStoneDevices());
 
 		//REVOLVER
+		revolverTextureMap = new TextureMap(Config.getInt("revolverSheetID"), "textures/revolvers");
+		ClientUtils.mc().renderEngine.loadTextureMap(revolverTextureResource, revolverTextureMap);
+		
 		MinecraftForgeClient.registerItemRenderer(IEContent.itemRevolver, new ItemRenderRevolver());
 		RenderingRegistry.registerEntityRenderingHandler(EntityRevolvershot.class, new EntityRenderRevolvershot());
 		//DRILL
@@ -380,6 +387,8 @@ public class ClientProxy extends CommonProxy
 		//			return new GuiDrill(player.inventory, world);
 		if(ID==Lib.GUIID_Workbench && world.getTileEntity(x, y, z) instanceof TileEntityModWorkbench)
 			return new GuiModWorkbench(player.inventory, (TileEntityModWorkbench) world.getTileEntity(x, y, z));
+		if(ID==Lib.GUIID_ArcFurnace && world.getTileEntity(x, y, z) instanceof TileEntityArcFurnace)
+			return new GuiArcFurnace(player.inventory, (TileEntityArcFurnace) world.getTileEntity(x, y, z));
 		return null;
 	}
 

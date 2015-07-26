@@ -267,10 +267,7 @@ public class MultiblockArcFurnace implements IMultiblock
 						int zz = startZ+ (side==2?l: side==3?-l: side==5?-ww : ww);
 
 						if(world.isAirBlock(xx, yy, zz))
-						{
-							world.setBlock(xx, yy, zz, IEContent.blockOres);
 							return false;
-						}
 						ItemStack checkStack = new ItemStack(world.getBlock(xx,yy,zz),1,world.getBlockMetadata(xx,yy,zz));
 						if(OreDictionary.itemMatches(structure[h+2][w+2][l+2], new ItemStack(Items.cauldron), true))
 						{

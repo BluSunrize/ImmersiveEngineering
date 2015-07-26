@@ -109,7 +109,7 @@ public class TileEntityFermenter extends TileEntityMultiblockPart implements IFl
 									if(recipe.output!=null)
 										if(inventory[11]!=null)
 											inventory[11].stackSize+= taken*recipe.output.copy().stackSize;
-										else if(inventory[1]==null)
+										else if(inventory[11]==null)
 											inventory[11] = Utils.copyStackWithAmount(recipe.output, taken*recipe.output.stackSize);
 									if(recipe.fluid!=null)
 										this.tank.fill( new FluidStack(recipe.fluid, taken*recipe.fluid.amount), true);
