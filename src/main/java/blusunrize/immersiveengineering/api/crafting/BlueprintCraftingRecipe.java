@@ -3,10 +3,14 @@ package blusunrize.immersiveengineering.api.crafting;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.oredict.OreDictionary;
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.common.util.Utils;
 
 import com.google.common.collect.ArrayListMultimap;
 
@@ -174,6 +178,46 @@ public class BlueprintCraftingRecipe
 						}
 					}
 		}
+	}
+	public ArrayList<Object> getFormattedInputs()
+	{
+		LinkedHashMap<Object, Integer> sumMap = new LinkedHashMap<Object, Integer>();
+		for(Object o : this.inputs)
+			if(o!=null)
+			{
+				boolean isNew = true;
+				for(Object ss : sumMap.keySet())
+					if(ss instanceof ItemStack && o instanceof ItemStack)
+					{	
+						if(OreDictionary.itemMatches((ItemStack)ss, (ItemStack)o, true))
+						{
+							isNew = false;
+							sumMap.put(ss, sumMap.get(ss)+((ItemStack)o).stackSize);
+						}
+					}
+					else if(ss.equals(o))
+					{
+						isNew = false;
+						sumMap.put(ss, sumMap.get(ss)+1);
+					}
+				if(isNew)
+					sumMap.put(o, (o instanceof ItemStack)?((ItemStack)o).stackSize: 1);
+			}
+		ArrayList<Object> formattedInputs = new ArrayList<Object>();  
+		for(Map.Entry<Object,Integer> e : sumMap.entrySet())
+		{
+			Object ss = e.getKey();
+			if(ss instanceof ItemStack)
+				formattedInputs.add(Utils.copyStackWithAmount((ItemStack)ss, e.getValue()));
+			else if(ss instanceof ArrayList)
+			{
+				ArrayList<ItemStack> oreListCopy = new ArrayList<ItemStack>();
+				for(ItemStack oreStack : (ArrayList<ItemStack>)ss)
+					oreListCopy.add(Utils.copyStackWithAmount(oreStack, e.getValue()));
+				formattedInputs.add(oreListCopy);
+			}
+		}
+		return formattedInputs;
 	}
 
 	public static void addRecipe(String blueprintCategory, ItemStack output, Object... inputs)

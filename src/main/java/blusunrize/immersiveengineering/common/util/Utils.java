@@ -44,10 +44,16 @@ public class Utils
 	}
 	public static boolean stackMatchesObject(ItemStack stack, Object o)
 	{
-		if(o instanceof String)
-			return compareToOreName(stack, (String)o);
 		if(o instanceof ItemStack)
 			return OreDictionary.itemMatches((ItemStack)o, stack, false);
+		else if(o instanceof ArrayList)
+		{
+			for(Object io : (ArrayList)o)
+				if(io instanceof ItemStack && OreDictionary.itemMatches((ItemStack)io, stack, false))
+					return true;
+		}
+		else if(o instanceof String)
+			return compareToOreName(stack, (String)o);
 		return false;
 	}
 	public static ItemStack copyStackWithAmount(ItemStack stack, int amount)

@@ -1,28 +1,33 @@
 #####Version 0.5.0
-- moved Workbench back to TESR because of derpy lighting
-- fixed critical bug with revolvers
-- redid API stuff. Addons might break
-- changed OreDict handling in recipes. Should improve performance
+- added Arc Furnace! Yes, it's a thing now!
+- added metal slabs
 - added Blueprint crafting. This will be used for bullets and other things in future
 - added Homing and Wolfpack bullets
 - added Engineer Villager to sell IE items
+- added metal nuggets
+- redid API stuff. Addons might break
+- changed OreDict handling in recipes. Should improve performance
 - added a world saving hook in the hopes of fixing that issue of wires vanishing on world reload
+- moved Workbench back to TESR because of derpy lighting
+- fixed critical bug with revolvers
 - connectors only accept power from the correct side now
 - the mousewheel can be used to changed pages in the manual
 - changed poweroutput config for dynamos to a double, to allow for more precise modifiers
 - fixed derpy in-hand rendering for fences
 - added WAILA compat for hemp
-- buffed electro upgrade for the rev olver
-- added metal nuggets
+- buffed electro upgrade for the revolver
 - changed bullets to be craftable with blueprints and added config for more costly bullets
 - changed Capacitors to no longer be ImmersiveConenctable. Dunno why I made them that in the first place...
 - prevented Multiblocks and Connectors from being teleposed by BloddMagic
 - updated Manual for new content added
 - changed formatting in manual, addon devs beware!
-- fixed Revolver, Drill and Core Sample Drill to have power of 2 textures
+- changed all textures to be power of 2, because old GPUs can't handle my fancyness
 - fixed raytracing on LV connectors
 - changed localization of High-Voltage Wire Coil to match its connector
-- enabled the Diesel Generator to be mirrored by clicking the center of the generator-block side 
+- enabled the Diesel Generator to be mirrored by clicking the center of the generator-block side
+- fixed BlastFurnace gui opening clientside
+- added another NPE check to wire rendering
+- fixed TCon interaction
 
 
 ##### 0.4 VERSIONS ######

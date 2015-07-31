@@ -183,7 +183,7 @@ public class IEContent
 				"coalCoke",
 				"gunpartBarrel","gunpartDrum","gunpartGrip","gunpartHammer",
 				"componentIron","componentSteel","slag");
-				
+
 		itemSeeds = new ItemIESeed(blockCrop,"hemp");
 		MinecraftForge.addGrassSeed(new ItemStack(itemSeeds), 5);
 		itemWireCoil = new ItemWireCoil();
@@ -249,7 +249,7 @@ public class IEContent
 		registerToOreDict("ore", blockOres);
 		registerToOreDict("block", blockStorage, 0,1,2,3,4,5,6,7);
 		registerToOreDict("", itemMetal);
-		registerOre("Cupronickel",	null,new ItemStack(itemMetal,1,5),new ItemStack(itemMetal,1,15),new ItemStack(blockStorage,1,5));
+		registerOre("Cupronickel",	null,new ItemStack(itemMetal,1,5),new ItemStack(itemMetal,1,15),new ItemStack(blockStorage,1,5),new ItemStack(itemMetal,1,27));
 
 		OreDictionary.registerOre("seedIndustrialHemp", new ItemStack(itemSeeds));
 		OreDictionary.registerOre("treatedStick", new ItemStack(itemMaterial,1,0));
@@ -414,37 +414,37 @@ public class IEContent
 		boolean hardmodeBullets = Config.getBoolean("hardmodeBulletRecipes");
 		if(hardmodeBullets)
 		{
-			BlueprintCraftingRecipe.addRecipe("bullet", new ItemStack(itemBullet,1,2), Items.gunpowder,new ItemStack(itemBullet,1,0),"ingotLead");
-			BlueprintCraftingRecipe.addRecipe("bullet", new ItemStack(itemBullet,1,3), Items.gunpowder,new ItemStack(itemBullet,1,0),"inotSteel","ingotConstantan");
+			BlueprintCraftingRecipe.addRecipe("bullet", new ItemStack(itemBullet,1,2), new ItemStack(itemBullet,1,0),Items.gunpowder,"ingotLead");
+			BlueprintCraftingRecipe.addRecipe("bullet", new ItemStack(itemBullet,1,3), new ItemStack(itemBullet,1,0),Items.gunpowder,"inotSteel","ingotConstantan");
 			if(!OreDictionary.getOres("ingotTungsten").isEmpty())
-				BlueprintCraftingRecipe.addRecipe("bullet", new ItemStack(itemBullet,1,3), Items.gunpowder,new ItemStack(itemBullet,1,0),"ingotTungsten");
+				BlueprintCraftingRecipe.addRecipe("bullet", new ItemStack(itemBullet,1,3), new ItemStack(itemBullet,1,0),Items.gunpowder,"ingotTungsten");
 			if(!OreDictionary.getOres("ingotCyanite").isEmpty())
-				BlueprintCraftingRecipe.addRecipe("bullet", new ItemStack(itemBullet,1,3), Items.gunpowder,new ItemStack(itemBullet,1,0),"ingotCyanite");
+				BlueprintCraftingRecipe.addRecipe("bullet", new ItemStack(itemBullet,1,3), new ItemStack(itemBullet,1,0),Items.gunpowder,"ingotCyanite");
 		}
 		else
 		{
-			BlueprintCraftingRecipe.addRecipe("bullet", new ItemStack(itemBullet,1,2), Items.gunpowder,new ItemStack(itemBullet,1,0),"nuggetLead","nuggetLead");
-			BlueprintCraftingRecipe.addRecipe("bullet", new ItemStack(itemBullet,1,3), Items.gunpowder,new ItemStack(itemBullet,1,0),"nuggetSteel","nuggetSteel","nuggetConstantan","nuggetConstantan");
+			BlueprintCraftingRecipe.addRecipe("bullet", new ItemStack(itemBullet,1,2), new ItemStack(itemBullet,1,0),Items.gunpowder,"nuggetLead","nuggetLead");
+			BlueprintCraftingRecipe.addRecipe("bullet", new ItemStack(itemBullet,1,3), new ItemStack(itemBullet,1,0),Items.gunpowder,"nuggetSteel","nuggetSteel","nuggetConstantan","nuggetConstantan");
 			if(!OreDictionary.getOres("nuggetTungsten").isEmpty())
-				BlueprintCraftingRecipe.addRecipe("bullet", new ItemStack(itemBullet,1,3), Items.gunpowder,new ItemStack(itemBullet,1,0),"nuggetTungsten","nuggetTungsten");
+				BlueprintCraftingRecipe.addRecipe("bullet", new ItemStack(itemBullet,1,3), new ItemStack(itemBullet,1,0),Items.gunpowder,"nuggetTungsten","nuggetTungsten");
 			else if(!OreDictionary.getOres("ingotTungsten").isEmpty())
-				BlueprintCraftingRecipe.addRecipe("bullet", new ItemStack(itemBullet,3,3), new ItemStack(Items.gunpowder,3),new ItemStack(itemBullet,3,0),"ingotTungsten");
+				BlueprintCraftingRecipe.addRecipe("bullet", new ItemStack(itemBullet,3,3), new ItemStack(itemBullet,3,0),new ItemStack(Items.gunpowder,3),"ingotTungsten");
 			if(!OreDictionary.getOres("nuggetCyanite").isEmpty())
-				BlueprintCraftingRecipe.addRecipe("bullet", new ItemStack(itemBullet,1,3), Items.gunpowder,new ItemStack(itemBullet,1,0),"nuggetCyanite","nuggetCyanite");
+				BlueprintCraftingRecipe.addRecipe("bullet", new ItemStack(itemBullet,1,3), new ItemStack(itemBullet,1,0),Items.gunpowder,"nuggetCyanite","nuggetCyanite");
 			else if(!OreDictionary.getOres("ingotCyanite").isEmpty())
-				BlueprintCraftingRecipe.addRecipe("bullet", new ItemStack(itemBullet,3,3), new ItemStack(Items.gunpowder,3),new ItemStack(itemBullet,3,0),"ingotCyanite");
+				BlueprintCraftingRecipe.addRecipe("bullet", new ItemStack(itemBullet,3,3), new ItemStack(itemBullet,3,0),new ItemStack(Items.gunpowder,3),"ingotCyanite");
 		}
-		BlueprintCraftingRecipe.addRecipe("bullet", new ItemStack(itemBullet,1,4), Items.gunpowder,new ItemStack(itemBullet,1,1),"dustIron");
-		BlueprintCraftingRecipe.addRecipe("bullet", new ItemStack(itemBullet,1,5), Items.gunpowder,new ItemStack(itemBullet,1,0),Blocks.tnt);
+		BlueprintCraftingRecipe.addRecipe("bullet", new ItemStack(itemBullet,1,4), new ItemStack(itemBullet,1,1),Items.gunpowder,"dustIron");
+		BlueprintCraftingRecipe.addRecipe("bullet", new ItemStack(itemBullet,1,5), new ItemStack(itemBullet,1,0),Items.gunpowder,Blocks.tnt);
 
-		BlueprintCraftingRecipe.addRecipe("specialBullet", new ItemStack(itemBullet,1,6), Items.gunpowder,new ItemStack(itemBullet,1,1),"dustAluminum","dustAluminum");
+		BlueprintCraftingRecipe.addRecipe("specialBullet", new ItemStack(itemBullet,1,6), new ItemStack(itemBullet,1,1),Items.gunpowder,"dustAluminum","dustAluminum");
 		if(Loader.isModLoaded("Botania"))
 		{
 			if(hardmodeBullets)
-				BlueprintCraftingRecipe.addRecipe("specialBullet", new ItemStack(itemBullet,1,7), Items.gunpowder,new ItemStack(itemBullet,1,0),"nuggetTerrasteel","nuggetTerrasteel");
+				BlueprintCraftingRecipe.addRecipe("specialBullet", new ItemStack(itemBullet,1,7), new ItemStack(itemBullet,1,0),Items.gunpowder,"ingotTerrasteel");
 			else
-				BlueprintCraftingRecipe.addRecipe("specialBullet", new ItemStack(itemBullet,1,7), Items.gunpowder,new ItemStack(itemBullet,1,0),"ingotTerrasteel");
-			BlueprintCraftingRecipe.addRecipe("specialBullet", new ItemStack(itemBullet,1,8), Items.gunpowder,new ItemStack(itemBullet,1,1), new ItemStack(itemBullet,6,7));
+				BlueprintCraftingRecipe.addRecipe("specialBullet", new ItemStack(itemBullet,1,7), new ItemStack(itemBullet,1,0),Items.gunpowder,"nuggetTerrasteel","nuggetTerrasteel");
+			BlueprintCraftingRecipe.addRecipe("specialBullet", new ItemStack(itemBullet,1,8), new ItemStack(itemBullet,1,1),Items.gunpowder, new ItemStack(itemBullet,6,7));
 			Config.setBoolean("botaniaBullets", true);
 		}
 		BlueprintCraftingRecipe.addVillagerTrade("bullet", new ItemStack(Items.emerald,1,2));
@@ -574,7 +574,7 @@ public class IEContent
 		addOreProcessingRecipe(new ItemStack(itemMetal,2,8), "Iron", 4000, true, new ItemStack(itemMetal,1,14),.1f);
 		ItemStack cinnabar = !OreDictionary.getOres("crystalCinnabar").isEmpty()?OreDictionary.getOres("crystalCinnabar").get(0):null;
 		addOreProcessingRecipe(new ItemStack(itemMetal,2,9), "Gold", 4000, true, cinnabar,.05f);
-
+		
 		addOreProcessingRecipe(new ItemStack(itemMetal,2,10), "Copper", 4000, true, new ItemStack(itemMetal,1,9),.1f);
 		addOreProcessingRecipe(new ItemStack(itemMetal,2,11), "Aluminum", 4000, true, null,0);
 		addOreProcessingRecipe(new ItemStack(itemMetal,2,12), "Lead", 4000, true, new ItemStack(itemMetal,1,13),.1f);
@@ -582,13 +582,6 @@ public class IEContent
 		ItemStack platinum = !OreDictionary.getOres("dustPlatinum").isEmpty()?OreDictionary.getOres("dustPlatinum").get(0):null;
 		addOreProcessingRecipe(new ItemStack(itemMetal,2,14), "Nickel", 4000, true, platinum,.1f);
 
-		//		r = addCrusherRecipe(10, "Copper").addSecondaryOutput(new ItemStack(itemMetal,1,9), .1f);
-		//		r = addCrusherRecipe(11, "Aluminum");
-		//		r = addCrusherRecipe(12, "Lead").addSecondaryOutput(new ItemStack(itemMetal,1,13), .1f);
-		//		r = addCrusherRecipe(13, "Silver").addSecondaryOutput(new ItemStack(itemMetal,1,12), .1f);
-		//		r = addCrusherRecipe(14, "Nickel");
-		//		if(!OreDictionary.getOres("dustPlatinum").isEmpty())
-		//			r.addSecondaryOutput(OreDictionary.getOres("dustPlatinum").get(0), .1f);
 		addCrusherRecipe(new ItemStack(itemMetal,1,15), "ingotConstantan", 2400, null,0);
 		addCrusherRecipe(new ItemStack(itemMetal,1,16), "ingotElectrum", 2400, null,0);
 
@@ -622,11 +615,25 @@ public class IEContent
 		addCrusherRecipe(new ItemStack(Items.blaze_powder,4), "rodBlaze", 1600, sulfur,.5f);
 		CrusherRecipe.addRecipe(new ItemStack(itemMetal,1,17), "fuelCoke", 3200);
 		CrusherRecipe.addRecipe(new ItemStack(itemMetal,1,18), "gemQuartz", 3200);
-
+		
 		ArcFurnaceRecipe.addRecipe(new ItemStack(itemMetal,1,7), "ingotIron", new ItemStack(itemMaterial,1,13), 400,512, "dustCoke");
 		ArcFurnaceRecipe.addRecipe(new ItemStack(itemMetal,1,7), "dustIron", new ItemStack(itemMaterial,1,13), 400,512, "dustCoke");
-		
-		
+		ArcFurnaceRecipe.addRecipe(new ItemStack(Items.iron_ingot,2), "oreIron", new ItemStack(itemMaterial,1,13), 200,512);
+		ArcFurnaceRecipe.addRecipe(new ItemStack(Items.gold_ingot,2), "oreGold", new ItemStack(itemMaterial,1,13), 200,512);
+		ArcFurnaceRecipe.addRecipe(new ItemStack(itemMetal,2,0), "oreCopper", new ItemStack(itemMaterial,1,13), 200,512);
+		ArcFurnaceRecipe.addRecipe(new ItemStack(itemMetal,2,1), "oreAluminum", new ItemStack(itemMaterial,1,13), 200,512);
+		ArcFurnaceRecipe.addRecipe(new ItemStack(itemMetal,2,2), "oreLead", new ItemStack(itemMaterial,1,13), 200,512);
+		ArcFurnaceRecipe.addRecipe(new ItemStack(itemMetal,2,3), "oreSilver", new ItemStack(itemMaterial,1,13), 200,512);
+		ArcFurnaceRecipe.addRecipe(new ItemStack(itemMetal,2,4), "oreNickel", new ItemStack(itemMaterial,1,13), 200,512);
+		addArcOreSmelting("Tin");
+		addArcOreSmelting("Mithril");
+		addArcOreSmelting("Platinum");
+		addArcOreSmelting("Ardite");
+		addArcOreSmelting("Cobalt");
+		addArcOreSmelting("Zinc");
+		addArcOreSmelting("Uranium");
+		addArcOreSmelting("Yellorium");
+
 		DieselHandler.registerFuel(fluidBiodiesel, 125);
 		DieselHandler.registerFuel(FluidRegistry.getFluid("fuel"), 375);
 		DieselHandler.registerFuel(FluidRegistry.getFluid("diesel"), 175);
@@ -728,7 +735,7 @@ public class IEContent
 			for(int meta: metas)
 				OreDictionary.registerOre(type+item.subNames[meta], new ItemStack(item,1,meta));
 	}
-	public static void registerOre(String type, ItemStack ore, ItemStack ingot, ItemStack dust, ItemStack block)
+	public static void registerOre(String type, ItemStack ore, ItemStack ingot, ItemStack dust, ItemStack block, ItemStack nugget)
 	{
 		if(ore!=null)
 			OreDictionary.registerOre("ore"+type, ore);
@@ -738,6 +745,8 @@ public class IEContent
 			OreDictionary.registerOre("dust"+type, dust);
 		if(block!=null)
 			OreDictionary.registerOre("block"+type, block);
+		if(nugget!=null)
+			OreDictionary.registerOre("nugget"+type, nugget);
 	}
 
 	public static void registerTile(Class<? extends TileEntity> tile)
@@ -804,6 +813,10 @@ public class IEContent
 		if(secondary!=null)
 			r.addSecondaryOutput(secondary, chance);
 	}
+	public static void addArcRecipe(ItemStack output, Object input, int time, int energyPerTick, ItemStack slag, Object... additives)
+	{
+		ArcFurnaceRecipe.addRecipe(output, input, slag, time, energyPerTick, additives);
+	}
 	public static void addOreProcessingRecipe(ItemStack output, String ore, int energy, boolean ingot, ItemStack secondary, float secChance)
 	{
 		if(ingot && !OreDictionary.getOres("ingot"+ore).isEmpty())
@@ -839,5 +852,13 @@ public class IEContent
 		if(out==null)
 			return null;
 		return CrusherRecipe.addRecipe(Utils.copyStackWithAmount(out, outSize), input, energy);
+	}
+	public static void addArcOreSmelting(String oreName)
+	{
+		if(!OreDictionary.getOres("ore"+oreName).isEmpty() && !OreDictionary.getOres("ingot"+oreName).isEmpty() )
+		{
+			ItemStack out = OreDictionary.getOres("ingot"+oreName).get(0);
+			addArcRecipe(out, "ore"+oreName, 200,512, new ItemStack(itemMaterial,1,13));
+		}
 	}
 }

@@ -39,6 +39,7 @@ import net.minecraftforge.fluids.FluidTank;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
+import codechicken.lib.gui.GuiDraw;
 import blusunrize.immersiveengineering.api.energy.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.client.render.TileRenderIE;
@@ -580,7 +581,7 @@ public class ClientUtils
 		renderWavefrontWithIconUVs(model, GL11.GL_QUADS, icon, parts);
 		renderWavefrontWithIconUVs(model, GL11.GL_TRIANGLES, icon, parts);
 	}
-	
+
 	public static void renderWavefrontWithIconUVs(WavefrontObject model, int glDrawingMode, IIcon icon, String... parts)
 	{
 		List<String> renderParts = Arrays.asList(parts);
@@ -745,6 +746,18 @@ public class ClientUtils
 				drawTexturedRect(x+iterMaxW*iconWidth, y+hh*iconHeight, leftoverW,iconHeight, uMin,(uMin+iconUDif*leftoverWf),vMin,vMax);
 			drawTexturedRect(x+iterMaxW*iconWidth, y+iterMaxH*iconHeight, leftoverW,leftoverH, uMin,(uMin+iconUDif*leftoverWf),vMin,(vMin+iconVDif*leftoverHf));
 		}
+	}
+	public static void drawSlot(int x, int y, int w, int h)
+	{
+		drawSlot(x,y, w,h, 0xff);
+	}
+	public static void drawSlot(int x, int y, int w, int h, int alpha)
+	{
+		GuiDraw.drawRect(x+8-w/2  , y+8-h/2-1, w,1, (alpha<<24)+0x373737);
+		GuiDraw.drawRect(x+8-w/2-1, y+8-h/2-1, 1,h+1, (alpha<<24)+0x373737);
+		GuiDraw.drawRect(x+8-w/2  , y+8-h/2  , w,h, (alpha<<24)+0x8b8b8b);
+		GuiDraw.drawRect(x+8-w/2  , y+8+h/2  , w+1,1, (alpha<<24)+0xffffff);
+		GuiDraw.drawRect(x+8+w/2  , y+8-h/2  , 1,h, (alpha<<24)+0xffffff);
 	}
 
 

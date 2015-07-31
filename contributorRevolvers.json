@@ -25,6 +25,11 @@
 
 {
 "uuid":["ca5a40eb-9f48-4b40-bb94-3e0f2d18c9a7"],
+"tag":"bee","flavour":"","baseUpgrades":{"melee":10.0},"renderAdditions":[]
+}
+
+{
+"uuid":["ca5a40eb-9f48-4b40-bb94-3e0f2d18c9a7"],
 "tag":"warlord","flavour":"","baseUpgrades":{},"renderAdditions":["dev_scope"]
 }
 
