@@ -61,7 +61,8 @@ public class TileEntityBlastFurnace extends TileEntityIEBase implements ISidedIn
 					burnTime--;
 					worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 				}
-				else
+
+				if(process<=0)
 				{
 					if(active)
 					{
@@ -94,7 +95,7 @@ public class TileEntityBlastFurnace extends TileEntityIEBase implements ISidedIn
 				if(active)
 					active=false;
 			}
-			
+
 			if(burnTime<=10 && getRecipe()!=null)
 			{
 				if(BlastFurnaceRecipe.isValidBlastFuel(inventory[1]))
@@ -105,7 +106,7 @@ public class TileEntityBlastFurnace extends TileEntityIEBase implements ISidedIn
 					worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 				}
 			}
-			
+
 			if(a!=active)
 			{
 
