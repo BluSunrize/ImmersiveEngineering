@@ -116,7 +116,7 @@ public class BlockIECrop extends BlockBush implements IGrowable
 	{
 		this.checkAndDropBlock(world, x, y, z);
 		int light = world.getBlockLightValue(x, y, z);
-		if(light >= 9)
+		if(light >= 12)
 		{
 			int meta = world.getBlockMetadata(x, y, z);
 			if(meta>4)
