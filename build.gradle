@@ -15,6 +15,21 @@ buildscript {
     }
 }
 
+repositories {
+    maven { // The repo from which to get ChickenBones' stuff, like CCLib and NEI
+        name 'CB Maven FS'
+        url "http://chickenbones.net/maven/"
+    }
+    maven { // The repo from which to get waila
+        name "Mobius Repo"
+        url "http://mobiusstrip.eu/maven"
+    }
+	maven { // The repo from which to get IC2
+		name = "ic2"
+		url = "http://maven.ic2.player.to/"
+	}
+}
+
 apply plugin: 'forge'
 
 version = "0.4.4"
@@ -28,8 +43,14 @@ minecraft {
 }
 
 dependencies {
-
+	compile "codechicken:CodeChickenLib:1.7.10-1.1.3.140:dev"
+    compile "codechicken:NotEnoughItems:1.7.10-1.0.5.111:dev"
+	compile "com.pahimar.ee3:EquivalentExchange3:1.7.10-0.3.507:dev"
+	compile 'net.industrial-craft:industrialcraft-2:2.2.757-experimental:api'
 }
+
+// You should download deobfuscated JARs of these mods and put them into a folder named "libs" to make this compile:
+// AquaTweaks, MineFactoryReloaded, MineTweaker
 
 processResources
 {
