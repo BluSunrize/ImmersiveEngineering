@@ -30,7 +30,7 @@ public class NEIArcFurnaceHandler extends TemplateRecipeHandler
 		public CachedArcFurnaceRecipe(ArcFurnaceRecipe recipe)
 		{
 			inputs = new PositionedStack[recipe.additives.length+1];
-			inputs[0] = new PositionedStack(recipe.input, 28, recipe.additives.length>0?0:16);
+			inputs[0] = new PositionedStack(recipe.input, 28, 0);
 			for(int i=0; i<recipe.additives.length; i++)
 				if(recipe.additives[i]!=null)
 					inputs[i+1] = new PositionedStack(recipe.additives[i], 20+i%2*18, 24+i/2*18);
@@ -127,10 +127,9 @@ public class NEIArcFurnaceHandler extends TemplateRecipeHandler
 		CachedArcFurnaceRecipe r = (CachedArcFurnaceRecipe) this.arecipes.get(recipe%arecipes.size());
 		if(r!=null)
 		{
-			ClientUtils.drawSlot(28, r.inputs.length>1?0:16, 16, 16);
-			if(r.inputs.length>1)
-				for(int i=0; i<4; i++)
-					ClientUtils.drawSlot(20+i%2*18, 24+i/2*18, 16, 16);
+			ClientUtils.drawSlot(28, 0, 16, 16);
+			for(int i=0; i<4; i++)
+				ClientUtils.drawSlot(20+i%2*18, 24+i/2*18, 16, 16);
 			ClientUtils.drawSlot(r.output.relx, r.output.rely, 16, 16);
 			if(r.slag!=null)
 				ClientUtils.drawSlot(r.slag.relx, r.slag.rely, 16, 16);

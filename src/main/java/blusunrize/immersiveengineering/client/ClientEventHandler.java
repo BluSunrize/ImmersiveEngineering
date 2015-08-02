@@ -75,7 +75,7 @@ public class ClientEventHandler
 		}
 		if(event.map.getTextureType()==Config.getInt("revolverSheetID"))
 		{
-			IELogger.info("Stitchign Revolver Textures!");
+			IELogger.info("Stitching Revolver Textures!");
 			((ItemRevolver)IEContent.itemRevolver).stichRevolverTextures(event.map);
 		}
 	}

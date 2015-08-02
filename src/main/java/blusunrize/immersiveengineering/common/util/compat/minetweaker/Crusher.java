@@ -23,7 +23,7 @@ public class Crusher
 
 		CrusherRecipe r = new CrusherRecipe(MTHelper.toStack(output), oInput, energy);
 		if(secondaryOutput!=null)
-			r.addSecondaryOutput(MTHelper.toStack(secondaryOutput), (float)secondaryChance);
+			r.addToSecondaryOutput(MTHelper.toStack(secondaryOutput), (float)secondaryChance);
 		MineTweakerAPI.apply(new Add(r));
 	}
 

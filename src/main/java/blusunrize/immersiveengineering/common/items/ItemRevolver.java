@@ -309,7 +309,10 @@ public class ItemRevolver extends ItemUpgradeableTool
 			render.add("player_bayonet");
 		}
 		if(upgrades.getBoolean("electro"))
-			render.add("player_electro");
+		{
+			render.add("player_electro_0");
+			render.add("player_electro_1");
+		}
 		return render.toArray(new String[render.size()]);
 	}
 

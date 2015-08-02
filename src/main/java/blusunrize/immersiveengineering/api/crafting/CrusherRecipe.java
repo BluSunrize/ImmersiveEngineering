@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
+import blusunrize.immersiveengineering.api.ApiUtils;
 
 /**
  * @author BluSunrize - 01.05.2015
@@ -19,8 +19,8 @@ public class CrusherRecipe
 	public final Object input;
 	public final ItemStack output;
 	public final int energy;
-	public ItemStack secondaryOutput;
-	public float secondaryChance;
+	public ItemStack[] secondaryOutput;
+	public float[] secondaryChance;
 
 	public CrusherRecipe(ItemStack output, Object input, int energy)
 	{
@@ -29,10 +29,38 @@ public class CrusherRecipe
 		this.oreInputString = input instanceof String?(String)input: null;
 		this.energy = energy;
 	}
-	public CrusherRecipe addSecondaryOutput(ItemStack output, float chance)
+	/**
+	 * Adds secondary outputs to the recipe. Should the recipe have secondary outputs, these will be added /in addition/<br>
+	 * The array should be alternating between Item/Block/ItemStack/ArrayList and a float for the chance
+	 */
+	public CrusherRecipe addToSecondaryOutput(Object... outputs)
 	{
-		this.secondaryOutput = output;
-		this.secondaryChance = chance;
+		if(outputs.length%2!=0)
+			return this;
+		ArrayList<ItemStack> newSecondaryOutput = new ArrayList<ItemStack>();
+		ArrayList<Float> newSecondaryChance = new ArrayList<Float>();
+		if(secondaryOutput!=null)
+			for(int i=0; i<secondaryOutput.length; i++)
+			{
+				newSecondaryOutput.add(secondaryOutput[i*2]);
+				newSecondaryChance.add(secondaryChance[i*2+1]);
+			}
+		for(int i=0; i<(outputs.length/2); i++)
+			if(outputs[i*2]!=null)
+			{
+				Object o = ApiUtils.convertToValidRecipeInput(outputs[i*2]);
+				ItemStack ss = o instanceof ItemStack?(ItemStack)o: o instanceof ArrayList?(ItemStack)((ArrayList)o).get(0): null;
+				if(ss!=null)
+				{
+					newSecondaryOutput.add(ss);
+					newSecondaryChance.add((Float)outputs[i*2+1]);
+				}
+			}
+		secondaryOutput = newSecondaryOutput.toArray(new ItemStack[newSecondaryOutput.size()]);
+		secondaryChance = new float[newSecondaryChance.size()];
+		int i=0;
+		for(Float f : newSecondaryChance)
+			secondaryChance[i++] = f;
 		return this;
 	}
 

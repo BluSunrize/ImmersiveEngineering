@@ -52,6 +52,12 @@ public class Utils
 				if(io instanceof ItemStack && OreDictionary.itemMatches((ItemStack)io, stack, false))
 					return true;
 		}
+		else if(o instanceof ItemStack[])
+		{
+			for(ItemStack io : (ItemStack[])o)
+				if(OreDictionary.itemMatches((ItemStack)io, stack, false))
+					return true;
+		}
 		else if(o instanceof String)
 			return compareToOreName(stack, (String)o);
 		return false;

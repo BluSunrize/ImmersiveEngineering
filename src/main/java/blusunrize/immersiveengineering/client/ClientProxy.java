@@ -97,6 +97,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySampleDrill
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySqueezer;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTransformer;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTransformerHV;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockArcFurnace;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockBlastFurnace;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockBucketWheel;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockCokeOven;
@@ -136,7 +137,7 @@ public class ClientProxy extends CommonProxy
 {
 	public static TextureMap revolverTextureMap;
 	public static final ResourceLocation revolverTextureResource = new ResourceLocation("textures/atlas/immersiveengineering/revolvers.png");
-	
+
 	@Override
 	public void init()
 	{
@@ -177,7 +178,7 @@ public class ClientProxy extends CommonProxy
 		//REVOLVER
 		revolverTextureMap = new TextureMap(Config.getInt("revolverSheetID"), "textures/revolvers");
 		ClientUtils.mc().renderEngine.loadTextureMap(revolverTextureResource, revolverTextureMap);
-		
+
 		MinecraftForgeClient.registerItemRenderer(IEContent.itemRevolver, new ItemRenderRevolver());
 		RenderingRegistry.registerEntityRenderingHandler(EntityRevolvershot.class, new EntityRenderRevolvershot());
 		//DRILL
@@ -355,6 +356,13 @@ public class ClientProxy extends CommonProxy
 		ManualHelper.addEntry("crusher", ManualHelper.CAT_MACHINES,
 				new ManualPageMultiblock(ManualHelper.getManual(), "crusher0", MultiblockCrusher.instance),
 				new ManualPages.Text(ManualHelper.getManual(), "crusher1"));
+		ManualHelper.addEntry("arcfurnace", ManualHelper.CAT_MACHINES,
+				new ManualPageMultiblock(ManualHelper.getManual(), "arcfurnace0", MultiblockArcFurnace.instance),
+				new ManualPages.Text(ManualHelper.getManual(), "arcfurnace1"),
+				new ManualPages.Text(ManualHelper.getManual(), "arcfurnace2"),
+				new ManualPages.Text(ManualHelper.getManual(), "arcfurnace3"),
+				new ManualPages.Text(ManualHelper.getManual(), "arcfurnace4"),
+				new ManualPages.Text(ManualHelper.getManual(), "arcfurnace5"));
 		ManualHelper.addEntry("excavator", ManualHelper.CAT_MACHINES,
 				new ManualPageMultiblock(ManualHelper.getManual(), "excavator0", MultiblockExcavator.instance),
 				new ManualPageMultiblock(ManualHelper.getManual(), "", MultiblockBucketWheel.instance),

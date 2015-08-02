@@ -15,6 +15,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -222,6 +223,21 @@ public class BlockWoodenDevices extends BlockIEBase implements blusunrize.aquatw
 				stack.setTagCompound(tag);
 			world.spawnEntityInWorld(new EntityItem(world,x+.5,y+.5,z+.5,stack));
 		}
+	}
+
+	@Override
+	public void onBlockExploded(World world, int x, int y, int z, Explosion explosion)
+	{
+		if(!world.isRemote && world.getTileEntity(x, y, z) instanceof TileEntityWoodenCrate)
+		{
+			ItemStack stack = new ItemStack(this,1,world.getBlockMetadata(x, y, z));
+			NBTTagCompound tag = new NBTTagCompound();
+			((TileEntityWoodenCrate)world.getTileEntity(x, y, z)).writeInv(tag, true);
+			if(!tag.hasNoTags())
+				stack.setTagCompound(tag);
+			world.spawnEntityInWorld(new EntityItem(world,x+.5,y+.5,z+.5,stack));
+		}
+		super.onBlockExploded(world, x, y, z, explosion);
 	}
 
 	@Override

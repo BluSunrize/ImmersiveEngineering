@@ -77,8 +77,9 @@ public class ItemRenderRevolver implements IItemRenderer
 		OpenGlHelper.glBlendFunc(770, 771, 0, 1);
 
 		IIcon ic = ((ItemRevolver)item.getItem()).getRevolverIcon(item);
-		ClientUtils.renderWavefrontWithIconUVs(modelobj, ic, ((ItemRevolver)item.getItem()).compileRender(item));
-		
+		String[] parts = ((ItemRevolver)item.getItem()).compileRender(item);
+		ClientUtils.renderWavefrontWithIconUVs(modelobj, ic, parts);
+
 		GL11.glDisable(3042);
 		GL11.glPopMatrix();
 	}

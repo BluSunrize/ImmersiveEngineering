@@ -248,7 +248,9 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 		if(world.getTileEntity(x, y, z) instanceof TileEntityCrusher)
 		{
 			TileEntityCrusher tile = (TileEntityCrusher)world.getTileEntity(x, y, z);
-			if(tile.pos==9 && side.ordinal()==tile.facing)
+			if(tile.pos%5==0)
+				return true;
+			else if(tile.pos==9 && side.ordinal()==tile.facing)
 				return true;
 		}
 		if(world.getTileEntity(x, y, z) instanceof TileEntityExcavator)

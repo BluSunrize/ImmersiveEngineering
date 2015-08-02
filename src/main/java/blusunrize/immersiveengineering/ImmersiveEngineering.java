@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.common.CommonProxy;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.EventHandler;
 import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.IERecipes;
 import blusunrize.immersiveengineering.common.IESaveData;
 import blusunrize.immersiveengineering.common.IEWorldGen;
 import blusunrize.immersiveengineering.common.items.ItemRevolver;
@@ -88,6 +89,7 @@ public class ImmersiveEngineering
 		for(IECompatModule compat : IECompatModule.modules)
 			if(Loader.isModLoaded(compat.modId))
 				compat.postInit();
+		IERecipes.postInitCrusherRecipes();
 	}
 	@Mod.EventHandler
 	public void loadComplete(FMLLoadCompleteEvent event)

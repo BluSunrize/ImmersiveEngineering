@@ -2,7 +2,9 @@ package blusunrize.immersiveengineering.client.nei;
 
 import static codechicken.lib.gui.GuiDraw.changeTexture;
 import static codechicken.lib.gui.GuiDraw.drawTexturedModalRect;
+import static codechicken.lib.gui.GuiDraw.getMousePosition;
 
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.Arrays;
 import java.util.List;
@@ -16,9 +18,10 @@ import org.lwjgl.opengl.GL11;
 import blusunrize.immersiveengineering.api.crafting.CrusherRecipe;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
+import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.Utils;
-import codechicken.lib.gui.GuiDraw;
 import codechicken.nei.PositionedStack;
+import codechicken.nei.recipe.GuiRecipe;
 import codechicken.nei.recipe.TemplateRecipeHandler;
 
 public class NEICrusherHandler extends TemplateRecipeHandler
@@ -27,26 +30,31 @@ public class NEICrusherHandler extends TemplateRecipeHandler
 	{
 		PositionedStack input;
 		PositionedStack output;
-		PositionedStack secondary;
-		public float secondaryChance;
+		PositionedStack[] secondary;
+		public float[] secondaryChance;
 		public int energy;
 		public CachedCrusherRecipe(CrusherRecipe recipe)
 		{
 			Object in = recipe.input;
-			input = new PositionedStack(in, 84, 0);
-			output = new PositionedStack(recipe.output, 84,40);
+			input = new PositionedStack(in, 70, 0);
+
+			output = new PositionedStack(recipe.output, 70,40);
 			if(recipe.secondaryOutput!=null)
 			{
-				output.relx-=10;
-				secondary = new PositionedStack(recipe.secondaryOutput, 94,40);
-				secondaryChance = recipe.secondaryChance;
+				secondary = new PositionedStack[recipe.secondaryOutput.length];
+				secondaryChance = new float[recipe.secondaryOutput.length];
+				for(int i=0; i<secondary.length; i++)
+				{
+					secondary[i] = new PositionedStack(recipe.secondaryOutput[i], 90+i*18,40);
+					secondaryChance[i] = recipe.secondaryChance[i];
+				}
 			}
 			energy = recipe.energy;
 		}
 		@Override
-		public PositionedStack getOtherStack()
+		public List<PositionedStack> getOtherStacks()
 		{
-			return secondary;
+			return Arrays.asList(secondary!=null?secondary:new PositionedStack[0]);
 		}
 		@Override
 		public List<PositionedStack> getIngredients()
@@ -121,36 +129,22 @@ public class NEICrusherHandler extends TemplateRecipeHandler
 	{
 		GL11.glPushMatrix();
 		GL11.glColor4f(1, 1, 1, 1);
-		//		changeTexture(getGuiTexture());
-		
+
 		CachedCrusherRecipe r = (CachedCrusherRecipe) this.arecipes.get(recipe%arecipes.size());
 		if(r!=null)
 		{
-			GuiDraw.drawRect(r.input.relx-1, r.input.rely-1, 17,17, 0xff373737);
-			GuiDraw.drawRect(r.input.relx, r.input.rely, 17,17, 0xffffffff);
-			GuiDraw.drawRect(r.input.relx, r.input.rely, 16,16, 0xff8b8b8b);
-			GuiDraw.drawRect(r.output.relx-1, r.output.rely-1, 17,17, 0xff373737);
-			GuiDraw.drawRect(r.output.relx, r.output.rely, 17,17, 0xffffffff);
-			GuiDraw.drawRect(r.output.relx, r.output.rely, 16,16, 0xff8b8b8b);
+			ClientUtils.drawSlot(r.input.relx,r.input.rely, 16,16);
+			ClientUtils.drawSlot(r.output.relx,r.output.rely, 16,16);
 			if(r.secondary!=null)
-			{
-			GuiDraw.drawRect(r.secondary.relx-1, r.secondary.rely-1, 17,17, 0xff373737);
-			GuiDraw.drawRect(r.secondary.relx, r.secondary.rely, 17,17, 0xffffffff);
-			GuiDraw.drawRect(r.secondary.relx, r.secondary.rely, 16,16, 0xff8b8b8b);
-			}
-			
+				for(PositionedStack ps : r.secondary)
+					ClientUtils.drawSlot(ps.relx, ps.rely, 16,16);
+
 			String s = r.energy+" RF";
-			ClientUtils.font().drawString(s, 140-ClientUtils.font().getStringWidth(s)/2,20, 0x777777, false);
-			if(r.secondary!=null)
-			{
-				String chance = Utils.formatDouble(r.secondaryChance*100, "0.0")+"%";
-//				r.secondaryChance*100+"%";
-				ClientUtils.font().drawString(chance, 120,46, 0x777777, false);
-			}
+			ClientUtils.font().drawString(s, 120-ClientUtils.font().getStringWidth(s)/2,20, 0x777777, false);
 			GL11.glColor4f(1, 1, 1, 1);
 			changeTexture("textures/gui/container/furnace.png");
 			GL11.glRotatef(90, 0, 0, 1);
-			drawTexturedModalRect(18,-100, 82,35, 20,15);
+			drawTexturedModalRect(18,-85, 82,35, 20,15);
 			GL11.glRotatef(-90, 0, 0, 1);
 
 			GL11.glTranslatef(40, 40, 100);
@@ -166,4 +160,20 @@ public class NEICrusherHandler extends TemplateRecipeHandler
 		GL11.glPopMatrix();
 	}
 
+	@Override
+	public List<String> handleItemTooltip(GuiRecipe gui, ItemStack stack, List<String> currenttip, int recipe)
+	{
+		Point mouse = getMousePosition();
+		Point offset = gui.getRecipePosition(recipe);
+		Point relMouse = new Point(mouse.x -(gui.width- 176)/2-offset.x, mouse.y-(gui.height-166)/2-offset.y);
+		CachedCrusherRecipe r = (CachedCrusherRecipe) this.arecipes.get(recipe%arecipes.size());
+		if(r!=null)
+		{
+			if(r.secondary!=null)
+				for(int i=0; i<r.secondary.length; i++)
+					if(new Rectangle(r.secondary[i].relx-1, r.secondary[i].rely-1, 18,18).contains(relMouse) && r.secondary[i].contains(stack)) 
+						currenttip.add(String.format("%s %.0f%%", StatCollector.translateToLocal(Lib.DESC_INFO+"chance"),r.secondaryChance[i]*100));
+		}
+		return currenttip;
+	}
 }

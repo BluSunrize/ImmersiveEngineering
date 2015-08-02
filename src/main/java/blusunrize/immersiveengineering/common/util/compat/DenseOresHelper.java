@@ -15,12 +15,12 @@ public class DenseOresHelper extends IECompatModule
 	{
 		super("denseores");
 	}
-	
+
 	@Override
 	public void init()
 	{
 	}
-	
+
 	@Override
 	public void postInit()
 	{
@@ -53,7 +53,15 @@ public class DenseOresHelper extends IECompatModule
 							ItemStack out = Utils.copyStackWithAmount(recipe.output, recipe.output.stackSize*4);
 							CrusherRecipe r = new CrusherRecipe(out, denseOre, recipe.energy+8000);
 							if(recipe.secondaryOutput!=null)
-								r.addSecondaryOutput(Utils.copyStackWithAmount(recipe.secondaryOutput, recipe.secondaryOutput.stackSize*2), recipe.secondaryChance*2);
+							{
+								Object[] newSec = new Object[recipe.secondaryOutput.length*2];
+								for(int i=0; i<recipe.secondaryOutput.length; i++)
+								{
+									newSec[i*2] = Utils.copyStackWithAmount(recipe.secondaryOutput[i], recipe.secondaryOutput[i].stackSize*2);
+									newSec[i*2+1] = recipe.secondaryChance[i]*2;
+								}
+								r.addToSecondaryOutput(newSec);
+							}
 							addedRecipes.add(r);		
 						}
 				}catch(Exception e)

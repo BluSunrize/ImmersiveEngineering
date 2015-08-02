@@ -18,6 +18,7 @@ public abstract class IECompatModule
 		modules.add(new ForestryHelper());
 		modules.add(new BacktoolsHelper());
 		modules.add(new WailaHelper());
+		modules.add(new GregTechHelper());
 	}
 	
 	public String modId;

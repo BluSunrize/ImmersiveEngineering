@@ -158,8 +158,10 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 							ItemStack outputStack = recipe.output;
 							if(outputStack!=null)
 								outputItem(outputStack.copy());
-							if(recipe.secondaryOutput!=null && worldObj.rand.nextFloat()<recipe.secondaryChance)
-								outputItem(recipe.secondaryOutput);
+							if(recipe.secondaryOutput!=null)
+								for(int i=0; i<recipe.secondaryOutput.length; i++)
+									if(worldObj.rand.nextFloat()<recipe.secondaryChance[i])
+										outputItem(recipe.secondaryOutput[i]);
 
 							inputStack.stackSize-= (recipe.input instanceof ItemStack)? ((ItemStack)recipe.input).stackSize: 1;
 							if(inputStack.stackSize>0)
