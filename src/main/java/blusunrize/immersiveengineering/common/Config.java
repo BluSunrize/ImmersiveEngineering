@@ -19,12 +19,12 @@ public class Config
 		Configuration config = new Configuration(event.getSuggestedConfigurationFile());
 		config.load();
 
-		Property cableProperty = config.get("General", "Cable transfer rates", new int[]{256,1024,4096,0,0,0}, "The transfer rates in RF/t for the cable tiers (copper, electrum, HV, Strutural Rope & Cable(no transfer) )");
+		Property cableProperty = config.get("General", "Cable transfer rates", new int[]{256,1024,4096,0,0,0}, "The transfer rates in RF/t for the cable tiers (copper, electrum, HV, Structural Rope & Cable(no transfer) )");
 		if(cableProperty.getIntList().length<5)
 			cableProperty.set(new int[]{256,1024,4096,0,0});
 		setIntArray("cableTransferRate", cableProperty.getIntList());
 
-		cableProperty = config.get("General", "Cable loss", new double[]{.05,.025,.1,1,1,1}, "The percentage of power lost every 16 blocks of distance for the cable tiers (copper, electrum, HV, Strutural Rope & Cable(no transfer) )");
+		cableProperty = config.get("General", "Cable loss", new double[]{.05,.025,.1,1,1,1}, "The percentage of power lost every 16 blocks of distance for the cable tiers (copper, electrum, HV, Structural Rope & Cable(no transfer) )");
 		if(cableProperty.getDoubleList().length<5)
 			cableProperty.set(new double[]{.05,.025,.1,1,1});
 		setDoubleArray("cableLossRatio", cableProperty.getDoubleList());
@@ -85,8 +85,8 @@ public class Config
 		setInt("coredrill_time", config.get("Machines", "Core Sample Drill: Evaluation Time", 600, "The length in ticks it takes for the Core Sample Drill to figure out which mineral is found in a chunk").getInt());
 		setInt("coredrill_consumption", config.get("Machines", "Core Sample Drill: Consumption", 40, "The RF per tick consumed by the Core Sample Drill").getInt());
 
-		setInt("arcfurnace_electrodeDamage", config.get("Machines", "Arc Furnace: Graphite Electrodes", 96000, "The maximum amount of damage Graphite Electrodes can take. While the furance is working, electrodes sustain 1 damage per tick, so this is effectively the lifetime in ticks. The default value of 96000 makes them last for 8 consecutive ingame days").getInt());
-		setBoolean("arcfurnace_electrodeCrafting", config.get("Machines", "Arc Furnace: Craftable Blueprint", false, "Set this to true to make the blueprint for graphite electrodes craftable in addiion to villager/dungeon loot").getBoolean());
+		setInt("arcfurnace_electrodeDamage", config.get("Machines", "Arc Furnace: Graphite Electrodes", 96000, "The maximum amount of damage Graphite Electrodes can take. While the furnace is working, electrodes sustain 1 damage per tick, so this is effectively the lifetime in ticks. The default value of 96000 makes them last for 8 consecutive ingame days").getInt());
+		setBoolean("arcfurnace_electrodeCrafting", config.get("Machines", "Arc Furnace: Craftable Blueprint", false, "Set this to true to make the blueprint for graphite electrodes craftable in addition to villager/dungeon loot").getBoolean());
 		
 		
 		setIntArray("ore_copper", config.get("OreGen", "Copper", new int[]{8, 40,72, 8,100}, "Generation config for Copper Ore. Parameters: Blocks per vein, lowest possible Y, highest possible Y, veins per chunk, chance for vein to spawn (out of 100). Set vein size to 0 to disable the generation").getIntList());

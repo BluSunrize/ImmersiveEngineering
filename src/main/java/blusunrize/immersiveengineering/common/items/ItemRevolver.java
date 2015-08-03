@@ -293,9 +293,17 @@ public class ItemRevolver extends ItemUpgradeableTool
 		render.add("barrel");
 		render.add("cosmetic_compensator");
 		String tag = ItemNBTHelper.getString(revolver, "elite");
+		String flavour = ItemNBTHelper.getString(revolver, "flavour");
 		if(tag!=null && !tag.isEmpty() && specialRevolversByTag.containsKey(tag))
 		{
 			SpecialRevolver r = specialRevolversByTag.get(tag);
+			if(r!=null && r.renderAdditions!=null)
+				for(String ss : r.renderAdditions)
+					render.add(ss);
+		}
+		else if(flavour!=null && !flavour.isEmpty() && specialRevolversByTag.containsKey(flavour))
+		{
+			SpecialRevolver r = specialRevolversByTag.get(flavour);
 			if(r!=null && r.renderAdditions!=null)
 				for(String ss : r.renderAdditions)
 					render.add(ss);

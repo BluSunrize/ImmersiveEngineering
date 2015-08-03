@@ -101,12 +101,13 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 		}
 		else if(Lib.GREG && GregTechHelper.gregtech_isEnergyConnected(capacitor))
 			if(simulate)
-				return amount;
-			else
 			{
-				GregTechHelper.gregtech_outputGTPower(capacitor, (byte)fd.getOpposite().ordinal(), (long)ModCompatability.convertRFtoEU(amount, getIC2Tier()), 1L);
-				return amount;
+				long accepted = GregTechHelper.gregtech_outputGTPower(capacitor, (byte)fd.getOpposite().ordinal(), (long)ModCompatability.convertRFtoEU(amount, getIC2Tier()), 1L);
+				GregTechHelper.gregtech_outputGTPower(capacitor, (byte)fd.getOpposite().ordinal(), -accepted, 1L);
+				return (int)accepted;
 			}
+			else
+				return (int)GregTechHelper.gregtech_outputGTPower(capacitor, (byte)fd.getOpposite().ordinal(), (long)ModCompatability.convertRFtoEU(amount, getIC2Tier()), 1L);
 		return 0;
 	}
 

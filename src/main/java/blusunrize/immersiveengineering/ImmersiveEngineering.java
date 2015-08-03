@@ -170,7 +170,7 @@ public class ImmersiveEngineering
 							if(revolver.uuid!=null)
 								for(String uuid : revolver.uuid)
 									ItemRevolver.specialRevolvers.put(uuid, revolver);
-							ItemRevolver.specialRevolversByTag.put(revolver.tag, revolver);
+							ItemRevolver.specialRevolversByTag.put(!revolver.tag.isEmpty()?revolver.tag:revolver.flavour, revolver);
 						}
 					}catch(Exception excepParse)
 					{

@@ -8,7 +8,6 @@ import net.minecraft.block.material.Material;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.Fluid;
@@ -351,25 +350,8 @@ public class IEContent
 
 
 		/**SMELTING*/
-		//Ores
-		FurnaceRecipes.smelting().func_151394_a(new ItemStack(blockOres,1,0), new ItemStack(itemMetal,1,0), 0.3F);
-		FurnaceRecipes.smelting().func_151394_a(new ItemStack(blockOres,1,1), new ItemStack(itemMetal,1,1), 0.3F);
-		FurnaceRecipes.smelting().func_151394_a(new ItemStack(blockOres,1,2), new ItemStack(itemMetal,1,2), 0.7F);
-		FurnaceRecipes.smelting().func_151394_a(new ItemStack(blockOres,1,3), new ItemStack(itemMetal,1,3), 1.0F);
-		FurnaceRecipes.smelting().func_151394_a(new ItemStack(blockOres,1,4), new ItemStack(itemMetal,1,4), 1.0F);
-		//Dusts
-		FurnaceRecipes.smelting().func_151394_a(new ItemStack(itemMetal,1,8), new ItemStack(Items.iron_ingot), 0.7F);
-		FurnaceRecipes.smelting().func_151394_a(new ItemStack(itemMetal,1,9), new ItemStack(Items.gold_ingot), 1.0F);
-		FurnaceRecipes.smelting().func_151394_a(new ItemStack(itemMetal,1,10), new ItemStack(itemMetal,1,0), 0.3F);
-		FurnaceRecipes.smelting().func_151394_a(new ItemStack(itemMetal,1,11), new ItemStack(itemMetal,1,1), 0.3F);
-		FurnaceRecipes.smelting().func_151394_a(new ItemStack(itemMetal,1,12), new ItemStack(itemMetal,1,2), 0.7F);
-		FurnaceRecipes.smelting().func_151394_a(new ItemStack(itemMetal,1,13), new ItemStack(itemMetal,1,3), 1.0F);
-		FurnaceRecipes.smelting().func_151394_a(new ItemStack(itemMetal,1,14), new ItemStack(itemMetal,1,4), 0.5F);
-		FurnaceRecipes.smelting().func_151394_a(new ItemStack(itemMetal,1,15), new ItemStack(itemMetal,1,5), 0.5F);
-		FurnaceRecipes.smelting().func_151394_a(new ItemStack(itemMetal,1,16), new ItemStack(itemMetal,1,6), 0.5F);
-		FurnaceRecipes.smelting().func_151394_a(new ItemStack(itemMetal,1,19), new ItemStack(itemMetal,1,20), 0F);
-
-
+		IERecipes.initFurnaceRecipes();
+		
 		/**CRAFTING*/
 		IERecipes.initCraftingRecipes();
 

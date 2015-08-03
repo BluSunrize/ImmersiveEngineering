@@ -277,6 +277,8 @@ public class ClientProxy extends CommonProxy
 		ManualHelper.addEntry("minerals", ManualHelper.CAT_GENERAL, pages.toArray(new IManualPage[pages.size()]));
 		ManualHelper.addEntry("workbench", ManualHelper.CAT_GENERAL, new ManualPages.Crafting(ManualHelper.getManual(), "workbench0", new ItemStack(IEContent.blockWoodenDevice,1,5)));
 		ManualHelper.addEntry("blueprints", ManualHelper.CAT_GENERAL, new ManualPages.Text(ManualHelper.getManual(), "blueprints0"),new ManualPages.Text(ManualHelper.getManual(), "blueprints1"));
+		int blueprint = BlueprintCraftingRecipe.blueprintCategories.indexOf("electrode");
+		ManualHelper.addEntry("graphite", ManualHelper.CAT_GENERAL, new ManualPages.Text(ManualHelper.getManual(), "graphite0"),new ManualPages.Crafting(ManualHelper.getManual(), "graphite1", new ItemStack(IEContent.itemBlueprint,1,blueprint)));
 
 		ManualHelper.addEntry("wiring", ManualHelper.CAT_ENERGY,
 				new ManualPages.Text(ManualHelper.getManual(), "wiring0"), 
@@ -321,11 +323,10 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.Text(ManualHelper.getManual(), "dieselgen2"),
 				new ManualPages.Table(ManualHelper.getManual(), "dieselgen3", table, false)
 				);
-
 		ManualHelper.addEntry("lightningrod", ManualHelper.CAT_ENERGY,
 				new ManualPages.Crafting(ManualHelper.getManual(), "lightningrod0",  new ItemStack(IEContent.blockMetalMultiblocks,1,BlockMetalMultiblocks.META_lightningRod)),
 				new ManualPageMultiblock(ManualHelper.getManual(), "lightningrod1", MultiblockLightningRod.instance));
-
+		
 		ManualHelper.addEntry("conveyor", ManualHelper.CAT_MACHINES,
 				new ManualPages.Crafting(ManualHelper.getManual(), "conveyor0", new ItemStack(IEContent.blockMetalDevice,1,BlockMetalDevices.META_conveyorBelt)),
 				new ManualPages.Text(ManualHelper.getManual(), "conveyor1"));
