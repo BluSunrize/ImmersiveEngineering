@@ -127,7 +127,6 @@ public class ImmersiveEngineering
 		}
 	}
 
-
 	public static CreativeTabs creativeTab = new CreativeTabs(MODID)
 	{
 		@Override

@@ -38,6 +38,7 @@
 - fixed revolver render to build correctly for flavour-linked render additions
 
 
+==============
 ##### 0.4 VERSIONS ######
 ==============
 #####Version 0.4.4 - BUILT
@@ -112,6 +113,7 @@
 - fixed excavator being unlimited for negative numbers
 
 
+==============
 ##### 0.3 VERSIONS ######
 ==============
 #####Version 0.3.3 - BUILT
@@ -170,6 +172,7 @@
 - possibly fixed the weird percentages on minerals 
 
 
+==============
 ##### 0.2 VERSIONS ######
 ==============
 #####Version 0.2.4 - BUILT
@@ -225,6 +228,7 @@
 - Added AquaTweaks compat
 
 
+==============
 ##### 0.1 VERSIONS ######
 ==============
 #####Version 0.1.16 - BUILT

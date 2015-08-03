@@ -268,9 +268,10 @@ public class IERecipes
 
 		oreOutputModifier.put("Nickel", new ItemStack(IEContent.itemMetal,2,14));
 		oreOutputSecondaries.put("Nickel", new Object[]{"dustPlatinum",.1f});
-
+		
 		addCrusherRecipe(new ItemStack(IEContent.itemMetal,1,15), "ingotConstantan", 3600, null,0);
 		addCrusherRecipe(new ItemStack(IEContent.itemMetal,1,16), "ingotElectrum", 3600, null,0);
+		addCrusherRecipe(new ItemStack(IEContent.itemMetal,1,19), "ingotHOPGraphite", 3600, null,0);
 		CrusherRecipe.addRecipe(new ItemStack(IEContent.itemMetal,1,17), "fuelCoke", 4800);
 		CrusherRecipe.addRecipe(new ItemStack(IEContent.itemMetal,1,18), "gemQuartz", 4800);
 
