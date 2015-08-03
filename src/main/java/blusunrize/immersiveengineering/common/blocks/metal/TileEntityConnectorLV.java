@@ -91,13 +91,8 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 			return ((IEnergyReceiver)capacitor).receiveEnergy(fd.getOpposite(), amount, simulate);
 		else if(Lib.IC2 && IC2Helper.isAcceptingEnergySink(capacitor, this, fd.getOpposite()))
 		{
-//			if(simulate)
-//				return amount;
-//			else
-//			{
-				double left = IC2Helper.injectEnergy(capacitor, fd.getOpposite(), ModCompatability.convertRFtoEU(amount, getIC2Tier()), canTakeHV()?(256*256): canTakeMV()?(128*128) : (32*32), simulate);
-				return amount-ModCompatability.convertEUtoRF(left);
-//			}
+			double left = IC2Helper.injectEnergy(capacitor, fd.getOpposite(), ModCompatability.convertRFtoEU(amount, getIC2Tier()), canTakeHV()?(256*256): canTakeMV()?(128*128) : (32*32), simulate);
+			return amount-ModCompatability.convertEUtoRF(left);
 		}
 		else if(Lib.GREG && GregTechHelper.gregtech_isEnergyConnected(capacitor))
 			if(simulate)
@@ -200,15 +195,6 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 					powerLeft -= r;
 					if(powerLeft<=0)
 						break;
-					
-//					int tempR = toIIC(con.end,worldObj).outputEnergy(Math.min(powerLeft,con.cableType.getTransferRate()), true, energyType);
-//					int r = tempR;
-//					tempR -= (int) Math.floor(tempR*con.getAverageLossRate());
-//					toIIC(con.end, worldObj).outputEnergy(tempR, simulate, energyType);
-//					received += r;
-//					powerLeft -= r;
-//					if(powerLeft<=0)
-//						break;
 				}
 		}
 		return received;

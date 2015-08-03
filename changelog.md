@@ -6,7 +6,9 @@
 - added Engineer Villager to sell IE items
 - added metal nuggets
 - redid API stuff. Addons might break
+- changed crusher API, allowing for multiple secondary outputs, will probably break AOBD
 - changed OreDict handling in recipes. Should improve performance
+- changed crusher to build most Ore->Dust & Ingot->Dust recipes dynamically
 - added a world saving hook in the hopes of fixing that issue of wires vanishing on world reload
 - moved Workbench back to TESR because of derpy lighting
 - fixed critical bug with revolvers
@@ -28,6 +30,12 @@
 - fixed BlastFurnace gui opening clientside
 - added another NPE check to wire rendering
 - fixed TCon interaction
+- fixed BlastFurnace glitch of running out of fuel before finishing a stack of iron
+- moved most recipe additions of IE to its own class
+- fixed revolver render to finally show the internal parts of the electrodes
+- allowed placing of ladders/torches/other things on certain parts of the multiblocks
+- extended GregTech support to include most ores, also possibly fixed energy transport
+- fixed revolver render to build correctly for flavour-linked render additions
 
 
 ##### 0.4 VERSIONS ######
