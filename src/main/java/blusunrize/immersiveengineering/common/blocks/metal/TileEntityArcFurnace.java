@@ -205,7 +205,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 				ItemStack stack = Utils.copyStackWithAmount(this.getStackInSlot(22),1);
 				if((inventoryBack instanceof ISidedInventory && ((ISidedInventory)inventoryBack).getAccessibleSlotsFromSide(ForgeDirection.OPPOSITES[facing]).length>0)
 						||(inventoryBack instanceof IInventory && ((IInventory)inventoryBack).getSizeInventory()>0))
-					stack = Utils.insertStackIntoInventory((IInventory)inventoryBack, stack, ForgeDirection.OPPOSITES[facing]);
+					stack = Utils.insertStackIntoInventory((IInventory)inventoryBack, stack, facing);
 				if(stack==null)
 					this.decrStackSize(22,1);
 			}
