@@ -58,7 +58,9 @@ public class TileEntityLightningRod extends TileEntityMultiblockPart implements 
 				if (worldObj.rand.nextInt(4096*worldObj.getHeight())<height*(yCoord+height))
 				{
 					this.energyStorage.setEnergyStored(Config.getInt("lightning_output"));
-					worldObj.spawnEntityInWorld(new EntityLightningBolt(worldObj, xCoord, yCoord+height, zCoord));
+					EntityLightningBolt entityLightningBolt = new EntityLightningBolt(worldObj, xCoord, yCoord+height, zCoord);
+					worldObj.addWeatherEffect(entityLightningBolt);
+					worldObj.spawnEntityInWorld(entityLightningBolt);
 				}
 			}
 		}
