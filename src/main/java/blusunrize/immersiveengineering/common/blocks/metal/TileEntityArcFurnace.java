@@ -500,7 +500,6 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 	{
 		if(!formed)
 			return new int[0];
-		System.out.println("get sltos at Pos: "+pos);
 		if((pos==86||pos==88) && side==1)//Input hatches on top
 			return new int[]{0,1,2,3,4,5,6,7,8,9,10,11, 12,13,14,15};
 		if(pos==3 && side==facing)//Output at the front
