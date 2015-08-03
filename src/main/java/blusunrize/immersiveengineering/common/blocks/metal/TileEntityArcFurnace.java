@@ -171,6 +171,8 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 						update = true;
 					}
 				}
+				else if(process[i]>0)
+					process[i]=0;
 			}
 			if(active)
 			{
