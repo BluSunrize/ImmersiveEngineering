@@ -16,6 +16,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.StatCollector;
@@ -30,16 +31,19 @@ import net.minecraftforge.client.model.obj.Face;
 import net.minecraftforge.client.model.obj.GroupObject;
 import net.minecraftforge.client.model.obj.TextureCoordinate;
 import net.minecraftforge.client.model.obj.WavefrontObject;
+import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
 
 import org.lwjgl.opengl.GL11;
 
+import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.api.energy.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.WireType;
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
+import blusunrize.immersiveengineering.client.gui.GuiBlastFurnace;
 import blusunrize.immersiveengineering.client.models.ModelIEObj;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.IEContent;
@@ -54,8 +58,10 @@ import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.SkylineHelper;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
+import cpw.mods.fml.relauncher.Side;
 
 public class ClientEventHandler
 {
@@ -171,6 +177,16 @@ public class ClientEventHandler
 		}
 	}
 
+	@SubscribeEvent
+	public void onItemTooltip(ItemTooltipEvent event)
+	{
+		if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT
+				&& ClientUtils.mc().currentScreen != null
+				&& ClientUtils.mc().currentScreen instanceof GuiBlastFurnace
+				&& BlastFurnaceRecipe.isValidBlastFuel(event.itemStack))
+			event.toolTip.add(EnumChatFormatting.GRAY+StatCollector.translateToLocalFormatted("desc.ImmersiveEngineering.info.blastFuelTime", BlastFurnaceRecipe.getBlastFuelTime(event.itemStack)));
+	}
+	
 	@SubscribeEvent()
 	public void lastWorldRender(RenderWorldLastEvent event)
 	{

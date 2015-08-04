@@ -75,7 +75,10 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 		boolean hasElectrodes = true;
 		for(int i=0; i<3; i++)
 		{
-			electrodes[i] = this.getStackInSlot(23+i)!=null;
+			boolean b = this.getStackInSlot(23+i)!=null;
+			if(electrodes[i]!=b)
+				update = true;
+			electrodes[i] = b;
 			if(!electrodes[i])
 			{
 				hasElectrodes = false;
@@ -90,6 +93,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 			ItemStack[] additives = new ItemStack[4];
 			for(int i=0; i<4; i++)
 				additives[i] = (inventory[12+i]!=null?inventory[12+i].copy():null);
+			boolean damageElectrodes = false;
 			for(int i=0; i<12; i++)
 			{
 				ArcFurnaceRecipe recipe = ArcFurnaceRecipe.findRecipe(this.getStackInSlot(i), additives);
@@ -119,8 +123,6 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 						processMax[i]=recipe.time;
 						process[i]=0;
 						update = true;
-						if(!active)
-							active = true;
 					}
 					else
 					{
@@ -129,6 +131,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 						{
 							this.energyStorage.extractEnergy(energy, false);
 							process[i]++;
+							damageElectrodes=true;
 							if(!active)
 								active = true;
 						}
@@ -174,7 +177,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 				else if(process[i]>0)
 					process[i]=0;
 			}
-			if(active)
+			if(damageElectrodes)
 			{
 				for(int i=23; i<26; i++)
 					if(this.getStackInSlot(i).attemptDamageItem(1, worldObj.rand))
@@ -182,6 +185,11 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 						this.setInventorySlotContents(i, null);
 						update = true;
 					}
+			}
+			else if(active)
+			{
+				active = false;
+				update = true;
 			}
 		}
 
@@ -314,8 +322,10 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 		}
 		else if(pos<75)
 		{
-			if(pos==52)
-				return new float[]{fl<4?-.5f:0,0,fl>3?-.5f:0, fl<4?1.5f:1,1,fl>3?1.5f:1};
+			if(pos==51)
+				return new float[]{fw==3?.5f:0,0,fw==4?.5f:0, fw==2?.5f:1,1,fw==5?.5f:1};
+			else if(pos==53)
+				return new float[]{fw==2?.5f:0,0,fw==5?.5f:0, fw==3?.5f:1,1,fw==4?.5f:1};
 			else if(pos==60)
 				return new float[]{fw==3?.125f:0,0,fw==4?.125f:0, fw==2?.875f:1,1,fw==5?.875f:1};
 			else if(pos==64)

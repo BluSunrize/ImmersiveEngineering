@@ -8,22 +8,16 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.StatCollector;
 import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
-import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.oredict.OreDictionary;
 import WayofTime.alchemicalWizardry.api.event.TeleposeEvent;
-import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
-import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.client.gui.GuiBlastFurnace;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
 import blusunrize.immersiveengineering.common.blocks.TileEntityImmersiveConnectable;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
@@ -31,11 +25,9 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMultiblockP
 import blusunrize.immersiveengineering.common.items.ItemDrill;
 import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.Utils;
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.ItemCraftedEvent;
-import cpw.mods.fml.relauncher.Side;
 
 public class EventHandler
 {
@@ -179,44 +171,5 @@ public class EventHandler
 				}
 			}
 		}
-	}
-
-
-	@SubscribeEvent
-	public void onItemTooltip(ItemTooltipEvent event)
-	{
-				for(int oid : OreDictionary.getOreIDs(event.itemStack))
-					event.toolTip.add(OreDictionary.getOreName(oid));
-		//		if(FluidContainerRegistry.getFluidForFilledItem(event.itemStack)!=null)
-		//			event.toolTip.add(FluidContainerRegistry.getFluidForFilledItem(event.itemStack).getUnlocalizedName());
-		//		if(event.itemStack.getItem() instanceof ItemTool && event.showAdvancedItemTooltips)
-		//		{
-		//			String mat = ((ItemTool)event.itemStack.getItem()).getToolMaterialName();
-		//			String speed = "?";
-		//			String level = "?";
-		//			String enchantability = "?";
-		//			try{
-		//				speed = ""+ToolMaterial.valueOf(((ItemTool)event.itemStack.getItem()).getToolMaterialName()).getEfficiencyOnProperMaterial();
-		//				level = ""+ToolMaterial.valueOf(((ItemTool)event.itemStack.getItem()).getToolMaterialName()).getHarvestLevel();
-		//				enchantability = ""+ToolMaterial.valueOf(((ItemTool)event.itemStack.getItem()).getToolMaterialName()).getEnchantability();
-		//			}catch(Exception e)
-		//			{
-		//				try{
-		//					speed = ""+ToolMaterial.valueOf("TF:"+((ItemTool)event.itemStack.getItem()).getToolMaterialName()).getEfficiencyOnProperMaterial();
-		//					level = ""+ToolMaterial.valueOf("TF:"+((ItemTool)event.itemStack.getItem()).getToolMaterialName()).getHarvestLevel();
-		//					enchantability = ""+ToolMaterial.valueOf("TF:"+((ItemTool)event.itemStack.getItem()).getToolMaterialName()).getEnchantability();
-		//				}catch(Exception e2){}
-		//			}
-		//			event.toolTip.add("Tool Material: "+Utils.toCamelCase(mat));
-		//			event.toolTip.add(" Speed: "+speed);
-		//			event.toolTip.add(" MiningLevel: "+level);
-		//			event.toolTip.add(" Enchantability: "+enchantability);
-		//		}
-
-		if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT
-				&& ClientUtils.mc().currentScreen != null
-				&& ClientUtils.mc().currentScreen instanceof GuiBlastFurnace
-				&& BlastFurnaceRecipe.isValidBlastFuel(event.itemStack))
-			event.toolTip.add(EnumChatFormatting.GRAY+StatCollector.translateToLocalFormatted("desc.ImmersiveEngineering.info.blastFuelTime", BlastFurnaceRecipe.getBlastFuelTime(event.itemStack)));
 	}
 }

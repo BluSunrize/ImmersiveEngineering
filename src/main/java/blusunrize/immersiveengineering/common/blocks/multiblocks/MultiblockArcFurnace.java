@@ -50,7 +50,7 @@ public class MultiblockArcFurnace implements IMultiblock
 					{
 						if(l==4)
 							m = BlockMetalDecoration.META_lightEngineering;
-						else if((l==0&&w==2)|| (l>0&&w>0&&w<4)||l==2)
+						else if((l==0&&(w>=1&&w<=3))|| (l>0&&w>0&&w<4)||l==2)
 							structure[h][w][l] = new ItemStack(IEContent.blockStorage,1,7);
 					}
 					else if(h==3)
@@ -233,7 +233,7 @@ public class MultiblockArcFurnace implements IMultiblock
 		return new ItemStack[]{
 				new ItemStack(Items.cauldron),
 				new ItemStack(IEContent.blockStorageSlabs,14,7),
-				new ItemStack(IEContent.blockStorage,23,7),
+				new ItemStack(IEContent.blockStorage,25,7),
 				new ItemStack(IEContent.blockMetalDecoration,13,BlockMetalDecoration.META_lightEngineering),
 				new ItemStack(IEContent.blockMetalDecoration,9,BlockMetalDecoration.META_heavyEngineering),
 				new ItemStack(IEContent.blockMetalDecoration,9,BlockMetalDecoration.META_scaffolding)};
