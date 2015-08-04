@@ -57,7 +57,6 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 		if(!formed || pos!=62)
 			return;
 
-		//		worldObj.spawnParticle("reddust", xCoord+.5+(facing==4?-2:facing==5?2:facing==(mirrored?2:3)?-2:2), yCoord+.5-1, zCoord+.5+(facing==2?-2:facing==3?2:facing==(mirrored?5:4)?-2:2), 0,0,0);
 		if(worldObj.isRemote)
 			return;
 		boolean update = false;

@@ -89,7 +89,7 @@ public class ImmersiveEngineering
 		for(IECompatModule compat : IECompatModule.modules)
 			if(Loader.isModLoaded(compat.modId))
 				compat.postInit();
-		IERecipes.postInitCrusherRecipes();
+		IERecipes.postInitCrusherAndArcRecipes();
 	}
 	@Mod.EventHandler
 	public void loadComplete(FMLLoadCompleteEvent event)

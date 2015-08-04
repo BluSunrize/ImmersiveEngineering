@@ -69,7 +69,8 @@ public class ItemBlockIESlabs extends ItemBlockIEBase
 			--stack.stackSize;
 			return true;
 		}
-		return false;
+		else
+			return super.onItemUse(stack,player,world,x,y,z,side,hitX,hitY,hitZ);
 	}
 
 	@Override

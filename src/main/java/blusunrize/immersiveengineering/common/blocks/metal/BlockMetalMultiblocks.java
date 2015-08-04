@@ -61,7 +61,7 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 	public void getSubBlocks(Item item, CreativeTabs tab, List list)
 	{
 		for(int i=0; i<subNames.length; i++)
-			if(i!=META_dieselGenerator && i!=META_refinery && i!=META_crusher && i!=META_bucketWheel && i!=META_excavator)
+			if(i!=META_dieselGenerator && i!=META_refinery && i!=META_crusher && i!=META_bucketWheel && i!=META_excavator && i!=META_arcFurnace)
 				list.add(new ItemStack(item, 1, i));
 	}
 
@@ -270,6 +270,22 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 				return side.getOpposite().ordinal()==tile.facing;
 		}
 		return super.isSideSolid(world, x, y, z, side);
+	}
+
+	@Override
+	public boolean canConnectRedstone(IBlockAccess world, int x, int y, int z, int side)
+	{
+		if(world.getTileEntity(x, y, z) instanceof TileEntityDieselGenerator)
+			return ((TileEntityDieselGenerator)world.getTileEntity(x, y, z)).pos==21 || ((TileEntityDieselGenerator)world.getTileEntity(x, y, z)).pos==23;
+		if(world.getTileEntity(x, y, z) instanceof TileEntityRefinery)
+			return ((TileEntityRefinery)world.getTileEntity(x, y, z)).pos==9 && side==((TileEntityRefinery)world.getTileEntity(x, y, z)).facing;
+		if(world.getTileEntity(x, y, z) instanceof TileEntityCrusher)
+			return ((TileEntityCrusher)world.getTileEntity(x, y, z)).pos==9 && side==((TileEntityCrusher)world.getTileEntity(x, y, z)).facing;
+		if(world.getTileEntity(x, y, z) instanceof TileEntityExcavator)
+			return ((TileEntityExcavator)world.getTileEntity(x, y, z)).pos==3 || ((TileEntityExcavator)world.getTileEntity(x, y, z)).pos==5;
+		if(world.getTileEntity(x, y, z) instanceof TileEntityArcFurnace)
+			return ((TileEntityArcFurnace)world.getTileEntity(x, y, z)).pos==25;
+		return false;
 	}
 
 	@Override

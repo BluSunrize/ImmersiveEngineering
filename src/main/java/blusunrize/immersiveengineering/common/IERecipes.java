@@ -161,7 +161,7 @@ public class IERecipes
 		addOredictRecipe(new ItemStack(IEContent.blockStoneDevice,2,4), " G ","IDI"," G ", 'G',"blockGlass",'I',"dustIron",'D',"dyeGreen");
 
 		addTwoWayStorageRecipe(new ItemStack(Items.iron_ingot), new ItemStack(IEContent.itemMetal,1,21));
-		for(int i=0; i<7; i++)
+		for(int i=0; i<=7; i++)
 		{
 			addTwoWayStorageRecipe(new ItemStack(IEContent.itemMetal,1,i), new ItemStack(IEContent.itemMetal,1,22+i));
 			addTwoWayStorageRecipe(new ItemStack(IEContent.blockStorage,1,i), new ItemStack(IEContent.itemMetal,1,i));
@@ -221,7 +221,7 @@ public class IERecipes
 		addOredictRecipe(storage, "III","III","III", 'I',component);
 		addShapelessOredictRecipe(Utils.copyStackWithAmount(component,9), storage);
 	}
-	
+
 
 	public static void initFurnaceRecipes()
 	{
@@ -268,7 +268,7 @@ public class IERecipes
 
 		oreOutputModifier.put("Nickel", new ItemStack(IEContent.itemMetal,2,14));
 		oreOutputSecondaries.put("Nickel", new Object[]{"dustPlatinum",.1f});
-		
+
 		addCrusherRecipe(new ItemStack(IEContent.itemMetal,1,15), "ingotConstantan", 3600, null,0);
 		addCrusherRecipe(new ItemStack(IEContent.itemMetal,1,16), "ingotElectrum", 3600, null,0);
 		addCrusherRecipe(new ItemStack(IEContent.itemMetal,1,19), "ingotHOPGraphite", 3600, null,0);
@@ -305,7 +305,7 @@ public class IERecipes
 		addItemToOreDictCrusherRecipe("dustCoal",1, new ItemStack(Items.coal), 2400);
 		addItemToOreDictCrusherRecipe("dustWood",2, "logWood", 1600);
 	}
-	public static void postInitCrusherRecipes()
+	public static void postInitCrusherAndArcRecipes()
 	{
 		for(String name : OreDictionary.getOreNames())
 			if(name.startsWith("ore"))
@@ -331,6 +331,16 @@ public class IERecipes
 					Float f = secondaries!=null&&secondaries.length>1&&secondaries[1] instanceof Float?(Float)secondaries[1]: 0;
 					addOreProcessingRecipe(out, ore, 6000, true, s, f);
 				}
+
+				out = arcOutputModifier.get(ore);
+				if(out==null)
+				{
+					ArrayList<ItemStack> ingots = OreDictionary.getOres("ingot"+ore);
+					if(!ingots.isEmpty())
+						out = Utils.copyStackWithAmount(ingots.get(0), 2);
+				}
+				if(out!=null)
+					addArcRecipe(out, "ore"+ore, 200,512, new ItemStack(IEContent.itemMaterial,1,13));
 			}
 	}
 
@@ -395,29 +405,21 @@ public class IERecipes
 	}
 
 
-
+	public static HashMap<String, ItemStack> arcOutputModifier = new HashMap<String, ItemStack>();
 	public static void initArcSmeltingRecipes()
 	{
 		//Steel
 		ArcFurnaceRecipe.addRecipe(new ItemStack(IEContent.itemMetal,1,7), "ingotIron", new ItemStack(IEContent.itemMaterial,1,13), 400,512, "dustCoke");
 		ArcFurnaceRecipe.addRecipe(new ItemStack(IEContent.itemMetal,1,7), "dustIron", new ItemStack(IEContent.itemMaterial,1,13), 400,512, "dustCoke");
 		//Vanilla+IE Ores
-		ArcFurnaceRecipe.addRecipe(new ItemStack(Items.iron_ingot,2), "oreIron", new ItemStack(IEContent.itemMaterial,1,13), 200,512);
-		ArcFurnaceRecipe.addRecipe(new ItemStack(Items.gold_ingot,2), "oreGold", new ItemStack(IEContent.itemMaterial,1,13), 200,512);
-		ArcFurnaceRecipe.addRecipe(new ItemStack(IEContent.itemMetal,2,0), "oreCopper", new ItemStack(IEContent.itemMaterial,1,13), 200,512);
-		ArcFurnaceRecipe.addRecipe(new ItemStack(IEContent.itemMetal,2,1), "oreAluminum", new ItemStack(IEContent.itemMaterial,1,13), 200,512);
-		ArcFurnaceRecipe.addRecipe(new ItemStack(IEContent.itemMetal,2,2), "oreLead", new ItemStack(IEContent.itemMaterial,1,13), 200,512);
-		ArcFurnaceRecipe.addRecipe(new ItemStack(IEContent.itemMetal,2,3), "oreSilver", new ItemStack(IEContent.itemMaterial,1,13), 200,512);
-		ArcFurnaceRecipe.addRecipe(new ItemStack(IEContent.itemMetal,2,4), "oreNickel", new ItemStack(IEContent.itemMaterial,1,13), 200,512);
-		//Other common ores
-		addArcOreSmelting("Tin");
-		addArcOreSmelting("Mithril");
-		addArcOreSmelting("Platinum");
-		addArcOreSmelting("Ardite");
-		addArcOreSmelting("Cobalt");
-		addArcOreSmelting("Zinc");
-		addArcOreSmelting("Uranium");
-		addArcOreSmelting("Yellorium");
+		arcOutputModifier.put("Iron", new ItemStack(Items.iron_ingot,2));
+		arcOutputModifier.put("Gold", new ItemStack(Items.gold_ingot,2));
+		arcOutputModifier.put("Copper", new ItemStack(IEContent.itemMetal,2,0));
+		arcOutputModifier.put("Aluminum", new ItemStack(IEContent.itemMetal,2,1));
+		arcOutputModifier.put("Aluminium", new ItemStack(IEContent.itemMetal,2,1));
+		arcOutputModifier.put("Lead", new ItemStack(IEContent.itemMetal,2,2));
+		arcOutputModifier.put("Silver", new ItemStack(IEContent.itemMetal,2,3));
+		arcOutputModifier.put("Nickel", new ItemStack(IEContent.itemMetal,2,4));
 	}
 	public static void addArcRecipe(ItemStack output, Object input, int time, int energyPerTick, ItemStack slag, Object... additives)
 	{
@@ -427,7 +429,7 @@ public class IERecipes
 	{
 		if(!OreDictionary.getOres("ore"+oreName).isEmpty() && !OreDictionary.getOres("ingot"+oreName).isEmpty() )
 		{
-			ItemStack out = OreDictionary.getOres("ingot"+oreName).get(0);
+			ItemStack out = Utils.copyStackWithAmount(OreDictionary.getOres("ingot"+oreName).get(0), 2);
 			addArcRecipe(out, "ore"+oreName, 200,512, new ItemStack(IEContent.itemMaterial,1,13));
 		}
 	}

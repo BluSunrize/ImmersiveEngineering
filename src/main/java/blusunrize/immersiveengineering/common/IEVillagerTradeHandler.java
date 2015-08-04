@@ -46,8 +46,8 @@ public class IEVillagerTradeHandler implements IVillageTradeHandler
 		addDeal(.4f, new ItemStack(IEContent.itemWireCoil,1,0),12,20, Items.emerald);
 		addDeal(.3f, Items.emerald,1,3, new ItemStack(IEContent.itemWireCoil,1,1),12,20);
 		addDeal(.3f, new ItemStack(IEContent.itemWireCoil,1,1),12,20, Items.emerald,1,3);
-		addDeal(.2f, Items.emerald,1,3, new ItemStack(IEContent.itemWireCoil,1,1),6,12);
-		addDeal(.2f, new ItemStack(IEContent.itemWireCoil,1,1),6,12, Items.emerald,1,3);
+		addDeal(.2f, Items.emerald,1,3, new ItemStack(IEContent.itemWireCoil,1,2),6,12);
+		addDeal(.2f, new ItemStack(IEContent.itemWireCoil,1,2),6,12, Items.emerald,1,3);
 
 		addDeal(.4f, Items.emerald,1,3, new ItemStack(IEContent.itemMaterial,1,11),2,6);
 		addDeal(.4f, new ItemStack(IEContent.itemMaterial,1,11),2,6, Items.emerald,1,3);
