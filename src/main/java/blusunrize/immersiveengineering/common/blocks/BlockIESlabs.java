@@ -4,13 +4,16 @@ import static net.minecraftforge.common.util.ForgeDirection.DOWN;
 import static net.minecraftforge.common.util.ForgeDirection.UP;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -62,9 +65,18 @@ public class BlockIESlabs extends BlockIEBase
 		}
 		return true;
 	}
+
+	@Override
+	public void addCollisionBoxesToList(World world, int x, int y, int z, AxisAlignedBB aabb, List list, Entity ent)
+	{
+		this.setBlockBoundsBasedOnState(world, x, y, z);
+		super.addCollisionBoxesToList(world, x, y, z, aabb, list, ent);
+	}
+
 	@Override
 	public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
 	{
+		this.setBlockBounds(0,0,0,1,1,1);
 		if(world.getTileEntity(x, y, z) instanceof TileEntityIESlab)
 		{
 			int type = ((TileEntityIESlab)world.getTileEntity(x, y, z)).slabType;
@@ -75,8 +87,6 @@ public class BlockIESlabs extends BlockIEBase
 			else
 				this.setBlockBounds(0,0,0,1,1,1);
 		}
-		else
-			this.setBlockBounds(0,0,0,1,.5f,1);
 	}
 	@Override
 	public void setBlockBoundsForItemRender()

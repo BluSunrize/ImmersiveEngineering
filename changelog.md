@@ -1,3 +1,14 @@
+#####Version 0.5.1
+- removed OreDict tooltip and moved tooltips to clientside-only
+- fixed degrading electrodes in unpowered Arc Furnace
+- added additional bounding box blocks to Arc Furnace, will require the furnace to be rebuilt
+- fixed Electrodes not rendering
+- removed Arc Furnace from creative tab (users are a bit dense >_>)
+- fixed slabs not placing against doubleslabs
+- fixed Villager selling the wrong wire
+- fixed steel not being craftable into blocks, nuggets and slabs
+
+
 #####Version 0.5.0
 - added Arc Furnace! Yes, it's a thing now!
 - added metal slabs
