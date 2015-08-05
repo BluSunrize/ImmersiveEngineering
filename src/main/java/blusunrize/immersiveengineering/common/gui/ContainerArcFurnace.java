@@ -5,6 +5,9 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
+import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
+import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityArcFurnace;
 
 public class ContainerArcFurnace extends Container
@@ -21,11 +24,11 @@ public class ContainerArcFurnace extends Container
 		for(int i=0; i<6; i++)
 			this.addSlotToContainer(new IESlot.Output(this, tile, 16+i, 78+i%3*18,80+i/3*18));
 		this.addSlotToContainer(new IESlot.Output(this, tile, 22, 132,98));
-		
+
 		this.addSlotToContainer(new IESlot.ArcElectrode(this, tile, 23, 62,10));
 		this.addSlotToContainer(new IESlot.ArcElectrode(this, tile, 24, 80,10));
 		this.addSlotToContainer(new IESlot.ArcElectrode(this, tile, 25, 98,10));
-		
+
 		slotCount=26;
 
 		for (int i = 0; i < 3; i++)
@@ -60,8 +63,26 @@ public class ContainerArcFurnace extends Container
 			}
 			else
 			{
-				if(!this.mergeItemStack(stackInSlot, 0,9, false))
-					return null;
+				int i = -1;
+				int j = -1;
+				if(ArcFurnaceRecipe.isValidInput(stackInSlot))
+				{
+					i=0;
+					j=12;
+				}
+				else if(ArcFurnaceRecipe.isValidAdditive(stackInSlot))
+				{
+					i=12;
+					j=16;
+				}
+				else if(IEContent.itemGraphiteElectrode.equals(stack.getItem()))
+				{
+					i=23;
+					j=26;
+				}
+				if(i!=-1 && j!=-1)
+					if(!this.mergeItemStack(stackInSlot, i,j, false))
+						return null;
 			}
 
 			if (stackInSlot.stackSize == 0)
