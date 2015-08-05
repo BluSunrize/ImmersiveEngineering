@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
@@ -101,45 +102,42 @@ public class BlueprintCraftingRecipe
 	}
 	public int getMaxCrafted(ItemStack[] query)
 	{
-		ArrayList<Object> inputList = new ArrayList();
-		for(Object i : inputs)
-			if(i!=null)
-				inputList.add(i instanceof ItemStack? ((ItemStack)i).copy(): i);
-		ArrayList<ItemStack> queryList = new ArrayList();
+		HashMap<ItemStack, Integer> queryAmount = new HashMap<ItemStack, Integer>();
 		for(ItemStack q : query)
 			if(q!=null)
-				queryList.add(q.copy());
+			{
+				boolean inc = false;
+				for(ItemStack key : queryAmount.keySet())
+					if(OreDictionary.itemMatches(q, key, true))
+						queryAmount.put(key, queryAmount.get(key)+q.stackSize);
+				if(!inc)
+					queryAmount.put(q, q.stackSize);
+			}
 
-		Iterator inputIt = inputList.iterator();
 		int maxCrafted = 0;
-		while(inputIt.hasNext())
+		ArrayList<Object> formattedInputList = getFormattedInputs();
+		Iterator formInputIt = formattedInputList.iterator();
+		while(formInputIt.hasNext())
 		{
+			Object o = formInputIt.next();
 			int supplied = 0;
-			Object o = inputIt.next();
-			Iterator<ItemStack> queryIt = queryList.iterator();
+			int req = o instanceof ItemStack?((ItemStack)o).stackSize: o instanceof ArrayList?((ItemStack)((ArrayList)o).get(0)).stackSize: 0;
+			Iterator<Entry<ItemStack, Integer>> queryIt = queryAmount.entrySet().iterator();
 			while(queryIt.hasNext())
 			{
-				ItemStack stack = queryIt.next();
-				if(ApiUtils.stackMatchesObject(stack, o))
-					if(o instanceof ItemStack)
+				Entry<ItemStack, Integer> e = queryIt.next();
+				ItemStack compStack = e.getKey();
+				if(ApiUtils.stackMatchesObject(compStack, o))
+				{
+					int taken = e.getValue()/req;
+					if(taken>0)
 					{
-						int taken = stack.stackSize/((ItemStack)o).stackSize;
-						if(taken>0)
-						{
-							stack.stackSize-= taken;
-							if(stack.stackSize<=0)
-								queryIt.remove();
-							supplied += taken;
-						}
-					}
-					else
-					{
-						int taken = stack.stackSize;
-						stack.stackSize-= taken;
-						if(stack.stackSize<=0)
+						e.setValue(e.getValue()-taken*req);
+						if(e.getValue()<=0)
 							queryIt.remove();
 						supplied += taken;
 					}
+				}
 			}
 			if(supplied<=0)
 				return 0;
