@@ -61,16 +61,6 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 			return;
 		boolean update = false;
 
-		if(worldObj.isBlockIndirectlyGettingPowered(xCoord+(facing==4?-2:facing==5?2:facing==(mirrored?2:3)?-2:2), yCoord-1, zCoord+(facing==2?-2:facing==3?2:facing==(mirrored?5:4)?-2:2)))
-		{
-			if(active)
-			{
-				active = false;
-				update = true;
-			}
-			return;
-		}
-
 		boolean hasElectrodes = true;
 		for(int i=0; i<3; i++)
 		{
@@ -85,6 +75,16 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 					active = false;
 				update = true;
 			}
+		}
+		
+		if(worldObj.isBlockIndirectlyGettingPowered(xCoord+(facing==4?-2:facing==5?2:facing==(mirrored?2:3)?-2:2), yCoord-1, zCoord+(facing==2?-2:facing==3?2:facing==(mirrored?5:4)?-2:2)))
+		{
+			if(active)
+			{
+				active = false;
+				update = true;
+			}
+			return;
 		}
 
 		if(hasElectrodes)
