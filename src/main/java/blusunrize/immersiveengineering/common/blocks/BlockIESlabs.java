@@ -76,7 +76,6 @@ public class BlockIESlabs extends BlockIEBase
 	@Override
 	public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
 	{
-		this.setBlockBounds(0,0,0,1,1,1);
 		if(world.getTileEntity(x, y, z) instanceof TileEntityIESlab)
 		{
 			int type = ((TileEntityIESlab)world.getTileEntity(x, y, z)).slabType;
@@ -87,6 +86,8 @@ public class BlockIESlabs extends BlockIEBase
 			else
 				this.setBlockBounds(0,0,0,1,1,1);
 		}
+		else
+			this.setBlockBounds(0,0,0,1,.5f,1);
 	}
 	@Override
 	public void setBlockBoundsForItemRender()
