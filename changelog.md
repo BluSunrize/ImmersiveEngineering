@@ -1,4 +1,17 @@
-#####Version 0.5.1
+#####Version 0.5.2 - BUILT
+- fixed boundingboxes on slabs
+- fixed shift-clicking items in the arc furnace
+- fixed Arc Furnace structure + collision
+- fixed broken Blueprint crafting
+- fixed Arc Furnace not updating its electrodes when shut off by redstone
+- fixed Raytracing of connectors allowing for invalid connections
+- fixed placement issues of connectors replacing blocks and hovering in the air
+- added localization for IE villager
+- attempted to fix blueprints spawning as dungeon loot
+- disabled EE3 compat module till I can make it work right
+
+
+#####Version 0.5.1 - BUILT
 - removed OreDict tooltip and moved tooltips to clientside-only
 - fixed degrading electrodes in unpowered Arc Furnace
 - added additional bounding box blocks to Arc Furnace, will require the furnace to be rebuilt
@@ -9,7 +22,7 @@
 - fixed steel not being craftable into blocks, nuggets and slabs
 
 
-#####Version 0.5.0
+#####Version 0.5.0 - BUILT
 - added Arc Furnace! Yes, it's a thing now!
 - added metal slabs
 - added Blueprint crafting. This will be used for bullets and other things in future
