@@ -14,7 +14,6 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
 import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
-import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.lib.manual.ManualInstance;
 import blusunrize.lib.manual.ManualPages;
 import blusunrize.lib.manual.ManualUtils;
@@ -103,8 +102,6 @@ public class ManualPageMultiblock extends ManualPages
 			GL11.glDisable(GL11.GL_DEPTH_TEST);
 			GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 			GL11.glPushMatrix();
-			GL11.glRotatef(0, 1,0,0);
-
 			RenderHelper.enableGUIStandardItemLighting();
 			RenderItem.getInstance().renderWithColor=true;
 			int i=0;
