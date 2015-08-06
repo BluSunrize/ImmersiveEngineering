@@ -20,6 +20,13 @@ public class ItemBlockMetalDecorations extends ItemBlockIEBase
 	@Override
 	public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int meta)
 	{
+		if(meta==BlockMetalDecoration.META_connectorStructural)
+		{
+			ForgeDirection fd = ForgeDirection.getOrientation(side).getOpposite();
+			if(world.isAirBlock(x+fd.offsetX, y+fd.offsetY, z+fd.offsetZ))
+				return false;
+		}
+		
 		boolean ret = super.placeBlockAt(stack, player, world, x, y, z, side, hitX, hitY, hitZ, meta);
 		if(!ret)
 			return ret;

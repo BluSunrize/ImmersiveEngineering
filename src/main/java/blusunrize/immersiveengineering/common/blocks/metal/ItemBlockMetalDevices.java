@@ -64,7 +64,13 @@ public class ItemBlockMetalDevices extends ItemBlockIEBase
 			return false;
 		if(meta==BlockMetalDevices.META_relayHV&& world.isAirBlock(x,y+1,z))
 			return false;
-
+		if(meta==BlockMetalDevices.META_connectorLV||meta==BlockMetalDevices.META_connectorMV||meta==BlockMetalDevices.META_connectorHV)
+		{
+			ForgeDirection fd = ForgeDirection.getOrientation(side).getOpposite();
+			if(world.isAirBlock(x+fd.offsetX, y+fd.offsetY, z+fd.offsetZ))
+				return false;
+		}
+		
 		int conveyorFacingPre=-1;
 		int conveyorModePre=-1;
 		if(meta==BlockMetalDevices.META_conveyorBelt && side!=0 && side!=1)
