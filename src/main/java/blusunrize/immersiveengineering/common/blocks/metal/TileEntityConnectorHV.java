@@ -24,6 +24,13 @@ public class TileEntityConnectorHV extends TileEntityConnectorMV
 	{
 		return super.canConnectCable(cableType, target) && limitType==null;
 	}
+	
+	@Override
+	public Vec3 getRaytraceOffset()
+	{
+		ForgeDirection fd = ForgeDirection.getOrientation(facing).getOpposite();
+		return Vec3.createVectorHelper(.5+fd.offsetX*.3125, .5+fd.offsetY*.3125, .5+fd.offsetZ*.3125);
+	}
 	@Override
 	public Vec3 getConnectionOffset(Connection con)
 	{

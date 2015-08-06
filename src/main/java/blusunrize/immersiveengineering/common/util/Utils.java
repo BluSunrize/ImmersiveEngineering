@@ -157,8 +157,8 @@ public class Utils
 	}
 	public static boolean canBlocksSeeOther(World world, ChunkCoordinates cc0, ChunkCoordinates cc1, Vec3 pos0, Vec3 pos1)
 	{
-		MovingObjectPosition mop =  world.rayTraceBlocks(pos0, pos1);
-		return mop==null || (mop.blockX==cc0.posX&&mop.blockY==cc0.posY&&mop.blockZ==cc0.posZ) || (mop.blockX==cc1.posX&&mop.blockY==cc1.posY&&mop.blockZ==cc1.posZ);
+		MovingObjectPosition mop = world.rayTraceBlocks(pos0, pos1);
+		return mop==null || (mop.blockX==cc1.posX&&mop.blockY==cc1.posY&&mop.blockZ==cc1.posZ);
 	}
 
 	public static boolean isHammer(ItemStack stack)
