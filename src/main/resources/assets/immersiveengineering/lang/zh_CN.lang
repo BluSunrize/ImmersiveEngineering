@@ -136,10 +136,10 @@ item.ImmersiveEngineering.material.hempFiber.name=工业大麻纤维
 item.ImmersiveEngineering.material.fabric.name=坚韧布料
 item.ImmersiveEngineering.material.windmillBladeAdvanced.name=改良风车叶片
 item.ImmersiveEngineering.material.coalCoke.name=焦煤
-item.ImmersiveEngineering.material.gunpartBarrel.name=左轮枪管
-item.ImmersiveEngineering.material.gunpartDrum.name=左轮弹筒
-item.ImmersiveEngineering.material.gunpartGrip.name=左轮握柄
-item.ImmersiveEngineering.material.gunpartHammer.name=左轮击锤
+item.ImmersiveEngineering.material.gunpartBarrel.name=枪管
+item.ImmersiveEngineering.material.gunpartDrum.name=左筒
+item.ImmersiveEngineering.material.gunpartGrip.name=握柄
+item.ImmersiveEngineering.material.gunpartHammer.name=击锤
 item.ImmersiveEngineering.material.componentIron.name=铁质机械零件
 item.ImmersiveEngineering.material.componentSteel.name=钢质机械零件
 item.ImmersiveEngineering.material.slag.name=矿渣
@@ -261,13 +261,13 @@ desc.ImmersiveEngineering.info.mineral.Lapis=青金石矿
 desc.ImmersiveEngineering.info.reqMaterial=所需材料:
 desc.ImmersiveEngineering.info.chance=Chance:
 
-desc.ImmersiveEngineering.info.blueprint.creates0=Created Items:§6按住Shift§r
-desc.ImmersiveEngineering.info.blueprint.creates1=Created Items:
-desc.ImmersiveEngineering.info.blueprint.bullet=Common Projectiles
-desc.ImmersiveEngineering.info.blueprint.specialBullet=Specialized Projectiles
+desc.ImmersiveEngineering.info.blueprint.creates0=可制作:§6按住Shift查看§r
+desc.ImmersiveEngineering.info.blueprint.creates1=可制作:
+desc.ImmersiveEngineering.info.blueprint.bullet=一般子弹
+desc.ImmersiveEngineering.info.blueprint.specialBullet=特种子弹
 desc.ImmersiveEngineering.info.blueprint.electrode=电弧炉电极
 
-desc.ImmersiveEngineering.info.electrodeIntegrity=Integrity
+desc.ImmersiveEngineering.info.electrodeIntegrity=完整度
 
 desc.ImmersiveEngineering.flavour.crate=破坏时仍会保留其内物品!
 desc.ImmersiveEngineering.flavour.coil.construction0=仅装饰用途
@@ -331,13 +331,13 @@ chat.ImmersiveEngineering.info.coreDrill.infinite=无限
 recipe.ImmersiveEngineering.hammerCrushing=粉碎
 
 #DEATH
-death.attack.ieRevolver_casull=%1$s 被 %2$s 射杀
-death.attack.ieRevolver_armorPiercing=%1$s 被 %2$s 射杀
-death.attack.ieRevolver_buckshot=%1$s 被 %2$s 用猎枪击中
-death.attack.ieRevolver_dragonsbreath=%1$s 被 %2$s 的吐息焚烧为灰烬
-death.attack.ieRevolver_homing=%1$s was shot by %2$s's homing bullet
+death.attack.ieRevolver_casull=%1$s被%2$s射杀
+death.attack.ieRevolver_armorPiercing=%1$s被%2$s射杀
+death.attack.ieRevolver_buckshot=%1$s被%2$s用猎枪击中
+death.attack.ieRevolver_dragonsbreath=%1$s被%2$s的吐息焚烧为灰烬
+death.attack.ieRevolver_homing=%1$s被%2$s的跟踪弹击杀
 death.attack.ieRevolver_wolfpack=%1$s was shredded by %2$s's Wolfpack Rounds
-death.attack.ieCrushed=%1$s 被粉碎
+death.attack.ieCrushed=%1$s被粉碎
 
 #MANUAL
 #ie.manual.entry..name=
@@ -383,9 +383,9 @@ ie.manual.entry.treatedwoodPost0=你的线缆接线器需要有一个依附点,�
 ie.manual.entry.treatedwoodPost1=不过使用工程师锤子你也可以在木杆的顶端的侧面位置加装另一个<link;wiring;§o§n变压器§r;3>,这使得它不怎么显眼.<br>在木杆侧面支架下方放置方块会使支架改变朝向.
 
 ie.manual.entry.graphite.name=石墨
-ie.manual.entry.graphite.subtext=Coal stuff
-ie.manual.entry.graphite0=Highly Ordered Pyrolytic Graphite (HOP) is a complex, highly compressed, carbon material used in special engineering constructs.<br>HOP Graphite Dust is created by compressing eight pieces of Coke Dust in the <link;biodiesel;§o§nIndustrial §o§nSqueezer§r;1>. That dust can then be smelted into an ingot.
-ie.manual.entry.graphite1=The most common use for HOP Graphite is the creation of electrodes to be used in the <link;arcfurnace;§o§nArc §o§nFurnace§r>.制造这些电极需要<link;blueprints;§o§n工程师§o§n蓝图§r>, 蓝图可以通过<config;b;arcfurnace_electrodeCrafting;合成,或>在箱子里找到，也可以通过和村民交易获得.
+ie.manual.entry.graphite.subtext=煤炭工业产品
+ie.manual.entry.graphite0=高定向热解石墨(HOP)是一类结构复杂,且高度压缩的碳材料,常用于特种工程结构.<br>HOP石墨粉可由八份焦煤粉在<link;biodiesel;§o§n工业 §o§n挤压机§r;1>中加工制取.这种粉末进一步烧制可得到HOP石墨锭.
+ie.manual.entry.graphite1=HOP石墨广泛用于制作<link;arcfurnace;§o§n电弧§o§n炉§r>中的电极.制造这些电极需要<link;blueprints;§o§n工程师§o§n蓝图§r>,这种蓝图可以通过<config;b;arcfurnace_electrodeCrafting;合成获得,>在某些箱子里找到,还可以通过和村民交易获得.
 
 ie.manual.entry.wiring.name=基础布线
 ie.manual.entry.wiring.subtext=滋滋滋!
@@ -440,16 +440,16 @@ ie.manual.entry.workbench.subtext=超频
 ie.manual.entry.workbench0=在你的工程师职业生涯当中,可能会涉及到一些工具的优化与改造.为了完成这些修改,你需要使用到设备齐全的工程师装配台.<br>右键装配台,将物品放入物品栏中,然后将合适的升级放入随后出现的物品栏中.
 
 ie.manual.entry.blueprints.name=工程师蓝图
-ie.manual.entry.blueprints.subtext=RTFM
-ie.manual.entry.blueprints0=There are certain items which are very complex in their construction and require more than just a simple block of wood with a grid on it. These items will need to be created under the instructions of precise Blueprints on an <link;workbench;§o§n工程师§o§n装配台§r>.<br><br>Should you come across an 工程师蓝图 (or maybe even create one yourself), you can place it in the slot of the 工程师装配台.
-ie.manual.entry.blueprints1=To create the items detailed in the 蓝图, you insert the required materials into the 6 slots in the middle, and retrieve the assembled results from the output slots to the right. Hovering your mouse over these output slots will inform you exactly which materials are needed for each item. 
+ie.manual.entry.blueprints.subtext=请看下下面**的说明书
+ie.manual.entry.blueprints0=仅仅是一块木头做成的九宫格工作台,是无法胜任制作结构异常精细的物品的.这些物品需要遵循精密的蓝图的指导才能在<link;workbench;§o§n工程师§o§n工作台§r>中制作.<br><br>若你能获得工程师蓝图(抑或你能制作出工程师蓝图),你就可以把它放进工程师装配台中以加工物品.
+ie.manual.entry.blueprints1=要借助蓝图制作物品,首先你需要将材料放入中间的六个格子中,然后在右边的格子中提取成品.鼠标指针指向输出格时会显示当前缺失的材料. 
 
 ie.manual.entry.dieselgen.name=柴油发电机
 ie.manual.entry.dieselgen.subtext=比产量更重要的是: 更高的产量.
 ie.manual.entry.dieselgen0=高电压结构是令人着迷的,但要让它变得有用,你得有一个发电机来输出能源.<br>柴油发电机是其中一种产生这类能量的方式.它由复杂的多结构方式组成并且将要用到<link;biodiesel;§o§n生物 §o§n柴油§r>或者是其他燃料.由于其产出高,它将会快速消耗燃料来运作,所以请确保你有足够的燃料来支撑它的运转.
 ie.manual.entry.dieselgen1=该装置由引擎,发电机及散热器块组建而成.将这些零件如下方所示形状放置好,接着用工程师锤子敲一下位于中央的任意发电机模块或散热器模块即可.
-ie.manual.entry.dieselgen2=燃料需要从发电机的底部位置输入,而能量的输出口允许增加至三个.它所拥有的<config;i;dieselGen_output>RF/t的输出量将会平均分散在各个连接点上.<br>用红石信号激活右侧的控制面板可以关闭发电机.<br>You can mirror the generator by clicking the top-center of the Generator Block side with an 工程师锤.
-ie.manual.entry.dieselgen3=下表列出了柴油发电机的所有有效燃料以及它们的燃烧时间(ticks). 
+ie.manual.entry.dieselgen2=燃料需要从发电机的底部位置输入,而能量的输出口允许增加至三个.它所拥有的<config;i;dieselGen_output>RF/t的输出量将会平均分散在各个连接点上.<br>用红石信号激活右侧的控制面板可以关闭发电机.<br>你可以通过手持工程师锤敲击顶部中央的发电机模块来镜像翻转发电机.
+ie.manual.entry.dieselgen3=下表列出了柴油发电机的所有有效燃料以及它们的燃烧时间(ticks).
 
 ie.manual.entry.biodiesel.name=生物柴油
 ie.manual.entry.biodiesel.subtext=绿色能源!
@@ -488,11 +488,11 @@ ie.manual.entry.drill5=大型燃料缸允许机械钻在内部存储更多燃料
 
 ie.manual.entry.revolver.name=左轮手枪
 ie.manual.entry.revolver.subtext=通缉:死或生
-ie.manual.entry.revolver0=左轮手枪,一把来自文明时代的优雅武器,可谓是小型机械的智慧结晶.小型仅仅是相对而言,毕竟这把武器填装的是12号弹药.<br>同采矿机械钻类似,左轮手枪同样能够在<link;workbench;§o§n工程师装配台§r>进行改造.These modificatiosn are detailed on the last pages of this entry.
+ie.manual.entry.revolver0=左轮手枪,一把来自文明时代的优雅武器,可谓是小型机械的智慧结晶.小型仅仅是相对而言,毕竟这把武器填装的是12号弹药.<br>同采矿机械钻类似,左轮手枪同样能够在<link;workbench;§o§n工程师装配台§r>进行改造.关于改造的详细信息在本条目的最后一页中有详细叙述.
 ie.manual.entry.revolver1=左轮手枪可装载不同类型的弹药.若想装填弹药,潜行右键武器,之后将弹药放入物品栏中.<br>若物品栏中有快速装弹器,装弹器将会在你发射出最后一颗子弹后对左轮进行装填.
-ie.manual.entry.revolver2=Cartridges are created in the 工程师装配台, by the use of specific <link;blueprints;§o§n工程师§o§n蓝图§r>.蓝图 for normal ammunition you can create yourself, but some more advanced types of ammunition will require you to buy adquate blueprints from someone else.
-ie.manual.entry.revolver3=These are common types of ammunition, created with simple, selfmade blueprints:<br><br>§l卡苏尔弹:§r简易的铅弹,能够造成中等的伤害.<br>§l穿甲弹:§r致密金属弹,通过纯动能力穿透护甲.<br>§l鹿弹:§r内含大量小型弹丸,弹道呈圆锥状.短距离效果拔群.<br>§l高爆弹:§r击中后造成小型爆炸.
-ie.manual.entry.revolver4=These are more intricate types of ammunition, created with unique blueprints that cannot be crafted, only found or bought.<br><br>§l龙息弹:§r易燃金属粉末,产生一束短距离火舌.<config;b;botaniaBullets;<br>§lHoming:§r Will home in on the closest target.<br>§lWolfpack:§r Cluster projectile, initially unguided, but splits into 6 small, target-seeking, projectiles on impact.;>
+ie.manual.entry.revolver2=子弹需要工程师装配台以及特定的<link;blueprints;§o§n工程师§o§n蓝图§r>才能制作.你自己就可以绘制一般军火的制造蓝图,但一些高级军火的蓝图需要你从他人手中购买才能得到.
+ie.manual.entry.revolver3=下列子弹均属于一般的弹药,可根据简易的自制蓝图制作:<br><br>§l卡苏尔弹:§r简易的铅弹,能够造成中等的伤害.<br>§l穿甲弹:§r致密金属弹,通过纯动能力穿透护甲.<br>§l鹿弹:§r内含大量小型弹丸,弹道呈圆锥状.短距离效果拔群.<br>§l高爆弹:§r击中后造成小型爆炸.
+ie.manual.entry.revolver4=下列子弹都是精密的高级弹药,需要用到那些交易得到的非自制蓝图.<br><br>§l龙息弹:§r易燃金属粉末,产生一束短距离火舌.<config;b;botaniaBullets;<br>§lHoming:§r Will home in on the closest target.<br>§lWolfpack:§r Cluster projectile, initially unguided, but splits into 6 small, target-seeking, projectiles on impact.;>
 ie.manual.entry.revolver5=通过在左轮上安插刺刀,你将得到一把近身格斗武器,让你能够在近距离造成和铁剑一样的伤害.
 ie.manual.entry.revolver6=扩充弹夹让你能够在左轮手枪中额外装填六发弹药.该弹夹无法被快速装弹器装填
 ie.manual.entry.revolver7=加强电子管能够在弹药上附加电流.电击会在击中目标前一直保持(不要问它的工作原理)然后传递出去.目标会被眩晕不到一秒的时间同时他们装备的所有能量武器会受到轻微的能量流失.
@@ -514,13 +514,13 @@ ie.manual.entry.minerals1=为了寻找并确定分布在世界中的矿产,你�
 ie.manual.entry.minerals2=下面将会列出所有矿脉的种类以及在其中能够找到的矿石种类.
 
 ie.manual.entry.arcfurnace.name=电弧炉
-ie.manual.entry.arcfurnace.subtext=Not a reactor 
-ie.manual.entry.arcfurnace0=电弧炉is a massive structure used to quickly smelt metals. It consists of a steel vat topped by 电极 which heat up the metal.
-ie.manual.entry.arcfurnace1=The furnace excels at smelting ores and creating steel due to its high speed and its abiltiy to process multiple items at the same time, but it is also complex in its workings and will require maintenance in order to coninue functioning.<br>矿渣 must be removed from the machine or it will cease to function, and degrading 电极 need to be replaced over time.
-ie.manual.entry.arcfurnace2=To form the structure, assemble it as shown on the first page, then click the cauldron with an 工程师锤.<br><br>Energy is input through the three connectors at the back, and supplying the controlpanel at the front with a redstone signal will turn off the machine. Right-clicking the panel, 'bucket' or vat will open the interface.
-ie.manual.entry.arcfurnace3=§lInterface:§r<br>The interface may look confusing upon first seeing it, but it's quite straight forward.<br><br>The three slots at the top are for the <link;graphite;§o§n石墨§o§n电极§r;1>.<br>电极 can be inserted into the furnace through the top-center block of the structre.<br>The twelve slots on the left are the input slots for metals and ores. Each slot has a temperature bar next to it, representing the progress of smelting.
-ie.manual.entry.arcfurnace4=The four slots on the right are for "additives", different materials added to the molten metal during the crafting process. An example of these would be adding Coke Dust to melting Iron in order to create Steel.<br>Inputs and additives are inserted through the two hatches at the top of the structure, to the left and right of the 电极.
-ie.manual.entry.arcfurnace5=The seven slots at the bottom are six output slots and a slot for 矿渣. Outputs are retrieved from the 'bucket' at the front of the structure, 矿渣 through the port at the back of the machine.电弧炉will automatically push output and 矿渣 to connected inventories (this includes Conveyor Belts).
+ie.manual.entry.arcfurnace.subtext=不是反应堆 
+ie.manual.entry.arcfurnace0=电弧炉是一种用于快速熔炼金属的重型结构.它外表被钢质外壳覆盖,顶部装有用于加热的电极.
+ie.manual.entry.arcfurnace1=因为它的高速和同时加工多个物品的能力,电弧炉相当擅长冶炼金属和炼钢,但它的工作流程也比较复杂,需要时常维护才能保持功能正常运转.<br>为保持工作,矿渣必须时常清理,损坏电极也应及时更换.
+ie.manual.entry.arcfurnace2=要搭建一台电弧炉,需要按照第一页的方式进行建造,然后用工程师锤右击炼药锅.<br><br>能量需要从后方的三个插孔中输入,并且给前端的控制面板输入红石信号将会关闭机器. 右击控制面板,"桶"或外壳将会打开交互界面.
+ie.manual.entry.arcfurnace3=§l交互界面:§r<br>第一眼看过去可能会有些迷惑,但是它实际上表达很直截了当.<br><br>顶部的三个格子是<link;graphite;§o§n石墨§o§n电极§r;1>插槽.<br>电极可插入电弧炉顶部中心方块中的插孔内.<br>左侧的十二个格子用于输入金属和矿石.每一个格子都有一个用于显示烧炼进度的温度条.
+ie.manual.entry.arcfurnace4=右侧的四个格子用于输入"辅料",这是指那些加工过程中加入的不同的原料. 举个例子,在熔炼铁时加焦煤粉来制得钢.<br>主料和辅料的输入可分别通过电弧炉顶部电极左右两侧的输入仓完成.
+ie.manual.entry.arcfurnace5=底部的七个格子有六个用于输出成品,还有一个输出矿渣. 成品可以从电弧炉正面的"桶"中提取,矿渣则会通过电弧炉背后的通道导出. 电弧炉会自动输出成品和矿渣到邻近的容器中(这包括传送带).
 
 ie.manual.entry.excavator.name=斗轮式挖掘机
 ie.manual.entry.excavator.subtext=比矮人更为高效
