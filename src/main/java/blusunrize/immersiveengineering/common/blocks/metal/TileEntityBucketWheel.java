@@ -86,14 +86,11 @@ public class TileEntityBucketWheel extends TileEntityMultiblockPart
 		if(formed && !worldObj.isRemote)
 		{
 			int f = facing;
-			int ih = (pos/7)-3;
-			int iw = (pos%7)-3;
-			if(mirrored)
-				iw = -iw;
-			int startX = xCoord-(f==3?-iw: f==2?iw: 0);
-			int startY = yCoord-ih;
-			int startZ = zCoord-(f==5?-iw: f==4?iw: 0);
-			for(int w=-3;w<4;w++)
+			int startX = xCoord-offset[0];
+			int startY = yCoord-offset[1];
+			int startZ = zCoord-offset[2];
+			
+			for(int w=-3;w<=3;w++)
 				for(int h=-3;h<=3;h++)
 				{
 					int xx = (f==3?-w: f==2?w: 0);
@@ -174,8 +171,24 @@ public class TileEntityBucketWheel extends TileEntityMultiblockPart
 	@Override
 	public double getMaxRenderDistanceSquared()
 	{
-		if(Config.getBoolean("increasedTileRenderdistance"))
-			return super.getMaxRenderDistanceSquared()*1.5;
-		return super.getMaxRenderDistanceSquared();
+		return super.getMaxRenderDistanceSquared()*Config.getDouble("increasedTileRenderdistance");
 	}
+	@Override
+	public float[] getBlockBounds()
+	{
+		if(pos==3||pos==9||pos==11)
+			return new float[]{0,.25f,0, 1,1,1};
+		else if(pos==45||pos==37||pos==39)
+			return new float[]{0,0,0, 1,.75f,1};
+		else if(pos==21)
+			return new float[]{facing==2?.25f:0,0,facing==4?.25f:0, facing==3?.75f:1,1,facing==5?.75f:1};
+		else if(pos==27)
+			return new float[]{facing==3?.25f:0,0,facing==5?.25f:0, facing==2?.75f:1,1,facing==4?.75f:1};
+		else if(pos==15||pos==29)
+			return new float[]{facing==2?.25f:0,0,facing==4?.25f:0, facing==3?.75f:1,1,facing==5?.75f:1};
+		else if(pos==19||pos==33)
+			return new float[]{facing==3?.25f:0,0,facing==5?.25f:0, facing==2?.75f:1,1,facing==4?.75f:1};
+		return new float[]{0,0,0,1,1,1};
+	}
+
 }

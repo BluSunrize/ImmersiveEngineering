@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.common.items;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -18,11 +19,12 @@ import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.IBullet;
-import blusunrize.immersiveengineering.api.IUpgrade;
+import blusunrize.immersiveengineering.api.tool.IBullet;
+import blusunrize.immersiveengineering.api.tool.IUpgrade;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.gui.InventoryStorageItem;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
@@ -47,6 +49,21 @@ public class ItemRevolver extends ItemUpgradeableTool
 		this.icons[1] = ir.registerIcon("immersiveengineering:"+itemName+"_"+"speedloader");
 	}
 
+	public HashMap<String, IIcon> revolverIcons = new HashMap();
+	public IIcon revolverDefaultTexture;
+	public void stichRevolverTextures(IIconRegister ir)
+	{
+		revolverDefaultTexture = ir.registerIcon("immersiveengineering:revolver");
+		for(String key : specialRevolversByTag.keySet())
+			if(!key.isEmpty())
+			{
+				int split = key.lastIndexOf("_");
+				if(split<0)
+					split = key.length();
+				revolverIcons.put(key, ir.registerIcon("immersiveengineering:revolver_"+key.substring(0,split)));
+			}
+	}
+
 	@Override
 	public int getInternalSlots(ItemStack stack)
 	{
@@ -57,8 +74,8 @@ public class ItemRevolver extends ItemUpgradeableTool
 	{
 		return new Slot[]
 				{
-				new IESlot.Upgrades(container, invItem,18+0, 102,32, IUpgrade.UpgradeType.REVOLVER, stack, true),
-				new IESlot.Upgrades(container, invItem,18+1, 122,32, IUpgrade.UpgradeType.REVOLVER, stack, true),
+				new IESlot.Upgrades(container, invItem,18+0, 80,32, IUpgrade.UpgradeType.REVOLVER, stack, true),
+				new IESlot.Upgrades(container, invItem,18+1,100,32, IUpgrade.UpgradeType.REVOLVER, stack, true),
 				};
 	}
 	@Override
@@ -73,6 +90,13 @@ public class ItemRevolver extends ItemUpgradeableTool
 	{
 		for(int i=0;i<2;i++)
 			list.add(new ItemStack(this,1,i));
+		//		for(Map.Entry<String, SpecialRevolver> e : specialRevolversByTag.entrySet())
+		//		{
+		//			ItemStack stack = new ItemStack(this,1,0);
+		//			applySpecialCrafting(stack, e.getValue());
+		//			this.recalculateUpgrades(stack);
+		//			list.add(stack);
+		//		}
 	}
 	@Override
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean adv)
@@ -98,6 +122,11 @@ public class ItemRevolver extends ItemUpgradeableTool
 				return this.getUnlocalizedName()+"."+tag;
 		}
 		return super.getUnlocalizedName(stack);
+	}
+	@Override
+	public boolean isFull3D()
+	{
+		return true;
 	}
 
 	@Override
@@ -246,13 +275,13 @@ public class ItemRevolver extends ItemUpgradeableTool
 		return "";
 	}
 
-	public String getRevolverTexture(ItemStack revolver)
+	public IIcon getRevolverIcon(ItemStack revolver)
 	{
-		String tag = getRevolverDisplayTag(revolver);
+		String tag = ItemNBTHelper.getString(revolver, "elite");
 		if(!tag.isEmpty())
-			return "immersiveengineering:textures/models/revolver_"+tag+".png";
+			return this.revolverIcons.get(tag);
 		else
-			return "immersiveengineering:textures/models/revolver.png";
+			return this.revolverDefaultTexture;
 	}
 
 	public String[] compileRender(ItemStack revolver)
@@ -262,9 +291,17 @@ public class ItemRevolver extends ItemUpgradeableTool
 		render.add("barrel");
 		render.add("cosmetic_compensator");
 		String tag = ItemNBTHelper.getString(revolver, "elite");
-		if(tag!=null &&  specialRevolversByTag.containsKey(tag))
+		String flavour = ItemNBTHelper.getString(revolver, "flavour");
+		if(tag!=null && !tag.isEmpty() && specialRevolversByTag.containsKey(tag))
 		{
 			SpecialRevolver r = specialRevolversByTag.get(tag);
+			if(r!=null && r.renderAdditions!=null)
+				for(String ss : r.renderAdditions)
+					render.add(ss);
+		}
+		else if(flavour!=null && !flavour.isEmpty() && specialRevolversByTag.containsKey(flavour))
+		{
+			SpecialRevolver r = specialRevolversByTag.get(flavour);
 			if(r!=null && r.renderAdditions!=null)
 				for(String ss : r.renderAdditions)
 					render.add(ss);
@@ -278,8 +315,11 @@ public class ItemRevolver extends ItemUpgradeableTool
 			render.add("player_bayonet");
 		}
 		if(upgrades.getBoolean("electro"))
-			render.add("player_electro");
-		return render.toArray(new String[0]);
+		{
+			render.add("player_electro_0");
+			render.add("player_electro_1");
+		}
+		return render.toArray(new String[render.size()]);
 	}
 
 
@@ -293,7 +333,7 @@ public class ItemRevolver extends ItemUpgradeableTool
 		String uuid = player.getUniqueID().toString();
 		if(specialRevolvers.containsKey(uuid))
 		{
-			List<SpecialRevolver> list = specialRevolvers.get(uuid);
+			ArrayList<SpecialRevolver> list = new ArrayList(specialRevolvers.get(uuid));
 			if(!list.isEmpty())
 			{
 				list.add(null);

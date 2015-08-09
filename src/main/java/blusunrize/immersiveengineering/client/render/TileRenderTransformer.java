@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
-import blusunrize.immersiveengineering.api.WireType;
+import blusunrize.immersiveengineering.api.energy.WireType;
 import blusunrize.immersiveengineering.client.models.ModelIEObj;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDevices;
@@ -83,7 +83,7 @@ public class TileRenderTransformer extends TileRenderIE
 				list.add("Connector_Left");
 				list.add("Connector_Right");
 			}
-			model.render(tile, tes, translationMatrix, rotationMatrix, true, false, list.toArray(new String[0]));
+			model.render(tile, tes, translationMatrix, rotationMatrix, true, false, list.toArray(new String[list.size()]));
 		}
 	}
 }

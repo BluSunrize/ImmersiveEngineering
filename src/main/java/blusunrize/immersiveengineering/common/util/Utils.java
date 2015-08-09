@@ -29,7 +29,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.oredict.OreDictionary;
-import blusunrize.immersiveengineering.api.IImmersiveConnectable;
+import blusunrize.immersiveengineering.api.energy.IImmersiveConnectable;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.registry.GameData;
 
@@ -44,10 +44,22 @@ public class Utils
 	}
 	public static boolean stackMatchesObject(ItemStack stack, Object o)
 	{
-		if(o instanceof String)
-			return compareToOreName(stack, (String)o);
 		if(o instanceof ItemStack)
 			return OreDictionary.itemMatches((ItemStack)o, stack, false);
+		else if(o instanceof ArrayList)
+		{
+			for(Object io : (ArrayList)o)
+				if(io instanceof ItemStack && OreDictionary.itemMatches((ItemStack)io, stack, false))
+					return true;
+		}
+		else if(o instanceof ItemStack[])
+		{
+			for(ItemStack io : (ItemStack[])o)
+				if(OreDictionary.itemMatches((ItemStack)io, stack, false))
+					return true;
+		}
+		else if(o instanceof String)
+			return compareToOreName(stack, (String)o);
 		return false;
 	}
 	public static ItemStack copyStackWithAmount(ItemStack stack, int amount)
@@ -145,8 +157,8 @@ public class Utils
 	}
 	public static boolean canBlocksSeeOther(World world, ChunkCoordinates cc0, ChunkCoordinates cc1, Vec3 pos0, Vec3 pos1)
 	{
-		MovingObjectPosition mop =  world.rayTraceBlocks(pos0, pos1);
-		return mop==null || (mop.blockX==cc0.posX&&mop.blockY==cc0.posY&&mop.blockZ==cc0.posZ) || (mop.blockX==cc1.posX&&mop.blockY==cc1.posY&&mop.blockZ==cc1.posZ);
+		MovingObjectPosition mop = world.rayTraceBlocks(pos0, pos1);
+		return mop==null || (mop.blockX==cc1.posX&&mop.blockY==cc1.posY&&mop.blockZ==cc1.posZ);
 	}
 
 	public static boolean isHammer(ItemStack stack)
@@ -330,45 +342,46 @@ public class Utils
 		inventory.setInventorySlotContents(slot, existingStack);
 		return stackLimit >= stack.stackSize ? null : stack.splitStack(stack.stackSize - stackLimit);
 	}
-	
+
 
 	public static boolean canInsertStackIntoInventory(IInventory inventory, ItemStack stack, int side)
 	{
-		if (stack == null || inventory == null)
+		if(stack == null || inventory == null)
 			return false;
-		if (inventory instanceof ISidedInventory)
+		if(inventory instanceof ISidedInventory)
 		{
 			ISidedInventory sidedInv = (ISidedInventory) inventory;
 			int slots[] = sidedInv.getAccessibleSlotsFromSide(side);
-			if (slots == null)
+			if(slots == null)
 				return false;
-			for (int i=0; i<slots.length && stack!=null; i++)
+			for(int i=0; i<slots.length && stack!=null; i++)
 			{
-				if (sidedInv.canInsertItem(slots[i], stack, side))
+				if(sidedInv.canInsertItem(slots[i], stack, side) && sidedInv.isItemValidForSlot(slots[i], stack))
 				{
 					ItemStack existingStack = inventory.getStackInSlot(slots[i]);
-					if(OreDictionary.itemMatches(existingStack, stack, true)&&ItemStack.areItemStackTagsEqual(stack, existingStack))
-						if(existingStack.stackSize+stack.stackSize<inventory.getInventoryStackLimit())
-							return true;
+					if(existingStack==null)
+						return true;
+					else
+						if(OreDictionary.itemMatches(existingStack, stack, true)&&ItemStack.areItemStackTagsEqual(stack, existingStack))
+							if(existingStack.stackSize+stack.stackSize<inventory.getInventoryStackLimit() && existingStack.stackSize+stack.stackSize<existingStack.getMaxStackSize())
+								return true;
 				}
 			}
-			for (int i=0; i<slots.length && stack!=null; i++)
-				if (inventory.getStackInSlot(slots[i]) == null && sidedInv.canInsertItem(slots[i], stack, side))
-					return true;
 		}
 		else
 		{
 			int invSize = inventory.getSizeInventory();
-			for (int i=0; i<invSize && stack!=null; i++)
-			{
-				ItemStack existingStack = inventory.getStackInSlot(i);
-				if (OreDictionary.itemMatches(existingStack, stack, true)&&ItemStack.areItemStackTagsEqual(stack, existingStack))
-					if(existingStack.stackSize+stack.stackSize<inventory.getInventoryStackLimit())
+			for(int i=0; i<invSize && stack!=null; i++)
+				if(inventory.isItemValidForSlot(i, stack))
+				{
+					ItemStack existingStack = inventory.getStackInSlot(i);
+					if(existingStack==null)
 						return true;
-			}
-			for (int i=0; i<invSize && stack!=null; i++)
-				if (inventory.getStackInSlot(i) == null)
-					return true;
+					else
+						if(OreDictionary.itemMatches(existingStack, stack, true)&&ItemStack.areItemStackTagsEqual(stack, existingStack))
+							if(existingStack.stackSize+stack.stackSize<inventory.getInventoryStackLimit() && existingStack.stackSize+stack.stackSize<existingStack.getMaxStackSize())
+								return true;
+				}
 		}
 		return false;
 	}

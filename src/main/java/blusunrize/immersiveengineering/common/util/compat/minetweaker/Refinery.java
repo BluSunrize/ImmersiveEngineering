@@ -9,8 +9,8 @@ import minetweaker.api.liquid.ILiquidStack;
 import net.minecraftforge.fluids.FluidStack;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
-import blusunrize.immersiveengineering.api.DieselHandler;
-import blusunrize.immersiveengineering.api.DieselHandler.RefineryRecipe;
+import blusunrize.immersiveengineering.api.energy.DieselHandler;
+import blusunrize.immersiveengineering.api.energy.DieselHandler.RefineryRecipe;
 
 @ZenClass("mods.immersiveengineering.Refinery")
 public class Refinery

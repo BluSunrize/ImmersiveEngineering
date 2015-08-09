@@ -8,11 +8,11 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import blusunrize.immersiveengineering.api.ApiUtils;
-import blusunrize.immersiveengineering.api.IImmersiveConnectable;
-import blusunrize.immersiveengineering.api.ImmersiveNetHandler;
-import blusunrize.immersiveengineering.api.ImmersiveNetHandler.Connection;
+import blusunrize.immersiveengineering.api.energy.IImmersiveConnectable;
+import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler;
+import blusunrize.immersiveengineering.api.energy.WireType;
+import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.api.TargetingInfo;
-import blusunrize.immersiveengineering.api.WireType;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.Utils;
 

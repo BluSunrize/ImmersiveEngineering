@@ -4,6 +4,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityArcFurnace;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBucketWheel;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConveyorSorter;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
@@ -14,6 +15,7 @@ import blusunrize.immersiveengineering.common.blocks.stone.TileEntityBlastFurnac
 import blusunrize.immersiveengineering.common.blocks.stone.TileEntityCokeOven;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityModWorkbench;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenCrate;
+import blusunrize.immersiveengineering.common.gui.ContainerArcFurnace;
 import blusunrize.immersiveengineering.common.gui.ContainerBlastFurnace;
 import blusunrize.immersiveengineering.common.gui.ContainerCokeOven;
 import blusunrize.immersiveengineering.common.gui.ContainerCrate;
@@ -54,6 +56,8 @@ public class CommonProxy implements IGuiHandler
 		//			return new ContainerDrill(player.inventory, world);
 		if(ID==Lib.GUIID_Workbench && world.getTileEntity(x, y, z) instanceof TileEntityModWorkbench)
 			return new ContainerModWorkbench(player.inventory, (TileEntityModWorkbench) world.getTileEntity(x, y, z));
+		if(ID==Lib.GUIID_ArcFurnace && world.getTileEntity(x, y, z) instanceof TileEntityArcFurnace)
+			return new ContainerArcFurnace(player.inventory, (TileEntityArcFurnace) world.getTileEntity(x, y, z));
 		return null;
 	}
 

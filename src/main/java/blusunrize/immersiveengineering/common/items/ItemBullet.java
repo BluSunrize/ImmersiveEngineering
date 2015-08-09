@@ -2,21 +2,26 @@ package blusunrize.immersiveengineering.common.items;
 
 import java.util.List;
 
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemFireworkCharge;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.Vec3;
-import blusunrize.immersiveengineering.api.IBullet;
+import blusunrize.immersiveengineering.api.tool.IBullet;
 import blusunrize.immersiveengineering.common.entities.EntityRevolvershot;
+import blusunrize.immersiveengineering.common.entities.EntityRevolvershotHoming;
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemBullet extends ItemIEBase implements IBullet
 {
 	public ItemBullet()
 	{
-		super("bullet", 64, "emptyCasing","emptyShell","casull","armorPiercing","buckshot","HE","dragonsbreath");
+		super("bullet", 64, "emptyCasing","emptyShell","casull","armorPiercing","buckshot","HE","dragonsbreath","homing","wolfpack");
 	}
 
 	@Override
@@ -29,6 +34,14 @@ public class ItemBullet extends ItemIEBase implements IBullet
 				if (nbttagcompound != null)
 					ItemFireworkCharge.func_150902_a(nbttagcompound, list);
 			}
+	}
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void getSubItems(Item item, CreativeTabs tab, List list)
+	{
+		for(int i=0;i<getSubNames().length;i++)
+			if((i!=7&&i!=8) || Loader.isModLoaded("Botania"))
+				list.add(new ItemStack(this,1,i));
 	}
 
 	@Override
@@ -73,14 +86,22 @@ public class ItemBullet extends ItemIEBase implements IBullet
 				shot.setFire(3);
 			}
 			break;
+		case 5://homing
+			EntityRevolvershotHoming bullet = new EntityRevolvershotHoming(player.worldObj, player, vec.xCoord*1.5,vec.yCoord*1.5,vec.zCoord*1.5, type, bulletStack);
+			bullet.motionX = vec.xCoord;
+			bullet.motionY = vec.yCoord;
+			bullet.motionZ = vec.zCoord;
+			bullet.bulletElectro = electro;
+			player.worldObj.spawnEntityInWorld(bullet);
+			break;
+		case 6://wolfpack
+			doSpawnBullet(player, vec, vec, type, bulletStack, electro);
+			break;
 		}
 	}
 
 	EntityRevolvershot doSpawnBullet(EntityPlayer player, Vec3 vecSpawn, Vec3 vecDir, int type, ItemStack stack, boolean electro)
 	{
-		//		double dX = player.posX+vecSpawn.xCoord;
-		//		double dY = player.posY+player.getEyeHeight()+vecSpawn.yCoord;
-		//		double dZ = player.posZ+vecSpawn.zCoord;
 		EntityRevolvershot bullet = new EntityRevolvershot(player.worldObj, player, vecDir.xCoord*1.5,vecDir.yCoord*1.5,vecDir.zCoord*1.5, type, stack);
 		bullet.motionX = vecDir.xCoord;
 		bullet.motionY = vecDir.yCoord;

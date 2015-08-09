@@ -389,12 +389,13 @@ public abstract class ManualPages implements IManualPage
 			int yyOff=0;
 			for(Object stack : this.stacks)
 			{
+				if(this.recipes.get(stack).size()>0)
+					yyOff += yOff[i-1]+8;
 				if(this.recipes.get(stack).size()>1)
 				{
 					pageButtons.add(new GuiButtonManualNavigation(gui, 100*i+0, x-2,y+yyOff+yOff[i-1]/2-3, 8,10, 0));
 					pageButtons.add(new GuiButtonManualNavigation(gui, 100*i+1, x+122-16,y+yyOff+yOff[i-1]/2-3, 8,10, 1));
 				}
-				yyOff += yOff[i-1]+8;
 				i++;
 			}
 			super.initPage(gui, x, y+yyOff-2, pageButtons);
@@ -669,7 +670,7 @@ public abstract class ManualPages implements IManualPage
 			overflow++;
 			int end = text.indexOf(">", start);
 			String rep = text.substring(start, end+1);
-			String[] segment = rep.substring(0,rep.length()-1).split(":");
+			String[] segment = rep.substring(0,rep.length()-1).split(";");
 			if(segment.length<3)
 				break;
 			String page = segment.length>3?segment[3]:"0";

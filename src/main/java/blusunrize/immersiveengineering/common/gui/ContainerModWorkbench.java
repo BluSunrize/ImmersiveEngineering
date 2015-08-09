@@ -6,6 +6,7 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityModWorkbench;
+import blusunrize.immersiveengineering.common.items.ItemEngineersBlueprint;
 import blusunrize.immersiveengineering.common.items.ItemUpgradeableTool;
 
 public class ContainerModWorkbench extends Container
@@ -34,12 +35,15 @@ public class ContainerModWorkbench extends Container
 	public void rebindSlots()
 	{
 		this.inventorySlots.clear();
-		this.addSlotToContainer(new IESlot.UpgradeableItem(this, tile, 0, 82, 24, 1));
+		this.addSlotToContainer(new IESlot.UpgradeableItem(this, tile, 0, 24, 22, 1));
 		slotCount=1;
 
 		ItemStack tool = this.getSlot(0).getStack();
 		if(tool!=null && tool.getItem() instanceof ItemUpgradeableTool)
 		{
+			if(tool.getItem() instanceof ItemEngineersBlueprint)
+				((ItemEngineersBlueprint)tool.getItem()).updateOutputs(tool);
+			
 			this.toolInv = new InventoryStorageItem(this, tool);
 			Slot[] slots =  ((ItemUpgradeableTool)tool.getItem()).getWorkbenchSlots(this, tool, toolInv);
 			if(slots!=null)

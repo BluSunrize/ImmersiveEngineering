@@ -9,7 +9,7 @@ import minetweaker.api.item.IItemStack;
 import net.minecraft.item.ItemStack;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
-import blusunrize.immersiveengineering.api.CrusherRecipe;
+import blusunrize.immersiveengineering.api.crafting.CrusherRecipe;
 
 @ZenClass("mods.immersiveengineering.Crusher")
 public class Crusher
@@ -23,7 +23,7 @@ public class Crusher
 
 		CrusherRecipe r = new CrusherRecipe(MTHelper.toStack(output), oInput, energy);
 		if(secondaryOutput!=null)
-			r.addSecondaryOutput(MTHelper.toStack(secondaryOutput), (float)secondaryChance);
+			r.addToSecondaryOutput(MTHelper.toStack(secondaryOutput), (float)secondaryChance);
 		MineTweakerAPI.apply(new Add(r));
 	}
 

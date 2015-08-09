@@ -3,6 +3,8 @@ package blusunrize.immersiveengineering.common.util;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagString;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -163,5 +165,15 @@ public class ItemNBTHelper
 				return new FluidStack(FluidRegistry.getFluid(name), amount);
 		}
 		return null;
+	}
+
+	public static void setLore(ItemStack stack, String... lore)
+	{
+		NBTTagCompound displayTag = getTagCompound(stack, "display");
+		NBTTagList list = new NBTTagList();
+		for(String s : lore)
+			list.appendTag(new NBTTagString(s));
+		displayTag.setTag("Lore", list);
+		setTagCompound(stack, "display", displayTag);
 	}
 }

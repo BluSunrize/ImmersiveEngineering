@@ -1,4 +1,110 @@
-#####Version 0.3.4
+#####Version 0.5.2 - BUILT
+- fixed boundingboxes on slabs
+- fixed shift-clicking items in the arc furnace
+- fixed Arc Furnace structure + collision
+- fixed broken Blueprint crafting
+- fixed Arc Furnace not updating its electrodes when shut off by redstone
+- fixed Raytracing of connectors allowing for invalid connections
+- fixed placement issues of connectors replacing blocks and hovering in the air
+- added localization for IE villager
+- attempted to fix blueprints spawning as dungeon loot
+- disabled EE3 compat module till I can make it work right
+
+
+#####Version 0.5.1 - BUILT
+- removed OreDict tooltip and moved tooltips to clientside-only
+- fixed degrading electrodes in unpowered Arc Furnace
+- added additional bounding box blocks to Arc Furnace, will require the furnace to be rebuilt
+- fixed Electrodes not rendering
+- removed Arc Furnace from creative tab (users are a bit dense >_>)
+- fixed slabs not placing against doubleslabs
+- fixed Villager selling the wrong wire
+- fixed steel not being craftable into blocks, nuggets and slabs
+
+
+#####Version 0.5.0 - BUILT
+- added Arc Furnace! Yes, it's a thing now!
+- added metal slabs
+- added Blueprint crafting. This will be used for bullets and other things in future
+- added Homing and Wolfpack bullets
+- added Engineer Villager to sell IE items
+- added metal nuggets
+- redid API stuff. Addons might break
+- changed crusher API, allowing for multiple secondary outputs, will probably break AOBD
+- changed OreDict handling in recipes. Should improve performance
+- changed crusher to build most Ore->Dust & Ingot->Dust recipes dynamically
+- added a world saving hook in the hopes of fixing that issue of wires vanishing on world reload
+- moved Workbench back to TESR because of derpy lighting
+- fixed critical bug with revolvers
+- connectors only accept power from the correct side now
+- the mousewheel can be used to changed pages in the manual
+- changed poweroutput config for dynamos to a double, to allow for more precise modifiers
+- fixed derpy in-hand rendering for fences
+- added WAILA compat for hemp
+- buffed electro upgrade for the revolver
+- changed bullets to be craftable with blueprints and added config for more costly bullets
+- changed Capacitors to no longer be ImmersiveConenctable. Dunno why I made them that in the first place...
+- prevented Multiblocks and Connectors from being teleposed by BloddMagic
+- updated Manual for new content added
+- changed formatting in manual, addon devs beware!
+- changed all textures to be power of 2, because old GPUs can't handle my fancyness
+- fixed raytracing on LV connectors
+- changed localization of High-Voltage Wire Coil to match its connector
+- enabled the Diesel Generator to be mirrored by clicking the center of the generator-block side
+- fixed BlastFurnace gui opening clientside
+- added another NPE check to wire rendering
+- fixed TCon interaction
+- fixed BlastFurnace glitch of running out of fuel before finishing a stack of iron
+- moved most recipe additions of IE to its own class
+- fixed revolver render to finally show the internal parts of the electrodes
+- allowed placing of ladders/torches/other things on certain parts of the multiblocks
+- extended GregTech support to include most ores, also possibly fixed energy transport
+- fixed revolver render to build correctly for flavour-linked render additions
+
+
+==============
+##### 0.4 VERSIONS ######
+==============
+#####Version 0.4.4 - BUILT
+- fixed vertical wires not rendering
+- dynamo can now be rotated with the hammer
+
+
+#####Version 0.4.3 - BUILT
+- important hotfix for TileRenders. They should work now
+- fixed capacitors not syncing their energy storage
+- fixed derpy boundingboxes on the arms
+
+
+#####Version 0.4.2 - BUILT
+- fixed rendering derp with backtools
+- added config for energy output on the ThermoElectric Gen
+- fixed coke oven to reset timer on input change
+- added external access methods for the Sample Drill
+- added null check to wire rendering
+- still working on derpy skylines .-.
+- fixed replacement ores in the excavator
+- more changes to the API, allowing for more specific colouring of wires, textures for them and customizeable slack
+- nerfed Kinetic Dynamos to only take power from one side now
+- optimized connections to cache catenaries. Improves rendering performance
+- added No Name
+- ominous changelog is ominous.
+- fixed arms on wooden posts to only connect where appropriate (bounding boxes \o/)
+- added config option to disable hammer crushing
+- allowed revolver recipe to be mirrored
+
+
+#####Version 0.4.1 - BUILT
+- updated zh_CN.lang
+- fixed randomness of the excavator for negative seeds
+- allowed customizeable renderdistance for windmills, watermills and a few others
+- made wooden posts climbable. Temporary feature, might be removed again.
+- fixed localization on voltmeter
+- added potatoes to the list of items to be fermented
+- started working on skycrates. Heavily WIP, be warned!
+
+
+#####Version 0.4.0 - BUILT
 - fixed conveyor sorter not accepting items
 - players can no longer ride bullets, sorry =P
 - players now ride the catenaries of the wires instead of straight lines
@@ -20,8 +126,20 @@
 - added a list of required blocks to every multiblock
 - attempted fix for the transfer of negative energy 
 - attempted fix on the sound system...again
- 
+- changes to revolver crafting, even users of custom skins can now get the normal one
+- stopped fluid producers from stacking unstackables
+- fixed Industrial Hemp page linking to the wrong page
+- refactored the API
+- added manual support into the API, so addon devs can do custom entries&categories
+- Fermenter&Squeezers no longer consume 9 of every stack but 9 in total
+- fixed hammer recipes to no longer consume the hammer and priorizite IE dusts
+- fixed ItemRouter voiding more stuff
+- fixed excavator being unlimited for negative numbers
 
+
+==============
+##### 0.3 VERSIONS ######
+==============
 #####Version 0.3.3 - BUILT
 - started working on skylines
 - fixed NEI handlers for squeezer+fermenter
@@ -78,6 +196,7 @@
 - possibly fixed the weird percentages on minerals 
 
 
+==============
 ##### 0.2 VERSIONS ######
 ==============
 #####Version 0.2.4 - BUILT
@@ -133,6 +252,7 @@
 - Added AquaTweaks compat
 
 
+==============
 ##### 0.1 VERSIONS ######
 ==============
 #####Version 0.1.16 - BUILT

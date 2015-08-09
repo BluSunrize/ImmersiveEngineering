@@ -3,11 +3,13 @@ package blusunrize.immersiveengineering.client.render;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.IIcon;
 import net.minecraftforge.client.IItemRenderer;
 import net.minecraftforge.client.model.obj.WavefrontObject;
 
 import org.lwjgl.opengl.GL11;
 
+import blusunrize.immersiveengineering.client.ClientProxy;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.ModelRevolverVariable;
 import blusunrize.immersiveengineering.common.items.ItemRevolver;
@@ -68,12 +70,16 @@ public class ItemRenderRevolver implements IItemRenderer
 			GL11.glTranslatef(0,.2f,.4f);
 			GL11.glScalef(.3f,.3f,.3f);
 		}
-		
-		ClientUtils.bindTexture(((ItemRevolver)item.getItem()).getRevolverTexture(item));
+
+		ClientUtils.mc().renderEngine.bindTexture(ClientProxy.revolverTextureResource);
 		GL11.glColor4f(1, 1, 1, 1);
 		GL11.glEnable(3042);
 		OpenGlHelper.glBlendFunc(770, 771, 0, 1);
-		modelobj.renderOnly(((ItemRevolver)item.getItem()).compileRender(item));
+
+		IIcon ic = ((ItemRevolver)item.getItem()).getRevolverIcon(item);
+		String[] parts = ((ItemRevolver)item.getItem()).compileRender(item);
+		ClientUtils.renderWavefrontWithIconUVs(modelobj, ic, parts);
+
 		GL11.glDisable(3042);
 		GL11.glPopMatrix();
 	}

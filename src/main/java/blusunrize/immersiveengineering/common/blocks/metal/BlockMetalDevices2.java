@@ -25,11 +25,12 @@ import cpw.mods.fml.common.Optional;
 public class BlockMetalDevices2 extends BlockIEBase implements blusunrize.aquatweaks.api.IAquaConnectable
 {
 	public static int META_breakerSwitch=0;
+	public static int META_skycrateDispenser=1;
 
 	public BlockMetalDevices2()
 	{
 		super("metalDevice2", Material.iron, 1, ItemBlockMetalDevices2.class,
-				"breakerSwitch");
+				"breakerSwitch","skycrateDispenser");
 		setHardness(3.0F);
 		setResistance(15.0F);
 	}
@@ -60,10 +61,11 @@ public class BlockMetalDevices2 extends BlockIEBase implements blusunrize.aquatw
 	@Override
 	public void getSubBlocks(Item item, CreativeTabs tab, List list)
 	{
-		for(int i=0; i<subNames.length; i++)
-		{
-			list.add(new ItemStack(item, 1, i));
-		}
+		list.add(new ItemStack(item, 1, 0));
+//		for(int i=0; i<subNames.length; i++)
+//		{
+//			list.add(new ItemStack(item, 1, i));
+//		}
 	}
 
 	@Override
@@ -154,6 +156,8 @@ public class BlockMetalDevices2 extends BlockIEBase implements blusunrize.aquatw
 		{
 		case 0://0 breakerSwitch
 			return new TileEntityBreakerSwitch();
+		case 1://1 skycrateDispenser
+			return new TileEntitySkycrateDispenser();
 		}
 		return null;
 	}

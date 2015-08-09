@@ -8,9 +8,9 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
-import blusunrize.immersiveengineering.api.IImmersiveConnectable;
-import blusunrize.immersiveengineering.api.ImmersiveNetHandler;
-import blusunrize.immersiveengineering.api.ImmersiveNetHandler.Connection;
+import blusunrize.immersiveengineering.api.energy.IImmersiveConnectable;
+import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler;
+import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.common.entities.EntitySkylineHook;
 import blusunrize.immersiveengineering.common.items.ItemSkyhook;
 
@@ -64,19 +64,20 @@ public class SkylineHelper
 		double dx = (steps[0].xCoord-vStart.xCoord);
 		double dy = (steps[0].yCoord-vStart.yCoord);
 		double dz = (steps[0].zCoord-vStart.zCoord);
-		//		double d = Math.sqrt(dx*dx+dz*dz+dy*dy);
+		double d = 1;//connection.length;
+		//						Math.sqrt(dx*dx+dz*dz+dy*dy);
 
-		Vec3 moveVec = Vec3.createVectorHelper(dx,dy,dz);
-		//		Vec3 moveVec = Vec3.createVectorHelper(dx/d,dy/d,dz/d);
-
+		//		Vec3 moveVec = Vec3.createVectorHelper(dx,dy,dz);
+//		Vec3 moveVec = Vec3.createVectorHelper(dx/d,dy/d,dz/d);
 
 		EntitySkylineHook hook = new EntitySkylineHook(player.worldObj, vStart.xCoord,vStart.yCoord,vStart.zCoord, connection, cc0, steps);
-		float speed = .2f;
+		float speed = 1;
 		if(player.getCurrentEquippedItem()!=null&&player.getCurrentEquippedItem().getItem() instanceof ItemSkyhook)
 			speed = ((ItemSkyhook)player.getCurrentEquippedItem().getItem()).getSkylineSpeed(player.getCurrentEquippedItem());
-		hook.motionX = moveVec.xCoord*speed;
-		hook.motionY = moveVec.yCoord*speed;
-		hook.motionZ = moveVec.zCoord*speed;
+		Vec3 moveVec = getSubMovementVector(vStart, steps[0], speed);
+		hook.motionX = moveVec.xCoord;//*speed;
+		hook.motionY = moveVec.yCoord;//*speed;
+		hook.motionZ = moveVec.zCoord;//*speed;
 		//		hook.motionX = (steps[0].xCoord-cc1.posX)*.5f;
 		//		hook.motionY = (steps[0].yCoord-cc1.posY)*.5f;
 		//		hook.motionZ = (steps[0].zCoord-cc1.posZ)*.5f;
@@ -102,7 +103,7 @@ public class SkylineHelper
 		double dy = (end.yCoord)-(start.yCoord);
 		double dz = (end.zCoord)-(start.zCoord);
 		double dw = Math.sqrt(dx*dx + dz*dz);
-		double k = Math.sqrt(dx*dx + dy*dy + dz*dz) * 1.005;
+		double k = Math.sqrt(dx*dx + dy*dy + dz*dz) * connection.cableType.getSlack();
 		double l = 0;
 		int limiter = 0;
 		while(!vertical && true && limiter<300)
@@ -128,5 +129,12 @@ public class SkylineHelper
 			vex[i] = Vec3.createVectorHelper(start.xCoord+x1, start.yCoord+y1, start.zCoord+z1);
 		}
 		return vex;
+	}
+
+	public static Vec3 getSubMovementVector(Vec3 start, Vec3 target, float speed)
+	{
+		Vec3 movementVec = Vec3.createVectorHelper(target.xCoord-start.xCoord, target.yCoord-start.yCoord, target.zCoord-start.zCoord);
+		int lPixel = (int)Math.max(1, (movementVec.lengthVector()/(.125*speed)));
+		return Vec3.createVectorHelper(movementVec.xCoord/lPixel, movementVec.yCoord/lPixel, movementVec.zCoord/lPixel);
 	}
 }

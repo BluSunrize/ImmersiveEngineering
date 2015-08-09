@@ -19,6 +19,9 @@ public class NEIConfig implements IConfigureNEI
 		
 		API.registerRecipeHandler(new NEICrusherHandler());
 		API.registerUsageHandler(new NEICrusherHandler());
+
+		API.registerRecipeHandler(new NEIBlueprintHandler());
+		API.registerUsageHandler(new NEIBlueprintHandler());
 		
 		API.registerRecipeHandler(new NEISqueezerHandler());
 		API.registerUsageHandler(new NEISqueezerHandler());
@@ -26,6 +29,9 @@ public class NEIConfig implements IConfigureNEI
 		API.registerUsageHandler(new NEIFermenterHandler());
 		API.registerRecipeHandler(new NEIRefineryHandler());
 		API.registerUsageHandler(new NEIRefineryHandler());
+		
+		API.registerRecipeHandler(new NEIArcFurnaceHandler());
+		API.registerUsageHandler(new NEIArcFurnaceHandler());
 	}
 
 

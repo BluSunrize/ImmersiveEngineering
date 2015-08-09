@@ -102,7 +102,7 @@ public class MultiblockBucketWheel implements IMultiblock
 					tile.facing=side;
 					tile.formed=true;
 					tile.pos = (w+3) + (h+3)*7;
-					tile.offset = new int[]{(side==2?-w: side==3?w: 0),h+1,(side==4?-w: side==5?w: 0)};
+					tile.offset = new int[]{(side==2?w: side==3?-w: 0),h,(side==4?w: side==5?-w: 0)};
 				}
 			}
 		return true;

@@ -6,10 +6,12 @@ import net.minecraft.util.ResourceLocation;
 
 public class EntityRenderNone extends Render
 {
+	@Override
 	public void doRender(Entity entity, double x, double y, double z, float f0, float f1)
 	{
 	}
 
+	@Override
 	protected ResourceLocation getEntityTexture(Entity p_110775_1_)
 	{
 		return null;

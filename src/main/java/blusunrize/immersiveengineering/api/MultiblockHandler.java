@@ -9,7 +9,7 @@ import net.minecraft.world.World;
 
 /**
  * @author BluSunrize - 27.04.2015
- *
+ * <br>
  * The handler for IE multiblocks. TO handle custom structures, create a class implementing IMultiblock and register it
  */
 public class MultiblockHandler

@@ -3,14 +3,14 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.common.util.ForgeDirection;
-import blusunrize.immersiveengineering.api.ImmersiveNetHandler.Connection;
+import blusunrize.immersiveengineering.api.energy.WireType;
+import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.api.TargetingInfo;
-import blusunrize.immersiveengineering.api.WireType;
 
 public class TileEntityConnectorStructural extends TileEntityConnectorLV
 {
 	public float rotation = 0;
-	
+
 	@Override
 	protected boolean canTakeMV()
 	{
@@ -26,7 +26,6 @@ public class TileEntityConnectorStructural extends TileEntityConnectorLV
 	{
 		return false;
 	}
-	
 
 	@Override
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
@@ -40,7 +39,7 @@ public class TileEntityConnectorStructural extends TileEntityConnectorLV
 		super.readCustomNBT(nbt, descPacket);
 		rotation = nbt.getFloat("rotation");
 	}
-	
+
 	@Override
 	public Vec3 getConnectionOffset(Connection con)
 	{
@@ -54,7 +53,7 @@ public class TileEntityConnectorStructural extends TileEntityConnectorLV
 	{
 		return WireType.STRUCTURE_STEEL.getMaxLength();
 	}
-	
+
 	@Override
 	public int getMaxInput()
 	{

@@ -16,8 +16,8 @@ import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.oredict.OreDictionary;
-import blusunrize.immersiveengineering.api.DieselHandler;
-import blusunrize.immersiveengineering.api.DieselHandler.FermenterRecipe;
+import blusunrize.immersiveengineering.api.energy.DieselHandler;
+import blusunrize.immersiveengineering.api.energy.DieselHandler.FermenterRecipe;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockFermenter;
@@ -53,6 +53,11 @@ public class TileEntityFermenter extends TileEntityMultiblockPart implements IFl
 		if(!formed)
 			return new ItemStack(IEContent.blockMetalMultiblocks,1,BlockMetalMultiblocks.META_fermenter);
 		return MultiblockFermenter.instance.getStructureManual()[(pos%9/3)][pos/9][pos%3].copy();
+	}
+	@Override
+	public float[] getBlockBounds()
+	{
+		return new float[]{0,0,0,1,1,1};
 	}
 
 
@@ -104,10 +109,11 @@ public class TileEntityFermenter extends TileEntityMultiblockPart implements IFl
 									if(recipe.output!=null)
 										if(inventory[11]!=null)
 											inventory[11].stackSize+= taken*recipe.output.copy().stackSize;
-										else if(inventory[1]==null)
+										else if(inventory[11]==null)
 											inventory[11] = Utils.copyStackWithAmount(recipe.output, taken*recipe.output.stackSize);
 									if(recipe.fluid!=null)
 										this.tank.fill( new FluidStack(recipe.fluid, taken*recipe.fluid.amount), true);
+									inputs-=taken;
 									update = true;
 								}
 							}
@@ -136,7 +142,7 @@ public class TileEntityFermenter extends TileEntityMultiblockPart implements IFl
 			}
 			else if(tick>0)
 				tick=0;
-			if(tank.getFluidAmount()>0 && tank.getFluid()!=null)
+			if(tank.getFluidAmount()>0 && tank.getFluid()!=null && (inventory[10]==null||inventory[10].stackSize+1<inventory[10].getMaxStackSize()))
 			{
 				ItemStack filledContainer = Utils.fillFluidContainer(tank, inventory[9], inventory[10]);
 				if(filledContainer!=null)

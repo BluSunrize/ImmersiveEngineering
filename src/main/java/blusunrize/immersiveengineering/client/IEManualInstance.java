@@ -1,8 +1,11 @@
 package blusunrize.immersiveengineering.client;
 
+import java.util.LinkedHashSet;
+
 import net.minecraft.util.StatCollector;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.lib.manual.IManualPage;
 import blusunrize.lib.manual.ManualInstance;
 
 public class IEManualInstance extends ManualInstance
@@ -16,7 +19,8 @@ public class IEManualInstance extends ManualInstance
 	public String formatText(String s)
 	{
 		s = StatCollector.translateToLocal("ie.manual.entry."+s);
-		
+		String splitKey = ";";
+
 		s = s.replaceAll("<br>", "\n");
 		int start;
 		int overflow=0;
@@ -25,14 +29,14 @@ public class IEManualInstance extends ManualInstance
 			overflow++;
 			int end = s.indexOf(">", start);
 			String rep = s.substring(start, end+1);
-			String[] segment = rep.substring(0,rep.length()-1).split(":");
+			String[] segment = rep.substring(0,rep.length()-1).split(splitKey);
 			if(segment.length<3)
 				break;
 			String result = "";
 			if(segment[1].equalsIgnoreCase("b"))
 			{
-				if(segment.length>4)
-					result = (Config.getBoolean(segment[2])?segment[3]:segment[4]);
+				if(segment.length>3)
+					result = (Config.getBoolean(segment[2])?segment[3]: segment.length>4?segment[4]:"");
 				else
 					result = ""+Config.getBoolean(segment[2]);
 			}
@@ -87,9 +91,17 @@ public class IEManualInstance extends ManualInstance
 		return StatCollector.translateToLocal("item.ImmersiveEngineering.tool.manual.name");
 	}
 	@Override
+	public void addEntry(String name, String category, IManualPage... pages)
+	{
+		super.addEntry(name, category, pages);
+		if(!categorySet.contains(category))
+			categorySet.add(category);
+	}
+	LinkedHashSet<String> categorySet = new LinkedHashSet<String>();
+	@Override
 	public String[] getSortedCategoryList()
 	{
-		return new String[]{"general","energy","machines"};
+		return categorySet.toArray(new String[categorySet.size()]);
 	}
 	@Override
 	public String formatCategoryName(String s)

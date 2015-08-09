@@ -9,6 +9,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 import blusunrize.lib.manual.IManualPage;
@@ -72,7 +73,7 @@ public class GuiManual extends GuiScreen
 			for(ManualEntry e : manual.manualContents.values())
 				if(manual.showEntryInList(e))
 					lHeaders.add(e.getName());
-			headers = lHeaders.toArray(new String[0]);
+			headers = lHeaders.toArray(new String[lHeaders.size()]);
 			this.buttonList.add(new GuiClickableList(this, 0, guiLeft+40,guiTop+20, 100,148, 1f, 1, headers));
 		}
 		else if(manual.manualContents.containsKey(selectedCategory))
@@ -81,7 +82,7 @@ public class GuiManual extends GuiScreen
 			for(ManualEntry e : manual.manualContents.get(selectedCategory))
 				if(manual.showEntryInList(e))
 					lHeaders.add(e.getName());
-			headers = lHeaders.toArray(new String[0]);
+			headers = lHeaders.toArray(new String[lHeaders.size()]);
 			this.buttonList.add(new GuiClickableList(this, 0, guiLeft+40,guiTop+20, 100,148, 1f, 1, headers));
 		}
 		else
@@ -90,7 +91,7 @@ public class GuiManual extends GuiScreen
 			for(String cat : manual.getSortedCategoryList())
 				if(manual.showCategoryInList(cat))
 					lHeaders.add(cat);
-			headers = lHeaders.toArray(new String[0]);
+			headers = lHeaders.toArray(new String[lHeaders.size()]);
 			this.buttonList.add(new GuiClickableList(this, 0, guiLeft+40,guiTop+20, 100,148, 1f, 0, headers));
 		}
 		if(manual.manualContents.containsKey(selectedCategory) || manual.getEntry(selectedEntry)!=null)
@@ -208,6 +209,26 @@ public class GuiManual extends GuiScreen
 		super.drawHoveringText(text,x,y,font);
 	}
 
+	@Override
+	public void handleMouseInput()
+	{
+		super.handleMouseInput();
+		int wheel = Mouse.getEventDWheel();
+		if(wheel!=0 && manual.getEntry(selectedEntry)!=null)
+		{
+			ManualEntry entry = manual.getEntry(selectedEntry);
+			if(wheel>0 && page>0)
+			{
+				page--;
+				this.initGui();
+			}
+			else if(wheel<0 && page<entry.getPages().length-1)
+			{
+				page++;
+				this.initGui();
+			}
+		}
+	}
 	@Override
 	public void mouseClicked(int mx, int my, int button)
 	{

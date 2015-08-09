@@ -17,7 +17,7 @@ import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.oredict.OreDictionary;
-import blusunrize.immersiveengineering.api.ExcavatorHandler;
+import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockExcavator;
@@ -35,6 +35,8 @@ public class TileEntityExcavator extends TileEntityMultiblockPart implements IEn
 	public boolean active = false;
 	public int process = 0;
 
+	public int lastPowerInput=0;
+	
 	@Override
 	public ItemStack getOriginalBlock()
 	{
@@ -252,18 +254,6 @@ public class TileEntityExcavator extends TileEntityMultiblockPart implements IEn
 		s = digBlock(wheel.xCoord+(facing==5?-1:facing==4?1:-1),wheel.yCoord-4,wheel.zCoord+(facing==3?-1:facing==2?1:-1));
 		if(s!=null)
 			return s;
-		//		//Down+Backward 1
-		//		s = digBlock(wheel.xCoord+(facing==5?1:facing==4?-1:0),wheel.yCoord-5,wheel.zCoord+(facing==3?1:facing==2?-1:0));
-		//		if(s!=null)
-		//			return s;
-		//		//Down
-		//		s = digBlock(wheel.xCoord,wheel.yCoord-5,wheel.zCoord);
-		//		if(s!=null)
-		//			return s;
-		//		//Down+Forward 1
-		//		s = digBlock(wheel.xCoord+(facing==5?-1:facing==4?1:0),wheel.yCoord-5,wheel.zCoord+(facing==3?-1:facing==2?1:0));
-		//		if(s!=null)
-		//			return s;
 		return null;
 	}
 
@@ -324,38 +314,20 @@ public class TileEntityExcavator extends TileEntityMultiblockPart implements IEn
 	{
 		super.readCustomNBT(nbt, descPacket);
 		facing = nbt.getInteger("facing");
-		//		barrelRotation = nbt.getFloat("barrelRotation");
 		active = nbt.getBoolean("active");
-		//		mobGrinding = nbt.getBoolean("mobGrinding");
-		//		grindingTimer = nbt.getInteger("grindingTimer");
 		process = nbt.getInteger("process");
+		lastPowerInput = nbt.getInteger("lastPowerInput");
 		energyStorage.readFromNBT(nbt);
-		//		if(!descPacket)
-		//		{
-		//			NBTTagList invList = nbt.getTagList("inputs", 10);
-		//			inputs.clear();
-		//			for(int i=0;i<invList.tagCount();i++)
-		//				inputs.add( ItemStack.loadItemStackFromNBT(invList.getCompoundTagAt(i)));
-		//		}
 	}
 	@Override
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
 		nbt.setInteger("facing", facing);
-		//		nbt.setFloat("barrelRotation", barrelRotation);
 		nbt.setBoolean("active", active);
-		//		nbt.setBoolean("mobGrinding", mobGrinding);
-		//		nbt.setInteger("grindingTimer", grindingTimer);
 		nbt.setInteger("process", process);
+		nbt.setInteger("lastPowerInput", lastPowerInput);
 		energyStorage.writeToNBT(nbt);
-		//		if(!descPacket)
-		//		{
-		//			NBTTagList invList = new NBTTagList();
-		//			for(ItemStack s : inputs)
-		//				invList.appendTag(s.writeToNBT(new NBTTagCompound()));
-		//			nbt.setTag("inputs", invList);
-		//		}
 	}
 
 	@Override
@@ -428,6 +400,7 @@ public class TileEntityExcavator extends TileEntityMultiblockPart implements IEn
 		{
 			TileEntityExcavator master = master();
 			int rec = master.energyStorage.receiveEnergy(maxReceive, simulate);
+			lastPowerInput = rec;
 			master.markDirty();
 			worldObj.markBlockForUpdate(master.xCoord, master.yCoord, master.zCoord);
 			return rec;
@@ -460,9 +433,27 @@ public class TileEntityExcavator extends TileEntityMultiblockPart implements IEn
 	@Override
 	public double getMaxRenderDistanceSquared()
 	{
-		if(Config.getBoolean("increasedTileRenderdistance"))
-			return super.getMaxRenderDistanceSquared()*1.5;
-		return super.getMaxRenderDistanceSquared();
+		return super.getMaxRenderDistanceSquared()*Config.getDouble("increasedTileRenderdistance");
+	}
+	@Override
+	public float[] getBlockBounds()
+	{
+		int fl = facing;
+		int fw = facing;
+		if(mirrored)
+			fw = ForgeDirection.OPPOSITES[fw];
+
+		if(pos==42)
+			return new float[]{fl==4||fl==5?-.5f:0,0,fl==2||fl==3?-.5f:0,  fl==4||fl==5?1.5f:1,.5f,fl==2||fl==3?1.5f:1};
+		else if(pos==29||pos==38||pos==47)
+			return new float[]{fw==2?.25f:0,0,fw==5?.25f:0, fw==3?.75f:1,1,fw==4?.75f:1};
+		else if(pos==44)
+			return new float[]{fw==3?.875f:0,0,fw==4?.875f:0, fw==2?.125f:1,1,fw==5?.125f:1};
+		else if(pos==35)
+			return new float[]{fl==5?.375f:fl==4?.5f:0,0,fl==3?.375f:fl==2?.5f:0,  fl==5?.5f:fl==4?.625f:1,1,fl==3?.5f:fl==2?.625f:1};
+		else if(pos==53)
+			return new float[]{fl==4?.375f: fl==5?.5f:0,0,fl==2?.375f:fl==3?.5f:0,  fl==4?.5f:fl==5?.625f:1,1,fl==2?.5f:fl==3?.625f:1};
+		return new float[]{0,0,0,1,1,1};
 	}
 
 }

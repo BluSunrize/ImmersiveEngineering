@@ -9,13 +9,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
-import blusunrize.immersiveengineering.api.ExcavatorHandler;
-import blusunrize.immersiveengineering.api.ImmersiveNetHandler;
-import blusunrize.immersiveengineering.api.WireType;
+import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler;
+import blusunrize.immersiveengineering.api.energy.WireType;
+import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.common.CommonProxy;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.EventHandler;
 import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.IERecipes;
 import blusunrize.immersiveengineering.common.IESaveData;
 import blusunrize.immersiveengineering.common.IEWorldGen;
 import blusunrize.immersiveengineering.common.items.ItemRevolver;
@@ -40,7 +41,7 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 
-@Mod(modid=ImmersiveEngineering.MODID,name=ImmersiveEngineering.MODNAME,version = ImmersiveEngineering.VERSION, dependencies="after:Railcraft")
+@Mod(modid=ImmersiveEngineering.MODID,name=ImmersiveEngineering.MODNAME,version = ImmersiveEngineering.VERSION, dependencies="after:Railcraft;before:TConstruct")
 public class ImmersiveEngineering
 {
 	public static final String MODID = "ImmersiveEngineering";
@@ -88,6 +89,7 @@ public class ImmersiveEngineering
 		for(IECompatModule compat : IECompatModule.modules)
 			if(Loader.isModLoaded(compat.modId))
 				compat.postInit();
+		IERecipes.postInitCrusherAndArcRecipes();
 	}
 	@Mod.EventHandler
 	public void loadComplete(FMLLoadCompleteEvent event)
@@ -125,7 +127,6 @@ public class ImmersiveEngineering
 		}
 	}
 
-
 	public static CreativeTabs creativeTab = new CreativeTabs(MODID)
 	{
 		@Override
@@ -155,7 +156,7 @@ public class ImmersiveEngineering
 		{
 			Gson gson = new Gson();
 			try {
-				IELogger.warn("Attempting to download special revolvers from GitHub");
+				IELogger.info("Attempting to download special revolvers from GitHub");
 				URL url = new URL("https://raw.githubusercontent.com/BluSunrize/ImmersiveEngineering/master/contributorRevolvers.json");
 				JsonStreamParser parser = new JsonStreamParser(new InputStreamReader(url.openStream()));
 				while(parser.hasNext())
@@ -168,7 +169,7 @@ public class ImmersiveEngineering
 							if(revolver.uuid!=null)
 								for(String uuid : revolver.uuid)
 									ItemRevolver.specialRevolvers.put(uuid, revolver);
-							ItemRevolver.specialRevolversByTag.put(revolver.tag, revolver);
+							ItemRevolver.specialRevolversByTag.put(!revolver.tag.isEmpty()?revolver.tag:revolver.flavour, revolver);
 						}
 					}catch(Exception excepParse)
 					{

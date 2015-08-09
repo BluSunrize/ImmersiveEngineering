@@ -6,7 +6,7 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import blusunrize.immersiveengineering.api.IUpgrade;
+import blusunrize.immersiveengineering.api.tool.IUpgrade;
 import blusunrize.immersiveengineering.common.gui.InventoryStorageItem;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 
@@ -43,7 +43,7 @@ public abstract class ItemUpgradeableTool extends ItemInternalStorage
 					upg.applyUpgrades(stack, u, map);	
 			}
 		}
-		NBTTagCompound upgradeTag = getUpgradeBase(stack);
+		NBTTagCompound upgradeTag = (NBTTagCompound)getUpgradeBase(stack).copy();
 		for(String key : map.keySet())
 		{
 			Object o = map.get(key);
@@ -69,6 +69,10 @@ public abstract class ItemUpgradeableTool extends ItemInternalStorage
 	public NBTTagCompound getUpgradeBase(ItemStack stack)
 	{
 		return new NBTTagCompound();
+	}
+	public boolean canTakeFromWorkbench(ItemStack stack)
+	{
+		return true;
 	}
 	
 	public abstract boolean canModify(ItemStack stack);

@@ -12,7 +12,7 @@ import net.minecraftforge.client.model.obj.WavefrontObject;
 
 import org.lwjgl.opengl.GL11;
 
-import blusunrize.immersiveengineering.api.IDrillHead;
+import blusunrize.immersiveengineering.api.tool.IDrillHead;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.items.ItemDrill;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;

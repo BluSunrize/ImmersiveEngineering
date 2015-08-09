@@ -14,6 +14,7 @@ public class EntityRenderRevolvershot extends Render
 	{
 	}
 
+	@Override
 	public void doRender(Entity entity, double x, double y, double z, float f0, float f1)
 	{
 		GL11.glPushMatrix();
@@ -81,9 +82,10 @@ public class EntityRenderRevolvershot extends Render
 		GL11.glPopMatrix();
 	}
 
+	@Override
 	protected ResourceLocation getEntityTexture(Entity p_110775_1_)
 	{
-		return new ResourceLocation("immersiveEngineering:textures/models/bullet.png");
+		return new ResourceLocation("immersiveengineering:textures/models/bullet.png");
 	}
 
 }

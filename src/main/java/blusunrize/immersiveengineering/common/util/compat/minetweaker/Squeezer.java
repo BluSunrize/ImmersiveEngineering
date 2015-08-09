@@ -13,8 +13,8 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
-import blusunrize.immersiveengineering.api.DieselHandler;
-import blusunrize.immersiveengineering.api.DieselHandler.SqueezerRecipe;
+import blusunrize.immersiveengineering.api.energy.DieselHandler;
+import blusunrize.immersiveengineering.api.energy.DieselHandler.SqueezerRecipe;
 
 @ZenClass("mods.immersiveengineering.Squeezer")
 public class Squeezer

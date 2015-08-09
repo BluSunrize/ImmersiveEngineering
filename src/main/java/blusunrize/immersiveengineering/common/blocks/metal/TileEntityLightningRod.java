@@ -38,7 +38,7 @@ public class TileEntityLightningRod extends TileEntityMultiblockPart implements 
 						ier.receiveEnergy(fd.getOpposite(), extracted, false);
 					}
 			}
-			if(worldObj.getTotalWorldTime()%257==((xCoord^zCoord)&256) && ( worldObj.isThundering() || (worldObj.isRaining()&&worldObj.rand.nextInt(10)==0) ))
+			if(worldObj.getTotalWorldTime()%256==((xCoord^zCoord)&255) && ( worldObj.isThundering() || (worldObj.isRaining()&&worldObj.rand.nextInt(10)==0) ))
 			{
 				int height = 0;
 				boolean broken = false;
@@ -58,7 +58,9 @@ public class TileEntityLightningRod extends TileEntityMultiblockPart implements 
 				if (worldObj.rand.nextInt(4096*worldObj.getHeight())<height*(yCoord+height))
 				{
 					this.energyStorage.setEnergyStored(Config.getInt("lightning_output"));
-					worldObj.spawnEntityInWorld(new EntityLightningBolt(worldObj, xCoord, yCoord+height, zCoord));
+					EntityLightningBolt entityLightningBolt = new EntityLightningBolt(worldObj, xCoord, yCoord+height, zCoord);
+					worldObj.addWeatherEffect(entityLightningBolt);
+					worldObj.spawnEntityInWorld(entityLightningBolt);
 				}
 			}
 		}
@@ -132,6 +134,11 @@ public class TileEntityLightningRod extends TileEntityMultiblockPart implements 
 	public ItemStack getOriginalBlock()
 	{
 		return new ItemStack(IEContent.blockMetalMultiblocks,1,BlockMetalMultiblocks.META_lightningRod);
+	}
+	@Override
+	public float[] getBlockBounds()
+	{
+		return new float[]{0,0,0,1,1,1};
 	}
 
 	@Override

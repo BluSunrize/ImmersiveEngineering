@@ -31,6 +31,11 @@ public class TileEntityConveyorSorter extends TileEntityIEBase implements ISided
 		filter = new SorterInventory(this);
 	}
 
+	@Override
+	public boolean canUpdate()
+	{
+		return false;
+	}
 
 	public void routeItem(int inputSide, ItemStack stack)
 	{
@@ -136,7 +141,7 @@ public class TileEntityConveyorSorter extends TileEntityIEBase implements ISided
 				{
 					ForgeDirection fd = ForgeDirection.getOrientation(side);
 					TileEntity inventory = this.worldObj.getTileEntity(xCoord+fd.offsetX, yCoord+fd.offsetY, zCoord+fd.offsetZ);
-					if(isInventory(inventory, ForgeDirection.OPPOSITES[side]))
+					if(isInventory(inventory, ForgeDirection.OPPOSITES[side]) && Utils.canInsertStackIntoInventory((IInventory)inventory, stack, ForgeDirection.OPPOSITES[side]))
 						validFilteredInvOuts.add(side);
 					else if(allowThrowing)
 						validFilteredEntityOuts.add(side);
@@ -145,17 +150,17 @@ public class TileEntityConveyorSorter extends TileEntityIEBase implements ISided
 				{
 					ForgeDirection fd = ForgeDirection.getOrientation(side);
 					TileEntity inventory = this.worldObj.getTileEntity(xCoord+fd.offsetX, yCoord+fd.offsetY, zCoord+fd.offsetZ);
-					if(isInventory(inventory, ForgeDirection.OPPOSITES[side]))
+					if(isInventory(inventory, ForgeDirection.OPPOSITES[side]) && Utils.canInsertStackIntoInventory((IInventory)inventory, stack, ForgeDirection.OPPOSITES[side]))
 						validUnfilteredInvOuts.add(side);
 					else if(allowThrowing)
 						validUnfilteredEntityOuts.add(side);
 				}
 			}
 		return new Integer[][]{ 
-				validFilteredInvOuts.toArray(new Integer[0]),
-				validFilteredEntityOuts.toArray(new Integer[0]),
-				validUnfilteredInvOuts.toArray(new Integer[0]),
-				validUnfilteredEntityOuts.toArray(new Integer[0])
+				validFilteredInvOuts.toArray(new Integer[validFilteredInvOuts.size()]),
+				validFilteredEntityOuts.toArray(new Integer[validFilteredEntityOuts.size()]),
+				validUnfilteredInvOuts.toArray(new Integer[validUnfilteredInvOuts.size()]),
+				validUnfilteredEntityOuts.toArray(new Integer[validUnfilteredEntityOuts.size()])
 		};
 	}
 
@@ -164,10 +169,8 @@ public class TileEntityConveyorSorter extends TileEntityIEBase implements ISided
 	{
 		ForgeDirection fd = ForgeDirection.getOrientation(side);
 		TileEntity inventory = this.worldObj.getTileEntity(xCoord+fd.offsetX, yCoord+fd.offsetY, zCoord+fd.offsetZ);
-		if(isInventory(inventory, ForgeDirection.OPPOSITES[side]))
-		{
+		if(isInventory(inventory, ForgeDirection.OPPOSITES[side]) && Utils.canInsertStackIntoInventory((IInventory)inventory, stack, ForgeDirection.OPPOSITES[side]))
 			stack = Utils.insertStackIntoInventory((IInventory)inventory, stack, ForgeDirection.OPPOSITES[side]);
-		}
 
 		if(stack != null)
 		{
@@ -278,8 +281,7 @@ public class TileEntityConveyorSorter extends TileEntityIEBase implements ISided
 	{
 		return false;
 	}
-
-
+	
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
@@ -405,7 +407,7 @@ public class TileEntityConveyorSorter extends TileEntityIEBase implements ISided
 					if(this.filters[i][j] != null)
 					{
 						NBTTagCompound itemTag = new NBTTagCompound();
-						itemTag.setByte("Slot", (byte)(i*j));
+						itemTag.setByte("Slot", (byte)(i*filterSlotsPerSide+j));
 						this.filters[i][j].writeToNBT(itemTag);
 						list.appendTag(itemTag);
 					}

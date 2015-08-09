@@ -9,10 +9,10 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.common.util.ForgeDirection;
-import blusunrize.immersiveengineering.api.ImmersiveNetHandler;
-import blusunrize.immersiveengineering.api.ImmersiveNetHandler.AbstractConnection;
-import blusunrize.immersiveengineering.api.ImmersiveNetHandler.Connection;
-import blusunrize.immersiveengineering.api.WireType;
+import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler;
+import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler.AbstractConnection;
+import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler.Connection;
+import blusunrize.immersiveengineering.api.energy.WireType;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.blocks.TileEntityImmersiveConnectable;
 import blusunrize.immersiveengineering.common.util.Lib;
@@ -91,22 +91,18 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 			return ((IEnergyReceiver)capacitor).receiveEnergy(fd.getOpposite(), amount, simulate);
 		else if(Lib.IC2 && IC2Helper.isAcceptingEnergySink(capacitor, this, fd.getOpposite()))
 		{
-//			if(simulate)
-//				return amount;
-//			else
-//			{
-				double left = IC2Helper.injectEnergy(capacitor, fd.getOpposite(), ModCompatability.convertRFtoEU(amount, getIC2Tier()), canTakeHV()?(256*256): canTakeMV()?(128*128) : (32*32), simulate);
-				return amount-ModCompatability.convertEUtoRF(left);
-//			}
+			double left = IC2Helper.injectEnergy(capacitor, fd.getOpposite(), ModCompatability.convertRFtoEU(amount, getIC2Tier()), canTakeHV()?(256*256): canTakeMV()?(128*128) : (32*32), simulate);
+			return amount-ModCompatability.convertEUtoRF(left);
 		}
 		else if(Lib.GREG && GregTechHelper.gregtech_isEnergyConnected(capacitor))
 			if(simulate)
-				return amount;
-			else
 			{
-				GregTechHelper.gregtech_outputGTPower(capacitor, (byte)fd.getOpposite().ordinal(), (long)ModCompatability.convertRFtoEU(amount, getIC2Tier()), 1L);
-				return amount;
+				long accepted = GregTechHelper.gregtech_outputGTPower(capacitor, (byte)fd.getOpposite().ordinal(), (long)ModCompatability.convertRFtoEU(amount, getIC2Tier()), 1L);
+				GregTechHelper.gregtech_outputGTPower(capacitor, (byte)fd.getOpposite().ordinal(), -accepted, 1L);
+				return (int)accepted;
 			}
+			else
+				return (int)GregTechHelper.gregtech_outputGTPower(capacitor, (byte)fd.getOpposite().ordinal(), (long)ModCompatability.convertRFtoEU(amount, getIC2Tier()), 1L);
 		return 0;
 	}
 
@@ -127,7 +123,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 	public Vec3 getRaytraceOffset()
 	{
 		ForgeDirection fd = ForgeDirection.getOrientation(facing).getOpposite();
-		return Vec3.createVectorHelper(.5+.5*fd.offsetX, .5+.5*fd.offsetY, .5+.5*fd.offsetZ);
+		return Vec3.createVectorHelper(.5+fd.offsetX*.0625, .5+fd.offsetY*.0625, .5+fd.offsetZ*.0625);
 	}
 	@Override
 	public Vec3 getConnectionOffset(Connection con)
@@ -156,7 +152,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 	@Override
 	public boolean canConnectEnergy(ForgeDirection from)
 	{
-		return true;
+		return from.ordinal()==facing;
 	}
 	@Override
 	public int receiveEnergy(ForgeDirection from, int maxReceive,boolean simulate)
@@ -200,15 +196,6 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 					powerLeft -= r;
 					if(powerLeft<=0)
 						break;
-					
-//					int tempR = toIIC(con.end,worldObj).outputEnergy(Math.min(powerLeft,con.cableType.getTransferRate()), true, energyType);
-//					int r = tempR;
-//					tempR -= (int) Math.floor(tempR*con.getAverageLossRate());
-//					toIIC(con.end, worldObj).outputEnergy(tempR, simulate, energyType);
-//					received += r;
-//					powerLeft -= r;
-//					if(powerLeft<=0)
-//						break;
 				}
 		}
 		return received;

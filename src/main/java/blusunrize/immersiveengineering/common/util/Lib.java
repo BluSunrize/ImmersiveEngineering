@@ -24,11 +24,14 @@ public class Lib
 	public static final int GUIID_Sorter = 7;
 	public static final int GUIID_Refinery = 8;
 	public static final int GUIID_Workbench = 9;
+	public static final int GUIID_ArcFurnace = 10;
 	
 	public static String DMG_RevolverCasull="ieRevolver_casull";
 	public static String DMG_RevolverAP="ieRevolver_armorPiercing";
 	public static String DMG_RevolverBuck="ieRevolver_buckshot";
 	public static String DMG_RevolverDragon="ieRevolver_dragonsbreath";
+	public static String DMG_RevolverHoming="ieRevolver_homing";
+	public static String DMG_RevolverWolfpack="ieRevolver_wolfpack";
 	public static String DMG_Crusher="ieCrushed";
 	
 	public static boolean IC2 = false;

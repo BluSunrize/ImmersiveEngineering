@@ -26,9 +26,10 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.DimensionChunkCoords;
-import blusunrize.immersiveengineering.api.ExcavatorHandler;
+import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.client.render.BlockRenderMetalDevices;
 import blusunrize.immersiveengineering.common.Config;
+import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenPost;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
@@ -119,20 +120,20 @@ public class BlockMetalDevices extends BlockIEBase implements blusunrize.aquatwe
 
 	@Override
 	public boolean hasComparatorInputOverride()
-    {
-        return true;
-    }
+	{
+		return true;
+	}
 
 	@Override
-    public int getComparatorInputOverride(World world, int x, int y, int z, int side)
-    {
-    	if(world.getTileEntity(x, y, z) instanceof TileEntityCapacitorLV)
-        {
-    		TileEntityCapacitorLV capacitor = (TileEntityCapacitorLV)world.getTileEntity(x, y, z);
-    		return (int)(15*(capacitor.getEnergyStored(ForgeDirection.getOrientation(side))/(float)capacitor.getMaxEnergyStored(ForgeDirection.getOrientation(side))));
-        }
-    	return 0;
-    }
+	public int getComparatorInputOverride(World world, int x, int y, int z, int side)
+	{
+		if(world.getTileEntity(x, y, z) instanceof TileEntityCapacitorLV)
+		{
+			TileEntityCapacitorLV capacitor = (TileEntityCapacitorLV)world.getTileEntity(x, y, z);
+			return (int)(15*(capacitor.getEnergyStored(ForgeDirection.getOrientation(side))/(float)capacitor.getMaxEnergyStored(ForgeDirection.getOrientation(side))));
+		}
+		return 0;
+	}
 
 	@Override
 	public void getSubBlocks(Item item, CreativeTabs tab, List list)
@@ -226,7 +227,7 @@ public class BlockMetalDevices extends BlockIEBase implements blusunrize.aquatwe
 		for(int i=0;i<4;i++)
 		{
 			icons[META_connectorLV][i] = iconRegister.registerIcon("immersiveengineering:metal_connectorLV");
-			icons[META_connectorMV][i] = iconRegister.registerIcon("immersiveengineering:metal_connectorHV");
+			icons[META_connectorMV][i] = iconRegister.registerIcon("immersiveengineering:metal_connectorMV");
 			icons[META_relayHV][i] = iconRegister.registerIcon("immersiveengineering:metal_relayHV");
 			icons[META_connectorHV][i] = iconRegister.registerIcon("immersiveengineering:metal_connectorHV");
 			icons[META_transformerHV][i] = iconRegister.registerIcon("immersiveengineering:metal_transformerHV");
@@ -247,8 +248,13 @@ public class BlockMetalDevices extends BlockIEBase implements blusunrize.aquatwe
 			else
 				return icon_capacitorSide[t][cap.sideConfig[side]+1];
 		}
-		if(world.getTileEntity(x, y, z) instanceof TileEntityDynamo && ((TileEntityDynamo)world.getTileEntity(x,y,z)).facing>3 && side>1)
-			return icons[META_dynamo][side<4?3:2];
+		if(world.getTileEntity(x, y, z) instanceof TileEntityDynamo)
+		{
+			if(((TileEntityDynamo)world.getTileEntity(x,y,z)).facing == ForgeDirection.OPPOSITES[side])
+				return IEContent.blockStorage.getIcon(0,7);
+			if(((TileEntityDynamo)world.getTileEntity(x,y,z)).facing>3 && side>1)
+				return icons[META_dynamo][side<4?3:2];
+		}
 		if(world.getTileEntity(x, y, z) instanceof TileEntityConveyorBelt && (((TileEntityConveyorBelt)world.getTileEntity(x,y,z)).facing==side || ((TileEntityConveyorBelt)world.getTileEntity(x,y,z)).facing==ForgeDirection.OPPOSITES[side]))
 			return icons[META_conveyorBelt][1];
 		if(world.getTileEntity(x, y, z) instanceof TileEntityFurnaceHeater)
@@ -297,6 +303,17 @@ public class BlockMetalDevices extends BlockIEBase implements blusunrize.aquatwe
 			}
 			return true;
 		}
+		if(world.getTileEntity(x, y, z) instanceof TileEntityDynamo && Utils.isHammer(player.getCurrentEquippedItem()))
+		{
+			int f = ((TileEntityDynamo)world.getTileEntity(x, y, z)).facing;
+			f = ForgeDirection.ROTATION_MATRIX[player.isSneaking()?1:0][f];
+			((TileEntityDynamo)world.getTileEntity(x, y, z)).facing = f;
+			world.getTileEntity(x, y, z).markDirty();
+			world.func_147451_t(x, y, z);
+			world.markBlockForUpdate(x, y, z);
+			world.playSoundEffect(x+.5,y+.5,z+.5, "random.door_open", .5f,2f);
+			return !world.isRemote;
+		}
 		if(world.getTileEntity(x, y, z) instanceof TileEntityConveyorBelt && Utils.isHammer(player.getCurrentEquippedItem()))
 		{
 			TileEntityConveyorBelt tile = (TileEntityConveyorBelt)world.getTileEntity(x, y, z);
@@ -333,18 +350,6 @@ public class BlockMetalDevices extends BlockIEBase implements blusunrize.aquatwe
 		}
 		if(world.getTileEntity(x, y, z) instanceof TileEntityConveyorSorter)
 		{
-			//			if(world.getTileEntity(x, y, z) instanceof TileEntityCapacitorLV && )
-			//			{
-			//				if(player.isSneaking())
-			//					side = ForgeDirection.OPPOSITES[side];
-			//				if(!world.isRemote)
-			//				{
-			//					((TileEntityCapacitorLV)world.getTileEntity(x, y, z)).toggleSide(side);
-			//					world.getTileEntity(x, y, z).markDirty();
-			//					world.func_147451_t(x, y, z);
-			//				}
-			//				return true;
-			//			}
 			if(!player.isSneaking())
 			{
 				player.openGui(ImmersiveEngineering.instance, Lib.GUIID_Sorter, world, x, y, z);
@@ -383,11 +388,15 @@ public class BlockMetalDevices extends BlockIEBase implements blusunrize.aquatwe
 					else
 					{
 						String min = StatCollector.translateToLocal(Lib.DESC_INFO+"mineral."+mineral.name);
+						if(ExcavatorHandler.mineralVeinCapacity<0)
+							min = StatCollector.translateToLocal(Lib.CHAT_INFO+"coreDrill.infinite")+" "+min;
 						player.addChatMessage(new ChatComponentTranslation(Lib.CHAT_INFO+"coreDrill.result.mineral",min));
-
-						int dep = ExcavatorHandler.mineralDepletion.get(new DimensionChunkCoords(world.provider.dimensionId, chunkX,chunkZ));
-						String f = Utils.formatDouble((Config.getInt("excavator_depletion")-dep)/(float)Config.getInt("excavator_depletion")*100,"0.##")+"%";
-						player.addChatMessage(new ChatComponentTranslation(Lib.CHAT_INFO+"coreDrill.result.depl",f));
+						if(ExcavatorHandler.mineralVeinCapacity>0)
+						{
+							int dep = ExcavatorHandler.mineralDepletion.get(new DimensionChunkCoords(world.provider.dimensionId, chunkX,chunkZ));
+							String f = Utils.formatDouble((Config.getInt("excavator_depletion")-dep)/(float)Config.getInt("excavator_depletion")*100,"0.##")+"%";
+							player.addChatMessage(new ChatComponentTranslation(Lib.CHAT_INFO+"coreDrill.result.depl",f));
+						}
 					}
 				}
 			}

@@ -7,22 +7,20 @@ import java.util.List;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.StatCollector;
-import net.minecraft.util.Vec3;
 import net.minecraftforge.common.util.ForgeDirection;
-import blusunrize.immersiveengineering.api.IImmersiveConnectable;
-import blusunrize.immersiveengineering.api.ImmersiveNetHandler;
-import blusunrize.immersiveengineering.api.ImmersiveNetHandler.AbstractConnection;
-import blusunrize.immersiveengineering.api.ImmersiveNetHandler.Connection;
+import blusunrize.immersiveengineering.api.energy.IImmersiveConnectable;
+import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler;
+import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler.AbstractConnection;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
-import blusunrize.immersiveengineering.common.blocks.TileEntityImmersiveConnectable;
+import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.Utils;
 import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyHandler;
 import cofh.api.energy.IEnergyReceiver;
 
-public class TileEntityCapacitorLV extends TileEntityImmersiveConnectable implements IEnergyHandler, IBlockOverlayText
+public class TileEntityCapacitorLV extends TileEntityIEBase implements IEnergyHandler, IBlockOverlayText
 {
 	int[] sideConfig={-1,0,-1,-1,-1,-1};
 	EnergyStorage energyStorage = new EnergyStorage(getMaxStorage(),getMaxInput(),getMaxOutput());
@@ -152,44 +150,16 @@ public class TileEntityCapacitorLV extends TileEntityImmersiveConnectable implem
 	@Override
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
-		super.writeCustomNBT(nbt, descPacket);
 		nbt.setIntArray("sideConfig", sideConfig);
 		energyStorage.writeToNBT(nbt);
 	}
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
-		super.readCustomNBT(nbt, descPacket);
 		sideConfig = nbt.getIntArray("sideConfig");
 		if(sideConfig==null || sideConfig.length<6)
 			sideConfig = new int[6];
 		energyStorage.readFromNBT(nbt);
-	}
-
-	@Override
-	public boolean canConnect()
-	{
-		return false;
-	}
-	@Override
-	public boolean isEnergyOutput()
-	{
-		return true;
-	}
-	@Override
-	public int outputEnergy(int amount, boolean simulate, int energyType)
-	{
-		return this.energyStorage.receiveEnergy(amount, simulate);
-	}
-	@Override
-	public Vec3 getRaytraceOffset()
-	{
-		return null;
-	}
-	@Override
-	public Vec3 getConnectionOffset(Connection con)
-	{
-		return null;
 	}
 
 	@Override
@@ -204,7 +174,9 @@ public class TileEntityCapacitorLV extends TileEntityImmersiveConnectable implem
 	{
 		if(worldObj.isRemote || fd.ordinal()>=sideConfig.length || sideConfig[fd.ordinal()]!=1)
 			return 0;
-		return energyStorage.extractEnergy(amount, simulate);
+		int r = energyStorage.extractEnergy(amount, simulate);
+		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+		return r;
 	}
 	@Override
 	public int getEnergyStored(ForgeDirection fd)
@@ -221,7 +193,9 @@ public class TileEntityCapacitorLV extends TileEntityImmersiveConnectable implem
 	{
 		if(worldObj.isRemote || fd.ordinal()>=sideConfig.length || sideConfig[fd.ordinal()]!=0)
 			return 0;
-		return energyStorage.receiveEnergy(amount, simulate);
+		int r = energyStorage.receiveEnergy(amount, simulate);
+		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+		return r;
 	}
 	@Override
 	public String[] getOverlayText(MovingObjectPosition mop)

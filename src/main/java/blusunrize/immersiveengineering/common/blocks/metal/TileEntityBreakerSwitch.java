@@ -2,10 +2,10 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.Vec3;
-import blusunrize.immersiveengineering.api.ImmersiveNetHandler;
-import blusunrize.immersiveengineering.api.ImmersiveNetHandler.Connection;
+import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler;
+import blusunrize.immersiveengineering.api.energy.WireType;
+import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.api.TargetingInfo;
-import blusunrize.immersiveengineering.api.WireType;
 import blusunrize.immersiveengineering.common.blocks.TileEntityImmersiveConnectable;
 import blusunrize.immersiveengineering.common.util.Utils;
 
@@ -30,6 +30,12 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable
 	protected boolean canTakeHV()
 	{
 		return true;
+	}
+	
+	@Override
+	public boolean canUpdate()
+	{
+		return false;
 	}
 
 	@Override

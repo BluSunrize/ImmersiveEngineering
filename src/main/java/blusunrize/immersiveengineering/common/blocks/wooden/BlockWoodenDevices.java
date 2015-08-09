@@ -7,6 +7,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -14,6 +15,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -72,13 +74,13 @@ public class BlockWoodenDevices extends BlockIEBase implements blusunrize.aquatw
 			case 5:
 			case 6:
 			case 7:
-				float fd = .5f;
+				float fd = .4375f;
 				float fu = 1f;
-				if(!world.isAirBlock(x,y-1,z))
+				if(canArmConnectToBlock(world, x,y-1,z, true))
 				{
 					fd = 0;
-					if(world.isAirBlock(x,y+1,z))
-						fu = .5f;
+					if(!canArmConnectToBlock(world, x,y+1,z, false))
+						fu = .5625f;
 				}
 				this.setBlockBounds(type==7?0:.3125f,fd,type==5?0:.3125f,  type==6?1:.6875f,fu,type==4?1:.6875f);
 				break;
@@ -95,6 +97,19 @@ public class BlockWoodenDevices extends BlockIEBase implements blusunrize.aquatw
 		if(world.getTileEntity(x, y, z) instanceof TileEntityWoodenPost)
 			return ((TileEntityWoodenPost)world.getTileEntity(x, y, z)).type == type;
 		return world.getBlock(x,y,z)==this && world.getBlockMetadata(x, y, z)==0;
+	}
+	boolean canArmConnectToBlock(IBlockAccess world, int x, int y, int z, boolean down)
+	{
+		if(world.isAirBlock(x,y,z))
+			return false;
+		world.getBlock(x,y,z).setBlockBoundsBasedOnState(world, x, y, z);
+		return down?world.getBlock(x,y,z).getBlockBoundsMaxY()>=1: world.getBlock(x,y,z).getBlockBoundsMinY()<=0;
+	}
+
+	@Override
+	public boolean isLadder(IBlockAccess world, int x, int y, int z, EntityLivingBase entity)
+	{
+		return (world.getTileEntity(x, y, z) instanceof TileEntityWoodenPost);
 	}
 
 	@Override
@@ -208,6 +223,21 @@ public class BlockWoodenDevices extends BlockIEBase implements blusunrize.aquatw
 				stack.setTagCompound(tag);
 			world.spawnEntityInWorld(new EntityItem(world,x+.5,y+.5,z+.5,stack));
 		}
+	}
+
+	@Override
+	public void onBlockExploded(World world, int x, int y, int z, Explosion explosion)
+	{
+		if(!world.isRemote && world.getTileEntity(x, y, z) instanceof TileEntityWoodenCrate)
+		{
+			ItemStack stack = new ItemStack(this,1,world.getBlockMetadata(x, y, z));
+			NBTTagCompound tag = new NBTTagCompound();
+			((TileEntityWoodenCrate)world.getTileEntity(x, y, z)).writeInv(tag, true);
+			if(!tag.hasNoTags())
+				stack.setTagCompound(tag);
+			world.spawnEntityInWorld(new EntityItem(world,x+.5,y+.5,z+.5,stack));
+		}
+		super.onBlockExploded(world, x, y, z, explosion);
 	}
 
 	@Override

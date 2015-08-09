@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
+import net.minecraft.world.World;
 import blusunrize.immersiveengineering.client.models.ModelIEObj;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenPost;
@@ -46,7 +47,7 @@ public class TileRenderPost extends TileRenderIE
 		if(rotate)
 			rotationMatrix.rotate(Math.toRadians(-90), 0.0, 1.0, 0.0);
 
-		model.render(tile, tes, translationMatrix, rotationMatrix, true, false, parts.toArray(new String[0]));
+		model.render(tile, tes, translationMatrix, rotationMatrix, true, false, parts.toArray(new String[parts.size()]));
 	}
 
 
@@ -55,10 +56,10 @@ public class TileRenderPost extends TileRenderIE
 		if(arm instanceof TileEntityWoodenPost && ((TileEntityWoodenPost)arm).type==checkType)
 		{
 			String dir = checkType%2==1?"left":"right";
-			if(!arm.getWorldObj().isAirBlock(arm.xCoord,arm.yCoord-1,arm.zCoord))
+			if(canArmConnectToBlock(arm.getWorldObj(), arm.xCoord,arm.yCoord-1,arm.zCoord, true))
 			{
 				parts.add("Arm_"+dir+"_d");
-				if(!arm.getWorldObj().isAirBlock(arm.xCoord,arm.yCoord+1,arm.zCoord))
+				if(canArmConnectToBlock(arm.getWorldObj(), arm.xCoord,arm.yCoord+1,arm.zCoord, false))
 					parts.add("Arm_"+dir+"_u");
 			}
 			else
@@ -68,4 +69,11 @@ public class TileRenderPost extends TileRenderIE
 		return false;
 	}
 
+	public static boolean canArmConnectToBlock(World world, int x, int y, int z, boolean down)
+	{
+		if(world.isAirBlock(x,y,z))
+			return false;
+		world.getBlock(x,y,z).setBlockBoundsBasedOnState(world, x, y, z);
+		return down?world.getBlock(x,y,z).getBlockBoundsMaxY()>=1: world.getBlock(x,y,z).getBlockBoundsMinY()<=0;
+	}
 }

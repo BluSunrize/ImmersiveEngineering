@@ -101,6 +101,7 @@ public class ManualPageMultiblock extends ManualPages
 
 			GL11.glDisable(GL11.GL_DEPTH_TEST);
 			GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+			GL11.glPushMatrix();
 			RenderHelper.enableGUIStandardItemLighting();
 			RenderItem.getInstance().renderWithColor=true;
 			int i=0;
@@ -116,6 +117,7 @@ public class ManualPageMultiblock extends ManualPages
 						{
 							int xx = 60 +xHalf -10*w +10*l -7;
 							int yy = yOffPartial - 5*w - 5*l -12*h;
+
 							GL11.glTranslated(0, 0, 1);
 							if(row[w]!=null && i<=limiter)
 							{
@@ -128,6 +130,9 @@ public class ManualPageMultiblock extends ManualPages
 					}
 				}
 			GL11.glTranslated(0, 0, -i);
+			GL11.glPopMatrix();
+
+
 			RenderHelper.disableStandardItemLighting();
 			GL11.glDisable(GL12.GL_RESCALE_NORMAL);
 			GL11.glEnable(GL11.GL_BLEND);
@@ -155,8 +160,8 @@ public class ManualPageMultiblock extends ManualPages
 							indent = maxOff-(""+ss.stackSize).length();
 						String sIndent = "";
 						if(indent>0)
-						for(int ii=0;ii<indent;ii++)
-							sIndent+="0";
+							for(int ii=0;ii<indent;ii++)
+								sIndent+="0";
 						components.add(""+EnumChatFormatting.GRAY+sIndent+ss.stackSize+"x "+EnumChatFormatting.RESET+ss.getRarity().rarityColor+ss.getDisplayName());
 					}
 				gui.drawHoveringText(components, mx, my, manual.fontRenderer);

@@ -42,6 +42,7 @@ public class EntityRevolvershot extends Entity
 	public EntityRevolvershot(World world)
 	{
 		super(world);
+		this.renderDistanceWeight=10;
 		this.setSize(.125f,.125f);
 	}
 	public EntityRevolvershot(World world, double x, double y, double z, double ax, double ay, double az, int type)
@@ -186,7 +187,8 @@ public class EntityRevolvershot extends Entity
 				}
 			}
 
-			this.worldObj.spawnParticle("smoke", this.posX, this.posY, this.posZ, 0.0D, 0.0D, 0.0D);
+			if(ticksExisted%4==0)
+				this.worldObj.spawnParticle("smoke", this.posX, this.posY, this.posZ, 0.0D, 0.0D, 0.0D);
 			this.setPosition(this.posX, this.posY, this.posZ);
 		}
 	}
@@ -212,33 +214,61 @@ public class EntityRevolvershot extends Entity
 				case 4:
 					if(mop.entityHit.attackEntityFrom(IEDamageSources.causeDragonsbreathDamage(this, shootingEntity), (float)Config.getDouble("BulletDamage-Dragon")))
 						mop.entityHit.setFire(3);
+				case 5:
+					mop.entityHit.attackEntityFrom(IEDamageSources.causeHomingDamage(this, shootingEntity), (float)Config.getDouble("BulletDamage-Homing"));
+					break;
+				case 6:
+					mop.entityHit.attackEntityFrom(IEDamageSources.causeWolfpackDamage(this, shootingEntity), (float)Config.getDouble("BulletDamage-Wolfpack"));
 					break;
 				}
 			}
 			if(bulletType==3)
 				worldObj.createExplosion(shootingEntity, posX, posY, posZ, 2, false);
+
 			this.secondaryImpact(mop);
-			this.setDead();
 		}
+		this.setDead();
 	}
 	public void secondaryImpact(MovingObjectPosition mop)
 	{
 		if(bulletElectro && mop.entityHit instanceof EntityLivingBase)
 		{
-			((EntityLivingBase)mop.entityHit).addPotionEffect(new PotionEffect(Potion.moveSlowdown.id,3,4));
+			((EntityLivingBase)mop.entityHit).addPotionEffect(new PotionEffect(Potion.moveSlowdown.id,15,4));
 			for(int i=0; i<=4; i++)
 			{
 				ItemStack stack = ((EntityLivingBase)mop.entityHit).getEquipmentInSlot(i);
 				if(stack!=null && stack.getItem() instanceof IEnergyContainerItem)
 				{
-					int drain = (int)(((IEnergyContainerItem)stack.getItem()).getMaxEnergyStored(stack)*.10f);
+					int drain = (int)(((IEnergyContainerItem)stack.getItem()).getMaxEnergyStored(stack)*.15f);
 					((IEnergyContainerItem)stack.getItem()).extractEnergy(stack, drain, false);
 				}
 				if(stack!=null && Lib.IC2)
 				{
 					double charge = IC2Helper.getMaxItemCharge(stack);
-					IC2Helper.dischargeItem(stack, charge*.10f);
+					IC2Helper.dischargeItem(stack, charge*.15f);
 				}
+			}
+		}
+
+		if(bulletType==6)
+		{
+			Vec3 v = Vec3.createVectorHelper(-motionX, -motionY, -motionZ);
+			for(int i=0; i<6; i++)
+			{
+				//				float angleV = this.rand.nextFloat()*360f;
+				//			double my = Math.sin(angleV);
+				//			double md = Math.cos(angleV);
+				double d = Math.sqrt(motionX*motionX + motionZ*motionZ + motionY*motionY);
+				double modX = -motionZ/d;
+				double modZ = -motionX/d;
+
+				Vec3 vecDir = v.addVector((rand.nextDouble()-.5)*modX, (rand.nextDouble()-.5), (rand.nextDouble()-.5)*modZ).normalize();
+				EntityWolfpackShot bullet = new EntityWolfpackShot(worldObj, this.shootingEntity, vecDir.xCoord*1.5,vecDir.yCoord*1.5,vecDir.zCoord*1.5, this.bulletType, null);
+				bullet.setPosition(posX+vecDir.xCoord, posY+vecDir.yCoord, posZ+vecDir.zCoord);
+				bullet.motionX = vecDir.xCoord*.375;
+				bullet.motionY = vecDir.yCoord*.375;
+				bullet.motionZ = vecDir.zCoord*.375;
+				worldObj.spawnEntityInWorld(bullet);
 			}
 		}
 	}

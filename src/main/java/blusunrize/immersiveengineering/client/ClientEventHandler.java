@@ -16,6 +16,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.StatCollector;
@@ -30,17 +31,21 @@ import net.minecraftforge.client.model.obj.Face;
 import net.minecraftforge.client.model.obj.GroupObject;
 import net.minecraftforge.client.model.obj.TextureCoordinate;
 import net.minecraftforge.client.model.obj.WavefrontObject;
+import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
 
 import org.lwjgl.opengl.GL11;
 
-import blusunrize.immersiveengineering.api.IDrillHead;
-import blusunrize.immersiveengineering.api.IImmersiveConnectable;
-import blusunrize.immersiveengineering.api.ImmersiveNetHandler;
-import blusunrize.immersiveengineering.api.ImmersiveNetHandler.Connection;
-import blusunrize.immersiveengineering.api.WireType;
+import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
+import blusunrize.immersiveengineering.api.energy.IImmersiveConnectable;
+import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler;
+import blusunrize.immersiveengineering.api.energy.WireType;
+import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler.Connection;
+import blusunrize.immersiveengineering.api.tool.IDrillHead;
+import blusunrize.immersiveengineering.client.gui.GuiBlastFurnace;
 import blusunrize.immersiveengineering.client.models.ModelIEObj;
+import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
@@ -48,12 +53,15 @@ import blusunrize.immersiveengineering.common.gui.ContainerRevolver;
 import blusunrize.immersiveengineering.common.items.ItemDrill;
 import blusunrize.immersiveengineering.common.items.ItemRevolver;
 import blusunrize.immersiveengineering.common.items.ItemSkyhook;
+import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.SkylineHelper;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
+import cpw.mods.fml.relauncher.Side;
 
 public class ClientEventHandler
 {
@@ -70,6 +78,11 @@ public class ClientEventHandler
 				IEContent.fluidEthanol.setIcons(event.map.registerIcon("immersiveengineering:fluid/ethanol_still"), event.map.registerIcon("immersiveengineering:fluid/ethanol_flow"));
 			if(IEContent.IEBiodiesel)
 				IEContent.fluidBiodiesel.setIcons(event.map.registerIcon("immersiveengineering:fluid/biodiesel_still"), event.map.registerIcon("immersiveengineering:fluid/biodiesel_flow"));
+		}
+		if(event.map.getTextureType()==Config.getInt("revolverSheetID"))
+		{
+			IELogger.info("Stitching Revolver Textures!");
+			((ItemRevolver)IEContent.itemRevolver).stichRevolverTextures(event.map);
 		}
 	}
 	@SubscribeEvent()
@@ -164,6 +177,16 @@ public class ClientEventHandler
 		}
 	}
 
+	@SubscribeEvent
+	public void onItemTooltip(ItemTooltipEvent event)
+	{
+		if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT
+				&& ClientUtils.mc().currentScreen != null
+				&& ClientUtils.mc().currentScreen instanceof GuiBlastFurnace
+				&& BlastFurnaceRecipe.isValidBlastFuel(event.itemStack))
+			event.toolTip.add(EnumChatFormatting.GRAY+StatCollector.translateToLocalFormatted("desc.ImmersiveEngineering.info.blastFuelTime", BlastFurnaceRecipe.getBlastFuelTime(event.itemStack)));
+	}
+	
 	@SubscribeEvent()
 	public void lastWorldRender(RenderWorldLastEvent event)
 	{
@@ -177,7 +200,7 @@ public class ClientEventHandler
 		GL11.glPushMatrix();
 
 		GL11.glDisable(GL11.GL_CULL_FACE);
-		GL11.glDisable(GL11.GL_TEXTURE_2D);
+//		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glDisable(GL11.GL_ALPHA_TEST);
 		OpenGlHelper.glBlendFunc(770, 771, 1, 0);
@@ -243,7 +266,7 @@ public class ClientEventHandler
 					if(link!=null&&link.length>3)
 					{
 						String s = StatCollector.translateToLocalFormatted(Lib.DESC_INFO+"attachedTo", link[1],link[2],link[3]);
-						ClientUtils.font().drawString(s, event.resolution.getScaledWidth()/2 - ClientUtils.font().getStringWidth(s)/2, event.resolution.getScaledHeight()-GuiIngameForge.left_height-10, WireType.ELECTRUM.getColour(), true);
+						ClientUtils.font().drawString(s, event.resolution.getScaledWidth()/2 - ClientUtils.font().getStringWidth(s)/2, event.resolution.getScaledHeight()-GuiIngameForge.left_height-10, WireType.ELECTRUM.getColour(null), true);
 					}
 				}
 
@@ -269,6 +292,7 @@ public class ClientEventHandler
 				float dx = event.resolution.getScaledWidth()-32-48;
 				float dy = event.resolution.getScaledHeight()-64;
 				GL11.glPushMatrix();
+				GL11.glEnable(GL11.GL_BLEND);
 				GL11.glTranslated(dx, dy, 0);
 				GL11.glScalef(.5f, .5f, 1);
 
@@ -307,6 +331,7 @@ public class ClientEventHandler
 					}
 				}
 				RenderHelper.disableStandardItemLighting();
+				GL11.glDisable(GL11.GL_BLEND);
 				GL11.glPopMatrix();
 			}
 			else if(ClientUtils.mc().thePlayer.getCurrentEquippedItem().getItem() instanceof ItemDrill && ClientUtils.mc().thePlayer.getCurrentEquippedItem().getItemDamage()==0)

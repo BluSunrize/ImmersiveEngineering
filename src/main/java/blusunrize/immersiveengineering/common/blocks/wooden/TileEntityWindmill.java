@@ -21,7 +21,7 @@ public class TileEntityWindmill extends TileEntityIEBase
 	@Override
 	public void updateEntity()
 	{
-		if(worldObj.getTotalWorldTime()%101==((xCoord^zCoord)&100))
+		if(worldObj.getTotalWorldTime()%128==((xCoord^zCoord)&127))
 			canTurn = checkArea();
 		if(!canTurn)
 			return;
@@ -57,7 +57,7 @@ public class TileEntityWindmill extends TileEntityIEBase
 				else if((facing==4||facing==5)&&dynamo.facing!=4&&dynamo.facing!=5)
 					return;
 				double power = turnSpeed*mod * 400;
-				dynamo.inputRotation(Math.abs(power));
+				dynamo.inputRotation(Math.abs(power), ForgeDirection.OPPOSITES[facing]);
 			}
 		}
 	}
@@ -135,8 +135,9 @@ public class TileEntityWindmill extends TileEntityIEBase
 	@Override
 	public double getMaxRenderDistanceSquared()
 	{
-		if(Config.getBoolean("increasedTileRenderdistance"))
-			return super.getMaxRenderDistanceSquared()*1.5;
-		return super.getMaxRenderDistanceSquared();
+		return super.getMaxRenderDistanceSquared()*Config.getDouble("increasedTileRenderdistance");
+//		if(Config.getBoolean("increasedTileRenderdistance"))
+//			return super.getMaxRenderDistanceSquared()*1.5;
+//		return super.getMaxRenderDistanceSquared();
 	}
 }

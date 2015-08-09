@@ -5,7 +5,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import blusunrize.immersiveengineering.api.BlastFurnaceRecipe;
+import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.common.blocks.stone.TileEntityBlastFurnace;
 
 public class ContainerBlastFurnace extends Container

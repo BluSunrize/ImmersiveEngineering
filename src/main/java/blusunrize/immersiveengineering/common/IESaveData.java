@@ -8,9 +8,9 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldSavedData;
 import blusunrize.immersiveengineering.api.DimensionChunkCoords;
-import blusunrize.immersiveengineering.api.ExcavatorHandler;
-import blusunrize.immersiveengineering.api.ImmersiveNetHandler;
-import blusunrize.immersiveengineering.api.ImmersiveNetHandler.Connection;
+import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler;
+import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler.Connection;
+import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 
@@ -83,12 +83,12 @@ public class IESaveData extends WorldSavedData
 
 		NBTTagList mineralList = new NBTTagList();
 		for(Map.Entry<DimensionChunkCoords,Integer> e: ExcavatorHandler.mineralDepletion.entrySet())
-		if(e.getKey()!=null && e.getValue()!=null)
-		{
-			NBTTagCompound tag = e.getKey().writeToNBT();
-			tag.setInteger("depletion", e.getValue());
-			mineralList.appendTag(tag);
-		}
+			if(e.getKey()!=null && e.getValue()!=null)
+			{
+				NBTTagCompound tag = e.getKey().writeToNBT();
+				tag.setInteger("depletion", e.getValue());
+				mineralList.appendTag(tag);
+			}
 		nbt.setTag("mineralDepletion", mineralList);
 	}
 

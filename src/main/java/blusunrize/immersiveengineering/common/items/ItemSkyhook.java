@@ -13,13 +13,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
-import blusunrize.immersiveengineering.api.IUpgrade;
-import blusunrize.immersiveengineering.api.IUpgrade.UpgradeType;
-import blusunrize.immersiveengineering.api.ImmersiveNetHandler.Connection;
+import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler.Connection;
+import blusunrize.immersiveengineering.api.tool.IUpgrade;
+import blusunrize.immersiveengineering.api.tool.IUpgrade.UpgradeType;
 import blusunrize.immersiveengineering.common.entities.EntitySkylineHook;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.gui.InventoryStorageItem;
-import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.SkylineHelper;
@@ -96,7 +95,7 @@ public class ItemSkyhook extends ItemUpgradeableTool
 
 	public float getSkylineSpeed(ItemStack stack)
 	{
-		return .2f+this.getUpgrades(stack).getFloat("speed");
+		return 3f+this.getUpgrades(stack).getFloat("speed");
 	}
 
 	@Override
@@ -111,10 +110,10 @@ public class ItemSkyhook extends ItemUpgradeableTool
 		if(existingHooks.containsKey(player.getCommandSenderName()))
 		{
 			EntitySkylineHook hook = existingHooks.get(player.getCommandSenderName());
-			player.motionX = hook.motionX;
-			player.motionY = hook.motionY;
-			player.motionZ = hook.motionZ;
-			IELogger.debug("player motion: "+player.motionX+","+player.motionY+","+player.motionZ);
+//			player.motionX = hook.motionX;
+//			player.motionY = hook.motionY;
+//			player.motionZ = hook.motionZ;
+//			IELogger.debug("player motion: "+player.motionX+","+player.motionY+","+player.motionZ);
 			hook.setDead();
 			existingHooks.remove(player.getCommandSenderName());
 		}

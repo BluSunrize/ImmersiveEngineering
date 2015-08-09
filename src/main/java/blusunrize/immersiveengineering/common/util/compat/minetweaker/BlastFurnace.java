@@ -10,11 +10,10 @@ import minetweaker.MineTweakerAPI;
 import minetweaker.api.item.IIngredient;
 import minetweaker.api.item.IItemStack;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.oredict.OreDictionary;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 import blusunrize.immersiveengineering.api.ApiUtils;
-import blusunrize.immersiveengineering.api.BlastFurnaceRecipe;
+import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.common.util.Utils;
 
 @ZenClass("mods.immersiveengineering.BlastFurnace")
@@ -180,7 +179,7 @@ public class BlastFurnace
 	private static class RemoveFuel implements IUndoableAction
 	{
 		private final ItemStack stack;
-		String ident;
+		Object ident;
 		int removedTime;
 		public RemoveFuel(ItemStack fuel)
 		{
@@ -189,42 +188,25 @@ public class BlastFurnace
 		@Override
 		public void apply()
 		{
-			Set<Map.Entry<String,Integer>> set = BlastFurnaceRecipe.blastFuels.entrySet();
-			Iterator<Map.Entry<String,Integer>> it = set.iterator();
+			Set<Map.Entry<Object,Integer>> set = BlastFurnaceRecipe.blastFuels.entrySet();
+			Iterator<Map.Entry<Object,Integer>> it = set.iterator();
 			while(it.hasNext())
 			{
-				Map.Entry<String,Integer> e = it.next();
-				if(ApiUtils.compareToOreName(stack, e.getKey()))
+				Map.Entry<Object,Integer> e = it.next();
+				if(ApiUtils.stackMatchesObject(stack, e.getKey()))
 				{
 					removedTime = e.getValue();
 					ident = e.getKey();
 					it.remove();
 					break;
 				}
-				else
-				{
-					int lIndx = e.getKey().lastIndexOf("::");
-					if(lIndx>0)
-					{
-						String key = e.getKey().substring(0,lIndx);
-						try{
-							int reqMeta = Integer.parseInt(e.getKey().substring(lIndx+2));
-							if(key.equals(ApiUtils.nameFromStack(stack)) && (reqMeta==OreDictionary.WILDCARD_VALUE || reqMeta==stack.getItemDamage()))
-							{
-								removedTime = e.getValue();
-								ident = e.getKey();
-								it.remove();
-								break;
-							}
-						}catch(Exception exception){}
-					}
-				}
 			}
 		}
 		@Override
 		public void undo()
 		{
-			BlastFurnaceRecipe.blastFuels.put(ident, removedTime);
+			if(ident!=null)
+				BlastFurnaceRecipe.blastFuels.put(ident, removedTime);
 		}
 		@Override
 		public String describe()

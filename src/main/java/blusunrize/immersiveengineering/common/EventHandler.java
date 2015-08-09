@@ -7,32 +7,27 @@ import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.StatCollector;
 import net.minecraftforge.event.AnvilUpdateEvent;
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
-import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.oredict.OreDictionary;
-import blusunrize.immersiveengineering.api.BlastFurnaceRecipe;
-import blusunrize.immersiveengineering.api.IDrillHead;
-import blusunrize.immersiveengineering.api.ImmersiveNetHandler;
-import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.client.gui.GuiBlastFurnace;
+import WayofTime.alchemicalWizardry.api.event.TeleposeEvent;
+import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler;
+import blusunrize.immersiveengineering.api.tool.IDrillHead;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
+import blusunrize.immersiveengineering.common.blocks.TileEntityImmersiveConnectable;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMultiblockPart;
 import blusunrize.immersiveengineering.common.items.ItemDrill;
 import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.Utils;
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.ItemCraftedEvent;
-import cpw.mods.fml.relauncher.Side;
 
 public class EventHandler
 {
@@ -67,6 +62,13 @@ public class EventHandler
 	}
 
 	@SubscribeEvent
+	public void onSave(WorldEvent.Save event)
+	{
+		IESaveData.setDirty(0);
+	}
+
+
+	@SubscribeEvent
 	public void harvestCheck(PlayerEvent.HarvestCheck event)
 	{
 		if(event.block instanceof BlockIEBase && event.entityPlayer.getCurrentEquippedItem()!=null && event.entityPlayer.getCurrentEquippedItem().getItem().getToolClasses(event.entityPlayer.getCurrentEquippedItem()).contains(Lib.TOOL_HAMMER))
@@ -79,22 +81,14 @@ public class EventHandler
 
 	}
 	@SubscribeEvent
-	public void entitySpawn(EntityJoinWorldEvent event)
+	public void bloodMagicTeleposer(TeleposeEvent event)
 	{
-		//		if(event.entity instanceof EntityLightningBolt&&!event.world.isRemote)
-		//		{
-		//			for(int xx=-1; xx<=1; xx++)
-		//				for(int zz=-1; zz<=1; zz++)
-		//					if(event.world.getBlock((int)event.entity.posX+xx, (int)event.entity.posY-1, (int)event.entity.posZ+zz).equals(IEContent.blockMetalDecoration) && event.world.getBlockMetadata((int)event.entity.posX+xx, (int)event.entity.posY-1, (int)event.entity.posZ+zz)==BlockMetalDecoration.META_fence)
-		//						for(int y=(int) event.entity.posY-1; y>0; y--)
-		//							if( event.world.getTileEntity((int)event.entity.posX+xx, y, (int)event.entity.posZ+zz) instanceof TileEntityLightningRod)
-		//							{
-		//								((TileEntityLightningRod) event.world.getTileEntity((int)event.entity.posX+xx, y, (int)event.entity.posZ+zz)).energyStorage.setEnergyStored(Config.getInt("lightning_output"));
-		//								return;
-		//							}
-		//							else if(!(event.world.getBlock((int)event.entity.posX+xx, y, (int)event.entity.posZ+zz).equals(IEContent.blockMetalDecoration) && event.world.getBlockMetadata((int)event.entity.posX+xx, y, (int)event.entity.posZ+zz)==BlockMetalDecoration.META_fence))
-		//								return;		
-		//		}
+		TileEntity tI = event.initialWorld.getTileEntity(event.initialX, event.initialY, event.initialZ);
+		TileEntity tF = event.finalWorld.getTileEntity(event.finalX, event.finalY, event.finalZ);
+		if(tI instanceof TileEntityImmersiveConnectable || tF instanceof TileEntityImmersiveConnectable)
+			event.setCanceled(true);
+		if(tI instanceof TileEntityMultiblockPart || tF instanceof TileEntityMultiblockPart)
+			event.setCanceled(true);
 	}
 
 	public static HashMap<UUID, TileEntityCrusher> crusherMap = new HashMap<UUID, TileEntityCrusher>();
@@ -177,43 +171,5 @@ public class EventHandler
 				}
 			}
 		}
-	}
-
-
-	@SubscribeEvent
-	public void onItemTooltip(ItemTooltipEvent event)
-	{
-		//		for(int oid : OreDictionary.getOreIDs(event.itemStack))
-		//			event.toolTip.add(OreDictionary.getOreName(oid));
-
-		//		if(event.itemStack.getItem() instanceof ItemTool && event.showAdvancedItemTooltips)
-		//		{
-		//			String mat = ((ItemTool)event.itemStack.getItem()).getToolMaterialName();
-		//			String speed = "?";
-		//			String level = "?";
-		//			String enchantability = "?";
-		//			try{
-		//				speed = ""+ToolMaterial.valueOf(((ItemTool)event.itemStack.getItem()).getToolMaterialName()).getEfficiencyOnProperMaterial();
-		//				level = ""+ToolMaterial.valueOf(((ItemTool)event.itemStack.getItem()).getToolMaterialName()).getHarvestLevel();
-		//				enchantability = ""+ToolMaterial.valueOf(((ItemTool)event.itemStack.getItem()).getToolMaterialName()).getEnchantability();
-		//			}catch(Exception e)
-		//			{
-		//				try{
-		//					speed = ""+ToolMaterial.valueOf("TF:"+((ItemTool)event.itemStack.getItem()).getToolMaterialName()).getEfficiencyOnProperMaterial();
-		//					level = ""+ToolMaterial.valueOf("TF:"+((ItemTool)event.itemStack.getItem()).getToolMaterialName()).getHarvestLevel();
-		//					enchantability = ""+ToolMaterial.valueOf("TF:"+((ItemTool)event.itemStack.getItem()).getToolMaterialName()).getEnchantability();
-		//				}catch(Exception e2){}
-		//			}
-		//			event.toolTip.add("Tool Material: "+Utils.toCamelCase(mat));
-		//			event.toolTip.add(" Speed: "+speed);
-		//			event.toolTip.add(" MiningLevel: "+level);
-		//			event.toolTip.add(" Enchantability: "+enchantability);
-		//		}
-
-		if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT
-				&& ClientUtils.mc().currentScreen != null
-				&& ClientUtils.mc().currentScreen instanceof GuiBlastFurnace
-				&& BlastFurnaceRecipe.isValidBlastFuel(event.itemStack))
-			event.toolTip.add(EnumChatFormatting.GRAY+StatCollector.translateToLocalFormatted("desc.ImmersiveEngineering.info.blastFuelTime", BlastFurnaceRecipe.getBlastFuelTime(event.itemStack)));
 	}
 }

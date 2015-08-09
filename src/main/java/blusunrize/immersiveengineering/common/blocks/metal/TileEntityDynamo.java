@@ -16,9 +16,11 @@ public class TileEntityDynamo extends TileEntityIEBase implements IEnergyConnect
 	{
 		return false;
 	}
-	public void inputRotation(double rotation)
+	public void inputRotation(double rotation, int side)
 	{
-		int output = (int) (Config.getInt("dynamo_output") * rotation);
+		if(side!=ForgeDirection.OPPOSITES[facing])
+			return;
+		int output = (int) (Config.getDouble("dynamo_output") * rotation);
 		for(int i=0; i<6; i++)
 		{
 			ForgeDirection fd = ForgeDirection.VALID_DIRECTIONS[i];

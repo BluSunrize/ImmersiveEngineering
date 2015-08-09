@@ -20,7 +20,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.CrusherRecipe;
+import blusunrize.immersiveengineering.api.crafting.CrusherRecipe;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.EventHandler;
 import blusunrize.immersiveengineering.common.IEContent;
@@ -83,9 +83,7 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 		{
 			ImmersiveEngineering.proxy.handleTileSound("crusher", this, ((active&&process>0)||mobGrinding||grindingTimer>0), 1,1);
 			if(particleStack!=null && active&&process>0)
-			{
 				ImmersiveEngineering.proxy.spawnCrusherFX(this, particleStack);
-			}
 			else if(particleStack!=null)
 				particleStack=null;
 		}
@@ -160,10 +158,12 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 							ItemStack outputStack = recipe.output;
 							if(outputStack!=null)
 								outputItem(outputStack.copy());
-							if(recipe.secondaryOutput!=null && worldObj.rand.nextFloat()<recipe.secondaryChance)
-								outputItem(recipe.secondaryOutput);
+							if(recipe.secondaryOutput!=null)
+								for(int i=0; i<recipe.secondaryOutput.length; i++)
+									if(worldObj.rand.nextFloat()<recipe.secondaryChance[i])
+										outputItem(recipe.secondaryOutput[i]);
 
-							inputStack.stackSize-= (recipe.input instanceof String)? 1: ((ItemStack)recipe.input).stackSize;
+							inputStack.stackSize-= (recipe.input instanceof ItemStack)? ((ItemStack)recipe.input).stackSize: 1;
 							if(inputStack.stackSize>0)
 								inputs.set(0, inputStack);
 							else
@@ -314,10 +314,75 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 	@Override
 	public double getMaxRenderDistanceSquared()
 	{
-		if(Config.getBoolean("increasedTileRenderdistance"))
-			return super.getMaxRenderDistanceSquared()*1.5;
-		return super.getMaxRenderDistanceSquared();
+		return super.getMaxRenderDistanceSquared()*Config.getDouble("increasedTileRenderdistance");
 	}
+	@Override
+	public float[] getBlockBounds()
+	{
+		int fl = facing;
+		int fw = facing;
+		if(mirrored)
+			fw = ForgeDirection.OPPOSITES[fw];
+
+		if(pos%15>=6&&pos%15<=8)
+		{
+			if(pos/15==0)
+			{
+				if(pos%5==1)
+					return new float[]{fw==3||fl==4?.1875f:0, .5f, fl==2||fw==4?.1875f:0, fw==2||fl==5?.8125f:1, 1, fl==3||fw==5?.8125f:1};
+				else if(pos%5==2)
+					return new float[]{fl==4?.1875f:0, .5f, fl==2?.1875f:0, fl==5?.8125f:1, 1, fl==3?.8125f:1};
+				else if(pos%5==3)
+					return new float[]{fw==2||fl==4?.1875f:0, .5f, fl==2||fw==5?.1875f:0, fw==3||fl==5?.8125f:1, 1, fl==3||fw==4?.8125f:1};
+			}
+			else if(pos/15==1)
+			{
+				if(pos%5==1)
+					return new float[]{fw==3?.1875f:0, .5f, fw==4?.1875f:0, fw==2?.8125f:1, 1, fw==5?.8125f:1};
+				else if(pos%5==2)
+					return new float[]{0,0,0, 1,1,1};
+				else if(pos%5==3)
+					return new float[]{fw==2?.1875f:0, .5f, fw==5?.1875f:0, fw==3?.8125f:1, 1, fw==4?.8125f:1};
+			}
+			else if(pos/15==2)
+			{
+				if(pos%5==1)
+					return new float[]{fw==3||fl==5?.1875f:0, .5f, fl==3||fw==4?.1875f:0, fw==2||fl==4?.8125f:1, 1, fl==2||fw==5?.8125f:1};
+				else if(pos%5==2)
+					return new float[]{fl==5?.1875f:0, .5f, fl==3?.1875f:0, fl==4?.8125f:1, 1, fl==2?.8125f:1};
+				else if(pos%5==3)
+					return new float[]{fw==2||fl==5?.1875f:0, .5f, fl==3||fw==5?.1875f:0, fw==3||fl==4?.8125f:1, 1, fl==2||fw==4?.8125f:1};
+			}
+		}
+		else if(pos%15>=11&&pos%15<=13) 
+		{
+			if(pos/15==0)
+			{
+				if(pos%5==2)
+					return new float[]{fl==4?.1875f:fl==5?.5625f:0, 0, fl==2?.1875f:fl==3?.5625f:0, fl==5?.8125f:fl==4?.4375f:1, 1, fl==3?.8125f:fl==2?.4375f:1};
+			}
+			else if(pos/15==1)
+			{
+				if(pos%5==1)
+					return new float[]{fw==3?.1875f:fw==2?.5625f:0, 0, fw==4?.1875f:fw==5?.5625f:0, fw==2?.8125f:fw==3?.4375f:1, 1, fw==5?.8125f:fw==4?.4375f:1};
+				else if(pos%5==2)
+					return new float[]{0,0,0, 0,0,0};
+				else if(pos%5==3)
+					return new float[]{fw==2?.1875f:fw==3?.5625f:0, 0, fw==5?.1875f:fw==4?.5625f:0, fw==3?.8125f:fw==2?.4375f:1, 1, fw==4?.8125f:fw==5?.4375f:1};
+			}
+			else if(pos/15==2)
+			{
+				if(pos%5==2)
+					return new float[]{fl==5?.1875f:fl==4?.5625f:0, 0, fl==3?.1875f:fl==2?.5625f:0, fl==4?.8125f:fl==5?.4375f:1, 1, fl==2?.8125f:fl==3?.4375f:1};
+			}
+		}
+		else if(pos==9)
+			return new float[]{fl==5?.5f:0,0,fl==3?.5f:0,  fl==4?.5f:1,1,fl==2?.5f:1};
+		else if(pos==1||pos==3 || pos==16||pos==18||pos==24 || (pos>=31&&pos<=34))
+			return new float[]{0,0,0,1,.5f,1};
+		return new float[]{0,0,0,1,1,1};
+	}
+
 
 	@Override
 	public boolean receiveClientEvent(int id, int arg)
