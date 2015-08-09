@@ -387,7 +387,7 @@ ie.manual.entry.treatedwoodPost1=不过使用工程师锤子你也可以在木�
 ie.manual.entry.graphite.name=石墨
 ie.manual.entry.graphite.subtext=煤炭工业产品
 ie.manual.entry.graphite0=高定向热解石墨(HOP)是一类结构复杂,且高度压缩的碳材料,常用于特种工程结构.<br>HOP石墨粉可由八份焦煤粉在<link;biodiesel;§o§n工 §o§n业压榨机§r;1>中加工制取.这种粉末进一步烧制可得到HOP石墨锭.
-ie.manual.entry.graphite1=HOP石墨广泛用于制作<link;arcfurnace;§o§n电弧§o§n炉§r>中的电极.制造这些电极需要<link;blueprints;§o§n工程师 §o§n蓝图§r>,这种蓝图可以通过<config;b;arcfurnace_electrodeCrafting;合成获得,>在某些箱子里找到,还可以通过和村民交易获得.
+ie.manual.entry.graphite1=HOP石墨广泛用于制作<link;arcfurnace;§o§n电弧炉§r>中的电极.制造这些电极需要<link;blueprints;§o§n工程 §o§n师蓝图§r>,这种蓝图可以通过<config;b;arcfurnace_electrodeCrafting;合成获得,>在某些箱子里找到,还可以通过和村民交易获得.
 
 ie.manual.entry.wiring.name=基础布线
 ie.manual.entry.wiring.subtext=滋滋滋!
