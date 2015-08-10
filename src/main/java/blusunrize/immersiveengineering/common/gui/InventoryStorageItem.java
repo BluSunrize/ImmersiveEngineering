@@ -113,9 +113,11 @@ public class InventoryStorageItem implements IInventory
 	public void markDirty()
 	{
 		if(itemStack!=null)
+		{
 			((ItemInternalStorage)this.itemStack.getItem()).setContainedItems(itemStack, stackList);
-		if(this.itemStack.getItem() instanceof ItemUpgradeableTool)
-			((ItemUpgradeableTool)this.itemStack.getItem()).recalculateUpgrades(itemStack);
+			if(this.itemStack.getItem() instanceof ItemUpgradeableTool)
+				((ItemUpgradeableTool)this.itemStack.getItem()).recalculateUpgrades(itemStack);
+		}
 	}
 
 	@Override

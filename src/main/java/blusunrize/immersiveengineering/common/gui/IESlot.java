@@ -253,10 +253,13 @@ public abstract class IESlot extends Slot
 	    {
 			this.inventory.markDirty();
 			if(upgradeableTool!=null && upgradeableTool.getItem() instanceof ItemEngineersBlueprint)
-				((ItemEngineersBlueprint)upgradeableTool.getItem()).reduceInputs(recipe, upgradeableTool, stack);
+				((ItemEngineersBlueprint)upgradeableTool.getItem()).reduceInputs(recipe, upgradeableTool, stack, this.container);
 			if(container instanceof ContainerModWorkbench)
+			{
 				((ContainerModWorkbench)container).rebindSlots();
-	    	super.onPickupFromSlot(player, stack);
+				((ContainerModWorkbench)container).tile.markDirty();
+			}
+			super.onPickupFromSlot(player, stack);
 	    }
 	}
 	

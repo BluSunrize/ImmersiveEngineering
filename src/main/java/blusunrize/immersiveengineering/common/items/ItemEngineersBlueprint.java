@@ -17,6 +17,7 @@ import net.minecraftforge.common.ChestGenHooks;
 import org.lwjgl.input.Keyboard;
 
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
+import blusunrize.immersiveengineering.common.gui.ContainerModWorkbench;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.gui.InventoryStorageItem;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
@@ -136,7 +137,7 @@ public class ItemEngineersBlueprint extends ItemUpgradeableTool
 		}
 	}
 
-	public void reduceInputs(BlueprintCraftingRecipe recipe, ItemStack stack, ItemStack crafted)
+	public void reduceInputs(BlueprintCraftingRecipe recipe, ItemStack stack, ItemStack crafted, Container contained)
 	{
 		ItemStack[] stored = this.getContainedItems(stack);
 		ItemStack[] query = new ItemStack[6];
@@ -144,8 +145,15 @@ public class ItemEngineersBlueprint extends ItemUpgradeableTool
 			query[i] = stored[i];
 		recipe.consumeInputs(query, crafted.stackSize/recipe.output.stackSize);
 		for(int i=0; i<6; i++)
+		{
 			stored[i] = query[i];
+		}
 		this.setContainedItems(stack, stored);
+		if (contained instanceof ContainerModWorkbench)
+		{
+			ContainerModWorkbench work = (ContainerModWorkbench) contained;
+			work.toolInv.stackList = query;
+		}
 	}
 
 	@Override
