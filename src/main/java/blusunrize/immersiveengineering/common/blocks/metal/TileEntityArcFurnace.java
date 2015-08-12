@@ -103,7 +103,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 					{
 						boolean spaceForOutput = false;
 						for(int j=16; j<22; j++)
-							if(inventory[j]==null || (OreDictionary.itemMatches(inventory[j],recipe.output,false) && inventory[j].stackSize+recipe.output.stackSize<=getInventoryStackLimit()) )
+							if(inventory[j]==null || (OreDictionary.itemMatches(inventory[j],recipe.output,false) && inventory[j].stackSize+recipe.output.stackSize<=inventory[j].getMaxStackSize()) )
 							{
 								spaceForOutput = true;
 								outputSlot = j;
@@ -112,7 +112,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 						if(!spaceForOutput)
 							continue;
 					}
-					if(recipe.slag!=null && !(inventory[22]==null || (OreDictionary.itemMatches(inventory[22],recipe.slag,false) && inventory[22].stackSize+recipe.slag.stackSize<=getInventoryStackLimit()) ))
+					if(recipe.slag!=null && !(inventory[22]==null || (OreDictionary.itemMatches(inventory[22],recipe.slag,false) && inventory[22].stackSize+recipe.slag.stackSize<=inventory[22].getMaxStackSize()) ))
 						continue;
 
 
