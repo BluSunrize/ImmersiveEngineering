@@ -152,7 +152,8 @@ public class ItemEngineersBlueprint extends ItemUpgradeableTool
 		if (contained instanceof ContainerModWorkbench)
 		{
 			ContainerModWorkbench work = (ContainerModWorkbench) contained;
-			work.toolInv.stackList = query;
+			if (work.toolInv!=null) 
+				work.toolInv.stackList = query;
 		}
 	}
 
