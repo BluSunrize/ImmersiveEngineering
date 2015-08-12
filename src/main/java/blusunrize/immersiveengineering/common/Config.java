@@ -44,6 +44,7 @@ public class Config
 		setBoolean("colourblindSupport", config.get("General", "ColourblindSupport", false, "Support for colourblind people, gives a text-based output on capacitor sides").getBoolean());
 		setDouble("increasedTileRenderdistance", config.get("General", "Increased Tile Renderdistance", 1.5, "Increase the distance at which certain TileEntities (specifically windmills) are still visible. This is a modifier, so set it to 1 for default render distance, to 2 for doubled distance and so on.").getDouble());
 		setBoolean("disableHammerCrushing", config.get("General", "Disable Hammer Crushing", false, "Set this to true to completely disable the ore- and ingot-crushing recipes with the Engineers Hammer. Note that some of these disable automatically when other mods add the relevant dust (and by that probably a way to get them)").getBoolean());
+		setBoolean("forceHammerCrushing", config.get("General", "Force-Enable Hammer Crushing", false, "Set this to true to forefully enable the ore- and ingot-crushing recipes with the Engineers Hammer. This will override the disabling.").getBoolean());
 		
 		setBoolean("ic2compat", config.get("General", "IC2 Compatability", true, "Set this to false to prevent wires from accepting and outputting EU").getBoolean());
 		setBoolean("gregtechcompat", config.get("General", "GregTech Compatability", true, "Set this to false to prevent wires from outputting GregTech EU").getBoolean());

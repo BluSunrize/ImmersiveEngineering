@@ -436,7 +436,7 @@ public class IEContent
 	public static void loadComplete()
 	{
 		//Crushing
-		if(!Config.getBoolean("disableHammerCrushing"))
+		if(!Config.getBoolean("disableHammerCrushing") || Config.getBoolean("forceHammerCrushing"))
 		{
 			addHammerCrushingRecipe("Iron",8);
 			addHammerCrushingRecipe("Gold",9);
@@ -504,7 +504,7 @@ public class IEContent
 	public static List<String> validCrushingOres = new ArrayList();
 	public static void addHammerCrushingRecipe(String oreName, int dustMeta)
 	{
-		if(OreDictionary.getOres("dust"+oreName).size()<2)
+		if(OreDictionary.getOres("dust"+oreName).size()<2 || Config.getBoolean("forceHammerCrushing"))
 		{
 			GameRegistry.addRecipe(new RecipeOreCrushing(oreName,dustMeta));
 			validCrushingOres.add(oreName);
