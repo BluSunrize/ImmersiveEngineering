@@ -109,7 +109,10 @@ public class BlueprintCraftingRecipe
 				boolean inc = false;
 				for(ItemStack key : queryAmount.keySet())
 					if(OreDictionary.itemMatches(q, key, true))
+					{
 						queryAmount.put(key, queryAmount.get(key)+q.stackSize);
+						inc = true;
+					}
 				if(!inc)
 					queryAmount.put(q, q.stackSize);
 			}
