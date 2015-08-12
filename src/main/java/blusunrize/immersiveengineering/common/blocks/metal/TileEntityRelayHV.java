@@ -22,6 +22,14 @@ public class TileEntityRelayHV extends TileEntityConnectorHV
 			return false;
 		return limitType==null||limitType==cableType;
 	}
+
+	@Override
+	public Vec3 getRaytraceOffset()
+	{
+		ForgeDirection fd = ForgeDirection.getOrientation(facing).getOpposite();
+		return Vec3.createVectorHelper(.5+fd.offsetX*.4375, .5+fd.offsetY*.4375, .5+fd.offsetZ*.4375);
+	}
+
 	@Override
 	public boolean isEnergyOutput()
 	{
