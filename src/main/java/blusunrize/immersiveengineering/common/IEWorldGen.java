@@ -42,6 +42,7 @@ public class IEWorldGen implements IWorldGenerator
 		}
 	}
 	public static ArrayList<OreGen> orespawnList = new ArrayList();
+	public static ArrayList<Integer> oreDimBlacklist = new ArrayList();
 	public static OreGen addOreGen(Block block,int meta,int maxVeinSize,int minY, int maxY,int chunkOccurence,int weight)
 	{
 		OreGen gen = new OreGen(block, meta, maxVeinSize, Blocks.stone, minY, maxY, chunkOccurence, weight);
@@ -51,7 +52,7 @@ public class IEWorldGen implements IWorldGenerator
 
 	public void generate(Random random, int chunkX, int chunkZ, World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider)
 	{
-		if(world.provider.dimensionId==0)
+		if(!oreDimBlacklist.contains(world.provider.dimensionId))
 			for(OreGen gen : orespawnList)
 				gen.generate(world, random, chunkX*16, chunkZ*16);
 	}

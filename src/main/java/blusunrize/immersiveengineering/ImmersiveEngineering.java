@@ -64,6 +64,9 @@ public class ImmersiveEngineering
 		WireType.cableTransferRate=Config.getIntArray("cableTransferRate");
 		WireType.cableColouration=Config.getIntArray("cableColouration");
 		WireType.cableLength=Config.getIntArray("cableLength");
+
+		for(int b : Config.getIntArray("oreDimBlacklist"))
+			IEWorldGen.oreDimBlacklist.add(b);
 	}
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent event)

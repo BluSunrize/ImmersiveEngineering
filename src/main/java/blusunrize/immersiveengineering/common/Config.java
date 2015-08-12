@@ -94,7 +94,8 @@ public class Config
 		setIntArray("ore_lead", config.get("OreGen", "Lead", new int[]{6,  8,36, 4,100}, "Generation config for Lead Ore. Parameters: Blocks per vein, lowest possible Y, highest possible Y, veins per chunk, chance for vein to spawn (out of 100). Set vein size to 0 to disable the generation").getIntList());
 		setIntArray("ore_silver", config.get("OreGen", "Silver", new int[]{8,  8,40, 4,80}, "Generation config for Silver Ore. Parameters: Blocks per vein, lowest possible Y, highest possible Y, veins per chunk, chance for vein to spawn (out of 100). Set vein size to 0 to disable the generation").getIntList());
 		setIntArray("ore_nickel", config.get("OreGen", "Nickel", new int[]{6,  8,24, 2,100}, "Generation config for Nickel Ore. Parameters: Blocks per vein, lowest possible Y, highest possible Y, veins per chunk, chance for vein to spawn (out of 100). Set vein size to 0 to disable the generation").getIntList());
-
+		setIntArray("oreDimBlacklist", config.get("OreGen", "DimensionBlacklist", new int[]{-1,1}, "A blacklist of dimensions in which IE ores won't spawn. By default this is Nether (-1) and End (1)").getIntList());
+		
 		setBoolean("hardmodeBulletRecipes", config.get("Tools", "Bullets: Hardmode Recipes", false, "Enable this to use the old, harder bullet recipes(require one ingot per bullet)").getBoolean());
 		setDouble("BulletDamage-Casull", config.get("Tools", "BulletDamage-Casull", 7d, "The amount of base damage a Casull Cartridge inflicts").getDouble());
 		setDouble("BulletDamage-AP", config.get("Tools", "BulletDamage-AP", 7d, "The amount of base damage an ArmorPiercing Cartridge inflicts").getDouble());
