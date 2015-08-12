@@ -46,6 +46,8 @@ public class NEIBlueprintHandler extends TemplateRecipeHandler
 		@Override
 		public List<PositionedStack> getIngredients()
 		{
+			if(inputs.length<1)
+				return new ArrayList();
 			return getCycledIngredients(cycleticks/20, Arrays.asList(inputs));
 		}
 		@Override
