@@ -13,6 +13,7 @@ public class Config
 	public static HashMap<String, Double> config_double = new HashMap();
 	public static HashMap<String, double[]> config_doubleArray = new HashMap();
 	public static HashMap<String, int[]> config_intArray = new HashMap();
+	public static HashMap<String, String[]> config_stringArray = new HashMap();
 
 	public static void init(FMLPreInitializationEvent event)
 	{
@@ -45,7 +46,8 @@ public class Config
 		setDouble("increasedTileRenderdistance", config.get("General", "Increased Tile Renderdistance", 1.5, "Increase the distance at which certain TileEntities (specifically windmills) are still visible. This is a modifier, so set it to 1 for default render distance, to 2 for doubled distance and so on.").getDouble());
 		setBoolean("disableHammerCrushing", config.get("General", "Disable Hammer Crushing", false, "Set this to true to completely disable the ore- and ingot-crushing recipes with the Engineers Hammer. Note that some of these disable automatically when other mods add the relevant dust (and by that probably a way to get them)").getBoolean());
 		setBoolean("forceHammerCrushing", config.get("General", "Force-Enable Hammer Crushing", false, "Set this to true to forefully enable the ore- and ingot-crushing recipes with the Engineers Hammer. This will override the disabling.").getBoolean());
-		
+		setStringArray("preferredOres", config.get("General", "Preferred Ores", new String[]{"ImmersiveEngineering","ThermalFoundation"}, "A list of preferred Mod IDs that results of IE processes should stem from, aka which mod you want the copper to come from. This affects the ores dug by the excavator, as well as those crushing recipes that don't have associated IE items. This list is in oreder of priority.").getStringList());
+
 		setBoolean("ic2compat", config.get("General", "IC2 Compatability", true, "Set this to false to prevent wires from accepting and outputting EU").getBoolean());
 		setBoolean("gregtechcompat", config.get("General", "GregTech Compatability", true, "Set this to false to prevent wires from outputting GregTech EU").getBoolean());
 		setInt("euConversion", config.get("General", "EU Conversion", 4, "The amount of RF that equal 1 EU. 4 by default, so 4RF == 1EU and .25EU == 1RF").getInt());
@@ -82,7 +84,7 @@ public class Config
 		setBoolean("excavator_particles", config.get("Machines", "Excavator: Particles", true, "Set this to false to disable the ridiculous amounts of particles the Excavator spawns").getBoolean());
 		setInt("excavator_depletion", config.get("Machines", "Excavator: Mineral Depletion", 76800, "The maximum amount of yield one can get out of a chunk with the excavator. Set a number smaller than zero to make it infinite").getInt());
 		setInt("excavator_depletion_days", getInt("excavator_depletion")*45/24000);
-
+		
 		setInt("coredrill_time", config.get("Machines", "Core Sample Drill: Evaluation Time", 600, "The length in ticks it takes for the Core Sample Drill to figure out which mineral is found in a chunk").getInt());
 		setInt("coredrill_consumption", config.get("Machines", "Core Sample Drill: Consumption", 40, "The RF per tick consumed by the Core Sample Drill").getInt());
 
@@ -159,5 +161,14 @@ public class Config
 	public static int[] getIntArray(String key)
 	{
 		return config_intArray.get(key);
+	}
+
+	public static void setStringArray(String key, String[] dA)
+	{
+		config_stringArray.put(key, dA);
+	}
+	public static String[] getStringArray(String key)
+	{
+		return config_stringArray.get(key);
 	}
 }

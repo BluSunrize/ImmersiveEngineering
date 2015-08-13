@@ -527,14 +527,20 @@ public class ClientProxy extends CommonProxy
 		{
 			multiTables[curTable][i][0] = Lib.DESC_INFO+"mineral."+minerals[i].name;
 			multiTables[curTable][i][1] = "";
-			for(int j=0; j<minerals[i].recalculatedOres.length; j++)
-				if(!OreDictionary.getOres(minerals[i].recalculatedOres[j]).isEmpty())
+//			for(int j=0; j<minerals[i].recalculatedOres.length; j++)
+//				if(!OreDictionary.getOres(minerals[i].recalculatedOres[j]).isEmpty())
+//				{
+//					ItemStack stackOre = OreDictionary.getOres(minerals[i].recalculatedOres[j]).get(0);
+//					multiTables[curTable][i][1] += stackOre.getDisplayName()+" "+( Utils.formatDouble(minerals[i].recalculatedChances[j]*100,"#.00")+"%" )+(j<minerals[i].recalculatedOres.length-1?"\n":""); 
+//					totalLines++;
+//				}
+			for(int j=0; j<minerals[i].oreOutput.length; j++)
+				if(minerals[i].oreOutput[j]!=null)
 				{
-					ItemStack stackOre = OreDictionary.getOres(minerals[i].recalculatedOres[j]).get(0);
-					multiTables[curTable][i][1] += stackOre.getDisplayName()+" "+( Utils.formatDouble(minerals[i].recalculatedChances[j]*100,"#.00")+"%" )+(j<minerals[i].recalculatedOres.length-1?"\n":""); 
+					multiTables[curTable][i][1] += minerals[i].oreOutput[j].getDisplayName()+" "+( Utils.formatDouble(minerals[i].recalculatedChances[j]*100,"#.00")+"%" )+(j<minerals[i].oreOutput.length-1?"\n":""); 
 					totalLines++;
 				}
-			if(i<minerals.length-1 && totalLines+minerals[i+1].recalculatedOres.length>=13)
+			if(i<minerals.length-1 && totalLines+minerals[i+1].oreOutput.length>=13)
 			{
 				String[][][] newMultiTables = new String[multiTables.length+1][ExcavatorHandler.mineralList.size()][2];
 				System.arraycopy(multiTables,0, newMultiTables,0, multiTables.length);

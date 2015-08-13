@@ -43,7 +43,7 @@ public class ApiUtils
 			return compareToOreName(stack, (String)o);
 		return false;
 	}
-
+	
 	public static String nameFromStack(ItemStack stack)
 	{
 		if(stack==null)
@@ -56,6 +56,7 @@ public class ApiUtils
 		return "";
 	}
 
+	
 	public static ChunkCoordinates toCC(Object object)
 	{
 		if(object instanceof ChunkCoordinates)

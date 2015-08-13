@@ -16,7 +16,6 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.event.ForgeEventFactory;
-import net.minecraftforge.oredict.OreDictionary;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.IEContent;
@@ -139,16 +138,13 @@ public class TileEntityExcavator extends TileEntityMultiblockPart implements IEn
 									&& !worldObj.isAirBlock(wheel.xCoord+(facing==5?-1:facing==4?1:0),wheel.yCoord-5,wheel.zCoord+(facing==3?-1:facing==2?1:0))
 									&& !worldObj.isAirBlock(wheel.xCoord,wheel.yCoord-5,wheel.zCoord))
 							{
-								String ore = mineral.getRandomOre(worldObj.rand);
-								ItemStack output = null;
-								if(!OreDictionary.getOres(ore).isEmpty())
-									output = OreDictionary.getOres(ore).get(0);
+								ItemStack ore = mineral.getRandomOre(worldObj.rand);
 								float configChance = worldObj.rand.nextFloat();
 								float failChance = worldObj.rand.nextFloat();
-								if(output!=null && configChance>Config.getDouble("excavator_chance") && failChance>mineral.failChance)
+								if(ore!=null && configChance>Config.getDouble("excavator_chance") && failChance>mineral.failChance)
 								{
-									wheel.digStacks[(target+4)%8] = output;
-									worldObj.addBlockEvent(wheel.xCoord,wheel.yCoord,wheel.zCoord, wheel.getBlockType(), ((target+4)%8)+2, Block.getIdFromBlock(Block.getBlockFromItem(output.getItem())) + (output.getItemDamage() << 12));
+									wheel.digStacks[(target+4)%8] = ore;
+									worldObj.addBlockEvent(wheel.xCoord,wheel.yCoord,wheel.zCoord, wheel.getBlockType(), ((target+4)%8)+2, Block.getIdFromBlock(Block.getBlockFromItem(ore.getItem())) + (ore.getItemDamage() << 12));
 									wheel.markDirty();
 								}
 								ExcavatorHandler.depleteMinerals(worldObj, wheelAxis[0]>>4, wheelAxis[2]>>4);

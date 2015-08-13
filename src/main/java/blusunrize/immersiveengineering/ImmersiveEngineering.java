@@ -2,6 +2,7 @@ package blusunrize.immersiveengineering;
 
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.Arrays;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -9,6 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.WireType;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
@@ -67,6 +69,7 @@ public class ImmersiveEngineering
 
 		for(int b : Config.getIntArray("oreDimBlacklist"))
 			IEWorldGen.oreDimBlacklist.add(b);
+		IEApi.modPreference = Arrays.asList(Config.getStringArray("preferredOres"));
 	}
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent event)

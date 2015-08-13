@@ -14,6 +14,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.crafting.CrusherRecipe;
@@ -316,12 +317,12 @@ public class IERecipes
 				{
 					ArrayList<ItemStack> gems = OreDictionary.getOres("gem"+ore);
 					if(!gems.isEmpty())
-						out = Utils.copyStackWithAmount(gems.get(0), 2);
+						out = Utils.copyStackWithAmount(IEApi.getPreferredOreStack("gem"+ore), 2);
 					else
 					{
 						ArrayList<ItemStack> dusts = OreDictionary.getOres("dust"+ore);
 						if(!dusts.isEmpty())
-							out = Utils.copyStackWithAmount(dusts.get(0), 2);
+							out = Utils.copyStackWithAmount(IEApi.getPreferredOreStack("dust"+ore), 2);
 					}
 				}
 				if(out!=null)
@@ -337,7 +338,7 @@ public class IERecipes
 				{
 					ArrayList<ItemStack> ingots = OreDictionary.getOres("ingot"+ore);
 					if(!ingots.isEmpty())
-						out = Utils.copyStackWithAmount(ingots.get(0), 2);
+						out = Utils.copyStackWithAmount(IEApi.getPreferredOreStack("ingot"+ore), 2);
 				}
 				if(out!=null)
 					addArcRecipe(out, "ore"+ore, 200,512, new ItemStack(IEContent.itemMaterial,1,13));
@@ -374,7 +375,7 @@ public class IERecipes
 	{
 		if(OreDictionary.getOres("dust"+ore).isEmpty())
 			return;
-		ItemStack dust = OreDictionary.getOres("dust"+ore).get(0);
+		ItemStack dust = IEApi.getPreferredOreStack("dust"+ore);
 		if(dust==null)
 			return;
 		if(!OreDictionary.getOres("ore"+ore).isEmpty())
@@ -398,7 +399,7 @@ public class IERecipes
 	{
 		if(OreDictionary.getOres(oreName).isEmpty())
 			return null;
-		ItemStack out = OreDictionary.getOres(oreName).get(0);
+		ItemStack out = IEApi.getPreferredOreStack(oreName);
 		if(out==null)
 			return null;
 		return CrusherRecipe.addRecipe(Utils.copyStackWithAmount(out, outSize), input, energy);
@@ -429,7 +430,7 @@ public class IERecipes
 	{
 		if(!OreDictionary.getOres("ore"+oreName).isEmpty() && !OreDictionary.getOres("ingot"+oreName).isEmpty() )
 		{
-			ItemStack out = Utils.copyStackWithAmount(OreDictionary.getOres("ingot"+oreName).get(0), 2);
+			ItemStack out = Utils.copyStackWithAmount(IEApi.getPreferredOreStack("ingot"+oreName), 2);
 			addArcRecipe(out, "ore"+oreName, 200,512, new ItemStack(IEContent.itemMaterial,1,13));
 		}
 	}
