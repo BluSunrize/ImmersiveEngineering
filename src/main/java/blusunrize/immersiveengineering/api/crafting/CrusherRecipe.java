@@ -7,6 +7,7 @@ import java.util.List;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.IEApi;
 
 /**
  * @author BluSunrize - 01.05.2015
@@ -49,7 +50,7 @@ public class CrusherRecipe
 			if(outputs[i*2]!=null)
 			{
 				Object o = ApiUtils.convertToValidRecipeInput(outputs[i*2]);
-				ItemStack ss = o instanceof ItemStack?(ItemStack)o: o instanceof ArrayList?(ItemStack)((ArrayList)o).get(0): null;
+				ItemStack ss = o instanceof ItemStack?(ItemStack)o: o instanceof ArrayList?IEApi.getPreferredStackbyMod((ArrayList<ItemStack>)o): null;
 				if(ss!=null)
 				{
 					newSecondaryOutput.add(ss);

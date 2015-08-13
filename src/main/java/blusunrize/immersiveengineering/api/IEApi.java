@@ -1,11 +1,12 @@
 package blusunrize.immersiveengineering.api;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
+import cpw.mods.fml.common.registry.GameRegistry;
 
 public class IEApi
 {
@@ -16,9 +17,17 @@ public class IEApi
 	{
 		if(!oreOutputPreference.containsKey(oreName))
 		{
-			ItemStack preferredStack = null;
-			int lastPref = -1;
-			for(ItemStack stack : OreDictionary.getOres(oreName))
+			ItemStack preferredStack = getPreferredStackbyMod(OreDictionary.getOres(oreName));
+			oreOutputPreference.put(oreName, preferredStack);
+			return preferredStack;
+		}
+		return oreOutputPreference.get(oreName);
+	}
+	public static ItemStack getPreferredStackbyMod(ArrayList<ItemStack> list)
+	{
+		ItemStack preferredStack = null;
+		int lastPref = -1;
+		for(ItemStack stack : list)
 			if(stack!=null)
 			{
 				String modId = GameRegistry.findUniqueIdentifierFor(stack.getItem()).modId;
@@ -29,9 +38,6 @@ public class IEApi
 					lastPref = idx;
 				}
 			}
-			oreOutputPreference.put(oreName, preferredStack);
-			return preferredStack;
-		}
-		return oreOutputPreference.get(oreName);
+		return preferredStack;
 	}
 }

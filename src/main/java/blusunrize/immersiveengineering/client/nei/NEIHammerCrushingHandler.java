@@ -7,6 +7,7 @@ import java.util.List;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.oredict.OreDictionary;
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -28,7 +29,7 @@ public class NEIHammerCrushingHandler extends TemplateRecipeHandler
 				inputs[i] = new PositionedStack[i+2];
 				for(int j=0;j<inputs[i].length;j++)
 					inputs[i][j]= new PositionedStack(j==0?new ItemStack(IEContent.itemTool):OreDictionary.getOres(inputType+oreName) ,25+(j%3)*18, 6+(j/3)*18, j!=0);
-				ItemStack dust = Utils.copyStackWithAmount(OreDictionary.getOres("dust"+oreName).get(0), (i+1)*("ore".equals(inputType)?2:1));
+				ItemStack dust = Utils.copyStackWithAmount(IEApi.getPreferredOreStack("dust"+oreName), (i+1)*("ore".equals(inputType)?2:1));
 				output[i] = new PositionedStack(dust, 119,24);
 			}
 		}
