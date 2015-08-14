@@ -76,7 +76,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 				update = true;
 			}
 		}
-		
+
 		if(worldObj.isBlockIndirectlyGettingPowered(xCoord+(facing==4?-2:facing==5?2:facing==(mirrored?2:3)?-2:2), yCoord-1, zCoord+(facing==2?-2:facing==3?2:facing==(mirrored?5:4)?-2:2)))
 		{
 			if(active)
@@ -84,139 +84,140 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 				active = false;
 				update = true;
 			}
-			return;
 		}
-
-		if(hasElectrodes)
+		else
 		{
-			ItemStack[] additives = new ItemStack[4];
-			for(int i=0; i<4; i++)
-				additives[i] = (inventory[12+i]!=null?inventory[12+i].copy():null);
-			boolean damageElectrodes = false;
-			for(int i=0; i<12; i++)
+			if(hasElectrodes)
 			{
-				ArcFurnaceRecipe recipe = ArcFurnaceRecipe.findRecipe(this.getStackInSlot(i), additives);
-				if(recipe!=null)
+				ItemStack[] additives = new ItemStack[4];
+				for(int i=0; i<4; i++)
+					additives[i] = (inventory[12+i]!=null?inventory[12+i].copy():null);
+				boolean damageElectrodes = false;
+				for(int i=0; i<12; i++)
 				{
-					int outputSlot = -1;
-					if(recipe.output!=null)
+					ArcFurnaceRecipe recipe = ArcFurnaceRecipe.findRecipe(this.getStackInSlot(i), additives);
+					if(recipe!=null)
 					{
-						boolean spaceForOutput = false;
-						for(int j=16; j<22; j++)
-							if(inventory[j]==null || (OreDictionary.itemMatches(inventory[j],recipe.output,false) && inventory[j].stackSize+recipe.output.stackSize<=inventory[j].getMaxStackSize()) )
-							{
-								spaceForOutput = true;
-								outputSlot = j;
-								break;
-							}
-						if(!spaceForOutput)
+						int outputSlot = -1;
+						if(recipe.output!=null)
+						{
+							boolean spaceForOutput = false;
+							for(int j=16; j<22; j++)
+								if(inventory[j]==null || (OreDictionary.itemMatches(inventory[j],recipe.output,false) && inventory[j].stackSize+recipe.output.stackSize<=inventory[j].getMaxStackSize()) )
+								{
+									spaceForOutput = true;
+									outputSlot = j;
+									break;
+								}
+							if(!spaceForOutput)
+								continue;
+						}
+						if(recipe.slag!=null && !(inventory[22]==null || (OreDictionary.itemMatches(inventory[22],recipe.slag,false) && inventory[22].stackSize+recipe.slag.stackSize<=inventory[22].getMaxStackSize()) ))
 							continue;
-					}
-					if(recipe.slag!=null && !(inventory[22]==null || (OreDictionary.itemMatches(inventory[22],recipe.slag,false) && inventory[22].stackSize+recipe.slag.stackSize<=inventory[22].getMaxStackSize()) ))
-						continue;
 
 
 
-					if(processMax[i]!=recipe.time)
-					{
-						processMax[i]=recipe.time;
-						process[i]=0;
-						update = true;
-					}
-					else
-					{
-						int energy = recipe.energyPerTick;
-						if(this.energyStorage.extractEnergy(energy, true)>=energy)
+						if(processMax[i]!=recipe.time)
 						{
-							this.energyStorage.extractEnergy(energy, false);
-							process[i]++;
-							damageElectrodes=true;
-							if(!active)
-								active = true;
-						}
-						if(process[i]>=processMax[i])
-						{
-							int taken = recipe.input instanceof ItemStack?((ItemStack)recipe.input).stackSize: 1;
-							this.decrStackSize(i, taken);
-							for(Object add : recipe.additives)
-							{
-								int takenAdd = 	add instanceof ItemStack?((ItemStack)add).stackSize: 1;
-								for(int j=12; j<16; j++)
-									if(this.getStackInSlot(j)!=null && ApiUtils.stackMatchesObject(this.getStackInSlot(j), add))
-									{
-										int t = Math.min(takenAdd, this.getStackInSlot(j).stackSize);
-										this.decrStackSize(j, t);
-										takenAdd -= t;
-										if(takenAdd<=0)
-											break;
-									}
-							}
-
-							processMax[i]=0;
+							processMax[i]=recipe.time;
 							process[i]=0;
-							if(recipe.output!=null && outputSlot!=-1)
-							{
-								if(inventory[outputSlot]!=null)
-									inventory[outputSlot].stackSize+= recipe.output.stackSize;
-								else if(inventory[outputSlot]==null)
-									inventory[outputSlot] = recipe.output.copy();
-							}
-
-							if(inventory[22]!=null)
-								inventory[22].stackSize+= recipe.slag.stackSize;
-							else if(inventory[22]==null)
-								inventory[22] = recipe.slag.copy();
-
-							if(active)
-								active = false;
+							update = true;
 						}
-						update = true;
-					}
-				}
-				else if(process[i]>0)
-					process[i]=0;
-			}
-			if(damageElectrodes)
-			{
-				for(int i=23; i<26; i++)
-					if(this.getStackInSlot(i).attemptDamageItem(1, worldObj.rand))
-					{
-						this.setInventorySlotContents(i, null);
-						update = true;
-					}
-			}
-			else if(active)
-			{
-				active = false;
-				update = true;
-			}
-		}
+						else
+						{
+							int energy = recipe.energyPerTick;
+							if(this.energyStorage.extractEnergy(energy, true)>=energy)
+							{
+								this.energyStorage.extractEnergy(energy, false);
+								process[i]++;
+								damageElectrodes=true;
+								if(!active)
+									active = true;
+							}
+							if(process[i]>=processMax[i])
+							{
+								int taken = recipe.input instanceof ItemStack?((ItemStack)recipe.input).stackSize: 1;
+								this.decrStackSize(i, taken);
+								for(Object add : recipe.additives)
+								{
+									int takenAdd = 	add instanceof ItemStack?((ItemStack)add).stackSize: 1;
+									for(int j=12; j<16; j++)
+										if(this.getStackInSlot(j)!=null && ApiUtils.stackMatchesObject(this.getStackInSlot(j), add))
+										{
+											int t = Math.min(takenAdd, this.getStackInSlot(j).stackSize);
+											this.decrStackSize(j, t);
+											takenAdd -= t;
+											if(takenAdd<=0)
+												break;
+										}
+								}
 
-		if(worldObj.getTotalWorldTime()%8==0)
-		{
-			TileEntity inventoryFront = this.worldObj.getTileEntity(xCoord+(facing==4?-3:facing==5?3:0),yCoord-2,zCoord+(facing==2?-3:facing==3?3:0));
-			for(int j=16; j<22; j++)
-				if(this.getStackInSlot(j)!=null)
-				{
-					ItemStack stack = Utils.copyStackWithAmount(this.getStackInSlot(j),1);
-					if((inventoryFront instanceof ISidedInventory && ((ISidedInventory)inventoryFront).getAccessibleSlotsFromSide(ForgeDirection.OPPOSITES[facing]).length>0)
-							||(inventoryFront instanceof IInventory && ((IInventory)inventoryFront).getSizeInventory()>0))
-						stack = Utils.insertStackIntoInventory((IInventory)inventoryFront, stack, ForgeDirection.OPPOSITES[facing]);
-					if(stack==null)
-					{
-						this.decrStackSize(j, 1);
-						break;
+								processMax[i]=0;
+								process[i]=0;
+								if(recipe.output!=null && outputSlot!=-1)
+								{
+									if(inventory[outputSlot]!=null)
+										inventory[outputSlot].stackSize+= recipe.output.stackSize;
+									else if(inventory[outputSlot]==null)
+										inventory[outputSlot] = recipe.output.copy();
+								}
+
+								if(inventory[22]!=null)
+									inventory[22].stackSize+= recipe.slag.stackSize;
+								else if(inventory[22]==null)
+									inventory[22] = recipe.slag.copy();
+
+								if(active)
+									active = false;
+							}
+							update = true;
+						}
 					}
+					else if(process[i]>0)
+						process[i]=0;
 				}
-			TileEntity inventoryBack = this.worldObj.getTileEntity(xCoord+(facing==4?3:facing==5?-3:0),yCoord-2,zCoord+(facing==2?3:facing==3?-3:0));
-			if(this.getStackInSlot(22)!=null)
+				if(damageElectrodes)
+				{
+					for(int i=23; i<26; i++)
+						if(this.getStackInSlot(i).attemptDamageItem(1, worldObj.rand))
+						{
+							this.setInventorySlotContents(i, null);
+							update = true;
+						}
+				}
+				else if(active)
+				{
+					active = false;
+					update = true;
+				}
+			}
+
+			if(worldObj.getTotalWorldTime()%8==0)
 			{
-				ItemStack stack = Utils.copyStackWithAmount(this.getStackInSlot(22),1);
-				if((inventoryBack instanceof ISidedInventory && ((ISidedInventory)inventoryBack).getAccessibleSlotsFromSide(ForgeDirection.OPPOSITES[facing]).length>0)
-						||(inventoryBack instanceof IInventory && ((IInventory)inventoryBack).getSizeInventory()>0))
-					stack = Utils.insertStackIntoInventory((IInventory)inventoryBack, stack, facing);
-				if(stack==null)
-					this.decrStackSize(22,1);
+				TileEntity inventoryFront = this.worldObj.getTileEntity(xCoord+(facing==4?-3:facing==5?3:0),yCoord-2,zCoord+(facing==2?-3:facing==3?3:0));
+				for(int j=16; j<22; j++)
+					if(this.getStackInSlot(j)!=null)
+					{
+						ItemStack stack = Utils.copyStackWithAmount(this.getStackInSlot(j),1);
+						if((inventoryFront instanceof ISidedInventory && ((ISidedInventory)inventoryFront).getAccessibleSlotsFromSide(ForgeDirection.OPPOSITES[facing]).length>0)
+								||(inventoryFront instanceof IInventory && ((IInventory)inventoryFront).getSizeInventory()>0))
+							stack = Utils.insertStackIntoInventory((IInventory)inventoryFront, stack, ForgeDirection.OPPOSITES[facing]);
+						if(stack==null)
+						{
+							this.decrStackSize(j, 1);
+							break;
+						}
+					}
+				TileEntity inventoryBack = this.worldObj.getTileEntity(xCoord+(facing==4?3:facing==5?-3:0),yCoord-2,zCoord+(facing==2?3:facing==3?-3:0));
+				if(this.getStackInSlot(22)!=null)
+				{
+					ItemStack stack = Utils.copyStackWithAmount(this.getStackInSlot(22),1);
+					if((inventoryBack instanceof ISidedInventory && ((ISidedInventory)inventoryBack).getAccessibleSlotsFromSide(ForgeDirection.OPPOSITES[facing]).length>0)
+							||(inventoryBack instanceof IInventory && ((IInventory)inventoryBack).getSizeInventory()>0))
+						stack = Utils.insertStackIntoInventory((IInventory)inventoryBack, stack, facing);
+					if(stack==null)
+						this.decrStackSize(22,1);
+				}
 			}
 		}
 
