@@ -1,3 +1,7 @@
+#####Version 0.5.3
+-
+
+
 #####Version 0.5.2 - BUILT
 - fixed boundingboxes on slabs
 - fixed shift-clicking items in the arc furnace

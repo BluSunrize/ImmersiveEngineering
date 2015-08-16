@@ -125,7 +125,6 @@ public class IERecipes
 		addShapelessOredictRecipe(new ItemStack(Items.string), new ItemStack(IEContent.itemMaterial,1,3));
 		addOredictRecipe(new ItemStack(IEContent.itemMaterial,1,4), "HHH","HSH","HHH", 'H',new ItemStack(IEContent.itemMaterial,1,3), 'S',"stickWood");
 		addShapelessOredictRecipe(new ItemStack(IEContent.itemMaterial,1,5), new ItemStack(IEContent.itemMaterial,1,2),new ItemStack(IEContent.itemMaterial,1,4),new ItemStack(IEContent.itemMaterial,1,4),new ItemStack(IEContent.itemMaterial,1,4),new ItemStack(IEContent.itemMaterial,1,4));
-		addShapelessOredictRecipe(new ItemStack(IEContent.itemMaterial,9,6), new ItemStack(IEContent.blockStoneDevice,1,3));
 		addOredictRecipe(new ItemStack(IEContent.itemMaterial,1,7), "III", 'I',"ingotSteel");
 		addOredictRecipe(new ItemStack(IEContent.itemMaterial,1,8), " I ","ICI"," I ", 'I',"ingotSteel",'C',componentIron);
 		addOredictRecipe(new ItemStack(IEContent.itemMaterial,1,9), "SS","IS","SS", 'I',"ingotCopper",'S',"treatedStick");
