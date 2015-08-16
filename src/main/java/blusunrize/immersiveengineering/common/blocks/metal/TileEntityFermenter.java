@@ -196,7 +196,7 @@ public class TileEntityFermenter extends TileEntityMultiblockPart implements IFl
 		if(recipe==null)
 			return null;
 
-		if(inventory[11]==null || recipe.output==null || (OreDictionary.itemMatches(inventory[11],recipe.output,false) && inventory[11].stackSize+recipe.output.stackSize<=getInventoryStackLimit()) )
+		if(inventory[11]==null || recipe.output==null || (OreDictionary.itemMatches(inventory[11],recipe.output,false) && inventory[11].stackSize+recipe.output.stackSize<=recipe.output.getMaxStackSize()) )
 			if(tank.getFluid()==null || recipe.fluid==null || (tank.getFluid().isFluidEqual(recipe.fluid) && tank.getFluidAmount()+recipe.fluid.amount<=tank.getCapacity()))
 				return recipe;
 		return null;

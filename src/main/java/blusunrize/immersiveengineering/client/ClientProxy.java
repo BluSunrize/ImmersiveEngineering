@@ -325,8 +325,9 @@ public class ClientProxy extends CommonProxy
 				);
 		ManualHelper.addEntry("lightningrod", ManualHelper.CAT_ENERGY,
 				new ManualPages.Crafting(ManualHelper.getManual(), "lightningrod0",  new ItemStack(IEContent.blockMetalMultiblocks,1,BlockMetalMultiblocks.META_lightningRod)),
-				new ManualPageMultiblock(ManualHelper.getManual(), "lightningrod1", MultiblockLightningRod.instance));
-		
+				new ManualPageMultiblock(ManualHelper.getManual(), "lightningrod1", MultiblockLightningRod.instance),
+				new ManualPages.Text(ManualHelper.getManual(), "lightningrod2"));
+
 		ManualHelper.addEntry("conveyor", ManualHelper.CAT_MACHINES,
 				new ManualPages.Crafting(ManualHelper.getManual(), "conveyor0", new ItemStack(IEContent.blockMetalDevice,1,BlockMetalDevices.META_conveyorBelt)),
 				new ManualPages.Text(ManualHelper.getManual(), "conveyor1"));
@@ -527,13 +528,13 @@ public class ClientProxy extends CommonProxy
 		{
 			multiTables[curTable][i][0] = Lib.DESC_INFO+"mineral."+minerals[i].name;
 			multiTables[curTable][i][1] = "";
-//			for(int j=0; j<minerals[i].recalculatedOres.length; j++)
-//				if(!OreDictionary.getOres(minerals[i].recalculatedOres[j]).isEmpty())
-//				{
-//					ItemStack stackOre = OreDictionary.getOres(minerals[i].recalculatedOres[j]).get(0);
-//					multiTables[curTable][i][1] += stackOre.getDisplayName()+" "+( Utils.formatDouble(minerals[i].recalculatedChances[j]*100,"#.00")+"%" )+(j<minerals[i].recalculatedOres.length-1?"\n":""); 
-//					totalLines++;
-//				}
+			//			for(int j=0; j<minerals[i].recalculatedOres.length; j++)
+			//				if(!OreDictionary.getOres(minerals[i].recalculatedOres[j]).isEmpty())
+			//				{
+			//					ItemStack stackOre = OreDictionary.getOres(minerals[i].recalculatedOres[j]).get(0);
+			//					multiTables[curTable][i][1] += stackOre.getDisplayName()+" "+( Utils.formatDouble(minerals[i].recalculatedChances[j]*100,"#.00")+"%" )+(j<minerals[i].recalculatedOres.length-1?"\n":""); 
+			//					totalLines++;
+			//				}
 			for(int j=0; j<minerals[i].oreOutput.length; j++)
 				if(minerals[i].oreOutput[j]!=null)
 				{

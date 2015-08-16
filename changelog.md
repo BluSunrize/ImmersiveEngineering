@@ -12,6 +12,8 @@
 - moved coke blocks, coke oven bricks, blast furnace bricks and hempcrete to a separate block class to allow for multiparts and carpenters blocks
 - Arc Furnace should respect the stacksize limit for outputs now
 - fixed a rare NEI crash
+- fixed DenseOres not registering for the crusher
+- made changes to the lightning rod, improving its chances of getting hit
 
 
 #####Version 0.5.2 - BUILT

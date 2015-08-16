@@ -1,11 +1,14 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import java.util.ArrayList;
+
 import net.minecraft.block.Block;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChunkCoordinates;
 import net.minecraftforge.common.util.ForgeDirection;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.IEContent;
@@ -21,6 +24,9 @@ public class TileEntityLightningRod extends TileEntityMultiblockPart implements 
 	{
 		return true;
 	}
+
+	ArrayList<ChunkCoordinates> fenceNet = null;
+	int height;
 
 	@Override
 	public void updateEntity()
@@ -38,32 +44,62 @@ public class TileEntityLightningRod extends TileEntityMultiblockPart implements 
 						ier.receiveEnergy(fd.getOpposite(), extracted, false);
 					}
 			}
-			if(worldObj.getTotalWorldTime()%256==((xCoord^zCoord)&255) && ( worldObj.isThundering() || (worldObj.isRaining()&&worldObj.rand.nextInt(10)==0) ))
-			{
-				int height = 0;
-				boolean broken = false;
-				for(int i=yCoord+1; i<worldObj.getHeight()-1; i++)
-				{
-					if(!broken && worldObj.getBlock(xCoord, i, zCoord).equals(IEContent.blockMetalDecoration) && worldObj.getBlockMetadata(xCoord, i, zCoord)==0)
-						height++;
-					else if(!worldObj.isAirBlock(xCoord, i, zCoord))
-						return;
-					else
-					{
-						if(!broken)
-							broken=true;
-					}
-				}
 
-				if (worldObj.rand.nextInt(4096*worldObj.getHeight())<height*(yCoord+height))
+			if(worldObj.getTotalWorldTime()%256==((xCoord^zCoord)&255))
+				fenceNet = null;
+			if(fenceNet==null)
+				fenceNet = this.getFenceNet();
+
+			if(fenceNet!=null && worldObj.getTotalWorldTime()%128==((xCoord^zCoord)&127) && ( worldObj.isThundering() || (worldObj.isRaining()&&worldObj.rand.nextInt(10)==0) ))
+			{
+				int i = this.height + this.fenceNet.size();
+				if (worldObj.rand.nextInt(4096*worldObj.getHeight())<i*(yCoord+i))
 				{
 					this.energyStorage.setEnergyStored(Config.getInt("lightning_output"));
-					EntityLightningBolt entityLightningBolt = new EntityLightningBolt(worldObj, xCoord, yCoord+height, zCoord);
+					ChunkCoordinates cc = fenceNet.get(worldObj.rand.nextInt(fenceNet.size()));
+					EntityLightningBolt entityLightningBolt = new EntityLightningBolt(worldObj, cc.posX,cc.posY,cc.posZ);
 					worldObj.addWeatherEffect(entityLightningBolt);
 					worldObj.spawnEntityInWorld(entityLightningBolt);
 				}
 			}
 		}
+	}
+
+	ArrayList<ChunkCoordinates> getFenceNet()
+	{
+		this.height = 0;
+		boolean broken = false;
+		for(int i=yCoord+1; i<worldObj.getHeight()-1; i++)
+		{
+			if(!broken && worldObj.getBlock(xCoord, i, zCoord).equals(IEContent.blockMetalDecoration) && worldObj.getBlockMetadata(xCoord, i, zCoord)==0)
+				this.height++;
+			else if(!worldObj.isAirBlock(xCoord, i, zCoord))
+				return null;
+			else
+			{
+				if(!broken)
+					broken=true;
+			}
+		}
+
+		ArrayList<ChunkCoordinates> openList = new ArrayList();
+		ArrayList<ChunkCoordinates> closedList = new ArrayList();
+		openList.add(new ChunkCoordinates(xCoord,yCoord+this.height,zCoord));
+		while(!openList.isEmpty() && closedList.size()<1024)
+		{
+			ChunkCoordinates next = openList.get(0);
+			if(worldObj.getBlock(next.posX,next.posY,next.posZ).equals(IEContent.blockMetalDecoration) && worldObj.getBlockMetadata(next.posX,next.posY,next.posZ)==0)
+			{
+				closedList.add(next);
+				openList.add(new ChunkCoordinates(next.posX+1,next.posY,next.posZ));
+				openList.add(new ChunkCoordinates(next.posX-1,next.posY,next.posZ));
+				openList.add(new ChunkCoordinates(next.posX,next.posY,next.posZ+1));
+				openList.add(new ChunkCoordinates(next.posX,next.posY,next.posZ-1));
+				openList.add(new ChunkCoordinates(next.posX,next.posY+1,next.posZ));
+			}
+			openList.remove(0);
+		}
+		return closedList;
 	}
 
 	public TileEntityLightningRod master()

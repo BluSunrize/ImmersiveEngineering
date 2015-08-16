@@ -41,13 +41,17 @@ public class IEWailaDataProvider implements IWailaDataProvider
 		{
 			int meta = accessor.getMetadata();
 			int min = ((BlockIECrop)b).getMinMeta(meta);
-			int max = ((BlockIECrop)b).getMinMeta(meta);
-			float growth = ((meta-min)/(float)(max-min))*100f;
-			if(growth < 100.0)
-				currenttip.add(String.format("%s : %.0f %%", StatCollector.translateToLocal("hud.msg.growth"), growth));
-			else
+			int max = ((BlockIECrop)b).getMaxMeta(meta);
+			if(min==max)
 				currenttip.add(String.format("%s : %s", StatCollector.translateToLocal("hud.msg.growth"), StatCollector.translateToLocal("hud.msg.mature")));
-
+			else
+			{
+				float growth = ((meta-min)/(float)(max-min))*100f;
+				if(growth < 100.0)
+					currenttip.add(String.format("%s : %.0f %%", StatCollector.translateToLocal("hud.msg.growth"), growth));
+				else
+					currenttip.add(String.format("%s : %s", StatCollector.translateToLocal("hud.msg.growth"), StatCollector.translateToLocal("hud.msg.mature")));
+			}
 			return currenttip;
 		}
 		return currenttip;

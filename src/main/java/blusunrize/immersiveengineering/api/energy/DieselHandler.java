@@ -6,14 +6,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
-import blusunrize.immersiveengineering.common.IEContent;
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
+import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.common.IEContent;
 
 /**
  * @author BluSunrize - 23.04.2015
@@ -61,12 +59,7 @@ public class DieselHandler
 		public final FluidStack fluid;
 		public SqueezerRecipe(Object input, int time, FluidStack fluid, ItemStack itemOutput)
 		{
-			if(input instanceof Item)
-				this.input = new ItemStack((Item) input);
-			else if(input instanceof Block)
-				this.input = new ItemStack((Block) input);
-			else
-				this.input=input;
+			this.input = ApiUtils.convertToValidRecipeInput(input);
 			this.output=itemOutput;
 			this.time=time;
 			this.fluid=fluid;
@@ -82,12 +75,8 @@ public class DieselHandler
 	public static SqueezerRecipe findSqueezerRecipe(ItemStack input)
 	{
 		for(SqueezerRecipe recipe : squeezerList)
-		{
-			if(recipe.input instanceof ItemStack && OreDictionary.itemMatches((ItemStack)recipe.input, input, false))
+			if(ApiUtils.stackMatchesObject(input, recipe.input))
 				return recipe;
-			else if(recipe.input instanceof String && ApiUtils.compareToOreName(input, (String)recipe.input))
-				return recipe;
-		}
 		return null;
 	}
 	public static List<SqueezerRecipe> removeSqueezerRecipes(ItemStack stack)
@@ -111,10 +100,8 @@ public class DieselHandler
 		for(SqueezerRecipe recipe : squeezerList)
 			if(recipe.fluid!=null && recipe.fluid.getFluid()==IEContent.fluidPlantoil)
 			{
-				if(recipe.input instanceof String)
-					map.put((String) recipe.input, recipe.fluid.amount);
-				else if(recipe.input instanceof ItemStack)
-					map.put(((ItemStack)recipe.input).getDisplayName(), recipe.fluid.amount);
+				ItemStack is = (ItemStack)(recipe.input instanceof ArrayList?((ArrayList)recipe.input).get(0): recipe.input instanceof ItemStack?recipe.input: null);
+				map.put(is.getDisplayName(), recipe.fluid.amount);
 			}
 		return ApiUtils.sortMap(map, inverse);
 	}
@@ -127,12 +114,7 @@ public class DieselHandler
 		public final FluidStack fluid;
 		public FermenterRecipe(Object input, int time, FluidStack fluid, ItemStack itemOutput)
 		{
-			if(input instanceof Item)
-				this.input = new ItemStack((Item) input);
-			else if(input instanceof Block)
-				this.input = new ItemStack((Block) input);
-			else
-				this.input=input;
+			this.input = ApiUtils.convertToValidRecipeInput(input);
 			this.output=itemOutput;
 			this.time=time;
 			this.fluid=fluid;
@@ -148,12 +130,8 @@ public class DieselHandler
 	public static FermenterRecipe findFermenterRecipe(ItemStack input)
 	{
 		for(FermenterRecipe recipe : fermenterList)
-		{
-			if(recipe.input instanceof ItemStack && OreDictionary.itemMatches((ItemStack)recipe.input, input, false))
+			if(ApiUtils.stackMatchesObject(input, recipe.input))
 				return recipe;
-			else if(recipe.input instanceof String && ApiUtils.compareToOreName(input, (String)recipe.input))
-				return recipe;
-		}
 		return null;
 	}
 	public static List<FermenterRecipe> removeFermenterRecipes(ItemStack stack)
@@ -177,61 +155,59 @@ public class DieselHandler
 		for(FermenterRecipe recipe : fermenterList)
 			if(recipe.fluid!=null && recipe.fluid.getFluid()==IEContent.fluidEthanol)
 			{
-				if(recipe.input instanceof String)
-					map.put((String) recipe.input, recipe.fluid.amount);
-				else if(recipe.input instanceof ItemStack)
-					map.put(((ItemStack)recipe.input).getDisplayName(), recipe.fluid.amount);
+				ItemStack is = (ItemStack)(recipe.input instanceof ArrayList?((ArrayList)recipe.input).get(0): recipe.input instanceof ItemStack?recipe.input: null);
+				map.put(is.getDisplayName(), recipe.fluid.amount);
 			}
 		return ApiUtils.sortMap(map, inverse);
 	}
-//	static HashMap<String, Integer> ethanolOutput = new HashMap<String, Integer>();
-//	/**
-//	 * @param input either itemstack or OreDictionary name
-//	 * @param output the output of ethanol in mB per item
-//	 */
-//	public static void registerEthanolSource(Object input, int output)
-//	{
-//		if(input instanceof String)
-//			ethanolOutput.put((String)input, output);
-//		else 
-//		{
-//			if(input instanceof Item)
-//				input = new ItemStack((Item)input);
-//			if(input instanceof Block)
-//				input = new ItemStack((Block)input);
-//			if(input instanceof ItemStack && !ApiUtils.nameFromStack((ItemStack)input).isEmpty())
-//				ethanolOutput.put(ApiUtils.nameFromStack((ItemStack)input)+"::"+((ItemStack)input).getItemDamage(), output);
-//		}
-//	}
-//	public static int getEthanolOutput(ItemStack stack)
-//	{
-//		for(Map.Entry<String,Integer> e : ethanolOutput.entrySet())
-//			if(ApiUtils.compareToOreName(stack, e.getKey()))
-//				return e.getValue();
-//			else
-//			{
-//				int lIndx = e.getKey().lastIndexOf("::");
-//				if(lIndx>0)
-//				{
-//					String key = e.getKey().substring(0,lIndx);
-//					try{
-//						int reqMeta = Integer.parseInt(e.getKey().substring(lIndx+2));
-//						if(key.equals(ApiUtils.nameFromStack(stack)) && (reqMeta==OreDictionary.WILDCARD_VALUE || reqMeta==stack.getItemDamage()))
-//							return e.getValue();
-//					}catch(Exception exception){}
-//				}
-//			}
-//		return 0;
-//	}
-//	public static HashMap<String, Integer> getEthanolValues()
-//	{
-//		return ethanolOutput;
-//	}
-//	public static Map<String, Integer> getEthanolValuesSorted(boolean inverse)
-//	{
-//		return ApiUtils.sortMap(ethanolOutput, inverse);
-//	}
-	
+	//	static HashMap<String, Integer> ethanolOutput = new HashMap<String, Integer>();
+	//	/**
+	//	 * @param input either itemstack or OreDictionary name
+	//	 * @param output the output of ethanol in mB per item
+	//	 */
+	//	public static void registerEthanolSource(Object input, int output)
+	//	{
+	//		if(input instanceof String)
+	//			ethanolOutput.put((String)input, output);
+	//		else 
+	//		{
+	//			if(input instanceof Item)
+	//				input = new ItemStack((Item)input);
+	//			if(input instanceof Block)
+	//				input = new ItemStack((Block)input);
+	//			if(input instanceof ItemStack && !ApiUtils.nameFromStack((ItemStack)input).isEmpty())
+	//				ethanolOutput.put(ApiUtils.nameFromStack((ItemStack)input)+"::"+((ItemStack)input).getItemDamage(), output);
+	//		}
+	//	}
+	//	public static int getEthanolOutput(ItemStack stack)
+	//	{
+	//		for(Map.Entry<String,Integer> e : ethanolOutput.entrySet())
+	//			if(ApiUtils.compareToOreName(stack, e.getKey()))
+	//				return e.getValue();
+	//			else
+	//			{
+	//				int lIndx = e.getKey().lastIndexOf("::");
+	//				if(lIndx>0)
+	//				{
+	//					String key = e.getKey().substring(0,lIndx);
+	//					try{
+	//						int reqMeta = Integer.parseInt(e.getKey().substring(lIndx+2));
+	//						if(key.equals(ApiUtils.nameFromStack(stack)) && (reqMeta==OreDictionary.WILDCARD_VALUE || reqMeta==stack.getItemDamage()))
+	//							return e.getValue();
+	//					}catch(Exception exception){}
+	//				}
+	//			}
+	//		return 0;
+	//	}
+	//	public static HashMap<String, Integer> getEthanolValues()
+	//	{
+	//		return ethanolOutput;
+	//	}
+	//	public static Map<String, Integer> getEthanolValuesSorted(boolean inverse)
+	//	{
+	//		return ApiUtils.sortMap(ethanolOutput, inverse);
+	//	}
+
 	public static class RefineryRecipe
 	{
 		public final FluidStack input0;
@@ -281,19 +257,19 @@ public class DieselHandler
 		}
 		return null;
 	}
-//	public static List<RefineryRecipe> removeFermenterRecipes(ItemStack stack)
-//	{
-//		List<RefineryRecipe> list = new ArrayList();
-//		Iterator<RefineryRecipe> it = fermenterList.iterator();
-//		while(it.hasNext())
-//		{
-//			RefineryRecipe ir = it.next();
-//			if(OreDictionary.itemMatches(ir.output, stack, true))
-//			{
-//				list.add(ir);
-//				it.remove();
-//			}
-//		}
-//		return list;
-//	}
+	//	public static List<RefineryRecipe> removeFermenterRecipes(ItemStack stack)
+	//	{
+	//		List<RefineryRecipe> list = new ArrayList();
+	//		Iterator<RefineryRecipe> it = fermenterList.iterator();
+	//		while(it.hasNext())
+	//		{
+	//			RefineryRecipe ir = it.next();
+	//			if(OreDictionary.itemMatches(ir.output, stack, true))
+	//			{
+	//				list.add(ir);
+	//				it.remove();
+	//			}
+	//		}
+	//		return list;
+	//	}
 }
