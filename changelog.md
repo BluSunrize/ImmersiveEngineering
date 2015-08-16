@@ -1,5 +1,17 @@
 #####Version 0.5.3
--
+- fixed raytracing on HV relays (thanks cobra)
+- updated zh_CN.lang
+- fixed dupebug with blueprints (thanks malte0811)
+- fixed tooltips rendering below text (thanks UnwrittenFun)
+- introduced mod-priority system, allowing users to configure which mod they'd like the ores the excavator spits out to be from
+- fixed Excavator's chance system for good, hopefully
+- added blacklist for dimension IDs, rather than restricting IE ores to the overworld
+- added a config to force-enable the crushing of ores with the Engineer's Hammer
+- added Minetweaker support for the Arc Furnace
+- fixed the appearance update of the Arc Furnace, even when it's shut off by redstone
+- moved coke blocks, coke oven bricks, blast furnace bricks and hempcrete to a separate block class to allow for multiparts and carpenters blocks
+- Arc Furnace should respect the stacksize limit for outputs now
+- fixed a rare NEI crash
 
 
 #####Version 0.5.2 - BUILT

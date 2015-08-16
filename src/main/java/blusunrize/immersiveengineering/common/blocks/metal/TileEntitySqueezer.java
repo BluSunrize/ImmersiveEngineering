@@ -99,13 +99,14 @@ public class TileEntitySqueezer extends TileEntityMultiblockPart implements IFlu
 
 							if(recipe!=null)
 							{
+								int recipeInputSize = recipe.input instanceof ItemStack?((ItemStack)recipe.input).stackSize:1;
 								int outLimit = recipe.output==null?9: ((64-(inventory[11]!=null?inventory[11].stackSize:0))/recipe.output.stackSize);
 								int fluidLimit = recipe.fluid==null?9: ((tank.getCapacity()-tank.getFluidAmount())/recipe.fluid.amount);
-								int taken = Math.min(Math.min(inputs,stack.stackSize), Math.min(outLimit,fluidLimit));
+								int taken = Math.min(Math.min(inputs,stack.stackSize/recipeInputSize), Math.min(outLimit,fluidLimit));
 								//								
 								if(taken>0)
 								{
-									this.decrStackSize(i, taken*(recipe.input instanceof ItemStack?((ItemStack)recipe.input).stackSize:1));
+									this.decrStackSize(i, taken*recipeInputSize);
 									if(recipe.output!=null)
 										if(inventory[11]!=null)
 											inventory[11].stackSize+= taken*recipe.output.copy().stackSize;
