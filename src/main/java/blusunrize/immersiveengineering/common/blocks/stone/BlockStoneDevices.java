@@ -1,9 +1,13 @@
 package blusunrize.immersiveengineering.common.blocks.stone;
 
-import net.minecraft.block.Block;
+import java.util.List;
+
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
@@ -16,7 +20,7 @@ import blusunrize.immersiveengineering.common.util.Lib;
 
 public class BlockStoneDevices extends BlockIEBase
 {
-	IIcon[] iconsCokeOven = new IIcon[2];
+	IIcon[] iconsCokeOven = new IIcon[10];
 	IIcon[] iconsBlastFurnace = new IIcon[2];
 
 	public BlockStoneDevices()
@@ -27,6 +31,12 @@ public class BlockStoneDevices extends BlockIEBase
 	}
 
 	@Override
+	public void getSubBlocks(Item item, CreativeTabs tab, List list)
+	{
+		list.add(new ItemStack(item, 1, 4));
+	}
+
+	@Override
 	public int getRenderType()
 	{
 		return BlockRenderStoneDevices.renderID;
@@ -34,8 +44,8 @@ public class BlockStoneDevices extends BlockIEBase
 	@Override
 	public boolean canRenderInPass(int pass)
 	{
-		BlockRenderStoneDevices.renderPass=pass;
-		return true;
+//		BlockRenderStoneDevices.renderPass=pass;
+		return pass==1;
 	}
 	@Override
 	public boolean isOpaqueCube()
@@ -64,8 +74,9 @@ public class BlockStoneDevices extends BlockIEBase
 	{
 		for(int i=0; i<icons.length; i++)
 			icons[i][0] = iconRegister.registerIcon("immersiveengineering:"+name+"_"+subNames[i]);
-		iconsCokeOven[0] = iconRegister.registerIcon("immersiveengineering:"+name+"_cokeOven_off");
-		iconsCokeOven[1] = iconRegister.registerIcon("immersiveengineering:"+name+"_cokeOven_on");
+		for(int i=0; i<9; i++)
+			iconsCokeOven[i] = iconRegister.registerIcon("immersiveengineering:"+name+"_cokeOven"+i+(i==4?"off":""));
+		iconsCokeOven[9] = iconRegister.registerIcon("immersiveengineering:"+name+"_cokeOven4on");
 		iconsBlastFurnace[0] = iconRegister.registerIcon("immersiveengineering:"+name+"_blastFurnace_off");
 		iconsBlastFurnace[1] = iconRegister.registerIcon("immersiveengineering:"+name+"_blastFurnace_on");
 	}
@@ -79,116 +90,31 @@ public class BlockStoneDevices extends BlockIEBase
 	{
 		if(world.getTileEntity(x, y, z) instanceof TileEntityCokeOven && ((TileEntityCokeOven)world.getTileEntity(x, y, z)).formed)
 		{
-			int[] off = ((TileEntityCokeOven)world.getTileEntity(x, y, z)).offset;
-			if(off[1]!=0)
+			TileEntityCokeOven teco = ((TileEntityCokeOven)world.getTileEntity(x, y, z));
+			if(teco.master()==null)
+				return iconsCokeOven[teco.active?9:4];
+			if(side!=teco.facing)
 				return super.getIcon(world, x, y, z, side);
-			TileEntityCokeOven teco = ((TileEntityCokeOven)world.getTileEntity(x, y, z)).master();
-			if(teco==null)
-				teco=((TileEntityCokeOven)world.getTileEntity(x, y, z));
-			int j = teco.active?1:0;
-			if(off[0]==0&&off[2]==0)
-				return iconsCokeOven[j];
-			if(teco.facing<4 && off[0]==0 && Math.abs(off[2])==1)
-				return iconsCokeOven[j];
-			else if(teco.facing>3 && off[2]==0&&Math.abs(off[0])==1)
-				return iconsCokeOven[j];
-			
-			switch(teco.facing)
-			{
-			case 2:
-				if(off[0]==0&&off[2]==2)
-					return iconsCokeOven[j];
-				else if(off[0]!=0&&off[2]==1)
-					return iconsCokeOven[j];
-				return super.getIcon(world, x, y, z, side);
-			case 3:
-				if(off[0]==0&&off[2]==-2)
-					return iconsCokeOven[j];
-				else if(off[0]!=0&&off[2]==-1)
-					return iconsCokeOven[j];
-				return super.getIcon(world, x, y, z, side);
-			case 4:
-				if(off[0]==1&&off[2]!=0)
-					return iconsCokeOven[j];
-				else if(off[0]==2&&off[2]==0)
-					return iconsCokeOven[j];
-				return super.getIcon(world, x, y, z, side);
-			case 5:
-				if(off[0]==-1&&off[2]!=0)
-					return iconsCokeOven[j];
-				else if(off[0]==-2&&off[2]==0)
-					return iconsCokeOven[j];
-				return super.getIcon(world, x, y, z, side);
-			}
+			int[] off = teco.offset;
+			int pos = (1-off[1])*3 + (teco.facing==2?(1-off[0]): teco.facing==3?(off[0]+1): teco.facing==5?(1-off[2]): (off[2]+1));
+			return iconsCokeOven[pos];
 		}
 		if(world.getTileEntity(x, y, z) instanceof TileEntityBlastFurnace && ((TileEntityBlastFurnace)world.getTileEntity(x, y, z)).formed)
 		{
 			int[] off = ((TileEntityBlastFurnace)world.getTileEntity(x, y, z)).offset;
 			if(off[1]!=0)
 				return super.getIcon(world, x, y, z, side);
-			TileEntityBlastFurnace tebf = ((TileEntityBlastFurnace)world.getTileEntity(x, y, z)).master();
-			if(tebf==null)
-				tebf=((TileEntityBlastFurnace)world.getTileEntity(x, y, z));
-			int j = tebf.active?1:0;
-			if(off[0]==0&&off[2]==0)
-				return iconsBlastFurnace[j];
-
-			switch(((TileEntityBlastFurnace)world.getTileEntity(x, y, z)).facing)
-			{
-			case 2:
-				if(off[0]==0&&off[2]==2)
-					return iconsBlastFurnace[j];
-				else if(off[0]!=0&&off[2]==1)
-					return iconsBlastFurnace[j];
-				return super.getIcon(world, x, y, z, side);
-			case 3:
-				if(off[0]==0&&off[2]==-2)
-					return iconsBlastFurnace[j];
-				else if(off[0]!=0&&off[2]==-1)
-					return iconsBlastFurnace[j];
-				return super.getIcon(world, x, y, z, side);
-			case 4:
-				if(off[0]==1&&off[2]!=0)
-					return iconsBlastFurnace[j];
-				else if(off[0]==2&&off[2]==0)
-					return iconsBlastFurnace[j];
-				return super.getIcon(world, x, y, z, side);
-			case 5:
-				if(off[0]==-1&&off[2]!=0)
-					return iconsBlastFurnace[j];
-				else if(off[0]==-2&&off[2]==0)
-					return iconsBlastFurnace[j];
-				return super.getIcon(world, x, y, z, side);
-			}
+			TileEntityBlastFurnace tebf = ((TileEntityBlastFurnace)world.getTileEntity(x, y, z));
+			if(tebf.master()==null)
+				return iconsBlastFurnace[tebf.active?1:0];
 		}
 
 		return super.getIcon(world, x, y, z, side);
-		//		int meta = world.getBlockMetadata(x, y, z);
-		//		if(meta<icons.length)
-		//			return icons[meta][getSideForTexture(side)];
-		//		return null;
 	}
 
 	@Override
 	public boolean shouldSideBeRendered(IBlockAccess world, int x, int y ,int z, int side)
 	{
-		int xx = x+(side==4?1:side==5?-1:0);
-		int yy = y+(side==0?1:side==1?-1:0);
-		int zz = z+(side==2?1:side==3?-1:0);
-		if(world.getTileEntity(xx, yy, zz) instanceof TileEntityCokeOven && ((TileEntityCokeOven)world.getTileEntity(xx, yy, zz)).formed)
-		{
-			int[] off = ((TileEntityCokeOven)world.getTileEntity(xx, yy, zz)).offset;
-			int f = ((TileEntityCokeOven)world.getTileEntity(xx, yy, zz)).facing;
-			if(off[1]!=0)
-				return side==0||side==1;
-
-			if(f<4 && off[0]==0 && Math.abs(off[2])==1)
-				return side!=0&&side!=1;
-			else if(f>3 && off[2]==0&&Math.abs(off[0])==1)
-				return side!=0&&side!=1;
-			else
-				return false;
-		}
 		return super.shouldSideBeRendered(world, x, y, z, side);
 	}
 
@@ -221,64 +147,6 @@ public class BlockStoneDevices extends BlockIEBase
 			}
 		}
 		return false;
-	}
-
-	@Override
-	public void breakBlock(World world, int x, int y, int z, Block par5, int par6)
-	{
-		if(world.getTileEntity(x, y, z) instanceof TileEntityCokeOven && ((TileEntityCokeOven)world.getTileEntity(x, y, z)).formed)
-		{
-			int[] off = ((TileEntityCokeOven)world.getTileEntity(x, y, z)).offset;
-			int xx = x - off[0];
-			int yy = y - off[1];
-			int zz = z - off[2];
-			if(!(off[0]==0&&off[1]==0&&off[2]==0) && !(world.getTileEntity(xx, yy, zz) instanceof TileEntityCokeOven))
-				return;
-			int facing = ((TileEntityCokeOven)world.getTileEntity(xx, yy, zz)).facing;
-
-			int xMin= facing==5?-2: facing==4?0:-1;
-			int xMax= facing==5? 0: facing==4?2: 1;
-			int zMin= facing==3?-2: facing==2?0:-1;
-			int zMax= facing==3? 0: facing==2?2: 1;
-			for(int iy=-1;iy<=1;iy++)
-				for(int ix=xMin;ix<=xMax;ix++)
-					for(int iz=zMin;iz<=zMax;iz++)
-						if(world.getTileEntity(xx+ix, yy+iy, zz+iz) instanceof TileEntityCokeOven)
-						{
-							((TileEntityCokeOven)world.getTileEntity(xx+ix, yy+iy, zz+iz)).formed=false;
-							((TileEntityCokeOven)world.getTileEntity(xx+ix, yy+iy, zz+iz)).offset=new int[3];
-							world.getTileEntity(xx+ix, yy+iy, zz+iz).markDirty();
-							world.markBlockForUpdate(xx+ix, yy+iy, zz+iz);
-							world.addBlockEvent(xx+ix, yy+iy, zz+iz, this, 0,0);
-						}
-		}
-		if(world.getTileEntity(x, y, z) instanceof TileEntityBlastFurnace && ((TileEntityBlastFurnace)world.getTileEntity(x, y, z)).formed)
-		{
-			int[] off = ((TileEntityBlastFurnace)world.getTileEntity(x, y, z)).offset;
-			int xx = x - off[0];
-			int yy = y - off[1];
-			int zz = z - off[2];
-			if(!(off[0]==0&&off[1]==0&&off[2]==0) && !(world.getTileEntity(xx, yy, zz) instanceof TileEntityBlastFurnace))
-				return;
-			int facing = ((TileEntityBlastFurnace)world.getTileEntity(xx, yy, zz)).facing;
-
-			int xMin= facing==5?-2: facing==4?0:-1;
-			int xMax= facing==5? 0: facing==4?2: 1;
-			int zMin= facing==3?-2: facing==2?0:-1;
-			int zMax= facing==3? 0: facing==2?2: 1;
-			for(int iy=-1;iy<=1;iy++)
-				for(int ix=xMin;ix<=xMax;ix++)
-					for(int iz=zMin;iz<=zMax;iz++)
-						if(world.getTileEntity(xx+ix, yy+iy, zz+iz) instanceof TileEntityBlastFurnace)
-						{
-							((TileEntityBlastFurnace)world.getTileEntity(xx+ix, yy+iy, zz+iz)).formed=false;
-							((TileEntityBlastFurnace)world.getTileEntity(xx+ix, yy+iy, zz+iz)).offset=new int[3];
-							world.getTileEntity(xx+ix, yy+iy, zz+iz).markDirty();
-							world.markBlockForUpdate(xx+ix, yy+iy, zz+iz);
-							world.addBlockEvent(xx+ix, yy+iy, zz+iz, this, 0,0);
-						}
-		}
-		super.breakBlock(world, x, y, z, par5, par6);
 	}
 
 	@Override

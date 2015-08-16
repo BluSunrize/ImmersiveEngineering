@@ -12,62 +12,24 @@ import blusunrize.immersiveengineering.common.blocks.stone.TileEntityCokeOven;
 public class MultiblockCokeOven implements IMultiblock
 {
 	public static MultiblockCokeOven instance = new MultiblockCokeOven();
-	
+
 	static ItemStack[][][] structure = new ItemStack[3][3][3];
 	static{
 		for(int h=0;h<3;h++)
 			for(int l=0;l<3;l++)
 				for(int w=0;w<3;w++)
-					structure[h][l][w]=new ItemStack(IEContent.blockStoneDevice,1,1);
+					structure[h][l][w]=new ItemStack(IEContent.blockStoneDecoration,1,1);
 	}
 	@Override
 	public ItemStack[][][] getStructureManual()
 	{
 		return structure;
-		
-//		ItemStack[][][] ss = new ItemStack[2][4][4];
-//		for(int i=0; i<16; i++)
-//		{
-//			ss[0][i/4][i%4] = new ItemStack(Blocks.wool,1,i);
-//			ss[1][i/4][i%4] = new ItemStack(Blocks.wool,1,i);
-//		}
-//
-//		ItemStack r = new ItemStack(IEContent.blockMetalDecoration,1,BlockMetalDecoration.META_radiator);
-//		ItemStack e = new ItemStack(IEContent.blockMetalDecoration,1,BlockMetalDecoration.META_engine);
-//		ItemStack g = new ItemStack(IEContent.blockMetalDecoration,1,BlockMetalDecoration.META_generator);
-//		return new ItemStack[][][] {
-//				{
-//					{g,g,g},
-//					{e,e,e},
-//					{e,e,e},
-//					{e,e,e},
-//					{r,r,r}
-//				},
-//				{
-//					{g,g,g},
-//					{e,e,e},
-//					{e,e,e},
-//					{e,e,e},
-//					{r,r,r}
-//				},
-//				{
-//					{null,null,null},
-//					{e,e,e},
-//					{e,e,e},
-//					{e,e,e},
-//					{r,r,r}
-//				}
-//		};
-
-
-//						return new ItemStack[][][]{ { {s,s,s},{s,s,s},{s,s,s} }, { {s,s,s},{s,s,s},{s,s,s} }, { {s,s,s},{s,s,s},{s,s,s} } };
-//				return ss;
 	}
 
 	@Override
 	public boolean isBlockTrigger(Block b, int meta)
 	{
-		return b==IEContent.blockStoneDevice && (meta==1);
+		return b==IEContent.blockStoneDecoration && (meta==1);
 	}
 
 	@Override
@@ -82,19 +44,21 @@ public class MultiblockCokeOven implements IMultiblock
 		for(int yy=-1;yy<=1;yy++)
 			for(int xx=xMin;xx<=xMax;xx++)
 				for(int zz=zMin;zz<=zMax;zz++)
-					if((yy!=0||xx!=0||zz!=0) && !(world.getTileEntity(x+xx, y+yy, z+zz) instanceof TileEntityCokeOven && !((TileEntityCokeOven)world.getTileEntity(x+xx, y+yy, z+zz)).formed))
+					if((yy!=0||xx!=0||zz!=0) && (!world.getBlock(x+xx,y+yy,z+zz).equals(IEContent.blockStoneDecoration) || world.getBlockMetadata(x+xx,y+yy,z+zz)!=1))
 						return false;
 
 		for(int yy=-1;yy<=1;yy++)
 			for(int xx=xMin;xx<=xMax;xx++)
 				for(int zz=zMin;zz<=zMax;zz++)
 				{
-					((TileEntityCokeOven)world.getTileEntity(x+xx, y+yy, z+zz)).offset=new int[]{xx,yy,zz};
-					((TileEntityCokeOven)world.getTileEntity(x+xx, y+yy, z+zz)).facing=f;
-					((TileEntityCokeOven)world.getTileEntity(x+xx, y+yy, z+zz)).formed=true;
-					world.getTileEntity(x+xx, y+yy, z+zz).markDirty();
-					world.markBlockForUpdate(x+xx,y+yy,z+zz);
-					world.addBlockEvent(x+xx, y+yy, z+zz, IEContent.blockStoneDevice, 0,1);
+					world.setBlock(x+xx, y+yy, z+zz, IEContent.blockStoneDevice, 1, 0x3);
+					if(world.getTileEntity(x+xx, y+yy, z+zz) instanceof TileEntityCokeOven)
+					{
+						((TileEntityCokeOven)world.getTileEntity(x+xx, y+yy, z+zz)).offset=new int[]{xx,yy,zz};
+						((TileEntityCokeOven)world.getTileEntity(x+xx, y+yy, z+zz)).facing=f;
+						((TileEntityCokeOven)world.getTileEntity(x+xx, y+yy, z+zz)).formed=true;
+						world.getTileEntity(x+xx, y+yy, z+zz).markDirty();
+					}
 				}
 		return true;
 	}
@@ -102,6 +66,6 @@ public class MultiblockCokeOven implements IMultiblock
 	@Override
 	public ItemStack[] getTotalMaterials()
 	{
-		return new ItemStack[]{new ItemStack(IEContent.blockStoneDevice,27,1)};
+		return new ItemStack[]{new ItemStack(IEContent.blockStoneDecoration,27,1)};
 	}
 }

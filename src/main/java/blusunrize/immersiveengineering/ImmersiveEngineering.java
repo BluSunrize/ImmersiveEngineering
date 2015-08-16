@@ -92,10 +92,10 @@ public class ImmersiveEngineering
 	@Mod.EventHandler
 	public void postInit(FMLPostInitializationEvent event)
 	{
+		IERecipes.postInitCrusherAndArcRecipes();
 		for(IECompatModule compat : IECompatModule.modules)
 			if(Loader.isModLoaded(compat.modId))
 				compat.postInit();
-		IERecipes.postInitCrusherAndArcRecipes();
 	}
 	@Mod.EventHandler
 	public void loadComplete(FMLLoadCompleteEvent event)

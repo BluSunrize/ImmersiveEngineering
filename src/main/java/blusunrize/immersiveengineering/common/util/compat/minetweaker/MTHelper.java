@@ -34,6 +34,7 @@ public class MTHelper extends IECompatModule
 		MineTweakerAPI.registerClass(Squeezer.class);
 		MineTweakerAPI.registerClass(Fermenter.class);
 		MineTweakerAPI.registerClass(Refinery.class);
+		MineTweakerAPI.registerClass(ArcFurnace.class);
 	}
 
 	/** Helper Methods */

@@ -87,6 +87,13 @@ tile.ImmersiveEngineering.stoneDevice.blastFurnace.name=Blast Furnace
 tile.ImmersiveEngineering.stoneDevice.coalCoke.name=Block of Coal Coke
 tile.ImmersiveEngineering.stoneDevice.insulatorGlass.name=Insulating Glass
 
+tile.ImmersiveEngineering.stoneDecoration.hempcrete.name=Hempcrete
+tile.ImmersiveEngineering.stoneDecoration.cokeBrick.name=Coke Brick
+tile.ImmersiveEngineering.stoneDecoration.blastBrick.name=Blast Brick
+tile.ImmersiveEngineering.stoneDecoration.coalCoke.name=Block of Coal Coke
+tile.ImmersiveEngineering.stoneDecoration.concrete.name=Concrete
+
+
 tile.ImmersiveEngineering.hemp.name=Industrial Hemp
 
 fluid.creosote=Creosote Oil

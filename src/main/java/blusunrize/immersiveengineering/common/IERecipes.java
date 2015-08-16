@@ -154,11 +154,10 @@ public class IERecipes
 		addOredictRecipe(new ItemStack(IEContent.blockWoodenDevice,1,4), "WWW","W W","WWW", 'W',treatedWood);
 		addOredictRecipe(new ItemStack(IEContent.blockWoodenDevice,1,5), "WWW","B F", 'W',new ItemStack(IEContent.blockWoodenDecoration,1,2),'B',"craftingTableWood",'F',new ItemStack(IEContent.blockWoodenDecoration,1,1));
 
-		addOredictRecipe(new ItemStack(IEContent.blockStoneDevice,6,0), "CCC","HHH","CCC", 'C',Items.clay_ball,'H',new ItemStack(IEContent.itemMaterial,1,3));
-		addOredictRecipe(new ItemStack(IEContent.blockStoneDevice,2,1), "CBC","BSB","CBC", 'S',"sandstone",'C',Items.clay_ball,'B',"ingotBrick");
-		addOredictRecipe(new ItemStack(IEContent.blockStoneDevice,2,2), "NBN","BDB","NBN", 'D',Items.blaze_powder,'N',"ingotBrickNether",'B',"ingotBrick");
-		addOredictRecipe(new ItemStack(IEContent.blockStoneDevice,1,3), "CCC","CCC","CCC", 'C',new ItemStack(IEContent.itemMaterial,1,6));
-		addOredictRecipe(new ItemStack(IEContent.blockStoneDevice,2,4), " I ","GDG"," I ", 'G',"blockGlass",'I',"dustIron",'D',"dyeGreen");
+		addOredictRecipe(new ItemStack(IEContent.blockStoneDecoration,6,0), "CCC","HHH","CCC", 'C',Items.clay_ball,'H',new ItemStack(IEContent.itemMaterial,1,3));
+		addOredictRecipe(new ItemStack(IEContent.blockStoneDecoration,2,1), "CBC","BSB","CBC", 'S',"sandstone",'C',Items.clay_ball,'B',"ingotBrick");
+		addOredictRecipe(new ItemStack(IEContent.blockStoneDecoration,2,2), "NBN","BDB","NBN", 'D',Items.blaze_powder,'N',"ingotBrickNether",'B',"ingotBrick");
+		addTwoWayStorageRecipe(new ItemStack(IEContent.blockStoneDecoration,1,3), new ItemStack(IEContent.itemMaterial,1,6));
 		addOredictRecipe(new ItemStack(IEContent.blockStoneDevice,2,4), " G ","IDI"," G ", 'G',"blockGlass",'I',"dustIron",'D',"dyeGreen");
 
 		addTwoWayStorageRecipe(new ItemStack(Items.iron_ingot), new ItemStack(IEContent.itemMetal,1,21));

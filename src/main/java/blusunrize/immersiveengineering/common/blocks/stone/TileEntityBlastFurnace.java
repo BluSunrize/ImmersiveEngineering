@@ -1,5 +1,7 @@
 package blusunrize.immersiveengineering.common.blocks.stone;
 
+import net.minecraft.block.Block;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
@@ -9,20 +11,18 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.oredict.OreDictionary;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMultiblockPart;
 
-public class TileEntityBlastFurnace extends TileEntityIEBase implements ISidedInventory
+public class TileEntityBlastFurnace extends TileEntityMultiblockPart implements ISidedInventory
 {
 	ItemStack[] inventory = new ItemStack[3];
 	public int facing = 2;
-	public boolean formed = false;
 	public int process = 0;
 	public int processMax = 0;
 	public boolean active = false;
 	public int burnTime = 0;
 	public int lastBurnTime = 0;
 
-	public int[] offset = {0,0,0};
 	public TileEntityBlastFurnace master()
 	{
 		if(offset[0]==0&&offset[1]==0&&offset[2]==0)
@@ -36,6 +36,18 @@ public class TileEntityBlastFurnace extends TileEntityIEBase implements ISidedIn
 		return true;
 	}
 
+	@Override
+	public float[] getBlockBounds()
+	{
+		return new float[]{0,0,0,1,1,1};
+	}
+
+	@Override
+	public ItemStack getOriginalBlock()
+	{
+		return new ItemStack(IEContent.blockStoneDecoration,1,2);
+	}
+	
 	@Override
 	public void updateEntity()
 	{
@@ -299,9 +311,8 @@ public class TileEntityBlastFurnace extends TileEntityIEBase implements ISidedIn
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
+		super.readCustomNBT(nbt, descPacket);
 		facing = nbt.getInteger("facing");
-		offset = nbt.getIntArray("offset");
-		formed = nbt.getBoolean("formed");
 		process = nbt.getInteger("process");
 		processMax = nbt.getInteger("processMax");
 		active = nbt.getBoolean("active");
@@ -323,9 +334,8 @@ public class TileEntityBlastFurnace extends TileEntityIEBase implements ISidedIn
 	@Override
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
+		super.writeCustomNBT(nbt, descPacket);
 		nbt.setInteger("facing", facing);
-		nbt.setIntArray("offset",offset);
-		nbt.setBoolean("formed", formed);
 		nbt.setInteger("process", process);
 		nbt.setInteger("processMax", processMax);
 		nbt.setBoolean("active", active);
@@ -343,6 +353,49 @@ public class TileEntityBlastFurnace extends TileEntityIEBase implements ISidedIn
 					invList.appendTag(itemTag);
 				}
 			nbt.setTag("inventory", invList);
+		}
+	}
+
+	@Override
+	public void invalidate()
+	{
+		super.invalidate();
+		if(formed && !worldObj.isRemote)
+		{
+			int startX = xCoord - offset[0];
+			int startY = yCoord - offset[1];
+			int startZ = zCoord - offset[2];
+			if(!(offset[0]==0&&offset[1]==0&&offset[2]==0) && !(worldObj.getTileEntity(startX, startY, startZ) instanceof TileEntityBlastFurnace))
+				return;
+
+			int xMin= facing==5?-2: facing==4?0:-1;
+			int xMax= facing==5? 0: facing==4?2: 1;
+			int zMin= facing==3?-2: facing==2?0:-1;
+			int zMax= facing==3? 0: facing==2?2: 1;
+			for(int yy=-1;yy<=1;yy++)
+				for(int xx=xMin;xx<=xMax;xx++)
+					for(int zz=zMin;zz<=zMax;zz++)
+					{
+						ItemStack s = null;
+						if(worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz) instanceof TileEntityBlastFurnace)
+						{
+							s = ((TileEntityBlastFurnace)worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz)).getOriginalBlock();
+							((TileEntityBlastFurnace)worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz)).formed=false;
+						}
+						if(startX+xx==xCoord && startY+yy==yCoord && startZ+zz==zCoord)
+							s = this.getOriginalBlock();
+						if(s!=null && Block.getBlockFromItem(s.getItem())!=null)
+						{
+							if(startX+xx==xCoord && startY+yy==yCoord && startZ+zz==zCoord)
+								worldObj.spawnEntityInWorld(new EntityItem(worldObj, xCoord+.5,yCoord+.5,zCoord+.5, s));
+							else
+							{
+								if(Block.getBlockFromItem(s.getItem())==IEContent.blockMetalMultiblocks)
+									worldObj.setBlockToAir(startX+xx,startY+yy,startZ+zz);
+								worldObj.setBlock(startX+xx,startY+yy,startZ+zz, Block.getBlockFromItem(s.getItem()), s.getItemDamage(), 0x3);
+							}
+						}
+					}
 		}
 	}
 }

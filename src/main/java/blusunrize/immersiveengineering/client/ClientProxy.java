@@ -232,7 +232,7 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.ItemDisplay(ManualHelper.getManual(), "hemp0", new ItemStack(IEContent.blockCrop,1,5),new ItemStack(IEContent.itemSeeds)));
 		ManualHelper.addEntry("cokeoven", ManualHelper.CAT_GENERAL,
 				new ManualPages.Text(ManualHelper.getManual(), "cokeoven0"),
-				new ManualPages.Crafting(ManualHelper.getManual(), "cokeovenBlock", new ItemStack(IEContent.blockStoneDevice,1,1)),
+				new ManualPages.Crafting(ManualHelper.getManual(), "cokeovenBlock", new ItemStack(IEContent.blockStoneDecoration,1,1)),
 				new ManualPageMultiblock(ManualHelper.getManual(), "", MultiblockCokeOven.instance));
 		ManualHelper.addEntry("treatedwood", ManualHelper.CAT_GENERAL,
 				new ManualPages.Text(ManualHelper.getManual(), "treatedwood0"), 
@@ -242,7 +242,7 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.Text(ManualHelper.getManual(), "treatedwoodPost1"));
 		ManualHelper.addEntry("blastfurnace", ManualHelper.CAT_GENERAL,
 				new ManualPages.Text(ManualHelper.getManual(), "blastfurnace0"),
-				new ManualPages.Crafting(ManualHelper.getManual(), "blastfurnaceBlock", new ItemStack(IEContent.blockStoneDevice,1,2)),
+				new ManualPages.Crafting(ManualHelper.getManual(), "blastfurnaceBlock", new ItemStack(IEContent.blockStoneDecoration,1,2)),
 				new ManualPageMultiblock(ManualHelper.getManual(), "", MultiblockBlastFurnace.instance));
 		ManualHelper.addEntry("steelconstruction", ManualHelper.CAT_GENERAL,
 				new ManualPages.Text(ManualHelper.getManual(), "steelconstruction0"),

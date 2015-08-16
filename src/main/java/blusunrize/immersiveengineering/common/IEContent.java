@@ -75,6 +75,7 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockLight
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockRefinery;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockSqueezer;
 import blusunrize.immersiveengineering.common.blocks.plant.BlockIECrop;
+import blusunrize.immersiveengineering.common.blocks.stone.BlockStoneDecoration;
 import blusunrize.immersiveengineering.common.blocks.stone.BlockStoneDevices;
 import blusunrize.immersiveengineering.common.blocks.stone.TileEntityBlastFurnace;
 import blusunrize.immersiveengineering.common.blocks.stone.TileEntityCokeOven;
@@ -125,6 +126,7 @@ public class IEContent
 	public static BlockIEBase blockWoodenDecoration;
 	public static Block blockWoodenStair;
 	public static BlockIEBase blockStoneDevice;
+	public static BlockIEBase blockStoneDecoration;
 	public static Block blockCrop;
 	public static ItemIEBase itemMetal;
 	public static ItemIEBase itemMaterial;
@@ -162,6 +164,7 @@ public class IEContent
 		blockWoodenDecoration = new BlockWoodenDecoration();
 		blockWoodenStair = new BlockIEWoodenStairs();
 		blockStoneDevice = new BlockStoneDevices();
+		blockStoneDecoration = new BlockStoneDecoration();
 		blockCrop = new BlockIECrop("hemp", "0B","1B","2B","3B","4B","0T");
 
 		itemMetal = new ItemIEBase("metal", 64,
@@ -247,6 +250,8 @@ public class IEContent
 		OreDictionary.registerOre("treatedStick", new ItemStack(itemMaterial,1,0));
 		OreDictionary.registerOre("fuelCoke", new ItemStack(itemMaterial,1,6));
 		OreDictionary.registerOre("blockFuelCoke", new ItemStack(blockStoneDevice,1,3));
+		OreDictionary.registerOre("blockFuelCoke", new ItemStack(blockStoneDecoration,1,3));
+		OreDictionary.registerOre("itemSlag", new ItemStack(itemMaterial,1,13));
 		//Vanilla OreDict
 		OreDictionary.registerOre("bricksStone", new ItemStack(Blocks.stonebrick));
 		OreDictionary.registerOre("blockIce", new ItemStack(Blocks.ice));
@@ -356,7 +361,7 @@ public class IEContent
 		IERecipes.initCraftingRecipes();
 
 		CokeOvenRecipe.addRecipe(new ItemStack(itemMaterial,1,6), new ItemStack(Items.coal), 1800, 500);
-		CokeOvenRecipe.addRecipe(new ItemStack(blockStoneDevice,1,3), "blockCoal", 1800*9, 5000);
+		CokeOvenRecipe.addRecipe(new ItemStack(blockStoneDecoration,1,3), "blockCoal", 1800*9, 5000);
 		CokeOvenRecipe.addRecipe(new ItemStack(Items.coal,1,1), "logWood", 900, 250);
 		BlastFurnaceRecipe.addRecipe(new ItemStack(itemMetal,1,7), "ingotIron", 1200);
 		BlastFurnaceRecipe.addRecipe(new ItemStack(blockStorage,1,7), "blockIron", 1200*9);
