@@ -1,4 +1,4 @@
-#####Version 0.5.3.2
+#####Version 0.5.3.2 - BUILT
 - fixed raytracing on HV relays (thanks cobra)
 - updated zh_CN.lang
 - fixed dupebug with blueprints (thanks malte0811)
