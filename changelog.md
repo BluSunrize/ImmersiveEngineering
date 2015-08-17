@@ -1,4 +1,4 @@
-#####Version 0.5.3
+#####Version 0.5.3.2
 - fixed raytracing on HV relays (thanks cobra)
 - updated zh_CN.lang
 - fixed dupebug with blueprints (thanks malte0811)
@@ -16,6 +16,9 @@
 - changed internal recipe handling of fermenter and squeezer
 - made changes to the lightning rod, improving its chances of getting hit
 - fixed crop growth display for WAILA
+- fixed extraction of items from Arc Furnace
+- fixed derpy crafting-navigation-arrows in manual
+- added metal dusts smelting in the Arc Furnace
 
 
 #####Version 0.5.2 - BUILT

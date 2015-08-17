@@ -336,10 +336,13 @@ public class IERecipes
 				{
 					ArrayList<ItemStack> ingots = OreDictionary.getOres("ingot"+ore);
 					if(!ingots.isEmpty())
-						out = Utils.copyStackWithAmount(IEApi.getPreferredOreStack("ingot"+ore), 2);
+						out = IEApi.getPreferredOreStack("ingot"+ore);
 				}
 				if(out!=null)
-					addArcRecipe(out, "ore"+ore, 200,512, new ItemStack(IEContent.itemMaterial,1,13));
+				{
+					addArcRecipe(Utils.copyStackWithAmount(out,2), "ore"+ore, 200,512, new ItemStack(IEContent.itemMaterial,1,13));
+					addArcRecipe(out, "dust"+ore, 100,512, null);
+				}
 			}
 	}
 
