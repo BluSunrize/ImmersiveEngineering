@@ -331,18 +331,22 @@ public class IERecipes
 					addOreProcessingRecipe(out, ore, 6000, true, s, f);
 				}
 
+				ItemStack dustOut = null;
 				out = arcOutputModifier.get(ore);
 				if(out==null)
 				{
 					ArrayList<ItemStack> ingots = OreDictionary.getOres("ingot"+ore);
 					if(!ingots.isEmpty())
-						out = IEApi.getPreferredOreStack("ingot"+ore);
+					{
+						dustOut = IEApi.getPreferredOreStack("ingot"+ore);
+						out = Utils.copyStackWithAmount(dustOut,2);
+					}
+
 				}
 				if(out!=null)
-				{
-					addArcRecipe(Utils.copyStackWithAmount(out,2), "ore"+ore, 200,512, new ItemStack(IEContent.itemMaterial,1,13));
+					addArcRecipe(out, "ore"+ore, 200,512, new ItemStack(IEContent.itemMaterial,1,13));
+				if(dustOut!=null)
 					addArcRecipe(out, "dust"+ore, 100,512, null);
-				}
 			}
 	}
 
