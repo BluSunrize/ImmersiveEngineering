@@ -13,7 +13,9 @@
 - Arc Furnace should respect the stacksize limit for outputs now
 - fixed a rare NEI crash
 - fixed DenseOres not registering for the crusher
+- changed internal recipe handling of fermenter and squeezer
 - made changes to the lightning rod, improving its chances of getting hit
+- fixed crop growth display for WAILA
 
 
 #####Version 0.5.2 - BUILT

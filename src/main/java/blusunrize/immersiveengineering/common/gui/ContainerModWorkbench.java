@@ -117,7 +117,7 @@ public class ContainerModWorkbench extends Container
 
 			if (stackInSlot.stackSize == stack.stackSize)
 				return null;
-			slotObject.onPickupFromSlot(player, stackInSlot);
+			slotObject.onPickupFromSlot(player, stack);
 		}
 		return stack;
 	}

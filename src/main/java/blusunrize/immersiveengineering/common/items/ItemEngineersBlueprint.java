@@ -54,7 +54,7 @@ public class ItemEngineersBlueprint extends ItemUpgradeableTool
 	{
 		return this.getUnlocalizedName();
 	}
-	
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean adv)
@@ -145,14 +145,12 @@ public class ItemEngineersBlueprint extends ItemUpgradeableTool
 			query[i] = stored[i];
 		recipe.consumeInputs(query, crafted.stackSize/recipe.output.stackSize);
 		for(int i=0; i<6; i++)
-		{
 			stored[i] = query[i];
-		}
 		this.setContainedItems(stack, stored);
 		if (contained instanceof ContainerModWorkbench)
 		{
 			ContainerModWorkbench work = (ContainerModWorkbench) contained;
-			if (work.toolInv!=null) 
+			if(work.toolInv!=null)
 				work.toolInv.stackList = query;
 		}
 	}

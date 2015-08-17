@@ -251,7 +251,6 @@ public abstract class IESlot extends Slot
 		@Override
 	    public void onPickupFromSlot(EntityPlayer player, ItemStack stack)
 	    {
-			this.inventory.markDirty();
 			if(upgradeableTool!=null && upgradeableTool.getItem() instanceof ItemEngineersBlueprint)
 				((ItemEngineersBlueprint)upgradeableTool.getItem()).reduceInputs(recipe, upgradeableTool, stack, this.container);
 			if(container instanceof ContainerModWorkbench)
@@ -259,6 +258,7 @@ public abstract class IESlot extends Slot
 				((ContainerModWorkbench)container).rebindSlots();
 				((ContainerModWorkbench)container).tile.markDirty();
 			}
+			this.inventory.markDirty();
 			super.onPickupFromSlot(player, stack);
 	    }
 	}
