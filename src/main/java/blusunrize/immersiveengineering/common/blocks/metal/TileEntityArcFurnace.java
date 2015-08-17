@@ -500,7 +500,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 	public boolean isItemValidForSlot(int slot, ItemStack stack)
 	{
 		if(!formed||stack==null)
-			return false;
+			return true;
 		if(master()!=null)
 			return master().isItemValidForSlot(slot,stack);
 		return (slot<12&&ArcFurnaceRecipe.isValidInput(stack))
@@ -514,7 +514,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 			return new int[0];
 		if((pos==86||pos==88) && side==1)//Input hatches on top
 			return new int[]{0,1,2,3,4,5,6,7,8,9,10,11, 12,13,14,15};
-		if(pos==3 && side==facing)//Output at the front
+		if(pos==2 && side==facing)//Output at the front
 			return new int[]{16,17,18,19,20,21};
 		if(pos==22 && side==ForgeDirection.OPPOSITES[facing])//Slag at the back
 			return new int[]{22};
@@ -526,7 +526,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 	public boolean canInsertItem(int slot, ItemStack stack, int side)
 	{
 		if(!formed)
-			return false;
+			return true;
 		if(master()!=null)
 			return master().canInsertItem(slot,stack,side);
 
@@ -536,7 +536,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 	public boolean canExtractItem(int slot, ItemStack stack, int side)
 	{
 		if(!formed)
-			return false;
+			return true;
 		if(master()!=null)
 			return master().canExtractItem(slot,stack,side);
 		return slot>=16&&slot<=22;
