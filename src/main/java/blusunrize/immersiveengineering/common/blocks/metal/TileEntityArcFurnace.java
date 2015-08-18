@@ -161,12 +161,13 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 									else if(inventory[outputSlot]==null)
 										inventory[outputSlot] = recipe.output.copy();
 								}
-
-								if(inventory[22]!=null)
-									inventory[22].stackSize+= recipe.slag.stackSize;
-								else if(inventory[22]==null)
-									inventory[22] = recipe.slag.copy();
-
+								if(recipe.slag!=null)
+								{
+									if(inventory[22]!=null)
+										inventory[22].stackSize+= recipe.slag.stackSize;
+									else if(inventory[22]==null)
+										inventory[22] = recipe.slag.copy();
+								}
 								if(active)
 									active = false;
 							}
