@@ -457,7 +457,8 @@ public abstract class ManualPages implements IManualPage
 			GL11.glTranslated(0, 0, -300);
 			GL11.glDisable(GL12.GL_RESCALE_NORMAL);
 			GL11.glEnable(GL11.GL_BLEND);
-
+			RenderHelper.disableStandardItemLighting();
+			
 			manual.fontRenderer.setUnicodeFlag(uni);
 			if(localizedText!=null&&!localizedText.isEmpty())
 				manual.fontRenderer.drawSplitString(localizedText, x,y+totalYOff-2, 120, manual.getTextColour());

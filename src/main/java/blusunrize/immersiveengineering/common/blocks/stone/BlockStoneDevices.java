@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.common.blocks.stone;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.block.material.Material;
@@ -10,12 +11,14 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.client.render.BlockRenderStoneDevices;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMultiblockPart;
 import blusunrize.immersiveengineering.common.util.Lib;
 
 public class BlockStoneDevices extends BlockIEBase
@@ -44,7 +47,7 @@ public class BlockStoneDevices extends BlockIEBase
 	@Override
 	public boolean canRenderInPass(int pass)
 	{
-//		BlockRenderStoneDevices.renderPass=pass;
+		//		BlockRenderStoneDevices.renderPass=pass;
 		return pass==1;
 	}
 	@Override
@@ -61,6 +64,26 @@ public class BlockStoneDevices extends BlockIEBase
 	public int getRenderBlockPass()
 	{
 		return 1;
+	}
+
+	@Override
+	public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int metadata, int fortune)
+	{
+		if(metadata==1||metadata==2)
+			return new ArrayList<ItemStack>();
+		return super.getDrops(world, x, y, z, metadata, fortune);
+	}
+	@Override
+	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z, EntityPlayer player)
+	{
+		return getOriginalBlock(world, x, y, z);
+	}
+
+	public ItemStack getOriginalBlock(World world, int x, int y, int z)
+	{
+		if(world.getTileEntity(x, y, z) instanceof TileEntityMultiblockPart)
+			return ((TileEntityMultiblockPart)world.getTileEntity(x, y, z)).getOriginalBlock();
+		return new ItemStack(this, 1, world.getBlockMetadata(x, y, z));
 	}
 
 	@Override
