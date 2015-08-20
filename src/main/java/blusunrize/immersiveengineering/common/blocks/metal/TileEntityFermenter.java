@@ -503,7 +503,7 @@ public class TileEntityFermenter extends TileEntityMultiblockPart implements IFl
 			return new int[0];
 		if(master()!=null)
 			return master().getAccessibleSlotsFromSide(side);
-		return new int[]{0,1,2,3,4,5,6,7,8,9,10};
+		return new int[]{0,1,2,3,4,5,6,7,8,9,10,11};
 	}
 	@Override
 	public boolean canInsertItem(int slot, ItemStack stack, int side)
@@ -521,7 +521,7 @@ public class TileEntityFermenter extends TileEntityMultiblockPart implements IFl
 			return false;
 		if(master()!=null)
 			return master().canExtractItem(slot,stack,side);
-		return slot!=9;
+		return slot==10&&slot==11;
 	}
 
 	@Override
