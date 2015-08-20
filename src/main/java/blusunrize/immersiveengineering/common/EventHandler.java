@@ -66,7 +66,11 @@ public class EventHandler
 	{
 		IESaveData.setDirty(0);
 	}
-
+	@SubscribeEvent
+	public void onUnload(WorldEvent.Unload event)
+	{
+		IESaveData.setDirty(0);
+	}
 
 	@SubscribeEvent
 	public void harvestCheck(PlayerEvent.HarvestCheck event)
