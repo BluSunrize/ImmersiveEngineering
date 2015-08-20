@@ -302,7 +302,7 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart implements ISid
 			return false;
 		if(master()!=null)
 			return master().canInsertItem(slot,stack,side);
-		return slot==0 || slot==2;
+		return (slot==0 || slot==2)&&this.isItemValidForSlot(slot, stack);
 	}
 
 	@Override

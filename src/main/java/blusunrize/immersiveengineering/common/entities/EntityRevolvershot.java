@@ -220,6 +220,9 @@ public class EntityRevolvershot extends Entity
 				case 6:
 					mop.entityHit.attackEntityFrom(IEDamageSources.causeWolfpackDamage(this, shootingEntity), (float)Config.getDouble("BulletDamage-Wolfpack"));
 					break;
+				case 7:
+					mop.entityHit.attackEntityFrom(IEDamageSources.causeSilverDamage(this, shootingEntity), (float)Config.getDouble("BulletDamage-Silver"));
+					break;
 				}
 			}
 			if(bulletType==3)

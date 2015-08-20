@@ -32,6 +32,7 @@ public class Lib
 	public static String DMG_RevolverDragon="ieRevolver_dragonsbreath";
 	public static String DMG_RevolverHoming="ieRevolver_homing";
 	public static String DMG_RevolverWolfpack="ieRevolver_wolfpack";
+	public static String DMG_RevolverSilver = "ieRevolver_silver";
 	public static String DMG_Crusher="ieCrushed";
 	
 	public static boolean IC2 = false;

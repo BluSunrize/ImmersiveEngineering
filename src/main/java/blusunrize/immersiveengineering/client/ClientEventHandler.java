@@ -22,10 +22,8 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.client.GuiIngameForge;
-import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.obj.Face;
@@ -115,14 +113,6 @@ public class ClientEventHandler
 				}
 	}
 
-	@SubscribeEvent()
-	public void onChatMessage(ClientChatReceivedEvent event)
-	{
-		//		I should probably try to catch that thing here sometime...meh
-		//		String loc = StatCollector.translateToLocal("death.attack.ieCrushed").substring(5);
-		//		if(event.message.getUnformattedTextForChat().contains(loc))
-	}
-
 	public static Set<Connection> skyhookGrabableConnections = new HashSet();
 	@SubscribeEvent
 	public void onPlayerTick(TickEvent.PlayerTickEvent event)
@@ -166,10 +156,7 @@ public class ClientEventHandler
 		{
 			EntityPlayer player = event.player;
 			ItemStack stack = player.getCurrentEquippedItem();
-			if(stack!=null && stack.getItem() instanceof 
-			ItemDrill
-//					ItemSword
-			&& (player!=ClientUtils.mc().renderViewEntity||ClientUtils.mc().gameSettings.thirdPersonView!=0))
+			if(stack!=null && stack.getItem() instanceof ItemDrill && (player!=ClientUtils.mc().renderViewEntity||ClientUtils.mc().gameSettings.thirdPersonView!=0))
 			{
 				if (player.getItemInUseCount() <= 0)
 				{
@@ -181,13 +168,6 @@ public class ClientEventHandler
 		}
 	}
 	
-	@SubscribeEvent
-	public void onPlayerRenderPre(RenderPlayerEvent.Pre event)
-	{
-		 event.renderer.modelArmorChestplate.heldItemLeft = event.renderer.modelArmor.heldItemLeft = event.renderer.modelBipedMain.heldItemLeft = 4;	
-//		 event.renderer.modelArmorChestplate.aimedBow = event.renderer.modelArmor.aimedBow = event.renderer.modelBipedMain.aimedBow = true;	
-	}
-
 	@SubscribeEvent
 	public void onItemTooltip(ItemTooltipEvent event)
 	{

@@ -5,14 +5,11 @@ import java.util.List;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemFireworkCharge;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.Vec3;
 import blusunrize.immersiveengineering.api.tool.IBullet;
 import blusunrize.immersiveengineering.common.entities.EntityRevolvershot;
 import blusunrize.immersiveengineering.common.entities.EntityRevolvershotHoming;
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -21,20 +18,9 @@ public class ItemBullet extends ItemIEBase implements IBullet
 {
 	public ItemBullet()
 	{
-		super("bullet", 64, "emptyCasing","emptyShell","casull","armorPiercing","buckshot","HE","dragonsbreath","homing","wolfpack");
+		super("bullet", 64, "emptyCasing","emptyShell","casull","armorPiercing","buckshot","HE","dragonsbreath","homing","wolfpack","silver");
 	}
 
-	@Override
-	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean b)
-	{
-		if(FMLCommonHandler.instance().getEffectiveSide()==Side.CLIENT)
-			if(stack.hasTagCompound())
-			{
-				NBTTagCompound nbttagcompound = stack.getTagCompound().getCompoundTag("Explosion");
-				if (nbttagcompound != null)
-					ItemFireworkCharge.func_150902_a(nbttagcompound, list);
-			}
-	}
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void getSubItems(Item item, CreativeTabs tab, List list)
@@ -95,6 +81,9 @@ public class ItemBullet extends ItemIEBase implements IBullet
 			player.worldObj.spawnEntityInWorld(bullet);
 			break;
 		case 6://wolfpack
+			doSpawnBullet(player, vec, vec, type, bulletStack, electro);
+			break;
+		case 7://Silver
 			doSpawnBullet(player, vec, vec, type, bulletStack, electro);
 			break;
 		}

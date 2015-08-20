@@ -107,7 +107,8 @@ public class Config
 		setDouble("BulletDamage-Homing", config.get("Tools", "BulletDamage-Homing", 8d, "The amount of base damage a Homing Cartridge inflicts").getDouble());
 		setDouble("BulletDamage-Wolfpack", config.get("Tools", "BulletDamage-Wolfpack", 6d, "The amount of base damage a Wolfpack Cartridge inflicts").getDouble());
 		setDouble("BulletDamage-WolfpackPart", config.get("Tools", "BulletDamage-WolfpackPart", 4d, "The amount of damage the sub-projectiles of the Wolfpack Cartridge inflict").getDouble());
-		
+		setDouble("BulletDamage-Silver", config.get("Tools", "BulletDamage-Silver", 7d, "The amount of damage a silver bullet inflicts").getDouble());
+				
 
 		//		Property propReGen = config.get("TESTING", "ReGen", false);
 		//		propReGen.set(false);
