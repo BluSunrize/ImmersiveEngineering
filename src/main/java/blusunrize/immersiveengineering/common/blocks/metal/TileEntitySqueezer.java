@@ -537,7 +537,6 @@ public class TileEntitySqueezer extends TileEntityMultiblockPart implements IFlu
 			TileEntitySqueezer master = master();
 			int rec = master.energyStorage.receiveEnergy(maxReceive, simulate);
 			master.markDirty();
-			worldObj.markBlockForUpdate(master.xCoord, master.yCoord, master.zCoord);
 			return rec;
 		}
 		return 0;

@@ -194,7 +194,6 @@ public class TileEntityCapacitorLV extends TileEntityIEBase implements IEnergyHa
 		if(worldObj.isRemote || fd.ordinal()>=sideConfig.length || sideConfig[fd.ordinal()]!=0)
 			return 0;
 		int r = energyStorage.receiveEnergy(amount, simulate);
-		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 		return r;
 	}
 	@Override

@@ -398,7 +398,6 @@ public class TileEntityExcavator extends TileEntityMultiblockPart implements IEn
 			int rec = master.energyStorage.receiveEnergy(maxReceive, simulate);
 			lastPowerInput = rec;
 			master.markDirty();
-			worldObj.markBlockForUpdate(master.xCoord, master.yCoord, master.zCoord);
 			return rec;
 		}
 		return 0;

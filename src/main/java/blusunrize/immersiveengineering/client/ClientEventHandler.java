@@ -25,6 +25,7 @@ import net.minecraftforge.client.GuiIngameForge;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.obj.Face;
@@ -40,8 +41,8 @@ import org.lwjgl.opengl.GL11;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.api.energy.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler;
-import blusunrize.immersiveengineering.api.energy.WireType;
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler.Connection;
+import blusunrize.immersiveengineering.api.energy.WireType;
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
 import blusunrize.immersiveengineering.client.gui.GuiBlastFurnace;
 import blusunrize.immersiveengineering.client.models.ModelIEObj;
@@ -56,8 +57,8 @@ import blusunrize.immersiveengineering.common.items.ItemSkyhook;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Lib;
-import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.SkylineHelper;
+import blusunrize.immersiveengineering.common.util.Utils;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
@@ -165,7 +166,10 @@ public class ClientEventHandler
 		{
 			EntityPlayer player = event.player;
 			ItemStack stack = player.getCurrentEquippedItem();
-			if(stack!=null && stack.getItem() instanceof ItemDrill && (player!=ClientUtils.mc().renderViewEntity||ClientUtils.mc().gameSettings.thirdPersonView!=0))
+			if(stack!=null && stack.getItem() instanceof 
+			ItemDrill
+//					ItemSword
+			&& (player!=ClientUtils.mc().renderViewEntity||ClientUtils.mc().gameSettings.thirdPersonView!=0))
 			{
 				if (player.getItemInUseCount() <= 0)
 				{
@@ -175,6 +179,13 @@ public class ClientEventHandler
 			}
 
 		}
+	}
+	
+	@SubscribeEvent
+	public void onPlayerRenderPre(RenderPlayerEvent.Pre event)
+	{
+		 event.renderer.modelArmorChestplate.heldItemLeft = event.renderer.modelArmor.heldItemLeft = event.renderer.modelBipedMain.heldItemLeft = 4;	
+//		 event.renderer.modelArmorChestplate.aimedBow = event.renderer.modelArmor.aimedBow = event.renderer.modelBipedMain.aimedBow = true;	
 	}
 
 	@SubscribeEvent
