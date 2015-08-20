@@ -1,3 +1,17 @@
+#####Version 0.5.4
+- added Concrete and Concrete Tile
+- fixed a Nullpointer Exception in the Arc Furnace, triggered when a recipe without slag is processed
+- fixed Minetweaker integration for Squeezer and Fermenter
+- fixed CokeOven and BlastFurnace dropping an extra block when broken
+- removed client update calls when machines receive RF. This might have been a cause of lag, but also might have consequences for WAILA
+- fixed a typo in an oredict name (thanks xbony2)
+- fixed item insertion and extraction for Squeezer and Fermenter
+- fixed item instert for coke oven
+- added Silver Bullets
+- added another saving hook to (hopefully) fix the issue of disappearing wires
+- Oblivion
+
+
 #####Version 0.5.3.2 - BUILT
 - fixed raytracing on HV relays (thanks cobra)
 - updated zh_CN.lang
