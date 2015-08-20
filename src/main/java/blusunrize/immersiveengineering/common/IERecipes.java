@@ -55,7 +55,7 @@ public class IERecipes
 		if(hardmodeBullets)
 		{
 			BlueprintCraftingRecipe.addRecipe("bullet", new ItemStack(IEContent.itemBullet,1,2), new ItemStack(IEContent.itemBullet,1,0),Items.gunpowder,"ingotLead");
-			BlueprintCraftingRecipe.addRecipe("bullet", new ItemStack(IEContent.itemBullet,1,3), new ItemStack(IEContent.itemBullet,1,0),Items.gunpowder,"inotSteel","ingotConstantan");
+			BlueprintCraftingRecipe.addRecipe("bullet", new ItemStack(IEContent.itemBullet,1,3), new ItemStack(IEContent.itemBullet,1,0),Items.gunpowder,"ingotSteel","ingotConstantan");
 			if(!OreDictionary.getOres("ingotTungsten").isEmpty())
 				BlueprintCraftingRecipe.addRecipe("bullet", new ItemStack(IEContent.itemBullet,1,3), new ItemStack(IEContent.itemBullet,1,0),Items.gunpowder,"ingotTungsten");
 			if(!OreDictionary.getOres("ingotCyanite").isEmpty())
