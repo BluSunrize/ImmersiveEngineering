@@ -1,4 +1,4 @@
-#####Version 0.5.4
+#####Version 0.5.4 - BUILT
 - added Concrete and Concrete Tile
 - fixed a Nullpointer Exception in the Arc Furnace, triggered when a recipe without slag is processed
 - fixed Minetweaker integration for Squeezer and Fermenter
