@@ -12,7 +12,7 @@ public class IEFuelHandler implements IFuelHandler
 	{
 		if(OreDictionary.itemMatches(new ItemStack(IEContent.itemMaterial,1,6), fuel, true))
 			return 3200;
-		if(OreDictionary.itemMatches(new ItemStack(IEContent.blockStoneDevice,1,3), fuel, true))
+		if(OreDictionary.itemMatches(new ItemStack(IEContent.blockStoneDecoration,1,3), fuel, true))
 			return 3200*10;
 		return 0;
 	}
