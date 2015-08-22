@@ -87,6 +87,14 @@ tile.ImmersiveEngineering.stoneDevice.blastFurnace.name=高炉
 tile.ImmersiveEngineering.stoneDevice.coalCoke.name=焦煤块
 tile.ImmersiveEngineering.stoneDevice.insulatorGlass.name=绝缘玻璃
 
+tile.ImmersiveEngineering.stoneDecoration.hempcrete.name=麻凝土
+tile.ImmersiveEngineering.stoneDecoration.cokeBrick.name=焦炉砖
+tile.ImmersiveEngineering.stoneDecoration.blastBrick.name=高炉砖
+tile.ImmersiveEngineering.stoneDecoration.coalCoke.name=焦煤块
+tile.ImmersiveEngineering.stoneDecoration.concrete.name=混凝土
+tile.ImmersiveEngineering.stoneDecoration.concreteTile.name=混凝土砖
+
+
 tile.ImmersiveEngineering.hemp.name=工业大麻
 
 fluid.creosote=杂酚油
@@ -188,6 +196,7 @@ item.ImmersiveEngineering.bullet.HE.name=高爆弹
 item.ImmersiveEngineering.bullet.dragonsbreath.name=龙息弹
 item.ImmersiveEngineering.bullet.homing.name=叶绿弹
 item.ImmersiveEngineering.bullet.wolfpack.name=狼群弹
+item.ImmersiveEngineering.bullet.silver.name=银弹
 
 item.ImmersiveEngineering.drill.diesel.name=采矿机械钻
 item.ImmersiveEngineering.drillhead.iron.name=铁制钻头
@@ -212,7 +221,7 @@ item.ImmersiveEngineering.graphiteElectrode.name=石墨电极
 itemGroup.ImmersiveEngineering=Immersive Engineering
 
 #DESCRIPTIONS
-+description.villager.profession.immersiveengineering.villager_engineer=工程师
+description.villager.profession.immersiveengineering.villager_engineer=工程师
 
 desc.ImmersiveEngineering.info.attachedTo=连接从 %1$s, %2$s, %3$s
 desc.ImmersiveEngineering.info.attachedToDim=连接从 %4$s 世界 %1$s, %2$s, %3$s
@@ -339,6 +348,7 @@ death.attack.ieRevolver_buckshot=%1$s被%2$s用猎枪击中
 death.attack.ieRevolver_dragonsbreath=%1$s被%2$s的吐息焚烧为灰烬
 death.attack.ieRevolver_homing=%1$s被%2$s的叶绿弹击杀
 death.attack.ieRevolver_wolfpack=%1$s被%2$s的狼群弹头们撕成碎片
+death.attack.ieRevolver_silver=%1$s被%2$s's的银弹所净化
 death.attack.ieCrushed=%1$s被粉碎
 
 #MANUAL
@@ -493,7 +503,7 @@ ie.manual.entry.revolver.subtext=通缉:死或生
 ie.manual.entry.revolver0=左轮手枪,一把来自文明时代的优雅武器,可谓是小型机械的智慧结晶.小型仅仅是相对而言,毕竟这把武器填装的是12号弹药.<br>同采矿机械钻类似,左轮手枪同样能够在<link;workbench;§o§n工程师装配台§r>进行改造.关于改造的详细信息在本条目的最后一页中有详细叙述.
 ie.manual.entry.revolver1=左轮手枪可装载不同类型的弹药.若想装填弹药,潜行右键武器,之后将弹药放入物品栏中.<br>若物品栏中有快速装弹器,装弹器将会在你发射出最后一颗子弹后对左轮进行装填.
 ie.manual.entry.revolver2=子弹需要工程师装配台以及特定的<link;blueprints;§o§n工程师§o§n蓝图§r>才能制作.你自己就可以绘制一般军火的制造蓝图,但一些高级军火的蓝图需要你从他人手中购买才能得到.
-ie.manual.entry.revolver3=下列子弹均属于一般的弹药,可根据简易的自制蓝图制作:<br><br>§l卡苏尔弹:§r简易的铅弹,能够造成中等的伤害.<br>§l穿甲弹:§r致密金属弹,通过纯动能力穿透护甲.<br>§l鹿弹:§r内含大量小型弹丸,弹道呈圆锥状.短距离效果拔群.<br>§l高爆弹:§r击中后造成小型爆炸.
+ie.manual.entry.revolver3=下列子弹均属于一般的弹药,可根据简易的自制蓝图制作:<br><br>§l卡苏尔弹:§r简易的铅弹,能够造成中等的伤害.<br>§l穿甲弹:§r致密金属弹,通过纯动能力穿透护甲.<br>§l鹿弹:§r内含大量小型弹丸,弹道呈圆锥状.短距离效果拔群.<br>§l高爆弹:§r击中后造成小型爆炸.<br>§l银弹:§r铅芯被银所包裹,会对...狼人十分有效?!.
 ie.manual.entry.revolver4=下列子弹都是精密的高级弹药,需要用到那些交易得到的非自制蓝图.<br><br>§l龙息弹:§r易燃金属粉末,产生一束短距离火舌.<config;b;botaniaBullets;<br>§l叶绿弹:§r自动寻找并跟踪目标.<br>§l狼群弹:§r集束子弹,发射时不会制导,击中目标时会分裂出六枚自动制导的弹头.;>
 ie.manual.entry.revolver5=通过在左轮上安插刺刀,你将得到一把近身格斗武器,让你能够在近距离造成和铁剑一样的伤害.
 ie.manual.entry.revolver6=扩充弹夹让你能够在左轮手枪中额外装填六发弹药.该弹夹无法被快速装弹器装填
@@ -508,6 +518,7 @@ ie.manual.entry.lightningrod.name=避雷针
 ie.manual.entry.lightningrod.subtext=雷击!
 ie.manual.entry.lightningrod0=闪电是一种自然现象.它包含了大量的原始力量,而避雷针能够驾驭这种力量.<br>通过在多方块结构上堆叠大量钢栅栏,你增加了在雨天或雷暴天气闪电击中它的概率. 
 ie.manual.entry.lightningrod1=当钢柱被击中时,产生的大量能量会被储存在避雷针中然后缓慢的传输到侧面的能量连接点.<br><br>结构搭建如上图所示,手持工程师锤右键中央方块完成搭建. 
+ie.manual.entry.lightningrod2=你能够通过在最顶端的钢栅栏搭建一个相互连接的钢栅栏"网"来增加避雷针被击中的概率. 
 
 ie.manual.entry.minerals.name=矿床
 ie.manual.entry.minerals.subtext=矿石相关
