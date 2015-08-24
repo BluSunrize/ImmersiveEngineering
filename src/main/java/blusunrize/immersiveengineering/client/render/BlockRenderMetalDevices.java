@@ -144,6 +144,7 @@ public class BlockRenderMetalDevices implements ISimpleBlockRenderingHandler
 		{
 			TileEntityConnectorLV tile = (TileEntityConnectorLV)world.getTileEntity(x, y, z);
 			ClientUtils.handleStaticTileRenderer(tile);
+			ClientUtils.renderAttachedConnections(tile);
 			return true;
 		}
 		else if(metadata==BlockMetalDevices.META_capacitorLV)

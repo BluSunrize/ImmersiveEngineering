@@ -77,6 +77,7 @@ public class ClientEventHandler
 				IEContent.fluidEthanol.setIcons(event.map.registerIcon("immersiveengineering:fluid/ethanol_still"), event.map.registerIcon("immersiveengineering:fluid/ethanol_flow"));
 			if(IEContent.IEBiodiesel)
 				IEContent.fluidBiodiesel.setIcons(event.map.registerIcon("immersiveengineering:fluid/biodiesel_still"), event.map.registerIcon("immersiveengineering:fluid/biodiesel_flow"));
+			WireType.iconDefaultWire = event.map.registerIcon("immersiveengineering:wire");
 		}
 		if(event.map.getTextureType()==Config.getInt("revolverSheetID"))
 		{
@@ -167,7 +168,7 @@ public class ClientEventHandler
 
 		}
 	}
-	
+
 	@SubscribeEvent
 	public void onItemTooltip(ItemTooltipEvent event)
 	{
@@ -177,7 +178,7 @@ public class ClientEventHandler
 				&& BlastFurnaceRecipe.isValidBlastFuel(event.itemStack))
 			event.toolTip.add(EnumChatFormatting.GRAY+StatCollector.translateToLocalFormatted("desc.ImmersiveEngineering.info.blastFuelTime", BlastFurnaceRecipe.getBlastFuelTime(event.itemStack)));
 	}
-	
+
 	@SubscribeEvent()
 	public void lastWorldRender(RenderWorldLastEvent event)
 	{
@@ -186,12 +187,12 @@ public class ClientEventHandler
 	static boolean connectionsRendered = false;
 	public static void renderAllIEConnections(float partial)
 	{
-		if(connectionsRendered)
+		if(true || connectionsRendered)
 			return;
 		GL11.glPushMatrix();
 
 		GL11.glDisable(GL11.GL_CULL_FACE);
-//		GL11.glDisable(GL11.GL_TEXTURE_2D);
+		//		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glDisable(GL11.GL_ALPHA_TEST);
 		OpenGlHelper.glBlendFunc(770, 771, 1, 0);
@@ -229,7 +230,7 @@ public class ClientEventHandler
 			ImmersiveNetHandler.Connection con = it.next();
 			Tessellator.instance.setTranslation(con.start.posX-dx, con.start.posY-dy, con.start.posZ-dz);
 			double r = con.cableType.getRenderDiameter()/2;
-			ClientUtils.drawConnection(con, Utils.toIIC(con.start, world), Utils.toIIC(con.end, world),   0x00ff99,128,r*1.75);
+			ClientUtils.drawConnection(con, Utils.toIIC(con.start, world), Utils.toIIC(con.end, world),   0x00ff99,128,r*1.75, con.cableType.getIcon(con));
 		}
 
 		Tessellator.instance.setTranslation(0,0,0);

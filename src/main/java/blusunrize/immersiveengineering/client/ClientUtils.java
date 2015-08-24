@@ -39,173 +39,41 @@ import net.minecraftforge.fluids.FluidTank;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
-import codechicken.lib.gui.GuiDraw;
 import blusunrize.immersiveengineering.api.energy.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.client.render.TileRenderIE;
 import blusunrize.immersiveengineering.common.util.IESound;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
+import codechicken.lib.gui.GuiDraw;
 
 public class ClientUtils
 {
 	// MOD SPECIFIC METHODS
 	public static void renderAttachedConnections(TileEntity tile)
 	{
-		String lastTex = "";
 		if(tile.getWorldObj()!=null && tile instanceof IImmersiveConnectable)
 		{
-			//			ClientUtils.bindTexture("immersiveengineering:textures/models/white.png");
 			Iterator<ImmersiveNetHandler.Connection> itCon = new ArrayList(ImmersiveNetHandler.INSTANCE.getConnections(tile.getWorldObj(), Utils.toCC(tile))).iterator();
-			//			if(!ImmersiveNetHandler.isModifyingMaps())
-			//			{
 			while(itCon.hasNext())
 			{
 				ImmersiveNetHandler.Connection con = itCon.next();
 				TileEntity tileEnd = tile.getWorldObj().getTileEntity(con.end.posX,con.end.posY,con.end.posZ);
 				if(tileEnd instanceof IImmersiveConnectable)
-				{
-					if(con!=null && con.cableType!=null && !con.cableType.getTexture(con).equals(lastTex))
-					{
-						lastTex = con.cableType.getTexture(con);
-						ClientUtils.bindTexture(lastTex);
-					}
-					drawConnection(con, (IImmersiveConnectable)tile, Utils.toIIC(tileEnd, tile.getWorldObj()));
-				}
+					drawConnection(con, (IImmersiveConnectable)tile, Utils.toIIC(tileEnd, tile.getWorldObj()), con.cableType.getIcon(con));
 			}
-
-			//			}
 		}
 	}
 
-	public static void drawConnection(ImmersiveNetHandler.Connection connection, IImmersiveConnectable start, IImmersiveConnectable end)
+	public static void drawConnection(ImmersiveNetHandler.Connection connection, IImmersiveConnectable start, IImmersiveConnectable end, IIcon icon)
 	{
 		if(connection==null || start==null || end==null)
 			return;
-		//		Vec3 startOffset = start.getConnectionOffset(connection);
-		//		Vec3 endOffset = end.getConnectionOffset(connection);
-		//		double dx = (connection.end.posX+endOffset.xCoord)-(connection.start.posX+startOffset.xCoord);
-		//		double dy = (connection.end.posY+endOffset.yCoord)-(connection.start.posY+startOffset.yCoord);
-		//		double dz = (connection.end.posZ+endOffset.zCoord)-(connection.start.posZ+startOffset.zCoord);
-		//		double dw = Math.sqrt(dx*dx + dz*dz);
-
 		int col = connection.cableType.getColour(connection);
 		double r = connection.cableType.getRenderDiameter()/2;
-		//				connection.cableType==WireType.STEEL||connection.cableType==WireType.STRUCTURE_STEEL||connection.cableType==WireType.STRUCTURE_ROPE?.03125:.015625;
-		//		boolean vertical = connection.end.posX==connection.start.posX && connection.end.posZ==connection.start.posZ;
-		//		World world = ((TileEntity)start).getWorldObj();
-
-		drawConnection(connection, start, end, col,255, r);
-
-		//		double rmodx = dz/dw;
-		//		double rmodz = dx/dw;
-		//		//		GL11.glTranslated(startOffset.xCoord,startOffset.yCoord,startOffset.zCoord);
-		//		Tessellator tes = tes();
-		//
-		//
-		//		tes.addTranslation((float)startOffset.xCoord,(float)startOffset.yCoord,(float)startOffset.zCoord);
-		//
-		//		double k = Math.sqrt(dx*dx + dy*dy + dz*dz) * 1.005;
-		//		double l = 0;
-		//		int limiter = 0;
-		//		while(!vertical && true && limiter<300)
-		//		{
-		//			limiter++;
-		//			l += 0.01;
-		//			if (Math.sinh(l)/l >= Math.sqrt(k*k - dy*dy)/dw)
-		//				break;
-		//		}
-		//		//		if(limiter>=100)
-		//		//			IELogger.warn("Catenary loop greatly exceeded its maximum at "+limiter);
-		//		double a = dw/2/l;
-		//		double p = (0+dw-a*Math.log((k+dy)/(k-dy)))*0.5;
-		//		double q = (dy+0-k*Math.cosh(l)/Math.sinh(l))*0.5;
-		//
-		//
-		//		int vertices = 16;
-		//		int passes = 1;
-		//		if(connection==ItemSkyHook.grabableConnection)
-		//			passes = 2;
-		//		int alpha = 255;
-		//		for(int pass=0; pass<passes; pass++)
-		//		{
-		//			if(pass>0)
-		//			{
-		//				col = 0x9900ff99;
-		//				r *= 1.75;
-		//				alpha = 128;
-		//			}
-		//
-		//			if(vertical)
-		//			{
-		//				//						tes.startDrawing(GL11.GL_QUADS);
-		//				tes.setColorRGBA_I(col, alpha);
-		//				tes.setBrightness(calcBrightness(world, connection.start.posX-r,connection.start.posY,connection.start.posZ));
-		//				tes.addVertex(0-r, 0, 0);
-		//				tes.setBrightness(calcBrightness(world, connection.start.posX-r,connection.start.posY+dy,connection.start.posZ));
-		//				tes.addVertex(dx-r, dy, dz);
-		//				tes.setBrightness(calcBrightness(world, connection.start.posX+r,connection.start.posY+dy,connection.start.posZ));
-		//				tes.addVertex(dx+r, dy, dz);
-		//				tes.setBrightness(calcBrightness(world, connection.start.posX+r,connection.start.posY,connection.start.posZ));
-		//				tes.addVertex(0+r, 0, 0);
-		//				//			tes.draw();
-		//				//			tes.startDrawing(GL11.GL_QUADS);
-		//				tes.setColorRGBA_I(col, alpha);
-		//				tes.setBrightness(calcBrightness(world, connection.start.posX,connection.start.posY,connection.start.posZ-r));
-		//				tes.addVertex(0, 0, 0-r);
-		//				tes.setBrightness(calcBrightness(world, connection.start.posX,connection.start.posY+dy,connection.start.posZ-r));
-		//				tes.addVertex(dx, dy, dz-r);
-		//				tes.setBrightness(calcBrightness(world, connection.start.posX,connection.start.posY+dy,connection.start.posZ+r));
-		//				tes.addVertex(dx, dy, dz+r);
-		//				tes.setBrightness(calcBrightness(world, connection.start.posX,connection.start.posY,connection.start.posZ+r));
-		//				tes.addVertex(0, 0, 0+r);
-		//				//			tes.draw();
-		//			}
-		//			else
-		//			{
-		//				//			tes.startDrawing(GL11.GL_QUADS);
-		//				for(int i=0; i<vertices; i++)
-		//				{
-		//					float n0 = i/(float)vertices;
-		//					float n1 = (i+1)/(float)vertices;
-		//
-		//					double x0 = 0 + dx * n0;
-		//					double z0 = 0 + dz * n0;
-		//					double y0 = a * Math.cosh((( Math.sqrt(x0*x0+z0*z0) )-p)/a)+q;
-		//					double x1 = 0 + dx * n1;
-		//					double z1 = 0 + dz * n1;
-		//					double y1 = a * Math.cosh((( Math.sqrt(x1*x1+z1*z1) )-p)/a)+q;
-		//					//				tes.startDrawing(GL11.GL_QUADS);
-		//					tes.setColorRGBA_I(col, alpha);
-		//					tes.setBrightness(calcBrightness(world, connection.start.posX+x0, connection.start.posY+y0+r, connection.start.posZ+z0));
-		//					tes.addVertex(x0, y0+r, z0);
-		//					tes.setBrightness(calcBrightness(world, connection.start.posX+x1, connection.start.posY+y1+r, connection.start.posZ+z1));
-		//					tes.addVertex(x1, y1+r, z1);
-		//					tes.setBrightness(calcBrightness(world, connection.start.posX+x1, connection.start.posY+y1-r, connection.start.posZ+z1));
-		//					tes.addVertex(x1, y1-r, z1);
-		//					tes.setBrightness(calcBrightness(world, connection.start.posX+x0, connection.start.posY+y0-r, connection.start.posZ+z0));
-		//					tes.addVertex(x0, y0-r, z0);
-		//					//				tes.draw();
-		//					//				tes.startDrawing(GL11.GL_QUADS);
-		//					tes.setColorRGBA_I(col, alpha);
-		//					tes.setBrightness(calcBrightness(world, connection.start.posX+x0-r*rmodx, connection.start.posY+y0, connection.start.posZ+z0+r*rmodz));
-		//					tes.addVertex(x0-r*rmodx, y0, z0+r*rmodz);
-		//					tes.setBrightness(calcBrightness(world, connection.start.posX+x1-r*rmodx, connection.start.posY+y1, connection.start.posZ+z1+r*rmodz));
-		//					tes.addVertex(x1-r*rmodx, y1, z1+r*rmodz);
-		//					tes.setBrightness(calcBrightness(world, connection.start.posX+x1+r*rmodx, connection.start.posY+y1, connection.start.posZ+z1-r*rmodz));
-		//					tes.addVertex(x1+r*rmodx, y1, z1-r*rmodz);
-		//					tes.setBrightness(calcBrightness(world, connection.start.posX+x0+r*rmodx, connection.start.posY+y0, connection.start.posZ+z0-r*rmodz));
-		//					tes.addVertex(x0+r*rmodx, y0, z0-r*rmodz);
-		//					//				tes.draw();
-		//				}
-		//				//			tes.draw();
-		//			}
-		//		}
-		//
-		//		//		GL11.glTranslated(-startOffset.xCoord,-startOffset.yCoord,-startOffset.zCoord);
-		//		Tessellator.instance.addTranslation((float)-startOffset.xCoord,(float)-startOffset.yCoord,(float)-startOffset.zCoord);
+		drawConnection(connection, start, end, col,255, r, icon);
 	}
-	public static void drawConnection(ImmersiveNetHandler.Connection connection, IImmersiveConnectable start, IImmersiveConnectable end, int colour,int alpha, double radius)
+	public static void drawConnection(ImmersiveNetHandler.Connection connection, IImmersiveConnectable start, IImmersiveConnectable end, int colour,int alpha, double radius, IIcon icon)
 	{
 		if(connection==null || start==null || end==null || connection.end==null || connection.start==null)
 			return;
@@ -219,10 +87,8 @@ public class ClientUtils
 		double dy = (connection.end.posY+endOffset.yCoord)-(connection.start.posY+startOffset.yCoord);
 		double dz = (connection.end.posZ+endOffset.zCoord)-(connection.start.posZ+startOffset.zCoord);
 		double dw = Math.sqrt(dx*dx + dz*dz);
-		double dTotal = Math.sqrt(dx*dx + dy*dy + dz*dz);
 		World world = ((TileEntity)start).getWorldObj();
 		Tessellator tes = tes();
-		tes.addTranslation((float)startOffset.xCoord,(float)startOffset.yCoord,(float)startOffset.zCoord);
 
 		double rmodx = dz/dw;
 		double rmodz = dx/dw;
@@ -230,8 +96,10 @@ public class ClientUtils
 		Vec3[] vertex = connection.getSubVertices(world);
 		Vec3 initPos = Vec3.createVectorHelper(connection.start.posX+startOffset.xCoord, connection.start.posY+startOffset.yCoord, connection.start.posZ+startOffset.zCoord);
 
-		double uMax = 0;
-		double uMin = 0;
+		double uMin = icon.getMinU();
+		double uMax = icon.getMaxU();
+		double vMin = icon.getMinV();
+		double vMax = icon.getMaxV();
 		boolean vertical = connection.end.posX==connection.start.posX && connection.end.posZ==connection.start.posZ;
 		boolean b = (dx<0&&dz<=0)||(dz<0&&dx<=0)||(dz<0&&dx>0);
 		if(vertical)
@@ -239,35 +107,30 @@ public class ClientUtils
 			b = dy<0;
 			tes.setColorRGBA_I(colour, alpha);
 			tes.setBrightness(calcBrightness(world, connection.start.posX-radius,connection.start.posY,connection.start.posZ));
-			tes.addVertexWithUV(0-radius, 0, 0, b?-dy:0,0);
+			tes.addVertexWithUV(0-radius, 0, 0, b?-dy:uMin,vMin);
 			tes.setBrightness(calcBrightness(world, connection.start.posX-radius,connection.start.posY+dy,connection.start.posZ));
-			tes.addVertexWithUV(dx-radius, dy, dz, b?0:dy,0);
+			tes.addVertexWithUV(dx-radius, dy, dz, b?uMin:dy,vMin);
 			tes.setBrightness(calcBrightness(world, connection.start.posX+radius,connection.start.posY+dy,connection.start.posZ));
-			tes.addVertexWithUV(dx+radius, dy, dz, b?0:dy,1);
+			tes.addVertexWithUV(dx+radius, dy, dz, b?uMin:dy,vMax);
 			tes.setBrightness(calcBrightness(world, connection.start.posX+radius,connection.start.posY,connection.start.posZ));
-			tes.addVertexWithUV(0+radius, 0, 0, b?-dy:0,1);
+			tes.addVertexWithUV(0+radius, 0, 0, b?-dy:uMin,vMax);
 
 			tes.setColorRGBA_I(colour, alpha);
 			tes.setBrightness(calcBrightness(world, connection.start.posX,connection.start.posY,connection.start.posZ-radius));
-			tes.addVertexWithUV(0, 0, 0-radius, b?-dy:0,0);
+			tes.addVertexWithUV(0, 0, 0-radius, b?-dy:uMin,vMin);
 			tes.setBrightness(calcBrightness(world, connection.start.posX,connection.start.posY+dy,connection.start.posZ-radius));
-			tes.addVertexWithUV(dx, dy, dz-radius, b?0:dy,0);
+			tes.addVertexWithUV(dx, dy, dz-radius, b?uMin:dy,vMin);
 			tes.setBrightness(calcBrightness(world, connection.start.posX,connection.start.posY+dy,connection.start.posZ+radius));
-			tes.addVertexWithUV(dx, dy, dz+radius, b?0:dy,1);
+			tes.addVertexWithUV(dx, dy, dz+radius, b?uMin:dy,vMax);
 			tes.setBrightness(calcBrightness(world, connection.start.posX,connection.start.posY,connection.start.posZ+radius));
-			tes.addVertexWithUV(0, 0, 0+radius, b?-dy:0,1);
+			tes.addVertexWithUV(0, 0, 0+radius, b?-dy:uMin,vMax);
 		}
 		else
 			for(int i=b?(vertex.length-1):0; (b?(i>=0):(i<vertex.length)); i+=(b?-1:1))
 			{
 				Vec3 v0 = i>0?vertex[i-1]:initPos;
 				Vec3 v1 = vertex[i];
-				v0 = initPos.subtract(v0);
-				v1 = initPos.subtract(v1);
-				double segmentLength = (connection.length)*Math.sqrt((v1.xCoord-v0.xCoord)*(v1.xCoord-v0.xCoord) + (v1.yCoord-v0.yCoord)*(v1.yCoord-v0.yCoord) + (v1.zCoord-v0.zCoord)*(v1.zCoord-v0.zCoord));
 
-				uMin = uMax;
-				uMax = uMin+segmentLength/dTotal;
 				double u0 = uMin;
 				double u1 = uMax;
 				if((dx<0&&dz<=0)||(dz<0&&dx<=0)||(dz<0&&dx>0))
@@ -276,81 +139,25 @@ public class ClientUtils
 					u0 = uMax;
 				}
 				tes.setColorRGBA_I(colour, alpha);
-				tes.setBrightness(calcBrightness(world, connection.start.posX+v0.xCoord, connection.start.posY+v0.yCoord+radius, connection.start.posZ+v0.zCoord));
-				tes.addVertexWithUV(v0.xCoord, v0.yCoord+radius, v0.zCoord, u0,1);
-				tes.setBrightness(calcBrightness(world, connection.start.posX+v1.xCoord, connection.start.posY+v1.yCoord+radius, connection.start.posZ+v1.zCoord));
-				tes.addVertexWithUV(v1.xCoord, v1.yCoord+radius, v1.zCoord, u1,1);
-				tes.setBrightness(calcBrightness(world, connection.start.posX+v1.xCoord, connection.start.posY+v1.yCoord-radius, connection.start.posZ+v1.zCoord));
-				tes.addVertexWithUV(v1.xCoord, v1.yCoord-radius, v1.zCoord, u1,0);
-				tes.setBrightness(calcBrightness(world, connection.start.posX+v0.xCoord, connection.start.posY+v0.yCoord-radius, connection.start.posZ+v0.zCoord));
-				tes.addVertexWithUV(v0.xCoord, v0.yCoord-radius, v0.zCoord, u0,0);
+				tes.setBrightness(calcBrightness(world, v0.xCoord, v0.yCoord+radius, v0.zCoord));
+				tes.addVertexWithUV(v0.xCoord, v0.yCoord+radius, v0.zCoord, u0,vMax);
+				tes.setBrightness(calcBrightness(world, v1.xCoord, v1.yCoord+radius, v1.zCoord));
+				tes.addVertexWithUV(v1.xCoord, v1.yCoord+radius, v1.zCoord, u1,vMax);
+				tes.setBrightness(calcBrightness(world, v1.xCoord, v1.yCoord-radius, v1.zCoord));
+				tes.addVertexWithUV(v1.xCoord, v1.yCoord-radius, v1.zCoord, u1,vMin);
+				tes.setBrightness(calcBrightness(world, v0.xCoord, v0.yCoord-radius, v0.zCoord));
+				tes.addVertexWithUV(v0.xCoord, v0.yCoord-radius, v0.zCoord, u0,vMin);
 
 				tes.setColorRGBA_I(colour, alpha);
-				tes.setBrightness(calcBrightness(world, connection.start.posX+v0.xCoord-radius*rmodx, connection.start.posY+v0.yCoord, connection.start.posZ+v0.zCoord+radius*rmodz));
-				tes.addVertexWithUV(v0.xCoord-radius*rmodx, v0.yCoord, v0.zCoord+radius*rmodz, u0,1);
-				tes.setBrightness(calcBrightness(world, connection.start.posX+v1.xCoord-radius*rmodx, connection.start.posY+v1.yCoord, connection.start.posZ+v1.zCoord+radius*rmodz));
-				tes.addVertexWithUV(v1.xCoord-radius*rmodx, v1.yCoord, v1.zCoord+radius*rmodz, u1,1);
-				tes.setBrightness(calcBrightness(world, connection.start.posX+v1.xCoord+radius*rmodx, connection.start.posY+v1.yCoord, connection.start.posZ+v1.zCoord-radius*rmodz));
-				tes.addVertexWithUV(v1.xCoord+radius*rmodx, v1.yCoord, v1.zCoord-radius*rmodz, u1,0);
-				tes.setBrightness(calcBrightness(world, connection.start.posX+v0.xCoord+radius*rmodx, connection.start.posY+v0.yCoord, connection.start.posZ+v0.zCoord-radius*rmodz));
-				tes.addVertexWithUV(v0.xCoord+radius*rmodx, v0.yCoord, v0.zCoord-radius*rmodz, u0,0);
+				tes.setBrightness(calcBrightness(world, v0.xCoord-radius*rmodx, v0.yCoord, v0.zCoord+radius*rmodz));
+				tes.addVertexWithUV(v0.xCoord-radius*rmodx, v0.yCoord, v0.zCoord+radius*rmodz, u0,vMax);
+				tes.setBrightness(calcBrightness(world, v1.xCoord-radius*rmodx, v1.yCoord, v1.zCoord+radius*rmodz));
+				tes.addVertexWithUV(v1.xCoord-radius*rmodx, v1.yCoord, v1.zCoord+radius*rmodz, u1,vMax);
+				tes.setBrightness(calcBrightness(world, v1.xCoord+radius*rmodx, v1.yCoord, v1.zCoord-radius*rmodz));
+				tes.addVertexWithUV(v1.xCoord+radius*rmodx, v1.yCoord, v1.zCoord-radius*rmodz, u1,vMin);
+				tes.setBrightness(calcBrightness(world, v0.xCoord+radius*rmodx, v0.yCoord, v0.zCoord-radius*rmodz));
+				tes.addVertexWithUV(v0.xCoord+radius*rmodx, v0.yCoord, v0.zCoord-radius*rmodz, u0,vMin);
 			}
-
-		//		if(vertical)
-		//		{
-		//			tes.setColorRGBA_I(colour, alpha);
-		//			tes.setBrightness(calcBrightness(world, connection.start.posX-radius,connection.start.posY,connection.start.posZ));
-		//			tes.addVertex(0-radius, 0, 0);
-		//			tes.setBrightness(calcBrightness(world, connection.start.posX-radius,connection.start.posY+dy,connection.start.posZ));
-		//			tes.addVertex(dx-radius, dy, dz);
-		//			tes.setBrightness(calcBrightness(world, connection.start.posX+radius,connection.start.posY+dy,connection.start.posZ));
-		//			tes.addVertex(dx+radius, dy, dz);
-		//			tes.setBrightness(calcBrightness(world, connection.start.posX+radius,connection.start.posY,connection.start.posZ));
-		//			tes.addVertex(0+radius, 0, 0);
-		//			tes.setColorRGBA_I(colour, alpha);
-		//			tes.setBrightness(calcBrightness(world, connection.start.posX,connection.start.posY,connection.start.posZ-radius));
-		//			tes.addVertex(0, 0, 0-radius);
-		//			tes.setBrightness(calcBrightness(world, connection.start.posX,connection.start.posY+dy,connection.start.posZ-radius));
-		//			tes.addVertex(dx, dy, dz-radius);
-		//			tes.setBrightness(calcBrightness(world, connection.start.posX,connection.start.posY+dy,connection.start.posZ+radius));
-		//			tes.addVertex(dx, dy, dz+radius);
-		//			tes.setBrightness(calcBrightness(world, connection.start.posX,connection.start.posY,connection.start.posZ+radius));
-		//			tes.addVertex(0, 0, 0+radius);
-		//		}
-		//		else
-		//		{
-		//			for(int i=0; i<vertices; i++)
-		//			{
-		//				float n0 = i/(float)vertices;
-		//				float n1 = (i+1)/(float)vertices;
-		//
-		//				double x0 = 0 + dx * n0;
-		//				double z0 = 0 + dz * n0;
-		//				double y0 = a * Math.cosh((( Math.sqrt(x0*x0+z0*z0) )-p)/a)+q;
-		//				double x1 = 0 + dx * n1;
-		//				double z1 = 0 + dz * n1;
-		//				double y1 = a * Math.cosh((( Math.sqrt(x1*x1+z1*z1) )-p)/a)+q;
-		//				tes.setColorRGBA_I(colour, alpha);
-		//				tes.setBrightness(calcBrightness(world, connection.start.posX+x0, connection.start.posY+y0+radius, connection.start.posZ+z0));
-		//				tes.addVertex(x0, y0+radius, z0);
-		//				tes.setBrightness(calcBrightness(world, connection.start.posX+x1, connection.start.posY+y1+radius, connection.start.posZ+z1));
-		//				tes.addVertex(x1, y1+radius, z1);
-		//				tes.setBrightness(calcBrightness(world, connection.start.posX+x1, connection.start.posY+y1-radius, connection.start.posZ+z1));
-		//				tes.addVertex(x1, y1-radius, z1);
-		//				tes.setBrightness(calcBrightness(world, connection.start.posX+x0, connection.start.posY+y0-radius, connection.start.posZ+z0));
-		//				tes.addVertex(x0, y0-radius, z0);
-		//				tes.setColorRGBA_I(colour, alpha);
-		//				tes.setBrightness(calcBrightness(world, connection.start.posX+x0-radius*rmodx, connection.start.posY+y0, connection.start.posZ+z0+radius*rmodz));
-		//				tes.addVertex(x0-radius*rmodx, y0, z0+radius*rmodz);
-		//				tes.setBrightness(calcBrightness(world, connection.start.posX+x1-radius*rmodx, connection.start.posY+y1, connection.start.posZ+z1+radius*rmodz));
-		//				tes.addVertex(x1-radius*rmodx, y1, z1+radius*rmodz);
-		//				tes.setBrightness(calcBrightness(world, connection.start.posX+x1+radius*rmodx, connection.start.posY+y1, connection.start.posZ+z1-radius*rmodz));
-		//				tes.addVertex(x1+radius*rmodx, y1, z1-radius*rmodz);
-		//				tes.setBrightness(calcBrightness(world, connection.start.posX+x0+radius*rmodx, connection.start.posY+y0, connection.start.posZ+z0-radius*rmodz));
-		//				tes.addVertex(x0+radius*rmodx, y0, z0-radius*rmodz);
-		//			}
-		//		}
-		tes.addTranslation((float)-startOffset.xCoord,(float)-startOffset.yCoord,(float)-startOffset.zCoord);
 	}
 
 	public static int calcBrightness(IBlockAccess world, double x, double y, double z)

@@ -4,6 +4,7 @@ import java.util.LinkedHashSet;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.IIcon;
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler.Connection;
 
 /**
@@ -39,7 +40,7 @@ public abstract class WireType
 	public abstract int getColour(Connection connection);
 	/**Determines how saggy the wire is*/
 	public abstract double getSlack();
-	public abstract String getTexture(Connection connection);
+	public abstract IIcon getIcon(Connection connection);
 	public abstract int getMaxLength();
 	public abstract ItemStack getWireCoil();
 	public abstract double getRenderDiameter();
@@ -53,6 +54,7 @@ public abstract class WireType
 	public static int[] cableLength;
 	public static Item ieWireCoil;
 	public static double[] renderDiameter = {.03125,.03125, .0625,.0625,.0625};
+	public static IIcon iconDefaultWire;
 	
 	public static WireType COPPER = new WireType.IEBASE(0);
 	public static WireType ELECTRUM = new WireType.IEBASE(1);
@@ -94,9 +96,9 @@ public abstract class WireType
 			return 1.005;
 		}
 		@Override
-		public String getTexture(Connection connection)
+		public IIcon getIcon(Connection connection)
 		{
-			return "immersiveengineering:textures/misc/wire.png";
+			return iconDefaultWire;
 		}
 		@Override
 		public int getMaxLength()

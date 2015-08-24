@@ -46,7 +46,7 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 	{
 		return true;
 	}
-	
+
 	@Override
 	public boolean canConnect()
 	{
@@ -136,6 +136,17 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 					IELogger.error("CLIENT read connection as null");
 			}
 		}
+	}
+
+	@Override
+	public boolean receiveClientEvent(int id, int arg)
+	{
+		if(id==-1)
+		{
+			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+			return true;
+		}
+		return false;
 	}
 
 	@Override

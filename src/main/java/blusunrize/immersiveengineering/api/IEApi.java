@@ -7,6 +7,7 @@ import java.util.List;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.common.registry.GameRegistry.UniqueIdentifier;
 
 public class IEApi
 {
@@ -28,14 +29,18 @@ public class IEApi
 		ItemStack preferredStack = null;
 		int lastPref = -1;
 		for(ItemStack stack : list)
-			if(stack!=null)
+			if(stack!=null && stack.getItem()==null)
 			{
-				String modId = GameRegistry.findUniqueIdentifierFor(stack.getItem()).modId;
-				int idx = modId==null||modId.isEmpty()?-1: modPreference.indexOf(modId);
-				if(preferredStack==null || (idx>=0 && (lastPref<0 || idx<lastPref)))
+				UniqueIdentifier id = GameRegistry.findUniqueIdentifierFor(stack.getItem());
+				if(id!=null)
 				{
-					preferredStack = stack;
-					lastPref = idx;
+					String modId = id.modId;
+					int idx = modId==null||modId.isEmpty()?-1: modPreference.indexOf(modId);
+					if(preferredStack==null || (idx>=0 && (lastPref<0 || idx<lastPref)))
+					{
+						preferredStack = stack;
+						lastPref = idx;
+					}
 				}
 			}
 		return preferredStack;

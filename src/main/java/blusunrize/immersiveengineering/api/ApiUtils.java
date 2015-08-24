@@ -43,7 +43,7 @@ public class ApiUtils
 			return compareToOreName(stack, (String)o);
 		return false;
 	}
-	
+
 	public static String nameFromStack(ItemStack stack)
 	{
 		if(stack==null)
@@ -56,7 +56,7 @@ public class ApiUtils
 		return "";
 	}
 
-	
+
 	public static ChunkCoordinates toCC(Object object)
 	{
 		if(object instanceof ChunkCoordinates)
@@ -117,6 +117,8 @@ public class ApiUtils
 			double y1 = a * Math.cosh((( Math.sqrt(x1*x1+z1*z1) )-p)/a)+q;
 			vex[i] = Vec3.createVectorHelper(start.xCoord+x1, start.yCoord+y1, start.zCoord+z1);
 		}
+		vex[vertices-1] = Vec3.createVectorHelper(end.xCoord, end.yCoord, end.zCoord);
+		
 		return vex;
 	}
 
