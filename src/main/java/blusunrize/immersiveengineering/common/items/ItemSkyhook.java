@@ -110,10 +110,10 @@ public class ItemSkyhook extends ItemUpgradeableTool
 		if(existingHooks.containsKey(player.getCommandSenderName()))
 		{
 			EntitySkylineHook hook = existingHooks.get(player.getCommandSenderName());
-//			player.motionX = hook.motionX;
-//			player.motionY = hook.motionY;
-//			player.motionZ = hook.motionZ;
-//			IELogger.debug("player motion: "+player.motionX+","+player.motionY+","+player.motionZ);
+			//			player.motionX = hook.motionX;
+			//			player.motionY = hook.motionY;
+			//			player.motionZ = hook.motionZ;
+			//			IELogger.debug("player motion: "+player.motionX+","+player.motionY+","+player.motionZ);
 			hook.setDead();
 			existingHooks.remove(player.getCommandSenderName());
 		}

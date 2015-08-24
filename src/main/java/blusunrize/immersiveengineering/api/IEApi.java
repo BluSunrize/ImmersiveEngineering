@@ -29,7 +29,7 @@ public class IEApi
 		ItemStack preferredStack = null;
 		int lastPref = -1;
 		for(ItemStack stack : list)
-			if(stack!=null && stack.getItem()==null)
+			if(stack!=null && stack.getItem()!=null)
 			{
 				UniqueIdentifier id = GameRegistry.findUniqueIdentifierFor(stack.getItem());
 				if(id!=null)

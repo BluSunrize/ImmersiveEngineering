@@ -187,7 +187,7 @@ public class ClientEventHandler
 	static boolean connectionsRendered = false;
 	public static void renderAllIEConnections(float partial)
 	{
-		if(true || connectionsRendered)
+		if(connectionsRendered)
 			return;
 		GL11.glPushMatrix();
 
