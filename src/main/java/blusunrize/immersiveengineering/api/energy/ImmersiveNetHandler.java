@@ -1,11 +1,9 @@
 package blusunrize.immersiveengineering.api.energy;
 
-import static blusunrize.immersiveengineering.api.ApiUtils.toCC;
-import static blusunrize.immersiveengineering.api.ApiUtils.toIIC;
 import static blusunrize.immersiveengineering.api.ApiUtils.addVectors;
 import static blusunrize.immersiveengineering.api.ApiUtils.getConnectionCatenary;
-
-
+import static blusunrize.immersiveengineering.api.ApiUtils.toCC;
+import static blusunrize.immersiveengineering.api.ApiUtils.toIIC;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,7 +21,6 @@ import net.minecraft.world.World;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.common.IESaveData;
-import blusunrize.immersiveengineering.common.util.Utils;
 
 import com.google.common.collect.ArrayListMultimap;
 

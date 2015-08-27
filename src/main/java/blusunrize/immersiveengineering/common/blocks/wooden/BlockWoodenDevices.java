@@ -84,8 +84,8 @@ public class BlockWoodenDevices extends BlockIEBase implements blusunrize.aquatw
 	@SideOnly(Side.CLIENT)
 	public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side)
 	{
-		if(world.getTileEntity(x, y, z) instanceof TileEntityWoodenBarrel && side<2)
-			return iconBarrel[((TileEntityWoodenBarrel)world.getTileEntity(x, y, z)).sideConfig[side]+1];
+//		if(world.getTileEntity(x, y, z) instanceof TileEntityWoodenBarrel && side<2)
+//			return iconBarrel[((TileEntityWoodenBarrel)world.getTileEntity(x, y, z)).sideConfig[side]+1];
 		return super.getIcon(world, x, y, z, side);
 	}
 

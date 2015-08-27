@@ -37,6 +37,8 @@ public class TileEntityWoodenBarrel extends TileEntityIEBase implements IFluidHa
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		sideConfig = nbt.getIntArray("sideConfig");
+		if(sideConfig==null || sideConfig.length<2)
+			sideConfig = new int[]{-1,0};
 		this.readTank(nbt);
 	}
 	public void readTank(NBTTagCompound nbt)

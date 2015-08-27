@@ -92,6 +92,7 @@ public class ClientUtils
 		double dy = (connection.end.posY+endOffset.yCoord)-(connection.start.posY+startOffset.yCoord);
 		double dz = (connection.end.posZ+endOffset.zCoord)-(connection.start.posZ+startOffset.zCoord);
 		double dw = Math.sqrt(dx*dx + dz*dz);
+		double d = Math.sqrt(dx*dx + dy*dy + dz*dz);
 		World world = ((TileEntity)start).getWorldObj();
 		Tessellator tes = tes();
 
@@ -105,58 +106,82 @@ public class ClientUtils
 		double uMax = icon.getMaxU();
 		double vMin = icon.getMinV();
 		double vMax = icon.getMaxV();
+		double uD = uMax-uMin;
 		boolean vertical = connection.end.posX==connection.start.posX && connection.end.posZ==connection.start.posZ;
 		boolean b = (dx<0&&dz<=0)||(dz<0&&dx<=0)||(dz<0&&dx>0);
 		if(vertical)
 		{
-			b = dy<0;
+			//			double uShift = Math.abs(dy)/ * uD;
+			tes.addTranslation((float)initPos.xCoord,(float)initPos.yCoord,(float)initPos.zCoord);
 			tes.setColorRGBA_I(colour, alpha);
 			tes.setBrightness(calcBrightness(world, connection.start.posX-radius,connection.start.posY,connection.start.posZ));
-			tes.addVertexWithUV(0-radius, 0, 0, b?-dy:uMin,vMin);
+//			tes.addVertexWithUV(0-radius, 0, 0, b?uMax-uShift:uMin,vMin);
+			tes.addVertexWithUV(0-radius, 0, 0, uMin,vMin);
 			tes.setBrightness(calcBrightness(world, connection.start.posX-radius,connection.start.posY+dy,connection.start.posZ));
-			tes.addVertexWithUV(dx-radius, dy, dz, b?uMin:dy,vMin);
+//			tes.addVertexWithUV(dx-radius, dy, dz, b?uMin:uMin+uShift,vMin);
+			tes.addVertexWithUV(dx-radius, dy, dz, uMax,vMin);
 			tes.setBrightness(calcBrightness(world, connection.start.posX+radius,connection.start.posY+dy,connection.start.posZ));
-			tes.addVertexWithUV(dx+radius, dy, dz, b?uMin:dy,vMax);
+//			tes.addVertexWithUV(dx+radius, dy, dz, b?uMin:uMin+uShift,vMax);
+			tes.addVertexWithUV(dx+radius, dy, dz, uMax,vMax);
 			tes.setBrightness(calcBrightness(world, connection.start.posX+radius,connection.start.posY,connection.start.posZ));
-			tes.addVertexWithUV(0+radius, 0, 0, b?-dy:uMin,vMax);
+//			tes.addVertexWithUV(0+radius, 0, 0, b?uMax-uShift:uMin,vMax);
+			tes.addVertexWithUV(0+radius, 0, 0, uMin,vMax);
 
 			tes.setBrightness(calcBrightness(world, connection.start.posX-radius,connection.start.posY+dy,connection.start.posZ));
-			tes.addVertexWithUV(dx-radius, dy, dz, b?uMin:dy,vMin);
+//			tes.addVertexWithUV(dx-radius, dy, dz, b?uMin:uMin+uShift,vMin);
+			tes.addVertexWithUV(dx-radius, dy, dz, uMax,vMin);
 			tes.setBrightness(calcBrightness(world, connection.start.posX-radius,connection.start.posY,connection.start.posZ));
-			tes.addVertexWithUV(0-radius, 0, 0, b?-dy:uMin,vMin);
+//			tes.addVertexWithUV(0-radius, 0, 0, b?uMax-uShift:uMin,vMin);
+			tes.addVertexWithUV(0-radius, 0, 0,uMin,vMin);
 			tes.setBrightness(calcBrightness(world, connection.start.posX+radius,connection.start.posY,connection.start.posZ));
-			tes.addVertexWithUV(0+radius, 0, 0, b?-dy:uMin,vMax);
+//			tes.addVertexWithUV(0+radius, 0, 0, b?uMax-uShift:uMin,vMax);
+			tes.addVertexWithUV(0+radius, 0, 0, uMin,vMax);
 			tes.setBrightness(calcBrightness(world, connection.start.posX+radius,connection.start.posY+dy,connection.start.posZ));
-			tes.addVertexWithUV(dx+radius, dy, dz, b?uMin:dy,vMax);
+//			tes.addVertexWithUV(dx+radius, dy, dz, b?uMin:uMin+uShift,vMax);
+			tes.addVertexWithUV(dx+radius, dy, dz, uMax,vMax);
 
 
 			tes.setColorRGBA_I(colour, alpha);
 			tes.setBrightness(calcBrightness(world, connection.start.posX,connection.start.posY,connection.start.posZ-radius));
-			tes.addVertexWithUV(0, 0, 0-radius, b?-dy:uMin,vMin);
+//			tes.addVertexWithUV(0, 0, 0-radius, b?uMax-uShift:uMin,vMin);
+			tes.addVertexWithUV(0, 0, 0-radius, uMin,vMin);
 			tes.setBrightness(calcBrightness(world, connection.start.posX,connection.start.posY+dy,connection.start.posZ-radius));
-			tes.addVertexWithUV(dx, dy, dz-radius, b?uMin:dy,vMin);
+//			tes.addVertexWithUV(dx, dy, dz-radius, b?uMin:uMin+uShift,vMin);
+			tes.addVertexWithUV(dx, dy, dz-radius, uMax,vMin);
 			tes.setBrightness(calcBrightness(world, connection.start.posX,connection.start.posY+dy,connection.start.posZ+radius));
-			tes.addVertexWithUV(dx, dy, dz+radius, b?uMin:dy,vMax);
+//			tes.addVertexWithUV(dx, dy, dz+radius, b?uMin:uMin+uShift,vMax);
+			tes.addVertexWithUV(dx, dy, dz+radius, uMax,vMax);
 			tes.setBrightness(calcBrightness(world, connection.start.posX,connection.start.posY,connection.start.posZ+radius));
-			tes.addVertexWithUV(0, 0, 0+radius, b?-dy:uMin,vMax);
+//			tes.addVertexWithUV(0, 0, 0+radius, b?uMax-uShift:uMin,vMax);
+			tes.addVertexWithUV(0, 0, 0+radius, uMin,vMax);
 
 			tes.setBrightness(calcBrightness(world, connection.start.posX,connection.start.posY+dy,connection.start.posZ-radius));
-			tes.addVertexWithUV(dx, dy, dz-radius, b?uMin:dy,vMin);
+//			tes.addVertexWithUV(dx, dy, dz-radius, b?uMin:uMin+uShift,vMin);
+			tes.addVertexWithUV(dx, dy, dz-radius, uMax,vMin);
 			tes.setBrightness(calcBrightness(world, connection.start.posX,connection.start.posY,connection.start.posZ-radius));
-			tes.addVertexWithUV(0, 0, 0-radius, b?-dy:uMin,vMin);
+//			tes.addVertexWithUV(0, 0, 0-radius, b?uMax-uShift:uMin,vMin);
+			tes.addVertexWithUV(0, 0, 0-radius, uMin,vMin);
 			tes.setBrightness(calcBrightness(world, connection.start.posX,connection.start.posY,connection.start.posZ+radius));
-			tes.addVertexWithUV(0, 0, 0+radius, b?-dy:uMin,vMax);
+//			tes.addVertexWithUV(0, 0, 0+radius, b?uMax-uShift:uMin,vMax);
+			tes.addVertexWithUV(0, 0, 0+radius, uMin,vMax);
 			tes.setBrightness(calcBrightness(world, connection.start.posX,connection.start.posY+dy,connection.start.posZ+radius));
-			tes.addVertexWithUV(dx, dy, dz+radius, b?uMin:dy,vMax);
+//			tes.addVertexWithUV(dx, dy, dz+radius, b?uMin:uMin+uShift,vMax);
+			tes.addVertexWithUV(dx, dy, dz+radius, uMax,vMax);
+			tes.addTranslation((float)-initPos.xCoord,(float)-initPos.yCoord,(float)-initPos.zCoord);
 		}
 		else
+		{
+			double u0 = uMin;
+			double u1 = uMin;
 			for(int i=b?(vertex.length-1):0; (b?(i>=0):(i<vertex.length)); i+=(b?-1:1))
 			{
 				Vec3 v0 = i>0?vertex[i-1]:initPos;
 				Vec3 v1 = vertex[i];
 
-				double u0 = uMin;
-				double u1 = uMax;
+//				double u0 = uMin;
+//				double u1 = uMax;
+				u0 = u1;
+				u1 = u0+(v0.distanceTo(v1)/d)*uD;
 				if((dx<0&&dz<=0)||(dz<0&&dx<=0)||(dz<0&&dx>0))
 				{
 					u1 = uMin;
@@ -200,6 +225,7 @@ public class ClientUtils
 				tes.setBrightness(calcBrightness(world, v1.xCoord+radius*rmodx, v1.yCoord, v1.zCoord-radius*rmodz));
 				tes.addVertexWithUV(v1.xCoord+radius*rmodx, v1.yCoord, v1.zCoord-radius*rmodz, u1,vMin);
 			}
+		}
 	}
 
 	public static int calcBrightness(IBlockAccess world, double x, double y, double z)

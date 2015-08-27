@@ -22,6 +22,7 @@ public class IEWailaDataProvider implements IWailaDataProvider
 	public static void callbackRegister(IWailaRegistrar registrar)
 	{
 		registrar.registerBodyProvider(new IEWailaDataProvider(), BlockIECrop.class);
+		registrar.registerBodyProvider(new IEWailaDataProvider(), TileEntityWoodenBarrel.class);
 	}
 
 
