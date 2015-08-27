@@ -20,11 +20,11 @@ import blusunrize.immersiveengineering.common.EventHandler;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.IERecipes;
 import blusunrize.immersiveengineering.common.IESaveData;
-import blusunrize.immersiveengineering.common.IEWorldGen;
 import blusunrize.immersiveengineering.common.items.ItemRevolver;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
+import blusunrize.immersiveengineering.common.world.IEWorldGen;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;

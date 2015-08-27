@@ -27,16 +27,16 @@ import cpw.mods.fml.common.Optional;
 @Optional.Interface(iface = "blusunrize.aquatweaks.api.IAquaConnectable", modid = "AquaTweaks")
 public class BlockMetalDecoration extends BlockIEBase implements blusunrize.aquatweaks.api.IAquaConnectable
 {
-	public static int META_fence=0;
-	public static int META_scaffolding=1;
-	public static int META_lantern=2;
-	public static int META_structuralArm=3;
-	public static int META_radiator=4;
-	public static int META_heavyEngineering=5;
-	public static int META_generator=6;
-	public static int META_lightEngineering=7;
-	public static int META_connectorStructural=8;
-	public static int META_wallMount=9;
+	public static final int META_fence=0;
+	public static final int META_scaffolding=1;
+	public static final int META_lantern=2;
+	public static final int META_structuralArm=3;
+	public static final int META_radiator=4;
+	public static final int META_heavyEngineering=5;
+	public static final int META_generator=6;
+	public static final int META_lightEngineering=7;
+	public static final int META_connectorStructural=8;
+	public static final int META_wallMount=9;
 
 	public BlockMetalDecoration()
 	{

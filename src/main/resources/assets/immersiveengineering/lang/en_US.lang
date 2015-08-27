@@ -197,6 +197,7 @@ item.ImmersiveEngineering.bullet.dragonsbreath.name=Dragon's Breath Cartridge
 item.ImmersiveEngineering.bullet.homing.name=Homing Cartridge
 item.ImmersiveEngineering.bullet.wolfpack.name=Wolfpack Cartridge
 item.ImmersiveEngineering.bullet.silver.name=Silver Cartridge
+item.ImmersiveEngineering.bullet.potion.name=Phial Cartridge
 
 item.ImmersiveEngineering.drill.diesel.name=Mining Drill
 item.ImmersiveEngineering.drillhead.iron.name=Iron Drill Head
@@ -421,7 +422,7 @@ ie.manual.entry.generatorWindmillImproved=The improved Windmill is an upgrade to
 
 ie.manual.entry.breaker.name=Breaker Switch
 ie.manual.entry.breaker.subtext=Clap on - Clap off
-ie.manual.entry.breaker0=Breaker Switches are simply switches that can stop the flow of power through wires. They can connect two wires of the same type and will only allow power to pass when activated. This can be used to seperate power-hungry machinery from the network or hook up an additional set of generators when needed!
+ie.manual.entry.breaker0=Breaker Switches are simply switches that can stop the flow of power through wires. They can connect two wires of the same type and will only allow power to pass when activated. This can be used to seperate power-hungry machinery from the network or hook up an additional set of generators when needed!<br>These breaker switches will emit a redstone signal when they are switched on; this behaviour can be inverted by clicking the switch with an Engineer's Hammer.
 #When lights are added, these switches have another use ;D
 
 ie.manual.entry.thermoElectric.name=Thermoelectric Generator

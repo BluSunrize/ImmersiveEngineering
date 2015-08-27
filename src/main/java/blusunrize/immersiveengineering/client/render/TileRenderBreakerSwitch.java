@@ -26,28 +26,25 @@ public class TileRenderBreakerSwitch extends TileRenderImmersiveConnectable
 
 		TileEntityBreakerSwitch breaker = (TileEntityBreakerSwitch)tile;
 		int f = breaker.facing;
-		translationMatrix.translate(.5,.5,.5);
+		translationMatrix.translate(.5,.3125,.5);
 
 		if(breaker.sideAttached==0)
 		{
-			rotationMatrix.rotate(Math.toRadians(f==3?180: f==4?90: f==5?-90: 0), 0,1,0);
-			rotationMatrix.rotate(Math.toRadians(90), 1,0,0);
+			rotationMatrix.rotate(Math.toRadians(180), 0,0,1);
+			rotationMatrix.rotate(Math.toRadians(f==3?180: f==4?-90: f==5?90: 0), 0,1,0);
+			rotationMatrix.translate(0, 0,-.125);
 		}
 		else
 		{
-			rotationMatrix.rotate(Math.toRadians(f==3?180: f==4?90: f==5?-90: 0), 0,1,0);
-			if(breaker.sideAttached==2)
-				rotationMatrix.rotate(Math.toRadians(180), 0,0,1);
+			rotationMatrix.rotate(Math.toRadians(f==3?180: f==4?90: f==5?-90: 0), 0,breaker.sideAttached==2?-1:1,0);
+			rotationMatrix.rotate(Math.toRadians(breaker.sideAttached==2?90:-90), 1,0,0);
+			rotationMatrix.translate(0, .1875, breaker.sideAttached==2?-.3125:.0625);
 		}
 
-		model.render(tile, tes, translationMatrix, rotationMatrix, false, false, "base");
-		if(breaker.sideAttached==0)
-		translationMatrix.translate(f==5?.3906:f==4?-.3906:0,0,f==3?.3906:f==2?-.3906:0);
-		else
-			translationMatrix.translate(0,breaker.sideAttached==1?-.3906:.3906,0);
-		if(breaker.active)
+		model.render(tile, tes, translationMatrix, rotationMatrix, 1, false, "base");
+		if(!breaker.active)
 			rotationMatrix.rotate(Math.toRadians(-76), 1,0,0);
-		model.render(tile, tes, translationMatrix, rotationMatrix, true, false, "lever");
+		model.render(tile, tes, translationMatrix, rotationMatrix, 1, false, "lever");
 	}
 
 }

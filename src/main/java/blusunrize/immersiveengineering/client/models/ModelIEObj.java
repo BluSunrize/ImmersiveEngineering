@@ -29,7 +29,7 @@ public abstract class ModelIEObj
 		return model;
 	}
 	
-	public void render(TileEntity tile, Tessellator tes, Matrix4 translationMatrix, Matrix4 rotationMatrix, boolean offsetLighting, boolean invertFaces, String... renderedParts)
+	public void render(TileEntity tile, Tessellator tes, Matrix4 translationMatrix, Matrix4 rotationMatrix, int offsetLighting, boolean invertFaces, String... renderedParts)
 	{
 		ClientUtils.renderStaticWavefrontModel(tile, model, tes, translationMatrix, rotationMatrix, offsetLighting, invertFaces, renderedParts);
 	}

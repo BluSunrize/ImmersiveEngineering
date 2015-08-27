@@ -22,7 +22,7 @@ public class SkylineHelper
 			return null;
 
 		List<Connection> outputs = ImmersiveNetHandler.INSTANCE.getConnections(world, new ChunkCoordinates(x,y,z));
-		if(outputs.size()>0)
+		if(outputs!=null && outputs.size()>0)
 		{
 			Vec3 vec = living.getLookVec();
 			vec = vec.normalize();

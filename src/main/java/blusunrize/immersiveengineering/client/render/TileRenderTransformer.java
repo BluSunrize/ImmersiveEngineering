@@ -61,7 +61,7 @@ public class TileRenderTransformer extends TileRenderIE
 
 		if(transformer.postAttached!=0)
 		{
-			modelPost.render(tile, tes, translationMatrix, rotationMatrix, false, false);
+			modelPost.render(tile, tes, translationMatrix, rotationMatrix, -1, false);
 		}
 		else
 		{
@@ -83,7 +83,7 @@ public class TileRenderTransformer extends TileRenderIE
 				list.add("Connector_Left");
 				list.add("Connector_Right");
 			}
-			model.render(tile, tes, translationMatrix, rotationMatrix, true, false, list.toArray(new String[list.size()]));
+			model.render(tile, tes, translationMatrix, rotationMatrix, 1, false, list.toArray(new String[list.size()]));
 		}
 	}
 }

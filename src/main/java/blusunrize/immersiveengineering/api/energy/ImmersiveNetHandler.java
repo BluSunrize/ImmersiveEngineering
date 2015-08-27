@@ -6,6 +6,7 @@ import static blusunrize.immersiveengineering.api.ApiUtils.addVectors;
 import static blusunrize.immersiveengineering.api.ApiUtils.getConnectionCatenary;
 
 
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -22,6 +23,7 @@ import net.minecraft.world.World;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.common.IESaveData;
+import blusunrize.immersiveengineering.common.util.Utils;
 
 import com.google.common.collect.ArrayListMultimap;
 
@@ -71,7 +73,9 @@ public class ImmersiveNetHandler
 	}
 	public List<Connection> getConnections(World world, ChunkCoordinates node)
 	{
-		return getMultimap(world.provider.dimensionId).get(node);
+		if(getMultimap(world.provider.dimensionId).containsKey(node))
+			return getMultimap(world.provider.dimensionId).get(node);
+		return null;
 	}
 	public void clearAllConnections(World world)
 	{
@@ -248,12 +252,14 @@ public class ImmersiveNetHandler
 		HashMap<ChunkCoordinates,ChunkCoordinates> backtracker = new HashMap<ChunkCoordinates,ChunkCoordinates>();
 
 		checked.add(node);
-		for(Connection con : getConnections(world, node))
-			if(toIIC(con.end, world)!=null)
-			{
-				openList.add(toIIC(con.end, world));
-				backtracker.put(con.end, node);
-			}
+		List<Connection> conL = getConnections(world, node);
+		if(conL!=null)
+			for(Connection con : conL)
+				if(toIIC(con.end, world)!=null)
+				{
+					openList.add(toIIC(con.end, world));
+					backtracker.put(con.end, node);
+				}
 
 		IImmersiveConnectable next = null;
 		final int closedListMax = 1200;
@@ -275,27 +281,32 @@ public class ImmersiveNetHandler
 						last = backtracker.get(last);
 						if(last!=null)
 						{
-							for(Connection conB : getConnections(world, prev))
-								if(conB.end.equals(last))
-								{
-									connectionParts.add(conB);
-									distance += conB.length;
-									if(averageType==null || conB.cableType.getTransferRate()<averageType.getTransferRate())
-										averageType = conB.cableType;
-									break;
-								}
+
+							List<Connection> conLB = getConnections(world, prev);
+							if(conLB!=null)
+								for(Connection conB : conLB)
+									if(conB.end.equals(last))
+									{
+										connectionParts.add(conB);
+										distance += conB.length;
+										if(averageType==null || conB.cableType.getTransferRate()<averageType.getTransferRate())
+											averageType = conB.cableType;
+										break;
+									}
 						}
 					}
 					closedList.add(new AbstractConnection(toCC(node), toCC(next), averageType, distance, connectionParts.toArray(new Connection[connectionParts.size()])));
 				}
 
-				for(Connection con : getConnections(world, toCC(next)))
-					if(next.allowEnergyToPass(con))
-						if(toIIC(con.end, world)!=null && !checked.contains(con.end) && !openList.contains(toIIC(con.end, world)))
-						{
-							openList.add(toIIC(con.end, world));
-							backtracker.put(con.end, toCC(next));
-						}
+				List<Connection> conLN = getConnections(world, toCC(next));
+				if(conLN!=null)
+					for(Connection con : conLN)
+						if(next.allowEnergyToPass(con))
+							if(toIIC(con.end, world)!=null && !checked.contains(con.end) && !openList.contains(toIIC(con.end, world)))
+							{
+								openList.add(toIIC(con.end, world));
+								backtracker.put(con.end, toCC(next));
+							}
 				checked.add(toCC(next));
 			}
 			openList.remove(0);

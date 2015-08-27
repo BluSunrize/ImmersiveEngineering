@@ -49,7 +49,7 @@ public class TileRenderConnectorStructural extends TileRenderImmersiveConnectabl
 		rotationMatrix.rotate(Math.toRadians(connector.rotation), 0,1,0);
 		
 
-		model.render(tile, tes, translationMatrix, rotationMatrix, true, false);
+		model.render(tile, tes, translationMatrix, rotationMatrix, 1, false);
 	}
 
 }

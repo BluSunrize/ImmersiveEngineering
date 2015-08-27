@@ -22,6 +22,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDecoration;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDevices;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDevices2;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalMultiblocks;
+import blusunrize.immersiveengineering.common.crafting.RecipePotionBullets;
 import blusunrize.immersiveengineering.common.crafting.RecipeRevolver;
 import blusunrize.immersiveengineering.common.util.Utils;
 import cpw.mods.fml.common.Loader;
@@ -89,9 +90,12 @@ public class IERecipes
 			BlueprintCraftingRecipe.addRecipe("specialBullet", new ItemStack(IEContent.itemBullet,1,8), new ItemStack(IEContent.itemBullet,1,1),Items.gunpowder, new ItemStack(IEContent.itemBullet,6,7));
 			Config.setBoolean("botaniaBullets", true);
 		}
+		BlueprintCraftingRecipe.addRecipe("specialBullet", new ItemStack(IEContent.itemBullet,1,10), new ItemStack(IEContent.itemBullet,1,1),Items.gunpowder,"dustQuartz",Items.glass_bottle);
+		
 		BlueprintCraftingRecipe.addVillagerTrade("bullet", new ItemStack(Items.emerald,1,2));
 		BlueprintCraftingRecipe.addVillagerTrade("specialBullet", new ItemStack(Items.emerald,1,7));
-
+		GameRegistry.addRecipe(new RecipePotionBullets());
+		
 		int blueprint = BlueprintCraftingRecipe.blueprintCategories.indexOf("bullet");
 		addOredictRecipe(new ItemStack(IEContent.itemBlueprint,1,blueprint), "JKL","DDD","PPP", 'J',Items.gunpowder,'K',"ingotCopper",'L',Items.gunpowder, 'D',"dyeBlue",'P',Items.paper);
 

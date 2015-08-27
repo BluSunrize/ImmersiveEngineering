@@ -45,21 +45,21 @@ public class BlockMetalDevices extends BlockIEBase implements blusunrize.aquatwe
 	public IIcon[][] icon_capacitorSide = new IIcon[3][3];
 	public IIcon[] icons_sorter = new IIcon[6];
 
-	public static int META_connectorLV=0;
-	public static int META_capacitorLV=1;
-	public static int META_connectorMV=2;
-	public static int META_capacitorMV=3;
-	public static int META_transformer=4;
-	public static int META_relayHV=5;
-	public static int META_connectorHV=6;
-	public static int META_capacitorHV=7;
-	public static int META_transformerHV=8;
-	public static int META_dynamo=9;
-	public static int META_thermoelectricGen=10;
-	public static int META_conveyorBelt=11;
-	public static int META_furnaceHeater=12;
-	public static int META_sorter=13;
-	public static int META_sampleDrill=14;
+	public static final int META_connectorLV=0;
+	public static final int META_capacitorLV=1;
+	public static final int META_connectorMV=2;
+	public static final int META_capacitorMV=3;
+	public static final int META_transformer=4;
+	public static final int META_relayHV=5;
+	public static final int META_connectorHV=6;
+	public static final int META_capacitorHV=7;
+	public static final int META_transformerHV=8;
+	public static final int META_dynamo=9;
+	public static final int META_thermoelectricGen=10;
+	public static final int META_conveyorBelt=11;
+	public static final int META_furnaceHeater=12;
+	public static final int META_sorter=13;
+	public static final int META_sampleDrill=14;
 
 	public BlockMetalDevices()
 	{
@@ -497,35 +497,35 @@ public class BlockMetalDevices extends BlockIEBase implements blusunrize.aquatwe
 	{
 		switch(meta)
 		{
-		case 0://0 connectorLV
+		case META_connectorLV:
 			return new TileEntityConnectorLV();
-		case 1://1 capacitorLV
+		case META_capacitorLV:
 			return new TileEntityCapacitorLV();
-		case 2://2 connectorMV
+		case META_connectorMV:
 			return new TileEntityConnectorMV();
-		case 3://3 capacitorMV
+		case META_capacitorMV:
 			return new TileEntityCapacitorMV();
-		case 4://4 transformer
+		case META_transformer:
 			return new TileEntityTransformer();
-		case 5://5 relayHV
+		case META_relayHV:
 			return new TileEntityRelayHV();
-		case 6://6 connectorHV
+		case META_connectorHV:
 			return new TileEntityConnectorHV();
-		case 7://7 capacitorHV
+		case META_capacitorHV:
 			return new TileEntityCapacitorHV();
-		case 8://8 transformerHV
+		case META_transformerHV:
 			return new TileEntityTransformerHV();
-		case 9://9 dynamo
+		case META_dynamo:
 			return new TileEntityDynamo();
-		case 10://10 thermoelectricGen
+		case META_thermoelectricGen:
 			return new TileEntityThermoelectricGen();
-		case 11://11 conveyorBelt
+		case META_conveyorBelt:
 			return new TileEntityConveyorBelt();
-		case 12://12 furnaceHeater
+		case META_furnaceHeater:
 			return new TileEntityFurnaceHeater();
-		case 13://13 sorter
+		case META_sorter:
 			return new TileEntityConveyorSorter();
-		case 14://14 sample drill
+		case META_sampleDrill:
 			return new TileEntitySampleDrill();
 		}
 		return null;

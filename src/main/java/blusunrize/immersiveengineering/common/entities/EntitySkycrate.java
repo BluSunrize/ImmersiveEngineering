@@ -99,7 +99,7 @@ public class EntitySkycrate extends EntitySkylineHook
 			return;
 		}
 		List<Connection> outputs = ImmersiveNetHandler.INSTANCE.getConnections(worldObj, target);
-		if(outputs.size()>0)
+		if(outputs!=null && outputs.size()>0)
 		{
 			Vec3 vec = Vec3.createVectorHelper(connection.end.posX-connection.start.posX, connection.end.posY-connection.start.posY, connection.end.posZ-connection.start.posZ);
 			//					getLookVec();

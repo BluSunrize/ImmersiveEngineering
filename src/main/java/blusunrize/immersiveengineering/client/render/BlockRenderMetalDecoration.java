@@ -442,6 +442,7 @@ public class BlockRenderMetalDecoration implements ISimpleBlockRenderingHandler
 		{
 			TileEntityConnectorStructural tile = (TileEntityConnectorStructural)world.getTileEntity(x, y, z);
 			ClientUtils.handleStaticTileRenderer(tile);
+			ClientUtils.renderAttachedConnections(tile);
 			return true;
 		}
 		else if(world.getBlockMetadata(x, y, z)==BlockMetalDecoration.META_wallMount)

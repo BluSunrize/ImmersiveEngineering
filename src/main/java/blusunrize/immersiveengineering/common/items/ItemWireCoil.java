@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.api.energy.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.IWireCoil;
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.WireType;
+import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.common.IESaveData;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Lib;
@@ -100,11 +101,13 @@ public class ItemWireCoil extends ItemIEBase implements IWireCoil
 					boolean connectionExists = false;
 					if(nodeHere!=null && nodeLink!=null)
 					{
-						for(ImmersiveNetHandler.Connection con : ImmersiveNetHandler.INSTANCE.getConnections(world, Utils.toCC(nodeHere)))
-						{
-							if(con.end.equals(Utils.toCC(nodeLink)))
-								connectionExists = true;
-						}
+						List<Connection> outputs = ImmersiveNetHandler.INSTANCE.getConnections(world, Utils.toCC(nodeHere));
+						if(outputs!=null)
+							for(ImmersiveNetHandler.Connection con : outputs)
+							{
+								if(con.end.equals(Utils.toCC(nodeLink)))
+									connectionExists = true;
+							}
 					}
 					if(connectionExists)
 						player.addChatMessage(new ChatComponentTranslation(Lib.CHAT_WARN+"connectionExists"));

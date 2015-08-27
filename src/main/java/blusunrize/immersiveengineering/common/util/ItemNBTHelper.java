@@ -167,6 +167,17 @@ public class ItemNBTHelper
 		return null;
 	}
 
+	public static void setItemStack(ItemStack stack, String key, ItemStack val)
+	{
+		getTag(stack).setTag(key, val.writeToNBT(new NBTTagCompound()));
+	}
+	public static ItemStack getItemStack(ItemStack stack, String key)
+	{		
+		if(hasTag(stack) && getTag(stack).hasKey(key))
+			return ItemStack.loadItemStackFromNBT(getTagCompound(stack, key));
+		return null;
+	}
+
 	public static void setLore(ItemStack stack, String... lore)
 	{
 		NBTTagCompound displayTag = getTagCompound(stack, "display");

@@ -31,6 +31,12 @@ public class BlockStorage extends BlockIEBase
 	}
 
 	@Override
+	public boolean isBeaconBase(IBlockAccess world, int x, int y, int z, int bx, int by, int bz)
+	{
+		return world.getBlockMetadata(x, y, z)<8;
+	}
+
+	@Override
 	public boolean isSideSolid(IBlockAccess world, int x, int y, int z, ForgeDirection side)
 	{
 		return true;
@@ -45,7 +51,7 @@ public class BlockStorage extends BlockIEBase
 	{
 		return true;
 	}
-	
+
 	@Override
 	public TileEntity createNewTileEntity(World p_149915_1_, int p_149915_2_)
 	{

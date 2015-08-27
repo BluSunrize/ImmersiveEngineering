@@ -48,6 +48,10 @@ public class IEDamageSources extends EntityDamageSourceIndirect
 		silver.damageType = Lib.DMG_RevolverSilver;
 		return silver;
 	}
+	public static DamageSource causePotionDamage(EntityRevolvershot shot, EntityLivingBase shooter)
+	{
+		return (new IEDamageSources(Lib.DMG_RevolverPotion, shot, shooter)).setProjectile();
+	}
 	
 	public static DamageSource causeCrusherDamage()
 	{

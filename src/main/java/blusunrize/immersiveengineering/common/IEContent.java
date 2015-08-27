@@ -9,6 +9,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.gen.structure.MapGenStructureIO;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
@@ -48,6 +49,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConveyorSor
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityDieselGenerator;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityDynamo;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityEnergyMeter;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityExcavator;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFermenter;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFurnaceHeater;
@@ -108,6 +110,9 @@ import blusunrize.immersiveengineering.common.items.ItemRevolver;
 import blusunrize.immersiveengineering.common.items.ItemSkyhook;
 import blusunrize.immersiveengineering.common.items.ItemToolUpgrade;
 import blusunrize.immersiveengineering.common.items.ItemWireCoil;
+import blusunrize.immersiveengineering.common.util.IELogger;
+import blusunrize.immersiveengineering.common.world.IEWorldGen;
+import blusunrize.immersiveengineering.common.world.VillageEngineersHouse;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -339,6 +344,7 @@ public class IEContent
 
 		registerTile(TileEntityBreakerSwitch.class);
 		registerTile(TileEntitySkycrateDispenser.class);
+		registerTile(TileEntityEnergyMeter.class);
 
 
 		registerTile(TileEntityCokeOven.class);
@@ -352,7 +358,12 @@ public class IEContent
 		EntityRegistry.registerModEntity(EntityWolfpackShot.class, "revolverShotWolfpack", 4, ImmersiveEngineering.instance, 64, 1, true);		
 		int villagerId = Config.getInt("villager_engineer");
 		VillagerRegistry.instance().registerVillagerId(villagerId);
-
+		VillagerRegistry.instance().registerVillageCreationHandler(new VillageEngineersHouse.VillageManager());
+		try{
+			MapGenStructureIO.func_143031_a(VillageEngineersHouse.class, "IEVillageEngineersHouse");
+		}catch (Exception e){
+			IELogger.error("Engineer's House not added to Villages");
+		}
 
 		/**SMELTING*/
 		IERecipes.initFurnaceRecipes();

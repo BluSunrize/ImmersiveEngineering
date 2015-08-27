@@ -2,9 +2,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import java.util.List;
 
-import net.minecraft.entity.item.EntityFallingBlock;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
@@ -16,8 +14,6 @@ import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.entities.EntitySkycrate;
-import blusunrize.immersiveengineering.common.entities.EntitySkylineHook;
-import blusunrize.immersiveengineering.common.items.ItemSkyhook;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.SkylineHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -42,7 +38,7 @@ public class TileEntitySkycrateDispenser extends TileEntityIEBase implements ISi
 				return;
 
 			List<Connection> outputs = ImmersiveNetHandler.INSTANCE.getConnections(worldObj, cc);
-			if(outputs.size()>0)
+			if(outputs!=null && outputs.size()>0)
 			{
 				//				Vec3 vec = living.getLookVec();
 				//				vec = vec.normalize();

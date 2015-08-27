@@ -59,6 +59,7 @@ import blusunrize.immersiveengineering.client.render.TileRenderConnectorMV;
 import blusunrize.immersiveengineering.client.render.TileRenderConnectorStructural;
 import blusunrize.immersiveengineering.client.render.TileRenderCrusher;
 import blusunrize.immersiveengineering.client.render.TileRenderDieselGenerator;
+import blusunrize.immersiveengineering.client.render.TileRenderEnergyMeter;
 import blusunrize.immersiveengineering.client.render.TileRenderExcavator;
 import blusunrize.immersiveengineering.client.render.TileRenderLantern;
 import blusunrize.immersiveengineering.client.render.TileRenderPost;
@@ -88,6 +89,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorSt
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConveyorSorter;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityDieselGenerator;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityEnergyMeter;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityExcavator;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFermenter;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityLantern;
@@ -162,6 +164,7 @@ public class ClientProxy extends CommonProxy
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityLantern.class, new TileRenderLantern());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityBreakerSwitch.class, new TileRenderBreakerSwitch());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityArcFurnace.class, new TileRenderArcFurnace());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityEnergyMeter.class, new TileRenderEnergyMeter());
 		//WOOD
 		RenderingRegistry.registerBlockHandler(new BlockRenderWoodenDevices());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityWoodenPost.class, new TileRenderPost());

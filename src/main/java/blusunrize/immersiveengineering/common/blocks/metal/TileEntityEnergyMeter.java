@@ -9,7 +9,7 @@ import blusunrize.immersiveengineering.api.energy.WireType;
 import blusunrize.immersiveengineering.common.blocks.TileEntityImmersiveConnectable;
 import blusunrize.immersiveengineering.common.util.Utils;
 
-public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable
+public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable
 {
 	public int sideAttached=0;
 	public int facing=2;

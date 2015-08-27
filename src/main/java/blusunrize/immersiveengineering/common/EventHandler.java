@@ -6,6 +6,7 @@ import java.util.UUID;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.item.EntityItemFrame;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
@@ -118,6 +119,9 @@ public class EventHandler
 	{
 		if(event.target instanceof EntityLivingBase && OreDictionary.itemMatches(new ItemStack(IEContent.itemRevolver,1,OreDictionary.WILDCARD_VALUE), event.entityPlayer.getCurrentEquippedItem(), false))
 			event.setCanceled(true);
+		
+		if(event.target instanceof EntityItemFrame)
+			System.out.println(((EntityItemFrame)event.target).hangingDirection);
 	}
 
 	@SubscribeEvent
@@ -151,7 +155,7 @@ public class EventHandler
 				for(;repair>0&&cost<event.right.stackSize; ++cost)
 				{
 					((IDrillHead)event.output.getItem()).damageHead(event.output, -repair);
-					event.cost += Math.max(1, repair/100);
+					event.cost += Math.max(1, repair/200);
 					repair = Math.min(
 							((IDrillHead)event.output.getItem()).getHeadDamage(event.output),
 							((IDrillHead)event.output.getItem()).getMaximumHeadDamage(event.output)/4);

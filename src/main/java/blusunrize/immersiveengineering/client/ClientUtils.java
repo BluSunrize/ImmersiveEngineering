@@ -41,6 +41,7 @@ import org.lwjgl.opengl.GL12;
 
 import blusunrize.immersiveengineering.api.energy.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler;
+import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.client.render.TileRenderIE;
 import blusunrize.immersiveengineering.common.util.IESound;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -54,13 +55,17 @@ public class ClientUtils
 	{
 		if(tile.getWorldObj()!=null && tile instanceof IImmersiveConnectable)
 		{
-			Iterator<ImmersiveNetHandler.Connection> itCon = new ArrayList(ImmersiveNetHandler.INSTANCE.getConnections(tile.getWorldObj(), Utils.toCC(tile))).iterator();
-			while(itCon.hasNext())
+			List<Connection> outputs = ImmersiveNetHandler.INSTANCE.getConnections(tile.getWorldObj(), Utils.toCC(tile));
+			if(outputs!=null)
 			{
-				ImmersiveNetHandler.Connection con = itCon.next();
-				TileEntity tileEnd = tile.getWorldObj().getTileEntity(con.end.posX,con.end.posY,con.end.posZ);
-				if(tileEnd instanceof IImmersiveConnectable)
-					drawConnection(con, (IImmersiveConnectable)tile, Utils.toIIC(tileEnd, tile.getWorldObj()), con.cableType.getIcon(con));
+				Iterator<ImmersiveNetHandler.Connection> itCon = outputs.iterator();
+				while(itCon.hasNext())
+				{
+					ImmersiveNetHandler.Connection con = itCon.next();
+					TileEntity tileEnd = tile.getWorldObj().getTileEntity(con.end.posX,con.end.posY,con.end.posZ);
+					if(tileEnd instanceof IImmersiveConnectable)
+						drawConnection(con, (IImmersiveConnectable)tile, Utils.toIIC(tileEnd, tile.getWorldObj()), con.cableType.getIcon(con));
+				}
 			}
 		}
 	}
@@ -115,6 +120,16 @@ public class ClientUtils
 			tes.setBrightness(calcBrightness(world, connection.start.posX+radius,connection.start.posY,connection.start.posZ));
 			tes.addVertexWithUV(0+radius, 0, 0, b?-dy:uMin,vMax);
 
+			tes.setBrightness(calcBrightness(world, connection.start.posX-radius,connection.start.posY+dy,connection.start.posZ));
+			tes.addVertexWithUV(dx-radius, dy, dz, b?uMin:dy,vMin);
+			tes.setBrightness(calcBrightness(world, connection.start.posX-radius,connection.start.posY,connection.start.posZ));
+			tes.addVertexWithUV(0-radius, 0, 0, b?-dy:uMin,vMin);
+			tes.setBrightness(calcBrightness(world, connection.start.posX+radius,connection.start.posY,connection.start.posZ));
+			tes.addVertexWithUV(0+radius, 0, 0, b?-dy:uMin,vMax);
+			tes.setBrightness(calcBrightness(world, connection.start.posX+radius,connection.start.posY+dy,connection.start.posZ));
+			tes.addVertexWithUV(dx+radius, dy, dz, b?uMin:dy,vMax);
+
+
 			tes.setColorRGBA_I(colour, alpha);
 			tes.setBrightness(calcBrightness(world, connection.start.posX,connection.start.posY,connection.start.posZ-radius));
 			tes.addVertexWithUV(0, 0, 0-radius, b?-dy:uMin,vMin);
@@ -124,6 +139,15 @@ public class ClientUtils
 			tes.addVertexWithUV(dx, dy, dz+radius, b?uMin:dy,vMax);
 			tes.setBrightness(calcBrightness(world, connection.start.posX,connection.start.posY,connection.start.posZ+radius));
 			tes.addVertexWithUV(0, 0, 0+radius, b?-dy:uMin,vMax);
+
+			tes.setBrightness(calcBrightness(world, connection.start.posX,connection.start.posY+dy,connection.start.posZ-radius));
+			tes.addVertexWithUV(dx, dy, dz-radius, b?uMin:dy,vMin);
+			tes.setBrightness(calcBrightness(world, connection.start.posX,connection.start.posY,connection.start.posZ-radius));
+			tes.addVertexWithUV(0, 0, 0-radius, b?-dy:uMin,vMin);
+			tes.setBrightness(calcBrightness(world, connection.start.posX,connection.start.posY,connection.start.posZ+radius));
+			tes.addVertexWithUV(0, 0, 0+radius, b?-dy:uMin,vMax);
+			tes.setBrightness(calcBrightness(world, connection.start.posX,connection.start.posY+dy,connection.start.posZ+radius));
+			tes.addVertexWithUV(dx, dy, dz+radius, b?uMin:dy,vMax);
 		}
 		else
 			for(int i=b?(vertex.length-1):0; (b?(i>=0):(i<vertex.length)); i+=(b?-1:1))
@@ -148,6 +172,15 @@ public class ClientUtils
 				tes.setBrightness(calcBrightness(world, v0.xCoord, v0.yCoord-radius, v0.zCoord));
 				tes.addVertexWithUV(v0.xCoord, v0.yCoord-radius, v0.zCoord, u0,vMin);
 
+				tes.setBrightness(calcBrightness(world, v1.xCoord, v1.yCoord+radius, v1.zCoord));
+				tes.addVertexWithUV(v1.xCoord, v1.yCoord+radius, v1.zCoord, u1,vMax);
+				tes.setBrightness(calcBrightness(world, v0.xCoord, v0.yCoord+radius, v0.zCoord));
+				tes.addVertexWithUV(v0.xCoord, v0.yCoord+radius, v0.zCoord, u0,vMax);
+				tes.setBrightness(calcBrightness(world, v0.xCoord, v0.yCoord-radius, v0.zCoord));
+				tes.addVertexWithUV(v0.xCoord, v0.yCoord-radius, v0.zCoord, u0,vMin);
+				tes.setBrightness(calcBrightness(world, v1.xCoord, v1.yCoord-radius, v1.zCoord));
+				tes.addVertexWithUV(v1.xCoord, v1.yCoord-radius, v1.zCoord, u1,vMin);
+
 				tes.setColorRGBA_I(colour, alpha);
 				tes.setBrightness(calcBrightness(world, v0.xCoord-radius*rmodx, v0.yCoord, v0.zCoord+radius*rmodz));
 				tes.addVertexWithUV(v0.xCoord-radius*rmodx, v0.yCoord, v0.zCoord+radius*rmodz, u0,vMax);
@@ -157,6 +190,15 @@ public class ClientUtils
 				tes.addVertexWithUV(v1.xCoord+radius*rmodx, v1.yCoord, v1.zCoord-radius*rmodz, u1,vMin);
 				tes.setBrightness(calcBrightness(world, v0.xCoord+radius*rmodx, v0.yCoord, v0.zCoord-radius*rmodz));
 				tes.addVertexWithUV(v0.xCoord+radius*rmodx, v0.yCoord, v0.zCoord-radius*rmodz, u0,vMin);
+
+				tes.setBrightness(calcBrightness(world, v1.xCoord-radius*rmodx, v1.yCoord, v1.zCoord+radius*rmodz));
+				tes.addVertexWithUV(v1.xCoord-radius*rmodx, v1.yCoord, v1.zCoord+radius*rmodz, u1,vMax);
+				tes.setBrightness(calcBrightness(world, v0.xCoord-radius*rmodx, v0.yCoord, v0.zCoord+radius*rmodz));
+				tes.addVertexWithUV(v0.xCoord-radius*rmodx, v0.yCoord, v0.zCoord+radius*rmodz, u0,vMax);
+				tes.setBrightness(calcBrightness(world, v0.xCoord+radius*rmodx, v0.yCoord, v0.zCoord-radius*rmodz));
+				tes.addVertexWithUV(v0.xCoord+radius*rmodx, v0.yCoord, v0.zCoord-radius*rmodz, u0,vMin);
+				tes.setBrightness(calcBrightness(world, v1.xCoord+radius*rmodx, v1.yCoord, v1.zCoord-radius*rmodz));
+				tes.addVertexWithUV(v1.xCoord+radius*rmodx, v1.yCoord, v1.zCoord-radius*rmodz, u1,vMin);
 			}
 	}
 
@@ -251,7 +293,7 @@ public class ClientUtils
 	/**
 	 * A big "Thank you!" to AtomicBlom and Rorax for helping me figure this one out =P
 	 */
-	public static void renderStaticWavefrontModel(TileEntity tile, WavefrontObject model, Tessellator tes, Matrix4 translationMatrix, Matrix4 rotationMatrix, boolean offsetLighting, boolean invertFaces, String... renderedParts)
+	public static void renderStaticWavefrontModel(TileEntity tile, WavefrontObject model, Tessellator tes, Matrix4 translationMatrix, Matrix4 rotationMatrix, int offsetLighting, boolean invertFaces, String... renderedParts)
 	{
 		tes.setColorRGBA_F(1F, 1F, 1F, 1F);
 
@@ -288,6 +330,11 @@ public class ClientUtils
 					int side = biggestNormal==Math.abs(normalCopy.y)?(normalCopy.y<0?0:1): biggestNormal==Math.abs(normalCopy.z)?(normalCopy.z<0?2:3): (normalCopy.x<0?4:5);
 
 					HashMap<String,BlockLightingInfo> light = new HashMap<String,BlockLightingInfo>();
+					BlockLightingInfo completeLight = null;
+					if(offsetLighting==0 && tile.getWorldObj()!=null)
+						completeLight = calculateBlockLighting(side, tile.getWorldObj(), tile.getBlockType(), tile.xCoord,tile.yCoord,tile.zCoord, 1,1,1);
+
+
 
 					tes.setNormal(face.faceNormal.x, face.faceNormal.y, face.faceNormal.z);
 					for(int i=0; i<face.vertices.length; ++i)
@@ -301,7 +348,7 @@ public class ClientUtils
 						rotationMatrix.apply(vertexCopy);
 						translationMatrix.apply(vertexCopy);
 
-						if(offsetLighting && tile.getWorldObj()!=null)
+						if(offsetLighting==1 && tile.getWorldObj()!=null)
 						{	
 							String key = Math.round(tile.xCoord+vertex.x)+";"+Math.round(tile.yCoord+vertex.y)+";"+Math.round(tile.zCoord+vertex.z);
 							BlockLightingInfo info = light.get(key);
@@ -314,6 +361,14 @@ public class ClientUtils
 							float r = corner==0?info.colorRedTopLeft: corner==1?info.colorRedBottomLeft: corner==2?info.colorRedBottomRight: info.colorRedTopRight;
 							float g = corner==0?info.colorGreenTopLeft: corner==1?info.colorGreenBottomLeft: corner==2?info.colorGreenBottomRight: info.colorGreenTopRight;
 							float b = corner==0?info.colorBlueTopLeft: corner==1?info.colorBlueBottomLeft: corner==2?info.colorBlueBottomRight: info.colorBlueTopRight;
+							tes.setColorOpaque_F(r, g, b);
+						}
+						else if(offsetLighting==0 && tile.getWorldObj()!=null && completeLight!=null)
+						{	
+							tes.setBrightness(corner==0?completeLight.brightnessTopLeft: corner==1?completeLight.brightnessBottomLeft: corner==2?completeLight.brightnessBottomRight: completeLight.brightnessTopRight);
+							float r = corner==0?completeLight.colorRedTopLeft: corner==1?completeLight.colorRedBottomLeft: corner==2?completeLight.colorRedBottomRight: completeLight.colorRedTopRight;
+							float g = corner==0?completeLight.colorGreenTopLeft: corner==1?completeLight.colorGreenBottomLeft: corner==2?completeLight.colorGreenBottomRight: completeLight.colorGreenTopRight;
+							float b = corner==0?completeLight.colorBlueTopLeft: corner==1?completeLight.colorBlueBottomLeft: corner==2?completeLight.colorBlueBottomRight: completeLight.colorBlueTopRight;
 							tes.setColorOpaque_F(r, g, b);
 						}
 						else

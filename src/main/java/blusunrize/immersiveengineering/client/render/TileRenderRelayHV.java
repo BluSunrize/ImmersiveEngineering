@@ -23,7 +23,7 @@ public class TileRenderRelayHV extends TileRenderImmersiveConnectable
 	public void renderStatic(TileEntity tile, Tessellator tes, Matrix4 translationMatrix, Matrix4 rotationMatrix)
 	{
 		translationMatrix.translate(.5, .5, .5);
-		model.render(tile, tes, translationMatrix, rotationMatrix, true, false);
+		model.render(tile, tes, translationMatrix, rotationMatrix, 1, false);
 	}
 
 }

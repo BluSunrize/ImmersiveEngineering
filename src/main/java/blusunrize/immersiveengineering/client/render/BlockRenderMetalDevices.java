@@ -165,6 +165,7 @@ public class BlockRenderMetalDevices implements ISimpleBlockRenderingHandler
 		{
 			TileEntityConnectorMV tile = (TileEntityConnectorMV)world.getTileEntity(x, y, z);
 			ClientUtils.handleStaticTileRenderer(tile);
+			ClientUtils.renderAttachedConnections(tile);
 			return true;
 		}
 		else if(metadata==BlockMetalDevices.META_capacitorMV)
@@ -176,12 +177,14 @@ public class BlockRenderMetalDevices implements ISimpleBlockRenderingHandler
 		{
 			TileEntityRelayHV tile = (TileEntityRelayHV)world.getTileEntity(x, y, z);
 			ClientUtils.handleStaticTileRenderer(tile);
+			ClientUtils.renderAttachedConnections(tile);
 			return true;
 		}
 		else if(metadata==BlockMetalDevices.META_connectorHV)
 		{
 			TileEntityConnectorHV tile = (TileEntityConnectorHV)world.getTileEntity(x, y, z);
 			ClientUtils.handleStaticTileRenderer(tile);
+			ClientUtils.renderAttachedConnections(tile);
 			return true;
 		}
 		else if(metadata==BlockMetalDevices.META_capacitorHV)

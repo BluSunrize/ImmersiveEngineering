@@ -1,4 +1,4 @@
-package blusunrize.immersiveengineering.common;
+package blusunrize.immersiveengineering.common.world;
 
 import java.util.ArrayList;
 import java.util.Random;

@@ -5,6 +5,7 @@ import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.item.ItemPotion;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -19,6 +20,7 @@ import net.minecraft.world.World;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import blusunrize.immersiveengineering.common.util.Lib;
+import blusunrize.immersiveengineering.common.util.compat.EtFuturumHelper;
 import blusunrize.immersiveengineering.common.util.compat.IC2Helper;
 import cofh.api.energy.IEnergyContainerItem;
 import cpw.mods.fml.relauncher.Side;
@@ -38,6 +40,7 @@ public class EntityRevolvershot extends Entity
 	private int tickLimit=40;
 	int bulletType = 0;
 	public boolean bulletElectro = false;
+	public ItemStack bulletPotion = null;
 
 	public EntityRevolvershot(World world)
 	{
@@ -223,6 +226,9 @@ public class EntityRevolvershot extends Entity
 				case 7:
 					mop.entityHit.attackEntityFrom(IEDamageSources.causeSilverDamage(this, shootingEntity), (float)Config.getDouble("BulletDamage-Silver"));
 					break;
+				case 8:
+					mop.entityHit.attackEntityFrom(IEDamageSources.causePotionDamage(this, shootingEntity), (float)Config.getDouble("BulletDamage-Potion"));
+					break;
 				}
 			}
 			if(bulletType==3)
@@ -274,6 +280,45 @@ public class EntityRevolvershot extends Entity
 				worldObj.spawnEntityInWorld(bullet);
 			}
 		}
+		if(bulletType==8 && bulletPotion!=null && bulletPotion.getItem() instanceof ItemPotion)
+		{
+			List<PotionEffect> effects = ((ItemPotion)bulletPotion.getItem()).getEffects(bulletPotion);
+
+			if(bulletPotion.getItem().getClass().getName().equalsIgnoreCase("ganymedes01.etfuturum.items.LingeringPotion"))
+				EtFuturumHelper.createLingeringPotionEffect(worldObj, posX, posY, posZ, bulletPotion, shootingEntity);
+			else if(ItemPotion.isSplash(bulletPotion.getItemDamage()) || mop.entityHit==null)
+			{
+				List<EntityLivingBase> livingEntities = this.worldObj.getEntitiesWithinAABB(EntityLivingBase.class, this.boundingBox.expand(4.0D, 2.0D, 4.0D));
+				if(livingEntities!=null && !livingEntities.isEmpty())
+					for(EntityLivingBase living : livingEntities)
+					{
+						double dist = this.getDistanceSqToEntity(living);
+						if(dist<16D)
+						{
+							double dist2 = 1-Math.sqrt(dist)/4D;
+							if(living == mop.entityHit)
+								dist2 = 1D;
+							for(PotionEffect p : effects)
+							{
+								int id = p.getPotionID();
+								if(Potion.potionTypes[id].isInstant())
+									Potion.potionTypes[id].affectEntity(this.shootingEntity, living, p.getAmplifier(), dist2);
+								else
+								{
+									int j = (int)(dist2*p.getDuration()+.5D);
+									if(j>20)
+										living.addPotionEffect(new PotionEffect(id, j, p.getAmplifier()));
+								}
+							}
+						}
+					}
+
+			}
+			else if(mop.entityHit!=null && mop.entityHit instanceof EntityLivingBase)
+				for(PotionEffect p : effects)
+					((EntityLivingBase)mop.entityHit).addPotionEffect(p);
+			worldObj.playAuxSFX(2002, (int) Math.round(posX), (int) Math.round(posY), (int) Math.round(posZ), bulletPotion.getItemDamage());
+		}
 	}
 	public void onExpire()
 	{
@@ -297,6 +342,8 @@ public class EntityRevolvershot extends Entity
 		nbt.setByte("inGround", (byte)(this.inGround ? 1 : 0));
 		nbt.setTag("direction", this.newDoubleNBTList(new double[] {this.motionX, this.motionY, this.motionZ}));
 		nbt.setShort("bulletType", (short)this.bulletType);
+		if(bulletPotion!=null)
+			nbt.setTag("bulletPotion", bulletPotion.writeToNBT(new NBTTagCompound()));
 	}
 
 	@Override
@@ -309,7 +356,9 @@ public class EntityRevolvershot extends Entity
 		this.field_145794_g = nbt.getShort("zTile");
 		this.field_145796_h = Block.getBlockById(nbt.getByte("inTile") & 255);
 		this.inGround = nbt.getByte("inGround") == 1;
-		this.bulletType= nbt.getShort("bulletType"); 
+		this.bulletType= nbt.getShort("bulletType");
+		if(nbt.hasKey("bulletPotion"))
+			this.bulletPotion= ItemStack.loadItemStackFromNBT(nbt.getCompoundTag("bulletPotion"));
 
 		if (nbt.hasKey("direction", 9))
 		{
