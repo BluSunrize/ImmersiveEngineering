@@ -155,7 +155,7 @@ public class TileEntityRefinery extends TileEntityMultiblockPart implements IFlu
 				}
 			}
 
-			ItemStack emptyContainer = Utils.drainFluidContainer(tank0, inventory[0], inventory[1]);
+			ItemStack emptyContainer = Utils.drainFluidContainer(tank0, inventory[0]);
 			if(emptyContainer!=null)
 			{
 				if(inventory[1]!=null && OreDictionary.itemMatches(inventory[1], emptyContainer, true))
@@ -165,7 +165,7 @@ public class TileEntityRefinery extends TileEntityMultiblockPart implements IFlu
 				this.decrStackSize(0, emptyContainer.stackSize);
 				update = true;
 			}
-			emptyContainer = Utils.drainFluidContainer(tank1, inventory[2], inventory[3]);
+			emptyContainer = Utils.drainFluidContainer(tank1, inventory[2]);
 			if(emptyContainer!=null)
 			{
 				if(inventory[3]!=null && OreDictionary.itemMatches(inventory[3], emptyContainer, true))

@@ -62,6 +62,11 @@ public class BlockRenderWoodenDevices implements ISimpleBlockRenderingHandler
 				tile.facing=3;
 				TileEntityRendererDispatcher.instance.renderTileEntityAt(tile, 0,0,0,0);
 			}
+			else if(metadata==6)
+			{
+				renderer.setRenderBounds(0,0,0, 1,1,1);
+				ClientUtils.drawInventoryBlock(block, metadata, renderer);
+			}
 		}catch(Exception e)
 		{
 			e.printStackTrace();
@@ -95,6 +100,11 @@ public class BlockRenderWoodenDevices implements ISimpleBlockRenderingHandler
 				ClientUtils.handleStaticTileRenderer(tile);
 				return true;
 			}
+		}
+		else if(world.getBlockMetadata(x, y, z) == 6)
+		{
+			renderer.setRenderBoundsFromBlock(block);
+			return renderer.renderStandardBlock(block, x, y, z);
 		}
 		return false;
 	}

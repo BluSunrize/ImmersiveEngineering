@@ -41,10 +41,10 @@ public class TileRenderBreakerSwitch extends TileRenderImmersiveConnectable
 			rotationMatrix.translate(0, .1875, breaker.sideAttached==2?-.3125:.0625);
 		}
 
-		model.render(tile, tes, translationMatrix, rotationMatrix, 1, false, "base");
+		model.render(tile, tes, translationMatrix, rotationMatrix, 0, false, "base");
 		if(!breaker.active)
 			rotationMatrix.rotate(Math.toRadians(-76), 1,0,0);
-		model.render(tile, tes, translationMatrix, rotationMatrix, 1, false, "lever");
+		model.render(tile, tes, translationMatrix, rotationMatrix, 0, false, "lever");
 	}
 
 }

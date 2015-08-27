@@ -13,7 +13,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.FluidStack;
 import blusunrize.immersiveengineering.common.blocks.plant.BlockIECrop;
+import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenBarrel;
 
 public class IEWailaDataProvider implements IWailaDataProvider
 {
@@ -37,6 +39,7 @@ public class IEWailaDataProvider implements IWailaDataProvider
 	public List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config)
 	{
 		Block b = accessor.getBlock();
+		TileEntity tile = accessor.getTileEntity();
 		if(b instanceof BlockIECrop)
 		{
 			int meta = accessor.getMetadata();
@@ -53,6 +56,17 @@ public class IEWailaDataProvider implements IWailaDataProvider
 					currenttip.add(String.format("%s : %s", StatCollector.translateToLocal("hud.msg.growth"), StatCollector.translateToLocal("hud.msg.mature")));
 			}
 			return currenttip;
+		}
+		if(tile instanceof TileEntityWoodenBarrel)
+		{
+			NBTTagCompound tank = accessor.getNBTData().getCompoundTag("tank");
+			if(!tank.hasKey("Empty"))
+			{
+				FluidStack fluid = FluidStack.loadFluidStackFromNBT(tank);
+				currenttip.add(String.format("%s: %d / %d mB", new Object[] { fluid.getLocalizedName(), Integer.valueOf(fluid.amount), 12000 }));
+			}
+			else
+				currenttip.add(StatCollector.translateToLocal("hud.msg.empty"));
 		}
 		return currenttip;
 	}

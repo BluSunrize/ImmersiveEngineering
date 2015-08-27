@@ -15,23 +15,32 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.IFluidContainerItem;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.client.render.BlockRenderWoodenDevices;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
 import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.Utils;
 import cpw.mods.fml.common.Optional;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @Optional.Interface(iface = "blusunrize.aquatweaks.api.IAquaConnectable", modid = "AquaTweaks")
 public class BlockWoodenDevices extends BlockIEBase implements blusunrize.aquatweaks.api.IAquaConnectable
 {
+	IIcon[] iconBarrel = new IIcon[3];
+
 	public BlockWoodenDevices()
 	{
-		super("woodenDevice", Material.wood, 1, ItemBlockWoodenDevices.class, "post","watermill","windmill","windmillAdvanced","crate","modificationWorkbench");
+		super("woodenDevice", Material.wood, 1, ItemBlockWoodenDevices.class, "post","watermill","windmill","windmillAdvanced","crate","modificationWorkbench","barrel");
 		this.setHardness(2.0F);
 		this.setResistance(5.0F);
 	}
@@ -48,12 +57,38 @@ public class BlockWoodenDevices extends BlockIEBase implements blusunrize.aquatw
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister iconRegister)
 	{
-		//Treated wood + post, fence, watermill, windmills
-		for(int i=0; i<subNames.length; i++)
-			icons[i][0] = iconRegister.registerIcon("immersiveengineering:"+(i==0?"woodenPost":i==4?"woodenCrate":i==5?"workbench":"treatedWood"));
+		icons[0][0] = iconRegister.registerIcon("immersiveengineering:woodenPost");
+		icons[1][0] = iconRegister.registerIcon("immersiveengineering:treatedWood");
+		icons[2][0] = iconRegister.registerIcon("immersiveengineering:treatedWood");
+		icons[3][0] = iconRegister.registerIcon("immersiveengineering:treatedWood");
+		icons[4][0] = iconRegister.registerIcon("immersiveengineering:woodenCrate");
+		icons[5][0] = iconRegister.registerIcon("immersiveengineering:workbench");
+		icons[6][0] = iconRegister.registerIcon("immersiveengineering:woodBarrel");
+
+		iconBarrel[0] = iconRegister.registerIcon("immersiveengineering:woodBarrel_top_none");
+		iconBarrel[1] = iconRegister.registerIcon("immersiveengineering:woodBarrel_top_in");
+		iconBarrel[2] = iconRegister.registerIcon("immersiveengineering:woodBarrel_top_out");
 	}
+	@Override
+	@SideOnly(Side.CLIENT)
+	public IIcon getIcon(int side, int meta)
+	{
+		if(meta==6&&side<2)
+			return iconBarrel[0];
+		return super.getIcon(side, meta);
+	}
+	@Override
+	@SideOnly(Side.CLIENT)
+	public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side)
+	{
+		if(world.getTileEntity(x, y, z) instanceof TileEntityWoodenBarrel && side<2)
+			return iconBarrel[((TileEntityWoodenBarrel)world.getTileEntity(x, y, z)).sideConfig[side]+1];
+		return super.getIcon(world, x, y, z, side);
+	}
+
 	@Override
 	public int getRenderType()
 	{
@@ -169,7 +204,7 @@ public class BlockWoodenDevices extends BlockIEBase implements blusunrize.aquatw
 				player.getCurrentEquippedItem().stackSize--;
 			return true;
 		}
-		if(!player.isSneaking() && world.getTileEntity(x, y, z) instanceof TileEntityWoodenCrate )
+		if(!player.isSneaking() && world.getTileEntity(x, y, z) instanceof TileEntityWoodenCrate)
 		{
 			if(!world.isRemote)
 				player.openGui(ImmersiveEngineering.instance, Lib.GUIID_WoodenCrate, world, x,y,z);
@@ -189,6 +224,32 @@ public class BlockWoodenDevices extends BlockIEBase implements blusunrize.aquatw
 			}
 			if(!world.isRemote)
 				player.openGui(ImmersiveEngineering.instance, Lib.GUIID_Workbench, world, tile.xCoord,tile.yCoord,tile.zCoord);
+			return true;
+		}
+		if(!player.isSneaking() && world.getTileEntity(x, y, z) instanceof TileEntityWoodenBarrel)
+		{
+			if(!world.isRemote)
+			{
+				TileEntityWoodenBarrel barrel = (TileEntityWoodenBarrel)world.getTileEntity(x, y, z);
+				if(Utils.isHammer(player.getCurrentEquippedItem()) && side<2)
+					barrel.toggleSide(side);
+				else
+				{
+					FluidStack f = FluidContainerRegistry.getFluidForFilledItem(player.getCurrentEquippedItem());
+					if(f!=null)
+						if(f.getFluid().getTemperature(f)<TileEntityWoodenBarrel.IGNITION_TEMPERATURE)
+						{
+							if(Utils.fillFluidHandlerWithPlayerItem(world, barrel, player))
+								return true;
+						}
+						else
+							player.addChatComponentMessage(new ChatComponentTranslation(Lib.CHAT_INFO+"tooHot"));
+					if(Utils.fillPlayerItemFromFluidHandler(world, barrel, player, barrel.tank.getFluid()))
+						return true;
+					if(player.getCurrentEquippedItem()!=null && player.getCurrentEquippedItem().getItem() instanceof IFluidContainerItem)
+						return true;
+				}
+			}
 			return true;
 		}
 		return false;
@@ -223,6 +284,15 @@ public class BlockWoodenDevices extends BlockIEBase implements blusunrize.aquatw
 				stack.setTagCompound(tag);
 			world.spawnEntityInWorld(new EntityItem(world,x+.5,y+.5,z+.5,stack));
 		}
+		if(!world.isRemote && world.getTileEntity(x, y, z) instanceof TileEntityWoodenBarrel)
+		{
+			ItemStack stack = new ItemStack(this,1,meta);
+			NBTTagCompound tag = new NBTTagCompound();
+			((TileEntityWoodenBarrel)world.getTileEntity(x, y, z)).writeTank(tag, true);
+			if(!tag.hasNoTags())
+				stack.setTagCompound(tag);
+			world.spawnEntityInWorld(new EntityItem(world,x+.5,y+.5,z+.5,stack));
+		}
 	}
 
 	@Override
@@ -237,6 +307,15 @@ public class BlockWoodenDevices extends BlockIEBase implements blusunrize.aquatw
 				stack.setTagCompound(tag);
 			world.spawnEntityInWorld(new EntityItem(world,x+.5,y+.5,z+.5,stack));
 		}
+		if(!world.isRemote && world.getTileEntity(x, y, z) instanceof TileEntityWoodenBarrel)
+		{
+			ItemStack stack = new ItemStack(this,1,world.getBlockMetadata(x, y, z));
+			NBTTagCompound tag = new NBTTagCompound();
+			((TileEntityWoodenBarrel)world.getTileEntity(x, y, z)).writeTank(tag, true);
+			if(!tag.hasNoTags())
+				stack.setTagCompound(tag);
+			world.spawnEntityInWorld(new EntityItem(world,x+.5,y+.5,z+.5,stack));
+		}
 		super.onBlockExploded(world, x, y, z, explosion);
 	}
 
@@ -244,7 +323,7 @@ public class BlockWoodenDevices extends BlockIEBase implements blusunrize.aquatw
 	public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int metadata, int fortune)
 	{
 		ArrayList<ItemStack> ret = new ArrayList<ItemStack>();
-		if(metadata==0 || metadata==4)
+		if(metadata==0 || metadata==4 || metadata==6)
 			return ret;
 
 		int count = quantityDropped(metadata, fortune, world.rand);
@@ -359,6 +438,8 @@ public class BlockWoodenDevices extends BlockIEBase implements blusunrize.aquatw
 			return new TileEntityWoodenCrate();
 		case 5:
 			return new TileEntityModWorkbench();
+		case 6:
+			return new TileEntityWoodenBarrel();
 		}
 		return null;
 	}

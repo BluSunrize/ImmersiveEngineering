@@ -70,6 +70,7 @@ tile.ImmersiveEngineering.woodenDevice.windmill.name=Windmill
 tile.ImmersiveEngineering.woodenDevice.windmillAdvanced.name=Improved Windmill
 tile.ImmersiveEngineering.woodenDevice.crate.name=Wooden Storage Crate
 tile.ImmersiveEngineering.woodenDevice.modificationWorkbench.name=Engineer's Workbench
+tile.ImmersiveEngineering.woodenDevice.barrel.name=Wooden Barrel
 
 tile.ImmersiveEngineering.woodenDecoration.treatedWood.name=Treated Wood Planks
 tile.ImmersiveEngineering.woodenDecoration.fence.name=Treated Wood Fence
@@ -269,6 +270,7 @@ desc.ImmersiveEngineering.info.mineral.Galena=Galena
 desc.ImmersiveEngineering.info.mineral.Lead=Lead
 desc.ImmersiveEngineering.info.mineral.Silver=Silver
 desc.ImmersiveEngineering.info.mineral.Lapis=Lapis
+desc.ImmersiveEngineering.info.mineral.Coal=Coal
 
 desc.ImmersiveEngineering.info.reqMaterial=Required Materials:
 desc.ImmersiveEngineering.info.chance=Chance:
@@ -282,6 +284,8 @@ desc.ImmersiveEngineering.info.blueprint.electrode=Arc Furnace Electrodes
 desc.ImmersiveEngineering.info.electrodeIntegrity=Integrity
 
 desc.ImmersiveEngineering.flavour.crate=Will keep its inventory when broken!
+desc.ImmersiveEngineering.flavour.barrel=Will keep its fluid when broken!
+desc.ImmersiveEngineering.flavour.barrelTemp=Cannot store hot fluids
 desc.ImmersiveEngineering.flavour.coil.construction0=For decoration purposes only
 desc.ImmersiveEngineering.flavour.coil.construction1=Will not transmit power
 desc.ImmersiveEngineering.flavour.revolver=Go ahead, make my day!
@@ -331,6 +335,7 @@ chat.ImmersiveEngineering.warning.connectionExists=The connection exists already
 chat.ImmersiveEngineering.warning.invalidPoint=One of the connection points is invalid
 chat.ImmersiveEngineering.info.averageLoss=Average loss between points: %1$s%%
 chat.ImmersiveEngineering.info.energyStorage=Energy Stored: %1$s/%2$s RF
+chat.ImmersiveEngineering.info.tooHot=This fluid is too hot for the container!
 
 chat.ImmersiveEngineering.info.forChunk=§8For Chunk from %1$s to %2$s
 chat.ImmersiveEngineering.info.coreDrill.progress=Core Sample in progress: %1$s
@@ -422,7 +427,8 @@ ie.manual.entry.generatorWindmillImproved=The improved Windmill is an upgrade to
 
 ie.manual.entry.breaker.name=Breaker Switch
 ie.manual.entry.breaker.subtext=Clap on - Clap off
-ie.manual.entry.breaker0=Breaker Switches are simply switches that can stop the flow of power through wires. They can connect two wires of the same type and will only allow power to pass when activated. This can be used to seperate power-hungry machinery from the network or hook up an additional set of generators when needed!<br>These breaker switches will emit a redstone signal when they are switched on; this behaviour can be inverted by clicking the switch with an Engineer's Hammer.
+ie.manual.entry.breaker0=Breaker Switches are simply switches that can stop the flow of power through wires. They can connect two wires of the same type and will only allow power to pass when activated. This can be used to seperate power-hungry machinery from the network or hook up an additional set of generators when needed!
+ie.manual.entry.breaker1=These breaker switches will emit a redstone signal when they are switched on; this behaviour can be inverted by clicking the switch with an Engineer's Hammer.
 #When lights are added, these switches have another use ;D
 
 ie.manual.entry.thermoElectric.name=Thermoelectric Generator
@@ -501,7 +507,7 @@ ie.manual.entry.drill5=The Large Fuel Tank allows the drill to store more fuel i
 
 ie.manual.entry.revolver.name=Revolver
 ie.manual.entry.revolver.subtext=Wanted: Dead or Alive
-ie.manual.entry.revolver0=The Revolver, a more elegant weapon from a more civilized age, is an achievement of small mechanics. Small being relative here, since this weapon is chambered for 12-gauge.<br>Similar to the Mining Drill, the Revolver will allow for modification in the <link;workbench;§o§nEngineer's §o§nWorkbench§r>. These modification are detailed on the last pages of this entry.
+ie.manual.entry.revolver0=The Revolver, a more elegant weapon from a more civilized age, is an achievement of small mechanics. Small being relative here, since this weapon is chambered for 12-gauge.<br>Similar to the Mining Drill, the Revolver will allow for modification in the <link;workbench;§o§nEngineer's §o§nWorkbench§r>, as detailed on the last pages.
 ie.manual.entry.revolver1=There are different types of ammunition the Revolver will accept. To load it, sneak+rightclick the weapon, then place cartridges into the slots.<br>A loaded Speedloader in your inventory, will be used to refill the revolver after you've fired your last shot.
 ie.manual.entry.revolver2=Cartridges are created in the Engineer's Workbench, by the use of specific <link;blueprints;§o§nEngineer's §o§nBlueprints§r>. Blueprints for normal ammunition you can create yourself, but some more advanced types of ammunition will require you to buy adequate blueprints from someone else. 
 ie.manual.entry.revolver3=These are common types of ammunition, created with simple, selfmade blueprints:<br><br>§lCasull:§r Simple lead projectile, capable of inflicting medium damage.<br>§lArmor-Piercing:§r Dense metal projectile, penetrates the armor by sheer kinetic force.<br>§lBuckshot:§r Collection of small projectiles, spreading in a cone shape. Effective at short range.<br>§lHigh-Explosive:§r Creates small explosion on impact.<br>§lSilver:§r Lead core in silver, effective against...werewolves?!.

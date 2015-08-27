@@ -20,6 +20,8 @@ import net.minecraft.world.World;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.util.Lib;
 import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public abstract class BlockIEBase extends BlockContainer
 {
@@ -94,6 +96,7 @@ public abstract class BlockIEBase extends BlockContainer
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public IIcon getIcon(int side, int meta)
 	{
 		if(meta<icons.length)
@@ -101,6 +104,7 @@ public abstract class BlockIEBase extends BlockContainer
 		return null;
 	}
 	@Override
+	@SideOnly(Side.CLIENT)
 	public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side)
 	{
 		int meta = world.getBlockMetadata(x, y, z);

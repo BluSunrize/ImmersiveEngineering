@@ -89,6 +89,7 @@ import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWallmount;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWatermill;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWindmill;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWindmillAdvanced;
+import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenBarrel;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenCrate;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenPost;
 import blusunrize.immersiveengineering.common.crafting.IEFuelHandler;
@@ -309,6 +310,7 @@ public class IEContent
 		registerTile(TileEntityWindmillAdvanced.class);
 		registerTile(TileEntityWoodenCrate.class);
 		registerTile(TileEntityModWorkbench.class);
+		registerTile(TileEntityWoodenBarrel.class);
 		registerTile(TileEntityWallmount.class);
 
 		registerTile(TileEntityConnectorLV.class);

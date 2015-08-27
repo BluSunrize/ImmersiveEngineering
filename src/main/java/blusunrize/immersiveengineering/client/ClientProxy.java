@@ -299,7 +299,7 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.CraftingMulti(ManualHelper.getManual(), "generatorWindmill", new ItemStack(IEContent.blockWoodenDevice,1,2),new ItemStack(IEContent.itemMaterial,1,2)),
 				new ManualPages.CraftingMulti(ManualHelper.getManual(), "generatorWatermill", new ItemStack(IEContent.blockWoodenDevice,1,1),new ItemStack(IEContent.itemMaterial,1,1)),
 				new ManualPages.CraftingMulti(ManualHelper.getManual(), "generatorWindmillImproved", new ItemStack(IEContent.blockWoodenDevice,1,3),new ItemStack(IEContent.itemMaterial,1,4),new ItemStack(IEContent.itemMaterial,1,5)));
-		ManualHelper.getManual().addEntry("breaker", ManualHelper.CAT_ENERGY, new ManualPages.Crafting(ManualHelper.getManual(), "breaker0", new ItemStack(IEContent.blockMetalDevice2,1,BlockMetalDevices2.META_breakerSwitch)));
+		ManualHelper.getManual().addEntry("breaker", ManualHelper.CAT_ENERGY, new ManualPages.Crafting(ManualHelper.getManual(), "breaker0", new ItemStack(IEContent.blockMetalDevice2,1,BlockMetalDevices2.META_breakerSwitch)),new ManualPages.Text(ManualHelper.getManual(), "breaker1"));
 		sortedMap = ThermoelectricHandler.getThermalValuesSorted(true);
 		table = formatToTable_ItemIntHashmap(sortedMap,"K");	
 		ManualHelper.getManual().addEntry("thermoElectric", ManualHelper.CAT_ENERGY, 

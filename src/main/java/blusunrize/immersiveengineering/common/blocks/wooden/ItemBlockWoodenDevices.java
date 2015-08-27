@@ -5,9 +5,11 @@ import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.FluidStack;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
 import blusunrize.immersiveengineering.common.util.Lib;
 
@@ -23,6 +25,28 @@ public class ItemBlockWoodenDevices extends ItemBlockIEBase
 	{
 		if(stack.getItemDamage()==4)
 			list.add(StatCollector.translateToLocal(Lib.DESC_FLAVOUR+"crate"));
+		if(stack.getItemDamage()==6)
+		{
+			if(stack.hasTagCompound())
+			{
+				NBTTagCompound tag = stack.getTagCompound().getCompoundTag("tank");
+				if(!tag.hasKey("Empty"))
+				{
+					FluidStack fluid = FluidStack.loadFluidStackFromNBT(tag);
+					list.add(fluid.getLocalizedName()+": "+fluid.amount+"mB");
+				}				
+				else
+				{
+					list.add(StatCollector.translateToLocal(Lib.DESC_FLAVOUR+"barrel"));
+					list.add(StatCollector.translateToLocal(Lib.DESC_FLAVOUR+"barrelTemp"));
+				}
+			}
+			else
+			{
+				list.add(StatCollector.translateToLocal(Lib.DESC_FLAVOUR+"barrel"));
+				list.add(StatCollector.translateToLocal(Lib.DESC_FLAVOUR+"barrelTemp"));
+			}
+		}
 	}
 
 	@Override
@@ -124,6 +148,11 @@ public class ItemBlockWoodenDevices extends ItemBlockIEBase
 				((TileEntityModWorkbench)world.getTileEntity(x+xOff,y,z+zOff)).dummyOffset = off;
 			}
 
+		}
+		if(ret && world.getTileEntity(x, y, z) instanceof TileEntityWoodenBarrel)
+		{
+			if(stack.hasTagCompound())
+				((TileEntityWoodenBarrel)world.getTileEntity(x, y, z)).readTank(stack.getTagCompound());
 		}
 		return ret;
 	}
