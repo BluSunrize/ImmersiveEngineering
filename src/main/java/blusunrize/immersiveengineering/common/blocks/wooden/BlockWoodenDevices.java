@@ -84,8 +84,8 @@ public class BlockWoodenDevices extends BlockIEBase implements blusunrize.aquatw
 	@SideOnly(Side.CLIENT)
 	public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side)
 	{
-//		if(world.getTileEntity(x, y, z) instanceof TileEntityWoodenBarrel && side<2)
-//			return iconBarrel[((TileEntityWoodenBarrel)world.getTileEntity(x, y, z)).sideConfig[side]+1];
+		//		if(world.getTileEntity(x, y, z) instanceof TileEntityWoodenBarrel && side<2)
+		//			return iconBarrel[((TileEntityWoodenBarrel)world.getTileEntity(x, y, z)).sideConfig[side]+1];
 		return super.getIcon(world, x, y, z, side);
 	}
 
@@ -181,9 +181,14 @@ public class BlockWoodenDevices extends BlockIEBase implements blusunrize.aquatw
 				world.setBlock(x+fd.offsetX, y, z+fd.offsetZ, this, 0, 0x3);
 				if(world.getTileEntity(x+fd.offsetX, y, z+fd.offsetZ) instanceof TileEntityWoodenPost)
 					((TileEntityWoodenPost)world.getTileEntity(x+fd.offsetX, y, z+fd.offsetZ)).type=(byte)(2+side);
+				world.markBlockForUpdate(x, y-3, z);
 			}
 			else if(type==4||type==5||type==6||type==7)
+			{
 				world.setBlockToAir(x, y, z);
+				ForgeDirection fd = ForgeDirection.getOrientation(type-2);
+				world.markBlockForUpdate(x-fd.offsetX, y-3, z-fd.offsetZ);
+			}
 
 			return true;
 		}

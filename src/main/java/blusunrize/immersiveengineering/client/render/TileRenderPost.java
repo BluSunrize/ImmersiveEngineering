@@ -33,13 +33,8 @@ public class TileRenderPost extends TileRenderIE
 		boolean rotate=false;
 		float fr = 0;
 		if(tile.getWorldObj()!=null)
-		{
 			for(int i=0; i<4; i++)
-			{
-				//	IELogger.debug("offset: "+(i==2?1:i==3?-1:0)+", "+(i==0?1:i==1?-1:0)+", check: "+(4+i));
 				rotate |= handleArms(tile.getWorldObj().getTileEntity(tile.xCoord+(i==2?-1:i==3?1:0),tile.yCoord+3,tile.zCoord+(i==0?-1:i==1?1:0)), 4+i, fr, parts);
-			}
-		}
 		else
 			parts.add("Arm_right_u");
 
