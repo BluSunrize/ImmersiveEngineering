@@ -96,7 +96,7 @@ public class Squeezer
 			while(it.hasNext())
 			{
 				SqueezerRecipe r = it.next();
-				if(r.fluid.isFluidEqual(output))
+				if(r.fluid!=null&&r.fluid.isFluidEqual(output))
 				{
 					removedRecipes.add(r);
 					it.remove();

@@ -96,7 +96,7 @@ public class Fermenter
 			while(it.hasNext())
 			{
 				FermenterRecipe r = it.next();
-				if(r.fluid.isFluidEqual(output))
+				if(r.fluid!=null&&r.fluid.isFluidEqual(output))
 				{
 					removedRecipes.add(r);
 					it.remove();
