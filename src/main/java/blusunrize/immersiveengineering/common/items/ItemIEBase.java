@@ -36,6 +36,7 @@ public class ItemIEBase extends Item
 		return subNames;
 	}
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void registerIcons(IIconRegister ir)
 	{
 		if(getSubNames()!=null)
@@ -45,6 +46,7 @@ public class ItemIEBase extends Item
 			this.icons[0] = ir.registerIcon("immersiveengineering:"+itemName);
 	}
 	@Override
+	@SideOnly(Side.CLIENT)
 	public IIcon getIconFromDamage(int meta)
 	{
 		if(getSubNames()!=null)
