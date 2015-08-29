@@ -1,5 +1,7 @@
 package blusunrize.immersiveengineering.common.blocks.stone;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
@@ -25,6 +27,7 @@ public class BlockStoneDecoration extends BlockIEBase
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister iconRegister)
 	{
 		for(int i=0; i<icons.length; i++)

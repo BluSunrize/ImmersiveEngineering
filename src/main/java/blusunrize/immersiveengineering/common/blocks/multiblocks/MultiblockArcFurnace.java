@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
 import net.minecraft.block.Block;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -8,12 +9,15 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDecoration;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityArcFurnace;
 import blusunrize.immersiveengineering.common.util.Utils;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class MultiblockArcFurnace implements IMultiblock
 {
@@ -77,6 +81,32 @@ public class MultiblockArcFurnace implements IMultiblock
 	public ItemStack[][][] getStructureManual()
 	{
 		return structure;
+	}
+	@Override
+	public boolean overwriteBlockRender(ItemStack stack)
+	{
+		if(stack.getItem()==Items.cauldron)
+		{
+			ImmersiveEngineering.proxy.draw3DBlockCauldron();
+			return true;
+		}
+		return false;
+	}
+	@Override
+	@SideOnly(Side.CLIENT)
+	public boolean canRenderFormedStructure()
+	{
+		return true;
+	}
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void renderFormedStructure()
+	{
+		TileEntityArcFurnace te = new TileEntityArcFurnace();
+		te.formed=true;
+		te.pos=62;
+		te.facing=4;
+		TileEntityRendererDispatcher.instance.renderTileEntityAt(te, -.5D, 0.0D, -.5D, 0.0F);
 	}
 
 	@Override
@@ -184,5 +214,10 @@ public class MultiblockArcFurnace implements IMultiblock
 				new ItemStack(IEContent.blockMetalDecoration,13,BlockMetalDecoration.META_lightEngineering),
 				new ItemStack(IEContent.blockMetalDecoration,9,BlockMetalDecoration.META_heavyEngineering),
 				new ItemStack(IEContent.blockMetalDecoration,9,BlockMetalDecoration.META_scaffolding)};
+	}
+	@Override
+	public float getManualScale()
+	{
+		return 12;
 	}
 }

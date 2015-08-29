@@ -83,6 +83,9 @@ public class CommonProxy implements IGuiHandler
 	public void spawnBucketWheelFX(TileEntityBucketWheel tile, ItemStack stack)
 	{
 	}
+	public void draw3DBlockCauldron()
+	{
+	}
 	public String[] splitStringOnWidth(String s, int w)
 	{
 		return new String[]{s};

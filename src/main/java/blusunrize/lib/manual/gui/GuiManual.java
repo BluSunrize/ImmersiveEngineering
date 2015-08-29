@@ -35,6 +35,8 @@ public class GuiManual extends GuiScreen
 	String texture;
 	String[] headers;
 	boolean backButtonPressed = false;
+	int[] lastClick;
+	int[] lastDrag;
 
 	public GuiManual(ManualInstance manual, String texture)
 	{
@@ -131,7 +133,7 @@ public class GuiManual extends GuiScreen
 			GL11.glColor3f(1,1,1);
 			IManualPage mPage = (page<0||page>=entry.getPages().length)?null: entry.getPages()[page];
 			if(mPage!=null)
-				mPage.renderPage(this, guiLeft+32,guiTop+30, mx+guiLeft,my+guiTop);
+				mPage.renderPage(this, guiLeft+32,guiTop+28, mx+guiLeft,my+guiTop);
 
 			mx+=guiLeft;
 			my+=guiTop;
@@ -259,6 +261,7 @@ public class GuiManual extends GuiScreen
 			page=0;
 			this.initGui();
 		}
+		lastClick = new int[]{mx,my};
 	}
 	@Override
 	protected void mouseMovedOrUp(int mx, int my, int action)
@@ -266,6 +269,21 @@ public class GuiManual extends GuiScreen
 		super.mouseMovedOrUp(mx, my, action);
 		if(backButtonPressed && (action==0||action==1))
 			backButtonPressed=false;
+		lastClick = null;
+		lastDrag = null;
 	}
+	@Override
+	protected void mouseClickMove(int mx, int my, int button, long time)
+	{
+		if(lastClick!=null && manual.getEntry(selectedEntry)!=null)
+		{
+			ManualEntry entry = manual.getEntry(selectedEntry);
+			if(lastDrag==null)
+				lastDrag = new int[]{mx-guiLeft,my-guiTop};
+			entry.getPages()[page].mouseDragged(guiLeft+32,guiTop+28, lastClick[0],lastClick[1], mx-guiLeft,my-guiTop, lastDrag[0],lastDrag[1], button);
+			lastDrag = new int[]{mx-guiLeft,my-guiTop};
+		}
+	}
+
 
 }

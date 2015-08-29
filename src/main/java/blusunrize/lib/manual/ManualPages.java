@@ -66,6 +66,20 @@ public abstract class ManualPages implements IManualPage
 	{
 		return manual;
 	}
+	@Override
+	public void mouseDragged(int x, int y, int clickX, int clickY, int mx, int my, int lastX, int lastY, int button)
+	{
+	}
+//	@Override
+//	public void buttonPressed(GuiManual gui, GuiButton button)
+//	{
+//		if(button instanceof GuiButtonManualLink && GuiManual.activeManual!=null && manual.showEntryInList(manual.getEntry(((GuiButtonManualLink)button).key)))
+//		{
+//			GuiManual.selectedEntry = ((GuiButtonManualLink)button).key;
+//			GuiManual.page = ((GuiButtonManualLink)button).pageLinked;
+//			GuiManual.activeManual.initGui();
+//		}
+//	}
 
 	public static class Text extends ManualPages
 	{

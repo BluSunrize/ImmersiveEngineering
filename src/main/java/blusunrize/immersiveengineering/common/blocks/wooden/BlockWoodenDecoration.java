@@ -23,6 +23,8 @@ import net.minecraftforge.common.util.ForgeDirection;
 import blusunrize.immersiveengineering.client.render.BlockRenderWoodenDecoration;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
 import cpw.mods.fml.common.Optional;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @Optional.Interface(iface = "blusunrize.aquatweaks.api.IAquaConnectable", modid = "AquaTweaks")
 public class BlockWoodenDecoration extends BlockIEBase implements blusunrize.aquatweaks.api.IAquaConnectable
@@ -106,6 +108,7 @@ public class BlockWoodenDecoration extends BlockIEBase implements blusunrize.aqu
 				list.add(new ItemStack(item, 1, i));
 	}
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister iconRegister)
 	{
 		for(int i=0; i<subNames.length; i++)

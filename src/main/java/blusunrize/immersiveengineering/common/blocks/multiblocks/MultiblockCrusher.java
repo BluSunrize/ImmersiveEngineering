@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
 import net.minecraft.block.Block;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -11,6 +12,8 @@ import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDecoration;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class MultiblockCrusher implements IMultiblock
 {
@@ -44,6 +47,32 @@ public class MultiblockCrusher implements IMultiblock
 	public ItemStack[][][] getStructureManual()
 	{
 		return structure;
+	}
+	@Override
+	public boolean overwriteBlockRender(ItemStack stack)
+	{
+		return false;
+	}
+	@Override
+	@SideOnly(Side.CLIENT)
+	public boolean canRenderFormedStructure()
+	{
+		return true;
+	}
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void renderFormedStructure()
+	{
+		TileEntityCrusher te = new TileEntityCrusher();
+		te.formed=true;
+		te.pos=17;
+		te.facing=4;
+		TileEntityRendererDispatcher.instance.renderTileEntityAt(te, -1D, -1D, .0D, 0.0F);
+	}
+	@Override
+	public float getManualScale()
+	{
+		return 12;
 	}
 
 	@Override

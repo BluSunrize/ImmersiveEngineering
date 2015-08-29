@@ -1,11 +1,17 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
+import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
+import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDecoration;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySqueezer;
@@ -24,6 +30,39 @@ public class MultiblockSqueezer implements IMultiblock
 	public ItemStack[][][] getStructureManual()
 	{
 		return structure;
+	}
+	@Override
+	public boolean overwriteBlockRender(ItemStack stack)
+	{
+		return false;
+	}
+	@Override
+	@SideOnly(Side.CLIENT)
+	public boolean canRenderFormedStructure()
+	{
+		return true;
+	}
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void renderFormedStructure()
+	{
+		RenderBlocks rb = RenderBlocks.getInstance();
+		Tessellator.instance.startDrawingQuads();
+		rb.setRenderBounds(-1.5,-1.5,-1.5, 1.5,1.5,1.5);
+		BlockIEBase b = IEContent.blockMetalMultiblocks;
+		ClientUtils.bindAtlas(0);
+		rb.renderFaceYNeg(b, 0,0,0, b.icons[2][1]);
+		rb.renderFaceYPos(b, 0,0,0, b.icons[2][1]);
+		rb.renderFaceXNeg(b, 0,0,0, b.icons[2][2]);
+		rb.renderFaceXPos(b, 0,0,0, b.icons[2][2]);
+		rb.renderFaceZNeg(b, 0,0,0, b.icons[2][3]);
+		rb.renderFaceZPos(b, 0,0,0, b.icons[2][3]);
+		Tessellator.instance.draw();
+	}
+	@Override
+	public float getManualScale()
+	{
+		return 12;
 	}
 	
 	@Override

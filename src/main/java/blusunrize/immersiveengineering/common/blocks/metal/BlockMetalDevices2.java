@@ -12,6 +12,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
@@ -19,7 +20,11 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import blusunrize.immersiveengineering.client.render.BlockRenderMetalDevices2;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
+import blusunrize.immersiveengineering.common.util.Lib;
+import blusunrize.immersiveengineering.common.util.Utils;
 import cpw.mods.fml.common.Optional;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @Optional.Interface(iface = "blusunrize.aquatweaks.api.IAquaConnectable", modid = "AquaTweaks")
 public class BlockMetalDevices2 extends BlockIEBase implements blusunrize.aquatweaks.api.IAquaConnectable
@@ -71,17 +76,20 @@ public class BlockMetalDevices2 extends BlockIEBase implements blusunrize.aquatw
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister iconRegister)
 	{
 		for(int i=0; i<this.subNames.length; i++)
 			this.icons[i][0] = iconRegister.registerIcon("immersiveEngineering:metal2_"+this.subNames[i]);
 	}
 	@Override
+	@SideOnly(Side.CLIENT)
 	public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side)
 	{
 		return super.getIcon(world, x, y, z, side);
 	}
 	@Override
+	@SideOnly(Side.CLIENT)
 	public IIcon getIcon(int side, int meta)
 	{
 		return super.getIcon(side, meta);
@@ -105,9 +113,17 @@ public class BlockMetalDevices2 extends BlockIEBase implements blusunrize.aquatw
 		{
 			if(!world.isRemote)
 			{
-				((TileEntityBreakerSwitch)world.getTileEntity(x, y, z)).toggle();
-
-				world.getTileEntity(x, y, z).markDirty();
+				if(Utils.isHammer(player.getCurrentEquippedItem()))
+				{
+					((TileEntityBreakerSwitch)world.getTileEntity(x, y, z)).inverted = !((TileEntityBreakerSwitch)world.getTileEntity(x, y, z)).inverted;
+					player.addChatMessage(new ChatComponentTranslation(Lib.CHAT_INFO+ (((TileEntityBreakerSwitch)world.getTileEntity(x, y, z)).inverted?"invertedOn":"invertedOff")));
+					world.getTileEntity(x, y, z).markDirty();
+				}
+				else
+				{
+					((TileEntityBreakerSwitch)world.getTileEntity(x, y, z)).toggle();
+					world.getTileEntity(x, y, z).markDirty();
+				}
 				world.notifyBlocksOfNeighborChange(x, y, z, this);
 				for(ForgeDirection fd:  ForgeDirection.VALID_DIRECTIONS)
 					world.notifyBlocksOfNeighborChange(x+fd.offsetX, y+fd.offsetY, z+fd.offsetZ, this);
@@ -187,7 +203,11 @@ public class BlockMetalDevices2 extends BlockIEBase implements blusunrize.aquatw
 	public int isProvidingWeakPower(IBlockAccess world, int x, int y, int z, int side)
 	{
 		if(world.getTileEntity(x, y, z) instanceof TileEntityBreakerSwitch)
-			return ((TileEntityBreakerSwitch)world.getTileEntity(x, y, z)).active?15:0;
+		{
+			TileEntityBreakerSwitch breaker = ((TileEntityBreakerSwitch)world.getTileEntity(x, y, z));
+			boolean power = (breaker.active&&!breaker.inverted) || (!breaker.active&&breaker.inverted);
+			return power?15:0;
+		}
 		return 0;
 	}
 	@Override
@@ -197,7 +217,8 @@ public class BlockMetalDevices2 extends BlockIEBase implements blusunrize.aquatw
 		{
 			TileEntityBreakerSwitch breaker = ((TileEntityBreakerSwitch)world.getTileEntity(x, y, z));
 			int powerSide = breaker.sideAttached>0?breaker.sideAttached-1:breaker.facing;
-			return ((TileEntityBreakerSwitch)world.getTileEntity(x, y, z)).active&&ForgeDirection.OPPOSITES[side]==powerSide?15:0;
+			boolean power = (breaker.active&&!breaker.inverted) || (!breaker.active&&breaker.inverted);
+			return power&&ForgeDirection.OPPOSITES[side]==powerSide?15:0;
 		}
 		return 0;
 	}

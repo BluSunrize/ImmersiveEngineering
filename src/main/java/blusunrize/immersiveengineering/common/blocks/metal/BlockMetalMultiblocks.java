@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -66,6 +68,7 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister iconRegister)
 	{
 		//0 lightningRod
@@ -86,14 +89,10 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 		icons[3][1] = iconRegister.registerIcon("immersiveengineering:metal_multiblockTop");
 		icons[3][2] = iconRegister.registerIcon("immersiveengineering:metal_multiblockFermenter0");
 		icons[3][3] = iconRegister.registerIcon("immersiveengineering:metal_multiblockFermenter1");
-		//4 fermenter
-		icons[4][0] = iconRegister.registerIcon("immersiveengineering:metal_fermenter");
-		icons[4][1] = iconRegister.registerIcon("immersiveengineering:metal_multiblockTop");
-		icons[4][2] = iconRegister.registerIcon("immersiveengineering:metal_multiblockFermenter0");
-		icons[4][3] = iconRegister.registerIcon("immersiveengineering:metal_multiblockFermenter1");
-		//5 crusher
+		//all others
 		for(int i=0;i<4;i++)
 		{
+			icons[4][i] = iconRegister.registerIcon("immersiveengineering:storage_Steel");
 			icons[5][i] = iconRegister.registerIcon("immersiveengineering:storage_Steel");
 			icons[6][i] = iconRegister.registerIcon("immersiveengineering:storage_Steel");
 			icons[7][i] = iconRegister.registerIcon("immersiveengineering:storage_Steel");
@@ -101,6 +100,7 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 		}
 	}
 	@Override
+	@SideOnly(Side.CLIENT)
 	public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side)
 	{
 		if(world.getBlockMetadata(x, y, z)==META_squeezer)

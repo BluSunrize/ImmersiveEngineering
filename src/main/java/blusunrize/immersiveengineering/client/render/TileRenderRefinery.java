@@ -23,7 +23,7 @@ public class TileRenderRefinery extends TileEntitySpecialRenderer
 
 		GL11.glTranslated(x, y, z);
 		GL11.glTranslated(+.5, +1.5, +.5);
-	      GL11.glScalef(1.0F, -1.0F, -1.0F);
+		GL11.glScalef(1.0F, -1.0F, -1.0F);
 
 		model.base.rotateAngleY=(float) Math.toRadians(refinery.facing==2?180: refinery.facing==4?90: refinery.facing==5?-90: 0);
 

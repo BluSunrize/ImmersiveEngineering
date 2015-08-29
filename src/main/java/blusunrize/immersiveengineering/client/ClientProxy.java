@@ -5,14 +5,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.minecraft.block.BlockCauldron;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityFX;
+import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
@@ -133,6 +138,7 @@ import blusunrize.lib.manual.ManualPages.PositionedItemStack;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.registry.GameData;
 import cpw.mods.fml.common.registry.VillagerRegistry;
 
 public class ClientProxy extends CommonProxy
@@ -491,6 +497,31 @@ public class ClientProxy extends CommonProxy
 			}
 	}
 
+	@Override
+	public void draw3DBlockCauldron()
+	{
+		RenderBlocks blockRender = RenderBlocks.getInstance();
+		blockRender.setRenderBounds(0, 0, 0, 1, 1, 1);
+		Tessellator.instance.startDrawingQuads();
+		Tessellator.instance.addTranslation(-.5f, -.5f, -.5f);
+		blockRender.renderFaceYPos(Blocks.cauldron, 0,0,0, Blocks.cauldron.getBlockTextureFromSide(1));
+		IIcon icon = Blocks.cauldron.getBlockTextureFromSide(2);
+		blockRender.renderFaceXNeg(Blocks.cauldron, 0,0,0, icon);
+		blockRender.renderFaceXPos(Blocks.cauldron, 0,0,0, icon);
+		blockRender.renderFaceZNeg(Blocks.cauldron, 0,0,0, icon);
+		blockRender.renderFaceZPos(Blocks.cauldron, 0,0,0, icon);
+		float f4 = 0.125F;
+		blockRender.renderFaceXPos(Blocks.cauldron, ((float)0 - 1.0F + f4), (double)0, (double)0, icon);
+		blockRender.renderFaceXNeg(Blocks.cauldron, (double)((float)0 + 1.0F - f4), (double)0, (double)0, icon);
+		blockRender.renderFaceZPos(Blocks.cauldron, (double)0, (double)0, (double)((float)0 - 1.0F + f4), icon);
+		blockRender.renderFaceZNeg(Blocks.cauldron, (double)0, (double)0, (double)((float)0 + 1.0F - f4), icon);
+		IIcon iicon1 = BlockCauldron.getCauldronIcon("inner");
+		blockRender.renderFaceYPos(Blocks.cauldron, (double)0, (double)((float)0 - 1.0F + 0.25F), (double)0, iicon1);
+		blockRender.renderFaceYNeg(Blocks.cauldron, (double)0, (double)((float)0 + 1.0F - 0.75F), (double)0, iicon1);
+		Tessellator.instance.addTranslation(.5f, .5f, .5f);
+		Tessellator.instance.draw();
+	}
+
 	static String[][] formatToTable_ItemIntHashmap(Map<String, Integer> map, String valueType)
 	{
 		Map.Entry<String,Integer>[] sortedMapArray = map.entrySet().toArray(new Map.Entry[0]);
@@ -505,10 +536,18 @@ public class ClientProxy extends CommonProxy
 					if(is!=null)
 						item = is.getDisplayName();
 				}
-				else
+				else if(sortedMapArray[i].getKey().contains("::"))
 				{
-					item = sortedMapArray[i].getKey();
+					String[] split = sortedMapArray[i].getKey().split("::");
+					Item it = GameData.getItemRegistry().getObject(split[0]);
+					int meta = 0;
+					try{meta = Integer.parseInt(split[1]);}catch(Exception e){}
+					if(it!=null)
+						item = new ItemStack(it, 1, meta).getDisplayName();
 				}
+				else
+					item = sortedMapArray[i].getKey();
+					
 				if(item!=null)
 				{
 					int bt = sortedMapArray[i].getValue();

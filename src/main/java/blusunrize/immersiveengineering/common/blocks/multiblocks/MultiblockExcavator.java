@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
 import net.minecraft.block.Block;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -12,6 +13,8 @@ import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDecoration;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityExcavator;
 import blusunrize.immersiveengineering.common.util.Utils;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class MultiblockExcavator implements IMultiblock
 {
@@ -58,6 +61,32 @@ public class MultiblockExcavator implements IMultiblock
 	public ItemStack[][][] getStructureManual()
 	{
 		return structure;
+	}
+	@Override
+	public boolean overwriteBlockRender(ItemStack stack)
+	{
+		return false;
+	}
+	@Override
+	@SideOnly(Side.CLIENT)
+	public boolean canRenderFormedStructure()
+	{
+		return true;
+	}
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void renderFormedStructure()
+	{
+		TileEntityExcavator te = new TileEntityExcavator();
+		te.formed=true;
+		te.pos=4;
+		te.facing=3;
+		TileEntityRendererDispatcher.instance.renderTileEntityAt(te, -.5D, -.5D, 2.5D, 0.0F);
+	}
+	@Override
+	public float getManualScale()
+	{
+		return 12;
 	}
 
 	@Override

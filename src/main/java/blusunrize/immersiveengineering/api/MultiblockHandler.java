@@ -6,6 +6,8 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * @author BluSunrize - 27.04.2015
@@ -49,5 +51,26 @@ public class MultiblockHandler
 		 * An array of ItemStacks that summarizes the total amount of materials needed for the structure. Will be rendered in the Engineer's Manual
 		 */
 		public ItemStack[] getTotalMaterials();
+		
+		/**
+		 * Use this to overwrite the rendering of a Multiblock's Component
+		 */
+		public boolean overwriteBlockRender(ItemStack stack);
+
+		/**
+		 * returns the scale modifier to be applied when rendering the structure in the IE manual
+		 */
+		public float getManualScale();
+		
+		/**
+		 * returns true to add a button that will switch between the assembly of multiblocks and the finished render
+		 */
+		@SideOnly(Side.CLIENT)
+		public boolean canRenderFormedStructure();
+		/**
+		 * use this function to render the complete multiblock
+		 */
+		@SideOnly(Side.CLIENT)
+		public void renderFormedStructure();
 	}
 }

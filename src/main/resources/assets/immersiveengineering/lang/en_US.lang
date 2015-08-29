@@ -336,6 +336,8 @@ chat.ImmersiveEngineering.warning.invalidPoint=One of the connection points is i
 chat.ImmersiveEngineering.info.averageLoss=Average loss between points: %1$s%%
 chat.ImmersiveEngineering.info.energyStorage=Energy Stored: %1$s/%2$s RF
 chat.ImmersiveEngineering.info.tooHot=This fluid is too hot for the container!
+chat.ImmersiveEngineering.info.invertedOn=Set redstone signal to inverted
+chat.ImmersiveEngineering.info.invertedOff=Set redstone signal to not inverted
 
 chat.ImmersiveEngineering.info.forChunk=§8For Chunk from %1$s to %2$s
 chat.ImmersiveEngineering.info.coreDrill.progress=Core Sample in progress: %1$s
@@ -355,6 +357,7 @@ death.attack.ieRevolver_dragonsbreath=%1$s was incinerated by %2$s
 death.attack.ieRevolver_homing=%1$s was shot by %2$s's homing bullet
 death.attack.ieRevolver_wolfpack=%1$s was shredded by %2$s's Wolfpack Rounds
 death.attack.ieRevolver_silver=%1$s was purified by %2$s's silver bullet
+death.attack.ieRevolver_potion=%1$s was doused by %2$s's phial shot
 death.attack.ieCrushed=%1$s was crushed
 
 #MANUAL

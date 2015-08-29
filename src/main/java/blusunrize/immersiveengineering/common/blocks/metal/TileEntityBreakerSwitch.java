@@ -15,6 +15,7 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable
 	public int facing=2;
 	public int wires = 0;
 	public boolean active=false;
+	public boolean inverted=false;
 
 	@Override
 	protected boolean canTakeLV()
@@ -86,6 +87,7 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable
 		nbt.setInteger("sideAttached", sideAttached);
 		nbt.setInteger("wires", wires);
 		nbt.setBoolean("active", active);
+		nbt.setBoolean("inverted", inverted);
 	}
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
@@ -95,6 +97,7 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable
 		sideAttached = nbt.getInteger("sideAttached");
 		wires = nbt.getInteger("wires");
 		active = nbt.getBoolean("active");
+		inverted = nbt.getBoolean("inverted");
 	}
 
 	@Override

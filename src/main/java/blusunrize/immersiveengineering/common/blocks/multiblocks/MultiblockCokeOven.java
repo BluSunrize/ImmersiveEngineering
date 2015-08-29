@@ -1,5 +1,7 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -24,6 +26,27 @@ public class MultiblockCokeOven implements IMultiblock
 	public ItemStack[][][] getStructureManual()
 	{
 		return structure;
+	}
+	@Override
+	public boolean overwriteBlockRender(ItemStack stack)
+	{
+		return false;
+	}
+	@Override
+	public float getManualScale()
+	{
+		return 16;
+	}
+	@Override
+	@SideOnly(Side.CLIENT)
+	public boolean canRenderFormedStructure()
+	{
+		return false;
+	}
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void renderFormedStructure()
+	{
 	}
 
 	@Override

@@ -36,6 +36,8 @@ import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.Utils;
 import cpw.mods.fml.common.Optional;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @Optional.Interface(iface = "blusunrize.aquatweaks.api.IAquaConnectable", modid = "AquaTweaks")
 public class BlockMetalDevices extends BlockIEBase implements blusunrize.aquatweaks.api.IAquaConnectable
@@ -151,6 +153,7 @@ public class BlockMetalDevices extends BlockIEBase implements blusunrize.aquatwe
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister iconRegister)
 	{
 		//1 capacitorLV
@@ -235,6 +238,7 @@ public class BlockMetalDevices extends BlockIEBase implements blusunrize.aquatwe
 		}
 	}
 	@Override
+	@SideOnly(Side.CLIENT)
 	public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side)
 	{
 		if(world.getTileEntity(x, y, z) instanceof TileEntityCapacitorLV)
@@ -270,6 +274,7 @@ public class BlockMetalDevices extends BlockIEBase implements blusunrize.aquatwe
 		return super.getIcon(world, x, y, z, side);
 	}
 	@Override
+	@SideOnly(Side.CLIENT)
 	public IIcon getIcon(int side, int meta)
 	{
 		if(meta == META_sorter)
