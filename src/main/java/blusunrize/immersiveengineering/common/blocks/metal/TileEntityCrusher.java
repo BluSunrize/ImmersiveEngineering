@@ -312,6 +312,7 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 		return AxisAlignedBB.getBoundingBox(xCoord,yCoord,zCoord, xCoord,yCoord,zCoord);
 	}
 	@Override
+    @SideOnly(Side.CLIENT)
 	public double getMaxRenderDistanceSquared()
 	{
 		return super.getMaxRenderDistanceSquared()*Config.getDouble("increasedTileRenderdistance");

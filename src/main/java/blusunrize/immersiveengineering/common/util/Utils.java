@@ -448,11 +448,13 @@ public class Utils
 	public static boolean fillPlayerItemFromFluidHandler(World world, IFluidHandler handler, EntityPlayer player, FluidStack tankFluid)
 	{
 		ItemStack equipped = player.getCurrentEquippedItem();
-		if (FluidContainerRegistry.isEmptyContainer(equipped))
+		if(equipped==null)
+			return false;
+		if(FluidContainerRegistry.isEmptyContainer(equipped))
 		{
 			ItemStack filledStack = FluidContainerRegistry.fillFluidContainer(tankFluid, equipped);
-			FluidStack localFluidStack = FluidContainerRegistry.getFluidForFilledItem(filledStack);
-			if(localFluidStack==null || filledStack==null)
+			FluidStack fluid = FluidContainerRegistry.getFluidForFilledItem(filledStack);
+			if(fluid==null || filledStack==null)
 				return false;
 			if(!player.capabilities.isCreativeMode)
 				if(equipped.stackSize == 1)
@@ -478,8 +480,20 @@ public class Utils
 					player.openContainer.detectAndSendChanges();
 					((EntityPlayerMP) player).sendContainerAndContentsToPlayer(player.openContainer, player.openContainer.getInventory());
 				}
-			handler.drain(ForgeDirection.UNKNOWN, localFluidStack.amount, true);
+			handler.drain(ForgeDirection.UNKNOWN, fluid.amount, true);
 			return true;
+		}
+		else if(equipped.getItem() instanceof IFluidContainerItem)
+		{
+			IFluidContainerItem container = (IFluidContainerItem)equipped.getItem();
+			if(container.fill(equipped, tankFluid, false)>0)
+			{
+				int fill = container.fill(equipped, tankFluid, true);
+				handler.drain(ForgeDirection.UNKNOWN, fill, true);
+				player.openContainer.detectAndSendChanges();
+				((EntityPlayerMP) player).sendContainerAndContentsToPlayer(player.openContainer, player.openContainer.getInventory());
+				return true;
+			}
 		}
 		return false;
 	}
@@ -487,9 +501,13 @@ public class Utils
 	public static boolean fillFluidHandlerWithPlayerItem(World world, IFluidHandler handler, EntityPlayer player)
 	{
 		ItemStack equipped = player.getCurrentEquippedItem();
+		if(equipped==null)
+			return false;
 		FluidStack fluid = FluidContainerRegistry.getFluidForFilledItem(equipped);
 		if(fluid != null)
-			if(handler.fill(ForgeDirection.UNKNOWN, fluid, false) == fluid.amount || player.capabilities.isCreativeMode) {
+		{
+			if(handler.fill(ForgeDirection.UNKNOWN, fluid, false) == fluid.amount || player.capabilities.isCreativeMode)
+			{
 				ItemStack filledStack = FluidContainerRegistry.drainFluidContainer(equipped);
 				if (!player.capabilities.isCreativeMode)
 				{
@@ -510,6 +528,20 @@ public class Utils
 				handler.fill(ForgeDirection.UNKNOWN, fluid, true);
 				return true;
 			}
+		}
+		else if(equipped.getItem() instanceof IFluidContainerItem)
+		{
+			IFluidContainerItem container = (IFluidContainerItem)equipped.getItem();
+			fluid = container.getFluid(equipped);
+			if(handler.fill(ForgeDirection.UNKNOWN, fluid, false)>0)
+			{
+				int fill = handler.fill(ForgeDirection.UNKNOWN, fluid, true);
+				container.drain(equipped, fill, true);
+				player.openContainer.detectAndSendChanges();
+				((EntityPlayerMP) player).sendContainerAndContentsToPlayer(player.openContainer, player.openContainer.getInventory());
+				return true;
+			}
+		}
 		return false;
 	}
 }

@@ -417,8 +417,8 @@ public class TileEntityExcavator extends TileEntityMultiblockPart implements IEn
 		return energyStorage.getMaxEnergyStored();
 	}
 
-	@SideOnly(Side.CLIENT)
 	@Override
+	@SideOnly(Side.CLIENT)
 	public AxisAlignedBB getRenderBoundingBox()
 	{
 		if(pos==4)
@@ -426,6 +426,7 @@ public class TileEntityExcavator extends TileEntityMultiblockPart implements IEn
 		return AxisAlignedBB.getBoundingBox(xCoord,yCoord,zCoord, xCoord,yCoord,zCoord);
 	}
 	@Override
+	@SideOnly(Side.CLIENT)
 	public double getMaxRenderDistanceSquared()
 	{
 		return super.getMaxRenderDistanceSquared()*Config.getDouble("increasedTileRenderdistance");

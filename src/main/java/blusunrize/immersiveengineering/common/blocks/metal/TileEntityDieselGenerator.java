@@ -245,8 +245,8 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockPart implemen
 	}
 
 
-	@SideOnly(Side.CLIENT)
 	@Override
+	@SideOnly(Side.CLIENT)
 	public AxisAlignedBB getRenderBoundingBox()
 	{
 		if(pos==31)
@@ -255,6 +255,7 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockPart implemen
 		return AxisAlignedBB.getBoundingBox(xCoord,yCoord,zCoord, xCoord,yCoord,zCoord);
 	}
 	@Override
+	@SideOnly(Side.CLIENT)
 	public double getMaxRenderDistanceSquared()
 	{
 		return super.getMaxRenderDistanceSquared()*Config.getDouble("increasedTileRenderdistance");

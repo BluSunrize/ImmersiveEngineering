@@ -284,8 +284,8 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 		}
 	}
 
-	@SideOnly(Side.CLIENT)
 	@Override
+	@SideOnly(Side.CLIENT)
 	public AxisAlignedBB getRenderBoundingBox()
 	{
 		if(pos==62)
@@ -293,6 +293,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 		return AxisAlignedBB.getBoundingBox(xCoord,yCoord,zCoord, xCoord,yCoord,zCoord);
 	}
 	@Override
+	@SideOnly(Side.CLIENT)
 	public double getMaxRenderDistanceSquared()
 	{
 		return super.getMaxRenderDistanceSquared()*Config.getDouble("increasedTileRenderdistance");

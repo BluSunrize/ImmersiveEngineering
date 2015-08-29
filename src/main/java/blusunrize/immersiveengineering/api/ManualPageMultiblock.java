@@ -126,7 +126,7 @@ public class ManualPageMultiblock extends ManualPages
 			//			GL11.glTranslatef(x+(structureWidth/2+structureLength/2)/2*30, y+structureHeight/2*30, structureLength);
 			float scale = multiblock.getManualScale();
 			yOffTotal = Math.max(10+(multiblock.canRenderFormedStructure()?12:0)+(structureHeight>1?36:0), (int) (f*scale));
-			GL11.glTranslatef(x+60,y+f*scale/2,structureLength);
+			GL11.glTranslatef(x+60,y+f*scale/2, Math.max(structureHeight, Math.max(structureWidth,structureLength)));
 			//						GL11.glScalef(12,-12,1);
 			GL11.glScalef(scale,-scale,1);
 			GL11.glRotatef(rotX, 1, 0, 0);

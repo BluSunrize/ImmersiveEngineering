@@ -39,12 +39,13 @@ public class BlockMetalDecoration extends BlockIEBase implements blusunrize.aqua
 	public static final int META_lightEngineering=7;
 	public static final int META_connectorStructural=8;
 	public static final int META_wallMount=9;
+	public static final int META_sheetMetal=10;
 
 	public BlockMetalDecoration()
 	{
 		super("metalDecoration", Material.iron,3, ItemBlockMetalDecorations.class, "fence","scaffolding","lantern","structuralArm",
 				"radiator","heavyEngineering","generator","lightEngineering",
-				"connectorStructural","wallMount");
+				"connectorStructural","wallMount","sheetMetal");
 		setHardness(3.0F);
 		setResistance(15.0F);
 	}
@@ -178,6 +179,7 @@ public class BlockMetalDecoration extends BlockIEBase implements blusunrize.aqua
 			icons[META_lightEngineering][i] = iconRegister.registerIcon("immersiveengineering:metalDeco_electricMachine");
 			icons[META_connectorStructural][i] = iconRegister.registerIcon("immersiveengineering:metalDeco_connectorStructural");
 			icons[META_wallMount][i] = iconRegister.registerIcon("immersiveengineering:metalDeco_wallmount");
+			icons[META_sheetMetal][i] = iconRegister.registerIcon("immersiveengineering:metalDeco_sheetMetal");
 		}
 	}
 

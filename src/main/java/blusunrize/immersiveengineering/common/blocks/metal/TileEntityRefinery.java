@@ -335,15 +335,21 @@ public class TileEntityRefinery extends TileEntityMultiblockPart implements IFlu
 		return new FluidTankInfo[]{tank0.getInfo(),tank1.getInfo(),tank2.getInfo()};
 	}
 
-	@SideOnly(Side.CLIENT)
 	@Override
+	@SideOnly(Side.CLIENT)
 	public AxisAlignedBB getRenderBoundingBox()
 	{
 		if(pos==17)
 			return AxisAlignedBB.getBoundingBox(xCoord-(facing==2||facing==3?2:1),yCoord,zCoord-(facing==4||facing==5?2:1), xCoord+(facing==2||facing==3?3:2),yCoord+3,zCoord+(facing==4||facing==5?3:2));
 		return AxisAlignedBB.getBoundingBox(xCoord,yCoord,zCoord, xCoord,yCoord,zCoord);
 	}
-
+	@Override
+    @SideOnly(Side.CLIENT)
+	public double getMaxRenderDistanceSquared()
+	{
+		return super.getMaxRenderDistanceSquared()*Config.getDouble("increasedTileRenderdistance");
+	}
+	
 	@Override
 	public void invalidate()
 	{

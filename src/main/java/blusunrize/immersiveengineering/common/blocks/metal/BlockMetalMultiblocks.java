@@ -5,8 +5,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -23,6 +21,7 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fluids.IFluidContainerItem;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.client.render.BlockRenderMetalMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
@@ -30,6 +29,8 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ICustomBo
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
 import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.Utils;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundingboxes
 {
@@ -42,12 +43,15 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 	public static int META_bucketWheel=6;
 	public static int META_excavator=7;
 	public static int META_arcFurnace=8;
+	public static int META_tank=9;
+	public static int META_silo=10;
 	public BlockMetalMultiblocks()
 	{
 		super("metalMultiblock", Material.iron, 4, ItemBlockIEBase.class,
 				"lightningRod","dieselGenerator",
 				"industrialSqueezer","fermenter","refinery",
-				"crusher","bucketWheel","excavator","arcFurnace");
+				"crusher","bucketWheel","excavator","arcFurnace",
+				"tank","silo");
 		setHardness(3.0F);
 		setResistance(15.0F);
 	}
@@ -97,6 +101,8 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 			icons[6][i] = iconRegister.registerIcon("immersiveengineering:storage_Steel");
 			icons[7][i] = iconRegister.registerIcon("immersiveengineering:storage_Steel");
 			icons[8][i] = iconRegister.registerIcon("immersiveengineering:storage_Steel");
+			icons[9][i] = iconRegister.registerIcon("immersiveengineering:storage_Steel");
+			icons[10][i] = iconRegister.registerIcon("immersiveengineering:storage_Steel");
 		}
 	}
 	@Override
@@ -221,6 +227,23 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 					return true;
 				}
 			}
+		}
+		if(!player.isSneaking() && world.getTileEntity(x, y, z) instanceof TileEntitySheetmetalTank)
+		{
+			if(!world.isRemote)
+			{
+				TileEntitySheetmetalTank tank = (TileEntitySheetmetalTank)world.getTileEntity(x, y, z);
+				TileEntitySheetmetalTank master = tank.master();
+				if(master==null)
+					master = tank;
+				if(Utils.fillFluidHandlerWithPlayerItem(world, master, player))
+					return true;
+				if(Utils.fillPlayerItemFromFluidHandler(world, master, player, master.tank.getFluid()))
+					return true;
+				if(player.getCurrentEquippedItem()!=null && player.getCurrentEquippedItem().getItem() instanceof IFluidContainerItem)
+					return true;
+			}
+			return true;
 		}
 		return false;
 	}
@@ -528,6 +551,8 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 			return new TileEntityExcavator();
 		case 8://8 arcFurnace
 			return new TileEntityArcFurnace();
+		case 9://9 tank
+			return new TileEntitySheetmetalTank();
 		}
 		return null;
 	}

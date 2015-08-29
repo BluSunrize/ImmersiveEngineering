@@ -78,12 +78,12 @@ public abstract class WireType
 		@Override
 		public double getLossRatio()
 		{
-			return cableLossRatio[ordinal];
+			return Math.abs(cableLossRatio[ordinal]);
 		}
 		@Override
 		public int getTransferRate()
 		{
-			return cableTransferRate[ordinal];
+			return Math.abs(cableTransferRate[ordinal]);
 		}
 		@Override
 		public int getColour(Connection connection)

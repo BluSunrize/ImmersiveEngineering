@@ -34,6 +34,17 @@ public class BlockStoneDecoration extends BlockIEBase
 			icons[i][0] = iconRegister.registerIcon("immersiveengineering:"+name+"_"+subNames[i]);
 	}
 
+	@Override
+	public boolean isOpaqueCube()
+	{
+		return true;
+	}
+	
+	@Override
+	public boolean renderAsNormalBlock()
+	{
+		return true;
+	}
 
 	@Override
 	public void onEntityCollidedWithBlock(World world, int x, int y, int z, Entity ent)
