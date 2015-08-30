@@ -245,6 +245,15 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 			}
 			return true;
 		}
+		if(!world.isRemote && !player.isSneaking() && world.getTileEntity(x, y, z) instanceof TileEntitySilo)
+		{
+			TileEntitySilo te = ( TileEntitySilo)world.getTileEntity(x, y, z);
+			TileEntitySilo master = te.master();
+			if(master==null)
+				master = te;
+			System.out.println("ident: "+master.identStack);
+			System.out.println("amount: "+master.storageAmount);
+		}
 		return false;
 	}
 
@@ -291,6 +300,11 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 				return side==ForgeDirection.UP;
 			if( (tile.pos>=21&&tile.pos<=23) || (tile.pos>=46&&tile.pos<=48) || (tile.pos>=71&&tile.pos<=73))
 				return side.getOpposite().ordinal()==tile.facing;
+		}
+		if(world.getTileEntity(x, y, z) instanceof TileEntitySheetmetalTank || world.getTileEntity(x, y, z) instanceof TileEntitySilo)
+		{
+			TileEntityMultiblockPart tile = (TileEntityMultiblockPart)world.getTileEntity(x, y, z);
+			return tile.pos==4||tile.pos==(tile instanceof TileEntitySilo?58:40)||(tile.pos>=18&&tile.pos<(tile instanceof TileEntitySilo?54:36));
 		}
 		return super.isSideSolid(world, x, y, z, side);
 	}
@@ -553,6 +567,8 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 			return new TileEntityArcFurnace();
 		case 9://9 tank
 			return new TileEntitySheetmetalTank();
+		case 10://10 silo
+			return new TileEntitySilo();
 		}
 		return null;
 	}

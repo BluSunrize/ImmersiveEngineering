@@ -59,6 +59,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityRefinery;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityRelayHV;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySampleDrill;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySheetmetalTank;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySilo;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySkycrateDispenser;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySqueezer;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityStructuralArm;
@@ -77,6 +78,7 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockFerme
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockLightningRod;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockRefinery;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockSheetmetalTank;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockSilo;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockSqueezer;
 import blusunrize.immersiveengineering.common.blocks.plant.BlockIECrop;
 import blusunrize.immersiveengineering.common.blocks.stone.BlockStoneDecoration;
@@ -341,6 +343,7 @@ public class IEContent
 		registerTile(TileEntityExcavator.class);
 		registerTile(TileEntityArcFurnace.class);
 		registerTile(TileEntitySheetmetalTank.class);
+		registerTile(TileEntitySilo.class);
 
 		registerTile(TileEntityStructuralArm.class);
 		registerTile(TileEntityConnectorStructural.class);
@@ -446,6 +449,7 @@ public class IEContent
 		MultiblockHandler.registerMultiblock(MultiblockBucketWheel.instance);
 		MultiblockHandler.registerMultiblock(MultiblockArcFurnace.instance);
 		MultiblockHandler.registerMultiblock(MultiblockSheetmetalTank.instance);
+		MultiblockHandler.registerMultiblock(MultiblockSilo.instance);
 
 		//Railcraft Compat
 		if(Loader.isModLoaded("Railcraft"))

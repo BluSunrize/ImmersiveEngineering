@@ -66,6 +66,8 @@ public class Utils
 	}
 	public static ItemStack copyStackWithAmount(ItemStack stack, int amount)
 	{
+		if(stack==null)
+			return null;
 		ItemStack s2 = stack.copy();
 		s2.stackSize=amount;
 		return s2;

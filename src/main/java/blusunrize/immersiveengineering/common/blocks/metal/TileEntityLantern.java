@@ -6,6 +6,12 @@ import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 public class TileEntityLantern extends TileEntityIEBase
 {
 	public int facing=1;
+
+	@Override
+	public boolean canUpdate()
+	{
+		return false;
+	}
 	
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)

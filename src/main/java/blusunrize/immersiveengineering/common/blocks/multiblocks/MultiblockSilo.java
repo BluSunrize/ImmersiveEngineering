@@ -10,17 +10,17 @@ import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDecoration;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalMultiblocks;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySheetmetalTank;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySilo;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class MultiblockSheetmetalTank implements IMultiblock
+public class MultiblockSilo implements IMultiblock
 {
-	public static MultiblockSheetmetalTank instance = new MultiblockSheetmetalTank();
+	public static MultiblockSilo instance = new MultiblockSilo();
 
 	static ItemStack[][][] structure = new ItemStack[7][3][3];
 	static{
-		for(int h=0;h<5;h++)
+		for(int h=0;h<7;h++)
 			for(int l=0;l<3;l++)
 				for(int w=0;w<3;w++)
 				{
@@ -31,7 +31,7 @@ public class MultiblockSheetmetalTank implements IMultiblock
 						else if(l==1&&w==1)
 							structure[h][l][w]=new ItemStack(IEContent.blockMetalDecoration,1,BlockMetalDecoration.META_sheetMetal);
 					}
-					else if(h<1||h>3 || w!=1||l!=1)
+					else if(h<1||h>5 || w!=1||l!=1)
 						structure[h][l][w]=new ItemStack(IEContent.blockMetalDecoration,1,BlockMetalDecoration.META_sheetMetal);
 				}
 	}
@@ -48,7 +48,7 @@ public class MultiblockSheetmetalTank implements IMultiblock
 	@Override
 	public float getManualScale()
 	{
-		return 14;
+		return 12;
 	}
 	@Override
 	@SideOnly(Side.CLIENT)
@@ -60,10 +60,10 @@ public class MultiblockSheetmetalTank implements IMultiblock
 	@SideOnly(Side.CLIENT)
 	public void renderFormedStructure()
 	{
-		TileEntitySheetmetalTank te = new TileEntitySheetmetalTank();
+		TileEntitySilo te = new TileEntitySilo();
 		te.formed=true;
 		te.pos=4;
-		TileEntityRendererDispatcher.instance.renderTileEntityAt(te, -.5D, -2.5D, -.5D, 0.0F);
+		TileEntityRendererDispatcher.instance.renderTileEntityAt(te, -.5D, -3.5D, -.5D, 0.0F);
 	}
 
 	@Override
@@ -80,7 +80,7 @@ public class MultiblockSheetmetalTank implements IMultiblock
 		int startX = x+(f==4?1:f==5?-1: 0);
 		int startY = y-1;
 		int startZ = z+(f==2?1:f==3?-1: 0);
-		for(int yy=0;yy<=4;yy++)
+		for(int yy=0;yy<=6;yy++)
 			for(int xx=-1;xx<=1;xx++)
 				for(int zz=-1;zz<=1;zz++)
 					if(yy==0)
@@ -96,7 +96,7 @@ public class MultiblockSheetmetalTank implements IMultiblock
 					}
 					else 
 					{
-						if(yy>0&&yy<4&&xx==0&&zz==0)
+						if(yy>0&&yy<6&&xx==0&&zz==0)
 						{
 							if(!world.isAirBlock(startX+xx, startY+yy, startZ+zz))
 								return false;
@@ -105,19 +105,19 @@ public class MultiblockSheetmetalTank implements IMultiblock
 							return false;
 					}
 
-		for(int yy=0;yy<=4;yy++)
+		for(int yy=0;yy<=6;yy++)
 			for(int xx=-1;xx<=1;xx++)
 				for(int zz=-1;zz<=1;zz++)
 					if(yy>0|| (Math.abs(xx)==1&&Math.abs(zz)==1) || (xx==0&&zz==0))
 					{
-						if(yy>0&&yy<4&&xx==0&&zz==0)
+						if(yy>0&&yy<6&&xx==0&&zz==0)
 							continue;
-						world.setBlock(startX+xx, startY+yy, startZ+zz, IEContent.blockMetalMultiblocks, BlockMetalMultiblocks.META_tank, 0x3);
-						if(world.getTileEntity(startX+xx, startY+yy, startZ+zz) instanceof TileEntitySheetmetalTank)
+						world.setBlock(startX+xx, startY+yy, startZ+zz, IEContent.blockMetalMultiblocks, BlockMetalMultiblocks.META_silo, 0x3);
+						if(world.getTileEntity(startX+xx, startY+yy, startZ+zz) instanceof TileEntitySilo)
 						{
-							((TileEntitySheetmetalTank)world.getTileEntity(startX+xx, startY+yy, startZ+zz)).pos=(yy)*9 + (xx+1)*3 + (zz+1);
-							((TileEntitySheetmetalTank)world.getTileEntity(startX+xx, startY+yy, startZ+zz)).formed=true;
-							((TileEntitySheetmetalTank)world.getTileEntity(startX+xx, startY+yy, startZ+zz)).offset=new int[]{xx,yy,zz};
+							((TileEntitySilo)world.getTileEntity(startX+xx, startY+yy, startZ+zz)).pos=(yy)*9 + (xx+1)*3 + (zz+1);
+							((TileEntitySilo)world.getTileEntity(startX+xx, startY+yy, startZ+zz)).formed=true;
+							((TileEntitySilo)world.getTileEntity(startX+xx, startY+yy, startZ+zz)).offset=new int[]{xx,yy,zz};
 							world.getTileEntity(startX+xx, startY+yy, startZ+zz).markDirty();
 						}
 					}
@@ -127,6 +127,6 @@ public class MultiblockSheetmetalTank implements IMultiblock
 	@Override
 	public ItemStack[] getTotalMaterials()
 	{
-		return new ItemStack[]{new ItemStack(IEContent.blockWoodenDecoration,4,1),new ItemStack(IEContent.blockMetalDecoration,34,BlockMetalDecoration.META_sheetMetal)};
+		return new ItemStack[]{new ItemStack(IEContent.blockWoodenDecoration,4,1),new ItemStack(IEContent.blockMetalDecoration,50,BlockMetalDecoration.META_sheetMetal)};
 	}
 }

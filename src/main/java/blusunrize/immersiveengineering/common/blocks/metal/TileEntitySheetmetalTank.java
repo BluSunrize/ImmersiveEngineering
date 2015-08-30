@@ -30,6 +30,12 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart implement
 	}
 
 	@Override
+	public boolean canUpdate()
+	{
+		return false;
+	}
+	
+	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);

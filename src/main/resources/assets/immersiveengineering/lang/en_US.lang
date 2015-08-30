@@ -50,6 +50,8 @@ tile.ImmersiveEngineering.metalMultiblock.crusher.name=Crusher
 tile.ImmersiveEngineering.metalMultiblock.bucketWheel.name=Bucket Wheel
 tile.ImmersiveEngineering.metalMultiblock.excavator.name=Excavator
 tile.ImmersiveEngineering.metalMultiblock.arcFurnace.name=Arc Furnace
+tile.ImmersiveEngineering.metalMultiblock.tank.name=Fluid Tank
+tile.ImmersiveEngineering.metalMultiblock.silo.name=Item Silo
 
 tile.ImmersiveEngineering.metalDecoration.fence.name=Steel Fence
 tile.ImmersiveEngineering.metalDecoration.scaffolding.name=Steel Scaffolding
@@ -61,6 +63,7 @@ tile.ImmersiveEngineering.metalDecoration.generator.name=Generator Block
 tile.ImmersiveEngineering.metalDecoration.lightEngineering.name=Light Engineering Block
 tile.ImmersiveEngineering.metalDecoration.connectorStructural.name=Structural Cable Connector
 tile.ImmersiveEngineering.metalDecoration.wallMount.name=Steel Wall Mount
+tile.ImmersiveEngineering.metalDecoration.sheetMetal.name=Sheet Metal Block
 
 tile.ImmersiveEngineering.metalDevice2.breakerSwitch.name=Breaker Switch
 

@@ -442,6 +442,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 				if(stack.stackSize == 0)
 					setInventorySlotContents(slot, null);
 			}
+		this.markDirty();
 		return stack;
 	}
 	@Override
@@ -469,6 +470,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 		inventory[slot] = stack;
 		if (stack != null && stack.stackSize > getInventoryStackLimit())
 			stack.stackSize = getInventoryStackLimit();
+		this.markDirty();
 	}
 	@Override
 	public String getInventoryName()
