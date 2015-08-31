@@ -144,14 +144,6 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 					{
 						ItemStack inputStack = inputs.get(0);
 
-						if(inputStack!=null)
-						{
-							Block b = Block.getBlockFromItem(inputStack.getItem());
-							int id = (b!=null&&b!=Blocks.air)?Block.getIdFromBlock(b): Item.getIdFromItem(inputStack.getItem());
-							int meta = inputStack.getItemDamage()+((b!=null&&b!=Blocks.air)?0:16);
-							worldObj.addBlockEvent(xCoord,yCoord,zCoord, this.getBlockType(), id,meta);
-						}
-
 						CrusherRecipe recipe = CrusherRecipe.findRecipe(inputStack);
 						if(recipe!=null)
 						{
@@ -196,6 +188,15 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 					else
 					{
 						ItemStack inputStack = inputs.get(0);
+
+						if(inputStack!=null)
+						{
+							Block b = Block.getBlockFromItem(inputStack.getItem());
+							int id = (b!=null&&b!=Blocks.air)?Block.getIdFromBlock(b): Item.getIdFromItem(inputStack.getItem());
+							int meta = inputStack.getItemDamage()+((b!=null&&b!=Blocks.air)?0:16);
+							worldObj.addBlockEvent(xCoord,yCoord,zCoord, this.getBlockType(), id,meta);
+						}
+
 						CrusherRecipe recipe = CrusherRecipe.findRecipe(inputStack);
 						if(recipe!=null)
 							this.process = recipe.energy;
