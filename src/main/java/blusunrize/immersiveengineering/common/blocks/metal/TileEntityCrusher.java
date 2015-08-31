@@ -136,7 +136,12 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 				if(process>0)
 				{
 					int consumed = this.energyStorage.extractEnergy(power, false);
-					process -= consumed;
+					if(consumed>0){
+						process -= consumed;
+					} else {
+						active = false;
+						update = true;
+					}
 				}
 
 				if(process<=0 && !inputs.isEmpty())
