@@ -116,7 +116,7 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 					for(EntityLivingBase e : livingList)
 						if(!e.isDead && e.getHealth()>0)
 						{
-							int consumed = this.energyStorage.extractEnergy(power, true);
+							int consumed = this.energyStorage.extractEnergy(power, false);
 							if(consumed>0)
 							{
 								e.attackEntityFrom(IEDamageSources.causeCrusherDamage(), consumed/20f);
