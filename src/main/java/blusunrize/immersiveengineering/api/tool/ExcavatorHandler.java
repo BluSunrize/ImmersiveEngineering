@@ -59,9 +59,17 @@ public class ExcavatorHandler
 				return null;
 		}
 
-		long seed = world.getSeed();
-		boolean empty = ((seed+(chunkX*chunkX + chunkZ*chunkZ))^seed)%8!=0; //Used to be 1 in 4
-		int query = (int) ((seed+((chunkX*chunkX*71862)+(chunkZ*chunkZ*31261)))^seed);
+		
+		long worldSeed = world.getSeed();
+		long seed = (chunkX+(chunkZ << 10) )^ worldSeed;
+		Random r = world.getChunkFromChunkCoords(chunkX, chunkZ).getRandomWithSeed(940610);
+//				new Random(seed);
+		double dd = r.nextDouble();
+		System.out.println(dd);
+		boolean empty = dd>.125;
+		int query = r.nextInt(); 
+//		boolean empty = ((seed+(chunkX*chunkX + chunkZ*chunkZ))^seed)%8!=0; //Used to be 1 in 4
+//		int query = (int) ((seed+((chunkX*chunkX*71862)+(chunkZ*chunkZ*31261)))^seed);
 		if(empty)
 			return null;
 

@@ -1,7 +1,5 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
@@ -16,10 +14,12 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.IEContent;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class TileEntitySheetmetalTank extends TileEntityMultiblockPart implements IFluidHandler
 {
-	FluidTank tank = new FluidTank(512000);
+	public FluidTank tank = new FluidTank(512000);
 
 	public TileEntitySheetmetalTank master()
 	{
@@ -102,7 +102,7 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart implement
 					}
 		}
 	}
-
+	
 	@Override
 	public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
 	{
@@ -112,6 +112,8 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart implement
 			return master().fill(from,resource,doFill);
 		int f =  tank.fill(resource, doFill);
 		markDirty();
+		if(f>0 && doFill)
+			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 		return f;
 	}
 	@Override
@@ -134,6 +136,8 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart implement
 			return master().drain(from,maxDrain,doDrain);
 		FluidStack fs =  tank.drain(maxDrain, doDrain);
 		markDirty();
+		if(fs!=null && fs.amount>0 && doDrain)
+			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 		return fs;
 	}
 	@Override

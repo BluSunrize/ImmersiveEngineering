@@ -586,7 +586,7 @@ public class ClientUtils
 		GL11.glEnable(GL11.GL_ALPHA_TEST);
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 	}
-	public static void drawTexturedRect(int x, int y, int w, int h, double... uv)
+	public static void drawTexturedRect(float x, float y, float w, float h, double... uv)
 	{
 		tes().startDrawingQuads();
 		tes().addVertexWithUV(x, y+h, 0, uv[0], uv[3]);
@@ -600,7 +600,7 @@ public class ClientUtils
 		double[] d_uv = new double[]{uv[0]/picSize,uv[1]/picSize, uv[2]/picSize,uv[3]/picSize};
 		drawTexturedRect(x,y,w,h, d_uv);
 	}
-	public static void drawRepeatedFluidIcon(Fluid fluid, int x, int y, int w, int h)
+	public static void drawRepeatedFluidIcon(Fluid fluid, float x, float y, float w, float h)
 	{
 		bindTexture(TextureMap.locationBlocksTexture.toString());
 		IIcon icon = fluid.getIcon();
@@ -612,12 +612,12 @@ public class ClientUtils
 				drawRepeatedIcon(x,y,w,h, iW, iH, icon.getMinU(),icon.getMaxU(), icon.getMinV(),icon.getMaxV());
 		}
 	}
-	public static void drawRepeatedIcon(int x, int y, int w, int h, int iconWidth, int iconHeight, float uMin, float uMax, float vMin, float vMax)
+	public static void drawRepeatedIcon(float x, float y, float w, float h, int iconWidth, int iconHeight, float uMin, float uMax, float vMin, float vMax)
 	{
-		int iterMaxW = w/iconWidth;
-		int iterMaxH = h/iconHeight;
-		int leftoverW = w%iconWidth;
-		int leftoverH = h%iconHeight;
+		int iterMaxW = (int)(w/iconWidth);
+		int iterMaxH = (int)(h/iconHeight);
+		float leftoverW = w%iconWidth;
+		float leftoverH = h%iconHeight;
 		float leftoverWf = leftoverW/(float)iconWidth;
 		float leftoverHf = leftoverH/(float)iconHeight;
 		float iconUDif = uMax-uMin;

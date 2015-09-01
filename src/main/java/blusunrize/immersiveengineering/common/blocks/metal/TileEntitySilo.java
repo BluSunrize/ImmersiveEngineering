@@ -21,7 +21,7 @@ public class TileEntitySilo extends TileEntityMultiblockPart implements ISidedIn
 {
 	public ItemStack identStack;
 	public int storageAmount = 0;
-	static int maxStorage = 64;//41472;
+	static int maxStorage = 41472;
 	ItemStack inputStack;
 	ItemStack outputStack;
 	ItemStack prevInputStack;
