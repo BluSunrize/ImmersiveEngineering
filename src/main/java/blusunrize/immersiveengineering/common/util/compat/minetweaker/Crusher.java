@@ -7,6 +7,7 @@ import minetweaker.MineTweakerAPI;
 import minetweaker.api.item.IIngredient;
 import minetweaker.api.item.IItemStack;
 import net.minecraft.item.ItemStack;
+import stanhebben.zenscript.annotations.Optional;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 import blusunrize.immersiveengineering.api.crafting.CrusherRecipe;
@@ -15,7 +16,7 @@ import blusunrize.immersiveengineering.api.crafting.CrusherRecipe;
 public class Crusher
 {
 	@ZenMethod
-	public static void addRecipe(IItemStack output, IIngredient input, int energy, IItemStack secondaryOutput, double secondaryChance)
+	public static void addRecipe(IItemStack output, IIngredient input, int energy, @Optional IItemStack secondaryOutput, @Optional double secondaryChance)
 	{
 		Object oInput = MTHelper.toObject(input);
 		if(oInput==null)
