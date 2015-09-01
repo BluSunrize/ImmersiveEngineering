@@ -7,7 +7,6 @@ import minetweaker.IUndoableAction;
 import minetweaker.MineTweakerAPI;
 import minetweaker.api.liquid.ILiquidStack;
 import net.minecraftforge.fluids.FluidStack;
-import stanhebben.zenscript.annotations.Optional;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 import blusunrize.immersiveengineering.api.energy.DieselHandler;
@@ -17,7 +16,7 @@ import blusunrize.immersiveengineering.api.energy.DieselHandler.RefineryRecipe;
 public class Refinery
 {
 	@ZenMethod
-	public static void addRecipe(ILiquidStack output, ILiquidStack input0, @Optional ILiquidStack input1)
+	public static void addRecipe(ILiquidStack output, ILiquidStack input0, ILiquidStack input1)
 	{
 		if(MTHelper.toFluidStack(input0)==null||MTHelper.toFluidStack(input0).getFluid()==null)
 			return;
