@@ -7,6 +7,7 @@ import minetweaker.MineTweakerAPI;
 import minetweaker.api.item.IIngredient;
 import minetweaker.api.item.IItemStack;
 import net.minecraft.item.ItemStack;
+import stanhebben.zenscript.annotations.Optional;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
@@ -15,7 +16,7 @@ import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 public class ArcFurnace
 {
 	@ZenMethod
-	public static void addRecipe(IItemStack output, IIngredient input, IItemStack slag, int time, int energyPerTick, IIngredient[] additives)
+	public static void addRecipe(IItemStack output, IIngredient input, IItemStack slag, int time, int energyPerTick, @Optional IIngredient[] additives)
 	{
 		Object oInput = MTHelper.toObject(input);
 		if(oInput==null)
