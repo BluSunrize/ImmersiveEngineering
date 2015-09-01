@@ -116,7 +116,7 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 					for(EntityLivingBase e : livingList)
 						if(!e.isDead && e.getHealth()>0)
 						{
-							int consumed = this.energyStorage.extractEnergy(power, true);
+							int consumed = this.energyStorage.extractEnergy(power, false);
 							if(consumed>0)
 							{
 								e.attackEntityFrom(IEDamageSources.causeCrusherDamage(), consumed/20f);
@@ -136,21 +136,18 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 				if(process>0)
 				{
 					int consumed = this.energyStorage.extractEnergy(power, false);
-					process -= consumed;
+					if(consumed>0){
+						process -= consumed;
+					} else {
+						active = false;
+						update = true;
+					}
 				}
 
 				if(process<=0 && !inputs.isEmpty())
 					if(active)
 					{
 						ItemStack inputStack = inputs.get(0);
-
-						if(inputStack!=null)
-						{
-							Block b = Block.getBlockFromItem(inputStack.getItem());
-							int id = (b!=null&&b!=Blocks.air)?Block.getIdFromBlock(b): Item.getIdFromItem(inputStack.getItem());
-							int meta = inputStack.getItemDamage()+((b!=null&&b!=Blocks.air)?0:16);
-							worldObj.addBlockEvent(xCoord,yCoord,zCoord, this.getBlockType(), id,meta);
-						}
 
 						CrusherRecipe recipe = CrusherRecipe.findRecipe(inputStack);
 						if(recipe!=null)
@@ -196,6 +193,15 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 					else
 					{
 						ItemStack inputStack = inputs.get(0);
+
+						if(inputStack!=null)
+						{
+							Block b = Block.getBlockFromItem(inputStack.getItem());
+							int id = (b!=null&&b!=Blocks.air)?Block.getIdFromBlock(b): Item.getIdFromItem(inputStack.getItem());
+							int meta = inputStack.getItemDamage()+((b!=null&&b!=Blocks.air)?0:16);
+							worldObj.addBlockEvent(xCoord,yCoord,zCoord, this.getBlockType(), id,meta);
+						}
+
 						CrusherRecipe recipe = CrusherRecipe.findRecipe(inputStack);
 						if(recipe!=null)
 							this.process = recipe.energy;
