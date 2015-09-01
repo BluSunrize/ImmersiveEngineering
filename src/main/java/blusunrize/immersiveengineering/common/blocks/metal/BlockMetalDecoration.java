@@ -247,12 +247,16 @@ public class BlockMetalDecoration extends BlockIEBase implements blusunrize.aqua
 	@Override
 	public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z)
 	{
-		if(world.getBlockMetadata(x, y, z)==META_fence)
-			this.setBlockBounds(canConnectFenceTo(world,x-1,y,z)?0:.375f,0,canConnectFenceTo(world,x,y,z-1)?0:.375f, canConnectFenceTo(world,x+1,y,z)?1:.625f,1.5f,canConnectFenceTo(world,x,y,z+1)?1:.625f);
-		else if(world.getBlockMetadata(x, y, z)==META_scaffolding)
-			this.setBlockBounds(.0625f,0,.0625f, .9375f,1,.9375f);
-		else
-			this.setBlockBoundsBasedOnState(world,x,y,z);
+		if (world.getBlock(x, y, z) == this) {
+			if (world.getBlockMetadata(x, y, z) == META_fence)
+				this.setBlockBounds(canConnectFenceTo(world, x - 1, y, z) ? 0 : .375f, 0, canConnectFenceTo(world, x, y, z - 1) ? 0 : .375f, canConnectFenceTo(world, x + 1, y, z) ? 1 : .625f, 1.5f, canConnectFenceTo(world, x, y, z + 1) ? 1 : .625f);
+			else if (world.getBlockMetadata(x, y, z) == META_scaffolding)
+				this.setBlockBounds(.0625f, 0, .0625f, .9375f, 1, .9375f);
+			else
+				this.setBlockBoundsBasedOnState(world, x, y, z);
+		} else {
+			this.setBlockBounds(0, 0, 0, 1, 1, 1);
+		}
 		return super.getCollisionBoundingBoxFromPool(world, x, y, z);
 	}
 	@Override
