@@ -64,8 +64,10 @@ import blusunrize.immersiveengineering.client.render.TileRenderConnectorMV;
 import blusunrize.immersiveengineering.client.render.TileRenderConnectorStructural;
 import blusunrize.immersiveengineering.client.render.TileRenderCrusher;
 import blusunrize.immersiveengineering.client.render.TileRenderDieselGenerator;
+import blusunrize.immersiveengineering.client.render.TileRenderElectricLantern;
 import blusunrize.immersiveengineering.client.render.TileRenderEnergyMeter;
 import blusunrize.immersiveengineering.client.render.TileRenderExcavator;
+import blusunrize.immersiveengineering.client.render.TileRenderFloodLight;
 import blusunrize.immersiveengineering.client.render.TileRenderLantern;
 import blusunrize.immersiveengineering.client.render.TileRenderPost;
 import blusunrize.immersiveengineering.client.render.TileRenderRefinery;
@@ -96,9 +98,11 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorSt
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConveyorSorter;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityDieselGenerator;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityElectricLantern;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityEnergyMeter;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityExcavator;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFermenter;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFloodLight;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityLantern;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityRefinery;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityRelayHV;
@@ -178,6 +182,8 @@ public class ClientProxy extends CommonProxy
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityEnergyMeter.class, new TileRenderEnergyMeter());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntitySheetmetalTank.class, new TileRenderSheetmetalTank());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntitySilo.class, new TileRenderSilo());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityElectricLantern.class, new TileRenderElectricLantern());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFloodLight.class, new TileRenderFloodLight());
 		//WOOD
 		RenderingRegistry.registerBlockHandler(new BlockRenderWoodenDevices());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityWoodenPost.class, new TileRenderPost());

@@ -58,7 +58,7 @@ public interface IImmersiveConnectable
 	/**
 	 * @return the offset used when RayTracing to or from this block. This vector is based from the blocks /origin/
 	 */
-	public Vec3 getRaytraceOffset();
+	public Vec3 getRaytraceOffset(IImmersiveConnectable link);
 	/**
 	 * Used for rendering only
 	 * @return Where the cable should attach

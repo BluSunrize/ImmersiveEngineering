@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.Vec3;
 import blusunrize.immersiveengineering.api.TargetingInfo;
+import blusunrize.immersiveengineering.api.energy.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.api.energy.WireType;
@@ -101,7 +102,7 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable
 	}
 
 	@Override
-	public Vec3 getRaytraceOffset()
+	public Vec3 getRaytraceOffset(IImmersiveConnectable link)
 	{
 		return Vec3.createVectorHelper(.5,.5,.5);
 	}

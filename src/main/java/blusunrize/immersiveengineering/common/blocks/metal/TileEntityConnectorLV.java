@@ -9,6 +9,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.common.util.ForgeDirection;
+import blusunrize.immersiveengineering.api.energy.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler.AbstractConnection;
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler.Connection;
@@ -120,7 +121,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 	}
 
 	@Override
-	public Vec3 getRaytraceOffset()
+	public Vec3 getRaytraceOffset(IImmersiveConnectable link)
 	{
 		ForgeDirection fd = ForgeDirection.getOrientation(facing).getOpposite();
 		return Vec3.createVectorHelper(.5+fd.offsetX*.0625, .5+fd.offsetY*.0625, .5+fd.offsetZ*.0625);

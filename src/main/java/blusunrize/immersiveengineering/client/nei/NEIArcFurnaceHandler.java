@@ -68,7 +68,7 @@ public class NEIArcFurnaceHandler extends TemplateRecipeHandler
 		if(outputId == getOverlayIdentifier())
 		{
 			for(ArcFurnaceRecipe r : ArcFurnaceRecipe.recipeList)
-				if(r!=null)
+				if(r!=null && r.input!=null)
 					this.arecipes.add(new CachedArcFurnaceRecipe(r));
 		}
 		else
@@ -99,7 +99,7 @@ public class NEIArcFurnaceHandler extends TemplateRecipeHandler
 	{
 		if(result!=null)
 			for(ArcFurnaceRecipe r : ArcFurnaceRecipe.recipeList)
-				if(r!=null && (Utils.stackMatchesObject(result, r.output)||(r.slag!=null&&Utils.stackMatchesObject(result, r.slag))))
+				if(r!=null && r.input!=null && (Utils.stackMatchesObject(result, r.output)||(r.slag!=null&&Utils.stackMatchesObject(result, r.slag))))
 					this.arecipes.add(new CachedArcFurnaceRecipe(r));
 	}
 	@Override
@@ -107,7 +107,7 @@ public class NEIArcFurnaceHandler extends TemplateRecipeHandler
 	{
 		if(ingredient!=null)
 			for(ArcFurnaceRecipe r : ArcFurnaceRecipe.recipeList)
-				if(r!=null)
+				if(r!=null && r.input!=null)
 				{
 					if(Utils.stackMatchesObject(ingredient, r.input))
 						this.arecipes.add(new CachedArcFurnaceRecipe(r));

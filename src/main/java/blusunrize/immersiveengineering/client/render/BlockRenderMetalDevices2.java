@@ -10,7 +10,9 @@ import org.lwjgl.opengl.GL11;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDevices2;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBreakerSwitch;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityElectricLantern;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityEnergyMeter;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFloodLight;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 
@@ -32,10 +34,22 @@ public class BlockRenderMetalDevices2 implements ISimpleBlockRenderingHandler
 				ClientUtils.handleStaticTileRenderer(new TileEntityBreakerSwitch());
 				Tessellator.instance.draw();
 			}
-			if(metadata==BlockMetalDevices2.META_energyMeter)
+			else if(metadata==BlockMetalDevices2.META_energyMeter)
 			{
 				Tessellator.instance.startDrawingQuads();
 				ClientUtils.handleStaticTileRenderer(new TileEntityEnergyMeter());
+				Tessellator.instance.draw();
+			}
+			else if(metadata==BlockMetalDevices2.META_electricLantern)
+			{
+				Tessellator.instance.startDrawingQuads();
+				ClientUtils.handleStaticTileRenderer(new TileEntityElectricLantern());
+				Tessellator.instance.draw();
+			}
+			else if(metadata==BlockMetalDevices2.META_floodLight)
+			{
+				Tessellator.instance.startDrawingQuads();
+				ClientUtils.handleStaticTileRenderer(new TileEntityFloodLight());
 				Tessellator.instance.draw();
 			}
 		}catch(Exception e)
@@ -64,6 +78,20 @@ public class BlockRenderMetalDevices2 implements ISimpleBlockRenderingHandler
 		else if(metadata==BlockMetalDevices2.META_energyMeter)
 		{
 			TileEntityEnergyMeter tile = (TileEntityEnergyMeter)world.getTileEntity(x, y, z);
+			ClientUtils.handleStaticTileRenderer(tile);
+			ClientUtils.renderAttachedConnections(tile);
+			return true;
+		}
+		else if(metadata==BlockMetalDevices2.META_electricLantern)
+		{
+			TileEntityElectricLantern tile = (TileEntityElectricLantern)world.getTileEntity(x, y, z);
+			ClientUtils.handleStaticTileRenderer(tile);
+			ClientUtils.renderAttachedConnections(tile);
+			return true;
+		}
+		else if(metadata==BlockMetalDevices2.META_floodLight)
+		{
+			TileEntityFloodLight tile = (TileEntityFloodLight)world.getTileEntity(x, y, z);
 			ClientUtils.handleStaticTileRenderer(tile);
 			ClientUtils.renderAttachedConnections(tile);
 			return true;

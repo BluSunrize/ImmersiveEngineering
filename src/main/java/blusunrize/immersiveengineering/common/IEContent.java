@@ -49,9 +49,11 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConveyorSor
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityDieselGenerator;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityDynamo;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityElectricLantern;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityEnergyMeter;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityExcavator;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFermenter;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFloodLight;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFurnaceHeater;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityLantern;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityLightningRod;
@@ -353,6 +355,8 @@ public class IEContent
 		registerTile(TileEntityBreakerSwitch.class);
 		registerTile(TileEntitySkycrateDispenser.class);
 		registerTile(TileEntityEnergyMeter.class);
+		registerTile(TileEntityElectricLantern.class);
+		registerTile(TileEntityFloodLight.class);
 
 
 		registerTile(TileEntityCokeOven.class);

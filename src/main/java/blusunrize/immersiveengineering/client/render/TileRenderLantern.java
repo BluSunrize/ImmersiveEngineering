@@ -49,7 +49,7 @@ public class TileRenderLantern extends TileRenderImmersiveConnectable
 			break;
 		}
 
-		model.render(tile, tes, translationMatrix, rotationMatrix, -1, false, render);
+		model.render(tile, tes, translationMatrix, rotationMatrix, 0, false, render);
 	}
 
 }

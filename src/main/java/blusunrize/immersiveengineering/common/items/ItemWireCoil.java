@@ -113,8 +113,8 @@ public class ItemWireCoil extends ItemIEBase implements IWireCoil
 						player.addChatMessage(new ChatComponentTranslation(Lib.CHAT_WARN+"connectionExists"));
 					else
 					{
-						Vec3 rtOff0 = nodeHere.getRaytraceOffset().addVector(x, y, z);
-						Vec3 rtOff1 = nodeLink.getRaytraceOffset().addVector(pos[1], pos[2], pos[3]);
+						Vec3 rtOff0 = nodeHere.getRaytraceOffset(nodeLink).addVector(x, y, z);
+						Vec3 rtOff1 = nodeLink.getRaytraceOffset(nodeHere).addVector(pos[1], pos[2], pos[3]);
 						boolean canSee = Utils.canBlocksSeeOther(world, new ChunkCoordinates(x,y,z), new ChunkCoordinates(pos[1], pos[2], pos[3]), rtOff0,rtOff1);
 						if(canSee)
 						{

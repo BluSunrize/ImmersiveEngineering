@@ -32,11 +32,13 @@ public class BlockMetalDevices2 extends BlockIEBase implements blusunrize.aquatw
 	public static final int META_breakerSwitch=0;
 	public static final int META_skycrateDispenser=1;
 	public static final int META_energyMeter=2;
+	public static final int META_electricLantern=3;
+	public static final int META_floodLight=4;
 
 	public BlockMetalDevices2()
 	{
 		super("metalDevice2", Material.iron, 1, ItemBlockMetalDevices2.class,
-				"breakerSwitch","skycrateDispenser","energyMeter");
+				"breakerSwitch","skycrateDispenser","energyMeter","electricLantern","floodlight");
 		setHardness(3.0F);
 		setResistance(15.0F);
 	}
@@ -68,7 +70,8 @@ public class BlockMetalDevices2 extends BlockIEBase implements blusunrize.aquatw
 	public void getSubBlocks(Item item, CreativeTabs tab, List list)
 	{
 		list.add(new ItemStack(item, 1, 0));
-		list.add(new ItemStack(item, 1, 2));
+		list.add(new ItemStack(item, 1, 3));
+		list.add(new ItemStack(item, 1, 4));
 		//		for(int i=0; i<subNames.length; i++)
 		//		{
 		//			list.add(new ItemStack(item, 1, i));
@@ -150,6 +153,8 @@ public class BlockMetalDevices2 extends BlockIEBase implements blusunrize.aquatw
 			else
 				this.setBlockBounds(f>=4?.1875f:.25f,.75f,f<=3?.1875f:.25f, f>=4?.8125f:.75f,1,f<=3?.8125f:.75f);
 		}
+		else if(world.getBlockMetadata(x, y, z)==META_electricLantern)
+			this.setBlockBounds(.1875f,0,.1875f, .8125f,1,.8125f);
 		else
 			this.setBlockBounds(0,0,0,1,1,1);
 	}
@@ -184,6 +189,10 @@ public class BlockMetalDevices2 extends BlockIEBase implements blusunrize.aquatw
 			return new TileEntitySkycrateDispenser();
 		case META_energyMeter:
 			return new TileEntityEnergyMeter();
+		case META_electricLantern:
+			return new TileEntityElectricLantern();
+		case META_floodLight:
+			return new TileEntityFloodLight();
 		}
 		return null;
 	}
@@ -236,16 +245,24 @@ public class BlockMetalDevices2 extends BlockIEBase implements blusunrize.aquatw
 	}
 
 
+	@Override
+	public int getLightValue(IBlockAccess world, int x, int y, int z)
+	{
+		if(world.getTileEntity(x, y, z) instanceof TileEntityElectricLantern)
+			return ((TileEntityElectricLantern)world.getTileEntity(x, y, z)).active?15:0;
+		return 0;
+	}
+
 	@Optional.Method(modid = "AquaTweaks")
 	public boolean shouldRenderFluid(IBlockAccess world, int x, int y, int z)
 	{
 		int meta = world.getBlockMetadata(x, y, z);
-		return meta==META_breakerSwitch;
+		return meta==META_breakerSwitch||meta==META_electricLantern;
 	}
 	@Optional.Method(modid = "AquaTweaks")
 	public boolean canConnectTo(IBlockAccess world, int x, int y, int z, int side)
 	{
 		int meta = world.getBlockMetadata(x, y, z);
-		return meta==META_breakerSwitch;
+		return meta==META_breakerSwitch||meta==META_electricLantern;
 	}
 }
