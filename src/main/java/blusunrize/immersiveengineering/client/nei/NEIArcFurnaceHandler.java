@@ -30,11 +30,13 @@ public class NEIArcFurnaceHandler extends TemplateRecipeHandler
 		public CachedArcFurnaceRecipe(ArcFurnaceRecipe recipe)
 		{
 			inputs = new PositionedStack[recipe.additives.length+1];
-			inputs[0] = new PositionedStack(recipe.input, 28, 0);
+			if(recipe.input!=null)
+				inputs[0] = new PositionedStack(recipe.input, 28, 0);
 			for(int i=0; i<recipe.additives.length; i++)
 				if(recipe.additives[i]!=null)
 					inputs[i+1] = new PositionedStack(recipe.additives[i], 20+i%2*18, 24+i/2*18);
-			output = new PositionedStack(recipe.output, 122,16);
+			if(recipe.output!=null)
+				output = new PositionedStack(recipe.output, 122,16);
 			if(recipe.slag!=null)
 				slag = new PositionedStack(recipe.slag, 122,36);
 			time = recipe.time;
