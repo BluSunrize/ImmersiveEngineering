@@ -80,6 +80,7 @@ public class TileEntitySqueezer extends TileEntityMultiblockPart implements IFlu
 				{
 					energyStorage.extractEnergy(consumed, false);
 					tick++;
+					update = true;
 				}
 				if(tick>=valid[1])
 				{
@@ -521,7 +522,7 @@ public class TileEntitySqueezer extends TileEntityMultiblockPart implements IFlu
 			return false;
 		if(master()!=null)
 			return master().canExtractItem(slot,stack,side);
-		return slot==10&&slot==11;
+		return slot==10||slot==11;
 	}
 
 	@Override
