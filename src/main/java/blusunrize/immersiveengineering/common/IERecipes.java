@@ -91,11 +91,11 @@ public class IERecipes
 			Config.setBoolean("botaniaBullets", true);
 		}
 		BlueprintCraftingRecipe.addRecipe("specialBullet", new ItemStack(IEContent.itemBullet,1,10), new ItemStack(IEContent.itemBullet,1,1),Items.gunpowder,"dustQuartz",Items.glass_bottle);
-		
+
 		BlueprintCraftingRecipe.addVillagerTrade("bullet", new ItemStack(Items.emerald,1,2));
 		BlueprintCraftingRecipe.addVillagerTrade("specialBullet", new ItemStack(Items.emerald,1,7));
 		GameRegistry.addRecipe(new RecipePotionBullets());
-		
+
 		int blueprint = BlueprintCraftingRecipe.blueprintCategories.indexOf("bullet");
 		addOredictRecipe(new ItemStack(IEContent.itemBlueprint,1,blueprint), "JKL","DDD","PPP", 'J',Items.gunpowder,'K',"ingotCopper",'L',Items.gunpowder, 'D',"dyeBlue",'P',Items.paper);
 
@@ -159,7 +159,7 @@ public class IERecipes
 		addOredictRecipe(new ItemStack(IEContent.blockWoodenDevice,1,4), "WWW","W W","WWW", 'W',treatedWood);
 		addOredictRecipe(new ItemStack(IEContent.blockWoodenDevice,1,5), "WWW","B F", 'W',new ItemStack(IEContent.blockWoodenDecoration,1,2),'B',"craftingTableWood",'F',new ItemStack(IEContent.blockWoodenDecoration,1,1));
 		addOredictRecipe(new ItemStack(IEContent.blockWoodenDevice,1,6), "WWW","W W","SSS", 'W',treatedWood,'S',new ItemStack(IEContent.blockWoodenDecoration,1,2));
-		
+
 		addOredictRecipe(new ItemStack(IEContent.blockStoneDecoration,6,0), "CCC","HHH","CCC", 'C',Items.clay_ball,'H',new ItemStack(IEContent.itemMaterial,1,3));
 		addOredictRecipe(new ItemStack(IEContent.blockStoneDecoration,2,1), "CBC","BSB","CBC", 'S',"sandstone",'C',Items.clay_ball,'B',"ingotBrick");
 		addOredictRecipe(new ItemStack(IEContent.blockStoneDecoration,2,2), "NBN","BDB","NBN", 'D',Items.blaze_powder,'N',"ingotBrickNether",'B',"ingotBrick");

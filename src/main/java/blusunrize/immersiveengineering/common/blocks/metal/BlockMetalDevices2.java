@@ -135,6 +135,23 @@ public class BlockMetalDevices2 extends BlockIEBase implements blusunrize.aquatw
 			}
 			return true;
 		}
+		if(Utils.isHammer(player.getCurrentEquippedItem()) && world.getTileEntity(x, y, z) instanceof TileEntityFloodLight)
+		{
+			if(player.isSneaking())
+			{
+				((TileEntityFloodLight)world.getTileEntity(x, y, z)).rotX+=10;
+				((TileEntityFloodLight)world.getTileEntity(x, y, z)).rotX%=360;
+				world.getTileEntity(x, y, z).markDirty();
+				world.markBlockForUpdate(x, y, z);
+			}
+			else
+			{
+				((TileEntityFloodLight)world.getTileEntity(x, y, z)).rotY+=10;
+				((TileEntityFloodLight)world.getTileEntity(x, y, z)).rotY%=360;
+				world.getTileEntity(x, y, z).markDirty();
+				world.markBlockForUpdate(x, y, z);
+			}
+		}
 
 		return false;
 	}

@@ -33,6 +33,7 @@ import blusunrize.immersiveengineering.api.energy.DieselHandler;
 import blusunrize.immersiveengineering.api.energy.ThermoelectricHandler;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.client.fx.EntityFXItemParts;
+import blusunrize.immersiveengineering.client.fx.EntityFXSparks;
 import blusunrize.immersiveengineering.client.gui.GuiArcFurnace;
 import blusunrize.immersiveengineering.client.gui.GuiBlastFurnace;
 import blusunrize.immersiveengineering.client.gui.GuiCokeOven;
@@ -511,6 +512,12 @@ public class ClientProxy extends CommonProxy
 				Minecraft.getMinecraft().effectRenderer.addEffect(particleMysterious);
 			}
 	}
+	@Override
+	public void spawnSparkFX(World world, double x, double y, double z, double mx, double my, double mz)
+	{
+		EntityFX particleMysterious = new EntityFXSparks(world, x,y,z, mx,my,mz);
+		Minecraft.getMinecraft().effectRenderer.addEffect(particleMysterious);
+	}
 
 	@Override
 	public void draw3DBlockCauldron()
@@ -562,7 +569,7 @@ public class ClientProxy extends CommonProxy
 				}
 				else
 					item = sortedMapArray[i].getKey();
-					
+
 				if(item!=null)
 				{
 					int bt = sortedMapArray[i].getValue();

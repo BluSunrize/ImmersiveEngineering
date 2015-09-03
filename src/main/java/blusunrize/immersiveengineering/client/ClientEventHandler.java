@@ -44,6 +44,7 @@ import blusunrize.immersiveengineering.api.energy.WireType;
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
 import blusunrize.immersiveengineering.client.gui.GuiBlastFurnace;
 import blusunrize.immersiveengineering.client.models.ModelIEObj;
+import blusunrize.immersiveengineering.client.render.TileRenderArcFurnace;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces;
@@ -78,6 +79,8 @@ public class ClientEventHandler
 			if(IEContent.IEBiodiesel)
 				IEContent.fluidBiodiesel.setIcons(event.map.registerIcon("immersiveengineering:fluid/biodiesel_still"), event.map.registerIcon("immersiveengineering:fluid/biodiesel_flow"));
 			WireType.iconDefaultWire = event.map.registerIcon("immersiveengineering:wire");
+			TileRenderArcFurnace.hotMetal_flow = event.map.registerIcon("immersiveengineering:fluid/hotMetal_flow");
+			TileRenderArcFurnace.hotMetal_still = event.map.registerIcon("immersiveengineering:fluid/hotMetal_still");
 		}
 		if(event.map.getTextureType()==Config.getInt("revolverSheetID"))
 		{

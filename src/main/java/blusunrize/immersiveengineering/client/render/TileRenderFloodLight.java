@@ -24,13 +24,14 @@ public class TileRenderFloodLight extends TileRenderImmersiveConnectable
 	public void renderStatic(TileEntity tile, Tessellator tes, Matrix4 translationMatrix, Matrix4 rotationMatrix)
 	{
 		translationMatrix.translate(.5, .5625, .5);
+		TileEntityFloodLight light = (TileEntityFloodLight)tile;
 		model.render(tile, tes, translationMatrix, rotationMatrix, 0, false, "base");
 
-		rotationMatrix.rotate(Math.toRadians(00), 0,1,0);
+		float angle = light.facing==2?180: light.facing==4?-90: light.facing==5?90: 0;
+		rotationMatrix.rotate(Math.toRadians(angle+light.rotY), 0,1,0);
 		model.render(tile, tes, translationMatrix, rotationMatrix, 0, false, "gear0");
 		
-		rotationMatrix.rotate(Math.toRadians(00), 1,0,0);
-		
+		rotationMatrix.rotate(Math.toRadians(light.rotX), 1,0,0);
 		String[] s = {"light","off"};
 		if(((TileEntityFloodLight)tile).active)
 			s[1]="on";

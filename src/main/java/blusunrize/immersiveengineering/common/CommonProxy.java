@@ -83,6 +83,9 @@ public class CommonProxy implements IGuiHandler
 	public void spawnBucketWheelFX(TileEntityBucketWheel tile, ItemStack stack)
 	{
 	}
+	public void spawnSparkFX(World world, double x, double y, double z, double mx, double my, double mz)
+	{
+	}
 	public void draw3DBlockCauldron()
 	{
 	}

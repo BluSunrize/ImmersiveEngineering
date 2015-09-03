@@ -43,6 +43,10 @@ public class ItemBlockMetalDevices2 extends ItemBlockIEBase
 			else
 				((TileEntityBreakerSwitch)world.getTileEntity(x, y, z)).facing = ForgeDirection.OPPOSITES[side];
 		}
+		if(world.getTileEntity(x, y, z) instanceof TileEntityFloodLight)
+		{
+			((TileEntityFloodLight)world.getTileEntity(x, y, z)).facing = f;
+		}
 		return ret;
 	}
 }

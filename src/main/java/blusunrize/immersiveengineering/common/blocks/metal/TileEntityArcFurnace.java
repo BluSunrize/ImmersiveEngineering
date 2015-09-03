@@ -14,6 +14,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.oredict.OreDictionary;
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.common.Config;
@@ -22,6 +23,7 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockArcFu
 import blusunrize.immersiveengineering.common.util.Utils;
 import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyReceiver;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -34,6 +36,8 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 	public int[] processMax = new int[12];
 	public boolean active = false;
 	public boolean[] electrodes = new boolean[3];
+	@SideOnly(Side.CLIENT)
+	public int pouringMetal = 0;
 
 
 	public TileEntityArcFurnace master()
@@ -58,7 +62,21 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 			return;
 
 		if(worldObj.isRemote)
+		{
+			if(pouringMetal>0)
+				pouringMetal--;
+			if(active)
+				for(int i=0; i<4; i++)
+				{
+					if(worldObj.rand.nextInt(6)==0)
+						ImmersiveEngineering.proxy.spawnSparkFX(worldObj, xCoord+.5+(facing==4?-.25:facing==5?.25:0),yCoord+2,zCoord+.5+(facing==2?-.25:facing==3?.25:0), worldObj.rand.nextDouble()*.05-.025, .025, worldObj.rand.nextDouble()*.05-.025);
+					if(worldObj.rand.nextInt(6)==0)
+						ImmersiveEngineering.proxy.spawnSparkFX(worldObj, xCoord+.5+(facing==4?.25:facing==5?-.25:.25),yCoord+2,zCoord+.5+(facing==2?.25:facing==3?-.25:-.25), worldObj.rand.nextDouble()*.05-.025, .025, worldObj.rand.nextDouble()*.05-.025);
+					if(worldObj.rand.nextInt(6)==0)
+						ImmersiveEngineering.proxy.spawnSparkFX(worldObj, xCoord+.5+(facing==4?.25:facing==5?-.25:-.25),yCoord+2,zCoord+.5+(facing==2?.25:facing==3?-.25:.25), worldObj.rand.nextDouble()*.05-.025, .025, worldObj.rand.nextDouble()*.05-.025);
+				}
 			return;
+		}
 		boolean update = false;
 
 		boolean hasElectrodes = true;
@@ -160,6 +178,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 										inventory[outputSlot].stackSize+= recipe.output.stackSize;
 									else if(inventory[outputSlot]==null)
 										inventory[outputSlot] = recipe.output.copy();
+									worldObj.addBlockEvent(xCoord,yCoord,zCoord, this.getBlockType(), 0,40);
 								}
 								if(recipe.slag!=null)
 								{
@@ -282,6 +301,14 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 				}
 			nbt.setTag("inventory", invList);
 		}
+	}
+
+	@Override
+	public boolean receiveClientEvent(int id, int arg)
+	{
+		if(id==0 && FMLCommonHandler.instance().getEffectiveSide()==Side.CLIENT)
+			this.pouringMetal=arg;
+		return true;
 	}
 
 	@Override

@@ -44,6 +44,7 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 
 	public float barrelRotation=0;
 	public boolean active = false;
+	public boolean hasPower = false;
 	public boolean mobGrinding = false;
 	public int grindingTimer = 0;
 	@SideOnly(Side.CLIENT)
@@ -71,7 +72,7 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 		if(!formed || pos!=17)
 			return;
 
-		if((active&&process>0)||mobGrinding||grindingTimer>0)
+		if(hasPower&&(active&&process>0)||mobGrinding||grindingTimer>0)
 		{
 			if(grindingTimer>0)
 				grindingTimer--;
@@ -81,8 +82,8 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 
 		if(worldObj.isRemote)
 		{
-			ImmersiveEngineering.proxy.handleTileSound("crusher", this, ((active&&process>0)||mobGrinding||grindingTimer>0), 1,1);
-			if(particleStack!=null && active&&process>0)
+			ImmersiveEngineering.proxy.handleTileSound("crusher", this, hasPower&&((active&&process>0)||mobGrinding||grindingTimer>0), 1,1);
+			if(particleStack!=null && active&&hasPower&&process>0)
 				ImmersiveEngineering.proxy.spawnCrusherFX(this, particleStack);
 			else if(particleStack!=null)
 				particleStack=null;
@@ -90,12 +91,17 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 		else
 		{
 			boolean update = false;
+			if(hasPower!=(energyStorage.getEnergyStored()>0))
+			{
+				hasPower = !hasPower;
+				update = true;
+			}
 			if(!worldObj.isBlockIndirectlyGettingPowered(xCoord+(facing==4?-1:facing==5?1:facing==(mirrored?2:3)?2:-2),yCoord+1,zCoord+(facing==2?-1:facing==3?1:facing==(mirrored?5:4)?2:-2)))
 			{
 				int power = Config.getInt("crusher_consumption");
 				AxisAlignedBB aabb = AxisAlignedBB.getBoundingBox(xCoord-.5625,yCoord+1.5,zCoord-.5625, xCoord+1.5625,yCoord+2.875,zCoord+1.5625);
 				List<EntityItem> itemList = worldObj.getEntitiesWithinAABB(EntityItem.class, aabb);
-				if(!itemList.isEmpty() && this.energyStorage.getEnergyStored()>0)
+				if(!itemList.isEmpty() && hasPower)
 					for(EntityItem e : itemList)
 					{
 						ItemStack input = ((EntityItem)e).getEntityItem();
@@ -187,7 +193,7 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 						{
 							inputs.remove(0);
 							active = false;
-							return;
+							update = true;
 						}
 					}
 					else
@@ -275,7 +281,9 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 	{
 		super.readCustomNBT(nbt, descPacket);
 		facing = nbt.getInteger("facing");
-		barrelRotation = nbt.getFloat("barrelRotation");
+		hasPower = nbt.getBoolean("hasPower");
+		if(hasPower)
+			barrelRotation = nbt.getFloat("barrelRotation");
 		active = nbt.getBoolean("active");
 		mobGrinding = nbt.getBoolean("mobGrinding");
 		grindingTimer = nbt.getInteger("grindingTimer");
@@ -294,6 +302,7 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 	{
 		super.writeCustomNBT(nbt, descPacket);
 		nbt.setInteger("facing", facing);
+		nbt.setBoolean("hasPower", hasPower);
 		nbt.setFloat("barrelRotation", barrelRotation);
 		nbt.setBoolean("active", active);
 		nbt.setBoolean("mobGrinding", mobGrinding);
@@ -318,7 +327,7 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 		return AxisAlignedBB.getBoundingBox(xCoord,yCoord,zCoord, xCoord,yCoord,zCoord);
 	}
 	@Override
-    @SideOnly(Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public double getMaxRenderDistanceSquared()
 	{
 		return super.getMaxRenderDistanceSquared()*Config.getDouble("increasedTileRenderdistance");

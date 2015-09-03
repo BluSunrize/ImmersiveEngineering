@@ -32,7 +32,7 @@ public class TileRenderCrusher extends TileEntitySpecialRenderer
 
 		ClientUtils.bindTexture("immersiveengineering:textures/models/crusher.png");
 
-		boolean b = (crusher.active&&crusher.process>0)||crusher.mobGrinding||crusher.grindingTimer>0;
+		boolean b = crusher.hasPower&&((crusher.active&&crusher.process>0)||crusher.mobGrinding||crusher.grindingTimer>0);
 		model.renderAllExcept("drum0","drum1");
 
 		float angle = crusher.barrelRotation+(b?18*f:0);
