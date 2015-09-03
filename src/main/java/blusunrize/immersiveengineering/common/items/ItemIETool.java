@@ -56,6 +56,11 @@ public class ItemIETool extends ItemIEBase
 	{
 		return stack.getItemDamage()==0?stack: null;
 	}
+	@Override
+    public boolean doesContainerItemLeaveCraftingGrid(ItemStack stack)
+    {
+        return stack.getItemDamage()!=0;
+    }
 	
 	@Override
 	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)

@@ -7,6 +7,7 @@ import java.awt.Rectangle;
 import java.util.Arrays;
 import java.util.List;
 
+import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 
@@ -14,6 +15,7 @@ import org.lwjgl.opengl.GL11;
 
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.client.gui.GuiArcFurnace;
 import blusunrize.immersiveengineering.common.util.Utils;
 import codechicken.nei.PositionedStack;
 import codechicken.nei.recipe.TemplateRecipeHandler;
@@ -60,9 +62,15 @@ public class NEIArcFurnaceHandler extends TemplateRecipeHandler
 	}
 
 	@Override
+	public Class<? extends GuiContainer> getGuiClass()
+	{
+		return GuiArcFurnace.class;
+	}
+
+	@Override
 	public void loadTransferRects()
 	{
-		transferRects.add(new RecipeTransferRect(new Rectangle(71,16, 25,15), "ieArcFurnace"));
+		transferRects.add(new RecipeTransferRect(new Rectangle(76,26, 32,40), "ieArcFurnace"));
 	}
 	@Override
 	public void loadCraftingRecipes(String outputId, Object... results)

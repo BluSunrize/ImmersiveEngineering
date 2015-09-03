@@ -8,6 +8,7 @@ import java.awt.Rectangle;
 import java.util.Arrays;
 import java.util.List;
 
+import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.fluids.Fluid;
@@ -20,6 +21,7 @@ import org.lwjgl.opengl.GL11;
 import blusunrize.immersiveengineering.api.energy.DieselHandler;
 import blusunrize.immersiveengineering.api.energy.DieselHandler.SqueezerRecipe;
 import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.client.gui.GuiSqueezer;
 import blusunrize.immersiveengineering.common.util.Utils;
 import codechicken.lib.gui.GuiDraw;
 import codechicken.nei.PositionedStack;
@@ -59,6 +61,11 @@ public class NEISqueezerHandler extends TemplateRecipeHandler
 		}
 	}
 
+	@Override
+	public Class<? extends GuiContainer> getGuiClass()
+	{
+		return GuiSqueezer.class;
+	}
 	@Override
 	public void loadTransferRects()
 	{
