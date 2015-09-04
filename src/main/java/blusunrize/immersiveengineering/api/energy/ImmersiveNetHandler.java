@@ -49,8 +49,10 @@ public class ImmersiveNetHandler
 		getMultimap(world.provider.dimensionId).get(connection).add(new Connection(connection, node, cableType, distance));
 		if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
 			indirectConnections.clear();
-		world.addBlockEvent(node.posX, node.posY, node.posZ, world.getBlock(node.posX,node.posY,node.posZ),-1,0);
-		world.addBlockEvent(connection.posX, connection.posY, connection.posZ, world.getBlock(connection.posX,connection.posY,connection.posZ),-1,0);
+		if(world.blockExists(node.posX,node.posY,node.posZ))
+			world.addBlockEvent(node.posX, node.posY, node.posZ, world.getBlock(node.posX,node.posY,node.posZ),-1,0);
+		if(world.blockExists(connection.posX,connection.posY,connection.posZ))
+			world.addBlockEvent(connection.posX, connection.posY, connection.posZ, world.getBlock(connection.posX,connection.posY,connection.posZ),-1,0);
 		IESaveData.setDirty(world.provider.dimensionId);
 	}
 	public void addConnection(World world, ChunkCoordinates node, Connection con)
@@ -122,13 +124,16 @@ public class ImmersiveNetHandler
 					double dy = node.posY+.5+Math.signum(con.start.posY-con.end.posY);
 					double dz = node.posZ+.5+Math.signum(con.start.posZ-con.end.posZ);
 					world.spawnEntityInWorld(new EntityItem(world, dx,dy,dz, con.cableType.getWireCoil()));
-					world.addBlockEvent(con.start.posX, con.start.posY, con.start.posZ, world.getBlock(con.start.posX,con.start.posY,con.start.posZ),-1,0);
+					if(world.blockExists(con.start.posX,con.start.posY,con.start.posZ))
+						world.addBlockEvent(con.start.posX, con.start.posY, con.start.posZ, world.getBlock(con.start.posX,con.start.posY,con.start.posZ),-1,0);
 				}
 				else
-					world.addBlockEvent(con.end.posX, con.end.posY, con.end.posZ, world.getBlock(con.end.posX,con.end.posY,con.end.posZ),-1,0);
+					if(world.blockExists(con.end.posX,con.end.posY,con.end.posZ))
+						world.addBlockEvent(con.end.posX, con.end.posY, con.end.posZ, world.getBlock(con.end.posX,con.end.posY,con.end.posZ),-1,0);
 			}
 		}
-		world.addBlockEvent(node.posX, node.posY, node.posZ, world.getBlock(node.posX,node.posY,node.posZ),-1,0);
+		if(world.blockExists(node.posX,node.posY,node.posZ))
+			world.addBlockEvent(node.posX, node.posY, node.posZ, world.getBlock(node.posX,node.posY,node.posZ),-1,0);
 		IESaveData.setDirty(world.provider.dimensionId);
 		if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
 			indirectConnections.clear();
@@ -161,13 +166,16 @@ public class ImmersiveNetHandler
 						double dy = node.posY+.5+Math.signum(con.start.posY-con.end.posY);
 						double dz = node.posZ+.5+Math.signum(con.start.posZ-con.end.posZ);
 						world.spawnEntityInWorld(new EntityItem(world, dx,dy,dz, con.cableType.getWireCoil()));
-						world.addBlockEvent(con.start.posX, con.start.posY, con.start.posZ, world.getBlock(con.start.posX,con.start.posY,con.start.posZ),-1,0);
+						if(world.blockExists(con.start.posX,con.start.posY,con.start.posZ))
+							world.addBlockEvent(con.start.posX, con.start.posY, con.start.posZ, world.getBlock(con.start.posX,con.start.posY,con.start.posZ),-1,0);
 					}
 					else
-						world.addBlockEvent(con.end.posX, con.end.posY, con.end.posZ, world.getBlock(con.end.posX,con.end.posY,con.end.posZ),-1,0);
+						if(world.blockExists(con.end.posX,con.end.posY,con.end.posZ))
+							world.addBlockEvent(con.end.posX, con.end.posY, con.end.posZ, world.getBlock(con.end.posX,con.end.posY,con.end.posZ),-1,0);
 				}
 		}
-		world.addBlockEvent(node.posX, node.posY, node.posZ, world.getBlock(node.posX,node.posY,node.posZ),-1,0);
+		if(world.blockExists(node.posX,node.posY,node.posZ))
+			world.addBlockEvent(node.posX, node.posY, node.posZ, world.getBlock(node.posX,node.posY,node.posZ),-1,0);
 
 		IESaveData.setDirty(world.provider.dimensionId);
 		if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)

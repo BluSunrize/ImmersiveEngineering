@@ -69,7 +69,7 @@ public class ApiUtils
 	{
 		if(object instanceof IImmersiveConnectable)
 			return (IImmersiveConnectable)object;
-		else if(object instanceof ChunkCoordinates && world!=null && world.getTileEntity( ((ChunkCoordinates)object).posX, ((ChunkCoordinates)object).posY, ((ChunkCoordinates)object).posZ) instanceof IImmersiveConnectable)
+		else if(object instanceof ChunkCoordinates && world!=null && world.blockExists( ((ChunkCoordinates)object).posX, ((ChunkCoordinates)object).posY, ((ChunkCoordinates)object).posZ) && world.getTileEntity( ((ChunkCoordinates)object).posX, ((ChunkCoordinates)object).posY, ((ChunkCoordinates)object).posZ) instanceof IImmersiveConnectable)
 		{
 			return (IImmersiveConnectable)world.getTileEntity( ((ChunkCoordinates)object).posX, ((ChunkCoordinates)object).posY, ((ChunkCoordinates)object).posZ);
 		}
