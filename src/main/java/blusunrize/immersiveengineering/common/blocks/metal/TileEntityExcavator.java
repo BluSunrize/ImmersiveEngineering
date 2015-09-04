@@ -35,21 +35,17 @@ public class TileEntityExcavator extends TileEntityMultiblockPart implements IEn
 	public int process = 0;
 
 	public int lastPowerInput=0;
-	
+
 	@Override
 	public ItemStack getOriginalBlock()
 	{
-		try{
-			int h = pos%9/3;
-			int l = pos/9;
-			int w = pos%3;
-			ItemStack s = MultiblockExcavator.instance.getStructureManual()[h][5-l][w];
-			return s!=null?s.copy():null;
-		}catch(Exception e)
-		{
-			e.printStackTrace();
-		}
-		return null;
+		if(pos<0)
+			return null;
+		int h = pos%9/3;
+		int l = pos/9;
+		int w = pos%3;
+		ItemStack s = MultiblockExcavator.instance.getStructureManual()[h][5-l][w];
+		return s!=null?s.copy():null;
 	}
 
 	public TileEntityExcavator master()

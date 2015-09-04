@@ -53,6 +53,8 @@ public class TileEntityRefinery extends TileEntityMultiblockPart implements IFlu
 	@Override
 	public ItemStack getOriginalBlock()
 	{
+		if(pos<0)
+			return null;
 		ItemStack s = MultiblockRefinery.instance.getStructureManual()[pos%15/5][pos%5][pos/15];
 		return s!=null?s.copy():null;
 	}

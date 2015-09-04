@@ -51,6 +51,8 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 	@Override
 	public ItemStack getOriginalBlock()
 	{
+		if(pos<0)
+			return null;
 		ItemStack s = MultiblockArcFurnace.instance.getStructureManual()[pos/25][pos%5][pos%25/5];
 		return s!=null?s.copy():null;
 	}

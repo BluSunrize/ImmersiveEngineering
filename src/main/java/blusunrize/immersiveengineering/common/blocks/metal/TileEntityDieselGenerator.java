@@ -50,6 +50,8 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockPart implemen
 	@Override
 	public ItemStack getOriginalBlock()
 	{
+		if(pos<0)
+			return null;
 		ItemStack s = MultiblockDieselGenerator.instance.getStructureManual()[pos%9/3][4-pos/9][pos%3];
 		return s!=null?s.copy():null;
 	}

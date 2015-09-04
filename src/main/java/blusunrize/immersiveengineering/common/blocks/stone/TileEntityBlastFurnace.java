@@ -45,6 +45,8 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart implements 
 	@Override
 	public ItemStack getOriginalBlock()
 	{
+		if(pos<0)
+			return null;
 		return new ItemStack(IEContent.blockStoneDecoration,1,2);
 	}
 	

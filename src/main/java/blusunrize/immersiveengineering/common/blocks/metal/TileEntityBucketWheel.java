@@ -24,6 +24,8 @@ public class TileEntityBucketWheel extends TileEntityMultiblockPart
 	@Override
 	public ItemStack getOriginalBlock()
 	{
+		if(pos<0)
+			return null;
 		ItemStack s = pos<0?null: MultiblockBucketWheel.instance.getStructureManual()[pos/7][pos%7][0];
 		return s!=null?s.copy():null;
 	}

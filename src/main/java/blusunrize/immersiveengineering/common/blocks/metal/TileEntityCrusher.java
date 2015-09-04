@@ -61,6 +61,8 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 	@Override
 	public ItemStack getOriginalBlock()
 	{
+		if(pos<0)
+			return null;
 		ItemStack s = MultiblockCrusher.instance.getStructureManual()[pos%15/5][pos%5][pos/15];
 		return s!=null?s.copy():null;
 	}
