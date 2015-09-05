@@ -142,8 +142,8 @@ public class VillageEngineersHouse extends StructureVillagePieces.Village
 		//Doors
 		int doorMeta = coordBaseMode==0?1: coordBaseMode==1?2: coordBaseMode==2?3: 0;
 		this.placeDoorAtCurrentPosition(world, box, rand, 4,1,3, doorMeta);
-		this.placeDoorAtCurrentPosition(world, box, rand, 3,5,5, doorMeta);
 		this.placeDoorAtCurrentPosition(world, box, rand, 4,5,5, doorMeta);
+		this.placeDoorAtCurrentPosition(world, box, rand, 3,5,5, doorMeta);
 
 		//Stairs
 		placeBlockAtCurrentPosition(world, Blocks.oak_stairs, stairMeta, 8,1,6, box);
