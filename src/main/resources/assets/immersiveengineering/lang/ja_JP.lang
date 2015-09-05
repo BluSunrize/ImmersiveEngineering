@@ -1,0 +1,561 @@
+# BLOCKS
+tile.ImmersiveEngineering.ore.Copper.name=銅鉱石
+tile.ImmersiveEngineering.ore.Aluminum.name=ボーキサイト鉱石
+tile.ImmersiveEngineering.ore.Lead.name=鉛鉱石
+tile.ImmersiveEngineering.ore.Silver.name=銀鉱石
+tile.ImmersiveEngineering.ore.Nickel.name=ニッケル鉱石
+tile.ImmersiveEngineering.storage.Copper.name=銅ブロック
+tile.ImmersiveEngineering.storage.Aluminum.name=アルミニウムブロック
+tile.ImmersiveEngineering.storage.Lead.name=鉛ブロック
+tile.ImmersiveEngineering.storage.Silver.name=銀ブロック
+tile.ImmersiveEngineering.storage.Nickel.name=ニッケルブロック
+tile.ImmersiveEngineering.storage.Constantan.name=白銅ブロック
+tile.ImmersiveEngineering.storage.Electrum.name=エレクトラムブロック
+tile.ImmersiveEngineering.storage.Steel.name=鋼ブロック
+tile.ImmersiveEngineering.storage.CoilCopper.name=銅線コイル
+tile.ImmersiveEngineering.storage.CoilElectrum.name=エレクトラム線コイル
+tile.ImmersiveEngineering.storage.CoilHV.name=高圧線コイル
+
+tile.ImmersiveEngineering.storageSlab.Copper.name=銅ハーフブロック
+tile.ImmersiveEngineering.storageSlab.Aluminum.name=アルミニウムハーフブロック
+tile.ImmersiveEngineering.storageSlab.Lead.name=鉛ハーフブロック
+tile.ImmersiveEngineering.storageSlab.Silver.name=銀ハーフブロック
+tile.ImmersiveEngineering.storageSlab.Nickel.name=ニッケルハーフブロック
+tile.ImmersiveEngineering.storageSlab.Constantan.name=白銅ハーフブロック
+tile.ImmersiveEngineering.storageSlab.Electrum.name=エレクトラムハーフブロック
+tile.ImmersiveEngineering.storageSlab.Steel.name=鋼ハーフブロック
+
+tile.ImmersiveEngineering.metalDevice.connectorLV.name=低圧線接続端子
+tile.ImmersiveEngineering.metalDevice.capacitorLV.name=低圧キャパシタ
+tile.ImmersiveEngineering.metalDevice.connectorMV.name=中圧線接続端子
+tile.ImmersiveEngineering.metalDevice.capacitorMV.name=中圧キャパシタ
+tile.ImmersiveEngineering.metalDevice.transformer.name=変圧器
+tile.ImmersiveEngineering.metalDevice.relayHV.name=高圧継電器
+tile.ImmersiveEngineering.metalDevice.connectorHV.name=高圧線接続端子
+tile.ImmersiveEngineering.metalDevice.capacitorHV.name=高圧キャパシタ
+tile.ImmersiveEngineering.metalDevice.transformerHV.name=高圧変圧器
+tile.ImmersiveEngineering.metalDevice.dynamo.name=動力ダイナモ
+tile.ImmersiveEngineering.metalDevice.thermoelectricGen.name=熱電発電機
+tile.ImmersiveEngineering.metalDevice.conveyorBelt.name=ベルトコンベア
+tile.ImmersiveEngineering.metalDevice.furnaceHeater.name=発熱機
+tile.ImmersiveEngineering.metalDevice.sorter.name=アイテム分別器
+tile.ImmersiveEngineering.metalDevice.sampleDrill.name=地質試料ドリル
+
+tile.ImmersiveEngineering.metalMultiblock.lightningRod.name=避雷針ベース
+tile.ImmersiveEngineering.metalMultiblock.dieselGenerator.name=ディーゼル発電機
+tile.ImmersiveEngineering.metalMultiblock.industrialSqueezer.name=工業用圧搾機
+tile.ImmersiveEngineering.metalMultiblock.fermenter.name=発酵槽
+tile.ImmersiveEngineering.metalMultiblock.refinery.name=製油機
+tile.ImmersiveEngineering.metalMultiblock.crusher.name=粉砕機
+tile.ImmersiveEngineering.metalMultiblock.bucketWheel.name=バケット羽車
+tile.ImmersiveEngineering.metalMultiblock.excavator.name=掘削機
+tile.ImmersiveEngineering.metalMultiblock.arcFurnace.name=アーク炉
+tile.ImmersiveEngineering.metalMultiblock.tank.name=液体タンク
+tile.ImmersiveEngineering.metalMultiblock.silo.name=サイロ
+
+tile.ImmersiveEngineering.metalDecoration.fence.name=鋼柵
+tile.ImmersiveEngineering.metalDecoration.scaffolding.name=鋼足場
+tile.ImmersiveEngineering.metalDecoration.lantern.name=ランタン
+tile.ImmersiveEngineering.metalDecoration.structuralArm.name=腕金
+tile.ImmersiveEngineering.metalDecoration.radiator.name=ラジエーターブロック
+tile.ImmersiveEngineering.metalDecoration.heavyEngineering.name=重機構ブロック
+tile.ImmersiveEngineering.metalDecoration.generator.name=ジェネレーターブロック
+tile.ImmersiveEngineering.metalDecoration.lightEngineering.name=軽機構ブロック
+tile.ImmersiveEngineering.metalDecoration.connectorStructural.name=装飾用ケーブルコネクター
+tile.ImmersiveEngineering.metalDecoration.wallMount.name=鋼壁掛け
+tile.ImmersiveEngineering.metalDecoration.sheetMetal.name=Sheet Metal Block
+
+tile.ImmersiveEngineering.metalDevice2.breakerSwitch.name=ブレーカースイッチ
+
+tile.ImmersiveEngineering.woodenDevice.post.name=木製支柱
+tile.ImmersiveEngineering.woodenDevice.watermill.name=水車
+tile.ImmersiveEngineering.woodenDevice.windmill.name=風車
+tile.ImmersiveEngineering.woodenDevice.windmillAdvanced.name=改良型風車
+tile.ImmersiveEngineering.woodenDevice.crate.name=クレート
+tile.ImmersiveEngineering.woodenDevice.modificationWorkbench.name=技師用工具台
+tile.ImmersiveEngineering.woodenDevice.barrel.name=木樽
+
+tile.ImmersiveEngineering.woodenDecoration.treatedWood.name=含浸木材
+tile.ImmersiveEngineering.woodenDecoration.fence.name=含浸木柵
+tile.ImmersiveEngineering.woodenDecoration.slab0.name=含浸木材のハーフブロック
+tile.ImmersiveEngineering.woodenDecoration.slab1.name=含浸木材のハーフブロック
+tile.ImmersiveEngineering.woodenDecoration.doubleSlab.name=含浸木材のハーフブロック
+tile.ImmersiveEngineering.woodenDecoration.scaffolding.name=含浸木材の足場
+tile.ImmersiveEngineering.woodenDecoration.wallMount.name=含浸木材の壁掛け
+
+tile.ImmersiveEngineering.woodenStairs.name=含浸木材の階段
+
+tile.ImmersiveEngineering.stoneDevice.hempcrete.name=ヘンプクリート
+tile.ImmersiveEngineering.stoneDevice.cokeOven.name=コークス炉
+tile.ImmersiveEngineering.stoneDevice.blastFurnace.name=高炉
+tile.ImmersiveEngineering.stoneDevice.coalCoke.name=コークスブロック
+tile.ImmersiveEngineering.stoneDevice.insulatorGlass.name=絶縁ガラス
+
+tile.ImmersiveEngineering.stoneDecoration.hempcrete.name=ヘンプクリート
+tile.ImmersiveEngineering.stoneDecoration.cokeBrick.name=コークス炉用レンガ
+tile.ImmersiveEngineering.stoneDecoration.blastBrick.name=高炉用レンガ
+tile.ImmersiveEngineering.stoneDecoration.coalCoke.name=コークスブロック
+tile.ImmersiveEngineering.stoneDecoration.concrete.name=コンクリート
+tile.ImmersiveEngineering.stoneDecoration.concreteTile.name=コンクリートタイル
+
+
+tile.ImmersiveEngineering.hemp.name=工業用大麻
+
+fluid.creosote=クレオソート油
+fluid.plantoil=植物油
+fluid.ethanol=エタノール
+fluid.biodiesel=バイオ燃料
+
+
+# ITEMS
+item.ImmersiveEngineering.metal.ingotCopper.name=銅インゴット
+item.ImmersiveEngineering.metal.ingotAluminum.name=アルミニウムインゴット
+item.ImmersiveEngineering.metal.ingotLead.name=鉛インゴット
+item.ImmersiveEngineering.metal.ingotSilver.name=銀インゴット
+item.ImmersiveEngineering.metal.ingotNickel.name=ニッケルインゴット
+item.ImmersiveEngineering.metal.ingotConstantan.name=白銅インゴット
+item.ImmersiveEngineering.metal.ingotElectrum.name=エレクトラムインゴット
+item.ImmersiveEngineering.metal.ingotSteel.name=鋼インゴット
+item.ImmersiveEngineering.metal.dustIron.name=鉄グリット
+item.ImmersiveEngineering.metal.dustGold.name=金グリット
+item.ImmersiveEngineering.metal.dustCopper.name=銅グリット
+item.ImmersiveEngineering.metal.dustAluminum.name=アルミニウムグリット
+item.ImmersiveEngineering.metal.dustLead.name=鉛グリット
+item.ImmersiveEngineering.metal.dustSilver.name=銀グリット
+item.ImmersiveEngineering.metal.dustNickel.name=ニッケルグリット
+item.ImmersiveEngineering.metal.dustConstantan.name=白銅グリット
+item.ImmersiveEngineering.metal.dustElectrum.name=エレクトラムグリット
+item.ImmersiveEngineering.metal.dustSteel.name=鋼グリット
+item.ImmersiveEngineering.metal.dustCoke.name=コークスの粉
+item.ImmersiveEngineering.metal.dustQuartz.name=水晶の粉
+item.ImmersiveEngineering.metal.dustHOPGraphite.name=高配向パイログラファイトの粉
+item.ImmersiveEngineering.metal.ingotHOPGraphite.name=高配向パイログラファイトインゴット
+item.ImmersiveEngineering.metal.nuggetIron.name=鉄塊
+item.ImmersiveEngineering.metal.nuggetCopper.name=銅塊
+item.ImmersiveEngineering.metal.nuggetAluminum.name=アルミニウム塊
+item.ImmersiveEngineering.metal.nuggetLead.name=鉛塊
+item.ImmersiveEngineering.metal.nuggetSilver.name=銀塊
+item.ImmersiveEngineering.metal.nuggetNickel.name=ニッケル塊
+item.ImmersiveEngineering.metal.nuggetConstantan.name=白銅塊
+item.ImmersiveEngineering.metal.nuggetElectrum.name=エレクトラム塊
+item.ImmersiveEngineering.metal.nuggetSteel.name=鋼塊
+
+
+item.ImmersiveEngineering.material.treatedStick.name=含浸木棒
+item.ImmersiveEngineering.material.waterwheelSegment.name=水車の部品
+item.ImmersiveEngineering.material.windmillBlade.name=風車の羽
+item.ImmersiveEngineering.material.hempFiber.name=工業用大麻繊維
+item.ImmersiveEngineering.material.fabric.name=丈夫な布
+item.ImmersiveEngineering.material.windmillBladeAdvanced.name=改良型風車の羽
+item.ImmersiveEngineering.material.coalCoke.name=コークス
+item.ImmersiveEngineering.material.gunpartBarrel.name=銃身
+item.ImmersiveEngineering.material.gunpartDrum.name=弾倉
+item.ImmersiveEngineering.material.gunpartGrip.name=木製グリップ
+item.ImmersiveEngineering.material.gunpartHammer.name=撃鉄
+item.ImmersiveEngineering.material.componentIron.name=鉄製機械部品
+item.ImmersiveEngineering.material.componentSteel.name=鋼製機械部品
+item.ImmersiveEngineering.material.slag.name=鉱滓
+item.ImmersiveEngineering.seed.hemp.name=工業用大麻の種
+
+item.ImmersiveEngineering.fluidContainers.bottleCreosote.name=クレオソート油入り瓶
+item.ImmersiveEngineering.fluidContainers.bucketCreosote.name=クレオソート油入りバケツ
+item.ImmersiveEngineering.fluidContainers.bottlePlantoil.name=植物油入り瓶
+item.ImmersiveEngineering.fluidContainers.bucketPlantoil.name=植物油入りバケツ
+item.ImmersiveEngineering.fluidContainers.bottleEthanol.name=エタノール入り瓶
+item.ImmersiveEngineering.fluidContainers.bucketEthanol.name=エタノール入りバケツ
+item.ImmersiveEngineering.fluidContainers.bottleBiodiesel.name=バイオ燃料入り瓶
+item.ImmersiveEngineering.fluidContainers.bucketBiodiesel.name=バイオ燃料入りバケツ
+
+item.ImmersiveEngineering.coil.copper.name=銅線コイル
+item.ImmersiveEngineering.coil.electrum.name=エレクトラム線コイル
+item.ImmersiveEngineering.coil.HV.name=高圧線コイル
+item.ImmersiveEngineering.coil.rope.name=麻紐コイル
+item.ImmersiveEngineering.coil.structural.name=鋼ケーブルコイル
+item.ImmersiveEngineering.tool.hammer.name=凄いハンマー
+item.ImmersiveEngineering.tool.wirecutter.name=ワイヤカッター
+item.ImmersiveEngineering.tool.voltmeter.name=電圧計
+item.ImmersiveEngineering.tool.manual.name=技士の手引書
+
+item.ImmersiveEngineering.revolver.normal.name=リボルバー
+item.ImmersiveEngineering.revolver.speedloader.name=リボルバースピードローダー
+item.ImmersiveEngineering.revolver.dev.name=♛Royal Vanquisher♚
+item.ImmersiveEngineering.revolver.sns.name=Steamroller
+item.ImmersiveEngineering.revolver.nerf.name=Nerf'd Revolver
+item.ImmersiveEngineering.revolver.oblivion.name=Oblivion
+item.ImmersiveEngineering.revolver.oathkeeper.name=Oathkeeper
+item.ImmersiveEngineering.revolver.bee.name=Beevolver
+item.ImmersiveEngineering.revolver.fenrir.name=Fenrir
+item.ImmersiveEngineering.revolver.earthshaker.name=§bEarthshaker§r
+item.ImmersiveEngineering.revolver.warlord.name=The Repulsor
+item.ImmersiveEngineering.revolver.noName.name=No Name
+item.ImmersiveEngineering.revolver.patreonBlu.name=§6Last Word§r
+item.ImmersiveEngineering.revolver.patreonHazard.name=§4Twisted Phantom§r
+
+item.ImmersiveEngineering.bullet.emptyCasing.name=空の外装
+item.ImmersiveEngineering.bullet.emptyShell.name=空の弾丸
+item.ImmersiveEngineering.bullet.casull.name=カートリッジ
+item.ImmersiveEngineering.bullet.armorPiercing.name=貫通弾カートリッジ
+item.ImmersiveEngineering.bullet.buckshot.name=散弾カートリッジ
+item.ImmersiveEngineering.bullet.HE.name=高爆発性弾カートリッジ
+item.ImmersiveEngineering.bullet.dragonsbreath.name=ドラゴンブレス弾カートリッジ
+item.ImmersiveEngineering.bullet.homing.name=Homing Cartridge
+item.ImmersiveEngineering.bullet.wolfpack.name=Wolfpack Cartridge
+item.ImmersiveEngineering.bullet.silver.name=Silver Cartridge
+item.ImmersiveEngineering.bullet.potion.name=Phial Cartridge
+
+item.ImmersiveEngineering.drill.diesel.name=採掘ドリル
+item.ImmersiveEngineering.drillhead.iron.name=鉄のドリルビット
+item.ImmersiveEngineering.drillhead.steel.name=鋼のドリルビット
+
+item.ImmersiveEngineering.skyhook.name=スカイフック
+
+item.ImmersiveEngineering.toolupgrade.drillWaterproof.name=内部酸素タンク
+item.ImmersiveEngineering.toolupgrade.drillSpeed.name=改良注油システム
+item.ImmersiveEngineering.toolupgrade.drillDamage.name=追加オーガー
+item.ImmersiveEngineering.toolupgrade.drillCapacity.name=大燃料タンク
+item.ImmersiveEngineering.toolupgrade.revolverBayonet.name=銃剣
+item.ImmersiveEngineering.toolupgrade.revolverMagazine.name=追加マガジン
+item.ImmersiveEngineering.toolupgrade.revolverElectro.name=増幅真空管
+
+item.ImmersiveEngineering.blueprint.name=技士のブループリント
+
+item.ImmersiveEngineering.graphiteElectrode.name=炭素電極
+
+
+#CREATIVE
+itemGroup.ImmersiveEngineering=Immersive Engineering
+
+#DESCRIPTIONS
+description.villager.profession.immersiveengineering.villager_engineer=エンジニア
+
+desc.ImmersiveEngineering.info.attachedTo=接続中:%1$s, %2$s, %3$sから
+desc.ImmersiveEngineering.info.attachedToDim=接続中:ディメンション%4$sの%1$s, %2$s, %3$sから
+desc.ImmersiveEngineering.info.energyStored=蓄電量: %1$sRF
+desc.ImmersiveEngineering.info.blastFuelTime=Blast Fuel: %1$s Ticks
+desc.ImmersiveEngineering.info.capacitorSide.facing=Facing Side:
+desc.ImmersiveEngineering.info.capacitorSide.opposite=Opposite Side:
+desc.ImmersiveEngineering.info.capacitorSide.-1=非接続
+desc.ImmersiveEngineering.info.capacitorSide.0=エネルギー入力
+desc.ImmersiveEngineering.info.capacitorSide.1=エネルギー出力
+
+desc.ImmersiveEngineering.info.blockSide.UP=上面
+desc.ImmersiveEngineering.info.blockSide.DOWN=下面
+desc.ImmersiveEngineering.info.blockSide.NORTH=北面
+desc.ImmersiveEngineering.info.blockSide.SOUTH=南面
+desc.ImmersiveEngineering.info.blockSide.EAST=東面
+desc.ImmersiveEngineering.info.blockSide.WEST=西面
+
+desc.ImmersiveEngineering.info.oreDict.off=鉱石辞書:不使用
+desc.ImmersiveEngineering.info.oreDict.on=OreDictionary:使用
+
+desc.ImmersiveEngineering.info.mininglvl.-1=None
+desc.ImmersiveEngineering.info.mininglvl.0=§7Stone
+desc.ImmersiveEngineering.info.mininglvl.1=§4Iron
+desc.ImmersiveEngineering.info.mininglvl.2=§cRedstone
+desc.ImmersiveEngineering.info.mininglvl.3=§dObsidian
+desc.ImmersiveEngineering.info.mininglvl.4=§9Cobalt
+desc.ImmersiveEngineering.info.mininglvl.5=§5Manyullyn
+desc.ImmersiveEngineering.info.mininglvl.6=§5Manyullyn§d+
+
+desc.ImmersiveEngineering.info.durability=Durability: %1$s
+
+desc.ImmersiveEngineering.info.mineral.Iron=鉄
+desc.ImmersiveEngineering.info.mineral.Magnetite=磁鉄鉱
+desc.ImmersiveEngineering.info.mineral.Pyrite=黄鉄鉱
+desc.ImmersiveEngineering.info.mineral.Bauxite=ボーキサイト
+desc.ImmersiveEngineering.info.mineral.Copper=銅
+desc.ImmersiveEngineering.info.mineral.Gold=金
+desc.ImmersiveEngineering.info.mineral.Nickel=ニッケル
+desc.ImmersiveEngineering.info.mineral.Platinum=白金
+desc.ImmersiveEngineering.info.mineral.Uranium=ウラン
+desc.ImmersiveEngineering.info.mineral.Quartzite=珪岩
+desc.ImmersiveEngineering.info.mineral.Galena=方鉛鉱
+desc.ImmersiveEngineering.info.mineral.Lead=鉛
+desc.ImmersiveEngineering.info.mineral.Silver=銀
+desc.ImmersiveEngineering.info.mineral.Lapis=ラピスラズリ
+desc.ImmersiveEngineering.info.mineral.Coal=石炭
+
+desc.ImmersiveEngineering.info.reqMaterial=Required Materials:
+desc.ImmersiveEngineering.info.chance=Chance:
+
+desc.ImmersiveEngineering.info.blueprint.creates0=作成アイテム: §6Shiftキーを押すと表示§r
+desc.ImmersiveEngineering.info.blueprint.creates1=作成アイテム:
+desc.ImmersiveEngineering.info.blueprint.bullet=普通弾丸
+desc.ImmersiveEngineering.info.blueprint.specialBullet=特殊弾丸
+desc.ImmersiveEngineering.info.blueprint.electrode=アーク炉の電極
+
+desc.ImmersiveEngineering.info.electrodeIntegrity=Integrity
+
+desc.ImmersiveEngineering.flavour.crate=壊してもインベントリを保持します
+desc.ImmersiveEngineering.flavour.barrel=壊しても液体を保持します
+desc.ImmersiveEngineering.flavour.barrelTemp=高温の液体は保存不可
+desc.ImmersiveEngineering.flavour.coil.construction0=装飾用
+desc.ImmersiveEngineering.flavour.coil.construction1=電力を伝達しません
+desc.ImmersiveEngineering.flavour.revolver=Go ahead, make my day!
+desc.ImmersiveEngineering.flavour.revolver.dev=Regicide!
+desc.ImmersiveEngineering.flavour.revolver.sns=Blood, Sweat, Steam and Steel
+desc.ImmersiveEngineering.flavour.revolver.nerf=Safe for kids
+desc.ImmersiveEngineering.flavour.revolver.oblivion=Passing Memories
+desc.ImmersiveEngineering.flavour.revolver.oathkeeper=Wayfinder
+desc.ImmersiveEngineering.flavour.revolver.bee=The Pain
+desc.ImmersiveEngineering.flavour.revolver.fenrir=There's nothing I don't cherish!
+desc.ImmersiveEngineering.flavour.revolver.earthshaker=Lingering Will
+desc.ImmersiveEngineering.flavour.revolver.warlord=Don't take my toys away!
+desc.ImmersiveEngineering.flavour.revolver.rommie=Targeting AI 'Rommie' included!
+desc.ImmersiveEngineering.flavour.revolver.noName=Peering Into Darkness
+desc.ImmersiveEngineering.flavour.revolver.patreonBlu=Hunter's Choice
+desc.ImmersiveEngineering.flavour.revolver.patreonHazard=Exclusive DLC Content
+
+desc.ImmersiveEngineering.flavour.drill.noHead=ドリルビットが装着されていません
+desc.ImmersiveEngineering.flavour.drill.headDamage=ドリルビットの状態:
+desc.ImmersiveEngineering.flavour.drill.fuel=燃料:
+desc.ImmersiveEngineering.flavour.drill.empty=燃料がありません
+
+desc.ImmersiveEngineering.flavour.drillhead.size=採掘範囲: %1$sx%1$sx%2$s 
+desc.ImmersiveEngineering.flavour.drillhead.level=採掘レベル: %1$s
+desc.ImmersiveEngineering.flavour.drillhead.speed=採掘速度: %1$s
+desc.ImmersiveEngineering.flavour.drillhead.damage=攻撃力: %1$s
+
+desc.ImmersiveEngineering.flavour.skyhook=Not fully implemented!
+
+desc.ImmersiveEngineering.flavour.toolupgrade.drillWaterproof=採掘ドリルを水中での作業ができる様にします
+desc.ImmersiveEngineering.flavour.toolupgrade.drillSpeed=採掘ドリルの採掘速度を上げます
+desc.ImmersiveEngineering.flavour.toolupgrade.drillDamage=採掘ドリルの攻撃力を上げます 3つまでスタック可
+desc.ImmersiveEngineering.flavour.toolupgrade.drillCapacity=採掘ドリルの燃料タンクを増やします
+desc.ImmersiveEngineering.flavour.toolupgrade.revolverBayonet=リボルバーの攻撃力を追加します
+desc.ImmersiveEngineering.flavour.toolupgrade.revolverMagazine=リボルバーのマガジンを増やします
+desc.ImmersiveEngineering.flavour.toolupgrade.revolverElectro=リボルバーの銃撃で相手をスタンできるようにします
+
+gui.ImmersiveEngineering.empty=Empty
+
+#CHAT
+chat.ImmersiveEngineering.warning.wrongCable=ワイヤーはここに接続できません
+chat.ImmersiveEngineering.warning.wrongDimension=居るディメンションがおかしいです
+chat.ImmersiveEngineering.warning.sameConnection=同じ場所に接続することは出来ません
+chat.ImmersiveEngineering.warning.tooFar=接続点が遠すぎます
+chat.ImmersiveEngineering.warning.cantSee=この接続は遮られています
+chat.ImmersiveEngineering.warning.connectionExists=既に接続がなされています
+chat.ImmersiveEngineering.warning.invalidPoint=One of the connection points is invalid
+chat.ImmersiveEngineering.info.averageLoss=Average loss between points: %1$s%%
+chat.ImmersiveEngineering.info.energyStorage=Energy Stored: %1$s/%2$s RF
+chat.ImmersiveEngineering.info.tooHot=この液体はコンテナに対して温度が高すぎます
+chat.ImmersiveEngineering.info.invertedOn=Set redstone signal to inverted
+chat.ImmersiveEngineering.info.invertedOff=Set redstone signal to not inverted
+
+chat.ImmersiveEngineering.info.forChunk=§8対象チャンク:(%1$s)から(%2$s)
+chat.ImmersiveEngineering.info.coreDrill.progress=地質調査の進捗: %1$s
+chat.ImmersiveEngineering.info.coreDrill.result.mineral=§7地質調査の結果、%1$s§7鉱脈を発見しました
+chat.ImmersiveEngineering.info.coreDrill.result.depl=§7鉱脈の整合性は%1$s§7です
+chat.ImmersiveEngineering.info.coreDrill.result.none=地質調査の結果、鉱脈は見つかりませんでした
+chat.ImmersiveEngineering.info.coreDrill.infinite=Infinite
+
+#RECIPES
+recipe.ImmersiveEngineering.hammerCrushing=Crushing
+
+#DEATH
+death.attack.ieRevolver_casull=%1$s was shot by %2$s
+death.attack.ieRevolver_armorPiercing=%1$s was shot by %2$s
+death.attack.ieRevolver_buckshot=%1$s was shotgunned by %2$s
+death.attack.ieRevolver_dragonsbreath=%1$s was incinerated by %2$s
+death.attack.ieRevolver_homing=%1$s was shot by %2$s's homing bullet
+death.attack.ieRevolver_wolfpack=%1$s was shredded by %2$s's Wolfpack Rounds
+death.attack.ieRevolver_silver=%1$s was purified by %2$s's silver bullet
+death.attack.ieRevolver_potion=%1$s was doused by %2$s's phial shot
+death.attack.ieCrushed=%1$s was crushed
+
+#マニュアル(Manual)
+#ie.manual.entry..name=
+#ie.manual.entry..subtext=
+#ie.manual.entry.=
+
+ie.manual.category.general.name=概要と材料
+ie.manual.category.energy.name=エネルギー、銅線、発電
+ie.manual.category.machines.name=工具と機械
+
+#マニュアル->概要と材料->概要(Introduction)
+ie.manual.entry.introduction.name=概要
+ie.manual.entry.introduction.subtext=Getting into Engineering
+ie.manual.entry.introduction0=Greetings, fellow engineer, and welcome to Immersive Engineering. This journal shall serve as your guide for setting up all the new machines and functions this mod has to offer.<br>Let's start with the basics first: Immersive Engineering is built around the concept of retrofuturistic generation and transfer of energy. The energy used in this mod is Redstone Flux, a trait shared with many other mods currently available.
+ie.manual.entry.introduction1=Energy is transmitted between §lconnectors§r by the use of §lwires§r. Wires can only bridge a limited distance of blocks, so you will need to use more connectors as §lrelays§r between the wires.<br>You have the choice between three different types of wire, which differ in transferrates, <config;iA;cableTransferRate;l3> RF/tick. To switch between different types of wire, you will need to use §ltransformers§r.
+ie.manual.entry.introductionHammer=The Engineer's Hammer is the most important tool at your disposal. It will be used to form multiblocks like the Coke Oven and Blast Furnace<config;b;crushingOreRecipe;, crushing ores into dust ; >or configuring blocks like Wooden Posts.
+
+#マニュアル->概要と材料->鉱石(Ores)
+ie.manual.entry.ores.name=鉱石
+ie.manual.entry.ores.subtext=Diggy diggy hole
+ie.manual.entry.oresCopper=§lCopper Ore§r is found in the world between layers <config;iA;ore_copper;1> and <config;iA;ore_copper;2>, and requires a Stone Pickaxe to harvest.<br><br>The ore will smelt into copper ingots, which are used in crafting basic copper wires, coils, and other integral parts of the IE architecture.
+ie.manual.entry.oresBauxite=§lBauxite Ore§r is found in the world between layers <config;iA;ore_bauxite;1> and <config;iA;ore_bauxite;2>, and requires a Stone Pickaxe to harvest.<br><br>The ore will smelt into aluminium ingots, which, together with steel, are used to create high-voltage wires.
+ie.manual.entry.oresLead=§lLead Ore§r is found in the world between layers <config;iA;ore_lead;1> and <config;iA;ore_lead;2>, and requires an Iron Pickaxe to harvest.<br><br>The ore will smelt into lead ingots, which are used in creating capacitors.
+ie.manual.entry.oresSilver=§lSilver Ore§r is found in the world between layers <config;iA;ore_silver;1> and <config;iA;ore_silver;2>, and requires an Iron Pickaxe to harvest.<br><br>The ore will smelt into silver ingots, which alloy with gold to create electrum, a far more effective conductor.
+ie.manual.entry.oresNickel=§lNickel Ore§r is found in the world between layers <config;iA;ore_nickel;1> and <config;iA;ore_nickel;2>, and requires an Iron Pickaxe to harvest.<br><br>The ore will smelt into nickel ingots, which alloy with copper to create constantan, a heat resistant conductor used in the creation of <link;generator;§o§nThermoelectric §o§nGenerators§r;1>.
+
+#マニュアル->概要と材料->鉱石処理(Ore Processing)
+ie.manual.entry.oreProcessing.name=鉱石処理
+ie.manual.entry.oreProcessing.subtext=
+ie.manual.entry.oreProcessing0=Crafting<config;b;crushingOreRecipe;ores and> ingots with a hammer allows you to crush them into dusts. This dust can be resmelted into ingots, but even more importantly, is used to create alloys.<config;b;crushingOreRecipe;<br>Crushing ores with the hammer will yield two dusts, effectively doubling your gain of ingots from ore.>
+ie.manual.entry.oreProcessing1=Mixing dusts creates an alloy blend that can then be smelted into alloyed ingots. Constantan has thermo-electric properties and is used in creating the <link;generator;§o§nthermoelectric §o§ngenerator§r;1> and electrum is an excellent electric conductor used in <link;wiring;§o§nmedium-voltage §o§narchitecture§r>.
+
+#マニュアル->概要と材料->工業用大麻(Industrial Hemp)
+ie.manual.entry.hemp.name=工業用大麻
+ie.manual.entry.hemp.subtext=530 fabric it
+ie.manual.entry.hemp0=Industrial Hemp is a remarkable plant! Not only are its seeds useful for the the creation of <link;biodiesel;§o§nBiodiesel§r>, the hemp fibers are also vital in the creation of <link;generator;§o§nImproved §o§nWindmills§r;3>. The seeds can be gathered by breaking tall grass.
+
+#マニュアルｰ>概要と材料ｰ>コークス炉(Coke Oven)
+ie.manual.entry.cokeoven.name=コークス炉
+ie.manual.entry.cokeoven.subtext=Hot topic!
+ie.manual.entry.cokeoven0=The Coke Oven is the first important machine you will need to create in order to proceed with Immersive Engineering. It's functionality is simple, it will heat up coal or blocks of coal without supplying it with oxygen, creating Coal Coke, a carbon rich fuel. More importantly, this process creates §lCreosote Oil§r, which is used as a <link;treatedwood;§o§npreservative §o§nfor §o§nwood§r>. Similarly you can also burn wooden logs into charcoal with this oven, albeit with a smaller yield of creosote.
+ie.manual.entry.cokeovenBlock=To form a Coke Oven, arrange 27 of these blocks in a 3x3x3 cube, and rightclick one of the sides' center blocks with an Engineer's Hammer.<br>See the following page for a diagram.
+
+#マニュアルｰ>概要と材料ｰ>含浸木材(Treated Wood)
+ie.manual.entry.treatedwood.name=含浸木材
+ie.manual.entry.treatedwood.subtext=Highly Durable
+ie.manual.entry.treatedwood0=Treated Wood is, quite simply, wooden planks covered in creosote oil. It is however, one of the most important materials you will be using in Immersive Engineering, so you'd better be prepared to create a lot of it.
+ie.manual.entry.treatedwoodPost0=Posts made from treated wood make for excellent attachment points for your Wire Connectors. They are 4 blocks high, so you won't be able to place them without the proper clearance.<br>Using the hammer on the sides of the topmost block will attach an arm to the post. 
+ie.manual.entry.treatedwoodPost1=You can also place <link;wiring;§o§ntransformers§r;3> on the pole, which makes it less obtrusive.<br>Placing blocks below the arms of the wooden post will flip the arms upside down.
+
+#マニュアル->概要と材料ｰ>グラファイト(Graphite)
+ie.manual.entry.graphite.name=グラファイト
+ie.manual.entry.graphite.subtext=Coal stuff
+ie.manual.entry.graphite0=Highly Ordered Pyrolytic Graphite (HOP) is a complex, highly compressed, carbon material used in special engineering constructs.<br>HOP Graphite Dust is created by compressing eight pieces of Coke Dust in the <link;biodiesel;§o§nIndustrial §o§nSqueezer§r;1>. That dust can then be smelted into an ingot.
+ie.manual.entry.graphite1=The most common use for HOP Graphite is the creation of electrodes to be used in the <link;arcfurnace;§o§nArc §o§nFurnace§r>. These electrodes are created with an <link;blueprints;§o§nEngineer's §o§nBlueprint§r>, which you can<config;b;arcfurnace_electrodeCrafting; craft,> find in certain chests or trade with a villager.
+
+ie.manual.entry.wiring.name=Basic Wiring
+ie.manual.entry.wiring.subtext=Bzzzt!
+ie.manual.entry.wiring0=The energy-net of Immersive Engineering has four important blocks: §lCapacitors§r to store energy, §lconnectors§r as inputs and outputs for the net, §lrelays§r to connect wires together and §ltransformers§r to switch between different levels of wire.<br>In low- and medium-voltage systems (copper and electrum wires), connectors and relays are the same block, but high-voltage connectors will only ever accept one wire.
+ie.manual.entry.wiring1=To connect two blocks, simply click the first one with a wire coil, then use the same coil on the second block. The total transferrate between two points depends on the weakest type of wire between them.
+ie.manual.entry.wiring2=Note that restrictions apply based on blocks: Connectors and relays will only take wires of the same type that is already connected, transformers will only take two wires of a different type,<br>[cont]
+ie.manual.entry.wiring3=and wires can only connect to blocks that match the voltage.
+ie.manual.entry.wiringConnector=§lConnectors§r serve as in- and outputs to the IE Energy-Net. You can place them on capacitors or other RF handlers and they will transfer power through connected wires. HV Relays will still accept wires but can't in- or output, they serve as connection points between wires.
+ie.manual.entry.wiringCapacitor=§lCapacitors§r serve as energy storage units. You can use the hammer to adjust the configuration of each side, with blue designating an input, orange an output and no colour marking preventing any connection at all. Sneak while using the hammer to configure the side opposite of the one you clicked.
+ie.manual.entry.wiringTransformer0=§lTransformers§r allow you to transition between different types of wire. The weakest wire restricts the transfer rate. Note that HV Transformers can step down to LV or MV, so you do not need to chain two transformers.
+ie.manual.entry.wiringTransformer1=You can attach <link;wiring;§o§ntransformers §o§nto §o§nwooden §o§npoles§r;3> as shown on the second image on page 4, however only non-HV Transformers can be placed like this.
+ie.manual.entry.wiringCutters=The §lWire Cutters§r are used to removed all the wires connected to a block by simply rightclicking it.
+ie.manual.entry.wiringVoltmeter=The §lVoltmeter§r is used to measure connections. Rightclick a capacitor to read its current storage or sneak+rightclick two connectors to calculate the average loss between them.
+
+ie.manual.entry.generator.name=Power Generation
+ie.manual.entry.generator.subtext=
+ie.manual.entry.generator0=Transferring power is quite helpful provided you have power. To actually generate RF, you can use the kinetic forces of windmills and waterwheels. Connecting these to a dynamo will generate power based on how fast they turn.
+ie.manual.entry.generatorWindmill=The Windmill is a free and easy way of generating power, albeit not a very powerful one. Its speed depends greatly on how high it is placed in the world and how obscured the space in front of it is. It will also run faster when it's raining or storming.
+ie.manual.entry.generatorWatermill=The Water Wheel is a fairly easy way of powering a dynamo. It's turning speed is based on the water flowing around it, so for optimal results, you'll want to direct the water in a semi-circle from the top down one side and along the bottom. Up to three water wheels can be placed against each other.
+ie.manual.entry.generatorWindmillImproved=The improved Windmill is an upgrade to the windmills. While it has twice the output it's also more pricey to create, requiring tough fabric made from industrial hemp. Break tall grass to aquire hemp seeds.
+
+ie.manual.entry.breaker.name=Breaker Switch
+ie.manual.entry.breaker.subtext=Clap on - Clap off
+ie.manual.entry.breaker0=Breaker Switches are simply switches that can stop the flow of power through wires. They can connect two wires of the same type and will only allow power to pass when activated. This can be used to seperate power-hungry machinery from the network or hook up an additional set of generators when needed!
+ie.manual.entry.breaker1=These breaker switches will emit a redstone signal when they are switched on; this behaviour can be inverted by clicking the switch with an Engineer's Hammer.
+#When lights are added, these switches have another use ;D
+
+ie.manual.entry.thermoElectric.name=Thermoelectric Generator
+ie.manual.entry.thermoElectric.subtext=Hot and Cold
+ie.manual.entry.thermoElectric0=Thermoelectric Generators are another option of power generation and work without the use of any mechanical parts, instead they use the temperature gradients between two sources.
+ie.manual.entry.thermoElectric1=Placing a hot fluid on one side and a colder fluid on the opposing side generates energy based on the difference between the two temperatures.<br>The following list contains other, non-fluid, blocks, which can be used as sources of temperature.
+
+ie.manual.entry.blastfurnace.name=Blast Furnace
+ie.manual.entry.blastfurnace.subtext=Even hotter topic!
+ie.manual.entry.blastfurnace0=The Blast Furnace is used to increase the carbon contents in iron, turning it into steel. To achieve this, only pure, high-carbon fuels may be used for the furnace, specifically coal coke and charcoal.<br>The steel created in the blast furnace is an integral part of high-voltage architecture.
+ie.manual.entry.blastfurnaceBlock=To form a Blast Furnace, arrange 27 of these blocks in a 3x3x3 cube, and rightclick one of the sides' center blocks with an Engineer's Hammer.<br>See the following page for a diagram.
+
+ie.manual.entry.steelconstruction.name=Steel Constructions
+ie.manual.entry.steelconstruction.subtext=Riveting
+ie.manual.entry.steelconstruction0=Steel is not only an integral part of high-voltage architectures, it is also quite useful in, well, architecture. Steel scaffolding can be used to quickly create climbable structures, steel fencing keeps baddies at bay and structural arms make for great attachment points for your HV relays. 
+ie.manual.entry.steelconstruction1=Structural Connectors work similarly to normal connectors, but instead of transferring energy, they are purely decorative.<br>They won't accept normal wires, but Hemp Rope and Steel Cable (see next page).<br>You can also rotate them by rightclicking them with an Engineer's Hammer.
+
+ie.manual.entry.highvoltage.name=High-Voltage
+ie.manual.entry.highvoltage.subtext=You can't shake the shock
+ie.manual.entry.highvoltage0=High-Voltage wires have the highest available transfer rate (<config;iA;cableTransferRate;2> RF/t) and will need special connectors. Note that on High voltage connections, §oConnectors and Relays are different blocks§r, Relays will not be able to in- or output to the energy net. Furthermore, §oRelays can only be placed on the underside of the block.§r<br>To transition from HV to LV or MV connections, you will need High-Voltage Transformers, and keep in mind, the lowest tier of wire limits the transferrate of an entire connection.
+
+ie.manual.entry.multiblocks.name=Multiblock Constructions
+ie.manual.entry.multiblocks.subtext=Where's my Allen Wrench?
+ie.manual.entry.multiblocks0=Fitting complex machinery into a single 1x1x1 cube seems to be a task unmanageable without the use of magic or possibly shrink rays. So in order to create more complex machines, you will need component blocks. The most common ones have been listed on the following pages.
+
+ie.manual.entry.workbench.name=Engineer's Workbench
+ie.manual.entry.workbench.subtext=Overclocking
+ie.manual.entry.workbench0=Over the course of your Engineering career you may come to deal with some tools that can be optimized and modified. To apply these modifications, you should use a properly equipped Engineer's Workbench.<br>Rightclick the Workbench, insert the item into the slot and insert applicable upgrades into the new slots that appear.
+
+ie.manual.entry.blueprints.name=Engineer's Blueprints
+ie.manual.entry.blueprints.subtext=RTFM
+ie.manual.entry.blueprints0=There are certain items which are very complex in their construction and require more than just a simple block of wood with a grid on it. These items will need to be created under the instructions of precise Blueprints on an <link;workbench;§o§nEngineer's §o§nWorkbench§r>.<br><br>Should you come across an Engineer's Blueprint (or maybe even create one yourself), you can place it in the slot of the Engineer's Workbench.
+ie.manual.entry.blueprints1=To create the items detailed in the Blueprint, you insert the required materials into the 6 slots in the middle, and retrieve the assembled results from the output slots to the right. Hovering your mouse over these output slots will inform you exactly which materials are needed for each item. 
+
+ie.manual.entry.dieselgen.name=Diesel Generator
+ie.manual.entry.dieselgen.subtext=Better than volume: More volume.
+ie.manual.entry.dieselgen0=High-Voltage architecture might be fascinating, but it's not very useful unless you have a generator that can actually create the required output for it.<br>The Diesel Generator is one of the few ways of generating this sort of energy. It is created as a complex multiblock structure and will run off of <link;biodiesel;§o§nBiodiesel§r> or other types of combustible fuel. Due to its high output, it will work through fuel very quickly, so make sure you have a sufficient fuel production to run it.
+ie.manual.entry.dieselgen1=The structure is built from Engine, Generator and Radiator blocks. Arrange them in the shape shown on the following side and hit either the central generator or central radiator with an Engineer's Hammer.
+ie.manual.entry.dieselgen2=Fuel is to be input at the bottom corners of the generator, whereas energy will be output to up to three connection on the top. The <config;i;dieselGen_output>RF/t the generator outputs will be split between all connected points.<br>The small terminal on the side will turn off the generator if supplied with a redstone signal.<br>You can mirror the generator by clicking the top-center of the Generator Block side with an Engineer's Hammer. 
+ie.manual.entry.dieselgen3=The following table lists all valid fuels for the Diesel Generator and for how long in seconds (ticks) they burn. 
+
+ie.manual.entry.biodiesel.name=Biodiesel
+ie.manual.entry.biodiesel.subtext=Green power!
+ie.manual.entry.biodiesel0=Combustible fuels are an easy to use and efficient fuel source. But with oil being a depletable resource, something renewable would be much preferable. Biodiesel is the solution! By combining plant oil and ethanol, you can create a combustible fluid that will burn in the <link;dieselgen;§o§nDiesel §o§nGenerator§r>.
+ie.manual.entry.biodiesel1=Plant Oil is created by processing various seeds in the industrial squeezer. Create the structure pictured above and click one of the sides with an Engineer's Hammer to form it. Power is input at the top or bottom, fluids are output through any of the ports at the bottom of each side.
+ie.manual.entry.biodiesel1T=The following list shows various items that can be squeezed into plant oil, and the amount they produce.
+ie.manual.entry.biodiesel2=Ethanol is gained by fermenting sugarcane. The fermenter's structure is created in a similar manner to that of the squeezer, as such power in- and fluid outputs are identical.
+ie.manual.entry.biodiesel2T=The following list shows various items that can be fermented into ethanol, and the amount they produce.
+ie.manual.entry.biodiesel3=Lastly, in order to refine plant oil and ethanol into Biodiesel, you will need to insert both fluids into a refinery and supply it with power. The structure is created as shown above and formed by clicking the center of the front with an Engineer's Hammer.
+ie.manual.entry.biodiesel4=The front of the refinery serves as fluid output, whereas the inputs are found on the smaller sides. Energy is supplied through the connector at the back. Applying a redstone signal to the control panel on the right will halt the refinery's process.
+
+ie.manual.entry.conveyor.name=Conveyor Belts
+ie.manual.entry.conveyor.subtext=Who needs rails anyway?
+ie.manual.entry.conveyor0=Conveyor Belts are an easy way of transporting all sorts of things around your base. While they are strong enough to move living creatures like cows or sheep, their true strength lies in transporting items.<br>Throwing items atop them will have the items move along the belt. Should the belt lead into an inventory, the item will be inserted.
+ie.manual.entry.conveyor1=Blocks like hoppers will be able to drop items onto the belts. Use an Engineer's Hammer to rotate the belts (rightclick) or adjust whether they should run up- or downwards (sneak + rightclick).<br>By default, conveyors face the same way the player is facing. Sneaking while placing them will instead make them face towards the player.
+
+ie.manual.entry.furnaceHeater.name=External Heater
+ie.manual.entry.furnaceHeater.subtext=Now you're cooking with flux!
+ie.manual.entry.furnaceHeater0=The External Heater does exactly what its name implies, it generates thermal energy from RF. When placed next to a normal furnace, this thermal energy will power the furnace, allowing it to smelt without any fuel inside it.
+ie.manual.entry.furnaceHeater1=Click a side of the heater with a hammer to make it an energy acceptor, sneak to target the opposing side.<br>The heater will consume §o<config;i;heater_consumption> RF/t§r for each heat unit added. During the initial phase of the furnace, the heater will produce up to §o4§r units of heat per tick, but as soon as the furnace reaches maximum temperature, it will only require §o1§r unit of heat to keep it going.
+ie.manual.entry.furnaceHeater2=Even better, while the furnace is at maximum temperature, the heater will consume an additional §o<config;i;heater_speedupConsumption> RF/t§r to increase the furnace's processing speed.<br>The heater will only affect a furnace with a valid input and space in the output slot, in order to conserve energy. However, you can apply a redstone signal to the heater to disable that functionality and have it keep the furnace at full heat.
+
+ie.manual.entry.sorter.name=Item Router
+ie.manual.entry.sorter.subtext=Left foot yellow, right hand green
+ie.manual.entry.sorter0=The Item Router is a block which will accept and redistribute items down filtered paths. Place it down and rightclick it to open the interface, which shows six different, colour and direction coordinated filters.
+ie.manual.entry.sorter1=When an item enters the router, it will be routed to an output whose filter matches the item, or, if no matching filter is found, it routes to an unfiltered output. If the router cannot route the item in the first place, it will not allow the item to enter the router. Items also can not be output to the side it was inserted from.<br>Sneak and rightclick a side to switch its routing to respect the OreDictionary. Note that this routing is a bit more taxing on the game performance.
+
+ie.manual.entry.drill.name=Mining Drill
+ie.manual.entry.drill.subtext=My drill will pierce the Bedrock!
+ie.manual.entry.drill0=The handheld, diesel-powered drill is a big advancement in mining. With exchangeable drill heads and upgrades, its properties are almost entirely modifyable. To modify it, place it in an <link;workbench;§o§nEngineer's §o§nWorkbench§r>.<br>The drill runs off of <link;biodiesel;§o§nBiodiesel§r> and can be filled directly in the refinery.
+ie.manual.entry.drill1=The Drill Head determines the base mining level, speed, and size, as well as the attack damage. As you dig blocks, the drill head takes damage, but it can be repaired in an anvil.
+ie.manual.entry.drill2=As the drill is powered by a combustion engine, it will not run underwater unless you equip it with the Internal Oxidizer Tank Upgrade. However, with this upgrade equipped, it will not only run while submerged, but also ignore the slowdown usually experienced when digging in water.
+ie.manual.entry.drill3=The Advanced Lubrication System applies additional lubricant to the drill at a regular basis, allowing it to run and dig faster.
+ie.manual.entry.drill4=By adding Additional Augers to the drill, it's destructive potential against living creatures is increased. The upgrade stacks up to three and each will add an additional point of attack damage.
+ie.manual.entry.drill5=The Large Fuel Tank allows the drill to store more fuel internally, extending the time you can use it before refilling.
+
+ie.manual.entry.revolver.name=Revolver
+ie.manual.entry.revolver.subtext=Wanted: Dead or Alive
+ie.manual.entry.revolver0=The Revolver, a more elegant weapon from a more civilized age, is an achievement of small mechanics. Small being relative here, since this weapon is chambered for 12-gauge.<br>Similar to the Mining Drill, the Revolver will allow for modification in the <link;workbench;§o§nEngineer's §o§nWorkbench§r>, as detailed on the last pages.
+ie.manual.entry.revolver1=There are different types of ammunition the Revolver will accept. To load it, sneak+rightclick the weapon, then place cartridges into the slots.<br>A loaded Speedloader in your inventory, will be used to refill the revolver after you've fired your last shot.
+ie.manual.entry.revolver2=Cartridges are created in the Engineer's Workbench, by the use of specific <link;blueprints;§o§nEngineer's §o§nBlueprints§r>. Blueprints for normal ammunition you can create yourself, but some more advanced types of ammunition will require you to buy adequate blueprints from someone else. 
+ie.manual.entry.revolver3=These are common types of ammunition, created with simple, selfmade blueprints:<br><br>§lCasull:§r Simple lead projectile, capable of inflicting medium damage.<br>§lArmor-Piercing:§r Dense metal projectile, penetrates the armor by sheer kinetic force.<br>§lBuckshot:§r Collection of small projectiles, spreading in a cone shape. Effective at short range.<br>§lHigh-Explosive:§r Creates small explosion on impact.<br>§lSilver:§r Lead core in silver, effective against...werewolves?!.
+ie.manual.entry.revolver4=These are more intricate types of ammunition, created with unique blueprints that cannot be crafted, only found or bought.<br><br>§lDragon's Breath:§r Flammable metal dust, creates a short-ranged inferno.<config;b;botaniaBullets;<br>§lHoming:§r Will home in on the closest target.<br>§lWolfpack:§r Cluster projectile, initially unguided, but splits into 6 small, target-seeking, projectiles on impact.;>
+ie.manual.entry.revolver5=By attaching a bayonet to the revolver, you outfit it with close-quarter-combat capabilities, allowing for melee damage as powerful as an Iron Sword.
+ie.manual.entry.revolver6=The Extended Magazine allows loading 6 more cartridges into the revolver. This magazine does not get refilled by a speedloader.
+ie.manual.entry.revolver7=The Amplifying Electron Tubes apply an electric shock to fired projectiles. This shock persists till it hits the target (don't ask how it works) and is passed on. The target will be stunned for a fraction of a second and all powered equipment they may be using will suffer a slight discharge.
+
+ie.manual.entry.crusher.name=Crusher
+ie.manual.entry.crusher.subtext=Keep your hands out!
+ie.manual.entry.crusher0=Crushing an ore is an effective way of increasing their yield, for each ore creates two dusts which you can then smelt. This industrial-size crusher is a quick way of doing so. The machine will consume up to <config;i;crusher_consumption> RF/t, and its processing speed depends on the power supplied.
+ie.manual.entry.crusher1=However, it is not only used for crushing ores. Every living being to fall into the machine will take grave damage and the crusher will output the relevant drops. Likewise, all items that cannot be processed will be destroyed.<br>Applying a redstone signal to the control panel at the front will halt the crushers process.<br>The structure is formed by right clicking the central block of the front. The front is the wide side of the structure which has a light engineering block at the bottom.
+
+ie.manual.entry.lightningrod.name=Lightning Rod
+ie.manual.entry.lightningrod.subtext=Thunderstruck!
+ie.manual.entry.lightningrod0=Lightning is a phenomenon of nature. It contains a huge amount of raw power, and this lightning rod is able to harness that power.<br>By stacking a lot of steel fences on this multiblock, you increase the chance of a lightning bolt striking it during rain or thunderstorms. 
+ie.manual.entry.lightningrod1=When the steel pole is struck, the huge amounts of energy created are stored in the base of the lightning rod and is then slowly distributed to energy connections at the sides.<br><br>The structure is created as shown above, and formed by clicking the central block with an Engineer's Hammer. 
+ie.manual.entry.lightningrod2=You can improve the chances of the Lightning Rod getting struck by creating a "net" of steel fences connected to the topmost fence. 
+
+ie.manual.entry.minerals.name=Mineral Deposits
+ie.manual.entry.minerals.subtext=Oresome
+ie.manual.entry.minerals0=The deposits of Ore found around your world are nothing new to you. What have so far left out of consideration though are mineral veins, which contain a mix of different ores. Due to their wide and thin spread, the average miner can't find them, but a <link;excavator;§o§nspecial §o§nmachine§r> might be able to assist with that.
+ie.manual.entry.minerals1=To find and determine minerals in the world, you will want to craft a Core Sample Drill. This machine, when powered, will drill into the chunk and determine which mineral can be found there. The Drill consumes <config;i;coredrill_consumption> RF/t and takes <config;i;coredrill_time> ticks to fully retrieve and analyze a sample.
+ie.manual.entry.minerals2=The following pages list every type of vein and the ores that can be retrieved from them.
+
+ie.manual.entry.arcfurnace.name=Arc Furnace
+ie.manual.entry.arcfurnace.subtext=Not a reactor 
+ie.manual.entry.arcfurnace0=The Arc Furnace is a massive structure used to quickly smelt metals. It consists of a steel vat topped by electrodes which heat up the metal.
+ie.manual.entry.arcfurnace1=The furnace excels at smelting ores and creating steel due to its high speed and its abiltiy to process multiple items at the same time, but it is also complex in its workings and will require maintenance in order to coninue functioning.<br>Slag must be removed from the machine or it will cease to function, and degrading electrodes need to be replaced over time.
+ie.manual.entry.arcfurnace2=To form the structure, assemble it as shown on the first page, then click the cauldron with an Engineer's Hammer.<br><br>Energy is input through the three connectors at the back, and supplying the controlpanel at the front with a redstone signal will turn off the machine. Right-clicking the panel, 'bucket' or vat will open the interface.
+ie.manual.entry.arcfurnace3=§lInterface:§r<br>The interface may look confusing upon first seeing it, but it's quite straight forward.<br><br>The three slots at the top are for the <link;graphite;§o§nGraphite §o§nElectrodes§r;1>.<br>Electrodes can be inserted into the furnace through the top-center block of the structre.<br>The twelve slots on the left are the input slots for metals and ores. Each slot has a temperature bar next to it, representing the progress of smelting.
+ie.manual.entry.arcfurnace4=The four slots on the right are for "additives", different materials added to the molten metal during the crafting process. An example of these would be adding Coke Dust to melting Iron in order to create Steel.<br>Inputs and additives are inserted through the two hatches at the top of the structure, to the left and right of the electrodes.
+ie.manual.entry.arcfurnace5=The seven slots at the bottom are six output slots and a slot for slag. Outputs are retrieved from the 'bucket' at the front of the structure, slag through the port at the back of the machine. The Arc Furance will automatically push output and slag to connected inventories (this includes Conveyor Belts).
+
+ie.manual.entry.excavator.name=Excavator
+ie.manual.entry.excavator.subtext=Better than Dwarves
+ie.manual.entry.excavator0=The Excavator is one of the pinnacles of modern engineering. It is able to dig up <link;minerals;§o§nminerals§r;0> from veins inaccessible by normal mining. In return however, the excavator is a complex structure which requires <config;i;excavator_consumption> RF/t in order to operate.
+ie.manual.entry.excavator1=The structure is comprised of two pieces: The engine shown on the first page and the bucket wheel displayed on the second, which fits into the 'braces' of the engine as displayed on the previous page. The energy input for the engine is on its side, the back features a redstone control panel and the item output.<br>As the excavator digs up ores, the yield of the vein slowly decreases, but a vein of minerals can last for <config;i;excavator_depletion_days> days of consecutive digging.
