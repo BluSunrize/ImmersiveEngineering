@@ -369,7 +369,7 @@ death.attack.ieCrushed=%1$s was crushed
 #ie.manual.entry.=
 
 ie.manual.category.general.name=概要と材料
-ie.manual.category.energy.name=エネルギー、銅線、発電
+ie.manual.category.energy.name=エネルギー、導線、発電
 ie.manual.category.machines.name=工具と機械
 
 #マニュアル->概要と材料->概要(Introduction)
