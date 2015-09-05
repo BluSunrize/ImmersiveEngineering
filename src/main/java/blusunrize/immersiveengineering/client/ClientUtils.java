@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
@@ -55,7 +56,7 @@ public class ClientUtils
 	{
 		if(tile.getWorldObj()!=null && tile instanceof IImmersiveConnectable)
 		{
-			List<Connection> outputs = ImmersiveNetHandler.INSTANCE.getConnections(tile.getWorldObj(), Utils.toCC(tile));
+			ConcurrentSkipListSet<Connection> outputs = ImmersiveNetHandler.INSTANCE.getConnections(tile.getWorldObj(), Utils.toCC(tile));
 			if(outputs!=null)
 			{
 				Iterator<ImmersiveNetHandler.Connection> itCon = outputs.iterator();

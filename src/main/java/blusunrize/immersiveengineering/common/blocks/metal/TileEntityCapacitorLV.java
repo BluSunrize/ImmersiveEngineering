@@ -94,27 +94,27 @@ public class TileEntityCapacitorLV extends TileEntityIEBase implements IEnergyHa
 		ForgeDirection fd = ForgeDirection.VALID_DIRECTIONS[side];
 		if(worldObj.getTileEntity(xCoord+fd.offsetX, yCoord+fd.offsetY, zCoord+fd.offsetZ) instanceof IEnergyReceiver)
 			this.energyStorage.modifyEnergyStored(-((IEnergyReceiver)worldObj.getTileEntity(xCoord+fd.offsetX, yCoord+fd.offsetY, zCoord+fd.offsetZ)).receiveEnergy(fd.getOpposite(), Math.min(getMaxOutput(), this.energyStorage.getEnergyStored()), false));
-		else if(worldObj.getTileEntity(xCoord+fd.offsetX,yCoord+fd.offsetY,zCoord+fd.offsetZ) instanceof TileEntityConnectorLV)
-		{
-			IImmersiveConnectable node = (IImmersiveConnectable) worldObj.getTileEntity(xCoord+fd.offsetX,yCoord+fd.offsetY,zCoord+fd.offsetZ);
-			if(!node.isEnergyOutput())
-				return;
-			List<AbstractConnection> outputs = ImmersiveNetHandler.INSTANCE.getIndirectEnergyConnections(Utils.toCC(node), worldObj);
-			int received = 0;
-			int powerLeft = Math.min(getMaxOutput(), this.energyStorage.getEnergyStored());
-			for(AbstractConnection con : outputs)
-				if(con!=null && toIIC(con.end, worldObj)!=null)
-				{
-					int tempR = toIIC(con.end,worldObj).outputEnergy(Math.min(powerLeft,con.cableType.getTransferRate()), true, 0);
-					tempR -= (int) Math.floor(tempR*con.getAverageLossRate());
-					int r = toIIC(con.end, worldObj).outputEnergy(tempR, false, 0);
-					received += r;
-					powerLeft -= r;
-					if(powerLeft<=0)
-						break;
-				}
-			this.energyStorage.modifyEnergyStored(-received);
-		}
+//		else if(worldObj.getTileEntity(xCoord+fd.offsetX,yCoord+fd.offsetY,zCoord+fd.offsetZ) instanceof TileEntityConnectorLV)
+//		{
+//			IImmersiveConnectable node = (IImmersiveConnectable) worldObj.getTileEntity(xCoord+fd.offsetX,yCoord+fd.offsetY,zCoord+fd.offsetZ);
+//			if(!node.isEnergyOutput())
+//				return;
+//			List<AbstractConnection> outputs = ImmersiveNetHandler.INSTANCE.getIndirectEnergyConnections(Utils.toCC(node), worldObj);
+//			int received = 0;
+//			int powerLeft = Math.min(getMaxOutput(), this.energyStorage.getEnergyStored());
+//			for(AbstractConnection con : outputs)
+//				if(con!=null && toIIC(con.end, worldObj)!=null)
+//				{
+//					int tempR = toIIC(con.end,worldObj).outputEnergy(Math.min(powerLeft,con.cableType.getTransferRate()), true, 0);
+//					tempR -= (int) Math.floor(tempR*con.getAverageLossRate());
+//					int r = toIIC(con.end, worldObj).outputEnergy(tempR, false, 0);
+//					received += r;
+//					powerLeft -= r;
+//					if(powerLeft<=0)
+//						break;
+//				}
+//			this.energyStorage.modifyEnergyStored(-received);
+//		}
 	}
 	public void toggleSide(int side)
 	{

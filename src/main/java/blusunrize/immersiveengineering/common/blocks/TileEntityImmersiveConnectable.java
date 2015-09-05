@@ -1,6 +1,6 @@
 package blusunrize.immersiveengineering.common.blocks;
 
-import java.util.List;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -91,7 +91,7 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 	public void removeCable(Connection connection)
 	{
 		WireType type = connection!=null?connection.cableType:null;
-		List<Connection> outputs = ImmersiveNetHandler.INSTANCE.getConnections(worldObj,Utils.toCC(this));
+		ConcurrentSkipListSet<Connection> outputs = ImmersiveNetHandler.INSTANCE.getConnections(worldObj,Utils.toCC(this));
 		if(outputs!=null && outputs.size()>0)
 		{
 			if(type==limitType || type==null)
@@ -109,7 +109,7 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 		if(worldObj!=null && !worldObj.isRemote)
 		{
 			NBTTagList connectionList = new NBTTagList();
-			List<Connection> conL = ImmersiveNetHandler.INSTANCE.getConnections(worldObj, Utils.toCC(this));
+			ConcurrentSkipListSet<Connection> conL = ImmersiveNetHandler.INSTANCE.getConnections(worldObj, Utils.toCC(this));
 			if(conL!=null)
 				for(Connection con : conL)
 					connectionList.appendTag(con.writeToNBT());

@@ -2,7 +2,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import static blusunrize.immersiveengineering.common.util.Utils.toIIC;
 
-import java.util.List;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -181,8 +181,11 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 		int received = 0;
 		if(!worldObj.isRemote)
 		{
-			List<AbstractConnection> outputs = ImmersiveNetHandler.INSTANCE.getIndirectEnergyConnections(Utils.toCC(this), worldObj);
+			ConcurrentSkipListSet<AbstractConnection> outputs = ImmersiveNetHandler.INSTANCE.getIndirectEnergyConnections(Utils.toCC(this), worldObj);
 			int powerLeft = Math.min(Math.min(getMaxOutput(),getMaxInput()), energy);
+			System.out.println();
+			System.out.println();
+			System.out.println("Sending power: "+powerLeft+" at "+xCoord+","+yCoord+","+zCoord);
 			if(outputs.size()<1)
 				return 0;
 			int output = powerLeft/outputs.size();
@@ -193,6 +196,20 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 					int r = tempR;
 					tempR -= (int) Math.max(0, Math.floor(tempR*con.getAverageLossRate()));
 					toIIC(con.end, worldObj).outputEnergy(tempR, simulate, energyType);
+					for(Connection sub : con.subConnections)
+					{
+						System.out.println("Sub Con"+sub.start+" to "+sub.end);
+						int transferredPerCon = ImmersiveNetHandler.INSTANCE.transferPerTick.containsKey(sub)?ImmersiveNetHandler.INSTANCE.transferPerTick.get(sub):0;
+						System.out.println("old t "+transferredPerCon);
+						transferredPerCon += r;
+						System.out.println("new t "+transferredPerCon);
+						if(transferredPerCon>sub.cableType.getTransferRate())
+						{
+							System.out.println("Okay, this wire is HAWT.");
+							System.out.println("Or at least hotter than "+sub.cableType.getTransferRate());
+						}
+						ImmersiveNetHandler.INSTANCE.transferPerTick.put(sub,r);
+					}
 					received += r;
 					powerLeft -= r;
 					if(powerLeft<=0)

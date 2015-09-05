@@ -1,6 +1,6 @@
 package blusunrize.immersiveengineering.common.entities;
 
-import java.util.List;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
@@ -98,7 +98,7 @@ public class EntitySkycrate extends EntitySkylineHook
 			this.setDead();
 			return;
 		}
-		List<Connection> outputs = ImmersiveNetHandler.INSTANCE.getConnections(worldObj, target);
+		ConcurrentSkipListSet<Connection> outputs = ImmersiveNetHandler.INSTANCE.getConnections(worldObj, target);
 		if(outputs!=null && outputs.size()>0)
 		{
 			Vec3 vec = Vec3.createVectorHelper(connection.end.posX-connection.start.posX, connection.end.posY-connection.start.posY, connection.end.posZ-connection.start.posZ);

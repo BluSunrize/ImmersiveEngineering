@@ -31,10 +31,14 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMultiblockP
 import blusunrize.immersiveengineering.common.items.ItemDrill;
 import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.Utils;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.Event;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.ItemCraftedEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
+import cpw.mods.fml.common.gameevent.TickEvent.WorldTickEvent;
+import cpw.mods.fml.relauncher.Side;
 
 public class EventHandler
 {
@@ -69,7 +73,7 @@ public class EventHandler
 		 */
 		//		}
 	}
-
+//transferPerTick
 	@SubscribeEvent
 	public void onSave(WorldEvent.Save event)
 	{
@@ -79,6 +83,13 @@ public class EventHandler
 	public void onUnload(WorldEvent.Unload event)
 	{
 		IESaveData.setDirty(0);
+	}
+	
+	@SubscribeEvent
+	public void onWorldTick(WorldTickEvent event)
+	{
+		if(event.phase==TickEvent.Phase.END && FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER)
+			ImmersiveNetHandler.INSTANCE.transferPerTick.clear();
 	}
 
 	@SubscribeEvent

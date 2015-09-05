@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.common.items;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
@@ -112,7 +113,7 @@ public class ItemIETool extends ItemIEBase
 							IImmersiveConnectable nodeLink = (IImmersiveConnectable)world.getTileEntity(pos[1], pos[2], pos[3]);
 							if(nodeHere!=null && nodeLink!=null)
 							{
-								List<AbstractConnection> connections = ImmersiveNetHandler.INSTANCE.getIndirectEnergyConnections(Utils.toCC(nodeLink), world);
+								ConcurrentSkipListSet<AbstractConnection> connections = ImmersiveNetHandler.INSTANCE.getIndirectEnergyConnections(Utils.toCC(nodeLink), world);
 								for(AbstractConnection con : connections)
 									if(Utils.toCC(nodeHere).equals(con.end))
 										player.addChatComponentMessage(new ChatComponentTranslation(Lib.CHAT_INFO+"averageLoss",Utils.formatDouble(con.getAverageLossRate()*100, "###.000")));
