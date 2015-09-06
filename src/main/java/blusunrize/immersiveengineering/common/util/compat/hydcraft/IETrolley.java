@@ -10,14 +10,14 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.util.ForgeDirection;
 import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.blocks.plant.BlockIECrop;
 
 public class IETrolley implements IHarvesterTrolley
 {
-
 	@Override
 	public boolean canHarvest(World world, int x, int y, int z)
 	{
-		return world.getBlock(x, y, z).equals(IEContent.blockCrop) && world.getBlock(x, y-1, z).equals(IEContent.blockCrop);
+		return world.getBlock(x, y, z).equals(IEContent.blockCrop) && world.getBlockMetadata(x, y, z)==((BlockIECrop)IEContent.blockCrop).getMaxMeta(world.getBlockMetadata(x, y, z));
 	}
 
 	@Override

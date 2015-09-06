@@ -99,8 +99,10 @@ tile.ImmersiveEngineering.stoneDecoration.coalCoke.name=Block of Coal Coke
 tile.ImmersiveEngineering.stoneDecoration.concrete.name=Concrete
 tile.ImmersiveEngineering.stoneDecoration.concreteTile.name=Concrete Tile
 
-
 tile.ImmersiveEngineering.hemp.name=Industrial Hemp
+
+#Hydraulicraft Support
+tile.harvesterTrolley.ieCrop.name=Industrial Hemp Harvester Trolley 
 
 fluid.creosote=Creosote Oil
 fluid.plantoil=Plant Oil
