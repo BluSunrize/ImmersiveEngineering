@@ -37,7 +37,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 	public boolean active = false;
 	public boolean[] electrodes = new boolean[3];
 	@SideOnly(Side.CLIENT)
-	public int pouringMetal = 0;
+	public int pouringMetal;
 
 
 	public TileEntityArcFurnace master()

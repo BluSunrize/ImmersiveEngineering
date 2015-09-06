@@ -25,7 +25,11 @@ public class DimensionChunkCoords extends ChunkCoordIntPair
             return this.dimension==coordPair.dimension && this.chunkXPos==coordPair.chunkXPos && this.chunkZPos==coordPair.chunkZPos;
         }
     }
-	
+	@Override
+    public String toString()
+    {
+        return "[dim:"+ this.dimension+ "; " +this.chunkXPos+ ", " +this.chunkZPos + "]";
+    }
 
 	public NBTTagCompound writeToNBT()
 	{

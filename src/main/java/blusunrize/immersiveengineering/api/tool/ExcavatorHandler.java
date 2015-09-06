@@ -24,9 +24,10 @@ public class ExcavatorHandler
 	 */
 	public static LinkedHashMap<MineralMix, Integer> mineralList = new LinkedHashMap<MineralMix, Integer>();
 	public static HashMap<DimensionChunkCoords, Integer> mineralDepletion = new HashMap<DimensionChunkCoords, Integer>();
+	public static HashMap<DimensionChunkCoords, MineralMix> mineralOverrides = new HashMap<DimensionChunkCoords, MineralMix>();
 	public static int totalWeight = 0;
 	public static int mineralVeinCapacity = 0;
-	
+
 	public static MineralMix addMineral(String name, int mineralChance, float failChance, String[] ores, float[] chances)
 	{
 		assert ores.length == chances.length;
@@ -59,17 +60,13 @@ public class ExcavatorHandler
 				return null;
 		}
 
-		
-		long worldSeed = world.getSeed();
-		long seed = (chunkX+(chunkZ << 10) )^ worldSeed;
+		if(mineralOverrides.containsKey(new DimensionChunkCoords(world.provider.dimensionId, chunkX,chunkZ)))
+			return mineralOverrides.get(new DimensionChunkCoords(world.provider.dimensionId, chunkX,chunkZ));
+
 		Random r = world.getChunkFromChunkCoords(chunkX, chunkZ).getRandomWithSeed(940610);
-//				new Random(seed);
 		double dd = r.nextDouble();
-		System.out.println(dd);
 		boolean empty = dd>.125;
 		int query = r.nextInt(); 
-//		boolean empty = ((seed+(chunkX*chunkX + chunkZ*chunkZ))^seed)%8!=0; //Used to be 1 in 4
-//		int query = (int) ((seed+((chunkX*chunkX*71862)+(chunkZ*chunkZ*31261)))^seed);
 		if(empty)
 			return null;
 
@@ -87,7 +84,8 @@ public class ExcavatorHandler
 		if(!mineralDepletion.containsKey(new DimensionChunkCoords(world.provider.dimensionId, chunkX,chunkZ)))
 			mineralDepletion.put(new DimensionChunkCoords(world.provider.dimensionId, chunkX,chunkZ), 0);
 		int dep = mineralDepletion.get(new DimensionChunkCoords(world.provider.dimensionId, chunkX,chunkZ));
-		mineralDepletion.put(new DimensionChunkCoords(world.provider.dimensionId, chunkX,chunkZ), dep+1);
+		if(dep>=0)
+			mineralDepletion.put(new DimensionChunkCoords(world.provider.dimensionId, chunkX,chunkZ), dep+1);
 	}
 
 	public static class MineralMix

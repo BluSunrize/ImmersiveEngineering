@@ -89,6 +89,15 @@ public class BlockIECrop extends BlockBush implements IGrowable
 	}
 
 	@Override
+	public boolean canBlockStay(World world, int x, int y, int z)
+	{
+		boolean b = super.canBlockStay(world, x, y, z);
+		if(world.getBlockMetadata(x, y, z)==5)
+			b = world.getBlock(x, y-1, z).equals(this)&&world.getBlockMetadata(x, y-1, z)==getMaxMeta(0);
+		return b;
+	}
+
+	@Override
 	public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
 	{
 		int meta = world.getBlockMetadata(x, y, z);
@@ -113,6 +122,13 @@ public class BlockIECrop extends BlockBush implements IGrowable
 		}
 
 		return ret;
+	}
+	@Override
+	public void onNeighborBlockChange(World world, int x, int y, int z, Block block)
+	{
+		super.onNeighborBlockChange(world, x, y, z, block);
+		if(world.getBlockMetadata(x, y, z)<getMaxMeta(0))
+			world.notifyBlockOfNeighborChange(x, y+1, z, this);
 	}
 
 
@@ -155,12 +171,12 @@ public class BlockIECrop extends BlockBush implements IGrowable
 		return block!=null && (block==this || block.equals(Blocks.farmland) || block instanceof BlockFarmland);
 	}
 
-    @Override
-    public EnumPlantType getPlantType(IBlockAccess world, int x, int y, int z)
-    {
-    	return EnumPlantType.Crop;
-    }
-    
+	@Override
+	public EnumPlantType getPlantType(IBlockAccess world, int x, int y, int z)
+	{
+		return EnumPlantType.Crop;
+	}
+
 	//isNotGrown
 	@Override
 	public boolean func_149851_a(World world, int x, int y, int z, boolean client)

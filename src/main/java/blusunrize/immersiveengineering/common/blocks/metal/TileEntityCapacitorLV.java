@@ -1,21 +1,13 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import static blusunrize.immersiveengineering.common.util.Utils.toIIC;
-
-import java.util.List;
-
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
-import blusunrize.immersiveengineering.api.energy.IImmersiveConnectable;
-import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler;
-import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler.AbstractConnection;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.util.Lib;
-import blusunrize.immersiveengineering.common.util.Utils;
 import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyHandler;
 import cofh.api.energy.IEnergyReceiver;

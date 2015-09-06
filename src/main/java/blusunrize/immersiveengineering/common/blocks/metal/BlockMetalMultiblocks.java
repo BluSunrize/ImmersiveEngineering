@@ -251,8 +251,6 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 			TileEntitySilo master = te.master();
 			if(master==null)
 				master = te;
-			System.out.println("ident: "+master.identStack);
-			System.out.println("amount: "+master.storageAmount);
 		}
 		return false;
 	}
