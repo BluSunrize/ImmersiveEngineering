@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.common.util.compat;
 import java.util.HashSet;
 import java.util.Set;
 
+import blusunrize.immersiveengineering.common.util.compat.hydcraft.HydCraftHelper;
 import blusunrize.immersiveengineering.common.util.compat.mfr.MFRHelper;
 import blusunrize.immersiveengineering.common.util.compat.minetweaker.MTHelper;
 import blusunrize.immersiveengineering.common.util.compat.waila.WailaHelper;
@@ -20,6 +21,7 @@ public abstract class IECompatModule
 		modules.add(new BacktoolsHelper());
 		modules.add(new WailaHelper());
 		modules.add(new GregTechHelper());
+		modules.add(new HydCraftHelper());
 	}
 	
 	public String modId;

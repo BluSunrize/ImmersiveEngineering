@@ -21,6 +21,9 @@ version = "0.6.0-pre"
 group= "blusunrize"
 archivesBaseName = "ImmersiveEngineering"
 
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
 minecraft {
     version = "1.7.10-10.13.4.1448-1.7.10"
 	replace '${version}', project.version
