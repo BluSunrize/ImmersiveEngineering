@@ -10,6 +10,7 @@ import net.minecraft.world.World;
 import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.stone.TileEntityBlastFurnace;
+import blusunrize.immersiveengineering.common.util.IEAchievements;
 
 public class MultiblockBlastFurnace implements IMultiblock
 {
@@ -79,6 +80,7 @@ public class MultiblockBlastFurnace implements IMultiblock
 						world.getTileEntity(x+xx, y+yy, z+zz).markDirty();
 					}
 				}
+		player.triggerAchievement(IEAchievements.blastfurnace);
 		return true;
 	}
 

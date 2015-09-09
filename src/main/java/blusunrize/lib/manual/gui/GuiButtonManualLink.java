@@ -38,7 +38,7 @@ public class GuiButtonManualLink extends GuiButton
 			FontRenderer font = gui.manual.fontRenderer;
 			boolean uni = font.getUnicodeFlag();
 			font.setUnicodeFlag(true);
-			font.drawString(localized, xPosition, yPosition+2, gui.manual.getHighlightColour());
+			font.drawString(localized, xPosition, yPosition, gui.manual.getHighlightColour());
 			font.setUnicodeFlag(false);
 			gui.drawHoveringText(Arrays.asList(gui.manual.formatEntryName(key)+", "+(pageLinked+1)), mx+8,my+4, font);
 			font.setUnicodeFlag(uni);

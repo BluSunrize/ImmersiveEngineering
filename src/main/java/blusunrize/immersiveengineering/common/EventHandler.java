@@ -33,6 +33,7 @@ import blusunrize.immersiveengineering.common.blocks.TileEntityImmersiveConnecta
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMultiblockPart;
 import blusunrize.immersiveengineering.common.items.ItemDrill;
+import blusunrize.immersiveengineering.common.util.IEAchievements;
 import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.Utils;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -182,6 +183,8 @@ public class EventHandler
 	@SubscribeEvent
 	public void onItemCrafted(ItemCraftedEvent event)
 	{
+		if(event.player!=null && OreDictionary.itemMatches(new ItemStack(IEContent.itemTool,1,0), event.crafting, true))
+			event.player.triggerAchievement(IEAchievements.craftHammer);
 	}
 
 	@SubscribeEvent()

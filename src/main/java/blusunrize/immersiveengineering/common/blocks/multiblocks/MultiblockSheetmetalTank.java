@@ -18,7 +18,7 @@ public class MultiblockSheetmetalTank implements IMultiblock
 {
 	public static MultiblockSheetmetalTank instance = new MultiblockSheetmetalTank();
 
-	static ItemStack[][][] structure = new ItemStack[7][3][3];
+	static ItemStack[][][] structure = new ItemStack[5][3][3];
 	static{
 		for(int h=0;h<5;h++)
 			for(int l=0;l<3;l++)

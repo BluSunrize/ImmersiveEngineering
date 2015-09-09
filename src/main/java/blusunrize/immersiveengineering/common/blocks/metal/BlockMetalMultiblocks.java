@@ -237,11 +237,23 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 				if(master==null)
 					master = tank;
 				if(Utils.fillFluidHandlerWithPlayerItem(world, master, player))
+				{
+					master.markDirty();
+					world.markBlockForUpdate(master.xCoord,master.yCoord,master.zCoord);
 					return true;
+				}
 				if(Utils.fillPlayerItemFromFluidHandler(world, master, player, master.tank.getFluid()))
+				{
+					master.markDirty();
+					world.markBlockForUpdate(master.xCoord,master.yCoord,master.zCoord);
 					return true;
+				}
 				if(player.getCurrentEquippedItem()!=null && player.getCurrentEquippedItem().getItem() instanceof IFluidContainerItem)
+				{
+					master.markDirty();
+					world.markBlockForUpdate(master.xCoord,master.yCoord,master.zCoord);
 					return true;
+				}
 			}
 			return true;
 		}

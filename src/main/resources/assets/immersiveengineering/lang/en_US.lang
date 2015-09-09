@@ -235,18 +235,21 @@ desc.ImmersiveEngineering.info.attachedTo=Linking from %1$s, %2$s, %3$s
 desc.ImmersiveEngineering.info.attachedToDim=Linking from %1$s, %2$s, %3$s in Dimension %4$s
 desc.ImmersiveEngineering.info.energyStored=Energy stored: %1$s RF
 desc.ImmersiveEngineering.info.blastFuelTime=Blast Fuel: %1$s Ticks
-desc.ImmersiveEngineering.info.capacitorSide.facing=Facing Side:
-desc.ImmersiveEngineering.info.capacitorSide.opposite=Opposite Side:
-desc.ImmersiveEngineering.info.capacitorSide.-1=No Connection
-desc.ImmersiveEngineering.info.capacitorSide.0=Energy Input
-desc.ImmersiveEngineering.info.capacitorSide.1=Energy Output
 
+desc.ImmersiveEngineering.info.blockSide.facing=Facing Side
+desc.ImmersiveEngineering.info.blockSide.opposite=Opposite Side
 desc.ImmersiveEngineering.info.blockSide.UP=Top Side
 desc.ImmersiveEngineering.info.blockSide.DOWN=Bottom Side
 desc.ImmersiveEngineering.info.blockSide.NORTH=North Side
 desc.ImmersiveEngineering.info.blockSide.SOUTH=South Side
 desc.ImmersiveEngineering.info.blockSide.EAST=East Side
 desc.ImmersiveEngineering.info.blockSide.WEST=West Side
+desc.ImmersiveEngineering.info.blockSide.connectEnergy.-1=No Connection
+desc.ImmersiveEngineering.info.blockSide.connectEnergy.0=Energy Input
+desc.ImmersiveEngineering.info.blockSide.connectEnergy.1=Energy Output
+desc.ImmersiveEngineering.info.blockSide.connectFluid.-1=No Connection
+desc.ImmersiveEngineering.info.blockSide.connectFluid.0=Fluid Input
+desc.ImmersiveEngineering.info.blockSide.connectFluid.1=Fluid Output
 
 desc.ImmersiveEngineering.info.oreDict.off=OreDictionary: Disabled
 desc.ImmersiveEngineering.info.oreDict.on=OreDictionary: Enabled
@@ -380,14 +383,55 @@ death.attack.ieRevolver_silver=%1$s was purified by %2$s's silver bullet
 death.attack.ieRevolver_potion=%1$s was doused by %2$s's phial shot
 death.attack.ieCrushed=%1$s was crushed
 
+#ACHIEVEMENTS
+achievement.immersiveengineering.openManual=RTFM
+achievement.immersiveengineering.openManual.desc=Open the Engineer's Manual
+achievement.immersiveengineering.craftHammer=HAMMAH!
+achievement.immersiveengineering.craftHammer.desc=Craft an Engineer's Hammer
+achievement.immersiveengineering.connectWire=Birds on a Wire
+achievement.immersiveengineering.connectWire.desc=Attach a wire
+achievement.immersiveengineering.blastfurnace=Really Hot Topic
+achievement.immersiveengineering.blastfurnace.desc=Create a Blast Furnace
+achievement.immersiveengineering.makeSteel=The Upgrade
+achievement.immersiveengineering.makeSteel.desc=Create a Steel Ingot
+achievement.immersiveengineering.makeRevolver=Make my day
+achievement.immersiveengineering.makeRevolver.desc=Craft the Revolver
+achievement.immersiveengineering.upgradeRevolver=Shalashaska
+achievement.immersiveengineering.upgradeRevolver.desc=Apply the maximum Upgrades to the Revolver
+achievement.immersiveengineering.makeWolfPack=Beauty of Destruction
+achievement.immersiveengineering.makeWolfPack.desc=Craft a Wolfpack Cartridge
+achievement.immersiveengineering.makeDrill=Power Pick
+achievement.immersiveengineering.makeDrill.desc=Craft the Mining Drill
+achievement.immersiveengineering.upgradeDrill=Big Daddy
+achievement.immersiveengineering.upgradeDrill.desc=Apply the maximum Upgrades to the Mining Drill
+achievement.immersiveengineering.makeSkyhook=Booker, catch!
+achievement.immersiveengineering.makeSkyhook.desc=Craft the Engineer's Skyhook
+achievement.immersiveengineering.skyhookPro=Skyline Master
+achievement.immersiveengineering.skyhookPro.desc=Travel a total of 1km with the Skyhook
+achievement.immersiveengineering.mbSilo=Sheetmetal Stash
+achievement.immersiveengineering.mbSilo.desc=Form the Silo Multiblock
+achievement.immersiveengineering.mbCrusher=Hazardous Machinery
+achievement.immersiveengineering.mbCrusher.desc=Form the Crusher Multiblock
+achievement.immersiveengineering.mbDieselGen=Bad for the Environment
+achievement.immersiveengineering.mbDieselGen.desc=Form the Diesel Generator Multiblock
+achievement.immersiveengineering.mbExcavator=Diggy Diggy Hole
+achievement.immersiveengineering.mbExcavator.desc=Form the Excavator Multiblock
+achievement.immersiveengineering.mbArcFurnace=The Hottest Topic
+achievement.immersiveengineering.mbArcFurnace.desc=Form the Arc Furnace Multiblock
+
+stat.skyhookOneCm=Distance by Skyhook
+
+
 #MANUAL
 #ie.manual.entry..name=
 #ie.manual.entry..subtext=
 #ie.manual.entry.=
 
 ie.manual.category.general.name=Overview and Resources
+ie.manual.category.construction.name=Construction
 ie.manual.category.energy.name=Power, wires, generators
-ie.manual.category.machines.name=Tools and Machinery
+ie.manual.category.machines.name=Tools and Simple Machines
+ie.manual.category.heavymachines.name=Heavy Machinery
 
 ie.manual.entry.introduction.name=Introduction
 ie.manual.entry.introduction.subtext=Getting into Engineering
@@ -422,6 +466,10 @@ ie.manual.entry.treatedwood.subtext=Highly Durable
 ie.manual.entry.treatedwood0=Treated Wood is, quite simply, wooden planks covered in creosote oil. It is however, one of the most important materials you will be using in Immersive Engineering, so you'd better be prepared to create a lot of it.
 ie.manual.entry.treatedwoodPost0=Posts made from treated wood make for excellent attachment points for your Wire Connectors. They are 4 blocks high, so you won't be able to place them without the proper clearance.<br>Using the hammer on the sides of the topmost block will attach an arm to the post. 
 ie.manual.entry.treatedwoodPost1=You can also place <link;wiring;§o§ntransformers§r;3> on the pole, which makes it less obtrusive.<br>Placing blocks below the arms of the wooden post will flip the arms upside down.
+
+ie.manual.entry.barrel.name=Wooden Barrel
+ie.manual.entry.barrel.subtext=Doesn't roll
+ie.manual.entry.barrel0=Wooden barrels are simple containers that can store fluid. They will store up to 12 buckets, but because they are wooden, they can't take any hot fluids.<br>Rightclicking the top or bottom side of the barrel with a Hammer will switch between in-, output or no connection.
 
 ie.manual.entry.graphite.name=Graphite
 ie.manual.entry.graphite.subtext=Coal stuff
@@ -464,10 +512,17 @@ ie.manual.entry.blastfurnace.subtext=Even hotter topic!
 ie.manual.entry.blastfurnace0=The Blast Furnace is used to increase the carbon contents in iron, turning it into steel. To achieve this, only pure, high-carbon fuels may be used for the furnace, specifically coal coke and charcoal.<br>The steel created in the blast furnace is an integral part of high-voltage architecture.
 ie.manual.entry.blastfurnaceBlock=To form a Blast Furnace, arrange 27 of these blocks in a 3x3x3 cube, and rightclick one of the sides' center blocks with an Engineer's Hammer.<br>See the following page for a diagram.
 
-ie.manual.entry.steelconstruction.name=Steel Constructions
-ie.manual.entry.steelconstruction.subtext=Riveting
-ie.manual.entry.steelconstruction0=Steel is not only an integral part of high-voltage architectures, it is also quite useful in, well, architecture. Steel scaffolding can be used to quickly create climbable structures, steel fencing keeps baddies at bay and structural arms make for great attachment points for your HV relays. 
-ie.manual.entry.steelconstruction1=Structural Connectors work similarly to normal connectors, but instead of transferring energy, they are purely decorative.<br>They won't accept normal wires, but Hemp Rope and Steel Cable (see next page).<br>You can also rotate them by rightclicking them with an Engineer's Hammer.
+ie.manual.entry.metalconstruction.name=Metal Constructions
+ie.manual.entry.metalconstruction.subtext=Riveting
+ie.manual.entry.metalconstruction0=Apart from Treated Wood, processed metals make for common construction blocks. You can craft almost any metal into blocks and slabs, or hammer iron ingots into a sheetmetal block.
+ie.manual.entry.metalconstruction1=Steel is not only an integral part of high-voltage architectures, it is also quite useful in, well, architecture. Steel scaffolding can be used to quickly create climbable structures, steel fencing keeps baddies at bay and structural arms make for great attachment points for your HV relays. 
+ie.manual.entry.metalconstruction2=Structural Connectors work similarly to normal connectors, but instead of transferring energy, they are purely decorative.<br>They won't accept normal wires, but Hemp Rope and Steel Cable (see next page).<br>You can also rotate them by rightclicking them with an Engineer's Hammer.
+
+ie.manual.entry.tanksilo.name=Tanks and Silos
+ie.manual.entry.tanksilo.subtext=Full to the brim!
+ie.manual.entry.tanksilo0=Sheetmetal Tanks and Silos provide space for large amounts of fluid and items.<br>The tanks will store up to 512 buckets of any fluid, which can be piped in through the top or bottom block.
+ie.manual.entry.tanksilo1=Silos offer space for a lot of items of the same type, makign them excellent for mass storage of seeds, slag or cobblestone. They have space for 41472 items, equalling the capacity of 24 chests.
+ie.manual.entry.tanksilo2=Items must be input through the top and extracted from the bottom. Applying a redstone signal to the bottom block will make it output automatically.
 
 ie.manual.entry.highvoltage.name=High-Voltage
 ie.manual.entry.highvoltage.subtext=You can't shake the shock

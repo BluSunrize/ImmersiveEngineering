@@ -16,7 +16,7 @@ public class IEBlockInterfaces
 	
 	public interface IBlockOverlayText
 	{
-		public String[] getOverlayText(MovingObjectPosition mop);
+		public String[] getOverlayText(EntityPlayer player, MovingObjectPosition mop, boolean hammer);
 	}
 	
 	public interface ISoundTile

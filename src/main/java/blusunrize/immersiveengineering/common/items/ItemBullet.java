@@ -147,6 +147,11 @@ public class ItemBullet extends ItemIEBase implements IBullet
 		return true;
 	}
 	@Override
+    public int getRenderPasses(int metadata)
+    {
+        return metadata==10?2:1;
+    }
+	@Override
 	public int getColorFromItemStack(ItemStack stack, int pass)
 	{
 		if(stack.getItemDamage()==10 && pass==0)

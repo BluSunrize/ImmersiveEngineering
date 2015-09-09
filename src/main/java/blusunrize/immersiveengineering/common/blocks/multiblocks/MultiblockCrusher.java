@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDecoration;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
+import blusunrize.immersiveengineering.common.util.IEAchievements;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -107,6 +108,7 @@ public class MultiblockCrusher implements IMultiblock
 		}
 		
 		if(b)
+		{
 			for(int l=0;l<3;l++)
 				for(int w=-2;w<=2;w++)
 					for(int h=-1;h<=1;h++)
@@ -129,6 +131,8 @@ public class MultiblockCrusher implements IMultiblock
 							tile.mirrored = mirrored;
 						}
 					}
+			player.triggerAchievement(IEAchievements.mbCrusher);
+		}
 		return b;
 	}
 

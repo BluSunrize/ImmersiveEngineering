@@ -453,14 +453,14 @@ public class ImmersiveNetHandler
 
 			WireType type = ApiUtils.getWireTypeFromNBT(tag, "cableType");
 
-			if(start!=null && end!=null)
+			if(start!=null && end!=null && type!=null)
 				return new Connection(start,end, type, tag.getInteger("length"));
 			return null;
 		}
 		@Override
 		public int compareTo(Connection con)
 		{
-			if(con==null)
+			if(con==null||con.cableType==null||cableType==null)
 				return 0;
 			int distComp = Integer.compare(length, con.length);
 			int cableComp = -1*Integer.compare(cableType.getTransferRate(), con.cableType.getTransferRate());

@@ -21,7 +21,6 @@ import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidContainerItem;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
@@ -84,8 +83,8 @@ public class BlockWoodenDevices extends BlockIEBase implements blusunrize.aquatw
 	@SideOnly(Side.CLIENT)
 	public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side)
 	{
-		//		if(world.getTileEntity(x, y, z) instanceof TileEntityWoodenBarrel && side<2)
-		//			return iconBarrel[((TileEntityWoodenBarrel)world.getTileEntity(x, y, z)).sideConfig[side]+1];
+		if(world.getTileEntity(x, y, z) instanceof TileEntityWoodenBarrel && side<2)
+			return iconBarrel[((TileEntityWoodenBarrel)world.getTileEntity(x, y, z)).sideConfig[side]+1];
 		return super.getIcon(world, x, y, z, side);
 	}
 
@@ -231,28 +230,42 @@ public class BlockWoodenDevices extends BlockIEBase implements blusunrize.aquatw
 				player.openGui(ImmersiveEngineering.instance, Lib.GUIID_Workbench, world, tile.xCoord,tile.yCoord,tile.zCoord);
 			return true;
 		}
-		if(!player.isSneaking() && world.getTileEntity(x, y, z) instanceof TileEntityWoodenBarrel)
+		if(world.getTileEntity(x, y, z) instanceof TileEntityWoodenBarrel)
 		{
 			if(!world.isRemote)
 			{
 				TileEntityWoodenBarrel barrel = (TileEntityWoodenBarrel)world.getTileEntity(x, y, z);
 				if(Utils.isHammer(player.getCurrentEquippedItem()) && side<2)
-					barrel.toggleSide(side);
-				else
 				{
-					FluidStack f = FluidContainerRegistry.getFluidForFilledItem(player.getCurrentEquippedItem());
+					if(player.isSneaking())
+						side = ForgeDirection.OPPOSITES[side];
+					barrel.toggleSide(side);
+				}
+				else if(!player.isSneaking())
+				{
+					FluidStack f = Utils.getFluidFromItemStack(player.getCurrentEquippedItem());
 					if(f!=null)
 						if(f.getFluid().getTemperature(f)<TileEntityWoodenBarrel.IGNITION_TEMPERATURE)
 						{
 							if(Utils.fillFluidHandlerWithPlayerItem(world, barrel, player))
+							{
+								world.markBlockForUpdate(x, y, z);
 								return true;
+							}
 						}
 						else
 							player.addChatComponentMessage(new ChatComponentTranslation(Lib.CHAT_INFO+"tooHot"));
 					if(Utils.fillPlayerItemFromFluidHandler(world, barrel, player, barrel.tank.getFluid()))
+					{
+						world.markBlockForUpdate(x, y, z);
 						return true;
+					}
 					if(player.getCurrentEquippedItem()!=null && player.getCurrentEquippedItem().getItem() instanceof IFluidContainerItem)
+					{
+						world.markBlockForUpdate(x, y, z);
 						return true;
+					}
+					
 				}
 			}
 			return true;

@@ -1,12 +1,18 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.EnumSkyBlock;
 import blusunrize.immersiveengineering.api.energy.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.common.EventHandler;
+import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISpawnInterdiction;
 import blusunrize.immersiveengineering.common.blocks.TileEntityImmersiveConnectable;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -19,6 +25,8 @@ public class TileEntityFloodLight extends TileEntityImmersiveConnectable impleme
 	public float rotY=0;
 	public float rotX=0;
 	private boolean interdictionList=false; 
+	public List<ChunkCoordinates> fakeLights = new ArrayList();
+	private boolean genNewLights;
 
 	@Override
 	public void updateEntity()
@@ -49,12 +57,37 @@ public class TileEntityFloodLight extends TileEntityImmersiveConnectable impleme
 		}
 	}
 
+	public void updateFakeLights()
+	{
+		Iterator<ChunkCoordinates> it = this.fakeLights.iterator();
+		while(it.hasNext())
+		{
+			ChunkCoordinates cc = it.next();
+			if(worldObj.getBlock(cc.posX, cc.posY, cc.posZ).equals(IEContent.blockFakeLight))
+			{
+				if(genNewLights)
+				{
+					worldObj.setBlockToAir(cc.posX, cc.posY, cc.posZ);
+					it.remove();
+				}
+			}
+			else
+				it.remove();
+		}
+		
+		if(genNewLights)
+		{
+			
+		}
+	}
+
+
 	@Override
 	public double getInterdictionRange()
 	{
 		return active?32:0;
 	}
-	
+
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{

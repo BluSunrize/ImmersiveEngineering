@@ -431,6 +431,8 @@ public class TileEntityRefinery extends TileEntityMultiblockPart implements IFlu
 			TileEntityRefinery master = master();
 			int rec = master.energyStorage.receiveEnergy(maxReceive, simulate);
 			master.markDirty();
+			if(rec>0)
+				worldObj.markBlockForUpdate(master().xCoord, master().yCoord, master().zCoord);
 			return rec;
 		}
 		return 0;

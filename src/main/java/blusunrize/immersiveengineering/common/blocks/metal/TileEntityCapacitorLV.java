@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.StatCollector;
@@ -189,17 +190,17 @@ public class TileEntityCapacitorLV extends TileEntityIEBase implements IEnergyHa
 		return r;
 	}
 	@Override
-	public String[] getOverlayText(MovingObjectPosition mop)
+	public String[] getOverlayText(EntityPlayer player, MovingObjectPosition mop, boolean hammer)
 	{
-		if(Config.getBoolean("colourblindSupport"))
+		if(hammer && Config.getBoolean("colourblindSupport"))
 		{
 			int i = sideConfig[Math.min(sideConfig.length-1, mop.sideHit)];
 			int j = sideConfig[Math.min(sideConfig.length-1, ForgeDirection.OPPOSITES[mop.sideHit])];
 			return new String[]{
-					StatCollector.translateToLocal(Lib.DESC_INFO+"capacitorSide.facing")
-					+StatCollector.translateToLocal(Lib.DESC_INFO+"capacitorSide."+i),
-					StatCollector.translateToLocal(Lib.DESC_INFO+"capacitorSide.opposite")
-					+StatCollector.translateToLocal(Lib.DESC_INFO+"capacitorSide."+j)
+					StatCollector.translateToLocal(Lib.DESC_INFO+"blockSide.facing")
+					+": "+StatCollector.translateToLocal(Lib.DESC_INFO+"blockSide.connectEnergy."+i),
+					StatCollector.translateToLocal(Lib.DESC_INFO+"blockSide.opposite")
+					+": "+StatCollector.translateToLocal(Lib.DESC_INFO+"blockSide.connectEnergy."+j)
 			};
 		}
 		return null;

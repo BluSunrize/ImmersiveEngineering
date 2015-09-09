@@ -146,6 +146,7 @@ public class IERecipes
 
 		for (ItemStack container : Utils.getContainersFilledWith(new FluidStack(IEContent.fluidCreosote,1000)))
 			addOredictRecipe(new ItemStack(IEContent.blockWoodenDecoration,8,0), "WWW","WCW","WWW", 'W',"plankWood",'C',container);
+		addOredictRecipe(new ItemStack(IEContent.blockWoodenDecoration,1,0), "W","W", 'W',new ItemStack(IEContent.blockWoodenDecoration,1,2));
 		addOredictRecipe(new ItemStack(IEContent.blockWoodenDecoration,2,1), "SSS","SSS", 'S',"treatedStick");
 		addOredictRecipe(new ItemStack(IEContent.blockWoodenDecoration,6,2), "WWW", 'W',treatedWood);
 		addOredictRecipe(new ItemStack(IEContent.blockWoodenDecoration,6,5), "WWW"," S ","S S", 'W',treatedWood,'S',new ItemStack(IEContent.blockWoodenDecoration,1,1));
@@ -158,7 +159,7 @@ public class IERecipes
 		addOredictRecipe(new ItemStack(IEContent.blockWoodenDevice,1,3), "PPP","PIP","PPP", 'P',new ItemStack(IEContent.itemMaterial,1,5),'I',"ingotSteel");
 		addOredictRecipe(new ItemStack(IEContent.blockWoodenDevice,1,4), "WWW","W W","WWW", 'W',treatedWood);
 		addOredictRecipe(new ItemStack(IEContent.blockWoodenDevice,1,5), "WWW","B F", 'W',new ItemStack(IEContent.blockWoodenDecoration,1,2),'B',"craftingTableWood",'F',new ItemStack(IEContent.blockWoodenDecoration,1,1));
-		addOredictRecipe(new ItemStack(IEContent.blockWoodenDevice,1,6), "WWW","W W","SSS", 'W',treatedWood,'S',new ItemStack(IEContent.blockWoodenDecoration,1,2));
+		addOredictRecipe(new ItemStack(IEContent.blockWoodenDevice,1,6), "SSS","W W","WWW", 'W',treatedWood,'S',new ItemStack(IEContent.blockWoodenDecoration,1,2));
 
 		addOredictRecipe(new ItemStack(IEContent.blockStoneDecoration,6,0), "CCC","HHH","CCC", 'C',Items.clay_ball,'H',new ItemStack(IEContent.itemMaterial,1,3));
 		addOredictRecipe(new ItemStack(IEContent.blockStoneDecoration,2,1), "CBC","BSB","CBC", 'S',"sandstone",'C',Items.clay_ball,'B',"ingotBrick");

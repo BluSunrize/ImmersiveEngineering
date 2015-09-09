@@ -11,6 +11,7 @@ import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDecoration;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySilo;
+import blusunrize.immersiveengineering.common.util.IEAchievements;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -121,6 +122,7 @@ public class MultiblockSilo implements IMultiblock
 							world.getTileEntity(startX+xx, startY+yy, startZ+zz).markDirty();
 						}
 					}
+		player.triggerAchievement(IEAchievements.mbSilo);
 		return true;
 	}
 

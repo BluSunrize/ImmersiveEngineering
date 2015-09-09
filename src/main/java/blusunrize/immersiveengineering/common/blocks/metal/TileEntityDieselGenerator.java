@@ -200,7 +200,7 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockPart implemen
 	@Override
 	public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain)
 	{
-		if(!formed)
+		if(!canFill(from, resource!=null?resource.getFluid():null))
 			return null;
 		if(master()!=null)
 		{

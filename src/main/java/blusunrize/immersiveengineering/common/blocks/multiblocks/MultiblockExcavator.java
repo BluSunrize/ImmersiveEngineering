@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDecoration;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityExcavator;
+import blusunrize.immersiveengineering.common.util.IEAchievements;
 import blusunrize.immersiveengineering.common.util.Utils;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -147,6 +148,7 @@ public class MultiblockExcavator implements IMultiblock
 							tile.mirrored = mirrored;
 						}
 					}
+			player.triggerAchievement(IEAchievements.mbExcavator);
 
 
 			int wheelX = startX+ (side==4?4: side==5?-4: 0);

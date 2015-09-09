@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.api.energy.WireType;
 import blusunrize.immersiveengineering.common.IESaveData;
+import blusunrize.immersiveengineering.common.util.IEAchievements;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -124,7 +125,8 @@ public class ItemWireCoil extends ItemIEBase implements IWireCoil
 							nodeHere.connectCable(type, target);
 							nodeLink.connectCable(type, targetLink);
 							IESaveData.setDirty(world.provider.dimensionId);
-
+							player.triggerAchievement(IEAchievements.connectWire);
+							
 							if(!player.capabilities.isCreativeMode)
 								stack.stackSize--;
 							((TileEntity)nodeHere).markDirty();

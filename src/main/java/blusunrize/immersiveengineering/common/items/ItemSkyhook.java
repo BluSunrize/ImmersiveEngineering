@@ -19,6 +19,7 @@ import blusunrize.immersiveengineering.api.tool.IUpgrade.UpgradeType;
 import blusunrize.immersiveengineering.common.entities.EntitySkylineHook;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.gui.InventoryStorageItem;
+import blusunrize.immersiveengineering.common.util.IEAchievements;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.SkylineHelper;
@@ -104,6 +105,14 @@ public class ItemSkyhook extends ItemUpgradeableTool
 		return 72000;
 	}
 
+	@Override
+	public void onCreated(ItemStack stack, World world, EntityPlayer player)
+	{
+		if(stack==null || player==null)
+			return;
+		player.triggerAchievement(IEAchievements.makeSkyhook);
+	}
+	
 	@Override
 	public void onPlayerStoppedUsing(ItemStack stack, World world, EntityPlayer player, int ticks)
 	{

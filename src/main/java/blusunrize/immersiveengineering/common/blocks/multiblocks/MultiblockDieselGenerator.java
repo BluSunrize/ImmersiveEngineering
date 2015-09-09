@@ -11,6 +11,7 @@ import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDecoration;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityDieselGenerator;
+import blusunrize.immersiveengineering.common.util.IEAchievements;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -132,6 +133,7 @@ public class MultiblockDieselGenerator implements IMultiblock
 						tile.offset = new int[]{(side==4?(l-3): side==5?(3-l): side==2?-w: w),h,(side==2?(l-3): side==3?(3-l): side==5?-w: w)};
 					}
 				}
+		player.triggerAchievement(IEAchievements.mbDieselGen);
 		return true;
 	}
 

@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.common.entities;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -14,6 +15,7 @@ import net.minecraft.world.World;
 import blusunrize.immersiveengineering.api.energy.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.common.items.ItemSkyhook;
+import blusunrize.immersiveengineering.common.util.IEAchievements;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.SkylineHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -76,8 +78,8 @@ public class EntitySkylineHook extends Entity
 		super.onUpdate();
 		//		if(this.ticksExisted>40)
 		//			this.setDead();
-//		if(worldObj.isRemote)
-//			return;
+		//		if(worldObj.isRemote)
+		//			return;
 
 		EntityPlayer player = null;
 		if(this.riddenByEntity instanceof EntityPlayer)
@@ -160,6 +162,19 @@ public class EntitySkylineHook extends Entity
 				float f3 = 0.25F;
 				this.worldObj.spawnParticle("bubble", this.posX - this.motionX * (double)f3, this.posY - this.motionY * (double)f3, this.posZ - this.motionZ * (double)f3, this.motionX, this.motionY, this.motionZ);
 			}
+		}
+
+		if(player!=null)
+		{
+			double dx = this.posX-this.prevPosX;
+			double dy = this.posY-this.prevPosY;
+			double dz = this.posZ-this.prevPosZ;
+			int distTrvl = Math.round(MathHelper.sqrt_double(dx*dx + dy*dy + dz*dz) * 100.0F);
+			if(distTrvl>0)
+				player.addStat(IEAchievements.statDistanceSkyhook, distTrvl);
+			if(player instanceof EntityPlayerMP)
+				if(((EntityPlayerMP)player).func_147099_x().writeStat(IEAchievements.statDistanceSkyhook)>100000)
+					player.triggerAchievement(IEAchievements.skyhookPro);
 		}
 
 		this.setPosition(this.posX, this.posY, this.posZ);

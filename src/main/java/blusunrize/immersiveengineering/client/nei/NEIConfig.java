@@ -1,6 +1,8 @@
 package blusunrize.immersiveengineering.client.nei;
 
+import net.minecraft.item.ItemStack;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.common.IEContent;
 import codechicken.nei.api.API;
 import codechicken.nei.api.IConfigureNEI;
 
@@ -32,6 +34,8 @@ public class NEIConfig implements IConfigureNEI
 		
 		API.registerRecipeHandler(new NEIArcFurnaceHandler());
 		API.registerUsageHandler(new NEIArcFurnaceHandler());
+		
+		API.hideItem(new ItemStack(IEContent.blockFakeLight));
 	}
 
 

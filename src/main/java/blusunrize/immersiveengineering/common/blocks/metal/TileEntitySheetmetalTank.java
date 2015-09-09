@@ -2,10 +2,13 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -14,10 +17,13 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
+import blusunrize.immersiveengineering.common.util.Lib;
+import blusunrize.immersiveengineering.common.util.Utils;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class TileEntitySheetmetalTank extends TileEntityMultiblockPart implements IFluidHandler
+public class TileEntitySheetmetalTank extends TileEntityMultiblockPart implements IFluidHandler, IBlockOverlayText
 {
 	public FluidTank tank = new FluidTank(512000);
 
@@ -30,11 +36,27 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart implement
 	}
 
 	@Override
+	public String[] getOverlayText(EntityPlayer player, MovingObjectPosition mop, boolean hammer)
+	{
+		if(Utils.isFluidRelatedItemStack(player.getCurrentEquippedItem()))
+		{
+			FluidStack fs = master()!=null?master().tank.getFluid():this.tank.getFluid();
+			String s = null;
+			if(fs!=null)
+				s = fs.getLocalizedName()+": "+fs.amount+"mB";
+			else
+				s = StatCollector.translateToLocal(Lib.GUI+"empty");
+			return new String[]{s};
+		}
+		return null;
+	}
+
+	@Override
 	public boolean canUpdate()
 	{
 		return false;
 	}
-	
+
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
@@ -102,24 +124,26 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart implement
 					}
 		}
 	}
-	
+
 	@Override
 	public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
 	{
-		if(!formed)
+		if(!canFill(from, resource!=null?resource.getFluid():null))
 			return 0;
 		if(master()!=null)
 			return master().fill(from,resource,doFill);
 		int f =  tank.fill(resource, doFill);
-		markDirty();
 		if(f>0 && doFill)
+		{
+			markDirty();
 			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+		}
 		return f;
 	}
 	@Override
 	public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain)
 	{
-		if(!formed)
+		if(!canDrain(from, resource!=null?resource.getFluid():null))
 			return null;
 		if(master()!=null)
 			return master().drain(from,resource,doDrain);
@@ -130,14 +154,16 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart implement
 	@Override
 	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain)
 	{
-		if(!formed)
+		if(!canDrain(from, null))
 			return null;
 		if(master()!=null)
 			return master().drain(from,maxDrain,doDrain);
 		FluidStack fs =  tank.drain(maxDrain, doDrain);
-		markDirty();
 		if(fs!=null && fs.amount>0 && doDrain)
+		{
+			markDirty();
 			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+		}
 		return fs;
 	}
 	@Override
@@ -159,7 +185,7 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart implement
 			return master().getTankInfo(from);
 		return new FluidTankInfo[]{tank.getInfo()};
 	}
-	
+
 
 	@Override
 	@SideOnly(Side.CLIENT)
@@ -170,7 +196,7 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart implement
 		return AxisAlignedBB.getBoundingBox(xCoord,yCoord,zCoord, xCoord,yCoord,zCoord);
 	}
 	@Override
-    @SideOnly(Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public double getMaxRenderDistanceSquared()
 	{
 		return super.getMaxRenderDistanceSquared()*Config.getDouble("increasedTileRenderdistance");

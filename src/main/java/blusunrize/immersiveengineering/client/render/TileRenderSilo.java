@@ -60,6 +60,7 @@ public class TileRenderSilo extends TileEntitySpecialRenderer
 					ri.renderItemIntoGUI(ClientUtils.font(), ClientUtils.mc().getTextureManager(), stack, 0, 0);
 				GL11.glScalef(1,1,1/flatScale);
 				
+				GL11.glDisable(GL11.GL_LIGHTING);
 				GL11.glDepthMask(false);
 				GL11.glTranslatef(8-w/2,17,.001f);
 				GL11.glScalef(textScale,textScale,1);
@@ -67,6 +68,7 @@ public class TileRenderSilo extends TileEntitySpecialRenderer
 				GL11.glScalef(1/textScale,1/textScale,1);
 				GL11.glTranslatef(-(8-w/2),-17,-.001f);
 				GL11.glDepthMask(true);
+				GL11.glEnable(GL11.GL_LIGHTING);
 
 				GL11.glTranslatef(-xx,0,-zz);
 				GL11.glRotatef(90, 0,1,0);

@@ -53,8 +53,6 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart implements ISid
 	@Override
 	public ItemStack getOriginalBlock()
 	{
-		if(pos<0)
-			return null;
 		return new ItemStack(IEContent.blockStoneDecoration,1,1);
 	}
 

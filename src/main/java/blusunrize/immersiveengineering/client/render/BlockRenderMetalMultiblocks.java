@@ -3,7 +3,6 @@ package blusunrize.immersiveengineering.client.render;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 
@@ -11,10 +10,17 @@ import org.lwjgl.opengl.GL11;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalMultiblocks;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityDieselGenerator;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFermenter;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityLightningRod;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySqueezer;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockArcFurnace;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockBucketWheel;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockCrusher;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockDieselGenerator;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockExcavatorDemo;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockRefinery;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockSheetmetalTank;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockSilo;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 
@@ -95,12 +101,9 @@ public class BlockRenderMetalMultiblocks implements ISimpleBlockRenderingHandler
 			}
 			else if(metadata==BlockMetalMultiblocks.META_dieselGenerator)
 			{
-				GL11.glTranslatef(1.5f, 1.125F, 1.1875f);
-				GL11.glScalef(.25f, .25f, .25f);
-				TileEntityDieselGenerator gen = new TileEntityDieselGenerator();
-				gen.pos=31;
-				gen.formed=true;
-				TileEntityRendererDispatcher.instance.renderTileEntityAt(gen, 0.0D, 0.0D, 0.0D, 0.0F);
+				GL11.glTranslatef(1.5f, 1F, 1.1875f);
+				GL11.glScalef(.3125f, .3125f, .3125f);
+				MultiblockDieselGenerator.instance.renderFormedStructure();
 				GL11.glEnable(32826);
 			}
 			else if(metadata==BlockMetalMultiblocks.META_squeezer)
@@ -118,6 +121,62 @@ public class BlockRenderMetalMultiblocks implements ISimpleBlockRenderingHandler
 				renderer.setOverrideBlockTexture( ((BlockMetalMultiblocks)block).icons[metadata][0]);
 				ClientUtils.drawInventoryBlock(block, metadata, renderer);
 				renderer.clearOverrideBlockTexture();
+			}
+			else if(metadata==BlockMetalMultiblocks.META_refinery)
+			{
+				GL11.glTranslatef(1.25f, 1.125F, 1.625f);
+				GL11.glScalef(.3125f, .3125f, .3125f);
+				GL11.glRotatef(180, 0, 1, 0);
+				MultiblockRefinery.instance.renderFormedStructure();
+				GL11.glEnable(32826);
+			}
+			else if(metadata==BlockMetalMultiblocks.META_crusher)
+			{
+				GL11.glTranslatef(1.25f, 1.125F, 1.625f);
+				GL11.glScalef(.3125f, .3125f, .3125f);
+				GL11.glRotatef(180, 0, 1, 0);
+				MultiblockCrusher.instance.renderFormedStructure();
+				GL11.glEnable(32826);
+			}
+			else if(metadata==BlockMetalMultiblocks.META_bucketWheel)
+			{
+				GL11.glTranslatef(1.5f, 1.125F, 1.5f);
+				GL11.glScalef(.25f, .25f, .25f);
+				GL11.glRotatef(180, 0, 1, 0);
+				MultiblockBucketWheel.instance.renderFormedStructure();
+				GL11.glEnable(32826);
+			}
+			else if(metadata==BlockMetalMultiblocks.META_excavator)
+			{
+				GL11.glTranslatef(1.25f, 1.125F, 1.625f);
+				GL11.glScalef(.25f, .25f, .25f);
+				GL11.glRotatef(180, 0, 1, 0);
+				MultiblockExcavatorDemo.instance.renderFormedStructure();
+				GL11.glEnable(32826);
+			}
+			else if(metadata==BlockMetalMultiblocks.META_arcFurnace)
+			{
+				GL11.glTranslatef(1.5f, 1.1875F, 1.5f);
+				GL11.glScalef(.25f, .25f, .25f);
+				GL11.glRotatef(90, 0, 1, 0);
+				MultiblockArcFurnace.instance.renderFormedStructure();
+				GL11.glEnable(32826);
+			}
+			else if(metadata==BlockMetalMultiblocks.META_tank)
+			{
+				GL11.glTranslatef(1.5f, 1.25F, 1.5f);
+				GL11.glScalef(.3125f, .3125f, .3125f);
+				GL11.glRotatef(180, 0, 1, 0);
+				MultiblockSheetmetalTank.instance.renderFormedStructure();
+				GL11.glEnable(32826);
+			}
+			else if(metadata==BlockMetalMultiblocks.META_silo)
+			{
+				GL11.glTranslatef(1.5f, 1.25F, 1.5f);
+				GL11.glScalef(.25f, .25f, .25f);
+				GL11.glRotatef(180, 0, 1, 0);
+				MultiblockSilo.instance.renderFormedStructure();
+				GL11.glEnable(32826);
 			}
 		}catch(Exception e)
 		{

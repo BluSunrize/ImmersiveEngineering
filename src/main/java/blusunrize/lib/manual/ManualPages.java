@@ -70,16 +70,16 @@ public abstract class ManualPages implements IManualPage
 	public void mouseDragged(int x, int y, int clickX, int clickY, int mx, int my, int lastX, int lastY, int button)
 	{
 	}
-//	@Override
-//	public void buttonPressed(GuiManual gui, GuiButton button)
-//	{
-//		if(button instanceof GuiButtonManualLink && GuiManual.activeManual!=null && manual.showEntryInList(manual.getEntry(((GuiButtonManualLink)button).key)))
-//		{
-//			GuiManual.selectedEntry = ((GuiButtonManualLink)button).key;
-//			GuiManual.page = ((GuiButtonManualLink)button).pageLinked;
-//			GuiManual.activeManual.initGui();
-//		}
-//	}
+	//	@Override
+	//	public void buttonPressed(GuiManual gui, GuiButton button)
+	//	{
+	//		if(button instanceof GuiButtonManualLink && GuiManual.activeManual!=null && manual.showEntryInList(manual.getEntry(((GuiButtonManualLink)button).key)))
+	//		{
+	//			GuiManual.selectedEntry = ((GuiButtonManualLink)button).key;
+	//			GuiManual.page = ((GuiButtonManualLink)button).pageLinked;
+	//			GuiManual.activeManual.initGui();
+	//		}
+	//	}
 
 	public static class Text extends ManualPages
 	{
@@ -331,69 +331,77 @@ public abstract class ManualPages implements IManualPage
 					for(int iStack=0; iStack<stacks.length; iStack++)
 					{
 						Object stack = stacks[iStack];
-						if(((IRecipe)o).getRecipeOutput()!=null && ManualUtils.stackMatchesObject(((IRecipe)o).getRecipeOutput(), stack))
-						{
-							IRecipe r = (IRecipe)o;
-							Object[] ingredientsPre=null;
-							int w=0;
-							int h=0;
-							if(r instanceof ShapelessRecipes)
-							{
-								ingredientsPre = ((ShapelessRecipes)r).recipeItems.toArray();
-								w = ingredientsPre.length>6?3: ingredientsPre.length>1?2: 1;
-								h = ingredientsPre.length>4?3: ingredientsPre.length>2?2: 1;
-							}
-							else if(r instanceof ShapelessOreRecipe)
-							{
-								ingredientsPre = ((ShapelessOreRecipe)r).getInput().toArray();
-								w = ingredientsPre.length>6?3: ingredientsPre.length>1?2: 1;
-								h = ingredientsPre.length>4?3: ingredientsPre.length>2?2: 1;
-							}
-							else if(r instanceof ShapedOreRecipe)
-							{
-								ingredientsPre = ((ShapedOreRecipe)r).getInput();
-								w = ReflectionHelper.getPrivateValue(ShapedOreRecipe.class, (ShapedOreRecipe)r, "width");
-								h = ReflectionHelper.getPrivateValue(ShapedOreRecipe.class, (ShapedOreRecipe)r, "height");
-							}
-							else if(r instanceof ShapedRecipes)
-							{
-								ingredientsPre = ((ShapedRecipes)r).recipeItems;
-								w = ((ShapedRecipes)r).recipeWidth;
-								h = ((ShapedRecipes)r).recipeHeight;
-							}
-							Object[] ingredients = new Object[ingredientsPre.length];
-							for(int iO=0; iO<ingredientsPre.length; iO++)
-							{
-								if(ingredientsPre[iO] instanceof List)
-								{
-									ingredients[iO] = new ArrayList((List)ingredientsPre[iO]);
-									Iterator<ItemStack> itValidate = ((ArrayList<ItemStack>)ingredients[iO]).iterator();
-									while(itValidate.hasNext())
-									{
-										ItemStack stVal = itValidate.next();
-										if(stVal==null || stVal.getItem()==null || stVal.getDisplayName()==null)
-											itValidate.remove();
-									}
-								}
-								else
-									ingredients[iO] = ingredientsPre[iO];
-							}
-							if(ingredients!=null)
-							{
-								PositionedItemStack[] pIngredients = new PositionedItemStack[ingredients.length+1];
-								int xBase = (120-(w+2)*18)/2;
-								for(int hh=0; hh<h; hh++)
-									for(int ww=0; ww<w; ww++)
-										if(hh*w+ww<ingredients.length)
-											pIngredients[hh*w+ww] = new PositionedItemStack(ingredients[hh*w+ww], xBase+ww*18,hh*18);
-								pIngredients[pIngredients.length-1] = new PositionedItemStack(((IRecipe)o).getRecipeOutput(), xBase+w*18+18, (int)(h/2f*18)-8);
-								this.recipes.put(stack, pIngredients);
-							}
-							if(h*18>yOff[iStack])
-								yOff[iStack]=h*18;
-						}
+						if(stack instanceof ItemStack[])
+							for(ItemStack subStack: (ItemStack[])stack)
+								checkRecipe((IRecipe)o, stack, subStack, iStack);
+						else
+							checkRecipe((IRecipe)o, stack, stack, iStack);
 					}
 				}
+		}
+
+		void checkRecipe(IRecipe rec, Object key, Object stack, int iStack)
+		{
+			if(rec.getRecipeOutput()!=null && ManualUtils.stackMatchesObject(rec.getRecipeOutput(), stack))
+			{
+				Object[] ingredientsPre=null;
+				int w=0;
+				int h=0;
+				if(rec instanceof ShapelessRecipes)
+				{
+					ingredientsPre = ((ShapelessRecipes)rec).recipeItems.toArray();
+					w = ingredientsPre.length>6?3: ingredientsPre.length>1?2: 1;
+					h = ingredientsPre.length>4?3: ingredientsPre.length>2?2: 1;
+				}
+				else if(rec instanceof ShapelessOreRecipe)
+				{
+					ingredientsPre = ((ShapelessOreRecipe)rec).getInput().toArray();
+					w = ingredientsPre.length>6?3: ingredientsPre.length>1?2: 1;
+					h = ingredientsPre.length>4?3: ingredientsPre.length>2?2: 1;
+				}
+				else if(rec instanceof ShapedOreRecipe)
+				{
+					ingredientsPre = ((ShapedOreRecipe)rec).getInput();
+					w = ReflectionHelper.getPrivateValue(ShapedOreRecipe.class, (ShapedOreRecipe)rec, "width");
+					h = ReflectionHelper.getPrivateValue(ShapedOreRecipe.class, (ShapedOreRecipe)rec, "height");
+				}
+				else if(rec instanceof ShapedRecipes)
+				{
+					ingredientsPre = ((ShapedRecipes)rec).recipeItems;
+					w = ((ShapedRecipes)rec).recipeWidth;
+					h = ((ShapedRecipes)rec).recipeHeight;
+				}
+				Object[] ingredients = new Object[ingredientsPre.length];
+				for(int iO=0; iO<ingredientsPre.length; iO++)
+				{
+					if(ingredientsPre[iO] instanceof List)
+					{
+						ingredients[iO] = new ArrayList((List)ingredientsPre[iO]);
+						Iterator<ItemStack> itValidate = ((ArrayList<ItemStack>)ingredients[iO]).iterator();
+						while(itValidate.hasNext())
+						{
+							ItemStack stVal = itValidate.next();
+							if(stVal==null || stVal.getItem()==null || stVal.getDisplayName()==null)
+								itValidate.remove();
+						}
+					}
+					else
+						ingredients[iO] = ingredientsPre[iO];
+				}
+				if(ingredients!=null)
+				{
+					PositionedItemStack[] pIngredients = new PositionedItemStack[ingredients.length+1];
+					int xBase = (120-(w+2)*18)/2;
+					for(int hh=0; hh<h; hh++)
+						for(int ww=0; ww<w; ww++)
+							if(hh*w+ww<ingredients.length)
+								pIngredients[hh*w+ww] = new PositionedItemStack(ingredients[hh*w+ww], xBase+ww*18,hh*18);
+					pIngredients[pIngredients.length-1] = new PositionedItemStack(rec.getRecipeOutput(), xBase+w*18+18, (int)(h/2f*18)-8);
+					this.recipes.put(key, pIngredients);
+				}
+				if(h*18>yOff[iStack])
+					yOff[iStack]=h*18;
+			}
 		}
 
 		@Override
@@ -403,8 +411,10 @@ public abstract class ManualPages implements IManualPage
 			int yyOff=0;
 			for(Object stack : this.stacks)
 			{
+				System.out.println("s "+stack);
 				if(this.recipes.get(stack).size()>1)
 				{
+					System.out.println("needs buttons!");
 					pageButtons.add(new GuiButtonManualNavigation(gui, 100*i+0, x-2,y+yyOff+yOff[i-1]/2-3, 8,10, 0));
 					pageButtons.add(new GuiButtonManualNavigation(gui, 100*i+1, x+122-16,y+yyOff+yOff[i-1]/2-3, 8,10, 1));
 				}
@@ -472,7 +482,7 @@ public abstract class ManualPages implements IManualPage
 			GL11.glDisable(GL12.GL_RESCALE_NORMAL);
 			GL11.glEnable(GL11.GL_BLEND);
 			RenderHelper.disableStandardItemLighting();
-			
+
 			manual.fontRenderer.setUnicodeFlag(uni);
 			if(localizedText!=null&&!localizedText.isEmpty())
 				manual.fontRenderer.drawSplitString(localizedText, x,y+totalYOff-2, 120, manual.getTextColour());

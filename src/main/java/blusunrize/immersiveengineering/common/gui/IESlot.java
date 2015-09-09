@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.api.tool.IUpgrade;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.items.ItemEngineersBlueprint;
 import blusunrize.immersiveengineering.common.items.ItemUpgradeableTool;
+import blusunrize.immersiveengineering.common.util.IEAchievements;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -46,6 +47,13 @@ public abstract class IESlot extends Slot
 		public boolean isItemValid(ItemStack itemStack)
 		{
 			return false;
+		}
+		@Override
+		public void onPickupFromSlot(EntityPlayer player, ItemStack stack)
+		{
+			super.onPickupFromSlot(player, stack);
+			if(player!=null && OreDictionary.itemMatches(new ItemStack(IEContent.itemMetal,1,7), stack, true))
+				player.triggerAchievement(IEAchievements.makeSteel);
 		}
 	}
 	public static class FluidContainer extends IESlot
@@ -174,6 +182,14 @@ public abstract class IESlot extends Slot
 				return false;
 			return true;
 		}
+		@Override
+		public void onPickupFromSlot(EntityPlayer player, ItemStack stack)
+		{
+			super.onPickupFromSlot(player, stack);
+			if(stack!=null && stack.getItem() instanceof ItemUpgradeableTool)
+				((ItemUpgradeableTool)stack.getItem()).removeFromWorkbench(player, stack);
+				
+		}
 	}
 	public static class Ghost extends IESlot
 	{
@@ -198,7 +214,7 @@ public abstract class IESlot extends Slot
 			return 1;
 		}
 	}
-	
+
 	public static class BlueprintInput extends IESlot
 	{
 		ItemStack upgradeableTool;
@@ -208,15 +224,15 @@ public abstract class IESlot extends Slot
 			this.upgradeableTool = upgradeableTool;
 		}
 		@Override
-	    public void onSlotChanged()
-	    {
+		public void onSlotChanged()
+		{
 			this.inventory.markDirty();
 			if(upgradeableTool!=null && upgradeableTool.getItem() instanceof ItemEngineersBlueprint)
 				((ItemEngineersBlueprint)upgradeableTool.getItem()).updateOutputs(upgradeableTool);
 			if(container instanceof ContainerModWorkbench)
 				((ContainerModWorkbench)container).rebindSlots();
 			super.onSlotChanged();
-	    }
+		}
 		@Override
 		public int getSlotStackLimit()
 		{
@@ -241,16 +257,16 @@ public abstract class IESlot extends Slot
 
 
 		@Override
-	    @SideOnly(Side.CLIENT)
+		@SideOnly(Side.CLIENT)
 		/**Determines whether to render slot-highlighting*/
-	    public boolean func_111238_b()
-	    {
-	        return this.getHasStack();
-	    }
-		
+		public boolean func_111238_b()
+		{
+			return this.getHasStack();
+		}
+
 		@Override
-	    public void onPickupFromSlot(EntityPlayer player, ItemStack stack)
-	    {
+		public void onPickupFromSlot(EntityPlayer player, ItemStack stack)
+		{
 			if(upgradeableTool!=null && upgradeableTool.getItem() instanceof ItemEngineersBlueprint)
 				((ItemEngineersBlueprint)upgradeableTool.getItem()).reduceInputs(recipe, upgradeableTool, stack, this.container);
 			if(container instanceof ContainerModWorkbench)
@@ -258,11 +274,13 @@ public abstract class IESlot extends Slot
 				((ContainerModWorkbench)container).rebindSlots();
 				((ContainerModWorkbench)container).tile.markDirty();
 			}
+			if(IEAchievements.makeWolfPack!=null&&OreDictionary.itemMatches(new ItemStack(IEContent.itemBullet,1,8), stack, true))
+				player.triggerAchievement(IEAchievements.makeWolfPack);
 			this.inventory.markDirty();
 			super.onPickupFromSlot(player, stack);
-	    }
+		}
 	}
-	
+
 	public static class ArcInput extends IESlot
 	{
 		public ArcInput(Container container, IInventory inv, int id, int x, int y)

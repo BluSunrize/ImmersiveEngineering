@@ -11,6 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.util.ForgeDirection;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
@@ -21,6 +22,7 @@ import blusunrize.immersiveengineering.api.energy.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler.AbstractConnection;
 import blusunrize.immersiveengineering.common.IESaveData;
+import blusunrize.immersiveengineering.common.util.IEAchievements;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -58,11 +60,11 @@ public class ItemIETool extends ItemIEBase
 		return stack.getItemDamage()==0?stack: null;
 	}
 	@Override
-    public boolean doesContainerItemLeaveCraftingGrid(ItemStack stack)
-    {
-        return stack.getItemDamage()!=0;
-    }
-	
+	public boolean doesContainerItemLeaveCraftingGrid(ItemStack stack)
+	{
+		return stack.getItemDamage()!=0;
+	}
+
 	@Override
 	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
 	{
@@ -124,6 +126,56 @@ public class ItemIETool extends ItemIEBase
 				}
 				return true;
 			}
+
+
+//						x += 6;
+//						y += 1;
+//			
+//						world.createExplosion(player, x+.5, y+.5, z+.5, 1.5f, true);
+//			
+//						float vex = 16;
+//			
+//						if(world instanceof WorldServer)
+//							for(int i=0; i<vex; i++)
+//							{
+//								float angle = i*(360/vex);
+//								float h = 0;
+//								for(int j=0; j<16; j++)
+//								{
+//									float r = 1f-Math.min(j,5)*.0625f;
+//									double xx = r*Math.cos(angle);
+//									double zz = r*Math.sin(angle);
+//									((WorldServer)world).func_147487_a("explode", x+xx, y+h,z+zz, 0, 0,0,0, 1);
+//									((WorldServer)world).func_147487_a("largesmoke", x+xx,y+h,z+zz, 0, 0,.0,0, 1);
+//									((WorldServer)world).func_147487_a("largesmoke", x+xx,y+h,z+zz, 0, 0,.0,0, 1);
+//									//					world.spawnParticle("explode", x+xx, y+h,z+zz, 0,0,0);
+//									//					world.spawnParticle("largesmoke", x+xx,y+h,z+zz, 0,.0,0);
+//									//					world.spawnParticle("largesmoke", x+xx,y+h,z+zz, 0,.0,0);
+//									if(i%2==0)
+//										//						world.spawnParticle("angryVillager", x+xx, y+h,z+zz, 0,0,0);
+//										((WorldServer)world).func_147487_a("angryVillager", x+xx, y+h,z+zz, 0, 0,0,0, 1);
+//									h += .1875f;
+//								}
+//								for(int j=0; j<16; j++)
+//								{
+//									float r = (float)(Math.cos(112.5f-j*(45/16f)));
+//									double xx = r*Math.cos(angle);
+//									double zz = r*Math.sin(angle);
+//									//					world.spawnParticle("explode", x+xx, y+h, z+zz, 0,.0,0);
+//									//					world.spawnParticle("largesmoke", x+xx, y+h, z+zz, xx*.025,.0,zz*.025);
+//									//					world.spawnParticle("largesmoke", x+xx, y+h, z+zz, xx*.05,.0,zz*.05);
+//									//					world.spawnParticle("largesmoke", x+xx, y+h, z+zz, xx*.1,.0,zz*.1);
+//									((WorldServer)world).func_147487_a("explode", x+xx, y+h, z+zz, 0, 0,.0,0, 1);
+//									((WorldServer)world).func_147487_a("largesmoke", x+xx, y+h, z+zz, 0, xx*.025,.0,zz*.025, 1);
+//									((WorldServer)world).func_147487_a("largesmoke", x+xx, y+h, z+zz, 0, xx*.05,.0,zz*.05, 1);
+//									((WorldServer)world).func_147487_a("largesmoke", x+xx, y+h, z+zz, 0, xx*.1,.0,zz*.1, 1);
+//									h += .0625f;
+//								}
+//							}
+		}
+		else
+		{
+
 		}
 		return false;
 	}
@@ -139,8 +191,12 @@ public class ItemIETool extends ItemIEBase
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
 	{
-		if(world.isRemote && stack.getItemDamage()==3)
-			player.openGui(ImmersiveEngineering.instance, Lib.GUIID_Manual, world, (int)player.posX,(int)player.posY,(int)player.posZ);
+		if(stack.getItemDamage()==3)
+		{
+			player.triggerAchievement(IEAchievements.openManual);
+			if(world.isRemote)
+				player.openGui(ImmersiveEngineering.instance, Lib.GUIID_Manual, world, (int)player.posX,(int)player.posY,(int)player.posZ);
+		}
 		return stack;
 	}
 

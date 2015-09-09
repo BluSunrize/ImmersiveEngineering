@@ -27,6 +27,7 @@ import blusunrize.immersiveengineering.api.tool.IBullet;
 import blusunrize.immersiveengineering.api.tool.IUpgrade;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.gui.InventoryStorageItem;
+import blusunrize.immersiveengineering.common.util.IEAchievements;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Lib;
 
@@ -330,7 +331,8 @@ public class ItemRevolver extends ItemUpgradeableTool
 			return;
 		if(stack.getItemDamage()==1)
 			return;
-		String uuid = player.getUniqueID().toString();
+		player.triggerAchievement(IEAchievements.makeRevolver);
+	    String uuid = player.getUniqueID().toString();
 		if(specialRevolvers.containsKey(uuid))
 		{
 			ArrayList<SpecialRevolver> list = new ArrayList(specialRevolvers.get(uuid));
@@ -381,6 +383,13 @@ public class ItemRevolver extends ItemUpgradeableTool
 				baseUpgrades.setString(e.getKey(), (String)e.getValue());
 		}
 		ItemNBTHelper.setTagCompound(stack, "baseUpgrades", baseUpgrades);
+	}
+	@Override
+	public void removeFromWorkbench(EntityPlayer player, ItemStack stack)
+	{
+		ItemStack[] contents = this.getContainedItems(stack);
+		if(contents[18]!=null&&contents[19]!=null)
+			player.triggerAchievement(IEAchievements.upgradeRevolver);
 	}
 
 	public static final ArrayListMultimap<String, SpecialRevolver> specialRevolvers = ArrayListMultimap.create();

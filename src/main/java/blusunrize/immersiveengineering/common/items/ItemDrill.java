@@ -31,6 +31,7 @@ import blusunrize.immersiveengineering.api.tool.IUpgrade;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.gui.InventoryStorageItem;
+import blusunrize.immersiveengineering.common.util.IEAchievements;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Lib;
 
@@ -143,6 +144,21 @@ public class ItemDrill extends ItemUpgradeableTool implements IFluidContainerIte
 		return EnumAction.bow;
 	}
 
+	@Override
+	public void onCreated(ItemStack stack, World world, EntityPlayer player)
+	{
+		if(stack==null || player==null)
+			return;
+		player.triggerAchievement(IEAchievements.makeDrill);
+	}
+	@Override
+	public void removeFromWorkbench(EntityPlayer player, ItemStack stack)
+	{
+		ItemStack[] contents = this.getContainedItems(stack);
+		if(contents[0]!=null&&contents[1]!=null&&contents[2]!=null&&contents[3]!=null)
+			player.triggerAchievement(IEAchievements.upgradeDrill);
+	}
+	
 	/*INVENTORY STUFF*/
 	public ItemStack getHead(ItemStack drill)
 	{

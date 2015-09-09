@@ -1,13 +1,14 @@
 package blusunrize.immersiveengineering.client.fx;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.particle.EntityFX;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
-public class EntityFXItemParts extends EntityFX
+public class EntityFXItemParts extends EntityFXIEBase
 {
 	ItemStack item;
 	int part = 0;
@@ -31,35 +32,37 @@ public class EntityFXItemParts extends EntityFX
 		this.motionY = my;
 		this.motionZ = mz;
 	}
-	@Override
-	public int getFXLayer()
-	{
-		if(item!=null && item.getItem()!=null)
-			return item.getItemSpriteNumber()+1;
-		return 0;
-	}
 
 	@Override
-	public void renderParticle(Tessellator p_70539_1_, float p_70539_2_, float p_70539_3_, float p_70539_4_, float p_70539_5_, float p_70539_6_, float p_70539_7_)
+	public ResourceLocation getParticleTexture()
+	{
+		return TextureMap.locationItemsTexture;
+	}
+	@Override
+	public String getParticleName()
+	{
+		return "itemParts";
+	}
+	@Override
+	public void tessellateFromQueue(Tessellator tessellator)
 	{
 		if(item!=null && item.getItem()!=null && this.particleIcon!=null)
 		{
 			float f10 = 0.025F * this.particleScale;
 
-			float f6 = this.particleIcon.getInterpolatedU((part%4)*4);
-			float f7 = this.particleIcon.getInterpolatedU((part%4+1)*4);
-			float f8 = this.particleIcon.getInterpolatedV((part/4)*4);
-			float f9 = this.particleIcon.getInterpolatedV((part/4+1)*4);
+			float uMin = this.particleIcon.getInterpolatedU((part%4)*4);
+			float uMax = this.particleIcon.getInterpolatedU((part%4+1)*4);
+			float vMin = this.particleIcon.getInterpolatedV((part/4)*4);
+			float vMax = this.particleIcon.getInterpolatedV((part/4+1)*4);
 
-			float f11 = (float)(this.prevPosX + (this.posX - this.prevPosX) * (double)p_70539_2_ - interpPosX);
-			float f12 = (float)(this.prevPosY + (this.posY - this.prevPosY) * (double)p_70539_2_ - interpPosY);
-			float f13 = (float)(this.prevPosZ + (this.posZ - this.prevPosZ) * (double)p_70539_2_ - interpPosZ);
-			p_70539_1_.setColorRGBA_F(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha);
-			p_70539_1_.addVertexWithUV((double)(f11 - p_70539_3_ * f10 - p_70539_6_ * f10), (double)(f12 - p_70539_4_ * f10), (double)(f13 - p_70539_5_ * f10 - p_70539_7_ * f10), (double)f7, (double)f9);
-			p_70539_1_.addVertexWithUV((double)(f11 - p_70539_3_ * f10 + p_70539_6_ * f10), (double)(f12 + p_70539_4_ * f10), (double)(f13 - p_70539_5_ * f10 + p_70539_7_ * f10), (double)f7, (double)f8);
-			p_70539_1_.addVertexWithUV((double)(f11 + p_70539_3_ * f10 + p_70539_6_ * f10), (double)(f12 + p_70539_4_ * f10), (double)(f13 + p_70539_5_ * f10 + p_70539_7_ * f10), (double)f6, (double)f8);
-			p_70539_1_.addVertexWithUV((double)(f11 + p_70539_3_ * f10 - p_70539_6_ * f10), (double)(f12 - p_70539_4_ * f10), (double)(f13 + p_70539_5_ * f10 - p_70539_7_ * f10), (double)f6, (double)f9);
+			float f11 = (float)(this.prevPosX + (this.posX - this.prevPosX) * (double)f2 - interpPosX);
+			float f12 = (float)(this.prevPosY + (this.posY - this.prevPosY) * (double)f2 - interpPosY);
+			float f13 = (float)(this.prevPosZ + (this.posZ - this.prevPosZ) * (double)f2 - interpPosZ);
+			tessellator.setColorRGBA_F(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha);
+			tessellator.addVertexWithUV((double)(f11 - f3 * f10 - f6 * f10), (double)(f12 - f4 * f10), (double)(f13 - f5 * f10 - f7 * f10), (double)uMax, (double)vMax);
+			tessellator.addVertexWithUV((double)(f11 - f3 * f10 + f6 * f10), (double)(f12 + f4 * f10), (double)(f13 - f5 * f10 + f7 * f10), (double)uMax, (double)vMin);
+			tessellator.addVertexWithUV((double)(f11 + f3 * f10 + f6 * f10), (double)(f12 + f4 * f10), (double)(f13 + f5 * f10 + f7 * f10), (double)uMin, (double)vMin);
+			tessellator.addVertexWithUV((double)(f11 + f3 * f10 - f6 * f10), (double)(f12 - f4 * f10), (double)(f13 + f5 * f10 - f7 * f10), (double)uMin, (double)vMax);
 		}
 	}
-
 }

@@ -44,7 +44,6 @@ processResources
                 
         expand 'version':project.version, 'mcversion':project.minecraft.version
     }
-        
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
     }

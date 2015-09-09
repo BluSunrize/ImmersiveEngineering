@@ -281,7 +281,7 @@ public class TileEntityConveyorSorter extends TileEntityIEBase implements ISided
 	{
 		return false;
 	}
-	
+
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
@@ -444,11 +444,13 @@ public class TileEntityConveyorSorter extends TileEntityIEBase implements ISided
 	}
 
 	@Override
-	public String[] getOverlayText(MovingObjectPosition mop)
+	public String[] getOverlayText(EntityPlayer player, MovingObjectPosition mop, boolean hammer)
 	{
-		return new String []{
+		if(hammer)
+			return new String []{
 				StatCollector.translateToLocal("desc.ImmersiveEngineering.info.blockSide."+ForgeDirection.getOrientation(mop.sideHit)),
 				StatCollector.translateToLocal("desc.ImmersiveEngineering.info.oreDict."+(oreDictFilter[mop.sideHit]==-1?"off":"on"))
 		};
+		return null;
 	}
 }

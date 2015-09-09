@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDecoration;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityArcFurnace;
+import blusunrize.immersiveengineering.common.util.IEAchievements;
 import blusunrize.immersiveengineering.common.util.Utils;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -166,6 +167,7 @@ public class MultiblockArcFurnace implements IMultiblock
 								tile.mirrored = mirrored;
 							}
 						}
+			player.triggerAchievement(IEAchievements.mbArcFurnace);
 		}
 		return b;
 	}

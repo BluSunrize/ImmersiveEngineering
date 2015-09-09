@@ -15,6 +15,8 @@ public class Lib
 	public static final String DESC_INFO = DESC+"info.";
 	public static final String DESC_FLAVOUR = DESC+"flavour.";
 	
+	public static final String GUI = "gui.ImmersiveEngineering.";
+	
 	public static final int GUIID_CokeOven = 0;
 	public static final int GUIID_BlastFurnace = 1;
 	public static final int GUIID_Revolver = 2;
