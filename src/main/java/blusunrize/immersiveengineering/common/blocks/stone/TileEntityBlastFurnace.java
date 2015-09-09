@@ -362,7 +362,6 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart implements 
 		super.invalidate();
 		if(formed && !worldObj.isRemote)
 		{
-			System.out.println("invalidate this!");
 			int startX = xCoord - offset[0];
 			int startY = yCoord - offset[1];
 			int startZ = zCoord - offset[2];

@@ -26,7 +26,7 @@ public class TileRenderArcFurnace extends TileEntitySpecialRenderer
 		GL11.glPushMatrix();
 
 		GL11.glTranslated(x+.5, y+.5, z+.5);
-//		GL11.glRotatef(arc.facing==2?180: arc.facing==4?-90: arc.facing==5?90: 0, 0,1,0);
+		GL11.glRotatef(arc.facing==2?180: arc.facing==4?-90: arc.facing==5?90: 0, 0,1,0);
 
 		if(arc.mirrored)
 		{

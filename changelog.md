@@ -1,3 +1,48 @@
+#####Version 0.6.0
+- added a house for the IE Villager. He should be a lot less rare now!
+- added Electric Lanterns and Floodlights, which will consume power but prevent mobspawns!
+- added a Coal Vein to the Excavator, which can contain Diamonds and Emeralds too
+- added Wooden Barrels to serve as portable fluid storage. Wont take hot fluids!
+- added Sheetmetal Tanks to store large amounts of fluid
+- added Silos for large, single-item, storage
+- added particles and a molten metal animation to the Arc Furnace
+- added Achievements!
+- added HydrauliCraft support for Hemp
+- added a recrafting recipe to turn treated wood slabs back into treated wood blocks
+- added a bunch of canFill and canDrain checks because no mod developer but MineMaarten seems to respect the methods for them >=(
+- added a statistic to track the distance travelled by Skyhook
+- changed wire rendering to be ISRBH, improving performance
+- changed a lot of internal handling of the Energy System:
+	- Wire Transferrates are now per tick. WIres can only have a certain amount of power go through them in a single tick
+	- Too much power will make the wires burn away
+	- TODO: buff the transferrates
+	- TODO: change loss calculations
+	- added more safety to avoid CME (shoutout to @mindforger)
+	- a big "Thank You" to @theunkn0wn1, @mindforger, @malte0811, @cobra and everyone else helping with the rebalancing! Dunno what I'd do without you guys :D
+- changed Breaker Switch, it has a new model and emits redstone
+- changed mineral distribution of the Excavator. You may lose your old deposits because of this
+- changed Multiblocks in the manual. They can now be dragged to rotate, as well as show their completed render
+- changed some of the NEI handlers to support GUI redirection
+- changed Graphite Electrodes to track damage via NBT data
+- changed the Engineer's Manual, restructured some entries into new categories and added a bunch of new ones
+- changed IE particles to run through a custom render dispatcher, similar to Botania
+- fixed SideOnly annotations, should fix that Railcraft tank thing among others
+- fixed burn time of coal coke block in furnaces
+- fixed blockupdates for wooden poles
+- fixed MineTweaker integration for Squeezer and Fermenter (thanks @Yulife)
+- fixed a NPE related to homing cartridges
+- fixed a dupebug with Thaumcraft's Magic Mirrors
+- fixed many things about the crusher. Desync, animation issues, incorrect consumption of energy (thanks @cobra)
+- fixed inability to place metal decoration blocks while jumping (thanks @UnwrittenFun)
+- fixed output bugs with Squeezer and Fermenter
+- updated zh_CN.lang
+- added ja_JP.lang
+- updated ru_RU.lang
+
+
+==============
+##### 0.5 VERSIONS ######
+==============
 #####Version 0.5.4 - BUILT
 - added Concrete and Concrete Tile
 - fixed a Nullpointer Exception in the Arc Furnace, triggered when a recipe without slag is processed

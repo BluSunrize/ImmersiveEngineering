@@ -411,10 +411,8 @@ public abstract class ManualPages implements IManualPage
 			int yyOff=0;
 			for(Object stack : this.stacks)
 			{
-				System.out.println("s "+stack);
 				if(this.recipes.get(stack).size()>1)
 				{
-					System.out.println("needs buttons!");
 					pageButtons.add(new GuiButtonManualNavigation(gui, 100*i+0, x-2,y+yyOff+yOff[i-1]/2-3, 8,10, 0));
 					pageButtons.add(new GuiButtonManualNavigation(gui, 100*i+1, x+122-16,y+yyOff+yOff[i-1]/2-3, 8,10, 1));
 				}
