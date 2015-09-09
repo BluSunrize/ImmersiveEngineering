@@ -26,6 +26,7 @@
 - changed Graphite Electrodes to track damage via NBT data
 - changed the Engineer's Manual, restructured some entries into new categories and added a bunch of new ones
 - changed IE particles to run through a custom render dispatcher, similar to Botania
+- changed the Materials required for a Refinery. IE Multiblocks are a little too expensive some times =P
 - fixed SideOnly annotations, should fix that Railcraft tank thing among others
 - fixed burn time of coal coke block in furnaces
 - fixed blockupdates for wooden poles

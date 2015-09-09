@@ -144,6 +144,7 @@ public class MultiblockRefinery implements IMultiblock
 		return new ItemStack[]{
 				new ItemStack(IEContent.blockMetalDecoration,8,BlockMetalDecoration.META_scaffolding),
 				new ItemStack(IEContent.blockMetalDecoration,6,BlockMetalDecoration.META_lightEngineering),
-				new ItemStack(IEContent.blockMetalDecoration,27,BlockMetalDecoration.META_heavyEngineering)};
+				new ItemStack(IEContent.blockMetalDecoration,24,BlockMetalDecoration.META_sheetMetal),
+				new ItemStack(IEContent.blockMetalDecoration,3,BlockMetalDecoration.META_heavyEngineering)};
 	}
 }
