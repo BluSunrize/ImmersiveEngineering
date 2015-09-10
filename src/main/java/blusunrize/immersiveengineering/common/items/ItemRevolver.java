@@ -1,12 +1,18 @@
 package blusunrize.immersiveengineering.common.items;
 
+import java.awt.image.BufferedImage;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import javax.imageio.ImageIO;
+
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -28,6 +34,7 @@ import blusunrize.immersiveengineering.api.tool.IUpgrade;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.gui.InventoryStorageItem;
 import blusunrize.immersiveengineering.common.util.IEAchievements;
+import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Lib;
 
@@ -61,7 +68,8 @@ public class ItemRevolver extends ItemUpgradeableTool
 				int split = key.lastIndexOf("_");
 				if(split<0)
 					split = key.length();
-				revolverIcons.put(key, ir.registerIcon("immersiveengineering:revolver_"+key.substring(0,split)));
+				
+//				revolverIcons.put(key, ir.registerIcon("immersiveengineering:revolver_"+key.substring(0,split)));
 			}
 	}
 
