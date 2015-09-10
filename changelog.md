@@ -5,6 +5,7 @@
 - added Wooden Barrels to serve as portable fluid storage. Wont take hot fluids!
 - added Sheetmetal Tanks to store large amounts of fluid
 - added Silos for large, single-item, storage
+- added Phial Cartridges to shoot potions with!
 - added particles and a molten metal animation to the Arc Furnace
 - added Achievements!
 - added HydrauliCraft support for Hemp

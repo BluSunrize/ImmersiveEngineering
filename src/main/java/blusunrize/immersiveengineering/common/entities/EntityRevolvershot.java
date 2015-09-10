@@ -286,7 +286,7 @@ public class EntityRevolvershot extends Entity
 
 			if(bulletPotion.getItem().getClass().getName().equalsIgnoreCase("ganymedes01.etfuturum.items.LingeringPotion"))
 				EtFuturumHelper.createLingeringPotionEffect(worldObj, posX, posY, posZ, bulletPotion, shootingEntity);
-			else if(ItemPotion.isSplash(bulletPotion.getItemDamage()) || mop.entityHit==null)
+			else if(ItemPotion.isSplash(bulletPotion.getItemDamage()))
 			{
 				List<EntityLivingBase> livingEntities = this.worldObj.getEntitiesWithinAABB(EntityLivingBase.class, this.boundingBox.expand(4.0D, 2.0D, 4.0D));
 				if(livingEntities!=null && !livingEntities.isEmpty())
