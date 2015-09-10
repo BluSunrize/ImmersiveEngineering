@@ -2,6 +2,7 @@ package blusunrize.immersiveengineering.api.tool;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.IIcon;
 
 /**
  * @author BluSunrize - 28.05.2015
@@ -55,6 +56,7 @@ public interface IDrillHead
 	
 	/**Return the texture of the drill head
 	 * Look at IE's default texture for the UV layout
+	 * This IIcon should be stitched in the item sheet
 	 */
-	public String getDrillTexture(ItemStack drill, ItemStack head);
+	public IIcon getDrillTexture(ItemStack drill, ItemStack head);
 }

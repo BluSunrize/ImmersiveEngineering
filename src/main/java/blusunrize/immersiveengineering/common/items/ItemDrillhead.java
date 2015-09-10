@@ -2,14 +2,19 @@ package blusunrize.immersiveengineering.common.items;
 
 import java.util.List;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.oredict.OreDictionary;
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
+import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -21,8 +26,8 @@ public class ItemDrillhead extends ItemIEBase implements IDrillHead
 		super("drillhead", 1, "steel","iron");
 		perms = new DrillHeadPerm[this.subNames.length];
 		//Maximal damage is slightly proportionate to pickaxes
-		addPerm(0, new DrillHeadPerm("ingotSteel",3,1,3,10,7,4000,"immersiveengineering:textures/models/drill_diesel.png"));
-		addPerm(1, new DrillHeadPerm("ingotIron",2,1,2,9,6,2000,"immersiveengineering:textures/models/drill_iron.png"));
+		addPerm(0, new DrillHeadPerm("ingotSteel",3,1,3,10,7,4000,"immersiveengineering:drill_diesel"));
+		addPerm(1, new DrillHeadPerm("ingotIron",2,1,2,9,6,2000,"immersiveengineering:drill_iron"));
 	}
 
 	DrillHeadPerm[] perms;
@@ -35,7 +40,7 @@ public class ItemDrillhead extends ItemIEBase implements IDrillHead
 	{
 		if(stack.getItemDamage()>=0 && stack.getItemDamage()<perms.length)
 			return perms[stack.getItemDamage()];
-		return new DrillHeadPerm("",0,0,0,0,0,0,"immersiveengineering:textures/models/drill_diesel.png");
+		return new DrillHeadPerm("",0,0,0,0,0,0,"immersiveengineering:textures/models/drill_diesel");
 	}
 
 	@Override
@@ -66,6 +71,15 @@ public class ItemDrillhead extends ItemIEBase implements IDrillHead
 				list.add(s);
 		}
 
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void registerIcons(IIconRegister ir)
+	{
+		super.registerIcons(ir);
+		for(DrillHeadPerm p : this.perms)
+			p.icon = ir.registerIcon(p.texture);
 	}
 
 	@Override
@@ -143,9 +157,10 @@ public class ItemDrillhead extends ItemIEBase implements IDrillHead
 	}
 
 	@Override
-	public String getDrillTexture(ItemStack drill, ItemStack head)
+	public IIcon getDrillTexture(ItemStack drill, ItemStack head)
 	{
-		return getHeadPerm(head).texture;
+		DrillHeadPerm perm = getHeadPerm(head);
+		return perm.icon!=null?perm.icon: IEContent.itemDrill.icons[0];
 	}
 
 
@@ -159,6 +174,7 @@ public class ItemDrillhead extends ItemIEBase implements IDrillHead
 		final float drillAttack;
 		final int maxDamage;
 		final String texture;
+		public IIcon icon;
 
 		public DrillHeadPerm(String repairMaterial, int drillSize, int drillDepth, int drillLevel, float drillSpeed, int drillAttack, int maxDamage, String texture)
 		{

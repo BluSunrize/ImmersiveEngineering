@@ -6,7 +6,6 @@ import java.util.Set;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -37,9 +36,6 @@ import blusunrize.immersiveengineering.common.util.Lib;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemDrill extends ItemUpgradeableTool implements IFluidContainerItem
 {
@@ -123,11 +119,6 @@ public class ItemDrill extends ItemUpgradeableTool implements IFluidContainerIte
 		return false;
 	}
 	
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister ir)
-	{
-	}
 	@Override
 	public double getDurabilityForDisplay(ItemStack stack)
 	{
