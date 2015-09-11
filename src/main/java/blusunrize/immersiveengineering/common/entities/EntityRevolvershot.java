@@ -20,6 +20,7 @@ import net.minecraft.world.World;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import blusunrize.immersiveengineering.common.util.Lib;
+import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.common.util.compat.EtFuturumHelper;
 import blusunrize.immersiveengineering.common.util.compat.IC2Helper;
 import cofh.api.energy.IEnergyContainerItem;
@@ -248,8 +249,16 @@ public class EntityRevolvershot extends Entity
 				ItemStack stack = ((EntityLivingBase)mop.entityHit).getEquipmentInSlot(i);
 				if(stack!=null && stack.getItem() instanceof IEnergyContainerItem)
 				{
-					int drain = (int)(((IEnergyContainerItem)stack.getItem()).getMaxEnergyStored(stack)*.15f);
-					((IEnergyContainerItem)stack.getItem()).extractEnergy(stack, drain, false);
+					int maxStore = ((IEnergyContainerItem)stack.getItem()).getMaxEnergyStored(stack);
+					int drain = Math.min((int)(maxStore*.15f), ((IEnergyContainerItem)stack.getItem()).getEnergyStored(stack));
+					int hasDrained = 0;
+					while(hasDrained<drain)
+					{
+						int actualDrain = ((IEnergyContainerItem)stack.getItem()).extractEnergy(stack, drain, false);
+						if(actualDrain<=0)
+							break;
+						hasDrained += actualDrain;
+					}
 				}
 				if(stack!=null && Lib.IC2)
 				{
@@ -262,17 +271,18 @@ public class EntityRevolvershot extends Entity
 		if(bulletType==6)
 		{
 			Vec3 v = Vec3.createVectorHelper(-motionX, -motionY, -motionZ);
-			for(int i=0; i<6; i++)
-			{
-				//				float angleV = this.rand.nextFloat()*360f;
-				//			double my = Math.sin(angleV);
-				//			double md = Math.cos(angleV);
-				double d = Math.sqrt(motionX*motionX + motionZ*motionZ + motionY*motionY);
-				double modX = -motionZ/d;
-				double modZ = -motionX/d;
+			int split = 6;
+			for(int i=0; i<split; i++)
+			{	
+				float angle = i * (360f/split);
+				Matrix4 matrix = new Matrix4();
+				matrix.rotate(angle, v.xCoord,v.yCoord,v.zCoord);
+				Vec3 vecDir = Vec3.createVectorHelper(0, 1, 0);
+				matrix.apply(vecDir);
 
-				Vec3 vecDir = v.addVector((rand.nextDouble()-.5)*modX, (rand.nextDouble()-.5), (rand.nextDouble()-.5)*modZ).normalize();
 				EntityWolfpackShot bullet = new EntityWolfpackShot(worldObj, this.shootingEntity, vecDir.xCoord*1.5,vecDir.yCoord*1.5,vecDir.zCoord*1.5, this.bulletType, null);
+				if(mop.entityHit instanceof EntityLivingBase)
+					bullet.targetOverride = (EntityLivingBase)mop.entityHit;
 				bullet.setPosition(posX+vecDir.xCoord, posY+vecDir.yCoord, posZ+vecDir.zCoord);
 				bullet.motionX = vecDir.xCoord*.375;
 				bullet.motionY = vecDir.yCoord*.375;
@@ -405,14 +415,4 @@ public class EntityRevolvershot extends Entity
 	{
 		return false;
 	}
-	//	@Override
-	//	protected void readEntityFromNBT(NBTTagCompound p_70037_1_) {
-	//		// TODO Auto-generated method stub
-	//		
-	//	}
-	//	@Override
-	//	protected void writeEntityToNBT(NBTTagCompound p_70014_1_) {
-	//		// TODO Auto-generated method stub
-	//		
-	//	}
 }

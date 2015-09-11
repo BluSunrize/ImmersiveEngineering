@@ -10,6 +10,7 @@ public class EntityRevolvershotHoming extends EntityRevolvershot
 {
 	public int trackCountdown = 5;
 	public double redirectionSpeed = .25;
+	EntityLivingBase targetOverride;
 	public EntityRevolvershotHoming(World world)
 	{
 		super(world);
@@ -47,6 +48,8 @@ public class EntityRevolvershotHoming extends EntityRevolvershot
 
 	public EntityLivingBase getTarget()
 	{
+		if(targetOverride!=null && !targetOverride.isDead)
+			return targetOverride;
 		double r = 20D;
 		AxisAlignedBB aabb = AxisAlignedBB.getBoundingBox(posX-r,posY-r,posZ-r, posX+r,posY+r,posZ+r);
 		EntityLivingBase target = null;

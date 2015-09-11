@@ -383,7 +383,7 @@ public class IEContent
 
 		/**SMELTING*/
 		IERecipes.initFurnaceRecipes();
-		
+
 		/**CRAFTING*/
 		IERecipes.initCraftingRecipes();
 
@@ -400,7 +400,7 @@ public class IEContent
 		GameRegistry.registerFuelHandler(new IEFuelHandler());
 
 		IERecipes.initCrusherRecipes();
-		
+
 		IERecipes.initArcSmeltingRecipes();
 
 		DieselHandler.registerFuel(fluidBiodiesel, 125);
@@ -435,8 +435,9 @@ public class IEContent
 		ExcavatorHandler.addMineral("Copper", 30, .2f, new String[]{"oreCopper","oreGold","oreNickel","denseoreCopper"}, new float[]{.65f,.25f,.05f,.05f});
 		ExcavatorHandler.addMineral("Gold", 20, .3f, new String[]{"oreGold","oreCopper","oreNickel","denseoreGold"}, new float[]{.65f,.25f,.05f,.05f});
 		ExcavatorHandler.addMineral("Nickel", 20, .3f, new String[]{"oreNickel","orePlatinum","oreIron","denseoreNickel"}, new float[]{.85f,.05f,.05f,.05f});
-		ExcavatorHandler.addMineral("Platinum", 5, .35f, new String[]{"orePlatinum","oreNickel","oreIridium","denseorePlatinum"}, new float[]{.45f,.35f,.1f,.05f});
-		ExcavatorHandler.addMineral("Uranium", 10, .35f, new String[]{"oreUranium","oreLead","orePlutonium","denseoreUranium"}, new float[]{.55f,.3f,.1f,.05f}).addReplacement("oreUranium", "oreYellorium");
+		ExcavatorHandler.addMineral("Platinum", 5, .35f, new String[]{"orePlatinum","oreNickel","","oreIridium","denseorePlatinum"}, new float[]{.40f,.30f,.15f,.1f,.05f});
+		if(OreDictionary.doesOreNameExist("oreUranium")||OreDictionary.doesOreNameExist("oreYellorium"))
+			ExcavatorHandler.addMineral("Uranium", 10, .35f, new String[]{"oreUranium","oreLead","orePlutonium","denseoreUranium"}, new float[]{.55f,.3f,.1f,.05f}).addReplacement("oreUranium", "oreYellorium");
 		ExcavatorHandler.addMineral("Quartzite", 5, .3f, new String[]{"oreQuartz","oreCertusQuartz"}, new float[]{.6f,.4f});
 		ExcavatorHandler.addMineral("Galena", 15, .2f, new String[]{"oreLead","oreSilver","oreSulfur","denseoreLead","denseoreSilver"}, new float[]{.40f,.40f,.1f,.05f,.05f});
 		ExcavatorHandler.addMineral("Lead", 10, .15f, new String[]{"oreLead","oreSilver","denseoreLead"}, new float[]{.55f,.4f,.05f});
@@ -460,7 +461,7 @@ public class IEContent
 		MultiblockHandler.registerMultiblock(MultiblockSilo.instance);
 
 		IEAchievements.init();
-		
+
 		//Railcraft Compat
 		if(Loader.isModLoaded("Railcraft"))
 		{

@@ -506,6 +506,8 @@ public class ClientUtils
 
 	public static void renderWavefrontWithIconUVs(WavefrontObject model, int glDrawingMode, IIcon icon, String... parts)
 	{
+		if(icon==null)
+			return;
 		List<String> renderParts = Arrays.asList(parts);
 		tes().startDrawing(glDrawingMode);
 		for(GroupObject go : model.groupObjects)

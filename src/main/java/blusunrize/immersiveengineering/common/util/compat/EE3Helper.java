@@ -20,6 +20,8 @@ public class EE3Helper extends IECompatModule
 	@Override
 	public void postInit()
 	{
+		//steel 320
+		
 		EnergyValueRegistryProxy.addPreAssignedEnergyValue(new ItemStack(IEContent.itemSeeds,1,3), 24);
 		EnergyValueRegistryProxy.addPreAssignedEnergyValue(IEContent.itemSeeds, 24);
 		EnergyValueRegistryProxy.addPreAssignedEnergyValue(new ItemStack(IEContent.blockWoodenDecoration,1,0), 24);

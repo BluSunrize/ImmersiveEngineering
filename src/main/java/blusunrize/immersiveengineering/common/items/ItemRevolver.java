@@ -1,18 +1,12 @@
 package blusunrize.immersiveengineering.common.items;
 
-import java.awt.image.BufferedImage;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-import javax.imageio.ImageIO;
-
 import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -34,7 +28,6 @@ import blusunrize.immersiveengineering.api.tool.IUpgrade;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.gui.InventoryStorageItem;
 import blusunrize.immersiveengineering.common.util.IEAchievements;
-import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Lib;
 
@@ -63,13 +56,12 @@ public class ItemRevolver extends ItemUpgradeableTool
 	{
 		revolverDefaultTexture = ir.registerIcon("immersiveengineering:revolver");
 		for(String key : specialRevolversByTag.keySet())
-			if(!key.isEmpty())
+			if(!key.isEmpty() && !specialRevolversByTag.get(key).tag.isEmpty())
 			{
 				int split = key.lastIndexOf("_");
 				if(split<0)
 					split = key.length();
-				
-//				revolverIcons.put(key, ir.registerIcon("immersiveengineering:revolver_"+key.substring(0,split)));
+				revolverIcons.put(key, ir.registerIcon("immersiveengineering:revolver_"+key.substring(0,split)));
 			}
 	}
 
@@ -99,13 +91,13 @@ public class ItemRevolver extends ItemUpgradeableTool
 	{
 		for(int i=0;i<2;i++)
 			list.add(new ItemStack(this,1,i));
-		//		for(Map.Entry<String, SpecialRevolver> e : specialRevolversByTag.entrySet())
-		//		{
-		//			ItemStack stack = new ItemStack(this,1,0);
-		//			applySpecialCrafting(stack, e.getValue());
-		//			this.recalculateUpgrades(stack);
-		//			list.add(stack);
-		//		}
+		for(Map.Entry<String, SpecialRevolver> e : specialRevolversByTag.entrySet())
+		{
+			ItemStack stack = new ItemStack(this,1,0);
+			applySpecialCrafting(stack, e.getValue());
+			this.recalculateUpgrades(stack);
+			list.add(stack);
+		}
 	}
 	@Override
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean adv)
@@ -340,7 +332,7 @@ public class ItemRevolver extends ItemUpgradeableTool
 		if(stack.getItemDamage()==1)
 			return;
 		player.triggerAchievement(IEAchievements.makeRevolver);
-	    String uuid = player.getUniqueID().toString();
+		String uuid = player.getUniqueID().toString();
 		if(specialRevolvers.containsKey(uuid))
 		{
 			ArrayList<SpecialRevolver> list = new ArrayList(specialRevolvers.get(uuid));
