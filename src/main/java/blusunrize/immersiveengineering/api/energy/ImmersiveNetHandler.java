@@ -201,33 +201,33 @@ public class ImmersiveNetHandler
 		WireType type = target==null?null : iic.getCableLimiter(target);
 		if(type==null)
 			return;
-		ConcurrentSkipListSet<Connection> itlist = new ConcurrentSkipListSet<Connection>();
-		for (ConcurrentSkipListSet<Connection> conl : getMultimap(world.provider.dimensionId).values()) 
-			itlist.addAll(conl);
-		Iterator<Connection> it = itlist.iterator();
-		while(it.hasNext())
+		for (ConcurrentSkipListSet<Connection> conl : getMultimap(world.provider.dimensionId).values())
 		{
-			Connection con = it.next();
-			if(con.cableType==type)
-				if(node.equals(con.start) || node.equals(con.end))
-				{
-					it.remove();
-					toIIC(con.end, world).removeCable(con);
-					toIIC(con.start, world).removeCable(con);
-
-					if(node.equals(con.end))
+			Iterator<Connection> it = conl.iterator();
+			while(it.hasNext())
+			{
+				Connection con = it.next();
+				if(con.cableType==type)
+					if(node.equals(con.start) || node.equals(con.end))
 					{
-						double dx = node.posX+.5+Math.signum(con.start.posX-con.end.posX);
-						double dy = node.posY+.5+Math.signum(con.start.posY-con.end.posY);
-						double dz = node.posZ+.5+Math.signum(con.start.posZ-con.end.posZ);
-						world.spawnEntityInWorld(new EntityItem(world, dx,dy,dz, con.cableType.getWireCoil()));
-						if(world.blockExists(con.start.posX,con.start.posY,con.start.posZ))
-							world.addBlockEvent(con.start.posX, con.start.posY, con.start.posZ, world.getBlock(con.start.posX,con.start.posY,con.start.posZ),-1,0);
+						it.remove();
+						toIIC(con.end, world).removeCable(con);
+						toIIC(con.start, world).removeCable(con);
+
+						if(node.equals(con.end))
+						{
+							double dx = node.posX+.5+Math.signum(con.start.posX-con.end.posX);
+							double dy = node.posY+.5+Math.signum(con.start.posY-con.end.posY);
+							double dz = node.posZ+.5+Math.signum(con.start.posZ-con.end.posZ);
+							world.spawnEntityInWorld(new EntityItem(world, dx,dy,dz, con.cableType.getWireCoil()));
+							if(world.blockExists(con.start.posX,con.start.posY,con.start.posZ))
+								world.addBlockEvent(con.start.posX, con.start.posY, con.start.posZ, world.getBlock(con.start.posX,con.start.posY,con.start.posZ),-1,0);
+						}
+						else
+							if(world.blockExists(con.end.posX,con.end.posY,con.end.posZ))
+									world.addBlockEvent(con.end.posX, con.end.posY, con.end.posZ, world.getBlock(con.end.posX,con.end.posY,con.end.posZ),-1,0);
 					}
-					else
-						if(world.blockExists(con.end.posX,con.end.posY,con.end.posZ))
-							world.addBlockEvent(con.end.posX, con.end.posY, con.end.posZ, world.getBlock(con.end.posX,con.end.posY,con.end.posZ),-1,0);
-				}
+			}
 		}
 		if(world.blockExists(node.posX,node.posY,node.posZ))
 			world.addBlockEvent(node.posX, node.posY, node.posZ, world.getBlock(node.posX,node.posY,node.posZ),-1,0);
@@ -311,7 +311,7 @@ public class ImmersiveNetHandler
 			@Override
 			public int compare(AbstractConnection c0, AbstractConnection c1)
 			{
-				return c0.compareTo(c1);
+				return c0.compare(c1);
 			}
 		});
 		List<ChunkCoordinates> checked = new ArrayList<ChunkCoordinates>();
@@ -457,8 +457,7 @@ public class ImmersiveNetHandler
 				return new Connection(start,end, type, tag.getInteger("length"));
 			return null;
 		}
-		@Override
-		public int compareTo(Connection con)
+		public int compare(Connection con)
 		{
 			if(con==null||con.cableType==null||cableType==null)
 				return 0;
@@ -467,6 +466,26 @@ public class ImmersiveNetHandler
 			if(distComp==0)
 				return cableComp;
 			return distComp;
+		}
+
+		@Override
+		public int compareTo(Connection o) {
+			if (equals(o))
+				return 0;
+			if (start.posX!=o.start.posX)
+				return start.posX>o.start.posX?1:-1;
+			if (start.posY!=o.start.posY)
+				return start.posY>o.start.posY?1:-1;
+			if (start.posZ!=o.start.posZ)
+				return start.posZ>o.start.posZ?1:-1;
+			if (end.posX!=o.end.posX)
+				return end.posX>o.end.posX?1:-1;
+			if (end.posY!=o.end.posY)
+				return end.posY>o.end.posY?1:-1;
+			if (end.posZ!=o.end.posZ)
+				return end.posZ>o.end.posZ?1:-1;	
+			//This should not happen, since equals(o) is true in this case
+			return 0;
 		}
 	}
 
