@@ -417,7 +417,7 @@ public class BlockMetalDevices extends BlockIEBase implements blusunrize.aquatwe
 	{
 		if(world.getTileEntity(x, y, z) instanceof TileEntityConnectorLV)
 		{
-			float length = world.getTileEntity(x, y, z) instanceof TileEntityRelayHV?.875f: world.getTileEntity(x, y, z) instanceof TileEntityConnectorHV?.75f: .5f;
+			float length = world.getTileEntity(x, y, z) instanceof TileEntityRelayHV?.875f: world.getTileEntity(x, y, z) instanceof TileEntityConnectorHV?.75f: world.getTileEntity(x, y, z) instanceof TileEntityConnectorMV?.5625f: .5f;
 
 			switch(((TileEntityConnectorLV)world.getTileEntity(x, y, z)).facing )
 			{
