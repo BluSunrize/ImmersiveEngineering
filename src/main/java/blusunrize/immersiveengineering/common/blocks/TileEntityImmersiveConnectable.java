@@ -92,7 +92,7 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 	{
 		WireType type = connection!=null?connection.cableType:null;
 		ConcurrentSkipListSet<Connection> outputs = ImmersiveNetHandler.INSTANCE.getConnections(worldObj,Utils.toCC(this));
-		if(outputs!=null && outputs.size()>0)
+		if (outputs==null||outputs.size()==0)
 		{
 			if(type==limitType || type==null)
 				this.limitType = null;
