@@ -472,9 +472,20 @@ public class ImmersiveNetHandler
 		public int compareTo(Connection o) {
 			if (equals(o))
 				return 0;
-			int ret = (int) (end.hashCode()*start.hashCode()*Math.signum(end.compareTo(start)));
-			ret+=ret>=0?1:-1;
-			return ret;
+			if (start.posX!=o.start.posX)
+				return start.posX>o.start.posX?1:-1;
+			if (start.posY!=o.start.posY)
+				return start.posY>o.start.posY?1:-1;
+			if (start.posZ!=o.start.posZ)
+				return start.posZ>o.start.posZ?1:-1;
+			if (end.posX!=o.end.posX)
+				return end.posX>o.end.posX?1:-1;
+			if (end.posY!=o.end.posY)
+				return end.posY>o.end.posY?1:-1;
+			if (end.posZ!=o.end.posZ)
+				return end.posZ>o.end.posZ?1:-1;	
+			//This should not happen, since equals(o) is true in this case
+			return 0;
 		}
 	}
 
