@@ -174,16 +174,20 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart implement
 	@Override
 	public boolean canDrain(ForgeDirection from, Fluid fluid)
 	{
-		return formed&&(pos==4||pos==40);
+		return formed&&pos==4;
 	}
 	@Override
 	public FluidTankInfo[] getTankInfo(ForgeDirection from)
 	{
-		if(!formed)
-			return new FluidTankInfo[]{};
-		if(master()!=null)
-			return master().getTankInfo(from);
-		return new FluidTankInfo[]{tank.getInfo()};
+		if (pos==4||pos==40) {
+			if (!formed)
+				return new FluidTankInfo[] {};
+			if (master() != null)
+				return master().getTankInfo(from);
+			return new FluidTankInfo[] { tank.getInfo() };
+		} else {
+			return new FluidTankInfo[0];
+		}
 	}
 
 

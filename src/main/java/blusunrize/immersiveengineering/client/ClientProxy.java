@@ -1,10 +1,39 @@
 package blusunrize.immersiveengineering.client;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import blusunrize.immersiveengineering.api.ManualHelper;
+import blusunrize.immersiveengineering.api.ManualPageMultiblock;
+import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
+import blusunrize.immersiveengineering.api.energy.DieselHandler;
+import blusunrize.immersiveengineering.api.energy.ThermoelectricHandler;
+import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
+import blusunrize.immersiveengineering.client.fx.EntityFXBlockParts;
+import blusunrize.immersiveengineering.client.fx.EntityFXItemParts;
+import blusunrize.immersiveengineering.client.fx.EntityFXSparks;
+import blusunrize.immersiveengineering.client.gui.*;
+import blusunrize.immersiveengineering.client.render.*;
+import blusunrize.immersiveengineering.common.CommonProxy;
+import blusunrize.immersiveengineering.common.Config;
+import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.blocks.metal.*;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.*;
+import blusunrize.immersiveengineering.common.blocks.stone.TileEntityBlastFurnace;
+import blusunrize.immersiveengineering.common.blocks.stone.TileEntityCokeOven;
+import blusunrize.immersiveengineering.common.blocks.wooden.*;
+import blusunrize.immersiveengineering.common.entities.EntityRevolvershot;
+import blusunrize.immersiveengineering.common.entities.EntitySkycrate;
+import blusunrize.immersiveengineering.common.entities.EntitySkylineHook;
+import blusunrize.immersiveengineering.common.items.ItemRevolver;
+import blusunrize.immersiveengineering.common.util.IESound;
+import blusunrize.immersiveengineering.common.util.Lib;
+import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.lib.manual.IManualPage;
+import blusunrize.lib.manual.ManualPages;
+import blusunrize.lib.manual.ManualPages.PositionedItemStack;
+import cpw.mods.fml.client.registry.ClientRegistry;
+import cpw.mods.fml.client.registry.RenderingRegistry;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.registry.GameData;
+import cpw.mods.fml.common.registry.VillagerRegistry;
 import net.minecraft.block.BlockCauldron;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityFX;
@@ -26,132 +55,11 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
-import blusunrize.immersiveengineering.api.ManualHelper;
-import blusunrize.immersiveengineering.api.ManualPageMultiblock;
-import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
-import blusunrize.immersiveengineering.api.energy.DieselHandler;
-import blusunrize.immersiveengineering.api.energy.ThermoelectricHandler;
-import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
-import blusunrize.immersiveengineering.client.fx.EntityFXBlockParts;
-import blusunrize.immersiveengineering.client.fx.EntityFXItemParts;
-import blusunrize.immersiveengineering.client.fx.EntityFXSparks;
-import blusunrize.immersiveengineering.client.gui.GuiArcFurnace;
-import blusunrize.immersiveengineering.client.gui.GuiBlastFurnace;
-import blusunrize.immersiveengineering.client.gui.GuiCokeOven;
-import blusunrize.immersiveengineering.client.gui.GuiCrate;
-import blusunrize.immersiveengineering.client.gui.GuiFermenter;
-import blusunrize.immersiveengineering.client.gui.GuiModWorkbench;
-import blusunrize.immersiveengineering.client.gui.GuiRefinery;
-import blusunrize.immersiveengineering.client.gui.GuiRevolver;
-import blusunrize.immersiveengineering.client.gui.GuiSorter;
-import blusunrize.immersiveengineering.client.gui.GuiSqueezer;
-import blusunrize.immersiveengineering.client.render.BlockRenderMetalDecoration;
-import blusunrize.immersiveengineering.client.render.BlockRenderMetalDevices;
-import blusunrize.immersiveengineering.client.render.BlockRenderMetalDevices2;
-import blusunrize.immersiveengineering.client.render.BlockRenderMetalMultiblocks;
-import blusunrize.immersiveengineering.client.render.BlockRenderStoneDevices;
-import blusunrize.immersiveengineering.client.render.BlockRenderWoodenDecoration;
-import blusunrize.immersiveengineering.client.render.BlockRenderWoodenDevices;
-import blusunrize.immersiveengineering.client.render.EntityRenderNone;
-import blusunrize.immersiveengineering.client.render.EntityRenderRevolvershot;
-import blusunrize.immersiveengineering.client.render.EntityRenderSkycrate;
-import blusunrize.immersiveengineering.client.render.ItemRenderDrill;
-import blusunrize.immersiveengineering.client.render.ItemRenderRevolver;
-import blusunrize.immersiveengineering.client.render.TileRenderArcFurnace;
-import blusunrize.immersiveengineering.client.render.TileRenderBreakerSwitch;
-import blusunrize.immersiveengineering.client.render.TileRenderBucketWheel;
-import blusunrize.immersiveengineering.client.render.TileRenderConnectorHV;
-import blusunrize.immersiveengineering.client.render.TileRenderConnectorLV;
-import blusunrize.immersiveengineering.client.render.TileRenderConnectorMV;
-import blusunrize.immersiveengineering.client.render.TileRenderConnectorStructural;
-import blusunrize.immersiveengineering.client.render.TileRenderCrusher;
-import blusunrize.immersiveengineering.client.render.TileRenderDieselGenerator;
-import blusunrize.immersiveengineering.client.render.TileRenderElectricLantern;
-import blusunrize.immersiveengineering.client.render.TileRenderEnergyMeter;
-import blusunrize.immersiveengineering.client.render.TileRenderExcavator;
-import blusunrize.immersiveengineering.client.render.TileRenderFloodLight;
-import blusunrize.immersiveengineering.client.render.TileRenderLantern;
-import blusunrize.immersiveengineering.client.render.TileRenderPost;
-import blusunrize.immersiveengineering.client.render.TileRenderRefinery;
-import blusunrize.immersiveengineering.client.render.TileRenderRelayHV;
-import blusunrize.immersiveengineering.client.render.TileRenderSampleDrill;
-import blusunrize.immersiveengineering.client.render.TileRenderSheetmetalTank;
-import blusunrize.immersiveengineering.client.render.TileRenderSilo;
-import blusunrize.immersiveengineering.client.render.TileRenderTransformer;
-import blusunrize.immersiveengineering.client.render.TileRenderWallmount;
-import blusunrize.immersiveengineering.client.render.TileRenderWatermill;
-import blusunrize.immersiveengineering.client.render.TileRenderWindmill;
-import blusunrize.immersiveengineering.client.render.TileRenderWindmillAdvanced;
-import blusunrize.immersiveengineering.client.render.TileRenderWorkbench;
-import blusunrize.immersiveengineering.common.CommonProxy;
-import blusunrize.immersiveengineering.common.Config;
-import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDecoration;
-import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDevices;
-import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDevices2;
-import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalMultiblocks;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityArcFurnace;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBreakerSwitch;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBucketWheel;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorHV;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorLV;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorMV;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorStructural;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConveyorSorter;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityDieselGenerator;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityElectricLantern;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityEnergyMeter;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityExcavator;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFermenter;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFloodLight;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityLantern;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityRefinery;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityRelayHV;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySampleDrill;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySheetmetalTank;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySilo;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySqueezer;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTransformer;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTransformerHV;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockArcFurnace;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockBlastFurnace;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockBucketWheel;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockCokeOven;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockCrusher;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockDieselGenerator;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockExcavator;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockExcavatorDemo;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockFermenter;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockLightningRod;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockRefinery;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockSheetmetalTank;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockSilo;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockSqueezer;
-import blusunrize.immersiveengineering.common.blocks.stone.TileEntityBlastFurnace;
-import blusunrize.immersiveengineering.common.blocks.stone.TileEntityCokeOven;
-import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityModWorkbench;
-import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWallmount;
-import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWatermill;
-import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWindmill;
-import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWindmillAdvanced;
-import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenCrate;
-import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenPost;
-import blusunrize.immersiveengineering.common.entities.EntityRevolvershot;
-import blusunrize.immersiveengineering.common.entities.EntitySkycrate;
-import blusunrize.immersiveengineering.common.entities.EntitySkylineHook;
-import blusunrize.immersiveengineering.common.items.ItemRevolver;
-import blusunrize.immersiveengineering.common.util.IESound;
-import blusunrize.immersiveengineering.common.util.Lib;
-import blusunrize.immersiveengineering.common.util.Utils;
-import blusunrize.lib.manual.IManualPage;
-import blusunrize.lib.manual.ManualPages;
-import blusunrize.lib.manual.ManualPages.PositionedItemStack;
-import cpw.mods.fml.client.registry.ClientRegistry;
-import cpw.mods.fml.client.registry.RenderingRegistry;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.registry.GameData;
-import cpw.mods.fml.common.registry.VillagerRegistry;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ClientProxy extends CommonProxy
 {
@@ -187,6 +95,9 @@ public class ClientProxy extends CommonProxy
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntitySilo.class, new TileRenderSilo());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityElectricLantern.class, new TileRenderElectricLantern());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFloodLight.class, new TileRenderFloodLight());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFluidPipe.class, new TileRenderFluidPipe());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFluidPump.class, new TileRenderFluidPump());
+
 		//WOOD
 		RenderingRegistry.registerBlockHandler(new BlockRenderWoodenDevices());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityWoodenPost.class, new TileRenderPost());
@@ -231,7 +142,7 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.Text(ManualHelper.getManual(), "introduction0"),
 				new ManualPages.Text(ManualHelper.getManual(), "introduction1"),
 				new ManualPages.Crafting(ManualHelper.getManual(), "introductionHammer", new ItemStack(IEContent.itemTool,1,0)));
-		ManualHelper.addEntry("ores", ManualHelper.CAT_GENERAL, 
+		ManualHelper.addEntry("ores", ManualHelper.CAT_GENERAL,
 				new ManualPages.ItemDisplay(ManualHelper.getManual(), "oresCopper", new ItemStack(IEContent.blockOres,1,0),new ItemStack(IEContent.itemMetal,1,0)),
 				new ManualPages.ItemDisplay(ManualHelper.getManual(), "oresBauxite", new ItemStack(IEContent.blockOres,1,1),new ItemStack(IEContent.itemMetal,1,1)),
 				new ManualPages.ItemDisplay(ManualHelper.getManual(), "oresLead", new ItemStack(IEContent.blockOres,1,2),new ItemStack(IEContent.itemMetal,1,2)),
@@ -247,12 +158,12 @@ public class ClientProxy extends CommonProxy
 			recipes.add(new PositionedItemStack[]{ new PositionedItemStack(ingot, 24, 0), new PositionedItemStack(new ItemStack(IEContent.itemTool,1,0), 42, 0), new PositionedItemStack(new ItemStack(IEContent.itemMetal,1,8+i), 78, 0)});
 		}
 		PositionedItemStack[][] recA = recipes.toArray(new PositionedItemStack[0][0]);
-		ManualHelper.addEntry("oreProcessing", ManualHelper.CAT_GENERAL, 
+		ManualHelper.addEntry("oreProcessing", ManualHelper.CAT_GENERAL,
 				new ManualPages.CraftingMulti(ManualHelper.getManual(), "oreProcessing0", (Object[])recA),
 				new ManualPages.CraftingMulti(ManualHelper.getManual(), "oreProcessing1", (Object[])new PositionedItemStack[][]{
 					new PositionedItemStack[]{new PositionedItemStack(OreDictionary.getOres("dustCopper"),24,0), new PositionedItemStack(OreDictionary.getOres("dustNickel"),42,0), new PositionedItemStack(new ItemStack(IEContent.itemMetal,2,15),78,0)},
 					new PositionedItemStack[]{new PositionedItemStack(OreDictionary.getOres("dustGold"),24,0), new PositionedItemStack(OreDictionary.getOres("dustSilver"),42,0), new PositionedItemStack(new ItemStack(IEContent.itemMetal,2,16),78,0)}}));
-		ManualHelper.addEntry("hemp", ManualHelper.CAT_GENERAL, 
+		ManualHelper.addEntry("hemp", ManualHelper.CAT_GENERAL,
 				new ManualPages.ItemDisplay(ManualHelper.getManual(), "hemp0", new ItemStack(IEContent.blockCrop,1,5),new ItemStack(IEContent.itemSeeds)));
 		ManualHelper.addEntry("cokeoven", ManualHelper.CAT_GENERAL,
 				new ManualPages.Text(ManualHelper.getManual(), "cokeoven0"),
@@ -304,17 +215,17 @@ public class ClientProxy extends CommonProxy
 
 
 		ManualHelper.addEntry("wiring", ManualHelper.CAT_ENERGY,
-				new ManualPages.Text(ManualHelper.getManual(), "wiring0"), 
+				new ManualPages.Text(ManualHelper.getManual(), "wiring0"),
 				new ManualPages.Crafting(ManualHelper.getManual(), "wiring1", new ItemStack(IEContent.itemWireCoil,1,OreDictionary.WILDCARD_VALUE)),
 				new ManualPages.Image(ManualHelper.getManual(), "wiring2", "immersiveengineering:textures/misc/wiring.png;0;0;110;40", "immersiveengineering:textures/misc/wiring.png;0;40;110;30"),
 				new ManualPages.Image(ManualHelper.getManual(), "wiring3", "immersiveengineering:textures/misc/wiring.png;0;70;110;60", "immersiveengineering:textures/misc/wiring.png;0;130;110;60"),
 				new ManualPages.CraftingMulti(ManualHelper.getManual(), "wiringConnector", new ItemStack(IEContent.blockMetalDevice,1,BlockMetalDevices.META_connectorLV),new ItemStack(IEContent.blockMetalDevice,1,BlockMetalDevices.META_connectorMV),new ItemStack(IEContent.blockMetalDevice,1,BlockMetalDevices.META_relayHV),new ItemStack(IEContent.blockMetalDevice,1,BlockMetalDevices.META_connectorHV)),
 				new ManualPages.CraftingMulti(ManualHelper.getManual(), "wiringCapacitor", new ItemStack(IEContent.blockMetalDevice,1,BlockMetalDevices.META_capacitorLV),new ItemStack(IEContent.blockMetalDevice,1,BlockMetalDevices.META_capacitorMV),new ItemStack(IEContent.blockMetalDevice,1,BlockMetalDevices.META_capacitorHV)),
 				new ManualPages.CraftingMulti(ManualHelper.getManual(), "wiringTransformer0", new ItemStack(IEContent.blockMetalDevice,1,BlockMetalDevices.META_transformer),new ItemStack(IEContent.blockMetalDevice,1,BlockMetalDevices.META_transformerHV)),
-				new ManualPages.Text(ManualHelper.getManual(), "wiringTransformer1"), 
+				new ManualPages.Text(ManualHelper.getManual(), "wiringTransformer1"),
 				new ManualPages.Crafting(ManualHelper.getManual(), "wiringCutters", new ItemStack(IEContent.itemTool,1,1)),
 				new ManualPages.Crafting(ManualHelper.getManual(), "wiringVoltmeter", new ItemStack(IEContent.itemTool,1,2)));
-		ManualHelper.getManual().addEntry("generator", ManualHelper.CAT_ENERGY, 
+		ManualHelper.getManual().addEntry("generator", ManualHelper.CAT_ENERGY,
 				new ManualPages.Crafting(ManualHelper.getManual(), "generator0", new ItemStack(IEContent.blockMetalDevice,1,BlockMetalDevices.META_dynamo)),
 				new ManualPages.CraftingMulti(ManualHelper.getManual(), "generatorWindmill", new ItemStack(IEContent.blockWoodenDevice,1,2),new ItemStack(IEContent.itemMaterial,1,2)),
 				new ManualPages.CraftingMulti(ManualHelper.getManual(), "generatorWatermill", new ItemStack(IEContent.blockWoodenDevice,1,1),new ItemStack(IEContent.itemMaterial,1,1)),
@@ -322,7 +233,7 @@ public class ClientProxy extends CommonProxy
 		ManualHelper.getManual().addEntry("breaker", ManualHelper.CAT_ENERGY, new ManualPages.Crafting(ManualHelper.getManual(), "breaker0", new ItemStack(IEContent.blockMetalDevice2,1,BlockMetalDevices2.META_breakerSwitch)),new ManualPages.Text(ManualHelper.getManual(), "breaker1"));
 		Map<String,Integer> sortedMap = ThermoelectricHandler.getThermalValuesSorted(true);
 		String[][] table = formatToTable_ItemIntHashmap(sortedMap,"K");	
-		ManualHelper.getManual().addEntry("thermoElectric", ManualHelper.CAT_ENERGY, 
+		ManualHelper.getManual().addEntry("thermoElectric", ManualHelper.CAT_ENERGY,
 				new ManualPages.Crafting(ManualHelper.getManual(), "thermoElectric0", new ItemStack(IEContent.blockMetalDevice,1,BlockMetalDevices.META_thermoelectricGen)),
 				new ManualPages.Table(ManualHelper.getManual(), "thermoElectric1", table, false));
 		ManualHelper.addEntry("highvoltage", ManualHelper.CAT_ENERGY,
@@ -621,13 +532,13 @@ public class ClientProxy extends CommonProxy
 			//				if(!OreDictionary.getOres(minerals[i].recalculatedOres[j]).isEmpty())
 			//				{
 			//					ItemStack stackOre = OreDictionary.getOres(minerals[i].recalculatedOres[j]).get(0);
-			//					multiTables[curTable][i][1] += stackOre.getDisplayName()+" "+( Utils.formatDouble(minerals[i].recalculatedChances[j]*100,"#.00")+"%" )+(j<minerals[i].recalculatedOres.length-1?"\n":""); 
+			//					multiTables[curTable][i][1] += stackOre.getDisplayName()+" "+( Utils.formatDouble(minerals[i].recalculatedChances[j]*100,"#.00")+"%" )+(j<minerals[i].recalculatedOres.length-1?"\n":"");
 			//					totalLines++;
 			//				}
 			for(int j=0; j<minerals[i].oreOutput.length; j++)
 				if(minerals[i].oreOutput[j]!=null)
 				{
-					multiTables[curTable][i][1] += minerals[i].oreOutput[j].getDisplayName()+" "+( Utils.formatDouble(minerals[i].recalculatedChances[j]*100,"#.00")+"%" )+(j<minerals[i].oreOutput.length-1?"\n":""); 
+					multiTables[curTable][i][1] += minerals[i].oreOutput[j].getDisplayName()+" "+( Utils.formatDouble(minerals[i].recalculatedChances[j]*100,"#.00")+"%" )+(j<minerals[i].oreOutput.length-1?"\n":"");
 					totalLines++;
 				}
 			if(i<minerals.length-1 && totalLines+minerals[i+1].oreOutput.length>=13)

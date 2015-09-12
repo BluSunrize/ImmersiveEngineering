@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import blusunrize.immersiveengineering.api.DirectionalChunkCoords;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityLivingBase;
@@ -93,6 +94,16 @@ public class Utils
 			return new ChunkCoordinates(((TileEntity)object).xCoord,((TileEntity)object).yCoord,((TileEntity)object).zCoord);
 		return null;
 	}
+
+	public static DirectionalChunkCoords toDirCC(Object object, ForgeDirection direction)
+	{
+		if(object instanceof ChunkCoordinates)
+			return new DirectionalChunkCoords((ChunkCoordinates)object, direction);
+		if(object instanceof TileEntity)
+			return new DirectionalChunkCoords(((TileEntity)object).xCoord,((TileEntity)object).yCoord,((TileEntity)object).zCoord, direction);
+		return null;
+	}
+
 	public static IImmersiveConnectable toIIC(Object object, World world)
 	{
 		if(object instanceof IImmersiveConnectable)
