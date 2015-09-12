@@ -155,7 +155,6 @@ public class Utils
 		Vec3 vec31 = vec3.addVector((double)f7 * d3, (double)f6 * d3, (double)f8 * d3);
 		return world.func_147447_a(vec3, vec31, bool, !bool, false);
 	}
-	private static double DEBUG_RAYTRACE_THRESHOLD = 0.5; // ToDo: only for debugging, remove before release
 	/**
 	 * Tests whether a clear line of sight between the two blocks exists.
 	 * Tests against bounding boxes, ignores liquids.
@@ -180,27 +179,22 @@ public class Utils
 			double restartVecY;
 			double restartVecZ;
 			if(pos0.xCoord>=aabb0.minX && pos0.xCoord<=aabb0.maxX){
-				restartVecX = (rayTraceDiff.xCoord>DEBUG_RAYTRACE_THRESHOLD)?aabb0.maxX:(rayTraceDiff.xCoord<(0-DEBUG_RAYTRACE_THRESHOLD))?aabb0.minX:pos0.xCoord;
+				restartVecX = (rayTraceDiff.xCoord>0.5)?aabb0.maxX:(rayTraceDiff.xCoord<(-0.5))?aabb0.minX:pos0.xCoord;
 			} else {
 				restartVecX = pos0.xCoord;
 			}
 			if(pos0.yCoord>=aabb0.minY && pos0.yCoord<=aabb0.maxY){
-				restartVecY = (rayTraceDiff.yCoord>DEBUG_RAYTRACE_THRESHOLD)?aabb0.maxY:(rayTraceDiff.yCoord<(0-DEBUG_RAYTRACE_THRESHOLD))?aabb0.minY:pos0.yCoord;
+				restartVecY = (rayTraceDiff.yCoord>0.5)?aabb0.maxY:(rayTraceDiff.yCoord<(-0.5))?aabb0.minY:pos0.yCoord;
 			} else {
 				restartVecY = pos0.yCoord;
 			}
 			if(pos0.zCoord>=aabb0.minZ && pos0.zCoord<=aabb0.maxZ){
-				restartVecZ = (rayTraceDiff.zCoord>DEBUG_RAYTRACE_THRESHOLD)?aabb0.maxZ:(rayTraceDiff.zCoord<(0-DEBUG_RAYTRACE_THRESHOLD))?aabb0.minZ:pos0.zCoord;
+				restartVecZ = (rayTraceDiff.zCoord>0.5)?aabb0.maxZ:(rayTraceDiff.zCoord<(-0.5))?aabb0.minZ:pos0.zCoord;
 			} else {
 				restartVecZ = pos0.zCoord;
 			}
 			Vec3 restartVec = Vec3.createVectorHelper(restartVecX, restartVecY, restartVecZ);
-			IELogger.error("Raytracing failed. Start vector was "+pos0+", moving by "+pos0.subtract(restartVec)+" to "+restartVec);
 			mop = world.rayTraceBlocks(restartVec, pos1);
-			if(mop!=null && mop.blockX==cc0.posX&&mop.blockY==cc0.posY&&mop.blockZ==cc0.posZ)
-			{
-				IELogger.error("Raytracing failed AGAIN. Hit start block at "+mop.hitVec);
-			}
 		}
 		return mop==null || (mop.blockX==cc1.posX&&mop.blockY==cc1.posY&&mop.blockZ==cc1.posZ);
 	}
