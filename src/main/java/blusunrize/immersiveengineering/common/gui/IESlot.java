@@ -14,6 +14,8 @@ import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.tool.IBullet;
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
+import blusunrize.immersiveengineering.api.tool.IShaderEquipableItem;
+import blusunrize.immersiveengineering.api.tool.IShaderItem;
 import blusunrize.immersiveengineering.api.tool.IUpgrade;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.items.ItemEngineersBlueprint;
@@ -148,6 +150,27 @@ public abstract class IESlot extends Slot
 		public int getSlotStackLimit()
 		{
 			return 64;
+		}
+	}
+	public static class Shader extends IESlot
+	{
+		ItemStack tool;
+		public Shader(Container container, IInventory inv, int id, int x, int y, ItemStack tool)
+		{
+			super(container, inv, id, x, y);
+			this.tool = tool;
+		}
+		@Override
+		public boolean isItemValid(ItemStack itemStack)
+		{
+			return itemStack!=null && itemStack.getItem() instanceof IShaderItem 
+					&& tool!=null && tool.getItem() instanceof IShaderEquipableItem
+					&& ((IShaderItem)itemStack.getItem()).canEquipOnItem(itemStack, tool);
+		}
+		@Override
+		public int getSlotStackLimit()
+		{
+			return 1;
 		}
 	}
 	public static class UpgradeableItem extends IESlot

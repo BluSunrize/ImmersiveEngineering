@@ -2,9 +2,10 @@ package blusunrize.immersiveengineering.common;
 
 import java.util.HashMap;
 
-import blusunrize.immersiveengineering.common.util.IELogger;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
+import blusunrize.immersiveengineering.api.IEApi;
+import blusunrize.immersiveengineering.common.util.IELogger;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 
 public class Config
@@ -52,6 +53,7 @@ public class Config
 		setIntArray("cableLength", cableProperty.getIntList());
 
 		setInt("revolverSheetID", config.get("General", "TextureSheet: Revolvers", 94, "The ID of the texture sheet used for revolvers. This should probably never conflict since not many mods do custom sheets.").getInt());
+		IEApi.revolverTextureSheetID = getInt("revolverSheetID");
 		setBoolean("increasedRenderboxes", config.get("General", "Increased Renderboxes", true, "By default all devices that accept cables have increased renderbounds to show cables even if the block itself is not in view. Disabling this reduces them to their minimum sizes, which might improve FPS on low-power PCs").getBoolean());
 		setBoolean("colourblindSupport", config.get("General", "ColourblindSupport", false, "Support for colourblind people, gives a text-based output on capacitor sides").getBoolean());
 		setDouble("increasedTileRenderdistance", config.get("General", "Increased Tile Renderdistance", 1.5, "Increase the distance at which certain TileEntities (specifically windmills) are still visible. This is a modifier, so set it to 1 for default render distance, to 2 for doubled distance and so on.").getDouble());

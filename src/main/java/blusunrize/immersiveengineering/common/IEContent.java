@@ -115,6 +115,7 @@ import blusunrize.immersiveengineering.common.items.ItemIEBase;
 import blusunrize.immersiveengineering.common.items.ItemIESeed;
 import blusunrize.immersiveengineering.common.items.ItemIETool;
 import blusunrize.immersiveengineering.common.items.ItemRevolver;
+import blusunrize.immersiveengineering.common.items.ItemShader;
 import blusunrize.immersiveengineering.common.items.ItemSkyhook;
 import blusunrize.immersiveengineering.common.items.ItemToolUpgrade;
 import blusunrize.immersiveengineering.common.items.ItemWireCoil;
@@ -157,6 +158,7 @@ public class IEContent
 	public static ItemIEBase itemSkyhook;
 	public static ItemIEBase itemBlueprint;
 	public static ItemIEBase itemGraphiteElectrode;
+	public static ItemIEBase itemShader;
 	public static Fluid fluidCreosote;
 	public static boolean IECreosote=false;
 	public static Fluid fluidPlantoil;
@@ -226,6 +228,7 @@ public class IEContent
 		itemSkyhook = new ItemSkyhook();
 		itemBlueprint = new ItemEngineersBlueprint();
 		itemGraphiteElectrode = new ItemGraphiteElectrode();
+		itemShader = new ItemShader();
 
 		fluidCreosote = FluidRegistry.getFluid("creosote");
 		if(fluidCreosote==null)

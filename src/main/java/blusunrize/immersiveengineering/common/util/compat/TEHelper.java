@@ -7,11 +7,6 @@ import cpw.mods.fml.common.event.FMLInterModComms;
 
 public class TEHelper extends IECompatModule
 {
-	public TEHelper()
-	{
-		super("ThermalExpansion");
-	}
-
 	@Override
 	public void init()
 	{

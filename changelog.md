@@ -12,6 +12,8 @@
 - added a recrafting recipe to turn treated wood slabs back into treated wood blocks
 - added a bunch of canFill and canDrain checks because no mod developer but MineMaarten seems to respect the methods for them >=(
 - added a statistic to track the distance travelled by Skyhook
+- added EE3 compat back in. All ingots as well as certain materials and the bullets have an EMC value now
+- added Thermal Expansion compat. Basically allowing Constantan to be made in the Smelter
 - changed wire rendering to be ISRBH, improving performance
 - changed a lot of internal handling of the Energy System:
 	- Wire Transferrates are now per tick. WIres can only have a certain amount of power go through them in a single tick
@@ -37,6 +39,8 @@
 - fixed many things about the crusher. Desync, animation issues, incorrect consumption of energy (thanks @cobra)
 - fixed inability to place metal decoration blocks while jumping (thanks @UnwrittenFun)
 - fixed output bugs with Squeezer and Fermenter
+- fixed Raytracing errors (thanks @cobra)
+ -fixed broken wirecutter, one-way wires and wire-limiters not getting reset (thanks @malte0811) 
 - updated zh_CN.lang
 - added ja_JP.lang
 - updated ru_RU.lang

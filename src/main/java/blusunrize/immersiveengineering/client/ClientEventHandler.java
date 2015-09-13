@@ -53,6 +53,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOve
 import blusunrize.immersiveengineering.common.gui.ContainerRevolver;
 import blusunrize.immersiveengineering.common.items.ItemDrill;
 import blusunrize.immersiveengineering.common.items.ItemRevolver;
+import blusunrize.immersiveengineering.common.items.ItemShader;
 import blusunrize.immersiveengineering.common.items.ItemSkyhook;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
@@ -88,6 +89,7 @@ public class ClientEventHandler
 			IELogger.info("Stitching Revolver Textures!");
 			((ItemRevolver)IEContent.itemRevolver).stichRevolverTextures(event.map);
 		}
+		((ItemShader)IEContent.itemShader).stichTextures(event.map, event.map.getTextureType());
 	}
 	@SubscribeEvent()
 	public void textureStich(TextureStitchEvent.Post event)

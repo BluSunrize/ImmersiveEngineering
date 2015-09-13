@@ -224,6 +224,8 @@ item.ImmersiveEngineering.blueprint.name=Engineer's Blueprint
 
 item.ImmersiveEngineering.graphiteElectrode.name=Graphite Electrode
 
+item.ImmersiveEngineering.shader.name=Shader
+
 
 #CREATIVE
 itemGroup.ImmersiveEngineering=Immersive Engineering

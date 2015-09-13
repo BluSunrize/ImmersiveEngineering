@@ -24,6 +24,7 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.tool.IBullet;
+import blusunrize.immersiveengineering.api.tool.IShaderEquipableItem;
 import blusunrize.immersiveengineering.api.tool.IUpgrade;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.gui.InventoryStorageItem;
@@ -37,7 +38,7 @@ import com.google.common.collect.Multimap;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class ItemRevolver extends ItemUpgradeableTool
+public class ItemRevolver extends ItemUpgradeableTool implements IShaderEquipableItem
 {
 	public ItemRevolver()
 	{
@@ -68,7 +69,7 @@ public class ItemRevolver extends ItemUpgradeableTool
 	@Override
 	public int getInternalSlots(ItemStack stack)
 	{
-		return 18+2;
+		return 18+2+1;
 	}
 	@Override
 	public Slot[] getWorkbenchSlots(Container container, ItemStack stack, InventoryStorageItem invItem)
@@ -77,6 +78,7 @@ public class ItemRevolver extends ItemUpgradeableTool
 				{
 				new IESlot.Upgrades(container, invItem,18+0, 80,32, IUpgrade.UpgradeType.REVOLVER, stack, true),
 				new IESlot.Upgrades(container, invItem,18+1,100,32, IUpgrade.UpgradeType.REVOLVER, stack, true),
+				new IESlot.Shader(container, invItem,20,140,24, stack)
 				};
 	}
 	@Override
@@ -85,6 +87,26 @@ public class ItemRevolver extends ItemUpgradeableTool
 		return stack.getItemDamage()!=1;
 	}
 
+
+	@Override
+	public void setShaderItem(ItemStack stack, ItemStack shader)
+	{
+		ItemStack[] contained = this.getContainedItems(stack);
+		contained[20] =  shader;
+		this.setContainedItems(stack, contained);
+	}
+	@Override
+	public ItemStack getShaderItem(ItemStack stack)
+	{
+		ItemStack[] contained = this.getContainedItems(stack);
+		return contained[20];
+	}
+	@Override
+	public boolean canAcceptShader(ItemStack stack, ItemStack shader)
+	{
+		return stack.getItemDamage()!=1;
+	}
+	
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void getSubItems(Item item, CreativeTabs tab, List list)

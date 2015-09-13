@@ -6,11 +6,6 @@ import cpw.mods.fml.common.event.FMLInterModComms;
 
 public class FMPHelper extends IECompatModule
 {
-	public FMPHelper()
-	{
-		super("ForgeMicroblock");
-	}
-
 	@Override
 	public void init()
 	{

@@ -7,11 +7,6 @@ import cpw.mods.fml.common.event.FMLInterModComms;
 
 public class BacktoolsHelper extends IECompatModule
 {
-	public BacktoolsHelper()
-	{
-		super("BackTools");
-	}
-
 	@Override
 	public void init()
 	{
