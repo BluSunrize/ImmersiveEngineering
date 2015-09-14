@@ -35,7 +35,7 @@ public class ItemBlockWoodenDecoration extends ItemBlockIEBase
 		{
 			int meta = stack.getItemDamage();
 			if(meta==0)
-				((EntityPlayer)ent).inventory.setInventorySlotContents(slot, new ItemStack(IEContent.blockTreatedWood));
+				((EntityPlayer)ent).inventory.setInventorySlotContents(slot, new ItemStack(IEContent.blockTreatedWood, stack.stackSize));
 		}
 	}
 
