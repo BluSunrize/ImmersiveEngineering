@@ -103,10 +103,12 @@ public class ItemRenderRevolver implements IItemRenderer
 						if(col==null||col.length<4)
 							col= new int[]{255,255,255,255};
 						
+						shaderItem.modifyRender(shader, item, obj.name, pass, true);
 						ClientUtils.tes().startDrawing(obj.glDrawingMode);
 						ClientUtils.tes().setColorRGBA(col[0], col[1], col[2], col[3]);
 						ClientUtils.tessellateWavefrontGroupObjectWithIconUVs(obj, ic);
 						ClientUtils.tes().draw();
+						shaderItem.modifyRender(shader, item, obj.name, pass, false);
 					}
 				}
 		}

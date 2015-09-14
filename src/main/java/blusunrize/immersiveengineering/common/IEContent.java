@@ -262,6 +262,7 @@ public class IEContent
 		//Ore Dict
 		registerToOreDict("ore", blockOres);
 		registerToOreDict("block", blockStorage, 0,1,2,3,4,5,6,7);
+		registerToOreDict("slab", blockStorageSlabs);
 		registerToOreDict("", itemMetal);
 		registerOre("Cupronickel",	null,new ItemStack(itemMetal,1,5),new ItemStack(itemMetal,1,15),new ItemStack(blockStorage,1,5),new ItemStack(itemMetal,1,27));
 

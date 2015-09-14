@@ -39,22 +39,26 @@ public class TileEntitySilo extends TileEntityMultiblockPart implements ISidedIn
 	@Override
 	public void updateEntity()
 	{
+		if(pos==4 && !worldObj.isRemote && this.outputStack==null && storageAmount>0 && identStack!=null)
+			this.markDirty();
+
 		if(pos==4 && !worldObj.isRemote && this.outputStack!=null && worldObj.isBlockIndirectlyGettingPowered(xCoord,yCoord,zCoord) && worldObj.getTotalWorldTime()%8==0)
-			for(int i=2; i<6; i++)
-			{
-				TileEntity inventoryFront = this.worldObj.getTileEntity(xCoord+(i==4?1:i==5?-1:0),yCoord,zCoord+(i==2?1:i==3?-1:0));
-				ItemStack stack = Utils.copyStackWithAmount(identStack,1);
-				if((inventoryFront instanceof ISidedInventory && ((ISidedInventory)inventoryFront).getAccessibleSlotsFromSide(ForgeDirection.OPPOSITES[i]).length>0)
-						||(inventoryFront instanceof IInventory && ((IInventory)inventoryFront).getSizeInventory()>0))
-					stack = Utils.insertStackIntoInventory((IInventory)inventoryFront, stack, ForgeDirection.OPPOSITES[i]);
-				if(stack==null)
+			for(int i=0; i<6; i++)
+				if(i!=1)
 				{
-					outputStack.stackSize--;
-					this.markDirty();
-					if(outputStack==null)
-						break;
+					TileEntity inventory = this.worldObj.getTileEntity(xCoord+(i==4?-1:i==5?1:0),yCoord+(i==0?-1:0),zCoord+(i==2?-1:i==3?1:0));
+					ItemStack stack = Utils.copyStackWithAmount(identStack,1);
+					if((inventory instanceof ISidedInventory && ((ISidedInventory)inventory).getAccessibleSlotsFromSide(ForgeDirection.OPPOSITES[i]).length>0)
+							||(inventory instanceof IInventory && ((IInventory)inventory).getSizeInventory()>0))
+						stack = Utils.insertStackIntoInventory((IInventory)inventory, stack, ForgeDirection.OPPOSITES[i]);
+					if(stack==null)
+					{
+						outputStack.stackSize--;
+						this.markDirty();
+						if(outputStack==null)
+							break;
+					}
 				}
-			}
 	}
 
 	@Override

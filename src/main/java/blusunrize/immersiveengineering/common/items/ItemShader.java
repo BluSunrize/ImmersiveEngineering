@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.common.items;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -26,14 +27,15 @@ public class ItemShader extends ItemIEBase implements IShaderItem
 	public ItemShader()
 	{
 		super("shader", 1);
-		addShader("Rosequartz", 0, new int[]{65,35,35,255}, new int[]{230,180,180,255}, new int[]{240,205,205,255});
-		addShader("Argo", 2, new int[]{45,45,45,255}, new int[]{220,220,220,255}, new int[]{220,120,35,255});
-		addShader("Sunstrike", 1, new int[]{115,115,115,255}, new int[]{205,105,0,255}, new int[]{215,58,0,185});
-		addShader("Locus", 2, new int[]{10,10,10,255}, new int[]{74,74,74,255}, new int[]{132,150,76,255});
-		addShader("Felix", 1, new int[]{10,10,10,255}, new int[]{74,74,74,255}, new int[]{240,136,3,255});
+		addShader("Rosequartz", 0, new int[]{65,35,35,255}, new int[]{230,180,180,255}, new int[]{240,205,205,255}, null);
+		addShader("Argo", 2, new int[]{45,45,45,255}, new int[]{220,220,220,255}, new int[]{220,120,35,255}, null);
+		addShader("Sunstrike", 1, new int[]{115,115,115,255}, new int[]{205,105,0,255}, new int[]{215,58,0,185}, null);
+		addShader("Locus", 2, new int[]{10,10,10,255}, new int[]{74,74,74,255}, new int[]{132,150,76,255}, null);
+		addShader("Felix", 1, new int[]{10,10,10,255}, new int[]{74,74,74,255}, new int[]{240,136,3,255}, null);
+		addShader("Dragon's Breath", 1, new int[]{25,25,25,255}, new int[]{51,63,43,255}, new int[]{138,138,138,255}, "immersiveengineering:shaders/revolver_shark");
 	}
 
-	public void addShader(String name, int overlayType, int[] colour0, int[] colour1, int[] colour2)
+	public void addShader(String name, int overlayType, int[] colour0, int[] colour1, int[] colour2, String additionalTexture)
 	{
 		NBTTagCompound tag = new NBTTagCompound();
 		tag.setString("shader_name", name);
@@ -41,6 +43,8 @@ public class ItemShader extends ItemIEBase implements IShaderItem
 		tag.setIntArray("shader_colour0", colour0);
 		tag.setIntArray("shader_colour1", colour1);
 		tag.setIntArray("shader_colour2", colour2);
+		if(additionalTexture!=null && !additionalTexture.isEmpty())
+			tag.setString("shader_extraTexture", additionalTexture);
 		IEApi.shaderList.add(tag);
 	}
 
@@ -122,10 +126,12 @@ public class ItemShader extends ItemIEBase implements IShaderItem
 	{
 		if(item.getItem() instanceof ItemRevolver)
 		{
+			int i = ItemNBTHelper.hasKey(shader, "shader_extraTexture")?1:0;
 			if(modelPart.equals("cosmetic_compensator") || modelPart.equals("player_bayonet")||modelPart.equals("dev_bayonet"))
-				return 1;
+				return 1+i;
 			if(modelPart.equals("bayonet_attachment") || modelPart.equals("player_mag")||modelPart.equals("dev_mag"))
-				return 2;
+				return 2+i;
+			return 3+i;
 		}
 		return 3;
 	}
@@ -135,7 +141,11 @@ public class ItemShader extends ItemIEBase implements IShaderItem
 	{
 		if(item.getItem() instanceof ItemRevolver)
 		{
-			int iOverlay = ItemNBTHelper.getInt(shader, "shader_overlay");
+			int maxPass = getPasses(shader, item, modelPart);
+			if(pass==maxPass-1 && ItemNBTHelper.hasKey(shader, "shader_extraTexture"))
+				return i_revolverAdditional.get(ItemNBTHelper.getString(shader, "shader_extraTexture"));
+
+			int iOverlay = 1;//ItemNBTHelper.getInt(shader, "shader_overlay");
 			switch(modelPart)
 			{
 			case "revolver_frame":
@@ -158,8 +168,6 @@ public class ItemShader extends ItemIEBase implements IShaderItem
 				return i_revolverBase;
 			}
 		}
-		//		if(pass==1)
-		//			return i_revolverShark;
 		return i_revolverBase;
 	}
 
@@ -211,7 +219,7 @@ public class ItemShader extends ItemIEBase implements IShaderItem
 	public IIcon[] i_revolverOverlay = new IIcon[3];
 	public IIcon i_revolverGrip;
 	public IIcon i_revolverUncoloured;
-	public IIcon i_revolverShark;
+	public HashMap<String,IIcon> i_revolverAdditional = new HashMap<String,IIcon>();
 	public void stichTextures(IIconRegister ir, int sheetID)
 	{
 		if(sheetID==IEApi.revolverTextureSheetID)
@@ -221,7 +229,14 @@ public class ItemShader extends ItemIEBase implements IShaderItem
 				i_revolverOverlay[i] = ir.registerIcon("immersiveengineering:shaders/revolver_1_"+i);
 			i_revolverGrip = ir.registerIcon("immersiveengineering:shaders/revolver_grip");
 			i_revolverUncoloured = ir.registerIcon("immersiveengineering:shaders/revolver_noColour");
-			i_revolverShark = ir.registerIcon("immersiveengineering:shaders/revolver_shark");
+			for(NBTTagCompound tag : IEApi.shaderList)
+				if(tag.hasKey("shader_extraTexture"))
+				{
+					String s = tag.getString("shader_extraTexture");
+					String sub = s.substring(s.lastIndexOf("/")+1);
+					if(sub.startsWith("revolver"))
+						i_revolverAdditional.put(s, ir.registerIcon(s));
+				}
 		}
 	}
 

@@ -122,7 +122,7 @@ public class BlockMetalDecoration extends BlockIEBase implements blusunrize.aqua
 			else
 				return ((TileEntityStructuralArm)world.getTileEntity(x,y,z)).facing==side.getOpposite().ordinal();
 		}
-		if(meta==META_radiator||meta==META_heavyEngineering||meta==META_generator||meta==META_lightEngineering)
+		if(meta==META_radiator||meta==META_heavyEngineering||meta==META_generator||meta==META_lightEngineering||meta==META_sheetMetal)
 			return true;
 		if(world.getTileEntity(x,y,z) instanceof TileEntityWallmount)
 		{
