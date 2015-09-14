@@ -13,6 +13,7 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.util.StatCollector;
+import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
@@ -756,7 +757,18 @@ public abstract class ManualPages implements IManualPage
 			else if(stack instanceof List && !((List)stack).isEmpty())
 			{
 				int perm = (int) (System.nanoTime()/1000000000 % ((List)stack).size());
-				return (ItemStack) ((List)stack).get(perm);
+				ItemStack itemStack = (ItemStack)((List)stack).get(perm);
+				if(itemStack.getItem().getHasSubtypes() && itemStack.getItemDamage()==OreDictionary.WILDCARD_VALUE)
+				{
+					ArrayList<ItemStack> list = new ArrayList<ItemStack>();
+					itemStack.getItem().getSubItems(itemStack.getItem(), itemStack.getItem().getCreativeTab(), list);
+					if(list.size()>0)
+					{
+						int i = (int)(System.nanoTime()/(1000000000/list.size()))%list.size();
+						return list.get(i);
+					}
+				}
+				return itemStack;
 			}
 			return null;
 		}

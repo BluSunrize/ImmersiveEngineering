@@ -75,13 +75,13 @@ public class VillageEngineersHouse extends StructureVillagePieces.Village
 		placeBlockAtCurrentPosition(world, Blocks.stone_stairs, stairMeta, 4,0,0, box);
 
 		//Pillars
-		this.fillWithBlocks(world, box, 1,1,3, 1,4,3, IEContent.blockWoodenDecoration, IEContent.blockWoodenDecoration, false);
-		this.fillWithBlocks(world, box, 1,1,8, 1,6,8, IEContent.blockWoodenDecoration, IEContent.blockWoodenDecoration, false);
-		this.fillWithBlocks(world, box, 9,1,3, 9,6,3, IEContent.blockWoodenDecoration, IEContent.blockWoodenDecoration, false);
-		this.fillWithBlocks(world, box, 9,1,8, 9,6,8, IEContent.blockWoodenDecoration, IEContent.blockWoodenDecoration, false);
-		this.fillWithBlocks(world, box, 1,4,3, 9,4,8, IEContent.blockWoodenDecoration, IEContent.blockWoodenDecoration, false);
-		this.fillWithBlocks(world, box, 6,5,3, 6,7,3, IEContent.blockWoodenDecoration, IEContent.blockWoodenDecoration, false);
-		this.fillWithBlocks(world, box, 1,5,5, 1,6,5, IEContent.blockWoodenDecoration, IEContent.blockWoodenDecoration, false);
+		this.fillWithBlocks(world, box, 1,1,3, 1,4,3, IEContent.blockTreatedWood, IEContent.blockTreatedWood, false);
+		this.fillWithBlocks(world, box, 1,1,8, 1,6,8, IEContent.blockTreatedWood, IEContent.blockTreatedWood, false);
+		this.fillWithBlocks(world, box, 9,1,3, 9,6,3, IEContent.blockTreatedWood, IEContent.blockTreatedWood, false);
+		this.fillWithBlocks(world, box, 9,1,8, 9,6,8, IEContent.blockTreatedWood, IEContent.blockTreatedWood, false);
+		this.fillWithBlocks(world, box, 1,4,3, 9,4,8, IEContent.blockTreatedWood, IEContent.blockTreatedWood, false);
+		this.fillWithBlocks(world, box, 6,5,3, 6,7,3, IEContent.blockTreatedWood, IEContent.blockTreatedWood, false);
+		this.fillWithBlocks(world, box, 1,5,5, 1,6,5, IEContent.blockTreatedWood, IEContent.blockTreatedWood, false);
 
 		this.fillWithBlocks(world, box, 2,4,5, 8,4,7, Blocks.air, Blocks.air, false);
 

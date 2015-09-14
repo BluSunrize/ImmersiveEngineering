@@ -5,12 +5,12 @@ import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import cpw.mods.fml.common.Loader;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.compat.hydcraft.HydCraftHelper;
 import blusunrize.immersiveengineering.common.util.compat.mfr.MFRHelper;
 import blusunrize.immersiveengineering.common.util.compat.minetweaker.MTHelper;
 import blusunrize.immersiveengineering.common.util.compat.waila.WailaHelper;
+import cpw.mods.fml.common.Loader;
 
 public abstract class IECompatModule
 {
@@ -30,6 +30,7 @@ public abstract class IECompatModule
 		moduleClasses.put("gregtech", GregTechHelper.class);
 		moduleClasses.put("HydCraft", HydCraftHelper.class);
 		moduleClasses.put("ThermalExpansion", TEHelper.class);
+		moduleClasses.put("chisel", ChiselHelper.class);
 	}
 
 	public static void preInit()

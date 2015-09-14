@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.effect.EntityLightningBolt;
@@ -53,10 +54,11 @@ public class TileEntityLightningRod extends TileEntityMultiblockPart implements 
 			if(fenceNet!=null && worldObj.getTotalWorldTime()%128==((xCoord^zCoord)&127) && ( worldObj.isThundering() || (worldObj.isRaining()&&worldObj.rand.nextInt(10)==0) ))
 			{
 				int i = this.height + this.fenceNet.size();
-				if(worldObj.rand.nextInt(4096*worldObj.getHeight())<i*(yCoord+i))
+				Random rand = new Random();
+				if(rand.nextInt(4096*worldObj.getHeight())<i*(yCoord+i))
 				{
 					this.energyStorage.setEnergyStored(Config.getInt("lightning_output"));
-					ChunkCoordinates cc = fenceNet.get(worldObj.rand.nextInt(fenceNet.size()));
+					ChunkCoordinates cc = fenceNet.get(rand.nextInt(fenceNet.size()));
 					EntityLightningBolt entityLightningBolt = new EntityLightningBolt(worldObj, cc.posX,cc.posY,cc.posZ);
 					worldObj.addWeatherEffect(entityLightningBolt);
 					worldObj.spawnEntityInWorld(entityLightningBolt);

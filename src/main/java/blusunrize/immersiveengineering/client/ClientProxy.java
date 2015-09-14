@@ -275,7 +275,7 @@ public class ClientProxy extends CommonProxy
 
 		ManualHelper.addEntry("treatedwood", ManualHelper.CAT_CONSTRUCTION,
 				new ManualPages.Text(ManualHelper.getManual(), "treatedwood0"), 
-				new ManualPages.Crafting(ManualHelper.getManual(), "", new ItemStack(IEContent.blockWoodenDecoration,1,0),new ItemStack(IEContent.blockWoodenDecoration,1,2),new ItemStack(IEContent.blockWoodenStair)),
+				new ManualPages.Crafting(ManualHelper.getManual(), "", new ItemStack(IEContent.blockTreatedWood,1,0),new ItemStack(IEContent.blockWoodenDecoration,1,2),new ItemStack(IEContent.blockWoodenStair)),
 				new ManualPages.Crafting(ManualHelper.getManual(), "", new ItemStack(IEContent.itemMaterial,1,0),new ItemStack(IEContent.blockWoodenDecoration,1,1),new ItemStack(IEContent.blockWoodenDecoration,1,6)),
 				new ManualPages.Crafting(ManualHelper.getManual(), "treatedwoodPost0", new ItemStack(IEContent.blockWoodenDevice,1,0)),
 				new ManualPages.Text(ManualHelper.getManual(), "treatedwoodPost1"));

@@ -139,6 +139,7 @@ public class IEContent
 	public static BlockIEBase blockMetalMultiblocks;
 	public static BlockIEBase blockWoodenDevice;
 	public static BlockIEBase blockWoodenDecoration;
+	public static BlockIEBase blockTreatedWood;
 	public static Block blockWoodenStair;
 	public static BlockIEBase blockStoneDevice;
 	public static BlockIEBase blockStoneDecoration;
@@ -179,6 +180,7 @@ public class IEContent
 		blockMetalMultiblocks = new BlockMetalMultiblocks();
 		blockWoodenDevice = new BlockWoodenDevices();
 		blockWoodenDecoration = new BlockWoodenDecoration();
+		blockTreatedWood = (BlockIEBase)new BlockIESimple("treatedWood",Material.wood,ItemBlockIEBase.class, "0","1","2").setHasFlavour(true).setHardness(2f).setResistance(5f);
 		blockWoodenStair = new BlockIEWoodenStairs();
 		blockStoneDevice = new BlockStoneDevices();
 		blockStoneDecoration = new BlockStoneDecoration();
@@ -269,8 +271,11 @@ public class IEContent
 		OreDictionary.registerOre("seedIndustrialHemp", new ItemStack(itemSeeds));
 		OreDictionary.registerOre("treatedStick", new ItemStack(itemMaterial,1,0));
 		OreDictionary.registerOre("fuelCoke", new ItemStack(itemMaterial,1,6));
+		OreDictionary.registerOre("plankTreatedWood", new ItemStack(blockTreatedWood,1,OreDictionary.WILDCARD_VALUE));
 		OreDictionary.registerOre("blockFuelCoke", new ItemStack(blockStoneDevice,1,3));
 		OreDictionary.registerOre("blockFuelCoke", new ItemStack(blockStoneDecoration,1,3));
+		OreDictionary.registerOre("concrete", new ItemStack(blockStoneDecoration,1,4));
+		OreDictionary.registerOre("concrete", new ItemStack(blockStoneDecoration,1,5));
 		OreDictionary.registerOre("itemSlag", new ItemStack(itemMaterial,1,13));
 		//Vanilla OreDict
 		OreDictionary.registerOre("bricksStone", new ItemStack(Blocks.stonebrick));

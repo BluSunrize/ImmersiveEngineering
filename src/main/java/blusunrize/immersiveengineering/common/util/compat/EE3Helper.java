@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.common.util.compat;
 
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.oredict.OreDictionary;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.IEContent;
 
@@ -35,7 +36,7 @@ public class EE3Helper extends IECompatModule
 		addValue(new ItemStack(IEContent.itemMaterial,1,6), 48);//Coke
 		addValue(new ItemStack(IEContent.itemMaterial,1,13), 1);//Slag
 
-		addValue(new ItemStack(IEContent.blockWoodenDecoration,1,0), 24);
+		addValue(new ItemStack(IEContent.blockTreatedWood,1,OreDictionary.WILDCARD_VALUE), 24);
 		addValue(new ItemStack(IEContent.blockStoneDevice,1,4), 265);//Insulated Glass
 
 		addValue(new ItemStack(IEContent.itemBullet,1,0), 213);//Casing

@@ -68,6 +68,10 @@ tile.ImmersiveEngineering.metalDecoration.sheetMetal.name=Sheet Metal Block
 tile.ImmersiveEngineering.metalDevice2.breakerSwitch.name=Breaker Switch
 tile.ImmersiveEngineering.metalDevice2.electricLantern.name=Powered Lantern
 
+tile.ImmersiveEngineering.treatedWood.0.name=Treated Wood Planks
+tile.ImmersiveEngineering.treatedWood.1.name=Treated Wood Planks
+tile.ImmersiveEngineering.treatedWood.2.name=Treated Wood Planks
+
 tile.ImmersiveEngineering.woodenDevice.post.name=Wooden Post
 tile.ImmersiveEngineering.woodenDevice.watermill.name=Water Wheel
 tile.ImmersiveEngineering.woodenDevice.windmill.name=Windmill
@@ -295,6 +299,9 @@ desc.ImmersiveEngineering.info.blueprint.electrode=Arc Furnace Electrodes
 
 desc.ImmersiveEngineering.info.electrodeIntegrity=Integrity
 
+desc.ImmersiveEngineering.flavour.treatedWood.0=Horizontal Planks
+desc.ImmersiveEngineering.flavour.treatedWood.1=Vertical Planks
+desc.ImmersiveEngineering.flavour.treatedWood.2=Packaged Planks
 desc.ImmersiveEngineering.flavour.crate=Will keep its inventory when broken!
 desc.ImmersiveEngineering.flavour.barrel=Will keep its fluid when broken!
 desc.ImmersiveEngineering.flavour.barrelTemp=Cannot store hot fluids
