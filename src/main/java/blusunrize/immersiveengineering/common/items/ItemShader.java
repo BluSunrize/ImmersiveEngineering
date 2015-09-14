@@ -145,7 +145,7 @@ public class ItemShader extends ItemIEBase implements IShaderItem
 			if(pass==maxPass-1 && ItemNBTHelper.hasKey(shader, "shader_extraTexture"))
 				return i_revolverAdditional.get(ItemNBTHelper.getString(shader, "shader_extraTexture"));
 
-			int iOverlay = 1;//ItemNBTHelper.getInt(shader, "shader_overlay");
+			int iOverlay = ItemNBTHelper.getInt(shader, "shader_overlay");
 			switch(modelPart)
 			{
 			case "revolver_frame":

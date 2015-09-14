@@ -53,7 +53,7 @@ public class TileEntityLightningRod extends TileEntityMultiblockPart implements 
 			if(fenceNet!=null && worldObj.getTotalWorldTime()%128==((xCoord^zCoord)&127) && ( worldObj.isThundering() || (worldObj.isRaining()&&worldObj.rand.nextInt(10)==0) ))
 			{
 				int i = this.height + this.fenceNet.size();
-				if (worldObj.rand.nextInt(4096*worldObj.getHeight())<i*(yCoord+i))
+				if(worldObj.rand.nextInt(4096*worldObj.getHeight())<i*(yCoord+i))
 				{
 					this.energyStorage.setEnergyStored(Config.getInt("lightning_output"));
 					ChunkCoordinates cc = fenceNet.get(worldObj.rand.nextInt(fenceNet.size()));

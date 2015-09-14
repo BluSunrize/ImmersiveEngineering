@@ -187,7 +187,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 			ConcurrentSkipListSet<AbstractConnection> outputs = ImmersiveNetHandler.INSTANCE.getIndirectEnergyConnections(Utils.toCC(this), worldObj);
 			int powerLeft = Math.min(Math.min(getMaxOutput(),getMaxInput()), energy);
 			final int powerForSort = powerLeft;
-			
+
 			IELogger.debug("");
 			IELogger.debug("Sending power: "+powerLeft+" at "+xCoord+","+yCoord+","+zCoord);
 			if(outputs.size()<1)
@@ -215,7 +215,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 					{
 						//					int output = powerLeft/outputs.size();
 						float prio = powerSorting.get(con)/(float)sum;
-						int output = (int)(powerLeft*prio);
+						int output = (int)(powerForSort*prio);
 
 						int tempR = toIIC(con.end,worldObj).outputEnergy(Math.min(output,con.cableType.getTransferRate()), true, energyType);
 						int r = tempR;
@@ -233,7 +233,8 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 								IELogger.debug("Okay, this wire is HAWT.");
 								IELogger.debug("Or at least hotter than "+sub.cableType.getTransferRate());
 							}
-							ImmersiveNetHandler.INSTANCE.transferPerTick.put(sub,transferredPerCon);
+							if(!simulate)
+								ImmersiveNetHandler.INSTANCE.transferPerTick.put(sub,transferredPerCon);
 						}
 						received += r;
 						powerLeft -= r;
