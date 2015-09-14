@@ -311,7 +311,7 @@ public class ImmersiveNetHandler
 			@Override
 			public int compare(AbstractConnection c0, AbstractConnection c1)
 			{
-				return c0.compare(c1);
+				return c0.compareTo(c1);
 			}
 		});
 		List<ChunkCoordinates> checked = new ArrayList<ChunkCoordinates>();
@@ -457,21 +457,17 @@ public class ImmersiveNetHandler
 				return new Connection(start,end, type, tag.getInteger("length"));
 			return null;
 		}
-		public int compare(Connection con)
-		{
-			if(con==null||con.cableType==null||cableType==null)
-				return 0;
-			int distComp = Integer.compare(length, con.length);
-			int cableComp = -1*Integer.compare(cableType.getTransferRate(), con.cableType.getTransferRate());
-			if(distComp==0)
-				return cableComp;
-			return distComp;
-		}
 
 		@Override
 		public int compareTo(Connection o) {
 			if (equals(o))
 				return 0;
+			int distComp = Integer.compare(length, o.length);
+			int cableComp = -1*Integer.compare(cableType.getTransferRate(), o.cableType.getTransferRate());
+			if(cableComp!=0)
+				return cableComp;
+			if (distComp!=0)
+				return distComp;
 			if (start.posX!=o.start.posX)
 				return start.posX>o.start.posX?1:-1;
 			if (start.posY!=o.start.posY)
