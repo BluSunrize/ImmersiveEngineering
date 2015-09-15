@@ -76,6 +76,11 @@ public class BlockStoneDecoration extends BlockIEBase
 	}
 
 	@Override
+    public boolean hasTileEntity(int meta)
+    {
+        return false;
+    }
+	@Override
 	public TileEntity createNewTileEntity(World world, int meta)
 	{
 		return null;

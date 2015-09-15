@@ -438,7 +438,6 @@ public class BlockWoodenDevices extends BlockIEBase implements blusunrize.aquatw
 	}
 
 
-
 	@Override
 	public TileEntity createNewTileEntity(World world, int meta)
 	{

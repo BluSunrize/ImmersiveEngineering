@@ -267,6 +267,11 @@ public class BlockMetalDecoration extends BlockIEBase implements blusunrize.aqua
 	}
 
 	@Override
+    public boolean hasTileEntity(int meta)
+    {
+        return meta==META_lantern||meta==META_structuralArm||meta==META_connectorStructural||meta==META_wallMount;
+    }
+	@Override
 	public TileEntity createNewTileEntity(World world, int meta)
 	{
 		if(meta==META_lantern)

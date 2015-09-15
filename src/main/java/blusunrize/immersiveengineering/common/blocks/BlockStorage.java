@@ -51,7 +51,12 @@ public class BlockStorage extends BlockIEBase
 	{
 		return true;
 	}
-
+	
+	@Override
+    public boolean hasTileEntity(int meta)
+    {
+        return false;
+    }
 	@Override
 	public TileEntity createNewTileEntity(World p_149915_1_, int p_149915_2_)
 	{

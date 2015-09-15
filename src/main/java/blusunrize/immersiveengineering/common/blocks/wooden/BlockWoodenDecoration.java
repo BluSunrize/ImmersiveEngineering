@@ -209,6 +209,11 @@ public class BlockWoodenDecoration extends BlockIEBase implements blusunrize.aqu
 	}
 
 	@Override
+    public boolean hasTileEntity(int meta)
+    {
+        return meta==6;
+    }
+	@Override
 	public TileEntity createNewTileEntity(World world, int meta)
 	{
 		switch(meta)
