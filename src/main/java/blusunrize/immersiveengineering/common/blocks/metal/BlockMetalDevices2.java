@@ -38,7 +38,7 @@ public class BlockMetalDevices2 extends BlockIEBase implements blusunrize.aquatw
 	public BlockMetalDevices2()
 	{
 		super("metalDevice2", Material.iron, 1, ItemBlockMetalDevices2.class,
-				"breakerSwitch","skycrateDispenser","energyMeter","electricLantern","floodlight");
+				"breakerSwitch","skycrateDispenser","energyMeter","electricLantern","floodLight");
 		setHardness(3.0F);
 		setResistance(15.0F);
 	}
