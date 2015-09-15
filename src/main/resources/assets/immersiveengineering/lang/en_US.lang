@@ -67,6 +67,7 @@ tile.ImmersiveEngineering.metalDecoration.sheetMetal.name=Sheet Metal Block
 
 tile.ImmersiveEngineering.metalDevice2.breakerSwitch.name=Breaker Switch
 tile.ImmersiveEngineering.metalDevice2.electricLantern.name=Powered Lantern
+tile.ImmersiveEngineering.metalDevice2.floodLight.name=Floodlight
 
 tile.ImmersiveEngineering.treatedWood.0.name=Treated Wood Planks
 tile.ImmersiveEngineering.treatedWood.1.name=Treated Wood Planks
