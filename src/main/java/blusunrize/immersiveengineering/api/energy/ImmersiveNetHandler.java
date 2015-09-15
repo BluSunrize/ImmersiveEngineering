@@ -307,13 +307,7 @@ public class ImmersiveNetHandler
 			return indirectConnections.get(node);
 
 		List<IImmersiveConnectable> openList = new ArrayList<IImmersiveConnectable>();
-		ConcurrentSkipListSet<AbstractConnection> closedList = new ConcurrentSkipListSet<AbstractConnection>(new Comparator<AbstractConnection>() {
-			@Override
-			public int compare(AbstractConnection c0, AbstractConnection c1)
-			{
-				return c0.compareTo(c1);
-			}
-		});
+		ConcurrentSkipListSet<AbstractConnection> closedList = new ConcurrentSkipListSet<AbstractConnection>();
 		List<ChunkCoordinates> checked = new ArrayList<ChunkCoordinates>();
 		HashMap<ChunkCoordinates,ChunkCoordinates> backtracker = new HashMap<ChunkCoordinates,ChunkCoordinates>();
 
@@ -460,8 +454,9 @@ public class ImmersiveNetHandler
 
 		@Override
 		public int compareTo(Connection o) {
-			if (equals(o))
-				return 0;
+			//this is not consistant with equals any more, but saving to nbt does not work otherwise
+//			if (equals(o))
+//				return 0;
 			int distComp = Integer.compare(length, o.length);
 			int cableComp = -1*Integer.compare(cableType.getTransferRate(), o.cableType.getTransferRate());
 			if(cableComp!=0)
@@ -479,8 +474,7 @@ public class ImmersiveNetHandler
 			if (end.posY!=o.end.posY)
 				return end.posY>o.end.posY?1:-1;
 			if (end.posZ!=o.end.posZ)
-				return end.posZ>o.end.posZ?1:-1;	
-			//This should not happen, since equals(o) is true in this case
+				return end.posZ>o.end.posZ?1:-1;
 			return 0;
 		}
 	}
