@@ -7,7 +7,6 @@ import static blusunrize.immersiveengineering.api.ApiUtils.toIIC;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -31,16 +30,22 @@ public class ImmersiveNetHandler
 	public static ImmersiveNetHandler INSTANCE;
 	public ConcurrentHashMap<Integer, ConcurrentHashMap<ChunkCoordinates, ConcurrentSkipListSet<Connection>>> directConnections = new ConcurrentHashMap<Integer, ConcurrentHashMap<ChunkCoordinates, ConcurrentSkipListSet<Connection>>>();
 	public ConcurrentHashMap<ChunkCoordinates, ConcurrentSkipListSet<AbstractConnection>> indirectConnections = new ConcurrentHashMap<ChunkCoordinates, ConcurrentSkipListSet<AbstractConnection>>();
-	public HashMap<Connection, Integer> transferPerTick = new HashMap<Connection, Integer>();
+	public HashMap<Integer, HashMap<Connection, Integer>> transferPerTick = new HashMap<Integer, HashMap<Connection,Integer>>();
 
 	private ConcurrentHashMap<ChunkCoordinates, ConcurrentSkipListSet<Connection>> getMultimap(int dimension)
 	{
-		if(directConnections.get(dimension)==null)
+		if (directConnections.get(dimension) == null)
 		{
 			ConcurrentHashMap<ChunkCoordinates, ConcurrentSkipListSet<Connection>> mm = new ConcurrentHashMap<ChunkCoordinates, ConcurrentSkipListSet<Connection>>();
 			directConnections.put(dimension, mm);
 		}
 		return directConnections.get(dimension);
+	}
+	public HashMap<Connection, Integer> getTransferedRates(int dimension)
+	{
+		if (!transferPerTick.containsKey(dimension))
+			transferPerTick.put(dimension, new HashMap<Connection,Integer>());
+		return transferPerTick.get(dimension);
 	}
 
 	public void addConnection(World world, ChunkCoordinates node, ChunkCoordinates connection, int distance, WireType cableType)
@@ -78,7 +83,7 @@ public class ImmersiveNetHandler
 			while(it.hasNext())
 			{
 				Connection itCon = it.next();
-				if(con.equals(itCon))
+				if(con.hasSameConnectors(itCon))
 				{
 					it.remove();
 					IImmersiveConnectable iic = toIIC(itCon.end, world);
@@ -94,10 +99,10 @@ public class ImmersiveNetHandler
 						world.addBlockEvent(itCon.end.posX, itCon.end.posY, itCon.end.posZ, world.getBlock(itCon.end.posX,itCon.end.posY,itCon.end.posZ),-1,0);
 				}
 			}
-			if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
-				indirectConnections.clear();
-			IESaveData.setDirty(world.provider.dimensionId);
 		}
+		if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
+			indirectConnections.clear();
+		IESaveData.setDirty(world.provider.dimensionId);
 	}
 	public Set<Integer> getRelevantDimensions()
 	{
@@ -396,6 +401,15 @@ public class ImmersiveNetHandler
 			this.length=length;
 		}
 
+		public boolean hasSameConnectors(Connection o) {
+			if(!(o instanceof Connection))
+				return false;
+			Connection con = (Connection)o;
+			boolean n0 = start.equals(con.start)&&end.equals(con.end);
+			boolean n1  =start.equals(con.end)&&end.equals(con.start);
+			return n0||n1;
+		}
+
 		public Vec3[] getSubVertices(World world)
 		{
 			if(catenaryVertices==null)
@@ -411,17 +425,6 @@ public class ImmersiveNetHandler
 				catenaryVertices = getConnectionCatenary(this, vStart, vEnd);
 			}
 			return catenaryVertices;
-		}
-
-		@Override
-		public boolean equals(Object o)
-		{
-			if(!(o instanceof Connection))
-				return false;
-			Connection con = (Connection)o;
-			boolean n0 = start.equals(con.start)&&end.equals(con.end);
-			boolean n1  =start.equals(con.end)&&end.equals(con.start);
-			return n0||n1;
 		}
 
 		public NBTTagCompound writeToNBT()
@@ -453,10 +456,10 @@ public class ImmersiveNetHandler
 		}
 
 		@Override
-		public int compareTo(Connection o) {
-			//this is not consistant with equals any more, but saving to nbt does not work otherwise
-//			if (equals(o))
-//				return 0;
+		public int compareTo(Connection o)
+		{
+			if (equals(o))
+				return 0;
 			int distComp = Integer.compare(length, o.length);
 			int cableComp = -1*Integer.compare(cableType.getTransferRate(), o.cableType.getTransferRate());
 			if(cableComp!=0)
