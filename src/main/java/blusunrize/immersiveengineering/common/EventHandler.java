@@ -93,9 +93,9 @@ public class EventHandler
 	@SubscribeEvent
 	public void onWorldTick(WorldTickEvent event)
 	{
-		if(event.phase==TickEvent.Phase.END && FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER)
+		if(event.phase==TickEvent.Phase.START && FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER)
 		{
-			for(Map.Entry<Connection, Integer> e : ImmersiveNetHandler.INSTANCE.transferPerTick.entrySet())
+			for(Map.Entry<Connection, Integer> e : ImmersiveNetHandler.INSTANCE.getTransferPerTick(event.world.provider.dimensionId).entrySet())
 				if(e.getValue()>e.getKey().cableType.getTransferRate())
 				{
 					if(event.world instanceof WorldServer)
@@ -103,7 +103,7 @@ public class EventHandler
 							((WorldServer)event.world).func_147487_a("flame", vec.xCoord,vec.yCoord,vec.zCoord, 0, 0,.02,0, 1);
 					ImmersiveNetHandler.INSTANCE.removeConnection(event.world, e.getKey());
 				}
-			ImmersiveNetHandler.INSTANCE.transferPerTick.clear();
+			ImmersiveNetHandler.INSTANCE.getTransferPerTick(event.world.provider.dimensionId).clear();
 		}
 	}
 
