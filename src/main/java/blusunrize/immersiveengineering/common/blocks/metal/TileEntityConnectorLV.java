@@ -224,7 +224,8 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 						for(Connection sub : con.subConnections)
 						{
 							IELogger.debug("Sub Con"+sub.start+" to "+sub.end);
-							int transferredPerCon = ImmersiveNetHandler.INSTANCE.transferPerTick.containsKey(sub)?ImmersiveNetHandler.INSTANCE.transferPerTick.get(sub):0;
+							int transferredPerCon = ImmersiveNetHandler.INSTANCE.getTransferPerTick(this.worldObj.provider.dimensionId).containsKey(sub)?
+									ImmersiveNetHandler.INSTANCE.getTransferPerTick(this.worldObj.provider.dimensionId).get(sub):0;
 							IELogger.debug("old t "+transferredPerCon);
 							transferredPerCon += r;
 							IELogger.debug("new t "+transferredPerCon);
@@ -234,7 +235,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 								IELogger.debug("Or at least hotter than "+sub.cableType.getTransferRate());
 							}
 							if(!simulate)
-								ImmersiveNetHandler.INSTANCE.transferPerTick.put(sub,transferredPerCon);
+								ImmersiveNetHandler.INSTANCE.getTransferPerTick(this.worldObj.provider.dimensionId).put(sub,transferredPerCon);
 						}
 						received += r;
 						powerLeft -= r;

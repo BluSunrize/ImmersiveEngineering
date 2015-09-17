@@ -31,7 +31,14 @@ public class ImmersiveNetHandler
 	public static ImmersiveNetHandler INSTANCE;
 	public ConcurrentHashMap<Integer, ConcurrentHashMap<ChunkCoordinates, ConcurrentSkipListSet<Connection>>> directConnections = new ConcurrentHashMap<Integer, ConcurrentHashMap<ChunkCoordinates, ConcurrentSkipListSet<Connection>>>();
 	public ConcurrentHashMap<ChunkCoordinates, ConcurrentSkipListSet<AbstractConnection>> indirectConnections = new ConcurrentHashMap<ChunkCoordinates, ConcurrentSkipListSet<AbstractConnection>>();
-	public HashMap<Connection, Integer> transferPerTick = new HashMap<Connection, Integer>();
+	private HashMap<Integer, HashMap<Connection, Integer>> transferPerTick = new HashMap<Integer, HashMap<Connection, Integer>>();
+	
+	public HashMap<Connection, Integer> getTransferPerTick(int dimension){
+		if(!transferPerTick.containsKey(dimension)){
+			transferPerTick.put(dimension, new HashMap<Connection, Integer>());
+		}
+		return transferPerTick.get(dimension);
+	}
 
 	private ConcurrentHashMap<ChunkCoordinates, ConcurrentSkipListSet<Connection>> getMultimap(int dimension)
 	{
@@ -94,10 +101,10 @@ public class ImmersiveNetHandler
 						world.addBlockEvent(itCon.end.posX, itCon.end.posY, itCon.end.posZ, world.getBlock(itCon.end.posX,itCon.end.posY,itCon.end.posZ),-1,0);
 				}
 			}
-			if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
-				indirectConnections.clear();
-			IESaveData.setDirty(world.provider.dimensionId);
 		}
+		if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
+			indirectConnections.clear();
+		IESaveData.setDirty(world.provider.dimensionId);
 	}
 	public Set<Integer> getRelevantDimensions()
 	{
