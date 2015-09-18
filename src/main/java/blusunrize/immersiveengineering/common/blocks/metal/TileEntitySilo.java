@@ -11,13 +11,14 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.oredict.OreDictionary;
+import powercrystals.minefactoryreloaded.api.IDeepStorageUnit;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.util.Utils;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class TileEntitySilo extends TileEntityMultiblockPart implements ISidedInventory
+public class TileEntitySilo extends TileEntityMultiblockPart implements ISidedInventory, IDeepStorageUnit
 {
 	public ItemStack identStack;
 	public int storageAmount = 0;
@@ -336,5 +337,39 @@ public class TileEntitySilo extends TileEntityMultiblockPart implements ISidedIn
 	public double getMaxRenderDistanceSquared()
 	{
 		return super.getMaxRenderDistanceSquared()*Config.getDouble("increasedTileRenderdistance");
+	}
+
+	//DEEP STORAGE
+	@Override
+	public ItemStack getStoredItemType()
+	{
+		if(this.identStack != null)
+			return Utils.copyStackWithAmount(identStack, storageAmount);
+		return null;
+	}
+
+	@Override
+	public void setStoredItemCount(int amount)
+	{
+		if(amount > maxStorage)
+			amount = maxStorage;
+		this.storageAmount = amount;
+		this.markDirty();
+	}
+
+	@Override
+	public void setStoredItemType(ItemStack type, int amount)
+	{
+		this.identStack = Utils.copyStackWithAmount(identStack, 0);
+		if(amount > maxStorage)
+			amount = maxStorage;
+		this.storageAmount = amount;
+		this.markDirty();
+	}
+
+	@Override
+	public int getMaxStoredCount()
+	{
+		return maxStorage;
 	}
 }
