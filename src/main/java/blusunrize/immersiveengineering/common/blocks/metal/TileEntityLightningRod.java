@@ -87,10 +87,10 @@ public class TileEntityLightningRod extends TileEntityMultiblockPart implements 
 		ArrayList<ChunkCoordinates> openList = new ArrayList();
 		ArrayList<ChunkCoordinates> closedList = new ArrayList();
 		openList.add(new ChunkCoordinates(xCoord,yCoord+this.height,zCoord));
-		while(!openList.isEmpty() && closedList.size()<1024)
+		while(!openList.isEmpty() && closedList.size()<256)
 		{
 			ChunkCoordinates next = openList.get(0);
-			if(worldObj.getBlock(next.posX,next.posY,next.posZ).equals(IEContent.blockMetalDecoration) && worldObj.getBlockMetadata(next.posX,next.posY,next.posZ)==0)
+			if(!closedList.contains(next) && worldObj.getBlock(next.posX,next.posY,next.posZ).equals(IEContent.blockMetalDecoration) && worldObj.getBlockMetadata(next.posX,next.posY,next.posZ)==0)
 			{
 				closedList.add(next);
 				openList.add(new ChunkCoordinates(next.posX+1,next.posY,next.posZ));
