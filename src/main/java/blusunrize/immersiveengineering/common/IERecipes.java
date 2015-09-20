@@ -25,6 +25,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalMultiblocks
 import blusunrize.immersiveengineering.common.crafting.RecipePotionBullets;
 import blusunrize.immersiveengineering.common.crafting.RecipeRevolver;
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.compat.NetherOresHelper;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.registry.GameRegistry;
 
@@ -384,7 +385,7 @@ public class IERecipes
 		if(!OreDictionary.getOres("ore"+ore).isEmpty())
 			addCrusherRecipe(output, "ore"+ore, energy, secondary,secChance);
 		if(!OreDictionary.getOres("oreNether"+ore).isEmpty())
-			addCrusherRecipe(Utils.copyStackWithAmount(output, output.stackSize*2), "oreNether"+ore, energy, secondary,secChance,Blocks.netherrack,.15f);
+			addCrusherRecipe(Utils.copyStackWithAmount(output, NetherOresHelper.getCrushingResult(ore)), "oreNether"+ore, energy, secondary,secChance,Blocks.netherrack,.15f);
 
 		//YAY GregTech!
 		if(!OreDictionary.getOres("oreNetherrack"+ore).isEmpty())
@@ -408,7 +409,7 @@ public class IERecipes
 		if(!OreDictionary.getOres("ingot"+ore).isEmpty())
 			addCrusherRecipe(Utils.copyStackWithAmount(dust, 1), "ingot"+ore, 2400);
 		if(!OreDictionary.getOres("oreNether"+ore).isEmpty())
-			addCrusherRecipe(Utils.copyStackWithAmount(dust, 4), "oreNether"+ore, 4000, secondary,chance, new ItemStack(Blocks.netherrack),.15f);
+			addCrusherRecipe(Utils.copyStackWithAmount(dust, NetherOresHelper.getCrushingResult(ore)), "oreNether"+ore, 4000, secondary,chance,Blocks.netherrack,.15f);
 
 		//YAY GregTech!
 		if(!OreDictionary.getOres("oreNetherrack"+ore).isEmpty())
