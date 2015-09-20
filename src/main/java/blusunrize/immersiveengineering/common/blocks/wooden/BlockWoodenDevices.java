@@ -89,6 +89,16 @@ public class BlockWoodenDevices extends BlockIEBase implements blusunrize.aquatw
 	}
 
 	@Override
+	public boolean isOpaqueCube()
+	{
+		return false;
+	}
+	@Override
+	public boolean renderAsNormalBlock()
+	{
+		return false;
+	}
+	@Override
 	public int getRenderType()
 	{
 		return BlockRenderWoodenDevices.renderID;

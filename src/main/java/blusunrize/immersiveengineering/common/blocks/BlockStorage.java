@@ -41,16 +41,6 @@ public class BlockStorage extends BlockIEBase
 	{
 		return true;
 	}
-	@Override
-	public boolean isOpaqueCube()
-	{
-		return true;
-	}
-	@Override
-	public boolean renderAsNormalBlock()
-	{
-		return true;
-	}
 	
 	@Override
     public boolean hasTileEntity(int meta)

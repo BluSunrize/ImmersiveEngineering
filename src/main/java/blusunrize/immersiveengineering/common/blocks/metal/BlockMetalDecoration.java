@@ -51,6 +51,16 @@ public class BlockMetalDecoration extends BlockIEBase implements blusunrize.aqua
 	}
 
 	@Override
+	public boolean isOpaqueCube()
+	{
+		return false;
+	}
+	@Override
+	public boolean renderAsNormalBlock()
+	{
+		return false;
+	}
+	@Override
 	public int getRenderType()
 	{
 		return BlockRenderMetalDecoration.renderID;

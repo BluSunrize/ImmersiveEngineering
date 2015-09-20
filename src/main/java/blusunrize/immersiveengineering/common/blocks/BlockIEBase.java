@@ -90,17 +90,6 @@ public abstract class BlockIEBase extends BlockContainer
 	{
 		return false;
 	}
-	@Override
-	public boolean isOpaqueCube()
-	{
-		return false;
-	}
-	
-	@Override
-	public boolean renderAsNormalBlock()
-	{
-		return false;
-	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
@@ -233,21 +222,6 @@ public abstract class BlockIEBase extends BlockContainer
 		public BlockIESimple(String name, Material mat, Class<? extends ItemBlockIEBase> itemBlock, String... subNames)
 		{
 			super(name, mat, 1, itemBlock, subNames);
-		}
-		@Override
-		public boolean canCreatureSpawn(EnumCreatureType type, IBlockAccess world, int x, int y, int z)
-		{
-			return true;
-		}
-		@Override
-		public boolean isOpaqueCube()
-		{
-			return true;
-		}
-		@Override
-		public boolean renderAsNormalBlock()
-		{
-			return true;
 		}
 
 		@Override

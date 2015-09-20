@@ -35,18 +35,6 @@ public class BlockStoneDecoration extends BlockIEBase
 	}
 
 	@Override
-	public boolean isOpaqueCube()
-	{
-		return true;
-	}
-	
-	@Override
-	public boolean renderAsNormalBlock()
-	{
-		return true;
-	}
-
-	@Override
 	public void onEntityCollidedWithBlock(World world, int x, int y, int z, Entity ent)
 	{
 //		if(world.getBlockMetadata(x, y, z)==5)

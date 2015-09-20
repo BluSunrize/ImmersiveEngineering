@@ -40,15 +40,19 @@ public class BlockWoodenDecoration extends BlockIEBase implements blusunrize.aqu
 	}
 
 	@Override
-	public int getRenderType()
+	public boolean isOpaqueCube()
 	{
-		return BlockRenderWoodenDecoration.renderID;
+		return false;
 	}
-
 	@Override
 	public boolean renderAsNormalBlock()
 	{
 		return false;
+	}
+	@Override
+	public int getRenderType()
+	{
+		return BlockRenderWoodenDecoration.renderID;
 	}
 
 	@Override

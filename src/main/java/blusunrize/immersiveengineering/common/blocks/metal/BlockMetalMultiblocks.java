@@ -130,6 +130,16 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 		return super.getIcon(world, x, y, z, side);
 	}
 	@Override
+	public boolean isOpaqueCube()
+	{
+		return false;
+	}
+	@Override
+	public boolean renderAsNormalBlock()
+	{
+		return false;
+	}
+	@Override
 	public int getRenderType()
 	{
 		return BlockRenderMetalMultiblocks.renderID;
