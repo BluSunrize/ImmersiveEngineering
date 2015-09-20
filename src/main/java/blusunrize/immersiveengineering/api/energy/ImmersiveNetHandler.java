@@ -179,7 +179,8 @@ public class ImmersiveNetHandler
 						double dx = node.posX+.5+Math.signum(con.start.posX-con.end.posX);
 						double dy = node.posY+.5+Math.signum(con.start.posY-con.end.posY);
 						double dz = node.posZ+.5+Math.signum(con.start.posZ-con.end.posZ);
-						world.spawnEntityInWorld(new EntityItem(world, dx,dy,dz, con.cableType.getWireCoil()));
+						if(world.getGameRules().getGameRuleBooleanValue("doTileDrops"))
+							world.spawnEntityInWorld(new EntityItem(world, dx,dy,dz, con.cableType.getWireCoil()));
 						if(world.blockExists(con.start.posX,con.start.posY,con.start.posZ))
 							world.addBlockEvent(con.start.posX, con.start.posY, con.start.posZ, world.getBlock(con.start.posX,con.start.posY,con.start.posZ),-1,0);
 					}
@@ -224,7 +225,8 @@ public class ImmersiveNetHandler
 							double dx = node.posX+.5+Math.signum(con.start.posX-con.end.posX);
 							double dy = node.posY+.5+Math.signum(con.start.posY-con.end.posY);
 							double dz = node.posZ+.5+Math.signum(con.start.posZ-con.end.posZ);
-							world.spawnEntityInWorld(new EntityItem(world, dx,dy,dz, con.cableType.getWireCoil()));
+							if(world.getGameRules().getGameRuleBooleanValue("doTileDrops"))
+								world.spawnEntityInWorld(new EntityItem(world, dx,dy,dz, con.cableType.getWireCoil()));
 							if(world.blockExists(con.start.posX,con.start.posY,con.start.posZ))
 								world.addBlockEvent(con.start.posX, con.start.posY, con.start.posZ, world.getBlock(con.start.posX,con.start.posY,con.start.posZ),-1,0);
 						}
@@ -496,7 +498,7 @@ public class ImmersiveNetHandler
 			float f = 0;
 			for(Connection c : subConnections)
 				f += (c.length/(float)c.cableType.getMaxLength())*c.cableType.getLossRatio();
-			return f;
+			return Math.min(f,1);
 		}
 	}
 }

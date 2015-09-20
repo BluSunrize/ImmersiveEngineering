@@ -278,7 +278,7 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 				return side == ForgeDirection.UP;
 			else if(tile.pos==36||tile.pos==38)
 				return true;
-			else if(tile.pos==21)
+			else if((tile.pos==21&&!tile.master().mirrored) || (tile.pos==23&&tile.master().mirrored))
 				return true;
 		}
 		if(world.getTileEntity(x, y, z) instanceof TileEntityRefinery)

@@ -46,7 +46,7 @@ public class BlockIESlabs extends BlockIEBase
 	@Override
 	public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z, boolean willHarvest)
 	{
-		if(world.getTileEntity(x, y, z) instanceof TileEntityIESlab && !player.capabilities.isCreativeMode && willHarvest)
+		if(world.getTileEntity(x, y, z) instanceof TileEntityIESlab && !player.capabilities.isCreativeMode && willHarvest && world.getGameRules().getGameRuleBooleanValue("doTileDrops"))
 		{
 			EntityItem drop = new EntityItem(world,x+.5,y+.5,z+.5, new ItemStack(this, ((TileEntityIESlab)world.getTileEntity(x,y,z)).slabType==2?2:1 ,world.getBlockMetadata(x,y,z)));
 			if(!world.isRemote)
