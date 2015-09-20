@@ -14,7 +14,7 @@ import cofh.api.energy.IEnergyReceiver;
 
 public class TileEntityFurnaceHeater extends TileEntityIEBase implements IEnergyReceiver
 {
-	public EnergyStorage energyStorage = new EnergyStorage(32000,256);
+	public EnergyStorage energyStorage = new EnergyStorage(32000,Math.max(256, Math.max(Config.getInt("heater_consumption"),Config.getInt("heater_speedupConsumption"))));
 	public int[] sockets = new int[6];
 	public boolean active = false;
 
