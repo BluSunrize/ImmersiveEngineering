@@ -1,12 +1,8 @@
 package blusunrize.immersiveengineering.client;
 
-import java.awt.image.BufferedImage;
-import java.net.URL;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-
-import javax.imageio.ImageIO;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -14,7 +10,6 @@ import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -58,6 +53,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOve
 import blusunrize.immersiveengineering.common.gui.ContainerRevolver;
 import blusunrize.immersiveengineering.common.items.ItemDrill;
 import blusunrize.immersiveengineering.common.items.ItemRevolver;
+import blusunrize.immersiveengineering.common.items.ItemShader;
 import blusunrize.immersiveengineering.common.items.ItemSkyhook;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
@@ -93,6 +89,7 @@ public class ClientEventHandler
 			IELogger.info("Stitching Revolver Textures!");
 			((ItemRevolver)IEContent.itemRevolver).stichRevolverTextures(event.map);
 		}
+		((ItemShader)IEContent.itemShader).stichTextures(event.map, event.map.getTextureType());
 	}
 	@SubscribeEvent()
 	public void textureStich(TextureStitchEvent.Post event)
@@ -102,24 +99,24 @@ public class ClientEventHandler
 			WavefrontObject model = modelIE.rebindModel();
 			rebindUVsToIcon(model, modelIE.getBlockIcon());
 		}
-
-		if(event.map.getTextureType()==Config.getInt("revolverSheetID"))
-		{
-			try {
-				IELogger.debug("TEST-udafe");
-				TextureAtlasSprite tal = (TextureAtlasSprite)event.map.registerIcon("immersiveengineering:revolver");
-				URL url = new URL("http://i.imgur.com/bU3bEDe.png");
-				BufferedImage img = ImageIO.read(url);
-				IELogger.debug("url = "+url);
-				IELogger.debug("img = "+img);
-				IELogger.debug("Loading sprite");
-				tal.loadSprite(new BufferedImage[]{img}, null, false);
-				IELogger.debug("sprite loaded");
-				((ItemRevolver)IEContent.itemRevolver).revolverDefaultTexture=tal;
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
+//
+//		if(event.map.getTextureType()==Config.getInt("revolverSheetID"))
+//		{
+//			try {
+//				IELogger.debug("TEST-udafe");
+//				TextureAtlasSprite tal = (TextureAtlasSprite)event.map.registerIcon("immersiveengineering:revolver");
+//				URL url = new URL("http://i.imgur.com/bU3bEDe.png");
+//				BufferedImage img = ImageIO.read(url);
+//				IELogger.debug("url = "+url);
+//				IELogger.debug("img = "+img);
+//				IELogger.debug("Loading sprite");
+//				tal.loadSprite(new BufferedImage[]{img}, null, false);
+//				IELogger.debug("sprite loaded");
+//				((ItemRevolver)IEContent.itemRevolver).revolverDefaultTexture=tal;
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//			}
+//		}
 	}
 
 	void rebindUVsToIcon(WavefrontObject model, IIcon icon)

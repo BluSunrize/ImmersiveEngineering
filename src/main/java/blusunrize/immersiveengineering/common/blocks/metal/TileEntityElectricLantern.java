@@ -56,7 +56,7 @@ public class TileEntityElectricLantern extends TileEntityImmersiveConnectable im
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		active = nbt.getBoolean("active");
-		energyStorage = nbt.getInteger("energy");
+		energyStorage = nbt.getInteger("energyStorage");
 	}
 
 	@Override

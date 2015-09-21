@@ -53,7 +53,7 @@ public class TileEntityLightningRod extends TileEntityMultiblockPart implements 
 			if(fenceNet!=null && worldObj.getTotalWorldTime()%128==((xCoord^zCoord)&127) && ( worldObj.isThundering() || (worldObj.isRaining()&&worldObj.rand.nextInt(10)==0) ))
 			{
 				int i = this.height + this.fenceNet.size();
-				if (worldObj.rand.nextInt(4096*worldObj.getHeight())<i*(yCoord+i))
+				if(worldObj.rand.nextInt(4096*worldObj.getHeight())<i*(yCoord+i))
 				{
 					this.energyStorage.setEnergyStored(Config.getInt("lightning_output"));
 					ChunkCoordinates cc = fenceNet.get(worldObj.rand.nextInt(fenceNet.size()));
@@ -85,10 +85,10 @@ public class TileEntityLightningRod extends TileEntityMultiblockPart implements 
 		ArrayList<ChunkCoordinates> openList = new ArrayList();
 		ArrayList<ChunkCoordinates> closedList = new ArrayList();
 		openList.add(new ChunkCoordinates(xCoord,yCoord+this.height,zCoord));
-		while(!openList.isEmpty() && closedList.size()<1024)
+		while(!openList.isEmpty() && closedList.size()<256)
 		{
 			ChunkCoordinates next = openList.get(0);
-			if(worldObj.getBlock(next.posX,next.posY,next.posZ).equals(IEContent.blockMetalDecoration) && worldObj.getBlockMetadata(next.posX,next.posY,next.posZ)==0)
+			if(!closedList.contains(next) && worldObj.getBlock(next.posX,next.posY,next.posZ).equals(IEContent.blockMetalDecoration) && worldObj.getBlockMetadata(next.posX,next.posY,next.posZ)==0)
 			{
 				closedList.add(next);
 				openList.add(new ChunkCoordinates(next.posX+1,next.posY,next.posZ));

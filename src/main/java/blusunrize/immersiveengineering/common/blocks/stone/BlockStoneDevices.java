@@ -173,6 +173,11 @@ public class BlockStoneDevices extends BlockIEBase
 	}
 
 	@Override
+    public boolean hasTileEntity(int meta)
+    {
+        return meta==1||meta==2;
+    }
+	@Override
 	public TileEntity createNewTileEntity(World world, int meta)
 	{
 		switch(meta)

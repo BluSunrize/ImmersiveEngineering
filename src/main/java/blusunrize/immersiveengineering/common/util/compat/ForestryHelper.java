@@ -9,11 +9,6 @@ import cpw.mods.fml.common.registry.GameRegistry;
 
 public class ForestryHelper extends IECompatModule
 {
-	public ForestryHelper()
-	{
-		super("Forestry");
-	}
-	
 	@Override
 	public void init()
 	{

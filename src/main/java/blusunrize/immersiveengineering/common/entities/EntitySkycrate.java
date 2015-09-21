@@ -106,7 +106,7 @@ public class EntitySkycrate extends EntitySkylineHook
 			vec = vec.normalize();
 			Connection line = null;
 			for(Connection c : outputs)
-				if(c!=null && !c.equals(this.connection))
+				if(c!=null && !c.hasSameConnectors(this.connection))
 				{
 					if(line==null)
 						line = c;

@@ -54,7 +54,26 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart implement
 	@Override
 	public boolean canUpdate()
 	{
-		return false;
+		return true;
+	}
+
+	@Override
+	public void updateEntity()
+	{
+		if(pos==4 && !worldObj.isRemote && worldObj.isBlockIndirectlyGettingPowered(xCoord,yCoord,zCoord))
+			for(int i=0; i<6; i++)
+				if(i!=1 && tank.getFluidAmount()>0)
+				{
+					ForgeDirection f = ForgeDirection.getOrientation(i);
+					int out = Math.min(144,tank.getFluidAmount());
+					TileEntity te = this.worldObj.getTileEntity(xCoord+(i==4?-1:i==5?1:0),yCoord+(i==0?-1:0),zCoord+(i==2?-1:i==3?1:0));
+					if(te!=null && te instanceof IFluidHandler && ((IFluidHandler)te).canFill(f.getOpposite(), tank.getFluid().getFluid()))
+					{
+						int accepted = ((IFluidHandler)te).fill(f.getOpposite(), new FluidStack(tank.getFluid().getFluid(),out), false);
+						FluidStack drained = this.tank.drain(accepted, true);
+						((IFluidHandler)te).fill(f.getOpposite(), drained, true);
+					}
+				}
 	}
 
 	@Override

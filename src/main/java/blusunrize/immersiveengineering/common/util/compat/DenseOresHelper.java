@@ -11,11 +11,6 @@ import blusunrize.immersiveengineering.common.util.Utils;
 
 public class DenseOresHelper extends IECompatModule
 {
-	public DenseOresHelper()
-	{
-		super("denseores");
-	}
-
 	@Override
 	public void init()
 	{

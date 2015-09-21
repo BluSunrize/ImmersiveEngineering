@@ -39,7 +39,7 @@ import com.google.common.collect.Multimap;
 
 public class ItemDrill extends ItemUpgradeableTool implements IFluidContainerItem
 {
-	public static Material[] validMaterials = {Material.anvil,Material.clay,Material.glass,Material.ice,Material.iron,Material.packedIce,Material.piston,Material.rock};
+	public static Material[] validMaterials = {Material.anvil,Material.clay,Material.glass,Material.ground,Material.ice,Material.iron,Material.packedIce,Material.piston,Material.rock,Material.sand, Material.snow};
 
 	public ItemDrill()
 	{

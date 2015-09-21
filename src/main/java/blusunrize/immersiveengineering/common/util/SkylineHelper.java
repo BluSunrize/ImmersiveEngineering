@@ -28,8 +28,7 @@ public class SkylineHelper
 			vec = vec.normalize();
 			Connection line = null;
 			for(Connection c : outputs)
-				if(c!=null && !c.equals(invalidCon))
-				{
+				if(c!=null && !c.hasSameConnectors(invalidCon))				{
 					if(line==null)
 						line = c;
 					else

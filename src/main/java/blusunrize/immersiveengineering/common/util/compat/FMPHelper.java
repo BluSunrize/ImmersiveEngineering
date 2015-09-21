@@ -6,15 +6,11 @@ import cpw.mods.fml.common.event.FMLInterModComms;
 
 public class FMPHelper extends IECompatModule
 {
-	public FMPHelper()
-	{
-		super("ForgeMicroblock");
-	}
-
 	@Override
 	public void init()
 	{
-		FMLInterModComms.sendMessage("ForgeMicroblock", "microMaterial", new ItemStack(IEContent.blockWoodenDecoration,1,0));
+		for(int i=0; i<=2; i++)
+			FMLInterModComms.sendMessage("ForgeMicroblock", "microMaterial", new ItemStack(IEContent.blockTreatedWood,1,i));
 		FMLInterModComms.sendMessage("ForgeMicroblock", "microMaterial", new ItemStack(IEContent.blockWoodenDecoration,1,5));
 		FMLInterModComms.sendMessage("ForgeMicroblock", "microMaterial", new ItemStack(IEContent.blockWoodenDevice,1,4));
 		for(int i=0; i<=10; i++)

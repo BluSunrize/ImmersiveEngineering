@@ -1,18 +1,12 @@
 package blusunrize.immersiveengineering.common.items;
 
-import java.awt.image.BufferedImage;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-import javax.imageio.ImageIO;
-
 import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -30,11 +24,11 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.tool.IBullet;
+import blusunrize.immersiveengineering.api.tool.IShaderEquipableItem;
 import blusunrize.immersiveengineering.api.tool.IUpgrade;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.gui.InventoryStorageItem;
 import blusunrize.immersiveengineering.common.util.IEAchievements;
-import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Lib;
 
@@ -44,7 +38,7 @@ import com.google.common.collect.Multimap;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class ItemRevolver extends ItemUpgradeableTool
+public class ItemRevolver extends ItemUpgradeableTool implements IShaderEquipableItem
 {
 	public ItemRevolver()
 	{
@@ -63,20 +57,19 @@ public class ItemRevolver extends ItemUpgradeableTool
 	{
 		revolverDefaultTexture = ir.registerIcon("immersiveengineering:revolver");
 		for(String key : specialRevolversByTag.keySet())
-			if(!key.isEmpty())
+			if(!key.isEmpty() && !specialRevolversByTag.get(key).tag.isEmpty())
 			{
 				int split = key.lastIndexOf("_");
 				if(split<0)
 					split = key.length();
-				
-//				revolverIcons.put(key, ir.registerIcon("immersiveengineering:revolver_"+key.substring(0,split)));
+				revolverIcons.put(key, ir.registerIcon("immersiveengineering:revolver_"+key.substring(0,split)));
 			}
 	}
 
 	@Override
 	public int getInternalSlots(ItemStack stack)
 	{
-		return 18+2;
+		return 18+2+1;
 	}
 	@Override
 	public Slot[] getWorkbenchSlots(Container container, ItemStack stack, InventoryStorageItem invItem)
@@ -85,6 +78,7 @@ public class ItemRevolver extends ItemUpgradeableTool
 				{
 				new IESlot.Upgrades(container, invItem,18+0, 80,32, IUpgrade.UpgradeType.REVOLVER, stack, true),
 				new IESlot.Upgrades(container, invItem,18+1,100,32, IUpgrade.UpgradeType.REVOLVER, stack, true),
+				new IESlot.Shader(container, invItem,20,140,24, stack)
 				};
 	}
 	@Override
@@ -93,6 +87,26 @@ public class ItemRevolver extends ItemUpgradeableTool
 		return stack.getItemDamage()!=1;
 	}
 
+
+	@Override
+	public void setShaderItem(ItemStack stack, ItemStack shader)
+	{
+		ItemStack[] contained = this.getContainedItems(stack);
+		contained[20] =  shader;
+		this.setContainedItems(stack, contained);
+	}
+	@Override
+	public ItemStack getShaderItem(ItemStack stack)
+	{
+		ItemStack[] contained = this.getContainedItems(stack);
+		return contained[20];
+	}
+	@Override
+	public boolean canAcceptShader(ItemStack stack, ItemStack shader)
+	{
+		return stack.getItemDamage()!=1;
+	}
+	
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void getSubItems(Item item, CreativeTabs tab, List list)
@@ -340,7 +354,7 @@ public class ItemRevolver extends ItemUpgradeableTool
 		if(stack.getItemDamage()==1)
 			return;
 		player.triggerAchievement(IEAchievements.makeRevolver);
-	    String uuid = player.getUniqueID().toString();
+		String uuid = player.getUniqueID().toString();
 		if(specialRevolvers.containsKey(uuid))
 		{
 			ArrayList<SpecialRevolver> list = new ArrayList(specialRevolvers.get(uuid));

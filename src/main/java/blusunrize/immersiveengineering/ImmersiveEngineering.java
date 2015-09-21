@@ -72,6 +72,7 @@ public class ImmersiveEngineering
 		for(int b : Config.getIntArray("oreDimBlacklist"))
 			IEWorldGen.oreDimBlacklist.add(b);
 		IEApi.modPreference = Arrays.asList(Config.getStringArray("preferredOres"));
+		IECompatModule.preInit();
 	}
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent event)
@@ -88,16 +89,14 @@ public class ImmersiveEngineering
 		Lib.IC2 = Loader.isModLoaded("IC2") && Config.getBoolean("ic2compat");
 		Lib.GREG = Loader.isModLoaded("gregtech") && Config.getBoolean("gregtechcompat");
 		for(IECompatModule compat : IECompatModule.modules)
-			if(Loader.isModLoaded(compat.modId))
-				compat.init();
+			compat.init();
 	}
 	@Mod.EventHandler
 	public void postInit(FMLPostInitializationEvent event)
 	{
 		IERecipes.postInitCrusherAndArcRecipes();
 		for(IECompatModule compat : IECompatModule.modules)
-			if(Loader.isModLoaded(compat.modId))
-				compat.postInit();
+			compat.postInit();
 	}
 	@Mod.EventHandler
 	public void loadComplete(FMLLoadCompleteEvent event)

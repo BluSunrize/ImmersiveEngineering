@@ -208,7 +208,7 @@ public class BlockIECrop extends BlockBush implements IGrowable
 				world.setBlockMetadataWithNotify(x, y, z, newMeta, 0x3);
 			meta = newMeta;
 		}
-		if(meta>3 && world.isAirBlock(x, y+1, z))
+		if(meta==4 && world.isAirBlock(x, y+1, z))
 			world.setBlock(x, y+1, z, this, meta+1, 0x3);
 	}
 }

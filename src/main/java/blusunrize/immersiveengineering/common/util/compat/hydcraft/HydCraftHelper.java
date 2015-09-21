@@ -5,11 +5,6 @@ import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 
 public class HydCraftHelper extends IECompatModule
 {
-	public HydCraftHelper()
-	{
-		super("HydCraft");
-	}
-
 	@Override
 	public void postInit()
 	{

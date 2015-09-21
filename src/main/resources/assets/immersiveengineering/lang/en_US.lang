@@ -67,7 +67,12 @@ tile.ImmersiveEngineering.metalDecoration.sheetMetal.name=Sheet Metal Block
 
 tile.ImmersiveEngineering.metalDevice2.breakerSwitch.name=Breaker Switch
 tile.ImmersiveEngineering.metalDevice2.electricLantern.name=Powered Lantern
+tile.ImmersiveEngineering.metalDevice2.floodLight.name=Floodlight
 tile.ImmersiveEngineering.metalDevice2.fluidPipe.name=Fluid Pipe
+
+tile.ImmersiveEngineering.treatedWood.0.name=Treated Wood Planks
+tile.ImmersiveEngineering.treatedWood.1.name=Treated Wood Planks
+tile.ImmersiveEngineering.treatedWood.2.name=Treated Wood Planks
 
 tile.ImmersiveEngineering.woodenDevice.post.name=Wooden Post
 tile.ImmersiveEngineering.woodenDevice.watermill.name=Water Wheel
@@ -183,6 +188,7 @@ item.ImmersiveEngineering.tool.manual.name=Engineer's Manual
 item.ImmersiveEngineering.revolver.normal.name=Revolver
 item.ImmersiveEngineering.revolver.speedloader.name=Revolver Speedloader
 item.ImmersiveEngineering.revolver.dev.name=♛Royal Vanquisher♚
+item.ImmersiveEngineering.revolver.infinity.name=Catalyst
 item.ImmersiveEngineering.revolver.sns.name=Steamroller
 item.ImmersiveEngineering.revolver.nerf.name=Nerf'd Revolver
 item.ImmersiveEngineering.revolver.oblivion.name=Oblivion
@@ -224,6 +230,8 @@ item.ImmersiveEngineering.toolupgrade.revolverElectro.name=Amplifier Electron Tu
 item.ImmersiveEngineering.blueprint.name=Engineer's Blueprint
 
 item.ImmersiveEngineering.graphiteElectrode.name=Graphite Electrode
+
+item.ImmersiveEngineering.shader.name=Shader
 
 
 #CREATIVE
@@ -293,6 +301,9 @@ desc.ImmersiveEngineering.info.blueprint.electrode=Arc Furnace Electrodes
 
 desc.ImmersiveEngineering.info.electrodeIntegrity=Integrity
 
+desc.ImmersiveEngineering.flavour.treatedWood.0=Horizontal Planks
+desc.ImmersiveEngineering.flavour.treatedWood.1=Vertical Planks
+desc.ImmersiveEngineering.flavour.treatedWood.2=Packaged Planks
 desc.ImmersiveEngineering.flavour.crate=Will keep its inventory when broken!
 desc.ImmersiveEngineering.flavour.barrel=Will keep its fluid when broken!
 desc.ImmersiveEngineering.flavour.barrelTemp=Cannot store hot fluids
@@ -300,6 +311,7 @@ desc.ImmersiveEngineering.flavour.coil.construction0=For decoration purposes onl
 desc.ImmersiveEngineering.flavour.coil.construction1=Will not transmit power
 desc.ImmersiveEngineering.flavour.revolver=Go ahead, make my day!
 desc.ImmersiveEngineering.flavour.revolver.dev=Regicide!
+desc.ImmersiveEngineering.flavour.revolver.infinity=All you need is a little pinch of infinity
 desc.ImmersiveEngineering.flavour.revolver.sns=Blood, Sweat, Steam and Steel
 desc.ImmersiveEngineering.flavour.revolver.nerf=Safe for kids
 desc.ImmersiveEngineering.flavour.revolver.oblivion=Passing Memories

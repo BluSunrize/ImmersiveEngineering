@@ -29,7 +29,7 @@ public class TileEntitySqueezer extends TileEntityMultiblockPart implements IFlu
 {
 	public int facing = 2;
 	public FluidTank tank = new FluidTank(12000);
-	public EnergyStorage energyStorage = new EnergyStorage(32000,256,32000);
+	public EnergyStorage energyStorage = new EnergyStorage(32000,Math.max(256, Config.getInt("squeezer_consumption")));
 	ItemStack[] inventory = new ItemStack[12];
 	public int tick=0;
 	int processMaxTime = 0;

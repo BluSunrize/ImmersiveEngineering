@@ -34,7 +34,7 @@ public class TileEntityRefinery extends TileEntityMultiblockPart implements IFlu
 	public FluidTank tank0 = new FluidTank(12000);
 	public FluidTank tank1 = new FluidTank(12000);
 	public FluidTank tank2 = new FluidTank(12000);
-	public EnergyStorage energyStorage = new EnergyStorage(32000,256,32000);
+	public EnergyStorage energyStorage = new EnergyStorage(32000,Math.max(256, Config.getInt("refinery_consumption")));
 	public ItemStack[] inventory = new ItemStack[6];
 
 	public TileEntityRefinery master()

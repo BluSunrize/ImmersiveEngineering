@@ -116,57 +116,57 @@ public class ClientUtils
 			tes.addTranslation((float)initPos.xCoord,(float)initPos.yCoord,(float)initPos.zCoord);
 			tes.setColorRGBA_I(colour, alpha);
 			tes.setBrightness(calcBrightness(world, connection.start.posX-radius,connection.start.posY,connection.start.posZ));
-//			tes.addVertexWithUV(0-radius, 0, 0, b?uMax-uShift:uMin,vMin);
+			//			tes.addVertexWithUV(0-radius, 0, 0, b?uMax-uShift:uMin,vMin);
 			tes.addVertexWithUV(0-radius, 0, 0, uMin,vMin);
 			tes.setBrightness(calcBrightness(world, connection.start.posX-radius,connection.start.posY+dy,connection.start.posZ));
-//			tes.addVertexWithUV(dx-radius, dy, dz, b?uMin:uMin+uShift,vMin);
+			//			tes.addVertexWithUV(dx-radius, dy, dz, b?uMin:uMin+uShift,vMin);
 			tes.addVertexWithUV(dx-radius, dy, dz, uMax,vMin);
 			tes.setBrightness(calcBrightness(world, connection.start.posX+radius,connection.start.posY+dy,connection.start.posZ));
-//			tes.addVertexWithUV(dx+radius, dy, dz, b?uMin:uMin+uShift,vMax);
+			//			tes.addVertexWithUV(dx+radius, dy, dz, b?uMin:uMin+uShift,vMax);
 			tes.addVertexWithUV(dx+radius, dy, dz, uMax,vMax);
 			tes.setBrightness(calcBrightness(world, connection.start.posX+radius,connection.start.posY,connection.start.posZ));
-//			tes.addVertexWithUV(0+radius, 0, 0, b?uMax-uShift:uMin,vMax);
+			//			tes.addVertexWithUV(0+radius, 0, 0, b?uMax-uShift:uMin,vMax);
 			tes.addVertexWithUV(0+radius, 0, 0, uMin,vMax);
 
 			tes.setBrightness(calcBrightness(world, connection.start.posX-radius,connection.start.posY+dy,connection.start.posZ));
-//			tes.addVertexWithUV(dx-radius, dy, dz, b?uMin:uMin+uShift,vMin);
+			//			tes.addVertexWithUV(dx-radius, dy, dz, b?uMin:uMin+uShift,vMin);
 			tes.addVertexWithUV(dx-radius, dy, dz, uMax,vMin);
 			tes.setBrightness(calcBrightness(world, connection.start.posX-radius,connection.start.posY,connection.start.posZ));
-//			tes.addVertexWithUV(0-radius, 0, 0, b?uMax-uShift:uMin,vMin);
+			//			tes.addVertexWithUV(0-radius, 0, 0, b?uMax-uShift:uMin,vMin);
 			tes.addVertexWithUV(0-radius, 0, 0,uMin,vMin);
 			tes.setBrightness(calcBrightness(world, connection.start.posX+radius,connection.start.posY,connection.start.posZ));
-//			tes.addVertexWithUV(0+radius, 0, 0, b?uMax-uShift:uMin,vMax);
+			//			tes.addVertexWithUV(0+radius, 0, 0, b?uMax-uShift:uMin,vMax);
 			tes.addVertexWithUV(0+radius, 0, 0, uMin,vMax);
 			tes.setBrightness(calcBrightness(world, connection.start.posX+radius,connection.start.posY+dy,connection.start.posZ));
-//			tes.addVertexWithUV(dx+radius, dy, dz, b?uMin:uMin+uShift,vMax);
+			//			tes.addVertexWithUV(dx+radius, dy, dz, b?uMin:uMin+uShift,vMax);
 			tes.addVertexWithUV(dx+radius, dy, dz, uMax,vMax);
 
 
 			tes.setColorRGBA_I(colour, alpha);
 			tes.setBrightness(calcBrightness(world, connection.start.posX,connection.start.posY,connection.start.posZ-radius));
-//			tes.addVertexWithUV(0, 0, 0-radius, b?uMax-uShift:uMin,vMin);
+			//			tes.addVertexWithUV(0, 0, 0-radius, b?uMax-uShift:uMin,vMin);
 			tes.addVertexWithUV(0, 0, 0-radius, uMin,vMin);
 			tes.setBrightness(calcBrightness(world, connection.start.posX,connection.start.posY+dy,connection.start.posZ-radius));
-//			tes.addVertexWithUV(dx, dy, dz-radius, b?uMin:uMin+uShift,vMin);
+			//			tes.addVertexWithUV(dx, dy, dz-radius, b?uMin:uMin+uShift,vMin);
 			tes.addVertexWithUV(dx, dy, dz-radius, uMax,vMin);
 			tes.setBrightness(calcBrightness(world, connection.start.posX,connection.start.posY+dy,connection.start.posZ+radius));
-//			tes.addVertexWithUV(dx, dy, dz+radius, b?uMin:uMin+uShift,vMax);
+			//			tes.addVertexWithUV(dx, dy, dz+radius, b?uMin:uMin+uShift,vMax);
 			tes.addVertexWithUV(dx, dy, dz+radius, uMax,vMax);
 			tes.setBrightness(calcBrightness(world, connection.start.posX,connection.start.posY,connection.start.posZ+radius));
-//			tes.addVertexWithUV(0, 0, 0+radius, b?uMax-uShift:uMin,vMax);
+			//			tes.addVertexWithUV(0, 0, 0+radius, b?uMax-uShift:uMin,vMax);
 			tes.addVertexWithUV(0, 0, 0+radius, uMin,vMax);
 
 			tes.setBrightness(calcBrightness(world, connection.start.posX,connection.start.posY+dy,connection.start.posZ-radius));
-//			tes.addVertexWithUV(dx, dy, dz-radius, b?uMin:uMin+uShift,vMin);
+			//			tes.addVertexWithUV(dx, dy, dz-radius, b?uMin:uMin+uShift,vMin);
 			tes.addVertexWithUV(dx, dy, dz-radius, uMax,vMin);
 			tes.setBrightness(calcBrightness(world, connection.start.posX,connection.start.posY,connection.start.posZ-radius));
-//			tes.addVertexWithUV(0, 0, 0-radius, b?uMax-uShift:uMin,vMin);
+			//			tes.addVertexWithUV(0, 0, 0-radius, b?uMax-uShift:uMin,vMin);
 			tes.addVertexWithUV(0, 0, 0-radius, uMin,vMin);
 			tes.setBrightness(calcBrightness(world, connection.start.posX,connection.start.posY,connection.start.posZ+radius));
-//			tes.addVertexWithUV(0, 0, 0+radius, b?uMax-uShift:uMin,vMax);
+			//			tes.addVertexWithUV(0, 0, 0+radius, b?uMax-uShift:uMin,vMax);
 			tes.addVertexWithUV(0, 0, 0+radius, uMin,vMax);
 			tes.setBrightness(calcBrightness(world, connection.start.posX,connection.start.posY+dy,connection.start.posZ+radius));
-//			tes.addVertexWithUV(dx, dy, dz+radius, b?uMin:uMin+uShift,vMax);
+			//			tes.addVertexWithUV(dx, dy, dz+radius, b?uMin:uMin+uShift,vMax);
 			tes.addVertexWithUV(dx, dy, dz+radius, uMax,vMax);
 			tes.addTranslation((float)-initPos.xCoord,(float)-initPos.yCoord,(float)-initPos.zCoord);
 		}
@@ -179,8 +179,8 @@ public class ClientUtils
 				Vec3 v0 = i>0?vertex[i-1]:initPos;
 				Vec3 v1 = vertex[i];
 
-//				double u0 = uMin;
-//				double u1 = uMax;
+				//				double u0 = uMin;
+				//				double u1 = uMax;
 				u0 = u1;
 				u1 = u0+(v0.distanceTo(v1)/d)*uD;
 				if((dx<0&&dz<=0)||(dz<0&&dx<=0)||(dz<0&&dx>0))
@@ -234,34 +234,34 @@ public class ClientUtils
 		return world.getLightBrightnessForSkyBlocks((int)Math.round(x), (int)Math.round(y), (int)Math.round(z), 0);
 	}
 
-	
+
 	public static void tessellateBox(double xMin, double yMin, double zMin, double xMax, double yMax, double zMax, IIcon icon)
 	{
 		tes().addVertexWithUV(xMin,yMin,zMax, icon.getInterpolatedU(xMin*16),icon.getInterpolatedV(zMax*16));
 		tes().addVertexWithUV(xMin,yMin,zMin, icon.getInterpolatedU(xMin*16),icon.getInterpolatedV(zMin*16));
 		tes().addVertexWithUV(xMax,yMin,zMin, icon.getInterpolatedU(xMax*16),icon.getInterpolatedV(zMin*16));
 		tes().addVertexWithUV(xMax,yMin,zMax, icon.getInterpolatedU(xMax*16),icon.getInterpolatedV(zMax*16));
-		
+
 		tes().addVertexWithUV(xMin,yMax,zMin, icon.getInterpolatedU(xMin*16),icon.getInterpolatedV(zMin*16));
 		tes().addVertexWithUV(xMin,yMax,zMax, icon.getInterpolatedU(xMin*16),icon.getInterpolatedV(zMax*16));
 		tes().addVertexWithUV(xMax,yMax,zMax, icon.getInterpolatedU(xMax*16),icon.getInterpolatedV(zMax*16));
 		tes().addVertexWithUV(xMax,yMax,zMin, icon.getInterpolatedU(xMax*16),icon.getInterpolatedV(zMin*16));
-		
+
 		tes().addVertexWithUV(xMax,yMin,zMin, icon.getInterpolatedU(xMin*16),icon.getInterpolatedV(yMax*16));
 		tes().addVertexWithUV(xMin,yMin,zMin, icon.getInterpolatedU(xMax*16),icon.getInterpolatedV(yMax*16));
 		tes().addVertexWithUV(xMin,yMax,zMin, icon.getInterpolatedU(xMax*16),icon.getInterpolatedV(yMin*16));
 		tes().addVertexWithUV(xMax,yMax,zMin, icon.getInterpolatedU(xMin*16),icon.getInterpolatedV(yMin*16));
-		
+
 		tes().addVertexWithUV(xMin,yMin,zMax, icon.getInterpolatedU(xMax*16),icon.getInterpolatedV(yMax*16));
 		tes().addVertexWithUV(xMax,yMin,zMax, icon.getInterpolatedU(xMin*16),icon.getInterpolatedV(yMax*16));
 		tes().addVertexWithUV(xMax,yMax,zMax, icon.getInterpolatedU(xMin*16),icon.getInterpolatedV(yMin*16));
 		tes().addVertexWithUV(xMin,yMax,zMax, icon.getInterpolatedU(xMax*16),icon.getInterpolatedV(yMin*16));
-		
+
 		tes().addVertexWithUV(xMin,yMin,zMin, icon.getInterpolatedU(zMin*16),icon.getInterpolatedV(yMax*16));
 		tes().addVertexWithUV(xMin,yMin,zMax, icon.getInterpolatedU(zMax*16),icon.getInterpolatedV(yMax*16));
 		tes().addVertexWithUV(xMin,yMax,zMax, icon.getInterpolatedU(zMax*16),icon.getInterpolatedV(yMin*16));
 		tes().addVertexWithUV(xMin,yMax,zMin, icon.getInterpolatedU(zMin*16),icon.getInterpolatedV(yMin*16));
-		
+
 		tes().addVertexWithUV(xMax,yMin,zMax, icon.getInterpolatedU(zMax*16),icon.getInterpolatedV(yMax*16));
 		tes().addVertexWithUV(xMax,yMin,zMin, icon.getInterpolatedU(zMin*16),icon.getInterpolatedV(yMax*16));
 		tes().addVertexWithUV(xMax,yMax,zMin, icon.getInterpolatedU(zMin*16),icon.getInterpolatedV(yMin*16));
@@ -506,38 +506,43 @@ public class ClientUtils
 
 	public static void renderWavefrontWithIconUVs(WavefrontObject model, int glDrawingMode, IIcon icon, String... parts)
 	{
+		if(icon==null)
+			return;
 		List<String> renderParts = Arrays.asList(parts);
 		tes().startDrawing(glDrawingMode);
 		for(GroupObject go : model.groupObjects)
 			if(go.glDrawingMode==glDrawingMode)
-			{
 				if(renderParts.contains(go.name))
-				{
-					for(Face face : go.faces)
-					{
-						float minU = icon.getMinU();
-						float sizeU = icon.getMaxU() - minU;
-						float minV = icon.getMinV();
-						float sizeV = icon.getMaxV() - minV;
-
-						TextureCoordinate[] oldUVs = new TextureCoordinate[face.textureCoordinates.length];
-						for(int v=0; v<face.vertices.length; ++v)
-						{
-							oldUVs[v] = face.textureCoordinates[v]; 
-							TextureCoordinate textureCoordinate = face.textureCoordinates[v];
-							face.textureCoordinates[v] = new TextureCoordinate(
-									minU + sizeU * textureCoordinate.u,
-									minV + sizeV * textureCoordinate.v
-									);
-						}
-						face.addFaceForRender(ClientUtils.tes());
-						for(int v=0; v<face.vertices.length; ++v)
-							face.textureCoordinates[v] = new TextureCoordinate(oldUVs[v].u,oldUVs[v].v);
-					}
-				}
-			}
+					tessellateWavefrontGroupObjectWithIconUVs(go, icon);
 		tes().draw();
 	}
+	public static void tessellateWavefrontGroupObjectWithIconUVs(GroupObject object, IIcon icon)
+	{
+		if(icon==null)
+			return;
+		for(Face face : object.faces)
+		{
+			float minU = icon.getMinU();
+			float sizeU = icon.getMaxU() - minU;
+			float minV = icon.getMinV();
+			float sizeV = icon.getMaxV() - minV;
+
+			TextureCoordinate[] oldUVs = new TextureCoordinate[face.textureCoordinates.length];
+			for(int v=0; v<face.vertices.length; ++v)
+			{
+				oldUVs[v] = face.textureCoordinates[v]; 
+				TextureCoordinate textureCoordinate = face.textureCoordinates[v];
+				face.textureCoordinates[v] = new TextureCoordinate(
+						minU + sizeU * textureCoordinate.u,
+						minV + sizeV * textureCoordinate.v
+						);
+			}
+			face.addFaceForRender(ClientUtils.tes());
+			for(int v=0; v<face.vertices.length; ++v)
+				face.textureCoordinates[v] = new TextureCoordinate(oldUVs[v].u,oldUVs[v].v);
+		}
+	}
+
 
 	public static void drawInventoryBlock(Block block, int metadata, RenderBlocks renderer)
 	{

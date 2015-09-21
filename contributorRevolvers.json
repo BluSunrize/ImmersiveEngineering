@@ -2,11 +2,15 @@
 "uuid":["f34afdfb-996b-4020-b8a2-b740e2937b29"],
 "tag":"fenrir", "flavour":"", "baseUpgrades":{"melee":10.0}, "renderAdditions":["bayonet_attachment","dev_bayonet","dev_scope"]
 }
-
 {
-"uuid":["07c11943-628b-4671-a331-84899d08e538","48a16fc8-bc1f-4e72-84e9-7ec73b7d8ea1"],
+"uuid":["07c11943-628b-4671-a331-84899d08e538"],
 "tag":"dev","flavour":"","baseUpgrades":{"bullets":10,"melee":10.0},"renderAdditions":["bayonet_attachment","dev_bayonet","dev_mag","dev_scope"]
 }
+{
+"uuid":["48a16fc8-bc1f-4e72-84e9-7ec73b7d8ea1"],
+"tag":"infinity","flavour":"","baseUpgrades":{"melee":10.0},"renderAdditions":["bayonet_attachment","player_bayonet"]
+}
+
 
 {
 "uuid":["e8b46b33-3e17-4b64-8d07-9af116df7d3b","58d506e2-7ee7-4774-8b22-c7a57eda488b","df0f4696-8a55-4777-b49d-6b38d6e1b501","b72d87ce-fa98-4a5a-b5a0-5db51a018d09"],

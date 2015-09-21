@@ -6,11 +6,6 @@ import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 
 public class MFRHelper extends IECompatModule
 {
-	public MFRHelper()
-	{
-		super("MineFactoryReloaded");
-	}
-
 	@Override
 	public void postInit()
 	{

@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 
+import net.minecraft.util.Vec3;
 import net.minecraftforge.client.model.obj.Vertex;
 
 /**
@@ -331,6 +332,22 @@ public class Matrix4
 		vec.x += m03;
 		vec.y += m13;
 		vec.z += m23;
+	}
+	private void mult3x3(Vec3 vec)
+	{
+		double x = m00 * vec.xCoord + m01 * vec.yCoord + m02 * vec.zCoord;
+		double y = m10 * vec.xCoord + m11 * vec.yCoord + m12 * vec.zCoord;
+		double z = m20 * vec.xCoord + m21 * vec.yCoord + m22 * vec.zCoord;
+		vec.xCoord = (float)x;
+		vec.yCoord = (float)y;
+		vec.zCoord = (float)z;
+	}
+	public void apply(Vec3 vec)
+	{
+		mult3x3(vec);
+		vec.xCoord += m03;
+		vec.yCoord += m13;
+		vec.zCoord += m23;
 	}
 	@Override
 	public String toString()

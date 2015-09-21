@@ -114,15 +114,21 @@ public class BlockMetalDevices2 extends BlockIEBase implements blusunrize.aquatw
 		}
 		return super.getIcon(side, meta);
 	}
+
+	@Override
+	public boolean isOpaqueCube()
+	{
+		return false;
+	}
+	@Override
+	public boolean renderAsNormalBlock()
+	{
+		return false;
+	}
 	@Override
 	public int getRenderType()
 	{
 		return BlockRenderMetalDevices2.renderID;
-	}
-	@Override
-	public int getRenderBlockPass()
-	{
-		return 0;
 	}
 
 

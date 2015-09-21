@@ -113,7 +113,7 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart implements ISid
 				}
 			}
 
-			if(tank.getFluidAmount()>0 && tank.getFluid()!=null && (inventory[3]==null||inventory[3].stackSize+1<inventory[3].getMaxStackSize()))
+			if(tank.getFluidAmount()>0 && tank.getFluid()!=null && (inventory[3]==null||inventory[3].stackSize+1<=inventory[3].getMaxStackSize()))
 			{
 				ItemStack filledContainer = Utils.fillFluidContainer(tank, inventory[2], inventory[3]);
 				if(filledContainer!=null)

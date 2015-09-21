@@ -25,6 +25,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalMultiblocks
 import blusunrize.immersiveengineering.common.crafting.RecipePotionBullets;
 import blusunrize.immersiveengineering.common.crafting.RecipeRevolver;
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.compat.NetherOresHelper;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.registry.GameRegistry;
 
@@ -33,7 +34,6 @@ public class IERecipes
 
 	public static void initCraftingRecipes()
 	{
-		ItemStack treatedWood = new ItemStack(IEContent.blockWoodenDecoration,1,0);
 		ItemStack copperCoil = new ItemStack(IEContent.blockStorage,1,8);
 		ItemStack electrumCoil = new ItemStack(IEContent.blockStorage,1,9);
 		ItemStack hvCoil = new ItemStack(IEContent.blockStorage,1,10);
@@ -107,7 +107,8 @@ public class IERecipes
 		if(Config.getBoolean("arcfurnace_electrodeCrafting"))
 			addOredictRecipe(new ItemStack(IEContent.itemBlueprint,1,blueprint), "GGG","GDG","GPG", 'G',"ingotHOPGraphite", 'D',"dyeBlue",'P',Items.paper);
 
-
+//TE addon
+		
 		addOredictRecipe(new ItemStack(IEContent.itemSkyhook,1,0), "II ","IC "," GG", 'C',componentIron,'I',"ingotSteel", 'G',new ItemStack(IEContent.itemMaterial,1,9));
 
 		addOredictRecipe(new ItemStack(IEContent.itemDrill,1,0), "  G"," EG","C  ", 'C',componentSteel,'E',new ItemStack(IEContent.blockMetalDecoration,1,BlockMetalDecoration.META_heavyEngineering), 'G',new ItemStack(IEContent.itemMaterial,1,9));
@@ -118,16 +119,16 @@ public class IERecipes
 			addOredictRecipe(new ItemStack(IEContent.itemToolUpgrades,1,1), "BI ","IBI"," IC", 'B',container, 'I',"ingotIron", 'C',componentIron);
 		addOredictRecipe(new ItemStack(IEContent.itemToolUpgrades,1,2), "SSS"," C ", 'S',"ingotSteel", 'C',componentSteel);
 		addOredictRecipe(new ItemStack(IEContent.itemToolUpgrades,1,3), "CS ","SBO"," OB", 'C',componentIron, 'S',"ingotSteel", 'B',Items.bucket, 'O',"dyeRed");
-		addOredictRecipe(new ItemStack(IEContent.itemToolUpgrades,1,4), "SI","IW", 'S',Items.iron_sword, 'I',"ingotSteel", 'W',treatedWood);
+		addOredictRecipe(new ItemStack(IEContent.itemToolUpgrades,1,4), "SI","IW", 'S',Items.iron_sword, 'I',"ingotSteel", 'W',"plankTreatedWood");
 		addOredictRecipe(new ItemStack(IEContent.itemToolUpgrades,1,5), " CS","C C","IC ", 'I',componentIron, 'S',"ingotSteel", 'C',"ingotCopper");
 		addOredictRecipe(new ItemStack(IEContent.itemToolUpgrades,1,6), " G ","GEG","GEG", 'E',electrumCoil, 'G',"blockGlass");
 
 		addShapelessOredictRecipe(new ItemStack(IEContent.itemMetal,2,15), "dustCopper","dustNickel");
 		addShapelessOredictRecipe(new ItemStack(IEContent.itemMetal,2,16), "dustSilver","dustGold");
 
-		addOredictRecipe(new ItemStack(IEContent.itemMaterial,4,0), "W","W", 'W',treatedWood);
-		addOredictRecipe(new ItemStack(IEContent.itemMaterial,1,1), " S ","SBS","BSB", 'B',treatedWood, 'S',"treatedStick");
-		addOredictRecipe(new ItemStack(IEContent.itemMaterial,1,2), "BB ","SSB","SS ", 'B',treatedWood, 'S',"treatedStick");
+		addOredictRecipe(new ItemStack(IEContent.itemMaterial,4,0), "W","W", 'W',"plankTreatedWood");
+		addOredictRecipe(new ItemStack(IEContent.itemMaterial,1,1), " S ","SBS","BSB", 'B',"plankTreatedWood", 'S',"treatedStick");
+		addOredictRecipe(new ItemStack(IEContent.itemMaterial,1,2), "BB ","SSB","SS ", 'B',"plankTreatedWood", 'S',"treatedStick");
 		addShapelessOredictRecipe(new ItemStack(Items.string), new ItemStack(IEContent.itemMaterial,1,3));
 		addOredictRecipe(new ItemStack(IEContent.itemMaterial,1,4), "HHH","HSH","HHH", 'H',new ItemStack(IEContent.itemMaterial,1,3), 'S',"stickWood");
 		addShapelessOredictRecipe(new ItemStack(IEContent.itemMaterial,1,5), new ItemStack(IEContent.itemMaterial,1,2),new ItemStack(IEContent.itemMaterial,1,4),new ItemStack(IEContent.itemMaterial,1,4),new ItemStack(IEContent.itemMaterial,1,4),new ItemStack(IEContent.itemMaterial,1,4));
@@ -145,21 +146,21 @@ public class IERecipes
 		addOredictRecipe(new ItemStack(IEContent.itemWireCoil,4,4), " I ","ISI"," I ", 'I',"ingotSteel", 'S',"stickWood");
 
 		for (ItemStack container : Utils.getContainersFilledWith(new FluidStack(IEContent.fluidCreosote,1000)))
-			addOredictRecipe(new ItemStack(IEContent.blockWoodenDecoration,8,0), "WWW","WCW","WWW", 'W',"plankWood",'C',container);
-		addOredictRecipe(new ItemStack(IEContent.blockWoodenDecoration,1,0), "W","W", 'W',new ItemStack(IEContent.blockWoodenDecoration,1,2));
+			addOredictRecipe(new ItemStack(IEContent.blockTreatedWood,8,0), "WWW","WCW","WWW", 'W',"plankWood",'C',container);
+		addOredictRecipe(new ItemStack(IEContent.blockTreatedWood,1,0), "W","W", 'W',new ItemStack(IEContent.blockWoodenDecoration,1,2));
 		addOredictRecipe(new ItemStack(IEContent.blockWoodenDecoration,2,1), "SSS","SSS", 'S',"treatedStick");
-		addOredictRecipe(new ItemStack(IEContent.blockWoodenDecoration,6,2), "WWW", 'W',treatedWood);
-		addOredictRecipe(new ItemStack(IEContent.blockWoodenDecoration,6,5), "WWW"," S ","S S", 'W',treatedWood,'S',new ItemStack(IEContent.blockWoodenDecoration,1,1));
-		addOredictRecipe(new ItemStack(IEContent.blockWoodenStair,4,0), "  W"," WW","WWW", 'W',treatedWood).setMirrored(true);
-		addOredictRecipe(new ItemStack(IEContent.blockWoodenDecoration,4,6), "WW","WF","W ", 'W',treatedWood,'F',new ItemStack(IEContent.blockWoodenDecoration,1,1));
+		addOredictRecipe(new ItemStack(IEContent.blockWoodenDecoration,6,2), "WWW", 'W',"plankTreatedWood");
+		addOredictRecipe(new ItemStack(IEContent.blockWoodenDecoration,6,5), "WWW"," S ","S S", 'W',"plankTreatedWood",'S',new ItemStack(IEContent.blockWoodenDecoration,1,1));
+		addOredictRecipe(new ItemStack(IEContent.blockWoodenStair,4,0), "  W"," WW","WWW", 'W',"plankTreatedWood").setMirrored(true);
+		addOredictRecipe(new ItemStack(IEContent.blockWoodenDecoration,4,6), "WW","WF","W ", 'W',"plankTreatedWood",'F',new ItemStack(IEContent.blockWoodenDecoration,1,1));
 
 		addOredictRecipe(new ItemStack(IEContent.blockWoodenDevice,1,0), "F","F","S", 'F',new ItemStack(IEContent.blockWoodenDecoration,1,1),'S',"bricksStone");
-		addOredictRecipe(new ItemStack(IEContent.blockWoodenDevice,1,1), " P ","PWP"," P ", 'P',new ItemStack(IEContent.itemMaterial,1,1),'W',treatedWood);
+		addOredictRecipe(new ItemStack(IEContent.blockWoodenDevice,1,1), " P ","PWP"," P ", 'P',new ItemStack(IEContent.itemMaterial,1,1),'W',"plankTreatedWood");
 		addOredictRecipe(new ItemStack(IEContent.blockWoodenDevice,1,2), " P ","PIP"," P ", 'P',new ItemStack(IEContent.itemMaterial,1,2),'I',"ingotIron");
 		addOredictRecipe(new ItemStack(IEContent.blockWoodenDevice,1,3), "PPP","PIP","PPP", 'P',new ItemStack(IEContent.itemMaterial,1,5),'I',"ingotSteel");
-		addOredictRecipe(new ItemStack(IEContent.blockWoodenDevice,1,4), "WWW","W W","WWW", 'W',treatedWood);
+		addOredictRecipe(new ItemStack(IEContent.blockWoodenDevice,1,4), "WWW","W W","WWW", 'W',"plankTreatedWood");
 		addOredictRecipe(new ItemStack(IEContent.blockWoodenDevice,1,5), "WWW","B F", 'W',new ItemStack(IEContent.blockWoodenDecoration,1,2),'B',"craftingTableWood",'F',new ItemStack(IEContent.blockWoodenDecoration,1,1));
-		addOredictRecipe(new ItemStack(IEContent.blockWoodenDevice,1,6), "SSS","W W","WWW", 'W',treatedWood,'S',new ItemStack(IEContent.blockWoodenDecoration,1,2));
+		addOredictRecipe(new ItemStack(IEContent.blockWoodenDevice,1,6), "SSS","W W","WWW", 'W',"plankTreatedWood",'S',new ItemStack(IEContent.blockWoodenDecoration,1,2));
 
 		addOredictRecipe(new ItemStack(IEContent.blockStoneDecoration,6,0), "CCC","HHH","CCC", 'C',Items.clay_ball,'H',new ItemStack(IEContent.itemMaterial,1,3));
 		addOredictRecipe(new ItemStack(IEContent.blockStoneDecoration,2,1), "CBC","BSB","CBC", 'S',"sandstone",'C',Items.clay_ball,'B',"ingotBrick");
@@ -184,19 +185,19 @@ public class IERecipes
 		addOredictRecipe(new ItemStack(IEContent.blockStorage,1,10), "WWW","WIW","WWW", 'W',new ItemStack(IEContent.itemWireCoil,1,2),'I',"ingotIron");
 
 		addOredictRecipe(new ItemStack(IEContent.blockMetalDevice,8, BlockMetalDevices.META_connectorLV), "BIB"," I ","BIB", 'I',"ingotCopper",'B',Blocks.hardened_clay);
-		addOredictRecipe(new ItemStack(IEContent.blockMetalDevice,1, BlockMetalDevices.META_capacitorLV), "III","CLC","WRW", 'L',"ingotLead",'I',"ingotIron",'C',"ingotCopper",'R',"dustRedstone",'W',treatedWood);
+		addOredictRecipe(new ItemStack(IEContent.blockMetalDevice,1, BlockMetalDevices.META_capacitorLV), "III","CLC","WRW", 'L',"ingotLead",'I',"ingotIron",'C',"ingotCopper",'R',"dustRedstone",'W',"plankTreatedWood");
 		addOredictRecipe(new ItemStack(IEContent.blockMetalDevice,8, BlockMetalDevices.META_connectorMV), "BIB"," I ","BIB", 'I',"ingotIron",'B',Blocks.hardened_clay);
-		addOredictRecipe(new ItemStack(IEContent.blockMetalDevice,1, BlockMetalDevices.META_capacitorMV), "III","ELE","WRW", 'L',"ingotLead",'I',"ingotIron",'E',"ingotElectrum",'R',"blockRedstone",'W',treatedWood);
+		addOredictRecipe(new ItemStack(IEContent.blockMetalDevice,1, BlockMetalDevices.META_capacitorMV), "III","ELE","WRW", 'L',"ingotLead",'I',"ingotIron",'E',"ingotElectrum",'R',"blockRedstone",'W',"plankTreatedWood");
 		addOredictRecipe(new ItemStack(IEContent.blockMetalDevice,1, BlockMetalDevices.META_transformer), "L M","IBI","III", 'L',new ItemStack(IEContent.blockMetalDevice,1,BlockMetalDevices.META_connectorLV),'M',new ItemStack(IEContent.blockMetalDevice,1,BlockMetalDevices.META_connectorMV),'I',"ingotIron",'B',electrumCoil).setMirrored(true);
 		addOredictRecipe(new ItemStack(IEContent.blockMetalDevice,8, BlockMetalDevices.META_relayHV), "BIB"," I ","BIB", 'I',"ingotIron",'B',new ItemStack(IEContent.blockStoneDevice,1,4));
 		addOredictRecipe(new ItemStack(IEContent.blockMetalDevice,4, BlockMetalDevices.META_connectorHV), "BIB","BIB","BIB", 'I',"ingotAluminum",'B',Blocks.hardened_clay);
-		addOredictRecipe(new ItemStack(IEContent.blockMetalDevice,1, BlockMetalDevices.META_capacitorHV), "III","ALA","WRW", 'L',"blockLead",'I',"ingotSteel",'A',"ingotAluminum",'R',"blockRedstone",'W',treatedWood);
+		addOredictRecipe(new ItemStack(IEContent.blockMetalDevice,1, BlockMetalDevices.META_capacitorHV), "III","ALA","WRW", 'L',"blockLead",'I',"ingotSteel",'A',"ingotAluminum",'R',"blockRedstone",'W',"plankTreatedWood");
 		addOredictRecipe(new ItemStack(IEContent.blockMetalDevice,1, BlockMetalDevices.META_transformerHV), "M H","IBI","III", 'H',new ItemStack(IEContent.blockMetalDevice,1,BlockMetalDevices.META_connectorHV),'M',new ItemStack(IEContent.blockMetalDevice,1,BlockMetalDevices.META_connectorMV),'I',"ingotIron",'B',hvCoil).setMirrored(true);
 		addOredictRecipe(new ItemStack(IEContent.blockMetalDevice,1, BlockMetalDevices.META_dynamo), "RCR","III", 'C',copperCoil,'I',"ingotIron",'R',"dustRedstone");
 		addOredictRecipe(new ItemStack(IEContent.blockMetalDevice,1, BlockMetalDevices.META_thermoelectricGen), "III","CBC","CCC", 'I',"ingotSteel",'C',"ingotConstantan",'B',copperCoil);
 		addOredictRecipe(new ItemStack(IEContent.blockMetalDevice,8, BlockMetalDevices.META_conveyorBelt), "LLL","IRI", 'I',"ingotIron",'R',"dustRedstone",'L',Items.leather);
 		addOredictRecipe(new ItemStack(IEContent.blockMetalDevice,1, BlockMetalDevices.META_furnaceHeater), "ICI","CBC","IRI", 'I',"ingotIron",'R',"dustRedstone",'C',"ingotCopper",'B',copperCoil);
-		addOredictRecipe(new ItemStack(IEContent.blockMetalDevice,1, BlockMetalDevices.META_sorter), "IRI","WBW","IRI", 'I',"ingotIron",'R',"dustRedstone",'W',treatedWood,'B',componentIron);
+		addOredictRecipe(new ItemStack(IEContent.blockMetalDevice,1, BlockMetalDevices.META_sorter), "IRI","WBW","IRI", 'I',"ingotIron",'R',"dustRedstone",'W',"plankTreatedWood",'B',componentIron);
 		addOredictRecipe(new ItemStack(IEContent.blockMetalDevice,1, BlockMetalDevices.META_sampleDrill), "SFS","SFS","BFB", 'F',new ItemStack(IEContent.blockMetalDecoration,1,BlockMetalDecoration.META_fence),'S',new ItemStack(IEContent.blockMetalDecoration,1,BlockMetalDecoration.META_scaffolding),'B',new ItemStack(IEContent.blockMetalDecoration,1,BlockMetalDecoration.META_lightEngineering));
 
 		addOredictRecipe(new ItemStack(IEContent.blockMetalDevice2,1, BlockMetalDevices2.META_breakerSwitch), " L ","CIC", 'L',Blocks.lever,'C',Blocks.hardened_clay,'I',"ingotCopper");
@@ -301,7 +302,7 @@ public class IERecipes
 		oreOutputSecondaries.put("Yellorium", new Object[]{"dustLead",.1f});
 		oreOutputSecondaries.put("Plutonium", new Object[]{"dustUranium",.1f});
 		Item i = GameRegistry.findItem("IC2", "itemOreIridium");
-		oreOutputSecondaries.put("Osmium", new Object[]{i,.1f});
+		oreOutputSecondaries.put("Osmium", new Object[]{i,.01f});
 		oreOutputSecondaries.put("Iridium", new Object[]{"dustPlatium",.1f});
 		oreOutputSecondaries.put("FzDarkIron", new Object[]{"dustIron",.1f});
 		i = GameRegistry.findItem("Railcraft", "firestone.raw");
@@ -384,7 +385,7 @@ public class IERecipes
 		if(!OreDictionary.getOres("ore"+ore).isEmpty())
 			addCrusherRecipe(output, "ore"+ore, energy, secondary,secChance);
 		if(!OreDictionary.getOres("oreNether"+ore).isEmpty())
-			addCrusherRecipe(Utils.copyStackWithAmount(output, output.stackSize*2), "oreNether"+ore, energy, secondary,secChance,Blocks.netherrack,.15f);
+			addCrusherRecipe(Utils.copyStackWithAmount(output, NetherOresHelper.getCrushingResult(ore)), "oreNether"+ore, energy, secondary,secChance,Blocks.netherrack,.15f);
 
 		//YAY GregTech!
 		if(!OreDictionary.getOres("oreNetherrack"+ore).isEmpty())
@@ -408,7 +409,7 @@ public class IERecipes
 		if(!OreDictionary.getOres("ingot"+ore).isEmpty())
 			addCrusherRecipe(Utils.copyStackWithAmount(dust, 1), "ingot"+ore, 2400);
 		if(!OreDictionary.getOres("oreNether"+ore).isEmpty())
-			addCrusherRecipe(Utils.copyStackWithAmount(dust, 4), "oreNether"+ore, 4000, secondary,chance, new ItemStack(Blocks.netherrack),.15f);
+			addCrusherRecipe(Utils.copyStackWithAmount(dust, NetherOresHelper.getCrushingResult(ore)), "oreNether"+ore, 4000, secondary,chance,Blocks.netherrack,.15f);
 
 		//YAY GregTech!
 		if(!OreDictionary.getOres("oreNetherrack"+ore).isEmpty())

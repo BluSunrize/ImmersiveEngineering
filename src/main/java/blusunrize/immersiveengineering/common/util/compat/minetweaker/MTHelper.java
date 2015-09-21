@@ -15,11 +15,6 @@ import cpw.mods.fml.relauncher.ReflectionHelper;
 
 public class MTHelper extends IECompatModule
 {
-	public MTHelper()
-	{
-		super("MineTweaker3");
-	}
-	
 	@Override
 	public void init()
 	{

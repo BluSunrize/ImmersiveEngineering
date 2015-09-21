@@ -11,11 +11,6 @@ import blusunrize.immersiveengineering.common.util.Lib;
 
 public class GregTechHelper extends IECompatModule
 {
-	public GregTechHelper()
-	{
-		super("gregtech");
-	}
-
 	@Override
 	public void init()
 	{

@@ -17,11 +17,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChunkCoordinates;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.StatCollector;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.*;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -170,9 +166,47 @@ public class Utils
 		Vec3 vec31 = vec3.addVector((double)f7 * d3, (double)f6 * d3, (double)f8 * d3);
 		return world.func_147447_a(vec3, vec31, bool, !bool, false);
 	}
+	/**
+	 * Tests whether a clear line of sight between the two blocks exists.
+	 * Tests against bounding boxes, ignores liquids.
+	 * This function tries to ignore hitting the starting block by moving pos0 to the respective edge of the start block's bounding box if this happens.
+	 * At least one coordinate of pos0 has to be outside of the start block's bounding box for this to work.
+	 * @param world
+	 * @param cc0 coordinates of start block
+	 * @param cc1 coordinates of target block
+	 * @param pos0 exact start position
+	 * @param pos1 exact target position
+	 * @return true if clear LOS exists. false if there are obstacles between start and target.
+	 */
 	public static boolean canBlocksSeeOther(World world, ChunkCoordinates cc0, ChunkCoordinates cc1, Vec3 pos0, Vec3 pos1)
 	{
 		MovingObjectPosition mop = world.rayTraceBlocks(pos0, pos1);
+		if(mop!=null && mop.blockX==cc0.posX&&mop.blockY==cc0.posY&&mop.blockZ==cc0.posZ)
+		{
+			AxisAlignedBB aabb0 = world.getBlock(cc0.posX, cc0.posY, cc0.posZ).getCollisionBoundingBoxFromPool(world, cc0.posX, cc0.posY, cc0.posZ);
+			Vec3 rayTraceDiff = pos0.subtract(mop.hitVec).normalize();
+			// move starting point to the edge of the bounding box in main direction of raytrace
+			double restartVecX;
+			double restartVecY;
+			double restartVecZ;
+			if(pos0.xCoord>=aabb0.minX && pos0.xCoord<=aabb0.maxX){
+				restartVecX = (rayTraceDiff.xCoord>0.5)?aabb0.maxX:(rayTraceDiff.xCoord<(-0.5))?aabb0.minX:pos0.xCoord;
+			} else {
+				restartVecX = pos0.xCoord;
+			}
+			if(pos0.yCoord>=aabb0.minY && pos0.yCoord<=aabb0.maxY){
+				restartVecY = (rayTraceDiff.yCoord>0.5)?aabb0.maxY:(rayTraceDiff.yCoord<(-0.5))?aabb0.minY:pos0.yCoord;
+			} else {
+				restartVecY = pos0.yCoord;
+			}
+			if(pos0.zCoord>=aabb0.minZ && pos0.zCoord<=aabb0.maxZ){
+				restartVecZ = (rayTraceDiff.zCoord>0.5)?aabb0.maxZ:(rayTraceDiff.zCoord<(-0.5))?aabb0.minZ:pos0.zCoord;
+			} else {
+				restartVecZ = pos0.zCoord;
+			}
+			Vec3 restartVec = Vec3.createVectorHelper(restartVecX, restartVecY, restartVecZ);
+			mop = world.rayTraceBlocks(restartVec, pos1);
+		}
 		return mop==null || (mop.blockX==cc1.posX&&mop.blockY==cc1.posY&&mop.blockZ==cc1.posZ);
 	}
 

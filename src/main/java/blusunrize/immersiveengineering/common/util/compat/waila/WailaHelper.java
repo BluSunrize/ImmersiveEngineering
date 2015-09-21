@@ -5,11 +5,6 @@ import cpw.mods.fml.common.event.FMLInterModComms;
 
 public class WailaHelper extends IECompatModule
 {
-	public WailaHelper()
-	{
-		super("Waila");
-	}
-
 	@Override
 	public void init()
 	{
