@@ -2,12 +2,12 @@ package blusunrize.immersiveengineering.common.blocks;
 
 import java.util.List;
 
-import blusunrize.immersiveengineering.common.util.IELogger;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -20,6 +20,7 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ICustomBoundingboxes;
 import blusunrize.immersiveengineering.common.util.Lib;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -51,7 +52,7 @@ public abstract class BlockIEBase extends BlockContainer
 		this.hasFlavour = hasFlavour;
 		return this;
 	}
-	
+
 	void adjustSound()
 	{
 		if(this.blockMaterial==Material.anvil)
@@ -143,32 +144,45 @@ public abstract class BlockIEBase extends BlockContainer
 	@Override
 	public MovingObjectPosition collisionRayTrace(World world, int x, int y, int z, Vec3 vec0, Vec3 vec1)
 	{
-		//this.setBlockBoundsBasedOnState(world, x, y, z);
-		//vec0 = vec0.addVector((double)(-x), (double)(-y), (double)(-z));
-		//vec1 = vec1.addVector((double)(-x), (double)(-y), (double)(-z));
-		return super.collisionRayTrace(world, x, y, z, vec0, vec1);
+		this.setBlockBoundsBasedOnState(world, x, y, z);
+		vec0 = vec0.addVector((double)(-x), (double)(-y), (double)(-z));
+		vec1 = vec1.addVector((double)(-x), (double)(-y), (double)(-z));
+
+
+		if(this instanceof ICustomBoundingboxes)
+		{
+			for(AxisAlignedBB aabb : ((ICustomBoundingboxes)this).addCustomSelectionBoxesToList(world, x,y,z, null))
+			{
+				MovingObjectPosition mop = this.doRayTraceOnBox(world, x, y, z, vec0, vec1, aabb);
+				if(mop!=null)
+					return mop;
+			}
+			return null;
+		}
+		else
+			return this.doRayTraceOnBox(world, x, y, z, vec0, vec1, AxisAlignedBB.getBoundingBox(minX,minY,minZ, maxX,maxY,maxZ));
 	}
 
-	protected MovingObjectPosition rayTraceAgainstBox(int x, int y, int z,Vec3 vec0, Vec3 vec1, double minX, double maxX, double minY, double maxY, double minZ, double maxZ)
+	protected MovingObjectPosition doRayTraceOnBox(World world, int x, int y, int z,Vec3 vec0, Vec3 vec1, AxisAlignedBB box)
 	{
-		Vec3 vecMinX = vec0.getIntermediateWithXValue(vec1, this.minX);
-		Vec3 vecMaxX = vec0.getIntermediateWithXValue(vec1, this.maxX);
-		Vec3 vecMinY = vec0.getIntermediateWithYValue(vec1, this.minY);
-		Vec3 vecMaxY = vec0.getIntermediateWithYValue(vec1, this.maxY);
-		Vec3 vecMinZ = vec0.getIntermediateWithZValue(vec1, this.minZ);
-		Vec3 vecMaxZ = vec0.getIntermediateWithZValue(vec1, this.maxZ);
+		Vec3 vecMinX = vec0.getIntermediateWithXValue(vec1, box.minX);
+		Vec3 vecMaxX = vec0.getIntermediateWithXValue(vec1, box.maxX);
+		Vec3 vecMinY = vec0.getIntermediateWithYValue(vec1, box.minY);
+		Vec3 vecMaxY = vec0.getIntermediateWithYValue(vec1, box.maxY);
+		Vec3 vecMinZ = vec0.getIntermediateWithZValue(vec1, box.minZ);
+		Vec3 vecMaxZ = vec0.getIntermediateWithZValue(vec1, box.maxZ);
 
-		if (!this.isVecInsideYZBounds(vecMinX))
+		if (!this.isVecInsideYZBounds(world,x,y,z, vecMinX, box))
 			vecMinX = null;
-		if (!this.isVecInsideYZBounds(vecMaxX))
+		if (!this.isVecInsideYZBounds(world,x,y,z, vecMaxX, box))
 			vecMaxX = null;
-		if (!this.isVecInsideXZBounds(vecMinY))
+		if (!this.isVecInsideXZBounds(world,x,y,z, vecMinY, box))
 			vecMinY = null;
-		if (!this.isVecInsideXZBounds(vecMaxY))
+		if (!this.isVecInsideXZBounds(world,x,y,z, vecMaxY, box))
 			vecMaxY = null;
-		if (!this.isVecInsideXYBounds(vecMinZ))
+		if (!this.isVecInsideXYBounds(world,x,y,z, vecMinZ, box))
 			vecMinZ = null;
-		if (!this.isVecInsideXYBounds(vecMaxZ))
+		if (!this.isVecInsideXYBounds(world,x,y,z, vecMaxZ, box))
 			vecMaxZ = null;
 
 		Vec3 vec38 = null;
@@ -206,17 +220,23 @@ public abstract class BlockIEBase extends BlockContainer
 			return new MovingObjectPosition(x, y, z, b0, vec38.addVector((double)x, (double)y, (double)z));
 		}
 	}
-	protected boolean isVecInsideYZBounds(Vec3 vec)
+	protected boolean isVecInsideYZBounds(World world, int x, int y, int z, Vec3 vec, AxisAlignedBB box)
 	{
-		return vec == null ? false : vec.yCoord >= this.minY && vec.yCoord <= this.maxY && vec.zCoord >= this.minZ && vec.zCoord <= this.maxZ;
+		return vec == null ? false : vec.yCoord>=box.minY && vec.yCoord<=box.maxY && vec.zCoord>=box.minZ && vec.zCoord<=box.maxZ;
 	}
-	protected boolean isVecInsideXZBounds(Vec3 vec)
+	protected boolean isVecInsideXZBounds(World world, int x, int y, int z, Vec3 vec, AxisAlignedBB box)
 	{
-		return vec == null ? false : vec.xCoord >= this.minX && vec.xCoord <= this.maxX && vec.zCoord >= this.minZ && vec.zCoord <= this.maxZ;
+		return vec == null ? false : vec.xCoord>=box.minX && vec.xCoord<=box.maxX && vec.zCoord>=box.minZ && vec.zCoord<=box.maxZ;
 	}
-	protected boolean isVecInsideXYBounds(Vec3 vec)
+	protected boolean isVecInsideXYBounds(World world, int x, int y, int z, Vec3 vec, AxisAlignedBB box)
 	{
-		return vec == null ? false : vec.xCoord >= this.minX && vec.xCoord <= this.maxX && vec.yCoord >= this.minY && vec.yCoord <= this.maxY;
+		return vec == null ? false : vec.xCoord>=box.minX && vec.xCoord<=box.maxX && vec.yCoord>=box.minY && vec.yCoord<=box.maxY;
+	}
+	protected void addCollisionBox(World world, int x, int y, int z, AxisAlignedBB aabb, List list, Entity ent)
+	{
+		AxisAlignedBB box = AxisAlignedBB.getBoundingBox(x+this.minX, y+this.minY, z+this.minZ, x+this.maxX, y+this.maxY, z+this.maxZ);
+		if (box != null && aabb.intersectsWith(box))
+			list.add(box);
 	}
 
 	public static class BlockIESimple extends BlockIEBase
@@ -234,10 +254,10 @@ public abstract class BlockIEBase extends BlockContainer
 		}
 
 		@Override
-	    public boolean hasTileEntity(int metadata)
-	    {
-	        return false;
-	    }
+		public boolean hasTileEntity(int metadata)
+		{
+			return false;
+		}
 		@Override
 		public TileEntity createNewTileEntity(World p_149915_1_, int p_149915_2_)
 		{
