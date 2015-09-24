@@ -7,6 +7,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.server.MinecraftServer;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.api.energy.IImmersiveConnectable;
@@ -122,7 +123,7 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 	{
 		NBTTagCompound nbt = pkt.func_148857_g();
 		this.readFromNBT(nbt);
-		if(worldObj!=null && worldObj.isRemote)
+		if(worldObj!=null && worldObj.isRemote && MinecraftServer.getServer()==null)
 		{
 			NBTTagList connectionList = nbt.getTagList("connectionList", 10);
 			ImmersiveNetHandler.INSTANCE.clearConnectionsOriginatingFrom(Utils.toCC(this), worldObj);
