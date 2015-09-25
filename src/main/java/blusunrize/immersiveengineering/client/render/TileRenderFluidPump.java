@@ -1,13 +1,12 @@
 package blusunrize.immersiveengineering.client.render;
 
-import blusunrize.immersiveengineering.client.models.ModelIEObj;
-import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDevices2;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFluidPump;
-import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
+import blusunrize.immersiveengineering.client.models.ModelIEObj;
+import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDevices2;
+import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 
 public class TileRenderFluidPump extends TileRenderIE {
   static ModelIEObj model = new ModelIEObj("immersiveengineering:models/pump.obj") {

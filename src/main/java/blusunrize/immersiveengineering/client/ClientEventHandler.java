@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.client;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -20,6 +21,7 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.StatCollector;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.client.GuiIngameForge;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
@@ -36,6 +38,7 @@ import net.minecraftforge.oredict.OreDictionary;
 
 import org.lwjgl.opengl.GL11;
 
+import blusunrize.immersiveengineering.api.AdvancedAABB;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.api.energy.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler;
@@ -99,24 +102,24 @@ public class ClientEventHandler
 			WavefrontObject model = modelIE.rebindModel();
 			rebindUVsToIcon(model, modelIE.getBlockIcon());
 		}
-//
-//		if(event.map.getTextureType()==Config.getInt("revolverSheetID"))
-//		{
-//			try {
-//				IELogger.debug("TEST-udafe");
-//				TextureAtlasSprite tal = (TextureAtlasSprite)event.map.registerIcon("immersiveengineering:revolver");
-//				URL url = new URL("http://i.imgur.com/bU3bEDe.png");
-//				BufferedImage img = ImageIO.read(url);
-//				IELogger.debug("url = "+url);
-//				IELogger.debug("img = "+img);
-//				IELogger.debug("Loading sprite");
-//				tal.loadSprite(new BufferedImage[]{img}, null, false);
-//				IELogger.debug("sprite loaded");
-//				((ItemRevolver)IEContent.itemRevolver).revolverDefaultTexture=tal;
-//			} catch (Exception e) {
-//				e.printStackTrace();
-//			}
-//		}
+		//
+		//		if(event.map.getTextureType()==Config.getInt("revolverSheetID"))
+		//		{
+		//			try {
+		//				IELogger.debug("TEST-udafe");
+		//				TextureAtlasSprite tal = (TextureAtlasSprite)event.map.registerIcon("immersiveengineering:revolver");
+		//				URL url = new URL("http://i.imgur.com/bU3bEDe.png");
+		//				BufferedImage img = ImageIO.read(url);
+		//				IELogger.debug("url = "+url);
+		//				IELogger.debug("img = "+img);
+		//				IELogger.debug("Loading sprite");
+		//				tal.loadSprite(new BufferedImage[]{img}, null, false);
+		//				IELogger.debug("sprite loaded");
+		//				((ItemRevolver)IEContent.itemRevolver).revolverDefaultTexture=tal;
+		//			} catch (Exception e) {
+		//				e.printStackTrace();
+		//			}
+		//		}
 	}
 
 	void rebindUVsToIcon(WavefrontObject model, IIcon icon)
@@ -273,107 +276,108 @@ public class ClientEventHandler
 	@SubscribeEvent()
 	public void renderOverlay(RenderGameOverlayEvent.Post event)
 	{
-		if(ClientUtils.mc().thePlayer!=null && ClientUtils.mc().thePlayer.getCurrentEquippedItem()!=null && event.type == RenderGameOverlayEvent.ElementType.TEXT)
+		if(ClientUtils.mc().thePlayer!=null && event.type == RenderGameOverlayEvent.ElementType.TEXT)
 		{
-			if( OreDictionary.itemMatches(new ItemStack(IEContent.itemTool,1,2), ClientUtils.mc().thePlayer.getCurrentEquippedItem(), false) || OreDictionary.itemMatches(new ItemStack(IEContent.itemWireCoil,1,OreDictionary.WILDCARD_VALUE), ClientUtils.mc().thePlayer.getCurrentEquippedItem(), false) )
-			{
-				if(ItemNBTHelper.hasKey(ClientUtils.mc().thePlayer.getCurrentEquippedItem(), "linkingPos"))
+			if(ClientUtils.mc().thePlayer.getCurrentEquippedItem()!=null)
+				if(OreDictionary.itemMatches(new ItemStack(IEContent.itemTool,1,2), ClientUtils.mc().thePlayer.getCurrentEquippedItem(), false) || OreDictionary.itemMatches(new ItemStack(IEContent.itemWireCoil,1,OreDictionary.WILDCARD_VALUE), ClientUtils.mc().thePlayer.getCurrentEquippedItem(), false) )
 				{
-					int[] link = ItemNBTHelper.getIntArray(ClientUtils.mc().thePlayer.getCurrentEquippedItem(), "linkingPos");
-					if(link!=null&&link.length>3)
+					if(ItemNBTHelper.hasKey(ClientUtils.mc().thePlayer.getCurrentEquippedItem(), "linkingPos"))
 					{
-						String s = StatCollector.translateToLocalFormatted(Lib.DESC_INFO+"attachedTo", link[1],link[2],link[3]);
-						ClientUtils.font().drawString(s, event.resolution.getScaledWidth()/2 - ClientUtils.font().getStringWidth(s)/2, event.resolution.getScaledHeight()-GuiIngameForge.left_height-10, WireType.ELECTRUM.getColour(null), true);
+						int[] link = ItemNBTHelper.getIntArray(ClientUtils.mc().thePlayer.getCurrentEquippedItem(), "linkingPos");
+						if(link!=null&&link.length>3)
+						{
+							String s = StatCollector.translateToLocalFormatted(Lib.DESC_INFO+"attachedTo", link[1],link[2],link[3]);
+							ClientUtils.font().drawString(s, event.resolution.getScaledWidth()/2 - ClientUtils.font().getStringWidth(s)/2, event.resolution.getScaledHeight()-GuiIngameForge.left_height-10, WireType.ELECTRUM.getColour(null), true);
+						}
 					}
+
 				}
-
-			}
-			else if(ClientUtils.mc().thePlayer.getCurrentEquippedItem().getItem() instanceof ItemRevolver && ClientUtils.mc().thePlayer.getCurrentEquippedItem().getItemDamage()!=2)
-			{
-				ClientUtils.bindTexture("immersiveengineering:textures/gui/revolver.png");
-				ItemStack[] bullets = ((ItemRevolver)ClientUtils.mc().thePlayer.getCurrentEquippedItem().getItem()).getBullets(ClientUtils.mc().thePlayer.getCurrentEquippedItem());
-				int bulletAmount = bullets.length;
-				float dx = event.resolution.getScaledWidth()-32-48;
-				float dy = event.resolution.getScaledHeight()-64;
-				GL11.glPushMatrix();
-				GL11.glEnable(GL11.GL_BLEND);
-				GL11.glTranslated(dx, dy, 0);
-				GL11.glScalef(.5f, .5f, 1);
-
-				ClientUtils.drawTexturedRect(0,1,74,74, 0/256f,74/256f, 51/256f,125/256f);
-				if(bulletAmount>=18)
-					ClientUtils.drawTexturedRect(47,1,103,74, 74/256f,177/256f, 51/256f,125/256f);
-				else if(bulletAmount>8)
-					ClientUtils.drawTexturedRect(57,1,79,39, 57/256f,136/256f, 12/256f,51/256f);
-
-				RenderItem ir = RenderItem.getInstance();
-				int[][] slots = ContainerRevolver.slotPositions[bulletAmount>=18?2: bulletAmount>8?1: 0];
-				for(int i=0; i<bulletAmount; i++)
+				else if(ClientUtils.mc().thePlayer.getCurrentEquippedItem().getItem() instanceof ItemRevolver && ClientUtils.mc().thePlayer.getCurrentEquippedItem().getItemDamage()!=2)
 				{
-					if(bullets[i]!=null)
+					ClientUtils.bindTexture("immersiveengineering:textures/gui/revolver.png");
+					ItemStack[] bullets = ((ItemRevolver)ClientUtils.mc().thePlayer.getCurrentEquippedItem().getItem()).getBullets(ClientUtils.mc().thePlayer.getCurrentEquippedItem());
+					int bulletAmount = bullets.length;
+					float dx = event.resolution.getScaledWidth()-32-48;
+					float dy = event.resolution.getScaledHeight()-64;
+					GL11.glPushMatrix();
+					GL11.glEnable(GL11.GL_BLEND);
+					GL11.glTranslated(dx, dy, 0);
+					GL11.glScalef(.5f, .5f, 1);
+
+					ClientUtils.drawTexturedRect(0,1,74,74, 0/256f,74/256f, 51/256f,125/256f);
+					if(bulletAmount>=18)
+						ClientUtils.drawTexturedRect(47,1,103,74, 74/256f,177/256f, 51/256f,125/256f);
+					else if(bulletAmount>8)
+						ClientUtils.drawTexturedRect(57,1,79,39, 57/256f,136/256f, 12/256f,51/256f);
+
+					RenderItem ir = RenderItem.getInstance();
+					int[][] slots = ContainerRevolver.slotPositions[bulletAmount>=18?2: bulletAmount>8?1: 0];
+					for(int i=0; i<bulletAmount; i++)
 					{
-						int x = 0; 
-						int y = 0;
-						if(i==0)
+						if(bullets[i]!=null)
 						{
-							x = 29;
-							y = 3;
-						}
-						else if(i-1<slots.length)
-						{
-							x = slots[i-1][0];
-							y = slots[i-1][1];
-						}
-						else
-						{
-							int ii = i-(slots.length+1);
-							x = ii==0?48: ii==1?29: ii==3?2: 10;
-							y = ii==1?57: ii==3?30: ii==4?11: 49;
-						}
+							int x = 0; 
+							int y = 0;
+							if(i==0)
+							{
+								x = 29;
+								y = 3;
+							}
+							else if(i-1<slots.length)
+							{
+								x = slots[i-1][0];
+								y = slots[i-1][1];
+							}
+							else
+							{
+								int ii = i-(slots.length+1);
+								x = ii==0?48: ii==1?29: ii==3?2: 10;
+								y = ii==1?57: ii==3?30: ii==4?11: 49;
+							}
 
-						ir.renderItemIntoGUI(ClientUtils.mc().fontRenderer, ClientUtils.mc().renderEngine, bullets[i], x,y);
+							ir.renderItemIntoGUI(ClientUtils.mc().fontRenderer, ClientUtils.mc().renderEngine, bullets[i], x,y);
+						}
 					}
-				}
-				RenderHelper.disableStandardItemLighting();
-				GL11.glDisable(GL11.GL_BLEND);
-				GL11.glPopMatrix();
-			}
-			else if(ClientUtils.mc().thePlayer.getCurrentEquippedItem().getItem() instanceof ItemDrill && ClientUtils.mc().thePlayer.getCurrentEquippedItem().getItemDamage()==0)
-			{
-				ItemStack drill = ClientUtils.mc().thePlayer.getCurrentEquippedItem(); 
-				ClientUtils.bindTexture("immersiveengineering:textures/gui/fuelGauge.png");
-				GL11.glColor4f(1, 1, 1, 1);
-				float dx = event.resolution.getScaledWidth()-16;
-				float dy = event.resolution.getScaledHeight()-12;
-				GL11.glPushMatrix();
-				GL11.glTranslated(dx, dy, 0);
-				ClientUtils.drawTexturedRect(-24,-68, 33,81, 179/256f,210/256f, 0/96f,80/96f);
-
-				GL11.glTranslated(-23,-28,0);
-				FluidStack fuel = ((ItemDrill)drill.getItem()).getFluid(drill);
-				//				for(float angle=80; angle>=-80; angle-=20)
-				//				{
-				float angle = 80-(160* (fuel!=null? fuel.amount/(float)((ItemDrill)drill.getItem()).getCapacity(drill): 0));
-				GL11.glRotatef(angle, 0, 0, 1);
-				ClientUtils.drawTexturedRect(6,-2, 24,4, 91/256f,123/256f, 80/96f,87/96f);
-				GL11.glRotatef(-angle, 0, 0, 1);
-				//				}
-				GL11.glTranslated(23,28,0);
-
-				ClientUtils.drawTexturedRect(-33-17,-40-26, 33+30,40+37, 108/256f,174/256f, 0/96f,80/96f);
-
-				RenderItem ir = RenderItem.getInstance();
-				float scale = 1;//.75f;
-				GL11.glScalef(scale,scale,scale);
-				ItemStack head = ((ItemDrill)drill.getItem()).getHead(drill);
-				if(head!=null)
-				{
-					ir.renderItemIntoGUI(ClientUtils.mc().fontRenderer, ClientUtils.mc().renderEngine, head, (int)(-48/scale),(int)(-36/scale));
-					ir.renderItemOverlayIntoGUI(ClientUtils.font(), ClientUtils.mc().renderEngine, head, (int)(-48/scale),(int)(-36/scale));
 					RenderHelper.disableStandardItemLighting();
+					GL11.glDisable(GL11.GL_BLEND);
+					GL11.glPopMatrix();
 				}
-				GL11.glPopMatrix();
-			}
+				else if(ClientUtils.mc().thePlayer.getCurrentEquippedItem().getItem() instanceof ItemDrill && ClientUtils.mc().thePlayer.getCurrentEquippedItem().getItemDamage()==0)
+				{
+					ItemStack drill = ClientUtils.mc().thePlayer.getCurrentEquippedItem(); 
+					ClientUtils.bindTexture("immersiveengineering:textures/gui/fuelGauge.png");
+					GL11.glColor4f(1, 1, 1, 1);
+					float dx = event.resolution.getScaledWidth()-16;
+					float dy = event.resolution.getScaledHeight()-12;
+					GL11.glPushMatrix();
+					GL11.glTranslated(dx, dy, 0);
+					ClientUtils.drawTexturedRect(-24,-68, 33,81, 179/256f,210/256f, 0/96f,80/96f);
+
+					GL11.glTranslated(-23,-28,0);
+					FluidStack fuel = ((ItemDrill)drill.getItem()).getFluid(drill);
+					//				for(float angle=80; angle>=-80; angle-=20)
+					//				{
+					float angle = 80-(160* (fuel!=null? fuel.amount/(float)((ItemDrill)drill.getItem()).getCapacity(drill): 0));
+					GL11.glRotatef(angle, 0, 0, 1);
+					ClientUtils.drawTexturedRect(6,-2, 24,4, 91/256f,123/256f, 80/96f,87/96f);
+					GL11.glRotatef(-angle, 0, 0, 1);
+					//				}
+					GL11.glTranslated(23,28,0);
+
+					ClientUtils.drawTexturedRect(-33-17,-40-26, 33+30,40+37, 108/256f,174/256f, 0/96f,80/96f);
+
+					RenderItem ir = RenderItem.getInstance();
+					float scale = 1;//.75f;
+					GL11.glScalef(scale,scale,scale);
+					ItemStack head = ((ItemDrill)drill.getItem()).getHead(drill);
+					if(head!=null)
+					{
+						ir.renderItemIntoGUI(ClientUtils.mc().fontRenderer, ClientUtils.mc().renderEngine, head, (int)(-48/scale),(int)(-36/scale));
+						ir.renderItemOverlayIntoGUI(ClientUtils.font(), ClientUtils.mc().renderEngine, head, (int)(-48/scale),(int)(-36/scale));
+						RenderHelper.disableStandardItemLighting();
+					}
+					GL11.glPopMatrix();
+				}
 
 			boolean hammer = Utils.isHammer(ClientUtils.mc().thePlayer.getCurrentEquippedItem());
 			MovingObjectPosition mop = ClientUtils.mc().objectMouseOver;
@@ -409,29 +413,35 @@ public class ClientEventHandler
 			double d0 = event.player.lastTickPosX + (event.player.posX - event.player.lastTickPosX) * (double)event.partialTicks;
 			double d1 = event.player.lastTickPosY + (event.player.posY - event.player.lastTickPosY) * (double)event.partialTicks;
 			double d2 = event.player.lastTickPosZ + (event.player.posZ - event.player.lastTickPosZ) * (double)event.partialTicks;
-			//			if(additionalBlockBounds.containsKey(new ChunkCoordinates(event.target.blockX,event.target.blockY,event.target.blockZ)))
 			if(event.player.worldObj.getBlock(event.target.blockX,event.target.blockY,event.target.blockZ) instanceof IEBlockInterfaces.ICustomBoundingboxes)
 			{
 				ChunkCoordinates cc = new ChunkCoordinates(event.target.blockX,event.target.blockY,event.target.blockZ);
 				IEBlockInterfaces.ICustomBoundingboxes block = (IEBlockInterfaces.ICustomBoundingboxes) event.player.worldObj.getBlock(event.target.blockX,event.target.blockY,event.target.blockZ);
-				Set<AxisAlignedBB> set = block.addCustomSelectionBoxesToList(event.player.worldObj, cc.posX,cc.posY,cc.posZ, event.player);
+				ArrayList<AxisAlignedBB> set = block.addCustomSelectionBoxesToList(event.player.worldObj, cc.posX,cc.posY,cc.posZ);
 				if(!set.isEmpty())
 				{
-					//				if(!(event.player.worldObj.getTileEntity(event.target.blockX,event.target.blockY,event.target.blockZ) instanceof IEBlockInterfaces.ICustomBoundingboxes))
-					//				{
-					//					additionalBlockBounds.removeAll(cc);
-					//					return;
-					//				}
 					GL11.glEnable(GL11.GL_BLEND);
 					OpenGlHelper.glBlendFunc(770, 771, 1, 0);
 					GL11.glColor4f(0.0F, 0.0F, 0.0F, 0.4F);
 					GL11.glLineWidth(2.0F);
 					GL11.glDisable(GL11.GL_TEXTURE_2D);
 					GL11.glDepthMask(false);
+					ArrayList<AxisAlignedBB> specialBoxes = new ArrayList<AxisAlignedBB>();
+					AxisAlignedBB overrideBox = null; 
 					for(AxisAlignedBB aabb : set)
-						//				for(AxisAlignedBB aabb : additionalBlockBounds.get(cc))
 						if(aabb!=null)
-							RenderGlobal.drawOutlinedBoundingBox(aabb.getOffsetBoundingBox(cc.posX,cc.posY,cc.posZ).expand((double)f1, (double)f1, (double)f1).getOffsetBoundingBox(-d0, -d1, -d2), -1);
+						{
+							boolean b = block.addSpecifiedSubBox(event.player.worldObj, cc.posX,cc.posY,cc.posZ, event.player, aabb, event.target.hitVec, specialBoxes);
+							if(b)
+								overrideBox = specialBoxes.get(specialBoxes.size()-1);
+						}
+
+					if(overrideBox!=null)
+						renderBoundingBox(overrideBox, cc.posX-d0,cc.posY-d1,cc.posZ-d2, f1);
+					else
+						for(AxisAlignedBB aabb : specialBoxes.isEmpty()?set:specialBoxes)
+							if(aabb!=null)
+								renderBoundingBox(aabb, cc.posX-d0,cc.posY-d1,cc.posZ-d2, f1);
 
 					GL11.glDepthMask(true);
 					GL11.glEnable(GL11.GL_TEXTURE_2D);
@@ -506,5 +516,26 @@ public class ClientEventHandler
 			}
 
 		}
+	}
+
+	static void renderBoundingBox(AxisAlignedBB aabb, double offsetX, double offsetY, double offsetZ, float expand)
+	{
+		if(aabb instanceof AdvancedAABB && ((AdvancedAABB)aabb).drawOverride!=null && ((AdvancedAABB)aabb).drawOverride.length>0)
+		{
+			double midX = aabb.minX+(aabb.maxX-aabb.minX)/2;
+			double midY = aabb.minY+(aabb.maxY-aabb.minY)/2;
+			double midZ = aabb.minZ+(aabb.maxZ-aabb.minZ)/2;
+			ClientUtils.tes().addTranslation((float)offsetX, (float)offsetY, (float)offsetZ);
+			for(Vec3[] face : ((AdvancedAABB)aabb).drawOverride)
+			{
+				ClientUtils.tes().startDrawing(GL11.GL_LINE_LOOP);
+				for(Vec3 v : face)
+					ClientUtils.tes().addVertex(v.xCoord+(v.xCoord<midX?-expand:expand),v.yCoord+(v.yCoord<midY?-expand:expand),v.zCoord+(v.zCoord<midZ?-expand:expand));
+				ClientUtils.tes().draw();
+			}
+			ClientUtils.tes().addTranslation((float)-offsetX, (float)-offsetY, (float)-offsetZ);
+		}
+		else
+			RenderGlobal.drawOutlinedBoundingBox(aabb.getOffsetBoundingBox(offsetX, offsetY, offsetZ).expand((double)expand, (double)expand, (double)expand), -1);
 	}
 }

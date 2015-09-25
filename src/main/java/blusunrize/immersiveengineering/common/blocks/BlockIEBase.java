@@ -145,19 +145,27 @@ public abstract class BlockIEBase extends BlockContainer
 	public MovingObjectPosition collisionRayTrace(World world, int x, int y, int z, Vec3 vec0, Vec3 vec1)
 	{
 		this.setBlockBoundsBasedOnState(world, x, y, z);
+		Vec3 playerVec = vec0;
 		vec0 = vec0.addVector((double)(-x), (double)(-y), (double)(-z));
 		vec1 = vec1.addVector((double)(-x), (double)(-y), (double)(-z));
-
-
 		if(this instanceof ICustomBoundingboxes)
 		{
-			for(AxisAlignedBB aabb : ((ICustomBoundingboxes)this).addCustomSelectionBoxesToList(world, x,y,z, null))
+			MovingObjectPosition hit = null;
+			double dist = 0;
+			for(AxisAlignedBB aabb : ((ICustomBoundingboxes)this).addCustomSelectionBoxesToList(world, x,y,z))
 			{
 				MovingObjectPosition mop = this.doRayTraceOnBox(world, x, y, z, vec0, vec1, aabb);
 				if(mop!=null)
-					return mop;
+				{
+					double newDist = playerVec.distanceTo(mop.hitVec);
+					if(hit==null||newDist<dist)
+					{
+						hit = mop;
+						dist = newDist;
+					}
+				}
 			}
-			return null;
+			return hit;
 		}
 		else
 			return this.doRayTraceOnBox(world, x, y, z, vec0, vec1, AxisAlignedBB.getBoundingBox(minX,minY,minZ, maxX,maxY,maxZ));

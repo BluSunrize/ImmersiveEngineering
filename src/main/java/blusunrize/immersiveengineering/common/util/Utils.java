@@ -82,6 +82,13 @@ public class Utils
 		return -1;
 	}
 
+	public static FluidStack copyFluidStackWithAmount(FluidStack stack, int amount)
+	{
+		if(stack==null)
+			return null;
+		return new FluidStack(stack, amount);
+	}
+	
 	public static ChunkCoordinates toCC(Object object)
 	{
 		if(object instanceof ChunkCoordinates)

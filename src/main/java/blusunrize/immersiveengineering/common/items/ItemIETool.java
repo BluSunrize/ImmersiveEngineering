@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 import net.minecraft.block.Block;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatComponentTranslation;
@@ -30,7 +31,10 @@ import cofh.api.energy.IEnergyReceiver;
 
 import com.google.common.collect.ImmutableSet;
 
-public class ItemIETool extends ItemIEBase
+import cpw.mods.fml.common.Optional;
+
+@Optional.Interface(iface = "cofh.api.item.IToolHammer", modid = "CoFHAPI")
+public class ItemIETool extends ItemIEBase implements cofh.api.item.IToolHammer
 {
 	public ItemIETool()
 	{
@@ -221,5 +225,18 @@ public class ItemIETool extends ItemIEBase
 		if(ForgeHooks.isToolEffective(stack, block, meta))
 			return 6;
 		return super.getDigSpeed(stack, block, meta);
+	}
+
+	@Override
+	@Optional.Method(modid = "CoFHAPI")
+	public boolean isUsable(ItemStack stack, EntityLivingBase living, int x, int y, int z)
+	{
+		return stack!=null&&stack.getItemDamage()==0;
+	}
+
+	@Override
+	@Optional.Method(modid = "CoFHAPI")
+	public void toolUsed(ItemStack stack, EntityLivingBase living, int x, int y, int z)
+	{
 	}
 }

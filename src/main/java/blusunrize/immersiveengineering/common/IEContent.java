@@ -289,6 +289,7 @@ public class IEContent
 		registerTile(TileEntityEnergyMeter.class);
 		registerTile(TileEntityElectricLantern.class);
 		registerTile(TileEntityFloodLight.class);
+		registerTile(TileEntityFluidPipe_old.class);
 		registerTile(TileEntityFluidPipe.class);
 		registerTile(TileEntityFluidPump.class);
 

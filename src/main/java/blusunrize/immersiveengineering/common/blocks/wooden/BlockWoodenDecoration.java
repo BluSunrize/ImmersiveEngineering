@@ -157,7 +157,9 @@ public class BlockWoodenDecoration extends BlockIEBase implements blusunrize.aqu
 	public boolean canConnectFenceTo(IBlockAccess world, int x, int y, int z)
 	{
 		Block block = world.getBlock(x, y, z);
-		return block != this && block != Blocks.fence_gate ? (block.getMaterial().isOpaque() && block.renderAsNormalBlock() ? block.getMaterial() != Material.gourd : false) : true;
+		if(block==this && world.getBlockMetadata(x, y, z)==1)
+			return true;
+		return block != Blocks.fence_gate ? (block.getMaterial().isOpaque() && block.renderAsNormalBlock() ? block.getMaterial() != Material.gourd : false) : true;
 	}
 
 	@Override

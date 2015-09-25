@@ -151,7 +151,7 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart implement
 			return 0;
 		if(master()!=null)
 			return master().fill(from,resource,doFill);
-		int f =  tank.fill(resource, doFill);
+		int f = tank.fill(resource, doFill);
 		if(f>0 && doFill)
 		{
 			markDirty();
@@ -177,7 +177,7 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart implement
 			return null;
 		if(master()!=null)
 			return master().drain(from,maxDrain,doDrain);
-		FluidStack fs =  tank.drain(maxDrain, doDrain);
+		FluidStack fs = tank.drain(maxDrain, doDrain);
 		if(fs!=null && fs.amount>0 && doDrain)
 		{
 			markDirty();

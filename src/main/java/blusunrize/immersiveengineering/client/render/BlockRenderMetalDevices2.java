@@ -1,16 +1,23 @@
 package blusunrize.immersiveengineering.client.render;
 
-import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.blocks.metal.*;
-import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
-import cpw.mods.fml.client.registry.RenderingRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.world.IBlockAccess;
+
 import org.lwjgl.opengl.GL11;
+
+import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDevices2;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBreakerSwitch;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityElectricLantern;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityEnergyMeter;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFloodLight;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFluidPipe;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFluidPump;
+import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
+import cpw.mods.fml.client.registry.RenderingRegistry;
 
 public class BlockRenderMetalDevices2 implements ISimpleBlockRenderingHandler
 {
@@ -136,6 +143,7 @@ public class BlockRenderMetalDevices2 implements ISimpleBlockRenderingHandler
 		}
 		else if(metadata==BlockMetalDevices2.META_fluidPipe)
 		{
+//			TileEntityFluidPipe_old tile = (TileEntityFluidPipe_old)world.getTileEntity(x, y, z);
 			TileEntityFluidPipe tile = (TileEntityFluidPipe)world.getTileEntity(x, y, z);
 			ClientUtils.handleStaticTileRenderer(tile);
 			return true;
