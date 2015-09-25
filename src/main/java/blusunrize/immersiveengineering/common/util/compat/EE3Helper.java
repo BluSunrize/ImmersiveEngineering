@@ -18,46 +18,49 @@ public class EE3Helper extends IECompatModule
 	@Override
 	public void postInit()
 	{
-		addValue(new ItemStack(IEContent.itemMetal,1,0), 128);//Copper
-		addValue(new ItemStack(IEContent.itemMetal,1,1), 192);//Aluminium
-		addValue(new ItemStack(IEContent.itemMetal,1,2), 512);//Lead
-		addValue(new ItemStack(IEContent.itemMetal,1,3), 512);//Silver
-		addValue(new ItemStack(IEContent.itemMetal,1,4), 1024);//Nickel
-		addValue(new ItemStack(IEContent.itemMetal,1,5), 576);//Constantan
+		int mode = Config.getInt("ee3mode");
+		if (mode==0)
+			return;
+		addValue(new ItemStack(IEContent.itemMetal,1,0), 128, mode==2);//Copper
+		addValue(new ItemStack(IEContent.itemMetal,1,1), 192, mode==2);//Aluminium
+		addValue(new ItemStack(IEContent.itemMetal,1,2), 512, mode==2);//Lead
+		addValue(new ItemStack(IEContent.itemMetal,1,3), 512, mode==2);//Silver
+		addValue(new ItemStack(IEContent.itemMetal,1,4), 1024, mode==2);//Nickel
+		addValue(new ItemStack(IEContent.itemMetal,1,5), 576, mode==2);//Constantan
 		AbilityRegistryProxy.setAsNotLearnable(new ItemStack(IEContent.itemMetal,1,5));
-		addValue(new ItemStack(IEContent.itemMetal,1,6), 1280);//Electrum
+		addValue(new ItemStack(IEContent.itemMetal,1,6), 1280, mode==2);//Electrum
 		AbilityRegistryProxy.setAsNotLearnable(new ItemStack(IEContent.itemMetal,1,6));
-		addValue(new ItemStack(IEContent.itemMetal,1,7), 320);//Steel
-		addValue(new ItemStack(IEContent.itemMetal,1,20), 384);//Graphite
+		addValue(new ItemStack(IEContent.itemMetal,1,7), 320, mode==2);//Steel
+		addValue(new ItemStack(IEContent.itemMetal,1,20), 384, mode==2);//Graphite
 		AbilityRegistryProxy.setAsNotLearnable(new ItemStack(IEContent.itemMetal,1,20));
 
-		addValue(IEContent.itemSeeds, 24);//Hemp Seeds
-		addValue(new ItemStack(IEContent.itemMaterial,1,3), 12);//HempFiber
-		addValue(new ItemStack(IEContent.itemMaterial,1,6), 48);//Coke
-		addValue(new ItemStack(IEContent.itemMaterial,1,13), 1);//Slag
+		addValue(IEContent.itemSeeds, 24, mode==2);//Hemp Seeds
+		addValue(new ItemStack(IEContent.itemMaterial,1,3), 12, mode==2);//HempFiber
+		addValue(new ItemStack(IEContent.itemMaterial,1,6), 48, mode==2);//Coke
+		addValue(new ItemStack(IEContent.itemMaterial,1,13), 1, mode==2);//Slag
 
-		addValue(new ItemStack(IEContent.blockTreatedWood,1,OreDictionary.WILDCARD_VALUE), 24);
-		addValue(new ItemStack(IEContent.blockStoneDevice,1,4), 265);//Insulated Glass
+		addValue(new ItemStack(IEContent.blockTreatedWood,1,OreDictionary.WILDCARD_VALUE), 24, mode==2);
+		addValue(new ItemStack(IEContent.blockStoneDevice,1,4), 265, mode==2);//Insulated Glass
 
-		addValue(new ItemStack(IEContent.itemBullet,1,0), 213);//Casing
-		addValue(new ItemStack(IEContent.itemBullet,1,1), 96);//Shell
+		addValue(new ItemStack(IEContent.itemBullet,1,0), 213, mode==2);//Casing
+		addValue(new ItemStack(IEContent.itemBullet,1,1), 96, mode==2);//Shell
 		//All these recipes use gunpowder and casings/shells
-		addValue(new ItemStack(IEContent.itemBullet,1,2), 213+192 +getBulletMetal(512));//lead
-		addValue(new ItemStack(IEContent.itemBullet,1,3), 213+192 +getBulletMetal(320)+getBulletMetal(576));//2 steel+constantan nuggets
-		addValue(new ItemStack(IEContent.itemBullet,1,4), 96 +192 +256);//1 iron dust
-		addValue(new ItemStack(IEContent.itemBullet,1,5), 213+192 +964);//1 TNT
-		addValue(new ItemStack(IEContent.itemBullet,1,6), 96 +192 +192*2);// 2 aluminium dust
+		addValue(new ItemStack(IEContent.itemBullet,1,2), 213+192 +getBulletMetal(512), mode==2);//lead
+		addValue(new ItemStack(IEContent.itemBullet,1,3), 213+192 +getBulletMetal(320)+getBulletMetal(576), mode==2);//2 steel+constantan nuggets
+		addValue(new ItemStack(IEContent.itemBullet,1,4), 96 +192 +256, mode==2);//1 iron dust
+		addValue(new ItemStack(IEContent.itemBullet,1,5), 213+192 +964, mode==2);//1 TNT
+		addValue(new ItemStack(IEContent.itemBullet,1,6), 96 +192 +192*2, mode==2);// 2 aluminium dust
 		int homingVal = 213+192 + getBulletMetal(10496);//going by 10496 for Terrasteel
-		addValue(new ItemStack(IEContent.itemBullet,1,7), homingVal);
-		addValue(new ItemStack(IEContent.itemBullet,1,8), 96 +192 +homingVal*4);
+		addValue(new ItemStack(IEContent.itemBullet,1,7), homingVal, mode==2);
+		addValue(new ItemStack(IEContent.itemBullet,1,8), 96 +192 +homingVal*4, mode==2);
 		float silverNugget = (512/9f);
-		addValue(new ItemStack(IEContent.itemBullet,1,9), 213+192 +getBulletMetal(512)+(int)(silverNugget*(Config.getBoolean("hardmodeBulletRecipes")?3:1)));
-		addValue(new ItemStack(IEContent.itemBullet,1,10),213+192 +256+1);//Quartz+Glass
+		addValue(new ItemStack(IEContent.itemBullet,1,9), 213+192 +getBulletMetal(512)+(int)(silverNugget*(Config.getBoolean("hardmodeBulletRecipes")?3:1)), mode==2);
+		addValue(new ItemStack(IEContent.itemBullet,1,10),213+192 +256+1, mode==2);//Quartz+Glass
 
-		addValue(IEContent.fluidCreosote, 128);
-		addValue(IEContent.fluidEthanol, 400);
-		addValue(IEContent.fluidPlantoil, 200);
-		addValue(IEContent.fluidBiodiesel, 600);
+		addValue(IEContent.fluidCreosote, 128, mode==2);
+		addValue(IEContent.fluidEthanol, 400, mode==2);
+		addValue(IEContent.fluidPlantoil, 200, mode==2);
+		addValue(IEContent.fluidBiodiesel, 600, mode==2);
 
 	}
 
@@ -70,8 +73,11 @@ public class EE3Helper extends IECompatModule
 			return (int)((ingot/9f)*2);
 	}
 
-	static void addValue(Object o, int val)
+	static void addValue(Object o, int val, boolean pre)
 	{
-		EnergyValueRegistryProxy.addPreAssignedEnergyValue(o,val);
+		if (pre)
+			EnergyValueRegistryProxy.addPreAssignedEnergyValue(o,val);
+		else
+			EnergyValueRegistryProxy.addPostAssignedEnergyValue(o,val);
 	}
 }
