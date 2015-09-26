@@ -33,7 +33,7 @@ import com.google.common.collect.ImmutableSet;
 
 import cpw.mods.fml.common.Optional;
 
-@Optional.Interface(iface = "cofh.api.item.IToolHammer", modid = "CoFHAPI")
+@Optional.Interface(iface = "cofh.api.item.IToolHammer", modid = "CoFHAPI|item")
 public class ItemIETool extends ItemIEBase implements cofh.api.item.IToolHammer
 {
 	public ItemIETool()
@@ -228,14 +228,14 @@ public class ItemIETool extends ItemIEBase implements cofh.api.item.IToolHammer
 	}
 
 	@Override
-	@Optional.Method(modid = "CoFHAPI")
+	@Optional.Method(modid = "CoFHAPI|item")
 	public boolean isUsable(ItemStack stack, EntityLivingBase living, int x, int y, int z)
 	{
 		return stack!=null&&stack.getItemDamage()==0;
 	}
 
 	@Override
-	@Optional.Method(modid = "CoFHAPI")
+	@Optional.Method(modid = "CoFHAPI|item")
 	public void toolUsed(ItemStack stack, EntityLivingBase living, int x, int y, int z)
 	{
 	}
