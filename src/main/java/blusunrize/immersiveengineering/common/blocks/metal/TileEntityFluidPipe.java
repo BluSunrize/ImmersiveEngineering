@@ -44,11 +44,14 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidHandl
 		while(!openList.isEmpty() && closedList.size()<1024)
 		{
 			ChunkCoordinates next = openList.get(0);
-			if(!closedList.contains(next) && world.getTileEntity(next.posX,next.posY,next.posZ) instanceof TileEntityFluidPipe)
+			if(!closedList.contains(next) && (world.getTileEntity(next.posX,next.posY,next.posZ) instanceof TileEntityFluidPipe || world.getTileEntity(next.posX,next.posY,next.posZ) instanceof TileEntityFluidPump))
 			{
-				closedList.add(next);
+				if(world.getTileEntity(next.posX,next.posY,next.posZ) instanceof TileEntityFluidPipe)
+					closedList.add(next);
 				for(int i=0; i<6; i++)
-					if( ((TileEntityFluidPipe)world.getTileEntity(next.posX,next.posY,next.posZ)).sideConfig[i]==0 )
+				{
+					boolean b = world.getTileEntity(next.posX,next.posY,next.posZ) instanceof TileEntityFluidPipe?((TileEntityFluidPipe)world.getTileEntity(next.posX,next.posY,next.posZ)).sideConfig[i]==0:((TileEntityFluidPump)world.getTileEntity(next.posX,next.posY,next.posZ)).sideConfig[i]==1; 
+					if(b)
 					{
 						ForgeDirection fd = ForgeDirection.getOrientation(i);
 						if(world.getTileEntity(next.posX+fd.offsetX,next.posY+fd.offsetY,next.posZ+fd.offsetZ) instanceof TileEntityFluidPipe)
@@ -59,6 +62,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidHandl
 							fluidHandlers.add(new DirectionalFluidOutput(handler, fd));
 						}
 					}
+				}
 			}
 			openList.remove(0);
 		}
@@ -99,9 +103,10 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidHandl
 	@Override
 	public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
 	{
-		if(resource==null)
+		if(resource==null || from==null || from==ForgeDirection.UNKNOWN || sideConfig[from.ordinal()]!=0)
 			return 0;
-		int canAccept = resource.tag!=null&&resource.tag.hasKey("pressurized")?resource.amount: 100;
+		int limit = resource.tag!=null&&resource.tag.hasKey("pressurized")?1000: 50;
+		int canAccept = Math.min(resource.amount, limit);
 		if(canAccept<=0)
 			return 0;
 		FluidStack insertResource = Utils.copyFluidStackWithAmount(resource, canAccept);
@@ -159,7 +164,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidHandl
 	@Override
 	public boolean canFill(ForgeDirection from, Fluid fluid)
 	{
-		return true;
+		return from!=null&&from!=ForgeDirection.UNKNOWN&&sideConfig[from.ordinal()]==0;
 	}
 
 	@Override

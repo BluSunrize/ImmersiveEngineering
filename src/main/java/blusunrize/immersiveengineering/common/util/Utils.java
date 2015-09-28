@@ -6,28 +6,38 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import blusunrize.immersiveengineering.api.DirectionalChunkCoords;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.*;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.MathHelper;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.StatCollector;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.BlockFluidBase;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.oredict.OreDictionary;
+import blusunrize.immersiveengineering.api.DirectionalChunkCoords;
 import blusunrize.immersiveengineering.api.energy.IImmersiveConnectable;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.registry.GameData;
@@ -88,7 +98,7 @@ public class Utils
 			return null;
 		return new FluidStack(stack, amount);
 	}
-	
+
 	public static ChunkCoordinates toCC(Object object)
 	{
 		if(object instanceof ChunkCoordinates)
@@ -312,6 +322,43 @@ public class Utils
 		return vec0.addVector(vec1.xCoord,vec1.yCoord,vec1.zCoord);
 	}
 
+	public static FluidStack drainFluidBlock(World world, int x, int y, int z, boolean doDrain)
+	{
+		Block b = world.getBlock(x, y, z);
+		Fluid f = FluidRegistry.lookupFluidForBlock(b);
+
+		if(f!=null)
+		{
+			if(b instanceof IFluidBlock)
+			{
+				if(((IFluidBlock)b).canDrain(world, x, y, z))
+					return ((IFluidBlock) b).drain(world, x, y, z, doDrain);
+				else
+					return null;
+			}
+			else
+			{
+				if(world.getBlockMetadata(x,y,z)==0)
+				{
+					if(b==Blocks.water)
+					{
+						int connectedSources = 0;
+						for(int i=2; i<6; i++)
+							if(world.getBlock(x+(i==4?-1:i==5?1: 0), y, z+(i==2?-1:i==3?1: 0))==Blocks.water && world.getBlockMetadata(x+(i==4?-1:i==5?1: 0), y, z+(i==2?-1:i==3?1: 0))==0)
+								connectedSources++;
+						if(connectedSources>1)
+							doDrain=false;
+					}
+					if(doDrain)
+						world.setBlockToAir(x, y, z);
+					return new FluidStack(f, 1000);
+				}
+				return null;
+			}
+		}
+		return null;
+	}
+
 	public static Collection<ItemStack> getContainersFilledWith(FluidStack fluidStack)
 	{
 		List<ItemStack> containers = new ArrayList();
@@ -517,7 +564,7 @@ public class Utils
 			return false;
 		return FluidContainerRegistry.isContainer(stack)||stack.getItem() instanceof IFluidContainerItem;
 	}
-	
+
 	public static boolean fillPlayerItemFromFluidHandler(World world, IFluidHandler handler, EntityPlayer player, FluidStack tankFluid)
 	{
 		ItemStack equipped = player.getCurrentEquippedItem();

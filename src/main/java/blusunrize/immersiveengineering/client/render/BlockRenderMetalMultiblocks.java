@@ -10,6 +10,7 @@ import org.lwjgl.opengl.GL11;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalMultiblocks;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityDieselGenerator;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFermenter;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityLightningRod;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySqueezer;
@@ -239,6 +240,10 @@ public class BlockRenderMetalMultiblocks implements ISimpleBlockRenderingHandler
 			else
 				renderer.setRenderBounds(0,0,0, 1,1,1);
 			return renderer.renderStandardBlock(block, x, y, z);
+		}
+		else if(world.getTileEntity(x, y, z) instanceof TileEntityDieselGenerator && ((TileEntityDieselGenerator)world.getTileEntity(x,y,z)).pos==31)
+		{
+			ClientUtils.handleStaticTileRenderer(world.getTileEntity(x, y, z));
 		}
 		return false;
 	}
