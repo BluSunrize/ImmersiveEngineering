@@ -5,6 +5,7 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.Config;
@@ -100,10 +101,11 @@ public class TileEntityBucketWheel extends TileEntityMultiblockPart
 					int zz = (f==5?-w: f==4?w: 0);
 
 					ItemStack s = null;
-					if(worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz) instanceof TileEntityBucketWheel)
+					TileEntity te = worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz);
+					if(te instanceof TileEntityBucketWheel)
 					{
-						s = ((TileEntityBucketWheel)worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz)).getOriginalBlock();
-						((TileEntityBucketWheel)worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz)).formed=false;
+						s = ((TileEntityBucketWheel)te).getOriginalBlock();
+						((TileEntityBucketWheel)te).formed=false;
 					}
 					if(startX+xx==xCoord && startY+yy==yCoord && startZ+zz==zCoord)
 						s = this.getOriginalBlock();

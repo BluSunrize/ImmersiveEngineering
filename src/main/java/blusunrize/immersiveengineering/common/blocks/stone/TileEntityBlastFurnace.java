@@ -377,10 +377,11 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart implements 
 					for(int zz=zMin;zz<=zMax;zz++)
 					{
 						ItemStack s = null;
-						if(worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz) instanceof TileEntityBlastFurnace)
+						TileEntity te = worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz);
+						if(te instanceof TileEntityBlastFurnace)
 						{
-							s = ((TileEntityBlastFurnace)worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz)).getOriginalBlock();
-							((TileEntityBlastFurnace)worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz)).formed=false;
+							s = ((TileEntityBlastFurnace)te).getOriginalBlock();
+							((TileEntityBlastFurnace)te).formed=false;
 						}
 						if(startX+xx==xCoord && startY+yy==yCoord && startZ+zz==zCoord)
 							s = this.getOriginalBlock();

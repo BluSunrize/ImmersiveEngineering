@@ -340,10 +340,11 @@ public class TileEntityExcavator extends TileEntityMultiblockPart implements IEn
 			int startZ = zCoord-(f==2?il: f==3?-il: f==5?-iw : iw);
 
 			int[] wheelAxis = {startX+(facing==5?-4:facing==4?4:0),startY,startZ+(facing==3?-4:facing==2?4:0)};
-			if(worldObj.getTileEntity(wheelAxis[0], wheelAxis[1], wheelAxis[2]) instanceof TileEntityBucketWheel)
+			TileEntity center = worldObj.getTileEntity(wheelAxis[0], wheelAxis[1], wheelAxis[2]);
+			if(center instanceof TileEntityBucketWheel)
 			{
-				((TileEntityBucketWheel)worldObj.getTileEntity(wheelAxis[0], wheelAxis[1], wheelAxis[2])).active = false;
-				worldObj.getTileEntity(wheelAxis[0], wheelAxis[1], wheelAxis[2]).markDirty();
+				((TileEntityBucketWheel)center).active = false;
+				center.markDirty();
 				worldObj.markBlockForUpdate(wheelAxis[0], wheelAxis[1], wheelAxis[2]);
 			}
 
@@ -357,10 +358,11 @@ public class TileEntityExcavator extends TileEntityMultiblockPart implements IEn
 						int zz = (f==2?l: f==3?-l: f==5?-ww : ww);
 
 						ItemStack s = null;
-						if(worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz) instanceof TileEntityExcavator)
+						TileEntity te = worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz);
+						if(te instanceof TileEntityExcavator)
 						{
-							s = ((TileEntityExcavator)worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz)).getOriginalBlock();
-							((TileEntityExcavator)worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz)).formed=false;
+							s = ((TileEntityExcavator)te).getOriginalBlock();
+							((TileEntityExcavator)te).formed=false;
 						}
 						if(startX+xx==xCoord && startY+yy==yCoord && startZ+zz==zCoord)
 							s = this.getOriginalBlock();

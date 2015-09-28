@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Vec3;
 import blusunrize.immersiveengineering.api.ApiUtils;
@@ -84,10 +85,13 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable
 		if(cableType==WireType.STEEL&&!canTakeHV())
 			return false;
 		if(dummy)
-			if(worldObj.getTileEntity(xCoord, yCoord+1, zCoord) instanceof TileEntityTransformer)
-				return ((TileEntityTransformer)worldObj.getTileEntity(xCoord, yCoord+1, zCoord)).canConnectCable(cableType, target);
+		{
+			TileEntity above = worldObj.getTileEntity(xCoord, yCoord+1, zCoord);
+			if(above instanceof TileEntityTransformer)
+				return ((TileEntityTransformer)above).canConnectCable(cableType, target);
 			else
 				return false;
+		}
 		int tc = getTargetedConnector(target);
 		switch(tc)
 		{
@@ -102,8 +106,10 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable
 	public void connectCable(WireType cableType, TargetingInfo target)
 	{
 		if(dummy)
-			if(worldObj.getTileEntity(xCoord, yCoord+1, zCoord) instanceof TileEntityTransformer)
-				((TileEntityTransformer)worldObj.getTileEntity(xCoord, yCoord+1, zCoord)).connectCable(cableType, target);
+		{
+			TileEntity above = worldObj.getTileEntity(xCoord, yCoord+1, zCoord);
+			if(above instanceof TileEntityTransformer)
+				((TileEntityTransformer)above).connectCable(cableType, target);
 			else
 				return;
 		switch(getTargetedConnector(target))
@@ -116,6 +122,7 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable
 			if(secondCable==null)
 				this.secondCable = cableType;
 			break;
+		}
 		}
 	}
 	@Override

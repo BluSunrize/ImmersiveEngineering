@@ -195,10 +195,11 @@ public class TileEntityLightningRod extends TileEntityMultiblockPart implements 
 					int zz = master.zCoord+l;
 
 					ItemStack s = null;
-					if(worldObj.getTileEntity(xx,yy,zz) instanceof TileEntityLightningRod)
+					TileEntity te = worldObj.getTileEntity(xx, yy, zz);
+					if(te instanceof TileEntityLightningRod)
 					{
-						s = ((TileEntityLightningRod)worldObj.getTileEntity(xx,yy,zz)).getOriginalBlock();
-						((TileEntityLightningRod)worldObj.getTileEntity(xx,yy,zz)).formed=false;
+						s = ((TileEntityLightningRod)te).getOriginalBlock();
+						((TileEntityLightningRod)te).formed=false;
 					}
 					if(xx==xCoord && yy==yCoord && zz==zCoord)
 						s = this.getOriginalBlock();

@@ -86,12 +86,13 @@ public class BlockMetalDevices extends BlockIEBase implements blusunrize.aquatwe
 	@Override
 	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z, EntityPlayer player)
 	{
-		if(world.getTileEntity(x, y, z) instanceof TileEntityCapacitorLV)
+		TileEntity te = world.getTileEntity(x, y, z);
+		if(te instanceof TileEntityCapacitorLV)
 		{
 			ItemStack stack = new ItemStack(this,1,world.getBlockMetadata(x, y, z));
-			if(((TileEntityCapacitorLV)world.getTileEntity(x,y,z)).energyStorage.getEnergyStored()>0)
-				ItemNBTHelper.setInt(stack, "energyStorage", ((TileEntityCapacitorLV)world.getTileEntity(x,y,z)).energyStorage.getEnergyStored());
-			int[] sides = ((TileEntityCapacitorLV)world.getTileEntity(x,y,z)).sideConfig;
+			if(((TileEntityCapacitorLV)te).energyStorage.getEnergyStored()>0)
+				ItemNBTHelper.setInt(stack, "energyStorage", ((TileEntityCapacitorLV)te).energyStorage.getEnergyStored());
+			int[] sides = ((TileEntityCapacitorLV)te).sideConfig;
 			ItemNBTHelper.setIntArray(stack, "sideConfig", sides);
 			return stack;
 		}
@@ -100,12 +101,13 @@ public class BlockMetalDevices extends BlockIEBase implements blusunrize.aquatwe
 	@Override
 	public void onBlockHarvested(World world, int x, int y, int z, int meta, EntityPlayer player)
 	{
-		if(!world.isRemote && world.getTileEntity(x, y, z) instanceof TileEntityCapacitorLV && player!=null && !player.capabilities.isCreativeMode)
+		TileEntity te = world.getTileEntity(x, y, z);
+		if(!world.isRemote && te instanceof TileEntityCapacitorLV && player!=null && !player.capabilities.isCreativeMode)
 		{
 			ItemStack stack = new ItemStack(this,1,meta);
-			if(((TileEntityCapacitorLV)world.getTileEntity(x,y,z)).energyStorage.getEnergyStored()>0)
-				ItemNBTHelper.setInt(stack, "energyStorage", ((TileEntityCapacitorLV)world.getTileEntity(x,y,z)).energyStorage.getEnergyStored());
-			int[] sides = ((TileEntityCapacitorLV)world.getTileEntity(x,y,z)).sideConfig;
+			if(((TileEntityCapacitorLV)te).energyStorage.getEnergyStored()>0)
+				ItemNBTHelper.setInt(stack, "energyStorage", ((TileEntityCapacitorLV)te).energyStorage.getEnergyStored());
+			int[] sides = ((TileEntityCapacitorLV)te).sideConfig;
 			//			if(sides[0]!=-1 || sides[1]!=0||sides[2]!=0||sides[3]!=0||sides[4]!=0||sides[5]!=0)
 			ItemNBTHelper.setIntArray(stack, "sideConfig", sides);
 			world.spawnEntityInWorld(new EntityItem(world,x+.5,y+.5,z+.5,stack));
@@ -129,9 +131,10 @@ public class BlockMetalDevices extends BlockIEBase implements blusunrize.aquatwe
 	@Override
 	public int getComparatorInputOverride(World world, int x, int y, int z, int side)
 	{
-		if(world.getTileEntity(x, y, z) instanceof TileEntityCapacitorLV)
+		TileEntity te = world.getTileEntity(x, y, z);
+		if(te instanceof TileEntityCapacitorLV)
 		{
-			TileEntityCapacitorLV capacitor = (TileEntityCapacitorLV)world.getTileEntity(x, y, z);
+			TileEntityCapacitorLV capacitor = (TileEntityCapacitorLV)te;
 			return (int)(15*(capacitor.getEnergyStored(ForgeDirection.getOrientation(side))/(float)capacitor.getMaxEnergyStored(ForgeDirection.getOrientation(side))));
 		}
 		return 0;
@@ -241,9 +244,10 @@ public class BlockMetalDevices extends BlockIEBase implements blusunrize.aquatwe
 	@SideOnly(Side.CLIENT)
 	public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side)
 	{
-		if(world.getTileEntity(x, y, z) instanceof TileEntityCapacitorLV)
+		TileEntity te = world.getTileEntity(x, y, z);
+		if(te instanceof TileEntityCapacitorLV)
 		{
-			TileEntityCapacitorLV cap = (TileEntityCapacitorLV)world.getTileEntity(x, y, z);
+			TileEntityCapacitorLV cap = (TileEntityCapacitorLV)te;
 			int t = cap instanceof TileEntityCapacitorHV?2: cap instanceof TileEntityCapacitorMV?1: 0;
 			if(side==0)
 				return icon_capacitorBot[t][cap.sideConfig[side]+1];
@@ -252,21 +256,21 @@ public class BlockMetalDevices extends BlockIEBase implements blusunrize.aquatwe
 			else
 				return icon_capacitorSide[t][cap.sideConfig[side]+1];
 		}
-		if(world.getTileEntity(x, y, z) instanceof TileEntityDynamo)
+		if(te instanceof TileEntityDynamo)
 		{
-			if(((TileEntityDynamo)world.getTileEntity(x,y,z)).facing == ForgeDirection.OPPOSITES[side])
+			if(((TileEntityDynamo)te).facing == ForgeDirection.OPPOSITES[side])
 				return IEContent.blockStorage.getIcon(0,7);
-			if(((TileEntityDynamo)world.getTileEntity(x,y,z)).facing>3 && side>1)
+			if(((TileEntityDynamo)te).facing>3 && side>1)
 				return icons[META_dynamo][side<4?3:2];
 		}
-		if(world.getTileEntity(x, y, z) instanceof TileEntityConveyorBelt && (((TileEntityConveyorBelt)world.getTileEntity(x,y,z)).facing==side || ((TileEntityConveyorBelt)world.getTileEntity(x,y,z)).facing==ForgeDirection.OPPOSITES[side]))
+		if(te instanceof TileEntityConveyorBelt && (((TileEntityConveyorBelt)te).facing==side || ((TileEntityConveyorBelt)te).facing==ForgeDirection.OPPOSITES[side]))
 			return icons[META_conveyorBelt][1];
-		if(world.getTileEntity(x, y, z) instanceof TileEntityFurnaceHeater)
+		if(te instanceof TileEntityFurnaceHeater)
 		{
-			if( ((TileEntityFurnaceHeater)world.getTileEntity(x, y, z)).sockets[side]==1)
+			if( ((TileEntityFurnaceHeater)te).sockets[side]==1)
 				return icons[META_furnaceHeater][0];
 			else
-				return icons[META_furnaceHeater][ ((TileEntityFurnaceHeater)world.getTileEntity(x, y, z)).showActiveTexture()?2:1 ];
+				return icons[META_furnaceHeater][ ((TileEntityFurnaceHeater)te).showActiveTexture()?2:1 ];
 		}
 		if(world.getBlockMetadata(x, y, z) == META_sorter)
 			return icons_sorter[side];
@@ -302,32 +306,33 @@ public class BlockMetalDevices extends BlockIEBase implements blusunrize.aquatwe
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
 	{
-		if(world.getTileEntity(x, y, z) instanceof TileEntityCapacitorLV && Utils.isHammer(player.getCurrentEquippedItem()))
+		TileEntity te = world.getTileEntity(x, y, z);
+		if(te instanceof TileEntityCapacitorLV && Utils.isHammer(player.getCurrentEquippedItem()))
 		{
 			if(player.isSneaking())
 				side = ForgeDirection.OPPOSITES[side];
 			if(!world.isRemote)
 			{
-				((TileEntityCapacitorLV)world.getTileEntity(x, y, z)).toggleSide(side);
-				world.getTileEntity(x, y, z).markDirty();
+				((TileEntityCapacitorLV)te).toggleSide(side);
+				te.markDirty();
 				world.func_147451_t(x, y, z);
 			}
 			return true;
 		}
-		if(world.getTileEntity(x, y, z) instanceof TileEntityDynamo && Utils.isHammer(player.getCurrentEquippedItem()))
+		if(te instanceof TileEntityDynamo && Utils.isHammer(player.getCurrentEquippedItem()))
 		{
-			int f = ((TileEntityDynamo)world.getTileEntity(x, y, z)).facing;
+			int f = ((TileEntityDynamo)te).facing;
 			f = ForgeDirection.ROTATION_MATRIX[player.isSneaking()?1:0][f];
-			((TileEntityDynamo)world.getTileEntity(x, y, z)).facing = f;
-			world.getTileEntity(x, y, z).markDirty();
+			((TileEntityDynamo)te).facing = f;
+			te.markDirty();
 			world.func_147451_t(x, y, z);
 			world.markBlockForUpdate(x, y, z);
 			world.playSoundEffect(x+.5,y+.5,z+.5, "random.door_open", .5f,2f);
 			return !world.isRemote;
 		}
-		if(world.getTileEntity(x, y, z) instanceof TileEntityConveyorBelt && Utils.isHammer(player.getCurrentEquippedItem()))
+		if(te instanceof TileEntityConveyorBelt && Utils.isHammer(player.getCurrentEquippedItem()))
 		{
-			TileEntityConveyorBelt tile = (TileEntityConveyorBelt)world.getTileEntity(x, y, z);
+			TileEntityConveyorBelt tile = (TileEntityConveyorBelt)te;
 			if(player.isSneaking())
 			{
 				if(tile.transportUp)
@@ -347,19 +352,19 @@ public class BlockMetalDevices extends BlockIEBase implements blusunrize.aquatwe
 			world.markBlockForUpdate(x, y, z);
 			return true;
 		}
-		if(world.getTileEntity(x, y, z) instanceof TileEntityFurnaceHeater && Utils.isHammer(player.getCurrentEquippedItem()))
+		if(te instanceof TileEntityFurnaceHeater && Utils.isHammer(player.getCurrentEquippedItem()))
 		{
 			if(player.isSneaking())
 				side = ForgeDirection.OPPOSITES[side];
 			if(!world.isRemote)
 			{
-				((TileEntityFurnaceHeater)world.getTileEntity(x, y, z)).toggleSide(side);
-				world.getTileEntity(x, y, z).markDirty();
+				((TileEntityFurnaceHeater)te).toggleSide(side);
+				te.markDirty();
 				world.func_147451_t(x, y, z);
 			}
 			return true;
 		}
-		if(world.getTileEntity(x, y, z) instanceof TileEntityConveyorSorter)
+		if(te instanceof TileEntityConveyorSorter)
 		{
 			if(!player.isSneaking())
 			{
@@ -368,18 +373,19 @@ public class BlockMetalDevices extends BlockIEBase implements blusunrize.aquatwe
 			}
 			else if(Utils.isHammer(player.getCurrentEquippedItem()))
 			{
-				((TileEntityConveyorSorter)world.getTileEntity(x, y, z)).toggleSide(side);
-				world.getTileEntity(x, y, z).markDirty();
+				((TileEntityConveyorSorter)te).toggleSide(side);
+				te.markDirty();
 				world.func_147451_t(x, y, z);
 				return true;
 			}
 		}
-		if(world.getTileEntity(x, y, z) instanceof TileEntitySampleDrill)
+		if(te instanceof TileEntitySampleDrill)
 		{
-			int off = ((TileEntitySampleDrill)world.getTileEntity(x, y, z)).pos;
-			if(!world.isRemote && world.getTileEntity(x, y-off, z) instanceof TileEntitySampleDrill)
+			int off = ((TileEntitySampleDrill)te).pos;
+			TileEntity te2 = world.getTileEntity(x, y-off, z);
+			if(!world.isRemote && te2 instanceof TileEntitySampleDrill)
 			{
-				TileEntitySampleDrill drill = (TileEntitySampleDrill)world.getTileEntity(x, y-off, z);
+				TileEntitySampleDrill drill = (TileEntitySampleDrill)te2;
 				int process = drill.process;
 				int chunkX = (x>>4);
 				int chunkZ = (z>>4);
@@ -421,11 +427,12 @@ public class BlockMetalDevices extends BlockIEBase implements blusunrize.aquatwe
 	@Override
 	public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
 	{
-		if(world.getTileEntity(x, y, z) instanceof TileEntityConnectorLV)
+		TileEntity te = world.getTileEntity(x, y, z);
+		if(te instanceof TileEntityConnectorLV)
 		{
-			float length = world.getTileEntity(x, y, z) instanceof TileEntityRelayHV?.875f: world.getTileEntity(x, y, z) instanceof TileEntityConnectorHV?.75f: world.getTileEntity(x, y, z) instanceof TileEntityConnectorMV?.5625f: .5f;
+			float length = te instanceof TileEntityRelayHV?.875f: te instanceof TileEntityConnectorHV?.75f: te instanceof TileEntityConnectorMV?.5625f: .5f;
 
-			switch(((TileEntityConnectorLV)world.getTileEntity(x, y, z)).facing )
+			switch(((TileEntityConnectorLV)te).facing )
 			{
 			case 0://UP
 				this.setBlockBounds(.3125f,0,.3125f,  .6875f,length,.6875f);
@@ -447,9 +454,9 @@ public class BlockMetalDevices extends BlockIEBase implements blusunrize.aquatwe
 				break;
 			}
 		}
-		else if(world.getTileEntity(x, y, z) instanceof TileEntityTransformer)
+		else if(te instanceof TileEntityTransformer)
 		{
-			TileEntityTransformer tile = (TileEntityTransformer)world.getTileEntity(x, y, z);
+			TileEntityTransformer tile = (TileEntityTransformer)te;
 			if( !(tile instanceof TileEntityTransformerHV) && tile.postAttached>0)
 			{
 				switch(tile.postAttached)
@@ -470,9 +477,9 @@ public class BlockMetalDevices extends BlockIEBase implements blusunrize.aquatwe
 			else
 				this.setBlockBounds(0,0,0,1,1,1);
 		}
-		else if(world.getTileEntity(x, y, z) instanceof TileEntityConveyorBelt)
+		else if(te instanceof TileEntityConveyorBelt)
 		{
-			TileEntityConveyorBelt tile = (TileEntityConveyorBelt) world.getTileEntity(x, y, z);
+			TileEntityConveyorBelt tile = (TileEntityConveyorBelt) te;
 			this.setBlockBounds(0F, 0F, 0F, 1F, tile.transportDown||tile.transportUp?1.125f:0.125F, 1F);
 		}
 		else
@@ -552,9 +559,10 @@ public class BlockMetalDevices extends BlockIEBase implements blusunrize.aquatwe
 	@Override
 	public void onNeighborBlockChange(World world, int x, int y, int z, Block nbid)
 	{
-		if(world.getTileEntity(x, y, z) instanceof TileEntityConnectorLV)
+		TileEntity te = world.getTileEntity(x, y, z);
+		if(te instanceof TileEntityConnectorLV)
 		{
-			TileEntityConnectorLV relay = (TileEntityConnectorLV)world.getTileEntity(x, y, z);
+			TileEntityConnectorLV relay = (TileEntityConnectorLV)te;
 			ForgeDirection fd = ForgeDirection.getOrientation(relay.facing);
 			if(world.isAirBlock(x+fd.offsetX, y+fd.offsetY, z+fd.offsetZ))
 			{
@@ -562,9 +570,9 @@ public class BlockMetalDevices extends BlockIEBase implements blusunrize.aquatwe
 				world.setBlockToAir(x, y, z);
 			}
 		}
-		if(world.getTileEntity(x, y, z) instanceof TileEntityTransformer)
+		if(te instanceof TileEntityTransformer)
 		{
-			TileEntityTransformer transf = (TileEntityTransformer)world.getTileEntity(x, y, z);
+			TileEntityTransformer transf = (TileEntityTransformer)te;
 			if(transf.postAttached>0 && !(world.getTileEntity(x+(transf.postAttached==4?1: transf.postAttached==5?-1: 0), y, z+(transf.postAttached==2?1: transf.postAttached==3?-1: 0)) instanceof TileEntityWoodenPost ))
 			{
 				this.dropBlockAsItem(world, x, y, z, new ItemStack(this,1,world.getBlockMetadata(x, y, z)));
@@ -573,9 +581,9 @@ public class BlockMetalDevices extends BlockIEBase implements blusunrize.aquatwe
 			else if(transf.postAttached<=0 && ((transf.dummy && world.isAirBlock(x,y+1,z))|| (!transf.dummy && world.isAirBlock(x,y-1,z))))
 				world.setBlockToAir(x, y, z);
 		}
-		if(world.getTileEntity(x, y, z) instanceof TileEntitySampleDrill)
+		if(te instanceof TileEntitySampleDrill)
 		{
-			TileEntitySampleDrill drill = (TileEntitySampleDrill)world.getTileEntity(x, y, z);
+			TileEntitySampleDrill drill = (TileEntitySampleDrill)te;
 			if((drill.pos==0 && (world.isAirBlock(x,y+1,z)||world.isAirBlock(x,y+2,z)))
 					||(drill.pos==1 && (world.isAirBlock(x,y-1,z)||world.isAirBlock(x,y+1,z)))
 					||(drill.pos==2 && (world.isAirBlock(x,y-1,z)||world.isAirBlock(x,y-2,z))))
@@ -586,11 +594,12 @@ public class BlockMetalDevices extends BlockIEBase implements blusunrize.aquatwe
 	@Override
 	public void onEntityCollidedWithBlock(World world, int x, int y, int z, Entity par5Entity)
 	{
-		if(par5Entity!=null && world.getTileEntity(x, y, z) instanceof TileEntityConveyorBelt && !par5Entity.isDead && !(par5Entity instanceof EntityPlayer && ((EntityPlayer)par5Entity).isSneaking()))
+		TileEntity te = world.getTileEntity(x, y, z);
+		if(par5Entity!=null && te instanceof TileEntityConveyorBelt && !par5Entity.isDead && !(par5Entity instanceof EntityPlayer && ((EntityPlayer)par5Entity).isSneaking()))
 		{
 			if(world.isBlockIndirectlyGettingPowered(x, y, z))
 				return;
-			TileEntityConveyorBelt tile = (TileEntityConveyorBelt) world.getTileEntity(x, y, z);
+			TileEntityConveyorBelt tile = (TileEntityConveyorBelt) te;
 			int f = tile.facing;
 			ForgeDirection fd = ForgeDirection.getOrientation(f).getOpposite();
 			double vBase = 1.15;
@@ -639,10 +648,11 @@ public class BlockMetalDevices extends BlockIEBase implements blusunrize.aquatwe
 			{
 				((EntityItem)par5Entity).age=0;
 				boolean contact = f==3?(par5Entity.posZ-z<=.2): f==2?(par5Entity.posZ-z>=.8): f==5?(par5Entity.posX-x<=.2): (par5Entity.posX-x>=.8);
-
-				if(contact && world.getTileEntity(x+fd.offsetX,y+(tile.transportUp?1: tile.transportDown?-1: 0),z+fd.offsetZ) instanceof IInventory)
+				te = world.getTileEntity(x+fd.offsetX,y+(tile.transportUp?1: tile.transportDown?-1: 0),z+fd.offsetZ);
+				
+				if(contact && te instanceof IInventory)
 				{
-					IInventory inv = (IInventory)world.getTileEntity(x+fd.offsetX,y+(tile.transportUp?1: tile.transportDown?-1: 0),z+fd.offsetZ);
+					IInventory inv = (IInventory)te;
 					if(!(inv instanceof TileEntityConveyorBelt))
 					{
 						ItemStack stack = ((EntityItem)par5Entity).getEntityItem();

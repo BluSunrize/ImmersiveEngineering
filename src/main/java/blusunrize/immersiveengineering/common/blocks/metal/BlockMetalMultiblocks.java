@@ -108,22 +108,23 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 	@SideOnly(Side.CLIENT)
 	public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side)
 	{
+		TileEntity te = world.getTileEntity(x, y, z);
 		if(world.getBlockMetadata(x, y, z)==META_squeezer)
 		{
-			if(world.getTileEntity(x, y, z) instanceof TileEntitySqueezer && ((TileEntitySqueezer)world.getTileEntity(x,y,z)).formed)
-				return icons[META_squeezer][ side==0||side==1?1 : ((TileEntitySqueezer)world.getTileEntity(x,y,z)).facing==side?2: 3];
+			if(te instanceof TileEntitySqueezer && ((TileEntitySqueezer)te).formed)
+				return icons[META_squeezer][ side==0||side==1?1 : ((TileEntitySqueezer)te).facing==side?2: 3];
 			return icons[META_squeezer][0];
 		}
 		if(world.getBlockMetadata(x, y, z)==META_fermenter)
 		{
-			if(world.getTileEntity(x, y, z) instanceof TileEntityFermenter && ((TileEntityFermenter)world.getTileEntity(x,y,z)).formed)
-				return icons[META_fermenter][ side==0||side==1?1 : ((TileEntityFermenter)world.getTileEntity(x,y,z)).facing==side?2: 3];
+			if(te instanceof TileEntityFermenter && ((TileEntityFermenter)te).formed)
+				return icons[META_fermenter][ side==0||side==1?1 : ((TileEntityFermenter)te).facing==side?2: 3];
 			return icons[META_fermenter][0];
 		}
 		if(world.getBlockMetadata(x, y, z)==META_refinery)
 		{
-			if(world.getTileEntity(x, y, z) instanceof TileEntityRefinery && ((TileEntityRefinery)world.getTileEntity(x,y,z)).formed)
-				return icons[META_refinery][ side==0||side==1?1 : ((TileEntityRefinery)world.getTileEntity(x,y,z)).facing==side?2: 3];
+			if(te instanceof TileEntityRefinery && ((TileEntityRefinery)te).formed)
+				return icons[META_refinery][ side==0||side==1?1 : ((TileEntityRefinery)te).facing==side?2: 3];
 			return icons[META_refinery][0];
 		}
 		return super.getIcon(world, x, y, z, side);
@@ -168,64 +169,66 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 
 	public ItemStack getOriginalBlock(World world, int x, int y, int z)
 	{
-		if(world.getTileEntity(x, y, z) instanceof TileEntityMultiblockPart)
-			return ((TileEntityMultiblockPart)world.getTileEntity(x, y, z)).getOriginalBlock();
+		TileEntity te = world.getTileEntity(x, y, z);
+		if(te instanceof TileEntityMultiblockPart)
+			return ((TileEntityMultiblockPart)te).getOriginalBlock();
 		return new ItemStack(this, 1, world.getBlockMetadata(x, y, z));
 	}
 
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
 	{
-		if(world.getTileEntity(x, y, z) instanceof TileEntitySqueezer)
+		TileEntity curr = world.getTileEntity(x, y, z);
+		if(curr instanceof TileEntitySqueezer)
 		{
-			if(!player.isSneaking() && ((TileEntitySqueezer)world.getTileEntity(x, y, z)).formed )
+			if(!player.isSneaking() && ((TileEntitySqueezer)curr).formed )
 			{
-				TileEntitySqueezer te = ((TileEntitySqueezer)world.getTileEntity(x, y, z)).master();
+				TileEntitySqueezer te = ((TileEntitySqueezer)curr).master();
 				if(te==null)
-					te = ((TileEntitySqueezer)world.getTileEntity(x, y, z));
+					te = ((TileEntitySqueezer)curr);
 				if(!world.isRemote)
 					player.openGui(ImmersiveEngineering.instance, Lib.GUIID_Squeezer, world, te.xCoord, te.yCoord, te.zCoord);
 				return true;
 			}
 		}
-		if(world.getTileEntity(x, y, z) instanceof TileEntityFermenter)
+		if(curr instanceof TileEntityFermenter)
 		{
-			if(!player.isSneaking() && ((TileEntityFermenter)world.getTileEntity(x, y, z)).formed )
+			if(!player.isSneaking() && ((TileEntityFermenter)curr).formed )
 			{
-				TileEntityFermenter te = ((TileEntityFermenter)world.getTileEntity(x, y, z)).master();
+				TileEntityFermenter te = ((TileEntityFermenter)curr).master();
 				if(te==null)
-					te = ((TileEntityFermenter)world.getTileEntity(x, y, z));
+					te = ((TileEntityFermenter)curr);
 				if(!world.isRemote)
 					player.openGui(ImmersiveEngineering.instance, Lib.GUIID_Fermenter, world, te.xCoord, te.yCoord, te.zCoord);
 				return true;
 			}
 		}
-		if(world.getTileEntity(x, y, z) instanceof TileEntityRefinery)
+		if(curr instanceof TileEntityRefinery)
 		{
-			if(!player.isSneaking() && ((TileEntityRefinery)world.getTileEntity(x, y, z)).formed )
+			if(!player.isSneaking() && ((TileEntityRefinery)curr).formed )
 			{
-				TileEntityRefinery te = ((TileEntityRefinery)world.getTileEntity(x, y, z)).master();
+				TileEntityRefinery te = ((TileEntityRefinery)curr).master();
 				if(te==null)
-					te = ((TileEntityRefinery)world.getTileEntity(x, y, z));
+					te = ((TileEntityRefinery)curr);
 				if(!world.isRemote)
 					player.openGui(ImmersiveEngineering.instance, Lib.GUIID_Refinery, world, te.xCoord, te.yCoord, te.zCoord);
 				return true;
 			}
 		}
-		if(world.getTileEntity(x, y, z) instanceof TileEntityDieselGenerator && Utils.isHammer(player.getCurrentEquippedItem()) &&((TileEntityDieselGenerator)world.getTileEntity(x, y, z)).pos==40)
+		if(curr instanceof TileEntityDieselGenerator && Utils.isHammer(player.getCurrentEquippedItem()) &&((TileEntityDieselGenerator)curr).pos==40)
 		{
-			TileEntityDieselGenerator te = ((TileEntityDieselGenerator)world.getTileEntity(x, y, z)).master();
+			TileEntityDieselGenerator te = ((TileEntityDieselGenerator)curr).master();
 			if(te==null)
-				te = ((TileEntityDieselGenerator)world.getTileEntity(x, y, z));
+				te = ((TileEntityDieselGenerator)curr);
 			te.mirrored = !te.mirrored;
 			te.markDirty();
 			world.markBlockForUpdate(te.xCoord, te.yCoord, te.zCoord);
 		}
-		if(world.getTileEntity(x, y, z) instanceof TileEntityArcFurnace)
+		if(curr instanceof TileEntityArcFurnace)
 		{
-			if(!player.isSneaking() && ((TileEntityArcFurnace)world.getTileEntity(x, y, z)).formed )
+			if(!player.isSneaking() && ((TileEntityArcFurnace)curr).formed )
 			{
-				TileEntityArcFurnace te = ((TileEntityArcFurnace)world.getTileEntity(x, y, z));
+				TileEntityArcFurnace te = ((TileEntityArcFurnace)curr);
 				if(te.pos==2||te.pos==25|| (te.pos>25 && te.pos%5>0 && te.pos%5<4 && te.pos%25/5<4))
 				{
 					TileEntityArcFurnace master = te.master();
@@ -237,11 +240,11 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 				}
 			}
 		}
-		if(!player.isSneaking() && world.getTileEntity(x, y, z) instanceof TileEntitySheetmetalTank)
+		if(!player.isSneaking() && curr instanceof TileEntitySheetmetalTank)
 		{
 			if(!world.isRemote)
 			{
-				TileEntitySheetmetalTank tank = (TileEntitySheetmetalTank)world.getTileEntity(x, y, z);
+				TileEntitySheetmetalTank tank = (TileEntitySheetmetalTank)curr;
 				TileEntitySheetmetalTank master = tank.master();
 				if(master==null)
 					master = tank;
@@ -266,9 +269,9 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 			}
 			return true;
 		}
-		if(!world.isRemote && !player.isSneaking() && world.getTileEntity(x, y, z) instanceof TileEntitySilo)
+		if(!world.isRemote && !player.isSneaking() && curr instanceof TileEntitySilo)
 		{
-			TileEntitySilo te = ( TileEntitySilo)world.getTileEntity(x, y, z);
+			TileEntitySilo te = ( TileEntitySilo)curr;
 			TileEntitySilo master = te.master();
 			if(master==null)
 				master = te;
@@ -280,9 +283,10 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 	@Override
 	public boolean isSideSolid(IBlockAccess world, int x, int y, int z, ForgeDirection side)
 	{
-		if(world.getTileEntity(x, y, z) instanceof TileEntityDieselGenerator)
+		TileEntity te = world.getTileEntity(x, y, z);
+		if(te instanceof TileEntityDieselGenerator)
 		{
-			TileEntityDieselGenerator tile = (TileEntityDieselGenerator)world.getTileEntity(x, y, z);
+			TileEntityDieselGenerator tile = (TileEntityDieselGenerator)te;
 			if(tile.pos==39||tile.pos==40||tile.pos==41)
 				return side == ForgeDirection.UP;
 			else if(tile.pos==36||tile.pos==38)
@@ -290,29 +294,29 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 			else if((tile.pos==21&&!tile.master().mirrored) || (tile.pos==23&&tile.master().mirrored))
 				return true;
 		}
-		if(world.getTileEntity(x, y, z) instanceof TileEntityRefinery)
+		if(te instanceof TileEntityRefinery)
 		{
-			TileEntityRefinery tile = (TileEntityRefinery)world.getTileEntity(x, y, z);
+			TileEntityRefinery tile = (TileEntityRefinery)te;
 			if(tile.pos==9 && side.ordinal()==tile.facing)
 				return true;
 		}
-		if(world.getTileEntity(x, y, z) instanceof TileEntityCrusher)
+		if(te instanceof TileEntityCrusher)
 		{
-			TileEntityCrusher tile = (TileEntityCrusher)world.getTileEntity(x, y, z);
+			TileEntityCrusher tile = (TileEntityCrusher)te;
 			if(tile.pos%5==0)
 				return true;
 			else if(tile.pos==9 && side.ordinal()==tile.facing)
 				return true;
 		}
-		if(world.getTileEntity(x, y, z) instanceof TileEntityExcavator)
+		if(te instanceof TileEntityExcavator)
 		{
-			TileEntityExcavator tile = (TileEntityExcavator)world.getTileEntity(x, y, z);
+			TileEntityExcavator tile = (TileEntityExcavator)te;
 			if(tile.pos<27)
 				return true;
 		}
-		if(world.getTileEntity(x, y, z) instanceof TileEntityArcFurnace)
+		if(te instanceof TileEntityArcFurnace)
 		{
-			TileEntityArcFurnace tile = (TileEntityArcFurnace)world.getTileEntity(x, y, z);
+			TileEntityArcFurnace tile = (TileEntityArcFurnace)te;
 			if(tile.pos==2 || tile.pos==25 || tile.pos==52)
 				return side.ordinal()==tile.facing || (tile.pos==52?side==ForgeDirection.UP:false);
 			if(tile.pos==82 || tile.pos==86 || tile.pos==88 || tile.pos==112)
@@ -320,9 +324,9 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 			if( (tile.pos>=21&&tile.pos<=23) || (tile.pos>=46&&tile.pos<=48) || (tile.pos>=71&&tile.pos<=73))
 				return side.getOpposite().ordinal()==tile.facing;
 		}
-		if(world.getTileEntity(x, y, z) instanceof TileEntitySheetmetalTank || world.getTileEntity(x, y, z) instanceof TileEntitySilo)
+		if(te instanceof TileEntitySheetmetalTank || te instanceof TileEntitySilo)
 		{
-			TileEntityMultiblockPart tile = (TileEntityMultiblockPart)world.getTileEntity(x, y, z);
+			TileEntityMultiblockPart tile = (TileEntityMultiblockPart)te;
 			return tile.pos==4||tile.pos==(tile instanceof TileEntitySilo?58:40)||(tile.pos>=18&&tile.pos<(tile instanceof TileEntitySilo?54:36));
 		}
 		return super.isSideSolid(world, x, y, z, side);
@@ -331,25 +335,27 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 	@Override
 	public boolean canConnectRedstone(IBlockAccess world, int x, int y, int z, int side)
 	{
-		if(world.getTileEntity(x, y, z) instanceof TileEntityDieselGenerator)
-			return ((TileEntityDieselGenerator)world.getTileEntity(x, y, z)).pos==21 || ((TileEntityDieselGenerator)world.getTileEntity(x, y, z)).pos==23;
-		if(world.getTileEntity(x, y, z) instanceof TileEntityRefinery)
-			return ((TileEntityRefinery)world.getTileEntity(x, y, z)).pos==9 && side==((TileEntityRefinery)world.getTileEntity(x, y, z)).facing;
-		if(world.getTileEntity(x, y, z) instanceof TileEntityCrusher)
-			return ((TileEntityCrusher)world.getTileEntity(x, y, z)).pos==9 && side==((TileEntityCrusher)world.getTileEntity(x, y, z)).facing;
-		if(world.getTileEntity(x, y, z) instanceof TileEntityExcavator)
-			return ((TileEntityExcavator)world.getTileEntity(x, y, z)).pos==3 || ((TileEntityExcavator)world.getTileEntity(x, y, z)).pos==5;
-		if(world.getTileEntity(x, y, z) instanceof TileEntityArcFurnace)
-			return ((TileEntityArcFurnace)world.getTileEntity(x, y, z)).pos==25;
+		TileEntity te = world.getTileEntity(x, y, z);
+		if(te instanceof TileEntityDieselGenerator)
+			return ((TileEntityDieselGenerator)te).pos==21 || ((TileEntityDieselGenerator)te).pos==23;
+		if(te instanceof TileEntityRefinery)
+			return ((TileEntityRefinery)te).pos==9 && side==((TileEntityRefinery)te).facing;
+		if(te instanceof TileEntityCrusher)
+			return ((TileEntityCrusher)te).pos==9 && side==((TileEntityCrusher)te).facing;
+		if(te instanceof TileEntityExcavator)
+			return ((TileEntityExcavator)te).pos==3 || ((TileEntityExcavator)te).pos==5;
+		if(te instanceof TileEntityArcFurnace)
+			return ((TileEntityArcFurnace)te).pos==25;
 		return false;
 	}
 
 	@Override
 	public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
 	{
-		if(world.getTileEntity(x, y, z) instanceof TileEntityMultiblockPart)
+		TileEntity te = world.getTileEntity(x, y, z);
+		if(te instanceof TileEntityMultiblockPart)
 		{
-			float[] bounds = ((TileEntityMultiblockPart)world.getTileEntity(x, y, z)).getBlockBounds();
+			float[] bounds = ((TileEntityMultiblockPart)te).getBlockBounds();
 			if(bounds!=null && bounds.length>5)
 				this.setBlockBounds(bounds[0],bounds[1],bounds[2], bounds[3],bounds[4],bounds[5]);
 			else

@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
@@ -24,9 +25,10 @@ public class TileEntityDynamo extends TileEntityIEBase implements IEnergyConnect
 		for(int i=0; i<6; i++)
 		{
 			ForgeDirection fd = ForgeDirection.VALID_DIRECTIONS[i];
-			if(worldObj.getTileEntity(xCoord+fd.offsetX, yCoord+fd.offsetY, zCoord+fd.offsetZ) instanceof IEnergyReceiver)
+			TileEntity te = worldObj.getTileEntity(xCoord+fd.offsetX, yCoord+fd.offsetY, zCoord+fd.offsetZ);
+			if(te instanceof IEnergyReceiver)
 			{
-				IEnergyReceiver ier = (IEnergyReceiver)worldObj.getTileEntity(xCoord+fd.offsetX, yCoord+fd.offsetY, zCoord+fd.offsetZ);
+				IEnergyReceiver ier = (IEnergyReceiver)te;
 				output -= ier.receiveEnergy(fd.getOpposite(), output, false);
 			}
 		}

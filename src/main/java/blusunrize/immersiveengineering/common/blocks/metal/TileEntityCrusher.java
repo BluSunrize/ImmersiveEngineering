@@ -456,10 +456,11 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 						int zz = (f==2?l: f==3?-l: f==5?-ww : ww);
 
 						ItemStack s = null;
-						if(worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz) instanceof TileEntityCrusher)
+						TileEntity te = worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz);
+						if(te instanceof TileEntityCrusher)
 						{
-							s = ((TileEntityCrusher)worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz)).getOriginalBlock();
-							((TileEntityCrusher)worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz)).formed=false;
+							s = ((TileEntityCrusher)te).getOriginalBlock();
+							((TileEntityCrusher)te).formed=false;
 						}
 						if(startX+xx==xCoord && startY+yy==yCoord && startZ+zz==zCoord)
 							s = this.getOriginalBlock();

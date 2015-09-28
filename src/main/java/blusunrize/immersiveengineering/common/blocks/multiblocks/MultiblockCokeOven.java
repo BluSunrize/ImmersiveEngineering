@@ -5,6 +5,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
@@ -75,12 +76,14 @@ public class MultiblockCokeOven implements IMultiblock
 				for(int zz=zMin;zz<=zMax;zz++)
 				{
 					world.setBlock(x+xx, y+yy, z+zz, IEContent.blockStoneDevice, 1, 0x3);
-					if(world.getTileEntity(x+xx, y+yy, z+zz) instanceof TileEntityCokeOven)
+					TileEntity curr = world.getTileEntity(x+xx, y+yy, z+zz);
+					if(curr instanceof TileEntityCokeOven)
 					{
-						((TileEntityCokeOven)world.getTileEntity(x+xx, y+yy, z+zz)).offset=new int[]{xx,yy,zz};
-						((TileEntityCokeOven)world.getTileEntity(x+xx, y+yy, z+zz)).facing=f;
-						((TileEntityCokeOven)world.getTileEntity(x+xx, y+yy, z+zz)).formed=true;
-						world.getTileEntity(x+xx, y+yy, z+zz).markDirty();
+						TileEntityCokeOven currOven = (TileEntityCokeOven) curr;
+						currOven.offset=new int[]{xx,yy,zz};
+						currOven.facing=f;
+						currOven.formed=true;
+						currOven.markDirty();
 					}
 				}
 		return true;

@@ -389,10 +389,11 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart implements ISid
 					for(int zz=zMin;zz<=zMax;zz++)
 					{
 						ItemStack s = null;
-						if(worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz) instanceof TileEntityCokeOven)
+						TileEntity te = worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz);
+						if(te instanceof TileEntityCokeOven)
 						{
-							s = ((TileEntityCokeOven)worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz)).getOriginalBlock();
-							((TileEntityCokeOven)worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz)).formed=false;
+							s = ((TileEntityCokeOven)te).getOriginalBlock();
+							((TileEntityCokeOven)te).formed=false;
 						}
 						if(startX+xx==xCoord && startY+yy==yCoord && startZ+zz==zCoord)
 							s = this.getOriginalBlock();

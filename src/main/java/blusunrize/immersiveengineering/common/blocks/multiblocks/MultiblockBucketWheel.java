@@ -4,6 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.common.IEContent;
@@ -125,9 +126,10 @@ public class MultiblockBucketWheel implements IMultiblock
 					continue;
 
 				world.setBlock(xx, yy, zz, IEContent.blockMetalMultiblocks, BlockMetalMultiblocks.META_bucketWheel, 0x3);
-				if(world.getTileEntity(xx, yy, zz) instanceof TileEntityBucketWheel)
+				TileEntity curr = world.getTileEntity(xx, yy, zz);
+				if(curr instanceof TileEntityBucketWheel)
 				{
-					TileEntityBucketWheel tile = (TileEntityBucketWheel)world.getTileEntity(xx,yy,zz);
+					TileEntityBucketWheel tile = (TileEntityBucketWheel) curr;
 					tile.facing=side;
 					tile.formed=true;
 					tile.pos = (w+3) + (h+3)*7;

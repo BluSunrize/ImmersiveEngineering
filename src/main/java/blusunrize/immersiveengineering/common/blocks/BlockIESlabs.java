@@ -58,9 +58,10 @@ public class BlockIESlabs extends BlockIEBase
 	@Override
 	public boolean isSideSolid(IBlockAccess world, int x, int y, int z, ForgeDirection side)
 	{
-		if(world.getTileEntity(x, y, z) instanceof TileEntityIESlab)
+		TileEntity te = world.getTileEntity(x, y, z);
+		if(te instanceof TileEntityIESlab)
 		{
-			int type = ((TileEntityIESlab)world.getTileEntity(x, y, z)).slabType;
+			int type = ((TileEntityIESlab)te).slabType;
 			if(type==0)
 				return side==DOWN;
 			else if(type==1)

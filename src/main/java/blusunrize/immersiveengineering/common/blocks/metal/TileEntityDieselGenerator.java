@@ -370,10 +370,11 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockPart implemen
 						int zz = (f==3?l: f==2?-l: f==5?-w: w);
 
 						ItemStack s = null;
-						if(worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz) instanceof TileEntityDieselGenerator)
+						TileEntity te = worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz);
+						if(te instanceof TileEntityDieselGenerator)
 						{
-							s = ((TileEntityDieselGenerator)worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz)).getOriginalBlock();
-							((TileEntityDieselGenerator)worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz)).formed=false;
+							s = ((TileEntityDieselGenerator)te).getOriginalBlock();
+							((TileEntityDieselGenerator)te).formed=false;
 						}
 						if(startX+xx==xCoord && startY+yy==yCoord && startZ+zz==zCoord)
 							s = this.getOriginalBlock();

@@ -123,23 +123,24 @@ public class BlockMetalDecoration extends BlockIEBase implements blusunrize.aqua
 			return side==UP;
 		if(meta==META_scaffolding)
 			return true;
-		if(world.getTileEntity(x,y,z) instanceof TileEntityStructuralArm)
+		TileEntity te = world.getTileEntity(x, y, z);
+		if(te instanceof TileEntityStructuralArm)
 		{
 			if(side==UP)
-				return ((TileEntityStructuralArm)world.getTileEntity(x,y,z)).inverted;
+				return ((TileEntityStructuralArm)te).inverted;
 			else if(side==DOWN)
-				return !((TileEntityStructuralArm)world.getTileEntity(x,y,z)).inverted;
+				return !((TileEntityStructuralArm)te).inverted;
 			else
-				return ((TileEntityStructuralArm)world.getTileEntity(x,y,z)).facing==side.getOpposite().ordinal();
+				return ((TileEntityStructuralArm)te).facing==side.getOpposite().ordinal();
 		}
 		if(meta==META_radiator||meta==META_heavyEngineering||meta==META_generator||meta==META_lightEngineering||meta==META_sheetMetal)
 			return true;
-		if(world.getTileEntity(x,y,z) instanceof TileEntityWallmount)
+		if(te instanceof TileEntityWallmount)
 		{
 			if(side==UP)
-				return ((TileEntityWallmount)world.getTileEntity(x,y,z)).inverted;
+				return ((TileEntityWallmount)te).inverted;
 			else if(side==DOWN)
-				return !((TileEntityWallmount)world.getTileEntity(x,y,z)).inverted;
+				return !((TileEntityWallmount)te).inverted;
 			else
 				return true;
 		}
@@ -303,13 +304,14 @@ public class BlockMetalDecoration extends BlockIEBase implements blusunrize.aqua
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
 	{
-		if(world.getTileEntity(x,y,z) instanceof TileEntityConnectorStructural)
+		TileEntity te = world.getTileEntity(x, y, z);
+		if(te instanceof TileEntityConnectorStructural)
 		{	
 			if(Utils.isHammer(player.getCurrentEquippedItem()))
 			{
-				((TileEntityConnectorStructural)world.getTileEntity(x,y,z)).rotation += 22.5f;
-				((TileEntityConnectorStructural)world.getTileEntity(x,y,z)).rotation %= 360;
-				world.getTileEntity(x,y,z).markDirty();
+				((TileEntityConnectorStructural)te).rotation += 22.5f;
+				((TileEntityConnectorStructural)te).rotation %= 360;
+				te.markDirty();
 				world.markBlockForUpdate(x, y, z);
 				return true;
 			}

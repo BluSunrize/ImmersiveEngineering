@@ -122,10 +122,11 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart implement
 					for(int zz=-1;zz<=1;zz++)
 					{
 						ItemStack s = null;
-						if(worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz) instanceof TileEntitySheetmetalTank)
+						TileEntity te = worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz);
+						if(te instanceof TileEntitySheetmetalTank)
 						{
-							s = ((TileEntitySheetmetalTank)worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz)).getOriginalBlock();
-							((TileEntitySheetmetalTank)worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz)).formed=false;
+							s = ((TileEntitySheetmetalTank)te).getOriginalBlock();
+							((TileEntitySheetmetalTank)te).formed=false;
 						}
 						if(startX+xx==xCoord && startY+yy==yCoord && startZ+zz==zCoord)
 							s = this.getOriginalBlock();

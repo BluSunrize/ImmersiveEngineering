@@ -4,6 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
@@ -114,12 +115,14 @@ public class MultiblockSilo implements IMultiblock
 						if(yy>0&&yy<6&&xx==0&&zz==0)
 							continue;
 						world.setBlock(startX+xx, startY+yy, startZ+zz, IEContent.blockMetalMultiblocks, BlockMetalMultiblocks.META_silo, 0x3);
-						if(world.getTileEntity(startX+xx, startY+yy, startZ+zz) instanceof TileEntitySilo)
+						TileEntity curr = world.getTileEntity(startX+xx, startY+yy, startZ+zz);
+						if(curr instanceof TileEntitySilo)
 						{
-							((TileEntitySilo)world.getTileEntity(startX+xx, startY+yy, startZ+zz)).pos=(yy)*9 + (xx+1)*3 + (zz+1);
-							((TileEntitySilo)world.getTileEntity(startX+xx, startY+yy, startZ+zz)).formed=true;
-							((TileEntitySilo)world.getTileEntity(startX+xx, startY+yy, startZ+zz)).offset=new int[]{xx,yy,zz};
-							world.getTileEntity(startX+xx, startY+yy, startZ+zz).markDirty();
+							TileEntitySilo currSilo = (TileEntitySilo) curr;
+							currSilo.pos=(yy)*9 + (xx+1)*3 + (zz+1);
+							currSilo.formed=true;
+							currSilo.offset=new int[]{xx,yy,zz};
+							currSilo.markDirty();
 						}
 					}
 		player.triggerAchievement(IEAchievements.mbSilo);
