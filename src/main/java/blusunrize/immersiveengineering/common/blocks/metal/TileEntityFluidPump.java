@@ -1,9 +1,12 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
+import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChunkCoordinates;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -24,6 +27,12 @@ public class TileEntityFluidPump extends TileEntityIEBase implements IFluidHandl
 	public boolean dummy = true;
 	public FluidTank tank = new FluidTank(4000);
 	public EnergyStorage energyStorage = new EnergyStorage(8000);
+
+	boolean checkingArea = false;
+	Fluid searchFluid = null;
+	ArrayList<ChunkCoordinates> openList = new ArrayList<ChunkCoordinates>();
+	ArrayList<ChunkCoordinates> closedList = new ArrayList<ChunkCoordinates>();
+	ArrayList<ChunkCoordinates> checked = new ArrayList<ChunkCoordinates>();
 
 	@Override
 	public void updateEntity()
@@ -54,22 +63,95 @@ public class TileEntityFluidPump extends TileEntityIEBase implements IFluidHandl
 							((IFluidHandler)tile).drain(fd.getOpposite(), out, true);
 						}
 					}
-					else if(worldObj.getTotalWorldTime()%8==((xCoord^zCoord)&7))
+					else if(worldObj.getTotalWorldTime()%20==((xCoord^zCoord)&19) && worldObj.getBlock(xCoord+fd.offsetX,yCoord+fd.offsetY,zCoord+fd.offsetZ)==Blocks.water && tank.fill(new FluidStack(FluidRegistry.WATER,1000), false)==1000 && this.energyStorage.extractEnergy(Config.getInt("pump_consumption"), true)>=Config.getInt("pump_consumption"))
 					{
-						FluidStack fs = Utils.drainFluidBlock(worldObj, xCoord+fd.offsetX,yCoord+fd.offsetY,zCoord+fd.offsetZ, false);
-						if(fs!=null && this.tank.fill(fs,false)==fs.amount)
+						int connectedSources = 0;
+						for(int j=2; j<6; j++)
+							if(worldObj.getBlock(xCoord+fd.offsetX+(j==4?-1:j==5?1: 0), yCoord+fd.offsetY, zCoord+fd.offsetZ+(j==2?-1:j==3?1: 0))==Blocks.water && worldObj.getBlockMetadata(xCoord+fd.offsetX+(j==4?-1:j==5?1: 0), yCoord+fd.offsetY, zCoord+fd.offsetZ+(j==2?-1:j==3?1: 0))==0)
+								connectedSources++;
+						if(connectedSources>1)
 						{
-							int d = this.energyStorage.extractEnergy(Config.getInt("pump_consumption"), true);
-							if(d>=Config.getInt("pump_consumption"))
-							{
-								this.energyStorage.extractEnergy(Config.getInt("pump_consumption"), false);
-								fs = Utils.drainFluidBlock(worldObj, xCoord+fd.offsetX,yCoord+fd.offsetY,zCoord+fd.offsetZ, true);
-								this.tank.fill(fs, true);
-							}
+							this.energyStorage.extractEnergy(Config.getInt("pump_consumption"), false);
+							this.tank.fill(new FluidStack(FluidRegistry.WATER,1000), true);
 						}
 					}
 				}
+			if(worldObj.getTotalWorldTime()%40==((xCoord^zCoord)&39))
+			{
+				if(closedList.isEmpty())
+					prepareAreaCheck();
+				else
+				{
+					int target = closedList.size()-1;
+					ChunkCoordinates cc = closedList.get(target);
+					FluidStack fs = Utils.drainFluidBlock(worldObj, cc.posX,cc.posY,cc.posZ, false);
+					if(fs==null)
+						closedList.remove(target);
+					else if(tank.fill(fs, false)==fs.amount && this.energyStorage.extractEnergy(Config.getInt("pump_consumption"), true)>=Config.getInt("pump_consumption"))
+					{
+						this.energyStorage.extractEnergy(Config.getInt("pump_consumption"), false);
+						fs = Utils.drainFluidBlock(worldObj, cc.posX,cc.posY,cc.posZ, true);
+						int rainbow = (closedList.size()%11)+1;
+						if(rainbow>6)
+							rainbow+=2;
+						if(rainbow>9)
+							rainbow++;
+						worldObj.setBlock( cc.posX,cc.posY,cc.posZ, Blocks.stained_glass,rainbow, 0x3);
+						this.tank.fill(fs, true);
+						closedList.remove(target);
+					}
+				}
+			}
 		}
+
+		if(checkingArea)
+			checkAreaTick();
+	}
+
+	public void prepareAreaCheck()
+	{
+		openList.clear();
+		closedList.clear();
+		checked.clear();
+		for(int i=0; i<6; i++)
+			if(sideConfig[i]==0)
+			{
+				ForgeDirection fd = ForgeDirection.getOrientation(i);
+				openList.add(new ChunkCoordinates(xCoord+fd.offsetX,yCoord+fd.offsetY,zCoord+fd.offsetZ));
+				checkingArea = true;
+			}
+	}
+	public void checkAreaTick()
+	{
+		ChunkCoordinates next = null;
+		final int closedListMax = 2048;
+		int timeout = 0;
+		while(timeout<64 && closedList.size()<closedListMax && !openList.isEmpty())
+		{
+			timeout++;
+			next = openList.get(0);
+			if(!checked.contains(next))
+			{
+				FluidStack fs = Utils.drainFluidBlock(worldObj, next.posX,next.posY,next.posZ, false);
+				if(fs!=null && fs.getFluid()!=FluidRegistry.WATER && (searchFluid==null || fs.getFluid()==searchFluid))
+				{
+					if(searchFluid==null)
+						searchFluid = fs.getFluid();
+					closedList.add(next);
+					for(ForgeDirection fd : ForgeDirection.VALID_DIRECTIONS)
+					{
+						ChunkCoordinates cc2 = new ChunkCoordinates(next.posX+fd.offsetX,next.posY+fd.offsetY,next.posZ+fd.offsetZ);
+						FluidStack fs2 = Utils.drainFluidBlock(worldObj, cc2.posX,cc2.posY,cc2.posZ, false);
+						if(!checked.contains(cc2) && !closedList.contains(cc2) && !openList.contains(cc2) && fs2!=null && fs2.getFluid()!=FluidRegistry.WATER && (searchFluid==null || fs2.getFluid()==searchFluid))
+							openList.add(cc2);
+					}
+				}
+				checked.add(next);
+			}
+			openList.remove(0);
+		}
+		if(closedList.size()>=closedListMax || openList.isEmpty())
+			checkingArea = false;
 	}
 
 	public int outputFluid(FluidStack fs, boolean simulate)

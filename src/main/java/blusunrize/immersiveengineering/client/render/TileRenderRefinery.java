@@ -26,7 +26,7 @@ public class TileRenderRefinery extends TileRenderIE
 	{
 		TileEntityRefinery refinery = (TileEntityRefinery)tile;
 		
-		translationMatrix.translate(.5, .5, .5);
+		translationMatrix.translate(.5, 1.5, .5);
 		rotationMatrix.rotate(Math.toRadians(refinery.facing==2?180: refinery.facing==4?-90: refinery.facing==5?90: 0), 0,1,0);
 		if(refinery.mirrored)
 			translationMatrix.scale(new Vertex(1,1,-1));

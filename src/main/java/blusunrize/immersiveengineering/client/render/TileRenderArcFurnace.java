@@ -16,12 +16,20 @@ import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 
 public class TileRenderArcFurnace extends TileRenderIE
 {
-	ModelIEObj model = new ModelIEObj("immersiveengineering:models/arcFurnace.obj")
+	ModelIEObj model0 = new ModelIEObj("immersiveengineering:models/arcFurnace.obj")
 	{
 		@Override
 		public IIcon getBlockIcon()
 		{
 			return IEContent.blockMetalMultiblocks.getIcon(0, BlockMetalMultiblocks.META_arcFurnace);
+		}
+	};
+	ModelIEObj model1 = new ModelIEObj("immersiveengineering:models/arcFurnace.obj")
+	{
+		@Override
+		public IIcon getBlockIcon()
+		{
+			return IEContent.blockMetalMultiblocks.getIcon(1, BlockMetalMultiblocks.META_arcFurnace);
 		}
 	};
 	public static IIcon hotMetal_flow;
@@ -31,7 +39,7 @@ public class TileRenderArcFurnace extends TileRenderIE
 	public void renderStatic(TileEntity tile, Tessellator tes, Matrix4 translationMatrix, Matrix4 rotationMatrix)
 	{
 		TileEntityArcFurnace arc = (TileEntityArcFurnace)tile;
-		
+
 		translationMatrix.translate(.5, .5, .5);
 		rotationMatrix.rotate(Math.toRadians(arc.facing==2?180: arc.facing==4?-90: arc.facing==5?90: 0), 0,1,0);
 		if(arc.mirrored)
@@ -41,8 +49,11 @@ public class TileRenderArcFurnace extends TileRenderIE
 		render[0]="base";
 		render[1]="furnace";
 		for(int i=0; i<3; i++)
-			render[2+i] = (!arc.electrodes[i]?"electrode"+(i+1):"");
-		model.render(tile, tes, translationMatrix, rotationMatrix, 0, arc.mirrored, render);
+			render[2+i] = (arc.electrodes[i]?"electrode"+(i+1):"");
+		if(arc.active)
+			model1.render(tile, tes, translationMatrix, rotationMatrix, 0, arc.mirrored, render);
+		else
+			model0.render(tile, tes, translationMatrix, rotationMatrix, 0, arc.mirrored, render);
 	}
 	@Override
 	public void renderDynamic(TileEntity tile, double x, double y, double z, float f)

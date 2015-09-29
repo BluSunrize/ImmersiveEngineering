@@ -10,9 +10,13 @@ import org.lwjgl.opengl.GL11;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalMultiblocks;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityArcFurnace;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityDieselGenerator;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityExcavator;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFermenter;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityLightningRod;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityRefinery;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySqueezer;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockArcFurnace;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockBucketWheel;
@@ -242,9 +246,15 @@ public class BlockRenderMetalMultiblocks implements ISimpleBlockRenderingHandler
 			return renderer.renderStandardBlock(block, x, y, z);
 		}
 		else if(world.getTileEntity(x, y, z) instanceof TileEntityDieselGenerator && ((TileEntityDieselGenerator)world.getTileEntity(x,y,z)).pos==31)
-		{
 			ClientUtils.handleStaticTileRenderer(world.getTileEntity(x, y, z));
-		}
+		else if(world.getTileEntity(x, y, z) instanceof TileEntityRefinery && ((TileEntityRefinery)world.getTileEntity(x,y,z)).pos==17)
+			ClientUtils.handleStaticTileRenderer(world.getTileEntity(x, y, z));
+		else if(world.getTileEntity(x, y, z) instanceof TileEntityCrusher && ((TileEntityCrusher)world.getTileEntity(x,y,z)).pos==17)
+			ClientUtils.handleStaticTileRenderer(world.getTileEntity(x, y, z));
+		else if(world.getTileEntity(x, y, z) instanceof TileEntityExcavator && ((TileEntityExcavator)world.getTileEntity(x,y,z)).pos==4)
+			ClientUtils.handleStaticTileRenderer(world.getTileEntity(x, y, z));
+		else if(world.getTileEntity(x, y, z) instanceof TileEntityArcFurnace && ((TileEntityArcFurnace)world.getTileEntity(x,y,z)).pos==62)
+			ClientUtils.handleStaticTileRenderer(world.getTileEntity(x, y, z));
 		return false;
 	}
 

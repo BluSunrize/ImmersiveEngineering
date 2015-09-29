@@ -30,7 +30,7 @@ public class TileRenderCrusher extends TileRenderIE
 	{
 		TileEntityCrusher crusher = (TileEntityCrusher)tile;
 		
-		translationMatrix.translate(.5, .5, .5);
+		translationMatrix.translate(.5, 1.5, .5);
 		rotationMatrix.rotate(Math.toRadians(crusher.facing==2?180: crusher.facing==4?-90: crusher.facing==5?90: 0), 0,1,0);
 		if(crusher.mirrored)
 			translationMatrix.scale(new Vertex(1,1,-1));
@@ -54,8 +54,7 @@ public class TileRenderCrusher extends TileRenderIE
 			GL11.glDisable(GL11.GL_CULL_FACE);
 		}
 
-		ClientUtils.bindTexture("immersiveengineering:textures/models/crusher.png");
-
+		ClientUtils.bindAtlas(0);
 		boolean b = crusher.hasPower&&((crusher.active&&crusher.process>0)||crusher.mobGrinding||crusher.grindingTimer>0);
 		float angle = crusher.barrelRotation+(b?18*f:0);
 		

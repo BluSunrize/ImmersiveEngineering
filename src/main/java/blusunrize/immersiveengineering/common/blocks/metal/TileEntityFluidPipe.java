@@ -199,12 +199,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidHandl
 			TileEntity con = worldObj.getTileEntity(xCoord+(i==4?-1: i==5?1: 0),yCoord+(i==0?-1: i==1?1: 0),zCoord+(i==2?-1: i==3?1: 0));
 			connections <<= 1;
 			if(sideConfig[i]==0 && con instanceof IFluidHandler)
-			{
-				//				if(!(con instanceof TileEntityFluidPipe))
 				connections |= 1;
-			}
-			//			if(sideConfig[i]==-1 || con instanceof TileEntityFluidPipe)
-			//				connections |= 1;
 		}
 		return connections;
 	}
@@ -234,7 +229,6 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidHandl
 		if(con instanceof TileEntityFluidPipe)
 		{
 			byte tileConnections = ((TileEntityFluidPipe)con).getConnectionByte();
-			//			int b = 1<<connection;
 			if(thisConnections==tileConnections)
 				return 0;
 		}

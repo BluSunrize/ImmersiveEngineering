@@ -26,10 +26,10 @@ public class TileRenderExcavator extends TileRenderIE
 	{
 		TileEntityExcavator excavator = (TileEntityExcavator)tile;
 		
-		translationMatrix.translate(.5, .5, .5);
+		translationMatrix.translate(excavator.facing==4?4.5: excavator.facing==5?-3.5: .5, .5, excavator.facing==2?4.5: excavator.facing==3?-3.5: .5);
 		rotationMatrix.rotate(Math.toRadians(excavator.facing==4?180: excavator.facing==3?-90: excavator.facing==2?90: 0), 0,1,0);
 		if(excavator.mirrored)
-			translationMatrix.scale(new Vertex(1,1,-1));
+			translationMatrix.scale(new Vertex(excavator.facing<4?-1:1, 1, excavator.facing>3?-1:1));
 
 		model.render(tile, tes, translationMatrix, rotationMatrix, 0, excavator.mirrored);
 	}

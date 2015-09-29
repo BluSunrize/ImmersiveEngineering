@@ -340,15 +340,15 @@ public class Utils
 			{
 				if(world.getBlockMetadata(x,y,z)==0)
 				{
-					if(b==Blocks.water)
-					{
-						int connectedSources = 0;
-						for(int i=2; i<6; i++)
-							if(world.getBlock(x+(i==4?-1:i==5?1: 0), y, z+(i==2?-1:i==3?1: 0))==Blocks.water && world.getBlockMetadata(x+(i==4?-1:i==5?1: 0), y, z+(i==2?-1:i==3?1: 0))==0)
-								connectedSources++;
-						if(connectedSources>1)
-							doDrain=false;
-					}
+//					if(b==Blocks.water)
+//					{
+//						int connectedSources = 0;
+//						for(int i=2; i<6; i++)
+//							if(world.getBlock(x+(i==4?-1:i==5?1: 0), y, z+(i==2?-1:i==3?1: 0))==Blocks.water && world.getBlockMetadata(x+(i==4?-1:i==5?1: 0), y, z+(i==2?-1:i==3?1: 0))==0)
+//								connectedSources++;
+//						if(connectedSources>1)
+//							doDrain=false;
+//					}
 					if(doDrain)
 						world.setBlockToAir(x, y, z);
 					return new FluidStack(f, 1000);
