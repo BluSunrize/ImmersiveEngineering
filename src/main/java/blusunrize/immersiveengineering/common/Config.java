@@ -32,6 +32,13 @@ public class Config
 //			config.getCategory("General").remove("Cable loss");
 		}
 
+		Property connectionValidation = config.get("General", "Validate Connections", false, "Drop connections with non-existing endpoints when loading the world. Use with care and backups and only when suspecting corrupted data. This option will check and load all connection endpoints and may slow down the world loading process.");
+		if(connectionValidation.getBoolean())
+		{
+			IELogger.warn("Connection validation enabled");
+		}
+		setBoolean("validateConnections", connectionValidation.getBoolean());
+
 		Property cableProperty = config.get("General", "Cable transfer rates", new int[]{256,1024,4096,0,0,0}, "The transfer rates in RF/t for the cable tiers (copper, electrum, HV, Structural Rope & Cable(no transfer) )");
 		if(cableProperty.getIntList().length<5)
 			cableProperty.set(new int[]{256,1024,4096,0,0});
