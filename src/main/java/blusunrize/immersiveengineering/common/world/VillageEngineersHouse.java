@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDecoration;
 import net.minecraft.entity.EntityHanging;
 import net.minecraft.entity.item.EntityItemFrame;
 import net.minecraft.init.Blocks;
@@ -142,8 +143,18 @@ public class VillageEngineersHouse extends StructureVillagePieces.Village
 		//Doors
 		int doorMeta = coordBaseMode==0?1: coordBaseMode==1?2: coordBaseMode==2?3: 0;
 		this.placeDoorAtCurrentPosition(world, box, rand, 4,1,3, doorMeta);
-		this.placeDoorAtCurrentPosition(world, box, rand, 4,5,5, doorMeta);
-		this.placeDoorAtCurrentPosition(world, box, rand, 3,5,5, doorMeta);
+		if(coordBaseMode==0 || coordBaseMode==1)
+		{
+			this.placeDoorAtCurrentPosition(world, box, rand, 4, 5, 5, doorMeta);
+			this.placeDoorAtCurrentPosition(world, box, rand, 3, 5, 5, doorMeta);
+		} else {
+			this.placeDoorAtCurrentPosition(world, box, rand, 3,5,5, doorMeta);
+			this.placeDoorAtCurrentPosition(world, box, rand, 4,5,5, doorMeta);
+		}
+
+		//Lanterns
+		this.placeBlockAtCurrentPosition(world, IEContent.blockMetalDecoration, BlockMetalDecoration.META_lantern, 5, 3, 6, box);
+		this.placeBlockAtCurrentPosition(world, IEContent.blockMetalDecoration, BlockMetalDecoration.META_lantern, 5, 7, 6, box);
 
 		//Stairs
 		placeBlockAtCurrentPosition(world, Blocks.oak_stairs, stairMeta, 8,1,6, box);
