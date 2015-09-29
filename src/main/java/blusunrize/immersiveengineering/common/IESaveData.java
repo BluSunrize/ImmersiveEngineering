@@ -21,7 +21,6 @@ public class IESaveData extends WorldSavedData
 	//	private static HashMap<Integer, IESaveData> INSTANCE = new HashMap<Integer, IESaveData>();
 	private static IESaveData INSTANCE;
 	public static final String dataName = "ImmersiveEngineering-SaveData";
-	public static boolean loaded = false;
 
 	public IESaveData(String s)
 	{
