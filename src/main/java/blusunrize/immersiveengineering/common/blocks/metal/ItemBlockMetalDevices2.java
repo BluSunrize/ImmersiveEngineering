@@ -6,6 +6,7 @@ import blusunrize.immersiveengineering.common.IEContent;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -36,23 +37,24 @@ public class ItemBlockMetalDevices2 extends ItemBlockIEBase
 
 		boolean ret = super.placeBlockAt(stack, player, world, x, y, z, side, hitX, hitY, hitZ, meta);
 		if(!ret) return false;
-		if(world.getTileEntity(x, y, z) instanceof TileEntityBreakerSwitch)
+		TileEntity tileEntity = world.getTileEntity(x, y, z);
+		if(tileEntity instanceof TileEntityBreakerSwitch)
 		{
 			if(side<2)
 			{
-				((TileEntityBreakerSwitch)world.getTileEntity(x, y, z)).sideAttached = ForgeDirection.OPPOSITES[side]+1;
-				((TileEntityBreakerSwitch)world.getTileEntity(x, y, z)).facing = f;
+				((TileEntityBreakerSwitch)tileEntity).sideAttached = ForgeDirection.OPPOSITES[side]+1;
+				((TileEntityBreakerSwitch)tileEntity).facing = f;
 			}
 			else
-				((TileEntityBreakerSwitch)world.getTileEntity(x, y, z)).facing = ForgeDirection.OPPOSITES[side];
+				((TileEntityBreakerSwitch)tileEntity).facing = ForgeDirection.OPPOSITES[side];
 		}
-		if(world.getTileEntity(x, y, z) instanceof TileEntityFloodLight)
+		if(tileEntity instanceof TileEntityFloodLight)
 		{
-			((TileEntityFloodLight)world.getTileEntity(x, y, z)).facing = f;
+			((TileEntityFloodLight)tileEntity).facing = f;
 		}
-		if(world.getTileEntity(x, y, z) instanceof TileEntityFluidPump)
+		if(tileEntity instanceof TileEntityFluidPump)
 		{
-			((TileEntityFluidPump)world.getTileEntity(x, y, z)).dummy = false;
+			((TileEntityFluidPump)tileEntity).dummy = false;
 			world.setBlock(x, y+1, z, IEContent.blockMetalDevice2, BlockMetalDevices2.META_fluidPump, 3);
 		}
 		return ret;

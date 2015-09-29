@@ -6,6 +6,7 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
@@ -91,18 +92,25 @@ public class ItemBlockWoodenDevices extends ItemBlockIEBase
 		}
 
 		boolean ret = super.placeBlockAt(stack, player, world, x, y, z, side, hitX, hitY, hitZ, meta);
-		if(ret && world.getTileEntity(x, y, z) instanceof TileEntityWoodenPost)
+		if(!ret)
+			return false;
+		
+		TileEntity tileEntity = world.getTileEntity(x, y, z);
+		if(tileEntity instanceof TileEntityWoodenPost)
 		{
+			TileEntity tileEntityWoodenPost;
 			for(int i=1; i<=3; i++)
 			{
 				world.setBlock(x, y+i, z, field_150939_a, meta, 0x3);
-				if(world.getTileEntity(x, y+i, z) instanceof TileEntityWoodenPost)
-					((TileEntityWoodenPost)world.getTileEntity(x, y+i, z)).type=(byte) i;
+				tileEntityWoodenPost = world.getTileEntity(x, y+i, z);
+				if(tileEntityWoodenPost instanceof TileEntityWoodenPost)
+					((TileEntityWoodenPost)tileEntityWoodenPost).type=(byte) i;
 			}
 		}
-		if(ret && world.getTileEntity(x, y, z) instanceof TileEntityWatermill)
+		if(tileEntity instanceof TileEntityWatermill)
 		{
-			((TileEntityWatermill)world.getTileEntity(x,y,z)).facing=f;
+			((TileEntityWatermill)tileEntity).facing=f;
+			TileEntity tileEntityWatermill;
 			for(int yy=-2;yy<=2;yy++)
 			{
 				int r=yy<-1||yy>1?1:2;
@@ -110,24 +118,25 @@ public class ItemBlockWoodenDevices extends ItemBlockIEBase
 					if(yy!=0||ww!=0)
 					{
 						world.setBlock(x+((f==2||f==3)?ww:0), y+yy, z+((f==2||f==3)?0:ww), field_150939_a, meta, 0x3);
-						if(world.getTileEntity(x+((f==2||f==3)?ww:0), y+yy, z+((f==2||f==3)?0:ww)) instanceof TileEntityWatermill)
+						tileEntityWatermill = world.getTileEntity(x+((f==2||f==3)?ww:0), y+yy, z+((f==2||f==3)?0:ww));
+						if(tileEntityWatermill instanceof TileEntityWatermill)
 						{
-							((TileEntityWatermill)world.getTileEntity(x+((f==2||f==3)?ww:0), y+yy, z+((f==2||f==3)?0:ww))).facing=f;
-							((TileEntityWatermill)world.getTileEntity(x+((f==2||f==3)?ww:0), y+yy, z+((f==2||f==3)?0:ww))).offset= new int[]{ww,yy};
+							((TileEntityWatermill)tileEntityWatermill).facing=f;
+							((TileEntityWatermill)tileEntityWatermill).offset= new int[]{ww,yy};
 						}
 					}
 			}
 		}
-		if(ret && world.getTileEntity(x, y, z) instanceof TileEntityWindmill)
-			((TileEntityWindmill)world.getTileEntity(x,y,z)).facing=f;
+		if(tileEntity instanceof TileEntityWindmill)
+			((TileEntityWindmill)tileEntity).facing=f;
 
-		if(ret && world.getTileEntity(x, y, z) instanceof TileEntityWoodenCrate)
+		if(tileEntity instanceof TileEntityWoodenCrate)
 		{
 			if(stack.hasTagCompound())
-				((TileEntityWoodenCrate)world.getTileEntity(x, y, z)).readInv(stack.getTagCompound());
+				((TileEntityWoodenCrate)tileEntity).readInv(stack.getTagCompound());
 		}
 
-		if(ret && world.getTileEntity(x, y, z) instanceof TileEntityModWorkbench)
+		if(tileEntity instanceof TileEntityModWorkbench)
 		{
 			int xOff = f>3?0:(hitX<.5?-1:1);
 			int zOff = f<4?0:(hitZ<.5?-1:1);
@@ -138,22 +147,23 @@ public class ItemBlockWoodenDevices extends ItemBlockIEBase
 			}
 			int off = f>3?zOff:xOff;
 
-			((TileEntityModWorkbench)world.getTileEntity(x,y,z)).facing=f;
-			((TileEntityModWorkbench)world.getTileEntity(x,y,z)).dummyOffset=off;
+			((TileEntityModWorkbench)tileEntity).facing=f;
+			((TileEntityModWorkbench)tileEntity).dummyOffset=off;
 			world.setBlock(x+xOff,y,z+zOff, field_150939_a, meta, 0x3);
-			if(world.getTileEntity(x+xOff,y,z+zOff) instanceof TileEntityModWorkbench)
+			TileEntity tileEntityDummy = world.getTileEntity(x+xOff,y,z+zOff);
+			if(tileEntityDummy instanceof TileEntityModWorkbench)
 			{
-				((TileEntityModWorkbench)world.getTileEntity(x+xOff,y,z+zOff)).facing =f;
-				((TileEntityModWorkbench)world.getTileEntity(x+xOff,y,z+zOff)).dummy = true;
-				((TileEntityModWorkbench)world.getTileEntity(x+xOff,y,z+zOff)).dummyOffset = off;
+				((TileEntityModWorkbench)tileEntityDummy).facing =f;
+				((TileEntityModWorkbench)tileEntityDummy).dummy = true;
+				((TileEntityModWorkbench)tileEntityDummy).dummyOffset = off;
 			}
 
 		}
-		if(ret && world.getTileEntity(x, y, z) instanceof TileEntityWoodenBarrel)
+		if(tileEntity instanceof TileEntityWoodenBarrel)
 		{
 			if(stack.hasTagCompound())
-				((TileEntityWoodenBarrel)world.getTileEntity(x, y, z)).readTank(stack.getTagCompound());
+				((TileEntityWoodenBarrel)tileEntity).readTank(stack.getTagCompound());
 		}
-		return ret;
+		return true;
 	}
 }

@@ -4,6 +4,7 @@ import net.minecraft.block.BlockDynamicLiquid;
 import net.minecraft.block.BlockStaticLiquid;
 import net.minecraft.block.material.Material;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -37,11 +38,13 @@ public class TileEntityThermoelectricGen extends TileEntityIEBase implements IEn
 	public void outputEnergy(int amount)
 	{
 		for(ForgeDirection fd : ForgeDirection.VALID_DIRECTIONS)
-			if(worldObj.getTileEntity(xCoord+fd.offsetX, yCoord+fd.offsetY, zCoord+fd.offsetZ) instanceof IEnergyReceiver)
+		{
+			TileEntity te = worldObj.getTileEntity(xCoord+fd.offsetX, yCoord+fd.offsetY, zCoord+fd.offsetZ);
+			if(te instanceof IEnergyReceiver)
 			{
-				IEnergyReceiver ier = (IEnergyReceiver)worldObj.getTileEntity(xCoord+fd.offsetX, yCoord+fd.offsetY, zCoord+fd.offsetZ);
-				amount -= ier.receiveEnergy(fd.getOpposite(), amount, false);
+				amount -= ((IEnergyReceiver) te).receiveEnergy(fd.getOpposite(), amount, false);
 			}
+		}
 	}
 
 

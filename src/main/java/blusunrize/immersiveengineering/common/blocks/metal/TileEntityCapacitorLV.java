@@ -2,6 +2,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -85,8 +86,9 @@ public class TileEntityCapacitorLV extends TileEntityIEBase implements IEnergyHa
 		if(this.sideConfig[side] != 1)
 			return;
 		ForgeDirection fd = ForgeDirection.VALID_DIRECTIONS[side];
-		if(worldObj.getTileEntity(xCoord+fd.offsetX, yCoord+fd.offsetY, zCoord+fd.offsetZ) instanceof IEnergyReceiver)
-			this.energyStorage.modifyEnergyStored(-((IEnergyReceiver)worldObj.getTileEntity(xCoord+fd.offsetX, yCoord+fd.offsetY, zCoord+fd.offsetZ)).receiveEnergy(fd.getOpposite(), Math.min(getMaxOutput(), this.energyStorage.getEnergyStored()), false));
+		TileEntity tileEntity = worldObj.getTileEntity(xCoord+fd.offsetX, yCoord+fd.offsetY, zCoord+fd.offsetZ);
+		if(tileEntity instanceof IEnergyReceiver)
+			this.energyStorage.modifyEnergyStored(-((IEnergyReceiver)tileEntity).receiveEnergy(fd.getOpposite(), Math.min(getMaxOutput(), this.energyStorage.getEnergyStored()), false));
 //		else if(worldObj.getTileEntity(xCoord+fd.offsetX,yCoord+fd.offsetY,zCoord+fd.offsetZ) instanceof TileEntityConnectorLV)
 //		{
 //			IImmersiveConnectable node = (IImmersiveConnectable) worldObj.getTileEntity(xCoord+fd.offsetX,yCoord+fd.offsetY,zCoord+fd.offsetZ);

@@ -87,8 +87,12 @@ public class ItemBlockIESlabs extends ItemBlockIEBase
 	public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int meta)
 	{
 		boolean ret = super.placeBlockAt(stack, player, world, x, y, z, side, hitX, hitY, hitZ, meta);
-		if(ret && world.getTileEntity(x, y, z) instanceof TileEntityIESlab)
-			((TileEntityIESlab)world.getTileEntity(x, y, z)).slabType= (side==0||(side!=1&&hitY>=.5))?1:0;
+		if(ret)
+		{
+			TileEntity tileEntity = world.getTileEntity(x, y, z);
+			if(tileEntity instanceof TileEntityIESlab)
+				((TileEntityIESlab) tileEntity).slabType = (side==0||(side!=1&&hitY>=.5))? 1: 0;
+		}
 		return ret;
 	}
 }

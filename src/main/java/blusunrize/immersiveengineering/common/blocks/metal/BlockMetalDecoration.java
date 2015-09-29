@@ -197,20 +197,21 @@ public class BlockMetalDecoration extends BlockIEBase implements blusunrize.aqua
 	@Override
 	public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
 	{
+		TileEntity tileEntity = world.getTileEntity(x, y, z);
 		if(world.getBlockMetadata(x, y, z)==META_fence)
 			this.setBlockBounds(canConnectFenceTo(world,x-1,y,z)?0:.375f,0,canConnectFenceTo(world,x,y,z-1)?0:.375f, canConnectFenceTo(world,x+1,y,z)?1:.625f,1,canConnectFenceTo(world,x,y,z+1)?1:.625f);
-		else if(world.getTileEntity(x, y, z) instanceof TileEntityLantern)
+		else if(tileEntity instanceof TileEntityLantern)
 		{
-			int f = ((TileEntityLantern)world.getTileEntity(x, y, z)).facing ;
+			int f = ((TileEntityLantern)tileEntity).facing ;
 			if(f<2)
 				this.setBlockBounds(.25f,f==1?0:.125f,.25f, .75f,f==1?.875f:1f,.75f);
 			else
 				this.setBlockBounds(f==5?0:.25f,0,f==3?0:.25f, f==4?1:.75f,.875f,f==2?1:.75f);
 		}
-		else if(world.getTileEntity(x, y, z) instanceof TileEntityConnectorStructural)
+		else if(tileEntity instanceof TileEntityConnectorStructural)
 		{
 			float length = .5f;
-			switch(((TileEntityConnectorStructural)world.getTileEntity(x, y, z)).facing )
+			switch(((TileEntityConnectorStructural)tileEntity).facing )
 			{
 			case 0://UP
 				this.setBlockBounds(.25f,0,.25f,  .75f,length,.75f);
@@ -232,9 +233,9 @@ public class BlockMetalDecoration extends BlockIEBase implements blusunrize.aqua
 				break;
 			}
 		}
-		else if(world.getTileEntity(x, y, z) instanceof TileEntityWallmount)
+		else if(tileEntity instanceof TileEntityWallmount)
 		{
-			TileEntityWallmount arm = (TileEntityWallmount)world.getTileEntity(x, y, z);
+			TileEntityWallmount arm = (TileEntityWallmount)tileEntity;
 			int f = arm.facing;
 			if(arm.sideAttached>0)
 				this.setBlockBounds(f==4?0:f==5?.375f:.3125f,arm.inverted?.3125f:0,f==2?0:f==3?.375f:.3125f, f==5?1:f==4?.625f:.6875f,arm.inverted?1:.6875f,f==3?1:f==2?.625f:.6875f);

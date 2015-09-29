@@ -69,82 +69,84 @@ public class ItemWireCoil extends ItemIEBase implements IWireCoil
 	@Override
 	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
 	{
-		if(!world.isRemote && world.getTileEntity(x, y, z) instanceof IImmersiveConnectable && ((IImmersiveConnectable)world.getTileEntity(x, y, z)).canConnect() )
+		if(!world.isRemote)
 		{
-			TargetingInfo target = new TargetingInfo(side, hitX,hitY,hitZ);
-			if( !((IImmersiveConnectable)world.getTileEntity(x, y, z)).canConnectCable(getWireType(stack), target))
+			TileEntity tileEntity = world.getTileEntity(x, y, z);
+			if(tileEntity instanceof IImmersiveConnectable && ((IImmersiveConnectable)tileEntity).canConnect())
 			{
-				player.addChatMessage(new ChatComponentTranslation(Lib.CHAT_WARN+"wrongCable"));
-				return false;
-			}
-
-			if(!ItemNBTHelper.hasKey(stack, "linkingPos"))
-			{
-				ItemNBTHelper.setIntArray(stack, "linkingPos", new int[]{world.provider.dimensionId,x,y,z});
-				target.writeToNBT(stack.getTagCompound());
-			}
-			else
-			{
-				WireType type = getWireType(stack);
-				int[] pos = ItemNBTHelper.getIntArray(stack, "linkingPos");
-				int distance = (int) Math.ceil(Math.sqrt( (pos[1]-x)*(pos[1]-x) + (pos[2]-y)*(pos[2]-y) + (pos[3]-z)*(pos[3]-z) ));
-				if(pos[0]!=world.provider.dimensionId)
-					player.addChatMessage(new ChatComponentTranslation(Lib.CHAT_WARN+"wrongDimension"));
-				else if(pos[1]==x&&pos[2]==y&&pos[3]==z)
-					player.addChatMessage(new ChatComponentTranslation(Lib.CHAT_WARN+"sameConnection"));
-				else if( distance > type.getMaxLength())
-					player.addChatMessage(new ChatComponentTranslation(Lib.CHAT_WARN+"tooFar"));
-				else if(!(world.getTileEntity(x, y, z) instanceof IImmersiveConnectable) || !(world.getTileEntity(pos[1], pos[2], pos[3]) instanceof IImmersiveConnectable))
-					player.addChatMessage(new ChatComponentTranslation(Lib.CHAT_WARN+"invalidPoint"));
+				TargetingInfo target = new TargetingInfo(side, hitX,hitY,hitZ);
+				if( !((IImmersiveConnectable)tileEntity).canConnectCable(getWireType(stack), target))
+				{
+					player.addChatMessage(new ChatComponentTranslation(Lib.CHAT_WARN+"wrongCable"));
+					return false;
+				}
+	
+				if(!ItemNBTHelper.hasKey(stack, "linkingPos"))
+				{
+					ItemNBTHelper.setIntArray(stack, "linkingPos", new int[]{world.provider.dimensionId,x,y,z});
+					target.writeToNBT(stack.getTagCompound());
+				}
 				else
 				{
-					IImmersiveConnectable nodeHere = (IImmersiveConnectable)world.getTileEntity(x, y, z);
-					IImmersiveConnectable nodeLink = (IImmersiveConnectable)world.getTileEntity(pos[1], pos[2], pos[3]);
-					boolean connectionExists = false;
-					if(nodeHere!=null && nodeLink!=null)
+					WireType type = getWireType(stack);
+					int[] pos = ItemNBTHelper.getIntArray(stack, "linkingPos");
+					TileEntity tileEntityLinkingPos = world.getTileEntity(pos[1], pos[2], pos[3]);
+					int distance = (int) Math.ceil(Math.sqrt( (pos[1]-x)*(pos[1]-x) + (pos[2]-y)*(pos[2]-y) + (pos[3]-z)*(pos[3]-z) ));
+					if(pos[0]!=world.provider.dimensionId)
+						player.addChatMessage(new ChatComponentTranslation(Lib.CHAT_WARN+"wrongDimension"));
+					else if(pos[1]==x&&pos[2]==y&&pos[3]==z)
+						player.addChatMessage(new ChatComponentTranslation(Lib.CHAT_WARN+"sameConnection"));
+					else if( distance > type.getMaxLength())
+						player.addChatMessage(new ChatComponentTranslation(Lib.CHAT_WARN+"tooFar"));
+					else if(!(tileEntityLinkingPos instanceof IImmersiveConnectable))
+						player.addChatMessage(new ChatComponentTranslation(Lib.CHAT_WARN+"invalidPoint"));
+					else
 					{
+						IImmersiveConnectable nodeHere = (IImmersiveConnectable)tileEntity;
+						IImmersiveConnectable nodeLink = (IImmersiveConnectable)tileEntityLinkingPos;
+						boolean connectionExists = false;
 						ConcurrentSkipListSet<Connection> outputs = ImmersiveNetHandler.INSTANCE.getConnections(world, Utils.toCC(nodeHere));
 						if(outputs!=null)
-							for(ImmersiveNetHandler.Connection con : outputs)
+							for(Connection con : outputs)
 							{
 								if(con.end.equals(Utils.toCC(nodeLink)))
 									connectionExists = true;
 							}
-					}
-					if(connectionExists)
-						player.addChatMessage(new ChatComponentTranslation(Lib.CHAT_WARN+"connectionExists"));
-					else
-					{
-						Vec3 rtOff0 = nodeHere.getRaytraceOffset(nodeLink).addVector(x, y, z);
-						Vec3 rtOff1 = nodeLink.getRaytraceOffset(nodeHere).addVector(pos[1], pos[2], pos[3]);
-						boolean canSee = Utils.canBlocksSeeOther(world, new ChunkCoordinates(x,y,z), new ChunkCoordinates(pos[1], pos[2], pos[3]), rtOff0,rtOff1);
-						if(canSee)
-						{
-							TargetingInfo targetLink = TargetingInfo.readFromNBT(stack.getTagCompound());
-							ImmersiveNetHandler.INSTANCE.addConnection(world, Utils.toCC(nodeHere), Utils.toCC(nodeLink), distance, type);
-							nodeHere.connectCable(type, target);
-							nodeLink.connectCable(type, targetLink);
-							IESaveData.setDirty(world.provider.dimensionId);
-							player.triggerAchievement(IEAchievements.connectWire);
-							
-							if(!player.capabilities.isCreativeMode)
-								stack.stackSize--;
-							((TileEntity)nodeHere).markDirty();
-							world.markBlockForUpdate(x, y, z);
-							((TileEntity)nodeLink).markDirty();
-							world.markBlockForUpdate(pos[1], pos[2], pos[3]);
-						}
+						if(connectionExists)
+							player.addChatMessage(new ChatComponentTranslation(Lib.CHAT_WARN+"connectionExists"));
 						else
-							player.addChatMessage(new ChatComponentTranslation(Lib.CHAT_WARN+"cantSee"));
+						{
+							Vec3 rtOff0 = nodeHere.getRaytraceOffset(nodeLink).addVector(x, y, z);
+							Vec3 rtOff1 = nodeLink.getRaytraceOffset(nodeHere).addVector(pos[1], pos[2], pos[3]);
+							boolean canSee = Utils.canBlocksSeeOther(world, new ChunkCoordinates(x,y,z), new ChunkCoordinates(pos[1], pos[2], pos[3]), rtOff0,rtOff1);
+							if(canSee)
+							{
+								TargetingInfo targetLink = TargetingInfo.readFromNBT(stack.getTagCompound());
+								ImmersiveNetHandler.INSTANCE.addConnection(world, Utils.toCC(nodeHere), Utils.toCC(nodeLink), distance, type);
+								nodeHere.connectCable(type, target);
+								nodeLink.connectCable(type, targetLink);
+								IESaveData.setDirty(world.provider.dimensionId);
+								player.triggerAchievement(IEAchievements.connectWire);
+								
+								if(!player.capabilities.isCreativeMode)
+									stack.stackSize--;
+								((TileEntity)nodeHere).markDirty();
+								world.markBlockForUpdate(x, y, z);
+								((TileEntity)nodeLink).markDirty();
+								world.markBlockForUpdate(pos[1], pos[2], pos[3]);
+							}
+							else
+								player.addChatMessage(new ChatComponentTranslation(Lib.CHAT_WARN+"cantSee"));
+						}
 					}
+					ItemNBTHelper.remove(stack, "linkingPos");
+					ItemNBTHelper.remove(stack, "side");
+					ItemNBTHelper.remove(stack, "hitX");
+					ItemNBTHelper.remove(stack, "hitY");
+					ItemNBTHelper.remove(stack, "hitZ");
 				}
-				ItemNBTHelper.remove(stack, "linkingPos");
-				ItemNBTHelper.remove(stack, "side");
-				ItemNBTHelper.remove(stack, "hitX");
-				ItemNBTHelper.remove(stack, "hitY");
-				ItemNBTHelper.remove(stack, "hitZ");
+				return true;
 			}
-			return true;
 		}
 		return false;
 	}
