@@ -193,8 +193,9 @@ public class BlockWoodenDevices extends BlockIEBase implements blusunrize.aquatw
 				if(te instanceof TileEntityWoodenPost && ((TileEntityWoodenPost)te).type-2==rot1.ordinal())
 					return false;
 				world.setBlock(x+fd.offsetX, y, z+fd.offsetZ, this, 0, 0x3);
-				if(world.getTileEntity(x+fd.offsetX, y, z+fd.offsetZ) instanceof TileEntityWoodenPost)
-					((TileEntityWoodenPost)world.getTileEntity(x+fd.offsetX, y, z+fd.offsetZ)).type=(byte)(2+side);
+				TileEntity tileEntity = world.getTileEntity(x+fd.offsetX, y, z+fd.offsetZ);
+				if(tileEntity instanceof TileEntityWoodenPost)
+					((TileEntityWoodenPost)tileEntity).type=(byte)(2+side);
 				world.markBlockForUpdate(x, y-3, z);
 			}
 			else if(type==4||type==5||type==6||type==7)

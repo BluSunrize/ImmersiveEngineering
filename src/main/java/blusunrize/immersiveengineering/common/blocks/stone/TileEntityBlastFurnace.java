@@ -127,12 +127,14 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart implements 
 				int xMax= facing==5? 0: facing==4?2: 1;
 				int zMin= facing==3?-2: facing==2?0:-1;
 				int zMax= facing==3? 0: facing==2?2: 1;
+				TileEntity tileEntity;
 				for(int yy=-1;yy<=1;yy++)
 					for(int xx=xMin;xx<=xMax;xx++)
 						for(int zz=zMin;zz<=zMax;zz++)
 						{
-							if(worldObj.getTileEntity(xCoord+xx, yCoord+yy, zCoord+zz)!=null)
-								worldObj.getTileEntity(xCoord+xx, yCoord+yy, zCoord+zz).markDirty();
+							tileEntity = worldObj.getTileEntity(xCoord+xx, yCoord+yy, zCoord+zz);
+							if(tileEntity!=null)
+								tileEntity.markDirty();
 							worldObj.markBlockForUpdate(xCoord+xx, yCoord+yy, zCoord+zz);
 							worldObj.addBlockEvent(xCoord+xx, yCoord+yy, zCoord+zz, IEContent.blockStoneDevice, 1,active?1:0);
 						}

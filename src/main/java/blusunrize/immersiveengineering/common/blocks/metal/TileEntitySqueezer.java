@@ -374,10 +374,11 @@ public class TileEntitySqueezer extends TileEntityMultiblockPart implements IFlu
 						int zz = (f==2?l: f==3?-l: f==5?-w: w);
 
 						ItemStack s = null;
-						if(worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz) instanceof TileEntitySqueezer)
+						TileEntity tileEntity = worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz);
+						if(tileEntity instanceof TileEntitySqueezer)
 						{
-							s = ((TileEntitySqueezer)worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz)).getOriginalBlock();
-							((TileEntitySqueezer)worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz)).formed=false;
+							s = ((TileEntitySqueezer)tileEntity).getOriginalBlock();
+							((TileEntitySqueezer)tileEntity).formed=false;
 						}
 						if(startX+xx==xCoord && startY+yy==yCoord && startZ+zz==zCoord)
 							s = this.getOriginalBlock();

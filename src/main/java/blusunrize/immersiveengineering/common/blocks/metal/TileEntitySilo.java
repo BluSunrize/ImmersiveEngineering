@@ -121,10 +121,11 @@ public class TileEntitySilo extends TileEntityMultiblockPart implements ISidedIn
 					for(int zz=-1;zz<=1;zz++)
 					{
 						ItemStack s = null;
-						if(worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz) instanceof TileEntitySilo)
+						TileEntity tileEntity = worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz);
+						if(tileEntity instanceof TileEntitySilo)
 						{
-							s = ((TileEntitySilo)worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz)).getOriginalBlock();
-							((TileEntitySilo)worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz)).formed=false;
+							s = ((TileEntitySilo)tileEntity).getOriginalBlock();
+							((TileEntitySilo)tileEntity).formed=false;
 						}
 						if(startX+xx==xCoord && startY+yy==yCoord && startZ+zz==zCoord)
 							s = this.getOriginalBlock();

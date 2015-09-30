@@ -68,11 +68,12 @@ public class TileEntityExcavator extends TileEntityMultiblockPart implements IEn
 		float rot = 0;
 		int target = -1;
 		TileEntityBucketWheel wheel = null;
+		TileEntity center = worldObj.getTileEntity(wheelAxis[0], wheelAxis[1], wheelAxis[2]);
 
-		if(worldObj.getTileEntity(wheelAxis[0], wheelAxis[1], wheelAxis[2]) instanceof TileEntityBucketWheel)
-			if(((TileEntityBucketWheel)worldObj.getTileEntity(wheelAxis[0], wheelAxis[1], wheelAxis[2])).facing==ff)
+		if(center instanceof TileEntityBucketWheel)
+			if(((TileEntityBucketWheel)center).facing==ff)
 			{
-				wheel = ((TileEntityBucketWheel)worldObj.getTileEntity(wheelAxis[0], wheelAxis[1], wheelAxis[2]));
+				wheel = ((TileEntityBucketWheel)center);
 				if(active!=wheel.active)
 				{
 					worldObj.addBlockEvent(wheel.xCoord,wheel.yCoord,wheel.zCoord, wheel.getBlockType(), 0,active?1:0);
@@ -89,8 +90,8 @@ public class TileEntityExcavator extends TileEntityMultiblockPart implements IEn
 		if(!worldObj.isRemote)
 		{
 			//Fix the wheel if necessary
-			if(worldObj.getTileEntity(wheelAxis[0], wheelAxis[1], wheelAxis[2]) instanceof TileEntityBucketWheel)
-				if(((TileEntityBucketWheel)worldObj.getTileEntity(wheelAxis[0], wheelAxis[1], wheelAxis[2])).facing!=ff || ((TileEntityBucketWheel)worldObj.getTileEntity(wheelAxis[0], wheelAxis[1], wheelAxis[2])).mirrored!=this.mirrored)
+			if(center instanceof TileEntityBucketWheel)
+				if(((TileEntityBucketWheel)center).facing!=ff || ((TileEntityBucketWheel)center).mirrored!=this.mirrored)
 					for(int h=-3;h<=3;h++)
 						for(int w=-3;w<=3;w++)
 						{

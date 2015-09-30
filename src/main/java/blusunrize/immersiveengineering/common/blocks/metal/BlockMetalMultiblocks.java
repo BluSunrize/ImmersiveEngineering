@@ -148,9 +148,10 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 	@Override
 	public void breakBlock(World world, int x, int y, int z, Block par5, int par6)
 	{
-		if(world.getTileEntity(x, y, z) instanceof TileEntityMultiblockPart)
+		TileEntity tileEntity = world.getTileEntity(x, y, z);
+		if(tileEntity instanceof TileEntityMultiblockPart)
 		{
-			TileEntityMultiblockPart tile = (TileEntityMultiblockPart)world.getTileEntity(x, y, z);
+			TileEntityMultiblockPart tile = (TileEntityMultiblockPart)tileEntity;
 			if(!tile.formed && tile.pos==-1 && tile.getOriginalBlock()!=null)
 				world.spawnEntityInWorld(new EntityItem(world, x+.5,y+.5,z+.5, tile.getOriginalBlock().copy()));
 		}
@@ -368,9 +369,10 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 	public void addCollisionBoxesToList(World world, int x, int y, int z, AxisAlignedBB aabb, List list, Entity ent)
 	{
 		this.setBlockBoundsBasedOnState(world, x, y, z);
-		if(world.getTileEntity(x, y, z) instanceof TileEntityCrusher)
+		TileEntity tileEntity = world.getTileEntity(x, y, z);
+		if(tileEntity instanceof TileEntityCrusher)
 		{
-			TileEntityCrusher tile = (TileEntityCrusher)world.getTileEntity(x, y, z);
+			TileEntityCrusher tile = (TileEntityCrusher)tileEntity;
 			if(tile.pos%15>=11&&tile.pos%15<=13)
 			{	
 				int pos = tile.pos;
@@ -417,9 +419,10 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 	public ArrayList<AxisAlignedBB> addCustomSelectionBoxesToList(World world, int x, int y, int z)
 	{
 		ArrayList<AxisAlignedBB> list = new ArrayList<AxisAlignedBB>();
-		if(world.getTileEntity(x, y, z) instanceof TileEntityCrusher)
+		TileEntity tileEntity = world.getTileEntity(x, y, z);
+		if(tileEntity instanceof TileEntityCrusher)
 		{
-			TileEntityCrusher tile = (TileEntityCrusher)world.getTileEntity(x, y, z);
+			TileEntityCrusher tile = (TileEntityCrusher)tileEntity;
 			int pos = tile.pos;
 			if(pos%15>=11&&pos%15<=13)
 			{		
@@ -490,7 +493,7 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 			}
 			else
 			{
-				float[] bounds = ((TileEntityMultiblockPart)world.getTileEntity(x, y, z)).getBlockBounds();
+				float[] bounds = ((TileEntityMultiblockPart)tileEntity).getBlockBounds();
 				if(bounds!=null && bounds.length>5)
 					list.add(AxisAlignedBB.getBoundingBox(bounds[0],bounds[1],bounds[2], bounds[3],bounds[4],bounds[5]));
 				else
