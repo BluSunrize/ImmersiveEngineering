@@ -1,50 +1,40 @@
 package blusunrize.immersiveengineering.client.render;
 
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.client.model.obj.WavefrontObject;
-
-import org.lwjgl.opengl.GL11;
-
-import blusunrize.immersiveengineering.client.ClientUtils;
+import net.minecraft.util.IIcon;
+import net.minecraftforge.client.model.obj.Vertex;
+import blusunrize.immersiveengineering.client.models.ModelIEObj;
+import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityExcavator;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 
-public class TileRenderExcavator extends TileEntitySpecialRenderer
+public class TileRenderExcavator extends TileRenderIE
 {
-	static WavefrontObject model = ClientUtils.getModel("immersiveengineering:models/excavator.obj");
+	ModelIEObj model = new ModelIEObj("immersiveengineering:models/excavator.obj")
+	{
+		@Override
+		public IIcon getBlockIcon()
+		{
+			return IEContent.blockMetalMultiblocks.getIcon(0, BlockMetalMultiblocks.META_excavator);
+		}
+	};
 
 	@Override
-	public void renderTileEntityAt(TileEntity tile, double x, double y, double z, float f)
+	public void renderStatic(TileEntity tile, Tessellator tes, Matrix4 translationMatrix, Matrix4 rotationMatrix)
 	{
 		TileEntityExcavator excavator = (TileEntityExcavator)tile;
-		if(!excavator.formed || excavator.pos!=4)
-			return;
-		GL11.glPushMatrix();
-
-		GL11.glTranslated(x+.5, y+.5, z+.5);
-		GL11.glRotatef(excavator.facing==4?180: excavator.facing==3?-90: excavator.facing==2?90: 0, 0,1,0);
-		GL11.glTranslated(-4,0,0);
+		
+		translationMatrix.translate(excavator.facing==4?4.5: excavator.facing==5?-3.5: .5, .5, excavator.facing==2?4.5: excavator.facing==3?-3.5: .5);
+		rotationMatrix.rotate(Math.toRadians(excavator.facing==4?180: excavator.facing==3?-90: excavator.facing==2?90: 0), 0,1,0);
 		if(excavator.mirrored)
-		{
-			GL11.glScalef(1,1,-1);
-			GL11.glDisable(GL11.GL_CULL_FACE);
-		}
+			translationMatrix.scale(new Vertex(excavator.facing<4?-1:1, 1, excavator.facing>3?-1:1));
 
-		ClientUtils.bindTexture("immersiveengineering:textures/models/excavator.png");
-
-
-		Tessellator.instance.startDrawingQuads();
-		ClientUtils.renderWavefrontModelWithModifications(model, Tessellator.instance, new Matrix4(), new Matrix4(), false);
-		Tessellator.instance.draw();
-
-		if(excavator.mirrored)
-		{
-			GL11.glScalef(1,1,-1);
-			GL11.glEnable(GL11.GL_CULL_FACE);
-		}
-		GL11.glPopMatrix();
+		model.render(tile, tes, translationMatrix, rotationMatrix, 0, excavator.mirrored);
 	}
-
+	@Override
+	public void renderDynamic(TileEntity tile, double x, double y, double z, float f)
+	{
+	}
 }

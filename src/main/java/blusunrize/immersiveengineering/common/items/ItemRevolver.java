@@ -78,7 +78,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IShaderEquipabl
 				{
 				new IESlot.Upgrades(container, invItem,18+0, 80,32, IUpgrade.UpgradeType.REVOLVER, stack, true),
 				new IESlot.Upgrades(container, invItem,18+1,100,32, IUpgrade.UpgradeType.REVOLVER, stack, true),
-				new IESlot.Shader(container, invItem,20,140,24, stack)
+				new IESlot.Shader(container, invItem,20,130,32, stack)
 				};
 	}
 	@Override
@@ -106,20 +106,20 @@ public class ItemRevolver extends ItemUpgradeableTool implements IShaderEquipabl
 	{
 		return stack.getItemDamage()!=1;
 	}
-	
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void getSubItems(Item item, CreativeTabs tab, List list)
 	{
 		for(int i=0;i<2;i++)
 			list.add(new ItemStack(this,1,i));
-				for(Map.Entry<String, SpecialRevolver> e : specialRevolversByTag.entrySet())
-				{
-					ItemStack stack = new ItemStack(this,1,0);
-					applySpecialCrafting(stack, e.getValue());
-					this.recalculateUpgrades(stack);
-					list.add(stack);
-				}
+//		for(Map.Entry<String, SpecialRevolver> e : specialRevolversByTag.entrySet())
+//		{
+//			ItemStack stack = new ItemStack(this,1,0);
+//			applySpecialCrafting(stack, e.getValue());
+//			this.recalculateUpgrades(stack);
+//			list.add(stack);
+//		}
 	}
 	@Override
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean adv)
@@ -351,6 +351,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IShaderEquipabl
 	{
 		if(stack==null || player==null)
 			return;
+
 		if(stack.getItemDamage()==1)
 			return;
 		player.triggerAchievement(IEAchievements.makeRevolver);

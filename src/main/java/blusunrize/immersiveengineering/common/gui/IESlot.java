@@ -159,6 +159,7 @@ public abstract class IESlot extends Slot
 		{
 			super(container, inv, id, x, y);
 			this.tool = tool;
+			this.setBackgroundIcon(IEContent.itemShader.icons[3]);
 		}
 		@Override
 		public boolean isItemValid(ItemStack itemStack)

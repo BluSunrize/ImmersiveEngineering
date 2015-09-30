@@ -96,7 +96,8 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 	public void registerBlockIcons(IIconRegister iconRegister)
 	{
 		for(int i=0; i<this.subNames.length; i++)
-			if (i != META_fluidPump) this.icons[i][0] = iconRegister.registerIcon("immersiveEngineering:metal2_"+this.subNames[i]);
+			if(i!=META_fluidPump)
+				this.icons[i][0] = iconRegister.registerIcon("immersiveEngineering:metal2_"+this.subNames[i]);
 
 		pumpIcons[0] = iconRegister.registerIcon("immersiveEngineering:metal2_pump_side_none");
 		pumpIcons[1] = iconRegister.registerIcon("immersiveEngineering:metal2_pump_side_in");
@@ -116,9 +117,8 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 	@SideOnly(Side.CLIENT)
 	public IIcon getIcon(int side, int meta)
 	{
-		if (meta == META_fluidPump) {
-			return pumpIcons[side];
-		}
+		if(meta==META_fluidPump)
+			return pumpIcons[Math.min(side+1,6)];
 		return super.getIcon(side, meta);
 	}
 
@@ -236,9 +236,9 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 						((TileEntityFluidPipe)world.getTileEntity(x+fd.offsetX, y+fd.offsetY, z+fd.offsetZ)).toggleSide(fd.getOpposite().ordinal());
 						world.markBlockForUpdate(x+fd.offsetX, y+fd.offsetY, z+fd.offsetZ);
 					}
+					TileEntityFluidPipe.indirectConnections.clear();
 					return true;
 				}
-				System.out.println("hit at "+hitX+","+hitY+","+hitZ+" - "+side+" = "+fd);
 				//				List<DirectionalFluidOutput> list = TileEntityFluidPipe.getConnectedFluidHandlers(new ChunkCoordinates(x,y,z), world);
 				//				System.out.println("list size: "+list.size());
 			}
@@ -394,7 +394,7 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 				if((connections & 0x1)==1)
 					list.add(new AdvancedAABB(i==4?0:i==5?1-depth:size, i==0?0:i==1?1-depth:size, i==2?0:i==3?1-depth:size,  i==4?depth:i==5?1:1-size, i==0?depth:i==1?1:1-size, i==2?depth:i==3?1:1-size, ForgeDirection.getOrientation(i)));
 				if((availableConnections & 0x1)==1)
-					baseAABB[i] += i%2==1?.25: -.25;
+					baseAABB[i] += i%2==1?.125: -.125;
 				availableConnections = (byte)(availableConnections>>1);
 				connections = (byte)(connections>>1);
 			}

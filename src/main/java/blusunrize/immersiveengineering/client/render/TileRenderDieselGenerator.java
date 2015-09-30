@@ -1,20 +1,43 @@
 package blusunrize.immersiveengineering.client.render;
 
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.client.model.IModelCustom;
+import net.minecraft.util.IIcon;
+import net.minecraftforge.client.model.obj.Vertex;
 
 import org.lwjgl.opengl.GL11;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.client.models.ModelIEObj;
+import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityDieselGenerator;
+import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 
-public class TileRenderDieselGenerator extends TileEntitySpecialRenderer
+public class TileRenderDieselGenerator extends TileRenderIE
 {
-	static IModelCustom objmodel = ClientUtils.getModel("immersiveengineering:models/dieselGenerator.obj");
-
+	ModelIEObj model = new ModelIEObj("immersiveengineering:models/dieselGenerator.obj")
+	{
+		@Override
+		public IIcon getBlockIcon()
+		{
+			return IEContent.blockMetalMultiblocks.getIcon(0, BlockMetalMultiblocks.META_dieselGenerator);
+		}
+	};
+	
+	
 	@Override
-	public void renderTileEntityAt(TileEntity tile, double x, double y, double z, float f)
+	public void renderStatic(TileEntity tile, Tessellator tes, Matrix4 translationMatrix, Matrix4 rotationMatrix)
+	{
+		TileEntityDieselGenerator gen = (TileEntityDieselGenerator)tile;
+		translationMatrix.translate(.5, .5, .5);
+		rotationMatrix.rotate(Math.toRadians(gen.facing==3?180: gen.facing==4?90: gen.facing==5?-90: 0), 0,1,0);
+		if(gen.mirrored)
+			translationMatrix.scale(new Vertex(1,1,-1));
+		model.render(tile, tes, translationMatrix, rotationMatrix, 0, gen.mirrored, "base");
+	}
+	@Override
+	public void renderDynamic(TileEntity tile, double x, double y, double z, float f)
 	{
 		TileEntityDieselGenerator gen = (TileEntityDieselGenerator)tile;
 		if(!gen.formed || gen.pos!=31)
@@ -31,12 +54,10 @@ public class TileRenderDieselGenerator extends TileEntitySpecialRenderer
 			GL11.glDisable(GL11.GL_CULL_FACE);
 		}
 		
-		ClientUtils.bindTexture("immersiveengineering:textures/models/dieselGenerator.png");
-		objmodel.renderAllExcept("fan");
-
+		ClientUtils.bindAtlas(0);
 		GL11.glTranslated(0, .1875, 2.96875);
 		GL11.glRotatef(gen.fanRotation+(gen.fanRotationStep*f), 0,0,1);
-		objmodel.renderOnly("fan");
+		model.model.renderOnly("fan");
 		
 		if(gen.mirrored)
 		{

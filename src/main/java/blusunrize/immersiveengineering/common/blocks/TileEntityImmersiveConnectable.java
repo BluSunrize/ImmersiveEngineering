@@ -2,6 +2,7 @@ package blusunrize.immersiveengineering.common.blocks;
 
 import java.util.concurrent.ConcurrentSkipListSet;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
@@ -123,7 +124,7 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 	{
 		NBTTagCompound nbt = pkt.func_148857_g();
 		this.readFromNBT(nbt);
-		if(worldObj!=null && worldObj.isRemote && MinecraftServer.getServer()==null)
+		if(worldObj!=null && worldObj.isRemote && !Minecraft.getMinecraft().isSingleplayer())
 		{
 			NBTTagList connectionList = nbt.getTagList("connectionList", 10);
 			ImmersiveNetHandler.INSTANCE.clearConnectionsOriginatingFrom(Utils.toCC(this), worldObj);

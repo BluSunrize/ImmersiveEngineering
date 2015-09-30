@@ -1,24 +1,62 @@
 package blusunrize.immersiveengineering.client.render;
 
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
-import net.minecraftforge.client.model.IModelCustom;
+import net.minecraftforge.client.model.obj.Vertex;
 
 import org.lwjgl.opengl.GL11;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.client.models.ModelIEObj;
+import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityArcFurnace;
+import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 
-public class TileRenderArcFurnace extends TileEntitySpecialRenderer
+public class TileRenderArcFurnace extends TileRenderIE
 {
-	static IModelCustom model = ClientUtils.getModel("immersiveengineering:models/arcFurnace.obj");
+	ModelIEObj model0 = new ModelIEObj("immersiveengineering:models/arcFurnace.obj")
+	{
+		@Override
+		public IIcon getBlockIcon()
+		{
+			return IEContent.blockMetalMultiblocks.getIcon(0, BlockMetalMultiblocks.META_arcFurnace);
+		}
+	};
+	ModelIEObj model1 = new ModelIEObj("immersiveengineering:models/arcFurnace.obj")
+	{
+		@Override
+		public IIcon getBlockIcon()
+		{
+			return IEContent.blockMetalMultiblocks.getIcon(1, BlockMetalMultiblocks.META_arcFurnace);
+		}
+	};
 	public static IIcon hotMetal_flow;
 	public static IIcon hotMetal_still;
 
 	@Override
-	public void renderTileEntityAt(TileEntity tile, double x, double y, double z, float f)
+	public void renderStatic(TileEntity tile, Tessellator tes, Matrix4 translationMatrix, Matrix4 rotationMatrix)
+	{
+		TileEntityArcFurnace arc = (TileEntityArcFurnace)tile;
+
+		translationMatrix.translate(.5, .5, .5);
+		rotationMatrix.rotate(Math.toRadians(arc.facing==2?180: arc.facing==4?-90: arc.facing==5?90: 0), 0,1,0);
+		if(arc.mirrored)
+			translationMatrix.scale(new Vertex(1,1,-1));
+
+		String[] render = new String[5];
+		render[0]="base";
+		render[1]="furnace";
+		for(int i=0; i<3; i++)
+			render[2+i] = (arc.electrodes[i]?"electrode"+(i+1):"");
+		if(arc.active)
+			model1.render(tile, tes, translationMatrix, rotationMatrix, 0, arc.mirrored, render);
+		else
+			model0.render(tile, tes, translationMatrix, rotationMatrix, 0, arc.mirrored, render);
+	}
+	@Override
+	public void renderDynamic(TileEntity tile, double x, double y, double z, float f)
 	{
 		TileEntityArcFurnace arc = (TileEntityArcFurnace)tile;
 		if(!arc.formed || arc.pos!=62)
@@ -33,14 +71,6 @@ public class TileRenderArcFurnace extends TileEntitySpecialRenderer
 			GL11.glScalef(-1,1,1);
 			GL11.glDisable(GL11.GL_CULL_FACE);
 		}
-
-		ClientUtils.bindTexture("immersiveengineering:textures/models/arcFurnace_"+(arc.active?"active":"inactive")+".png");
-
-		String[] electrodes = new String[3];
-		for(int i=0; i<3; i++)
-			electrodes[i] = (!arc.electrodes[i]?"electrode"+(i+1):"");
-		model.renderAllExcept(electrodes);
-
 
 		if(arc.pouringMetal>0)
 		{

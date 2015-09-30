@@ -121,7 +121,7 @@ public class ImmersiveEngineering
 		if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
 		{
 			World world = MinecraftServer.getServer().getEntityWorld();
-			if(!world.isRemote && !IESaveData.loaded)
+			if(!world.isRemote)
 			{
 				IELogger.info("WorldData loading");
 				IESaveData worldData = (IESaveData) world.loadItemData(IESaveData.class, IESaveData.dataName);
@@ -134,7 +134,6 @@ public class ImmersiveEngineering
 				else
 					IELogger.info("WorldData retrieved");
 				IESaveData.setInstance(world.provider.dimensionId, worldData);
-				IESaveData.loaded = true;
 			}
 		}
 	}

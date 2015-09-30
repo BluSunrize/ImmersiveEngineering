@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.common.blocks;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.block.Block;
@@ -150,9 +151,12 @@ public abstract class BlockIEBase extends BlockContainer
 		vec1 = vec1.addVector((double)(-x), (double)(-y), (double)(-z));
 		if(this instanceof ICustomBoundingboxes)
 		{
+			ArrayList<AxisAlignedBB> list = ((ICustomBoundingboxes)this).addCustomSelectionBoxesToList(world, x,y,z);
+			if(list.isEmpty())
+				return this.doRayTraceOnBox(world, x, y, z, vec0, vec1, AxisAlignedBB.getBoundingBox(minX,minY,minZ, maxX,maxY,maxZ));
 			MovingObjectPosition hit = null;
 			double dist = 0;
-			for(AxisAlignedBB aabb : ((ICustomBoundingboxes)this).addCustomSelectionBoxesToList(world, x,y,z))
+			for(AxisAlignedBB aabb : list)
 			{
 				MovingObjectPosition mop = this.doRayTraceOnBox(world, x, y, z, vec0, vec1, aabb);
 				if(mop!=null)

@@ -69,6 +69,7 @@ tile.ImmersiveEngineering.metalDevice2.breakerSwitch.name=Breaker Switch
 tile.ImmersiveEngineering.metalDevice2.electricLantern.name=Powered Lantern
 tile.ImmersiveEngineering.metalDevice2.floodLight.name=Floodlight
 tile.ImmersiveEngineering.metalDevice2.fluidPipe.name=Fluid Pipe
+tile.ImmersiveEngineering.metalDevice2.fluidPump.name=Fluid Pump
 
 tile.ImmersiveEngineering.treatedWood.0.name=Treated Wood Planks
 tile.ImmersiveEngineering.treatedWood.1.name=Treated Wood Planks
@@ -175,8 +176,8 @@ item.ImmersiveEngineering.fluidContainers.bucketEthanol.name=Bucket of Ethanol
 item.ImmersiveEngineering.fluidContainers.bottleBiodiesel.name=Bottle of Biodiesel
 item.ImmersiveEngineering.fluidContainers.bucketBiodiesel.name=Bucket of Biodiesel
 
-item.ImmersiveEngineering.coil.copper.name=Copper Wire Coil
-item.ImmersiveEngineering.coil.electrum.name=Electrum Wire Coil
+item.ImmersiveEngineering.coil.copper.name=LV Wire Coil
+item.ImmersiveEngineering.coil.electrum.name=MV Wire Coil
 item.ImmersiveEngineering.coil.HV.name=HV Wire Coil
 item.ImmersiveEngineering.coil.rope.name=Hemp Rope Coil
 item.ImmersiveEngineering.coil.structural.name=Steel Cable Coil

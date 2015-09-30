@@ -2,6 +2,8 @@ package blusunrize.immersiveengineering.common;
 
 import java.util.Map;
 
+import blusunrize.immersiveengineering.api.energy.IImmersiveConnectable;
+import blusunrize.immersiveengineering.common.util.IELogger;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.server.MinecraftServer;
@@ -19,7 +21,6 @@ public class IESaveData extends WorldSavedData
 	//	private static HashMap<Integer, IESaveData> INSTANCE = new HashMap<Integer, IESaveData>();
 	private static IESaveData INSTANCE;
 	public static final String dataName = "ImmersiveEngineering-SaveData";
-	public static boolean loaded = false;
 
 	public IESaveData(String s)
 	{
@@ -29,6 +30,8 @@ public class IESaveData extends WorldSavedData
 	@Override
 	public void readFromNBT(NBTTagCompound nbt)
 	{
+		boolean validateConnections = Config.getBoolean("validateConnections");
+		int invalidConnectionsDropped = 0;
 		int[] savedDimensions = nbt.getIntArray("savedDimensions");
 		for(int dim: savedDimensions)
 		{
@@ -42,10 +45,23 @@ public class IESaveData extends WorldSavedData
 					NBTTagCompound conTag = connectionList.getCompoundTagAt(i);
 					Connection con = Connection.readFromNBT(conTag);
 					if(con!=null)
-						ImmersiveNetHandler.INSTANCE.addConnection(world, con.start, con);
+					{
+						if(validateConnections)
+						{
+							if(world.getTileEntity(con.start.posX,con.start.posY,con.start.posZ) instanceof IImmersiveConnectable &&
+									world.getTileEntity(con.end.posX, con.end.posY, con.end.posZ) instanceof IImmersiveConnectable)
+								ImmersiveNetHandler.INSTANCE.addConnection(world, con.start, con);
+							else
+								invalidConnectionsDropped++;
+						}
+						else
+							ImmersiveNetHandler.INSTANCE.addConnection(world, con.start, con);
+					}
 				}
 			}
 		}
+		if(validateConnections)
+			IELogger.info("removed "+invalidConnectionsDropped+" invalid connections from world");
 
 		NBTTagList mineralList = nbt.getTagList("mineralDepletion", 10);
 		ExcavatorHandler.mineralDepletion.clear();		
