@@ -4,6 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -219,9 +220,10 @@ public class BlockRenderMetalDevices implements ISimpleBlockRenderingHandler
 			double y01=0;
 			double y11=0;
 			double y10=0;
-			if(world.getTileEntity(x, y, z) instanceof TileEntityConveyorBelt)
+			TileEntity te1 = world.getTileEntity(x, y, z);
+			if(te1 instanceof TileEntityConveyorBelt)
 			{
-				TileEntityConveyorBelt tile = (TileEntityConveyorBelt)world.getTileEntity(x, y, z);
+				TileEntityConveyorBelt tile = (TileEntityConveyorBelt)te1;
 				renderer.uvRotateTop = tile.facing==2?0: tile.facing==3?3: tile.facing==4?2: 1;
 				renderer.uvRotateBottom = tile.facing==2?3: tile.facing==3?0: tile.facing==4?2: 1;
 				f = tile.facing;
@@ -235,12 +237,21 @@ public class BlockRenderMetalDevices implements ISimpleBlockRenderingHandler
 			for(int i=0; i<connectedBelts.length; i++)
 			{
 				ForgeDirection fd = ForgeDirection.getOrientation(2+i);
-				if(world.getTileEntity(x+fd.offsetX,y,z+fd.offsetZ) instanceof TileEntityConveyorBelt && ((TileEntityConveyorBelt)world.getTileEntity(x+fd.offsetX,y,z+fd.offsetZ)).facing == i+2)
+				TileEntity te = world.getTileEntity(x+fd.offsetX,y,z+fd.offsetZ);
+				if(te instanceof TileEntityConveyorBelt && ((TileEntityConveyorBelt)te).facing == i+2)
 					connectedBelts[i] = true;
-				else if(world.getTileEntity(x+fd.offsetX,y-1,z+fd.offsetZ) instanceof TileEntityConveyorBelt && ((TileEntityConveyorBelt)world.getTileEntity(x+fd.offsetX,y-1,z+fd.offsetZ)).facing == i+2 && ((TileEntityConveyorBelt)world.getTileEntity(x+fd.offsetX,y-1,z+fd.offsetZ)).transportUp)
-					connectedBelts[i] = true;
-				else if(world.getTileEntity(x+fd.offsetX,y+1,z+fd.offsetZ) instanceof TileEntityConveyorBelt && ((TileEntityConveyorBelt)world.getTileEntity(x+fd.offsetX,y+1,z+fd.offsetZ)).facing == i+2 && ((TileEntityConveyorBelt)world.getTileEntity(x+fd.offsetX,y+1,z+fd.offsetZ)).transportDown)
-					connectedBelts[i] = true;
+				else 
+				{
+					te = world.getTileEntity(x+fd.offsetX,y-1,z+fd.offsetZ);
+					if(te instanceof TileEntityConveyorBelt && ((TileEntityConveyorBelt)te).facing == i+2 && ((TileEntityConveyorBelt)te).transportUp)
+						connectedBelts[i] = true;
+					else
+					{
+						te = world.getTileEntity(x+fd.offsetX,y+1,z+fd.offsetZ);
+						if(te instanceof TileEntityConveyorBelt && ((TileEntityConveyorBelt)te).facing == i+2 && ((TileEntityConveyorBelt)te).transportDown)
+							connectedBelts[i] = true;
+					}
+				}
 			}
 
 			Vec3[] vs = {

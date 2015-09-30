@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.client.render;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -229,14 +230,16 @@ public class BlockRenderMetalDecoration implements ISimpleBlockRenderingHandler
 			Tessellator tes = ClientUtils.tes();
 			IIcon iSide = block.getIcon(2, 3);
 			IIcon iTop = block.getIcon(0, 3);
-
-			int f = (world.getTileEntity(x, y, z) instanceof TileEntityStructuralArm)? ((TileEntityStructuralArm)world.getTileEntity(x, y, z)).facing : 0;
-			boolean inv = (world.getTileEntity(x, y, z) instanceof TileEntityStructuralArm)? ((TileEntityStructuralArm)world.getTileEntity(x, y, z)).inverted : false;
+			TileEntity te = world.getTileEntity(x, y, z);
+			
+			int f = (te instanceof TileEntityStructuralArm)? ((TileEntityStructuralArm)te).facing : 0;
+			boolean inv = (te instanceof TileEntityStructuralArm)? ((TileEntityStructuralArm)te).inverted : false;
 			ForgeDirection fd = ForgeDirection.getOrientation(f);
 			int rowTop = 0;
 			while(rowTop<8)
 			{
-				if(world.getTileEntity(x-fd.offsetX*(rowTop+1),y,z-fd.offsetZ*(rowTop+1)) instanceof TileEntityStructuralArm && ((TileEntityStructuralArm)world.getTileEntity(x-fd.offsetX*(rowTop+1),y,z-fd.offsetZ*(rowTop+1))).facing==f && ((TileEntityStructuralArm)world.getTileEntity(x-fd.offsetX*(rowTop+1),y,z-fd.offsetZ*(rowTop+1))).inverted==inv)
+				TileEntity te2 = world.getTileEntity(x-fd.offsetX*(rowTop+1),y,z-fd.offsetZ*(rowTop+1));
+				if(te2 instanceof TileEntityStructuralArm && ((TileEntityStructuralArm)te2).facing==f && ((TileEntityStructuralArm)te2).inverted==inv)
 					rowTop++;
 				else
 					break;
@@ -244,7 +247,8 @@ public class BlockRenderMetalDecoration implements ISimpleBlockRenderingHandler
 			int rowBot = 0;
 			while(rowBot<8)
 			{
-				if(world.getTileEntity(x+fd.offsetX*(rowBot+1),y,z+fd.offsetZ*(rowBot+1)) instanceof TileEntityStructuralArm && ((TileEntityStructuralArm)world.getTileEntity(x+fd.offsetX*(rowBot+1),y,z+fd.offsetZ*(rowBot+1))).facing==f && ((TileEntityStructuralArm)world.getTileEntity(x+fd.offsetX*(rowBot+1),y,z+fd.offsetZ*(rowBot+1))).inverted==inv)
+				TileEntity te2 = world.getTileEntity(x-fd.offsetX*(rowTop+1),y,z-fd.offsetZ*(rowTop+1));
+				if(te2 instanceof TileEntityStructuralArm && ((TileEntityStructuralArm)te2).facing==f && ((TileEntityStructuralArm)te2).inverted==inv)
 					rowBot++;
 				else
 					break;

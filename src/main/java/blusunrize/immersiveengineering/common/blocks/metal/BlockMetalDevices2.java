@@ -142,20 +142,21 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
 	{
-		if(!player.isSneaking() && world.getTileEntity(x, y, z) instanceof TileEntityBreakerSwitch)
+		TileEntity te = world.getTileEntity(x, y, z);
+		if(!player.isSneaking() && te instanceof TileEntityBreakerSwitch)
 		{
 			if(!world.isRemote)
 			{
 				if(Utils.isHammer(player.getCurrentEquippedItem()))
 				{
-					((TileEntityBreakerSwitch)world.getTileEntity(x, y, z)).inverted = !((TileEntityBreakerSwitch)world.getTileEntity(x, y, z)).inverted;
-					player.addChatMessage(new ChatComponentTranslation(Lib.CHAT_INFO+ (((TileEntityBreakerSwitch)world.getTileEntity(x, y, z)).inverted?"invertedOn":"invertedOff")));
-					world.getTileEntity(x, y, z).markDirty();
+					((TileEntityBreakerSwitch)te).inverted = !((TileEntityBreakerSwitch)te).inverted;
+					player.addChatMessage(new ChatComponentTranslation(Lib.CHAT_INFO+ (((TileEntityBreakerSwitch)te).inverted?"invertedOn":"invertedOff")));
+					te.markDirty();
 				}
 				else
 				{
-					((TileEntityBreakerSwitch)world.getTileEntity(x, y, z)).toggle();
-					world.getTileEntity(x, y, z).markDirty();
+					((TileEntityBreakerSwitch)te).toggle();
+					te.markDirty();
 				}
 				world.notifyBlocksOfNeighborChange(x, y, z, this);
 				for(ForgeDirection fd:  ForgeDirection.VALID_DIRECTIONS)
@@ -165,10 +166,10 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 			}
 			return true;
 		}
-		else if(world.getTileEntity(x, y, z) instanceof TileEntityFluidPipe_old)
+		else if(te instanceof TileEntityFluidPipe_old)
 		{
 			if(!world.isRemote) {
-				TileEntityFluidPipe_old fluidPipe = ((TileEntityFluidPipe_old) world.getTileEntity(x, y, z));
+				TileEntityFluidPipe_old fluidPipe = ((TileEntityFluidPipe_old) te);
 				if(Utils.isHammer(player.getCurrentEquippedItem()))
 				{
 					//					if (++fluidPipe.mode > 2) {
@@ -182,26 +183,26 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 					player.addChatMessage(new ChatComponentText("Server Connections: " + fluidPipe.connections.size()));
 			}
 		}
-		else if(Utils.isHammer(player.getCurrentEquippedItem()) && world.getTileEntity(x, y, z) instanceof TileEntityFloodLight)
+		else if(Utils.isHammer(player.getCurrentEquippedItem()) && te instanceof TileEntityFloodLight)
 		{
 			if(player.isSneaking())
 			{
-				((TileEntityFloodLight)world.getTileEntity(x, y, z)).rotX+=10;
-				((TileEntityFloodLight)world.getTileEntity(x, y, z)).rotX%=360;
-				world.getTileEntity(x, y, z).markDirty();
+				((TileEntityFloodLight)te).rotX+=10;
+				((TileEntityFloodLight)te).rotX%=360;
+				te.markDirty();
 				world.markBlockForUpdate(x, y, z);
 			}
 			else
 			{
-				((TileEntityFloodLight)world.getTileEntity(x, y, z)).rotY+=10;
-				((TileEntityFloodLight)world.getTileEntity(x, y, z)).rotY%=360;
-				world.getTileEntity(x, y, z).markDirty();
+				((TileEntityFloodLight)te).rotY+=10;
+				((TileEntityFloodLight)te).rotY%=360;
+				te.markDirty();
 				world.markBlockForUpdate(x, y, z);
 			}
 		}
-		else if(Utils.isHammer(player.getCurrentEquippedItem()) && world.getTileEntity(x, y, z) instanceof TileEntityFluidPump)
+		else if(Utils.isHammer(player.getCurrentEquippedItem()) && te instanceof TileEntityFluidPump)
 		{
-			TileEntityFluidPump pump = (TileEntityFluidPump) world.getTileEntity(x, y, z);
+			TileEntityFluidPump pump = (TileEntityFluidPump) te;
 			if (!pump.dummy)
 			{
 				if (!world.isRemote)
@@ -212,11 +213,11 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 				return true;
 			}
 		}
-		else if(world.getTileEntity(x, y, z) instanceof TileEntityFluidPipe)
+		else if(te instanceof TileEntityFluidPipe)
 		{
 			if(!world.isRemote && Utils.isHammer(player.getCurrentEquippedItem()))
 			{
-				TileEntityFluidPipe tile = ((TileEntityFluidPipe)world.getTileEntity(x, y, z));
+				TileEntityFluidPipe tile = ((TileEntityFluidPipe)te);
 				ForgeDirection fd =ForgeDirection.UNKNOWN;
 
 				ArrayList<AxisAlignedBB> boxes = addCustomSelectionBoxesToList(world, x, y, z);
@@ -230,9 +231,10 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 				{
 					tile.toggleSide(fd.ordinal());
 					world.markBlockForUpdate(x, y, z);
-					if(world.getTileEntity(x+fd.offsetX, y+fd.offsetY, z+fd.offsetZ) instanceof TileEntityFluidPipe)
+					TileEntity te2 = world.getTileEntity(x+fd.offsetX, y+fd.offsetY, z+fd.offsetZ);
+					if(te2 instanceof TileEntityFluidPipe)
 					{
-						((TileEntityFluidPipe)world.getTileEntity(x+fd.offsetX, y+fd.offsetY, z+fd.offsetZ)).toggleSide(fd.getOpposite().ordinal());
+						((TileEntityFluidPipe)te2).toggleSide(fd.getOpposite().ordinal());
 						world.markBlockForUpdate(x+fd.offsetX, y+fd.offsetY, z+fd.offsetZ);
 					}
 					TileEntityFluidPipe.indirectConnections.clear();
@@ -248,10 +250,11 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 	@Override
 	public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
 	{
-		if(world.getTileEntity(x, y, z) instanceof TileEntityBreakerSwitch)
+		TileEntity te = world.getTileEntity(x, y, z);
+		if(te instanceof TileEntityBreakerSwitch)
 		{
-			int f = ((TileEntityBreakerSwitch)world.getTileEntity(x, y, z)).facing;
-			int side = ((TileEntityBreakerSwitch)world.getTileEntity(x, y, z)).sideAttached;
+			int f = ((TileEntityBreakerSwitch)te).facing;
+			int side = ((TileEntityBreakerSwitch)te).sideAttached;
 			if(side==0)
 				this.setBlockBounds(f<4?.25f:f==5?.75f:0, .1875f, f>3?.25f:f==3?.75f:0, f<4?.75f:f==4?.25f:1,.8125f,f>3?.75f:f==2?.25f:1);
 			else if(side==1)
@@ -259,9 +262,9 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 			else
 				this.setBlockBounds(f>=4?.1875f:.25f,.75f,f<=3?.1875f:.25f, f>=4?.8125f:.75f,1,f<=3?.8125f:.75f);
 		}
-		else if (world.getTileEntity(x, y, z) instanceof TileEntityFluidPipe_old)
+		else if (te instanceof TileEntityFluidPipe_old)
 		{
-			TileEntityFluidPipe_old pipe = ((TileEntityFluidPipe_old) world.getTileEntity(x, y, z));
+			TileEntityFluidPipe_old pipe = ((TileEntityFluidPipe_old) te);
 			if(pipe.connections.size()==0)
 				this.setBlockBounds(.125f,0,.125f, .875f,1,.875f);
 			else
@@ -288,11 +291,11 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 					this.setBlockBounds(0,0,0, 1,1,1);
 			}
 		}
-		else if (world.getTileEntity(x, y, z) instanceof TileEntityFluidPipe)
+		else if (te instanceof TileEntityFluidPipe)
 			this.setBlockBounds(0,0,0,1,1,1);
-		else if (world.getTileEntity(x, y, z) instanceof TileEntityFluidPump)
+		else if (te instanceof TileEntityFluidPump)
 		{
-			if (((TileEntityFluidPump) world.getTileEntity(x, y, z)).dummy)
+			if (((TileEntityFluidPump) te).dummy)
 				this.setBlockBounds(0.1875f, 0, 0.1875f, 0.8125f, 1, 0.8125f);
 			else
 				this.setBlockBounds(0, 0, 0, 1, 1, 1);
@@ -307,9 +310,10 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 	@Override
 	public void addCollisionBoxesToList(World world, int x, int y, int z, AxisAlignedBB aabb, List list, Entity ent)
 	{
-		if(world.getTileEntity(x, y, z) instanceof TileEntityFluidPipe)
+		TileEntity te = world.getTileEntity(x, y, z);
+		if(te instanceof TileEntityFluidPipe)
 		{
-			TileEntityFluidPipe tile = (TileEntityFluidPipe)world.getTileEntity(x, y, z);
+			TileEntityFluidPipe tile = (TileEntityFluidPipe)te;
 			byte connections = tile.getConnectionByte();
 			if(/*connections==16||connections==32||*/connections==48)
 			{
@@ -379,9 +383,10 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 	public ArrayList<AxisAlignedBB> addCustomSelectionBoxesToList(World world, int x, int y, int z)
 	{
 		ArrayList<AxisAlignedBB> list = new ArrayList<AxisAlignedBB>();
-		if(world.getTileEntity(x, y, z) instanceof TileEntityFluidPipe)
+		TileEntity te = world.getTileEntity(x, y, z);
+		if(te instanceof TileEntityFluidPipe)
 		{
-			TileEntityFluidPipe tile = (TileEntityFluidPipe)world.getTileEntity(x, y, z);
+			TileEntityFluidPipe tile = (TileEntityFluidPipe)te;
 			byte connections = tile.getAvailableConnectionByte();
 			byte availableConnections = tile.getConnectionByte();
 			double[] baseAABB = {.25,.75, .25,.75, .25,.75}; 
@@ -465,9 +470,10 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 	@Override
 	public void breakBlock(World world, int x, int y, int z, Block par5, int par6)
 	{
-		if (world.getTileEntity(x, y, z) instanceof TileEntityFluidPump)
+		TileEntity te = world.getTileEntity(x, y, z);
+		if (te instanceof TileEntityFluidPump)
 		{
-			if (((TileEntityFluidPump) world.getTileEntity(x, y, z)).dummy)
+			if (((TileEntityFluidPump) te).dummy)
 				world.setBlockToAir(x, y - 1, z);
 			else
 				world.setBlockToAir(x, y + 1, z);
@@ -586,9 +592,10 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 	@Override
 	public int isProvidingWeakPower(IBlockAccess world, int x, int y, int z, int side)
 	{
-		if(world.getTileEntity(x, y, z) instanceof TileEntityBreakerSwitch)
+		TileEntity te = world.getTileEntity(x, y, z);
+		if(te instanceof TileEntityBreakerSwitch)
 		{
-			TileEntityBreakerSwitch breaker = ((TileEntityBreakerSwitch)world.getTileEntity(x, y, z));
+			TileEntityBreakerSwitch breaker = (TileEntityBreakerSwitch)te;
 			boolean power = (breaker.active&&!breaker.inverted) || (!breaker.active&&breaker.inverted);
 			return power?15:0;
 		}
@@ -597,9 +604,10 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 	@Override
 	public int isProvidingStrongPower(IBlockAccess world, int x, int y, int z, int side)
 	{
-		if(world.getTileEntity(x, y, z) instanceof TileEntityBreakerSwitch)
+		TileEntity te = world.getTileEntity(x, y, z);
+		if(te instanceof TileEntityBreakerSwitch)
 		{
-			TileEntityBreakerSwitch breaker = ((TileEntityBreakerSwitch)world.getTileEntity(x, y, z));
+			TileEntityBreakerSwitch breaker = (TileEntityBreakerSwitch)te;
 			int powerSide = breaker.sideAttached>0?breaker.sideAttached-1:breaker.facing;
 			boolean power = (breaker.active&&!breaker.inverted) || (!breaker.active&&breaker.inverted);
 			return power&&ForgeDirection.OPPOSITES[side]==powerSide?15:0;
@@ -623,8 +631,9 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 	@Override
 	public int getLightValue(IBlockAccess world, int x, int y, int z)
 	{
-		if(world.getTileEntity(x, y, z) instanceof TileEntityElectricLantern)
-			return ((TileEntityElectricLantern)world.getTileEntity(x, y, z)).active?15:0;
+		TileEntity te = world.getTileEntity(x, y, z);
+		if(te instanceof TileEntityElectricLantern)
+			return ((TileEntityElectricLantern)te).active?15:0;
 		return 0;
 	}
 

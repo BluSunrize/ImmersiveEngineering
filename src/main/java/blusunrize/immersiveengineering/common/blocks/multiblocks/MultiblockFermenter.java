@@ -5,6 +5,7 @@ import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.client.ClientUtils;
@@ -112,9 +113,10 @@ public class MultiblockFermenter implements IMultiblock
 						world.markBlockForUpdate(startX+xx, startY+yy, startZ+zz);
 					else
 						world.setBlock(startX+xx, startY+yy, startZ+zz, IEContent.blockMetalMultiblocks, BlockMetalMultiblocks.META_fermenter, 0x3);
-					if(world.getTileEntity(startX+xx, startY+yy, startZ+zz) instanceof TileEntityFermenter)
+					TileEntity curr = world.getTileEntity(startX+xx, startY+yy, startZ+zz);
+					if(curr instanceof TileEntityFermenter)
 					{
-						TileEntityFermenter tile = (TileEntityFermenter)world.getTileEntity(startX+xx,startY+yy,startZ+zz);
+						TileEntityFermenter tile = (TileEntityFermenter)curr;
 						tile.facing=side;
 						tile.formed=true;
 						tile.pos = l*9 + (h+1)*3 + (w+1);

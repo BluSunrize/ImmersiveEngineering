@@ -6,6 +6,7 @@ import net.minecraft.block.Block;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.StatCollector;
@@ -55,9 +56,8 @@ public class ItemBlockMetalDevices extends ItemBlockIEBase
 		int f = playerViewQuarter==0 ? 2:playerViewQuarter==1 ? 5:playerViewQuarter==2 ? 3: 4;
 		if(meta==BlockMetalDevices.META_transformer||meta==BlockMetalDevices.META_transformerHV)
 		{
-			if(meta==BlockMetalDevices.META_transformer && side==f && world.getTileEntity(x+(side==4?1: side==5?-1: 0), y, z+(side==2?1: side==3?-1: 0)) instanceof TileEntityWoodenPost && ((TileEntityWoodenPost)world.getTileEntity(x+(side==4?1: side==5?-1: 0), y, z+(side==2?1: side==3?-1: 0))).type>0 )
-				;
-			else if(!world.isAirBlock(x,y+1,z))
+			TileEntity te = world.getTileEntity(x+(side==4?1: side==5?-1: 0), y, z+(side==2?1: side==3?-1: 0));
+			if((meta!=BlockMetalDevices.META_transformer||side!=f||!(te instanceof TileEntityWoodenPost)||((TileEntityWoodenPost) te).type<=0)&&!world.isAirBlock(x, y+1, z))
 				return false;
 		}
 		if(meta==BlockMetalDevices.META_sampleDrill && (!world.isAirBlock(x,y+1,z)||!world.isAirBlock(x,y+2,z)))
@@ -76,9 +76,10 @@ public class ItemBlockMetalDevices extends ItemBlockIEBase
 		if(meta==BlockMetalDevices.META_conveyorBelt && side!=0 && side!=1)
 		{
 			ForgeDirection fd = ForgeDirection.VALID_DIRECTIONS[side].getOpposite();
-			if(world.getTileEntity(x+fd.offsetX, y, z+fd.offsetZ) instanceof TileEntityConveyorBelt)
+			TileEntity tileEntity = world.getTileEntity(x+fd.offsetX, y, z+fd.offsetZ);
+			if(tileEntity instanceof TileEntityConveyorBelt)
 			{
-				TileEntityConveyorBelt con = (TileEntityConveyorBelt)world.getTileEntity(x+fd.offsetX, y, z+fd.offsetZ);
+				TileEntityConveyorBelt con = (TileEntityConveyorBelt)tileEntity;
 				if(con.transportUp && con.facing==ForgeDirection.OPPOSITES[side] && hitY>.75 && world.isAirBlock(x, y+1, z))
 					y++;
 				else if( ((con.transportUp && con.facing==side)||(con.transportDown && con.facing==ForgeDirection.OPPOSITES[side])) && hitY<=.125 && world.isAirBlock(x, y-1, z))
@@ -94,42 +95,45 @@ public class ItemBlockMetalDevices extends ItemBlockIEBase
 		boolean ret = super.placeBlockAt(stack, player, world, x, y, z, side, hitX, hitY, hitZ, meta);
 		if(!ret)
 			return ret;
-		if(world.getTileEntity(x, y, z) instanceof TileEntityRelayHV)
+		TileEntity tileEntity = world.getTileEntity(x, y, z);
+		if(tileEntity instanceof TileEntityRelayHV)
 		{
-			if(ret && !world.isAirBlock(x,y+1,z))
-				((TileEntityConnectorLV)world.getTileEntity(x, y, z)).facing = ForgeDirection.UP.ordinal();
+			if(!world.isAirBlock(x, y+1,z))
+				((TileEntityConnectorLV)tileEntity).facing = ForgeDirection.UP.ordinal();
 		}
-		else if(world.getTileEntity(x, y, z) instanceof TileEntityCapacitorLV)
+		else if(tileEntity instanceof TileEntityCapacitorLV)
 		{
 			if(ItemNBTHelper.hasKey(stack, "energyStorage"))
-				((TileEntityCapacitorLV)world.getTileEntity(x, y, z)).energyStorage.setEnergyStored(ItemNBTHelper.getInt(stack, "energyStorage"));
+				((TileEntityCapacitorLV)tileEntity).energyStorage.setEnergyStored(ItemNBTHelper.getInt(stack, "energyStorage"));
 			if(ItemNBTHelper.hasKey(stack, "sideConfig"))
-				((TileEntityCapacitorLV)world.getTileEntity(x, y, z)).sideConfig = ItemNBTHelper.getIntArray(stack, "sideConfig");
+				((TileEntityCapacitorLV)tileEntity).sideConfig = ItemNBTHelper.getIntArray(stack, "sideConfig");
 			else
-				((TileEntityCapacitorLV)world.getTileEntity(x, y, z)).sideConfig[f]=1;
+				((TileEntityCapacitorLV)tileEntity).sideConfig[f]=1;
 		}
-		else if(world.getTileEntity(x, y, z) instanceof TileEntityConnectorLV)
-			((TileEntityConnectorLV)world.getTileEntity(x, y, z)).facing = ForgeDirection.getOrientation(side).getOpposite().ordinal();
-		else if(world.getTileEntity(x, y, z) instanceof TileEntityTransformer)
+		else if(tileEntity instanceof TileEntityConnectorLV)
+			((TileEntityConnectorLV)tileEntity).facing = ForgeDirection.getOrientation(side).getOpposite().ordinal();
+		else if(tileEntity instanceof TileEntityTransformer)
 		{
-			((TileEntityTransformer)world.getTileEntity(x,y,z)).facing=f;
-			if(meta==4 && side==f && world.getTileEntity(x+(side==4?1: side==5?-1: 0), y, z+(side==2?1: side==3?-1: 0)) instanceof TileEntityWoodenPost && ((TileEntityWoodenPost)world.getTileEntity(x+(side==4?1: side==5?-1: 0), y, z+(side==2?1: side==3?-1: 0))).type>0 )
-				((TileEntityTransformer)world.getTileEntity(x,y,z)).postAttached=side;
+			((TileEntityTransformer)tileEntity).facing=f;
+			TileEntity tileEntityWoodenPost = world.getTileEntity(x+(side==4?1: side==5?-1: 0), y, z+(side==2?1: side==3?-1: 0));
+			if(meta==4 && side==f && tileEntityWoodenPost instanceof TileEntityWoodenPost && ((TileEntityWoodenPost)tileEntityWoodenPost).type>0 )
+				((TileEntityTransformer)tileEntity).postAttached=side;
 			else
 			{
-				((TileEntityTransformer)world.getTileEntity(x,y,z)).dummy = true;
+				((TileEntityTransformer)tileEntity).dummy = true;
 				world.setBlock(x,y+1,z, field_150939_a,meta, 0x3);
-				if(world.getTileEntity(x,y+1,z) instanceof TileEntityTransformer)
+				TileEntity tileEntityTransformer = world.getTileEntity(x,y+1,z);
+				if(tileEntityTransformer instanceof TileEntityTransformer)
 				{
-					((TileEntityTransformer)world.getTileEntity(x,y+1,z)).facing = f;
+					((TileEntityTransformer)tileEntityTransformer).facing = f;
 				}
 			}
 		}
-		else if(world.getTileEntity(x, y, z) instanceof TileEntityDynamo)
-			((TileEntityDynamo)world.getTileEntity(x,y,z)).facing=f;
-		else if(world.getTileEntity(x, y, z) instanceof TileEntityConveyorBelt)
+		else if(tileEntity instanceof TileEntityDynamo)
+			((TileEntityDynamo)tileEntity).facing=f;
+		else if(tileEntity instanceof TileEntityConveyorBelt)
 		{
-			TileEntityConveyorBelt tile = (TileEntityConveyorBelt)world.getTileEntity(x,y,z);
+			TileEntityConveyorBelt tile = (TileEntityConveyorBelt)tileEntity;
 
 			if(player.isSneaking())
 				f = ForgeDirection.OPPOSITES[f];
@@ -181,13 +185,14 @@ public class ItemBlockMetalDevices extends ItemBlockIEBase
 			}
 			tile.facing=f;
 		}
-		else if(world.getTileEntity(x, y, z) instanceof TileEntitySampleDrill)
+		else if(tileEntity instanceof TileEntitySampleDrill)
 		{
 			for(int i=1;i<=2;i++)
 			{
 				world.setBlock(x,y+i,z, field_150939_a,meta, 0x3);
-				if(world.getTileEntity(x, y+i, z) instanceof TileEntitySampleDrill)
-					((TileEntitySampleDrill)world.getTileEntity(x,y+i,z)).pos = i;
+				TileEntity te = world.getTileEntity(x, y+i, z);
+				if(te instanceof TileEntitySampleDrill)
+					((TileEntitySampleDrill) te).pos = i;
 			}
 		}
 		return ret;

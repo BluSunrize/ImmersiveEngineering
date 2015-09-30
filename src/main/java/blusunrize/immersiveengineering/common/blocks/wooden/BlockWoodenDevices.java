@@ -83,8 +83,9 @@ public class BlockWoodenDevices extends BlockIEBase implements blusunrize.aquatw
 	@SideOnly(Side.CLIENT)
 	public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side)
 	{
-		if(world.getTileEntity(x, y, z) instanceof TileEntityWoodenBarrel && side<2)
-			return iconBarrel[((TileEntityWoodenBarrel)world.getTileEntity(x, y, z)).sideConfig[side]+1];
+		TileEntity te = world.getTileEntity(x, y, z);
+		if(te instanceof TileEntityWoodenBarrel && side<2)
+			return iconBarrel[((TileEntityWoodenBarrel)te).sideConfig[side]+1];
 		return super.getIcon(world, x, y, z, side);
 	}
 
@@ -106,9 +107,10 @@ public class BlockWoodenDevices extends BlockIEBase implements blusunrize.aquatw
 	@Override
 	public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
 	{
-		if(world.getTileEntity(x, y, z) instanceof TileEntityWoodenPost)
+		TileEntity tileEntity = world.getTileEntity(x, y, z);
+		if(tileEntity instanceof TileEntityWoodenPost)
 		{
-			byte type = ((TileEntityWoodenPost)world.getTileEntity(x, y, z)).type;
+			byte type = ((TileEntityWoodenPost) tileEntity).type;
 			switch(type)
 			{
 			case 0:
@@ -138,8 +140,9 @@ public class BlockWoodenDevices extends BlockIEBase implements blusunrize.aquatw
 	}
 	boolean isPost(IBlockAccess world, int x, int y, int z, int type)
 	{
-		if(world.getTileEntity(x, y, z) instanceof TileEntityWoodenPost)
-			return ((TileEntityWoodenPost)world.getTileEntity(x, y, z)).type == type;
+		TileEntity te = world.getTileEntity(x, y, z);
+		if(te instanceof TileEntityWoodenPost)
+			return ((TileEntityWoodenPost)te).type == type;
 		return world.getBlock(x,y,z)==this && world.getBlockMetadata(x, y, z)==0;
 	}
 	boolean canArmConnectToBlock(IBlockAccess world, int x, int y, int z, boolean down)
@@ -173,9 +176,10 @@ public class BlockWoodenDevices extends BlockIEBase implements blusunrize.aquatw
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
 	{
-		if(world.getTileEntity(x, y, z) instanceof TileEntityWoodenPost && Utils.isHammer(player.getCurrentEquippedItem()))
+		TileEntity te = world.getTileEntity(x, y, z);
+		if(te instanceof TileEntityWoodenPost && Utils.isHammer(player.getCurrentEquippedItem()))
 		{
-			byte type = ((TileEntityWoodenPost)world.getTileEntity(x, y, z)).type;
+			byte type = ((TileEntityWoodenPost)te).type;
 			if(type==3)
 			{
 				ForgeDirection fd = ForgeDirection.getOrientation(side);
@@ -183,13 +187,15 @@ public class BlockWoodenDevices extends BlockIEBase implements blusunrize.aquatw
 				ForgeDirection rot1 = rot0.getOpposite();
 				if(!world.isAirBlock(x+fd.offsetX,y+fd.offsetY,z+fd.offsetZ))
 					return false;
-				if(world.getTileEntity(x+rot0.offsetX,y+rot0.offsetY,z+rot0.offsetZ) instanceof TileEntityWoodenPost && ((TileEntityWoodenPost)world.getTileEntity(x+rot0.offsetX,y+rot0.offsetY,z+rot0.offsetZ)).type-2==rot0.ordinal())
+				te = world.getTileEntity(x+rot0.offsetX,y+rot0.offsetY,z+rot0.offsetZ);
+				if(te instanceof TileEntityWoodenPost && ((TileEntityWoodenPost)te).type-2==rot0.ordinal())
 					return false;
-				if(world.getTileEntity(x+rot1.offsetX,y+rot1.offsetY,z+rot1.offsetZ) instanceof TileEntityWoodenPost && ((TileEntityWoodenPost)world.getTileEntity(x+rot1.offsetX,y+rot1.offsetY,z+rot1.offsetZ)).type-2==rot1.ordinal())
+				if(te instanceof TileEntityWoodenPost && ((TileEntityWoodenPost)te).type-2==rot1.ordinal())
 					return false;
 				world.setBlock(x+fd.offsetX, y, z+fd.offsetZ, this, 0, 0x3);
-				if(world.getTileEntity(x+fd.offsetX, y, z+fd.offsetZ) instanceof TileEntityWoodenPost)
-					((TileEntityWoodenPost)world.getTileEntity(x+fd.offsetX, y, z+fd.offsetZ)).type=(byte)(2+side);
+				TileEntity tileEntity = world.getTileEntity(x+fd.offsetX, y, z+fd.offsetZ);
+				if(tileEntity instanceof TileEntityWoodenPost)
+					((TileEntityWoodenPost)tileEntity).type=(byte)(2+side);
 				world.markBlockForUpdate(x, y-3, z);
 			}
 			else if(type==4||type==5||type==6||type==7)
@@ -201,9 +207,9 @@ public class BlockWoodenDevices extends BlockIEBase implements blusunrize.aquatw
 
 			return true;
 		}
-		if(world.getTileEntity(x, y, z) instanceof TileEntityWindmillAdvanced && Utils.getDye(player.getCurrentEquippedItem())>=0 && ((TileEntityWindmillAdvanced)world.getTileEntity(x, y, z)).facing==side)
+		if(te instanceof TileEntityWindmillAdvanced && Utils.getDye(player.getCurrentEquippedItem())>=0 && ((TileEntityWindmillAdvanced)te).facing==side)
 		{
-			int f = ((TileEntityWindmillAdvanced)world.getTileEntity(x, y, z)).facing;
+			int f = ((TileEntityWindmillAdvanced)te).facing;
 			float w = f==2?1-hitX: f==3?hitX: f==4?hitZ: 1-hitZ;
 			double r = Math.sqrt( (w-.5)*(w-.5) + (hitY-.5)*(hitY-.5) );
 			double ax = Math.toDegrees( Math.acos( (w-.5)/r ));
@@ -211,40 +217,41 @@ public class BlockWoodenDevices extends BlockIEBase implements blusunrize.aquatw
 			double a = (ay<0?360-ax:ax)+22.25; 
 			int sel = ((4-(int)(a/45f)+6)%8);
 
-			if(((TileEntityWindmillAdvanced)world.getTileEntity(x, y, z)).dye[sel] == Utils.getDye(player.getCurrentEquippedItem()))
+			if(((TileEntityWindmillAdvanced)te).dye[sel] == Utils.getDye(player.getCurrentEquippedItem()))
 				return false;
-			((TileEntityWindmillAdvanced)world.getTileEntity(x, y, z)).dye[sel] = (byte) Utils.getDye(player.getCurrentEquippedItem());
+			((TileEntityWindmillAdvanced)te).dye[sel] = (byte) Utils.getDye(player.getCurrentEquippedItem());
 			if(!player.capabilities.isCreativeMode)
 				player.getCurrentEquippedItem().stackSize--;
 			return true;
 		}
-		if(!player.isSneaking() && world.getTileEntity(x, y, z) instanceof TileEntityWoodenCrate)
+		if(!player.isSneaking() && te instanceof TileEntityWoodenCrate)
 		{
 			if(!world.isRemote)
 				player.openGui(ImmersiveEngineering.instance, Lib.GUIID_WoodenCrate, world, x,y,z);
 			return true;
 		}
-		if(!player.isSneaking() && world.getTileEntity(x, y, z) instanceof TileEntityModWorkbench)
+		if(!player.isSneaking() && te instanceof TileEntityModWorkbench)
 		{
-			TileEntityModWorkbench tile = (TileEntityModWorkbench)world.getTileEntity(x, y, z);
+			TileEntityModWorkbench tile = (TileEntityModWorkbench)te;
 			if(tile.dummy)
 			{
 				int f = tile.facing;
 				int off = tile.dummyOffset;
 				int xx = x-(f<4?off:0);
 				int zz = z-(f>3?off:0);
-				if(world.getTileEntity(xx, y, zz) instanceof TileEntityModWorkbench)
-					tile = (TileEntityModWorkbench)world.getTileEntity(xx, y, zz);
+				TileEntity tileEntityModWorkbench = world.getTileEntity(xx, y, zz);
+				if(tileEntityModWorkbench instanceof TileEntityModWorkbench)
+					tile = (TileEntityModWorkbench)tileEntityModWorkbench;
 			}
 			if(!world.isRemote)
 				player.openGui(ImmersiveEngineering.instance, Lib.GUIID_Workbench, world, tile.xCoord,tile.yCoord,tile.zCoord);
 			return true;
 		}
-		if(world.getTileEntity(x, y, z) instanceof TileEntityWoodenBarrel)
+		if(te instanceof TileEntityWoodenBarrel)
 		{
 			if(!world.isRemote)
 			{
-				TileEntityWoodenBarrel barrel = (TileEntityWoodenBarrel)world.getTileEntity(x, y, z);
+				TileEntityWoodenBarrel barrel = (TileEntityWoodenBarrel)te;
 				if(Utils.isHammer(player.getCurrentEquippedItem()) && side<2)
 				{
 					if(player.isSneaking())
@@ -286,16 +293,18 @@ public class BlockWoodenDevices extends BlockIEBase implements blusunrize.aquatw
 	@Override
 	public void onNeighborBlockChange(World world, int x, int y, int z, Block block)
 	{
-		if(world.getTileEntity(x, y, z) instanceof TileEntityWatermill)
+		TileEntity tileEntity = world.getTileEntity(x, y, z);
+		if(tileEntity instanceof TileEntityWatermill)
 		{
-			int f = ((TileEntityWatermill)world.getTileEntity(x, y, z)).facing;
-			int[] off = ((TileEntityWatermill)world.getTileEntity(x, y, z)).offset;
+			int f = ((TileEntityWatermill)tileEntity).facing;
+			int[] off = ((TileEntityWatermill)tileEntity).offset;
 			int xx = x - ((f==2||f==3)?off[0]:0);
 			int yy = y - off[1];
 			int zz = z - ((f==2||f==3)?0:off[0]);
-			if(world.getTileEntity(xx,yy,zz) instanceof TileEntityWatermill)
+			TileEntity tileEntity2 = world.getTileEntity(xx,yy,zz);
+			if(tileEntity2 instanceof TileEntityWatermill)
 			{
-				((TileEntityWatermill)world.getTileEntity(xx,yy,zz)).resetRotationVec();
+				((TileEntityWatermill)tileEntity2).resetRotationVec();
 			}
 		}
 	}
@@ -303,46 +312,56 @@ public class BlockWoodenDevices extends BlockIEBase implements blusunrize.aquatw
 	@Override
 	public void onBlockHarvested(World world, int x, int y, int z, int meta, EntityPlayer player)
 	{
-		if(!world.isRemote && world.getTileEntity(x, y, z) instanceof TileEntityWoodenCrate)
+		TileEntity te = world.getTileEntity(x, y, z);
+		if(!world.isRemote)
 		{
-			ItemStack stack = new ItemStack(this,1,meta);
-			NBTTagCompound tag = new NBTTagCompound();
-			((TileEntityWoodenCrate)world.getTileEntity(x, y, z)).writeInv(tag, true);
-			if(!tag.hasNoTags())
-				stack.setTagCompound(tag);
-			world.spawnEntityInWorld(new EntityItem(world,x+.5,y+.5,z+.5,stack));
-		}
-		if(!world.isRemote && world.getTileEntity(x, y, z) instanceof TileEntityWoodenBarrel)
-		{
-			ItemStack stack = new ItemStack(this,1,meta);
-			NBTTagCompound tag = new NBTTagCompound();
-			((TileEntityWoodenBarrel)world.getTileEntity(x, y, z)).writeTank(tag, true);
-			if(!tag.hasNoTags())
-				stack.setTagCompound(tag);
-			world.spawnEntityInWorld(new EntityItem(world,x+.5,y+.5,z+.5,stack));
+			if(te instanceof TileEntityWoodenCrate)
+			{
+				ItemStack stack = new ItemStack(this, 1, meta);
+				NBTTagCompound tag = new NBTTagCompound();
+				((TileEntityWoodenCrate) te).writeInv(tag, true);
+				if(!tag.hasNoTags())
+					stack.setTagCompound(tag);
+				world.spawnEntityInWorld(new EntityItem(world, x+.5, y+.5, z+.5, stack));
+			}
+
+			if(te instanceof TileEntityWoodenBarrel)
+			{
+				ItemStack stack = new ItemStack(this, 1, meta);
+				NBTTagCompound tag = new NBTTagCompound();
+				((TileEntityWoodenBarrel) te).writeTank(tag, true);
+				if(!tag.hasNoTags())
+					stack.setTagCompound(tag);
+				world.spawnEntityInWorld(new EntityItem(world, x+.5, y+.5, z+.5, stack));
+			}
 		}
 	}
 
 	@Override
 	public void onBlockExploded(World world, int x, int y, int z, Explosion explosion)
 	{
-		if(!world.isRemote && world.getTileEntity(x, y, z) instanceof TileEntityWoodenCrate)
+		if(!world.isRemote)
 		{
-			ItemStack stack = new ItemStack(this,1,world.getBlockMetadata(x, y, z));
-			NBTTagCompound tag = new NBTTagCompound();
-			((TileEntityWoodenCrate)world.getTileEntity(x, y, z)).writeInv(tag, true);
-			if(!tag.hasNoTags())
-				stack.setTagCompound(tag);
-			world.spawnEntityInWorld(new EntityItem(world,x+.5,y+.5,z+.5,stack));
-		}
-		if(!world.isRemote && world.getTileEntity(x, y, z) instanceof TileEntityWoodenBarrel)
-		{
-			ItemStack stack = new ItemStack(this,1,world.getBlockMetadata(x, y, z));
-			NBTTagCompound tag = new NBTTagCompound();
-			((TileEntityWoodenBarrel)world.getTileEntity(x, y, z)).writeTank(tag, true);
-			if(!tag.hasNoTags())
-				stack.setTagCompound(tag);
-			world.spawnEntityInWorld(new EntityItem(world,x+.5,y+.5,z+.5,stack));
+			TileEntity te = world.getTileEntity(x, y, z);
+			if(te instanceof TileEntityWoodenCrate)
+			{
+				ItemStack stack = new ItemStack(this, 1, world.getBlockMetadata(x, y, z));
+				NBTTagCompound tag = new NBTTagCompound();
+				((TileEntityWoodenCrate) te).writeInv(tag, true);
+				if(!tag.hasNoTags())
+					stack.setTagCompound(tag);
+				world.spawnEntityInWorld(new EntityItem(world, x+.5, y+.5, z+.5, stack));
+			}
+
+			if(te instanceof TileEntityWoodenBarrel)
+			{
+				ItemStack stack = new ItemStack(this, 1, world.getBlockMetadata(x, y, z));
+				NBTTagCompound tag = new NBTTagCompound();
+				((TileEntityWoodenBarrel) te).writeTank(tag, true);
+				if(!tag.hasNoTags())
+					stack.setTagCompound(tag);
+				world.spawnEntityInWorld(new EntityItem(world, x+.5, y+.5, z+.5, stack));
+			}
 		}
 		super.onBlockExploded(world, x, y, z, explosion);
 	}
@@ -368,10 +387,11 @@ public class BlockWoodenDevices extends BlockIEBase implements blusunrize.aquatw
 	@Override
 	public void breakBlock(World world, int x, int y, int z, Block par5, int par6)
 	{
-		if(world.getTileEntity(x, y, z) instanceof TileEntityWoodenPost)
+		TileEntity tileEntity = world.getTileEntity(x, y, z);
+		if(tileEntity instanceof TileEntityWoodenPost)
 		{
 			int yy=y;
-			byte type = ((TileEntityWoodenPost)world.getTileEntity(x, y, z)).type;
+			byte type = ((TileEntityWoodenPost)tileEntity).type;
 			switch(type)
 			{
 			case 4:
@@ -380,7 +400,7 @@ public class BlockWoodenDevices extends BlockIEBase implements blusunrize.aquatw
 			case 7:
 				return;
 			default:
-				yy-= ((TileEntityWoodenPost)world.getTileEntity(x, y, z)).type;
+				yy-= ((TileEntityWoodenPost)tileEntity).type;
 				break;
 			}
 
@@ -388,17 +408,23 @@ public class BlockWoodenDevices extends BlockIEBase implements blusunrize.aquatw
 			{
 				world.setBlockToAir(x,yy+i,z);
 				if(i==3)
-					for(ForgeDirection fd : new ForgeDirection[]{ForgeDirection.NORTH,ForgeDirection.SOUTH,ForgeDirection.EAST,ForgeDirection.WEST})
-						if(world.getTileEntity(x+fd.offsetX,yy+i,z+fd.offsetZ) instanceof TileEntityWoodenPost && ((TileEntityWoodenPost)world.getTileEntity(x+fd.offsetX,yy+i,z+fd.offsetZ)).type==(2+fd.ordinal()))
-							world.setBlockToAir(x+fd.offsetX,yy+i,z+fd.offsetZ);
+				{
+					TileEntity te;
+					for(ForgeDirection fd : new ForgeDirection[]{ForgeDirection.NORTH, ForgeDirection.SOUTH, ForgeDirection.EAST, ForgeDirection.WEST})
+					{
+						te = world.getTileEntity(x+fd.offsetX, yy+i, z+fd.offsetZ);
+						if(te instanceof TileEntityWoodenPost && ((TileEntityWoodenPost) te).type==(2+fd.ordinal()))
+							world.setBlockToAir(x+fd.offsetX, yy+i, z+fd.offsetZ);
+					}
+				}
 			}
 			if(type==0 && !world.isRemote && world.getGameRules().getGameRuleBooleanValue("doTileDrops") && !world.restoringBlockSnapshots)
 				world.spawnEntityInWorld(new EntityItem(world, x+.5,y+.5,z+.5, new ItemStack(this,1,0)));
 		}
-		if(world.getTileEntity(x, y, z) instanceof TileEntityWatermill)
+		if(tileEntity instanceof TileEntityWatermill)
 		{
-			int[] off = ((TileEntityWatermill)world.getTileEntity(x, y, z)).offset;
-			int f = ((TileEntityWatermill)world.getTileEntity(x, y, z)).facing;
+			int[] off = ((TileEntityWatermill)tileEntity).offset;
+			int f = ((TileEntityWatermill)tileEntity).facing;
 			int xx = x - ((f==2||f==3)?off[0]:0);
 			int yy = y - off[1];
 			int zz = z - ((f==2||f==3)?0:off[0]);
@@ -413,9 +439,9 @@ public class BlockWoodenDevices extends BlockIEBase implements blusunrize.aquatw
 					world.setBlockToAir(xx+((f==2||f==3)?ww:0), yy+hh, zz+((f==2||f==3)?0:ww));
 			}
 		}
-		if(world.getTileEntity(x, y, z) instanceof TileEntityModWorkbench)
+		if(tileEntity instanceof TileEntityModWorkbench)
 		{
-			TileEntityModWorkbench tile = (TileEntityModWorkbench)world.getTileEntity(x, y, z);
+			TileEntityModWorkbench tile = (TileEntityModWorkbench)tileEntity;
 			int f = tile.facing;
 			int off = tile.dummyOffset;
 			if(tile.dummy)

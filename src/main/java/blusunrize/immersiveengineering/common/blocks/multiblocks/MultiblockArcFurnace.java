@@ -6,6 +6,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
@@ -157,9 +158,10 @@ public class MultiblockArcFurnace implements IMultiblock
 							int zz = startZ+ (side==2?l: side==3?-l: side==5?-ww : ww);
 
 							world.setBlock(xx, yy, zz, IEContent.blockMetalMultiblocks, BlockMetalMultiblocks.META_arcFurnace, 0x3);
-							if(world.getTileEntity(xx, yy, zz) instanceof TileEntityArcFurnace)
+							TileEntity curr = world.getTileEntity(xx, yy, zz);
+							if(curr instanceof TileEntityArcFurnace)
 							{
-								TileEntityArcFurnace tile = (TileEntityArcFurnace)world.getTileEntity(xx,yy,zz);
+								TileEntityArcFurnace tile = (TileEntityArcFurnace)curr;
 								tile.facing=side;
 								tile.formed=true;
 								tile.pos = (h+2)*25 + (l+2)*5 + (w+2);

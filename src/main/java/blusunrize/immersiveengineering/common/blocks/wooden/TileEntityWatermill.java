@@ -2,6 +2,7 @@ package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -51,14 +52,17 @@ public class TileEntityWatermill extends TileEntityIEBase
 		{
 			double power = getPower();
 			int l=1;
-			for(; l<3
-					&& worldObj.getTileEntity(xCoord+fd.offsetX*l,yCoord,zCoord+fd.offsetZ*l) instanceof TileEntityWatermill
-					&& ((TileEntityWatermill)worldObj.getTileEntity(xCoord+fd.offsetX*l,yCoord,zCoord+fd.offsetZ*l)).offset[0]==0
-					&& ((TileEntityWatermill)worldObj.getTileEntity(xCoord+fd.offsetX*l,yCoord,zCoord+fd.offsetZ*l)).offset[1]==0
-					&& ((TileEntityWatermill)worldObj.getTileEntity(xCoord+fd.offsetX*l,yCoord,zCoord+fd.offsetZ*l)).facing==facing
-					&& !((TileEntityWatermill)worldObj.getTileEntity(xCoord+fd.offsetX*l,yCoord,zCoord+fd.offsetZ*l)).isBlocked(); l++)
+			TileEntity tileEntity = worldObj.getTileEntity(xCoord+fd.offsetX*l,yCoord,zCoord+fd.offsetZ*l);
+			while (l<3
+					&& tileEntity instanceof TileEntityWatermill
+					&& ((TileEntityWatermill)tileEntity).offset[0]==0
+					&& ((TileEntityWatermill)tileEntity).offset[1]==0
+					&& ((TileEntityWatermill)tileEntity).facing==facing
+					&& !((TileEntityWatermill)tileEntity).isBlocked())
 			{
-				power += ((TileEntityWatermill)worldObj.getTileEntity(xCoord+fd.offsetX*l,yCoord,zCoord+fd.offsetZ*l)).getPower(); 
+				power += ((TileEntityWatermill)tileEntity).getPower();
+				l++;
+				tileEntity = worldObj.getTileEntity(xCoord+fd.offsetX*l,yCoord,zCoord+fd.offsetZ*l);
 			}
 
 			double perTick = 360f/1440 * (1/360f) * power/l;
@@ -66,11 +70,12 @@ public class TileEntityWatermill extends TileEntityIEBase
 			rotation += perTick;
 			rotation %= 1;
 			for(int l2=1; l2<l; l2++)
-				if(worldObj.getTileEntity(xCoord+fd.offsetX*l2,yCoord,zCoord+fd.offsetZ*l2) instanceof TileEntityWatermill)
+				tileEntity = worldObj.getTileEntity(xCoord+fd.offsetX*l2,yCoord,zCoord+fd.offsetZ*l2);
+				if(tileEntity instanceof TileEntityWatermill)
 				{
-					((TileEntityWatermill)worldObj.getTileEntity(xCoord+fd.offsetX*l2,yCoord,zCoord+fd.offsetZ*l2)).rotation = rotation;
-					((TileEntityWatermill)worldObj.getTileEntity(xCoord+fd.offsetX*l2,yCoord,zCoord+fd.offsetZ*l2)).canTurn = canTurn;
-					((TileEntityWatermill)worldObj.getTileEntity(xCoord+fd.offsetX*l2,yCoord,zCoord+fd.offsetZ*l2)).multiblock = true;
+					((TileEntityWatermill)tileEntity).rotation = rotation;
+					((TileEntityWatermill)tileEntity).canTurn = canTurn;
+					((TileEntityWatermill)tileEntity).multiblock = true;
 				}
 
 			if(!worldObj.isRemote)

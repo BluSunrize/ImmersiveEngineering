@@ -9,6 +9,7 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
@@ -73,39 +74,40 @@ public class ItemIETool extends ItemIEBase implements cofh.api.item.IToolHammer
 	{
 		if(!world.isRemote)
 		{
+			TileEntity tileEntity = world.getTileEntity(x, y, z);
 			if(stack.getItemDamage()==0)
 			{
 				for(IMultiblock mb : MultiblockHandler.getMultiblocks())
 					if(mb.isBlockTrigger(world.getBlock(x, y, z), world.getBlockMetadata(x, y, z)) && mb.createStructure(world, x, y, z, side, player))
 						return true;
 			}
-			else if(stack.getItemDamage()==1 && world.getTileEntity(x, y, z) instanceof IImmersiveConnectable)
+			else if(stack.getItemDamage()==1 && tileEntity instanceof IImmersiveConnectable)
 			{
-				IImmersiveConnectable nodeHere = (IImmersiveConnectable)world.getTileEntity(x, y, z);
+				IImmersiveConnectable nodeHere = (IImmersiveConnectable)tileEntity;
 				ImmersiveNetHandler.INSTANCE.clearAllConnectionsFor(Utils.toCC(nodeHere),world, new TargetingInfo(side,hitX,hitY,hitZ));
 				IESaveData.setDirty(world.provider.dimensionId);
 				return true;
 			}
 			else if(stack.getItemDamage()==2)
 			{
-				if(!player.isSneaking() && (world.getTileEntity(x, y, z) instanceof IEnergyReceiver || world.getTileEntity(x, y, z) instanceof IEnergyProvider))
+				if(!player.isSneaking() && (tileEntity instanceof IEnergyReceiver || tileEntity instanceof IEnergyProvider))
 				{
 					int max = 0;
 					int stored = 0;
-					if(world.getTileEntity(x, y, z) instanceof IEnergyReceiver)
+					if(tileEntity instanceof IEnergyReceiver)
 					{
-						max = ((IEnergyReceiver)world.getTileEntity(x, y, z)).getMaxEnergyStored(ForgeDirection.getOrientation(side));
-						stored = ((IEnergyReceiver)world.getTileEntity(x, y, z)).getEnergyStored(ForgeDirection.getOrientation(side));
+						max = ((IEnergyReceiver)tileEntity).getMaxEnergyStored(ForgeDirection.getOrientation(side));
+						stored = ((IEnergyReceiver)tileEntity).getEnergyStored(ForgeDirection.getOrientation(side));
 					}
-					else if(world.getTileEntity(x, y, z) instanceof IEnergyProvider)
+					else
 					{
-						max = ((IEnergyProvider)world.getTileEntity(x, y, z)).getMaxEnergyStored(ForgeDirection.getOrientation(side));
-						stored = ((IEnergyProvider)world.getTileEntity(x, y, z)).getEnergyStored(ForgeDirection.getOrientation(side));
+						max = ((IEnergyProvider)tileEntity).getMaxEnergyStored(ForgeDirection.getOrientation(side));
+						stored = ((IEnergyProvider)tileEntity).getEnergyStored(ForgeDirection.getOrientation(side));
 					}
 					if(max>0)
 						player.addChatMessage(new ChatComponentTranslation(Lib.CHAT_INFO+"energyStorage", stored,max));
 				}
-				if(player.isSneaking() && world.getTileEntity(x, y, z) instanceof IImmersiveConnectable)
+				if(player.isSneaking() && tileEntity instanceof IImmersiveConnectable)
 				{
 					if(!ItemNBTHelper.hasKey(stack, "linkingPos"))
 						ItemNBTHelper.setIntArray(stack, "linkingPos", new int[]{world.provider.dimensionId,x,y,z});
@@ -114,9 +116,9 @@ public class ItemIETool extends ItemIEBase implements cofh.api.item.IToolHammer
 						int[] pos = ItemNBTHelper.getIntArray(stack, "linkingPos");
 						if(pos[0]==world.provider.dimensionId)
 						{
-							IImmersiveConnectable nodeHere = (IImmersiveConnectable)world.getTileEntity(x, y, z);
+							IImmersiveConnectable nodeHere = (IImmersiveConnectable)tileEntity;
 							IImmersiveConnectable nodeLink = (IImmersiveConnectable)world.getTileEntity(pos[1], pos[2], pos[3]);
-							if(nodeHere!=null && nodeLink!=null)
+							if(nodeLink!=null)
 							{
 								ConcurrentSkipListSet<AbstractConnection> connections = ImmersiveNetHandler.INSTANCE.getIndirectEnergyConnections(Utils.toCC(nodeLink), world);
 								for(AbstractConnection con : connections)

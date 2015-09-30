@@ -409,10 +409,11 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 						int zz = (f==2?l: f==3?-l: f==5?-w : w);
 
 						ItemStack s = null;
-						if(worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz) instanceof TileEntityArcFurnace)
+						TileEntity te = worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz);
+						if(te instanceof TileEntityArcFurnace)
 						{
-							s = ((TileEntityArcFurnace)worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz)).getOriginalBlock();
-							((TileEntityArcFurnace)worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz)).formed=false;
+							s = ((TileEntityArcFurnace)te).getOriginalBlock();
+							((TileEntityArcFurnace)te).formed=false;
 						}
 						if(startX+xx==xCoord && startY+yy==yCoord && startZ+zz==zCoord)
 							s = this.getOriginalBlock();

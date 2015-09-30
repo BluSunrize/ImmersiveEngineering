@@ -81,12 +81,13 @@ public class BlockWoodenDecoration extends BlockIEBase implements blusunrize.aqu
 			return side==DOWN;
 		if(meta==3)
 			return side==UP;
-		if(world.getTileEntity(x,y,z) instanceof TileEntityWallmount)
+		TileEntity te = world.getTileEntity(x, y, z);
+		if(te instanceof TileEntityWallmount)
 		{
 			if(side==UP)
-				return ((TileEntityWallmount)world.getTileEntity(x,y,z)).inverted;
+				return ((TileEntityWallmount)te).inverted;
 			else if(side==DOWN)
-				return !((TileEntityWallmount)world.getTileEntity(x,y,z)).inverted;
+				return !((TileEntityWallmount)te).inverted;
 			else
 				return true;
 		}

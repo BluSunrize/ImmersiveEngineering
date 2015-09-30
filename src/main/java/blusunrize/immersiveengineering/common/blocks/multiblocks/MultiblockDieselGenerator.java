@@ -4,6 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
@@ -124,9 +125,10 @@ public class MultiblockDieselGenerator implements IMultiblock
 					int zz = (side==2?l: side==3?-l: side==5?-w : w);
 
 					world.setBlock(startX+xx, startY+yy, startZ+zz, IEContent.blockMetalMultiblocks, BlockMetalMultiblocks.META_dieselGenerator, 3);
-					if(world.getTileEntity(startX+xx, startY+yy, startZ+zz) instanceof TileEntityDieselGenerator)
+					TileEntity curr = world.getTileEntity(startX+xx, startY+yy, startZ+zz);
+					if(curr instanceof TileEntityDieselGenerator)
 					{
-						TileEntityDieselGenerator tile = (TileEntityDieselGenerator)world.getTileEntity(startX+xx,startY+yy,startZ+zz);
+						TileEntityDieselGenerator tile = (TileEntityDieselGenerator)curr;
 						tile.facing=ForgeDirection.OPPOSITES[side];
 						tile.formed=true;
 						tile.pos = l*9 + (h+1)*3 + (w+1);

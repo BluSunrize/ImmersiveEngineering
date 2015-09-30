@@ -381,16 +381,20 @@ public class ClientEventHandler
 
 			boolean hammer = Utils.isHammer(ClientUtils.mc().thePlayer.getCurrentEquippedItem());
 			MovingObjectPosition mop = ClientUtils.mc().objectMouseOver;
-			if(mop!=null && ClientUtils.mc().thePlayer.worldObj.getTileEntity(mop.blockX, mop.blockY, mop.blockZ) instanceof IEBlockInterfaces.IBlockOverlayText)
+			if(mop!=null)
 			{
-				IEBlockInterfaces.IBlockOverlayText overlayBlock = (IBlockOverlayText) ClientUtils.mc().thePlayer.worldObj.getTileEntity(mop.blockX, mop.blockY, mop.blockZ);
-				String[] text = overlayBlock.getOverlayText(ClientUtils.mc().thePlayer, mop, hammer);
-				if(text!=null && text.length>0)
+				TileEntity tileEntity = ClientUtils.mc().thePlayer.worldObj.getTileEntity(mop.blockX, mop.blockY, mop.blockZ);
+				if(tileEntity instanceof IBlockOverlayText)
 				{
-					int i = 0;
-					for(String s : text)
-						if(s!=null)
-							ClientUtils.font().drawString(s, event.resolution.getScaledWidth()/2+8, event.resolution.getScaledHeight()/2+8+(i++)*ClientUtils.font().FONT_HEIGHT, 0xcccccc, true);
+					IBlockOverlayText overlayBlock = (IBlockOverlayText) tileEntity;
+					String[] text = overlayBlock.getOverlayText(ClientUtils.mc().thePlayer, mop, hammer);
+					if(text!=null && text.length>0)
+					{
+						int i = 0;
+						for(String s : text)
+							if(s!=null)
+								ClientUtils.font().drawString(s, event.resolution.getScaledWidth()/2+8, event.resolution.getScaledHeight()/2+8+(i++)*ClientUtils.font().FONT_HEIGHT, 0xcccccc, true);
+					}
 				}
 			}
 		}

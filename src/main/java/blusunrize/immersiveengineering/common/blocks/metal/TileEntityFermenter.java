@@ -374,10 +374,11 @@ public class TileEntityFermenter extends TileEntityMultiblockPart implements IFl
 						int zz = (f==2?l: f==3?-l: f==5?-w: w);
 
 						ItemStack s = null;
-						if(worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz) instanceof TileEntityFermenter)
+						TileEntity te = worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz);
+						if(te instanceof TileEntityFermenter)
 						{
-							s = ((TileEntityFermenter)worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz)).getOriginalBlock();
-							((TileEntityFermenter)worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz)).formed=false;
+							s = ((TileEntityFermenter)te).getOriginalBlock();
+							((TileEntityFermenter)te).formed=false;
 						}
 						if(startX+xx==xCoord && startY+yy==yCoord && startZ+zz==zCoord)
 							s = this.getOriginalBlock();

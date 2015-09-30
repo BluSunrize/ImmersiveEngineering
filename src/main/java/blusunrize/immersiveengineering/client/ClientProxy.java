@@ -427,30 +427,31 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z)
 	{
-		if(ID==Lib.GUIID_CokeOven && world.getTileEntity(x, y, z) instanceof TileEntityCokeOven)
-			return new GuiCokeOven(player.inventory, (TileEntityCokeOven) world.getTileEntity(x, y, z));
-		if(ID==Lib.GUIID_BlastFurnace && world.getTileEntity(x, y, z) instanceof TileEntityBlastFurnace)
-			return new GuiBlastFurnace(player.inventory, (TileEntityBlastFurnace) world.getTileEntity(x, y, z));
+		TileEntity te = world.getTileEntity(x, y, z);
+		if(ID==Lib.GUIID_CokeOven && te instanceof TileEntityCokeOven)
+			return new GuiCokeOven(player.inventory, (TileEntityCokeOven) te);
+		if(ID==Lib.GUIID_BlastFurnace && te instanceof TileEntityBlastFurnace)
+			return new GuiBlastFurnace(player.inventory, (TileEntityBlastFurnace) te);
 		if(ID==Lib.GUIID_Revolver && player.getCurrentEquippedItem()!=null && player.getCurrentEquippedItem().getItem() instanceof ItemRevolver)
 			return new GuiRevolver(player.inventory, world);
 		if(ID==Lib.GUIID_Manual && ManualHelper.getManual()!=null && player.getCurrentEquippedItem()!=null && OreDictionary.itemMatches(new ItemStack(IEContent.itemTool,1,3), player.getCurrentEquippedItem(), false))
 			return ManualHelper.getManual().getGui();
-		if(ID==Lib.GUIID_WoodenCrate && world.getTileEntity(x, y, z) instanceof TileEntityWoodenCrate)
-			return new GuiCrate(player.inventory, (TileEntityWoodenCrate) world.getTileEntity(x, y, z));
-		if(ID==Lib.GUIID_Squeezer && world.getTileEntity(x, y, z) instanceof TileEntitySqueezer)
-			return new GuiSqueezer(player.inventory, (TileEntitySqueezer) world.getTileEntity(x, y, z));
-		if(ID==Lib.GUIID_Fermenter && world.getTileEntity(x, y, z) instanceof TileEntityFermenter)
-			return new GuiFermenter(player.inventory, (TileEntityFermenter) world.getTileEntity(x, y, z));
-		if(ID==Lib.GUIID_Sorter && world.getTileEntity(x, y, z) instanceof TileEntityConveyorSorter)
-			return new GuiSorter(player.inventory, (TileEntityConveyorSorter) world.getTileEntity(x, y, z));
-		if(ID==Lib.GUIID_Refinery && world.getTileEntity(x, y, z) instanceof TileEntityRefinery)
-			return new GuiRefinery(player.inventory, (TileEntityRefinery) world.getTileEntity(x, y, z));
+		if(ID==Lib.GUIID_WoodenCrate && te instanceof TileEntityWoodenCrate)
+			return new GuiCrate(player.inventory, (TileEntityWoodenCrate) te);
+		if(ID==Lib.GUIID_Squeezer && te instanceof TileEntitySqueezer)
+			return new GuiSqueezer(player.inventory, (TileEntitySqueezer) te);
+		if(ID==Lib.GUIID_Fermenter && te instanceof TileEntityFermenter)
+			return new GuiFermenter(player.inventory, (TileEntityFermenter) te);
+		if(ID==Lib.GUIID_Sorter && te instanceof TileEntityConveyorSorter)
+			return new GuiSorter(player.inventory, (TileEntityConveyorSorter) te);
+		if(ID==Lib.GUIID_Refinery && te instanceof TileEntityRefinery)
+			return new GuiRefinery(player.inventory, (TileEntityRefinery) te);
 		//		if(ID==Lib.GUIID_Workbench && player.getCurrentEquippedItem()!=null && player.getCurrentEquippedItem().getItem() instanceof ItemDrill)
 		//			return new GuiDrill(player.inventory, world);
-		if(ID==Lib.GUIID_Workbench && world.getTileEntity(x, y, z) instanceof TileEntityModWorkbench)
-			return new GuiModWorkbench(player.inventory, (TileEntityModWorkbench) world.getTileEntity(x, y, z));
-		if(ID==Lib.GUIID_ArcFurnace && world.getTileEntity(x, y, z) instanceof TileEntityArcFurnace)
-			return new GuiArcFurnace(player.inventory, (TileEntityArcFurnace) world.getTileEntity(x, y, z));
+		if(ID==Lib.GUIID_Workbench && te instanceof TileEntityModWorkbench)
+			return new GuiModWorkbench(player.inventory, (TileEntityModWorkbench) te);
+		if(ID==Lib.GUIID_ArcFurnace && te instanceof TileEntityArcFurnace)
+			return new GuiArcFurnace(player.inventory, (TileEntityArcFurnace) te);
 		return null;
 	}
 

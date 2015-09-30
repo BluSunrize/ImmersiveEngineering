@@ -4,6 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -47,16 +48,18 @@ public class ItemBlockIESlabs extends ItemBlockIEBase
 		TileEntityIESlab stackSlab = null;
 		if((side==0||side==1) && field_150939_a.equals(world.getBlock(x0,y0,z0)) && world.getBlockMetadata(x0,y0,z0)==stack.getItemDamage())
 		{
-			if(world.getTileEntity(x0,y0,z0) instanceof TileEntityIESlab && ((TileEntityIESlab)world.getTileEntity(x0,y0,z0)).slabType+side==1)
-				stackSlab = ((TileEntityIESlab)world.getTileEntity(x0,y0,z0));
+			TileEntity te = world.getTileEntity(x0,y0,z0);
+			if(te instanceof TileEntityIESlab && ((TileEntityIESlab)te).slabType+side==1)
+				stackSlab = ((TileEntityIESlab)te);
 		}
 		else if(field_150939_a.equals(world.getBlock(x1,y1,z1)) && world.getBlockMetadata(x1,y1,z1)==stack.getItemDamage())
 		{
-			if(world.getTileEntity(x1,y1,z1) instanceof TileEntityIESlab)
+			TileEntity te = world.getTileEntity(x1,y1,z1);
+			if(te instanceof TileEntityIESlab)
 			{
-				int type = ((TileEntityIESlab)world.getTileEntity(x1,y1,z1)).slabType;
+				int type = ((TileEntityIESlab)te).slabType;
 				if((type==0&&(side==0||hitY>=.5))||(type==1&&(side==1||hitY<=.5)))
-					stackSlab = ((TileEntityIESlab)world.getTileEntity(x1,y1,z1));
+					stackSlab = ((TileEntityIESlab)te);
 			}
 		}
 		else
@@ -84,8 +87,12 @@ public class ItemBlockIESlabs extends ItemBlockIEBase
 	public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int meta)
 	{
 		boolean ret = super.placeBlockAt(stack, player, world, x, y, z, side, hitX, hitY, hitZ, meta);
-		if(ret && world.getTileEntity(x, y, z) instanceof TileEntityIESlab)
-			((TileEntityIESlab)world.getTileEntity(x, y, z)).slabType= (side==0||(side!=1&&hitY>=.5))?1:0;
+		if(ret)
+		{
+			TileEntity tileEntity = world.getTileEntity(x, y, z);
+			if(tileEntity instanceof TileEntityIESlab)
+				((TileEntityIESlab) tileEntity).slabType = (side==0||(side!=1&&hitY>=.5))? 1: 0;
+		}
 		return ret;
 	}
 }

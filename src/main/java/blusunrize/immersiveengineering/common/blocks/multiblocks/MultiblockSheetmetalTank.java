@@ -4,6 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
@@ -113,12 +114,14 @@ public class MultiblockSheetmetalTank implements IMultiblock
 						if(yy>0&&yy<4&&xx==0&&zz==0)
 							continue;
 						world.setBlock(startX+xx, startY+yy, startZ+zz, IEContent.blockMetalMultiblocks, BlockMetalMultiblocks.META_tank, 0x3);
-						if(world.getTileEntity(startX+xx, startY+yy, startZ+zz) instanceof TileEntitySheetmetalTank)
+						TileEntity curr = world.getTileEntity(startX+xx, startY+yy, startZ+zz);
+						if(curr instanceof TileEntitySheetmetalTank)
 						{
-							((TileEntitySheetmetalTank)world.getTileEntity(startX+xx, startY+yy, startZ+zz)).pos=(yy)*9 + (xx+1)*3 + (zz+1);
-							((TileEntitySheetmetalTank)world.getTileEntity(startX+xx, startY+yy, startZ+zz)).formed=true;
-							((TileEntitySheetmetalTank)world.getTileEntity(startX+xx, startY+yy, startZ+zz)).offset=new int[]{xx,yy,zz};
-							world.getTileEntity(startX+xx, startY+yy, startZ+zz).markDirty();
+							TileEntitySheetmetalTank currTank = (TileEntitySheetmetalTank) curr;
+							currTank.pos=(yy)*9 + (xx+1)*3 + (zz+1);
+							currTank.formed=true;
+							currTank.offset=new int[]{xx,yy,zz};
+							currTank.markDirty();
 						}
 					}
 		return true;

@@ -7,6 +7,7 @@ import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.client.ClientUtils;
@@ -112,9 +113,10 @@ public class MultiblockSqueezer implements IMultiblock
 						world.markBlockForUpdate(startX+xx, startY+yy, startZ+zz);
 					else
 						world.setBlock(startX+xx, startY+yy, startZ+zz, IEContent.blockMetalMultiblocks, BlockMetalMultiblocks.META_squeezer, 0x3);
-					if(world.getTileEntity(startX+xx, startY+yy, startZ+zz) instanceof TileEntitySqueezer)
+					TileEntity curr = world.getTileEntity(startX+xx, startY+yy, startZ+zz);
+					if(curr instanceof TileEntitySqueezer)
 					{
-						TileEntitySqueezer tile = (TileEntitySqueezer)world.getTileEntity(startX+xx,startY+yy,startZ+zz);
+						TileEntitySqueezer tile = (TileEntitySqueezer)curr;
 						tile.facing=side;
 						tile.formed=true;
 						tile.pos = l*9 + (h+1)*3 + (w+1);

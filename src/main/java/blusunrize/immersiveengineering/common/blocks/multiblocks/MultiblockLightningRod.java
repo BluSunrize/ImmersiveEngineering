@@ -5,6 +5,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.common.IEContent;
@@ -58,17 +59,20 @@ public class MultiblockLightningRod implements IMultiblock
 	{
 		if(side!=0&&side!=1)
 			return false;
-
-		for(int xx=-1;xx<=1;xx++)
-			for(int zz=-1;zz<=1;zz++)
-				if(!(world.getTileEntity(x+xx, y+0, z+zz) instanceof TileEntityLightningRod) || ((TileEntityLightningRod)world.getTileEntity(x+xx, y+0, z+zz)).formed)
-				{
-					return false;
-				}
+		TileEntity[][] tes = new TileEntity[3][3];
 		for(int xx=-1;xx<=1;xx++)
 			for(int zz=-1;zz<=1;zz++)
 			{
-				TileEntityLightningRod tile = (TileEntityLightningRod)world.getTileEntity(x+xx, y+0, z+zz);
+				tes[xx+1][zz+1] = world.getTileEntity(x+xx, y, z+zz);
+				if(!(tes[xx+1][zz+1] instanceof TileEntityLightningRod) || ((TileEntityLightningRod)tes[xx+1][zz+1]).formed)
+				{
+					return false;
+				}
+			}
+		for(int xx=-1;xx<=1;xx++)
+			for(int zz=-1;zz<=1;zz++)
+			{
+				TileEntityLightningRod tile = (TileEntityLightningRod)tes[xx+1][zz+1];
 				tile.formed=true;
 				tile.pos=(byte) ((xx+1)+(zz+1)*3);
 				tile.offset = new int[]{xx,0,zz};

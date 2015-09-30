@@ -4,6 +4,7 @@ import net.minecraft.block.BlockFurnace;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraftforge.common.util.ForgeDirection;
 import blusunrize.immersiveengineering.common.Config;
@@ -27,14 +28,16 @@ public class TileEntityFurnaceHeater extends TileEntityIEBase implements IEnergy
 			if(active)
 				active=false;
 			for(ForgeDirection fd : ForgeDirection.VALID_DIRECTIONS)
-				if(worldObj.getTileEntity(xCoord+fd.offsetX, yCoord+fd.offsetY, zCoord+fd.offsetZ) instanceof TileEntityFurnace)
+			{
+				TileEntity tileEntity = worldObj.getTileEntity(xCoord+fd.offsetX, yCoord+fd.offsetY, zCoord+fd.offsetZ);
+				if(tileEntity instanceof TileEntityFurnace)
 				{
-					TileEntityFurnace furnace = (TileEntityFurnace) worldObj.getTileEntity(xCoord+fd.offsetX, yCoord+fd.offsetY, zCoord+fd.offsetZ);
+					TileEntityFurnace furnace = (TileEntityFurnace) tileEntity;
 					boolean canHeat = canHeat(furnace);
-					if(canHeat || worldObj.isBlockIndirectlyGettingPowered(xCoord,yCoord,zCoord))
+					if(canHeat||worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord))
 					{
 						boolean burning = furnace.isBurning();
-						if(furnace.furnaceBurnTime < 200)
+						if(furnace.furnaceBurnTime<200)
 						{
 							int heatAttempt = 4;
 							int heatEnergyRatio = Math.max(1, Config.getInt("heater_consumption"));
@@ -48,21 +51,22 @@ public class TileEntityFurnaceHeater extends TileEntityIEBase implements IEnergy
 								if(!burning)
 									BlockFurnace.updateFurnaceBlockState(furnace.furnaceBurnTime>0, worldObj, furnace.xCoord, furnace.yCoord, furnace.zCoord);
 								if(!active)
-									active=true;
+									active = true;
 							}
 						}
-						if(canHeat && furnace.furnaceBurnTime>=200 && furnace.furnaceCookTime<199)
+						if(canHeat&&furnace.furnaceBurnTime>=200&&furnace.furnaceCookTime<199)
 						{
 							int energy = Config.getInt("heater_speedupConsumption");
-							if(this.energyStorage.extractEnergy(energy,false)>=energy)
+							if(this.energyStorage.extractEnergy(energy, false)>=energy)
 							{
 								furnace.furnaceCookTime += 1;
 								if(!active)
-									active=true;
+									active = true;
 							}
 						}
 					}
 				}
+			}
 			if(active!=a)
 			{
 				this.markDirty();

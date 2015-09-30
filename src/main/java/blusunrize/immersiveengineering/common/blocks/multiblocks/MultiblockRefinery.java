@@ -4,6 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.common.IEContent;
@@ -126,9 +127,10 @@ public class MultiblockRefinery implements IMultiblock
 					int zz = (side==2?l: side==3?-l: side==5?-w : w);
 
 					world.setBlock(startX+xx, startY+yy, startZ+zz, IEContent.blockMetalMultiblocks, BlockMetalMultiblocks.META_refinery, 0x3);
-					if(world.getTileEntity(startX+xx, startY+yy, startZ+zz) instanceof TileEntityRefinery)
+					TileEntity curr = world.getTileEntity(startX+xx, startY+yy, startZ+zz);
+					if(curr instanceof TileEntityRefinery)
 					{
-						TileEntityRefinery tile = (TileEntityRefinery)world.getTileEntity(startX+xx,startY+yy,startZ+zz);
+						TileEntityRefinery tile = (TileEntityRefinery)curr;
 						tile.facing=side;
 						tile.formed=true;
 						tile.pos = l*15 + (h+1)*5 + (w+2);

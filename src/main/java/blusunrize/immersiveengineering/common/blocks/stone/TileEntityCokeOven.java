@@ -134,12 +134,14 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart implements ISid
 				int xMax= facing==5? 0: facing==4?2: 1;
 				int zMin= facing==3?-2: facing==2?0:-1;
 				int zMax= facing==3? 0: facing==2?2: 1;
+				TileEntity tileEntity;
 				for(int yy=-1;yy<=1;yy++)
 					for(int xx=xMin;xx<=xMax;xx++)
 						for(int zz=zMin;zz<=zMax;zz++)
 						{
-							if(worldObj.getTileEntity(xCoord+xx, yCoord+yy, zCoord+zz)!=null)
-								worldObj.getTileEntity(xCoord+xx, yCoord+yy, zCoord+zz).markDirty();
+							tileEntity = worldObj.getTileEntity(xCoord+xx, yCoord+yy, zCoord+zz);
+							if(tileEntity!=null)
+								tileEntity.markDirty();
 							worldObj.markBlockForUpdate(xCoord+xx, yCoord+yy, zCoord+zz);
 							worldObj.addBlockEvent(xCoord+xx, yCoord+yy, zCoord+zz, IEContent.blockStoneDevice, 1,active?1:0);
 						}
@@ -389,10 +391,11 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart implements ISid
 					for(int zz=zMin;zz<=zMax;zz++)
 					{
 						ItemStack s = null;
-						if(worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz) instanceof TileEntityCokeOven)
+						TileEntity te = worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz);
+						if(te instanceof TileEntityCokeOven)
 						{
-							s = ((TileEntityCokeOven)worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz)).getOriginalBlock();
-							((TileEntityCokeOven)worldObj.getTileEntity(startX+xx,startY+yy,startZ+zz)).formed=false;
+							s = ((TileEntityCokeOven)te).getOriginalBlock();
+							((TileEntityCokeOven)te).formed=false;
 						}
 						if(startX+xx==xCoord && startY+yy==yCoord && startZ+zz==zCoord)
 							s = this.getOriginalBlock();

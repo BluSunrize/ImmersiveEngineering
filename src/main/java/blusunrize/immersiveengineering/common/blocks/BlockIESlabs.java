@@ -46,9 +46,10 @@ public class BlockIESlabs extends BlockIEBase
 	@Override
 	public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z, boolean willHarvest)
 	{
-		if(world.getTileEntity(x, y, z) instanceof TileEntityIESlab && !player.capabilities.isCreativeMode && willHarvest && world.getGameRules().getGameRuleBooleanValue("doTileDrops"))
+		TileEntity te = world.getTileEntity(x, y, z);
+		if(te instanceof TileEntityIESlab && !player.capabilities.isCreativeMode && willHarvest && world.getGameRules().getGameRuleBooleanValue("doTileDrops"))
 		{
-			EntityItem drop = new EntityItem(world,x+.5,y+.5,z+.5, new ItemStack(this, ((TileEntityIESlab)world.getTileEntity(x,y,z)).slabType==2?2:1 ,world.getBlockMetadata(x,y,z)));
+			EntityItem drop = new EntityItem(world,x+.5,y+.5,z+.5, new ItemStack(this, ((TileEntityIESlab)te).slabType==2?2:1 ,world.getBlockMetadata(x,y,z)));
 			if(!world.isRemote)
 				world.spawnEntityInWorld(drop);
 		}
@@ -58,9 +59,10 @@ public class BlockIESlabs extends BlockIEBase
 	@Override
 	public boolean isSideSolid(IBlockAccess world, int x, int y, int z, ForgeDirection side)
 	{
-		if(world.getTileEntity(x, y, z) instanceof TileEntityIESlab)
+		TileEntity te = world.getTileEntity(x, y, z);
+		if(te instanceof TileEntityIESlab)
 		{
-			int type = ((TileEntityIESlab)world.getTileEntity(x, y, z)).slabType;
+			int type = ((TileEntityIESlab)te).slabType;
 			if(type==0)
 				return side==DOWN;
 			else if(type==1)
@@ -79,9 +81,10 @@ public class BlockIESlabs extends BlockIEBase
 	@Override
 	public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
 	{
-		if(world.getTileEntity(x, y, z) instanceof TileEntityIESlab)
+		TileEntity te = world.getTileEntity(x, y, z);
+		if(te instanceof TileEntityIESlab)
 		{
-			int type = ((TileEntityIESlab)world.getTileEntity(x, y, z)).slabType;
+			int type = ((TileEntityIESlab)te).slabType;
 			if(type==0)
 				this.setBlockBounds(0,0,0, 1,.5f,1);
 			else if(type==1)

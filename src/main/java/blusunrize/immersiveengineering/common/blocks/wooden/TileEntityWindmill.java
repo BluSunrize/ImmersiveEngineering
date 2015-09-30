@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
 import blusunrize.immersiveengineering.common.Config;
@@ -49,9 +50,10 @@ public class TileEntityWindmill extends TileEntityIEBase
 		if(!worldObj.isRemote)
 		{
 			ForgeDirection fd = ForgeDirection.getOrientation(facing);
-			if(worldObj.getTileEntity(xCoord-fd.offsetX,yCoord-fd.offsetY,zCoord-fd.offsetZ) instanceof TileEntityDynamo)
+			TileEntity tileEntity = worldObj.getTileEntity(xCoord-fd.offsetX,yCoord-fd.offsetY,zCoord-fd.offsetZ);
+			if(tileEntity instanceof TileEntityDynamo)
 			{
-				TileEntityDynamo dynamo = (TileEntityDynamo)worldObj.getTileEntity(xCoord-fd.offsetX,yCoord-fd.offsetY,zCoord-fd.offsetZ);
+				TileEntityDynamo dynamo = (TileEntityDynamo)tileEntity;
 				if((facing==2||facing==3)&&dynamo.facing!=2&&dynamo.facing!=3)
 					return;
 				else if((facing==4||facing==5)&&dynamo.facing!=4&&dynamo.facing!=5)

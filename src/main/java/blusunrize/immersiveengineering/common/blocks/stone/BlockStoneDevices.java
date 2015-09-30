@@ -81,8 +81,9 @@ public class BlockStoneDevices extends BlockIEBase
 
 	public ItemStack getOriginalBlock(World world, int x, int y, int z)
 	{
-		if(world.getTileEntity(x, y, z) instanceof TileEntityMultiblockPart)
-			return ((TileEntityMultiblockPart)world.getTileEntity(x, y, z)).getOriginalBlock();
+		TileEntity te = world.getTileEntity(x, y, z);
+		if(te instanceof TileEntityMultiblockPart)
+			return ((TileEntityMultiblockPart)te).getOriginalBlock();
 		return new ItemStack(this, 1, world.getBlockMetadata(x, y, z));
 	}
 
@@ -111,9 +112,10 @@ public class BlockStoneDevices extends BlockIEBase
 	@Override
 	public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side)
 	{
-		if(world.getTileEntity(x, y, z) instanceof TileEntityCokeOven && ((TileEntityCokeOven)world.getTileEntity(x, y, z)).formed)
+		TileEntity te = world.getTileEntity(x, y, z);
+		if(te instanceof TileEntityCokeOven && ((TileEntityCokeOven)te).formed)
 		{
-			TileEntityCokeOven teco = ((TileEntityCokeOven)world.getTileEntity(x, y, z));
+			TileEntityCokeOven teco = ((TileEntityCokeOven)te);
 			if(teco.master()==null)
 				return iconsCokeOven[teco.active?9:4];
 			if(side!=teco.facing)
@@ -122,12 +124,12 @@ public class BlockStoneDevices extends BlockIEBase
 			int pos = (1-off[1])*3 + (teco.facing==2?(1-off[0]): teco.facing==3?(off[0]+1): teco.facing==5?(1-off[2]): (off[2]+1));
 			return iconsCokeOven[pos];
 		}
-		if(world.getTileEntity(x, y, z) instanceof TileEntityBlastFurnace && ((TileEntityBlastFurnace)world.getTileEntity(x, y, z)).formed)
+		if(te instanceof TileEntityBlastFurnace && ((TileEntityBlastFurnace)te).formed)
 		{
-			int[] off = ((TileEntityBlastFurnace)world.getTileEntity(x, y, z)).offset;
+			int[] off = ((TileEntityBlastFurnace)te).offset;
 			if(off[1]!=0)
 				return super.getIcon(world, x, y, z, side);
-			TileEntityBlastFurnace tebf = ((TileEntityBlastFurnace)world.getTileEntity(x, y, z));
+			TileEntityBlastFurnace tebf = ((TileEntityBlastFurnace)te);
 			if(tebf.master()==null)
 				return iconsBlastFurnace[tebf.active?1:0];
 		}
@@ -144,26 +146,27 @@ public class BlockStoneDevices extends BlockIEBase
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
 	{
-		if(world.getTileEntity(x, y, z) instanceof TileEntityCokeOven)
+		TileEntity curr = world.getTileEntity(x, y, z);
+		if(curr instanceof TileEntityCokeOven)
 		{
-			if(!player.isSneaking() && ((TileEntityCokeOven)world.getTileEntity(x, y, z)).formed )
+			if(!player.isSneaking() && ((TileEntityCokeOven)curr).formed )
 			{
-				TileEntityCokeOven te = ((TileEntityCokeOven)world.getTileEntity(x, y, z)).master();
+				TileEntityCokeOven te = ((TileEntityCokeOven)curr).master();
 				if(te==null)
-					te = ((TileEntityCokeOven)world.getTileEntity(x, y, z));
+					te = ((TileEntityCokeOven)curr);
 				if(!world.isRemote)
 					player.openGui(ImmersiveEngineering.instance, Lib.GUIID_CokeOven, world, te.xCoord, te.yCoord, te.zCoord);
 				return true;
 			}
 
 		}
-		if(world.getTileEntity(x, y, z) instanceof TileEntityBlastFurnace)
+		if(curr instanceof TileEntityBlastFurnace)
 		{	
-			if(!player.isSneaking() && ((TileEntityBlastFurnace)world.getTileEntity(x, y, z)).formed )
+			if(!player.isSneaking() && ((TileEntityBlastFurnace)curr).formed )
 			{
-				TileEntityBlastFurnace te = ((TileEntityBlastFurnace)world.getTileEntity(x, y, z)).master();
+				TileEntityBlastFurnace te = ((TileEntityBlastFurnace)curr).master();
 				if(te==null)
-					te = ((TileEntityBlastFurnace)world.getTileEntity(x, y, z));
+					te = ((TileEntityBlastFurnace)curr);
 				if(!world.isRemote)
 					player.openGui(ImmersiveEngineering.instance, Lib.GUIID_BlastFurnace, world, te.xCoord, te.yCoord, te.zCoord);
 				return true;

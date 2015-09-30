@@ -35,14 +35,18 @@ public class TileEntityLightningRod extends TileEntityMultiblockPart implements 
 		{
 			if(energyStorage.getEnergyStored()>0)
 			{
+				TileEntity tileEntity;
 				for(ForgeDirection fd : new ForgeDirection[]{ForgeDirection.NORTH,ForgeDirection.SOUTH,ForgeDirection.EAST,ForgeDirection.WEST})
-					if(worldObj.getTileEntity(xCoord+fd.offsetX*2, yCoord, zCoord+fd.offsetZ*2) instanceof IEnergyReceiver)
+				{
+					tileEntity = worldObj.getTileEntity(xCoord+fd.offsetX*2, yCoord, zCoord+fd.offsetZ*2);
+					if(tileEntity instanceof IEnergyReceiver)
 					{
-						IEnergyReceiver ier = (IEnergyReceiver)worldObj.getTileEntity(xCoord+fd.offsetX*2, yCoord, zCoord+fd.offsetZ*2);
+						IEnergyReceiver ier = (IEnergyReceiver) tileEntity;
 						int accepted = ier.receiveEnergy(fd.getOpposite(), energyStorage.getEnergyStored(), true);
 						int extracted = energyStorage.extractEnergy(accepted, false);
 						ier.receiveEnergy(fd.getOpposite(), extracted, false);
 					}
+				}
 			}
 
 			if(worldObj.getTotalWorldTime()%256==((xCoord^zCoord)&255))
@@ -195,10 +199,11 @@ public class TileEntityLightningRod extends TileEntityMultiblockPart implements 
 					int zz = master.zCoord+l;
 
 					ItemStack s = null;
-					if(worldObj.getTileEntity(xx,yy,zz) instanceof TileEntityLightningRod)
+					TileEntity te = worldObj.getTileEntity(xx, yy, zz);
+					if(te instanceof TileEntityLightningRod)
 					{
-						s = ((TileEntityLightningRod)worldObj.getTileEntity(xx,yy,zz)).getOriginalBlock();
-						((TileEntityLightningRod)worldObj.getTileEntity(xx,yy,zz)).formed=false;
+						s = ((TileEntityLightningRod)te).getOriginalBlock();
+						((TileEntityLightningRod)te).formed=false;
 					}
 					if(xx==xCoord && yy==yCoord && zz==zCoord)
 						s = this.getOriginalBlock();
