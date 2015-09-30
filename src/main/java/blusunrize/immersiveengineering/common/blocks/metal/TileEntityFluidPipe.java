@@ -51,7 +51,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidHandl
 					closedList.add(next);
 				for(int i=0; i<6; i++)
 				{
-					boolean b = te instanceof TileEntityFluidPipe?((TileEntityFluidPipe)te).sideConfig[i]==0:((TileEntityFluidPump)te).sideConfig[i]==1; 
+					boolean b = (te instanceof TileEntityFluidPipe)? (((TileEntityFluidPipe) te).sideConfig[i]==0): (((TileEntityFluidPump) te).sideConfig[i]==1);
 					if(b)
 					{
 						ForgeDirection fd = ForgeDirection.getOrientation(i);
