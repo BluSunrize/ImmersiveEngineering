@@ -279,8 +279,9 @@ public class TileEntityFluidPump extends TileEntityIEBase implements IFluidHandl
 	{
 		if(dummy)
 		{
-			if(worldObj.getTileEntity(xCoord, yCoord-1, zCoord) instanceof TileEntityFluidPump)	
-				return ((TileEntityFluidPump)worldObj.getTileEntity(xCoord, yCoord-1, zCoord)).getTankInfo(from);
+			TileEntity te = worldObj.getTileEntity(xCoord, yCoord-1, zCoord);
+			if(te instanceof TileEntityFluidPump)	
+				return ((TileEntityFluidPump)te).getTankInfo(from);
 			return new FluidTankInfo[0];
 		}
 		return new FluidTankInfo[]{tank.getInfo()};
@@ -297,8 +298,9 @@ public class TileEntityFluidPump extends TileEntityIEBase implements IFluidHandl
 	{
 		if(dummy)
 		{
-			if(worldObj.getTileEntity(xCoord, yCoord-1, zCoord) instanceof TileEntityFluidPump)	
-				return ((TileEntityFluidPump)worldObj.getTileEntity(xCoord, yCoord-1, zCoord)).receiveEnergy(from, maxReceive, simulate);
+			TileEntity te = worldObj.getTileEntity(xCoord, yCoord-1, zCoord);
+			if(te instanceof TileEntityFluidPump)	
+				return ((TileEntityFluidPump)te).receiveEnergy(from, maxReceive, simulate);
 			return 0;
 		}
 		return energyStorage.receiveEnergy(maxReceive, simulate);
@@ -309,8 +311,9 @@ public class TileEntityFluidPump extends TileEntityIEBase implements IFluidHandl
 	{
 		if(dummy)
 		{
-			if(worldObj.getTileEntity(xCoord, yCoord-1, zCoord) instanceof TileEntityFluidPump)	
-				return ((TileEntityFluidPump)worldObj.getTileEntity(xCoord, yCoord-1, zCoord)).getEnergyStored(from);
+			TileEntity te = worldObj.getTileEntity(xCoord, yCoord-1, zCoord);
+			if(te instanceof TileEntityFluidPump)	
+				return ((TileEntityFluidPump)te).getEnergyStored(from);
 			return 0;
 		}
 		return energyStorage.getEnergyStored();
@@ -321,8 +324,9 @@ public class TileEntityFluidPump extends TileEntityIEBase implements IFluidHandl
 	{
 		if(dummy)
 		{
-			if(worldObj.getTileEntity(xCoord, yCoord-1, zCoord) instanceof TileEntityFluidPump)	
-				return ((TileEntityFluidPump)worldObj.getTileEntity(xCoord, yCoord-1, zCoord)).getMaxEnergyStored(from);
+			TileEntity te = worldObj.getTileEntity(xCoord, yCoord-1, zCoord);
+			if(te instanceof TileEntityFluidPump)	
+				return ((TileEntityFluidPump)te).getMaxEnergyStored(from);
 			return 0;
 		}
 		return energyStorage.getMaxEnergyStored();

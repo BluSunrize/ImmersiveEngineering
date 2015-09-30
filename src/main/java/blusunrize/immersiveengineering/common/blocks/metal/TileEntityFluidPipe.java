@@ -44,21 +44,22 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidHandl
 		while(!openList.isEmpty() && closedList.size()<1024)
 		{
 			ChunkCoordinates next = openList.get(0);
-			if(!closedList.contains(next) && (world.getTileEntity(next.posX,next.posY,next.posZ) instanceof TileEntityFluidPipe || world.getTileEntity(next.posX,next.posY,next.posZ) instanceof TileEntityFluidPump))
+			TileEntity te = world.getTileEntity(next.posX,next.posY,next.posZ);
+			if(!closedList.contains(next) && (te instanceof TileEntityFluidPipe || te instanceof TileEntityFluidPump))
 			{
-				if(world.getTileEntity(next.posX,next.posY,next.posZ) instanceof TileEntityFluidPipe)
+				if(te instanceof TileEntityFluidPipe)
 					closedList.add(next);
 				for(int i=0; i<6; i++)
 				{
-					boolean b = world.getTileEntity(next.posX,next.posY,next.posZ) instanceof TileEntityFluidPipe?((TileEntityFluidPipe)world.getTileEntity(next.posX,next.posY,next.posZ)).sideConfig[i]==0:((TileEntityFluidPump)world.getTileEntity(next.posX,next.posY,next.posZ)).sideConfig[i]==1; 
+					boolean b = te instanceof TileEntityFluidPipe?((TileEntityFluidPipe)te).sideConfig[i]==0:((TileEntityFluidPump)te).sideConfig[i]==1; 
 					if(b)
 					{
 						ForgeDirection fd = ForgeDirection.getOrientation(i);
-						if(world.getTileEntity(next.posX+fd.offsetX,next.posY+fd.offsetY,next.posZ+fd.offsetZ) instanceof TileEntityFluidPipe)
+						if(te instanceof TileEntityFluidPipe)
 							openList.add(new ChunkCoordinates(next.posX+fd.offsetX,next.posY+fd.offsetY,next.posZ+fd.offsetZ));
-						else if(world.getTileEntity(next.posX+fd.offsetX,next.posY+fd.offsetY,next.posZ+fd.offsetZ) instanceof IFluidHandler)
+						else if(te instanceof IFluidHandler)
 						{
-							IFluidHandler handler = (IFluidHandler)world.getTileEntity(next.posX+fd.offsetX,next.posY+fd.offsetY,next.posZ+fd.offsetZ);
+							IFluidHandler handler = (IFluidHandler)te;
 							fluidHandlers.add(new DirectionalFluidOutput(handler, fd));
 						}
 					}

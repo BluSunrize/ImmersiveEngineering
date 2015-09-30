@@ -231,9 +231,10 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 				{
 					tile.toggleSide(fd.ordinal());
 					world.markBlockForUpdate(x, y, z);
-					if(world.getTileEntity(x+fd.offsetX, y+fd.offsetY, z+fd.offsetZ) instanceof TileEntityFluidPipe)
+					TileEntity te2 = world.getTileEntity(x+fd.offsetX, y+fd.offsetY, z+fd.offsetZ);
+					if(te2 instanceof TileEntityFluidPipe)
 					{
-						((TileEntityFluidPipe)world.getTileEntity(x+fd.offsetX, y+fd.offsetY, z+fd.offsetZ)).toggleSide(fd.getOpposite().ordinal());
+						((TileEntityFluidPipe)te2).toggleSide(fd.getOpposite().ordinal());
 						world.markBlockForUpdate(x+fd.offsetX, y+fd.offsetY, z+fd.offsetZ);
 					}
 					TileEntityFluidPipe.indirectConnections.clear();
@@ -309,9 +310,10 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 	@Override
 	public void addCollisionBoxesToList(World world, int x, int y, int z, AxisAlignedBB aabb, List list, Entity ent)
 	{
-		if(world.getTileEntity(x, y, z) instanceof TileEntityFluidPipe)
+		TileEntity te = world.getTileEntity(x, y, z);
+		if(te instanceof TileEntityFluidPipe)
 		{
-			TileEntityFluidPipe tile = (TileEntityFluidPipe)world.getTileEntity(x, y, z);
+			TileEntityFluidPipe tile = (TileEntityFluidPipe)te;
 			byte connections = tile.getConnectionByte();
 			if(/*connections==16||connections==32||*/connections==48)
 			{
@@ -381,9 +383,10 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 	public ArrayList<AxisAlignedBB> addCustomSelectionBoxesToList(World world, int x, int y, int z)
 	{
 		ArrayList<AxisAlignedBB> list = new ArrayList<AxisAlignedBB>();
-		if(world.getTileEntity(x, y, z) instanceof TileEntityFluidPipe)
+		TileEntity te = world.getTileEntity(x, y, z);
+		if(te instanceof TileEntityFluidPipe)
 		{
-			TileEntityFluidPipe tile = (TileEntityFluidPipe)world.getTileEntity(x, y, z);
+			TileEntityFluidPipe tile = (TileEntityFluidPipe)te;
 			byte connections = tile.getAvailableConnectionByte();
 			byte availableConnections = tile.getConnectionByte();
 			double[] baseAABB = {.25,.75, .25,.75, .25,.75}; 
@@ -467,9 +470,10 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 	@Override
 	public void breakBlock(World world, int x, int y, int z, Block par5, int par6)
 	{
-		if (world.getTileEntity(x, y, z) instanceof TileEntityFluidPump)
+		TileEntity te = world.getTileEntity(x, y, z);
+		if (te instanceof TileEntityFluidPump)
 		{
-			if (((TileEntityFluidPump) world.getTileEntity(x, y, z)).dummy)
+			if (((TileEntityFluidPump) te).dummy)
 				world.setBlockToAir(x, y - 1, z);
 			else
 				world.setBlockToAir(x, y + 1, z);
