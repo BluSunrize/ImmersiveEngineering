@@ -355,7 +355,7 @@ public class IERecipes
 						out = Utils.copyStackWithAmount(IEApi.getPreferredOreStack("ingot"+ore),2);
 				}
 				if(out!=null)
-					addArcRecipe(out, "ore"+ore, 200,512, new ItemStack(IEContent.itemMaterial,1,13));
+					addArcOreSmelting(out, ore);
 			}
 			else if(name.startsWith("dust"))
 			{
@@ -392,13 +392,13 @@ public class IERecipes
 
 		//YAY GregTech!
 		if(!OreDictionary.getOres("oreNetherrack"+ore).isEmpty())
-			addCrusherRecipe(output, "oreNetherrack"+ore, 4000, secondary,secChance, new ItemStack(Blocks.netherrack),.15f);
+			addCrusherRecipe(output, "oreNetherrack"+ore, energy, secondary,secChance, new ItemStack(Blocks.netherrack),.15f);
 		if(!OreDictionary.getOres("oreEndstone"+ore).isEmpty())
-			addCrusherRecipe(output, "oreEndstone"+ore, 4000, secondary,secChance, "dustEndstone",.5f);
+			addCrusherRecipe(output, "oreEndstone"+ore, energy, secondary,secChance, "dustEndstone",.5f);
 		if(!OreDictionary.getOres("oreBlackgranite"+ore).isEmpty())
-			addCrusherRecipe(output, "oreBlackgranite"+ore, 4000, secondary,secChance, "dustGraniteBlack",.5f);
+			addCrusherRecipe(output, "oreBlackgranite"+ore, energy, secondary,secChance, "dustGraniteBlack",.5f);
 		if(!OreDictionary.getOres("oreRedgranite"+ore).isEmpty())
-			addCrusherRecipe(output, "oreRedgranite"+ore, 4000, secondary,secChance, "dustGraniteBlack",.5f);
+			addCrusherRecipe(output, "oreRedgranite"+ore, energy, secondary,secChance, "dustGraniteBlack",.5f);
 	}
 	public static void addOreDictCrusherRecipe(String ore, Object secondary, float chance)
 	{
@@ -455,12 +455,21 @@ public class IERecipes
 	{
 		ArcFurnaceRecipe.addRecipe(output, input, slag, time, energyPerTick, additives);
 	}
-	public static void addArcOreSmelting(String oreName)
+	public static void addArcOreSmelting(ItemStack output, String ore)
 	{
-		if(!OreDictionary.getOres("ore"+oreName).isEmpty() && !OreDictionary.getOres("ingot"+oreName).isEmpty() )
-		{
-			ItemStack out = Utils.copyStackWithAmount(IEApi.getPreferredOreStack("ingot"+oreName), 2);
-			addArcRecipe(out, "ore"+oreName, 200,512, new ItemStack(IEContent.itemMaterial,1,13));
-		}
+		if(!OreDictionary.getOres("ore"+ore).isEmpty())
+			addArcRecipe(output, "ore"+ore, 200,512, new ItemStack(IEContent.itemMaterial,1,13));
+		if(!OreDictionary.getOres("oreNether"+ore).isEmpty())
+			addArcRecipe(Utils.copyStackWithAmount(output, NetherOresHelper.getCrushingResult(ore)), "oreNether"+ore, 200,512, new ItemStack(IEContent.itemMaterial,1,13));
+
+		//YAY GregTech!
+		if(!OreDictionary.getOres("oreNetherrack"+ore).isEmpty())
+			addArcRecipe(output, "oreNetherrack"+ore, 200,512, new ItemStack(IEContent.itemMaterial,1,13));
+		if(!OreDictionary.getOres("oreEndstone"+ore).isEmpty())
+			addArcRecipe(output, "oreEndstone"+ore, 200,512, new ItemStack(IEContent.itemMaterial,1,13));
+		if(!OreDictionary.getOres("oreBlackgranite"+ore).isEmpty())
+			addArcRecipe(output, "oreBlackgranite"+ore, 200,512, new ItemStack(IEContent.itemMaterial,1,13));
+		if(!OreDictionary.getOres("oreRedgranite"+ore).isEmpty())
+			addArcRecipe(output, "oreRedgranite"+ore, 200,512, new ItemStack(IEContent.itemMaterial,1,13));
 	}
 }

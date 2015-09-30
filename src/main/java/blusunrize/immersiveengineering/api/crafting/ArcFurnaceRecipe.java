@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 public class ArcFurnaceRecipe
 {
 	public final Object input;
+	public final String oreInputString;
 	public final ItemStack output;
 	public final ItemStack slag;
 	public final Object[] additives;
@@ -26,6 +27,7 @@ public class ArcFurnaceRecipe
 	{
 		this.output=output;
 		this.input=ApiUtils.convertToValidRecipeInput(input);
+		this.oreInputString = input instanceof String?(String)input: null;
 		this.slag=slag;
 		this.time=time;
 		this.energyPerTick=energyPerTick;
