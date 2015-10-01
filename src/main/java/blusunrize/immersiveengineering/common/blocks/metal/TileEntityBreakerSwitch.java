@@ -137,6 +137,8 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable
 	@Override
 	public boolean receiveClientEvent(int id, int arg)
 	{
+		if(super.receiveClientEvent(id, arg))
+			return true;
 		this.active = id==1;
 		this.worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 		return true;
