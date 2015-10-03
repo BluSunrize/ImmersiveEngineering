@@ -1,7 +1,6 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -9,6 +8,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.oredict.OreDictionary;
 import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
+import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDecoration;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalMultiblocks;
@@ -83,7 +83,7 @@ public class MultiblockExcavator implements IMultiblock
 		te.formed=true;
 		te.pos=4;
 		te.facing=3;
-		TileEntityRendererDispatcher.instance.renderTileEntityAt(te, -.5D, -.5D, 2.5D, 0.0F);
+		ClientUtils.handleStaticTileRenderer(te, false);
 	}
 	@Override
 	public float getManualScale()

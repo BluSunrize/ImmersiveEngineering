@@ -1,12 +1,12 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
+import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDecoration;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalMultiblocks;
@@ -66,7 +66,7 @@ public class MultiblockRefinery implements IMultiblock
 		te.formed=true;
 		te.pos=17;
 		te.facing=4;
-		TileEntityRendererDispatcher.instance.renderTileEntityAt(te, -1D, -1D, .0D, 0.0F);
+		ClientUtils.handleStaticTileRenderer(te, false);
 	}
 	@Override
 	public float getManualScale()

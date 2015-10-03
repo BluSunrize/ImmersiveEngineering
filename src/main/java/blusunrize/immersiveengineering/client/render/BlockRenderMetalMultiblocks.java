@@ -39,7 +39,6 @@ public class BlockRenderMetalMultiblocks implements ISimpleBlockRenderingHandler
 	{
 		GL11.glPushMatrix();
 		try{
-
 			if(metadata==BlockMetalMultiblocks.META_lightningRod)
 			{
 				//				block.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);

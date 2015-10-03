@@ -1,7 +1,6 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -12,6 +11,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
+import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDecoration;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalMultiblocks;
@@ -108,7 +108,11 @@ public class MultiblockArcFurnace implements IMultiblock
 		te.formed=true;
 		te.pos=62;
 		te.facing=4;
-		TileEntityRendererDispatcher.instance.renderTileEntityAt(te, -.5D, 0.0D, -.5D, 0.0F);
+		ClientUtils.tes().startDrawingQuads();
+		ClientUtils.tes().setTranslation(-.5,0,-.5);
+		ClientUtils.handleStaticTileRenderer(te, false);
+		ClientUtils.tes().setTranslation(0,0,0);
+		ClientUtils.tes().draw();
 	}
 
 	@Override

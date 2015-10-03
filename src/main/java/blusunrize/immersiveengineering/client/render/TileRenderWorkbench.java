@@ -33,7 +33,7 @@ public class TileRenderWorkbench extends TileRenderIE
 		TileEntityModWorkbench bench = (TileEntityModWorkbench)tile;
 		if(bench.dummy)
 			return;
-
+		
 		GL11.glPushMatrix();
 		GL11.glTranslated(x,y,z);
 
@@ -59,7 +59,7 @@ public class TileRenderWorkbench extends TileRenderIE
 			GL11.glEnable(GL11.GL_CULL_FACE);
 		}
 		GL11.glPopMatrix();
-		
+
 		GL11.glTranslated(.5,1.05,.5);
 		float offset = off * (mirror?1f:.825f);
 		GL11.glTranslated(facing<4?offset:0,0,facing>3?offset:0);

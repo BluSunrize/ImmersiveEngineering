@@ -9,6 +9,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
+import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDecoration;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalMultiblocks;
@@ -69,6 +70,11 @@ public class MultiblockCrusher implements IMultiblock
 		te.formed=true;
 		te.pos=17;
 		te.facing=4;
+		ClientUtils.tes().startDrawingQuads();
+		ClientUtils.tes().setTranslation(-1f, -1, 0);
+		ClientUtils.handleStaticTileRenderer(te, false);
+		ClientUtils.tes().draw();
+		ClientUtils.tes().setTranslation(0,0,0);
 		TileEntityRendererDispatcher.instance.renderTileEntityAt(te, -1D, -1D, .0D, 0.0F);
 	}
 	@Override

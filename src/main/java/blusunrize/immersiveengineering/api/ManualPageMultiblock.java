@@ -252,4 +252,10 @@ public class ManualPageMultiblock extends ManualPages
 		super.buttonPressed(gui, button);
 	}
 
+	@Override
+	public boolean listForSearch(String searchTag)
+	{
+		return false;
+	}
+
 }

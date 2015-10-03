@@ -8,6 +8,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
+import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDecoration;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalMultiblocks;
@@ -54,6 +55,11 @@ public class MultiblockDieselGenerator implements IMultiblock
 		TileEntityDieselGenerator te = new TileEntityDieselGenerator();
 		te.formed=true;
 		te.pos=31;
+		ClientUtils.tes().startDrawingQuads();
+		ClientUtils.tes().setTranslation(-1,0,-1);
+		ClientUtils.handleStaticTileRenderer(te, false);
+		ClientUtils.tes().setTranslation(0,0,0);
+		ClientUtils.tes().draw();
 		TileEntityRendererDispatcher.instance.renderTileEntityAt(te, -1D, 0D, -1D, 0.0F);
 	}
 	@Override

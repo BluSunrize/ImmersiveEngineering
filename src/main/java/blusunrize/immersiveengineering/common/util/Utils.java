@@ -5,6 +5,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Random;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
@@ -12,11 +13,13 @@ import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
+import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ChunkCoordinates;
@@ -324,6 +327,47 @@ public class Utils
 		return vec0.addVector(vec1.xCoord,vec1.yCoord,vec1.zCoord);
 	}
 
+	public static boolean isVecInEntityHead(EntityLivingBase entity, Vec3 vec)
+	{
+		if(entity.height/entity.width<2)//Crude check to see if the entity is bipedal or at least upright (this should work for blazes)
+			return false;
+		double d = vec.yCoord-(entity.posY+entity.getEyeHeight());
+		if(entity.worldObj.isRemote)
+			System.out.println("distance between "+vec.yCoord+" and "+(entity.posY+entity.getEyeHeight())+"("+entity.posY+") = "+d);
+		if(Math.abs(d)<.25)
+			return true;
+		return false;
+	}
+
+	public static NBTTagCompound getRandomFireworkExplosion(Random rand, int preType)
+	{
+		NBTTagCompound tag = new NBTTagCompound();
+		NBTTagCompound expl = new NBTTagCompound();
+		expl.setBoolean("Flicker", true);
+		expl.setBoolean("Trail", true);
+		int[] colors = new int[rand.nextInt(8) + 1];
+		for (int i = 0; i < colors.length; i++)
+		{
+			int j = rand.nextInt(11)+1;
+			if(j>2)
+				j++;
+			if(j>6)
+				j+=2;
+			//no black, brown, light grey, grey or white
+			colors[i] = ItemDye.field_150922_c[j];
+		}
+		expl.setIntArray("Colors", colors);
+		int type = preType>=0?preType: rand.nextInt(4);
+		if(preType<0 && type==3)
+			type = 4;
+		expl.setByte("Type", (byte) type);
+		NBTTagList list = new NBTTagList();
+		list.appendTag(expl);
+		tag.setTag("Explosions", list);
+		
+		return tag;
+	}
+
 	public static FluidStack drainFluidBlock(World world, int x, int y, int z, boolean doDrain)
 	{
 		Block b = world.getBlock(x, y, z);
@@ -342,15 +386,6 @@ public class Utils
 			{
 				if(world.getBlockMetadata(x,y,z)==0)
 				{
-//					if(b==Blocks.water)
-//					{
-//						int connectedSources = 0;
-//						for(int i=2; i<6; i++)
-//							if(world.getBlock(x+(i==4?-1:i==5?1: 0), y, z+(i==2?-1:i==3?1: 0))==Blocks.water && world.getBlockMetadata(x+(i==4?-1:i==5?1: 0), y, z+(i==2?-1:i==3?1: 0))==0)
-//								connectedSources++;
-//						if(connectedSources>1)
-//							doDrain=false;
-//					}
 					if(doDrain)
 						world.setBlockToAir(x, y, z);
 					return new FluidStack(f, 1000);

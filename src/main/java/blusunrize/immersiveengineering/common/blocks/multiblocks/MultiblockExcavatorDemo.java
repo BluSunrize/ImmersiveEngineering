@@ -1,17 +1,21 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+
+import org.lwjgl.opengl.GL11;
+
 import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
+import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDecoration;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBucketWheel;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityExcavator;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class MultiblockExcavatorDemo implements IMultiblock
 {
@@ -91,7 +95,12 @@ public class MultiblockExcavatorDemo implements IMultiblock
 		te.formed=true;
 		te.pos=4;
 		te.facing=3;
-		TileEntityRendererDispatcher.instance.renderTileEntityAt(te, -.5D, -.5D, 3.5D, 0.0F);
+		GL11.glRotated(180, 0,1,0);
+		ClientUtils.tes().startDrawingQuads();
+		ClientUtils.tes().setTranslation(-.5,-.5,-.5);
+		ClientUtils.handleStaticTileRenderer(te, false);
+		ClientUtils.tes().setTranslation(0,0,0);
+		ClientUtils.tes().draw();
 
 		TileEntityBucketWheel te2 = new TileEntityBucketWheel();
 		te2.formed=true;

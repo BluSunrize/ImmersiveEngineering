@@ -11,6 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.village.MerchantRecipe;
 import net.minecraft.village.MerchantRecipeList;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
+import blusunrize.immersiveengineering.common.items.ItemShader;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import cpw.mods.fml.common.ObfuscationReflectionHelper;
@@ -67,6 +68,8 @@ public class IEVillagerTradeHandler implements IVillageTradeHandler
 				ItemNBTHelper.setLore(special, "Congratulations!","You have found an easter egg!");
 				addDeal(.05f, price,min,max, special);
 			}
+
+		addDeal(.5f, Items.emerald,3,8,null, new ItemShader.ShaderMerchantItem());
 	}
 	void addDeal(float chance, Object... objects)
 	{
@@ -98,6 +101,19 @@ public class IEVillagerTradeHandler implements IVillageTradeHandler
 					val0=1;
 					val1=1;
 				}
+				else if(o instanceof MerchantItem)
+				{
+					if(tempItem!=null)
+					{
+						items[currentObject++] = new MerchantItem(tempItem,val0,val1);
+						tempItem = null;
+					}
+					if(currentObject>=items.length)
+						break;
+					items[currentObject++] = (MerchantItem)o;
+				}
+				if(currentObject>=items.length)
+					break;
 			}
 		if(tempItem!=null)
 			items[currentObject++] = new MerchantItem(tempItem,val0,val1);
@@ -143,11 +159,11 @@ public class IEVillagerTradeHandler implements IVillageTradeHandler
 		}
 	}
 
-	class MerchantItem
+	public static class MerchantItem
 	{
-		final ItemStack item;
-		final int minAmount;
-		final int maxAmount;
+		protected final ItemStack item;
+		protected final int minAmount;
+		protected final int maxAmount;
 
 		public MerchantItem(Object item, int minAmount, int maxAmount)
 		{

@@ -345,18 +345,25 @@ public class ClientUtils
 
 	public static void handleStaticTileRenderer(TileEntity tile)
 	{
+		handleStaticTileRenderer(tile,true);
+	}
+	public static void handleStaticTileRenderer(TileEntity tile, boolean translate)
+	{
 		TileEntitySpecialRenderer tesr = TileEntityRendererDispatcher.instance.getSpecialRenderer(tile);
 		if(tesr instanceof TileRenderIE)
-			((TileRenderIE)tesr).renderStatic(tile, Tessellator.instance, new Matrix4().translate(tile.xCoord, tile.yCoord, tile.zCoord), new Matrix4());
+		{
+			Matrix4 matrixT = new Matrix4();
+			if(translate)
+				matrixT.translate(tile.xCoord, tile.yCoord, tile.zCoord);
+			((TileRenderIE)tesr).renderStatic(tile, Tessellator.instance, matrixT, new Matrix4());
+		}
 	}
-
+	
 	/**
 	 * A big "Thank you!" to AtomicBlom and Rorax for helping me figure this one out =P
 	 */
 	public static void renderStaticWavefrontModel(TileEntity tile, WavefrontObject model, Tessellator tes, Matrix4 translationMatrix, Matrix4 rotationMatrix, int offsetLighting, boolean invertFaces, String... renderedParts)
 	{
-		tes.setColorRGBA_F(1F, 1F, 1F, 1F);
-
 		if(tile.getWorldObj()!=null)
 		{
 			int lb = tile.getWorldObj().getLightBrightnessForSkyBlocks(tile.xCoord, tile.yCoord, tile.zCoord, 0);
@@ -430,11 +437,6 @@ public class ClientUtils
 							float g = corner==0?completeLight.colorGreenTopLeft: corner==1?completeLight.colorGreenBottomLeft: corner==2?completeLight.colorGreenBottomRight: completeLight.colorGreenTopRight;
 							float b = corner==0?completeLight.colorBlueTopLeft: corner==1?completeLight.colorBlueBottomLeft: corner==2?completeLight.colorBlueBottomRight: completeLight.colorBlueTopRight;
 							tes.setColorOpaque_F(r, g, b);
-						}
-						else
-						{
-							tes.setBrightness(0xf000f0);
-							tes.setColorOpaque_F(1,1,1);
 						}
 
 						if((face.textureCoordinates != null) && (face.textureCoordinates.length > 0))

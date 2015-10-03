@@ -18,7 +18,10 @@ import org.lwjgl.opengl.GL11;
 
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.tool.IShaderItem;
+import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.IEVillagerTradeHandler.MerchantItem;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.util.Utils;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -34,6 +37,8 @@ public class ItemShader extends ItemIEBase implements IShaderItem
 		addShader("Felix", 1, new int[]{10,10,10,255}, new int[]{74,74,74,255}, new int[]{240,136,3,255}, null);
 		addShader("Dragon's Breath", 1, new int[]{25,25,25,255}, new int[]{51,63,43,255}, new int[]{138,138,138,255}, "immersiveengineering:shaders/revolver_shark");
 		addShader("Falconmoon", 3, new int[]{103,99,107,255}, new int[]{244,238,235,255}, new int[]{45,45,45,255}, null);
+		addShader("Sponsor", 0, new int[]{25,25,25,255}, new int[]{247,27,36,255}, new int[]{255,255,255,255}, "immersiveengineering:shaders/revolver_sponsor");
+		addShader("Magnum", 1, new int[]{86,56,44,255},new int[]{220,220,220,255},new int[]{160,160,160,255}, null);
 	}
 
 	public void addShader(String name, int overlayType, int[] colour0, int[] colour1, int[] colour2, String additionalTexture)
@@ -60,10 +65,6 @@ public class ItemShader extends ItemIEBase implements IShaderItem
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean adv)
 	{
-		//		String[] sub = getSubNames();
-		//		if(stack.getItemDamage()<sub.length)
-		//		{
-		//		}
 		if(ItemNBTHelper.hasKey(stack, "shader_name"))
 			list.add(ItemNBTHelper.getString(stack, "shader_name"));
 	}
@@ -251,6 +252,21 @@ public class ItemShader extends ItemIEBase implements IShaderItem
 				GL11.glDisable(GL11.GL_CULL_FACE);
 			else
 				GL11.glEnable(GL11.GL_CULL_FACE);
+		}
+	}
+	
+	public static class ShaderMerchantItem extends MerchantItem
+	{
+		public ShaderMerchantItem()
+		{
+			super(IEContent.itemShader,1,1);
+		}
+
+		public ItemStack getItem(Random rand)
+		{
+			ItemStack s = Utils.copyStackWithAmount(this.item, 1);
+			s.setTagCompound(IEApi.shaderList.get(rand.nextInt(IEApi.shaderList.size())));
+			return s;
 		}
 	}
 }

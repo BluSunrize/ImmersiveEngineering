@@ -43,6 +43,8 @@ public class IEAchievements
 	public static Achievement mbExcavator;
 	public static Achievement mbArcFurnace;
 	
+	public static Achievement birthdayParty;
+	
 	public static StatBase statDistanceSkyhook;
 
 	public static void init()
@@ -91,6 +93,7 @@ public class IEAchievements
 		hook.addEnchantment(Enchantment.unbreaking, 1);
 		skyhookPro = new AchievementIE("skyhookPro", 0, -4, hook, makeSkyhook);
 		
+		birthdayParty = new AchievementIE("secret_birthdayParty", -4,-2, IEContent.itemFakeIcons, null).setSpecial();
 		
 		ieAchievementPage = new AchievementPage(ImmersiveEngineering.MODNAME, AchievementIE.achievements.toArray(new Achievement[AchievementIE.achievements.size()]));
 		AchievementPage.registerAchievementPage(ieAchievementPage);

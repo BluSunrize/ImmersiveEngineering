@@ -5,6 +5,7 @@ import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemPotion;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -18,8 +19,10 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import blusunrize.immersiveengineering.common.Config;
+import blusunrize.immersiveengineering.common.util.IEAchievements;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import blusunrize.immersiveengineering.common.util.Lib;
+import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.common.util.compat.EtFuturumHelper;
 import blusunrize.immersiveengineering.common.util.compat.IC2Helper;
@@ -199,42 +202,72 @@ public class EntityRevolvershot extends Entity
 
 	protected void onImpact(MovingObjectPosition mop)
 	{
-		if(!this.worldObj.isRemote)
+		boolean headshot = false;
+
+		if(mop.entityHit != null)
 		{
-			if(mop.entityHit != null)
+			if(mop.entityHit instanceof EntityLivingBase)
+				headshot = Utils.isVecInEntityHead((EntityLivingBase)mop.entityHit, Vec3.createVectorHelper(posX,posY,posZ));
+
+			String dmgKey = bulletType==0?"Casull" :bulletType==1?"AP":
+				bulletType==2?"Buck" :bulletType==4?"Dragon":
+					bulletType==5?"Homing" :bulletType==6?"Wolfpack":
+						bulletType==7?"Silver" :bulletType==8?"Potion": "";
+			double damage = Config.getDouble("BulletDamage-"+dmgKey);
+			if(headshot)
+			{
+				damage *= 1.5;
+				EntityLivingBase living = (EntityLivingBase)mop.entityHit;
+				if(living.isChild() && !living.isEntityInvulnerable() && (living.hurtResistantTime>0?living.getHealth()<=0:living.getHealth()<=damage))
+				{
+					if(this.worldObj.isRemote)
+					{
+						worldObj.makeFireworks(posX,posY,posZ, 0,0,0, Utils.getRandomFireworkExplosion(worldObj.rand, 4));
+						worldObj.playSound(posX,posY,posZ, "immersiveengineering:birthdayParty", 1.5f,1, false);
+						mop.entityHit.getEntityData().setBoolean("headshot", true);
+					}
+					else if(this.shootingEntity instanceof EntityPlayer)
+						((EntityPlayer)this.shootingEntity).triggerAchievement(IEAchievements.birthdayParty);
+				}
+			}
+
+			if(!this.worldObj.isRemote)
 			{
 				switch(bulletType)
 				{
 				case 0:
-					mop.entityHit.attackEntityFrom(IEDamageSources.causeCasullDamage(this, shootingEntity), (float)Config.getDouble("BulletDamage-Casull"));
+					mop.entityHit.attackEntityFrom(IEDamageSources.causeCasullDamage(this, shootingEntity), (float)damage);
 					break;
 				case 1:
-					mop.entityHit.attackEntityFrom(IEDamageSources.causePiercingDamage(this, shootingEntity), (float)Config.getDouble("BulletDamage-AP"));
+					mop.entityHit.attackEntityFrom(IEDamageSources.causePiercingDamage(this, shootingEntity), (float)damage);
 					break;
 				case 2:
-					mop.entityHit.attackEntityFrom(IEDamageSources.causeBuckshotDamage(this, shootingEntity), (float)Config.getDouble("BulletDamage-Buck"));
+					mop.entityHit.attackEntityFrom(IEDamageSources.causeBuckshotDamage(this, shootingEntity), (float)damage);
 					mop.entityHit.hurtResistantTime=0;
 					break;
 				case 4:
-					if(mop.entityHit.attackEntityFrom(IEDamageSources.causeDragonsbreathDamage(this, shootingEntity), (float)Config.getDouble("BulletDamage-Dragon")))
+					if(mop.entityHit.attackEntityFrom(IEDamageSources.causeDragonsbreathDamage(this, shootingEntity), (float)damage))
 						mop.entityHit.setFire(3);
+					break;
 				case 5:
-					mop.entityHit.attackEntityFrom(IEDamageSources.causeHomingDamage(this, shootingEntity), (float)Config.getDouble("BulletDamage-Homing"));
+					mop.entityHit.attackEntityFrom(IEDamageSources.causeHomingDamage(this, shootingEntity), (float)damage);
 					break;
 				case 6:
-					mop.entityHit.attackEntityFrom(IEDamageSources.causeWolfpackDamage(this, shootingEntity), (float)Config.getDouble("BulletDamage-Wolfpack"));
+					mop.entityHit.attackEntityFrom(IEDamageSources.causeWolfpackDamage(this, shootingEntity), (float)damage);
 					break;
 				case 7:
-					mop.entityHit.attackEntityFrom(IEDamageSources.causeSilverDamage(this, shootingEntity), (float)Config.getDouble("BulletDamage-Silver"));
+					mop.entityHit.attackEntityFrom(IEDamageSources.causeSilverDamage(this, shootingEntity), (float)damage);
 					break;
 				case 8:
-					mop.entityHit.attackEntityFrom(IEDamageSources.causePotionDamage(this, shootingEntity), (float)Config.getDouble("BulletDamage-Potion"));
+					mop.entityHit.attackEntityFrom(IEDamageSources.causePotionDamage(this, shootingEntity), (float)damage);
 					break;
 				}
 			}
+		}
+		if(!this.worldObj.isRemote)
+		{
 			if(bulletType==3)
 				worldObj.createExplosion(shootingEntity, posX, posY, posZ, 2, false);
-
 			this.secondaryImpact(mop);
 		}
 		this.setDead();

@@ -6,11 +6,15 @@ import java.util.Iterator;
 import java.util.Set;
 
 import net.minecraft.block.Block;
+import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.model.ModelBiped;
+import net.minecraft.client.model.ModelVillager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
+import net.minecraft.client.renderer.entity.RendererLivingEntity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -26,12 +30,14 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.GuiIngameForge;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.obj.Face;
 import net.minecraftforge.client.model.obj.GroupObject;
 import net.minecraftforge.client.model.obj.TextureCoordinate;
 import net.minecraftforge.client.model.obj.WavefrontObject;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
@@ -64,6 +70,7 @@ import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.SkylineHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.relauncher.Side;
@@ -541,5 +548,34 @@ public class ClientEventHandler
 		}
 		else
 			RenderGlobal.drawOutlinedBoundingBox(aabb.getOffsetBoundingBox(offsetX, offsetY, offsetZ).expand((double)expand, (double)expand, (double)expand), -1);
+	}
+
+	@SubscribeEvent()
+	public void onClientDeath(LivingDeathEvent event)
+	{
+	}
+	@SubscribeEvent()
+	public void renderLivingPre(RenderLivingEvent.Pre event)
+	{
+		if(event.entity.getEntityData().hasKey("headshot"))
+		{
+			ModelBase model = ObfuscationReflectionHelper.getPrivateValue(RendererLivingEntity.class, event.renderer, "mainModel");
+			if(model instanceof ModelBiped)
+				((ModelBiped)model).bipedHead.showModel=false;
+			else if(model instanceof ModelVillager)
+				((ModelVillager)model).villagerHead.showModel=false;
+		}
+	}
+	@SubscribeEvent()
+	public void renderLivingPre(RenderLivingEvent.Post event)
+	{
+		if(event.entity.getEntityData().hasKey("headshot"))
+		{
+			ModelBase model = ObfuscationReflectionHelper.getPrivateValue(RendererLivingEntity.class, event.renderer, "mainModel");
+			if(model instanceof ModelBiped)
+				((ModelBiped)model).bipedHead.showModel=true;
+			else if(model instanceof ModelVillager)
+				((ModelVillager)model).villagerHead.showModel=true;
+		}
 	}
 }

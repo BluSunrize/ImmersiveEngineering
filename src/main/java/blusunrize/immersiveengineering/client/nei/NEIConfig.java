@@ -36,6 +36,7 @@ public class NEIConfig implements IConfigureNEI
 		API.registerUsageHandler(new NEIArcFurnaceHandler());
 		
 		API.hideItem(new ItemStack(IEContent.blockFakeLight));
+		API.hideItem(new ItemStack(IEContent.itemFakeIcons));
 	}
 
 
