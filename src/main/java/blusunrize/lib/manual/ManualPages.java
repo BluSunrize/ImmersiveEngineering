@@ -95,6 +95,12 @@ public abstract class ManualPages implements IManualPage
 			if(localizedText!=null&&!localizedText.isEmpty())
 				manual.fontRenderer.drawSplitString(localizedText, x,y, 120, manual.getTextColour());
 		}
+
+		@Override
+		public boolean listForSearch(String searchTag)
+		{
+			return false;
+		}
 	}
 
 	public static class Image extends ManualPages
@@ -161,6 +167,12 @@ public abstract class ManualPages implements IManualPage
 
 			if(localizedText!=null&&!localizedText.isEmpty())
 				manual.fontRenderer.drawSplitString(localizedText, x,y+yOff, 120, manual.getTextColour());
+		}
+
+		@Override
+		public boolean listForSearch(String searchTag)
+		{
+			return false;
 		}
 	}
 
@@ -271,6 +283,12 @@ public abstract class ManualPages implements IManualPage
 				}
 			}
 		}
+
+		@Override
+		public boolean listForSearch(String searchTag)
+		{
+			return false;
+		}
 	}
 
 	public static class ItemDisplay extends ManualPages
@@ -308,6 +326,15 @@ public abstract class ManualPages implements IManualPage
 
 			if(localizedText!=null&&!localizedText.isEmpty())
 				manual.fontRenderer.drawSplitString(localizedText, x,y+44, 120, manual.getTextColour());
+		}
+
+		@Override
+		public boolean listForSearch(String searchTag)
+		{
+			for(ItemStack stack : stacks)
+				if(stack.getDisplayName().toLowerCase().contains(searchTag))
+					return true;
+			return false;
 		}
 	}
 
@@ -510,6 +537,33 @@ public abstract class ManualPages implements IManualPage
 					recipePage[r]=this.recipes.get(stacks[r]).size()-1;
 			}
 		}
+
+		@Override
+		public boolean listForSearch(String searchTag)
+		{
+			for(Object stack: stacks)
+			{
+				if(stack instanceof ItemStack[])
+				{
+					for(ItemStack subStack: (ItemStack[])stack)
+
+						if(subStack.getDisplayName().toLowerCase().contains(searchTag))
+							return true;
+				}
+				else if(stack instanceof ItemStack)
+				{
+					if(((ItemStack)stack).getDisplayName().toLowerCase().contains(searchTag))
+						return true;
+				}
+				else if(stack instanceof String)
+				{
+					for(ItemStack subStack: OreDictionary.getOres((String)stack))
+						if(subStack.getDisplayName().toLowerCase().contains(searchTag))
+							return true;
+				}
+			}
+			return false;
+		}
 	}
 
 	public static class CraftingMulti extends ManualPages
@@ -686,6 +740,39 @@ public abstract class ManualPages implements IManualPage
 				recipePage=0;
 			if(recipePage<0)
 				recipePage=this.recipes.size()-1;
+		}
+
+		@Override
+		public boolean listForSearch(String searchTag)
+		{
+			for(PositionedItemStack[] recipe: this.recipes)
+				for(PositionedItemStack stack: recipe)
+				{
+					if(stack.stack instanceof ItemStack[])
+					{
+						for(ItemStack subStack: (ItemStack[])stack.stack)
+							if(subStack.getDisplayName().toLowerCase().contains(searchTag))
+								return true;
+					}
+					else if(stack.stack instanceof ArrayList)
+						for(ItemStack subStack: (ArrayList<ItemStack>)stack.stack)
+						{
+							if(subStack.getDisplayName().toLowerCase().contains(searchTag))
+								return true;
+						}
+					else if(stack.stack instanceof ItemStack)
+					{
+						if(((ItemStack)stack.stack).getDisplayName().toLowerCase().contains(searchTag))
+							return true;
+					}
+					else if(stack.stack instanceof String)
+					{
+						for(ItemStack subStack: OreDictionary.getOres((String)stack.stack))
+							if(subStack.getDisplayName().toLowerCase().contains(searchTag))
+								return true;
+					}
+				}
+			return false;
 		}
 	}
 

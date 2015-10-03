@@ -12,4 +12,5 @@ public interface IManualPage
 	public void renderPage(GuiManual gui, int x, int y, int mx, int my);
 	public void buttonPressed(GuiManual gui, GuiButton button);
 	public void mouseDragged(int x, int y, int clickX, int clickY, int mx, int my, int lastX, int lastY, int button);
+	public boolean listForSearch(String searchTag);
 }

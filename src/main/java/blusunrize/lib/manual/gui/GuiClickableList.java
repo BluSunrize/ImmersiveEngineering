@@ -17,6 +17,8 @@ public class GuiClickableList extends GuiButton
 	int translationType;
 	GuiManual gui;
 	
+	private long prevWheelNano = 0;
+	
 	public GuiClickableList(GuiManual gui, int id, int x, int y, int w, int h, float textScale, int translationType, String... entries)
 	{
 		super(id, x, y, w, h, "");
@@ -45,14 +47,17 @@ public class GuiClickableList extends GuiButton
 		GL11.glPushMatrix();
 		GL11.glScalef(textScale, textScale, textScale);
 		GL11.glTranslatef(xPosition/textScale, yPosition/textScale, 0);
-		for(int i=offset; i<Math.min(perPage, entries.length); i++)
+		for(int i=0; i<Math.min(perPage, entries.length); i++)
 		{
 			int col = gui.manual.getTextColour();
 			if(mmY>=i*getFontHeight() && mmY<(i+1)*getFontHeight())
 				col = gui.manual.getHighlightColour();
 			if(i!=0)
 				GL11.glTranslatef(0, getFontHeight(), 0);
-			String s = translationType==0?gui.manual.formatCategoryName(entries[i]):gui.manual.formatEntryName(entries[i]);
+			int j = offset+i;
+			if(j>entries.length-1)
+				j=entries.length-1;
+			String s = translationType==-1?entries[j]: translationType==0?gui.manual.formatCategoryName(entries[j]):gui.manual.formatEntryName(entries[j]);
 
 			fr.drawString(s, 0,0, col, false);
 		}
@@ -64,8 +69,9 @@ public class GuiClickableList extends GuiButton
 
 		//Handle DWheel
 		int mouseWheel = Mouse.getEventDWheel();
-		if(mouseWheel!=0 && maxOffset>0)
+		if(mouseWheel!=0 && maxOffset>0 && Mouse.getEventNanoseconds()!=prevWheelNano)
 		{
+			prevWheelNano = Mouse.getEventNanoseconds();
 			if(mouseWheel<0 && offset<maxOffset)
 				offset++;
 			if(mouseWheel>0 && offset>0)
