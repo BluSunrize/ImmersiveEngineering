@@ -14,6 +14,13 @@
 - added a statistic to track the distance travelled by Skyhook
 - added EE3 compat back in. All ingots as well as certain materials and the bullets have an EMC value now
 - added Thermal Expansion compat. Basically allowing Constantan to be made in the Smelter
+- added Shaders. These will allow you to change hte look of your revolvers (and other items in future). Think paletteswap
+- added treated wood as a separate block, added update methods accordingly. Fixes solidity issues and useability for carpenters and others
+- added Fluid Pipes! They transport fluids! (thanks @UnwrittenFun!)
+- added Fluid Pumps! They collect fluids and improve a pipe's throughput! (thanks @UnwrittenFun!)
+- added config option to drop orphaned connections (thanks @cobra)
+- added Nether- and Dense Ores support to the Arc Furnace
+- added a search function with spellchecking to the manual
 - changed wire rendering to be ISRBH, improving performance
 - changed a lot of internal handling of the Energy System:
 	- Wire Transferrates are now per tick. WIres can only have a certain amount of power go through them in a single tick
@@ -21,6 +28,7 @@
 	- TODO: buff the transferrates
 	- TODO: change loss calculations
 	- added more safety to avoid CME (shoutout to @mindforger)
+	- fixed priorities on indirect connections (thanks @malte0811)
 	- a big "Thank You" to @theunkn0wn1, @mindforger, @malte0811, @cobra and everyone else helping with the rebalancing! Dunno what I'd do without you guys :D
 - changed Breaker Switch, it has a new model and emits redstone
 - changed mineral distribution of the Excavator. You may lose your old deposits because of this
@@ -30,6 +38,9 @@
 - changed the Engineer's Manual, restructured some entries into new categories and added a bunch of new ones
 - changed IE particles to run through a custom render dispatcher, similar to Botania
 - changed the Materials required for a Refinery. IE Multiblocks are a little too expensive some times =P
+- changed multiple machines to accept enough power based on their consumption config
+- changed big portions of the code to use less getTileEntity() calls (thanks @cobra & @malte0811)
+- changed static parts of the multiblocks to use ISRBH in favour of the laggy TESRs
 - fixed SideOnly annotations, should fix that Railcraft tank thing among others
 - fixed burn time of coal coke block in furnaces
 - fixed blockupdates for wooden poles
@@ -41,9 +52,22 @@
 - fixed output bugs with Squeezer and Fermenter
 - fixed Raytracing errors (thanks @cobra)
  -fixed broken wirecutter, one-way wires and wire-limiters not getting reset (thanks @malte0811) 
+- fixed Coke Oven not stacking bottles to 16
+- fixed 'simple' IE blocks not being moved by pistons
+- fixed hemp growing further than intended by mods like ProjectE that do not respect the "canBonemeal" method (thanks @cobra)
+- fixed Lightningrod getting guaranteed hits
+- fixed wooden posts breaking arms that don't belong to it (thanks @cobra)
+- fixed side solidity on the Diesel Generator (thanks @cobra)
+- fixed energyloss exceeding 100% (thanks @cobra)
+- fixed transparency and light opacity for certain blocks
+- fixed Nether Ores in the crusher ignoring their config
+- fixed incorrect uses of CoFH API and repackackign the wrong package-infos (thanks @cobra)
+- fixed world data not getting loaded under certain conditions (thanks @cobra)
+- fixed breaker switch updating at the wrong time
 - updated zh_CN.lang
 - added ja_JP.lang
 - updated ru_RU.lang
+- added fr_FR.lang
 
 
 ==============
