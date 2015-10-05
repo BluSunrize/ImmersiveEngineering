@@ -155,6 +155,10 @@ public class NEICrusherHandler extends TemplateRecipeHandler
 			TileEntityCrusher gen = new TileEntityCrusher();
 			gen.pos=17;
 			gen.formed=true;
+			ClientUtils.bindAtlas(0);
+			ClientUtils.tes().startDrawingQuads();
+			ClientUtils.handleStaticTileRenderer(gen, false);
+			ClientUtils.tes().draw();
 			TileEntityRendererDispatcher.instance.renderTileEntityAt(gen, 0.0D, 0.0D, 0.0D, 0.0F);
 		}
 		GL11.glPopMatrix();

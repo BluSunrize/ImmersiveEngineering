@@ -412,7 +412,7 @@ public class IEContent
 		}
 	}
 
-	public static void loadComplete()
+	public static void postInit()
 	{
 		//Crushing
 		if(!Config.getBoolean("disableHammerCrushing") || Config.getBoolean("forceHammerCrushing"))

@@ -36,7 +36,6 @@ import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLLoadCompleteEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartedEvent;
@@ -97,14 +96,11 @@ public class ImmersiveEngineering
 		IERecipes.postInitCrusherAndArcRecipes();
 		for(IECompatModule compat : IECompatModule.modules)
 			compat.postInit();
-	}
-	@Mod.EventHandler
-	public void loadComplete(FMLLoadCompleteEvent event)
-	{
-		ExcavatorHandler.recalculateChances();
-		IEContent.loadComplete();
-		proxy.loadComplete();
 
+		ExcavatorHandler.recalculateChances();
+		IEContent.postInit();
+		proxy.postInit();
+		
 		new ThreadContributorSpecialsDownloader();
 	}
 

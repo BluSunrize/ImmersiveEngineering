@@ -234,7 +234,7 @@ public class ClientProxy extends CommonProxy
 	}
 
 	@Override
-	public void loadComplete()
+	public void postInit()
 	{
 		ManualHelper.ieManualInstance = new IEManualInstance();
 		ManualHelper.addEntry("introduction", ManualHelper.CAT_GENERAL,
