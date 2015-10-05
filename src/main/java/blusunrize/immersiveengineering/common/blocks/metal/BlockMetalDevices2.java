@@ -240,8 +240,6 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 					TileEntityFluidPipe.indirectConnections.clear();
 					return true;
 				}
-				//				List<DirectionalFluidOutput> list = TileEntityFluidPipe.getConnectedFluidHandlers(new ChunkCoordinates(x,y,z), world);
-				//				System.out.println("list size: "+list.size());
 			}
 		}
 		return false;

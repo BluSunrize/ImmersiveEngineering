@@ -407,14 +407,6 @@ public class ClientEventHandler
 		}
 	}
 
-	//	public static ArrayListMultimap<ChunkCoordinates, AxisAlignedBB> additionalBlockBounds = ArrayListMultimap.create();
-	//	public static void addAdditionalBlockBounds(ChunkCoordinates cc, AxisAlignedBB aabb)
-	//	{
-	//		for(AxisAlignedBB aabb1 : additionalBlockBounds.get(cc))
-	//			if(aabb1.toString().equals(aabb.toString()))
-	//				return;
-	//		additionalBlockBounds.put(cc, aabb);
-	//	}
 	@SubscribeEvent()
 	public void renderAdditionalBlockBounds(DrawBlockHighlightEvent event)
 	{

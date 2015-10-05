@@ -241,7 +241,5 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidHandl
 		sideConfig[side]++;
 		if(sideConfig[side]>0)
 			sideConfig[side] = -1;
-
-		System.out.println("cahnged side "+side+" to "+sideConfig[side]);
 	}
 }

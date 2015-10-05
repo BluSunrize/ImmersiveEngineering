@@ -332,8 +332,6 @@ public class Utils
 		if(entity.height/entity.width<2)//Crude check to see if the entity is bipedal or at least upright (this should work for blazes)
 			return false;
 		double d = vec.yCoord-(entity.posY+entity.getEyeHeight());
-		if(entity.worldObj.isRemote)
-			System.out.println("distance between "+vec.yCoord+" and "+(entity.posY+entity.getEyeHeight())+"("+entity.posY+") = "+d);
 		if(Math.abs(d)<.25)
 			return true;
 		return false;

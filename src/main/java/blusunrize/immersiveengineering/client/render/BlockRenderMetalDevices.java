@@ -332,6 +332,7 @@ public class BlockRenderMetalDevices implements ISimpleBlockRenderingHandler
 			renderer.clearOverrideBlockTexture();
 			renderer.uvRotateTop = 0;
 			renderer.uvRotateBottom = 0;
+			renderer.enableAO = false;
 			return true;
 		}
 		else if(metadata==BlockMetalDevices.META_furnaceHeater)
