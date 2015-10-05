@@ -22,19 +22,19 @@ public class BlockRenderStoneDevices implements ISimpleBlockRenderingHandler
 	@Override
 	public boolean renderWorldBlock(IBlockAccess world, int x, int y, int z, Block block, int modelId, RenderBlocks renderer)
 	{
-//		if(world.getBlockMetadata(x,y,z)==4 && renderPass==1)
-//		{
+		if(world.getBlockMetadata(x,y,z)==4 && renderPass==1)
+		{
 			block.setBlockBoundsBasedOnState(world, x, y, z);
 			renderer.setRenderBoundsFromBlock(block);
 			return renderer.renderStandardBlock(block, x, y, z);
-//		}
-//		else if(world.getBlockMetadata(x,y,z)!=4 && renderPass==0)
-//		{
-//			block.setBlockBoundsBasedOnState(world, x, y, z);
-//			renderer.setRenderBoundsFromBlock(block);
-//			return renderer.renderStandardBlock(block, x, y, z);
-//		}
-//		return false;
+		}
+		else if(world.getBlockMetadata(x,y,z)!=4 && renderPass==0)
+		{
+			block.setBlockBoundsBasedOnState(world, x, y, z);
+			renderer.setRenderBoundsFromBlock(block);
+			return renderer.renderStandardBlock(block, x, y, z);
+		}
+		return false;
 	}
 
 	@Override

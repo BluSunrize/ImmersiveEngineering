@@ -538,7 +538,7 @@ ie.manual.entry.metalconstruction2=Structural Connectors work similarly to norma
 ie.manual.entry.tanksilo.name=Tanks and Silos
 ie.manual.entry.tanksilo.subtext=Full to the brim!
 ie.manual.entry.tanksilo0=Sheetmetal Tanks and Silos provide space for large amounts of fluid and items.<br>The tanks will store up to 512 buckets of any fluid, which can be piped in through the top or bottom block.
-ie.manual.entry.tanksilo1=Silos offer space for a lot of items of the same type, makign them excellent for mass storage of seeds, slag or cobblestone. They have space for 41472 items, equalling the capacity of 24 chests.
+ie.manual.entry.tanksilo1=Silos offer space for a lot of items of the same type, making them excellent for mass storage of seeds, slag or cobblestone. They have space for 41472 items, equalling the capacity of 24 chests.
 ie.manual.entry.tanksilo2=Items must be input through the top and extracted from the bottom. Applying a redstone signal to the bottom block will make it output automatically.
 
 ie.manual.entry.highvoltage.name=High-Voltage

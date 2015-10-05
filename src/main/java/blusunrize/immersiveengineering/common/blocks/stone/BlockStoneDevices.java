@@ -47,8 +47,8 @@ public class BlockStoneDevices extends BlockIEBase
 	@Override
 	public boolean canRenderInPass(int pass)
 	{
-		//		BlockRenderStoneDevices.renderPass=pass;
-		return pass==1;
+		BlockRenderStoneDevices.renderPass=pass;
+		return true;
 	}
 	@Override
 	public boolean isOpaqueCube()
@@ -176,10 +176,10 @@ public class BlockStoneDevices extends BlockIEBase
 	}
 
 	@Override
-    public boolean hasTileEntity(int meta)
-    {
-        return meta==1||meta==2;
-    }
+	public boolean hasTileEntity(int meta)
+	{
+		return meta==1||meta==2;
+	}
 	@Override
 	public TileEntity createNewTileEntity(World world, int meta)
 	{
