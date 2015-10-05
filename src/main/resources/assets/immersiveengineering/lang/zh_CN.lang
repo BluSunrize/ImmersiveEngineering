@@ -63,11 +63,11 @@ tile.ImmersiveEngineering.metalDecoration.generator.name=发电机模块
 tile.ImmersiveEngineering.metalDecoration.lightEngineering.name=轻型工程块
 tile.ImmersiveEngineering.metalDecoration.connectorStructural.name=钢制接线器
 tile.ImmersiveEngineering.metalDecoration.wallMount.name=钢制壁挂支架
-tile.ImmersiveEngineering.metalDecoration.sheetMetal.name=Sheet金属块
+tile.ImmersiveEngineering.metalDecoration.sheetMetal.name=金属板方块
 
 tile.ImmersiveEngineering.metalDevice2.breakerSwitch.name=断路刀闸
-tile.ImmersiveEngineering.metalDevice2.electricLantern.name=Powered Lantern
-tile.ImmersiveEngineering.metalDevice2.floodLight.name=Floodlight
+tile.ImmersiveEngineering.metalDevice2.electricLantern.name=电灯
+tile.ImmersiveEngineering.metalDevice2.floodLight.name=泛光灯
 tile.ImmersiveEngineering.metalDevice2.fluidPipe.name=输液管
 tile.ImmersiveEngineering.metalDevice2.fluidPump.name=液泵
 
@@ -109,7 +109,7 @@ tile.ImmersiveEngineering.stoneDecoration.concreteTile.name=混凝土砖
 tile.ImmersiveEngineering.hemp.name=工业大麻
 
 #Hydraulicraft Support/液压工艺兼容组件
-tile.harvesterTrolley.ieCrop.name=工业大麻Harvester Trolley
+tile.harvesterTrolley.ieCrop.name=工业大麻收割车
 
 fluid.creosote=杂酚油
 fluid.plantoil=植物油
@@ -176,8 +176,8 @@ item.ImmersiveEngineering.fluidContainers.bucketEthanol.name=乙醇桶
 item.ImmersiveEngineering.fluidContainers.bottleBiodiesel.name=生物柴油瓶
 item.ImmersiveEngineering.fluidContainers.bucketBiodiesel.name=生物柴油桶
 
-item.ImmersiveEngineering.coil.copper.name=铜线圈
-item.ImmersiveEngineering.coil.electrum.name=琥珀金线圈
+item.ImmersiveEngineering.coil.copper.name=低压线圈
+item.ImmersiveEngineering.coil.electrum.name=中压线圈
 item.ImmersiveEngineering.coil.HV.name=高压线圈
 item.ImmersiveEngineering.coil.rope.name=麻绳线圈
 item.ImmersiveEngineering.coil.structural.name=钢线圈
@@ -188,8 +188,8 @@ item.ImmersiveEngineering.tool.manual.name=工程师手册
 
 item.ImmersiveEngineering.revolver.normal.name=左轮手枪
 item.ImmersiveEngineering.revolver.speedloader.name=左轮快速装弹器
-item.ImmersiveEngineering.revolver.dev.name=♛Royal Vanquisher♚
-item.ImmersiveEngineering.revolver.infinity.name=Catalyst
+item.ImmersiveEngineering.revolver.dev.name=♛皇家征服者♚
+item.ImmersiveEngineering.revolver.infinity.name=催化
 item.ImmersiveEngineering.revolver.sns.name=蒸汽动力
 item.ImmersiveEngineering.revolver.nerf.name=玩具左轮
 item.ImmersiveEngineering.revolver.oblivion.name=湮灭
@@ -302,9 +302,9 @@ desc.ImmersiveEngineering.info.blueprint.electrode=电弧炉电极
 
 desc.ImmersiveEngineering.info.electrodeIntegrity=完整度
 
-desc.ImmersiveEngineering.flavour.treatedWood.0=Horizontal Planks
-desc.ImmersiveEngineering.flavour.treatedWood.1=Vertical Planks
-desc.ImmersiveEngineering.flavour.treatedWood.2=Packaged Planks
+desc.ImmersiveEngineering.flavour.treatedWood.0=横纹木板
+desc.ImmersiveEngineering.flavour.treatedWood.1=纵纹木板
+desc.ImmersiveEngineering.flavour.treatedWood.2=打包的木板
 desc.ImmersiveEngineering.flavour.crate=破坏时仍保留其中物品！
 desc.ImmersiveEngineering.flavour.barrel=破坏时仍保留其中液体！
 desc.ImmersiveEngineering.flavour.barrelTemp=不能储存高温液体
@@ -312,18 +312,18 @@ desc.ImmersiveEngineering.flavour.coil.construction0=仅装饰用途
 desc.ImmersiveEngineering.flavour.coil.construction1=不传输能量
 desc.ImmersiveEngineering.flavour.revolver=让你们高兴高兴!
 desc.ImmersiveEngineering.flavour.revolver.dev=Regicide!
-desc.ImmersiveEngineering.flavour.revolver.infinity=All you need is a little pinch of infinity
-desc.ImmersiveEngineering.flavour.revolver.sns=Blood, Sweat, Steam and Steel
-desc.ImmersiveEngineering.flavour.revolver.nerf=Safe for kids
-desc.ImmersiveEngineering.flavour.revolver.oblivion=Passing Memories
-desc.ImmersiveEngineering.flavour.revolver.oathkeeper=Wayfinder
-desc.ImmersiveEngineering.flavour.revolver.bee=The Pain
+desc.ImmersiveEngineering.flavour.revolver.infinity=你只需要一点infinity
+desc.ImmersiveEngineering.flavour.revolver.sns=鲜血，汗水，蒸汽，钢铁
+desc.ImmersiveEngineering.flavour.revolver.nerf=儿童可安全玩耍
+desc.ImmersiveEngineering.flavour.revolver.oblivion=往昔之忆
+desc.ImmersiveEngineering.flavour.revolver.oathkeeper=寻路者
+desc.ImmersiveEngineering.flavour.revolver.bee=苦痛
 desc.ImmersiveEngineering.flavour.revolver.fenrir=There's nothing I don't cherish!
 desc.ImmersiveEngineering.flavour.revolver.earthshaker=Lingering Will
 desc.ImmersiveEngineering.flavour.revolver.warlord=Don't take my toys away!
 desc.ImmersiveEngineering.flavour.revolver.rommie=Targeting AI 'Rommie' included!
 desc.ImmersiveEngineering.flavour.revolver.noName=Peering Into Darkness
-desc.ImmersiveEngineering.flavour.revolver.patreonBlu=Hunter's Choice
+desc.ImmersiveEngineering.flavour.revolver.patreonBlu=猎人的选择
 desc.ImmersiveEngineering.flavour.revolver.patreonHazard=Exclusive DLC Content
 
 desc.ImmersiveEngineering.flavour.drill.noHead=未装配钻头
@@ -393,12 +393,12 @@ death.attack.ieRevolver_buckshot=%1$s被%2$s用猎枪击中
 death.attack.ieRevolver_dragonsbreath=%1$s被%2$s的吐息焚烧殆尽
 death.attack.ieRevolver_homing=%1$s被%2$s的叶绿弹击杀
 death.attack.ieRevolver_wolfpack=%1$s被%2$s的狼群弹头们撕成碎片
-death.attack.ieRevolver_silver=%1$s被%2$s's的银弹所净化
-death.attack.ieRevolver_potion=%1$s被%2$s的phial shot所doused
+death.attack.ieRevolver_silver=%1$s被%2$s的银弹所净化
+death.attack.ieRevolver_potion=%2$s的弹头里的药水溅到了%1$s身上
 death.attack.ieCrushed=%1$s被粉碎
 
 #ACHIEVEMENTS
-achievement.immersiveengineering.openManual=请阅读下()面的说明书
+achievement.immersiveengineering.openManual=请阅读下面的说明书
 achievement.immersiveengineering.openManual.desc=打开工程师手册
 achievement.immersiveengineering.craftHammer=HAMMAH!
 achievement.immersiveengineering.craftHammer.desc=制作一把工程师锤子
@@ -414,7 +414,7 @@ achievement.immersiveengineering.upgradeRevolver=Shalashaska
 achievement.immersiveengineering.upgradeRevolver.desc=给左轮手枪加装尽可能多的升级
 achievement.immersiveengineering.makeWolfPack=毁灭之美
 achievement.immersiveengineering.makeWolfPack.desc=制造狼群弹头
-achievement.immersiveengineering.makeDrill=蕴能之镐
+achievement.immersiveengineering.makeDrill=储能镐
 achievement.immersiveengineering.makeDrill.desc=制作采矿钻头
 achievement.immersiveengineering.upgradeDrill=Big Daddy
 achievement.immersiveengineering.upgradeDrill.desc=给采矿钻头加装尽可能多的升级
@@ -433,7 +433,9 @@ achievement.immersiveengineering.mbExcavator.desc=建造斗轮式挖掘机
 achievement.immersiveengineering.mbArcFurnace=最热话题
 achievement.immersiveengineering.mbArcFurnace.desc=建造电弧炉
 
-stat.skyhookOneCm=Distance by Skyhook
+achievement.immersiveengineering.secret_birthdayParty.desc=擦亮火柴...
+
+stat.skyhookOneCm=使用天钩滑行的距离
 
 
 #MANUAL
@@ -472,8 +474,8 @@ ie.manual.entry.hemp0=工业大麻是一种备受瞩目的作物!不仅其种子
 
 ie.manual.entry.cokeoven.name=焦炉
 ie.manual.entry.cokeoven.subtext=热门话题!
-ie.manual.entry.cokeoven0=焦炉是你发展ImmersiveEngineering中所制作的第一台重要设备.它的功能十分简单,它能让煤以及煤块在无氧环境下进行燃烧,产出焦煤,一种能长时间燃烧的燃料.更重要的是,这一加工过程能产生出§l杂酚油§r,它被用于<link;treatedwood;§o§n防腐木§r>的制作. 同样你可以用原木在里面烧制得到木炭,同时得到少量的杂酚油.
-ie.manual.entry.cokeovenBlock=搭建一个高炉,首先需要27个这样的方块,搭建出一个3x3x3的正方体结构,用工程师锤右击侧面的中心来完成建造.<br>看接下来的图页
+ie.manual.entry.cokeoven0=焦炉是你在发展ImmersiveEngineering时所建造的第一台重要设备。它的功能十分简单，让煤以及煤块在无氧环境下进行燃烧以产出焦煤，一种能长时间燃烧的燃料。更重要的是,这一加工过程能产生出§l杂酚油§r，它被用于<link;treatedwood;§o§n防腐木§r>的制作。同样你可以用原木在里面烧制得到木炭，同时得到少量的杂酚油。
+ie.manual.entry.cokeovenBlock=搭建一个焦炉，首先需要27个焦炉方块搭建出一个3x3x3的正方体结构，用工程师锤右击侧面的中心来完成建造。<br>看接下来的图页
 
 ie.manual.entry.treatedwood.name=防腐木
 ie.manual.entry.treatedwood.subtext=非常耐用
@@ -522,19 +524,19 @@ ie.manual.entry.thermoElectric0=热传导发电机是另一种可用发电方式
 ie.manual.entry.thermoElectric1=在发电机侧面放置热源和冷源各一,即可根据温差来产生能量.<br>下表中包括了其他可用作热源或冷源的非流体方块.
 
 ie.manual.entry.blastfurnace.name=高炉
-ie.manual.entry.blastfurnace.subtext=更热的话题!
-ie.manual.entry.blastfurnace0=高炉用于提高铁的含碳量,使之成为钢.为了达到这个目的,只有含碳量高的燃料才被高炉所接受,特别是焦煤和木炭.<br>钢由高炉制造并且作为高压结构的重要组成部分
-ie.manual.entry.blastfurnaceBlock=搭建一个高炉,你需要用这27个方块搭建出3x3x3的结构,用工程师锤右击其中一面的中央方块<br>见下一页的图
+ie.manual.entry.blastfurnace.subtext=更热的话题！
+ie.manual.entry.blastfurnace0=高炉用于提高铁的含碳量，使之成为钢。为了达成目的，只有含碳量高的燃料才被高炉所接受，特别是焦煤和木炭。<br>钢由高炉冶炼而成，是高压结构的重要组成部分
+ie.manual.entry.blastfurnaceBlock=搭建一个高炉，你需要用这27个方块搭建出3x3x3的结构，然后用工程师锤右击其中一面的中央方块<br>见下一页的图
 
-ie.manual.entry.steelconstruction.name=钢结构
-ie.manual.entry.steelconstruction.subtext=铆钉
-ie.manual.entry.metalconstruction0=除了防腐木，加工过的金属也可用于建筑。你可以将绝大多数金属制成块或台阶，你还可以用锤子把铁锭敲成sheetmetal block.
-ie.manual.entry.steelconstruction1=钢不仅是高压设备不可或缺的一部分,也是非常有用,极好的建筑材料,钢制脚手架可用于快速搭建建筑结构,钢围栏能让你建立防线抵御敌人,钢制臂架构是你搭建高压继电器的依附点.
-ie.manual.entry.steelconstruction2=钢制接线器的作用与普通接线器类似,但它们是纯装饰性物品,而非用于传输能量.<br>它们无法接收普通线缆,但能够与麻线圈或钢线圈连接(见下页).<br>你可以手持工程锤右击来旋转它们.
+ie.manual.entry.steelconstruction.name=金属结构
+ie.manual.entry.steelconstruction.subtext=铆接
+ie.manual.entry.metalconstruction0=除了防腐木，加工过的金属也可用于建筑。你可以将绝大多数金属制成块或台阶，你还可以用锤子把铁锭敲成金属板方块。
+ie.manual.entry.steelconstruction1=钢不仅是高压设备不可或缺的一部分，还是非常有用的上好建筑材料，钢制脚手架可用于快速搭建建筑结构，钢围栏能让你建立防线抵御敌人，钢制臂架构是你搭建高压继电器的接点。
+ie.manual.entry.steelconstruction2=钢制接线器的作用与普通接线器类似，但它们是纯装饰性物品，不能用于传输能量。<br>它们无法与普通线缆相连接，但能够与麻线圈或钢线圈连接（见下页）。<br>你可以手持工程师锤右击来旋转它们。
 
 ie.manual.entry.tanksilo.name=储罐与筒仓
 ie.manual.entry.tanksilo.subtext=正好堆满！
-ie.manual.entry.tanksilo0=你可以使用Sheetmetal Tanks和筒仓来储存大量同种液体或物品。<br>储罐可以存储512桶液体，你可以从储罐顶或底部将液体泵入。
+ie.manual.entry.tanksilo0=你可以使用金属板储罐和筒仓来储存大量同种液体或物品。<br>储罐可以存储512桶液体，你可以从储罐顶或底部将液体泵入。
 ie.manual.entry.tanksilo1=筒仓可以储存大量同种物品，极其适合用于储存种子，炉渣和圆石。一个筒仓可储存41472个物品，相当于24个箱子的容积。
 ie.manual.entry.tanksilo2=你必须从筒仓顶部输入物品，并从底部提取物品。若在底部向筒仓提供红石信号，它将会自动输出。
 
