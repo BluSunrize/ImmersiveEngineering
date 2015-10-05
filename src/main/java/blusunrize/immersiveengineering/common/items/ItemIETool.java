@@ -106,6 +106,7 @@ public class ItemIETool extends ItemIEBase implements cofh.api.item.IToolHammer
 					}
 					if(max>0)
 						player.addChatMessage(new ChatComponentTranslation(Lib.CHAT_INFO+"energyStorage", stored,max));
+					return true;
 				}
 				if(player.isSneaking() && tileEntity instanceof IImmersiveConnectable)
 				{
@@ -128,8 +129,8 @@ public class ItemIETool extends ItemIEBase implements cofh.api.item.IToolHammer
 						}
 						ItemNBTHelper.remove(stack, "linkingPos");
 					}
+					return true;
 				}
-				return true;
 			}
 
 
