@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 
@@ -43,6 +45,7 @@ public class GuiManual extends GuiScreen
 	GuiTextField searchField;
 	int hasSuggestions = -1;
 	String[] suggestionHeaders = new String[0];
+	int prevGuiScale = -1;
 
 	public GuiManual(ManualInstance manual, String texture)
 	{
@@ -50,6 +53,9 @@ public class GuiManual extends GuiScreen
 		this.manual = manual;
 		this.texture = texture;
 
+		prevGuiScale = Minecraft.getMinecraft().gameSettings.guiScale;
+		if(prevGuiScale!=2)
+			Minecraft.getMinecraft().gameSettings.guiScale=2;
 		activeManual=this;
 	}
 	@Override
@@ -61,6 +67,14 @@ public class GuiManual extends GuiScreen
 	@Override
 	public void initGui()
 	{
+		if(Minecraft.getMinecraft().gameSettings.guiScale==1)
+		{
+			Minecraft.getMinecraft().gameSettings.guiScale=2;
+			ScaledResolution res = new ScaledResolution(this.mc, this.mc.displayWidth, this.mc.displayHeight);
+			this.width = res.getScaledWidth();
+			this.height = res.getScaledHeight();
+			Minecraft.getMinecraft().gameSettings.guiScale=1;
+		}
 		guiLeft =  (this.width - this.xSize) / 2;
 		guiTop =  (this.height - this.ySize) / 2;
 		boolean textField = false;
@@ -208,6 +222,14 @@ public class GuiManual extends GuiScreen
 		}
 		manual.fontRenderer.setUnicodeFlag(uni);
 		super.drawScreen(mx, my, f);
+	}
+
+	@Override
+	public void onGuiClosed()
+	{
+		super.onGuiClosed();
+		if(prevGuiScale!=-1)
+			Minecraft.getMinecraft().gameSettings.guiScale = prevGuiScale;
 	}
 
 	@Override
