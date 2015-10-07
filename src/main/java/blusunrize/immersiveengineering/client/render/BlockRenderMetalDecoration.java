@@ -247,7 +247,7 @@ public class BlockRenderMetalDecoration implements ISimpleBlockRenderingHandler
 			int rowBot = 0;
 			while(rowBot<8)
 			{
-				TileEntity te2 = world.getTileEntity(x-fd.offsetX*(rowTop+1),y,z-fd.offsetZ*(rowTop+1));
+				TileEntity te2 = world.getTileEntity(x+fd.offsetX*(rowBot+1),y,z+fd.offsetZ*(rowBot+1));
 				if(te2 instanceof TileEntityStructuralArm && ((TileEntityStructuralArm)te2).facing==f && ((TileEntityStructuralArm)te2).inverted==inv)
 					rowBot++;
 				else
@@ -472,5 +472,4 @@ public class BlockRenderMetalDecoration implements ISimpleBlockRenderingHandler
 	{
 		return renderID;
 	}
-
 }
