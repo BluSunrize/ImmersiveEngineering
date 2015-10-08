@@ -55,11 +55,12 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidHandl
 					if(b)
 					{
 						ForgeDirection fd = ForgeDirection.getOrientation(i);
-						if(te instanceof TileEntityFluidPipe)
+						TileEntity te2 = world.getTileEntity(next.posX+fd.offsetX,next.posY+fd.offsetY,next.posZ+fd.offsetZ);
+						if(te2 instanceof TileEntityFluidPipe)
 							openList.add(new ChunkCoordinates(next.posX+fd.offsetX,next.posY+fd.offsetY,next.posZ+fd.offsetZ));
-						else if(te instanceof IFluidHandler)
+						else if(te2 instanceof IFluidHandler)
 						{
-							IFluidHandler handler = (IFluidHandler)te;
+							IFluidHandler handler = (IFluidHandler)te2;
 							fluidHandlers.add(new DirectionalFluidOutput(handler, fd));
 						}
 					}
