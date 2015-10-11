@@ -1646,16 +1646,16 @@ public class ClientUtils
 			info = calculateBlockLighting(2, world, block, x,y,z, 1,1,1);
 			tes.setColorOpaque_F(info.colorRedTopLeft, info.colorGreenTopLeft, info.colorBlueTopLeft);
 			tes.setBrightness(info.brightnessTopLeft);
-			tes.addVertexWithUV(x+0, y+1, z+0, uv[2][0], uv[2][3]);
+			tes.addVertexWithUV(x+0, y+1, z+0, uv[2][1], uv[2][2]);
 			tes.setColorOpaque_F(info.colorRedBottomLeft, info.colorGreenBottomLeft, info.colorBlueBottomLeft);
 			tes.setBrightness(info.brightnessBottomLeft);
-			tes.addVertexWithUV(x+1, y+1, z+0, uv[2][1], uv[2][3]);
+			tes.addVertexWithUV(x+1, y+1, z+0, uv[2][0], uv[2][2]);
 			tes.setColorOpaque_F(info.colorRedBottomRight, info.colorGreenBottomRight, info.colorBlueBottomRight);
 			tes.setBrightness(info.brightnessBottomRight);
-			tes.addVertexWithUV(x+1, y+0, z+0, uv[2][1], uv[2][2]);
+			tes.addVertexWithUV(x+1, y+0, z+0, uv[2][0], uv[2][3]);
 			tes.setColorOpaque_F(info.colorRedTopRight, info.colorGreenTopRight, info.colorBlueTopRight);
 			tes.setBrightness(info.brightnessTopRight);
-			tes.addVertexWithUV(x+0, y+0, z+0, uv[2][0], uv[2][2]);
+			tes.addVertexWithUV(x+0, y+0, z+0, uv[2][1], uv[2][3]);
 			flag=true;
 		}
 		// SIDE 3
@@ -1664,16 +1664,16 @@ public class ClientUtils
 			info = calculateBlockLighting(3, world, block, x,y,z, 1,1,1);
 			tes.setColorOpaque_F(info.colorRedTopLeft, info.colorGreenTopLeft, info.colorBlueTopLeft);
 			tes.setBrightness(info.brightnessTopLeft);
-			tes.addVertexWithUV(x+0, y+1, z+1, uv[3][0], uv[3][3]);
+			tes.addVertexWithUV(x+0, y+1, z+1, uv[3][0], uv[3][2]);
 			tes.setColorOpaque_F(info.colorRedBottomLeft, info.colorGreenBottomLeft, info.colorBlueBottomLeft);
 			tes.setBrightness(info.brightnessBottomLeft);
-			tes.addVertexWithUV(x+0, y+0, z+1, uv[3][0], uv[3][2]);
+			tes.addVertexWithUV(x+0, y+0, z+1, uv[3][0], uv[3][3]);
 			tes.setColorOpaque_F(info.colorRedBottomRight, info.colorGreenBottomRight, info.colorBlueBottomRight);
 			tes.setBrightness(info.brightnessBottomRight);
-			tes.addVertexWithUV(x+1, y+0, z+1, uv[3][1], uv[3][2]);
+			tes.addVertexWithUV(x+1, y+0, z+1, uv[3][1], uv[3][3]);
 			tes.setColorOpaque_F(info.colorRedTopRight, info.colorGreenTopRight, info.colorBlueTopRight);
 			tes.setBrightness(info.brightnessTopRight);
-			tes.addVertexWithUV(x+1, y+1, z+1, uv[3][1], uv[3][3]);
+			tes.addVertexWithUV(x+1, y+1, z+1, uv[3][1], uv[3][2]);
 			flag=true;
 		}
 		// SIDE 4
@@ -1682,16 +1682,16 @@ public class ClientUtils
 			info = calculateBlockLighting(4, world, block, x,y,z, 1,1,1);
 			tes.setColorOpaque_F(info.colorRedTopLeft, info.colorGreenTopLeft, info.colorBlueTopLeft);
 			tes.setBrightness(info.brightnessTopLeft);
-			tes.addVertexWithUV(x+0, y+1, z+1, uv[4][1], uv[4][3]);
+			tes.addVertexWithUV(x+0, y+1, z+1, uv[4][1], uv[4][2]);
 			tes.setColorOpaque_F(info.colorRedBottomLeft, info.colorGreenBottomLeft, info.colorBlueBottomLeft);
 			tes.setBrightness(info.brightnessBottomLeft);
-			tes.addVertexWithUV(x+0, y+1, z+0, uv[4][0], uv[4][3]);
+			tes.addVertexWithUV(x+0, y+1, z+0, uv[4][0], uv[4][2]);
 			tes.setColorOpaque_F(info.colorRedBottomRight, info.colorGreenBottomRight, info.colorBlueBottomRight);
 			tes.setBrightness(info.brightnessBottomRight);
-			tes.addVertexWithUV(x+0, y+0, z+0, uv[4][0], uv[4][2]);
+			tes.addVertexWithUV(x+0, y+0, z+0, uv[4][0], uv[4][3]);
 			tes.setColorOpaque_F(info.colorRedTopRight, info.colorGreenTopRight, info.colorBlueTopRight);
 			tes.setBrightness(info.brightnessTopRight);
-			tes.addVertexWithUV(x+0, y+0, z+1, uv[4][1], uv[4][2]);
+			tes.addVertexWithUV(x+0, y+0, z+1, uv[4][1], uv[4][3]);
 			flag=true;
 		}
 		// SIDE 5
@@ -1700,16 +1700,16 @@ public class ClientUtils
 			info = calculateBlockLighting(5, world, block, x,y,z, 1,1,1);
 			tes.setColorOpaque_F(info.colorRedTopLeft, info.colorGreenTopLeft, info.colorBlueTopLeft);
 			tes.setBrightness(info.brightnessTopLeft);
-			tes.addVertexWithUV(x+1, y+0, z+1, uv[5][1], uv[5][2]);
+			tes.addVertexWithUV(x+1, y+0, z+1, uv[5][0], uv[5][3]);
 			tes.setColorOpaque_F(info.colorRedBottomLeft, info.colorGreenBottomLeft, info.colorBlueBottomLeft);
 			tes.setBrightness(info.brightnessBottomLeft);
-			tes.addVertexWithUV(x+1, y+0, z+0, uv[5][0], uv[5][2]);
+			tes.addVertexWithUV(x+1, y+0, z+0, uv[5][1], uv[5][3]);
 			tes.setColorOpaque_F(info.colorRedBottomRight, info.colorGreenBottomRight, info.colorBlueBottomRight);
 			tes.setBrightness(info.brightnessBottomRight);
-			tes.addVertexWithUV(x+1, y+1, z+0, uv[5][0], uv[5][3]);
+			tes.addVertexWithUV(x+1, y+1, z+0, uv[5][1], uv[5][2]);
 			tes.setColorOpaque_F(info.colorRedTopRight, info.colorGreenTopRight, info.colorBlueTopRight);
 			tes.setBrightness(info.brightnessTopRight);
-			tes.addVertexWithUV(x+1, y+1, z+1, uv[5][1], uv[5][3]);
+			tes.addVertexWithUV(x+1, y+1, z+1, uv[5][0], uv[5][2]);
 			flag=true;
 		}
 		return flag;

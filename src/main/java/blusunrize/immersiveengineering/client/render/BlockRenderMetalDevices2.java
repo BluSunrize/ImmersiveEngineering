@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.client.render;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.init.Blocks;
 import net.minecraft.world.IBlockAccess;
 
 import org.lwjgl.opengl.GL11;
@@ -149,11 +150,6 @@ public class BlockRenderMetalDevices2 implements ISimpleBlockRenderingHandler
 			{
 				Block cover = Block.getBlockFromItem(tile.scaffoldCovering.getItem());
 				ClientUtils.drawWorldBlock(world, cover, x, y, z, tile.scaffoldCovering.getItemDamage());
-//				renderer.setRenderBounds(0,0,0,1,1,1);
-//				renderer.setOverrideBlockTexture(cover.getIcon(0, tile.scaffoldCovering.getItemDamage()));
-				
-//				renderer.renderBlockByRenderType(cover, x, y, z);
-//				renderer.clearOverrideBlockTexture();
 			}
 			return true;
 		}
