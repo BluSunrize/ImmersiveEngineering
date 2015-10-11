@@ -22,6 +22,7 @@
 - added Nether- and Dense Ores support to the Arc Furnace
 - added a search function with spellchecking to the manual
 - added a headshot functionality to the revolver
+- added the Assembler, an IE autocrafting machine
 - changed wire rendering to be ISRBH, improving performance
 - changed a lot of internal handling of the Energy System:
 	- Wire Transferrates are now per tick. WIres can only have a certain amount of power go through them in a single tick
