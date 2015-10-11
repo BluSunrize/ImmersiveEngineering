@@ -188,9 +188,10 @@ public class MultiblockAssembler implements IMultiblock
 	public ItemStack[] getTotalMaterials()
 	{
 		return new ItemStack[]{
-				new ItemStack(IEContent.blockMetalDecoration,10,BlockMetalDecoration.META_scaffolding),
-				new ItemStack(IEContent.blockMetalDecoration,11,BlockMetalDecoration.META_lightEngineering),
-				new ItemStack(IEContent.blockMetalDecoration,8,BlockMetalDecoration.META_fence),
-				new ItemStack(Blocks.hopper,9)};
+				new ItemStack(IEContent.blockMetalDecoration,9,BlockMetalDecoration.META_scaffolding),
+				new ItemStack(IEContent.blockMetalDecoration,4,BlockMetalDecoration.META_lightEngineering),
+				new ItemStack(IEContent.blockMetalDecoration,6,BlockMetalDecoration.META_sheetMetal),
+				new ItemStack(IEContent.blockMetalDecoration,6,BlockMetalDecoration.META_structuralArm),
+				new ItemStack(IEContent.blockMetalDevice,2,BlockMetalDevices.META_conveyorBelt)};
 	}
 }
