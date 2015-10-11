@@ -3,7 +3,6 @@ package blusunrize.immersiveengineering.client.render;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.init.Blocks;
 import net.minecraft.world.IBlockAccess;
 
 import org.lwjgl.opengl.GL11;
@@ -156,7 +155,8 @@ public class BlockRenderMetalDevices2 implements ISimpleBlockRenderingHandler
 		else if(metadata==BlockMetalDevices2.META_fluidPump)
 		{
 			TileEntityFluidPump tile = (TileEntityFluidPump)world.getTileEntity(x, y, z);
-			if (!tile.dummy) {
+			if (!tile.dummy)
+			{
 				ClientUtils.handleStaticTileRenderer(tile);
 				renderer.renderFaceXPos(IEContent.blockMetalDevice2, x, y, z, IEContent.blockMetalDevice2.getIcon(tile.sideConfig[5], BlockMetalDevices2.META_fluidPump));
 				renderer.renderFaceXNeg(IEContent.blockMetalDevice2, x, y, z, IEContent.blockMetalDevice2.getIcon(tile.sideConfig[4], BlockMetalDevices2.META_fluidPump));

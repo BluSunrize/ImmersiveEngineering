@@ -3,7 +3,6 @@ package blusunrize.immersiveengineering.client.render;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
@@ -207,8 +206,6 @@ public class BlockRenderMetalDecoration implements ISimpleBlockRenderingHandler
 			IIcon iSide = block.getIcon(2, 3);
 			IIcon iTop = block.getIcon(0, 3);
 			TileEntity te = world.getTileEntity(x, y, z);
-			iSide = Blocks.bookshelf.getIcon(2, 0);
-			iTop = Blocks.bookshelf.getIcon(0, 0);
 			
 			int f = (te instanceof TileEntityStructuralArm)? ((TileEntityStructuralArm)te).facing : 0;
 			boolean inv = (te instanceof TileEntityStructuralArm)? ((TileEntityStructuralArm)te).inverted : false;
