@@ -549,6 +549,12 @@ ie.manual.entry.tanksilo0=Sheetmetal Tanks and Silos provide space for large amo
 ie.manual.entry.tanksilo1=Silos offer space for a lot of items of the same type, making them excellent for mass storage of seeds, slag or cobblestone. They have space for 41472 items, equalling the capacity of 24 chests.
 ie.manual.entry.tanksilo2=Items must be input through the top and extracted from the bottom. Applying a redstone signal to the bottom block will make it output automatically. The multiblock is formed by clicking a middle block of the second layer.
 
+ie.manual.entry.assembler.name=Assembler
+ie.manual.entry.assembler.subtext=
+ie.manual.entry.assembler0=The Assembler is a complex machine capable of crafting items, similar to how a player would.<br>To form the structure, build it like demonstrated above and use the hammer on one of the conveyors.
+ie.manual.entry.assembler1=The conveyor you clicked will be the input side, indicated by the blue marker above it and the arrow on the side of the machine.<br>The Assembler allows for up to 3 recipes to be stored inside it that will be performed in order. The outputs of previous recipes can be used as inputs for the following.<br>The 3 crafting grids store the recipes, and the 18 slots below them are the inventory for materials.
+ie.manual.entry.assembler2=The input side, in addition to an item input also features a fluid input to fill the three internal tanks of the machine. Fluid in these tanks can be used to replace fluid containers like water buckets in recipes.<br>Power for the machine is input through the top center block.
+
 ie.manual.entry.highvoltage.name=High-Voltage
 ie.manual.entry.highvoltage.subtext=You can't shake the shock
 ie.manual.entry.highvoltage0=High-Voltage wires have the highest available transfer rate (<config;iA;cableTransferRate;2> RF/t) and will need special connectors. Note that on High voltage connections, §oConnectors and Relays are different blocks§r, Relays will not be able to in- or output to the energy net. Furthermore, §oRelays can only be placed on the underside of the block.§r<br>To transition from HV to LV or MV connections, you will need High-Voltage Transformers, and keep in mind, the lowest tier of wire limits the transferrate of an entire connection.

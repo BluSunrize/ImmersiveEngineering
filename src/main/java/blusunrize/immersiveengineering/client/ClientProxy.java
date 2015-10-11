@@ -323,7 +323,7 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.Text(ManualHelper.getManual(), "lighting2"),
 				new ManualPages.Crafting(ManualHelper.getManual(), "lighting3", new ItemStack(IEContent.blockMetalDevice2,1,BlockMetalDevices2.META_floodLight)));
 
-		
+
 		ManualHelper.addEntry("wiring", ManualHelper.CAT_ENERGY,
 				new ManualPages.Text(ManualHelper.getManual(), "wiring0"),
 				new ManualPages.Crafting(ManualHelper.getManual(), "wiring1", new ItemStack(IEContent.itemWireCoil,1,OreDictionary.WILDCARD_VALUE)),
@@ -388,7 +388,8 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.Text(ManualHelper.getManual(), "tanksilo2"));
 		ManualHelper.addEntry("assembler", ManualHelper.CAT_MACHINES,
 				new ManualPageMultiblock(ManualHelper.getManual(), "assembler0", MultiblockAssembler.instance),
-				new ManualPages.Text(ManualHelper.getManual(), "assembler1"));
+				new ManualPages.Text(ManualHelper.getManual(), "assembler1"),
+				new ManualPages.Text(ManualHelper.getManual(), "assembler2"));
 		ManualHelper.addEntry("drill", ManualHelper.CAT_MACHINES,
 				new ManualPages.CraftingMulti(ManualHelper.getManual(), "drill0", new ItemStack(IEContent.itemDrill,1,0), new ItemStack(IEContent.itemMaterial,1,9)),
 				new ManualPages.Crafting(ManualHelper.getManual(), "drill1", new ItemStack(IEContent.itemDrillhead,1,0)),
@@ -410,7 +411,7 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.Crafting(ManualHelper.getManual(), "fluidPipes0", new ItemStack(IEContent.blockMetalDevice2,1,BlockMetalDevices2.META_fluidPipe)),
 				new ManualPages.Crafting(ManualHelper.getManual(), "fluidPipes1", new ItemStack(IEContent.blockMetalDevice2,1,BlockMetalDevices2.META_fluidPump)),
 				new ManualPages.Text(ManualHelper.getManual(), "fluidPipes2"));
-		
+
 
 		sortedMap = DieselHandler.getPlantoilValuesSorted(true);
 		table = formatToTable_ItemIntHashmap(sortedMap,"mB");	

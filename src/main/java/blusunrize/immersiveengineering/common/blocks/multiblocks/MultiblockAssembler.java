@@ -82,7 +82,7 @@ public class MultiblockAssembler implements IMultiblock
 		TileEntityAssembler te = new TileEntityAssembler();
 		ClientUtils.bindAtlas(0);
 		ClientUtils.tes().startDrawingQuads();
-		ClientUtils.tes().setTranslation(-1f, -1, 0);
+		ClientUtils.tes().setTranslation(-.5f,-1.5f,-.5f);
 		ClientUtils.handleStaticTileRenderer(te, false);
 		ClientUtils.tes().draw();
 		ClientUtils.tes().setTranslation(0,0,0);
@@ -90,7 +90,7 @@ public class MultiblockAssembler implements IMultiblock
 	@Override
 	public float getManualScale()
 	{
-		return 16;
+		return 13;
 	}
 
 	@Override

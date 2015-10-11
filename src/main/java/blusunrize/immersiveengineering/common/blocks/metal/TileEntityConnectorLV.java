@@ -35,6 +35,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 {
 	boolean inICNet=false;
 	public int facing=0;
+	private long lastTransfer = -1;
 
 	@Override
 	public void updateEntity()
@@ -115,12 +116,14 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 	{
 		super.writeCustomNBT(nbt, descPacket);
 		nbt.setInteger("facing", facing);
+		nbt.setLong("lastTransfer", lastTransfer);
 	}
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
 		facing = nbt.getInteger("facing");
+		lastTransfer = nbt.getLong("lastTransfer");
 	}
 
 	@Override
@@ -184,6 +187,8 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 		int received = 0;
 		if(!worldObj.isRemote)
 		{
+			if(worldObj.getTotalWorldTime()==lastTransfer)
+				return 0;
 			ConcurrentSkipListSet<AbstractConnection> outputs = ImmersiveNetHandler.INSTANCE.getIndirectEnergyConnections(Utils.toCC(this), worldObj);
 			int powerLeft = Math.min(Math.min(getMaxOutput(),getMaxInput()), energy);
 			final int powerForSort = powerLeft;
@@ -241,6 +246,8 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 						if(powerLeft<=0)
 							break;
 					}
+			if(!simulate)
+				lastTransfer = worldObj.getTotalWorldTime();
 		}
 		return received;
 	}

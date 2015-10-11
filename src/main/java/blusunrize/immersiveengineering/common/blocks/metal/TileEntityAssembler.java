@@ -37,7 +37,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class TileEntityAssembler extends TileEntityMultiblockPart implements ISidedInventory, IEnergyReceiver, IFluidHandler
 {
 	public int facing = 2;
-	public EnergyStorage energyStorage = new EnergyStorage(32000);
+	public EnergyStorage energyStorage = new EnergyStorage(16000);
 	public ItemStack[] inventory = new ItemStack[18];
 	public CrafterPatternInventory[] patterns = {new CrafterPatternInventory(this),new CrafterPatternInventory(this),new CrafterPatternInventory(this)};
 	public FluidTank[] tanks = {new FluidTank(8000),new FluidTank(8000),new FluidTank(8000)};
@@ -68,6 +68,8 @@ public class TileEntityAssembler extends TileEntityMultiblockPart implements ISi
 
 		if(worldObj.isRemote || worldObj.getTotalWorldTime()%16!=((xCoord^zCoord)&15))
 			return;
+
+		boolean update = false;
 		ItemStack[][] outputBuffer = new ItemStack[patterns.length][0];
 		for(int p=0; p<patterns.length; p++)
 		{
@@ -84,8 +86,10 @@ public class TileEntityAssembler extends TileEntityMultiblockPart implements ISi
 					if(stack!=null)
 						queryList.add(stack.copy());
 
-				if(this.hasIngredients(pattern, queryList))
+				int consumed = Config.getInt("assembler_consumption");
+				if(this.hasIngredients(pattern, queryList) && this.energyStorage.extractEnergy(consumed, true)==consumed)
 				{
+					this.energyStorage.extractEnergy(consumed, false);
 					ArrayList<ItemStack> outputList = new ArrayList<ItemStack>();//List of all outputs for the current recipe. This includes discarded containers
 					outputList.add(output);
 
@@ -134,6 +138,7 @@ public class TileEntityAssembler extends TileEntityMultiblockPart implements ISi
 								this.consumeItem(query, querySize, inventory, outputList);
 						}
 					outputBuffer[p]=outputList.toArray(new ItemStack[outputList.size()]);
+					update = true;
 				}
 			}
 		}
@@ -184,11 +189,11 @@ public class TileEntityAssembler extends TileEntityMultiblockPart implements ISi
 							this.inventory[free] = output.copy();
 					}
 
-		//		if(update)
-		//		{
-		//			this.markDirty();
-		//			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-		//		}
+		if(update)
+		{
+			this.markDirty();
+			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+		}
 	}
 
 	public boolean consumeItem(Object query, int querySize, ItemStack[] inventory, ArrayList<ItemStack> containerItems)
