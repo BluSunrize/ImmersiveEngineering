@@ -14,7 +14,7 @@ public class TileRenderFloodLight extends TileRenderImmersiveConnectable
 	ModelIEObj model = new ModelIEObj("immersiveengineering:models/searchlight.obj")
 	{
 		@Override
-		public IIcon getBlockIcon()
+		public IIcon getBlockIcon(String groupName)
 		{
 			return IEContent.blockMetalDevice2.getIcon(0, BlockMetalDevices2.META_floodLight);
 		}

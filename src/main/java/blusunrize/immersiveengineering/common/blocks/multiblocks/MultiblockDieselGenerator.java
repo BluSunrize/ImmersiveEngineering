@@ -38,7 +38,8 @@ public class MultiblockDieselGenerator implements IMultiblock
 		return structure;
 	}
 	@Override
-	public boolean overwriteBlockRender(ItemStack stack)
+	@SideOnly(Side.CLIENT)
+	public boolean overwriteBlockRender(ItemStack stack, int iterator)
 	{
 		return false;
 	}
@@ -55,12 +56,13 @@ public class MultiblockDieselGenerator implements IMultiblock
 		TileEntityDieselGenerator te = new TileEntityDieselGenerator();
 		te.formed=true;
 		te.pos=31;
+		ClientUtils.bindAtlas(0);
 		ClientUtils.tes().startDrawingQuads();
-		ClientUtils.tes().setTranslation(-1,0,-1);
+		ClientUtils.tes().setTranslation(-.5,-.5,-1.5);
 		ClientUtils.handleStaticTileRenderer(te, false);
 		ClientUtils.tes().setTranslation(0,0,0);
 		ClientUtils.tes().draw();
-		TileEntityRendererDispatcher.instance.renderTileEntityAt(te, -1D, 0D, -1D, 0.0F);
+		TileEntityRendererDispatcher.instance.renderTileEntityAt(te, -.5D, -.5D, -1.5D, 0.0F);
 	}
 	@Override
 	public float getManualScale()

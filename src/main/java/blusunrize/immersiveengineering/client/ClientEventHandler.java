@@ -107,7 +107,7 @@ public class ClientEventHandler
 		for(ModelIEObj modelIE : ModelIEObj.existingStaticRenders)
 		{
 			WavefrontObject model = modelIE.rebindModel();
-			rebindUVsToIcon(model, modelIE.getBlockIcon());
+			rebindUVsToIcon(model, modelIE);
 		}
 		//
 		//		if(event.map.getTextureType()==Config.getInt("revolverSheetID"))
@@ -129,23 +129,50 @@ public class ClientEventHandler
 		//		}
 	}
 
-	void rebindUVsToIcon(WavefrontObject model, IIcon icon)
+	void rebindUVsToIcon(WavefrontObject model, ModelIEObj modelIE)
 	{
-		float minU = icon.getInterpolatedU(0);
-		float sizeU = icon.getInterpolatedU(16) - minU;
-		float minV = icon.getInterpolatedV(0);
-		float sizeV = icon.getInterpolatedV(16) - minV;
-
 		for(GroupObject groupObject : model.groupObjects)
+		{
+			IIcon icon = modelIE.getBlockIcon(groupObject.name);
+			float minU = icon.getInterpolatedU(0);
+			float sizeU = icon.getInterpolatedU(16) - minU;
+			float minV = icon.getInterpolatedV(0);
+			float sizeV = icon.getInterpolatedV(16) - minV;
+			float baseOffsetU = (16f/icon.getIconWidth())*.0005F;
+			float baseOffsetV = (16f/icon.getIconHeight())*.0005F;
 			for(Face face : groupObject.faces)
-				for (int i = 0; i < face.vertices.length; ++i)
+			{
+				float averageU = 0F;
+				float averageV = 0F;
+				if(face.textureCoordinates!=null && face.textureCoordinates.length>0)
 				{
+					for(int i=0; i<face.textureCoordinates.length; ++i)
+					{
+						averageU += face.textureCoordinates[i].u;
+						averageV += face.textureCoordinates[i].v;
+					}
+					averageU = averageU / face.textureCoordinates.length;
+					averageV = averageV / face.textureCoordinates.length;
+				}
+
+				for (int i=0; i<face.vertices.length; ++i)
+				{
+					float offsetU, offsetV;
 					TextureCoordinate textureCoordinate = face.textureCoordinates[i];
+					offsetU = baseOffsetU;
+					offsetV = baseOffsetV;
+					if (face.textureCoordinates[i].u > averageU)
+						offsetU = -offsetU;
+					if (face.textureCoordinates[i].v > averageV)
+						offsetV = -offsetV;
+
 					face.textureCoordinates[i] = new TextureCoordinate(
-							minU + sizeU * textureCoordinate.u,
-							minV + sizeV * textureCoordinate.v
+							minU + sizeU * (textureCoordinate.u+offsetU),
+							minV + sizeV * (textureCoordinate.v+offsetV)
 							);
 				}
+			}
+		}
 	}
 
 	public static Set<Connection> skyhookGrabableConnections = new HashSet();
@@ -211,6 +238,8 @@ public class ClientEventHandler
 				&& ClientUtils.mc().currentScreen instanceof GuiBlastFurnace
 				&& BlastFurnaceRecipe.isValidBlastFuel(event.itemStack))
 			event.toolTip.add(EnumChatFormatting.GRAY+StatCollector.translateToLocalFormatted("desc.ImmersiveEngineering.info.blastFuelTime", BlastFurnaceRecipe.getBlastFuelTime(event.itemStack)));
+		for(int oid : OreDictionary.getOreIDs(event.itemStack))
+			event.toolTip.add(OreDictionary.getOreName(oid));
 	}
 
 	@SubscribeEvent()

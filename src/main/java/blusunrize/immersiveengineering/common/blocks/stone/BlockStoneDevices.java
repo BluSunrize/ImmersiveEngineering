@@ -3,12 +3,16 @@ package blusunrize.immersiveengineering.common.blocks.stone;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
@@ -174,7 +178,39 @@ public class BlockStoneDevices extends BlockIEBase
 		}
 		return false;
 	}
+	
+	@Override
+	public void breakBlock(World world, int x, int y, int z, Block par5, int par6)
+	{
+		TileEntity tileEntity = world.getTileEntity(x, y, z);
+		if(tileEntity instanceof TileEntityMultiblockPart && tileEntity instanceof IInventory && world.getGameRules().getGameRuleBooleanValue("doTileDrops"))
+		{
+			if(!world.isRemote && ((TileEntityMultiblockPart)tileEntity).formed)
+			{
+				TileEntity master = ((TileEntityMultiblockPart)tileEntity).master();
+				if(master==null)
+					master = tileEntity;
+				for(int i=0; i<((IInventory)master).getSizeInventory(); i++)
+				{
+					ItemStack stack = ((IInventory)master).getStackInSlot(i);
+					if(stack!=null)
+					{
+						float fx = world.rand.nextFloat() * 0.8F + 0.1F;
+						float fz = world.rand.nextFloat() * 0.8F + 0.1F;
 
+						EntityItem entityitem = new EntityItem(world, x+fx, y+.5, z+fz, stack);
+						entityitem.motionX = world.rand.nextGaussian()*.05;
+						entityitem.motionY = world.rand.nextGaussian()*.05+.2;
+						entityitem.motionZ = world.rand.nextGaussian()*.05;
+						if(stack.hasTagCompound())
+							entityitem.getEntityItem().setTagCompound((NBTTagCompound)stack.getTagCompound().copy());
+						world.spawnEntityInWorld(entityitem);
+					}
+				}
+			}
+		}
+	}
+	
 	@Override
 	public boolean hasTileEntity(int meta)
 	{

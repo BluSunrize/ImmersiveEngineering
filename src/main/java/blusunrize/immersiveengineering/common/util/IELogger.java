@@ -30,7 +30,7 @@ public class IELogger
 
 	public static void debug(Object object)
 	{
-		if(debug)
-			log(Level.INFO, "[DEBUG:] "+object);
+//		if(debug)
+//			log(Level.INFO, "[DEBUG:] "+object);
 	}
 }

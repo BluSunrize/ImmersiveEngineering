@@ -85,7 +85,8 @@ public class MultiblockArcFurnace implements IMultiblock
 		return structure;
 	}
 	@Override
-	public boolean overwriteBlockRender(ItemStack stack)
+	@SideOnly(Side.CLIENT)
+	public boolean overwriteBlockRender(ItemStack stack, int iterator)
 	{
 		if(stack.getItem()==Items.cauldron)
 		{
@@ -108,8 +109,9 @@ public class MultiblockArcFurnace implements IMultiblock
 		te.formed=true;
 		te.pos=62;
 		te.facing=4;
+		ClientUtils.bindAtlas(0);
 		ClientUtils.tes().startDrawingQuads();
-		ClientUtils.tes().setTranslation(-.5,0,-.5);
+		ClientUtils.tes().setTranslation(-.5,-.5,-.5);
 		ClientUtils.handleStaticTileRenderer(te, false);
 		ClientUtils.tes().setTranslation(0,0,0);
 		ClientUtils.tes().draw();

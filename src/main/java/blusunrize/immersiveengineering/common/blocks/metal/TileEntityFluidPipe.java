@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
@@ -13,6 +14,7 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
+import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.util.Utils;
 
@@ -24,8 +26,15 @@ import cpw.mods.fml.relauncher.Side;
 public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidHandler
 {
 	static ArrayListMultimap<ChunkCoordinates, DirectionalFluidOutput> indirectConnections = ArrayListMultimap.create();
+	public static ArrayList<ItemStack> validScaffoldCoverings = new ArrayList<ItemStack>();
+	static{
+		TileEntityFluidPipe.validScaffoldCoverings.add(new ItemStack(IEContent.blockMetalDecoration,1,1));
+		TileEntityFluidPipe.validScaffoldCoverings.add(new ItemStack(IEContent.blockWoodenDecoration,1,5));
+	}
+	
 	public int[] sideConfig = new int[] {0,0,0,0,0,0};
-
+	public ItemStack scaffoldCovering = null;
+	
 	@Override
 	public boolean canUpdate()
 	{
@@ -90,15 +99,15 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidHandl
 		sideConfig = nbt.getIntArray("sideConfig");
 		if(sideConfig==null || sideConfig.length!=6)
 			sideConfig = new int[]{0,0,0,0,0,0};
-		//		tank.readFromNBT(nbt.getCompoundTag("tank"));
+		scaffoldCovering = ItemStack.loadItemStackFromNBT(nbt.getCompoundTag("scaffold"));
 	}
 
 	@Override
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		nbt.setIntArray("sideConfig", sideConfig);
-		//		NBTTagCompound tankTag = tank.writeToNBT(new NBTTagCompound());
-		//		nbt.setTag("tank", tankTag);
+		if(scaffoldCovering!=null)
+			nbt.setTag("scaffold", (scaffoldCovering.writeToNBT(new NBTTagCompound())));
 	}
 
 
@@ -111,9 +120,8 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidHandl
 		int canAccept = Math.min(resource.amount, limit);
 		if(canAccept<=0)
 			return 0;
-		FluidStack insertResource = Utils.copyFluidStackWithAmount(resource, canAccept);
 
-		List<DirectionalFluidOutput> outputList = getConnectedFluidHandlers(new ChunkCoordinates(xCoord,yCoord,zCoord), worldObj);
+		ArrayList<DirectionalFluidOutput> outputList = new ArrayList(getConnectedFluidHandlers(new ChunkCoordinates(xCoord,yCoord,zCoord), worldObj));
 		if(outputList.size()<1)
 			return 0;
 		ChunkCoordinates ccFrom = new ChunkCoordinates(xCoord+from.offsetX,yCoord+from.offsetY,zCoord+from.offsetZ);
@@ -121,9 +129,9 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidHandl
 		int sum = 0;
 		HashMap<DirectionalFluidOutput,Integer> sorting = new HashMap<DirectionalFluidOutput,Integer>();
 		for(DirectionalFluidOutput output : outputList)
-			if(!Utils.toCC(output.output).equals(ccFrom) && output.output.canFill(output.direction, insertResource.getFluid()))
+			if(!Utils.toCC(output.output).equals(ccFrom) && output.output.canFill(output.direction, resource.getFluid()))
 			{
-				int temp = output.output.fill(output.direction.getOpposite(), insertResource, false);
+				int temp = output.output.fill(output.direction.getOpposite(), Utils.copyFluidStackWithAmount(resource, fluidForSort,true), false);
 				if(temp>0)
 				{
 					sorting.put(output, temp);
@@ -140,7 +148,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidHandl
 				int amount = (int)(fluidForSort*prio);
 				if(i++ == sorting.size()-1)
 					amount = canAccept;
-				int r = output.output.fill(output.direction.getOpposite(), Utils.copyFluidStackWithAmount(resource, amount), doFill);
+				int r = output.output.fill(output.direction.getOpposite(), Utils.copyFluidStackWithAmount(resource, amount, true), doFill);
 				f += r;
 				canAccept -= r;
 				if(canAccept<=0)
@@ -242,5 +250,16 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidHandl
 		sideConfig[side]++;
 		if(sideConfig[side]>0)
 			sideConfig[side] = -1;
+		worldObj.addBlockEvent(xCoord, yCoord, zCoord, getBlockType(), 0,0);
+	}
+	@Override
+	public boolean receiveClientEvent(int id, int arg)
+	{
+		if(id==0)
+		{
+			this.worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+			return true;
+		}
+		return false;
 	}
 }

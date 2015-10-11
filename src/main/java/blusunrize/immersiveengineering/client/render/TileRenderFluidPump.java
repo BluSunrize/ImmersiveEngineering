@@ -11,7 +11,7 @@ import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 public class TileRenderFluidPump extends TileRenderIE {
   static ModelIEObj model = new ModelIEObj("immersiveengineering:models/pump.obj") {
     @Override
-    public IIcon getBlockIcon() {
+    public IIcon getBlockIcon(String groupName) {
       return IEContent.blockMetalDevice2.getIcon(6, BlockMetalDevices2.META_fluidPump);
     }
   };

@@ -29,6 +29,7 @@ public class TileEntitySilo extends TileEntityMultiblockPart implements ISidedIn
 	ItemStack prevOutputStack;
 	boolean lockItem = false;
 
+	@Override
 	public TileEntitySilo master()
 	{
 		if(offset[0]==0&&offset[1]==0&&offset[2]==0)

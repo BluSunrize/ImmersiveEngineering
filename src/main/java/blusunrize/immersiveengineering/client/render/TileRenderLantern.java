@@ -14,7 +14,7 @@ public class TileRenderLantern extends TileRenderImmersiveConnectable
 	ModelIEObj model = new ModelIEObj("immersiveengineering:models/lantern.obj")
 	{
 		@Override
-		public IIcon getBlockIcon()
+		public IIcon getBlockIcon(String groupName)
 		{
 			return IEContent.blockMetalDecoration.getIcon(0, BlockMetalDecoration.META_lantern);
 		}

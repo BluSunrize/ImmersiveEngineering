@@ -35,6 +35,7 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockPart implemen
 	public int fanFadeIn=0;
 	public int fanFadeOut=0;
 
+	@Override
 	public TileEntityDieselGenerator master()
 	{
 		if(offset[0]==0&&offset[1]==0&&offset[2]==0)

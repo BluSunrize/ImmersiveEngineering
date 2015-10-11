@@ -31,7 +31,8 @@ public class MultiblockBlastFurnace implements IMultiblock
 		return structure;
 	}
 	@Override
-	public boolean overwriteBlockRender(ItemStack stack)
+	@SideOnly(Side.CLIENT)
+	public boolean overwriteBlockRender(ItemStack stack, int iterator)
 	{
 		return false;
 	}

@@ -13,7 +13,7 @@ public class TileRenderEnergyMeter extends TileRenderImmersiveConnectable
 	ModelIEObj model = new ModelIEObj("immersiveengineering:models/eMeter.obj")
 	{
 		@Override
-		public IIcon getBlockIcon()
+		public IIcon getBlockIcon(String groupName)
 		{
 			return IEContent.blockMetalDevice2.getIcon(0, BlockMetalDevices2.META_energyMeter);
 		}

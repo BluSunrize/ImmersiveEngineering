@@ -65,7 +65,8 @@ public class MultiblockExcavator implements IMultiblock
 		return structure;
 	}
 	@Override
-	public boolean overwriteBlockRender(ItemStack stack)
+	@SideOnly(Side.CLIENT)
+	public boolean overwriteBlockRender(ItemStack stack, int iterator)
 	{
 		return false;
 	}
@@ -83,7 +84,12 @@ public class MultiblockExcavator implements IMultiblock
 		te.formed=true;
 		te.pos=4;
 		te.facing=3;
+		ClientUtils.bindAtlas(0);
+		ClientUtils.tes().startDrawingQuads();
+		ClientUtils.tes().setTranslation(-.5,-.5,2.5);
 		ClientUtils.handleStaticTileRenderer(te, false);
+		ClientUtils.tes().setTranslation(0,0,0);
+		ClientUtils.tes().draw();
 	}
 	@Override
 	public float getManualScale()

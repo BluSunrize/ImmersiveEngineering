@@ -196,4 +196,13 @@ public class TileEntityBucketWheel extends TileEntityMultiblockPart
 		return new float[]{0,0,0,1,1,1};
 	}
 
+	@Override
+	public TileEntityBucketWheel master()
+	{
+		if(offset[0]==0&&offset[1]==0&&offset[2]==0)
+			return null;
+		TileEntity te = worldObj.getTileEntity(xCoord-offset[0], yCoord-offset[1], zCoord-offset[2]);
+		return te instanceof TileEntityBucketWheel?(TileEntityBucketWheel)te : null;
+	}
+
 }

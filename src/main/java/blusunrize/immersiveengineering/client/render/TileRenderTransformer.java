@@ -18,7 +18,7 @@ public class TileRenderTransformer extends TileRenderIE
 	static ModelIEObj model = new ModelIEObj("immersiveengineering:models/transformerHV.obj")
 	{
 		@Override
-		public IIcon getBlockIcon()
+		public IIcon getBlockIcon(String groupName)
 		{
 			return IEContent.blockMetalDevice.getIcon(0, BlockMetalDevices.META_transformerHV);
 		}
@@ -26,7 +26,7 @@ public class TileRenderTransformer extends TileRenderIE
 	static ModelIEObj modelPost = new ModelIEObj("immersiveengineering:models/transformerPost.obj")
 	{
 		@Override
-		public IIcon getBlockIcon()
+		public IIcon getBlockIcon(String groupName)
 		{
 			return IEContent.blockMetalDevice.getIcon(1, BlockMetalDevices.META_transformer);
 		}

@@ -406,8 +406,12 @@ public class GuiManual extends GuiScreen
 						else
 							lSpellcheck.put(manual.formatEntryName(e.getName()), e.getName());
 					}
-					else
+				}
+				ArrayList<String> lCorrections = ManualUtils.getPrimitiveSpellingCorrections(search, lSpellcheck.keySet().toArray(new String[lSpellcheck.keySet().size()]), 4);
+				for(String key : lSpellcheck.keySet())
+					if(!lCorrections.contains(key))
 					{
+						ManualEntry e = manual.getEntry(lSpellcheck.get(key));
 						for(IManualPage page : e.getPages())
 							if(page.listForSearch(search))
 							{
@@ -415,8 +419,6 @@ public class GuiManual extends GuiScreen
 								break;
 							}
 					}
-				}
-				ArrayList<String> lCorrections = ManualUtils.getPrimitiveSpellingCorrections(search, lSpellcheck.keySet().toArray(new String[lSpellcheck.keySet().size()]), 4);
 
 				headers = lHeaders.toArray(new String[lHeaders.size()]);
 				this.buttonList.set(0, new GuiClickableList(this, 0, guiLeft+40,guiTop+20, 100,148, 1f, 1, headers));

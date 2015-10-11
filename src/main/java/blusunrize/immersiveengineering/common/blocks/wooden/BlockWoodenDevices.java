@@ -451,7 +451,7 @@ public class BlockWoodenDevices extends BlockIEBase implements blusunrize.aquatw
 
 			if(world.getTileEntity(xx, y, zz) instanceof TileEntityModWorkbench)
 				world.setBlockToAir(xx, y, zz);
-			if(!world.isRemote && !tile.dummy)
+			if(!world.isRemote && !tile.dummy && world.getGameRules().getGameRuleBooleanValue("doTileDrops"))
 				for(int i=0; i<tile.getSizeInventory(); i++)
 				{
 					ItemStack stack = tile.getStackInSlot(i);

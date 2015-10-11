@@ -15,7 +15,7 @@ public class TileRenderExcavator extends TileRenderIE
 	ModelIEObj model = new ModelIEObj("immersiveengineering:models/excavator.obj")
 	{
 		@Override
-		public IIcon getBlockIcon()
+		public IIcon getBlockIcon(String groupName)
 		{
 			return IEContent.blockMetalMultiblocks.getIcon(0, BlockMetalMultiblocks.META_excavator);
 		}

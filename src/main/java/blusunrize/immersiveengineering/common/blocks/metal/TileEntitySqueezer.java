@@ -35,6 +35,7 @@ public class TileEntitySqueezer extends TileEntityMultiblockPart implements IFlu
 	int processMaxTime = 0;
 
 
+	@Override
 	public TileEntitySqueezer master()
 	{
 		if(offset[0]==0&&offset[1]==0&&offset[2]==0)

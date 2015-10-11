@@ -106,6 +106,7 @@ public class TileEntityLightningRod extends TileEntityMultiblockPart implements 
 		return closedList;
 	}
 
+	@Override
 	public TileEntityLightningRod master()
 	{
 		if(offset[0]==0&&offset[1]==0&&offset[2]==0)

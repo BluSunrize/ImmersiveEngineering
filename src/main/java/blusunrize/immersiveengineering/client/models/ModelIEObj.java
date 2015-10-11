@@ -34,5 +34,5 @@ public abstract class ModelIEObj
 		ClientUtils.renderStaticWavefrontModel(tile, model, tes, translationMatrix, rotationMatrix, offsetLighting, invertFaces, renderedParts);
 	}
 	
-	public abstract IIcon getBlockIcon();
+	public abstract IIcon getBlockIcon(String groupName);
 }

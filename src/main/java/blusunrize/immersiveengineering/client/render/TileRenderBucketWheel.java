@@ -81,7 +81,7 @@ public class TileRenderBucketWheel extends TileEntitySpecialRenderer
 										minV + sizeV * textureCoordinate.v
 										);
 							}
-							face.addFaceForRender(ClientUtils.tes());
+							face.addFaceForRender(ClientUtils.tes(),0);
 							for(int v=0; v<face.vertices.length; ++v)
 								face.textureCoordinates[v] = new TextureCoordinate(oldUVs[v].u,oldUVs[v].v);
 //							face.textureCoordinates = oldUVs;

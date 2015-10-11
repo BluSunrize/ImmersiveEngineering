@@ -19,7 +19,7 @@ public class TileRenderArcFurnace extends TileRenderIE
 	ModelIEObj model0 = new ModelIEObj("immersiveengineering:models/arcFurnace.obj")
 	{
 		@Override
-		public IIcon getBlockIcon()
+		public IIcon getBlockIcon(String groupName)
 		{
 			return IEContent.blockMetalMultiblocks.getIcon(0, BlockMetalMultiblocks.META_arcFurnace);
 		}
@@ -27,7 +27,7 @@ public class TileRenderArcFurnace extends TileRenderIE
 	ModelIEObj model1 = new ModelIEObj("immersiveengineering:models/arcFurnace.obj")
 	{
 		@Override
-		public IIcon getBlockIcon()
+		public IIcon getBlockIcon(String groupName)
 		{
 			return IEContent.blockMetalMultiblocks.getIcon(1, BlockMetalMultiblocks.META_arcFurnace);
 		}

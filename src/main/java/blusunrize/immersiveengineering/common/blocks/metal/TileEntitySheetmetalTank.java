@@ -27,6 +27,7 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart implement
 {
 	public FluidTank tank = new FluidTank(512000);
 
+	@Override
 	public TileEntitySheetmetalTank master()
 	{
 		if(offset[0]==0&&offset[1]==0&&offset[2]==0)

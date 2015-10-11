@@ -10,8 +10,10 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.IIcon;
@@ -33,24 +35,25 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundingboxes
 {
-	public static int META_lightningRod=0;
-	public static int META_dieselGenerator=1;
-	public static int META_squeezer=2;
-	public static int META_fermenter=3;
-	public static int META_refinery=4;
-	public static int META_crusher=5;
-	public static int META_bucketWheel=6;
-	public static int META_excavator=7;
-	public static int META_arcFurnace=8;
-	public static int META_tank=9;
-	public static int META_silo=10;
+	public static final int META_lightningRod=0;
+	public static final int META_dieselGenerator=1;
+	public static final int META_squeezer=2;
+	public static final int META_fermenter=3;
+	public static final int META_refinery=4;
+	public static final int META_crusher=5;
+	public static final int META_bucketWheel=6;
+	public static final int META_excavator=7;
+	public static final int META_arcFurnace=8;
+	public static final int META_tank=9;
+	public static final int META_silo=10;
+	public static final int META_assembler=11;
 	public BlockMetalMultiblocks()
 	{
 		super("metalMultiblock", Material.iron, 4, ItemBlockIEBase.class,
 				"lightningRod","dieselGenerator",
 				"industrialSqueezer","fermenter","refinery",
 				"crusher","bucketWheel","excavator","arcFurnace",
-				"tank","silo");
+				"tank","silo","assembler");
 		setHardness(3.0F);
 		setResistance(15.0F);
 	}
@@ -79,7 +82,7 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 		icons[0][1] = iconRegister.registerIcon("immersiveengineering:metal_lightningrod_top");
 		icons[0][2] = iconRegister.registerIcon("immersiveengineering:metal_lightningrod_side");
 		icons[0][3] = iconRegister.registerIcon("immersiveengineering:metal_lightningrod_side");
-		
+
 		//2 industrialSqueezer
 		icons[2][0] = iconRegister.registerIcon("immersiveengineering:metal_squeezer");
 		icons[2][1] = iconRegister.registerIcon("immersiveengineering:metal_multiblockTop");
@@ -97,6 +100,7 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 		icons[META_excavator][0] = iconRegister.registerIcon("immersiveengineering:metal_multiblock_excavator");
 		icons[META_arcFurnace][0] = iconRegister.registerIcon("immersiveengineering:metal_multiblock_arcFurnace_inactive");
 		icons[META_arcFurnace][1] = iconRegister.registerIcon("immersiveengineering:metal_multiblock_arcFurnace_active");
+		icons[META_assembler][0] = iconRegister.registerIcon("immersiveengineering:metal_multiblock_assembler");
 		for(int i=0;i<4;i++)
 		{
 			icons[6][i] = iconRegister.registerIcon("immersiveengineering:storage_Steel");
@@ -149,11 +153,38 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 	public void breakBlock(World world, int x, int y, int z, Block par5, int par6)
 	{
 		TileEntity tileEntity = world.getTileEntity(x, y, z);
-		if(tileEntity instanceof TileEntityMultiblockPart)
+		if(tileEntity instanceof TileEntityMultiblockPart && world.getGameRules().getGameRuleBooleanValue("doTileDrops"))
 		{
 			TileEntityMultiblockPart tile = (TileEntityMultiblockPart)tileEntity;
 			if(!tile.formed && tile.pos==-1 && tile.getOriginalBlock()!=null)
 				world.spawnEntityInWorld(new EntityItem(world, x+.5,y+.5,z+.5, tile.getOriginalBlock().copy()));
+
+			if(tileEntity instanceof IInventory)
+			{
+				if(!world.isRemote && ((TileEntityMultiblockPart)tileEntity).formed)
+				{
+					TileEntity master = ((TileEntityMultiblockPart)tileEntity).master();
+					if(master==null)
+						master = tileEntity;
+					for(int i=0; i<((IInventory)master).getSizeInventory(); i++)
+					{
+						ItemStack stack = ((IInventory)master).getStackInSlot(i);
+						if(stack!=null)
+						{
+							float fx = world.rand.nextFloat() * 0.8F + 0.1F;
+							float fz = world.rand.nextFloat() * 0.8F + 0.1F;
+
+							EntityItem entityitem = new EntityItem(world, x+fx, y+.5, z+fz, stack);
+							entityitem.motionX = world.rand.nextGaussian()*.05;
+							entityitem.motionY = world.rand.nextGaussian()*.05+.2;
+							entityitem.motionZ = world.rand.nextGaussian()*.05;
+							if(stack.hasTagCompound())
+								entityitem.getEntityItem().setTagCompound((NBTTagCompound)stack.getTagCompound().copy());
+							world.spawnEntityInWorld(entityitem);
+						}
+					}
+				}
+			}
 		}
 		super.breakBlock(world, x, y, z, par5, par6);
 	}
@@ -270,12 +301,18 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 			}
 			return true;
 		}
-		if(!world.isRemote && !player.isSneaking() && curr instanceof TileEntitySilo)
+		if(curr instanceof TileEntityAssembler)
 		{
-			TileEntitySilo te = ( TileEntitySilo)curr;
-			TileEntitySilo master = te.master();
-			if(master==null)
-				master = te;
+			if(!player.isSneaking() && ((TileEntityAssembler)curr).formed)
+			{
+				TileEntityAssembler te = ((TileEntityAssembler)curr);
+				TileEntityAssembler master = te.master();
+				if(master==null)
+					master = te;
+				if(!world.isRemote)
+					player.openGui(ImmersiveEngineering.instance, Lib.GUIID_Assembler, world, master.xCoord, master.yCoord, master.zCoord);
+				return true;
+			}
 		}
 		return false;
 	}
@@ -502,28 +539,30 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 	{
 		switch(meta)
 		{
-		case 0://0 lightningRod
+		case META_lightningRod:
 			return new TileEntityLightningRod();
-		case 1://1 dieselGenerator
+		case META_dieselGenerator:
 			return new TileEntityDieselGenerator();
-		case 2://2 squeezer
+		case META_squeezer:
 			return new TileEntitySqueezer();
-		case 3://3 fermenter
+		case META_fermenter:
 			return new TileEntityFermenter();
-		case 4://4 fermenter
+		case META_refinery:
 			return new TileEntityRefinery();
-		case 5://5 crusher
+		case META_crusher:
 			return new TileEntityCrusher();
-		case 6://6 bucketWheel
+		case META_bucketWheel:
 			return new TileEntityBucketWheel();
-		case 7://7 excavator
+		case META_excavator:
 			return new TileEntityExcavator();
-		case 8://8 arcFurnace
+		case META_arcFurnace:
 			return new TileEntityArcFurnace();
-		case 9://9 tank
+		case META_tank:
 			return new TileEntitySheetmetalTank();
-		case 10://10 silo
+		case META_silo:
 			return new TileEntitySilo();
+		case META_assembler:
+			return new TileEntityAssembler();
 		}
 		return null;
 	}

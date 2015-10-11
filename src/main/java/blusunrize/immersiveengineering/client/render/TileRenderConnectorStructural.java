@@ -14,7 +14,7 @@ public class TileRenderConnectorStructural extends TileRenderImmersiveConnectabl
 	ModelIEObj model = new ModelIEObj("immersiveengineering:models/connectorStructural.obj")
 	{
 		@Override
-		public IIcon getBlockIcon()
+		public IIcon getBlockIcon(String groupName)
 		{
 			return IEContent.blockMetalDecoration.getIcon(0, BlockMetalDecoration.META_connectorStructural);
 		}

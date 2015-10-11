@@ -16,7 +16,7 @@ public class TileRenderPost extends TileRenderIE
 	static ModelIEObj model = new ModelIEObj("immersiveengineering:models/post.obj")
 	{
 		@Override
-		public IIcon getBlockIcon()
+		public IIcon getBlockIcon(String groupName)
 		{
 			return IEContent.blockWoodenDevice.getIcon(0, 0);
 		}

@@ -137,6 +137,7 @@ public class ManualPageMultiblock extends ManualPages
 			{
 				if(structureWidth%2==1)
 					GL11.glTranslatef(-.5f,0,0);
+				int iterator = 0;
 				for(int h=0; h<structure.length; h++)
 					if(showLayer==-1 || h<=showLayer)
 					{
@@ -159,7 +160,7 @@ public class ManualPageMultiblock extends ManualPages
 										ClientUtils.bindAtlas(0);
 										GL11.glPushMatrix();
 										GL11.glTranslatef(w-structureWidth/2, h-structureHeight/2, l-structureLength/2);
-										if(!multiblock.overwriteBlockRender(row[w]))
+										if(!multiblock.overwriteBlockRender(row[w], iterator++))
 											blockRender.renderBlockAsItem(b, row[w].getItemDamage(), 0.8F);
 										GL11.glPopMatrix();
 									}

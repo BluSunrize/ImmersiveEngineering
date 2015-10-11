@@ -36,6 +36,7 @@ import blusunrize.immersiveengineering.client.fx.EntityFXBlockParts;
 import blusunrize.immersiveengineering.client.fx.EntityFXItemParts;
 import blusunrize.immersiveengineering.client.fx.EntityFXSparks;
 import blusunrize.immersiveengineering.client.gui.GuiArcFurnace;
+import blusunrize.immersiveengineering.client.gui.GuiAssembler;
 import blusunrize.immersiveengineering.client.gui.GuiBlastFurnace;
 import blusunrize.immersiveengineering.client.gui.GuiCokeOven;
 import blusunrize.immersiveengineering.client.gui.GuiCrate;
@@ -58,6 +59,7 @@ import blusunrize.immersiveengineering.client.render.EntityRenderSkycrate;
 import blusunrize.immersiveengineering.client.render.ItemRenderDrill;
 import blusunrize.immersiveengineering.client.render.ItemRenderRevolver;
 import blusunrize.immersiveengineering.client.render.TileRenderArcFurnace;
+import blusunrize.immersiveengineering.client.render.TileRenderAssembler;
 import blusunrize.immersiveengineering.client.render.TileRenderBreakerSwitch;
 import blusunrize.immersiveengineering.client.render.TileRenderBucketWheel;
 import blusunrize.immersiveengineering.client.render.TileRenderConnectorHV;
@@ -94,6 +96,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDevices;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDevices2;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityArcFurnace;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityAssembler;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBreakerSwitch;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBucketWheel;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorHV;
@@ -121,6 +124,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySqueezer;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTransformer;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTransformerHV;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockArcFurnace;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockAssembler;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockBlastFurnace;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockBucketWheel;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockCokeOven;
@@ -196,6 +200,7 @@ public class ClientProxy extends CommonProxy
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFluidPipe_old.class, new TileRenderFluidPipe_old());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFluidPipe.class, new TileRenderFluidPipe());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFluidPump.class, new TileRenderFluidPump());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityAssembler.class, new TileRenderAssembler());
 
 		//WOOD
 		RenderingRegistry.registerBlockHandler(new BlockRenderWoodenDevices());
@@ -282,6 +287,7 @@ public class ClientProxy extends CommonProxy
 		ManualHelper.addEntry("minerals", ManualHelper.CAT_GENERAL, pages.toArray(new IManualPage[pages.size()]));
 		int blueprint = BlueprintCraftingRecipe.blueprintCategories.indexOf("electrode");
 		ManualHelper.addEntry("graphite", ManualHelper.CAT_GENERAL, new ManualPages.Text(ManualHelper.getManual(), "graphite0"),new ManualPages.Crafting(ManualHelper.getManual(), "graphite1", new ItemStack(IEContent.itemBlueprint,1,blueprint)));
+		ManualHelper.addEntry("shader", ManualHelper.CAT_GENERAL, new ManualPages.Text(ManualHelper.getManual(), "shader0"));
 
 		ManualHelper.addEntry("treatedwood", ManualHelper.CAT_CONSTRUCTION,
 				new ManualPages.Text(ManualHelper.getManual(), "treatedwood0"), 
@@ -311,8 +317,13 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.Crafting(ManualHelper.getManual(), "", new ItemStack(IEContent.blockMetalDecoration,1,BlockMetalDecoration.META_generator),new ItemStack(IEContent.blockMetalDecoration,1,BlockMetalDecoration.META_radiator)));
 		ManualHelper.addEntry("workbench", ManualHelper.CAT_CONSTRUCTION, new ManualPages.Crafting(ManualHelper.getManual(), "workbench0", new ItemStack(IEContent.blockWoodenDevice,1,5)));
 		ManualHelper.addEntry("blueprints", ManualHelper.CAT_CONSTRUCTION, new ManualPages.Text(ManualHelper.getManual(), "blueprints0"),new ManualPages.Text(ManualHelper.getManual(), "blueprints1"));
+		ManualHelper.addEntry("lighting", ManualHelper.CAT_CONSTRUCTION,
+				new ManualPages.Crafting(ManualHelper.getManual(), "lighting0", new ItemStack(IEContent.blockMetalDecoration,1,BlockMetalDecoration.META_lantern)),
+				new ManualPages.Crafting(ManualHelper.getManual(), "lighting1", new ItemStack(IEContent.blockMetalDevice2,1,BlockMetalDevices2.META_electricLantern)),
+				new ManualPages.Text(ManualHelper.getManual(), "lighting2"),
+				new ManualPages.Crafting(ManualHelper.getManual(), "lighting3", new ItemStack(IEContent.blockMetalDevice2,1,BlockMetalDevices2.META_floodLight)));
 
-
+		
 		ManualHelper.addEntry("wiring", ManualHelper.CAT_ENERGY,
 				new ManualPages.Text(ManualHelper.getManual(), "wiring0"),
 				new ManualPages.Crafting(ManualHelper.getManual(), "wiring1", new ItemStack(IEContent.itemWireCoil,1,OreDictionary.WILDCARD_VALUE)),
@@ -375,6 +386,9 @@ public class ClientProxy extends CommonProxy
 				new ManualPageMultiblock(ManualHelper.getManual(), "tanksilo0", MultiblockSheetmetalTank.instance),
 				new ManualPageMultiblock(ManualHelper.getManual(), "tanksilo1", MultiblockSilo.instance),
 				new ManualPages.Text(ManualHelper.getManual(), "tanksilo2"));
+		ManualHelper.addEntry("assembler", ManualHelper.CAT_MACHINES,
+				new ManualPageMultiblock(ManualHelper.getManual(), "assembler0", MultiblockAssembler.instance),
+				new ManualPages.Text(ManualHelper.getManual(), "assembler1"));
 		ManualHelper.addEntry("drill", ManualHelper.CAT_MACHINES,
 				new ManualPages.CraftingMulti(ManualHelper.getManual(), "drill0", new ItemStack(IEContent.itemDrill,1,0), new ItemStack(IEContent.itemMaterial,1,9)),
 				new ManualPages.Crafting(ManualHelper.getManual(), "drill1", new ItemStack(IEContent.itemDrillhead,1,0)),
@@ -392,7 +406,11 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.Crafting(ManualHelper.getManual(), "revolver5", new ItemStack(IEContent.itemToolUpgrades,1,4)),
 				new ManualPages.Crafting(ManualHelper.getManual(), "revolver6", new ItemStack(IEContent.itemToolUpgrades,1,5)),
 				new ManualPages.Crafting(ManualHelper.getManual(), "revolver7", new ItemStack(IEContent.itemToolUpgrades,1,6)));
-
+		ManualHelper.addEntry("fluidPipes", ManualHelper.CAT_MACHINES,
+				new ManualPages.Crafting(ManualHelper.getManual(), "fluidPipes0", new ItemStack(IEContent.blockMetalDevice2,1,BlockMetalDevices2.META_fluidPipe)),
+				new ManualPages.Crafting(ManualHelper.getManual(), "fluidPipes1", new ItemStack(IEContent.blockMetalDevice2,1,BlockMetalDevices2.META_fluidPump)),
+				new ManualPages.Text(ManualHelper.getManual(), "fluidPipes2"));
+		
 
 		sortedMap = DieselHandler.getPlantoilValuesSorted(true);
 		table = formatToTable_ItemIntHashmap(sortedMap,"mB");	
@@ -452,6 +470,8 @@ public class ClientProxy extends CommonProxy
 			return new GuiModWorkbench(player.inventory, (TileEntityModWorkbench) te);
 		if(ID==Lib.GUIID_ArcFurnace && te instanceof TileEntityArcFurnace)
 			return new GuiArcFurnace(player.inventory, (TileEntityArcFurnace) te);
+		if(ID==Lib.GUIID_Assembler && te instanceof TileEntityAssembler)
+			return new GuiAssembler(player.inventory, (TileEntityAssembler) te);
 		return null;
 	}
 

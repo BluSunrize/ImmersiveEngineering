@@ -19,7 +19,7 @@ public class TileRenderCrusher extends TileRenderIE
 	ModelIEObj model = new ModelIEObj("immersiveengineering:models/crusher.obj")
 	{
 		@Override
-		public IIcon getBlockIcon()
+		public IIcon getBlockIcon(String groupName)
 		{
 			return IEContent.blockMetalMultiblocks.getIcon(0, BlockMetalMultiblocks.META_crusher);
 		}
@@ -31,7 +31,7 @@ public class TileRenderCrusher extends TileRenderIE
 		TileEntityCrusher crusher = (TileEntityCrusher)tile;
 		
 		translationMatrix.translate(.5, 1.5, .5);
-		rotationMatrix.rotate(Math.toRadians(crusher.facing==2?180: crusher.facing==4?-90: crusher.facing==5?90: 0), 0,1,0);
+		rotationMatrix.rotate(Math.toRadians(crusher.facing==3?180: crusher.facing==4?-90: crusher.facing==5?90: 0), 0,1,0);
 		if(crusher.mirrored)
 			translationMatrix.scale(new Vertex(1,1,-1));
 

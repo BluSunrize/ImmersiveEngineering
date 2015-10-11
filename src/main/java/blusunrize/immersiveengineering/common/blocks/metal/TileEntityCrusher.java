@@ -50,6 +50,7 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 	@SideOnly(Side.CLIENT)
 	ItemStack particleStack;
 
+	@Override
 	public TileEntityCrusher master()
 	{
 		if(offset[0]==0&&offset[1]==0&&offset[2]==0)

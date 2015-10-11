@@ -5,9 +5,6 @@ import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
-
-import org.lwjgl.opengl.GL11;
-
 import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.IEContent;
@@ -77,7 +74,8 @@ public class MultiblockExcavatorDemo implements IMultiblock
 		return structure;
 	}
 	@Override
-	public boolean overwriteBlockRender(ItemStack stack)
+	@SideOnly(Side.CLIENT)
+	public boolean overwriteBlockRender(ItemStack stack, int iterator)
 	{
 		return false;
 	}
@@ -95,9 +93,9 @@ public class MultiblockExcavatorDemo implements IMultiblock
 		te.formed=true;
 		te.pos=4;
 		te.facing=3;
-		GL11.glRotated(180, 0,1,0);
+		ClientUtils.bindAtlas(0);
 		ClientUtils.tes().startDrawingQuads();
-		ClientUtils.tes().setTranslation(-.5,-.5,-.5);
+		ClientUtils.tes().setTranslation(-.5,-.5,3.5);
 		ClientUtils.handleStaticTileRenderer(te, false);
 		ClientUtils.tes().setTranslation(0,0,0);
 		ClientUtils.tes().draw();

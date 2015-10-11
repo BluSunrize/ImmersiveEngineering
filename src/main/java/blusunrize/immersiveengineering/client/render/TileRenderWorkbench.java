@@ -22,7 +22,7 @@ public class TileRenderWorkbench extends TileRenderIE
 	static ModelIEObj model = new ModelIEObj("immersiveengineering:models/workbench.obj")
 	{
 		@Override
-		public IIcon getBlockIcon()
+		public IIcon getBlockIcon(String groupName)
 		{
 			return IEContent.blockWoodenDevice.getIcon(0, 5);
 		}

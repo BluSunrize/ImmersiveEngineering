@@ -37,6 +37,7 @@ public class TileEntityRefinery extends TileEntityMultiblockPart implements IFlu
 	public EnergyStorage energyStorage = new EnergyStorage(32000,Math.max(256, Config.getInt("refinery_consumption")));
 	public ItemStack[] inventory = new ItemStack[6];
 
+	@Override
 	public TileEntityRefinery master()
 	{
 		if(offset[0]==0&&offset[1]==0&&offset[2]==0)

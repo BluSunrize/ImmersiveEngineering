@@ -15,7 +15,7 @@ public class TileRenderWallmount extends TileRenderIE
 	static ModelIEObj model = new ModelIEObj("immersiveengineering:models/wallmount.obj")
 	{
 		@Override
-		public IIcon getBlockIcon()
+		public IIcon getBlockIcon(String groupName)
 		{
 			return IEContent.blockWoodenDecoration.getIcon(0, 6);
 		}
@@ -23,7 +23,7 @@ public class TileRenderWallmount extends TileRenderIE
 	static ModelIEObj modelMetal = new ModelIEObj("immersiveengineering:models/wallmount.obj")
 	{
 		@Override
-		public IIcon getBlockIcon()
+		public IIcon getBlockIcon(String groupName)
 		{
 			return IEContent.blockMetalDecoration.getIcon(0, BlockMetalDecoration.META_wallMount);
 		}

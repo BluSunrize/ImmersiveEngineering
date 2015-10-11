@@ -16,7 +16,7 @@ public class TileRenderFluidPipe extends TileRenderIE
 	static ModelIEObj model = new ModelIEObj("immersiveengineering:models/pipe.obj")
 	{
 		@Override
-		public IIcon getBlockIcon()
+		public IIcon getBlockIcon(String groupName)
 		{
 			return IEContent.blockMetalDevice2.getIcon(0, BlockMetalDevices2.META_fluidPipe);
 		}
@@ -239,4 +239,5 @@ public class TileRenderFluidPipe extends TileRenderIE
 				model.render(tile, tes, translationMatrix, new Matrix4(), 1, false, connectionCaps.toArray(new String[connectionCaps.size()]));
 		}
 	}
+
 }

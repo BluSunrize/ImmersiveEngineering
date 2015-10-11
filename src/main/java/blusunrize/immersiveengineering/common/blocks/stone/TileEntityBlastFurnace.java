@@ -23,6 +23,7 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart implements 
 	public int burnTime = 0;
 	public int lastBurnTime = 0;
 
+	@Override
 	public TileEntityBlastFurnace master()
 	{
 		if(offset[0]==0&&offset[1]==0&&offset[2]==0)

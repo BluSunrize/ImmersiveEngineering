@@ -39,7 +39,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 	@SideOnly(Side.CLIENT)
 	public int pouringMetal;
 
-
+	@Override
 	public TileEntityArcFurnace master()
 	{
 		if(offset[0]==0&&offset[1]==0&&offset[2]==0)

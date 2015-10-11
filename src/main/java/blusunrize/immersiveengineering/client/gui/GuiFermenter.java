@@ -30,7 +30,7 @@ public class GuiFermenter extends GuiContainer
 
 		if(!tooltip.isEmpty())
 		{
-			this.drawHoveringText(tooltip, mx-guiLeft, my-guiTop, fontRendererObj);
+			ClientUtils.drawHoveringText(tooltip, mx-guiLeft, my-guiTop, fontRendererObj, guiLeft+xSize,-1);
 			RenderHelper.enableGUIStandardItemLighting();
 		}
 	}

@@ -52,6 +52,7 @@ tile.ImmersiveEngineering.metalMultiblock.excavator.name=Excavator
 tile.ImmersiveEngineering.metalMultiblock.arcFurnace.name=Arc Furnace
 tile.ImmersiveEngineering.metalMultiblock.tank.name=Fluid Tank
 tile.ImmersiveEngineering.metalMultiblock.silo.name=Item Silo
+tile.ImmersiveEngineering.metalMultiblock.assembler.name=Assembler
 
 tile.ImmersiveEngineering.metalDecoration.fence.name=Steel Fence
 tile.ImmersiveEngineering.metalDecoration.scaffolding.name=Steel Scaffolding
@@ -535,11 +536,18 @@ ie.manual.entry.metalconstruction0=Apart from Treated Wood, processed metals mak
 ie.manual.entry.metalconstruction1=Steel is not only an integral part of high-voltage architectures, it is also quite useful in, well, architecture. Steel scaffolding can be used to quickly create climbable structures, steel fencing keeps baddies at bay and structural arms make for great attachment points for your HV relays. 
 ie.manual.entry.metalconstruction2=Structural Connectors work similarly to normal connectors, but instead of transferring energy, they are purely decorative.<br>They won't accept normal wires, but Hemp Rope and Steel Cable (see next page).<br>You can also rotate them by rightclicking them with an Engineer's Hammer.
 
+ie.manual.entry.lighting.name=Engineered Lighting
+ie.manual.entry.lighting.subtext=Lighting up the Wasteland
+ie.manual.entry.lighting0=Deep in the halls of the factories, it can be quite dark. In order to still find your way around the machines, you should probably light up the place with some Lanterns. These Lanterns provide as much light as a glowstone block would.
+ie.manual.entry.lighting1=Powered Lanterns are one of the first ever invented uses for electric power. To run these, you need to connect them directly to your power grid using wires. They will allow power to be transferred through them, so you can link them in a row.
+ie.manual.entry.lighting2=As long as they are supplied with a little bit of power, they will light up the sourounding area like a normal Lantern, but additionally, they will also prevent hostile mobs to spawn in a 32 block radius!
+ie.manual.entry.lighting3=Floodlight
+
 ie.manual.entry.tanksilo.name=Tanks and Silos
 ie.manual.entry.tanksilo.subtext=Full to the brim!
-ie.manual.entry.tanksilo0=Sheetmetal Tanks and Silos provide space for large amounts of fluid and items.<br>The tanks will store up to 512 buckets of any fluid, which can be piped in through the top or bottom block.
+ie.manual.entry.tanksilo0=Sheetmetal Tanks and Silos provide space for large amounts of fluid and items.<br>The tanks will store up to 512 buckets of any fluid, which can be piped in through the top or bottom block. The multiblock is formed by clicking a middle block of the second layer.
 ie.manual.entry.tanksilo1=Silos offer space for a lot of items of the same type, making them excellent for mass storage of seeds, slag or cobblestone. They have space for 41472 items, equalling the capacity of 24 chests.
-ie.manual.entry.tanksilo2=Items must be input through the top and extracted from the bottom. Applying a redstone signal to the bottom block will make it output automatically.
+ie.manual.entry.tanksilo2=Items must be input through the top and extracted from the bottom. Applying a redstone signal to the bottom block will make it output automatically. The multiblock is formed by clicking a middle block of the second layer.
 
 ie.manual.entry.highvoltage.name=High-Voltage
 ie.manual.entry.highvoltage.subtext=You can't shake the shock
@@ -586,6 +594,13 @@ ie.manual.entry.furnaceHeater0=The External Heater does exactly what its name im
 ie.manual.entry.furnaceHeater1=Click a side of the heater with a hammer to make it an energy acceptor, sneak to target the opposing side.<br>The heater will consume §o<config;i;heater_consumption> RF/t§r for each heat unit added. During the initial phase of the furnace, the heater will produce up to §o4§r units of heat per tick, but as soon as the furnace reaches maximum temperature, it will only require §o1§r unit of heat to keep it going.
 ie.manual.entry.furnaceHeater2=Even better, while the furnace is at maximum temperature, the heater will consume an additional §o<config;i;heater_speedupConsumption> RF/t§r to increase the furnace's processing speed.<br>The heater will only affect a furnace with a valid input and space in the output slot, in order to conserve energy. However, you can apply a redstone signal to the heater to disable that functionality and have it keep the furnace at full heat.
 
+ie.manual.entry.fluidPipes.name=Fluid Transport
+ie.manual.entry.fluidPipes.subtext=Professional Plumber
+ie.manual.entry.fluidPipes0=Transporting fluids has become quite essential in the engineering business. Fluid Pipes and Fluid Pumps do exactly that. On their own, Fluid Pipes are quite slow at transferrign fluids, but if a pump is used to insert the fluid, it'll move much faster.
+ie.manual.entry.fluidPipes1=You can rightclick the connection piece of a pipe to prevent it from conencting to that side.
+ie.manual.entry.fluidPipes2=Fluid Pumps have two essential functions. They can be used to insert into pipes at high pressure, to transfer fluids much faster, or they can pick up fluids from the world. Using your hammer on the base of the pump will switch the sides between in- and output.
+ie.manual.entry.fluidPipes3=In order for the pump to pick up fluid blocks, it will need a power input at the top and a redstone signal. Pumps can also be used to extract from tanks and other fluid containers that do not have an automatic output. This will also require a redstone signal, but won't consume power.
+
 ie.manual.entry.sorter.name=Item Router
 ie.manual.entry.sorter.subtext=Left foot yellow, right hand green
 ie.manual.entry.sorter0=The Item Router is a block which will accept and redistribute items down filtered paths. Place it down and rightclick it to open the interface, which shows six different, colour and direction coordinated filters.
@@ -605,11 +620,15 @@ ie.manual.entry.revolver.subtext=Wanted: Dead or Alive
 ie.manual.entry.revolver0=The Revolver, a more elegant weapon from a more civilized age, is an achievement of small mechanics. Small being relative here, since this weapon is chambered for 12-gauge.<br>Similar to the Mining Drill, the Revolver will allow for modification in the <link;workbench;§o§nEngineer's §o§nWorkbench§r>, as detailed on the last pages.
 ie.manual.entry.revolver1=There are different types of ammunition the Revolver will accept. To load it, sneak+rightclick the weapon, then place cartridges into the slots.<br>A loaded Speedloader in your inventory, will be used to refill the revolver after you've fired your last shot.
 ie.manual.entry.revolver2=Cartridges are created in the Engineer's Workbench, by the use of specific <link;blueprints;§o§nEngineer's §o§nBlueprints§r>. Blueprints for normal ammunition you can create yourself, but some more advanced types of ammunition will require you to buy adequate blueprints from someone else. 
-ie.manual.entry.revolver3=These are common types of ammunition, created with simple, selfmade blueprints:<br><br>§lCasull:§r Simple lead projectile, capable of inflicting medium damage.<br>§lArmor-Piercing:§r Dense metal projectile, penetrates the armor by sheer kinetic force.<br>§lBuckshot:§r Collection of small projectiles, spreading in a cone shape. Effective at short range.<br>§lHigh-Explosive:§r Creates small explosion on impact.<br>§lSilver:§r Lead core in silver, effective against...werewolves?!.
-ie.manual.entry.revolver4=These are more intricate types of ammunition, created with unique blueprints that cannot be crafted, only found or bought.<br><br>§lDragon's Breath:§r Flammable metal dust, creates a short-ranged inferno.<config;b;botaniaBullets;<br>§lHoming:§r Will home in on the closest target.<br>§lWolfpack:§r Cluster projectile, initially unguided, but splits into 6 small, target-seeking, projectiles on impact.;>
+ie.manual.entry.revolver3=These are common types of ammunition, created with simple, selfmade blueprints:<br><br>§lCasull:§r Simple lead projectile, capable of inflicting medium damage.<br>§lArmor-Piercing:§r Dense metal projectile, penetrates the armor by sheer kinetic force.<br>§lBuckshot:§r Collection of small projectiles, spreading in a cone shape. Effective at short range.<br>§lHigh-Explosive:§r Creates small explosion on impact.<br>§lSilver:§r Lead core in silver, effective against...werewolves?!
+ie.manual.entry.revolver4=These are more intricate types of ammunition, created with unique blueprints that cannot be crafted, only found or bought.<br><br>§lDragon's Breath:§r Flammable metal dust, creates a short-ranged inferno.<config;b;botaniaBullets;<br>§lHoming:§r Will home in on the closest target.<br>§lWolfpack:§r Unguided cluster projectile, splits into 6 small, homing, shots.;><br>§lPhial:§r Can be crafted with any potion to create a shot that inflicts the potion effect.
 ie.manual.entry.revolver5=By attaching a bayonet to the revolver, you outfit it with close-quarter-combat capabilities, allowing for melee damage as powerful as an Iron Sword.
 ie.manual.entry.revolver6=The Extended Magazine allows loading 6 more cartridges into the revolver. This magazine does not get refilled by a speedloader.
 ie.manual.entry.revolver7=The Amplifying Electron Tubes apply an electric shock to fired projectiles. This shock persists till it hits the target (don't ask how it works) and is passed on. The target will be stunned for a fraction of a second and all powered equipment they may be using will suffer a slight discharge.
+
+ie.manual.entry.shader.name=Shaders
+ie.manual.entry.shader.subtext=Blue! No, yellow!
+ie.manual.entry.shader0=Shaders are items you can find in the world or aquire by trading with villagers. They don't ahve a purpose by themselves, but they can be equipped to <link;revolver;§o§nrevolvers§r> (and possibly other things you still have to discover) to change the designs of the item. Simply put the item in an <link;workbench;§o§nEngineer's §o§nWorkbench§r> and equip the shader in the apropriate slot.
 
 ie.manual.entry.crusher.name=Crusher
 ie.manual.entry.crusher.subtext=Keep your hands out!

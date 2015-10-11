@@ -30,6 +30,7 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart implements ISid
 	public int processMax = 0;
 	public boolean active = false;
 
+	@Override
 	public TileEntityCokeOven master()
 	{
 		if(offset[0]==0&&offset[1]==0&&offset[2]==0)

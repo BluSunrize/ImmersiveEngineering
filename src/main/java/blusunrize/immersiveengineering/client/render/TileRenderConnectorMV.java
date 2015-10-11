@@ -14,7 +14,7 @@ public class TileRenderConnectorMV extends TileRenderImmersiveConnectable
 	ModelIEObj model = new ModelIEObj("immersiveengineering:models/connectorMV.obj")
 	{
 		@Override
-		public IIcon getBlockIcon()
+		public IIcon getBlockIcon(String groupName)
 		{
 			return IEContent.blockMetalDevice.getIcon(0, BlockMetalDevices.META_connectorMV);
 		}

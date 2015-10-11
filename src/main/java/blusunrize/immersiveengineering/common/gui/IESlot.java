@@ -238,7 +238,24 @@ public abstract class IESlot extends Slot
 			return 1;
 		}
 	}
-
+	public static class ItemDisplay extends IESlot
+	{
+		public ItemDisplay(Container container, IInventory inv, int id, int x, int y)
+		{
+			super(container, inv, id, x, y);
+		}
+		@Override
+		public boolean isItemValid(ItemStack itemStack)
+		{
+			return false;
+		}
+		@Override
+		public boolean canTakeStack(EntityPlayer player)
+		{
+			return false;
+		}
+	}
+	
 	public static class BlueprintInput extends IESlot
 	{
 		ItemStack upgradeableTool;

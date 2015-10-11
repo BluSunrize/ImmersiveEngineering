@@ -143,9 +143,18 @@ public class BlockRenderMetalDevices2 implements ISimpleBlockRenderingHandler
 		}
 		else if(metadata==BlockMetalDevices2.META_fluidPipe)
 		{
-//			TileEntityFluidPipe_old tile = (TileEntityFluidPipe_old)world.getTileEntity(x, y, z);
 			TileEntityFluidPipe tile = (TileEntityFluidPipe)world.getTileEntity(x, y, z);
 			ClientUtils.handleStaticTileRenderer(tile);
+			if(tile.scaffoldCovering!=null)
+			{
+				Block cover = Block.getBlockFromItem(tile.scaffoldCovering.getItem());
+				ClientUtils.drawWorldBlock(world, cover, x, y, z, tile.scaffoldCovering.getItemDamage());
+//				renderer.setRenderBounds(0,0,0,1,1,1);
+//				renderer.setOverrideBlockTexture(cover.getIcon(0, tile.scaffoldCovering.getItemDamage()));
+				
+//				renderer.renderBlockByRenderType(cover, x, y, z);
+//				renderer.clearOverrideBlockTexture();
+			}
 			return true;
 		}
 		else if(metadata==BlockMetalDevices2.META_fluidPump)

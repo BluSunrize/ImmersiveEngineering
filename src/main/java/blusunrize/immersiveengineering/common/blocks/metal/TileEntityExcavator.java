@@ -48,6 +48,7 @@ public class TileEntityExcavator extends TileEntityMultiblockPart implements IEn
 		return s!=null?s.copy():null;
 	}
 
+	@Override
 	public TileEntityExcavator master()
 	{
 		if(offset[0]==0&&offset[1]==0&&offset[2]==0)

@@ -35,6 +35,6 @@ public abstract class TileEntityMultiblockPart extends TileEntityIEBase
 	{
 		return true;
 	}
-	
+	public abstract TileEntityMultiblockPart master();
 	public abstract ItemStack getOriginalBlock();
 }

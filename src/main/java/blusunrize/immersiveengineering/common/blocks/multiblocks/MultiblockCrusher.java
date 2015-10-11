@@ -52,7 +52,8 @@ public class MultiblockCrusher implements IMultiblock
 		return structure;
 	}
 	@Override
-	public boolean overwriteBlockRender(ItemStack stack)
+	@SideOnly(Side.CLIENT)
+	public boolean overwriteBlockRender(ItemStack stack, int iterator)
 	{
 		return false;
 	}
@@ -70,6 +71,7 @@ public class MultiblockCrusher implements IMultiblock
 		te.formed=true;
 		te.pos=17;
 		te.facing=4;
+		ClientUtils.bindAtlas(0);
 		ClientUtils.tes().startDrawingQuads();
 		ClientUtils.tes().setTranslation(-1f, -1, 0);
 		ClientUtils.handleStaticTileRenderer(te, false);
