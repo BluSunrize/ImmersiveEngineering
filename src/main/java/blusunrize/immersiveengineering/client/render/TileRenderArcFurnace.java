@@ -43,7 +43,10 @@ public class TileRenderArcFurnace extends TileRenderIE
 		translationMatrix.translate(.5, .5, .5);
 		rotationMatrix.rotate(Math.toRadians(arc.facing==2?180: arc.facing==4?-90: arc.facing==5?90: 0), 0,1,0);
 		if(arc.mirrored)
-			translationMatrix.scale(new Vertex(1,1,-1));
+			translationMatrix.scale(new Vertex(arc.facing<4?-1:1,1,arc.facing>3?-1:1));
+
+//		if(arc.mirrored)
+//			translationMatrix.scale(new Vertex(1,1,-1));
 
 		String[] render = new String[5];
 		render[0]="base";

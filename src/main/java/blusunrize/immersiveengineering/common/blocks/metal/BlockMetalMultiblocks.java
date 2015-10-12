@@ -69,7 +69,7 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 	public void getSubBlocks(Item item, CreativeTabs tab, List list)
 	{
 		for(int i=0; i<subNames.length; i++)
-			if(i!=META_dieselGenerator && i!=META_refinery && i!=META_crusher && i!=META_bucketWheel && i!=META_excavator && i!=META_arcFurnace && i!=META_tank && i!=META_silo)
+			if(i!=META_dieselGenerator && i!=META_refinery && i!=META_crusher && i!=META_bucketWheel && i!=META_excavator && i!=META_arcFurnace && i!=META_tank && i!=META_silo && i!=META_assembler)
 				list.add(new ItemStack(item, 1, i));
 	}
 

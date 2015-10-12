@@ -31,9 +31,9 @@ public class TileRenderCrusher extends TileRenderIE
 		TileEntityCrusher crusher = (TileEntityCrusher)tile;
 		
 		translationMatrix.translate(.5, 1.5, .5);
-		rotationMatrix.rotate(Math.toRadians(crusher.facing==3?180: crusher.facing==4?-90: crusher.facing==5?90: 0), 0,1,0);
+		rotationMatrix.rotate(Math.toRadians(crusher.facing==2?180: crusher.facing==4?-90: crusher.facing==5?90: 0), 0,1,0);
 		if(crusher.mirrored)
-			translationMatrix.scale(new Vertex(1,1,-1));
+			translationMatrix.scale(new Vertex(crusher.facing<4?-1:1,1,crusher.facing>3?-1:1));
 
 		model.render(tile, tes, translationMatrix, rotationMatrix, 0, crusher.mirrored, "base");
 	}

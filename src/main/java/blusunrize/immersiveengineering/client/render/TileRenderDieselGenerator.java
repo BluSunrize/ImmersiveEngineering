@@ -33,7 +33,7 @@ public class TileRenderDieselGenerator extends TileRenderIE
 		translationMatrix.translate(.5, .5, .5);
 		rotationMatrix.rotate(Math.toRadians(gen.facing==3?180: gen.facing==4?90: gen.facing==5?-90: 0), 0,1,0);
 		if(gen.mirrored)
-			translationMatrix.scale(new Vertex(1,1,-1));
+			translationMatrix.scale(new Vertex(gen.facing<4?-1:1,1,gen.facing>3?-1:1));
 		model.render(tile, tes, translationMatrix, rotationMatrix, 0, gen.mirrored, "base");
 	}
 	@Override
