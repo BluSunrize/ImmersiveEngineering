@@ -112,6 +112,7 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable
 				((TileEntityTransformer)above).connectCable(cableType, target);
 			else
 				return;
+		}
 		switch(getTargetedConnector(target))
 		{
 		case 0:
@@ -122,7 +123,6 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable
 			if(secondCable==null)
 				this.secondCable = cableType;
 			break;
-		}
 		}
 	}
 	@Override
