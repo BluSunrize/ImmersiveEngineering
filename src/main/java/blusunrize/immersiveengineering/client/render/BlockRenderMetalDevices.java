@@ -159,6 +159,7 @@ public class BlockRenderMetalDevices implements ISimpleBlockRenderingHandler
 			if(!tile.dummy)
 			{
 				ClientUtils.handleStaticTileRenderer(tile);
+				ClientUtils.renderAttachedConnections(tile);
 				return true;
 			}
 		}
@@ -199,6 +200,7 @@ public class BlockRenderMetalDevices implements ISimpleBlockRenderingHandler
 			if(!tile.dummy)
 			{
 				ClientUtils.handleStaticTileRenderer(tile);
+				ClientUtils.renderAttachedConnections(tile);
 				return true;
 			}
 		}
