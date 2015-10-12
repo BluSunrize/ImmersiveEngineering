@@ -32,12 +32,12 @@ public class EntitySkylineHook extends Entity
 	{
 		super(world);
 		this.setSize(.125f,.125f);
-		this.noClip=true;
+//		this.noClip=true;
 	}
 	public EntitySkylineHook(World world, double x, double y, double z, Connection connection, ChunkCoordinates target, Vec3[] subPoints)
 	{
 		super(world);
-		this.noClip=true;
+//		this.noClip=true;
 		this.setSize(0.125F, 0.125F);
 		this.setLocationAndAngles(x, y, z, this.rotationYaw, this.rotationPitch);
 		this.setPosition(x, y, z);

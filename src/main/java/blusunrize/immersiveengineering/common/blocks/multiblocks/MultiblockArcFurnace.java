@@ -118,6 +118,12 @@ public class MultiblockArcFurnace implements IMultiblock
 	}
 
 	@Override
+	public String getUniqueName()
+	{
+		return "IE:ArcFurnace";
+	}
+	
+	@Override
 	public boolean isBlockTrigger(Block b, int meta)
 	{
 		return b==Blocks.cauldron;

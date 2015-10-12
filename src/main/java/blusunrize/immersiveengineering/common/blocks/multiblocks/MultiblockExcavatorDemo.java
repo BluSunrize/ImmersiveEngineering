@@ -113,6 +113,12 @@ public class MultiblockExcavatorDemo implements IMultiblock
 	}
 
 	@Override
+	public String getUniqueName()
+	{
+		return "IE:ExcavatorDemo";
+	}
+	
+	@Override
 	public boolean isBlockTrigger(Block b, int meta)
 	{
 		return false;

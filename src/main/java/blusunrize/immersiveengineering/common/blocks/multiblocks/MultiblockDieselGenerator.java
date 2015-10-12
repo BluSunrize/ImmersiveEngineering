@@ -71,6 +71,12 @@ public class MultiblockDieselGenerator implements IMultiblock
 	}
 
 	@Override
+	public String getUniqueName()
+	{
+		return "IE:DieselGenrator";
+	}
+	
+	@Override
 	public boolean isBlockTrigger(Block b, int meta)
 	{
 		return b==IEContent.blockMetalDecoration && (meta==BlockMetalDecoration.META_radiator||meta==BlockMetalDecoration.META_generator);

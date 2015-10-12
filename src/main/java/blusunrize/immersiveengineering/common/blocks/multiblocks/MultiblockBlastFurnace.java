@@ -1,7 +1,5 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -12,6 +10,8 @@ import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.stone.TileEntityBlastFurnace;
 import blusunrize.immersiveengineering.common.util.IEAchievements;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class MultiblockBlastFurnace implements IMultiblock
 {
@@ -46,6 +46,12 @@ public class MultiblockBlastFurnace implements IMultiblock
 	@SideOnly(Side.CLIENT)
 	public void renderFormedStructure()
 	{
+	}
+	
+	@Override
+	public String getUniqueName()
+	{
+		return "IE:BlastFurnace";
 	}
 	
 	@Override

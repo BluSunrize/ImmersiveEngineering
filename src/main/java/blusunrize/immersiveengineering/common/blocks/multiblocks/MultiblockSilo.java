@@ -70,6 +70,12 @@ public class MultiblockSilo implements IMultiblock
 	}
 
 	@Override
+	public String getUniqueName()
+	{
+		return "IE:Silo";
+	}
+	
+	@Override
 	public boolean isBlockTrigger(Block b, int meta)
 	{
 		return b==IEContent.blockMetalDecoration && (meta==BlockMetalDecoration.META_sheetMetal);

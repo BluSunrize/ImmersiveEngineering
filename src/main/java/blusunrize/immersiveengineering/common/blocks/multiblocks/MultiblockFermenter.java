@@ -68,6 +68,12 @@ public class MultiblockFermenter implements IMultiblock
 	}
 
 	@Override
+	public String getUniqueName()
+	{
+		return "IE:Fermenter";
+	}
+	
+	@Override
 	public boolean isBlockTrigger(Block b, int meta)
 	{
 		return b==IEContent.blockMetalMultiblocks && (meta==BlockMetalMultiblocks.META_fermenter);

@@ -69,6 +69,12 @@ public class MultiblockSheetmetalTank implements IMultiblock
 	}
 
 	@Override
+	public String getUniqueName()
+	{
+		return "IE:SheetmetalTank";
+	}
+	
+	@Override
 	public boolean isBlockTrigger(Block b, int meta)
 	{
 		return b==IEContent.blockMetalDecoration && (meta==BlockMetalDecoration.META_sheetMetal);

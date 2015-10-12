@@ -67,6 +67,12 @@ public class MultiblockBucketWheel implements IMultiblock
 	}
 
 	@Override
+	public String getUniqueName()
+	{
+		return "IE:BucketWheel";
+	}
+	
+	@Override
 	public boolean isBlockTrigger(Block b, int meta)
 	{
 		return Utils.compareToOreName(new ItemStack(b,1,meta), "blockSteel");

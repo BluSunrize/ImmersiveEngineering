@@ -1,7 +1,5 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -11,6 +9,8 @@ import net.minecraft.world.World;
 import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.stone.TileEntityCokeOven;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class MultiblockCokeOven implements IMultiblock
 {
@@ -51,6 +51,12 @@ public class MultiblockCokeOven implements IMultiblock
 	{
 	}
 
+	@Override
+	public String getUniqueName()
+	{
+		return "IE:CokeOven";
+	}
+	
 	@Override
 	public boolean isBlockTrigger(Block b, int meta)
 	{

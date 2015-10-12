@@ -9,6 +9,7 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.StatCollector;
@@ -77,9 +78,24 @@ public class ItemIETool extends ItemIEBase implements cofh.api.item.IToolHammer
 			TileEntity tileEntity = world.getTileEntity(x, y, z);
 			if(stack.getItemDamage()==0)
 			{
+				String[] interdictedMultiblocks = null;
+				if(ItemNBTHelper.hasKey(stack, "multiblockInterdiction"))
+				{
+					NBTTagList list = stack.getTagCompound().getTagList("multiblockInterdiction", 8);
+					interdictedMultiblocks = new String[list.tagCount()];
+					for(int i=0; i<interdictedMultiblocks.length; i++)
+						interdictedMultiblocks[i] = list.getStringTagAt(i);
+				}
 				for(IMultiblock mb : MultiblockHandler.getMultiblocks())
-					if(mb.isBlockTrigger(world.getBlock(x, y, z), world.getBlockMetadata(x, y, z)) && mb.createStructure(world, x, y, z, side, player))
-						return true;
+					if(mb.isBlockTrigger(world.getBlock(x, y, z), world.getBlockMetadata(x, y, z)))
+					{
+						if(interdictedMultiblocks!=null)
+							for(String s : interdictedMultiblocks)
+								if(mb.getUniqueName().equalsIgnoreCase(s))
+									return false;
+						
+						return mb.createStructure(world, x, y, z, side, player);
+					}
 			}
 			else if(stack.getItemDamage()==1 && tileEntity instanceof IImmersiveConnectable)
 			{
@@ -134,50 +150,50 @@ public class ItemIETool extends ItemIEBase implements cofh.api.item.IToolHammer
 			}
 
 
-//						x += 6;
-//						y += 1;
-//			
-//						world.createExplosion(player, x+.5, y+.5, z+.5, 1.5f, true);
-//			
-//						float vex = 16;
-//			
-//						if(world instanceof WorldServer)
-//							for(int i=0; i<vex; i++)
-//							{
-//								float angle = i*(360/vex);
-//								float h = 0;
-//								for(int j=0; j<16; j++)
-//								{
-//									float r = 1f-Math.min(j,5)*.0625f;
-//									double xx = r*Math.cos(angle);
-//									double zz = r*Math.sin(angle);
-//									((WorldServer)world).func_147487_a("explode", x+xx, y+h,z+zz, 0, 0,0,0, 1);
-//									((WorldServer)world).func_147487_a("largesmoke", x+xx,y+h,z+zz, 0, 0,.0,0, 1);
-//									((WorldServer)world).func_147487_a("largesmoke", x+xx,y+h,z+zz, 0, 0,.0,0, 1);
-//									//					world.spawnParticle("explode", x+xx, y+h,z+zz, 0,0,0);
-//									//					world.spawnParticle("largesmoke", x+xx,y+h,z+zz, 0,.0,0);
-//									//					world.spawnParticle("largesmoke", x+xx,y+h,z+zz, 0,.0,0);
-//									if(i%2==0)
-//										//						world.spawnParticle("angryVillager", x+xx, y+h,z+zz, 0,0,0);
-//										((WorldServer)world).func_147487_a("angryVillager", x+xx, y+h,z+zz, 0, 0,0,0, 1);
-//									h += .1875f;
-//								}
-//								for(int j=0; j<16; j++)
-//								{
-//									float r = (float)(Math.cos(112.5f-j*(45/16f)));
-//									double xx = r*Math.cos(angle);
-//									double zz = r*Math.sin(angle);
-//									//					world.spawnParticle("explode", x+xx, y+h, z+zz, 0,.0,0);
-//									//					world.spawnParticle("largesmoke", x+xx, y+h, z+zz, xx*.025,.0,zz*.025);
-//									//					world.spawnParticle("largesmoke", x+xx, y+h, z+zz, xx*.05,.0,zz*.05);
-//									//					world.spawnParticle("largesmoke", x+xx, y+h, z+zz, xx*.1,.0,zz*.1);
-//									((WorldServer)world).func_147487_a("explode", x+xx, y+h, z+zz, 0, 0,.0,0, 1);
-//									((WorldServer)world).func_147487_a("largesmoke", x+xx, y+h, z+zz, 0, xx*.025,.0,zz*.025, 1);
-//									((WorldServer)world).func_147487_a("largesmoke", x+xx, y+h, z+zz, 0, xx*.05,.0,zz*.05, 1);
-//									((WorldServer)world).func_147487_a("largesmoke", x+xx, y+h, z+zz, 0, xx*.1,.0,zz*.1, 1);
-//									h += .0625f;
-//								}
-//							}
+			//						x += 6;
+			//						y += 1;
+			//			
+			//						world.createExplosion(player, x+.5, y+.5, z+.5, 1.5f, true);
+			//			
+			//						float vex = 16;
+			//			
+			//						if(world instanceof WorldServer)
+			//							for(int i=0; i<vex; i++)
+			//							{
+			//								float angle = i*(360/vex);
+			//								float h = 0;
+			//								for(int j=0; j<16; j++)
+			//								{
+			//									float r = 1f-Math.min(j,5)*.0625f;
+			//									double xx = r*Math.cos(angle);
+			//									double zz = r*Math.sin(angle);
+			//									((WorldServer)world).func_147487_a("explode", x+xx, y+h,z+zz, 0, 0,0,0, 1);
+			//									((WorldServer)world).func_147487_a("largesmoke", x+xx,y+h,z+zz, 0, 0,.0,0, 1);
+			//									((WorldServer)world).func_147487_a("largesmoke", x+xx,y+h,z+zz, 0, 0,.0,0, 1);
+			//									//					world.spawnParticle("explode", x+xx, y+h,z+zz, 0,0,0);
+			//									//					world.spawnParticle("largesmoke", x+xx,y+h,z+zz, 0,.0,0);
+			//									//					world.spawnParticle("largesmoke", x+xx,y+h,z+zz, 0,.0,0);
+			//									if(i%2==0)
+			//										//						world.spawnParticle("angryVillager", x+xx, y+h,z+zz, 0,0,0);
+			//										((WorldServer)world).func_147487_a("angryVillager", x+xx, y+h,z+zz, 0, 0,0,0, 1);
+			//									h += .1875f;
+			//								}
+			//								for(int j=0; j<16; j++)
+			//								{
+			//									float r = (float)(Math.cos(112.5f-j*(45/16f)));
+			//									double xx = r*Math.cos(angle);
+			//									double zz = r*Math.sin(angle);
+			//									//					world.spawnParticle("explode", x+xx, y+h, z+zz, 0,.0,0);
+			//									//					world.spawnParticle("largesmoke", x+xx, y+h, z+zz, xx*.025,.0,zz*.025);
+			//									//					world.spawnParticle("largesmoke", x+xx, y+h, z+zz, xx*.05,.0,zz*.05);
+			//									//					world.spawnParticle("largesmoke", x+xx, y+h, z+zz, xx*.1,.0,zz*.1);
+			//									((WorldServer)world).func_147487_a("explode", x+xx, y+h, z+zz, 0, 0,.0,0, 1);
+			//									((WorldServer)world).func_147487_a("largesmoke", x+xx, y+h, z+zz, 0, xx*.025,.0,zz*.025, 1);
+			//									((WorldServer)world).func_147487_a("largesmoke", x+xx, y+h, z+zz, 0, xx*.05,.0,zz*.05, 1);
+			//									((WorldServer)world).func_147487_a("largesmoke", x+xx, y+h, z+zz, 0, xx*.1,.0,zz*.1, 1);
+			//									h += .0625f;
+			//								}
+			//							}
 		}
 		else
 		{

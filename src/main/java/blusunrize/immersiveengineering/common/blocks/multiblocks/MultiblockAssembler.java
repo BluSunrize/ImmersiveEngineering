@@ -2,7 +2,6 @@ package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
@@ -93,6 +92,12 @@ public class MultiblockAssembler implements IMultiblock
 		return 13;
 	}
 
+	@Override
+	public String getUniqueName()
+	{
+		return "IE:Assembler";
+	}
+	
 	@Override
 	public boolean isBlockTrigger(Block b, int meta)
 	{
