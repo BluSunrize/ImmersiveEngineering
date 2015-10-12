@@ -2,7 +2,6 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import java.util.List;
 
-import blusunrize.immersiveengineering.common.IEContent;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -10,6 +9,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
 
 public class ItemBlockMetalDevices2 extends ItemBlockIEBase
@@ -47,6 +47,10 @@ public class ItemBlockMetalDevices2 extends ItemBlockIEBase
 			}
 			else
 				((TileEntityBreakerSwitch)tileEntity).facing = ForgeDirection.OPPOSITES[side];
+		}
+		if(tileEntity instanceof TileEntityEnergyMeter)
+		{
+			((TileEntityEnergyMeter)tileEntity).facing = f;
 		}
 		if(tileEntity instanceof TileEntityFloodLight)
 		{

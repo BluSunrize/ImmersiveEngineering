@@ -4,18 +4,16 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.Vec3;
 import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.api.energy.IImmersiveConnectable;
-import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.api.energy.WireType;
 import blusunrize.immersiveengineering.common.blocks.TileEntityImmersiveConnectable;
-import blusunrize.immersiveengineering.common.util.Utils;
 
 public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable
 {
 	public int sideAttached=0;
 	public int facing=2;
 	public int wires = 0;
-	public boolean active=false;
+	public int energyPassed = 0;
 
 	@Override
 	protected boolean canTakeLV()
@@ -39,11 +37,12 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable
 		return false;
 	}
 
-	@Override
-	public boolean allowEnergyToPass(Connection con)
-	{
-		return active;
-	}
+//	@Override
+//	public void onEnergyPassthrough(int amount, boolean simulate, int energyType)
+//	{
+//		if(!simulate)
+//			energyPassed +=amount;
+//	}
 
 	@Override
 	public boolean canConnectCable(WireType cableType, TargetingInfo target)
@@ -86,7 +85,7 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable
 		nbt.setInteger("facing", facing);
 		nbt.setInteger("sideAttached", sideAttached);
 		nbt.setInteger("wires", wires);
-		nbt.setBoolean("active", active);
+		nbt.setInteger("energyPassed", energyPassed);
 	}
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
@@ -95,48 +94,17 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable
 		facing = nbt.getInteger("facing");
 		sideAttached = nbt.getInteger("sideAttached");
 		wires = nbt.getInteger("wires");
-		active = nbt.getBoolean("active");
+		energyPassed = nbt.getInteger("energyPassed");
 	}
 
 	@Override
 	public Vec3 getRaytraceOffset(IImmersiveConnectable link)
 	{
-		return Vec3.createVectorHelper(.5,.5,.5);
+		return Vec3.createVectorHelper(.5,1.3125,.5);
 	}
 	@Override
 	public Vec3 getConnectionOffset(Connection con)
 	{
-		if(sideAttached==0)
-		{
-			int xDif = (con==null||con.start==null||con.end==null)?0: (con.start.equals(Utils.toCC(this))&&con.end!=null)? con.end.posX-xCoord: (con.end.equals(Utils.toCC(this))&& con.start!=null)?con.start.posX-xCoord: 0;
-			int zDif = (con==null||con.start==null||con.end==null)?0: (con.start.equals(Utils.toCC(this))&&con.end!=null)? con.end.posZ-zCoord: (con.end.equals(Utils.toCC(this))&& con.start!=null)?con.start.posZ-zCoord: 0;
-
-			return Vec3.createVectorHelper(facing==4?.125:facing==5?.875:xDif<0?.25:.75, .5, facing==2?.125:facing==3?.875:zDif<0?.25:.75);
-		}
-		else
-		{
-			int xDif = (con==null||con.start==null||con.end==null)?0: (con.start.equals(Utils.toCC(this))&&con.end!=null)? con.end.posX-xCoord: (con.end.equals(Utils.toCC(this))&& con.start!=null)?con.start.posX-xCoord: 0;
-			int zDif = (con==null||con.start==null||con.end==null)?0: (con.start.equals(Utils.toCC(this))&&con.end!=null)? con.end.posZ-zCoord: (con.end.equals(Utils.toCC(this))&& con.start!=null)?con.start.posZ-zCoord: 0;
-			double h = sideAttached==1?.125: .875;
-			if(facing>3)
-				return Vec3.createVectorHelper(.5,h,zDif>0?.75:.25);
-			else
-				return Vec3.createVectorHelper(xDif>0?.75:.25,h,.5);
-		}
+		return Vec3.createVectorHelper(facing==5?.25:facing==4?.75:.5, 1.3125, facing==3?.25:facing==2?.75:.5);
 	}
-
-	public void toggle()
-	{
-		active = !active;
-		ImmersiveNetHandler.INSTANCE.resetCachedIndirectConnections();
-		worldObj.addBlockEvent(xCoord, yCoord, zCoord, getBlockType(), active?1:0, 0);
-	}
-	@Override
-	public boolean receiveClientEvent(int id, int arg)
-	{
-		this.active = id==1;
-		this.worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-		return true;
-	}
-
 }

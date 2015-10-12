@@ -218,7 +218,6 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 				for(AbstractConnection con : powerSorting.keySet())
 					if(con!=null && con.cableType!=null && toIIC(con.end, worldObj)!=null)
 					{
-						//					int output = powerLeft/outputs.size();
 						float prio = powerSorting.get(con)/(float)sum;
 						int output = (int)(powerForSort*prio);
 
@@ -226,6 +225,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 						int r = tempR;
 						tempR -= (int) Math.max(0, Math.floor(tempR*con.getAverageLossRate()));
 						toIIC(con.end, worldObj).outputEnergy(tempR, simulate, energyType);
+						
 						for(Connection sub : con.subConnections)
 						{
 							IELogger.debug("Sub Con"+sub.start+" to "+sub.end);
@@ -241,6 +241,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 							if(!simulate)
 								ImmersiveNetHandler.INSTANCE.getTransferedRates(worldObj.provider.dimensionId).put(sub,transferredPerCon);
 						}
+
 						received += r;
 						powerLeft -= r;
 						if(powerLeft<=0)

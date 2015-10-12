@@ -168,6 +168,11 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 			}
 			return true;
 		}
+		else if(te instanceof TileEntityEnergyMeter)
+		{
+			if(!world.isRemote)
+				player.addChatComponentMessage(new ChatComponentText("Energy transferred through: "+((TileEntityEnergyMeter)te).energyPassed));
+		}
 		else if(te instanceof TileEntityFluidPipe_old)
 		{
 			if(!world.isRemote) {

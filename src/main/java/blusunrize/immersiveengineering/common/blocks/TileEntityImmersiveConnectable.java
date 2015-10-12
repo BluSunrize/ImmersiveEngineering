@@ -47,7 +47,7 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 	{
 		return true;
 	}
-
+	
 	@Override
 	public boolean canConnect()
 	{
