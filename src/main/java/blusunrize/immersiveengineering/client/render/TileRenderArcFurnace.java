@@ -41,7 +41,8 @@ public class TileRenderArcFurnace extends TileRenderIE
 		TileEntityArcFurnace arc = (TileEntityArcFurnace)tile;
 
 		translationMatrix.translate(.5, .5, .5);
-		rotationMatrix.rotate(Math.toRadians(arc.facing==2?180: arc.facing==4?-90: arc.facing==5?90: 0), 0,1,0);
+		int f = (arc.mirrored)?3:2;
+		rotationMatrix.rotate(Math.toRadians(arc.facing==f?180: arc.facing==4?-90: arc.facing==5?90: 0), 0,1,0);
 		if(arc.mirrored)
 			translationMatrix.scale(new Vertex(1,1,-1));
 
