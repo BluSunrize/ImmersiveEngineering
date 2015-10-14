@@ -26,7 +26,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class TileEntitySheetmetalTank extends TileEntityMultiblockPart implements IFluidHandler, IBlockOverlayText
 {
 	public FluidTank tank = new FluidTank(512000);
-
 	@Override
 	public TileEntitySheetmetalTank master()
 	{
@@ -153,11 +152,34 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart implement
 			return 0;
 		if(master()!=null)
 			return master().fill(from,resource,doFill);
+		int[] oldComps = new int[4];
+		int vol = tank.getCapacity() / 4;
+		for (int i = 0; i < 4; i++)
+		{
+			int filled = tank.getFluidAmount() - i * vol;
+			oldComps[i] = Math.min(15, Math.max((15*filled)/vol, 0));
+		}
+		int masterCompOld = (15*tank.getFluidAmount())/tank.getCapacity();
 		int f = tank.fill(resource, doFill);
 		if(f>0 && doFill)
 		{
 			markDirty();
 			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+			//Block updates for comparators
+			if ((15*tank.getFluidAmount())/tank.getCapacity()!=masterCompOld)
+				worldObj.func_147453_f(xCoord, yCoord, zCoord, getBlockType());
+			for (int i = 0; i < 4; i++)
+			{
+				int filled = tank.getFluidAmount() - i * vol;
+				int now = Math.min(15, Math.max((15*filled)/vol, 0));
+				if (now!=oldComps[i])
+				{
+					int y = yCoord-offset[1]+i+1;
+					for (int x = -1;x<2;x++)
+						for (int z = -1;z<2;z++)
+							worldObj.func_147453_f(xCoord-offset[0]+x, y, zCoord-offset[2]+z, worldObj.getBlock(xCoord-offset[0]+x, y, zCoord-offset[2]+z));
+				}
+			}
 		}
 		return f;
 	}
@@ -179,11 +201,34 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart implement
 			return null;
 		if(master()!=null)
 			return master().drain(from,maxDrain,doDrain);
+		int[] oldComps = new int[4];
+		int vol = tank.getCapacity() / 4;
+		for (int i = 0; i < 4; i++)
+		{
+			int filled = tank.getFluidAmount() - i * vol;
+			oldComps[i] = Math.min(15, Math.max((15*filled)/vol, 0));
+		}
+		int masterCompOld = (15*tank.getFluidAmount())/tank.getCapacity();
 		FluidStack fs = tank.drain(maxDrain, doDrain);
 		if(fs!=null && fs.amount>0 && doDrain)
 		{
 			markDirty();
 			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+			//Block updates for comparators
+			if ((15*tank.getFluidAmount())/tank.getCapacity()!=masterCompOld)
+				worldObj.func_147453_f(xCoord, yCoord, zCoord, getBlockType());
+			for (int i = 0; i < 4; i++)
+			{
+				int filled = tank.getFluidAmount() - i * vol;
+				int now = Math.min(15, Math.max((15*filled)/vol, 0));
+				if (now!=oldComps[i])
+				{
+					int y = yCoord-offset[1]+i+1;
+					for (int x = -1;x<2;x++)
+						for (int z = -1;z<2;z++)
+							worldObj.func_147453_f(xCoord-offset[0]+x, y, zCoord-offset[2]+z, worldObj.getBlock(xCoord-offset[0]+x, y, zCoord-offset[2]+z));
+				}
+			}
 		}
 		return fs;
 	}
@@ -225,5 +270,21 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart implement
 	public double getMaxRenderDistanceSquared()
 	{
 		return super.getMaxRenderDistanceSquared()*Config.getDouble("increasedTileRenderdistance");
+	}
+
+	public int getComparatorOutput() {
+		if (pos==4)
+		{
+			return (15*tank.getFluidAmount())/tank.getCapacity();
+		}
+		if (offset[1]>=1&&offset[1]<=4&&master()!=null) { //4 layers of storage
+			FluidTank t = master().tank;
+			int layer = offset[1]-1;
+			int vol = t.getCapacity()/4;
+			int filled = t.getFluidAmount()-layer*vol;
+			int ret = Math.min(15, Math.max(0, (15*filled)/vol));
+			return ret;
+		}
+		return 0;
 	}
 }
