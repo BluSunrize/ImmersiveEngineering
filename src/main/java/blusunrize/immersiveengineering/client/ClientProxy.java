@@ -378,7 +378,8 @@ public class ClientProxy extends CommonProxy
 		ManualHelper.addEntry("tanksilo", ManualHelper.CAT_MACHINES,
 				new ManualPageMultiblock(ManualHelper.getManual(), "tanksilo0", MultiblockSheetmetalTank.instance),
 				new ManualPageMultiblock(ManualHelper.getManual(), "tanksilo1", MultiblockSilo.instance),
-				new ManualPages.Text(ManualHelper.getManual(), "tanksilo2"));
+				new ManualPages.Text(ManualHelper.getManual(), "tanksilo2"),
+				new ManualPages.Text(ManualHelper.getManual(), "tanksilo3"));
 		ManualHelper.addEntry("assembler", ManualHelper.CAT_MACHINES,
 				new ManualPageMultiblock(ManualHelper.getManual(), "assembler0", MultiblockAssembler.instance),
 				new ManualPages.Text(ManualHelper.getManual(), "assembler1"),

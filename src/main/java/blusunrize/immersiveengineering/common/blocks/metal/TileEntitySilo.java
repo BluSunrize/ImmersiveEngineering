@@ -28,6 +28,8 @@ public class TileEntitySilo extends TileEntityMultiblockPart implements ISidedIn
 	ItemStack prevInputStack;
 	ItemStack prevOutputStack;
 	boolean lockItem = false;
+	private int[] oldComps;
+	private int masterCompOld;
 
 	@Override
 	public TileEntitySilo master()
@@ -45,6 +47,8 @@ public class TileEntitySilo extends TileEntityMultiblockPart implements ISidedIn
 			this.markDirty();
 
 		if(pos==4 && !worldObj.isRemote && this.outputStack!=null && worldObj.isBlockIndirectlyGettingPowered(xCoord,yCoord,zCoord) && worldObj.getTotalWorldTime()%8==0)
+		{
+			updateComparatorValuesPart1();
 			for(int i=0; i<6; i++)
 				if(i!=1)
 				{
@@ -61,6 +65,8 @@ public class TileEntitySilo extends TileEntityMultiblockPart implements ISidedIn
 							break;
 					}
 				}
+			updateComparatorValuesPart2();
+		}
 	}
 
 	@Override
@@ -165,6 +171,7 @@ public class TileEntitySilo extends TileEntityMultiblockPart implements ISidedIn
 	@Override
 	public ItemStack decrStackSize(int slot, int amount)
 	{
+		updateComparatorValuesPart1();
 		if(!formed)
 			return null;
 		if(master()!=null)
@@ -179,6 +186,7 @@ public class TileEntitySilo extends TileEntityMultiblockPart implements ISidedIn
 		if(outputStack.stackSize<=0)
 			outputStack=null;
 		this.markDirty();
+		updateComparatorValuesPart2();
 		return ret;
 	}
 	@Override
@@ -189,6 +197,7 @@ public class TileEntitySilo extends TileEntityMultiblockPart implements ISidedIn
 	@Override
 	public void setInventorySlotContents(int slot, ItemStack stack)
 	{
+		updateComparatorValuesPart1();
 		if(!formed)
 			return;
 		if(master()!=null)
@@ -201,6 +210,7 @@ public class TileEntitySilo extends TileEntityMultiblockPart implements ISidedIn
 		else
 			this.outputStack = stack;
 		this.markDirty();
+		updateComparatorValuesPart2();
 	}
 	@Override
 	public String getInventoryName()
@@ -353,20 +363,24 @@ public class TileEntitySilo extends TileEntityMultiblockPart implements ISidedIn
 	@Override
 	public void setStoredItemCount(int amount)
 	{
+		updateComparatorValuesPart1();
 		if(amount > maxStorage)
 			amount = maxStorage;
 		this.storageAmount = amount;
 		this.markDirty();
+		updateComparatorValuesPart2();
 	}
 
 	@Override
 	public void setStoredItemType(ItemStack type, int amount)
 	{
+		updateComparatorValuesPart1();
 		this.identStack = Utils.copyStackWithAmount(identStack, 0);
 		if(amount > maxStorage)
 			amount = maxStorage;
 		this.storageAmount = amount;
 		this.markDirty();
+		updateComparatorValuesPart2();
 	}
 
 	@Override
@@ -374,4 +388,49 @@ public class TileEntitySilo extends TileEntityMultiblockPart implements ISidedIn
 	{
 		return maxStorage;
 	}
+
+	public int getComparatorOutput() {
+		if (pos==4)
+		{
+			return (15*storageAmount)/maxStorage;
+		}
+		if (offset[1]>=1&&offset[1]<=6&&master()!=null) { //6 layers of storage
+			TileEntitySilo t = master();
+			int layer = offset[1]-1;
+			int vol = maxStorage/6;
+			int filled = t.storageAmount-layer*vol;
+			int ret = Math.min(15, Math.max(0, (15*filled)/vol));
+			return ret;
+		}
+		return 0;
+	}
+	private void updateComparatorValuesPart1() {
+		oldComps = new int[6];
+		int vol = maxStorage / 6;
+		for (int i = 0; i < 6; i++)
+		{
+			int filled = storageAmount - i * vol;
+			oldComps[i] = Math.min(15, Math.max((15*filled)/vol, 0));
+		}
+		masterCompOld = (15*storageAmount)/maxStorage;
+	}
+	private void updateComparatorValuesPart2() {
+		int vol = maxStorage / 6;
+		if ((15*storageAmount)/maxStorage!=masterCompOld)
+			worldObj.func_147453_f(xCoord, yCoord, zCoord, getBlockType());
+		for (int i = 0; i < 6; i++)
+		{
+			int filled = storageAmount - i * vol;
+			int now = Math.min(15, Math.max((15*filled)/vol, 0));
+			if (now!=oldComps[i])
+			{
+				int y = yCoord-offset[1]+i+1;
+				for (int x = -1;x<2;x++)
+					for (int z = -1;z<2;z++)
+						worldObj.func_147453_f(xCoord-offset[0]+x, y, zCoord-offset[2]+z, worldObj.getBlock(xCoord-offset[0]+x, y, zCoord-offset[2]+z));
+			}
+		}
+		oldComps = null;
+	}
+	
 }
