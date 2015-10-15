@@ -25,8 +25,8 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.DimensionChunkCoords;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
+import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralWorldInfo;
 import blusunrize.immersiveengineering.client.render.BlockRenderMetalDevices;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.IEContent;
@@ -405,14 +405,14 @@ public class BlockMetalDevices extends BlockIEBase implements blusunrize.aquatwe
 					else
 					{
 						String min = StatCollector.translateToLocal(Lib.DESC_INFO+"mineral."+mineral.name);
-						boolean deplOverride = ExcavatorHandler.mineralDepletion.get(new DimensionChunkCoords(world.provider.dimensionId, chunkX,chunkZ))<0;
+						MineralWorldInfo info = ExcavatorHandler.getMineralWorldInfo(world, chunkX, chunkZ);
+						boolean deplOverride = info.depletion<0;
 						if(ExcavatorHandler.mineralVeinCapacity<0||deplOverride)
 							min = StatCollector.translateToLocal(Lib.CHAT_INFO+"coreDrill.infinite")+" "+min;
 						player.addChatMessage(new ChatComponentTranslation(Lib.CHAT_INFO+"coreDrill.result.mineral",min));
 						if(ExcavatorHandler.mineralVeinCapacity>0&&!deplOverride)
 						{
-							int dep = ExcavatorHandler.mineralDepletion.get(new DimensionChunkCoords(world.provider.dimensionId, chunkX,chunkZ));
-							String f = Utils.formatDouble((Config.getInt("excavator_depletion")-dep)/(float)Config.getInt("excavator_depletion")*100,"0.##")+"%";
+							String f = Utils.formatDouble((Config.getInt("excavator_depletion")-info.depletion)/(float)Config.getInt("excavator_depletion")*100,"0.##")+"%";
 							player.addChatMessage(new ChatComponentTranslation(Lib.CHAT_INFO+"coreDrill.result.depl",f));
 						}
 					}

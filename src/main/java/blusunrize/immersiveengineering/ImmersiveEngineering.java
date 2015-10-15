@@ -25,6 +25,7 @@ import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.commands.CommandHandler;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
+import blusunrize.immersiveengineering.common.util.network.MessageMineralListSync;
 import blusunrize.immersiveengineering.common.world.IEWorldGen;
 
 import com.google.gson.Gson;
@@ -41,6 +42,7 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartedEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 
@@ -50,11 +52,14 @@ public class ImmersiveEngineering
 	public static final String MODID = "ImmersiveEngineering";
 	public static final String MODNAME = "Immersive Engineering";
 	public static final String VERSION = "${version}";
+	public static final double VERSION_D = .6;
 
 	@Mod.Instance(MODID)
 	public static ImmersiveEngineering instance = new ImmersiveEngineering();
 	@SidedProxy(clientSide="blusunrize.immersiveengineering.client.ClientProxy", serverSide="blusunrize.immersiveengineering.common.CommonProxy")
 	public static CommonProxy proxy;
+	
+	public static final SimpleNetworkWrapper packetHandler = NetworkRegistry.INSTANCE.newSimpleChannel(MODID);
 
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent event)
@@ -89,6 +94,8 @@ public class ImmersiveEngineering
 		Lib.GREG = Loader.isModLoaded("gregtech") && Config.getBoolean("gregtechcompat");
 		for(IECompatModule compat : IECompatModule.modules)
 			compat.init();
+		
+		packetHandler.registerMessage(MessageMineralListSync.Handler.class, MessageMineralListSync.class, 0, Side.CLIENT);
 	}
 	@Mod.EventHandler
 	public void postInit(FMLPostInitializationEvent event)
@@ -100,7 +107,7 @@ public class ImmersiveEngineering
 		ExcavatorHandler.recalculateChances();
 		IEContent.postInit();
 		proxy.postInit();
-		
+
 		new ThreadContributorSpecialsDownloader();
 	}
 
@@ -147,7 +154,6 @@ public class ImmersiveEngineering
 			return new ItemStack(IEContent.blockMetalDevice,1,1);
 		}
 	};
-
 
 	public static class ThreadContributorSpecialsDownloader extends Thread
 	{

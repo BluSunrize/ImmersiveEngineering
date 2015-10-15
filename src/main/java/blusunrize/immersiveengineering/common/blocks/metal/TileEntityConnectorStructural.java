@@ -57,12 +57,12 @@ public class TileEntityConnectorStructural extends TileEntityConnectorLV
 	@Override
 	public int getMaxInput()
 	{
-		return WireType.STRUCTURE_STEEL.getTransferRate();
+		return 0;
 	}
 	@Override
 	public int getMaxOutput()
 	{
-		return WireType.STRUCTURE_STEEL.getTransferRate();
+		return 0;
 	}
 
 	@Override

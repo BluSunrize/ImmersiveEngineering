@@ -49,11 +49,11 @@ public class TileEntityConnectorHV extends TileEntityConnectorMV
 	@Override
 	public int getMaxInput()
 	{
-		return WireType.STEEL.getTransferRate();
+		return connectorInputValues[2];
 	}
 	@Override
 	public int getMaxOutput()
 	{
-		return WireType.STEEL.getTransferRate();
+		return connectorInputValues[2];
 	}
 }

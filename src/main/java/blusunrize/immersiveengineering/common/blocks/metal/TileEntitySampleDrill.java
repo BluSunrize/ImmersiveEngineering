@@ -4,8 +4,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
-import blusunrize.immersiveengineering.api.DimensionChunkCoords;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
+import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralWorldInfo;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import cofh.api.energy.EnergyStorage;
@@ -53,15 +53,14 @@ public class TileEntitySampleDrill extends TileEntityIEBase implements IEnergyRe
 	}
 	public float getVeinIntegrity()
 	{
-		if(ExcavatorHandler.mineralVeinCapacity<0)
+		MineralWorldInfo info = ExcavatorHandler.getMineralWorldInfo(worldObj, (xCoord>>4), (zCoord>>4));
+		boolean deplOverride = info.depletion<0;
+		if(ExcavatorHandler.mineralVeinCapacity<0||deplOverride)
 			return 1;
-		else if(ExcavatorHandler.getRandomMineral(worldObj, (xCoord>>4), (zCoord>>4))==null)
+		else if(info.mineralOverride==null && info.mineral==null)
 			return 0;
 		else
-		{
-			int dep = ExcavatorHandler.mineralDepletion.get(new DimensionChunkCoords(worldObj.provider.dimensionId, (xCoord>>4), (zCoord>>4)));
-			return (Config.getInt("excavator_depletion")-dep)/(float)Config.getInt("excavator_depletion");
-		}
+			return (Config.getInt("excavator_depletion")-info.depletion)/(float)Config.getInt("excavator_depletion");
 	}
 
 	@Override

@@ -149,8 +149,11 @@ public class ItemIETool extends ItemIEBase implements cofh.api.item.IToolHammer
 					return true;
 				}
 			}
-
-
+			//			int chunkX = (x>>4);
+			//			int chunkZ = (z>>4);
+			//			MineralWorldInfo info = ExcavatorHandler.getMineralWorldInfo(world, chunkX, chunkZ);
+			//			
+			//			player.addChatMessage(new ChatComponentText("info for chunk; mineral: "+(info.mineral!=null?EnumChatFormatting.GREEN+info.mineral.name+EnumChatFormatting.RESET:"none")+"  override: "+(info.mineralOverride!=null?EnumChatFormatting.GREEN+info.mineralOverride.name+EnumChatFormatting.RESET:"none")+"  depletion: "+info.depletion));
 			//						x += 6;
 			//						y += 1;
 			//			

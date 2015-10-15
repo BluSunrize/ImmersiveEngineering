@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.DimensionChunkCoords;
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
+import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralWorldInfo;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 
@@ -64,13 +65,16 @@ public class IESaveData extends WorldSavedData
 			IELogger.info("removed "+invalidConnectionsDropped+" invalid connections from world");
 
 		NBTTagList mineralList = nbt.getTagList("mineralDepletion", 10);
-		ExcavatorHandler.mineralDepletion.clear();		
+		ExcavatorHandler.mineralCache.clear();		
 		for(int i=0; i<mineralList.tagCount(); i++)
 		{
 			NBTTagCompound tag = mineralList.getCompoundTagAt(i);
 			DimensionChunkCoords coords = DimensionChunkCoords.readFromNBT(tag);
 			if(coords!=null)
-				ExcavatorHandler.mineralDepletion.put(coords, tag.getInteger("depletion"));
+			{
+				MineralWorldInfo info = MineralWorldInfo.readFromNBT(tag.getCompoundTag("info"));
+				ExcavatorHandler.mineralCache.put(coords, info);
+			}
 		}
 	}
 
@@ -98,11 +102,11 @@ public class IESaveData extends WorldSavedData
 		}
 
 		NBTTagList mineralList = new NBTTagList();
-		for(Map.Entry<DimensionChunkCoords,Integer> e: ExcavatorHandler.mineralDepletion.entrySet())
+		for(Map.Entry<DimensionChunkCoords,MineralWorldInfo> e: ExcavatorHandler.mineralCache.entrySet())
 			if(e.getKey()!=null && e.getValue()!=null)
 			{
 				NBTTagCompound tag = e.getKey().writeToNBT();
-				tag.setInteger("depletion", e.getValue());
+				tag.setTag("info", e.getValue().writeToNBT());
 				mineralList.appendTag(tag);
 			}
 		nbt.setTag("mineralDepletion", mineralList);

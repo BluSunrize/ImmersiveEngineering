@@ -54,7 +54,7 @@ public class GuiManual extends GuiScreen
 		this.texture = texture;
 
 		prevGuiScale = Minecraft.getMinecraft().gameSettings.guiScale;
-		if(prevGuiScale!=2)
+		if(prevGuiScale!=0 && prevGuiScale!=2)
 			Minecraft.getMinecraft().gameSettings.guiScale=2;
 		activeManual=this;
 	}

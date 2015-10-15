@@ -277,14 +277,7 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.Text(ManualHelper.getManual(), "blastfurnace0"),
 				new ManualPages.Crafting(ManualHelper.getManual(), "blastfurnaceBlock", new ItemStack(IEContent.blockStoneDecoration,1,2)),
 				new ManualPageMultiblock(ManualHelper.getManual(), "", MultiblockBlastFurnace.instance));
-		String[][][] multiTables = formatToTable_ExcavatorMinerals();
-		ArrayList<IManualPage> pages = new ArrayList();
-		pages.add(new ManualPages.Text(ManualHelper.getManual(), "minerals0"));
-		pages.add(new ManualPages.Crafting(ManualHelper.getManual(), "minerals1", new ItemStack(IEContent.blockMetalDevice,1,BlockMetalDevices.META_sampleDrill)));
-		pages.add(new ManualPages.Text(ManualHelper.getManual(), "minerals2"));
-		for(String[][] minTable : multiTables)
-			pages.add(new ManualPages.Table(ManualHelper.getManual(), "", minTable,true));
-		ManualHelper.addEntry("minerals", ManualHelper.CAT_GENERAL, pages.toArray(new IManualPage[pages.size()]));
+		ExcavatorHandler.handleMineralManual();
 		int blueprint = BlueprintCraftingRecipe.blueprintCategories.indexOf("electrode");
 		ManualHelper.addEntry("graphite", ManualHelper.CAT_GENERAL, new ManualPages.Text(ManualHelper.getManual(), "graphite0"),new ManualPages.Crafting(ManualHelper.getManual(), "graphite1", new ItemStack(IEContent.itemBlueprint,1,blueprint)));
 		ManualHelper.addEntry("shader", ManualHelper.CAT_GENERAL, new ManualPages.Text(ManualHelper.getManual(), "shader0"));
@@ -639,43 +632,6 @@ public class ClientProxy extends CommonProxy
 		String[][] table = list.toArray(new String[0][]);
 		return table;
 	}
-
-	static String[][][] formatToTable_ExcavatorMinerals()
-	{
-		ExcavatorHandler.MineralMix[] minerals = ExcavatorHandler.mineralList.keySet().toArray(new ExcavatorHandler.MineralMix[0]);
-		String[][][] multiTables = new String[1][ExcavatorHandler.mineralList.size()][2];
-		int curTable = 0;
-		int totalLines = 0;
-		for(int i=0; i<minerals.length; i++)
-		{
-			multiTables[curTable][i][0] = Lib.DESC_INFO+"mineral."+minerals[i].name;
-			multiTables[curTable][i][1] = "";
-			//			for(int j=0; j<minerals[i].recalculatedOres.length; j++)
-			//				if(!OreDictionary.getOres(minerals[i].recalculatedOres[j]).isEmpty())
-			//				{
-			//					ItemStack stackOre = OreDictionary.getOres(minerals[i].recalculatedOres[j]).get(0);
-			//					multiTables[curTable][i][1] += stackOre.getDisplayName()+" "+( Utils.formatDouble(minerals[i].recalculatedChances[j]*100,"#.00")+"%" )+(j<minerals[i].recalculatedOres.length-1?"\n":"");
-			//					totalLines++;
-			//				}
-			for(int j=0; j<minerals[i].oreOutput.length; j++)
-				if(minerals[i].oreOutput[j]!=null)
-				{
-					multiTables[curTable][i][1] += minerals[i].oreOutput[j].getDisplayName()+" "+( Utils.formatDouble(minerals[i].recalculatedChances[j]*100,"#.00")+"%" )+(j<minerals[i].oreOutput.length-1?"\n":"");
-					totalLines++;
-				}
-			if(i<minerals.length-1 && totalLines+minerals[i+1].oreOutput.length>=13)
-			{
-				String[][][] newMultiTables = new String[multiTables.length+1][ExcavatorHandler.mineralList.size()][2];
-				System.arraycopy(multiTables,0, newMultiTables,0, multiTables.length);
-				multiTables = newMultiTables;
-				totalLines = 0;
-				curTable++;
-			}
-		}
-		return multiTables;
-	}
-
-
 
 
 	@Override

@@ -24,7 +24,7 @@ public abstract class ManualInstance
 	public abstract String formatText(String s);
 	public abstract boolean showCategoryInList(String category);
 	public abstract boolean showEntryInList(ManualEntry entry);
-	
+
 	public abstract int getTitleColour();
 	public abstract int getSubTitleColour();
 	public abstract int getTextColour();
@@ -72,6 +72,10 @@ public abstract class ManualInstance
 		public IManualPage[] getPages()
 		{
 			return pages;
+		}
+		public void setPages(IManualPage[] pages)
+		{
+			this.pages = pages;
 		}
 	}
 

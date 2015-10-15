@@ -42,11 +42,11 @@ public class TileEntityConnectorMV extends TileEntityConnectorLV
 	@Override
 	public int getMaxInput()
 	{
-		return WireType.ELECTRUM.getTransferRate();
+		return connectorInputValues[1];
 	}
 	@Override
 	public int getMaxOutput()
 	{
-		return WireType.ELECTRUM.getTransferRate();
+		return connectorInputValues[1];
 	}
 }
