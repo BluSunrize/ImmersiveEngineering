@@ -506,11 +506,28 @@ public class ImmersiveNetHandler
 			this.subConnections=subConnections;
 		}
 
+		public float getPreciseLossRate(int energyInput, int connectorMaxInput)
+		{
+			float f = 0;
+			for(Connection c : subConnections)
+			{
+				float length = c.length/(float)c.cableType.getMaxLength();
+				float baseLoss = (float)c.cableType.getLossRatio();
+				float mod = (((connectorMaxInput-energyInput)/(float)connectorMaxInput)/.25f)*.1f;
+				f += length*(baseLoss+baseLoss*mod);
+			}
+			return Math.min(f,1);
+		}
+
 		public float getAverageLossRate()
 		{
 			float f = 0;
 			for(Connection c : subConnections)
-				f += (c.length/(float)c.cableType.getMaxLength())*c.cableType.getLossRatio();
+			{
+				float length = c.length/(float)c.cableType.getMaxLength();
+				float baseLoss = (float)c.cableType.getLossRatio();
+				f += length*baseLoss;
+			}
 			return Math.min(f,1);
 		}
 	}

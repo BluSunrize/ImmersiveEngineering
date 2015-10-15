@@ -36,6 +36,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 	boolean inICNet=false;
 	public int facing=0;
 	private long lastTransfer = -1;
+	public static int[] connectorInputValues = {};
 
 	@Override
 	public void updateEntity()
@@ -223,7 +224,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 
 						int tempR = toIIC(con.end,worldObj).outputEnergy(Math.min(output,con.cableType.getTransferRate()), true, energyType);
 						int r = tempR;
-						tempR -= (int) Math.max(0, Math.floor(tempR*con.getAverageLossRate()));
+						tempR -= (int) Math.max(0, Math.floor(tempR*con.getPreciseLossRate(tempR,getMaxInput())));
 						toIIC(con.end, worldObj).outputEnergy(tempR, simulate, energyType);
 						
 						for(Connection sub : con.subConnections)
@@ -256,11 +257,11 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 
 	public int getMaxInput()
 	{
-		return WireType.COPPER.getTransferRate();
+		return connectorInputValues[0];
 	}
 	public int getMaxOutput()
 	{
-		return WireType.COPPER.getTransferRate();
+		return connectorInputValues[0];
 	}
 
 	@Optional.Method(modid = "IC2")
