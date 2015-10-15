@@ -566,4 +566,23 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 		}
 		return null;
 	}
+	@Override
+	public boolean hasComparatorInputOverride() {
+		return true;
+	}
+	@Override
+	public int getComparatorInputOverride(World world, int x,
+			int y, int z, int side) {
+		TileEntity te = world.getTileEntity(x, y, z);
+		if (te instanceof TileEntitySilo)
+		{
+			return ((TileEntitySilo)te).getComparatorOutput();
+		}
+		else if (te instanceof TileEntitySheetmetalTank)
+		{
+			return ((TileEntitySheetmetalTank)te).getComparatorOutput();
+		}
+		return super.getComparatorInputOverride(world, x, y,
+				z, side);
+	}
 }
