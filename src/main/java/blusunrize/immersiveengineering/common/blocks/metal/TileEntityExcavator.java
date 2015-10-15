@@ -32,9 +32,6 @@ public class TileEntityExcavator extends TileEntityMultiblockPart implements IEn
 	public int facing = 2;
 	public EnergyStorage energyStorage = new EnergyStorage(64000);
 	public boolean active = false;
-	public int process = 0;
-
-	public int lastPowerInput=0;
 
 	@Override
 	public ItemStack getOriginalBlock()
@@ -71,27 +68,21 @@ public class TileEntityExcavator extends TileEntityMultiblockPart implements IEn
 		TileEntityBucketWheel wheel = null;
 		TileEntity center = worldObj.getTileEntity(wheelAxis[0], wheelAxis[1], wheelAxis[2]);
 
-		if(center instanceof TileEntityBucketWheel)
-			if(((TileEntityBucketWheel)center).facing==ff)
-			{
-				wheel = ((TileEntityBucketWheel)center);
-				if(active!=wheel.active)
-				{
-					worldObj.addBlockEvent(wheel.xCoord,wheel.yCoord,wheel.zCoord, wheel.getBlockType(), 0,active?1:0);
-
-					//					wheel.rotation+=(float)Config.getDouble("excavator_speed");
-					//					wheel.rotation%=360;
-				}
-				rot = wheel.rotation;
-				if(rot%45>40)
-					target = Math.round(rot/360f * 8)%8;
-			}
-
-
 		if(!worldObj.isRemote)
 		{
-			//Fix the wheel if necessary
 			if(center instanceof TileEntityBucketWheel)
+			{
+				if(((TileEntityBucketWheel) center).facing==ff)
+				{
+					wheel = ((TileEntityBucketWheel) center);
+					if(active!=wheel.active)
+						worldObj.addBlockEvent(wheel.xCoord, wheel.yCoord, wheel.zCoord, wheel.getBlockType(), 0, active? 1: 0);
+					rot = wheel.rotation;
+					if(rot%45>40)
+						target = Math.round(rot/360f*8)%8;
+				}
+
+				//Fix the wheel if necessary
 				if(((TileEntityBucketWheel)center).facing!=ff || ((TileEntityBucketWheel)center).mirrored!=this.mirrored)
 					for(int h=-3;h<=3;h++)
 						for(int w=-3;w<=3;w++)
@@ -105,6 +96,7 @@ public class TileEntityExcavator extends TileEntityMultiblockPart implements IEn
 								worldObj.markBlockForUpdate(te.xCoord,te.yCoord,te.zCoord);
 							}
 						}
+			}
 
 			boolean update = false;
 			ExcavatorHandler.MineralMix mineral = ExcavatorHandler.getRandomMineral(worldObj, wheelAxis[0]>>4, wheelAxis[2]>>4);
@@ -126,8 +118,8 @@ public class TileEntityExcavator extends TileEntityMultiblockPart implements IEn
 							if(blocking!=null)
 							{
 								wheel.digStacks[(target+4)%8] = blocking;
-								worldObj.addBlockEvent(wheel.xCoord,wheel.yCoord,wheel.zCoord, wheel.getBlockType(), (target+4)%8+2, Block.getIdFromBlock(Block.getBlockFromItem(blocking.getItem())) + (blocking.getItemDamage() << 12));
 								wheel.markDirty();
+								worldObj.markBlockForUpdate(wheel.xCoord, wheel.yCoord, wheel.zCoord);
 							}
 							else if(mineral!=null 
 									&& !worldObj.isAirBlock(wheel.xCoord+(facing==5?2:facing==4?-2:0),wheel.yCoord-5,wheel.zCoord+(facing==3?2:facing==2?-2:0))
@@ -142,8 +134,8 @@ public class TileEntityExcavator extends TileEntityMultiblockPart implements IEn
 								if(ore!=null && configChance>Config.getDouble("excavator_chance") && failChance>mineral.failChance)
 								{
 									wheel.digStacks[(target+4)%8] = ore;
-									worldObj.addBlockEvent(wheel.xCoord,wheel.yCoord,wheel.zCoord, wheel.getBlockType(), ((target+4)%8)+2, Block.getIdFromBlock(Block.getBlockFromItem(ore.getItem())) + (ore.getItemDamage() << 12));
 									wheel.markDirty();
+									worldObj.markBlockForUpdate(wheel.xCoord, wheel.yCoord, wheel.zCoord);
 								}
 								ExcavatorHandler.depleteMinerals(worldObj, wheelAxis[0]>>4, wheelAxis[2]>>4);
 							}
@@ -153,10 +145,10 @@ public class TileEntityExcavator extends TileEntityMultiblockPart implements IEn
 							this.outputItem(wheel.digStacks[target].copy());
 							Block b = Block.getBlockFromItem(wheel.digStacks[target].getItem());
 							if(b!=null&&b!=Blocks.air)
-								worldObj.addBlockEvent(wheel.xCoord,wheel.yCoord,wheel.zCoord, wheel.getBlockType(), 1, Block.getIdFromBlock(b) + (wheel.digStacks[target].getItemDamage() << 12));
+								wheel.particleStack = wheel.digStacks[target].copy();
 							wheel.digStacks[target] = null;
-							worldObj.addBlockEvent(wheel.xCoord,wheel.yCoord,wheel.zCoord, wheel.getBlockType(), target+2, 0);
 							wheel.markDirty();
+							worldObj.markBlockForUpdate(wheel.xCoord, wheel.yCoord, wheel.zCoord);
 						}
 					}
 				}
@@ -309,8 +301,6 @@ public class TileEntityExcavator extends TileEntityMultiblockPart implements IEn
 		super.readCustomNBT(nbt, descPacket);
 		facing = nbt.getInteger("facing");
 		active = nbt.getBoolean("active");
-		process = nbt.getInteger("process");
-		lastPowerInput = nbt.getInteger("lastPowerInput");
 		energyStorage.readFromNBT(nbt);
 	}
 	@Override
@@ -319,8 +309,6 @@ public class TileEntityExcavator extends TileEntityMultiblockPart implements IEn
 		super.writeCustomNBT(nbt, descPacket);
 		nbt.setInteger("facing", facing);
 		nbt.setBoolean("active", active);
-		nbt.setInteger("process", process);
-		nbt.setInteger("lastPowerInput", lastPowerInput);
 		energyStorage.writeToNBT(nbt);
 	}
 
@@ -396,7 +384,6 @@ public class TileEntityExcavator extends TileEntityMultiblockPart implements IEn
 		{
 			TileEntityExcavator master = master();
 			int rec = master.energyStorage.receiveEnergy(maxReceive, simulate);
-			lastPowerInput = rec;
 			master.markDirty();
 			return rec;
 		}
