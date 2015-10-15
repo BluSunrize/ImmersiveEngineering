@@ -9,7 +9,7 @@ public class TileEntityWindmillAdvanced extends TileEntityWindmill
 	@Override
 	protected float getSpeedModifier()
 	{
-		return .88f;
+		return 1f;
 	}
 	
 

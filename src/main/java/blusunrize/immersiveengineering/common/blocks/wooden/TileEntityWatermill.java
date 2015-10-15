@@ -85,7 +85,7 @@ public class TileEntityWatermill extends TileEntityIEBase
 					return;
 				else if((facing==4||facing==5)&&dynamo.facing!=4&&dynamo.facing!=5)
 					return;
-				dynamo.inputRotation(Math.abs(power), ForgeDirection.OPPOSITES[facing]);
+				dynamo.inputRotation(Math.abs(power*.75), ForgeDirection.OPPOSITES[facing]);
 			}
 		}
 		else if(!multiblock)

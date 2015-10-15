@@ -316,9 +316,9 @@ public class IERecipes
 		CrusherRecipe.addRecipe(new ItemStack(Blocks.sand), "cobblestone", 3200);
 		CrusherRecipe.addRecipe(new ItemStack(Blocks.sand), "blockGlass", 3200);
 		CrusherRecipe.addRecipe(new ItemStack(Items.quartz,4), "blockQuartz", 3200);
-		addCrusherRecipe(new ItemStack(Items.blaze_powder,4), "rodBlaze", 1600, "dustSulfur",.5f);
+		addCrusherRecipe(new ItemStack(Items.blaze_powder,4), "rodBlaze", 2400, "dustSulfur",.5f);
 		addItemToOreDictCrusherRecipe("dustCoal",1, new ItemStack(Items.coal), 2400);
-		addItemToOreDictCrusherRecipe("dustWood",2, "logWood", 1600);
+		addItemToOreDictCrusherRecipe("dustWood",2, "logWood", 2400);
 	}
 	public static void postInitCrusherAndArcRecipes()
 	{
@@ -408,21 +408,21 @@ public class IERecipes
 		if(dust==null)
 			return;
 		if(!OreDictionary.getOres("ore"+ore).isEmpty())
-			addCrusherRecipe(Utils.copyStackWithAmount(dust, 2), "ore"+ore, 4000, secondary,chance);
+			addCrusherRecipe(Utils.copyStackWithAmount(dust, 2), "ore"+ore, 6000, secondary,chance);
 		if(!OreDictionary.getOres("ingot"+ore).isEmpty())
-			addCrusherRecipe(Utils.copyStackWithAmount(dust, 1), "ingot"+ore, 2400);
+			addCrusherRecipe(Utils.copyStackWithAmount(dust, 1), "ingot"+ore, 3600);
 		if(!OreDictionary.getOres("oreNether"+ore).isEmpty())
-			addCrusherRecipe(Utils.copyStackWithAmount(dust, NetherOresHelper.getCrushingResult(ore)), "oreNether"+ore, 4000, secondary,chance,Blocks.netherrack,.15f);
+			addCrusherRecipe(Utils.copyStackWithAmount(dust, NetherOresHelper.getCrushingResult(ore)), "oreNether"+ore, 6000, secondary,chance,Blocks.netherrack,.15f);
 
 		//YAY GregTech!
 		if(!OreDictionary.getOres("oreNetherrack"+ore).isEmpty())
-			addCrusherRecipe(Utils.copyStackWithAmount(dust, 2), "oreNetherrack"+ore, 4000, secondary,chance, new ItemStack(Blocks.netherrack),.15f);
+			addCrusherRecipe(Utils.copyStackWithAmount(dust, 2), "oreNetherrack"+ore, 6000, secondary,chance, new ItemStack(Blocks.netherrack),.15f);
 		if(!OreDictionary.getOres("oreEndstone"+ore).isEmpty())
-			addCrusherRecipe(Utils.copyStackWithAmount(dust, 2), "oreEndstone"+ore, 4000, secondary,chance, "dustEndstone",.5f);
+			addCrusherRecipe(Utils.copyStackWithAmount(dust, 2), "oreEndstone"+ore, 6000, secondary,chance, "dustEndstone",.5f);
 		if(!OreDictionary.getOres("oreBlackgranite"+ore).isEmpty())
-			addCrusherRecipe(Utils.copyStackWithAmount(dust, 2), "oreBlackgranite"+ore, 4000, secondary,chance, "dustGraniteBlack",.5f);
+			addCrusherRecipe(Utils.copyStackWithAmount(dust, 2), "oreBlackgranite"+ore, 6000, secondary,chance, "dustGraniteBlack",.5f);
 		if(!OreDictionary.getOres("oreRedgranite"+ore).isEmpty())
-			addCrusherRecipe(Utils.copyStackWithAmount(dust, 2), "oreRedgranite"+ore, 4000, secondary,chance, "dustGraniteRed",.5f);
+			addCrusherRecipe(Utils.copyStackWithAmount(dust, 2), "oreRedgranite"+ore, 6000, secondary,chance, "dustGraniteRed",.5f);
 	}
 	public static CrusherRecipe addItemToOreDictCrusherRecipe(String oreName, int outSize, Object input, int energy)
 	{

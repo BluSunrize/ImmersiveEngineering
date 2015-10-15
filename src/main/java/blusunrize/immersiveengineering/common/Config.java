@@ -85,7 +85,8 @@ public class Config
 		Property propConnectorInput = config.get("Machines", "Wire Connector Input", new int[]{256,1024,4096}, "In- and output rates of LV,MV and HV Wire Conenctors. This is independant of the transferrate of the wires.");
 		if(propConnectorInput.getIntList().length<3)
 			propConnectorInput.set(new int[]{256,1024,4096});
-		TileEntityConnectorLV.connectorInputValues = cableProperty.getIntList();
+		TileEntityConnectorLV.connectorInputValues = propConnectorInput.getIntList();
+		setIntArray("wireConnectorInput", propConnectorInput.getIntList());
 
 		setInt("capacitorLV_storage", config.get("Machines", "Capacitor LV: RF Storage", 100000, "The maximum amount of RF that can be stored in a low-voltage capacitor").getInt());
 		setInt("capacitorLV_input", config.get("Machines", "Capacitor LV: Input", 256, "The maximum amount of RF that can be input into a low-voltage capacitor (by IE net or other means)").getInt());
@@ -106,7 +107,7 @@ public class Config
 
 		setInt("heater_consumption", config.get("Machines", "Heater: RF per Heat", 8, "The RF per tick consumed to add one heat to a furnace. Creates up to 4 heat in the startup time and then 1 heat per tick to keep it running").getInt());
 		setInt("heater_speedupConsumption", config.get("Machines", "Heater: Speedup", 24, "The RF per tick consumed to double the speed of the furnace. Only happens if furnace is at maximum heat.").getInt());
-		setInt("crusher_consumption", config.get("Machines", "Crusher: Consumed", 80, "The RF per tick consumed by the Crusher. Will also directly influence the speed.").getInt());
+		setInt("crusher_consumption", config.get("Machines", "Crusher: Consumed", 120, "The RF per tick consumed by the Crusher. Will also directly influence the speed.").getInt());
 		setInt("squeezer_consumption", config.get("Machines", "Squeezer: Consumed", 10, "The RF per tick per item that the Squeezer will consume to create Plant Oil").getInt());
 		setInt("fermenter_consumption", config.get("Machines", "Fermenter: Consumed", 10, "The RF per tick per item that the Fermenter will consume to create Ethanol").getInt());
 		setInt("refinery_consumption", config.get("Machines", "Refinery: Consumed", 80, "The RF per tick the Refinery will consume to mix two fluids").getInt());

@@ -65,7 +65,7 @@ public class TileEntityWindmill extends TileEntityIEBase
 	}
 	protected float getSpeedModifier()
 	{
-		return .44f;
+		return .5f;
 	}
 
 	public boolean checkArea()
