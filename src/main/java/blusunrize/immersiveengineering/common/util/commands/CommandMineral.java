@@ -1,8 +1,11 @@
 package blusunrize.immersiveengineering.common.util.commands;
 
+import java.util.ArrayList;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import blusunrize.immersiveengineering.api.DimensionChunkCoords;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
@@ -37,7 +40,7 @@ public class CommandMineral extends IESubCommand
 				break;
 			case "get":
 				MineralWorldInfo info = ExcavatorHandler.getMineralWorldInfo(sender.getEntityWorld(), coords.chunkXPos, coords.chunkZPos);
-				sender.addChatMessage(new ChatComponentTranslation(Lib.CHAT_COMMAND+getIdent()+".get",(info.mineral!=null?info.mineral.name:"null"),(info.mineralOverride!=null?info.mineralOverride.name:"null"),info.depletion));
+				sender.addChatMessage(new ChatComponentTranslation(Lib.CHAT_COMMAND+getIdent()+".get",EnumChatFormatting.GOLD+(info.mineral!=null?info.mineral.name:"null")+EnumChatFormatting.RESET,EnumChatFormatting.GOLD+(info.mineralOverride!=null?info.mineralOverride.name:"null")+EnumChatFormatting.RESET,EnumChatFormatting.GOLD+(""+info.depletion)+EnumChatFormatting.RESET));
 				break;
 			case "set":
 				info = ExcavatorHandler.getMineralWorldInfo(sender.getEntityWorld(),coords.chunkXPos,coords.chunkZPos);
@@ -47,7 +50,7 @@ public class CommandMineral extends IESubCommand
 					info.mineralOverride=null;
 					return;
 				}
-				
+
 				MineralMix mineral = null;
 				for(MineralMix mm : ExcavatorHandler.mineralList.keySet())
 					if(mm.name.equalsIgnoreCase(args[2]))
@@ -85,5 +88,19 @@ public class CommandMineral extends IESubCommand
 		else
 			sender.addChatMessage(new ChatComponentTranslation(getHelp("")));
 
+	}
+
+	@Override
+	public ArrayList<String> getSubCommands(String[] args)
+	{
+		ArrayList<String> list = new ArrayList<String>();
+		for(String s : new String[]{"list","get","set","setDepletion"})
+		{
+			if(args.length==0)
+				list.add(s);
+			else if(s.startsWith(args[0].toLowerCase()))
+				list.add(s);
+		}
+		return list;
 	}
 }

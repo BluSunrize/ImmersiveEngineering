@@ -1,5 +1,7 @@
 package blusunrize.immersiveengineering.common.util.commands;
 
+import java.util.ArrayList;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
@@ -44,5 +46,11 @@ public class CommandHelp extends IESubCommand
 				sub += ((i++)>0?", ":"")+com.getIdent();
 			sender.addChatMessage(new ChatComponentTranslation(Lib.CHAT_COMMAND+"available",sub));
 		}
+	}
+
+	@Override
+	public ArrayList<String> getSubCommands(String[] args)
+	{
+		return null;
 	}
 }

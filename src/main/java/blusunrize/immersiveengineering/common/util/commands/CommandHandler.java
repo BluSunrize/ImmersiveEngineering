@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.common.util.commands;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
@@ -20,6 +21,32 @@ public class CommandHandler extends CommandBase
 	public String getCommandName()
 	{
 		return "ie";
+	}
+
+	@Override
+	public List addTabCompletionOptions(ICommandSender sender, String[] args)
+	{
+		ArrayList<String> list = new ArrayList<String>();
+		for(String a : args)
+			System.out.println("|"+a+"|");
+		if(args.length>0)
+			for(IESubCommand sub : commands)
+			{
+				if(args.length==1)
+				{
+					if(args[0].isEmpty() || sub.getIdent().startsWith(args[0].toLowerCase()))
+						list.add(sub.getIdent());
+				}
+				else if(sub.getIdent().equalsIgnoreCase(args[0]))
+				{
+					String[] redArgs = new String[args.length-1];
+					System.arraycopy(args,1, redArgs,0, redArgs.length);
+					ArrayList<String> subCommands = sub.getSubCommands(redArgs);	
+					if(subCommands!=null)
+						list.addAll(subCommands);
+				}
+			}
+		return list;
 	}
 
 	@Override
@@ -59,5 +86,6 @@ public class CommandHandler extends CommandBase
 		{
 			return Lib.CHAT_COMMAND+getIdent()+subIdent+".help";
 		}
+		public abstract ArrayList<String> getSubCommands(String[] args);
 	}
 }
