@@ -14,6 +14,7 @@ public class ManualHelper
 	public static String CAT_ENERGY = "energy";
 	public static String CAT_MACHINES = "machines";
 	public static String CAT_HEAVYMACHINES = "heavymachines";
+	public static String CAT_UPDATE = "update";
 	
 	public static ManualInstance ieManualInstance;
 

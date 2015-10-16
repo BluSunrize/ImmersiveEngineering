@@ -8,6 +8,7 @@ import blusunrize.immersiveengineering.api.DimensionChunkCoords;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralMix;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralWorldInfo;
+import blusunrize.immersiveengineering.common.IESaveData;
 import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.commands.CommandHandler.IESubCommand;
 
@@ -35,11 +36,11 @@ public class CommandMineral extends IESubCommand
 				sender.addChatMessage(new ChatComponentText(s));
 				break;
 			case "get":
-				MineralMix min = ExcavatorHandler.getRandomMineral(sender.getEntityWorld(), coords.chunkXPos, coords.chunkZPos);
-				sender.addChatMessage(new ChatComponentTranslation(Lib.CHAT_COMMAND+getIdent()+".get",(min!=null?min.name:"null")));
+				MineralWorldInfo info = ExcavatorHandler.getMineralWorldInfo(sender.getEntityWorld(), coords.chunkXPos, coords.chunkZPos);
+				sender.addChatMessage(new ChatComponentTranslation(Lib.CHAT_COMMAND+getIdent()+".get",(info.mineral!=null?info.mineral.name:"null"),(info.mineralOverride!=null?info.mineralOverride.name:"null"),info.depletion));
 				break;
 			case "set":
-				MineralWorldInfo info = ExcavatorHandler.getMineralWorldInfo(sender.getEntityWorld(),coords.chunkXPos,coords.chunkZPos);
+				info = ExcavatorHandler.getMineralWorldInfo(sender.getEntityWorld(),coords.chunkXPos,coords.chunkZPos);
 				if(args.length<3)
 				{
 					sender.addChatMessage(new ChatComponentTranslation(Lib.CHAT_COMMAND+getIdent()+".set.clear",info.mineralOverride!=null?info.mineralOverride.name:"null"));
@@ -58,6 +59,7 @@ public class CommandMineral extends IESubCommand
 				}
 				info.mineralOverride = mineral;
 				sender.addChatMessage(new ChatComponentTranslation(Lib.CHAT_COMMAND+getIdent()+".set.sucess",mineral.name));
+				IESaveData.setDirty(sender.getEntityWorld().provider.dimensionId);
 				break;
 			case "setDepletion":
 				info = ExcavatorHandler.getMineralWorldInfo(sender.getEntityWorld(),coords.chunkXPos,coords.chunkZPos);
@@ -76,6 +78,7 @@ public class CommandMineral extends IESubCommand
 				}
 				info.depletion = depl;
 				sender.addChatMessage(new ChatComponentTranslation(Lib.CHAT_COMMAND+getIdent()+".setDepletion.sucess",(depl<0?StatCollector.translateToLocal(Lib.CHAT_INFO+"coreDrill.infinite"):Integer.toString(depl))));
+				IESaveData.setDirty(sender.getEntityWorld().provider.dimensionId);
 				break;
 			}
 		}

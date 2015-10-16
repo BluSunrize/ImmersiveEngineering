@@ -38,6 +38,7 @@ public class Config
 				config.getCategory("general").remove("Cable transfer rates");
 				config.getCategory("general").remove("Cable loss");
 			}
+			config.getCategory("general").remove("Show Update News");
 		}
 
 		Property connectionValidation = config.get("General", "Validate Connections", false, "Drop connections with non-existing endpoints when loading the world. Use with care and backups and only when suspecting corrupted data. This option will check and load all connection endpoints and may slow down the world loading process.");
@@ -75,13 +76,15 @@ public class Config
 		setBoolean("disableHammerCrushing", config.get("General", "Disable Hammer Crushing", false, "Set this to true to completely disable the ore- and ingot-crushing recipes with the Engineers Hammer. Note that some of these disable automatically when other mods add the relevant dust (and by that probably a way to get them)").getBoolean());
 		setBoolean("forceHammerCrushing", config.get("General", "Force-Enable Hammer Crushing", false, "Set this to true to forefully enable the ore- and ingot-crushing recipes with the Engineers Hammer. This will override the disabling.").getBoolean());
 		setStringArray("preferredOres", config.get("General", "Preferred Ores", new String[]{"ImmersiveEngineering","ThermalFoundation"}, "A list of preferred Mod IDs that results of IE processes should stem from, aka which mod you want the copper to come from. This affects the ores dug by the excavator, as well as those crushing recipes that don't have associated IE items. This list is in oreder of priority.").getStringList());
+		setBoolean("showUpdateNews", config.get("General", "Show Update News", true, "Set this to false to hide the update news in the manual").getBoolean());
+
 
 		setBoolean("ic2compat", config.get("General", "IC2 Compatability", true, "Set this to false to prevent wires from accepting and outputting EU").getBoolean());
 		setBoolean("gregtechcompat", config.get("General", "GregTech Compatability", true, "Set this to false to prevent wires from outputting GregTech EU").getBoolean());
 		setInt("euConversion", config.get("General", "EU Conversion", 4, "The amount of RF that equal 1 EU. 4 by default, so 4RF == 1EU and .25EU == 1RF").getInt());
 
 		setInt("villager_engineer", config.get("General", "Villager ID: Engineer", 512, "The villager ID for the Engineer Villager. Change if it conflicts").getInt());
-		
+
 		Property propConnectorInput = config.get("Machines", "Wire Connector Input", new int[]{256,1024,4096}, "In- and output rates of LV,MV and HV Wire Conenctors. This is independant of the transferrate of the wires.");
 		if(propConnectorInput.getIntList().length<3)
 			propConnectorInput.set(new int[]{256,1024,4096});

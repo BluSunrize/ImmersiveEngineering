@@ -19,6 +19,7 @@ import blusunrize.immersiveengineering.api.DimensionChunkCoords;
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.ManualHelper;
 import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.IESaveData;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDevices;
 import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -116,6 +117,7 @@ public class ExcavatorHandler
 	{
 		MineralWorldInfo info = getMineralWorldInfo(world,chunkX,chunkZ);
 		info.depletion++;
+		IESaveData.setDirty(world.provider.dimensionId);
 	}
 
 	public static class MineralMix

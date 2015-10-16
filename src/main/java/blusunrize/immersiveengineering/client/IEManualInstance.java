@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.client;
 import java.util.LinkedHashSet;
 
 import net.minecraft.util.StatCollector;
+import blusunrize.immersiveengineering.api.ManualHelper;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.lib.manual.IManualPage;
@@ -121,6 +122,9 @@ public class IEManualInstance extends ManualInstance
 	@Override
 	public boolean showEntryInList(ManualEntry entry)
 	{
+		if(entry.getCategory().equalsIgnoreCase(ManualHelper.CAT_UPDATE))
+			return Config.getBoolean("showUpdateNews");
+		
 		return true;
 	}
 	@Override

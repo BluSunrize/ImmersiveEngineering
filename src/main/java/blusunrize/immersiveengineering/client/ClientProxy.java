@@ -154,7 +154,6 @@ import blusunrize.immersiveengineering.common.items.ItemRevolver;
 import blusunrize.immersiveengineering.common.util.IESound;
 import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.Utils;
-import blusunrize.lib.manual.IManualPage;
 import blusunrize.lib.manual.ManualPages;
 import blusunrize.lib.manual.ManualPages.PositionedItemStack;
 import cpw.mods.fml.client.registry.ClientRegistry;
@@ -436,6 +435,10 @@ public class ClientProxy extends CommonProxy
 				new ManualPageMultiblock(ManualHelper.getManual(), "", MultiblockBucketWheel.instance),
 				new ManualPageMultiblock(ManualHelper.getManual(), "", MultiblockExcavatorDemo.instance),
 				new ManualPages.Text(ManualHelper.getManual(), "excavator1"));
+	
+		ManualHelper.addEntry("updateNews", ManualHelper.CAT_UPDATE,
+				new ManualPages.Text(ManualHelper.getManual(), "updateNews0"),
+				new ManualPages.Text(ManualHelper.getManual(), "updateNews1"));
 	}
 
 	@Override

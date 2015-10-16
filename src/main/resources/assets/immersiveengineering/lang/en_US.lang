@@ -377,7 +377,7 @@ chat.ImmersiveEngineering.command.mineral.list.help=§6Usage: /ie mineral list§
 chat.ImmersiveEngineering.command.mineral.get.help=§6Usage: /ie mineral get§r<br> Displays the mineral for the chunk
 chat.ImmersiveEngineering.command.mineral.set.help=§6Usage: /ie mineral set [mineral]§r<br> Sets a mineral override for the chunk. Specify no mineral to clear the override.
 chat.ImmersiveEngineering.command.mineral.setDepletion.help=§6Usage: /ie mineral setDepletion <number>§r<br> Set the depletion of the minerals inside the chunk. Set this to -1 to make the vein infinite.
-chat.ImmersiveEngineering.command.mineral.get=Chunk contains: %1$s
+chat.ImmersiveEngineering.command.mineral.get=Chunk contains: §6%1$s§r, Override: §6%2$s§r, Depletion: §6%3$s§r
 chat.ImmersiveEngineering.command.mineral.set.invalidMineral=§cInvalid Mineral, '%1$s' is not a valid identifier. Use '/ie mineral list' for a list of all identifiers.§r
 chat.ImmersiveEngineering.command.mineral.set.sucess=Mineral override set to '%1$s'
 chat.ImmersiveEngineering.command.mineral.set.clear=Mineral override (%1$s) cleared.
@@ -444,6 +444,13 @@ stat.skyhookOneCm=Distance by Skyhook
 #ie.manual.entry..name=
 #ie.manual.entry..subtext=
 #ie.manual.entry.=
+
+ie.manual.category.update.name=UPDATE NEWS!
+ie.manual.entry.updateNews.name=What's new in Version 0.6
+ie.manual.entry.updateNews.subtext=Old, new; borrowed and Blu
+ie.manual.entry.updateNews0=Dear Engineer!<br>Since you last worked with Immersive Engineering, many things have changed! Among the new things are: Villager houses, <link;lighting;§nnew §nlights§r>, <link;barrel;§nwooden §nbarrels§r>, <link;tanksilo;§ntanks§r>, <link;tanksilo;§nsilos§r;1> and <link;fluidPipes;§nfluid §npipes§r>, achievements, <link;shader;§nshaders§r> and the <link;assembler;§nAssembler§r>!
+ie.manual.entry.updateNews1=Most importantly however, the way energy transmission is handled has changed a lot. In order to avoid mistakes, please make sure to read the entry on <link;wiring;§nWiring§r>, especially page 5, detailing the new distinction between a cable's transferrate and a connector's in- and output.
+
 
 ie.manual.category.general.name=Overview and Resources
 ie.manual.category.construction.name=Construction
