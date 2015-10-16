@@ -38,7 +38,7 @@ public class TileEntityBucketWheel extends TileEntityMultiblockPart
 		super.readCustomNBT(nbt, descPacket);
 		facing = nbt.getInteger("facing");
 		float nbtRot = nbt.getFloat("rotation");
-		rotation = (Math.abs(nbtRot-rotation)>5)?nbtRot:rotation; // avoid stuttering due to packet delays
+		rotation = (Math.abs(nbtRot-rotation)>5*(float)Config.getDouble("excavator_speed"))?nbtRot:rotation; // avoid stuttering due to packet delays
 		NBTTagList invList = nbt.getTagList("digStacks", 10);
 		digStacks = new ItemStack[8];
 		for (int i=0; i<invList.tagCount(); i++)
