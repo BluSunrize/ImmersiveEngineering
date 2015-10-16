@@ -71,7 +71,7 @@ public class ExcavatorHandler
 		if(world.isRemote)
 			return null;
 		MineralWorldInfo info = getMineralWorldInfo(world,chunkX,chunkZ);
-		if(info==null || info.mineral==null)
+		if(info==null || (info.mineral==null && info.mineralOverride==null))
 			return null;
 
 		if(mineralVeinCapacity>=0 && info.depletion>mineralVeinCapacity)
