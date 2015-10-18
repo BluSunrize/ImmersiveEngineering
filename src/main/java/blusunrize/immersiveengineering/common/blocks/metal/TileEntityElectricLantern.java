@@ -47,9 +47,17 @@ public class TileEntityElectricLantern extends TileEntityImmersiveConnectable im
 	}
 
 	@Override
-	public double getInterdictionRange()
+	public double getInterdictionRangeSquared()
 	{
-		return active?32:0;
+		return active?1024:0;
+	}
+
+	@Override
+	public void invalidate()
+	{
+		if(EventHandler.interdictionTiles.contains(this))
+			EventHandler.interdictionTiles.remove(this);
+		super.invalidate();
 	}
 	
 	@Override

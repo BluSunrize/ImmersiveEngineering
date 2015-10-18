@@ -319,6 +319,7 @@ public class IERecipes
 		addCrusherRecipe(new ItemStack(Items.blaze_powder,4), "rodBlaze", 2400, "dustSulfur",.5f);
 		addItemToOreDictCrusherRecipe("dustCoal",1, new ItemStack(Items.coal), 2400);
 		addItemToOreDictCrusherRecipe("dustWood",2, "logWood", 2400);
+		addItemToOreDictCrusherRecipe("dustObsidian",4, Blocks.obsidian, 6000);
 	}
 	public static void postInitCrusherAndArcRecipes()
 	{
@@ -330,14 +331,15 @@ public class IERecipes
 				if(out==null)
 				{
 					ArrayList<ItemStack> gems = OreDictionary.getOres("gem"+ore);
+					ArrayList<ItemStack> dusts = OreDictionary.getOres("dust"+ore);
 					if(!gems.isEmpty())
-						out = Utils.copyStackWithAmount(IEApi.getPreferredOreStack("gem"+ore), 2);
-					else
 					{
-						ArrayList<ItemStack> dusts = OreDictionary.getOres("dust"+ore);
 						if(!dusts.isEmpty())
-							out = Utils.copyStackWithAmount(IEApi.getPreferredOreStack("dust"+ore), 2);
+							addCrusherRecipe(IEApi.getPreferredOreStack("dust"+ore), "gem"+ore, 6000, null,0);
+						out = Utils.copyStackWithAmount(IEApi.getPreferredOreStack("gem"+ore), 2);
 					}
+					else if(!dusts.isEmpty())
+						out = Utils.copyStackWithAmount(IEApi.getPreferredOreStack("dust"+ore), 2);
 				}
 				if(out!=null)
 				{
@@ -346,7 +348,6 @@ public class IERecipes
 					Float f = secondaries!=null&&secondaries.length>1&&secondaries[1] instanceof Float?(Float)secondaries[1]: 0;
 					addOreProcessingRecipe(out, ore, 6000, true, s, f);
 				}
-
 				out = arcOutputModifier.get(ore);
 				if(out==null)
 				{

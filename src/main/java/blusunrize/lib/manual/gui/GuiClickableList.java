@@ -92,6 +92,6 @@ public class GuiClickableList extends GuiButton
 				if(mmY>=i*getFontHeight() && mmY<(i+1)*getFontHeight())
 					selectedOption=i;
 		}
-		return b;
+		return selectedOption!=-1;
 	}
 }

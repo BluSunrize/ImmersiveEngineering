@@ -79,7 +79,7 @@ public class ItemEngineersBlueprint extends ItemUpgradeableTool
 	@Override
 	public WeightedRandomChestContent getChestGenBase(ChestGenHooks chest, Random random, WeightedRandomChestContent original)
 	{
-		original.theItemId.func_135074_t();
+		original.theItemId.setTagCompound(null);
 		if(random.nextDouble()<.125f)
 		{
 			original.theItemId.setStackDisplayName("Super Special BluPrintz");

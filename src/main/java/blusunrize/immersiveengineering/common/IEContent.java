@@ -27,6 +27,7 @@ import blusunrize.immersiveengineering.api.energy.ThermoelectricHandler;
 import blusunrize.immersiveengineering.api.energy.WireType;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.common.blocks.BlockFakeLight;
+import blusunrize.immersiveengineering.common.blocks.BlockFakeLight.TileEntityFakeLight;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase.BlockIESimple;
 import blusunrize.immersiveengineering.common.blocks.BlockIESlabs;
@@ -57,7 +58,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityElectricLan
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityEnergyMeter;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityExcavator;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFermenter;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFloodLight;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFloodlight;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFluidPipe;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFluidPipe_old;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFluidPump;
@@ -386,10 +387,11 @@ public class IEContent
 		registerTile(TileEntitySkycrateDispenser.class);
 		registerTile(TileEntityEnergyMeter.class);
 		registerTile(TileEntityElectricLantern.class);
-		registerTile(TileEntityFloodLight.class);
+		registerTile(TileEntityFloodlight.class);
 		registerTile(TileEntityFluidPipe_old.class);
 		registerTile(TileEntityFluidPipe.class);
 		registerTile(TileEntityFluidPump.class);
+		registerTile(TileEntityFakeLight.class);
 
 
 		registerTile(TileEntityCokeOven.class);

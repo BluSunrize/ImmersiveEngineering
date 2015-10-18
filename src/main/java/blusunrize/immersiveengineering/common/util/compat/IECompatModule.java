@@ -32,6 +32,7 @@ public abstract class IECompatModule
 		moduleClasses.put("ThermalExpansion", TEHelper.class);
 		moduleClasses.put("chisel", ChiselHelper.class);
 		moduleClasses.put("harvestcraft", HarvestCraftHelper.class);
+		moduleClasses.put("CarpentersBlocks", CarpentersHelper.class);
 	}
 
 	public static void preInit()

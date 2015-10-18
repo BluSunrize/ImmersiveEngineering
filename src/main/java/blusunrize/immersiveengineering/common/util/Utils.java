@@ -337,6 +337,17 @@ public class Utils
 	{
 		return vec0.addVector(vec1.xCoord,vec1.yCoord,vec1.zCoord);
 	}
+	public static Vec3 rotateVector(Vec3 vec0, double angleX, double angleY, double angleZ)
+	{
+		Vec3 vec1 = Vec3.createVectorHelper(vec0.xCoord,vec0.yCoord,vec0.zCoord);
+		if(angleX!=0)
+			vec1.rotateAroundX((float)angleX);
+		if(angleY!=0)
+			vec1.rotateAroundY((float)angleY);
+		if(angleZ!=0)
+			vec1.rotateAroundZ((float)angleZ);
+		return vec1;
+	}
 
 	public static boolean isVecInEntityHead(EntityLivingBase entity, Vec3 vec)
 	{

@@ -31,6 +31,6 @@ public class IEBlockInterfaces
 
 	public interface ISpawnInterdiction
 	{
-		public double getInterdictionRange();
+		public double getInterdictionRangeSquared();
 	}
 }

@@ -2,6 +2,7 @@ package blusunrize.immersiveengineering.common;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 
@@ -163,10 +164,31 @@ public class EventHandler
 	{
 		if(event.entityLiving.isCreatureType(EnumCreatureType.monster, false))
 		{
-			for(ISpawnInterdiction interdictor : interdictionTiles)
-				if((interdictor instanceof TileEntity && ((TileEntity)interdictor).getWorldObj().provider.dimensionId==event.entity.worldObj.provider.dimensionId && ((TileEntity)interdictor).getDistanceFrom(event.entity.posX, event.entity.posY, event.entity.posZ)<=interdictor.getInterdictionRange())
-						||(interdictor instanceof Entity && ((Entity)interdictor).worldObj.provider.dimensionId==event.entity.worldObj.provider.dimensionId && ((Entity)interdictor).getDistanceToEntity(event.entity)<=interdictor.getInterdictionRange()))
-					event.setCanceled(true);
+			Iterator<ISpawnInterdiction> it = interdictionTiles.iterator();
+			while(it.hasNext())
+			{
+				ISpawnInterdiction interdictor = it.next();
+				if(interdictor instanceof TileEntity)
+				{
+					if(((TileEntity)interdictor).isInvalid())
+					{
+						it.remove();
+						continue;
+					}
+					else if( ((TileEntity)interdictor).getWorldObj().provider.dimensionId==event.entity.worldObj.provider.dimensionId && ((TileEntity)interdictor).getDistanceFrom(event.entity.posX, event.entity.posY, event.entity.posZ)<=interdictor.getInterdictionRangeSquared())
+						event.setResult(Event.Result.DENY);
+				}
+				else if(interdictor instanceof Entity)
+				{
+					if(((Entity)interdictor).isDead)
+					{
+						it.remove();
+						continue;
+					}
+					else if(((Entity)interdictor).worldObj.provider.dimensionId==event.entity.worldObj.provider.dimensionId && ((Entity)interdictor).getDistanceSqToEntity(event.entity)<=interdictor.getInterdictionRangeSquared())
+						event.setResult(Event.Result.DENY);
+				}
+			}
 		}
 	}
 	@SubscribeEvent
@@ -176,10 +198,31 @@ public class EventHandler
 			return;
 		if(event.entityLiving.isCreatureType(EnumCreatureType.monster, false))
 		{
-			for(ISpawnInterdiction interdictor : interdictionTiles)
-				if((interdictor instanceof TileEntity && ((TileEntity)interdictor).getWorldObj().provider.dimensionId==event.entity.worldObj.provider.dimensionId && ((TileEntity)interdictor).getDistanceFrom(event.entity.posX, event.entity.posY, event.entity.posZ)<=interdictor.getInterdictionRange())
-						||(interdictor instanceof Entity && ((Entity)interdictor).worldObj.provider.dimensionId==event.entity.worldObj.provider.dimensionId && ((Entity)interdictor).getDistanceToEntity(event.entity)<=interdictor.getInterdictionRange()))
-					event.setResult(Event.Result.DENY);
+			Iterator<ISpawnInterdiction> it = interdictionTiles.iterator();
+			while(it.hasNext())
+			{
+				ISpawnInterdiction interdictor = it.next();
+				if(interdictor instanceof TileEntity)
+				{
+					if(((TileEntity)interdictor).isInvalid())
+					{
+						it.remove();
+						continue;
+					}
+					else if( ((TileEntity)interdictor).getWorldObj().provider.dimensionId==event.entity.worldObj.provider.dimensionId && ((TileEntity)interdictor).getDistanceFrom(event.entity.posX, event.entity.posY, event.entity.posZ)<=interdictor.getInterdictionRangeSquared())
+						event.setResult(Event.Result.DENY);
+				}
+				else if(interdictor instanceof Entity)
+				{
+					if(((Entity)interdictor).isDead)
+					{
+						it.remove();
+						continue;
+					}
+					else if(((Entity)interdictor).worldObj.provider.dimensionId==event.entity.worldObj.provider.dimensionId && ((Entity)interdictor).getDistanceSqToEntity(event.entity)<=interdictor.getInterdictionRangeSquared())
+						event.setResult(Event.Result.DENY);
+				}
+			}
 		}
 	}
 

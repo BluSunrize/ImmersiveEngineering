@@ -2,6 +2,7 @@ package blusunrize.immersiveengineering.common.util.compat;
 
 import net.minecraft.item.ItemStack;
 import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDecoration;
 import cpw.mods.fml.common.event.FMLInterModComms;
 
 public class FMPHelper extends IECompatModule
@@ -18,9 +19,13 @@ public class FMPHelper extends IECompatModule
 		for(int i=0; i<=4; i++)
 			FMLInterModComms.sendMessage("ForgeMicroblock", "microMaterial", new ItemStack(IEContent.blockStoneDecoration,1,i));
 		FMLInterModComms.sendMessage("ForgeMicroblock", "microMaterial", new ItemStack(IEContent.blockStoneDevice,1,4));
-		FMLInterModComms.sendMessage("ForgeMicroblock", "microMaterial", new ItemStack(IEContent.blockMetalDecoration,1,1));
-		for(int i=4; i<=7; i++)
-			FMLInterModComms.sendMessage("ForgeMicroblock", "microMaterial", new ItemStack(IEContent.blockMetalDecoration,1,i));
+		//Metal Decoration
+		FMLInterModComms.sendMessage("ForgeMicroblock", "microMaterial", new ItemStack(IEContent.blockMetalDecoration,1,BlockMetalDecoration.META_scaffolding));
+		FMLInterModComms.sendMessage("ForgeMicroblock", "microMaterial", new ItemStack(IEContent.blockMetalDecoration,1,BlockMetalDecoration.META_radiator));
+		FMLInterModComms.sendMessage("ForgeMicroblock", "microMaterial", new ItemStack(IEContent.blockMetalDecoration,1,BlockMetalDecoration.META_heavyEngineering));
+		FMLInterModComms.sendMessage("ForgeMicroblock", "microMaterial", new ItemStack(IEContent.blockMetalDecoration,1,BlockMetalDecoration.META_generator));
+		FMLInterModComms.sendMessage("ForgeMicroblock", "microMaterial", new ItemStack(IEContent.blockMetalDecoration,1,BlockMetalDecoration.META_lightEngineering));
+		FMLInterModComms.sendMessage("ForgeMicroblock", "microMaterial", new ItemStack(IEContent.blockMetalDecoration,1,BlockMetalDecoration.META_sheetMetal));
 	}
 
 	@Override

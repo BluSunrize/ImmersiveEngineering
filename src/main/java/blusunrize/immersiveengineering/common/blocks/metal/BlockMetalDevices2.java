@@ -42,9 +42,11 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 	public static final int META_skycrateDispenser=1;
 	public static final int META_energyMeter=2;
 	public static final int META_electricLantern=3;
-	public static final int META_floodLight=4;
+	public static final int META_floodlight=4;
 	public static final int META_fluidPipe=5;
 	public static final int META_fluidPump=6;
+	IIcon[] pumpIcons = new IIcon[7];
+	IIcon floodlightGlass;
 
 	public BlockMetalDevices2()
 	{
@@ -91,8 +93,6 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 		//		}
 	}
 
-	IIcon[] pumpIcons = new IIcon[7];
-
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister iconRegister)
@@ -101,6 +101,7 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 			if(i!=META_fluidPump)
 				this.icons[i][0] = iconRegister.registerIcon("immersiveEngineering:metal2_"+this.subNames[i]);
 
+		floodlightGlass = iconRegister.registerIcon("immersiveEngineering:metal2_floodlightGlass");
 		pumpIcons[0] = iconRegister.registerIcon("immersiveEngineering:metal2_pump_side_none");
 		pumpIcons[1] = iconRegister.registerIcon("immersiveEngineering:metal2_pump_side_in");
 		pumpIcons[2] = iconRegister.registerIcon("immersiveEngineering:metal2_pump_side_out");
@@ -121,6 +122,8 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 	{
 		if(meta==META_fluidPump)
 			return pumpIcons[Math.min(side+1,6)];
+		if(meta==META_floodlight && side==1)
+			return floodlightGlass;
 		return super.getIcon(side, meta);
 	}
 
@@ -139,7 +142,17 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 	{
 		return BlockRenderMetalDevices2.renderID;
 	}
-
+	@Override
+	public boolean canRenderInPass(int pass)
+	{
+		BlockRenderMetalDevices2.renderPass=pass;
+		return true;
+	}
+	@Override
+	public int getRenderBlockPass()
+	{
+		return 1;
+	}
 
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
@@ -190,22 +203,22 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 					player.addChatMessage(new ChatComponentText("Server Connections: " + fluidPipe.connections.size()));
 			}
 		}
-		else if(Utils.isHammer(player.getCurrentEquippedItem()) && te instanceof TileEntityFloodLight)
+		else if(Utils.isHammer(player.getCurrentEquippedItem()) && te instanceof TileEntityFloodlight)
 		{
-			if(player.isSneaking())
+			if(side==((TileEntityFloodlight)te).side || ForgeDirection.OPPOSITES[side]==((TileEntityFloodlight)te).side)
 			{
-				((TileEntityFloodLight)te).rotX+=10;
-				((TileEntityFloodLight)te).rotX%=360;
-				te.markDirty();
-				world.markBlockForUpdate(x, y, z);
+				((TileEntityFloodlight)te).rotY+=player.isSneaking()?-11.25:11.25;
+				((TileEntityFloodlight)te).rotY%=360;
 			}
 			else
 			{
-				((TileEntityFloodLight)te).rotY+=10;
-				((TileEntityFloodLight)te).rotY%=360;
-				te.markDirty();
-				world.markBlockForUpdate(x, y, z);
+				float newX = (((TileEntityFloodlight)te).rotX+(player.isSneaking()?-11.25f:11.25f))%360;
+				if(newX>=-11.25 && newX<=191.25)
+					((TileEntityFloodlight)te).rotX=newX;
 			}
+			((TileEntityFloodlight)te).updateFakeLights(true,((TileEntityFloodlight)te).active);
+			te.markDirty();
+			world.markBlockForUpdate(x, y, z);
 		}
 		else if(Utils.isHammer(player.getCurrentEquippedItem()) && te instanceof TileEntityFluidPump)
 		{
@@ -291,6 +304,12 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 				this.setBlockBounds(f>=4?.1875f:.25f,0,f<=3?.1875f:.25f, f>=4?.8125f:.75f,.25f,f<=3?.8125f:.75f);
 			else
 				this.setBlockBounds(f>=4?.1875f:.25f,.75f,f<=3?.1875f:.25f, f>=4?.8125f:.75f,1,f<=3?.8125f:.75f);
+		}
+		else if (te instanceof TileEntityFloodlight)
+		{
+			TileEntityFloodlight light = ((TileEntityFloodlight)te);
+			
+			this.setBlockBounds(light.side/2==2?0:.0625f,light.side/2==0?0:.0625f,light.side/2==1?0:.0625f, light.side/2==2?1:.9375f,light.side/2==0?1:.9375f,light.side/2==1?1:.9375f);
 		}
 		else if (te instanceof TileEntityFluidPipe_old)
 		{
@@ -490,8 +509,8 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 			return new TileEntityEnergyMeter();
 		case META_electricLantern:
 			return new TileEntityElectricLantern();
-		case META_floodLight:
-			return new TileEntityFloodLight();
+		case META_floodlight:
+			return new TileEntityFloodlight();
 		case META_fluidPipe:
 			return new TileEntityFluidPipe();
 		case META_fluidPump:
@@ -504,6 +523,10 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 	public void breakBlock(World world, int x, int y, int z, Block par5, int par6)
 	{
 		TileEntity te = world.getTileEntity(x, y, z);
+		if(te instanceof TileEntityFloodlight)
+		{
+			((TileEntityFloodlight)te).updateFakeLights(true,false);
+		}
 		if(te instanceof TileEntityFluidPump)
 		{
 			if(((TileEntityFluidPump) te).dummy)

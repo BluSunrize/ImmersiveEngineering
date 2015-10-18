@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDecoration;
 import net.minecraft.entity.EntityHanging;
 import net.minecraft.entity.item.EntityItemFrame;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.MathHelper;
@@ -23,6 +23,8 @@ import net.minecraftforge.common.ChestGenHooks;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDecoration;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityLantern;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenCrate;
 import cpw.mods.fml.common.registry.VillagerRegistry.IVillageCreationHandler;
 
@@ -139,7 +141,7 @@ public class VillageEngineersHouse extends StructureVillagePieces.Village
 		this.fillWithMetadataBlocks(world, box, 1,5,3, 1,5,4, IEContent.blockWoodenDecoration,1,IEContent.blockWoodenDecoration,1, false);
 		this.fillWithMetadataBlocks(world, box, 2,5,3, 5,5,3, IEContent.blockWoodenDecoration,1,IEContent.blockWoodenDecoration,1, false);
 		this.fillWithMetadataBlocks(world, box, 7,1,6, 7,5,6, IEContent.blockWoodenDecoration,1,IEContent.blockWoodenDecoration,1, false);
-		
+
 		//Doors
 		int doorMeta = coordBaseMode==0?1: coordBaseMode==1?2: coordBaseMode==2?3: 0;
 		this.placeDoorAtCurrentPosition(world, box, rand, 4,1,3, doorMeta);
@@ -153,8 +155,8 @@ public class VillageEngineersHouse extends StructureVillagePieces.Village
 		}
 
 		//Lanterns
-		this.placeBlockAtCurrentPosition(world, IEContent.blockMetalDecoration, BlockMetalDecoration.META_lantern, 5, 3, 6, box);
-		this.placeBlockAtCurrentPosition(world, IEContent.blockMetalDecoration, BlockMetalDecoration.META_lantern, 5, 7, 6, box);
+		this.placeLantern(world, box, 5,3,6, 0);
+		this.placeLantern(world, box, 5,7,6, 0);
 
 		//Stairs
 		placeBlockAtCurrentPosition(world, Blocks.oak_stairs, stairMeta, 8,1,6, box);
@@ -172,7 +174,7 @@ public class VillageEngineersHouse extends StructureVillagePieces.Village
 		this.fillWithMetadataBlocks(world, box, 7,8,2, 7,8,8, Blocks.stone_slab,4,Blocks.stone_slab,4, false);
 		this.fillWithMetadataBlocks(world, box, 9,7,2, 9,7,8, Blocks.stone_slab,4,Blocks.stone_slab,4, false);
 		this.fillWithMetadataBlocks(world, box, 10,6,2, 10,6,8, Blocks.stone_slab,12,Blocks.stone_slab,12, false);
-		
+
 		stairMeta = this.getMetadataWithOffset(Blocks.oak_stairs, 0);
 		this.fillWithMetadataBlocks(world, box, 2,7,4, 2,7,8, Blocks.brick_stairs,stairMeta,Blocks.brick_stairs,stairMeta, false);
 		this.fillWithMetadataBlocks(world, box, 4,8,4, 4,8,8, Blocks.brick_stairs,stairMeta,Blocks.brick_stairs,stairMeta, false);
@@ -209,15 +211,32 @@ public class VillageEngineersHouse extends StructureVillagePieces.Village
 		if(box.isVecInside(i1, j1, k1) && (world.getBlock(i1, j1, k1)!=IEContent.blockWoodenDevice||world.getBlockMetadata(i1, j1, k1)!=4))
 		{
 			world.setBlock(i1, j1, k1, IEContent.blockWoodenDevice,4, 2);
-			TileEntityWoodenCrate crate = (TileEntityWoodenCrate)world.getTileEntity(i1, j1, k1);
-			if(crate != null)
-				WeightedRandomChestContent.generateChestContents(rand, contents, crate, amount);
+			TileEntity tile = world.getTileEntity(i1, j1, k1);
+			if(tile instanceof TileEntityWoodenCrate)
+				WeightedRandomChestContent.generateChestContents(rand, contents, ((TileEntityWoodenCrate)tile), amount);
 			return true;
 		}
 		else
 			return false;
 	}
 
+	protected boolean placeLantern(World world, StructureBoundingBox box, int x, int y, int z, int facing)
+	{
+		int i1 = this.getXWithOffset(x, z);
+		int j1 = this.getYWithOffset(y);
+		int k1 = this.getZWithOffset(x, z);
+
+		if(box.isVecInside(i1, j1, k1))
+		{
+			world.setBlock(i1, j1, k1, IEContent.blockMetalDecoration,BlockMetalDecoration.META_lantern, 2);
+			TileEntity tile = world.getTileEntity(i1, j1, k1);
+			if(tile instanceof TileEntityLantern)
+				((TileEntityLantern)tile).facing = facing;
+			return true;
+		}
+		else
+			return false;
+	}
 	public void placeItemframe(Random random, World world, int x, int y, int z, int side, ItemStack stack)
 	{
 		int i1 = this.getXWithOffset(x, z);

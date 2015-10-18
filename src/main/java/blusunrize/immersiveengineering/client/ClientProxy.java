@@ -71,7 +71,7 @@ import blusunrize.immersiveengineering.client.render.TileRenderDieselGenerator;
 import blusunrize.immersiveengineering.client.render.TileRenderElectricLantern;
 import blusunrize.immersiveengineering.client.render.TileRenderEnergyMeter;
 import blusunrize.immersiveengineering.client.render.TileRenderExcavator;
-import blusunrize.immersiveengineering.client.render.TileRenderFloodLight;
+import blusunrize.immersiveengineering.client.render.TileRenderFloodlight;
 import blusunrize.immersiveengineering.client.render.TileRenderFluidPipe;
 import blusunrize.immersiveengineering.client.render.TileRenderFluidPipe_old;
 import blusunrize.immersiveengineering.client.render.TileRenderFluidPump;
@@ -110,7 +110,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityElectricLan
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityEnergyMeter;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityExcavator;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFermenter;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFloodLight;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFloodlight;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFluidPipe;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFluidPipe_old;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFluidPump;
@@ -195,7 +195,7 @@ public class ClientProxy extends CommonProxy
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntitySheetmetalTank.class, new TileRenderSheetmetalTank());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntitySilo.class, new TileRenderSilo());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityElectricLantern.class, new TileRenderElectricLantern());
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFloodLight.class, new TileRenderFloodLight());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFloodlight.class, new TileRenderFloodlight());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFluidPipe_old.class, new TileRenderFluidPipe_old());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFluidPipe.class, new TileRenderFluidPipe());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFluidPump.class, new TileRenderFluidPump());
@@ -313,7 +313,7 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.Crafting(ManualHelper.getManual(), "lighting0", new ItemStack(IEContent.blockMetalDecoration,1,BlockMetalDecoration.META_lantern)),
 				new ManualPages.Crafting(ManualHelper.getManual(), "lighting1", new ItemStack(IEContent.blockMetalDevice2,1,BlockMetalDevices2.META_electricLantern)),
 				new ManualPages.Text(ManualHelper.getManual(), "lighting2"),
-				new ManualPages.Crafting(ManualHelper.getManual(), "lighting3", new ItemStack(IEContent.blockMetalDevice2,1,BlockMetalDevices2.META_floodLight)));
+				new ManualPages.Crafting(ManualHelper.getManual(), "lighting3", new ItemStack(IEContent.blockMetalDevice2,1,BlockMetalDevices2.META_floodlight)));
 
 
 		ManualHelper.addEntry("wiring", ManualHelper.CAT_ENERGY,
