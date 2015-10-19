@@ -115,7 +115,6 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable
 			mat.rotate(angleY, 0,1,0);
 			mat.rotate(-angleX, 1,0,0);
 			mat.apply(rays[0]);
-			//			this.placeLightAlongVector(rays[0], 4);
 
 			mat.rotate(Math.PI/8, 0,1,0);
 			mat.apply(rays[1]);
@@ -149,58 +148,23 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable
 			mat.rotate(Math.PI/8, 0,1,0);
 			mat.apply(rays[12]);
 
-
-			//			this.placeLightAlongVector(rays[1], 3);
-			//			this.placeLightAlongVector(rays[5], 1);
-			//			this.placeLightAlongVector(rays[2], 3);
-			//			this.placeLightAlongVector(rays[6], 1);
-			//			this.placeLightAlongVector(rays[3], 3);
-			//			this.placeLightAlongVector(rays[7], 1);
-			//			this.placeLightAlongVector(rays[4], 3);
-			//			this.placeLightAlongVector(rays[8], 1);
-			//			this.placeLightAlongVector(rays[9], 1);
-			//			this.placeLightAlongVector(rays[10], 1);
-			//			this.placeLightAlongVector(rays[11], 1);
-			//			this.placeLightAlongVector(rays[12], 1);
-
 			for(int ray=0; ray<rays.length; ray++)
 			{
-				int modulo = ray==0?0: ray<4?3: 1;
-				Vec3 vec = rays[ray];
-				Vec3 light = Vec3.createVectorHelper(xCoord+.5,yCoord+.75,zCoord+.5);
-				int range = 32;
-				MovingObjectPosition mop = worldObj.rayTraceBlocks(Utils.addVectors(vec,light), light.addVector(vec.xCoord*range,vec.yCoord*range,vec.zCoord*range));
-				double maxDistance = mop!=null?Vec3.createVectorHelper(mop.blockX+.5,mop.blockY+.75,mop.blockZ+.5).squareDistanceTo(light):range*range;
-				for(int i=1+modulo; i<=range; i++)
-				{
-					int xx = xCoord+(int)Math.round(vec.xCoord*i);
-					int yy = yCoord+(int)Math.round(vec.yCoord*i);
-					int zz = zCoord+(int)Math.round(vec.zCoord*i);
-					double dist = (vec.xCoord*i*vec.xCoord*i)+(vec.yCoord*i*vec.yCoord*i)+(vec.zCoord*i*vec.zCoord*i);
-					if(dist>maxDistance)
-						break;
-					//&&worldObj.getBlockLightValue(xx,yy,zz)<12 using this makes it not work in daylight .-.
-					if((xx!=xCoord||yy!=yCoord||zz!=zCoord)&&worldObj.isAirBlock(xx,yy,zz))
-					{
-						ChunkCoordinates cc = new ChunkCoordinates(xx,yy,zz);
-						if(!tempRemove.remove(cc))
-							lightsToBePlaced.add(cc);
-						i+=2;
-					}
-				}
+				int offset = ray==0?0: ray<4?3: 1;
+				placeLightAlongVector(rays[ray], offset, tempRemove);
 			}
 		}
 		
 		this.lightsToBeRemoved.addAll(tempRemove);
 	}
 
-	public void placeLightAlongVector(Vec3 vec, int modulo)
+	public void placeLightAlongVector(Vec3 vec, int offset, ArrayList<ChunkCoordinates> checklist)
 	{
 		Vec3 light = Vec3.createVectorHelper(xCoord+.5,yCoord+.75,zCoord+.5);
 		int range = 32;
 		MovingObjectPosition mop = worldObj.rayTraceBlocks(Utils.addVectors(vec,light), light.addVector(vec.xCoord*range,vec.yCoord*range,vec.zCoord*range));
 		double maxDistance = mop!=null?Vec3.createVectorHelper(mop.blockX+.5,mop.blockY+.75,mop.blockZ+.5).squareDistanceTo(light):range*range;
-		for(int i=1+modulo; i<=range; i++)
+		for(int i=1+offset; i<=range; i++)
 		{
 			int xx = xCoord+(int)Math.round(vec.xCoord*i);
 			int yy = yCoord+(int)Math.round(vec.yCoord*i);
@@ -211,7 +175,9 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable
 			//&&worldObj.getBlockLightValue(xx,yy,zz)<12 using this makes it not work in daylight .-.
 			if((xx!=xCoord||yy!=yCoord||zz!=zCoord)&&worldObj.isAirBlock(xx,yy,zz))
 			{
-				lightsToBePlaced.add(new ChunkCoordinates(xx,yy,zz));
+				ChunkCoordinates cc = new ChunkCoordinates(xx,yy,zz);
+				if(!checklist.remove(cc))
+					lightsToBePlaced.add(cc);
 				i+=2;
 			}
 		}

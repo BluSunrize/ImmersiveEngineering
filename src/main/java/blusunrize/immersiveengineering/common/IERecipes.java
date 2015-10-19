@@ -331,15 +331,14 @@ public class IERecipes
 				if(out==null)
 				{
 					ArrayList<ItemStack> gems = OreDictionary.getOres("gem"+ore);
-					ArrayList<ItemStack> dusts = OreDictionary.getOres("dust"+ore);
 					if(!gems.isEmpty())
-					{
-						if(!dusts.isEmpty())
-							addCrusherRecipe(IEApi.getPreferredOreStack("dust"+ore), "gem"+ore, 6000, null,0);
 						out = Utils.copyStackWithAmount(IEApi.getPreferredOreStack("gem"+ore), 2);
+					else
+					{
+						ArrayList<ItemStack> dusts = OreDictionary.getOres("dust"+ore);
+						if(!dusts.isEmpty())
+							out = Utils.copyStackWithAmount(IEApi.getPreferredOreStack("dust"+ore), 2);
 					}
-					else if(!dusts.isEmpty())
-						out = Utils.copyStackWithAmount(IEApi.getPreferredOreStack("dust"+ore), 2);
 				}
 				if(out!=null)
 				{
@@ -357,6 +356,13 @@ public class IERecipes
 				}
 				if(out!=null)
 					addArcOreSmelting(out, ore);
+			}
+			else if(name.startsWith("gem"))
+			{
+				String ore = name.substring("gem".length());
+				ArrayList<ItemStack> dusts = OreDictionary.getOres("dust"+ore);
+				if(!dusts.isEmpty())
+					addCrusherRecipe(IEApi.getPreferredOreStack("dust"+ore), "gem"+ore, 6000, null,0);
 			}
 			else if(name.startsWith("dust"))
 			{
