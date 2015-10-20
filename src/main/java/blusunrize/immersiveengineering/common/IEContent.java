@@ -122,6 +122,7 @@ import blusunrize.immersiveengineering.common.items.ItemGraphiteElectrode;
 import blusunrize.immersiveengineering.common.items.ItemIEBase;
 import blusunrize.immersiveengineering.common.items.ItemIESeed;
 import blusunrize.immersiveengineering.common.items.ItemIETool;
+import blusunrize.immersiveengineering.common.items.ItemJerrycan;
 import blusunrize.immersiveengineering.common.items.ItemRevolver;
 import blusunrize.immersiveengineering.common.items.ItemShader;
 import blusunrize.immersiveengineering.common.items.ItemSkyhook;
@@ -169,6 +170,7 @@ public class IEContent
 	public static ItemIEBase itemGraphiteElectrode;
 	public static ItemIEBase itemShader;
 	public static ItemIEBase itemFakeIcons;
+	public static ItemIEBase itemJerrycan;
 	public static Fluid fluidCreosote;
 	public static boolean IECreosote=false;
 	public static Fluid fluidPlantoil;
@@ -247,6 +249,7 @@ public class IEContent
 			{
 			}
 		};
+		itemJerrycan = new ItemJerrycan();
 
 		fluidCreosote = FluidRegistry.getFluid("creosote");
 		if(fluidCreosote==null)

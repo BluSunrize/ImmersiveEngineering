@@ -2,7 +2,8 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -17,15 +18,12 @@ import net.minecraftforge.fluids.IFluidHandler;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.util.Utils;
-
-import com.google.common.collect.ArrayListMultimap;
-
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 
 public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidHandler
 {
-	static ArrayListMultimap<ChunkCoordinates, DirectionalFluidOutput> indirectConnections = ArrayListMultimap.create();
+	static ConcurrentHashMap<ChunkCoordinates, ConcurrentSkipListSet<DirectionalFluidOutput>> indirectConnections = new ConcurrentHashMap<ChunkCoordinates, ConcurrentSkipListSet<DirectionalFluidOutput>>();
 	public static ArrayList<ItemStack> validScaffoldCoverings = new ArrayList<ItemStack>();
 	static{
 		TileEntityFluidPipe.validScaffoldCoverings.add(new ItemStack(IEContent.blockMetalDecoration,1,1));
@@ -41,14 +39,14 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidHandl
 		return false;
 	}
 
-	public static List<DirectionalFluidOutput> getConnectedFluidHandlers(ChunkCoordinates node, World world)
+	public static ConcurrentSkipListSet<DirectionalFluidOutput> getConnectedFluidHandlers(ChunkCoordinates node, World world)
 	{
 		if(indirectConnections.containsKey(node))
 			return indirectConnections.get(node);
 
 		ArrayList<ChunkCoordinates> openList = new ArrayList();
 		ArrayList<ChunkCoordinates> closedList = new ArrayList();
-		ArrayList<DirectionalFluidOutput> fluidHandlers = new ArrayList();
+		ConcurrentSkipListSet<DirectionalFluidOutput> fluidHandlers = new ConcurrentSkipListSet();
 		openList.add(node);
 		while(!openList.isEmpty() && closedList.size()<1024)
 		{
@@ -80,7 +78,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidHandl
 		if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
 		{
 			if(!indirectConnections.containsKey(node))
-				indirectConnections.putAll(node, fluidHandlers);
+				indirectConnections.get(node).addAll(fluidHandlers);
 		}
 		return fluidHandlers;
 	}

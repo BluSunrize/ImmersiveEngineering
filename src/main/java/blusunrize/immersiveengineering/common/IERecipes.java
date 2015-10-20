@@ -304,13 +304,13 @@ public class IERecipes
 		oreOutputSecondaries.put("Uranium", new Object[]{"dustLead",.1f});
 		oreOutputSecondaries.put("Yellorium", new Object[]{"dustLead",.1f});
 		oreOutputSecondaries.put("Plutonium", new Object[]{"dustUranium",.1f});
-		Item i = GameRegistry.findItem("IC2", "itemOreIridium");
-		oreOutputSecondaries.put("Osmium", new Object[]{i,.01f});
+		Item item = GameRegistry.findItem("IC2", "itemOreIridium");
+		oreOutputSecondaries.put("Osmium", new Object[]{item,.01f});
 		oreOutputSecondaries.put("Iridium", new Object[]{"dustPlatium",.1f});
 		oreOutputSecondaries.put("FzDarkIron", new Object[]{"dustIron",.1f});
-		i = GameRegistry.findItem("Railcraft", "firestone.raw");
-		if(i!=null)
-			oreOutputModifier.put("Firestone", new ItemStack(i));
+		item = GameRegistry.findItem("Railcraft", "firestone.raw");
+		if(item!=null)
+			oreOutputModifier.put("Firestone", new ItemStack(item));
 		oreOutputSecondaries.put("Nikolite", new Object[]{Items.diamond,.025f});
 
 		CrusherRecipe.addRecipe(new ItemStack(Blocks.sand), "cobblestone", 3200);
@@ -320,6 +320,13 @@ public class IERecipes
 		addItemToOreDictCrusherRecipe("dustCoal",1, new ItemStack(Items.coal), 2400);
 		addItemToOreDictCrusherRecipe("dustWood",2, "logWood", 2400);
 		addItemToOreDictCrusherRecipe("dustObsidian",4, Blocks.obsidian, 6000);
+		for(int i=0; i<16; i++)
+			if(i==0)
+			{
+				CrusherRecipe r = CrusherRecipe.addRecipe(new ItemStack(Items.string,4), new ItemStack(Blocks.wool,1,i), 3200);
+				if(i!=0)
+					r.addToSecondaryOutput(new ItemStack(Items.dye,1,15-0), .05f);
+			}
 	}
 	public static void postInitCrusherAndArcRecipes()
 	{

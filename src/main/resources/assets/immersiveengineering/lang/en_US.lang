@@ -235,6 +235,8 @@ item.ImmersiveEngineering.graphiteElectrode.name=Graphite Electrode
 
 item.ImmersiveEngineering.shader.name=Shader
 
+item.ImmersiveEngineering.jerrycan.name=Jerrycan
+
 
 #CREATIVE
 itemGroup.ImmersiveEngineering=Immersive Engineering
