@@ -1,7 +1,5 @@
 package blusunrize.immersiveengineering.common.crafting;
 
-import java.util.ArrayList;
-
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
@@ -27,7 +25,7 @@ public class RecipeOreCrushing implements IRecipe
 	public boolean matches(InventoryCrafting inv, World world)
 	{
 		ItemStack hammer = null;
-		ArrayList<ItemStack> ores = new ArrayList();
+		ItemStack ore = null;
 		for(int i=0;i<inv.getSizeInventory();i++)
 		{
 			ItemStack stackInSlot = inv.getStackInSlot(i);
@@ -35,13 +33,13 @@ public class RecipeOreCrushing implements IRecipe
 			{
 				if(hammer==null && stackInSlot.getItem().getToolClasses(stackInSlot).contains(Lib.TOOL_HAMMER))
 					hammer = stackInSlot;
-				else if(Utils.compareToOreName(stackInSlot, "ore"+oreName) || Utils.compareToOreName(stackInSlot, "ingot"+oreName))
-					ores.add(stackInSlot);
+				else if(ore==null && (Utils.compareToOreName(stackInSlot, "ore"+oreName) || Utils.compareToOreName(stackInSlot, "ingot"+oreName)))
+					ore = stackInSlot;
 				else
 					return false;
 			}
 		}
-		return hammer!=null&&!ores.isEmpty();
+		return hammer!=null&&ore!=null;
 	}
 
 	@Override
@@ -54,9 +52,9 @@ public class RecipeOreCrushing implements IRecipe
 			if(stackInSlot!=null)
 			{
 				if(Utils.compareToOreName(stackInSlot, "ore"+oreName))
-					amount+=2;
+					amount=2;
 				else if(Utils.compareToOreName(stackInSlot, "ingot"+oreName))
-					amount++;
+					amount=1;
 			}
 		}
 		return Utils.copyStackWithAmount(getRecipeOutput(),amount);

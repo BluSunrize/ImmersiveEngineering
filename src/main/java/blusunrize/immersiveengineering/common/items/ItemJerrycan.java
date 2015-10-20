@@ -11,6 +11,8 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidContainerItem;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemJerrycan extends ItemIEBase implements IFluidContainerItem
 {
@@ -19,8 +21,8 @@ public class ItemJerrycan extends ItemIEBase implements IFluidContainerItem
 		super("jerrycan", 1);
 	}
 	
-
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean adv)
 	{
 		FluidStack fs = getFluid(stack);
@@ -33,6 +35,24 @@ public class ItemJerrycan extends ItemIEBase implements IFluidContainerItem
 			list.add(StatCollector.translateToLocal("desc.ImmersiveEngineering.flavour.drill.empty"));
 	}
 
+	@Override
+	public boolean hasContainerItem(ItemStack stack)
+	{
+		return ItemNBTHelper.hasKey(stack, "jerrycanDrain");
+	}
+	@Override
+	public ItemStack getContainerItem(ItemStack stack)
+	{
+		if(ItemNBTHelper.hasKey(stack, "jerrycanDrain"))
+		{
+			ItemStack ret = stack.copy();
+			this.drain(ret, ItemNBTHelper.getInt(stack, "jerrycanDrain"), true);
+			ItemNBTHelper.remove(ret, "jerrycanDrain");
+			return ret;
+		}
+		return stack;
+	}
+	
 	@Override
 	public FluidStack getFluid(ItemStack container)
 	{

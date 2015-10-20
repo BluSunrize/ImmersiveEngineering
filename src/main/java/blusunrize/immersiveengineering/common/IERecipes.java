@@ -22,6 +22,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDecoration;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDevices;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDevices2;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalMultiblocks;
+import blusunrize.immersiveengineering.common.crafting.RecipeJerrycan;
 import blusunrize.immersiveengineering.common.crafting.RecipePotionBullets;
 import blusunrize.immersiveengineering.common.crafting.RecipeRevolver;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -143,6 +144,9 @@ public class IERecipes
 		addOredictRecipe(new ItemStack(IEContent.itemWireCoil,4,3), " I ","ISI"," I ", 'I',new ItemStack(IEContent.itemMaterial,1,3), 'S',"stickWood");
 		addOredictRecipe(new ItemStack(IEContent.itemWireCoil,4,4), " I ","ISI"," I ", 'I',"ingotSteel", 'S',"stickWood");
 
+		GameRegistry.addRecipe(new RecipeJerrycan());
+		
+		
 		for(ItemStack container : Utils.getContainersFilledWith(new FluidStack(IEContent.fluidCreosote,1000)))
 			addOredictRecipe(new ItemStack(IEContent.blockTreatedWood,8,0), "WWW","WCW","WWW", 'W',"plankWood",'C',container);
 		addOredictRecipe(new ItemStack(IEContent.blockTreatedWood,1,0), "W","W", 'W',new ItemStack(IEContent.blockWoodenDecoration,1,2));

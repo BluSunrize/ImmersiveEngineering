@@ -36,6 +36,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMultiblockPart;
 import blusunrize.immersiveengineering.common.items.ItemDrill;
 import blusunrize.immersiveengineering.common.util.IEAchievements;
+import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.network.MessageMineralListSync;
@@ -238,6 +239,22 @@ public class EventHandler
 	{
 		if(event.player!=null && OreDictionary.itemMatches(new ItemStack(IEContent.itemTool,1,0), event.crafting, true))
 			event.player.triggerAchievement(IEAchievements.craftHammer);
+
+		if(event.crafting!=null && ItemNBTHelper.hasKey(event.crafting, "jerrycanFilling"))
+		{
+			int drain = ItemNBTHelper.getInt(event.crafting, "jerrycanFilling");
+			for(int i=0;i<event.craftMatrix.getSizeInventory();i++)
+			{
+				ItemStack stackInSlot = event.craftMatrix.getStackInSlot(i);
+				if(stackInSlot!=null)
+					if(IEContent.itemJerrycan.equals(stackInSlot.getItem()) && ItemNBTHelper.hasKey(stackInSlot, "fluid"))
+					{
+						ItemNBTHelper.setInt(stackInSlot, "jerrycanDrain", drain);
+						break;
+					}
+			}
+			ItemNBTHelper.remove(event.crafting, "jerrycanFilling");	
+		}
 	}
 
 	@SubscribeEvent()
