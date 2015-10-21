@@ -52,7 +52,7 @@ public class BlockStoneDevices extends BlockIEBase
 	public boolean canRenderInPass(int pass)
 	{
 		BlockRenderStoneDevices.renderPass=pass;
-		return pass==1;
+		return true;
 	}
 	@Override
 	public boolean isOpaqueCube()
