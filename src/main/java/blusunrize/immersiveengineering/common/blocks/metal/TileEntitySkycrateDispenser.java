@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import java.util.concurrent.ConcurrentSkipListSet;
+
+import java.util.Set;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
@@ -37,7 +38,7 @@ public class TileEntitySkycrateDispenser extends TileEntityIEBase implements ISi
 			if(!(worldObj.getTileEntity(cc.posX,cc.posY,cc.posZ) instanceof IImmersiveConnectable))
 				return;
 
-			ConcurrentSkipListSet<Connection> outputs = ImmersiveNetHandler.INSTANCE.getConnections(worldObj, cc);
+			Set<Connection> outputs = ImmersiveNetHandler.INSTANCE.getConnections(worldObj, cc);
 			if(outputs!=null && outputs.size()>0)
 			{
 				//				Vec3 vec = living.getLookVec();
@@ -58,7 +59,7 @@ public class TileEntitySkycrateDispenser extends TileEntityIEBase implements ISi
 				//					}
 				//				return line;
 
-				Connection connection = outputs.first();
+				Connection connection = outputs.iterator().next();
 
 				ChunkCoordinates cc0 = connection.end==cc?connection.start:connection.end;
 				ChunkCoordinates cc1 = connection.end==cc?connection.end:connection.start;

@@ -4,6 +4,7 @@ import static blusunrize.immersiveengineering.api.ApiUtils.addVectors;
 import static blusunrize.immersiveengineering.api.ApiUtils.getConnectionCatenary;
 import static blusunrize.immersiveengineering.api.ApiUtils.toCC;
 import static blusunrize.immersiveengineering.api.ApiUtils.toIIC;
+import static java.util.Collections.newSetFromMap;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -12,7 +13,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentSkipListSet;
 
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.nbt.NBTTagCompound;
@@ -28,15 +28,15 @@ import cpw.mods.fml.relauncher.Side;
 public class ImmersiveNetHandler
 {
 	public static ImmersiveNetHandler INSTANCE;
-	public ConcurrentHashMap<Integer, ConcurrentHashMap<ChunkCoordinates, ConcurrentSkipListSet<Connection>>> directConnections = new ConcurrentHashMap<Integer, ConcurrentHashMap<ChunkCoordinates, ConcurrentSkipListSet<Connection>>>();
-	public ConcurrentHashMap<ChunkCoordinates, ConcurrentSkipListSet<AbstractConnection>> indirectConnections = new ConcurrentHashMap<ChunkCoordinates, ConcurrentSkipListSet<AbstractConnection>>();
+	public ConcurrentHashMap<Integer, ConcurrentHashMap<ChunkCoordinates, Set<Connection>>> directConnections = new ConcurrentHashMap<Integer, ConcurrentHashMap<ChunkCoordinates, Set<Connection>>>();
+	public ConcurrentHashMap<ChunkCoordinates, Set<AbstractConnection>> indirectConnections = new ConcurrentHashMap<ChunkCoordinates, Set<AbstractConnection>>();
 	public HashMap<Integer, HashMap<Connection, Integer>> transferPerTick = new HashMap<Integer, HashMap<Connection,Integer>>();
 
-	private ConcurrentHashMap<ChunkCoordinates, ConcurrentSkipListSet<Connection>> getMultimap(int dimension)
+	private ConcurrentHashMap<ChunkCoordinates, Set<Connection>> getMultimap(int dimension)
 	{
 		if (directConnections.get(dimension) == null)
 		{
-			ConcurrentHashMap<ChunkCoordinates, ConcurrentSkipListSet<Connection>> mm = new ConcurrentHashMap<ChunkCoordinates, ConcurrentSkipListSet<Connection>>();
+			ConcurrentHashMap<ChunkCoordinates, Set<Connection>> mm = new ConcurrentHashMap<ChunkCoordinates, Set<Connection>>();
 			directConnections.put(dimension, mm);
 		}
 		return directConnections.get(dimension);
@@ -51,10 +51,10 @@ public class ImmersiveNetHandler
 	public void addConnection(World world, ChunkCoordinates node, ChunkCoordinates connection, int distance, WireType cableType)
 	{
 		if(!getMultimap(world.provider.dimensionId).containsKey(node))
-			getMultimap(world.provider.dimensionId).put(node, new ConcurrentSkipListSet<Connection>());
+			getMultimap(world.provider.dimensionId).put(node, newSetFromMap(new ConcurrentHashMap<Connection, Boolean>()));
 		getMultimap(world.provider.dimensionId).get(node).add(new Connection(node, connection, cableType, distance));
 		if(!getMultimap(world.provider.dimensionId).containsKey(connection))
-			getMultimap(world.provider.dimensionId).put(connection, new ConcurrentSkipListSet<Connection>());
+			getMultimap(world.provider.dimensionId).put(connection, newSetFromMap(new ConcurrentHashMap<Connection, Boolean>()));
 		getMultimap(world.provider.dimensionId).get(connection).add(new Connection(connection, node, cableType, distance));
 		if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
 			indirectConnections.clear();
@@ -67,7 +67,7 @@ public class ImmersiveNetHandler
 	public void addConnection(World world, ChunkCoordinates node, Connection con)
 	{
 		if(!getMultimap(world.provider.dimensionId).containsKey(node))
-			getMultimap(world.provider.dimensionId).put(node, new ConcurrentSkipListSet<Connection>());
+			getMultimap(world.provider.dimensionId).put(node, newSetFromMap(new ConcurrentHashMap<Connection, Boolean>()));
 		getMultimap(world.provider.dimensionId).get(node).add(con);
 		if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
 			indirectConnections.clear();
@@ -77,7 +77,7 @@ public class ImmersiveNetHandler
 	{
 		if(con==null||world==null)
 			return;
-		for (ConcurrentSkipListSet<Connection> conl : getMultimap(world.provider.dimensionId).values())
+		for (Set<Connection> conl : getMultimap(world.provider.dimensionId).values())
 		{
 			Iterator<Connection> it = conl.iterator();
 			while(it.hasNext())
@@ -110,14 +110,14 @@ public class ImmersiveNetHandler
 	}
 	public Collection<Connection> getAllConnections(World world)
 	{
-		ConcurrentSkipListSet<Connection> ret = new ConcurrentSkipListSet<Connection>();
-		for (ConcurrentSkipListSet<Connection> conlist : getMultimap(world.provider.dimensionId).values())
+		Set<Connection> ret = newSetFromMap(new ConcurrentHashMap<Connection, Boolean>());
+		for (Set<Connection> conlist : getMultimap(world.provider.dimensionId).values())
 			ret.addAll(conlist);
 		return ret;
 	}
-	public synchronized ConcurrentSkipListSet<Connection> getConnections(World world, ChunkCoordinates node)
+	public synchronized Set<Connection> getConnections(World world, ChunkCoordinates node)
 	{
-		ConcurrentHashMap<ChunkCoordinates, ConcurrentSkipListSet<Connection>> map = getMultimap(world.provider.dimensionId);
+		ConcurrentHashMap<ChunkCoordinates, Set<Connection>> map = getMultimap(world.provider.dimensionId);
 		if(map.containsKey(node))
 			return map.get(node);
 		return null;
@@ -155,7 +155,7 @@ public class ImmersiveNetHandler
 		//			itlist.addAll(conl);
 		//		Iterator<Connection> it = itlist.iterator();
 
-		for (ConcurrentSkipListSet<Connection> conl : getMultimap(world.provider.dimensionId).values())
+		for (Set<Connection> conl : getMultimap(world.provider.dimensionId).values())
 		{
 			Iterator<Connection> it = conl.iterator();
 
@@ -208,7 +208,7 @@ public class ImmersiveNetHandler
 		WireType type = target==null?null : iic.getCableLimiter(target);
 		if(type==null)
 			return;
-		for (ConcurrentSkipListSet<Connection> conl : getMultimap(world.provider.dimensionId).values())
+		for (Set<Connection> conl : getMultimap(world.provider.dimensionId).values())
 		{
 			Iterator<Connection> it = conl.iterator();
 			while(it.hasNext())
@@ -315,18 +315,18 @@ public class ImmersiveNetHandler
 		return closedList;
 	}
 	 */
-	public ConcurrentSkipListSet<AbstractConnection> getIndirectEnergyConnections(ChunkCoordinates node, World world)
+	public Set<AbstractConnection> getIndirectEnergyConnections(ChunkCoordinates node, World world)
 	{
 		if(indirectConnections.containsKey(node))
 			return indirectConnections.get(node);
 
 		List<IImmersiveConnectable> openList = new ArrayList<IImmersiveConnectable>();
-		ConcurrentSkipListSet<AbstractConnection> closedList = new ConcurrentSkipListSet<AbstractConnection>();
+		Set<AbstractConnection> closedList = newSetFromMap(new ConcurrentHashMap<AbstractConnection, Boolean>());
 		List<ChunkCoordinates> checked = new ArrayList<ChunkCoordinates>();
 		HashMap<ChunkCoordinates,ChunkCoordinates> backtracker = new HashMap<ChunkCoordinates,ChunkCoordinates>();
 
 		checked.add(node);
-		ConcurrentSkipListSet<Connection> conL = getConnections(world, node);
+		Set<Connection> conL = getConnections(world, node);
 		if(conL!=null)
 			for(Connection con : conL)
 			{
@@ -359,7 +359,7 @@ public class ImmersiveNetHandler
 						if(last!=null)
 						{
 
-							ConcurrentSkipListSet<Connection> conLB = getConnections(world, prev);
+							Set<Connection> conLB = getConnections(world, prev);
 							if(conLB!=null)
 								for(Connection conB : conLB)
 									if(conB.end.equals(last))
@@ -375,7 +375,7 @@ public class ImmersiveNetHandler
 					closedList.add(new AbstractConnection(toCC(node), toCC(next), averageType, distance, connectionParts.toArray(new Connection[connectionParts.size()])));
 				}
 
-				ConcurrentSkipListSet<Connection> conLN = getConnections(world, toCC(next));
+				Set<Connection> conLN = getConnections(world, toCC(next));
 				if(conLN!=null)
 					for(Connection con : conLN)
 						if(next.allowEnergyToPass(con))
@@ -394,7 +394,7 @@ public class ImmersiveNetHandler
 		if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
 		{
 			if(!indirectConnections.containsKey(node))
-				indirectConnections.put(node, new ConcurrentSkipListSet<AbstractConnection>());
+				indirectConnections.put(node, newSetFromMap(new ConcurrentHashMap<AbstractConnection, Boolean>()));
 			indirectConnections.get(node).addAll(closedList);
 		}
 		return closedList;
