@@ -649,23 +649,23 @@ public class BlockMetalDevices extends BlockIEBase implements blusunrize.aquatwe
 				((EntityItem)par5Entity).age=0;
 				boolean contact = f==3?(par5Entity.posZ-z<=.2): f==2?(par5Entity.posZ-z>=.8): f==5?(par5Entity.posX-x<=.2): (par5Entity.posX-x>=.8);
 				te = world.getTileEntity(x+fd.offsetX,y+(tile.transportUp?1: tile.transportDown?-1: 0),z+fd.offsetZ);
-				
-				if(contact && te instanceof IInventory)
-				{
-					IInventory inv = (IInventory)te;
-					if(!(inv instanceof TileEntityConveyorBelt))
+				if (!world.isRemote)
+					if(contact && te instanceof IInventory)
 					{
-						ItemStack stack = ((EntityItem)par5Entity).getEntityItem();
-						if(stack!=null)
+						IInventory inv = (IInventory)te;
+						if(!(inv instanceof TileEntityConveyorBelt))
 						{
-							ItemStack ret = Utils.insertStackIntoInventory(inv, ((EntityItem)par5Entity).getEntityItem(), fd.getOpposite().ordinal());
-							if(ret==null)
-								par5Entity.setDead();
-							else if(ret.stackSize<stack.stackSize)
-								((EntityItem)par5Entity).setEntityItemStack(ret);
+							ItemStack stack = ((EntityItem)par5Entity).getEntityItem();
+							if(stack!=null)
+							{
+								ItemStack ret = Utils.insertStackIntoInventory(inv, ((EntityItem)par5Entity).getEntityItem(), fd.getOpposite().ordinal());
+								if(ret==null)
+									par5Entity.setDead();
+								else if(ret.stackSize<stack.stackSize)
+									((EntityItem)par5Entity).setEntityItemStack(ret);
+							}
 						}
 					}
-				}
 			}
 		}
 	}
