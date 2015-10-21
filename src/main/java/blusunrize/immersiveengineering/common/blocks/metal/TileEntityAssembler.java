@@ -526,7 +526,7 @@ public class TileEntityAssembler extends TileEntityMultiblockPart implements ISi
 	@Override
 	public void setInventorySlotContents(int slot, ItemStack stack)
 	{
-		if(!formed)
+		if(!formed||worldObj.isRemote)
 			return;
 		if(master()!=null)
 		{

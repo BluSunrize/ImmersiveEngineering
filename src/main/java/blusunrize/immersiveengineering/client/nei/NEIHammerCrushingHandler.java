@@ -18,20 +18,15 @@ public class NEIHammerCrushingHandler extends TemplateRecipeHandler
 {
 	public class CachedHammerCrushingRecipe extends CachedRecipe
 	{
-		PositionedStack[][] inputs;
-		PositionedStack[] output;
+		PositionedStack[] inputs;
+		PositionedStack output;
 		public CachedHammerCrushingRecipe(String inputType, String oreName)
 		{
-			inputs = new PositionedStack[8][];
-			output = new PositionedStack[8];
-			for(int i=0;i<8;i++)
-			{
-				inputs[i] = new PositionedStack[i+2];
-				for(int j=0;j<inputs[i].length;j++)
-					inputs[i][j]= new PositionedStack(j==0?new ItemStack(IEContent.itemTool):OreDictionary.getOres(inputType+oreName) ,25+(j%3)*18, 6+(j/3)*18, j!=0);
-				ItemStack dust = Utils.copyStackWithAmount(IEApi.getPreferredOreStack("dust"+oreName), (i+1)*("ore".equals(inputType)?2:1));
-				output[i] = new PositionedStack(dust, 119,24);
-			}
+			inputs = new PositionedStack[2];
+			for(int j=0;j<inputs.length;j++)
+				inputs[j]= new PositionedStack(j==0?new ItemStack(IEContent.itemTool):OreDictionary.getOres(inputType+oreName) ,25+(j%3)*18, 6+(j/3)*18, j!=0);
+			ItemStack dust = Utils.copyStackWithAmount(IEApi.getPreferredOreStack("dust"+oreName), ("ore".equals(inputType)?2:1));
+			output = new PositionedStack(dust, 119,24);
 		}
 		@Override
 		public List<PositionedStack> getIngredients()
@@ -46,7 +41,7 @@ public class NEIHammerCrushingHandler extends TemplateRecipeHandler
 		@Override
 		public PositionedStack getResult()
 		{
-			return output[(NEIHammerCrushingHandler.this.cycleticks/20)%output.length];
+			return output;
 		}
 	}
 

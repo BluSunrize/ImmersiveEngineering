@@ -145,8 +145,8 @@ public class IERecipes
 		addOredictRecipe(new ItemStack(IEContent.itemWireCoil,4,4), " I ","ISI"," I ", 'I',"ingotSteel", 'S',"stickWood");
 
 		GameRegistry.addRecipe(new RecipeJerrycan());
-		
-		
+
+
 		for(ItemStack container : Utils.getContainersFilledWith(new FluidStack(IEContent.fluidCreosote,1000)))
 			addOredictRecipe(new ItemStack(IEContent.blockTreatedWood,8,0), "WWW","WCW","WWW", 'W',"plankWood",'C',container);
 		addOredictRecipe(new ItemStack(IEContent.blockTreatedWood,1,0), "W","W", 'W',new ItemStack(IEContent.blockWoodenDecoration,1,2));
@@ -320,17 +320,18 @@ public class IERecipes
 		CrusherRecipe.addRecipe(new ItemStack(Blocks.sand), "cobblestone", 3200);
 		CrusherRecipe.addRecipe(new ItemStack(Blocks.sand), "blockGlass", 3200);
 		CrusherRecipe.addRecipe(new ItemStack(Items.quartz,4), "blockQuartz", 3200);
-		addCrusherRecipe(new ItemStack(Items.blaze_powder,4), "rodBlaze", 2400, "dustSulfur",.5f);
+		CrusherRecipe.addRecipe(new ItemStack(Items.glowstone_dust,4), "glowstone", 3200);
+		addCrusherRecipe(new ItemStack(Items.blaze_powder,4), "rodBlaze", 3200, "dustSulfur",.5f);
+		addCrusherRecipe(new ItemStack(Items.dye,6,15), Items.bone, 3200);
 		addItemToOreDictCrusherRecipe("dustCoal",1, new ItemStack(Items.coal), 2400);
 		addItemToOreDictCrusherRecipe("dustWood",2, "logWood", 2400);
 		addItemToOreDictCrusherRecipe("dustObsidian",4, Blocks.obsidian, 6000);
 		for(int i=0; i<16; i++)
-			if(i==0)
-			{
-				CrusherRecipe r = CrusherRecipe.addRecipe(new ItemStack(Items.string,4), new ItemStack(Blocks.wool,1,i), 3200);
-				if(i!=0)
-					r.addToSecondaryOutput(new ItemStack(Items.dye,1,15-0), .05f);
-			}
+		{
+			CrusherRecipe r = CrusherRecipe.addRecipe(new ItemStack(Items.string,4), new ItemStack(Blocks.wool,1,i), 3200);
+			if(i!=0)
+				r.addToSecondaryOutput(new ItemStack(Items.dye,1,15-i), .05f);
+		}
 	}
 	public static void postInitCrusherAndArcRecipes()
 	{
@@ -389,6 +390,9 @@ public class IERecipes
 					out = Utils.copyStackWithAmount(out, out.stackSize/2);
 				if(out!=null)
 					addArcRecipe(out, "dust"+ore, 100,512, null);
+
+				if(OreDictionary.doesOreNameExist("ingot"+ore))
+					addCrusherRecipe(IEApi.getPreferredOreStack("dust"+ore), "ingot"+ore, 3600, null,0);
 			}
 	}
 

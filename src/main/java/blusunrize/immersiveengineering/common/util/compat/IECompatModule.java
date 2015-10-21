@@ -29,7 +29,8 @@ public abstract class IECompatModule
 		moduleClasses.put("Waila", WailaHelper.class);
 		moduleClasses.put("gregtech", GregTechHelper.class);
 		moduleClasses.put("HydCraft", HydCraftHelper.class);
-		moduleClasses.put("ThermalExpansion", TEHelper.class);
+		moduleClasses.put("ThermalExpansion", ThermalExpansionHelper.class);
+		moduleClasses.put("ThermalFoundation", ThermalFoundationHelper.class);
 		moduleClasses.put("chisel", ChiselHelper.class);
 		moduleClasses.put("harvestcraft", HarvestCraftHelper.class);
 		moduleClasses.put("CarpentersBlocks", CarpentersHelper.class);

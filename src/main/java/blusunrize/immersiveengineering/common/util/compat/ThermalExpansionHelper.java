@@ -5,7 +5,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import cpw.mods.fml.common.event.FMLInterModComms;
 
-public class TEHelper extends IECompatModule
+public class ThermalExpansionHelper extends IECompatModule
 {
 	@Override
 	public void init()
