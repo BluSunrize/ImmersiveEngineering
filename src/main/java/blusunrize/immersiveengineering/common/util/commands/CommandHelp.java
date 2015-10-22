@@ -51,6 +51,24 @@ public class CommandHelp extends IESubCommand
 	@Override
 	public ArrayList<String> getSubCommands(String[] args)
 	{
-		return null;
+		ArrayList<String> list = new ArrayList<>();
+		for(IESubCommand sub : CommandHandler.commands)
+			if(sub!=this)
+			{
+				if(args.length==1)
+				{
+					if(args[0].isEmpty() || sub.getIdent().startsWith(args[0].toLowerCase()))
+						list.add(sub.getIdent());
+				}
+				else if(sub.getIdent().equalsIgnoreCase(args[0]))
+				{
+					String[] redArgs = new String[args.length-1];
+					System.arraycopy(args, 1, redArgs, 0, redArgs.length);
+					ArrayList<String> subCommands = sub.getSubCommands(redArgs);
+					if(subCommands!=null)
+						list.addAll(subCommands);
+				}
+			}
+		return list;
 	}
 }
