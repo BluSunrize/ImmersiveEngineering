@@ -429,10 +429,7 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart implements ISid
 			return master().drain(from,resource,doDrain);
 		if(resource!=null)
 		{
-			FluidStack fs = drain(from, resource.amount, doDrain);
-			markDirty();
-			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-			return fs;
+			return drain(from, resource.amount, doDrain);
 		}
 		return null;
 	}
@@ -443,6 +440,8 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart implements ISid
 			return null;
 		if(master()!=null)
 			return master().drain(from,maxDrain,doDrain);
+		markDirty();
+		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 		return tank.drain(maxDrain, doDrain);
 	}
 	@Override

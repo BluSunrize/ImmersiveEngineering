@@ -68,7 +68,9 @@ public class CommandMineral extends IESubCommand
 				info = ExcavatorHandler.getMineralWorldInfo(sender.getEntityWorld(),coords.chunkXPos,coords.chunkZPos);
 				if(args.length<3)
 				{
-					sender.addChatMessage(new ChatComponentTranslation(getHelp(".setDepletion")));
+					String h = StatCollector.translateToLocal(getHelp(".setDepletion"));
+					for(String str : h.split("<br>"))
+						sender.addChatMessage(new ChatComponentText(str));
 					return;
 				}
 				int depl = 0;
@@ -83,6 +85,9 @@ public class CommandMineral extends IESubCommand
 				sender.addChatMessage(new ChatComponentTranslation(Lib.CHAT_COMMAND+getIdent()+".setDepletion.sucess",(depl<0?StatCollector.translateToLocal(Lib.CHAT_INFO+"coreDrill.infinite"):Integer.toString(depl))));
 				IESaveData.setDirty(sender.getEntityWorld().provider.dimensionId);
 				break;
+			default:
+				sender.addChatMessage(new ChatComponentTranslation(getHelp("")));
+				break;
 			}
 		}
 		else
@@ -94,11 +99,27 @@ public class CommandMineral extends IESubCommand
 	public ArrayList<String> getSubCommands(String[] args)
 	{
 		ArrayList<String> list = new ArrayList<String>();
+		// subcommand argument autocomplete
+		if(args.length>1)
+		{
+			switch (args[0])
+			{
+				case "set":
+					if(args.length>2)
+						break;
+					for(MineralMix mineralMix : ExcavatorHandler.mineralList.keySet())
+						if(args[1].isEmpty()||mineralMix.name.toLowerCase().startsWith(args[1].toLowerCase()))
+							list.add(mineralMix.name);
+					break;
+			}
+			return list;
+		}
+
 		for(String s : new String[]{"list","get","set","setDepletion"})
 		{
 			if(args.length==0)
 				list.add(s);
-			else if(s.startsWith(args[0].toLowerCase()))
+			else if(s.toLowerCase().startsWith(args[0].toLowerCase()))
 				list.add(s);
 		}
 		return list;

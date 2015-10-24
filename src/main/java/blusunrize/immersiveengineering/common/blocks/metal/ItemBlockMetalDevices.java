@@ -57,7 +57,7 @@ public class ItemBlockMetalDevices extends ItemBlockIEBase
 		if(meta==BlockMetalDevices.META_transformer||meta==BlockMetalDevices.META_transformerHV)
 		{
 			TileEntity te = world.getTileEntity(x+(side==4?1: side==5?-1: 0), y, z+(side==2?1: side==3?-1: 0));
-			if((meta!=BlockMetalDevices.META_transformer||side!=f||!(te instanceof TileEntityWoodenPost)||((TileEntityWoodenPost) te).type<=0)&&!world.isAirBlock(x, y+1, z))
+			if((meta!=BlockMetalDevices.META_transformer||!(te instanceof TileEntityWoodenPost)||((TileEntityWoodenPost) te).type<=0)&&!world.isAirBlock(x, y+1, z))
 				return false;
 		}
 		if(meta==BlockMetalDevices.META_sampleDrill && (!world.isAirBlock(x,y+1,z)||!world.isAirBlock(x,y+2,z)))
@@ -114,12 +114,15 @@ public class ItemBlockMetalDevices extends ItemBlockIEBase
 			((TileEntityConnectorLV)tileEntity).facing = ForgeDirection.getOrientation(side).getOpposite().ordinal();
 		else if(tileEntity instanceof TileEntityTransformer)
 		{
-			((TileEntityTransformer)tileEntity).facing=f;
 			TileEntity tileEntityWoodenPost = world.getTileEntity(x+(side==4?1: side==5?-1: 0), y, z+(side==2?1: side==3?-1: 0));
-			if(meta==4 && side==f && tileEntityWoodenPost instanceof TileEntityWoodenPost && ((TileEntityWoodenPost)tileEntityWoodenPost).type>0 )
-				((TileEntityTransformer)tileEntity).postAttached=side;
+			if(meta==4 && tileEntityWoodenPost instanceof TileEntityWoodenPost && ((TileEntityWoodenPost)tileEntityWoodenPost).type>0 )
+			{
+				((TileEntityTransformer) tileEntity).postAttached = side;
+				((TileEntityTransformer)tileEntity).facing=side;
+			}
 			else
 			{
+				((TileEntityTransformer)tileEntity).facing=f;
 				((TileEntityTransformer)tileEntity).dummy = true;
 				world.setBlock(x,y+1,z, field_150939_a,meta, 0x3);
 				TileEntity tileEntityTransformer = world.getTileEntity(x,y+1,z);
