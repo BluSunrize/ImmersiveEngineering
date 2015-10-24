@@ -47,13 +47,14 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 	public static final int META_tank=9;
 	public static final int META_silo=10;
 	public static final int META_assembler=11;
+	public static final int META_bottlingMachine=12;
 	public BlockMetalMultiblocks()
 	{
 		super("metalMultiblock", Material.iron, 4, ItemBlockIEBase.class,
 				"lightningRod","dieselGenerator",
 				"industrialSqueezer","fermenter","refinery",
 				"crusher","bucketWheel","excavator","arcFurnace",
-				"tank","silo","assembler");
+				"tank","silo","assembler","bottlingMachine");
 		setHardness(3.0F);
 		setResistance(15.0F);
 	}
@@ -101,6 +102,7 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 		icons[META_arcFurnace][0] = iconRegister.registerIcon("immersiveengineering:metal_multiblock_arcFurnace_inactive");
 		icons[META_arcFurnace][1] = iconRegister.registerIcon("immersiveengineering:metal_multiblock_arcFurnace_active");
 		icons[META_assembler][0] = iconRegister.registerIcon("immersiveengineering:metal_multiblock_assembler");
+		icons[META_bottlingMachine][0] = iconRegister.registerIcon("immersiveengineering:metal_multiblock_bottlingMachine");
 		for(int i=0;i<4;i++)
 		{
 			icons[6][i] = iconRegister.registerIcon("immersiveengineering:storage_Steel");
@@ -563,6 +565,8 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 			return new TileEntitySilo();
 		case META_assembler:
 			return new TileEntityAssembler();
+		case META_bottlingMachine:
+			return new TileEntityBottlingMachine();
 		}
 		return null;
 	}

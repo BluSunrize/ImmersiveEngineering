@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityArcFurnace;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityAssembler;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBottlingMachine;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityDieselGenerator;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityExcavator;
@@ -258,6 +259,8 @@ public class BlockRenderMetalMultiblocks implements ISimpleBlockRenderingHandler
 		else if(te instanceof TileEntityArcFurnace && ((TileEntityArcFurnace)te).pos==62)
 			ClientUtils.handleStaticTileRenderer(te);
 		else if(te instanceof TileEntityAssembler && ((TileEntityAssembler)te).pos==4)
+			ClientUtils.handleStaticTileRenderer(te);
+		else if(te instanceof TileEntityBottlingMachine && ((TileEntityBottlingMachine)te).pos==4)
 			ClientUtils.handleStaticTileRenderer(te);
 		return false;
 	}

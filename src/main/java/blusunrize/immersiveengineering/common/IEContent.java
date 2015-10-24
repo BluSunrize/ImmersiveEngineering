@@ -40,6 +40,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDevices2;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityArcFurnace;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityAssembler;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBottlingMachine;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBreakerSwitch;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBucketWheel;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCapacitorHV;
@@ -380,7 +381,8 @@ public class IEContent
 		registerTile(TileEntitySheetmetalTank.class);
 		registerTile(TileEntitySilo.class);
 		registerTile(TileEntityAssembler.class);
-
+		registerTile(TileEntityBottlingMachine.class);
+		
 		registerTile(TileEntityStructuralArm.class);
 		registerTile(TileEntityConnectorStructural.class);
 		registerTile(TileEntityWallmountMetal.class);

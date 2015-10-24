@@ -73,9 +73,6 @@ public class TileRenderBottlingMachine extends TileRenderIE
 
 		double d0 = .05867077;
 		double d1 = .08265846;
-
-//		step = (float)(.4+d0 + (d1*2)*step);//force
-
 		double tapShift = 0;
 		if(step>=.4+d0 && step<.4+d0+d1)
 			tapShift = (step-.4-d0)/d1;
