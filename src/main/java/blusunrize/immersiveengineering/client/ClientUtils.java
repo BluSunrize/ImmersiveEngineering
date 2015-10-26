@@ -227,6 +227,7 @@ public class ClientUtils
 				tes.addVertexWithUV(v1.xCoord+radius*rmodx, v1.yCoord, v1.zCoord-radius*rmodz, u1,vMin);
 			}
 		}
+		tes.setColorRGBA_I(0xffffff, 0xff);
 	}
 
 	public static int calcBrightness(IBlockAccess world, double x, double y, double z)
