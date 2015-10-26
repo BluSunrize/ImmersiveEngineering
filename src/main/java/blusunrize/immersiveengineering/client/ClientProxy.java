@@ -493,8 +493,9 @@ public class ClientProxy extends CommonProxy
 			{
 				if(!tileActive)
 				{
+					sound.donePlaying = true;
+					sound.volume = 0;
 					ClientUtils.mc().getSoundHandler().stopSound(sound);
-					sound = null;
 					soundMap.remove(soundName);
 				}
 			}
@@ -513,13 +514,10 @@ public class ClientProxy extends CommonProxy
 				}
 			}
 		}
-		if(tileActive)
+		else if(tileActive)
 		{
-			if(sound==null || !ClientUtils.mc().getSoundHandler().isSoundPlaying(sound))
-			{
-				sound = ClientUtils.generatePositionedIESound("immersiveengineering:"+soundName, volume,pitch, true,0, tile.xCoord,tile.yCoord,tile.zCoord);
-				soundMap.put(soundName, sound);
-			}
+			sound = ClientUtils.generatePositionedIESound("immersiveengineering:"+soundName, volume, pitch, true, 0, tile.xCoord, tile.yCoord, tile.zCoord);
+			soundMap.put(soundName, sound);
 		}
 	}
 	@Override
