@@ -23,12 +23,17 @@
 - added a search function with spellchecking to the manual
 - added a headshot functionality to the revolver
 - added the Assembler, an IE autocrafting machine
+- added interdiction system to the Engineer's Hamemr allowing map- and pack-makers to prevent certain multiblocks from being formed via NBT data
+- added commands to configure minerals and stuff
+- added Minetweaker support for minerals
+- added Jerrycans to refuel your drill on the go!
+- added Bottling Machine to fill bottles, buckets and other fluid containers
 - changed wire rendering to be ISRBH, improving performance
 - changed a lot of internal handling of the Energy System:
 	- Wire Transferrates are now per tick. WIres can only have a certain amount of power go through them in a single tick
 	- Too much power will make the wires burn away
-	- TODO: buff the transferrates
-	- TODO: change loss calculations
+	- buffed the transferrates
+	- changed the loss calculations
 	- added more safety to avoid CME (shoutout to @mindforger)
 	- fixed priorities on indirect connections (thanks @malte0811)
 	- a big "Thank You" to @theunkn0wn1, @mindforger, @malte0811, @cobra and everyone else helping with the rebalancing! Dunno what I'd do without you guys :D
