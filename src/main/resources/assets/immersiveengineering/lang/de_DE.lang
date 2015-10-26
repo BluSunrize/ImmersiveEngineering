@@ -1,4 +1,4 @@
-﻿# BLOCKS
+# BLOCKS
 tile.ImmersiveEngineering.ore.Copper.name=Kupfererz
 tile.ImmersiveEngineering.ore.Aluminum.name=Bauxiterz
 tile.ImmersiveEngineering.ore.Lead.name=Bleierz
@@ -79,8 +79,8 @@ tile.ImmersiveEngineering.treatedWood.2.name=Behandeltes Holzbrett
 
 tile.ImmersiveEngineering.woodenDevice.post.name=Holzpfosten
 tile.ImmersiveEngineering.woodenDevice.watermill.name=Wasserrad
-tile.ImmersiveEngineering.woodenDevice.windmill.name=Windmülle
-tile.ImmersiveEngineering.woodenDevice.windmillAdvanced.name=Verbesserte Windmülle
+tile.ImmersiveEngineering.woodenDevice.windmill.name=Windmühle
+tile.ImmersiveEngineering.woodenDevice.windmillAdvanced.name=Verbesserte Windmühle
 tile.ImmersiveEngineering.woodenDevice.crate.name=Holzkiste
 tile.ImmersiveEngineering.woodenDevice.modificationWorkbench.name=Ingenieurswerkbank
 tile.ImmersiveEngineering.woodenDevice.barrel.name=Hölzernes Fass
@@ -95,13 +95,13 @@ tile.ImmersiveEngineering.woodenDecoration.wallMount.name=Hölzerne Wandhalterun
 
 tile.ImmersiveEngineering.woodenStairs.name=Behandelte Holztreppe
 
-tile.ImmersiveEngineering.stoneDevice.hempcrete.name=Hempcrete
+tile.ImmersiveEngineering.stoneDevice.hempcrete.name=Hanfbeton
 tile.ImmersiveEngineering.stoneDevice.cokeOven.name=Kokerei
 tile.ImmersiveEngineering.stoneDevice.blastFurnace.name=Hochofen
 tile.ImmersiveEngineering.stoneDevice.coalCoke.name=Koksblock
 tile.ImmersiveEngineering.stoneDevice.insulatorGlass.name=Isolierendes Glas
 
-tile.ImmersiveEngineering.stoneDecoration.hempcrete.name=Hempcrete
+tile.ImmersiveEngineering.stoneDecoration.hempcrete.name=Hanfbeton
 tile.ImmersiveEngineering.stoneDecoration.cokeBrick.name=Kokereiziegel
 tile.ImmersiveEngineering.stoneDecoration.blastBrick.name=Hochofenziegel
 tile.ImmersiveEngineering.stoneDecoration.coalCoke.name=Koksblock
@@ -113,7 +113,7 @@ tile.ImmersiveEngineering.hemp.name=Industrieller Hanf
 #Hydraulicraft Support
 tile.harvesterTrolley.ieCrop.name=Industrial Hemp Harvester Trolley 
 
-fluid.creosote=Teeröl
+fluid.creosote=Kreosot
 fluid.plantoil=Pflanzenöl
 fluid.ethanol=Ethanol
 fluid.biodiesel=Biodiesel
@@ -154,11 +154,11 @@ item.ImmersiveEngineering.metal.nuggetSteel.name=Stahlnugget
 
 
 item.ImmersiveEngineering.material.treatedStick.name=Behandelter Stock
-item.ImmersiveEngineering.material.waterwheelSegment.name=Wassermüllensegment
-item.ImmersiveEngineering.material.windmillBlade.name=Windmüllenflügel
+item.ImmersiveEngineering.material.waterwheelSegment.name=Wasserradsegment
+item.ImmersiveEngineering.material.windmillBlade.name=Windmühlenflügel
 item.ImmersiveEngineering.material.hempFiber.name=Industrielle Hanffaser
 item.ImmersiveEngineering.material.fabric.name=Fester Stoff
-item.ImmersiveEngineering.material.windmillBladeAdvanced.name=Verbesserter Windmüllenflügel
+item.ImmersiveEngineering.material.windmillBladeAdvanced.name=Verbesserter Windmühlenflügel
 item.ImmersiveEngineering.material.coalCoke.name=Koks
 item.ImmersiveEngineering.material.gunpartBarrel.name=Revolverrohr
 item.ImmersiveEngineering.material.gunpartDrum.name=Revolvertrommel
@@ -169,8 +169,8 @@ item.ImmersiveEngineering.material.componentSteel.name=Stählerne mechanische Ko
 item.ImmersiveEngineering.material.slag.name=Schlacke
 item.ImmersiveEngineering.seed.hemp.name=Industrielle Hanfsamen
 
-item.ImmersiveEngineering.fluidContainers.bottleCreosote.name=Teerölflasche
-item.ImmersiveEngineering.fluidContainers.bucketCreosote.name=Teeröleimer
+item.ImmersiveEngineering.fluidContainers.bottleCreosote.name=Kreosotflasche
+item.ImmersiveEngineering.fluidContainers.bucketCreosote.name=Kreosoteimer
 item.ImmersiveEngineering.fluidContainers.bottlePlantoil.name=Pflanzenölflasche
 item.ImmersiveEngineering.fluidContainers.bucketPlantoil.name=Pflanzenöleimer
 item.ImmersiveEngineering.fluidContainers.bottleEthanol.name=Ethanolflasche
@@ -185,8 +185,8 @@ item.ImmersiveEngineering.coil.rope.name=Hanfseilrolle
 item.ImmersiveEngineering.coil.structural.name=Stahlkabelrolle
 item.ImmersiveEngineering.tool.hammer.name=Hammer des Ingenieurs
 item.ImmersiveEngineering.tool.wirecutter.name=Kabelzange
-item.ImmersiveEngineering.tool.voltmeter.name=Messgerät des Ingenieur
-item.ImmersiveEngineering.tool.manual.name=Handbuch des Ingenieur
+item.ImmersiveEngineering.tool.voltmeter.name=Messgerät des Ingenieurs
+item.ImmersiveEngineering.tool.manual.name=Handbuch des Ingenieurs
 
 item.ImmersiveEngineering.revolver.normal.name=Revolver
 item.ImmersiveEngineering.revolver.speedloader.name=Revolverschnelllader
@@ -204,11 +204,11 @@ item.ImmersiveEngineering.revolver.noName.name=No Name
 item.ImmersiveEngineering.revolver.patreonBlu.name=§6Last Word§r
 item.ImmersiveEngineering.revolver.patreonHazard.name=§4Twisted Phantom§r
 
-item.ImmersiveEngineering.bullet.emptyCasing.name=Leere Hülle
-item.ImmersiveEngineering.bullet.emptyShell.name=Leere Patrone
+item.ImmersiveEngineering.bullet.emptyCasing.name=Leere Patrone
+item.ImmersiveEngineering.bullet.emptyShell.name=Leere Flintenhülse
 item.ImmersiveEngineering.bullet.casull.name=Casull-Patrone
 item.ImmersiveEngineering.bullet.armorPiercing.name=Panzerbrechende Patrone
-item.ImmersiveEngineering.bullet.buckshot.name=Schrottpatrone
+item.ImmersiveEngineering.bullet.buckshot.name=Schrotpatrone
 item.ImmersiveEngineering.bullet.HE.name=Hochexplosive Patrone
 item.ImmersiveEngineering.bullet.dragonsbreath.name=Dragon's Breath-Patrone
 item.ImmersiveEngineering.bullet.homing.name=Zielsuchende Patrone
@@ -220,7 +220,7 @@ item.ImmersiveEngineering.drill.diesel.name=Handbohrer
 item.ImmersiveEngineering.drillhead.iron.name=Eisenbohrkopf
 item.ImmersiveEngineering.drillhead.steel.name=Stahlbohrkopf
 
-item.ImmersiveEngineering.skyhook.name=Engineer's Skyhook
+item.ImmersiveEngineering.skyhook.name=Skyhook des Ingenieurs
 
 item.ImmersiveEngineering.toolupgrade.drillWaterproof.name=Interner Oxidatortank
 item.ImmersiveEngineering.toolupgrade.drillSpeed.name=Erweitertes Schmiersystem
@@ -396,7 +396,7 @@ death.attack.ieRevolver_armorPiercing=%1$s wurde erschossen von %2$s
 death.attack.ieRevolver_buckshot=%1$s wurde von %2$s mit einer Schrotflinte erschossen
 death.attack.ieRevolver_dragonsbreath=%1$s wurde verbrannt von %2$s
 death.attack.ieRevolver_homing=%1$s wurde von %2$s's Zielsuchender Patrone erschossen
-death.attack.ieRevolver_wolfpack=%1$s wurde von %2$s's Wolfpack Rounds geschreddert
+death.attack.ieRevolver_wolfpack=%1$s wurde von %2$s's Wolfpack Geschossen geschreddert
 death.attack.ieRevolver_silver=%1$s wurde von %2$s's Silberpatrone gereinigt
 death.attack.ieRevolver_potion=%1$s wurde von %2$s's Phiolenpatrone übergossen
 death.attack.ieCrushed=%1$s wurde zerkleinert
@@ -422,9 +422,9 @@ achievement.immersiveengineering.makeDrill=Power Pick
 achievement.immersiveengineering.makeDrill.desc=Fertige einen Handbohrer
 achievement.immersiveengineering.upgradeDrill=Big Daddy
 achievement.immersiveengineering.upgradeDrill.desc=Montiere die maximale Anzahl an Upgrades am Handbohrer
-achievement.immersiveengineering.makeSkyhook=Booker, catch!
-achievement.immersiveengineering.makeSkyhook.desc=Fertige die Engineer's Skyhook
-achievement.immersiveengineering.skyhookPro=Skyline Master
+achievement.immersiveengineering.makeSkyhook=Booker, fang!
+achievement.immersiveengineering.makeSkyhook.desc=Fertige den Engineer's Skyhook
+achievement.immersiveengineering.skyhookPro=Skyline Meister
 achievement.immersiveengineering.skyhookPro.desc=Reise 1km mit der Skyhook
 achievement.immersiveengineering.mbSilo=Blechreserve
 achievement.immersiveengineering.mbSilo.desc=Forme den Silo-Multiblock
@@ -472,9 +472,9 @@ ie.manual.entry.ores.name=Erze
 ie.manual.entry.ores.subtext=Diggy diggy hole
 ie.manual.entry.oresCopper=§lKupfererz§r kann in der Welt zwischen <config:iA:ore_copper:1> und <config:iA:ore_copper:2> gefunden werden, und benötigt eine Steinspitzhacke zum Abbauen.<br><br>Das Erz wird zu Kupferbarren geschmolzen, welche benutzt werden um Kupferkabel, Spulen und andere integrale Teile der IE-Architektur herzstellen.
 ie.manual.entry.oresBauxite=§lBauxiterz§r kann in der Welt zwischen <config:iA:ore_bauxite:1> und <config:iA:ore_bauxite:2> gefunden werden, und benötigt eine Steinspitzhacke zum Abbauen.<br><br>Das Erz wird zu Aluminiumbarren geschmolzen, welche, zusammen mit Stahl, verwendet werden um Hochspannungskabel herzustellen.
-ie.manual.entry.oresLead=§lLead Ore§r kann in der Welt zwischen <config:iA:ore_lead:1> und <config:iA:ore_lead:2> gefunden werden, und benötigt eine Eisenspitzhacke zum Abbauen.<br><br>Das Erz wird zu Bleibarren geschmolzen, welche zur Herstellung von Kondensatoren benötigt werden.
-ie.manual.entry.oresSilver=§lSilver Ore§r kann in der Welt zwischen <config:iA:ore_silver:1> und <config:iA:ore_silver:2> gefunden werden, und benötigt eine Eisenspitzhacke zum Abbauen.<br><br>Das Erz wird zu Silberbarren geschmolzen, welche mit Gold legiert werden um Elektrum herzustellen, ein deutlich besserer Leiter.
-ie.manual.entry.oresNickel=§lNickel Ore§r kann in der Welt zwischen <config:iA:ore_nickel:1> und <config:iA:ore_nickel:2> gefunden werden, und benötigt eine Eisenspitzhacke zum Abbauen.<br><br>Das Erz wird zu Nickelbarren geschmolzen, welche mit Kupfer legiert werden um Konstantan herzustellen, ein hitzebeständiger Leiter, verwendet in der Herstellung von <link:generator:§o§nThermoelektrischen §o§nGeneratoren§r:1>.
+ie.manual.entry.oresLead=§lBleierz§r kann in der Welt zwischen <config:iA:ore_lead:1> und <config:iA:ore_lead:2> gefunden werden, und benötigt eine Eisenspitzhacke zum Abbauen.<br><br>Das Erz wird zu Bleibarren geschmolzen, welche zur Herstellung von Kondensatoren benötigt werden.
+ie.manual.entry.oresSilver=§lSilbererz§r kann in der Welt zwischen <config:iA:ore_silver:1> und <config:iA:ore_silver:2> gefunden werden, und benötigt eine Eisenspitzhacke zum Abbauen.<br><br>Das Erz wird zu Silberbarren geschmolzen, welche mit Gold legiert werden um Elektrum herzustellen, ein deutlich besserer Leiter.
+ie.manual.entry.oresNickel=§lNickelerz§r kann in der Welt zwischen <config:iA:ore_nickel:1> und <config:iA:ore_nickel:2> gefunden werden, und benötigt eine Eisenspitzhacke zum Abbauen.<br><br>Das Erz wird zu Nickelbarren geschmolzen, welche mit Kupfer legiert werden um Konstantan herzustellen, ein hitzebeständiger Leiter, verwendet in der Herstellung von <link:generator:§o§nThermoelektrischen §o§nGeneratoren§r:1>.
 
 ie.manual.entry.oreProcessing.name=Erzverarbeitung
 ie.manual.entry.oreProcessing.subtext=
@@ -486,7 +486,7 @@ ie.manual.entry.hemp.subtext=530 fabric it
 ie.manual.entry.hemp0=Industrieller Hanf ist eine bemerkenswerte Pflanze! Nicht nur sind die Samen verwendbar um <link:biodiesel:§o§nBiodiesel§r> herzustellen, die Hanffasern sind auch nützlich um <link:generator:§o§nVerbesserte §o§nWindmüllen§r:4> zu bauen. Die Samen können durch Abbauen von hohem Gras gesammelt werden.
 
 ie.manual.entry.cokeoven.name=Kokerei
-ie.manual.entry.cokeoven.subtext=Hot topic!
+ie.manual.entry.cokeoven.subtext=Heißes Thema!
 ie.manual.entry.cokeoven0=Die Kokerei ist die erste wichtige Maschine, die du brauchst um in Immersive Engineering weiterzukommen. Die Funktionalität ist simpel, Kohle oder Kohleblöcke werden ohne Sauerstoffzufuhr erhitzt, dadurch entsteht Koks, ein kohlenstoffreicher Brennstoff. Außerdem erzeugt dieser Prozess §lTeeröl§r, welches als <link:treatedwood:§o§nKonservierungsmittel §o§nfür §o§nHolz§r> verwendet wird. Des Weiteren kannst du in diesem Ofen Holz zu Holzkohle verbrennen, wenngleich mit einer geringeren Teerölausbeute.
 ie.manual.entry.cokeovenBlock=Um eine Kokerei zu bauen musst du 27 dieser Blöcke in einem 3x3x3-Raster platzieren, und einen der mittleren Blöcke mit dem Hammer des Ingenieurs rechtsklicken.<br>Auf der nächsten Seite siehst du ein Diagramm.
 
@@ -594,7 +594,7 @@ ie.manual.entry.dieselgen3=In der folgenden Tabelle sind alle nutzbaren Treibsto
 
 ie.manual.entry.biodiesel.name=Biodiesel
 ie.manual.entry.biodiesel.subtext=Grüne Energie!
-ie.manual.entry.biodiesel0=Brennbare Kraftstoffe sind eine einfach zu nutzende und effiziente Energiequelle. Aber weil Öl eine erschöpfende Ressource ist, wäre etwas Erneuerbares zu bevorzugen. Biodiesel ist die Lösung! Durch die Kombination von Ethanol und Pflanzenöl kannst du einen brennbaren Kraftstoff herstellen, der im <link;dieselgen;§o§nDieselgenerator§r> verbrannt werden kann.
+ie.manual.entry.biodiesel0=Brennbare Kraftstoffe sind eine einfach zu nutzende und effiziente Energiequelle. Aber weil Ã–l eine erschöpfende Ressource ist, wäre etwas Erneuerbares zu bevorzugen. Biodiesel ist die Lösung! Durch die Kombination von Ethanol und Pflanzenöl kannst du einen brennbaren Kraftstoff herstellen, der im <link;dieselgen;§o§nDieselgenerator§r> verbrannt werden kann.
 ie.manual.entry.biodiesel1=Pflanzenöl wird hergestellt durch die Verarbeitung verschiedener Samen in der Industriellen Presse. Baue die Struktur wie oben gezeigt un forme den Multiblock, indem du eine der Seiten mit dem Hammer anklickst. Energie wird oben oder unten zugeführt und Flüssigkeiten können an den 4 Seiten unten extrahiert werden.
 ie.manual.entry.biodiesel1T=Die folgende Liste zeigt Items, die zu Pflanzenöl verarbeitet werden können, und wieviel sie produzieren.
 ie.manual.entry.biodiesel2=Ethanol erhält man durch die Fermentierung von Zuckerrohr. Der Fermenter wird ähnlich aufgebaut, wie die Industrielle Presse, daher sind Energieeingänge und Flüssigkeitsausgänge identisch.
@@ -611,7 +611,7 @@ ie.manual.entry.furnaceHeater.name=Externer Erhitzer
 ie.manual.entry.furnaceHeater.subtext=Jetzt kochst du mit Flux!
 ie.manual.entry.furnaceHeater0=Der Externe Erhitzer tut genau das, was sein Name sagt, er erzeugt thermische Energie aus RF. Wird er neben einem normalen Ofen platziert, wird die thermische Energie diesen Ofen betreiben, was es ihm erlaubt, ohne jeglichen Treibstoff Dinge zu schmelzen.
 ie.manual.entry.furnaceHeater1=Klicke auf eine Seite des Externen Erhitzers, um diese Seite zum Energieeingang zu machen, schleiche, um die gegenüberliegende Seite einzustellen.<br>Der Erhitzer verbraucht §o<config;i;heater_consumption> RF/t§r für jede weitere Wärmeeinheit. Während der Aufwärmphase des Ofens produziert der Erhitzer bis zu §o4§r Wärmeeinheiten pro Tick, aber sobald der Ofen die maximale Temperatur erreicht hat, wird nur noch §o1§r Wärmeeinheit pro Tick benötigt, um den Ofen am Laufen zu halten.
-ie.manual.entry.furnaceHeater2=Noch besser ist, dass der Erhitzer, während der Ofen auf maximaler Temperatur ist, weitere §o<config;i;heater_speedupConsumption> RF/t§r verbraucht, um die Verarbeitungsgeschwindigkeit des Ofens noch zu erhöhen.<br>Um Energie zu sparen, beeinflusst der Erhitzer nur Öfen mit gültigen Items im Eingangsslot und Platz im Ausgangsslot. Du kannst jedoch ein Redstonesignal anlegen, um dieses Verhalten zu deaktivieren, sodass der Ofen immer auf maximaler Temperatur gehalten wird.
+ie.manual.entry.furnaceHeater2=Noch besser ist, dass der Erhitzer, während der Ofen auf maximaler Temperatur ist, weitere §o<config;i;heater_speedupConsumption> RF/t§r verbraucht, um die Verarbeitungsgeschwindigkeit des Ofens noch zu erhöhen.<br>Um Energie zu sparen, beeinflusst der Erhitzer nur Ã–fen mit gültigen Items im Eingangsslot und Platz im Ausgangsslot. Du kannst jedoch ein Redstonesignal anlegen, um dieses Verhalten zu deaktivieren, sodass der Ofen immer auf maximaler Temperatur gehalten wird.
 
 ie.manual.entry.fluidPipes.name=Flüssigkeitstransport
 ie.manual.entry.fluidPipes.subtext=Professioneller Klempner
@@ -636,7 +636,7 @@ ie.manual.entry.drill5=Der Große Treibstofftank erhöht die interne Kapazität 
 
 ie.manual.entry.revolver.name=Revolver
 ie.manual.entry.revolver.subtext=Gesucht: Tot oder lebendig
-ie.manual.entry.revolver0=Der Revolver, eine elegantere Waffe aus einem zivilisierten Zeitalter, ist eine Meisterleistung der feinen Mechanik. Wobei "klein" hier relativ ist, die Waffe ist für Kaliber 12 gekammert.<br>Ähnlich wie der Handbohrer kann der Revolver in der <link;workbench;§o§nIngenieurswerkbank§r>, wie auf den letzten Seiten beschrieben, modifiziert werden.
+ie.manual.entry.revolver0=Der Revolver, eine elegantere Waffe aus einem zivilisierten Zeitalter, ist eine Meisterleistung der feinen Mechanik. Wobei "klein" hier relativ ist, die Waffe ist für Kaliber 12 gekammert.<br>Ã„hnlich wie der Handbohrer kann der Revolver in der <link;workbench;§o§nIngenieurswerkbank§r>, wie auf den letzten Seiten beschrieben, modifiziert werden.
 ie.manual.entry.revolver1=Der Revolver kann mit drei verschiedenen Arten von Munition geladen werden. Um ihn zu laden, schleiche und rechtsklicke die Waffe, dann platziere die Patronen in den Slots.<br>Ein Revolverschnelllader in deinem Inventar wird benutzt um den Revolver nachzuladen, wenn du den letzten Schuss abgefeuert hast.
 ie.manual.entry.revolver2=Patronen werden in der Ingenieurswerkbank, unter Verwendung spezieller <link;blueprints;§o§nIngenieursbaupläne§r>, hergestellt. Baupläne für normale Munition kannst du selber fertigen, aber einige fortgeschrittenere Arten von Munition erfordern den Kauf spezieller Baupläne von jemand anderem. 
 ie.manual.entry.revolver3=Dies sind simple Munitionstypen, die mit einfachen, selbstgefertigten Bauplänen hergestellt werden können:<br><br>§lCasull:§r Einfache Bleipatrone, in der Lage mittleren Schaden zu verursachen.<br>§lPanzerbrechend:§r Dichtes Metallprojektil, durchdringt Rüstungen mit enormer kinetischer Kraft.<br>§lSchrottpatrone:§r Zusammenfassung vieler kleiner Projektile, streuen in Form eines Kegels. Hohe Wirkung auf kurze Distanz.<br>§lHochexplosiv:§r Erzeugt eine kleine Explosion beim Aufprall.<br>§lSilver:§r Bleikern in Silber, effektiv gegen...Werwölfe?!

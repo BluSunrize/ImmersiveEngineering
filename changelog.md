@@ -27,7 +27,7 @@
 - added commands to configure minerals and stuff
 - added Minetweaker support for minerals
 - added Jerrycans to refuel your drill on the go!
-- added Bottling Machine to fill bottles, buckets and other fluid containers
+- added the Bottling Machine to fill bottles, buckets and other fluid containers
 - changed wire rendering to be ISRBH, improving performance
 - changed a lot of internal handling of the Energy System:
 	- Wire Transferrates are now per tick. WIres can only have a certain amount of power go through them in a single tick
@@ -75,6 +75,7 @@
 - added ja_JP.lang
 - updated ru_RU.lang
 - added fr_FR.lang
+- added de_DE.lang
 
 
 ==============
