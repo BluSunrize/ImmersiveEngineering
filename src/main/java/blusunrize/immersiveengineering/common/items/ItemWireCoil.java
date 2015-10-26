@@ -1,8 +1,7 @@
 package blusunrize.immersiveengineering.common.items;
 
 import java.util.List;
-import java.util.concurrent.ConcurrentSkipListSet;
-
+import java.util.Set;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -105,7 +104,7 @@ public class ItemWireCoil extends ItemIEBase implements IWireCoil
 						IImmersiveConnectable nodeHere = (IImmersiveConnectable)tileEntity;
 						IImmersiveConnectable nodeLink = (IImmersiveConnectable)tileEntityLinkingPos;
 						boolean connectionExists = false;
-						ConcurrentSkipListSet<Connection> outputs = ImmersiveNetHandler.INSTANCE.getConnections(world, Utils.toCC(nodeHere));
+						Set<Connection> outputs = ImmersiveNetHandler.INSTANCE.getConnections(world, Utils.toCC(nodeHere));
 						if(outputs!=null)
 							for(Connection con : outputs)
 							{
