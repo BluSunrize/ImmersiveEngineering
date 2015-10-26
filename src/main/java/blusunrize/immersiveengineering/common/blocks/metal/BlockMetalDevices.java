@@ -658,7 +658,7 @@ public class BlockMetalDevices extends BlockIEBase implements blusunrize.aquatwe
 							ItemStack stack = ((EntityItem)par5Entity).getEntityItem();
 							if(stack!=null)
 							{
-								ItemStack ret = Utils.insertStackIntoInventory(inv, ((EntityItem)par5Entity).getEntityItem(), fd.getOpposite().ordinal());
+								ItemStack ret = Utils.insertStackIntoInventory(inv, stack.copy(), fd.getOpposite().ordinal());
 								if(ret==null)
 									par5Entity.setDead();
 								else if(ret.stackSize<stack.stackSize)

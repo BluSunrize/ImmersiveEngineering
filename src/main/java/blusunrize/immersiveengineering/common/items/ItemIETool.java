@@ -97,7 +97,7 @@ public class ItemIETool extends ItemIEBase implements cofh.api.item.IToolHammer
 							for(String s : interdictedMultiblocks)
 								if(mb.getUniqueName().equalsIgnoreCase(s))
 									return false;
-						if (mb.createStructure(world, x, y, z, side, player))
+						if(mb.createStructure(world, x, y, z, side, player))
 							return true;
 					}
 				return false;

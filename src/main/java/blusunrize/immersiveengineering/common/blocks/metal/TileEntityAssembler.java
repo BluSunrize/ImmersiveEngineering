@@ -570,7 +570,7 @@ public class TileEntityAssembler extends TileEntityMultiblockPart implements ISi
 	public boolean isItemValidForSlot(int slot, ItemStack stack)
 	{
 		if(!formed||stack==null)
-			return true;
+			return false;
 		if(master()!=null)
 			return master().isItemValidForSlot(slot,stack);
 		return true;

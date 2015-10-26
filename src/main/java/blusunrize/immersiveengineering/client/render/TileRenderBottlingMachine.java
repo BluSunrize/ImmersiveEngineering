@@ -1,11 +1,9 @@
 package blusunrize.immersiveengineering.client.render;
 
-import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
@@ -44,45 +42,63 @@ public class TileRenderBottlingMachine extends TileRenderIE
 		TileEntityBottlingMachine bottler = (TileEntityBottlingMachine)tile;
 
 		translationMatrix.translate(.5, 0, .5);
-		rotationMatrix.rotate(Math.toRadians(bottler.facing==2?180: bottler.facing==4?-90: bottler.facing==5?90: 0), 0,1,0);
+		rotationMatrix.rotate(Math.toRadians(bottler.facing==3?180: bottler.facing==4?90: bottler.facing==5?-90: 0), 0,1,0);
 		if(bottler.mirrored)
-			translationMatrix.scale(new Vertex(1,1,-1));
+			translationMatrix.scale(new Vertex(bottler.facing<4?-1:1,1,bottler.facing>3?-1:1));
 
 		model.render(tile, tes, translationMatrix, rotationMatrix, 0, bottler.mirrored, "conveyors","base");
 	}
 	@Override
 	public void renderDynamic(TileEntity tile, double x, double y, double z, float f)
 	{
+		TileEntityBottlingMachine bottler = (TileEntityBottlingMachine)tile;
+		if(!bottler.formed || bottler.pos!=4)
+			return;
 		GL11.glPushMatrix();
 		GL11.glTranslated(x+.5, y, z+.5);
-		TileEntityBottlingMachine bottler = (TileEntityBottlingMachine)tile;
-		GL11.glRotated(bottler.facing==2?180: bottler.facing==4?-90: bottler.facing==5?90: 0, 0,1,0);
+		GL11.glRotated(bottler.facing==3?180: bottler.facing==4?90: bottler.facing==5?-90: 0, 0,1,0);
 		double shift = .3358;
 
 		Matrix4 translationMatrix = new Matrix4();
 		Matrix4 rotationMatrix = new Matrix4();
-		//		if(bottler.mirrored)
-		//			translationMatrix.scale(new Vertex(1,1,-1));
+		if(bottler.mirrored)
+			GL11.glScalef(-1,1,1);
 
 		GL11.glTranslated(shift/2,0,0);
-
-		float t = 120;
-		float step = (ClientUtils.mc().thePlayer.ticksExisted%t)/t;
-		float fill = 0;
-
 
 		double d0 = .05867077;
 		double d1 = .08265846;
 		double tapShift = 0;
-		if(step>=.4+d0 && step<.4+d0+d1)
-			tapShift = (step-.4-d0)/d1;
-		else if(step>=.4+d0+d1 && step<.4+d0+d1*2)
-			tapShift = 1;
-		else if(step>=.4+d0+d1 && step<.4+d0+d1*3)
-			tapShift = 1-(step-.4-d0-d1*2)/d1;
 
-		fill = step>=.4+d0+d1*3?1:(float)tapShift;
+		for(int i=0; i<bottler.inventory.length; i++)
+			if(bottler.inventory[i]!=null && bottler.process[i]>0)
+			{
+				float step = bottler.process[i]/120f;
+				double fill = step>=.4+d0+d1*3?1:0;
 
+				if(step>=.4+d0 && step<.4+d0+d1)
+					fill = tapShift = (step-.4-d0)/d1;
+				else if(step>=.4+d0+d1 && step<.4+d0+d1*2)
+					fill = tapShift = 1;
+				else if(step>=.4+d0+d1 && step<.4+d0+d1*3)
+					fill = tapShift = 1-(step-.4-d0-d1*2)/d1;
+
+				GL11.glPushMatrix();
+				GL11.glTranslated(1,1.15625,.5);
+				double itemX = 0;
+				double itemY = 0;
+				double itemZ = 0;
+				itemX = -( step<.18?0: step<.4?((step-.18)/.22)*.75: step<.6?.75+((step-.40)/.2)*.8125: step<.82?1.5625+(step-.6)/.22*.75: 2.3125);
+				itemZ = -( step<.18?step/.18*.9: step<.4?.9+((step-.18)/.22)*.7875: step<.6? 1.6875: step<.82?1.6875-((step-.6)/.22)*.7875: (1-step)/.18 * .9);
+
+				GL11.glTranslated(itemX,itemY,itemZ);
+
+				if(bottler.mirrored)
+					GL11.glScalef(-1,1,1);
+				renderItemToFill(bottler.inventory[i], bottler.getFilledItem(bottler.inventory[i],false), (float)fill, step>=.71, bottler.getWorldObj());
+				GL11.glPopMatrix();
+			}
+		
 		GL11.glTranslated(-shift*tapShift,0,0);
 		Tessellator tes = ClientUtils.tes();
 		ClientUtils.bindAtlas(0);
@@ -91,26 +107,10 @@ public class TileRenderBottlingMachine extends TileRenderIE
 		tes.draw();
 		GL11.glTranslated(shift*tapShift,0,0);
 
-
-		//		GL11.glTranslated(-.25,1.125,-1.1875);
-		GL11.glTranslated(1,1.15625,.5);
-		double itemX = 0;
-		double itemY = 0;
-		double itemZ = 0;
-		itemX = -( step<.18?0: step<.4?((step-.18)/.22)*.75: step<.6?.75+((step-.40)/.2)*.8125: step<.82?1.5625+(step-.6)/.22*.75: 2.3125);
-		itemZ = -( step<.18?step/.18*.9: step<.4?.9+((step-.18)/.22)*.7875: step<.6? 1.6875: step<.82?1.6875-((step-.6)/.22)*.7875: (1-step)/.18 * .9);
-
-		//step<.4?-1.6875*(step/.4): step>.6?-1.6875*((1-step)/.4): -1.6875;
-
-		GL11.glTranslated(itemX,itemY,itemZ);
-
-		renderItemToFill(new ItemStack(Items.glass_bottle), new ItemStack(Items.potionitem), fill, bottler.getWorldObj());
-
 		GL11.glPopMatrix();
 	}
 
-
-	static void renderItemToFill(ItemStack empty, ItemStack full, float fill, World world)
+	static void renderItemToFill(ItemStack empty, ItemStack full, float fill, boolean packaged, World world)
 	{
 		if(empty==null||full==null)
 			return;
@@ -151,7 +151,7 @@ public class TileRenderBottlingMachine extends TileRenderIE
 		}
 		else
 		{
-			EntityItem entityitem = new EntityItem(world, 0.0D, 0.0D, 0.0D, empty);
+			EntityItem entityitem = new EntityItem(world, 0.0D, 0.0D, 0.0D, packaged?full:empty);
 			entityitem.getEntityItem().stackSize = 1;
 			entityitem.hoverStart = 0.0F;
 			RenderItem.renderInFrame = true;

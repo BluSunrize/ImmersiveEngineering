@@ -208,7 +208,7 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 						if(recipe!=null)
 							this.process = recipe.energy;
 						else if(RailcraftCraftingManager.rockCrusher!=null && RailcraftCraftingManager.rockCrusher.getRecipe(inputStack)!=null)
-							this.process = 2400;
+							this.process = 4000;
 						else
 							inputs.remove(0);
 						active = true;

@@ -112,7 +112,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidHandl
 	@Override
 	public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
 	{
-		if(resource==null || from==null || from==ForgeDirection.UNKNOWN || sideConfig[from.ordinal()]!=0)
+		if(true||resource==null || from==null || from==ForgeDirection.UNKNOWN || sideConfig[from.ordinal()]!=0)
 			return 0;
 		int limit = resource.tag!=null&&resource.tag.hasKey("pressurized")?1000: 50;
 		int canAccept = Math.min(resource.amount, limit);

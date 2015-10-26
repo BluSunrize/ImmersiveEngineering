@@ -545,6 +545,92 @@ public class ClientUtils
 		}
 	}
 
+	public static void renderItemIn2D(IIcon icon, double[] uv, int width, int height, float depth)
+	{
+		double uMin = icon.getInterpolatedU(uv[0]*16);
+		double uMax = icon.getInterpolatedU(uv[1]*16);
+		double vMin = icon.getInterpolatedV(uv[2]*16);
+		double vMax = icon.getInterpolatedV(uv[3]*16);
+
+		double w = width/16d/2;
+		double h = height/16d;
+		tes().startDrawingQuads();
+		tes().setNormal(0.0F, 0.0F, 1.0F);
+		tes().addVertexWithUV(-w, 0, 0.0D, uMin, vMax);
+		tes().addVertexWithUV( w, 0, 0.0D, uMax, vMax);
+		tes().addVertexWithUV( w, h, 0.0D, uMax, vMin);
+		tes().addVertexWithUV(-w, h, 0.0D, uMin, vMin);
+		tes().draw();
+		tes().startDrawingQuads();
+		tes().setNormal(0.0F, 0.0F, -1.0F);
+		tes().addVertexWithUV(-w, h, (0.0F - depth), uMin, vMin);
+		tes().addVertexWithUV( w, h, (0.0F - depth), uMax, vMin);
+		tes().addVertexWithUV( w, 0, (0.0F - depth), uMax, vMax);
+		tes().addVertexWithUV(-w, 0, (0.0F - depth), uMin, vMax);
+		tes().draw();
+		double f5 = 0.5F * (uMin - uMax) / (float)width;
+		double f6 = 0.5F * (vMax - vMin) / (float)height;
+		int k;
+		double f7;
+		double f8;
+		double f9;
+
+		tes().startDrawingQuads();
+		tes().setNormal(0.0F, 1.0F, 0.0F);
+		for(k=0; k<width; k++)
+		{
+			f7 = k/(double)width;
+			f8 = uMin + (uMax - uMin) * f7 - f5;
+			f9 = k/(double)icon.getIconWidth();
+			tes().addVertexWithUV(-w+f9, 0, -depth, f8, vMax);
+			tes().addVertexWithUV(-w+f9, 0, 0, f8, vMax);
+			tes().addVertexWithUV(-w+f9, h, 0, f8, vMin);
+			tes().addVertexWithUV(-w+f9, h, -depth, f8, vMin);
+		}
+		tes().draw();
+
+		tes().startDrawingQuads();
+		tes().setNormal(1.0F, 0.0F, 0.0F);
+		for(k=0; k<width; k++)
+		{
+			f7 = k/(double)width;
+			f8 = uMin + (uMax - uMin) * f7 - f5;
+			f9 = (k+1)/(double)icon.getIconWidth();
+			tes().addVertexWithUV(-w+f9, h, -depth, f8, vMin);
+			tes().addVertexWithUV(-w+f9, h, 0, f8, vMin);
+			tes().addVertexWithUV(-w+f9, 0, 0, f8, vMax);
+			tes().addVertexWithUV(-w+f9, 0, -depth, f8, vMax);
+		}
+		tes().draw();
+
+		tes().startDrawingQuads();
+		tes().setNormal(0.0F, 1.0F, 0.0F);
+		for (k = 0; k < height; ++k)
+		{
+			f7 = k / (double)height;
+			f8 = vMax + (vMin - vMax) * f7 - f6;
+			f9 = (k+1)/(double)icon.getIconHeight();
+			tes().addVertexWithUV(-w, f9, 0, uMin, f8);
+			tes().addVertexWithUV( w, f9, 0, uMax, f8);
+			tes().addVertexWithUV( w, f9, -depth, uMax, f8);
+			tes().addVertexWithUV(-w, f9,- depth, uMin, f8);
+		}
+		tes().draw();
+
+		tes().startDrawingQuads();
+		tes().setNormal(0.0F, -1.0F, 0.0F);
+		for (k = 0; k < height; ++k)
+		{
+			f7 = k / (double)height;
+			f8 = vMax + (vMin - vMax) * f7 - f6;
+			f9 = k/(double)icon.getIconHeight();
+			tes().addVertexWithUV( w, f9, 0, uMax, f8);
+			tes().addVertexWithUV(-w, f9, 0, uMin, f8);
+			tes().addVertexWithUV(-w, f9, -depth, uMin, f8);
+			tes().addVertexWithUV( w, f9, -depth, uMax, f8);
+		}
+		tes().draw();
+	}
 
 	public static void drawInventoryBlock(Block block, int metadata, RenderBlocks renderer)
 	{
@@ -1580,7 +1666,7 @@ public class ClientUtils
 		}
 		return lightingInfo;
 	}
-	
+
 	public static boolean drawWorldBlock(IBlockAccess world, Block block, int x, int y, int z, int meta)
 	{
 		IIcon iBot = block.getIcon(0, meta);
@@ -1598,7 +1684,7 @@ public class ClientUtils
 				{iEast.getMinU(),iEast.getMaxU(), iEast.getMinV(),iEast.getMaxV()}};
 		return drawWorldBlock(world, block, x, y, z, uv);
 	}
-	
+
 	public static boolean drawWorldBlock(IBlockAccess world, Block block, int x, int y, int z, double[][] uv)
 	{
 		Tessellator tes = tes();

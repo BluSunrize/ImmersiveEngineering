@@ -81,6 +81,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityWallmountMe
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockArcFurnace;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockAssembler;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockBlastFurnace;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockBottlingMachine;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockBucketWheel;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockCokeOven;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockCrusher;
@@ -496,6 +497,7 @@ public class IEContent
 		MultiblockHandler.registerMultiblock(MultiblockSheetmetalTank.instance);
 		MultiblockHandler.registerMultiblock(MultiblockSilo.instance);
 		MultiblockHandler.registerMultiblock(MultiblockAssembler.instance);
+		MultiblockHandler.registerMultiblock(MultiblockBottlingMachine.instance);
 
 		IEAchievements.init();
 

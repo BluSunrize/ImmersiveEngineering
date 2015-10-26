@@ -53,6 +53,7 @@ tile.ImmersiveEngineering.metalMultiblock.arcFurnace.name=Arc Furnace
 tile.ImmersiveEngineering.metalMultiblock.tank.name=Fluid Tank
 tile.ImmersiveEngineering.metalMultiblock.silo.name=Item Silo
 tile.ImmersiveEngineering.metalMultiblock.assembler.name=Assembler
+tile.ImmersiveEngineering.metalMultiblock.bottlingMachine.name=Bottling Machine
 
 tile.ImmersiveEngineering.metalDecoration.fence.name=Steel Fence
 tile.ImmersiveEngineering.metalDecoration.scaffolding.name=Steel Scaffolding
