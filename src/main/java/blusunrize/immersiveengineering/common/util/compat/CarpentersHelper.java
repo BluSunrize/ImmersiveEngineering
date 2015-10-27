@@ -11,6 +11,11 @@ import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDecoration;
 public class CarpentersHelper extends IECompatModule
 {
 	@Override
+	public void preInit()
+	{
+	}
+	
+	@Override
 	public void init()
 	{
 		try

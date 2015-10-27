@@ -6,6 +6,11 @@ import blusunrize.immersiveengineering.common.IERecipes;
 public class ThermalFoundationHelper extends IECompatModule
 {
 	@Override
+	public void preInit()
+	{
+	}
+	
+	@Override
 	public void init()
 	{
 		IERecipes.addItemToOreDictCrusherRecipe("dustBasalz",4, "rodBasalz", 3200).addToSecondaryOutput("dustObsidian",.5f);

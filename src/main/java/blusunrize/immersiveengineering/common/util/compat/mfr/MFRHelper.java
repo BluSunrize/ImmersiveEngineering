@@ -7,6 +7,11 @@ import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 public class MFRHelper extends IECompatModule
 {
 	@Override
+	public void preInit()
+	{
+	}
+	
+	@Override
 	public void postInit()
 	{
 	}

@@ -16,6 +16,11 @@ import cpw.mods.fml.relauncher.ReflectionHelper;
 public class MTHelper extends IECompatModule
 {
 	@Override
+	public void preInit()
+	{
+	}
+	
+	@Override
 	public void init()
 	{
 	}

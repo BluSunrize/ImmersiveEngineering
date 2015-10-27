@@ -31,22 +31,27 @@ public abstract class IECompatModule
 		moduleClasses.put("HydCraft", HydCraftHelper.class);
 		moduleClasses.put("ThermalExpansion", ThermalExpansionHelper.class);
 		moduleClasses.put("ThermalFoundation", ThermalFoundationHelper.class);
+		moduleClasses.put("ThermalDynamics", ThermalDynamicsHelper.class);
 		moduleClasses.put("chisel", ChiselHelper.class);
 		moduleClasses.put("harvestcraft", HarvestCraftHelper.class);
 		moduleClasses.put("CarpentersBlocks", CarpentersHelper.class);
+		moduleClasses.put("Forestry", ForestryHelper.class);
 	}
 
-	public static void preInit()
+	public static void preInitModules()
 	{
 		for(Entry<String, Class<? extends IECompatModule>> e : moduleClasses.entrySet())
 			if(Loader.isModLoaded(e.getKey()))
 				try{
-					modules.add(e.getValue().newInstance());
+					IECompatModule m = e.getValue().newInstance();
+					modules.add(m);
+					m.preInit();
 				}catch (Exception exception){
 					IELogger.error("Compat module for "+e.getKey()+" could not be initialized. Report this!");
 				}
 	}
 
+	public abstract void preInit();
 	public abstract void init();
 	public abstract void postInit();
 }

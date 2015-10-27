@@ -8,6 +8,11 @@ import cpw.mods.fml.common.event.FMLInterModComms;
 public class FMPHelper extends IECompatModule
 {
 	@Override
+	public void preInit()
+	{
+	}
+	
+	@Override
 	public void init()
 	{
 		for(int i=0; i<=2; i++)

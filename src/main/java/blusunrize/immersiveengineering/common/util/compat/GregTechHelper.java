@@ -12,6 +12,11 @@ import blusunrize.immersiveengineering.common.util.Lib;
 public class GregTechHelper extends IECompatModule
 {
 	@Override
+	public void preInit()
+	{
+	}
+	
+	@Override
 	public void init()
 	{
 		IERecipes.oreOutputSecondaries.put("Beryllium", new Object[]{Items.emerald,.1f});

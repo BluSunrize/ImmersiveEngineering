@@ -8,6 +8,9 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.oredict.OreDictionary;
+
+import org.lwjgl.opengl.GL11;
+
 import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.IEContent;
@@ -57,13 +60,10 @@ public class MultiblockBottlingMachine implements IMultiblock
 	@SideOnly(Side.CLIENT)
 	public boolean overwriteBlockRender(ItemStack stack, int iterator)
 	{
-		//		if(iterator==10 || iterator==16)
-		//			GL11.glRotatef(-90, 0, 1, 0);
-		//		if(iterator==20||iterator==23||iterator==26)
-		//			GL11.glRotatef(-90, 0, 1, 0);
-		//		if(iterator==18||iterator==21||iterator==24)
-		//			GL11.glRotatef(90, 0, 1, 0);
-
+		if(iterator==6||iterator==9)
+			GL11.glRotatef(90, 0, 1, 0);
+		if(iterator==8)
+			GL11.glRotatef(-90, 0, 1, 0);
 		return false;
 	}
 	@Override
@@ -128,9 +128,10 @@ public class MultiblockBottlingMachine implements IMultiblock
 				for(int l=0;l<2;l++)
 					for(int w=-1;w<=1;w++)
 					{
-						int xx = startX+ (side==4?l: side==5?-l: side==2?-w : w);
+						int ww = mirrored?-w:w;
+						int xx = startX+ (side==4?l: side==5?-l: side==2?-ww : ww);
 						int yy = startY+ h;
-						int zz = startZ+ (side==2?l: side==3?-l: side==5?-w : w);
+						int zz = startZ+ (side==2?l: side==3?-l: side==5?-ww : ww);
 
 						world.setBlock(xx, yy, zz, IEContent.blockMetalMultiblocks, BlockMetalMultiblocks.META_bottlingMachine, 0x3);
 						TileEntity curr = world.getTileEntity(xx, yy, zz);
@@ -141,7 +142,7 @@ public class MultiblockBottlingMachine implements IMultiblock
 							tile.mirrored=mirrored;
 							tile.formed=true;
 							tile.pos = (h+1)*6 + l*3 + (w+1);
-							tile.offset = new int[]{(side==4?l-1: side==5?1-l: side==2?-w: w),h+1,(side==2?l-1: side==3?1-l: side==5?-w: w)};
+							tile.offset = new int[]{(side==4?l-1: side==5?1-l: side==2?-ww: ww),h+1,(side==2?l-1: side==3?1-l: side==5?-ww: ww)};
 						}
 					}
 		return true;

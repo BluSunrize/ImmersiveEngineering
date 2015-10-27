@@ -18,6 +18,7 @@ import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.IFluidHandler;
+import blusunrize.immersiveengineering.api.crafting.BottlingMachineRecipe;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockBottlingMachine;
@@ -128,7 +129,7 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockPart implemen
 					return i;
 				else
 					return -1;
-					
+
 			}
 		return -1;
 	}
@@ -136,6 +137,14 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockPart implemen
 	{
 		if(empty==null || tank.getFluid()==null)
 			return null;
+		BottlingMachineRecipe recipe = BottlingMachineRecipe.findRecipe(empty, tank.getFluid());
+		if(recipe!=null && recipe.output!=null)
+		{
+			if(drainTank)
+				tank.drain(recipe.fluidInput.amount, true);
+			return recipe.output;
+		}
+
 		ItemStack filled = FluidContainerRegistry.fillFluidContainer(new FluidStack(tank.getFluid(),Integer.MAX_VALUE), empty);
 		FluidStack fs = FluidContainerRegistry.getFluidForFilledItem(filled);
 		if(filled!=null && fs.amount<=tank.getFluidAmount())
@@ -237,6 +246,7 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockPart implemen
 		float xMax = 1;
 		float yMax = 1;
 		float zMax = 1;
+		int ff = this.mirrored?ForgeDirection.OPPOSITES[facing]:facing;
 
 		if(pos%6<3)
 		{
@@ -245,15 +255,15 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockPart implemen
 			xMax = facing==5?.4375f:1;
 			zMax = facing==3?.4375f:1;
 		}
-		if((pos%3==0&&facing==4)||(pos%3==2&&facing==5))
+		if((pos%3==0&&ff==4)||(pos%3==2&&ff==5))
 			zMin = .4375f;
-		else if((pos%3==0&&facing==5)||(pos%3==2&&facing==4))
+		else if((pos%3==0&&ff==5)||(pos%3==2&&ff==4))
 			zMax = .5625f;
-		else if((pos%3==0&&facing==3)||(pos%3==2&&facing==2))
+		else if((pos%3==0&&ff==3)||(pos%3==2&&ff==2))
 			xMin = .4375f;
-		else if((pos%3==0&&facing==2)||(pos%3==2&&facing==3))
+		else if((pos%3==0&&ff==2)||(pos%3==2&&ff==3))
 			xMax = .5625f;
-		
+
 		return new float[]{xMin,yMin,zMin, xMax,yMax,zMax};
 	}
 

@@ -76,7 +76,7 @@ public class ImmersiveEngineering
 		for(int b : Config.getIntArray("oreDimBlacklist"))
 			IEWorldGen.oreDimBlacklist.add(b);
 		IEApi.modPreference = Arrays.asList(Config.getStringArray("preferredOres"));
-		IECompatModule.preInit();
+		IECompatModule.preInitModules();
 	}
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent event)

@@ -4,6 +4,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
@@ -74,14 +75,14 @@ public class TileRenderBottlingMachine extends TileRenderIE
 			if(bottler.inventory[i]!=null && bottler.process[i]>0)
 			{
 				float step = bottler.process[i]/120f;
-				double fill = step>=.4+d0+d1*3?1:0;
+				double fill = step>=.4+d0+d1*2?1:0;
 
 				if(step>=.4+d0 && step<.4+d0+d1)
 					fill = tapShift = (step-.4-d0)/d1;
 				else if(step>=.4+d0+d1 && step<.4+d0+d1*2)
 					fill = tapShift = 1;
 				else if(step>=.4+d0+d1 && step<.4+d0+d1*3)
-					fill = tapShift = 1-(step-.4-d0-d1*2)/d1;
+					tapShift = 1-(step-.4-d0-d1*2)/d1;
 
 				GL11.glPushMatrix();
 				GL11.glTranslated(1,1.15625,.5);
@@ -98,7 +99,7 @@ public class TileRenderBottlingMachine extends TileRenderIE
 				renderItemToFill(bottler.inventory[i], bottler.getFilledItem(bottler.inventory[i],false), (float)fill, step>=.71, bottler.getWorldObj());
 				GL11.glPopMatrix();
 			}
-		
+
 		GL11.glTranslated(-shift*tapShift,0,0);
 		Tessellator tes = ClientUtils.tes();
 		ClientUtils.bindAtlas(0);

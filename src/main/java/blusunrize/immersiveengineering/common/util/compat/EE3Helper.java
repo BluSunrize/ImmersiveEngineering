@@ -11,6 +11,11 @@ import com.pahimar.ee3.api.knowledge.AbilityRegistryProxy;
 public class EE3Helper extends IECompatModule
 {
 	@Override
+	public void preInit()
+	{
+	}
+	
+	@Override
 	public void init()
 	{
 	}

@@ -5,6 +5,11 @@ import cpw.mods.fml.common.event.FMLInterModComms;
 public class ChiselHelper extends IECompatModule
 {
 	@Override
+	public void preInit()
+	{
+	}
+	
+	@Override
 	public void init()
 	{
 		FMLInterModComms.sendMessage("chisel", "variation:add", "treated_wood|ImmersiveEngineering:treatedWood|0");

@@ -8,6 +8,11 @@ import blusunrize.immersiveengineering.common.IEContent;
 public class HarvestCraftHelper extends IECompatModule
 {
 	@Override
+	public void preInit()
+	{
+	}
+	
+	@Override
 	public void init()
 	{
 		DieselHandler.addSqueezerRecipe("listAllseed", 80, new FluidStack(IEContent.fluidPlantoil,80), null);
