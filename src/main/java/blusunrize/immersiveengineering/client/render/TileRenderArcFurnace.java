@@ -37,9 +37,6 @@ public class TileRenderArcFurnace extends TileRenderIE
 		if(arc.mirrored)
 			translationMatrix.scale(new Vertex(arc.facing<4?-1:1,1,arc.facing>3?-1:1));
 
-		//		if(arc.mirrored)
-		//			translationMatrix.scale(new Vertex(1,1,-1));
-
 		String[] render = new String[5];
 		render[0]="base";
 		render[1]="furnace";
