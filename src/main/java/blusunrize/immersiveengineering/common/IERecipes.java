@@ -225,8 +225,6 @@ public class IERecipes
 		addOredictRecipe(new ItemStack(IEContent.blockMetalMultiblocks, 2,BlockMetalMultiblocks.META_squeezer), "IPI","GDG","IPI", 'I',"ingotIron",'D',"dyeGreen",'G',componentIron,'P',Blocks.piston);
 		addOredictRecipe(new ItemStack(IEContent.blockMetalMultiblocks, 2,BlockMetalMultiblocks.META_fermenter), "IPI","GDG","IPI", 'I',"ingotIron",'D',"dyeBlue",'G',componentIron,'P',Blocks.piston);
 		addOredictRecipe(new ItemStack(IEContent.blockMetalMultiblocks, 1,BlockMetalMultiblocks.META_lightningRod), "IFI","CBC","IHI", 'I',"ingotSteel",'F',new ItemStack(IEContent.blockMetalDecoration,1,BlockMetalDecoration.META_fence),'B',new ItemStack(IEContent.blockMetalDevice,1,BlockMetalDevices.META_capacitorHV),'C',electrumCoil,'H',hvCoil);
-	
-	BottlingMachineRecipe.addRecipe(new ItemStack(IEContent.itemMaterial,1,0), "stickWood", new FluidStack(IEContent.fluidCreosote,500));
 	}
 	public static ShapedOreRecipe addOredictRecipe(ItemStack output, Object... recipe)
 	{
