@@ -70,7 +70,7 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 	public void getSubBlocks(Item item, CreativeTabs tab, List list)
 	{
 		for(int i=0; i<subNames.length; i++)
-			if(i!=META_dieselGenerator && i!=META_refinery && i!=META_crusher && i!=META_bucketWheel && i!=META_excavator && i!=META_arcFurnace && i!=META_tank && i!=META_silo && i!=META_assembler)
+			if(i!=META_dieselGenerator && i!=META_refinery && i!=META_crusher && i!=META_bucketWheel && i!=META_excavator && i!=META_arcFurnace && i!=META_tank && i!=META_silo && i!=META_assembler && i!=META_bottlingMachine)
 				list.add(new ItemStack(item, 1, i));
 	}
 
@@ -99,8 +99,7 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 		icons[META_refinery][0] = iconRegister.registerIcon("immersiveengineering:metal_multiblock_refinery");
 		icons[META_crusher][0] = iconRegister.registerIcon("immersiveengineering:metal_multiblock_crusher");
 		icons[META_excavator][0] = iconRegister.registerIcon("immersiveengineering:metal_multiblock_excavator");
-		icons[META_arcFurnace][0] = iconRegister.registerIcon("immersiveengineering:metal_multiblock_arcFurnace_inactive");
-		icons[META_arcFurnace][1] = iconRegister.registerIcon("immersiveengineering:metal_multiblock_arcFurnace_active");
+		icons[META_arcFurnace][0] = iconRegister.registerIcon("immersiveengineering:metal_multiblock_arcFurnace");
 		icons[META_assembler][0] = iconRegister.registerIcon("immersiveengineering:metal_multiblock_assembler");
 		icons[META_bottlingMachine][0] = iconRegister.registerIcon("immersiveengineering:metal_multiblock_bottlingMachine");
 		for(int i=0;i<4;i++)

@@ -24,14 +24,6 @@ public class TileRenderArcFurnace extends TileRenderIE
 			return IEContent.blockMetalMultiblocks.getIcon(0, BlockMetalMultiblocks.META_arcFurnace);
 		}
 	};
-	ModelIEObj model1 = new ModelIEObj("immersiveengineering:models/arcFurnace.obj")
-	{
-		@Override
-		public IIcon getBlockIcon(String groupName)
-		{
-			return IEContent.blockMetalMultiblocks.getIcon(1, BlockMetalMultiblocks.META_arcFurnace);
-		}
-	};
 	public static IIcon hotMetal_flow;
 	public static IIcon hotMetal_still;
 
@@ -45,18 +37,15 @@ public class TileRenderArcFurnace extends TileRenderIE
 		if(arc.mirrored)
 			translationMatrix.scale(new Vertex(arc.facing<4?-1:1,1,arc.facing>3?-1:1));
 
-//		if(arc.mirrored)
-//			translationMatrix.scale(new Vertex(1,1,-1));
+		//		if(arc.mirrored)
+		//			translationMatrix.scale(new Vertex(1,1,-1));
 
 		String[] render = new String[5];
 		render[0]="base";
 		render[1]="furnace";
 		for(int i=0; i<3; i++)
 			render[2+i] = (arc.electrodes[i]?"electrode"+(i+1):"");
-		if(arc.active)
-			model1.render(tile, tes, translationMatrix, rotationMatrix, 0, arc.mirrored, render);
-		else
-			model0.render(tile, tes, translationMatrix, rotationMatrix, 0, arc.mirrored, render);
+		model0.render(tile, tes, translationMatrix, rotationMatrix, 0, arc.mirrored, render);
 	}
 	@Override
 	public void renderDynamic(TileEntity tile, double x, double y, double z, float f)
@@ -69,10 +58,16 @@ public class TileRenderArcFurnace extends TileRenderIE
 		GL11.glTranslated(x+.5, y+.5, z+.5);
 		GL11.glRotatef(arc.facing==2?180: arc.facing==4?-90: arc.facing==5?90: 0, 0,1,0);
 
-		if(arc.mirrored)
+		Tessellator tes = ClientUtils.tes();
+		if(arc.active)
 		{
-			GL11.glScalef(-1,1,1);
-			GL11.glDisable(GL11.GL_CULL_FACE);
+			Matrix4 translationMatrix = new Matrix4();
+			translationMatrix.scale(new Vertex(arc.mirrored?-1.001f:1.001f,1,1.001f));
+			translationMatrix.translate(0,0,.0002f);
+			ClientUtils.bindAtlas(0);
+			tes.startDrawingQuads();
+			model0.render(tile, tes, translationMatrix,new Matrix4(), 0, arc.mirrored, "active");
+			tes.draw();
 		}
 
 		if(arc.pouringMetal>0)
@@ -82,7 +77,6 @@ public class TileRenderArcFurnace extends TileRenderIE
 			int pour = process-arc.pouringMetal;
 			GL11.glDisable(GL11.GL_LIGHTING);
 			ClientUtils.bindAtlas(0);
-			Tessellator tes = Tessellator.instance;
 			float h = (pour>(process-speed)?((process-pour)/speed*27): pour>speed?27: (pour/speed*27))/16f;
 			tes.addTranslation(-.5f,-.6875f,1.5f);
 			tes.startDrawingQuads();
@@ -116,12 +110,6 @@ public class TileRenderArcFurnace extends TileRenderIE
 			tes.draw();
 			tes.addTranslation(.5f,.6875f,-1.5f);
 			GL11.glEnable(GL11.GL_LIGHTING);
-		}
-
-		if(arc.mirrored)
-		{
-			GL11.glScalef(-1,1,1);
-			GL11.glEnable(GL11.GL_CULL_FACE);
 		}
 		GL11.glPopMatrix();
 	}
