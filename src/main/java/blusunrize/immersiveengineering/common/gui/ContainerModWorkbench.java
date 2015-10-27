@@ -5,9 +5,9 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import blusunrize.immersiveengineering.api.tool.IUpgradeableTool;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityModWorkbench;
 import blusunrize.immersiveengineering.common.items.ItemEngineersBlueprint;
-import blusunrize.immersiveengineering.common.items.ItemUpgradeableTool;
 
 public class ContainerModWorkbench extends Container
 {
@@ -39,13 +39,13 @@ public class ContainerModWorkbench extends Container
 		slotCount=1;
 
 		ItemStack tool = this.getSlot(0).getStack();
-		if(tool!=null && tool.getItem() instanceof ItemUpgradeableTool)
+		if(tool!=null && tool.getItem() instanceof IUpgradeableTool)
 		{
 			if(tool.getItem() instanceof ItemEngineersBlueprint)
 				((ItemEngineersBlueprint)tool.getItem()).updateOutputs(tool);
 			
 			this.toolInv = new InventoryStorageItem(this, tool);
-			Slot[] slots =  ((ItemUpgradeableTool)tool.getItem()).getWorkbenchSlots(this, tool, toolInv);
+			Slot[] slots =  ((IUpgradeableTool)tool.getItem()).getWorkbenchSlots(this, tool, toolInv);
 			if(slots!=null)
 				for(Slot s : slots)
 				{
@@ -53,7 +53,7 @@ public class ContainerModWorkbench extends Container
 					slotCount++;
 				}
 
-			ItemStack[] cont = ((ItemUpgradeableTool)tool.getItem()).getContainedItems(tool);
+			ItemStack[] cont = ((IUpgradeableTool)tool.getItem()).getContainedItems(tool);
 			((InventoryStorageItem)this.toolInv).stackList = cont;
 		}
 
@@ -85,7 +85,7 @@ public class ContainerModWorkbench extends Container
 			}
 			else if(stackInSlot!=null)
 			{
-				if(stackInSlot.getItem() instanceof ItemUpgradeableTool && ((ItemUpgradeableTool)stackInSlot.getItem()).canModify(stackInSlot))
+				if(stackInSlot.getItem() instanceof IUpgradeableTool && ((IUpgradeableTool)stackInSlot.getItem()).canModify(stackInSlot))
 				{
 					if(!this.mergeItemStack(stackInSlot, 0, 1, true))
 						return null;

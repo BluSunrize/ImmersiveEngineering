@@ -8,17 +8,15 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler.Connection;
-import blusunrize.immersiveengineering.api.tool.IUpgrade;
-import blusunrize.immersiveengineering.api.tool.IUpgrade.UpgradeType;
 import blusunrize.immersiveengineering.common.entities.EntitySkylineHook;
 import blusunrize.immersiveengineering.common.gui.IESlot;
-import blusunrize.immersiveengineering.common.gui.InventoryStorageItem;
 import blusunrize.immersiveengineering.common.util.IEAchievements;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Lib;
@@ -30,7 +28,7 @@ public class ItemSkyhook extends ItemUpgradeableTool
 {
 	public ItemSkyhook()
 	{
-		super("skyhook", 1, UpgradeType.SKYHOOK);
+		super("skyhook", 1, "SKYHOOK");
 	}
 
 	@Override
@@ -135,12 +133,12 @@ public class ItemSkyhook extends ItemUpgradeableTool
 	}
 
 	@Override
-	public Slot[] getWorkbenchSlots(Container container, ItemStack stack, InventoryStorageItem invItem)
+	public Slot[] getWorkbenchSlots(Container container, ItemStack stack, IInventory invItem)
 	{
 		return new Slot[]
 				{
-				new IESlot.Upgrades(container, invItem,0, 102,42, IUpgrade.UpgradeType.SKYHOOK, stack, true),
-				new IESlot.Upgrades(container, invItem,1, 102,22, IUpgrade.UpgradeType.SKYHOOK, stack, true),
+				new IESlot.Upgrades(container, invItem,0, 102,42, "SKYHOOK", stack, true),
+				new IESlot.Upgrades(container, invItem,1, 102,22, "SKYHOOK", stack, true),
 				};
 	}
 

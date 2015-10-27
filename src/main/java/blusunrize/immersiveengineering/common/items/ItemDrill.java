@@ -12,6 +12,7 @@ import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
@@ -26,10 +27,8 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidContainerItem;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
-import blusunrize.immersiveengineering.api.tool.IUpgrade;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.gui.IESlot;
-import blusunrize.immersiveengineering.common.gui.InventoryStorageItem;
 import blusunrize.immersiveengineering.common.util.IEAchievements;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Lib;
@@ -43,7 +42,7 @@ public class ItemDrill extends ItemUpgradeableTool implements IFluidContainerIte
 
 	public ItemDrill()
 	{
-		super("drill", 1, IUpgrade.UpgradeType.DRILL, "diesel");
+		super("drill", 1, "DRILL", "diesel");
 	}
 	@Override
 	public int getInternalSlots(ItemStack stack)
@@ -51,14 +50,14 @@ public class ItemDrill extends ItemUpgradeableTool implements IFluidContainerIte
 		return 4;
 	}
 	@Override
-	public Slot[] getWorkbenchSlots(Container container, ItemStack stack, InventoryStorageItem invItem)
+	public Slot[] getWorkbenchSlots(Container container, ItemStack stack, IInventory invItem)
 	{
 		return new Slot[]
 				{
 				new IESlot.DrillHead(container, invItem,0, 98,22),
-				new IESlot.Upgrades(container, invItem,1,  78,42, IUpgrade.UpgradeType.DRILL, stack, true),
-				new IESlot.Upgrades(container, invItem,2,  98,52, IUpgrade.UpgradeType.DRILL, stack, true),
-				new IESlot.Upgrades(container, invItem,3, 118,42, IUpgrade.UpgradeType.DRILL, stack, true)
+				new IESlot.Upgrades(container, invItem,1,  78,42, "DRILL", stack, true),
+				new IESlot.Upgrades(container, invItem,2,  98,52, "DRILL", stack, true),
+				new IESlot.Upgrades(container, invItem,3, 118,42, "DRILL", stack, true)
 				};
 	}
 	@Override

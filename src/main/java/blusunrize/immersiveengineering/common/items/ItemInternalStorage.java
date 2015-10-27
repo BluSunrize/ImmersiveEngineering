@@ -3,13 +3,16 @@ package blusunrize.immersiveengineering.common.items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import blusunrize.immersiveengineering.api.tool.IInternalStorageItem;
 
-public abstract class ItemInternalStorage extends ItemIEBase
+public abstract class ItemInternalStorage extends ItemIEBase implements IInternalStorageItem 
 {
 	public ItemInternalStorage(String name, int stackSize, String... subNames)
 	{
 		super(name, stackSize, subNames);
 	}
+	
+	@Override
 	public ItemStack[] getContainedItems(ItemStack stack)
 	{
 		ItemStack[] stackList = new ItemStack[getInternalSlots(stack)];
@@ -26,6 +29,8 @@ public abstract class ItemInternalStorage extends ItemIEBase
 		}
 		return stackList;
 	}
+	
+	@Override
 	public void setContainedItems(ItemStack stack, ItemStack[] stackList)
 	{
 		NBTTagList inv = new NBTTagList();
@@ -41,6 +46,7 @@ public abstract class ItemInternalStorage extends ItemIEBase
 			stack.setTagCompound(new NBTTagCompound());
 		stack.getTagCompound().setTag("Inv",inv);
 	}
-	
+
+	@Override
 	public abstract int getInternalSlots(ItemStack stack);
 }

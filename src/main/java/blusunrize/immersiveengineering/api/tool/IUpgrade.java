@@ -12,18 +12,11 @@ import net.minecraft.item.ItemStack;
  */
 public interface IUpgrade
 {
-	public static enum UpgradeType
-	{
-		DRILL,
-		REVOLVER,
-		SKYHOOK;
-	}
-	
 	/**
 	 * @return the upgrade types this item provides
 	 * Returns a set so an item can be used for multiple items
 	 */
-	public Set<UpgradeType> getUpgradeTypes(ItemStack upgrade);
+	public Set<String> getUpgradeTypes(ItemStack upgrade);
 	
 	/**
 	 * @return whether the upgrade can be applied to the parsed target item

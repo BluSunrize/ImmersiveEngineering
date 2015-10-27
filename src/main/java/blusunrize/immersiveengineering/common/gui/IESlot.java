@@ -17,9 +17,9 @@ import blusunrize.immersiveengineering.api.tool.IDrillHead;
 import blusunrize.immersiveengineering.api.tool.IShaderEquipableItem;
 import blusunrize.immersiveengineering.api.tool.IShaderItem;
 import blusunrize.immersiveengineering.api.tool.IUpgrade;
+import blusunrize.immersiveengineering.api.tool.IUpgradeableTool;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.items.ItemEngineersBlueprint;
-import blusunrize.immersiveengineering.common.items.ItemUpgradeableTool;
 import blusunrize.immersiveengineering.common.util.IEAchievements;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -128,9 +128,9 @@ public abstract class IESlot extends Slot
 	public static class Upgrades extends IESlot
 	{
 		ItemStack upgradeableTool;
-		IUpgrade.UpgradeType type;
+		String type;
 		boolean preventDoubles;
-		public Upgrades(Container container, IInventory inv, int id, int x, int y, IUpgrade.UpgradeType type, ItemStack upgradeableTool, boolean preventDoubles)
+		public Upgrades(Container container, IInventory inv, int id, int x, int y, String type, ItemStack upgradeableTool, boolean preventDoubles)
 		{
 			super(container, inv, id, x, y);
 			this.type = type;
@@ -185,7 +185,7 @@ public abstract class IESlot extends Slot
 		@Override
 		public boolean isItemValid(ItemStack itemStack)
 		{
-			return itemStack!=null && itemStack.getItem() instanceof ItemUpgradeableTool && ((ItemUpgradeableTool)itemStack.getItem()).canModify(itemStack);
+			return itemStack!=null && itemStack.getItem() instanceof IUpgradeableTool && ((IUpgradeableTool)itemStack.getItem()).canModify(itemStack);
 		}
 		@Override
 		public int getSlotStackLimit()
@@ -202,7 +202,7 @@ public abstract class IESlot extends Slot
 		@Override
 		public boolean canTakeStack(EntityPlayer player)
 		{
-			if(this.getStack()!=null && getStack().getItem() instanceof ItemUpgradeableTool && !((ItemUpgradeableTool)getStack().getItem()).canTakeFromWorkbench(getStack()))
+			if(this.getStack()!=null && getStack().getItem() instanceof IUpgradeableTool && !((IUpgradeableTool)getStack().getItem()).canTakeFromWorkbench(getStack()))
 				return false;
 			return true;
 		}
@@ -210,8 +210,8 @@ public abstract class IESlot extends Slot
 		public void onPickupFromSlot(EntityPlayer player, ItemStack stack)
 		{
 			super.onPickupFromSlot(player, stack);
-			if(stack!=null && stack.getItem() instanceof ItemUpgradeableTool)
-				((ItemUpgradeableTool)stack.getItem()).removeFromWorkbench(player, stack);
+			if(stack!=null && stack.getItem() instanceof IUpgradeableTool)
+				((IUpgradeableTool)stack.getItem()).removeFromWorkbench(player, stack);
 				
 		}
 	}

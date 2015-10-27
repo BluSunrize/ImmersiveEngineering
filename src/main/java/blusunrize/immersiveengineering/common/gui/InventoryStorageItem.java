@@ -4,8 +4,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import blusunrize.immersiveengineering.common.items.ItemInternalStorage;
-import blusunrize.immersiveengineering.common.items.ItemUpgradeableTool;
+import blusunrize.immersiveengineering.api.tool.IInternalStorageItem;
+import blusunrize.immersiveengineering.api.tool.IUpgradeableTool;
 
 public class InventoryStorageItem implements IInventory
 {
@@ -17,10 +17,10 @@ public class InventoryStorageItem implements IInventory
 	public InventoryStorageItem(Container par1Container, ItemStack stack)
 	{
 		this.container = par1Container;
-		if(stack!=null && stack.getItem() instanceof ItemInternalStorage)
+		if(stack!=null && stack.getItem() instanceof IInternalStorageItem)
 		{
 			this.itemStack=stack;
-			int slots = ((ItemInternalStorage)stack.getItem()).getInternalSlots(stack);
+			int slots = ((IInternalStorageItem)stack.getItem()).getInternalSlots(stack);
 			this.stackList = new ItemStack[slots];
 			this.name = stack.getDisplayName();
 		}
@@ -114,9 +114,9 @@ public class InventoryStorageItem implements IInventory
 	{
 		if(itemStack!=null)
 		{
-			((ItemInternalStorage)this.itemStack.getItem()).setContainedItems(itemStack, stackList);
-			if(this.itemStack.getItem() instanceof ItemUpgradeableTool)
-				((ItemUpgradeableTool)this.itemStack.getItem()).recalculateUpgrades(itemStack);
+			((IInternalStorageItem)this.itemStack.getItem()).setContainedItems(itemStack, stackList);
+			if(this.itemStack.getItem() instanceof IUpgradeableTool)
+				((IUpgradeableTool)this.itemStack.getItem()).recalculateUpgrades(itemStack);
 		}
 	}
 

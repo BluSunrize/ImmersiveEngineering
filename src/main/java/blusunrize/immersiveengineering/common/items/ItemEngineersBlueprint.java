@@ -7,6 +7,7 @@ import java.util.Random;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
@@ -19,7 +20,6 @@ import org.lwjgl.input.Keyboard;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.common.gui.ContainerModWorkbench;
 import blusunrize.immersiveengineering.common.gui.IESlot;
-import blusunrize.immersiveengineering.common.gui.InventoryStorageItem;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -94,7 +94,7 @@ public class ItemEngineersBlueprint extends ItemUpgradeableTool
 		return true;
 	}
 	@Override
-	public Slot[] getWorkbenchSlots(Container container, ItemStack stack, InventoryStorageItem invItem)
+	public Slot[] getWorkbenchSlots(Container container, ItemStack stack, IInventory invItem)
 	{
 		LinkedHashSet<Slot> slots = new LinkedHashSet<Slot>();
 

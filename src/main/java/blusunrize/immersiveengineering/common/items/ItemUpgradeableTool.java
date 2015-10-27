@@ -4,31 +4,35 @@ import java.util.HashMap;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import blusunrize.immersiveengineering.api.tool.IUpgrade;
-import blusunrize.immersiveengineering.common.gui.InventoryStorageItem;
+import blusunrize.immersiveengineering.api.tool.IUpgradeableTool;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 
-public abstract class ItemUpgradeableTool extends ItemInternalStorage
+public abstract class ItemUpgradeableTool extends ItemInternalStorage implements IUpgradeableTool
 {
-	IUpgrade.UpgradeType upgradeType;
+	String upgradeType;
 	
-	public ItemUpgradeableTool(String name, int stackSize, IUpgrade.UpgradeType upgradeType, String... subNames)
+	public ItemUpgradeableTool(String name, int stackSize, String upgradeType, String... subNames)
 	{
 		super(name, stackSize, subNames);
 		this.upgradeType=upgradeType;
 	}
 
+	@Override
 	public NBTTagCompound getUpgrades(ItemStack stack)
 	{
 		return ItemNBTHelper.getTagCompound(stack, "upgrades");
 	}
+	@Override
 	public void clearUpgrades(ItemStack stack)
 	{
 		ItemNBTHelper.remove(stack, "upgrades");
 	}
+	@Override
 	public void recalculateUpgrades(ItemStack stack)
 	{
 		clearUpgrades(stack);
@@ -71,14 +75,18 @@ public abstract class ItemUpgradeableTool extends ItemInternalStorage
 	{
 		return new NBTTagCompound();
 	}
+	@Override
 	public boolean canTakeFromWorkbench(ItemStack stack)
 	{
 		return true;
 	}
+	@Override
 	public void removeFromWorkbench(EntityPlayer player, ItemStack stack)
 	{
 	}
-	
+
+	@Override
 	public abstract boolean canModify(ItemStack stack);
-	public abstract Slot[] getWorkbenchSlots(Container container, ItemStack stack, InventoryStorageItem invItem);
+	@Override
+	public abstract Slot[] getWorkbenchSlots(Container container, ItemStack stack, IInventory invItem);
 }

@@ -9,6 +9,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.tool.IUpgrade;
+import blusunrize.immersiveengineering.api.tool.IUpgradeableTool;
 import blusunrize.immersiveengineering.common.util.Lib;
 
 import com.google.common.collect.ImmutableSet;
@@ -40,16 +41,16 @@ public class ItemToolUpgrade extends ItemIEBase implements IUpgrade {
 	}
 
 	@Override
-	public Set<UpgradeType> getUpgradeTypes(ItemStack upgrade)
+	public Set<String> getUpgradeTypes(ItemStack upgrade)
 	{
-		return ImmutableSet.of(upgrade.getItemDamage()<=3?IUpgrade.UpgradeType.DRILL: IUpgrade.UpgradeType.REVOLVER);
+		return ImmutableSet.of(upgrade.getItemDamage()<=3?"DRILL": "REVOLVER");
 	}
 
 	@Override
 	public boolean canApplyUpgrades(ItemStack target, ItemStack upgrade)
 	{
-		if(upgrade.getItemDamage()==5 && target.getItem() instanceof ItemUpgradeableTool)
-			return !((ItemUpgradeableTool)target.getItem()).getUpgrades(target).hasKey("bullets");
+		if(upgrade.getItemDamage()==5 && target.getItem() instanceof IUpgradeableTool)
+			return !((IUpgradeableTool)target.getItem()).getUpgrades(target).hasKey("bullets");
 		return true;
 	}
 

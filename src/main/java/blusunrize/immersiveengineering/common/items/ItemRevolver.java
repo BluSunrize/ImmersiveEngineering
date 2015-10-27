@@ -14,6 +14,7 @@ import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
@@ -25,9 +26,7 @@ import net.minecraft.world.World;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.tool.IBullet;
 import blusunrize.immersiveengineering.api.tool.IShaderEquipableItem;
-import blusunrize.immersiveengineering.api.tool.IUpgrade;
 import blusunrize.immersiveengineering.common.gui.IESlot;
-import blusunrize.immersiveengineering.common.gui.InventoryStorageItem;
 import blusunrize.immersiveengineering.common.util.IEAchievements;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Lib;
@@ -42,7 +41,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IShaderEquipabl
 {
 	public ItemRevolver()
 	{
-		super("revolver", 1, IUpgrade.UpgradeType.REVOLVER, "normal","speedloader");
+		super("revolver", 1, "REVOLVER", "normal","speedloader");
 	}
 
 	@Override
@@ -72,12 +71,12 @@ public class ItemRevolver extends ItemUpgradeableTool implements IShaderEquipabl
 		return 18+2+1;
 	}
 	@Override
-	public Slot[] getWorkbenchSlots(Container container, ItemStack stack, InventoryStorageItem invItem)
+	public Slot[] getWorkbenchSlots(Container container, ItemStack stack, IInventory invItem)
 	{
 		return new Slot[]
 				{
-				new IESlot.Upgrades(container, invItem,18+0, 80,32, IUpgrade.UpgradeType.REVOLVER, stack, true),
-				new IESlot.Upgrades(container, invItem,18+1,100,32, IUpgrade.UpgradeType.REVOLVER, stack, true),
+				new IESlot.Upgrades(container, invItem,18+0, 80,32, "REVOLVER", stack, true),
+				new IESlot.Upgrades(container, invItem,18+1,100,32, "REVOLVER", stack, true),
 				new IESlot.Shader(container, invItem,20,130,32, stack)
 				};
 	}

@@ -62,12 +62,14 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockPart implemen
 		if(worldObj.isRemote)
 			return;
 		boolean update = false;
+		int consumed = Config.getInt("bottlingMachine_consumption");
 		for(int i=0; i<inventory.length; i++)
 			if(inventory[i]!=null)
 			{
 				ItemStack filled = getFilledItem(inventory[i], false);
-				if(filled!=null)
+				if(filled!=null && this.energyStorage.extractEnergy(consumed, true)==consumed)
 				{
+					this.energyStorage.extractEnergy(consumed, false);
 					if(process[i]==0)
 						update = true;
 					process[i]++;
@@ -89,7 +91,7 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockPart implemen
 							ei.motionZ = (0.075F * fd.offsetZ);
 							this.worldObj.spawnEntityInWorld(ei);
 						}
-						process[i]=0;
+						process[i]=-1;
 						inventory[i]=null;
 						update = true;
 					}
