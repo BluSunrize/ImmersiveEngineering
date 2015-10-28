@@ -300,7 +300,6 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 					return true;
 				}
 			}
-			return true;
 		}
 		if(curr instanceof TileEntityAssembler)
 		{

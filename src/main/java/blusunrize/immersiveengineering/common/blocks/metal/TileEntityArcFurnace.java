@@ -309,7 +309,8 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 	public boolean receiveClientEvent(int id, int arg)
 	{
 		if(id==0 && FMLCommonHandler.instance().getEffectiveSide()==Side.CLIENT)
-			this.pouringMetal=arg;
+			if(this.pouringMetal<=0)
+				this.pouringMetal=arg;
 		return true;
 	}
 
