@@ -113,19 +113,13 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockPart implemen
 		for(int i=0; i<inventory.length; i++)
 			if(inventory[i]==null)
 			{
-				int prevID = -1;
-				for(int j=1; j<inventory.length; j++)
+				int lowestProcess = 200;
+				for(int j=0; j<inventory.length; j++)
 				{
-					int p = i-j;
-					if(p<0)
-						p = inventory.length+p;
-					if(inventory[p]!=null)
-					{
-						prevID = p;
-						break;
-					}
+					if(inventory[j]!=null && process[j]<lowestProcess)
+						lowestProcess = process[j];
 				}
-				if(prevID==-1 || process[prevID]>24)
+				if(lowestProcess==200 || lowestProcess>24)
 					return i;
 				else
 					return -1;

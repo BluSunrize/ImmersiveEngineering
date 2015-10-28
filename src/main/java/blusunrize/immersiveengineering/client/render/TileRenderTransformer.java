@@ -61,7 +61,7 @@ public class TileRenderTransformer extends TileRenderIE
 
 		if(transformer.postAttached!=0)
 		{
-			modelPost.render(tile, tes, translationMatrix, rotationMatrix, -1, false);
+			modelPost.render(tile, tes, translationMatrix, rotationMatrix, 0, false);
 		}
 		else
 		{
