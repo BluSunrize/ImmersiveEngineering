@@ -30,18 +30,23 @@ public class ItemShader extends ItemIEBase implements IShaderItem
 	public ItemShader()
 	{
 		super("shader", 1);
-		addShader("Rosequartz", 0, new int[]{65,35,35,255}, new int[]{230,180,180,255}, new int[]{240,205,205,255}, null);
-		addShader("Argo", 2, new int[]{45,45,45,255}, new int[]{220,220,220,255}, new int[]{220,120,35,255}, null);
-		addShader("Sunstrike", 1, new int[]{115,115,115,255}, new int[]{205,105,0,255}, new int[]{215,58,0,185}, null);
-		addShader("Locus", 2, new int[]{10,10,10,255}, new int[]{74,74,74,255}, new int[]{132,150,76,255}, null);
-		addShader("Felix", 1, new int[]{10,10,10,255}, new int[]{74,74,74,255}, new int[]{240,136,3,255}, null);
-		addShader("Dragon's Breath", 1, new int[]{25,25,25,255}, new int[]{51,63,43,255}, new int[]{138,138,138,255}, "immersiveengineering:shaders/revolver_shark");
-		addShader("Falconmoon", 3, new int[]{103,99,107,255}, new int[]{244,238,235,255}, new int[]{45,45,45,255}, null);
-		addShader("Sponsor", 0, new int[]{25,25,25,255}, new int[]{247,27,36,255}, new int[]{255,255,255,255}, "immersiveengineering:shaders/revolver_sponsor");
-		addShader("Magnum", 1, new int[]{86,56,44,255},new int[]{220,220,220,255},new int[]{160,160,160,255}, null);
+		addShader("Rosequartz", 0, new int[]{65,35,35,255}, new int[]{230,180,180,255}, new int[]{240,205,205,255},new int[]{230,180,180,255}, null);
+		addShader("Argo", 2, new int[]{45,45,45,255}, new int[]{220,220,220,255}, new int[]{220,120,35,255},new int[]{200,200,200,255}, null);
+		addShader("Sunstrike", 1, new int[]{115,115,115,255}, new int[]{205,105,0,255}, new int[]{215,58,0,185},new int[]{215,58,0,185}, null);
+		addShader("Locus", 2, new int[]{10,10,10,255}, new int[]{74,74,74,255}, new int[]{132,150,76,255},new int[]{74,74,74,255}, null);
+		addShader("Felix", 1, new int[]{10,10,10,255}, new int[]{74,74,74,255}, new int[]{240,136,3,255},new int[]{74,74,74,255}, null);
+		addShader("Dragon's Breath", 1, new int[]{25,25,25,255}, new int[]{51,63,43,255}, new int[]{138,138,138,255},new int[]{138,138,138,255}, "immersiveengineering:shaders/revolver_shark");
+		addShader("Falconmoon", 3, new int[]{103,99,107,255}, new int[]{244,238,235,255}, new int[]{45,45,45,255},new int[]{244,238,235,255}, null);
+		addShader("Sponsor", 0, new int[]{25,25,25,255}, new int[]{247,27,36,255}, new int[]{255,255,255,255},new int[]{170,170,170,255}, "immersiveengineering:shaders/revolver_sponsor");
+		addShader("Magnum", 1, new int[]{86,56,44,255},new int[]{220,220,220,255},new int[]{160,160,160,255},new int[]{220,220,220,255}, null);
+
+		addShader("StormFlower", 1, new int[]{39,52,39,255},new int[]{40,111,48,255},new int[]{75,146,85,255},new int[]{40,111,48,255}, null);
+		addShader("Miló", 2, new int[]{59,27,16,255},new int[]{103,0,4,255},new int[]{206,126,16,255},new int[]{103,0,4,255}, null);
+		addShader("Trident", 2, new int[]{81,81,81,255},new int[]{168,168,168,255},new int[]{41,211,255,255},new int[]{175,175,175,255}, null);
+		addShader("Chloris", 4, new int[]{56,50,42,255},new int[]{56,50,42,255},new int[]{136,250,190,255},new int[]{200,200,200,255}, null);
 	}
 
-	public void addShader(String name, int overlayType, int[] colour0, int[] colour1, int[] colour2, String additionalTexture)
+	public void addShader(String name, int overlayType, int[] colour0, int[] colour1, int[] colour2, int[] colour3, String additionalTexture)
 	{
 		NBTTagCompound tag = new NBTTagCompound();
 		tag.setString("shader_name", name);
@@ -49,6 +54,7 @@ public class ItemShader extends ItemIEBase implements IShaderItem
 		tag.setIntArray("shader_colour0", colour0);
 		tag.setIntArray("shader_colour1", colour1);
 		tag.setIntArray("shader_colour2", colour2);
+		tag.setIntArray("shader_colour3", colour3);
 		if(additionalTexture!=null && !additionalTexture.isEmpty())
 			tag.setString("shader_extraTexture", additionalTexture);
 		IEApi.shaderList.add(tag);
@@ -130,9 +136,9 @@ public class ItemShader extends ItemIEBase implements IShaderItem
 		if(item.getItem() instanceof ItemRevolver)
 		{
 			int i = ItemNBTHelper.hasKey(shader, "shader_extraTexture")?1:0;
-			if(modelPart.equals("cosmetic_compensator") || modelPart.equals("player_bayonet")||modelPart.equals("dev_bayonet"))
+			if(modelPart.equals("cosmetic_compensator"))
 				return 1+i;
-			if(modelPart.equals("bayonet_attachment") || modelPart.equals("player_mag")||modelPart.equals("dev_mag"))
+			if(modelPart.equals("bayonet_attachment") || modelPart.equals("player_bayonet")||modelPart.equals("dev_bayonet") || modelPart.equals("player_mag")||modelPart.equals("dev_mag"))
 				return 2+i;
 			return 3+i;
 		}
@@ -168,7 +174,7 @@ public class ItemShader extends ItemIEBase implements IShaderItem
 				return i_revolverOverlay[iOverlay];
 			case "player_bayonet":
 			case "dev_bayonet":
-				return i_revolverBase;
+				return pass==0?i_revolverBase:i_revolverOverlay[iOverlay];
 			}
 		}
 		return i_revolverBase;
@@ -182,7 +188,7 @@ public class ItemShader extends ItemIEBase implements IShaderItem
 			if(pass==2&&(modelPart.equals("barrel") || modelPart.equals("dev_scope")||modelPart.equals("player_electro_0")||modelPart.equals("player_electro_1")))
 				return new int[]{255,255,255,255};
 
-			int i=0; //0 == grip, 1==main, 2==detail
+			int i=0; //0 == grip, 1==main, 2==detail, 3==blade
 			switch(modelPart)
 			{
 			case "revolver_frame":
@@ -205,7 +211,7 @@ public class ItemShader extends ItemIEBase implements IShaderItem
 				break;
 			case "player_bayonet":
 			case "dev_bayonet":
-				i=1;
+				i=pass==1?2:3;
 				break;
 			}
 			if(i==0)
@@ -214,12 +220,14 @@ public class ItemShader extends ItemIEBase implements IShaderItem
 				return ItemNBTHelper.getIntArray(shader, "shader_colour1");
 			if(i==2)
 				return ItemNBTHelper.getIntArray(shader, "shader_colour2");
+			if(i==3)
+				return ItemNBTHelper.getIntArray(shader, "shader_colour3");
 		}
 		return new int[]{255,255,255,255};
 	}
 
 	public IIcon i_revolverBase;
-	public IIcon[] i_revolverOverlay = new IIcon[4];
+	public IIcon[] i_revolverOverlay = new IIcon[5];
 	public IIcon i_revolverGrip;
 	public IIcon i_revolverUncoloured;
 	public HashMap<String,IIcon> i_revolverAdditional = new HashMap<String,IIcon>();
@@ -254,7 +262,7 @@ public class ItemShader extends ItemIEBase implements IShaderItem
 				GL11.glEnable(GL11.GL_CULL_FACE);
 		}
 	}
-	
+
 	public static class ShaderMerchantItem extends MerchantItem
 	{
 		public ShaderMerchantItem()

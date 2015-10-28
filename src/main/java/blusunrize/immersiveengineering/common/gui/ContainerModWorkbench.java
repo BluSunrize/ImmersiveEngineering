@@ -95,7 +95,7 @@ public class ContainerModWorkbench extends Container
 					boolean b = true;
 					for(int i=1; i<slotCount; i++)
 					{
-						Slot s = this.getSlotFromInventory(toolInv, i-1);
+						Slot s = (Slot)inventorySlots.get(i);
 						if(s!=null && s.isItemValid(stackInSlot))
 							if(this.mergeItemStack(stackInSlot, i, i+1, true))
 							{
