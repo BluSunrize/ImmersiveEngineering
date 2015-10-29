@@ -68,38 +68,50 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockPart implemen
 		for(int i=0; i<inventory.length; i++)
 			if(inventory[i]!=null)
 			{
-				ItemStack filled = getFilledItem(inventory[i], false);
-				if(filled!=null && this.energyStorage.extractEnergy(consumed, true)==consumed)
+				if(process[i]>72)
 				{
-					if(predictedOutput[i]==null)
-						predictedOutput[i]=filled;
-					this.energyStorage.extractEnergy(consumed, false);
-					if(process[i]==0)
-						update = true;
-					process[i]++;
-					if(process[i]>120)
+					if(this.energyStorage.extractEnergy(consumed, true)==consumed)
 					{
-						filled = getFilledItem(inventory[i], true);
-						ItemStack output = filled.copy();
-						TileEntity invOutput = worldObj.getTileEntity(xCoord+(facing==4?1:facing==5?-1:((mirrored?-1:1)*(facing==3?1:-1))), yCoord+1, zCoord+(facing==2?1:facing==3?-1:((mirrored?-1:1)*(facing==4?1:-1))));
-						if((invOutput instanceof ISidedInventory && ((ISidedInventory)invOutput).getAccessibleSlotsFromSide(facing).length>0)
-								||(invOutput instanceof IInventory && ((IInventory)invOutput).getSizeInventory()>0))
-							output = Utils.insertStackIntoInventory((IInventory)invOutput, output, facing);
-
-						if(output!=null)
-						{
-							ForgeDirection fd = ForgeDirection.getOrientation(facing);
-							EntityItem ei = new EntityItem(worldObj, xCoord+.5+(facing==4?1:facing==5?-1:((mirrored?-1:1)*(facing==3?1:-1))), yCoord+1+.25, zCoord+.5+(facing==2?1:facing==3?-1:((mirrored?-1:1)*(facing==4?1:-1))), output.copy());
-							ei.motionX = (0.075F * fd.offsetX);
-							ei.motionY = 0.025000000372529D;
-							ei.motionZ = (0.075F * fd.offsetZ);
-							this.worldObj.spawnEntityInWorld(ei);
-						}
-						process[i]=-1;
-						inventory[i]=null;
-						predictedOutput[i]=null;
-						update = true;
+						this.energyStorage.extractEnergy(consumed, false);
+						process[i]++;
 					}
+				}
+				else
+				{
+					ItemStack filled = getFilledItem(inventory[i], false);
+					if(filled!=null && this.energyStorage.extractEnergy(consumed, true)==consumed)
+					{
+						if(predictedOutput[i]==null)
+							predictedOutput[i]=filled;
+						this.energyStorage.extractEnergy(consumed, false);
+						if(process[i]==0)
+							update = true;
+						process[i]++;
+						if(process[i]>72)
+							inventory[i] = getFilledItem(inventory[i], true).copy();
+					}
+				}
+				if(process[i]>120)
+				{
+					ItemStack output = inventory[i].copy();
+					TileEntity invOutput = worldObj.getTileEntity(xCoord+(facing==4?1:facing==5?-1:((mirrored?-1:1)*(facing==3?1:-1))), yCoord+1, zCoord+(facing==2?1:facing==3?-1:((mirrored?-1:1)*(facing==4?1:-1))));
+					if((invOutput instanceof ISidedInventory && ((ISidedInventory)invOutput).getAccessibleSlotsFromSide(facing).length>0)
+							||(invOutput instanceof IInventory && ((IInventory)invOutput).getSizeInventory()>0))
+						output = Utils.insertStackIntoInventory((IInventory)invOutput, output, facing);
+
+					if(output!=null)
+					{
+						ForgeDirection fd = ForgeDirection.getOrientation(facing);
+						EntityItem ei = new EntityItem(worldObj, xCoord+.5+(facing==4?1:facing==5?-1:((mirrored?-1:1)*(facing==3?1:-1))), yCoord+1+.25, zCoord+.5+(facing==2?1:facing==3?-1:((mirrored?-1:1)*(facing==4?1:-1))), output.copy());
+						ei.motionX = (0.075F * fd.offsetX);
+						ei.motionY = 0.025000000372529D;
+						ei.motionZ = (0.075F * fd.offsetZ);
+						this.worldObj.spawnEntityInWorld(ei);
+					}
+					process[i]=-1;
+					inventory[i]=null;
+					predictedOutput[i]=null;
+					update = true;
 				}
 			}
 
@@ -227,7 +239,7 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockPart implemen
 				finishedList.appendTag(itemTag);
 			}
 		nbt.setTag("predictedOutput", finishedList);
-		
+
 		nbt.setIntArray("process", process);
 	}
 
