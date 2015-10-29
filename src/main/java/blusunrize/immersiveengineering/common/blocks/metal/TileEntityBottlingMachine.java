@@ -32,10 +32,10 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class TileEntityBottlingMachine extends TileEntityMultiblockPart implements ISidedInventory, IEnergyReceiver, IFluidHandler
 {
 	public int facing = 2;
-	public EnergyStorage energyStorage = new EnergyStorage(32000);
+	public EnergyStorage energyStorage = new EnergyStorage(16000);
 	public ItemStack[] inventory = new ItemStack[5];
 	public int[] process = new int[5];
-	public FluidTank tank = new FluidTank(8000);
+	public FluidTank tank = new FluidTank(32000);
 	public ItemStack[] predictedOutput = new ItemStack[5];
 
 
