@@ -104,7 +104,7 @@ public class TileEntityRefinery extends TileEntityMultiblockPart implements IFlu
 		else if(pos==0||pos==1||pos==3 || pos==30||pos==31||pos==33||pos==34)
 			return new float[]{0,0,0,1,.5f,1};
 		else
-		return new float[]{0,0,0,1,1,1};
+			return new float[]{0,0,0,1,1,1};
 	}
 
 	@Override
@@ -133,6 +133,7 @@ public class TileEntityRefinery extends TileEntityMultiblockPart implements IFlu
 			}
 			if(tank2.getFluidAmount()>0)
 			{
+				int prevAmount = tank2.getFluidAmount();
 				ItemStack filledContainer = Utils.fillFluidContainer(tank2, inventory[4], inventory[5]);
 				if(filledContainer!=null)
 				{
@@ -143,6 +144,8 @@ public class TileEntityRefinery extends TileEntityMultiblockPart implements IFlu
 					this.decrStackSize(4, filledContainer.stackSize);
 					update = true;
 				}
+				else if(prevAmount!=tank2.getFluidAmount())
+					update = true;
 
 				if(tank2.getFluidAmount()>0)
 				{
@@ -347,12 +350,12 @@ public class TileEntityRefinery extends TileEntityMultiblockPart implements IFlu
 		return AxisAlignedBB.getBoundingBox(xCoord,yCoord,zCoord, xCoord,yCoord,zCoord);
 	}
 	@Override
-    @SideOnly(Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public double getMaxRenderDistanceSquared()
 	{
 		return super.getMaxRenderDistanceSquared()*Config.getDouble("increasedTileRenderdistance");
 	}
-	
+
 	@Override
 	public void invalidate()
 	{

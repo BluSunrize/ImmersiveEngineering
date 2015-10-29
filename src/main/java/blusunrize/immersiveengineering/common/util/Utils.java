@@ -580,8 +580,21 @@ public class Utils
 				}
 				else
 				{
-					int filled = iContainer.fill(containerIn, tank.getFluid(), true);
-					tank.drain(filled, true);
+					if(containerIn.stackSize==1)
+					{
+						int filled = iContainer.fill(containerIn, tank.getFluid(), true);
+						tank.drain(filled, true);
+					}
+					else
+					{
+						ItemStack filledContainer = copyStackWithAmount(containerIn,1);
+						int filled = iContainer.fill(filledContainer, tank.getFluid(), true);
+						if(containerOut==null || (OreDictionary.itemMatches(containerOut, filledContainer, true) && ItemStack.areItemStackTagsEqual(filledContainer, containerOut) && containerOut.stackSize+1<containerOut.getMaxStackSize() ))
+						{
+							tank.drain(filled, true);
+							return filledContainer;
+						}
+					}
 				}
 			}
 		}
