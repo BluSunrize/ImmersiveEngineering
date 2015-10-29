@@ -523,22 +523,45 @@ public class ClientUtils
 	{
 		if(icon==null)
 			return;
+
+		float minU = icon.getInterpolatedU(0);
+		float sizeU = icon.getInterpolatedU(16) - minU;
+		float minV = icon.getInterpolatedV(0);
+		float sizeV = icon.getInterpolatedV(16) - minV;
+		float baseOffsetU = (16f/icon.getIconWidth())*.0005F;
+		float baseOffsetV = (16f/icon.getIconHeight())*.0005F;
 		for(Face face : object.faces)
 		{
-			float minU = icon.getMinU();
-			float sizeU = icon.getMaxU() - minU;
-			float minV = icon.getMinV();
-			float sizeV = icon.getMaxV() - minV;
+			float averageU = 0F;
+			float averageV = 0F;
+			if(face.textureCoordinates!=null && face.textureCoordinates.length>0)
+			{
+				for(int i=0; i<face.textureCoordinates.length; ++i)
+				{
+					averageU += face.textureCoordinates[i].u;
+					averageV += face.textureCoordinates[i].v;
+				}
+				averageU = averageU / face.textureCoordinates.length;
+				averageV = averageV / face.textureCoordinates.length;
+			}
 
 			TextureCoordinate[] oldUVs = new TextureCoordinate[face.textureCoordinates.length];
 			for(int v=0; v<face.vertices.length; ++v)
 			{
-				oldUVs[v] = face.textureCoordinates[v]; 
+				float offsetU, offsetV;
+				offsetU = baseOffsetU;
+				offsetV = baseOffsetV;
+				if (face.textureCoordinates[v].u > averageU)
+					offsetU = -offsetU;
+				if (face.textureCoordinates[v].v > averageV)
+					offsetV = -offsetV;
+
+				oldUVs[v] = face.textureCoordinates[v];
 				TextureCoordinate textureCoordinate = face.textureCoordinates[v];
 				face.textureCoordinates[v] = new TextureCoordinate(
-						minU + sizeU * textureCoordinate.u,
-						minV + sizeV * textureCoordinate.v
-						);
+				minU + sizeU * (textureCoordinate.u+offsetU),
+				minV + sizeV * (textureCoordinate.v+offsetV)
+				);
 			}
 			face.addFaceForRender(ClientUtils.tes(),0);
 			for(int v=0; v<face.vertices.length; ++v)

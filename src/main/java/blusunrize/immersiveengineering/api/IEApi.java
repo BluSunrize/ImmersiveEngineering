@@ -5,8 +5,12 @@ import java.util.HashMap;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.oredict.OreDictionary;
+import blusunrize.immersiveengineering.api.shader.ShaderCase;
+import blusunrize.immersiveengineering.api.shader.ShaderCaseRevolver;
+
+import com.google.common.collect.ArrayListMultimap;
+
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.GameRegistry.UniqueIdentifier;
 
@@ -17,18 +21,29 @@ import cpw.mods.fml.common.registry.GameRegistry.UniqueIdentifier;
  */
 public class IEApi
 {
-	/**A list of mod-ids, representing the mods an ore should be used from in order of priority
+	/**
+	 * A list of mod-ids, representing the mods an ore should be used from in order of priority
 	 */
 	public static List<String> modPreference;
-	/**This map caches the preferred ores for the given OreDict name
+	
+	/**
+	 * This map caches the preferred ores for the given OreDict name
 	 */
 	public static HashMap<String, ItemStack> oreOutputPreference = new HashMap<String, ItemStack>();
-	/**The TextureSheet id for the revolver's icons
+	
+	/**
+	 * The TextureSheet id for the revolver's icons
 	 */
 	public static int revolverTextureSheetID;
-	/**A list of NBTTagCompounds that can be applied to the shader items when they are generated as loot or villager trade
+	
+	/**
+	 * A list of shader names
 	 */
-	public static ArrayList<NBTTagCompound> shaderList = new ArrayList<NBTTagCompound>();
+	public static ArrayList<String> shaderList = new ArrayList<String>();
+	/**
+	 * A map of shader name to ShaderCase
+	 */
+	public static ArrayListMultimap<String,ShaderCase> shaderCaseRegistry = ArrayListMultimap.create();
 	
 	public static ItemStack getPreferredOreStack(String oreName)
 	{
@@ -61,4 +76,19 @@ public class IEApi
 			}
 		return preferredStack;
 	}
+	
+	public static ShaderCase getShader(String name, String shaderType)
+	{
+		for(ShaderCase sCase : shaderCaseRegistry.get(name))
+			if(sCase.getShaderType().equalsIgnoreCase(shaderType))
+				return sCase;
+		return null;
+	}
+	public static void registerShader_Revolver(String name, int overlayType, int[] colourGrip, int[] colourPrimary, int[] colourSecondary, int[] colourBlade, String additionalTexture)
+	{
+		if(!shaderList.contains(name))
+			shaderList.add(name);
+		shaderCaseRegistry.put(name, new ShaderCaseRevolver(overlayType, colourGrip, colourPrimary, colourSecondary, colourBlade, additionalTexture));
+	}
+	
 }

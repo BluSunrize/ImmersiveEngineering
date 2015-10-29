@@ -45,11 +45,13 @@ import net.minecraftforge.oredict.OreDictionary;
 import org.lwjgl.opengl.GL11;
 
 import blusunrize.immersiveengineering.api.AdvancedAABB;
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.api.energy.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.api.energy.WireType;
+import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
 import blusunrize.immersiveengineering.client.fx.ParticleRenderer;
 import blusunrize.immersiveengineering.client.gui.GuiBlastFurnace;
@@ -62,7 +64,6 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOve
 import blusunrize.immersiveengineering.common.gui.ContainerRevolver;
 import blusunrize.immersiveengineering.common.items.ItemDrill;
 import blusunrize.immersiveengineering.common.items.ItemRevolver;
-import blusunrize.immersiveengineering.common.items.ItemShader;
 import blusunrize.immersiveengineering.common.items.ItemSkyhook;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
@@ -99,7 +100,9 @@ public class ClientEventHandler
 			IELogger.info("Stitching Revolver Textures!");
 			((ItemRevolver)IEContent.itemRevolver).stichRevolverTextures(event.map);
 		}
-		((ItemShader)IEContent.itemShader).stichTextures(event.map, event.map.getTextureType());
+		for(String key : IEApi.shaderCaseRegistry.keySet())
+			for(ShaderCase sCase : IEApi.shaderCaseRegistry.get(key))
+				sCase.stichTextures(event.map, event.map.getTextureType());
 	}
 	@SubscribeEvent()
 	public void textureStich(TextureStitchEvent.Post event)

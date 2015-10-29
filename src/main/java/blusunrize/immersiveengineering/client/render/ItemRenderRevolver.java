@@ -13,7 +13,8 @@ import net.minecraftforge.client.model.obj.WavefrontObject;
 
 import org.lwjgl.opengl.GL11;
 
-import blusunrize.immersiveengineering.api.tool.IShaderItem;
+import blusunrize.immersiveengineering.api.shader.IShaderItem;
+import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.client.ClientProxy;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.ModelRevolverVariable;
@@ -84,31 +85,31 @@ public class ItemRenderRevolver implements IItemRenderer
 		IIcon icon = ((ItemRevolver)item.getItem()).getRevolverIcon(item);
 		String[] parts = ((ItemRevolver)item.getItem()).compileRender(item);
 		ItemStack shader =  ((ItemRevolver)item.getItem()).getShaderItem(item);
+		ShaderCase sCase = (shader!=null && shader.getItem() instanceof IShaderItem)?((IShaderItem)shader.getItem()).getShaderCase(shader, item, "revolver"):null;
 		
-		if(shader==null || !(shader.getItem() instanceof IShaderItem))
+		if(sCase==null)
 			ClientUtils.renderWavefrontWithIconUVs(modelobj, icon, parts);
 		else
 		{
 			List<String> renderParts = Arrays.asList(parts);
-			IShaderItem shaderItem = (IShaderItem)shader.getItem(); 
 			for(GroupObject obj : modelobj.groupObjects)
 				if(renderParts.contains(obj.name))
 				{
-					for(int pass=0; pass<shaderItem.getPasses(shader, item, obj.name); pass++)
+					for(int pass=0; pass<sCase.getPasses(shader, item, obj.name); pass++)
 					{
-						IIcon ic = shaderItem.getReplacementIcon(shader, item, obj.name, pass);
+						IIcon ic = sCase.getReplacementIcon(shader, item, obj.name, pass);
 						if(ic==null)
 							ic=icon;
-						int[] col = shaderItem.getRGBAColourModifier(shader, item, obj.name, pass);
+						int[] col = sCase.getRGBAColourModifier(shader, item, obj.name, pass);
 						if(col==null||col.length<4)
 							col= new int[]{255,255,255,255};
 						
-						shaderItem.modifyRender(shader, item, obj.name, pass, true);
+						sCase.modifyRender(shader, item, obj.name, pass, true);
 						ClientUtils.tes().startDrawing(obj.glDrawingMode);
 						ClientUtils.tes().setColorRGBA(col[0], col[1], col[2], col[3]);
 						ClientUtils.tessellateWavefrontGroupObjectWithIconUVs(obj, ic);
 						ClientUtils.tes().draw();
-						shaderItem.modifyRender(shader, item, obj.name, pass, false);
+						sCase.modifyRender(shader, item, obj.name, pass, false);
 					}
 				}
 		}

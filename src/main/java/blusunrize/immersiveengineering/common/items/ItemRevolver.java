@@ -24,8 +24,8 @@ import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.shader.IShaderEquipableItem;
 import blusunrize.immersiveengineering.api.tool.IBullet;
-import blusunrize.immersiveengineering.api.tool.IShaderEquipableItem;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.util.IEAchievements;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
@@ -101,9 +101,9 @@ public class ItemRevolver extends ItemUpgradeableTool implements IShaderEquipabl
 		return contained[20];
 	}
 	@Override
-	public boolean canAcceptShader(ItemStack stack, ItemStack shader)
+	public String getShaderType()
 	{
-		return stack.getItemDamage()!=1;
+		return "revolver";
 	}
 
 	@Override
@@ -112,13 +112,13 @@ public class ItemRevolver extends ItemUpgradeableTool implements IShaderEquipabl
 	{
 		for(int i=0;i<2;i++)
 			list.add(new ItemStack(this,1,i));
-//		for(Map.Entry<String, SpecialRevolver> e : specialRevolversByTag.entrySet())
-//		{
-//			ItemStack stack = new ItemStack(this,1,0);
-//			applySpecialCrafting(stack, e.getValue());
-//			this.recalculateUpgrades(stack);
-//			list.add(stack);
-//		}
+		//		for(Map.Entry<String, SpecialRevolver> e : specialRevolversByTag.entrySet())
+		//		{
+		//			ItemStack stack = new ItemStack(this,1,0);
+		//			applySpecialCrafting(stack, e.getValue());
+		//			this.recalculateUpgrades(stack);
+		//			list.add(stack);
+		//		}
 	}
 	@Override
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean adv)
@@ -132,6 +132,10 @@ public class ItemRevolver extends ItemUpgradeableTool implements IShaderEquipabl
 				list.add(StatCollector.translateToLocal(Lib.DESC_FLAVOUR+"revolver."+ItemNBTHelper.getString(stack, "flavour")));
 			else if(stack.getItemDamage()==0)
 				list.add(StatCollector.translateToLocal(Lib.DESC_FLAVOUR+"revolver"));
+
+			ItemStack shader = getShaderItem(stack);
+			if(shader!=null)
+				list.add(shader.getDisplayName());
 		}
 	}
 	@Override
@@ -416,32 +420,6 @@ public class ItemRevolver extends ItemUpgradeableTool implements IShaderEquipabl
 
 	public static final ArrayListMultimap<String, SpecialRevolver> specialRevolvers = ArrayListMultimap.create();
 	public static final Map<String, SpecialRevolver> specialRevolversByTag = new HashMap<String, SpecialRevolver>();
-	static
-	{
-		//		HashMap<String, SpecialRevolver> map = new HashMap<String, SpecialRevolver>();
-		//		SpecialRevolver r = new SpecialRevolver(1,"fenrir",0,"");
-		//		map.put("f34afdfb-996b-4020-b8a2-b740e2937b29", r);
-		//		r = new SpecialRevolver(1,"",1,"");
-		//		map.put("07c11943-628b-4671-a331-84899d08e538", r);
-		//		map.put("48a16fc8-bc1f-4e72-84e9-7ec73b7d8ea1", r);
-		//		r = new SpecialRevolver(3,"sns",0,"");
-		//		map.put("e8b46b33-3e17-4b64-8d07-9af116df7d3b", r);
-		//		map.put("58d506e2-7ee7-4774-8b22-c7a57eda488b", r);
-		//		map.put("df0f4696-8a55-4777-b49d-6b38d6e1b501", r);
-		//		map.put("b72d87ce-fa98-4a5a-b5a0-5db51a018d09", r);
-		//		r = new SpecialRevolver(4,"nerf",0,"");
-		//		map.put("4f3a8d1e-33c1-44e7-bce8-e683027c7dac", r);
-		//		r = new SpecialRevolver(1,"earthshaker",0,"");
-		//		map.put("c2024e2a-dd76-4bc9-9ea3-b771f18f23b6", r);
-		//		r = new SpecialRevolver(1,"bee",0,"");
-		//		map.put("ca5a40eb-9f48-4b40-bb94-3e0f2d18c9a7", r);
-		//		r = new SpecialRevolver(0,"warlord",0,"");
-		//		map.put("c2e83bd4-e8df-40d6-a639-58ba8b05401e", r);
-		//		r = new SpecialRevolver(0,"",0,"rommie");
-		//		map.put("4f1b6e70-4a7d-45e0-a69e-3550d528cd89", r);
-		//		eliteGunmen = Collections.unmodifiableMap(map);
-		//TODO Myst,Kihira
-	}
 
 
 	public static class SpecialRevolver
