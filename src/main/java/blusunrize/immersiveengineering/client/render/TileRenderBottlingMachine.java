@@ -8,7 +8,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
-import net.minecraftforge.client.IItemRenderer;
 import net.minecraftforge.client.IItemRenderer.ItemRenderType;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.model.obj.Vertex;
@@ -71,7 +70,7 @@ public class TileRenderBottlingMachine extends TileRenderIE
 		double tapShift = 0;
 
 		for(int i=0; i<bottler.inventory.length; i++)
-			if(bottler.inventory[i]!=null && bottler.process[i]>0)
+			if(bottler.inventory[i]!=null)
 			{
 				float step = bottler.process[i]/120f;
 				double fill = step>=.4+d0+d1*2?1:0;
@@ -95,7 +94,7 @@ public class TileRenderBottlingMachine extends TileRenderIE
 
 				if(bottler.mirrored)
 					GL11.glScalef(-1,1,1);
-				renderItemToFill(bottler.inventory[i], bottler.getFilledItem(bottler.inventory[i],false), (float)fill, step>=.71, bottler.getWorldObj());
+				renderItemToFill(bottler.inventory[i], bottler.predictedOutput[i], (float)fill, step>=.71, bottler.getWorldObj());
 				GL11.glPopMatrix();
 			}
 
@@ -112,11 +111,9 @@ public class TileRenderBottlingMachine extends TileRenderIE
 
 	static void renderItemToFill(ItemStack empty, ItemStack full, float fill, boolean packaged, World world)
 	{
-		if(empty==null||full==null)
+		if(empty==null)
 			return;
-		IItemRenderer iirEmpty = MinecraftForgeClient.getItemRenderer(empty, ItemRenderType.ENTITY);
-		IItemRenderer iirFull = MinecraftForgeClient.getItemRenderer(full, ItemRenderType.ENTITY);
-		if(iirEmpty==null && iirFull==null && empty.getItemSpriteNumber()==1 && full.getItemSpriteNumber()==1)
+		if(full!=null && MinecraftForgeClient.getItemRenderer(empty, ItemRenderType.ENTITY)==null && MinecraftForgeClient.getItemRenderer(full, ItemRenderType.ENTITY)==null && empty.getItemSpriteNumber()==1 && full.getItemSpriteNumber()==1)
 		{
 			GL11.glPushMatrix();
 			ClientUtils.bindAtlas(1);
@@ -151,7 +148,7 @@ public class TileRenderBottlingMachine extends TileRenderIE
 		}
 		else
 		{
-			EntityItem entityitem = new EntityItem(world, 0.0D, 0.0D, 0.0D, packaged?full:empty);
+			EntityItem entityitem = new EntityItem(world, 0.0D, 0.0D, 0.0D, packaged&&full!=null?full:empty);
 			entityitem.getEntityItem().stackSize = 1;
 			entityitem.hoverStart = 0.0F;
 			RenderItem.renderInFrame = true;

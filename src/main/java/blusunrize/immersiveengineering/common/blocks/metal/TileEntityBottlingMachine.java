@@ -31,10 +31,11 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class TileEntityBottlingMachine extends TileEntityMultiblockPart implements ISidedInventory, IEnergyReceiver, IFluidHandler
 {
 	public int facing = 2;
-	public EnergyStorage energyStorage = new EnergyStorage(16000);
+	public EnergyStorage energyStorage = new EnergyStorage(32000);
 	public ItemStack[] inventory = new ItemStack[5];
 	public int[] process = new int[5];
 	public FluidTank tank = new FluidTank(8000);
+	public ItemStack[] predictedOutput = new ItemStack[5];
 
 
 	@Override
@@ -70,6 +71,8 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockPart implemen
 				ItemStack filled = getFilledItem(inventory[i], false);
 				if(filled!=null && this.energyStorage.extractEnergy(consumed, true)==consumed)
 				{
+					if(predictedOutput[i]==null)
+						predictedOutput[i]=filled;
 					this.energyStorage.extractEnergy(consumed, false);
 					if(process[i]==0)
 						update = true;
@@ -94,6 +97,7 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockPart implemen
 						}
 						process[i]=-1;
 						inventory[i]=null;
+						predictedOutput[i]=null;
 						update = true;
 					}
 				}
@@ -181,6 +185,15 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockPart implemen
 			if(slot>=0 && slot<this.inventory.length)
 				this.inventory[slot] = ItemStack.loadItemStackFromNBT(itemTag);
 		}
+		NBTTagList finishedList = nbt.getTagList("predictedOutput", 10);
+		this.predictedOutput = new ItemStack[5];
+		for(int i=0; i<finishedList.tagCount(); i++)
+		{
+			NBTTagCompound itemTag = finishedList.getCompoundTagAt(i);
+			int slot = itemTag.getByte("Slot") & 255;
+			if(slot>=0 && slot<this.predictedOutput.length)
+				this.predictedOutput[slot] = ItemStack.loadItemStackFromNBT(itemTag);
+		}
 		process = nbt.getIntArray("process");
 	}
 	@Override
@@ -203,6 +216,18 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockPart implemen
 				invList.appendTag(itemTag);
 			}
 		nbt.setTag("inventory", invList);
+
+		NBTTagList finishedList = new NBTTagList();
+		for(int i=0; i<this.predictedOutput.length; i++)
+			if(this.predictedOutput[i] != null)
+			{
+				NBTTagCompound itemTag = new NBTTagCompound();
+				itemTag.setByte("Slot", (byte)i);
+				this.predictedOutput[i].writeToNBT(itemTag);
+				finishedList.appendTag(itemTag);
+			}
+		nbt.setTag("predictedOutput", finishedList);
+		
 		nbt.setIntArray("process", process);
 	}
 
@@ -361,7 +386,7 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockPart implemen
 		if(master()!=null)
 			return master().getStackInSlotOnClosing(slot);
 		ItemStack stack = getStackInSlot(slot);
-		if (stack != null)
+		if(stack != null)
 			setInventorySlotContents(slot, null);
 		return stack;
 	}
@@ -376,9 +401,10 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockPart implemen
 			return;
 		}
 		inventory[slot] = stack;
-		if (stack != null && stack.stackSize > getInventoryStackLimit())
+		if(stack != null && stack.stackSize > getInventoryStackLimit())
 			stack.stackSize = getInventoryStackLimit();
 		this.markDirty();
+		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 	}
 	@Override
 	public String getInventoryName()
@@ -438,7 +464,6 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockPart implemen
 			return true;
 		if(master()!=null)
 			return master().canInsertItem(slot,stack,side);
-
 		return isItemValidForSlot(slot,stack);
 	}
 	@Override
