@@ -33,7 +33,6 @@ public class CarpentersHelper extends IECompatModule
 		}
 		catch(Exception e)
 		{
-			System.out.println("Wro-wro");
 			e.printStackTrace();
 		}
 	}

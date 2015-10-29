@@ -44,6 +44,7 @@ public class ItemShader extends ItemIEBase implements IShaderItem
 		addShader("Miló", 2, new int[]{59,27,16,255},new int[]{103,0,4,255},new int[]{206,126,16,255},new int[]{103,0,4,255}, null);
 		addShader("Trident", 2, new int[]{81,81,81,255},new int[]{168,168,168,255},new int[]{41,211,255,255},new int[]{175,175,175,255}, null);
 		addShader("Chloris", 4, new int[]{56,50,42,255},new int[]{56,50,42,255},new int[]{136,250,190,255},new int[]{200,200,200,255}, null);
+		addShader("Crescent Rose", 2, new int[]{20,20,20,255},new int[]{145,0,8,255},new int[]{8,8,8,255},new int[]{164,164,164,255}, null);
 	}
 
 	public void addShader(String name, int overlayType, int[] colour0, int[] colour1, int[] colour2, int[] colour3, String additionalTexture)
@@ -215,12 +216,16 @@ public class ItemShader extends ItemIEBase implements IShaderItem
 				break;
 			}
 			if(i==0)
+//				return new int[]{20,20,20,255};
 				return ItemNBTHelper.getIntArray(shader, "shader_colour0");
 			if(i==1)
+//				return new int[]{145,0,8,255};
 				return ItemNBTHelper.getIntArray(shader, "shader_colour1");
 			if(i==2)
+//				return new int[]{8,8,8,255};
 				return ItemNBTHelper.getIntArray(shader, "shader_colour2");
 			if(i==3)
+//				return new int[]{164,164,164,255};
 				return ItemNBTHelper.getIntArray(shader, "shader_colour3");
 		}
 		return new int[]{255,255,255,255};

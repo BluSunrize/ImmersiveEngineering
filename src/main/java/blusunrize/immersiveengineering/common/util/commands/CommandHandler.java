@@ -27,8 +27,6 @@ public class CommandHandler extends CommandBase
 	public List addTabCompletionOptions(ICommandSender sender, String[] args)
 	{
 		ArrayList<String> list = new ArrayList<String>();
-		for(String a : args)
-			System.out.println("|"+a+"|");
 		if(args.length>0)
 			for(IESubCommand sub : commands)
 			{
