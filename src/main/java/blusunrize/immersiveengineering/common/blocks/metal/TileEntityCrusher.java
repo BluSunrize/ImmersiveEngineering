@@ -138,18 +138,20 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 					update = true;
 				}
 
-
 				if(process>0)
 				{
 					int consumed = this.energyStorage.extractEnergy(power, false);
-					if(consumed>0){
+					if(consumed>0)
+					{
 						process -= consumed;
 						if(!active)
 						{
 							active = true;
 							update = true;
 						}
-					} else if(active) {
+					}
+					else if(active)
+					{
 						active = false;
 						update = true;
 					}
@@ -163,21 +165,29 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 						CrusherRecipe recipe = CrusherRecipe.findRecipe(inputStack);
 						if(recipe!=null)
 						{
-							ItemStack outputStack = recipe.output;
-							if(outputStack!=null)
-								outputItem(outputStack.copy());
-							if(recipe.secondaryOutput!=null)
-								for(int i=0; i<recipe.secondaryOutput.length; i++)
-									if(worldObj.rand.nextFloat()<recipe.secondaryChance[i])
-										outputItem(recipe.secondaryOutput[i]);
+							if(inputStack.stackSize>=(recipe.input instanceof ItemStack?((ItemStack)recipe.input).stackSize:1))
+							{
+								ItemStack outputStack = recipe.output;
+								if(outputStack!=null)
+									outputItem(outputStack.copy());
+								if(recipe.secondaryOutput!=null)
+									for(int i=0; i<recipe.secondaryOutput.length; i++)
+										if(worldObj.rand.nextFloat()<recipe.secondaryChance[i])
+											outputItem(recipe.secondaryOutput[i]);
 
-							inputStack.stackSize-= (recipe.input instanceof ItemStack)? ((ItemStack)recipe.input).stackSize: 1;
-							if(inputStack.stackSize>0)
-								inputs.set(0, inputStack);
+								inputStack.stackSize-= (recipe.input instanceof ItemStack)? ((ItemStack)recipe.input).stackSize: 1;
+								if(inputStack.stackSize>0)
+									inputs.set(0, inputStack);
+								else
+									inputs.remove(0);
+								active = false;
+								update = true;
+							}
 							else
-								inputs.remove(0);
-							active = false;
-							update = true;
+							{
+								active = false;
+								update = true;
+							}
 						}
 						else if(RailcraftCraftingManager.rockCrusher!=null && RailcraftCraftingManager.rockCrusher.getRecipe(inputStack)!=null)
 						{
@@ -205,14 +215,23 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 					{
 						ItemStack inputStack = inputs.get(0);
 						CrusherRecipe recipe = CrusherRecipe.findRecipe(inputStack);
+						boolean b = true;
 						if(recipe!=null)
-							this.process = recipe.energy;
+						{
+							if(inputStack.stackSize>=(recipe.input instanceof ItemStack?((ItemStack)recipe.input).stackSize:1))
+								this.process = recipe.energy;
+							else
+								b = false;
+						}
 						else if(RailcraftCraftingManager.rockCrusher!=null && RailcraftCraftingManager.rockCrusher.getRecipe(inputStack)!=null)
 							this.process = 4000;
 						else
 							inputs.remove(0);
-						active = true;
-						update = true;
+						if(b)
+						{
+							active = true;
+							update = true;
+						}
 					}
 			}
 			else if(active)
