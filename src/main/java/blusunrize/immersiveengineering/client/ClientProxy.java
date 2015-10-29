@@ -245,6 +245,11 @@ public class ClientProxy extends CommonProxy
 	public void postInit()
 	{
 		ManualHelper.ieManualInstance = new IEManualInstance();
+	
+		ManualHelper.addEntry("updateNews", ManualHelper.CAT_UPDATE,
+				new ManualPages.Text(ManualHelper.getManual(), "updateNews0"),
+				new ManualPages.Text(ManualHelper.getManual(), "updateNews1"));
+		
 		ManualHelper.addEntry("introduction", ManualHelper.CAT_GENERAL,
 				new ManualPages.Text(ManualHelper.getManual(), "introduction0"),
 				new ManualPages.Text(ManualHelper.getManual(), "introduction1"),
@@ -390,8 +395,8 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.Text(ManualHelper.getManual(), "assembler2"));
 		ManualHelper.addEntry("bottlingMachine", ManualHelper.CAT_MACHINES,
 				new ManualPageMultiblock(ManualHelper.getManual(), "bottlingMachine0", MultiblockBottlingMachine.instance),
-				new ManualPages.Text(ManualHelper.getManual(), "bottlingMachine1"),
-				new ManualPages.Text(ManualHelper.getManual(), "bottlingMachine2"));
+				new ManualPages.Text(ManualHelper.getManual(), "bottlingMachine1"));
+		ManualHelper.addEntry("jerrycan", ManualHelper.CAT_MACHINES, new ManualPages.Crafting(ManualHelper.getManual(), "jerrycan0", new ItemStack(IEContent.itemJerrycan)));
 		ManualHelper.addEntry("drill", ManualHelper.CAT_MACHINES,
 				new ManualPages.CraftingMulti(ManualHelper.getManual(), "drill0", new ItemStack(IEContent.itemDrill,1,0), new ItemStack(IEContent.itemMaterial,1,9)),
 				new ManualPages.Crafting(ManualHelper.getManual(), "drill1", new ItemStack(IEContent.itemDrillhead,1,0)),
@@ -443,10 +448,6 @@ public class ClientProxy extends CommonProxy
 				new ManualPageMultiblock(ManualHelper.getManual(), "", MultiblockBucketWheel.instance),
 				new ManualPageMultiblock(ManualHelper.getManual(), "", MultiblockExcavatorDemo.instance),
 				new ManualPages.Text(ManualHelper.getManual(), "excavator1"));
-	
-		ManualHelper.addEntry("updateNews", ManualHelper.CAT_UPDATE,
-				new ManualPages.Text(ManualHelper.getManual(), "updateNews0"),
-				new ManualPages.Text(ManualHelper.getManual(), "updateNews1"));
 	}
 
 	@Override

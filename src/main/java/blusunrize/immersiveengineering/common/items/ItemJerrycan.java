@@ -5,10 +5,13 @@ import java.util.List;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
+import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidContainerItem;
+import net.minecraftforge.fluids.IFluidHandler;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import cpw.mods.fml.relauncher.Side;
@@ -20,7 +23,7 @@ public class ItemJerrycan extends ItemIEBase implements IFluidContainerItem
 	{
 		super("jerrycan", 1);
 	}
-	
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean adv)
@@ -33,6 +36,32 @@ public class ItemJerrycan extends ItemIEBase implements IFluidContainerItem
 		}
 		else
 			list.add(StatCollector.translateToLocal("desc.ImmersiveEngineering.flavour.drill.empty"));
+	}
+
+	@Override
+	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
+	{
+		if(!world.isRemote)
+		{
+			TileEntity tileEntity = world.getTileEntity(x, y, z);
+			if(tileEntity instanceof IFluidHandler)
+				return Utils.fillFluidHandlerWithPlayerItem(world, (IFluidHandler)tileEntity, player);
+			else
+			{
+				x += side==4?-1:side==5?1:0;
+				y += side==0?-1:side==1?1:0;
+				z += side==2?-1:side==3?1:0;
+				FluidStack fs = this.getFluid(stack);
+				if(Utils.placeFluidBlock(world, x, y, z, fs))
+				{
+					if(fs.amount<=0)
+						fs = null;
+					ItemNBTHelper.setFluidStack(stack, "fluid", fs);
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	@Override
@@ -52,7 +81,7 @@ public class ItemJerrycan extends ItemIEBase implements IFluidContainerItem
 		}
 		return stack;
 	}
-	
+
 	@Override
 	public FluidStack getFluid(ItemStack container)
 	{

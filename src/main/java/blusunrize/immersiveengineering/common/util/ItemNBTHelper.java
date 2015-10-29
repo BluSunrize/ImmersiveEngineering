@@ -153,6 +153,8 @@ public class ItemNBTHelper
 			tag.setInteger("amount", val.amount);
 			setTagCompound(stack, key, tag);
 		}
+		else
+			remove(stack, "fluid");
 	}
 	public static FluidStack getFluidStack(ItemStack stack, String key)
 	{

@@ -74,13 +74,13 @@ public class TileRenderBottlingMachine extends TileRenderIE
 			{
 				float step = bottler.process[i]/120f;
 				double fill = step>=.4+d0+d1*2?1:0;
-
-				if(step>=.4+d0 && step<.4+d0+d1)
-					fill = tapShift = (step-.4-d0)/d1;
-				else if(step>=.4+d0+d1 && step<.4+d0+d1*2)
-					fill = tapShift = 1;
-				else if(step>=.4+d0+d1 && step<.4+d0+d1*3)
-					tapShift = 1-(step-.4-d0-d1*2)/d1;
+				if(bottler.predictedOutput[i]!=null)
+					if(step>=.4+d0 && step<.4+d0+d1)
+						fill = tapShift = (step-.4-d0)/d1;
+					else if(step>=.4+d0+d1 && step<.4+d0+d1*1.5)
+						fill = tapShift = 1;
+					else if(step>=.4+d0+d1*1.5 && step<.4+d0+d1*2.5)
+						tapShift = 1-(step-.4-d0-d1*1.5)/d1;
 
 				GL11.glPushMatrix();
 				GL11.glTranslated(1,1.15625,.5);

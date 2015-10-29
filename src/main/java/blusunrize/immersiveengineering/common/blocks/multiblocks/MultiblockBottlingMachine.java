@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
 import net.minecraft.block.Block;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -77,17 +78,21 @@ public class MultiblockBottlingMachine implements IMultiblock
 	public void renderFormedStructure()
 	{
 		TileEntityBottlingMachine te = new TileEntityBottlingMachine();
+		te.pos = 4;
+		te.formed=true;
 		ClientUtils.bindAtlas(0);
+		GL11.glRotatef(180, 0, 1, 0);
 		ClientUtils.tes().startDrawingQuads();
 		ClientUtils.tes().setTranslation(-.5f,-1.5f,-.5f);
 		ClientUtils.handleStaticTileRenderer(te, false);
 		ClientUtils.tes().draw();
 		ClientUtils.tes().setTranslation(0,0,0);
+		TileEntityRendererDispatcher.instance.renderTileEntityAt(te, -.5D, -1.5D, -.5D, 0.0F);
 	}
 	@Override
 	public float getManualScale()
 	{
-		return 13;
+		return 15;
 	}
 
 	@Override
@@ -181,10 +186,8 @@ public class MultiblockBottlingMachine implements IMultiblock
 	public ItemStack[] getTotalMaterials()
 	{
 		return new ItemStack[]{
-				new ItemStack(IEContent.blockMetalDecoration,9,BlockMetalDecoration.META_scaffolding),
-				new ItemStack(IEContent.blockMetalDecoration,4,BlockMetalDecoration.META_lightEngineering),
-				new ItemStack(IEContent.blockMetalDecoration,6,BlockMetalDecoration.META_sheetMetal),
-				new ItemStack(IEContent.blockMetalDecoration,6,BlockMetalDecoration.META_structuralArm),
-				new ItemStack(IEContent.blockMetalDevice,2,BlockMetalDevices.META_conveyorBelt)};
+				new ItemStack(IEContent.blockMetalDecoration,5,BlockMetalDecoration.META_scaffolding),
+				new ItemStack(IEContent.blockMetalDecoration,2,BlockMetalDecoration.META_lightEngineering),
+				new ItemStack(IEContent.blockMetalDevice,5,BlockMetalDevices.META_conveyorBelt)};
 	}
 }

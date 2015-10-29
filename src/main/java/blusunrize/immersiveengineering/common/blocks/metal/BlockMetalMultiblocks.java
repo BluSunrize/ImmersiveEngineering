@@ -224,7 +224,7 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 				return true;
 			}
 		}
-		if(curr instanceof TileEntityFermenter)
+		else if(curr instanceof TileEntityFermenter)
 		{
 			if(!player.isSneaking() && ((TileEntityFermenter)curr).formed )
 			{
@@ -236,7 +236,7 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 				return true;
 			}
 		}
-		if(curr instanceof TileEntityRefinery)
+		else if(curr instanceof TileEntityRefinery)
 		{
 			if(!player.isSneaking() && ((TileEntityRefinery)curr).formed )
 			{
@@ -248,16 +248,34 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 				return true;
 			}
 		}
-		if(curr instanceof TileEntityDieselGenerator && Utils.isHammer(player.getCurrentEquippedItem()) &&((TileEntityDieselGenerator)curr).pos==40)
+		else if(curr instanceof TileEntityDieselGenerator)
 		{
-			TileEntityDieselGenerator te = ((TileEntityDieselGenerator)curr).master();
-			if(te==null)
-				te = ((TileEntityDieselGenerator)curr);
-			te.mirrored = !te.mirrored;
-			te.markDirty();
-			world.markBlockForUpdate(te.xCoord, te.yCoord, te.zCoord);
+			TileEntityDieselGenerator master = ((TileEntityDieselGenerator)curr).master();
+			if(master==null)
+				master = ((TileEntityDieselGenerator)curr);
+			if(((TileEntityDieselGenerator)curr).pos==40 && Utils.isHammer(player.getCurrentEquippedItem()))
+			{
+				master.mirrored = !master.mirrored;
+				master.markDirty();
+				world.markBlockForUpdate(master.xCoord, master.yCoord, master.zCoord);
+			}
+			else if(!world.isRemote && (((TileEntityDieselGenerator)curr).pos==36 || ((TileEntityDieselGenerator)curr).pos==38))
+			{
+				if(Utils.fillFluidHandlerWithPlayerItem(world, master, player))
+				{
+					master.markDirty();
+					world.markBlockForUpdate(master.xCoord,master.yCoord,master.zCoord);
+					return true;
+				}
+				if(player.getCurrentEquippedItem()!=null && player.getCurrentEquippedItem().getItem() instanceof IFluidContainerItem)
+				{
+					master.markDirty();
+					world.markBlockForUpdate(master.xCoord,master.yCoord,master.zCoord);
+					return true;
+				}
+			}
 		}
-		if(curr instanceof TileEntityArcFurnace)
+		else if(curr instanceof TileEntityArcFurnace)
 		{
 			if(!player.isSneaking() && ((TileEntityArcFurnace)curr).formed )
 			{
@@ -273,7 +291,7 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 				}
 			}
 		}
-		if(!player.isSneaking() && curr instanceof TileEntitySheetmetalTank)
+		else if(!player.isSneaking() && curr instanceof TileEntitySheetmetalTank)
 		{
 			if(!world.isRemote)
 			{
@@ -301,7 +319,7 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 				}
 			}
 		}
-		if(curr instanceof TileEntityAssembler)
+		else if(curr instanceof TileEntityAssembler)
 		{
 			if(!player.isSneaking() && ((TileEntityAssembler)curr).formed)
 			{

@@ -71,8 +71,6 @@ public class ItemShader extends ItemIEBase implements IShaderItem
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean adv)
 	{
-		if(ItemNBTHelper.hasKey(stack, "shader_name"))
-			list.add(ItemNBTHelper.getString(stack, "shader_name"));
 	}
 	@Override
 	public String getItemStackDisplayName(ItemStack stack)

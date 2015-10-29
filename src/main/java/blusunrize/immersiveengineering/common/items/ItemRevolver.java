@@ -20,6 +20,7 @@ import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
@@ -135,7 +136,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IShaderEquipabl
 
 			ItemStack shader = getShaderItem(stack);
 			if(shader!=null)
-				list.add(shader.getDisplayName());
+				list.add(EnumChatFormatting.DARK_GRAY+shader.getDisplayName());
 		}
 	}
 	@Override

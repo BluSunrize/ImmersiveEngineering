@@ -416,6 +416,32 @@ public class Utils
 		return null;
 	}
 
+	public static boolean placeFluidBlock(World world, int x, int y, int z, FluidStack fluid)
+	{
+		if(fluid==null || fluid.getFluid()==null)
+			return false;
+		Block b = world.getBlock(x, y, z);
+		Block fluidBlock = fluid.getFluid().getBlock();
+
+		boolean canPlace = b==null||b.isAir(world,x,y,z)||b.isReplaceable(world,x,y,z);
+
+		if(fluidBlock!=null && canPlace && fluid.amount>=1000)
+		{
+			boolean placed = false;
+			if ((fluidBlock instanceof BlockFluidBase))
+			{
+				BlockFluidBase blockFluid = (BlockFluidBase)fluidBlock;
+				placed = world.setBlock(x, y, z, fluidBlock, blockFluid.getMaxRenderHeightMeta(), 3);
+			}
+			else
+				placed = world.setBlock(x, y, z, fluidBlock);
+			if(placed)
+				fluid.amount -= 1000;
+			return placed;
+		}
+		return false;
+	}
+
 	public static Collection<ItemStack> getContainersFilledWith(FluidStack fluidStack)
 	{
 		List<ItemStack> containers = new ArrayList();

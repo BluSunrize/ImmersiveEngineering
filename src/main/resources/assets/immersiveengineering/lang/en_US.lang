@@ -451,7 +451,7 @@ stat.skyhookOneCm=Distance by Skyhook
 ie.manual.category.update.name=UPDATE NEWS!
 ie.manual.entry.updateNews.name=What's new in Version 0.6
 ie.manual.entry.updateNews.subtext=Old, new; borrowed and Blu
-ie.manual.entry.updateNews0=Dear Engineer!<br>Since you last worked with Immersive Engineering, many things have changed! Among the new things are: Villager houses, <link;lighting;§nnew §nlights§r>, <link;barrel;§nwooden §nbarrels§r>, <link;tanksilo;§ntanks§r>, <link;tanksilo;§nsilos§r;1> and <link;fluidPipes;§nfluid §npipes§r>, achievements, <link;shader;§nshaders§r> and the <link;assembler;§nAssembler§r>!
+ie.manual.entry.updateNews0=Dear Engineer!<br><br>Since you last worked with Immersive Engineering, many things have changed! Among the new things are: Villager houses, <link;lighting;§nnew §nlights§r>, <link;barrel;§nwooden §nbarrels§r>, <link;tanksilo;§ntanks§r>, <link;tanksilo;§nsilos§r;1> and <link;fluidPipes;§nfluid §npipes§r>, achievements, <link;shader;§nshaders§r> and the <link;assembler;§nAssembler§r> and <link;bottlingMachine;§nBottling §nMachine§r>!
 ie.manual.entry.updateNews1=Most importantly however, the way energy transmission is handled has changed a lot. In order to avoid mistakes, please make sure to read the entry on <link;wiring;§nWiring§r>, especially page 5, detailing the new distinction between a cable's transferrate and a connector's in- and output.
 
 
@@ -498,6 +498,10 @@ ie.manual.entry.treatedwoodPost1=You can also place <link;wiring;§o§ntransform
 ie.manual.entry.barrel.name=Wooden Barrel
 ie.manual.entry.barrel.subtext=Doesn't roll
 ie.manual.entry.barrel0=Wooden barrels are simple containers that can store fluid. They will store up to 12 buckets, but because they are wooden, they can't take any hot fluids.<br>Rightclicking the top or bottom side of the barrel with a Hammer will switch between in-, output or no connection.
+
+ie.manual.entry.jerrycan.name=Jerrycan
+ie.manual.entry.jerrycan.subtext=Better than buckets
+ie.manual.entry.jerrycan0=Jerrycans are simple metal containers used to carry fluids. They can store up to 10 buckets and can pour that fluid into the world as well as into machines. They can not pick up fluids. Additionally, they can be used to refill other fluid-consuming items like the <link;drill;§o§nMining §o§nDrill§r> by crafting them together.
 
 ie.manual.entry.graphite.name=Graphite
 ie.manual.entry.graphite.subtext=Coal stuff
@@ -562,10 +566,15 @@ ie.manual.entry.tanksilo2=Items must be input through the top and extracted from
 ie.manual.entry.tanksilo3=Attaching a comparator to the output block makes it emit a redstone signal proportional to how full the tank/silo is. Attaching a comparator to one of the top 6 (silos) or top 4 (tanks) layers causes it to emit a signal proportional to how full the corresponding 1/6 (silos) or 1/4 (tanks) of the storage is. For example, a comparator attached to the second layer of a tank would not emit any signal until the tank is 1/4 full and have a signal strength of 15 if the tank is half full or more.
 
 ie.manual.entry.assembler.name=Assembler
-ie.manual.entry.assembler.subtext=
+ie.manual.entry.assembler.subtext=Some assembly required
 ie.manual.entry.assembler0=The Assembler is a complex machine capable of crafting items, similar to how a player would.<br>To form the structure, build it like demonstrated above and use the hammer on one of the conveyors.
 ie.manual.entry.assembler1=The conveyor you clicked will be the input side, indicated by the blue marker above it and the arrow on the side of the machine.<br>The Assembler allows for up to 3 recipes to be stored inside it that will be performed in order. The outputs of previous recipes can be used as inputs for the following.<br>The 3 crafting grids store the recipes, and the 18 slots below them are the inventory for materials.
 ie.manual.entry.assembler2=The input side, in addition to an item input also features a fluid input to fill the three internal tanks of the machine. Fluid in these tanks can be used to replace fluid containers like water buckets in recipes.<br>Power for the machine is input through the top center block.
+
+ie.manual.entry.bottlingMachine.name=Bottling Machine
+ie.manual.entry.bottlingMachine.subtext=Fill 'er up!
+ie.manual.entry.bottlingMachine0=The Bottling Machine fills fluids into containers. The structure is created as shown above, the direction of the conveyors is important but can be mirrored. To form the structure, use the Engineer's Hammer on the cental conveyor.
+ie.manual.entry.bottlingMachine1=Fluid is input through the cental port on the lower level, items are input through the conveyors. The movement of the conveyors should make in- and output quite obvious. Energy is input through the top.<br>Generally, the Bottling Machine will be able to fill any container that has a filled version available (bucket, glass bottle). It will also accept items designated as fluid containers, like the <link;drill;§o§nMining §o§nDrill§r> or a <link;jerrycan;§o§nJerrycan§r>.
 
 ie.manual.entry.highvoltage.name=High-Voltage
 ie.manual.entry.highvoltage.subtext=You can't shake the shock

@@ -18,6 +18,7 @@ import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.oredict.OreDictionary;
 import blusunrize.immersiveengineering.api.crafting.BottlingMachineRecipe;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.IEContent;
@@ -79,15 +80,15 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockPart implemen
 				else
 				{
 					ItemStack filled = getFilledItem(inventory[i], false);
-					if(filled!=null && this.energyStorage.extractEnergy(consumed, true)==consumed)
+					if(this.energyStorage.extractEnergy(consumed, true)==consumed)
 					{
-						if(predictedOutput[i]==null)
+						if(predictedOutput[i]==null || !OreDictionary.itemMatches(filled, predictedOutput[i],true))
 							predictedOutput[i]=filled;
 						this.energyStorage.extractEnergy(consumed, false);
 						if(process[i]==0)
 							update = true;
 						process[i]++;
-						if(process[i]>72)
+						if(filled!=null && process[i]>72)
 							inventory[i] = getFilledItem(inventory[i], true).copy();
 					}
 				}
@@ -453,7 +454,7 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockPart implemen
 			return false;
 		if(master()!=null)
 			return master().isItemValidForSlot(slot,stack);
-		return this.getFilledItem(stack, false)!=null;
+		return true;//this.getFilledItem(stack, false)!=null;
 	}
 	@Override
 	public int[] getAccessibleSlotsFromSide(int side)
