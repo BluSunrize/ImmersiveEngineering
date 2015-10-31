@@ -89,7 +89,7 @@ public class Refinery
 			while(it.hasNext())
 			{
 				RefineryRecipe r = it.next();
-				if(r.output.isFluidEqual(output))
+				if(r!=null && r.output.isFluidEqual(output))
 				{
 					removedRecipes.add(r);
 					it.remove();

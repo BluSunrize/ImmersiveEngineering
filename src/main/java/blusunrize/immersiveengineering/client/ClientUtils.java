@@ -924,7 +924,7 @@ public class ClientUtils
 			}
 		}
 	}
-
+	
 	public static class BlockLightingInfo
 	{
 		public int aoBrightnessXYNN;

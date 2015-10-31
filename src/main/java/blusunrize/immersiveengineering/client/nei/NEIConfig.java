@@ -36,6 +36,9 @@ public class NEIConfig implements IConfigureNEI
 		API.registerRecipeHandler(new NEIArcFurnaceHandler());
 		API.registerUsageHandler(new NEIArcFurnaceHandler());
 		
+		API.registerRecipeHandler(new NEIBottlingMachineHandler());
+		API.registerUsageHandler(new NEIBottlingMachineHandler());
+		
 		API.hideItem(new ItemStack(IEContent.blockFakeLight,1,OreDictionary.WILDCARD_VALUE));
 		API.hideItem(new ItemStack(IEContent.itemFakeIcons,1,OreDictionary.WILDCARD_VALUE));
 	}

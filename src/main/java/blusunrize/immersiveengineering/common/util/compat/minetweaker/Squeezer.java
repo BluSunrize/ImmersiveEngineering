@@ -96,7 +96,7 @@ public class Squeezer
 			while(it.hasNext())
 			{
 				SqueezerRecipe r = it.next();
-				if(r.fluid!=null&&r.fluid.isFluidEqual(output))
+				if(r!=null && r.fluid!=null&&r.fluid.isFluidEqual(output))
 				{
 					removedRecipes.add(r);
 					it.remove();
@@ -154,7 +154,7 @@ public class Squeezer
 			while(it.hasNext())
 			{
 				SqueezerRecipe r = it.next();
-				if(OreDictionary.itemMatches(output, r.output, false))
+				if(r!=null && OreDictionary.itemMatches(output, r.output, false))
 				{
 					removedRecipes.add(r);
 					it.remove();

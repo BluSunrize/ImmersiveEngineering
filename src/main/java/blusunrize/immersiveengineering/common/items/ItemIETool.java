@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.common.items;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -32,6 +33,7 @@ import cofh.api.energy.IEnergyReceiver;
 import com.google.common.collect.ImmutableSet;
 
 import cpw.mods.fml.common.Optional;
+import cpw.mods.fml.common.registry.GameRegistry;
 
 @Optional.Interface(iface = "cofh.api.item.IToolHammer", modid = "CoFHAPI|item")
 public class ItemIETool extends ItemIEBase implements cofh.api.item.IToolHammer
@@ -216,6 +218,8 @@ public class ItemIETool extends ItemIEBase implements cofh.api.item.IToolHammer
 	{
 		if(stack.getItemDamage()==3)
 		{
+//			Block blockFrame = GameRegistry.findBlock("ThermalExpansion", "Frame");
+//			System.out.println(blockFrame);
 			player.triggerAchievement(IEAchievements.openManual);
 			if(world.isRemote)
 				player.openGui(ImmersiveEngineering.instance, Lib.GUIID_Manual, world, (int)player.posX,(int)player.posY,(int)player.posZ);

@@ -24,7 +24,11 @@ public class ThermalExpansionHelper extends IECompatModule
 		//Constantan
 		addSmelterRecipe(new ItemStack(IEContent.itemMetal,2,5), new ItemStack(IEContent.itemMetal,1,0),new ItemStack(IEContent.itemMetal,1,4), 2400, null,0);
 		addSmelterRecipe(new ItemStack(IEContent.itemMetal,2,5), new ItemStack(IEContent.itemMetal,1,10),new ItemStack(IEContent.itemMetal,1,14), 1600, null,0);
+	}
 
+	@Override
+	public void postInit()
+	{
 		Block blockFrame = GameRegistry.findBlock("ThermalExpansion", "Frame");
 		if(blockFrame!=null)
 		{
@@ -43,11 +47,6 @@ public class ThermalExpansionHelper extends IECompatModule
 			if(fluidGlowstone!=null && blockIlluminator!=null)
 				BottlingMachineRecipe.addRecipe(new ItemStack(blockIlluminator), new ItemStack(blockFrame,1,12), new FluidStack(fluidGlowstone,500));
 		}
-	}
-
-	@Override
-	public void postInit()
-	{
 	}
 
 	public static void addSmelterRecipe(ItemStack output, ItemStack input0, ItemStack input1, int energy, ItemStack secondaryOuput, int secondaryChance)
