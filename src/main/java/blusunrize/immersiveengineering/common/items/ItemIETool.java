@@ -33,7 +33,6 @@ import cofh.api.energy.IEnergyReceiver;
 import com.google.common.collect.ImmutableSet;
 
 import cpw.mods.fml.common.Optional;
-import cpw.mods.fml.common.registry.GameRegistry;
 
 @Optional.Interface(iface = "cofh.api.item.IToolHammer", modid = "CoFHAPI|item")
 public class ItemIETool extends ItemIEBase implements cofh.api.item.IToolHammer
@@ -218,8 +217,6 @@ public class ItemIETool extends ItemIEBase implements cofh.api.item.IToolHammer
 	{
 		if(stack.getItemDamage()==3)
 		{
-//			Block blockFrame = GameRegistry.findBlock("ThermalExpansion", "Frame");
-//			System.out.println(blockFrame);
 			player.triggerAchievement(IEAchievements.openManual);
 			if(world.isRemote)
 				player.openGui(ImmersiveEngineering.instance, Lib.GUIID_Manual, world, (int)player.posX,(int)player.posY,(int)player.posZ);
