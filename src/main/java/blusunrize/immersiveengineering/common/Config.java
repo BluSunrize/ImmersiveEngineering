@@ -82,7 +82,14 @@ public class Config
 		setBoolean("ic2compat", config.get("General", "IC2 Compatability", true, "Set this to false to prevent wires from accepting and outputting EU").getBoolean());
 		setBoolean("gregtechcompat", config.get("General", "GregTech Compatability", true, "Set this to false to prevent wires from outputting GregTech EU").getBoolean());
 		setInt("euConversion", config.get("General", "EU Conversion", 4, "The amount of RF that equal 1 EU. 4 by default, so 4RF == 1EU and .25EU == 1RF").getInt());
-
+		int ee3 = config.get("General", "EE3 integration mode", 2, "How EE3 EMC values will be registered. 0 means they will not be registered at all, 1 means that they are registered as \"post\"-values and 2 means that they will be registered as \"pre\"-values. \"post\"-values may cause less problems with DynEMC, however items that are crafted using the registered materials will not have an EMC value").getInt();
+		if (ee3<0||ee3>2)
+		{
+			IELogger.warn("The EE3 integration mode has to be an integer between 0 and 2, "+ee3+" is not a valid value. Defaulting to 2");
+			ee3 = 2;
+		}
+		setInt("ee3mode", ee3);
+		
 		setInt("villager_engineer", config.get("General", "Villager ID: Engineer", 512, "The villager ID for the Engineer Villager. Change if it conflicts").getInt());
 
 		Property propConnectorInput = config.get("Machines", "Wire Connector Input", new int[]{256,1024,4096}, "In- and output rates of LV,MV and HV Wire Conenctors. This is independant of the transferrate of the wires.");
@@ -149,7 +156,7 @@ public class Config
 		setDouble("BulletDamage-Wolfpack", config.get("Tools", "BulletDamage-Wolfpack", 6d, "The amount of base damage a Wolfpack Cartridge inflicts").getDouble());
 		setDouble("BulletDamage-WolfpackPart", config.get("Tools", "BulletDamage-WolfpackPart", 4d, "The amount of damage the sub-projectiles of the Wolfpack Cartridge inflict").getDouble());
 		setDouble("BulletDamage-Silver", config.get("Tools", "BulletDamage-Silver", 7d, "The amount of damage a silver bullet inflicts").getDouble());
-
+		
 		config.save();
 	}
 
