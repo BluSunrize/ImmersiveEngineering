@@ -26,7 +26,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class TileEntitySheetmetalTank extends TileEntityMultiblockPart implements IFluidHandler, IBlockOverlayText
 {
 	public FluidTank tank = new FluidTank(512000);
-	private int[] oldComps;
+	private int[] oldComps = new int[4];
 	private int masterCompOld;
 
 	@Override
@@ -253,7 +253,7 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart implement
 	}
 	
 	private void updateComparatorValuesPart1() {
-		oldComps = new int[4];
+//		oldComps = new int[4];
 		int vol = tank.getCapacity() / 4;
 		for (int i = 0; i < 4; i++)
 		{
@@ -279,6 +279,6 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart implement
 						worldObj.func_147453_f(xCoord-offset[0]+x, y, zCoord-offset[2]+z, worldObj.getBlock(xCoord-offset[0]+x, y, zCoord-offset[2]+z));
 			}
 		}
-		oldComps = null;
+//		oldComps = null;
 	}
 }

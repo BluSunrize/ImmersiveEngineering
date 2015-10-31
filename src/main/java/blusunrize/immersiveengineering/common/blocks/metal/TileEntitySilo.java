@@ -28,7 +28,7 @@ public class TileEntitySilo extends TileEntityMultiblockPart implements ISidedIn
 	ItemStack prevInputStack;
 	ItemStack prevOutputStack;
 	boolean lockItem = false;
-	private int[] oldComps;
+	private int[] oldComps = new int[6];
 	private int masterCompOld;
 
 	@Override
@@ -405,7 +405,7 @@ public class TileEntitySilo extends TileEntityMultiblockPart implements ISidedIn
 		return 0;
 	}
 	private void updateComparatorValuesPart1() {
-		oldComps = new int[6];
+//		oldComps = new int[6];
 		int vol = maxStorage / 6;
 		for (int i = 0; i < 6; i++)
 		{
@@ -430,7 +430,7 @@ public class TileEntitySilo extends TileEntityMultiblockPart implements ISidedIn
 						worldObj.func_147453_f(xCoord-offset[0]+x, y, zCoord-offset[2]+z, worldObj.getBlock(xCoord-offset[0]+x, y, zCoord-offset[2]+z));
 			}
 		}
-		oldComps = null;
+//		oldComps = null;
 	}
 	
 }
