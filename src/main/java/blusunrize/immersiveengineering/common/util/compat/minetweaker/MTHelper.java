@@ -37,6 +37,7 @@ public class MTHelper extends IECompatModule
 		MineTweakerAPI.registerClass(ArcFurnace.class);
 		MineTweakerAPI.registerClass(Excavator.class);
 		MineTweakerAPI.registerClass(Excavator.MTMineralMix.class);
+		MineTweakerAPI.registerClass(BottlingMachine.class);
 	}
 
 	/** Helper Methods */

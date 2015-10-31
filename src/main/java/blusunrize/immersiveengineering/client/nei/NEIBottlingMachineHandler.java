@@ -11,7 +11,6 @@ import java.util.List;
 
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -20,9 +19,7 @@ import org.lwjgl.opengl.GL11;
 import blusunrize.immersiveengineering.api.crafting.BottlingMachineRecipe;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBottlingMachine;
-import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.Utils;
-import codechicken.lib.gui.GuiDraw;
 import codechicken.nei.PositionedStack;
 import codechicken.nei.recipe.GuiRecipe;
 import codechicken.nei.recipe.TemplateRecipeHandler;
@@ -135,7 +132,6 @@ public class NEIBottlingMachineHandler extends TemplateRecipeHandler
 			drawTexturedModalRect(74,8, 179,14, (int)((cycleticks%timer)/(float)timer*20),16);
 			
 			GL11.glTranslatef(89, 50, 100);
-			//			GL11.glTranslatef(58, 50, 100);
 			GL11.glRotatef(-45, 1, 0, 0);
 			GL11.glRotatef(180, 0, 1, 0);
 			GL11.glScalef(12, -12, 12);
