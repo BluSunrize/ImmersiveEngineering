@@ -28,6 +28,7 @@
 - added Minetweaker support for minerals
 - added Jerrycans to refuel your drill on the go!
 - added the Bottling Machine to fill bottles, buckets and other fluid containers, also has a recipe system + Minetweaker integration
+- added config options to disable every cross-mod compat module
 - changed wire rendering to be ISRBH, improving performance
 - changed a lot of internal handling of the Energy System:
 	- Wire Transferrates are now per tick. WIres can only have a certain amount of power go through them in a single tick
@@ -73,6 +74,7 @@
 - fixed world data not getting loaded under certain conditions (thanks @cobra)
 - fixed breaker switch updating at the wrong time
 - fixed Crusher not accepting inputs of specific size
+- fixed wooden blocks being non-inflammable
 - updated zh_CN.lang
 - added ja_JP.lang
 - updated ru_RU.lang

@@ -148,6 +148,8 @@ public class TileRenderBottlingMachine extends TileRenderIE
 		}
 		else
 		{
+			if(!RenderManager.instance.options.fancyGraphics)
+				GL11.glRotatef(90.0F - RenderManager.instance.playerViewY, 0.0F, 1.0F, 0.0F);
 			EntityItem entityitem = new EntityItem(world, 0.0D, 0.0D, 0.0D, packaged&&full!=null?full:empty);
 			entityitem.getEntityItem().stackSize = 1;
 			entityitem.hoverStart = 0.0F;
