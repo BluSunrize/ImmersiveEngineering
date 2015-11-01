@@ -204,7 +204,7 @@ public class TileEntityConveyorSorter extends TileEntityIEBase implements ISided
 	@Override
 	public int getSizeInventory()
 	{
-		return 1;
+		return 6;
 	}
 	@Override
 	public ItemStack getStackInSlot(int slot)
