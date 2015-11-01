@@ -70,10 +70,10 @@ public class TileRenderBottlingMachine extends TileRenderIE
 		double tapShift = 0;
 
 		for(int i=0; i<bottler.inventory.length; i++)
-			if(bottler.inventory[i]!=null)
+			if(bottler.inventory[i]!=null && bottler.process[i]!=-1)
 			{
 				float step = bottler.process[i]/120f;
-				double fill = step>=.4+d0+d1*2?1:0;
+				double fill = step>=.4+d0+d1*1.5?1:0;
 				if(bottler.predictedOutput[i]!=null)
 					if(step>=.4+d0 && step<.4+d0+d1)
 						fill = tapShift = (step-.4-d0)/d1;
