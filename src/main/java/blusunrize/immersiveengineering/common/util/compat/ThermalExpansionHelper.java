@@ -40,7 +40,7 @@ public class ThermalExpansionHelper extends IECompatModule
 			}
 			Fluid fluidEnder = FluidRegistry.getFluid("ender");
 			if(fluidEnder!=null)
-				BottlingMachineRecipe.addRecipe(new ItemStack(blockFrame,1,11), new ItemStack(blockFrame,1,10), new FluidStack(fluidRedstone,1000));
+				BottlingMachineRecipe.addRecipe(new ItemStack(blockFrame,1,11), new ItemStack(blockFrame,1,10), new FluidStack(fluidEnder,1000));
 
 			Fluid fluidGlowstone = FluidRegistry.getFluid("glowstone");
 			Block blockIlluminator = GameRegistry.findBlock("ThermalExpansion", "Light");

@@ -3,7 +3,9 @@ package blusunrize.immersiveengineering.common.blocks.wooden;
 import net.minecraft.block.BlockStairs;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.IEContent;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -32,5 +34,21 @@ public class BlockIEWoodenStairs extends BlockStairs
 	public void registerBlockIcons(IIconRegister iconRegister)
 	{
 		this.blockIcon = iconRegister.registerIcon("immersiveengineering:treatedWood");
+	}
+
+	@Override
+	public final boolean isFlammable(IBlockAccess world, int x, int y, int z, ForgeDirection face)
+	{
+		return true;
+	}
+	@Override
+	public int getFlammability(IBlockAccess world, int x, int y, int z, ForgeDirection face)
+	{
+		return 20;
+	}
+	@Override
+	public int getFireSpreadSpeed(IBlockAccess world, int x, int y, int z, ForgeDirection face)
+	{
+		return 5;
 	}
 }

@@ -191,9 +191,9 @@ public class IEContent
 		blockMetalDevice2 = new BlockMetalDevices2();
 		blockMetalDecoration = new BlockMetalDecoration();
 		blockMetalMultiblocks = new BlockMetalMultiblocks();
-		blockWoodenDevice = new BlockWoodenDevices();
-		blockWoodenDecoration = new BlockWoodenDecoration();
-		blockTreatedWood = (BlockIEBase)new BlockIESimple("treatedWood",Material.wood,ItemBlockIEBase.class, "0","1","2").setHasFlavour(true).setHardness(2f).setResistance(5f);
+		blockWoodenDevice = new BlockWoodenDevices().setFlammable(true);
+		blockWoodenDecoration = new BlockWoodenDecoration().setFlammable(true);
+		blockTreatedWood = (BlockIEBase)new BlockIESimple("treatedWood",Material.wood,ItemBlockIEBase.class, "0","1","2").setFlammable(true).setHasFlavour(true).setHardness(2f).setResistance(5f);
 		blockWoodenStair = new BlockIEWoodenStairs();
 		blockStoneDevice = new BlockStoneDevices();
 		blockStoneDecoration = new BlockStoneDecoration();

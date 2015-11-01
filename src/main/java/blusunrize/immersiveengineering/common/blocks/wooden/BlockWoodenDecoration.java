@@ -216,10 +216,10 @@ public class BlockWoodenDecoration extends BlockIEBase implements blusunrize.aqu
 	}
 
 	@Override
-    public boolean hasTileEntity(int meta)
-    {
-        return meta==6;
-    }
+	public boolean hasTileEntity(int meta)
+	{
+		return meta==6;
+	}
 	@Override
 	public TileEntity createNewTileEntity(World world, int meta)
 	{
@@ -235,7 +235,6 @@ public class BlockWoodenDecoration extends BlockIEBase implements blusunrize.aqu
 	{
 		return false;
 	}
-
 
 	@Optional.Method(modid = "AquaTweaks")
 	public boolean shouldRenderFluid(IBlockAccess world, int x, int y, int z)

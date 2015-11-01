@@ -8,6 +8,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorLV;
 import blusunrize.immersiveengineering.common.util.IELogger;
+import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 
 public class Config
@@ -150,6 +151,9 @@ public class Config
 		setDouble("BulletDamage-WolfpackPart", config.get("Tools", "BulletDamage-WolfpackPart", 4d, "The amount of damage the sub-projectiles of the Wolfpack Cartridge inflict").getDouble());
 		setDouble("BulletDamage-Silver", config.get("Tools", "BulletDamage-Silver", 7d, "The amount of damage a silver bullet inflicts").getDouble());
 
+		for(String key : IECompatModule.moduleClasses.keySet())
+			setBoolean("compat_"+key, config.get("Compatability", "Enable Compatmodule: "+key, true, "Set this to false to disable IE's built in compatability with "+key).getBoolean());
+		
 		config.save();
 	}
 

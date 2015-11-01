@@ -20,6 +20,7 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ICustomBoundingboxes;
 import blusunrize.immersiveengineering.common.util.Lib;
@@ -34,6 +35,7 @@ public abstract class BlockIEBase extends BlockContainer
 	public final IIcon[][] icons;
 	protected final int iconDimensions;
 	public boolean hasFlavour = false;
+	public boolean isFlammable = false;
 
 	protected BlockIEBase(String name, Material mat, int iconDimensions, Class<? extends ItemBlockIEBase> itemBlock, String... subNames)
 	{
@@ -48,6 +50,12 @@ public abstract class BlockIEBase extends BlockContainer
 		this.setCreativeTab(ImmersiveEngineering.creativeTab);
 	}
 
+	public BlockIEBase setFlammable(boolean b)
+	{
+		this.isFlammable = b;
+		return this;
+	}
+	
 	public BlockIEBase setHasFlavour(boolean hasFlavour)
 	{
 		this.hasFlavour = hasFlavour;
@@ -94,6 +102,22 @@ public abstract class BlockIEBase extends BlockContainer
 	{
 		return false;
 	}
+	
+	@Override
+	public boolean isFlammable(IBlockAccess world, int x, int y, int z, ForgeDirection face)
+	{
+		return isFlammable;
+	}
+	@Override
+	public int getFlammability(IBlockAccess world, int x, int y, int z, ForgeDirection face)
+	{
+		return isFlammable?20:0;
+	}
+	@Override
+	public int getFireSpreadSpeed(IBlockAccess world, int x, int y, int z, ForgeDirection face)
+	{
+		return isFlammable?5:0;
+	}			
 
 	@Override
 	@SideOnly(Side.CLIENT)

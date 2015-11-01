@@ -27,7 +27,7 @@
 - added commands to configure minerals and stuff
 - added Minetweaker support for minerals
 - added Jerrycans to refuel your drill on the go!
-- added the Bottling Machine to fill bottles, buckets and other fluid containers
+- added the Bottling Machine to fill bottles, buckets and other fluid containers, also has a recipe system + Minetweaker integration
 - changed wire rendering to be ISRBH, improving performance
 - changed a lot of internal handling of the Energy System:
 	- Wire Transferrates are now per tick. WIres can only have a certain amount of power go through them in a single tick
@@ -48,6 +48,7 @@
 - changed multiple machines to accept enough power based on their consumption config
 - changed big portions of the code to use less getTileEntity() calls (thanks @cobra & @malte0811)
 - changed static parts of the multiblocks to use ISRBH in favour of the laggy TESRs
+- changed UpgradeableTool system to be more API based, to allow addon devs to make their own
 - fixed SideOnly annotations, should fix that Railcraft tank thing among others
 - fixed burn time of coal coke block in furnaces
 - fixed blockupdates for wooden poles
@@ -71,6 +72,7 @@
 - fixed incorrect uses of CoFH API and repackackign the wrong package-infos (thanks @cobra)
 - fixed world data not getting loaded under certain conditions (thanks @cobra)
 - fixed breaker switch updating at the wrong time
+- fixed Crusher not accepting inputs of specific size
 - updated zh_CN.lang
 - added ja_JP.lang
 - updated ru_RU.lang

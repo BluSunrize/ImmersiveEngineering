@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.compat.hydcraft.HydCraftHelper;
 import blusunrize.immersiveengineering.common.util.compat.mfr.MFRHelper;
@@ -41,7 +42,7 @@ public abstract class IECompatModule
 	public static void preInitModules()
 	{
 		for(Entry<String, Class<? extends IECompatModule>> e : moduleClasses.entrySet())
-			if(Loader.isModLoaded(e.getKey()))
+			if(Loader.isModLoaded(e.getKey()) && Config.getBoolean("compat_"+e.getKey()))
 				try{
 					IECompatModule m = e.getValue().newInstance();
 					modules.add(m);
