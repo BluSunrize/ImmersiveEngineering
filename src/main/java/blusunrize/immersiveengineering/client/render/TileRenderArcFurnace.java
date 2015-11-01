@@ -63,7 +63,8 @@ public class TileRenderArcFurnace extends TileRenderIE
 			translationMatrix.translate(0,0,.0002f);
 			ClientUtils.bindAtlas(0);
 			tes.startDrawingQuads();
-			model0.render(tile, tes, translationMatrix,new Matrix4(), 0, arc.mirrored, "active");
+			tes.setBrightness(0xf000f0);
+			model0.render(tile, tes, translationMatrix,new Matrix4(), -1, arc.mirrored, "active");
 			tes.draw();
 		}
 
