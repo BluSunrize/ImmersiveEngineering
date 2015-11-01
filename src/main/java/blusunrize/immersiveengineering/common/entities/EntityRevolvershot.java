@@ -326,40 +326,47 @@ public class EntityRevolvershot extends Entity
 		if(bulletType==8 && bulletPotion!=null && bulletPotion.getItem() instanceof ItemPotion)
 		{
 			List<PotionEffect> effects = ((ItemPotion)bulletPotion.getItem()).getEffects(bulletPotion);
-
-			if(bulletPotion.getItem().getClass().getName().equalsIgnoreCase("ganymedes01.etfuturum.items.LingeringPotion"))
-				EtFuturumHelper.createLingeringPotionEffect(worldObj, posX, posY, posZ, bulletPotion, shootingEntity);
-			else if(ItemPotion.isSplash(bulletPotion.getItemDamage()))
-			{
-				List<EntityLivingBase> livingEntities = this.worldObj.getEntitiesWithinAABB(EntityLivingBase.class, this.boundingBox.expand(4.0D, 2.0D, 4.0D));
-				if(livingEntities!=null && !livingEntities.isEmpty())
-					for(EntityLivingBase living : livingEntities)
-					{
-						double dist = this.getDistanceSqToEntity(living);
-						if(dist<16D)
+			
+			System.out.println(" hrgrbl, "+mop.entityHit+", "+effects);
+			
+			if(effects!=null)
+				if(bulletPotion.getItem().getClass().getName().equalsIgnoreCase("ganymedes01.etfuturum.items.LingeringPotion"))
+					EtFuturumHelper.createLingeringPotionEffect(worldObj, posX, posY, posZ, bulletPotion, shootingEntity);
+				else if(ItemPotion.isSplash(bulletPotion.getItemDamage()))
+				{
+					List<EntityLivingBase> livingEntities = this.worldObj.getEntitiesWithinAABB(EntityLivingBase.class, this.boundingBox.expand(4.0D, 2.0D, 4.0D));
+					if(livingEntities!=null && !livingEntities.isEmpty())
+						for(EntityLivingBase living : livingEntities)
 						{
-							double dist2 = 1-Math.sqrt(dist)/4D;
-							if(living == mop.entityHit)
-								dist2 = 1D;
-							for(PotionEffect p : effects)
+							double dist = this.getDistanceSqToEntity(living);
+							if(dist<16D)
 							{
-								int id = p.getPotionID();
-								if(Potion.potionTypes[id].isInstant())
-									Potion.potionTypes[id].affectEntity(this.shootingEntity, living, p.getAmplifier(), dist2);
-								else
+								double dist2 = 1-Math.sqrt(dist)/4D;
+								if(living == mop.entityHit)
+									dist2 = 1D;
+								for(PotionEffect p : effects)
 								{
-									int j = (int)(dist2*p.getDuration()+.5D);
-									if(j>20)
-										living.addPotionEffect(new PotionEffect(id, j, p.getAmplifier()));
+									int id = p.getPotionID();
+									if(Potion.potionTypes[id].isInstant())
+										Potion.potionTypes[id].affectEntity(this.shootingEntity, living, p.getAmplifier(), dist2);
+									else
+									{
+										int j = (int)(dist2*p.getDuration()+.5D);
+										if(j>20)
+											living.addPotionEffect(new PotionEffect(id, j, p.getAmplifier()));
+									}
 								}
 							}
 						}
-					}
 
-			}
-			else if(mop.entityHit!=null && mop.entityHit instanceof EntityLivingBase)
-				for(PotionEffect p : effects)
-					((EntityLivingBase)mop.entityHit).addPotionEffect(p);
+				}
+				else if(mop.entityHit!=null && mop.entityHit instanceof EntityLivingBase)
+					for(PotionEffect p : effects)
+					{
+						if(p.getDuration()<1)
+							p = new PotionEffect(p.getPotionID(),1);
+						((EntityLivingBase)mop.entityHit).addPotionEffect(p);
+					}
 			worldObj.playAuxSFX(2002, (int) Math.round(posX), (int) Math.round(posY), (int) Math.round(posZ), bulletPotion.getItemDamage());
 		}
 	}
