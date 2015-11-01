@@ -13,6 +13,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
@@ -422,6 +423,11 @@ public class Utils
 			return false;
 		Block b = world.getBlock(x, y, z);
 		Block fluidBlock = fluid.getFluid().getBlock();
+
+		if(Blocks.water.equals(fluidBlock))
+			fluidBlock = Blocks.flowing_water;
+		else if(Blocks.lava.equals(fluidBlock))
+			fluidBlock = Blocks.flowing_lava;
 
 		boolean canPlace = b==null||b.isAir(world,x,y,z)||b.isReplaceable(world,x,y,z);
 
