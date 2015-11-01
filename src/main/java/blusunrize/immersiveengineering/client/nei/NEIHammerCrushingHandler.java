@@ -31,7 +31,7 @@ public class NEIHammerCrushingHandler extends TemplateRecipeHandler
 		@Override
 		public List<PositionedStack> getIngredients()
 		{
-			return this.getCycledIngredients(NEIHammerCrushingHandler.this.cycleticks/20, Arrays.asList(inputs[(NEIHammerCrushingHandler.this.cycleticks/20)%inputs.length]));
+			return this.getCycledIngredients(NEIHammerCrushingHandler.this.cycleticks/20, Arrays.asList(inputs));
 		}
 		@Override
 		public PositionedStack getIngredient()

@@ -135,10 +135,11 @@ public class ItemBullet extends ItemIEBase implements IBullet
 		{
 			String s = this.getUnlocalizedNameInefficiently(stack);
 			ItemStack pot = ItemNBTHelper.getItemStack(stack, "potion");
-			if(pot.getItem().getClass().getName().equalsIgnoreCase("ganymedes01.etfuturum.items.LingeringPotion"))
-				s+=".linger";
-			else if(ItemPotion.isSplash(pot.getItemDamage()))
-				s+=".splash";
+			if(pot!=null)
+				if(pot.getItem().getClass().getName().equalsIgnoreCase("ganymedes01.etfuturum.items.LingeringPotion"))
+					s+=".linger";
+				else if(ItemPotion.isSplash(pot.getItemDamage()))
+					s+=".splash";
 			return StatCollector.translateToLocal(s+".name").trim();
 		}
 		return super.getItemStackDisplayName(stack);
