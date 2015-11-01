@@ -326,9 +326,6 @@ public class EntityRevolvershot extends Entity
 		if(bulletType==8 && bulletPotion!=null && bulletPotion.getItem() instanceof ItemPotion)
 		{
 			List<PotionEffect> effects = ((ItemPotion)bulletPotion.getItem()).getEffects(bulletPotion);
-			
-			System.out.println(" hrgrbl, "+mop.entityHit+", "+effects);
-			
 			if(effects!=null)
 				if(bulletPotion.getItem().getClass().getName().equalsIgnoreCase("ganymedes01.etfuturum.items.LingeringPotion"))
 					EtFuturumHelper.createLingeringPotionEffect(worldObj, posX, posY, posZ, bulletPotion, shootingEntity);
