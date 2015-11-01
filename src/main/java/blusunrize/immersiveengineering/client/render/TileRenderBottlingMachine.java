@@ -94,7 +94,7 @@ public class TileRenderBottlingMachine extends TileRenderIE
 
 				if(bottler.mirrored)
 					GL11.glScalef(-1,1,1);
-				renderItemToFill(bottler.inventory[i], bottler.predictedOutput[i], (float)fill, step>=.71, bottler.getWorldObj());
+				renderItemToFill(bottler.inventory[i], bottler.predictedOutput[i], (float)fill, step>=.71, bottler.getWorldObj(), bottler.facing);
 				GL11.glPopMatrix();
 			}
 
@@ -109,7 +109,7 @@ public class TileRenderBottlingMachine extends TileRenderIE
 		GL11.glPopMatrix();
 	}
 
-	static void renderItemToFill(ItemStack empty, ItemStack full, float fill, boolean packaged, World world)
+	static void renderItemToFill(ItemStack empty, ItemStack full, float fill, boolean packaged, World world, int machineRotation)
 	{
 		if(empty==null)
 			return;
@@ -149,7 +149,11 @@ public class TileRenderBottlingMachine extends TileRenderIE
 		else
 		{
 			if(!RenderManager.instance.options.fancyGraphics)
-				GL11.glRotatef(90.0F - RenderManager.instance.playerViewY, 0.0F, 1.0F, 0.0F);
+			{
+				float rot = machineRotation==2?180: machineRotation==4?90: machineRotation==5?-90: 0;
+				GL11.glRotatef(rot - RenderManager.instance.playerViewY, 0.0F, 1.0F, 0.0F);
+
+			}
 			EntityItem entityitem = new EntityItem(world, 0.0D, 0.0D, 0.0D, packaged&&full!=null?full:empty);
 			entityitem.getEntityItem().stackSize = 1;
 			entityitem.hoverStart = 0.0F;

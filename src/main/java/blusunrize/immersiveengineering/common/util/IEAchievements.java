@@ -13,6 +13,7 @@ import net.minecraft.stats.StatList;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraftforge.common.AchievementPage;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalMultiblocks;
 import blusunrize.immersiveengineering.common.items.ItemDrill;
@@ -72,7 +73,7 @@ public class IEAchievements
 		((ItemRevolver)IEContent.itemRevolver).setContainedItems(revolver, upgrades);
 		((ItemRevolver)IEContent.itemRevolver).recalculateUpgrades(revolver);
 		upgradeRevolver = new AchievementIE("upgradeRevolver", 4, -5, revolver, makeRevolver);
-		if(Loader.isModLoaded("Botania"))
+		if(Loader.isModLoaded("Botania")&&Config.getBoolean("compat_Botania"))
 			makeWolfPack = new AchievementIE("makeWolfPack", 4, -6, new ItemStack(IEContent.itemBullet,1,8), makeRevolver).setSpecial();
 		
 		ItemStack drill = new ItemStack(IEContent.itemDrill);

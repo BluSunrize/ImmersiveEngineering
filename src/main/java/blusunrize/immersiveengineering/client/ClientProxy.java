@@ -157,6 +157,7 @@ import blusunrize.immersiveengineering.common.items.ItemRevolver;
 import blusunrize.immersiveengineering.common.util.IESound;
 import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.lib.manual.IManualPage;
 import blusunrize.lib.manual.ManualPages;
 import blusunrize.lib.manual.ManualPages.PositionedItemStack;
 import cpw.mods.fml.client.registry.ClientRegistry;
@@ -245,11 +246,11 @@ public class ClientProxy extends CommonProxy
 	public void postInit()
 	{
 		ManualHelper.ieManualInstance = new IEManualInstance();
-	
+
 		ManualHelper.addEntry("updateNews", ManualHelper.CAT_UPDATE,
 				new ManualPages.Text(ManualHelper.getManual(), "updateNews0"),
 				new ManualPages.Text(ManualHelper.getManual(), "updateNews1"));
-		
+
 		ManualHelper.addEntry("introduction", ManualHelper.CAT_GENERAL,
 				new ManualPages.Text(ManualHelper.getManual(), "introduction0"),
 				new ManualPages.Text(ManualHelper.getManual(), "introduction1"),
@@ -407,18 +408,33 @@ public class ClientProxy extends CommonProxy
 		int blueprint_bullet = BlueprintCraftingRecipe.blueprintCategories.indexOf("bullet");
 		ManualHelper.addEntry("revolver", ManualHelper.CAT_MACHINES,
 				new ManualPages.CraftingMulti(ManualHelper.getManual(), "revolver0", new ItemStack(IEContent.itemRevolver,1,0), new ItemStack(IEContent.itemMaterial,1,7),new ItemStack(IEContent.itemMaterial,1,8),new ItemStack(IEContent.itemMaterial,1,9),new ItemStack(IEContent.itemMaterial,1,10)),
-				new ManualPages.CraftingMulti(ManualHelper.getManual(), "revolver1", new ItemStack(IEContent.itemBullet,1,0),new ItemStack(IEContent.itemBullet,1,1),new ItemStack(IEContent.itemRevolver,1,1)),
-				new ManualPages.CraftingMulti(ManualHelper.getManual(), "revolver2", new ItemStack(IEContent.itemBlueprint,1,blueprint_bullet)),
-				new ManualPages.Text(ManualHelper.getManual(), "revolver3"),
-				new ManualPages.Text(ManualHelper.getManual(), "revolver4"),
-				new ManualPages.Crafting(ManualHelper.getManual(), "revolver5", new ItemStack(IEContent.itemToolUpgrades,1,4)),
-				new ManualPages.Crafting(ManualHelper.getManual(), "revolver6", new ItemStack(IEContent.itemToolUpgrades,1,5)),
-				new ManualPages.Crafting(ManualHelper.getManual(), "revolver7", new ItemStack(IEContent.itemToolUpgrades,1,6)));
+				new ManualPages.CraftingMulti(ManualHelper.getManual(), "revolver1", new ItemStack(IEContent.itemRevolver,1,1)),
+				//				new ManualPages.CraftingMulti(ManualHelper.getManual(), "revolver2", new ItemStack(IEContent.itemBlueprint,1,blueprint_bullet)),
+				//				new ManualPages.Text(ManualHelper.getManual(), "revolver3"),
+				//				new ManualPages.Text(ManualHelper.getManual(), "revolver4"),
+				new ManualPages.Crafting(ManualHelper.getManual(), "revolver2", new ItemStack(IEContent.itemToolUpgrades,1,4)),
+				new ManualPages.Crafting(ManualHelper.getManual(), "revolver3", new ItemStack(IEContent.itemToolUpgrades,1,5)),
+				new ManualPages.Crafting(ManualHelper.getManual(), "revolver4", new ItemStack(IEContent.itemToolUpgrades,1,6)));
+		ArrayList<IManualPage> pages = new ArrayList<IManualPage>();
+		pages.add(new ManualPages.CraftingMulti(ManualHelper.getManual(), "bullets0", new ItemStack(IEContent.itemBlueprint,1,blueprint_bullet), new ItemStack(IEContent.itemBullet,1,0),new ItemStack(IEContent.itemBullet,1,1)));
+		pages.add(new ManualPages.ItemDisplay(ManualHelper.getManual(), "bullets1", new ItemStack(IEContent.itemBullet,1,2)));
+		pages.add(new ManualPages.ItemDisplay(ManualHelper.getManual(), "bullets2", new ItemStack(IEContent.itemBullet,1,3)));
+		pages.add(new ManualPages.ItemDisplay(ManualHelper.getManual(), "bullets3", new ItemStack(IEContent.itemBullet,1,4)));
+		pages.add(new ManualPages.ItemDisplay(ManualHelper.getManual(), "bullets4", new ItemStack(IEContent.itemBullet,1,5)));
+		pages.add(new ManualPages.ItemDisplay(ManualHelper.getManual(), "bullets5", new ItemStack(IEContent.itemBullet,1,9)));
+		pages.add(new ManualPages.ItemDisplay(ManualHelper.getManual(), "bullets6", new ItemStack(IEContent.itemBullet,1,6)));
+		pages.add(new ManualPages.ItemDisplay(ManualHelper.getManual(), "bullets7", new ItemStack(IEContent.itemBullet,1,10)));
+		if(Config.getBoolean("botaniaBullets"))
+		{
+			pages.add(new ManualPages.ItemDisplay(ManualHelper.getManual(), "bulletsBotania0", new ItemStack(IEContent.itemBullet,1,7)));
+			pages.add(new ManualPages.ItemDisplay(ManualHelper.getManual(), "bulletsBotania1", new ItemStack(IEContent.itemBullet,1,8)));
+		}
+		ManualHelper.addEntry("bullets", ManualHelper.CAT_MACHINES, pages.toArray(new IManualPage[pages.size()]));
 		ManualHelper.addEntry("fluidPipes", ManualHelper.CAT_MACHINES,
 				new ManualPages.Crafting(ManualHelper.getManual(), "fluidPipes0", new ItemStack(IEContent.blockMetalDevice2,1,BlockMetalDevices2.META_fluidPipe)),
-				new ManualPages.Crafting(ManualHelper.getManual(), "fluidPipes1", new ItemStack(IEContent.blockMetalDevice2,1,BlockMetalDevices2.META_fluidPump)),
-				new ManualPages.Text(ManualHelper.getManual(), "fluidPipes2"));
-
+				new ManualPages.Text(ManualHelper.getManual(), "fluidPipes1"),
+				new ManualPages.Crafting(ManualHelper.getManual(), "fluidPipes2", new ItemStack(IEContent.blockMetalDevice2,1,BlockMetalDevices2.META_fluidPump)),
+				new ManualPages.Text(ManualHelper.getManual(), "fluidPipes3"));
 
 		sortedMap = DieselHandler.getPlantoilValuesSorted(true);
 		table = formatToTable_ItemIntHashmap(sortedMap,"mB");	

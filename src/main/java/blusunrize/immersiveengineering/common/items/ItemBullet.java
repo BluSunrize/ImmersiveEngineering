@@ -21,6 +21,7 @@ import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
 import net.minecraft.util.Vec3;
 import blusunrize.immersiveengineering.api.tool.IBullet;
+import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.entities.EntityRevolvershot;
 import blusunrize.immersiveengineering.common.entities.EntityRevolvershotHoming;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
@@ -44,7 +45,7 @@ public class ItemBullet extends ItemIEBase implements IBullet
 	public void getSubItems(Item item, CreativeTabs tab, List list)
 	{
 		for(int i=0;i<getSubNames().length;i++)
-			if((i!=7&&i!=8) || Loader.isModLoaded("Botania"))
+			if((i!=7&&i!=8) || (Loader.isModLoaded("Botania")&&Config.getBoolean("compat_Botania")))
 				list.add(new ItemStack(this,1,i));
 	}
 
@@ -127,6 +128,21 @@ public class ItemBullet extends ItemIEBase implements IBullet
 			}
 		}
 	}
+	@Override
+	public String getItemStackDisplayName(ItemStack stack)
+	{
+		if(stack.getItemDamage()==10)
+		{
+			String s = this.getUnlocalizedNameInefficiently(stack);
+			ItemStack pot = ItemNBTHelper.getItemStack(stack, "potion");
+			if(pot.getItem().getClass().getName().equalsIgnoreCase("ganymedes01.etfuturum.items.LingeringPotion"))
+				s+=".linger";
+			else if(ItemPotion.isSplash(pot.getItemDamage()))
+				s+=".splash";
+			return StatCollector.translateToLocal(s+".name").trim();
+		}
+		return super.getItemStackDisplayName(stack);
+	}
 
 	@Override
 	public void registerIcons(IIconRegister ir)
@@ -147,10 +163,10 @@ public class ItemBullet extends ItemIEBase implements IBullet
 		return true;
 	}
 	@Override
-    public int getRenderPasses(int metadata)
-    {
-        return metadata==10?2:1;
-    }
+	public int getRenderPasses(int metadata)
+	{
+		return metadata==10?2:1;
+	}
 	@Override
 	public int getColorFromItemStack(ItemStack stack, int pass)
 	{

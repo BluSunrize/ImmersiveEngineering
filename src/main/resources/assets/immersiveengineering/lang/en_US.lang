@@ -215,6 +215,8 @@ item.ImmersiveEngineering.bullet.homing.name=Homing Cartridge
 item.ImmersiveEngineering.bullet.wolfpack.name=Wolfpack Cartridge
 item.ImmersiveEngineering.bullet.silver.name=Silver Cartridge
 item.ImmersiveEngineering.bullet.potion.name=Phial Cartridge
+item.ImmersiveEngineering.bullet.potion.splash.name=Splash Phial Cartridge
+item.ImmersiveEngineering.bullet.potion.linger.name=Lingering Phial Cartridge
 
 item.ImmersiveEngineering.drill.diesel.name=Mining Drill
 item.ImmersiveEngineering.drillhead.iron.name=Iron Drill Head
@@ -477,7 +479,7 @@ ie.manual.entry.oresNickel=§lNickel Ore§r is found in the world between layers
 
 ie.manual.entry.oreProcessing.name=Ore Processing
 ie.manual.entry.oreProcessing.subtext=
-ie.manual.entry.oreProcessing0=Crafting<config;b;crushingOreRecipe;ores and> ingots with a hammer allows you to crush them into dusts. This dust can be resmelted into ingots, but even more importantly, is used to create alloys.<config;b;crushingOreRecipe;<br>Crushing ores with the hammer will yield two dusts, effectively doubling your gain of ingots from ore.>
+ie.manual.entry.oreProcessing0=Crafting <config;b;crushingOreRecipe;ores and> ingots with a hammer allows you to crush them into dusts. This dust can be resmelted into ingots, but even more importantly, is used to create alloys.<config;b;crushingOreRecipe;<br>Crushing ores with the hammer will yield two dusts, effectively doubling your gain of ingots from ore.>
 ie.manual.entry.oreProcessing1=Mixing dusts creates an alloy blend that can then be smelted into alloyed ingots. Constantan has thermo-electric properties and is used in creating the <link;generator;§o§nthermoelectric §o§ngenerator§r;1> and electrum is an excellent electric conductor used in <link;wiring;§o§nmedium-voltage §o§narchitecture§r>.
 
 ie.manual.entry.hemp.name=Industrial Hemp
@@ -605,7 +607,7 @@ ie.manual.entry.biodiesel.subtext=Green power!
 ie.manual.entry.biodiesel0=Combustible fuels are an easy to use and efficient fuel source. But with oil being a depletable resource, something renewable would be much preferable. Biodiesel is the solution! By combining plant oil and ethanol, you can create a combustible fluid that will burn in the <link;dieselgen;§o§nDiesel §o§nGenerator§r>.
 ie.manual.entry.biodiesel1=Plant Oil is created by processing various seeds in the industrial squeezer. Create the structure pictured above and click one of the sides with an Engineer's Hammer to form it. Power is input at the top or bottom, fluids are output through any of the ports at the bottom of each side.
 ie.manual.entry.biodiesel1T=The following list shows various items that can be squeezed into plant oil, and the amount they produce.
-ie.manual.entry.biodiesel2=Ethanol is gained by fermenting sugarcane. The fermenter's structure is created in a similar manner to that of the squeezer, as such power in- and fluid outputs are identical.
+ie.manual.entry.biodiesel2=Ethanol is gained by fermenting sugarcane or other fruit. The fermenter's structure is created in a similar manner to that of the squeezer, as such power in- and fluid outputs are identical.
 ie.manual.entry.biodiesel2T=The following list shows various items that can be fermented into ethanol, and the amount they produce.
 ie.manual.entry.biodiesel3=Lastly, in order to refine plant oil and ethanol into Biodiesel, you will need to insert both fluids into a refinery and supply it with power. The structure is created as shown above and formed by clicking the center of the front with an Engineer's Hammer.
 ie.manual.entry.biodiesel4=The front of the refinery serves as fluid output, whereas the inputs are found on the smaller sides. Energy is supplied through the connector at the back. Applying a redstone signal to the control panel on the right will halt the refinery's process.
@@ -624,7 +626,7 @@ ie.manual.entry.furnaceHeater2=Even better, while the furnace is at maximum temp
 ie.manual.entry.fluidPipes.name=Fluid Transport
 ie.manual.entry.fluidPipes.subtext=Professional Plumber
 ie.manual.entry.fluidPipes0=Transporting fluids has become quite essential in the engineering business. Fluid Pipes and Fluid Pumps do exactly that. On their own, Fluid Pipes are quite slow at transferring fluids, but if a pump is used to insert the fluid, it'll move much faster.
-ie.manual.entry.fluidPipes1=You can rightclick the connection piece of a pipe to prevent it from conencting to that side.
+ie.manual.entry.fluidPipes1=You can rightclick the connection piece of a pipe with an Engineer's Hammer to prevent it from conencting to that side.
 ie.manual.entry.fluidPipes2=Fluid Pumps have two essential functions. They can be used to insert into pipes at high pressure, to transfer fluids much faster, or they can pick up fluids from the world. Using your hammer on the base of the pump will switch the sides between in- and output.
 ie.manual.entry.fluidPipes3=In order for the pump to pick up fluid blocks, it will need a power input at the top and a redstone signal. Pumps can also be used to extract from tanks and other fluid containers that do not have an automatic output. This will also require a redstone signal, but won't consume power.
 
@@ -645,13 +647,26 @@ ie.manual.entry.drill5=The Large Fuel Tank allows the drill to store more fuel i
 ie.manual.entry.revolver.name=Revolver
 ie.manual.entry.revolver.subtext=Wanted: Dead or Alive
 ie.manual.entry.revolver0=The Revolver, a more elegant weapon from a more civilized age, is an achievement of small mechanics. Small being relative here, since this weapon is chambered for 12-gauge.<br>Similar to the Mining Drill, the Revolver will allow for modification in the <link;workbench;§o§nEngineer's §o§nWorkbench§r>, as detailed on the last pages.
-ie.manual.entry.revolver1=There are different types of ammunition the Revolver will accept. To load it, sneak+rightclick the weapon, then place cartridges into the slots.<br>A loaded Speedloader in your inventory, will be used to refill the revolver after you've fired your last shot.
-ie.manual.entry.revolver2=Cartridges are created in the Engineer's Workbench, by the use of specific <link;blueprints;§o§nEngineer's §o§nBlueprints§r>. Blueprints for normal ammunition you can create yourself, but some more advanced types of ammunition will require you to buy adequate blueprints from someone else. 
-ie.manual.entry.revolver3=These are common types of ammunition, created with simple, selfmade blueprints:<br><br>§lCasull:§r Simple lead projectile, capable of inflicting medium damage.<br>§lArmor-Piercing:§r Dense metal projectile, penetrates the armor by sheer kinetic force.<br>§lBuckshot:§r Collection of small projectiles, spreading in a cone shape. Effective at short range.<br>§lHigh-Explosive:§r Creates small explosion on impact.<br>§lSilver:§r Lead core in silver, effective against...werewolves?!
-ie.manual.entry.revolver4=These are more intricate types of ammunition, created with unique blueprints that cannot be crafted, only found or bought.<br><br>§lDragon's Breath:§r Flammable metal dust, creates a short-ranged inferno.<config;b;botaniaBullets;<br>§lHoming:§r Will home in on the closest target.<br>§lWolfpack:§r Unguided cluster projectile, splits into 6 small, homing, shots.;><br>§lPhial:§r Can be crafted with any potion to create a shot that inflicts the potion effect.
-ie.manual.entry.revolver5=By attaching a bayonet to the revolver, you outfit it with close-quarter-combat capabilities, allowing for melee damage as powerful as an Iron Sword.
-ie.manual.entry.revolver6=The Extended Magazine allows loading 6 more cartridges into the revolver. This magazine does not get refilled by a speedloader.
-ie.manual.entry.revolver7=The Amplifying Electron Tubes apply an electric shock to fired projectiles. This shock persists till it hits the target (don't ask how it works) and is passed on. The target will be stunned for a fraction of a second and all powered equipment they may be using will suffer a slight discharge.
+ie.manual.entry.revolver1=There are different <link;bullets;§o§ntypes §o§nof §o§nammunition§r;> the Revolver will accept. To load it, sneak+rightclick the weapon, then place cartridges into the slots.<br>A loaded Speedloader in your inventory will be used to refill the revolver after you've fired your last shot.
+ie.manual.entry.revolver2=By attaching a bayonet to the revolver, you outfit it with close-quarter-combat capabilities, allowing for melee damage as powerful as an Iron Sword.
+ie.manual.entry.revolver3=The Extended Magazine allows loading 6 more cartridges into the revolver. This magazine does not get refilled by a speedloader.
+ie.manual.entry.revolver4=The Amplifying Electron Tubes apply an electric shock to fired projectiles. This shock persists till it hits the target (don't ask how it works) and is passed on. The target will be stunned for a fraction of a second and all powered equipment they may be using will suffer a slight discharge.
+
+ie.manual.entry.bullets.name=Revolver Cartridges
+ie.manual.entry.bullets.subtext=
+ie.manual.entry.bullets0=Cartridges are created in the Engineer's Workbench, by the use of specific <link;blueprints;§o§nEngineer's §o§nBlueprints§r>. Blueprints for normal ammunition you can create yourself, but some more advanced types of ammunition will require you to buy adequate blueprints from someone else. 
+ie.manual.entry.bullets1=§lCasull §lCartridges§r are created with a "Common Projectiles" blueprint. They are a simple lead projectile inflicting medium damage.
+ie.manual.entry.bullets2=§lArmor-Piercing §lCartridges§r are created with the same blueprint. They do the same amount of damage but penetrate armor by sheer kinetic force.
+ie.manual.entry.bullets3=§lBuckshot §lCartridges§r, created with the aformentioned blueprint, are filled with multiple small projectiles that are fired out in a cone shape. This cartridge is highly effective at short range.
+ie.manual.entry.bullets4=§lHigh-Explosive §lCartridges§r are created with a "Common Projectiles" blueprint. They fire a projectile that implodes on impact, causing damage to living creatures and damaging the terrain.
+ie.manual.entry.bullets5=§lSilver §lCartridges§r consist of a lead core wrapped in silver, making them highly effective against...werewolves?!
+ie.manual.entry.bullets6=§lDragon's §lBreath Cartridges§r are created with a "Specialized Projectiles" blueprint. Similarly to Buckshot, they are effective at short range, but instead of small metal shots are filled with a flammable metal dust, creating a blast of flame.
+ie.manual.entry.bullets7=§lPhial §lCartridges§r are also created with the "Specialized" blueprint. They can be filled with any potion by crafting them together in a crafting grid and this potion will then be applied on impact. Normal potions require a direct hit, splash potions have an area of effect<config;b;etfuturumBullets; and Lingering Potions will create a temporary, lingering potion cloud.;.>
+ie.manual.entry.bulletsBotania0=§lHoming §lCartridges§r are created with a "Specialized Projectiles" blueprint and the magical metal "Terrasteel", which gives them the ability to home in on the closest target.
+ie.manual.entry.bulletsBotania1=§lWolfpack §lCartridges§r are a colelction of six homming shots in a single shell. The initial projectile is unguided, but on impact, it splits into the six, target seeking, shots that shred the enemies.
+#ie.manual.entry.bullets1=These are common types of ammunition, created with simple, selfmade blueprints:<br><br>§lCasull:§r Simple lead projectile, capable of inflicting medium damage.<br>§lArmor-Piercing:§r Dense metal projectile, penetrates the armor by sheer kinetic force.<br>§lBuckshot:§r Collection of small projectiles, spreading in a cone shape. Effective at short range.<br>§lHigh-Explosive:§r Creates small explosion on impact.<br>§lSilver:§r Lead core in silver, effective against...werewolves?!
+#ie.manual.entry.bullets2=These are more intricate types of ammunition, created with unique blueprints that cannot be crafted, only found or bought.<br><br>§lDragon's Breath:§r Flammable metal dust, creates a short-ranged inferno.<config;b;botaniaBullets;<br>§lHoming:§r Will home in on the closest target.<br>§lWolfpack:§r Unguided cluster projectile, splits into 6 small, homing, shots.;><br>§lPhial:§r Can be crafted with any potion to create a shot that inflicts the potion effect.
+
 
 ie.manual.entry.shader.name=Shaders
 ie.manual.entry.shader.subtext=Blue! No, yellow!
@@ -670,7 +685,7 @@ ie.manual.entry.lightningrod2=You can improve the chances of the Lightning Rod g
 
 ie.manual.entry.minerals.name=Mineral Deposits
 ie.manual.entry.minerals.subtext=Oresome
-ie.manual.entry.minerals0=The deposits of Ore found around your world are nothing new to you. What have so far left out of consideration though are mineral veins, which contain a mix of different ores. Due to their wide and thin spread, the average miner can't find them, but a <link;excavator;§o§nspecial §o§nmachine§r> might be able to assist with that.
+ie.manual.entry.minerals0=The deposits of Ore found around your world are nothing new to you. What you have so far left out of consideration though are mineral veins, which contain a mix of different ores. Due to their wide and thin spread, the average miner can't find them, but a <link;excavator;§o§nspecial §o§nmachine§r> might be able to assist with that.
 ie.manual.entry.minerals1=To find and determine minerals in the world, you will want to craft a Core Sample Drill. This machine, when powered, will drill into the chunk and determine which mineral can be found there. The Drill consumes <config;i;coredrill_consumption> RF/t and takes <config;i;coredrill_time> ticks to fully retrieve and analyze a sample.
 ie.manual.entry.minerals2=The following pages list every type of vein and the ores that can be retrieved from them.
 

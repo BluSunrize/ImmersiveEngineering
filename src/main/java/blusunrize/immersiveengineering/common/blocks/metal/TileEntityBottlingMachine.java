@@ -67,7 +67,7 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockPart implemen
 		boolean update = false;
 		int consumed = Config.getInt("bottlingMachine_consumption");
 		for(int i=0; i<inventory.length; i++)
-			if(inventory[i]!=null)
+			if(inventory[i]!=null && process[i]<50)
 			{
 				if(process[i]>72)
 				{

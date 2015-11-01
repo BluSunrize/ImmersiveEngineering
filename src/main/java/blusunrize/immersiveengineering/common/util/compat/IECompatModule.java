@@ -37,6 +37,8 @@ public abstract class IECompatModule
 		moduleClasses.put("harvestcraft", HarvestCraftHelper.class);
 		moduleClasses.put("CarpentersBlocks", CarpentersHelper.class);
 		moduleClasses.put("Forestry", ForestryHelper.class);
+		moduleClasses.put("Botania", BotaniaHelper.class);
+		moduleClasses.put("etfuturum", EtFuturumHelper.class);
 	}
 
 	public static void preInitModules()

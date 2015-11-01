@@ -27,7 +27,6 @@ import blusunrize.immersiveengineering.common.crafting.RecipePotionBullets;
 import blusunrize.immersiveengineering.common.crafting.RecipeRevolver;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.compat.NetherOresHelper;
-import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 public class IERecipes
@@ -82,15 +81,6 @@ public class IERecipes
 		BlueprintCraftingRecipe.addRecipe("bullet", new ItemStack(IEContent.itemBullet,1,5), new ItemStack(IEContent.itemBullet,1,0),Items.gunpowder,Blocks.tnt);
 
 		BlueprintCraftingRecipe.addRecipe("specialBullet", new ItemStack(IEContent.itemBullet,1,6), new ItemStack(IEContent.itemBullet,1,1),Items.gunpowder,"dustAluminum","dustAluminum");
-		if(Loader.isModLoaded("Botania"))
-		{
-			if(hardmodeBullets)
-				BlueprintCraftingRecipe.addRecipe("specialBullet", new ItemStack(IEContent.itemBullet,1,7), new ItemStack(IEContent.itemBullet,1,0),Items.gunpowder,"ingotTerrasteel");
-			else
-				BlueprintCraftingRecipe.addRecipe("specialBullet", new ItemStack(IEContent.itemBullet,1,7), new ItemStack(IEContent.itemBullet,1,0),Items.gunpowder,"nuggetTerrasteel","nuggetTerrasteel");
-			BlueprintCraftingRecipe.addRecipe("specialBullet", new ItemStack(IEContent.itemBullet,1,8), new ItemStack(IEContent.itemBullet,1,1),Items.gunpowder, new ItemStack(IEContent.itemBullet,4,7));
-			Config.setBoolean("botaniaBullets", true);
-		}
 		BlueprintCraftingRecipe.addRecipe("specialBullet", new ItemStack(IEContent.itemBullet,1,10), new ItemStack(IEContent.itemBullet,1,0),Items.gunpowder,"dustQuartz",Items.glass_bottle);
 
 		BlueprintCraftingRecipe.addVillagerTrade("bullet", new ItemStack(Items.emerald,1,2));

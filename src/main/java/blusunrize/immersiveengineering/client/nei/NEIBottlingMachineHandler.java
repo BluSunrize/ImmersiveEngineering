@@ -19,10 +19,8 @@ import org.lwjgl.opengl.GL11;
 
 import blusunrize.immersiveengineering.api.crafting.BottlingMachineRecipe;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.client.nei.NEIRefineryHandler.CachedRefineryRecipe;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBottlingMachine;
 import blusunrize.immersiveengineering.common.util.Utils;
-import codechicken.lib.gui.GuiDraw;
 import codechicken.nei.PositionedStack;
 import codechicken.nei.recipe.GuiCraftingRecipe;
 import codechicken.nei.recipe.GuiRecipe;
