@@ -125,7 +125,7 @@ public class TileEntityWoodenBarrel extends TileEntityIEBase implements IFluidHa
 	@Override
 	public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
 	{
-		if(canFill(from, resource!=null?resource.getFluid():null))
+		if(resource!=null && resource.getFluid()!=null && canFill(from, resource.getFluid()) && resource.getFluid().getTemperature(resource)<IGNITION_TEMPERATURE && !resource.getFluid().isGaseous(resource))
 		{
 			int i = tank.fill(resource, doFill);
 			if(i>0)
@@ -163,7 +163,7 @@ public class TileEntityWoodenBarrel extends TileEntityIEBase implements IFluidHa
 	@Override
 	public boolean canFill(ForgeDirection from, Fluid fluid)
 	{
-		return (from==ForgeDirection.UNKNOWN || (from.ordinal()<2 && sideConfig[from.ordinal()]==0) && (fluid==null||fluid.getTemperature()<IGNITION_TEMPERATURE));
+		return (from==ForgeDirection.UNKNOWN || (from.ordinal()<2 && sideConfig[from.ordinal()]==0));
 	}
 
 	@Override

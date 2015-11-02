@@ -262,16 +262,15 @@ public class BlockWoodenDevices extends BlockIEBase implements blusunrize.aquatw
 				{
 					FluidStack f = Utils.getFluidFromItemStack(player.getCurrentEquippedItem());
 					if(f!=null)
-						if(f.getFluid().getTemperature(f)<TileEntityWoodenBarrel.IGNITION_TEMPERATURE)
-						{
-							if(Utils.fillFluidHandlerWithPlayerItem(world, barrel, player))
-							{
-								world.markBlockForUpdate(x, y, z);
-								return true;
-							}
-						}
-						else
+						if(f.getFluid().isGaseous(f))
+							player.addChatComponentMessage(new ChatComponentTranslation(Lib.CHAT_INFO+"noGasAllowed"));
+						else if(f.getFluid().getTemperature(f)>=TileEntityWoodenBarrel.IGNITION_TEMPERATURE)
 							player.addChatComponentMessage(new ChatComponentTranslation(Lib.CHAT_INFO+"tooHot"));
+						else if(Utils.fillFluidHandlerWithPlayerItem(world, barrel, player))
+						{
+							world.markBlockForUpdate(x, y, z);
+							return true;
+						}
 					if(Utils.fillPlayerItemFromFluidHandler(world, barrel, player, barrel.tank.getFluid()))
 					{
 						world.markBlockForUpdate(x, y, z);
@@ -282,7 +281,7 @@ public class BlockWoodenDevices extends BlockIEBase implements blusunrize.aquatw
 						world.markBlockForUpdate(x, y, z);
 						return true;
 					}
-					
+
 				}
 			}
 			return true;

@@ -365,6 +365,7 @@ chat.ImmersiveEngineering.warning.invalidPoint=One of the connection points is i
 chat.ImmersiveEngineering.info.averageLoss=Average loss between points: %1$s%%
 chat.ImmersiveEngineering.info.energyStorage=Energy Stored: %1$s/%2$s RF
 chat.ImmersiveEngineering.info.tooHot=This fluid is too hot for the container!
+chat.ImmersiveEngineering.info.noGasAllowed=This container can't store gasses!
 chat.ImmersiveEngineering.info.invertedOn=Set redstone signal to inverted
 chat.ImmersiveEngineering.info.invertedOff=Set redstone signal to not inverted
 
@@ -499,7 +500,7 @@ ie.manual.entry.treatedwoodPost1=You can also place <link;wiring;§o§ntransform
 
 ie.manual.entry.barrel.name=Wooden Barrel
 ie.manual.entry.barrel.subtext=Doesn't roll
-ie.manual.entry.barrel0=Wooden barrels are simple containers that can store fluid. They will store up to 12 buckets, but because they are wooden, they can't take any hot fluids.<br>Rightclicking the top or bottom side of the barrel with a Hammer will switch between in-, output or no connection.
+ie.manual.entry.barrel0=Wooden barrels are simple containers that can store fluid. They will store up to 12 buckets, but because they are wooden, they can't store any gasses or hot fluids.<br>Rightclicking the top or bottom side of the barrel with a Hammer will switch between in-, output or no connection.
 
 ie.manual.entry.jerrycan.name=Jerrycan
 ie.manual.entry.jerrycan.subtext=Better than buckets

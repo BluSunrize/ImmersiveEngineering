@@ -589,19 +589,22 @@ public class TileEntityAssembler extends TileEntityMultiblockPart implements ISi
 	{
 		if(!formed)
 			return true;
-		if(master()!=null)
+		if(master()==null)
+			return isItemValidForSlot(slot,stack);
+		else if(pos==10)
 			return master().canInsertItem(slot,stack,side);
-
-		return isItemValidForSlot(slot,stack);
+		return false;
 	}
 	@Override
 	public boolean canExtractItem(int slot, ItemStack stack, int side)
 	{
 		if(!formed)
 			return true;
-		if(master()!=null)
+		if(master()==null)
+			return (slot>=16&&slot<=22);
+		else if(pos==16)
 			return master().canExtractItem(slot,stack,side);
-		return slot>=16&&slot<=22;
+		return false;
 	}
 
 	@Override
