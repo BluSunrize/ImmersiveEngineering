@@ -33,9 +33,11 @@ public class ItemBlockIEBase extends ItemBlock
 	@Override
 	public String getUnlocalizedName(ItemStack itemstack)
 	{
-		return getUnlocalizedName()+"."+((BlockIEBase)field_150939_a).subNames[ Math.min(((BlockIEBase)field_150939_a).subNames.length-1, itemstack.getItemDamage())];
+		if(((BlockIEBase)field_150939_a).subNames!=null && ((BlockIEBase)field_150939_a).subNames.length>0)
+			return getUnlocalizedName()+"."+((BlockIEBase)field_150939_a).subNames[ Math.min(((BlockIEBase)field_150939_a).subNames.length-1, itemstack.getItemDamage())];
+		return super.getUnlocalizedName(itemstack);
 	}
-	
+
 	@Override
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean advInfo)
 	{

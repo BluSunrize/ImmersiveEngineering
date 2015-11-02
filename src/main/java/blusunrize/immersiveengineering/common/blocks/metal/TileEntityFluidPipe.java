@@ -120,6 +120,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidHandl
 	{
 		if(resource==null || from==null || from==ForgeDirection.UNKNOWN || sideConfig[from.ordinal()]!=0)
 			return 0;
+		
 		int limit = resource.tag!=null&&resource.tag.hasKey("pressurized")?1000: 50;
 		int canAccept = Math.min(resource.amount, limit);
 		if(canAccept<=0)
@@ -133,6 +134,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidHandl
 		int sum = 0;
 		HashMap<DirectionalFluidOutput,Integer> sorting = new HashMap<DirectionalFluidOutput,Integer>();
 		for(DirectionalFluidOutput output : outputList)
+		{
 			if(!Utils.toCC(output.output).equals(ccFrom) && output.output.canFill(output.direction.getOpposite(), resource.getFluid()))
 			{
 				int temp = output.output.fill(output.direction.getOpposite(), Utils.copyFluidStackWithAmount(resource, fluidForSort,true), false);
@@ -142,6 +144,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidHandl
 					sum += temp;
 				}
 			}
+		}
 		if(sum>0)
 		{
 			int f = 0;

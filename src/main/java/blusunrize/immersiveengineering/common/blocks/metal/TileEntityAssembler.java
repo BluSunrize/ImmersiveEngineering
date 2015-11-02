@@ -682,7 +682,7 @@ public class TileEntityAssembler extends TileEntityMultiblockPart implements ISi
 	@Override
 	public boolean canFill(ForgeDirection from, Fluid fluid)
 	{
-		return formed && pos==1 && from==ForgeDirection.getOrientation(facing).getOpposite();
+		return formed && pos==1 && from==ForgeDirection.getOrientation(facing);
 	}
 	@Override
 	public boolean canDrain(ForgeDirection from, Fluid fluid)
