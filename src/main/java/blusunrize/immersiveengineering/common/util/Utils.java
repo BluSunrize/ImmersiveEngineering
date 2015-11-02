@@ -678,6 +678,9 @@ public class Utils
 			FluidStack fluid = FluidContainerRegistry.getFluidForFilledItem(filledStack);
 			if(fluid==null || filledStack==null)
 				return false;
+			if(world.isRemote)
+				return true;
+
 			if(!player.capabilities.isCreativeMode)
 				if(equipped.stackSize == 1)
 				{
@@ -688,17 +691,9 @@ public class Utils
 				}
 				else 
 				{
-					if(equipped.stackSize==1)
-					{
-						player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
-						player.inventory.addItemStackToInventory(filledStack);
-					}
-					else
-					{
-						equipped.stackSize -= 1;
-						if(filledStack!=null && !player.inventory.addItemStackToInventory(filledStack))
-							player.func_146097_a(filledStack, false, true);
-					}
+					equipped.stackSize -= 1;
+					if(!player.inventory.addItemStackToInventory(filledStack))
+						player.func_146097_a(filledStack, false, true);
 					player.openContainer.detectAndSendChanges();
 					((EntityPlayerMP) player).sendContainerAndContentsToPlayer(player.openContainer, player.openContainer.getInventory());
 				}
@@ -710,6 +705,9 @@ public class Utils
 			IFluidContainerItem container = (IFluidContainerItem)equipped.getItem();
 			if(container.fill(equipped, tankFluid, false)>0)
 			{
+				if(world.isRemote)
+					return true;
+
 				int fill = container.fill(equipped, tankFluid, true);
 				handler.drain(ForgeDirection.UNKNOWN, fill, true);
 				player.openContainer.detectAndSendChanges();
@@ -730,6 +728,9 @@ public class Utils
 		{
 			if(handler.fill(ForgeDirection.UNKNOWN, fluid, false) == fluid.amount || player.capabilities.isCreativeMode)
 			{
+				if(world.isRemote)
+					return true;
+
 				ItemStack filledStack = FluidContainerRegistry.drainFluidContainer(equipped);
 				if (!player.capabilities.isCreativeMode)
 				{
@@ -757,6 +758,9 @@ public class Utils
 			fluid = container.getFluid(equipped);
 			if(handler.fill(ForgeDirection.UNKNOWN, fluid, false)>0)
 			{
+				if(world.isRemote)
+					return true;
+
 				int fill = handler.fill(ForgeDirection.UNKNOWN, fluid, true);
 				container.drain(equipped, fill, true);
 				player.openContainer.detectAndSendChanges();

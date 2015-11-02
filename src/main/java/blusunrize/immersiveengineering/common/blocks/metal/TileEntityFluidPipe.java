@@ -133,7 +133,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidHandl
 		int sum = 0;
 		HashMap<DirectionalFluidOutput,Integer> sorting = new HashMap<DirectionalFluidOutput,Integer>();
 		for(DirectionalFluidOutput output : outputList)
-			if(!Utils.toCC(output.output).equals(ccFrom) && output.output.canFill(output.direction, resource.getFluid()))
+			if(!Utils.toCC(output.output).equals(ccFrom) && output.output.canFill(output.direction.getOpposite(), resource.getFluid()))
 			{
 				int temp = output.output.fill(output.direction.getOpposite(), Utils.copyFluidStackWithAmount(resource, fluidForSort,true), false);
 				if(temp>0)
