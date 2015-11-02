@@ -24,8 +24,10 @@ public class TileEntityElectricLantern extends TileEntityImmersiveConnectable im
 			return;
 		if(!interdictionList)
 		{
-			if(!EventHandler.interdictionTiles.contains(this))
-				EventHandler.interdictionTiles.add(this);
+			synchronized (EventHandler.interdictionTiles) {
+				if (!EventHandler.interdictionTiles.contains(this))
+					EventHandler.interdictionTiles.add(this);
+			}
 			interdictionList=true;
 		}
 		boolean b = active;
@@ -55,8 +57,10 @@ public class TileEntityElectricLantern extends TileEntityImmersiveConnectable im
 	@Override
 	public void invalidate()
 	{
-		if(EventHandler.interdictionTiles.contains(this))
-			EventHandler.interdictionTiles.remove(this);
+		synchronized (EventHandler.interdictionTiles) {
+			if (EventHandler.interdictionTiles.contains(this))
+				EventHandler.interdictionTiles.remove(this);
+		}
 		super.invalidate();
 	}
 	
