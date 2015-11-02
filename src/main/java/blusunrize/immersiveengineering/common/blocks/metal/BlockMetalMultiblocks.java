@@ -293,30 +293,27 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 		}
 		else if(!player.isSneaking() && curr instanceof TileEntitySheetmetalTank)
 		{
-			if(!world.isRemote)
+			TileEntitySheetmetalTank tank = (TileEntitySheetmetalTank)curr;
+			TileEntitySheetmetalTank master = tank.master();
+			if(master==null)
+				master = tank;
+			if(Utils.fillFluidHandlerWithPlayerItem(world, master, player))
 			{
-				TileEntitySheetmetalTank tank = (TileEntitySheetmetalTank)curr;
-				TileEntitySheetmetalTank master = tank.master();
-				if(master==null)
-					master = tank;
-				if(Utils.fillFluidHandlerWithPlayerItem(world, master, player))
-				{
-					master.markDirty();
-					world.markBlockForUpdate(master.xCoord,master.yCoord,master.zCoord);
-					return true;
-				}
-				if(Utils.fillPlayerItemFromFluidHandler(world, master, player, master.tank.getFluid()))
-				{
-					master.markDirty();
-					world.markBlockForUpdate(master.xCoord,master.yCoord,master.zCoord);
-					return true;
-				}
-				if(player.getCurrentEquippedItem()!=null && player.getCurrentEquippedItem().getItem() instanceof IFluidContainerItem)
-				{
-					master.markDirty();
-					world.markBlockForUpdate(master.xCoord,master.yCoord,master.zCoord);
-					return true;
-				}
+				master.markDirty();
+				world.markBlockForUpdate(master.xCoord,master.yCoord,master.zCoord);
+				return true;
+			}
+			if(Utils.fillPlayerItemFromFluidHandler(world, master, player, master.tank.getFluid()))
+			{
+				master.markDirty();
+				world.markBlockForUpdate(master.xCoord,master.yCoord,master.zCoord);
+				return true;
+			}
+			if(player.getCurrentEquippedItem()!=null && player.getCurrentEquippedItem().getItem() instanceof IFluidContainerItem)
+			{
+				master.markDirty();
+				world.markBlockForUpdate(master.xCoord,master.yCoord,master.zCoord);
+				return true;
 			}
 		}
 		else if(curr instanceof TileEntityAssembler)

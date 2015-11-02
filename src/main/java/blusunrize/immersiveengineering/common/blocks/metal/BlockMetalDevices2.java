@@ -227,6 +227,8 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 			{
 				if (!world.isRemote)
 				{
+					if(player.isSneaking())
+						side = ForgeDirection.OPPOSITES[side];
 					pump.toggleSide(side);
 					world.markBlockForUpdate(x, y, z);
 				}
