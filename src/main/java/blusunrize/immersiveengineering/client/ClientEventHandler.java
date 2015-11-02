@@ -241,8 +241,8 @@ public class ClientEventHandler
 				&& ClientUtils.mc().currentScreen instanceof GuiBlastFurnace
 				&& BlastFurnaceRecipe.isValidBlastFuel(event.itemStack))
 			event.toolTip.add(EnumChatFormatting.GRAY+StatCollector.translateToLocalFormatted("desc.ImmersiveEngineering.info.blastFuelTime", BlastFurnaceRecipe.getBlastFuelTime(event.itemStack)));
-		for(int oid : OreDictionary.getOreIDs(event.itemStack))
-			event.toolTip.add(OreDictionary.getOreName(oid));
+		//		for(int oid : OreDictionary.getOreIDs(event.itemStack))
+		//			event.toolTip.add(OreDictionary.getOreName(oid));
 	}
 
 	@SubscribeEvent()
