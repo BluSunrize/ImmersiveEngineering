@@ -158,4 +158,10 @@ public class IEManualInstance extends ManualInstance
 	{
 		return 0x9c917c;
 	}
+	
+	@Override
+	public boolean allowGuiRescale()
+	{
+		return Config.getBoolean("adjustManualScale");
+	}
 }

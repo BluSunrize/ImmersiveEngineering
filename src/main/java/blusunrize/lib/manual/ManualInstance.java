@@ -30,6 +30,7 @@ public abstract class ManualInstance
 	public abstract int getTextColour();
 	public abstract int getHighlightColour();
 	public abstract int getPagenumberColour();
+	public abstract boolean allowGuiRescale();
 
 	public GuiManual getGui()
 	{

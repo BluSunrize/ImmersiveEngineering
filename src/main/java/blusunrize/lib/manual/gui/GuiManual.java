@@ -54,7 +54,7 @@ public class GuiManual extends GuiScreen
 		this.texture = texture;
 
 		prevGuiScale = Minecraft.getMinecraft().gameSettings.guiScale;
-		if(prevGuiScale!=0 && prevGuiScale!=2)
+		if(prevGuiScale!=0 && prevGuiScale!=2 && manual.allowGuiRescale())
 			Minecraft.getMinecraft().gameSettings.guiScale=2;
 		activeManual=this;
 	}
@@ -228,7 +228,7 @@ public class GuiManual extends GuiScreen
 	public void onGuiClosed()
 	{
 		super.onGuiClosed();
-		if(prevGuiScale!=-1)
+		if(prevGuiScale!=-1 && manual.allowGuiRescale())
 			Minecraft.getMinecraft().gameSettings.guiScale = prevGuiScale;
 	}
 
