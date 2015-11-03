@@ -12,6 +12,7 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ChatComponentText;
@@ -19,9 +20,12 @@ import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
+import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.oredict.OreDictionary;
 import blusunrize.immersiveengineering.api.AdvancedAABB;
@@ -29,6 +33,7 @@ import blusunrize.immersiveengineering.api.fluid.PipeConnection;
 import blusunrize.immersiveengineering.client.render.BlockRenderMetalDevices2;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ICustomBoundingboxes;
+import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenBarrel;
 import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.Utils;
 import cpw.mods.fml.common.Optional;
@@ -45,13 +50,15 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 	public static final int META_floodlight=4;
 	public static final int META_fluidPipe=5;
 	public static final int META_fluidPump=6;
-	IIcon[] pumpIcons = new IIcon[7];
-	IIcon floodlightGlass;
+	public static final int META_barrel=7;
+	IIcon[] iconPump = new IIcon[7];
+	IIcon iconFloodlightGlass;
+	IIcon[] iconBarrel = new IIcon[4];
 
 	public BlockMetalDevices2()
 	{
 		super("metalDevice2", Material.iron, 1, ItemBlockMetalDevices2.class,
-				"breakerSwitch","skycrateDispenser","energyMeter","electricLantern","floodlight","fluidPipe", "fluidPump");
+				"breakerSwitch","skycrateDispenser","energyMeter","electricLantern","floodlight","fluidPipe", "fluidPump", "barrel");
 		setHardness(3.0F);
 		setResistance(15.0F);
 	}
@@ -68,16 +75,6 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 	{
 		return super.getPickBlock(target, world, x, y, z, player);
 	}
-	@Override
-	public void onBlockHarvested(World world, int x, int y, int z, int meta, EntityPlayer player)
-	{
-	}
-	@Override
-	public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int metadata, int fortune)
-	{
-		ArrayList<ItemStack> ret = super.getDrops(world, x, y, z, metadata, fortune);
-		return ret;
-	}
 
 	@Override
 	public void getSubBlocks(Item item, CreativeTabs tab, List list)
@@ -87,6 +84,7 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 		list.add(new ItemStack(item, 1, 4));
 		list.add(new ItemStack(item, 1, 5));
 		list.add(new ItemStack(item, 1, 6));
+		list.add(new ItemStack(item, 1, 7));
 		//		for(int i=0; i<subNames.length; i++)
 		//		{
 		//			list.add(new ItemStack(item, 1, i));
@@ -101,19 +99,26 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 			if(i!=META_fluidPump)
 				this.icons[i][0] = iconRegister.registerIcon("immersiveEngineering:metal2_"+this.subNames[i]);
 
-		floodlightGlass = iconRegister.registerIcon("immersiveEngineering:metal2_floodlightGlass");
-		pumpIcons[0] = iconRegister.registerIcon("immersiveEngineering:metal2_pump_side_none");
-		pumpIcons[1] = iconRegister.registerIcon("immersiveEngineering:metal2_pump_side_in");
-		pumpIcons[2] = iconRegister.registerIcon("immersiveEngineering:metal2_pump_side_out");
-		pumpIcons[3] = iconRegister.registerIcon("immersiveEngineering:metal2_pump_bottom_none");
-		pumpIcons[4] = iconRegister.registerIcon("immersiveEngineering:metal2_pump_bottom_in");
-		pumpIcons[5] = iconRegister.registerIcon("immersiveEngineering:metal2_pump_bottom_out");
-		pumpIcons[6] = iconRegister.registerIcon("immersiveEngineering:metal2_pump_top");
+		iconFloodlightGlass = iconRegister.registerIcon("immersiveEngineering:metal2_floodlightGlass");
+		iconPump[0] = iconRegister.registerIcon("immersiveEngineering:metal2_pump_side_none");
+		iconPump[1] = iconRegister.registerIcon("immersiveEngineering:metal2_pump_side_in");
+		iconPump[2] = iconRegister.registerIcon("immersiveEngineering:metal2_pump_side_out");
+		iconPump[3] = iconRegister.registerIcon("immersiveEngineering:metal2_pump_bottom_none");
+		iconPump[4] = iconRegister.registerIcon("immersiveEngineering:metal2_pump_bottom_in");
+		iconPump[5] = iconRegister.registerIcon("immersiveEngineering:metal2_pump_bottom_out");
+		iconPump[6] = iconRegister.registerIcon("immersiveEngineering:metal2_pump_top");
+
+		iconBarrel[0] = iconRegister.registerIcon("immersiveengineering:metal2_barrel_top_none");
+		iconBarrel[1] = iconRegister.registerIcon("immersiveengineering:metal2_barrel_top_in");
+		iconBarrel[2] = iconRegister.registerIcon("immersiveengineering:metal2_barrel_top_out");
 	}
 	@Override
 	@SideOnly(Side.CLIENT)
 	public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side)
 	{
+		TileEntity te = world.getTileEntity(x, y, z);
+		if(te instanceof TileEntityMetalBarrel && side<2)
+			return iconBarrel[((TileEntityMetalBarrel)te).sideConfig[side]+1];
 		return super.getIcon(world, x, y, z, side);
 	}
 	@Override
@@ -121,9 +126,11 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 	public IIcon getIcon(int side, int meta)
 	{
 		if(meta==META_fluidPump)
-			return pumpIcons[Math.min(side+1,6)];
+			return iconPump[Math.min(side+1,6)];
 		if(meta==META_floodlight && side==1)
-			return floodlightGlass;
+			return iconFloodlightGlass;
+		if(meta==META_barrel && side<2)
+			return iconBarrel[0];
 		return super.getIcon(side, meta);
 	}
 
@@ -281,6 +288,40 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 						}
 					}
 			}
+		}
+		else if(te instanceof TileEntityWoodenBarrel)
+		{
+			if(!world.isRemote)
+			{
+				TileEntityWoodenBarrel barrel = (TileEntityWoodenBarrel)te;
+				if(Utils.isHammer(player.getCurrentEquippedItem()) && side<2)
+				{
+					if(player.isSneaking())
+						side = ForgeDirection.OPPOSITES[side];
+					barrel.toggleSide(side);
+				}
+				else if(!player.isSneaking())
+				{
+					FluidStack f = Utils.getFluidFromItemStack(player.getCurrentEquippedItem());
+					if(f!=null && Utils.fillFluidHandlerWithPlayerItem(world, barrel, player))
+					{
+						world.markBlockForUpdate(x, y, z);
+						return true;
+					}
+					if(Utils.fillPlayerItemFromFluidHandler(world, barrel, player, barrel.tank.getFluid()))
+					{
+						world.markBlockForUpdate(x, y, z);
+						return true;
+					}
+					if(player.getCurrentEquippedItem()!=null && player.getCurrentEquippedItem().getItem() instanceof IFluidContainerItem)
+					{
+						world.markBlockForUpdate(x, y, z);
+						return true;
+					}
+
+				}
+			}
+			return true;
 		}
 		return false;
 	}
@@ -563,6 +604,8 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 			return new TileEntityFluidPipe();
 		case META_fluidPump:
 			return new TileEntityFluidPump();
+		case META_barrel:
+			return new TileEntityMetalBarrel();
 		}
 		return null;
 	}
@@ -593,12 +636,62 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 		}
 		super.breakBlock(world, x, y, z, par5, par6);
 	}
-
 	@Override
-	public void onNeighborBlockChange(World world, int x, int y, int z, Block nbid)
+	public void onBlockHarvested(World world, int x, int y, int z, int meta, EntityPlayer player)
 	{
+		TileEntity te = world.getTileEntity(x, y, z);
+		if(!world.isRemote)
+		{
+			if(te instanceof TileEntityWoodenBarrel)
+			{
+				ItemStack stack = new ItemStack(this, 1, meta);
+				NBTTagCompound tag = new NBTTagCompound();
+				((TileEntityWoodenBarrel) te).writeTank(tag, true);
+				if(!tag.hasNoTags())
+					stack.setTagCompound(tag);
+				world.spawnEntityInWorld(new EntityItem(world, x+.5, y+.5, z+.5, stack));
+			}
+		}
 	}
 
+	@Override
+	public void onBlockExploded(World world, int x, int y, int z, Explosion explosion)
+	{
+		if(!world.isRemote)
+		{
+			TileEntity te = world.getTileEntity(x, y, z);
+			if(te instanceof TileEntityWoodenBarrel)
+			{
+				ItemStack stack = new ItemStack(this, 1, world.getBlockMetadata(x, y, z));
+				NBTTagCompound tag = new NBTTagCompound();
+				((TileEntityWoodenBarrel) te).writeTank(tag, true);
+				if(!tag.hasNoTags())
+					stack.setTagCompound(tag);
+				world.spawnEntityInWorld(new EntityItem(world, x+.5, y+.5, z+.5, stack));
+			}
+		}
+		super.onBlockExploded(world, x, y, z, explosion);
+	}
+
+	@Override
+	public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int metadata, int fortune)
+	{
+		ArrayList<ItemStack> ret = new ArrayList<ItemStack>();
+		if(metadata==META_barrel)
+			return ret;
+
+		int count = quantityDropped(metadata, fortune, world.rand);
+		for(int i = 0; i < count; i++)
+		{
+			Item item = getItemDropped(metadata, world.rand, fortune);
+			if (item != null)
+			{
+				ret.add(new ItemStack(item, 1, damageDropped(metadata)));
+			}
+		}
+		return ret;
+	}
+	
 	@Override
 	public void onBlockAdded(World world, int x, int y, int z)
 	{

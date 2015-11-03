@@ -19,8 +19,8 @@ import blusunrize.immersiveengineering.common.util.Utils;
 
 public class TileEntityWoodenBarrel extends TileEntityIEBase implements IFluidHandler, IBlockOverlayText
 {
-	int[] sideConfig = {-1,0};
-	FluidTank tank = new FluidTank(12000);
+	public int[] sideConfig = {-1,0};
+	public FluidTank tank = new FluidTank(12000);
 	public static final int IGNITION_TEMPERATURE = 573;
 
 	public void toggleSide(int side)
@@ -125,7 +125,7 @@ public class TileEntityWoodenBarrel extends TileEntityIEBase implements IFluidHa
 	@Override
 	public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
 	{
-		if(resource!=null && resource.getFluid()!=null && canFill(from, resource.getFluid()) && resource.getFluid().getTemperature(resource)<IGNITION_TEMPERATURE && !resource.getFluid().isGaseous(resource))
+		if(isFluidValid(resource) && canFill(from, resource.getFluid()))
 		{
 			int i = tank.fill(resource, doFill);
 			if(i>0)
@@ -136,6 +136,11 @@ public class TileEntityWoodenBarrel extends TileEntityIEBase implements IFluidHa
 			return i;
 		}
 		return 0;
+	}
+	
+	public boolean isFluidValid(FluidStack fluid)
+	{
+		return fluid!=null && fluid.getFluid()!=null && fluid.getFluid().getTemperature(fluid)<IGNITION_TEMPERATURE && !fluid.getFluid().isGaseous(fluid);
 	}
 
 	@Override

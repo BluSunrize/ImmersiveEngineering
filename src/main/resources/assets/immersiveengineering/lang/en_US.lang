@@ -72,6 +72,7 @@ tile.ImmersiveEngineering.metalDevice2.electricLantern.name=Powered Lantern
 tile.ImmersiveEngineering.metalDevice2.floodlight.name=Floodlight
 tile.ImmersiveEngineering.metalDevice2.fluidPipe.name=Fluid Pipe
 tile.ImmersiveEngineering.metalDevice2.fluidPump.name=Fluid Pump
+tile.ImmersiveEngineering.metalDevice2.barrel.name=Metal Barrel
 
 tile.ImmersiveEngineering.treatedWood.0.name=Treated Wood Planks
 tile.ImmersiveEngineering.treatedWood.1.name=Treated Wood Planks
@@ -567,6 +568,10 @@ ie.manual.entry.tanksilo0=Sheetmetal Tanks and Silos provide space for large amo
 ie.manual.entry.tanksilo1=Silos offer space for a lot of items of the same type, making them excellent for mass storage of seeds, slag or cobblestone. They have space for 41472 items, equalling the capacity of 24 chests.
 ie.manual.entry.tanksilo2=Items must be input through the top and extracted from the bottom. Applying a redstone signal to the bottom block will make it output automatically. The multiblock is formed by clicking a middle block of the second layer.
 ie.manual.entry.tanksilo3=Attaching a comparator to the output block makes it emit a redstone signal proportional to how full the tank/silo is. Attaching a comparator to one of the top 6 (silos) or top 4 (tanks) layers causes it to emit a signal proportional to how full the corresponding 1/6 (silos) or 1/4 (tanks) of the storage is. For example, a comparator attached to the second layer of a tank would not emit any signal until the tank is 1/4 full and have a signal strength of 15 if the tank is half full or more.
+
+ie.manual.entry.metalbarrel.name=Metal Barrel
+ie.manual.entry.metalbarrel.subtext=Doesn't roll
+ie.manual.entry.metalbarrel0=Metal barrels work exactly like <link;barrel;§o§nWooden §o§nBarrels§r;>. They store the same amount of fluid and their in- and outputs are configured the same way, but unlike the wooden version, these can store gasses and hot fluids. 
 
 ie.manual.entry.assembler.name=Assembler
 ie.manual.entry.assembler.subtext=Some assembly required

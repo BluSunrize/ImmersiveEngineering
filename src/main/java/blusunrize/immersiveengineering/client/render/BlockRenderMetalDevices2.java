@@ -106,6 +106,11 @@ public class BlockRenderMetalDevices2 implements ISimpleBlockRenderingHandler
 				Tessellator.instance.draw();
 				GL11.glPopMatrix();
 			}
+			else if(metadata==BlockMetalDevices2.META_barrel)
+			{
+				renderer.setRenderBounds(0,0,0, 1,1,1);
+				ClientUtils.drawInventoryBlock(block, metadata, renderer);
+			}
 		}catch(Exception e)
 		{
 			e.printStackTrace();
@@ -179,6 +184,11 @@ public class BlockRenderMetalDevices2 implements ISimpleBlockRenderingHandler
 				}
 
 				return true;
+			}
+			else if(metadata==BlockMetalDevices2.META_barrel)
+			{
+				renderer.setRenderBoundsFromBlock(block);
+				return renderer.renderStandardBlock(block, x, y, z);
 			}
 		return false;
 	}
