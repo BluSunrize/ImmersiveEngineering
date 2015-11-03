@@ -52,6 +52,8 @@ tile.ImmersiveEngineering.metalMultiblock.excavator.name=掘削機
 tile.ImmersiveEngineering.metalMultiblock.arcFurnace.name=アーク炉
 tile.ImmersiveEngineering.metalMultiblock.tank.name=液体タンク
 tile.ImmersiveEngineering.metalMultiblock.silo.name=サイロ
+tile.ImmersiveEngineering.metalMultiblock.assembler.name=組立機
+tile.ImmersiveEngineering.metalMultiblock.bottlingMachine.name=瓶詰機
 
 tile.ImmersiveEngineering.metalDecoration.fence.name=鋼柵
 tile.ImmersiveEngineering.metalDecoration.scaffolding.name=鋼足場
@@ -63,9 +65,17 @@ tile.ImmersiveEngineering.metalDecoration.generator.name=ジェネレーター�
 tile.ImmersiveEngineering.metalDecoration.lightEngineering.name=軽機構ブロック
 tile.ImmersiveEngineering.metalDecoration.connectorStructural.name=装飾用ケーブルコネクター
 tile.ImmersiveEngineering.metalDecoration.wallMount.name=鋼壁掛け
-tile.ImmersiveEngineering.metalDecoration.sheetMetal.name=Sheet Metal Block
+tile.ImmersiveEngineering.metalDecoration.sheetMetal.name=金属板ブロック
 
 tile.ImmersiveEngineering.metalDevice2.breakerSwitch.name=ブレーカースイッチ
+tile.ImmersiveEngineering.metalDevice2.electricLantern.name=電動ランタン
+tile.ImmersiveEngineering.metalDevice2.floodlight.name=投光機
+tile.ImmersiveEngineering.metalDevice2.fluidPipe.name=液体導管
+tile.ImmersiveEngineering.metalDevice2.fluidPump.name=液体ポンプ
+
+tile.ImmersiveEngineering.treatedWood.0.name=防腐木材
+tile.ImmersiveEngineering.treatedWood.1.name=防腐木材
+tile.ImmersiveEngineering.treatedWood.2.name=防腐木材
 
 tile.ImmersiveEngineering.woodenDevice.post.name=木製支柱
 tile.ImmersiveEngineering.woodenDevice.watermill.name=水車
@@ -178,6 +188,7 @@ item.ImmersiveEngineering.tool.manual.name=技士の手引書
 item.ImmersiveEngineering.revolver.normal.name=リボルバー
 item.ImmersiveEngineering.revolver.speedloader.name=リボルバースピードローダー
 item.ImmersiveEngineering.revolver.dev.name=♛Royal Vanquisher♚
+item.ImmersiveEngineering.revolver.infinity.name=Catalyst
 item.ImmersiveEngineering.revolver.sns.name=Steamroller
 item.ImmersiveEngineering.revolver.nerf.name=Nerf'd Revolver
 item.ImmersiveEngineering.revolver.oblivion.name=Oblivion
@@ -199,8 +210,10 @@ item.ImmersiveEngineering.bullet.HE.name=高爆発性弾カートリッジ
 item.ImmersiveEngineering.bullet.dragonsbreath.name=ドラゴンブレス弾カートリッジ
 item.ImmersiveEngineering.bullet.homing.name=Homing Cartridge
 item.ImmersiveEngineering.bullet.wolfpack.name=Wolfpack Cartridge
-item.ImmersiveEngineering.bullet.silver.name=Silver Cartridge
-item.ImmersiveEngineering.bullet.potion.name=Phial Cartridge
+item.ImmersiveEngineering.bullet.silver.name=銀の弾丸
+item.ImmersiveEngineering.bullet.potion.name=ポーション弾
+item.ImmersiveEngineering.bullet.potion.splash.name=炸裂ポーション弾
+item.ImmersiveEngineering.bullet.potion.linger.name=Lingering Phial Cartridge
 
 item.ImmersiveEngineering.drill.diesel.name=採掘ドリル
 item.ImmersiveEngineering.drillhead.iron.name=鉄のドリルビット
@@ -220,6 +233,10 @@ item.ImmersiveEngineering.blueprint.name=技士のブループリント
 
 item.ImmersiveEngineering.graphiteElectrode.name=炭素電極
 
+item.ImmersiveEngineering.shader.name=リボルバースキン
+
+item.ImmersiveEngineering.jerrycan.name=ジェリー缶
+
 
 #CREATIVE
 itemGroup.ImmersiveEngineering=Immersive Engineering
@@ -231,18 +248,26 @@ desc.ImmersiveEngineering.info.attachedTo=接続中:%1$s, %2$s, %3$sから
 desc.ImmersiveEngineering.info.attachedToDim=接続中:ディメンション%4$sの%1$s, %2$s, %3$sから
 desc.ImmersiveEngineering.info.energyStored=蓄電量: %1$sRF
 desc.ImmersiveEngineering.info.blastFuelTime=Blast Fuel: %1$s Ticks
-desc.ImmersiveEngineering.info.capacitorSide.facing=Facing Side:
-desc.ImmersiveEngineering.info.capacitorSide.opposite=Opposite Side:
-desc.ImmersiveEngineering.info.capacitorSide.-1=非接続
-desc.ImmersiveEngineering.info.capacitorSide.0=エネルギー入力
-desc.ImmersiveEngineering.info.capacitorSide.1=エネルギー出力
 
+desc.ImmersiveEngineering.info.blockSide.facing=Facing Side
+desc.ImmersiveEngineering.info.blockSide.opposite=Opposite Side
 desc.ImmersiveEngineering.info.blockSide.UP=上面
 desc.ImmersiveEngineering.info.blockSide.DOWN=下面
 desc.ImmersiveEngineering.info.blockSide.NORTH=北面
 desc.ImmersiveEngineering.info.blockSide.SOUTH=南面
 desc.ImmersiveEngineering.info.blockSide.EAST=東面
 desc.ImmersiveEngineering.info.blockSide.WEST=西面
+desc.ImmersiveEngineering.info.blockSide.connectEnergy.-1=No Connection
+desc.ImmersiveEngineering.info.blockSide.connectEnergy.0=Energy Input
+desc.ImmersiveEngineering.info.blockSide.connectEnergy.1=Energy Output
+desc.ImmersiveEngineering.info.blockSide.connectFluid.-1=No Connection
+desc.ImmersiveEngineering.info.blockSide.connectFluid.0=Fluid Input
+desc.ImmersiveEngineering.info.blockSide.connectFluid.1=Fluid Output
+#desc.ImmersiveEngineering.info.capacitorSide.facing=Facing Side:
+#desc.ImmersiveEngineering.info.capacitorSide.opposite=Opposite Side:
+#desc.ImmersiveEngineering.info.capacitorSide.-1=非接続
+#desc.ImmersiveEngineering.info.capacitorSide.0=エネルギー入力
+#desc.ImmersiveEngineering.info.capacitorSide.1=エネルギー出力
 
 desc.ImmersiveEngineering.info.oreDict.off=鉱石辞書:不使用
 desc.ImmersiveEngineering.info.oreDict.on=OreDictionary:使用
@@ -285,6 +310,9 @@ desc.ImmersiveEngineering.info.blueprint.electrode=アーク炉の電極
 
 desc.ImmersiveEngineering.info.electrodeIntegrity=Integrity
 
+desc.ImmersiveEngineering.flavour.treatedWood.0=垂直
+desc.ImmersiveEngineering.flavour.treatedWood.1=並行
+desc.ImmersiveEngineering.flavour.treatedWood.2=パック
 desc.ImmersiveEngineering.flavour.crate=壊してもインベントリを保持します
 desc.ImmersiveEngineering.flavour.barrel=壊しても液体を保持します
 desc.ImmersiveEngineering.flavour.barrelTemp=高温の液体は保存不可
@@ -292,6 +320,7 @@ desc.ImmersiveEngineering.flavour.coil.construction0=装飾用
 desc.ImmersiveEngineering.flavour.coil.construction1=電力を伝達しません
 desc.ImmersiveEngineering.flavour.revolver=Go ahead, make my day!
 desc.ImmersiveEngineering.flavour.revolver.dev=Regicide!
+desc.ImmersiveEngineering.flavour.revolver.infinity=All you need is a little pinch of infinity
 desc.ImmersiveEngineering.flavour.revolver.sns=Blood, Sweat, Steam and Steel
 desc.ImmersiveEngineering.flavour.revolver.nerf=Safe for kids
 desc.ImmersiveEngineering.flavour.revolver.oblivion=Passing Memories
@@ -338,6 +367,7 @@ chat.ImmersiveEngineering.warning.invalidPoint=One of the connection points is i
 chat.ImmersiveEngineering.info.averageLoss=Average loss between points: %1$s%%
 chat.ImmersiveEngineering.info.energyStorage=貯蓄エネルギー: %1$s/%2$s RF
 chat.ImmersiveEngineering.info.tooHot=この液体はコンテナに対して温度が高すぎます
+chat.ImmersiveEngineering.info.noGasAllowed=This container can't store gasses!
 chat.ImmersiveEngineering.info.invertedOn=Set redstone signal to inverted
 chat.ImmersiveEngineering.info.invertedOff=Set redstone signal to not inverted
 
@@ -347,6 +377,20 @@ chat.ImmersiveEngineering.info.coreDrill.result.mineral=§7地質調査の結果
 chat.ImmersiveEngineering.info.coreDrill.result.depl=§7鉱脈の整合性は%1$s§7です
 chat.ImmersiveEngineering.info.coreDrill.result.none=地質調査の結果、鉱脈は見つかりませんでした
 chat.ImmersiveEngineering.info.coreDrill.infinite=Infinite
+
+chat.ImmersiveEngineering.command.available=§6Available commands:§r %1$s
+chat.ImmersiveEngineering.command.help.help=§6Usage: /ie help <command> [sub-commands ...]§r<br> To get more info on the specified command or, optionally, its sub commands
+chat.ImmersiveEngineering.command.mineral.help=§6Usage: /ie mineral <list|get|set|setDepletion>§r
+chat.ImmersiveEngineering.command.mineral.list.help=§6Usage: /ie mineral list§r<br> Lists all registered Minerals
+chat.ImmersiveEngineering.command.mineral.get.help=§6Usage: /ie mineral get§r<br> Displays the mineral for the chunk
+chat.ImmersiveEngineering.command.mineral.set.help=§6Usage: /ie mineral set [mineral]§r<br> Sets a mineral override for the chunk. Specify no mineral to clear the override.
+chat.ImmersiveEngineering.command.mineral.setDepletion.help=§6Usage: /ie mineral setDepletion <number>§r<br> Set the depletion of the minerals inside the chunk. Set this to -1 to make the vein infinite.
+chat.ImmersiveEngineering.command.mineral.get=Chunk contains: %1$s, Override: %2$s, Depletion: %3$s
+chat.ImmersiveEngineering.command.mineral.set.invalidMineral=§cInvalid Mineral, '%1$s' is not a valid identifier. Use '/ie mineral list' for a list of all identifiers.§r
+chat.ImmersiveEngineering.command.mineral.set.sucess=Mineral override set to '%1$s'
+chat.ImmersiveEngineering.command.mineral.set.clear=Mineral override (%1$s) cleared.
+chat.ImmersiveEngineering.command.mineral.setDepletion.NFE=Error, '%1$s' is not a valid number
+chat.ImmersiveEngineering.command.mineral.setDepletion.sucess=Mineral depletion set to '%1$s'
 
 #RECIPES
 recipe.ImmersiveEngineering.hammerCrushing=粉砕
@@ -361,6 +405,48 @@ death.attack.ieRevolver_wolfpack=%1$s was shredded by %2$s's Wolfpack Rounds
 death.attack.ieRevolver_silver=%1$s was purified by %2$s's silver bullet
 death.attack.ieRevolver_potion=%1$s was doused by %2$s's phial shot
 death.attack.ieCrushed=%1$s was crushed
+
+#ACHIEVEMENTS
+achievement.immersiveengineering.openManual=RTFM
+achievement.immersiveengineering.openManual.desc=Open the Engineer's Manual
+achievement.immersiveengineering.craftHammer=HAMMAH!
+achievement.immersiveengineering.craftHammer.desc=Craft an Engineer's Hammer
+achievement.immersiveengineering.connectWire=Birds on a Wire
+achievement.immersiveengineering.connectWire.desc=Attach a wire
+achievement.immersiveengineering.blastfurnace=Really Hot Topic
+achievement.immersiveengineering.blastfurnace.desc=Create a Blast Furnace
+achievement.immersiveengineering.makeSteel=The Upgrade
+achievement.immersiveengineering.makeSteel.desc=Create a Steel Ingot
+achievement.immersiveengineering.makeRevolver=Make my day
+achievement.immersiveengineering.makeRevolver.desc=Craft the Revolver
+achievement.immersiveengineering.upgradeRevolver=Shalashaska
+achievement.immersiveengineering.upgradeRevolver.desc=Apply the maximum Upgrades to the Revolver
+achievement.immersiveengineering.makeWolfPack=Beauty of Destruction
+achievement.immersiveengineering.makeWolfPack.desc=Craft a Wolfpack Cartridge
+achievement.immersiveengineering.makeDrill=Power Pick
+achievement.immersiveengineering.makeDrill.desc=Craft the Mining Drill
+achievement.immersiveengineering.upgradeDrill=Big Daddy
+achievement.immersiveengineering.upgradeDrill.desc=Apply the maximum Upgrades to the Mining Drill
+achievement.immersiveengineering.makeSkyhook=Booker, catch!
+achievement.immersiveengineering.makeSkyhook.desc=Craft the Engineer's Skyhook
+achievement.immersiveengineering.skyhookPro=Skyline Master
+achievement.immersiveengineering.skyhookPro.desc=Travel a total of 1km with the Skyhook
+achievement.immersiveengineering.mbSilo=Sheetmetal Stash
+achievement.immersiveengineering.mbSilo.desc=Form the Silo Multiblock
+achievement.immersiveengineering.mbCrusher=Hazardous Machinery
+achievement.immersiveengineering.mbCrusher.desc=Form the Crusher Multiblock
+achievement.immersiveengineering.mbDieselGen=Bad for the Environment
+achievement.immersiveengineering.mbDieselGen.desc=Form the Diesel Generator Multiblock
+achievement.immersiveengineering.mbExcavator=Diggy Diggy Hole
+achievement.immersiveengineering.mbExcavator.desc=Form the Excavator Multiblock
+achievement.immersiveengineering.mbArcFurnace=The Hottest Topic
+achievement.immersiveengineering.mbArcFurnace.desc=Form the Arc Furnace Multiblock
+
+achievement.immersiveengineering.secret_birthdayParty=Grunt Birthday Party
+achievement.immersiveengineering.secret_birthdayParty.desc=Light a match...
+
+stat.skyhookOneCm=Distance by Skyhook
+
 
 #マニュアル(Manual)
 #ie.manual.entry..name=
