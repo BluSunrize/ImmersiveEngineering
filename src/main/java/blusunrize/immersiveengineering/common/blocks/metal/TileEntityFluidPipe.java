@@ -121,8 +121,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidHandl
 		if(resource==null || from==null || from==ForgeDirection.UNKNOWN || sideConfig[from.ordinal()]!=0)
 			return 0;
 
-		int limit = resource.tag!=null&&resource.tag.hasKey("pressurized")?1000: 50;
-		int canAccept = Math.min(resource.amount, limit);
+		int canAccept = resource.amount;
 		if(canAccept<=0)
 			return 0;
 
@@ -130,14 +129,15 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidHandl
 		if(outputList.size()<1)
 			return 0;
 		ChunkCoordinates ccFrom = new ChunkCoordinates(xCoord+from.offsetX,yCoord+from.offsetY,zCoord+from.offsetZ);
-		final int fluidForSort = canAccept;
 		int sum = 0;
 		HashMap<DirectionalFluidOutput,Integer> sorting = new HashMap<DirectionalFluidOutput,Integer>();
 		for(DirectionalFluidOutput output : outputList)
 		{
 			if(!Utils.toCC(output.output).equals(ccFrom) && output.output.canFill(output.direction.getOpposite(), resource.getFluid()))
 			{
-				int temp = output.output.fill(output.direction.getOpposite(), Utils.copyFluidStackWithAmount(resource, fluidForSort,true), false);
+				int limit = (resource.tag!=null&&resource.tag.hasKey("pressurized"))||output.output instanceof TileEntityFluidPump?1000: 50;
+				int tileSpecificAcceptedFluid = Math.min(limit, canAccept);
+				int temp = output.output.fill(output.direction.getOpposite(), Utils.copyFluidStackWithAmount(resource, tileSpecificAcceptedFluid,true), false);
 				if(temp>0)
 				{
 					sorting.put(output, temp);
@@ -148,13 +148,13 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidHandl
 		if(sum>0)
 		{
 			int f = 0;
-			int i=0;
 			for(DirectionalFluidOutput output : sorting.keySet())
 			{
+				int limit = (resource.tag!=null&&resource.tag.hasKey("pressurized"))||output.output instanceof TileEntityFluidPump?1000: 50;
+				int tileSpecificAcceptedFluid = Math.min(limit, canAccept);
+
 				float prio = sorting.get(output)/(float)sum;
-				int amount = (int)(fluidForSort*prio);
-				if(i++ == sorting.size()-1)
-					amount = canAccept;
+				int amount = (int)(tileSpecificAcceptedFluid*prio);
 				int r = output.output.fill(output.direction.getOpposite(), Utils.copyFluidStackWithAmount(resource, amount, true), doFill);
 				f += r;
 				canAccept -= r;
