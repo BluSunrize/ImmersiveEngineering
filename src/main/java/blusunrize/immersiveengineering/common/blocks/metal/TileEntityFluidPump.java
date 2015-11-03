@@ -174,9 +174,12 @@ public class TileEntityFluidPump extends TileEntityIEBase implements IFluidHandl
 				TileEntity tile = worldObj.getTileEntity(xCoord+fd.offsetX,yCoord+fd.offsetY,zCoord+fd.offsetZ);
 				if(tile instanceof IFluidHandler && ((IFluidHandler)tile).canFill(ForgeDirection.getOrientation(i).getOpposite(), fs.getFluid()))
 				{
-					FluidStack insertResource = new FluidStack(fs.getFluid(), fs.amount, new NBTTagCompound());
+					FluidStack insertResource = new FluidStack(fs.getFluid(), fs.amount);
 					if(tile instanceof TileEntityFluidPipe)
+					{
+						insertResource.tag = new NBTTagCompound();
 						insertResource.tag.setBoolean("pressurized", true);
+					}
 					int temp = ((IFluidHandler)tile).fill(fd.getOpposite(), insertResource, false);
 					if(temp>0)
 					{
@@ -195,8 +198,12 @@ public class TileEntityFluidPump extends TileEntityIEBase implements IFluidHandl
 				int amount = (int)(fluidForSort*prio);
 				if(i++ == sorting.size()-1)
 					amount = canAccept;
-				FluidStack insertResource = new FluidStack(fs.getFluid(), amount, new NBTTagCompound());
-				insertResource.tag.setBoolean("pressurized", true);
+				FluidStack insertResource = new FluidStack(fs.getFluid(), amount);
+				if(output.output instanceof TileEntityFluidPipe)
+				{
+					insertResource.tag = new NBTTagCompound();
+					insertResource.tag.setBoolean("pressurized", true);
+				}
 				int r = output.output.fill(output.direction.getOpposite(), insertResource, !simulate);
 				f += r;
 				canAccept -= r;
