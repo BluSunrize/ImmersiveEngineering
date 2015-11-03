@@ -91,12 +91,12 @@ public class TileEntityFluidPump extends TileEntityIEBase implements IFluidHandl
 					{
 						this.energyStorage.extractEnergy(Config.getInt("pump_consumption"), false);
 						fs = Utils.drainFluidBlock(worldObj, cc.posX,cc.posY,cc.posZ, true);
-//						int rainbow = (closedList.size()%11)+1;
-//						if(rainbow>6)
-//							rainbow+=2;
-//						if(rainbow>9)
-//							rainbow++;
-//						worldObj.setBlock( cc.posX,cc.posY,cc.posZ, Blocks.stained_glass,rainbow, 0x3);
+						//						int rainbow = (closedList.size()%11)+1;
+						//						if(rainbow>6)
+						//							rainbow+=2;
+						//						if(rainbow>9)
+						//							rainbow++;
+						//						worldObj.setBlock( cc.posX,cc.posY,cc.posZ, Blocks.stained_glass,rainbow, 0x3);
 						worldObj.setBlock( cc.posX,cc.posY,cc.posZ, Blocks.cobblestone);
 						this.tank.fill(fs, true);
 						closedList.remove(target);
@@ -175,7 +175,8 @@ public class TileEntityFluidPump extends TileEntityIEBase implements IFluidHandl
 				if(tile instanceof IFluidHandler && ((IFluidHandler)tile).canFill(ForgeDirection.getOrientation(i).getOpposite(), fs.getFluid()))
 				{
 					FluidStack insertResource = new FluidStack(fs.getFluid(), fs.amount, new NBTTagCompound());
-					insertResource.tag.setBoolean("pressurized", true);
+					if(tile instanceof TileEntityFluidPipe)
+						insertResource.tag.setBoolean("pressurized", true);
 					int temp = ((IFluidHandler)tile).fill(fd.getOpposite(), insertResource, false);
 					if(temp>0)
 					{
