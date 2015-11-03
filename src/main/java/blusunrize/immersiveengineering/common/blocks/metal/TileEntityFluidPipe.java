@@ -32,10 +32,10 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidHandl
 		TileEntityFluidPipe.validScaffoldCoverings.add(new ItemStack(IEContent.blockMetalDecoration,1,1));
 		TileEntityFluidPipe.validScaffoldCoverings.add(new ItemStack(IEContent.blockWoodenDecoration,1,5));
 	}
-	
+
 	public int[] sideConfig = new int[] {0,0,0,0,0,0};
 	public ItemStack scaffoldCovering = null;
-	
+
 	@Override
 	public boolean canUpdate()
 	{
@@ -120,7 +120,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidHandl
 	{
 		if(resource==null || from==null || from==ForgeDirection.UNKNOWN || sideConfig[from.ordinal()]!=0)
 			return 0;
-		
+
 		int limit = resource.tag!=null&&resource.tag.hasKey("pressurized")?1000: 50;
 		int canAccept = Math.min(resource.amount, limit);
 		if(canAccept<=0)
@@ -257,6 +257,14 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidHandl
 		sideConfig[side]++;
 		if(sideConfig[side]>0)
 			sideConfig[side] = -1;
+
+		ForgeDirection fd = ForgeDirection.getOrientation(side);
+		TileEntity connected = worldObj.getTileEntity(xCoord+fd.offsetX, yCoord+fd.offsetY, zCoord+fd.offsetZ);
+		if(connected instanceof TileEntityFluidPipe)
+		{
+			((TileEntityFluidPipe)connected).sideConfig[ForgeDirection.OPPOSITES[side]] = sideConfig[side]; 
+			worldObj.addBlockEvent(xCoord+fd.offsetX, yCoord+fd.offsetY, zCoord+fd.offsetZ, getBlockType(), 0,0);
+		}
 		worldObj.addBlockEvent(xCoord, yCoord, zCoord, getBlockType(), 0,0);
 	}
 	@Override

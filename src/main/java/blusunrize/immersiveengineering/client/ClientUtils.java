@@ -21,6 +21,7 @@ import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
@@ -1708,8 +1709,11 @@ public class ClientUtils
 				{iEast.getMinU(),iEast.getMaxU(), iEast.getMinV(),iEast.getMaxV()}};
 		return drawWorldBlock(world, block, x, y, z, uv);
 	}
-
 	public static boolean drawWorldBlock(IBlockAccess world, Block block, int x, int y, int z, double[][] uv)
+	{
+		return drawWorldBlock(world, block, x,y,z, uv, AxisAlignedBB.getBoundingBox(0,0,0,1,1,1).getOffsetBoundingBox(x,y,z));
+	}
+	public static boolean drawWorldBlock(IBlockAccess world, Block block, int x, int y, int z, double[][] uv, AxisAlignedBB bounds)
 	{
 		Tessellator tes = tes();
 		boolean flag = false;
@@ -1720,16 +1724,16 @@ public class ClientUtils
 			info = calculateBlockLighting(0, world, block, x,y,z, 1,1,1);
 			tes.setColorOpaque_F(info.colorRedTopLeft, info.colorGreenTopLeft, info.colorBlueTopLeft);
 			tes.setBrightness(info.brightnessTopLeft);
-			tes.addVertexWithUV(x+0, y+0, z+1, uv[0][0], uv[0][3]);
+			tes.addVertexWithUV(bounds.minX, bounds.minY, bounds.maxZ, uv[0][0], uv[0][3]);
 			tes.setColorOpaque_F(info.colorRedBottomLeft, info.colorGreenBottomLeft, info.colorBlueBottomLeft);
 			tes.setBrightness(info.brightnessBottomLeft);
-			tes.addVertexWithUV(x+0, y+0, z+0, uv[0][0], uv[0][2]);
+			tes.addVertexWithUV(bounds.minX, bounds.minY, bounds.minZ, uv[0][0], uv[0][2]);
 			tes.setColorOpaque_F(info.colorRedBottomRight, info.colorGreenBottomRight, info.colorBlueBottomRight);
 			tes.setBrightness(info.brightnessBottomRight);
-			tes.addVertexWithUV(x+1, y+0, z+0, uv[0][1], uv[0][2]);
+			tes.addVertexWithUV(bounds.maxX, bounds.minY, bounds.minZ, uv[0][1], uv[0][2]);
 			tes.setColorOpaque_F(info.colorRedTopRight, info.colorGreenTopRight, info.colorBlueTopRight);
 			tes.setBrightness(info.brightnessTopRight);
-			tes.addVertexWithUV(x+1, y+0, z+1, uv[0][1], uv[0][3]);
+			tes.addVertexWithUV(bounds.maxX, bounds.minY, bounds.maxZ, uv[0][1], uv[0][3]);
 			flag=true;
 		}
 		// SIDE 1
@@ -1738,16 +1742,16 @@ public class ClientUtils
 			info = calculateBlockLighting(1, world, block, x,y,z, 1,1,1);
 			tes.setColorOpaque_F(info.colorRedTopLeft, info.colorGreenTopLeft, info.colorBlueTopLeft);
 			tes.setBrightness(info.brightnessTopLeft);
-			tes.addVertexWithUV(x+1, y+1, z+1, uv[1][1], uv[1][3]);
+			tes.addVertexWithUV(bounds.maxX, bounds.maxY, bounds.maxZ, uv[1][1], uv[1][3]);
 			tes.setColorOpaque_F(info.colorRedBottomLeft, info.colorGreenBottomLeft, info.colorBlueBottomLeft);
 			tes.setBrightness(info.brightnessBottomLeft);
-			tes.addVertexWithUV(x+1, y+1, z+0, uv[1][1], uv[1][2]);
+			tes.addVertexWithUV(bounds.maxX, bounds.maxY, bounds.minZ, uv[1][1], uv[1][2]);
 			tes.setColorOpaque_F(info.colorRedBottomRight, info.colorGreenBottomRight, info.colorBlueBottomRight);
 			tes.setBrightness(info.brightnessBottomRight);
-			tes.addVertexWithUV(x+0, y+1, z+0, uv[1][0], uv[1][2]);
+			tes.addVertexWithUV(bounds.minX, bounds.maxY, bounds.minZ, uv[1][0], uv[1][2]);
 			tes.setColorOpaque_F(info.colorRedTopRight, info.colorGreenTopRight, info.colorBlueTopRight);
 			tes.setBrightness(info.brightnessTopRight);
-			tes.addVertexWithUV(x+0, y+1, z+1, uv[1][0], uv[1][3]);
+			tes.addVertexWithUV(bounds.minX, bounds.maxY, bounds.maxZ, uv[1][0], uv[1][3]);
 			flag=true;
 		}
 		// SIDE 2
@@ -1756,16 +1760,16 @@ public class ClientUtils
 			info = calculateBlockLighting(2, world, block, x,y,z, 1,1,1);
 			tes.setColorOpaque_F(info.colorRedTopLeft, info.colorGreenTopLeft, info.colorBlueTopLeft);
 			tes.setBrightness(info.brightnessTopLeft);
-			tes.addVertexWithUV(x+0, y+1, z+0, uv[2][1], uv[2][2]);
+			tes.addVertexWithUV(bounds.minX, bounds.maxY, bounds.minZ, uv[2][1], uv[2][2]);
 			tes.setColorOpaque_F(info.colorRedBottomLeft, info.colorGreenBottomLeft, info.colorBlueBottomLeft);
 			tes.setBrightness(info.brightnessBottomLeft);
-			tes.addVertexWithUV(x+1, y+1, z+0, uv[2][0], uv[2][2]);
+			tes.addVertexWithUV(bounds.maxX, bounds.maxY, bounds.minZ, uv[2][0], uv[2][2]);
 			tes.setColorOpaque_F(info.colorRedBottomRight, info.colorGreenBottomRight, info.colorBlueBottomRight);
 			tes.setBrightness(info.brightnessBottomRight);
-			tes.addVertexWithUV(x+1, y+0, z+0, uv[2][0], uv[2][3]);
+			tes.addVertexWithUV(bounds.maxX, bounds.minY, bounds.minZ, uv[2][0], uv[2][3]);
 			tes.setColorOpaque_F(info.colorRedTopRight, info.colorGreenTopRight, info.colorBlueTopRight);
 			tes.setBrightness(info.brightnessTopRight);
-			tes.addVertexWithUV(x+0, y+0, z+0, uv[2][1], uv[2][3]);
+			tes.addVertexWithUV(bounds.minX, bounds.minY, bounds.minZ, uv[2][1], uv[2][3]);
 			flag=true;
 		}
 		// SIDE 3
@@ -1774,16 +1778,16 @@ public class ClientUtils
 			info = calculateBlockLighting(3, world, block, x,y,z, 1,1,1);
 			tes.setColorOpaque_F(info.colorRedTopLeft, info.colorGreenTopLeft, info.colorBlueTopLeft);
 			tes.setBrightness(info.brightnessTopLeft);
-			tes.addVertexWithUV(x+0, y+1, z+1, uv[3][0], uv[3][2]);
+			tes.addVertexWithUV(bounds.minX, bounds.maxY, bounds.maxZ, uv[3][0], uv[3][2]);
 			tes.setColorOpaque_F(info.colorRedBottomLeft, info.colorGreenBottomLeft, info.colorBlueBottomLeft);
 			tes.setBrightness(info.brightnessBottomLeft);
-			tes.addVertexWithUV(x+0, y+0, z+1, uv[3][0], uv[3][3]);
+			tes.addVertexWithUV(bounds.minX, bounds.minY, bounds.maxZ, uv[3][0], uv[3][3]);
 			tes.setColorOpaque_F(info.colorRedBottomRight, info.colorGreenBottomRight, info.colorBlueBottomRight);
 			tes.setBrightness(info.brightnessBottomRight);
-			tes.addVertexWithUV(x+1, y+0, z+1, uv[3][1], uv[3][3]);
+			tes.addVertexWithUV(bounds.maxX, bounds.minY, bounds.maxZ, uv[3][1], uv[3][3]);
 			tes.setColorOpaque_F(info.colorRedTopRight, info.colorGreenTopRight, info.colorBlueTopRight);
 			tes.setBrightness(info.brightnessTopRight);
-			tes.addVertexWithUV(x+1, y+1, z+1, uv[3][1], uv[3][2]);
+			tes.addVertexWithUV(bounds.maxX, bounds.maxY, bounds.maxZ, uv[3][1], uv[3][2]);
 			flag=true;
 		}
 		// SIDE 4
@@ -1792,16 +1796,16 @@ public class ClientUtils
 			info = calculateBlockLighting(4, world, block, x,y,z, 1,1,1);
 			tes.setColorOpaque_F(info.colorRedTopLeft, info.colorGreenTopLeft, info.colorBlueTopLeft);
 			tes.setBrightness(info.brightnessTopLeft);
-			tes.addVertexWithUV(x+0, y+1, z+1, uv[4][1], uv[4][2]);
+			tes.addVertexWithUV(bounds.minX, bounds.maxY, bounds.maxZ, uv[4][1], uv[4][2]);
 			tes.setColorOpaque_F(info.colorRedBottomLeft, info.colorGreenBottomLeft, info.colorBlueBottomLeft);
 			tes.setBrightness(info.brightnessBottomLeft);
-			tes.addVertexWithUV(x+0, y+1, z+0, uv[4][0], uv[4][2]);
+			tes.addVertexWithUV(bounds.minX, bounds.maxY, bounds.minZ, uv[4][0], uv[4][2]);
 			tes.setColorOpaque_F(info.colorRedBottomRight, info.colorGreenBottomRight, info.colorBlueBottomRight);
 			tes.setBrightness(info.brightnessBottomRight);
-			tes.addVertexWithUV(x+0, y+0, z+0, uv[4][0], uv[4][3]);
+			tes.addVertexWithUV(bounds.minX, bounds.minY, bounds.minZ, uv[4][0], uv[4][3]);
 			tes.setColorOpaque_F(info.colorRedTopRight, info.colorGreenTopRight, info.colorBlueTopRight);
 			tes.setBrightness(info.brightnessTopRight);
-			tes.addVertexWithUV(x+0, y+0, z+1, uv[4][1], uv[4][3]);
+			tes.addVertexWithUV(bounds.minX, bounds.minY, bounds.maxZ, uv[4][1], uv[4][3]);
 			flag=true;
 		}
 		// SIDE 5
@@ -1810,16 +1814,16 @@ public class ClientUtils
 			info = calculateBlockLighting(5, world, block, x,y,z, 1,1,1);
 			tes.setColorOpaque_F(info.colorRedTopLeft, info.colorGreenTopLeft, info.colorBlueTopLeft);
 			tes.setBrightness(info.brightnessTopLeft);
-			tes.addVertexWithUV(x+1, y+0, z+1, uv[5][0], uv[5][3]);
+			tes.addVertexWithUV(bounds.maxX, bounds.minY, bounds.maxZ, uv[5][0], uv[5][3]);
 			tes.setColorOpaque_F(info.colorRedBottomLeft, info.colorGreenBottomLeft, info.colorBlueBottomLeft);
 			tes.setBrightness(info.brightnessBottomLeft);
-			tes.addVertexWithUV(x+1, y+0, z+0, uv[5][1], uv[5][3]);
+			tes.addVertexWithUV(bounds.maxX, bounds.minY, bounds.minZ, uv[5][1], uv[5][3]);
 			tes.setColorOpaque_F(info.colorRedBottomRight, info.colorGreenBottomRight, info.colorBlueBottomRight);
 			tes.setBrightness(info.brightnessBottomRight);
-			tes.addVertexWithUV(x+1, y+1, z+0, uv[5][1], uv[5][2]);
+			tes.addVertexWithUV(bounds.maxX, bounds.maxY, bounds.minZ, uv[5][1], uv[5][2]);
 			tes.setColorOpaque_F(info.colorRedTopRight, info.colorGreenTopRight, info.colorBlueTopRight);
 			tes.setBrightness(info.brightnessTopRight);
-			tes.addVertexWithUV(x+1, y+1, z+1, uv[5][0], uv[5][2]);
+			tes.addVertexWithUV(bounds.maxX, bounds.maxY, bounds.maxZ, uv[5][0], uv[5][2]);
 			flag=true;
 		}
 		return flag;

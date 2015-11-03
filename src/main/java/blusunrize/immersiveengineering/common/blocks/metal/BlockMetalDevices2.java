@@ -255,12 +255,6 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 					{
 						tile.toggleSide(fd.ordinal());
 						world.markBlockForUpdate(x, y, z);
-						TileEntity te2 = world.getTileEntity(x+fd.offsetX, y+fd.offsetY, z+fd.offsetZ);
-						if(te2 instanceof TileEntityFluidPipe)
-						{
-							((TileEntityFluidPipe)te2).toggleSide(fd.getOpposite().ordinal());
-							world.markBlockForUpdate(x+fd.offsetX, y+fd.offsetY, z+fd.offsetZ);
-						}
 						TileEntityFluidPipe.indirectConnections.clear();
 						return true;
 					}
@@ -282,7 +276,6 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 							tile.scaffoldCovering = Utils.copyStackWithAmount(player.getCurrentEquippedItem(), 1);
 							if(!player.capabilities.isCreativeMode)
 								player.inventory.decrStackSize(player.inventory.currentItem, 1);
-							tile.markDirty();
 							world.markBlockForUpdate(x, y, z);
 							return true;
 						}
@@ -310,7 +303,7 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 		else if (te instanceof TileEntityFloodlight)
 		{
 			TileEntityFloodlight light = ((TileEntityFloodlight)te);
-			
+
 			this.setBlockBounds(light.side/2==2?0:.0625f,light.side/2==0?0:.0625f,light.side/2==1?0:.0625f, light.side/2==2?1:.9375f,light.side/2==0?1:.9375f,light.side/2==1?1:.9375f);
 		}
 		else if (te instanceof TileEntityFluidPipe_old)
@@ -365,64 +358,73 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 		if(te instanceof TileEntityFluidPipe)
 		{
 			TileEntityFluidPipe tile = (TileEntityFluidPipe)te;
-			byte connections = tile.getConnectionByte();
-			if(/*connections==16||connections==32||*/connections==48)
+			if(tile.scaffoldCovering!=null)
 			{
-				this.setBlockBounds(0,.25f,.25f, 1,.75f,.75f);
+				this.setBlockBounds(.0625f,0,.0625f, .9375f,1,.9375f);
 				addCollisionBox(world, x, y, z, aabb, list, ent);
-				if((connections&16) == 0)
-				{
-					this.setBlockBounds(0,.125f,.125f, .125f,.875f,.875f);
-					addCollisionBox(world, x, y, z, aabb, list, ent);
-				}
-				if((connections&32) == 0)
-				{
-					this.setBlockBounds(.875f,.125f,.125f, 1,.875f,.875f);
-					addCollisionBox(world, x, y, z, aabb, list, ent);
-				}
-			}
-			else if(/*connections==4||connections==8||*/connections==12)
-			{
-				this.setBlockBounds(.25f,.25f,0, .75f,.75f,1);
-				addCollisionBox(world, x, y, z, aabb, list, ent);
-				if((connections&4) == 0)
-				{
-					this.setBlockBounds(.125f,.125f,0, .875f,.875f,.125f);
-					addCollisionBox(world, x, y, z, aabb, list, ent);
-				}
-				if((connections&8) == 0)
-				{
-					this.setBlockBounds(.125f,.125f,.875f, .875f,.875f,1);
-					addCollisionBox(world, x, y, z, aabb, list, ent);
-				}
-			}
-			else if(/*connections==1||connections==2||*/connections==3)
-			{
-				this.setBlockBounds(.25f,0,.25f, .75f,1,.75f);
-				addCollisionBox(world, x, y, z, aabb, list, ent);
-				if((connections&1) == 0)
-				{
-					this.setBlockBounds(.125f,0,.125f, .875f,.125f,.875f);
-					addCollisionBox(world, x, y, z, aabb, list, ent);
-				}
-				if((connections&2) == 0)
-				{
-					this.setBlockBounds(.125f,.875f,.125f, .875f,1,.875f);
-					addCollisionBox(world, x, y, z, aabb, list, ent);
-				}
 			}
 			else
 			{
-				this.setBlockBounds(.25f,.25f,.25f, .75f,.75f,.75f);
-				addCollisionBox(world, x, y, z, aabb, list, ent);
-				for(int i=0; i<6; i++)
+
+				byte connections = tile.getConnectionByte();
+				if(/*connections==16||connections==32||*/connections==48)
 				{
-					if((connections & 0x1)==1)
+					this.setBlockBounds(0,.25f,.25f, 1,.75f,.75f);
+					addCollisionBox(world, x, y, z, aabb, list, ent);
+					if((connections&16) == 0)
 					{
-						this.setBlockBounds(i==4?0:i==5?.875f:.125f, i==0?0:i==1?.875f:.125f, i==2?0:i==3?.875f:.125f,  i==4?.125f:i==5?1:.875f, i==0?.125f:i==1?1:.875f, i==2?.125f:i==3?1:.875f);
+						this.setBlockBounds(0,.125f,.125f, .125f,.875f,.875f);
 						addCollisionBox(world, x, y, z, aabb, list, ent);
 					}
-					connections >>= 1;
+					if((connections&32) == 0)
+					{
+						this.setBlockBounds(.875f,.125f,.125f, 1,.875f,.875f);
+						addCollisionBox(world, x, y, z, aabb, list, ent);
+					}
+				}
+				else if(/*connections==4||connections==8||*/connections==12)
+				{
+					this.setBlockBounds(.25f,.25f,0, .75f,.75f,1);
+					addCollisionBox(world, x, y, z, aabb, list, ent);
+					if((connections&4) == 0)
+					{
+						this.setBlockBounds(.125f,.125f,0, .875f,.875f,.125f);
+						addCollisionBox(world, x, y, z, aabb, list, ent);
+					}
+					if((connections&8) == 0)
+					{
+						this.setBlockBounds(.125f,.125f,.875f, .875f,.875f,1);
+						addCollisionBox(world, x, y, z, aabb, list, ent);
+					}
+				}
+				else if(/*connections==1||connections==2||*/connections==3)
+				{
+					this.setBlockBounds(.25f,0,.25f, .75f,1,.75f);
+					addCollisionBox(world, x, y, z, aabb, list, ent);
+					if((connections&1) == 0)
+					{
+						this.setBlockBounds(.125f,0,.125f, .875f,.125f,.875f);
+						addCollisionBox(world, x, y, z, aabb, list, ent);
+					}
+					if((connections&2) == 0)
+					{
+						this.setBlockBounds(.125f,.875f,.125f, .875f,1,.875f);
+						addCollisionBox(world, x, y, z, aabb, list, ent);
+					}
+				}
+				else
+				{
+					this.setBlockBounds(.25f,.25f,.25f, .75f,.75f,.75f);
+					addCollisionBox(world, x, y, z, aabb, list, ent);
+					for(int i=0; i<6; i++)
+					{
+						if((connections & 0x1)==1)
+						{
+							this.setBlockBounds(i==4?0:i==5?.875f:.125f, i==0?0:i==1?.875f:.125f, i==2?0:i==3?.875f:.125f,  i==4?.125f:i==5?1:.875f, i==0?.125f:i==1?1:.875f, i==2?.125f:i==3?1:.875f);
+							addCollisionBox(world, x, y, z, aabb, list, ent);
+						}
+						connections >>= 1;
+					}
 				}
 			}
 		}
@@ -490,12 +492,56 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 		return super.getSelectedBoundingBoxFromPool(world, x, y, z);
 	}
 
+	@Override
+	public void onEntityCollidedWithBlock(World world, int x, int y, int z, Entity ent)
+	{
+		if(world.getBlockMetadata(x, y, z)==META_fluidPipe)
+		{
+			TileEntity te = world.getTileEntity(x, y, z);
+			if(te instanceof TileEntityFluidPipe && ((TileEntityFluidPipe)te).scaffoldCovering!=null)
+			{
+				float f5 = 0.15F;
+				if (ent.motionX < (double)(-f5))
+					ent.motionX = (double)(-f5);
+				if (ent.motionX > (double)f5)
+					ent.motionX = (double)f5;
+				if (ent.motionZ < (double)(-f5))
+					ent.motionZ = (double)(-f5);
+				if (ent.motionZ > (double)f5)
+					ent.motionZ = (double)f5;
+
+				ent.fallDistance = 0.0F;
+				if (ent.motionY < -0.15D)
+					ent.motionY = -0.15D;
+
+				if(ent.motionY<0 && ent instanceof EntityPlayer && ent.isSneaking())
+				{
+					ent.motionY=.05;
+					return;
+				}
+				if(ent.isCollidedHorizontally)
+					ent.motionY=.2;
+			}
+		}
+	}
 
 	@Override
 	public boolean isSideSolid(IBlockAccess world, int x, int y, int z, ForgeDirection side)
 	{
-		//		int meta = world.getBlockMetadata(x, y, z);
-		return true;
+		int meta = world.getBlockMetadata(x, y, z);
+		if(meta==META_electricLantern)
+			return side.ordinal()<2;
+		else if(meta==META_floodlight)
+			return side == ForgeDirection.DOWN;
+		else if(meta==META_fluidPipe)
+		{
+			TileEntity te = world.getTileEntity(x, y, z);
+			if(te instanceof TileEntityFluidPipe && ((TileEntityFluidPipe)te).scaffoldCovering!=null)
+				return true;
+		}
+		else if(meta==META_fluidPump)
+			return true;
+		return false;
 	}
 
 	@Override
@@ -565,12 +611,15 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 	{
 		TileEntity tile = world.getTileEntity(x, y, z);
 		if(tile instanceof TileEntityFluidPipe)
-			if(world.getTileEntity(tileX, tileY, tileZ) instanceof IFluidHandler)
+		{
+			TileEntity other = world.getTileEntity(tileX, tileY, tileZ);
+			if(other instanceof IFluidHandler)
 			{
 				TileEntityFluidPipe.indirectConnections.clear();
 				ForgeDirection fd = tileY<y?ForgeDirection.DOWN: tileY>y?ForgeDirection.UP: tileZ<z?ForgeDirection.NORTH: tileZ>z?ForgeDirection.SOUTH: tileX<x?ForgeDirection.WEST: ForgeDirection.EAST;
 				((TileEntityFluidPipe) tile).sideConfig[fd.ordinal()]=0;
 			}
+		}
 	}
 
 	//	@Override
