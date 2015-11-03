@@ -110,8 +110,10 @@ public class BlockFakeLight extends BlockIEBase
 		public int[] floodlightCoords = {-1,-1,-1};
 		public TileEntityFakeLight()
 		{
-			if(!EventHandler.interdictionTiles.contains(this))
-				EventHandler.interdictionTiles.add(this);
+			synchronized (EventHandler.interdictionTiles) {
+				if (!EventHandler.interdictionTiles.contains(this))
+					EventHandler.interdictionTiles.add(this);
+			}
 		}
 		@Override
 		public void updateEntity()
@@ -140,8 +142,10 @@ public class BlockFakeLight extends BlockIEBase
 		@Override
 		public void invalidate()
 		{
-			if(EventHandler.interdictionTiles.contains(this))
-				EventHandler.interdictionTiles.remove(this);
+			synchronized (EventHandler.interdictionTiles) {
+				if (EventHandler.interdictionTiles.contains(this))
+					EventHandler.interdictionTiles.remove(this);
+			}
 			super.invalidate();
 		}
 		@Override
