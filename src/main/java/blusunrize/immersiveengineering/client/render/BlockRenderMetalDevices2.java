@@ -5,6 +5,7 @@ import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.IBlockAccess;
 
 import org.lwjgl.opengl.GL11;
@@ -157,7 +158,10 @@ public class BlockRenderMetalDevices2 implements ISimpleBlockRenderingHandler
 				if(tile.scaffoldCovering!=null)
 				{
 					Block cover = Block.getBlockFromItem(tile.scaffoldCovering.getItem());
+					float f = .015625f;
+					AxisAlignedBB aabb = AxisAlignedBB.getBoundingBox(1-f,1-f,1-f, f,f,f).getOffsetBoundingBox(x,y,z);
 					ClientUtils.drawWorldBlock(world, cover, x, y, z, tile.scaffoldCovering.getItemDamage());
+					ClientUtils.drawWorldBlock(world, cover, x, y, z, tile.scaffoldCovering.getItemDamage(),aabb);
 				}
 				return true;
 			}

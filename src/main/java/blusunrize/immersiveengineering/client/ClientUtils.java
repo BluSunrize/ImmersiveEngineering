@@ -1694,6 +1694,10 @@ public class ClientUtils
 
 	public static boolean drawWorldBlock(IBlockAccess world, Block block, int x, int y, int z, int meta)
 	{
+		return drawWorldBlock(world, block, x, y, z, meta, AxisAlignedBB.getBoundingBox(0,0,0,1,1,1).getOffsetBoundingBox(x,y,z));
+	}
+	public static boolean drawWorldBlock(IBlockAccess world, Block block, int x, int y, int z, int meta, AxisAlignedBB aabb)
+	{
 		IIcon iBot = block.getIcon(0, meta);
 		IIcon iTop = block.getIcon(1, meta);
 		IIcon iNorth = block.getIcon(2, meta);
@@ -1707,7 +1711,7 @@ public class ClientUtils
 				{iSouth.getMinU(),iSouth.getMaxU(), iSouth.getMinV(),iSouth.getMaxV()},
 				{iWest.getMinU(),iWest.getMaxU(), iWest.getMinV(),iWest.getMaxV()},
 				{iEast.getMinU(),iEast.getMaxU(), iEast.getMinV(),iEast.getMaxV()}};
-		return drawWorldBlock(world, block, x, y, z, uv);
+		return drawWorldBlock(world, block, x, y, z, uv, aabb);
 	}
 	public static boolean drawWorldBlock(IBlockAccess world, Block block, int x, int y, int z, double[][] uv)
 	{
