@@ -61,8 +61,9 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable
 			{
 				ChunkCoordinates cc = it.next();
 				worldObj.setBlock(cc.posX,cc.posY,cc.posZ, IEContent.blockFakeLight,0, 2);
-
-				((TileEntityFakeLight)worldObj.getTileEntity(cc.posX,cc.posY,cc.posZ)).floodlightCoords = new int[]{xCoord,yCoord,zCoord};
+				TileEntity te = worldObj.getTileEntity(cc.posX,cc.posY,cc.posZ);
+				if (te instanceof TileEntityFakeLight)
+					((TileEntityFakeLight)te).floodlightCoords = new int[]{xCoord,yCoord,zCoord};
 
 				fakeLights.add(cc);
 				it.remove();
@@ -172,6 +173,8 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable
 			double dist = (vec.xCoord*i*vec.xCoord*i)+(vec.yCoord*i*vec.yCoord*i)+(vec.zCoord*i*vec.zCoord*i);
 			if(dist>maxDistance)
 				break;
+			if (yy>255||yy<0)
+				continue;
 			//&&worldObj.getBlockLightValue(xx,yy,zz)<12 using this makes it not work in daylight .-.
 			if((xx!=xCoord||yy!=yCoord||zz!=zCoord)&&worldObj.isAirBlock(xx,yy,zz))
 			{
