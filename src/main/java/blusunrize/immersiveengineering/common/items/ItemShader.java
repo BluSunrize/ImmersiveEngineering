@@ -27,6 +27,8 @@ public class ItemShader extends ItemIEBase implements IShaderItem
 	public ItemShader()
 	{
 		super("shader", 1);
+		this.icons = new IIcon[4];
+		
 		addShader("Rosequartz", 0, new int[]{65,35,35,255}, new int[]{230,180,180,255}, new int[]{240,205,205,255},new int[]{230,180,180,255}, null);
 		addShader("Argo", 2, new int[]{45,45,45,255}, new int[]{220,220,220,255}, new int[]{220,120,35,255},new int[]{200,200,200,255}, null);
 		addShader("Sunstrike", 1, new int[]{115,115,115,255}, new int[]{205,105,0,255}, new int[]{215,58,0,185},new int[]{215,58,0,185}, null);
@@ -108,7 +110,6 @@ public class ItemShader extends ItemIEBase implements IShaderItem
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IIconRegister ir)
 	{
-		this.icons = new IIcon[4];
 		for(int i=0; i<3; i++)
 			this.icons[i] = ir.registerIcon("immersiveengineering:shader_"+i);
 		this.icons[3] = ir.registerIcon("immersiveengineering:shader_slot");

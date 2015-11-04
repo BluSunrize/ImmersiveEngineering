@@ -21,6 +21,7 @@ import blusunrize.immersiveengineering.api.tool.IUpgradeableTool;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.items.ItemEngineersBlueprint;
 import blusunrize.immersiveengineering.common.util.IEAchievements;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -159,7 +160,8 @@ public abstract class IESlot extends Slot
 		{
 			super(container, inv, id, x, y);
 			this.tool = tool;
-			this.setBackgroundIcon(IEContent.itemShader.icons[3]);
+			if(FMLCommonHandler.instance().getEffectiveSide()==Side.CLIENT)
+				this.setBackgroundIcon(IEContent.itemShader.icons[3]);
 		}
 		@Override
 		public boolean isItemValid(ItemStack itemStack)
@@ -212,7 +214,7 @@ public abstract class IESlot extends Slot
 			super.onPickupFromSlot(player, stack);
 			if(stack!=null && stack.getItem() instanceof IUpgradeableTool)
 				((IUpgradeableTool)stack.getItem()).removeFromWorkbench(player, stack);
-				
+
 		}
 	}
 	public static class Ghost extends IESlot
@@ -255,7 +257,7 @@ public abstract class IESlot extends Slot
 			return false;
 		}
 	}
-	
+
 	public static class BlueprintInput extends IESlot
 	{
 		ItemStack upgradeableTool;
