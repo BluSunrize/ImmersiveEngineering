@@ -479,7 +479,7 @@ public class TileEntityFermenter extends TileEntityMultiblockPart implements IFl
 	@Override
 	public boolean isUseableByPlayer(EntityPlayer player)
 	{
-		return worldObj.getTileEntity(xCoord,yCoord,zCoord)!=this?false:player.getDistanceSq(xCoord+.5D,yCoord+.5D,zCoord+.5D)<=64;
+		return worldObj.getTileEntity(xCoord,yCoord,zCoord)!=this?false:formed&&player.getDistanceSq(xCoord+.5D,yCoord+.5D,zCoord+.5D)<=64;
 	}
 	@Override
 	public void openInventory()
