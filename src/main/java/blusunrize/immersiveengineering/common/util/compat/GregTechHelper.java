@@ -1,7 +1,6 @@
 package blusunrize.immersiveengineering.common.util.compat;
 
-import java.lang.reflect.Method;
-
+import gregtech.api.interfaces.tileentity.IBasicEnergyContainer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -15,7 +14,7 @@ public class GregTechHelper extends IECompatModule
 	public void preInit()
 	{
 	}
-	
+
 	@Override
 	public void init()
 	{
@@ -38,40 +37,60 @@ public class GregTechHelper extends IECompatModule
 	}
 
 
-	static Class c_IEnergyConnected;
-	static Method m_IEnergyConnected;
-	public static boolean gregtech_isEnergyConnected(TileEntity tile)
+	//	static Class c_IEnergyConnected;
+	//	static Class c_IBasicEnergyContainer;
+	//	static Method m_IEnergyConnected;
+	public static boolean gregtech_isValidEnergyOutput(TileEntity tile)
 	{
 		if(!Lib.GREG)
 			return false;
-		try{
-			if(c_IEnergyConnected==null)
-				c_IEnergyConnected = Class.forName("gregtech.api.interfaces.tileentity.IEnergyConnected");
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		if(c_IEnergyConnected!=null)
-			return c_IEnergyConnected.isAssignableFrom(tile.getClass());
-		return false;
+		//		try{
+		//			if(c_IBasicEnergyContainer==null)
+		//				c_IBasicEnergyContainer = Class.forName("gregtech.api.interfaces.tileentity.IBasicEnergyContainer");
+		//		}catch(Exception e){
+		//			e.printStackTrace();
+		//		}
+		//		if(c_IBasicEnergyContainer!=null)
+		//			return c_IBasicEnergyContainer.isAssignableFrom(tile.getClass());
+		return tile instanceof IBasicEnergyContainer && ((IBasicEnergyContainer)tile).getEUCapacity()>0;
 	}
-	public static long gregtech_outputGTPower(Object energyConnected, byte side, long volt, long amp)
+	public static long gregtech_outputGTPower(Object energyContainer, byte side, long volt, long amp, boolean simulate)
 	{
 		if(!Lib.GREG)
 			return 0;
-		try{
-			if(c_IEnergyConnected==null)
-				c_IEnergyConnected = Class.forName("gregtech.api.interfaces.tileentity.IEnergyConnected");
-			if(m_IEnergyConnected==null)
-				m_IEnergyConnected = (c_IEnergyConnected!=null?c_IEnergyConnected.getDeclaredMethod("injectEnergyUnits", byte.class,long.class,long.class): null);
-			
-			if(m_IEnergyConnected!=null)
-			{
-				long i =  (Long) m_IEnergyConnected.invoke(energyConnected, (byte)side,128,volt);
-				return i;
-			}
-		}catch(Exception e){
-			e.printStackTrace();
+		//		try{
+		//			if(c_IBasicEnergyContainer==null)
+		//				c_IBasicEnergyContainer = Class.forName("gregtech.api.interfaces.tileentity.IBasicEnergyContainer");
+		//			if(m_IEnergyConnected==null)
+		//				m_IEnergyConnected = (c_IBasicEnergyContainer!=null?c_IBasicEnergyContainer.getDeclaredMethod("injectEnergyUnits", byte.class,long.class,long.class): null);
+		//			
+		//			if(m_IEnergyConnected!=null)
+		//			{
+		//				long i =  (Long) m_IEnergyConnected.invoke(energyConnected, (byte)side,128,volt);
+		//				return i;
+		//			}
+		//		}catch(Exception e){
+		//			e.printStackTrace();
+		//		}
+		if(energyContainer instanceof IBasicEnergyContainer)
+		{
+			//			System.out.println("Space: "+space+"("+cap+"; "+stored+")");
+			long in = ((IBasicEnergyContainer)energyContainer).injectEnergyUnits(side, volt, 1);
+//			if(simulate && in==1)
+//				((IBasicEnergyContainer)energyContainer).drainEnergyUnits((byte)6, insert, 1);
+
+//			System.out.println((simulate?"SIMULATED":"REAL")+": Inserting "+insert+", "+in);
+//			try
+//			{
+//				throw new RuntimeException("THROW!");
+//			}
+//			catch(Exception e)
+//			{
+//				e.printStackTrace();
+//			}
+			return in==1?volt:0;
 		}
+
 		return 0;
 	}
 }

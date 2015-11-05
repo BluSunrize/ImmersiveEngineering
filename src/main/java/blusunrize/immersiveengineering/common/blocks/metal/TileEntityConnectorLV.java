@@ -83,7 +83,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 	{
 		ForgeDirection fd = ForgeDirection.getOrientation(facing);
 		TileEntity tile = worldObj.getTileEntity(xCoord+fd.offsetX, yCoord+fd.offsetY, zCoord+fd.offsetZ);
-		return tile !=null && (tile instanceof IEnergyReceiver || (Lib.IC2 && IC2Helper.isEnergySink(tile)) || (Lib.GREG && GregTechHelper.gregtech_isEnergyConnected(tile)));
+		return tile !=null && (tile instanceof IEnergyReceiver || (Lib.IC2 && IC2Helper.isEnergySink(tile)) || (Lib.GREG && GregTechHelper.gregtech_isValidEnergyOutput(tile)));
 	}
 	@Override
 	public int outputEnergy(int amount, boolean simulate, int energyType)
@@ -99,15 +99,32 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 			double left = IC2Helper.injectEnergy(capacitor, fd.getOpposite(), ModCompatability.convertRFtoEU(amount, getIC2Tier()), canTakeHV()?(256*256): canTakeMV()?(128*128) : (32*32), simulate);
 			return amount-ModCompatability.convertEUtoRF(left);
 		}
-		else if(Lib.GREG && GregTechHelper.gregtech_isEnergyConnected(capacitor))
-			if(simulate)
-			{
-				long accepted = GregTechHelper.gregtech_outputGTPower(capacitor, (byte)fd.getOpposite().ordinal(), (long)ModCompatability.convertRFtoEU(amount, getIC2Tier()), 1L);
-				GregTechHelper.gregtech_outputGTPower(capacitor, (byte)fd.getOpposite().ordinal(), -accepted, 1L);
-				return (int)accepted;
-			}
-			else
-				return (int)GregTechHelper.gregtech_outputGTPower(capacitor, (byte)fd.getOpposite().ordinal(), (long)ModCompatability.convertRFtoEU(amount, getIC2Tier()), 1L);
+		else if(Lib.GREG && GregTechHelper.gregtech_isValidEnergyOutput(capacitor))
+		{
+			long translAmount = (long)ModCompatability.convertRFtoEU(amount, getIC2Tier());
+			long accepted = GregTechHelper.gregtech_outputGTPower(capacitor, (byte)fd.getOpposite().ordinal(), translAmount, 1L, simulate);
+			int reConv =  ModCompatability.convertEUtoRF(accepted);
+//			System.out.println("Insert: "+amount+", rer: "+reConv);
+			return reConv;
+		}
+//			if(simulate)
+//			{
+////				return amount;
+//				long translAmount = (long)ModCompatability.convertRFtoEU(amount, getIC2Tier());
+////				long accepted = GregTechHelper.gregtech_outputGTPower(capacitor, (byte)fd.getOpposite().ordinal(), translAmount, 1L);
+////				GregTechHelper.gregtech_outputGTPower(capacitor, (byte)fd.getOpposite().ordinal(), -translAmount, 1L);
+//////				System.out.println("SIMULATE: transfering: "+amount+", accepted: "+accepted);
+//////				return (int)accepted;
+//				return accepted>0?amount:0;
+//			}
+//			else
+//			{
+//				int accepted = (int)GregTechHelper.gregtech_outputGTPower(capacitor, (byte)fd.getOpposite().ordinal(), (long)ModCompatability.convertRFtoEU(amount, getIC2Tier()), 1L);
+////				System.out.println("PROPER transfering: "+amount+", accepted: "+accepted);
+////				return accepted;
+////				return am
+//						return accepted>0?amount:0;
+//			}
 		return 0;
 	}
 
