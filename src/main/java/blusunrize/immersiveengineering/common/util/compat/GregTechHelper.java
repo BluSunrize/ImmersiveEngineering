@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.common.util.compat;
 
 import gregtech.api.interfaces.tileentity.IBasicEnergyContainer;
+import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -74,47 +75,62 @@ public class GregTechHelper extends IECompatModule
 		//		}
 		if(energyContainer instanceof IBasicEnergyContainer)
 		{
+
+			IBasicEnergyContainer container = (IBasicEnergyContainer)energyContainer;
+			if(!container.inputEnergyFrom(side) || container.getStoredEU() >= container.getEUCapacity())
+				return 0L;
+			
+			if(volt>container.getInputVoltage() && container instanceof IGregTechTileEntity)
+			{
+				((IGregTechTileEntity)container).doExplosion(volt);
+				return 0L;
+			}
+
 			//			System.out.println("Space: "+space+"("+cap+"; "+stored+")");
 			long in = 0;
 			int voltLeft = (int)volt;
 			int insert=0;
 			//			System.out.println("VoltLeft = "+voltLeft);
-//			while(voltLeft>0 && (insert=Integer.highestOneBit(voltLeft))>0)
-//			{
-////				in += ((IBasicEnergyContainer)energyContainer).injectEnergyUnits(side, insert, 1);
-//				if(((IBasicEnergyContainer)energyContainer).increaseStoredEnergyUnits(insert, true))
-//				{
-//					if(simulate)
-//						((IBasicEnergyContainer)energyContainer).decreaseStoredEnergyUnits(insert,true);
-//					in++;
-//				}
-//				System.out.println("Insert "+insert+" accepted: "+in);
-//				voltLeft -= insert;
-//			}
-			
+			//			while(voltLeft>0 && (insert=Integer.highestOneBit(voltLeft))>0)
+			//			{
+			////				in += ((IBasicEnergyContainer)energyContainer).injectEnergyUnits(side, insert, 1);
+			//				if(((IBasicEnergyContainer)energyContainer).increaseStoredEnergyUnits(insert, true))
+			//				{
+			//					if(simulate)
+			//						((IBasicEnergyContainer)energyContainer).decreaseStoredEnergyUnits(insert,true);
+			//					in++;
+			//				}
+			//				System.out.println("Insert "+insert+" accepted: "+in);
+			//				voltLeft -= insert;
+			//			}
+
 			long stored = ((IBasicEnergyContainer)energyContainer).getStoredEU();
-//			if(((IBasicEnergyContainer)energyContainer).increaseStoredEnergyUnits(volt, true))
-//			{
-//				
-//				if(simulate)
-//					((IBasicEnergyContainer)energyContainer).decreaseStoredEnergyUnits(volt,true);
+			//			if(((IBasicEnergyContainer)energyContainer).increaseStoredEnergyUnits(volt, true))
+			//			{
+			//				
+			//				if(simulate)
+			//					((IBasicEnergyContainer)energyContainer).decreaseStoredEnergyUnits(volt,true);
 			long voltRound = volt;
-			
-			int lowestDiff = Integer.MAX_VALUE;
-		    for (int i : new int[]{32,64,128,256})
-		    {
-		        int diff = (int)Math.abs(volt - i); // use API to get absolute diff
-		        if (diff < lowestDiff)
-		        {
-		            lowestDiff = diff;
-		            voltRound = i;
-		        }
-		    }
-//			if(!simulate)
-				((IBasicEnergyContainer)energyContainer).increaseStoredEnergyUnits(voltRound, true);
-			in++;
+
+//			int lowestDiff = Integer.MAX_VALUE;
+//			for (int i : new int[]{32,64,128,256})
+//			{
+//				int diff = (int)Math.abs(volt - i); // use API to get absolute diff
+//				if (diff < lowestDiff)
+//				{
+//					lowestDiff = diff;
+//					voltRound = i;
+//				}
 //			}
-			
+			//			if(!simulate)
+			if(((IBasicEnergyContainer)energyContainer).increaseStoredEnergyUnits(voltRound, false));
+			{
+				if(simulate)
+					((IBasicEnergyContainer)energyContainer).decreaseStoredEnergyUnits(voltRound,true);
+				in++;
+			}
+			//			}
+
 			//			System.out.println((simulate?"SIMULATED":"REAL")+": Inserting "+insert+", "+in);
 			//			try
 			//			{

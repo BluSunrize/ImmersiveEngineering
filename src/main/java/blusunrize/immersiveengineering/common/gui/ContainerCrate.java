@@ -10,11 +10,13 @@ import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenCrat
 public class ContainerCrate extends Container
 {
 	int slotCount;
+	TileEntityWoodenCrate tile;
 	public ContainerCrate(InventoryPlayer inventoryPlayer, TileEntityWoodenCrate tile)
 	{
 		for(int i=0; i<tile.getSizeInventory(); i++)
 			this.addSlotToContainer(new Slot(tile, i, 8+(i%9)*18, 18+(i/9)*18));
-		slotCount=tile.getSizeInventory();
+		this.slotCount=tile.getSizeInventory();
+		this.tile = tile;
 
 		for (int i = 0; i < 3; i++)
 			for (int j = 0; j < 9; j++)
@@ -26,7 +28,7 @@ public class ContainerCrate extends Container
 	@Override
 	public boolean canInteractWith(EntityPlayer p_75145_1_)
 	{
-		return true;
+		return tile.isUseableByPlayer(p_75145_1_);
 	}
 
 

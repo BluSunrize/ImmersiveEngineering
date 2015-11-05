@@ -102,11 +102,12 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 		else if(Lib.GREG && GregTechHelper.gregtech_isValidEnergyOutput(capacitor))
 		{
 			long translAmount = (long)ModCompatability.convertRFtoEU(amount, getIC2Tier());
-			System.out.println((simulate?"SIM":"REAL")+" Output: "+amount+"RF == "+translAmount+"EU");
 			long accepted = GregTechHelper.gregtech_outputGTPower(capacitor, (byte)fd.getOpposite().ordinal(), translAmount, 1L, simulate);
 			int reConv =  ModCompatability.convertEUtoRF(accepted);
+			System.out.println((simulate?"SIM":"REAL")+" Output: "+amount+"RF == "+translAmount+"EU"+" ~ Accepted: "+reConv+"RF == "+accepted+"EU");
+			
 //			System.out.println("Insert: "+amount+", rer: "+reConv);
-			System.out.println("Acepted: "+reConv+"RF == "+accepted+"EU");
+//			System.out.println("Acepted: "+reConv+"RF == "+accepted+"EU");
 			return reConv;
 		}
 //			if(simulate)
@@ -290,7 +291,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 	@Optional.Method(modid = "IC2")
 	public double getDemandedEnergy()
 	{
-		return getMaxInput()/4;
+		return ModCompatability.convertRFtoEU(getMaxInput(), getIC2Tier());
 	}
 	@Optional.Method(modid = "IC2")
 	public int getSinkTier()
@@ -304,8 +305,17 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 	@Optional.Method(modid = "IC2")
 	public double injectEnergy(ForgeDirection directionFrom, double amount, double voltage)
 	{
-		int r =  transferEnergy(ModCompatability.convertEUtoRF(amount), false, 1);
-		double left = amount-(r/4f);
-		return left;
+		int rf = ModCompatability.convertEUtoRF(amount);
+		if(rf>this.getMaxInput())//More Input than allowed results in blocking
+			return amount;
+		System.out.println("Simul Call:");
+		int rSimul = transferEnergy(rf, true, 1);
+//		System.out.println("simul: "+rSimul);
+		if(rSimul==0)//This will prevent full power void but allow partial transfer
+			return amount;
+		System.out.println("Transfer Call:");
+		int r = transferEnergy(rf, false, 1);
+		double eu = ModCompatability.convertRFtoEU(r, getIC2Tier());
+		return amount-eu;
 	}
 }

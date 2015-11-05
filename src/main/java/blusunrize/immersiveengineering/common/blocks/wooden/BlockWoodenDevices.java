@@ -468,6 +468,7 @@ public class BlockWoodenDevices extends BlockIEBase implements blusunrize.aquatw
 						world.spawnEntityInWorld(entityitem);
 					}
 				}
+			world.func_147453_f(x, y, z, par5);
 		}
 		super.breakBlock(world, x, y, z, par5, par6);
 	}

@@ -79,9 +79,9 @@ public class TileEntityModWorkbench extends TileEntityIEBase implements IInvento
 	}
 
 	@Override
-	public boolean isUseableByPlayer(EntityPlayer p_70300_1_)
+	public boolean isUseableByPlayer(EntityPlayer player)
 	{
-		return true;
+		return worldObj.getTileEntity(xCoord,yCoord,zCoord)!=this?false:player.getDistanceSq(xCoord+.5D,yCoord+.5D,zCoord+.5D)<=64;
 	}
 
 	@Override
