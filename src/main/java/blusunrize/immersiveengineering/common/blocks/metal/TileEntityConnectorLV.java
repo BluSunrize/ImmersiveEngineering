@@ -102,9 +102,11 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 		else if(Lib.GREG && GregTechHelper.gregtech_isValidEnergyOutput(capacitor))
 		{
 			long translAmount = (long)ModCompatability.convertRFtoEU(amount, getIC2Tier());
+			System.out.println((simulate?"SIM":"REAL")+" Output: "+amount+"RF == "+translAmount+"EU");
 			long accepted = GregTechHelper.gregtech_outputGTPower(capacitor, (byte)fd.getOpposite().ordinal(), translAmount, 1L, simulate);
 			int reConv =  ModCompatability.convertEUtoRF(accepted);
 //			System.out.println("Insert: "+amount+", rer: "+reConv);
+			System.out.println("Acepted: "+reConv+"RF == "+accepted+"EU");
 			return reConv;
 		}
 //			if(simulate)

@@ -81,6 +81,8 @@ public class IERecipes
 		BlueprintCraftingRecipe.addRecipe("bullet", new ItemStack(IEContent.itemBullet,1,5), new ItemStack(IEContent.itemBullet,1,0),Items.gunpowder,Blocks.tnt);
 
 		BlueprintCraftingRecipe.addRecipe("specialBullet", new ItemStack(IEContent.itemBullet,1,6), new ItemStack(IEContent.itemBullet,1,1),Items.gunpowder,"dustAluminum","dustAluminum");
+		if(OreDictionary.doesOreNameExist("dustAluminium"))
+		BlueprintCraftingRecipe.addRecipe("specialBullet", new ItemStack(IEContent.itemBullet,1,6), new ItemStack(IEContent.itemBullet,1,1),Items.gunpowder,"dustAluminium","dustAluminium");
 		BlueprintCraftingRecipe.addRecipe("specialBullet", new ItemStack(IEContent.itemBullet,1,10), new ItemStack(IEContent.itemBullet,1,0),Items.gunpowder,"dustQuartz",Items.glass_bottle);
 
 		BlueprintCraftingRecipe.addVillagerTrade("bullet", new ItemStack(Items.emerald,1,2));
@@ -131,6 +133,8 @@ public class IERecipes
 		addOredictRecipe(new ItemStack(IEContent.itemWireCoil,4,0), " I ","ISI"," I ", 'I',"ingotCopper", 'S',"stickWood");
 		addOredictRecipe(new ItemStack(IEContent.itemWireCoil,4,1), " I ","ISI"," I ", 'I',"ingotElectrum", 'S',"stickWood");
 		addOredictRecipe(new ItemStack(IEContent.itemWireCoil,4,2), " I ","ASA"," I ", 'I',"ingotSteel", 'A',"ingotAluminum", 'S',"stickWood");
+		if(OreDictionary.doesOreNameExist("dustAluminium"))
+			addOredictRecipe(new ItemStack(IEContent.itemWireCoil,4,2), " I ","ASA"," I ", 'I',"ingotSteel", 'A',"ingotAluminium", 'S',"stickWood");
 		addOredictRecipe(new ItemStack(IEContent.itemWireCoil,4,3), " I ","ISI"," I ", 'I',new ItemStack(IEContent.itemMaterial,1,3), 'S',"stickWood");
 		addOredictRecipe(new ItemStack(IEContent.itemWireCoil,4,4), " I ","ISI"," I ", 'I',"ingotSteel", 'S',"stickWood");
 
@@ -186,7 +190,11 @@ public class IERecipes
 		addOredictRecipe(new ItemStack(IEContent.blockMetalDevice,1, BlockMetalDevices.META_transformer), "L M","IBI","III", 'L',new ItemStack(IEContent.blockMetalDevice,1,BlockMetalDevices.META_connectorLV),'M',new ItemStack(IEContent.blockMetalDevice,1,BlockMetalDevices.META_connectorMV),'I',"ingotIron",'B',electrumCoil).setMirrored(true);
 		addOredictRecipe(new ItemStack(IEContent.blockMetalDevice,8, BlockMetalDevices.META_relayHV), "BIB"," I ","BIB", 'I',"ingotIron",'B',new ItemStack(IEContent.blockStoneDevice,1,4));
 		addOredictRecipe(new ItemStack(IEContent.blockMetalDevice,4, BlockMetalDevices.META_connectorHV), "BIB","BIB","BIB", 'I',"ingotAluminum",'B',Blocks.hardened_clay);
+		if(OreDictionary.doesOreNameExist("dustAluminium"))
+			addOredictRecipe(new ItemStack(IEContent.blockMetalDevice,4, BlockMetalDevices.META_connectorHV), "BIB","BIB","BIB", 'I',"ingotAluminium",'B',Blocks.hardened_clay);
 		addOredictRecipe(new ItemStack(IEContent.blockMetalDevice,1, BlockMetalDevices.META_capacitorHV), "III","ALA","WRW", 'L',"blockLead",'I',"ingotSteel",'A',"ingotAluminum",'R',"blockRedstone",'W',"plankTreatedWood");
+		if(OreDictionary.doesOreNameExist("dustAluminium"))
+			addOredictRecipe(new ItemStack(IEContent.blockMetalDevice,1, BlockMetalDevices.META_capacitorHV), "III","ALA","WRW", 'L',"blockLead",'I',"ingotSteel",'A',"ingotAluminium",'R',"blockRedstone",'W',"plankTreatedWood");
 		addOredictRecipe(new ItemStack(IEContent.blockMetalDevice,1, BlockMetalDevices.META_transformerHV), "M H","IBI","III", 'H',new ItemStack(IEContent.blockMetalDevice,1,BlockMetalDevices.META_connectorHV),'M',new ItemStack(IEContent.blockMetalDevice,1,BlockMetalDevices.META_connectorMV),'I',"ingotIron",'B',hvCoil).setMirrored(true);
 		addOredictRecipe(new ItemStack(IEContent.blockMetalDevice,1, BlockMetalDevices.META_dynamo), "RCR","III", 'C',copperCoil,'I',"ingotIron",'R',"dustRedstone");
 		addOredictRecipe(new ItemStack(IEContent.blockMetalDevice,1, BlockMetalDevices.META_thermoelectricGen), "III","CBC","CCC", 'I',"ingotSteel",'C',"ingotConstantan",'B',copperCoil);

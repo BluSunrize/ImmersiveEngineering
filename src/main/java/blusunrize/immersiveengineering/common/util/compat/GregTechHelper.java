@@ -75,20 +75,56 @@ public class GregTechHelper extends IECompatModule
 		if(energyContainer instanceof IBasicEnergyContainer)
 		{
 			//			System.out.println("Space: "+space+"("+cap+"; "+stored+")");
-			long in = ((IBasicEnergyContainer)energyContainer).injectEnergyUnits(side, volt, 1);
-//			if(simulate && in==1)
-//				((IBasicEnergyContainer)energyContainer).drainEnergyUnits((byte)6, insert, 1);
-
-//			System.out.println((simulate?"SIMULATED":"REAL")+": Inserting "+insert+", "+in);
-//			try
+			long in = 0;
+			int voltLeft = (int)volt;
+			int insert=0;
+			//			System.out.println("VoltLeft = "+voltLeft);
+//			while(voltLeft>0 && (insert=Integer.highestOneBit(voltLeft))>0)
 //			{
-//				throw new RuntimeException("THROW!");
+////				in += ((IBasicEnergyContainer)energyContainer).injectEnergyUnits(side, insert, 1);
+//				if(((IBasicEnergyContainer)energyContainer).increaseStoredEnergyUnits(insert, true))
+//				{
+//					if(simulate)
+//						((IBasicEnergyContainer)energyContainer).decreaseStoredEnergyUnits(insert,true);
+//					in++;
+//				}
+//				System.out.println("Insert "+insert+" accepted: "+in);
+//				voltLeft -= insert;
 //			}
-//			catch(Exception e)
+			
+			long stored = ((IBasicEnergyContainer)energyContainer).getStoredEU();
+//			if(((IBasicEnergyContainer)energyContainer).increaseStoredEnergyUnits(volt, true))
 //			{
-//				e.printStackTrace();
+//				
+//				if(simulate)
+//					((IBasicEnergyContainer)energyContainer).decreaseStoredEnergyUnits(volt,true);
+			long voltRound = volt;
+			
+			int lowestDiff = Integer.MAX_VALUE;
+		    for (int i : new int[]{32,64,128,256})
+		    {
+		        int diff = (int)Math.abs(volt - i); // use API to get absolute diff
+		        if (diff < lowestDiff)
+		        {
+		            lowestDiff = diff;
+		            voltRound = i;
+		        }
+		    }
+//			if(!simulate)
+				((IBasicEnergyContainer)energyContainer).increaseStoredEnergyUnits(voltRound, true);
+			in++;
 //			}
-			return in==1?volt:0;
+			
+			//			System.out.println((simulate?"SIMULATED":"REAL")+": Inserting "+insert+", "+in);
+			//			try
+			//			{
+			//				throw new RuntimeException("THROW!");
+			//			}
+			//			catch(Exception e)
+			//			{
+			//				e.printStackTrace();
+			//			}
+			return in>0?volt:0;
 		}
 
 		return 0;
