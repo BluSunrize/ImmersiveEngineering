@@ -104,30 +104,8 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 			long translAmount = (long)ModCompatability.convertRFtoEU(amount, getIC2Tier());
 			long accepted = GregTechHelper.gregtech_outputGTPower(capacitor, (byte)fd.getOpposite().ordinal(), translAmount, 1L, simulate);
 			int reConv =  ModCompatability.convertEUtoRF(accepted);
-			System.out.println((simulate?"SIM":"REAL")+" Output: "+amount+"RF == "+translAmount+"EU"+" ~ Accepted: "+reConv+"RF == "+accepted+"EU");
-			
-//			System.out.println("Insert: "+amount+", rer: "+reConv);
-//			System.out.println("Acepted: "+reConv+"RF == "+accepted+"EU");
 			return reConv;
 		}
-//			if(simulate)
-//			{
-////				return amount;
-//				long translAmount = (long)ModCompatability.convertRFtoEU(amount, getIC2Tier());
-////				long accepted = GregTechHelper.gregtech_outputGTPower(capacitor, (byte)fd.getOpposite().ordinal(), translAmount, 1L);
-////				GregTechHelper.gregtech_outputGTPower(capacitor, (byte)fd.getOpposite().ordinal(), -translAmount, 1L);
-//////				System.out.println("SIMULATE: transfering: "+amount+", accepted: "+accepted);
-//////				return (int)accepted;
-//				return accepted>0?amount:0;
-//			}
-//			else
-//			{
-//				int accepted = (int)GregTechHelper.gregtech_outputGTPower(capacitor, (byte)fd.getOpposite().ordinal(), (long)ModCompatability.convertRFtoEU(amount, getIC2Tier()), 1L);
-////				System.out.println("PROPER transfering: "+amount+", accepted: "+accepted);
-////				return accepted;
-////				return am
-//						return accepted>0?amount:0;
-//			}
 		return 0;
 	}
 
@@ -308,12 +286,9 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 		int rf = ModCompatability.convertEUtoRF(amount);
 		if(rf>this.getMaxInput())//More Input than allowed results in blocking
 			return amount;
-		System.out.println("Simul Call:");
 		int rSimul = transferEnergy(rf, true, 1);
-//		System.out.println("simul: "+rSimul);
 		if(rSimul==0)//This will prevent full power void but allow partial transfer
 			return amount;
-		System.out.println("Transfer Call:");
 		int r = transferEnergy(rf, false, 1);
 		double eu = ModCompatability.convertRFtoEU(r, getIC2Tier());
 		return amount-eu;

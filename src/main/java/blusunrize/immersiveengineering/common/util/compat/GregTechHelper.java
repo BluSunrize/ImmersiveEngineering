@@ -37,42 +37,16 @@ public class GregTechHelper extends IECompatModule
 	{
 	}
 
-
-	//	static Class c_IEnergyConnected;
-	//	static Class c_IBasicEnergyContainer;
-	//	static Method m_IEnergyConnected;
 	public static boolean gregtech_isValidEnergyOutput(TileEntity tile)
 	{
 		if(!Lib.GREG)
 			return false;
-		//		try{
-		//			if(c_IBasicEnergyContainer==null)
-		//				c_IBasicEnergyContainer = Class.forName("gregtech.api.interfaces.tileentity.IBasicEnergyContainer");
-		//		}catch(Exception e){
-		//			e.printStackTrace();
-		//		}
-		//		if(c_IBasicEnergyContainer!=null)
-		//			return c_IBasicEnergyContainer.isAssignableFrom(tile.getClass());
 		return tile instanceof IBasicEnergyContainer && ((IBasicEnergyContainer)tile).getEUCapacity()>0;
 	}
 	public static long gregtech_outputGTPower(Object energyContainer, byte side, long volt, long amp, boolean simulate)
 	{
 		if(!Lib.GREG)
 			return 0;
-		//		try{
-		//			if(c_IBasicEnergyContainer==null)
-		//				c_IBasicEnergyContainer = Class.forName("gregtech.api.interfaces.tileentity.IBasicEnergyContainer");
-		//			if(m_IEnergyConnected==null)
-		//				m_IEnergyConnected = (c_IBasicEnergyContainer!=null?c_IBasicEnergyContainer.getDeclaredMethod("injectEnergyUnits", byte.class,long.class,long.class): null);
-		//			
-		//			if(m_IEnergyConnected!=null)
-		//			{
-		//				long i =  (Long) m_IEnergyConnected.invoke(energyConnected, (byte)side,128,volt);
-		//				return i;
-		//			}
-		//		}catch(Exception e){
-		//			e.printStackTrace();
-		//		}
 		if(energyContainer instanceof IBasicEnergyContainer)
 		{
 
@@ -86,32 +60,7 @@ public class GregTechHelper extends IECompatModule
 				return 0L;
 			}
 
-			//			System.out.println("Space: "+space+"("+cap+"; "+stored+")");
-			long in = 0;
-			int voltLeft = (int)volt;
-			int insert=0;
-			//			System.out.println("VoltLeft = "+voltLeft);
-			//			while(voltLeft>0 && (insert=Integer.highestOneBit(voltLeft))>0)
-			//			{
-			////				in += ((IBasicEnergyContainer)energyContainer).injectEnergyUnits(side, insert, 1);
-			//				if(((IBasicEnergyContainer)energyContainer).increaseStoredEnergyUnits(insert, true))
-			//				{
-			//					if(simulate)
-			//						((IBasicEnergyContainer)energyContainer).decreaseStoredEnergyUnits(insert,true);
-			//					in++;
-			//				}
-			//				System.out.println("Insert "+insert+" accepted: "+in);
-			//				voltLeft -= insert;
-			//			}
-
-			long stored = ((IBasicEnergyContainer)energyContainer).getStoredEU();
-			//			if(((IBasicEnergyContainer)energyContainer).increaseStoredEnergyUnits(volt, true))
-			//			{
-			//				
-			//				if(simulate)
-			//					((IBasicEnergyContainer)energyContainer).decreaseStoredEnergyUnits(volt,true);
 			long voltRound = volt;
-
 //			int lowestDiff = Integer.MAX_VALUE;
 //			for (int i : new int[]{32,64,128,256})
 //			{
@@ -122,24 +71,13 @@ public class GregTechHelper extends IECompatModule
 //					voltRound = i;
 //				}
 //			}
-			//			if(!simulate)
+			long in = 0;
 			if(((IBasicEnergyContainer)energyContainer).increaseStoredEnergyUnits(voltRound, false));
 			{
 				if(simulate)
 					((IBasicEnergyContainer)energyContainer).decreaseStoredEnergyUnits(voltRound,true);
 				in++;
 			}
-			//			}
-
-			//			System.out.println((simulate?"SIMULATED":"REAL")+": Inserting "+insert+", "+in);
-			//			try
-			//			{
-			//				throw new RuntimeException("THROW!");
-			//			}
-			//			catch(Exception e)
-			//			{
-			//				e.printStackTrace();
-			//			}
 			return in>0?volt:0;
 		}
 
