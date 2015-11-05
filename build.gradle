@@ -15,6 +15,13 @@ buildscript {
     }
 }
 
+repositories {
+    maven {
+        name = "forestry"
+        url = "http://maven.ic2.player.to/"
+    }
+}
+
 apply plugin: 'forge'
 
 version = "0.6.0"
@@ -25,13 +32,14 @@ sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
 minecraft {
-    version = "1.7.10-10.13.4.1448-1.7.10"
+    version = project.version_mc + "-" + project.version_forge
 	replace '${version}', project.version
     runDir = "eclipse"
 }
 
 dependencies {
-
+    compile "net.sengir.forestry:forestry_${project.version_mc}:${project.version_forestry}:api"
+    runtime "net.sengir.forestry:forestry_${project.version_mc}:${project.version_forestry}:dev"
 }
 
 processResources

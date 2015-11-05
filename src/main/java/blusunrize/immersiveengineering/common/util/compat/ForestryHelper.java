@@ -7,12 +7,15 @@ import net.minecraftforge.fluids.FluidStack;
 import blusunrize.immersiveengineering.api.energy.DieselHandler;
 import blusunrize.immersiveengineering.common.IEContent;
 import cpw.mods.fml.common.registry.GameRegistry;
+
+import forestry.api.core.ForestryAPI;
 import forestry.api.fuels.EngineBronzeFuel;
 import forestry.api.fuels.FuelManager;
-import forestry.core.config.GameMode;
 
 public class ForestryHelper extends IECompatModule
 {
+	private static final int ENGINE_CYCLE_DURATION_BIOMASS = 2500;
+
 	@Override
 	public void preInit()
 	{
@@ -34,6 +37,8 @@ public class ForestryHelper extends IECompatModule
 			DieselHandler.addSqueezerRecipe("dropHoneydew", 80, new FluidStack(fluidHoney,100), null);
 		}
 
-		FuelManager.bronzeEngineFuel.put(IEContent.fluidBiodiesel, new EngineBronzeFuel(IEContent.fluidBiodiesel, 50, (int)(2500*GameMode.getGameMode().getFloatSetting("fuel.biomass.biogas")), 1));
+		int burnDuration = (int) (ENGINE_CYCLE_DURATION_BIOMASS * ForestryAPI.activeMode.getFloatSetting("fuel.biomass.biogas"));
+		EngineBronzeFuel engineBronzeFuel = new EngineBronzeFuel(IEContent.fluidBiodiesel, 50, burnDuration, 1);
+		FuelManager.bronzeEngineFuel.put(IEContent.fluidBiodiesel, engineBronzeFuel);
 	}
 }
