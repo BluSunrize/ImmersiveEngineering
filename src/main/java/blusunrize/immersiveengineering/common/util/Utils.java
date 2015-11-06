@@ -54,8 +54,10 @@ public class Utils
 {
 	public static boolean compareToOreName(ItemStack stack, String oreName)
 	{
-		for(int oid : OreDictionary.getOreIDs(stack))
-			if(OreDictionary.getOreName(oid).equals(oreName))
+		ItemStack comp = copyStackWithAmount(stack, 1);
+		ArrayList<ItemStack> s = OreDictionary.getOres(oreName);
+		for (ItemStack st:s)
+			if (ItemStack.areItemStacksEqual(comp, st))
 				return true;
 		return false;
 	}
