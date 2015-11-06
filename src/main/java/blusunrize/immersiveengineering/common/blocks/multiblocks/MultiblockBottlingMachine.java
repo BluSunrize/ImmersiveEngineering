@@ -150,7 +150,7 @@ public class MultiblockBottlingMachine implements IMultiblock
 							tile.offset = new int[]{(side==4?l-1: side==5?1-l: side==2?-ww: ww),h+1,(side==2?l-1: side==3?1-l: side==5?-ww: ww)};
 						}
 					}
-		return true;
+		return b;
 	}
 
 	boolean structureCheck(World world, int startX, int startY, int startZ, int side, boolean mirror)
