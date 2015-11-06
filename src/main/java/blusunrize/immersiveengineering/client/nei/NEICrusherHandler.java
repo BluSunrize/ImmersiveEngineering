@@ -37,7 +37,6 @@ public class NEICrusherHandler extends TemplateRecipeHandler
 		{
 			Object in = recipe.input;
 			input = new PositionedStack(in, 70, 0);
-
 			output = new PositionedStack(recipe.output, 70,40);
 			if(recipe.secondaryOutput!=null)
 			{
@@ -79,7 +78,7 @@ public class NEICrusherHandler extends TemplateRecipeHandler
 		if(outputId == getOverlayIdentifier())
 		{
 			for(CrusherRecipe r : CrusherRecipe.recipeList)
-				if(r!=null)
+				if(r!=null && r.output!=null)
 					this.arecipes.add(new CachedCrusherRecipe(r));
 		}
 		else
@@ -119,7 +118,7 @@ public class NEICrusherHandler extends TemplateRecipeHandler
 		if(ingredient!=null)
 		{
 			CrusherRecipe r = CrusherRecipe.findRecipe(ingredient);
-			if(r!=null)
+			if(r!=null && r.output!=null)
 				this.arecipes.add(new CachedCrusherRecipe(r));
 		}
 	}

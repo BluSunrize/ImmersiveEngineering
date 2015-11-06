@@ -200,7 +200,7 @@ public class IEContent
 		blockStoneDecoration = new BlockStoneDecoration();
 		blockCrop = new BlockIECrop("hemp", "0B","1B","2B","3B","4B","0T");
 		blockFakeLight = new BlockFakeLight();
-		
+
 		itemMetal = new ItemIEBase("metal", 64,
 				"ingotCopper","ingotAluminum","ingotLead","ingotSilver","ingotNickel","ingotConstantan","ingotElectrum","ingotSteel",  
 				"dustIron","dustGold","dustCopper","dustAluminum","dustLead","dustSilver","dustNickel","dustConstantan","dustElectrum",
@@ -384,7 +384,7 @@ public class IEContent
 		registerTile(TileEntitySilo.class);
 		registerTile(TileEntityAssembler.class);
 		registerTile(TileEntityBottlingMachine.class);
-		
+
 		registerTile(TileEntityStructuralArm.class);
 		registerTile(TileEntityConnectorStructural.class);
 		registerTile(TileEntityWallmountMetal.class);
@@ -472,6 +472,8 @@ public class IEContent
 		ExcavatorHandler.addMineral("Pyrite", 20, .1f, new String[]{"oreIron","oreSulfur"}, new float[]{.5f,.5f});
 		ExcavatorHandler.addMineral("Bauxite", 20, .2f, new String[]{"oreAluminum","oreTitanium","denseoreAluminum"}, new float[]{.90f,.05f,.05f});
 		ExcavatorHandler.addMineral("Copper", 30, .2f, new String[]{"oreCopper","oreGold","oreNickel","denseoreCopper"}, new float[]{.65f,.25f,.05f,.05f});
+		if(OreDictionary.doesOreNameExist("oreTin"))
+			ExcavatorHandler.addMineral("Cassiterite", 15, .2f, new String[]{"oreTin","denseoreTin"}, new float[]{.95f,.05f});
 		ExcavatorHandler.addMineral("Gold", 20, .3f, new String[]{"oreGold","oreCopper","oreNickel","denseoreGold"}, new float[]{.65f,.25f,.05f,.05f});
 		ExcavatorHandler.addMineral("Nickel", 20, .3f, new String[]{"oreNickel","orePlatinum","oreIron","denseoreNickel"}, new float[]{.85f,.05f,.05f,.05f});
 		ExcavatorHandler.addMineral("Platinum", 5, .35f, new String[]{"orePlatinum","oreNickel","","oreIridium","denseorePlatinum"}, new float[]{.40f,.30f,.15f,.1f,.05f});

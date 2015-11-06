@@ -1,10 +1,14 @@
 package blusunrize.immersiveengineering.common.util.compat;
 
+import java.util.Map;
+
 import gregtech.api.interfaces.tileentity.IBasicEnergyContainer;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
+import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralMix;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.IERecipes;
 import blusunrize.immersiveengineering.common.util.Lib;
@@ -30,6 +34,16 @@ public class GregTechHelper extends IECompatModule
 		IERecipes.oreOutputSecondaries.put("PigIron", new Object[]{"dustIron",.1f});
 		IERecipes.oreOutputSecondaries.put("Naquadah", new Object[]{"dustNaquadahEnriched",.1f});
 		IERecipes.oreOutputSecondaries.put("NaquadahEnriched", new Object[]{"dustNaquadah",.1f});
+
+
+		for(MineralMix min : ExcavatorHandler.mineralList.keySet())
+			if(min.name.equalsIgnoreCase("Magnetite"))
+			{
+				min.ores = new String[]{"oreMagnetite","oreIron","oreVanadiumMagnetite"};
+				min.chances = new float[]{.75f,.20f,.05f};
+			}
+		ExcavatorHandler.addMineral("Wolframite", 15, .2f, new String[]{"oreTungsten","oreIron","oreManganese"}, new float[]{.55f,.3f,.15f});
+
 	}
 
 	@Override
@@ -53,7 +67,7 @@ public class GregTechHelper extends IECompatModule
 			IBasicEnergyContainer container = (IBasicEnergyContainer)energyContainer;
 			if(!container.inputEnergyFrom(side) || container.getStoredEU() >= container.getEUCapacity())
 				return 0L;
-			
+
 			if(volt>container.getInputVoltage() && container instanceof IGregTechTileEntity)
 			{
 				((IGregTechTileEntity)container).doExplosion(volt);
@@ -61,16 +75,16 @@ public class GregTechHelper extends IECompatModule
 			}
 
 			long voltRound = volt;
-//			int lowestDiff = Integer.MAX_VALUE;
-//			for (int i : new int[]{32,64,128,256})
-//			{
-//				int diff = (int)Math.abs(volt - i); // use API to get absolute diff
-//				if (diff < lowestDiff)
-//				{
-//					lowestDiff = diff;
-//					voltRound = i;
-//				}
-//			}
+			//			int lowestDiff = Integer.MAX_VALUE;
+			//			for (int i : new int[]{32,64,128,256})
+			//			{
+			//				int diff = (int)Math.abs(volt - i); // use API to get absolute diff
+			//				if (diff < lowestDiff)
+			//				{
+			//					lowestDiff = diff;
+			//					voltRound = i;
+			//				}
+			//			}
 			long in = 0;
 			if(((IBasicEnergyContainer)energyContainer).increaseStoredEnergyUnits(voltRound, false));
 			{
