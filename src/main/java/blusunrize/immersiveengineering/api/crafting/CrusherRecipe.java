@@ -69,7 +69,7 @@ public class CrusherRecipe
 	public static CrusherRecipe addRecipe(ItemStack output, Object input, int energy)
 	{
 		CrusherRecipe r = new CrusherRecipe(output, input, energy);
-		if(r.input!=null)
+		if(r.input!=null && r.output!=null)
 			recipeList.add(r);
 		return r;
 	}

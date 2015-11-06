@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.api.shader;
 
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
@@ -10,9 +11,10 @@ import blusunrize.immersiveengineering.api.IEApi;
 
 public class ShaderCaseRevolver extends ShaderCase
 {
-	int overlayType=0;
-	int[] colourBlade = new int[4];
-	String additionalTexture = null;
+	public int overlayType=0;
+	public int[] colourBlade = new int[4];
+	public String additionalTexture = null;
+	public int glowLayer = -1;
 
 	public ShaderCaseRevolver(int overlayType, int[] colourGrip, int[] colourPrimary, int[] colourSecondary, int[] colourBlade, String additionalTexture)
 	{
@@ -21,7 +23,7 @@ public class ShaderCaseRevolver extends ShaderCase
 		this.overlayType = overlayType;
 		this.additionalTexture = additionalTexture;
 	}
-
+	
 	@Override
 	public String getShaderType()
 	{
@@ -76,6 +78,20 @@ public class ShaderCaseRevolver extends ShaderCase
 		if(!shader.hasTagCompound() || pass==2&&(modelPart.equals("barrel") || modelPart.equals("dev_scope")||modelPart.equals("player_electro_0")||modelPart.equals("player_electro_1")))
 			return new int[]{255,255,255,255};
 
+		int i=getTextureType(modelPart,pass); //0 == grip, 1==main, 2==detail, 3==blade
+		if(i==0)
+			return colourUnderlying;
+		if(i==1)
+			return colourPrimary;
+		if(i==2)
+			return colourSecondary;
+		if(i==3)
+			return colourBlade;
+		return new int[]{255,255,255,255};
+	}
+	
+	public int getTextureType(String modelPart, int pass)
+	{
 		int i=0; //0 == grip, 1==main, 2==detail, 3==blade
 		switch(modelPart)
 		{
@@ -102,15 +118,7 @@ public class ShaderCaseRevolver extends ShaderCase
 			i=pass==1?2:3;
 			break;
 		}
-		if(i==0)
-			return colourUnderlying;
-		if(i==1)
-			return colourPrimary;
-		if(i==2)
-			return colourSecondary;
-		if(i==3)
-			return colourBlade;
-		return new int[]{255,255,255,255};
+		return i;
 	}
 
 	public IIcon i_revolverBase;
@@ -141,6 +149,17 @@ public class ShaderCaseRevolver extends ShaderCase
 				GL11.glDisable(GL11.GL_CULL_FACE);
 			else
 				GL11.glEnable(GL11.GL_CULL_FACE);
+		}
+		
+		if(glowLayer>-1 && (glowLayer&(getTextureType(modelPart,pass)+1))==1)
+		{
+			if(pre)
+			{
+				GL11.glDisable(GL11.GL_LIGHTING);
+			Tessellator.instance.setBrightness(0xffffff);
+			}
+			else
+				GL11.glEnable(GL11.GL_LIGHTING);
 		}
 	}
 }

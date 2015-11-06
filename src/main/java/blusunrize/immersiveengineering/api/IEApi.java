@@ -84,11 +84,13 @@ public class IEApi
 				return sCase;
 		return null;
 	}
-	public static void registerShader_Revolver(String name, int overlayType, int[] colourGrip, int[] colourPrimary, int[] colourSecondary, int[] colourBlade, String additionalTexture)
+	public static ShaderCaseRevolver registerShader_Revolver(String name, int overlayType, int[] colourGrip, int[] colourPrimary, int[] colourSecondary, int[] colourBlade, String additionalTexture)
 	{
 		if(!shaderList.contains(name))
 			shaderList.add(name);
-		shaderCaseRegistry.put(name, new ShaderCaseRevolver(overlayType, colourGrip, colourPrimary, colourSecondary, colourBlade, additionalTexture));
+		ShaderCaseRevolver shader = new ShaderCaseRevolver(overlayType, colourGrip, colourPrimary, colourSecondary, colourBlade, additionalTexture);
+		shaderCaseRegistry.put(name, shader);
+		return shader;
 	}
 	
 }
