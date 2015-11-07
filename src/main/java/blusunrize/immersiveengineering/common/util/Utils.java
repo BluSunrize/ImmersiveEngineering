@@ -4,6 +4,8 @@ import java.lang.reflect.Method;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -26,7 +28,6 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
@@ -200,48 +201,16 @@ public class Utils
 		Vec3 vec31 = vec3.addVector((double)f7 * d3, (double)f6 * d3, (double)f8 * d3);
 		return world.func_147447_a(vec3, vec31, bool, !bool, false);
 	}
-	/**
-	 * Tests whether a clear line of sight between the two blocks exists.
-	 * Tests against bounding boxes, ignores liquids.
-	 * This function tries to ignore hitting the starting block by moving pos0 to the respective edge of the start block's bounding box if this happens.
-	 * At least one coordinate of pos0 has to be outside of the start block's bounding box for this to work.
-	 * @param world
-	 * @param cc0 coordinates of start block
-	 * @param cc1 coordinates of target block
-	 * @param pos0 exact start position
-	 * @param pos1 exact target position
-	 * @return true if clear LOS exists. false if there are obstacles between start and target.
-	 */
 	public static boolean canBlocksSeeOther(World world, ChunkCoordinates cc0, ChunkCoordinates cc1, Vec3 pos0, Vec3 pos1)
 	{
-		MovingObjectPosition mop = world.rayTraceBlocks(pos0, pos1);
-		if(mop!=null && mop.blockX==cc0.posX&&mop.blockY==cc0.posY&&mop.blockZ==cc0.posZ)
-		{
-			AxisAlignedBB aabb0 = world.getBlock(cc0.posX, cc0.posY, cc0.posZ).getCollisionBoundingBoxFromPool(world, cc0.posX, cc0.posY, cc0.posZ);
-			Vec3 rayTraceDiff = pos0.subtract(mop.hitVec).normalize();
-			// move starting point to the edge of the bounding box in main direction of raytrace
-			double restartVecX;
-			double restartVecY;
-			double restartVecZ;
-			if(pos0.xCoord>=aabb0.minX && pos0.xCoord<=aabb0.maxX){
-				restartVecX = (rayTraceDiff.xCoord>0.5)?aabb0.maxX:(rayTraceDiff.xCoord<(-0.5))?aabb0.minX:pos0.xCoord;
-			} else {
-				restartVecX = pos0.xCoord;
-			}
-			if(pos0.yCoord>=aabb0.minY && pos0.yCoord<=aabb0.maxY){
-				restartVecY = (rayTraceDiff.yCoord>0.5)?aabb0.maxY:(rayTraceDiff.yCoord<(-0.5))?aabb0.minY:pos0.yCoord;
-			} else {
-				restartVecY = pos0.yCoord;
-			}
-			if(pos0.zCoord>=aabb0.minZ && pos0.zCoord<=aabb0.maxZ){
-				restartVecZ = (rayTraceDiff.zCoord>0.5)?aabb0.maxZ:(rayTraceDiff.zCoord<(-0.5))?aabb0.minZ:pos0.zCoord;
-			} else {
-				restartVecZ = pos0.zCoord;
-			}
-			Vec3 restartVec = Vec3.createVectorHelper(restartVecX, restartVecY, restartVecZ);
-			mop = world.rayTraceBlocks(restartVec, pos1);
+		HashSet<ChunkCoordinates> inter = rayTrace(pos0, pos1, world);
+		Iterator<ChunkCoordinates> it = inter.iterator();
+		while (it.hasNext()) {
+			ChunkCoordinates cc = it.next();
+			if (!cc.equals(cc0)&&!cc.equals(cc1))
+				return false;
 		}
-		return mop==null || (mop.blockX==cc1.posX&&mop.blockY==cc1.posY&&mop.blockZ==cc1.posZ);
+		return true;
 	}
 
 	public static boolean isHammer(ItemStack stack)
@@ -798,5 +767,135 @@ public class Utils
 			super(nullContainer, w, h);
 		}
 	}
+	public static HashSet<ChunkCoordinates> rayTrace(Vec3 start, Vec3 end, World world)
+	{
+		HashSet<ChunkCoordinates> ret = new HashSet<ChunkCoordinates>();
+		// x
+		if (start.xCoord>end.xCoord)
+		{
+			Vec3 tmp = start;
+			start = end;
+			end = tmp;
+		}
+		double min = start.xCoord;
+		double dif =end.xCoord-min;
+		double lengthAdd = Math.ceil(min)-start.xCoord;
+		Vec3 mov = start.subtract(end);
+		if (mov.xCoord!=0)
+		{
+			mov = scalarProd(mov, 1 / mov.xCoord);
+			ray(dif, mov, start, lengthAdd, ret, world, Blocks.diamond_ore);
+		}
+		// y
+		if (mov.yCoord!=0)
+		{
+			if (start.yCoord>end.yCoord)
+			{
+				Vec3 tmp = start;
+				start = end;
+				end = tmp;
+			}
+			min = start.yCoord;
+			dif = end.yCoord-min;
+			lengthAdd = Math.ceil(min)-start.yCoord;
+			mov = start.subtract(end);
+			mov = scalarProd(mov, 1/mov.yCoord);
 
+			ray(dif, mov, start, lengthAdd, ret, world, Blocks.iron_ore);
+		}
+		
+		// z
+		if (mov.zCoord!=0)
+		{
+			if (start.zCoord>end.zCoord)
+			{
+				Vec3 tmp = start;
+				start = end;
+				end = tmp;
+			}
+			min = start.zCoord;
+			dif = end.zCoord - min;
+			lengthAdd = Math.ceil(min)-start.zCoord;
+			mov = start.subtract(end);
+			mov = scalarProd(mov, 1 / mov.zCoord);
+
+			ray(dif, mov, start, lengthAdd, ret, world, Blocks.gold_ore);
+		}
+		return ret;
+	}
+	private static void ray(double dif, Vec3 mov, Vec3 start, double lengthAdd, HashSet<ChunkCoordinates> ret, World world, Block tmp)
+	{
+		//Do NOT set this to true unless for debugging. Causes blocks to be placed along the traced ray
+		boolean place = false;
+		double standartOff = .0625;
+		for (int i = 0; i < dif; i++)
+		{
+			Vec3 pos = addVectors(start, scalarProd(mov, i + lengthAdd+standartOff));
+			Vec3 posNext = addVectors(start,
+					scalarProd(mov, i + 1 + lengthAdd+standartOff));
+			Vec3 posPrev = addVectors(start,
+					scalarProd(mov, i + lengthAdd-standartOff));
+			Vec3 posVeryPrev = addVectors(start,
+					scalarProd(mov, i - 1 + lengthAdd-standartOff));
+			
+			ChunkCoordinates cc = new ChunkCoordinates((int) Math.floor(pos.xCoord),
+					(int) Math.floor(pos.yCoord), (int) Math.floor(pos.zCoord));
+			Block b = world.getBlock(cc.posX, cc.posY, cc.posZ);
+			int meta = world.getBlockMetadata(cc.posX, cc.posY, cc.posZ);
+			if (b.canCollideCheck(meta, false)&&b.collisionRayTrace(world, cc.posX, cc.posY, cc.posZ, pos,
+					posNext) != null)
+				ret.add(cc);
+			if (place)world.setBlock(cc.posX, cc.posY, cc.posZ, tmp);
+			
+			cc = new ChunkCoordinates((int) Math.floor(posPrev.xCoord),
+					(int) Math.floor(posPrev.yCoord), (int) Math.floor(posPrev.zCoord));
+			b = world.getBlock(cc.posX, cc.posY, cc.posZ);
+			meta = world.getBlockMetadata(cc.posX, cc.posY, cc.posZ);
+			if (b.canCollideCheck(meta, false)&&b.collisionRayTrace(world, cc.posX, cc.posY, cc.posZ, posVeryPrev,
+					posPrev) != null)
+				ret.add(cc);
+			if (place)
+				world.setBlock(cc.posX, cc.posY, cc.posZ, tmp);
+		}
+	}
+	public static Vec3 scalarProd(Vec3 v, double s) {
+		return Vec3.createVectorHelper(v.xCoord*s, v.yCoord*s, v.zCoord*s);
+	}
+	public static ChunkCoordinates rayTraceForFirst(Vec3 start, Vec3 end, World w, HashSet<ChunkCoordinates> ignore)
+	{
+		HashSet<ChunkCoordinates> trace = rayTrace(start, end, w);
+		for (ChunkCoordinates cc:ignore)
+			trace.remove(cc);
+		if (start.xCoord!=end.xCoord)
+			trace = findMinOrMax(trace, start.xCoord>end.xCoord, 0);
+		if (start.yCoord!=end.yCoord)
+			trace = findMinOrMax(trace, start.yCoord>end.yCoord, 0);
+		if (start.zCoord!=end.zCoord)
+			trace = findMinOrMax(trace, start.zCoord>end.zCoord, 0);
+		if (trace.size()>0)
+		{
+			ChunkCoordinates ret = trace.iterator().next();
+			return ret;
+		}
+		return null;
+	}
+	public static HashSet<ChunkCoordinates> findMinOrMax(HashSet<ChunkCoordinates> in, boolean max, int coord) {
+		HashSet<ChunkCoordinates> ret = new HashSet<ChunkCoordinates>();
+		int currMinMax = max?Integer.MIN_VALUE:Integer.MAX_VALUE;
+		//find minimum
+		for (ChunkCoordinates cc:in)
+		{
+			int curr = (coord==0?cc.posX:(coord==1?cc.posY:cc.posZ));
+			if (max^(curr<currMinMax))
+				currMinMax = curr;
+		}
+		//fill ret set
+		for (ChunkCoordinates cc:in)
+		{
+			int curr = (coord==0?cc.posX:(coord==1?cc.posY:cc.posZ));
+			if (curr==currMinMax)
+				ret.add(cc);
+		}
+		return ret;
+	}
 }
