@@ -1,7 +1,5 @@
 package blusunrize.immersiveengineering.common.util.compat;
 
-import java.util.Map;
-
 import gregtech.api.interfaces.tileentity.IBasicEnergyContainer;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import net.minecraft.init.Items;
@@ -11,6 +9,7 @@ import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralMix;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.IERecipes;
+import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDevices;
 import blusunrize.immersiveengineering.common.util.Lib;
 
 public class GregTechHelper extends IECompatModule
@@ -23,6 +22,8 @@ public class GregTechHelper extends IECompatModule
 	@Override
 	public void init()
 	{
+		IERecipes.addOredictRecipe(new ItemStack(IEContent.blockMetalDevice,8, BlockMetalDevices.META_conveyorBelt), "LLL","IRI", 'I',"ingotIron",'R',"dustRedstone",'L',"sheetRubber");
+		
 		IERecipes.oreOutputSecondaries.put("Beryllium", new Object[]{Items.emerald,.1f});
 		IERecipes.oreOutputSecondaries.put("Magnesium", new Object[]{"gemPeridot",.1f});
 		IERecipes.oreOutputSecondaries.put("Silicon", new Object[]{"dustSiliconDioxide",.1f});
@@ -35,7 +36,16 @@ public class GregTechHelper extends IECompatModule
 		IERecipes.oreOutputSecondaries.put("Naquadah", new Object[]{"dustNaquadahEnriched",.1f});
 		IERecipes.oreOutputSecondaries.put("NaquadahEnriched", new Object[]{"dustNaquadah",.1f});
 
-
+		IERecipes.addOreDictAlloyingRecipe("ingotHotNichrome",5, "Chrome", 400,4096, "dustNickel","dustNickel","dustNickel","dustNickel");
+		IERecipes.addOreDictAlloyingRecipe("ingotHotKanthal",3, "Iron", 500,4096, "dustAluminium","dustChrome");
+		IERecipes.addOreDictAlloyingRecipe("ingotHotKanthal",3, "Aluminium", 500,4096, "dustIron","dustChrome");
+		IERecipes.addOreDictAlloyingRecipe("ingotHotKanthal",3, "Chrome", 500,4096, "dustAluminium","dustIron");
+		IERecipes.addOreDictAlloyingRecipe("ingotMagnalium",3, "Magnesium", 200,512, "dustAluminium","dustAluminium");
+		IERecipes.addOreDictAlloyingRecipe("ingotBatteryAlloy",5, "Antimony", 200,512, "dustLead","dustLead","dustLead","dustLead");
+		IERecipes.addOreDictAlloyingRecipe("ingotHotTungstenSteel",2, "Tungsten", 800,4096, "dustSteel");
+		IERecipes.addOreDictAlloyingRecipe("ingotHotTungstenSteel",2, "Steel", 800,4096, "dustTungsten");
+		IERecipes.addOreDictAlloyingRecipe("ingotHotTungstenCarbide",2, "Tungsten", 1000,4096, "dustCoke");
+		
 		for(MineralMix min : ExcavatorHandler.mineralList.keySet())
 			if(min.name.equalsIgnoreCase("Magnetite"))
 			{
@@ -43,7 +53,6 @@ public class GregTechHelper extends IECompatModule
 				min.chances = new float[]{.75f,.20f,.05f};
 			}
 		ExcavatorHandler.addMineral("Wolframite", 15, .2f, new String[]{"oreTungsten","oreIron","oreManganese"}, new float[]{.55f,.3f,.15f});
-
 	}
 
 	@Override

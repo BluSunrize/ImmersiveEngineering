@@ -164,6 +164,7 @@ public class TileEntityFluidPump extends TileEntityIEBase implements IFluidHandl
 		if(canAccept<=0)
 			return 0;
 
+		int accelPower = Config.getInt("pump_consumption_accelerate");
 		final int fluidForSort = canAccept;
 		int sum = 0;
 		HashMap<DirectionalFluidOutput,Integer> sorting = new HashMap<DirectionalFluidOutput,Integer>();
@@ -175,7 +176,7 @@ public class TileEntityFluidPump extends TileEntityIEBase implements IFluidHandl
 				if(tile instanceof IFluidHandler && ((IFluidHandler)tile).canFill(ForgeDirection.getOrientation(i).getOpposite(), fs.getFluid()))
 				{
 					FluidStack insertResource = new FluidStack(fs.getFluid(), fs.amount);
-					if(tile instanceof TileEntityFluidPipe)
+					if(tile instanceof TileEntityFluidPipe && this.energyStorage.extractEnergy(accelPower,true)>=accelPower)
 					{
 						insertResource.tag = new NBTTagCompound();
 						insertResource.tag.setBoolean("pressurized", true);
@@ -199,8 +200,9 @@ public class TileEntityFluidPump extends TileEntityIEBase implements IFluidHandl
 				if(i++ == sorting.size()-1)
 					amount = canAccept;
 				FluidStack insertResource = new FluidStack(fs.getFluid(), amount);
-				if(output.output instanceof TileEntityFluidPipe)
+				if(output.output instanceof TileEntityFluidPipe && this.energyStorage.extractEnergy(accelPower,true)>=accelPower)
 				{
+					this.energyStorage.extractEnergy(accelPower,false);
 					insertResource.tag = new NBTTagCompound();
 					insertResource.tag.setBoolean("pressurized", true);
 				}

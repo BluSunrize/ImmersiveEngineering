@@ -42,11 +42,12 @@ public class ArcFurnaceRecipe
 	}
 
 	public static ArrayList<ArcFurnaceRecipe> recipeList = new ArrayList<ArcFurnaceRecipe>();
-	public static void addRecipe(ItemStack output, Object input, ItemStack slag, int time, int energyPerTick, Object... additives)
+	public static ArcFurnaceRecipe addRecipe(ItemStack output, Object input, ItemStack slag, int time, int energyPerTick, Object... additives)
 	{
 		ArcFurnaceRecipe recipe = new ArcFurnaceRecipe(output, input, slag, time, energyPerTick, additives);
 		if(recipe.input!=null)
 			recipeList.add(recipe);
+		return recipe;
 	}
 	public static ArcFurnaceRecipe findRecipe(ItemStack input, ItemStack[] additives)
 	{

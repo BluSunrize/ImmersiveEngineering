@@ -39,6 +39,9 @@ public abstract class IECompatModule
 		moduleClasses.put("Forestry", ForestryHelper.class);
 		moduleClasses.put("Botania", BotaniaHelper.class);
 		moduleClasses.put("etfuturum", EtFuturumHelper.class);
+		moduleClasses.put("EnderIO", EnderIOHelper.class);
+		moduleClasses.put("steamcraft2", SteamCraftHelper.class);
+		
 	}
 
 	public static void preInitModules()

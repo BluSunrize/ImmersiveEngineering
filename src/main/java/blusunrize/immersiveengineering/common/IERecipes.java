@@ -82,7 +82,7 @@ public class IERecipes
 
 		BlueprintCraftingRecipe.addRecipe("specialBullet", new ItemStack(IEContent.itemBullet,1,6), new ItemStack(IEContent.itemBullet,1,1),Items.gunpowder,"dustAluminum","dustAluminum");
 		if(OreDictionary.doesOreNameExist("dustAluminium"))
-		BlueprintCraftingRecipe.addRecipe("specialBullet", new ItemStack(IEContent.itemBullet,1,6), new ItemStack(IEContent.itemBullet,1,1),Items.gunpowder,"dustAluminium","dustAluminium");
+			BlueprintCraftingRecipe.addRecipe("specialBullet", new ItemStack(IEContent.itemBullet,1,6), new ItemStack(IEContent.itemBullet,1,1),Items.gunpowder,"dustAluminium","dustAluminium");
 		BlueprintCraftingRecipe.addRecipe("specialBullet", new ItemStack(IEContent.itemBullet,1,10), new ItemStack(IEContent.itemBullet,1,0),Items.gunpowder,"dustQuartz",Items.glass_bottle);
 
 		BlueprintCraftingRecipe.addVillagerTrade("bullet", new ItemStack(Items.emerald,1,2));
@@ -473,6 +473,19 @@ public class IERecipes
 		arcOutputModifier.put("Lead", new ItemStack(IEContent.itemMetal,2,2));
 		arcOutputModifier.put("Silver", new ItemStack(IEContent.itemMetal,2,3));
 		arcOutputModifier.put("Nickel", new ItemStack(IEContent.itemMetal,2,4));
+		//IE Alloys
+		addOreDictAlloyingRecipe(new ItemStack(IEContent.itemMetal,1,5), "Copper", 100,512, "dustNickel");
+		addOreDictAlloyingRecipe(new ItemStack(IEContent.itemMetal,1,5), "Nickel", 100,512, "dustCopper");
+		addOreDictAlloyingRecipe(new ItemStack(IEContent.itemMetal,1,6), "Gold", 100,512, "dustSilver");
+		addOreDictAlloyingRecipe(new ItemStack(IEContent.itemMetal,1,6), "Silver", 100,512, "dustGold");
+		//Common Alloys
+		addOreDictAlloyingRecipe("ingotInvar",3, "Nickel", 200,512, "dustIron","dustIron");
+		addOreDictAlloyingRecipe("ingotBronze",4, "Tin", 200,512, "dustCopper","dustCopper","dustCopper");
+		
+		addOreDictAlloyingRecipe("ingotBrass",4, "Zinc", 200,512, "dustCopper","dustCopper","dustCopper");
+		addOreDictAlloyingRecipe("ingotBlueAlloy",1, "Silver", 100,512, "dustNicolite","dustNicolite","dustNicolite","dustNicolite");
+		addOreDictAlloyingRecipe("ingotRedAlloy",1, "Copper", 100,512, "dustRedstone","dustRedstone","dustRedstone","dustRedstone");
+
 	}
 	public static void addArcRecipe(ItemStack output, Object input, int time, int energyPerTick, ItemStack slag, Object... additives)
 	{
@@ -494,5 +507,21 @@ public class IERecipes
 			addArcRecipe(output, "oreBlackgranite"+ore, 200,512, new ItemStack(IEContent.itemMaterial,1,13));
 		if(!OreDictionary.getOres("oreRedgranite"+ore).isEmpty())
 			addArcRecipe(output, "oreRedgranite"+ore, 200,512, new ItemStack(IEContent.itemMaterial,1,13));
+	}
+	public static void addOreDictAlloyingRecipe(String outName, int outSize, String inputName, int time, int energyPerTick, Object... additives)
+	{
+		if(OreDictionary.getOres(outName).isEmpty())
+			return;
+		ItemStack out = IEApi.getPreferredOreStack(outName);
+		if(out==null)
+			return;
+		addOreDictAlloyingRecipe(Utils.copyStackWithAmount(out, outSize), inputName, time,energyPerTick, additives);
+	}
+	public static void addOreDictAlloyingRecipe(ItemStack out, String inputName, int time, int energyPerTick, Object... additives)
+	{
+		if(!OreDictionary.getOres("ingot"+inputName).isEmpty())
+			ArcFurnaceRecipe.addRecipe(out, "ingot"+inputName, null, time, energyPerTick, additives);
+		if(!OreDictionary.getOres("dust"+inputName).isEmpty())
+			ArcFurnaceRecipe.addRecipe(out, "dust"+inputName, null, time, energyPerTick, additives);
 	}
 }
