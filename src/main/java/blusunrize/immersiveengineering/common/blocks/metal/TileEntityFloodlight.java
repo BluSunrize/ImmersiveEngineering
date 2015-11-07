@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
@@ -29,6 +30,8 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable
 	public List<ChunkCoordinates> fakeLights = new ArrayList();
 	public List<ChunkCoordinates> lightsToBePlaced = new ArrayList();
 	public List<ChunkCoordinates> lightsToBeRemoved = new ArrayList();
+	final int timeBetweenSwitches = 20;
+	int switchCooldown = 0;
 
 	@Override
 	public void updateEntity()
@@ -36,15 +39,18 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable
 		if(worldObj.isRemote)
 			return;
 		boolean b = active;
-		if(energyStorage>=(!active?50:5) && !worldObj.isBlockIndirectlyGettingPowered(xCoord,yCoord,zCoord))
+		if(energyStorage>=(!active?50:5) && !worldObj.isBlockIndirectlyGettingPowered(xCoord,yCoord,zCoord)&&switchCooldown<=0)
 		{
 			energyStorage-=5;
 			if(!active)
 				active=true;
 		}
 		else if(active)
+		{
 			active=false;
-
+			switchCooldown = timeBetweenSwitches;
+		}
+		switchCooldown--;
 		if(active!=b || worldObj.getTotalWorldTime()%512==((xCoord^zCoord)&511))
 			updateFakeLights(true,active);
 
@@ -163,8 +169,10 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable
 	{
 		Vec3 light = Vec3.createVectorHelper(xCoord+.5,yCoord+.75,zCoord+.5);
 		int range = 32;
-		MovingObjectPosition mop = worldObj.rayTraceBlocks(Utils.addVectors(vec,light), light.addVector(vec.xCoord*range,vec.yCoord*range,vec.zCoord*range));
-		double maxDistance = mop!=null?Vec3.createVectorHelper(mop.blockX+.5,mop.blockY+.75,mop.blockZ+.5).squareDistanceTo(light):range*range;
+		HashSet<ChunkCoordinates> ignore = new HashSet<ChunkCoordinates>();
+		ignore.add(new ChunkCoordinates(xCoord, yCoord, zCoord));
+		ChunkCoordinates hit = Utils.rayTraceForFirst(Utils.addVectors(vec,light), light.addVector(vec.xCoord*range,vec.yCoord*range,vec.zCoord*range), worldObj, ignore);
+		double maxDistance = hit!=null?Vec3.createVectorHelper(hit.posX+.5,hit.posY+.75,hit.posZ+.5).squareDistanceTo(light):range*range;
 		for(int i=1+offset; i<=range; i++)
 		{
 			int xx = xCoord+(int)Math.round(vec.xCoord*i);
