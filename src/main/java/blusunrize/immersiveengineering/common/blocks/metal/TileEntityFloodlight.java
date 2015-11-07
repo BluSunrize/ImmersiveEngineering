@@ -30,6 +30,8 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable
 	public List<ChunkCoordinates> fakeLights = new ArrayList();
 	public List<ChunkCoordinates> lightsToBePlaced = new ArrayList();
 	public List<ChunkCoordinates> lightsToBeRemoved = new ArrayList();
+	final int timeBetweenSwitches = 20;
+	int switchCooldown = 0;
 
 	@Override
 	public void updateEntity()
@@ -37,15 +39,18 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable
 		if(worldObj.isRemote)
 			return;
 		boolean b = active;
-		if(energyStorage>=(!active?50:5) && !worldObj.isBlockIndirectlyGettingPowered(xCoord,yCoord,zCoord))
+		if(energyStorage>=(!active?50:5) && !worldObj.isBlockIndirectlyGettingPowered(xCoord,yCoord,zCoord)&&switchCooldown<=0)
 		{
 			energyStorage-=5;
 			if(!active)
 				active=true;
 		}
 		else if(active)
+		{
 			active=false;
-
+			switchCooldown = timeBetweenSwitches;
+		}
+		switchCooldown--;
 		if(active!=b || worldObj.getTotalWorldTime()%512==((xCoord^zCoord)&511))
 			updateFakeLights(true,active);
 
