@@ -770,6 +770,7 @@ public class Utils
 	public static HashSet<ChunkCoordinates> rayTrace(Vec3 start, Vec3 end, World world)
 	{
 		HashSet<ChunkCoordinates> ret = new HashSet<ChunkCoordinates>();
+		HashSet<ChunkCoordinates> checked = new HashSet<ChunkCoordinates>();
 		// x
 		if (start.xCoord>end.xCoord)
 		{
@@ -784,7 +785,7 @@ public class Utils
 		if (mov.xCoord!=0)
 		{
 			mov = scalarProd(mov, 1 / mov.xCoord);
-			ray(dif, mov, start, lengthAdd, ret, world, Blocks.diamond_ore);
+			ray(dif, mov, start, lengthAdd, ret, world, checked, Blocks.diamond_ore);
 		}
 		// y
 		if (mov.yCoord!=0)
@@ -801,7 +802,7 @@ public class Utils
 			mov = start.subtract(end);
 			mov = scalarProd(mov, 1/mov.yCoord);
 
-			ray(dif, mov, start, lengthAdd, ret, world, Blocks.iron_ore);
+			ray(dif, mov, start, lengthAdd, ret, world, checked, Blocks.iron_ore);
 		}
 		
 		// z
@@ -819,11 +820,11 @@ public class Utils
 			mov = start.subtract(end);
 			mov = scalarProd(mov, 1 / mov.zCoord);
 
-			ray(dif, mov, start, lengthAdd, ret, world, Blocks.gold_ore);
+			ray(dif, mov, start, lengthAdd, ret, world, checked, Blocks.gold_ore);
 		}
 		return ret;
 	}
-	private static void ray(double dif, Vec3 mov, Vec3 start, double lengthAdd, HashSet<ChunkCoordinates> ret, World world, Block tmp)
+	private static void ray(double dif, Vec3 mov, Vec3 start, double lengthAdd, HashSet<ChunkCoordinates> ret, World world, HashSet<ChunkCoordinates> checked, Block tmp)
 	{
 		//Do NOT set this to true unless for debugging. Causes blocks to be placed along the traced ray
 		boolean place = false;
@@ -840,22 +841,34 @@ public class Utils
 			
 			ChunkCoordinates cc = new ChunkCoordinates((int) Math.floor(pos.xCoord),
 					(int) Math.floor(pos.yCoord), (int) Math.floor(pos.zCoord));
-			Block b = world.getBlock(cc.posX, cc.posY, cc.posZ);
-			int meta = world.getBlockMetadata(cc.posX, cc.posY, cc.posZ);
-			if (b.canCollideCheck(meta, false)&&b.collisionRayTrace(world, cc.posX, cc.posY, cc.posZ, pos,
-					posNext) != null)
-				ret.add(cc);
-			if (place)world.setBlock(cc.posX, cc.posY, cc.posZ, tmp);
-			
+			Block b;
+			int meta;
+			if (!checked.contains(cc))
+			{
+				b = world.getBlock(cc.posX, cc.posY, cc.posZ);
+				meta = world.getBlockMetadata(cc.posX, cc.posY, cc.posZ);
+				if (b.canCollideCheck(meta, false)
+						&& b.collisionRayTrace(world, cc.posX, cc.posY,
+								cc.posZ, pos, posNext) != null)
+					ret.add(cc);
+				if (place)
+					world.setBlock(cc.posX, cc.posY, cc.posZ, tmp);
+				checked.add(cc);
+			}
 			cc = new ChunkCoordinates((int) Math.floor(posPrev.xCoord),
 					(int) Math.floor(posPrev.yCoord), (int) Math.floor(posPrev.zCoord));
-			b = world.getBlock(cc.posX, cc.posY, cc.posZ);
-			meta = world.getBlockMetadata(cc.posX, cc.posY, cc.posZ);
-			if (b.canCollideCheck(meta, false)&&b.collisionRayTrace(world, cc.posX, cc.posY, cc.posZ, posVeryPrev,
-					posPrev) != null)
-				ret.add(cc);
-			if (place)
-				world.setBlock(cc.posX, cc.posY, cc.posZ, tmp);
+			if (!checked.contains(cc))
+			{
+				b = world.getBlock(cc.posX, cc.posY, cc.posZ);
+				meta = world.getBlockMetadata(cc.posX, cc.posY, cc.posZ);
+				if (b.canCollideCheck(meta, false)
+						&& b.collisionRayTrace(world, cc.posX, cc.posY,
+								cc.posZ, posVeryPrev, posPrev) != null)
+					ret.add(cc);
+				if (place)
+					world.setBlock(cc.posX, cc.posY, cc.posZ, tmp);
+				checked.add(cc);
+			}
 		}
 	}
 	public static Vec3 scalarProd(Vec3 v, double s) {
