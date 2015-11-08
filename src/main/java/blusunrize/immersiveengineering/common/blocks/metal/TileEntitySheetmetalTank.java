@@ -76,6 +76,7 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart implement
 						int accepted = ((IFluidHandler)te).fill(f.getOpposite(), new FluidStack(tank.getFluid().getFluid(),out), false);
 						FluidStack drained = this.tank.drain(accepted, true);
 						((IFluidHandler)te).fill(f.getOpposite(), drained, true);
+						worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 						updateComparatorValuesPart2();
 					}
 				}
