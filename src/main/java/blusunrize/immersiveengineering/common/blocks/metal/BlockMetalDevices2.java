@@ -21,6 +21,7 @@ import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.Explosion;
+import net.minecraft.world.GameRules;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -267,7 +268,7 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 					}
 				}
 			}
-			else
+			else if(player.getCurrentEquippedItem()!=null)
 			{
 				TileEntityFluidPipe tile = ((TileEntityFluidPipe)te);
 				for(ItemStack valid : TileEntityFluidPipe.validScaffoldCoverings)
@@ -275,7 +276,7 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 					{
 						if(!OreDictionary.itemMatches(tile.scaffoldCovering, player.getCurrentEquippedItem(), true))
 						{
-							if(!world.isRemote && tile.scaffoldCovering!=null)
+							if(!world.isRemote && tile.scaffoldCovering!=null && world.getGameRules().getGameRuleBooleanValue("doTileDrops"))
 							{
 								EntityItem entityitem = player.dropPlayerItemWithRandomChoice(tile.scaffoldCovering.copy(), false);
 								entityitem.delayBeforeCanPickup = 0;
@@ -284,9 +285,29 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 							if(!player.capabilities.isCreativeMode)
 								player.inventory.decrStackSize(player.inventory.currentItem, 1);
 							world.markBlockForUpdate(x, y, z);
+							world.addBlockEvent(x, y, z, tile.getBlockType(), 0, 0);
 							return true;
 						}
 					}
+			}
+			else if(player.isSneaking() && player.getCurrentEquippedItem()==null)
+			{
+				TileEntityFluidPipe pipe = (TileEntityFluidPipe)te;
+				if(pipe.scaffoldCovering!=null)
+				{
+					if(!world.isRemote)
+					{
+						if(world.getGameRules().getGameRuleBooleanValue("doTileDrops"))
+						{
+							EntityItem entityitem = player.dropPlayerItemWithRandomChoice(pipe.scaffoldCovering.copy(), false);
+							entityitem.delayBeforeCanPickup = 0;
+						}
+						pipe.scaffoldCovering = null;
+						world.markBlockForUpdate(x, y, z);
+						world.addBlockEvent(x, y, z, pipe.getBlockType(), 0, 0);
+					}
+					return true;
+				}
 			}
 		}
 		else if(te instanceof TileEntityWoodenBarrel)
