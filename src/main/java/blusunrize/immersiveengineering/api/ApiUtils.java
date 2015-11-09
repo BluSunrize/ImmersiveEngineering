@@ -120,7 +120,7 @@ public class ApiUtils
 			vex[i] = Vec3.createVectorHelper(start.xCoord+x1, start.yCoord+y1, start.zCoord+z1);
 		}
 		vex[vertices-1] = Vec3.createVectorHelper(end.xCoord, end.yCoord, end.zCoord);
-		
+
 		return vex;
 	}
 
@@ -156,6 +156,27 @@ public class ApiUtils
 		}
 		else
 			throw new RuntimeException("Recipe Inputs must always be ItemStack, Item, Block or String (OreDictionary name), "+input+" is invalid");
+	}
+
+	public static ItemStack getItemStackFromObject(Object o)
+	{
+		if(o instanceof ItemStack)
+			return (ItemStack)o;
+		else if(o instanceof Item)
+			return new ItemStack((Item)o);
+		else if(o instanceof Block)
+			return new ItemStack((Block)o);
+		else if(o instanceof ArrayList)
+			return ((ArrayList<ItemStack>)o).get(0);
+		else if(o instanceof String)
+		{
+			ArrayList<ItemStack> l = OreDictionary.getOres((String)o);
+			if(!l.isEmpty())
+				return l.get(0);
+			else
+				return null;
+		}
+		return null;
 	}
 
 	public static Map<String, Integer> sortMap(Map<String, Integer> map, boolean inverse)

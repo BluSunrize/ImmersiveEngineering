@@ -23,6 +23,10 @@ public class ArcFurnaceRecipe
 	public final int time;
 	public final int energyPerTick;
 
+
+	public String specialRecipeType;
+	public static ArrayList<String> specialRecipeTypes = new ArrayList<String>();
+	
 	public ArcFurnaceRecipe(ItemStack output, Object input, ItemStack slag, int time, int energyPerTick, Object... additives)
 	{
 		this.output=output;
@@ -89,6 +93,13 @@ public class ArcFurnaceRecipe
 			return true;
 		}
 		return false;
+	}
+	public ArcFurnaceRecipe setSpecialRecipeType(String type)
+	{
+		this.specialRecipeType = type;
+		if(!specialRecipeTypes.contains(type))
+			specialRecipeTypes.add(type);
+		return this;
 	}
 
 	public static ArrayList<ArcFurnaceRecipe> recipeList = new ArrayList<ArcFurnaceRecipe>();

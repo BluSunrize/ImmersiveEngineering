@@ -18,6 +18,7 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
+import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -135,7 +136,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidHandl
 		{
 			if(!Utils.toCC(output.output).equals(ccFrom) && output.output.canFill(output.direction.getOpposite(), resource.getFluid()))
 			{
-				int limit = (resource.tag!=null&&resource.tag.hasKey("pressurized"))||output.output instanceof TileEntityFluidPump?1000: 50;
+				int limit = (resource.tag!=null&&resource.tag.hasKey("pressurized"))||canOutputPressurized(output.output, false)?1000: 50;
 				int tileSpecificAcceptedFluid = Math.min(limit, canAccept);
 				int temp = output.output.fill(output.direction.getOpposite(), Utils.copyFluidStackWithAmount(resource, tileSpecificAcceptedFluid,true), false);
 				if(temp>0)
@@ -150,12 +151,14 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidHandl
 			int f = 0;
 			for(DirectionalFluidOutput output : sorting.keySet())
 			{
-				int limit = (resource.tag!=null&&resource.tag.hasKey("pressurized"))||output.output instanceof TileEntityFluidPump?1000: 50;
+				int limit = (resource.tag!=null&&resource.tag.hasKey("pressurized"))||canOutputPressurized(output.output, false)?1000: 50;
 				int tileSpecificAcceptedFluid = Math.min(limit, canAccept);
 
 				float prio = sorting.get(output)/(float)sum;
 				int amount = (int)(tileSpecificAcceptedFluid*prio);
 				int r = output.output.fill(output.direction.getOpposite(), Utils.copyFluidStackWithAmount(resource, amount, true), doFill);
+				if(r>50)
+					canOutputPressurized(output.output, true);
 				f += r;
 				canAccept -= r;
 				if(canAccept<=0)
@@ -164,6 +167,21 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidHandl
 			return f;
 		}
 		return 0;
+	}
+
+	boolean canOutputPressurized(IFluidHandler output, boolean consumePower)
+	{
+		if(output instanceof TileEntityFluidPump)
+		{
+			int accelPower = Config.getInt("pump_consumption_accelerate");
+			if(((TileEntityFluidPump)output).energyStorage.extractEnergy(accelPower, true)>=accelPower)
+			{
+				if(consumePower)
+					((TileEntityFluidPump)output).energyStorage.extractEnergy(accelPower, false);
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@Override

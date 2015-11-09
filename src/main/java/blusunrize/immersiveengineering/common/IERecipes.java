@@ -554,26 +554,26 @@ public class IERecipes
 			e.printStackTrace();
 		}
 	}
-	public static void addArcRecipe(ItemStack output, Object input, int time, int energyPerTick, ItemStack slag, Object... additives)
+	public static ArcFurnaceRecipe addArcRecipe(ItemStack output, Object input, int time, int energyPerTick, ItemStack slag, Object... additives)
 	{
-		ArcFurnaceRecipe.addRecipe(output, input, slag, time, energyPerTick, additives);
+		return ArcFurnaceRecipe.addRecipe(output, input, slag, time, energyPerTick, additives);
 	}
 	public static void addArcOreSmelting(ItemStack output, String ore)
 	{
 		if(!OreDictionary.getOres("ore"+ore).isEmpty())
-			addArcRecipe(output, "ore"+ore, 200,512, new ItemStack(IEContent.itemMaterial,1,13));
+			addArcRecipe(output, "ore"+ore, 200,512, new ItemStack(IEContent.itemMaterial,1,13)).setSpecialRecipeType("Ores");
 		if(!OreDictionary.getOres("oreNether"+ore).isEmpty())
-			addArcRecipe(Utils.copyStackWithAmount(output, NetherOresHelper.getCrushingResult(ore)), "oreNether"+ore, 200,512, new ItemStack(IEContent.itemMaterial,1,13));
+			addArcRecipe(Utils.copyStackWithAmount(output, NetherOresHelper.getCrushingResult(ore)), "oreNether"+ore, 200,512, new ItemStack(IEContent.itemMaterial,1,13)).setSpecialRecipeType("Ores");
 
 		//YAY GregTech!
 		if(!OreDictionary.getOres("oreNetherrack"+ore).isEmpty())
-			addArcRecipe(output, "oreNetherrack"+ore, 200,512, new ItemStack(IEContent.itemMaterial,1,13));
+			addArcRecipe(output, "oreNetherrack"+ore, 200,512, new ItemStack(IEContent.itemMaterial,1,13)).setSpecialRecipeType("Ores");
 		if(!OreDictionary.getOres("oreEndstone"+ore).isEmpty())
-			addArcRecipe(output, "oreEndstone"+ore, 200,512, new ItemStack(IEContent.itemMaterial,1,13));
+			addArcRecipe(output, "oreEndstone"+ore, 200,512, new ItemStack(IEContent.itemMaterial,1,13)).setSpecialRecipeType("Ores");
 		if(!OreDictionary.getOres("oreBlackgranite"+ore).isEmpty())
-			addArcRecipe(output, "oreBlackgranite"+ore, 200,512, new ItemStack(IEContent.itemMaterial,1,13));
+			addArcRecipe(output, "oreBlackgranite"+ore, 200,512, new ItemStack(IEContent.itemMaterial,1,13)).setSpecialRecipeType("Ores");
 		if(!OreDictionary.getOres("oreRedgranite"+ore).isEmpty())
-			addArcRecipe(output, "oreRedgranite"+ore, 200,512, new ItemStack(IEContent.itemMaterial,1,13));
+			addArcRecipe(output, "oreRedgranite"+ore, 200,512, new ItemStack(IEContent.itemMaterial,1,13)).setSpecialRecipeType("Ores");
 	}
 	public static void addOreDictAlloyingRecipe(String outName, int outSize, String inputName, int time, int energyPerTick, Object... additives)
 	{
@@ -587,8 +587,8 @@ public class IERecipes
 	public static void addOreDictAlloyingRecipe(ItemStack out, String inputName, int time, int energyPerTick, Object... additives)
 	{
 		if(!OreDictionary.getOres("ingot"+inputName).isEmpty())
-			ArcFurnaceRecipe.addRecipe(out, "ingot"+inputName, null, time, energyPerTick, additives);
+			ArcFurnaceRecipe.addRecipe(out, "ingot"+inputName, null, time, energyPerTick, additives).setSpecialRecipeType("Alloying");
 		if(!OreDictionary.getOres("dust"+inputName).isEmpty())
-			ArcFurnaceRecipe.addRecipe(out, "dust"+inputName, null, time, energyPerTick, additives);
+			ArcFurnaceRecipe.addRecipe(out, "dust"+inputName, null, time, energyPerTick, additives).setSpecialRecipeType("Alloying");
 	}
 }

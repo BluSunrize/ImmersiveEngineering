@@ -107,7 +107,7 @@ public class Utils
 				return true;
 		return false;
 	}
-	
+
 	public static FluidStack copyFluidStackWithAmount(FluidStack stack, int amount, boolean stripPressure)
 	{
 		if(stack==null)
@@ -774,7 +774,7 @@ public class Utils
 			super(nullContainer, w, h);
 		}
 	}
-	
+
 	public static HashSet<ChunkCoordinates> rayTrace(Vec3 start, Vec3 end, World world)
 	{
 		HashSet<ChunkCoordinates> ret = new HashSet<ChunkCoordinates>();
@@ -812,7 +812,7 @@ public class Utils
 
 			ray(dif, mov, start, lengthAdd, ret, world, checked, Blocks.iron_ore);
 		}
-		
+
 		// z
 		if (mov.zCoord!=0)
 		{
@@ -846,7 +846,7 @@ public class Utils
 					scalarProd(mov, i + lengthAdd-standartOff));
 			Vec3 posVeryPrev = addVectors(start,
 					scalarProd(mov, i - 1 + lengthAdd-standartOff));
-			
+
 			ChunkCoordinates cc = new ChunkCoordinates((int) Math.floor(pos.xCoord),
 					(int) Math.floor(pos.yCoord), (int) Math.floor(pos.zCoord));
 			Block b;

@@ -5,12 +5,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.relauncher.Side;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
-import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.EnumSkyBlock;
 import blusunrize.immersiveengineering.api.energy.IImmersiveConnectable;
@@ -20,6 +17,8 @@ import blusunrize.immersiveengineering.common.blocks.BlockFakeLight.TileEntityFa
 import blusunrize.immersiveengineering.common.blocks.TileEntityImmersiveConnectable;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.relauncher.Side;
 
 public class TileEntityFloodlight extends TileEntityImmersiveConnectable
 {
@@ -163,7 +162,7 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable
 				placeLightAlongVector(rays[ray], offset, tempRemove);
 			}
 		}
-		
+
 		this.lightsToBeRemoved.addAll(tempRemove);
 	}
 
