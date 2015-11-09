@@ -1,4 +1,4 @@
-#####Version 0.6.1
+#####Version 0.6.1 - BUILT
 - added sneak-hammering to change opposite side of a pump (thanks cobra)
 - added config to disable GUI rescaling in the manual
 - added a recipe for the HC Hemp Trolley
@@ -12,8 +12,10 @@
 - added workaround for OreDict weirdness (thanks malte0811)
 - removed those debug OreDict tooltips ^^
 - changed wooden barrel to not accept gasses
+- changed the default bullet damage to be higher
 - changed fluid pipes to pressurize fluids when inserting into pumps
 - changed floodlights to be less laggy (thanks malte0811)
+- changed scaffold-covered pipes to be climbable
 - changed scaffolds to be removeable from pipes with sneak+rightclick with an empty hand (thanks cobra)
 - fixed extracting items from the assembler
 - fixed Fluid Pipes not outputting correctly (thanks cobra)
@@ -31,8 +33,8 @@
 - fixed NPE on Crusher's NPE
 - fixed rotating conveyors with a hammer (thanks cobra)
 - fixed tanks not updating properly (thanks cobra)
-- fixed wires not rerendering on servers (thanks cobra)
-- fixed that rerenderign for other blocks too (thanks cobra)
+- fixed wires not re-rendering on servers (thanks cobra)
+- fixed that re-rendering for other blocks too (thanks cobra)
 - updated jp_JP.lang
 - updated zh_CN.lang
 
