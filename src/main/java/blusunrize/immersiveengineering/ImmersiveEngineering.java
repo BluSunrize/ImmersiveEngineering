@@ -46,7 +46,7 @@ import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 
-@Mod(modid=ImmersiveEngineering.MODID,name=ImmersiveEngineering.MODNAME,version = ImmersiveEngineering.VERSION, dependencies="after:Railcraft;before:TConstruct")
+@Mod(modid=ImmersiveEngineering.MODID,name=ImmersiveEngineering.MODNAME,version = ImmersiveEngineering.VERSION, dependencies="after:Railcraft;before:TConstruct;after:ThermalFoundation")
 public class ImmersiveEngineering
 {
 	public static final String MODID = "ImmersiveEngineering";
@@ -110,7 +110,7 @@ public class ImmersiveEngineering
 
 		new ThreadContributorSpecialsDownloader();
 	}
-
+	
 	@Mod.EventHandler
 	public void serverStarting(FMLServerStartingEvent event)
 	{

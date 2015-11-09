@@ -118,20 +118,35 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 					ArcFurnaceRecipe recipe = ArcFurnaceRecipe.findRecipe(this.getStackInSlot(i), additives);
 					if(recipe!=null)
 					{
-						int outputSlot = -1;
-						if(recipe.output!=null)
+						int[] outputSlots = null;
+						ItemStack[] outputs = recipe.getOutputs(this.getStackInSlot(i),additives);
+						if(outputs!=null && outputs.length>0)
 						{
-							boolean spaceForOutput = false;
-							for(int j=16; j<22; j++)
-								if(inventory[j]==null || (OreDictionary.itemMatches(inventory[j],recipe.output,false) && inventory[j].stackSize+recipe.output.stackSize<=inventory[j].getMaxStackSize()) )
+							boolean spaceForOutput = true;
+							outputSlots = new int[outputs.length];
+							for(int iOut=0; iOut<outputs.length; iOut++)
+							{
+								outputSlots[iOut] = -1;
+								ItemStack out = outputs[iOut];
+								boolean b0 = false;
+								for(int j=16; j<22; j++)
+									if(inventory[j]==null || (OreDictionary.itemMatches(inventory[j],out,false) && inventory[j].stackSize+out.stackSize<=inventory[j].getMaxStackSize()) )
+									{
+										b0 = true;
+										outputSlots[iOut] = j;
+										break;
+									}
+								if(!b0)
 								{
-									spaceForOutput = true;
-									outputSlot = j;
+									spaceForOutput = false;
 									break;
 								}
+							}
 							if(!spaceForOutput)
 								continue;
 						}
+						else
+							continue;
 						if(recipe.slag!=null && !(inventory[22]==null || (OreDictionary.itemMatches(inventory[22],recipe.slag,false) && inventory[22].stackSize+recipe.slag.stackSize<=inventory[22].getMaxStackSize()) ))
 							continue;
 
@@ -174,14 +189,16 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 
 								processMax[i]=0;
 								process[i]=0;
-								if(recipe.output!=null && outputSlot!=-1)
-								{
-									if(inventory[outputSlot]!=null)
-										inventory[outputSlot].stackSize+= recipe.output.stackSize;
-									else if(inventory[outputSlot]==null)
-										inventory[outputSlot] = recipe.output.copy();
-									worldObj.addBlockEvent(xCoord,yCoord,zCoord, this.getBlockType(), 0,40);
-								}
+								for(int iOut=0; iOut<outputs.length; iOut++)
+									if(outputs[iOut]!=null && outputSlots[iOut]!=-1)
+									{
+										int outputSlot = outputSlots[iOut];
+										if(inventory[outputSlot]!=null)
+											inventory[outputSlot].stackSize+= outputs[iOut].stackSize;
+										else if(inventory[outputSlot]==null)
+											inventory[outputSlot] = outputs[iOut].copy();
+										worldObj.addBlockEvent(xCoord,yCoord,zCoord, this.getBlockType(), 0,40);
+									}
 								if(recipe.slag!=null)
 								{
 									if(inventory[22]!=null)

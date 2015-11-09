@@ -99,7 +99,14 @@ public class Utils
 				return dye;
 		return -1;
 	}
-
+	public static boolean isIngot(ItemStack stack)
+	{
+		for(int oid : OreDictionary.getOreIDs(stack))
+			if(OreDictionary.getOreName(oid).startsWith("ingot"))
+				return true;
+		return false;
+	}
+	
 	public static FluidStack copyFluidStackWithAmount(FluidStack stack, int amount, boolean stripPressure)
 	{
 		if(stack==null)
@@ -798,5 +805,4 @@ public class Utils
 			super(nullContainer, w, h);
 		}
 	}
-
 }

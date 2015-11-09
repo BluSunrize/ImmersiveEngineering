@@ -2,12 +2,20 @@ package blusunrize.immersiveengineering.common;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemArmor;
+import net.minecraft.item.ItemHoe;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemSword;
+import net.minecraft.item.ItemTool;
+import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.FurnaceRecipes;
+import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.util.WeightedRandomChestContent;
 import net.minecraftforge.common.ChestGenHooks;
 import net.minecraftforge.fluids.FluidStack;
@@ -22,6 +30,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDecoration;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDevices;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDevices2;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalMultiblocks;
+import blusunrize.immersiveengineering.common.crafting.ArcToolRecyclingRecipe;
 import blusunrize.immersiveengineering.common.crafting.RecipeJerrycan;
 import blusunrize.immersiveengineering.common.crafting.RecipePotionBullets;
 import blusunrize.immersiveengineering.common.crafting.RecipeRevolver;
@@ -395,6 +404,11 @@ public class IERecipes
 				if(OreDictionary.doesOreNameExist("ingot"+ore))
 					addCrusherRecipe(IEApi.getPreferredOreStack("dust"+ore), "ingot"+ore, 3600, null,0);
 			}
+		//			else if(name.startsWith("ingot"))
+		//			{
+		//				String ore = name.substring("ingot".length());
+		//				ArcFurnaceRecipe.recipeList.add(new ArcToolRecyclingRecipe(ore, 100, 512));
+		//			}
 	}
 
 	public static CrusherRecipe addCrusherRecipe(ItemStack output, Object input, int energy, Object... secondary)
@@ -481,11 +495,64 @@ public class IERecipes
 		//Common Alloys
 		addOreDictAlloyingRecipe("ingotInvar",3, "Nickel", 200,512, "dustIron","dustIron");
 		addOreDictAlloyingRecipe("ingotBronze",4, "Tin", 200,512, "dustCopper","dustCopper","dustCopper");
-		
+
 		addOreDictAlloyingRecipe("ingotBrass",4, "Zinc", 200,512, "dustCopper","dustCopper","dustCopper");
-		addOreDictAlloyingRecipe("ingotBlueAlloy",1, "Silver", 100,512, "dustNicolite","dustNicolite","dustNicolite","dustNicolite");
+		addOreDictAlloyingRecipe("ingotBlueAlloy",1, "Silver", 100,512, "dustNikolite","dustNikolite","dustNikolite","dustNikolite");
 		addOreDictAlloyingRecipe("ingotRedAlloy",1, "Copper", 100,512, "dustRedstone","dustRedstone","dustRedstone","dustRedstone");
 
+	}
+	public static void initArcRecyclingRecipes()
+	{
+		Iterator<IRecipe> itRecipes = CraftingManager.getInstance().getRecipeList().iterator();
+		while(itRecipes.hasNext()) 
+			try
+		{
+				IRecipe recipe = itRecipes.next();
+				if(recipe.getRecipeOutput()!=null)
+				{
+					Item item = recipe.getRecipeOutput().getItem();
+					if(item instanceof ItemTool || item instanceof ItemSword || item instanceof ItemHoe || item instanceof ItemArmor)
+					{
+						Object[] inputs = null;
+						if(recipe instanceof ShapedOreRecipe)
+							inputs = ((ShapedOreRecipe)recipe).getInput();
+						//						else if(recipe instanceof ShapelessOreRecipe)
+						//							inputs = ((ShapelessOreRecipe)recipe).getInput().toArray();
+						else if(recipe instanceof ShapedRecipes)
+							inputs = ((ShapedRecipes)recipe).recipeItems;
+						//						else if(recipe instanceof ShapelessRecipes)
+						//							inputs = ((ShapelessRecipes)recipe).recipeItems.toArray();
+						if(inputs!=null)
+						{
+							HashMap<ItemStack,Integer> outputs = new HashMap<ItemStack,Integer>();
+							for(Object in : inputs)
+							{
+								boolean b = false;
+								for(ItemStack storedOut : outputs.keySet())
+									if(Utils.stackMatchesObject(storedOut, in))
+									{
+										outputs.put(storedOut, outputs.get(storedOut)+1);
+										b=true;
+									}
+								if(!b)
+								{
+									if(in instanceof ItemStack && Utils.isIngot((ItemStack)in))
+										outputs.put((ItemStack)in, 1);
+									else if(in instanceof String && ((String)in).startsWith("ingot"))
+										outputs.put(IEApi.getPreferredOreStack((String)in), 1);
+									else if(in instanceof ArrayList && Utils.isIngot((ItemStack) ((ArrayList)in).get(0)))
+										outputs.put(IEApi.getPreferredStackbyMod((ArrayList)in), 1);
+								}
+							}
+							if(!outputs.isEmpty())
+								ArcFurnaceRecipe.recipeList.add(new ArcToolRecyclingRecipe(outputs, recipe.getRecipeOutput(), 100, 512));
+						}
+					}
+				}
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+		}
 	}
 	public static void addArcRecipe(ItemStack output, Object input, int time, int energyPerTick, ItemStack slag, Object... additives)
 	{

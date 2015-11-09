@@ -4,6 +4,7 @@ import static codechicken.lib.gui.GuiDraw.changeTexture;
 import static codechicken.lib.gui.GuiDraw.drawTexturedModalRect;
 
 import java.awt.Rectangle;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -31,12 +32,14 @@ public class NEIArcFurnaceHandler extends TemplateRecipeHandler
 		public int energy;
 		public CachedArcFurnaceRecipe(ArcFurnaceRecipe recipe)
 		{
-			inputs = new PositionedStack[recipe.additives.length+1];
+			ArrayList<PositionedStack> lInputs = new ArrayList<PositionedStack>();
 			if(recipe.input!=null)
-				inputs[0] = new PositionedStack(recipe.input, 28, 0);
+				lInputs.add(new PositionedStack(recipe.input, 28, 0));
 			for(int i=0; i<recipe.additives.length; i++)
 				if(recipe.additives[i]!=null)
-					inputs[i+1] = new PositionedStack(recipe.additives[i], 20+i%2*18, 24+i/2*18);
+					lInputs.add(new PositionedStack(recipe.additives[i], 20+i%2*18, 24+i/2*18));
+			inputs = lInputs.toArray(new PositionedStack[lInputs.size()]);
+			
 			if(recipe.output!=null)
 				output = new PositionedStack(recipe.output, 122,16);
 			if(recipe.slag!=null)

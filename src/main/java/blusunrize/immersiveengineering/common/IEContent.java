@@ -533,9 +533,11 @@ public class IEContent
 		//These are done so late to account for Blueprints added by addons
 		int villagerId = Config.getInt("villager_engineer");
 		VillagerRegistry.instance().registerVillageTradeHandler(villagerId, new IEVillagerTradeHandler());
+
+		if(Config.getBoolean("arcfurnace_recycle"))
+			IERecipes.initArcRecyclingRecipes();
 	}
-
-
+	
 	public static void registerToOreDict(String type, ItemIEBase item, int... metas)
 	{
 		if(metas==null||metas.length<1)

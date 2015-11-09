@@ -53,7 +53,8 @@ public class IEApi
 			oreOutputPreference.put(oreName, preferredStack);
 			return preferredStack;
 		}
-		return oreOutputPreference.get(oreName);
+		ItemStack s = oreOutputPreference.get(oreName);
+		return s!=null?s.copy():null;
 	}
 	public static ItemStack getPreferredStackbyMod(ArrayList<ItemStack> list)
 	{
@@ -74,7 +75,7 @@ public class IEApi
 					}
 				}
 			}
-		return preferredStack;
+		return preferredStack!=null?preferredStack.copy():null;
 	}
 	
 	public static ShaderCase getShader(String name, String shaderType)
