@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.relauncher.Side;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
@@ -209,6 +211,8 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable
 			int[] icc = nbt.getIntArray("fakeLight_"+i);
 			fakeLights.add(new ChunkCoordinates(icc[0],icc[1],icc[2]));
 		}
+		if(FMLCommonHandler.instance().getEffectiveSide()==Side.CLIENT)
+			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 	}
 
 	@Override

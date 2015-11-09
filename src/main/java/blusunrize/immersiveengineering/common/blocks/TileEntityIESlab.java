@@ -15,6 +15,8 @@ public class TileEntityIESlab extends TileEntityIEBase
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		slabType = nbt.getInteger("slabType");
+		if(descPacket)
+			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 	}
 	@Override
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)

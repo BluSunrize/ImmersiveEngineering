@@ -321,35 +321,41 @@ public class BlockMetalDevices extends BlockIEBase implements blusunrize.aquatwe
 		}
 		if(te instanceof TileEntityDynamo && Utils.isHammer(player.getCurrentEquippedItem()))
 		{
-			int f = ((TileEntityDynamo)te).facing;
-			f = ForgeDirection.ROTATION_MATRIX[player.isSneaking()?1:0][f];
-			((TileEntityDynamo)te).facing = f;
-			te.markDirty();
-			world.func_147451_t(x, y, z);
-			world.markBlockForUpdate(x, y, z);
-			world.playSoundEffect(x+.5,y+.5,z+.5, "random.door_open", .5f,2f);
-			return !world.isRemote;
+			if(!world.isRemote)
+			{
+				int f = ((TileEntityDynamo) te).facing;
+				f = ForgeDirection.ROTATION_MATRIX[player.isSneaking()? 1: 0][f];
+				((TileEntityDynamo) te).facing = f;
+				te.markDirty();
+				world.func_147451_t(x, y, z);
+				world.markBlockForUpdate(x, y, z);
+				world.playSoundEffect(x+.5, y+.5, z+.5, "random.door_open", .5f, 2f);
+			}
+			return true;
 		}
 		if(te instanceof TileEntityConveyorBelt && Utils.isHammer(player.getCurrentEquippedItem()))
 		{
-			TileEntityConveyorBelt tile = (TileEntityConveyorBelt)te;
-			if(player.isSneaking())
+			if(!world.isRemote)
 			{
-				if(tile.transportUp)
+				TileEntityConveyorBelt tile = (TileEntityConveyorBelt) te;
+				if(player.isSneaking())
 				{
-					tile.transportUp=false;
-					tile.transportDown=true;
-				}
-				else if(tile.transportDown)
-				{
-					tile.transportDown=false;
+					if(tile.transportUp)
+					{
+						tile.transportUp = false;
+						tile.transportDown = true;
+					}
+					else if(tile.transportDown)
+					{
+						tile.transportDown = false;
+					}
+					else
+						tile.transportUp = true;
 				}
 				else
-					tile.transportUp=true;
+					tile.facing = ForgeDirection.ROTATION_MATRIX[1][tile.facing];
+				world.markBlockForUpdate(x, y, z);
 			}
-			else
-				tile.facing = ForgeDirection.ROTATION_MATRIX[1][tile.facing];
-			world.markBlockForUpdate(x, y, z);
 			return true;
 		}
 		if(te instanceof TileEntityFurnaceHeater && Utils.isHammer(player.getCurrentEquippedItem()))

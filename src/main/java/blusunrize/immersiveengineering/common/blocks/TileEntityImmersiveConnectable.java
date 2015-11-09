@@ -145,7 +145,7 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 	@Override
 	public boolean receiveClientEvent(int id, int arg)
 	{
-		if(id==-1)
+		if(id==-1||id==255)
 		{
 			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 			return true;
