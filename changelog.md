@@ -1,4 +1,44 @@
-#####Version 0.6.0
+#####Version 0.6.1
+- added sneak-hammering to change opposite side of a pump (thanks cobra)
+- added config to disable GUI rescaling in the manual
+- added a recipe for the HC Hemp Trolley
+- added metal barrels. The are like wooden barrels but can store hot fluids and gases
+- added 4 new Shaders (Vanguard, Regal, Harrowed, Taken)
+- added Alloying to the Arc Furnace
+- added Recycling to the Arc Furnace
+- added 4 distinct NEI handlers for the Arc Furnace
+- added a new and better raytracing algorithm (thanks malte0811)
+- added treated wood slabs to the OreDict (thanks artdude543 + UnwrittenFun)
+- added workaround for OreDict weirdness (thanks malte0811)
+- removed those debug OreDict tooltips ^^
+- changed wooden barrel to not accept gasses
+- changed fluid pipes to pressurize fluids when inserting into pumps
+- changed floodlights to be less laggy (thanks malte0811)
+- changed scaffolds to be removeable from pipes with sneak+rightclick with an empty hand (thanks cobra)
+- fixed extracting items from the assembler
+- fixed Fluid Pipes not outputting correctly (thanks cobra)
+- fixed rightclicking tanks with fluid containers (thanks cobra)
+- fixed spawninterdiction CMEs (thanks malte0811)
+- fixed Assembler getting fixed by fluid pipes
+- fixed fluid pipes resetting their connections when scaffolding is placed
+- fixed scaffolding not rendering from the inside when covering a pipe
+- fixed pumps pressurizing fluids when not inserting into pipes, resulting in broken NBT tags on fluids
+- fixed some NPEs when placing fake lights (thanks malte0811)
+- fixed client access error on shaders
+- fixed GregTech power transfer
+- fixed GregTech using the wrong ore name (Aluminium >_>)
+- fixed GUIs not closing when their blocks are broken
+- fixed NPE on Crusher's NPE
+- fixed rotating conveyors with a hammer (thanks cobra)
+- fixed tanks not updating properly (thanks cobra)
+- fixed wires not rerendering on servers (thanks cobra)
+- fixed that rerenderign for other blocks too (thanks cobra)
+- updated jp_JP.lang
+- updated zh_CN.lang
+
+
+
+#####Version 0.6.0 - BUILT
 - added a house for the IE Villager. He should be a lot less rare now!
 - added Electric Lanterns and Floodlights, which will consume power but prevent mobspawns!
 - added a Coal Vein to the Excavator, which can contain Diamonds and Emeralds too
