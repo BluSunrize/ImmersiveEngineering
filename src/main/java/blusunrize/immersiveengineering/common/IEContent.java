@@ -295,6 +295,7 @@ public class IEContent
 		OreDictionary.registerOre("fabricHemp", new ItemStack(itemMaterial,1,4));
 		OreDictionary.registerOre("fuelCoke", new ItemStack(itemMaterial,1,6));
 		OreDictionary.registerOre("plankTreatedWood", new ItemStack(blockTreatedWood,1,OreDictionary.WILDCARD_VALUE));
+		OreDictionary.registerOre("slabTreatedWood", new ItemStack(blockWoodenDecoration,1,2));
 		OreDictionary.registerOre("blockFuelCoke", new ItemStack(blockStoneDevice,1,3));
 		OreDictionary.registerOre("blockFuelCoke", new ItemStack(blockStoneDecoration,1,3));
 		OreDictionary.registerOre("concrete", new ItemStack(blockStoneDecoration,1,4));

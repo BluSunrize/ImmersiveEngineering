@@ -38,6 +38,8 @@ public class TileEntityDynamo extends TileEntityIEBase implements IEnergyConnect
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		facing = nbt.getInteger("facing");
+		if(descPacket)
+			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 	}
 	@Override
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)

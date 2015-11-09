@@ -130,8 +130,10 @@ public class ItemWireCoil extends ItemIEBase implements IWireCoil
 								if(!player.capabilities.isCreativeMode)
 									stack.stackSize--;
 								((TileEntity)nodeHere).markDirty();
+								world.addBlockEvent(x, y, z, ((TileEntity) nodeHere).getBlockType(), -1, 0);
 								world.markBlockForUpdate(x, y, z);
 								((TileEntity)nodeLink).markDirty();
+								world.addBlockEvent(pos[1], pos[2], pos[3], ((TileEntity) nodeLink).getBlockType(), -1, 0);
 								world.markBlockForUpdate(pos[1], pos[2], pos[3]);
 							}
 							else
