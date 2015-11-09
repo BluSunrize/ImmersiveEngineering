@@ -213,20 +213,24 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 		}
 		else if(Utils.isHammer(player.getCurrentEquippedItem()) && te instanceof TileEntityFloodlight)
 		{
-			if(side==((TileEntityFloodlight)te).side || ForgeDirection.OPPOSITES[side]==((TileEntityFloodlight)te).side)
+			if(!world.isRemote)
 			{
-				((TileEntityFloodlight)te).rotY+=player.isSneaking()?-11.25:11.25;
-				((TileEntityFloodlight)te).rotY%=360;
+				if(side==((TileEntityFloodlight) te).side || ForgeDirection.OPPOSITES[side]==((TileEntityFloodlight) te).side)
+				{
+					((TileEntityFloodlight) te).rotY += player.isSneaking()? -11.25: 11.25;
+					((TileEntityFloodlight) te).rotY %= 360;
+				}
+				else
+				{
+					float newX = (((TileEntityFloodlight) te).rotX+(player.isSneaking()? -11.25f: 11.25f))%360;
+					if(newX>=-11.25 && newX<=191.25)
+						((TileEntityFloodlight) te).rotX = newX;
+				}
+				((TileEntityFloodlight) te).updateFakeLights(true, ((TileEntityFloodlight) te).active);
+				te.markDirty();
+				world.markBlockForUpdate(x, y, z);
 			}
-			else
-			{
-				float newX = (((TileEntityFloodlight)te).rotX+(player.isSneaking()?-11.25f:11.25f))%360;
-				if(newX>=-11.25 && newX<=191.25)
-					((TileEntityFloodlight)te).rotX=newX;
-			}
-			((TileEntityFloodlight)te).updateFakeLights(true,((TileEntityFloodlight)te).active);
-			te.markDirty();
-			world.markBlockForUpdate(x, y, z);
+			return true;
 		}
 		else if(Utils.isHammer(player.getCurrentEquippedItem()) && te instanceof TileEntityFluidPump)
 		{

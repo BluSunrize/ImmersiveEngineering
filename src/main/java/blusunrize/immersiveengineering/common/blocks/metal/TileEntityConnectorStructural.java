@@ -1,5 +1,7 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.relauncher.Side;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -38,6 +40,8 @@ public class TileEntityConnectorStructural extends TileEntityConnectorLV
 	{
 		super.readCustomNBT(nbt, descPacket);
 		rotation = nbt.getFloat("rotation");
+		if(FMLCommonHandler.instance().getEffectiveSide()==Side.CLIENT)
+			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 	}
 
 	@Override
