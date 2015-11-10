@@ -172,7 +172,7 @@ public class EventHandler
 					ISpawnInterdiction interdictor = it.next();
 					if(interdictor instanceof TileEntity)
 					{
-						if(((TileEntity)interdictor).isInvalid())
+						if(((TileEntity)interdictor).isInvalid() || ((TileEntity)interdictor).getWorldObj()==null)
 						{
 							it.remove();
 							continue;
@@ -182,7 +182,7 @@ public class EventHandler
 					}
 					else if(interdictor instanceof Entity)
 					{
-						if(((Entity)interdictor).isDead)
+						if(((Entity)interdictor).isDead || ((Entity)interdictor).worldObj==null)
 						{
 							it.remove();
 							continue;
@@ -208,7 +208,7 @@ public class EventHandler
 					ISpawnInterdiction interdictor = it.next();
 					if(interdictor instanceof TileEntity)
 					{
-						if(((TileEntity)interdictor).isInvalid())
+						if(((TileEntity)interdictor).isInvalid() || ((TileEntity)interdictor).getWorldObj()==null)
 						{
 							it.remove();
 							continue;
@@ -218,7 +218,7 @@ public class EventHandler
 					}
 					else if(interdictor instanceof Entity)
 					{
-						if(((Entity)interdictor).isDead)
+						if(((Entity)interdictor).isDead || ((Entity)interdictor).worldObj==null)
 						{
 							it.remove();
 							continue;
