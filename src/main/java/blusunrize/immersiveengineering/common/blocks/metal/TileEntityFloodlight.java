@@ -198,6 +198,7 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
+		super.readCustomNBT(nbt, descPacket);
 		active = nbt.getBoolean("active");
 		energyStorage = nbt.getInteger("energy");
 		facing = nbt.getInteger("facing");
@@ -217,6 +218,7 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable
 	@Override
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
+		super.writeCustomNBT(nbt, descPacket);
 		nbt.setBoolean("active",active);
 		nbt.setInteger("energyStorage",energyStorage);
 		nbt.setInteger("facing",facing);
@@ -267,15 +269,35 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable
 	@Override
 	public Vec3 getRaytraceOffset(IImmersiveConnectable link)
 	{
-		int xDif = xCoord - ((TileEntity)link).xCoord;
-		int zDif = zCoord - ((TileEntity)link).zCoord;
-		int h = ((TileEntity)link).yCoord>yCoord?1:0;
-		if(xDif==0&&zDif==0)
-			return Vec3.createVectorHelper(.5, h, .5);
-		else if(Math.abs(xDif)>=Math.abs(zDif))
-			return Vec3.createVectorHelper(xDif>0?0:1, h, .5);
-		else
-			return Vec3.createVectorHelper(.5, h, zDif>0?0:1);
+		int xDif = ((TileEntity)link).xCoord-xCoord;
+		int yDif = ((TileEntity)link).yCoord-yCoord;
+		int zDif = ((TileEntity)link).zCoord-zCoord;
+		double x, y, z;
+
+		switch(side)
+		{
+			case 0:
+			case 1:
+				x = (Math.abs(xDif)>=Math.abs(zDif))? (xDif>=0)?.9375: .0625: .5;
+				y = (side==0)?.9375: .0625;
+				z = (Math.abs(zDif)>Math.abs(xDif))? (zDif>=0)?.9375: .0625: .5;
+				break;
+			case 2:
+			case 3:
+				x = (Math.abs(xDif)>=Math.abs(yDif))? (xDif>=0)?.9375: .0625: .5;
+				y = (Math.abs(yDif)>Math.abs(xDif))? (yDif>=0)?.9375: .0625: .5;
+				z = (side==2)?.9375: .0625;
+				break;
+			case 4:
+			case 5:
+			default:
+				x = (side==4)?.9375: .0625;
+				y = (Math.abs(yDif)>=Math.abs(zDif))? (yDif>=0)?.9375: .0625: .5;
+				z = (Math.abs(zDif)>Math.abs(yDif))? (zDif>=0)?.9375: .0625: .5;
+				break;
+		}
+
+		return Vec3.createVectorHelper(x,y,z);
 	}
 	@Override
 	public Vec3 getConnectionOffset(Connection con)
@@ -283,16 +305,30 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable
 		int xDif = (con==null||con.start==null||con.end==null)?0: (con.start.equals(Utils.toCC(this))&&con.end!=null)? con.end.posX-xCoord: (con.end.equals(Utils.toCC(this))&& con.start!=null)?con.start.posX-xCoord: 0;
 		int yDif = (con==null||con.start==null||con.end==null)?0: (con.start.equals(Utils.toCC(this))&&con.end!=null)? con.end.posY-yCoord: (con.end.equals(Utils.toCC(this))&& con.start!=null)?con.start.posY-yCoord: 0;
 		int zDif = (con==null||con.start==null||con.end==null)?0: (con.start.equals(Utils.toCC(this))&&con.end!=null)? con.end.posZ-zCoord: (con.end.equals(Utils.toCC(this))&& con.start!=null)?con.start.posZ-zCoord: 0;
-		double x = side==4?.9375: side==5?.0625: .5;
-		double y = side==0?.9375: side==1?.0625: .5;
-		double z = side==2?.9375: side==3?.0625: .5;
+		double x, y, z;
 
-		if(x==.5 && Math.abs(xDif)>=Math.abs(zDif) && Math.abs(xDif)>=Math.abs(yDif))
-			x = xDif<0?.0625:.9375;
-		else if(z==.5 && Math.abs(zDif)>=Math.abs(xDif) && Math.abs(zDif)>=Math.abs(yDif))
-			z = zDif<0?.0625:.9375;
-		else if(y==.5 && Math.abs(yDif)>=Math.abs(xDif) && Math.abs(yDif)>=Math.abs(zDif))
-			y = yDif<0?.0625:.9375;
+		switch(side)
+		{
+			case 0:
+			case 1:
+				x = (Math.abs(xDif)>=Math.abs(zDif))? (xDif>=0)?.9375: .0625: .5;
+				y = (side==0)?.9375: .0625;
+				z = (Math.abs(zDif)>Math.abs(xDif))? (zDif>=0)?.9375: .0625: .5;
+				break;
+			case 2:
+			case 3:
+				x = (Math.abs(xDif)>=Math.abs(yDif))? (xDif>=0)?.9375: .0625: .5;
+				y = (Math.abs(yDif)>Math.abs(xDif))? (yDif>=0)?.9375: .0625: .5;
+				z = (side==2)?.9375: .0625;
+				break;
+			case 4:
+			case 5:
+			default:
+				x = (side==4)?.9375: .0625;
+				y = (Math.abs(yDif)>=Math.abs(zDif))? (yDif>=0)?.9375: .0625: .5;
+				z = (Math.abs(zDif)>Math.abs(yDif))? (zDif>=0)?.9375: .0625: .5;
+				break;
+		}
 		return Vec3.createVectorHelper(x,y,z);
 	}
 }
