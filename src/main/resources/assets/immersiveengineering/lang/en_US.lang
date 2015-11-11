@@ -66,6 +66,11 @@ tile.ImmersiveEngineering.metalDecoration.lightEngineering.name=Light Engineerin
 tile.ImmersiveEngineering.metalDecoration.connectorStructural.name=Structural Cable Connector
 tile.ImmersiveEngineering.metalDecoration.wallMount.name=Steel Wall Mount
 tile.ImmersiveEngineering.metalDecoration.sheetMetal.name=Sheet Metal Block
+tile.ImmersiveEngineering.metalDecoration.scaffolding2.name=Steel Scaffolding
+tile.ImmersiveEngineering.metalDecoration.aluminiumFence.name=Aluminium Fence
+tile.ImmersiveEngineering.metalDecoration.aluminiumScaffolding.name=Aluminium Scaffolding
+tile.ImmersiveEngineering.metalDecoration.aluminiumScaffolding2.name=Aluminium Scaffolding
+tile.ImmersiveEngineering.metalDecoration.aluminiumStructuralArm.name=Aluminium Structural Arm
 
 tile.ImmersiveEngineering.metalDevice2.breakerSwitch.name=Breaker Switch
 tile.ImmersiveEngineering.metalDevice2.electricLantern.name=Powered Lantern
