@@ -22,6 +22,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
@@ -230,6 +231,18 @@ public class IERecipes
 		addOredictRecipe(new ItemStack(IEContent.blockMetalDecoration, 8,BlockMetalDecoration.META_connectorStructural), "FIF","III", 'I',"ingotSteel",'F',new ItemStack(IEContent.blockMetalDecoration,1,0));
 		addOredictRecipe(new ItemStack(IEContent.blockMetalDecoration, 4,BlockMetalDecoration.META_wallMount), "WW","WF","W ", 'W',new ItemStack(IEContent.blockMetalDecoration,1,1),'F',new ItemStack(IEContent.blockMetalDecoration,1,0));
 		addOredictRecipe(new ItemStack(IEContent.blockMetalDecoration, 4,BlockMetalDecoration.META_sheetMetal), " I ","IHI"," I ", 'I',"ingotIron",'H',new ItemStack(IEContent.itemTool,1,0));
+		addShapelessOredictRecipe(new ItemStack(IEContent.blockMetalDecoration,1,BlockMetalDecoration.META_scaffolding2), new ItemStack(IEContent.blockMetalDecoration,1,BlockMetalDecoration.META_scaffolding));
+		addShapelessOredictRecipe(new ItemStack(IEContent.blockMetalDecoration,1,BlockMetalDecoration.META_scaffolding), new ItemStack(IEContent.blockMetalDecoration,1,BlockMetalDecoration.META_scaffolding2));
+		addOredictRecipe(new ItemStack(IEContent.blockMetalDecoration,16,BlockMetalDecoration.META_aluminiumFence), "III","III", 'I',"ingotAluminum");
+		if(OreDictionary.doesOreNameExist("ingotAluminium"))
+			addOredictRecipe(new ItemStack(IEContent.blockMetalDecoration,16,BlockMetalDecoration.META_aluminiumFence), "III","III", 'I',"ingotAluminium");
+		addOredictRecipe(new ItemStack(IEContent.blockMetalDecoration, 6,BlockMetalDecoration.META_aluminiumScaffolding), "III"," S ","S S", 'I',"ingotAluminum",'S',new ItemStack(IEContent.blockMetalDecoration,1,BlockMetalDecoration.META_aluminiumFence));
+		if(OreDictionary.doesOreNameExist("ingotAluminium"))
+			addOredictRecipe(new ItemStack(IEContent.blockMetalDecoration, 6,BlockMetalDecoration.META_aluminiumScaffolding), "III"," S ","S S", 'I',"ingotAluminium",'S',new ItemStack(IEContent.blockMetalDecoration,1,BlockMetalDecoration.META_aluminiumFence));
+		addShapelessOredictRecipe(new ItemStack(IEContent.blockMetalDecoration,1,BlockMetalDecoration.META_aluminiumScaffolding2), new ItemStack(IEContent.blockMetalDecoration,1,BlockMetalDecoration.META_aluminiumScaffolding));
+		addShapelessOredictRecipe(new ItemStack(IEContent.blockMetalDecoration,1,BlockMetalDecoration.META_aluminiumScaffolding), new ItemStack(IEContent.blockMetalDecoration,1,BlockMetalDecoration.META_aluminiumScaffolding2));
+		addOredictRecipe(new ItemStack(IEContent.blockMetalDecoration, 4,BlockMetalDecoration.META_aluminiumStructuralArm), "B  ","BB ","BBB", 'B',new ItemStack(IEContent.blockMetalDecoration,1,BlockMetalDecoration.META_aluminiumScaffolding)).setMirrored(true);
+
 
 		addOredictRecipe(new ItemStack(IEContent.blockMetalMultiblocks, 2,BlockMetalMultiblocks.META_squeezer), "IPI","GDG","IPI", 'I',"ingotIron",'D',"dyeGreen",'G',componentIron,'P',Blocks.piston);
 		addOredictRecipe(new ItemStack(IEContent.blockMetalMultiblocks, 2,BlockMetalMultiblocks.META_fermenter), "IPI","GDG","IPI", 'I',"ingotIron",'D',"dyeBlue",'G',componentIron,'P',Blocks.piston);
@@ -501,58 +514,63 @@ public class IERecipes
 		addOreDictAlloyingRecipe("ingotRedAlloy",1, "Copper", 100,512, "dustRedstone","dustRedstone","dustRedstone","dustRedstone");
 
 	}
-	public static void initArcRecyclingRecipes()
-	{
-		Iterator<IRecipe> itRecipes = CraftingManager.getInstance().getRecipeList().iterator();
-		while(itRecipes.hasNext()) 
-			try
-		{
-				IRecipe recipe = itRecipes.next();
-				if(recipe.getRecipeOutput()!=null)
-				{
-					Item item = recipe.getRecipeOutput().getItem();
-					if(item instanceof ItemTool || item instanceof ItemSword || item instanceof ItemHoe || item instanceof ItemArmor)
-					{
-						Object[] inputs = null;
-						if(recipe instanceof ShapedOreRecipe)
-							inputs = ((ShapedOreRecipe)recipe).getInput();
-						//						else if(recipe instanceof ShapelessOreRecipe)
-						//							inputs = ((ShapelessOreRecipe)recipe).getInput().toArray();
-						else if(recipe instanceof ShapedRecipes)
-							inputs = ((ShapedRecipes)recipe).recipeItems;
-						//						else if(recipe instanceof ShapelessRecipes)
-						//							inputs = ((ShapelessRecipes)recipe).recipeItems.toArray();
-						if(inputs!=null)
-						{
-							HashMap<ItemStack,Integer> outputs = new HashMap<ItemStack,Integer>();
-							for(Object in : inputs)
-							{
-								boolean b = false;
-								for(ItemStack storedOut : outputs.keySet())
-									if(Utils.stackMatchesObject(storedOut, in))
-									{
-										outputs.put(storedOut, outputs.get(storedOut)+1);
-										b=true;
-									}
-								if(!b)
-								{
-									if(in instanceof ItemStack && Utils.isIngot((ItemStack)in))
-										outputs.put((ItemStack)in, 1);
-									else if(in instanceof String && ((String)in).startsWith("ingot"))
-										outputs.put(IEApi.getPreferredOreStack((String)in), 1);
-									else if(in instanceof ArrayList && Utils.isIngot((ItemStack) ((ArrayList)in).get(0)))
-										outputs.put(IEApi.getPreferredStackbyMod((ArrayList)in), 1);
-								}
-							}
-							if(!outputs.isEmpty())
-								ArcFurnaceRecipe.recipeList.add(new ArcToolRecyclingRecipe(outputs, recipe.getRecipeOutput(), 100, 512));
-						}
-					}
-				}
-		}catch(Exception e)
-		{
-			e.printStackTrace();
-		}
+	public static void initArcRecyclingRecipes() {
+		ArcFurnaceRecipe.allowItemForRecycling(new ItemStack(IEContent.blockMetalDecoration,1,OreDictionary.WILDCARD_VALUE));
+		
+//		Iterator<IRecipe> itRecipes = CraftingManager.getInstance().getRecipeList().iterator();
+//		while(itRecipes.hasNext()) 
+//			try
+//		{
+//				IRecipe recipe = itRecipes.next();
+//				if(recipe.getRecipeOutput()!=null)
+//				{
+//					Item item = recipe.getRecipeOutput().getItem();
+//					if(item instanceof ItemTool || item instanceof ItemSword || item instanceof ItemHoe || item instanceof ItemArmor)
+//					{
+//						Object[] inputs = null;
+//						if(recipe instanceof ShapedOreRecipe)
+//							inputs = ((ShapedOreRecipe)recipe).getInput();
+//						//						else if(recipe instanceof ShapelessOreRecipe)
+//						//							inputs = ((ShapelessOreRecipe)recipe).getInput().toArray();
+//						else if(recipe instanceof ShapedRecipes)
+//							inputs = ((ShapedRecipes)recipe).recipeItems;
+//						//						else if(recipe instanceof ShapelessRecipes)
+//						//							inputs = ((ShapelessRecipes)recipe).recipeItems.toArray();
+//						if(inputs!=null)
+//						{
+//							HashMap<ItemStack,Double> outputs = new HashMap<ItemStack,Double>();
+//							for(Object in : inputs)
+//							{
+//								Object[] brokenDown = null;
+//								if(in instanceof ItemStack)
+//									brokenDown = ApiUtils.breakStackIntoPreciseIngots((ItemStack)in);
+//								else if(in instanceof ArrayList)
+//									brokenDown = ApiUtils.breakStackIntoPreciseIngots(((ArrayList<ItemStack>)in).get(0));
+//								else if(in instanceof String)
+//									brokenDown = ApiUtils.breakStackIntoPreciseIngots(IEApi.getPreferredOreStack((String)in));
+//
+//								if(brokenDown!=null && brokenDown[0]!=null)
+//								{
+//									boolean b = false;
+//									for(ItemStack storedOut : outputs.keySet())
+//										if(OreDictionary.itemMatches((ItemStack)brokenDown[0], storedOut, false))
+//										{
+//											outputs.put(storedOut, outputs.get(storedOut)+(Double)brokenDown[1]);
+//											b=true;
+//										}
+//									if(!b)
+//										outputs.put(Utils.copyStackWithAmount((ItemStack)brokenDown[0],1), (Double)brokenDown[1]);
+//								}
+//							}
+//							if(!outputs.isEmpty())
+//								ArcFurnaceRecipe.recipeList.add(new ArcToolRecyclingRecipe(outputs, recipe.getRecipeOutput(), 100, 512));
+//						}
+//					}
+//				}
+//		}catch(Exception e)
+//		{
+//			e.printStackTrace();
+//		}
 	}
 	public static ArcFurnaceRecipe addArcRecipe(ItemStack output, Object input, int time, int energyPerTick, ItemStack slag, Object... additives)
 	{

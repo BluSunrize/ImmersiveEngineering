@@ -20,6 +20,7 @@ import blusunrize.immersiveengineering.common.EventHandler;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.IERecipes;
 import blusunrize.immersiveengineering.common.IESaveData;
+import blusunrize.immersiveengineering.common.crafting.ArcRecyclingThreadHandler;
 import blusunrize.immersiveengineering.common.items.ItemRevolver;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.Lib;
@@ -58,7 +59,7 @@ public class ImmersiveEngineering
 	public static ImmersiveEngineering instance = new ImmersiveEngineering();
 	@SidedProxy(clientSide="blusunrize.immersiveengineering.client.ClientProxy", serverSide="blusunrize.immersiveengineering.common.CommonProxy")
 	public static CommonProxy proxy;
-	
+
 	public static final SimpleNetworkWrapper packetHandler = NetworkRegistry.INSTANCE.newSimpleChannel(MODID);
 
 	@Mod.EventHandler
@@ -76,6 +77,13 @@ public class ImmersiveEngineering
 		for(int b : Config.getIntArray("oreDimBlacklist"))
 			IEWorldGen.oreDimBlacklist.add(b);
 		IEApi.modPreference = Arrays.asList(Config.getStringArray("preferredOres"));
+		IEApi.prefixToIngotMap.put("ingot", new Integer[]{1,1});
+		IEApi.prefixToIngotMap.put("nugget", new Integer[]{1,9});
+		IEApi.prefixToIngotMap.put("block", new Integer[]{9,1});
+		IEApi.prefixToIngotMap.put("plate", new Integer[]{1,1});
+		IEApi.prefixToIngotMap.put("gear", new Integer[]{4,1});
+		IEApi.prefixToIngotMap.put("rod", new Integer[]{2,1});
+		IEApi.prefixToIngotMap.put("fence", new Integer[]{6,16});
 		IECompatModule.preInitModules();
 	}
 	@Mod.EventHandler
@@ -94,7 +102,7 @@ public class ImmersiveEngineering
 		Lib.GREG = Loader.isModLoaded("gregtech") && Config.getBoolean("gregtechcompat");
 		for(IECompatModule compat : IECompatModule.modules)
 			compat.init();
-		
+
 		packetHandler.registerMessage(MessageMineralListSync.Handler.class, MessageMineralListSync.class, 0, Side.CLIENT);
 	}
 	@Mod.EventHandler
@@ -110,7 +118,7 @@ public class ImmersiveEngineering
 
 		new ThreadContributorSpecialsDownloader();
 	}
-	
+
 	@Mod.EventHandler
 	public void serverStarting(FMLServerStartingEvent event)
 	{
@@ -139,6 +147,8 @@ public class ImmersiveEngineering
 				IESaveData.setInstance(world.provider.dimensionId, worldData);
 			}
 		}
+		if(Config.getBoolean("arcfurnace_recycle"))
+			ArcRecyclingThreadHandler.doRecipeProfiling();
 	}
 
 	public static CreativeTabs creativeTab = new CreativeTabs(MODID)

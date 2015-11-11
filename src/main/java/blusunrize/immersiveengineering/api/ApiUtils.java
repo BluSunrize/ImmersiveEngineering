@@ -24,8 +24,10 @@ public class ApiUtils
 {
 	public static boolean compareToOreName(ItemStack stack, String oreName)
 	{
-		for(int oid : OreDictionary.getOreIDs(stack))
-			if(OreDictionary.getOreName(oid).equals(oreName))
+		ItemStack comp = copyStackWithAmount(stack, 1);
+		ArrayList<ItemStack> s = OreDictionary.getOres(oreName);
+		for (ItemStack st:s)
+			if (ItemStack.areItemStacksEqual(comp, st))
 				return true;
 		return false;
 	}
@@ -43,6 +45,14 @@ public class ApiUtils
 			return compareToOreName(stack, (String)o);
 		return false;
 	}
+	public static ItemStack copyStackWithAmount(ItemStack stack, int amount)
+	{
+		if(stack==null)
+			return null;
+		ItemStack s2 = stack.copy();
+		s2.stackSize=amount;
+		return s2;
+	}
 
 	public static String nameFromStack(ItemStack stack)
 	{
@@ -56,6 +66,92 @@ public class ApiUtils
 		return "";
 	}
 
+
+	public static boolean isMetalComponent(ItemStack stack, String componentType)
+	{
+		return getMetalComponentType(stack, componentType)!=null;
+	}
+	public static String getMetalComponentType(ItemStack stack, String... componentTypes)
+	{
+		ItemStack comp = copyStackWithAmount(stack, 1);
+		for(String oreName : OreDictionary.getOreNames())//This is super ugly, but I don't want to force the latest forge ._.
+			for(int iType=0; iType<componentTypes.length; iType++)
+				if(oreName.startsWith(componentTypes[iType]))
+				{
+					ArrayList<ItemStack> s = OreDictionary.getOres(oreName);
+					for(ItemStack st : s)
+						if(ItemStack.areItemStacksEqual(comp, st))
+							return componentTypes[iType];
+				}
+		return null;
+	}
+	public static String[] getMetalComponentTypeAndMetal(ItemStack stack, String... componentTypes)
+	{
+		ItemStack comp = copyStackWithAmount(stack, 1);
+		for(String oreName : OreDictionary.getOreNames())//This is super ugly, but I don't want to force the latest forge ._.
+			for(int iType=0; iType<componentTypes.length; iType++)
+				if(oreName.startsWith(componentTypes[iType]))
+				{
+					ArrayList<ItemStack> s = OreDictionary.getOres(oreName);
+					for(ItemStack st : s)
+						if(ItemStack.areItemStacksEqual(comp, st))
+							return new String[]{componentTypes[iType], oreName.substring(componentTypes[iType].length())};
+				}
+		return null;
+	}
+	public static boolean isIngot(ItemStack stack)
+	{
+		return isMetalComponent(stack, "ingot");
+	}
+	public static boolean isPlate(ItemStack stack)
+	{
+		return isMetalComponent(stack, "plate");
+	}
+	public static int getComponentIngotWorth(ItemStack stack)
+	{
+		String[] keys = IEApi.prefixToIngotMap.keySet().toArray(new String[IEApi.prefixToIngotMap.size()]);
+		String key = getMetalComponentType(stack, keys);
+		if(key!=null)
+		{
+			Integer[] relation = IEApi.prefixToIngotMap.get(key);
+			if(relation!=null && relation.length>1)
+			{
+				double val = relation[0]/(double)relation[1];
+				return (int)val;
+			}
+		}
+		return 0;
+	}
+	public static ItemStack breakStackIntoIngots(ItemStack stack)
+	{
+		String[] keys = IEApi.prefixToIngotMap.keySet().toArray(new String[IEApi.prefixToIngotMap.size()]);
+		String[] type = getMetalComponentTypeAndMetal(stack, keys);
+		if(type!=null)
+		{
+			Integer[] relation = IEApi.prefixToIngotMap.get(type[0]);
+			if(relation!=null && relation.length>1)
+			{
+				double val = relation[0]/(double)relation[1];
+				return copyStackWithAmount(IEApi.getPreferredOreStack("ingot"+type[1]), (int)val);
+			}
+		}
+		return null;
+	}
+	public static Object[] breakStackIntoPreciseIngots(ItemStack stack)
+	{
+		String[] keys = IEApi.prefixToIngotMap.keySet().toArray(new String[IEApi.prefixToIngotMap.size()]);
+		String[] type = getMetalComponentTypeAndMetal(stack, keys);
+		if(type!=null)
+		{
+			Integer[] relation = IEApi.prefixToIngotMap.get(type[0]);
+			if(relation!=null && relation.length>1)
+			{
+				double val = relation[0]/(double)relation[1];
+				return new Object[]{IEApi.getPreferredOreStack("ingot"+type[1]),val};
+			}
+		}
+		return null;
+	}
 
 	public static ChunkCoordinates toCC(Object object)
 	{

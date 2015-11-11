@@ -333,7 +333,7 @@ public abstract class IESlot extends Slot
 		@Override
 		public boolean isItemValid(ItemStack itemStack)
 		{
-			return itemStack!=null && ArcFurnaceRecipe.isValidInput(itemStack);
+			return itemStack!=null && ArcFurnaceRecipe.isValidRecipeInput(itemStack);
 		}
 	}
 	public static class ArcAdditive extends IESlot
@@ -345,7 +345,7 @@ public abstract class IESlot extends Slot
 		@Override
 		public boolean isItemValid(ItemStack itemStack)
 		{
-			return itemStack!=null && ArcFurnaceRecipe.isValidAdditive(itemStack);
+			return itemStack!=null && ArcFurnaceRecipe.isValidRecipeAdditive(itemStack);
 		}
 	}
 	public static class ArcElectrode extends IESlot

@@ -64,12 +64,12 @@ public class ContainerArcFurnace extends Container
 			{
 				int i = -1;
 				int j = -1;
-				if(ArcFurnaceRecipe.isValidInput(stackInSlot))
+				if(ArcFurnaceRecipe.isValidRecipeInput(stackInSlot))
 				{
 					i=0;
 					j=12;
 				}
-				else if(ArcFurnaceRecipe.isValidAdditive(stackInSlot))
+				else if(ArcFurnaceRecipe.isValidRecipeAdditive(stackInSlot))
 				{
 					i=12;
 					j=16;

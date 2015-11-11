@@ -41,7 +41,7 @@ public abstract class IECompatModule
 		moduleClasses.put("etfuturum", EtFuturumHelper.class);
 		moduleClasses.put("EnderIO", EnderIOHelper.class);
 		moduleClasses.put("steamcraft2", SteamCraftHelper.class);
-		
+		moduleClasses.put("ExtraUtilities", ExtraUtilsHelper.class);
 	}
 
 	public static void preInitModules()

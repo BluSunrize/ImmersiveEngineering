@@ -10,8 +10,8 @@ import blusunrize.immersiveengineering.common.util.Utils;
 
 public class ArcToolRecyclingRecipe extends ArcFurnaceRecipe
 {
-	HashMap<ItemStack,Integer> outputs;
-	public ArcToolRecyclingRecipe(HashMap<ItemStack,Integer> outputs, Object input, int time, int energyPerTick)
+	HashMap<ItemStack,Double> outputs;
+	public ArcToolRecyclingRecipe(HashMap<ItemStack,Double> outputs, Object input, int time, int energyPerTick)
 	{
 		super(null,input,null, time, energyPerTick);
 		this.outputs = outputs;
@@ -22,11 +22,11 @@ public class ArcToolRecyclingRecipe extends ArcFurnaceRecipe
 	{
 		if(outputs==null)
 			return new ItemStack[0];
-		float mod = (input.getMaxDamage()-input.getItemDamage())/(float)input.getMaxDamage();
+		float mod = !input.getItem().isDamageable()?1:(input.getMaxDamage()-input.getItemDamage())/(float)input.getMaxDamage();
 		ArrayList<ItemStack> outs = new ArrayList<ItemStack>();
-		for(Entry<ItemStack,Integer> e : outputs.entrySet())
+		for(Entry<ItemStack,Double> e : outputs.entrySet())
 		{
-			float scaledOut = mod*e.getValue();
+			double scaledOut = mod*e.getValue();
 			//Noone likes nuggets anyway >_>
 			//			float nuggetOut = scaledOut-(int)scaledOut;
 			//			Utils.getNuggetForItem();

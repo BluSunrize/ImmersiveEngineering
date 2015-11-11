@@ -45,6 +45,13 @@ public class IEApi
 	 */
 	public static ArrayListMultimap<String,ShaderCase> shaderCaseRegistry = ArrayListMultimap.create();
 	
+	/**
+	 * This map stores a list of OreDict prefixes (ingot, plate, gear, nugget) and their ingot relation (ingot:component) <br>
+	 * Examples:<br>"plate"-{1,1},<br>"nugget"-{1,9},<br>"block"-{9,1},<br>"gear"-{4,1}
+	 */
+	public static HashMap<String, Integer[]> prefixToIngotMap = new HashMap<String, Integer[]>();
+	
+	
 	public static ItemStack getPreferredOreStack(String oreName)
 	{
 		if(!oreOutputPreference.containsKey(oreName))

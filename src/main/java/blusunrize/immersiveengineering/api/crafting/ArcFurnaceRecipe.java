@@ -23,10 +23,9 @@ public class ArcFurnaceRecipe
 	public final int time;
 	public final int energyPerTick;
 
-
 	public String specialRecipeType;
 	public static ArrayList<String> specialRecipeTypes = new ArrayList<String>();
-	
+
 	public ArcFurnaceRecipe(ItemStack output, Object input, ItemStack slag, int time, int energyPerTick, Object... additives)
 	{
 		this.output=output;
@@ -94,6 +93,17 @@ public class ArcFurnaceRecipe
 		}
 		return false;
 	}
+	public boolean isValidInput(ItemStack stack)
+	{
+		return ApiUtils.stackMatchesObject(stack, this.input);
+	}
+	public boolean isValidAdditive(ItemStack stack)
+	{
+		for(Object add : additives)
+			if(ApiUtils.stackMatchesObject(stack, add))
+				return true;
+		return false;
+	}
 	public ArcFurnaceRecipe setSpecialRecipeType(String type)
 	{
 		this.specialRecipeType = type;
@@ -115,27 +125,6 @@ public class ArcFurnaceRecipe
 		for(ArcFurnaceRecipe recipe : recipeList)
 			if(recipe!=null && recipe.matches(input, additives))
 				return recipe;
-		//			if(recipe!=null && ApiUtils.stackMatchesObject(input, recipe.input))
-		//			{
-		//				boolean b0 = true;
-		//				for(Object add : recipe.additives)
-		//					if(add!=null)
-		//					{
-		//						boolean b1 = false;
-		//						for(ItemStack stack : additives)
-		//							if(stack!=null)
-		//								if(ApiUtils.stackMatchesObject(stack, add) && (add instanceof ItemStack?((ItemStack)add).stackSize<=stack.stackSize:true))
-		//									b1 = true;
-		//						if(!b1)
-		//						{
-		//							b0 = false;
-		//							break;
-		//						}
-		//
-		//					}
-		//				if(b0)
-		//					return recipe;
-		//			}
 		return null;
 	}
 	public static List<ArcFurnaceRecipe> removeRecipes(ItemStack stack)
@@ -154,20 +143,36 @@ public class ArcFurnaceRecipe
 		return list;
 	}
 
-	public static boolean isValidInput(ItemStack stack)
-	{
-//		for(ArcFurnaceRecipe recipe : recipeList)
-//			if(ApiUtils.stackMatchesObject(stack, recipe.input))
-				return true;
-//		return false;
-	}
-	public static boolean isValidAdditive(ItemStack stack)
+	public static boolean isValidRecipeInput(ItemStack stack)
 	{
 		for(ArcFurnaceRecipe recipe : recipeList)
-			if(recipe!=null)
-				for(Object add : recipe.additives)
-					if(ApiUtils.stackMatchesObject(stack, add))
-						return true;
+			if(recipe!=null && recipe.isValidInput(stack))
+				return true;
 		return false;
+	}
+	public static boolean isValidRecipeAdditive(ItemStack stack)
+	{
+		for(ArcFurnaceRecipe recipe : recipeList)
+			if(recipe!=null && recipe.isValidAdditive(stack))
+				return true;
+		return false;
+	}
+	
+	public static ArrayList recyclingAllowed = new ArrayList();
+	/**
+	 * Set an item/oredict-entry to be considered for recycling in the arc furnace. Tools and Armor should usually be auto-detected
+	 */
+	public static void allowItemForRecycling(Object stack)
+	{
+		recyclingAllowed.add(ApiUtils.convertToValidRecipeInput(stack));
+	}
+	
+	public static ArrayList invalidRecyclingOutput = new ArrayList();
+	/**
+	 * Set an item/oredict-entry to be an invalid output for the recycling process. Used for magical ingots that should be reclaimable or similar
+	 */
+	public static void makeItemInvalidRecyclingOutput(Object stack)
+	{
+		invalidRecyclingOutput.add(ApiUtils.convertToValidRecipeInput(stack));
 	}
 }

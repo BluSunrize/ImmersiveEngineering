@@ -300,6 +300,8 @@ public class IEContent
 		OreDictionary.registerOre("blockFuelCoke", new ItemStack(blockStoneDecoration,1,3));
 		OreDictionary.registerOre("concrete", new ItemStack(blockStoneDecoration,1,4));
 		OreDictionary.registerOre("concrete", new ItemStack(blockStoneDecoration,1,5));
+		OreDictionary.registerOre("fenceSteel", new ItemStack(blockMetalDecoration,1,BlockMetalDecoration.META_fence));
+		OreDictionary.registerOre("fenceAluminum", new ItemStack(blockMetalDecoration,1,BlockMetalDecoration.META_aluminiumFence));
 		OreDictionary.registerOre("itemSlag", new ItemStack(itemMaterial,1,13));
 		//Vanilla OreDict
 		OreDictionary.registerOre("bricksStone", new ItemStack(Blocks.stonebrick));
@@ -535,8 +537,6 @@ public class IEContent
 		int villagerId = Config.getInt("villager_engineer");
 		VillagerRegistry.instance().registerVillageTradeHandler(villagerId, new IEVillagerTradeHandler());
 
-		if(Config.getBoolean("arcfurnace_recycle"))
-			IERecipes.initArcRecyclingRecipes();
 	}
 	
 	public static void registerToOreDict(String type, ItemIEBase item, int... metas)
