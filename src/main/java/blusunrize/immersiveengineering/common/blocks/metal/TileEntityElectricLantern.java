@@ -67,6 +67,7 @@ public class TileEntityElectricLantern extends TileEntityImmersiveConnectable im
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
+		super.readCustomNBT(nbt, descPacket);
 		active = nbt.getBoolean("active");
 		energyStorage = nbt.getInteger("energyStorage");
 	}
@@ -74,6 +75,7 @@ public class TileEntityElectricLantern extends TileEntityImmersiveConnectable im
 	@Override
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
+		super.writeCustomNBT(nbt, descPacket);
 		nbt.setBoolean("active",active);
 		nbt.setInteger("energyStorage",energyStorage);
 	}
@@ -115,13 +117,12 @@ public class TileEntityElectricLantern extends TileEntityImmersiveConnectable im
 	{
 		int xDif = xCoord - ((TileEntity)link).xCoord;
 		int zDif = zCoord - ((TileEntity)link).zCoord;
-		int h = ((TileEntity)link).yCoord>yCoord?1:0;
 		if(xDif==0&&zDif==0)
-			return Vec3.createVectorHelper(.5, h, .5);
+			return Vec3.createVectorHelper(.5, .0625, .5);
 		else if(Math.abs(xDif)>=Math.abs(zDif))
-			return Vec3.createVectorHelper(xDif>0?.125:.875, h, .5);
+			return Vec3.createVectorHelper(xDif<0?.25:xDif>0?.75:.5, .0625, .5);
 		else
-			return Vec3.createVectorHelper(.5, h, zDif>0?.125:.875);
+			return Vec3.createVectorHelper(.5, .0625, zDif<0?.25:zDif>0?.75:.5);
 	}
 	@Override
 	public Vec3 getConnectionOffset(Connection con)
