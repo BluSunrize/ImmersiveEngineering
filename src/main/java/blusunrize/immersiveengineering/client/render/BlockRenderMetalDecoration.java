@@ -29,7 +29,7 @@ public class BlockRenderMetalDecoration implements ISimpleBlockRenderingHandler
 		GL11.glPushMatrix();
 		try{
 
-			if(metadata==BlockMetalDecoration.META_fence)
+			if(metadata==BlockMetalDecoration.META_fence||metadata==BlockMetalDecoration.META_aluminiumFence)
 			{
 				renderer.setRenderBounds(0,0,.375, .25,1,.625);
 				ClientUtils.drawInventoryBlock(block, metadata, renderer);
@@ -40,7 +40,7 @@ public class BlockRenderMetalDecoration implements ISimpleBlockRenderingHandler
 				renderer.setRenderBounds(-.125,.3125,.4375, 1.125,.4375,.5625);
 				ClientUtils.drawInventoryBlock(block, metadata, renderer);
 			}
-			else if(metadata==BlockMetalDecoration.META_scaffolding)
+			else if(metadata==BlockMetalDecoration.META_scaffolding||metadata==BlockMetalDecoration.META_scaffolding2||metadata==BlockMetalDecoration.META_aluminiumScaffolding||metadata==BlockMetalDecoration.META_aluminiumScaffolding2)
 			{
 				block.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
 				renderer.setRenderBoundsFromBlock(block);
@@ -52,11 +52,11 @@ public class BlockRenderMetalDecoration implements ISimpleBlockRenderingHandler
 				ClientUtils.handleStaticTileRenderer(new TileEntityLantern());
 				Tessellator.instance.draw();
 			}
-			else if(metadata==BlockMetalDecoration.META_structuralArm)
+			else if(metadata==BlockMetalDecoration.META_structuralArm||metadata==BlockMetalDecoration.META_aluminiumStructuralArm)
 			{
 				Tessellator tes = ClientUtils.tes();
-				IIcon iSide = block.getIcon(2, 3);
-				IIcon iTop = block.getIcon(0, 3);
+				IIcon iSide = block.getIcon(2, metadata);
+				IIcon iTop = block.getIcon(0, metadata);
 
 				GL11.glRotatef(90.0F, 0.0F, 1.0F, 0.0F);
 				GL11.glTranslatef(-0.5F, -0.5F, -0.5F);
@@ -136,7 +136,8 @@ public class BlockRenderMetalDecoration implements ISimpleBlockRenderingHandler
 	@Override
 	public boolean renderWorldBlock(IBlockAccess world, int x, int y, int z, Block block, int modelId, RenderBlocks renderer)
 	{
-		if(world.getBlockMetadata(x, y, z)==BlockMetalDecoration.META_fence)
+		int meta = world.getBlockMetadata(x, y, z);
+		if(meta==BlockMetalDecoration.META_fence||meta==BlockMetalDecoration.META_aluminiumFence)
 		{
 			renderer.setRenderBounds(.375,0,.375, .625,1,.625);
 			renderer.renderStandardBlock(block, x, y, z);
@@ -172,7 +173,7 @@ public class BlockRenderMetalDecoration implements ISimpleBlockRenderingHandler
 			}
 			return true;
 		}
-		else if(world.getBlockMetadata(x, y, z)==BlockMetalDecoration.META_scaffolding)
+		else if(meta==BlockMetalDecoration.META_scaffolding||meta==BlockMetalDecoration.META_scaffolding2||meta==BlockMetalDecoration.META_aluminiumScaffolding||meta==BlockMetalDecoration.META_aluminiumScaffolding2)
 		{
 			renderer.setRenderBoundsFromBlock(block);
 			float f = .015625f;
@@ -194,17 +195,17 @@ public class BlockRenderMetalDecoration implements ISimpleBlockRenderingHandler
 			renderer.renderFromInside=false;
 			return renderer.renderStandardBlock(block, x, y, z);
 		}
-		else if(world.getBlockMetadata(x, y, z)==BlockMetalDecoration.META_lantern)
+		else if(meta==BlockMetalDecoration.META_lantern)
 		{
 			TileEntityLantern tile = (TileEntityLantern)world.getTileEntity(x, y, z);
 			ClientUtils.handleStaticTileRenderer(tile);
 			return true;
 		}
-		else if(world.getBlockMetadata(x, y, z)==BlockMetalDecoration.META_structuralArm)
+		else if(meta==BlockMetalDecoration.META_structuralArm||meta==BlockMetalDecoration.META_aluminiumStructuralArm)
 		{
 			Tessellator tes = ClientUtils.tes();
-			IIcon iSide = block.getIcon(2, 3);
-			IIcon iTop = block.getIcon(0, 3);
+			IIcon iSide = block.getIcon(2, meta);
+			IIcon iTop = block.getIcon(0, meta);
 			TileEntity te = world.getTileEntity(x, y, z);
 			
 			int f = (te instanceof TileEntityStructuralArm)? ((TileEntityStructuralArm)te).facing : 0;
@@ -417,14 +418,14 @@ public class BlockRenderMetalDecoration implements ISimpleBlockRenderingHandler
 
 			return true;
 		}
-		else if(world.getBlockMetadata(x, y, z)==BlockMetalDecoration.META_connectorStructural)
+		else if(meta==BlockMetalDecoration.META_connectorStructural)
 		{
 			TileEntityConnectorStructural tile = (TileEntityConnectorStructural)world.getTileEntity(x, y, z);
 			ClientUtils.handleStaticTileRenderer(tile);
 			ClientUtils.renderAttachedConnections(tile);
 			return true;
 		}
-		else if(world.getBlockMetadata(x, y, z)==BlockMetalDecoration.META_wallMount)
+		else if(meta==BlockMetalDecoration.META_wallMount)
 		{
 			TileEntityWallmountMetal tile = (TileEntityWallmountMetal)world.getTileEntity(x, y, z);
 			ClientUtils.handleStaticTileRenderer(tile);

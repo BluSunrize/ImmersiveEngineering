@@ -555,8 +555,8 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 			return true;
 		if(master()!=null)
 			return master().isItemValidForSlot(slot,stack);
-		return (slot<12&&ArcFurnaceRecipe.isValidInput(stack))
-				|| (slot>=12&&slot<16 && ArcFurnaceRecipe.isValidAdditive(stack)
+		return (slot<12&&ArcFurnaceRecipe.isValidRecipeInput(stack))
+				|| (slot>=12&&slot<16 && ArcFurnaceRecipe.isValidRecipeAdditive(stack)
 				|| (slot>22&&IEContent.itemGraphiteElectrode.equals(stack.getItem())));
 	}
 	@Override

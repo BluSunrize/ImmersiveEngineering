@@ -30,7 +30,10 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidHandl
 	static ConcurrentHashMap<ChunkCoordinates, Set<DirectionalFluidOutput>> indirectConnections = new ConcurrentHashMap<ChunkCoordinates, Set<DirectionalFluidOutput>>();
 	public static ArrayList<ItemStack> validScaffoldCoverings = new ArrayList<ItemStack>();
 	static{
-		TileEntityFluidPipe.validScaffoldCoverings.add(new ItemStack(IEContent.blockMetalDecoration,1,1));
+		TileEntityFluidPipe.validScaffoldCoverings.add(new ItemStack(IEContent.blockMetalDecoration,1,BlockMetalDecoration.META_scaffolding));
+		TileEntityFluidPipe.validScaffoldCoverings.add(new ItemStack(IEContent.blockMetalDecoration,1,BlockMetalDecoration.META_scaffolding2));
+		TileEntityFluidPipe.validScaffoldCoverings.add(new ItemStack(IEContent.blockMetalDecoration,1,BlockMetalDecoration.META_aluminiumScaffolding));
+		TileEntityFluidPipe.validScaffoldCoverings.add(new ItemStack(IEContent.blockMetalDecoration,1,BlockMetalDecoration.META_aluminiumScaffolding2));
 		TileEntityFluidPipe.validScaffoldCoverings.add(new ItemStack(IEContent.blockWoodenDecoration,1,5));
 	}
 
