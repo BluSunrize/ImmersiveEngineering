@@ -147,7 +147,7 @@ public class ContainerRevolver extends Container
 	@Override
 	public ItemStack slotClick(int par1, int par2, int par3, EntityPlayer par4EntityPlayer)
 	{
-		if (par1 == this.blockedSlot)
+		if(par1 == this.blockedSlot || (par3!=0&&par2==par4EntityPlayer.inventory.currentItem))
 			return null;		
 		((ItemRevolver)this.revolver.getItem()).setBullets(this.revolver, ((InventoryStorageItem)this.input).stackList);
 
