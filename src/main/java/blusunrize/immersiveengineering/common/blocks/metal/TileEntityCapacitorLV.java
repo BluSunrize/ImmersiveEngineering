@@ -116,7 +116,6 @@ public class TileEntityCapacitorLV extends TileEntityIEBase implements IEnergyHa
 		sideConfig[side]++;
 		if(sideConfig[side]>1)
 			sideConfig[side]=-1;
-		worldObj.addBlockEvent(xCoord, yCoord, zCoord, getBlockType(), 0, 0);
 	}
 	@Override
 	public boolean receiveClientEvent(int id, int arg)

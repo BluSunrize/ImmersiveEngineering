@@ -315,7 +315,8 @@ public class BlockMetalDevices extends BlockIEBase implements blusunrize.aquatwe
 			{
 				((TileEntityCapacitorLV)te).toggleSide(side);
 				te.markDirty();
-				world.func_147451_t(x, y, z);
+				world.markBlockForUpdate(x, y, z);
+				world.addBlockEvent(x, y, z, te.getBlockType(), 0, 0);
 			}
 			return true;
 		}
