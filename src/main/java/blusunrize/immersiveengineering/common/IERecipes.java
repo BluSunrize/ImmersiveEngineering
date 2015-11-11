@@ -2,27 +2,18 @@ package blusunrize.immersiveengineering.common;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemArmor;
-import net.minecraft.item.ItemHoe;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemSword;
-import net.minecraft.item.ItemTool;
-import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.FurnaceRecipes;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.util.WeightedRandomChestContent;
 import net.minecraftforge.common.ChestGenHooks;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
@@ -31,7 +22,6 @@ import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDecoration;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDevices;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDevices2;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalMultiblocks;
-import blusunrize.immersiveengineering.common.crafting.ArcToolRecyclingRecipe;
 import blusunrize.immersiveengineering.common.crafting.RecipeJerrycan;
 import blusunrize.immersiveengineering.common.crafting.RecipePotionBullets;
 import blusunrize.immersiveengineering.common.crafting.RecipeRevolver;
@@ -513,65 +503,10 @@ public class IERecipes
 		addOreDictAlloyingRecipe("ingotBlueAlloy",1, "Silver", 100,512, "dustNikolite","dustNikolite","dustNikolite","dustNikolite");
 		addOreDictAlloyingRecipe("ingotRedAlloy",1, "Copper", 100,512, "dustRedstone","dustRedstone","dustRedstone","dustRedstone");
 
-	}
-	public static void initArcRecyclingRecipes() {
+		//Recycling
 		ArcFurnaceRecipe.allowItemForRecycling(new ItemStack(IEContent.blockMetalDecoration,1,OreDictionary.WILDCARD_VALUE));
-		
-//		Iterator<IRecipe> itRecipes = CraftingManager.getInstance().getRecipeList().iterator();
-//		while(itRecipes.hasNext()) 
-//			try
-//		{
-//				IRecipe recipe = itRecipes.next();
-//				if(recipe.getRecipeOutput()!=null)
-//				{
-//					Item item = recipe.getRecipeOutput().getItem();
-//					if(item instanceof ItemTool || item instanceof ItemSword || item instanceof ItemHoe || item instanceof ItemArmor)
-//					{
-//						Object[] inputs = null;
-//						if(recipe instanceof ShapedOreRecipe)
-//							inputs = ((ShapedOreRecipe)recipe).getInput();
-//						//						else if(recipe instanceof ShapelessOreRecipe)
-//						//							inputs = ((ShapelessOreRecipe)recipe).getInput().toArray();
-//						else if(recipe instanceof ShapedRecipes)
-//							inputs = ((ShapedRecipes)recipe).recipeItems;
-//						//						else if(recipe instanceof ShapelessRecipes)
-//						//							inputs = ((ShapelessRecipes)recipe).recipeItems.toArray();
-//						if(inputs!=null)
-//						{
-//							HashMap<ItemStack,Double> outputs = new HashMap<ItemStack,Double>();
-//							for(Object in : inputs)
-//							{
-//								Object[] brokenDown = null;
-//								if(in instanceof ItemStack)
-//									brokenDown = ApiUtils.breakStackIntoPreciseIngots((ItemStack)in);
-//								else if(in instanceof ArrayList)
-//									brokenDown = ApiUtils.breakStackIntoPreciseIngots(((ArrayList<ItemStack>)in).get(0));
-//								else if(in instanceof String)
-//									brokenDown = ApiUtils.breakStackIntoPreciseIngots(IEApi.getPreferredOreStack((String)in));
-//
-//								if(brokenDown!=null && brokenDown[0]!=null)
-//								{
-//									boolean b = false;
-//									for(ItemStack storedOut : outputs.keySet())
-//										if(OreDictionary.itemMatches((ItemStack)brokenDown[0], storedOut, false))
-//										{
-//											outputs.put(storedOut, outputs.get(storedOut)+(Double)brokenDown[1]);
-//											b=true;
-//										}
-//									if(!b)
-//										outputs.put(Utils.copyStackWithAmount((ItemStack)brokenDown[0],1), (Double)brokenDown[1]);
-//								}
-//							}
-//							if(!outputs.isEmpty())
-//								ArcFurnaceRecipe.recipeList.add(new ArcToolRecyclingRecipe(outputs, recipe.getRecipeOutput(), 100, 512));
-//						}
-//					}
-//				}
-//		}catch(Exception e)
-//		{
-//			e.printStackTrace();
-//		}
 	}
+	
 	public static ArcFurnaceRecipe addArcRecipe(ItemStack output, Object input, int time, int energyPerTick, ItemStack slag, Object... additives)
 	{
 		return ArcFurnaceRecipe.addRecipe(output, input, slag, time, energyPerTick, additives);

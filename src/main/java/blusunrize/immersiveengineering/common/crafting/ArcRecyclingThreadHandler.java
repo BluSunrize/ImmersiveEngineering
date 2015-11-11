@@ -2,6 +2,7 @@ package blusunrize.immersiveengineering.common.crafting;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -34,10 +35,15 @@ public class ArcRecyclingThreadHandler
 	public static void doRecipeProfiling()
 	{
 		Iterator<ArcFurnaceRecipe> prevRecipeIt = ArcFurnaceRecipe.recipeList.iterator();
+		int r = 0;
 		if(hasProfiled)
 			while(prevRecipeIt.hasNext())
 				if("Recycling".equals(prevRecipeIt.next().specialRecipeType))
+				{
 					prevRecipeIt.remove();
+					r++;
+				}
+		IELogger.info("Removed "+r+" old recipes");
 
 		long timestamp = System.currentTimeMillis();
 		int threadAmount = Runtime.getRuntime().availableProcessors();
@@ -99,14 +105,17 @@ public class ArcRecyclingThreadHandler
 			nonValidated.values().removeAll(newlyValid);
 			validated.addAll(newlyValid);
 		}
-
+		//HashSet to avoid duplicates
+		HashSet<String> finishedRecycles = new HashSet<String>();
 		for(RecyclingCalculation valid :  validated)
-			ArcFurnaceRecipe.recipeList.add(new ArcToolRecyclingRecipe(valid.outputs, valid.stack, 100, 512));
+			if(finishedRecycles.add(valid.stack.toString()))
+				ArcFurnaceRecipe.recipeList.add(new ArcRecyclingRecipe(valid.outputs, valid.stack, 100, 512));
 		for(RecyclingCalculation invalid :  Sets.newHashSet(nonValidated.values()))
-		{
-			IELogger.info("Couldn't fully analyze "+invalid.stack+", missing knowledge for "+invalid.queriedSubcomponents);
-			ArcFurnaceRecipe.recipeList.add(new ArcToolRecyclingRecipe(invalid.outputs, invalid.stack, 100, 512));
-		}
+			if(finishedRecycles.add(invalid.stack.toString()))
+			{
+				IELogger.info("Couldn't fully analyze "+invalid.stack+", missing knowledge for "+invalid.queriedSubcomponents);
+				ArcFurnaceRecipe.recipeList.add(new ArcRecyclingRecipe(invalid.outputs, invalid.stack, 100, 512));
+			}
 		IELogger.info("Finished recipe profiler for Arc Recycling, took "+(System.currentTimeMillis()-timestamp)+" milliseconds");
 		hasProfiled = true;
 	}
@@ -170,6 +179,7 @@ public class ArcRecyclingThreadHandler
 
 		if(inputs!=null)
 		{
+			int inputSize = stack.stackSize;
 			ArrayList<ItemStack> missingSub = new ArrayList<ItemStack>();
 			HashMap<ItemStack,Double> outputs = new HashMap<ItemStack,Double>();
 			for(Object in : inputs)
@@ -204,17 +214,17 @@ public class ArcRecyclingThreadHandler
 							for(ItemStack storedOut : outputs.keySet())
 								if(OreDictionary.itemMatches((ItemStack)brokenDown[0], storedOut, false))
 								{
-									outputs.put(storedOut, outputs.get(storedOut)+(Double)brokenDown[1]);
+									outputs.put(storedOut, outputs.get(storedOut)+(Double)brokenDown[1]/inputSize);
 									b=true;
 								}
 							if(!b)
-								outputs.put(Utils.copyStackWithAmount((ItemStack)brokenDown[0],1), (Double)brokenDown[1]);
+								outputs.put(Utils.copyStackWithAmount((ItemStack)brokenDown[0],1), (Double)brokenDown[1]/inputSize);
 						}
 					}
 				}
 			if(!outputs.isEmpty() || !missingSub.isEmpty())
 			{
-				RecyclingCalculation calc = new RecyclingCalculation(recipe, stack, outputs);
+				RecyclingCalculation calc = new RecyclingCalculation(recipe, Utils.copyStackWithAmount(stack,1), outputs);
 				calc.queriedSubcomponents.addAll(missingSub);
 				return calc;
 			}

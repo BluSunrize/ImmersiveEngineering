@@ -5,13 +5,15 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 
 import net.minecraft.item.ItemStack;
+import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.common.util.Utils;
 
-public class ArcToolRecyclingRecipe extends ArcFurnaceRecipe
+public class ArcRecyclingRecipe extends ArcFurnaceRecipe
 {
 	HashMap<ItemStack,Double> outputs;
-	public ArcToolRecyclingRecipe(HashMap<ItemStack,Double> outputs, Object input, int time, int energyPerTick)
+	public ArcRecyclingRecipe(HashMap<ItemStack,Double> outputs, Object input, int time, int energyPerTick)
 	{
 		super(null,input,null, time, energyPerTick);
 		this.outputs = outputs;
@@ -28,9 +30,18 @@ public class ArcToolRecyclingRecipe extends ArcFurnaceRecipe
 		{
 			double scaledOut = mod*e.getValue();
 			//Noone likes nuggets anyway >_>
-			//			float nuggetOut = scaledOut-(int)scaledOut;
-			//			Utils.getNuggetForItem();
-			outs.add(Utils.copyStackWithAmount(e.getKey(),(int)scaledOut));
+			if(scaledOut>=1)
+				outs.add(Utils.copyStackWithAmount(e.getKey(),(int)scaledOut));
+			int nuggetOut = (int)((scaledOut-(int)scaledOut)*9);
+			if(nuggetOut>0)
+			{
+				String[] type = ApiUtils.getMetalComponentTypeAndMetal(e.getKey(), "ingot");
+				if(type!=null)
+				{
+					ItemStack nuggets = IEApi.getPreferredOreStack("nugget"+type[1]);
+					outs.add(Utils.copyStackWithAmount(nuggets,(int)nuggetOut));
+				}
+			}
 		}
 		return outs.toArray(new ItemStack[outs.size()]);
 	}
