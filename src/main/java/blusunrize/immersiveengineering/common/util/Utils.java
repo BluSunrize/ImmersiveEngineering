@@ -846,7 +846,7 @@ public class Utils
 					(int) Math.floor(pos.yCoord), (int) Math.floor(pos.zCoord));
 			Block b;
 			int meta;
-			if (!checked.contains(cc))
+			if (!checked.contains(cc)&&i + lengthAdd+standartOff<dif)
 			{
 				b = world.getBlock(cc.posX, cc.posY, cc.posZ);
 				meta = world.getBlockMetadata(cc.posX, cc.posY, cc.posZ);
@@ -860,7 +860,7 @@ public class Utils
 			}
 			cc = new ChunkCoordinates((int) Math.floor(posPrev.xCoord),
 					(int) Math.floor(posPrev.yCoord), (int) Math.floor(posPrev.zCoord));
-			if (!checked.contains(cc))
+			if (!checked.contains(cc)&&i + lengthAdd-standartOff<dif)
 			{
 				b = world.getBlock(cc.posX, cc.posY, cc.posZ);
 				meta = world.getBlockMetadata(cc.posX, cc.posY, cc.posZ);
