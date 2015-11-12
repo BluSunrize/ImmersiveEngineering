@@ -61,7 +61,7 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 	public BlockMetalDevices2()
 	{
 		super("metalDevice2", Material.iron, 1, ItemBlockMetalDevices2.class,
-				"breakerSwitch","skycrateDispenser","energyMeter","electricLantern","floodlight","fluidPipe", "fluidPump", "barrel", "creativeCap");
+				"breakerSwitch","skycrateDispenser","energyMeter","electricLantern","floodlight","fluidPipe", "fluidPump", "barrel", "capacitorCreative");
 		setHardness(3.0F);
 		setResistance(15.0F);
 		this.setMetaLightOpacity(META_barrel, 255);
@@ -108,9 +108,9 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 		for(int i=0;i<3;i++)
 		{
 			String s = i==0?"none":i==1?"in":"out";
-			iconCap[0][i]= iconRegister.registerIcon("immersiveengineering:metal2_creativeCap_bottom_"+s);
-			iconCap[1][i]= iconRegister.registerIcon("immersiveengineering:metal2_creativeCap_top_"+s);
-			iconCap[2][i]= iconRegister.registerIcon("immersiveengineering:metal2_creativeCap_side_"+s);
+			iconCap[0][i]= iconRegister.registerIcon("immersiveengineering:metal2_capacitorCreative_bottom_"+s);
+			iconCap[1][i]= iconRegister.registerIcon("immersiveengineering:metal2_capacitorCreative_top_"+s);
+			iconCap[2][i]= iconRegister.registerIcon("immersiveengineering:metal2_capacitorCreative_side_"+s);
 		}
 		
 		iconFloodlightGlass = iconRegister.registerIcon("immersiveEngineering:metal2_floodlightGlass");
