@@ -106,7 +106,7 @@ public class ImmersiveNetHandler
 	}
 	public Set<Integer> getRelevantDimensions()
 	{
-		return directConnections.keySet();
+		return directConnections.keySet();//TODO This will break on Java8. Remember to ask cobra >_>
 	}
 	public Collection<Connection> getAllConnections(World world)
 	{

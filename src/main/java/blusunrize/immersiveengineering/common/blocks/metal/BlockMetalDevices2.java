@@ -881,12 +881,12 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 	public boolean shouldRenderFluid(IBlockAccess world, int x, int y, int z)
 	{
 		int meta = world.getBlockMetadata(x, y, z);
-		return meta==META_breakerSwitch||meta==META_electricLantern;
+		return meta==META_breakerSwitch||meta==META_electricLantern||meta==META_floodlight||meta==META_fluidPipe;
 	}
 	@Optional.Method(modid = "AquaTweaks")
 	public boolean canConnectTo(IBlockAccess world, int x, int y, int z, int side)
 	{
 		int meta = world.getBlockMetadata(x, y, z);
-		return meta==META_breakerSwitch||meta==META_electricLantern;
+		return meta==META_breakerSwitch||meta==META_electricLantern||meta==META_floodlight||meta==META_fluidPipe;
 	}
 }
