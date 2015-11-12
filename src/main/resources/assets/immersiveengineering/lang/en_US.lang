@@ -78,6 +78,7 @@ tile.ImmersiveEngineering.metalDevice2.floodlight.name=Floodlight
 tile.ImmersiveEngineering.metalDevice2.fluidPipe.name=Fluid Pipe
 tile.ImmersiveEngineering.metalDevice2.fluidPump.name=Fluid Pump
 tile.ImmersiveEngineering.metalDevice2.barrel.name=Metal Barrel
+tile.ImmersiveEngineering.metalDevice2.creativeCap.name=Creative Capacitor
 
 tile.ImmersiveEngineering.treatedWood.0.name=Treated Wood Planks
 tile.ImmersiveEngineering.treatedWood.1.name=Treated Wood Planks
