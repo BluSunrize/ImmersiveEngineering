@@ -51,14 +51,17 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 	public static final int META_fluidPipe=5;
 	public static final int META_fluidPump=6;
 	public static final int META_barrel=7;
+	public static final int META_creativeCap=8;
+	
 	IIcon[] iconPump = new IIcon[7];
 	IIcon iconFloodlightGlass;
 	IIcon[] iconBarrel = new IIcon[4];
+	IIcon[][] iconCap = new IIcon[3][3];
 
 	public BlockMetalDevices2()
 	{
 		super("metalDevice2", Material.iron, 1, ItemBlockMetalDevices2.class,
-				"breakerSwitch","skycrateDispenser","energyMeter","electricLantern","floodlight","fluidPipe", "fluidPump", "barrel");
+				"breakerSwitch","skycrateDispenser","energyMeter","electricLantern","floodlight","fluidPipe", "fluidPump", "barrel", "creativeCap");
 		setHardness(3.0F);
 		setResistance(15.0F);
 		this.setMetaLightOpacity(META_barrel, 255);
@@ -86,6 +89,8 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 		list.add(new ItemStack(item, 1, 5));
 		list.add(new ItemStack(item, 1, 6));
 		list.add(new ItemStack(item, 1, 7));
+		list.add(new ItemStack(item, 1, 8));
+		
 		//		for(int i=0; i<subNames.length; i++)
 		//		{
 		//			list.add(new ItemStack(item, 1, i));
@@ -99,7 +104,15 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 		for(int i=0; i<this.subNames.length; i++)
 			if(i!=META_fluidPump)
 				this.icons[i][0] = iconRegister.registerIcon("immersiveEngineering:metal2_"+this.subNames[i]);
-
+		//creativeCap
+		for(int i=0;i<3;i++)
+		{
+			String s = i==0?"none":i==1?"in":"out";
+			iconCap[0][i]= iconRegister.registerIcon("immersiveengineering:metal2_creativeCap_bottom_"+s);
+			iconCap[1][i]= iconRegister.registerIcon("immersiveengineering:metal2_creativeCap_top_"+s);
+			iconCap[2][i]= iconRegister.registerIcon("immersiveengineering:metal2_creativeCap_side_"+s);
+		}
+		
 		iconFloodlightGlass = iconRegister.registerIcon("immersiveEngineering:metal2_floodlightGlass");
 		iconPump[0] = iconRegister.registerIcon("immersiveEngineering:metal2_pump_side_none");
 		iconPump[1] = iconRegister.registerIcon("immersiveEngineering:metal2_pump_side_in");
@@ -120,6 +133,17 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 		TileEntity te = world.getTileEntity(x, y, z);
 		if(te instanceof TileEntityMetalBarrel && side<2)
 			return iconBarrel[((TileEntityMetalBarrel)te).sideConfig[side]+1];
+		if(te instanceof TileEntityCreativeCap)
+		{
+			TileEntityCreativeCap cap = (TileEntityCreativeCap)te;
+			if(side==0)
+				return iconCap[0][cap.sideConfig[side]+1];
+			else if(side==1)
+				return iconCap[1][cap.sideConfig[side]+1];
+			else
+				return iconCap[2][cap.sideConfig[side]+1];
+		}
+		
 		return super.getIcon(world, x, y, z, side);
 	}
 	@Override
@@ -132,6 +156,13 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 			return iconFloodlightGlass;
 		if(meta==META_barrel && side<2)
 			return iconBarrel[0];
+		if (meta==META_creativeCap)
+			if (side==0)
+				return iconCap[0][0];
+			else if (side==1)
+				return iconCap[1][0];
+			else
+				return iconCap[2][0];
 		return super.getIcon(side, meta);
 	}
 
@@ -345,6 +376,19 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 					}
 
 				}
+			}
+			return true;
+		}
+		else if(te instanceof TileEntityCreativeCap && Utils.isHammer(player.getCurrentEquippedItem()))
+		{
+			if(player.isSneaking())
+				side = ForgeDirection.OPPOSITES[side];
+			if(!world.isRemote)
+			{
+				((TileEntityCreativeCap)te).toggleSide(side);
+				te.markDirty();
+				world.markBlockForUpdate(x, y, z);
+				world.addBlockEvent(x, y, z, te.getBlockType(), 0, 0);
 			}
 			return true;
 		}
@@ -631,6 +675,8 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 			return new TileEntityFluidPump();
 		case META_barrel:
 			return new TileEntityMetalBarrel();
+		case META_creativeCap:
+			return new TileEntityCreativeCap();
 		}
 		return null;
 	}

@@ -52,6 +52,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorMV
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorStructural;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConveyorBelt;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConveyorSorter;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCreativeCap;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityDieselGenerator;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityDynamo;
@@ -402,6 +403,7 @@ public class IEContent
 		registerTile(TileEntityFluidPipe.class);
 		registerTile(TileEntityFluidPump.class);
 		registerTile(TileEntityMetalBarrel.class);
+		registerTile(TileEntityCreativeCap.class);
 		registerTile(TileEntityFakeLight.class);
 
 

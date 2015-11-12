@@ -111,6 +111,13 @@ public class BlockRenderMetalDevices2 implements ISimpleBlockRenderingHandler
 				renderer.setRenderBounds(0,0,0, 1,1,1);
 				ClientUtils.drawInventoryBlock(block, metadata, renderer);
 			}
+			else if(metadata==BlockMetalDevices2.META_creativeCap)
+			{
+				block.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
+				renderer.setRenderBoundsFromBlock(block);
+				ClientUtils.drawInventoryBlock(block, metadata, renderer);
+			}
+			
 		}catch(Exception e)
 		{
 			e.printStackTrace();
@@ -188,6 +195,11 @@ public class BlockRenderMetalDevices2 implements ISimpleBlockRenderingHandler
 			else if(metadata==BlockMetalDevices2.META_barrel)
 			{
 				renderer.setRenderBoundsFromBlock(block);
+				return renderer.renderStandardBlock(block, x, y, z);
+			}
+			else if(metadata==BlockMetalDevices2.META_creativeCap)
+			{
+				renderer.setRenderBounds(0,0,0, 1,1,1);
 				return renderer.renderStandardBlock(block, x, y, z);
 			}
 		return false;
