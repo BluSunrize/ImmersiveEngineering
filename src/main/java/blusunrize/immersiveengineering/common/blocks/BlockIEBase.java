@@ -36,6 +36,7 @@ public abstract class BlockIEBase extends BlockContainer
 	protected final int iconDimensions;
 	public boolean hasFlavour = false;
 	public boolean isFlammable = false;
+	public int[] lightOpacities;
 
 	protected BlockIEBase(String name, Material mat, int iconDimensions, Class<? extends ItemBlockIEBase> itemBlock, String... subNames)
 	{
@@ -45,6 +46,7 @@ public abstract class BlockIEBase extends BlockContainer
 		this.name = name;
 		this.iconDimensions = iconDimensions;
 		this.icons = new IIcon[subNames.length][iconDimensions];
+		this.lightOpacities = new int[subNames.length];
 		this.setBlockName(ImmersiveEngineering.MODID+"."+name);
 		GameRegistry.registerBlock(this, itemBlock, name);
 		this.setCreativeTab(ImmersiveEngineering.creativeTab);
@@ -61,7 +63,14 @@ public abstract class BlockIEBase extends BlockContainer
 		this.hasFlavour = hasFlavour;
 		return this;
 	}
-
+	
+	public BlockIEBase setMetaLightOpacity(int meta, int opacity)
+	{
+		if(meta>=0&&meta<this.lightOpacities.length)
+			this.lightOpacities[meta]=opacity;
+		return this;
+	}
+	
 	void adjustSound()
 	{
 		if(this.blockMaterial==Material.anvil)
@@ -86,6 +95,15 @@ public abstract class BlockIEBase extends BlockContainer
 			this.stepSound = Block.soundTypeWood;
 	}
 
+	@Override
+    public int getLightOpacity(IBlockAccess world, int x, int y, int z)
+    {
+		int meta = world.getBlockMetadata(x,y,z);
+		if(meta>=0&&meta<this.lightOpacities.length)
+			return this.lightOpacities[meta];
+        return getLightOpacity();
+    }
+	
 	@Override
 	public int damageDropped(int meta)
 	{

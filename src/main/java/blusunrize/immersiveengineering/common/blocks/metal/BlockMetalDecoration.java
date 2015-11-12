@@ -55,6 +55,11 @@ public class BlockMetalDecoration extends BlockIEBase implements blusunrize.aqua
 				"scaffolding2","aluminiumFence","aluminiumScaffolding","aluminiumScaffolding2","aluminiumStructuralArm");
 		setHardness(3.0F);
 		setResistance(15.0F);
+		this.setMetaLightOpacity(META_radiator, 255);
+		this.setMetaLightOpacity(META_heavyEngineering, 255);
+		this.setMetaLightOpacity(META_generator, 255);
+		this.setMetaLightOpacity(META_lightEngineering, 255);
+		this.setMetaLightOpacity(META_sheetMetal, 255);
 	}
 
 	@Override

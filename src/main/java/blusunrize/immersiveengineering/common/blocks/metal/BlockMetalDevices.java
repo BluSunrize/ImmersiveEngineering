@@ -74,6 +74,15 @@ public class BlockMetalDevices extends BlockIEBase implements blusunrize.aquatwe
 				"sampleDrill");
 		setHardness(3.0F);
 		setResistance(15.0F);
+		this.setMetaLightOpacity(META_capacitorLV, 255);
+		this.setMetaLightOpacity(META_capacitorMV, 255);
+		this.setMetaLightOpacity(META_transformer, 255);
+		this.setMetaLightOpacity(META_capacitorHV, 255);
+		this.setMetaLightOpacity(META_transformerHV, 255);
+		this.setMetaLightOpacity(META_dynamo, 255);
+		this.setMetaLightOpacity(META_thermoelectricGen, 255);
+		this.setMetaLightOpacity(META_furnaceHeater, 255);
+		this.setMetaLightOpacity(META_sorter, 255);
 	}
 
 

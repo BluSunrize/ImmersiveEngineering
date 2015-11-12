@@ -61,6 +61,7 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 				"breakerSwitch","skycrateDispenser","energyMeter","electricLantern","floodlight","fluidPipe", "fluidPump", "barrel");
 		setHardness(3.0F);
 		setResistance(15.0F);
+		this.setMetaLightOpacity(META_barrel, 255);
 	}
 
 

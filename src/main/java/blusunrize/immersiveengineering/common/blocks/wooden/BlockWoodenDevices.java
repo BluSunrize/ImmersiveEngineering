@@ -42,6 +42,8 @@ public class BlockWoodenDevices extends BlockIEBase implements blusunrize.aquatw
 		super("woodenDevice", Material.wood, 1, ItemBlockWoodenDevices.class, "post","watermill","windmill","windmillAdvanced","crate","modificationWorkbench","barrel");
 		this.setHardness(2.0F);
 		this.setResistance(5.0F);
+		this.setMetaLightOpacity(4, 255);
+		this.setMetaLightOpacity(6, 255);
 	}
 	@Override
 	public boolean allowHammerHarvest(int meta)
