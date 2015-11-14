@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.api.energy.DieselHandler;
 import blusunrize.immersiveengineering.api.energy.DieselHandler.RefineryRecipe;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import codechicken.lib.gui.GuiDraw;
+import codechicken.nei.NEIClientConfig;
 import codechicken.nei.PositionedStack;
 import codechicken.nei.recipe.GuiCraftingRecipe;
 import codechicken.nei.recipe.GuiRecipe;
@@ -109,6 +110,37 @@ public class NEIRefineryHandler extends TemplateRecipeHandler
 		return 2;
 	}
 
+	@Override
+	public boolean keyTyped(GuiRecipe gui, char keyChar, int keyCode, int recipe)
+	{
+		CachedRefineryRecipe r = (CachedRefineryRecipe) this.arecipes.get(recipe%arecipes.size());
+		if(r!=null)
+		{
+			Point localPoint = GuiDraw.getMousePosition();
+			int gl = (gui.width-176)/2;
+			int gt = (gui.height-176)/2;
+			FluidStack fs = null;
+			if(localPoint.x>gl+12 && localPoint.x<=gl+12+16  &&  localPoint.y>gt+(64*(recipe%2))+11 && localPoint.y<=gt+(64*(recipe%2))+11+47)
+				fs = r.fluid0;
+			else if(localPoint.x>gl+60 && localPoint.x<=gl+60+16  &&  localPoint.y>gt+(64*(recipe%2))+11 && localPoint.y<=gt+(64*(recipe%2))+11+47)
+				fs = r.fluid1;
+			else if(localPoint.x>gl+108 && localPoint.x<=gl+108+16  &&  localPoint.y>gt+(64*(recipe%2))+11 && localPoint.y<=gt+(64*(recipe%2))+1+47)
+				fs = r.fluidOut;
+
+			if(fs!=null)
+				if(keyCode==NEIClientConfig.getKeyBinding("gui.recipe"))
+				{
+					if(GuiCraftingRecipe.openRecipeGui("liquid", new Object[] { fs }))
+						return true;
+				}
+				else if(keyCode==NEIClientConfig.getKeyBinding("gui.usage"))
+				{
+					if(GuiUsageRecipe.openRecipeGui("liquid", new Object[] { fs }))
+						return true;
+				}
+		}
+		return super.keyTyped(gui, keyChar, keyCode, recipe); 		
+	}
 	@Override
 	public boolean mouseClicked(GuiRecipe gui, int button, int recipe)
 	{

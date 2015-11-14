@@ -24,6 +24,7 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.GuiSqueezer;
 import blusunrize.immersiveengineering.common.util.Utils;
 import codechicken.lib.gui.GuiDraw;
+import codechicken.nei.NEIClientConfig;
 import codechicken.nei.PositionedStack;
 import codechicken.nei.recipe.GuiCraftingRecipe;
 import codechicken.nei.recipe.GuiRecipe;
@@ -129,6 +130,31 @@ public class NEISqueezerHandler extends TemplateRecipeHandler
 		}
 	}
 
+	@Override
+	public boolean keyTyped(GuiRecipe gui, char keyChar, int keyCode, int recipe)
+	{
+		CachedSqueezerRecipe r = (CachedSqueezerRecipe) this.arecipes.get(recipe%arecipes.size());
+		if(r!=null && r.fluid!=null)
+		{
+			Point localPoint = GuiDraw.getMousePosition();
+			int gl = (gui.width-176)/2;
+			int gt = (gui.height-176)/2;
+			if(localPoint.x>gl+110 && localPoint.x<=gl+110+16  &&  localPoint.y>gt+(64*(recipe%2))+13 && localPoint.y<=gt+(64*(recipe%2))+13+47)
+			{
+				if(keyCode==NEIClientConfig.getKeyBinding("gui.recipe"))
+				{
+					if(GuiCraftingRecipe.openRecipeGui("liquid", new Object[] { r.fluid }))
+						return true;
+				}
+				else if(keyCode==NEIClientConfig.getKeyBinding("gui.usage"))
+				{
+					if(GuiUsageRecipe.openRecipeGui("liquid", new Object[] { r.fluid }))
+						return true;
+				}
+			}
+		}
+		return super.keyTyped(gui, keyChar, keyCode, recipe); 		
+	}
 	@Override
 	public boolean mouseClicked(GuiRecipe gui, int button, int recipe)
 	{

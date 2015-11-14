@@ -21,6 +21,7 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.util.Utils;
 import codechicken.lib.gui.GuiDraw;
+import codechicken.nei.NEIClientConfig;
 import codechicken.nei.PositionedStack;
 import codechicken.nei.recipe.GuiCraftingRecipe;
 import codechicken.nei.recipe.GuiRecipe;
@@ -70,7 +71,7 @@ public class NEICokeOvenHandler extends TemplateRecipeHandler
 			b = ((FluidStack)results[0]).getFluid().equals(IEContent.fluidCreosote);
 		if(outputId == "item" && results!=null && results.length>0 && results[0] instanceof ItemStack && FluidContainerRegistry.isFilledContainer((ItemStack) results[0]))
 			b = FluidContainerRegistry.getFluidForFilledItem((ItemStack) results[0]).getFluid().equals(IEContent.fluidCreosote);
-		
+
 		if(b || outputId == getOverlayIdentifier())
 		{
 			for(CokeOvenRecipe r : CokeOvenRecipe.recipeList)
@@ -119,6 +120,32 @@ public class NEICokeOvenHandler extends TemplateRecipeHandler
 		}
 	}
 
+	@Override
+	public boolean keyTyped(GuiRecipe gui, char keyChar, int keyCode, int recipe)
+	{
+		CachedCokeOvenRecipe r = (CachedCokeOvenRecipe) this.arecipes.get(recipe%arecipes.size());
+		if(r!=null)
+		{
+			Point localPoint = GuiDraw.getMousePosition();
+			int gl = (gui.width-176)/2;
+			int gt = (gui.height-176)/2;
+			if(localPoint.x>gl+124 && localPoint.x<=gl+124+16  &&  localPoint.y>gt+12 && localPoint.y<=gt+12+47)
+			{
+				FluidStack fs = new FluidStack(IEContent.fluidCreosote,r.creosote);
+				if(keyCode==NEIClientConfig.getKeyBinding("gui.recipe"))
+				{
+					if(GuiCraftingRecipe.openRecipeGui("liquid", new Object[] { fs }))
+						return true;
+				}
+				else if(keyCode==NEIClientConfig.getKeyBinding("gui.usage"))
+				{
+					if(GuiUsageRecipe.openRecipeGui("liquid", new Object[] { fs }))
+						return true;
+				}
+			}
+		}
+		return super.keyTyped(gui, keyChar, keyCode, recipe); 		
+	}
 	@Override
 	public boolean mouseClicked(GuiRecipe gui, int button, int recipe)
 	{
@@ -177,7 +204,7 @@ public class NEICokeOvenHandler extends TemplateRecipeHandler
 			String s = r.time+" Ticks";
 			ClientUtils.font().drawString(s, 50-ClientUtils.font().getStringWidth(s)/2,53, 0xaaaaaa, true);
 			GL11.glColor4f(1, 1, 1, 1);
-			
+
 			int h = (int)Math.max(1,47*(r.creosote/(float)12000));
 			ClientUtils.drawRepeatedFluidIcon(IEContent.fluidCreosote, 124,12+47-h, 16, h);
 			ClientUtils.bindTexture("immersiveengineering:textures/gui/cokeOven.png");

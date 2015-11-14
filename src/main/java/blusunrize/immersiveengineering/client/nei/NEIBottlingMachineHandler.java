@@ -11,6 +11,7 @@ import java.util.List;
 
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -21,6 +22,7 @@ import blusunrize.immersiveengineering.api.crafting.BottlingMachineRecipe;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBottlingMachine;
 import blusunrize.immersiveengineering.common.util.Utils;
+import codechicken.nei.NEIClientConfig;
 import codechicken.nei.PositionedStack;
 import codechicken.nei.recipe.GuiCraftingRecipe;
 import codechicken.nei.recipe.GuiRecipe;
@@ -162,7 +164,31 @@ public class NEIBottlingMachineHandler extends TemplateRecipeHandler
 		}
 		GL11.glPopMatrix();
 	}
+	
+	@Override
+	public boolean keyTyped(GuiRecipe gui, char keyChar, int keyCode, int recipe)
+	{
+		Point mouse = getMousePosition();
+		Point offset = gui.getRecipePosition(recipe);
+		Point relMouse = new Point(mouse.x -(gui.width- 176)/2-offset.x, mouse.y-(gui.height-166)/2-offset.y);
 
+		CachedBottlingMachineRecipe r = (CachedBottlingMachineRecipe) this.arecipes.get(recipe%arecipes.size());
+		if(r!=null)
+		{
+			if(new Rectangle(15,5, 18,50).contains(relMouse)) 
+				if(keyCode==NEIClientConfig.getKeyBinding("gui.recipe"))
+				{
+					if(GuiCraftingRecipe.openRecipeGui("liquid", new Object[] { r.fluid }))
+						return true;
+				}
+				else if(keyCode==NEIClientConfig.getKeyBinding("gui.usage"))
+				{
+					if(GuiUsageRecipe.openRecipeGui("liquid", new Object[] { r.fluid }))
+						return true;
+				}
+		}
+		return super.keyTyped(gui, keyChar, keyCode, recipe); 		
+	}
 	@Override
 	public boolean mouseClicked(GuiRecipe gui, int button, int recipe)
 	{
@@ -200,7 +226,7 @@ public class NEIBottlingMachineHandler extends TemplateRecipeHandler
 			if(new Rectangle(15,5, 18,50).contains(relMouse)) 
 			{
 				currenttip.add(r.fluid.getLocalizedName());
-				currenttip.add("§7"+r.fluid.amount+" mB");
+				currenttip.add(EnumChatFormatting.GRAY.toString()+r.fluid.amount+" mB");
 			}
 		}
 		return currenttip;
