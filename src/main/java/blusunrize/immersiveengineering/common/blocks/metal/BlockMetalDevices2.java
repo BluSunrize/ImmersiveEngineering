@@ -105,7 +105,7 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 	public void registerBlockIcons(IIconRegister iconRegister)
 	{
 		for(int i=0; i<this.subNames.length; i++)
-			if(i!=META_fluidPump)
+			if(i!=META_fluidPump && i!=META_creativeCap)
 				this.icons[i][0] = iconRegister.registerIcon("immersiveEngineering:metal2_"+this.subNames[i]);
 		//creativeCap
 		for(int i=0;i<3;i++)
