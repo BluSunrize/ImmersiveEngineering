@@ -290,7 +290,7 @@ public class TileEntityRefinery extends TileEntityMultiblockPart implements IFlu
 			return null;
 		if(master()!=null)
 		{
-			if(pos!=2&&pos!=32)
+			if(pos!=2)
 				return null;
 			return master().drain(from,resource,doDrain);
 		}
@@ -305,7 +305,7 @@ public class TileEntityRefinery extends TileEntityMultiblockPart implements IFlu
 			return null;
 		if(master()!=null)
 		{
-			if(pos!=2&&pos!=32)
+			if(pos!=2)
 				return null;
 			return master().drain(from,maxDrain,doDrain);
 		}
@@ -322,14 +322,14 @@ public class TileEntityRefinery extends TileEntityMultiblockPart implements IFlu
 	{
 		if(!formed)
 			return false;
-		return true;
+		return pos==15||pos==19;
 	}
 	@Override
 	public boolean canDrain(ForgeDirection from, Fluid fluid)
 	{
 		if(!formed)
 			return false;
-		return true;
+		return pos==2;
 	}
 	@Override
 	public FluidTankInfo[] getTankInfo(ForgeDirection from)
