@@ -40,7 +40,7 @@ public class TileEntityConnectorStructural extends TileEntityConnectorLV
 	{
 		super.readCustomNBT(nbt, descPacket);
 		rotation = nbt.getFloat("rotation");
-		if(FMLCommonHandler.instance().getEffectiveSide()==Side.CLIENT)
+		if(FMLCommonHandler.instance().getEffectiveSide()==Side.CLIENT && worldObj!=null)
 			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 	}
 

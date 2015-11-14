@@ -211,7 +211,7 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable
 			int[] icc = nbt.getIntArray("fakeLight_"+i);
 			fakeLights.add(new ChunkCoordinates(icc[0],icc[1],icc[2]));
 		}
-		if(FMLCommonHandler.instance().getEffectiveSide()==Side.CLIENT)
+		if(FMLCommonHandler.instance().getEffectiveSide()==Side.CLIENT && worldObj!=null)
 			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 	}
 

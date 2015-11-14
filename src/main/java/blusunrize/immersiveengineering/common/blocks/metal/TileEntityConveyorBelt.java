@@ -26,7 +26,7 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements ISidedIn
 		transportUp = nbt.getBoolean("transportUp");
 		transportDown = nbt.getBoolean("transportDown");
 		facing = nbt.getInteger("facing");
-		if(descPacket)
+		if(descPacket && worldObj!=null)
 			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 	}
 
