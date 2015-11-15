@@ -19,7 +19,7 @@ public abstract class EntityFXIEBase extends EntityFX
 	protected float f6;
 	protected float f7;
 	protected static ResourceLocation vanillaParticleTextures = new ResourceLocation("textures/particle/particles.png");
-	
+
 	public EntityFXIEBase(World world, double x,double y,double z, double mx,double my,double mz)
 	{
 		super(world, x,y,z, mx,my,mz);
@@ -61,27 +61,28 @@ public abstract class EntityFXIEBase extends EntityFX
 	public void tessellateFromQueue(Tessellator tessellator)
 	{
 		float f6 = (float)this.particleTextureIndexX / 16.0F;
-        float f7 = f6 + 0.0624375F;
-        float f8 = (float)this.particleTextureIndexY / 16.0F;
-        float f9 = f8 + 0.0624375F;
-        float f10 = 0.1F * this.particleScale;
+		float f7 = f6 + 0.0624375F;
+		float f8 = (float)this.particleTextureIndexY / 16.0F;
+		float f9 = f8 + 0.0624375F;
+		float f10 = 0.1F * this.particleScale;
 
-        if (this.particleIcon != null)
-        {
-            f6 = this.particleIcon.getMinU();
-            f7 = this.particleIcon.getMaxU();
-            f8 = this.particleIcon.getMinV();
-            f9 = this.particleIcon.getMaxV();
-        }
+		if (this.particleIcon != null)
+		{
+			f6 = this.particleIcon.getMinU();
+			f7 = this.particleIcon.getMaxU();
+			f8 = this.particleIcon.getMinV();
+			f9 = this.particleIcon.getMaxV();
+		}
 
-        float f11 = (float)(this.prevPosX + (this.posX - this.prevPosX) * (double)f2 - interpPosX);
-        float f12 = (float)(this.prevPosY + (this.posY - this.prevPosY) * (double)f2 - interpPosY);
-        float f13 = (float)(this.prevPosZ + (this.posZ - this.prevPosZ) * (double)f2 - interpPosZ);
-        tessellator.setColorRGBA_F(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha);
-        tessellator.addVertexWithUV((double)(f11 - f3 * f10 - f6 * f10), (double)(f12 - f4 * f10), (double)(f13 - f5 * f10 - f7 * f10), (double)f7, (double)f9);
-        tessellator.addVertexWithUV((double)(f11 - f3 * f10 + f6 * f10), (double)(f12 + f4 * f10), (double)(f13 - f5 * f10 + f7 * f10), (double)f7, (double)f8);
-        tessellator.addVertexWithUV((double)(f11 + f3 * f10 + f6 * f10), (double)(f12 + f4 * f10), (double)(f13 + f5 * f10 + f7 * f10), (double)f6, (double)f8);
-        tessellator.addVertexWithUV((double)(f11 + f3 * f10 - f6 * f10), (double)(f12 - f4 * f10), (double)(f13 + f5 * f10 - f7 * f10), (double)f6, (double)f9);
-   
+		float f11 = (float)(this.prevPosX + (this.posX - this.prevPosX) * (double)f2 - interpPosX);
+		float f12 = (float)(this.prevPosY + (this.posY - this.prevPosY) * (double)f2 - interpPosY);
+		float f13 = (float)(this.prevPosZ + (this.posZ - this.prevPosZ) * (double)f2 - interpPosZ);
+		tessellator.setBrightness(getBrightnessForRender(f7));
+		tessellator.setColorRGBA_F(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha);
+		tessellator.addVertexWithUV((double)(f11 - f3 * f10 - f6 * f10), (double)(f12 - f4 * f10), (double)(f13 - f5 * f10 - f7 * f10), (double)f7, (double)f9);
+		tessellator.addVertexWithUV((double)(f11 - f3 * f10 + f6 * f10), (double)(f12 + f4 * f10), (double)(f13 - f5 * f10 + f7 * f10), (double)f7, (double)f8);
+		tessellator.addVertexWithUV((double)(f11 + f3 * f10 + f6 * f10), (double)(f12 + f4 * f10), (double)(f13 + f5 * f10 + f7 * f10), (double)f6, (double)f8);
+		tessellator.addVertexWithUV((double)(f11 + f3 * f10 - f6 * f10), (double)(f12 - f4 * f10), (double)(f13 + f5 * f10 - f7 * f10), (double)f6, (double)f9);
+
 	}
 }

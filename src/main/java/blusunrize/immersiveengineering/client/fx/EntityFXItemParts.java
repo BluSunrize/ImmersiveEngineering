@@ -58,6 +58,7 @@ public class EntityFXItemParts extends EntityFXIEBase
 			float f11 = (float)(this.prevPosX + (this.posX - this.prevPosX) * (double)f2 - interpPosX);
 			float f12 = (float)(this.prevPosY + (this.posY - this.prevPosY) * (double)f2 - interpPosY);
 			float f13 = (float)(this.prevPosZ + (this.posZ - this.prevPosZ) * (double)f2 - interpPosZ);
+			tessellator.setBrightness(getBrightnessForRender(f7));
 			tessellator.setColorRGBA_F(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha);
 			tessellator.addVertexWithUV((double)(f11 - f3 * f10 - f6 * f10), (double)(f12 - f4 * f10), (double)(f13 - f5 * f10 - f7 * f10), (double)uMax, (double)vMax);
 			tessellator.addVertexWithUV((double)(f11 - f3 * f10 + f6 * f10), (double)(f12 + f4 * f10), (double)(f13 - f5 * f10 + f7 * f10), (double)uMax, (double)vMin);
