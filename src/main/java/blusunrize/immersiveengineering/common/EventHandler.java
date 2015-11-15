@@ -28,7 +28,9 @@ import WayofTime.alchemicalWizardry.api.event.TeleposeEvent;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler.Connection;
+import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
+import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralMix;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISpawnInterdiction;
 import blusunrize.immersiveengineering.common.blocks.TileEntityImmersiveConnectable;
@@ -116,7 +118,13 @@ public class EventHandler
 	public void onLogin(PlayerLoggedInEvent event)
 	{
 		if(!event.player.worldObj.isRemote)
-			ImmersiveEngineering.packetHandler.sendToAll(new MessageMineralListSync());
+		{
+			HashMap<MineralMix,Integer> packetMap = new HashMap<MineralMix,Integer>(); 
+			for(Map.Entry<MineralMix,Integer> e: ExcavatorHandler.mineralList.entrySet())
+				if(e.getKey()!=null && e.getValue()!=null)
+					packetMap.put(e.getKey(), e.getValue());
+			ImmersiveEngineering.packetHandler.sendToAll(new MessageMineralListSync(packetMap));
+		}
 	}
 
 	@SubscribeEvent

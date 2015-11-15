@@ -19,7 +19,10 @@ public class IEManualInstance extends ManualInstance
 	@Override
 	public String formatText(String s)
 	{
-		s = StatCollector.translateToLocal("ie.manual.entry."+s);
+		String translKey = "ie.manual.entry."+s;
+		String translated = StatCollector.translateToLocal(translKey);
+		if(translKey!=translated)
+			s = translated;
 		String splitKey = ";";
 
 		s = s.replaceAll("<br>", "\n");
@@ -124,7 +127,7 @@ public class IEManualInstance extends ManualInstance
 	{
 		if(entry.getCategory().equalsIgnoreCase(ManualHelper.CAT_UPDATE))
 			return Config.getBoolean("showUpdateNews");
-		
+
 		return true;
 	}
 	@Override
@@ -158,7 +161,7 @@ public class IEManualInstance extends ManualInstance
 	{
 		return 0x9c917c;
 	}
-	
+
 	@Override
 	public boolean allowGuiRescale()
 	{

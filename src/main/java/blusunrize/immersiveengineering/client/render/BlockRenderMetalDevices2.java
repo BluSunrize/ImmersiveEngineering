@@ -19,6 +19,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityEnergyMeter
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFloodlight;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFluidPipe;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFluidPump;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityRedstoneBreaker;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;
@@ -117,7 +118,14 @@ public class BlockRenderMetalDevices2 implements ISimpleBlockRenderingHandler
 				renderer.setRenderBoundsFromBlock(block);
 				ClientUtils.drawInventoryBlock(block, metadata, renderer);
 			}
-			
+			else if(metadata==BlockMetalDevices2.META_redstoneBreaker)
+			{
+				GL11.glTranslatef(-.5f,-.5f,-.5f);
+				Tessellator.instance.startDrawingQuads();
+				ClientUtils.handleStaticTileRenderer(new TileEntityRedstoneBreaker());
+				Tessellator.instance.draw();
+			}
+
 		}catch(Exception e)
 		{
 			e.printStackTrace();
@@ -201,6 +209,13 @@ public class BlockRenderMetalDevices2 implements ISimpleBlockRenderingHandler
 			{
 				renderer.setRenderBounds(0,0,0, 1,1,1);
 				return renderer.renderStandardBlock(block, x, y, z);
+			}
+			else if(metadata==BlockMetalDevices2.META_redstoneBreaker)
+			{
+				TileEntityRedstoneBreaker tile = (TileEntityRedstoneBreaker)world.getTileEntity(x, y, z);
+				ClientUtils.handleStaticTileRenderer(tile);
+				ClientUtils.renderAttachedConnections(tile);
+				return true;
 			}
 		return false;
 	}

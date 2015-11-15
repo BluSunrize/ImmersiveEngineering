@@ -4,7 +4,7 @@ import cofh.api.energy.IEnergyReceiver;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityCreativeCap extends TileEntityCapacitorLV {
+public class TileEntityCapacitorCreative extends TileEntityCapacitorLV {
 
 	@Override
 	public int receiveEnergy(ForgeDirection from, int maxReceive,

@@ -18,6 +18,7 @@ import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.oredict.RecipeSorter;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.MultiblockHandler;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
@@ -43,6 +44,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityAssembler;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBottlingMachine;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBreakerSwitch;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBucketWheel;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCapacitorCreative;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCapacitorHV;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCapacitorLV;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCapacitorMV;
@@ -52,7 +54,6 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorMV
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorStructural;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConveyorBelt;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConveyorSorter;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCreativeCap;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityDieselGenerator;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityDynamo;
@@ -68,6 +69,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFurnaceHeat
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityLantern;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityLightningRod;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMetalBarrel;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityRedstoneBreaker;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityRefinery;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityRelayHV;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySampleDrill;
@@ -403,9 +405,10 @@ public class IEContent
 		registerTile(TileEntityFluidPipe.class);
 		registerTile(TileEntityFluidPump.class);
 		registerTile(TileEntityMetalBarrel.class);
-		registerTile(TileEntityCreativeCap.class);
+		registerTile(TileEntityCapacitorCreative.class);
+		registerTile(TileEntityRedstoneBreaker.class);
+		
 		registerTile(TileEntityFakeLight.class);
-
 
 		registerTile(TileEntityCokeOven.class);
 		registerTile(TileEntityBlastFurnace.class);
@@ -595,5 +598,6 @@ public class IEContent
 			GameRegistry.addRecipe(new RecipeOreCrushing(oreName,dustMeta));
 			validCrushingOres.add(oreName);
 		}
+		RecipeSorter.register(ImmersiveEngineering.MODID+":hammerCrushing", RecipeOreCrushing.class, RecipeSorter.Category.SHAPELESS, "after:forge:shapelessore");
 	}
 }

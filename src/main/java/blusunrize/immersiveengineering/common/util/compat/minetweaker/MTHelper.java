@@ -3,13 +3,18 @@ package blusunrize.immersiveengineering.common.util.compat.minetweaker;
 import static minetweaker.api.minecraft.MineTweakerMC.getItemStack;
 import static minetweaker.api.minecraft.MineTweakerMC.getLiquidStack;
 import minetweaker.MineTweakerAPI;
+import minetweaker.MineTweakerImplementationAPI;
+import minetweaker.MineTweakerImplementationAPI.ReloadEvent;
 import minetweaker.api.item.IIngredient;
 import minetweaker.api.item.IItemStack;
 import minetweaker.api.item.IngredientStack;
 import minetweaker.api.liquid.ILiquidStack;
 import minetweaker.api.oredict.IOreDictEntry;
+import minetweaker.util.IEventHandler;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
+import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
+import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 
@@ -19,12 +24,12 @@ public class MTHelper extends IECompatModule
 	public void preInit()
 	{
 	}
-	
+
 	@Override
 	public void init()
 	{
 	}
-	
+
 	@Override
 	public void postInit()
 	{
@@ -38,6 +43,15 @@ public class MTHelper extends IECompatModule
 		MineTweakerAPI.registerClass(Excavator.class);
 		MineTweakerAPI.registerClass(Excavator.MTMineralMix.class);
 		MineTweakerAPI.registerClass(BottlingMachine.class);
+		try{
+			MineTweakerImplementationAPI.onPostReload(new ExcavatorEventHandler());
+		}catch(Exception e)
+		{
+			IELogger.error("[CRITICAL] YOU ARE USING AN OUTDATED VERSION OF MINETWEAKER");
+			IELogger.error("[CRITICAL] IE requires version 3.0.10b or later to function correctly!");
+			IELogger.error("[CRITICAL] The use of an outdated version will cause major issues!!!!");
+			e.printStackTrace();
+		}
 	}
 
 	/** Helper Methods */
@@ -71,9 +85,19 @@ public class MTHelper extends IECompatModule
 			oA[i] = toObject(iStacks[i]);
 		return oA;
 	}
-	
+
 	public static FluidStack toFluidStack(ILiquidStack iStack)
 	{
 		return getLiquidStack(iStack);
 	}
+
+	public static class ExcavatorEventHandler implements IEventHandler<ReloadEvent>
+	{
+		@Override
+		public void handle(ReloadEvent event)
+		{
+			ExcavatorHandler.recalculateChances();
+		}
+	}
+
 }

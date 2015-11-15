@@ -701,6 +701,10 @@ ie.manual.entry.minerals.subtext=Oresome
 ie.manual.entry.minerals0=The deposits of Ore found around your world are nothing new to you. What you have so far left out of consideration though are mineral veins, which contain a mix of different ores. Due to their wide and thin spread, the average miner can't find them, but a <link;excavator;§o§nspecial §o§nmachine§r> might be able to assist with that.
 ie.manual.entry.minerals1=To find and determine minerals in the world, you will want to craft a Core Sample Drill. This machine, when powered, will drill into the chunk and determine which mineral can be found there. The Drill consumes <config;i;coredrill_consumption> RF/t and takes <config;i;coredrill_time> ticks to fully retrieve and analyze a sample.
 ie.manual.entry.minerals2=The following pages list every type of vein and the ores that can be retrieved from them.
+ie.manual.entry.minerals3=%1$s<br>It consists of %2$s.
+ie.manual.entry.mineralsDimValid=§l%1$s§r is a mineral vein that can be found in the %2$s.
+ie.manual.entry.mineralsDimInvalid=§l%1$s§r is a mineral vein that can be found anywhere but in the %2$s.
+ie.manual.entry.mineralsDimAny=§l%1$s§r is a mineral vein that can be found in any Dimension.
 
 ie.manual.entry.arcfurnace.name=Arc Furnace
 ie.manual.entry.arcfurnace.subtext=Not a reactor 

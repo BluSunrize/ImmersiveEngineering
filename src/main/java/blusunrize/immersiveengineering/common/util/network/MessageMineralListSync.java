@@ -8,22 +8,20 @@ import java.util.Map;
 import net.minecraft.nbt.NBTTagCompound;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralMix;
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
-import cpw.mods.fml.relauncher.Side;
 
 public class MessageMineralListSync implements IMessage
 {
 	HashMap<MineralMix,Integer> map = new HashMap<MineralMix,Integer>();
+	public MessageMineralListSync(HashMap<MineralMix,Integer> map)
+	{
+		this.map = map;
+	}
 	public MessageMineralListSync()
 	{
-		if(FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER)
-			for(Map.Entry<MineralMix,Integer> e: ExcavatorHandler.mineralList.entrySet())
-				if(e.getKey()!=null && e.getValue()!=null)
-					map.put(e.getKey(), e.getValue());
 	}
 
 	@Override

@@ -31,7 +31,7 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable
 	@Override
 	protected boolean canTakeHV()
 	{
-		return true;
+		return false;
 	}
 
 	@Override

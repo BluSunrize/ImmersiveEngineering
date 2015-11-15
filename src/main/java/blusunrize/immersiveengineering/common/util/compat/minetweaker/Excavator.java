@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.common.util.compat.minetweaker;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -7,6 +8,7 @@ import java.util.Map.Entry;
 
 import minetweaker.IUndoableAction;
 import minetweaker.MineTweakerAPI;
+import stanhebben.zenscript.annotations.Optional;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenGetter;
 import stanhebben.zenscript.annotations.ZenMethod;
@@ -18,12 +20,13 @@ import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralMix;
 public class Excavator
 {
 	@ZenMethod
-	public static void addMineral(String name, int mineralWeight, double failChance, String[] ores, double[] chances)
+	public static void addMineral(String name, int mineralWeight, double failChance, String[] ores, double[] chances,  @Optional int[] dimensionWhitelist,  @Optional boolean blacklist)
 	{
 		float[] fChances = new float[chances.length];
 		for(int i=0; i<chances.length; i++)
 			fChances[i] = (float)chances[i];
-		MineTweakerAPI.apply(new AddMineral(name,mineralWeight,(float)failChance,ores,fChances));
+		System.out.println("name: "+name+", dim "+dimensionWhitelist+", black: "+blacklist);
+		MineTweakerAPI.apply(new AddMineral(name,mineralWeight,(float)failChance,ores,fChances, dimensionWhitelist,blacklist));
 	}
 
 	private static class AddMineral implements IUndoableAction
@@ -33,22 +36,30 @@ public class Excavator
 		private final float failChance;
 		private final String[] ores;
 		private final float[] chances;
+		private final int[] dimensions;
+		private final boolean blacklist;
 
 		MineralMix mineral;
 
-		public AddMineral(String name, int mineralWeight, float failChance, String[] ores, float[] chances)
+		public AddMineral(String name, int mineralWeight, float failChance, String[] ores, float[] chances, int[] dimensions, boolean blacklist)
 		{
 			this.name=name;
 			this.mineralWeight=mineralWeight;
 			this.failChance=failChance;
 			this.ores=ores;
 			this.chances=chances;
+			this.dimensions = dimensions;
+			this.blacklist = blacklist;
 		}
 		@Override
 		public void apply()
 		{
 			this.mineral = ExcavatorHandler.addMineral(name, mineralWeight, failChance, ores, chances);
-			ExcavatorHandler.recalculateChances();
+			if(dimensions!=null)
+				if(blacklist)
+					this.mineral.dimensionBlacklist = dimensions;
+				else
+					this.mineral.dimensionWhitelist = dimensions;
 		}
 		@Override
 		public boolean canUndo()
@@ -58,8 +69,13 @@ public class Excavator
 		@Override
 		public void undo()
 		{
-			ExcavatorHandler.mineralList.remove(this.mineral);
-			ExcavatorHandler.recalculateChances();
+			Iterator<Map.Entry<MineralMix,Integer>> it = ExcavatorHandler.mineralList.entrySet().iterator();
+			while(it.hasNext())
+			{
+				Map.Entry<MineralMix,Integer> e = it.next();
+				if(e.getKey().name.equalsIgnoreCase(name))
+					it.remove();
+			}
 		}
 		@Override
 		public String describe()
@@ -87,37 +103,47 @@ public class Excavator
 	{
 		private final String name;
 
-		MineralMix mix;
-		int weight;
+		ArrayList<MineralMix> mix;
+		ArrayList<Integer> weight;
 		public RemoveMineral(String name)
 		{
 			this.name = name;
+			mix = new ArrayList<MineralMix>();
+			weight = new ArrayList<Integer>();
 		}
 		@Override
 		public void apply()
 		{
+			mix.clear();
+			weight.clear();
 			Iterator<Map.Entry<MineralMix,Integer>> it = ExcavatorHandler.mineralList.entrySet().iterator();
 			while(it.hasNext())
 			{
 				Map.Entry<MineralMix,Integer> e = it.next();
-				if(e.getKey().name.equalsIgnoreCase(name))
+				if(e.getKey().name.equalsIgnoreCase(name) && !mix.contains(e.getKey()))
 				{
-					mix = e.getKey();
-					weight = e.getValue();
+					mix.add(e.getKey());
+					weight.add(e.getValue());
 					it.remove();
-					break;
 				}
 			}
-			ExcavatorHandler.recalculateChances();
 		}
 		@Override
 		public void undo()
 		{
-			if(mix!=null)
-			{
-				ExcavatorHandler.mineralList.put(mix, weight);
-				ExcavatorHandler.recalculateChances();
-			}
+			if(mix!=null&&weight!=null)
+				for(int i=0; i<mix.size(); i++)
+				{
+					boolean exists = false;
+					for(MineralMix mm : ExcavatorHandler.mineralList.keySet())
+						if(mm!=null && mix.get(i).name.equalsIgnoreCase(mm.name))
+						{
+							exists=true;
+							break;
+						}
+					if(!exists)
+						ExcavatorHandler.mineralList.put(mix.get(i), weight.get(i));
+				}
 		}
 		@Override
 		public String describe()
@@ -183,7 +209,6 @@ public class Excavator
 			newChances[mix.ores.length] = (float)chance;
 			mix.ores = newOres;
 			mix.chances = newChances;
-			ExcavatorHandler.recalculateChances();
 		}
 
 		@ZenMethod
@@ -202,7 +227,6 @@ public class Excavator
 				mix.chances[i] = e.getValue();
 				i++;
 			}
-			ExcavatorHandler.recalculateChances();
 		}
 
 	}

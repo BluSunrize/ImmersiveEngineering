@@ -12,8 +12,10 @@ import net.minecraft.util.WeightedRandomChestContent;
 import net.minecraftforge.common.ChestGenHooks;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.oredict.RecipeSorter;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
@@ -47,7 +49,8 @@ public class IERecipes
 		addOredictRecipe(new ItemStack(IEContent.itemRevolver,1,0), " I ","HDB","GIG", 'I',"ingotIron",'B',new ItemStack(IEContent.itemMaterial,1,7),'D',new ItemStack(IEContent.itemMaterial,1,8),'G',new ItemStack(IEContent.itemMaterial,1,9),'H',new ItemStack(IEContent.itemMaterial,1,10)).setMirrored(true);
 		addOredictRecipe(new ItemStack(IEContent.itemRevolver,1,1), "  I","IIS","  I", 'I',"ingotIron",'S',"ingotSteel");
 		GameRegistry.addRecipe(new RecipeRevolver());
-
+		RecipeSorter.register(ImmersiveEngineering.MODID+":revolverLoop", RecipeRevolver.class, RecipeSorter.Category.SHAPELESS, "after:forge:shapelessore");
+		
 		addOredictRecipe(new ItemStack(IEContent.itemBullet,3,0), "I I","I I"," I ", 'I',"ingotCopper");
 		addOredictRecipe(new ItemStack(IEContent.itemBullet,3,1), "PDP","PDP"," I ", 'I',"ingotCopper",'P',Items.paper,'D',"dyeRed");
 
@@ -88,7 +91,8 @@ public class IERecipes
 		BlueprintCraftingRecipe.addVillagerTrade("bullet", new ItemStack(Items.emerald,1,2));
 		BlueprintCraftingRecipe.addVillagerTrade("specialBullet", new ItemStack(Items.emerald,1,7));
 		GameRegistry.addRecipe(new RecipePotionBullets());
-
+		RecipeSorter.register(ImmersiveEngineering.MODID+":potionBullet", RecipePotionBullets.class, RecipeSorter.Category.SHAPELESS, "after:forge:shapelessore");
+		
 		int blueprint = BlueprintCraftingRecipe.blueprintCategories.indexOf("bullet");
 		addOredictRecipe(new ItemStack(IEContent.itemBlueprint,1,blueprint), "JKL","DDD","PPP", 'J',Items.gunpowder,'K',"ingotCopper",'L',Items.gunpowder, 'D',"dyeBlue",'P',Items.paper);
 
@@ -140,7 +144,7 @@ public class IERecipes
 
 		addOredictRecipe(new ItemStack(IEContent.itemJerrycan), " II","IBB","IBB", 'I',"ingotIron",'B',Items.bucket);
 		GameRegistry.addRecipe(new RecipeJerrycan());
-
+		RecipeSorter.register(ImmersiveEngineering.MODID+":jerrycan", RecipeJerrycan.class, RecipeSorter.Category.SHAPELESS, "after:forge:shapelessore");
 
 		for(ItemStack container : Utils.getContainersFilledWith(new FluidStack(IEContent.fluidCreosote,1000)))
 			addOredictRecipe(new ItemStack(IEContent.blockTreatedWood,8,0), "WWW","WCW","WWW", 'W',"plankWood",'C',container);
@@ -209,6 +213,7 @@ public class IERecipes
 		addOredictRecipe(new ItemStack(IEContent.blockMetalDevice2,8, BlockMetalDevices2.META_fluidPipe), "I I","SSS","I I", 'S',new ItemStack(IEContent.blockMetalDecoration,1,BlockMetalDecoration.META_sheetMetal),'I',"ingotIron");
 		addOredictRecipe(new ItemStack(IEContent.blockMetalDevice2,1, BlockMetalDevices2.META_fluidPump), " I ","ICI","PPP", 'I',"ingotIron",'C',componentIron,'P',new ItemStack(IEContent.blockMetalDevice2,1,BlockMetalDevices2.META_fluidPipe));
 		addOredictRecipe(new ItemStack(IEContent.blockMetalDevice2,1, BlockMetalDevices2.META_barrel), "SSS","S S","SSS", 'S',new ItemStack(IEContent.blockMetalDecoration,1,BlockMetalDecoration.META_sheetMetal));
+		addOredictRecipe(new ItemStack(IEContent.blockMetalDevice2,1, BlockMetalDevices2.META_redstoneBreaker), "C C","ICI","IRI", 'C',new ItemStack(IEContent.blockMetalDevice,1,BlockMetalDevices.META_connectorHV), 'I',"ingotIron", 'C',Items.repeater, 'R',"dustRedstone");
 
 		addOredictRecipe(new ItemStack(IEContent.blockMetalDecoration,16,BlockMetalDecoration.META_fence), "III","III", 'I',"ingotSteel");
 		addOredictRecipe(new ItemStack(IEContent.blockMetalDecoration, 6,BlockMetalDecoration.META_scaffolding), "III"," S ","S S", 'I',"ingotSteel",'S',new ItemStack(IEContent.blockMetalDecoration,1,0));

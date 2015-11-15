@@ -29,6 +29,7 @@ import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.oredict.OreDictionary;
 import blusunrize.immersiveengineering.api.AdvancedAABB;
+import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.fluid.PipeConnection;
 import blusunrize.immersiveengineering.client.render.BlockRenderMetalDevices2;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
@@ -52,7 +53,8 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 	public static final int META_fluidPump=6;
 	public static final int META_barrel=7;
 	public static final int META_creativeCap=8;
-	
+	public static final int META_redstoneBreaker = 9;
+
 	IIcon[] iconPump = new IIcon[7];
 	IIcon iconFloodlightGlass;
 	IIcon[] iconBarrel = new IIcon[4];
@@ -61,7 +63,7 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 	public BlockMetalDevices2()
 	{
 		super("metalDevice2", Material.iron, 1, ItemBlockMetalDevices2.class,
-				"breakerSwitch","skycrateDispenser","energyMeter","electricLantern","floodlight","fluidPipe", "fluidPump", "barrel", "capacitorCreative");
+				"breakerSwitch","skycrateDispenser","energyMeter","electricLantern","floodlight","fluidPipe", "fluidPump", "barrel", "capacitorCreative", "redstoneBreaker");
 		setHardness(3.0F);
 		setResistance(15.0F);
 		this.setMetaLightOpacity(META_barrel, 255);
@@ -90,7 +92,8 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 		list.add(new ItemStack(item, 1, 6));
 		list.add(new ItemStack(item, 1, 7));
 		list.add(new ItemStack(item, 1, 8));
-		
+		list.add(new ItemStack(item, 1, 9));
+
 		//		for(int i=0; i<subNames.length; i++)
 		//		{
 		//			list.add(new ItemStack(item, 1, i));
@@ -112,7 +115,7 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 			iconCap[1][i]= iconRegister.registerIcon("immersiveengineering:metal2_capacitorCreative_top_"+s);
 			iconCap[2][i]= iconRegister.registerIcon("immersiveengineering:metal2_capacitorCreative_side_"+s);
 		}
-		
+
 		iconFloodlightGlass = iconRegister.registerIcon("immersiveEngineering:metal2_floodlightGlass");
 		iconPump[0] = iconRegister.registerIcon("immersiveEngineering:metal2_pump_side_none");
 		iconPump[1] = iconRegister.registerIcon("immersiveEngineering:metal2_pump_side_in");
@@ -133,9 +136,9 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 		TileEntity te = world.getTileEntity(x, y, z);
 		if(te instanceof TileEntityMetalBarrel && side<2)
 			return iconBarrel[((TileEntityMetalBarrel)te).sideConfig[side]+1];
-		if(te instanceof TileEntityCreativeCap)
+		if(te instanceof TileEntityCapacitorCreative)
 		{
-			TileEntityCreativeCap cap = (TileEntityCreativeCap)te;
+			TileEntityCapacitorCreative cap = (TileEntityCapacitorCreative)te;
 			if(side==0)
 				return iconCap[0][cap.sideConfig[side]+1];
 			else if(side==1)
@@ -143,7 +146,7 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 			else
 				return iconCap[2][cap.sideConfig[side]+1];
 		}
-		
+
 		return super.getIcon(world, x, y, z, side);
 	}
 	@Override
@@ -197,7 +200,7 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
 	{
 		TileEntity te = world.getTileEntity(x, y, z);
-		if(!player.isSneaking() && te instanceof TileEntityBreakerSwitch)
+		if(!player.isSneaking() && te instanceof TileEntityBreakerSwitch && !(te instanceof TileEntityRedstoneBreaker))
 		{
 			if(!world.isRemote)
 			{
@@ -379,13 +382,13 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 			}
 			return true;
 		}
-		else if(te instanceof TileEntityCreativeCap && Utils.isHammer(player.getCurrentEquippedItem()))
+		else if(te instanceof TileEntityCapacitorCreative && Utils.isHammer(player.getCurrentEquippedItem()))
 		{
 			if(player.isSneaking())
 				side = ForgeDirection.OPPOSITES[side];
 			if(!world.isRemote)
 			{
-				((TileEntityCreativeCap)te).toggleSide(side);
+				((TileEntityCapacitorCreative)te).toggleSide(side);
 				te.markDirty();
 				world.markBlockForUpdate(x, y, z);
 				world.addBlockEvent(x, y, z, te.getBlockType(), 0, 0);
@@ -399,7 +402,7 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 	public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
 	{
 		TileEntity te = world.getTileEntity(x, y, z);
-		if(te instanceof TileEntityBreakerSwitch)
+		if(te instanceof TileEntityBreakerSwitch && !(te instanceof TileEntityRedstoneBreaker))
 		{
 			int f = ((TileEntityBreakerSwitch)te).facing;
 			int side = ((TileEntityBreakerSwitch)te).sideAttached;
@@ -456,6 +459,17 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 		}
 		else if(world.getBlockMetadata(x, y, z)==META_electricLantern)
 			this.setBlockBounds(.1875f,0,.1875f, .8125f,1,.8125f);
+		else if(te instanceof TileEntityRedstoneBreaker)
+		{
+			int f = ((TileEntityBreakerSwitch)te).facing;
+			int side = ((TileEntityBreakerSwitch)te).sideAttached;
+			if(side==0)
+				this.setBlockBounds(0,.125f,0, 1,.875f,1);
+			else if(side==1)
+				this.setBlockBounds(f>=4?.125f:0,0,f<=3?.125f:0, f>=4?.875f:1,1,f<=3?.875f:1);
+			else
+				this.setBlockBounds(f>=4?.125f:0,0,f<=3?.125f:0, f>=4?.875f:1,1,f<=3?.875f:1);
+		}
 		else
 			this.setBlockBounds(0,0,0,1,1,1);
 	}
@@ -676,7 +690,9 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 		case META_barrel:
 			return new TileEntityMetalBarrel();
 		case META_creativeCap:
-			return new TileEntityCreativeCap();
+			return new TileEntityCapacitorCreative();
+		case META_redstoneBreaker:
+			return new TileEntityRedstoneBreaker();
 		}
 		return null;
 	}
@@ -762,7 +778,7 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 		}
 		return ret;
 	}
-	
+
 	@Override
 	public void onBlockAdded(World world, int x, int y, int z)
 	{
@@ -783,6 +799,18 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 				ForgeDirection fd = tileY<y?ForgeDirection.DOWN: tileY>y?ForgeDirection.UP: tileZ<z?ForgeDirection.NORTH: tileZ>z?ForgeDirection.SOUTH: tileX<x?ForgeDirection.WEST: ForgeDirection.EAST;
 				((TileEntityFluidPipe) tile).sideConfig[fd.ordinal()]=0;
 			}
+		}
+	}
+	@Override
+	public void onNeighborBlockChange(World world, int x, int y, int z, Block neighbor)
+	{
+		TileEntity tile = world.getTileEntity(x, y, z);
+		if(tile instanceof TileEntityRedstoneBreaker)
+		{
+			boolean b = ((TileEntityRedstoneBreaker)tile).active;
+			((TileEntityRedstoneBreaker)tile).active = world.isBlockIndirectlyGettingPowered(x,y,z);
+			if(b!=((TileEntityRedstoneBreaker)tile).active)
+				ImmersiveNetHandler.INSTANCE.resetCachedIndirectConnections();
 		}
 	}
 

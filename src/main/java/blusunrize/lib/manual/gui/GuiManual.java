@@ -372,7 +372,7 @@ public class GuiManual extends GuiScreen
 	@Override
 	protected void mouseClickMove(int mx, int my, int button, long time)
 	{
-		if(lastClick!=null && manual.getEntry(selectedEntry)!=null)
+		if(lastClick!=null && manual.getEntry(selectedEntry)!=null && page<manual.getEntry(selectedEntry).getPages().length)
 		{
 			ManualEntry entry = manual.getEntry(selectedEntry);
 			if(lastDrag==null)

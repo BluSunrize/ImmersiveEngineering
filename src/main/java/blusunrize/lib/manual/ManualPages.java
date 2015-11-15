@@ -242,19 +242,21 @@ public abstract class ManualPages implements IManualPage
 				int col = manual.getHighlightColour()|0xff000000;
 				gui.drawGradientRect(x,y+textHeight-2,x+120,y+textHeight-1, col,col);
 				int[] textOff = new int[bars!=null?bars.length:0];
+
+				//				gui.drawGradientRect(x,y+textHeight+yOff-2,x+120,y+textHeight+yOff-1,  manual.getTextColour()|0xff000000, manual.getTextColour()|0xff000000);
 				if(bars!=null)
 				{
 					int xx = x;
 					for(int i=0; i<bars.length; i++)
 					{
 						xx += bars[i]+4;
-						gui.drawGradientRect(xx,y+textHeight-4,xx+1,y+textHeight+(manual.fontRenderer.FONT_HEIGHT+1)*localizedTable.length, col,col);
+
+						//						gui.drawGradientRect(xx,y+textHeight-4,xx+1,y+textHeight+yOff, col,col);
+						//						gui.drawGradientRect(xx,y+textHeight-4,xx+1,y+textHeight+(manual.fontRenderer.FONT_HEIGHT+1)*localizedTable.length, col,col);
 						xx+=4;
 						textOff[i] = xx;
 					}
 				}
-
-				//				gui.drawGradientRect(x,y+textHeight+yOff-2,x+120,y+textHeight+yOff-1,  manual.getTextColour()|0xff000000, manual.getTextColour()|0xff000000);
 
 				int yOff = 0;
 				for(int i=0; i<localizedTable.length; i++)
@@ -281,6 +283,10 @@ public abstract class ManualPages implements IManualPage
 							}
 						}
 				}
+
+				if(bars!=null)
+					for(int i=0; i<bars.length; i++)
+						gui.drawGradientRect(textOff[i]-4,y+textHeight-4,textOff[i]-3,y+textHeight+yOff, col,col);
 			}
 		}
 
@@ -311,13 +317,34 @@ public abstract class ManualPages implements IManualPage
 		{
 			GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 			RenderHelper.enableGUIStandardItemLighting();
-
-			float scale = 2f;
-			int w = (105-stacks.length*16)/(stacks.length+1);
+			
+			int length = stacks.length;
+			float scale = length>7?1f: length>4?1.5f: 2f;
+			int line0 = (int)(2/scale*4);
+			int line1 = line0-1;
+			int lineSum = line0+line1;
+			int lines = (length/lineSum*2)+(length%lineSum/line0)+(length%lineSum%line0>0?1:0);
 			GL11.glScalef(scale,scale,scale);
 			RenderItem.getInstance().renderWithColor=true;
-			for(int i=0; i<stacks.length; i++)
-				RenderItem.getInstance().renderItemAndEffectIntoGUI(manual.fontRenderer, ManualUtils.mc().renderEngine, stacks[i], (int)((x+w+(18+w)*i)/scale), (int)((y+4)/scale));
+			int yOffset = lines*(int)(18*scale);
+			for(int line=0; line<lines; line++)
+			{
+				int perLine = line%2==0?line0:line1;
+				if(line==0 && perLine>length)
+					perLine = length;
+				int w2 = perLine*(int)(16*scale)/2;
+				for(int i=0; i<perLine; i++)
+				{
+					int item = line/2*lineSum+line%2*line0+i;
+					if(item>=length)
+						break;
+					int xx = x+60-w2 + i*(int)(16*scale);
+					xx = (int)(xx/scale);
+					int yy = y+(lines<2?4:0)+line*(int)(16*scale);
+					yy = (int)(yy/scale);
+					RenderItem.getInstance().renderItemAndEffectIntoGUI(manual.fontRenderer, ManualUtils.mc().renderEngine, stacks[item], xx,yy);
+				}
+			}
 			GL11.glScalef(1/scale,1/scale,1/scale);
 
 			RenderHelper.disableStandardItemLighting();
@@ -325,7 +352,7 @@ public abstract class ManualPages implements IManualPage
 			GL11.glEnable(GL11.GL_BLEND);
 
 			if(localizedText!=null&&!localizedText.isEmpty())
-				manual.fontRenderer.drawSplitString(localizedText, x,y+44, 120, manual.getTextColour());
+				manual.fontRenderer.drawSplitString(localizedText, x,y+yOffset, 120, manual.getTextColour());
 		}
 
 		@Override
