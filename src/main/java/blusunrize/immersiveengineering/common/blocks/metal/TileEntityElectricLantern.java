@@ -6,6 +6,7 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.EnumSkyBlock;
 import blusunrize.immersiveengineering.api.energy.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler.Connection;
+import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.EventHandler;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISpawnInterdiction;
 import blusunrize.immersiveengineering.common.blocks.TileEntityImmersiveConnectable;
@@ -22,7 +23,7 @@ public class TileEntityElectricLantern extends TileEntityImmersiveConnectable im
 	{
 		if(worldObj.isRemote)
 			return;
-		if(!interdictionList)
+		if(!interdictionList && Config.getBoolean("lantern_spawnPrevent"))
 		{
 			synchronized (EventHandler.interdictionTiles) {
 				if (!EventHandler.interdictionTiles.contains(this))

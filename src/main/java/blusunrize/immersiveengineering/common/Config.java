@@ -144,6 +144,9 @@ public class Config
 		setBoolean("arcfurnace_electrodeCrafting", config.get("Machines", "Arc Furnace: Craftable Blueprint", false, "Set this to true to make the blueprint for graphite electrodes craftable in addition to villager/dungeon loot").getBoolean());
 		setBoolean("arcfurnace_recycle", config.get("Machines", "Arc Furnace: Recycling", true, "Set this to false to disable the Arc Furnace's recycling of armors and tools").getBoolean());
 		
+		setBoolean("lantern_spawnPrevent", config.get("Machines", "Powered Lantern: Spawn Prevention", true, "Set this to false to disable the mob-spawn prevention of the Powered Lantern").getBoolean());
+		setBoolean("floodlight_spawnPrevent", config.get("Machines", "Floodlight: Spawn Prevention", true, "Set this to false to disable the mob-spawn prevention of the Floodlight").getBoolean());
+		
 		setInt("pump_consumption", config.get("Machines", "Fluid Pump: Consumed", 250, "The RF the Fluid Pump will consume to pick up a fluid block in the world").getInt());
 		setInt("pump_consumption_accelerate", config.get("Machines", "Fluid Pump: Acceleration", 5, "The RF the Fluid Pump will consume pressurize+accellerate fluids, increasing the transferrate").getInt());
 		setInt("assembler_consumption", config.get("Machines", "Assembler: Consumed", 80, "The RF the Assembler will consume to craft an item from a recipe").getInt());

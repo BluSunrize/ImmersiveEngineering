@@ -11,6 +11,7 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.EventHandler;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISpawnInterdiction;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFloodlight;
@@ -110,10 +111,11 @@ public class BlockFakeLight extends BlockIEBase
 		public int[] floodlightCoords = {-1,-1,-1};
 		public TileEntityFakeLight()
 		{
-			synchronized (EventHandler.interdictionTiles) {
-				if (!EventHandler.interdictionTiles.contains(this))
-					EventHandler.interdictionTiles.add(this);
-			}
+			if(Config.getBoolean("floodlight_spawnPrevent"))
+				synchronized (EventHandler.interdictionTiles) {
+					if (!EventHandler.interdictionTiles.contains(this))
+						EventHandler.interdictionTiles.add(this);
+				}
 		}
 		@Override
 		public void updateEntity()
