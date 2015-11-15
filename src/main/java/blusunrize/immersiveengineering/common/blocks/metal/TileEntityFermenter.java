@@ -550,14 +550,14 @@ public class TileEntityFermenter extends TileEntityMultiblockPart implements IFl
 	public int getEnergyStored(ForgeDirection from)
 	{
 		if(this.master()!=null)
-			this.master().energyStorage.getEnergyStored();
+			return this.master().energyStorage.getEnergyStored();
 		return energyStorage.getEnergyStored();
 	}
 	@Override
 	public int getMaxEnergyStored(ForgeDirection from)
 	{
 		if(this.master()!=null)
-			this.master().energyStorage.getMaxEnergyStored();
+			return this.master().energyStorage.getMaxEnergyStored();
 		return energyStorage.getMaxEnergyStored();
 	}
 }
