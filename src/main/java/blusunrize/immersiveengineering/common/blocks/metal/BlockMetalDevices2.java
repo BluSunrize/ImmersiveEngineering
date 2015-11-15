@@ -52,7 +52,7 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 	public static final int META_fluidPipe=5;
 	public static final int META_fluidPump=6;
 	public static final int META_barrel=7;
-	public static final int META_creativeCap=8;
+	public static final int META_capacitorCreative=8;
 	public static final int META_redstoneBreaker = 9;
 
 	IIcon[] iconPump = new IIcon[7];
@@ -105,7 +105,7 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 	public void registerBlockIcons(IIconRegister iconRegister)
 	{
 		for(int i=0; i<this.subNames.length; i++)
-			if(i!=META_fluidPump)
+			if(i!=META_fluidPump && i!=META_capacitorCreative)
 				this.icons[i][0] = iconRegister.registerIcon("immersiveEngineering:metal2_"+this.subNames[i]);
 		//creativeCap
 		for(int i=0;i<3;i++)
@@ -159,7 +159,7 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 			return iconFloodlightGlass;
 		if(meta==META_barrel && side<2)
 			return iconBarrel[0];
-		if (meta==META_creativeCap)
+		if (meta==META_capacitorCreative)
 			if (side==0)
 				return iconCap[0][0];
 			else if (side==1)
@@ -689,7 +689,7 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 			return new TileEntityFluidPump();
 		case META_barrel:
 			return new TileEntityMetalBarrel();
-		case META_creativeCap:
+		case META_capacitorCreative:
 			return new TileEntityCapacitorCreative();
 		case META_redstoneBreaker:
 			return new TileEntityRedstoneBreaker();

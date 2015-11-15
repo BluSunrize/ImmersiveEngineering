@@ -112,7 +112,7 @@ public class BlockRenderMetalDevices2 implements ISimpleBlockRenderingHandler
 				renderer.setRenderBounds(0,0,0, 1,1,1);
 				ClientUtils.drawInventoryBlock(block, metadata, renderer);
 			}
-			else if(metadata==BlockMetalDevices2.META_creativeCap)
+			else if(metadata==BlockMetalDevices2.META_capacitorCreative)
 			{
 				block.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
 				renderer.setRenderBoundsFromBlock(block);
@@ -205,7 +205,7 @@ public class BlockRenderMetalDevices2 implements ISimpleBlockRenderingHandler
 				renderer.setRenderBoundsFromBlock(block);
 				return renderer.renderStandardBlock(block, x, y, z);
 			}
-			else if(metadata==BlockMetalDevices2.META_creativeCap)
+			else if(metadata==BlockMetalDevices2.META_capacitorCreative)
 			{
 				renderer.setRenderBounds(0,0,0, 1,1,1);
 				return renderer.renderStandardBlock(block, x, y, z);
