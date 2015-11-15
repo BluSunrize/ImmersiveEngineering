@@ -463,7 +463,7 @@ ie.manual.category.update.name=UPDATE NEWS!
 ie.manual.entry.updateNews.name=What's new in Version 0.6
 ie.manual.entry.updateNews.subtext=Old, new; borrowed and Blu
 ie.manual.entry.updateNews0=Dear Engineer!<br><br>Since you last worked with Immersive Engineering, many things have changed! Among the new things are: Villager houses, <link;lighting;§nnew §nlights§r>, <link;barrel;§nwooden §nbarrels§r>, <link;tanksilo;§ntanks§r>, <link;tanksilo;§nsilos§r;1> and <link;fluidPipes;§nfluid §npipes§r>, achievements, <link;shader;§nshaders§r> and the <link;assembler;§nAssembler§r> and <link;bottlingMachine;§nBottling §nMachine§r>!
-ie.manual.entry.updateNews1=Most importantly however, the way energy transmission is handled has changed a lot. In order to avoid mistakes, please make sure to read the entry on <link;wiring;§nWiring§r>, especially page 5, detailing the new distinction between a cable's transferrate and a connector's in- and output.
+ie.manual.entry.updateNews1=Most importantly however, the way energy transmission is handled has changed a lot. In order to avoid mistakes, please make sure to read the entry on <link;wiring;§nWiring§r>, especially page 5, detailing the new distinction between a cable's transfer rate and a connector's in- and output.
 
 
 ie.manual.category.general.name=Overview and Resources
@@ -522,10 +522,10 @@ ie.manual.entry.graphite1=The most common use for HOP Graphite is the creation o
 ie.manual.entry.wiring.name=Basic Wiring
 ie.manual.entry.wiring.subtext=Bzzzt!
 ie.manual.entry.wiring0=The energy-net of Immersive Engineering has four important blocks: §lCapacitors§r to store energy, §lconnectors§r as inputs and outputs for the net, §lrelays§r to connect wires together and §ltransformers§r to switch between different levels of wire.<br>In low- and medium-voltage systems (copper and electrum wires), connectors and relays are the same block, but high-voltage connectors will only ever accept one wire.
-ie.manual.entry.wiring1=To connect two blocks, simply click the first one with a wire coil, then use the same coil on the second block. The total transferrate between two points depends on the weakest type of wire between them.
+ie.manual.entry.wiring1=To connect two blocks, simply click the first one with a wire coil, then use the same coil on the second block. The total transfer rate between two points depends on the weakest type of wire between them.
 ie.manual.entry.wiring2=Note that restrictions apply based on blocks: Connectors and relays will only take wires of the same type that is already connected, transformers will only take two wires of a different type,<br>[cont]
 ie.manual.entry.wiring3=and wires can only connect to blocks that match the voltage.
-ie.manual.entry.wiring4=There are two important values to note about wiring:<br>Each connector has an input value (§o<config;iA;wireConnectorInput>§r) and each wire has a maximum transferrate (§o<config;iA;cableTransferRate;l3>§r).<br>The connector limits how much power can be in- and output, but multiple connectors can §ounify§r into a single wire, allowing you to combine the transfer over longer ranges. Note however that the §omaximum transferrate§r of the wire must not be exceeded, or else the wire will §oburn up§r.
+ie.manual.entry.wiring4=There are two important values to note about wiring:<br>Each connector has an input value (§o<config;iA;wireConnectorInput>§r) and each wire has a maximum transfer rate (§o<config;iA;cableTransferRate;l3>§r).<br>The connector limits how much power can be in- and output, but multiple connectors can §ounify§r into a single wire, allowing you to combine the transfer over longer ranges. Note however that the §omaximum transfer rate of the wire must not be exceeded, or else the wire will §oburn up§r.
 ie.manual.entry.wiringConnector=§lConnectors§r serve as in- and outputs to the IE Energy-Net. You can place them on capacitors or other RF handlers and they will transfer power through connected wires. HV Relays will still accept wires but can't in- or output, they serve as connection points between wires.
 ie.manual.entry.wiringCapacitor=§lCapacitors§r serve as energy storage units. You can use the hammer to adjust the configuration of each side, with blue designating an input, orange an output and no colour marking preventing any connection at all. Sneak while using the hammer to configure the side opposite of the one you clicked.
 ie.manual.entry.wiringTransformer0=§lTransformers§r allow you to transition between different types of wire. The weakest wire restricts the transfer rate. Note that HV Transformers can step down to LV or MV, so you do not need to chain two transformers.
@@ -549,7 +549,7 @@ ie.manual.entry.breaker2=The Redstone Breaker is similar to a normal breaker swi
 ie.manual.entry.thermoElectric.name=Thermoelectric Generator
 ie.manual.entry.thermoElectric.subtext=Hot and Cold
 ie.manual.entry.thermoElectric0=Thermoelectric Generators are another option of power generation and work without the use of any mechanical parts, instead they use the temperature gradients between two sources.
-ie.manual.entry.thermoElectric1=Placing a hot fluid on one side and a colder fluid on the opposing side generates energy based on the difference between the two temperatures.<br>The following list contains other, non-fluid, blocks, which can be used as sources of temperature.
+ie.manual.entry.thermoElectric1=Placing a hot fluid on one side and a colder fluid on the opposing side generates energy based on the difference between the two temperatures.<br>The following list contains other, non-fluid blocks, which can be used as sources of temperature.
 
 ie.manual.entry.blastfurnace.name=Blast Furnace
 ie.manual.entry.blastfurnace.subtext=Even hotter topic!
