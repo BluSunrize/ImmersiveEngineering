@@ -79,6 +79,7 @@ tile.ImmersiveEngineering.metalDevice2.fluidPipe.name=Fluid Pipe
 tile.ImmersiveEngineering.metalDevice2.fluidPump.name=Fluid Pump
 tile.ImmersiveEngineering.metalDevice2.barrel.name=Metal Barrel
 tile.ImmersiveEngineering.metalDevice2.capacitorCreative.name=Creative Capacitor
+tile.ImmersiveEngineering.metalDevice2.redstoneBreaker.name=Redstone Breaker
 
 tile.ImmersiveEngineering.treatedWood.0.name=Treated Wood Planks
 tile.ImmersiveEngineering.treatedWood.1.name=Treated Wood Planks
@@ -542,8 +543,8 @@ ie.manual.entry.generatorWindmillImproved=The improved Windmill is an upgrade to
 ie.manual.entry.breaker.name=Breaker Switch
 ie.manual.entry.breaker.subtext=Clap on - Clap off
 ie.manual.entry.breaker0=Breaker Switches are simply switches that can stop the flow of power through wires. They can connect two wires of the same type and will only allow power to pass when activated. This can be used to separate power-hungry machinery from the network or hook up an additional set of generators when needed!
-ie.manual.entry.breaker1=These breaker switches will emit a redstone signal when they are switched on; this behaviour can be inverted by clicking the switch with an Engineer's Hammer.
-#When lights are added, these switches have another use ;D
+ie.manual.entry.breaker1=Due to the high risk, these switches will not accept HV wires.<br>They will also emit a redstone signal when they are switched on; this behaviour can be inverted by clicking the switch with an Engineer's Hammer.<br>Additionally they are an excellent way to control your <link;lighting;powered lights;1>!
+ie.manual.entry.breaker2=The Redstone Breaker is similar to a normal breaker switch, but cannot be operated manually. Instead, it will require a redstone signal to break the connection. In return, this device is insulated well enough to allow the connection of HV wires as well!
 
 ie.manual.entry.thermoElectric.name=Thermoelectric Generator
 ie.manual.entry.thermoElectric.subtext=Hot and Cold
