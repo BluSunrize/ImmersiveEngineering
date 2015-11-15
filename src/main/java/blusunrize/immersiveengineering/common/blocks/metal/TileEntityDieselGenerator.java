@@ -230,12 +230,12 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockPart implemen
 	@Override
 	public boolean canFill(ForgeDirection from, Fluid fluid)
 	{
-		return formed && pos==36||pos==38 && DieselHandler.isValidFuel(fluid);
+		return formed && (pos==36||pos==38) && DieselHandler.isValidFuel(fluid);
 	}
 	@Override
 	public boolean canDrain(ForgeDirection from, Fluid fluid)
 	{
-		return formed && pos==36||pos==38;
+		return formed && (pos==36||pos==38);
 	}
 	@Override
 	public FluidTankInfo[] getTankInfo(ForgeDirection from)
