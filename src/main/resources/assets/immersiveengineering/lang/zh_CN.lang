@@ -56,7 +56,7 @@ tile.ImmersiveEngineering.metalMultiblock.assembler.name=装配机
 tile.ImmersiveEngineering.metalMultiblock.bottlingMachine.name=灌装机
 
 tile.ImmersiveEngineering.metalDecoration.fence.name=钢栅栏
-tile.ImmersiveEngineering.metalDecoration.scaffolding.name=钢质脚手架
+tile.ImmersiveEngineering.metalDecoration.scaffolding.name=钢制脚手架
 tile.ImmersiveEngineering.metalDecoration.lantern.name=灯
 tile.ImmersiveEngineering.metalDecoration.structuralArm.name=钢制臂架构
 tile.ImmersiveEngineering.metalDecoration.radiator.name=散热器模块
@@ -66,12 +66,20 @@ tile.ImmersiveEngineering.metalDecoration.lightEngineering.name=轻型工程块
 tile.ImmersiveEngineering.metalDecoration.connectorStructural.name=钢制接线器
 tile.ImmersiveEngineering.metalDecoration.wallMount.name=钢制壁挂支架
 tile.ImmersiveEngineering.metalDecoration.sheetMetal.name=金属板方块
+tile.ImmersiveEngineering.metalDecoration.scaffolding2.name=钢制脚手架
+tile.ImmersiveEngineering.metalDecoration.aluminiumFence.name=铝栅栏
+tile.ImmersiveEngineering.metalDecoration.aluminiumScaffolding.name=铝制脚手架
+tile.ImmersiveEngineering.metalDecoration.aluminiumScaffolding2.name=铝制脚手架
+tile.ImmersiveEngineering.metalDecoration.aluminiumStructuralArm.name=铝制臂架构
 
 tile.ImmersiveEngineering.metalDevice2.breakerSwitch.name=断路刀闸
 tile.ImmersiveEngineering.metalDevice2.electricLantern.name=电灯
-tile.ImmersiveEngineering.metalDevice2.floodLight.name=泛光灯
+tile.ImmersiveEngineering.metalDevice2.floodlight.name=泛光灯
 tile.ImmersiveEngineering.metalDevice2.fluidPipe.name=输液管
 tile.ImmersiveEngineering.metalDevice2.fluidPump.name=液泵
+tile.ImmersiveEngineering.metalDevice2.barrel.name=金属桶
+tile.ImmersiveEngineering.metalDevice2.capacitorCreative.name=创造电容器
+tile.ImmersiveEngineering.metalDevice2.redstoneBreaker.name=红石断路器
 
 tile.ImmersiveEngineering.treatedWood.0.name=防腐木板
 tile.ImmersiveEngineering.treatedWood.1.name=防腐木板
@@ -365,6 +373,7 @@ chat.ImmersiveEngineering.warning.invalidPoint=存在无效连接点
 chat.ImmersiveEngineering.info.averageLoss=两点间平均能量损耗：%1$s%%
 chat.ImmersiveEngineering.info.energyStorage=存储能量：%1$s/%2$s RF
 chat.ImmersiveEngineering.info.tooHot=此容器无法承受该液体的温度！
+chat.ImmersiveEngineering.info.noGasAllowed=此容器无法盛装气体!
 chat.ImmersiveEngineering.info.invertedOn=开启红石信号反转
 chat.ImmersiveEngineering.info.invertedOff=关闭红石信号反转
 
@@ -498,7 +507,7 @@ ie.manual.entry.treatedwoodPost0=你的线缆接线器需要有一个依附点,�
 ie.manual.entry.treatedwoodPost1=不过使用工程师锤子你也可以在木杆的顶端的侧面位置加装另一个<link;wiring;§o§n变压器§r;3>,这使得它不怎么显眼.<br>在木杆侧面支架下方放置方块会使支架改变朝向.
 
 ie.manual.entry.barrel.name=木桶
-ie.manual.entry.barrel.subtext=并不会到处乱滚
+ie.manual.entry.barrel.subtext=拒绝滚动
 ie.manual.entry.barrel0=木桶是一种简单的储液容器。一个木桶可以存储12桶液体，但材质毕竟是木质，所以木桶并不能存储高温液体。<br>用锤子右击桶的顶部或底部可以在输入，输出和不连接三种模式中切换。
 
 ie.manual.entry.jerrycan.name=油罐
@@ -512,7 +521,7 @@ ie.manual.entry.graphite1=HOP石墨广泛用于制作<link;arcfurnace;§o§n电�
 
 ie.manual.entry.wiring.name=基础布线
 ie.manual.entry.wiring.subtext=滋滋滋!
-ie.manual.entry.wiring0=IE的能源网络主要有四个重要设备:§l电容器§r用于储存能量,§l接线器§r用于网络内能源的输入输出,§l继电器§r将线缆连接在一起,§l变压器§r用于不同线缆间的切换.<br>在低压中压能源网里(铜与琥珀金电线),接线器与继电器是同种方块,但高压的接线器只能用一种线缆.
+ie.manual.entry.wiring0=IE的能源网络主要有四个重要设备:§l电容器§r用于储存能量,§l接线器§r用于网络内能源的输入输出,§l继电器§r将线缆连接在一起,§l变压器§r用于不同线缆间的切换 <br>在低压中压能源网里(铜与琥珀金电线),接线器与继电器是同种方块,但高压的接线器只能用一种线缆.
 ie.manual.entry.wiring1=要连接两个方块,只需手持线圈右击一个方块,然后使用相同的线圈右击另一个.两点间总传输速率由最差的线缆决定.
 ie.manual.entry.wiring2=注意到这些方块还有一定的限制:接线器跟继电器只能与已经与其连接的同种导线相连接,而变压器只能连接两根不同种类的导线.
 ie.manual.entry.wiring3=并且线缆只能与之电压相匹配的方块相连.
@@ -534,8 +543,8 @@ ie.manual.entry.generatorWindmillImproved=改良风车是风车的升级版.虽�
 ie.manual.entry.breaker.name=断路刀闸
 ie.manual.entry.breaker.subtext=扳开-扣合
 ie.manual.entry.breaker0=断路刀闸是能够让线缆中的能量流动停止的一种简单闸门. 它们能够连接两种相同的线缆并仅有在激活时让能量通过. 它能够被用于将高能耗机器从电网中分离或者在需要时连接附加发电机组!
-ie.manual.entry.breaker1=断路刀闸在开启状态下会发射红石信号；你可以使用工程师锤子来反转它的输出。
-#When lights are added, these switches have another use ;D 
+ie.manual.entry.breaker1=断路刀闸在开启状态下会发射红石信号；你可以使用工程师锤子来反转它的输出.<br>同时它们还是用来控制 <link;lighting;§n电灯§r;1> 的好方法!
+ie.manual.entry.breaker2=红石断路器功能同断路刀闸类似,但是无法手动操控.取而代之,它需要一个红石信号来断开连接.而作为回报,它良好的绝缘性使其能够连接高压线缆!
 
 ie.manual.entry.thermoElectric.name=热传导发电机
 ie.manual.entry.thermoElectric.subtext=冷和热
@@ -566,6 +575,10 @@ ie.manual.entry.tanksilo0=你可以使用金属板储罐和筒仓来储存大量
 ie.manual.entry.tanksilo1=筒仓可以储存大量同种物品，极其适合用于储存种子，炉渣和圆石。一个筒仓可储存41472个物品，相当于24个箱子的容积。
 ie.manual.entry.tanksilo2=你必须从筒仓顶部输入物品，并从底部提取物品。若在底部向筒仓提供红石信号，它将会自动输出。
 ie.manual.entry.tanksilo3=在输出方块旁放置一个比较器会让它输出一个强度正比于储量的红石信号.若将比较器放置在6层筒仓或4层储罐的中间一层会让其发出一个强度与该层储量成正比的红石信号.例如,一个被放置在了储罐的第二层的比较器在储量到达1/4之前不会发出任何信号,当该层储量已满，也就是储量到达1/2时会输出强度15的红石信号.
+
+ie.manual.entry.metalbarrel.name=金属桶
+ie.manual.entry.metalbarrel.subtext=拒绝滚动
+ie.manual.entry.metalbarrel0=金属桶功能同<link;barrel;§o§n木桶§r;>完全一样.它们的储量相同,输入输出的配置方式也相同,但和木桶不同的是,金属桶能够存储气体和高温液体. 
 
 ie.manual.entry.assembler.name=装配机
 ie.manual.entry.assembler.subtext=需要一些装配
@@ -654,17 +667,18 @@ ie.manual.entry.revolver4=加强电子管能够在弹药上附加电流.电击�
 
 ie.manual.entry.bullets.name=左轮弹药
 ie.manual.entry.bullets.subtext=
-ie.manual.entry.bullets0=子弹需要工程师装配台以及特定的<link;blueprints;§o§n工程师§o§n蓝图§r>才能制作.你自己就可以绘制一般军火的制造蓝图,但一些高级军火的蓝图需要你从他人手中购买才能得到.
+ie.manual.entry.bullets0=左轮手枪弹药需要工程师装配台以及特定的<link;blueprints;§o§n工程师§o§n蓝图§r>才能制作.你自己就可以绘制一般军火的制造蓝图,但一些高级军火的蓝图需要你从他人手中购买才能得到.
 ie.manual.entry.bullets1=§l卡苏尔弹§r可以通过使用"普通子弹"蓝图制作.它们是简易的铅弹,能够造成中等的伤害.
 ie.manual.entry.bullets2=§l穿甲弹§r可以通过使用同种蓝图制作.它们能够造成同等伤害但却能通过高动能穿透装甲.
 ie.manual.entry.bullets3=§l鹿弹§r可以通过使用同种蓝图制作.内含大量小型弹丸,弹道呈圆锥状.短距离效果拔群.
 ie.manual.entry.bullets4=§l高爆弹§r可以通过使用"普通子弹"蓝图制作.它们在击中后会造成小型爆炸,对生物和地形造成伤害.
 ie.manual.entry.bullets5=§l银弹§r是由铅芯被银所包裹而制成,会对...狼人十分有效?!
 ie.manual.entry.bullets6=§l龙息弹§r可以通过使用"特种子弹"蓝图制作.类似鹿弹,短距离十分有效,不过内部充满的是易燃金属粉末,产生一束短距离火舌.
-ie.manual.entry.bullets7=§l药剂弹头§r同样通过使用"特种子弹"蓝图制作.它们能够通过和对应药剂一起合成来装填任何药剂并且在弹药击中时生效.普通药急需要精准命中,而溅射药剂会有范围效果<config;b;etfuturumBullets; and Lingering Potions will create a temporary, lingering potion cloud.;.>
+ie.manual.entry.bullets7=§l药剂弹头§r同样通过使用"特种子弹"蓝图制作.它们能够通过和对应药剂一起合成来装填任何药剂并且在弹药击中时生效.普通药剂需要精准命中,而溅射药剂会有范围效果<config;b;etfuturumBullets; and Lingering Potions will create a temporary, lingering potion cloud.;.>
 ie.manual.entry.bulletsBotania0=§l叶绿弹§r通过使用"特种子弹"蓝图和魔力金属"泰拉钢"制作,这让它们能够自动寻找并跟踪目标.
 ie.manual.entry.bulletsBotania1=§l狼群弹§r集束子弹,发射时不会制导,击中目标时会分裂出六枚自动制导的弹头.
-叶绿弹:§r自动寻找并跟踪目标.<br>§l狼群弹:§r集束子弹,发射时不会制导,击中目标时会分裂出六枚自动制导的弹头.;>
+#ie.manual.entry.bullets1=These are common types of ammunition, created with simple, selfmade blueprints:<br><br>§lCasull:§r Simple lead projectile, capable of inflicting medium damage.<br>§lArmor-Piercing:§r Dense metal projectile, penetrates the armor by sheer kinetic force.<br>§lBuckshot:§r Collection of small projectiles, spreading in a cone shape. Effective at short range.<br>§lHigh-Explosive:§r Creates small explosion on impact.<br>§lSilver:§r Lead core in silver, effective against...werewolves?!
+#ie.manual.entry.bullets2=These are more intricate types of ammunition, created with unique blueprints that cannot be crafted, only found or bought.<br><br>§lDragon's Breath:§r Flammable metal dust, creates a short-ranged inferno.<config;b;botaniaBullets;<br>§lHoming:§r Will home in on the closest target.<br>§lWolfpack:§r Unguided cluster projectile, splits into 6 small, homing, shots.;><br>§lPhial:§r Can be crafted with any potion to create a shot that inflicts the potion effect.
 
 
 ie.manual.entry.shader.name=皮肤
@@ -687,6 +701,10 @@ ie.manual.entry.minerals.subtext=矿石相关
 ie.manual.entry.minerals0=在你的世界中发现的矿床分布对你来说并不新鲜.而如今我们一直忽略的是矿脉,其中混合着多种矿石的存在.由于它们细长的分布,普通的矿工难以发现它们,但一种<link;excavator;§o§n特殊机器§r>或许能够提供一些帮助.
 ie.manual.entry.minerals1=为了寻找并确定分布在世界中的矿产,你会想合成一个岩芯钻井.这台机器在通电时能够钻入区块并确定分布矿物的种类.钻井会消耗<config;i;coredrill_consumption>RF/t并需要<config;i;coredrill_time>ticks来完整的获取与检测样本.
 ie.manual.entry.minerals2=下面将会列出所有矿脉的种类以及在其中能够找到的矿石种类.
+ie.manual.entry.minerals3=%1$s<br>它包含 %2$s.
+ie.manual.entry.mineralsDimValid=§l%1$s§r 是一种会在 %2$s 生成的矿脉.
+ie.manual.entry.mineralsDimInvalid=§l%1$s§r 是一种会在任何地方除了 %2$s 生成的矿脉.
+ie.manual.entry.mineralsDimAny=§l%1$s§r 是一种会在任何世界生成的矿脉.
 
 ie.manual.entry.arcfurnace.name=电弧炉
 ie.manual.entry.arcfurnace.subtext=不是反应堆 
