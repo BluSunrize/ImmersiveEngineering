@@ -1,3 +1,28 @@
+#####Version 0.6.2
+- added wood-covered scaffolding
+- added aluminium decoration blocks (fence, scaffold)
+- added a creative capacitor (thanks malte0811)
+- added the Vault-Tec shader
+- added the redstone controlled breaker switch
+- added dimension black+whitelists to the MineralMixes. Not used by IE but accessible for Minetweaker
+- reworked recycling on the arc furnace, uses recipe profiling, multithreading and fancy thing (cheers, AtomicBlom)
+- reworked the Excavator's Minetweaker integration. Dependent on MT 3.0.10b or later
+- changed hemp->string recipe to be only a third as effective
+- changed the manual on minerals, exchanged tables for proper pages for each mineral
+- fixed dupe bug
+- fixed NPE in eventhandler (thanks cobra)
+- fixed wire offset on floodlight and lantern (thanks cobra)
+- fixed ghost arms on wooden pole (thanks cobra)
+- fixed Raytracing (thanks malte0811 & cobra)
+- fixed broken Miló shader
+- fixed light-opacity for some solid blocks
+- fixed use+recipe keybinds in the NEI handler
+- fixed table drawing in the manual, closes #646
+- fixed getEnergyStored on machines (thanks cobra)
+- fixed fluid mechanics on machines (thanks cobra)
+- fixed lighting on particles
+
+
 #####Version 0.6.1 - BUILT
 - added sneak-hammering to change opposite side of a pump (thanks cobra)
 - added config to disable GUI rescaling in the manual

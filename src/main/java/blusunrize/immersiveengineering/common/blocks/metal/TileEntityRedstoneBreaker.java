@@ -14,6 +14,12 @@ public class TileEntityRedstoneBreaker extends TileEntityBreakerSwitch
 	}
 	
 	@Override
+	public boolean allowEnergyToPass(Connection con)
+	{
+		return !worldObj.isBlockIndirectlyGettingPowered(xCoord,yCoord,zCoord);
+	}
+	
+	@Override
 	public Vec3 getRaytraceOffset(IImmersiveConnectable link)
 	{
 		if(sideAttached==0)

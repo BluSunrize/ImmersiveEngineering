@@ -805,12 +805,16 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 	public void onNeighborBlockChange(World world, int x, int y, int z, Block neighbor)
 	{
 		TileEntity tile = world.getTileEntity(x, y, z);
-		if(tile instanceof TileEntityRedstoneBreaker)
+		if(!world.isRemote && tile instanceof TileEntityRedstoneBreaker)
 		{
+			boolean RS = !world.isBlockIndirectlyGettingPowered(x,y,z);
 			boolean b = ((TileEntityRedstoneBreaker)tile).active;
-			((TileEntityRedstoneBreaker)tile).active = world.isBlockIndirectlyGettingPowered(x,y,z);
-			if(b!=((TileEntityRedstoneBreaker)tile).active)
+			((TileEntityRedstoneBreaker)tile).active = RS;
+			if(b!=RS)
+			{
+				tile.markDirty();
 				ImmersiveNetHandler.INSTANCE.resetCachedIndirectConnections();
+			}
 		}
 	}
 
@@ -907,7 +911,7 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 	public int isProvidingWeakPower(IBlockAccess world, int x, int y, int z, int side)
 	{
 		TileEntity te = world.getTileEntity(x, y, z);
-		if(te instanceof TileEntityBreakerSwitch)
+		if(te instanceof TileEntityBreakerSwitch && !(te instanceof TileEntityRedstoneBreaker))
 		{
 			TileEntityBreakerSwitch breaker = (TileEntityBreakerSwitch)te;
 			boolean power = (breaker.active&&!breaker.inverted) || (!breaker.active&&breaker.inverted);
@@ -919,7 +923,7 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 	public int isProvidingStrongPower(IBlockAccess world, int x, int y, int z, int side)
 	{
 		TileEntity te = world.getTileEntity(x, y, z);
-		if(te instanceof TileEntityBreakerSwitch)
+		if(te instanceof TileEntityBreakerSwitch&& !(te instanceof TileEntityRedstoneBreaker))
 		{
 			TileEntityBreakerSwitch breaker = (TileEntityBreakerSwitch)te;
 			int powerSide = breaker.sideAttached>0?breaker.sideAttached-1:breaker.facing;
@@ -936,7 +940,7 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 	@Override
 	public boolean canConnectRedstone(IBlockAccess world, int x, int y, int z, int side)
 	{
-		if(world.getBlockMetadata(x, y, z)==META_breakerSwitch)
+		if(world.getBlockMetadata(x, y, z)==META_breakerSwitch || world.getBlockMetadata(x, y, z)==META_redstoneBreaker)
 			return super.canConnectRedstone(world, x, y, z, side);
 		return false;
 	}
