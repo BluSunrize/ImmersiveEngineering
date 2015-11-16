@@ -1,4 +1,4 @@
-#####Version 0.6.2
+#####Version 0.6.2 - BUILT
 - added wood-covered scaffolding
 - added aluminium decoration blocks (fence, scaffold)
 - added a creative capacitor (thanks malte0811)
