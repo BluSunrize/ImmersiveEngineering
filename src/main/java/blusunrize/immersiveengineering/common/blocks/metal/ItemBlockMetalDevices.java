@@ -2,6 +2,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import java.util.List;
 
+import blusunrize.immersiveengineering.api.IPostBlock;
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
@@ -14,7 +15,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
-import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenPost;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 
 public class ItemBlockMetalDevices extends ItemBlockIEBase
@@ -56,8 +56,10 @@ public class ItemBlockMetalDevices extends ItemBlockIEBase
 		int f = playerViewQuarter==0 ? 2:playerViewQuarter==1 ? 5:playerViewQuarter==2 ? 3: 4;
 		if(meta==BlockMetalDevices.META_transformer||meta==BlockMetalDevices.META_transformerHV)
 		{
-			TileEntity te = world.getTileEntity(x+(side==4?1: side==5?-1: 0), y, z+(side==2?1: side==3?-1: 0));
-			if((meta!=BlockMetalDevices.META_transformer||!(te instanceof TileEntityWoodenPost)||((TileEntityWoodenPost) te).type<=0)&&!world.isAirBlock(x, y+1, z))
+			int postX = x+(side==4?1: side==5?-1: 0);
+			int postZ = z+(side==2?1: side==3?-1: 0);
+			Block blockPost = world.getBlock(postX, y, postZ);
+			if((meta!=BlockMetalDevices.META_transformer||!(blockPost instanceof IPostBlock && ((IPostBlock) blockPost).canConnectTransformer(world, postX, y, postZ)))&&!world.isAirBlock(x, y+1, z))
 				return false;
 		}
 		if(meta==BlockMetalDevices.META_sampleDrill && (!world.isAirBlock(x,y+1,z)||!world.isAirBlock(x,y+2,z)))
@@ -114,8 +116,10 @@ public class ItemBlockMetalDevices extends ItemBlockIEBase
 			((TileEntityConnectorLV)tileEntity).facing = ForgeDirection.getOrientation(side).getOpposite().ordinal();
 		else if(tileEntity instanceof TileEntityTransformer)
 		{
-			TileEntity tileEntityWoodenPost = world.getTileEntity(x+(side==4?1: side==5?-1: 0), y, z+(side==2?1: side==3?-1: 0));
-			if(meta==4 && tileEntityWoodenPost instanceof TileEntityWoodenPost && ((TileEntityWoodenPost)tileEntityWoodenPost).type>0 )
+			int postX = x+(side==4?1: side==5?-1: 0);
+			int postZ = z+(side==2?1: side==3?-1: 0);
+			Block blockPost = world.getBlock(postX, y, postZ);
+			if(meta==4 && blockPost instanceof IPostBlock && ((IPostBlock)blockPost).canConnectTransformer(world, postX, y, postZ) )
 			{
 				((TileEntityTransformer) tileEntity).postAttached = side;
 				((TileEntityTransformer)tileEntity).facing=side;

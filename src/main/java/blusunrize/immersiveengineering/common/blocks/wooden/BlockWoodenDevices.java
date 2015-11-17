@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.common.blocks.wooden;
 import java.util.ArrayList;
 import java.util.List;
 
+import blusunrize.immersiveengineering.api.IPostBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -33,7 +34,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @Optional.Interface(iface = "blusunrize.aquatweaks.api.IAquaConnectable", modid = "AquaTweaks")
-public class BlockWoodenDevices extends BlockIEBase implements blusunrize.aquatweaks.api.IAquaConnectable
+public class BlockWoodenDevices extends BlockIEBase implements IPostBlock, blusunrize.aquatweaks.api.IAquaConnectable
 {
 	IIcon[] iconBarrel = new IIcon[3];
 
@@ -497,6 +498,13 @@ public class BlockWoodenDevices extends BlockIEBase implements blusunrize.aquatw
 			return new TileEntityWoodenBarrel();
 		}
 		return null;
+	}
+
+	@Override
+	public boolean canConnectTransformer(IBlockAccess world, int x, int y, int z)
+	{
+		TileEntity tileEntity = world.getTileEntity(x, y, z);
+		return tileEntity instanceof TileEntityWoodenPost && ((TileEntityWoodenPost) tileEntity).type > 0;
 	}
 
 	@Optional.Method(modid = "AquaTweaks")
