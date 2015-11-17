@@ -39,12 +39,12 @@ public class ItemShader extends ItemIEBase implements IShaderItem
 		addShader("Sunstrike", 5, new int[]{115,115,115,255}, new int[]{205,105,0,255}, new int[]{215,58,0,185},new int[]{215,58,0,185});
 		addShader("Locus", 2, new int[]{10,10,10,255}, new int[]{74,74,74,255}, new int[]{132,150,76,255},new int[]{74,74,74,255});
 		addShader("Felix", 1, new int[]{10,10,10,255}, new int[]{74,74,74,255}, new int[]{240,136,3,255},new int[]{74,74,74,255});
-		addShader("Sharkface", 2, new int[]{10,10,10,255}, new int[]{74,74,74,255}, new int[]{145,0,8,255},new int[]{74,74,74,255}, "immersiveengineering:shaders/revolver_shark",-1);
-		addShader("Dragon's Breath", 1, new int[]{25,25,25,255}, new int[]{51,63,43,255}, new int[]{138,138,138,255},new int[]{138,138,138,255}, "immersiveengineering:shaders/revolver_shark",-1);
+		addShader("Sharkface", 2, new int[]{10,10,10,255}, new int[]{74,74,74,255}, new int[]{145,0,8,255},new int[]{74,74,74,255}, "shark",-1);
+		addShader("Dragon's Breath", 1, new int[]{25,25,25,255}, new int[]{51,63,43,255}, new int[]{138,138,138,255},new int[]{138,138,138,255}, "shark",-1);
 		addShader("Falconmoon", 3, new int[]{103,99,107,255}, new int[]{244,238,235,255}, new int[]{45,45,45,255},new int[]{244,238,235,255});
 		addShader("Magnum", 1, new int[]{86,56,44,255},new int[]{220,220,220,255},new int[]{160,160,160,255},new int[]{220,220,220,255});
 		addShader("Vault-Tec", 0, new int[]{86,56,44,255},new int[]{26,71,133,255},new int[]{192,170,80,255},new int[]{170,170,170,255});
-		addShader("Sponsor", 0, new int[]{25,25,25,255}, new int[]{247,27,36,255}, new int[]{255,255,255,255},new int[]{170,170,170,255}, "immersiveengineering:shaders/revolver_sponsor",-1);
+		addShader("Sponsor", 0, new int[]{25,25,25,255}, new int[]{247,27,36,255}, new int[]{255,255,255,255},new int[]{170,170,170,255}, "sponsor",-1);
 		
 		addShader("StormFlower", 1, new int[]{39,52,39,255},new int[]{40,111,48,255},new int[]{75,146,85,255},new int[]{40,111,48,255});
 		addShader("Mil\u00f3", 2, new int[]{59,27,16,255},new int[]{103,0,4,255},new int[]{206,126,16,255},new int[]{103,0,4,255});
@@ -74,6 +74,9 @@ public class ItemShader extends ItemIEBase implements IShaderItem
 	{
 		ShaderCaseRevolver revolver = IEApi.registerShader_Revolver(name, overlayType, colour0, colour1, colour2, colour3, revolver_additionalTexture);
 		revolver.glowLayer = revolver_glow;
+		
+		IEApi.registerShader_Chemthrower(name, overlayType, colour0, colour1, colour2, true,false, revolver_additionalTexture);
+		
 		//		NBTTagCompound tag = new NBTTagCompound();
 		//		tag.setString("shader_name", name);
 		//		tag.setInteger("shader_overlay", overlayType);

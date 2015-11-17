@@ -248,6 +248,8 @@ item.ImmersiveEngineering.shader.name=Shader
 
 item.ImmersiveEngineering.jerrycan.name=Jerrycan
 
+item.ImmersiveEngineering.chemthrower.name=Chemical Thrower
+
 
 #CREATIVE
 itemGroup.ImmersiveEngineering=Immersive Engineering

@@ -134,9 +134,9 @@ public class ShaderCaseRevolver extends ShaderCase
 			i_revolverBase = ir.registerIcon("immersiveengineering:shaders/revolver_0");
 			i_revolverOverlay = ir.registerIcon("immersiveengineering:shaders/revolver_1_"+this.overlayType);
 			i_revolverGrip = ir.registerIcon("immersiveengineering:shaders/revolver_grip");
-			i_revolverUncoloured = ir.registerIcon("immersiveengineering:shaders/revolver_noColour");
+			i_revolverUncoloured = ir.registerIcon("immersiveengineering:shaders/revolver_uncoloured");
 			if(this.additionalTexture!=null)
-				i_revolverAdditional = ir.registerIcon(additionalTexture);
+				i_revolverAdditional = ir.registerIcon("immersiveengineering:shaders/revolver_"+additionalTexture);
 		}
 	}
 

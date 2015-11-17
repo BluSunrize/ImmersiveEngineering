@@ -221,9 +221,10 @@ public class ClientEventHandler
 		{
 			EntityPlayer player = event.player;
 			ItemStack stack = player.getCurrentEquippedItem();
-			if(stack!=null && stack.getItem() instanceof ItemDrill && (player!=ClientUtils.mc().renderViewEntity||ClientUtils.mc().gameSettings.thirdPersonView!=0))
+			boolean twohanded = stack!=null && (stack.getItem() instanceof ItemDrill);
+			if(twohanded && (player!=ClientUtils.mc().renderViewEntity||ClientUtils.mc().gameSettings.thirdPersonView!=0))
 			{
-				if (player.getItemInUseCount() <= 0)
+				if(player.getItemInUseCount() <= 0)
 				{
 					player.clearItemInUse();
 					player.setItemInUse(stack, 2147483647);

@@ -7,6 +7,7 @@ import java.util.List;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
+import blusunrize.immersiveengineering.api.shader.ShaderCaseChemthrower;
 import blusunrize.immersiveengineering.api.shader.ShaderCaseRevolver;
 
 import com.google.common.collect.ArrayListMultimap;
@@ -97,6 +98,14 @@ public class IEApi
 		if(!shaderList.contains(name))
 			shaderList.add(name);
 		ShaderCaseRevolver shader = new ShaderCaseRevolver(overlayType, colourGrip, colourPrimary, colourSecondary, colourBlade, additionalTexture);
+		shaderCaseRegistry.put(name, shader);
+		return shader;
+	}
+	public static ShaderCaseChemthrower registerShader_Chemthrower(String name, int overlayType, int[] colourGrip, int[] colourPrimary, int[] colourSecondary, boolean cageOnBase, boolean tanksUncoloured, String additionalTexture)
+	{
+		if(!shaderList.contains(name))
+			shaderList.add(name);
+		ShaderCaseChemthrower shader = new ShaderCaseChemthrower(overlayType, colourGrip, colourPrimary, colourSecondary, cageOnBase, tanksUncoloured, additionalTexture);
 		shaderCaseRegistry.put(name, shader);
 		return shader;
 	}
