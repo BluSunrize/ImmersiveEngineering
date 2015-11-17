@@ -524,7 +524,7 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockPart implemen
 	{
 		if(resource==null)
 			return 0;
-		if(master()!=null)
+		if(master()!=null && canFill(from, resource.getFluid()))
 			return master().fill(from, resource, doFill);
 		int fill = tank.fill(resource, doFill);
 		if(fill>0)
@@ -547,7 +547,7 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockPart implemen
 	@Override
 	public boolean canFill(ForgeDirection from, Fluid fluid)
 	{
-		return formed && pos==4 && from==ForgeDirection.getOrientation(facing);
+		return formed && pos==4 && from==ForgeDirection.getOrientation(facing).getOpposite();
 	}
 	@Override
 	public boolean canDrain(ForgeDirection from, Fluid fluid)
