@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import java.util.ArrayList;
 import java.util.List;
 
+import blusunrize.immersiveengineering.api.IPostBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -31,7 +32,6 @@ import blusunrize.immersiveengineering.client.render.BlockRenderMetalDevices;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
-import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenPost;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -589,7 +589,10 @@ public class BlockMetalDevices extends BlockIEBase implements blusunrize.aquatwe
 		if(te instanceof TileEntityTransformer)
 		{
 			TileEntityTransformer transf = (TileEntityTransformer)te;
-			if(transf.postAttached>0 && !(world.getTileEntity(x+(transf.postAttached==4?1: transf.postAttached==5?-1: 0), y, z+(transf.postAttached==2?1: transf.postAttached==3?-1: 0)) instanceof TileEntityWoodenPost ))
+			int postX = x+(transf.postAttached==4?1: transf.postAttached==5?-1: 0);
+			int postZ = z+(transf.postAttached==2?1: transf.postAttached==3?-1: 0);
+			Block blockPost = world.getBlock(postX, y, postZ);
+			if(transf.postAttached>0 && !(blockPost instanceof IPostBlock && ((IPostBlock)blockPost).canConnectTransformer(world, postX, y, postZ)))
 			{
 				this.dropBlockAsItem(world, x, y, z, new ItemStack(this,1,world.getBlockMetadata(x, y, z)));
 				world.setBlockToAir(x, y, z);
