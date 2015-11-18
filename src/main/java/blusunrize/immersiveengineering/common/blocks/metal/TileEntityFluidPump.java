@@ -288,14 +288,9 @@ public class TileEntityFluidPump extends TileEntityIEBase implements IFluidHandl
 	@Override
 	public FluidTankInfo[] getTankInfo(ForgeDirection from)
 	{
-		if(dummy)
-		{
-			TileEntity te = worldObj.getTileEntity(xCoord, yCoord-1, zCoord);
-			if(te instanceof TileEntityFluidPump)	
-				return ((TileEntityFluidPump)te).getTankInfo(from);
-			return new FluidTankInfo[0];
-		}
-		return new FluidTankInfo[]{tank.getInfo()};
+		if(!dummy && from!=ForgeDirection.UNKNOWN && sideConfig[from.ordinal()]!=-1)
+			return new FluidTankInfo[]{tank.getInfo()};
+		return new FluidTankInfo[0];
 	}
 
 	@Override

@@ -692,9 +692,15 @@ public class TileEntityAssembler extends TileEntityMultiblockPart implements ISi
 	@Override
 	public FluidTankInfo[] getTankInfo(ForgeDirection from)
 	{
-		if(this.master()!=null)
-			return this.master().getTankInfo(from);
-		return new FluidTankInfo[]{tanks[0].getInfo(),tanks[1].getInfo(),tanks[2].getInfo()};
+		if(pos==1 && from==ForgeDirection.getOrientation(facing))
+		{
+			TileEntityAssembler master = master();
+			if(master!=null)
+				return new FluidTankInfo[]{master.tanks[0].getInfo(), master.tanks[1].getInfo(), master.tanks[2].getInfo()};
+			else
+				return new FluidTankInfo[]{tanks[0].getInfo(),tanks[1].getInfo(),tanks[2].getInfo()};
+		}
+		return new FluidTankInfo[0];
 	}
 
 	public static class CrafterPatternInventory implements IInventory

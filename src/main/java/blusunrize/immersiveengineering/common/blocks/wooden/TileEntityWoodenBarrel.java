@@ -180,6 +180,8 @@ public class TileEntityWoodenBarrel extends TileEntityIEBase implements IFluidHa
 	@Override
 	public FluidTankInfo[] getTankInfo(ForgeDirection from)
 	{
-		return new FluidTankInfo[]{tank.getInfo()};
+		if(from!=ForgeDirection.UNKNOWN && from.ordinal()<2 && sideConfig[from.ordinal()]!=-1)
+			return new FluidTankInfo[]{tank.getInfo()};
+		return new FluidTankInfo[0];
 	}
 }

@@ -557,8 +557,10 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockPart implemen
 	@Override
 	public FluidTankInfo[] getTankInfo(ForgeDirection from)
 	{
-		if(this.master()!=null)
-			return this.master().getTankInfo(from);
-		return new FluidTankInfo[]{tank.getInfo()};
+		if(pos==4 && from==ForgeDirection.getOrientation(facing).getOpposite())
+		{
+			return new FluidTankInfo[]{(master()!=null)?master().tank.getInfo():tank.getInfo()};
+		}
+		return new FluidTankInfo[0];
 	}
 }

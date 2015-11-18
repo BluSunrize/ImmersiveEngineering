@@ -240,11 +240,9 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockPart implemen
 	@Override
 	public FluidTankInfo[] getTankInfo(ForgeDirection from)
 	{
-		if(!formed)
-			return new FluidTankInfo[]{};
-		if(master()!=null)
-			return master().getTankInfo(from);
-		return new FluidTankInfo[]{tank.getInfo()};
+		if((pos==36 && facing==from.getRotation(ForgeDirection.UP).ordinal()) || (pos==38 && facing==from.getRotation(ForgeDirection.DOWN).ordinal()))
+			return new FluidTankInfo[]{(master()!=null)? master().tank.getInfo(): tank.getInfo()};
+		return new FluidTankInfo[0];
 	}
 
 
