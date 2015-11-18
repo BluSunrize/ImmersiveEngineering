@@ -14,10 +14,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fluids.*;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
@@ -76,7 +73,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidHandl
 								TileEntity te2 = world.getTileEntity(next.posX+fd.offsetX,next.posY+fd.offsetY,next.posZ+fd.offsetZ);
 								if(te2 instanceof TileEntityFluidPipe)
 									openList.add(new ChunkCoordinates(next.posX+fd.offsetX,next.posY+fd.offsetY,next.posZ+fd.offsetZ));
-								else if(te2 instanceof IFluidHandler)
+								else if(te2 instanceof IFluidHandler && ((IFluidHandler) te2).getTankInfo(fd.getOpposite()).length>0)
 								{
 									IFluidHandler handler = (IFluidHandler)te2;
 									fluidHandlers.add(new DirectionalFluidOutput(handler, fd));
@@ -221,7 +218,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidHandl
 	@Override
 	public FluidTankInfo[] getTankInfo(ForgeDirection from)
 	{
-		return new FluidTankInfo[0];
+		return new FluidTankInfo[]{new FluidTank(1000).getInfo()};
 	}
 
 	public static class DirectionalFluidOutput
@@ -243,7 +240,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidHandl
 		{
 			TileEntity con = worldObj.getTileEntity(xCoord+(i==4?-1: i==5?1: 0),yCoord+(i==0?-1: i==1?1: 0),zCoord+(i==2?-1: i==3?1: 0));
 			connections <<= 1;
-			if(sideConfig[i]==0 && con instanceof IFluidHandler)
+			if(sideConfig[i]==0 && con instanceof IFluidHandler && ((IFluidHandler) con).getTankInfo(ForgeDirection.getOrientation(i).getOpposite()).length>0)
 				connections |= 1;
 		}
 		return connections;
@@ -255,7 +252,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidHandl
 		{
 			TileEntity con = worldObj.getTileEntity(xCoord+(i==4?-1: i==5?1: 0),yCoord+(i==0?-1: i==1?1: 0),zCoord+(i==2?-1: i==3?1: 0));
 			connections <<= 1;
-			if(con instanceof IFluidHandler)
+			if(con instanceof IFluidHandler && ((IFluidHandler) con).getTankInfo(ForgeDirection.getOrientation(i).getOpposite()).length>0)
 				connections |= 1;
 		}
 		return connections;

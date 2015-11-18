@@ -334,11 +334,21 @@ public class TileEntityRefinery extends TileEntityMultiblockPart implements IFlu
 	@Override
 	public FluidTankInfo[] getTankInfo(ForgeDirection from)
 	{
-		if(!formed)
-			return new FluidTankInfo[]{};
-		if(master()!=null)
-			return master().getTankInfo(from);
-		return new FluidTankInfo[]{tank0.getInfo(),tank1.getInfo(),tank2.getInfo()};
+		if(from.ordinal()<=1)
+			return new FluidTankInfo[0];
+		switch(pos)
+		{
+			case 2:
+				return new FluidTankInfo[]{(master()!=null)?master().tank2.getInfo():tank2.getInfo()};
+			case 15:
+			case 19:
+				TileEntityRefinery master = master();
+				if(master!=null)
+					return new FluidTankInfo[]{master.tank0.getInfo(), master.tank1.getInfo()};
+				return new FluidTankInfo[]{tank0.getInfo(), tank1.getInfo()};
+			default:
+				return new FluidTankInfo[0];
+		}
 	}
 
 	@Override

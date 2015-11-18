@@ -345,11 +345,9 @@ public class TileEntityFermenter extends TileEntityMultiblockPart implements IFl
 	@Override
 	public FluidTankInfo[] getTankInfo(ForgeDirection from)
 	{
-		if(!formed)
-			return new FluidTankInfo[]{};
-		if(master()!=null)
-			return master().getTankInfo(from);
-		return new FluidTankInfo[]{tank.getInfo()};
+		if((pos==1||pos==9||pos==11||pos==19) && from.ordinal()>1)
+			return new FluidTankInfo[]{(master()!=null)?master().tank.getInfo():tank.getInfo()};
+		return new FluidTankInfo[0];
 	}
 
 
