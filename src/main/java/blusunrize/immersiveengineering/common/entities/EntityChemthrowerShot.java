@@ -81,7 +81,8 @@ public class EntityChemthrowerShot extends Entity
 
 	public void setFluidSynced()
 	{
-		this.dataWatcher.updateObject(dataMarker_fluid, Integer.valueOf(FluidRegistry.getFluidID(this.getFluid())));
+		if(this.getFluid()!=null)
+			this.dataWatcher.updateObject(dataMarker_fluid, Integer.valueOf(FluidRegistry.getFluidID(this.getFluid())));
 	}
 	public Fluid getFluidSynced()
 	{
@@ -269,11 +270,11 @@ public class EntityChemthrowerShot extends Entity
 				this.motionX *= (double)movementDecay;
 				this.motionY *= (double)movementDecay;
 				this.motionZ *= (double)movementDecay;
-				this.motionY -= (double)gravity;
+				this.motionY -= (double)gravity*(getFluid().getDensity()<0?-1:1);
 
 				if(ticksExisted%4==0)
 				{
-					this.worldObj.spawnParticle("smoke", this.posX, this.posY, this.posZ, 0.0D, 0.0D, 0.0D);
+//					this.worldObj.spawnParticle("smoke", this.posX, this.posY, this.posZ, 0.0D, 0.0D, 0.0D);
 				}
 				this.setPosition(this.posX, this.posY, this.posZ);
 			}
@@ -293,6 +294,9 @@ public class EntityChemthrowerShot extends Entity
 					thrower = shooter.getCurrentEquippedItem();
 				effect.apply((EntityLivingBase)mop.entityHit, shooter, thrower, fluid);
 			}
+			
+			if(this.isBurning())
+				mop.entityHit.setFire(this.fire);
 		}
 	}
 

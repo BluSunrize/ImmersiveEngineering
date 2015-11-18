@@ -10,6 +10,8 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.gen.structure.MapGenStructureIO;
@@ -29,6 +31,7 @@ import blusunrize.immersiveengineering.api.energy.ThermoelectricHandler;
 import blusunrize.immersiveengineering.api.energy.WireType;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEffect_Damage;
+import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEffect_Potion;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.common.blocks.BlockFakeLight;
 import blusunrize.immersiveengineering.common.blocks.BlockFakeLight.TileEntityFakeLight;
@@ -141,6 +144,7 @@ import blusunrize.immersiveengineering.common.items.ItemToolUpgrade;
 import blusunrize.immersiveengineering.common.items.ItemWireCoil;
 import blusunrize.immersiveengineering.common.util.IEAchievements;
 import blusunrize.immersiveengineering.common.util.IELogger;
+import blusunrize.immersiveengineering.common.util.IEPotions;
 import blusunrize.immersiveengineering.common.world.IEWorldGen;
 import blusunrize.immersiveengineering.common.world.VillageEngineersHouse;
 import cpw.mods.fml.common.Loader;
@@ -414,7 +418,7 @@ public class IEContent
 		registerTile(TileEntityMetalBarrel.class);
 		registerTile(TileEntityCapacitorCreative.class);
 		registerTile(TileEntityRedstoneBreaker.class);
-		
+
 		registerTile(TileEntityFakeLight.class);
 
 		registerTile(TileEntityCokeOven.class);
@@ -441,6 +445,9 @@ public class IEContent
 
 		/**CRAFTING*/
 		IERecipes.initCraftingRecipes();
+		
+		/**POTIONS*/
+		IEPotions.init();
 
 		CokeOvenRecipe.addRecipe(new ItemStack(itemMaterial,1,6), new ItemStack(Items.coal), 1800, 500);
 		CokeOvenRecipe.addRecipe(new ItemStack(blockStoneDecoration,1,3), "blockCoal", 1800*9, 5000);
@@ -461,6 +468,24 @@ public class IEContent
 		DieselHandler.registerFuel(fluidBiodiesel, 125);
 		DieselHandler.registerFuel(FluidRegistry.getFluid("fuel"), 375);
 		DieselHandler.registerFuel(FluidRegistry.getFluid("diesel"), 175);
+
+		ChemthrowerHandler.registerEffect(FluidRegistry.LAVA, new ChemthrowerEffect_Damage(DamageSource.lava,4));
+		ChemthrowerHandler.registerEffect(fluidCreosote, new ChemthrowerEffect_Potion(null,0, IEPotions.flammable,140,0));
+		ChemthrowerHandler.registerFlammable(fluidCreosote);
+		ChemthrowerHandler.registerEffect(fluidBiodiesel, new ChemthrowerEffect_Potion(null,0, IEPotions.flammable,140,1));
+		ChemthrowerHandler.registerFlammable(fluidBiodiesel);
+		ChemthrowerHandler.registerFlammable(fluidEthanol);
+		ChemthrowerHandler.registerEffect("oil", new ChemthrowerEffect_Potion(null,0, new PotionEffect(IEPotions.flammable.id,140,0),new PotionEffect(Potion.blindness.id,80,1)));
+		ChemthrowerHandler.registerFlammable("oil");
+		ChemthrowerHandler.registerEffect("fuel", new ChemthrowerEffect_Potion(null,0, IEPotions.flammable,100,1));
+		ChemthrowerHandler.registerFlammable("fuel");
+		ChemthrowerHandler.registerEffect("diesel", new ChemthrowerEffect_Potion(null,0, IEPotions.flammable,140,1));
+		ChemthrowerHandler.registerFlammable("diesel");
+		ChemthrowerHandler.registerEffect("kerosene", new ChemthrowerEffect_Potion(null,0, IEPotions.flammable,100,1));
+		ChemthrowerHandler.registerFlammable("kerosene");
+		ChemthrowerHandler.registerEffect("biofuel", new ChemthrowerEffect_Potion(null,0, IEPotions.flammable,140,1));
+		ChemthrowerHandler.registerFlammable("biofuel");
+		
 
 		DieselHandler.addSqueezerRecipe(new ItemStack(itemMetal,8,17), 240, null, new ItemStack(itemMetal,1,19));
 		DieselHandler.addSqueezerRecipe(Items.wheat_seeds, 80, new FluidStack(fluidPlantoil, 80), null);
@@ -501,8 +526,6 @@ public class IEContent
 		ExcavatorHandler.addMineral("Silver", 10, .2f, new String[]{"oreSilver","oreLead","denseoreSilver"}, new float[]{.55f,.4f,.05f});
 		ExcavatorHandler.addMineral("Lapis", 10, .2f, new String[]{"oreLapis","oreIron","oreSulfur","denseoreLapis"}, new float[]{.65f,.275f,.025f,.05f});
 		ExcavatorHandler.addMineral("Coal", 25, .1f, new String[]{"oreCoal","denseoreCoal","oreDiamond","oreEmerald"}, new float[]{.92f,.1f,.015f,.015f});
-
-		ChemthrowerHandler.registerEffect(FluidRegistry.LAVA, new ChemthrowerEffect_Damage(DamageSource.lava,4));
 
 		MultiblockHandler.registerMultiblock(MultiblockCokeOven.instance);
 		MultiblockHandler.registerMultiblock(MultiblockBlastFurnace.instance);
@@ -552,7 +575,7 @@ public class IEContent
 		VillagerRegistry.instance().registerVillageTradeHandler(villagerId, new IEVillagerTradeHandler());
 
 	}
-	
+
 	public static void registerToOreDict(String type, ItemIEBase item, int... metas)
 	{
 		if(metas==null||metas.length<1)

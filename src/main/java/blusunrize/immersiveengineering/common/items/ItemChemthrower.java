@@ -7,14 +7,19 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.EnumAction;
+import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.StatCollector;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.FluidEvent;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidContainerItem;
 import blusunrize.immersiveengineering.api.shader.IShaderEquipableItem;
+import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler;
+import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.entities.EntityChemthrowerShot;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
@@ -32,6 +37,15 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IShaderEquip
 		ItemStack shader = getShaderItem(stack);
 		if(shader!=null)
 			list.add(EnumChatFormatting.DARK_GRAY+shader.getDisplayName());
+
+		FluidStack fs = getFluid(stack);
+		if(fs!=null)
+		{
+			EnumChatFormatting rarity = fs.getFluid().getRarity()==EnumRarity.common?EnumChatFormatting.GRAY:fs.getFluid().getRarity().rarityColor;
+			list.add(rarity+fs.getLocalizedName()+EnumChatFormatting.GRAY+": "+fs.amount+"/"+getCapacity(stack)+"mB");
+		}
+		else
+			list.add(StatCollector.translateToLocal("desc.ImmersiveEngineering.flavour.drill.empty"));
 	}
 	@Override
 	public boolean isFull3D()
@@ -47,32 +61,6 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IShaderEquip
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
 	{
-		//		if(!world.isRemote)
-		//		{
-		//			System.out.println("CLICKIGN SHIT");
-		//			Vec3 v = player.getLookVec();
-		//			int split = 8;
-		//			for(int i=0; i<split; i++)
-		//			{	
-		//				//			float angle = i * (360f/split);
-		//				//			Matrix4 matrix = new Matrix4();
-		//				//			matrix.rotate(angle, v.xCoord,v.yCoord,0);
-		//				//			Vec3 vecDir = Vec3.createVectorHelper(0, 0, 1);
-		//				//			matrix.apply(vecDir);
-		//				float scatter = .025f;
-		//				Vec3 vecDir = v.addVector(player.getRNG().nextGaussian()*scatter,player.getRNG().nextGaussian()*scatter,player.getRNG().nextGaussian()*scatter);
-		//
-		//				EntityChemthrowerShot chem = new EntityChemthrowerShot(world, player, vecDir.xCoord*1.5,vecDir.yCoord*1.5,vecDir.zCoord*1.5, FluidRegistry.LAVA);
-		////							chem.setPosition(player.posX+vecDir.xCoord, player.posY+vecDir.yCoord, posZ+vecDir.zCoord);
-		//				chem.motionX = vecDir.xCoord;
-		//				chem.motionY = vecDir.yCoord;
-		//				chem.motionZ = vecDir.zCoord;
-		//
-		//				if(!world.isRemote)
-		//				world.spawnEntityInWorld(chem);
-		//			}
-		//		}
-
 		player.setItemInUse(stack, this.getMaxItemUseDuration(stack));
 		return stack;
 	}
@@ -80,20 +68,51 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IShaderEquip
 	@Override
 	public void onUsingTick(ItemStack stack, EntityPlayer player, int count)
 	{
-		Vec3 v = player.getLookVec();
-		int split = 8;
-		for(int i=0; i<split; i++)
-		{	
-			float scatter = .025f;
-			Vec3 vecDir = v.addVector(player.getRNG().nextGaussian()*scatter,player.getRNG().nextGaussian()*scatter,player.getRNG().nextGaussian()*scatter);
+		FluidStack fs = this.getFluid(stack);
+		if(fs!=null && fs.getFluid()!=null)
+		{
+			int duration = getMaxItemUseDuration(stack)-count;
+			int consumed = Config.getInt("chemthrower_consumption");
+			if(consumed*duration<=fs.amount)
+			{
+				Vec3 v = player.getLookVec();
+				int split = 8;
+				for(int i=0; i<split; i++)
+				{	
+					float scatter = fs.getFluid().isGaseous()?.1f:.025f;
+					float range = fs.getFluid().isGaseous()?.5f:1f;
+					Vec3 vecDir = v.addVector(player.getRNG().nextGaussian()*scatter,player.getRNG().nextGaussian()*scatter,player.getRNG().nextGaussian()*scatter);
 
-			EntityChemthrowerShot chem = new EntityChemthrowerShot(player.worldObj, player, vecDir.xCoord*0.25,vecDir.yCoord*0.25,vecDir.zCoord*0.25, FluidRegistry.LAVA);
-			chem.motionX = vecDir.xCoord;
-			chem.motionY = vecDir.yCoord;
-			chem.motionZ = vecDir.zCoord;
+					EntityChemthrowerShot chem = new EntityChemthrowerShot(player.worldObj, player, vecDir.xCoord*0.25,vecDir.yCoord*0.25,vecDir.zCoord*0.25, fs.getFluid());
+					chem.motionX = vecDir.xCoord*range;
+					chem.motionY = vecDir.yCoord*range;
+					chem.motionZ = vecDir.zCoord*range;
+					if(ChemthrowerHandler.isFlammable(fs.getFluid()))
+						chem.setFire(10);
+					
+					
+					if(!player.worldObj.isRemote)
+						player.worldObj.spawnEntityInWorld(chem);
+				}
+			}
+			else
+				player.stopUsingItem();
 
-			if(!player.worldObj.isRemote)
-				player.worldObj.spawnEntityInWorld(chem);
+		}
+	}
+	@Override
+	public void onPlayerStoppedUsing(ItemStack stack, World world, EntityPlayer player, int timeLeft)
+	{
+		FluidStack fs = this.getFluid(stack);
+		if(fs!=null)
+		{
+			int duration = getMaxItemUseDuration(stack)-timeLeft;
+			int consumed = Config.getInt("chemthrower_consumption");
+			fs.amount -= consumed*duration;
+			if(fs.amount <= 0)
+				ItemNBTHelper.remove(stack, "fluid");
+			else
+				ItemNBTHelper.setFluidStack(stack, "fluid", fs);
 		}
 	}
 
@@ -116,39 +135,41 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IShaderEquip
 	@Override
 	public int fill(ItemStack container, FluidStack resource, boolean doFill)
 	{
-		//		if(resource!=null && IEContent.fluidBiodiesel.equals(resource.getFluid()))
-		//		{
-		//			FluidStack fs = getFluid(container);
-		//			int space = fs==null?getCapacity(container): getCapacity(container)-fs.amount;
-		//			int accepted = Math.min(space, resource.amount);
-		//			if(fs==null)
-		//				fs = new FluidStack(IEContent.fluidBiodiesel, accepted);
-		//			else
-		//				fs.amount += accepted;
-		//			if(doFill)
-		//				ItemNBTHelper.setFluidStack(container, "fuel", fs);
-		//			return accepted;
-		//		}
+		if(resource!=null)
+		{
+			FluidStack fs = getFluid(container);
+			if(fs==null || fs.amount<0 || fs.isFluidEqual(resource))
+			{
+				int space = fs==null?getCapacity(container): getCapacity(container)-fs.amount;
+				int accepted = Math.min(space, resource.amount);
+				if(fs==null)
+					fs = new FluidStack(resource, accepted);
+				else
+					fs.amount += accepted;
+				if(doFill)
+					ItemNBTHelper.setFluidStack(container, "fluid", fs);
+				return accepted;
+			}
+		}
 		return 0;
 	}
 	@Override
 	public FluidStack drain(ItemStack container, int maxDrain, boolean doDrain)
 	{
-		//		FluidStack fs = getFluid(container);
-		//		if(fs == null)
-		//			return null;
-		//		int drained = Math.min(maxDrain, fs.amount);
-		//		FluidStack stack = new FluidStack(fs, drained);
-		//		if(doDrain)
-		//		{
-		//			fs.amount -= drained;
-		//			if(fs.amount <= 0)
-		//				ItemNBTHelper.remove(container, "fuel");
-		//			else
-		//				ItemNBTHelper.setFluidStack(container, "fuel", fs);
-		//		}
-		//		return stack;
-		return null;
+		FluidStack fs = getFluid(container);
+		if(fs == null)
+			return null;
+		int drained = Math.min(maxDrain, fs.amount);
+		FluidStack stack = new FluidStack(fs, drained);
+		if(doDrain)
+		{
+			fs.amount -= drained;
+			if(fs.amount <= 0)
+				ItemNBTHelper.remove(container, "fluid");
+			else
+				ItemNBTHelper.setFluidStack(container, "fluid", fs);
+		}
+		return stack;
 	}
 
 	@Override

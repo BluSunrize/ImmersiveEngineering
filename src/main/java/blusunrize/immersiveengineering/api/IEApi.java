@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.potion.Potion;
 import net.minecraftforge.oredict.OreDictionary;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderCaseChemthrower;
@@ -52,6 +53,13 @@ public class IEApi
 	 */
 	public static HashMap<String, Integer[]> prefixToIngotMap = new HashMap<String, Integer[]>();
 	
+	/**
+	 * An array of all potions added by IE. indices are as follows:<br>
+	 * 0: flammable, increases all fire damage done<br>
+	 * 1: slippery, makes the target slide around and randomly drop their held item<br>
+	 * 2: conductive, increases flux damage done to the target (CoFH/RedstoneArsenal compat)<br>
+	 */
+	public static Potion[] potions;
 	
 	public static ItemStack getPreferredOreStack(String oreName)
 	{

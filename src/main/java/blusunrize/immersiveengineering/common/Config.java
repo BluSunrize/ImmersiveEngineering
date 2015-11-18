@@ -8,6 +8,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorLV;
 import blusunrize.immersiveengineering.common.util.IELogger;
+import blusunrize.immersiveengineering.common.util.IEPotions;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 
@@ -20,9 +21,10 @@ public class Config
 	public static HashMap<String, int[]> config_intArray = new HashMap();
 	public static HashMap<String, String[]> config_stringArray = new HashMap();
 
+	static Configuration config;
 	public static void init(FMLPreInitializationEvent event)
 	{
-		Configuration config = new Configuration(event.getSuggestedConfigurationFile());
+		config = new Configuration(event.getSuggestedConfigurationFile());
 		config.load();
 
 		double currentVersion = ImmersiveEngineering.VERSION_D;
@@ -170,6 +172,8 @@ public class Config
 		setDouble("BulletDamage-WolfpackPart", config.get("Tools", "BulletDamage-WolfpackPart", 4d, "The amount of damage the sub-projectiles of the Wolfpack Cartridge inflict").getDouble());
 		setDouble("BulletDamage-Silver", config.get("Tools", "BulletDamage-Silver", 10d, "The amount of damage a silver bullet inflicts").getDouble());
 		setDouble("BulletDamage-Potion", config.get("Tools", "BulletDamage-Potion", 1d, "The amount of base damage a Phial Cartridge inflicts").getDouble());
+		
+		setInt("chemthrower_consumption", config.get("Tools", "ChemThrower: Consumed", 10, "The mb of fluid the Chemical Thrower will consume per tick of usage").getInt());
 
 		for(String key : IECompatModule.moduleClasses.keySet())
 			setBoolean("compat_"+key, config.get("Compatability", "Enable Compatmodule: "+key, true, "Set this to false to disable IE's built in compatability with "+key).getBoolean());
@@ -232,5 +236,13 @@ public class Config
 	public static String[] getStringArray(String key)
 	{
 		return config_stringArray.get(key);
+	}
+
+	public static int getPotionID(int base, String key)
+	{
+		config.load();
+		int i = config.get("Potions", key, IEPotions.getNextPotionId(base), "The potion ID for the "+key+" potion effect").getInt();
+		config.save();
+		return i;
 	}
 }

@@ -19,6 +19,7 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.entity.living.EnderTeleportEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -29,8 +30,8 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
-import blusunrize.immersiveengineering.api.tool.IDrillHead;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralMix;
+import blusunrize.immersiveengineering.api.tool.IDrillHead;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISpawnInterdiction;
 import blusunrize.immersiveengineering.common.blocks.TileEntityImmersiveConnectable;
@@ -38,6 +39,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMultiblockPart;
 import blusunrize.immersiveengineering.common.items.ItemDrill;
 import blusunrize.immersiveengineering.common.util.IEAchievements;
+import blusunrize.immersiveengineering.common.util.IEPotions;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -167,7 +169,24 @@ public class EventHandler
 			}
 		}
 	}
-
+	
+	@SubscribeEvent(priority=EventPriority.LOWEST)
+	public void onLivingHurt(LivingHurtEvent event)
+	{
+		if(event.source.isFireDamage() && event.entityLiving.getActivePotionEffect(IEPotions.flammable)!=null)
+		{
+			int amp = event.entityLiving.getActivePotionEffect(IEPotions.flammable).getAmplifier();
+			float mod = 1.5f + ((amp*amp)*.5f);
+			event.ammount *= mod;
+		}
+		if(event.source.getDamageType().equals("flux") && event.entityLiving.getActivePotionEffect(IEPotions.conductive)!=null)
+		{
+			int amp = event.entityLiving.getActivePotionEffect(IEPotions.conductive).getAmplifier();
+			float mod = 1.5f + ((amp*amp)*.5f); 
+			event.ammount *= mod;
+		}
+	}
+	
 	@SubscribeEvent
 	public void onEnderTeleport(EnderTeleportEvent event)
 	{
