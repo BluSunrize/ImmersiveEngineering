@@ -679,7 +679,19 @@ public class Utils
 				if(world.isRemote)
 					return true;
 
-				int fill = container.fill(equipped, tankFluid, true);
+				int fill;
+				if(equipped.stackSize > 1)
+				{
+					ItemStack filled = copyStackWithAmount(equipped, 1);
+					equipped.stackSize -= 1;
+					fill = container.fill(filled, tankFluid, true);
+					if(!player.inventory.addItemStackToInventory(filled))
+						player.func_146097_a(filled, false, true);
+				}
+				else
+				{
+					fill = container.fill(equipped, tankFluid, true);
+				}
 				handler.drain(ForgeDirection.UNKNOWN, fill, true);
 				player.openContainer.detectAndSendChanges();
 				((EntityPlayerMP) player).sendContainerAndContentsToPlayer(player.openContainer, player.openContainer.getInventory());
@@ -733,7 +745,18 @@ public class Utils
 					return true;
 
 				int fill = handler.fill(ForgeDirection.UNKNOWN, fluid, true);
-				container.drain(equipped, fill, true);
+				if(equipped.stackSize > 1)
+				{
+					ItemStack emptied = copyStackWithAmount(equipped, 1);
+					equipped.stackSize -= 1;
+					container.drain(emptied, fill, true);
+					if(!player.inventory.addItemStackToInventory(emptied))
+						player.func_146097_a(emptied, false, true);
+				}
+				else
+				{
+					container.drain(equipped, fill, true);
+				}
 				player.openContainer.detectAndSendChanges();
 				((EntityPlayerMP) player).sendContainerAndContentsToPlayer(player.openContainer, player.openContainer.getInventory());
 				return true;
