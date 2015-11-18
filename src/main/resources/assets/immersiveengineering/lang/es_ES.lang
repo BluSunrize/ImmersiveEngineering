@@ -1,0 +1,723 @@
+# BLOCKS
+tile.ImmersiveEngineering.ore.Copper.name=Mena de cobre
+tile.ImmersiveEngineering.ore.Aluminum.name=Mena de bauxita
+tile.ImmersiveEngineering.ore.Lead.name=Mena de plomo
+tile.ImmersiveEngineering.ore.Silver.name=Mena de plata
+tile.ImmersiveEngineering.ore.Nickel.name=Mena de niquel
+tile.ImmersiveEngineering.storage.Copper.name=Bloque de cobre
+tile.ImmersiveEngineering.storage.Aluminum.name=Bloque de aluminio
+tile.ImmersiveEngineering.storage.Lead.name=Bloque de plomo
+tile.ImmersiveEngineering.storage.Silver.name=Bloque de plata
+tile.ImmersiveEngineering.storage.Nickel.name=Bloque de niquel
+tile.ImmersiveEngineering.storage.Constantan.name=Bloque de constantan
+tile.ImmersiveEngineering.storage.Electrum.name=Bloque de electrum
+tile.ImmersiveEngineering.storage.Steel.name=Bloque de acero
+tile.ImmersiveEngineering.storage.CoilCopper.name=Bobina de cable de cobre
+tile.ImmersiveEngineering.storage.CoilElectrum.name=Bobina de cable de electrum
+tile.ImmersiveEngineering.storage.CoilHV.name=Bobina de cable de alto voltaje
+
+tile.ImmersiveEngineering.storageSlab.Copper.name=Losa de cobre
+tile.ImmersiveEngineering.storageSlab.Aluminum.name=Losa de aluminio
+tile.ImmersiveEngineering.storageSlab.Lead.name=Losa de plomo
+tile.ImmersiveEngineering.storageSlab.Silver.name=Losa de plata
+tile.ImmersiveEngineering.storageSlab.Nickel.name=Losa de niquel
+tile.ImmersiveEngineering.storageSlab.Constantan.name=Losa de constantan
+tile.ImmersiveEngineering.storageSlab.Electrum.name=Losa de electrum
+tile.ImmersiveEngineering.storageSlab.Steel.name=Losa de acero
+
+tile.ImmersiveEngineering.metalDevice.connectorLV.name=Conector BV
+tile.ImmersiveEngineering.metalDevice.capacitorLV.name=Capacitor BV
+tile.ImmersiveEngineering.metalDevice.connectorMV.name=Conector MV
+tile.ImmersiveEngineering.metalDevice.capacitorMV.name=Capacitor MV
+tile.ImmersiveEngineering.metalDevice.transformer.name=Transformador
+tile.ImmersiveEngineering.metalDevice.relayHV.name=Rele AV
+tile.ImmersiveEngineering.metalDevice.connectorHV.name=Conector AV
+tile.ImmersiveEngineering.metalDevice.capacitorHV.name=Capacitor AV
+tile.ImmersiveEngineering.metalDevice.transformerHV.name=Transformador AV
+tile.ImmersiveEngineering.metalDevice.dynamo.name=Dinamo cinetico
+tile.ImmersiveEngineering.metalDevice.thermoelectricGen.name=Generador termoelectrico
+tile.ImmersiveEngineering.metalDevice.conveyorBelt.name=Cinta transportadora
+tile.ImmersiveEngineering.metalDevice.furnaceHeater.name=Calentador externo
+tile.ImmersiveEngineering.metalDevice.sorter.name=Enrutador de items
+tile.ImmersiveEngineering.metalDevice.sampleDrill.name=Taladro de muestreo
+
+tile.ImmersiveEngineering.metalMultiblock.lightningRod.name=Base de pararayos
+tile.ImmersiveEngineering.metalMultiblock.dieselGenerator.name=Generador diesel
+tile.ImmersiveEngineering.metalMultiblock.industrialSqueezer.name=Exprimidor industrial
+tile.ImmersiveEngineering.metalMultiblock.fermenter.name=Frementador
+tile.ImmersiveEngineering.metalMultiblock.refinery.name=Refineria
+tile.ImmersiveEngineering.metalMultiblock.crusher.name=Pulverizador
+tile.ImmersiveEngineering.metalMultiblock.bucketWheel.name=Rueda de cangilones
+tile.ImmersiveEngineering.metalMultiblock.excavator.name=Escavador
+tile.ImmersiveEngineering.metalMultiblock.arcFurnace.name=Horno electrico
+tile.ImmersiveEngineering.metalMultiblock.tank.name=Tanque de fluidos
+tile.ImmersiveEngineering.metalMultiblock.silo.name=Silo de almacenamiento
+tile.ImmersiveEngineering.metalMultiblock.assembler.name=Ensamblador
+tile.ImmersiveEngineering.metalMultiblock.bottlingMachine.name=Maquina de embotellar
+
+tile.ImmersiveEngineering.metalDecoration.fence.name=Valla de acero
+tile.ImmersiveEngineering.metalDecoration.scaffolding.name=Andamio de acero
+tile.ImmersiveEngineering.metalDecoration.lantern.name=Farol
+tile.ImmersiveEngineering.metalDecoration.structuralArm.name=Brazo estructural
+tile.ImmersiveEngineering.metalDecoration.radiator.name=Bloque radiador
+tile.ImmersiveEngineering.metalDecoration.heavyEngineering.name=Bloque de maquinaria pesada
+tile.ImmersiveEngineering.metalDecoration.generator.name=Bloque generador
+tile.ImmersiveEngineering.metalDecoration.lightEngineering.name=Bloque de maquinaria ligera
+tile.ImmersiveEngineering.metalDecoration.connectorStructural.name=Conector de cable structural
+tile.ImmersiveEngineering.metalDecoration.wallMount.name=Montura de acero
+tile.ImmersiveEngineering.metalDecoration.sheetMetal.name=Bloque de chapa
+tile.ImmersiveEngineering.metalDecoration.scaffolding2.name=Andamio de acero
+tile.ImmersiveEngineering.metalDecoration.aluminiumFence.name=Valla de aluminio
+tile.ImmersiveEngineering.metalDecoration.aluminiumScaffolding.name=Andamio de aluminio
+tile.ImmersiveEngineering.metalDecoration.aluminiumScaffolding2.name=Andamio de aluminio
+tile.ImmersiveEngineering.metalDecoration.aluminiumStructuralArm.name=Brazo estructural de aluminio
+
+tile.ImmersiveEngineering.metalDevice2.breakerSwitch.name=Disyuntor
+tile.ImmersiveEngineering.metalDevice2.electricLantern.name=Farol electrico
+tile.ImmersiveEngineering.metalDevice2.floodlight.name=Foco
+tile.ImmersiveEngineering.metalDevice2.fluidPipe.name=Caño de fluidos
+tile.ImmersiveEngineering.metalDevice2.fluidPump.name=Bomba de fluidos
+tile.ImmersiveEngineering.metalDevice2.barrel.name=Barril de metal
+tile.ImmersiveEngineering.metalDevice2.capacitorCreative.name=Capacitor creativo
+tile.ImmersiveEngineering.metalDevice2.redstoneBreaker.name=Interruptor Redstone
+
+tile.ImmersiveEngineering.treatedWood.0.name=Madera tratada
+tile.ImmersiveEngineering.treatedWood.1.name=Madera tratada
+tile.ImmersiveEngineering.treatedWood.2.name=Madera tratada
+
+tile.ImmersiveEngineering.woodenDevice.post.name=Poste de madera
+tile.ImmersiveEngineering.woodenDevice.watermill.name=Rueda de agua
+tile.ImmersiveEngineering.woodenDevice.windmill.name=Molino de viento
+tile.ImmersiveEngineering.woodenDevice.windmillAdvanced.name=Molino de viento mejorado
+tile.ImmersiveEngineering.woodenDevice.crate.name=Caja de madera
+tile.ImmersiveEngineering.woodenDevice.modificationWorkbench.name=Mesa de ingenieria
+tile.ImmersiveEngineering.woodenDevice.barrel.name=Barril de madera
+
+tile.ImmersiveEngineering.woodenDecoration.treatedWood.name=Madera tratada
+tile.ImmersiveEngineering.woodenDecoration.fence.name=Valla de madera tratada
+tile.ImmersiveEngineering.woodenDecoration.slab0.name=Losa de madera tratada
+tile.ImmersiveEngineering.woodenDecoration.slab1.name=Losa de madera tratada
+tile.ImmersiveEngineering.woodenDecoration.doubleSlab.name=Madera tratada
+tile.ImmersiveEngineering.woodenDecoration.scaffolding.name=Andamio de madera tratada
+tile.ImmersiveEngineering.woodenDecoration.wallMount.name=Montura de madera
+
+tile.ImmersiveEngineering.woodenStairs.name=Escaleras de madera tratada
+
+tile.ImmersiveEngineering.stoneDevice.hempcrete.name=Concreto de cañamo
+tile.ImmersiveEngineering.stoneDevice.cokeOven.name=Horno de coque
+tile.ImmersiveEngineering.stoneDevice.blastFurnace.name=Alto horno
+tile.ImmersiveEngineering.stoneDevice.coalCoke.name=Bloque de carbon de coque
+tile.ImmersiveEngineering.stoneDevice.insulatorGlass.name=Vidrio aislante
+
+tile.ImmersiveEngineering.stoneDecoration.hempcrete.name=Concreto de cañamo
+tile.ImmersiveEngineering.stoneDecoration.cokeBrick.name=Ladrillos de coque
+tile.ImmersiveEngineering.stoneDecoration.blastBrick.name=Ladrillos de refractarios
+tile.ImmersiveEngineering.stoneDecoration.coalCoke.name=Bloque de carbon de coque
+tile.ImmersiveEngineering.stoneDecoration.concrete.name=Concreto
+tile.ImmersiveEngineering.stoneDecoration.concreteTile.name=Baldosa de concreto
+
+tile.ImmersiveEngineering.hemp.name=Cañamo industrial
+
+#Hydraulicraft Support
+tile.harvesterTrolley.ieCrop.name=Carro recolector de cañamo industrial
+
+fluid.creosote=Aceite de creosota
+fluid.plantoil=Aceite vegetal
+fluid.ethanol=Etanol
+fluid.biodiesel=Biodiesel
+
+
+# ITEMS
+item.ImmersiveEngineering.metal.ingotCopper.name=Lingote de cobre
+item.ImmersiveEngineering.metal.ingotAluminum.name=Lingote de aluminio
+item.ImmersiveEngineering.metal.ingotLead.name=Lingote de plomo
+item.ImmersiveEngineering.metal.ingotSilver.name=Lingote de plata
+item.ImmersiveEngineering.metal.ingotNickel.name=Lingote de niquel
+item.ImmersiveEngineering.metal.ingotConstantan.name=Lingote de constantan
+item.ImmersiveEngineering.metal.ingotElectrum.name=Lingote de electrum
+item.ImmersiveEngineering.metal.ingotSteel.name=Lingote de acero
+item.ImmersiveEngineering.metal.dustIron.name=Polvo de hierro
+item.ImmersiveEngineering.metal.dustGold.name=Polvo de oro
+item.ImmersiveEngineering.metal.dustCopper.name=Polvo de cobre
+item.ImmersiveEngineering.metal.dustAluminum.name=Polvo de aluminio
+item.ImmersiveEngineering.metal.dustLead.name=Polvo de plomo
+item.ImmersiveEngineering.metal.dustSilver.name=Polvo de plata
+item.ImmersiveEngineering.metal.dustNickel.name=Polvo de nickel
+item.ImmersiveEngineering.metal.dustConstantan.name=Polvo de constantan
+item.ImmersiveEngineering.metal.dustElectrum.name=Polvo de Electrum
+item.ImmersiveEngineering.metal.dustSteel.name=Polvo de acero
+item.ImmersiveEngineering.metal.dustCoke.name=Polvo de Coke
+item.ImmersiveEngineering.metal.dustQuartz.name=Polvo de Cuarzo
+item.ImmersiveEngineering.metal.dustHOPGraphite.name=Polvo de grafito
+item.ImmersiveEngineering.metal.ingotHOPGraphite.name=Lingote de grafito
+item.ImmersiveEngineering.metal.nuggetIron.name=Pepita de hierro
+item.ImmersiveEngineering.metal.nuggetCopper.name=Pepita de cobre
+item.ImmersiveEngineering.metal.nuggetAluminum.name=Pepita de aluminio
+item.ImmersiveEngineering.metal.nuggetLead.name=Pepita de plomo
+item.ImmersiveEngineering.metal.nuggetSilver.name=Pepita de plata
+item.ImmersiveEngineering.metal.nuggetNickel.name=Pepita de niquel
+item.ImmersiveEngineering.metal.nuggetConstantan.name=Pepita de constantan 
+item.ImmersiveEngineering.metal.nuggetElectrum.name=Pepita de Electrum
+item.ImmersiveEngineering.metal.nuggetSteel.name=Pepita de acero
+
+
+item.ImmersiveEngineering.material.treatedStick.name=Palo tratado
+item.ImmersiveEngineering.material.waterwheelSegment.name=Segmento de rueda de agua
+item.ImmersiveEngineering.material.windmillBlade.name=Aspa de molino
+item.ImmersiveEngineering.material.hempFiber.name=Fibra de cañamo industrial
+item.ImmersiveEngineering.material.fabric.name=Lona pesada
+item.ImmersiveEngineering.material.windmillBladeAdvanced.name=Aspa de molino mejorada
+item.ImmersiveEngineering.material.coalCoke.name=Carbon de coque
+item.ImmersiveEngineering.material.gunpartBarrel.name=Cañon de revolver
+item.ImmersiveEngineering.material.gunpartDrum.name=Tambor de revolver
+item.ImmersiveEngineering.material.gunpartGrip.name=Culata de madera
+item.ImmersiveEngineering.material.gunpartHammer.name=Percutor
+item.ImmersiveEngineering.material.componentIron.name=Componente mecaninco de hierro
+item.ImmersiveEngineering.material.componentSteel.name=Componente mecanico de acero
+item.ImmersiveEngineering.material.slag.name=Escoria
+item.ImmersiveEngineering.seed.hemp.name=Semilla de cañamo industrial
+
+item.ImmersiveEngineering.fluidContainers.bottleCreosote.name=Botella de aceite de creosota
+item.ImmersiveEngineering.fluidContainers.bucketCreosote.name=Cubo de aceite de creosota
+item.ImmersiveEngineering.fluidContainers.bottlePlantoil.name=Botella de aceite vegetal
+item.ImmersiveEngineering.fluidContainers.bucketPlantoil.name=Cubo de aceite vegetal
+item.ImmersiveEngineering.fluidContainers.bottleEthanol.name=Botella de etanol
+item.ImmersiveEngineering.fluidContainers.bucketEthanol.name=Cubo de etanol
+item.ImmersiveEngineering.fluidContainers.bottleBiodiesel.name=Botella de biodiesel
+item.ImmersiveEngineering.fluidContainers.bucketBiodiesel.name=Cubo de biodiesel
+
+item.ImmersiveEngineering.coil.copper.name=Bobina de cable BV
+item.ImmersiveEngineering.coil.electrum.name=Bobina de cable MV
+item.ImmersiveEngineering.coil.HV.name=Bobina de cable AV
+item.ImmersiveEngineering.coil.rope.name=Bobina de cañamo
+item.ImmersiveEngineering.coil.structural.name=Bobina de cable de acero
+item.ImmersiveEngineering.tool.hammer.name=Martillo de Ingeniero
+item.ImmersiveEngineering.tool.wirecutter.name=Alicate de Ingeniero
+item.ImmersiveEngineering.tool.voltmeter.name=Voltimetro de Ingeniero
+item.ImmersiveEngineering.tool.manual.name=Manual del Ingeniero
+
+item.ImmersiveEngineering.revolver.normal.name=Revolver
+item.ImmersiveEngineering.revolver.speedloader.name=Revolver Speedloader
+item.ImmersiveEngineering.revolver.dev.name=♛Royal Vanquisher♚
+item.ImmersiveEngineering.revolver.infinity.name=Catalizador
+item.ImmersiveEngineering.revolver.sns.name=Apisonadora
+item.ImmersiveEngineering.revolver.nerf.name=Revolver Nerf
+item.ImmersiveEngineering.revolver.oblivion.name=Oblivion
+item.ImmersiveEngineering.revolver.oathkeeper.name=Oathkeeper
+item.ImmersiveEngineering.revolver.bee.name=Beevolver
+item.ImmersiveEngineering.revolver.fenrir.name=Fenrir
+item.ImmersiveEngineering.revolver.earthshaker.name=§bEarthshaker§r
+item.ImmersiveEngineering.revolver.warlord.name=The Repulsor
+item.ImmersiveEngineering.revolver.noName.name=No Name
+item.ImmersiveEngineering.revolver.patreonBlu.name=§6Last Word§r
+item.ImmersiveEngineering.revolver.patreonHazard.name=§4Twisted Phantom§r
+
+item.ImmersiveEngineering.bullet.emptyCasing.name=Carcasa vacia
+item.ImmersiveEngineering.bullet.emptyShell.name=Casquillo vacio
+item.ImmersiveEngineering.bullet.casull.name=Cartucho Casull
+item.ImmersiveEngineering.bullet.armorPiercing.name=Cartucho AP
+item.ImmersiveEngineering.bullet.buckshot.name=Cartucho Buckshot
+item.ImmersiveEngineering.bullet.HE.name=Cartucho HE
+item.ImmersiveEngineering.bullet.dragonsbreath.name=Cartucho Dragon
+item.ImmersiveEngineering.bullet.homing.name=Cartucho Perseguidor
+item.ImmersiveEngineering.bullet.wolfpack.name=Cartucho Wolfpack
+item.ImmersiveEngineering.bullet.silver.name=Cartucho de plata
+item.ImmersiveEngineering.bullet.potion.name=Cartucho de pocion
+item.ImmersiveEngineering.bullet.potion.splash.name=Cartucho de pocion explosiva
+item.ImmersiveEngineering.bullet.potion.linger.name=Cartucho de pocion prolongada
+
+item.ImmersiveEngineering.drill.diesel.name=Taladro de mineria
+item.ImmersiveEngineering.drillhead.iron.name=Punta de taladro de hierro
+item.ImmersiveEngineering.drillhead.steel.name=Punta de taladro de acero
+
+item.ImmersiveEngineering.skyhook.name=Gancho Aereo del ingeniero
+
+item.ImmersiveEngineering.toolupgrade.drillWaterproof.name=Tanque de oxigenacion interno
+item.ImmersiveEngineering.toolupgrade.drillSpeed.name=Sistema de lubricacion avanzado
+item.ImmersiveEngineering.toolupgrade.drillDamage.name=Sinfines adicionales
+item.ImmersiveEngineering.toolupgrade.drillCapacity.name=Tanque de combustible grande
+item.ImmersiveEngineering.toolupgrade.revolverBayonet.name=Bayoneta
+item.ImmersiveEngineering.toolupgrade.revolverMagazine.name=Cargador extendido
+item.ImmersiveEngineering.toolupgrade.revolverElectro.name=Tubo amplificador de electrones
+
+item.ImmersiveEngineering.blueprint.name=Plano de ingenieria
+
+item.ImmersiveEngineering.graphiteElectrode.name=Electrodo de grafito
+
+item.ImmersiveEngineering.shader.name=Estilo
+
+item.ImmersiveEngineering.jerrycan.name=Jerrycan
+
+item.ImmersiveEngineering.chemthrower.name=Lanzador quimico
+
+
+#CREATIVE
+itemGroup.ImmersiveEngineering=Immersive Engineering
+
+#DESCRIPTIONS
+description.villager.profession.immersiveengineering.villager_engineer=Ingeniero
+
+desc.ImmersiveEngineering.info.attachedTo=Linking from %1$s, %2$s, %3$s
+desc.ImmersiveEngineering.info.attachedToDim=Linking from %1$s, %2$s, %3$s in Dimension %4$s
+desc.ImmersiveEngineering.info.energyStored=Energy stored: %1$s RF
+desc.ImmersiveEngineering.info.blastFuelTime=Blast Fuel: %1$s Ticks
+
+desc.ImmersiveEngineering.info.blockSide.facing=Adelante
+desc.ImmersiveEngineering.info.blockSide.opposite=Atras
+desc.ImmersiveEngineering.info.blockSide.UP=Arriba
+desc.ImmersiveEngineering.info.blockSide.DOWN=Abajo
+desc.ImmersiveEngineering.info.blockSide.NORTH=Norte
+desc.ImmersiveEngineering.info.blockSide.SOUTH=Sur
+desc.ImmersiveEngineering.info.blockSide.EAST=Este
+desc.ImmersiveEngineering.info.blockSide.WEST=Oeste
+desc.ImmersiveEngineering.info.blockSide.connectEnergy.-1=Sin Conexion
+desc.ImmersiveEngineering.info.blockSide.connectEnergy.0=Recibiendo energia
+desc.ImmersiveEngineering.info.blockSide.connectEnergy.1=Emitiendo energia
+desc.ImmersiveEngineering.info.blockSide.connectFluid.-1=Sin conexion
+desc.ImmersiveEngineering.info.blockSide.connectFluid.0=Recibiendo fluido
+desc.ImmersiveEngineering.info.blockSide.connectFluid.1=Emitiendo fluido
+
+desc.ImmersiveEngineering.info.oreDict.off=OreDictionary: Disabled
+desc.ImmersiveEngineering.info.oreDict.on=OreDictionary: Enabled
+
+desc.ImmersiveEngineering.info.mininglvl.-1=Nada
+desc.ImmersiveEngineering.info.mininglvl.0=§7Piedra
+desc.ImmersiveEngineering.info.mininglvl.1=§4Hierro
+desc.ImmersiveEngineering.info.mininglvl.2=§cRedstone
+desc.ImmersiveEngineering.info.mininglvl.3=§dObsidiana
+desc.ImmersiveEngineering.info.mininglvl.4=§9Cobalto
+desc.ImmersiveEngineering.info.mininglvl.5=§5Manyullyn
+desc.ImmersiveEngineering.info.mininglvl.6=§5Manyullyn§d+
+
+desc.ImmersiveEngineering.info.durability=Durabilidad: %1$s
+
+desc.ImmersiveEngineering.info.mineral.Iron=Hierro
+desc.ImmersiveEngineering.info.mineral.Magnetite=Magnetita
+desc.ImmersiveEngineering.info.mineral.Pyrite=Pyrita
+desc.ImmersiveEngineering.info.mineral.Bauxite=Bauxita
+desc.ImmersiveEngineering.info.mineral.Copper=Cobre
+desc.ImmersiveEngineering.info.mineral.Gold=Oro
+desc.ImmersiveEngineering.info.mineral.Nickel=Noquel
+desc.ImmersiveEngineering.info.mineral.Platinum=Platino
+desc.ImmersiveEngineering.info.mineral.Uranium=Uranio
+desc.ImmersiveEngineering.info.mineral.Quartzite=Cuarzita
+desc.ImmersiveEngineering.info.mineral.Galena=Galena
+desc.ImmersiveEngineering.info.mineral.Lead=Plomo
+desc.ImmersiveEngineering.info.mineral.Silver=Plata
+desc.ImmersiveEngineering.info.mineral.Lapis=Lapis
+desc.ImmersiveEngineering.info.mineral.Coal=Carbon
+
+desc.ImmersiveEngineering.info.reqMaterial=Materiales:
+desc.ImmersiveEngineering.info.chance=Chance:
+
+desc.ImmersiveEngineering.info.blueprint.creates0=Items creados: §6Hold Shift§r
+desc.ImmersiveEngineering.info.blueprint.creates1=Items creados:
+desc.ImmersiveEngineering.info.blueprint.bullet=Proyectiles comunes
+desc.ImmersiveEngineering.info.blueprint.specialBullet=Proyectiles especializados
+desc.ImmersiveEngineering.info.blueprint.electrode=Electrodos de horno electrico
+
+desc.ImmersiveEngineering.info.electrodeIntegrity=Integridad
+
+desc.ImmersiveEngineering.flavour.treatedWood.0=Tablas horizontales
+desc.ImmersiveEngineering.flavour.treatedWood.1=tablas verticales
+desc.ImmersiveEngineering.flavour.treatedWood.2=Tablas empacadas
+desc.ImmersiveEngineering.flavour.crate=Conservara su inventario cuando se rompa
+desc.ImmersiveEngineering.flavour.barrel=Conservara su inventario cuando se rompa
+desc.ImmersiveEngineering.flavour.barrelTemp=No puede conservar fluidos calientes
+desc.ImmersiveEngineering.flavour.coil.construction0=Solo para decoracion
+desc.ImmersiveEngineering.flavour.coil.construction1=No transmite energia
+desc.ImmersiveEngineering.flavour.revolver=Go ahead, make my day!
+desc.ImmersiveEngineering.flavour.revolver.dev=Regicide!
+desc.ImmersiveEngineering.flavour.revolver.infinity=All you need is a little pinch of infinity
+desc.ImmersiveEngineering.flavour.revolver.sns=Blood, Sweat, Steam and Steel
+desc.ImmersiveEngineering.flavour.revolver.nerf=Safe for kids
+desc.ImmersiveEngineering.flavour.revolver.oblivion=Passing Memories
+desc.ImmersiveEngineering.flavour.revolver.oathkeeper=Wayfinder
+desc.ImmersiveEngineering.flavour.revolver.bee=The Pain
+desc.ImmersiveEngineering.flavour.revolver.fenrir=There's nothing I don't cherish!
+desc.ImmersiveEngineering.flavour.revolver.earthshaker=Lingering Will
+desc.ImmersiveEngineering.flavour.revolver.warlord=Don't take my toys away!
+desc.ImmersiveEngineering.flavour.revolver.rommie=Targeting AI 'Rommie' included!
+desc.ImmersiveEngineering.flavour.revolver.noName=Peering Into Darkness
+desc.ImmersiveEngineering.flavour.revolver.patreonBlu=Hunter's Choice
+desc.ImmersiveEngineering.flavour.revolver.patreonHazard=Exclusive DLC Content
+
+desc.ImmersiveEngineering.flavour.drill.noHead=Sin punta de taladro
+desc.ImmersiveEngineering.flavour.drill.headDamage=Punta de taladro:
+desc.ImmersiveEngineering.flavour.drill.fuel=Combustible:
+desc.ImmersiveEngineering.flavour.drill.empty=Vacio
+
+desc.ImmersiveEngineering.flavour.drillhead.size=Area a minar: %1$sx%1$sx%2$s 
+desc.ImmersiveEngineering.flavour.drillhead.level=Nivel a minar: %1$s
+desc.ImmersiveEngineering.flavour.drillhead.speed=Velocidad: %1$s
+desc.ImmersiveEngineering.flavour.drillhead.damage=Daño: %1$s
+
+desc.ImmersiveEngineering.flavour.skyhook=No esta completo!
+
+desc.ImmersiveEngineering.flavour.toolupgrade.drillWaterproof=Permite que el taladro de mineria funcione bajo agua
+desc.ImmersiveEngineering.flavour.toolupgrade.drillSpeed=Aumenta la velocidad del taladro de mineria
+desc.ImmersiveEngineering.flavour.toolupgrade.drillDamage=Aumenta el daño del taladro de mineria. Max: 3
+desc.ImmersiveEngineering.flavour.toolupgrade.drillCapacity=Aumenta el tamaño del tanque interno del taladro de mineria
+desc.ImmersiveEngineering.flavour.toolupgrade.revolverBayonet=Aumenta el daño melee del revolver
+desc.ImmersiveEngineering.flavour.toolupgrade.revolverMagazine=Aumenta el tamaño del cargador del revolver
+desc.ImmersiveEngineering.flavour.toolupgrade.revolverElectro=Agrega daño electrico al revolver
+
+gui.ImmersiveEngineering.empty=Vacio
+
+#CHAT
+chat.ImmersiveEngineering.warning.wrongCable=No puedes poner el cable ahi
+chat.ImmersiveEngineering.warning.wrongDimension=Estas en la dimension equivocada
+chat.ImmersiveEngineering.warning.sameConnection=No puedes poner el cable en el punto de partida
+chat.ImmersiveEngineering.warning.tooFar=Estas demasiado lejos del conector anterior
+chat.ImmersiveEngineering.warning.cantSee=La coneccion esta obstruida
+chat.ImmersiveEngineering.warning.connectionExists=Ya existe esa conexion
+chat.ImmersiveEngineering.warning.invalidPoint=Uno de los puntos de la conexion no es valido
+chat.ImmersiveEngineering.info.averageLoss=Perdida media: %1$s%%
+chat.ImmersiveEngineering.info.energyStorage=Energia guardada: %1$s/%2$s RF
+chat.ImmersiveEngineering.info.tooHot=Fluido demasiado caliente para el contenedor!
+chat.ImmersiveEngineering.info.noGasAllowed=No puede contener gases!
+chat.ImmersiveEngineering.info.invertedOn=Redstone invertida
+chat.ImmersiveEngineering.info.invertedOff=Redstone directa
+
+chat.ImmersiveEngineering.info.forChunk=§8Para el chunk entre %1$s y %2$s
+chat.ImmersiveEngineering.info.coreDrill.progress=Muestreando: %1$s
+chat.ImmersiveEngineering.info.coreDrill.result.mineral=§7Muestreo evaluado, yacimiento de %1$s§7 encontrado
+chat.ImmersiveEngineering.info.coreDrill.result.depl=§7yacimiento tiene %1$s§7 integridad
+chat.ImmersiveEngineering.info.coreDrill.result.none=Muestreo evaluado, no se han encontrado yacimientos
+chat.ImmersiveEngineering.info.coreDrill.infinite=infinito
+
+chat.ImmersiveEngineering.command.available=§6Available commands:§r %1$s
+chat.ImmersiveEngineering.command.help.help=§6Usage: /ie help <command> [sub-commands ...]§r<br> To get more info on the specified command or, optionally, its sub commands
+chat.ImmersiveEngineering.command.mineral.help=§6Usage: /ie mineral <list|get|set|setDepletion>§r
+chat.ImmersiveEngineering.command.mineral.list.help=§6Usage: /ie mineral list§r<br> Lists all registered Minerals
+chat.ImmersiveEngineering.command.mineral.get.help=§6Usage: /ie mineral get§r<br> Displays the mineral for the chunk
+chat.ImmersiveEngineering.command.mineral.set.help=§6Usage: /ie mineral set [mineral]§r<br> Sets a mineral override for the chunk. Specify no mineral to clear the override.
+chat.ImmersiveEngineering.command.mineral.setDepletion.help=§6Usage: /ie mineral setDepletion <number>§r<br> Set the depletion of the minerals inside the chunk. Set this to -1 to make the vein infinite.
+chat.ImmersiveEngineering.command.mineral.get=Chunk contains: %1$s, Override: %2$s, Depletion: %3$s
+chat.ImmersiveEngineering.command.mineral.set.invalidMineral=§cInvalid Mineral, '%1$s' is not a valid identifier. Use '/ie mineral list' for a list of all identifiers.§r
+chat.ImmersiveEngineering.command.mineral.set.sucess=Mineral override set to '%1$s'
+chat.ImmersiveEngineering.command.mineral.set.clear=Mineral override (%1$s) cleared.
+chat.ImmersiveEngineering.command.mineral.setDepletion.NFE=Error, '%1$s' is not a valid number
+chat.ImmersiveEngineering.command.mineral.setDepletion.sucess=Mineral depletion set to '%1$s'
+
+#RECIPES
+recipe.ImmersiveEngineering.hammerCrushing=Pulverizar
+
+#DEATH
+death.attack.ieRevolver_casull=%1$s was shot by %2$s
+death.attack.ieRevolver_armorPiercing=%1$s was shot by %2$s
+death.attack.ieRevolver_buckshot=%1$s was shotgunned by %2$s
+death.attack.ieRevolver_dragonsbreath=%1$s was incinerated by %2$s
+death.attack.ieRevolver_homing=%1$s was shot by %2$s's homing bullet
+death.attack.ieRevolver_wolfpack=%1$s was shredded by %2$s's Wolfpack Rounds
+death.attack.ieRevolver_silver=%1$s was purified by %2$s's silver bullet
+death.attack.ieRevolver_potion=%1$s was doused by %2$s's phial shot
+death.attack.ieCrushed=%1$s was crushed
+
+#ACHIEVEMENTS
+achievement.immersiveengineering.openManual=RTFM
+achievement.immersiveengineering.openManual.desc=Open the Engineer's Manual
+achievement.immersiveengineering.craftHammer=HAMMAH!
+achievement.immersiveengineering.craftHammer.desc=Craft an Engineer's Hammer
+achievement.immersiveengineering.connectWire=Birds on a Wire
+achievement.immersiveengineering.connectWire.desc=Attach a wire
+achievement.immersiveengineering.blastfurnace=Really Hot Topic
+achievement.immersiveengineering.blastfurnace.desc=Create a Blast Furnace
+achievement.immersiveengineering.makeSteel=The Upgrade
+achievement.immersiveengineering.makeSteel.desc=Create a Steel Ingot
+achievement.immersiveengineering.makeRevolver=Make my day
+achievement.immersiveengineering.makeRevolver.desc=Craft the Revolver
+achievement.immersiveengineering.upgradeRevolver=Shalashaska
+achievement.immersiveengineering.upgradeRevolver.desc=Apply the maximum Upgrades to the Revolver
+achievement.immersiveengineering.makeWolfPack=Beauty of Destruction
+achievement.immersiveengineering.makeWolfPack.desc=Craft a Wolfpack Cartridge
+achievement.immersiveengineering.makeDrill=Power Pick
+achievement.immersiveengineering.makeDrill.desc=Craft the Mining Drill
+achievement.immersiveengineering.upgradeDrill=Big Daddy
+achievement.immersiveengineering.upgradeDrill.desc=Apply the maximum Upgrades to the Mining Drill
+achievement.immersiveengineering.makeSkyhook=Booker, catch!
+achievement.immersiveengineering.makeSkyhook.desc=Craft the Engineer's Skyhook
+achievement.immersiveengineering.skyhookPro=Skyline Master
+achievement.immersiveengineering.skyhookPro.desc=Travel a total of 1km with the Skyhook
+achievement.immersiveengineering.mbSilo=Sheetmetal Stash
+achievement.immersiveengineering.mbSilo.desc=Form the Silo Multiblock
+achievement.immersiveengineering.mbCrusher=Hazardous Machinery
+achievement.immersiveengineering.mbCrusher.desc=Form the Crusher Multiblock
+achievement.immersiveengineering.mbDieselGen=Bad for the Environment
+achievement.immersiveengineering.mbDieselGen.desc=Form the Diesel Generator Multiblock
+achievement.immersiveengineering.mbExcavator=Diggy Diggy Hole
+achievement.immersiveengineering.mbExcavator.desc=Form the Excavator Multiblock
+achievement.immersiveengineering.mbArcFurnace=The Hottest Topic
+achievement.immersiveengineering.mbArcFurnace.desc=Form the Arc Furnace Multiblock
+
+achievement.immersiveengineering.secret_birthdayParty=Grunt Birthday Party
+achievement.immersiveengineering.secret_birthdayParty.desc=Light a match...
+
+stat.skyhookOneCm=Distance by Skyhook
+
+
+#MANUAL
+#ie.manual.entry..name=
+#ie.manual.entry..subtext=
+#ie.manual.entry.=
+
+ie.manual.category.update.name=UPDATE NEWS!
+ie.manual.entry.updateNews.name=What's new in Version 0.6
+ie.manual.entry.updateNews.subtext=Old, new; borrowed and Blu
+ie.manual.entry.updateNews0=Dear Engineer!<br><br>Since you last worked with Immersive Engineering, many things have changed! Among the new things are: Villager houses, <link;lighting;§nnew §nlights§r>, <link;barrel;§nwooden §nbarrels§r>, <link;tanksilo;§ntanks§r>, <link;tanksilo;§nsilos§r;1> and <link;fluidPipes;§nfluid §npipes§r>, achievements, <link;shader;§nshaders§r> and the <link;assembler;§nAssembler§r> and <link;bottlingMachine;§nBottling §nMachine§r>!
+ie.manual.entry.updateNews1=Most importantly however, the way energy transmission is handled has changed a lot. In order to avoid mistakes, please make sure to read the entry on <link;wiring;§nWiring§r>, especially page 5, detailing the new distinction between a cable's transfer rate and a connector's in- and output.
+
+
+ie.manual.category.general.name=Informacion General y Recursos
+ie.manual.category.construction.name=Construccion
+ie.manual.category.energy.name=Energia, Cables y generadores
+ie.manual.category.machines.name=Herramientas y maquinas simples
+ie.manual.category.heavymachines.name=Maquinaria Pesada
+
+ie.manual.entry.introduction.name=Introduccion
+ie.manual.entry.introduction.subtext=Getting into Engineering
+ie.manual.entry.introduction0=Saludos, ingeniero, y bienvenido a Immersive Engineering. Este libro te servira de guia para instalar las nuevas maquinas y funciones que este mod tiene para ofrecer.<br>Empecemos con lo basico: Immersive Engineering esta hecho con el concepto de generacion y transmision de energia retrofuturista. Este mod utiliza RedstoneFlux como energia, lo que es compartido por muchos otros mods
+ie.manual.entry.introduction1=La energia es transferida entre §lconectores§r a travez del uso de §lcables§r. Los cables tienen una longitud maxima, asi que necesitaras usar mas conectores com §lrelays§r entre cables.<br>Tienes a tu disposicion 3 tipos diferentes de cable, que ofrecen diferente capacidad de transferencia, <config;iA;cableTransferRate;l3> RF/tick. Para pasar de un tipo a otro de cables, necesitaras usar §ltransformadores§r.
+ie.manual.entry.introductionHammer=El Martillo del Ingeniero es tu herramienta mas importante. Sera utilizado para armar estructuras multibloque Como el Horno de Coque y el Alto Horno<config;b;crushingOreRecipe;, para aplastar menas en polvo  ; >o configurar algunos bloques como postes de madera.
+
+ie.manual.entry.ores.name=Minerales
+ie.manual.entry.ores.subtext=Diggy diggy hole
+ie.manual.entry.oresCopper=§lMineral de cobre§r se encuentra en el mundo entre las capas <config;iA;ore_copper;1> y <config;iA;ore_copper;2>, y requiere un pico de piedra para recolectar.<br><br>La mena se puede fundir en lingotes, que se usan en la construccion de cables basicos de cobre, bobinas, y otras partes integrales de IE.
+ie.manual.entry.oresBauxite=§lMineral de bauxite§r se encuentra en el mundo entre las capas <config;iA;ore_bauxite;1> y <config;iA;ore_bauxite;2>, y requiere un pico de piedra para recolectar.<br><br>La mena se puede fundir en lingotes, que, junto con el acero se utilizan en la creacion de Cables de alto voltaje.
+ie.manual.entry.oresLead=§lMineral de Plomo§r se encuentra en el mundo entre las capas <config;iA;ore_lead;1> y <config;iA;ore_lead;2>, y requiere un pico de hierro para recolectar.<br><br>La mena se puede fundir en lingotes, que son utilizado en la construccion de capacitores.
+ie.manual.entry.oresSilver=§lMineral de plata§r se encuentra en el mundo entre las capas <config;iA;ore_silver;1> y <config;iA;ore_silver;2>, y requiere un pico de hierro para recolectar.<br><br>La mena se puede fundir en lingotes, que con oro forman una aleacion llamada electrum, un conductor muy eficaz.
+ie.manual.entry.oresNickel=§lMineral de niquel§r se encuentra en el mundo entre las capas <config;iA;ore_nickel;1> y <config;iA;ore_nickel;2>, y requiere un pico de hierro para recolectar.<br><br>La mena se puede fundir en lingotes, que con cobre forman una aleacion llamada constantan, un conductor resistente al calor utilizado en la creacion de <link;generator;§o§nGeneradores §o§nTermoelectricos§r;1>.
+
+ie.manual.entry.oreProcessing.name=Procesamiento de minerales
+ie.manual.entry.oreProcessing.subtext=
+ie.manual.entry.oreProcessing0=Construir <config;b;crushingOreRecipe;minerales y> lingotes con un martillo te permite pulverisarlos.los polvos pueden luego ser refundidos en lingotes, pero mas importante, son utilizados en la creacion de aleaciones.<config;b;crushingOreRecipe;<br>Aplastar los minerales con el martillo duplicara la cantidad de lingotes obtenidos>
+ie.manual.entry.oreProcessing1=Mezclar los polvos genera mezcla de aleacion, que puede fundirse en lingotes. El Constantan tiene propiedades termoelectricas y se usa para crear el <link;generator;§o§ngenerador §o§ntermoelectrico§r;1> y el electrum es un excelente conductor de electricidad utilizado en <link;wiring;§o§ncablead §o§nde §o§nmedio §o§nvoltaje§r>.
+
+ie.manual.entry.hemp.name=Cañamo Industrial
+ie.manual.entry.hemp.subtext=530 fabric it
+ie.manual.entry.hemp0=El cañamo industrial es una planta maravillosa! No solo sus semillas se utilizan para la creacion de <link;biodiesel;§o§nBiodiesel§r>, las fibras de cañamo son tambien parte vital de los <link;generator;§o§nMolinos §o§nde §o§nviento §o§nmejorados§r;3>. las semillas pueden obtenerse rompiendo pastos altos.
+
+ie.manual.entry.cokeoven.name=Horno de Coque
+ie.manual.entry.cokeoven.subtext=Hot topic!
+ie.manual.entry.cokeoven0=El Horno de coque es la primera maquina que necesitaras. Su funcionalidad es simple, calienta carbon o bloques de carbon sin proveerles oxigeno, creando Carbon de coque, un combustible excepcional. Mas importante, este proceso crea §lAceite de creosota§r, que se usa como <link;treatedwood;§o§npreservador §o§npara §o§nmadera§r>. De forma similar, puedes quemar madera para producir carbon vegatal, aunque esto produce menos cantidad de aceite de creosota.
+ie.manual.entry.cokeovenBlock=Para armar el Horno de Coke, arme un cubo de 3x3x3 con estos bloques, Y haga click derecho en el bloque central de una de las caras con un martillo de ingeniero.<br>En la pagina siguiente hay un diagrama.
+
+ie.manual.entry.treatedwood.name=Madera Tratada
+ie.manual.entry.treatedwood.subtext=Highly Durable
+ie.manual.entry.treatedwood0=La madera tratada es, simplemente, madera cubierta de aceite de creosota. Es sinembargo, uno de los materiales mas importantes que usarta en Immersive Engineering, Asi que preparese para crear montañas de ella.
+ie.manual.entry.treatedwoodPost0=Postes hechos con madera tratada son un punto exceletne para poner conectores. Miden 4 bloques de altura, asi que no podra ponerlos donde no quepan.<br>Al usar un martillo en la parte superior del poste aparecera un brazo de soporte. 
+ie.manual.entry.treatedwoodPost1=Puede tambien poner <link;wiring;§o§ntransformadores§r;4> en el poste, Lo que lo hace menos intrusivo.<br>poner bloques bajo los brazons hara que estos queden invertidos.
+
+ie.manual.entry.barrel.name=Barril de madera
+ie.manual.entry.barrel.subtext=Doesn't roll
+ie.manual.entry.barrel0=Los barriles de madera son contenedores de liquido. Guardaran hasta 12 cubos de fluidos, pero al ser de madera, no pueden guardar gases ni fluidos calientes.<br>Click derecho con un martillo cambiara la cara superior o inferior del barril a entrada, salida o sin conexion.
+
+ie.manual.entry.jerrycan.name=Jerrycan
+ie.manual.entry.jerrycan.subtext=Better than buckets
+ie.manual.entry.jerrycan0=Las Jerrycans son contenedores de metal para fluidos. pueden guardar 10 cubos de fluido y pueden verterlo tanto en el mundo como en maquina. Sin embargo, no pueden recoger fluidos. Adicionalmente, pueden usarse para llenar otros items que consuman fluidos como <link;drill;§o§nTaladro §o§nde §o§nMineria§r> construyendo los dos items juntos.
+
+ie.manual.entry.graphite.name=Grafito
+ie.manual.entry.graphite.subtext=Coal stuff
+ie.manual.entry.graphite0=El grafito es un material carbonico complejo, altamente comprimido, usado en construciones especiales.<br>El polvo de grafito se obtiene al comprimir 8 piezas de carbon de coque en el <link;biodiesel;§o§nExprimidor §o§nIndustrial;1>. El polvo luego puede ser fundido en lingotes.
+ie.manual.entry.graphite1=El uso mas comun del grafito es la fabricacion de electrodos para el <link;arcfurnace;§o§nHorno §o§nde §o§nArcos§r>. Estos electrodos se crean con <link;blueprints;§o§nPlanos §o§nde §o§nIngeniero§r>, que puedes<config;b;arcfurnace_electrodeCrafting; construir,> encontrar en cofres o comprar a los habitantes de los pueblos.
+
+ie.manual.entry.wiring.name=Cableado Basico
+ie.manual.entry.wiring.subtext=Bzzzt!
+ie.manual.entry.wiring0=La red energetica de Immersive Engineering tiene 4 bloques importantes: §lCapacitores§r para guardar energia, §lconectores§r como entradas y salidas de la red, §lrelays§r para conectar cables entre si y §ltransformadores§r para cambiar entre diferentes niveles de cableado.<br>En sistemas de bajo y medio voltaje (cables de cobre y electrum), los conectores y relays son lo mismo, pero los conectores de alto voltaje solo aceptan un cable.
+ie.manual.entry.wiring1=para conectar 2 bloques, cliquee el primero con una bobina de cable, y luego use la misma bobina en el destino. La velocidad de transferencia entre dos puntos depende del cable mas debil entre ellos.
+ie.manual.entry.wiring2=Note que hay restricciones: los conectores y relays solo aceptaran cables del mismo tipo que tienen conectados, los transformadores solo aceptaran 2 cables diferentes,<br>[cont]
+ie.manual.entry.wiring3=y los cables solo se conectaran a bloques que igualen el voltaje.
+ie.manual.entry.wiring4=Hay 2 valores importantes a la hora de cablear:<br>cada conector tiene un valor de entrada (§o<config;iA;wireConnectorInput>§r) y cada cable tiene un limite de transferencia (§o<config;iA;cableTransferRate;l3>§r).<br>El conector limita cuanta energia puede entrar y salir, pero multiples conectores puede §ounificarse§r en un solo cable, permitiendo combinar la trasferencia a largas distancias. Note sinembargo que el  §omaximo de transferencia del cable no puede ser excedido, o sino el cable se §oquemara§r.
+ie.manual.entry.wiringConnector=los §lConectores§r sirven como entrada y salida de la red energetica de IE. Pueden ponerse en capacitores u otras maquinas que utilicen RF Y enviaran energia por los cables. Relays de alto voltaje aceptaran cables, pero no emiten ni reciben energia, solo sirven como conexion entre cables.
+ie.manual.entry.wiringCapacitor=los §lCapacitores§r sirven como unidades de almacenamiento de energia. Puedes configurar cada lado con un martillo, azul es entrada, naranja salida y sin color es no conectado. Shift a la vez que utilizas el martillo para configurar el lado opuesto al que estas mirando.
+ie.manual.entry.wiringTransformer0=los §lTransformadores§r permiten la transcicion entre tipos de voltaje. el cable mas debil limita la transferencia. Notese que los Transformadoers AV pueden bajar directamente a MV o BV, asi que no se necesita encadenar transformadores.
+ie.manual.entry.wiringTransformer1=Puedes poner <link;wiring;§o§nTransformadores §o§nen §o§npostes §o§nde §o§nmadera§r;4> commo se muestra en la segunda imagen de la pagina 4, excepto los de Alto Voltaje.
+ie.manual.entry.wiringCutters=los §lAlicates§r se utilizan para quitar todos los cables conectados a un bloque simplemente haciendo click derecho en el.
+ie.manual.entry.wiringVoltmeter=le §lVoltimetro§r se utiliza para medir conexiones. click derecho en un capacitor para leer la cantidad de energia que tiene o shift+click derecho en dos conectores para calcular la perdida media entre ellos.
+
+ie.manual.entry.generator.name=Generacion de Energia
+ie.manual.entry.generator.subtext=
+ie.manual.entry.generator0=La transmision de energia se vuelve mucho mas util cuando tienes energia que transferir. Para generar RF, puedes utilizar la energia cinetica del viento o el agua. Conectar un molino de viento o una rueda de agua a un dynamo generara energia basado en la velocidad con que giren.
+ie.manual.entry.generatorWindmill=El molino de viento es una manera gratuita, aunque no muy poderosa de generar energia. Su velocidad depende en gran medida de la altura y el espacio que tenga delante. Ira mas rapido si llueve.
+ie.manual.entry.generatorWatermill=La rueda de agua es una manera sencilla de generar energia. Su velocidad depenede del agua fluyendo a su alrededor. Hasta 3 ruedas de agua se pueden conectar entre si.
+ie.manual.entry.generatorWindmillImproved=el Molino de viento mejorado es mas eficiente que el comun. aunque es el doble de poderoso que el otro es mas caro, Necesitando lona pesada hecha con calamo industrial. 
+
+ie.manual.entry.breaker.name=Disyuntor
+ie.manual.entry.breaker.subtext=Clap on - Clap off
+ie.manual.entry.breaker0=Los disyuntores sirven para cortar la corriente entre dos cables. Pueden conectar 2 cables y no pasara energia hasta que este activado. 
+ie.manual.entry.breaker1=Debido al alto riesgo, Estos disyuntores no aceptan cables AV.<br>Tambien emiten una señal redstone cuando se prenden; este comportamiento se puede invertir con un martillo.<br>Adicionalmente son una manera excelente de controlar los <link;lighting;Faroles;1>!
+ie.manual.entry.breaker2=El interruptor redstone es similar a un disyuntor, pero no se puede operar manualmente. Requiere una señal redstone para cortar la energia. este interruptor esta suficientemente aislado para conectar cables AV!
+
+ie.manual.entry.thermoElectric.name=Generador Termoelectrico
+ie.manual.entry.thermoElectric.subtext=Hot and Cold
+ie.manual.entry.thermoElectric0=Los Generadores Termoelectricos son otra opcion de generacion de energia que trabaja sin el uso de partes mecanicas, sino que usan la diferencia de temperatura entre dos fuentes.
+ie.manual.entry.thermoElectric1=Poniendo un fluido caliente en un lado y otro frio en el opuesto, genera energia basandose en la diferencia de temperatura.<br>La siguiente lista contiene otros, bloques solidos, que pueden usarse como fuente de temperatura.
+
+ie.manual.entry.blastfurnace.name=Alto Horno
+ie.manual.entry.blastfurnace.subtext=Even hotter topic!
+ie.manual.entry.blastfurnace0=El Alto Horno se utiliza para aumentar el contenido de carbon del hierro, Convirtiendolo en acero. Para lograr esto, solo coblustibles puuros de alto contenido carbonico pueden ser usados, especificamente Carbon de Coque y carbon vegetal.<br>El acero es una parte integral de los componentes de AV.
+ie.manual.entry.blastfurnaceBlock=Para construir un Alto Horno arma un cubo de 3x3x3 con este bloque, y has click derecho con un martillo en el bloque central de cualquier cara<br>Mira el siguiente diagrama
+
+ie.manual.entry.metalconstruction.name=Construcciones Metalicas
+ie.manual.entry.metalconstruction.subtext=Riveting
+ie.manual.entry.metalconstruction0=Ademas de la madera tratada, los metales procesados tambien sirven como bloques de construccion. Puedes hacer casi cualquier metal en losas o escaleras, o martillar lingotes de hierro en bloques de chapa.
+ie.manual.entry.metalconstruction1=Los andamios de acero se pueden utilizar para crear estructuras trepables, las vallas de acero no se queman como las de madera y los brazos estructurales son un lugar optimo para poner los relays AV. 
+ie.manual.entry.metalconstruction2=Los conectores estructurales funcionan como los normales solos que no transfieren energia, son puramente decorativos.<br>No aceptan cables normales, pero si cuerda de Cañamo, y cables de acero (ver pagina siguiente).<br>se pueden rotar haciendo click derecho con un martillo.
+
+ie.manual.entry.lighting.name=Iluminacion
+ie.manual.entry.lighting.subtext=Lighting up the Wasteland
+ie.manual.entry.lighting0=En lo profundo de las fabricas, puede estar bastante oscuro. para poder encontrar el camino entre las maquinas, probablemente debas iluminar un poco con faroles. Los faroles dan la misma luz que un bloque de glowstone.
+ie.manual.entry.lighting1=Los faroles electricos son de los primeros inventos que usan electricidad. Para que funcionen, alcanza con conectarlos a la red energetica. Ademas son conductores de energia, asi que puedes poner una fila entera de ellos y conectar solo uno.
+ie.manual.entry.lighting2=Siempre que tengan un poco de energia, iluminaran igual que un foco comun, pero ademas impedira el swapn de enemigos en 32 bloques a la redonda!
+ie.manual.entry.lighting3=Los Focos son fuentes de luz poderosas.Si bien necesitan mas energia que los faroles electricos, haran un cono de luz de 32 bloques de longitud. Use un martillo en la cara superior o inferior para rotarlo, o en los costados para cambiar su inclinacion.
+
+ie.manual.entry.tanksilo.name=Tanques y Silos
+ie.manual.entry.tanksilo.subtext=Full to the brim!
+ie.manual.entry.tanksilo0=Tanques y silos de chapa proveen almacenaje para gran numero de items y liquidos.<br>Los tanques pueden contener 512 cubos, que pueden ser bombeados a travez de la cara superior o inferior. Para ensamblar la estructura usar el martillo en el bloque central de la segunda capa.
+ie.manual.entry.tanksilo1=Los Silos permiten almacenar mucha cantidad de un item, lo que los hace excelentes para guardad semillas, escoria o roca. Pueden almacenar 41472 items, lo mismo que 24 cofres.
+ie.manual.entry.tanksilo2=Los items deben ser insertados por arriba y extraidos por debajo. Aplicar una señal de redston al bloque inferior hara que emita automaticamente. Para ensamblar la estructura usar el martillo en el bloque central de la segunda capa.
+ie.manual.entry.tanksilo3=Un comparador en el bloque de extraccion del tanque/silo emitira una señal redstone proporcional a su contenido. Un comparador en las 6 capas superiores en un silo o en las 4 superiores en un tanque emitira una señal redstone proporcional a que tan lleno esta ese 1/4 o 1/6.
+
+ie.manual.entry.metalbarrel.name=Barril de metal
+ie.manual.entry.metalbarrel.subtext=Doesn't roll
+ie.manual.entry.metalbarrel0=Los barriles de metal funcionan como <link;barrel;§o§nBarriles §o§nde §o§nMadera§r;>. Guardan la misma cantidad de fluido y se configuran igual, pero pueden guardar liquidos calientes y gases. 
+
+ie.manual.entry.assembler.name=Ensamblador
+ie.manual.entry.assembler.subtext=Some assembly required
+ie.manual.entry.assembler0=El ensabmlador es una maquina compleja capas de construir items, igual que lo haria un jugador.<br>Para formar la estructura, Construyalo como se muestra arriba y use el martillo en una cinta transportadora.
+ie.manual.entry.assembler1=La cinta que haya cliqueado sera el punto de ingreso, indicado por el marcador azul y la flecha al costado de la maquina.<br>El ensamblador puede contener hasta 3 recetas que se construiran en orden. La salida de un receta puede utilizarse como material para la siguiente.<br>Las 3 grillas de construccion guardan las recetas, y los 18 slots de abajo son el inventario de materiales.
+ie.manual.entry.assembler2=El lado de entrada, tiene ademas una entrada para fluidos, que llena los 3 tanques internos de la maquina. Los fluidos en estos tanques pueden usarse para reemplazar cubos y botellas en las recetas.<br>La energia debe ser proporcionada por el bloque central superior
+
+ie.manual.entry.bottlingMachine.name=Embotelladora
+ie.manual.entry.bottlingMachine.subtext=Fill 'er up!
+ie.manual.entry.bottlingMachine0=La Embotelladora pone fluidos en contenedores. La estructura se crea como se muestra arriba, la direccion de las cintas transportadoras es importante, pero pueden estar espejadas. para ensamblar utilice el martillo en la cinta transportadora central.
+ie.manual.entry.bottlingMachine1=Los fluidos se ingresan por el puerto central del nivel inferior, los items se ingresan por las cintas transportadoras. El movimiento de las cintas deberia hacer que la entrada y salida sean obias. La Energia se recibe en la parte superior.<br>Generalmente, La embotelladora podra llenar cualquier recipiente que tenga una version con el fluido. Ademas llenara items designados como contenedores de fluido, como el <link;drill;§o§nTaladro §o§nMinero§r> o un <link;jerrycan;§o§nJerrycan§r>.
+
+ie.manual.entry.highvoltage.name=Alto Voltaje
+ie.manual.entry.highvoltage.subtext=You can't shake the shock
+ie.manual.entry.highvoltage0=Los cables de alto voltaje tienen el indice de transferencia mas alto (<config;iA;cableTransferRate;2> RF/t) y necesitan conectores especiales. Note que en conexiones de alto voltaje, §oLos conectores y los relays no son el mismo bloque§r, los relays no seran capaces de emitir o recibir energia de la red. Ademas, §olos relays solo pueden ponerse en la parte de abajo de un bloque§r<br>Para pasar de conecciones AV a conecciones BV o MV, necesitara Transformadores de Alto Voltaje, y tenga en mente, el cable mas debil es el que limita la transferencia.
+
+ie.manual.entry.multiblocks.name=Construcciones multibloque
+ie.manual.entry.multiblocks.subtext=Where's my Allen Wrench?
+ie.manual.entry.multiblocks0=Meter maquinaria compleja en un cubo de 1x1x1 parece una tarea inmanejable sin magia o rayos encogedores. Asi que para crear maquinaria compleja, necesitara bloques de componentes. Los mas comunes estan listados en las siguientes paginas.
+
+ie.manual.entry.workbench.name=Mesa de Ingeniero
+ie.manual.entry.workbench.subtext=Overclocking
+ie.manual.entry.workbench0=A lo largo de su carrera como ingeniero se topara con herramientas que pueden ser optimizadas y mejoradas. Para aplicar estas modificaciones, necesitara una Mesa de Ingeniero propiamente equipada.<br>Rightclick en la mesa, inserte el item en el slot, y la modificacion en el nuevo slot que aparecera.
+
+ie.manual.entry.blueprints.name=Planos de Ingeniero
+ie.manual.entry.blueprints.subtext=RTFM
+ie.manual.entry.blueprints0=Hay algunos items que son demasiado complejos en su construccion y necesitan algo mas que un cubo de madera con una grilla. Estos items necesitaran ser creados siguiendo instrucciones precisas de un plano en una <link;workbench;§o§nMesa §o§nde §o§nIngeniero§r>.<br><br>Si encuentras un plano (o si creas alguno), puedes ponerlo en el slot de la mesa de ingeniero.
+ie.manual.entry.blueprints1=Para crear el item descrito en el plano, Inserte los materiales requeridos en los 6 slots centrales, y retire el objeto completo en el slot de la derecha. Poner el mouse sobre estos slots le dira que materiales faltan. 
+
+ie.manual.entry.dieselgen.name=Generador Diesel
+ie.manual.entry.dieselgen.subtext=Better than volume: More volume.
+ie.manual.entry.dieselgen0=El Alto Voltaje puede ser interesante, Pero no sirve para mucho si no tienes un generado que puede producir suficiente energia.<br>Los generadores diesel son una de las pocas formas de generar esa energia. Es una estructura multibloque compleja que corre con <link;biodiesel;§o§nBiodiesel§r> u otros tipos de combustible. Debido a su alta produccion de energia, Consume mucho combustible, Asi que asegurate de tener una fuerte produccion.
+ie.manual.entry.dieselgen1=La estructura esta compuesta de bloques de Motor, Generador y Radiador. construya siguiendo las instrucciones al costado y haga click derecho con el martillo en el generador central o en el radiador central para ensamblar.
+ie.manual.entry.dieselgen2=El combustible ingresa por las esquinas inferiores del generador, mientras que la energia ssale por hasta 3 conectores en la parte superior. Los <config;i;dieselGen_output>RF/t que genera este generador seran divididos entre los cables conectados.<br>La pequeña terminal al costado apagara el generador si recibe una señal redstone.<br>Puedes invertir el generador haciendo click con un martillo en el bloque generador central. 
+ie.manual.entry.dieselgen3=La siguiente table muestra los combustibles validos del generador y cuanto duran. 
+
+ie.manual.entry.biodiesel.name=Biodiesel
+ie.manual.entry.biodiesel.subtext=Green power!
+ie.manual.entry.biodiesel0=Los combustibles fosiles son faciles de usar y muy eficientes. Pero como el petroleo es finito, algo renovable seria preferible. Biodiesel es la solucion! Combinando aceite vegetal con etanol, puedes crear combustible para el <link;dieselgen;§o§nGenerador §o§nDiesel§r>.
+ie.manual.entry.biodiesel1=El aceite vegetal se obtiene de procesar varias semillas en el exprimidor industrial. Cree la estructura de arriba y hagale click con un martillo para construirlo. La energia debe ser proporcionada por encima o debajo, y los fluidos salen por los puertos inferiores de las caras.
+ie.manual.entry.biodiesel1T=La siguiente lista muestra que items pueden ser utilizados para exprimir aceite vegetal y cuanto rinden.
+ie.manual.entry.biodiesel2=Etanol se obtiene de fermentar caña de azucar y otras frutas. El fermentador se crea de forma similar al exprimidor industrial, y su configuracion es ideintica.
+ie.manual.entry.biodiesel2T=La siguiente lista muestra items que pueden fermentarse en etanol y cuanto rinden.
+ie.manual.entry.biodiesel3=Finalmente, Para convertir etanol y aceite vegetal en bidiesel, debe insertar ambios fluidos en una refineria y darle energia. La estructura se arma como se muestra arriba, y se ensambla haciendo click con un martillo en el bloque central del frente.
+ie.manual.entry.biodiesel4=El frente de la refineria sirve para expulsar el fluido, mientras que las entradas son a los costados. La energia se provee por detras. Aplicar una señal redstone a la consola de la derecha detendra a la refineria.
+
+ie.manual.entry.conveyor.name=Cintas Transportadorasa
+ie.manual.entry.conveyor.subtext=Who needs rails anyway?
+ie.manual.entry.conveyor0=las cintas transportadores son una manera facil de transportar items dentro de tu base. Si bien pueden transportar cosas vivas, su objetivo principal es transportar items.<br>Un item tirado sobre una sera transportado a lo largo de la cinta. Si la cinta va a dar a un inventario, el item sera insertado.
+ie.manual.entry.conveyor1=Los bloques como los embudos pueden tirar elementos en la cinta. Use un martillo para orientarlas (rightclick) o para ajustar si tienen que ir hacia arriba o abajo (shift + rightclick).<br>Por defecto, las cintas van en el mismo sentido que el jugador esta mirando cuando las pone. Apretar shift mientras se ponen las invierte.
+
+ie.manual.entry.furnaceHeater.name=Calentador externo
+ie.manual.entry.furnaceHeater.subtext=Now you're cooking with flux!
+ie.manual.entry.furnaceHeater0=El calentador externo hace justamente eso, Genera calor consumiendo RF. Si se pone junto a un horno, este se calentara, permitiendole trabajar sin combustible.
+ie.manual.entry.furnaceHeater1=Click en un lado del calentador para hacerlo receptor de energia, Shift+click para apuntar al lado opuesto<br>El calentador consumira §o<config;i;heater_consumption> RF/t§r por cada unidad de calor agregada. Durante la primera fase del horno, El calentador producira hasta §o4§r unidades de calor por tick, Pero tan pronto como el horno alcance maxima temperatura, necesitara solo §o1§r unidad de calor para mantenerse funcionando.
+ie.manual.entry.furnaceHeater2=Incluso mejor, Cuando el horno este a maxima temperatura, El calentador consumira un adicional de §o<config;i;heater_speedupConsumption> RF/t§r para aumentar la velocidad de proceso.<br>El calentador solo afectara hornos que puedan trabajar, para conservar energia. Sin embargo se puede aplicar una señal redstone para evitar esto, y mantener los hornos a maxima temperatura.
+
+ie.manual.entry.fluidPipes.name=Transporte de Fluidos
+ie.manual.entry.fluidPipes.subtext=Professional Plumber
+ie.manual.entry.fluidPipes0=Transportar fluidos se ha vuelto una parte escencial de la ingenieria. Los tubos de fluidos y las bombas de fluidos hacen justamente eso. Por si mismos, Los caños de fluidos son bastante lentos, Pero al usar una bomba para introducir el fluido, Se movera mucho mas rapido.
+ie.manual.entry.fluidPipes1=Puedes hacer click con el martillo en una conexion de caño para evitarla<br>Los caños pueden ser cubiertos con andamios de madera o acero. Simplemente pon el andamio sobre el caño para cubrirlo. Rompe el caño para recuperar el andamio.
+ie.manual.entry.fluidPipes2=Las bombas de fluido tienen dos funciones esenciales. Pueden usarse para insertar liquios en los caños a gran presion, para acelerar la transferencia, O pueden recoger fluidos del mundo. Usar el martillo en la base cambiara los lados de entrada a salida.
+ie.manual.entry.fluidPipes3=Para que la bomba recoja fluidos, necesitara una entrada de energia en la parte superior y una señal de redstone. Las bombas tambien pueden utilizarse para sacar liquido de contenedores que no lo hagan automaticamente. Esto tambien requiere una señal redstone, pero no consume energia.
+
+ie.manual.entry.sorter.name=Enrutador de items
+ie.manual.entry.sorter.subtext=Left foot yellow, right hand green
+ie.manual.entry.sorter0=El enrutador de Items es un bloque que aceptara y distruibuira items deacuerdo a filtros prefijados. Ponlo en el mundo y haz click derecho para abrir la interfaz, que muestra 6 filtros de colores y direcciones diferentes.
+ie.manual.entry.sorter1=Cuando un item entra al enrutador, sera ruteado a un filtro que lo acepte, o, si nos e encuentra un filtro, sera ruteado a una salida sin filtro. El enrutador no aceptara items que no pueda rutear. Los items no pueden salir por el lado donde ingresaron.
+
+ie.manual.entry.drill.name=Taladro Minero
+ie.manual.entry.drill.subtext=My drill will pierce the Bedrock!
+ie.manual.entry.drill0=Este taladro de mano a diesel es un gran avance en la industria minera. Con cabezales intercambiables y mejoras, sus propiedades son casi enteramente modificables. Para modificarlo, ponlo en una <link;workbench;§o§nMesa §o§nde §o§nIngeniero§r>.<br>el taladro consume <link;biodiesel;§o§nBiodiesel§r> y puede rellenarse automaticamente en una refineria.
+ie.manual.entry.drill1=El cabezal determina en nivel de minado, velocidad, y tamaño, asi como tambien el daño de ataque. A medida que mines, el cabezal pierde durabilidad, Pero se puede reparar en un yunque.
+ie.manual.entry.drill2=Como el taladro funciona en base a un motor de combustion, no funcionara bajo el agua a menos que le agregues un tanque de oxigenacion. Sin embargo, con esta mejora equipada, no solo funcionara bajo el agua, sino que ignorara la penalizacion de velocidad.
+ie.manual.entry.drill3=El sistema de lubricacion avanzado lubrica el taladro en forma periodica, permitiendole girar y minar mas rapido.
+ie.manual.entry.drill4=Agregarle sinfines adicio al taladro, su potencial destructivo en criaturas vivas crece. Esta mejora se puede aplicar hasta 3 veces agregando un punto de daño cada vez.
+ie.manual.entry.drill5=El gran tanque de combustible permite al taladro aumentar sus reservas, extendiendo el tiempo operativo entre recargas.
+
+ie.manual.entry.revolver.name=Revolver
+ie.manual.entry.revolver.subtext=Wanted: Dead or Alive
+ie.manual.entry.revolver0=El Revolver, Un arma mas elegante de una epoca mas civilizada.<br>Similar al taladro minero, el Revolver podra modificarse en la <link;workbench;§o§nMesa §o§nde §o§nIngeniero§r>, como se detalla en las ultimas paginas.
+ie.manual.entry.revolver1=Hay varios <link;bullets;§o§ntipos §o§nde §o§nmunicio§r;> que el Revolver puede aceptar. Para cargarlo, shift+click derecho con el arma, luego pon cartuchos en el slot.<br>Un speedloader en el inventario sera utilizado automaticamente para recargar luego de haber disparado el ultimo tiro.
+ie.manual.entry.revolver2=Agragarle una bayoneta al revolver, lo equipara en daño melee con una espada de hierro.
+ie.manual.entry.revolver3=El cargador extendido Permite cargar 6 cartuchos mas en el revolver, aunque no se puede usar con un speedloader.
+ie.manual.entry.revolver4=Los tubos amplificadores de electrones cargan de estatica las balas que estunea a los enemigos por una fraccion de segundo.
+
+ie.manual.entry.bullets.name=Cartichos de Revolver
+ie.manual.entry.bullets.subtext=
+ie.manual.entry.bullets0=Los cartuchos se crean en la mesa de ingeniero, usando los <link;blueprints;§o§nPlanos §o§nde §o§nIngeniero§r> adecuados. Los planos para la municon normal los puedes hacer tu, paro para los mas avanzados tendras que comprarlos. 
+ie.manual.entry.bullets1=§lCartuchos §lCasull§r Se crean con el plano de "Proyectiles Comunes". Son simplemente proyectiles de plomo que hacen daño medio.
+ie.manual.entry.bullets2=§lCartuchos §lAP§r son creados utilizando el mismo plano. Hacen el mismo daño pero ignoran parte de la armadura.
+ie.manual.entry.bullets3=§lCartuchos §lBuckshot§r, son creados utilizando el mismo plano. Son muchos proyectiles pequeños que son disparados a la vez. Extremadamente efectivo en rangos reducidos. Escopeta!
+ie.manual.entry.bullets4=§lCartuchos §lHE§r son creados utilizando el mismo plano. Proyectil que explota al impactar, dañando criaturas y terreno.
+ie.manual.entry.bullets5=§lCartuchos §lPlata§r Son cartuchos comunes bañados en plata, lo que los hace eficientes contra... hombres lobo?!
+ie.manual.entry.bullets6=§lCartuchos §lDragon§r son creados con el plano de "Proyectiles Especializados". Son como los Buckshot, efectivos en rango corto, pero en vez de pequeños proyectiles dispara polvo incendiario, creando una erupcion de fuego.
+ie.manual.entry.bullets7=§lCartuchos §lPocion§r son creados con el plano de "Proyectiles Especializados". Se pueden llenar con cualquier pocion construyendolos juntos en una grilla, y el efecto de esa pocion sera aplicado al impacto. Pociones normales requieren un impacto directo, Pociones explosivas tienen un area de efecto<config;b;etfuturumBullets; y pociones extendidas crearan una nube de efecto temporal.;.>
+ie.manual.entry.bulletsBotania0=§lCartuchos §lPerseguidores§r son creados con el plano de "Proyectiles Especializados" y el metal magico "Terrasteel", que le permite seguir al objetivo mas cercano.
+ie.manual.entry.bulletsBotania1=§lCartuchos §lManada§r Son una coleccion de proyectiles perseguidores en un solo cartucho. el proyectil inicial es norma, pero en impacto se convierte en 6 proyectiles perseguidores que destrozan al enemigo.
+#ie.manual.entry.bullets1=These are common types of ammunition, created with simple, selfmade blueprints:<br><br>§lCasull:§r Simple lead projectile, capable of inflicting medium damage.<br>§lArmor-Piercing:§r Dense metal projectile, penetrates the armor by sheer kinetic force.<br>§lBuckshot:§r Collection of small projectiles, spreading in a cone shape. Effective at short range.<br>§lHigh-Explosive:§r Creates small explosion on impact.<br>§lSilver:§r Lead core in silver, effective against...werewolves?!
+#ie.manual.entry.bullets2=These are more intricate types of ammunition, created with unique blueprints that cannot be crafted, only found or bought.<br><br>§lDragon's Breath:§r Flammable metal dust, creates a short-ranged inferno.<config;b;botaniaBullets;<br>§lHoming:§r Will home in on the closest target.<br>§lWolfpack:§r Unguided cluster projectile, splits into 6 small, homing, shots.;><br>§lPhial:§r Can be crafted with any potion to create a shot that inflicts the potion effect.
+
+
+ie.manual.entry.shader.name=Estilos
+ie.manual.entry.shader.subtext=Blue! No, yellow!
+ie.manual.entry.shader0=Los Estilos son items que puedes encontrar en el mundo o comprar a los pueblerinos. No tienen un proposito por si mismos, pero se pueden equipar al <link;revolver;§o§nrevolver§r> para cambiar el diseño del item. Simplemente pon el item en la <link;workbench;§o§nMesa §o§nde §o§nIngeniero§r> y equipa el estilo en el slot adecuado.
+
+ie.manual.entry.crusher.name=Pulverizador
+ie.manual.entry.crusher.subtext=Keep your hands out!
+ie.manual.entry.crusher0=aplastar minerales es una manera eficiente de duplicar su valor, ya que cada mena rinde 2 polvos que puedes fundir. Este pulverizador de tamaño industrial es una manera rapida de hacerlo. La maqunia consumira hasta <config;i;crusher_consumption> RF/t, y su velocidad dependera de la energia suministrada.
+ie.manual.entry.crusher1=No solo sirve para ppicar minerales. Cualquier cosa viva que caiga en el sufrira daño y la maquina devolvera los drops correspondientes. Del mismo modo, items que no puedan ser procesados seran destruidos.<br>Aplicar una señal redstone al panel de control en el frente detendra el pulverizador<br>La estructura se ensambla al usar un martillo en el bloque central del frente. el frente es le lado ancho que tiene un bloque de maquinaria ligera abajo.
+
+ie.manual.entry.lightningrod.name=Pararrayos
+ie.manual.entry.lightningrod.subtext=Thunderstruck!
+ie.manual.entry.lightningrod0=El rayo es un fenomeno de la naturaleza. Contiene cantidades enormes de energia, Y el pararrayos tiene la capacidad de utilizarla.<br>Poniendo vallas de acero sobre esta estructura aumentas la posibilidad de que lo golpee un rayo.
+ie.manual.entry.lightningrod1=Cuando un rayo impacta, La enorme cantidad de energia se almacena en la parte inferior del pararrayos y se distribuye lentamente por los conectores de los costados.<br><br>La estructura se crea como se muestra arriba y usando un martillo en el bloque central.
+ie.manual.entry.lightningrod2=Puedes aumentar las chances de que un rayo impacte creando una "red" de vallas de acero conectadas a la mas elevada.
+
+ie.manual.entry.minerals.name=Depositos de Minerales
+ie.manual.entry.minerals.subtext=Oresome
+ie.manual.entry.minerals0=Los depositos de minerales en el mundo no son nada nuevo para ti. Lo que ha quedado fuera de consideracion hasta ahora son la venas de minerales, que contienen mas de un tipo. Debido a lo disperso de estas, el minero promedio no puede encontrarlas, pero una <link;excavator;§o§nmaquina §o§nespecial§r> puede ayudar con ello.
+ie.manual.entry.minerals1=Para encontrar y determinar los minerales en el mundo, tendras que construir un taladro de muestreo. esta maquina, cuando tiene energia, taladrara un chunk ideintificando los minerales que se encuentran en el. Este taladro consume <config;i;coredrill_consumption> RF/t y toma <config;i;coredrill_time> ticks en analizar una muestra.
+ie.manual.entry.minerals2=Las siguientes paginas listan las diferentes venas y donde encontrarlas
+ie.manual.entry.minerals3=%1$s<br>Consiste de %2$s.
+ie.manual.entry.mineralsDimValid=§l%1$s§r es una vena que puede encontrarse en %2$s.
+ie.manual.entry.mineralsDimInvalid=§l%1$s§r es una vena que puede encontrarse en todos lados menos en %2$s.
+ie.manual.entry.mineralsDimAny=§l%1$s§r es una vena que puede encontrarse en todas las dimensiones.
+
+ie.manual.entry.arcfurnace.name=Horno de Arco
+ie.manual.entry.arcfurnace.subtext=Not a reactor 
+ie.manual.entry.arcfurnace0=El Horno de arco es una estructura que permite fundir cualquier metal. Consiste de una pileta de acero con electrodos que calientan el metal.
+ie.manual.entry.arcfurnace1=El horno es excelente para fundir metales y crear acero devido a su alta velocidad y su capacidad para procesar multiples items a la vez, pero es tambien complejo en su funcionamiento y requerira mantenimiento constante para seguir funcionando.<br>la Escoria debe ser removida de la maquina o esta se detendra, y los electrodos sufren desgaste y necesitaran ser reemplazados con el tiempo.
+ie.manual.entry.arcfurnace2=Para armar la estructura, Construyala como en la primera pagina, Y haga click con el martillo en el caldero.<br><br>la energia es suministrada por tres conectores en la parte trasera, y aplicar una señal redstone en el panel de control detendra la maquina. click derecho en el panel, cubo o pileta abrira la interfaz.
+ie.manual.entry.arcfurnace3=§lInterfaz:§r<br>La interfaz puede parecer confusa, pero en realidad es muy simple.<br><br>Los tres slots superiores son para los <link;graphite;§o§nElectrodos §o§nde §o§nGrafito§r;1>.<br>Los electrodos pueden ser suministrados a travez del bloque central de la cara superior.<br>Los 12 slots de la izquierda son la entrada de minerales y metales a fundir. Cada slot tiene una temperatura al costado representando el progrego de la fundicion.
+ie.manual.entry.arcfurnace4=Los 4 slots de la derecha son para aditivos, Diferentes materiales agregados al metal mientras se funde. Un ejemplo seria polvo de coke agregado al hierro para hacer acero.<br>Materiales y aditivos se introducen por las compuertas a la izq y der del acceso de los electrodos.
+ie.manual.entry.arcfurnace5=Los 7 slots inferiores son 6 de salida y uno para escoria. Los objetos de salida salen por el cubo en el frente de la estructura, y la escoria a travez del puerto en la parte trasera. El horno de Arcos automaticamente expulsara items a inventarios cercanos
+
+ie.manual.entry.excavator.name=Escavadora
+ie.manual.entry.excavator.subtext=Better than Dwarves
+ie.manual.entry.excavator0=La excavadora es lo maximo de la ingenieria moderna. Puede recolectar directamente <link;minerals;§o§nminerales§r;0> de venas inaccesibles a los metodos tradicionales. Sin embargo se trata de una estructura compleja que requiere <config;i;excavator_consumption> RF/t para operar.
+ie.manual.entry.excavator1=la estructura esta compuesta de dos partes: El motor que se ve en la primera pagina, y la rueda de cangilones de la segunda, que entra dentro de los 'brazos' del motor de la pagina anterior. La entrada de energia para la maquina esta en un costado, y la parte trasera tiene un panel de control por redstone y una salida de items.<br>A medida que la escavadora obtiene minerales, la vena va decreciendo su densidad, pero una vena puede durar <config;i;excavator_depletion_days> dias de minado consecutivo.
