@@ -16,12 +16,19 @@ public class ChemthrowerHandler
 {
 	public static HashMap<String, ChemthrowerEffect> effectMap = new HashMap<String, ChemthrowerEffect>();
 	public static HashSet<String> flammableList = new HashSet<String>();
+	public static HashSet<String> gasList = new HashSet<String>();
 
+	/**
+	 * registers a special effect to a fluid. Fluids without an effect simply do damage based on temperature
+	 */
 	public static void registerEffect(Fluid fluid, ChemthrowerEffect effect)
 	{
 		if(fluid!=null)
 			registerEffect(fluid.getName(),effect);
 	}
+	/**
+	 * registers a special effect to a fluid. Fluids without an effect simply do damage based on temperature
+	 */
 	public static void registerEffect(String fluidName, ChemthrowerEffect effect)
 	{
 		effectMap.put(fluidName, effect);
@@ -37,11 +44,17 @@ public class ChemthrowerHandler
 		return effectMap.get(fluidName);
 	}
 
+	/**
+	 * registers a fluid to allow the chemical thrower to ignite it upon dispersal
+	 */
 	public static void registerFlammable(Fluid fluid)
 	{
 		if(fluid!=null)
 			registerFlammable(fluid.getName());
 	}
+	/**
+	 * registers a fluid to allow the chemical thrower to ignite it upon dispersal
+	 */
 	public static void registerFlammable(String fluidName)
 	{
 		flammableList.add(fluidName);
@@ -57,6 +70,31 @@ public class ChemthrowerHandler
 		return flammableList.contains(fluidName);
 	}
 
+	/**
+	 * registers a fluid to be dispersed like a gas. This is only necessary if the fluid itself isn't designated as a gas
+	 */
+	public static void registerGas(Fluid fluid)
+	{
+		if(fluid!=null)
+			registerGas(fluid.getName());
+	}
+	/**
+	 * registers a fluid to be dispersed like a gas. This is only necessary if the fluid itself isn't designated as a gas
+	 */
+	public static void registerGas(String fluidName)
+	{
+		gasList.add(fluidName);
+	}
+	public static boolean isGas(Fluid fluid)
+	{
+		if(fluid!=null)
+			return gasList.contains(fluid.getName());
+		return false;
+	}
+	public static boolean isGas(String fluidName)
+	{
+		return gasList.contains(fluidName);
+	}
 
 	public static abstract class ChemthrowerEffect
 	{

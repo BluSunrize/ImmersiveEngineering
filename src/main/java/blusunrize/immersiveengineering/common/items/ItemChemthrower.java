@@ -13,8 +13,6 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.FluidEvent;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidContainerItem;
 import blusunrize.immersiveengineering.api.shader.IShaderEquipableItem;
@@ -77,20 +75,19 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IShaderEquip
 			{
 				Vec3 v = player.getLookVec();
 				int split = 8;
+				boolean isGas = fs.getFluid().isGaseous()||ChemthrowerHandler.isGas(fs.getFluid());
+				float scatter = isGas?.1f:.025f;
+				float range = isGas?.5f:1f;
+				boolean ignite = ChemthrowerHandler.isFlammable(fs.getFluid())&&ItemNBTHelper.getBoolean(stack, "ignite");
 				for(int i=0; i<split; i++)
 				{	
-					float scatter = fs.getFluid().isGaseous()?.1f:.025f;
-					float range = fs.getFluid().isGaseous()?.5f:1f;
 					Vec3 vecDir = v.addVector(player.getRNG().nextGaussian()*scatter,player.getRNG().nextGaussian()*scatter,player.getRNG().nextGaussian()*scatter);
-
 					EntityChemthrowerShot chem = new EntityChemthrowerShot(player.worldObj, player, vecDir.xCoord*0.25,vecDir.yCoord*0.25,vecDir.zCoord*0.25, fs.getFluid());
 					chem.motionX = vecDir.xCoord*range;
 					chem.motionY = vecDir.yCoord*range;
 					chem.motionZ = vecDir.zCoord*range;
-					if(ChemthrowerHandler.isFlammable(fs.getFluid()))
+					if(ignite)
 						chem.setFire(10);
-					
-					
 					if(!player.worldObj.isRemote)
 						player.worldObj.spawnEntityInWorld(chem);
 				}

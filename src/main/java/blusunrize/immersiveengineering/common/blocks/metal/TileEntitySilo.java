@@ -155,7 +155,7 @@ public class TileEntitySilo extends TileEntityMultiblockPart implements ISidedIn
 	@Override
 	public int getSizeInventory()
 	{
-		if(!formed)
+		if(!formed || !(pos==4||pos==58))
 			return 0;
 		return 2;
 	}
@@ -246,7 +246,9 @@ public class TileEntitySilo extends TileEntityMultiblockPart implements ISidedIn
 	@Override
 	public int[] getAccessibleSlotsFromSide(int side)
 	{
-		return new int[]{0,1};
+		if(pos==4||pos==58)
+			return new int[]{0,1};
+		return new int[0];
 	}
 	@Override
 	public boolean canInsertItem(int slot, ItemStack stack, int side)
@@ -405,7 +407,7 @@ public class TileEntitySilo extends TileEntityMultiblockPart implements ISidedIn
 		return 0;
 	}
 	private void updateComparatorValuesPart1() {
-//		oldComps = new int[6];
+		//		oldComps = new int[6];
 		int vol = maxStorage / 6;
 		for (int i = 0; i < 6; i++)
 		{
@@ -430,7 +432,7 @@ public class TileEntitySilo extends TileEntityMultiblockPart implements ISidedIn
 						worldObj.func_147453_f(xCoord-offset[0]+x, y, zCoord-offset[2]+z, worldObj.getBlock(xCoord-offset[0]+x, y, zCoord-offset[2]+z));
 			}
 		}
-//		oldComps = null;
+		//		oldComps = null;
 	}
-	
+
 }
