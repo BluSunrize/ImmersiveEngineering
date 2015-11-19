@@ -41,9 +41,7 @@ public class ChemthrowerHandler
 	}
 	public static ChemthrowerEffect getEffect(String fluidName)
 	{
-		ChemthrowerEffect eff = effectMap.get(fluidName);
-		System.out.println("get effect for "+fluidName+" "+eff);
-		return eff;
+		return effectMap.get(fluidName);
 	}
 
 	/**
