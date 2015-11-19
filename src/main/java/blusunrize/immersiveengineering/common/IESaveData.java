@@ -31,38 +31,23 @@ public class IESaveData extends WorldSavedData
 	@Override
 	public void readFromNBT(NBTTagCompound nbt)
 	{
-		boolean validateConnections = Config.getBoolean("validateConnections");
-		int invalidConnectionsDropped = 0;
 		int[] savedDimensions = nbt.getIntArray("savedDimensions");
 		for(int dim: savedDimensions)
 		{
 			NBTTagList connectionList = nbt.getTagList("connectionList"+dim, 10);
-			World world = MinecraftServer.getServer().worldServerForDimension(dim);
-			if(world!=null)
+			ImmersiveNetHandler.INSTANCE.clearAllConnections(dim);
+			for(int i=0; i<connectionList.tagCount(); i++)
 			{
-				ImmersiveNetHandler.INSTANCE.clearAllConnections(world);
-				for(int i=0; i<connectionList.tagCount(); i++)
+				NBTTagCompound conTag = connectionList.getCompoundTagAt(i);
+				Connection con = Connection.readFromNBT(conTag);
+				if(con!=null)
 				{
-					NBTTagCompound conTag = connectionList.getCompoundTagAt(i);
-					Connection con = Connection.readFromNBT(conTag);
-					if(con!=null)
-					{
-						if(validateConnections)
-						{
-							if(world.getTileEntity(con.start.posX,con.start.posY,con.start.posZ) instanceof IImmersiveConnectable &&
-									world.getTileEntity(con.end.posX, con.end.posY, con.end.posZ) instanceof IImmersiveConnectable)
-								ImmersiveNetHandler.INSTANCE.addConnection(world, con.start, con);
-							else
-								invalidConnectionsDropped++;
-						}
-						else
-							ImmersiveNetHandler.INSTANCE.addConnection(world, con.start, con);
-					}
+					ImmersiveNetHandler.INSTANCE.addConnection(dim, con.start, con);
 				}
 			}
 		}
-		if(validateConnections)
-			IELogger.info("removed "+invalidConnectionsDropped+" invalid connections from world");
+
+		EventHandler.validateConnsNextTick = true;
 
 		NBTTagList mineralList = nbt.getTagList("mineralDepletion", 10);
 		ExcavatorHandler.mineralCache.clear();		

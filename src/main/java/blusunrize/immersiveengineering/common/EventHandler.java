@@ -12,9 +12,11 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
+import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.entity.living.EnderTeleportEvent;
@@ -27,6 +29,7 @@ import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.oredict.OreDictionary;
 import WayofTime.alchemicalWizardry.api.event.TeleposeEvent;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.energy.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
@@ -39,6 +42,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMultiblockPart;
 import blusunrize.immersiveengineering.common.items.ItemDrill;
 import blusunrize.immersiveengineering.common.util.IEAchievements;
+import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.IEPotions;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Lib;
@@ -57,7 +61,7 @@ import cpw.mods.fml.relauncher.Side;
 public class EventHandler
 {
 	public static ArrayList<ISpawnInterdiction> interdictionTiles = new ArrayList<ISpawnInterdiction>();
-
+	public static boolean validateConnsNextTick = false;
 	@SubscribeEvent
 	public void onLoad(WorldEvent.Load event)
 	{
@@ -102,6 +106,36 @@ public class EventHandler
 	@SubscribeEvent
 	public void onWorldTick(WorldTickEvent event)
 	{
+		if (event.phase==TickEvent.Phase.START && validateConnsNextTick && FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER)
+		{
+			boolean validateConnections = Config.getBoolean("validateConnections");
+			int invalidConnectionsDropped = 0;
+			for (int dim:ImmersiveNetHandler.INSTANCE.getRelevantDimensions())
+			{
+				World world = MinecraftServer.getServer().worldServerForDimension(dim);
+				if (world==null) {
+					ImmersiveNetHandler.INSTANCE.directConnections.remove(dim);
+					continue;
+				}
+				if (validateConnections)
+				{
+					for (Connection con:ImmersiveNetHandler.INSTANCE.getAllConnections(world))
+					{
+						if (!(world.getTileEntity(con.start.posX, con.start.posY,
+								con.start.posZ) instanceof IImmersiveConnectable
+								&& world.getTileEntity(con.end.posX, con.end.posY,
+										con.end.posZ) instanceof IImmersiveConnectable))
+						{
+							ImmersiveNetHandler.INSTANCE.removeConnection(world, con);
+							invalidConnectionsDropped++;
+						}
+					}
+					IELogger.info("removed "+invalidConnectionsDropped+" invalid connections from world");
+				}
+			}
+
+			validateConnsNextTick = false;
+		}
 		if(event.phase==TickEvent.Phase.END && FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER)
 		{
 			for(Map.Entry<Connection, Integer> e : ImmersiveNetHandler.INSTANCE.getTransferedRates(event.world.provider.dimensionId).entrySet())
@@ -169,7 +203,7 @@ public class EventHandler
 			}
 		}
 	}
-	
+
 	@SubscribeEvent(priority=EventPriority.LOWEST)
 	public void onLivingHurt(LivingHurtEvent event)
 	{
@@ -186,7 +220,7 @@ public class EventHandler
 			event.ammount *= mod;
 		}
 	}
-	
+
 	@SubscribeEvent
 	public void onEnderTeleport(EnderTeleportEvent event)
 	{

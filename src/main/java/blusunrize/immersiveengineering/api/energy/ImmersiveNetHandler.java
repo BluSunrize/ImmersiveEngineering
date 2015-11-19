@@ -73,6 +73,16 @@ public class ImmersiveNetHandler
 			indirectConnections.clear();
 		IESaveData.setDirty(world.provider.dimensionId);
 	}
+	public void addConnection(int world, ChunkCoordinates node, Connection con)
+	{
+		if(!getMultimap(world).containsKey(node))
+			getMultimap(world).put(node, newSetFromMap(new ConcurrentHashMap<Connection, Boolean>()));
+		getMultimap(world).get(node).add(con);
+		if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
+			indirectConnections.clear();
+		IESaveData.setDirty(world);
+	}
+	
 	public void removeConnection(World world, Connection con)
 	{
 		if(con==null||world==null)
@@ -125,6 +135,10 @@ public class ImmersiveNetHandler
 	public void clearAllConnections(World world)
 	{
 		getMultimap(world.provider.dimensionId).clear();
+	}
+	public void clearAllConnections(int world)
+	{
+		getMultimap(world).clear();
 	}
 	public void clearConnectionsOriginatingFrom(ChunkCoordinates node, World world)
 	{
