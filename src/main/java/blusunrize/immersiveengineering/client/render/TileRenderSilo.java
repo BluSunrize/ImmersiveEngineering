@@ -48,7 +48,7 @@ public class TileRenderSilo extends TileEntitySpecialRenderer
 			RenderItem ri = RenderItem.getInstance();
 
 			float xx = -.5f*itemScale;
-			float zz = 1.5001f;
+			float zz = 1.501f;
 			xx/=baseScale;
 			zz/=baseScale;
 			w*=textScale;
