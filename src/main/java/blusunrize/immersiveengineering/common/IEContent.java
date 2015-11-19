@@ -485,6 +485,8 @@ public class IEContent
 		ChemthrowerHandler.registerFlammable("kerosene");
 		ChemthrowerHandler.registerEffect("biofuel", new ChemthrowerEffect_Potion(null,0, IEPotions.flammable,140,1));
 		ChemthrowerHandler.registerFlammable("biofuel");
+		ChemthrowerHandler.registerEffect("rocket_fuel", new ChemthrowerEffect_Potion(null,0, IEPotions.flammable,60,2));
+		ChemthrowerHandler.registerFlammable("rocket_fuel");
 		
 
 		DieselHandler.addSqueezerRecipe(new ItemStack(itemMetal,8,17), 240, null, new ItemStack(itemMetal,1,19));

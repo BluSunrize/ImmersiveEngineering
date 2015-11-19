@@ -19,6 +19,7 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.entity.living.EnderTeleportEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
+import net.minecraftforge.event.entity.living.LivingEvent.LivingJumpEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
@@ -185,6 +186,12 @@ public class EventHandler
 			float mod = 1.5f + ((amp*amp)*.5f); 
 			event.ammount *= mod;
 		}
+	}
+	@SubscribeEvent
+	public void onLivingJump(LivingJumpEvent event)
+	{
+		if(event.entityLiving.getActivePotionEffect(IEPotions.sticky)!=null)
+			event.entityLiving.motionY -= (event.entityLiving.getActivePotionEffect(IEPotions.sticky).getAmplifier()+1)*0.3F;
 	}
 	
 	@SubscribeEvent

@@ -411,17 +411,16 @@ public class ClientEventHandler
 					if(!drill && player.isUsingItem())
 						amount -= player.getItemInUseDuration()*Config.getInt("chemthrower_consumption");
 					float cap = (float)((IFluidContainerItem)equipped.getItem()).getCapacity(equipped);
-					float angle = 80-(160* amount/cap);
+					float angle = 83-(166* amount/cap);
 					GL11.glRotatef(angle, 0, 0, 1);
 					ClientUtils.drawTexturedRect(6,-2, 24,4, 91/256f,123/256f, 80/96f,87/96f);
 					GL11.glRotatef(-angle, 0, 0, 1);
-					//					for(float angle=80; angle>=-80; angle-=20)
-					//					{
-					//						GL11.glRotatef(angle, 0, 0, 1);
-					//						ClientUtils.drawTexturedRect(6,-2, 24,4, 91/256f,123/256f, 80/96f,87/96f);
-					//						GL11.glRotatef(-angle, 0, 0, 1);
-					//					}
-
+					//for(float angle=83; angle>=-83; angle-=20)
+					//{
+					//	GL11.glRotatef(angle, 0, 0, 1);
+					//	ClientUtils.drawTexturedRect(6,-2, 24,4, 91/256f,123/256f, 80/96f,87/96f);
+					//	GL11.glRotatef(-angle, 0, 0, 1);
+					//}
 					GL11.glTranslated(23,28,0);
 					if(drill)
 					{

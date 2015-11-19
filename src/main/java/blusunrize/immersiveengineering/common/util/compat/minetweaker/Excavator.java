@@ -25,7 +25,6 @@ public class Excavator
 		float[] fChances = new float[chances.length];
 		for(int i=0; i<chances.length; i++)
 			fChances[i] = (float)chances[i];
-		System.out.println("name: "+name+", dim "+dimensionWhitelist+", black: "+blacklist);
 		MineTweakerAPI.apply(new AddMineral(name,mineralWeight,(float)failChance,ores,fChances, dimensionWhitelist,blacklist));
 	}
 
