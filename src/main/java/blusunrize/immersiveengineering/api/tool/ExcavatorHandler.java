@@ -15,7 +15,6 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
-import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.oredict.OreDictionary;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.DimensionChunkCoords;
@@ -350,60 +349,77 @@ public class ExcavatorHandler
 			pages.add(new ManualPages.Text(ManualHelper.getManual(), "minerals2"));
 
 			final ExcavatorHandler.MineralMix[] minerals = ExcavatorHandler.mineralList.keySet().toArray(new ExcavatorHandler.MineralMix[0]);
+
+			ArrayList<Integer> mineralIndices = new ArrayList();
 			for(int i=0; i<minerals.length; i++)
 				if(minerals[i].isValid())
+					mineralIndices.add(i);
+			Collections.sort(mineralIndices, new Comparator<Integer>(){
+				@Override
+				public int compare(Integer paramT1, Integer paramT2)
 				{
-					String s0 = "";
-					if(minerals[i].dimensionWhitelist!=null && minerals[i].dimensionWhitelist.length>0)
-					{
-						String validDims = "";
-						for(int dim : minerals[i].dimensionWhitelist)
-						{
-							World world = DimensionManager.getWorld(dim);
-							if(world!=null && world.provider!=null)
-								validDims += (!validDims.isEmpty()?", ":"")+world.provider.getDimensionName();
-						}
-						s0 = StatCollector.translateToLocalFormatted("ie.manual.entry.mineralsDimValid",minerals[i].name,validDims);
-					}
-					else if(minerals[i].dimensionBlacklist!=null && minerals[i].dimensionBlacklist.length>0)
-					{
-						String invalidDims = "";
-						for(int dim : minerals[i].dimensionBlacklist)
-						{
-							World world = DimensionManager.getWorld(dim);
-							if(world!=null && world.provider!=null)
-								invalidDims += (!invalidDims.isEmpty()?", ":"")+world.provider.getDimensionName();
-						}
-						s0 = StatCollector.translateToLocalFormatted("ie.manual.entry.mineralsDimInvalid",minerals[i].name,invalidDims);
-					}
-					else
-						s0 = StatCollector.translateToLocalFormatted("ie.manual.entry.mineralsDimAny",minerals[i].name);
+					String name1 = Lib.DESC_INFO+"mineral."+minerals[paramT1].name;
+					String localizedName1 = StatCollector.translateToLocal(name1);
+					if(localizedName1==name1)
+						localizedName1 = minerals[paramT1].name;
 
-					ArrayList<Integer> formattedOutputs = new ArrayList<Integer>();
-					for(int j=0; j<minerals[i].oreOutput.length; j++)
-						formattedOutputs.add(j);
-					final int fi = i; 
-					Collections.sort(formattedOutputs, new Comparator<Integer>()
-							{
-						@Override
-						public int compare(Integer paramT1, Integer paramT2)
-						{
-							return -Double.compare( minerals[fi].recalculatedChances[paramT1],  minerals[fi].recalculatedChances[paramT2]);
-						}
-							});
-
-					String s1 = "";
-					ItemStack[] sortedOres = new ItemStack[minerals[i].oreOutput.length];
-					for(int j=0; j<formattedOutputs.size(); j++)
-						if(minerals[i].oreOutput[j]!=null)
-						{
-							int sorted = formattedOutputs.get(j);
-							s1 += "<br>" + Utils.formatDouble(minerals[i].recalculatedChances[sorted]*100,"00.00").replaceAll("\\G0"," ")+"% "+minerals[i].oreOutput[sorted].getDisplayName();
-							sortedOres[j] = minerals[i].oreOutput[sorted];
-						}
-					String s2 = StatCollector.translateToLocalFormatted("ie.manual.entry.minerals3", s0,s1);
-					pages.add(new ManualPages.ItemDisplay(ManualHelper.getManual(), s2, sortedOres));
+					String name2 = Lib.DESC_INFO+"mineral."+minerals[paramT2].name;
+					String localizedName2 = StatCollector.translateToLocal(name2);
+					if(localizedName2==name2)
+						localizedName2 = minerals[paramT2].name;
+					return localizedName1.compareToIgnoreCase(localizedName2);
 				}
+			});
+			for(int i : mineralIndices)
+			{
+				String name = Lib.DESC_INFO+"mineral."+minerals[i].name;
+				String localizedName = StatCollector.translateToLocal(name);
+				if(localizedName==name)
+					localizedName = minerals[i].name;
+
+				String s0 = "";
+				if(minerals[i].dimensionWhitelist!=null && minerals[i].dimensionWhitelist.length>0)
+				{
+					String validDims = "";
+					for(int dim : minerals[i].dimensionWhitelist)
+						validDims += (!validDims.isEmpty()?", ":"")+"<dim;"+dim+">";
+					s0 = StatCollector.translateToLocalFormatted("ie.manual.entry.mineralsDimValid",localizedName,validDims);
+				}
+				else if(minerals[i].dimensionBlacklist!=null && minerals[i].dimensionBlacklist.length>0)
+				{
+					String invalidDims = "";
+					for(int dim : minerals[i].dimensionBlacklist)
+						invalidDims += (!invalidDims.isEmpty()?", ":"")+"<dim;"+dim+">";
+					s0 = StatCollector.translateToLocalFormatted("ie.manual.entry.mineralsDimInvalid",localizedName,invalidDims);
+				}
+				else
+					s0 = StatCollector.translateToLocalFormatted("ie.manual.entry.mineralsDimAny",localizedName);
+
+				ArrayList<Integer> formattedOutputs = new ArrayList<Integer>();
+				for(int j=0; j<minerals[i].oreOutput.length; j++)
+					formattedOutputs.add(j);
+				final int fi = i; 
+				Collections.sort(formattedOutputs, new Comparator<Integer>(){
+					@Override
+					public int compare(Integer paramT1, Integer paramT2)
+					{
+						return -Double.compare( minerals[fi].recalculatedChances[paramT1],  minerals[fi].recalculatedChances[paramT2]);
+					}
+				});
+
+				String s1 = "";
+				ItemStack[] sortedOres = new ItemStack[minerals[i].oreOutput.length];
+				for(int j=0; j<formattedOutputs.size(); j++)
+					if(minerals[i].oreOutput[j]!=null)
+					{
+						int sorted = formattedOutputs.get(j);
+						s1 += "<br>" + Utils.formatDouble(minerals[i].recalculatedChances[sorted]*100,"00.00").replaceAll("\\G0"," ")+"% "+minerals[i].oreOutput[sorted].getDisplayName();
+						sortedOres[j] = minerals[i].oreOutput[sorted];
+					}
+				String s2 = StatCollector.translateToLocalFormatted("ie.manual.entry.minerals3", s0,s1);
+				pages.add(new ManualPages.ItemDisplay(ManualHelper.getManual(), s2, sortedOres));
+			}
+
 			//			String[][][] multiTables = formatToTable_ExcavatorMinerals();
 			//			for(String[][] minTable : multiTables)
 			//				pages.add(new ManualPages.Table(ManualHelper.getManual(), "", minTable,true));

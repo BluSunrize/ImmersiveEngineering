@@ -6,7 +6,9 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import blusunrize.immersiveengineering.api.energy.DieselHandler;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler;
+import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEffect_Potion;
 import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.util.IEPotions;
 import cpw.mods.fml.common.registry.GameRegistry;
 import forestry.api.core.ForestryAPI;
 import forestry.api.fuels.EngineBronzeFuel;
@@ -40,5 +42,6 @@ public class ForestryHelper extends IECompatModule
 		FuelManager.bronzeEngineFuel.put(IEContent.fluidBiodiesel, engineBronzeFuel);
 	
 		ChemthrowerHandler.registerFlammable("bioEthanol");
+		ChemthrowerHandler.registerEffect("for.honey", new ChemthrowerEffect_Potion(null,0, IEPotions.sticky,60,0));
 	}
 }

@@ -3,6 +3,8 @@ package blusunrize.immersiveengineering.client;
 import java.util.LinkedHashSet;
 
 import net.minecraft.util.StatCollector;
+import net.minecraft.world.World;
+import net.minecraftforge.common.DimensionManager;
 import blusunrize.immersiveengineering.api.ManualHelper;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -86,6 +88,35 @@ public class IEManualInstance extends ManualInstance
 
 			s = s.replaceFirst(rep, result);
 		}
+		overflow=0;
+		while( (start=s.indexOf("<dim"))>=0 && overflow<50)
+		{
+			overflow++;
+			int end = s.indexOf(">", start);
+			String rep = s.substring(start, end+1);
+			String[] segment = rep.substring(0,rep.length()-1).split(splitKey);
+			if(segment.length<2)
+				break;
+			String result = "";
+			try{
+				int dim = Integer.parseInt(segment[1]);
+				World world = DimensionManager.getWorld(dim);
+				if(world!=null && world.provider!=null)
+				{
+					String name = world.provider.getDimensionName();
+					if(name.toLowerCase().startsWith("the "))
+						name = name.substring(4);
+					result = name;
+				}
+				else
+					result = "Dimension "+dim;
+			}catch(Exception ex){
+				ex.printStackTrace();
+			}
+			s = s.replaceFirst(rep, result);
+		}
+
+
 		return s;
 	}
 
