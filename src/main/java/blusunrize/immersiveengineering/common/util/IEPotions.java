@@ -1,9 +1,11 @@
 package blusunrize.immersiveengineering.common.util;
 
 import java.lang.reflect.Field;
+import java.util.UUID;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.ResourceLocation;
@@ -15,19 +17,27 @@ public class IEPotions
 	public static Potion flammable;
 	public static Potion slippery;
 	public static Potion conductive;
+	public static Potion sticky;
 
 	public static void init()
 	{
-		int potionID = Config.getPotionID(32, "Flammable");
-		flammable = new IEPotion(potionID, true,0x8f3f1f,0, false,0).setPotionName("ie.flammable");
+		int l = 4;
+		extendPotionArray(l);
+		long potionUUIDBase = 109406000905L;
+
+		int potionID = Config.getPotionID(24, "Flammable");
+		flammable = new IEPotion(potionID, true,0x8f3f1f,0, false,0).setPotionName("immersiveengineering.potion.flammable");
 
 		potionID = Config.getPotionID(potionID, "Slippery");
-		slippery = new IEPotion(potionID, true,0x171003,0, false,0).setPotionName("ie.slippery");
+		slippery = new IEPotion(potionID, true,0x171003,0, false,1).setPotionName("immersiveengineering.potion.slippery");
 
 		potionID = Config.getPotionID(potionID, "Conductive");
-		conductive = new IEPotion(potionID, true,0x690000,0, false,0).setPotionName("ie.conductive");
+		conductive = new IEPotion(potionID, true,0x690000,0, false,2).setPotionName("immersiveengineering.potion.conductive");
 
-		IEApi.potions = new Potion[]{flammable,slippery,conductive};
+		potionID = Config.getPotionID(potionID, "Sticky");
+		sticky = new IEPotion(potionID, true,0x9c6800,0, false,3).setPotionName("immersiveengineering.potion.sticky").func_111184_a(SharedMonsterAttributes.movementSpeed, new UUID(potionUUIDBase,01L).toString(), -0.50000000298023224D, 2);
+
+		IEApi.potions = new Potion[]{flammable,slippery,conductive,sticky};
 	}
 
 	public static void extendPotionArray(int extendBy)

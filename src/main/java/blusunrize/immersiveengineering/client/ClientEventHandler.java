@@ -40,6 +40,7 @@ import net.minecraftforge.client.model.obj.WavefrontObject;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.oredict.OreDictionary;
 
 import org.lwjgl.opengl.GL11;
@@ -62,6 +63,7 @@ import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
 import blusunrize.immersiveengineering.common.gui.ContainerRevolver;
+import blusunrize.immersiveengineering.common.items.ItemChemthrower;
 import blusunrize.immersiveengineering.common.items.ItemDrill;
 import blusunrize.immersiveengineering.common.items.ItemRevolver;
 import blusunrize.immersiveengineering.common.items.ItemSkyhook;
@@ -318,12 +320,15 @@ public class ClientEventHandler
 	{
 		if(ClientUtils.mc().thePlayer!=null && event.type == RenderGameOverlayEvent.ElementType.TEXT)
 		{
-			if(ClientUtils.mc().thePlayer.getCurrentEquippedItem()!=null)
-				if(OreDictionary.itemMatches(new ItemStack(IEContent.itemTool,1,2), ClientUtils.mc().thePlayer.getCurrentEquippedItem(), false) || OreDictionary.itemMatches(new ItemStack(IEContent.itemWireCoil,1,OreDictionary.WILDCARD_VALUE), ClientUtils.mc().thePlayer.getCurrentEquippedItem(), false) )
+			EntityPlayer player = ClientUtils.mc().thePlayer;
+			if(player.getCurrentEquippedItem()!=null)
+			{
+				ItemStack equipped = player.getCurrentEquippedItem();
+				if(OreDictionary.itemMatches(new ItemStack(IEContent.itemTool,1,2), equipped, false) || OreDictionary.itemMatches(new ItemStack(IEContent.itemWireCoil,1,OreDictionary.WILDCARD_VALUE), equipped, false) )
 				{
-					if(ItemNBTHelper.hasKey(ClientUtils.mc().thePlayer.getCurrentEquippedItem(), "linkingPos"))
+					if(ItemNBTHelper.hasKey(equipped, "linkingPos"))
 					{
-						int[] link = ItemNBTHelper.getIntArray(ClientUtils.mc().thePlayer.getCurrentEquippedItem(), "linkingPos");
+						int[] link = ItemNBTHelper.getIntArray(equipped, "linkingPos");
 						if(link!=null&&link.length>3)
 						{
 							String s = StatCollector.translateToLocalFormatted(Lib.DESC_INFO+"attachedTo", link[1],link[2],link[3]);
@@ -332,10 +337,10 @@ public class ClientEventHandler
 					}
 
 				}
-				else if(ClientUtils.mc().thePlayer.getCurrentEquippedItem().getItem() instanceof ItemRevolver && ClientUtils.mc().thePlayer.getCurrentEquippedItem().getItemDamage()!=2)
+				else if(equipped.getItem() instanceof ItemRevolver && equipped.getItemDamage()!=2)
 				{
 					ClientUtils.bindTexture("immersiveengineering:textures/gui/revolver.png");
-					ItemStack[] bullets = ((ItemRevolver)ClientUtils.mc().thePlayer.getCurrentEquippedItem().getItem()).getBullets(ClientUtils.mc().thePlayer.getCurrentEquippedItem());
+					ItemStack[] bullets = ((ItemRevolver)equipped.getItem()).getBullets(equipped);
 					int bulletAmount = bullets.length;
 					float dx = event.resolution.getScaledWidth()-32-48;
 					float dy = event.resolution.getScaledHeight()-64;
@@ -382,58 +387,75 @@ public class ClientEventHandler
 					GL11.glDisable(GL11.GL_BLEND);
 					GL11.glPopMatrix();
 				}
-				else if(ClientUtils.mc().thePlayer.getCurrentEquippedItem().getItem() instanceof ItemDrill && ClientUtils.mc().thePlayer.getCurrentEquippedItem().getItemDamage()==0)
+				else if((equipped.getItem() instanceof ItemDrill && equipped.getItemDamage()==0)
+						||equipped.getItem() instanceof ItemChemthrower)
 				{
-					ItemStack drill = ClientUtils.mc().thePlayer.getCurrentEquippedItem(); 
+					boolean drill = equipped.getItem() instanceof ItemDrill;
 					ClientUtils.bindTexture("immersiveengineering:textures/gui/fuelGauge.png");
 					GL11.glColor4f(1, 1, 1, 1);
 					float dx = event.resolution.getScaledWidth()-16;
 					float dy = event.resolution.getScaledHeight()-12;
 					GL11.glPushMatrix();
 					GL11.glTranslated(dx, dy, 0);
-					ClientUtils.drawTexturedRect(-24,-68, 33,81, 179/256f,210/256f, 0/96f,80/96f);
+					int w = 33;
+					int h = 81;
+					double uMin = (drill?179:66)/256f;
+					double uMax = (drill?210:97)/256f;
+					double vMin = 0/96f;
+					double vMax = 80/96f;
+					ClientUtils.drawTexturedRect(-24,-68, w,h, uMin,uMax,vMin,vMax);
 
 					GL11.glTranslated(-23,-28,0);
-					FluidStack fuel = ((ItemDrill)drill.getItem()).getFluid(drill);
-					//				for(float angle=80; angle>=-80; angle-=20)
-					//				{
-					float angle = 80-(160* (fuel!=null? fuel.amount/(float)((ItemDrill)drill.getItem()).getCapacity(drill): 0));
+					FluidStack fuel = ((IFluidContainerItem)equipped.getItem()).getFluid(equipped);
+					int amount = fuel!=null?fuel.amount:0;
+					if(!drill && player.isUsingItem())
+						amount -= player.getItemInUseDuration()*Config.getInt("chemthrower_consumption");
+					float cap = (float)((IFluidContainerItem)equipped.getItem()).getCapacity(equipped);
+					float angle = 83-(166* amount/cap);
 					GL11.glRotatef(angle, 0, 0, 1);
 					ClientUtils.drawTexturedRect(6,-2, 24,4, 91/256f,123/256f, 80/96f,87/96f);
 					GL11.glRotatef(-angle, 0, 0, 1);
-					//				}
+					//for(float angle=83; angle>=-83; angle-=20)
+					//{
+					//	GL11.glRotatef(angle, 0, 0, 1);
+					//	ClientUtils.drawTexturedRect(6,-2, 24,4, 91/256f,123/256f, 80/96f,87/96f);
+					//	GL11.glRotatef(-angle, 0, 0, 1);
+					//}
 					GL11.glTranslated(23,28,0);
-
-					ClientUtils.drawTexturedRect(-33-17,-40-26, 33+30,40+37, 108/256f,174/256f, 0/96f,80/96f);
-
-					RenderItem ir = RenderItem.getInstance();
-					float scale = 1;//.75f;
-					GL11.glScalef(scale,scale,scale);
-					ItemStack head = ((ItemDrill)drill.getItem()).getHead(drill);
-					if(head!=null)
+					if(drill)
 					{
-						ir.renderItemIntoGUI(ClientUtils.mc().fontRenderer, ClientUtils.mc().renderEngine, head, (int)(-48/scale),(int)(-36/scale));
-						ir.renderItemOverlayIntoGUI(ClientUtils.font(), ClientUtils.mc().renderEngine, head, (int)(-48/scale),(int)(-36/scale));
-						RenderHelper.disableStandardItemLighting();
+						ClientUtils.drawTexturedRect(-33-18,-40-26, 33+30,40+37, 108/256f,174/256f, 0/96f,80/96f);
+						RenderItem ir = RenderItem.getInstance();
+						ItemStack head = ((ItemDrill)equipped.getItem()).getHead(equipped);
+						if(head!=null)
+						{
+							ir.renderItemIntoGUI(ClientUtils.mc().fontRenderer, ClientUtils.mc().renderEngine, head, -48,-36);
+							ir.renderItemOverlayIntoGUI(ClientUtils.font(), ClientUtils.mc().renderEngine, head, -48,-36);
+							RenderHelper.disableStandardItemLighting();
+						}
 					}
+					else
+						ClientUtils.drawTexturedRect(-33-6,-40-26, 33+18,40+37, 8/256f,61/256f, 0/96f,80/96f);
+
 					GL11.glPopMatrix();
 				}
 
-			boolean hammer = Utils.isHammer(ClientUtils.mc().thePlayer.getCurrentEquippedItem());
-			MovingObjectPosition mop = ClientUtils.mc().objectMouseOver;
-			if(mop!=null)
-			{
-				TileEntity tileEntity = ClientUtils.mc().thePlayer.worldObj.getTileEntity(mop.blockX, mop.blockY, mop.blockZ);
-				if(tileEntity instanceof IBlockOverlayText)
+				boolean hammer = Utils.isHammer(equipped);
+				MovingObjectPosition mop = ClientUtils.mc().objectMouseOver;
+				if(mop!=null)
 				{
-					IBlockOverlayText overlayBlock = (IBlockOverlayText) tileEntity;
-					String[] text = overlayBlock.getOverlayText(ClientUtils.mc().thePlayer, mop, hammer);
-					if(text!=null && text.length>0)
+					TileEntity tileEntity = player.worldObj.getTileEntity(mop.blockX, mop.blockY, mop.blockZ);
+					if(tileEntity instanceof IBlockOverlayText)
 					{
-						int i = 0;
-						for(String s : text)
-							if(s!=null)
-								ClientUtils.font().drawString(s, event.resolution.getScaledWidth()/2+8, event.resolution.getScaledHeight()/2+8+(i++)*ClientUtils.font().FONT_HEIGHT, 0xcccccc, true);
+						IBlockOverlayText overlayBlock = (IBlockOverlayText) tileEntity;
+						String[] text = overlayBlock.getOverlayText(ClientUtils.mc().thePlayer, mop, hammer);
+						if(text!=null && text.length>0)
+						{
+							int i = 0;
+							for(String s : text)
+								if(s!=null)
+									ClientUtils.font().drawString(s, event.resolution.getScaledWidth()/2+8, event.resolution.getScaledHeight()/2+8+(i++)*ClientUtils.font().FONT_HEIGHT, 0xcccccc, true);
+						}
 					}
 				}
 			}

@@ -455,6 +455,10 @@ achievement.immersiveengineering.secret_birthdayParty.desc=Light a match...
 
 stat.skyhookOneCm=Distance by Skyhook
 
+immersiveengineering.potion.flammable=Flammable
+immersiveengineering.potion.slippery=Slippery
+immersiveengineering.potion.conductive=Conductive
+immersiveengineering.potion.sticky=Sticky
 
 #MANUAL
 #ie.manual.entry..name=

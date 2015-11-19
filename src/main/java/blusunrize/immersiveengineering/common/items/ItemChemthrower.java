@@ -59,7 +59,13 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IShaderEquip
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
 	{
-		player.setItemInUse(stack, this.getMaxItemUseDuration(stack));
+		if(player.isSneaking())
+		{
+			if(!world.isRemote)
+				ItemNBTHelper.setBoolean(stack, "ignite", !ItemNBTHelper.getBoolean(stack, "ignite"));
+		}
+		else
+			player.setItemInUse(stack, this.getMaxItemUseDuration(stack));
 		return stack;
 	}
 
@@ -94,8 +100,9 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IShaderEquip
 			}
 			else
 				player.stopUsingItem();
-
 		}
+		else
+			player.stopUsingItem();
 	}
 	@Override
 	public void onPlayerStoppedUsing(ItemStack stack, World world, EntityPlayer player, int timeLeft)
