@@ -13,6 +13,7 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
@@ -31,6 +32,7 @@ import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.util.IEAchievements;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Lib;
+import blusunrize.immersiveengineering.common.util.network.MessageSpeedloaderSync;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
@@ -227,6 +229,8 @@ public class ItemRevolver extends ItemUpgradeableTool implements IShaderEquipabl
 							setBullets(loader, new ItemStack[8]);
 							player.inventory.setInventorySlotContents(i, loader);
 							player.inventory.markDirty();
+							if (player instanceof EntityPlayerMP)
+								ImmersiveEngineering.packetHandler.sendTo(new MessageSpeedloaderSync(i), (EntityPlayerMP)player);
 
 							ItemNBTHelper.setBoolean(revolver, "blocked", true);
 							return revolver;
