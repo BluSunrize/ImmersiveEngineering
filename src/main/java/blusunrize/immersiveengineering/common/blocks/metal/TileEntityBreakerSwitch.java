@@ -51,6 +51,8 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable
 	{
 		if(cableType!=null && !cableType.isEnergyWire())
 			return false;
+		if(cableType==WireType.STEEL&&!canTakeHV())
+			return false;
 		if(wires>=2)
 			return false;
 		return limitType==null || cableType==limitType;

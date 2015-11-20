@@ -177,7 +177,7 @@ public abstract class EntityIEProjectile extends Entity
 
 				if(movingobjectposition!=null)
 				{
-					if(movingobjectposition.entityHit!=null && movingobjectposition.entityHit.isBurning())
+					if(!this.isBurning() && movingobjectposition.entityHit!=null && movingobjectposition.entityHit.isBurning())
 						this.setFire(3);
 					if(movingobjectposition.entityHit!=null && movingobjectposition.entityHit instanceof EntityLivingBase)
 					{
