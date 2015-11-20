@@ -2,15 +2,20 @@ package blusunrize.immersiveengineering.client.gui;
 
 import java.util.ArrayList;
 
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumChatFormatting;
 
 import org.lwjgl.opengl.GL11;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityAssembler;
 import blusunrize.immersiveengineering.common.gui.ContainerAssembler;
+import blusunrize.immersiveengineering.common.util.network.MessageTileSync;
 
 public class GuiAssembler extends GuiContainer
 {
@@ -23,6 +28,23 @@ public class GuiAssembler extends GuiContainer
 		this.ySize = 218;
 	}
 
+	@Override
+	public void initGui()
+	{
+		super.initGui();
+		this.buttonList.clear();
+		this.buttonList.add(new GuiButton(0, guiLeft+49,guiTop+65, 10,10, EnumChatFormatting.GRAY+"\u2716"));
+		this.buttonList.add(new GuiButton(1, guiLeft+107,guiTop+65, 10,10, EnumChatFormatting.GRAY+"\u2716"));
+		this.buttonList.add(new GuiButton(2, guiLeft+165,guiTop+65, 10,10, EnumChatFormatting.GRAY+"\u2716"));
+	}
+	@Override
+    protected void actionPerformed(GuiButton button)
+	{
+		NBTTagCompound tag = new NBTTagCompound();
+		tag.setInteger("buttonID", button.id);
+		ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(tile, tag));
+	}
+	
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mx, int my)
 	{

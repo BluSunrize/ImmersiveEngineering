@@ -35,4 +35,8 @@ public abstract class TileEntityIEBase extends TileEntity
     {
 		this.readCustomNBT(pkt.func_148857_g(), true);
     }
+	
+	public void receiveMessageFromClient(NBTTagCompound messsage)
+	{
+	}
 }

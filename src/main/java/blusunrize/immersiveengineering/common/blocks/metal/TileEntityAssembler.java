@@ -373,6 +373,18 @@ public class TileEntityAssembler extends TileEntityMultiblockPart implements ISi
 	}
 
 	@Override
+	public void receiveMessageFromClient(NBTTagCompound messsage)
+	{
+		int id = messsage.getInteger("buttonID");
+		if(id>=0 && id<patterns.length)
+		{
+			CrafterPatternInventory pattern = patterns[id];
+			for(int i=0; i<pattern.inv.length; i++)
+				pattern.inv[i] = null;
+		}
+	}
+
+	@Override
 	public boolean receiveClientEvent(int id, int arg)
 	{
 		return false;
