@@ -357,6 +357,9 @@ public class TileEntitySilo extends TileEntityMultiblockPart implements ISidedIn
 	@Override
 	public ItemStack getStoredItemType()
 	{
+		TileEntitySilo mast = master();
+		if (mast!=null)
+			return mast.getStoredItemType();
 		if(this.identStack != null)
 			return Utils.copyStackWithAmount(identStack, storageAmount);
 		return null;
@@ -365,6 +368,12 @@ public class TileEntitySilo extends TileEntityMultiblockPart implements ISidedIn
 	@Override
 	public void setStoredItemCount(int amount)
 	{
+		TileEntitySilo mast = master();
+		if (mast!=null)
+		{
+			mast.setStoredItemCount(amount);
+			return;
+		}
 		updateComparatorValuesPart1();
 		if(amount > maxStorage)
 			amount = maxStorage;
@@ -376,8 +385,14 @@ public class TileEntitySilo extends TileEntityMultiblockPart implements ISidedIn
 	@Override
 	public void setStoredItemType(ItemStack type, int amount)
 	{
+		TileEntitySilo mast = master();
+		if (mast!=null)
+		{
+			mast.setStoredItemType(type, amount);
+			return;
+		}
 		updateComparatorValuesPart1();
-		this.identStack = Utils.copyStackWithAmount(identStack, 0);
+		this.identStack = Utils.copyStackWithAmount(type, 0);
 		if(amount > maxStorage)
 			amount = maxStorage;
 		this.storageAmount = amount;
