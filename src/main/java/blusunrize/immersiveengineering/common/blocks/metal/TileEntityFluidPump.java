@@ -63,7 +63,7 @@ public class TileEntityFluidPump extends TileEntityIEBase implements IFluidHandl
 							((IFluidHandler)tile).drain(fd.getOpposite(), out, true);
 						}
 					}
-					else if(worldObj.getTotalWorldTime()%20==((xCoord^zCoord)&19) && worldObj.getBlock(xCoord+fd.offsetX,yCoord+fd.offsetY,zCoord+fd.offsetZ)==Blocks.water && tank.fill(new FluidStack(FluidRegistry.WATER,1000), false)==1000 && this.energyStorage.extractEnergy(Config.getInt("pump_consumption"), true)>=Config.getInt("pump_consumption"))
+					else if(worldObj.getTotalWorldTime()%20==((xCoord^zCoord)&19) && worldObj.getBlock(xCoord+fd.offsetX,yCoord+fd.offsetY,zCoord+fd.offsetZ)==Blocks.water && Config.getBoolean("pump_infiniteWater") && tank.fill(new FluidStack(FluidRegistry.WATER,1000), false)==1000 && this.energyStorage.extractEnergy(Config.getInt("pump_consumption"), true)>=Config.getInt("pump_consumption"))
 					{
 						int connectedSources = 0;
 						for(int j=2; j<6; j++)

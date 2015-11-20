@@ -43,6 +43,7 @@ public abstract class IECompatModule
 		moduleClasses.put("steamcraft2", SteamCraftHelper.class);
 		moduleClasses.put("ExtraUtilities", ExtraUtilsHelper.class);
 		moduleClasses.put("Thaumcraft", ThaumcraftHelper.class);
+		moduleClasses.put("TConstruct", TConstructHelper.class);
 	}
 
 	public static void preInitModules()

@@ -4,8 +4,11 @@ import gregtech.api.interfaces.tileentity.IBasicEnergyContainer;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.potion.Potion;
 import net.minecraft.tileentity.TileEntity;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
+import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler;
+import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEffect_Potion;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralMix;
 import blusunrize.immersiveengineering.common.Config;
@@ -30,7 +33,7 @@ public class GregTechHelper extends IECompatModule
 			BlueprintCraftingRecipe.addRecipe("bullet", new ItemStack(IEContent.itemBullet,1,3), new ItemStack(IEContent.itemBullet,1,0),Items.gunpowder,"ingotSteel","ingotCupronickel");
 		else
 			BlueprintCraftingRecipe.addRecipe("bullet", new ItemStack(IEContent.itemBullet,1,3), new ItemStack(IEContent.itemBullet,1,0),Items.gunpowder,"nuggetSteel","nuggetSteel","nuggetCupronickel","nuggetCupronickel");
-		
+
 		IERecipes.oreOutputSecondaries.put("Beryllium", new Object[]{Items.emerald,.1f});
 		IERecipes.oreOutputSecondaries.put("Magnesium", new Object[]{"gemPeridot",.1f});
 		IERecipes.oreOutputSecondaries.put("Silicon", new Object[]{"dustSiliconDioxide",.1f});
@@ -52,7 +55,7 @@ public class GregTechHelper extends IECompatModule
 		IERecipes.addOreDictAlloyingRecipe("ingotHotTungstenSteel",2, "Tungsten", 800,4096, "dustSteel");
 		IERecipes.addOreDictAlloyingRecipe("ingotHotTungstenSteel",2, "Steel", 800,4096, "dustTungsten");
 		IERecipes.addOreDictAlloyingRecipe("ingotHotTungstenCarbide",2, "Tungsten", 1000,4096, "dustCoke");
-		
+
 		for(MineralMix min : ExcavatorHandler.mineralList.keySet())
 			if(min.name.equalsIgnoreCase("Magnetite"))
 			{
@@ -60,6 +63,23 @@ public class GregTechHelper extends IECompatModule
 				min.chances = new float[]{.75f,.20f,.05f};
 			}
 		ExcavatorHandler.addMineral("Wolframite", 15, .2f, new String[]{"oreTungsten","oreIron","oreManganese"}, new float[]{.55f,.3f,.15f});
+
+		for(GregsTerribleFluidPotions fluidPotion : GregsTerribleFluidPotions.values())
+		{
+			String potionName = "potion."+fluidPotion.toString().toLowerCase();
+			ChemthrowerHandler.registerEffect(potionName, new ChemthrowerEffect_Potion(null,0, fluidPotion.potion,fluidPotion.baseDuration,fluidPotion.baseAmplifier));
+			if(fluidPotion.strong)
+				ChemthrowerHandler.registerEffect(potionName+".strong", new ChemthrowerEffect_Potion(null,0, fluidPotion.potion,(int)(fluidPotion.baseDuration*.5f),fluidPotion.baseAmplifier+1));
+			if(fluidPotion.extended)
+				ChemthrowerHandler.registerEffect(potionName+".long", new ChemthrowerEffect_Potion(null,0, fluidPotion.potion,fluidPotion.baseDuration*2,fluidPotion.baseAmplifier));
+			
+			if(fluidPotion.splash)
+				ChemthrowerHandler.registerEffect(potionName+".splash", new ChemthrowerEffect_Potion(null,0, fluidPotion.potion,(int)(fluidPotion.baseDuration*.75f),fluidPotion.baseAmplifier));
+			if(fluidPotion.strong && fluidPotion.splash)
+				ChemthrowerHandler.registerEffect(potionName+".strong.splash", new ChemthrowerEffect_Potion(null,0, fluidPotion.potion,(int)(fluidPotion.baseDuration*.375f),fluidPotion.baseAmplifier+1));
+			if(fluidPotion.extended && fluidPotion.splash)
+				ChemthrowerHandler.registerEffect(potionName+".long.splash", new ChemthrowerEffect_Potion(null,0, fluidPotion.potion,(int)(fluidPotion.baseDuration*1.5f),fluidPotion.baseAmplifier));
+		}
 	}
 
 	@Override
@@ -112,5 +132,37 @@ public class GregTechHelper extends IECompatModule
 		}
 
 		return 0;
+	}
+
+	public static enum GregsTerribleFluidPotions
+	{
+		DAMAGE(Potion.harm, 0,0, true,false,true),
+		HEALTH(Potion.heal, 0,0, true,false,true),
+		SPEED(Potion.moveSpeed, 60,0, true,true,true),
+		STRENGTH(Potion.damageBoost, 60,0, true,true,true),
+		REGEN(Potion.regeneration, 60,0, true,true,true),
+		POISON(Potion.poison, 60,0, true,true,true),
+		FIRERESISTANCE(Potion.fireResistance, 60,0, false,true,true),
+		NIGHTVISION(Potion.nightVision, 60,0, false,true,true),
+		WEAKNESS(Potion.weakness, 60,0, false,true,true),
+		SLOWNESS(Potion.moveSlowdown, 60,0, false,true,true),
+		WATERBREATHING(Potion.waterBreathing, 60,0, false,true,true),
+		INVISIBILITY(Potion.invisibility, 60,0, false,true,true);
+
+		final Potion potion;
+		final int baseDuration;
+		final int baseAmplifier;
+		final boolean strong;
+		final boolean extended;
+		final boolean splash;
+		private GregsTerribleFluidPotions(Potion pot, int baseDur, int baseAmp, boolean strong, boolean extended, boolean splash)
+		{
+			this.potion=pot;
+			this.baseDuration=baseDur;
+			this.baseAmplifier=baseAmp;
+			this.strong=strong; 
+			this.extended=extended;
+			this.splash=splash; 
+		}
 	}
 }

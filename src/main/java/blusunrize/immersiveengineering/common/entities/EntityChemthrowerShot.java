@@ -1,5 +1,7 @@
 package blusunrize.immersiveengineering.common.entities;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -59,6 +61,9 @@ public class EntityChemthrowerShot extends EntityIEProjectile
 	{
 		if(this.getFluid() == null && this.worldObj.isRemote)
 			this.fluid = getFluidSynced();
+		Block b = worldObj.getBlock((int)posX, (int)posY, (int)posZ);
+		if(b!=null && (b.getMaterial()==Material.fire||b.getMaterial()==Material.lava))
+			this.setFire(6);
 		super.onEntityUpdate();
 	}
 
