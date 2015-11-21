@@ -30,6 +30,7 @@ public class TileEntitySilo extends TileEntityMultiblockPart implements ISidedIn
 	boolean lockItem = false;
 	private int[] oldComps = new int[6];
 	private int masterCompOld;
+	private boolean forceUpdate = false;
 
 	@Override
 	public TileEntitySilo master()
@@ -317,7 +318,6 @@ public class TileEntitySilo extends TileEntityMultiblockPart implements ISidedIn
 		}
 
 		// Handle emptying of the barrel
-		boolean forceUpdate = false;
 		if(storageAmount==0 && !lockItem)
 		{
 			identStack = null;
@@ -336,6 +336,7 @@ public class TileEntitySilo extends TileEntityMultiblockPart implements ISidedIn
 		}
 		if(storageAmount!=oldStorage||forceUpdate)
 			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+		forceUpdate = false;
 	}
 
 	@Override
@@ -378,6 +379,7 @@ public class TileEntitySilo extends TileEntityMultiblockPart implements ISidedIn
 		if(amount > maxStorage)
 			amount = maxStorage;
 		this.storageAmount = amount;
+		this.forceUpdate = true;
 		this.markDirty();
 		updateComparatorValuesPart2();
 	}
@@ -396,6 +398,7 @@ public class TileEntitySilo extends TileEntityMultiblockPart implements ISidedIn
 		if(amount > maxStorage)
 			amount = maxStorage;
 		this.storageAmount = amount;
+		this.forceUpdate = true;
 		this.markDirty();
 		updateComparatorValuesPart2();
 	}
