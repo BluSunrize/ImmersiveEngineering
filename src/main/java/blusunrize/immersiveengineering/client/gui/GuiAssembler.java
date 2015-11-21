@@ -19,7 +19,7 @@ import blusunrize.immersiveengineering.common.util.network.MessageTileSync;
 
 public class GuiAssembler extends GuiContainer
 {
-	TileEntityAssembler tile;
+	public TileEntityAssembler tile;
 	public GuiAssembler(InventoryPlayer inventoryPlayer, TileEntityAssembler tile)
 	{
 		super(new ContainerAssembler(inventoryPlayer, tile));
@@ -38,13 +38,13 @@ public class GuiAssembler extends GuiContainer
 		this.buttonList.add(new GuiButton(2, guiLeft+165,guiTop+65, 10,10, EnumChatFormatting.GRAY+"\u2716"));
 	}
 	@Override
-    protected void actionPerformed(GuiButton button)
+	protected void actionPerformed(GuiButton button)
 	{
 		NBTTagCompound tag = new NBTTagCompound();
 		tag.setInteger("buttonID", button.id);
 		ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(tile, tag));
 	}
-	
+
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mx, int my)
 	{

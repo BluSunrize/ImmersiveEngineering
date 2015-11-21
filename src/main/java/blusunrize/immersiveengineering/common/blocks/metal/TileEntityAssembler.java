@@ -373,14 +373,28 @@ public class TileEntityAssembler extends TileEntityMultiblockPart implements ISi
 	}
 
 	@Override
-	public void receiveMessageFromClient(NBTTagCompound messsage)
+	public void receiveMessageFromClient(NBTTagCompound message)
 	{
-		int id = messsage.getInteger("buttonID");
-		if(id>=0 && id<patterns.length)
+		if(message.hasKey("buttonID"))
 		{
-			CrafterPatternInventory pattern = patterns[id];
-			for(int i=0; i<pattern.inv.length; i++)
-				pattern.inv[i] = null;
+			int id = message.getInteger("buttonID");
+			if(id>=0 && id<patterns.length)
+			{
+				CrafterPatternInventory pattern = patterns[id];
+				for(int i=0; i<pattern.inv.length; i++)
+					pattern.inv[i] = null;
+			}
+		}
+		else if(message.hasKey("patternSync"))
+		{
+			int r = message.getInteger("recipe");
+			NBTTagList list = message.getTagList("patternSync", 10);
+			CrafterPatternInventory pattern = patterns[r];
+			for(int i=0; i<list.tagCount(); i++)
+			{
+				NBTTagCompound itemTag = list.getCompoundTagAt(i);
+				pattern.inv[itemTag.getInteger("slot")] = ItemStack.loadItemStackFromNBT(itemTag);
+			}
 		}
 	}
 
