@@ -75,7 +75,7 @@ public class ItemBlockMetalDevices extends ItemBlockIEBase
 		
 		int conveyorFacingPre=-1;
 		int conveyorModePre=-1;
-		if(meta==BlockMetalDevices.META_conveyorBelt && side!=0 && side!=1)
+		if((meta==BlockMetalDevices.META_conveyorBelt||meta==BlockMetalDevices.META_conveyorDropper) && side!=0 && side!=1)
 		{
 			ForgeDirection fd = ForgeDirection.VALID_DIRECTIONS[side].getOpposite();
 			TileEntity tileEntity = world.getTileEntity(x+fd.offsetX, y, z+fd.offsetZ);

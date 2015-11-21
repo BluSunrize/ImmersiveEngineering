@@ -40,6 +40,7 @@ tile.ImmersiveEngineering.metalDevice.conveyorBelt.name=Conveyor Belt
 tile.ImmersiveEngineering.metalDevice.furnaceHeater.name=External Heater
 tile.ImmersiveEngineering.metalDevice.sorter.name=Item Router
 tile.ImmersiveEngineering.metalDevice.sampleDrill.name=Core Sample Drill
+tile.ImmersiveEngineering.metalDevice.conveyorDropper.name=Dropping Conveyor Belt
 
 tile.ImmersiveEngineering.metalMultiblock.lightningRod.name=Lightning Rod Base
 tile.ImmersiveEngineering.metalMultiblock.dieselGenerator.name=Diesel Generator

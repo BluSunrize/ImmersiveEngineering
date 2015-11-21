@@ -13,6 +13,18 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements ISidedIn
 	public boolean transportUp=false;
 	public boolean transportDown=false;
 	public int facing=2;
+	public boolean dropping=false;
+
+	public TileEntityConveyorBelt()
+	{
+		super();
+	}
+
+	public TileEntityConveyorBelt(boolean dropping)
+	{
+		super();
+		this.dropping = dropping;
+	}
 
 	@Override
 	public boolean canUpdate()
@@ -26,6 +38,7 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements ISidedIn
 		transportUp = nbt.getBoolean("transportUp");
 		transportDown = nbt.getBoolean("transportDown");
 		facing = nbt.getInteger("facing");
+		dropping = nbt.getBoolean("dropping");
 		if(descPacket && worldObj!=null)
 			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 	}
@@ -36,6 +49,7 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements ISidedIn
 		nbt.setBoolean("transportUp", transportUp);
 		nbt.setBoolean("transportDown", transportDown);
 		nbt.setInteger("facing", facing);
+		nbt.setBoolean("dropping", dropping);
 	}
 
 	@Override
