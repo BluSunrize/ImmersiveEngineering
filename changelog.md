@@ -1,3 +1,25 @@
+#####Version 0.6.3
+- added the Chemical Thrower! A device that shoots fluids at people to varying effects! Also supports shaders!
+- added potioneffects to IE, these are used by the Chemthrower
+- added an interface to allow addons to make their own wooden posts that transformers can attach to (thanks UnwrittenFun)
+- added config to disable infinite water sources with the pump
+- added a "clear recipe" button to the assembler
+- added support for NEI's "?" button to the assembler
+- changed fluid pipes to be smarter about their connections (thanks cobra)
+- changed manual entries on mineral veins to be sorted alphabetically. Also changed the handling of dimension names, might fix the relevant bugs.
+- fixed bottling machine not accepting fluids correctly
+- fixed fluid dupe bug (thanks cobra)
+- fixed silo having pipes connect to everywhere
+- fixed z-fighting on the silo
+- fixed wires disappearing in RFTools dimensions (thanks malte0811)
+- fixed Breaker Switches falsely accepting HV
+- fixed speedloader-caused desync (thanks malte0811)
+- fixed DeppStorage interface on the silo (thanks malte0811)
+- updated zh_CN.lang
+- updated fr_FR.lang
+- added es_ES.lang
+
+
 #####Version 0.6.2 - BUILT
 - added wood-covered scaffolding
 - added aluminium decoration blocks (fence, scaffold)
