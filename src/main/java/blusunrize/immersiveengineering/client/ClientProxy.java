@@ -392,7 +392,8 @@ public class ClientProxy extends CommonProxy
 
 		ManualHelper.addEntry("conveyor", ManualHelper.CAT_MACHINES,
 				new ManualPages.Crafting(ManualHelper.getManual(), "conveyor0", new ItemStack(IEContent.blockMetalDevice,1,BlockMetalDevices.META_conveyorBelt)),
-				new ManualPages.Text(ManualHelper.getManual(), "conveyor1"));
+				new ManualPages.Text(ManualHelper.getManual(), "conveyor1"),
+				new ManualPages.Crafting(ManualHelper.getManual(), "conveyor2", new ItemStack(IEContent.blockMetalDevice,1,BlockMetalDevices.META_conveyorDropper)));
 		ManualHelper.addEntry("furnaceHeater", ManualHelper.CAT_MACHINES,
 				new ManualPages.Crafting(ManualHelper.getManual(), "furnaceHeater0", new ItemStack(IEContent.blockMetalDevice,1,BlockMetalDevices.META_furnaceHeater)),
 				new ManualPages.Text(ManualHelper.getManual(), "furnaceHeater1"),

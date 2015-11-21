@@ -18,6 +18,7 @@ public class TConstructHelper extends IECompatModule {
 		IERecipes.addOreDictAlloyingRecipe("ingotAluminumBrass",4, "Copper", 100,512, "dustAluminum","dustAluminum","dustAluminum");
 		
 		ChemthrowerHandler.registerEffect("glue", new ChemthrowerEffect_Potion(null,0, IEPotions.sticky,100,1));
+		ChemthrowerHandler.registerEffect("slime.blue", new ChemthrowerEffect_Potion(null,0, IEPotions.sticky,100,1));
 	}
 
 	@Override

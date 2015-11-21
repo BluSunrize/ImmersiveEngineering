@@ -13,4 +13,5 @@ public interface IManualPage
 	public void buttonPressed(GuiManual gui, GuiButton button);
 	public void mouseDragged(int x, int y, int clickX, int clickY, int mx, int my, int lastX, int lastY, int button);
 	public boolean listForSearch(String searchTag);
+	public void recalculateCraftingRecipes();
 }

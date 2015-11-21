@@ -14,7 +14,8 @@
 - fixed wires disappearing in RFTools dimensions (thanks malte0811)
 - fixed Breaker Switches falsely accepting HV
 - fixed speedloader-caused desync (thanks malte0811)
-- fixed DeppStorage interface on the silo (thanks malte0811)
+- fixed DeepStorage interface on the silo (thanks malte0811)
+- fixed typos in the manual (thanks xbony2)
 - updated zh_CN.lang
 - updated fr_FR.lang
 - added es_ES.lang

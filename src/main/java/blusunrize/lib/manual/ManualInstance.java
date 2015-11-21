@@ -1,6 +1,7 @@
 package blusunrize.lib.manual;
 
 import net.minecraft.client.gui.FontRenderer;
+import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.lib.manual.gui.GuiManual;
 
 import com.google.common.collect.ArrayListMultimap;
@@ -80,4 +81,10 @@ public abstract class ManualInstance
 		}
 	}
 
+	public void recalculateAllRecipes()
+	{
+		for(ManualEntry entry : manualContents.values())
+			for(IManualPage p : entry.getPages())
+				p.recalculateCraftingRecipes();
+	}
 }

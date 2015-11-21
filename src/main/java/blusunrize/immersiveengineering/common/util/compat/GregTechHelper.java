@@ -5,9 +5,11 @@ import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.tileentity.TileEntity;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler;
+import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEffect_Damage;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEffect_Potion;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralMix;
@@ -15,6 +17,8 @@ import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.IERecipes;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDevices;
+import blusunrize.immersiveengineering.common.util.IEDamageSources;
+import blusunrize.immersiveengineering.common.util.IEPotions;
 import blusunrize.immersiveengineering.common.util.Lib;
 
 public class GregTechHelper extends IECompatModule
@@ -72,7 +76,7 @@ public class GregTechHelper extends IECompatModule
 				ChemthrowerHandler.registerEffect(potionName+".strong", new ChemthrowerEffect_Potion(null,0, fluidPotion.potion,(int)(fluidPotion.baseDuration*.5f),fluidPotion.baseAmplifier+1));
 			if(fluidPotion.extended)
 				ChemthrowerHandler.registerEffect(potionName+".long", new ChemthrowerEffect_Potion(null,0, fluidPotion.potion,fluidPotion.baseDuration*2,fluidPotion.baseAmplifier));
-			
+
 			if(fluidPotion.splash)
 				ChemthrowerHandler.registerEffect(potionName+".splash", new ChemthrowerEffect_Potion(null,0, fluidPotion.potion,(int)(fluidPotion.baseDuration*.75f),fluidPotion.baseAmplifier));
 			if(fluidPotion.strong && fluidPotion.splash)
@@ -80,6 +84,49 @@ public class GregTechHelper extends IECompatModule
 			if(fluidPotion.extended && fluidPotion.splash)
 				ChemthrowerHandler.registerEffect(potionName+".long.splash", new ChemthrowerEffect_Potion(null,0, fluidPotion.potion,(int)(fluidPotion.baseDuration*1.5f),fluidPotion.baseAmplifier));
 		}
+		ChemthrowerHandler.registerEffect("liquid_light_oil", new ChemthrowerEffect_Potion(null,0, new PotionEffect(IEPotions.flammable.id,100,0)));
+		ChemthrowerHandler.registerFlammable("liquid_light_oil");
+		ChemthrowerHandler.registerEffect("liquid_medium_oil", new ChemthrowerEffect_Potion(null,0, new PotionEffect(IEPotions.flammable.id,100,0)));
+		ChemthrowerHandler.registerFlammable("liquid_medium_oil");
+		ChemthrowerHandler.registerEffect("liquid_heavy_oil", new ChemthrowerEffect_Potion(null,0, new PotionEffect(IEPotions.flammable.id,120,0)));
+		ChemthrowerHandler.registerFlammable("liquid_heavy_oil");
+		ChemthrowerHandler.registerEffect("liquid_extra_heavy_oil", new ChemthrowerEffect_Potion(null,0, new PotionEffect(IEPotions.flammable.id,140,0),new PotionEffect(Potion.blindness.id,80,1)));
+		ChemthrowerHandler.registerFlammable("liquid_extra_heavy_oil");
+		ChemthrowerHandler.registerFlammable("gas_natural_gas");
+		ChemthrowerHandler.registerEffect("liquid_heavy_fuel", new ChemthrowerEffect_Potion(null,0, new PotionEffect(IEPotions.flammable.id,100,1)));
+		ChemthrowerHandler.registerFlammable("liquid_heavy_fuel");
+		ChemthrowerHandler.registerEffect("liquid_light_fuel", new ChemthrowerEffect_Potion(null,0, new PotionEffect(IEPotions.flammable.id,100,1)));
+		ChemthrowerHandler.registerFlammable("liquid_light_fuel");
+		ChemthrowerHandler.registerEffect("liquid_cracked_light_fuel", new ChemthrowerEffect_Potion(null,0, new PotionEffect(IEPotions.flammable.id,60,1)));
+		ChemthrowerHandler.registerFlammable("liquid_cracked_light_fuel");
+		ChemthrowerHandler.registerEffect("liquid_cracked_heavy_fuel", new ChemthrowerEffect_Potion(null,0, new PotionEffect(IEPotions.flammable.id,80,1)));
+		ChemthrowerHandler.registerFlammable("liquid_cracked_heavy_fuel");
+
+		ChemthrowerHandler.registerEffect("liquid_heavy_fuel", new ChemthrowerEffect_Potion(null,0, new PotionEffect(IEPotions.flammable.id,100,1)));
+		ChemthrowerHandler.registerFlammable("liquid_heavy_fuel");
+		ChemthrowerHandler.registerEffect("liquid_light_fuel", new ChemthrowerEffect_Potion(null,0, new PotionEffect(IEPotions.flammable.id,80,1)));
+		ChemthrowerHandler.registerFlammable("liquid_light_fuel");
+		ChemthrowerHandler.registerEffect("liquid_sulfuricheavy_fuel", new ChemthrowerEffect_Potion(null,0, new PotionEffect(IEPotions.flammable.id,100,1)));
+		ChemthrowerHandler.registerFlammable("liquid_sulfuricheavy_fuel");
+		ChemthrowerHandler.registerEffect("liquid_sufluriclight_fuel", new ChemthrowerEffect_Potion(null,0, new PotionEffect(IEPotions.flammable.id,80,1)));
+		ChemthrowerHandler.registerFlammable("liquid_sufluriclight_fuel");
+		ChemthrowerHandler.registerEffect("liquid_naphtha", new ChemthrowerEffect_Potion(null,0, new PotionEffect(IEPotions.flammable.id,100,1)));
+		ChemthrowerHandler.registerFlammable("liquid_naphtha");
+		ChemthrowerHandler.registerEffect("liquid_sulfuricnaphtha", new ChemthrowerEffect_Potion(null,0, new PotionEffect(IEPotions.flammable.id,100,1)));
+		ChemthrowerHandler.registerFlammable("liquid_sulfuricnaphtha");
+
+		ChemthrowerHandler.registerEffect("nitrofuel", new ChemthrowerEffect_Potion(null,0, new PotionEffect(IEPotions.flammable.id,100,1)));
+		ChemthrowerHandler.registerFlammable("nitrofuel");
+		ChemthrowerHandler.registerEffect("lubricant", new ChemthrowerEffect_Potion(null,0, new PotionEffect(IEPotions.slippery.id,80,0)));
+		ChemthrowerHandler.registerEffect("sulfuricacid", new ChemthrowerEffect_Damage(IEDamageSources.causeAcidDamage(),2));
+
+		ChemthrowerHandler.registerFlammable("hydrogen");
+		ChemthrowerHandler.registerFlammable("methane");
+		ChemthrowerHandler.registerFlammable("gas_gas");
+		ChemthrowerHandler.registerFlammable("gas_natural_gas");
+		ChemthrowerHandler.registerFlammable("gas_sulfuricgas");
+		ChemthrowerHandler.registerFlammable("liquid_lpg");
+		ChemthrowerHandler.registerGas("liquid_lpg");
 	}
 
 	@Override

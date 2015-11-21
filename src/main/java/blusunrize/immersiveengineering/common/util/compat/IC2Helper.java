@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.common.util.compat;
 
+import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler;
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.api.energy.tile.IEnergySink;
@@ -11,7 +12,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class IC2Helper
+public class IC2Helper extends IECompatModule
 {
 	public static void loadIC2Tile(TileEntity tile)
 	{
@@ -51,5 +52,18 @@ public class IC2Helper
 		if(stack!=null && stack.getItem() instanceof IElectricItem)
 			return ElectricItem.manager.discharge(stack, amount, 5, true, false, false);
 		return 0;
+	}
+	@Override
+	public void preInit()
+	{
+	}
+	@Override
+	public void init()
+	{
+		ChemthrowerHandler.registerFlammable("ic2biogas");
+	}
+	@Override
+	public void postInit() 
+	{
 	}
 }

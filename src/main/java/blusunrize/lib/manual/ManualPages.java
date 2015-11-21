@@ -81,6 +81,10 @@ public abstract class ManualPages implements IManualPage
 	//			GuiManual.activeManual.initGui();
 	//		}
 	//	}
+	@Override
+	public void recalculateCraftingRecipes()
+	{
+	}
 
 	public static class Text extends ManualPages
 	{
@@ -317,7 +321,7 @@ public abstract class ManualPages implements IManualPage
 		{
 			GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 			RenderHelper.enableGUIStandardItemLighting();
-			
+
 			int length = stacks.length;
 			float scale = length>7?1f: length>4?1.5f: 2f;
 			int line0 = (int)(2/scale*4);
@@ -377,7 +381,12 @@ public abstract class ManualPages implements IManualPage
 			this.stacks=stacks;
 			this.recipePage=new int[stacks.length];
 			this.yOff=new int[stacks.length];
+			recalculateCraftingRecipes();
+		}
 
+		@Override
+		public void recalculateCraftingRecipes()
+		{
 			this.recipes.clear();
 			List cmRecipes = CraftingManager.getInstance().getRecipeList();
 			for(Object o : cmRecipes)
@@ -594,12 +603,20 @@ public abstract class ManualPages implements IManualPage
 
 	public static class CraftingMulti extends ManualPages
 	{
+		Object[] stacks;
 		ArrayList<PositionedItemStack[]> recipes = new ArrayList();
 		int recipePage;
 		int yOff;
 		public CraftingMulti(ManualInstance manual, String text, Object... stacks)
 		{
 			super(manual,text);
+			this.stacks = stacks;
+			recalculateCraftingRecipes();
+		}
+
+		@Override
+		public void recalculateCraftingRecipes()
+		{
 			this.recipes.clear();
 			if(stacks!=null&&stacks.length>0&&stacks[0] instanceof PositionedItemStack[])
 			{

@@ -2,8 +2,6 @@ package blusunrize.immersiveengineering.common;
 
 import java.util.Map;
 
-import blusunrize.immersiveengineering.api.energy.IImmersiveConnectable;
-import blusunrize.immersiveengineering.common.util.IELogger;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.server.MinecraftServer;

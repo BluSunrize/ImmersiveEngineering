@@ -13,6 +13,7 @@ import minetweaker.api.oredict.IOreDictEntry;
 import minetweaker.util.IEventHandler;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
+import blusunrize.immersiveengineering.api.ManualHelper;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
@@ -97,6 +98,7 @@ public class MTHelper extends IECompatModule
 		public void handle(ReloadEvent event)
 		{
 			ExcavatorHandler.recalculateChances();
+			ManualHelper.ieManualInstance.recalculateAllRecipes();
 		}
 	}
 

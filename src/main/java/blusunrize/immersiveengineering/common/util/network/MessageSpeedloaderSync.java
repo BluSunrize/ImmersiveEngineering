@@ -1,19 +1,10 @@
 package blusunrize.immersiveengineering.common.util.network;
 
 import io.netty.buffer.ByteBuf;
-
-import java.util.HashMap;
-import java.util.Map;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
-import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralMix;
 import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.items.ItemRevolver;
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;

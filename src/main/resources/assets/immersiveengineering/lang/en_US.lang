@@ -636,6 +636,7 @@ ie.manual.entry.conveyor.name=Conveyor Belts
 ie.manual.entry.conveyor.subtext=Who needs rails anyway?
 ie.manual.entry.conveyor0=Conveyor Belts are an easy way of transporting all sorts of things around your base. While they are strong enough to move living creatures like cows or sheep, their true strength lies in transporting items.<br>Throwing items atop them will have the items move along the belt. Should the belt lead into an inventory, the item will be inserted.
 ie.manual.entry.conveyor1=Blocks like hoppers will be able to drop items onto the belts. Use an Engineer's Hammer to rotate the belts (rightclick) or adjust whether they should run up- or downwards (sneak + rightclick).<br>By default, conveyors face the same way the player is facing. Sneaking while placing them will instead make them face towards the player.
+ie.manual.entry.conveyor2=The Dropping Conveyor Belt is quite simply a conveyor with a hatch in the middle, allowing it to drop items that pass over it downwards.<br>Items will be inserted into inventories below or simply dropped if there is an empty space below the conveyor.
 
 ie.manual.entry.furnaceHeater.name=External Heater
 ie.manual.entry.furnaceHeater.subtext=Now you're cooking with flux!
