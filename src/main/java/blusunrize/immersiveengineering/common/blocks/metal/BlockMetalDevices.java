@@ -62,6 +62,7 @@ public class BlockMetalDevices extends BlockIEBase implements blusunrize.aquatwe
 	public static final int META_furnaceHeater=12;
 	public static final int META_sorter=13;
 	public static final int META_sampleDrill=14;
+	public static final int META_conveyorDropper=15;
 
 	public BlockMetalDevices()
 	{
@@ -71,7 +72,7 @@ public class BlockMetalDevices extends BlockIEBase implements blusunrize.aquatwe
 				"relayHV","connectorHV","capacitorHV","transformerHV",
 				"dynamo","thermoelectricGen",
 				"conveyorBelt","furnaceHeater","sorter",
-				"sampleDrill");
+				"sampleDrill","conveyorDropper");
 		setHardness(3.0F);
 		setResistance(15.0F);
 		this.setMetaLightOpacity(META_capacitorLV, 255);
@@ -232,6 +233,11 @@ public class BlockMetalDevices extends BlockIEBase implements blusunrize.aquatwe
 		//13 sorter
 		for(int i=0; i<6; i++)
 			icons_sorter[i] = iconRegister.registerIcon("immersiveengineering:metal_sorter_"+i);
+		//15 conveyorDropper
+		icons[META_conveyorDropper][0] = iconRegister.registerIcon("immersiveengineering:metal_conveyor_dropper");
+		icons[META_conveyorDropper][1] = iconRegister.registerIcon("immersiveengineering:metal_conveyor_dropper");
+		icons[META_conveyorDropper][2] = iconRegister.registerIcon("immersiveengineering:metal_dynamo_bottom");
+		icons[META_conveyorDropper][3] = iconRegister.registerIcon("immersiveengineering:metal_dynamo_bottom");
 
 		//0 connectorLV
 		//2 connectorMV
@@ -273,7 +279,12 @@ public class BlockMetalDevices extends BlockIEBase implements blusunrize.aquatwe
 				return icons[META_dynamo][side<4?3:2];
 		}
 		if(te instanceof TileEntityConveyorBelt && (((TileEntityConveyorBelt)te).facing==side || ((TileEntityConveyorBelt)te).facing==ForgeDirection.OPPOSITES[side]))
-			return icons[META_conveyorBelt][1];
+		{
+			if(((TileEntityConveyorBelt) te).dropping)
+				return icons[META_conveyorDropper][1];
+			else
+				return icons[META_conveyorBelt][1];
+		}
 		if(te instanceof TileEntityFurnaceHeater)
 		{
 			if( ((TileEntityFurnaceHeater)te).sockets[side]==1)
@@ -504,7 +515,7 @@ public class BlockMetalDevices extends BlockIEBase implements blusunrize.aquatwe
 	@Override
 	public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z)
 	{
-		if(world.getBlockMetadata(x, y, z) == META_conveyorBelt)
+		if(world.getBlockMetadata(x, y, z) == META_conveyorBelt || world.getBlockMetadata(x, y, z) == META_conveyorDropper )
 			return AxisAlignedBB.getBoundingBox(x, y, z, x+1, y, z + 1);
 		this.setBlockBoundsBasedOnState(world,x,y,z);
 		return super.getCollisionBoundingBoxFromPool(world, x, y, z);
@@ -562,6 +573,8 @@ public class BlockMetalDevices extends BlockIEBase implements blusunrize.aquatwe
 			return new TileEntityConveyorSorter();
 		case META_sampleDrill:
 			return new TileEntitySampleDrill();
+		case META_conveyorDropper:
+			return new TileEntityConveyorBelt(true);
 		}
 		return null;
 	}
@@ -666,8 +679,19 @@ public class BlockMetalDevices extends BlockIEBase implements blusunrize.aquatwe
 			if(par5Entity instanceof EntityItem)
 			{
 				((EntityItem)par5Entity).age=0;
-				boolean contact = f==3?(par5Entity.posZ-z<=.2): f==2?(par5Entity.posZ-z>=.8): f==5?(par5Entity.posX-x<=.2): (par5Entity.posX-x>=.8);
-				te = world.getTileEntity(x+fd.offsetX,y+(tile.transportUp?1: tile.transportDown?-1: 0),z+fd.offsetZ);
+				boolean contact;
+				boolean dropping = ((TileEntityConveyorBelt) te).dropping;
+				if(dropping)
+				{
+					te = world.getTileEntity(x, y-1, z);
+					contact = (f==2)&&(par5Entity.posZ-z>=.2) || (f==3)&&(par5Entity.posZ-z<=.8) || (f==4)&&(par5Entity.posX-x>=.2) || (f==5)&&(par5Entity.posX-x<=.8);
+					fd = ForgeDirection.DOWN;
+				}
+				else
+				{
+					te = world.getTileEntity(x+fd.offsetX,y+(tile.transportUp?1: tile.transportDown?-1: 0),z+fd.offsetZ);
+					contact = f==3? (par5Entity.posZ-z<=.2): f==2? (par5Entity.posZ-z>=.8): f==5? (par5Entity.posX-x<=.2): (par5Entity.posX-x>=.8);
+				}
 				if (!world.isRemote)
 					if(contact && te instanceof IInventory)
 					{
@@ -685,6 +709,13 @@ public class BlockMetalDevices extends BlockIEBase implements blusunrize.aquatwe
 							}
 						}
 					}
+
+				if(dropping && contact && !(te instanceof IInventory) && world.isAirBlock(x, y-1, z) && !world.isRemote)
+				{
+					par5Entity.motionX = 0;
+					par5Entity.motionZ = 0;
+					par5Entity.setPosition(x+.5, y-.5, z+.5);
+				}
 			}
 		}
 	}
