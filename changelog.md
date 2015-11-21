@@ -5,6 +5,8 @@
 - added config to disable infinite water sources with the pump
 - added a "clear recipe" button to the assembler
 - added support for NEI's "?" button to the assembler
+- added the Dropping Conveyor Belt which inserts into inventories below it (thanks cobra)
+- added recipe recalculation, to (hopefully) include minetweake'd recipes in the manual
 - changed fluid pipes to be smarter about their connections (thanks cobra)
 - changed manual entries on mineral veins to be sorted alphabetically. Also changed the handling of dimension names, might fix the relevant bugs.
 - fixed bottling machine not accepting fluids correctly
@@ -14,7 +16,7 @@
 - fixed wires disappearing in RFTools dimensions (thanks malte0811)
 - fixed Breaker Switches falsely accepting HV
 - fixed speedloader-caused desync (thanks malte0811)
-- fixed DeepStorage interface on the silo (thanks malte0811)
+- fixed DeepStorage interface on the silo (thanks malte0811 and cobra)
 - fixed typos in the manual (thanks xbony2)
 - updated zh_CN.lang
 - updated fr_FR.lang
