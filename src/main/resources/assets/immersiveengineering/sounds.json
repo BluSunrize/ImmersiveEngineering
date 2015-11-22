@@ -1,5 +1,7 @@
 {
 	"dieselGenerator": { "category": "block", "sounds":["dieselGenerator"] },
 	"crusher": { "category": "block", "sounds":["crusher"] },
-	"birthdayParty": { "category": "neutral", "sounds":["birthdayParty"] }
+	"birthdayParty": { "category": "neutral", "sounds":["birthdayParty"] },
+	"spray": { "category": "player", "sounds":["spray"] },
+	"spray_fire": { "category": "player", "sounds":["spray_fire"] }
 }

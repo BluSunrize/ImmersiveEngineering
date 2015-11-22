@@ -53,6 +53,7 @@ import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.api.energy.WireType;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
+import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler;
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
 import blusunrize.immersiveengineering.client.fx.ParticleRenderer;
 import blusunrize.immersiveengineering.client.gui.GuiBlastFurnace;
@@ -394,18 +395,18 @@ public class ClientEventHandler
 					ClientUtils.bindTexture("immersiveengineering:textures/gui/fuelGauge.png");
 					GL11.glColor4f(1, 1, 1, 1);
 					float dx = event.resolution.getScaledWidth()-16;
-					float dy = event.resolution.getScaledHeight()-12;
+					float dy = event.resolution.getScaledHeight();
 					GL11.glPushMatrix();
 					GL11.glTranslated(dx, dy, 0);
-					int w = 33;
-					int h = 81;
-					double uMin = (drill?179:66)/256f;
-					double uMax = (drill?210:97)/256f;
-					double vMin = 0/96f;
-					double vMax = 80/96f;
+					int w = 31;
+					int h = 62;
+					double uMin = 179/256f;
+					double uMax = 210/256f;
+					double vMin = 9/96f;
+					double vMax = 71/96f;
 					ClientUtils.drawTexturedRect(-24,-68, w,h, uMin,uMax,vMin,vMax);
 
-					GL11.glTranslated(-23,-28,0);
+					GL11.glTranslated(-23,-37,0);
 					FluidStack fuel = ((IFluidContainerItem)equipped.getItem()).getFluid(equipped);
 					int amount = fuel!=null?fuel.amount:0;
 					if(!drill && player.isUsingItem())
@@ -415,28 +416,33 @@ public class ClientEventHandler
 					GL11.glRotatef(angle, 0, 0, 1);
 					ClientUtils.drawTexturedRect(6,-2, 24,4, 91/256f,123/256f, 80/96f,87/96f);
 					GL11.glRotatef(-angle, 0, 0, 1);
-					//for(float angle=83; angle>=-83; angle-=20)
-					//{
-					//	GL11.glRotatef(angle, 0, 0, 1);
-					//	ClientUtils.drawTexturedRect(6,-2, 24,4, 91/256f,123/256f, 80/96f,87/96f);
-					//	GL11.glRotatef(-angle, 0, 0, 1);
-					//}
-					GL11.glTranslated(23,28,0);
+//					for(int i=0; i<=8; i++)
+//					{
+//						float angle = 83-(166/8f)*i;
+//						GL11.glRotatef(angle, 0, 0, 1);
+//						ClientUtils.drawTexturedRect(6,-2, 24,4, 91/256f,123/256f, 80/96f,87/96f);
+//						GL11.glRotatef(-angle, 0, 0, 1);
+//					}
+					GL11.glTranslated(23,37,0);
 					if(drill)
 					{
-						ClientUtils.drawTexturedRect(-33-18,-40-26, 33+30,40+37, 108/256f,174/256f, 0/96f,80/96f);
+						ClientUtils.drawTexturedRect(-54,-73, 66,72, 108/256f,174/256f, 4/96f,76/96f);
 						RenderItem ir = RenderItem.getInstance();
 						ItemStack head = ((ItemDrill)equipped.getItem()).getHead(equipped);
 						if(head!=null)
 						{
-							ir.renderItemIntoGUI(ClientUtils.mc().fontRenderer, ClientUtils.mc().renderEngine, head, -48,-36);
-							ir.renderItemOverlayIntoGUI(ClientUtils.font(), ClientUtils.mc().renderEngine, head, -48,-36);
+							ir.renderItemIntoGUI(ClientUtils.mc().fontRenderer, ClientUtils.mc().renderEngine, head, -51,-45);
+							ir.renderItemOverlayIntoGUI(ClientUtils.font(), ClientUtils.mc().renderEngine, head, -51,-45);
 							RenderHelper.disableStandardItemLighting();
 						}
 					}
 					else
-						ClientUtils.drawTexturedRect(-33-6,-40-26, 33+18,40+37, 8/256f,61/256f, 0/96f,80/96f);
-
+					{
+						ClientUtils.drawTexturedRect(-41,-73, 53,72, 8/256f,61/256f, 4/96f,76/96f);
+						boolean ignite = ItemNBTHelper.getBoolean(equipped, "ignite");
+						ClientUtils.drawTexturedRect(-32,-43, 12,12, 66/256f,78/256f, (ignite?21:9)/96f,(ignite?33:21)/96f);
+						
+					}
 					GL11.glPopMatrix();
 				}
 

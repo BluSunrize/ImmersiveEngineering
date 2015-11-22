@@ -76,7 +76,7 @@ public class ShaderCaseRevolver extends ShaderCase
 	public int[] getRGBAColourModifier(ItemStack shader, ItemStack item, String modelPart, int pass)
 	{
 		if(!shader.hasTagCompound() || pass==2&&(modelPart.equals("barrel") || modelPart.equals("dev_scope")||modelPart.equals("player_electro_0")||modelPart.equals("player_electro_1")))
-			return new int[]{255,255,255,255};
+			return defaultWhite;
 
 		int i=getTextureType(modelPart,pass); //0 == grip, 1==main, 2==detail, 3==blade
 		if(i==0)
@@ -87,7 +87,7 @@ public class ShaderCaseRevolver extends ShaderCase
 			return colourSecondary;
 		if(i==3)
 			return colourBlade;
-		return new int[]{255,255,255,255};
+		return defaultWhite;
 	}
 	
 	public int getTextureType(String modelPart, int pass)

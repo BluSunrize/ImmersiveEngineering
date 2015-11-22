@@ -233,13 +233,14 @@ item.ImmersiveEngineering.drillhead.steel.name=Steel Drill Head
 
 item.ImmersiveEngineering.skyhook.name=Engineer's Skyhook
 
-item.ImmersiveEngineering.toolupgrade.drillWaterproof.name=Internal Oxidizer Tank
+item.ImmersiveEngineering.toolupgrade.drillWaterproof.name=Pressurized Air Tank
 item.ImmersiveEngineering.toolupgrade.drillSpeed.name=Advanced Lubrication System
 item.ImmersiveEngineering.toolupgrade.drillDamage.name=Additional Augers
-item.ImmersiveEngineering.toolupgrade.drillCapacity.name=Large Fuel Tank
+item.ImmersiveEngineering.toolupgrade.drillCapacity.name=Large Tank
 item.ImmersiveEngineering.toolupgrade.revolverBayonet.name=Bayonet
 item.ImmersiveEngineering.toolupgrade.revolverMagazine.name=Extended Magazine
 item.ImmersiveEngineering.toolupgrade.revolverElectro.name=Amplifier Electron Tubes
+item.ImmersiveEngineering.toolupgrade.chemthrowerFocus.name=Focused Nozzle
 
 item.ImmersiveEngineering.blueprint.name=Engineer's Blueprint
 
@@ -358,10 +359,11 @@ desc.ImmersiveEngineering.flavour.skyhook=Not fully implemented!
 desc.ImmersiveEngineering.flavour.toolupgrade.drillWaterproof=Allows the Mining Drill to operate under water
 desc.ImmersiveEngineering.flavour.toolupgrade.drillSpeed=Increases the digging speed of the Mining Drill
 desc.ImmersiveEngineering.flavour.toolupgrade.drillDamage=Increases the attack damage of the Mining Drill, stacks up to 3
-desc.ImmersiveEngineering.flavour.toolupgrade.drillCapacity=Increases the internal tank size of the Mining Drill
+desc.ImmersiveEngineering.flavour.toolupgrade.drillCapacity=Increases the internal tank size of the Mining Drill and Chemical Thrower
 desc.ImmersiveEngineering.flavour.toolupgrade.revolverBayonet=Adds melee damage to the Revolver
 desc.ImmersiveEngineering.flavour.toolupgrade.revolverMagazine=Increases the Revolver's magazine size
 desc.ImmersiveEngineering.flavour.toolupgrade.revolverElectro=Revolver shots inflict shock damage
+desc.ImmersiveEngineering.flavour.toolupgrade.chemthrowerFocus=Decreases spread and increases range of the Chemical Thrower
 
 gui.ImmersiveEngineering.empty=Empty
 
@@ -660,7 +662,7 @@ ie.manual.entry.drill.name=Mining Drill
 ie.manual.entry.drill.subtext=My drill will pierce the Bedrock!
 ie.manual.entry.drill0=The handheld, diesel-powered drill is a big advancement in mining. With exchangeable drill heads and upgrades, its properties are almost entirely modifiable. To modify it, place it in an <link;workbench;§o§nEngineer's §o§nWorkbench§r>.<br>The drill runs off of <link;biodiesel;§o§nBiodiesel§r> and can be filled directly in the refinery.
 ie.manual.entry.drill1=The Drill Head determines the base mining level, speed, and size, as well as the attack damage. As you dig blocks, the drill head takes damage, but it can be repaired in an anvil.
-ie.manual.entry.drill2=As the drill is powered by a combustion engine, it will not run underwater unless you equip it with the Internal Oxidizer Tank Upgrade. However, with this upgrade equipped, it will not only run while submerged, but also ignore the slowdown usually experienced when digging in water.
+ie.manual.entry.drill2=As the drill is powered by a combustion engine, it will not run underwater unless you equip it with the Pressurized Air Tank Upgrade. However, with this upgrade equipped, it will not only run while submerged, but also ignore the slowdown usually experienced when digging in water.
 ie.manual.entry.drill3=The Advanced Lubrication System applies additional lubricant to the drill at a regular basis, allowing it to run and dig faster.
 ie.manual.entry.drill4=By adding Additional Augers to the drill, it's destructive potential against living creatures is increased. The upgrade stacks up to three and each will add an additional point of attack damage.
 ie.manual.entry.drill5=The Large Fuel Tank allows the drill to store more fuel internally, extending the time you can use it before refilling.
@@ -688,6 +690,11 @@ ie.manual.entry.bulletsBotania1=§lWolfpack §lCartridges§r are a colelction of
 #ie.manual.entry.bullets1=These are common types of ammunition, created with simple, selfmade blueprints:<br><br>§lCasull:§r Simple lead projectile, capable of inflicting medium damage.<br>§lArmor-Piercing:§r Dense metal projectile, penetrates the armor by sheer kinetic force.<br>§lBuckshot:§r Collection of small projectiles, spreading in a cone shape. Effective at short range.<br>§lHigh-Explosive:§r Creates small explosion on impact.<br>§lSilver:§r Lead core in silver, effective against...werewolves?!
 #ie.manual.entry.bullets2=These are more intricate types of ammunition, created with unique blueprints that cannot be crafted, only found or bought.<br><br>§lDragon's Breath:§r Flammable metal dust, creates a short-ranged inferno.<config;b;botaniaBullets;<br>§lHoming:§r Will home in on the closest target.<br>§lWolfpack:§r Unguided cluster projectile, splits into 6 small, homing, shots.;><br>§lPhial:§r Can be crafted with any potion to create a shot that inflicts the potion effect.
 
+ie.manual.entry.chemthrower.name=Chemical Thrower
+ie.manual.entry.chemthrower.subtext=
+ie.manual.entry.chemthrower0=The Chemical Thrower is a device that propells fluids from its internal tank. The device can be loaded with any fluid, liquid or gas, and, on right click, will spray it out.<br>It also features a function to ignite the fluid, if it is flammable. To toggle the pilot light, sneak and rightclick.
+ie.manual.entry.chemthrower1=Like some other tools, the chemical thrower can be modified in the <link;workbench;§o§nEngineer's §o§nWorkbench§r>. These upgrades affect the size of the tank, range and spread.<br><br>The Large Tank increases the fluid capacity of the Chemical Thrower by 2000 mb. 
+ie.manual.entry.chemthrower2=The Focused Nozzle decreases the spread of fluids sprayed out and also slightly increases their range, allowing you to hit further targets with more precision.
 
 ie.manual.entry.shader.name=Shaders
 ie.manual.entry.shader.subtext=Blue! No, yellow!

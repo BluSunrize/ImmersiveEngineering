@@ -24,6 +24,7 @@ public class TileEntityConveyorSorter extends TileEntityIEBase implements ISided
 	public int[] oreDictFilter = {-1,-1,-1,-1,-1,-1};
 	public int[] sideFilter = {0,0,0,0,0,0};
 	public static final int filterSlotsPerSide = 8;
+	private boolean isRouting = false;
 
 
 	public TileEntityConveyorSorter()
@@ -101,6 +102,9 @@ public class TileEntityConveyorSorter extends TileEntityIEBase implements ISided
 
 	public Integer[][] getValidOutputs(int inputSide, ItemStack stack, boolean allowUnmapped, boolean allowThrowing)
 	{
+		if(isRouting)
+			return new Integer[][]{{},{},{},{}};
+		this.isRouting = true;
 		ArrayList<Integer> validFilteredInvOuts = new ArrayList<Integer>();
 		ArrayList<Integer> validFilteredEntityOuts = new ArrayList<Integer>();
 		ArrayList<Integer> validUnfilteredInvOuts = new ArrayList<Integer>();
@@ -156,6 +160,7 @@ public class TileEntityConveyorSorter extends TileEntityIEBase implements ISided
 						validUnfilteredEntityOuts.add(side);
 				}
 			}
+		this.isRouting = false;
 		return new Integer[][]{ 
 				validFilteredInvOuts.toArray(new Integer[validFilteredInvOuts.size()]),
 				validFilteredEntityOuts.toArray(new Integer[validFilteredEntityOuts.size()]),

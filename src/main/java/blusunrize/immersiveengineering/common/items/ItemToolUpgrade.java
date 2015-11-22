@@ -19,7 +19,8 @@ public class ItemToolUpgrade extends ItemIEBase implements IUpgrade {
 	public ItemToolUpgrade()
 	{
 		super("toolupgrade", 1, "drillWaterproof","drillSpeed","drillDamage","drillCapacity",
-				"revolverBayonet","revolverMagazine","revolverElectro");
+				"revolverBayonet","revolverMagazine","revolverElectro",
+				"chemthrowerFocus");
 	}
 
 	@Override
@@ -43,7 +44,14 @@ public class ItemToolUpgrade extends ItemIEBase implements IUpgrade {
 	@Override
 	public Set<String> getUpgradeTypes(ItemStack upgrade)
 	{
-		return ImmutableSet.of(upgrade.getItemDamage()<=3?"DRILL": "REVOLVER");
+		if(upgrade.getItemDamage()<=2)
+			return ImmutableSet.of("DRILL");
+		else if(upgrade.getItemDamage()==3)
+			return ImmutableSet.of("DRILL","CHEMTHROWER");
+		else if(upgrade.getItemDamage()<=6)
+			return ImmutableSet.of("REVOLVER");
+		else
+			return ImmutableSet.of("CHEMTHROWER");
 	}
 
 	@Override
@@ -72,7 +80,7 @@ public class ItemToolUpgrade extends ItemIEBase implements IUpgrade {
 			break;
 		case 3:
 			mod = (Integer)modifications.get("capacity");
-			modifications.put("capacity", (mod==null?0:mod)+1000);
+			modifications.put("capacity", (mod==null?0:mod)+2000);
 			break;
 
 		case 4:
@@ -85,6 +93,10 @@ public class ItemToolUpgrade extends ItemIEBase implements IUpgrade {
 			break;
 		case 6:
 			modifications.put("electro", true);
+			break;
+			
+		case 7:
+			modifications.put("focus", true);
 			break;
 		}
 	}

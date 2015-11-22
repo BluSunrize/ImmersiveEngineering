@@ -82,8 +82,15 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IShaderEquip
 				Vec3 v = player.getLookVec();
 				int split = 8;
 				boolean isGas = fs.getFluid().isGaseous()||ChemthrowerHandler.isGas(fs.getFluid());
-				float scatter = isGas?.1f:.025f;
+
+				float scatter = isGas?.15f:.05f;
 				float range = isGas?.5f:1f;
+				if(getUpgrades(stack).getBoolean("focus"))
+				{
+					range += .25f;
+					scatter -= .025f;
+				}
+
 				boolean ignite = ChemthrowerHandler.isFlammable(fs.getFluid())&&ItemNBTHelper.getBoolean(stack, "ignite");
 				for(int i=0; i<split; i++)
 				{	
@@ -96,6 +103,13 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IShaderEquip
 						chem.setFire(10);
 					if(!player.worldObj.isRemote)
 						player.worldObj.spawnEntityInWorld(chem);
+				}
+				if(count%4==0)
+				{
+					if(ignite)
+						player.playSound("immersiveengineering:spray_fire", .5f, 1.5f);
+					else
+						player.playSound("immersiveengineering:spray", .5f, .75f);
 				}
 			}
 			else

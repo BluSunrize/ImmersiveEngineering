@@ -38,7 +38,7 @@ public abstract class ItemUpgradeableTool extends ItemInternalStorage implements
 		clearUpgrades(stack);
 		ItemStack[] inv = getContainedItems(stack);
 		HashMap<String, Object> map = new HashMap<String, Object>();
-		for(int i=1; i<inv.length; i++)//start at 1, 0 is the drill
+		for(int i=0; i<inv.length; i++)//start at 1, 0 is the drill
 		{
 			ItemStack u = inv[i];
 			if(u!=null && u.getItem() instanceof IUpgrade)

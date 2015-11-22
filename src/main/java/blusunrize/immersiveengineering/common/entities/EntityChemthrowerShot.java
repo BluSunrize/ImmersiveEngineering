@@ -55,6 +55,17 @@ public class EntityChemthrowerShot extends EntityIEProjectile
 	{
 		return fluid;
 	}
+	
+	@Override
+	public double getGravity()
+	{
+		if(getFluid()!=null)
+		{
+			boolean isGas = getFluid().isGaseous()||ChemthrowerHandler.isGas(getFluid());
+			return (isGas?.025f:.05F) * (getFluid().getDensity()<0?-1:1);
+		}
+		return super.getGravity();
+	}
 
 	@Override
 	public void onEntityUpdate()

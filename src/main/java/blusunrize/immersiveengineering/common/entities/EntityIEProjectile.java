@@ -252,7 +252,6 @@ public abstract class EntityIEProjectile extends Entity
 	public double getGravity()
 	{
 		return 0.05F;
-//		gravity*(getFluid().getDensity()<0?-1:1)
 	}
 	
 	public abstract void onImpact(MovingObjectPosition mop);

@@ -61,9 +61,9 @@ public class ShaderCaseChemthrower extends ShaderCase
 		int maxPass = getPasses(shader, item, modelPart);
 		boolean hasUncoloured = modelPart.equals("base") || (tanksUncoloured&&modelPart.equals("tanks"));
 		if(pass==maxPass-1 && hasUncoloured)//uncoloured
-			return new int[]{255,255,255,255};
+			return defaultWhite;
 		if(pass==maxPass-(hasUncoloured?2:1) && i_chemthrowerAdditional!=null)
-			return new int[]{255,255,255,255};
+			return defaultWhite;
 
 		int i=getTextureType(modelPart,pass); //0 == grip, 1==main, 2==detail
 		if(i==0)
@@ -72,7 +72,7 @@ public class ShaderCaseChemthrower extends ShaderCase
 			return colourPrimary;
 		if(i==2)
 			return colourSecondary;
-		return new int[]{255,255,255,255};
+		return defaultWhite;
 	}
 
 	public int getTextureType(String modelPart, int pass)

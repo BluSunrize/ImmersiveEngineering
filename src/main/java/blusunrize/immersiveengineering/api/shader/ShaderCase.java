@@ -15,6 +15,7 @@ public abstract class ShaderCase
 	protected final int[] colourUnderlying;
 	protected final int[] colourPrimary;
 	protected final int[] colourSecondary;
+	protected final static int[] defaultWhite = {255,255,255,255};
 	
 	public ShaderCase(int[] colourUnderlying, int[] colourPrimary, int[] colourSecondary)
 	{
