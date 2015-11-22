@@ -7,8 +7,12 @@
 - added support for NEI's "?" button to the assembler
 - added the Dropping Conveyor Belt which inserts into inventories below it (thanks cobra)
 - added recipe recalculation, to (hopefully) include minetweake'd recipes in the manual
+- added compat for Cutting Edge
+- fleshed out the Item Router. Now has OreDict, NBT and fuzzy filtering and matching buttons in the GUI
+- removed the ability to insert and extract graphite electrodes from the Arc Furnace
 - changed fluid pipes to be smarter about their connections (thanks cobra)
 - changed manual entries on mineral veins to be sorted alphabetically. Also changed the handling of dimension names, might fix the relevant bugs.
+- changed the HUD for the Drill a little
 - fixed bottling machine not accepting fluids correctly
 - fixed fluid dupe bug (thanks cobra)
 - fixed silo having pipes connect to everywhere
@@ -18,6 +22,9 @@
 - fixed speedloader-caused desync (thanks malte0811)
 - fixed DeepStorage interface on the silo (thanks malte0811 and cobra)
 - fixed typos in the manual (thanks xbony2)
+- fixed stack overflow with the Item Router
+- fixed tooltips rendering below NEI (thanks UnwrittenFun)
+- fixed Mekanisms's refined obsidian being smeltable in the Arc Furnace
 - updated zh_CN.lang
 - updated fr_FR.lang
 - added es_ES.lang

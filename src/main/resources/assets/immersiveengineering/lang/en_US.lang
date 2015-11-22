@@ -473,11 +473,24 @@ immersiveengineering.potion.sticky=Sticky
 #ie.manual.entry.=
 
 ie.manual.category.update.name=UPDATE NEWS!
-ie.manual.entry.updateNews.name=What's new in Version 0.6
-ie.manual.entry.updateNews.subtext=Old, new; borrowed and Blu
-ie.manual.entry.updateNews0=Dear Engineer!<br><br>Since you last worked with Immersive Engineering, many things have changed! Among the new things are: Villager houses, <link;lighting;§nnew §nlights§r>, <link;barrel;§nwooden §nbarrels§r>, <link;tanksilo;§ntanks§r>, <link;tanksilo;§nsilos§r;1> and <link;fluidPipes;§nfluid §npipes§r>, achievements, <link;shader;§nshaders§r> and the <link;assembler;§nAssembler§r> and <link;bottlingMachine;§nBottling §nMachine§r>!
-ie.manual.entry.updateNews1=Most importantly however, the way energy transmission is handled has changed a lot. In order to avoid mistakes, please make sure to read the entry on <link;wiring;§nWiring§r>, especially page 5, detailing the new distinction between a cable's transfer rate and a connector's in- and output.
+ie.manual.entry.updateNews_0.name=What's new in v0.6.0
+ie.manual.entry.updateNews_0.subtext=Old, new; borrowed and Blu
+ie.manual.entry.updateNews_00=Dear Engineer!<br><br>Since you last worked with Immersive Engineering, many things have changed! Among the new things are: Villager houses, <link;lighting;§nnew §nlights§r>, <link;barrel;§nwooden §nbarrels§r>, <link;tanksilo;§ntanks§r>, <link;tanksilo;§nsilos§r;1> and <link;fluidPipes;§nfluid §npipes§r>, achievements, <link;shader;§nshaders§r> and the <link;assembler;§nAssembler§r> and <link;bottlingMachine;§nBottling §nMachine§r>!
+ie.manual.entry.updateNews_01=Most importantly however, the way energy transmission is handled has changed a lot. In order to avoid mistakes, please make sure to read the entry on <link;wiring;§nWiring§r>, especially page 5, detailing the new distinction between a cable's transfer rate and a connector's in- and output.
 
+ie.manual.entry.updateNews_1.name=What's new in v0.6.1
+ie.manual.entry.updateNews_1.subtext=Old, new; borrowed and Blu
+ie.manual.entry.updateNews_10=Dear Engineer!<br><br>The past update has brought some new features and changes to Immersive Engineering:<br><br><link;metalbarrel;§nMetal §nBarrels§r> offer a more stable, yet portable fluid storage solution, the Arc Furnace has been improved to alloy certain metals, as well as recycle old tools and armor, and the scaffolding used to cover a <link;fluidPipes;§nFluid §nPipe§r> can now be climbed.
+
+ie.manual.entry.updateNews_2.name=What's new in v0.6.2
+ie.manual.entry.updateNews_2.subtext=Old, new; borrowed and Blu
+ie.manual.entry.updateNews_20=Dear Engineer!<br><br>The past update has brought some new features and changes to Immersive Engineering:<br><br>A new variation of scaffolding was invented, that replaces the unsafe, open steel struts on the top with some wooden planks. Aluminium has turned out to be quite useful for decorative purposes, as such, fences and scaffolding have now been made available in your local Engineer's shop.
+ie.manual.entry.updateNews_21=A new kind of breakerswitch was invented to be controlled with redstone signals and accept HV lines. Subsequently, HV lines are now forbidden from being attached to normal breakers, due to lifethreatening voltages. We don't want trouble with the union.
+
+ie.manual.entry.updateNews_3.name=What's new in v0.6.3
+ie.manual.entry.updateNews_3.subtext=Old, new; borrowed and Blu
+ie.manual.entry.updateNews_30=Dear Engineer!<br><br>The past update has brought some new features and changes to Immersive Engineering:<br><br>After suffering a severe concussion, Chief Engineer Adams drafted plans for the <link;chemthrower;Chemical Thrower>, a device that allows you to spray any fluid anywhere. It also features a built-in pilot light to ignite the fluid spray. We think Adams might be insane.
+ie.manual.entry.updateNews_31=Assistant Engineer "Cobra" has presented his newest invention, the <link;conveyor;Dropping Conveyor;2>, which drops items passing over it into inventories below. To top it all off the <link;sorter;Item Router> has had its interface designed to allow for OreDictionary-, NBT-based and Fuzzy filtering of items!
 
 ie.manual.category.general.name=Overview and Resources
 ie.manual.category.construction.name=Construction
