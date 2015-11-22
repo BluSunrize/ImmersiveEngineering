@@ -46,8 +46,9 @@ public class GuiAssembler extends GuiContainer
 	}
 
 	@Override
-	protected void drawGuiContainerForegroundLayer(int mx, int my)
+	public void drawScreen(int mx, int my, float partial)
 	{
+		super.drawScreen(mx, my, partial);
 		ArrayList<String> tooltip = new ArrayList<String>();
 		if(mx>=guiLeft+187&&mx<guiLeft+194 && my>=guiTop+12&&my<guiTop+59)
 			tooltip.add(tile.energyStorage.getEnergyStored()+"/"+tile.energyStorage.getMaxEnergyStored()+" RF");
@@ -58,7 +59,7 @@ public class GuiAssembler extends GuiContainer
 
 		if(!tooltip.isEmpty())
 		{
-			ClientUtils.drawHoveringText(tooltip, mx-guiLeft, my-guiTop, fontRendererObj, xSize,-1);
+			ClientUtils.drawHoveringText(tooltip, mx, my, fontRendererObj, xSize,-1);
 			RenderHelper.enableGUIStandardItemLighting();
 		}
 

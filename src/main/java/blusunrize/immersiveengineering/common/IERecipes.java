@@ -2,6 +2,7 @@ package blusunrize.immersiveengineering.common;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -389,7 +390,7 @@ public class IERecipes
 					if(!ingots.isEmpty())
 						out = Utils.copyStackWithAmount(IEApi.getPreferredOreStack("ingot"+ore),2);
 				}
-				if(out!=null)
+				if(out!=null && !arcBlacklist.contains(ore))
 					addArcOreSmelting(out, ore);
 			}
 			else if(name.startsWith("gem"))
@@ -411,7 +412,7 @@ public class IERecipes
 				}
 				else
 					out = Utils.copyStackWithAmount(out, out.stackSize/2);
-				if(out!=null)
+				if(out!=null && !arcBlacklist.contains(ore))
 					addArcRecipe(out, "dust"+ore, 100,512, null);
 
 				if(OreDictionary.doesOreNameExist("ingot"+ore))
@@ -486,6 +487,7 @@ public class IERecipes
 
 
 	public static HashMap<String, ItemStack> arcOutputModifier = new HashMap<String, ItemStack>();
+	public static HashSet<String> arcBlacklist = new HashSet<String>();
 	public static void initArcSmeltingRecipes()
 	{
 		//Steel

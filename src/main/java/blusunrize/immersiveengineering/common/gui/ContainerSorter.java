@@ -19,21 +19,17 @@ public class ContainerSorter extends Container
 			for(int i=0; i<TileEntityConveyorSorter.filterSlotsPerSide; i++)
 			{
 				int x = 4+ (side/2)*58 + (i<3?i*18: i>4?(i-5)*18: i==3?0: 36);
-				int y = 4+ (side%2)*58 + (i<3?0: i>4?36: 18);
+				int y = 22+ (side%2)*76 + (i<3?0: i>4?36: 18);
 				int id = side*TileEntityConveyorSorter.filterSlotsPerSide+i;
 				this.addSlotToContainer(new IESlot.Ghost(this, tile.filter, id, x, y));
 			}
-
-		//				this.addSlotToContainer(new Slot(tile, i, 24+i%3*18, 17+i/3*18));
-		//		this.addSlotToContainer(new IESlot.FluidContainer(tile, 9, 133,19, true));
-		//		this.addSlotToContainer(new IESlot.Output(tile, 10, 133,55));
 		slotCount=6*TileEntityConveyorSorter.filterSlotsPerSide;
 
 		for (int i = 0; i < 3; i++)
 			for (int j = 0; j < 9; j++)
-				addSlotToContainer(new Slot(inventoryPlayer, j+i*9+9, 8+j*18, 127+i*18));
+				addSlotToContainer(new Slot(inventoryPlayer, j+i*9+9, 8+j*18, 163+i*18));
 		for (int i = 0; i < 9; i++)
-			addSlotToContainer(new Slot(inventoryPlayer, i, 8+i*18, 185));
+			addSlotToContainer(new Slot(inventoryPlayer, i, 8+i*18, 221));
 	}
 
 	@Override

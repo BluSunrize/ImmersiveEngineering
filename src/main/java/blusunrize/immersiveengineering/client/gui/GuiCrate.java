@@ -17,11 +17,6 @@ public class GuiCrate extends GuiContainer
 		this.ySize=168;
 	}
 
-	protected void drawGuiContainerForegroundLayer(int mx, int my)
-	{
-	}
-
-
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float f, int mx, int my)
 	{

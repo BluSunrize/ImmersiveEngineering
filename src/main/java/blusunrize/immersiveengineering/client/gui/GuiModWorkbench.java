@@ -29,8 +29,10 @@ public class GuiModWorkbench extends GuiContainer
 		this.ySize=168;
 	}
 
-	protected void drawGuiContainerForegroundLayer(int mx, int my)
+	@Override
+	public void drawScreen(int mx, int my, float partial)
 	{
+		super.drawScreen(mx, my, partial);
 		for(int i=0; i<((ContainerModWorkbench)inventorySlots).slotCount; i++)
 		{
 			Slot s = inventorySlots.getSlot(i);
@@ -62,7 +64,7 @@ public class GuiModWorkbench extends GuiContainer
 						for(ItemStack ss : inputs)
 							tooltip.add(EnumChatFormatting.GRAY.toString()+ss.stackSize+"x "+ ss.getDisplayName());
 
-						ClientUtils.drawHoveringText(tooltip, mx-guiLeft, my-guiTop, fontRendererObj);
+						ClientUtils.drawHoveringText(tooltip, mx, my, fontRendererObj);
 						RenderHelper.enableGUIStandardItemLighting();
 					}
 			}

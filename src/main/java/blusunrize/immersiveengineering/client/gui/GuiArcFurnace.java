@@ -21,16 +21,17 @@ public class GuiArcFurnace extends GuiContainer
 		this.ySize=207;
 		this.tile=tile;
 	}
-
-	protected void drawGuiContainerForegroundLayer(int mx, int my)
+	@Override
+	public void drawScreen(int mx, int my, float partial)
 	{
+		super.drawScreen(mx, my, partial);
 		ArrayList<String> tooltip = new ArrayList<String>();
 		if(mx>guiLeft+157&&mx<guiLeft+164 && my>guiTop+22&&my<guiTop+68)
 			tooltip.add(tile.energyStorage.getEnergyStored()+"/"+tile.energyStorage.getMaxEnergyStored()+" RF");
 
 		if(!tooltip.isEmpty())
 		{
-			ClientUtils.drawHoveringText(tooltip, mx-guiLeft, my-guiTop, fontRendererObj, guiLeft+xSize,-1);
+			ClientUtils.drawHoveringText(tooltip, mx, my, fontRendererObj, guiLeft+xSize,-1);
 			RenderHelper.enableGUIStandardItemLighting();
 		}
 	}

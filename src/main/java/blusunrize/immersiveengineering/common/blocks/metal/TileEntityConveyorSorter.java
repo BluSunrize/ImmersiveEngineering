@@ -21,8 +21,7 @@ import blusunrize.immersiveengineering.common.util.Utils;
 public class TileEntityConveyorSorter extends TileEntityIEBase implements ISidedInventory, IBlockOverlayText
 {
 	public SorterInventory filter;
-	public int[] oreDictFilter = {-1,-1,-1,-1,-1,-1};
-	public int[] sideFilter = {0,0,0,0,0,0};
+	public int[] sideFilter = {0,0,0,0,0,0};//OreDict,nbt,fuzzy
 	public static final int filterSlotsPerSide = 8;
 	private boolean isRouting = false;
 
@@ -100,9 +99,35 @@ public class TileEntityConveyorSorter extends TileEntityIEBase implements ISided
 		}
 	}
 
+	public boolean doOredict(int side)
+	{
+		if(side>=0 && side<this.sideFilter.length)
+			return (this.sideFilter[side]&1)!=0;
+		return false;		
+	}
+	public boolean doNBT(int side)
+	{
+		if(side>=0 && side<this.sideFilter.length)
+			return (this.sideFilter[side]&2)!=0;
+		return false;		
+	}
+	public boolean doFuzzy(int side)
+	{
+		if(side>=0 && side<this.sideFilter.length)
+			return (this.sideFilter[side]&4)!=0;
+		return false;		
+	}
+
+	@Override
+	public void receiveMessageFromClient(NBTTagCompound message)
+	{
+		if(message.hasKey("sideConfig"))
+			this.sideFilter = message.getIntArray("sideConfig");
+	}
+
 	public Integer[][] getValidOutputs(int inputSide, ItemStack stack, boolean allowUnmapped, boolean allowThrowing)
 	{
-		if(isRouting)
+		if(isRouting || stack==null)
 			return new Integer[][]{{},{},{},{}};
 		this.isRouting = true;
 		ArrayList<Integer> validFilteredInvOuts = new ArrayList<Integer>();
@@ -110,7 +135,7 @@ public class TileEntityConveyorSorter extends TileEntityIEBase implements ISided
 		ArrayList<Integer> validUnfilteredInvOuts = new ArrayList<Integer>();
 		ArrayList<Integer> validUnfilteredEntityOuts = new ArrayList<Integer>();
 		for(int side=0; side<6; side++)
-			if(side!=inputSide && sideFilter[side]==0)
+			if(side!=inputSide)
 			{
 				boolean unmapped = true;
 				boolean allowed = false;
@@ -120,23 +145,26 @@ public class TileEntityConveyorSorter extends TileEntityIEBase implements ISided
 						if(filterStack!=null)
 						{
 							unmapped = false;
-							if(oreDictFilter[side]==0)
-							{
+							
+							System.out.println("filter "+Integer.toBinaryString(this.sideFilter[side])+" ore:"+doOredict(side)+", nbt:"+doNBT(side)+", fuzzy:"+doFuzzy(side));
+							
+							boolean b = OreDictionary.itemMatches(filterStack, stack, true);
+							
+							if(!b && doFuzzy(side))
+								b = filterStack.getItem().equals(stack.getItem());
+							
+							if(!b && doOredict(side))
 								for(int allowedOid : OreDictionary.getOreIDs(filterStack))
 									for(int oid : OreDictionary.getOreIDs(stack))
 										if(oid==allowedOid)
-										{
-											allowed=true;
-											break filterIteration;
-										}
-							}
-							else
+											b=true;
+							
+							if(doNBT(side))
+								b &= ItemStack.areItemStackTagsEqual(filterStack, stack);
+							if(b)
 							{
-								if(OreDictionary.itemMatches(filterStack, stack, true))
-								{
-									allowed=true;
-									break filterIteration;
-								}
+								allowed=true;
+								break filterIteration;
 							}
 
 						}
@@ -432,10 +460,10 @@ public class TileEntityConveyorSorter extends TileEntityIEBase implements ISided
 
 	public void toggleSide(int side)
 	{
-		oreDictFilter[side]++;
-		if(oreDictFilter[side]>0)
-			oreDictFilter[side]=-1;
-		worldObj.addBlockEvent(xCoord, yCoord, zCoord, getBlockType(), 0, 0);
+		//		oreDictFilter[side]++;
+		//		if(oreDictFilter[side]>0)
+		//			oreDictFilter[side]=-1;
+		//		worldObj.addBlockEvent(xCoord, yCoord, zCoord, getBlockType(), 0, 0);
 	}
 	@Override
 	public boolean receiveClientEvent(int id, int arg)
@@ -454,7 +482,7 @@ public class TileEntityConveyorSorter extends TileEntityIEBase implements ISided
 		if(hammer)
 			return new String []{
 				StatCollector.translateToLocal("desc.ImmersiveEngineering.info.blockSide."+ForgeDirection.getOrientation(mop.sideHit)),
-				StatCollector.translateToLocal("desc.ImmersiveEngineering.info.oreDict."+(oreDictFilter[mop.sideHit]==-1?"off":"on"))
+				//				StatCollector.translateToLocal("desc.ImmersiveEngineering.info.oreDict."+(oreDictFilter[mop.sideHit]==-1?"off":"on"))
 		};
 		return null;
 	}

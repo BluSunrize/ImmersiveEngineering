@@ -21,18 +21,11 @@ public class GuiRefinery extends GuiContainer
 		this.tile=tile;
 	}
 
-	protected void drawGuiContainerForegroundLayer(int mx, int my)
+	@Override
+	public void drawScreen(int mx, int my, float partial)
 	{
+		super.drawScreen(mx, my, partial);
 		ArrayList<String> tooltip = new ArrayList();
-		//		if(mx>guiLeft+98&&mx<guiLeft+98+16 && my>guiTop+21&&my<guiTop+21+47)
-		//		{
-		//			tooltip = new ArrayList<String>();
-		//			if(tile.tank.getFluid()!=null && tile.tank.getFluid().getFluid()!=null)
-		//				tooltip.add(tile.tank.getFluid().getLocalizedName());
-		//			else
-		//				tooltip.add(StatCollector.translateToLocal("gui.ImmersiveEngineering.empty"));
-		//			tooltip.add(tile.tank.getFluidAmount()+"/"+tile.tank.getCapacity()+"mB");
-		//		}
 		ClientUtils.handleGuiTank(tile.tank0, guiLeft+ 13,guiTop+20, 16,47, 177,31,20,51, mx,my, "immersiveengineering:textures/gui/refinery.png", tooltip);
 		ClientUtils.handleGuiTank(tile.tank1, guiLeft+ 61,guiTop+20, 16,47, 177,31,20,51, mx,my, "immersiveengineering:textures/gui/refinery.png", tooltip);
 		ClientUtils.handleGuiTank(tile.tank2, guiLeft+109,guiTop+20, 16,47, 177,31,20,51, mx,my, "immersiveengineering:textures/gui/refinery.png", tooltip);
@@ -41,7 +34,7 @@ public class GuiRefinery extends GuiContainer
 
 		if(!tooltip.isEmpty())
 		{
-			ClientUtils.drawHoveringText(tooltip, mx-guiLeft, my-guiTop, fontRendererObj, guiLeft+xSize,-1);
+			ClientUtils.drawHoveringText(tooltip, mx, my, fontRendererObj, guiLeft+xSize,-1);
 			RenderHelper.enableGUIStandardItemLighting();
 		}
 	}

@@ -570,8 +570,6 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 			return new int[]{16,17,18,19,20,21};
 		if(pos==22 && side==ForgeDirection.OPPOSITES[facing])//Slag at the back
 			return new int[]{22};
-		if(pos==112)//Electrodes on top
-			return new int[]{23,24,25};
 		return new int[0];
 	}
 	@Override

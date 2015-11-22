@@ -45,6 +45,8 @@ public abstract class IECompatModule
 		moduleClasses.put("ExtraUtilities", ExtraUtilsHelper.class);
 		moduleClasses.put("Thaumcraft", ThaumcraftHelper.class);
 		moduleClasses.put("TConstruct", TConstructHelper.class);
+		moduleClasses.put("Mekanism", MekanismHelper.class);
+		moduleClasses.put("cuttingedge", CuttingEdgeHelper.class);
 	}
 
 	public static void preInitModules()

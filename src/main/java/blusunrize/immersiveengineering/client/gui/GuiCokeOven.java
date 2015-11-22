@@ -21,24 +21,17 @@ public class GuiCokeOven extends GuiContainer
 		this.tile=tile;
 	}
 
-	protected void drawGuiContainerForegroundLayer(int mx, int my)
+	@Override
+	public void drawScreen(int mx, int my, float partial)
 	{
+		super.drawScreen(mx, my, partial);
 		ArrayList<String> tooltip = new ArrayList<String>();
 		ClientUtils.handleGuiTank(tile.tank, guiLeft+129,guiTop+20, 16,47, 176,31,20,51, mx,my, "immersiveengineering:textures/gui/cokeOven.png", tooltip);
 		if(!tooltip.isEmpty())
 		{
-			ClientUtils.drawHoveringText(tooltip, mx-guiLeft, my-guiTop, fontRendererObj, guiLeft+xSize,-1);
+			ClientUtils.drawHoveringText(tooltip, mx, my, fontRendererObj, guiLeft+xSize,-1);
 			RenderHelper.enableGUIStandardItemLighting();
 		}
-//		if(mx>guiLeft+129&&mx<guiLeft+129+16 && my>guiTop+20&&my<guiTop+20+47)
-//		{
-//			if(tile.tank.getFluid()!=null && tile.tank.getFluid().getFluid()!=null)
-//				tooltip.add(tile.tank.getFluid().getLocalizedName());
-//			else
-//				tooltip.add(StatCollector.translateToLocal("gui.ImmersiveEngineering.empty"));
-//			tooltip.add(tile.tank.getFluidAmount()+"/"+tile.tank.getCapacity()+"mB");
-//
-//		}
 	}
 
 

@@ -279,6 +279,10 @@ desc.ImmersiveEngineering.info.blockSide.connectFluid.-1=No Connection
 desc.ImmersiveEngineering.info.blockSide.connectFluid.0=Fluid Input
 desc.ImmersiveEngineering.info.blockSide.connectFluid.1=Fluid Output
 
+desc.ImmersiveEngineering.info.filter.oreDict=Filter: OreDictionary<br>Filters items based on<br>their OreDictionary names.
+desc.ImmersiveEngineering.info.filter.nbt=Filter: NBT Data<br>Filters items with<br>respect to their NBT Data.
+desc.ImmersiveEngineering.info.filter.fuzzy=Filter: Fuzzy<br>Filters items while<br>ignoring their damage value.
+
 desc.ImmersiveEngineering.info.oreDict.off=OreDictionary: Disabled
 desc.ImmersiveEngineering.info.oreDict.on=OreDictionary: Enabled
 

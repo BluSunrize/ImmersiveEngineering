@@ -84,6 +84,7 @@ public class EntityChemthrowerShot extends EntityIEProjectile
 		if(mop.entityHit!=null && !this.worldObj.isRemote && getFluid()!=null)
 		{
 			ChemthrowerEffect effect = ChemthrowerHandler.getEffect(getFluid());
+			boolean fire = getFluid().getTemperature()>1000;
 			if(effect!=null)
 			{
 				ItemStack thrower = null;
@@ -100,6 +101,8 @@ public class EntityChemthrowerShot extends EntityIEProjectile
 			}
 			if(this.isBurning())
 				mop.entityHit.setFire(this.fire);
+			else if(fire)
+				mop.entityHit.setFire(3);
 		}
 	}
 
