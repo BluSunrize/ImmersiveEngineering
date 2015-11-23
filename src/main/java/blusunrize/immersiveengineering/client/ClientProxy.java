@@ -256,12 +256,12 @@ public class ClientProxy extends CommonProxy
 	{
 		ManualHelper.ieManualInstance = new IEManualInstance();
 		int subVersion = 0;
-		while(ManualHelper.ieManualInstance.formatEntryName("updateNews_"+subVersion)!="updateNews_"+subVersion)
+		while(!(ManualHelper.ieManualInstance.formatEntryName("updateNews_"+subVersion).equals("ie.manual.entry.updateNews_"+subVersion+".name")))
 		{
 			ArrayList<IManualPage> pages = new ArrayList<IManualPage>();
 			int i=0;
 			String key;
-			while(ManualHelper.ieManualInstance.formatText(key="updateNews_"+subVersion+""+i)!=key && i<5)
+			while(!ManualHelper.ieManualInstance.formatText(key = "updateNews_"+subVersion+""+i).equals(key) && i<5)
 			{
 				pages.add(new ManualPages.Text(ManualHelper.getManual(), key));
 				i++;
