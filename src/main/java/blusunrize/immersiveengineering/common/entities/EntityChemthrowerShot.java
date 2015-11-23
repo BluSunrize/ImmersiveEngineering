@@ -8,6 +8,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -55,7 +56,7 @@ public class EntityChemthrowerShot extends EntityIEProjectile
 	{
 		return fluid;
 	}
-	
+
 	@Override
 	public double getGravity()
 	{
@@ -68,12 +69,20 @@ public class EntityChemthrowerShot extends EntityIEProjectile
 	}
 
 	@Override
+	public boolean canIgnite()
+	{
+		if(getFluid()!=null)
+			return !ChemthrowerHandler.isFlammable(getFluid());
+		return false;
+	}
+
+	@Override
 	public void onEntityUpdate()
 	{
 		if(this.getFluid() == null && this.worldObj.isRemote)
 			this.fluid = getFluidSynced();
 		Block b = worldObj.getBlock((int)posX, (int)posY, (int)posZ);
-		if(b!=null && (b.getMaterial()==Material.fire||b.getMaterial()==Material.lava))
+		if(b!=null && this.canIgnite() && (b.getMaterial()==Material.fire||b.getMaterial()==Material.lava))
 			this.setFire(6);
 		super.onEntityUpdate();
 	}
@@ -81,7 +90,7 @@ public class EntityChemthrowerShot extends EntityIEProjectile
 	@Override
 	public void onImpact(MovingObjectPosition mop)
 	{
-		if(mop.entityHit!=null && !this.worldObj.isRemote && getFluid()!=null)
+		if(!this.worldObj.isRemote && getFluid()!=null)
 		{
 			ChemthrowerEffect effect = ChemthrowerHandler.getEffect(getFluid());
 			boolean fire = getFluid().getTemperature()>1000;
@@ -91,18 +100,23 @@ public class EntityChemthrowerShot extends EntityIEProjectile
 				EntityPlayer shooter = (EntityPlayer)this.getShooter();
 				if(shooter!=null)
 					thrower = shooter.getCurrentEquippedItem();
-				effect.apply((EntityLivingBase)mop.entityHit, shooter, thrower, fluid);
+
+				if(mop.typeOfHit==MovingObjectType.ENTITY)
+					effect.applyToEntity((EntityLivingBase)mop.entityHit, shooter, thrower, fluid);
+				else if(mop.typeOfHit==MovingObjectType.BLOCK)
+					effect.applyToBlock(worldObj, mop, shooter, thrower, fluid);
 			}
-			else if(getFluid().getTemperature()>500)
+			else if(mop.entityHit!=null && getFluid().getTemperature()>500)
 			{
 				int tempDiff = getFluid().getTemperature()-300;
 				int damage = Math.abs(tempDiff)/500;
 				mop.entityHit.attackEntityFrom(DamageSource.lava, damage);
 			}
-			if(this.isBurning())
-				mop.entityHit.setFire(this.fire);
-			else if(fire)
-				mop.entityHit.setFire(3);
+			if(mop.entityHit!=null)
+				if(this.isBurning())
+					mop.entityHit.setFire(this.fire);
+				else if(fire)
+					mop.entityHit.setFire(3);
 		}
 	}
 

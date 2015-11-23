@@ -10,6 +10,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
 
 public class ChemthrowerHandler
@@ -98,7 +100,9 @@ public class ChemthrowerHandler
 
 	public static abstract class ChemthrowerEffect
 	{
-		public abstract void apply(EntityLivingBase target, EntityPlayer shooter, ItemStack thrower, Fluid fluid);
+		public abstract void applyToEntity(EntityLivingBase target, EntityPlayer shooter, ItemStack thrower, Fluid fluid);
+
+		public abstract void applyToBlock(World worldObj, MovingObjectPosition mop, EntityPlayer shooter, ItemStack thrower, Fluid fluid);
 	}
 	public static class ChemthrowerEffect_Damage extends ChemthrowerEffect
 	{
@@ -109,15 +113,19 @@ public class ChemthrowerHandler
 			this.source = source;
 			this.damage = damage;
 		}
-		public void apply(EntityLivingBase target, EntityPlayer shooter, ItemStack thrower, Fluid fluid)
+		public void applyToEntity(EntityLivingBase target, EntityPlayer shooter, ItemStack thrower, Fluid fluid)
 		{
 			if(this.source!=null)
 			{
 				target.attackEntityFrom(source, damage);
-//				target.hurtResistantTime = 12;
+				//				target.hurtResistantTime = 12;
 				if(source.isFireDamage() && !target.isImmuneToFire())
 					target.setFire(fluid.isGaseous()?2:5);
 			}
+		}
+		@Override
+		public void applyToBlock(World worldObj, MovingObjectPosition mop, EntityPlayer shooter, ItemStack thrower, Fluid fluid)
+		{
 		}
 	}
 	public static class ChemthrowerEffect_Potion extends ChemthrowerEffect_Damage
@@ -144,9 +152,9 @@ public class ChemthrowerHandler
 		}
 
 		@Override
-		public void apply(EntityLivingBase target, EntityPlayer shooter, ItemStack thrower, Fluid fluid)
+		public void applyToEntity(EntityLivingBase target, EntityPlayer shooter, ItemStack thrower, Fluid fluid)
 		{
-			super.apply(target, shooter, thrower, fluid);
+			super.applyToEntity(target, shooter, thrower, fluid);
 			if(this.potionEffects!=null && this.potionEffects.length>0)
 				for(int iEffect=0; iEffect<this.potionEffects.length; iEffect++)
 					if(target.getRNG().nextFloat() < this.effectChances[iEffect])

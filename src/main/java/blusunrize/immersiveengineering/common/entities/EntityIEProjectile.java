@@ -177,7 +177,7 @@ public abstract class EntityIEProjectile extends Entity
 
 				if(movingobjectposition!=null)
 				{
-					if(!this.isBurning() && movingobjectposition.entityHit!=null && movingobjectposition.entityHit.isBurning())
+					if(!this.isBurning() && this.canIgnite() && movingobjectposition.entityHit!=null && movingobjectposition.entityHit.isBurning())
 						this.setFire(3);
 					if(movingobjectposition.entityHit!=null && movingobjectposition.entityHit instanceof EntityLivingBase)
 					{
@@ -186,6 +186,7 @@ public abstract class EntityIEProjectile extends Entity
 					}
 					else if(movingobjectposition.typeOfHit==MovingObjectPosition.MovingObjectType.BLOCK)
 					{
+						this.onImpact(movingobjectposition);
 						this.blockX = movingobjectposition.blockX;
 						this.blockY = movingobjectposition.blockY;
 						this.blockZ = movingobjectposition.blockZ;
@@ -252,6 +253,11 @@ public abstract class EntityIEProjectile extends Entity
 	public double getGravity()
 	{
 		return 0.05F;
+	}
+	
+	public boolean canIgnite()
+	{
+		return false;
 	}
 	
 	public abstract void onImpact(MovingObjectPosition mop);

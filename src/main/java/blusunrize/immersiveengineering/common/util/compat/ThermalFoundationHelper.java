@@ -64,9 +64,9 @@ public class ThermalFoundationHelper extends IECompatModule
 			this.chance = chance;
 		}
 		@Override
-		public void apply(EntityLivingBase target, EntityPlayer shooter, ItemStack thrower, Fluid fluid)
+		public void applyToEntity(EntityLivingBase target, EntityPlayer shooter, ItemStack thrower, Fluid fluid)
 		{
-			super.apply(target, shooter, thrower, fluid);
+			super.applyToEntity(target, shooter, thrower, fluid);
 			if(target.worldObj.rand.nextFloat()<chance)
 			{
 				double x = target.posX - 8 + target.worldObj.rand.nextInt(17);
