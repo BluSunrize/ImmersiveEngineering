@@ -117,10 +117,12 @@ public class ChemthrowerHandler
 		{
 			if(this.source!=null)
 			{
-				target.attackEntityFrom(source, damage);
-				//				target.hurtResistantTime = 12;
-				if(source.isFireDamage() && !target.isImmuneToFire())
-					target.setFire(fluid.isGaseous()?2:5);
+				if(target.attackEntityFrom(source, damage))
+				{
+					target.hurtResistantTime = (int)(target.hurtResistantTime*.75);
+					if(source.isFireDamage() && !target.isImmuneToFire())
+						target.setFire(fluid.isGaseous()?2:5);
+				}
 			}
 		}
 		@Override

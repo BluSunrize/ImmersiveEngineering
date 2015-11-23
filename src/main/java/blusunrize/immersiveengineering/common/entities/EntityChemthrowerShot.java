@@ -110,13 +110,19 @@ public class EntityChemthrowerShot extends EntityIEProjectile
 			{
 				int tempDiff = getFluid().getTemperature()-300;
 				int damage = Math.abs(tempDiff)/500;
-				mop.entityHit.attackEntityFrom(DamageSource.lava, damage);
+				if(mop.entityHit.attackEntityFrom(DamageSource.lava, damage))
+					mop.entityHit.hurtResistantTime = (int)(mop.entityHit.hurtResistantTime*.75);
 			}
 			if(mop.entityHit!=null)
-				if(this.isBurning())
-					mop.entityHit.setFire(this.fire);
-				else if(fire)
-					mop.entityHit.setFire(3);
+			{
+				int f = this.isBurning()?this.fire: fire?3: 0;
+				if(f>0)
+				{
+					mop.entityHit.setFire(f);
+					if(mop.entityHit.attackEntityFrom(DamageSource.inFire, 2))
+						mop.entityHit.hurtResistantTime = (int)(mop.entityHit.hurtResistantTime*.75);
+				}
+			}
 		}
 	}
 
