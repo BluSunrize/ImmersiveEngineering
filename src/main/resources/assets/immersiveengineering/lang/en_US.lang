@@ -420,6 +420,7 @@ death.attack.ieRevolver_wolfpack=%1$s was shredded by %2$s's Wolfpack Rounds
 death.attack.ieRevolver_silver=%1$s was purified by %2$s's silver bullet
 death.attack.ieRevolver_potion=%1$s was doused by %2$s's phial shot
 death.attack.ieCrushed=%1$s was crushed
+death.attack.ieAcid=%1$s was dissolved in acid
 
 #ACHIEVEMENTS
 achievement.immersiveengineering.openManual=RTFM

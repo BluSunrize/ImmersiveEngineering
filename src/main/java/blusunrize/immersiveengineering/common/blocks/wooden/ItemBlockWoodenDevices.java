@@ -57,11 +57,12 @@ public class ItemBlockWoodenDevices extends ItemBlockIEBase
 		int f = playerViewQuarter==0 ? 2:playerViewQuarter==1 ? 5:playerViewQuarter==2 ? 3: 4;
 
 		if(meta==0)
+		{
 			for(int i=0;i<=3;i++)
 				if(!player.canPlayerEdit(x,y+1,z, side, stack) || !world.getBlock(x,y+i,z).isReplaceable(world, x,y+i,z) )
-					//						|| !world.isAirBlock(x,y+i,z))
 					return false;
-		if(meta==1)
+		}
+		else if(meta==1)
 			for(int yy=-2;yy<=2;yy++)
 			{
 				int r=yy<-1||yy>1?1:2;
@@ -69,7 +70,7 @@ public class ItemBlockWoodenDevices extends ItemBlockIEBase
 					if(!world.getBlock(x+((f==2||f==3)?ww:0), y+yy, z+((f==2||f==3)?0:ww)).isReplaceable(world, x+((f==2||f==3)?ww:0), y+yy, z+((f==2||f==3)?0:ww)) )
 						return false;
 			}
-		if(meta==2||meta==3)
+		else if(meta==2||meta==3)
 			for(int yy=-6;yy<=6;yy++)
 			{
 				int r=Math.abs(yy)==6?1: Math.abs(yy)==5?3: Math.abs(yy)==4?4: Math.abs(yy)>1?5: 6;
@@ -77,7 +78,7 @@ public class ItemBlockWoodenDevices extends ItemBlockIEBase
 					if(!world.getBlock(x+(f<=3?ww:0), y+yy, z+(f<=3?0:ww)).isReplaceable(world, x+(f<=3?ww:0), y+yy, z+(f<=3?0:ww)) )
 						return false;
 			}
-		if(meta==5)
+		else if(meta==5)
 		{
 			if(f==2||f==3)
 			{
@@ -107,7 +108,7 @@ public class ItemBlockWoodenDevices extends ItemBlockIEBase
 					((TileEntityWoodenPost)tileEntityWoodenPost).type=(byte) i;
 			}
 		}
-		if(tileEntity instanceof TileEntityWatermill)
+		else if(tileEntity instanceof TileEntityWatermill)
 		{
 			((TileEntityWatermill)tileEntity).facing=f;
 			TileEntity tileEntityWatermill;
@@ -127,16 +128,14 @@ public class ItemBlockWoodenDevices extends ItemBlockIEBase
 					}
 			}
 		}
-		if(tileEntity instanceof TileEntityWindmill)
+		else if(tileEntity instanceof TileEntityWindmill)
 			((TileEntityWindmill)tileEntity).facing=f;
-
-		if(tileEntity instanceof TileEntityWoodenCrate)
+		else if(tileEntity instanceof TileEntityWoodenCrate)
 		{
 			if(stack.hasTagCompound())
 				((TileEntityWoodenCrate)tileEntity).readInv(stack.getTagCompound());
 		}
-
-		if(tileEntity instanceof TileEntityModWorkbench)
+		else if(tileEntity instanceof TileEntityModWorkbench)
 		{
 			int xOff = f>3?0:(hitX<.5?-1:1);
 			int zOff = f<4?0:(hitZ<.5?-1:1);
@@ -159,7 +158,7 @@ public class ItemBlockWoodenDevices extends ItemBlockIEBase
 			}
 
 		}
-		if(tileEntity instanceof TileEntityWoodenBarrel)
+		else if(tileEntity instanceof TileEntityWoodenBarrel)
 		{
 			if(stack.hasTagCompound())
 				((TileEntityWoodenBarrel)tileEntity).readTank(stack.getTagCompound());
