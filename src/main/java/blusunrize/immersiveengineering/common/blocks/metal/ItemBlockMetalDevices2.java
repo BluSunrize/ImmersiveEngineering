@@ -14,6 +14,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidStack;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
+import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenBarrel;
 import blusunrize.immersiveengineering.common.util.Lib;
 
 public class ItemBlockMetalDevices2 extends ItemBlockIEBase
@@ -38,16 +39,10 @@ public class ItemBlockMetalDevices2 extends ItemBlockIEBase
 					list.add(fluid.getLocalizedName()+": "+fluid.amount+"mB");
 				}				
 				else
-				{
 					list.add(StatCollector.translateToLocal(Lib.DESC_FLAVOUR+"barrel"));
-					list.add(StatCollector.translateToLocal(Lib.DESC_FLAVOUR+"barrelTemp"));
-				}
 			}
 			else
-			{
 				list.add(StatCollector.translateToLocal(Lib.DESC_FLAVOUR+"barrel"));
-				list.add(StatCollector.translateToLocal(Lib.DESC_FLAVOUR+"barrelTemp"));
-			}
 		}
 	}
 
@@ -74,21 +69,26 @@ public class ItemBlockMetalDevices2 extends ItemBlockIEBase
 			else
 				((TileEntityBreakerSwitch)tileEntity).facing = ForgeDirection.OPPOSITES[side];
 		}
-		if(tileEntity instanceof TileEntityEnergyMeter)
+		else if(tileEntity instanceof TileEntityEnergyMeter)
 		{
 			((TileEntityEnergyMeter)tileEntity).facing = f;
 		}
-		if(tileEntity instanceof TileEntityFloodlight)
+		else if(tileEntity instanceof TileEntityFloodlight)
 		{
 			((TileEntityFloodlight)tileEntity).side = side;
 			if(f==side && player.rotationPitch>0)
 				f = ForgeDirection.OPPOSITES[f];
 			((TileEntityFloodlight)tileEntity).facing = f;
 		}
-		if(tileEntity instanceof TileEntityFluidPump)
+		else if(tileEntity instanceof TileEntityFluidPump)
 		{
 			((TileEntityFluidPump)tileEntity).dummy = false;
 			world.setBlock(x, y+1, z, IEContent.blockMetalDevice2, BlockMetalDevices2.META_fluidPump, 3);
+		}
+		else if(tileEntity instanceof TileEntityWoodenBarrel)
+		{
+			if(stack.hasTagCompound())
+				((TileEntityWoodenBarrel)tileEntity).readTank(stack.getTagCompound());
 		}
 		return ret;
 	}
