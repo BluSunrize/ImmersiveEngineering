@@ -233,7 +233,7 @@ public class ClientUtils
 
 	public static int calcBrightness(IBlockAccess world, double x, double y, double z)
 	{
-		return world.getLightBrightnessForSkyBlocks((int)Math.round(x), (int)Math.round(y), (int)Math.round(z), 0);
+		return world.getLightBrightnessForSkyBlocks((int)Math.floor(x), (int)Math.floor(y), (int)Math.floor(z), 0);
 	}
 
 

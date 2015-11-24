@@ -21,6 +21,8 @@ public class TileEntityThermoelectricGen extends TileEntityIEBase implements IEn
 	public void updateEntity()
 	{
 		if(!worldObj.isRemote)
+		{
+			int energy = 0;
 			for(ForgeDirection fd : new ForgeDirection[]{ForgeDirection.UP,ForgeDirection.SOUTH,ForgeDirection.EAST})
 				if(!worldObj.isAirBlock(xCoord+fd.offsetX, yCoord+fd.offsetY, zCoord+fd.offsetZ) && !worldObj.isAirBlock(xCoord+fd.getOpposite().offsetX, yCoord+fd.getOpposite().offsetY, zCoord+fd.getOpposite().offsetZ))
 				{
@@ -29,10 +31,11 @@ public class TileEntityThermoelectricGen extends TileEntityIEBase implements IEn
 					if(temp0>-1&&temp1>-1)
 					{
 						int diff = Math.abs(temp0-temp1);
-						int energy = (int) (Math.sqrt(diff)/2 *Config.getDouble("thermoelectric_output"));
-						outputEnergy(energy);
+						energy += (int) (Math.sqrt(diff)/2 *Config.getDouble("thermoelectric_output"));
 					}
 				}
+			outputEnergy(energy);
+		}
 	}
 
 	public void outputEnergy(int amount)
