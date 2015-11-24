@@ -77,12 +77,6 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 	}
 
 	@Override
-	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z, EntityPlayer player)
-	{
-		return super.getPickBlock(target, world, x, y, z, player);
-	}
-
-	@Override
 	public void getSubBlocks(Item item, CreativeTabs tab, List list)
 	{
 		list.add(new ItemStack(item, 1, 0));
@@ -697,6 +691,21 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 		return null;
 	}
 
+	@Override
+	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z, EntityPlayer player)
+	{
+		TileEntity te = world.getTileEntity(x, y, z);
+		if(te instanceof TileEntityWoodenBarrel)
+		{
+			ItemStack stack = new ItemStack(this,1,world.getBlockMetadata(x, y, z));
+			NBTTagCompound tag = new NBTTagCompound();
+			((TileEntityWoodenBarrel) te).writeTank(tag, true);
+			if(!tag.hasNoTags())
+				stack.setTagCompound(tag);
+			return stack;
+		}
+		return super.getPickBlock(target, world, x, y, z, player);
+	}
 	@Override
 	public void breakBlock(World world, int x, int y, int z, Block par5, int par6)
 	{

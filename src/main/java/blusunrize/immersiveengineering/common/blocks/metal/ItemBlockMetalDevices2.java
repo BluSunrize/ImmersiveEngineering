@@ -5,12 +5,16 @@ import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fluids.FluidStack;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
+import blusunrize.immersiveengineering.common.util.Lib;
 
 public class ItemBlockMetalDevices2 extends ItemBlockIEBase
 {
@@ -23,6 +27,28 @@ public class ItemBlockMetalDevices2 extends ItemBlockIEBase
 	@Override
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean advInfo)
 	{
+		if(stack.getItemDamage()==BlockMetalDevices2.META_barrel)
+		{
+			if(stack.hasTagCompound())
+			{
+				NBTTagCompound tag = stack.getTagCompound().getCompoundTag("tank");
+				if(!tag.hasKey("Empty"))
+				{
+					FluidStack fluid = FluidStack.loadFluidStackFromNBT(tag);
+					list.add(fluid.getLocalizedName()+": "+fluid.amount+"mB");
+				}				
+				else
+				{
+					list.add(StatCollector.translateToLocal(Lib.DESC_FLAVOUR+"barrel"));
+					list.add(StatCollector.translateToLocal(Lib.DESC_FLAVOUR+"barrelTemp"));
+				}
+			}
+			else
+			{
+				list.add(StatCollector.translateToLocal(Lib.DESC_FLAVOUR+"barrel"));
+				list.add(StatCollector.translateToLocal(Lib.DESC_FLAVOUR+"barrelTemp"));
+			}
+		}
 	}
 
 	@Override
