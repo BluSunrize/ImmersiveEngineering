@@ -71,9 +71,7 @@ public class EntityChemthrowerShot extends EntityIEProjectile
 	@Override
 	public boolean canIgnite()
 	{
-		if(getFluid()!=null)
-			return !ChemthrowerHandler.isFlammable(getFluid());
-		return false;
+		return ChemthrowerHandler.isFlammable(getFluid());
 	}
 
 	@Override
