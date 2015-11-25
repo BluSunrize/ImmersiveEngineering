@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDevices2;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBreakerSwitch;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityChargingStation;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityElectricLantern;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityEnergyMeter;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFloodlight;
@@ -125,6 +126,19 @@ public class BlockRenderMetalDevices2 implements ISimpleBlockRenderingHandler
 				ClientUtils.handleStaticTileRenderer(new TileEntityRedstoneBreaker());
 				Tessellator.instance.draw();
 			}
+			else if(metadata==BlockMetalDevices2.META_chargingStation)
+			{
+				Tessellator.instance.startDrawingQuads();
+				
+				TileEntityChargingStation tile = new TileEntityChargingStation();
+				GL11.glRotatef(-180, 0,1,0);
+				GL11.glTranslatef(-.5f,-.5f,-.5f);
+				renderPass = 0;
+				ClientUtils.handleStaticTileRenderer(tile);
+				renderPass = 1;
+				ClientUtils.handleStaticTileRenderer(tile);
+				Tessellator.instance.draw();
+			}
 
 		}catch(Exception e)
 		{
@@ -137,7 +151,7 @@ public class BlockRenderMetalDevices2 implements ISimpleBlockRenderingHandler
 	public boolean renderWorldBlock(IBlockAccess world, int x, int y, int z, Block block, int modelId, RenderBlocks renderer)
 	{
 		int metadata = world.getBlockMetadata(x, y, z);
-		if(renderPass==0||metadata==BlockMetalDevices2.META_floodlight)
+		if(renderPass==0||metadata==BlockMetalDevices2.META_floodlight||metadata==BlockMetalDevices2.META_chargingStation)
 			if(metadata==BlockMetalDevices2.META_breakerSwitch)
 			{
 				TileEntityBreakerSwitch tile = (TileEntityBreakerSwitch)world.getTileEntity(x, y, z);
@@ -215,6 +229,12 @@ public class BlockRenderMetalDevices2 implements ISimpleBlockRenderingHandler
 				TileEntityRedstoneBreaker tile = (TileEntityRedstoneBreaker)world.getTileEntity(x, y, z);
 				ClientUtils.handleStaticTileRenderer(tile);
 				ClientUtils.renderAttachedConnections(tile);
+				return true;
+			}
+			else if(metadata==BlockMetalDevices2.META_chargingStation)
+			{
+				TileEntityChargingStation tile = (TileEntityChargingStation)world.getTileEntity(x, y, z);
+				ClientUtils.handleStaticTileRenderer(tile);
 				return true;
 			}
 		return false;

@@ -63,7 +63,7 @@ public class BlockMetalDevices extends BlockIEBase implements blusunrize.aquatwe
 	public static final int META_sorter=13;
 	public static final int META_sampleDrill=14;
 	public static final int META_conveyorDropper=15;
-
+	
 	public BlockMetalDevices()
 	{
 		super("metalDevice", Material.iron, 4, ItemBlockMetalDevices.class,

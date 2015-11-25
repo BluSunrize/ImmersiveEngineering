@@ -91,6 +91,9 @@ public class CommonProxy implements IGuiHandler
 	public void spawnSparkFX(World world, double x, double y, double z, double mx, double my, double mz)
 	{
 	}
+	public void spawnRedstoneFX(World world, double x, double y, double z, double mx, double my, double mz, float size, float r, float g, float b)
+	{
+	}
 	public void draw3DBlockCauldron()
 	{
 	}
@@ -98,4 +101,5 @@ public class CommonProxy implements IGuiHandler
 	{
 		return new String[]{s};
 	}
+
 }

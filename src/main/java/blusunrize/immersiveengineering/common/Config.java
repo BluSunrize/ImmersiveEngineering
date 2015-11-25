@@ -154,7 +154,8 @@ public class Config
 		setBoolean("pump_infiniteWater", config.get("Machines", "Fluid Pump: Infinite Water", true, "Set this to false to disable the fluid pump being able to draw infinite water from sources").getBoolean());
 		setInt("assembler_consumption", config.get("Machines", "Assembler: Consumed", 80, "The RF the Assembler will consume to craft an item from a recipe").getInt());
 		setInt("bottlingMachine_consumption", config.get("Machines", "Bottling: Consumed", 8, "The RF the Bottling Machine will consume per tick, when filling items").getInt());
-
+		setInt("charger_consumption", config.get("Machines", "ChargingStation: Charge", 4000, "The RF per tick the Charging Station can insert into an item").getInt());
+		
 
 		setIntArray("ore_copper", config.get("OreGen", "Copper", new int[]{8, 40,72, 8,100}, "Generation config for Copper Ore. Parameters: Blocks per vein, lowest possible Y, highest possible Y, veins per chunk, chance for vein to spawn (out of 100). Set vein size to 0 to disable the generation").getIntList());
 		setIntArray("ore_bauxite", config.get("OreGen", "Bauxite", new int[]{4, 40,85, 8,100}, "Generation config for Bauxite Ore. Parameters: Blocks per vein, lowest possible Y, highest possible Y, veins per chunk, chance for vein to spawn (out of 100). Set vein size to 0 to disable the generation").getIntList());

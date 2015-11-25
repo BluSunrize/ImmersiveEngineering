@@ -1,6 +1,5 @@
 package blusunrize.immersiveengineering.common.util.compat;
 
-import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler;
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.api.energy.tile.IEnergySink;
@@ -11,6 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
+import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler;
 
 public class IC2Helper extends IECompatModule
 {
@@ -40,17 +40,33 @@ public class IC2Helper extends IECompatModule
 			((IEnergySink)sink).injectEnergy(fd, amount, voltage);
 		return amount-accepted;
 	}
-
+	
+	public static boolean isElectricItem(ItemStack stack)
+	{
+		return stack!=null && stack.getItem() instanceof IElectricItem;
+	}
+	public static double getCurrentItemCharge(ItemStack stack)
+	{
+		if(stack!=null && stack.getItem() instanceof IElectricItem)
+			return ElectricItem.manager.getCharge(stack);
+		return 0;
+	}
 	public static double getMaxItemCharge(ItemStack stack)
 	{
 		if(stack!=null && stack.getItem() instanceof IElectricItem)
 			return ((IElectricItem)stack.getItem()).getMaxCharge(stack);
-		return 0;	
+		return 0;
 	}
 	public static double dischargeItem(ItemStack stack, double amount)
 	{
 		if(stack!=null && stack.getItem() instanceof IElectricItem)
 			return ElectricItem.manager.discharge(stack, amount, 5, true, false, false);
+		return 0;
+	}
+	public static double chargeItem(ItemStack stack, double amount, boolean simulate)
+	{
+		if(stack!=null && stack.getItem() instanceof IElectricItem)
+			return ElectricItem.manager.charge(stack, amount, 5, false, simulate);
 		return 0;
 	}
 	@Override

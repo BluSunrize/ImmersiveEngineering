@@ -8,6 +8,7 @@ import java.util.Map;
 import net.minecraft.block.BlockCauldron;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityFX;
+import net.minecraft.client.particle.EntityReddustFX;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -65,6 +66,7 @@ import blusunrize.immersiveengineering.client.render.TileRenderAssembler;
 import blusunrize.immersiveengineering.client.render.TileRenderBottlingMachine;
 import blusunrize.immersiveengineering.client.render.TileRenderBreakerSwitch;
 import blusunrize.immersiveengineering.client.render.TileRenderBucketWheel;
+import blusunrize.immersiveengineering.client.render.TileRenderChargingStation;
 import blusunrize.immersiveengineering.client.render.TileRenderConnectorHV;
 import blusunrize.immersiveengineering.client.render.TileRenderConnectorLV;
 import blusunrize.immersiveengineering.client.render.TileRenderConnectorMV;
@@ -104,6 +106,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityAssembler;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBottlingMachine;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBreakerSwitch;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBucketWheel;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityChargingStation;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorHV;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorLV;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorMV;
@@ -201,6 +204,7 @@ public class ClientProxy extends CommonProxy
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFluidPipe.class, new TileRenderFluidPipe());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFluidPump.class, new TileRenderFluidPump());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityRedstoneBreaker.class, new TileRenderRedstoneBreaker());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityChargingStation.class, new TileRenderChargingStation());
 		// MULTIBLOCKS
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityDieselGenerator.class, new TileRenderDieselGenerator());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityRefinery.class, new TileRenderRefinery());
@@ -418,6 +422,7 @@ public class ClientProxy extends CommonProxy
 		ManualHelper.addEntry("bottlingMachine", ManualHelper.CAT_MACHINES,
 				new ManualPageMultiblock(ManualHelper.getManual(), "bottlingMachine0", MultiblockBottlingMachine.instance),
 				new ManualPages.Text(ManualHelper.getManual(), "bottlingMachine1"));
+		ManualHelper.addEntry("chargingStation", ManualHelper.CAT_MACHINES, new ManualPages.Crafting(ManualHelper.getManual(), "chargingStation0", new ItemStack(IEContent.blockMetalDevice2,1,BlockMetalDevices2.META_chargingStation)));
 		ManualHelper.addEntry("jerrycan", ManualHelper.CAT_MACHINES, new ManualPages.Crafting(ManualHelper.getManual(), "jerrycan0", new ItemStack(IEContent.itemJerrycan)));
 		ManualHelper.addEntry("drill", ManualHelper.CAT_MACHINES,
 				new ManualPages.CraftingMulti(ManualHelper.getManual(), "drill0", new ItemStack(IEContent.itemDrill,1,0), new ItemStack(IEContent.itemMaterial,1,9)),
@@ -618,8 +623,19 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void spawnSparkFX(World world, double x, double y, double z, double mx, double my, double mz)
 	{
-		EntityFX particleMysterious = new EntityFXSparks(world, x,y,z, mx,my,mz);
-		Minecraft.getMinecraft().effectRenderer.addEffect(particleMysterious);
+		EntityFX particle = new EntityFXSparks(world, x,y,z, mx,my,mz);
+		Minecraft.getMinecraft().effectRenderer.addEffect(particle);
+	}
+	@Override
+	public void spawnRedstoneFX(World world, double x, double y, double z, double mx, double my, double mz, float size, float r, float g, float b)
+	{
+		EntityReddustFX particle = new EntityReddustFX(world, x,y,z, size, 0,0,0);
+		particle.motionX*=mx;
+		particle.motionY*=my;
+		particle.motionZ*=mz;
+		particle.setRBGColorF(r,g,b);
+		ClientUtils.mc().effectRenderer.addEffect(particle);
+		Minecraft.getMinecraft().effectRenderer.addEffect(particle);
 	}
 
 	@Override

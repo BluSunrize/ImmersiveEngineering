@@ -102,6 +102,8 @@ public class ImmersiveEngineering
 
 		Lib.IC2 = Loader.isModLoaded("IC2") && Config.getBoolean("ic2compat");
 		Lib.GREG = Loader.isModLoaded("gregtech") && Config.getBoolean("gregtechcompat");
+		Config.setBoolean("ic2Manual", Lib.IC2);
+		Config.setBoolean("gregManual", Lib.GREG);
 		for(IECompatModule compat : IECompatModule.modules)
 			compat.init();
 

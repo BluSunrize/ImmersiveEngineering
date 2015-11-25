@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import java.util.ArrayList;
 import java.util.List;
 
+import cofh.api.energy.IEnergyContainerItem;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -37,6 +38,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ICustomBo
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenBarrel;
 import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.compat.IC2Helper;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -54,6 +56,7 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 	public static final int META_barrel=7;
 	public static final int META_capacitorCreative=8;
 	public static final int META_redstoneBreaker = 9;
+	public static final int META_chargingStation = 10;
 
 	IIcon[] iconPump = new IIcon[7];
 	IIcon iconFloodlightGlass;
@@ -63,7 +66,7 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 	public BlockMetalDevices2()
 	{
 		super("metalDevice2", Material.iron, 1, ItemBlockMetalDevices2.class,
-				"breakerSwitch","skycrateDispenser","energyMeter","electricLantern","floodlight","fluidPipe", "fluidPump", "barrel", "capacitorCreative", "redstoneBreaker");
+				"breakerSwitch","skycrateDispenser","energyMeter","electricLantern","floodlight","fluidPipe", "fluidPump", "barrel", "capacitorCreative", "redstoneBreaker","chargingStation");
 		setHardness(3.0F);
 		setResistance(15.0F);
 		this.setMetaLightOpacity(META_barrel, 255);
@@ -87,6 +90,7 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 		list.add(new ItemStack(item, 1, 7));
 		list.add(new ItemStack(item, 1, 8));
 		list.add(new ItemStack(item, 1, 9));
+		list.add(new ItemStack(item, 1,10));
 
 		//		for(int i=0; i<subNames.length; i++)
 		//		{
@@ -389,6 +393,24 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 			}
 			return true;
 		}
+		else if(te instanceof TileEntityChargingStation)
+		{
+			ItemStack equipped = player.getCurrentEquippedItem();
+			if(equipped!=null && (equipped.getItem() instanceof IEnergyContainerItem || (Lib.IC2 && IC2Helper.isElectricItem(equipped))))
+			{
+				ItemStack stored = ((TileEntityChargingStation)te).inventory;
+				((TileEntityChargingStation)te).setInventorySlotContents(0, player.getCurrentEquippedItem());
+				player.setCurrentItemOrArmor(0, stored);
+				return true;
+			}
+			else if(((TileEntityChargingStation)te).inventory!=null)
+			{
+				if(!world.isRemote)
+					player.entityDropItem(((TileEntityChargingStation)te).inventory, .5f);
+				((TileEntityChargingStation)te).setInventorySlotContents(0, null);
+				return true;
+			}
+		}
 		return false;
 	}
 
@@ -463,6 +485,11 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 				this.setBlockBounds(f>=4?.125f:0,0,f<=3?.125f:0, f>=4?.875f:1,1,f<=3?.875f:1);
 			else
 				this.setBlockBounds(f>=4?.125f:0,0,f<=3?.125f:0, f>=4?.875f:1,1,f<=3?.875f:1);
+		}
+		else if(te instanceof TileEntityChargingStation)
+		{
+			int f = ((TileEntityChargingStation)te).facing;
+			this.setBlockBounds(f<4?.125f:0, 0, f>3?.125f:0, f<4?.875f:1,1,f>3?.875f:1);
 		}
 		else
 			this.setBlockBounds(0,0,0,1,1,1);
@@ -687,6 +714,8 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 			return new TileEntityCapacitorCreative();
 		case META_redstoneBreaker:
 			return new TileEntityRedstoneBreaker();
+		case META_chargingStation:
+			return new TileEntityChargingStation();
 		}
 		return null;
 	}

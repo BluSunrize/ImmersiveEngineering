@@ -8,6 +8,7 @@
 - added the Dropping Conveyor Belt which inserts into inventories below it (thanks cobra)
 - added recipe recalculation, to (hopefully) include minetweake'd recipes in the manual
 - added compat for Cutting Edge
+- added Charging Station, uses RF to charge items
 - fleshed out the Item Router. Now has OreDict, NBT and fuzzy filtering and matching buttons in the GUI
 - removed the ability to insert and extract graphite electrodes from the Arc Furnace
 - changed fluid pipes to be smarter about their connections (thanks cobra)

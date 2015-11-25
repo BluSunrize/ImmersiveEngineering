@@ -81,6 +81,7 @@ tile.ImmersiveEngineering.metalDevice2.fluidPump.name=Fluid Pump
 tile.ImmersiveEngineering.metalDevice2.barrel.name=Metal Barrel
 tile.ImmersiveEngineering.metalDevice2.capacitorCreative.name=Creative Capacitor
 tile.ImmersiveEngineering.metalDevice2.redstoneBreaker.name=Redstone Breaker
+tile.ImmersiveEngineering.metalDevice2.chargingStation.name=Charging Station
 
 tile.ImmersiveEngineering.treatedWood.0.name=Treated Wood Planks
 tile.ImmersiveEngineering.treatedWood.1.name=Treated Wood Planks
@@ -490,8 +491,8 @@ ie.manual.entry.updateNews_21=A new kind of breakerswitch was invented to be con
 
 ie.manual.entry.updateNews_3.name=What's new in v0.6.3
 ie.manual.entry.updateNews_3.subtext=Old, new; borrowed and Blu
-ie.manual.entry.updateNews_30=Dear Engineer!<br><br>The past update has brought some new features and changes to Immersive Engineering:<br><br>After suffering a severe concussion, Chief Engineer Adams drafted plans for the <link;chemthrower;Chemical Thrower>, a device that allows you to spray any fluid anywhere. It also features a built-in pilot light to ignite the fluid spray. We think Adams might be insane.
-ie.manual.entry.updateNews_31=Assistant Engineer "Cobra" has presented his newest invention, the <link;conveyor;Dropping Conveyor;2>, which drops items passing over it into inventories below. To top it all off the <link;sorter;Item Router> has had its interface designed to allow for OreDictionary-, NBT-based and Fuzzy filtering of items!
+ie.manual.entry.updateNews_30=Dear Engineer!<br><br>The past update has brought some new features and changes to Immersive Engineering:<br><br>After suffering a severe concussion, Chief Engineer Adams drafted plans for the <link;chemthrower;§nChemical §nThrower§r>, a device that allows you to spray any fluid anywhere. It also features a built-in pilot light to ignite the fluid spray. We think Adams might be insane.
+ie.manual.entry.updateNews_31=Another new invention of the research department is the <link;chargingStation;§nCharging §nStation§r>, which allows you to insert energy into items and charge them up.<br>Assistant Engineer "Cobra" has presented his newest invention, the <link;conveyor;§nDropping §nConveyor§r;2>, which drops items passing over it into inventories below.<br>To top it all off the <link;sorter;§nItem §nRouter§r> has had its interface designed to allow for OreDictionary-, NBT-based and Fuzzy filtering of items!
 
 ie.manual.category.general.name=Overview and Resources
 ie.manual.category.construction.name=Construction
@@ -617,6 +618,10 @@ ie.manual.entry.bottlingMachine.name=Bottling Machine
 ie.manual.entry.bottlingMachine.subtext=Fill 'er up!
 ie.manual.entry.bottlingMachine0=The Bottling Machine fills fluids into containers. The structure is created as shown above, the direction of the conveyors is important but can be mirrored. To form the structure, use the Engineer's Hammer on the cental conveyor.
 ie.manual.entry.bottlingMachine1=Fluid is input through the cental port on the lower level, items are input through the conveyors. The movement of the conveyors should make in- and output quite obvious. Energy is input through the top.<br>Generally, the Bottling Machine will be able to fill any container that has a filled version available (bucket, glass bottle). It will also accept items designated as fluid containers, like the <link;drill;§o§nMining §o§nDrill§r> or a <link;jerrycan;§o§nJerrycan§r>.
+
+ie.manual.entry.chargingStation.name=Charging Station
+ie.manual.entry.chargingStation.subtext=
+ie.manual.entry.chargingStation0=The Charging Station is a device that allows you to charge tools and other items. Energy can be input through the bottom or the back and items can be placed in manually or inserted automatically.<config;b;ic2Manual; The Charging Station will work for EU-powered items as well.;>
 
 ie.manual.entry.highvoltage.name=High-Voltage
 ie.manual.entry.highvoltage.subtext=You can't shake the shock

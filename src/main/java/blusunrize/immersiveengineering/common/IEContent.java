@@ -52,6 +52,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCapacitorCr
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCapacitorHV;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCapacitorLV;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCapacitorMV;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityChargingStation;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorHV;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorLV;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorMV;
@@ -416,6 +417,7 @@ public class IEContent
 		registerTile(TileEntityMetalBarrel.class);
 		registerTile(TileEntityCapacitorCreative.class);
 		registerTile(TileEntityRedstoneBreaker.class);
+		registerTile(TileEntityChargingStation.class);
 
 		registerTile(TileEntityFakeLight.class);
 

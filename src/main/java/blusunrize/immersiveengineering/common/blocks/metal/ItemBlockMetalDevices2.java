@@ -90,6 +90,10 @@ public class ItemBlockMetalDevices2 extends ItemBlockIEBase
 			if(stack.hasTagCompound())
 				((TileEntityWoodenBarrel)tileEntity).readTank(stack.getTagCompound());
 		}
+		else if(tileEntity instanceof TileEntityChargingStation)
+		{
+			((TileEntityChargingStation)tileEntity).facing = f;
+		}
 		return ret;
 	}
 }
