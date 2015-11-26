@@ -44,6 +44,10 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 	}
 
 	@Override
+	public void onEnergyPassthrough(int amount)
+	{
+	}
+	@Override
 	public boolean allowEnergyToPass(Connection con)
 	{
 		return true;

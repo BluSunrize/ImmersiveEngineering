@@ -17,7 +17,7 @@ import cofh.api.energy.IEnergyReceiver;
 
 public class TileEntityChargingStation extends TileEntityIEBase implements IEnergyReceiver, IInventory
 {
-	public EnergyStorage energyStorage = new EnergyStorage(32000,Math.max(1024, Config.getInt("heater_consumption")));
+	public EnergyStorage energyStorage = new EnergyStorage(32000,Math.max(1024, Config.getInt("charger_consumption")));
 	public int facing = 2;
 	public ItemStack inventory;
 

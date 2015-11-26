@@ -83,6 +83,7 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 	public void getSubBlocks(Item item, CreativeTabs tab, List list)
 	{
 		list.add(new ItemStack(item, 1, 0));
+		list.add(new ItemStack(item, 1, 2));
 		list.add(new ItemStack(item, 1, 3));
 		list.add(new ItemStack(item, 1, 4));
 		list.add(new ItemStack(item, 1, 5));
@@ -224,7 +225,29 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 		else if(te instanceof TileEntityEnergyMeter)
 		{
 			if(!world.isRemote)
-				player.addChatComponentMessage(new ChatComponentText("Energy transferred through: "+((TileEntityEnergyMeter)te).energyPassed));
+			{
+				TileEntityEnergyMeter meter = (TileEntityEnergyMeter)te;
+				if(meter.dummy)
+				{
+					TileEntity tileOther = world.getTileEntity(x, y+1, z);
+					if(tileOther instanceof TileEntityEnergyMeter)
+						meter = (TileEntityEnergyMeter)tileOther;
+					else
+						return false;
+				}
+				//player.addChatComponentMessage(new ChatComponentText("Energy transferred through: "+meter.energyPassed));
+				int sum = 0;
+				int size = meter.lastPackets.size();
+				String transferred = "0";
+				if(size>0)
+				{
+					for(int i : meter.lastPackets)
+						sum += i;
+					transferred = Utils.formatDouble(sum/(float)size, "0.###");
+				}
+				player.addChatComponentMessage(new ChatComponentTranslation(Lib.CHAT_INFO+"energyTransfered",size,transferred));
+			}
+
 		}
 		else if(te instanceof TileEntityFluidPipe_old)
 		{
@@ -739,6 +762,13 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 	public void breakBlock(World world, int x, int y, int z, Block par5, int par6)
 	{
 		TileEntity te = world.getTileEntity(x, y, z);
+		if(te instanceof TileEntityEnergyMeter)
+		{
+			if(((TileEntityEnergyMeter) te).dummy)
+				world.setBlockToAir(x, y + 1, z);
+			else
+				world.setBlockToAir(x, y - 1, z);
+		}
 		if(te instanceof TileEntityFloodlight)
 		{
 			((TileEntityFloodlight)te).updateFakeLights(true,false);

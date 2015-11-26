@@ -46,6 +46,8 @@ public class BlockRenderMetalDevices2 implements ISimpleBlockRenderingHandler
 			}
 			else if(metadata==BlockMetalDevices2.META_energyMeter)
 			{
+				GL11.glScalef(.75f,.75f,.75f);
+				GL11.glTranslatef(0,.625f,0);
 				Tessellator.instance.startDrawingQuads();
 				ClientUtils.handleStaticTileRenderer(new TileEntityEnergyMeter());
 				Tessellator.instance.draw();
@@ -129,7 +131,6 @@ public class BlockRenderMetalDevices2 implements ISimpleBlockRenderingHandler
 			else if(metadata==BlockMetalDevices2.META_chargingStation)
 			{
 				Tessellator.instance.startDrawingQuads();
-				
 				TileEntityChargingStation tile = new TileEntityChargingStation();
 				GL11.glRotatef(-180, 0,1,0);
 				GL11.glTranslatef(-.5f,-.5f,-.5f);
@@ -167,9 +168,12 @@ public class BlockRenderMetalDevices2 implements ISimpleBlockRenderingHandler
 			else if(metadata==BlockMetalDevices2.META_energyMeter)
 			{
 				TileEntityEnergyMeter tile = (TileEntityEnergyMeter)world.getTileEntity(x, y, z);
-				ClientUtils.handleStaticTileRenderer(tile);
-				ClientUtils.renderAttachedConnections(tile);
-				return true;
+				if(!tile.dummy)
+				{
+					ClientUtils.handleStaticTileRenderer(tile);
+					ClientUtils.renderAttachedConnections(tile);
+					return true;
+				}
 			}
 			else if(metadata==BlockMetalDevices2.META_electricLantern)
 			{

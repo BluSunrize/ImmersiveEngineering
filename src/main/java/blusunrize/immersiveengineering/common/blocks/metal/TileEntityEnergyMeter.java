@@ -1,19 +1,23 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import java.util.ArrayList;
+
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Vec3;
 import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.api.energy.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.api.energy.WireType;
 import blusunrize.immersiveengineering.common.blocks.TileEntityImmersiveConnectable;
+import blusunrize.immersiveengineering.common.util.Utils;
 
 public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable
 {
-	public int sideAttached=0;
-	public int facing=2;
-	public int wires = 0;
-	public int energyPassed = 0;
+	public int facing=3;
+	public int lastEnergyPassed = 0;
+	public ArrayList<Integer> lastPackets = new ArrayList<Integer>();
+	public boolean dummy=false;
 
 	@Override
 	protected boolean canTakeLV()
@@ -32,50 +36,52 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable
 	}
 
 	@Override
-	public boolean canUpdate()
+	public void updateEntity()
 	{
-		return false;
+		if(dummy || worldObj.isRemote)
+			return;
+		//Yes, this might tick in between different connectors sending power, but since this is a block for statistical evaluation over a tick, that is irrelevant.
+		lastPackets.add(lastEnergyPassed);
+		if(lastPackets.size()>20)
+			lastPackets.remove(0);
+		lastEnergyPassed = 0;
 	}
 
-//	@Override
-//	public void onEnergyPassthrough(int amount, boolean simulate, int energyType)
-//	{
-//		if(!simulate)
-//			energyPassed +=amount;
-//	}
+	@Override
+	public boolean canConnect()
+	{
+		return !dummy;
+	}
+
+	@Override
+	public void onEnergyPassthrough(int amount)
+	{
+		lastEnergyPassed = amount;
+	}
 
 	@Override
 	public boolean canConnectCable(WireType cableType, TargetingInfo target)
 	{
-		if(cableType!=null && !cableType.isEnergyWire())
+		if(dummy)
+		{
+			TileEntity above = worldObj.getTileEntity(xCoord, yCoord+1, zCoord);
+			if(above instanceof TileEntityEnergyMeter)
+				return ((TileEntityEnergyMeter)above).canConnectCable(cableType, target);
 			return false;
-		if(wires>=2)
-			return false;
-		return limitType==null || cableType==limitType;
+		}
+		return super.canConnectCable(cableType, target);
 	}
 	@Override
 	public void connectCable(WireType cableType, TargetingInfo target)
 	{
-		if(this.limitType==null)
-			this.limitType = cableType;
-		wires++;
-	}
-	@Override
-	public WireType getCableLimiter(TargetingInfo target)
-	{
-		return limitType;
-	}
-	@Override
-	public void removeCable(Connection connection)
-	{
-		WireType type = connection!=null?connection.cableType:null;
-		if(type==null)
-			wires = 0;
+		if(dummy)
+		{
+			TileEntity above = worldObj.getTileEntity(xCoord, yCoord+1, zCoord);
+			if(above instanceof TileEntityEnergyMeter)
+				((TileEntityEnergyMeter)above).connectCable(cableType, target);
+		}
 		else
-			wires--;
-		if(wires<=0)
-			limitType=null;
-		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+			super.connectCable(cableType, target);
 	}
 
 	@Override
@@ -83,28 +89,34 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable
 	{
 		super.writeCustomNBT(nbt, descPacket);
 		nbt.setInteger("facing", facing);
-		nbt.setInteger("sideAttached", sideAttached);
-		nbt.setInteger("wires", wires);
-		nbt.setInteger("energyPassed", energyPassed);
+		nbt.setBoolean("dummy", dummy);
 	}
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
 		facing = nbt.getInteger("facing");
-		sideAttached = nbt.getInteger("sideAttached");
-		wires = nbt.getInteger("wires");
-		energyPassed = nbt.getInteger("energyPassed");
+		dummy = nbt.getBoolean("dummy");
 	}
 
 	@Override
 	public Vec3 getRaytraceOffset(IImmersiveConnectable link)
 	{
-		return Vec3.createVectorHelper(.5,1.3125,.5);
+		int xDif = ((TileEntity)link).xCoord-xCoord;
+		int zDif = ((TileEntity)link).zCoord-zCoord;
+		if(facing>3)
+			return Vec3.createVectorHelper(.5,.4375,zDif>0?.8125:.1875);
+		else
+			return Vec3.createVectorHelper(xDif>0?.8125:.1875,.4375,.5);
 	}
 	@Override
 	public Vec3 getConnectionOffset(Connection con)
 	{
-		return Vec3.createVectorHelper(facing==5?.25:facing==4?.75:.5, 1.3125, facing==3?.25:facing==2?.75:.5);
+		int xDif = (con==null||con.start==null||con.end==null)?0: (con.start.equals(Utils.toCC(this))&&con.end!=null)? con.end.posX-xCoord: (con.end.equals(Utils.toCC(this))&& con.start!=null)?con.start.posX-xCoord: 0;
+		int zDif = (con==null||con.start==null||con.end==null)?0: (con.start.equals(Utils.toCC(this))&&con.end!=null)? con.end.posZ-zCoord: (con.end.equals(Utils.toCC(this))&& con.start!=null)?con.start.posZ-zCoord: 0;
+		if(facing>3)
+			return Vec3.createVectorHelper(.5,.4375,zDif>0?.8125:.1875);
+		else
+			return Vec3.createVectorHelper(xDif>0?.8125:.1875,.4375,.5);
 	}
 }

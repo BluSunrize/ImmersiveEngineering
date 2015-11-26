@@ -398,10 +398,34 @@ public class ClientUtils
 					float biggestNormal = Math.max(Math.abs(normalCopy.y), Math.max(Math.abs(normalCopy.x),Math.abs(normalCopy.z)));
 					int side = biggestNormal==Math.abs(normalCopy.y)?(normalCopy.y<0?0:1): biggestNormal==Math.abs(normalCopy.z)?(normalCopy.z<0?2:3): (normalCopy.x<0?4:5);
 
-					HashMap<String,BlockLightingInfo> light = new HashMap<String,BlockLightingInfo>();
-					BlockLightingInfo completeLight = null;
+					//					HashMap<String,BlockLightingInfo> light = new HashMap<String,BlockLightingInfo>();
+					//					BlockLightingInfo completeLight = null;
+					//					if(offsetLighting==0 && tile.getWorldObj()!=null)
+					//						completeLight = calculateBlockLighting(side, tile.getWorldObj(), tile.getBlockType(), tile.xCoord,tile.yCoord,tile.zCoord, 1,1,1, AxisAlignedBB.getBoundingBox(tile.xCoord,tile.yCoord,tile.zCoord, tile.xCoord+1,tile.yCoord+1,tile.zCoord+1));
+
+					BlockLightingInfo faceLight = null;
 					if(offsetLighting==0 && tile.getWorldObj()!=null)
-						completeLight = calculateBlockLighting(side, tile.getWorldObj(), tile.getBlockType(), tile.xCoord,tile.yCoord,tile.zCoord, 1,1,1);
+						faceLight = calculateBlockLighting(side, tile.getWorldObj(), tile.getBlockType(), tile.xCoord,tile.yCoord,tile.zCoord, 1,1,1, AxisAlignedBB.getBoundingBox(0,0,0,1,1,1));
+					//						faceLight = calculateBlockLighting(side, tile.getWorldObj(), tile.getBlockType(), tile.xCoord,tile.yCoord,tile.zCoord, 1,1,1, tile.getBlockType().getCollisionBoundingBoxFromPool(tile.getWorldObj(), tile.xCoord, tile.yCoord, tile.zCoord).addCoord(-tile.xCoord,-tile.yCoord,-tile.zCoord));
+					else if(offsetLighting==1 && tile.getWorldObj()!=null)
+					{
+						double faceMinX = face.vertices[0].x;
+						double faceMinY = face.vertices[0].y;
+						double faceMinZ = face.vertices[0].z;
+						double faceMaxX = face.vertices[0].x;
+						double faceMaxY = face.vertices[0].y;
+						double faceMaxZ = face.vertices[0].z;
+						for(int i=1; i<face.vertices.length; ++i)
+						{
+							faceMinX = Math.min(faceMinX, face.vertices[i].x);
+							faceMinY = Math.min(faceMinY, face.vertices[i].y);
+							faceMinZ = Math.min(faceMinZ, face.vertices[i].z);
+							faceMaxX = Math.max(faceMaxX, face.vertices[i].x);
+							faceMaxY = Math.max(faceMaxY, face.vertices[i].y);
+							faceMaxZ = Math.max(faceMaxZ, face.vertices[i].z);
+						}
+						faceLight = calculateBlockLighting(side, tile.getWorldObj(), tile.getBlockType(), tile.xCoord,tile.yCoord,tile.zCoord, 1,1,1, AxisAlignedBB.getBoundingBox(faceMinX,faceMinY,faceMinZ, faceMaxX,faceMaxY,faceMaxZ));
+					}
 
 					tes.setNormal(face.faceNormal.x, face.faceNormal.y, face.faceNormal.z);
 
@@ -416,27 +440,35 @@ public class ClientUtils
 						rotationMatrix.apply(vertexCopy);
 						translationMatrix.apply(vertexCopy);
 
-						if(offsetLighting==1 && tile.getWorldObj()!=null)
-						{	
-							String key = Math.round(tile.xCoord+vertex.x)+";"+Math.round(tile.yCoord+vertex.y)+";"+Math.round(tile.zCoord+vertex.z);
-							BlockLightingInfo info = light.get(key);
-							if(info==null)
-							{
-								info = calculateBlockLighting(side, tile.getWorldObj(), tile.getBlockType(), (int)Math.round(tile.xCoord+vertex.x),(int)Math.round(tile.yCoord+vertex.y),(int)Math.round(tile.zCoord+vertex.z), 1,1,1);
-								light.put(key, info);
-							}
-							tes.setBrightness(corner==0?info.brightnessTopLeft: corner==1?info.brightnessBottomLeft: corner==2?info.brightnessBottomRight: info.brightnessTopRight);
-							float r = corner==0?info.colorRedTopLeft: corner==1?info.colorRedBottomLeft: corner==2?info.colorRedBottomRight: info.colorRedTopRight;
-							float g = corner==0?info.colorGreenTopLeft: corner==1?info.colorGreenBottomLeft: corner==2?info.colorGreenBottomRight: info.colorGreenTopRight;
-							float b = corner==0?info.colorBlueTopLeft: corner==1?info.colorBlueBottomLeft: corner==2?info.colorBlueBottomRight: info.colorBlueTopRight;
-							tes.setColorOpaque_F(r, g, b);
-						}
-						else if(offsetLighting==0 && tile.getWorldObj()!=null && completeLight!=null)
-						{	
-							tes.setBrightness(corner==0?completeLight.brightnessTopLeft: corner==1?completeLight.brightnessBottomLeft: corner==2?completeLight.brightnessBottomRight: completeLight.brightnessTopRight);
-							float r = corner==0?completeLight.colorRedTopLeft: corner==1?completeLight.colorRedBottomLeft: corner==2?completeLight.colorRedBottomRight: completeLight.colorRedTopRight;
-							float g = corner==0?completeLight.colorGreenTopLeft: corner==1?completeLight.colorGreenBottomLeft: corner==2?completeLight.colorGreenBottomRight: completeLight.colorGreenTopRight;
-							float b = corner==0?completeLight.colorBlueTopLeft: corner==1?completeLight.colorBlueBottomLeft: corner==2?completeLight.colorBlueBottomRight: completeLight.colorBlueTopRight;
+						//						if(offsetLighting==1 && tile.getWorldObj()!=null)
+						//						{	
+						//							String key = Math.round(tile.xCoord+vertex.x)+";"+Math.round(tile.yCoord+vertex.y)+";"+Math.round(tile.zCoord+vertex.z);
+						//							BlockLightingInfo info = light.get(key);
+						//							if(info==null)
+						//							{
+						//								info = calculateBlockLighting(side, tile.getWorldObj(), tile.getBlockType(), (int)Math.round(tile.xCoord+vertex.x),(int)Math.round(tile.yCoord+vertex.y),(int)Math.round(tile.zCoord+vertex.z), 1,1,1);
+						//								light.put(key, info);
+						//							}
+						//							tes.setBrightness(corner==0?info.brightnessTopLeft: corner==1?info.brightnessBottomLeft: corner==2?info.brightnessBottomRight: info.brightnessTopRight);
+						//							float r = corner==0?info.colorRedTopLeft: corner==1?info.colorRedBottomLeft: corner==2?info.colorRedBottomRight: info.colorRedTopRight;
+						//							float g = corner==0?info.colorGreenTopLeft: corner==1?info.colorGreenBottomLeft: corner==2?info.colorGreenBottomRight: info.colorGreenTopRight;
+						//							float b = corner==0?info.colorBlueTopLeft: corner==1?info.colorBlueBottomLeft: corner==2?info.colorBlueBottomRight: info.colorBlueTopRight;
+						//							tes.setColorOpaque_F(r, g, b);
+						//						}
+						//						else if(offsetLighting==0 && tile.getWorldObj()!=null && completeLight!=null)
+						//						{	
+						//							tes.setBrightness(corner==0?completeLight.brightnessTopLeft: corner==1?completeLight.brightnessBottomLeft: corner==2?completeLight.brightnessBottomRight: completeLight.brightnessTopRight);
+						//							float r = corner==0?completeLight.colorRedTopLeft: corner==1?completeLight.colorRedBottomLeft: corner==2?completeLight.colorRedBottomRight: completeLight.colorRedTopRight;
+						//							float g = corner==0?completeLight.colorGreenTopLeft: corner==1?completeLight.colorGreenBottomLeft: corner==2?completeLight.colorGreenBottomRight: completeLight.colorGreenTopRight;
+						//							float b = corner==0?completeLight.colorBlueTopLeft: corner==1?completeLight.colorBlueBottomLeft: corner==2?completeLight.colorBlueBottomRight: completeLight.colorBlueTopRight;
+						//							tes.setColorOpaque_F(r, g, b);
+						//						}
+						if(faceLight!=null)
+						{
+							tes.setBrightness(corner==0?faceLight.brightnessTopLeft: corner==1?faceLight.brightnessBottomLeft: corner==2?faceLight.brightnessBottomRight: faceLight.brightnessTopRight);
+							float r = corner==0?faceLight.colorRedTopLeft: corner==1?faceLight.colorRedBottomLeft: corner==2?faceLight.colorRedBottomRight: faceLight.colorRedTopRight;
+							float g = corner==0?faceLight.colorGreenTopLeft: corner==1?faceLight.colorGreenBottomLeft: corner==2?faceLight.colorGreenBottomRight: faceLight.colorGreenTopRight;
+							float b = corner==0?faceLight.colorBlueTopLeft: corner==1?faceLight.colorBlueBottomLeft: corner==2?faceLight.colorBlueBottomRight: faceLight.colorBlueTopRight;
 							tes.setColorOpaque_F(r, g, b);
 						}
 
@@ -560,9 +592,9 @@ public class ClientUtils
 				oldUVs[v] = face.textureCoordinates[v];
 				TextureCoordinate textureCoordinate = face.textureCoordinates[v];
 				face.textureCoordinates[v] = new TextureCoordinate(
-				minU + sizeU * (textureCoordinate.u+offsetU),
-				minV + sizeV * (textureCoordinate.v+offsetV)
-				);
+						minU + sizeU * (textureCoordinate.u+offsetU),
+						minV + sizeV * (textureCoordinate.v+offsetV)
+						);
 			}
 			face.addFaceForRender(ClientUtils.tes(),0);
 			for(int v=0; v<face.vertices.length; ++v)
@@ -925,7 +957,7 @@ public class ClientUtils
 			}
 		}
 	}
-	
+
 	public static class BlockLightingInfo
 	{
 		public int aoBrightnessXYNN;
@@ -1007,6 +1039,10 @@ public class ClientUtils
 	}
 	public static BlockLightingInfo calculateBlockLighting(int side, IBlockAccess world, Block block, int x, int y, int z, float colR, float colG, float colB)
 	{
+		return calculateBlockLighting(side, world, block, x,y,z, colR,colG,colB, AxisAlignedBB.getBoundingBox(0,0,0, 1,1,1));
+	}
+	public static BlockLightingInfo calculateBlockLighting(int side, IBlockAccess world, Block block, int x, int y, int z, float colR, float colG, float colB, AxisAlignedBB bounds)
+	{
 		float f3 = 0.0F;
 		float f4 = 0.0F;
 		float f5 = 0.0F;
@@ -1024,10 +1060,10 @@ public class ClientUtils
 
 		if(side==0)
 		{
-			//            if (RenderBlocks.getInstance().renderMinY <= 0.0D)
-			//            {
-			//                --y;
-			//            }
+			if (bounds.minY <= 0.0D)
+			{
+				--y;
+			}
 
 			lightingInfo.aoBrightnessXYNN = block.getMixedBrightnessForBlock(world, x - 1, y, z);
 			lightingInfo.aoBrightnessYZNN = block.getMixedBrightnessForBlock(world, x, y, z - 1);
@@ -1086,14 +1122,14 @@ public class ClientUtils
 				lightingInfo.aoBrightnessXYZPNP = block.getMixedBrightnessForBlock(world, x + 1, y, z + 1);
 			}
 
-			if (RenderBlocks.getInstance().renderMinY <= 0.0D)
+			if (bounds.minY <= 0.0D)
 			{
 				++y;
 			}
 
 			i1 = l;
 
-			if (RenderBlocks.getInstance().renderMinY <= 0.0D || !world.getBlock(x, y - 1, z).isOpaqueCube())
+			if (bounds.minY <= 0.0D || !world.getBlock(x, y - 1, z).isOpaqueCube())
 			{
 				i1 = block.getMixedBrightnessForBlock(world, x, y - 1, z);
 			}
@@ -1129,10 +1165,10 @@ public class ClientUtils
 		if(side==1)
 			//			if(lightingInfo.renderAllFaces || block.shouldSideBeRendered(world, x, y + 1, z, 1))
 		{
-			//			if (RenderBlocks.getInstance().renderMaxY >= 1.0D)
-			//			{
-			//				++y;
-			//			}
+			if (bounds.maxY >= 1.0D)
+			{
+				++y;
+			}
 
 			lightingInfo.aoBrightnessXYNP = block.getMixedBrightnessForBlock(world, x - 1, y, z);
 			lightingInfo.aoBrightnessXYPP = block.getMixedBrightnessForBlock(world, x + 1, y, z);
@@ -1191,14 +1227,14 @@ public class ClientUtils
 				lightingInfo.aoBrightnessXYZPPP = block.getMixedBrightnessForBlock(world, x + 1, y, z + 1);
 			}
 
-			if (RenderBlocks.getInstance().renderMaxY >= 1.0D)
+			if (bounds.maxY >= 1.0D)
 			{
 				--y;
 			}
 
 			i1 = l;
 
-			if (RenderBlocks.getInstance().renderMaxY >= 1.0D || !world.getBlock(x, y + 1, z).isOpaqueCube())
+			if (bounds.maxY >= 1.0D || !world.getBlock(x, y + 1, z).isOpaqueCube())
 			{
 				i1 = block.getMixedBrightnessForBlock(world, x, y + 1, z);
 			}
@@ -1241,10 +1277,10 @@ public class ClientUtils
 		if(side==2)
 			//			if (lightingInfo.renderAllFaces || block.shouldSideBeRendered(world, x, y, z - 1, 2))
 		{
-			//			if (RenderBlocks.getInstance().renderMinZ <= 0.0D)
-			//			{
-			//				--z;
-			//			}
+			if (bounds.minZ <= 0.0D)
+			{
+				--z;
+			}
 
 			lightingInfo.aoLightValueScratchXZNN = world.getBlock(x - 1, y, z).getAmbientOcclusionLightValue();
 			lightingInfo.aoLightValueScratchYZNN = world.getBlock(x, y - 1, z).getAmbientOcclusionLightValue();
@@ -1303,14 +1339,14 @@ public class ClientUtils
 				lightingInfo.aoBrightnessXYZPPN = block.getMixedBrightnessForBlock(world, x + 1, y + 1, z);
 			}
 
-			if (RenderBlocks.getInstance().renderMinZ <= 0.0D)
+			if (bounds.minZ <= 0.0D)
 			{
 				++z;
 			}
 
 			i1 = l;
 
-			if (RenderBlocks.getInstance().renderMinZ <= 0.0D || !world.getBlock(x, y, z - 1).isOpaqueCube())
+			if (bounds.minZ <= 0.0D || !world.getBlock(x, y, z - 1).isOpaqueCube())
 			{
 				i1 = block.getMixedBrightnessForBlock(world, x, y, z - 1);
 			}
@@ -1320,18 +1356,18 @@ public class ClientUtils
 			f9 = (f7 + lightingInfo.aoLightValueScratchYZPN + lightingInfo.aoLightValueScratchXZPN + lightingInfo.aoLightValueScratchXYZPPN) / 4.0F;
 			f10 = (lightingInfo.aoLightValueScratchYZNN + f7 + lightingInfo.aoLightValueScratchXYZPNN + lightingInfo.aoLightValueScratchXZPN) / 4.0F;
 			f11 = (lightingInfo.aoLightValueScratchXYZNNN + lightingInfo.aoLightValueScratchXZNN + lightingInfo.aoLightValueScratchYZNN + f7) / 4.0F;
-			f3 = (float)((double)f8 * RenderBlocks.getInstance().renderMaxY * (1.0D - RenderBlocks.getInstance().renderMinX) + (double)f9 * RenderBlocks.getInstance().renderMaxY * RenderBlocks.getInstance().renderMinX + (double)f10 * (1.0D - RenderBlocks.getInstance().renderMaxY) * RenderBlocks.getInstance().renderMinX + (double)f11 * (1.0D - RenderBlocks.getInstance().renderMaxY) * (1.0D - RenderBlocks.getInstance().renderMinX));
-			f4 = (float)((double)f8 * RenderBlocks.getInstance().renderMaxY * (1.0D - RenderBlocks.getInstance().renderMaxX) + (double)f9 * RenderBlocks.getInstance().renderMaxY * RenderBlocks.getInstance().renderMaxX + (double)f10 * (1.0D - RenderBlocks.getInstance().renderMaxY) * RenderBlocks.getInstance().renderMaxX + (double)f11 * (1.0D - RenderBlocks.getInstance().renderMaxY) * (1.0D - RenderBlocks.getInstance().renderMaxX));
-			f5 = (float)((double)f8 * RenderBlocks.getInstance().renderMinY * (1.0D - RenderBlocks.getInstance().renderMaxX) + (double)f9 * RenderBlocks.getInstance().renderMinY * RenderBlocks.getInstance().renderMaxX + (double)f10 * (1.0D - RenderBlocks.getInstance().renderMinY) * RenderBlocks.getInstance().renderMaxX + (double)f11 * (1.0D - RenderBlocks.getInstance().renderMinY) * (1.0D - RenderBlocks.getInstance().renderMaxX));
-			f6 = (float)((double)f8 * RenderBlocks.getInstance().renderMinY * (1.0D - RenderBlocks.getInstance().renderMinX) + (double)f9 * RenderBlocks.getInstance().renderMinY * RenderBlocks.getInstance().renderMinX + (double)f10 * (1.0D - RenderBlocks.getInstance().renderMinY) * RenderBlocks.getInstance().renderMinX + (double)f11 * (1.0D - RenderBlocks.getInstance().renderMinY) * (1.0D - RenderBlocks.getInstance().renderMinX));
+			f3 = (float)((double)f8 * bounds.maxY * (1.0D - bounds.minX) + (double)f9 * bounds.maxY * bounds.minX + (double)f10 * (1.0D - bounds.maxY) * bounds.minX + (double)f11 * (1.0D - bounds.maxY) * (1.0D - bounds.minX));
+			f4 = (float)((double)f8 * bounds.maxY * (1.0D - bounds.maxX) + (double)f9 * bounds.maxY * bounds.maxX + (double)f10 * (1.0D - bounds.maxY) * bounds.maxX + (double)f11 * (1.0D - bounds.maxY) * (1.0D - bounds.maxX));
+			f5 = (float)((double)f8 * bounds.minY * (1.0D - bounds.maxX) + (double)f9 * bounds.minY * bounds.maxX + (double)f10 * (1.0D - bounds.minY) * bounds.maxX + (double)f11 * (1.0D - bounds.minY) * (1.0D - bounds.maxX));
+			f6 = (float)((double)f8 * bounds.minY * (1.0D - bounds.minX) + (double)f9 * bounds.minY * bounds.minX + (double)f10 * (1.0D - bounds.minY) * bounds.minX + (double)f11 * (1.0D - bounds.minY) * (1.0D - bounds.minX));
 			j1 = lightingInfo.getAoBrightness(lightingInfo.aoBrightnessXZNN, lightingInfo.aoBrightnessXYZNPN, lightingInfo.aoBrightnessYZPN, i1);
 			k1 = lightingInfo.getAoBrightness(lightingInfo.aoBrightnessYZPN, lightingInfo.aoBrightnessXZPN, lightingInfo.aoBrightnessXYZPPN, i1);
 			l1 = lightingInfo.getAoBrightness(lightingInfo.aoBrightnessYZNN, lightingInfo.aoBrightnessXYZPNN, lightingInfo.aoBrightnessXZPN, i1);
 			i2 = lightingInfo.getAoBrightness(lightingInfo.aoBrightnessXYZNNN, lightingInfo.aoBrightnessXZNN, lightingInfo.aoBrightnessYZNN, i1);
-			lightingInfo.brightnessTopLeft = lightingInfo.mixAoBrightness(j1, k1, l1, i2, RenderBlocks.getInstance().renderMaxY * (1.0D - RenderBlocks.getInstance().renderMinX), RenderBlocks.getInstance().renderMaxY * RenderBlocks.getInstance().renderMinX, (1.0D - RenderBlocks.getInstance().renderMaxY) * RenderBlocks.getInstance().renderMinX, (1.0D - RenderBlocks.getInstance().renderMaxY) * (1.0D - RenderBlocks.getInstance().renderMinX));
-			lightingInfo.brightnessBottomLeft = lightingInfo.mixAoBrightness(j1, k1, l1, i2, RenderBlocks.getInstance().renderMaxY * (1.0D - RenderBlocks.getInstance().renderMaxX), RenderBlocks.getInstance().renderMaxY * RenderBlocks.getInstance().renderMaxX, (1.0D - RenderBlocks.getInstance().renderMaxY) * RenderBlocks.getInstance().renderMaxX, (1.0D - RenderBlocks.getInstance().renderMaxY) * (1.0D - RenderBlocks.getInstance().renderMaxX));
-			lightingInfo.brightnessBottomRight = lightingInfo.mixAoBrightness(j1, k1, l1, i2, RenderBlocks.getInstance().renderMinY * (1.0D - RenderBlocks.getInstance().renderMaxX), RenderBlocks.getInstance().renderMinY * RenderBlocks.getInstance().renderMaxX, (1.0D - RenderBlocks.getInstance().renderMinY) * RenderBlocks.getInstance().renderMaxX, (1.0D - RenderBlocks.getInstance().renderMinY) * (1.0D - RenderBlocks.getInstance().renderMaxX));
-			lightingInfo.brightnessTopRight = lightingInfo.mixAoBrightness(j1, k1, l1, i2, RenderBlocks.getInstance().renderMinY * (1.0D - RenderBlocks.getInstance().renderMinX), RenderBlocks.getInstance().renderMinY * RenderBlocks.getInstance().renderMinX, (1.0D - RenderBlocks.getInstance().renderMinY) * RenderBlocks.getInstance().renderMinX, (1.0D - RenderBlocks.getInstance().renderMinY) * (1.0D - RenderBlocks.getInstance().renderMinX));
+			lightingInfo.brightnessTopLeft = lightingInfo.mixAoBrightness(j1, k1, l1, i2, bounds.maxY * (1.0D - bounds.minX), bounds.maxY * bounds.minX, (1.0D - bounds.maxY) * bounds.minX, (1.0D - bounds.maxY) * (1.0D - bounds.minX));
+			lightingInfo.brightnessBottomLeft = lightingInfo.mixAoBrightness(j1, k1, l1, i2, bounds.maxY * (1.0D - bounds.maxX), bounds.maxY * bounds.maxX, (1.0D - bounds.maxY) * bounds.maxX, (1.0D - bounds.maxY) * (1.0D - bounds.maxX));
+			lightingInfo.brightnessBottomRight = lightingInfo.mixAoBrightness(j1, k1, l1, i2, bounds.minY * (1.0D - bounds.maxX), bounds.minY * bounds.maxX, (1.0D - bounds.minY) * bounds.maxX, (1.0D - bounds.minY) * (1.0D - bounds.maxX));
+			lightingInfo.brightnessTopRight = lightingInfo.mixAoBrightness(j1, k1, l1, i2, bounds.minY * (1.0D - bounds.minX), bounds.minY * bounds.minX, (1.0D - bounds.minY) * bounds.minX, (1.0D - bounds.minY) * (1.0D - bounds.minX));
 
 			lightingInfo.colorRedTopLeft = lightingInfo.colorRedBottomLeft = lightingInfo.colorRedBottomRight = lightingInfo.colorRedTopRight = 0.8F;
 			lightingInfo.colorGreenTopLeft = lightingInfo.colorGreenBottomLeft = lightingInfo.colorGreenBottomRight = lightingInfo.colorGreenTopRight = 0.8F;
@@ -1354,7 +1390,7 @@ public class ClientUtils
 		if(side==3)
 			//		if (lightingInfo.renderAllFaces || block.shouldSideBeRendered(world, x, y, z + 1, 3))
 		{
-			if (RenderBlocks.getInstance().renderMaxZ >= 1.0D)
+			if (bounds.maxZ >= 1.0D)
 			{
 				++z;
 			}
@@ -1416,14 +1452,14 @@ public class ClientUtils
 				lightingInfo.aoBrightnessXYZPPP = block.getMixedBrightnessForBlock(world, x + 1, y + 1, z);
 			}
 
-			if (RenderBlocks.getInstance().renderMaxZ >= 1.0D)
+			if (bounds.maxZ >= 1.0D)
 			{
 				--z;
 			}
 
 			i1 = l;
 
-			if (RenderBlocks.getInstance().renderMaxZ >= 1.0D || !world.getBlock(x, y, z + 1).isOpaqueCube())
+			if (bounds.maxZ >= 1.0D || !world.getBlock(x, y, z + 1).isOpaqueCube())
 			{
 				i1 = block.getMixedBrightnessForBlock(world, x, y, z + 1);
 			}
@@ -1433,18 +1469,18 @@ public class ClientUtils
 			f9 = (f7 + lightingInfo.aoLightValueScratchYZPP + lightingInfo.aoLightValueScratchXZPP + lightingInfo.aoLightValueScratchXYZPPP) / 4.0F;
 			f10 = (lightingInfo.aoLightValueScratchYZNP + f7 + lightingInfo.aoLightValueScratchXYZPNP + lightingInfo.aoLightValueScratchXZPP) / 4.0F;
 			f11 = (lightingInfo.aoLightValueScratchXYZNNP + lightingInfo.aoLightValueScratchXZNP + lightingInfo.aoLightValueScratchYZNP + f7) / 4.0F;
-			f3 = (float)((double)f8 * RenderBlocks.getInstance().renderMaxY * (1.0D - RenderBlocks.getInstance().renderMinX) + (double)f9 * RenderBlocks.getInstance().renderMaxY * RenderBlocks.getInstance().renderMinX + (double)f10 * (1.0D - RenderBlocks.getInstance().renderMaxY) * RenderBlocks.getInstance().renderMinX + (double)f11 * (1.0D - RenderBlocks.getInstance().renderMaxY) * (1.0D - RenderBlocks.getInstance().renderMinX));
-			f4 = (float)((double)f8 * RenderBlocks.getInstance().renderMinY * (1.0D - RenderBlocks.getInstance().renderMinX) + (double)f9 * RenderBlocks.getInstance().renderMinY * RenderBlocks.getInstance().renderMinX + (double)f10 * (1.0D - RenderBlocks.getInstance().renderMinY) * RenderBlocks.getInstance().renderMinX + (double)f11 * (1.0D - RenderBlocks.getInstance().renderMinY) * (1.0D - RenderBlocks.getInstance().renderMinX));
-			f5 = (float)((double)f8 * RenderBlocks.getInstance().renderMinY * (1.0D - RenderBlocks.getInstance().renderMaxX) + (double)f9 * RenderBlocks.getInstance().renderMinY * RenderBlocks.getInstance().renderMaxX + (double)f10 * (1.0D - RenderBlocks.getInstance().renderMinY) * RenderBlocks.getInstance().renderMaxX + (double)f11 * (1.0D - RenderBlocks.getInstance().renderMinY) * (1.0D - RenderBlocks.getInstance().renderMaxX));
-			f6 = (float)((double)f8 * RenderBlocks.getInstance().renderMaxY * (1.0D - RenderBlocks.getInstance().renderMaxX) + (double)f9 * RenderBlocks.getInstance().renderMaxY * RenderBlocks.getInstance().renderMaxX + (double)f10 * (1.0D - RenderBlocks.getInstance().renderMaxY) * RenderBlocks.getInstance().renderMaxX + (double)f11 * (1.0D - RenderBlocks.getInstance().renderMaxY) * (1.0D - RenderBlocks.getInstance().renderMaxX));
+			f3 = (float)((double)f8 * bounds.maxY * (1.0D - bounds.minX) + (double)f9 * bounds.maxY * bounds.minX + (double)f10 * (1.0D - bounds.maxY) * bounds.minX + (double)f11 * (1.0D - bounds.maxY) * (1.0D - bounds.minX));
+			f4 = (float)((double)f8 * bounds.minY * (1.0D - bounds.minX) + (double)f9 * bounds.minY * bounds.minX + (double)f10 * (1.0D - bounds.minY) * bounds.minX + (double)f11 * (1.0D - bounds.minY) * (1.0D - bounds.minX));
+			f5 = (float)((double)f8 * bounds.minY * (1.0D - bounds.maxX) + (double)f9 * bounds.minY * bounds.maxX + (double)f10 * (1.0D - bounds.minY) * bounds.maxX + (double)f11 * (1.0D - bounds.minY) * (1.0D - bounds.maxX));
+			f6 = (float)((double)f8 * bounds.maxY * (1.0D - bounds.maxX) + (double)f9 * bounds.maxY * bounds.maxX + (double)f10 * (1.0D - bounds.maxY) * bounds.maxX + (double)f11 * (1.0D - bounds.maxY) * (1.0D - bounds.maxX));
 			j1 = lightingInfo.getAoBrightness(lightingInfo.aoBrightnessXZNP, lightingInfo.aoBrightnessXYZNPP, lightingInfo.aoBrightnessYZPP, i1);
 			k1 = lightingInfo.getAoBrightness(lightingInfo.aoBrightnessYZPP, lightingInfo.aoBrightnessXZPP, lightingInfo.aoBrightnessXYZPPP, i1);
 			l1 = lightingInfo.getAoBrightness(lightingInfo.aoBrightnessYZNP, lightingInfo.aoBrightnessXYZPNP, lightingInfo.aoBrightnessXZPP, i1);
 			i2 = lightingInfo.getAoBrightness(lightingInfo.aoBrightnessXYZNNP, lightingInfo.aoBrightnessXZNP, lightingInfo.aoBrightnessYZNP, i1);
-			lightingInfo.brightnessTopLeft = lightingInfo.mixAoBrightness(j1, i2, l1, k1, RenderBlocks.getInstance().renderMaxY * (1.0D - RenderBlocks.getInstance().renderMinX), (1.0D - RenderBlocks.getInstance().renderMaxY) * (1.0D - RenderBlocks.getInstance().renderMinX), (1.0D - RenderBlocks.getInstance().renderMaxY) * RenderBlocks.getInstance().renderMinX, RenderBlocks.getInstance().renderMaxY * RenderBlocks.getInstance().renderMinX);
-			lightingInfo.brightnessBottomLeft = lightingInfo.mixAoBrightness(j1, i2, l1, k1, RenderBlocks.getInstance().renderMinY * (1.0D - RenderBlocks.getInstance().renderMinX), (1.0D - RenderBlocks.getInstance().renderMinY) * (1.0D - RenderBlocks.getInstance().renderMinX), (1.0D - RenderBlocks.getInstance().renderMinY) * RenderBlocks.getInstance().renderMinX, RenderBlocks.getInstance().renderMinY * RenderBlocks.getInstance().renderMinX);
-			lightingInfo.brightnessBottomRight = lightingInfo.mixAoBrightness(j1, i2, l1, k1, RenderBlocks.getInstance().renderMinY * (1.0D - RenderBlocks.getInstance().renderMaxX), (1.0D - RenderBlocks.getInstance().renderMinY) * (1.0D - RenderBlocks.getInstance().renderMaxX), (1.0D - RenderBlocks.getInstance().renderMinY) * RenderBlocks.getInstance().renderMaxX, RenderBlocks.getInstance().renderMinY * RenderBlocks.getInstance().renderMaxX);
-			lightingInfo.brightnessTopRight = lightingInfo.mixAoBrightness(j1, i2, l1, k1, RenderBlocks.getInstance().renderMaxY * (1.0D - RenderBlocks.getInstance().renderMaxX), (1.0D - RenderBlocks.getInstance().renderMaxY) * (1.0D - RenderBlocks.getInstance().renderMaxX), (1.0D - RenderBlocks.getInstance().renderMaxY) * RenderBlocks.getInstance().renderMaxX, RenderBlocks.getInstance().renderMaxY * RenderBlocks.getInstance().renderMaxX);
+			lightingInfo.brightnessTopLeft = lightingInfo.mixAoBrightness(j1, i2, l1, k1, bounds.maxY * (1.0D - bounds.minX), (1.0D - bounds.maxY) * (1.0D - bounds.minX), (1.0D - bounds.maxY) * bounds.minX, bounds.maxY * bounds.minX);
+			lightingInfo.brightnessBottomLeft = lightingInfo.mixAoBrightness(j1, i2, l1, k1, bounds.minY * (1.0D - bounds.minX), (1.0D - bounds.minY) * (1.0D - bounds.minX), (1.0D - bounds.minY) * bounds.minX, bounds.minY * bounds.minX);
+			lightingInfo.brightnessBottomRight = lightingInfo.mixAoBrightness(j1, i2, l1, k1, bounds.minY * (1.0D - bounds.maxX), (1.0D - bounds.minY) * (1.0D - bounds.maxX), (1.0D - bounds.minY) * bounds.maxX, bounds.minY * bounds.maxX);
+			lightingInfo.brightnessTopRight = lightingInfo.mixAoBrightness(j1, i2, l1, k1, bounds.maxY * (1.0D - bounds.maxX), (1.0D - bounds.maxY) * (1.0D - bounds.maxX), (1.0D - bounds.maxY) * bounds.maxX, bounds.maxY * bounds.maxX);
 
 			lightingInfo.colorRedTopLeft = lightingInfo.colorRedBottomLeft = lightingInfo.colorRedBottomRight = lightingInfo.colorRedTopRight = 0.8F;
 			lightingInfo.colorGreenTopLeft = lightingInfo.colorGreenBottomLeft = lightingInfo.colorGreenBottomRight = lightingInfo.colorGreenTopRight = 0.8F;
@@ -1467,7 +1503,7 @@ public class ClientUtils
 		if(side==4)
 			//		if (lightingInfo.renderAllFaces || block.shouldSideBeRendered(world, x - 1, y, z, 4))
 		{
-			if (RenderBlocks.getInstance().renderMinX <= 0.0D)
+			if (bounds.minX <= 0.0D)
 			{
 				--x;
 			}
@@ -1529,14 +1565,14 @@ public class ClientUtils
 				lightingInfo.aoBrightnessXYZNPP = block.getMixedBrightnessForBlock(world, x, y + 1, z + 1);
 			}
 
-			if (RenderBlocks.getInstance().renderMinX <= 0.0D)
+			if (bounds.minX <= 0.0D)
 			{
 				++x;
 			}
 
 			i1 = l;
 
-			if (RenderBlocks.getInstance().renderMinX <= 0.0D || !world.getBlock(x - 1, y, z).isOpaqueCube())
+			if (bounds.minX <= 0.0D || !world.getBlock(x - 1, y, z).isOpaqueCube())
 			{
 				i1 = block.getMixedBrightnessForBlock(world, x - 1, y, z);
 			}
@@ -1546,18 +1582,18 @@ public class ClientUtils
 			f9 = (f7 + lightingInfo.aoLightValueScratchXZNP + lightingInfo.aoLightValueScratchXYNP + lightingInfo.aoLightValueScratchXYZNPP) / 4.0F;
 			f10 = (lightingInfo.aoLightValueScratchXZNN + f7 + lightingInfo.aoLightValueScratchXYZNPN + lightingInfo.aoLightValueScratchXYNP) / 4.0F;
 			f11 = (lightingInfo.aoLightValueScratchXYZNNN + lightingInfo.aoLightValueScratchXYNN + lightingInfo.aoLightValueScratchXZNN + f7) / 4.0F;
-			f3 = (float)((double)f9 * RenderBlocks.getInstance().renderMaxY * RenderBlocks.getInstance().renderMaxZ + (double)f10 * RenderBlocks.getInstance().renderMaxY * (1.0D - RenderBlocks.getInstance().renderMaxZ) + (double)f11 * (1.0D - RenderBlocks.getInstance().renderMaxY) * (1.0D - RenderBlocks.getInstance().renderMaxZ) + (double)f8 * (1.0D - RenderBlocks.getInstance().renderMaxY) * RenderBlocks.getInstance().renderMaxZ);
-			f4 = (float)((double)f9 * RenderBlocks.getInstance().renderMaxY * RenderBlocks.getInstance().renderMinZ + (double)f10 * RenderBlocks.getInstance().renderMaxY * (1.0D - RenderBlocks.getInstance().renderMinZ) + (double)f11 * (1.0D - RenderBlocks.getInstance().renderMaxY) * (1.0D - RenderBlocks.getInstance().renderMinZ) + (double)f8 * (1.0D - RenderBlocks.getInstance().renderMaxY) * RenderBlocks.getInstance().renderMinZ);
-			f5 = (float)((double)f9 * RenderBlocks.getInstance().renderMinY * RenderBlocks.getInstance().renderMinZ + (double)f10 * RenderBlocks.getInstance().renderMinY * (1.0D - RenderBlocks.getInstance().renderMinZ) + (double)f11 * (1.0D - RenderBlocks.getInstance().renderMinY) * (1.0D - RenderBlocks.getInstance().renderMinZ) + (double)f8 * (1.0D - RenderBlocks.getInstance().renderMinY) * RenderBlocks.getInstance().renderMinZ);
-			f6 = (float)((double)f9 * RenderBlocks.getInstance().renderMinY * RenderBlocks.getInstance().renderMaxZ + (double)f10 * RenderBlocks.getInstance().renderMinY * (1.0D - RenderBlocks.getInstance().renderMaxZ) + (double)f11 * (1.0D - RenderBlocks.getInstance().renderMinY) * (1.0D - RenderBlocks.getInstance().renderMaxZ) + (double)f8 * (1.0D - RenderBlocks.getInstance().renderMinY) * RenderBlocks.getInstance().renderMaxZ);
+			f3 = (float)((double)f9 * bounds.maxY * bounds.maxZ + (double)f10 * bounds.maxY * (1.0D - bounds.maxZ) + (double)f11 * (1.0D - bounds.maxY) * (1.0D - bounds.maxZ) + (double)f8 * (1.0D - bounds.maxY) * bounds.maxZ);
+			f4 = (float)((double)f9 * bounds.maxY * bounds.minZ + (double)f10 * bounds.maxY * (1.0D - bounds.minZ) + (double)f11 * (1.0D - bounds.maxY) * (1.0D - bounds.minZ) + (double)f8 * (1.0D - bounds.maxY) * bounds.minZ);
+			f5 = (float)((double)f9 * bounds.minY * bounds.minZ + (double)f10 * bounds.minY * (1.0D - bounds.minZ) + (double)f11 * (1.0D - bounds.minY) * (1.0D - bounds.minZ) + (double)f8 * (1.0D - bounds.minY) * bounds.minZ);
+			f6 = (float)((double)f9 * bounds.minY * bounds.maxZ + (double)f10 * bounds.minY * (1.0D - bounds.maxZ) + (double)f11 * (1.0D - bounds.minY) * (1.0D - bounds.maxZ) + (double)f8 * (1.0D - bounds.minY) * bounds.maxZ);
 			j1 = lightingInfo.getAoBrightness(lightingInfo.aoBrightnessXYNN, lightingInfo.aoBrightnessXYZNNP, lightingInfo.aoBrightnessXZNP, i1);
 			k1 = lightingInfo.getAoBrightness(lightingInfo.aoBrightnessXZNP, lightingInfo.aoBrightnessXYNP, lightingInfo.aoBrightnessXYZNPP, i1);
 			l1 = lightingInfo.getAoBrightness(lightingInfo.aoBrightnessXZNN, lightingInfo.aoBrightnessXYZNPN, lightingInfo.aoBrightnessXYNP, i1);
 			i2 = lightingInfo.getAoBrightness(lightingInfo.aoBrightnessXYZNNN, lightingInfo.aoBrightnessXYNN, lightingInfo.aoBrightnessXZNN, i1);
-			lightingInfo.brightnessTopLeft = lightingInfo.mixAoBrightness(k1, l1, i2, j1, RenderBlocks.getInstance().renderMaxY * RenderBlocks.getInstance().renderMaxZ, RenderBlocks.getInstance().renderMaxY * (1.0D - RenderBlocks.getInstance().renderMaxZ), (1.0D - RenderBlocks.getInstance().renderMaxY) * (1.0D - RenderBlocks.getInstance().renderMaxZ), (1.0D - RenderBlocks.getInstance().renderMaxY) * RenderBlocks.getInstance().renderMaxZ);
-			lightingInfo.brightnessBottomLeft = lightingInfo.mixAoBrightness(k1, l1, i2, j1, RenderBlocks.getInstance().renderMaxY * RenderBlocks.getInstance().renderMinZ, RenderBlocks.getInstance().renderMaxY * (1.0D - RenderBlocks.getInstance().renderMinZ), (1.0D - RenderBlocks.getInstance().renderMaxY) * (1.0D - RenderBlocks.getInstance().renderMinZ), (1.0D - RenderBlocks.getInstance().renderMaxY) * RenderBlocks.getInstance().renderMinZ);
-			lightingInfo.brightnessBottomRight = lightingInfo.mixAoBrightness(k1, l1, i2, j1, RenderBlocks.getInstance().renderMinY * RenderBlocks.getInstance().renderMinZ, RenderBlocks.getInstance().renderMinY * (1.0D - RenderBlocks.getInstance().renderMinZ), (1.0D - RenderBlocks.getInstance().renderMinY) * (1.0D - RenderBlocks.getInstance().renderMinZ), (1.0D - RenderBlocks.getInstance().renderMinY) * RenderBlocks.getInstance().renderMinZ);
-			lightingInfo.brightnessTopRight = lightingInfo.mixAoBrightness(k1, l1, i2, j1, RenderBlocks.getInstance().renderMinY * RenderBlocks.getInstance().renderMaxZ, RenderBlocks.getInstance().renderMinY * (1.0D - RenderBlocks.getInstance().renderMaxZ), (1.0D - RenderBlocks.getInstance().renderMinY) * (1.0D - RenderBlocks.getInstance().renderMaxZ), (1.0D - RenderBlocks.getInstance().renderMinY) * RenderBlocks.getInstance().renderMaxZ);
+			lightingInfo.brightnessTopLeft = lightingInfo.mixAoBrightness(k1, l1, i2, j1, bounds.maxY * bounds.maxZ, bounds.maxY * (1.0D - bounds.maxZ), (1.0D - bounds.maxY) * (1.0D - bounds.maxZ), (1.0D - bounds.maxY) * bounds.maxZ);
+			lightingInfo.brightnessBottomLeft = lightingInfo.mixAoBrightness(k1, l1, i2, j1, bounds.maxY * bounds.minZ, bounds.maxY * (1.0D - bounds.minZ), (1.0D - bounds.maxY) * (1.0D - bounds.minZ), (1.0D - bounds.maxY) * bounds.minZ);
+			lightingInfo.brightnessBottomRight = lightingInfo.mixAoBrightness(k1, l1, i2, j1, bounds.minY * bounds.minZ, bounds.minY * (1.0D - bounds.minZ), (1.0D - bounds.minY) * (1.0D - bounds.minZ), (1.0D - bounds.minY) * bounds.minZ);
+			lightingInfo.brightnessTopRight = lightingInfo.mixAoBrightness(k1, l1, i2, j1, bounds.minY * bounds.maxZ, bounds.minY * (1.0D - bounds.maxZ), (1.0D - bounds.minY) * (1.0D - bounds.maxZ), (1.0D - bounds.minY) * bounds.maxZ);
 
 			lightingInfo.colorRedTopLeft = lightingInfo.colorRedBottomLeft = lightingInfo.colorRedBottomRight = lightingInfo.colorRedTopRight = 0.6F;
 			lightingInfo.colorGreenTopLeft = lightingInfo.colorGreenBottomLeft = lightingInfo.colorGreenBottomRight = lightingInfo.colorGreenTopRight = 0.6F;
@@ -1580,7 +1616,7 @@ public class ClientUtils
 		if(side==5)
 			//		if (lightingInfo.renderAllFaces || block.shouldSideBeRendered(world, x + 1, y, z, 5))
 		{
-			if (RenderBlocks.getInstance().renderMaxX >= 1.0D)
+			if (bounds.maxX >= 1.0D)
 			{
 				++x;
 			}
@@ -1642,14 +1678,14 @@ public class ClientUtils
 				lightingInfo.aoBrightnessXYZPPP = block.getMixedBrightnessForBlock(world, x, y + 1, z + 1);
 			}
 
-			if (RenderBlocks.getInstance().renderMaxX >= 1.0D)
+			if (bounds.maxX >= 1.0D)
 			{
 				--x;
 			}
 
 			i1 = l;
 
-			if (RenderBlocks.getInstance().renderMaxX >= 1.0D || !world.getBlock(x + 1, y, z).isOpaqueCube())
+			if (bounds.maxX >= 1.0D || !world.getBlock(x + 1, y, z).isOpaqueCube())
 			{
 				i1 = block.getMixedBrightnessForBlock(world, x + 1, y, z);
 			}
@@ -1659,18 +1695,18 @@ public class ClientUtils
 			f9 = (lightingInfo.aoLightValueScratchXYZPNN + lightingInfo.aoLightValueScratchXYPN + lightingInfo.aoLightValueScratchXZPN + f7) / 4.0F;
 			f10 = (lightingInfo.aoLightValueScratchXZPN + f7 + lightingInfo.aoLightValueScratchXYZPPN + lightingInfo.aoLightValueScratchXYPP) / 4.0F;
 			f11 = (f7 + lightingInfo.aoLightValueScratchXZPP + lightingInfo.aoLightValueScratchXYPP + lightingInfo.aoLightValueScratchXYZPPP) / 4.0F;
-			f3 = (float)((double)f8 * (1.0D - RenderBlocks.getInstance().renderMinY) * RenderBlocks.getInstance().renderMaxZ + (double)f9 * (1.0D - RenderBlocks.getInstance().renderMinY) * (1.0D - RenderBlocks.getInstance().renderMaxZ) + (double)f10 * RenderBlocks.getInstance().renderMinY * (1.0D - RenderBlocks.getInstance().renderMaxZ) + (double)f11 * RenderBlocks.getInstance().renderMinY * RenderBlocks.getInstance().renderMaxZ);
-			f4 = (float)((double)f8 * (1.0D - RenderBlocks.getInstance().renderMinY) * RenderBlocks.getInstance().renderMinZ + (double)f9 * (1.0D - RenderBlocks.getInstance().renderMinY) * (1.0D - RenderBlocks.getInstance().renderMinZ) + (double)f10 * RenderBlocks.getInstance().renderMinY * (1.0D - RenderBlocks.getInstance().renderMinZ) + (double)f11 * RenderBlocks.getInstance().renderMinY * RenderBlocks.getInstance().renderMinZ);
-			f5 = (float)((double)f8 * (1.0D - RenderBlocks.getInstance().renderMaxY) * RenderBlocks.getInstance().renderMinZ + (double)f9 * (1.0D - RenderBlocks.getInstance().renderMaxY) * (1.0D - RenderBlocks.getInstance().renderMinZ) + (double)f10 * RenderBlocks.getInstance().renderMaxY * (1.0D - RenderBlocks.getInstance().renderMinZ) + (double)f11 * RenderBlocks.getInstance().renderMaxY * RenderBlocks.getInstance().renderMinZ);
-			f6 = (float)((double)f8 * (1.0D - RenderBlocks.getInstance().renderMaxY) * RenderBlocks.getInstance().renderMaxZ + (double)f9 * (1.0D - RenderBlocks.getInstance().renderMaxY) * (1.0D - RenderBlocks.getInstance().renderMaxZ) + (double)f10 * RenderBlocks.getInstance().renderMaxY * (1.0D - RenderBlocks.getInstance().renderMaxZ) + (double)f11 * RenderBlocks.getInstance().renderMaxY * RenderBlocks.getInstance().renderMaxZ);
+			f3 = (float)((double)f8 * (1.0D - bounds.minY) * bounds.maxZ + (double)f9 * (1.0D - bounds.minY) * (1.0D - bounds.maxZ) + (double)f10 * bounds.minY * (1.0D - bounds.maxZ) + (double)f11 * bounds.minY * bounds.maxZ);
+			f4 = (float)((double)f8 * (1.0D - bounds.minY) * bounds.minZ + (double)f9 * (1.0D - bounds.minY) * (1.0D - bounds.minZ) + (double)f10 * bounds.minY * (1.0D - bounds.minZ) + (double)f11 * bounds.minY * bounds.minZ);
+			f5 = (float)((double)f8 * (1.0D - bounds.maxY) * bounds.minZ + (double)f9 * (1.0D - bounds.maxY) * (1.0D - bounds.minZ) + (double)f10 * bounds.maxY * (1.0D - bounds.minZ) + (double)f11 * bounds.maxY * bounds.minZ);
+			f6 = (float)((double)f8 * (1.0D - bounds.maxY) * bounds.maxZ + (double)f9 * (1.0D - bounds.maxY) * (1.0D - bounds.maxZ) + (double)f10 * bounds.maxY * (1.0D - bounds.maxZ) + (double)f11 * bounds.maxY * bounds.maxZ);
 			j1 = lightingInfo.getAoBrightness(lightingInfo.aoBrightnessXYPN, lightingInfo.aoBrightnessXYZPNP, lightingInfo.aoBrightnessXZPP, i1);
 			k1 = lightingInfo.getAoBrightness(lightingInfo.aoBrightnessXZPP, lightingInfo.aoBrightnessXYPP, lightingInfo.aoBrightnessXYZPPP, i1);
 			l1 = lightingInfo.getAoBrightness(lightingInfo.aoBrightnessXZPN, lightingInfo.aoBrightnessXYZPPN, lightingInfo.aoBrightnessXYPP, i1);
 			i2 = lightingInfo.getAoBrightness(lightingInfo.aoBrightnessXYZPNN, lightingInfo.aoBrightnessXYPN, lightingInfo.aoBrightnessXZPN, i1);
-			lightingInfo.brightnessTopLeft = lightingInfo.mixAoBrightness(j1, i2, l1, k1, (1.0D - RenderBlocks.getInstance().renderMinY) * RenderBlocks.getInstance().renderMaxZ, (1.0D - RenderBlocks.getInstance().renderMinY) * (1.0D - RenderBlocks.getInstance().renderMaxZ), RenderBlocks.getInstance().renderMinY * (1.0D - RenderBlocks.getInstance().renderMaxZ), RenderBlocks.getInstance().renderMinY * RenderBlocks.getInstance().renderMaxZ);
-			lightingInfo.brightnessBottomLeft = lightingInfo.mixAoBrightness(j1, i2, l1, k1, (1.0D - RenderBlocks.getInstance().renderMinY) * RenderBlocks.getInstance().renderMinZ, (1.0D - RenderBlocks.getInstance().renderMinY) * (1.0D - RenderBlocks.getInstance().renderMinZ), RenderBlocks.getInstance().renderMinY * (1.0D - RenderBlocks.getInstance().renderMinZ), RenderBlocks.getInstance().renderMinY * RenderBlocks.getInstance().renderMinZ);
-			lightingInfo.brightnessBottomRight = lightingInfo.mixAoBrightness(j1, i2, l1, k1, (1.0D - RenderBlocks.getInstance().renderMaxY) * RenderBlocks.getInstance().renderMinZ, (1.0D - RenderBlocks.getInstance().renderMaxY) * (1.0D - RenderBlocks.getInstance().renderMinZ), RenderBlocks.getInstance().renderMaxY * (1.0D - RenderBlocks.getInstance().renderMinZ), RenderBlocks.getInstance().renderMaxY * RenderBlocks.getInstance().renderMinZ);
-			lightingInfo.brightnessTopRight = lightingInfo.mixAoBrightness(j1, i2, l1, k1, (1.0D - RenderBlocks.getInstance().renderMaxY) * RenderBlocks.getInstance().renderMaxZ, (1.0D - RenderBlocks.getInstance().renderMaxY) * (1.0D - RenderBlocks.getInstance().renderMaxZ), RenderBlocks.getInstance().renderMaxY * (1.0D - RenderBlocks.getInstance().renderMaxZ), RenderBlocks.getInstance().renderMaxY * RenderBlocks.getInstance().renderMaxZ);
+			lightingInfo.brightnessTopLeft = lightingInfo.mixAoBrightness(j1, i2, l1, k1, (1.0D - bounds.minY) * bounds.maxZ, (1.0D - bounds.minY) * (1.0D - bounds.maxZ), bounds.minY * (1.0D - bounds.maxZ), bounds.minY * bounds.maxZ);
+			lightingInfo.brightnessBottomLeft = lightingInfo.mixAoBrightness(j1, i2, l1, k1, (1.0D - bounds.minY) * bounds.minZ, (1.0D - bounds.minY) * (1.0D - bounds.minZ), bounds.minY * (1.0D - bounds.minZ), bounds.minY * bounds.minZ);
+			lightingInfo.brightnessBottomRight = lightingInfo.mixAoBrightness(j1, i2, l1, k1, (1.0D - bounds.maxY) * bounds.minZ, (1.0D - bounds.maxY) * (1.0D - bounds.minZ), bounds.maxY * (1.0D - bounds.minZ), bounds.maxY * bounds.minZ);
+			lightingInfo.brightnessTopRight = lightingInfo.mixAoBrightness(j1, i2, l1, k1, (1.0D - bounds.maxY) * bounds.maxZ, (1.0D - bounds.maxY) * (1.0D - bounds.maxZ), bounds.maxY * (1.0D - bounds.maxZ), bounds.maxY * bounds.maxZ);
 
 			lightingInfo.colorRedTopLeft = lightingInfo.colorRedBottomLeft = lightingInfo.colorRedBottomRight = lightingInfo.colorRedTopRight = 0.6F;
 			lightingInfo.colorGreenTopLeft = lightingInfo.colorGreenBottomLeft = lightingInfo.colorGreenBottomRight = lightingInfo.colorGreenTopRight = 0.6F;
@@ -1725,7 +1761,7 @@ public class ClientUtils
 		// SIDE 0
 		if(block.shouldSideBeRendered(world, x, y, z, 0))
 		{
-			info = calculateBlockLighting(0, world, block, x,y,z, 1,1,1);
+			info = calculateBlockLighting(0, world, block, x,y,z, 1,1,1, bounds);
 			tes.setColorOpaque_F(info.colorRedTopLeft, info.colorGreenTopLeft, info.colorBlueTopLeft);
 			tes.setBrightness(info.brightnessTopLeft);
 			tes.addVertexWithUV(bounds.minX, bounds.minY, bounds.maxZ, uv[0][0], uv[0][3]);
@@ -1743,7 +1779,7 @@ public class ClientUtils
 		// SIDE 1
 		if(block.shouldSideBeRendered(world, x, y, z, 1))
 		{
-			info = calculateBlockLighting(1, world, block, x,y,z, 1,1,1);
+			info = calculateBlockLighting(1, world, block, x,y,z, 1,1,1, bounds);
 			tes.setColorOpaque_F(info.colorRedTopLeft, info.colorGreenTopLeft, info.colorBlueTopLeft);
 			tes.setBrightness(info.brightnessTopLeft);
 			tes.addVertexWithUV(bounds.maxX, bounds.maxY, bounds.maxZ, uv[1][1], uv[1][3]);
@@ -1761,7 +1797,7 @@ public class ClientUtils
 		// SIDE 2
 		if(block.shouldSideBeRendered(world, x, y, z, 2))
 		{
-			info = calculateBlockLighting(2, world, block, x,y,z, 1,1,1);
+			info = calculateBlockLighting(2, world, block, x,y,z, 1,1,1, bounds);
 			tes.setColorOpaque_F(info.colorRedTopLeft, info.colorGreenTopLeft, info.colorBlueTopLeft);
 			tes.setBrightness(info.brightnessTopLeft);
 			tes.addVertexWithUV(bounds.minX, bounds.maxY, bounds.minZ, uv[2][1], uv[2][2]);
@@ -1779,7 +1815,7 @@ public class ClientUtils
 		// SIDE 3
 		if(block.shouldSideBeRendered(world, x, y, z, 3))
 		{
-			info = calculateBlockLighting(3, world, block, x,y,z, 1,1,1);
+			info = calculateBlockLighting(3, world, block, x,y,z, 1,1,1, bounds);
 			tes.setColorOpaque_F(info.colorRedTopLeft, info.colorGreenTopLeft, info.colorBlueTopLeft);
 			tes.setBrightness(info.brightnessTopLeft);
 			tes.addVertexWithUV(bounds.minX, bounds.maxY, bounds.maxZ, uv[3][0], uv[3][2]);
@@ -1797,7 +1833,7 @@ public class ClientUtils
 		// SIDE 4
 		if(block.shouldSideBeRendered(world, x, y, z, 4))
 		{
-			info = calculateBlockLighting(4, world, block, x,y,z, 1,1,1);
+			info = calculateBlockLighting(4, world, block, x,y,z, 1,1,1, bounds);
 			tes.setColorOpaque_F(info.colorRedTopLeft, info.colorGreenTopLeft, info.colorBlueTopLeft);
 			tes.setBrightness(info.brightnessTopLeft);
 			tes.addVertexWithUV(bounds.minX, bounds.maxY, bounds.maxZ, uv[4][1], uv[4][2]);
@@ -1815,7 +1851,7 @@ public class ClientUtils
 		// SIDE 5
 		if(block.shouldSideBeRendered(world, x, y, z, 5))
 		{
-			info = calculateBlockLighting(5, world, block, x,y,z, 1,1,1);
+			info = calculateBlockLighting(5, world, block, x,y,z, 1,1,1, bounds);
 			tes.setColorOpaque_F(info.colorRedTopLeft, info.colorGreenTopLeft, info.colorBlueTopLeft);
 			tes.setBrightness(info.brightnessTopLeft);
 			tes.addVertexWithUV(bounds.maxX, bounds.minY, bounds.maxZ, uv[5][0], uv[5][3]);
@@ -1840,13 +1876,22 @@ public class ClientUtils
 	{
 		Tessellator tes = tes();
 		boolean flag = false;
+		AxisAlignedBB bounds = AxisAlignedBB.getBoundingBox(
+				Math.min(Math.min(vs[0].xCoord,vs[1].xCoord),Math.min(vs[4].xCoord,vs[5].xCoord)),
+				Math.min(Math.min(vs[0].yCoord,vs[1].yCoord),Math.min(vs[2].yCoord,vs[3].yCoord)),
+				Math.min(Math.min(vs[0].zCoord,vs[2].zCoord),Math.min(vs[4].zCoord,vs[6].zCoord)),
+
+				Math.min(Math.min(vs[2].xCoord,vs[3].xCoord),Math.min(vs[6].xCoord,vs[7].xCoord)),
+				Math.min(Math.min(vs[4].yCoord,vs[5].yCoord),Math.min(vs[6].yCoord,vs[7].yCoord)),
+				Math.min(Math.min(vs[1].zCoord,vs[3].zCoord),Math.min(vs[5].zCoord,vs[7].zCoord)));
+
 		BlockLightingInfo info;
 		IIcon icon;
 		// SIDE 0
 		if(block.shouldSideBeRendered(world, x, y, z, 0))
 		{
 			icon = renderer.hasOverrideBlockTexture()?renderer.overrideBlockTexture: block.getIcon(world,x,y,z,0);
-			info = calculateBlockLighting(0, world, block, x,y,z, 1,1,1);
+			info = calculateBlockLighting(0, world, block, x,y,z, 1,1,1, bounds);
 
 			double d3 = icon.getInterpolatedU(Math.min(16,Math.max(0, vs[0].xCoord * 16)));
 			double d4 = icon.getInterpolatedU(Math.min(16,Math.max(0, vs[3].xCoord * 16)));
@@ -1924,7 +1969,7 @@ public class ClientUtils
 		if(block.shouldSideBeRendered(world, x, y, z, 1))
 		{
 			icon = renderer.hasOverrideBlockTexture()?renderer.overrideBlockTexture: block.getIcon(world,x,y,z,1);
-			info = calculateBlockLighting(1, world, block, x,y,z, 1,1,1);
+			info = calculateBlockLighting(1, world, block, x,y,z, 1,1,1, bounds);
 			tes.setBrightness(983055);
 
 			double d3 = icon.getInterpolatedU(Math.min(16,Math.max(0, vs[4].xCoord * 16)));
@@ -2003,7 +2048,7 @@ public class ClientUtils
 		if(block.shouldSideBeRendered(world, x, y, z, 2))
 		{
 			icon = renderer.hasOverrideBlockTexture()?renderer.overrideBlockTexture: block.getIcon(world,x,y,z,2);
-			info = calculateBlockLighting(2, world, block, x,y,z, 1,1,1);
+			info = calculateBlockLighting(2, world, block, x,y,z, 1,1,1, bounds);
 			tes.setBrightness(983055);
 
 			double d3 = icon.getInterpolatedU(Math.min(16,Math.max(0, vs[0].xCoord * 16)));
@@ -2083,7 +2128,7 @@ public class ClientUtils
 		if(block.shouldSideBeRendered(world, x, y, z, 3))
 		{
 			icon = renderer.hasOverrideBlockTexture()?renderer.overrideBlockTexture: block.getIcon(world,x,y,z,3);
-			info = calculateBlockLighting(3, world, block, x,y,z, 1,1,1);
+			info = calculateBlockLighting(3, world, block, x,y,z, 1,1,1, bounds);
 			tes.setBrightness(983055);
 
 			double d3 = icon.getInterpolatedU(Math.min(16,Math.max(0, vs[5].xCoord * 16)));
@@ -2162,7 +2207,7 @@ public class ClientUtils
 		if(block.shouldSideBeRendered(world, x, y, z, 4))
 		{
 			icon = renderer.hasOverrideBlockTexture()?renderer.overrideBlockTexture: block.getIcon(world,x,y,z,4);
-			info = calculateBlockLighting(4, world, block, x,y,z, 1,1,1);
+			info = calculateBlockLighting(4, world, block, x,y,z, 1,1,1, bounds);
 			tes.setBrightness(983055);
 
 			double d3 = icon.getInterpolatedU(Math.min(16,Math.max(0, vs[4].zCoord * 16)));
@@ -2241,7 +2286,7 @@ public class ClientUtils
 		if(block.shouldSideBeRendered(world, x, y, z, 5))
 		{
 			icon = renderer.hasOverrideBlockTexture()?renderer.overrideBlockTexture: block.getIcon(world,x,y,z,5);
-			info = calculateBlockLighting(5, world, block, x,y,z, 1,1,1);
+			info = calculateBlockLighting(5, world, block, x,y,z, 1,1,1, bounds);
 			tes.setBrightness(983055);
 
 			double d3 = icon.getInterpolatedU(Math.min(16,Math.max(0, vs[7].zCoord * 16)));

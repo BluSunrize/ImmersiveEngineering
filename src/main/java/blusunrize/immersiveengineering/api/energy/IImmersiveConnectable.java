@@ -48,6 +48,11 @@ public interface IImmersiveConnectable
 	 * return false to stop checking for available outputs from this point onward
 	 */
 	public boolean allowEnergyToPass(Connection con);
+
+	/**
+	 * fired for every not-simulated energy packet passing through. Used for energy meter and stuff
+	 */
+	public void onEnergyPassthrough(int amount);
 	
 	/**
 	 * used to reset the CableType limiter of the tile, provided it matches the given argument
@@ -64,4 +69,11 @@ public interface IImmersiveConnectable
 	 * @return Where the cable should attach
 	 */
 	public Vec3 getConnectionOffset(Connection con);
+
+//	@Override
+//	public void onEnergyPassthrough(int amount, boolean simulate, int energyType)
+//	{
+//		if(!simulate)
+//			energyPassed +=amount;
+//	}
 }

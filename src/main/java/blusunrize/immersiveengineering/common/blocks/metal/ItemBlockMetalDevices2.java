@@ -52,7 +52,7 @@ public class ItemBlockMetalDevices2 extends ItemBlockIEBase
 		int playerViewQuarter = MathHelper.floor_double(player.rotationYaw * 4.0F / 360.0F + 0.5D) & 3;
 		int f = playerViewQuarter==0 ? 2:playerViewQuarter==1 ? 5:playerViewQuarter==2 ? 3: 4;
 
-		if(meta==BlockMetalDevices2.META_fluidPump)
+		if(meta==BlockMetalDevices2.META_fluidPump || meta==BlockMetalDevices2.META_energyMeter)
 			if(!world.isAirBlock(x, y+1, z))
 				return false;
 
@@ -72,6 +72,11 @@ public class ItemBlockMetalDevices2 extends ItemBlockIEBase
 		else if(tileEntity instanceof TileEntityEnergyMeter)
 		{
 			((TileEntityEnergyMeter)tileEntity).facing = f;
+			((TileEntityEnergyMeter)tileEntity).dummy = true;
+			world.setBlock(x, y+1, z, IEContent.blockMetalDevice2, BlockMetalDevices2.META_energyMeter, 3);
+			TileEntity tileEntityOther = world.getTileEntity(x,y+1,z);
+			if(tileEntityOther instanceof TileEntityEnergyMeter)
+				((TileEntityEnergyMeter)tileEntityOther).facing = f;
 		}
 		else if(tileEntity instanceof TileEntityFloodlight)
 		{

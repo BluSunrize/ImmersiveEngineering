@@ -74,6 +74,7 @@ tile.ImmersiveEngineering.metalDecoration.aluminiumScaffolding2.name=Aluminium S
 tile.ImmersiveEngineering.metalDecoration.aluminiumStructuralArm.name=Aluminium Structural Arm
 
 tile.ImmersiveEngineering.metalDevice2.breakerSwitch.name=Breaker Switch
+tile.ImmersiveEngineering.metalDevice2.energyMeter.name=Current Transformer
 tile.ImmersiveEngineering.metalDevice2.electricLantern.name=Powered Lantern
 tile.ImmersiveEngineering.metalDevice2.floodlight.name=Floodlight
 tile.ImmersiveEngineering.metalDevice2.fluidPipe.name=Fluid Pipe
@@ -393,6 +394,8 @@ chat.ImmersiveEngineering.info.coreDrill.result.mineral=§7Core Sample evaluated
 chat.ImmersiveEngineering.info.coreDrill.result.depl=§7Mineral vein at %1$s§7 integrity
 chat.ImmersiveEngineering.info.coreDrill.result.none=Core Sample evaluated, no minerals found
 chat.ImmersiveEngineering.info.coreDrill.infinite=Infinite
+		
+chat.ImmersiveEngineering.info.energyTransfered=Energy transferred over the last %1$s ticks: %2$s RF
 
 chat.ImmersiveEngineering.command.available=§6Available commands:§r %1$s
 chat.ImmersiveEngineering.command.help.help=§6Usage: /ie help <command> [sub-commands ...]§r<br> To get more info on the specified command or, optionally, its sub commands

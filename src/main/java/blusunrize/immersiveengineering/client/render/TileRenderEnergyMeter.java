@@ -25,8 +25,8 @@ public class TileRenderEnergyMeter extends TileRenderImmersiveConnectable
 	{
 		TileEntityEnergyMeter meter = (TileEntityEnergyMeter)tile;
 		int f = meter.facing;
-		rotationMatrix.rotate(Math.toRadians(f==2?180: f==4?-90: f==5?90: 0), 0,1,0);
-		translationMatrix.translate(.5,0,.5);
+		rotationMatrix.rotate(Math.toRadians(f==3?180: f==4?90: f==5?-90: 0), 0,1,0);
+		translationMatrix.translate(.5,-1,.5);
 		
 		model.render(tile, tes, translationMatrix, rotationMatrix, 0, false);
 	}

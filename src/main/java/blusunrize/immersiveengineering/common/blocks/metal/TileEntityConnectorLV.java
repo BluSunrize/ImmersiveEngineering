@@ -3,7 +3,9 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import static blusunrize.immersiveengineering.common.util.Utils.toIIC;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Set;
+
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
@@ -223,7 +225,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 						int r = tempR;
 						tempR -= (int) Math.max(0, Math.floor(tempR*con.getPreciseLossRate(tempR,getMaxInput())));
 						toIIC(con.end, worldObj).outputEnergy(tempR, simulate, energyType);
-						
+						HashSet<IImmersiveConnectable> passedConnectors = new HashSet<IImmersiveConnectable>();
 						for(Connection sub : con.subConnections)
 						{
 							IELogger.debug("Sub Con"+sub.start+" to "+sub.end);
@@ -237,9 +239,16 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 								IELogger.debug("Or at least hotter than "+sub.cableType.getTransferRate());
 							}	
 							if(!simulate)
+							{
 								ImmersiveNetHandler.INSTANCE.getTransferedRates(worldObj.provider.dimensionId).put(sub,transferredPerCon);
+								IImmersiveConnectable subStart = toIIC(sub.start,worldObj);
+								IImmersiveConnectable subEnd = toIIC(sub.end,worldObj);
+								if(passedConnectors.add(subStart))
+									subStart.onEnergyPassthrough(r);
+								if(passedConnectors.add(subEnd))
+									subEnd.onEnergyPassthrough(r);
+							}
 						}
-
 						received += r;
 						powerLeft -= r;
 						if(powerLeft<=0)
