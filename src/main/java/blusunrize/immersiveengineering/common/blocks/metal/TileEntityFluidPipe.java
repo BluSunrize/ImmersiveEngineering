@@ -62,6 +62,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidHandl
 				{
 					if(te instanceof TileEntityFluidPipe)
 						closedList.add(next);
+					FluidTankInfo[] tankInfo;
 					for(int i=0; i<6; i++)
 					{
 						boolean b = (te instanceof TileEntityFluidPipe)? (((TileEntityFluidPipe) te).sideConfig[i]==0): (((TileEntityFluidPump) te).sideConfig[i]==1);
@@ -73,10 +74,14 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidHandl
 								TileEntity te2 = world.getTileEntity(next.posX+fd.offsetX,next.posY+fd.offsetY,next.posZ+fd.offsetZ);
 								if(te2 instanceof TileEntityFluidPipe)
 									openList.add(new ChunkCoordinates(next.posX+fd.offsetX,next.posY+fd.offsetY,next.posZ+fd.offsetZ));
-								else if(te2 instanceof IFluidHandler && ((IFluidHandler) te2).getTankInfo(fd.getOpposite()).length>0)
+								else if(te2 instanceof IFluidHandler)
 								{
-									IFluidHandler handler = (IFluidHandler)te2;
-									fluidHandlers.add(new DirectionalFluidOutput(handler, fd));
+									tankInfo = ((IFluidHandler) te2).getTankInfo(fd.getOpposite());
+									if(tankInfo!=null && tankInfo.length>0)
+									{
+										IFluidHandler handler = (IFluidHandler) te2;
+										fluidHandlers.add(new DirectionalFluidOutput(handler, fd));
+									}
 								}
 							}
 						}
@@ -236,24 +241,34 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidHandl
 	public byte getConnectionByte()
 	{
 		byte connections = 0;
+		FluidTankInfo[] tankInfo;
 		for(int i=5; i>=0; i--)
 		{
 			TileEntity con = worldObj.getTileEntity(xCoord+(i==4?-1: i==5?1: 0),yCoord+(i==0?-1: i==1?1: 0),zCoord+(i==2?-1: i==3?1: 0));
 			connections <<= 1;
-			if(sideConfig[i]==0 && con instanceof IFluidHandler && ((IFluidHandler) con).getTankInfo(ForgeDirection.getOrientation(i).getOpposite()).length>0)
-				connections |= 1;
+			if(sideConfig[i]==0 && con instanceof IFluidHandler)
+			{
+				tankInfo = ((IFluidHandler) con).getTankInfo(ForgeDirection.getOrientation(i).getOpposite());
+				if(tankInfo!=null && tankInfo.length>0)
+					connections |= 1;
+			}
 		}
 		return connections;
 	}
 	public byte getAvailableConnectionByte()
 	{
 		byte connections = 0;
+		FluidTankInfo[] tankInfo;
 		for(int i=5; i>=0; i--)
 		{
 			TileEntity con = worldObj.getTileEntity(xCoord+(i==4?-1: i==5?1: 0),yCoord+(i==0?-1: i==1?1: 0),zCoord+(i==2?-1: i==3?1: 0));
 			connections <<= 1;
-			if(con instanceof IFluidHandler && ((IFluidHandler) con).getTankInfo(ForgeDirection.getOrientation(i).getOpposite()).length>0)
-				connections |= 1;
+			if(con instanceof IFluidHandler)
+			{
+				tankInfo = ((IFluidHandler) con).getTankInfo(ForgeDirection.getOrientation(i).getOpposite());
+				if(tankInfo!=null && tankInfo.length>0)
+					connections |= 1;
+			}
 		}
 		return connections;
 	}
