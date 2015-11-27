@@ -20,13 +20,14 @@ public class TileEntityChargingStation extends TileEntityIEBase implements IEner
 	public EnergyStorage energyStorage = new EnergyStorage(32000,Math.max(1024, Config.getInt("charger_consumption")));
 	public int facing = 2;
 	public ItemStack inventory;
+	private boolean charging = true;
 
 	@Override
 	public void updateEntity()
 	{
 		if(inventory!=null && (inventory.getItem() instanceof IEnergyContainerItem || (Lib.IC2 && IC2Helper.isElectricItem(inventory))))
 		{
-			if(worldObj.isRemote)
+			if(worldObj.isRemote&&charging)
 			{
 				float charge = 0;
 				if(inventory.getItem() instanceof IEnergyContainerItem)
@@ -50,18 +51,28 @@ public class TileEntityChargingStation extends TileEntityIEBase implements IEner
 					}
 				}
 			}
-			else
+			else if (charging)
 			{
+				if (energyStorage.getEnergyStored()==0)
+				{
+					charging = false;
+					worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+					return;
+				}
 				if(inventory.getItem() instanceof IEnergyContainerItem)
 				{
 					IEnergyContainerItem container = (IEnergyContainerItem)inventory.getItem();
 					int space = container.getMaxEnergyStored(inventory)-container.getEnergyStored(inventory);
 					if(space>0)
 					{
+						int energyDec = (10*container.getEnergyStored(inventory))/container.getMaxEnergyStored(inventory);
 						int insert = Math.min(space, Config.getInt("charger_consumption"));
 						int accepted = Math.min(container.receiveEnergy(inventory, insert, true), this.energyStorage.extractEnergy(insert, true));
 						if((accepted=this.energyStorage.extractEnergy(accepted, false))>0)
 							container.receiveEnergy(inventory, accepted, false);
+						int energyDecNew = (10*container.getEnergyStored(inventory))/container.getMaxEnergyStored(inventory);
+						if (energyDec!=energyDecNew)
+							worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 					}
 				}
 				else
@@ -69,13 +80,22 @@ public class TileEntityChargingStation extends TileEntityIEBase implements IEner
 					double space = IC2Helper.getMaxItemCharge(inventory)-IC2Helper.getCurrentItemCharge(inventory);
 					if(space>0)
 					{
+						int energyDec = (int) ((10*IC2Helper.getCurrentItemCharge(inventory))/IC2Helper.getMaxItemCharge(inventory));
 						double insert = Math.min(space, ModCompatability.convertRFtoEU(Config.getInt("charger_consumption"),5));
 						double accepted = IC2Helper.chargeItem(inventory, insert, true);
 						int rfAccepted = this.energyStorage.extractEnergy(ModCompatability.convertEUtoRF(accepted), false);
 						if(rfAccepted>0)
 							IC2Helper.chargeItem(inventory, ModCompatability.convertRFtoEU(rfAccepted,5), false);
+						int energyDecNew = (int) ((10*IC2Helper.getCurrentItemCharge(inventory))/IC2Helper.getMaxItemCharge(inventory));
+						if (energyDec!=energyDecNew)
+							worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 					}
 				}
+			}
+			else if (energyStorage.getEnergyStored()==energyStorage.getMaxEnergyStored())
+			{
+				charging = true;
+				worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 			}
 		}
 	}
@@ -86,12 +106,14 @@ public class TileEntityChargingStation extends TileEntityIEBase implements IEner
 		energyStorage.readFromNBT(nbt);
 		facing = nbt.getInteger("facing");
 		inventory = ItemStack.loadItemStackFromNBT(nbt.getCompoundTag("inventory"));
+		charging = nbt.getBoolean("charging");
 	}
 	@Override
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		energyStorage.writeToNBT(nbt);
 		nbt.setInteger("facing", facing);
+		nbt.setBoolean("charging", charging);
 		if(inventory!=null)
 			nbt.setTag("inventory", inventory.writeToNBT(new NBTTagCompound()));
 	}
