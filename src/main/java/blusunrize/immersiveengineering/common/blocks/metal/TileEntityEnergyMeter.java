@@ -56,7 +56,7 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable
 	@Override
 	public void onEnergyPassthrough(int amount)
 	{
-		lastEnergyPassed = amount;
+		lastEnergyPassed += amount;
 	}
 
 	@Override

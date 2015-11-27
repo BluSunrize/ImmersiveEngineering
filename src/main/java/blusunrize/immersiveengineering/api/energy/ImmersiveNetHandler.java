@@ -487,7 +487,7 @@ public class ImmersiveNetHandler
 		@Override
 		public int compareTo(Connection o)
 		{
-			if (equals(o))
+			if(equals(o))
 				return 0;
 			int distComp = Integer.compare(length, o.length);
 			int cableComp = -1*Integer.compare(cableType.getTransferRate(), o.cableType.getTransferRate());
