@@ -3,7 +3,6 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import java.util.ArrayList;
 import java.util.List;
 
-import cofh.api.energy.IEnergyContainerItem;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -11,6 +10,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -18,6 +18,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.Direction;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
@@ -39,6 +40,7 @@ import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenBarr
 import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.compat.IC2Helper;
+import cofh.api.energy.IEnergyContainerItem;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -979,11 +981,23 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 	public int isProvidingWeakPower(IBlockAccess world, int x, int y, int z, int side)
 	{
 		TileEntity te = world.getTileEntity(x, y, z);
-		if(te instanceof TileEntityBreakerSwitch && !(te instanceof TileEntityRedstoneBreaker))
+		if(te instanceof TileEntityBreakerSwitch)
 		{
 			TileEntityBreakerSwitch breaker = (TileEntityBreakerSwitch)te;
-			boolean power = (breaker.active&&!breaker.inverted) || (!breaker.active&&breaker.inverted);
-			return power?15:0;
+			if(te instanceof TileEntityRedstoneBreaker && side>1)
+			{
+				int mcDir = Direction.facingToDirection[side];
+				int x2 = x + Direction.offsetX[mcDir];
+				int z2 = z + Direction.offsetZ[mcDir];
+				int signal = te.getWorldObj().getIndirectPowerLevelTo(x2, y, z2, Direction.directionToFacing[mcDir]);
+				int rsStrength = signal >= 15 ? signal : Math.max(signal, world.getBlock(x2, y, z2) == Blocks.redstone_wire ? world.getBlockMetadata(x2, y, z2) : 0);
+				return rsStrength-1;
+			}
+			else
+			{
+				boolean power = (breaker.active&&!breaker.inverted) || (!breaker.active&&breaker.inverted);
+				return power?15:0;
+			}
 		}
 		return 0;
 	}
@@ -991,7 +1005,7 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 	public int isProvidingStrongPower(IBlockAccess world, int x, int y, int z, int side)
 	{
 		TileEntity te = world.getTileEntity(x, y, z);
-		if(te instanceof TileEntityBreakerSwitch&& !(te instanceof TileEntityRedstoneBreaker))
+		if(te instanceof TileEntityBreakerSwitch && !(te instanceof TileEntityRedstoneBreaker))
 		{
 			TileEntityBreakerSwitch breaker = (TileEntityBreakerSwitch)te;
 			int powerSide = breaker.sideAttached>0?breaker.sideAttached-1:breaker.facing;
