@@ -105,7 +105,8 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidHandl
 	public void invalidate()
 	{
 		super.invalidate();
-		indirectConnections.clear();
+		if (!worldObj.isRemote)
+			indirectConnections.clear();
 	}
 
 
@@ -130,7 +131,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidHandl
 	@Override
 	public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
 	{
-		if(resource==null || from==null || from==ForgeDirection.UNKNOWN || sideConfig[from.ordinal()]!=0)
+		if(resource==null || from==null || from==ForgeDirection.UNKNOWN || sideConfig[from.ordinal()]!=0 || worldObj.isRemote)
 			return 0;
 
 		int canAccept = resource.amount;
