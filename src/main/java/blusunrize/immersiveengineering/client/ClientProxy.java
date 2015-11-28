@@ -61,6 +61,7 @@ import blusunrize.immersiveengineering.client.render.EntityRenderSkycrate;
 import blusunrize.immersiveengineering.client.render.ItemRenderChemthrower;
 import blusunrize.immersiveengineering.client.render.ItemRenderDrill;
 import blusunrize.immersiveengineering.client.render.ItemRenderRevolver;
+import blusunrize.immersiveengineering.client.render.ItemRenderVoltmeter;
 import blusunrize.immersiveengineering.client.render.TileRenderArcFurnace;
 import blusunrize.immersiveengineering.client.render.TileRenderAssembler;
 import blusunrize.immersiveengineering.client.render.TileRenderBottlingMachine;
@@ -232,7 +233,6 @@ public class ClientProxy extends CommonProxy
 		//REVOLVER
 		revolverTextureMap = new TextureMap(Config.getInt("revolverSheetID"), "textures/revolvers");
 		ClientUtils.mc().renderEngine.loadTextureMap(revolverTextureResource, revolverTextureMap);
-
 		MinecraftForgeClient.registerItemRenderer(IEContent.itemRevolver, new ItemRenderRevolver());
 		RenderingRegistry.registerEntityRenderingHandler(EntityRevolvershot.class, new EntityRenderRevolvershot());
 		//DRILL
@@ -243,6 +243,8 @@ public class ClientProxy extends CommonProxy
 		//CHEMTHROWER
 		MinecraftForgeClient.registerItemRenderer(IEContent.itemChemthrower, new ItemRenderChemthrower());
 		RenderingRegistry.registerEntityRenderingHandler(EntityChemthrowerShot.class, new EntityRenderChemthrowerShot());
+		//VOLTMETER
+		MinecraftForgeClient.registerItemRenderer(IEContent.itemTool, new ItemRenderVoltmeter());
 		/** TODO when there is an actual model for it =P
 		MinecraftForgeClient.registerItemRenderer(IEContent.itemSkyhook, new ItemRenderSkyhook());
 		 */

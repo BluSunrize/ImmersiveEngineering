@@ -22,7 +22,7 @@ public abstract class ModelIEObj
 		
 		existingStaticRenders.add(this);
 	}
-	
+
 	public WavefrontObject rebindModel()
 	{
 		model = ClientUtils.getModel(path);

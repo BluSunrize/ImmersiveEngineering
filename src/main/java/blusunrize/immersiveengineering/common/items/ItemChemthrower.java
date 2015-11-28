@@ -141,6 +141,18 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IShaderEquip
 	}
 
 	@Override
+	public void clearUpgrades(ItemStack stack)
+	{
+		super.clearUpgrades(stack);
+		FluidStack fs = getFluid(stack);
+		if(fs!=null && fs.amount > getCapacity(stack))
+		{
+			fs.amount = getCapacity(stack);
+			ItemNBTHelper.setFluidStack(stack, "fluid", fs);
+		}
+	}
+
+	@Override
 	public FluidStack getFluid(ItemStack container)
 	{
 		return ItemNBTHelper.getFluidStack(container, "fluid");

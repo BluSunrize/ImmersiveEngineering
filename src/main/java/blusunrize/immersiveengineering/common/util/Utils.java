@@ -153,6 +153,12 @@ public class Utils
 		DecimalFormat df = new DecimalFormat(s);
 		return df.format(d);
 	}
+	public static String toScientificNotation(int value, String decimalPrecision, int useKilo)
+	{
+		float formatted = value>=1000000000?value/1000000000f : value>=1000000?value/1000000f: value>=useKilo?value/1000f: value;
+		String notation = value>=1000000000?"G" : value>=1000000?"M": value>=useKilo?"K": "";
+		return formatDouble(formatted, "0."+decimalPrecision)+notation;
+	}
 	public static String toCamelCase(String s)
 	{
 		return s.substring(0,1).toUpperCase() + s.substring(1).toLowerCase();

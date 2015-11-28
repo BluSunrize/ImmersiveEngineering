@@ -20,6 +20,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDevices;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import blusunrize.immersiveengineering.common.util.IEPotions;
 import blusunrize.immersiveengineering.common.util.Lib;
+import blusunrize.immersiveengineering.common.util.Utils;
 
 public class GregTechHelper extends IECompatModule
 {
@@ -180,6 +181,21 @@ public class GregTechHelper extends IECompatModule
 
 		return 0;
 	}
+	
+	public static String gregtech_getEnergyStored(TileEntity tile)
+	{
+		if(!Lib.GREG)
+			return null;
+		if(tile instanceof IBasicEnergyContainer)
+		{
+			long stored = ((IBasicEnergyContainer)tile).getStoredEU();
+			long maxStored = ((IBasicEnergyContainer)tile).getEUCapacity();
+			if(maxStored>0)
+				return Utils.toScientificNotation(ModCompatability.convertEUtoRF(stored),"0##",100000)+" / "+Utils.toScientificNotation(ModCompatability.convertEUtoRF(maxStored),"0##",100000);
+		}
+		return null;
+	}
+	
 
 	public static enum GregsTerribleFluidPotions
 	{

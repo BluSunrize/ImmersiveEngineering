@@ -37,6 +37,7 @@ import net.minecraftforge.client.model.obj.Face;
 import net.minecraftforge.client.model.obj.GroupObject;
 import net.minecraftforge.client.model.obj.TextureCoordinate;
 import net.minecraftforge.client.model.obj.WavefrontObject;
+import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.fluids.FluidStack;
@@ -72,6 +73,8 @@ import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.SkylineHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.compat.GregTechHelper;
+import cofh.api.energy.IEnergyReceiver;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -109,11 +112,12 @@ public class ClientEventHandler
 	@SubscribeEvent()
 	public void textureStich(TextureStitchEvent.Post event)
 	{
-		for(ModelIEObj modelIE : ModelIEObj.existingStaticRenders)
-		{
-			WavefrontObject model = modelIE.rebindModel();
-			rebindUVsToIcon(model, modelIE);
-		}
+		if(event.map.getTextureType()==0)
+			for(ModelIEObj modelIE : ModelIEObj.existingStaticRenders)
+			{
+				WavefrontObject model = modelIE.rebindModel();
+				rebindUVsToIcon(model, modelIE);
+			}
 		//
 		//		if(event.map.getTextureType()==Config.getInt("revolverSheetID"))
 		//		{
@@ -335,7 +339,6 @@ public class ClientEventHandler
 							ClientUtils.font().drawString(s, event.resolution.getScaledWidth()/2 - ClientUtils.font().getStringWidth(s)/2, event.resolution.getScaledHeight()-GuiIngameForge.left_height-10, WireType.ELECTRUM.getColour(null), true);
 						}
 					}
-
 				}
 				else if(equipped.getItem() instanceof ItemRevolver && equipped.getItemDamage()!=2)
 				{
@@ -415,13 +418,13 @@ public class ClientEventHandler
 					GL11.glRotatef(angle, 0, 0, 1);
 					ClientUtils.drawTexturedRect(6,-2, 24,4, 91/256f,123/256f, 80/96f,87/96f);
 					GL11.glRotatef(-angle, 0, 0, 1);
-//					for(int i=0; i<=8; i++)
-//					{
-//						float angle = 83-(166/8f)*i;
-//						GL11.glRotatef(angle, 0, 0, 1);
-//						ClientUtils.drawTexturedRect(6,-2, 24,4, 91/256f,123/256f, 80/96f,87/96f);
-//						GL11.glRotatef(-angle, 0, 0, 1);
-//					}
+					//					for(int i=0; i<=8; i++)
+					//					{
+					//						float angle = 83-(166/8f)*i;
+					//						GL11.glRotatef(angle, 0, 0, 1);
+					//						ClientUtils.drawTexturedRect(6,-2, 24,4, 91/256f,123/256f, 80/96f,87/96f);
+					//						GL11.glRotatef(-angle, 0, 0, 1);
+					//					}
 					GL11.glTranslated(23,37,0);
 					if(drill)
 					{
@@ -440,7 +443,7 @@ public class ClientEventHandler
 						ClientUtils.drawTexturedRect(-41,-73, 53,72, 8/256f,61/256f, 4/96f,76/96f);
 						boolean ignite = ItemNBTHelper.getBoolean(equipped, "ignite");
 						ClientUtils.drawTexturedRect(-32,-43, 12,12, 66/256f,78/256f, (ignite?21:9)/96f,(ignite?33:21)/96f);
-						
+
 					}
 					GL11.glPopMatrix();
 				}
@@ -460,6 +463,42 @@ public class ClientEventHandler
 							for(String s : text)
 								if(s!=null)
 									ClientUtils.font().drawString(s, event.resolution.getScaledWidth()/2+8, event.resolution.getScaledHeight()/2+8+(i++)*ClientUtils.font().FONT_HEIGHT, 0xcccccc, true);
+						}
+					}
+
+					if(OreDictionary.itemMatches(new ItemStack(IEContent.itemTool,1,2), equipped, true))
+					{
+						if(tileEntity instanceof IEnergyReceiver)
+						{
+						ForgeDirection fd = ForgeDirection.getOrientation(mop.sideHit);
+						int maxStorage = ((IEnergyReceiver)tileEntity).getMaxEnergyStored(fd);
+						int storage = ((IEnergyReceiver)tileEntity).getEnergyStored(fd);
+						if(maxStorage>0)
+						{
+							String[] text = StatCollector.translateToLocalFormatted(Lib.DESC_INFO+"energyStored","<br>"+Utils.toScientificNotation(storage,"0##",100000)+" / "+Utils.toScientificNotation(maxStorage,"0##",100000)).split("<br>");
+							int i = 0;
+							for(String s : text)
+								if(s!=null)
+								{
+									int w = ClientUtils.font().getStringWidth(s);
+									ClientUtils.font().drawString(s, event.resolution.getScaledWidth()/2-w/2, event.resolution.getScaledHeight()/2+16+(i++)*(ClientUtils.font().FONT_HEIGHT+2), 0xcccccc, true);
+								}
+						}
+						}
+						else if(Lib.GREG && GregTechHelper.gregtech_isValidEnergyOutput(tileEntity))
+						{
+							String gregStored = GregTechHelper.gregtech_getEnergyStored(tileEntity);
+							if(gregStored!=null)
+							{
+								String[] text = StatCollector.translateToLocalFormatted(Lib.DESC_INFO+"energyStored","<br>"+gregStored).split("<br>");
+								int i = 0;
+								for(String s : text)
+									if(s!=null)
+									{
+										int w = ClientUtils.font().getStringWidth(s);
+										ClientUtils.font().drawString(s, event.resolution.getScaledWidth()/2-w/2, event.resolution.getScaledHeight()/2+16+(i++)*(ClientUtils.font().FONT_HEIGHT+2), 0xcccccc, true);
+									}
+							}
 						}
 					}
 				}

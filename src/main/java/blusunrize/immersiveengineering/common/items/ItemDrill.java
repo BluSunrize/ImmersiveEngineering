@@ -76,6 +76,17 @@ public class ItemDrill extends ItemUpgradeableTool implements IFluidContainerIte
 			ItemNBTHelper.setFluidStack(stack, "fuel",fs);
 		}
 	}
+	@Override
+	public void clearUpgrades(ItemStack stack)
+	{
+		super.clearUpgrades(stack);
+		FluidStack fs = getFluid(stack);
+		if(fs!=null && fs.amount > getCapacity(stack))
+		{
+			fs.amount = getCapacity(stack);
+			ItemNBTHelper.setFluidStack(stack, "fuel", fs);
+		}
+	}
 
 	@Override
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean adv)
