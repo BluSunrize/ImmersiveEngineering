@@ -98,7 +98,8 @@ public class MTHelper extends IECompatModule
 		public void handle(ReloadEvent event)
 		{
 			ExcavatorHandler.recalculateChances();
-			ManualHelper.ieManualInstance.recalculateAllRecipes();
+			if (ManualHelper.ieManualInstance!=null)
+				ManualHelper.ieManualInstance.recalculateAllRecipes();
 		}
 	}
 
