@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.common.gui;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import blusunrize.immersiveengineering.api.tool.IUpgradeableTool;
@@ -120,5 +121,10 @@ public class ContainerModWorkbench extends Container
 			slotObject.onPickupFromSlot(player, stack);
 		}
 		return stack;
+	}
+	@Override
+	public void onCraftMatrixChanged(IInventory p_75130_1_) {
+		super.onCraftMatrixChanged(p_75130_1_);
+		tile.getWorldObj().markBlockForUpdate(tile.xCoord, tile.yCoord, tile.zCoord);
 	}
 }

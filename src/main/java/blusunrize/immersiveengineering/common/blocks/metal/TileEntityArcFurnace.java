@@ -264,6 +264,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 		{
 			this.markDirty();
 			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+			worldObj.addBlockEvent(xCoord, yCoord, zCoord, getBlockType(), -1, -1);
 		}
 	}
 
@@ -325,6 +326,11 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 	@Override
 	public boolean receiveClientEvent(int id, int arg)
 	{
+		if (id==-1||id==255)
+		{
+			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+			return true;
+		}
 		if(id==0 && FMLCommonHandler.instance().getEffectiveSide()==Side.CLIENT)
 			if(this.pouringMetal<=0)
 				this.pouringMetal=arg;

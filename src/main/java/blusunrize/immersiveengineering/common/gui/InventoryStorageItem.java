@@ -65,6 +65,7 @@ public class InventoryStorageItem implements IInventory
 				itemstack = this.stackList[i];
 				this.stackList[i] = null;
 				this.markDirty();
+				this.container.onCraftMatrixChanged(this);
 				return itemstack;
 			}
 			itemstack = this.stackList[i].splitStack(j);

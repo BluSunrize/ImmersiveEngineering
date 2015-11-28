@@ -41,6 +41,7 @@ import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.compat.IC2Helper;
 import cofh.api.energy.IEnergyContainerItem;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -852,7 +853,7 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 	@Override
 	public void onBlockAdded(World world, int x, int y, int z)
 	{
-		if(world.getTileEntity(x, y, z) instanceof TileEntityFluidPipe)
+		if(world.getTileEntity(x, y, z) instanceof TileEntityFluidPipe&&!world.isRemote)
 			TileEntityFluidPipe.indirectConnections.clear();
 	}
 
@@ -865,7 +866,8 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 			TileEntity other = world.getTileEntity(tileX, tileY, tileZ);
 			if(other instanceof IFluidHandler)
 			{
-				TileEntityFluidPipe.indirectConnections.clear();
+				if (FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER)
+					TileEntityFluidPipe.indirectConnections.clear();
 				ForgeDirection fd = tileY<y?ForgeDirection.DOWN: tileY>y?ForgeDirection.UP: tileZ<z?ForgeDirection.NORTH: tileZ>z?ForgeDirection.SOUTH: tileX<x?ForgeDirection.WEST: ForgeDirection.EAST;
 				((TileEntityFluidPipe) tile).sideConfig[fd.ordinal()]=0;
 			}
