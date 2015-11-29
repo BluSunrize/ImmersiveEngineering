@@ -115,13 +115,13 @@ public class ItemRevolver extends ItemUpgradeableTool implements IShaderEquipabl
 	{
 		for(int i=0;i<2;i++)
 			list.add(new ItemStack(this,1,i));
-				for(Map.Entry<String, SpecialRevolver> e : specialRevolversByTag.entrySet())
-				{
-					ItemStack stack = new ItemStack(this,1,0);
-					applySpecialCrafting(stack, e.getValue());
-					this.recalculateUpgrades(stack);
-					list.add(stack);
-				}
+		//		for(Map.Entry<String, SpecialRevolver> e : specialRevolversByTag.entrySet())
+		//		{
+		//			ItemStack stack = new ItemStack(this,1,0);
+		//			applySpecialCrafting(stack, e.getValue());
+		//			this.recalculateUpgrades(stack);
+		//			list.add(stack);
+		//		}
 	}
 	@Override
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean adv)
