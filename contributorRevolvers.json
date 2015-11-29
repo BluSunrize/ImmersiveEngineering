@@ -30,6 +30,10 @@
 "uuid":["c2024e2a-dd76-4bc9-9ea3-b771f18f23b6","f34afdfb-996b-4020-b8a2-b740e2937b29"],
 "tag":"oblivion","flavour":"","baseUpgrades":{"melee":10.0},"renderAdditions":["bayonet_attachment","dev_bayonet"]
 }
+{
+"uuid":["c2024e2a-dd76-4bc9-9ea3-b771f18f23b6"],
+"tag":"oathkeeper","flavour":"","baseUpgrades":{"melee":10.0},"renderAdditions":["bayonet_attachment","dev_bayonet"]
+}
 
 {
 "uuid":["ca5a40eb-9f48-4b40-bb94-3e0f2d18c9a7"],
