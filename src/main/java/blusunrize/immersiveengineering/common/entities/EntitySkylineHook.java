@@ -12,6 +12,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.energy.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.common.items.ItemSkyhook;
@@ -19,25 +20,26 @@ import blusunrize.immersiveengineering.common.util.IEAchievements;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.SkylineHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.network.MessageSkyhookSync;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class EntitySkylineHook extends Entity
 {
-	Connection connection;
-	ChunkCoordinates target;
-	Vec3[] subPoints;
-	int targetPoint=0;
+	public Connection connection;
+	public ChunkCoordinates target;
+	public Vec3[] subPoints;
+	public int targetPoint=0;
 	public EntitySkylineHook(World world)
 	{
 		super(world);
 		this.setSize(.125f,.125f);
-//		this.noClip=true;
+		//		this.noClip=true;
 	}
 	public EntitySkylineHook(World world, double x, double y, double z, Connection connection, ChunkCoordinates target, Vec3[] subPoints)
 	{
 		super(world);
-//		this.noClip=true;
+		//		this.noClip=true;
 		this.setSize(0.125F, 0.125F);
 		this.setLocationAndAngles(x, y, z, this.rotationYaw, this.rotationPitch);
 		this.setPosition(x, y, z);
@@ -73,42 +75,42 @@ public class EntitySkylineHook extends Entity
 	@Override
 	public void onUpdate()
 	{
+		EntityPlayer player = null;
+		if(this.riddenByEntity instanceof EntityPlayer)
+			player = ((EntityPlayer)this.riddenByEntity);
 		if(this.ticksExisted==1&&!worldObj.isRemote)
+		{
 			IELogger.debug("init tick at "+System.currentTimeMillis());
+			if(player instanceof EntityPlayerMP)
+				ImmersiveEngineering.packetHandler.sendTo(new MessageSkyhookSync(this), (EntityPlayerMP)player);
+		}
 		super.onUpdate();
 		//		if(this.ticksExisted>40)
 		//			this.setDead();
 		//		if(worldObj.isRemote)
 		//			return;
-
-		EntityPlayer player = null;
-		if(this.riddenByEntity instanceof EntityPlayer)
-			player = ((EntityPlayer)this.riddenByEntity);
-
 		if(subPoints!=null && targetPoint<subPoints.length-1)
 		{
 			double dist = subPoints[targetPoint].distanceTo(Vec3.createVectorHelper(posX,posY,posZ));
 			IELogger.debug("dist: "+dist);
-			if(dist<=.05)
+			if(dist<=0)
 			{
 				this.posX = subPoints[targetPoint].xCoord;
 				this.posY = subPoints[targetPoint].yCoord;
 				this.posZ = subPoints[targetPoint].zCoord;
 				targetPoint++;
+				if (player instanceof EntityPlayerMP)
+					ImmersiveEngineering.packetHandler.sendTo(new MessageSkyhookSync(this), (EntityPlayerMP)player);
 				IELogger.debug("next vertex: "+targetPoint);
-				//				double dx = (subPoints[targetPoint].xCoord-posX);//connection.length;
-				//				double dy = (subPoints[targetPoint].yCoord-posY);//connection.length;
-				//				double dz = (subPoints[targetPoint].zCoord-posZ);//connection.length;
-				//				Vec3 moveVec = Vec3.createVectorHelper(dx,dy,dz);
-				float speed = 2f;
-				if(player!=null && player.getCurrentEquippedItem()!=null&&player.getCurrentEquippedItem().getItem() instanceof ItemSkyhook)
-					speed = ((ItemSkyhook)player.getCurrentEquippedItem().getItem()).getSkylineSpeed(player.getCurrentEquippedItem());
-				Vec3 moveVec = SkylineHelper.getSubMovementVector(Vec3.createVectorHelper(posX, posY, posZ), subPoints[targetPoint], speed);
-				motionX = moveVec.xCoord;//*speed;
-				motionY = moveVec.yCoord;//*speed;
-				motionZ = moveVec.zCoord;//*speed;
 				return;
 			}
+			float speed = 2f;
+			if(player!=null && player.getCurrentEquippedItem()!=null&&player.getCurrentEquippedItem().getItem() instanceof ItemSkyhook)
+				speed = ((ItemSkyhook)player.getCurrentEquippedItem().getItem()).getSkylineSpeed(player.getCurrentEquippedItem());
+			Vec3 moveVec = SkylineHelper.getSubMovementVector(Vec3.createVectorHelper(posX, posY, posZ), subPoints[targetPoint], speed);
+			motionX = moveVec.xCoord;//*speed;
+			motionY = moveVec.yCoord;//*speed;
+			motionZ = moveVec.zCoord;//*speed;
 		}
 
 		if(target!=null&&targetPoint==subPoints.length-1)

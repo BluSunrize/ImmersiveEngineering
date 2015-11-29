@@ -27,8 +27,9 @@ import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.commands.CommandHandler;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import blusunrize.immersiveengineering.common.util.network.MessageMineralListSync;
-import blusunrize.immersiveengineering.common.util.network.MessageTileSync;
+import blusunrize.immersiveengineering.common.util.network.MessageSkyhookSync;
 import blusunrize.immersiveengineering.common.util.network.MessageSpeedloaderSync;
+import blusunrize.immersiveengineering.common.util.network.MessageTileSync;
 import blusunrize.immersiveengineering.common.world.IEWorldGen;
 
 import com.google.gson.Gson;
@@ -111,6 +112,7 @@ public class ImmersiveEngineering
 		packetHandler.registerMessage(MessageMineralListSync.Handler.class, MessageMineralListSync.class, messageId++, Side.CLIENT);
 		packetHandler.registerMessage(MessageTileSync.Handler.class, MessageTileSync.class, messageId++, Side.SERVER);
 		packetHandler.registerMessage(MessageSpeedloaderSync.Handler.class, MessageSpeedloaderSync.class, messageId++, Side.CLIENT);
+		packetHandler.registerMessage(MessageSkyhookSync.Handler.class, MessageSkyhookSync.class, messageId++, Side.CLIENT);
 	}
 	@Mod.EventHandler
 	public void postInit(FMLPostInitializationEvent event)
