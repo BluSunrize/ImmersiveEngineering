@@ -991,6 +991,8 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 				int mcDir = Direction.facingToDirection[side];
 				int x2 = x + Direction.offsetX[mcDir];
 				int z2 = z + Direction.offsetZ[mcDir];
+				if(world.getTileEntity(x2, y, z2) instanceof TileEntityRedstoneBreaker)
+					return 0;
 				int signal = te.getWorldObj().getIndirectPowerLevelTo(x2, y, z2, Direction.directionToFacing[mcDir]);
 				int rsStrength = signal >= 15 ? signal : Math.max(signal, world.getBlock(x2, y, z2) == Blocks.redstone_wire ? world.getBlockMetadata(x2, y, z2) : 0);
 				return rsStrength-1;
