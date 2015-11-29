@@ -5,6 +5,8 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraftforge.oredict.OreDictionary;
+import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 
 public class TileEntityWoodenCrate extends TileEntityIEBase implements IInventory
@@ -89,7 +91,7 @@ public class TileEntityWoodenCrate extends TileEntityIEBase implements IInventor
 	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack stack)
 	{
-		return true;
+		return !OreDictionary.itemMatches(new ItemStack(IEContent.blockWoodenDevice,1,4), stack, true);
 	}
 
 	@Override

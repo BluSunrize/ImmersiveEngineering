@@ -5,6 +5,8 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.oredict.OreDictionary;
+import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenCrate;
 
 public class ContainerCrate extends Container
@@ -14,7 +16,13 @@ public class ContainerCrate extends Container
 	public ContainerCrate(InventoryPlayer inventoryPlayer, TileEntityWoodenCrate tile)
 	{
 		for(int i=0; i<tile.getSizeInventory(); i++)
-			this.addSlotToContainer(new Slot(tile, i, 8+(i%9)*18, 18+(i/9)*18));
+			this.addSlotToContainer(new Slot(tile, i, 8+(i%9)*18, 18+(i/9)*18){
+				@Override
+				public boolean isItemValid(ItemStack stack)
+				{
+					return !OreDictionary.itemMatches(new ItemStack(IEContent.blockWoodenDevice,1,4), stack, true);
+				}
+			});
 		this.slotCount=tile.getSizeInventory();
 		this.tile = tile;
 
@@ -50,7 +58,20 @@ public class ContainerCrate extends Container
 			}
 			else
 			{
-				if(!this.mergeItemStack(stackInSlot, 0,slotCount, false))
+				boolean b = true;
+				for(int i=0; i<slotCount; i++)
+				{
+					Slot s = (Slot)inventorySlots.get(i);
+					if(s!=null && s.isItemValid(stackInSlot))
+						if(this.mergeItemStack(stackInSlot, i, i+1, true))
+						{
+							b = false;
+							break;
+						}
+						else
+							continue;
+				}
+				if(b)
 					return null;
 			}
 
