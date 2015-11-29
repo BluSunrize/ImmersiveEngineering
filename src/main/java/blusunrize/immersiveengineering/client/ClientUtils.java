@@ -361,10 +361,14 @@ public class ClientUtils
 		}
 	}
 
+	public static void renderStaticWavefrontModel(TileEntity tile, WavefrontObject model, Tessellator tes, Matrix4 translationMatrix, Matrix4 rotationMatrix, int offsetLighting, boolean invertFaces, String... renderedParts) {
+		renderStaticWavefrontModel(tile, model, tes, translationMatrix, rotationMatrix, offsetLighting, invertFaces, 1, 1, 1, renderedParts);
+	}
+
 	/**
 	 * A big "Thank you!" to AtomicBlom and Rorax for helping me figure this one out =P
 	 */
-	public static void renderStaticWavefrontModel(TileEntity tile, WavefrontObject model, Tessellator tes, Matrix4 translationMatrix, Matrix4 rotationMatrix, int offsetLighting, boolean invertFaces, String... renderedParts)
+	public static void renderStaticWavefrontModel(TileEntity tile, WavefrontObject model, Tessellator tes, Matrix4 translationMatrix, Matrix4 rotationMatrix, int offsetLighting, boolean invertFaces, float colR, float colG, float colB, String... renderedParts)
 	{
 		if(tile.getWorldObj()!=null)
 		{
@@ -405,7 +409,7 @@ public class ClientUtils
 
 					BlockLightingInfo faceLight = null;
 					if(offsetLighting==0 && tile.getWorldObj()!=null)
-						faceLight = calculateBlockLighting(side, tile.getWorldObj(), tile.getBlockType(), tile.xCoord,tile.yCoord,tile.zCoord, 1,1,1, AxisAlignedBB.getBoundingBox(0,0,0,1,1,1));
+						faceLight = calculateBlockLighting(side, tile.getWorldObj(), tile.getBlockType(), tile.xCoord,tile.yCoord,tile.zCoord, colR,colG,colB, AxisAlignedBB.getBoundingBox(0,0,0,1,1,1));
 					//						faceLight = calculateBlockLighting(side, tile.getWorldObj(), tile.getBlockType(), tile.xCoord,tile.yCoord,tile.zCoord, 1,1,1, tile.getBlockType().getCollisionBoundingBoxFromPool(tile.getWorldObj(), tile.xCoord, tile.yCoord, tile.zCoord).addCoord(-tile.xCoord,-tile.yCoord,-tile.zCoord));
 					else if(offsetLighting==1 && tile.getWorldObj()!=null)
 					{
@@ -424,7 +428,7 @@ public class ClientUtils
 							faceMaxY = Math.max(faceMaxY, face.vertices[i].y);
 							faceMaxZ = Math.max(faceMaxZ, face.vertices[i].z);
 						}
-						faceLight = calculateBlockLighting(side, tile.getWorldObj(), tile.getBlockType(), tile.xCoord,tile.yCoord,tile.zCoord, 1,1,1, AxisAlignedBB.getBoundingBox(faceMinX,faceMinY,faceMinZ, faceMaxX,faceMaxY,faceMaxZ));
+						faceLight = calculateBlockLighting(side, tile.getWorldObj(), tile.getBlockType(), tile.xCoord,tile.yCoord,tile.zCoord, colR,colG,colB, AxisAlignedBB.getBoundingBox(faceMinX,faceMinY,faceMinZ, faceMaxX,faceMaxY,faceMaxZ));
 					}
 
 					tes.setNormal(face.faceNormal.x, face.faceNormal.y, face.faceNormal.z);
@@ -1144,9 +1148,9 @@ public class ClientUtils
 			lightingInfo.brightnessBottomRight = lightingInfo.getAoBrightness(lightingInfo.aoBrightnessYZNN, lightingInfo.aoBrightnessXYPN, lightingInfo.aoBrightnessXYZPNN, i1);
 			lightingInfo.brightnessBottomLeft = lightingInfo.getAoBrightness(lightingInfo.aoBrightnessXYNN, lightingInfo.aoBrightnessXYZNNN, lightingInfo.aoBrightnessYZNN, i1);
 
-			lightingInfo.colorRedTopLeft = lightingInfo.colorRedBottomLeft = lightingInfo.colorRedBottomRight = lightingInfo.colorRedTopRight = 0.5F;
-			lightingInfo.colorGreenTopLeft = lightingInfo.colorGreenBottomLeft = lightingInfo.colorGreenBottomRight = lightingInfo.colorGreenTopRight = 0.5F;
-			lightingInfo.colorBlueTopLeft = lightingInfo.colorBlueBottomLeft = lightingInfo.colorBlueBottomRight = lightingInfo.colorBlueTopRight = 0.5F;
+			lightingInfo.colorRedTopLeft = lightingInfo.colorRedBottomLeft = lightingInfo.colorRedBottomRight = lightingInfo.colorRedTopRight = colR * 0.5f;
+			lightingInfo.colorGreenTopLeft = lightingInfo.colorGreenBottomLeft = lightingInfo.colorGreenBottomRight = lightingInfo.colorGreenTopRight = colG * 0.5f;
+			lightingInfo.colorBlueTopLeft = lightingInfo.colorBlueBottomLeft = lightingInfo.colorBlueBottomRight = lightingInfo.colorBlueTopRight = colB * 0.5f;
 
 			lightingInfo.colorRedTopLeft *= f3;
 			lightingInfo.colorGreenTopLeft *= f3;
@@ -1369,9 +1373,9 @@ public class ClientUtils
 			lightingInfo.brightnessBottomRight = lightingInfo.mixAoBrightness(j1, k1, l1, i2, bounds.minY * (1.0D - bounds.maxX), bounds.minY * bounds.maxX, (1.0D - bounds.minY) * bounds.maxX, (1.0D - bounds.minY) * (1.0D - bounds.maxX));
 			lightingInfo.brightnessTopRight = lightingInfo.mixAoBrightness(j1, k1, l1, i2, bounds.minY * (1.0D - bounds.minX), bounds.minY * bounds.minX, (1.0D - bounds.minY) * bounds.minX, (1.0D - bounds.minY) * (1.0D - bounds.minX));
 
-			lightingInfo.colorRedTopLeft = lightingInfo.colorRedBottomLeft = lightingInfo.colorRedBottomRight = lightingInfo.colorRedTopRight = 0.8F;
-			lightingInfo.colorGreenTopLeft = lightingInfo.colorGreenBottomLeft = lightingInfo.colorGreenBottomRight = lightingInfo.colorGreenTopRight = 0.8F;
-			lightingInfo.colorBlueTopLeft = lightingInfo.colorBlueBottomLeft = lightingInfo.colorBlueBottomRight = lightingInfo.colorBlueTopRight = 0.8F;
+			lightingInfo.colorRedTopLeft = lightingInfo.colorRedBottomLeft = lightingInfo.colorRedBottomRight = lightingInfo.colorRedTopRight = colR * 0.8f;
+			lightingInfo.colorGreenTopLeft = lightingInfo.colorGreenBottomLeft = lightingInfo.colorGreenBottomRight = lightingInfo.colorGreenTopRight = colG * 0.8f;
+			lightingInfo.colorBlueTopLeft = lightingInfo.colorBlueBottomLeft = lightingInfo.colorBlueBottomRight = lightingInfo.colorBlueTopRight = colB * 0.8f;
 
 			lightingInfo.colorRedTopLeft *= f3;
 			lightingInfo.colorGreenTopLeft *= f3;
@@ -1482,9 +1486,9 @@ public class ClientUtils
 			lightingInfo.brightnessBottomRight = lightingInfo.mixAoBrightness(j1, i2, l1, k1, bounds.minY * (1.0D - bounds.maxX), (1.0D - bounds.minY) * (1.0D - bounds.maxX), (1.0D - bounds.minY) * bounds.maxX, bounds.minY * bounds.maxX);
 			lightingInfo.brightnessTopRight = lightingInfo.mixAoBrightness(j1, i2, l1, k1, bounds.maxY * (1.0D - bounds.maxX), (1.0D - bounds.maxY) * (1.0D - bounds.maxX), (1.0D - bounds.maxY) * bounds.maxX, bounds.maxY * bounds.maxX);
 
-			lightingInfo.colorRedTopLeft = lightingInfo.colorRedBottomLeft = lightingInfo.colorRedBottomRight = lightingInfo.colorRedTopRight = 0.8F;
-			lightingInfo.colorGreenTopLeft = lightingInfo.colorGreenBottomLeft = lightingInfo.colorGreenBottomRight = lightingInfo.colorGreenTopRight = 0.8F;
-			lightingInfo.colorBlueTopLeft = lightingInfo.colorBlueBottomLeft = lightingInfo.colorBlueBottomRight = lightingInfo.colorBlueTopRight = 0.8F;
+			lightingInfo.colorRedTopLeft = lightingInfo.colorRedBottomLeft = lightingInfo.colorRedBottomRight = lightingInfo.colorRedTopRight = colR * 0.8f;
+			lightingInfo.colorGreenTopLeft = lightingInfo.colorGreenBottomLeft = lightingInfo.colorGreenBottomRight = lightingInfo.colorGreenTopRight = colG * 0.8f;
+			lightingInfo.colorBlueTopLeft = lightingInfo.colorBlueBottomLeft = lightingInfo.colorBlueBottomRight = lightingInfo.colorBlueTopRight = colB * 0.8f;
 
 			lightingInfo.colorRedTopLeft *= f3;
 			lightingInfo.colorGreenTopLeft *= f3;
@@ -1595,9 +1599,9 @@ public class ClientUtils
 			lightingInfo.brightnessBottomRight = lightingInfo.mixAoBrightness(k1, l1, i2, j1, bounds.minY * bounds.minZ, bounds.minY * (1.0D - bounds.minZ), (1.0D - bounds.minY) * (1.0D - bounds.minZ), (1.0D - bounds.minY) * bounds.minZ);
 			lightingInfo.brightnessTopRight = lightingInfo.mixAoBrightness(k1, l1, i2, j1, bounds.minY * bounds.maxZ, bounds.minY * (1.0D - bounds.maxZ), (1.0D - bounds.minY) * (1.0D - bounds.maxZ), (1.0D - bounds.minY) * bounds.maxZ);
 
-			lightingInfo.colorRedTopLeft = lightingInfo.colorRedBottomLeft = lightingInfo.colorRedBottomRight = lightingInfo.colorRedTopRight = 0.6F;
-			lightingInfo.colorGreenTopLeft = lightingInfo.colorGreenBottomLeft = lightingInfo.colorGreenBottomRight = lightingInfo.colorGreenTopRight = 0.6F;
-			lightingInfo.colorBlueTopLeft = lightingInfo.colorBlueBottomLeft = lightingInfo.colorBlueBottomRight = lightingInfo.colorBlueTopRight = 0.6F;
+			lightingInfo.colorRedTopLeft = lightingInfo.colorRedBottomLeft = lightingInfo.colorRedBottomRight = lightingInfo.colorRedTopRight = colR * 0.6f;
+			lightingInfo.colorGreenTopLeft = lightingInfo.colorGreenBottomLeft = lightingInfo.colorGreenBottomRight = lightingInfo.colorGreenTopRight = colG * 0.6f;
+			lightingInfo.colorBlueTopLeft = lightingInfo.colorBlueBottomLeft = lightingInfo.colorBlueBottomRight = lightingInfo.colorBlueTopRight = colB * 0.6f;
 
 			lightingInfo.colorRedTopLeft *= f3;
 			lightingInfo.colorGreenTopLeft *= f3;
@@ -1708,9 +1712,9 @@ public class ClientUtils
 			lightingInfo.brightnessBottomRight = lightingInfo.mixAoBrightness(j1, i2, l1, k1, (1.0D - bounds.maxY) * bounds.minZ, (1.0D - bounds.maxY) * (1.0D - bounds.minZ), bounds.maxY * (1.0D - bounds.minZ), bounds.maxY * bounds.minZ);
 			lightingInfo.brightnessTopRight = lightingInfo.mixAoBrightness(j1, i2, l1, k1, (1.0D - bounds.maxY) * bounds.maxZ, (1.0D - bounds.maxY) * (1.0D - bounds.maxZ), bounds.maxY * (1.0D - bounds.maxZ), bounds.maxY * bounds.maxZ);
 
-			lightingInfo.colorRedTopLeft = lightingInfo.colorRedBottomLeft = lightingInfo.colorRedBottomRight = lightingInfo.colorRedTopRight = 0.6F;
-			lightingInfo.colorGreenTopLeft = lightingInfo.colorGreenBottomLeft = lightingInfo.colorGreenBottomRight = lightingInfo.colorGreenTopRight = 0.6F;
-			lightingInfo.colorBlueTopLeft = lightingInfo.colorBlueBottomLeft = lightingInfo.colorBlueBottomRight = lightingInfo.colorBlueTopRight = 0.6F;
+			lightingInfo.colorRedTopLeft = lightingInfo.colorRedBottomLeft = lightingInfo.colorRedBottomRight = lightingInfo.colorRedTopRight = colR * 0.6f;
+			lightingInfo.colorGreenTopLeft = lightingInfo.colorGreenBottomLeft = lightingInfo.colorGreenBottomRight = lightingInfo.colorGreenTopRight = colG * 0.6f;
+			lightingInfo.colorBlueTopLeft = lightingInfo.colorBlueBottomLeft = lightingInfo.colorBlueBottomRight = lightingInfo.colorBlueTopRight = colB * 0.6f;
 
 			lightingInfo.colorRedTopLeft *= f3;
 			lightingInfo.colorGreenTopLeft *= f3;
