@@ -9,6 +9,7 @@ import java.util.Set;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.common.util.ForgeDirection;
 import blusunrize.immersiveengineering.api.energy.IImmersiveConnectable;
@@ -37,6 +38,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 	boolean inICNet=false;
 	public int facing=0;
 	private long lastTransfer = -1;
+	public int currentTickAccepted=0;
 	public static int[] connectorInputValues = {};
 
 	@Override
@@ -47,6 +49,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 			IC2Helper.loadIC2Tile(this);
 			this.inICNet = true;
 		}
+		currentTickAccepted=0;
 	}
 	@Override
 	public void invalidate()
@@ -90,25 +93,33 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 	@Override
 	public int outputEnergy(int amount, boolean simulate, int energyType)
 	{
+		int acceptanceLeft = getMaxOutput()-currentTickAccepted;
+		if(acceptanceLeft<=0)
+			return 0;
+		int toAccept = Math.min(acceptanceLeft, amount);
+
 		ForgeDirection fd = ForgeDirection.getOrientation(facing);
 		TileEntity capacitor = worldObj.getTileEntity(xCoord+fd.offsetX, yCoord+fd.offsetY, zCoord+fd.offsetZ);
+		int ret = 0;
 		if(capacitor instanceof IEnergyReceiver && ((IEnergyReceiver)capacitor).canConnectEnergy(fd.getOpposite()))
 		{
-			return  ((IEnergyReceiver)capacitor).receiveEnergy(fd.getOpposite(), amount, simulate);
+			ret = ((IEnergyReceiver)capacitor).receiveEnergy(fd.getOpposite(), toAccept, simulate);
 		}
 		else if(Lib.IC2 && IC2Helper.isAcceptingEnergySink(capacitor, this, fd.getOpposite()))
 		{
-			double left = IC2Helper.injectEnergy(capacitor, fd.getOpposite(), ModCompatability.convertRFtoEU(amount, getIC2Tier()), canTakeHV()?(256*256): canTakeMV()?(128*128) : (32*32), simulate);
-			return amount-ModCompatability.convertEUtoRF(left);
+			double left = IC2Helper.injectEnergy(capacitor, fd.getOpposite(), ModCompatability.convertRFtoEU(toAccept, getIC2Tier()), canTakeHV()?(256*256): canTakeMV()?(128*128) : (32*32), simulate);
+			ret = amount-ModCompatability.convertEUtoRF(left);
 		}
 		else if(Lib.GREG && GregTechHelper.gregtech_isValidEnergyOutput(capacitor))
 		{
-			long translAmount = (long)ModCompatability.convertRFtoEU(amount, getIC2Tier());
+			long translAmount = (long)ModCompatability.convertRFtoEU(toAccept, getIC2Tier());
 			long accepted = GregTechHelper.gregtech_outputGTPower(capacitor, (byte)fd.getOpposite().ordinal(), translAmount, 1L, simulate);
 			int reConv =  ModCompatability.convertEUtoRF(accepted);
-			return reConv;
+			ret = reConv;
 		}
-		return 0;
+		if(!simulate)
+			currentTickAccepted+=ret;
+		return ret;
 	}
 
 	@Override
@@ -223,11 +234,18 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 
 						int tempR = toIIC(con.end,worldObj).outputEnergy(Math.min(output,con.cableType.getTransferRate()), true, energyType);
 						int r = tempR;
-						tempR -= (int) Math.max(0, Math.floor(tempR*con.getPreciseLossRate(tempR,getMaxInput())));
+						int maxInput = getMaxInput();
+						tempR -= (int) Math.max(0, Math.floor(tempR*con.getPreciseLossRate(tempR,maxInput)));
 						toIIC(con.end, worldObj).outputEnergy(tempR, simulate, energyType);
 						HashSet<IImmersiveConnectable> passedConnectors = new HashSet<IImmersiveConnectable>();
+						float intermediaryLoss = 0;
 						for(Connection sub : con.subConnections)
 						{
+							float length = sub.length/(float)sub.cableType.getMaxLength();
+							float baseLoss = (float)sub.cableType.getLossRatio();
+							float mod = (((maxInput-tempR)/(float)maxInput)/.25f)*.1f;
+							intermediaryLoss = MathHelper.clamp_float(intermediaryLoss+length*(baseLoss+baseLoss*mod), 0,1);
+
 							IELogger.debug("Sub Con"+sub.start+" to "+sub.end);
 							int transferredPerCon = ImmersiveNetHandler.INSTANCE.getTransferedRates(worldObj.provider.dimensionId).containsKey(sub)?ImmersiveNetHandler.INSTANCE.getTransferedRates(worldObj.provider.dimensionId).get(sub):0;
 							IELogger.debug("old t "+transferredPerCon);
@@ -244,9 +262,9 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 								IImmersiveConnectable subStart = toIIC(sub.start,worldObj);
 								IImmersiveConnectable subEnd = toIIC(sub.end,worldObj);
 								if(passedConnectors.add(subStart))
-									subStart.onEnergyPassthrough(r);
+									subStart.onEnergyPassthrough((int)(r-r*intermediaryLoss));
 								if(passedConnectors.add(subEnd))
-									subEnd.onEnergyPassthrough(r);
+									subEnd.onEnergyPassthrough((int)(r-r*intermediaryLoss));
 							}
 						}
 						received += r;

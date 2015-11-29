@@ -455,6 +455,10 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 			else
 				this.setBlockBounds(f>=4?.1875f:.25f,.75f,f<=3?.1875f:.25f, f>=4?.8125f:.75f,1,f<=3?.8125f:.75f);
 		}
+		else if (te instanceof TileEntityEnergyMeter && !((TileEntityEnergyMeter)te).dummy)
+		{
+			this.setBlockBounds(.1875f,0,.1875f, .8125f,.875f,.8125f);
+		}
 		else if (te instanceof TileEntityFloodlight)
 		{
 			TileEntityFloodlight light = ((TileEntityFloodlight)te);
