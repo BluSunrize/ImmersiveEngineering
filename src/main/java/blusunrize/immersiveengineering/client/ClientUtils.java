@@ -361,10 +361,14 @@ public class ClientUtils
 		}
 	}
 
+	public static void renderStaticWavefrontModel(TileEntity tile, WavefrontObject model, Tessellator tes, Matrix4 translationMatrix, Matrix4 rotationMatrix, int offsetLighting, boolean invertFaces, String... renderedParts) {
+		renderStaticWavefrontModel(tile, model, tes, translationMatrix, rotationMatrix, offsetLighting, invertFaces, 1, 1, 1, renderedParts);
+	}
+
 	/**
 	 * A big "Thank you!" to AtomicBlom and Rorax for helping me figure this one out =P
 	 */
-	public static void renderStaticWavefrontModel(TileEntity tile, WavefrontObject model, Tessellator tes, Matrix4 translationMatrix, Matrix4 rotationMatrix, int offsetLighting, boolean invertFaces, String... renderedParts)
+	public static void renderStaticWavefrontModel(TileEntity tile, WavefrontObject model, Tessellator tes, Matrix4 translationMatrix, Matrix4 rotationMatrix, int offsetLighting, boolean invertFaces, float colR, float colG, float colB, String... renderedParts)
 	{
 		if(tile.getWorldObj()!=null)
 		{
@@ -405,7 +409,7 @@ public class ClientUtils
 
 					BlockLightingInfo faceLight = null;
 					if(offsetLighting==0 && tile.getWorldObj()!=null)
-						faceLight = calculateBlockLighting(side, tile.getWorldObj(), tile.getBlockType(), tile.xCoord,tile.yCoord,tile.zCoord, 1,1,1, AxisAlignedBB.getBoundingBox(0,0,0,1,1,1));
+						faceLight = calculateBlockLighting(side, tile.getWorldObj(), tile.getBlockType(), tile.xCoord,tile.yCoord,tile.zCoord, colR,colG,colB, AxisAlignedBB.getBoundingBox(0,0,0,1,1,1));
 					//						faceLight = calculateBlockLighting(side, tile.getWorldObj(), tile.getBlockType(), tile.xCoord,tile.yCoord,tile.zCoord, 1,1,1, tile.getBlockType().getCollisionBoundingBoxFromPool(tile.getWorldObj(), tile.xCoord, tile.yCoord, tile.zCoord).addCoord(-tile.xCoord,-tile.yCoord,-tile.zCoord));
 					else if(offsetLighting==1 && tile.getWorldObj()!=null)
 					{
@@ -424,7 +428,7 @@ public class ClientUtils
 							faceMaxY = Math.max(faceMaxY, face.vertices[i].y);
 							faceMaxZ = Math.max(faceMaxZ, face.vertices[i].z);
 						}
-						faceLight = calculateBlockLighting(side, tile.getWorldObj(), tile.getBlockType(), tile.xCoord,tile.yCoord,tile.zCoord, 1,1,1, AxisAlignedBB.getBoundingBox(faceMinX,faceMinY,faceMinZ, faceMaxX,faceMaxY,faceMaxZ));
+						faceLight = calculateBlockLighting(side, tile.getWorldObj(), tile.getBlockType(), tile.xCoord,tile.yCoord,tile.zCoord, colR,colG,colB, AxisAlignedBB.getBoundingBox(faceMinX,faceMinY,faceMinZ, faceMaxX,faceMaxY,faceMaxZ));
 					}
 
 					tes.setNormal(face.faceNormal.x, face.faceNormal.y, face.faceNormal.z);
