@@ -17,6 +17,7 @@ import net.minecraftforge.oredict.RecipeSorter;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
@@ -26,6 +27,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDevices;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDevices2;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalMultiblocks;
 import blusunrize.immersiveengineering.common.crafting.RecipeJerrycan;
+import blusunrize.immersiveengineering.common.crafting.RecipeOreCrushing;
 import blusunrize.immersiveengineering.common.crafting.RecipePotionBullets;
 import blusunrize.immersiveengineering.common.crafting.RecipeRevolver;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -51,7 +53,7 @@ public class IERecipes
 		addOredictRecipe(new ItemStack(IEContent.itemRevolver,1,1), "  I","IIS","  I", 'I',"ingotIron",'S',"ingotSteel");
 		GameRegistry.addRecipe(new RecipeRevolver());
 		RecipeSorter.register(ImmersiveEngineering.MODID+":revolverLoop", RecipeRevolver.class, RecipeSorter.Category.SHAPELESS, "after:forge:shapelessore");
-		
+
 		addOredictRecipe(new ItemStack(IEContent.itemBullet,3,0), "I I","I I"," I ", 'I',"ingotCopper");
 		addOredictRecipe(new ItemStack(IEContent.itemBullet,3,1), "PDP","PDP"," I ", 'I',"ingotCopper",'P',Items.paper,'D',"dyeRed");
 
@@ -61,9 +63,9 @@ public class IERecipes
 		{
 			BlueprintCraftingRecipe.addRecipe("bullet", new ItemStack(IEContent.itemBullet,1,2), new ItemStack(IEContent.itemBullet,1,0),Items.gunpowder,"ingotLead");
 			BlueprintCraftingRecipe.addRecipe("bullet", new ItemStack(IEContent.itemBullet,1,3), new ItemStack(IEContent.itemBullet,1,0),Items.gunpowder,"ingotSteel","ingotConstantan");
-			if(!OreDictionary.getOres("ingotTungsten").isEmpty())
+			if(ApiUtils.isExistingOreName("ingotTungsten"))
 				BlueprintCraftingRecipe.addRecipe("bullet", new ItemStack(IEContent.itemBullet,1,3), new ItemStack(IEContent.itemBullet,1,0),Items.gunpowder,"ingotTungsten");
-			if(!OreDictionary.getOres("ingotCyanite").isEmpty())
+			if(ApiUtils.isExistingOreName("ingotCyanite"))
 				BlueprintCraftingRecipe.addRecipe("bullet", new ItemStack(IEContent.itemBullet,1,3), new ItemStack(IEContent.itemBullet,1,0),Items.gunpowder,"ingotCyanite");
 			BlueprintCraftingRecipe.addRecipe("bullet", new ItemStack(IEContent.itemBullet,1,9), new ItemStack(IEContent.itemBullet,1,0),Items.gunpowder,"ingotLead","nuggetSilver","nuggetSilver","nuggetSilver");
 		}
@@ -71,13 +73,13 @@ public class IERecipes
 		{
 			BlueprintCraftingRecipe.addRecipe("bullet", new ItemStack(IEContent.itemBullet,1,2), new ItemStack(IEContent.itemBullet,1,0),Items.gunpowder,"nuggetLead","nuggetLead");
 			BlueprintCraftingRecipe.addRecipe("bullet", new ItemStack(IEContent.itemBullet,1,3), new ItemStack(IEContent.itemBullet,1,0),Items.gunpowder,"nuggetSteel","nuggetSteel","nuggetConstantan","nuggetConstantan");
-			if(!OreDictionary.getOres("nuggetTungsten").isEmpty())
+			if(ApiUtils.isExistingOreName("nuggetTungsten"))
 				BlueprintCraftingRecipe.addRecipe("bullet", new ItemStack(IEContent.itemBullet,1,3), new ItemStack(IEContent.itemBullet,1,0),Items.gunpowder,"nuggetTungsten","nuggetTungsten");
-			else if(!OreDictionary.getOres("ingotTungsten").isEmpty())
+			else if(ApiUtils.isExistingOreName("ingotTungsten"))
 				BlueprintCraftingRecipe.addRecipe("bullet", new ItemStack(IEContent.itemBullet,3,3), new ItemStack(IEContent.itemBullet,3,0),new ItemStack(Items.gunpowder,3),"ingotTungsten");
-			if(!OreDictionary.getOres("nuggetCyanite").isEmpty())
+			if(ApiUtils.isExistingOreName("nuggetCyanite"))
 				BlueprintCraftingRecipe.addRecipe("bullet", new ItemStack(IEContent.itemBullet,1,3), new ItemStack(IEContent.itemBullet,1,0),Items.gunpowder,"nuggetCyanite","nuggetCyanite");
-			else if(!OreDictionary.getOres("ingotCyanite").isEmpty())
+			else if(ApiUtils.isExistingOreName("ingotCyanite"))
 				BlueprintCraftingRecipe.addRecipe("bullet", new ItemStack(IEContent.itemBullet,3,3), new ItemStack(IEContent.itemBullet,3,0),new ItemStack(Items.gunpowder,3),"ingotCyanite");
 			BlueprintCraftingRecipe.addRecipe("bullet", new ItemStack(IEContent.itemBullet,1,9), new ItemStack(IEContent.itemBullet,1,0),Items.gunpowder,"nuggetLead","nuggetLead","nuggetSilver");
 		}
@@ -93,7 +95,7 @@ public class IERecipes
 		BlueprintCraftingRecipe.addVillagerTrade("specialBullet", new ItemStack(Items.emerald,1,7));
 		GameRegistry.addRecipe(new RecipePotionBullets());
 		RecipeSorter.register(ImmersiveEngineering.MODID+":potionBullet", RecipePotionBullets.class, RecipeSorter.Category.SHAPELESS, "after:forge:shapelessore");
-		
+
 		int blueprint = BlueprintCraftingRecipe.blueprintCategories.indexOf("bullet");
 		addOredictRecipe(new ItemStack(IEContent.itemBlueprint,1,blueprint), "JKL","DDD","PPP", 'J',Items.gunpowder,'K',"ingotCopper",'L',Items.gunpowder, 'D',"dyeBlue",'P',Items.paper);
 
@@ -110,9 +112,9 @@ public class IERecipes
 		addOredictRecipe(new ItemStack(IEContent.itemDrill,1,0), "  G"," EG","C  ", 'C',componentSteel,'E',new ItemStack(IEContent.blockMetalDecoration,1,BlockMetalDecoration.META_heavyEngineering), 'G',new ItemStack(IEContent.itemMaterial,1,9));
 		addOredictRecipe(new ItemStack(IEContent.itemDrillhead,1,0), "SS ","BBS","SS ", 'B',"blockSteel", 'S',"ingotSteel");
 		addOredictRecipe(new ItemStack(IEContent.itemDrillhead,1,1), "SS ","BBS","SS ", 'B',"blockIron", 'S',"ingotIron");
-		
+
 		addOredictRecipe(new ItemStack(IEContent.itemChemthrower,1,0), " OG"," EG","PB ", 'P',new ItemStack(IEContent.blockMetalDevice2,1,BlockMetalDevices2.META_fluidPipe), 'O',new ItemStack(IEContent.itemToolUpgrades,1,0), 'B',Items.bucket, 'E',new ItemStack(IEContent.blockMetalDecoration,1,BlockMetalDecoration.META_heavyEngineering), 'G',new ItemStack(IEContent.itemMaterial,1,9));
-		
+
 		addOredictRecipe(new ItemStack(IEContent.itemToolUpgrades,1,0), "BI ","IBI"," IC", 'B',Items.bucket, 'I',"dyeBlue", 'C',componentIron);
 		for (ItemStack container : Utils.getContainersFilledWith(new FluidStack(IEContent.fluidPlantoil,1000)))
 			addOredictRecipe(new ItemStack(IEContent.itemToolUpgrades,1,1), "BI ","IBI"," IC", 'B',container, 'I',"ingotIron", 'C',componentIron);
@@ -222,7 +224,7 @@ public class IERecipes
 		addOredictRecipe(new ItemStack(IEContent.blockMetalDevice2,1, BlockMetalDevices2.META_barrel), "SSS","S S","SSS", 'S',new ItemStack(IEContent.blockMetalDecoration,1,BlockMetalDecoration.META_sheetMetal));
 		addOredictRecipe(new ItemStack(IEContent.blockMetalDevice2,1, BlockMetalDevices2.META_redstoneBreaker), "H H","ICI","IRI", 'H',new ItemStack(IEContent.blockMetalDevice,1,BlockMetalDevices.META_connectorHV), 'I',"ingotIron", 'C',Items.repeater, 'R',"dustRedstone");
 		addOredictRecipe(new ItemStack(IEContent.blockMetalDevice2,1, BlockMetalDevices2.META_chargingStation), "IMI","GGG","WCW", 'M',new ItemStack(IEContent.blockMetalDevice,1,BlockMetalDevices.META_connectorMV), 'I',"ingotIron", 'G',"blockGlass", 'C',copperCoil, 'W',"plankTreatedWood");
-		
+
 		addOredictRecipe(new ItemStack(IEContent.blockMetalDecoration,16,BlockMetalDecoration.META_fence), "III","III", 'I',"ingotSteel");
 		addOredictRecipe(new ItemStack(IEContent.blockMetalDecoration, 6,BlockMetalDecoration.META_scaffolding), "III"," S ","S S", 'I',"ingotSteel",'S',new ItemStack(IEContent.blockMetalDecoration,1,0));
 		addOredictRecipe(new ItemStack(IEContent.blockMetalDecoration, 4,BlockMetalDecoration.META_lantern), " I ","PGP"," I ", 'G',"glowstone",'I',"ingotIron",'P',"paneGlass");
@@ -291,6 +293,7 @@ public class IERecipes
 
 	public static HashMap<String, ItemStack> oreOutputModifier = new HashMap<String, ItemStack>();
 	public static HashMap<String, Object[]> oreOutputSecondaries = new HashMap<String, Object[]>();
+	public static ArrayList<String> hammerCrushingList = new ArrayList<String>();
 	public static void initCrusherRecipes()
 	{
 		oreOutputModifier.put("Iron", new ItemStack(IEContent.itemMetal,2,8));
@@ -361,70 +364,86 @@ public class IERecipes
 	}
 	public static void postInitCrusherAndArcRecipes()
 	{
-		for(String name : OreDictionary.getOreNames())
-			if(name.startsWith("ore"))
-			{
-				String ore = name.substring("ore".length());
-				ItemStack out = oreOutputModifier.get(ore);
-				if(out==null)
-				{
-					ArrayList<ItemStack> gems = OreDictionary.getOres("gem"+ore);
-					if(!gems.isEmpty())
-						out = Utils.copyStackWithAmount(IEApi.getPreferredOreStack("gem"+ore), 2);
-					else
-					{
-						ArrayList<ItemStack> dusts = OreDictionary.getOres("dust"+ore);
-						if(!dusts.isEmpty())
-							out = Utils.copyStackWithAmount(IEApi.getPreferredOreStack("dust"+ore), 2);
-					}
-				}
-				if(out!=null)
-				{
-					Object[] secondaries = oreOutputSecondaries.get(ore);
-					Object s = secondaries!=null&&secondaries.length>1?secondaries[0]: null;
-					Float f = secondaries!=null&&secondaries.length>1&&secondaries[1] instanceof Float?(Float)secondaries[1]: 0;
-					addOreProcessingRecipe(out, ore, 6000, true, s, f);
-				}
-				out = arcOutputModifier.get(ore);
-				if(out==null)
-				{
-					ArrayList<ItemStack> ingots = OreDictionary.getOres("ingot"+ore);
-					if(!ingots.isEmpty())
-						out = Utils.copyStackWithAmount(IEApi.getPreferredOreStack("ingot"+ore),2);
-				}
-				if(out!=null && !arcBlacklist.contains(ore))
-					addArcOreSmelting(out, ore);
-			}
-			else if(name.startsWith("gem"))
-			{
-				String ore = name.substring("gem".length());
-				ArrayList<ItemStack> dusts = OreDictionary.getOres("dust"+ore);
-				if(!dusts.isEmpty())
-					addCrusherRecipe(IEApi.getPreferredOreStack("dust"+ore), "gem"+ore, 6000, null,0);
-			}
-			else if(name.startsWith("dust"))
-			{
-				String ore = name.substring("dust".length());
-				ItemStack out = arcOutputModifier.get(ore);
-				if(out==null)
-				{
-					ArrayList<ItemStack> ingots = OreDictionary.getOres("ingot"+ore);
-					if(!ingots.isEmpty())
-						out = IEApi.getPreferredOreStack("ingot"+ore);
-				}
-				else
-					out = Utils.copyStackWithAmount(out, out.stackSize/2);
-				if(out!=null && !arcBlacklist.contains(ore))
-					addArcRecipe(out, "dust"+ore, 100,512, null);
+		boolean hammerCrushing = !Config.getBoolean("disableHammerCrushing");
+		if(hammerCrushing)
+		{
+			RecipeSorter.register(ImmersiveEngineering.MODID+":hammerCrushing", RecipeOreCrushing.class, RecipeSorter.Category.SHAPELESS, "after:forge:shapelessore");
+			addHammerCrushingRecipe("Iron",new ItemStack(IEContent.itemMetal,1,8));
+			addHammerCrushingRecipe("Gold",new ItemStack(IEContent.itemMetal,9));
+			addHammerCrushingRecipe("Copper",new ItemStack(IEContent.itemMetal,10));
+			addHammerCrushingRecipe("Aluminum",new ItemStack(IEContent.itemMetal,11));
+			addHammerCrushingRecipe("Lead",new ItemStack(IEContent.itemMetal,12));
+			addHammerCrushingRecipe("Silver",new ItemStack(IEContent.itemMetal,13));
+			addHammerCrushingRecipe("Nickel",new ItemStack(IEContent.itemMetal,14));
+		}
 
-				if(OreDictionary.doesOreNameExist("ingot"+ore))
-					addCrusherRecipe(IEApi.getPreferredOreStack("dust"+ore), "ingot"+ore, 3600, null,0);
-			}
-		//			else if(name.startsWith("ingot"))
-		//			{
-		//				String ore = name.substring("ingot".length());
-		//				ArcFurnaceRecipe.recipeList.add(new ArcToolRecyclingRecipe(ore, 100, 512));
-		//			}
+		for(String name : OreDictionary.getOreNames())
+			if(ApiUtils.isExistingOreName(name))
+				if(name.startsWith("ore"))
+				{
+					String ore = name.substring("ore".length());
+					ItemStack out = oreOutputModifier.get(ore);
+					if(out==null)
+					{
+						ArrayList<ItemStack> gems = OreDictionary.getOres("gem"+ore);
+						if(!gems.isEmpty())
+							out = Utils.copyStackWithAmount(IEApi.getPreferredOreStack("gem"+ore), 2);
+						else
+						{
+							ArrayList<ItemStack> dusts = OreDictionary.getOres("dust"+ore);
+							if(!dusts.isEmpty())
+							{
+								ItemStack preferredDust = IEApi.getPreferredOreStack("dust"+ore);
+								out = Utils.copyStackWithAmount(preferredDust, 2);
+								if(hammerCrushing && preferredDust!=null)
+									addHammerCrushingRecipe(ore,preferredDust);
+							}
+						}
+					}
+					if(out!=null)
+					{
+						Object[] secondaries = oreOutputSecondaries.get(ore);
+						Object s = secondaries!=null&&secondaries.length>1?secondaries[0]: null;
+						Float f = secondaries!=null&&secondaries.length>1&&secondaries[1] instanceof Float?(Float)secondaries[1]: 0;
+						addOreProcessingRecipe(out, ore, 6000, true, s, f);
+					}
+					out = arcOutputModifier.get(ore);
+					if(out==null)
+					{
+						ArrayList<ItemStack> ingots = OreDictionary.getOres("ingot"+ore);
+						if(!ingots.isEmpty())
+							out = Utils.copyStackWithAmount(IEApi.getPreferredOreStack("ingot"+ore),2);
+					}
+					if(out!=null && !arcBlacklist.contains(ore))
+						addArcOreSmelting(out, ore);
+				}
+				else if(name.startsWith("gem"))
+				{
+					String ore = name.substring("gem".length());
+					ArrayList<ItemStack> dusts = OreDictionary.getOres("dust"+ore);
+					if(!dusts.isEmpty())
+						addCrusherRecipe(IEApi.getPreferredOreStack("dust"+ore), "gem"+ore, 6000, null,0);
+				}
+				else if(name.startsWith("dust"))
+				{
+					String ore = name.substring("dust".length());
+					ItemStack out = arcOutputModifier.get(ore);
+					if(out==null)
+					{
+						ArrayList<ItemStack> ingots = OreDictionary.getOres("ingot"+ore);
+						if(!ingots.isEmpty())
+							out = IEApi.getPreferredOreStack("ingot"+ore);
+					}
+					else
+						out = Utils.copyStackWithAmount(out, out.stackSize/2);
+					if(out!=null && !arcBlacklist.contains(ore))
+						addArcRecipe(out, "dust"+ore, 100,512, null);
+
+					if(OreDictionary.doesOreNameExist("ingot"+ore))
+						addCrusherRecipe(IEApi.getPreferredOreStack("dust"+ore), "ingot"+ore, 3600, null,0);
+				}
+
+		Config.setBoolean("crushingOreRecipe", !hammerCrushingList.isEmpty());
 	}
 
 	public static CrusherRecipe addCrusherRecipe(ItemStack output, Object input, int energy, Object... secondary)
@@ -436,50 +455,50 @@ public class IERecipes
 	}
 	public static void addOreProcessingRecipe(ItemStack output, String ore, int energy, boolean ingot, Object secondary, float secChance)
 	{
-		if(ingot && !OreDictionary.getOres("ingot"+ore).isEmpty())
+		if(ingot && ApiUtils.isExistingOreName("ingot"+ore))
 			addCrusherRecipe(Utils.copyStackWithAmount(output, output.stackSize/2), "ingot"+ore, (int)(energy*.6f));
-		if(!OreDictionary.getOres("ore"+ore).isEmpty())
+		if(ApiUtils.isExistingOreName("ore"+ore))
 			addCrusherRecipe(output, "ore"+ore, energy, secondary,secChance);
-		if(!OreDictionary.getOres("oreNether"+ore).isEmpty())
+		if(ApiUtils.isExistingOreName("oreNether"+ore))
 			addCrusherRecipe(Utils.copyStackWithAmount(output, NetherOresHelper.getCrushingResult(ore)), "oreNether"+ore, energy, secondary,secChance,Blocks.netherrack,.15f);
 
 		//YAY GregTech!
-		if(!OreDictionary.getOres("oreNetherrack"+ore).isEmpty())
+		if(ApiUtils.isExistingOreName("oreNetherrack"+ore))
 			addCrusherRecipe(output, "oreNetherrack"+ore, energy, secondary,secChance, new ItemStack(Blocks.netherrack),.15f);
-		if(!OreDictionary.getOres("oreEndstone"+ore).isEmpty())
+		if(ApiUtils.isExistingOreName("oreEndstone"+ore))
 			addCrusherRecipe(output, "oreEndstone"+ore, energy, secondary,secChance, "dustEndstone",.5f);
-		if(!OreDictionary.getOres("oreBlackgranite"+ore).isEmpty())
+		if(ApiUtils.isExistingOreName("oreBlackgranite"+ore))
 			addCrusherRecipe(output, "oreBlackgranite"+ore, energy, secondary,secChance, "dustGraniteBlack",.5f);
-		if(!OreDictionary.getOres("oreRedgranite"+ore).isEmpty())
+		if(ApiUtils.isExistingOreName("oreRedgranite"+ore))
 			addCrusherRecipe(output, "oreRedgranite"+ore, energy, secondary,secChance, "dustGraniteBlack",.5f);
 	}
 	public static void addOreDictCrusherRecipe(String ore, Object secondary, float chance)
 	{
-		if(OreDictionary.getOres("dust"+ore).isEmpty())
+		if(!ApiUtils.isExistingOreName("dust"+ore))
 			return;
 		ItemStack dust = IEApi.getPreferredOreStack("dust"+ore);
 		if(dust==null)
 			return;
-		if(!OreDictionary.getOres("ore"+ore).isEmpty())
+		if(ApiUtils.isExistingOreName("ore"+ore))
 			addCrusherRecipe(Utils.copyStackWithAmount(dust, 2), "ore"+ore, 6000, secondary,chance);
-		if(!OreDictionary.getOres("ingot"+ore).isEmpty())
+		if(ApiUtils.isExistingOreName("ingot"+ore))
 			addCrusherRecipe(Utils.copyStackWithAmount(dust, 1), "ingot"+ore, 3600);
-		if(!OreDictionary.getOres("oreNether"+ore).isEmpty())
+		if(ApiUtils.isExistingOreName("oreNether"+ore))
 			addCrusherRecipe(Utils.copyStackWithAmount(dust, NetherOresHelper.getCrushingResult(ore)), "oreNether"+ore, 6000, secondary,chance,Blocks.netherrack,.15f);
 
 		//YAY GregTech!
-		if(!OreDictionary.getOres("oreNetherrack"+ore).isEmpty())
+		if(ApiUtils.isExistingOreName("oreNetherrack"+ore))
 			addCrusherRecipe(Utils.copyStackWithAmount(dust, 2), "oreNetherrack"+ore, 6000, secondary,chance, new ItemStack(Blocks.netherrack),.15f);
-		if(!OreDictionary.getOres("oreEndstone"+ore).isEmpty())
+		if(ApiUtils.isExistingOreName("oreEndstone"+ore))
 			addCrusherRecipe(Utils.copyStackWithAmount(dust, 2), "oreEndstone"+ore, 6000, secondary,chance, "dustEndstone",.5f);
-		if(!OreDictionary.getOres("oreBlackgranite"+ore).isEmpty())
+		if(ApiUtils.isExistingOreName("oreBlackgranite"+ore))
 			addCrusherRecipe(Utils.copyStackWithAmount(dust, 2), "oreBlackgranite"+ore, 6000, secondary,chance, "dustGraniteBlack",.5f);
-		if(!OreDictionary.getOres("oreRedgranite"+ore).isEmpty())
+		if(ApiUtils.isExistingOreName("oreRedgranite"+ore))
 			addCrusherRecipe(Utils.copyStackWithAmount(dust, 2), "oreRedgranite"+ore, 6000, secondary,chance, "dustGraniteRed",.5f);
 	}
 	public static CrusherRecipe addItemToOreDictCrusherRecipe(String oreName, int outSize, Object input, int energy)
 	{
-		if(OreDictionary.getOres(oreName).isEmpty())
+		if(!ApiUtils.isExistingOreName(oreName))
 			return null;
 		ItemStack out = IEApi.getPreferredOreStack(oreName);
 		if(out==null)
@@ -520,31 +539,31 @@ public class IERecipes
 		//Recycling
 		ArcFurnaceRecipe.allowItemForRecycling(new ItemStack(IEContent.blockMetalDecoration,1,OreDictionary.WILDCARD_VALUE));
 	}
-	
+
 	public static ArcFurnaceRecipe addArcRecipe(ItemStack output, Object input, int time, int energyPerTick, ItemStack slag, Object... additives)
 	{
 		return ArcFurnaceRecipe.addRecipe(output, input, slag, time, energyPerTick, additives);
 	}
 	public static void addArcOreSmelting(ItemStack output, String ore)
 	{
-		if(!OreDictionary.getOres("ore"+ore).isEmpty())
+		if(ApiUtils.isExistingOreName("ore"+ore))
 			addArcRecipe(output, "ore"+ore, 200,512, new ItemStack(IEContent.itemMaterial,1,13)).setSpecialRecipeType("Ores");
-		if(!OreDictionary.getOres("oreNether"+ore).isEmpty())
+		if(ApiUtils.isExistingOreName("oreNether"+ore))
 			addArcRecipe(Utils.copyStackWithAmount(output, NetherOresHelper.getCrushingResult(ore)), "oreNether"+ore, 200,512, new ItemStack(IEContent.itemMaterial,1,13)).setSpecialRecipeType("Ores");
 
 		//YAY GregTech!
-		if(!OreDictionary.getOres("oreNetherrack"+ore).isEmpty())
+		if(ApiUtils.isExistingOreName("oreNetherrack"+ore))
 			addArcRecipe(output, "oreNetherrack"+ore, 200,512, new ItemStack(IEContent.itemMaterial,1,13)).setSpecialRecipeType("Ores");
-		if(!OreDictionary.getOres("oreEndstone"+ore).isEmpty())
+		if(ApiUtils.isExistingOreName("oreEndstone"+ore))
 			addArcRecipe(output, "oreEndstone"+ore, 200,512, new ItemStack(IEContent.itemMaterial,1,13)).setSpecialRecipeType("Ores");
-		if(!OreDictionary.getOres("oreBlackgranite"+ore).isEmpty())
+		if(ApiUtils.isExistingOreName("oreBlackgranite"+ore))
 			addArcRecipe(output, "oreBlackgranite"+ore, 200,512, new ItemStack(IEContent.itemMaterial,1,13)).setSpecialRecipeType("Ores");
-		if(!OreDictionary.getOres("oreRedgranite"+ore).isEmpty())
+		if(ApiUtils.isExistingOreName("oreRedgranite"+ore))
 			addArcRecipe(output, "oreRedgranite"+ore, 200,512, new ItemStack(IEContent.itemMaterial,1,13)).setSpecialRecipeType("Ores");
 	}
 	public static void addOreDictAlloyingRecipe(String outName, int outSize, String inputName, int time, int energyPerTick, Object... additives)
 	{
-		if(OreDictionary.getOres(outName).isEmpty())
+		if(!ApiUtils.isExistingOreName(outName))
 			return;
 		ItemStack out = IEApi.getPreferredOreStack(outName);
 		if(out==null)
@@ -553,9 +572,18 @@ public class IERecipes
 	}
 	public static void addOreDictAlloyingRecipe(ItemStack out, String inputName, int time, int energyPerTick, Object... additives)
 	{
-		if(!OreDictionary.getOres("ingot"+inputName).isEmpty())
+		if(ApiUtils.isExistingOreName("ingot"+inputName))
 			ArcFurnaceRecipe.addRecipe(out, "ingot"+inputName, null, time, energyPerTick, additives).setSpecialRecipeType("Alloying");
-		if(!OreDictionary.getOres("dust"+inputName).isEmpty())
+		if(ApiUtils.isExistingOreName("dust"+inputName))
 			ArcFurnaceRecipe.addRecipe(out, "dust"+inputName, null, time, energyPerTick, additives).setSpecialRecipeType("Alloying");
+	}
+
+	public static void addHammerCrushingRecipe(String oreName, ItemStack dust)
+	{
+		if(!hammerCrushingList.contains(oreName) && OreDictionary.doesOreNameExist("ingot"+oreName) && dust!=null)
+		{
+			GameRegistry.addRecipe(new RecipeOreCrushing(oreName,dust));
+			hammerCrushingList.add(oreName);
+		}
 	}
 }

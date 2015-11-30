@@ -20,6 +20,7 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.lib.manual.gui.GuiButtonManualLink;
 import blusunrize.lib.manual.gui.GuiButtonManualNavigation;
 import blusunrize.lib.manual.gui.GuiManual;
@@ -592,9 +593,10 @@ public abstract class ManualPages implements IManualPage
 				}
 				else if(stack instanceof String)
 				{
-					for(ItemStack subStack: OreDictionary.getOres((String)stack))
-						if(subStack.getDisplayName().toLowerCase().contains(searchTag))
-							return true;
+					if(ApiUtils.isExistingOreName((String)stack))
+						for(ItemStack subStack: OreDictionary.getOres((String)stack))
+							if(subStack.getDisplayName().toLowerCase().contains(searchTag))
+								return true;
 				}
 			}
 			return false;
@@ -811,9 +813,10 @@ public abstract class ManualPages implements IManualPage
 					}
 					else if(stack.stack instanceof String)
 					{
-						for(ItemStack subStack: OreDictionary.getOres((String)stack.stack))
-							if(subStack.getDisplayName().toLowerCase().contains(searchTag))
-								return true;
+						if(ApiUtils.isExistingOreName((String)stack.stack))
+							for(ItemStack subStack: OreDictionary.getOres((String)stack.stack))
+								if(subStack.getDisplayName().toLowerCase().contains(searchTag))
+									return true;
 					}
 				}
 			return false;

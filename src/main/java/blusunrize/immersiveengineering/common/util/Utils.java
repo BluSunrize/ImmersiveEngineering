@@ -46,6 +46,7 @@ import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.oredict.OreDictionary;
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.DirectionalChunkCoords;
 import blusunrize.immersiveengineering.api.energy.IImmersiveConnectable;
 import cpw.mods.fml.common.Loader;
@@ -55,6 +56,8 @@ public class Utils
 {
 	public static boolean compareToOreName(ItemStack stack, String oreName)
 	{
+		if(!ApiUtils.isExistingOreName(oreName))
+			return false;
 		ItemStack comp = copyStackWithAmount(stack, 1);
 		ArrayList<ItemStack> s = OreDictionary.getOres(oreName);
 		for (ItemStack st:s)
@@ -102,7 +105,7 @@ public class Utils
 				return dye;
 		return -1;
 	}
-	
+
 	public static FluidStack copyFluidStackWithAmount(FluidStack stack, int amount, boolean stripPressure)
 	{
 		if(stack==null)

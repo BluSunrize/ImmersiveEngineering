@@ -156,7 +156,8 @@ public class DieselHandler
 			if(recipe.fluid!=null && recipe.fluid.getFluid()==IEContent.fluidEthanol)
 			{
 				ItemStack is = (ItemStack)(recipe.input instanceof ArrayList?((ArrayList)recipe.input).get(0): recipe.input instanceof ItemStack?recipe.input: null);
-				map.put(is.getDisplayName(), recipe.fluid.amount);
+				if(is!=null)
+					map.put(is.getDisplayName(), recipe.fluid.amount);
 			}
 		return ApiUtils.sortMap(map, inverse);
 	}

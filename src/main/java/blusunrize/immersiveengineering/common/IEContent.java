@@ -1,6 +1,5 @@
 package blusunrize.immersiveengineering.common;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.block.Block;
@@ -20,7 +19,6 @@ import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
-import net.minecraftforge.oredict.RecipeSorter;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.MultiblockHandler;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
@@ -119,7 +117,6 @@ import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenBarr
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenCrate;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenPost;
 import blusunrize.immersiveengineering.common.crafting.IEFuelHandler;
-import blusunrize.immersiveengineering.common.crafting.RecipeOreCrushing;
 import blusunrize.immersiveengineering.common.entities.EntityChemthrowerShot;
 import blusunrize.immersiveengineering.common.entities.EntityRevolvershot;
 import blusunrize.immersiveengineering.common.entities.EntityRevolvershotHoming;
@@ -445,7 +442,7 @@ public class IEContent
 
 		/**CRAFTING*/
 		IERecipes.initCraftingRecipes();
-		
+
 		/**POTIONS*/
 		IEPotions.init();
 
@@ -486,7 +483,7 @@ public class IEContent
 		ChemthrowerHandler.registerFlammable("biofuel");
 		ChemthrowerHandler.registerEffect("rocket_fuel", new ChemthrowerEffect_Potion(null,0, IEPotions.flammable,60,2));
 		ChemthrowerHandler.registerFlammable("rocket_fuel");
-		
+
 
 		DieselHandler.addSqueezerRecipe(new ItemStack(itemMetal,8,17), 240, null, new ItemStack(itemMetal,1,19));
 		DieselHandler.addSqueezerRecipe(Items.wheat_seeds, 80, new FluidStack(fluidPlantoil, 80), null);
@@ -557,24 +554,10 @@ public class IEContent
 
 	public static void postInit()
 	{
-		//Crushing
-		if(!Config.getBoolean("disableHammerCrushing") || Config.getBoolean("forceHammerCrushing"))
-		{
-			addHammerCrushingRecipe("Iron",8);
-			addHammerCrushingRecipe("Gold",9);
-			addHammerCrushingRecipe("Copper",10);
-			addHammerCrushingRecipe("Aluminum",11);
-			addHammerCrushingRecipe("Lead",12);
-			addHammerCrushingRecipe("Silver",13);
-			addHammerCrushingRecipe("Nickel",14);
-			Config.setBoolean("crushingOreRecipe", !validCrushingOres.isEmpty());
-		}
-
 		//Villager Trades
 		//These are done so late to account for Blueprints added by addons
 		int villagerId = Config.getInt("villager_engineer");
 		VillagerRegistry.instance().registerVillageTradeHandler(villagerId, new IEVillagerTradeHandler());
-
 	}
 
 	public static void registerToOreDict(String type, ItemIEBase item, int... metas)
@@ -617,20 +600,9 @@ public class IEContent
 	}
 
 	public static void addConfiguredWorldgen(Block block, int meta, String config)
-	{
+	{	
 		int[] values = Config.getIntArray(config);
 		if(values!=null && values.length>=5 && values[0]>0)
 			IEWorldGen.addOreGen(block, meta, values[0],values[1],values[2], values[3],values[4]);
-	}
-
-	public static List<String> validCrushingOres = new ArrayList();
-	public static void addHammerCrushingRecipe(String oreName, int dustMeta)
-	{
-		if(OreDictionary.getOres("dust"+oreName).size()<2 || Config.getBoolean("forceHammerCrushing"))
-		{
-			GameRegistry.addRecipe(new RecipeOreCrushing(oreName,dustMeta));
-			validCrushingOres.add(oreName);
-		}
-		RecipeSorter.register(ImmersiveEngineering.MODID+":hammerCrushing", RecipeOreCrushing.class, RecipeSorter.Category.SHAPELESS, "after:forge:shapelessore");
 	}
 }

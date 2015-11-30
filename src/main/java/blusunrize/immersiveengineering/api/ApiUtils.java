@@ -24,6 +24,8 @@ public class ApiUtils
 {
 	public static boolean compareToOreName(ItemStack stack, String oreName)
 	{
+		if(!isExistingOreName(oreName))
+			return false;
 		ItemStack comp = copyStackWithAmount(stack, 1);
 		ArrayList<ItemStack> s = OreDictionary.getOres(oreName);
 		for (ItemStack st:s)
@@ -52,6 +54,14 @@ public class ApiUtils
 		ItemStack s2 = stack.copy();
 		s2.stackSize=amount;
 		return s2;
+	}
+
+	public static boolean isExistingOreName(String name)
+	{
+		if(!OreDictionary.doesOreNameExist(name))
+			return false;
+		else
+			return !OreDictionary.getOres(name).isEmpty();
 	}
 
 	public static String nameFromStack(ItemStack stack)
@@ -244,6 +254,8 @@ public class ApiUtils
 			return input;
 		else if(input instanceof String)
 		{
+			if(!ApiUtils.isExistingOreName((String)input))
+				return null;
 			ArrayList<ItemStack> l = OreDictionary.getOres((String)input);
 			if(!l.isEmpty())
 				return l;
@@ -266,6 +278,8 @@ public class ApiUtils
 			return ((ArrayList<ItemStack>)o).get(0);
 		else if(o instanceof String)
 		{
+			if(!isExistingOreName((String)o))
+				return null;
 			ArrayList<ItemStack> l = OreDictionary.getOres((String)o);
 			if(!l.isEmpty())
 				return l.get(0);

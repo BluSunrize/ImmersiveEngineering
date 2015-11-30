@@ -9,6 +9,7 @@ import net.minecraft.util.StatCollector;
 import net.minecraftforge.oredict.OreDictionary;
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.IERecipes;
 import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.Utils;
 import codechicken.nei.PositionedStack;
@@ -25,7 +26,7 @@ public class NEIHammerCrushingHandler extends TemplateRecipeHandler
 			inputs = new PositionedStack[2];
 			for(int j=0;j<inputs.length;j++)
 				inputs[j]= new PositionedStack(j==0?new ItemStack(IEContent.itemTool):OreDictionary.getOres(inputType+oreName) ,25+(j%3)*18, 6+(j/3)*18, j!=0);
-			ItemStack dust = Utils.copyStackWithAmount(IEApi.getPreferredOreStack("dust"+oreName), ("ore".equals(inputType)?2:1));
+			ItemStack dust = Utils.copyStackWithAmount(IEApi.getPreferredOreStack("dust"+oreName), 1);
 			output = new PositionedStack(dust, 119,24);
 		}
 		@Override
@@ -55,11 +56,8 @@ public class NEIHammerCrushingHandler extends TemplateRecipeHandler
 	{
 		if(outputId == getOverlayIdentifier())
 		{
-			for(String oreName : IEContent.validCrushingOres)
-			{
+			for(String oreName : IERecipes.hammerCrushingList)
 				this.arecipes.add(new CachedHammerCrushingRecipe("ore",oreName));
-				this.arecipes.add(new CachedHammerCrushingRecipe("ingot",oreName));
-			}
 		}
 		else
 		{
@@ -90,30 +88,22 @@ public class NEIHammerCrushingHandler extends TemplateRecipeHandler
 	public void loadCraftingRecipes(ItemStack result)
 	{
 		if(result!=null)
-			for(String oreName : IEContent.validCrushingOres)
+			for(String oreName : IERecipes.hammerCrushingList)
 				if(Utils.compareToOreName(result, "dust"+oreName))
-				{
 					this.arecipes.add(new CachedHammerCrushingRecipe("ore",oreName));
-					this.arecipes.add(new CachedHammerCrushingRecipe("ingot",oreName));
-				}
 	}
 	@Override
 	public void loadUsageRecipes(ItemStack ingredient)
 	{
 		if(ingredient!=null)
 			if(ingredient.getItem().getToolClasses(ingredient).contains(Lib.TOOL_HAMMER))
-				for(String oreName : IEContent.validCrushingOres)
-				{
+				for(String oreName : IERecipes.hammerCrushingList)
 					this.arecipes.add(new CachedHammerCrushingRecipe("ore",oreName));
-					this.arecipes.add(new CachedHammerCrushingRecipe("ingot",oreName));
-				}
 			else
 			{
-				for(String oreName : IEContent.validCrushingOres)
+				for(String oreName : IERecipes.hammerCrushingList)
 					if(Utils.compareToOreName(ingredient, "ore"+oreName))
 						this.arecipes.add(new CachedHammerCrushingRecipe("ore",oreName));
-					else if(Utils.compareToOreName(ingredient, "ingot"+oreName))
-						this.arecipes.add(new CachedHammerCrushingRecipe("ingot",oreName));
 			}
 
 	}

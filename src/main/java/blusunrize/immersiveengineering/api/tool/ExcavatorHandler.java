@@ -15,8 +15,8 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
-import net.minecraftforge.oredict.OreDictionary;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.DimensionChunkCoords;
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.ManualHelper;
@@ -175,9 +175,9 @@ public class ExcavatorHandler
 			for(int i=0; i<ores.length; i++)
 			{
 				String ore = ores[i];
-				if(replacementOres!=null && OreDictionary.getOres(ore).size()<=0 && replacementOres.containsKey(ore))
+				if(replacementOres!=null && !ApiUtils.isExistingOreName(ore) && replacementOres.containsKey(ore))
 					ore = replacementOres.get(ore);
-				if(ore!=null && !ore.isEmpty() && OreDictionary.getOres(ore).size()>0)
+				if(ore!=null && !ore.isEmpty() && ApiUtils.isExistingOreName(ore))
 				{
 					ItemStack preferredOre = IEApi.getPreferredOreStack(ore);
 					if(preferredOre!=null)
