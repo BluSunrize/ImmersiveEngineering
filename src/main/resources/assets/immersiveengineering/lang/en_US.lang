@@ -162,6 +162,16 @@ item.ImmersiveEngineering.metal.nuggetNickel.name=Nickel Nugget
 item.ImmersiveEngineering.metal.nuggetConstantan.name=Constantan Nugget
 item.ImmersiveEngineering.metal.nuggetElectrum.name=Electrum Nugget
 item.ImmersiveEngineering.metal.nuggetSteel.name=Steel Nugget
+item.ImmersiveEngineering.metal.plateIron.name=Iron Plate
+item.ImmersiveEngineering.metal.plateCopper.name=Copper Plate
+item.ImmersiveEngineering.metal.plateAluminum.name=Aluminium Plate
+item.ImmersiveEngineering.metal.plateLead.name=Lead Plate
+item.ImmersiveEngineering.metal.plateSilver.name=Silver Plate
+item.ImmersiveEngineering.metal.plateNickel.name=Nickel Plate
+item.ImmersiveEngineering.metal.plateConstantan.name=Constantan Plate
+item.ImmersiveEngineering.metal.plateElectrum.name=Electrum Plate
+item.ImmersiveEngineering.metal.plateSteel.name=Steel Plate
+
 
 
 item.ImmersiveEngineering.material.treatedStick.name=Treated Stick

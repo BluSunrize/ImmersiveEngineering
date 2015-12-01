@@ -17,6 +17,7 @@ public class ItemIEBase extends Item
 	public String itemName;
 	public String[] subNames;
 	public IIcon[] icons;
+	int[] hiddenMeta;
 	public ItemIEBase(String name, int stackSize, String... subNames)
 	{
 		this.setUnlocalizedName(ImmersiveEngineering.MODID+"."+name);
@@ -34,6 +35,12 @@ public class ItemIEBase extends Item
 	public String[] getSubNames()
 	{
 		return subNames;
+	}
+	
+	public ItemIEBase setHiddenMeta(int... array)
+	{
+		this.hiddenMeta = array;
+		return this;
 	}
 	@Override
 	@SideOnly(Side.CLIENT)

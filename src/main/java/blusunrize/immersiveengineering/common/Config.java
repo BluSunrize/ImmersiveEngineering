@@ -91,7 +91,7 @@ public class Config
 		setBoolean("adjustManualScale", config.get("general", "AutoscaleManual", true, "Set this to false to disable tge manual's forced change of GUI scale").getBoolean());
 		setDouble("increasedTileRenderdistance", config.get("general", "Increased Tile Renderdistance", 1.5, "Increase the distance at which certain TileEntities (specifically windmills) are still visible. This is a modifier, so set it to 1 for default render distance, to 2 for doubled distance and so on.").getDouble());
 		setBoolean("disableHammerCrushing", config.get("general", "Disable Hammer Crushing", false, "Set this to true to completely disable the ore-crushing recipes with the Engineers Hammer").getBoolean());
-		setStringArray("preferredOres", config.get("general", "Preferred Ores", new String[]{"ImmersiveEngineering","ThermalFoundation"}, "A list of preferred Mod IDs that results of IE processes should stem from, aka which mod you want the copper to come from. This affects the ores dug by the excavator, as well as those crushing recipes that don't have associated IE items. This list is in oreder of priority.").getStringList());
+		setStringArray("preferredOres", config.get("general", "Preferred Ores", new String[]{"ImmersiveEngineering","ThermalFoundation"}, "A list of preferred Mod IDs that results of IE processes should stem from, aka which mod you want the copper to come from. This affects the ores dug by the excavator, as well as those crushing recipes that don't have associated IE items. This list is in order of priority.").getStringList());
 		setBoolean("showUpdateNews", config.get("general", "Show Update News", true, "Set this to false to hide the update news in the manual").getBoolean());
 
 

@@ -38,6 +38,7 @@ import blusunrize.immersiveengineering.common.blocks.BlockStorage;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIESlab;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDecoration;
+import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDecoration2;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDevices;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDevices2;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalMultiblocks;
@@ -156,6 +157,7 @@ public class IEContent
 	public static BlockIEBase blockMetalDevice;
 	public static BlockIEBase blockMetalDevice2;
 	public static BlockIEBase blockMetalDecoration;
+	public static BlockIEBase blockMetalDecoration2;
 	public static BlockIEBase blockMetalMultiblocks;
 	public static BlockIEBase blockWoodenDevice;
 	public static BlockIEBase blockWoodenDecoration;
@@ -200,6 +202,7 @@ public class IEContent
 		blockMetalDevice = new BlockMetalDevices();
 		blockMetalDevice2 = new BlockMetalDevices2();
 		blockMetalDecoration = new BlockMetalDecoration();
+		blockMetalDecoration2 = new BlockMetalDecoration2();
 		blockMetalMultiblocks = new BlockMetalMultiblocks();
 		blockWoodenDevice = new BlockWoodenDevices().setFlammable(true);
 		blockWoodenDecoration = new BlockWoodenDecoration().setFlammable(true);
@@ -214,8 +217,9 @@ public class IEContent
 				"ingotCopper","ingotAluminum","ingotLead","ingotSilver","ingotNickel","ingotConstantan","ingotElectrum","ingotSteel",  
 				"dustIron","dustGold","dustCopper","dustAluminum","dustLead","dustSilver","dustNickel","dustConstantan","dustElectrum",
 				"dustCoke","dustQuartz","dustHOPGraphite","ingotHOPGraphite",
-				"nuggetIron","nuggetCopper","nuggetAluminum","nuggetLead","nuggetSilver","nuggetNickel","nuggetConstantan","nuggetElectrum","nuggetSteel");
-
+				"nuggetIron","nuggetCopper","nuggetAluminum","nuggetLead","nuggetSilver","nuggetNickel","nuggetConstantan","nuggetElectrum","nuggetSteel",
+				"plateIron","plateCopper","plateAluminum","plateLead","plateSilver","plateNickel","plateConstantan","plateElectrum","plateSteel").setHiddenMeta(31,34,35,36,37);
+		
 		itemMaterial = new ItemIEBase("material", 64,
 				"treatedStick","waterwheelSegment","windmillBlade","hempFiber","fabric","windmillBladeAdvanced",
 				"coalCoke",
