@@ -19,6 +19,8 @@
 - changed the HUD for the Drill a little
 - changed the redstone breaker to relay the redstone signal trough it in a straight line
 - changed wooden crates to no longer be allowed inside eachother. This was a potential for NBT overflow
+- changed ingots to no longer be crushable
+- changed ores to only crush into a single piece of dust
 - fixed bottling machine not accepting fluids correctly
 - fixed fluid dupe bug (thanks cobra)
 - fixed silo having pipes connect to everywhere
