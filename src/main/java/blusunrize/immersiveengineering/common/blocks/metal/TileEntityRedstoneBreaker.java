@@ -11,6 +11,13 @@ public class TileEntityRedstoneBreaker extends TileEntityBreakerSwitch
 {
 	Connection primaryConnection;
 	@Override
+	public void updateEntity() {
+		if (!worldObj.isRemote&&worldObj.isBlockIndirectlyGettingPowered(xCoord,yCoord,zCoord)==active) {
+			active = !active;
+			ImmersiveNetHandler.INSTANCE.resetCachedIndirectConnections();
+		}
+	}
+	@Override
 	protected boolean canTakeHV()
 	{
 		return true;
@@ -19,7 +26,11 @@ public class TileEntityRedstoneBreaker extends TileEntityBreakerSwitch
 	@Override
 	public boolean allowEnergyToPass(Connection con)
 	{
-		return !worldObj.isBlockIndirectlyGettingPowered(xCoord,yCoord,zCoord);
+		return active;
+	}
+	@Override
+	public boolean canUpdate() {
+		return true;
 	}
 
 	@Override
