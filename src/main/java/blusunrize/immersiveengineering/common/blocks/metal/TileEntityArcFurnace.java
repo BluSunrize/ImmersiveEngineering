@@ -1,5 +1,10 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -571,7 +576,56 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 		if(!formed)
 			return new int[0];
 		if((pos==86||pos==88) && side==1)//Input hatches on top
-			return new int[]{0,1,2,3,4,5,6,7,8,9,10,11, 12,13,14,15};
+		{
+			final TileEntityArcFurnace master = master();
+			ArrayList<Integer> slotsMain = new ArrayList<Integer>();
+			boolean allOccupied = true;
+			for(int i=0; i<=11; i++)
+				if(master.getStackInSlot(i)==null)
+				{
+					slotsMain.add(i);
+					allOccupied = false;
+				}
+			if(allOccupied)
+				slotsMain.addAll(Arrays.asList(0,1,2,3,4,5,6,7,8,9,10,11));
+			Collections.sort(slotsMain, new Comparator<Integer>(){
+				@Override
+				public int compare(Integer arg0, Integer arg1)
+				{
+					ItemStack stack0 = master.getStackInSlot(arg0);
+					ItemStack stack1 = master.getStackInSlot(arg1);
+					return Integer.compare((stack0!=null?stack0.stackSize:0),(stack1!=null?stack1.stackSize:0));
+				}
+			});
+
+			ArrayList<Integer> slotsAdditives = new ArrayList<Integer>();
+			allOccupied = true;
+			for(int i=12; i<=15; i++)
+				if(master.getStackInSlot(i)==null)
+				{
+					slotsAdditives.add(i);
+					allOccupied = false;
+				}
+			if(allOccupied)
+				slotsAdditives.addAll(Arrays.asList(12,13,14,15));
+			Collections.sort(slotsAdditives, new Comparator<Integer>(){
+				@Override
+				public int compare(Integer arg0, Integer arg1)
+				{
+					ItemStack stack0 = master.getStackInSlot(arg0);
+					ItemStack stack1 = master.getStackInSlot(arg1);
+					return Integer.compare((stack0!=null?stack0.stackSize:0),(stack1!=null?stack1.stackSize:0));
+				}
+			});
+			
+			int[] ret = new int[slotsMain.size()+slotsAdditives.size()];
+			for(int i=0; i<ret.length; i++)
+			{
+				int slot = i<slotsMain.size()?slotsMain.get(i): slotsAdditives.get(i-slotsMain.size());
+				ret[i] = slot;
+			}
+			return ret;
+		}
 		if(pos==2 && side==facing)//Output at the front
 			return new int[]{16,17,18,19,20,21};
 		if(pos==22 && side==ForgeDirection.OPPOSITES[facing])//Slag at the back
