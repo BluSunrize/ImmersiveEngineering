@@ -1762,10 +1762,11 @@ public class ClientUtils
 		Tessellator tes = tes();
 		boolean flag = false;
 		BlockLightingInfo info;
+		AxisAlignedBB lightBounds = bounds.getOffsetBoundingBox(-x, -y, -z);
 		// SIDE 0
 		if(block.shouldSideBeRendered(world, x, y, z, 0))
 		{
-			info = calculateBlockLighting(0, world, block, x,y,z, 1,1,1, bounds);
+			info = calculateBlockLighting(0, world, block, x,y,z, 1,1,1, lightBounds);
 			tes.setColorOpaque_F(info.colorRedTopLeft, info.colorGreenTopLeft, info.colorBlueTopLeft);
 			tes.setBrightness(info.brightnessTopLeft);
 			tes.addVertexWithUV(bounds.minX, bounds.minY, bounds.maxZ, uv[0][0], uv[0][3]);
@@ -1783,7 +1784,7 @@ public class ClientUtils
 		// SIDE 1
 		if(block.shouldSideBeRendered(world, x, y, z, 1))
 		{
-			info = calculateBlockLighting(1, world, block, x,y,z, 1,1,1, bounds);
+			info = calculateBlockLighting(1, world, block, x,y,z, 1,1,1, lightBounds);
 			tes.setColorOpaque_F(info.colorRedTopLeft, info.colorGreenTopLeft, info.colorBlueTopLeft);
 			tes.setBrightness(info.brightnessTopLeft);
 			tes.addVertexWithUV(bounds.maxX, bounds.maxY, bounds.maxZ, uv[1][1], uv[1][3]);
@@ -1801,7 +1802,7 @@ public class ClientUtils
 		// SIDE 2
 		if(block.shouldSideBeRendered(world, x, y, z, 2))
 		{
-			info = calculateBlockLighting(2, world, block, x,y,z, 1,1,1, bounds);
+			info = calculateBlockLighting(2, world, block, x,y,z, 1,1,1, lightBounds);
 			tes.setColorOpaque_F(info.colorRedTopLeft, info.colorGreenTopLeft, info.colorBlueTopLeft);
 			tes.setBrightness(info.brightnessTopLeft);
 			tes.addVertexWithUV(bounds.minX, bounds.maxY, bounds.minZ, uv[2][1], uv[2][2]);
@@ -1819,7 +1820,7 @@ public class ClientUtils
 		// SIDE 3
 		if(block.shouldSideBeRendered(world, x, y, z, 3))
 		{
-			info = calculateBlockLighting(3, world, block, x,y,z, 1,1,1, bounds);
+			info = calculateBlockLighting(3, world, block, x,y,z, 1,1,1, lightBounds);
 			tes.setColorOpaque_F(info.colorRedTopLeft, info.colorGreenTopLeft, info.colorBlueTopLeft);
 			tes.setBrightness(info.brightnessTopLeft);
 			tes.addVertexWithUV(bounds.minX, bounds.maxY, bounds.maxZ, uv[3][0], uv[3][2]);
@@ -1837,7 +1838,7 @@ public class ClientUtils
 		// SIDE 4
 		if(block.shouldSideBeRendered(world, x, y, z, 4))
 		{
-			info = calculateBlockLighting(4, world, block, x,y,z, 1,1,1, bounds);
+			info = calculateBlockLighting(4, world, block, x,y,z, 1,1,1, lightBounds);
 			tes.setColorOpaque_F(info.colorRedTopLeft, info.colorGreenTopLeft, info.colorBlueTopLeft);
 			tes.setBrightness(info.brightnessTopLeft);
 			tes.addVertexWithUV(bounds.minX, bounds.maxY, bounds.maxZ, uv[4][1], uv[4][2]);
@@ -1855,7 +1856,7 @@ public class ClientUtils
 		// SIDE 5
 		if(block.shouldSideBeRendered(world, x, y, z, 5))
 		{
-			info = calculateBlockLighting(5, world, block, x,y,z, 1,1,1, bounds);
+			info = calculateBlockLighting(5, world, block, x,y,z, 1,1,1, lightBounds);
 			tes.setColorOpaque_F(info.colorRedTopLeft, info.colorGreenTopLeft, info.colorBlueTopLeft);
 			tes.setBrightness(info.brightnessTopLeft);
 			tes.addVertexWithUV(bounds.maxX, bounds.minY, bounds.maxZ, uv[5][0], uv[5][3]);
@@ -2094,8 +2095,8 @@ public class ClientUtils
 			{
 				d3 = icon.getInterpolatedU(16 - Math.min(16,Math.max(0, vs[6].xCoord * 16)));
 				d4 = icon.getInterpolatedU(16 - Math.min(16,Math.max(0, vs[0].xCoord * 16)));
-				d5 = icon.getInterpolatedV(Math.min(16,Math.max(0, vs[6].yCoord * 16)));
-				d6 = icon.getInterpolatedV(Math.min(16,Math.max(0, vs[0].yCoord * 16)));
+				d5 = icon.getInterpolatedV(Math.min(16,Math.max(0, vs[0].yCoord * 16)));
+				d6 = icon.getInterpolatedV(Math.min(16,Math.max(0, vs[6].yCoord * 16)));
 				d7 = d4;
 				d8 = d3;
 				d9 = d5;
