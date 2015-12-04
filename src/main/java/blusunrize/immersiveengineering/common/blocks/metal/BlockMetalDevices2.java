@@ -250,6 +250,7 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 				}
 				player.addChatComponentMessage(new ChatComponentTranslation(Lib.CHAT_INFO+"energyTransfered",size,transferred));
 			}
+			return true;
 
 		}
 		else if(te instanceof TileEntityFluidPipe_old)
