@@ -987,25 +987,11 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 	public int isProvidingWeakPower(IBlockAccess world, int x, int y, int z, int side)
 	{
 		TileEntity te = world.getTileEntity(x, y, z);
-		if(te instanceof TileEntityBreakerSwitch)
+		if(te instanceof TileEntityBreakerSwitch && !(te instanceof TileEntityRedstoneBreaker))
 		{
 			TileEntityBreakerSwitch breaker = (TileEntityBreakerSwitch)te;
-			if(te instanceof TileEntityRedstoneBreaker && side>1)
-			{
-				int mcDir = Direction.facingToDirection[side];
-				int x2 = x + Direction.offsetX[mcDir];
-				int z2 = z + Direction.offsetZ[mcDir];
-				if(world.getTileEntity(x2, y, z2) instanceof TileEntityRedstoneBreaker)
-					return 0;
-				int signal = te.getWorldObj().getIndirectPowerLevelTo(x2, y, z2, Direction.directionToFacing[mcDir]);
-				int rsStrength = signal >= 15 ? signal : Math.max(signal, world.getBlock(x2, y, z2) == Blocks.redstone_wire ? world.getBlockMetadata(x2, y, z2) : 0);
-				return rsStrength-1;
-			}
-			else
-			{
-				boolean power = (breaker.active&&!breaker.inverted) || (!breaker.active&&breaker.inverted);
-				return power?15:0;
-			}
+			boolean power = (breaker.active&&!breaker.inverted) || (!breaker.active&&breaker.inverted);
+			return power?15:0;
 		}
 		return 0;
 	}
@@ -1030,7 +1016,7 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 	@Override
 	public boolean canConnectRedstone(IBlockAccess world, int x, int y, int z, int side)
 	{
-		if(world.getBlockMetadata(x, y, z)==META_breakerSwitch || world.getBlockMetadata(x, y, z)==META_redstoneBreaker)
+		if(world.getBlockMetadata(x, y, z)==META_breakerSwitch)
 			return super.canConnectRedstone(world, x, y, z, side);
 		return false;
 	}
