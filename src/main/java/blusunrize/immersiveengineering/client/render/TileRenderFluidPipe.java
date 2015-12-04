@@ -35,7 +35,10 @@ public class TileRenderFluidPipe extends TileRenderIE
 	public void renderStatic(TileEntity tile, Tessellator tes, Matrix4 translationMatrix, Matrix4 rotationMatrix)
 	{
 		if(tile.getWorldObj() == null)
-			model.render(tile, tes, translationMatrix, rotationMatrix, 1, false, "con_yMin", "con_yMax", "pipe_y");
+		{
+			model.render(tile, tes, translationMatrix, rotationMatrix, 1, false, "pipe_y");
+			model.render(tile, tes, translationMatrix, rotationMatrix, 1, false, "con_yMin", "con_yMax");
+		}
 		else
 		{
 			translationMatrix.translate(.5, .5, .5);
