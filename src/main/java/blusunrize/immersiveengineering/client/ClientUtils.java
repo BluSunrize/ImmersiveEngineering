@@ -2094,8 +2094,8 @@ public class ClientUtils
 			{
 				d3 = icon.getInterpolatedU(16 - Math.min(16,Math.max(0, vs[6].xCoord * 16)));
 				d4 = icon.getInterpolatedU(16 - Math.min(16,Math.max(0, vs[0].xCoord * 16)));
-				d5 = icon.getInterpolatedV(Math.min(16,Math.max(0, vs[0].yCoord * 16)));
-				d6 = icon.getInterpolatedV(Math.min(16,Math.max(0, vs[6].yCoord * 16)));
+				d5 = icon.getInterpolatedV(Math.min(16,Math.max(0, vs[6].yCoord * 16)));
+				d6 = icon.getInterpolatedV(Math.min(16,Math.max(0, vs[0].yCoord * 16)));
 				d7 = d4;
 				d8 = d3;
 				d9 = d5;
