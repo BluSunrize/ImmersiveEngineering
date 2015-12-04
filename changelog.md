@@ -12,12 +12,12 @@
 - added Current Transformer, a block based energy meter
 - added a 3D item render to the voltmeter, and allowed it to show energystorage on mouse-over (shoutout to Tage for the model! :D)
 - added the "Mass Fusion" Shader
+- added the "Angel's Thesis" Shader
 - fleshed out the Item Router. Now has OreDict, NBT and fuzzy filtering and matching buttons in the GUI
 - removed the ability to insert and extract graphite electrodes from the Arc Furnace
 - changed fluid pipes to be smarter about their connections (thanks cobra)
 - changed manual entries on mineral veins to be sorted alphabetically. Also changed the handling of dimension names, might fix the relevant bugs.
 - changed the HUD for the Drill a little
-- changed the redstone breaker to relay the redstone signal trough it in a straight line
 - changed wooden crates to no longer be allowed inside eachother. This was a potential for NBT overflow
 - changed ingots to no longer be crushable
 - changed ores to only crush into a single piece of dust

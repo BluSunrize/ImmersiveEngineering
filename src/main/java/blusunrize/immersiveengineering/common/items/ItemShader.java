@@ -57,6 +57,8 @@ public class ItemShader extends ItemIEBase implements IShaderItem
 		addShader("Regal", 4, new int[]{216,212,209,255},new int[]{67,28,29,255},new int[]{216,212,209,255},new int[]{216,212,209,255});
 		addShader("Harrowed", 4, new int[]{22,19,33,255},new int[]{67,28,29,255},new int[]{22,19,33,255},new int[]{22,19,33,255});
 		addShader("Taken", 5, new int[]{17,28,38,255},new int[]{17,28,38,255},new int[]{186,215,221},new int[]{17,28,38,255});
+	
+		addShader("Angel's Thesis", 2, new int[]{30,30,30,255},new int[]{117,70,151,255},new int[]{119,185,61,255},new int[]{80,80,80,255});
 	}
 
 	@Override
