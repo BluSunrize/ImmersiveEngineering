@@ -59,6 +59,7 @@ public class ExcavatorHandler
 	{
 		for(Map.Entry<MineralMix, Integer> e : mineralList.entrySet())
 			e.getKey().recalculateChances();
+		dimensionBasedTotalWeight.clear();
 		if(FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER)
 		{
 			HashMap<MineralMix,Integer> packetMap = new HashMap<MineralMix,Integer>(); 
