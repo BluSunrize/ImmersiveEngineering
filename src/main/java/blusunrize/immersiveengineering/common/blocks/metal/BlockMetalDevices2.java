@@ -10,15 +10,12 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.Direction;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
@@ -26,7 +23,6 @@ import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.oredict.OreDictionary;
@@ -253,23 +249,6 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 			return true;
 
 		}
-		else if(te instanceof TileEntityFluidPipe_old)
-		{
-			if(!world.isRemote) {
-				TileEntityFluidPipe_old fluidPipe = ((TileEntityFluidPipe_old) te);
-				if(Utils.isHammer(player.getCurrentEquippedItem()))
-				{
-					//					if (++fluidPipe.mode > 2) {
-					//						fluidPipe.mode = 0;
-					//					}
-					fluidPipe.markDirty();
-					world.markBlockForUpdate(x, y, z);
-					return true;
-				}
-				else
-					player.addChatMessage(new ChatComponentText("Server Connections: " + fluidPipe.connections.size()));
-			}
-		}
 		else if(Utils.isHammer(player.getCurrentEquippedItem()) && te instanceof TileEntityFloodlight)
 		{
 			if(!world.isRemote)
@@ -375,37 +354,34 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 		}
 		else if(te instanceof TileEntityWoodenBarrel)
 		{
-			if(!world.isRemote)
+			TileEntityWoodenBarrel barrel = (TileEntityWoodenBarrel)te;
+			if(Utils.isHammer(player.getCurrentEquippedItem()) && side<2)
 			{
-				TileEntityWoodenBarrel barrel = (TileEntityWoodenBarrel)te;
-				if(Utils.isHammer(player.getCurrentEquippedItem()) && side<2)
+				if(player.isSneaking())
+					side = ForgeDirection.OPPOSITES[side];
+				barrel.toggleSide(side);
+			}
+			else
+			{
+				if(Utils.fillFluidHandlerWithPlayerItem(world, barrel, player))
 				{
-					if(player.isSneaking())
-						side = ForgeDirection.OPPOSITES[side];
-					barrel.toggleSide(side);
+					barrel.markDirty();
+					world.markBlockForUpdate(barrel.xCoord,barrel.yCoord,barrel.zCoord);
+					return true;
 				}
-				else if(!player.isSneaking())
+				if(Utils.fillPlayerItemFromFluidHandler(world, barrel, player, barrel.tank.getFluid()))
 				{
-					FluidStack f = Utils.getFluidFromItemStack(player.getCurrentEquippedItem());
-					if(f!=null && Utils.fillFluidHandlerWithPlayerItem(world, barrel, player))
-					{
-						world.markBlockForUpdate(x, y, z);
-						return true;
-					}
-					if(Utils.fillPlayerItemFromFluidHandler(world, barrel, player, barrel.tank.getFluid()))
-					{
-						world.markBlockForUpdate(x, y, z);
-						return true;
-					}
-					if(player.getCurrentEquippedItem()!=null && player.getCurrentEquippedItem().getItem() instanceof IFluidContainerItem)
-					{
-						world.markBlockForUpdate(x, y, z);
-						return true;
-					}
-
+					barrel.markDirty();
+					world.markBlockForUpdate(barrel.xCoord,barrel.yCoord,barrel.zCoord);
+					return true;
+				}
+				if(player.getCurrentEquippedItem()!=null && player.getCurrentEquippedItem().getItem() instanceof IFluidContainerItem)
+				{
+					barrel.markDirty();
+					world.markBlockForUpdate(barrel.xCoord,barrel.yCoord,barrel.zCoord);
+					return true;
 				}
 			}
-			return true;
 		}
 		else if(te instanceof TileEntityCapacitorCreative && Utils.isHammer(player.getCurrentEquippedItem()))
 		{
