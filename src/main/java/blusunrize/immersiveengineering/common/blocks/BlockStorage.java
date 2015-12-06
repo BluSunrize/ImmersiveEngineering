@@ -12,6 +12,8 @@ public class BlockStorage extends BlockIEBase
 	public BlockStorage(String... subNames)
 	{
 		super("storage",Material.iron,2,ItemBlockIEBase.class, subNames);
+		for(int i=0; i<subNames.length; i++)
+			this.setMetaLightOpacity(i, 255);
 	}
 
 	@Override
@@ -41,12 +43,12 @@ public class BlockStorage extends BlockIEBase
 	{
 		return true;
 	}
-	
+
 	@Override
-    public boolean hasTileEntity(int meta)
-    {
-        return false;
-    }
+	public boolean hasTileEntity(int meta)
+	{
+		return false;
+	}
 	@Override
 	public TileEntity createNewTileEntity(World p_149915_1_, int p_149915_2_)
 	{
