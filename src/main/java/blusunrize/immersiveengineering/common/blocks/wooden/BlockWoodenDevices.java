@@ -254,42 +254,45 @@ public class BlockWoodenDevices extends BlockIEBase implements IPostBlock, blusu
 		}
 		if(te instanceof TileEntityWoodenBarrel)
 		{
-			if(!world.isRemote)
+			TileEntityWoodenBarrel barrel = (TileEntityWoodenBarrel)te;
+			if(!world.isRemote && Utils.isHammer(player.getCurrentEquippedItem()) && side<2)
 			{
-				TileEntityWoodenBarrel barrel = (TileEntityWoodenBarrel)te;
-				if(Utils.isHammer(player.getCurrentEquippedItem()) && side<2)
+				if(player.isSneaking())
+					side = ForgeDirection.OPPOSITES[side];
+				barrel.toggleSide(side);
+			}
+			else
+			{
+				FluidStack f = Utils.getFluidFromItemStack(player.getCurrentEquippedItem());
+				if(f!=null)
+					if(f.getFluid().isGaseous(f))
+						player.addChatComponentMessage(new ChatComponentTranslation(Lib.CHAT_INFO+"noGasAllowed"));
+					else if(f.getFluid().getTemperature(f)>=TileEntityWoodenBarrel.IGNITION_TEMPERATURE)
+						player.addChatComponentMessage(new ChatComponentTranslation(Lib.CHAT_INFO+"tooHot"));
+					else if(Utils.fillFluidHandlerWithPlayerItem(world, barrel, player))
+					{
+						world.markBlockForUpdate(x, y, z);
+						return true;
+					}
+				if(Utils.fillFluidHandlerWithPlayerItem(world, barrel, player))
 				{
-					if(player.isSneaking())
-						side = ForgeDirection.OPPOSITES[side];
-					barrel.toggleSide(side);
+					barrel.markDirty();
+					world.markBlockForUpdate(barrel.xCoord,barrel.yCoord,barrel.zCoord);
+					return true;
 				}
-				else if(!player.isSneaking())
+				if(Utils.fillPlayerItemFromFluidHandler(world, barrel, player, barrel.tank.getFluid()))
 				{
-					FluidStack f = Utils.getFluidFromItemStack(player.getCurrentEquippedItem());
-					if(f!=null)
-						if(f.getFluid().isGaseous(f))
-							player.addChatComponentMessage(new ChatComponentTranslation(Lib.CHAT_INFO+"noGasAllowed"));
-						else if(f.getFluid().getTemperature(f)>=TileEntityWoodenBarrel.IGNITION_TEMPERATURE)
-							player.addChatComponentMessage(new ChatComponentTranslation(Lib.CHAT_INFO+"tooHot"));
-						else if(Utils.fillFluidHandlerWithPlayerItem(world, barrel, player))
-						{
-							world.markBlockForUpdate(x, y, z);
-							return true;
-						}
-					if(Utils.fillPlayerItemFromFluidHandler(world, barrel, player, barrel.tank.getFluid()))
-					{
-						world.markBlockForUpdate(x, y, z);
-						return true;
-					}
-					if(player.getCurrentEquippedItem()!=null && player.getCurrentEquippedItem().getItem() instanceof IFluidContainerItem)
-					{
-						world.markBlockForUpdate(x, y, z);
-						return true;
-					}
-
+					barrel.markDirty();
+					world.markBlockForUpdate(barrel.xCoord,barrel.yCoord,barrel.zCoord);
+					return true;
+				}
+				if(player.getCurrentEquippedItem()!=null && player.getCurrentEquippedItem().getItem() instanceof IFluidContainerItem)
+				{
+					barrel.markDirty();
+					world.markBlockForUpdate(barrel.xCoord,barrel.yCoord,barrel.zCoord);
+					return true;
 				}
 			}
-			return true;
 		}
 		return false;
 	}
@@ -312,7 +315,7 @@ public class BlockWoodenDevices extends BlockIEBase implements IPostBlock, blusu
 			}
 		}
 	}
-	
+
 	@Override
 	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z, EntityPlayer player)
 	{
@@ -328,7 +331,7 @@ public class BlockWoodenDevices extends BlockIEBase implements IPostBlock, blusu
 		}
 		return super.getPickBlock(target, world, x, y, z, player);
 	}
-	
+
 	@Override
 	public void onBlockHarvested(World world, int x, int y, int z, int meta, EntityPlayer player)
 	{

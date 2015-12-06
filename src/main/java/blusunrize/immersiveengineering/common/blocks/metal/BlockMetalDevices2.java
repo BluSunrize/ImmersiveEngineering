@@ -355,7 +355,7 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 		else if(te instanceof TileEntityWoodenBarrel)
 		{
 			TileEntityWoodenBarrel barrel = (TileEntityWoodenBarrel)te;
-			if(Utils.isHammer(player.getCurrentEquippedItem()) && side<2)
+			if(!world.isRemote && Utils.isHammer(player.getCurrentEquippedItem()) && side<2)
 			{
 				if(player.isSneaking())
 					side = ForgeDirection.OPPOSITES[side];
