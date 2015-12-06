@@ -50,6 +50,7 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.DirectionalChunkCoords;
 import blusunrize.immersiveengineering.api.energy.IImmersiveConnectable;
 import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.registry.GameData;
 
 public class Utils
@@ -183,6 +184,14 @@ public class Utils
 			}catch(Exception e){}
 		}
 		return StatCollector.translateToLocal(Lib.DESC_INFO+"mininglvl."+Math.max(-1, Math.min(lvl, 6)));
+	}
+
+	public static String getModVersion(String modid)
+	{
+		for(ModContainer container : Loader.instance().getActiveModList())
+			if(container.getModId().equalsIgnoreCase(modid))
+				return container.getVersion();
+		return "";
 	}
 
 	public static boolean tilePositionMatch(TileEntity tile0, TileEntity tile1)

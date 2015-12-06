@@ -41,7 +41,8 @@ public class VillageEngineersHouse extends StructureVillagePieces.Village
 			new WeightedRandomChestContent(IEContent.itemMetal,7, 1,4, 8),
 			new WeightedRandomChestContent(IEContent.itemBlueprint,BlueprintCraftingRecipe.blueprintCategories.indexOf("bullet"), 1,1, 5),
 			new WeightedRandomChestContent(IEContent.itemBlueprint,BlueprintCraftingRecipe.blueprintCategories.indexOf("specialBullet"), 1,1, 2),
-			new WeightedRandomChestContent(IEContent.itemBlueprint,BlueprintCraftingRecipe.blueprintCategories.indexOf("electrode"), 1,1, 1)
+			new WeightedRandomChestContent(IEContent.itemBlueprint,BlueprintCraftingRecipe.blueprintCategories.indexOf("electrode"), 1,1, 1),
+			new WeightedRandomChestContent(IEContent.itemShader,0, 1,1, 3)
 	}
 	, 3,9);
 

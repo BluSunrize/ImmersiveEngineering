@@ -75,6 +75,9 @@ public class CommonProxy implements IGuiHandler
 	public void postInit()
 	{
 	}
+	public void serverStarting()
+	{
+	}
 
 	public void handleTileSound(String soundName, TileEntity tile, boolean tileActive, float volume, float pitch)
 	{
@@ -101,5 +104,4 @@ public class CommonProxy implements IGuiHandler
 	{
 		return new String[]{s};
 	}
-
 }

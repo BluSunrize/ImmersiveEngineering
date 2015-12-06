@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.common;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -11,14 +12,20 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.item.EntityMinecart;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemMinecart;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.event.AnvilUpdateEvent;
+import net.minecraftforge.event.entity.EntityEvent.EntityConstructing;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.EnderTeleportEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingJumpEvent;
@@ -33,6 +40,8 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.energy.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler.Connection;
+import blusunrize.immersiveengineering.api.shader.IShaderItem;
+import blusunrize.immersiveengineering.api.shader.ShaderCaseMinecart;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralMix;
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
@@ -41,6 +50,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISpawnInt
 import blusunrize.immersiveengineering.common.blocks.TileEntityImmersiveConnectable;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMultiblockPart;
+import blusunrize.immersiveengineering.common.entities.EntityPropertiesShaderCart;
 import blusunrize.immersiveengineering.common.items.ItemDrill;
 import blusunrize.immersiveengineering.common.util.IEAchievements;
 import blusunrize.immersiveengineering.common.util.IELogger;
@@ -48,6 +58,7 @@ import blusunrize.immersiveengineering.common.util.IEPotions;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.network.MessageMinecartShaderSync;
 import blusunrize.immersiveengineering.common.util.network.MessageMineralListSync;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.Event;
@@ -103,6 +114,59 @@ public class EventHandler
 	{
 		IESaveData.setDirty(0);
 	}
+
+	@SubscribeEvent
+	public void onEntityConstructing(EntityConstructing event)
+	{
+		if(event.entity instanceof EntityMinecart)
+		{
+			for(Class<? extends EntityMinecart> invalid : ShaderCaseMinecart.invalidMinecartClasses)
+				if(invalid.isInstance(event.entity.getClass()))
+					return;
+			event.entity.registerExtendedProperties(EntityPropertiesShaderCart.PROPERTY_NAME, new EntityPropertiesShaderCart());
+		}
+	}
+	@SubscribeEvent
+	public void onEntityJoiningWorld(EntityJoinWorldEvent event)
+	{
+		if(!event.entity.worldObj.isRemote && event.entity instanceof EntityItem)
+		{
+			ItemStack stored = ((EntityItem)event.entity).getEntityItem();
+			if(stored.getItem() instanceof ItemMinecart)
+			{
+				List<EntityMinecart> carts = (List<EntityMinecart>)event.world.getEntitiesWithinAABB(EntityMinecart.class, AxisAlignedBB.getBoundingBox(event.entity.posX-1,event.entity.posY-1,event.entity.posZ-1, event.entity.posX+1,event.entity.posY+1,event.entity.posZ+1));
+				for(EntityMinecart cart : carts)
+					if(cart.posX==event.entity.posX && cart.posZ==event.entity.posZ)
+					{
+						EntityPropertiesShaderCart properties = (EntityPropertiesShaderCart)cart.getExtendedProperties(EntityPropertiesShaderCart.PROPERTY_NAME);
+						if(properties!=null && properties.getShader()!=null)
+							cart.entityDropItem(properties.getShader(), 0.0F);
+					}
+			}
+		}
+		if(event.entity.worldObj.isRemote && event.entity instanceof EntityMinecart && event.entity.getExtendedProperties(EntityPropertiesShaderCart.PROPERTY_NAME)!=null)
+			ImmersiveEngineering.packetHandler.sendToServer(new MessageMinecartShaderSync(event.entity,null));
+	}
+	@SubscribeEvent
+	public void onEntityInteract(EntityInteractEvent event)
+	{
+		if(event.target instanceof EntityLivingBase && OreDictionary.itemMatches(new ItemStack(IEContent.itemRevolver,1,OreDictionary.WILDCARD_VALUE), event.entityPlayer.getCurrentEquippedItem(), false))
+			event.setCanceled(true);
+		if(!event.entityPlayer.worldObj.isRemote && event.target instanceof EntityMinecart && event.entityPlayer.getCurrentEquippedItem()!=null && event.entityPlayer.getCurrentEquippedItem().getItem() instanceof IShaderItem)
+		{
+			EntityPropertiesShaderCart properties = (EntityPropertiesShaderCart)event.target.getExtendedProperties(EntityPropertiesShaderCart.PROPERTY_NAME);
+			if(properties!=null)
+			{
+				if(properties.getShader()!=null)
+					event.target.entityDropItem(properties.getShader(), 0.0F);
+				properties.setShader(Utils.copyStackWithAmount(event.entityPlayer.getCurrentEquippedItem(), 1));
+				ImmersiveEngineering.packetHandler.sendTo(new MessageMinecartShaderSync(event.target,properties), (EntityPlayerMP)event.entityPlayer);
+				event.setCanceled(true);
+			}
+		}
+	}
+
+
 
 	@SubscribeEvent
 	public void onWorldTick(WorldTickEvent event)
@@ -297,13 +361,6 @@ public class EventHandler
 				}
 			}
 		}
-	}
-
-	@SubscribeEvent
-	public void onEntityInteract(EntityInteractEvent event)
-	{
-		if(event.target instanceof EntityLivingBase && OreDictionary.itemMatches(new ItemStack(IEContent.itemRevolver,1,OreDictionary.WILDCARD_VALUE), event.entityPlayer.getCurrentEquippedItem(), false))
-			event.setCanceled(true);
 	}
 
 	@SubscribeEvent

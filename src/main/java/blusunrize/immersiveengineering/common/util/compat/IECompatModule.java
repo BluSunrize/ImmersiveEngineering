@@ -47,6 +47,7 @@ public abstract class IECompatModule
 		moduleClasses.put("TConstruct", TConstructHelper.class);
 		moduleClasses.put("Mekanism", MekanismHelper.class);
 		moduleClasses.put("cuttingedge", CuttingEdgeHelper.class);
+		moduleClasses.put("Railcraft", RailcraftHelper.class);
 	}
 
 	public static void preInitModules()

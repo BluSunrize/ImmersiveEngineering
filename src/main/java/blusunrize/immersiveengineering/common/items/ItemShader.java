@@ -56,7 +56,7 @@ public class ItemShader extends ItemIEBase implements IShaderItem
 		addShader("Vanguard", 3, new int[]{55,55,55,255},new int[]{19,27,66,255},new int[]{184,108,20,255},new int[]{220,220,220,255});
 		addShader("Regal", 4, new int[]{216,212,209,255},new int[]{67,28,29,255},new int[]{216,212,209,255},new int[]{216,212,209,255});
 		addShader("Harrowed", 4, new int[]{22,19,33,255},new int[]{67,28,29,255},new int[]{22,19,33,255},new int[]{22,19,33,255});
-		addShader("Taken", 5, new int[]{17,28,38,255},new int[]{17,28,38,255},new int[]{186,215,221},new int[]{17,28,38,255});
+		addShader("Taken", 5, new int[]{17,28,38,255},new int[]{17,28,38,255},new int[]{186,215,221,255},new int[]{17,28,38,255});
 	
 		addShader("Angel's Thesis", 2, new int[]{30,30,30,255},new int[]{117,70,151,255},new int[]{119,185,61,255},new int[]{80,80,80,255});
 	}
@@ -73,23 +73,12 @@ public class ItemShader extends ItemIEBase implements IShaderItem
 		this.addShader(name, overlayType, colour0, colour1, colour2, colour3, null,-1);
 	}
 
-	public void addShader(String name, int overlayType, int[] colour0, int[] colour1, int[] colour2, int[] colour3, String revolver_additionalTexture, int revolver_glow)
+	public void addShader(String name, int overlayType, int[] colour0, int[] colour1, int[] colour2, int[] colour3, String additionalTexture, int revolver_glow)
 	{
-		ShaderCaseRevolver revolver = IEApi.registerShader_Revolver(name, overlayType, colour0, colour1, colour2, colour3, revolver_additionalTexture);
+		ShaderCaseRevolver revolver = IEApi.registerShader_Revolver(name, overlayType, colour0, colour1, colour2, colour3, additionalTexture);
 		revolver.glowLayer = revolver_glow;
-		
-		IEApi.registerShader_Chemthrower(name, overlayType, colour0, colour1, colour2, true,false, revolver_additionalTexture);
-		
-		//		NBTTagCompound tag = new NBTTagCompound();
-		//		tag.setString("shader_name", name);
-		//		tag.setInteger("shader_overlay", overlayType);
-		//		tag.setIntArray("shader_colour0", colour0);
-		//		tag.setIntArray("shader_colour1", colour1);
-		//		tag.setIntArray("shader_colour2", colour2);
-		//		tag.setIntArray("shader_colour3", colour3);
-		//		if(additionalTexture!=null && !additionalTexture.isEmpty())
-		//			tag.setString("shader_extraTexture", additionalTexture);
-		//		IEApi.shaderList.add(tag);
+		IEApi.registerShader_Chemthrower(name, overlayType, colour0, colour1, colour2, true,false, additionalTexture);
+		IEApi.registerShader_Minecart(name, overlayType, colour1, colour2, additionalTexture);
 	}
 
 

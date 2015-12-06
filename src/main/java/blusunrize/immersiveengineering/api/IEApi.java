@@ -9,6 +9,7 @@ import net.minecraft.potion.Potion;
 import net.minecraftforge.oredict.OreDictionary;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderCaseChemthrower;
+import blusunrize.immersiveengineering.api.shader.ShaderCaseMinecart;
 import blusunrize.immersiveengineering.api.shader.ShaderCaseRevolver;
 
 import com.google.common.collect.ArrayListMultimap;
@@ -114,6 +115,14 @@ public class IEApi
 		if(!shaderList.contains(name))
 			shaderList.add(name);
 		ShaderCaseChemthrower shader = new ShaderCaseChemthrower(overlayType, colourGrip, colourPrimary, colourSecondary, cageOnBase, tanksUncoloured, additionalTexture);
+		shaderCaseRegistry.put(name, shader);
+		return shader;
+	}
+	public static ShaderCaseMinecart registerShader_Minecart(String name, int overlayType, int[] colourPrimary, int[] colourSecondary, String additionalTexture)
+	{
+		if(!shaderList.contains(name))
+			shaderList.add(name);
+		ShaderCaseMinecart shader = new ShaderCaseMinecart(overlayType, colourPrimary, colourSecondary, additionalTexture);
 		shaderCaseRegistry.put(name, shader);
 		return shader;
 	}

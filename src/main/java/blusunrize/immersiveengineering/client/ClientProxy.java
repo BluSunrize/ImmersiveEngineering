@@ -7,10 +7,13 @@ import java.util.Map;
 
 import net.minecraft.block.BlockCauldron;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.ModelMinecart;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.client.particle.EntityReddustFX;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.entity.RenderMinecart;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -48,6 +51,7 @@ import blusunrize.immersiveengineering.client.gui.GuiRefinery;
 import blusunrize.immersiveengineering.client.gui.GuiRevolver;
 import blusunrize.immersiveengineering.client.gui.GuiSorter;
 import blusunrize.immersiveengineering.client.gui.GuiSqueezer;
+import blusunrize.immersiveengineering.client.models.ModelShaderMinecart;
 import blusunrize.immersiveengineering.client.render.BlockRenderMetalDecoration;
 import blusunrize.immersiveengineering.client.render.BlockRenderMetalDevices;
 import blusunrize.immersiveengineering.client.render.BlockRenderMetalDevices2;
@@ -174,6 +178,7 @@ import blusunrize.lib.manual.ManualPages.PositionedItemStack;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import cpw.mods.fml.common.registry.GameData;
 import cpw.mods.fml.common.registry.VillagerRegistry;
 
@@ -495,6 +500,20 @@ public class ClientProxy extends CommonProxy
 				new ManualPageMultiblock(ManualHelper.getManual(), "", MultiblockBucketWheel.instance),
 				new ManualPageMultiblock(ManualHelper.getManual(), "", MultiblockExcavatorDemo.instance),
 				new ManualPages.Text(ManualHelper.getManual(), "excavator1"));
+	}
+	@Override
+	public void serverStarting()
+	{
+		if(!ModelShaderMinecart.rendersReplaced)
+		{
+			for(Object render : RenderManager.instance.entityRenderMap.values())
+				if(RenderMinecart.class.isAssignableFrom(render.getClass()))
+				{
+					ModelMinecart wrapped = ObfuscationReflectionHelper.getPrivateValue(RenderMinecart.class,(RenderMinecart)render, "field_77013_a","modelMinecart");
+					ObfuscationReflectionHelper.setPrivateValue(RenderMinecart.class,(RenderMinecart)render, (ModelMinecart)new ModelShaderMinecart(wrapped), "field_77013_a","modelMinecart");
+				}
+			ModelShaderMinecart.rendersReplaced = true;
+		}
 	}
 
 	@Override

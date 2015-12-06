@@ -26,6 +26,7 @@ import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.commands.CommandHandler;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
+import blusunrize.immersiveengineering.common.util.network.MessageMinecartShaderSync;
 import blusunrize.immersiveengineering.common.util.network.MessageMineralListSync;
 import blusunrize.immersiveengineering.common.util.network.MessageSkyhookSync;
 import blusunrize.immersiveengineering.common.util.network.MessageSpeedloaderSync;
@@ -41,6 +42,7 @@ import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLLoadCompleteEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartedEvent;
@@ -113,6 +115,8 @@ public class ImmersiveEngineering
 		packetHandler.registerMessage(MessageTileSync.Handler.class, MessageTileSync.class, messageId++, Side.SERVER);
 		packetHandler.registerMessage(MessageSpeedloaderSync.Handler.class, MessageSpeedloaderSync.class, messageId++, Side.CLIENT);
 		packetHandler.registerMessage(MessageSkyhookSync.Handler.class, MessageSkyhookSync.class, messageId++, Side.CLIENT);
+		packetHandler.registerMessage(MessageMinecartShaderSync.HandlerServer.class, MessageMinecartShaderSync.class, messageId++, Side.SERVER);
+		packetHandler.registerMessage(MessageMinecartShaderSync.HandlerClient.class, MessageMinecartShaderSync.class, messageId++, Side.CLIENT);
 	}
 	@Mod.EventHandler
 	public void postInit(FMLPostInitializationEvent event)
@@ -131,6 +135,7 @@ public class ImmersiveEngineering
 	@Mod.EventHandler
 	public void serverStarting(FMLServerStartingEvent event)
 	{
+		proxy.serverStarting();
 		event.registerServerCommand(new CommandHandler());	
 	}
 	@Mod.EventHandler

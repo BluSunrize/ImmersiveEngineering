@@ -146,8 +146,6 @@ public class TileEntityConveyorSorter extends TileEntityIEBase implements ISided
 						{
 							unmapped = false;
 							
-							System.out.println("filter "+Integer.toBinaryString(this.sideFilter[side])+" ore:"+doOredict(side)+", nbt:"+doNBT(side)+", fuzzy:"+doFuzzy(side));
-							
 							boolean b = OreDictionary.itemMatches(filterStack, stack, true);
 							
 							if(!b && doFuzzy(side))
