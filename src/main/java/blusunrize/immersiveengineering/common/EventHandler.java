@@ -129,21 +129,6 @@ public class EventHandler
 	@SubscribeEvent
 	public void onEntityJoiningWorld(EntityJoinWorldEvent event)
 	{
-		if(!event.entity.worldObj.isRemote && event.entity instanceof EntityItem)
-		{
-			ItemStack stored = ((EntityItem)event.entity).getEntityItem();
-			if(stored.getItem() instanceof ItemMinecart)
-			{
-				List<EntityMinecart> carts = (List<EntityMinecart>)event.world.getEntitiesWithinAABB(EntityMinecart.class, AxisAlignedBB.getBoundingBox(event.entity.posX-1,event.entity.posY-1,event.entity.posZ-1, event.entity.posX+1,event.entity.posY+1,event.entity.posZ+1));
-				for(EntityMinecart cart : carts)
-					if(cart.posX==event.entity.posX && cart.posZ==event.entity.posZ)
-					{
-						EntityPropertiesShaderCart properties = (EntityPropertiesShaderCart)cart.getExtendedProperties(EntityPropertiesShaderCart.PROPERTY_NAME);
-						if(properties!=null && properties.getShader()!=null)
-							cart.entityDropItem(properties.getShader(), 0.0F);
-					}
-			}
-		}
 		if(event.entity.worldObj.isRemote && event.entity instanceof EntityMinecart && event.entity.getExtendedProperties(EntityPropertiesShaderCart.PROPERTY_NAME)!=null)
 			ImmersiveEngineering.packetHandler.sendToServer(new MessageMinecartShaderSync(event.entity,null));
 	}
@@ -157,8 +142,6 @@ public class EventHandler
 			EntityPropertiesShaderCart properties = (EntityPropertiesShaderCart)event.target.getExtendedProperties(EntityPropertiesShaderCart.PROPERTY_NAME);
 			if(properties!=null)
 			{
-				if(properties.getShader()!=null)
-					event.target.entityDropItem(properties.getShader(), 0.0F);
 				properties.setShader(Utils.copyStackWithAmount(event.entityPlayer.getCurrentEquippedItem(), 1));
 				ImmersiveEngineering.packetHandler.sendTo(new MessageMinecartShaderSync(event.target,properties), (EntityPlayerMP)event.entityPlayer);
 				event.setCanceled(true);
