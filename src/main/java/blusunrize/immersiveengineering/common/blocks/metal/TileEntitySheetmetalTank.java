@@ -53,6 +53,11 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart implement
 		}
 		return null;
 	}
+	@Override
+	public boolean useNixieFont(EntityPlayer player, MovingObjectPosition mop)
+	{
+		return false;
+	}
 
 	@Override
 	public boolean canUpdate()

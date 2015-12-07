@@ -2,23 +2,6 @@ package blusunrize.immersiveengineering.common;
 
 import java.util.List;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionEffect;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.gen.structure.MapGenStructureIO;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidContainerRegistry;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.oredict.OreDictionary;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.MultiblockHandler;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
@@ -66,7 +49,6 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityExcavator;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFermenter;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFloodlight;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFluidPipe;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFluidPipe_old;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFluidPump;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFurnaceHeater;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityLantern;
@@ -147,6 +129,23 @@ import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.VillagerRegistry;
+import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionEffect;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.gen.structure.MapGenStructureIO;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.oredict.OreDictionary;
 
 public class IEContent
 {
@@ -408,7 +407,6 @@ public class IEContent
 		registerTile(TileEntityEnergyMeter.class);
 		registerTile(TileEntityElectricLantern.class);
 		registerTile(TileEntityFloodlight.class);
-		registerTile(TileEntityFluidPipe_old.class);
 		registerTile(TileEntityFluidPipe.class);
 		registerTile(TileEntityFluidPump.class);
 		registerTile(TileEntityMetalBarrel.class);

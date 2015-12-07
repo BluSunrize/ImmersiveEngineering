@@ -398,13 +398,6 @@ public class BlockMetalDevices extends BlockIEBase implements blusunrize.aquatwe
 				player.openGui(ImmersiveEngineering.instance, Lib.GUIID_Sorter, world, x, y, z);
 				return true;
 			}
-			else if(Utils.isHammer(player.getCurrentEquippedItem()))
-			{
-				((TileEntityConveyorSorter)te).toggleSide(side);
-				te.markDirty();
-				world.func_147451_t(x, y, z);
-				return true;
-			}
 		}
 		if(te instanceof TileEntitySampleDrill)
 		{

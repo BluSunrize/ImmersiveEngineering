@@ -5,7 +5,44 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.lwjgl.opengl.GL11;
+
+import blusunrize.immersiveengineering.api.AdvancedAABB;
+import blusunrize.immersiveengineering.api.IEApi;
+import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
+import blusunrize.immersiveengineering.api.energy.IImmersiveConnectable;
+import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler;
+import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler.Connection;
+import blusunrize.immersiveengineering.api.energy.WireType;
+import blusunrize.immersiveengineering.api.shader.ShaderCase;
+import blusunrize.immersiveengineering.api.tool.IDrillHead;
+import blusunrize.immersiveengineering.client.fx.ParticleRenderer;
+import blusunrize.immersiveengineering.client.gui.GuiBlastFurnace;
+import blusunrize.immersiveengineering.client.models.ModelIEObj;
+import blusunrize.immersiveengineering.client.render.TileRenderArcFurnace;
+import blusunrize.immersiveengineering.common.Config;
+import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
+import blusunrize.immersiveengineering.common.gui.ContainerRevolver;
+import blusunrize.immersiveengineering.common.items.ItemChemthrower;
+import blusunrize.immersiveengineering.common.items.ItemDrill;
+import blusunrize.immersiveengineering.common.items.ItemRevolver;
+import blusunrize.immersiveengineering.common.items.ItemSkyhook;
+import blusunrize.immersiveengineering.common.util.IELogger;
+import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.util.Lib;
+import blusunrize.immersiveengineering.common.util.SkylineHelper;
+import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.compat.GregTechHelper;
+import cofh.api.energy.IEnergyReceiver;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.ObfuscationReflectionHelper;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
+import cpw.mods.fml.relauncher.Side;
 import net.minecraft.block.Block;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelVillager;
@@ -43,43 +80,6 @@ import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.oredict.OreDictionary;
-
-import org.lwjgl.opengl.GL11;
-
-import blusunrize.immersiveengineering.api.AdvancedAABB;
-import blusunrize.immersiveengineering.api.IEApi;
-import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
-import blusunrize.immersiveengineering.api.energy.IImmersiveConnectable;
-import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler;
-import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler.Connection;
-import blusunrize.immersiveengineering.api.energy.WireType;
-import blusunrize.immersiveengineering.api.shader.ShaderCase;
-import blusunrize.immersiveengineering.api.tool.IDrillHead;
-import blusunrize.immersiveengineering.client.fx.ParticleRenderer;
-import blusunrize.immersiveengineering.client.gui.GuiBlastFurnace;
-import blusunrize.immersiveengineering.client.models.ModelIEObj;
-import blusunrize.immersiveengineering.client.render.TileRenderArcFurnace;
-import blusunrize.immersiveengineering.common.Config;
-import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
-import blusunrize.immersiveengineering.common.gui.ContainerRevolver;
-import blusunrize.immersiveengineering.common.items.ItemChemthrower;
-import blusunrize.immersiveengineering.common.items.ItemDrill;
-import blusunrize.immersiveengineering.common.items.ItemRevolver;
-import blusunrize.immersiveengineering.common.items.ItemSkyhook;
-import blusunrize.immersiveengineering.common.util.IELogger;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import blusunrize.immersiveengineering.common.util.Lib;
-import blusunrize.immersiveengineering.common.util.SkylineHelper;
-import blusunrize.immersiveengineering.common.util.Utils;
-import blusunrize.immersiveengineering.common.util.compat.GregTechHelper;
-import cofh.api.energy.IEnergyReceiver;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.ObfuscationReflectionHelper;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.TickEvent;
-import cpw.mods.fml.relauncher.Side;
 
 public class ClientEventHandler
 {
@@ -448,58 +448,66 @@ public class ClientEventHandler
 					GL11.glPopMatrix();
 				}
 
-				boolean hammer = Utils.isHammer(equipped);
 				MovingObjectPosition mop = ClientUtils.mc().objectMouseOver;
 				if(mop!=null)
 				{
 					TileEntity tileEntity = player.worldObj.getTileEntity(mop.blockX, mop.blockY, mop.blockZ);
-					if(tileEntity instanceof IBlockOverlayText)
-					{
-						IBlockOverlayText overlayBlock = (IBlockOverlayText) tileEntity;
-						String[] text = overlayBlock.getOverlayText(ClientUtils.mc().thePlayer, mop, hammer);
-						if(text!=null && text.length>0)
-						{
-							int i = 0;
-							for(String s : text)
-								if(s!=null)
-									ClientUtils.font().drawString(s, event.resolution.getScaledWidth()/2+8, event.resolution.getScaledHeight()/2+8+(i++)*ClientUtils.font().FONT_HEIGHT, 0xcccccc, true);
-						}
-					}
-
 					if(OreDictionary.itemMatches(new ItemStack(IEContent.itemTool,1,2), equipped, true))
 					{
+						int col = Config.getBoolean("nixietubeFont")?Lib.colour_nixieTubeText:0xffffff;
+						String[] text = null;
 						if(tileEntity instanceof IEnergyReceiver)
 						{
-						ForgeDirection fd = ForgeDirection.getOrientation(mop.sideHit);
-						int maxStorage = ((IEnergyReceiver)tileEntity).getMaxEnergyStored(fd);
-						int storage = ((IEnergyReceiver)tileEntity).getEnergyStored(fd);
-						if(maxStorage>0)
-						{
-							String[] text = StatCollector.translateToLocalFormatted(Lib.DESC_INFO+"energyStored","<br>"+Utils.toScientificNotation(storage,"0##",100000)+" / "+Utils.toScientificNotation(maxStorage,"0##",100000)).split("<br>");
-							int i = 0;
-							for(String s : text)
-								if(s!=null)
-								{
-									int w = ClientUtils.font().getStringWidth(s);
-									ClientUtils.font().drawString(s, event.resolution.getScaledWidth()/2-w/2, event.resolution.getScaledHeight()/2+16+(i++)*(ClientUtils.font().FONT_HEIGHT+2), 0xcccccc, true);
-								}
-						}
+							ForgeDirection fd = ForgeDirection.getOrientation(mop.sideHit);
+							int maxStorage = ((IEnergyReceiver)tileEntity).getMaxEnergyStored(fd);
+							int storage = ((IEnergyReceiver)tileEntity).getEnergyStored(fd);
+							if(maxStorage>0)
+								text = StatCollector.translateToLocalFormatted(Lib.DESC_INFO+"energyStored","<br>"+Utils.toScientificNotation(storage,"0##",100000)+" / "+Utils.toScientificNotation(maxStorage,"0##",100000)).split("<br>");
 						}
 						else if(Lib.GREG && GregTechHelper.gregtech_isValidEnergyOutput(tileEntity))
 						{
 							String gregStored = GregTechHelper.gregtech_getEnergyStored(tileEntity);
 							if(gregStored!=null)
-							{
-								String[] text = StatCollector.translateToLocalFormatted(Lib.DESC_INFO+"energyStored","<br>"+gregStored).split("<br>");
-								int i = 0;
-								for(String s : text)
-									if(s!=null)
-									{
-										int w = ClientUtils.font().getStringWidth(s);
-										ClientUtils.font().drawString(s, event.resolution.getScaledWidth()/2-w/2, event.resolution.getScaledHeight()/2+16+(i++)*(ClientUtils.font().FONT_HEIGHT+2), 0xcccccc, true);
-									}
-							}
+								text = StatCollector.translateToLocalFormatted(Lib.DESC_INFO+"energyStored","<br>"+gregStored).split("<br>");
 						}
+						else if(mop.entityHit instanceof IEnergyReceiver)
+						{
+							int maxStorage = ((IEnergyReceiver)mop.entityHit).getMaxEnergyStored(ForgeDirection.UNKNOWN);
+							int storage = ((IEnergyReceiver)mop.entityHit).getEnergyStored(ForgeDirection.UNKNOWN);
+							if(maxStorage>0)
+								text = StatCollector.translateToLocalFormatted(Lib.DESC_INFO+"energyStored","<br>"+Utils.toScientificNotation(storage,"0##",100000)+" / "+Utils.toScientificNotation(maxStorage,"0##",100000)).split("<br>");
+						}
+						if(text!=null)
+						{
+							int i = 0;
+							for(String s : text)
+								if(s!=null)
+								{
+									int w = ClientProxy.nixieFont.getStringWidth(s);
+									ClientProxy.nixieFont.drawString(s, event.resolution.getScaledWidth()/2-w/2, event.resolution.getScaledHeight()/2-4-text.length*(ClientProxy.nixieFont.FONT_HEIGHT+2)+(i++)*(ClientProxy.nixieFont.FONT_HEIGHT+2), col, true);
+								}
+						}
+					}
+				}
+			}
+			if(ClientUtils.mc().objectMouseOver!=null)
+			{
+				boolean hammer = player.getCurrentEquippedItem()!=null?Utils.isHammer(player.getCurrentEquippedItem()): false;
+				MovingObjectPosition mop = ClientUtils.mc().objectMouseOver;
+				TileEntity tileEntity = player.worldObj.getTileEntity(mop.blockX, mop.blockY, mop.blockZ);
+				if(tileEntity instanceof IBlockOverlayText)
+				{
+					IBlockOverlayText overlayBlock = (IBlockOverlayText) tileEntity;
+					String[] text = overlayBlock.getOverlayText(ClientUtils.mc().thePlayer, mop, hammer);
+					boolean useNixie = overlayBlock.useNixieFont(ClientUtils.mc().thePlayer, mop);
+					if(text!=null && text.length>0)
+					{
+						FontRenderer font = useNixie?ClientProxy.nixieFont:ClientUtils.font();
+						int col = (useNixie&&Config.getBoolean("nixietubeFont"))?Lib.colour_nixieTubeText:0xffffff;
+						int i = 0;
+						for(String s : text)
+							if(s!=null)
+								font.drawString(s, event.resolution.getScaledWidth()/2+8, event.resolution.getScaledHeight()/2+8+(i++)*font.FONT_HEIGHT, col, true);
 					}
 				}
 			}

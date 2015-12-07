@@ -88,6 +88,7 @@ public class Config
 		IEApi.revolverTextureSheetID = getInt("revolverSheetID");
 		setBoolean("increasedRenderboxes", config.get("general", "Increased Renderboxes", true, "By default all devices that accept cables have increased renderbounds to show cables even if the block itself is not in view. Disabling this reduces them to their minimum sizes, which might improve FPS on low-power PCs").getBoolean());
 		setBoolean("colourblindSupport", config.get("general", "ColourblindSupport", false, "Support for colourblind people, gives a text-based output on capacitor sides").getBoolean());
+		setBoolean("nixietubeFont", config.get("general", "NixietubeFont", true, "Set this to false to disable the super awesome looking nixie tube front for the voltmeter and other things").getBoolean());
 		setBoolean("adjustManualScale", config.get("general", "AutoscaleManual", true, "Set this to false to disable tge manual's forced change of GUI scale").getBoolean());
 		setDouble("increasedTileRenderdistance", config.get("general", "Increased Tile Renderdistance", 1.5, "Increase the distance at which certain TileEntities (specifically windmills) are still visible. This is a modifier, so set it to 1 for default render distance, to 2 for doubled distance and so on.").getDouble());
 		setBoolean("disableHammerCrushing", config.get("general", "Disable Hammer Crushing", false, "Set this to true to completely disable the ore-crushing recipes with the Engineers Hammer").getBoolean());

@@ -206,4 +206,9 @@ public class TileEntityCapacitorLV extends TileEntityIEBase implements IEnergyHa
 		}
 		return null;
 	}
+	@Override
+	public boolean useNixieFont(EntityPlayer player, MovingObjectPosition mop)
+	{
+		return false;
+	}
 }

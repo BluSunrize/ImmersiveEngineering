@@ -5,30 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.minecraft.block.BlockCauldron;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.ModelMinecart;
-import net.minecraft.client.particle.EntityFX;
-import net.minecraft.client.particle.EntityReddustFX;
-import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.renderer.entity.RenderMinecart;
-import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
-import net.minecraftforge.client.MinecraftForgeClient;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.oredict.OreDictionary;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.ManualHelper;
@@ -84,7 +60,6 @@ import blusunrize.immersiveengineering.client.render.TileRenderEnergyMeter;
 import blusunrize.immersiveengineering.client.render.TileRenderExcavator;
 import blusunrize.immersiveengineering.client.render.TileRenderFloodlight;
 import blusunrize.immersiveengineering.client.render.TileRenderFluidPipe;
-import blusunrize.immersiveengineering.client.render.TileRenderFluidPipe_old;
 import blusunrize.immersiveengineering.client.render.TileRenderFluidPump;
 import blusunrize.immersiveengineering.client.render.TileRenderLantern;
 import blusunrize.immersiveengineering.client.render.TileRenderPost;
@@ -127,7 +102,6 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityExcavator;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFermenter;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFloodlight;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFluidPipe;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFluidPipe_old;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFluidPump;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityLantern;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityRedstoneBreaker;
@@ -181,15 +155,42 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import cpw.mods.fml.common.registry.GameData;
 import cpw.mods.fml.common.registry.VillagerRegistry;
+import net.minecraft.block.BlockCauldron;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.model.ModelMinecart;
+import net.minecraft.client.particle.EntityFX;
+import net.minecraft.client.particle.EntityReddustFX;
+import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.entity.RenderMinecart;
+import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.IIcon;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
+import net.minecraftforge.client.MinecraftForgeClient;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.oredict.OreDictionary;
 
 public class ClientProxy extends CommonProxy
 {
 	public static TextureMap revolverTextureMap;
 	public static final ResourceLocation revolverTextureResource = new ResourceLocation("textures/atlas/immersiveengineering/revolvers.png");
+	public static FontRenderer nixieFont;
 
 	@Override
 	public void init()
 	{
+		nixieFont = Config.getBoolean("nixietubeFont")?new IENixieFontRender():ClientUtils.font();
 		//METAL
 		RenderingRegistry.registerBlockHandler(new BlockRenderMetalDevices());
 		RenderingRegistry.registerBlockHandler(new BlockRenderMetalDevices2());
@@ -208,7 +209,6 @@ public class ClientProxy extends CommonProxy
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityEnergyMeter.class, new TileRenderEnergyMeter());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityElectricLantern.class, new TileRenderElectricLantern());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFloodlight.class, new TileRenderFloodlight());
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFluidPipe_old.class, new TileRenderFluidPipe_old());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFluidPipe.class, new TileRenderFluidPipe());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFluidPump.class, new TileRenderFluidPump());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityRedstoneBreaker.class, new TileRenderRedstoneBreaker());

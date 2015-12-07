@@ -3,6 +3,20 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import java.util.ArrayList;
 import java.util.List;
 
+import blusunrize.immersiveengineering.api.AdvancedAABB;
+import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler;
+import blusunrize.immersiveengineering.client.render.BlockRenderMetalDevices2;
+import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ICustomBoundingboxes;
+import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenBarrel;
+import blusunrize.immersiveengineering.common.util.Lib;
+import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.compat.IC2Helper;
+import cofh.api.energy.IEnergyContainerItem;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.Optional;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -26,21 +40,6 @@ import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.oredict.OreDictionary;
-import blusunrize.immersiveengineering.api.AdvancedAABB;
-import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler;
-import blusunrize.immersiveengineering.api.fluid.PipeConnection;
-import blusunrize.immersiveengineering.client.render.BlockRenderMetalDevices2;
-import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ICustomBoundingboxes;
-import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenBarrel;
-import blusunrize.immersiveengineering.common.util.Lib;
-import blusunrize.immersiveengineering.common.util.Utils;
-import blusunrize.immersiveengineering.common.util.compat.IC2Helper;
-import cofh.api.energy.IEnergyContainerItem;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.Optional;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 @Optional.Interface(iface = "blusunrize.aquatweaks.api.IAquaConnectable", modid = "AquaTweaks")
 public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingboxes, blusunrize.aquatweaks.api.IAquaConnectable
@@ -441,35 +440,6 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 			TileEntityFloodlight light = ((TileEntityFloodlight)te);
 
 			this.setBlockBounds(light.side/2==2?0:.0625f,light.side/2==0?0:.0625f,light.side/2==1?0:.0625f, light.side/2==2?1:.9375f,light.side/2==0?1:.9375f,light.side/2==1?1:.9375f);
-		}
-		else if (te instanceof TileEntityFluidPipe_old)
-		{
-			TileEntityFluidPipe_old pipe = ((TileEntityFluidPipe_old) te);
-			if(pipe.connections.size()==0)
-				this.setBlockBounds(.125f,0,.125f, .875f,1,.875f);
-			else
-			{
-				byte connections = 0;
-				for(PipeConnection connection : pipe.connections)
-					if(connection.direction != ForgeDirection.UNKNOWN)
-						connections = (byte) (connections | 1 << connection.direction.ordinal());
-				if(pipe.connections.size()==1)
-				{
-					byte tempCon = connections;
-					for(int i = 0; i < 6; i++)
-						if((tempCon & (1 << i)) >> i == 1)
-							connections = (byte) (connections | 1 << ForgeDirection.OPPOSITES[i]);
-				}
-
-				if(connections == 48) // 110000
-					this.setBlockBounds(0,.125f,.125f, 1,.875f,.875f);
-				else if(connections == 12) // 001100
-					this.setBlockBounds(.125f,.125f,0, .875f,.875f,1);
-				else if(connections == 3) // 000011
-					this.setBlockBounds(.125f,0,.125f, .875f,1,.875f);
-				else
-					this.setBlockBounds(0,0,0, 1,1,1);
-			}
 		}
 		else if (te instanceof TileEntityFluidPipe)
 			this.setBlockBounds(.25f,.25f,.25f,.75f,.75f,.75f);

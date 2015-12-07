@@ -23,6 +23,7 @@ public class IEBlockInterfaces
 	public interface IBlockOverlayText
 	{
 		public String[] getOverlayText(EntityPlayer player, MovingObjectPosition mop, boolean hammer);
+		public boolean useNixieFont(EntityPlayer player, MovingObjectPosition mop);
 	}
 
 	public interface ISoundTile
