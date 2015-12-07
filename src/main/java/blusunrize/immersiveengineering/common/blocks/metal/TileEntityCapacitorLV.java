@@ -16,7 +16,7 @@ import cofh.api.energy.IEnergyReceiver;
 
 public class TileEntityCapacitorLV extends TileEntityIEBase implements IEnergyHandler, IBlockOverlayText
 {
-	int[] sideConfig={-1,0,-1,-1,-1,-1};
+	public int[] sideConfig={-1,0,-1,-1,-1,-1};
 	EnergyStorage energyStorage = new EnergyStorage(getMaxStorage(),getMaxInput(),getMaxOutput());
 
 	public int comparatorOutput=0;
