@@ -46,6 +46,11 @@
 }
 
 {
+"uuid":["27672103-b8c7-400d-8817-49de433336dd"],
+"tag":"superchief","flavour":"","baseUpgrades":{},"renderAdditions":[]
+}
+
+{
 "uuid":["4f1b6e70-4a7d-45e0-a69e-3550d528cd89"],
 "tag":"","flavour":"rommie","baseUpgrades":{},"renderAdditions":["dev_scope"]
 }
