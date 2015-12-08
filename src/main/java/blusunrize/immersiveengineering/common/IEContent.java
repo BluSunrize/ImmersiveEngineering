@@ -21,6 +21,7 @@ import blusunrize.immersiveengineering.common.blocks.BlockStorage;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIESlab;
 import blusunrize.immersiveengineering.common.blocks.cloth.BlockClothDevices;
+import blusunrize.immersiveengineering.common.blocks.cloth.TileEntityBalloon;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDecoration;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDevices;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDevices2;
@@ -421,6 +422,8 @@ public class IEContent
 
 		registerTile(TileEntityCokeOven.class);
 		registerTile(TileEntityBlastFurnace.class);
+		
+		registerTile(TileEntityBalloon.class);
 
 		/**ENTITIES*/
 		EntityRegistry.registerModEntity(EntityRevolvershot.class, "revolverShot", 0, ImmersiveEngineering.instance, 64, 1, true);

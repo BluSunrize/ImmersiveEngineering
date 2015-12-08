@@ -24,45 +24,6 @@ public class TileEntityCapacitorLV extends TileEntityIEBase implements IEnergyHa
 	@Override
 	public void updateEntity()
 	{
-		//		if(worldObj.isRemote)
-		//		{
-		//			if(worldObj.getTotalWorldTime()%20==0)
-		//			{
-		//				List<Vec3> vecs = new ArrayList();
-		//				vecs.add(Vec3.createVectorHelper(0, 1, 0));
-		//				for(int i=0; i<6; i++)
-		//				{
-		//					Vec3 off = Vec3.createVectorHelper(0, 1+(worldObj.rand.nextGaussian()*.25 -.125), 0);
-		//					off.rotateAroundY((float) Math.toRadians(20*worldObj.rand.nextFloat() - 10));
-		//					off.rotateAroundX((float) Math.toRadians(20*worldObj.rand.nextFloat() - 10));
-		//					off.rotateAroundZ((float) Math.toRadians(20*worldObj.rand.nextFloat() - 10));
-		//					vecs.add(off);
-		//				}
-		//
-		//				double px = 0;
-		//				double py = 0;
-		//				double pz = 0;
-		//				for(int i=0; i<vecs.size(); i++)
-		//				{
-		//					Vec3 vec = vecs.get(i);
-		////					worldObj.spawnParticle("flame", xCoord+.5+px+vec.xCoord,yCoord+.5+py+vec.yCoord,zCoord+.5+pz+vec.zCoord, 0, 0, 0);
-		//					for(int j=0; j<10; j++)
-		//					{
-		//						double dx = (vec.xCoord/10d) * j;
-		//						double dy = (vec.yCoord/10d) * j;
-		//						double dz = (vec.zCoord/10d) * j;
-		//						worldObj.spawnParticle("flame", xCoord+.5+px+dx,yCoord+.5+py+dy,zCoord+.5+pz+dz, 0, 0, 0);
-		//						}
-		//					
-		//					px += vec.xCoord;
-		//					py += vec.yCoord;
-		//					pz += vec.zCoord;
-		//				}
-		//
-		//			}
-		//			return;
-		//		}
-
 		for(int i=0; i<6; i++)
 			this.transferEnergy(i);
 

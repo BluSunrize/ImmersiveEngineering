@@ -501,7 +501,7 @@ ie.manual.entry.updateNews_3.name=What's new in v0.6.3
 ie.manual.entry.updateNews_3.subtext=Old, new; borrowed and Blu
 ie.manual.entry.updateNews_30=Dear Engineer!<br><br>The past update has brought some new features and changes to Immersive Engineering:<br><br>After suffering a severe concussion, Chief Engineer Adams drafted plans for the <link;chemthrower;§o§nChemical §o§nThrower§r>, a device that allows you to spray any fluid anywhere. It also features a built-in pilot light to ignite the fluid spray. We think Adams might be insane.
 ie.manual.entry.updateNews_31=Another new invention of the research department is the <link;chargingStation;§o§nCharging §o§nStation§r>, which allows you to insert energy into items and charge them up.<br>Assistant Engineer "Cobra" has presented his newest invention, the <link;conveyor;§o§nDropping §o§nConveyor§r;2>, which drops items passing over it into inventories below.<br>To top it all off the <link;sorter;§o§nItem §o§nRouter§r> has had its interface designed to allow for OreDictionary-, NBT-based and Fuzzy filtering of items!
-ie.manual.entry.updateNews_32=Finally, the financial department has been hassling us for not keeping track of our power usage. After a heated argument, the have presented us with the blueprints for the <link;eMeter;§o§nCurrent §o§nTransformer§r>, a device that can measure the energy flowing through it. Needless to say they are even less happy now that they know how much energy an Arc Furnace really cosumes.
+ie.manual.entry.updateNews_32=Finally, the financial department has been hassling us for not keeping track of our power usage. After a heated argument, the have presented us with the blueprints for the <link;eMeter;§o§nCurrent §o§nTransformer§r>, a device that can measure the energy flowing through it. Needless to say they are even less happy now that they know how much energy an Arc Furnace really consumes.
 
 ie.manual.category.general.name=Overview and Resources
 ie.manual.category.construction.name=Construction
@@ -545,6 +545,11 @@ ie.manual.entry.treatedwood.subtext=Highly Durable
 ie.manual.entry.treatedwood0=Treated Wood is, quite simply, wooden planks covered in creosote oil. It is however, one of the most important materials you will be using in Immersive Engineering, so you'd better be prepared to create a lot of it.
 ie.manual.entry.treatedwoodPost0=Posts made from treated wood make for excellent attachment points for your Wire Connectors. They are 4 blocks high, so you won't be able to place them without the proper clearance.<br>Using the hammer on the sides of the topmost block will attach an arm to the post. 
 ie.manual.entry.treatedwoodPost1=You can also place <link;wiring;§o§ntransformers§r;4> on the pole, which makes it less obtrusive.<br>Placing blocks below the arms of the wooden post will flip the arms upside down.
+
+ie.manual.entry.balloon.name=Balloon
+ie.manual.entry.balloon.subtext=...just make 99 of them
+ie.manual.entry.balloon0=Balloons are sacks of fabric with a heatsource below to keep them afloat. They will also emit light, but despite the torch, they are not a fire hazard.<br>Balloons can be placed like normal blocks, or, when no block is targeted, they will be placed in the air infront of you.
+ie.manual.entry.balloon1=Similar to <link;metalconstruction;§o§nStructural §o§nConnectors§r;5>, you can attach Hemp Rope and Steel Cable to the balloon.<br>Sneak-clicking allows you to set a height offset for the balloon, allowing you to place it up to 5 blocks above the target.<br>You can also use dyes on a placed balloon; which part you dye depends on where you target it.<br>Rightclicking with an Engineer's Hammer will toggle the balloon's design between horizontal or vertical stripes.
 
 ie.manual.entry.barrel.name=Wooden Barrel
 ie.manual.entry.barrel.subtext=Doesn't roll
@@ -632,8 +637,8 @@ ie.manual.entry.assembler2=The input side, in addition to an item input also fea
 
 ie.manual.entry.bottlingMachine.name=Bottling Machine
 ie.manual.entry.bottlingMachine.subtext=Fill 'er up!
-ie.manual.entry.bottlingMachine0=The Bottling Machine fills fluids into containers. The structure is created as shown above, the direction of the conveyors is important but can be mirrored. To form the structure, use the Engineer's Hammer on the cental conveyor.
-ie.manual.entry.bottlingMachine1=Fluid is input through the cental port on the lower level, items are input through the conveyors. The movement of the conveyors should make in- and output quite obvious. Energy is input through the top.<br>Generally, the Bottling Machine will be able to fill any container that has a filled version available (bucket, glass bottle). It will also accept items designated as fluid containers, like the <link;drill;§o§nMining §o§nDrill§r> or a <link;jerrycan;§o§nJerrycan§r>.
+ie.manual.entry.bottlingMachine0=The Bottling Machine fills fluids into containers. The structure is created as shown above, the direction of the conveyors is important but can be mirrored. To form the structure, use the Engineer's Hammer on the central conveyor.
+ie.manual.entry.bottlingMachine1=Fluid is input through the central port on the lower level, items are input through the conveyors. The movement of the conveyors should make in- and output quite obvious. Energy is input through the top.<br>Generally, the Bottling Machine will be able to fill any container that has a filled version available (bucket, glass bottle). It will also accept items designated as fluid containers, like the <link;drill;§o§nMining §o§nDrill§r> or a <link;jerrycan;§o§nJerrycan§r>.
 
 ie.manual.entry.chargingStation.name=Charging Station
 ie.manual.entry.chargingStation.subtext=
@@ -688,7 +693,7 @@ ie.manual.entry.furnaceHeater2=Even better, while the furnace is at maximum temp
 ie.manual.entry.fluidPipes.name=Fluid Transport
 ie.manual.entry.fluidPipes.subtext=Professional Plumber
 ie.manual.entry.fluidPipes0=Transporting fluids has become quite essential in the engineering business. Fluid Pipes and Fluid Pumps do exactly that. On their own, Fluid Pipes are quite slow at transferring fluids, but if a pump is used to insert the fluid, it'll move much faster.
-ie.manual.entry.fluidPipes1=You can rightclick the connection piece of a pipe with an Engineer's Hammer to prevent it from conencting to that side.<br>Fluid Pipes can be covered with wooden or steel scaffolding. Simply rightclick a piece of scaffolding onto a pipe to cover it. Break the pipe to retrieve the scaffolding.
+ie.manual.entry.fluidPipes1=You can rightclick the connection piece of a pipe with an Engineer's Hammer to prevent it from connecting to that side.<br>Fluid Pipes can be covered with wooden or steel scaffolding. Simply rightclick a piece of scaffolding onto a pipe to cover it. Break the pipe to retrieve the scaffolding.
 ie.manual.entry.fluidPipes2=Fluid Pumps have three essential functions. They can be used to insert into pipes at high pressure, to transfer fluids much faster, or they can pick up fluids from the world. Using your hammer on the base of the pump will switch the sides between in- and output.
 ie.manual.entry.fluidPipes3=In order for the pump to pick up fluid blocks, it will need a power input at the top and a redstone signal. Pumps can also be used to extract from tanks and other fluid containers that do not have an automatic output. This will also require a redstone signal, but won't consume power.
 
@@ -725,23 +730,24 @@ ie.manual.entry.bullets5=§lSilver §lCartridges§r consist of a lead core wrapp
 ie.manual.entry.bullets6=§lDragon's §lBreath Cartridges§r are created with a "Specialized Projectiles" blueprint. Similarly to Buckshot, they are effective at short range, but instead of small metal shots are filled with a flammable metal dust, creating a blast of flame.
 ie.manual.entry.bullets7=§lPhial §lCartridges§r are also created with the "Specialized" blueprint. They can be filled with any potion by crafting them together in a crafting grid and this potion will then be applied on impact. Normal potions require a direct hit, splash potions have an area of effect<config;b;etfuturumBullets; and Lingering Potions will create a temporary, lingering potion cloud.;.>
 ie.manual.entry.bulletsBotania0=§lHoming §lCartridges§r are created with a "Specialized Projectiles" blueprint and the magical metal "Terrasteel", which gives them the ability to home in on the closest target.
-ie.manual.entry.bulletsBotania1=§lWolfpack §lCartridges§r are a colelction of multiple homming shots in a single shell. The initial projectile is unguided, but on impact, it splits into six target seeking shots that shred the enemies.
+ie.manual.entry.bulletsBotania1=§lWolfpack §lCartridges§r are a collection of multiple homing shots in a single shell. The initial projectile is unguided, but on impact, it splits into six target seeking shots that shred the enemies.
 #ie.manual.entry.bullets1=These are common types of ammunition, created with simple, selfmade blueprints:<br><br>§lCasull:§r Simple lead projectile, capable of inflicting medium damage.<br>§lArmor-Piercing:§r Dense metal projectile, penetrates the armor by sheer kinetic force.<br>§lBuckshot:§r Collection of small projectiles, spreading in a cone shape. Effective at short range.<br>§lHigh-Explosive:§r Creates small explosion on impact.<br>§lSilver:§r Lead core in silver, effective against...werewolves?!
 #ie.manual.entry.bullets2=These are more intricate types of ammunition, created with unique blueprints that cannot be crafted, only found or bought.<br><br>§lDragon's Breath:§r Flammable metal dust, creates a short-ranged inferno.<config;b;botaniaBullets;<br>§lHoming:§r Will home in on the closest target.<br>§lWolfpack:§r Unguided cluster projectile, splits into 6 small, homing, shots.;><br>§lPhial:§r Can be crafted with any potion to create a shot that inflicts the potion effect.
 
 ie.manual.entry.chemthrower.name=Chemical Thrower
 ie.manual.entry.chemthrower.subtext=
-ie.manual.entry.chemthrower0=The Chemical Thrower is a device that propells fluids from its internal tank. The device can be loaded with any fluid, liquid or gas, and, on right click, will spray it out.<br>It also features a function to ignite the fluid, if it is flammable. To toggle the pilot light, sneak and rightclick.
+ie.manual.entry.chemthrower0=The Chemical Thrower is a device that propels fluids from its internal tank. The device can be loaded with any fluid, liquid or gas, and, on right click, will spray it out.<br>It also features a function to ignite the fluid, if it is flammable. To toggle the pilot light, sneak and rightclick.
 ie.manual.entry.chemthrower1=Like some other tools, the chemical thrower can be modified in the <link;workbench;§o§nEngineer's §o§nWorkbench§r>. These upgrades affect the size of the tank, range and spread.<br><br>The Large Tank increases the fluid capacity of the Chemical Thrower by 2000 mb. 
 ie.manual.entry.chemthrower2=The Focused Nozzle decreases the spread of fluids sprayed out and also slightly increases their range, allowing you to hit further targets with more precision.
 
 ie.manual.entry.skyhook.name=Engineer's Skyhook
 ie.manual.entry.skyhook.subtext=Booker, catch!
-ie.manual.entry.skyhook0=The Engineer's Skyhook is a motorized grabber system designed to hook onto wires, hemp ropes or steel cables. With it, engineers can quickly traverse the length of a powerline to move between substations or other installations. Simply hold the right mousebutton while close to a connector and you will be attached to the wire. Releasing the button at any time or sneaking will cause you to dismount. You can not start in the middle of a wire, you must attach at a connector.
+ie.manual.entry.skyhook0=The Engineer's Skyhook is a motorized grabber system designed to hook onto wires, hemp ropes or steel cables. With it, engineers can quickly traverse the length of a powerline to move between substations or other installations.
+ie.manual.entry.skyhook1=Simply hold the right mousebutton while close to a connector and you will be attached to the wire. Releasing the button at any time or sneaking will cause you to dismount. You can not start in the middle of a wire, you must attach at a connector.
 
 ie.manual.entry.shader.name=Shaders
 ie.manual.entry.shader.subtext=Blue! No, yellow!
-ie.manual.entry.shader0=Shaders are items you can find in the world or aquire by trading with villagers. They don't have a purpose by themselves, but they can be equipped to <link;revolver;§o§nRevolvers§r> or <link;chemthrower;§o§nChemical §o§nThrowers§r>(and possibly other things you still have to discover) to change the designs of the item. Simply put the item in an <link;workbench;§o§nEngineer's §o§nWorkbench§r> and equip the shader in the apropriate slot.<br>You can also apply them to a Minecart by rightclicking!
+ie.manual.entry.shader0=Shaders are items you can find in the world or aquire by trading with villagers. They don't have a purpose by themselves, but they can be equipped to <link;revolver;§o§nRevolvers§r> or <link;chemthrower;§o§nChemical §o§nThrowers§r>(and possibly other things you still have to discover) to change the designs of the item. Simply put the item in an <link;workbench;§o§nEngineer's §o§nWorkbench§r> and equip the shader in the appropriate slot.<br>You can also apply them to a Minecart by rightclicking!
 
 ie.manual.entry.crusher.name=Crusher
 ie.manual.entry.crusher.subtext=Keep your hands out!
@@ -757,7 +763,7 @@ ie.manual.entry.lightningrod2=You can improve the chances of the Lightning Rod g
 ie.manual.entry.minerals.name=Mineral Deposits
 ie.manual.entry.minerals.subtext=Oresome
 ie.manual.entry.minerals0=The deposits of Ore found around your world are nothing new to you. What you have so far left out of consideration though are mineral veins, which contain a mix of different ores. Due to their wide and thin spread, the average miner can't find them, but a <link;excavator;§o§nspecial §o§nmachine§r> might be able to assist with that.
-ie.manual.entry.minerals1=To find and determine minerals in the world, you will want to craft a Core Sample Drill. This machine, when powered, will drill into the chunk and determine which mineral can be found there. The Drill consumes <config;i;coredrill_consumption> RF/t and takes <config;i;coredrill_time> ticks to fully retrieve and analyze a sample.
+ie.manual.entry.minerals1=To find and determine minerals in the world, you will want to craft a Core Sample Drill. This machine, when powered, will drill into the chunk and determine which mineral can be found there. The Drill consumes <config;i;coredrill_consumption> RF/t and takes <config;i;coredrill_time> ticks to fully retrieve and analyse a sample.
 ie.manual.entry.minerals2=The following pages list every type of vein and the ores that can be retrieved from them.
 ie.manual.entry.minerals3=%1$s<br>It consists of %2$s.
 ie.manual.entry.mineralsDimValid=§l%1$s§r is a mineral vein that can be found in the %2$s.

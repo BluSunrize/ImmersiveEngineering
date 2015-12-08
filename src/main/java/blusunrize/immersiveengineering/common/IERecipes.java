@@ -133,7 +133,7 @@ public class IERecipes
 		addOredictRecipe(new ItemStack(IEContent.itemMaterial,1,2), "BB ","SSB","SS ", 'B',"plankTreatedWood", 'S',"treatedStick");
 		addShapelessOredictRecipe(new ItemStack(Items.string), new ItemStack(IEContent.itemMaterial,1,3),new ItemStack(IEContent.itemMaterial,1,3),new ItemStack(IEContent.itemMaterial,1,3));
 		addOredictRecipe(new ItemStack(IEContent.itemMaterial,1,4), "HHH","HSH","HHH", 'H',new ItemStack(IEContent.itemMaterial,1,3), 'S',"stickWood");
-		addShapelessOredictRecipe(new ItemStack(IEContent.itemMaterial,1,5), new ItemStack(IEContent.itemMaterial,1,2),new ItemStack(IEContent.itemMaterial,1,4),new ItemStack(IEContent.itemMaterial,1,4),new ItemStack(IEContent.itemMaterial,1,4),new ItemStack(IEContent.itemMaterial,1,4));
+		addShapelessOredictRecipe(new ItemStack(IEContent.itemMaterial,1,5), new ItemStack(IEContent.itemMaterial,1,2),"fabricHemp","fabricHemp","fabricHemp","fabricHemp");
 		addOredictRecipe(new ItemStack(IEContent.itemMaterial,1,7), "III", 'I',"ingotSteel");
 		addOredictRecipe(new ItemStack(IEContent.itemMaterial,1,8), " I ","ICI"," I ", 'I',"ingotSteel",'C',componentIron);
 		addOredictRecipe(new ItemStack(IEContent.itemMaterial,1,9), "SS","IS","SS", 'I',"ingotCopper",'S',"treatedStick");
@@ -248,6 +248,7 @@ public class IERecipes
 		addShapelessOredictRecipe(new ItemStack(IEContent.blockMetalDecoration,1,BlockMetalDecoration.META_aluminiumScaffolding), new ItemStack(IEContent.blockMetalDecoration,1,BlockMetalDecoration.META_aluminiumScaffolding2));
 		addOredictRecipe(new ItemStack(IEContent.blockMetalDecoration, 4,BlockMetalDecoration.META_aluminiumStructuralArm), "B  ","BB ","BBB", 'B',new ItemStack(IEContent.blockMetalDecoration,1,BlockMetalDecoration.META_aluminiumScaffolding)).setMirrored(true);
 
+		addOredictRecipe(new ItemStack(IEContent.blockClothDevice, 2,0), " F ","FTF"," S ", 'F',"fabricHemp", 'T',Blocks.torch, 'S',"slabTreatedWood");
 
 		addOredictRecipe(new ItemStack(IEContent.blockMetalMultiblocks, 2,BlockMetalMultiblocks.META_squeezer), "IPI","GDG","IPI", 'I',"ingotIron",'D',"dyeGreen",'G',componentIron,'P',Blocks.piston);
 		addOredictRecipe(new ItemStack(IEContent.blockMetalMultiblocks, 2,BlockMetalMultiblocks.META_fermenter), "IPI","GDG","IPI", 'I',"ingotIron",'D',"dyeBlue",'G',componentIron,'P',Blocks.piston);

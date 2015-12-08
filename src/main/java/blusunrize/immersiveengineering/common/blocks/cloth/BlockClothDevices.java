@@ -4,6 +4,7 @@ import java.util.List;
 
 import blusunrize.immersiveengineering.client.render.BlockRenderClothDevices;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
+import blusunrize.immersiveengineering.common.util.Utils;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -68,7 +69,7 @@ public class BlockClothDevices extends BlockIEBase implements blusunrize.aquatwe
 	{
 		this.setBlockBounds(.125f,0,.125f,.875f,.9375f,.875f);
 	}
-	
+
 	@Override
 	public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z)
 	{
@@ -82,10 +83,63 @@ public class BlockClothDevices extends BlockIEBase implements blusunrize.aquatwe
 		return super.getCollisionBoundingBoxFromPool(world, x, y, z);
 	}
 
+	@Override
+	public int getLightValue(IBlockAccess world, int x, int y, int z)
+	{
+		return world.getBlockMetadata(x, y, z)==0?13:0;
+	}
 
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
 	{
+		TileEntity tile = world.getTileEntity(x, y, z);
+		if(tile instanceof TileEntityBalloon)
+		{
+			if(Utils.isHammer(player.getCurrentEquippedItem()))
+			{
+				((TileEntityBalloon)tile).style = ((TileEntityBalloon)tile).style==0?1:0;
+				world.addBlockEvent(x, y, z, this, 0, 0);
+				return true;
+			}
+			else
+			{
+				int target = 0;
+				int style = ((TileEntityBalloon)tile).style;
+				if(side<2 && style==0)
+					target = (hitX<.375||hitX>.625)&&(hitZ<.375||hitZ>.625)?1:0;
+				else if(side>=2&&side<4)
+				{
+					if(style==0)
+						target = (hitX<.375||hitX>.625)?1:0;
+					else
+						target =(hitY>.5625&&hitY<.75)?1:0;
+				}
+				else if(side>=4)
+				{
+					if(style==0)
+						target = (hitZ<.375||hitZ>.625)?1:0;
+					else
+						target =(hitY>.5625&&hitY<.75)?1:0;
+				}
+				int heldDye = Utils.getDye(player.getCurrentEquippedItem());
+				if(heldDye==-1)
+					return false;
+				if(target==0)
+				{
+					if(((TileEntityBalloon)tile).colour0==heldDye)
+						return false;
+					((TileEntityBalloon)tile).colour0 = (byte)heldDye;
+				}
+				else
+				{
+					if(((TileEntityBalloon)tile).colour1==heldDye)
+						return false;
+					((TileEntityBalloon)tile).colour1 = (byte)heldDye;
+				}
+				world.addBlockEvent(x, y, z, this, 0, 0);
+				return true;
+			}
+		}
 		return false;
 	}
 
@@ -93,7 +147,7 @@ public class BlockClothDevices extends BlockIEBase implements blusunrize.aquatwe
 	@Override
 	public TileEntity createNewTileEntity(World world, int meta)
 	{
-		return null;
+		return new TileEntityBalloon();
 	}
 
 

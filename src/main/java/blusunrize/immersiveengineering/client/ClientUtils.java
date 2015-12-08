@@ -370,125 +370,7 @@ public class ClientUtils
 	 */
 	public static void renderStaticWavefrontModel(TileEntity tile, WavefrontObject model, Tessellator tes, Matrix4 translationMatrix, Matrix4 rotationMatrix, int offsetLighting, boolean invertFaces, float colR, float colG, float colB, String... renderedParts)
 	{
-		if(tile.getWorldObj()!=null)
-		{
-			int lb = tile.getWorldObj().getLightBrightnessForSkyBlocks(tile.xCoord, tile.yCoord, tile.zCoord, 0);
-			int lb_j = lb % 65536;
-			int lb_k = lb / 65536;
-			OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)lb_j / 1.0F, (float)lb_k / 1.0F);
-		}
-		Vertex vertexCopy = new Vertex(0,0,0);
-		Vertex normalCopy = new Vertex(0,0,0);
-
-		for(GroupObject groupObject : model.groupObjects)
-		{
-			boolean render = false;
-			if(renderedParts==null || renderedParts.length<1)
-				render = true;
-			else
-				for(String s : renderedParts)
-					if(groupObject.name.equalsIgnoreCase(s))
-						render = true;
-			if(render)
-				for(Face face : groupObject.faces)
-				{
-					if(face.faceNormal == null)
-						face.faceNormal = face.calculateFaceNormal();
-
-					normalCopy.x = face.faceNormal.x;
-					normalCopy.y = face.faceNormal.y;
-					normalCopy.z = face.faceNormal.z;
-					rotationMatrix.apply(normalCopy);
-					float biggestNormal = Math.max(Math.abs(normalCopy.y), Math.max(Math.abs(normalCopy.x),Math.abs(normalCopy.z)));
-					int side = biggestNormal==Math.abs(normalCopy.y)?(normalCopy.y<0?0:1): biggestNormal==Math.abs(normalCopy.z)?(normalCopy.z<0?2:3): (normalCopy.x<0?4:5);
-
-					//					HashMap<String,BlockLightingInfo> light = new HashMap<String,BlockLightingInfo>();
-					//					BlockLightingInfo completeLight = null;
-					//					if(offsetLighting==0 && tile.getWorldObj()!=null)
-					//						completeLight = calculateBlockLighting(side, tile.getWorldObj(), tile.getBlockType(), tile.xCoord,tile.yCoord,tile.zCoord, 1,1,1, AxisAlignedBB.getBoundingBox(tile.xCoord,tile.yCoord,tile.zCoord, tile.xCoord+1,tile.yCoord+1,tile.zCoord+1));
-
-					BlockLightingInfo faceLight = null;
-					if(offsetLighting==0 && tile.getWorldObj()!=null)
-						faceLight = calculateBlockLighting(side, tile.getWorldObj(), tile.getBlockType(), tile.xCoord,tile.yCoord,tile.zCoord, colR,colG,colB, AxisAlignedBB.getBoundingBox(0,0,0,1,1,1));
-					//						faceLight = calculateBlockLighting(side, tile.getWorldObj(), tile.getBlockType(), tile.xCoord,tile.yCoord,tile.zCoord, 1,1,1, tile.getBlockType().getCollisionBoundingBoxFromPool(tile.getWorldObj(), tile.xCoord, tile.yCoord, tile.zCoord).addCoord(-tile.xCoord,-tile.yCoord,-tile.zCoord));
-					else if(offsetLighting==1 && tile.getWorldObj()!=null)
-					{
-						double faceMinX = face.vertices[0].x;
-						double faceMinY = face.vertices[0].y;
-						double faceMinZ = face.vertices[0].z;
-						double faceMaxX = face.vertices[0].x;
-						double faceMaxY = face.vertices[0].y;
-						double faceMaxZ = face.vertices[0].z;
-						for(int i=1; i<face.vertices.length; ++i)
-						{
-							faceMinX = Math.min(faceMinX, face.vertices[i].x);
-							faceMinY = Math.min(faceMinY, face.vertices[i].y);
-							faceMinZ = Math.min(faceMinZ, face.vertices[i].z);
-							faceMaxX = Math.max(faceMaxX, face.vertices[i].x);
-							faceMaxY = Math.max(faceMaxY, face.vertices[i].y);
-							faceMaxZ = Math.max(faceMaxZ, face.vertices[i].z);
-						}
-						faceLight = calculateBlockLighting(side, tile.getWorldObj(), tile.getBlockType(), tile.xCoord,tile.yCoord,tile.zCoord, colR,colG,colB, AxisAlignedBB.getBoundingBox(faceMinX,faceMinY,faceMinZ, faceMaxX,faceMaxY,faceMaxZ));
-					}
-
-					tes.setNormal(face.faceNormal.x, face.faceNormal.y, face.faceNormal.z);
-
-					for(int i=0; i<face.vertices.length; ++i)
-					{
-						int target = !invertFaces?i:(face.vertices.length-1-i);
-						int corner = (int)(target/(float)face.vertices.length*4);
-						Vertex vertex = face.vertices[target];
-						vertexCopy.x = vertex.x;
-						vertexCopy.y = vertex.y;
-						vertexCopy.z = vertex.z;
-						rotationMatrix.apply(vertexCopy);
-						translationMatrix.apply(vertexCopy);
-
-						//						if(offsetLighting==1 && tile.getWorldObj()!=null)
-						//						{	
-						//							String key = Math.round(tile.xCoord+vertex.x)+";"+Math.round(tile.yCoord+vertex.y)+";"+Math.round(tile.zCoord+vertex.z);
-						//							BlockLightingInfo info = light.get(key);
-						//							if(info==null)
-						//							{
-						//								info = calculateBlockLighting(side, tile.getWorldObj(), tile.getBlockType(), (int)Math.round(tile.xCoord+vertex.x),(int)Math.round(tile.yCoord+vertex.y),(int)Math.round(tile.zCoord+vertex.z), 1,1,1);
-						//								light.put(key, info);
-						//							}
-						//							tes.setBrightness(corner==0?info.brightnessTopLeft: corner==1?info.brightnessBottomLeft: corner==2?info.brightnessBottomRight: info.brightnessTopRight);
-						//							float r = corner==0?info.colorRedTopLeft: corner==1?info.colorRedBottomLeft: corner==2?info.colorRedBottomRight: info.colorRedTopRight;
-						//							float g = corner==0?info.colorGreenTopLeft: corner==1?info.colorGreenBottomLeft: corner==2?info.colorGreenBottomRight: info.colorGreenTopRight;
-						//							float b = corner==0?info.colorBlueTopLeft: corner==1?info.colorBlueBottomLeft: corner==2?info.colorBlueBottomRight: info.colorBlueTopRight;
-						//							tes.setColorOpaque_F(r, g, b);
-						//						}
-						//						else if(offsetLighting==0 && tile.getWorldObj()!=null && completeLight!=null)
-						//						{	
-						//							tes.setBrightness(corner==0?completeLight.brightnessTopLeft: corner==1?completeLight.brightnessBottomLeft: corner==2?completeLight.brightnessBottomRight: completeLight.brightnessTopRight);
-						//							float r = corner==0?completeLight.colorRedTopLeft: corner==1?completeLight.colorRedBottomLeft: corner==2?completeLight.colorRedBottomRight: completeLight.colorRedTopRight;
-						//							float g = corner==0?completeLight.colorGreenTopLeft: corner==1?completeLight.colorGreenBottomLeft: corner==2?completeLight.colorGreenBottomRight: completeLight.colorGreenTopRight;
-						//							float b = corner==0?completeLight.colorBlueTopLeft: corner==1?completeLight.colorBlueBottomLeft: corner==2?completeLight.colorBlueBottomRight: completeLight.colorBlueTopRight;
-						//							tes.setColorOpaque_F(r, g, b);
-						//						}
-						if(faceLight!=null)
-						{
-							tes.setBrightness(corner==0?faceLight.brightnessTopLeft: corner==1?faceLight.brightnessBottomLeft: corner==2?faceLight.brightnessBottomRight: faceLight.brightnessTopRight);
-							float r = corner==0?faceLight.colorRedTopLeft: corner==1?faceLight.colorRedBottomLeft: corner==2?faceLight.colorRedBottomRight: faceLight.colorRedTopRight;
-							float g = corner==0?faceLight.colorGreenTopLeft: corner==1?faceLight.colorGreenBottomLeft: corner==2?faceLight.colorGreenBottomRight: faceLight.colorGreenTopRight;
-							float b = corner==0?faceLight.colorBlueTopLeft: corner==1?faceLight.colorBlueBottomLeft: corner==2?faceLight.colorBlueBottomRight: faceLight.colorBlueTopRight;
-							tes.setColorOpaque_F(r, g, b);
-						}
-
-
-						if(face.textureCoordinates!=null && face.textureCoordinates.length>0)
-						{
-							TextureCoordinate textureCoordinate = face.textureCoordinates[target];
-							tes.addVertexWithUV(vertexCopy.x, vertexCopy.y, vertexCopy.z, textureCoordinate.u, textureCoordinate.v);
-						}
-						else
-						{
-							tes.addVertex(vertexCopy.x, vertexCopy.y, vertexCopy.z);
-						}
-					}
-				}
-		}
+		renderStaticWavefrontModel(tile.getWorldObj(),tile.xCoord,tile.yCoord,tile.zCoord, model, tes, translationMatrix, rotationMatrix, offsetLighting, invertFaces, colR,colG,colB, renderedParts);
 	}
 	public static void renderStaticWavefrontModel(IBlockAccess world, int x, int y, int z, WavefrontObject model, Tessellator tes, Matrix4 translationMatrix, Matrix4 rotationMatrix, int offsetLighting, boolean invertFaces, float colR, float colG, float colB, String... renderedParts)
 	{
@@ -567,7 +449,11 @@ public class ClientUtils
 							float b = corner==0?faceLight.colorBlueTopLeft: corner==1?faceLight.colorBlueBottomLeft: corner==2?faceLight.colorBlueBottomRight: faceLight.colorBlueTopRight;
 							tes.setColorOpaque_F(r, g, b);
 						}
-
+						else
+						{
+							tes.setBrightness(0xb000b0);
+							tes.setColorOpaque_F(colR,colG,colB);
+						}
 
 						if(face.textureCoordinates!=null && face.textureCoordinates.length>0)
 						{

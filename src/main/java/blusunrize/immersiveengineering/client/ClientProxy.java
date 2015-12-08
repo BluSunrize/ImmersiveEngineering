@@ -46,6 +46,7 @@ import blusunrize.immersiveengineering.client.render.ItemRenderRevolver;
 import blusunrize.immersiveengineering.client.render.ItemRenderVoltmeter;
 import blusunrize.immersiveengineering.client.render.TileRenderArcFurnace;
 import blusunrize.immersiveengineering.client.render.TileRenderAssembler;
+import blusunrize.immersiveengineering.client.render.TileRenderBalloon;
 import blusunrize.immersiveengineering.client.render.TileRenderBottlingMachine;
 import blusunrize.immersiveengineering.client.render.TileRenderBreakerSwitch;
 import blusunrize.immersiveengineering.client.render.TileRenderBucketWheel;
@@ -80,6 +81,7 @@ import blusunrize.immersiveengineering.common.CommonProxy;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.IERecipes;
+import blusunrize.immersiveengineering.common.blocks.cloth.TileEntityBalloon;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDecoration;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDevices;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDevices2;
@@ -239,6 +241,7 @@ public class ClientProxy extends CommonProxy
 		RenderingRegistry.registerBlockHandler(new BlockRenderStoneDevices());
 		//CLOTH
 		RenderingRegistry.registerBlockHandler(new BlockRenderClothDevices());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityBalloon.class, new TileRenderBalloon());
 
 		//REVOLVER
 		revolverTextureMap = new TextureMap(Config.getInt("revolverSheetID"), "textures/revolvers");
@@ -356,6 +359,8 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.Crafting(ManualHelper.getManual(), "lighting1", new ItemStack(IEContent.blockMetalDevice2,1,BlockMetalDevices2.META_electricLantern)),
 				new ManualPages.Text(ManualHelper.getManual(), "lighting2"),
 				new ManualPages.Crafting(ManualHelper.getManual(), "lighting3", new ItemStack(IEContent.blockMetalDevice2,1,BlockMetalDevices2.META_floodlight)));
+		ManualHelper.addEntry("balloon", ManualHelper.CAT_CONSTRUCTION, new ManualPages.Crafting(ManualHelper.getManual(), "balloon0", new ItemStack(IEContent.blockClothDevice,1,0)),
+				new ManualPages.Text(ManualHelper.getManual(), "balloon1"));
 		ManualHelper.addEntry("tanksilo", ManualHelper.CAT_CONSTRUCTION,
 				new ManualPageMultiblock(ManualHelper.getManual(), "tanksilo0", MultiblockSheetmetalTank.instance),
 				new ManualPageMultiblock(ManualHelper.getManual(), "tanksilo1", MultiblockSilo.instance),
@@ -471,7 +476,8 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.Crafting(ManualHelper.getManual(), "fluidPipes2", new ItemStack(IEContent.blockMetalDevice2,1,BlockMetalDevices2.META_fluidPump)),
 				new ManualPages.Text(ManualHelper.getManual(), "fluidPipes3"));
 		ManualHelper.addEntry("skyhook", ManualHelper.CAT_MACHINES,
-				new ManualPages.CraftingMulti(ManualHelper.getManual(), "skyhook0", new ItemStack(IEContent.itemChemthrower,1,0), new ItemStack(IEContent.itemMaterial,1,9)));
+				new ManualPages.CraftingMulti(ManualHelper.getManual(), "skyhook0", new ItemStack(IEContent.itemSkyhook), new ItemStack(IEContent.itemMaterial,1,9)),
+				new ManualPages.Text(ManualHelper.getManual(), "skyhook1"));
 		ManualHelper.addEntry("chemthrower", ManualHelper.CAT_MACHINES,
 				new ManualPages.CraftingMulti(ManualHelper.getManual(), "chemthrower0", new ItemStack(IEContent.itemChemthrower,1,0), new ItemStack(IEContent.itemMaterial,1,9), new ItemStack(IEContent.itemToolUpgrades,1,0)),
 				new ManualPages.Crafting(ManualHelper.getManual(), "chemthrower1", new ItemStack(IEContent.itemToolUpgrades,1,3)),

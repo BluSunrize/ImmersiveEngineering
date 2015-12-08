@@ -222,9 +222,10 @@ public class BlockWoodenDevices extends BlockIEBase implements IPostBlock, blusu
 			double a = (ay<0?360-ax:ax)+22.25; 
 			int sel = ((4-(int)(a/45f)+6)%8);
 
-			if(((TileEntityWindmillAdvanced)te).dye[sel] == Utils.getDye(player.getCurrentEquippedItem()))
+			int heldDye = Utils.getDye(player.getCurrentEquippedItem());
+			if(((TileEntityWindmillAdvanced)te).dye[sel] == heldDye)
 				return false;
-			((TileEntityWindmillAdvanced)te).dye[sel] = (byte) Utils.getDye(player.getCurrentEquippedItem());
+			((TileEntityWindmillAdvanced)te).dye[sel] = (byte)heldDye;
 			if(!player.capabilities.isCreativeMode)
 				player.getCurrentEquippedItem().stackSize--;
 			return true;
