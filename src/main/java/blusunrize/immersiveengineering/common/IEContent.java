@@ -20,6 +20,7 @@ import blusunrize.immersiveengineering.common.blocks.BlockIESlabs;
 import blusunrize.immersiveengineering.common.blocks.BlockStorage;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIESlab;
+import blusunrize.immersiveengineering.common.blocks.cloth.BlockClothDevices;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDecoration;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDevices;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDevices2;
@@ -164,6 +165,7 @@ public class IEContent
 	public static BlockIEBase blockStoneDecoration;
 	public static Block blockCrop;
 	public static Block blockFakeLight;
+	public static BlockIEBase blockClothDevice;
 	public static ItemIEBase itemMetal;
 	public static ItemIEBase itemMaterial;
 	public static ItemIEBase itemSeeds;
@@ -208,6 +210,7 @@ public class IEContent
 		blockStoneDecoration = new BlockStoneDecoration();
 		blockCrop = new BlockIECrop("hemp", "0B","1B","2B","3B","4B","0T");
 		blockFakeLight = new BlockFakeLight();
+		blockClothDevice = new BlockClothDevices();
 
 		itemMetal = new ItemIEBase("metal", 64,
 				"ingotCopper","ingotAluminum","ingotLead","ingotSilver","ingotNickel","ingotConstantan","ingotElectrum","ingotSteel",  

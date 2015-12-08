@@ -121,6 +121,8 @@ tile.ImmersiveEngineering.stoneDecoration.concreteTile.name=Concrete Tile
 
 tile.ImmersiveEngineering.hemp.name=Industrial Hemp
 
+tile.ImmersiveEngineering.clothDevice.balloon.name=Balloon
+
 #Hydraulicraft Support
 tile.harvesterTrolley.ieCrop.name=Industrial Hemp Harvester Trolley 
 
@@ -732,6 +734,10 @@ ie.manual.entry.chemthrower.subtext=
 ie.manual.entry.chemthrower0=The Chemical Thrower is a device that propells fluids from its internal tank. The device can be loaded with any fluid, liquid or gas, and, on right click, will spray it out.<br>It also features a function to ignite the fluid, if it is flammable. To toggle the pilot light, sneak and rightclick.
 ie.manual.entry.chemthrower1=Like some other tools, the chemical thrower can be modified in the <link;workbench;§o§nEngineer's §o§nWorkbench§r>. These upgrades affect the size of the tank, range and spread.<br><br>The Large Tank increases the fluid capacity of the Chemical Thrower by 2000 mb. 
 ie.manual.entry.chemthrower2=The Focused Nozzle decreases the spread of fluids sprayed out and also slightly increases their range, allowing you to hit further targets with more precision.
+
+ie.manual.entry.skyhook.name=Engineer's Skyhook
+ie.manual.entry.skyhook.subtext=Booker, catch!
+ie.manual.entry.skyhook0=The Engineer's Skyhook is a motorized grabber system designed to hook onto wires, hemp ropes or steel cables. With it, engineers can quickly traverse the length of a powerline to move between substations or other installations. Simply hold the right mousebutton while close to a connector and you will be attached to the wire. Releasing the button at any time or sneaking will cause you to dismount. You can not start in the middle of a wire, you must attach at a connector.
 
 ie.manual.entry.shader.name=Shaders
 ie.manual.entry.shader.subtext=Blue! No, yellow!
