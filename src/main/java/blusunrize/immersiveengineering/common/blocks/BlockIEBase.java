@@ -298,6 +298,8 @@ public abstract class BlockIEBase extends BlockContainer
 		public BlockIESimple(String name, Material mat, Class<? extends ItemBlockIEBase> itemBlock, String... subNames)
 		{
 			super(name, mat, 1, itemBlock, subNames);
+			for(int i=0;i<subNames.length;i++)
+				this.setMetaLightOpacity(i, 255);
 		}
 
 		@Override

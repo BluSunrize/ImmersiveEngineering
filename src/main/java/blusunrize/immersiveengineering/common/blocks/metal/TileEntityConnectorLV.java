@@ -40,6 +40,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 	private long lastTransfer = -1;
 	public int currentTickAccepted=0;
 	public static int[] connectorInputValues = {};
+	public int energyStored=0;
 
 	@Override
 	public void updateEntity()
@@ -48,6 +49,12 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 		{
 			IC2Helper.loadIC2Tile(this);
 			this.inICNet = true;
+		}
+		if(energyStored>0)
+		{
+			int temp = this.transferEnergy(energyStored, true, 0);
+			if(temp>0)
+				energyStored -= this.transferEnergy(temp, false, 0);
 		}
 		currentTickAccepted=0;
 	}
@@ -175,7 +182,23 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 	@Override
 	public int receiveEnergy(ForgeDirection from, int maxReceive,boolean simulate)
 	{
-		return transferEnergy(maxReceive, simulate, 0);
+		if(worldObj.isRemote)
+			return 0;
+		if(worldObj.getTotalWorldTime()==lastTransfer)
+			return 0;
+
+		int accepted = Math.min(Math.min(getMaxOutput(),getMaxInput()), maxReceive);
+		accepted = Math.min(getMaxOutput()-energyStored, accepted);
+		if(accepted<=0)
+			return 0;
+
+		if(!simulate)
+		{
+			energyStored += accepted;
+			lastTransfer = worldObj.getTotalWorldTime();
+		}
+
+		return accepted;
 	}
 	@Override
 	public int getEnergyStored(ForgeDirection from)
@@ -198,8 +221,6 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 		int received = 0;
 		if(!worldObj.isRemote)
 		{
-			if(worldObj.getTotalWorldTime()==lastTransfer)
-				return 0;
 			Set<AbstractConnection> outputs = ImmersiveNetHandler.INSTANCE.getIndirectEnergyConnections(Utils.toCC(this), worldObj);
 			int powerLeft = Math.min(Math.min(getMaxOutput(),getMaxInput()), energy);
 			final int powerForSort = powerLeft;
@@ -272,8 +293,6 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 						if(powerLeft<=0)
 							break;
 					}
-			if(!simulate)
-				lastTransfer = worldObj.getTotalWorldTime();
 		}
 		return received;
 	}
