@@ -13,6 +13,12 @@
 - added a 3D item render to the voltmeter, and allowed it to show energystorage on mouse-over (shoutout to Tage for the model! :D)
 - added the "Mass Fusion" Shader
 - added the "Angel's Thesis" Shader
+- added Shader support for Minecarts
+- added compat with Botania, Magnet Ring wont pull items from conveyors now
+- added Balloons! They are like Structural Connectors but they fly and glow and can be dyed
+- added the Skyhook! Now officially implemented, hopefully no longer stuttery and with its own manual entry!
+- added stairs for the other two treated woods and for concrete
+- gave concrete an entry in the manual and changed the recipe
 - fleshed out the Item Router. Now has OreDict, NBT and fuzzy filtering and matching buttons in the GUI
 - removed the ability to insert and extract graphite electrodes from the Arc Furnace
 - changed fluid pipes to be smarter about their connections (thanks cobra)
@@ -21,6 +27,11 @@
 - changed wooden crates to no longer be allowed inside eachother. This was a potential for NBT overflow
 - changed ingots to no longer be crushable
 - changed ores to only crush into a single piece of dust
+- changed Arc Furnace to distribute inputs equally across its slots
+- changed villager houses to maybe have shaders in the crates
+- changed Drill Heads to have +100% durability
+- changed Drills to be able to dig grass
+- changed certain ingame overlays to use a new font, styled to look like Nixie Tubes. You can disable this in the config
 - fixed bottling machine not accepting fluids correctly
 - fixed fluid dupe bug (thanks cobra)
 - fixed silo having pipes connect to everywhere
@@ -36,6 +47,11 @@
 - fixed multiple clientside desyncs (thanks malte0811)
 - fixed (possibly) the desyncing of the SkyHook
 - fixed connectors to have limited output as well rather than just accepting everything
+- fixed conveyors rendering the wrong way on some sides
+- fixed light opacity on mutliple blocks
+- fixed StackOverflow when using tesseracts with IE wires
+- fixed derped lightign on stairs
+- fixed connected sides on metal scaffolding
 - updated zh_CN.lang
 - updated fr_FR.lang
 - added es_ES.lang
