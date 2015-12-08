@@ -1,4 +1,4 @@
-#####Version 0.6.3
+#####Version 0.6.3 - BUILT
 - added the Chemical Thrower! A device that shoots fluids at people to varying effects! Also supports shaders!
 - added potioneffects to IE, these are used by the Chemthrower
 - added an interface to allow addons to make their own wooden posts that transformers can attach to (thanks UnwrittenFun)
