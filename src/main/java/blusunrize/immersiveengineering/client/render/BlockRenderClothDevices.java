@@ -41,6 +41,7 @@ public class BlockRenderClothDevices implements ISimpleBlockRenderingHandler
 		{
 			TileEntityBalloon tile = (TileEntityBalloon)world.getTileEntity(x, y, z);
 			ClientUtils.handleStaticTileRenderer(tile);
+			ClientUtils.renderAttachedConnections(tile);
 			return true;
 		}
 		return false;

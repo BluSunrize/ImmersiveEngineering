@@ -365,7 +365,7 @@ desc.ImmersiveEngineering.flavour.drillhead.level=Mining Level: %1$s
 desc.ImmersiveEngineering.flavour.drillhead.speed=Mining Speed: %1$s
 desc.ImmersiveEngineering.flavour.drillhead.damage=Attack Damage: %1$s
 
-desc.ImmersiveEngineering.flavour.skyhook=Not fully implemented!
+desc.ImmersiveEngineering.flavour.skyhook=A new form of travel
 
 desc.ImmersiveEngineering.flavour.toolupgrade.drillWaterproof=Allows the Mining Drill to operate under water
 desc.ImmersiveEngineering.flavour.toolupgrade.drillSpeed=Increases the digging speed of the Mining Drill
