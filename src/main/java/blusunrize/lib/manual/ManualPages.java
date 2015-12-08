@@ -314,7 +314,14 @@ public abstract class ManualPages implements IManualPage
 		@Override
 		public void initPage(GuiManual gui, int x, int y, List<GuiButton> pageButtons)
 		{
-			super.initPage(gui, x, y+44, pageButtons);
+			int length = stacks.length;
+			float scale = length>7?1f: length>4?1.5f: 2f;
+			int line0 = (int)(2/scale*4);
+			int line1 = line0-1;
+			int lineSum = line0+line1;
+			int lines = (length/lineSum*2)+(length%lineSum/line0)+(length%lineSum%line0>0?1:0);
+			int yOffset = lines*(int)(18*scale);
+			super.initPage(gui, x, y+yOffset, pageButtons);
 		}
 
 		@Override

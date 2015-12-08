@@ -105,6 +105,8 @@ tile.ImmersiveEngineering.woodenDecoration.scaffolding.name=Treated Wood Scaffol
 tile.ImmersiveEngineering.woodenDecoration.wallMount.name=Wooden Wall Mount
 
 tile.ImmersiveEngineering.woodenStairs.name=Treated Wood Stairs
+tile.ImmersiveEngineering.woodenStairs1.name=Treated Wood Stairs
+tile.ImmersiveEngineering.woodenStairs2.name=Treated Wood Stairs
 
 tile.ImmersiveEngineering.stoneDevice.hempcrete.name=Hempcrete
 tile.ImmersiveEngineering.stoneDevice.cokeOven.name=Coke Oven
@@ -118,6 +120,8 @@ tile.ImmersiveEngineering.stoneDecoration.blastBrick.name=Blast Brick
 tile.ImmersiveEngineering.stoneDecoration.coalCoke.name=Block of Coal Coke
 tile.ImmersiveEngineering.stoneDecoration.concrete.name=Concrete
 tile.ImmersiveEngineering.stoneDecoration.concreteTile.name=Concrete Tile
+tile.ImmersiveEngineering.concreteStairs.name=Concrete Stairs
+tile.ImmersiveEngineering.concreteTileStairs.name=Concrete Tile Stairs
 
 tile.ImmersiveEngineering.hemp.name=Industrial Hemp
 
@@ -333,6 +337,9 @@ desc.ImmersiveEngineering.info.electrodeIntegrity=Integrity
 desc.ImmersiveEngineering.flavour.treatedWood.0=Horizontal Planks
 desc.ImmersiveEngineering.flavour.treatedWood.1=Vertical Planks
 desc.ImmersiveEngineering.flavour.treatedWood.2=Packaged Planks
+desc.ImmersiveEngineering.flavour.woodenStairs=Horizontal Planks
+desc.ImmersiveEngineering.flavour.woodenStairs1=Vertical Planks
+desc.ImmersiveEngineering.flavour.woodenStairs2=Packaged Planks
 desc.ImmersiveEngineering.flavour.crate=Will keep its inventory when broken!
 desc.ImmersiveEngineering.flavour.barrel=Will keep its fluid when broken!
 desc.ImmersiveEngineering.flavour.barrelTemp=Cannot store hot fluids or gases
@@ -533,7 +540,8 @@ ie.manual.entry.alloys0=Mixing dusts creates an alloy blend that can then be sme
 
 ie.manual.entry.hemp.name=Industrial Hemp
 ie.manual.entry.hemp.subtext=530 fabric it
-ie.manual.entry.hemp0=Industrial Hemp is a remarkable plant! Not only are its seeds useful for the the creation of <link;biodiesel;§o§nBiodiesel§r>, the hemp fibers are also vital in the creation of <link;generator;§o§nImproved §o§nWindmills§r;3>. The seeds can be gathered by breaking tall grass.
+ie.manual.entry.hemp0=Industrial Hemp is a remarkable plant! Not only are its seeds useful for the the creation of <link;biodiesel;§o§nBiodiesel§r>, the hemp fibers are also useful for the creation of Tough Fabric. The seeds can be gathered by breaking tall grass.
+ie.manual.entry.hemp1=Tough Fabric is a resilient weave made from hemp fiber. It's used to create <link;generator;§o§nImproved §o§nWindmills§r;3> as well as <link;balloon;§o§nBalloons§r>.
 
 ie.manual.entry.cokeoven.name=Coke Oven
 ie.manual.entry.cokeoven.subtext=Hot topic!
@@ -545,6 +553,10 @@ ie.manual.entry.treatedwood.subtext=Highly Durable
 ie.manual.entry.treatedwood0=Treated Wood is, quite simply, wooden planks covered in creosote oil. It is however, one of the most important materials you will be using in Immersive Engineering, so you'd better be prepared to create a lot of it.
 ie.manual.entry.treatedwoodPost0=Posts made from treated wood make for excellent attachment points for your Wire Connectors. They are 4 blocks high, so you won't be able to place them without the proper clearance.<br>Using the hammer on the sides of the topmost block will attach an arm to the post. 
 ie.manual.entry.treatedwoodPost1=You can also place <link;wiring;§o§ntransformers§r;4> on the pole, which makes it less obtrusive.<br>Placing blocks below the arms of the wooden post will flip the arms upside down.
+
+ie.manual.entry.concrete.name=Concrete
+ie.manual.entry.concrete.subtext=Fortess Material
+ie.manual.entry.concrete0=Concrete is a very hard and resistant composite material. It's cheap to craft and makes for an excellent use for the excess slag produced by the <link;arcfurnace;§n§oArc §n§oFurnace§r>. 
 
 ie.manual.entry.balloon.name=Balloon
 ie.manual.entry.balloon.subtext=...just make 99 of them

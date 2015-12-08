@@ -166,8 +166,11 @@ public class BlockMetalDecoration extends BlockIEBase implements blusunrize.aqua
 		//		if(meta==1||meta==2||meta==3)
 		//			return true;
 		int meta = world.getBlockMetadata(x+(side==4?1:side==5?-1:0),y+(side==0?1:side==1?-1:0),z+(side==2?1:side==3?-1:0));
-		if(meta==META_scaffolding||meta==META_scaffolding2||meta==META_aluminiumScaffolding||meta==META_aluminiumScaffolding2)
-			return (world.getBlock(x, y, z)==this&&world.getBlockMetadata(x,y,z)==1)?false:true;
+		if((meta==META_scaffolding||meta==META_scaffolding2||meta==META_aluminiumScaffolding||meta==META_aluminiumScaffolding2)&&world.getBlock(x, y, z)==this)
+		{
+			int meta2 = world.getBlockMetadata(x,y,z);
+			return !(meta2==META_scaffolding||meta2==META_scaffolding2||meta2==META_aluminiumScaffolding||meta2==META_aluminiumScaffolding2);
+		}
 		if(meta==META_fence||meta==META_aluminiumFence)
 			return true;
 		return super.shouldSideBeRendered(world, x, y, z, side);

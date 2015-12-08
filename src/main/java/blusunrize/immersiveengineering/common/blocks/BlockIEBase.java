@@ -135,7 +135,7 @@ public abstract class BlockIEBase extends BlockContainer
 	public int getFireSpreadSpeed(IBlockAccess world, int x, int y, int z, ForgeDirection face)
 	{
 		return isFlammable?5:0;
-	}			
+	}
 
 	@Override
 	@SideOnly(Side.CLIENT)

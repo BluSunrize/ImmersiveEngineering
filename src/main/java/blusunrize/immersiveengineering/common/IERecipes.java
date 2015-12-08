@@ -161,7 +161,9 @@ public class IERecipes
 		addOredictRecipe(new ItemStack(IEContent.blockWoodenDecoration,2,1), "SSS","SSS", 'S',"treatedStick");
 		addOredictRecipe(new ItemStack(IEContent.blockWoodenDecoration,6,2), "WWW", 'W',"plankTreatedWood");
 		addOredictRecipe(new ItemStack(IEContent.blockWoodenDecoration,6,5), "WWW"," S ","S S", 'W',"plankTreatedWood",'S',new ItemStack(IEContent.blockWoodenDecoration,1,1));
-		addOredictRecipe(new ItemStack(IEContent.blockWoodenStair,4,0), "  W"," WW","WWW", 'W',"plankTreatedWood").setMirrored(true);
+		addOredictRecipe(new ItemStack(IEContent.blockWoodenStair,4,0), "  W"," WW","WWW", 'W',new ItemStack(IEContent.blockTreatedWood,1,0)).setMirrored(true);
+		addOredictRecipe(new ItemStack(IEContent.blockWoodenStair1,4,0), "  W"," WW","WWW", 'W',new ItemStack(IEContent.blockTreatedWood,1,1)).setMirrored(true);
+		addOredictRecipe(new ItemStack(IEContent.blockWoodenStair2,4,0), "  W"," WW","WWW", 'W',new ItemStack(IEContent.blockTreatedWood,1,2)).setMirrored(true);
 		addOredictRecipe(new ItemStack(IEContent.blockWoodenDecoration,4,6), "WW","WF","W ", 'W',"plankTreatedWood",'F',new ItemStack(IEContent.blockWoodenDecoration,1,1));
 
 		addOredictRecipe(new ItemStack(IEContent.blockWoodenDevice,1,0), "F","F","S", 'F',new ItemStack(IEContent.blockWoodenDecoration,1,1),'S',"bricksStone");
@@ -176,11 +178,14 @@ public class IERecipes
 		addOredictRecipe(new ItemStack(IEContent.blockStoneDecoration,2,1), "CBC","BSB","CBC", 'S',"sandstone",'C',Items.clay_ball,'B',"ingotBrick");
 		addOredictRecipe(new ItemStack(IEContent.blockStoneDecoration,2,2), "NBN","BDB","NBN", 'D',Items.blaze_powder,'N',"ingotBrickNether",'B',"ingotBrick");
 		addTwoWayStorageRecipe(new ItemStack(IEContent.blockStoneDecoration,1,3), new ItemStack(IEContent.itemMaterial,1,6));
-		addOredictRecipe(new ItemStack(IEContent.blockStoneDecoration,8,4), "SCS","GSG","SCS", 'C',Items.clay_ball,'S',"itemSlag",'G',Blocks.gravel);
+		addOredictRecipe(new ItemStack(IEContent.blockStoneDecoration,8,4), "SCS","GBG","SCS", 'C',Items.clay_ball,'S',"sand",'G',Blocks.gravel,'B',Items.water_bucket);
+		addOredictRecipe(new ItemStack(IEContent.blockStoneDecoration,12,4), "SCS","GBG","SCS", 'C',Items.clay_ball,'S',"itemSlag",'G',Blocks.gravel,'B',Items.water_bucket);
 		addShapelessOredictRecipe(new ItemStack(IEContent.blockStoneDecoration,1,4), new ItemStack(IEContent.blockStoneDecoration,1,5));
 		addOredictRecipe(new ItemStack(IEContent.blockStoneDecoration,4,5), "CC","CC", 'C',new ItemStack(IEContent.blockStoneDecoration,1,4));
 		addOredictRecipe(new ItemStack(IEContent.blockStoneDevice,2,4), " G ","IDI"," G ", 'G',"blockGlass",'I',"dustIron",'D',"dyeGreen");
-
+		addOredictRecipe(new ItemStack(IEContent.blockConcreteStair,4,0), "  C"," CC","CCC", 'C',new ItemStack(IEContent.blockStoneDecoration,1,4)).setMirrored(true);
+		addOredictRecipe(new ItemStack(IEContent.blockConcreteTileStair,4,0), "  C"," CC","CCC", 'C',new ItemStack(IEContent.blockStoneDecoration,1,5)).setMirrored(true);
+		
 		addTwoWayStorageRecipe(new ItemStack(Items.iron_ingot), new ItemStack(IEContent.itemMetal,1,21));
 		for(int i=0; i<=7; i++)
 		{
