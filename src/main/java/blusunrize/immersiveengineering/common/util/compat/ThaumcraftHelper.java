@@ -1,16 +1,14 @@
 package blusunrize.immersiveengineering.common.util.compat;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEffect_Damage;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEffect_Potion;
 import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.potion.Potion;
 import net.minecraft.tileentity.TileEntity;
-import thaumcraft.api.ThaumcraftApiHelper;
-import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.damagesource.DamageSourceThaumcraft;
 
 public class ThaumcraftHelper extends IECompatModule
@@ -44,59 +42,51 @@ public class ThaumcraftHelper extends IECompatModule
 
 	public static class AlchemyFurnaceAdapter extends ExternalHeaterHandler.HeatableAdapter
 	{
-		boolean canSmelt(NBTTagCompound nbt )
+		Method m_canSmelt;
+		Field f_furnaceBurnTime;
+		public AlchemyFurnaceAdapter()
 		{
-			NBTTagList inventoryList = nbt.getTagList("Items", 10);
-			ItemStack input = null;
-			for(int i=0; i<inventoryList.tagCount(); i++)
-			{
-				NBTTagCompound itemTag = inventoryList.getCompoundTagAt(i);
-				if(itemTag.getByte("Slot")==0)
-					input = ItemStack.loadItemStackFromNBT(itemTag);
-			}
-
-			if(input==null)
-				return false;
-			AspectList al = ThaumcraftApiHelper.getObjectAspects(input);
-			al = ThaumcraftApiHelper.getBonusObjectTags(input, al);
-			if(al==null || al.size()<=0)
-				return false;
-			AspectList storedAspects = new AspectList();
-			storedAspects.readFromNBT(nbt);
-			if(al.visSize()>(50-storedAspects.size()))
-				return false;
-			return true;
+			try{
+				Class c_TileEvaporator = Class.forName("thaumcraft.common.tiles.TileAlchemyFurnace");
+				m_canSmelt = c_TileEvaporator.getDeclaredMethod("canSmelt");
+				m_canSmelt.setAccessible(true);
+				f_furnaceBurnTime = c_TileEvaporator.getDeclaredField("furnaceBurnTime");
+			}catch(Exception e){}
+		}
+		boolean canSmelt(TileEntity tileEntity) throws Exception
+		{
+			if(m_canSmelt!=null)
+				return (boolean)m_canSmelt.invoke(tileEntity);
+			return false;
 		}
 
 		@Override
 		public int doHeatTick(TileEntity tileEntity, int energyAvailable, boolean redstone)
 		{
 			int energyConsumed = 0;
-
-			NBTTagCompound nbt = new NBTTagCompound();
-			tileEntity.writeToNBT(nbt);
-			short time = nbt.getShort("BurnTime");
-			boolean canSmelt = redstone?true:canSmelt(nbt);
-			if(canSmelt)
-			{
-				boolean burning = time==0;
-				if(time<200)
+			try{
+				int time = f_furnaceBurnTime.getInt(tileEntity);
+				boolean canSmelt = redstone?true:canSmelt(tileEntity);
+				if(canSmelt)
 				{
-					int heatAttempt = 4;
-					int heatEnergyRatio = Math.max(1, ExternalHeaterHandler.defaultFurnaceEnergyCost);
-					int energyToUse = Math.min(energyAvailable, heatAttempt*heatEnergyRatio);
-					int heat = energyToUse/heatEnergyRatio;
-					if(heat>0)
+					boolean burning = time==0;
+					if(time<200)
 					{
-						time += heat;
-						energyConsumed += heat*heatEnergyRatio;
-						if(!burning)
-							tileEntity.getWorldObj().markBlockForUpdate(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord);
+						int heatAttempt = 4;
+						int heatEnergyRatio = Math.max(1, ExternalHeaterHandler.defaultFurnaceEnergyCost);
+						int energyToUse = Math.min(energyAvailable, heatAttempt*heatEnergyRatio);
+						int heat = energyToUse/heatEnergyRatio;
+						if(heat>0)
+						{
+							time += heat;
+							energyConsumed += heat*heatEnergyRatio;
+							if(!burning)
+								tileEntity.getWorldObj().markBlockForUpdate(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord);
+						}
 					}
+					f_furnaceBurnTime.setInt(tileEntity, time);
 				}
-				nbt.setShort("BurnTime", time);
-				tileEntity.readFromNBT(nbt);
-			}
+			}catch(Exception e){}
 			return energyConsumed;
 		}
 	}
