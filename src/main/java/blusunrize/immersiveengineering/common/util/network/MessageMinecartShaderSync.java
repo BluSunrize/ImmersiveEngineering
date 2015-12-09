@@ -77,7 +77,7 @@ public class MessageMinecartShaderSync implements IMessage
 		@Override
 		public IMessage onMessage(MessageMinecartShaderSync message, MessageContext ctx)
 		{
-			World world = DimensionManager.getWorld(message.dimension);
+			World world = ImmersiveEngineering.proxy.getClientWorld();
 			if(world!=null)
 			{
 				Entity entity = world.getEntityByID(message.entityID);
