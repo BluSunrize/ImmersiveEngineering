@@ -1,3 +1,7 @@
+#####Version 0.6.4
+- fixed energy not being transmitted (thanks a lot cobra ^.^)
+
+
 #####Version 0.6.3 - BUILT
 - added the Chemical Thrower! A device that shoots fluids at people to varying effects! Also supports shaders!
 - added potioneffects to IE, these are used by the Chemthrower
@@ -56,6 +60,7 @@
 - updated fr_FR.lang
 - added es_ES.lang
 - Oathkeeper
+- Super Chief
 
 
 #####Version 0.6.2 - BUILT
