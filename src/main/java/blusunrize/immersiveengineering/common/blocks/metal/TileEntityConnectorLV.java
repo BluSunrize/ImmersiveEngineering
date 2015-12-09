@@ -81,7 +81,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 	@Override
 	public boolean canUpdate()
 	{
-		return Lib.IC2;
+		return true;
 	}
 
 	@Override
@@ -233,10 +233,12 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 			int sum = 0;
 			HashMap<AbstractConnection,Integer> powerSorting = new HashMap<AbstractConnection,Integer>();
 			for(AbstractConnection con : outputs)
-				if(con!=null && con.cableType!=null && toIIC(con.end, worldObj)!=null)
+			{
+				IImmersiveConnectable end = toIIC(con.end, worldObj);
+				if(con.cableType!=null && end!=null)
 				{
 					int atmOut = Math.min(powerForSort,con.cableType.getTransferRate());
-					int tempR = toIIC(con.end,worldObj).outputEnergy(atmOut, true, energyType);
+					int tempR = end.outputEnergy(atmOut, true, energyType);
 					IELogger.debug("trying "+atmOut+"RF for: "+con.end+", accepted "+tempR);
 					if(tempR>0)
 					{
@@ -245,19 +247,22 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 						sum += tempR;
 					}
 				}
+			}
 
 			if(sum>0)
 				for(AbstractConnection con : powerSorting.keySet())
-					if(con!=null && con.cableType!=null && toIIC(con.end, worldObj)!=null)
+				{
+					IImmersiveConnectable end = toIIC(con.end, worldObj);
+					if(con.cableType!=null && end!=null)
 					{
 						float prio = powerSorting.get(con)/(float)sum;
 						int output = (int)(powerForSort*prio);
 
-						int tempR = toIIC(con.end,worldObj).outputEnergy(Math.min(output,con.cableType.getTransferRate()), true, energyType);
+						int tempR = end.outputEnergy(Math.min(output, con.cableType.getTransferRate()), true, energyType);
 						int r = tempR;
 						int maxInput = getMaxInput();
 						tempR -= (int) Math.max(0, Math.floor(tempR*con.getPreciseLossRate(tempR,maxInput)));
-						toIIC(con.end, worldObj).outputEnergy(tempR, simulate, energyType);
+						end.outputEnergy(tempR, simulate, energyType);
 						HashSet<IImmersiveConnectable> passedConnectors = new HashSet<IImmersiveConnectable>();
 						float intermediaryLoss = 0;
 						for(Connection sub : con.subConnections)
@@ -276,15 +281,15 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 							{
 								IELogger.debug("Okay, this wire is HAWT.");
 								IELogger.debug("Or at least hotter than "+sub.cableType.getTransferRate());
-							}	
+							}
 							if(!simulate)
 							{
 								ImmersiveNetHandler.INSTANCE.getTransferedRates(worldObj.provider.dimensionId).put(sub,transferredPerCon);
 								IImmersiveConnectable subStart = toIIC(sub.start,worldObj);
 								IImmersiveConnectable subEnd = toIIC(sub.end,worldObj);
-								if(passedConnectors.add(subStart))
+								if(subStart!=null && passedConnectors.add(subStart))
 									subStart.onEnergyPassthrough((int)(r-r*intermediaryLoss));
-								if(passedConnectors.add(subEnd))
+								if(subEnd!=null && passedConnectors.add(subEnd))
 									subEnd.onEnergyPassthrough((int)(r-r*intermediaryLoss));
 							}
 						}
@@ -293,6 +298,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 						if(powerLeft<=0)
 							break;
 					}
+				}
 		}
 		return received;
 	}
