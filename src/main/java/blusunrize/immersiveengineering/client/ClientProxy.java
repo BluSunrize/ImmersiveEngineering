@@ -741,4 +741,10 @@ public class ClientProxy extends CommonProxy
 	{
 		return ((List<String>)ClientUtils.font().listFormattedStringToWidth(s, w)).toArray(new String[0]);
 	}
+
+	@Override
+	public World getClientWorld()
+	{
+		return ClientUtils.mc().theWorld;
+	}
 }
