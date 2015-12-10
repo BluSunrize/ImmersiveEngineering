@@ -45,18 +45,18 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 	@Override
 	public void updateEntity()
 	{
-		if(Lib.IC2 && !this.inICNet && !FMLCommonHandler.instance().getEffectiveSide().isClient())
-		{
-			IC2Helper.loadIC2Tile(this);
-			this.inICNet = true;
+		if (!worldObj.isRemote) {
+			if (Lib.IC2 && !this.inICNet) {
+				IC2Helper.loadIC2Tile(this);
+				this.inICNet = true;
+			}
+			if (energyStored > 0) {
+				int temp = this.transferEnergy(energyStored, true, 0);
+				if (temp > 0)
+					energyStored -= this.transferEnergy(temp, false, 0);
+			}
+			currentTickAccepted = 0;
 		}
-		if(energyStored>0)
-		{
-			int temp = this.transferEnergy(energyStored, true, 0);
-			if(temp>0)
-				energyStored -= this.transferEnergy(temp, false, 0);
-		}
-		currentTickAccepted=0;
 	}
 	@Override
 	public void invalidate()

@@ -85,6 +85,8 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 			return;
 		}
 		boolean update = false;
+		//this is ignored if update is false
+		boolean updateClient = true;
 
 		boolean hasElectrodes = true;
 		for(int i=0; i<3; i++)
@@ -97,8 +99,10 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 			{
 				hasElectrodes = false;
 				if(active)
+				{
 					active = false;
-				update = true;
+					update = true;
+				}
 			}
 		}
 
@@ -215,6 +219,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 									active = false;
 							}
 							update = true;
+							updateClient = false;
 						}
 					}
 					else if(process[i]>0)
@@ -269,7 +274,8 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 		{
 			this.markDirty();
 			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-			worldObj.addBlockEvent(xCoord, yCoord, zCoord, getBlockType(), -1, -1);
+			if (updateClient)
+				worldObj.addBlockEvent(xCoord, yCoord, zCoord, getBlockType(), -1, -1);
 		}
 	}
 
@@ -331,7 +337,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 	@Override
 	public boolean receiveClientEvent(int id, int arg)
 	{
-		if (id==-1||id==255)
+		if ((id==-1||id==255)&&worldObj.isRemote)
 		{
 			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 			return true;
