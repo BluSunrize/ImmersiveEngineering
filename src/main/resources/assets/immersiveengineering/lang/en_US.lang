@@ -518,6 +518,10 @@ ie.manual.entry.updateNews_31=Another new invention of the research department i
 ie.manual.entry.updateNews_32=Other noteable additions all around the topic of transport and decoration include:<br>- <link;shader;§o§nShaders§r> can be applied to Minecarts<br>- <link;skyhook;§o§nThe §o§nEngineer's §o§nSkyhook§r>, a tool to allow you to zip along your powerlines and overtake those Minecarts<br>- <link;balloon;§o§nBalloons§r>, as a convenient way to suspend connectors in the air and form the skylines for the afore mentioned hook<br>- <link;concrete;§o§nConcrete§r> that will make for a hard landing when you fall off the skyline
 ie.manual.entry.updateNews_33=Finally, the financial department has been hassling us for not keeping track of our power usage. After a heated argument, the have presented us with the blueprints for the <link;eMeter;§o§nCurrent §o§nTransformer§r>, a device that can measure the energy flowing through it. Needless to say they are even less happy now that they know how much energy an Arc Furnace really consumes.
 
+ie.manual.entry.updateNews_4.name=What's new in v0.6.4
+ie.manual.entry.updateNews_4.subtext=Old, new; borrowed and Blu
+ie.manual.entry.updateNews_40=Dear Engineer!<br><br>The past update has brought only little changes.<br>The energy transmission is fixed again, the engineer it that broke has been dunked into cold water as punishment.<br>The <link;furnaceHeater;§o§nFurnace §o§nHeater§r> has seen some improvements that now allow it to heat up Alchemical Furnaces from Thaumcraft or Evaporators from Cutting Edge.<br><br>That's all for now, let's hope it stays sufficiently stable.
+
 ie.manual.category.general.name=Overview and Resources
 ie.manual.category.construction.name=Construction
 ie.manual.category.energy.name=Power, wires, generators
