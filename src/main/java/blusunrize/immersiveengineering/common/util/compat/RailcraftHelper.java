@@ -4,16 +4,16 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Map;
 
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelMinecart;
-import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityMinecart;
 import blusunrize.immersiveengineering.api.shader.ShaderCaseMinecart;
 import blusunrize.immersiveengineering.client.models.ModelShaderMinecart;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.model.ModelMinecart;
+import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityMinecart;
 
 public class RailcraftHelper extends IECompatModule
 {
@@ -68,16 +68,22 @@ public class RailcraftHelper extends IECompatModule
 			byte width = 16;
 			byte yOffset = 4;
 			byte height = 6;
-			this.wrappedModel.sideModels[3] = new ModelRenderer(this, 0, 0);
-			this.wrappedModel.sideModels[4] = new ModelRenderer(this, 0, 0);
-			this.wrappedModel.sideModels[4].mirror = true;
-		    this.wrappedModel.sideModels[3].addBox(-length/2+2, -height-1, -1, length-4, height, 2, 0);
-		    this.wrappedModel.sideModels[3].setRotationPoint(0, yOffset, -width/2+1);
-		    this.wrappedModel.sideModels[4].addBox(-length/2+2, -height-1, -1, length-4, height, 2, 0);
-		    this.wrappedModel.sideModels[4].setRotationPoint(0, yOffset, width/2-1);
-			this.wrappedModel.sideModels[3].rotateAngleY = (float)Math.PI;
-			
-
+			this.sideModels[3] = new ModelRenderer(this, 0, 0);
+			this.sideModels[4] = new ModelRenderer(this, 0, 0);
+			this.sideModels[4].mirror = true;
+		    this.sideModels[3].addBox(-length/2+2, -height-1, -1, length-4, height, 2, 0);
+		    this.sideModels[3].setRotationPoint(0, yOffset, -width/2+1);
+		    this.sideModels[4].addBox(-length/2+2, -height-1, -1, length-4, height, 2, 0);
+		    this.sideModels[4].setRotationPoint(0, yOffset, width/2-1);
+			this.sideModels[3].rotateAngleY = (float)Math.PI;
+			this.sideModelsMirrored[3] = new ModelRenderer(this, 0, 0);
+			this.sideModelsMirrored[4] = new ModelRenderer(this, 0, 0);
+			this.sideModelsMirrored[4].mirror = true;
+		    this.sideModelsMirrored[3].addBox(-length/2+2, -height-1, -1, length-4, height, 2, 0);
+		    this.sideModelsMirrored[3].setRotationPoint(0, yOffset, -width/2+1);
+		    this.sideModelsMirrored[4].addBox(-length/2+2, -height-1, -1, length-4, height, 2, 0);
+		    this.sideModelsMirrored[4].setRotationPoint(0, yOffset, width/2-1);
+			this.sideModelsMirrored[3].rotateAngleY = (float)Math.PI;
 		}
 		
 

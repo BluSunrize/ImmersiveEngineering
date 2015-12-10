@@ -7,10 +7,24 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
+
+import blusunrize.immersiveengineering.api.energy.IImmersiveConnectable;
+import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler;
+import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler.Connection;
+import blusunrize.immersiveengineering.client.render.TileRenderIE;
+import blusunrize.immersiveengineering.common.util.IESound;
+import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
+import codechicken.lib.gui.GuiDraw;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound.AttenuationType;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.model.ModelBox;
+import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.RenderHelper;
@@ -37,18 +51,6 @@ import net.minecraftforge.client.model.obj.Vertex;
 import net.minecraftforge.client.model.obj.WavefrontObject;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidTank;
-
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
-
-import blusunrize.immersiveengineering.api.energy.IImmersiveConnectable;
-import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler;
-import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler.Connection;
-import blusunrize.immersiveengineering.client.render.TileRenderIE;
-import blusunrize.immersiveengineering.common.util.IESound;
-import blusunrize.immersiveengineering.common.util.Utils;
-import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
-import codechicken.lib.gui.GuiDraw;
 
 public class ClientUtils
 {
@@ -343,6 +345,32 @@ public class ClientUtils
 		sound.evaluateVolume();
 		ClientUtils.mc().getSoundHandler().playSound(sound);
 		return sound;
+	}
+
+	public static ModelRenderer[] copyModelRenderers(ModelBase model, ModelRenderer... oldRenderers)
+	{
+		ModelRenderer[] newRenderers = new ModelRenderer[oldRenderers.length];
+		for(int i=0; i<newRenderers.length; i++)
+			if(oldRenderers[i]!=null)
+			{
+				newRenderers[i] = new ModelRenderer(model, oldRenderers[i].boxName);
+				int toX = oldRenderers[i].textureOffsetX;
+				int toY = oldRenderers[i].textureOffsetY;
+				newRenderers[i].setTextureOffset(toX,toY);
+				newRenderers[i].mirror = oldRenderers[i].mirror;
+				ArrayList<ModelBox> newCubes = new ArrayList<ModelBox>();
+				for(ModelBox cube :  (List<ModelBox>)oldRenderers[i].cubeList)
+					newCubes.add(new ModelBox(newRenderers[i],toX,toY, cube.posX1,cube.posY1,cube.posZ1, (int)(cube.posX2-cube.posX1),(int)(cube.posY2-cube.posY1),(int)(cube.posZ2-cube.posZ1), 0));
+				newRenderers[i].cubeList = newCubes;
+				newRenderers[i].setRotationPoint(oldRenderers[i].rotationPointX,oldRenderers[i].rotationPointY,oldRenderers[i].rotationPointZ);
+				newRenderers[i].rotateAngleX = oldRenderers[i].rotateAngleX;
+				newRenderers[i].rotateAngleY = oldRenderers[i].rotateAngleY;
+				newRenderers[i].rotateAngleZ = oldRenderers[i].rotateAngleZ;
+				newRenderers[i].offsetX = oldRenderers[i].offsetX;
+				newRenderers[i].offsetY = oldRenderers[i].offsetY;
+				newRenderers[i].offsetZ = oldRenderers[i].offsetZ;
+			}
+		return newRenderers;
 	}
 
 	public static void handleStaticTileRenderer(TileEntity tile)

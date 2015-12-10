@@ -6,6 +6,7 @@ import java.util.List;
 
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelMinecart;
+import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
@@ -21,18 +22,21 @@ public class ModelShaderMinecart extends ModelMinecart
 {
 	public static HashMap<Integer, ItemStack> shadedCarts = new HashMap<Integer, ItemStack>();
 	public static boolean rendersReplaced = false;
-	
-	public ModelMinecart wrappedModel;
-	
+
+	//	public ModelMinecart wrappedModel;
+	//	public ModelMinecart wrappedMirroredModel;
+	public ModelRenderer[] sideModelsMirrored = new ModelRenderer[7];
+
 	public ModelShaderMinecart(ModelMinecart model)
 	{
 		super();
-		this.wrappedModel = model;
-		wrappedModel.sideModels[4].mirror = true;
+		this.sideModels = ClientUtils.copyModelRenderers(model, model.sideModels);
+		this.sideModelsMirrored = ClientUtils.copyModelRenderers(model, model.sideModels);
+		sideModelsMirrored[4].mirror = true;
 		ArrayList<ModelBox> newCubes = new ArrayList<ModelBox>();
-		for(ModelBox cube :  (List<ModelBox>)wrappedModel.sideModels[4].cubeList)
-			newCubes.add(new ModelBox(wrappedModel.sideModels[4], 0,0, cube.posX1,cube.posY1,cube.posZ1, (int)(cube.posX2-cube.posX1),(int)(cube.posY2-cube.posY1),(int)(cube.posZ2-cube.posZ1), 0));
-		wrappedModel.sideModels[4].cubeList = newCubes;
+		for(ModelBox cube :  (List<ModelBox>)sideModelsMirrored[4].cubeList)
+			newCubes.add(new ModelBox(sideModelsMirrored[4], 0,0, cube.posX1,cube.posY1,cube.posZ1, (int)(cube.posX2-cube.posX1),(int)(cube.posY2-cube.posY1),(int)(cube.posZ2-cube.posZ1), 0));
+		sideModelsMirrored[4].cubeList = newCubes;
 	}
 
 
@@ -52,7 +56,8 @@ public class ModelShaderMinecart extends ModelMinecart
 			GL11.glEnable(GL11.GL_BLEND);
 			OpenGlHelper.glBlendFunc(770, 771, 0, 1);
 
-			wrappedModel.sideModels[5].rotationPointY = 4.0F - f2;
+			sideModels[5].rotationPointY = 4.0F - f2;
+			sideModelsMirrored[5].rotationPointY = 4.0F - f2;
 			for(int part=0;part<sideModels.length-1;part++)
 				if(sideModels[part]!=null)
 				{
@@ -69,7 +74,11 @@ public class ModelShaderMinecart extends ModelMinecart
 							if(pass==2 && ((ShaderCaseMinecart)sCase).additionalTexture!=null)
 								texture = ((ShaderCaseMinecart)sCase).additionalTexture;
 							ClientUtils.bindTexture("immersiveengineering:textures/models/shaders/minecart_"+texture+".png");
-							wrappedModel.sideModels[part].render(f5);
+
+							if(((ShaderCaseMinecart)sCase).mirrorSideForPass[pass])
+								sideModelsMirrored[part].render(f5);
+							else
+								sideModels[part].render(f5);
 
 							GL11.glColor4f(1,1,1,1);
 							GL11.glScalef(1/scale,1/scale,1/scale);
@@ -80,6 +89,6 @@ public class ModelShaderMinecart extends ModelMinecart
 			GL11.glDisable(GL11.GL_BLEND);
 		}
 		else
-			wrappedModel.render(entity, f0, f1, f2, f3, f4, f5);
+			super.render(entity, f0, f1, f2, f3, f4, f5);
 	}
 }

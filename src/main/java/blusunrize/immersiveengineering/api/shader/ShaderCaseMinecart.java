@@ -14,6 +14,7 @@ public class ShaderCaseMinecart extends ShaderCase
 	public int overlayType=0;
 	public String additionalTexture = null;
 	public boolean[] overlaySides = {true, true,true,true,true, true,true};
+	public boolean[] mirrorSideForPass = {true,true,true,true};
 
 	public ShaderCaseMinecart(int overlayType, int[] colourPrimary, int[] colourSecondary, String additionalTexture)
 	{
