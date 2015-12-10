@@ -518,16 +518,6 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void serverStarting()
 	{
-		if(!ModelShaderMinecart.rendersReplaced)
-		{
-			for(Object render : RenderManager.instance.entityRenderMap.values())
-				if(RenderMinecart.class.isAssignableFrom(render.getClass()))
-				{
-					ModelMinecart wrapped = ObfuscationReflectionHelper.getPrivateValue(RenderMinecart.class,(RenderMinecart)render, "field_77013_a","modelMinecart");
-					ObfuscationReflectionHelper.setPrivateValue(RenderMinecart.class,(RenderMinecart)render, (ModelMinecart)new ModelShaderMinecart(wrapped), "field_77013_a","modelMinecart");
-				}
-			ModelShaderMinecart.rendersReplaced = true;
-		}
 	}
 
 	@Override
