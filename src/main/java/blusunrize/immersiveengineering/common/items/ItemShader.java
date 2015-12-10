@@ -54,8 +54,7 @@ public class ItemShader extends ItemIEBase implements IShaderItem
 		addShader("Trident", 2, new int[]{81,81,81,255},new int[]{168,168,168,255},new int[]{41,211,255,255},new int[]{175,175,175,255});
 		addShader("Chloris", 4, new int[]{56,50,42,255},new int[]{56,50,42,255},new int[]{136,250,190,255},new int[]{200,200,200,255});
 		addShader("Crescent Rose", 2, new int[]{20,20,20,255},new int[]{145,0,8,255},new int[]{8,8,8,255},new int[]{164,164,164,255}, null,0x001);
-		addShader("Qrow1", 4, new int[]{49,54,64,255},new int[]{216,215,208,255},new int[]{109,28,17,255},new int[]{177,167,163,255});
-		addShader("Qrow2", 2, new int[]{109,28,17,255},new int[]{216,215,208,255},new int[]{49,54,64,255},new int[]{177,167,163,255});
+		addShader("Qrow", 2, new int[]{109,28,17,255},new int[]{216,215,208,255},new int[]{49,54,64,255},new int[]{177,167,163,255});
 
 		addShader("Vanguard", 3, new int[]{55,55,55,255},new int[]{19,27,66,255},new int[]{184,108,20,255},new int[]{220,220,220,255});
 		addShader("Regal", 4, new int[]{216,212,209,255},new int[]{67,28,29,255},new int[]{216,212,209,255},new int[]{216,212,209,255});
