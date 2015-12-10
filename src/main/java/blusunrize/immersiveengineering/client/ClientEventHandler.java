@@ -7,6 +7,7 @@ import java.util.Set;
 
 import org.lwjgl.opengl.GL11;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.AdvancedAABB;
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
@@ -35,6 +36,7 @@ import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.SkylineHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.compat.GregTechHelper;
+import blusunrize.immersiveengineering.common.util.network.MessageRequestBlockUpdate;
 import cofh.api.energy.IEnergyReceiver;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.ObfuscationReflectionHelper;
@@ -479,6 +481,10 @@ public class ClientEventHandler
 						}
 						if(text!=null)
 						{
+							if (player.worldObj.getTotalWorldTime()%20==0)
+							{
+								ImmersiveEngineering.packetHandler.sendToServer(new MessageRequestBlockUpdate(mop.blockX, mop.blockY, mop.blockZ, player.dimension));
+							}
 							int i = 0;
 							for(String s : text)
 								if(s!=null)
