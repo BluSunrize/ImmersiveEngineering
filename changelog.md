@@ -1,4 +1,4 @@
-#####Version 0.6.4
+#####Version 0.6.4 - BUILT
 - added an API for the the FurnaceHeater
 	- this fixes the dupe with Natura's Netherrack Furnace
 	- adds compatability for Thaucmraft's Alchemical Furnace
