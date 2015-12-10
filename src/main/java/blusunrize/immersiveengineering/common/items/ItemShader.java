@@ -14,17 +14,21 @@ import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.IEVillagerTradeHandler.MerchantItem;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.lib.manual.ManualUtils;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IIcon;
+import net.minecraft.util.StatCollector;
 import net.minecraft.util.WeightedRandomChestContent;
 import net.minecraftforge.common.ChestGenHooks;
 
@@ -48,7 +52,7 @@ public class ItemShader extends ItemIEBase implements IShaderItem
 		addShader("Sponsor", 0, new int[]{25,25,25,255}, new int[]{247,27,36,255}, new int[]{255,255,255,255},new int[]{170,170,170,255}, "sponsor",-1);
 		((ShaderCaseMinecart)IEApi.getShader("Sponsor", "minecart")).mirrorSideForPass[2]=false;
 		addShader("Mass Fusion", 3, new int[]{110,90,55,255}, new int[]{57,71,48,255}, new int[]{84,84,84,255}, new int[]{170,170,170,255}, "fusion",-1);
-		
+
 		addShader("StormFlower", 1, new int[]{39,52,39,255},new int[]{40,111,48,255},new int[]{75,146,85,255},new int[]{40,111,48,255});
 		addShader("Mil\u00f3", 2, new int[]{59,27,16,255},new int[]{103,0,4,255},new int[]{206,126,16,255},new int[]{103,0,4,255});
 		addShader("Trident", 2, new int[]{81,81,81,255},new int[]{168,168,168,255},new int[]{41,211,255,255},new int[]{175,175,175,255});
@@ -60,7 +64,7 @@ public class ItemShader extends ItemIEBase implements IShaderItem
 		addShader("Regal", 4, new int[]{216,212,209,255},new int[]{67,28,29,255},new int[]{216,212,209,255},new int[]{216,212,209,255});
 		addShader("Harrowed", 4, new int[]{22,19,33,255},new int[]{67,28,29,255},new int[]{22,19,33,255},new int[]{22,19,33,255});
 		addShader("Taken", 5, new int[]{17,28,38,255},new int[]{17,28,38,255},new int[]{186,215,221,255},new int[]{17,28,38,255});
-	
+
 		addShader("Angel's Thesis", 2, new int[]{30,30,30,255},new int[]{117,70,151,255},new int[]{119,185,61,255},new int[]{80,80,80,255});
 	}
 
@@ -112,6 +116,19 @@ public class ItemShader extends ItemIEBase implements IShaderItem
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean adv)
 	{
+		if(!GuiScreen.isShiftKeyDown())
+			list.add(StatCollector.translateToLocal(Lib.DESC_INFO+"shader.applyTo")+" "+StatCollector.translateToLocal(Lib.DESC_INFO+"holdShift"));
+		else
+		{
+			list.add(StatCollector.translateToLocal(Lib.DESC_INFO+"shader.applyTo"));
+			String name = getShaderName(stack);
+			if(name!=null && !name.isEmpty())
+			{
+				List<ShaderCase> array = IEApi.shaderCaseRegistry.get(name);
+				for(ShaderCase sCase : array)
+					list.add(EnumChatFormatting.DARK_GRAY+" "+StatCollector.translateToLocal(Lib.DESC_INFO+"shader."+sCase.getShaderType()));
+			}
+		}
 	}
 	@Override
 	public String getItemStackDisplayName(ItemStack stack)

@@ -307,6 +307,8 @@ desc.ImmersiveEngineering.info.mininglvl.6=§5Manyullyn§d+
 
 desc.ImmersiveEngineering.info.durability=Durability: %1$s
 
+desc.ImmersiveEngineering.info.holdShift=§6Hold Shift§r
+
 desc.ImmersiveEngineering.info.mineral.Iron=Iron
 desc.ImmersiveEngineering.info.mineral.Magnetite=Magnetite
 desc.ImmersiveEngineering.info.mineral.Pyrite=Pyrite
@@ -333,6 +335,11 @@ desc.ImmersiveEngineering.info.blueprint.specialBullet=Specialized Projectiles
 desc.ImmersiveEngineering.info.blueprint.electrode=Arc Furnace Electrodes
 
 desc.ImmersiveEngineering.info.electrodeIntegrity=Integrity
+
+desc.ImmersiveEngineering.info.shader.applyTo=Can be applied to:
+desc.ImmersiveEngineering.info.shader.revolver=Revolver
+desc.ImmersiveEngineering.info.shader.chemthrower=Chemical Thrower
+desc.ImmersiveEngineering.info.shader.minecart=Minecart
 
 desc.ImmersiveEngineering.flavour.treatedWood.0=Horizontal Planks
 desc.ImmersiveEngineering.flavour.treatedWood.1=Vertical Planks
