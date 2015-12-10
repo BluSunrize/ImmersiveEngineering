@@ -123,7 +123,7 @@ public class ImmersiveEngineering
 		for(IECompatModule compat : IECompatModule.modules)
 			compat.postInit();
 
-		ExcavatorHandler.recalculateChances();
+		ExcavatorHandler.recalculateChances(true);
 		IEContent.postInit();
 		proxy.postInit();
 
