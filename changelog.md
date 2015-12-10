@@ -1,5 +1,13 @@
 #####Version 0.6.4
-- fixed energy not being transmitted (thanks a lot cobra ^.^)
+- added an API for the the FurnaceHeater
+	- this fixes the dupe with Natura's Netherrack Furnace
+	- adds compatability for Thaucmraft's Alchemical Furnace
+	- adds compatability for CuttingEdge's Evaporator
+- added the "Qrow" Shader
+- fixed energy not being transmitted (thanks cobra)
+- fixed minecart shaders not syncing on servers (thanks cobra)
+- fixed NPE upon joining servers
+- updated zh_CN.lang
 
 
 #####Version 0.6.3 - BUILT
