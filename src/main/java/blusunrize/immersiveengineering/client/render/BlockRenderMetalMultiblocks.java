@@ -108,7 +108,7 @@ public class BlockRenderMetalMultiblocks implements ISimpleBlockRenderingHandler
 			}
 			else if(metadata==BlockMetalMultiblocks.META_dieselGenerator)
 			{
-				GL11.glTranslatef(1.5f, 1F, 1.1875f);
+				GL11.glTranslatef(1f, 1F, 1.1875f);
 				GL11.glScalef(.3125f, .3125f, .3125f);
 				MultiblockDieselGenerator.instance.renderFormedStructure();
 				GL11.glEnable(32826);

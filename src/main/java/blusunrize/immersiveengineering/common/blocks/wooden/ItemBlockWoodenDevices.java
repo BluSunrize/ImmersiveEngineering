@@ -12,6 +12,7 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
+import blusunrize.immersiveengineering.common.util.IEAchievements;
 import blusunrize.immersiveengineering.common.util.Lib;
 
 public class ItemBlockWoodenDevices extends ItemBlockIEBase
@@ -129,7 +130,10 @@ public class ItemBlockWoodenDevices extends ItemBlockIEBase
 			}
 		}
 		else if(tileEntity instanceof TileEntityWindmill)
+		{
+			player.triggerAchievement(IEAchievements.placeWindmill);
 			((TileEntityWindmill)tileEntity).facing=f;
+		}
 		else if(tileEntity instanceof TileEntityWoodenCrate)
 		{
 			if(stack.hasTagCompound())

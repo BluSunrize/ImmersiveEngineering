@@ -4,6 +4,7 @@ import blusunrize.immersiveengineering.api.energy.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorStructural;
 import blusunrize.immersiveengineering.common.util.Utils;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Vec3;
@@ -13,6 +14,7 @@ public class TileEntityBalloon extends TileEntityConnectorStructural
 	public int style = 0;
 	public byte colour0 = 15;
 	public byte colour1 = 15;
+	public ItemStack shader;
 
 	@Override
 	public boolean canUpdate()
@@ -27,6 +29,7 @@ public class TileEntityBalloon extends TileEntityConnectorStructural
 		style = nbt.getInteger("style");
 		colour0 = nbt.getByte("colour0");
 		colour1 = nbt.getByte("colour1");
+		shader = ItemStack.loadItemStackFromNBT(nbt.getCompoundTag("shader"));
 	}
 
 	@Override
@@ -36,6 +39,11 @@ public class TileEntityBalloon extends TileEntityConnectorStructural
 		nbt.setInteger("style",style);
 		nbt.setByte("colour0",colour0);
 		nbt.setByte("colour1",colour1);
+		if(shader!=null)
+		{
+			NBTTagCompound shaderTag = shader.writeToNBT(new NBTTagCompound());
+			nbt.setTag("shader", shaderTag);
+		}
 	}
 	
 	@Override

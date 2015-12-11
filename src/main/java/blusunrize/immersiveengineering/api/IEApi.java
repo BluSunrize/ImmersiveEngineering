@@ -4,18 +4,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.potion.Potion;
-import net.minecraftforge.oredict.OreDictionary;
+import com.google.common.collect.ArrayListMultimap;
+
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
+import blusunrize.immersiveengineering.api.shader.ShaderCaseBalloon;
 import blusunrize.immersiveengineering.api.shader.ShaderCaseChemthrower;
 import blusunrize.immersiveengineering.api.shader.ShaderCaseMinecart;
 import blusunrize.immersiveengineering.api.shader.ShaderCaseRevolver;
-
-import com.google.common.collect.ArrayListMultimap;
-
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.GameRegistry.UniqueIdentifier;
+import net.minecraft.item.ItemStack;
+import net.minecraft.potion.Potion;
+import net.minecraftforge.oredict.OreDictionary;
 
 /**
  * @author BluSunrize - 13.08.2015
@@ -123,6 +123,14 @@ public class IEApi
 		if(!shaderList.contains(name))
 			shaderList.add(name);
 		ShaderCaseMinecart shader = new ShaderCaseMinecart(overlayType, colourPrimary, colourSecondary, additionalTexture);
+		shaderCaseRegistry.put(name, shader);
+		return shader;
+	}
+	public static ShaderCaseBalloon registerShader_Balloon(String name, int overlayType, int[] colourPrimary, int[] colourSecondary, String additionalTexture)
+	{
+		if(!shaderList.contains(name))
+			shaderList.add(name);
+		ShaderCaseBalloon shader = new ShaderCaseBalloon(overlayType, colourPrimary, colourSecondary, additionalTexture);
 		shaderCaseRegistry.put(name, shader);
 		return shader;
 	}

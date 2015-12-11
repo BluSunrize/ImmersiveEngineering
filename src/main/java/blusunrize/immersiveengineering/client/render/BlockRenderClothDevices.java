@@ -14,6 +14,7 @@ import net.minecraft.world.IBlockAccess;
 public class BlockRenderClothDevices implements ISimpleBlockRenderingHandler
 {
 	public static int renderID = RenderingRegistry.getNextAvailableRenderId();
+	public static int renderPass;
 
 	@Override
 	public void renderInventoryBlock(Block block, int metadata, int modelId, RenderBlocks renderer)
@@ -41,7 +42,8 @@ public class BlockRenderClothDevices implements ISimpleBlockRenderingHandler
 		{
 			TileEntityBalloon tile = (TileEntityBalloon)world.getTileEntity(x, y, z);
 			ClientUtils.handleStaticTileRenderer(tile);
-			ClientUtils.renderAttachedConnections(tile);
+			if(renderPass==0)
+				ClientUtils.renderAttachedConnections(tile);
 			return true;
 		}
 		return false;

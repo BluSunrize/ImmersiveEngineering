@@ -69,6 +69,7 @@ import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -364,8 +365,21 @@ public class EventHandler
 	@SubscribeEvent
 	public void onItemCrafted(ItemCraftedEvent event)
 	{
-		if(event.player!=null && OreDictionary.itemMatches(new ItemStack(IEContent.itemTool,1,0), event.crafting, true))
-			event.player.triggerAchievement(IEAchievements.craftHammer);
+		if(event.player!=null)
+			for(IEAchievements.AchievementIE achievement : IEAchievements.normalCraftingAchievements)
+			{
+				if(achievement.triggerItems!=null && achievement.triggerItems.length>0)
+				{
+					for(ItemStack trigger : achievement.triggerItems)
+						if(OreDictionary.itemMatches(trigger, event.crafting, true))
+						{
+							event.player.triggerAchievement(achievement);
+							break;
+						}
+				}
+				else if(OreDictionary.itemMatches(achievement.theItemStack, event.crafting, true))
+					event.player.triggerAchievement(achievement);
+			}
 
 		if(event.crafting!=null && ItemNBTHelper.hasKey(event.crafting, "jerrycanFilling"))
 		{
@@ -382,6 +396,26 @@ public class EventHandler
 			}
 			ItemNBTHelper.remove(event.crafting, "jerrycanFilling");	
 		}
+	}
+
+	@SubscribeEvent(priority=EventPriority.LOWEST)
+	public void onBlockPlaced(BlockEvent.PlaceEvent event)
+	{
+		if(event.player!=null && !event.isCanceled())
+			for(IEAchievements.AchievementIE achievement : IEAchievements.placementAchievements)
+			{
+				if(achievement.triggerItems!=null && achievement.triggerItems.length>0)
+				{
+					for(ItemStack trigger : achievement.triggerItems)
+						if(OreDictionary.itemMatches(trigger, event.itemInHand, true))
+						{
+							event.player.triggerAchievement(achievement);
+							break;
+						}
+				}
+				else if(OreDictionary.itemMatches(achievement.theItemStack, event.itemInHand, true))
+					event.player.triggerAchievement(achievement);
+			}
 	}
 
 	@SubscribeEvent()

@@ -2,13 +2,6 @@ package blusunrize.immersiveengineering.common.gui;
 
 import java.util.List;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.FluidContainerRegistry;
-import net.minecraftforge.oredict.OreDictionary;
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
@@ -24,6 +17,13 @@ import blusunrize.immersiveengineering.common.util.IEAchievements;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Container;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.oredict.OreDictionary;
 
 public abstract class IESlot extends Slot
 {
@@ -55,7 +55,7 @@ public abstract class IESlot extends Slot
 		public void onPickupFromSlot(EntityPlayer player, ItemStack stack)
 		{
 			super.onPickupFromSlot(player, stack);
-			if(player!=null && OreDictionary.itemMatches(new ItemStack(IEContent.itemMetal,1,7), stack, true))
+			if(player!=null && (this.container instanceof ContainerBlastFurnace || this.container instanceof ContainerArcFurnace) && OreDictionary.itemMatches(new ItemStack(IEContent.itemMetal,1,7), stack, true))
 				player.triggerAchievement(IEAchievements.makeSteel);
 		}
 	}
@@ -317,8 +317,20 @@ public abstract class IESlot extends Slot
 				((ContainerModWorkbench)container).rebindSlots();
 				((ContainerModWorkbench)container).tile.markDirty();
 			}
-			if(IEAchievements.makeWolfPack!=null&&OreDictionary.itemMatches(new ItemStack(IEContent.itemBullet,1,8), stack, true))
-				player.triggerAchievement(IEAchievements.makeWolfPack);
+			for(IEAchievements.AchievementIE achievement : IEAchievements.blueprintCraftingAchievements)
+			{
+				if(achievement.triggerItems!=null && achievement.triggerItems.length>0)
+				{
+					for(ItemStack trigger : achievement.triggerItems)
+						if(OreDictionary.itemMatches(trigger, stack, true))
+						{
+							player.triggerAchievement(achievement);
+							break;
+						}
+				}
+				else if(OreDictionary.itemMatches(achievement.theItemStack, stack, true))
+					player.triggerAchievement(achievement);
+			}
 			this.inventory.markDirty();
 			super.onPickupFromSlot(player, stack);
 		}

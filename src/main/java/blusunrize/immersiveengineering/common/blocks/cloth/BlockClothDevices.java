@@ -2,6 +2,7 @@ package blusunrize.immersiveengineering.common.blocks.cloth;
 
 import java.util.List;
 
+import blusunrize.immersiveengineering.api.shader.IShaderItem;
 import blusunrize.immersiveengineering.client.render.BlockRenderClothDevices;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -65,6 +66,18 @@ public class BlockClothDevices extends BlockIEBase implements blusunrize.aquatwe
 		return BlockRenderClothDevices.renderID;
 	}
 	@Override
+	public boolean canRenderInPass(int pass)
+	{
+		BlockRenderClothDevices.renderPass=pass;
+		return true;
+	}
+	@Override
+	public int getRenderBlockPass()
+	{
+		return 1;
+	}
+	
+	@Override
 	public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
 	{
 		this.setBlockBounds(.125f,0,.125f,.875f,.9375f,.875f);
@@ -95,9 +108,16 @@ public class BlockClothDevices extends BlockIEBase implements blusunrize.aquatwe
 		TileEntity tile = world.getTileEntity(x, y, z);
 		if(tile instanceof TileEntityBalloon)
 		{
-			if(Utils.isHammer(player.getCurrentEquippedItem()))
+			ItemStack equipped = player.getCurrentEquippedItem();
+			if(Utils.isHammer(equipped))
 			{
 				((TileEntityBalloon)tile).style = ((TileEntityBalloon)tile).style==0?1:0;
+				world.addBlockEvent(x, y, z, this, 0, 0);
+				return true;
+			}
+			else if(equipped!=null && equipped.getItem() instanceof IShaderItem)
+			{
+				((TileEntityBalloon)tile).shader = equipped;
 				world.addBlockEvent(x, y, z, this, 0, 0);
 				return true;
 			}
@@ -121,7 +141,7 @@ public class BlockClothDevices extends BlockIEBase implements blusunrize.aquatwe
 					else
 						target =(hitY>.5625&&hitY<.75)?1:0;
 				}
-				int heldDye = Utils.getDye(player.getCurrentEquippedItem());
+				int heldDye = Utils.getDye(equipped);
 				if(heldDye==-1)
 					return false;
 				if(target==0)

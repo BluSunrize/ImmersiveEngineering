@@ -146,13 +146,6 @@ public class ItemDrill extends ItemUpgradeableTool implements IFluidContainerIte
 	}
 
 	@Override
-	public void onCreated(ItemStack stack, World world, EntityPlayer player)
-	{
-		if(stack==null || player==null)
-			return;
-		player.triggerAchievement(IEAchievements.makeDrill);
-	}
-	@Override
 	public void removeFromWorkbench(EntityPlayer player, ItemStack stack)
 	{
 		ItemStack[] contents = this.getContainedItems(stack);

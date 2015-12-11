@@ -86,6 +86,7 @@ public class ItemShader extends ItemIEBase implements IShaderItem
 		revolver.glowLayer = revolver_glow;
 		IEApi.registerShader_Chemthrower(name, overlayType, colour0, colour1, colour2, true,false, additionalTexture);
 		IEApi.registerShader_Minecart(name, overlayType, colour1, colour2, additionalTexture);
+		IEApi.registerShader_Balloon(name, overlayType, colour1, colour2, additionalTexture);
 	}
 
 

@@ -496,6 +496,114 @@ public class ClientUtils
 				}
 		}
 	}
+	public static void renderStaticWavefrontModelWithIcon(TileEntity tile, WavefrontObject model, IIcon icon, Tessellator tes, Matrix4 translationMatrix, Matrix4 rotationMatrix, int offsetLighting, boolean invertFaces, float colR, float colG, float colB, String... renderedParts)
+	{
+		renderStaticWavefrontModelWithIcon(tile.getWorldObj(),tile.xCoord,tile.yCoord,tile.zCoord, model, icon, tes, translationMatrix, rotationMatrix, offsetLighting, invertFaces, colR,colG,colB, renderedParts);
+	}
+	public static void renderStaticWavefrontModelWithIcon(IBlockAccess world, int x, int y, int z, WavefrontObject model, IIcon icon, Tessellator tes, Matrix4 translationMatrix, Matrix4 rotationMatrix, int offsetLighting, boolean invertFaces, float colR, float colG, float colB, String... renderedParts)
+	{
+		if(icon==null)
+			return;
+		if(world!=null)
+		{
+			int lb = world.getLightBrightnessForSkyBlocks(x, y, z, 0);
+			int lb_j = lb % 65536;
+			int lb_k = lb / 65536;
+			OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)lb_j / 1.0F, (float)lb_k / 1.0F);
+		}
+		Vertex normalCopy = new Vertex(0,0,0);
+		
+		float minU = icon.getInterpolatedU(0);
+		float sizeU = icon.getInterpolatedU(16) - minU;
+		float minV = icon.getInterpolatedV(0);
+		float sizeV = icon.getInterpolatedV(16) - minV;
+		float baseOffsetU = (16f/icon.getIconWidth())*.0005F;
+		float baseOffsetV = (16f/icon.getIconHeight())*.0005F;
+
+		for(GroupObject groupObject : model.groupObjects)
+		{
+			boolean render = false;
+			if(renderedParts==null || renderedParts.length<1)
+				render = true;
+			else
+				for(String s : renderedParts)
+					if(groupObject.name.equalsIgnoreCase(s))
+						render = true;
+			if(render)
+				for(Face face : groupObject.faces)
+				{
+					if(face.faceNormal == null)
+						face.faceNormal = face.calculateFaceNormal();
+
+					normalCopy.x = face.faceNormal.x;
+					normalCopy.y = face.faceNormal.y;
+					normalCopy.z = face.faceNormal.z;
+					rotationMatrix.apply(normalCopy);
+					float biggestNormal = Math.max(Math.abs(normalCopy.y), Math.max(Math.abs(normalCopy.x),Math.abs(normalCopy.z)));
+					int side = biggestNormal==Math.abs(normalCopy.y)?(normalCopy.y<0?0:1): biggestNormal==Math.abs(normalCopy.z)?(normalCopy.z<0?2:3): (normalCopy.x<0?4:5);
+
+					BlockLightingInfo faceLight = null;
+					if(offsetLighting==0 && world!=null)
+						faceLight = calculateBlockLighting(side, world, world.getBlock(x,y,z), x,y,z, colR,colG,colB, AxisAlignedBB.getBoundingBox(0,0,0,1,1,1));
+					else if(offsetLighting==1 && world!=null)
+					{
+						double faceMinX = face.vertices[0].x;
+						double faceMinY = face.vertices[0].y;
+						double faceMinZ = face.vertices[0].z;
+						double faceMaxX = face.vertices[0].x;
+						double faceMaxY = face.vertices[0].y;
+						double faceMaxZ = face.vertices[0].z;
+						for(int i=1; i<face.vertices.length; ++i)
+						{
+							faceMinX = Math.min(faceMinX, face.vertices[i].x);
+							faceMinY = Math.min(faceMinY, face.vertices[i].y);
+							faceMinZ = Math.min(faceMinZ, face.vertices[i].z);
+							faceMaxX = Math.max(faceMaxX, face.vertices[i].x);
+							faceMaxY = Math.max(faceMaxY, face.vertices[i].y);
+							faceMaxZ = Math.max(faceMaxZ, face.vertices[i].z);
+						}
+						faceLight = calculateBlockLighting(side, world, world.getBlock(x, y, z), x,y,z, colR,colG,colB, AxisAlignedBB.getBoundingBox(faceMinX,faceMinY,faceMinZ, faceMaxX,faceMaxY,faceMaxZ));
+					}
+
+					tes.setNormal(face.faceNormal.x, face.faceNormal.y, face.faceNormal.z);
+
+					float averageU = 0F;
+					float averageV = 0F;
+					if(face.textureCoordinates!=null && face.textureCoordinates.length>0)
+					{
+						for(int i=0; i<face.textureCoordinates.length; ++i)
+						{
+							averageU += face.textureCoordinates[i].u;
+							averageV += face.textureCoordinates[i].v;
+						}
+						averageU = averageU / face.textureCoordinates.length;
+						averageV = averageV / face.textureCoordinates.length;
+					}
+
+					TextureCoordinate[] oldUVs = new TextureCoordinate[face.textureCoordinates.length];
+					for(int v=0; v<face.vertices.length; ++v)
+					{
+						float offsetU, offsetV;
+						offsetU = baseOffsetU;
+						offsetV = baseOffsetV;
+						if (face.textureCoordinates[v].u > averageU)
+							offsetU = -offsetU;
+						if (face.textureCoordinates[v].v > averageV)
+							offsetV = -offsetV;
+
+						oldUVs[v] = face.textureCoordinates[v];
+						TextureCoordinate textureCoordinate = face.textureCoordinates[v];
+						face.textureCoordinates[v] = new TextureCoordinate(
+								minU + sizeU * (textureCoordinate.u+offsetU),
+								minV + sizeV * (textureCoordinate.v+offsetV)
+								);
+					}
+					addFaceToWorldRender(face, tes, faceLight, translationMatrix, rotationMatrix, invertFaces, colR, colG, colB);
+					for(int v=0; v<face.vertices.length; ++v)
+						face.textureCoordinates[v] = new TextureCoordinate(oldUVs[v].u,oldUVs[v].v);
+				}
+		}
+	}
 	public static void renderWavefrontModelWithModifications(WavefrontObject model, Tessellator tes, Matrix4 translationMatrix, Matrix4 rotationMatrix, boolean flipTextureU, String... renderedParts)
 	{
 		Vertex vertexCopy = new Vertex(0,0,0);
@@ -611,6 +719,46 @@ public class ClientUtils
 				face.textureCoordinates[v] = new TextureCoordinate(oldUVs[v].u,oldUVs[v].v);
 		}
 	}
+	
+	public static void addFaceToWorldRender(Face face, Tessellator tes, BlockLightingInfo light, Matrix4 translationMatrix, Matrix4 rotationMatrix, boolean invert, float colR, float colG, float colB)
+	{
+		Vertex vertexCopy = new Vertex(0,0,0);
+		for(int i=0; i<face.vertices.length; ++i)
+		{
+			int target = !invert?i:(face.vertices.length-1-i);
+			int corner = (int)(target/(float)face.vertices.length*4);
+			Vertex vertex = face.vertices[target];
+			vertexCopy.x = vertex.x;
+			vertexCopy.y = vertex.y;
+			vertexCopy.z = vertex.z;
+			rotationMatrix.apply(vertexCopy);
+			translationMatrix.apply(vertexCopy);
+			if(light!=null)
+			{
+				tes.setBrightness(corner==0?light.brightnessTopLeft: corner==1?light.brightnessBottomLeft: corner==2?light.brightnessBottomRight: light.brightnessTopRight);
+				float r = corner==0?light.colorRedTopLeft: corner==1?light.colorRedBottomLeft: corner==2?light.colorRedBottomRight: light.colorRedTopRight;
+				float g = corner==0?light.colorGreenTopLeft: corner==1?light.colorGreenBottomLeft: corner==2?light.colorGreenBottomRight: light.colorGreenTopRight;
+				float b = corner==0?light.colorBlueTopLeft: corner==1?light.colorBlueBottomLeft: corner==2?light.colorBlueBottomRight: light.colorBlueTopRight;
+				tes.setColorOpaque_F(r, g, b);
+			}
+			else
+			{
+				tes.setBrightness(0xb000b0);
+				tes.setColorOpaque_F(colR,colG,colB);
+			}
+
+			if(face.textureCoordinates!=null && face.textureCoordinates.length>0)
+			{
+				TextureCoordinate textureCoordinate = face.textureCoordinates[target];
+				tes.addVertexWithUV(vertexCopy.x, vertexCopy.y, vertexCopy.z, textureCoordinate.u, textureCoordinate.v);
+			}
+			else
+			{
+				tes.addVertex(vertexCopy.x, vertexCopy.y, vertexCopy.z);
+			}
+		}
+	}
+	
 
 	public static void renderItemIn2D(IIcon icon, double[] uv, int width, int height, float depth)
 	{
