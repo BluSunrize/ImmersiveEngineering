@@ -164,6 +164,11 @@ public class IERecipes
 		addOredictRecipe(new ItemStack(IEContent.blockWoodenStair,4,0), "  W"," WW","WWW", 'W',new ItemStack(IEContent.blockTreatedWood,1,0)).setMirrored(true);
 		addOredictRecipe(new ItemStack(IEContent.blockWoodenStair1,4,0), "  W"," WW","WWW", 'W',new ItemStack(IEContent.blockTreatedWood,1,1)).setMirrored(true);
 		addOredictRecipe(new ItemStack(IEContent.blockWoodenStair2,4,0), "  W"," WW","WWW", 'W',new ItemStack(IEContent.blockTreatedWood,1,2)).setMirrored(true);
+		
+		GameRegistry.addShapelessRecipe(new ItemStack(IEContent.blockWoodenStair,1,0), new ItemStack(IEContent.blockWoodenStair2,1,0));
+		GameRegistry.addShapelessRecipe(new ItemStack(IEContent.blockWoodenStair1,1,0), new ItemStack(IEContent.blockWoodenStair,1,0));
+		GameRegistry.addShapelessRecipe(new ItemStack(IEContent.blockWoodenStair2,1,0), new ItemStack(IEContent.blockWoodenStair1,1,0));
+		
 		addOredictRecipe(new ItemStack(IEContent.blockWoodenDecoration,4,6), "WW","WF","W ", 'W',"plankTreatedWood",'F',new ItemStack(IEContent.blockWoodenDecoration,1,1));
 
 		addOredictRecipe(new ItemStack(IEContent.blockWoodenDevice,1,0), "F","F","S", 'F',new ItemStack(IEContent.blockWoodenDecoration,1,1),'S',"bricksStone");
@@ -185,6 +190,8 @@ public class IERecipes
 		addOredictRecipe(new ItemStack(IEContent.blockStoneDevice,2,4), " G ","IDI"," G ", 'G',"blockGlass",'I',"dustIron",'D',"dyeGreen");
 		addOredictRecipe(new ItemStack(IEContent.blockConcreteStair,4,0), "  C"," CC","CCC", 'C',new ItemStack(IEContent.blockStoneDecoration,1,4)).setMirrored(true);
 		addOredictRecipe(new ItemStack(IEContent.blockConcreteTileStair,4,0), "  C"," CC","CCC", 'C',new ItemStack(IEContent.blockStoneDecoration,1,5)).setMirrored(true);
+		GameRegistry.addShapedRecipe(new ItemStack(IEContent.blockConcreteStair, 4), "CC", "CC", 'C', new ItemStack(IEContent.blockConcreteTileStair));
+		GameRegistry.addShapedRecipe(new ItemStack(IEContent.blockConcreteTileStair, 4), "CC", "CC", 'C', new ItemStack(IEContent.blockConcreteStair));
 		
 		addTwoWayStorageRecipe(new ItemStack(Items.iron_ingot), new ItemStack(IEContent.itemMetal,1,21));
 		for(int i=0; i<=7; i++)
