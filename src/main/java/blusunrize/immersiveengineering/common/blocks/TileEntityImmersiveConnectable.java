@@ -39,8 +39,8 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 	public void invalidate()
 	{
 		super.invalidate();
-		if(worldObj!=null && !worldObj.isRemote)
-			ImmersiveNetHandler.INSTANCE.clearAllConnectionsFor(Utils.toCC(this),worldObj);
+		if(worldObj!=null)
+			ImmersiveNetHandler.INSTANCE.clearAllConnectionsFor(Utils.toCC(this),worldObj, !worldObj.isRemote);
 	}
 
 	@Override
