@@ -113,27 +113,30 @@ public class TileEntityRefinery extends TileEntityMultiblockPart implements IFlu
 		if(!formed || pos!=17)
 			return;
 
-		if(!worldObj.isRemote && !worldObj.isBlockIndirectlyGettingPowered(xCoord+(facing==4?-1:facing==5?1:facing==2?-2:2),yCoord+1,zCoord+(facing==2?-1:facing==3?1:facing==4?2:-2)))
+		if(!worldObj.isRemote)
 		{
 			boolean update = false;
-			RefineryRecipe recipe = getRecipe();
-			if(recipe!=null)
+			int prevAmount = tank2.getFluidAmount();
+			if (!worldObj.isBlockIndirectlyGettingPowered(xCoord+(facing==4?-1:facing==5?1:facing==2?-2:2),yCoord+1,zCoord+(facing==2?-1:facing==3?1:facing==4?2:-2)))
 			{
-				int consumed = Config.getInt("refinery_consumption");
-				if(energyStorage.extractEnergy(consumed, true)==consumed && tank2.fill(recipe.output.copy(), false)==recipe.output.amount)
+				RefineryRecipe recipe = getRecipe();
+				if(recipe!=null)
 				{
-					energyStorage.extractEnergy(consumed, false);
-					int drain0 = tank0.getFluid().isFluidEqual(recipe.input0)?recipe.input0.amount: recipe.input1.amount;
-					int drain1 = tank0.getFluid().isFluidEqual(recipe.input0)?recipe.input1.amount: recipe.input0.amount;
-					tank0.drain(drain0, true);
-					tank1.drain(drain1, true);
-					tank2.fill(recipe.output.copy(), true);
-					update = true;
+					int consumed = Config.getInt("refinery_consumption");
+					if(energyStorage.extractEnergy(consumed, true)==consumed && tank2.fill(recipe.output.copy(), false)==recipe.output.amount)
+					{
+						energyStorage.extractEnergy(consumed, false);
+						int drain0 = tank0.getFluid().isFluidEqual(recipe.input0)?recipe.input0.amount: recipe.input1.amount;
+						int drain1 = tank0.getFluid().isFluidEqual(recipe.input0)?recipe.input1.amount: recipe.input0.amount;
+						tank0.drain(drain0, true);
+						tank1.drain(drain1, true);
+						tank2.fill(recipe.output.copy(), true);
+						update = true;
+					}
 				}
 			}
 			if(tank2.getFluidAmount()>0)
 			{
-				int prevAmount = tank2.getFluidAmount();
 				ItemStack filledContainer = Utils.fillFluidContainer(tank2, inventory[4], inventory[5]);
 				if(filledContainer!=null)
 				{
@@ -144,9 +147,6 @@ public class TileEntityRefinery extends TileEntityMultiblockPart implements IFlu
 					this.decrStackSize(4, filledContainer.stackSize);
 					update = true;
 				}
-				else if(prevAmount!=tank2.getFluidAmount())
-					update = true;
-
 				if(tank2.getFluidAmount()>0)
 				{
 					ForgeDirection f = ForgeDirection.getOrientation(facing);
@@ -160,6 +160,8 @@ public class TileEntityRefinery extends TileEntityMultiblockPart implements IFlu
 					}
 				}
 			}
+			if (tank2.getFluidAmount()!=prevAmount)
+				update = true;
 
 			ItemStack emptyContainer = Utils.drainFluidContainer(tank0, inventory[0]);
 			if(emptyContainer!=null)
@@ -338,16 +340,16 @@ public class TileEntityRefinery extends TileEntityMultiblockPart implements IFlu
 			return new FluidTankInfo[0];
 		switch(pos)
 		{
-			case 2:
-				return new FluidTankInfo[]{(master()!=null)?master().tank2.getInfo():tank2.getInfo()};
-			case 15:
-			case 19:
-				TileEntityRefinery master = master();
-				if(master!=null)
-					return new FluidTankInfo[]{master.tank0.getInfo(), master.tank1.getInfo()};
-				return new FluidTankInfo[]{tank0.getInfo(), tank1.getInfo()};
-			default:
-				return new FluidTankInfo[0];
+		case 2:
+			return new FluidTankInfo[]{(master()!=null)?master().tank2.getInfo():tank2.getInfo()};
+		case 15:
+		case 19:
+			TileEntityRefinery master = master();
+			if(master!=null)
+				return new FluidTankInfo[]{master.tank0.getInfo(), master.tank1.getInfo()};
+			return new FluidTankInfo[]{tank0.getInfo(), tank1.getInfo()};
+		default:
+			return new FluidTankInfo[0];
 		}
 	}
 
