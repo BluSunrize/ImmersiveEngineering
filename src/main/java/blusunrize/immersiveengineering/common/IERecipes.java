@@ -382,12 +382,12 @@ public class IERecipes
 		{
 			RecipeSorter.register(ImmersiveEngineering.MODID+":hammerCrushing", RecipeOreCrushing.class, RecipeSorter.Category.SHAPELESS, "after:forge:shapelessore");
 			addHammerCrushingRecipe("Iron",new ItemStack(IEContent.itemMetal,1,8));
-			addHammerCrushingRecipe("Gold",new ItemStack(IEContent.itemMetal,9));
-			addHammerCrushingRecipe("Copper",new ItemStack(IEContent.itemMetal,10));
-			addHammerCrushingRecipe("Aluminum",new ItemStack(IEContent.itemMetal,11));
-			addHammerCrushingRecipe("Lead",new ItemStack(IEContent.itemMetal,12));
-			addHammerCrushingRecipe("Silver",new ItemStack(IEContent.itemMetal,13));
-			addHammerCrushingRecipe("Nickel",new ItemStack(IEContent.itemMetal,14));
+			addHammerCrushingRecipe("Gold",new ItemStack(IEContent.itemMetal,1,9));
+			addHammerCrushingRecipe("Copper",new ItemStack(IEContent.itemMetal,1,10));
+			addHammerCrushingRecipe("Aluminum",new ItemStack(IEContent.itemMetal,1,11));
+			addHammerCrushingRecipe("Lead",new ItemStack(IEContent.itemMetal,1,12));
+			addHammerCrushingRecipe("Silver",new ItemStack(IEContent.itemMetal,1,13));
+			addHammerCrushingRecipe("Nickel",new ItemStack(IEContent.itemMetal,1,14));
 		}
 
 		for(String name : OreDictionary.getOreNames())
