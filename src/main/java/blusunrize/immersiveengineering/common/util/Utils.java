@@ -955,4 +955,15 @@ public class Utils
 		}
 		return ret;
 	}
+
+	/**
+	 * get tile entity without loading currently unloaded chunks
+	 * @return return value of {@link net.minecraft.world.IBlockAccess#getTileEntity(int, int, int)} or always null if chunk is not loaded
+	 */
+	public static TileEntity getExistingTileEntity(World world, int x, int y, int z)
+	{
+		if(world.blockExists(x, y, z))
+			return world.getTileEntity(x, y, z);
+		return null;
+	}
 }

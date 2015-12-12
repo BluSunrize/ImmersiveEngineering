@@ -25,6 +25,8 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyReceiver;
 
+import java.util.HashMap;
+
 public class TileEntitySqueezer extends TileEntityMultiblockPart implements IFluidHandler, ISidedInventory, IEnergyReceiver
 {
 	public int facing = 2;
@@ -121,21 +123,6 @@ public class TileEntitySqueezer extends TileEntityMultiblockPart implements IFlu
 								}
 							}
 
-							//							int f = DieselHandler.getPlantoilOutput(stack);
-							//							if(f>0)
-							//							{
-							//								int fSpace = tank.getCapacity()-tank.getFluidAmount();
-							//								int taken = Math.min(inputs, Math.min(stack.stackSize, fSpace/f));
-							//								if(taken>0)
-							//								{
-							//									tank.fill(new FluidStack(IEContent.fluidPlantoil,f*taken), true);
-							//									this.decrStackSize(i, taken);
-							//									inputs-=taken;
-							//									update = true;
-							//								}
-							//								else
-							//									continue;
-							//							}
 							if(inputs<=0 || tank.getFluidAmount()>=tank.getCapacity())
 								break;
 						}
@@ -158,26 +145,33 @@ public class TileEntitySqueezer extends TileEntityMultiblockPart implements IFlu
 					update = true;
 				}
 
-				if(tank.getFluidAmount()>0 && tank.getFluid()!=null)
+				if(tank.getFluid()!=null && tank.getFluidAmount()>0)
 				{
-					int connected=0;
+					HashMap<ForgeDirection, IFluidHandler> targets = new HashMap<>(4);
+					ForgeDirection direction;
+					TileEntity te;
 					for(int f=2; f<6; f++)
 					{
-						TileEntity te = worldObj.getTileEntity(xCoord+(f==4?-2:f==5?2:0),yCoord-1,zCoord+(f==2?-2:f==3?2:0));
-						if(te!=null && te instanceof IFluidHandler && ((IFluidHandler)te).canFill(ForgeDirection.getOrientation(f).getOpposite(), this.tank.getFluid().getFluid()))
-							connected++;
+						direction = ForgeDirection.getOrientation(f);
+						te = Utils.getExistingTileEntity(worldObj, xCoord+direction.offsetX*2, yCoord-1, zCoord+direction.offsetZ*2);
+						if(te instanceof IFluidHandler && ((IFluidHandler)te).canFill(direction.getOpposite(), this.tank.getFluid().getFluid()))
+							targets.put(direction, (IFluidHandler) te);
 					}
-					if(connected!=0)
+					if(targets.size()>0)
 					{
-						int out = Math.min(144,tank.getFluidAmount())/connected;
-						for(int f=2; f<6; f++)
+						int out = (int) Math.ceil(Math.min(144, tank.getFluidAmount()) / (float) targets.size());
+						IFluidHandler fluidHandler;
+						for(ForgeDirection targetDirection: targets.keySet())
 						{
-							TileEntity te = worldObj.getTileEntity(xCoord+(f==4?-2:f==5?2:0),yCoord-1,zCoord+(f==2?-2:f==3?2:0));
-							if(te!=null && te instanceof IFluidHandler && this.tank.getFluid()!=null && ((IFluidHandler)te).canFill(ForgeDirection.getOrientation(f).getOpposite(), this.tank.getFluid().getFluid()))
+							if(tank.getFluid()==null || tank.getFluidAmount()<1)
+								break;
+
+							fluidHandler = targets.get(targetDirection);
+							int accepted = fluidHandler.fill(targetDirection.getOpposite(), new FluidStack(this.tank.getFluid().getFluid(), out), false);
+							if(accepted>0)
 							{
-								int accepted = ((IFluidHandler)te).fill(ForgeDirection.getOrientation(f).getOpposite(), new FluidStack(this.tank.getFluid().getFluid(),out), false);
 								FluidStack drained = this.tank.drain(accepted, true);
-								((IFluidHandler)te).fill(ForgeDirection.getOrientation(f).getOpposite(), drained, true);
+								fluidHandler.fill(targetDirection.getOpposite(), drained, true);
 								update = true;
 							}
 						}
