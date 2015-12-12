@@ -424,12 +424,15 @@ public class BlockMetalDevices extends BlockIEBase implements blusunrize.aquatwe
 						player.addChatMessage(new ChatComponentTranslation(Lib.CHAT_INFO+"coreDrill.result.none").setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GRAY)));
 					else
 					{
-						String min = StatCollector.translateToLocal(Lib.DESC_INFO+"mineral."+mineral.name);
+						String name = Lib.DESC_INFO+"mineral."+mineral.name;
+						String localizedName = StatCollector.translateToLocal(name);
+						if(localizedName==name)
+							localizedName = mineral.name;
 						MineralWorldInfo info = ExcavatorHandler.getMineralWorldInfo(world, chunkX, chunkZ);
 						boolean deplOverride = info.depletion<0;
 						if(ExcavatorHandler.mineralVeinCapacity<0||deplOverride)
-							min = StatCollector.translateToLocal(Lib.CHAT_INFO+"coreDrill.infinite")+" "+min;
-						player.addChatMessage(new ChatComponentTranslation(Lib.CHAT_INFO+"coreDrill.result.mineral",min));
+							name = StatCollector.translateToLocal(Lib.CHAT_INFO+"coreDrill.infinite")+" "+name;
+						player.addChatMessage(new ChatComponentTranslation(Lib.CHAT_INFO+"coreDrill.result.mineral",name));
 						if(ExcavatorHandler.mineralVeinCapacity>0&&!deplOverride)
 						{
 							String f = Utils.formatDouble((Config.getInt("excavator_depletion")-info.depletion)/(float)Config.getInt("excavator_depletion")*100,"0.##")+"%";

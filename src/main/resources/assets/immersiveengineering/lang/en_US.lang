@@ -314,6 +314,7 @@ desc.ImmersiveEngineering.info.mineral.Magnetite=Magnetite
 desc.ImmersiveEngineering.info.mineral.Pyrite=Pyrite
 desc.ImmersiveEngineering.info.mineral.Bauxite=Bauxite
 desc.ImmersiveEngineering.info.mineral.Copper=Copper
+desc.ImmersiveEngineering.info.mineral.Cassiterite=Cassiterite
 desc.ImmersiveEngineering.info.mineral.Gold=Gold
 desc.ImmersiveEngineering.info.mineral.Nickel=Nickel
 desc.ImmersiveEngineering.info.mineral.Platinum=Platinum
@@ -324,6 +325,7 @@ desc.ImmersiveEngineering.info.mineral.Lead=Lead
 desc.ImmersiveEngineering.info.mineral.Silver=Silver
 desc.ImmersiveEngineering.info.mineral.Lapis=Lapis
 desc.ImmersiveEngineering.info.mineral.Coal=Coal
+desc.ImmersiveEngineering.info.mineral.Wolframite=Wolframite
 
 desc.ImmersiveEngineering.info.reqMaterial=Required Materials:
 desc.ImmersiveEngineering.info.chance=Chance:
