@@ -143,7 +143,9 @@ public class ItemShader extends ItemIEBase implements IShaderItem
 	public WeightedRandomChestContent getChestGenBase(ChestGenHooks chest, Random random, WeightedRandomChestContent original)
 	{
 		NBTTagCompound tag = new NBTTagCompound();
-		tag.setString("shader_name", IEApi.shaderList.get(random.nextInt(IEApi.shaderList.size())));
+		List<String> list = new ArrayList(IEApi.shaderList);
+		list.removeAll(IEApi.shaderTradeBlacklist);
+		tag.setString("shader_name", list.get(random.nextInt(list.size())));
 		original.theItemId.setTagCompound(tag);
 		return original;
 	}
@@ -210,7 +212,9 @@ public class ItemShader extends ItemIEBase implements IShaderItem
 		{
 			ItemStack s = Utils.copyStackWithAmount(this.item, 1);
 			NBTTagCompound tag = new NBTTagCompound();
-			tag.setString("shader_name", IEApi.shaderList.get(rand.nextInt(IEApi.shaderList.size())));
+			List<String> list = new ArrayList(IEApi.shaderList);
+			list.removeAll(IEApi.shaderTradeBlacklist);
+			tag.setString("shader_name", list.get(rand.nextInt(list.size())));
 			s.setTagCompound(tag);
 			return s;
 		}

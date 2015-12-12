@@ -47,6 +47,14 @@ public class IEApi
 	 * A map of shader name to ShaderCase
 	 */
 	public static ArrayListMultimap<String,ShaderCase> shaderCaseRegistry = ArrayListMultimap.create();
+	/**
+	 * A list of shader names that can't be found as loot
+	 */
+	public static ArrayList<String> shaderLootBlacklist = new ArrayList<String>();
+	/**
+	 * A list of shader names that can't be found as a villager trade
+	 */
+	public static ArrayList<String> shaderTradeBlacklist = new ArrayList<String>();
 	
 	/**
 	 * This map stores a list of OreDict prefixes (ingot, plate, gear, nugget) and their ingot relation (ingot:component) <br>
@@ -133,6 +141,16 @@ public class IEApi
 		ShaderCaseBalloon shader = new ShaderCaseBalloon(overlayType, colourPrimary, colourSecondary, additionalTexture);
 		shaderCaseRegistry.put(name, shader);
 		return shader;
+	}
+	public static void blacklistShaderForLoot(String name)
+	{
+		if(!shaderLootBlacklist.contains(name))
+			shaderLootBlacklist.add(name);
+	}
+	public static void blacklistShaderForTrade(String name)
+	{
+		if(!shaderTradeBlacklist.contains(name))
+			shaderTradeBlacklist.add(name);
 	}
 	
 }
