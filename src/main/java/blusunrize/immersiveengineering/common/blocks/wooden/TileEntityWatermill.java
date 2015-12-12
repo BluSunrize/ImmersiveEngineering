@@ -215,12 +215,17 @@ public class TileEntityWatermill extends TileEntityIEBase
 	}
 
 	@SideOnly(Side.CLIENT)
+	private AxisAlignedBB renderAABB;
+	@SideOnly(Side.CLIENT)
 	@Override
 	public AxisAlignedBB getRenderBoundingBox()
 	{
-		if(offset[0]==0&&offset[1]==0)
-			return AxisAlignedBB.getBoundingBox(xCoord-(facing<=3?2:0),yCoord-2,zCoord-(facing<=3?0:2), xCoord+(facing<=3?3:0),yCoord+3,zCoord+(facing<=3?0:3));
-		return AxisAlignedBB.getBoundingBox(xCoord,yCoord,zCoord, xCoord,yCoord,zCoord);
+		if(renderAABB==null)
+			if(offset[0]==0&&offset[1]==0)
+				renderAABB = AxisAlignedBB.getBoundingBox(xCoord-(facing<=3?2:0),yCoord-2,zCoord-(facing<=3?0:2), xCoord+(facing<=3?3:0),yCoord+3,zCoord+(facing<=3?0:3));
+			else
+				renderAABB = AxisAlignedBB.getBoundingBox(xCoord,yCoord,zCoord, xCoord,yCoord,zCoord);
+		return renderAABB;
 	}
 	@Override
 	public double getMaxRenderDistanceSquared()

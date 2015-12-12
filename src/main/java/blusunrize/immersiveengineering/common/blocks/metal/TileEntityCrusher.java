@@ -350,12 +350,17 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 	}
 
 	@SideOnly(Side.CLIENT)
+	private AxisAlignedBB renderAABB;
+	@SideOnly(Side.CLIENT)
 	@Override
 	public AxisAlignedBB getRenderBoundingBox()
 	{
-		if(pos==17)
-			return AxisAlignedBB.getBoundingBox(xCoord-(facing==2||facing==3?2:1),yCoord,zCoord-(facing==4||facing==5?2:1), xCoord+(facing==2||facing==3?3:2),yCoord+3,zCoord+(facing==4||facing==5?3:2));
-		return AxisAlignedBB.getBoundingBox(xCoord,yCoord,zCoord, xCoord,yCoord,zCoord);
+		if(renderAABB==null)
+			if(pos==17)
+				renderAABB = AxisAlignedBB.getBoundingBox(xCoord-(facing==2||facing==3?2:1),yCoord,zCoord-(facing==4||facing==5?2:1), xCoord+(facing==2||facing==3?3:2),yCoord+3,zCoord+(facing==4||facing==5?3:2));
+			else
+				renderAABB = AxisAlignedBB.getBoundingBox(xCoord,yCoord,zCoord, xCoord,yCoord,zCoord);
+		return renderAABB;
 	}
 	@Override
 	@SideOnly(Side.CLIENT)

@@ -131,9 +131,13 @@ public class TileEntityModWorkbench extends TileEntityIEBase implements IInvento
 	}
 
 	@SideOnly(Side.CLIENT)
+	private AxisAlignedBB renderAABB;
+	@SideOnly(Side.CLIENT)
 	@Override
 	public AxisAlignedBB getRenderBoundingBox()
 	{
-		return AxisAlignedBB.getBoundingBox(xCoord-1,yCoord,zCoord-1, xCoord+2,yCoord+2,zCoord+2);
+		if(renderAABB==null)
+			renderAABB = AxisAlignedBB.getBoundingBox(xCoord-1,yCoord,zCoord-1, xCoord+2,yCoord+2,zCoord+2);
+		return renderAABB;
 	}
 }

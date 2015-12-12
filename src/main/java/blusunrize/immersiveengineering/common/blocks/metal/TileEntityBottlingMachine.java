@@ -206,13 +206,18 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockPart implemen
 		return false;
 	}
 
+	@SideOnly(Side.CLIENT)
+	private AxisAlignedBB renderAABB;
 	@Override
 	@SideOnly(Side.CLIENT)
 	public AxisAlignedBB getRenderBoundingBox()
 	{
-		if(pos==4)
-			return AxisAlignedBB.getBoundingBox(xCoord-1,yCoord,zCoord-1, xCoord+2,yCoord+2,zCoord+2);
-		return AxisAlignedBB.getBoundingBox(xCoord,yCoord,zCoord, xCoord,yCoord,zCoord);
+		if(renderAABB==null)
+			if(pos==4)
+				renderAABB = AxisAlignedBB.getBoundingBox(xCoord-1,yCoord,zCoord-1, xCoord+2,yCoord+2,zCoord+2);
+			else
+				renderAABB = AxisAlignedBB.getBoundingBox(xCoord,yCoord,zCoord, xCoord,yCoord,zCoord);
+		return renderAABB;
 	}
 	@Override
 	@SideOnly(Side.CLIENT)

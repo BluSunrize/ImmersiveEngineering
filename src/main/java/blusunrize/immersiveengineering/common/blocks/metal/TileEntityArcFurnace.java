@@ -342,13 +342,18 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 		return true;
 	}
 
+	@SideOnly(Side.CLIENT)
+	private AxisAlignedBB renderAABB;
 	@Override
 	@SideOnly(Side.CLIENT)
 	public AxisAlignedBB getRenderBoundingBox()
 	{
-		if(pos==62)
-			return AxisAlignedBB.getBoundingBox(xCoord-2,yCoord-2,zCoord-2, xCoord+3,yCoord+3,zCoord+3);
-		return AxisAlignedBB.getBoundingBox(xCoord,yCoord,zCoord, xCoord,yCoord,zCoord);
+		if(renderAABB==null)
+			if(pos==62)
+				renderAABB = AxisAlignedBB.getBoundingBox(xCoord-2, yCoord-2, zCoord-2, xCoord+3, yCoord+3, zCoord+3);
+			else
+				renderAABB = AxisAlignedBB.getBoundingBox(xCoord, yCoord, zCoord, xCoord, yCoord, zCoord);
+		return renderAABB;
 	}
 	@Override
 	@SideOnly(Side.CLIENT)
