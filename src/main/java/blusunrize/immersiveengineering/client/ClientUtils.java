@@ -54,6 +54,8 @@ import net.minecraftforge.fluids.FluidTank;
 
 public class ClientUtils
 {
+	public static final AxisAlignedBB standardBlockAABB = AxisAlignedBB.getBoundingBox(0, 0, 0, 1, 1, 1);
+
 	// MOD SPECIFIC METHODS
 	public static void renderAttachedConnections(TileEntity tile)
 	{
@@ -459,7 +461,7 @@ public class ClientUtils
 
 					BlockLightingInfo faceLight = null;
 					if(offsetLighting==0 && world!=null)
-						faceLight = calculateBlockLighting(side, world, world.getBlock(x,y,z), x,y,z, colR,colG,colB, AxisAlignedBB.getBoundingBox(0,0,0,1,1,1));
+						faceLight = calculateBlockLighting(side, world, world.getBlock(x,y,z), x,y,z, colR,colG,colB, standardBlockAABB);
 					else if(offsetLighting==1 && world!=null)
 					{
 						double faceMinX = face.vertices[0].x;
@@ -567,7 +569,7 @@ public class ClientUtils
 
 					BlockLightingInfo faceLight = null;
 					if(offsetLighting==0 && world!=null)
-						faceLight = calculateBlockLighting(side, world, world.getBlock(x,y,z), x,y,z, colR,colG,colB, AxisAlignedBB.getBoundingBox(0,0,0,1,1,1));
+						faceLight = calculateBlockLighting(side, world, world.getBlock(x,y,z), x,y,z, colR,colG,colB, standardBlockAABB);
 					else if(offsetLighting==1 && world!=null)
 					{
 						double faceMinX = face.vertices[0].x;
@@ -1220,7 +1222,7 @@ public class ClientUtils
 	}
 	public static BlockLightingInfo calculateBlockLighting(int side, IBlockAccess world, Block block, int x, int y, int z, float colR, float colG, float colB)
 	{
-		return calculateBlockLighting(side, world, block, x,y,z, colR,colG,colB, AxisAlignedBB.getBoundingBox(0,0,0, 1,1,1));
+		return calculateBlockLighting(side, world, block, x,y,z, colR,colG,colB, standardBlockAABB);
 	}
 	public static BlockLightingInfo calculateBlockLighting(int side, IBlockAccess world, Block block, int x, int y, int z, float colR, float colG, float colB, AxisAlignedBB bounds)
 	{
