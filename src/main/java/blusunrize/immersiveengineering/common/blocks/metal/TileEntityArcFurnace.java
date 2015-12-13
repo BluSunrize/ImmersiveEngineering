@@ -122,6 +122,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 				for(int i=0; i<4; i++)
 					additives[i] = (inventory[12+i]!=null?inventory[12+i].copy():null);
 				boolean damageElectrodes = false;
+				boolean allEmpty = true;
 				for(int i=0; i<12; i++)
 				{
 					ArcFurnaceRecipe recipe = ArcFurnaceRecipe.findRecipe(this.getStackInSlot(i), additives);
@@ -177,6 +178,8 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 								damageElectrodes=true;
 								if(!active)
 									active = true;
+								if (process[i]<processMax[i])
+									allEmpty = false;
 							}
 							if(process[i]>=processMax[i])
 							{
@@ -215,15 +218,27 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 									else if(inventory[22]==null)
 										inventory[22] = recipe.slag.copy();
 								}
-								if(active)
-									active = false;
+								for(int i2=0; i2<4; i2++)
+									additives[i2] = (inventory[12+i2]!=null?inventory[12+i2].copy():null);
+								recipe = ArcFurnaceRecipe.findRecipe(inventory[i], additives);
+								if (recipe!=null) {
+									allEmpty = false;
+									processMax[i] = recipe.time;
+								}
 							}
 							update = true;
 							updateClient = false;
 						}
+
 					}
 					else if(process[i]>0)
 						process[i]=0;
+				}
+				if (allEmpty&&active)
+				{
+					active = false;
+					update = true;
+					updateClient = true;
 				}
 				if(damageElectrodes)
 				{
@@ -296,16 +311,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 			electrodes[i] = nbt.getBoolean("electrodes"+i);
 
 		if(!descPacket)
-		{
-			NBTTagList invList = nbt.getTagList("inventory", 10);
-			for (int i=0; i<invList.tagCount(); i++)
-			{
-				NBTTagCompound itemTag = invList.getCompoundTagAt(i);
-				int slot = itemTag.getByte("Slot") & 255;
-				if(slot>=0 && slot<this.inventory.length)
-					this.inventory[slot] = ItemStack.loadItemStackFromNBT(itemTag);
-			}
-		}
+			inventory = Utils.readInventory(nbt.getTagList("inventory", 10), 26);
 	}
 	@Override
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
@@ -320,18 +326,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 			nbt.setBoolean("electrodes"+i, electrodes[i]);
 
 		if(!descPacket)
-		{
-			NBTTagList invList = new NBTTagList();
-			for(int i=0; i<this.inventory.length; i++)
-				if(this.inventory[i] != null)
-				{
-					NBTTagCompound itemTag = new NBTTagCompound();
-					itemTag.setByte("Slot", (byte)i);
-					this.inventory[i].writeToNBT(itemTag);
-					invList.appendTag(itemTag);
-				}
-			nbt.setTag("inventory", invList);
-		}
+			nbt.setTag("inventory", Utils.writeInventory(inventory));
 	}
 
 	@Override
@@ -484,8 +479,9 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 	{
 		if(!formed)
 			return null;
-		if(master()!=null)
-			return master().getStackInSlot(slot);
+		TileEntityArcFurnace master = master();
+		if(master!=null)
+			return master.getStackInSlot(slot);
 		if(slot<inventory.length)
 			return inventory[slot];
 		return null;
@@ -495,8 +491,9 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 	{
 		if(!formed)
 			return null;
-		if(master()!=null)
-			return master().decrStackSize(slot,amount);
+		TileEntityArcFurnace master = master();
+		if(master!=null)
+			return master.decrStackSize(slot,amount);
 		ItemStack stack = getStackInSlot(slot);
 		if(stack != null)
 			if(stack.stackSize <= amount)
@@ -515,8 +512,9 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 	{
 		if(!formed)
 			return null;
-		if(master()!=null)
-			return master().getStackInSlotOnClosing(slot);
+		TileEntityArcFurnace master = master();
+		if(master!=null)
+			return master.getStackInSlotOnClosing(slot);
 		ItemStack stack = getStackInSlot(slot);
 		if (stack != null)
 			setInventorySlotContents(slot, null);
@@ -527,9 +525,10 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 	{
 		if(!formed)
 			return;
-		if(master()!=null)
+		TileEntityArcFurnace master = master();
+		if(master!=null)
 		{
-			master().setInventorySlotContents(slot,stack);
+			master.setInventorySlotContents(slot,stack);
 			return;
 		}
 		inventory[slot] = stack;
@@ -570,8 +569,9 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 	{
 		if(!formed||stack==null)
 			return true;
-		if(master()!=null)
-			return master().isItemValidForSlot(slot,stack);
+		TileEntityArcFurnace master = master();
+		if(master!=null)
+			return master.isItemValidForSlot(slot,stack);
 		return (slot<12&&ArcFurnaceRecipe.isValidRecipeInput(stack))
 				|| (slot>=12&&slot<16 && ArcFurnaceRecipe.isValidRecipeAdditive(stack)
 				|| (slot>22&&IEContent.itemGraphiteElectrode.equals(stack.getItem())));
@@ -623,7 +623,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 					return Integer.compare((stack0!=null?stack0.stackSize:0),(stack1!=null?stack1.stackSize:0));
 				}
 			});
-			
+
 			int[] ret = new int[slotsMain.size()+slotsAdditives.size()];
 			for(int i=0; i<ret.length; i++)
 			{
@@ -643,8 +643,9 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 	{
 		if(!formed)
 			return true;
-		if(master()!=null)
-			return master().canInsertItem(slot,stack,side);
+		TileEntityArcFurnace master = master();
+		if(master!=null)
+			return master.canInsertItem(slot,stack,side);
 
 		return isItemValidForSlot(slot,stack);
 	}
@@ -653,8 +654,9 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 	{
 		if(!formed)
 			return true;
-		if(master()!=null)
-			return master().canExtractItem(slot,stack,side);
+		TileEntityArcFurnace master = master();
+		if(master!=null)
+			return master.canExtractItem(slot,stack,side);
 		return slot>=16&&slot<=22;
 	}
 
@@ -666,13 +668,13 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 	@Override
 	public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate)
 	{
-		if(formed && this.master()!=null && pos>=46&&pos<=48 && ForgeDirection.OPPOSITES[from.ordinal()]==facing)
+		TileEntityArcFurnace master = master();
+		if(formed && master!=null && pos>=46&&pos<=48 && ForgeDirection.OPPOSITES[from.ordinal()]==facing)
 		{
-			TileEntityArcFurnace master = master();
 			int rec = master.energyStorage.receiveEnergy(maxReceive, simulate);
 			master.markDirty();
 			if(rec>0)
-				worldObj.markBlockForUpdate(master().xCoord, master().yCoord, master().zCoord);
+				worldObj.markBlockForUpdate(master.xCoord, master.yCoord, master.zCoord);
 			return rec;
 		}
 		return 0;
@@ -680,15 +682,17 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 	@Override
 	public int getEnergyStored(ForgeDirection from)
 	{
-		if(this.master()!=null)
-			return this.master().energyStorage.getEnergyStored();
+		TileEntityArcFurnace master = master();
+		if(master!=null)
+			return master.energyStorage.getEnergyStored();
 		return energyStorage.getEnergyStored();
 	}
 	@Override
 	public int getMaxEnergyStored(ForgeDirection from)
 	{
-		if(this.master()!=null)
-			return this.master().energyStorage.getMaxEnergyStored();
+		TileEntityArcFurnace master = master();
+		if(master!=null)
+			return master.energyStorage.getMaxEnergyStored();
 		return energyStorage.getMaxEnergyStored();
 	}
 }
