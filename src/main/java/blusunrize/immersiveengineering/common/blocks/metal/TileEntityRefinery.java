@@ -125,13 +125,16 @@ public class TileEntityRefinery extends TileEntityMultiblockPart implements IFlu
 					int consumed = Config.getInt("refinery_consumption");
 					if(energyStorage.extractEnergy(consumed, true)==consumed && tank2.fill(recipe.output.copy(), false)==recipe.output.amount)
 					{
-						energyStorage.extractEnergy(consumed, false);
 						int drain0 = tank0.getFluid().isFluidEqual(recipe.input0)?recipe.input0.amount: recipe.input1.amount;
 						int drain1 = tank0.getFluid().isFluidEqual(recipe.input0)?recipe.input1.amount: recipe.input0.amount;
-						tank0.drain(drain0, true);
-						tank1.drain(drain1, true);
-						tank2.fill(recipe.output.copy(), true);
-						update = true;
+						if(tank0.getFluidAmount()>=drain0 && tank1.getFluidAmount()>=drain1)
+						{
+							energyStorage.extractEnergy(consumed, false);
+							tank0.drain(drain0, true);
+							tank1.drain(drain1, true);
+							tank2.fill(recipe.output.copy(), true);
+							update = true;
+						}
 					}
 				}
 			}
@@ -151,8 +154,8 @@ public class TileEntityRefinery extends TileEntityMultiblockPart implements IFlu
 				{
 					ForgeDirection f = ForgeDirection.getOrientation(facing);
 					int out = Math.min(144,tank2.getFluidAmount());
-					TileEntity te = worldObj.getTileEntity(xCoord+f.offsetX*2,yCoord,zCoord+f.offsetZ*2);
-					if(te!=null && te instanceof IFluidHandler && ((IFluidHandler)te).canFill(f.getOpposite(), tank2.getFluid().getFluid()))
+					TileEntity te = Utils.getExistingTileEntity(worldObj, xCoord+f.offsetX*2, yCoord, zCoord+f.offsetZ*2);
+					if(te instanceof IFluidHandler && ((IFluidHandler) te).canFill(f.getOpposite(), tank2.getFluid().getFluid()))
 					{
 						int accepted = ((IFluidHandler)te).fill(f.getOpposite(), new FluidStack(tank2.getFluid().getFluid(),out), false);
 						FluidStack drained = this.tank2.drain(accepted, true);
