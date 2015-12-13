@@ -2,6 +2,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.EnumSkyBlock;
 import blusunrize.immersiveengineering.api.energy.IImmersiveConnectable;
@@ -97,7 +98,11 @@ public class TileEntityElectricLantern extends TileEntityImmersiveConnectable im
 		if(amount>0 && energyStorage<10)
 		{
 			if(!simulate)
-				energyStorage++;
+			{
+				int rec = Math.min(10-energyStorage, 2);
+				energyStorage+=rec;
+				return rec;
+			}
 			return Math.min(10-energyStorage, 2);
 		}
 		return 0;
@@ -128,8 +133,9 @@ public class TileEntityElectricLantern extends TileEntityImmersiveConnectable im
 	@Override
 	public Vec3 getConnectionOffset(Connection con)
 	{
-		int xDif = (con==null||con.start==null||con.end==null)?0: (con.start.equals(Utils.toCC(this))&&con.end!=null)? con.end.posX-xCoord: (con.end.equals(Utils.toCC(this))&& con.start!=null)?con.start.posX-xCoord: 0;
-		int zDif = (con==null||con.start==null||con.end==null)?0: (con.start.equals(Utils.toCC(this))&&con.end!=null)? con.end.posZ-zCoord: (con.end.equals(Utils.toCC(this))&& con.start!=null)?con.start.posZ-zCoord: 0;
+		ChunkCoordinates here = Utils.toCC(this);
+		int xDif = (con==null||con.start==null||con.end==null)?0: (con.start.equals(here)&&con.end!=null)? con.end.posX-xCoord: (con.end.equals(here)&& con.start!=null)?con.start.posX-xCoord: 0;
+		int zDif = (con==null||con.start==null||con.end==null)?0: (con.start.equals(here)&&con.end!=null)? con.end.posZ-zCoord: (con.end.equals(here)&& con.start!=null)?con.start.posZ-zCoord: 0;
 		if(Math.abs(xDif)>=Math.abs(zDif))
 			return Vec3.createVectorHelper(xDif<0?.25:xDif>0?.75:.5, .0625, .5);
 		return Vec3.createVectorHelper(.5, .0625, zDif<0?.25:zDif>0?.75:.5);

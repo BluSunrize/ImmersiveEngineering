@@ -23,7 +23,7 @@ public class TileEntityConnectorHV extends TileEntityConnectorMV
 	@Override
 	public boolean canConnectCable(WireType cableType, TargetingInfo target)
 	{
-		return super.canConnectCable(cableType, target) && limitType==null;
+		return limitType==null&&super.canConnectCable(cableType, target);
 	}
 	
 	@Override

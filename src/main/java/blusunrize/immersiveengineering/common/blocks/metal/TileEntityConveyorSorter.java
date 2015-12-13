@@ -149,10 +149,12 @@ public class TileEntityConveyorSorter extends TileEntityIEBase implements ISided
 								b = filterStack.getItem().equals(stack.getItem());
 							
 							if(!b && doOredict(side))
-								for(int allowedOid : OreDictionary.getOreIDs(filterStack))
-									for(int oid : OreDictionary.getOreIDs(stack))
-										if(oid==allowedOid)
-											b=true;
+								for (String name:OreDictionary.getOreNames())
+									if (Utils.compareToOreName(stack, name)&&Utils.compareToOreName(filterStack, name))
+									{
+										b = true;
+										break;
+									}
 							
 							if(doNBT(side))
 								b &= ItemStack.areItemStackTagsEqual(filterStack, stack);

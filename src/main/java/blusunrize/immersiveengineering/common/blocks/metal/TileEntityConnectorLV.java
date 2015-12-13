@@ -19,7 +19,6 @@ import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler.Connection
 import blusunrize.immersiveengineering.api.energy.WireType;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.blocks.TileEntityImmersiveConnectable;
-import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.compat.GregTechHelper;
@@ -27,7 +26,6 @@ import blusunrize.immersiveengineering.common.util.compat.IC2Helper;
 import blusunrize.immersiveengineering.common.util.compat.ModCompatability;
 import cofh.api.energy.IEnergyHandler;
 import cofh.api.energy.IEnergyReceiver;
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -53,7 +51,10 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 			if (energyStored > 0) {
 				int temp = this.transferEnergy(energyStored, true, 0);
 				if (temp > 0)
+				{
 					energyStored -= this.transferEnergy(temp, false, 0);
+					markDirty();
+				}
 			}
 			currentTickAccepted = 0;
 		}
@@ -135,6 +136,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 		super.writeCustomNBT(nbt, descPacket);
 		nbt.setInteger("facing", facing);
 		nbt.setLong("lastTransfer", lastTransfer);
+		nbt.setInteger("stored", energyStored);
 	}
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
@@ -142,6 +144,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 		super.readCustomNBT(nbt, descPacket);
 		facing = nbt.getInteger("facing");
 		lastTransfer = nbt.getLong("lastTransfer");
+		energyStored = nbt.getInteger("stored");
 	}
 
 	@Override
@@ -196,6 +199,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 		{
 			energyStored += accepted;
 			lastTransfer = worldObj.getTotalWorldTime();
+			markDirty();
 		}
 
 		return accepted;
@@ -203,12 +207,12 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 	@Override
 	public int getEnergyStored(ForgeDirection from)
 	{
-		return 0;
+		return energyStored;
 	}
 	@Override
 	public int getMaxEnergyStored(ForgeDirection from)
 	{
-		return 0;
+		return getMaxInput();
 	}
 	@Override
 	public int extractEnergy(ForgeDirection from, int maxExtract,boolean simulate)
@@ -225,8 +229,6 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 			int powerLeft = Math.min(Math.min(getMaxOutput(),getMaxInput()), energy);
 			final int powerForSort = powerLeft;
 
-			IELogger.debug("");
-			IELogger.debug("Sending power: "+powerLeft+" at "+xCoord+","+yCoord+","+zCoord);
 			if(outputs.size()<1)
 				return 0;
 
@@ -239,10 +241,8 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 				{
 					int atmOut = Math.min(powerForSort,con.cableType.getTransferRate());
 					int tempR = end.outputEnergy(atmOut, true, energyType);
-					IELogger.debug("trying "+atmOut+"RF for: "+con.end+", accepted "+tempR);
 					if(tempR>0)
 					{
-						IELogger.debug("Can output "+tempR+"RF to "+con.end);
 						powerSorting.put(con, tempR);
 						sum += tempR;
 					}
@@ -272,16 +272,8 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 							float mod = (((maxInput-tempR)/(float)maxInput)/.25f)*.1f;
 							intermediaryLoss = MathHelper.clamp_float(intermediaryLoss+length*(baseLoss+baseLoss*mod), 0,1);
 
-							IELogger.debug("Sub Con"+sub.start+" to "+sub.end);
 							int transferredPerCon = ImmersiveNetHandler.INSTANCE.getTransferedRates(worldObj.provider.dimensionId).containsKey(sub)?ImmersiveNetHandler.INSTANCE.getTransferedRates(worldObj.provider.dimensionId).get(sub):0;
-							IELogger.debug("old t "+transferredPerCon);
 							transferredPerCon += r;
-							IELogger.debug("new t "+transferredPerCon);
-							if(transferredPerCon>sub.cableType.getTransferRate())
-							{
-								IELogger.debug("Okay, this wire is HAWT.");
-								IELogger.debug("Or at least hotter than "+sub.cableType.getTransferRate());
-							}
 							if(!simulate)
 							{
 								ImmersiveNetHandler.INSTANCE.getTransferedRates(worldObj.provider.dimensionId).put(sub,transferredPerCon);

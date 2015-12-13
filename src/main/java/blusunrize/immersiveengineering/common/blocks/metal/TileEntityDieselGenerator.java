@@ -103,10 +103,11 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockPart implemen
 				int fluidConsumed = 1000/burnTime;
 				int output = Config.getInt("dieselGen_output");
 				int connected = 0;
+				IEnergyReceiver[] receivers = new IEnergyReceiver[3];
 				for(int i=0; i<3; i++)
 				{
-					IEnergyReceiver receiver = getOutput(i==1?-1:i==2?1:0);
-					if(receiver!=null && receiver.canConnectEnergy(ForgeDirection.DOWN) && receiver.receiveEnergy(ForgeDirection.DOWN,4096,true)>0)
+					receivers[i] = getOutput(i==1?-1:i==2?1:0);
+					if(receivers[i]!=null && receivers[i].canConnectEnergy(ForgeDirection.DOWN) && receivers[i].receiveEnergy(ForgeDirection.DOWN,4096,true)>0)
 						connected++;
 				}
 				if(connected>0 && tank.getFluidAmount()>=fluidConsumed)
@@ -118,11 +119,11 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockPart implemen
 					}
 					tank.drain(fluidConsumed, true);
 					int splitOutput = output/connected;
+					int leftover = output%connected;
 					for(int i=0; i<3; i++)
 					{
-						IEnergyReceiver receiver = getOutput(i==1?-1:i==2?1:0);
-						if(receiver!=null && receiver.canConnectEnergy(ForgeDirection.DOWN))
-							receiver.receiveEnergy(ForgeDirection.DOWN,splitOutput,false);
+						if(receivers[i]!=null && receivers[i].canConnectEnergy(ForgeDirection.DOWN))
+							receivers[i].receiveEnergy(ForgeDirection.DOWN,splitOutput+(leftover-->0?1:0),false);
 					}
 
 				}
@@ -185,11 +186,12 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockPart implemen
 	{
 		if(!formed)
 			return 0;
-		if(master()!=null)
+		TileEntityDieselGenerator master = master();
+		if(master!=null)
 		{
 			if(pos!=36&&pos!=38)
 				return 0;
-			return master().fill(from,resource,doFill);
+			return master.fill(from,resource,doFill);
 		}
 		else if(resource!=null && DieselHandler.isValidFuel(resource.getFluid()))
 		{
@@ -203,11 +205,12 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockPart implemen
 	{
 		if(!canDrain(from, resource!=null?resource.getFluid():null))
 			return null;
-		if(master()!=null)
+		TileEntityDieselGenerator master = master();
+		if(master!=null)
 		{
 			if(pos!=36&&pos!=38)
 				return null;
-			return master().drain(from,resource,doDrain);
+			return master.drain(from,resource,doDrain);
 		}
 		else if(resource!=null)
 			return drain(from, resource.amount, doDrain);
@@ -218,11 +221,12 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockPart implemen
 	{
 		if(!formed)
 			return null;
-		if(master()!=null)
+		TileEntityDieselGenerator master = master();
+		if(master!=null)
 		{
 			if(pos!=36&&pos!=38)
 				return null;
-			return master().drain(from,maxDrain,doDrain);
+			return master.drain(from,maxDrain,doDrain);
 		}
 		else
 			return tank.drain(maxDrain, doDrain);
@@ -241,7 +245,10 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockPart implemen
 	public FluidTankInfo[] getTankInfo(ForgeDirection from)
 	{
 		if((pos==36 && facing==from.getRotation(ForgeDirection.UP).ordinal()) || (pos==38 && facing==from.getRotation(ForgeDirection.DOWN).ordinal()))
-			return new FluidTankInfo[]{(master()!=null)? master().tank.getInfo(): tank.getInfo()};
+		{
+			TileEntityDieselGenerator master = master();
+			return new FluidTankInfo[]{(master!=null)? master.tank.getInfo(): tank.getInfo()};
+		}
 		return new FluidTankInfo[0];
 	}
 
@@ -264,7 +271,8 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockPart implemen
 	@Override
 	public float[] getBlockBounds()
 	{
-		boolean mirror = master()!=null?master().mirrored:mirrored;
+		TileEntityDieselGenerator master = master();
+		boolean mirror = master!=null?master.mirrored:mirrored;
 		if(pos>=3 && pos<36)
 		{
 			float height = pos==24||pos==26?1: pos%9>=6&&pos>9?.375f: 1;
