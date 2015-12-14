@@ -6,16 +6,14 @@ import net.minecraft.util.IIcon;
 
 public class ShaderCaseChemthrower extends ShaderCase
 {
-	public int overlayType=0;
 	public String additionalTexture = null;
 	public int glowLayer = -1;
 	public boolean renderCageOnBase = true;
 	public boolean tanksUncoloured = true;
 
-	public ShaderCaseChemthrower(int overlayType, int[] colourGrip, int[] colourPrimary, int[] colourSecondary, boolean cageOnBase, boolean tanksUncoloured, String additionalTexture)
+	public ShaderCaseChemthrower(String overlayType, int[] colourGrip, int[] colourPrimary, int[] colourSecondary, boolean cageOnBase, boolean tanksUncoloured, String additionalTexture)
 	{
-		super(colourGrip,colourPrimary,colourSecondary);
-		this.overlayType = overlayType;
+		super(overlayType, colourGrip,colourPrimary,colourSecondary);
 		this.additionalTexture = additionalTexture;
 		this.renderCageOnBase = cageOnBase;
 		this.tanksUncoloured = tanksUncoloured;

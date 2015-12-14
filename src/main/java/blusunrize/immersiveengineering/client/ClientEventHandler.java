@@ -9,13 +9,13 @@ import org.lwjgl.opengl.GL11;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.AdvancedAABB;
-import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.api.energy.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.api.energy.WireType;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
+import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
 import blusunrize.immersiveengineering.client.fx.ParticleRenderer;
 import blusunrize.immersiveengineering.client.gui.GuiBlastFurnace;
@@ -107,8 +107,8 @@ public class ClientEventHandler
 			IELogger.info("Stitching Revolver Textures!");
 			((ItemRevolver)IEContent.itemRevolver).stichRevolverTextures(event.map);
 		}
-		for(String key : IEApi.shaderCaseRegistry.keySet())
-			for(ShaderCase sCase : IEApi.shaderCaseRegistry.get(key))
+		for(String key : ShaderRegistry.shaderCaseRegistry.keySet())
+			for(ShaderCase sCase : ShaderRegistry.shaderCaseRegistry.get(key))
 				sCase.stichTextures(event.map, event.map.getTextureType());
 	}
 	@SubscribeEvent()

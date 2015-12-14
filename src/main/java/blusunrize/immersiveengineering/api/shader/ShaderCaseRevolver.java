@@ -11,16 +11,14 @@ import blusunrize.immersiveengineering.api.IEApi;
 
 public class ShaderCaseRevolver extends ShaderCase
 {
-	public int overlayType=0;
 	public int[] colourBlade = new int[4];
 	public String additionalTexture = null;
 	public int glowLayer = -1;
 
-	public ShaderCaseRevolver(int overlayType, int[] colourGrip, int[] colourPrimary, int[] colourSecondary, int[] colourBlade, String additionalTexture)
+	public ShaderCaseRevolver(String overlayType, int[] colourGrip, int[] colourPrimary, int[] colourSecondary, int[] colourBlade, String additionalTexture)
 	{
-		super(colourGrip,colourPrimary,colourSecondary);
+		super(overlayType, colourGrip,colourPrimary,colourSecondary);
 		this.colourBlade = colourBlade;
-		this.overlayType = overlayType;
 		this.additionalTexture = additionalTexture;
 	}
 	

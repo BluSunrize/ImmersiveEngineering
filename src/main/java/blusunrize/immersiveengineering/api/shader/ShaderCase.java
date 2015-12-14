@@ -16,9 +16,11 @@ public abstract class ShaderCase
 	protected final int[] colourPrimary;
 	protected final int[] colourSecondary;
 	protected final static int[] defaultWhite = {255,255,255,255};
+	protected String overlayType="0";
 	
-	public ShaderCase(int[] colourUnderlying, int[] colourPrimary, int[] colourSecondary)
+	public ShaderCase(String overlayType, int[] colourUnderlying, int[] colourPrimary, int[] colourSecondary)
 	{
+		this.overlayType = overlayType;
 		this.colourUnderlying = colourUnderlying; 
 		this.colourPrimary = colourPrimary; 
 		this.colourSecondary = colourSecondary; 
@@ -36,7 +38,10 @@ public abstract class ShaderCase
 	{
 		return colourSecondary;
 	}
-	
+	public String getOverlayType()
+	{
+		return overlayType;
+	}
 	
 	/**
 	 * @return A string representing which item this shader case applies to. e.g.: "revolver"

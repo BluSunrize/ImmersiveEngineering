@@ -6,13 +6,11 @@ import net.minecraft.util.IIcon;
 
 public class ShaderCaseBalloon extends ShaderCase
 {
-	public int overlayType=0;
 	public String additionalTexture = null;
 
-	public ShaderCaseBalloon(int overlayType, int[] colourPrimary, int[] colourSecondary, String additionalTexture)
+	public ShaderCaseBalloon(String overlayType, int[] colourPrimary, int[] colourSecondary, String additionalTexture)
 	{
-		super(defaultWhite,colourPrimary,colourSecondary);
-		this.overlayType = overlayType;
+		super(overlayType, defaultWhite,colourPrimary,colourSecondary);
 		this.additionalTexture = additionalTexture;
 	}
 

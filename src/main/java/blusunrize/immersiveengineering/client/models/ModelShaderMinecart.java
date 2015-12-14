@@ -70,7 +70,7 @@ public class ModelShaderMinecart extends ModelMinecart
 							GL11.glScalef(scale,scale,scale);
 							GL11.glColor4f(col[0]/255f,col[1]/255f,col[2]/255f,col.length>3?(col[3]/255f):1f);
 
-							String texture = pass==0?"0": pass==1?("1_"+((ShaderCaseMinecart)sCase).overlayType): "uncoloured";
+							String texture = pass==0?"0": pass==1?("1_"+((ShaderCaseMinecart)sCase).getOverlayType()): "uncoloured";
 							if(pass==2 && ((ShaderCaseMinecart)sCase).additionalTexture!=null)
 								texture = ((ShaderCaseMinecart)sCase).additionalTexture;
 							ClientUtils.bindTexture("immersiveengineering:textures/models/shaders/minecart_"+texture+".png");

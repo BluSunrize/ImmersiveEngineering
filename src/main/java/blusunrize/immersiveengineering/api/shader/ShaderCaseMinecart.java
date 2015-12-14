@@ -11,17 +11,15 @@ import net.minecraft.util.IIcon;
 public class ShaderCaseMinecart extends ShaderCase
 {
 	public static Set<Class<? extends EntityMinecart>> invalidMinecartClasses = new HashSet();
-	public int overlayType=0;
 	public String additionalTexture = null;
 	public boolean[] overlaySides = {true, true,true,true,true, true,true};
 	public boolean[] mirrorSideForPass = {true,true,true,true};
 
-	public ShaderCaseMinecart(int overlayType, int[] colourPrimary, int[] colourSecondary, String additionalTexture)
+	public ShaderCaseMinecart(String overlayType, int[] colourPrimary, int[] colourSecondary, String additionalTexture)
 	{
-		super(defaultWhite,colourPrimary,colourSecondary);
-		this.overlayType = overlayType;
+		super(overlayType, defaultWhite,colourPrimary,colourSecondary);
 		this.additionalTexture = additionalTexture;
-		if(overlayType==1 || overlayType==2)
+		if(overlayType=="1" || overlayType=="2")
 		{
 			overlaySides[1] = false;
 			overlaySides[2] = false;
