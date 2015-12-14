@@ -342,6 +342,7 @@ desc.ImmersiveEngineering.info.shader.applyTo=Can be applied to:
 desc.ImmersiveEngineering.info.shader.revolver=Revolver
 desc.ImmersiveEngineering.info.shader.chemthrower=Chemical Thrower
 desc.ImmersiveEngineering.info.shader.minecart=Minecart
+desc.ImmersiveEngineering.info.shader.balloon=Balloon
 
 desc.ImmersiveEngineering.flavour.treatedWood.0=Horizontal Planks
 desc.ImmersiveEngineering.flavour.treatedWood.1=Vertical Planks
@@ -816,7 +817,7 @@ ie.manual.entry.arcfurnace.subtext=Not a reactor
 ie.manual.entry.arcfurnace0=The Arc Furnace is a massive structure used to quickly smelt metals. It consists of a steel vat topped by electrodes which heat up the metal.
 ie.manual.entry.arcfurnace1=The furnace excels at smelting ores and creating steel due to its high speed and its ability to process multiple items at the same time, but it is also complex in its workings and will require maintenance in order to continue functioning.<br>Slag must be removed from the machine or it will cease to function, and degrading electrodes need to be replaced over time.
 ie.manual.entry.arcfurnace2=To form the structure, assemble it as shown on the first page, then click the cauldron with an Engineer's Hammer.<br><br>Energy is input through the three connectors at the back, and supplying the control panel at the front with a redstone signal will turn off the machine. Right-clicking the panel, 'bucket' or vat will open the interface.
-ie.manual.entry.arcfurnace3=§lInterface:§r<br>The interface may look confusing upon first seeing it, but it's quite straight forward.<br><br>The three slots at the top are for the <link;graphite;§o§nGraphite §o§nElectrodes§r;1>.<br>Electrodes can be inserted into the furnace through the top-center block of the structure.<br>The twelve slots on the left are the input slots for metals and ores. Each slot has a temperature bar next to it, representing the progress of smelting.
+ie.manual.entry.arcfurnace3=§lInterface:§r<br>The interface may look confusing upon first seeing it, but it's quite straight forward.<br><br>The three slots at the top are for the <link;graphite;§o§nGraphite §o§nElectrodes§r;1>.<br>The twelve slots on the left are the input slots for metals and ores. Each slot has a temperature bar next to it, representing the progress of smelting.
 ie.manual.entry.arcfurnace4=The four slots on the right are for "additives", different materials added to the molten metal during the crafting process. An example of these would be adding Coke Dust to melting Iron in order to create Steel.<br>Inputs and additives are inserted through the two hatches at the top of the structure, to the left and right of the electrodes.
 ie.manual.entry.arcfurnace5=The seven slots at the bottom are six output slots and a slot for slag. Outputs are retrieved from the 'bucket' at the front of the structure, slag through the port at the back of the machine. The Arc Furnace will automatically push output and slag to connected inventories (this includes Conveyor Belts).
 
