@@ -4,18 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.FurnaceRecipes;
-import net.minecraft.util.WeightedRandomChestContent;
-import net.minecraftforge.common.ChestGenHooks;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.oredict.OreDictionary;
-import net.minecraftforge.oredict.RecipeSorter;
-import net.minecraftforge.oredict.ShapedOreRecipe;
-import net.minecraftforge.oredict.ShapelessOreRecipe;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEApi;
@@ -33,6 +21,18 @@ import blusunrize.immersiveengineering.common.crafting.RecipeRevolver;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.compat.NetherOresHelper;
 import cpw.mods.fml.common.registry.GameRegistry;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.FurnaceRecipes;
+import net.minecraft.util.WeightedRandomChestContent;
+import net.minecraftforge.common.ChestGenHooks;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.oredict.RecipeSorter;
+import net.minecraftforge.oredict.ShapedOreRecipe;
+import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 public class IERecipes
 {
@@ -164,11 +164,11 @@ public class IERecipes
 		addOredictRecipe(new ItemStack(IEContent.blockWoodenStair,4,0), "  W"," WW","WWW", 'W',new ItemStack(IEContent.blockTreatedWood,1,0)).setMirrored(true);
 		addOredictRecipe(new ItemStack(IEContent.blockWoodenStair1,4,0), "  W"," WW","WWW", 'W',new ItemStack(IEContent.blockTreatedWood,1,1)).setMirrored(true);
 		addOredictRecipe(new ItemStack(IEContent.blockWoodenStair2,4,0), "  W"," WW","WWW", 'W',new ItemStack(IEContent.blockTreatedWood,1,2)).setMirrored(true);
-		
+
 		GameRegistry.addShapelessRecipe(new ItemStack(IEContent.blockWoodenStair,1,0), new ItemStack(IEContent.blockWoodenStair2,1,0));
 		GameRegistry.addShapelessRecipe(new ItemStack(IEContent.blockWoodenStair1,1,0), new ItemStack(IEContent.blockWoodenStair,1,0));
 		GameRegistry.addShapelessRecipe(new ItemStack(IEContent.blockWoodenStair2,1,0), new ItemStack(IEContent.blockWoodenStair1,1,0));
-		
+
 		addOredictRecipe(new ItemStack(IEContent.blockWoodenDecoration,4,6), "WW","WF","W ", 'W',"plankTreatedWood",'F',new ItemStack(IEContent.blockWoodenDecoration,1,1));
 
 		addOredictRecipe(new ItemStack(IEContent.blockWoodenDevice,1,0), "F","F","S", 'F',new ItemStack(IEContent.blockWoodenDecoration,1,1),'S',"bricksStone");
@@ -192,7 +192,7 @@ public class IERecipes
 		addOredictRecipe(new ItemStack(IEContent.blockConcreteTileStair,4,0), "  C"," CC","CCC", 'C',new ItemStack(IEContent.blockStoneDecoration,1,5)).setMirrored(true);
 		GameRegistry.addShapedRecipe(new ItemStack(IEContent.blockConcreteStair, 4), "CC", "CC", 'C', new ItemStack(IEContent.blockConcreteTileStair));
 		GameRegistry.addShapedRecipe(new ItemStack(IEContent.blockConcreteTileStair, 4), "CC", "CC", 'C', new ItemStack(IEContent.blockConcreteStair));
-		
+
 		addTwoWayStorageRecipe(new ItemStack(Items.iron_ingot), new ItemStack(IEContent.itemMetal,1,21));
 		for(int i=0; i<=7; i++)
 		{
@@ -359,7 +359,8 @@ public class IERecipes
 			oreOutputModifier.put("Firestone", new ItemStack(item));
 		oreOutputSecondaries.put("Nikolite", new Object[]{Items.diamond,.025f});
 
-		CrusherRecipe.addRecipe(new ItemStack(Blocks.sand), "cobblestone", 3200);
+		CrusherRecipe.addRecipe(new ItemStack(Blocks.gravel), "cobblestone", 1600);
+		CrusherRecipe.addRecipe(new ItemStack(Blocks.sand), Blocks.gravel, 1600);
 		CrusherRecipe.addRecipe(new ItemStack(Blocks.sand), "blockGlass", 3200);
 		CrusherRecipe.addRecipe(new ItemStack(Items.quartz,4), "blockQuartz", 3200);
 		CrusherRecipe.addRecipe(new ItemStack(Items.glowstone_dust,4), "glowstone", 3200);
