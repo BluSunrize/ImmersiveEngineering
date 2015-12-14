@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockFire;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -12,6 +14,7 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 
 public class ChemthrowerHandler
@@ -166,6 +169,22 @@ public class ChemthrowerHandler
 						newEffect.setCurativeItems(new ArrayList(e.getCurativeItems()));
 						target.addPotionEffect(newEffect);
 					}
+		}
+	}
+	public static class ChemthrowerEffect_Extinguish extends ChemthrowerEffect
+	{
+		public void applyToEntity(EntityLivingBase target, EntityPlayer shooter, ItemStack thrower, Fluid fluid)
+		{
+			if(target.isBurning())
+				target.extinguish();
+		}
+		@Override
+		public void applyToBlock(World worldObj, MovingObjectPosition mop, EntityPlayer shooter, ItemStack thrower, Fluid fluid)
+		{
+			ForgeDirection fd = ForgeDirection.getOrientation(mop.sideHit);
+			Block b = worldObj.getBlock(mop.blockX+fd.offsetX, mop.blockY+fd.offsetY, mop.blockZ+fd.offsetZ);
+			if(b instanceof BlockFire)
+				worldObj.setBlockToAir(mop.blockX+fd.offsetX, mop.blockY+fd.offsetY, mop.blockZ+fd.offsetZ);
 		}
 	}
 }

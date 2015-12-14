@@ -367,7 +367,6 @@ public class IERecipes
 		addCrusherRecipe(new ItemStack(Items.blaze_powder,4), "rodBlaze", 3200, "dustSulfur",.5f);
 		addCrusherRecipe(new ItemStack(Items.dye,6,15), Items.bone, 3200);
 		addItemToOreDictCrusherRecipe("dustCoal",1, new ItemStack(Items.coal), 2400);
-		addItemToOreDictCrusherRecipe("dustWood",2, "logWood", 2400);
 		addItemToOreDictCrusherRecipe("dustObsidian",4, Blocks.obsidian, 6000);
 		for(int i=0; i<16; i++)
 		{
