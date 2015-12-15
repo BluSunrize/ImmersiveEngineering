@@ -9,6 +9,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.AxisAlignedBB;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
+import blusunrize.immersiveengineering.common.util.Utils;
 
 public class TileEntityModWorkbench extends TileEntityIEBase implements IInventory
 {
@@ -114,18 +115,8 @@ public class TileEntityModWorkbench extends TileEntityIEBase implements IInvento
 		dummy = nbt.getBoolean("dummy");
 		//		if(!descPacket)
 		//		{
-		//clear inv
-		for (int i = 0;i<inventory.length;i++)
-			inventory[i] = null;
 		//read inv
-		NBTTagList invList = nbt.getTagList("inventory", 10);
-		for(int i=0; i<invList.tagCount(); i++)
-		{
-			NBTTagCompound itemTag = invList.getCompoundTagAt(i);
-			int slot = itemTag.getByte("Slot") & 255;
-			if(slot>=0 && slot<this.inventory.length)
-				this.inventory[slot] = ItemStack.loadItemStackFromNBT(itemTag);
-		}
+		inventory = Utils.readInventory(nbt.getTagList("inventory", 10), 1);
 		//		}
 	}
 	@Override
@@ -136,16 +127,7 @@ public class TileEntityModWorkbench extends TileEntityIEBase implements IInvento
 		nbt.setBoolean("dummy", dummy);
 		//		if(!descPacket)
 		//		{
-		NBTTagList invList = new NBTTagList();
-		for(int i=0; i<this.inventory.length; i++)
-			if(this.inventory[i] != null)
-			{
-				NBTTagCompound itemTag = new NBTTagCompound();
-				itemTag.setByte("Slot", (byte)i);
-				this.inventory[i].writeToNBT(itemTag);
-				invList.appendTag(itemTag);
-			}
-		nbt.setTag("inventory", invList);
+		nbt.setTag("inventory", Utils.writeInventory(inventory));
 		//		}
 	}
 

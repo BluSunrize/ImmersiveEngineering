@@ -70,6 +70,7 @@ public class TileEntityWatermill extends TileEntityIEBase
 			rotation += perTick;
 			rotation %= 1;
 			for(int l2=1; l2<l; l2++)
+			{
 				tileEntity = worldObj.getTileEntity(xCoord+fd.offsetX*l2,yCoord,zCoord+fd.offsetZ*l2);
 				if(tileEntity instanceof TileEntityWatermill)
 				{
@@ -77,6 +78,7 @@ public class TileEntityWatermill extends TileEntityIEBase
 					((TileEntityWatermill)tileEntity).canTurn = canTurn;
 					((TileEntityWatermill)tileEntity).multiblock = true;
 				}
+			}
 
 			if(!worldObj.isRemote)
 			{
@@ -128,7 +130,7 @@ public class TileEntityWatermill extends TileEntityIEBase
 			rotationVec = Vec3.createVectorHelper(0, 0, 0);
 			rotationVec = Utils.addVectors(rotationVec, getHorizontalVec());
 			rotationVec = Utils.addVectors(rotationVec, getVerticalVec());
-//			worldObj.addBlockEvent(xCoord, yCoord, zCoord, getBlockType(), (int)((float)rotationVec.xCoord*10000f), (int)((float)rotationVec.zCoord*10000f));
+			//			worldObj.addBlockEvent(xCoord, yCoord, zCoord, getBlockType(), (int)((float)rotationVec.xCoord*10000f), (int)((float)rotationVec.zCoord*10000f));
 		}
 		return rotationVec;
 	}
@@ -224,8 +226,8 @@ public class TileEntityWatermill extends TileEntityIEBase
 	public double getMaxRenderDistanceSquared()
 	{
 		return super.getMaxRenderDistanceSquared()*Config.getDouble("increasedTileRenderdistance");
-//		if(Config.getBoolean("increasedTileRenderdistance"))
-//			return super.getMaxRenderDistanceSquared()*1.5;
-//		return super.getMaxRenderDistanceSquared();
+		//		if(Config.getBoolean("increasedTileRenderdistance"))
+		//			return super.getMaxRenderDistanceSquared()*1.5;
+		//		return super.getMaxRenderDistanceSquared();
 	}
 }

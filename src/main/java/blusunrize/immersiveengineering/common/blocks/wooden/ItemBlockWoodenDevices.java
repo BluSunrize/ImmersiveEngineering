@@ -137,7 +137,7 @@ public class ItemBlockWoodenDevices extends ItemBlockIEBase
 		else if(tileEntity instanceof TileEntityWoodenCrate)
 		{
 			if(stack.hasTagCompound())
-				((TileEntityWoodenCrate)tileEntity).readInv(stack.getTagCompound());
+				((TileEntityWoodenCrate)tileEntity).readCustomNBT(stack.getTagCompound(), false);
 		}
 		else if(tileEntity instanceof TileEntityModWorkbench)
 		{
