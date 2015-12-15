@@ -53,7 +53,10 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable
 		}
 		switchCooldown--;
 		if(active!=b || worldObj.getTotalWorldTime()%512==((xCoord^zCoord)&511))
+		{
+			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 			updateFakeLights(true,active);
+		}
 
 		if(!active)
 		{
@@ -206,6 +209,7 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable
 		rotY = nbt.getFloat("rotY");
 		rotX = nbt.getFloat("rotX");
 		int lightAmount = nbt.getInteger("lightAmount");
+		fakeLights.clear();
 		for(int i=0; i<lightAmount; i++)
 		{
 			int[] icc = nbt.getIntArray("fakeLight_"+i);

@@ -380,9 +380,9 @@ public class TileEntityExcavator extends TileEntityMultiblockPart implements IEn
 	@Override
 	public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate)
 	{
-		if(formed && this.master()!=null && (pos==11||pos==14||pos==17) && from!=ForgeDirection.UP&&from!=ForgeDirection.DOWN)
+		TileEntityExcavator master = master();
+		if(formed && master!=null && (pos==11||pos==14||pos==17) && from!=ForgeDirection.UP&&from!=ForgeDirection.DOWN)
 		{
-			TileEntityExcavator master = master();
 			int rec = master.energyStorage.receiveEnergy(maxReceive, simulate);
 			master.markDirty();
 			return rec;
@@ -392,15 +392,17 @@ public class TileEntityExcavator extends TileEntityMultiblockPart implements IEn
 	@Override
 	public int getEnergyStored(ForgeDirection from)
 	{
-		if(this.master()!=null)
-			return this.master().energyStorage.getEnergyStored();
+		TileEntityExcavator master = master();
+		if(master!=null)
+			return master.energyStorage.getEnergyStored();
 		return energyStorage.getEnergyStored();
 	}
 	@Override
 	public int getMaxEnergyStored(ForgeDirection from)
 	{
-		if(this.master()!=null)
-			return this.master().energyStorage.getMaxEnergyStored();
+		TileEntityExcavator master = master();
+		if(master!=null)
+			return master.energyStorage.getMaxEnergyStored();
 		return energyStorage.getMaxEnergyStored();
 	}
 

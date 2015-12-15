@@ -53,7 +53,6 @@ public class TileEntityLightningRod extends TileEntityMultiblockPart implements 
 				fenceNet = null;
 			if(fenceNet==null)
 				fenceNet = this.getFenceNet();
-
 			if(fenceNet!=null && worldObj.getTotalWorldTime()%128==((xCoord^zCoord)&127) && ( worldObj.isThundering() || (worldObj.isRaining()&&worldObj.rand.nextInt(10)==0) ))
 			{
 				int i = this.height + this.fenceNet.size();
@@ -150,24 +149,27 @@ public class TileEntityLightningRod extends TileEntityMultiblockPart implements 
 	@Override
 	public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate)
 	{
-		if(master()!=null)
-			return master().energyStorage.extractEnergy(maxExtract, simulate);
+		TileEntityLightningRod master = master();
+		if(master!=null)
+			return master.energyStorage.extractEnergy(maxExtract, simulate);
 		return energyStorage.extractEnergy(maxExtract, simulate);
 	}
 
 	@Override
 	public int getEnergyStored(ForgeDirection from)
 	{
-		if(master()!=null)
-			return master().getEnergyStored(from);
+		TileEntityLightningRod master = master();
+		if(master!=null)
+			return master.getEnergyStored(from);
 		return energyStorage.getEnergyStored();
 	}
 
 	@Override
 	public int getMaxEnergyStored(ForgeDirection from)
 	{
-		if(master()!=null)
-			return master().getMaxEnergyStored(from);
+		TileEntityLightningRod master = master();
+		if(master!=null)
+			return master.getMaxEnergyStored(from);
 		return energyStorage.getMaxEnergyStored();
 	}
 

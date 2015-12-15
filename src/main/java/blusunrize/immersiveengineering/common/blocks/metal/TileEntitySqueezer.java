@@ -249,14 +249,7 @@ public class TileEntitySqueezer extends TileEntityMultiblockPart implements IFlu
 		processMaxTime = nbt.getInteger("processMaxTime");
 		if(!descPacket)
 		{
-			NBTTagList invList = nbt.getTagList("inventory", 10);
-			for (int i=0; i<invList.tagCount(); i++)
-			{
-				NBTTagCompound itemTag = invList.getCompoundTagAt(i);
-				int slot = itemTag.getByte("Slot") & 255;
-				if(slot>=0 && slot<this.inventory.length)
-					this.inventory[slot] = ItemStack.loadItemStackFromNBT(itemTag);
-			}
+			inventory = Utils.readInventory(nbt.getTagList("inventory", 10), 12);
 		}
 	}
 	@Override
@@ -271,16 +264,7 @@ public class TileEntitySqueezer extends TileEntityMultiblockPart implements IFlu
 		nbt.setInteger("processMaxTime", processMaxTime);
 		if(!descPacket)
 		{
-			NBTTagList invList = new NBTTagList();
-			for(int i=0; i<this.inventory.length; i++)
-				if(this.inventory[i] != null)
-				{
-					NBTTagCompound itemTag = new NBTTagCompound();
-					itemTag.setByte("Slot", (byte)i);
-					this.inventory[i].writeToNBT(itemTag);
-					invList.appendTag(itemTag);
-				}
-			nbt.setTag("inventory", invList);
+			nbt.setTag("inventory", Utils.writeInventory(inventory));
 		}
 	}
 
@@ -295,11 +279,12 @@ public class TileEntitySqueezer extends TileEntityMultiblockPart implements IFlu
 	{
 		if(!formed)
 			return null;
-		if(master()!=null)
+		TileEntitySqueezer master = master();
+		if(master!=null)
 		{
 			if(pos!=1&&pos!=9&&pos!=11&&pos!=19)
 				return null;
-			return master().drain(from,resource,doDrain);
+			return master.drain(from,resource,doDrain);
 		}
 		else if(resource!=null)
 			return drain(from, resource.amount, doDrain);
@@ -310,11 +295,12 @@ public class TileEntitySqueezer extends TileEntityMultiblockPart implements IFlu
 	{
 		if(!formed)
 			return null;
-		if(master()!=null)
+		TileEntitySqueezer master = master();
+		if(master!=null)
 		{
 			if(pos!=1&&pos!=9&&pos!=11&&pos!=19)
 				return null;
-			return master().drain(from,maxDrain,doDrain);
+			return master.drain(from,maxDrain,doDrain);
 		}
 		else
 		{
@@ -340,7 +326,10 @@ public class TileEntitySqueezer extends TileEntityMultiblockPart implements IFlu
 	public FluidTankInfo[] getTankInfo(ForgeDirection from)
 	{
 		if((pos==1||pos==9||pos==11||pos==19) && from.ordinal()>1)
-			return new FluidTankInfo[]{(master()!=null)?master().tank.getInfo():tank.getInfo()};
+		{
+			TileEntitySqueezer master = master();
+			return new FluidTankInfo[]{(master!=null)?master.tank.getInfo():tank.getInfo()};
+		}
 		return new FluidTankInfo[0];
 	}
 
@@ -402,8 +391,9 @@ public class TileEntitySqueezer extends TileEntityMultiblockPart implements IFlu
 	{
 		if(!formed)
 			return null;
-		if(master()!=null)
-			return master().getStackInSlot(slot);
+		TileEntitySqueezer master = master();
+		if(master!=null)
+			return master.getStackInSlot(slot);
 		if(slot<inventory.length)
 			return inventory[slot];
 		return null;
@@ -413,8 +403,9 @@ public class TileEntitySqueezer extends TileEntityMultiblockPart implements IFlu
 	{
 		if(!formed)
 			return null;
-		if(master()!=null)
-			return master().decrStackSize(slot,amount);
+		TileEntitySqueezer master = master();
+		if(master!=null)
+			return master.decrStackSize(slot,amount);
 		ItemStack stack = getStackInSlot(slot);
 		if(stack != null)
 			if(stack.stackSize <= amount)
@@ -432,8 +423,9 @@ public class TileEntitySqueezer extends TileEntityMultiblockPart implements IFlu
 	{
 		if(!formed)
 			return null;
-		if(master()!=null)
-			return master().getStackInSlotOnClosing(slot);
+		TileEntitySqueezer master = master();
+		if(master!=null)
+			return master.getStackInSlotOnClosing(slot);
 		ItemStack stack = getStackInSlot(slot);
 		if (stack != null)
 			setInventorySlotContents(slot, null);
@@ -444,9 +436,10 @@ public class TileEntitySqueezer extends TileEntityMultiblockPart implements IFlu
 	{
 		if(!formed)
 			return;
-		if(master()!=null)
+		TileEntitySqueezer master = master();
+		if(master!=null)
 		{
-			master().setInventorySlotContents(slot,stack);
+			master.setInventorySlotContents(slot,stack);
 			return;
 		}
 		inventory[slot] = stack;
@@ -486,8 +479,9 @@ public class TileEntitySqueezer extends TileEntityMultiblockPart implements IFlu
 	{
 		if(!formed)
 			return false;
-		if(master()!=null)
-			return master().isItemValidForSlot(slot,stack);
+		TileEntitySqueezer master = master();
+		if(master!=null)
+			return master.isItemValidForSlot(slot,stack);
 		return slot<9?DieselHandler.findSqueezerRecipe(stack)!=null:
 			(slot==9 && FluidContainerRegistry.isEmptyContainer(stack));
 	}
@@ -496,8 +490,9 @@ public class TileEntitySqueezer extends TileEntityMultiblockPart implements IFlu
 	{
 		if(!formed)
 			return new int[0];
-		if(master()!=null)
-			return master().getAccessibleSlotsFromSide(side);
+		TileEntitySqueezer master = master();
+		if(master!=null)
+			return master.getAccessibleSlotsFromSide(side);
 		return new int[]{0,1,2,3,4,5,6,7,8,9,10,11};
 	}
 	@Override
@@ -505,8 +500,9 @@ public class TileEntitySqueezer extends TileEntityMultiblockPart implements IFlu
 	{
 		if(!formed)
 			return false;
-		if(master()!=null)
-			return master().canInsertItem(slot,stack,side);
+		TileEntitySqueezer master = master();
+		if(master!=null)
+			return master.canInsertItem(slot,stack,side);
 		return isItemValidForSlot(slot,stack);
 	}
 	@Override
@@ -514,8 +510,9 @@ public class TileEntitySqueezer extends TileEntityMultiblockPart implements IFlu
 	{
 		if(!formed)
 			return false;
-		if(master()!=null)
-			return master().canExtractItem(slot,stack,side);
+		TileEntitySqueezer master = master();
+		if(master!=null)
+			return master.canExtractItem(slot,stack,side);
 		return slot==10||slot==11;
 	}
 
@@ -527,13 +524,13 @@ public class TileEntitySqueezer extends TileEntityMultiblockPart implements IFlu
 	@Override
 	public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate)
 	{
-		if(formed && this.master()!=null &&((pos==10 && from==ForgeDirection.DOWN)||(pos==16 && from==ForgeDirection.UP)))
+		TileEntitySqueezer master = master();
+		if(formed && master!=null &&((pos==10 && from==ForgeDirection.DOWN)||(pos==16 && from==ForgeDirection.UP)))
 		{
-			TileEntitySqueezer master = master();
 			int rec = master.energyStorage.receiveEnergy(maxReceive, simulate);
 			master.markDirty();
 			if(rec>0)
-				worldObj.markBlockForUpdate(master().xCoord, master().yCoord, master().zCoord);
+				worldObj.markBlockForUpdate(master.xCoord, master.yCoord, master.zCoord);
 			return rec;
 		}
 		return 0;
@@ -541,15 +538,17 @@ public class TileEntitySqueezer extends TileEntityMultiblockPart implements IFlu
 	@Override
 	public int getEnergyStored(ForgeDirection from)
 	{
-		if(this.master()!=null)
-			return this.master().energyStorage.getEnergyStored();
+		TileEntitySqueezer master = master();
+		if(master!=null)
+			return master.energyStorage.getEnergyStored();
 		return energyStorage.getEnergyStored();
 	}
 	@Override
 	public int getMaxEnergyStored(ForgeDirection from)
 	{
-		if(this.master()!=null)
-			return this.master().energyStorage.getMaxEnergyStored();
+		TileEntitySqueezer master = master();
+		if(master!=null)
+			return master.energyStorage.getMaxEnergyStored();
 		return energyStorage.getMaxEnergyStored();
 	}
 }

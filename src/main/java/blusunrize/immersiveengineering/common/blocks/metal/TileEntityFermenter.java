@@ -249,14 +249,7 @@ public class TileEntityFermenter extends TileEntityMultiblockPart implements IFl
 		processMaxTime = nbt.getInteger("processMaxTime");
 		if(!descPacket)
 		{
-			NBTTagList invList = nbt.getTagList("inventory", 10);
-			for (int i=0; i<invList.tagCount(); i++)
-			{
-				NBTTagCompound itemTag = invList.getCompoundTagAt(i);
-				int slot = itemTag.getByte("Slot") & 255;
-				if(slot>=0 && slot<this.inventory.length)
-					this.inventory[slot] = ItemStack.loadItemStackFromNBT(itemTag);
-			}
+			inventory = Utils.readInventory(nbt.getTagList("inventory", 10), 12);
 		}
 	}
 	@Override
@@ -271,16 +264,7 @@ public class TileEntityFermenter extends TileEntityMultiblockPart implements IFl
 		nbt.setInteger("processMaxTime", processMaxTime);
 		if(!descPacket)
 		{
-			NBTTagList invList = new NBTTagList();
-			for(int i=0; i<this.inventory.length; i++)
-				if(this.inventory[i] != null)
-				{
-					NBTTagCompound itemTag = new NBTTagCompound();
-					itemTag.setByte("Slot", (byte)i);
-					this.inventory[i].writeToNBT(itemTag);
-					invList.appendTag(itemTag);
-				}
-			nbt.setTag("inventory", invList);
+			nbt.setTag("inventory", Utils.writeInventory(inventory));
 		}
 	}
 

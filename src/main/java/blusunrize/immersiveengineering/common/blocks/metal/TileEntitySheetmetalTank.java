@@ -161,8 +161,9 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart implement
 	{
 		if(!canFill(from, resource!=null?resource.getFluid():null))
 			return 0;
-		if(master()!=null)
-			return master().fill(from,resource,doFill);
+		TileEntitySheetmetalTank master = master();
+		if(master!=null)
+			return master.fill(from,resource,doFill);
 		updateComparatorValuesPart1();
 		int f = tank.fill(resource, doFill);
 		if(f>0 && doFill)
@@ -178,8 +179,9 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart implement
 	{
 		if(!canDrain(from, resource!=null?resource.getFluid():null))
 			return null;
-		if(master()!=null)
-			return master().drain(from,resource,doDrain);
+		TileEntitySheetmetalTank master = master();
+		if(master!=null)
+			return master.drain(from,resource,doDrain);
 		if(resource!=null)
 			return drain(from, resource.amount, doDrain);
 		return null;
@@ -189,8 +191,9 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart implement
 	{
 		if(!canDrain(from, null))
 			return null;
-		if(master()!=null)
-			return master().drain(from,maxDrain,doDrain);
+		TileEntitySheetmetalTank master = master();
+		if(master!=null)
+			return master.drain(from,maxDrain,doDrain);
 		updateComparatorValuesPart1();
 		FluidStack fs = tank.drain(maxDrain, doDrain);
 		if(fs!=null && fs.amount>0 && doDrain)
@@ -218,8 +221,9 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart implement
 		if (pos==4||pos==40) {
 			if (!formed)
 				return new FluidTankInfo[] {};
-			if (master() != null)
-				return master().getTankInfo(from);
+			TileEntitySheetmetalTank master = master();
+			if (master != null)
+				return master.getTankInfo(from);
 			return new FluidTankInfo[] { tank.getInfo() };
 		} else {
 			return new FluidTankInfo[0];
@@ -247,8 +251,9 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart implement
 		{
 			return (15*tank.getFluidAmount())/tank.getCapacity();
 		}
-		if (offset[1]>=1&&offset[1]<=4&&master()!=null) { //4 layers of storage
-			FluidTank t = master().tank;
+		TileEntitySheetmetalTank master = master();
+		if (offset[1]>=1&&offset[1]<=4&&master!=null) { //4 layers of storage
+			FluidTank t = master.tank;
 			int layer = offset[1]-1;
 			int vol = t.getCapacity()/4;
 			int filled = t.getFluidAmount()-layer*vol;
