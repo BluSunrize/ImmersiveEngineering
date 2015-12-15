@@ -195,7 +195,6 @@ public class TileEntityAssembler extends TileEntityMultiblockPart implements ISi
 			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 		}
 	}
-
 	public boolean consumeItem(Object query, int querySize, ItemStack[] inventory, ArrayList<ItemStack> containerItems)
 	{
 		if(query instanceof FluidStack)
@@ -321,14 +320,7 @@ public class TileEntityAssembler extends TileEntityMultiblockPart implements ISi
 
 		if(!descPacket)
 		{
-			NBTTagList invList = nbt.getTagList("inventory", 10);
-			for (int i=0; i<invList.tagCount(); i++)
-			{
-				NBTTagCompound itemTag = invList.getCompoundTagAt(i);
-				int slot = itemTag.getByte("Slot") & 255;
-				if(slot>=0 && slot<this.inventory.length)
-					this.inventory[slot] = ItemStack.loadItemStackFromNBT(itemTag);
-			}
+			inventory = Utils.readInventory(nbt.getTagList("inventory", 10), 18);
 			for(int iPattern=0; iPattern<patterns.length; iPattern++)
 			{
 				NBTTagList patternList = nbt.getTagList("pattern"+iPattern, 10);
@@ -353,16 +345,7 @@ public class TileEntityAssembler extends TileEntityMultiblockPart implements ISi
 
 		if(!descPacket)
 		{
-			NBTTagList invList = new NBTTagList();
-			for(int i=0; i<this.inventory.length; i++)
-				if(this.inventory[i] != null)
-				{
-					NBTTagCompound itemTag = new NBTTagCompound();
-					itemTag.setByte("Slot", (byte)i);
-					this.inventory[i].writeToNBT(itemTag);
-					invList.appendTag(itemTag);
-				}
-			nbt.setTag("inventory", invList);
+			nbt.setTag("inventory", Utils.writeInventory(inventory));
 			for(int iPattern=0; iPattern<patterns.length; iPattern++)
 			{
 				NBTTagList patternList = new NBTTagList();
@@ -511,8 +494,9 @@ public class TileEntityAssembler extends TileEntityMultiblockPart implements ISi
 	{
 		if(!formed)
 			return null;
-		if(master()!=null)
-			return master().getStackInSlot(slot);
+		TileEntityAssembler master = master();
+		if(master!=null)
+			return master.getStackInSlot(slot);
 		if(slot<inventory.length)
 			return inventory[slot];
 		return null;
@@ -522,8 +506,9 @@ public class TileEntityAssembler extends TileEntityMultiblockPart implements ISi
 	{
 		if(!formed)
 			return null;
-		if(master()!=null)
-			return master().decrStackSize(slot,amount);
+		TileEntityAssembler master = master();
+		if(master!=null)
+			return master.decrStackSize(slot,amount);
 		ItemStack stack = getStackInSlot(slot);
 		if(stack != null)
 			if(stack.stackSize <= amount)
@@ -542,8 +527,9 @@ public class TileEntityAssembler extends TileEntityMultiblockPart implements ISi
 	{
 		if(!formed)
 			return null;
-		if(master()!=null)
-			return master().getStackInSlotOnClosing(slot);
+		TileEntityAssembler master = master();
+		if(master!=null)
+			return master.getStackInSlotOnClosing(slot);
 		ItemStack stack = getStackInSlot(slot);
 		if (stack != null)
 			setInventorySlotContents(slot, null);
@@ -554,9 +540,10 @@ public class TileEntityAssembler extends TileEntityMultiblockPart implements ISi
 	{
 		if(!formed)
 			return;
-		if(master()!=null)
+		TileEntityAssembler master = master();
+		if(master!=null)
 		{
-			master().setInventorySlotContents(slot,stack);
+			master.setInventorySlotContents(slot,stack);
 			return;
 		}
 		inventory[slot] = stack;
@@ -597,8 +584,9 @@ public class TileEntityAssembler extends TileEntityMultiblockPart implements ISi
 	{
 		if(!formed||stack==null)
 			return false;
-		if(master()!=null)
-			return master().isItemValidForSlot(slot,stack);
+		TileEntityAssembler master = master();
+		if(master!=null)
+			return master.isItemValidForSlot(slot,stack);
 		return true;
 	}
 	@Override
@@ -615,10 +603,11 @@ public class TileEntityAssembler extends TileEntityMultiblockPart implements ISi
 	{
 		if(!formed)
 			return true;
-		if(master()==null)
+		TileEntityAssembler master = master();
+		if(master==null)
 			return isItemValidForSlot(slot,stack);
 		else if(pos==10)
-			return master().canInsertItem(slot,stack,side);
+			return master.canInsertItem(slot,stack,side);
 		return false;
 	}
 	@Override
@@ -626,10 +615,11 @@ public class TileEntityAssembler extends TileEntityMultiblockPart implements ISi
 	{
 		if(!formed)
 			return true;
-		if(master()==null)
+		TileEntityAssembler master = master();
+		if(master==null)
 			return true;
 		else if(pos==16)
-			return master().canExtractItem(slot,stack,side);
+			return master.canExtractItem(slot,stack,side);
 		return false;
 	}
 
@@ -641,13 +631,13 @@ public class TileEntityAssembler extends TileEntityMultiblockPart implements ISi
 	@Override
 	public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate)
 	{
-		if(formed && pos==22 && from==ForgeDirection.UP && this.master()!=null)
+		TileEntityAssembler master = master();
+		if(formed && pos==22 && from==ForgeDirection.UP && master!=null)
 		{
-			TileEntityAssembler master = master();
 			int rec = master.energyStorage.receiveEnergy(maxReceive, simulate);
 			master.markDirty();
 			if(rec>0)
-				worldObj.markBlockForUpdate(master().xCoord, master().yCoord, master().zCoord);
+				worldObj.markBlockForUpdate(master.xCoord, master.yCoord, master.zCoord);
 			return rec;
 		}
 		return 0;
@@ -655,15 +645,17 @@ public class TileEntityAssembler extends TileEntityMultiblockPart implements ISi
 	@Override
 	public int getEnergyStored(ForgeDirection from)
 	{
-		if(this.master()!=null)
-			return this.master().energyStorage.getEnergyStored();
+		TileEntityAssembler master = master();
+		if(master!=null)
+			return master.energyStorage.getEnergyStored();
 		return energyStorage.getEnergyStored();
 	}
 	@Override
 	public int getMaxEnergyStored(ForgeDirection from)
 	{
-		if(this.master()!=null)
-			return this.master().energyStorage.getMaxEnergyStored();
+		TileEntityAssembler master = master();
+		if(master!=null)
+			return master.energyStorage.getMaxEnergyStored();
 		return energyStorage.getMaxEnergyStored();
 	}
 
@@ -672,8 +664,9 @@ public class TileEntityAssembler extends TileEntityMultiblockPart implements ISi
 	{
 		if(resource==null)
 			return 0;
-		if(master()!=null)
-			return master().fill(from, resource, doFill);
+		TileEntityAssembler master = master();
+		if(master!=null)
+			return master.fill(from, resource, doFill);
 		int fill = -1;
 		for(FluidTank tank : tanks)
 			if(tank.getFluid()!=null && tank.getFluid().isFluidEqual(resource))

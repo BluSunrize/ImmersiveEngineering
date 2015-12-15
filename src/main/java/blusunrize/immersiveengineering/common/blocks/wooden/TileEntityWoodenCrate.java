@@ -8,6 +8,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.oredict.OreDictionary;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
+import blusunrize.immersiveengineering.common.util.Utils;
 
 public class TileEntityWoodenCrate extends TileEntityIEBase implements IInventory
 {
@@ -99,18 +100,7 @@ public class TileEntityWoodenCrate extends TileEntityIEBase implements IInventor
 	{
 		if(!descPacket)
 		{
-			readInv(nbt);
-		}
-	}
-	public void readInv(NBTTagCompound nbt)
-	{
-		NBTTagList invList = nbt.getTagList("inventory", 10);
-		for (int i=0; i<invList.tagCount(); i++)
-		{
-			NBTTagCompound itemTag = invList.getCompoundTagAt(i);
-			int slot = itemTag.getByte("Slot") & 255;
-			if(slot>=0 && slot<this.inventory.length)
-				this.inventory[slot] = ItemStack.loadItemStackFromNBT(itemTag);
+			inventory = Utils.readInventory(nbt.getTagList("inventory", 10), 27);
 		}
 	}
 	@Override
