@@ -11,12 +11,12 @@ import com.google.gson.JsonStreamParser;
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.WireType;
+import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.common.CommonProxy;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.EventHandler;
 import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.IERecipes;
 import blusunrize.immersiveengineering.common.IESaveData;
 import blusunrize.immersiveengineering.common.crafting.ArcRecyclingThreadHandler;
 import blusunrize.immersiveengineering.common.items.ItemRevolver;
@@ -88,7 +88,7 @@ public class ImmersiveEngineering
 		IEApi.prefixToIngotMap.put("gear", new Integer[]{4,1});
 		IEApi.prefixToIngotMap.put("rod", new Integer[]{2,1});
 		IEApi.prefixToIngotMap.put("fence", new Integer[]{6,16});
-		IECompatModule.preInitModules();
+		IECompatModule.doModulesPreInit();
 	}
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent event)
@@ -106,9 +106,7 @@ public class ImmersiveEngineering
 		Lib.GREG = Loader.isModLoaded("gregtech") && Config.getBoolean("gregtechcompat");
 		Config.setBoolean("ic2Manual", Lib.IC2);
 		Config.setBoolean("gregManual", Lib.GREG);
-		for(IECompatModule compat : IECompatModule.modules)
-			compat.init();
-
+		IECompatModule.doModulesInit();
 		int messageId = 0;
 		packetHandler.registerMessage(MessageMineralListSync.Handler.class, MessageMineralListSync.class, messageId++, Side.CLIENT);
 		packetHandler.registerMessage(MessageTileSync.Handler.class, MessageTileSync.class, messageId++, Side.SERVER);
@@ -121,22 +119,20 @@ public class ImmersiveEngineering
 	@Mod.EventHandler
 	public void postInit(FMLPostInitializationEvent event)
 	{
-		IERecipes.postInitCrusherAndArcRecipes();
-		for(IECompatModule compat : IECompatModule.modules)
-			compat.postInit();
-
-		ExcavatorHandler.recalculateChances(true);
 		IEContent.postInit();
+		ExcavatorHandler.recalculateChances(true);
 		proxy.postInit();
-
 		new ThreadContributorSpecialsDownloader();
+		IECompatModule.doModulesPostInit();
 	}
 
 	@Mod.EventHandler
 	public void serverStarting(FMLServerStartingEvent event)
 	{
 		proxy.serverStarting();
-		event.registerServerCommand(new CommandHandler());	
+		event.registerServerCommand(new CommandHandler());
+		IECompatModule.doModulesServerStarting();
+		ShaderRegistry.compileWeight();	
 	}
 	@Mod.EventHandler
 	public void serverStarted(FMLServerStartedEvent event)

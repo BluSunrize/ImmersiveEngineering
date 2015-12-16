@@ -1,12 +1,21 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import java.util.HashMap;
+
+import blusunrize.immersiveengineering.api.energy.DieselHandler;
+import blusunrize.immersiveengineering.api.energy.DieselHandler.FermenterRecipe;
+import blusunrize.immersiveengineering.common.Config;
+import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockFermenter;
+import blusunrize.immersiveengineering.common.util.Utils;
+import cofh.api.energy.EnergyStorage;
+import cofh.api.energy.IEnergyReceiver;
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
@@ -16,16 +25,6 @@ import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.oredict.OreDictionary;
-import blusunrize.immersiveengineering.api.energy.DieselHandler;
-import blusunrize.immersiveengineering.api.energy.DieselHandler.FermenterRecipe;
-import blusunrize.immersiveengineering.common.Config;
-import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockFermenter;
-import blusunrize.immersiveengineering.common.util.Utils;
-import cofh.api.energy.EnergyStorage;
-import cofh.api.energy.IEnergyReceiver;
-
-import java.util.*;
 
 public class TileEntityFermenter extends TileEntityMultiblockPart implements IFluidHandler, ISidedInventory, IEnergyReceiver
 {

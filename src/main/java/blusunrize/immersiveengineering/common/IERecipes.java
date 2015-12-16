@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.common.crafting.RecipeJerrycan;
 import blusunrize.immersiveengineering.common.crafting.RecipeOreCrushing;
 import blusunrize.immersiveengineering.common.crafting.RecipePotionBullets;
 import blusunrize.immersiveengineering.common.crafting.RecipeRevolver;
+import blusunrize.immersiveengineering.common.crafting.RecipeShaderBags;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.compat.NetherOresHelper;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -152,7 +153,9 @@ public class IERecipes
 		addOredictRecipe(new ItemStack(IEContent.itemJerrycan), " II","IBB","IBB", 'I',"ingotIron",'B',Items.bucket);
 		GameRegistry.addRecipe(new RecipeJerrycan());
 		RecipeSorter.register(ImmersiveEngineering.MODID+":jerrycan", RecipeJerrycan.class, RecipeSorter.Category.SHAPELESS, "after:forge:shapelessore");
-
+		
+		GameRegistry.addRecipe(new RecipeShaderBags());
+		
 		for(ItemStack container : Utils.getContainersFilledWith(new FluidStack(IEContent.fluidCreosote,1000)))
 			addOredictRecipe(new ItemStack(IEContent.blockTreatedWood,8,0), "WWW","WCW","WWW", 'W',"plankWood",'C',container);
 		addOredictRecipe(new ItemStack(IEContent.blockTreatedWood,1,0), "W","W", 'W',new ItemStack(IEContent.blockWoodenDecoration,1,2));

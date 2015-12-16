@@ -3,6 +3,20 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import java.util.ArrayList;
 import java.util.List;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.crafting.CrusherRecipe;
+import blusunrize.immersiveengineering.common.Config;
+import blusunrize.immersiveengineering.common.EventHandler;
+import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundTile;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockCrusher;
+import blusunrize.immersiveengineering.common.util.IEDamageSources;
+import blusunrize.immersiveengineering.common.util.IESound;
+import blusunrize.immersiveengineering.common.util.Utils;
+import cofh.api.energy.EnergyStorage;
+import cofh.api.energy.IEnergyReceiver;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import mods.railcraft.api.crafting.IRockCrusherRecipe;
 import mods.railcraft.api.crafting.RailcraftCraftingManager;
 import net.minecraft.block.Block;
@@ -17,21 +31,6 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
-import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.crafting.CrusherRecipe;
-import blusunrize.immersiveengineering.common.Config;
-import blusunrize.immersiveengineering.common.EventHandler;
-import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundTile;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockCrusher;
-import blusunrize.immersiveengineering.common.util.IEDamageSources;
-import blusunrize.immersiveengineering.common.util.IELogger;
-import blusunrize.immersiveengineering.common.util.IESound;
-import blusunrize.immersiveengineering.common.util.Utils;
-import cofh.api.energy.EnergyStorage;
-import cofh.api.energy.IEnergyReceiver;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class TileEntityCrusher extends TileEntityMultiblockPart implements IEnergyReceiver, ISidedInventory, ISoundTile
 {

@@ -338,6 +338,29 @@ public class ClientUtils
 		}
 		return "";
 	}
+	
+	static int[] chatColours = {
+			0x000000,//BLACK
+			0x0000AA,//DARK_BLUE
+			0x00AA00,//DARK_GREEN
+			0x00AAAA,//DARK_AQUA
+			0xAA0000,//DARK_RED
+			0xAA00AA,//DARK_PURPLE
+			0xFFAA00,//GOLD
+			0xAAAAAA,//GRAY
+			0x555555,//DARK_GRAY
+			0x5555FF,//BLUE
+			0x55FF55,//GREEN
+			0x55FFFF,//AQUA
+			0xFF5555,//RED
+			0xFF55FF,//LIGHT_PURPLE
+			0xFFFF55,//YELLOW
+			0xFFFFFF//WHITE
+	};
+	public static int getFormattingColour(EnumChatFormatting rarityColor)
+	{
+		return rarityColor.ordinal()<16?chatColours[rarityColor.ordinal()]:0;
+	}
 
 	public static IESound generatePositionedIESound(String soundName, float volume, float pitch, boolean repeat, int delay, double x, double y, double z)
 	{
@@ -512,7 +535,7 @@ public class ClientUtils
 			OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)lb_j / 1.0F, (float)lb_k / 1.0F);
 		}
 		Vertex normalCopy = new Vertex(0,0,0);
-		
+
 		float minU = icon.getInterpolatedU(0);
 		float sizeU = icon.getInterpolatedU(16) - minU;
 		float minV = icon.getInterpolatedV(0);
@@ -719,7 +742,7 @@ public class ClientUtils
 				face.textureCoordinates[v] = new TextureCoordinate(oldUVs[v].u,oldUVs[v].v);
 		}
 	}
-	
+
 	public static void addFaceToWorldRender(Face face, Tessellator tes, BlockLightingInfo light, Matrix4 translationMatrix, Matrix4 rotationMatrix, boolean invert, float colR, float colG, float colB)
 	{
 		Vertex vertexCopy = new Vertex(0,0,0);
@@ -758,7 +781,7 @@ public class ClientUtils
 			}
 		}
 	}
-	
+
 
 	public static void renderItemIn2D(IIcon icon, double[] uv, int width, int height, float depth)
 	{

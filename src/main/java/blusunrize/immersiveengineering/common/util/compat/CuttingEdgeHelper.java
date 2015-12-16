@@ -91,7 +91,6 @@ public class CuttingEdgeHelper extends IECompatModule
 					int cookTime = f_cookTime.getInt(tileEntity);
 					if(canEvaporate&&burnTime>=200&&cookTime<199)
 					{
-//						System.out.println("SPEEDUP!!!!");
 						int energyToUse = ExternalHeaterHandler.defaultFurnaceSpeedupCost;
 						if(energyAvailable-energyConsumed > energyToUse)
 						{

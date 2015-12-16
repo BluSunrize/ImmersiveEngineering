@@ -2,6 +2,7 @@ package blusunrize.immersiveengineering.common;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
@@ -47,11 +48,15 @@ import net.minecraft.client.model.ModelMinecart;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RenderMinecart;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EnumCreatureType;
+import net.minecraft.entity.boss.EntityWither;
+import net.minecraft.entity.boss.IBossDisplayData;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
@@ -137,8 +142,7 @@ public class EventHandler
 		if(event.entity instanceof EntityMinecart)
 		{
 			for(Class<? extends EntityMinecart> invalid : ShaderCaseMinecart.invalidMinecartClasses)
-				if(invalid.isInstance(event.entity.getClass()))
-					return;
+				if(invalid.isAssignableFrom(event.entity.getClass())) return;
 			event.entity.registerExtendedProperties(EntityPropertiesShaderCart.PROPERTY_NAME, new EntityPropertiesShaderCart());
 		}
 	}
@@ -251,8 +255,12 @@ public class EventHandler
 	}
 
 	public static HashMap<UUID, TileEntityCrusher> crusherMap = new HashMap<UUID, TileEntityCrusher>();
+	public static HashSet<Class<? extends EntityLiving>> listOfBoringBosses = new HashSet();
+	static{
+		listOfBoringBosses.add(EntityWither.class);
+	}
 	@SubscribeEvent(priority=EventPriority.LOWEST)
-	public void onLivingDrops(LivingDropsEvent event)
+	public void onLivingDropsLowest(LivingDropsEvent event)
 	{
 		if(!event.isCanceled() && Lib.DMG_Crusher.equals(event.source.getDamageType()))
 		{
@@ -265,6 +273,24 @@ public class EventHandler
 				crusherMap.remove(event.entityLiving.getUniqueID());
 				event.setCanceled(true);
 			}
+		}
+	}
+	@SubscribeEvent
+	public void onLivingDrops(LivingDropsEvent event)
+	{
+		if(!event.isCanceled() && event.entityLiving instanceof IBossDisplayData)
+		{
+			EnumRarity r = EnumRarity.epic;
+			if(event.lootingLevel<3)
+				for(Class<? extends EntityLiving> boring : listOfBoringBosses)
+					if(boring.isAssignableFrom(event.entityLiving.getClass()))
+					{
+						r = EnumRarity.rare;
+						break;
+					}
+			ItemStack bag = new ItemStack(IEContent.itemShaderBag);
+			ItemNBTHelper.setString(bag, "rarity", r.toString());
+			event.drops.add(new EntityItem(event.entityLiving.worldObj, event.entityLiving.posX,event.entityLiving.posY,event.entityLiving.posZ, bag));
 		}
 	}
 

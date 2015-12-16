@@ -3,6 +3,11 @@ package blusunrize.immersiveengineering.common;
 import java.util.ArrayList;
 import java.util.Random;
 
+import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
+import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.util.Utils;
+import cpw.mods.fml.common.ObfuscationReflectionHelper;
+import cpw.mods.fml.common.registry.VillagerRegistry.IVillageTradeHandler;
 import net.minecraft.block.Block;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.init.Items;
@@ -10,12 +15,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.village.MerchantRecipe;
 import net.minecraft.village.MerchantRecipeList;
-import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
-import blusunrize.immersiveengineering.common.items.ItemShader;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import blusunrize.immersiveengineering.common.util.Utils;
-import cpw.mods.fml.common.ObfuscationReflectionHelper;
-import cpw.mods.fml.common.registry.VillagerRegistry.IVillageTradeHandler;
 
 public class IEVillagerTradeHandler implements IVillageTradeHandler
 {
@@ -68,8 +67,6 @@ public class IEVillagerTradeHandler implements IVillageTradeHandler
 				ItemNBTHelper.setLore(special, "Congratulations!","You have found an easter egg!");
 				addDeal(.05f, price,min,max, special);
 			}
-
-		addDeal(.5f, Items.emerald,3,8,null, new ItemShader.ShaderMerchantItem());
 	}
 	void addDeal(float chance, Object... objects)
 	{

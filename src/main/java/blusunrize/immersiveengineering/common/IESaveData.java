@@ -2,18 +2,20 @@ package blusunrize.immersiveengineering.common;
 
 import java.util.Map;
 
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.World;
-import net.minecraft.world.WorldSavedData;
 import blusunrize.immersiveengineering.api.DimensionChunkCoords;
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler.Connection;
+import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralWorldInfo;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagString;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.World;
+import net.minecraft.world.WorldSavedData;
 
 public class IESaveData extends WorldSavedData
 {
@@ -59,6 +61,19 @@ public class IESaveData extends WorldSavedData
 				ExcavatorHandler.mineralCache.put(coords, info);
 			}
 		}
+
+
+		NBTTagList receivedShaderList = nbt.getTagList("receivedShaderList", 10);
+		for(int i=0; i<receivedShaderList.tagCount(); i++)
+		{
+			NBTTagCompound tag = receivedShaderList.getCompoundTagAt(i);
+			String player = tag.getString("player"); 
+			ShaderRegistry.receivedShaders.get(player).clear();
+			
+			NBTTagList playerReceived = tag.getTagList("received", 8);
+			for(int j=0; j<playerReceived.tagCount(); j++)
+				ShaderRegistry.receivedShaders.put(player, playerReceived.getStringTagAt(j));
+		}
 	}
 
 	@Override
@@ -93,6 +108,20 @@ public class IESaveData extends WorldSavedData
 				mineralList.appendTag(tag);
 			}
 		nbt.setTag("mineralDepletion", mineralList);
+		
+
+		NBTTagList receivedShaderList = new NBTTagList();
+		for(String player : ShaderRegistry.receivedShaders.keySet())
+		{
+			NBTTagCompound tag = new NBTTagCompound();
+			tag.setString("player", player);
+			NBTTagList playerReceived = new NBTTagList();
+			for(String shader : ShaderRegistry.receivedShaders.get(player))
+				playerReceived.appendTag(new NBTTagString(shader));
+			tag.setTag("received", playerReceived);
+			receivedShaderList.appendTag(tag);
+		}
+		nbt.setTag("receivedShaderList", receivedShaderList);
 	}
 
 

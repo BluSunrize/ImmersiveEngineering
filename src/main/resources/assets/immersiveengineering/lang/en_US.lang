@@ -256,6 +256,7 @@ item.ImmersiveEngineering.blueprint.name=Engineer's Blueprint
 item.ImmersiveEngineering.graphiteElectrode.name=Graphite Electrode
 
 item.ImmersiveEngineering.shader.name=Shader
+item.ImmersiveEngineering.shaderBag.name=Shader Grabbag
 
 item.ImmersiveEngineering.jerrycan.name=Jerrycan
 
@@ -432,6 +433,9 @@ chat.ImmersiveEngineering.command.mineral.set.sucess=Mineral override set to '%1
 chat.ImmersiveEngineering.command.mineral.set.clear=Mineral override (%1$s) cleared.
 chat.ImmersiveEngineering.command.mineral.setDepletion.NFE=Error, '%1$s' is not a valid number
 chat.ImmersiveEngineering.command.mineral.setDepletion.sucess=Mineral depletion set to '%1$s'
+chat.ImmersiveEngineering.command.shaders.help=§6Usage: /ie shaders <clear>§r
+chat.ImmersiveEngineering.command.shaders.clear.help=§6Usage: /ie shaders clear [player]§r<br> Clear the received shaders for the given player. Clear for yourself if no player is specified.
+chat.ImmersiveEngineering.command.shaders.clear.sucess=Received Shaders for '%1$s' where cleared
 
 #RECIPES
 recipe.ImmersiveEngineering.hammerCrushing=Crushing

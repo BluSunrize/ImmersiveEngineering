@@ -9,12 +9,9 @@ import blusunrize.immersiveengineering.api.shader.IShaderItem;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderCaseMinecart;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
-import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.IEVillagerTradeHandler.MerchantItem;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Lib;
-import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.lib.manual.ManualUtils;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -82,12 +79,12 @@ public class ItemShader extends ItemIEBase implements IShaderItem
 
 	public void addShader(String name, int overlayType, EnumRarity rarity, int[] colourBackground, int[] colourPrimary, int[] colourSecondary, int[] colourBlade, String additionalTexture)
 	{
-		ShaderRegistry.registerShader(name, Integer.toString(overlayType), rarity, colourPrimary, colourSecondary, colourBackground, colourBlade, additionalTexture);
-//		ShaderCaseRevolver revolver = IEApi.registerShader_Revolver(name, overlayType, colour0, colour1, colour2, colour3, additionalTexture);
-//		revolver.glowLayer = revolver_glow;
-//		IEApi.registerShader_Chemthrower(name, overlayType, colour0, colour1, colour2, true,false, additionalTexture);
-//		IEApi.registerShader_Minecart(name, overlayType, colour1, colour2, additionalTexture);
-//		IEApi.registerShader_Balloon(name, overlayType, colour1, colour2, additionalTexture);
+		ShaderRegistry.registerShader(name, Integer.toString(overlayType), rarity, colourPrimary, colourSecondary, colourBackground, colourBlade, additionalTexture, true,true);
+		//		ShaderCaseRevolver revolver = IEApi.registerShader_Revolver(name, overlayType, colour0, colour1, colour2, colour3, additionalTexture);
+		//		revolver.glowLayer = revolver_glow;
+		//		IEApi.registerShader_Chemthrower(name, overlayType, colour0, colour1, colour2, true,false, additionalTexture);
+		//		IEApi.registerShader_Minecart(name, overlayType, colour1, colour2, additionalTexture);
+		//		IEApi.registerShader_Balloon(name, overlayType, colour1, colour2, additionalTexture);
 	}
 
 	public String getShaderName(ItemStack stack)
@@ -95,11 +92,11 @@ public class ItemShader extends ItemIEBase implements IShaderItem
 		if(ItemNBTHelper.hasKey(stack, "shader_name"))
 		{
 			String name = ItemNBTHelper.getString(stack, "shader_name");
-			if(ShaderRegistry.shaderCaseRegistry.containsKey(ItemNBTHelper.getString(stack, "shader_name")))
+			if(ShaderRegistry.shaderRegistry.containsKey(ItemNBTHelper.getString(stack, "shader_name")))
 				return name;
 			else
 			{
-				Set<String> keys = ShaderRegistry.shaderCaseRegistry.keySet();
+				Set<String> keys = ShaderRegistry.shaderRegistry.keySet();
 				ArrayList<String> corrected = ManualUtils.getPrimitiveSpellingCorrections(name, keys.toArray(new String[keys.size()]), 4);
 				if(!corrected.isEmpty())
 				{
@@ -117,6 +114,7 @@ public class ItemShader extends ItemIEBase implements IShaderItem
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean adv)
 	{
+		list.add(StatCollector.translateToLocal("Level: "+this.getRarity(stack).rarityColor+this.getRarity(stack).rarityName));
 		if(!GuiScreen.isShiftKeyDown())
 			list.add(StatCollector.translateToLocal(Lib.DESC_INFO+"shader.applyTo")+" "+StatCollector.translateToLocal(Lib.DESC_INFO+"holdShift"));
 		else
@@ -125,7 +123,7 @@ public class ItemShader extends ItemIEBase implements IShaderItem
 			String name = getShaderName(stack);
 			if(name!=null && !name.isEmpty())
 			{
-				List<ShaderCase> array = ShaderRegistry.shaderCaseRegistry.get(name);
+				List<ShaderCase> array = ShaderRegistry.shaderRegistry.get(name).getCases();
 				for(ShaderCase sCase : array)
 					list.add(EnumChatFormatting.DARK_GRAY+" "+StatCollector.translateToLocal(Lib.DESC_INFO+"shader."+sCase.getShaderType()));
 			}
@@ -141,7 +139,7 @@ public class ItemShader extends ItemIEBase implements IShaderItem
 	public EnumRarity getRarity(ItemStack stack)
 	{
 		String s = getShaderName(stack);
-		return ShaderRegistry.shaderRarityMap.containsKey(s)?ShaderRegistry.shaderRarityMap.get(s):EnumRarity.common;
+		return ShaderRegistry.shaderRegistry.containsKey(s)?ShaderRegistry.shaderRegistry.get(s).getRarity():EnumRarity.common;
 	}
 
 
@@ -149,9 +147,8 @@ public class ItemShader extends ItemIEBase implements IShaderItem
 	public WeightedRandomChestContent getChestGenBase(ChestGenHooks chest, Random random, WeightedRandomChestContent original)
 	{
 		NBTTagCompound tag = new NBTTagCompound();
-		List<String> list = new ArrayList(ShaderRegistry.shaderList);
-		list.removeAll(ShaderRegistry.shaderTradeBlacklist);
-		tag.setString("shader_name", list.get(random.nextInt(list.size())));
+
+		//		tag.setString("shader_name", ShaderRegistry.shaderLootList.get(random.nextInt(ShaderRegistry.shaderLootList.size())));
 		original.theItemId.setTagCompound(tag);
 		return original;
 	}
@@ -162,9 +159,7 @@ public class ItemShader extends ItemIEBase implements IShaderItem
 		for(String key : ShaderRegistry.shaderList)
 		{
 			ItemStack s = new ItemStack(item);
-			NBTTagCompound tag = new NBTTagCompound();
-			tag.setString("shader_name", key);
-			s.setTagCompound(tag);
+			ItemNBTHelper.setString(s, "shader_name", key);
 			list.add(s);
 		}
 	}
@@ -196,33 +191,17 @@ public class ItemShader extends ItemIEBase implements IShaderItem
 	public int getColorFromItemStack(ItemStack stack, int pass)
 	{
 		String name = getShaderName(stack);
-		if(ShaderRegistry.shaderCaseRegistry.containsKey(name))
+		if(ShaderRegistry.shaderRegistry.containsKey(name))
 		{
-			ShaderCase sCase = ShaderRegistry.shaderCaseRegistry.get(name).get(0);
-			int[] col = pass==0?sCase.getUnderlyingColour(): pass==1?sCase.getPrimaryColour(): sCase.getSecondaryColour();
-			if(col!=null&&col.length>3)
-				return (col[3]<<24)+(col[0]<<16)+(col[1]<<8)+col[2];
+			List<ShaderCase> array = ShaderRegistry.shaderRegistry.get(name).getCases();
+			ShaderCase sCase = array.size()>0?array.get(0):null;
+			if(sCase!=null)
+			{
+				int[] col = pass==0?sCase.getUnderlyingColour(): pass==1?sCase.getPrimaryColour(): sCase.getSecondaryColour();
+				if(col!=null&&col.length>3)
+					return (col[3]<<24)+(col[0]<<16)+(col[1]<<8)+col[2];
+			}
 		}
 		return super.getColorFromItemStack(stack, pass);
-	}
-
-
-	public static class ShaderMerchantItem extends MerchantItem
-	{
-		public ShaderMerchantItem()
-		{
-			super(IEContent.itemShader,1,1);
-		}
-
-		public ItemStack getItem(Random rand)
-		{
-			ItemStack s = Utils.copyStackWithAmount(this.item, 1);
-			NBTTagCompound tag = new NBTTagCompound();
-			List<String> list = new ArrayList(ShaderRegistry.shaderList);
-			list.removeAll(ShaderRegistry.shaderTradeBlacklist);
-			tag.setString("shader_name", list.get(rand.nextInt(list.size())));
-			s.setTagCompound(tag);
-			return s;
-		}
 	}
 }

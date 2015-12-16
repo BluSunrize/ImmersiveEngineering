@@ -121,6 +121,7 @@ import blusunrize.immersiveengineering.common.items.ItemIETool;
 import blusunrize.immersiveengineering.common.items.ItemJerrycan;
 import blusunrize.immersiveengineering.common.items.ItemRevolver;
 import blusunrize.immersiveengineering.common.items.ItemShader;
+import blusunrize.immersiveengineering.common.items.ItemShaderBag;
 import blusunrize.immersiveengineering.common.items.ItemSkyhook;
 import blusunrize.immersiveengineering.common.items.ItemToolUpgrade;
 import blusunrize.immersiveengineering.common.items.ItemWireCoil;
@@ -189,6 +190,7 @@ public class IEContent
 	public static ItemIEBase itemBlueprint;
 	public static ItemIEBase itemGraphiteElectrode;
 	public static ItemIEBase itemShader;
+	public static ItemIEBase itemShaderBag;
 	public static ItemIEBase itemFakeIcons;
 	public static ItemIEBase itemJerrycan;
 	public static ItemIEBase itemChemthrower;
@@ -268,6 +270,7 @@ public class IEContent
 		itemBlueprint = new ItemEngineersBlueprint();
 		itemGraphiteElectrode = new ItemGraphiteElectrode();
 		itemShader = new ItemShader();
+		itemShaderBag = new ItemShaderBag();
 		itemFakeIcons =  new ItemIEBase("fakeIcon", 1, "birthday")
 		{
 			@Override
@@ -574,12 +577,13 @@ public class IEContent
 
 	public static void postInit()
 	{
+		IERecipes.postInitCrusherAndArcRecipes();
 		//Villager Trades
 		//These are done so late to account for Blueprints added by addons
 		int villagerId = Config.getInt("villager_engineer");
 		VillagerRegistry.instance().registerVillageTradeHandler(villagerId, new IEVillagerTradeHandler());
 	}
-
+	
 	public static void registerToOreDict(String type, ItemIEBase item, int... metas)
 	{
 		if(metas==null||metas.length<1)

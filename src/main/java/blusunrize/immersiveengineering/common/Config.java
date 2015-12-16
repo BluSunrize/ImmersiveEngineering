@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.common;
 
+import java.util.Calendar;
 import java.util.HashMap;
 
 import net.minecraftforge.common.config.Configuration;
@@ -95,6 +96,8 @@ public class Config
 		setStringArray("preferredOres", config.get("general", "Preferred Ores", new String[]{"ImmersiveEngineering","ThermalFoundation"}, "A list of preferred Mod IDs that results of IE processes should stem from, aka which mod you want the copper to come from. This affects the ores dug by the excavator, as well as those crushing recipes that don't have associated IE items. This list is in oreder of priority.").getStringList());
 		setBoolean("showUpdateNews", config.get("general", "Show Update News", true, "Set this to false to hide the update news in the manual").getBoolean());
 
+        Calendar calendar = Calendar.getInstance();
+        setBoolean("christmas", calendar.get(2)+1==12);
 
 		setBoolean("ic2compat", config.get("general", "IC2 Compatability", true, "Set this to false to prevent wires from accepting and outputting EU").getBoolean());
 		setBoolean("gregtechcompat", config.get("general", "GregTech Compatability", true, "Set this to false to prevent wires from outputting GregTech EU").getBoolean());

@@ -107,8 +107,8 @@ public class ClientEventHandler
 			IELogger.info("Stitching Revolver Textures!");
 			((ItemRevolver)IEContent.itemRevolver).stichRevolverTextures(event.map);
 		}
-		for(String key : ShaderRegistry.shaderCaseRegistry.keySet())
-			for(ShaderCase sCase : ShaderRegistry.shaderCaseRegistry.get(key))
+		for(ShaderRegistry.ShaderRegistryEntry entry : ShaderRegistry.shaderRegistry.values())
+			for(ShaderCase sCase : entry.getCases())
 				sCase.stichTextures(event.map, event.map.getTextureType());
 	}
 	@SubscribeEvent()

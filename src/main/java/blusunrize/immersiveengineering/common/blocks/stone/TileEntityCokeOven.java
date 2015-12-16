@@ -1,12 +1,15 @@
 package blusunrize.immersiveengineering.common.blocks.stone;
 
+import blusunrize.immersiveengineering.api.crafting.CokeOvenRecipe;
+import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMultiblockPart;
+import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
@@ -16,10 +19,6 @@ import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.oredict.OreDictionary;
-import blusunrize.immersiveengineering.api.crafting.CokeOvenRecipe;
-import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMultiblockPart;
-import blusunrize.immersiveengineering.common.util.Utils;
 
 public class TileEntityCokeOven extends TileEntityMultiblockPart implements ISidedInventory, IFluidHandler
 {

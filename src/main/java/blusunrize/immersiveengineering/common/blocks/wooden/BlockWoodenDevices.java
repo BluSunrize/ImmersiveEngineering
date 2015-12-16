@@ -27,6 +27,7 @@ import net.minecraftforge.fluids.IFluidContainerItem;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IPostBlock;
 import blusunrize.immersiveengineering.client.render.BlockRenderWoodenDevices;
+import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
 import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -41,7 +42,7 @@ public class BlockWoodenDevices extends BlockIEBase implements IPostBlock, blusu
 
 	public BlockWoodenDevices()
 	{
-		super("woodenDevice", Material.wood, 1, ItemBlockWoodenDevices.class, "post","watermill","windmill","windmillAdvanced","crate","modificationWorkbench","barrel");
+		super("woodenDevice", Material.wood, Config.getBoolean("christmas")?2:1, ItemBlockWoodenDevices.class, "post","watermill","windmill","windmillAdvanced","crate","modificationWorkbench","barrel");
 		this.setHardness(2.0F);
 		this.setResistance(5.0F);
 		this.setMetaLightOpacity(4, 255);
@@ -63,14 +64,19 @@ public class BlockWoodenDevices extends BlockIEBase implements IPostBlock, blusu
 	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister iconRegister)
 	{
-		icons[0][0] = iconRegister.registerIcon("immersiveengineering:woodenPost");
-		icons[1][0] = iconRegister.registerIcon("immersiveengineering:treatedWood");
-		icons[2][0] = iconRegister.registerIcon("immersiveengineering:treatedWood");
-		icons[3][0] = iconRegister.registerIcon("immersiveengineering:treatedWood");
-		icons[4][0] = iconRegister.registerIcon("immersiveengineering:woodenCrate");
-		icons[5][0] = iconRegister.registerIcon("immersiveengineering:workbench");
-		icons[6][0] = iconRegister.registerIcon("immersiveengineering:woodBarrel");
-
+		for(int i=0; i<this.iconDimensions; i++)
+		{
+			icons[0][i] = iconRegister.registerIcon("immersiveengineering:woodenPost");
+			icons[1][i] = iconRegister.registerIcon("immersiveengineering:treatedWood");
+			icons[2][i] = iconRegister.registerIcon("immersiveengineering:treatedWood");
+			icons[3][i] = iconRegister.registerIcon("immersiveengineering:treatedWood");
+			if(Config.getBoolean("christmas"))
+				icons[4][i] = iconRegister.registerIcon("immersiveengineering:woodenCrateChristmas"+i);
+			else
+				icons[4][i] = iconRegister.registerIcon("immersiveengineering:woodenCrate");
+			icons[5][0] = iconRegister.registerIcon("immersiveengineering:workbench");
+			icons[6][0] = iconRegister.registerIcon("immersiveengineering:woodBarrel");
+		}
 		iconBarrel[0] = iconRegister.registerIcon("immersiveengineering:woodBarrel_top_none");
 		iconBarrel[1] = iconRegister.registerIcon("immersiveengineering:woodBarrel_top_in");
 		iconBarrel[2] = iconRegister.registerIcon("immersiveengineering:woodBarrel_top_out");
