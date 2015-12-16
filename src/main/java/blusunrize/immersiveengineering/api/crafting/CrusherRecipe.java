@@ -44,7 +44,7 @@ public class CrusherRecipe
 			for(int i=0; i<secondaryOutput.length; i++)
 			{
 				newSecondaryOutput.add(secondaryOutput[i*2]);
-				newSecondaryChance.add(secondaryChance[i*2+1]);
+				newSecondaryChance.add(secondaryChance[i*2]);
 			}
 		for(int i=0; i<(outputs.length/2); i++)
 			if(outputs[i*2]!=null)
