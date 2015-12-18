@@ -271,7 +271,7 @@ public class IEContent
 		itemGraphiteElectrode = new ItemGraphiteElectrode();
 		itemShader = new ItemShader();
 		itemShaderBag = new ItemShaderBag();
-		itemFakeIcons =  new ItemIEBase("fakeIcon", 1, "birthday")
+		itemFakeIcons =  new ItemIEBase("fakeIcon", 1, "birthday","lucky")
 		{
 			@Override
 			public void getSubItems(Item item, CreativeTabs tab, List list)

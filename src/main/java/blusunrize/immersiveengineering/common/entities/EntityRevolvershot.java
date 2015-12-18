@@ -227,7 +227,7 @@ public class EntityRevolvershot extends Entity
 						mop.entityHit.getEntityData().setBoolean("headshot", true);
 					}
 					else if(this.shootingEntity instanceof EntityPlayer)
-						((EntityPlayer)this.shootingEntity).triggerAchievement(IEAchievements.birthdayParty);
+						((EntityPlayer)this.shootingEntity).triggerAchievement(IEAchievements.secret_birthdayParty);
 				}
 			}
 

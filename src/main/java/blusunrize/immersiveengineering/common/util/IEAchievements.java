@@ -51,8 +51,9 @@ public class IEAchievements
 	public static Achievement mbDieselGen;
 	public static Achievement mbExcavator;
 	public static Achievement mbArcFurnace;
-	
-	public static Achievement birthdayParty;
+
+	public static Achievement secret_birthdayParty;
+	public static Achievement secret_luckOfTheDraw;
 	
 	public static StatBase statDistanceSkyhook;
 
@@ -109,7 +110,8 @@ public class IEAchievements
 		
 		craftChemthrower = new AchievementIE("craftChemthrower", 3, -6, IEContent.itemChemthrower, craftWorkbench).setNormalCrafting();
 		
-		birthdayParty = new AchievementIE("secret_birthdayParty", -4,-2, IEContent.itemFakeIcons, null).setSpecial();
+		secret_birthdayParty = new AchievementIE("secret_birthdayParty", -4,-2, new ItemStack(IEContent.itemFakeIcons,1,0), null).setSpecial();
+		secret_luckOfTheDraw = new AchievementIE("secret_luckOfTheDraw", -4, 0, new ItemStack(IEContent.itemFakeIcons,1,1), null).setSpecial();
 		
 		ieAchievementPage = new AchievementPage(ImmersiveEngineering.MODNAME, AchievementIE.achievements.toArray(new Achievement[AchievementIE.achievements.size()]));
 		AchievementPage.registerAchievementPage(ieAchievementPage);

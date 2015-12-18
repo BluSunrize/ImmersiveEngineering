@@ -5,6 +5,7 @@ import java.util.List;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.util.IEAchievements;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -34,7 +35,6 @@ public class ItemShaderBag extends ItemIEBase
 	@SideOnly(Side.CLIENT)
 	public void getSubItems(Item item, CreativeTabs tab, List list)
 	{
-
 		for(int i=ShaderRegistry.sortedRarityMap.size()-1; i>=0; i--)
 		{
 			EnumRarity rarity = ShaderRegistry.sortedRarityMap.get(i);
@@ -67,8 +67,12 @@ public class ItemShaderBag extends ItemIEBase
 			if(ShaderRegistry.totalWeight.containsKey(stack.getRarity()) && ShaderRegistry.totalWeight.get(stack.getRarity())>0)
 			{
 				String shader = ShaderRegistry.getRandomShader(player.getCommandSenderName(), player.getRNG(), stack.getRarity(), true);
+				if(shader==null || shader.isEmpty())
+					return stack;
 				ItemStack shaderItem = new ItemStack(IEContent.itemShader);
 				ItemNBTHelper.setString(shaderItem, "shader_name", shader);
+				if(ShaderRegistry.sortedRarityMap.indexOf(ShaderRegistry.shaderRegistry.get(shader).getRarity())<=ShaderRegistry.sortedRarityMap.indexOf(EnumRarity.epic) && ShaderRegistry.sortedRarityMap.indexOf(stack.getRarity())>=ShaderRegistry.sortedRarityMap.indexOf(EnumRarity.common))
+					player.triggerAchievement(IEAchievements.secret_luckOfTheDraw);
 				stack.stackSize--;
 				if(stack.stackSize<=0)
 					return shaderItem;

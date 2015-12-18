@@ -505,6 +505,10 @@ achievement.immersiveengineering.mbArcFurnace.desc=Form the Arc Furnace Multiblo
 
 achievement.immersiveengineering.secret_birthdayParty=Grunt Birthday Party
 achievement.immersiveengineering.secret_birthdayParty.desc=Light a match...
+achievement.immersiveengineering.secret_luckOfTheDraw=Luck of the Draw
+achievement.immersiveengineering.secret_luckOfTheDraw.desc=All or nothing
+
+
 
 stat.skyhookOneCm=Distance by Skyhook
 
