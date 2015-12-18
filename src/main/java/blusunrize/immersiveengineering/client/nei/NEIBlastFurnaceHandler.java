@@ -7,11 +7,6 @@ import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.StatCollector;
-import net.minecraftforge.oredict.OreDictionary;
-
 import org.lwjgl.opengl.GL11;
 
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
@@ -20,6 +15,10 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import codechicken.nei.PositionedStack;
 import codechicken.nei.recipe.GuiRecipe;
 import codechicken.nei.recipe.TemplateRecipeHandler;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.StatCollector;
+import net.minecraftforge.oredict.OreDictionary;
 
 public class NEIBlastFurnaceHandler extends TemplateRecipeHandler
 {

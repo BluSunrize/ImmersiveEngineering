@@ -9,10 +9,6 @@ import java.awt.Rectangle;
 import java.util.Arrays;
 import java.util.List;
 
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.StatCollector;
-
 import org.lwjgl.opengl.GL11;
 
 import blusunrize.immersiveengineering.api.crafting.CrusherRecipe;
@@ -23,6 +19,9 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import codechicken.nei.PositionedStack;
 import codechicken.nei.recipe.GuiRecipe;
 import codechicken.nei.recipe.TemplateRecipeHandler;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.StatCollector;
 
 public class NEICrusherHandler extends TemplateRecipeHandler
 {
