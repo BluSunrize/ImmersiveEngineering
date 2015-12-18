@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
+import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import cpw.mods.fml.common.ObfuscationReflectionHelper;
@@ -11,6 +12,7 @@ import cpw.mods.fml.common.registry.VillagerRegistry.IVillageTradeHandler;
 import net.minecraft.block.Block;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.init.Items;
+import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.village.MerchantRecipe;
@@ -20,6 +22,7 @@ public class IEVillagerTradeHandler implements IVillageTradeHandler
 {
 	float baseChance;
 	ArrayList<MerchantDeal> dealList = new ArrayList<MerchantDeal>();
+	public static IEVillagerTradeHandler instance;
 
 	public IEVillagerTradeHandler()
 	{
@@ -68,6 +71,26 @@ public class IEVillagerTradeHandler implements IVillageTradeHandler
 				addDeal(.05f, price,min,max, special);
 			}
 	}
+
+	boolean doneShaderTrades = false;
+	public void addShaderTrades()
+	{
+		if(!doneShaderTrades)
+		{
+			doneShaderTrades = true;
+			int highestRarityWeight = ShaderRegistry.rarityWeightMap.get(ShaderRegistry.sortedRarityMap.get(ShaderRegistry.sortedRarityMap.size()-1));
+			for(EnumRarity rarity : ShaderRegistry.sortedRarityMap)
+				if(ShaderRegistry.totalWeight.containsKey(rarity) && ShaderRegistry.totalWeight.get(rarity)>0)
+				{
+					int w = ShaderRegistry.rarityWeightMap.get(rarity);
+					int price = highestRarityWeight-w;
+					ItemStack bag = new ItemStack(IEContent.itemShaderBag);
+					ItemNBTHelper.setString(bag, "rarity", rarity.toString());
+					addDeal(.75f*(w/(float)highestRarityWeight), Items.emerald,price,price+3, bag,1,1);
+				}
+		}
+	}
+
 	void addDeal(float chance, Object... objects)
 	{
 		MerchantItem[] items = new MerchantItem[3];

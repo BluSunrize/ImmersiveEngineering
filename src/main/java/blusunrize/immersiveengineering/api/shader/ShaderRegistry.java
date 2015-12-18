@@ -20,6 +20,9 @@ public class ShaderRegistry
 	/**A map of shader name to ShaderRegistryEntry, which contains ShaderCases, rarity, weight and loot specifics */
 	public static HashMap<String,ShaderRegistryEntry> shaderRegistry = new HashMap<String, ShaderRegistryEntry>();
 
+	/**A list of shader names that can generate in chests/crates. Names are added multiple times depending on their weight */
+	public static ArrayList<String> chestLootShaders = new ArrayList<String>();
+
 	/**A map of EnumRarities to weight for grab bag distribution */
 	public static HashMap<EnumRarity, Integer> rarityWeightMap = new HashMap<EnumRarity, Integer>();
 	static{
@@ -107,7 +110,9 @@ public class ShaderRegistry
 	public static void compileWeight()
 	{
 		totalWeight.clear();
+		chestLootShaders.clear();
 		for(ShaderRegistryEntry entry : shaderRegistry.values())
+		{
 			if(entry.getIsBagLoot())
 			{
 				int entryRarityWeight = rarityWeightMap.get(entry.getRarity());
@@ -118,6 +123,11 @@ public class ShaderRegistry
 						totalWeight.put(weightedRarity.getKey(), i+entry.getWeight() );
 					}
 			}
+			if(entry.getIsCrateLoot())
+				for(int i=0; i<entry.getWeight(); i++)
+					chestLootShaders.add(entry.getName());
+		}
+
 
 		sortedRarityMap.clear();
 		sortedRarityMap.addAll(ShaderRegistry.rarityWeightMap.keySet());

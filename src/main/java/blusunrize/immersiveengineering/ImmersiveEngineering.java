@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.EventHandler;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.IESaveData;
+import blusunrize.immersiveengineering.common.IEVillagerTradeHandler;
 import blusunrize.immersiveengineering.common.crafting.ArcRecyclingThreadHandler;
 import blusunrize.immersiveengineering.common.items.ItemRevolver;
 import blusunrize.immersiveengineering.common.util.IELogger;
@@ -132,7 +133,8 @@ public class ImmersiveEngineering
 		proxy.serverStarting();
 		event.registerServerCommand(new CommandHandler());
 		IECompatModule.doModulesServerStarting();
-		ShaderRegistry.compileWeight();	
+		ShaderRegistry.compileWeight();
+		IEVillagerTradeHandler.instance.addShaderTrades();
 	}
 	@Mod.EventHandler
 	public void serverStarted(FMLServerStartedEvent event)

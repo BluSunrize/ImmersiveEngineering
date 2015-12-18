@@ -581,7 +581,8 @@ public class IEContent
 		//Villager Trades
 		//These are done so late to account for Blueprints added by addons
 		int villagerId = Config.getInt("villager_engineer");
-		VillagerRegistry.instance().registerVillageTradeHandler(villagerId, new IEVillagerTradeHandler());
+		IEVillagerTradeHandler.instance = new IEVillagerTradeHandler();
+		VillagerRegistry.instance().registerVillageTradeHandler(villagerId, IEVillagerTradeHandler.instance);
 	}
 	
 	public static void registerToOreDict(String type, ItemIEBase item, int... metas)

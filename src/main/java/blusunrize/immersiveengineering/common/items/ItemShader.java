@@ -147,8 +147,7 @@ public class ItemShader extends ItemIEBase implements IShaderItem
 	public WeightedRandomChestContent getChestGenBase(ChestGenHooks chest, Random random, WeightedRandomChestContent original)
 	{
 		NBTTagCompound tag = new NBTTagCompound();
-
-		//		tag.setString("shader_name", ShaderRegistry.shaderLootList.get(random.nextInt(ShaderRegistry.shaderLootList.size())));
+		tag.setString("shader_name", ShaderRegistry.chestLootShaders.get(random.nextInt(ShaderRegistry.chestLootShaders.size())));
 		original.theItemId.setTagCompound(tag);
 		return original;
 	}
