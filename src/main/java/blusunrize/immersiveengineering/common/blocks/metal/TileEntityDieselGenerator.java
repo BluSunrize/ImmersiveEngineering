@@ -1,5 +1,11 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import cpw.mods.fml.common.Optional;
+import li.cil.oc.api.machine.Arguments;
+import li.cil.oc.api.machine.Callback;
+import li.cil.oc.api.machine.Context;
+import li.cil.oc.api.network.SidedComponent;
+import li.cil.oc.api.network.SimpleComponent;
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
@@ -24,7 +30,10 @@ import cofh.api.energy.IEnergyReceiver;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class TileEntityDieselGenerator extends TileEntityMultiblockPart implements IFluidHandler, ISoundTile, IEnergyConnection
+@Optional.InterfaceList({
+		@Optional.Interface(iface = "li.cil.oc.api.network.SidedComponent", modid = "OpenComputers"),
+		@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")})
+public class TileEntityDieselGenerator extends TileEntityMultiblockPart implements IFluidHandler, ISoundTile, IEnergyConnection, SidedComponent, SimpleComponent
 {
 	public int facing = 2;
 	public FluidTank tank = new FluidTank(8000);
@@ -407,5 +416,38 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockPart implemen
 	public boolean canConnectEnergy(ForgeDirection from)
 	{
 		return (pos>=38&&pos<=41) && from==ForgeDirection.UP;
+	}
+
+	@Override
+	public boolean canConnectNode(ForgeDirection side)
+	{
+		return (pos==21 && !master().mirrored) || (pos==23 && master().mirrored);
+	}
+
+	@Override
+	public String getComponentName()
+	{
+		return "diesel_generator";
+	}
+
+	@Optional.Method(modid = "OpenComputers")
+	@Callback
+	public Object[] getActive(Context context, Arguments args)
+	{
+		return new Object[]{master().active};
+	}
+
+	@Optional.Method(modid = "OpenComputers")
+	@Callback
+	public Object[] setActive(Context context, Arguments args)
+	{
+		return null;//todo
+	}
+
+	@Optional.Method(modid = "OpenComputers")
+	@Callback
+	public Object[] getTankInfo(Context context, Arguments args)
+	{
+		return new Object[]{master().tank.getInfo()};
 	}
 }
