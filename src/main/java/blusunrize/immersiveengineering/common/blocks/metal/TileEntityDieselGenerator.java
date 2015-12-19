@@ -146,7 +146,7 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockPart implemen
 	IEnergyReceiver getOutput(int w)
 	{
 		TileEntity eTile = worldObj.getTileEntity(xCoord+(facing==4?-1:facing==5?1: w), yCoord+1, zCoord+(facing==2?-1:facing==3?1: w));
-		if(eTile!=null && eTile instanceof IEnergyReceiver)
+		if(eTile instanceof IEnergyReceiver)
 			return (IEnergyReceiver)eTile;
 		return null;
 	}

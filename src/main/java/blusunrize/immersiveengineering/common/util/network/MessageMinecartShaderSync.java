@@ -81,7 +81,7 @@ public class MessageMinecartShaderSync implements IMessage
 			if(world!=null)
 			{
 				Entity entity = world.getEntityByID(message.entityID);
-				if(entity!=null && entity instanceof EntityMinecart)
+				if(entity instanceof EntityMinecart)
 					ModelShaderMinecart.shadedCarts.put(message.entityID, message.shader);
 			}
 			return null;

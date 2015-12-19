@@ -38,7 +38,7 @@ public class TileRenderBalloon extends TileRenderImmersiveConnectable
 			ShaderCase sCase = null;
 			if(balloon.shader!=null && balloon.shader.getItem() instanceof IShaderItem)
 				sCase = ((IShaderItem)balloon.shader.getItem()).getShaderCase(balloon.shader,null,"balloon");
-			if(sCase!=null && sCase instanceof ShaderCaseBalloon)
+			if(sCase instanceof ShaderCaseBalloon)
 			{
 				String[] parts = {"balloon0_0","balloon1_0","balloon0_1","balloon1_1"};
 				int maxPasses;

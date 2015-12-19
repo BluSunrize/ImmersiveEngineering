@@ -357,7 +357,7 @@ public class EntityRevolvershot extends Entity
 						}
 
 				}
-				else if(mop.entityHit!=null && mop.entityHit instanceof EntityLivingBase)
+				else if(mop.entityHit instanceof EntityLivingBase)
 					for(PotionEffect p : effects)
 					{
 						if(p.getDuration()<1)

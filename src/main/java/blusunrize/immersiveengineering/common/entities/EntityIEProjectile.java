@@ -179,7 +179,7 @@ public abstract class EntityIEProjectile extends Entity
 				{
 					if(!this.isBurning() && this.canIgnite() && movingobjectposition.entityHit!=null && movingobjectposition.entityHit.isBurning())
 						this.setFire(3);
-					if(movingobjectposition.entityHit!=null && movingobjectposition.entityHit instanceof EntityLivingBase)
+					if(movingobjectposition.entityHit instanceof EntityLivingBase)
 					{
 						this.onImpact(movingobjectposition);
 						this.setDead();

@@ -59,7 +59,7 @@ public class MessageTileSync implements IMessage
 			if(world!=null)
 			{
 				TileEntity tile = world.getTileEntity(message.x,message.y,message.z);
-				if(tile!=null && tile instanceof TileEntityIEBase)
+				if(tile instanceof TileEntityIEBase)
 					((TileEntityIEBase)tile).receiveMessageFromClient(message.nbt);
 			}
 			return null;
