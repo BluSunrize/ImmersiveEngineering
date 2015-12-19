@@ -40,10 +40,12 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable
 	{
 		if(dummy || worldObj.isRemote)
 			return;
-		//Yes, this might tick in between different connectors sending power, but since this is a block for statistical evaluation over a tick, that is irrelevant.
-		lastPackets.add(lastEnergyPassed);
-		if(lastPackets.size()>20)
-			lastPackets.remove(0);
+		synchronized (lastPackets) {
+			//Yes, this might tick in between different connectors sending power, but since this is a block for statistical evaluation over a tick, that is irrelevant.
+			lastPackets.add(lastEnergyPassed);
+			if (lastPackets.size() > 20)
+				lastPackets.remove(0);
+		}
 		lastEnergyPassed = 0;
 	}
 
@@ -118,5 +120,23 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable
 			return Vec3.createVectorHelper(.5,.4375,zDif>0?.8125:.1875);
 		else
 			return Vec3.createVectorHelper(xDif>0?.8125:.1875,.4375,.5);
+	}
+	public int getAveragePower() {
+		TileEntityEnergyMeter te = this;
+		if (te.dummy) {
+			TileEntity tmp = worldObj.getTileEntity(xCoord, yCoord+1, zCoord);
+			if (!(tmp instanceof TileEntityEnergyMeter))
+				return -1;
+			te = (TileEntityEnergyMeter) tmp;
+		}
+		if (te.lastPackets.size()==0)
+			return 0;
+		int sum = 0;
+		synchronized (te.lastPackets) {
+			for (int i = 0; i < te.lastPackets.size(); i++) {
+				sum+=te.lastPackets.get(i);
+			}
+		}
+		return sum/te.lastPackets.size();
 	}
 }

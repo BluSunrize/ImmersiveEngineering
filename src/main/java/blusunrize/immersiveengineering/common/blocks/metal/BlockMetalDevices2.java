@@ -225,25 +225,18 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 			if(!world.isRemote)
 			{
 				TileEntityEnergyMeter meter = (TileEntityEnergyMeter)te;
-				if(meter.dummy)
-				{
-					TileEntity tileOther = world.getTileEntity(x, y+1, z);
-					if(tileOther instanceof TileEntityEnergyMeter)
-						meter = (TileEntityEnergyMeter)tileOther;
-					else
-						return false;
+				int transfer = meter.getAveragePower();
+				if (meter.dummy) {
+					TileEntity tmp = world.getTileEntity(meter.xCoord, meter.yCoord+1, meter.zCoord);
+					if (tmp instanceof TileEntityEnergyMeter)
+						meter = (TileEntityEnergyMeter) tmp;
 				}
-				//player.addChatComponentMessage(new ChatComponentText("Energy transferred through: "+meter.energyPassed));
-				int sum = 0;
-				int size = meter.lastPackets.size();
 				String transferred = "0";
-				if(size>0)
+				if(transfer>0)
 				{
-					for(int i : meter.lastPackets)
-						sum += i;
-					transferred = Utils.formatDouble(sum/(float)size, "0.###");
+					transferred = Utils.formatDouble(transfer, "0.###");
 				}
-				player.addChatComponentMessage(new ChatComponentTranslation(Lib.CHAT_INFO+"energyTransfered",size,transferred));
+				player.addChatComponentMessage(new ChatComponentTranslation(Lib.CHAT_INFO+"energyTransfered",meter.lastPackets.size(),transferred));
 			}
 			return true;
 
