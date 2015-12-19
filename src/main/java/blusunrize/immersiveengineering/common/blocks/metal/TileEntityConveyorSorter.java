@@ -127,10 +127,10 @@ public class TileEntityConveyorSorter extends TileEntityIEBase implements ISided
 		if(isRouting || stack==null)
 			return new Integer[][]{{},{},{},{}};
 		this.isRouting = true;
-		ArrayList<Integer> validFilteredInvOuts = new ArrayList<Integer>();
-		ArrayList<Integer> validFilteredEntityOuts = new ArrayList<Integer>();
-		ArrayList<Integer> validUnfilteredInvOuts = new ArrayList<Integer>();
-		ArrayList<Integer> validUnfilteredEntityOuts = new ArrayList<Integer>();
+		ArrayList<Integer> validFilteredInvOuts = new ArrayList<Integer>(6);
+		ArrayList<Integer> validFilteredEntityOuts = new ArrayList<Integer>(6);
+		ArrayList<Integer> validUnfilteredInvOuts = new ArrayList<Integer>(6);
+		ArrayList<Integer> validUnfilteredEntityOuts = new ArrayList<Integer>(6);
 		for(int side=0; side<6; side++)
 			if(side!=inputSide)
 			{

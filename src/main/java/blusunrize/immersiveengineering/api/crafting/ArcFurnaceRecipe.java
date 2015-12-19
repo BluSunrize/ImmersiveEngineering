@@ -52,7 +52,7 @@ public class ArcFurnaceRecipe
 	{
 		if(ApiUtils.stackMatchesObject(input, this.input))
 		{
-			ArrayList<ItemStack> qAdd = new ArrayList<ItemStack>();
+			ArrayList<ItemStack> qAdd = new ArrayList<ItemStack>(additives.length);
 			for(ItemStack s : additives)
 				qAdd.add(s);
 
