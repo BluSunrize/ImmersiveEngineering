@@ -44,6 +44,8 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 	public boolean hasPower = false;
 	public boolean mobGrinding = false;
 	public int grindingTimer = 0;
+	public boolean computerControlled;
+	public boolean computerOn;
 	@SideOnly(Side.CLIENT)
 	ItemStack particleStack;
 
@@ -96,7 +98,12 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 				hasPower = !hasPower;
 				update = true;
 			}
-			if(!worldObj.isBlockIndirectlyGettingPowered(xCoord+(facing==4?-1:facing==5?1:facing==(mirrored?2:3)?2:-2),yCoord+1,zCoord+(facing==2?-1:facing==3?1:facing==(mirrored?5:4)?2:-2)))
+			boolean canWork;
+			if (computerControlled)
+				canWork = computerOn;
+			else
+				canWork = !worldObj.isBlockIndirectlyGettingPowered(xCoord+(facing==4?-1:facing==5?1:facing==(mirrored?2:3)?2:-2),yCoord+1,zCoord+(facing==2?-1:facing==3?1:facing==(mirrored?5:4)?2:-2));
+			if(canWork)
 			{
 				int power = Config.getInt("crusher_consumption");
 				AxisAlignedBB aabb = AxisAlignedBB.getBoundingBox(xCoord-.5625,yCoord+1.5,zCoord-.5625, xCoord+1.5625,yCoord+2.875,zCoord+1.5625);

@@ -8,16 +8,14 @@ import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-public class PeripheralEnergyMeter implements IPeripheral {
+public class PeripheralEnergyMeter extends IEPeripheral {
+	public PeripheralEnergyMeter(World w, int _x, int _y, int _z) {
+		super(w, _x, _y, _z);
+	}
+
 	final static String[] cmds = {"getAvgEnergy"};
 	World w;
 	int x, y, z;
-	public PeripheralEnergyMeter(World world, int _x, int _y, int _z) {
-		w = world;
-		x = _x;
-		y = _y;
-		z = _z;
-	}
 	@Override
 	public String getType() {
 		return "IE:CurrentTrafo";
@@ -36,21 +34,20 @@ public class PeripheralEnergyMeter implements IPeripheral {
 		
 		if (method==0)
 		{
-			TileEntity te = w.getTileEntity(x, y, z);
-			return new Object[]{(te instanceof TileEntityEnergyMeter)?((TileEntityEnergyMeter)te).getAveragePower():-1};
+			TileEntityEnergyMeter te = (TileEntityEnergyMeter) getTileEntity(TileEntityEnergyMeter.class);
+			if (te!=null)
+				return new Object[]{te.getAveragePower()};
+			else
+				return new Object[]{-1};
 		}
 		return null;
 	}
 
 	@Override
-	public void attach(IComputerAccess computer) {
-		
-	}
+	public void attach(IComputerAccess computer) {}
 
 	@Override
-	public void detach(IComputerAccess computer) {
-		
-	}
+	public void detach(IComputerAccess computer) {}
 
 	@Override
 	public boolean equals(IPeripheral other) {
