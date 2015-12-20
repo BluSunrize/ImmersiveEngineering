@@ -33,6 +33,7 @@ public class GuiManual extends GuiScreen
 
 	public static String selectedCategory;
 	public static String selectedEntry;
+	public static ArrayList<String> previousSelectedEntry = new ArrayList();
 	public static int page;
 	public static GuiManual activeManual;
 
@@ -243,7 +244,10 @@ public class GuiManual extends GuiScreen
 				if(((GuiClickableList)button).translationType==0)
 					selectedCategory = headers[sel];
 				else
+				{
+					previousSelectedEntry.clear();
 					selectedEntry = headers[sel];
+				}
 			}
 			((GuiClickableList)button).selectedOption=-1;
 			this.initGui();
@@ -259,7 +263,15 @@ public class GuiManual extends GuiScreen
 		else if(button.id == 1 && !backButtonPressed)
 		{
 			if(selectedEntry!=null)
-				selectedEntry=null;
+			{
+				if(previousSelectedEntry.size()>0)
+				{
+					selectedEntry = previousSelectedEntry.get(0);
+					previousSelectedEntry.remove(0);
+				}
+				else
+					selectedEntry = null;
+			}
 			else if(selectedCategory!=null)
 				selectedCategory=null;
 			page=0;
@@ -350,7 +362,15 @@ public class GuiManual extends GuiScreen
 			if(searchField!=null && searchField.getText()!=null && !searchField.getText().isEmpty())
 				searchField.setText("");
 			else if(selectedEntry!=null)
-				selectedEntry=null;
+			{
+				if(previousSelectedEntry.size()>0)
+				{
+					selectedEntry = previousSelectedEntry.get(0);
+					previousSelectedEntry.remove(0);
+				}
+				else
+					selectedEntry = null;
+			}
 			else if(selectedCategory!=null)
 				selectedCategory=null;
 			page=0;
