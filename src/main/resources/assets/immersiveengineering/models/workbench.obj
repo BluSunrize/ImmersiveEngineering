@@ -1,6 +1,5 @@
-# Blender v2.69 (sub 0) OBJ File: 'empty.blend'
-# www.blender.org
-mtllib workbench.mtl
+# Model created by Damien A.W. Hazard
+
 o cube0
 v 0.750000 0.812500 0.437500
 v 0.750000 0.812500 0.250000
@@ -312,8 +311,6 @@ vt 0.062500 0.484375
 vt 0.171875 0.500000
 vt 0.109375 0.500000
 vt 0.187500 0.468750
-usemtl None
-s off
 f 1/1 2/2 3/3 4/4
 f 2/1 5/2 6/3 3/4
 f 5/1 7/2 8/5 6/6
