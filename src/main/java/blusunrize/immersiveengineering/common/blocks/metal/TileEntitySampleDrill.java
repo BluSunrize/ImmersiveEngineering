@@ -1,8 +1,16 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import blusunrize.immersiveengineering.common.util.Lib;
+import cpw.mods.fml.common.Optional;
+import li.cil.oc.api.machine.Arguments;
+import li.cil.oc.api.machine.Callback;
+import li.cil.oc.api.machine.Context;
+import li.cil.oc.api.network.SidedComponent;
+import li.cil.oc.api.network.SimpleComponent;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralWorldInfo;
@@ -13,7 +21,10 @@ import cofh.api.energy.IEnergyReceiver;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class TileEntitySampleDrill extends TileEntityIEBase implements IEnergyReceiver
+@Optional.InterfaceList({
+		@Optional.Interface(iface = "li.cil.oc.api.network.SidedComponent", modid = "OpenComputers"),
+		@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")})
+public class TileEntitySampleDrill extends TileEntityIEBase implements IEnergyReceiver, SidedComponent, SimpleComponent
 {
 	public EnergyStorage energyStorage = new EnergyStorage(8000);
 	public int pos=0;
@@ -38,6 +49,11 @@ public class TileEntitySampleDrill extends TileEntityIEBase implements IEnergyRe
 			}
 	}
 
+	/*
+	 CAUTION: all these getters will not check whether or not they belong to the master!
+	 Check this.pos and call them on the master TileEntity (pos==0) to avoid incorrect data.
+	 They will also provide information at all times and ignore the sampling progress.
+	  */
 	public float getSampleProgress()
 	{
 		return process/(float)Config.getInt("coredrill_time");
@@ -46,17 +62,27 @@ public class TileEntitySampleDrill extends TileEntityIEBase implements IEnergyRe
 	{
 		return process>=Config.getInt("coredrill_time");
 	}
-	public String getVein()
+	public String getVeinUnlocalizedName()
 	{
 		ExcavatorHandler.MineralMix mineral = ExcavatorHandler.getRandomMineral(worldObj, (xCoord>>4), (zCoord>>4));
-		return mineral==null?null: mineral.name;
+		return (mineral==null)? null: mineral.name;
+	}
+	public String getVeinLocalizedName()
+	{
+		String name = getVeinUnlocalizedName();
+		if(name==null)
+			return null;
+		String unlocalizedName = Lib.DESC_INFO+"mineral."+name;
+		String localizedName = StatCollector.translateToLocal(unlocalizedName);
+		if(unlocalizedName.equals(localizedName))
+			return name;
+		return localizedName;
 	}
 	public float getVeinIntegrity()
 	{
 		MineralWorldInfo info = ExcavatorHandler.getMineralWorldInfo(worldObj, (xCoord>>4), (zCoord>>4));
-		boolean deplOverride = info.depletion<0;
-		if(ExcavatorHandler.mineralVeinCapacity<0||deplOverride)
-			return 1;
+		if(ExcavatorHandler.mineralVeinCapacity<0||info.depletion<0)
+			return -1;
 		else if(info.mineralOverride==null && info.mineral==null)
 			return 0;
 		else
@@ -130,5 +156,71 @@ public class TileEntitySampleDrill extends TileEntityIEBase implements IEnergyRe
 				return ((TileEntitySampleDrill)te).getMaxEnergyStored(from);
 		}
 		return energyStorage.getMaxEnergyStored();
+	}
+
+	@Optional.Method(modid = "OpenComputers")
+	@Override
+	public boolean canConnectNode(ForgeDirection side)
+	{
+		return (pos==0);
+	}
+
+	@Optional.Method(modid = "OpenComputers")
+	@Override
+	public String getComponentName()
+	{
+		return "ie_sample_drill";
+	}
+
+	/*
+	 only the master will connect, so we don't need to check or find it before calling the getters.
+	 */
+	@Optional.Method(modid = "OpenComputers")
+	@Callback
+	public Object[] getSampleProgress(Context context, Arguments args)
+	{
+		return new Object[]{getSampleProgress()};
+	}
+	@Optional.Method(modid = "OpenComputers")
+	@Callback
+	public Object[] isSamplingFinished(Context context, Arguments args)
+	{
+		return new Object[]{isSamplingFinished()};
+	}
+	@Optional.Method(modid = "OpenComputers")
+	@Callback
+	public Object[] getVeinUnlocalizedName(Context context, Arguments args)
+	{
+		if(isSamplingFinished())
+			return new Object[]{getVeinUnlocalizedName()};
+		return new Object[0];
+	}
+	@Optional.Method(modid = "OpenComputers")
+	@Callback
+	public Object[] getVeinLocalizedName(Context context, Arguments args)
+	{
+		if(isSamplingFinished())
+			return new Object[]{getVeinLocalizedName()};
+		return new Object[0];
+	}
+	@Optional.Method(modid = "OpenComputers")
+	@Callback
+	public Object[] getVeinIntegrity(Context context, Arguments args)
+	{
+		if(isSamplingFinished())
+			return new Object[]{getVeinIntegrity()};
+		return new Object[0];
+	}
+	@Optional.Method(modid = "OpenComputers")
+	@Callback
+	public Object[] getEnergyStored(Context context, Arguments args)
+	{
+		return new Object[]{energyStorage.getEnergyStored()};
+	}
+	@Optional.Method(modid = "OpenComputers")
+	@Callback
+	public Object[] getMaxEnergyStored(Context context, Arguments args)
+	{
+		return new Object[]{energyStorage.getMaxEnergyStored()};
 	}
 }
