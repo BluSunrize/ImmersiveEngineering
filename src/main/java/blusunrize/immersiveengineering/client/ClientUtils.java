@@ -500,7 +500,7 @@ public class ClientUtils
 							float b = corner==0?faceLight.colorBlueTopLeft: corner==1?faceLight.colorBlueBottomLeft: corner==2?faceLight.colorBlueBottomRight: faceLight.colorBlueTopRight;
 							tes.setColorOpaque_F(r, g, b);
 						}
-						else
+						else if(world!=null)
 						{
 							tes.setBrightness(0xb000b0);
 							tes.setColorOpaque_F(colR,colG,colB);

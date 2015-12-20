@@ -78,14 +78,35 @@ public class ShaderCaseRevolver extends ShaderCase
 
 		int i=getTextureType(modelPart,pass); //0 == grip, 1==main, 2==detail, 3==blade
 		if(i==0)
+//			return new int[]{40,40,50,220};
 			return colourUnderlying;
 		if(i==1)
+//			return new int[]{26,26,40,220};
 			return colourPrimary;
 		if(i==2)
+//			return new int[]{0,70,49,220};
 			return colourSecondary;
 		if(i==3)
+//			return new int[]{5,10,8,180};
 			return colourBlade;
+		
 		return defaultWhite;
+//		0x000000,//BLACK
+//		0x0000AA,//DARK_BLUE
+//		0x00AA00,//DARK_GREEN
+//		0x00AAAA,//DARK_AQUA
+//		0xAA0000,//DARK_RED
+//		0xAA00AA,//DARK_PURPLE
+//		0xFFAA00,//GOLD
+//		0xAAAAAA,//GRAY
+//		0x555555,//DARK_GRAY
+//		0x5555FF,//BLUE
+//		0x55FF55,//GREEN
+//		0x55FFFF,//AQUA
+//		0xFF5555,//RED
+//		0xFF55FF,//LIGHT_PURPLE
+//		0xFFFF55,//YELLOW
+//		0xFFFFFF//WHITE
 	}
 	
 	public int getTextureType(String modelPart, int pass)

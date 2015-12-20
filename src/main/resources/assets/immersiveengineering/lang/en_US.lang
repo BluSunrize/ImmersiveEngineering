@@ -342,6 +342,7 @@ desc.ImmersiveEngineering.info.electrodeIntegrity=Integrity
 desc.ImmersiveEngineering.info.shader.applyTo=Can be applied to:
 desc.ImmersiveEngineering.info.shader.revolver=Revolver
 desc.ImmersiveEngineering.info.shader.chemthrower=Chemical Thrower
+desc.ImmersiveEngineering.info.shader.drill=Mining Drill
 desc.ImmersiveEngineering.info.shader.minecart=Minecart
 desc.ImmersiveEngineering.info.shader.balloon=Balloon
 

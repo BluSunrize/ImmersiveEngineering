@@ -42,6 +42,7 @@ public class BotaniaHelper extends IECompatModule
 		}
 
 		ShaderRegistry.rarityWeightMap.put(EnumRarity.valueOf("RELIC"),2);
+		ShaderRegistry.registerShader("Spectral", "5", EnumRarity.epic, new int[]{26,26,40,220},new int[]{0,70,49,220},new int[]{40,40,50,220},new int[]{5,10,8,180}, null,false,true);
 		MinecraftForge.EVENT_BUS.register(this);
 	}
 

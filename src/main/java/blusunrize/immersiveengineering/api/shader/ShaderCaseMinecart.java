@@ -19,7 +19,7 @@ public class ShaderCaseMinecart extends ShaderCase
 	{
 		super(overlayType, defaultWhite,colourPrimary,colourSecondary);
 		this.additionalTexture = additionalTexture;
-		if(overlayType=="1" || overlayType=="2")
+		if(overlayType=="1" || overlayType=="2" || overlayType=="7")
 		{
 			overlaySides[1] = false;
 			overlaySides[2] = false;

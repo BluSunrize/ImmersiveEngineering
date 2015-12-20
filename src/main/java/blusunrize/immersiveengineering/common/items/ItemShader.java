@@ -41,14 +41,14 @@ public class ItemShader extends ItemIEBase implements IShaderItem
 		addShader("Sunstrike", 5, EnumRarity.rare, new int[]{115,115,115,255}, new int[]{205,105,0,255}, new int[]{215,58,0,185},new int[]{215,58,0,185});
 		addShader("Locus", 2, EnumRarity.common, new int[]{10,10,10,255}, new int[]{74,74,74,255}, new int[]{132,150,76,255},new int[]{74,74,74,255});
 		addShader("Felix", 1, EnumRarity.common, new int[]{10,10,10,255}, new int[]{74,74,74,255}, new int[]{240,136,3,255},new int[]{74,74,74,255});
-		addShader("Sharkface", 2, EnumRarity.uncommon, new int[]{10,10,10,255}, new int[]{74,74,74,255}, new int[]{145,0,8,255},new int[]{74,74,74,255}, "shark");
-		addShader("Dragon's Breath", 1, EnumRarity.uncommon, new int[]{25,25,25,255}, new int[]{51,63,43,255}, new int[]{138,138,138,255},new int[]{138,138,138,255}, "shark");
+		addShader("Sharkface", 2, EnumRarity.uncommon, new int[]{10,10,10,255}, new int[]{74,74,74,255}, new int[]{145,0,8,255},new int[]{74,74,74,255}, "shark",true);
+		addShader("Dragon's Breath", 1, EnumRarity.uncommon, new int[]{25,25,25,255}, new int[]{51,63,43,255}, new int[]{138,138,138,255},new int[]{138,138,138,255}, "shark",true);
 		addShader("Falconmoon", 3, EnumRarity.common, new int[]{103,99,107,255}, new int[]{244,238,235,255}, new int[]{45,45,45,255},new int[]{244,238,235,255});
 		addShader("Magnum", 1, EnumRarity.common, new int[]{86,56,44,255},new int[]{220,220,220,255},new int[]{160,160,160,255},new int[]{220,220,220,255});
 		addShader("Vault-Tec", 0, EnumRarity.common, new int[]{86,56,44,255},new int[]{26,71,133,255},new int[]{192,170,80,255},new int[]{170,170,170,255});
-		addShader("Sponsor", 0, EnumRarity.epic, new int[]{25,25,25,255}, new int[]{247,27,36,255}, new int[]{255,255,255,255},new int[]{170,170,170,255}, "sponsor");
+		addShader("Sponsor", 0, EnumRarity.epic, new int[]{25,25,25,255}, new int[]{247,27,36,255}, new int[]{255,255,255,255},new int[]{170,170,170,255}, "sponsor",false);
 		((ShaderCaseMinecart)ShaderRegistry.getShader("Sponsor", "minecart")).mirrorSideForPass[2]=false;
-		addShader("Mass Fusion", 3, EnumRarity.rare, new int[]{110,90,55,255}, new int[]{57,71,48,255}, new int[]{84,84,84,255}, new int[]{170,170,170,255}, "fusion");
+		addShader("Mass Fusion", 3, EnumRarity.rare, new int[]{110,90,55,255}, new int[]{57,71,48,255}, new int[]{84,84,84,255}, new int[]{170,170,170,255}, "fusion",true);
 
 		addShader("StormFlower", 1, EnumRarity.common, new int[]{39,52,39,255},new int[]{40,111,48,255},new int[]{75,146,85,255},new int[]{40,111,48,255});
 		addShader("Mil\u00f3", 2, EnumRarity.uncommon, new int[]{59,27,16,255},new int[]{103,0,4,255},new int[]{206,126,16,255},new int[]{103,0,4,255});
@@ -60,9 +60,15 @@ public class ItemShader extends ItemIEBase implements IShaderItem
 		addShader("Vanguard", 3, EnumRarity.uncommon, new int[]{55,55,55,255},new int[]{19,27,66,255},new int[]{184,108,20,255},new int[]{220,220,220,255});
 		addShader("Regal", 4, EnumRarity.uncommon, new int[]{216,212,209,255},new int[]{67,28,29,255},new int[]{216,212,209,255},new int[]{216,212,209,255});
 		addShader("Harrowed", 4, EnumRarity.rare, new int[]{22,19,33,255},new int[]{67,28,29,255},new int[]{22,19,33,255},new int[]{22,19,33,255});
-		addShader("Taken", 5, EnumRarity.epic, new int[]{17,28,38,255},new int[]{17,28,38,255},new int[]{186,215,221,255},new int[]{17,28,38,255});
+		addShader("Taken", 5, EnumRarity.epic, new int[]{17,28,38,255},new int[]{17,28,38,255},new int[]{186,215,221,255},new int[]{17,28,38,255}, null,false);
 
-		addShader("Angel's Thesis", 2, EnumRarity.epic, new int[]{30,30,30,255},new int[]{117,70,151,255},new int[]{119,185,61,255},new int[]{80,80,80,255});
+		addShader("Angel's Thesis", 2, EnumRarity.epic, new int[]{30,30,30,255},new int[]{117,70,151,255},new int[]{119,185,61,255},new int[]{80,80,80,255}, null,false);
+		
+		addShader("Warbird", 7, EnumRarity.uncommon, new int[]{49,54,64,255},new int[]{216,215,208,255},new int[]{235,172,0,255},new int[]{216,215,208,255});
+		
+		addShader("Glacis", 6, EnumRarity.rare, new int[]{73,155,194,255}, new int[]{118,208,249,200}, new int[]{189,255,253,200}, new int[]{189,255,253,200});
+		addShader("Solum", 3, EnumRarity.rare, new int[]{104,90,72,255}, new int[]{208,161,111,200}, new int[]{148,116,96,180}, new int[]{148,116,96,180});
+		addShader("Aero", 1, EnumRarity.rare, new int[]{99,159,98,255}, new int[]{120,233,128,220}, new int[]{232,255,220,160}, new int[]{120,233,128,220});
 	}
 
 	@Override
@@ -74,12 +80,12 @@ public class ItemShader extends ItemIEBase implements IShaderItem
 
 	public void addShader(String name, int overlayType, EnumRarity rarity, int[] colourBackground, int[] colourPrimary, int[] colourSecondary, int[] colourBlade)
 	{
-		this.addShader(name, overlayType, rarity, colourBackground, colourPrimary, colourSecondary, colourBlade, null);
+		this.addShader(name, overlayType, rarity, colourBackground, colourPrimary, colourSecondary, colourBlade, null,true);
 	}
 
-	public void addShader(String name, int overlayType, EnumRarity rarity, int[] colourBackground, int[] colourPrimary, int[] colourSecondary, int[] colourBlade, String additionalTexture)
+	public void addShader(String name, int overlayType, EnumRarity rarity, int[] colourBackground, int[] colourPrimary, int[] colourSecondary, int[] colourBlade, String additionalTexture, boolean loot)
 	{
-		ShaderRegistry.registerShader(name, Integer.toString(overlayType), rarity, colourPrimary, colourSecondary, colourBackground, colourBlade, additionalTexture, true,true);
+		ShaderRegistry.registerShader(name, Integer.toString(overlayType), rarity, colourPrimary, colourSecondary, colourBackground, colourBlade, additionalTexture, loot,true);
 		//		ShaderCaseRevolver revolver = IEApi.registerShader_Revolver(name, overlayType, colour0, colour1, colour2, colour3, additionalTexture);
 		//		revolver.glowLayer = revolver_glow;
 		//		IEApi.registerShader_Chemthrower(name, overlayType, colour0, colour1, colour2, true,false, additionalTexture);

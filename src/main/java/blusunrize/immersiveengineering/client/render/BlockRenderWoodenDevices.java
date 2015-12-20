@@ -59,7 +59,10 @@ public class BlockRenderWoodenDevices implements ISimpleBlockRenderingHandler
 				GL11.glTranslatef(-.75f, -.5F, -.25f);
 				TileEntityModWorkbench tile = new TileEntityModWorkbench();
 				tile.facing=3;
-				TileEntityRendererDispatcher.instance.renderTileEntityAt(tile, 0,0,0,0);
+				Tessellator.instance.startDrawingQuads();
+				ClientUtils.handleStaticTileRenderer(tile);
+				Tessellator.instance.draw();
+//				TileEntityRendererDispatcher.instance.renderTileEntityAt(tile, 0,0,0,0);
 			}
 			else if(metadata==6)
 			{

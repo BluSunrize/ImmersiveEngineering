@@ -74,8 +74,8 @@ public class BlockWoodenDevices extends BlockIEBase implements IPostBlock, blusu
 				icons[4][i] = iconRegister.registerIcon("immersiveengineering:woodenCrateChristmas"+i);
 			else
 				icons[4][i] = iconRegister.registerIcon("immersiveengineering:woodenCrate");
-			icons[5][0] = iconRegister.registerIcon("immersiveengineering:workbench");
-			icons[6][0] = iconRegister.registerIcon("immersiveengineering:woodBarrel");
+			icons[5][i] = iconRegister.registerIcon("immersiveengineering:workbench");
+			icons[6][i] = iconRegister.registerIcon("immersiveengineering:woodBarrel");
 		}
 		iconBarrel[0] = iconRegister.registerIcon("immersiveengineering:woodBarrel_top_none");
 		iconBarrel[1] = iconRegister.registerIcon("immersiveengineering:woodBarrel_top_in");

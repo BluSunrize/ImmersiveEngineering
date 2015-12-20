@@ -1,20 +1,25 @@
 package blusunrize.immersiveengineering.client.render;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
+import org.lwjgl.opengl.GL11;
+
+import blusunrize.immersiveengineering.api.shader.IShaderItem;
+import blusunrize.immersiveengineering.api.shader.ShaderCase;
+import blusunrize.immersiveengineering.api.tool.IDrillHead;
+import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.common.items.ItemDrill;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.client.IItemRenderer;
+import net.minecraftforge.client.model.obj.GroupObject;
 import net.minecraftforge.client.model.obj.WavefrontObject;
-
-import org.lwjgl.opengl.GL11;
-
-import blusunrize.immersiveengineering.api.tool.IDrillHead;
-import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.common.items.ItemDrill;
 
 public class ItemRenderDrill implements IItemRenderer
 {
@@ -37,6 +42,8 @@ public class ItemRenderDrill implements IItemRenderer
 		if(model==null)
 			return;
 		GL11.glPushMatrix();
+		GL11.glEnable(3042);
+		OpenGlHelper.glBlendFunc(770, 771, 0, 1);
 		if(type!=ItemRenderType.EQUIPPED_FIRST_PERSON)
 			GL11.glRotatef(-45, 0, 1, 0);
 
@@ -89,7 +96,7 @@ public class ItemRenderDrill implements IItemRenderer
 			{
 				GL11.glRotatef(180, 0, 0, 1);
 				GL11.glRotatef(45, 0, 1, 0);
-				GL11.glRotatef(45, 0, 0, 1);
+				GL11.glRotatef(-135, 0, 0, 1);
 				GL11.glTranslatef(-.0625f,.0625f,-.0625f);
 				GL11.glScalef(.625f,.625f,.625f);
 				angle = 0;
@@ -110,14 +117,47 @@ public class ItemRenderDrill implements IItemRenderer
 
 		ItemStack head = ((ItemDrill)item.getItem()).getHead(item);
 		NBTTagCompound upgrades = ((ItemDrill)item.getItem()).getUpgrades(item);
-		
+
 		GL11.glColor4f(1, 1, 1, 1);
-		ClientUtils.renderWavefrontWithIconUVs(model, item.getIconIndex(), "drill_frame");
+		String[] parts = {"drill_frame","drill_grip",null,null};
 		if(upgrades.getBoolean("waterproof"))
-			ClientUtils.renderWavefrontWithIconUVs(model, item.getIconIndex(), "upgrade_waterproof");
+			parts[2] = "upgrade_waterproof";
 		if(upgrades.getInteger("speed")>0)
-			ClientUtils.renderWavefrontWithIconUVs(model, item.getIconIndex(), "upgrade_speed");
-		
+			parts[3] = "upgrade_speed";
+
+
+		IIcon icon = item.getIconIndex();
+		ItemStack shader = ((ItemDrill)item.getItem()).getShaderItem(item);
+		ShaderCase sCase = (shader!=null && shader.getItem() instanceof IShaderItem)?((IShaderItem)shader.getItem()).getShaderCase(shader, item, "drill"):null;
+
+		if(sCase==null)
+			ClientUtils.renderWavefrontWithIconUVs(model, icon, parts);
+		else
+		{
+			List<String> renderParts = Arrays.asList(parts);
+			for(GroupObject obj : model.groupObjects)
+				if(renderParts.contains(obj.name))
+				{
+					for(int pass=0; pass<sCase.getPasses(shader, item, obj.name); pass++)
+					{
+						IIcon ic = sCase.getReplacementIcon(shader, item, obj.name, pass);
+						if(ic==null)
+							ic=icon;
+						int[] col = sCase.getRGBAColourModifier(shader, item, obj.name, pass);
+						if(col==null||col.length<4)
+							col= new int[]{255,255,255,255};
+
+						sCase.modifyRender(shader, item, obj.name, pass, true);
+						ClientUtils.tes().startDrawing(obj.glDrawingMode);
+						ClientUtils.tes().setColorRGBA(col[0], col[1], col[2], col[3]);
+						ClientUtils.tessellateWavefrontGroupObjectWithIconUVs(obj, ic);
+						ClientUtils.tes().draw();
+						sCase.modifyRender(shader, item, obj.name, pass, false);
+					}
+				}
+		}
+
+
 
 		if(head!=null)
 		{
@@ -147,10 +187,10 @@ public class ItemRenderDrill implements IItemRenderer
 
 				GL11.glRotatef(-720*angle, 0,0,1);
 				if(upgrades.getInteger("damage")>2)
-				ClientUtils.renderWavefrontWithIconUVs(model, headIcon, "upgrade_damage3");
+					ClientUtils.renderWavefrontWithIconUVs(model, headIcon, "upgrade_damage3");
 				GL11.glRotatef(1440*angle, 0,0,1);
 				if(upgrades.getInteger("damage")>2)
-				ClientUtils.renderWavefrontWithIconUVs(model, headIcon, "upgrade_damage4");
+					ClientUtils.renderWavefrontWithIconUVs(model, headIcon, "upgrade_damage4");
 				GL11.glRotatef(-720*angle, 0,0,1);
 				GL11.glTranslatef(-.441f,0,0);
 			}
@@ -158,7 +198,6 @@ public class ItemRenderDrill implements IItemRenderer
 			GL11.glColor3f(1,1,1);
 		}
 
-		if(type==ItemRenderType.INVENTORY)
 			GL11.glDisable(3042);
 		GL11.glPopMatrix();
 	}

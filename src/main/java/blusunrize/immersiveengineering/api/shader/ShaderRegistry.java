@@ -54,6 +54,7 @@ public class ShaderRegistry
 	{
 		registerShader_Revolver(name, overlayType, rarity, colourBackground, colourPrimary, colourSecondary, colourBlade, additionalTexture);
 		registerShader_Chemthrower(name, overlayType, rarity, colourBackground, colourPrimary, colourSecondary, true,false, additionalTexture);
+		registerShader_Drill(name, overlayType, rarity, colourBackground, colourPrimary, colourSecondary, additionalTexture);
 		registerShader_Minecart(name, overlayType, rarity, colourPrimary, colourSecondary, additionalTexture);
 		registerShader_Balloon(name, overlayType, rarity, colourPrimary, colourSecondary, additionalTexture);
 		return shaderRegistry.get(name).setCrateLoot(loot).setBagLoot(bags);
@@ -75,6 +76,18 @@ public class ShaderRegistry
 		if(!shaderList.contains(name))
 			shaderList.add(name);
 		ShaderCaseChemthrower shader = new ShaderCaseChemthrower(overlayType, colourGrip, colourPrimary, colourSecondary, cageOnBase, tanksUncoloured, additionalTexture);
+		if(!shaderRegistry.containsKey(name))
+			shaderRegistry.put(name, new ShaderRegistryEntry(name, rarity, shader));
+		else
+			shaderRegistry.get(name).addCase(shader);
+
+		return shader;
+	}
+	public static ShaderCaseDrill registerShader_Drill(String name, String overlayType, EnumRarity rarity, int[] colourGrip, int[] colourPrimary, int[] colourSecondary, String additionalTexture)
+	{
+		if(!shaderList.contains(name))
+			shaderList.add(name);
+		ShaderCaseDrill shader = new ShaderCaseDrill(overlayType, colourGrip, colourPrimary, colourSecondary, additionalTexture);
 		if(!shaderRegistry.containsKey(name))
 			shaderRegistry.put(name, new ShaderRegistryEntry(name, rarity, shader));
 		else
