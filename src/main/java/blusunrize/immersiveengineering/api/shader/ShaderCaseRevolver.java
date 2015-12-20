@@ -17,7 +17,7 @@ public class ShaderCaseRevolver extends ShaderCase
 
 	public ShaderCaseRevolver(String overlayType, int[] colourGrip, int[] colourPrimary, int[] colourSecondary, int[] colourBlade, String additionalTexture)
 	{
-		super(overlayType, colourGrip,colourPrimary,colourSecondary);
+		super(overlayType, colourGrip,colourPrimary,colourSecondary, "immersiveengineering:shaders/revolver_");
 		this.colourBlade = colourBlade;
 		this.additionalTexture = additionalTexture;
 	}
@@ -151,11 +151,11 @@ public class ShaderCaseRevolver extends ShaderCase
 		if(sheetID==IEApi.revolverTextureSheetID)
 		{
 			i_revolverBase = ir.registerIcon("immersiveengineering:shaders/revolver_0");
-			i_revolverOverlay = ir.registerIcon("immersiveengineering:shaders/revolver_1_"+this.overlayType);
+			i_revolverOverlay = ir.registerIcon(this.baseTexturePath+"1_"+this.overlayType);
 			i_revolverGrip = ir.registerIcon("immersiveengineering:shaders/revolver_grip");
 			i_revolverUncoloured = ir.registerIcon("immersiveengineering:shaders/revolver_uncoloured");
 			if(this.additionalTexture!=null)
-				i_revolverAdditional = ir.registerIcon("immersiveengineering:shaders/revolver_"+additionalTexture);
+				i_revolverAdditional = ir.registerIcon(this.baseTexturePath+additionalTexture);
 		}
 	}
 

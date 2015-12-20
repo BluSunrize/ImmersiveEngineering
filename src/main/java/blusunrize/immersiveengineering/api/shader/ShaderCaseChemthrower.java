@@ -13,7 +13,7 @@ public class ShaderCaseChemthrower extends ShaderCase
 
 	public ShaderCaseChemthrower(String overlayType, int[] colourGrip, int[] colourPrimary, int[] colourSecondary, boolean cageOnBase, boolean tanksUncoloured, String additionalTexture)
 	{
-		super(overlayType, colourGrip,colourPrimary,colourSecondary);
+		super(overlayType, colourGrip,colourPrimary,colourSecondary,"immersiveengineering:shaders/chemthrower_");
 		this.additionalTexture = additionalTexture;
 		this.renderCageOnBase = cageOnBase;
 		this.tanksUncoloured = tanksUncoloured;
@@ -91,10 +91,10 @@ public class ShaderCaseChemthrower extends ShaderCase
 		if(sheetID==1)
 		{
 			i_chemthrowerBase = ir.registerIcon("immersiveengineering:shaders/chemthrower_0");
-			i_chemthrowerOverlay = ir.registerIcon("immersiveengineering:shaders/chemthrower_1_"+this.overlayType);
+			i_chemthrowerOverlay = ir.registerIcon(this.baseTexturePath+"1_"+this.overlayType);
 			i_chemthrowerUncoloured = ir.registerIcon("immersiveengineering:shaders/chemthrower_uncoloured");
 			if(this.additionalTexture!=null)
-				i_chemthrowerAdditional = ir.registerIcon("immersiveengineering:shaders/chemthrower_"+additionalTexture);
+				i_chemthrowerAdditional = ir.registerIcon(this.baseTexturePath+additionalTexture);
 		}
 	}
 

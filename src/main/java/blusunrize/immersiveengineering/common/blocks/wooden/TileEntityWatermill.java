@@ -57,7 +57,7 @@ public class TileEntityWatermill extends TileEntityIEBase
 					&& tileEntity instanceof TileEntityWatermill
 					&& ((TileEntityWatermill)tileEntity).offset[0]==0
 					&& ((TileEntityWatermill)tileEntity).offset[1]==0
-					&& ((TileEntityWatermill)tileEntity).facing==facing
+					&& ( ((TileEntityWatermill)tileEntity).facing==facing || ((TileEntityWatermill)tileEntity).facing==ForgeDirection.OPPOSITES[facing] )
 					&& !((TileEntityWatermill)tileEntity).isBlocked())
 			{
 				power += ((TileEntityWatermill)tileEntity).getPower();

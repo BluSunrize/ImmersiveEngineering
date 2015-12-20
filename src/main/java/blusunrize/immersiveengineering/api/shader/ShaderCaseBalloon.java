@@ -10,7 +10,7 @@ public class ShaderCaseBalloon extends ShaderCase
 
 	public ShaderCaseBalloon(String overlayType, int[] colourPrimary, int[] colourSecondary, String additionalTexture)
 	{
-		super(overlayType, defaultWhite,colourPrimary,colourSecondary);
+		super(overlayType, defaultWhite,colourPrimary,colourSecondary, "immersiveengineering:shaders/balloon_");
 		this.additionalTexture = additionalTexture;
 	}
 
@@ -49,9 +49,9 @@ public class ShaderCaseBalloon extends ShaderCase
 		if(sheetID==0)
 		{
 			i_balloonBase = ir.registerIcon("immersiveengineering:shaders/balloon_0");
-			i_balloonOverlay = ir.registerIcon("immersiveengineering:shaders/balloon_1_"+this.overlayType);
+			i_balloonOverlay = ir.registerIcon(this.baseTexturePath+"1_"+this.overlayType);
 			if(this.additionalTexture!=null)
-				i_balloonAdditional = ir.registerIcon("immersiveengineering:shaders/balloon_"+additionalTexture);
+				i_balloonAdditional = ir.registerIcon(this.baseTexturePath+additionalTexture);
 		}
 	}
 

@@ -10,7 +10,7 @@ public class ShaderCaseDrill extends ShaderCase
 
 	public ShaderCaseDrill(String overlayType, int[] colourGrip, int[] colourPrimary, int[] colourSecondary, String additionalTexture)
 	{
-		super(overlayType, colourGrip,colourPrimary,colourSecondary);
+		super(overlayType, colourGrip,colourPrimary,colourSecondary, "immersiveengineering:shaders/drill_diesel_");
 		this.additionalTexture = additionalTexture;
 	}
 
@@ -77,10 +77,10 @@ public class ShaderCaseDrill extends ShaderCase
 		if(sheetID==1)
 		{
 			i_drillBase = ir.registerIcon("immersiveengineering:shaders/drill_diesel_0");
-			i_drillOverlay = ir.registerIcon("immersiveengineering:shaders/drill_diesel_1_"+this.overlayType);
+			i_drillOverlay = ir.registerIcon(this.baseTexturePath+"1_"+this.overlayType);
 			i_drillUncoloured = ir.registerIcon("immersiveengineering:shaders/drill_diesel_uncoloured");
 			if(this.additionalTexture!=null)
-				i_drillAdditional = ir.registerIcon("immersiveengineering:shaders/drill_diesel_"+additionalTexture);
+				i_drillAdditional = ir.registerIcon(this.baseTexturePath+additionalTexture);
 		}
 	}
 

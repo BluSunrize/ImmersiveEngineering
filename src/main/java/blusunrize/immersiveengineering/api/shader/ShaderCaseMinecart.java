@@ -17,7 +17,7 @@ public class ShaderCaseMinecart extends ShaderCase
 
 	public ShaderCaseMinecart(String overlayType, int[] colourPrimary, int[] colourSecondary, String additionalTexture)
 	{
-		super(overlayType, defaultWhite,colourPrimary,colourSecondary);
+		super(overlayType, defaultWhite,colourPrimary,colourSecondary, "immersiveengineering:textures/models/shaders/minecart_");
 		this.additionalTexture = additionalTexture;
 		if(overlayType=="1" || overlayType=="2" || overlayType=="7")
 		{
