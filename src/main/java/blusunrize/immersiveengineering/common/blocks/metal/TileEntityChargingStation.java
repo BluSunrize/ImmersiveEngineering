@@ -101,7 +101,7 @@ public class TileEntityChargingStation extends TileEntityIEBase implements IEner
 		}
 
 
-		if(worldObj.getTotalWorldTime()%32==((xCoord^zCoord)&31))
+		if(!worldObj.isRemote && worldObj.getTotalWorldTime()%32==((xCoord^zCoord)&31))
 		{
 			float charge = 0;
 			if(inventory!=null && (inventory.getItem() instanceof IEnergyContainerItem || (Lib.IC2 && IC2Helper.isElectricItem(inventory))))
