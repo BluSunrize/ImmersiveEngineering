@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.common.util.compat.computercraft;
 
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
+import blusunrize.immersiveengineering.common.util.IELogger;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
@@ -10,6 +11,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 public class PeripheralCrusher extends IEPeripheral {
+	public static final String[] cmds = {"getQueueLength", "setEnabled", "isActive", "getInputStack", "getCurrentMaxProgress", "getCurrentProgress", "getMaxEnergyStored", "getEnergyStored"};
 	public PeripheralCrusher(World w, int _x, int _y, int _z) {
 		super(w, _x, _y, _z);
 	}
@@ -23,7 +25,7 @@ public class PeripheralCrusher extends IEPeripheral {
 
 	@Override
 	public String[] getMethodNames() {
-		return new String[]{"getQueueLength", "setEnabled", "getActive", "getInputStack"};
+		return cmds;
 	}
 
 	@Override
@@ -55,9 +57,25 @@ public class PeripheralCrusher extends IEPeripheral {
 					throw new LuaException("The requested place in the queue does not exist");
 				stack = te.inputs.get(id);
 			}
-			if (stack==null||stack.getItem()==null)
-				return null;
-			return new Object[]{stack.stackSize, stack.getItem().getUnlocalizedName(stack), stack.getItemDamage()};
+			return saveStack(stack, new Object[3]);
+		case 4://max progress
+			if (te.inputs.isEmpty())
+				throw new LuaException("The crusher doesn't have any inputs");
+			int time = te.getRecipeTime(te.inputs.get(0));
+			if (time<=0)
+				throw new LuaException("The current crusher recipe is invalid");
+			return new Object[]{time};
+		case 5://current progress
+			if (te.inputs.isEmpty())
+				throw new LuaException("The crusher doesn't have any inputs");
+			time = te.getRecipeTime(te.inputs.get(0))-te.process;
+			if (time<=0)
+				throw new LuaException("The current crusher recipe is invalid");
+			return new Object[]{time};
+		case 6://max energy
+			return new Object[]{te.energyStorage.getMaxEnergyStored()};
+		case 7://current energy
+			return new Object[]{te.energyStorage.getEnergyStored()};
 		}
 		return null;
 	}
@@ -69,6 +87,8 @@ public class PeripheralCrusher extends IEPeripheral {
 			return;
 		te.computerControlled = true;
 		te.computerOn = true;
+		IELogger.info("Attach");
+		IELogger.info(te);
 	}
 
 	@Override
@@ -77,6 +97,8 @@ public class PeripheralCrusher extends IEPeripheral {
 		if (te==null)
 			return;
 		te.computerControlled = false;
+		IELogger.info("Detach");
+		IELogger.info(te);
 	}
 
 	@Override

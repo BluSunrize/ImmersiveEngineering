@@ -233,6 +233,7 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 			else if(active)
 			{
 				active=false;
+				mobGrinding = false;
 				update = true;
 			}
 			if(update)
@@ -248,20 +249,22 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 		if (inputs.isEmpty())
 			return false;
 		ItemStack inputStack = inputs.get(0);
-		CrusherRecipe recipe = CrusherRecipe.findRecipe(inputStack);
-		boolean b = true;
+		int time = getRecipeTime(inputStack);
+		if (time>0)
+			this.process = time;
+		return time>0;
+	}
+	public int getRecipeTime(ItemStack in)
+	{
+		CrusherRecipe recipe = CrusherRecipe.findRecipe(in);
 		if(recipe!=null)
 		{
-			if(inputStack.stackSize>=(recipe.input instanceof ItemStack?((ItemStack)recipe.input).stackSize:1))
-				this.process = recipe.energy;
-			else
-				b = false;
+			if(in.stackSize>=(recipe.input instanceof ItemStack?((ItemStack)recipe.input).stackSize:1))
+				return recipe.energy;
 		}
-		else if(RailcraftCraftingManager.rockCrusher!=null && RailcraftCraftingManager.rockCrusher.getRecipe(inputStack)!=null)
-			this.process = 4000;
-		else
-			inputs.remove(0);
-		return b;
+		else if(RailcraftCraftingManager.rockCrusher!=null && RailcraftCraftingManager.rockCrusher.getRecipe(in)!=null)
+			return 4000;
+		return -1;
 	}
 
 	boolean isValidInput(ItemStack stack)
