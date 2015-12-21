@@ -51,7 +51,7 @@ public class ModelShaderMinecart extends ModelMinecart
 			if(shader!=null && shader.getItem() instanceof IShaderItem)
 				sCase = ((IShaderItem)shader.getItem()).getShaderCase(shader,null,"minecart");
 		}
-		if(sCase!=null && sCase instanceof ShaderCaseMinecart)
+		if(sCase instanceof ShaderCaseMinecart)
 		{
 			GL11.glEnable(GL11.GL_BLEND);
 			OpenGlHelper.glBlendFunc(770, 771, 0, 1);

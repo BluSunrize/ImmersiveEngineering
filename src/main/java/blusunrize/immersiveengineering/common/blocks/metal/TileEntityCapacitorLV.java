@@ -24,16 +24,19 @@ public class TileEntityCapacitorLV extends TileEntityIEBase implements IEnergyHa
 	@Override
 	public void updateEntity()
 	{
-		for(int i=0; i<6; i++)
-			this.transferEnergy(i);
-
-		if(worldObj.getTotalWorldTime()%32==((xCoord^zCoord)&31))
+		if(!worldObj.isRemote)
 		{
-			int i = scaleStoredEnergyTo(15);
-			if(i!=this.comparatorOutput)
+			for(int i=0; i<6; i++)
+				this.transferEnergy(i);
+
+			if(worldObj.getTotalWorldTime()%32==((xCoord^zCoord)&31))
 			{
-				this.comparatorOutput=i;
-				worldObj.func_147453_f(xCoord, yCoord, zCoord, getBlockType());
+				int i = scaleStoredEnergyTo(15);
+				if(i!=this.comparatorOutput)
+				{
+					this.comparatorOutput=i;
+					worldObj.func_147453_f(xCoord, yCoord, zCoord, getBlockType());
+				}
 			}
 		}
 	}

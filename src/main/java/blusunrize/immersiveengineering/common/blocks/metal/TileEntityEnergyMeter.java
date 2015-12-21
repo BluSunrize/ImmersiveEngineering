@@ -16,7 +16,7 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable
 {
 	public int facing=3;
 	public int lastEnergyPassed = 0;
-	public ArrayList<Integer> lastPackets = new ArrayList<Integer>();
+	public ArrayList<Integer> lastPackets = new ArrayList<Integer>(25);
 	public boolean dummy=false;
 
 	@Override

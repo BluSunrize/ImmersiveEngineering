@@ -162,15 +162,22 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 	}
 
 	@SideOnly(Side.CLIENT)
+	private AxisAlignedBB renderAABB;
+	@SideOnly(Side.CLIENT)
 	@Override
 	public AxisAlignedBB getRenderBoundingBox()
 	{
-		if(Config.getBoolean("increasedRenderboxes"))
+		if(renderAABB==null)
 		{
-			int inc = getRenderRadiusIncrease();
-			return AxisAlignedBB.getBoundingBox(xCoord-inc,yCoord-inc,zCoord-inc, xCoord+inc+1,yCoord+inc+1,zCoord+inc+1);
+			if(Config.getBoolean("increasedRenderboxes"))
+			{
+				int inc = getRenderRadiusIncrease();
+				renderAABB = AxisAlignedBB.getBoundingBox(xCoord-inc,yCoord-inc,zCoord-inc, xCoord+inc+1,yCoord+inc+1,zCoord+inc+1);
+			}
+			else
+				renderAABB = super.getRenderBoundingBox();
 		}
-		return super.getRenderBoundingBox();
+		return renderAABB;
 	}
 	int getRenderRadiusIncrease()
 	{

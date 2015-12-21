@@ -330,20 +330,14 @@ public class EventHandler
 					if(interdictor instanceof TileEntity)
 					{
 						if(((TileEntity)interdictor).isInvalid() || ((TileEntity)interdictor).getWorldObj()==null)
-						{
 							it.remove();
-							continue;
-						}
 						else if( ((TileEntity)interdictor).getWorldObj().provider.dimensionId==event.entity.worldObj.provider.dimensionId && ((TileEntity)interdictor).getDistanceFrom(event.entity.posX, event.entity.posY, event.entity.posZ)<=interdictor.getInterdictionRangeSquared())
 							event.setResult(Event.Result.DENY);
 					}
 					else if(interdictor instanceof Entity)
 					{
 						if(((Entity)interdictor).isDead || ((Entity)interdictor).worldObj==null)
-						{
 							it.remove();
-							continue;
-						}
 						else if(((Entity)interdictor).worldObj.provider.dimensionId==event.entity.worldObj.provider.dimensionId && ((Entity)interdictor).getDistanceSqToEntity(event.entity)<=interdictor.getInterdictionRangeSquared())
 							event.setResult(Event.Result.DENY);
 					}
@@ -366,20 +360,14 @@ public class EventHandler
 					if(interdictor instanceof TileEntity)
 					{
 						if(((TileEntity)interdictor).isInvalid() || ((TileEntity)interdictor).getWorldObj()==null)
-						{
 							it.remove();
-							continue;
-						}
 						else if( ((TileEntity)interdictor).getWorldObj().provider.dimensionId==event.entity.worldObj.provider.dimensionId && ((TileEntity)interdictor).getDistanceFrom(event.entity.posX, event.entity.posY, event.entity.posZ)<=interdictor.getInterdictionRangeSquared())
 							event.setResult(Event.Result.DENY);
 					}
 					else if(interdictor instanceof Entity)
 					{
 						if(((Entity)interdictor).isDead || ((Entity)interdictor).worldObj==null)
-						{
 							it.remove();
-							continue;
-						}
 						else if(((Entity)interdictor).worldObj.provider.dimensionId==event.entity.worldObj.provider.dimensionId && ((Entity)interdictor).getDistanceSqToEntity(event.entity)<=interdictor.getInterdictionRangeSquared())
 							event.setResult(Event.Result.DENY);
 					}
