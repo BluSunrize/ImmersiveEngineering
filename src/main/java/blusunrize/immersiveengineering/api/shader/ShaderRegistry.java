@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.api.shader;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -11,7 +12,6 @@ import java.util.Random;
 import com.google.common.collect.ArrayListMultimap;
 
 import net.minecraft.item.EnumRarity;
-import scala.actors.threadpool.Arrays;
 
 public class ShaderRegistry
 {
