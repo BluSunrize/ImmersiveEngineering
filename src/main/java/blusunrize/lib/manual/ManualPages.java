@@ -402,7 +402,7 @@ public abstract class ManualPages implements IManualPage
 			this.recipes.clear();
 			List cmRecipes = CraftingManager.getInstance().getRecipeList();
 			for(Object o : cmRecipes)
-				if(o!=null && o instanceof IRecipe)
+				if(o instanceof IRecipe)
 				{
 					for(int iStack=0; iStack<stacks.length; iStack++)
 					{
@@ -645,7 +645,7 @@ public abstract class ManualPages implements IManualPage
 			{
 				List cmRecipes = CraftingManager.getInstance().getRecipeList();
 				for(Object o : cmRecipes)
-					if(o!=null && o instanceof IRecipe)
+					if(o instanceof IRecipe)
 					{
 						for(int iStack=0; iStack<stacks.length; iStack++)
 						{

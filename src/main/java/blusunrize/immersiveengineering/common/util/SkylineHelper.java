@@ -106,7 +106,7 @@ public class SkylineHelper
 		double k = Math.sqrt(dx*dx + dy*dy + dz*dz) * connection.cableType.getSlack();
 		double l = 0;
 		int limiter = 0;
-		while(!vertical && true && limiter<300)
+		while(!vertical && limiter<300)
 		{
 			limiter++;
 			l += 0.01;

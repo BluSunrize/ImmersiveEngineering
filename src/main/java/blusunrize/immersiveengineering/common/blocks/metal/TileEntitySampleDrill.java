@@ -77,12 +77,17 @@ public class TileEntitySampleDrill extends TileEntityIEBase implements IEnergyRe
 	}
 
 	@SideOnly(Side.CLIENT)
+	private AxisAlignedBB renderAABB;
+	@SideOnly(Side.CLIENT)
 	@Override
 	public AxisAlignedBB getRenderBoundingBox()
 	{
-		if(pos==0)
-			return AxisAlignedBB.getBoundingBox(xCoord,yCoord,zCoord, xCoord+1,yCoord+3,zCoord+1);
-		return AxisAlignedBB.getBoundingBox(xCoord,yCoord,zCoord, xCoord,yCoord,zCoord);
+		if(renderAABB==null)
+			if(pos==0)
+				renderAABB = AxisAlignedBB.getBoundingBox(xCoord,yCoord,zCoord, xCoord+1,yCoord+3,zCoord+1);
+			else
+				renderAABB = AxisAlignedBB.getBoundingBox(xCoord,yCoord,zCoord, xCoord,yCoord,zCoord);
+		return renderAABB;
 	}
 
 	@Override

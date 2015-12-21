@@ -146,7 +146,7 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockPart implemen
 	IEnergyReceiver getOutput(int w)
 	{
 		TileEntity eTile = worldObj.getTileEntity(xCoord+(facing==4?-1:facing==5?1: w), yCoord+1, zCoord+(facing==2?-1:facing==3?1: w));
-		if(eTile!=null && eTile instanceof IEnergyReceiver)
+		if(eTile instanceof IEnergyReceiver)
 			return (IEnergyReceiver)eTile;
 		return null;
 	}
@@ -253,14 +253,18 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockPart implemen
 	}
 
 
+	@SideOnly(Side.CLIENT)
+	private AxisAlignedBB renderAABB;
 	@Override
 	@SideOnly(Side.CLIENT)
 	public AxisAlignedBB getRenderBoundingBox()
 	{
-		if(pos==31)
-			return AxisAlignedBB.getBoundingBox(xCoord-(facing==5?3: 1),yCoord-1,zCoord-(facing==3?3: 1), xCoord+(facing==4?4:2),yCoord+2,zCoord+(facing==2?4:2));
-
-		return AxisAlignedBB.getBoundingBox(xCoord,yCoord,zCoord, xCoord,yCoord,zCoord);
+		if(renderAABB==null)
+			if(pos==31)
+				renderAABB = AxisAlignedBB.getBoundingBox(xCoord-(facing==5?3: 1),yCoord-1,zCoord-(facing==3?3: 1), xCoord+(facing==4?4:2),yCoord+2,zCoord+(facing==2?4:2));
+			else
+				renderAABB = AxisAlignedBB.getBoundingBox(xCoord,yCoord,zCoord, xCoord,yCoord,zCoord);
+		return renderAABB;
 	}
 	@Override
 	@SideOnly(Side.CLIENT)

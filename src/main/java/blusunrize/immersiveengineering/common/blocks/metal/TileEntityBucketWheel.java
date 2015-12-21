@@ -127,13 +127,18 @@ public class TileEntityBucketWheel extends TileEntityMultiblockPart
 		return true;
 	}
 
+	@SideOnly(Side.CLIENT)
+	private AxisAlignedBB renderAABB;
 	@Override
 	@SideOnly(Side.CLIENT)
 	public AxisAlignedBB getRenderBoundingBox()
 	{
-		if(pos==24)
-			return AxisAlignedBB.getBoundingBox(xCoord-(facing<4?3:0),yCoord-3,zCoord-(facing>3?3:0), xCoord+(facing<4?4:1),yCoord+4,zCoord+(facing>3?4:1));
-		return AxisAlignedBB.getBoundingBox(xCoord,yCoord,zCoord, xCoord,yCoord,zCoord);
+		if(renderAABB==null)
+			if(pos==24)
+				renderAABB = AxisAlignedBB.getBoundingBox(xCoord-(facing<4?3:0),yCoord-3,zCoord-(facing>3?3:0), xCoord+(facing<4?4:1),yCoord+4,zCoord+(facing>3?4:1));
+			else
+				renderAABB = AxisAlignedBB.getBoundingBox(xCoord,yCoord,zCoord, xCoord,yCoord,zCoord);
+		return renderAABB;
 	}
 	@Override
 	@SideOnly(Side.CLIENT)

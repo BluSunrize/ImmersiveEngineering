@@ -230,13 +230,20 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable
 	}
 
 	@SideOnly(Side.CLIENT)
+	private AxisAlignedBB renderAABB;
+	@SideOnly(Side.CLIENT)
 	@Override
 	public AxisAlignedBB getRenderBoundingBox()
 	{
-		if(Config.getBoolean("increasedRenderboxes"))
-			return AxisAlignedBB.getBoundingBox(xCoord-16,yCoord-16,zCoord-16, xCoord+17,yCoord+17,zCoord+17);
-		if(!dummy)
-			return AxisAlignedBB.getBoundingBox(xCoord,yCoord-1,zCoord, xCoord+1,yCoord+1.5,zCoord+1);
-		return AxisAlignedBB.getBoundingBox(xCoord,yCoord,zCoord, xCoord,yCoord,zCoord);
+		if(renderAABB==null)
+		{
+			if(Config.getBoolean("increasedRenderboxes"))
+				renderAABB = AxisAlignedBB.getBoundingBox(xCoord-16, yCoord-16, zCoord-16, xCoord+17, yCoord+17, zCoord+17);
+			else if(!dummy)
+				renderAABB = AxisAlignedBB.getBoundingBox(xCoord, yCoord-1, zCoord, xCoord+1, yCoord+1.5, zCoord+1);
+			else
+				renderAABB = AxisAlignedBB.getBoundingBox(xCoord, yCoord, zCoord, xCoord, yCoord, zCoord);
+		}
+		return renderAABB;
 	}
 }

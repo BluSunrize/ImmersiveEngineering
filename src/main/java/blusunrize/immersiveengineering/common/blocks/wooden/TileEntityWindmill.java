@@ -129,10 +129,14 @@ public class TileEntityWindmill extends TileEntityIEBase
 	}
 
 	@SideOnly(Side.CLIENT)
+	private AxisAlignedBB renderAABB;
+	@SideOnly(Side.CLIENT)
 	@Override
 	public AxisAlignedBB getRenderBoundingBox()
 	{
-		return AxisAlignedBB.getBoundingBox(xCoord-(facing<=3?6:0),yCoord-6,zCoord-(facing<=3?0:6), xCoord+(facing<=3?7:0),yCoord+7,zCoord+(facing<=3?0:7));
+		if(renderAABB==null)
+			renderAABB = AxisAlignedBB.getBoundingBox(xCoord-(facing<=3?6:0),yCoord-6,zCoord-(facing<=3?0:6), xCoord+(facing<=3?7:0),yCoord+7,zCoord+(facing<=3?0:7));
+		return renderAABB;
 	}
 	@Override
 	public double getMaxRenderDistanceSquared()
