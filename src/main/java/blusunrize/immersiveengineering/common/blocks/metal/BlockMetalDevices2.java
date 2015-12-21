@@ -930,6 +930,27 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 	//		}
 	//	}
 
+
+	@Override
+	public boolean hasComparatorInputOverride()
+	{
+		return true;
+	}
+
+	@Override
+	public int getComparatorInputOverride(World world, int x, int y, int z, int side)
+	{
+		TileEntity te = world.getTileEntity(x, y, z);
+		if(te instanceof TileEntityWoodenBarrel)
+		{
+			TileEntityWoodenBarrel barrel = (TileEntityWoodenBarrel)te;
+			return (int)(15*(barrel.tank.getFluidAmount()/(float)barrel.tank.getCapacity()));
+		}
+		else if(te instanceof TileEntityChargingStation)
+			return ((TileEntityChargingStation)te).comparatorOutput;
+		return 0;
+	}
+
 	@Override
 	public int isProvidingWeakPower(IBlockAccess world, int x, int y, int z, int side)
 	{
@@ -982,12 +1003,12 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 	public boolean shouldRenderFluid(IBlockAccess world, int x, int y, int z)
 	{
 		int meta = world.getBlockMetadata(x, y, z);
-		return meta==META_breakerSwitch||meta==META_electricLantern||meta==META_floodlight||meta==META_fluidPipe;
+		return meta==META_breakerSwitch||meta==META_electricLantern||meta==META_floodlight||meta==META_fluidPipe||meta==META_redstoneBreaker;
 	}
 	@Optional.Method(modid = "AquaTweaks")
 	public boolean canConnectTo(IBlockAccess world, int x, int y, int z, int side)
 	{
 		int meta = world.getBlockMetadata(x, y, z);
-		return meta==META_breakerSwitch||meta==META_electricLantern||meta==META_floodlight||meta==META_fluidPipe;
+		return meta==META_breakerSwitch||meta==META_electricLantern||meta==META_floodlight||meta==META_fluidPipe||meta==META_redstoneBreaker;
 	}
 }

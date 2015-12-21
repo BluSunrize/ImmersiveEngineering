@@ -21,6 +21,7 @@ public class TileEntityChargingStation extends TileEntityIEBase implements IEner
 	public int facing = 2;
 	public ItemStack inventory;
 	private boolean charging = true;
+	public int comparatorOutput=0;
 
 	@Override
 	public void updateEntity()
@@ -96,6 +97,26 @@ public class TileEntityChargingStation extends TileEntityIEBase implements IEner
 			{
 				charging = true;
 				worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+			}
+		}
+
+
+		if(worldObj.getTotalWorldTime()%32==((xCoord^zCoord)&31))
+		{
+			float charge = 0;
+			if(inventory!=null && (inventory.getItem() instanceof IEnergyContainerItem || (Lib.IC2 && IC2Helper.isElectricItem(inventory))))
+				if(inventory.getItem() instanceof IEnergyContainerItem)
+				{
+					IEnergyContainerItem container = (IEnergyContainerItem)inventory.getItem();
+					charge = container.getEnergyStored(inventory)/(float)container.getMaxEnergyStored(inventory);
+				}
+				else
+					charge = (float)(IC2Helper.getCurrentItemCharge(inventory)/IC2Helper.getMaxItemCharge(inventory));
+			int i = (int)(15*charge);
+			if(i!=this.comparatorOutput)
+			{
+				this.comparatorOutput=i;
+				worldObj.func_147453_f(xCoord, yCoord, zCoord, getBlockType());
 			}
 		}
 	}

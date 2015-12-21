@@ -3,6 +3,16 @@ package blusunrize.immersiveengineering.common.blocks.wooden;
 import java.util.ArrayList;
 import java.util.List;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.IPostBlock;
+import blusunrize.immersiveengineering.client.render.BlockRenderWoodenDevices;
+import blusunrize.immersiveengineering.common.Config;
+import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
+import blusunrize.immersiveengineering.common.util.Lib;
+import blusunrize.immersiveengineering.common.util.Utils;
+import cpw.mods.fml.common.Optional;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -10,6 +20,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Container;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -24,16 +35,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidContainerItem;
-import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.IPostBlock;
-import blusunrize.immersiveengineering.client.render.BlockRenderWoodenDevices;
-import blusunrize.immersiveengineering.common.Config;
-import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
-import blusunrize.immersiveengineering.common.util.Lib;
-import blusunrize.immersiveengineering.common.util.Utils;
-import cpw.mods.fml.common.Optional;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 @Optional.Interface(iface = "blusunrize.aquatweaks.api.IAquaConnectable", modid = "AquaTweaks")
 public class BlockWoodenDevices extends BlockIEBase implements IPostBlock, blusunrize.aquatweaks.api.IAquaConnectable
@@ -396,6 +397,28 @@ public class BlockWoodenDevices extends BlockIEBase implements IPostBlock, blusu
 		super.onBlockExploded(world, x, y, z, explosion);
 	}
 
+	@Override
+	public boolean hasComparatorInputOverride()
+	{
+		return true;
+	}
+
+	@Override
+	public int getComparatorInputOverride(World world, int x, int y, int z, int side)
+	{
+		TileEntity te = world.getTileEntity(x, y, z);
+		if(te instanceof TileEntityWoodenCrate)
+		{
+			return Container.calcRedstoneFromInventory((TileEntityWoodenCrate)te);
+		}
+		else if(te instanceof TileEntityWoodenBarrel)
+		{
+			TileEntityWoodenBarrel barrel = (TileEntityWoodenBarrel)te;
+			return (int)(15*(barrel.tank.getFluidAmount()/(float)barrel.tank.getCapacity()));
+		}
+		return 0;
+	}
+	
 	@Override
 	public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int metadata, int fortune)
 	{
