@@ -1,7 +1,9 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.CrusherRecipe;
@@ -15,8 +17,15 @@ import blusunrize.immersiveengineering.common.util.IESound;
 import blusunrize.immersiveengineering.common.util.Utils;
 import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyReceiver;
+import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import li.cil.oc.api.machine.Arguments;
+import li.cil.oc.api.machine.Callback;
+import li.cil.oc.api.machine.Context;
+import li.cil.oc.api.network.Node;
+import li.cil.oc.api.network.SidedComponent;
+import li.cil.oc.api.network.SimpleComponent;
 import mods.railcraft.api.crafting.IRockCrusherRecipe;
 import mods.railcraft.api.crafting.RailcraftCraftingManager;
 import net.minecraft.block.Block;
@@ -32,7 +41,10 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityCrusher extends TileEntityMultiblockPart implements IEnergyReceiver, ISidedInventory, ISoundTile
+@Optional.InterfaceList({
+		@Optional.Interface(iface = "li.cil.oc.api.network.SidedComponent", modid = "OpenComputers"),
+		@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")})
+public class TileEntityCrusher extends TileEntityMultiblockPart implements IEnergyReceiver, ISidedInventory, ISoundTile, SidedComponent, SimpleComponent
 {
 	public int facing = 2;
 	public EnergyStorage energyStorage = new EnergyStorage(32000);
@@ -609,5 +621,74 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 		if(master!=null)
 			return master.energyStorage.getMaxEnergyStored();
 		return energyStorage.getMaxEnergyStored();
+	}
+
+	@Override
+	public boolean canConnectNode(ForgeDirection side)
+	{
+		return (pos==9 && side.ordinal()==facing);
+	}
+
+	@Override
+	public String getComponentName()
+	{
+		return "ie_crusher";
+	}
+
+	@Optional.Method(modid = "OpenComputers")
+	// "override" what gets injected by OC's class transformer
+	public void onConnect(Node node)
+	{
+		master().computerControlled = true;
+	}
+
+	@Optional.Method(modid = "OpenComputers")
+	// "override" what gets injected by OC's class transformer
+	public void onDisconnect(Node node)
+	{
+		master().computerControlled = false;
+	}
+
+	@Optional.Method(modid = "OpenComputers")
+	@Callback(doc = "function():boolean -- get whether the crusher is enabled")
+	public Object[] getEnabled(Context context, Arguments args)
+	{
+		return new Object[]{master().computerOn};
+	}
+
+	@Optional.Method(modid = "OpenComputers")
+	@Callback(doc = "function(enable:boolean) -- enable or disable the crusher")
+	public Object[] setEnabled(Context context, Arguments args)
+	{
+		master().computerOn = args.checkBoolean(0);
+		return null;
+	}
+
+	@Optional.Method(modid = "OpenComputers")
+	@Callback(doc = "function():number -- get energy storage capacity")
+	public Object[] getEnergyStored(Context context, Arguments args)
+	{
+		return new Object[]{master().energyStorage.getEnergyStored()};
+	}
+
+	@Optional.Method(modid = "OpenComputers")
+	@Callback(doc = "function():number -- get currently stored energy")
+	public Object[] getMaxEnergyStored(Context context, Arguments args)
+	{
+		return new Object[]{master().energyStorage.getMaxEnergyStored()};
+	}
+
+	@Optional.Method(modid = "OpenComputers")
+	@Callback(doc = "function():boolean -- get whether the crusher is currently running")
+	public Object[] isRunning(Context context, Arguments args)
+	{
+		return new Object[]{master().active};
+	}
+
+	@Optional.Method(modid = "OpenComputers")
+	@Callback(doc = "function():table -- get input queue")
+	public Object[] getInputQueue(Context context, Arguments args)
+	{
+		return new Object[]{master().inputs};
 	}
 }
