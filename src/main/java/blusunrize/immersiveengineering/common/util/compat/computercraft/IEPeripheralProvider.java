@@ -5,12 +5,14 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityArcFurnace;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityEnergyMeter;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityExcavator;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityRefinery;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.peripheral.IPeripheralProvider;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-public class IEPeripheralProvider implements IPeripheralProvider {
+public class IEPeripheralProvider implements IPeripheralProvider
+{
 
 	@Override
 	public IPeripheral getPeripheral(World world, int x, int y, int z, int side)
@@ -45,6 +47,12 @@ public class IEPeripheralProvider implements IPeripheralProvider {
 					return new PeripheralExcavator(world, x, y, z);
 				else
 					return null;
+			}
+			if (te instanceof TileEntityRefinery)
+			{
+				TileEntityRefinery ref = (TileEntityRefinery) te;
+				if (ref.pos==9&&ref.facing==side)
+					return new PeripheralRefinery(world, x, y, z);
 			}
 		}
 		return null;

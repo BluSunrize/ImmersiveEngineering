@@ -35,6 +35,8 @@ public class TileEntityRefinery extends TileEntityMultiblockPart implements IFlu
 	public FluidTank tank2 = new FluidTank(12000);
 	public EnergyStorage energyStorage = new EnergyStorage(32000,Math.max(256, Config.getInt("refinery_consumption")));
 	public ItemStack[] inventory = new ItemStack[6];
+	public boolean computerControlled;
+	public boolean computerOn;
 
 	@Override
 	public TileEntityRefinery master()
@@ -116,7 +118,12 @@ public class TileEntityRefinery extends TileEntityMultiblockPart implements IFlu
 		{
 			boolean update = false;
 			int prevAmount = tank2.getFluidAmount();
-			if (!worldObj.isBlockIndirectlyGettingPowered(xCoord+(facing==4?-1:facing==5?1:facing==2?-2:2),yCoord+1,zCoord+(facing==2?-1:facing==3?1:facing==4?2:-2)))
+			boolean enabled;
+			if (computerControlled)
+				enabled = computerOn;
+			else
+				enabled = !worldObj.isBlockIndirectlyGettingPowered(xCoord+(facing==4?-1:facing==5?1:facing==2?-2:2),yCoord+1,zCoord+(facing==2?-1:facing==3?1:facing==4?2:-2));
+			if (enabled)
 			{
 				RefineryRecipe recipe = getRecipe();
 				if(recipe!=null)

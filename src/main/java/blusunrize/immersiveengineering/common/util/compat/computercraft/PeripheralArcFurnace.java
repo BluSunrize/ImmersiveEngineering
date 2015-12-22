@@ -9,25 +9,30 @@ import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-public class PeripheralArcFurnace extends IEPeripheral {
-
-	public PeripheralArcFurnace(World w, int _x, int _y, int _z) {
+public class PeripheralArcFurnace extends IEPeripheral
+{
+	public static final String[] cmds = {"setEnabled", "isActive", "getInputStack", "getOutputStack", "getAdditiveStack", "getSlagStack", "hasElectrodes", "getElectrode", "getMaxEnergyStored", "getEnergyStored"};
+	public PeripheralArcFurnace(World w, int _x, int _y, int _z)
+	{
 		super(w, _x, _y, _z);
 	}
 
 	@Override
-	public String getType() {
+	public String getType()
+	{
 		return "IE:arcFurnace";
 	}
 
 	@Override
-	public String[] getMethodNames() {
-		return new String[]{"setEnabled", "isActive", "getInputStack", "getOutputStack", "getAdditiveStack", "getSlagStack", "hasElectrodes", "getElectrode", "getMaxEnergyStored", "getEnergyStored"};
+	public String[] getMethodNames()
+	{
+		return cmds;
 	}
 
 	@Override
 	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments)
-			throws LuaException, InterruptedException {
+			throws LuaException, InterruptedException
+	{
 		TileEntityArcFurnace te = (TileEntityArcFurnace) getTileEntity(TileEntityArcFurnace.class);
 		if (te==null)
 			return null;
@@ -85,7 +90,8 @@ public class PeripheralArcFurnace extends IEPeripheral {
 	}
 
 	@Override
-	public void attach(IComputerAccess computer) {
+	public void attach(IComputerAccess computer)
+	{
 		TileEntityArcFurnace te = (TileEntityArcFurnace) getTileEntity(TileEntityArcFurnace.class);
 		if (te!=null)
 		{
@@ -95,21 +101,16 @@ public class PeripheralArcFurnace extends IEPeripheral {
 	}
 
 	@Override
-	public void detach(IComputerAccess computer) {
+	public void detach(IComputerAccess computer)
+	{
 		TileEntityArcFurnace te = (TileEntityArcFurnace) getTileEntity(TileEntityArcFurnace.class);
 		if (te!=null)
 			te.computerControlled = false;
 	}
-
+	
 	@Override
-	public boolean equals(IPeripheral other) {
-		if (!(other instanceof PeripheralArcFurnace))
-			return false;
-		PeripheralArcFurnace otherPer = (PeripheralArcFurnace) other;
-		return w==otherPer.w&&x==otherPer.x&&y==otherPer.y&&z==otherPer.z;
-	}
-	@Override
-	protected TileEntity getTileEntity(Class<? extends TileEntity> type) {
+	protected TileEntity getTileEntity(Class<? extends TileEntity> type)
+	{
 		TileEntityArcFurnace te = (TileEntityArcFurnace) super.getTileEntity(type);
 		return te==null?null:te.master();
 	}

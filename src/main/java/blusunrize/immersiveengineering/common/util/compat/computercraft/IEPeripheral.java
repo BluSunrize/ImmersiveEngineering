@@ -7,8 +7,11 @@ import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
 
-public abstract class IEPeripheral implements IPeripheral {
+public abstract class IEPeripheral implements IPeripheral
+{
 	World w;
 	int x, y, z;
 	public IEPeripheral(World w, int _x, int _y, int _z)
@@ -18,18 +21,24 @@ public abstract class IEPeripheral implements IPeripheral {
 		y = _y;
 		z = _z;
 	}
-	protected TileEntity getTileEntity(Class<? extends TileEntity> type) {
+	protected TileEntity getTileEntity(Class<? extends TileEntity> type)
+	{
 		boolean usePipeline = FMLCommonHandler.instance().getEffectiveSide()!=Side.SERVER;
 		TileEntityRequest req = null;
 		if (usePipeline) {
 			req = new TileEntityRequest(w, x, y, z);
 			synchronized (req) {
 				EventHandler.ccRequestedTEs.add(req);
-				try {
-					while (!req.checked)
-						req.wait();
-				} catch (InterruptedException e) {
-					return null;
+				int timeout = 100;
+				while (!req.checked&&timeout>0)
+				{
+					try
+					{
+						req.wait(50);
+					}
+					catch (InterruptedException e)
+					{}
+					timeout--;
 				}
 			}
 		}
@@ -45,7 +54,26 @@ public abstract class IEPeripheral implements IPeripheral {
 			ret[1] = stack.getItem().getUnlocalizedName(stack);
 			ret[2] = stack.getItemDamage();
 		} else
-			ret[1] = "Empty";
+			ret[0] = "Empty";
 		return ret;
+	}
+	protected Object[] saveFluidStack(FluidStack tank, Object[] ret, int offset)
+	{
+		if (tank==null||tank.getFluid()==null)
+			ret[0+offset] = "Empty";
+		else
+		{
+			ret[0+offset] = tank.getFluid().getName();
+			ret[1+offset] = tank.amount;
+		}
+		return ret;
+	}
+	@Override
+	public boolean equals(IPeripheral other)
+	{
+		if (!(other instanceof IEPeripheral))
+			return false;
+		IEPeripheral otherPer = (IEPeripheral) other;
+		return w==otherPer.w&&x==otherPer.x&&y==otherPer.y&&z==otherPer.z;
 	}
 }

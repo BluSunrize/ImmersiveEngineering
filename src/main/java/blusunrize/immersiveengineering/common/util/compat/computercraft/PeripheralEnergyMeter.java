@@ -9,7 +9,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 public class PeripheralEnergyMeter extends IEPeripheral {
-	public PeripheralEnergyMeter(World w, int _x, int _y, int _z) {
+	public PeripheralEnergyMeter(World w, int _x, int _y, int _z)
+	{
 		super(w, _x, _y, _z);
 	}
 
@@ -17,18 +18,21 @@ public class PeripheralEnergyMeter extends IEPeripheral {
 	World w;
 	int x, y, z;
 	@Override
-	public String getType() {
+	public String getType()
+	{
 		return "IE:CurrentTrafo";
 	}
 
 	@Override
-	public String[] getMethodNames() {
+	public String[] getMethodNames()
+	{
 		return cmds;
 	}
 
 	@Override
 	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments)
-			throws LuaException, InterruptedException {
+			throws LuaException, InterruptedException
+	{
 		if (method<0||method>=cmds.length)
 			return null;
 		
@@ -50,7 +54,8 @@ public class PeripheralEnergyMeter extends IEPeripheral {
 	public void detach(IComputerAccess computer) {}
 
 	@Override
-	public boolean equals(IPeripheral other) {
+	public boolean equals(IPeripheral other)
+	{
 		if (!(other instanceof PeripheralEnergyMeter))
 			return false;
 		PeripheralEnergyMeter otherPer = (PeripheralEnergyMeter) other;
