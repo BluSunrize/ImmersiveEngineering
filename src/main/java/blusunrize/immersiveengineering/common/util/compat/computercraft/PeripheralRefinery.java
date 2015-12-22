@@ -51,11 +51,11 @@ public class PeripheralRefinery extends IEPeripheral
 				write = te.tank0;
 			else
 				write = te.tank1;
-			return saveFluidStack(write.getFluid(), new Object[2], 0);
+			return saveFluidTank(write, new Object[3], 0);
 		case 1://Output
-			return saveFluidStack(te.tank2.getFluid(), new Object[2], 0);
+			return saveFluidTank(te.tank2, new Object[3], 0);
 		case 2://recipe
-			Object[] ret = new Object[7];
+			Object[] ret = new Object[6];
 			RefineryRecipe ref = te.getRecipe();
 			if (ref==null)
 				throw new LuaException("The recipe of the refinery is invalid");

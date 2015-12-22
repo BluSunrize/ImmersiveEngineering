@@ -3,9 +3,11 @@ package blusunrize.immersiveengineering.common.util.compat.computercraft;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityArcFurnace;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityDieselGenerator;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityEnergyMeter;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityExcavator;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityRefinery;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySampleDrill;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.peripheral.IPeripheralProvider;
 import net.minecraft.tileentity.TileEntity;
@@ -53,7 +55,28 @@ public class IEPeripheralProvider implements IPeripheralProvider
 				TileEntityRefinery ref = (TileEntityRefinery) te;
 				if (ref.pos==9&&ref.facing==side)
 					return new PeripheralRefinery(world, x, y, z);
+				else
+					return null;
 			}
+			if (te instanceof TileEntityDieselGenerator)
+			{
+				TileEntityDieselGenerator gen = (TileEntityDieselGenerator) te;
+				TileEntityDieselGenerator master = gen.master();
+				if (master==null)
+					return null;
+				if (((gen.pos==21 && !master.mirrored) || (gen.pos==23 && master.mirrored)))
+					return new PeripheralDieselGenerator(world, x, y, z);
+				else
+					return null;
+			}
+			if (te instanceof TileEntitySampleDrill)
+			{
+				if (((TileEntitySampleDrill) te).pos==0)
+					return new PeripheralCoreDrill(world, x, y, z);
+				else
+					return null;
+			}
+			
 		}
 		return null;
 	}

@@ -57,13 +57,25 @@ public abstract class IEPeripheral implements IPeripheral
 			ret[0] = "Empty";
 		return ret;
 	}
+	protected Object[] saveFluidTank(FluidTank tank, Object[] ret, int offset)
+	{
+		if (tank==null||tank.getFluid()==null)
+			ret[0+offset] = "Empty";
+		else
+		{
+			ret[0+offset] = tank.getFluid().getFluid().getUnlocalizedName();
+			ret[1+offset] = tank.getFluidAmount();
+			ret[2+offset] = tank.getCapacity();
+		}
+		return ret;
+	}
 	protected Object[] saveFluidStack(FluidStack tank, Object[] ret, int offset)
 	{
 		if (tank==null||tank.getFluid()==null)
 			ret[0+offset] = "Empty";
 		else
 		{
-			ret[0+offset] = tank.getFluid().getName();
+			ret[0+offset] = tank.getFluid().getUnlocalizedName();
 			ret[1+offset] = tank.amount;
 		}
 		return ret;

@@ -525,6 +525,12 @@ public class BlockMetalDevices extends BlockIEBase implements blusunrize.aquatwe
 			return true;
 		if(meta==META_dynamo||meta==META_thermoelectricGen||meta==META_furnaceHeater)
 			return true;
+		if (meta==META_sampleDrill)
+		{
+			TileEntity te = world.getTileEntity(x, y, z);
+			if (te instanceof TileEntitySampleDrill&&((TileEntitySampleDrill)te).pos==0)
+				return true;
+		}
 		return false;
 	}
 

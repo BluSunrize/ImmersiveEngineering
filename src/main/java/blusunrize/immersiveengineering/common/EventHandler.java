@@ -222,7 +222,8 @@ public class EventHandler
 			ImmersiveNetHandler.INSTANCE.getTransferedRates(event.world.provider.dimensionId).clear();
 			// CC tile entity requests
 			Iterator<TileEntityRequest> it = ccRequestedTEs.iterator();
-			while (it.hasNext())
+			int timeout = 100;
+			while (it.hasNext()&&timeout>0)
 			{
 				TileEntityRequest req = it.next();
 				synchronized (req) {
@@ -231,6 +232,7 @@ public class EventHandler
 					req.notifyAll();
 				}
 				it.remove();
+				timeout--;
 			}
 		}
 	}
