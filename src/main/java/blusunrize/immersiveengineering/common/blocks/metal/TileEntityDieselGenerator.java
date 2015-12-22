@@ -1,5 +1,12 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import cpw.mods.fml.common.Optional;
+import li.cil.oc.api.machine.Arguments;
+import li.cil.oc.api.machine.Callback;
+import li.cil.oc.api.machine.Context;
+import li.cil.oc.api.network.Node;
+import li.cil.oc.api.network.SidedComponent;
+import li.cil.oc.api.network.SimpleComponent;
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
@@ -24,7 +31,10 @@ import cofh.api.energy.IEnergyReceiver;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class TileEntityDieselGenerator extends TileEntityMultiblockPart implements IFluidHandler, ISoundTile, IEnergyConnection
+@Optional.InterfaceList({
+		@Optional.Interface(iface = "li.cil.oc.api.network.SidedComponent", modid = "OpenComputers"),
+		@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")})
+public class TileEntityDieselGenerator extends TileEntityMultiblockPart implements IFluidHandler, ISoundTile, IEnergyConnection, SidedComponent, SimpleComponent
 {
 	public int facing = 2;
 	public FluidTank tank = new FluidTank(8000);
@@ -34,6 +44,9 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockPart implemen
 	public float fanRotation=0;
 	public int fanFadeIn=0;
 	public int fanFadeOut=0;
+
+	public boolean computerControlled = false;
+	public boolean computerActivated = false;
 
 	@Override
 	public TileEntityDieselGenerator master()
@@ -95,9 +108,13 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockPart implemen
 		else
 		{
 			boolean prevActive = active;
-			boolean rs = worldObj.isBlockIndirectlyGettingPowered(xCoord+(facing==4||facing==(mirrored?2:3)?1:-1), yCoord, zCoord+(facing==2||facing==(mirrored?5:4)?1:-1));
+			boolean run;
+			if(computerControlled)
+				run = computerActivated;
+			else
+				run = !worldObj.isBlockIndirectlyGettingPowered(xCoord+(facing==4||facing==(mirrored?2:3)?1:-1), yCoord, zCoord+(facing==2||facing==(mirrored?5:4)?1:-1));
 
-			if(!rs && tank.getFluid()!=null && tank.getFluid().getFluid()!=null)
+			if(run && tank.getFluid()!=null && tank.getFluid().getFluid()!=null)
 			{
 				int burnTime = DieselHandler.getBurnTime(tank.getFluid().getFluid());
 				int fluidConsumed = 1000/burnTime;
@@ -407,5 +424,62 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockPart implemen
 	public boolean canConnectEnergy(ForgeDirection from)
 	{
 		return (pos>=38&&pos<=41) && from==ForgeDirection.UP;
+	}
+
+	@Optional.Method(modid = "OpenComputers")
+	@Override
+	public boolean canConnectNode(ForgeDirection side)
+	{
+		return (pos==21 && !master().mirrored) || (pos==23 && master().mirrored);
+	}
+
+	@Optional.Method(modid = "OpenComputers")
+	@Override
+	public String getComponentName()
+	{
+		return "ie_diesel_generator";
+	}
+
+	@Optional.Method(modid = "OpenComputers")
+	// "override" what gets injected by OC's class transformer
+	public void onConnect(Node node)
+	{
+		master().computerControlled = true;
+	}
+
+	@Optional.Method(modid = "OpenComputers")
+	// "override" what gets injected by OC's class transformer
+	public void onDisconnect(Node node)
+	{
+		master().computerControlled = false;
+	}
+
+	@Optional.Method(modid = "OpenComputers")
+	@Callback(doc = "function():boolean -- get whether the generator is enabled to run when it can")
+	public Object[] getEnabled(Context context, Arguments args)
+	{
+		return new Object[]{master().computerActivated};
+	}
+
+	@Optional.Method(modid = "OpenComputers")
+	@Callback(doc = "function(enable:boolean) -- allow or disallow the generator to run when it can")
+	public Object[] setEnabled(Context context, Arguments args)
+	{
+		master().computerActivated = args.checkBoolean(0);
+		return null;
+	}
+
+	@Optional.Method(modid = "OpenComputers")
+	@Callback(doc = "function():boolean -- get whether the generator is currently producing energy")
+	public Object[] isRunning(Context context, Arguments args)
+	{
+		return new Object[]{master().active};
+	}
+
+	@Optional.Method(modid = "OpenComputers")
+	@Callback(doc = "function():table -- get information about the internal fuel tank")
+	public Object[] getTankInfo(Context context, Arguments args)
+	{
+		return new Object[]{master().tank.getInfo()};
 	}
 }

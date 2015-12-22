@@ -7,6 +7,7 @@ import java.util.Set;
 
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.util.IELogger;
+import blusunrize.immersiveengineering.common.util.compat.computercraft.ComputercraftHelper;
 import blusunrize.immersiveengineering.common.util.compat.hydcraft.HydCraftHelper;
 import blusunrize.immersiveengineering.common.util.compat.mfr.MFRHelper;
 import blusunrize.immersiveengineering.common.util.compat.minetweaker.MTHelper;
@@ -49,6 +50,7 @@ public abstract class IECompatModule
 		moduleClasses.put("cuttingedge", CuttingEdgeHelper.class);
 		moduleClasses.put("Railcraft", RailcraftHelper.class);
 		moduleClasses.put("Avaritia", AvaritiaHelper.class);
+		moduleClasses.put("ComputerCraft", ComputercraftHelper.class);
 	}
 
 	public static void doModulesPreInit()

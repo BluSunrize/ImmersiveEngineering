@@ -8,11 +8,21 @@ import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler.Connection
 import blusunrize.immersiveengineering.api.energy.WireType;
 import blusunrize.immersiveengineering.common.blocks.TileEntityImmersiveConnectable;
 import blusunrize.immersiveengineering.common.util.Utils;
+import cpw.mods.fml.common.Optional;
+import li.cil.oc.api.machine.Arguments;
+import li.cil.oc.api.machine.Callback;
+import li.cil.oc.api.machine.Context;
+import li.cil.oc.api.network.SidedComponent;
+import li.cil.oc.api.network.SimpleComponent;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Vec3;
+import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable
+@Optional.InterfaceList({
+		@Optional.Interface(iface = "li.cil.oc.api.network.SidedComponent", modid = "OpenComputers"),
+		@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")})
+public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implements SidedComponent, SimpleComponent
 {
 	public int facing=3;
 	public int lastEnergyPassed = 0;
@@ -40,10 +50,12 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable
 	{
 		if(dummy || worldObj.isRemote)
 			return;
-		//Yes, this might tick in between different connectors sending power, but since this is a block for statistical evaluation over a tick, that is irrelevant.
-		lastPackets.add(lastEnergyPassed);
-		if(lastPackets.size()>20)
-			lastPackets.remove(0);
+		synchronized (lastPackets) {
+			//Yes, this might tick in between different connectors sending power, but since this is a block for statistical evaluation over a tick, that is irrelevant.
+			lastPackets.add(lastEnergyPassed);
+			if (lastPackets.size() > 20)
+				lastPackets.remove(0);
+		}
 		lastEnergyPassed = 0;
 	}
 
@@ -118,5 +130,45 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable
 			return Vec3.createVectorHelper(.5,.4375,zDif>0?.8125:.1875);
 		else
 			return Vec3.createVectorHelper(xDif>0?.8125:.1875,.4375,.5);
+	}
+
+	public int getAveragePower()
+	{
+		TileEntityEnergyMeter te = this;
+		if (te.dummy)
+		{
+			TileEntity tmp = worldObj.getTileEntity(xCoord, yCoord+1, zCoord);
+			if (!(tmp instanceof TileEntityEnergyMeter))
+				return -1;
+			te = (TileEntityEnergyMeter) tmp;
+		}
+		if (te.lastPackets.size()==0)
+			return 0;
+		int sum = 0;
+		synchronized (te.lastPackets)
+		{
+			for (int transfer: te.lastPackets)
+				sum += transfer;
+		}
+		return sum/te.lastPackets.size();
+	}
+
+	@Override
+	public boolean canConnectNode(ForgeDirection side)
+	{
+		return dummy;
+	}
+
+	@Override
+	public String getComponentName()
+	{
+		return "energy_meter";
+	}
+
+	@Optional.Method(modid = "OpenComputers")
+	@Callback
+	public Object[] getLastMeasurements(Context context, Arguments args)
+	{
+		return new Object[]{getAveragePower()};
 	}
 }

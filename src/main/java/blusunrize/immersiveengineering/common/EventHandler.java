@@ -1,11 +1,14 @@
 package blusunrize.immersiveengineering.common;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import WayofTime.alchemicalWizardry.api.event.TeleposeEvent;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
@@ -31,6 +34,7 @@ import blusunrize.immersiveengineering.common.util.IEPotions;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.compat.computercraft.TileEntityRequest;
 import blusunrize.immersiveengineering.common.util.network.MessageMinecartShaderSync;
 import blusunrize.immersiveengineering.common.util.network.MessageMineralListSync;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -82,6 +86,7 @@ public class EventHandler
 {
 	public static ArrayList<ISpawnInterdiction> interdictionTiles = new ArrayList<ISpawnInterdiction>();
 	public static boolean validateConnsNextTick = false;
+	public static Set<TileEntityRequest> ccRequestedTEs = Collections.newSetFromMap(new ConcurrentHashMap<TileEntityRequest, Boolean>());
 	@SubscribeEvent
 	public void onLoad(WorldEvent.Load event)
 	{
@@ -215,6 +220,18 @@ public class EventHandler
 					ImmersiveNetHandler.INSTANCE.removeConnection(event.world, e.getKey());
 				}
 			ImmersiveNetHandler.INSTANCE.getTransferedRates(event.world.provider.dimensionId).clear();
+			// CC tile entity requests
+			Iterator<TileEntityRequest> it = ccRequestedTEs.iterator();
+			while (it.hasNext())
+			{
+				TileEntityRequest req = it.next();
+				synchronized (req) {
+					req.te = req.w.getTileEntity(req.x, req.y, req.z);
+					req.checked = true;
+					req.notifyAll();
+				}
+				it.remove();
+			}
 		}
 	}
 

@@ -44,6 +44,8 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 	public boolean hasPower = false;
 	public boolean mobGrinding = false;
 	public int grindingTimer = 0;
+	public boolean computerControlled;
+	public boolean computerOn;
 	@SideOnly(Side.CLIENT)
 	ItemStack particleStack;
 
@@ -96,7 +98,12 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 				hasPower = !hasPower;
 				update = true;
 			}
-			if(!worldObj.isBlockIndirectlyGettingPowered(xCoord+(facing==4?-1:facing==5?1:facing==(mirrored?2:3)?2:-2),yCoord+1,zCoord+(facing==2?-1:facing==3?1:facing==(mirrored?5:4)?2:-2)))
+			boolean canWork;
+			if (computerControlled)
+				canWork = computerOn;
+			else
+				canWork = !worldObj.isBlockIndirectlyGettingPowered(xCoord+(facing==4?-1:facing==5?1:facing==(mirrored?2:3)?2:-2),yCoord+1,zCoord+(facing==2?-1:facing==3?1:facing==(mirrored?5:4)?2:-2));
+			if(canWork)
 			{
 				int power = Config.getInt("crusher_consumption");
 				AxisAlignedBB aabb = AxisAlignedBB.getBoundingBox(xCoord-.5625,yCoord+1.5,zCoord-.5625, xCoord+1.5625,yCoord+2.875,zCoord+1.5625);
@@ -226,6 +233,7 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 			else if(active)
 			{
 				active=false;
+				mobGrinding = false;
 				update = true;
 			}
 			if(update)
@@ -241,20 +249,22 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 		if (inputs.isEmpty())
 			return false;
 		ItemStack inputStack = inputs.get(0);
-		CrusherRecipe recipe = CrusherRecipe.findRecipe(inputStack);
-		boolean b = true;
+		int time = getRecipeTime(inputStack);
+		if (time>0)
+			this.process = time;
+		return time>0;
+	}
+	public int getRecipeTime(ItemStack in)
+	{
+		CrusherRecipe recipe = CrusherRecipe.findRecipe(in);
 		if(recipe!=null)
 		{
-			if(inputStack.stackSize>=(recipe.input instanceof ItemStack?((ItemStack)recipe.input).stackSize:1))
-				this.process = recipe.energy;
-			else
-				b = false;
+			if(in.stackSize>=(recipe.input instanceof ItemStack?((ItemStack)recipe.input).stackSize:1))
+				return recipe.energy;
 		}
-		else if(RailcraftCraftingManager.rockCrusher!=null && RailcraftCraftingManager.rockCrusher.getRecipe(inputStack)!=null)
-			this.process = 4000;
-		else
-			inputs.remove(0);
-		return b;
+		else if(RailcraftCraftingManager.rockCrusher!=null && RailcraftCraftingManager.rockCrusher.getRecipe(in)!=null)
+			return 4000;
+		return -1;
 	}
 
 	boolean isValidInput(ItemStack stack)
