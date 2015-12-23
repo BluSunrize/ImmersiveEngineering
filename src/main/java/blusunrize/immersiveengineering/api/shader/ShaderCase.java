@@ -84,5 +84,5 @@ public abstract class ShaderCase
 	 * @param pre indicates whether this is before or after the part was rendered
 	 * @return make specific changes to the render, like GL calls
 	 */
-	public abstract void modifyRender(ItemStack shader, ItemStack item, String modelPart, int pass, boolean pre);
+	public abstract void modifyRender(ItemStack shader, ItemStack item, String modelPart, int pass, boolean pre, boolean inventory);
 }

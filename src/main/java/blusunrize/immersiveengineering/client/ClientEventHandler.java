@@ -85,6 +85,10 @@ import net.minecraftforge.oredict.OreDictionary;
 
 public class ClientEventHandler
 {
+	public static IIcon iconItemBlank;
+	public static int itemSheetWidth;
+	public static int itemSheetHeight;
+
 	@SubscribeEvent()
 	public void textureStich(TextureStitchEvent.Pre event)
 	{
@@ -101,6 +105,10 @@ public class ClientEventHandler
 			WireType.iconDefaultWire = event.map.registerIcon("immersiveengineering:wire");
 			TileRenderArcFurnace.hotMetal_flow = event.map.registerIcon("immersiveengineering:fluid/hotMetal_flow");
 			TileRenderArcFurnace.hotMetal_still = event.map.registerIcon("immersiveengineering:fluid/hotMetal_still");
+		}
+		if(event.map.getTextureType()==1)
+		{
+			iconItemBlank = event.map.registerIcon("immersiveengineering:white");
 		}
 		if(event.map.getTextureType()==Config.getInt("revolverSheetID"))
 		{
@@ -120,6 +128,11 @@ public class ClientEventHandler
 				WavefrontObject model = modelIE.rebindModel();
 				rebindUVsToIcon(model, modelIE);
 			}
+		if(event.map.getTextureType()==1)
+		{
+			itemSheetWidth = GL11.glGetTexLevelParameteri(GL11.GL_TEXTURE_2D, 0, GL11.GL_TEXTURE_WIDTH);
+			itemSheetHeight = GL11.glGetTexLevelParameteri(GL11.GL_TEXTURE_2D, 0, GL11.GL_TEXTURE_HEIGHT);
+		}
 		//
 		//		if(event.map.getTextureType()==Config.getInt("revolverSheetID"))
 		//		{

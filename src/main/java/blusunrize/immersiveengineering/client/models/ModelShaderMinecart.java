@@ -4,28 +4,29 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.lwjgl.opengl.GL11;
+
+import blusunrize.immersiveengineering.api.shader.IShaderItem;
+import blusunrize.immersiveengineering.api.shader.ShaderCase;
+import blusunrize.immersiveengineering.api.shader.ShaderCaseMinecart;
+import blusunrize.immersiveengineering.client.ClientEventHandler;
+import blusunrize.immersiveengineering.client.ClientUtils;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelMinecart;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
-
-import org.lwjgl.opengl.GL11;
-
-import blusunrize.immersiveengineering.api.shader.IShaderItem;
-import blusunrize.immersiveengineering.api.shader.ShaderCase;
-import blusunrize.immersiveengineering.api.shader.ShaderCaseMinecart;
-import blusunrize.immersiveengineering.client.ClientUtils;
+import net.minecraft.util.IIcon;
+import net.minecraft.util.MathHelper;
 
 public class ModelShaderMinecart extends ModelMinecart
 {
 	public static HashMap<Integer, ItemStack> shadedCarts = new HashMap<Integer, ItemStack>();
 	public static boolean rendersReplaced = false;
 
-	//	public ModelMinecart wrappedModel;
-	//	public ModelMinecart wrappedMirroredModel;
 	public ModelRenderer[] sideModelsMirrored = new ModelRenderer[7];
+	public HashMap<IIcon,ModelShaderMinecart> remappedModels = new HashMap();
 
 	public ModelShaderMinecart(ModelMinecart model)
 	{
@@ -67,26 +68,46 @@ public class ModelShaderMinecart extends ModelMinecart
 						if( (((ShaderCaseMinecart)sCase).additionalTexture!=null&&pass==2)?(part!=1&&part!=2): (pass!=1 || ((ShaderCaseMinecart)sCase).overlaySides[part]))
 						{
 							int[] col = sCase.getRGBAColourModifier(shader, null, ""+part, pass);
+							boolean upScale = true;
 							GL11.glScalef(scale,scale,scale);
 							GL11.glColor4f(col[0]/255f,col[1]/255f,col[2]/255f,col.length>3?(col[3]/255f):1f);
 
-							if(pass==0)
-								ClientUtils.bindTexture("immersiveengineering:textures/models/shaders/minecart_0.png");
-							else if((pass==2&&((ShaderCaseMinecart)sCase).additionalTexture==null)||pass==3)
+							if(pass==maxPasses-1)
 								ClientUtils.bindTexture("immersiveengineering:textures/models/shaders/minecart_uncoloured.png");
-							else if(pass==1)
-								ClientUtils.bindTexture(sCase.getBaseTexturePath()+"1_"+sCase.getOverlayType()+".png");
-							else if(((ShaderCaseMinecart)sCase).additionalTexture!=null)
+							else if(pass==maxPasses-2 && ((ShaderCaseMinecart)sCase).additionalTexture!=null)
 								ClientUtils.bindTexture(sCase.getBaseTexturePath()+((ShaderCaseMinecart)sCase).additionalTexture+".png");
-
-							if(((ShaderCaseMinecart)sCase).mirrorSideForPass[pass])
-								sideModelsMirrored[part].render(f5);
+							else if(pass==0)
+								ClientUtils.bindTexture("immersiveengineering:textures/models/shaders/minecart_0.png");
 							else
-								sideModels[part].render(f5);
+							{
+								ClientUtils.bindTexture(sCase.getBaseTexturePath()+"1_"+sCase.getOverlayType()+".png");
+								upScale = false;
+							}
+
+							sCase.modifyRender(shader, null, ""+part, pass, true, false);
+							IIcon icon = sCase.getReplacementIcon(shader, null, ""+part, pass);
+							if(icon!=null)
+							{
+								ModelShaderMinecart modelRemapped = getRemappedModel(icon);
+								if(modelRemapped!=null)
+									if(((ShaderCaseMinecart)sCase).mirrorSideForPass[pass])
+										modelRemapped.sideModelsMirrored[part].render(f5);
+									else
+										modelRemapped.sideModels[part].render(f5);
+							}
+							else
+							{
+								if(((ShaderCaseMinecart)sCase).mirrorSideForPass[pass])
+									sideModelsMirrored[part].render(f5);
+								else
+									sideModels[part].render(f5);
+							}
+							sCase.modifyRender(shader, null, ""+part, pass, false, false);
 
 							GL11.glColor4f(1,1,1,1);
 							GL11.glScalef(1/scale,1/scale,1/scale);
-							scale += .001f;
+							if(upScale)
+								scale += .001f;
 						}
 				}
 
@@ -94,5 +115,27 @@ public class ModelShaderMinecart extends ModelMinecart
 		}
 		else
 			super.render(entity, f0, f1, f2, f3, f4, f5);
+	}
+
+	ModelShaderMinecart getRemappedModel(IIcon icon)
+	{
+		if(remappedModels.containsKey(icon))
+			return remappedModels.get(icon);
+
+		ModelShaderMinecart modelRemapped = new ModelShaderMinecart(this);
+		int ox = MathHelper.floor_float(icon.getMinU() * ClientEventHandler.itemSheetWidth);
+		int oy = MathHelper.floor_float(icon.getMinV() * ClientEventHandler.itemSheetHeight);
+		modelRemapped.textureWidth = ClientEventHandler.itemSheetWidth;
+		modelRemapped.textureHeight = ClientEventHandler.itemSheetHeight;
+		for(ModelRenderer mr : modelRemapped.sideModels)
+			if(mr!=null)
+				mr.setTextureOffset(mr.textureOffsetX+ox, mr.textureOffsetX+oy);
+		for(ModelRenderer mr : modelRemapped.sideModelsMirrored)
+			if(mr!=null)
+				mr.setTextureOffset(mr.textureOffsetX+ox, mr.textureOffsetX+oy);
+		modelRemapped.sideModels = ClientUtils.copyModelRenderers(modelRemapped, modelRemapped.sideModels);
+		modelRemapped.sideModelsMirrored = ClientUtils.copyModelRenderers(modelRemapped, modelRemapped.sideModelsMirrored);
+		remappedModels.put(icon, modelRemapped);
+		return modelRemapped;
 	}
 }

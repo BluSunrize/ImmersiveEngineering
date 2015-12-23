@@ -104,6 +104,7 @@ import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenCrat
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenPost;
 import blusunrize.immersiveengineering.common.crafting.IEFuelHandler;
 import blusunrize.immersiveengineering.common.entities.EntityChemthrowerShot;
+import blusunrize.immersiveengineering.common.entities.EntityRailgunShot;
 import blusunrize.immersiveengineering.common.entities.EntityRevolvershot;
 import blusunrize.immersiveengineering.common.entities.EntityRevolvershotHoming;
 import blusunrize.immersiveengineering.common.entities.EntitySkycrate;
@@ -119,6 +120,7 @@ import blusunrize.immersiveengineering.common.items.ItemIEBase;
 import blusunrize.immersiveengineering.common.items.ItemIESeed;
 import blusunrize.immersiveengineering.common.items.ItemIETool;
 import blusunrize.immersiveengineering.common.items.ItemJerrycan;
+import blusunrize.immersiveengineering.common.items.ItemRailgun;
 import blusunrize.immersiveengineering.common.items.ItemRevolver;
 import blusunrize.immersiveengineering.common.items.ItemShader;
 import blusunrize.immersiveengineering.common.items.ItemShaderBag;
@@ -194,6 +196,7 @@ public class IEContent
 	public static ItemIEBase itemFakeIcons;
 	public static ItemIEBase itemJerrycan;
 	public static ItemIEBase itemChemthrower;
+	public static ItemIEBase itemRailgun;
 	public static Fluid fluidCreosote;
 	public static boolean IECreosote=false;
 	public static Fluid fluidPlantoil;
@@ -280,6 +283,7 @@ public class IEContent
 		};
 		itemJerrycan = new ItemJerrycan();
 		itemChemthrower = new ItemChemthrower();
+		itemRailgun= new ItemRailgun();
 
 		fluidCreosote = FluidRegistry.getFluid("creosote");
 		if(fluidCreosote==null)
@@ -446,6 +450,7 @@ public class IEContent
 		EntityRegistry.registerModEntity(EntityRevolvershotHoming.class, "revolverShotHoming", 3, ImmersiveEngineering.instance, 64, 1, true);
 		EntityRegistry.registerModEntity(EntityWolfpackShot.class, "revolverShotWolfpack", 4, ImmersiveEngineering.instance, 64, 1, true);		
 		EntityRegistry.registerModEntity(EntityChemthrowerShot.class, "chemthrowerShot", 5, ImmersiveEngineering.instance, 64, 1, true);
+		EntityRegistry.registerModEntity(EntityRailgunShot.class, "railgunShot", 6, ImmersiveEngineering.instance, 32, 5, true);
 		int villagerId = Config.getInt("villager_engineer");
 		VillagerRegistry.instance().registerVillagerId(villagerId);
 		VillagerRegistry.instance().registerVillageCreationHandler(new VillageEngineersHouse.VillageManager());

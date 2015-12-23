@@ -56,7 +56,7 @@ public class ShaderCaseBalloon extends ShaderCase
 	}
 
 	@Override
-	public void modifyRender(ItemStack shader, ItemStack item, String modelPart, int pass, boolean pre)
+	public void modifyRender(ItemStack shader, ItemStack item, String modelPart, int pass, boolean pre, boolean inventory)
 	{
 	}
 }

@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+
+import com.mojang.authlib.GameProfile;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEApi;
@@ -37,10 +40,12 @@ import blusunrize.immersiveengineering.client.render.BlockRenderWoodenDecoration
 import blusunrize.immersiveengineering.client.render.BlockRenderWoodenDevices;
 import blusunrize.immersiveengineering.client.render.EntityRenderChemthrowerShot;
 import blusunrize.immersiveengineering.client.render.EntityRenderNone;
+import blusunrize.immersiveengineering.client.render.EntityRenderRailgunShot;
 import blusunrize.immersiveengineering.client.render.EntityRenderRevolvershot;
 import blusunrize.immersiveengineering.client.render.EntityRenderSkycrate;
 import blusunrize.immersiveengineering.client.render.ItemRenderChemthrower;
 import blusunrize.immersiveengineering.client.render.ItemRenderDrill;
+import blusunrize.immersiveengineering.client.render.ItemRenderRailgun;
 import blusunrize.immersiveengineering.client.render.ItemRenderRevolver;
 import blusunrize.immersiveengineering.client.render.ItemRenderVoltmeter;
 import blusunrize.immersiveengineering.client.render.TileRenderArcFurnace;
@@ -141,6 +146,7 @@ import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWindmillAd
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenCrate;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenPost;
 import blusunrize.immersiveengineering.common.entities.EntityChemthrowerShot;
+import blusunrize.immersiveengineering.common.entities.EntityRailgunShot;
 import blusunrize.immersiveengineering.common.entities.EntityRevolvershot;
 import blusunrize.immersiveengineering.common.entities.EntitySkycrate;
 import blusunrize.immersiveengineering.common.entities.EntitySkylineHook;
@@ -253,6 +259,9 @@ public class ClientProxy extends CommonProxy
 		RenderingRegistry.registerEntityRenderingHandler(EntityChemthrowerShot.class, new EntityRenderChemthrowerShot());
 		//VOLTMETER
 		MinecraftForgeClient.registerItemRenderer(IEContent.itemTool, new ItemRenderVoltmeter());
+		//RAILGUN
+		MinecraftForgeClient.registerItemRenderer(IEContent.itemRailgun, new ItemRenderRailgun());
+		RenderingRegistry.registerEntityRenderingHandler(EntityRailgunShot.class, new EntityRenderRailgunShot());
 		/** TODO when there is an actual model for it =P
 		MinecraftForgeClient.registerItemRenderer(IEContent.itemSkyhook, new ItemRenderSkyhook());
 		 */
@@ -731,5 +740,11 @@ public class ClientProxy extends CommonProxy
 	public World getClientWorld()
 	{
 		return ClientUtils.mc().theWorld;
+	}
+
+	@Override
+	public String getNameFromUUID(String uuid)
+	{
+		return Minecraft.getMinecraft().func_152347_ac().fillProfileProperties(new GameProfile(UUID.fromString(uuid.replaceAll("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})", "$1-$2-$3-$4-$5")), null), false).getName();
 	}
 }

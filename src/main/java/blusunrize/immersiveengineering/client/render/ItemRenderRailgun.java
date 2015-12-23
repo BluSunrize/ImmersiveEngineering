@@ -5,7 +5,7 @@ import org.lwjgl.opengl.GL11;
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.common.items.ItemChemthrower;
+import blusunrize.immersiveengineering.common.items.ItemRailgun;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.item.ItemStack;
@@ -14,9 +14,9 @@ import net.minecraftforge.client.IItemRenderer;
 import net.minecraftforge.client.model.obj.GroupObject;
 import net.minecraftforge.client.model.obj.WavefrontObject;
 
-public class ItemRenderChemthrower implements IItemRenderer
+public class ItemRenderRailgun implements IItemRenderer
 {
-	static WavefrontObject modelobj = ClientUtils.getModel("immersiveengineering:models/chemthrower.obj");
+	static WavefrontObject modelobj = ClientUtils.getModel("immersiveengineering:models/railgun.obj");
 
 	@Override
 	public boolean handleRenderType(ItemStack item, ItemRenderType type)
@@ -36,35 +36,25 @@ public class ItemRenderChemthrower implements IItemRenderer
 
 		if(type==ItemRenderType.EQUIPPED_FIRST_PERSON)
 		{
+			float scale = .375f;
+			GL11.glRotatef(42, 0, 1, 0);
+			GL11.glTranslatef(-.5f,1.25f,.25f);
 			if(ClientUtils.mc().thePlayer.getItemInUseCount()>0)
-			{
-				GL11.glRotatef(65, 0, 1, 0);
-				GL11.glRotatef(15, 0, 0, 1);
-				GL11.glRotatef(-10, 1, 0, 0);
-				GL11.glTranslatef(-.25f,.625f,1f);
-				GL11.glScalef(.5f,.5f,.625f);
-			}
-			else
-			{
-				GL11.glRotatef(52, 0, 1, 0);
-				GL11.glTranslatef(-.5f,1.125f,.25f);
-				GL11.glScalef(.5f,.5f,.625f);
-			}
+				GL11.glTranslatef(0,0,-.25f);
+			GL11.glScalef(.3125f,scale,scale);
 		}
 		else if(type==ItemRenderType.EQUIPPED)
 		{
+			float scale = .4375f;
+			GL11.glRotatef(135, 0, 1, 0);
+			GL11.glRotatef(-35, 0, 0, 1);
+			GL11.glTranslatef(.1f,-.4f,-0f);
 			if(ClientUtils.mc().thePlayer.getItemInUseCount()>0)
 			{
-				GL11.glRotatef(135, 0, 1, 0);
-				GL11.glRotatef(-45, 0, 0, 1);
-				GL11.glRotatef(20, 0, 1, 0);
-				GL11.glTranslatef(-.2f,-.5f,-.35f);
+				GL11.glRotatef(35, 0, 0, 1);
+				GL11.glTranslatef(.4f,.8f,-0f);
 			}
-			else
-			{
-				GL11.glRotatef(195, 0, 1, 0);
-				GL11.glTranslatef(.5f,.5f,-1f);
-			}
+			GL11.glScalef(scale,scale,scale);
 		}
 		else if(type==ItemRenderType.ENTITY)
 		{
@@ -83,9 +73,9 @@ public class ItemRenderChemthrower implements IItemRenderer
 		}
 		else if(type==ItemRenderType.INVENTORY)
 		{
-			GL11.glRotatef(-80, 0, 1, 0);
-			GL11.glTranslatef(-.625f,-.1f,.125f);
-			GL11.glScalef(.625f,.625f,.625f);
+			GL11.glRotatef(-190, 0, 1, 0);
+			GL11.glTranslatef(.5f,-.2f,.2f);
+			GL11.glScalef(.25f,.375f,.375f);
 		}
 
 		//		ClientUtils.mc().renderEngine.bindTexture(ClientProxy.revolverTextureResource);
@@ -94,15 +84,18 @@ public class ItemRenderChemthrower implements IItemRenderer
 		OpenGlHelper.glBlendFunc(770, 771, 0, 1);
 
 		IIcon icon = item.getIconIndex();
-		ItemStack shader = ((ItemChemthrower)item.getItem()).getShaderItem(item);
+		ItemStack shader = ((ItemRailgun)item.getItem()).getShaderItem(item);
 		ShaderCase sCase = (shader!=null && shader.getItem() instanceof IShaderItem)?((IShaderItem)shader.getItem()).getShaderCase(shader, item, "chemthrower"):null;
 
 		if(sCase==null)
 		{
-			ClientUtils.renderWavefrontWithIconUVs(modelobj, icon, "base","grip","tank","tanks");
-			GL11.glDisable(GL11.GL_CULL_FACE);
-			ClientUtils.renderWavefrontWithIconUVs(modelobj, icon, "cage");
-			GL11.glEnable(GL11.GL_CULL_FACE);
+			ClientUtils.renderWavefrontWithIconUVs(modelobj, icon, "grip","frame","barrel","capacitors","sled","wires");
+			ClientUtils.renderWavefrontWithIconUVs(modelobj, icon, "upgrade_speed","upgrade_scope");
+			
+//			ClientUtils.renderWavefrontWithIconUVs(modelobj, icon, "base","grip","tank","tanks");
+//			GL11.glDisable(GL11.GL_CULL_FACE);
+//			ClientUtils.renderWavefrontWithIconUVs(modelobj, icon, "cage");
+//			GL11.glEnable(GL11.GL_CULL_FACE);
 		}
 		else
 		{

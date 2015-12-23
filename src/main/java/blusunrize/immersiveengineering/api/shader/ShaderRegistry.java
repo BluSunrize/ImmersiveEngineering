@@ -130,7 +130,7 @@ public class ShaderRegistry
 			{
 				int entryRarityWeight = rarityWeightMap.get(entry.getRarity());
 				for(Map.Entry<EnumRarity,Integer> weightedRarity : rarityWeightMap.entrySet())
-					if(weightedRarity.getValue()>=entryRarityWeight)
+					if(entry.getIsInLowerBags()?(weightedRarity.getValue()>=entryRarityWeight):(weightedRarity.getValue()==entryRarityWeight))
 					{
 						int i = totalWeight.containsKey(weightedRarity.getKey())?totalWeight.get(weightedRarity.getKey()):0;
 						totalWeight.put(weightedRarity.getKey(), i+entry.getWeight() );
@@ -164,7 +164,7 @@ public class ShaderRegistry
 			{
 				int entryRarityWeight = rarityWeightMap.get(entry.getRarity());
 				for(Map.Entry<EnumRarity,Integer> weightedRarity : rarityWeightMap.entrySet())
-					if(weightedRarity.getValue()>=entryRarityWeight)
+					if(entry.getIsInLowerBags()?(weightedRarity.getValue()>=entryRarityWeight):(weightedRarity.getValue()==entryRarityWeight))
 					{
 						int weight = playerTotalWeight.get(player).containsKey(weightedRarity.getKey())? playerTotalWeight.get(player).get(weightedRarity.getKey()):0;
 						int value =  entry.getWeight();
@@ -182,21 +182,25 @@ public class ShaderRegistry
 		total = playerTotalWeight.get(player).get(minRarity);
 
 		String shader = null;
-		int weight = rand.nextInt(total);
+		int minWeight = rarityWeightMap.get(minRarity);
+		int weight = total<1?total:rand.nextInt(total);
 		for(ShaderRegistryEntry entry : shaderRegistry.values())
 			if(entry.getIsBagLoot())
-				if(rarityWeightMap.get(minRarity)>=rarityWeightMap.get(entry.getRarity()))
+			{
+				int entryRarityWeight = rarityWeightMap.get(entry.getRarity());
+				if(entry.getIsInLowerBags()?(minWeight>=entryRarityWeight):(minWeight==entryRarityWeight))
 				{
 					int value = entry.getWeight();
 					if(receivedShaders.get(player).contains(entry.getName()))
 						value = 1;
 					weight -=value;
-					if(weight<0)
+					if(weight<=0)
 					{
 						shader = entry.getName();
 						break;
 					}
 				}
+			}
 		if(addToReceived)
 		{
 			if(!receivedShaders.get(player).contains(shader))
@@ -271,6 +275,7 @@ public class ShaderRegistry
 		public int weight;
 		public boolean isCrateLoot;
 		public boolean isBagLoot;
+		public boolean isInLowerBags = true;
 
 		public ShaderRegistryEntry(String name, EnumRarity rarity, List<ShaderCase> cases)
 		{
@@ -337,6 +342,15 @@ public class ShaderRegistry
 		public boolean getIsBagLoot()
 		{
 			return this.isBagLoot;
+		}
+		public ShaderRegistryEntry setInLowerBags(boolean b)
+		{
+			this.isInLowerBags = b;
+			return this;
+		}
+		public boolean getIsInLowerBags()
+		{
+			return this.isInLowerBags;
 		}
 	}
 }
