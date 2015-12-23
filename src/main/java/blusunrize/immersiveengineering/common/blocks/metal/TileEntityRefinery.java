@@ -8,8 +8,16 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockRefin
 import blusunrize.immersiveengineering.common.util.Utils;
 import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyReceiver;
+import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import li.cil.oc.api.machine.Arguments;
+import li.cil.oc.api.machine.Callback;
+import li.cil.oc.api.machine.Context;
+import li.cil.oc.api.network.Node;
+import li.cil.oc.api.network.SidedComponent;
+import li.cil.oc.api.network.SimpleComponent;
+import mekanism.common.tile.TileEntityEnrichmentChamber;
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -27,7 +35,12 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.oredict.OreDictionary;
 
-public class TileEntityRefinery extends TileEntityMultiblockPart implements IFluidHandler, IEnergyReceiver, ISidedInventory
+import java.util.HashMap;
+
+@Optional.InterfaceList({
+		@Optional.Interface(iface = "li.cil.oc.api.network.SidedComponent", modid = "OpenComputers"),
+		@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")})
+public class TileEntityRefinery extends TileEntityMultiblockPart implements IFluidHandler, IEnergyReceiver, ISidedInventory, SidedComponent, SimpleComponent
 {
 	public int facing = 2;
 	public FluidTank tank0 = new FluidTank(12000);
@@ -607,5 +620,123 @@ public class TileEntityRefinery extends TileEntityMultiblockPart implements IFlu
 		if(master()!=null)
 			return master().canExtractItem(slot,stack,side);
 		return slot==1||slot==3||slot==5;
+	}
+
+	@Override
+	public boolean canConnectNode(ForgeDirection side)
+	{
+		return (pos==9 && side.ordinal()==facing);
+	}
+
+	@Override
+	public String getComponentName()
+	{
+		return "ie_refinery";
+	}
+
+	@Optional.Method(modid = "OpenComputers")
+	// "override" what gets injected by OC's class transformer
+	public void onConnect(Node node)
+	{
+		master().computerControlled = true;
+	}
+
+	@Optional.Method(modid = "OpenComputers")
+	// "override" what gets injected by OC's class transformer
+	public void onDisconnect(Node node)
+	{
+		master().computerControlled = false;
+	}
+
+	@Optional.Method(modid = "OpenComputers")
+	@Callback(doc = "function():boolean -- get whether the refinery is enabled")
+	public Object[] getEnabled(Context context, Arguments args)
+	{
+		return new Object[]{master().computerOn};
+	}
+
+	@Optional.Method(modid = "OpenComputers")
+	@Callback(doc = "function(enable:boolean) -- enable or disable the refinery")
+	public Object[] setEnabled(Context context, Arguments args)
+	{
+		master().computerOn = args.checkBoolean(0);
+		return null;
+	}
+
+	@Optional.Method(modid = "OpenComputers")
+	@Callback(doc = "function():number -- get energy storage capacity")
+	public Object[] getEnergyStored(Context context, Arguments args)
+	{
+		return new Object[]{master().energyStorage.getEnergyStored()};
+	}
+
+	@Optional.Method(modid = "OpenComputers")
+	@Callback(doc = "function():number -- get currently stored energy")
+	public Object[] getMaxEnergyStored(Context context, Arguments args)
+	{
+		return new Object[]{master().energyStorage.getMaxEnergyStored()};
+	}
+
+	@Optional.Method(modid = "OpenComputers")
+	@Callback(doc = "function():table -- get tankinfo for input tanks")
+	public Object[] getInputFluidTanks(Context context, Arguments args)
+	{
+		TileEntityRefinery master = master();
+		HashMap<String, FluidTankInfo> ret = new HashMap<>(2);
+		ret.put("input0",master.tank0.getInfo());
+		ret.put("input1",master.tank1.getInfo());
+		return new Object[]{ret};
+	}
+
+	@Optional.Method(modid = "OpenComputers")
+	@Callback(doc = "function():table -- get tankinfo for output tank")
+	public Object[] getOutputFluidTank(Context context, Arguments args)
+	{
+		return new Object[]{master().tank2.getInfo()};
+	}
+
+	@Optional.Method(modid = "OpenComputers")
+	@Callback(doc = "function():table -- get current recipe")
+	public Object[] getRecipe(Context context, Arguments args)
+	{
+		RefineryRecipe recipe = master().getRecipe();
+		if(recipe==null)
+			return null;
+		HashMap<String, FluidStack> ret = new HashMap<>(3);
+		ret.put("input0", recipe.input0);
+		ret.put("input1", recipe.input1);
+		ret.put("output", recipe.output);
+		return new Object[]{ret};
+	}
+
+	@Optional.Method(modid = "OpenComputers")
+	@Callback(doc = "function():boolean -- check whether a valid recipe exists for the current inputs")
+	public Object[] isValidRecipe(Context context, Arguments args)
+	{
+		return new Object[]{master().getRecipe()!=null};
+	}
+
+	@Optional.Method(modid = "OpenComputers")
+	@Callback(doc = "function():table -- return item input slot contents for both input and output tanks")
+	public Object[] getEmptyCanisters(Context context, Arguments args)
+	{
+		TileEntityRefinery te = master();
+		HashMap<String, ItemStack> ret = new HashMap<>(3);
+		ret.put("input0", te.inventory[1]);
+		ret.put("input1", te.inventory[3]);
+		ret.put("output", te.inventory[4]);
+		return new Object[]{ret};
+	}
+
+	@Optional.Method(modid = "OpenComputers")
+	@Callback(doc = "function():table -- return item output slot contents for both input and output tanks")
+	public Object[] getFullCanisters(Context context, Arguments args)
+	{
+		TileEntityRefinery te = master();
+		HashMap<String, ItemStack> ret = new HashMap<>(3);
+		ret.put("input0", te.inventory[0]);
+		ret.put("input1", te.inventory[2]);
+		ret.put("output", te.inventory[5]);
+		return new Object[]{ret};
 	}
 }
