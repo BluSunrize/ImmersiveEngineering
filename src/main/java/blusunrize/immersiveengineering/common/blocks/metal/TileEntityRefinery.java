@@ -17,7 +17,6 @@ import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.network.Node;
 import li.cil.oc.api.network.SidedComponent;
 import li.cil.oc.api.network.SimpleComponent;
-import mekanism.common.tile.TileEntityEnrichmentChamber;
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;

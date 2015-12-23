@@ -6,6 +6,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityDieselGenerator;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityEnergyMeter;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityExcavator;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFloodlight;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityRefinery;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySampleDrill;
 import dan200.computercraft.api.peripheral.IPeripheral;
@@ -76,7 +77,8 @@ public class IEPeripheralProvider implements IPeripheralProvider
 				else
 					return null;
 			}
-			
+			if (te instanceof TileEntityFloodlight)
+				return new PeripheralFloodlight(world, x, y, z);
 		}
 		return null;
 	}

@@ -246,19 +246,9 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 			if(!world.isRemote)
 			{
 				if(side==((TileEntityFloodlight) te).side || ForgeDirection.OPPOSITES[side]==((TileEntityFloodlight) te).side)
-				{
-					((TileEntityFloodlight) te).rotY += player.isSneaking()? -11.25: 11.25;
-					((TileEntityFloodlight) te).rotY %= 360;
-				}
+					((TileEntityFloodlight)te).turnY(player.isSneaking(), false);
 				else
-				{
-					float newX = (((TileEntityFloodlight) te).rotX+(player.isSneaking()? -11.25f: 11.25f))%360;
-					if(newX>=-11.25 && newX<=191.25)
-						((TileEntityFloodlight) te).rotX = newX;
-				}
-				((TileEntityFloodlight) te).updateFakeLights(true, ((TileEntityFloodlight) te).active);
-				te.markDirty();
-				world.markBlockForUpdate(x, y, z);
+					((TileEntityFloodlight)te).turnX(!player.isSneaking(), false);
 			}
 			return true;
 		}
@@ -647,7 +637,10 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 		if(meta==META_electricLantern)
 			return side.ordinal()<2;
 		else if(meta==META_floodlight)
-			return side == ForgeDirection.DOWN;
+		{
+			TileEntity te = world.getTileEntity(x, y, z);
+			return te instanceof TileEntityFloodlight&&side.getOpposite().ordinal() == ((TileEntityFloodlight)te).side;
+		}
 		else if(meta==META_fluidPipe)
 		{
 			TileEntity te = world.getTileEntity(x, y, z);

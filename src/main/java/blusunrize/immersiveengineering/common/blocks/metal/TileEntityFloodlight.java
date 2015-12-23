@@ -33,6 +33,9 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable
 	public List<ChunkCoordinates> lightsToBeRemoved = new ArrayList();
 	final int timeBetweenSwitches = 20;
 	int switchCooldown = 0;
+	public int computerTurnCooldown = 0;
+	public boolean computerControlled;
+	public boolean computerOn;
 
 	@Override
 	public void updateEntity()
@@ -40,7 +43,12 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable
 		if(worldObj.isRemote)
 			return;
 		boolean b = active;
-		if(energyStorage>=(!active?50:5) && !worldObj.isBlockIndirectlyGettingPowered(xCoord,yCoord,zCoord)&&switchCooldown<=0)
+		boolean enabled;
+		if (computerControlled)
+			enabled = computerOn;
+		else
+			enabled = !worldObj.isBlockIndirectlyGettingPowered(xCoord,yCoord,zCoord);
+		if(energyStorage>=(!active?50:5) && enabled&&switchCooldown<=0)
 		{
 			energyStorage-=5;
 			if(!active)
@@ -52,6 +60,12 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable
 			switchCooldown = timeBetweenSwitches;
 		}
 		switchCooldown--;
+		computerTurnCooldown--;
+		if (computerTurnCooldown==0)
+			synchronized (this)
+			{
+				this.notifyAll();
+			}
 		if(active!=b || worldObj.getTotalWorldTime()%512==((xCoord^zCoord)&511))
 		{
 			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
@@ -334,5 +348,30 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable
 				break;
 		}
 		return Vec3.createVectorHelper(x,y,z);
+	}
+	public void turnY(boolean down, boolean computer)
+	{
+		rotY += down? -11.25: 11.25;
+		rotY %= 360;
+		if (computer)
+			computerTurnCooldown = 20;
+		updateFakeLights(true, active);
+		markDirty();
+		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+	}
+	public void turnX(boolean up, boolean computer)
+	{
+		float newX = (rotX+(up? 11.25f: -11.25f))%360;
+		if(newX>=-11.25 && newX<=191.25)
+			rotX = newX;
+		if (computer)
+			computerTurnCooldown = 20;
+		updateFakeLights(true, active);
+		markDirty();
+		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+	}
+	public boolean canComputerTurn()
+	{
+		return computerTurnCooldown<=0||!active;
 	}
 }
