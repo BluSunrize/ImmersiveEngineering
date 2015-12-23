@@ -1,5 +1,8 @@
 package blusunrize.immersiveengineering.common.util.compat.computercraft;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import blusunrize.immersiveengineering.common.EventHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
@@ -47,36 +50,35 @@ public abstract class IEPeripheral implements IPeripheral
 			return te;
 		return null;
 	}
-	protected Object[] saveStack(ItemStack stack, Object[] ret)
+	protected Map<String, Object> saveStack(ItemStack stack)
 	{
-		if (stack!=null&&stack.getItem()!=null) {
-			ret[0] = stack.stackSize;
-			ret[1] = stack.getItem().getUnlocalizedName(stack);
-			ret[2] = stack.getItemDamage();
-		} else
-			ret[0] = "Empty";
-		return ret;
-	}
-	protected Object[] saveFluidTank(FluidTank tank, Object[] ret, int offset)
-	{
-		if (tank==null||tank.getFluid()==null)
-			ret[0+offset] = "Empty";
-		else
+		HashMap<String, Object> ret = new HashMap<>();
+		if (stack!=null&&stack.getItem()!=null)
 		{
-			ret[0+offset] = tank.getFluid().getFluid().getUnlocalizedName();
-			ret[1+offset] = tank.getFluidAmount();
-			ret[2+offset] = tank.getCapacity();
+			ret.put("stackSize", stack.stackSize);
+			ret.put("item", stack.getItem().getUnlocalizedName(stack));
+			ret.put("damage", stack.getItemDamage());
 		}
 		return ret;
 	}
-	protected Object[] saveFluidStack(FluidStack tank, Object[] ret, int offset)
+	protected Map<String, Object> saveFluidTank(FluidTank tank)
 	{
-		if (tank==null||tank.getFluid()==null)
-			ret[0+offset] = "Empty";
-		else
+		HashMap<String, Object> ret = new HashMap<>();
+		if (tank!=null&&tank.getFluid()!=null)
 		{
-			ret[0+offset] = tank.getFluid().getUnlocalizedName();
-			ret[1+offset] = tank.amount;
+			ret.put("fluid", tank.getFluid().getFluid().getUnlocalizedName());
+			ret.put("amount", tank.getFluidAmount());
+			ret.put("capacity", tank.getCapacity());
+		}
+		return ret;
+	}
+	protected Map<String, Object> saveFluidStack(FluidStack tank)
+	{
+		HashMap<String, Object> ret = new HashMap<>();
+		if (tank!=null&&tank.getFluid()!=null)
+		{
+			ret.put("fluid", tank.getFluid().getUnlocalizedName());
+			ret.put("amount", tank.amount);
 		}
 		return ret;
 	}

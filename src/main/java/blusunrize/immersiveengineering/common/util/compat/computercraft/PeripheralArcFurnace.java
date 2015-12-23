@@ -1,5 +1,7 @@
 package blusunrize.immersiveengineering.common.util.compat.computercraft;
 
+import java.util.Map;
+
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityArcFurnace;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
 import dan200.computercraft.api.lua.ILuaContext;
@@ -52,26 +54,26 @@ public class PeripheralArcFurnace extends IEPeripheral
 			int slot = (int)(double)arguments[0];
 			if (slot<0||slot>11)
 				throw new LuaException("Input slots are 0-11");
-			Object[] ret = saveStack(te.getStackInSlot(slot), new Object[5]);
-			ret[3] = te.process[slot];
-			ret[4] = te.processMax[slot];
-			return ret;
+			Map<String, Object> ret = saveStack(te.getStackInSlot(slot));
+			ret.put("progress", te.process[slot]);
+			ret.put("maxProgress", te.processMax[slot]);
+			return new Object[]{ret};
 		case 3://get Output stack (16-21)
 			if (arguments.length!=1||!(arguments[0] instanceof Integer)&&!(arguments[0] instanceof Double))
 				throw new LuaException("Wrong amount of arguments, needs one integer");
 			slot = (int)(double)arguments[0];
 			if (slot<0||slot>5)
 				throw new LuaException("Output slots are 0-5");
-			return saveStack(te.getStackInSlot(slot+16), new Object[3]);
+			return new Object[]{saveStack(te.getStackInSlot(slot+16))};
 		case 4://get additives (12-15)
 			if (arguments.length!=1||!(arguments[0] instanceof Integer)&&!(arguments[0] instanceof Double))
 				throw new LuaException("Wrong amount of arguments, needs one integer");
 			slot = (int)(double)arguments[0];
 			if (slot<0||slot>3)
 				throw new LuaException("Additive slots are 0-3");
-			return saveStack(te.getStackInSlot(slot+12), new Object[3]);
+			return new Object[]{saveStack(te.getStackInSlot(slot+12))};
 		case 5://getSlag
-			return saveStack(te.getStackInSlot(22), new Object[3]);
+			return new Object[]{saveStack(te.getStackInSlot(22))};
 		case 6://hasElectrodes
 			return new Object[]{te.electrodes[0]&&te.electrodes[1]&&te.electrodes[2]};
 		case 7: //getElectrode
@@ -80,7 +82,7 @@ public class PeripheralArcFurnace extends IEPeripheral
 			slot = (int)(double)arguments[0];
 			if (slot<0||slot>2)
 				throw new LuaException("Output slots are 0-2");
-			return saveStack(te.getStackInSlot(slot+23), new Object[3]);
+			return new Object[]{saveStack(te.getStackInSlot(slot+23))};
 		case 8: //max energy
 			return new Object[]{te.energyStorage.getMaxEnergyStored()};
 		case 9:

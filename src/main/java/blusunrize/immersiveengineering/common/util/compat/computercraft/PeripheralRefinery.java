@@ -1,5 +1,7 @@
 package blusunrize.immersiveengineering.common.util.compat.computercraft;
 
+import java.util.Map;
+
 import blusunrize.immersiveengineering.api.energy.DieselHandler.RefineryRecipe;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityRefinery;
 import dan200.computercraft.api.lua.ILuaContext;
@@ -51,18 +53,17 @@ public class PeripheralRefinery extends IEPeripheral
 				write = te.tank0;
 			else
 				write = te.tank1;
-			return saveFluidTank(write, new Object[3], 0);
+			return new Object[]{saveFluidTank(write)};
 		case 1://Output
-			return saveFluidTank(te.tank2, new Object[3], 0);
+			return new Object[]{saveFluidTank(te.tank2)};
 		case 2://recipe
-			Object[] ret = new Object[6];
 			RefineryRecipe ref = te.getRecipe();
 			if (ref==null)
 				throw new LuaException("The recipe of the refinery is invalid");
-			saveFluidStack(ref.input0, ret, 0);
-			saveFluidStack(ref.input1, ret, 2);
-			saveFluidStack(ref.output, ret, 4);
-			return ret;
+			Map<String, Object> in1 = saveFluidStack(ref.input0);
+			Map<String, Object> in2 = saveFluidStack(ref.input1);
+			Map<String, Object> out = saveFluidStack(ref.output);
+			return new Object[]{in1, in2, out};
 		case 3://setEnabled
 			if (arguments.length!=1||!(arguments[0] instanceof Boolean))
 				throw new LuaException("Wrong amount of arguments, needs one boolean");
@@ -80,11 +81,11 @@ public class PeripheralRefinery extends IEPeripheral
 			switch (id)
 			{
 			case 0:
-				return saveStack(te.inventory[1], new Object[3]);
+				return new Object[]{saveStack(te.inventory[1])};
 			case 1:
-				return saveStack(te.inventory[3], new Object[3]);
+				return new Object[]{saveStack(te.inventory[3])};
 			case 2:
-				return saveStack(te.inventory[4], new Object[3]);
+				return new Object[]{saveStack(te.inventory[4])};
 			}
 		case 6://full canisters
 			if (arguments.length!=1||!(arguments[0] instanceof Double))
@@ -95,11 +96,11 @@ public class PeripheralRefinery extends IEPeripheral
 			switch (id)
 			{
 			case 0:
-				return saveStack(te.inventory[0], new Object[3]);
+				return new Object[]{saveStack(te.inventory[0])};
 			case 1:
-				return saveStack(te.inventory[2], new Object[3]);
+				return new Object[]{saveStack(te.inventory[2])};
 			case 2:
-				return saveStack(te.inventory[5], new Object[3]);
+				return new Object[]{saveStack(te.inventory[5])};
 			}
 		case 7://max energy
 			return new Object[]{te.energyStorage.getMaxEnergyStored()};

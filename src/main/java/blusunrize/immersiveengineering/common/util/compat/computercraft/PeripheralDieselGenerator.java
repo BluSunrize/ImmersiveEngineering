@@ -45,7 +45,7 @@ public class PeripheralDieselGenerator extends IEPeripheral
 		case 1://is active
 			return new Object[]{te.active};
 		case 2://tank
-			return saveFluidTank(te.tank, new Object[3], 0);
+			return new Object[]{saveFluidTank(te.tank)};
 		}
 		return null;
 	}

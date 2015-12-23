@@ -64,7 +64,7 @@ public class PeripheralCrusher extends IEPeripheral
 					throw new LuaException("The requested place in the queue does not exist");
 				stack = te.inputs.get(id);
 			}
-			return saveStack(stack, new Object[3]);
+			return new Object[]{saveStack(stack)};
 		case 4://max progress
 			if (te.inputs.isEmpty())
 				throw new LuaException("The crusher doesn't have any inputs");
