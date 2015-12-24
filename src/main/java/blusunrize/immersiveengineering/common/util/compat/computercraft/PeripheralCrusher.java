@@ -55,7 +55,7 @@ public class PeripheralCrusher extends IEPeripheral
 		case 2: //get active
 			return new Object[]{te.active};
 		case 3: //get queue element
-			if (arguments.length!=1||!(arguments[0] instanceof Integer)&&!(arguments[0] instanceof Double))
+			if (arguments.length!=1||!(arguments[0] instanceof Double))
 				throw new LuaException("Wrong amount of arguments, needs one integer");
 			int id = (int) (double)arguments[0];
 			ItemStack stack;

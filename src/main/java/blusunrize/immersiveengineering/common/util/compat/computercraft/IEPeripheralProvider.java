@@ -6,9 +6,11 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityDieselGenerator;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityEnergyMeter;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityExcavator;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFermenter;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFloodlight;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityRefinery;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySampleDrill;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySqueezer;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.peripheral.IPeripheralProvider;
 import net.minecraft.tileentity.TileEntity;
@@ -79,6 +81,10 @@ public class IEPeripheralProvider implements IPeripheralProvider
 			}
 			if (te instanceof TileEntityFloodlight)
 				return new PeripheralFloodlight(world, x, y, z);
+			if (te instanceof TileEntityFermenter)
+				return new PeripheralFermenter(world, x, y, z);
+			if (te instanceof TileEntitySqueezer)
+				return new PeripheralSqueezer(world, x, y, z);
 		}
 		return null;
 	}

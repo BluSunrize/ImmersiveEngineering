@@ -382,6 +382,8 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 			TileEntityMultiblockPart tile = (TileEntityMultiblockPart)te;
 			return tile.pos==4||tile.pos==(tile instanceof TileEntitySilo?58:40)||(tile.pos>=18&&tile.pos<(tile instanceof TileEntitySilo?54:36));
 		}
+		if (te instanceof TileEntityFermenter||te instanceof TileEntitySqueezer)
+			return true;
 		return super.isSideSolid(world, x, y, z, side);
 	}
 
