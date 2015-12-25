@@ -3,9 +3,11 @@ package blusunrize.immersiveengineering.common.items;
 import java.util.List;
 
 import blusunrize.immersiveengineering.api.shader.IShaderEquipableItem;
+import blusunrize.immersiveengineering.api.tool.RailgunHandler;
 import blusunrize.immersiveengineering.common.entities.EntityRailgunShot;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.util.Utils;
 import cofh.api.energy.IEnergyContainerItem;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -13,6 +15,7 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
@@ -77,9 +80,9 @@ public class ItemRailgun extends ItemUpgradeableTool implements IShaderEquipable
 		//			else if(stack.getItemDamage()==0)
 		//				list.add(StatCollector.translateToLocal(Lib.DESC_FLAVOUR+"revolver"));
 		//
-		//			ItemStack shader = getShaderItem(stack);
-		//			if(shader!=null)
-		//				list.add(EnumChatFormatting.DARK_GRAY+shader.getDisplayName());
+		ItemStack shader = getShaderItem(stack);
+		if(shader!=null)
+			list.add(EnumChatFormatting.DARK_GRAY+shader.getDisplayName());
 		//		}
 	}
 	@Override
@@ -141,24 +144,54 @@ public class ItemRailgun extends ItemUpgradeableTool implements IShaderEquipable
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
 	{
-		player.setItemInUse(stack, this.getMaxItemUseDuration(stack));
+		if(findAmmo(player)!=null)
+		{
+			player.setItemInUse(stack, this.getMaxItemUseDuration(stack));
+
+			player.playSound("immersiveengineering:chargeSlow", 1.5f, 1);
+		}
 		return stack;
 	}
-
 	@Override
 	public void onUsingTick(ItemStack stack, EntityPlayer player, int count)
 	{
+		int inUse = this.getMaxItemUseDuration(stack)-count;
+		if(inUse>20 && inUse%20 == player.getRNG().nextInt(20))
+			player.playSound("immersiveengineering:spark", .8f+(.2f*player.getRNG().nextFloat()), .5f+(.5f*player.getRNG().nextFloat()));
 	}
 	@Override
 	public void onPlayerStoppedUsing(ItemStack stack, World world, EntityPlayer player, int timeLeft)
 	{
-		Vec3 vec = player.getLookVec();
-		EntityRailgunShot shot = new EntityRailgunShot(player.worldObj, player, vec.xCoord*1.5,vec.yCoord*1.5,vec.zCoord*1.5, stack);
-		shot.motionX = vec.xCoord;
-		shot.motionY = vec.yCoord;
-		shot.motionZ = vec.zCoord;
-		if(!world.isRemote)
-			player.worldObj.spawnEntityInWorld(shot);
+		ItemStack ammo = findAmmo(player);
+		if(ammo!=null)
+		{
+			Vec3 vec = player.getLookVec();
+			EntityRailgunShot shot = new EntityRailgunShot(player.worldObj, player, vec.xCoord*1.5,vec.yCoord*1.5,vec.zCoord*1.5, Utils.copyStackWithAmount(ammo, 1));
+			shot.motionX = vec.xCoord;
+			shot.motionY = vec.yCoord;
+			shot.motionZ = vec.zCoord;
+			ammo.stackSize--;
+			if(ammo.stackSize<=0)
+				ammo=null;
+			player.playSound("immersiveengineering:railgunFire", 1, .5f+(.5f*player.getRNG().nextFloat()));
+			if(!world.isRemote)
+				player.worldObj.spawnEntityInWorld(shot);
+		}
+	}
+
+	public static ItemStack findAmmo(EntityPlayer player)
+	{
+		ItemStack[] inventory = player.inventory.mainInventory;
+		for(int i=0; i<inventory.length; i++)
+		{
+			ItemStack stack = inventory[i];
+			if(stack == null)
+				continue;
+			RailgunHandler.RailgunProjectileProperties prop = RailgunHandler.getProjectileProperties(stack);
+			if(prop!=null)
+				return stack;
+		}
+		return null;
 	}
 
 	@Override

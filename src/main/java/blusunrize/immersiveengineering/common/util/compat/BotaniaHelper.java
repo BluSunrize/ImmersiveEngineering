@@ -1,6 +1,5 @@
 package blusunrize.immersiveengineering.common.util.compat;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.lwjgl.opengl.GL11;
@@ -60,6 +59,28 @@ public class BotaniaHelper extends IECompatModule
 	@Override
 	public void postInit()
 	{
+		new ThreadContributorToNameFormatter();
+	}
+
+
+	private static ArrayListMultimap<String, ItemRevolver.SpecialRevolver> nameToSpecial = ArrayListMultimap.create();
+	public static class ThreadContributorToNameFormatter extends Thread
+	{
+		public ThreadContributorToNameFormatter()
+		{
+			setName("Immersive Engineering Contributors Name Finder Thread");
+			setDaemon(true);
+			start();
+		}
+
+		@Override
+		public void run()
+		{
+			while(!ImmersiveEngineering.ThreadContributorSpecialsDownloader.downloadComplete)
+			{}
+			for(String uuid : ItemRevolver.specialRevolvers.keySet())
+				nameToSpecial.putAll(ImmersiveEngineering.proxy.getNameFromUUID(uuid).toLowerCase(), ItemRevolver.specialRevolvers.get(uuid));
+		}
 	}
 
 	@SubscribeEvent(priority=EventPriority.LOW)
@@ -77,7 +98,6 @@ public class BotaniaHelper extends IECompatModule
 	}
 
 	EntityItem revolverEntity;
-	private ArrayListMultimap<String, ItemRevolver.SpecialRevolver> nameToSpecial = ArrayListMultimap.create();
 	@SubscribeEvent()
 	public void onPotatoRender(TinyPotatoRenderEvent event)
 	{
@@ -89,45 +109,36 @@ public class BotaniaHelper extends IECompatModule
 			revolverEntity.hoverStart = 0;
 		}
 		try{
-		String formattedName = event.name.replace("_"," ");
-		ItemRevolver.SpecialRevolver special = null;
-		if(formattedName.equalsIgnoreCase("Mr Damien Hazard")||event.name.equalsIgnoreCase("Mr Hazard"))
-			special = ItemRevolver.specialRevolversByTag.get("dev");
-		else if(event.name.equalsIgnoreCase("BluSunrize"))
-			special = ItemRevolver.specialRevolversByTag.get("fenrir");
-		else
-		{
-			List<ItemRevolver.SpecialRevolver> list = null;
-			if(nameToSpecial.containsKey(event.name))
-				list = nameToSpecial.get(event.name);
+			String formattedName = event.name.replace("_"," ");
+			ItemRevolver.SpecialRevolver special = null;
+			if(formattedName.equalsIgnoreCase("Mr Damien Hazard")||event.name.equalsIgnoreCase("Mr Hazard"))
+				special = ItemRevolver.specialRevolversByTag.get("dev");
+			else if(event.name.equalsIgnoreCase("BluSunrize"))
+				special = ItemRevolver.specialRevolversByTag.get("fenrir");
 			else
 			{
-				for(String uuid : ItemRevolver.specialRevolvers.keySet())
-					if(event.name.equalsIgnoreCase(ImmersiveEngineering.proxy.getNameFromUUID(uuid)))
+				if(nameToSpecial.containsKey(event.name.toLowerCase()))
+				{
+					List<ItemRevolver.SpecialRevolver> list = nameToSpecial.get(event.name.toLowerCase());
+					if(list!=null && list.size()>0)
 					{
-						list = ItemRevolver.specialRevolvers.get(uuid);
-						break;
+						long ticks = event.tile.getWorldObj()!=null?event.tile.getWorldObj().getTotalWorldTime()/100:0;
+						special = list.get((int)(ticks%list.size()));
 					}
-				nameToSpecial.putAll(event.name, list!=null?list:new ArrayList());
+				}
 			}
-			if(list!=null)
-			{
-				long ticks = event.tile.getWorldObj()!=null?event.tile.getWorldObj().getTotalWorldTime()/100:0;
-				special = list.get((int)(ticks%list.size()));
-			}
-		}
 
-		if(special!=null)
-		{
-			GL11.glPushMatrix();
-			((ItemRevolver)IEContent.itemRevolver).applySpecialCrafting(revolverEntity.getEntityItem(), special);
-			GL11.glRotated(200, 1,0,0);
-			GL11.glTranslated(-.16,-1.3,.6);
-			GL11.glScalef(.625f,.625f,.625f);
-			RenderManager.instance.renderEntityWithPosYaw(revolverEntity, 0.0D, 0.0D, 0.0D, 0.0F, 0.0F);
-			GL11.glPopMatrix();
-		}
-		}catch(Exception e){ e.printStackTrace(); }
+			if(special!=null)
+			{
+				GL11.glPushMatrix();
+				((ItemRevolver)IEContent.itemRevolver).applySpecialCrafting(revolverEntity.getEntityItem(), special);
+				GL11.glRotated(200, 1,0,0);
+				GL11.glTranslated(-.16,-1.3,.6);
+				GL11.glScalef(.625f,.625f,.625f);
+				RenderManager.instance.renderEntityWithPosYaw(revolverEntity, 0.0D, 0.0D, 0.0D, 0.0F, 0.0F);
+				GL11.glPopMatrix();
+			}
+		}catch(Exception e){}
 	}
 
 

@@ -6,7 +6,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
 
 public class EntityRailgunShot extends EntityIEProjectile
 {
@@ -70,13 +69,6 @@ public class EntityRailgunShot extends EntityIEProjectile
 	{
 		if(this.getAmmo() == null && this.worldObj.isRemote)
 			this.ammo = getAmmoSynced();
-		if(worldObj instanceof WorldServer)
-		{
-			((WorldServer)worldObj).func_147487_a("smoke", posX,posY,posZ, 0, 0,0,0 ,1);
-		}
-		else
-			worldObj.spawnParticle("flame", posX,posY,posZ, 0,0,0);
-
 		super.onEntityUpdate();
 	}
 

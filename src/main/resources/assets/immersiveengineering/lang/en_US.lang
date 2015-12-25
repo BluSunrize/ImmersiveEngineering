@@ -184,6 +184,8 @@ item.ImmersiveEngineering.material.gunpartHammer.name=Revolver Hammer
 item.ImmersiveEngineering.material.componentIron.name=Iron Mechanical Component
 item.ImmersiveEngineering.material.componentSteel.name=Steel Mechanical Component
 item.ImmersiveEngineering.material.slag.name=Slag
+item.ImmersiveEngineering.material.stickIron.name=Iron Rod
+item.ImmersiveEngineering.material.stickSteel.name=Steel Rod
 item.ImmersiveEngineering.seed.hemp.name=Industrial Hemp Seeds
 
 item.ImmersiveEngineering.fluidContainers.bottleCreosote.name=Bottle of Creosote Oil
@@ -262,6 +264,7 @@ item.ImmersiveEngineering.jerrycan.name=Jerrycan
 
 item.ImmersiveEngineering.chemthrower.name=Chemical Thrower
 
+item.ImmersiveEngineering.railgun.name=Railgun
 
 #CREATIVE
 itemGroup.ImmersiveEngineering=Immersive Engineering
@@ -343,6 +346,7 @@ desc.ImmersiveEngineering.info.shader.applyTo=Can be applied to:
 desc.ImmersiveEngineering.info.shader.revolver=Revolver
 desc.ImmersiveEngineering.info.shader.chemthrower=Chemical Thrower
 desc.ImmersiveEngineering.info.shader.drill=Mining Drill
+desc.ImmersiveEngineering.info.shader.railgun=Railgun
 desc.ImmersiveEngineering.info.shader.minecart=Minecart
 desc.ImmersiveEngineering.info.shader.balloon=Balloon
 

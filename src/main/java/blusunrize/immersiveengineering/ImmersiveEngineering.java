@@ -179,11 +179,14 @@ public class ImmersiveEngineering
 
 	public static class ThreadContributorSpecialsDownloader extends Thread
 	{
+		public static boolean downloadComplete;
+		
 		public ThreadContributorSpecialsDownloader()
 		{
 			setName("Immersive Engineering Contributors Thread");
 			setDaemon(true);
 			start();
+			downloadComplete = false;
 		}
 
 		@Override
@@ -215,6 +218,7 @@ public class ImmersiveEngineering
 				IELogger.info("Could not load contributor+special revolver list.");
 				e.printStackTrace();
 			}
+			downloadComplete = true;
 		}
 	}
 }

@@ -55,6 +55,14 @@ public class ApiUtils
 		s2.stackSize=amount;
 		return s2;
 	}
+	
+	public static ComparableItemStack createComparableItemStack(ItemStack stack)
+	{
+		ComparableItemStack comp = new ComparableItemStack(stack);
+		if(stack.hasTagCompound())
+			comp.setUseNBT(true);
+		return comp;
+	}
 
 	public static boolean isExistingOreName(String name)
 	{

@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.common;
 import java.util.List;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.ComparableOreStack;
 import blusunrize.immersiveengineering.api.MultiblockHandler;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.CokeOvenRecipe;
@@ -14,6 +15,7 @@ import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEf
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEffect_Potion;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler;
+import blusunrize.immersiveengineering.api.tool.RailgunHandler;
 import blusunrize.immersiveengineering.common.blocks.BlockFakeLight;
 import blusunrize.immersiveengineering.common.blocks.BlockFakeLight.TileEntityFakeLight;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
@@ -239,7 +241,7 @@ public class IEContent
 				"treatedStick","waterwheelSegment","windmillBlade","hempFiber","fabric","windmillBladeAdvanced",
 				"coalCoke",
 				"gunpartBarrel","gunpartDrum","gunpartGrip","gunpartHammer",
-				"componentIron","componentSteel","slag");
+				"componentIron","componentSteel","slag", "stickIron","stickSteel");
 
 		itemSeeds = new ItemIESeed(blockCrop,"hemp");
 		MinecraftForge.addGrassSeed(new ItemStack(itemSeeds), 5);
@@ -334,6 +336,8 @@ public class IEContent
 		OreDictionary.registerOre("fenceSteel", new ItemStack(blockMetalDecoration,1,BlockMetalDecoration.META_fence));
 		OreDictionary.registerOre("fenceAluminum", new ItemStack(blockMetalDecoration,1,BlockMetalDecoration.META_aluminiumFence));
 		OreDictionary.registerOre("itemSlag", new ItemStack(itemMaterial,1,13));
+		OreDictionary.registerOre("stickIron", new ItemStack(itemMaterial,1,14));
+		OreDictionary.registerOre("stickSteel", new ItemStack(itemMaterial,1,15));
 		//Vanilla OreDict
 		OreDictionary.registerOre("bricksStone", new ItemStack(Blocks.stonebrick));
 		OreDictionary.registerOre("blockIce", new ItemStack(Blocks.ice));
@@ -508,6 +512,9 @@ public class IEContent
 		ChemthrowerHandler.registerEffect("rocket_fuel", new ChemthrowerEffect_Potion(null,0, IEPotions.flammable,60,2));
 		ChemthrowerHandler.registerFlammable("rocket_fuel");
 
+		RailgunHandler.registerProjectileProperties(new ComparableOreStack("stickIron"), 6, 1.25).setColourMap(new int[][]{{0xd8d8d8,0xd8d8d8,0xd8d8d8,0xa8a8a8,0x686868,0x686868}});
+		RailgunHandler.registerProjectileProperties(new ComparableOreStack("stickSteel"), 6, 1.25).setColourMap(new int[][]{{0xb4b4b4,0xb4b4b4,0xb4b4b4,0x7a7a7a,0x555555,0x555555}});
+		
 		ExternalHeaterHandler.defaultFurnaceEnergyCost = Config.getInt("heater_consumption");
 		ExternalHeaterHandler.defaultFurnaceSpeedupCost= Config.getInt("heater_speedupConsumption");
 		ExternalHeaterHandler.registerHeatableAdapter(TileEntityFurnace.class, new ExternalHeaterHandler.DefaultFurnaceAdapter());

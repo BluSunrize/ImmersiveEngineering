@@ -8,6 +8,8 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.items.ItemChemthrower;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.client.IItemRenderer;
@@ -36,7 +38,8 @@ public class ItemRenderChemthrower implements IItemRenderer
 
 		if(type==ItemRenderType.EQUIPPED_FIRST_PERSON)
 		{
-			if(ClientUtils.mc().thePlayer.getItemInUseCount()>0)
+			EntityLivingBase user = (EntityLivingBase) data[1];
+			if(user instanceof EntityPlayer && ((EntityPlayer)user).getItemInUseCount()>0)
 			{
 				GL11.glRotatef(65, 0, 1, 0);
 				GL11.glRotatef(15, 0, 0, 1);

@@ -8,6 +8,7 @@ import org.lwjgl.opengl.GL11;
 import blusunrize.immersiveengineering.api.shader.ShaderCaseChemthrower;
 import blusunrize.immersiveengineering.api.shader.ShaderCaseDrill;
 import blusunrize.immersiveengineering.api.shader.ShaderCaseMinecart;
+import blusunrize.immersiveengineering.api.shader.ShaderCaseRailgun;
 import blusunrize.immersiveengineering.api.shader.ShaderCaseRevolver;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.client.ClientEventHandler;
@@ -43,6 +44,7 @@ public class AvaritiaHelper extends IECompatModule
 				new CosmicShaderCaseRevolver(overlayType, colourBackground, colourPrimary, colourSecondary, colourBlade, null),
 				new CosmicShaderCaseDrill(overlayType, colourBackground, colourPrimary, colourSecondary, null),
 				new CosmicShaderCaseChemthrower(overlayType, colourBackground, colourPrimary, colourSecondary, true,false, null),
+				new CosmicShaderCaseRailgun(overlayType, colourBackground, colourPrimary, colourSecondary, null),
 				new CosmicShaderCaseMinecart(overlayType, colourPrimary, colourSecondary, null)).setBagLoot(true).setInLowerBags(false));
 	}
 	@Override
@@ -153,6 +155,36 @@ public class AvaritiaHelper extends IECompatModule
 				GL11.glScalef(1.001f,1.001f,1.001f);
 				GL11.glTranslatef(-.0005f,0,0);
 			}
+			if(pass==2)
+				applyCosmicShader(pre, inventory);
+		}
+	}
+	static class CosmicShaderCaseRailgun extends ShaderCaseRailgun
+	{
+		public CosmicShaderCaseRailgun(String overlayType, int[] colourGrip, int[] colourPrimary, int[] colourSecondary, String additionalTexture)
+		{
+			super(overlayType, colourGrip, colourPrimary, colourSecondary, additionalTexture);
+		}
+
+		@Override
+		public int getPasses(ItemStack shader, ItemStack item, String modelPart)
+		{
+			if(modelPart.equals("sled")||modelPart.equals("wires"))
+				return 1;
+			int i = super.getPasses(shader, item, modelPart);
+			return i+1;
+		}
+		@Override
+		public int getTextureType(String modelPart, int pass)
+		{
+			int i = super.getTextureType(modelPart, pass);
+			return i==3?2:i;
+		}
+		@Override
+		public void modifyRender(ItemStack shader, ItemStack item, String modelPart, int pass, boolean pre, boolean inventory)
+		{
+			if(pass==1 && pre)
+				GL11.glScalef(1.001f,1.001f,1.001f);
 			if(pass==2)
 				applyCosmicShader(pre, inventory);
 		}
