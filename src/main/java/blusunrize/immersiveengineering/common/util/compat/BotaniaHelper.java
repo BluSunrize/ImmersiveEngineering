@@ -76,8 +76,11 @@ public class BotaniaHelper extends IECompatModule
 		@Override
 		public void run()
 		{
-			while(!ImmersiveEngineering.ThreadContributorSpecialsDownloader.downloadComplete)
-			{}
+			try {
+				ImmersiveEngineering.ThreadContributorSpecialsDownloader.activeThread.join();
+			}catch(InterruptedException e){
+				e.printStackTrace();
+			}
 			for(String uuid : ItemRevolver.specialRevolvers.keySet())
 				nameToSpecial.putAll(ImmersiveEngineering.proxy.getNameFromUUID(uuid).toLowerCase(), ItemRevolver.specialRevolvers.get(uuid));
 		}
