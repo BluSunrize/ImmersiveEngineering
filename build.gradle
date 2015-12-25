@@ -58,6 +58,9 @@ processResources
 task deobfJar(type: Jar) {
 	from sourceSets.main.output
 	classifier = 'deobf'
+	manifest {
+		attributes 'FMLAT': 'ImmersiveEngineering_at.cfg'
+	}
 }
 
 task apiZip(type: Zip) {
