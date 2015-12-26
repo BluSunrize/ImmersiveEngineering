@@ -5,7 +5,6 @@ import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 public class PeripheralEnergyMeter extends IEPeripheral {
@@ -20,7 +19,7 @@ public class PeripheralEnergyMeter extends IEPeripheral {
 	@Override
 	public String getType()
 	{
-		return "IE:CurrentTrafo";
+		return "IE:currentTransformer";
 	}
 
 	@Override

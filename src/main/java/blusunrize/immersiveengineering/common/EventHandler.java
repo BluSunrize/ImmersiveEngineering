@@ -87,6 +87,7 @@ public class EventHandler
 	public static ArrayList<ISpawnInterdiction> interdictionTiles = new ArrayList<ISpawnInterdiction>();
 	public static boolean validateConnsNextTick = false;
 	public static Set<TileEntityRequest> ccRequestedTEs = Collections.newSetFromMap(new ConcurrentHashMap<TileEntityRequest, Boolean>());
+	public static ConcurrentHashMap<TileEntityRequest, TileEntity> cachedRequestRsults = new ConcurrentHashMap<>();
 	@SubscribeEvent
 	public void onLoad(WorldEvent.Load event)
 	{
@@ -221,18 +222,33 @@ public class EventHandler
 				}
 			ImmersiveNetHandler.INSTANCE.getTransferedRates(event.world.provider.dimensionId).clear();
 			// CC tile entity requests
-			Iterator<TileEntityRequest> it = ccRequestedTEs.iterator();
-			int timeout = 100;
-			while (it.hasNext()&&timeout>0)
+			Iterator<TileEntityRequest> it;
+			it = cachedRequestRsults.keySet().iterator();
+			while (it.hasNext())
 			{
 				TileEntityRequest req = it.next();
-				synchronized (req) {
+				if (!ccRequestedTEs.contains(req))
+				{
+					it.remove();
+					continue;
+				}
+				req.te = req.w.getTileEntity(req.x, req.y, req.z);
+				cachedRequestRsults.put(req, req.te);
+			}
+			it = ccRequestedTEs.iterator();
+			int timeout = 100;
+			while (it.hasNext() && timeout > 0)
+			{
+				TileEntityRequest req = it.next();
+				synchronized (req)
+				{
 					req.te = req.w.getTileEntity(req.x, req.y, req.z);
 					req.checked = true;
 					req.notifyAll();
 				}
 				it.remove();
 				timeout--;
+				cachedRequestRsults.put(req, req.te);
 			}
 		}
 	}
@@ -501,5 +517,36 @@ public class EventHandler
 				}
 			}
 		}
+	}
+	public static TileEntity requestTE(World w, int x, int y, int z)
+	{
+		TileEntityRequest req = new TileEntityRequest(w, x, y, z);
+		TileEntity te = cachedRequestRsults.get(req);
+		if (te!=null)
+			return te;
+		synchronized (req)
+		{
+			ccRequestedTEs.add(req);
+			int timeout = 100;
+			while (!req.checked&&timeout>0)
+			{
+				// i don't really know why this is necessary, but the requests sometimes time out without this
+				if (!ccRequestedTEs.contains(req))
+					ccRequestedTEs.add(req);
+				try
+				{
+					req.wait(50);
+				}
+				catch (InterruptedException e)
+				{}
+				timeout--;
+			}
+			if (!req.checked)
+			{
+				IELogger.info("Timeout while requesting a TileEntity");
+				return w.getTileEntity(x, y, z);
+			}
+		}
+		return req.te;
 	}
 }

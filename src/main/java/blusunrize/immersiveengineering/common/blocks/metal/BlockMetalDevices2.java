@@ -649,6 +649,11 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 		}
 		else if(meta==META_fluidPump)
 			return true;
+		else if (meta==META_energyMeter)
+		{
+			TileEntity te = world.getTileEntity(x, y, z);
+			return te instanceof TileEntityEnergyMeter&&((TileEntityEnergyMeter)te).dummy;
+		}
 		return false;
 	}
 

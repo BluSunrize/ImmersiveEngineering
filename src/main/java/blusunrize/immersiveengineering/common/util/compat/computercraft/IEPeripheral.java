@@ -27,25 +27,7 @@ public abstract class IEPeripheral implements IPeripheral
 	protected TileEntity getTileEntity(Class<? extends TileEntity> type)
 	{
 		boolean usePipeline = FMLCommonHandler.instance().getEffectiveSide()!=Side.SERVER;
-		TileEntityRequest req = null;
-		if (usePipeline) {
-			req = new TileEntityRequest(w, x, y, z);
-			synchronized (req) {
-				EventHandler.ccRequestedTEs.add(req);
-				int timeout = 100;
-				while (!req.checked&&timeout>0)
-				{
-					try
-					{
-						req.wait(50);
-					}
-					catch (InterruptedException e)
-					{}
-					timeout--;
-				}
-			}
-		}
-		TileEntity te = usePipeline?req.te:w.getTileEntity(x, y, z);
+		TileEntity te = usePipeline?EventHandler.requestTE(w, x, y, z):w.getTileEntity(x, y, z);
 		if (te!=null&&te.getClass().equals(type))
 			return te;
 		return null;
