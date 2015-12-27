@@ -1,9 +1,11 @@
 package blusunrize.immersiveengineering.common.entities;
 
+import blusunrize.immersiveengineering.api.tool.RailgunHandler;
+import blusunrize.immersiveengineering.api.tool.RailgunHandler.RailgunProjectileProperties;
+import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.DamageSource;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
@@ -11,6 +13,7 @@ public class EntityRailgunShot extends EntityIEProjectile
 {
 	private ItemStack ammo;
 	final static int dataMarker_ammo = 13;
+	private RailgunHandler.RailgunProjectileProperties ammoProperties;
 
 	public EntityRailgunShot(World world)
 	{
@@ -51,11 +54,17 @@ public class EntityRailgunShot extends EntityIEProjectile
 	{
 		return ammo;
 	}
+	public RailgunProjectileProperties getAmmoProperties()
+	{
+		if(ammoProperties==null && ammo!=null)
+			ammoProperties = RailgunHandler.getProjectileProperties(ammo);
+		return ammoProperties;
+	}
 
 	@Override
 	public double getGravity()
 	{
-		return .01;
+		return .005*(getAmmoProperties()!=null?getAmmoProperties().gravity:1);
 	}
 
 	@Override
@@ -79,8 +88,9 @@ public class EntityRailgunShot extends EntityIEProjectile
 		{
 			if(mop.entityHit!=null)
 			{
-				if(mop.entityHit.attackEntityFrom(DamageSource.inFire, 2))
-					mop.entityHit.hurtResistantTime = (int)(mop.entityHit.hurtResistantTime*.75);
+				if(getAmmoProperties()!=null)
+					if(!getAmmoProperties().overrideHitEntity(mop.entityHit, getShooter()))
+						mop.entityHit.attackEntityFrom(IEDamageSources.causeRailgunDamage(this, getShooter()), (float)getAmmoProperties().damage);
 			}
 		}
 	}

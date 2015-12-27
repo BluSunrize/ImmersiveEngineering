@@ -1,13 +1,14 @@
 package blusunrize.immersiveengineering.common.util;
 
+import com.emoniph.witchery.util.EntityDamageSourceIndirectSilver;
+
+import blusunrize.immersiveengineering.common.entities.EntityRailgunShot;
+import blusunrize.immersiveengineering.common.entities.EntityRevolvershot;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSource;
 import net.minecraft.util.EntityDamageSourceIndirect;
-import blusunrize.immersiveengineering.common.entities.EntityRevolvershot;
-
-import com.emoniph.witchery.util.EntityDamageSourceIndirectSilver;
 
 public class IEDamageSources
 {
@@ -77,5 +78,10 @@ public class IEDamageSources
 	public static DamageSource causeCrusherDamage()
 	{
 		return new IEDamageSource(Lib.DMG_Crusher);
+	}
+	
+	public static DamageSource causeRailgunDamage(EntityRailgunShot shot, Entity shooter)
+	{
+		return new IEDamageSource_Indirect(Lib.DMG_Railgun, shot, shooter).setDamageBypassesArmor().setProjectile();
 	}
 }

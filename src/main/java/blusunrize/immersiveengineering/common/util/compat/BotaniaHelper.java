@@ -77,7 +77,8 @@ public class BotaniaHelper extends IECompatModule
 		public void run()
 		{
 			try {
-				ImmersiveEngineering.ThreadContributorSpecialsDownloader.activeThread.join();
+				if(ImmersiveEngineering.ThreadContributorSpecialsDownloader.activeThread!=null)
+					ImmersiveEngineering.ThreadContributorSpecialsDownloader.activeThread.join();
 			}catch(InterruptedException e){
 				e.printStackTrace();
 			}

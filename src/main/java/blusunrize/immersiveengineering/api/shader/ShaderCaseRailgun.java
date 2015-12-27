@@ -24,9 +24,9 @@ public class ShaderCaseRailgun extends ShaderCase
 	@Override
 	public int getPasses(ItemStack shader, ItemStack item, String modelPart)
 	{
-		if(modelPart.equals("sled")||modelPart.equals("wires"))
+		if(modelPart.equals("sled")||modelPart.equals("wires")||modelPart.equals("tubes"))
 			return 1;
-		boolean hasUncoloured = modelPart.equals("barrel")||modelPart.equals("upgrade_scope");
+		boolean hasUncoloured = modelPart.equals("barrel")||modelPart.equals("frame")||modelPart.equals("upgrade_speed")||modelPart.equals("upgrade_scope");
 		return 2+(additionalTexture!=null?1:0)+(hasUncoloured?1:0);
 	}
 
@@ -34,7 +34,7 @@ public class ShaderCaseRailgun extends ShaderCase
 	public IIcon getReplacementIcon(ItemStack shader, ItemStack item, String modelPart, int pass)
 	{
 		int maxPass = getPasses(shader, item, modelPart);
-		boolean hasUncoloured = modelPart.equals("sled")||modelPart.equals("wires")||modelPart.equals("barrel")||modelPart.equals("upgrade_scope");
+		boolean hasUncoloured = modelPart.equals("sled")||modelPart.equals("wires")||modelPart.equals("tubes")||modelPart.equals("frame")||modelPart.equals("barrel")||modelPart.equals("upgrade_speed")||modelPart.equals("upgrade_scope");
 		if(hasUncoloured && pass==maxPass-1)//uncoloured
 			return i_railgunUncoloured;
 		if(pass==maxPass-(hasUncoloured?2:1) && i_railgunAdditional!=null)
@@ -47,7 +47,7 @@ public class ShaderCaseRailgun extends ShaderCase
 	public int[] getRGBAColourModifier(ItemStack shader, ItemStack item, String modelPart, int pass)
 	{
 		int maxPass = getPasses(shader, item, modelPart);
-		boolean hasUncoloured = modelPart.equals("sled")||modelPart.equals("wires")||modelPart.equals("barrel")||modelPart.equals("upgrade_scope");
+		boolean hasUncoloured = modelPart.equals("sled")||modelPart.equals("wires")||modelPart.equals("tubes")||modelPart.equals("frame")||modelPart.equals("barrel")||modelPart.equals("upgrade_speed")||modelPart.equals("upgrade_scope");
 		if((hasUncoloured&&pass==maxPass-1)||(pass==maxPass-(hasUncoloured?2:1) && i_railgunAdditional!=null))
 			return defaultWhite;
 

@@ -1,11 +1,15 @@
 package blusunrize.immersiveengineering.common.items;
 
+import java.util.HashSet;
 import java.util.List;
 
 import blusunrize.immersiveengineering.api.shader.IShaderEquipableItem;
 import blusunrize.immersiveengineering.api.tool.RailgunHandler;
+import blusunrize.immersiveengineering.api.tool.ZoomHandler.IZoomTool;
+import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.entities.EntityRailgunShot;
 import blusunrize.immersiveengineering.common.gui.IESlot;
+import blusunrize.immersiveengineering.common.items.ItemRevolver.SpecialRevolver;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import cofh.api.energy.IEnergyContainerItem;
@@ -15,11 +19,13 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.StatCollector;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
-public class ItemRailgun extends ItemUpgradeableTool implements IShaderEquipableItem, IEnergyContainerItem
+public class ItemRailgun extends ItemUpgradeableTool implements IShaderEquipableItem, IEnergyContainerItem, IZoomTool
 {
 	public ItemRailgun()
 	{
@@ -70,20 +76,11 @@ public class ItemRailgun extends ItemUpgradeableTool implements IShaderEquipable
 	@Override
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean adv)
 	{
-		//		if(stack.getItemDamage()!=1)
-		//		{
-		//			String tag = getRevolverDisplayTag(stack);
-		//			if(!tag.isEmpty())
-		//				list.add(StatCollector.translateToLocal(Lib.DESC_FLAVOUR+"revolver."+tag));
-		//			else if(ItemNBTHelper.hasKey(stack, "flavour"))
-		//				list.add(StatCollector.translateToLocal(Lib.DESC_FLAVOUR+"revolver."+ItemNBTHelper.getString(stack, "flavour")));
-		//			else if(stack.getItemDamage()==0)
-		//				list.add(StatCollector.translateToLocal(Lib.DESC_FLAVOUR+"revolver"));
-		//
 		ItemStack shader = getShaderItem(stack);
 		if(shader!=null)
 			list.add(EnumChatFormatting.DARK_GRAY+shader.getDisplayName());
-		//		}
+		String stored = this.getEnergyStored(stack)+"/"+this.getMaxEnergyStored(stack);
+		list.add(StatCollector.translateToLocalFormatted("desc.ImmersiveEngineering.info.energyStored", stored));
 	}
 	@Override
 	public String getUnlocalizedName(ItemStack stack)
@@ -144,11 +141,16 @@ public class ItemRailgun extends ItemUpgradeableTool implements IShaderEquipable
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
 	{
-		if(findAmmo(player)!=null)
+		int energy = Config.getInt("railgun_consumption");
+		float energyMod = 1 + this.getUpgrades(stack).getFloat("consumption");
+		energy = (int)(energy*energyMod);
+		if(this.extractEnergy(stack, energy, true)==energy && findAmmo(player)!=null)
 		{
 			player.setItemInUse(stack, this.getMaxItemUseDuration(stack));
-
-			player.playSound("immersiveengineering:chargeSlow", 1.5f, 1);
+			String sound = "chargeSlow";
+			if(getChargeTime(stack)<=20)
+				sound = "chargeFast";
+			player.playSound("immersiveengineering:"+sound, 1.5f, 1);
 		}
 		return stack;
 	}
@@ -156,30 +158,44 @@ public class ItemRailgun extends ItemUpgradeableTool implements IShaderEquipable
 	public void onUsingTick(ItemStack stack, EntityPlayer player, int count)
 	{
 		int inUse = this.getMaxItemUseDuration(stack)-count;
-		if(inUse>20 && inUse%20 == player.getRNG().nextInt(20))
+		if(inUse>getChargeTime(stack) && inUse%20 == player.getRNG().nextInt(20))
 			player.playSound("immersiveengineering:spark", .8f+(.2f*player.getRNG().nextFloat()), .5f+(.5f*player.getRNG().nextFloat()));
 	}
 	@Override
 	public void onPlayerStoppedUsing(ItemStack stack, World world, EntityPlayer player, int timeLeft)
 	{
-		ItemStack ammo = findAmmo(player);
-		if(ammo!=null)
+		int inUse = this.getMaxItemUseDuration(stack)-timeLeft;
+		if(inUse<getChargeTime(stack))
+			return;
+		int energy = Config.getInt("railgun_consumption");
+		float energyMod = 1 + this.getUpgrades(stack).getFloat("consumption");
+		energy = (int)(energy*energyMod);
+		if(this.extractEnergy(stack, energy, true)==energy)
 		{
-			Vec3 vec = player.getLookVec();
-			EntityRailgunShot shot = new EntityRailgunShot(player.worldObj, player, vec.xCoord*1.5,vec.yCoord*1.5,vec.zCoord*1.5, Utils.copyStackWithAmount(ammo, 1));
-			shot.motionX = vec.xCoord;
-			shot.motionY = vec.yCoord;
-			shot.motionZ = vec.zCoord;
-			ammo.stackSize--;
-			if(ammo.stackSize<=0)
-				ammo=null;
-			player.playSound("immersiveengineering:railgunFire", 1, .5f+(.5f*player.getRNG().nextFloat()));
-			if(!world.isRemote)
-				player.worldObj.spawnEntityInWorld(shot);
+			int ammoSlot = findAmmoSlot(player);
+			if(ammoSlot>=0)
+			{
+				ItemStack ammo = player.inventory.mainInventory[ammoSlot];
+				Vec3 vec = player.getLookVec();
+				EntityRailgunShot shot = new EntityRailgunShot(player.worldObj, player, vec.xCoord*1.5,vec.yCoord*1.5,vec.zCoord*1.5, Utils.copyStackWithAmount(ammo, 1));
+//				shot.motionX = vec.xCoord;
+//				shot.motionY = vec.yCoord;
+//				shot.motionZ = vec.zCoord;
+				player.inventory.decrStackSize(ammoSlot, 1);
+				player.playSound("immersiveengineering:railgunFire", 1, .5f+(.5f*player.getRNG().nextFloat()));
+				this.extractEnergy(stack, energy, false);
+				if(!world.isRemote)
+					player.worldObj.spawnEntityInWorld(shot);
+			}
 		}
 	}
 
 	public static ItemStack findAmmo(EntityPlayer player)
+	{
+		int slot = findAmmoSlot(player);
+		return slot>=0?player.inventory.mainInventory[slot]:null;
+	}
+	public static int findAmmoSlot(EntityPlayer player)
 	{
 		ItemStack[] inventory = player.inventory.mainInventory;
 		for(int i=0; i<inventory.length; i++)
@@ -189,9 +205,14 @@ public class ItemRailgun extends ItemUpgradeableTool implements IShaderEquipable
 				continue;
 			RailgunHandler.RailgunProjectileProperties prop = RailgunHandler.getProjectileProperties(stack);
 			if(prop!=null)
-				return stack;
+				return i;
 		}
-		return null;
+		return -1;
+	}
+
+	public int getChargeTime(ItemStack railgun)
+	{
+		return (int)(40/(1+this.getUpgrades(railgun).getFloat("speed")));
 	}
 
 	@Override
@@ -242,5 +263,35 @@ public class ItemRailgun extends ItemUpgradeableTool implements IShaderEquipable
 	public int getMaxEnergyStored(ItemStack container)
 	{
 		return 8000;
+	}
+	
+
+	public String[] compileRender(ItemStack stack)
+	{
+		HashSet<String> render = new HashSet<String>();
+		render.add("frame");
+		render.add("barrel");
+		render.add("grip");
+		render.add("capacitors");
+		render.add("sled");
+		render.add("wires");
+		NBTTagCompound upgrades = this.getUpgrades(stack);
+		if(upgrades.getDouble("speed")>0)
+			render.add("upgrade_speed");
+//		if(upgrades.getBoolean("scope"))
+			render.add("upgrade_scope");
+		return render.toArray(new String[render.size()]);
+	}
+
+	@Override
+	public boolean canZoom(ItemStack stack, EntityPlayer player)
+	{
+		return true;//this.getUpgrades(stack).getBoolean("scope");
+	}
+	float[] zoomSteps = new float[]{.1f,.2f,.3f,.4f,.5f,.6f,.7f,.8f};
+	@Override
+	public float[] getZoomSteps(ItemStack stack, EntityPlayer player)
+	{
+		return zoomSteps;
 	}
 }

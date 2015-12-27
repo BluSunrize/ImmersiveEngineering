@@ -189,12 +189,14 @@ public class ClientProxy extends CommonProxy
 {
 	public static TextureMap revolverTextureMap;
 	public static final ResourceLocation revolverTextureResource = new ResourceLocation("textures/atlas/immersiveengineering/revolvers.png");
-	public static FontRenderer nixieFont;
+	public static FontRenderer nixieFontOptional;
+	public static IENixieFontRender nixieFont;
 
 	@Override
 	public void init()
 	{
-		nixieFont = Config.getBoolean("nixietubeFont")?new IENixieFontRender():ClientUtils.font();
+		nixieFontOptional = Config.getBoolean("nixietubeFont")?new IENixieFontRender():ClientUtils.font();
+		nixieFont = new IENixieFontRender();
 		//METAL
 		RenderingRegistry.registerBlockHandler(new BlockRenderMetalDevices());
 		RenderingRegistry.registerBlockHandler(new BlockRenderMetalDevices2());

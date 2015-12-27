@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.ComparableItemStack;
+import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 
 public class RailgunHandler
@@ -40,6 +41,14 @@ public class RailgunHandler
 		{
 			this.colourMap = map;
 			return this;
+		}
+		
+		/**
+		 * @return true to cancel normal damage application
+		 */
+		public boolean overrideHitEntity(Entity entityHit, Entity shooter)
+		{
+			return false;
 		}
 	}
 }

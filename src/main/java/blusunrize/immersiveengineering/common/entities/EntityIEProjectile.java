@@ -53,8 +53,22 @@ public abstract class EntityIEProjectile extends EntityArrow//Yes I have to exte
 		this.setPosition(this.posX, this.posY, this.posZ);
 		this.yOffset = 0.0F;
 		this.motionX = this.motionY = this.motionZ = 0.0D;
+		this.motionX = ax;
+		this.motionY = ay;
+		this.motionZ = az;
 		this.shootingEntity = living;
 		this.setShooterSynced();
+		
+		  this.posX -= (double)(MathHelper.cos(this.rotationYaw / 180.0F * (float)Math.PI) * 0.16F);
+	        this.posY -= 0.10000000149011612D;
+	        this.posZ -= (double)(MathHelper.sin(this.rotationYaw / 180.0F * (float)Math.PI) * 0.16F);
+	        this.setPosition(this.posX, this.posY, this.posZ);
+	        this.yOffset = 0.0F;
+	        this.motionX = (double)(-MathHelper.sin(this.rotationYaw / 180.0F * (float)Math.PI) * MathHelper.cos(this.rotationPitch / 180.0F * (float)Math.PI));
+	        this.motionZ = (double)(MathHelper.cos(this.rotationYaw / 180.0F * (float)Math.PI) * MathHelper.cos(this.rotationPitch / 180.0F * (float)Math.PI));
+	        this.motionY = (double)(-MathHelper.sin(this.rotationPitch / 180.0F * (float)Math.PI));
+		
+	    this.setThrowableHeading(this.motionX, this.motionY, this.motionZ, 2*1.5F, 1.0F);
 	}
 
 	@Override
@@ -89,7 +103,7 @@ public abstract class EntityIEProjectile extends EntityArrow//Yes I have to exte
 		if(this.getShooter() == null && this.worldObj.isRemote)
 			this.shootingEntity = getShooterSynced();
 
-		super.onUpdate();
+		this.onEntityUpdate();
 
 		Block block = this.worldObj.getBlock(this.blockX, this.blockY, this.blockZ);
 		if(block.getMaterial() != Material.air)
@@ -206,21 +220,21 @@ public abstract class EntityIEProjectile extends EntityArrow//Yes I have to exte
 			this.posX += this.motionX;
 			this.posY += this.motionY;
 			this.posZ += this.motionZ;
-			float f1 = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ);
-			this.rotationYaw = (float)(Math.atan2(this.motionZ, this.motionX) * 180.0D / Math.PI) + 90.0F;
-			this.rotationPitch = (float)(Math.atan2(this.motionY, f1) * 180.0D / Math.PI);
 
-			while (this.rotationPitch - this.prevRotationPitch < -180.0F)
-				this.prevRotationPitch -= 360.0F;
-			while (this.rotationPitch - this.prevRotationPitch >= 180.0F)
-				this.prevRotationPitch += 360.0F;
-			while (this.rotationYaw - this.prevRotationYaw < -180.0F)
-				this.prevRotationYaw -= 360.0F;
-			while (this.rotationYaw - this.prevRotationYaw >= 180.0F)
-				this.prevRotationYaw += 360.0F;
-			this.rotationPitch = this.prevRotationPitch + (this.rotationPitch - this.prevRotationPitch) * 0.2F;
-			this.rotationYaw = this.prevRotationYaw + (this.rotationYaw - this.prevRotationYaw) * 0.2F;
+            float motion = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ);
+            this.rotationYaw = (float)(Math.atan2(this.motionX, this.motionZ) * 180.0D / Math.PI);
 
+            for (this.rotationPitch = (float)(Math.atan2(this.motionY, (double)motion) * 180.0D / Math.PI); this.rotationPitch - this.prevRotationPitch < -180.0F; this.prevRotationPitch -= 360.0F);
+            while (this.rotationPitch - this.prevRotationPitch >= 180.0F)
+                this.prevRotationPitch += 360.0F;
+            while (this.rotationYaw - this.prevRotationYaw < -180.0F)
+                this.prevRotationYaw -= 360.0F;
+            while (this.rotationYaw - this.prevRotationYaw >= 180.0F)
+                this.prevRotationYaw += 360.0F;
+            this.rotationPitch = this.prevRotationPitch + (this.rotationPitch - this.prevRotationPitch) * 0.2F;
+            this.rotationYaw = this.prevRotationYaw + (this.rotationYaw - this.prevRotationYaw) * 0.2F;
+			
+			
 			float movementDecay = getMotionDecayFactor();
 
 			if(this.isInWater())
@@ -233,9 +247,9 @@ public abstract class EntityIEProjectile extends EntityArrow//Yes I have to exte
 				movementDecay *= 0.8F;
 			}
 
-			this.motionX *= (double)movementDecay;
-			this.motionY *= (double)movementDecay;
-			this.motionZ *= (double)movementDecay;
+			this.motionX *= movementDecay;
+			this.motionY *= movementDecay;
+			this.motionZ *= movementDecay;
 			this.motionY -= getGravity();
 			this.setPosition(this.posX, this.posY, this.posZ);
 			this.func_145775_I();
@@ -275,7 +289,7 @@ public abstract class EntityIEProjectile extends EntityArrow//Yes I have to exte
 
 	protected float getMotionDecayFactor()
 	{
-		return 0.95F;
+		return 0.99F;
 	}
 
 	@Override

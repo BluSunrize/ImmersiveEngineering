@@ -8,10 +8,19 @@ public class ComparableItemStack
 {
 	public ItemStack stack;
 	public boolean useNBT;
+	public int oreID=-1;
 
 	public ComparableItemStack(ItemStack stack)
 	{
 		this.stack = stack;
+		int[] oids = OreDictionary.getOreIDs(stack);
+		if(oids!=null && oids.length>0)
+			this.oreID = oids[0];
+	}
+	public ComparableItemStack(String oreName)
+	{
+		this(IEApi.getPreferredOreStack(oreName));
+		this.oreID = OreDictionary.getOreID(oreName);
 	}
 
 	public ComparableItemStack setUseNBT(boolean useNBT)
@@ -19,16 +28,22 @@ public class ComparableItemStack
 		this.useNBT = useNBT;
 		return this;
 	}
-
+	public ComparableItemStack setOreID(int oid)
+	{
+		this.oreID = oid;
+		return this;
+	}
 
 	@Override
 	public String toString()
 	{
-		return "ComparableStack: {"+this.stack.toString()+"}; checkNBT: "+useNBT;
+		return "ComparableStack: {"+this.stack.toString()+"}; oreID: "+this.oreID+"; checkNBT: "+this.useNBT;
 	}
 	@Override
 	public int hashCode()
 	{
+		if(this.oreID!=-1)
+			return this.oreID;
 		return this.stack.getItemDamage()&0xFFFF | Item.getIdFromItem(this.stack.getItem())<<16;
 	}
 
@@ -37,6 +52,9 @@ public class ComparableItemStack
 	{
 		if(!(object instanceof ComparableItemStack))
 			return false;
+
+		if(this.oreID!=-1 && ((ComparableItemStack)object).oreID!=-1)
+			return this.oreID == ((ComparableItemStack)object).oreID;
 
 		ItemStack otherStack = ((ComparableItemStack)object).stack;
 		if(!OreDictionary.itemMatches(stack,otherStack, false))
