@@ -7,6 +7,7 @@ import blusunrize.immersiveengineering.common.EventHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import dan200.computercraft.api.peripheral.IPeripheral;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -37,9 +38,14 @@ public abstract class IEPeripheral implements IPeripheral
 		HashMap<String, Object> ret = new HashMap<>();
 		if (stack!=null&&stack.getItem()!=null)
 		{
-			ret.put("stackSize", stack.stackSize);
-			ret.put("item", stack.getItem().getUnlocalizedName(stack));
+			ret.put("size", stack.stackSize);
+			ret.put("name", Item.itemRegistry.getNameForObject(stack.getItem()));
+			ret.put("nameUnlocalized", stack.getUnlocalizedName());
+			ret.put("label", stack.getDisplayName());
 			ret.put("damage", stack.getItemDamage());
+			ret.put("maxDamage", stack.getMaxDamage());
+			ret.put("maxSize", stack.getMaxStackSize());
+			ret.put("hasTag", stack.hasTagCompound());
 		}
 		return ret;
 	}
@@ -48,9 +54,10 @@ public abstract class IEPeripheral implements IPeripheral
 		HashMap<String, Object> ret = new HashMap<>();
 		if (tank!=null&&tank.getFluid()!=null)
 		{
-			ret.put("fluid", tank.getFluid().getFluid().getUnlocalizedName());
+			ret.put("name", tank.getFluid().getFluid().getUnlocalizedName());
 			ret.put("amount", tank.getFluidAmount());
 			ret.put("capacity", tank.getCapacity());
+			ret.put("hasTag", tank.getFluid().tag!=null);
 		}
 		return ret;
 	}
@@ -59,8 +66,9 @@ public abstract class IEPeripheral implements IPeripheral
 		HashMap<String, Object> ret = new HashMap<>();
 		if (tank!=null&&tank.getFluid()!=null)
 		{
-			ret.put("fluid", tank.getFluid().getUnlocalizedName());
+			ret.put("name", tank.getFluid().getUnlocalizedName());
 			ret.put("amount", tank.amount);
+			ret.put("hasTag", tank.tag!=null);
 		}
 		return ret;
 	}

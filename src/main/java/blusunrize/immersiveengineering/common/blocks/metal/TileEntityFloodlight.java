@@ -36,6 +36,7 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable
 	public int computerTurnCooldown = 0;
 	public boolean computerControlled;
 	public boolean computerOn;
+	private boolean shouldUpdate = true;
 
 	@Override
 	public void updateEntity()
@@ -44,6 +45,13 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable
 			return;
 		boolean b = active;
 		boolean enabled;
+		if (shouldUpdate)
+		{
+			updateFakeLights(true, active);
+			markDirty();
+			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+			shouldUpdate = false;
+		}
 		if (computerControlled)
 			enabled = computerOn;
 		else
@@ -355,9 +363,7 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable
 		rotY %= 360;
 		if (computer)
 			computerTurnCooldown = 20;
-		updateFakeLights(true, active);
-		markDirty();
-		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+		shouldUpdate = true;
 	}
 	public void turnX(boolean up, boolean computer)
 	{
@@ -366,9 +372,7 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable
 			rotX = newX;
 		if (computer)
 			computerTurnCooldown = 20;
-		updateFakeLights(true, active);
-		markDirty();
-		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+		shouldUpdate = true;
 	}
 	public boolean canComputerTurn()
 	{
