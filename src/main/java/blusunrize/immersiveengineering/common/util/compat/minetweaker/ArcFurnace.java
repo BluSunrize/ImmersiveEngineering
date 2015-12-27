@@ -16,7 +16,6 @@ import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 public class ArcFurnace
 {
 	@ZenMethod
-//	public static void addRecipe(IItemStack output, IIngredient input, IItemStack slag, int time, int energyPerTick, @Optional IIngredient[] additives)
 	public static void addRecipe(IItemStack output, IIngredient input, IItemStack slag, int time, int energyPerTick, @Optional IIngredient[] additives, @Optional String specialRecipeType)
 	{
 		Object oInput = MTHelper.toObject(input);
