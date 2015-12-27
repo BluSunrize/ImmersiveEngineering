@@ -1,7 +1,5 @@
 package blusunrize.immersiveengineering.common.util.compat.computercraft;
 
-import java.util.HashMap;
-
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFloodlight;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
