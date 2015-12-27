@@ -16,7 +16,8 @@ import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 public class ArcFurnace
 {
 	@ZenMethod
-	public static void addRecipe(IItemStack output, IIngredient input, IItemStack slag, int time, int energyPerTick, @Optional IIngredient[] additives)
+//	public static void addRecipe(IItemStack output, IIngredient input, IItemStack slag, int time, int energyPerTick, @Optional IIngredient[] additives)
+	public static void addRecipe(IItemStack output, IIngredient input, IItemStack slag, int time, int energyPerTick, @Optional IIngredient[] additives, @Optional String specialRecipeType)
 	{
 		Object oInput = MTHelper.toObject(input);
 		if(oInput==null)
@@ -25,8 +26,9 @@ public class ArcFurnace
 		Object[] adds = new Object[additives.length];
 		for(int i=0; i<additives.length; i++)
 			adds[i] = MTHelper.toObject(additives[i]);
-		
+
 		ArcFurnaceRecipe r = new ArcFurnaceRecipe(MTHelper.toStack(output), oInput, MTHelper.toStack(slag), time, energyPerTick, adds);
+		r.setSpecialRecipeType(specialRecipeType);
 		MineTweakerAPI.apply(new Add(r));
 	}
 
