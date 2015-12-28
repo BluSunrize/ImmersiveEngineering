@@ -14,8 +14,6 @@ public class PeripheralEnergyMeter extends IEPeripheral {
 	}
 
 	final static String[] cmds = {"getAvgEnergy"};
-	World w;
-	int x, y, z;
 	@Override
 	public String getType()
 	{
@@ -32,16 +30,13 @@ public class PeripheralEnergyMeter extends IEPeripheral {
 	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments)
 			throws LuaException, InterruptedException
 	{
-		if (method<0||method>=cmds.length)
-			return null;
-		
 		if (method==0)
 		{
 			TileEntityEnergyMeter te = (TileEntityEnergyMeter) getTileEntity(TileEntityEnergyMeter.class);
 			if (te!=null)
 				return new Object[]{te.getAveragePower()};
 			else
-				return new Object[]{-1};
+				throw new LuaException("The current transformer was removed");
 		}
 		return null;
 	}

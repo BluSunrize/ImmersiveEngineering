@@ -33,7 +33,7 @@ public class IEPeripheralProvider implements IPeripheralProvider
 			{
 				TileEntityCrusher crush = (TileEntityCrusher) te;
 				if (crush.pos==9&&crush.facing==side)
-					return new PeripheralCrusher(world, x, y, z);
+					return new PeripheralCrusher(world, x-crush.offset[0], y-crush.offset[1], z-crush.offset[2]);
 				else
 					return null;
 			}
@@ -41,7 +41,7 @@ public class IEPeripheralProvider implements IPeripheralProvider
 			{
 				TileEntityArcFurnace arc = (TileEntityArcFurnace) te;
 				if (arc.pos==25&&arc.facing==side)
-					return new PeripheralArcFurnace(world, x, y, z);
+					return new PeripheralArcFurnace(world, x-arc.offset[0], y-arc.offset[1], z-arc.offset[2]);
 				else
 					return null;
 			}
@@ -49,7 +49,7 @@ public class IEPeripheralProvider implements IPeripheralProvider
 			{
 				TileEntityExcavator exc = (TileEntityExcavator) te;
 				if (exc.pos==3&&exc.facing==side)
-					return new PeripheralExcavator(world, x, y, z);
+					return new PeripheralExcavator(world, x-exc.offset[0], y-exc.offset[1], z-exc.offset[2]);
 				else
 					return null;
 			}
@@ -57,7 +57,7 @@ public class IEPeripheralProvider implements IPeripheralProvider
 			{
 				TileEntityRefinery ref = (TileEntityRefinery) te;
 				if (ref.pos==9&&ref.facing==side)
-					return new PeripheralRefinery(world, x, y, z);
+					return new PeripheralRefinery(world, x-ref.offset[0], y-ref.offset[1], z-ref.offset[2]);
 				else
 					return null;
 			}
@@ -68,7 +68,7 @@ public class IEPeripheralProvider implements IPeripheralProvider
 				if (master==null)
 					return null;
 				if (((gen.pos==21 && !master.mirrored) || (gen.pos==23 && master.mirrored)))
-					return new PeripheralDieselGenerator(world, x, y, z);
+					return new PeripheralDieselGenerator(world, x-gen.offset[0], y-gen.offset[1], z-gen.offset[2]);
 				else
 					return null;
 			}
@@ -82,9 +82,15 @@ public class IEPeripheralProvider implements IPeripheralProvider
 			if (te instanceof TileEntityFloodlight)
 				return new PeripheralFloodlight(world, x, y, z);
 			if (te instanceof TileEntityFermenter)
-				return new PeripheralFermenter(world, x, y, z);
+			{
+				TileEntityFermenter fer = (TileEntityFermenter) te;
+				return new PeripheralFermenter(world, x-fer.offset[0], y-fer.offset[1], z-fer.offset[2]);
+			}
 			if (te instanceof TileEntitySqueezer)
-				return new PeripheralSqueezer(world, x, y, z);
+			{
+				TileEntitySqueezer sq = (TileEntitySqueezer) te;
+				return new PeripheralSqueezer(world, x-sq.offset[0], y-sq.offset[1], z-sq.offset[2]);
+			}
 		}
 		return null;
 	}

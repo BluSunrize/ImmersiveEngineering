@@ -32,7 +32,7 @@ public class PeripheralFloodlight extends IEPeripheral
 	{
 		TileEntityFloodlight te = (TileEntityFloodlight) getTileEntity(TileEntityFloodlight.class);
 		if(te==null)
-			return null;
+			throw new LuaException("The floodlight was removed");
 		switch (method)
 		{
 		case 0://turn X
@@ -78,7 +78,7 @@ public class PeripheralFloodlight extends IEPeripheral
 	@Override
 	public void attach(IComputerAccess computer)
 	{
-		TileEntityFloodlight te = (TileEntityFloodlight) getTileEntity(TileEntityFloodlight.class);
+		TileEntityFloodlight te = (TileEntityFloodlight) w.getTileEntity(x, y, z);
 		if(te==null)
 			return;
 		te.computerControlled = true;
@@ -88,7 +88,7 @@ public class PeripheralFloodlight extends IEPeripheral
 	@Override
 	public void detach(IComputerAccess computer)
 	{
-		TileEntityFloodlight te = (TileEntityFloodlight) getTileEntity(TileEntityFloodlight.class);
+		TileEntityFloodlight te = (TileEntityFloodlight) w.getTileEntity(x, y, z);
 		if(te==null)
 			return;
 		te.computerControlled = false;

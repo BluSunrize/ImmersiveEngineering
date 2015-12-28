@@ -34,7 +34,7 @@ public static final String[] cmds = {"isActive", "setEnabled", "getEnergyStored"
 	{
 		TileEntityExcavator te = (TileEntityExcavator) getTileEntity(TileEntityExcavator.class);
 		if (te==null)
-			return null;
+			throw new LuaException("The excavator was removed");
 		switch (method)
 		{
 		case 0://isActive
@@ -56,7 +56,7 @@ public static final String[] cmds = {"isActive", "setEnabled", "getEnergyStored"
 	@Override
 	public void attach(IComputerAccess computer)
 	{
-		TileEntityExcavator te = (TileEntityExcavator) getTileEntity(TileEntityExcavator.class);
+		TileEntityExcavator te = (TileEntityExcavator) w.getTileEntity(x, y, z);
 		if (te==null)
 			return;
 		te.computerControlled = true;
@@ -66,7 +66,7 @@ public static final String[] cmds = {"isActive", "setEnabled", "getEnergyStored"
 	@Override
 	public void detach(IComputerAccess computer)
 	{
-		TileEntityExcavator te = (TileEntityExcavator) getTileEntity(TileEntityExcavator.class);
+		TileEntityExcavator te = (TileEntityExcavator) w.getTileEntity(x, y, z);
 		if (te==null)
 			return;
 		te.computerControlled = false;
@@ -84,6 +84,6 @@ public static final String[] cmds = {"isActive", "setEnabled", "getEnergyStored"
 	protected TileEntity getTileEntity(Class<? extends TileEntity> type)
 	{
 		TileEntityExcavator te = (TileEntityExcavator) super.getTileEntity(type);
-		return te==null?null:te.master();
+		return te;
 	}
 }

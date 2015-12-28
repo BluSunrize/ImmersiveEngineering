@@ -42,6 +42,10 @@ public class ComputercraftHelper extends IECompatModule
 			ManualHelper.getManual().addEntry("computer.squeezerAndFermenter", "computers", new ManualPages.Text(ManualHelper.getManual(), "computer.squeezerAndFermenter0"),
 					new ManualPages.Text(ManualHelper.getManual(), "computer.squeezerAndFermenter1"),
 					new ManualPages.Text(ManualHelper.getManual(), "computer.squeezerAndFermenter2"));
+			ManualHelper.getManual().addEntry("computer.floodlight", "computers", new ManualPages.Text(ManualHelper.getManual(), "computer.floodlight0"),
+					new ManualPages.Text(ManualHelper.getManual(), "computer.floodlight1"));
+			ManualHelper.getManual().addEntry("computer.refinery", "computers", new ManualPages.Text(ManualHelper.getManual(), "computer.refinery0"),
+					new ManualPages.Text(ManualHelper.getManual(), "computer.refinery1"));
 		}
 	}
 

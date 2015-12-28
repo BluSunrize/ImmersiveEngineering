@@ -87,7 +87,7 @@ public class EventHandler
 	public static ArrayList<ISpawnInterdiction> interdictionTiles = new ArrayList<ISpawnInterdiction>();
 	public static boolean validateConnsNextTick = false;
 	public static Set<TileEntityRequest> ccRequestedTEs = Collections.newSetFromMap(new ConcurrentHashMap<TileEntityRequest, Boolean>());
-	public static ConcurrentHashMap<TileEntityRequest, TileEntity> cachedRequestRsults = new ConcurrentHashMap<>();
+	public static Set<TileEntityRequest> cachedRequestResults = Collections.newSetFromMap(new ConcurrentHashMap<TileEntityRequest, Boolean>());
 	@SubscribeEvent
 	public void onLoad(WorldEvent.Load event)
 	{
@@ -223,7 +223,7 @@ public class EventHandler
 			ImmersiveNetHandler.INSTANCE.getTransferedRates(event.world.provider.dimensionId).clear();
 			// CC tile entity requests
 			Iterator<TileEntityRequest> it;
-			it = cachedRequestRsults.keySet().iterator();
+			it = cachedRequestResults.iterator();
 			while (it.hasNext())
 			{
 				TileEntityRequest req = it.next();
@@ -233,7 +233,6 @@ public class EventHandler
 					continue;
 				}
 				req.te = req.w.getTileEntity(req.x, req.y, req.z);
-				cachedRequestRsults.put(req, req.te);
 			}
 			it = ccRequestedTEs.iterator();
 			int timeout = 100;
@@ -248,7 +247,7 @@ public class EventHandler
 				}
 				it.remove();
 				timeout--;
-				cachedRequestRsults.put(req, req.te);
+				cachedRequestResults.add(req);
 			}
 		}
 	}
@@ -521,7 +520,14 @@ public class EventHandler
 	public static TileEntity requestTE(World w, int x, int y, int z)
 	{
 		TileEntityRequest req = new TileEntityRequest(w, x, y, z);
-		TileEntity te = cachedRequestRsults.get(req);
+		TileEntity te = null;
+		Iterator<TileEntityRequest> it = cachedRequestResults.iterator();
+		while (it.hasNext())
+		{
+			TileEntityRequest curr = it.next();
+			if (req.equals(curr))
+				te = curr.te;
+		}
 		if (te!=null)
 			return te;
 		synchronized (req)

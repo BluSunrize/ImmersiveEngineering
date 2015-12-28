@@ -7,14 +7,13 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityRefinery;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
-import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidTank;
 
 public class PeripheralRefinery extends IEPeripheral
 {
-	public static final String[] cmds = {"getInputFluid", "getOutputTank", "getRecipe", "setEnabled", "isValidRecipe", "getEmptyCanisters", "getFilledCanisters", "getMaxEnergyStored", "getEnergyStored"};
+	public static final String[] cmds = {"getInputFluid", "getOutputTank", "getRecipe", "setEnabled", "isValidRecipe", "getEmptyCanisters", "getFullCanisters", "getMaxEnergyStored", "getEnergyStored"};
 	public PeripheralRefinery(World w, int _x, int _y, int _z)
 	{
 		super(w, _x, _y, _z);
@@ -39,7 +38,7 @@ public class PeripheralRefinery extends IEPeripheral
 
 		TileEntityRefinery te = (TileEntityRefinery) getTileEntity(TileEntityRefinery.class);
 		if (te==null)
-			return null;
+			throw new LuaException("The refinery was removed");
 		switch (method)
 		{
 		case 0://getFluid
@@ -113,7 +112,7 @@ public class PeripheralRefinery extends IEPeripheral
 	@Override
 	public void attach(IComputerAccess computer)
 	{
-		TileEntityRefinery te = (TileEntityRefinery) getTileEntity(TileEntityRefinery.class);
+		TileEntityRefinery te = (TileEntityRefinery) w.getTileEntity(x, y, z);
 		if (te==null)
 			return;
 		te.computerControlled = true;
@@ -123,7 +122,7 @@ public class PeripheralRefinery extends IEPeripheral
 	@Override
 	public void detach(IComputerAccess computer)
 	{
-		TileEntityRefinery te = (TileEntityRefinery) getTileEntity(TileEntityRefinery.class);
+		TileEntityRefinery te = (TileEntityRefinery) w.getTileEntity(x, y, z);
 		if (te==null)
 			return;
 		te.computerControlled = false;
@@ -132,6 +131,6 @@ public class PeripheralRefinery extends IEPeripheral
 	protected TileEntity getTileEntity(Class<? extends TileEntity> type)
 	{
 		TileEntityRefinery te = (TileEntityRefinery) super.getTileEntity(type);
-		return te==null?null:te.master();
+		return te;
 	}
 }

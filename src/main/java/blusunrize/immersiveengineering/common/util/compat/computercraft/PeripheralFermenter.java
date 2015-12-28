@@ -34,6 +34,8 @@ public class PeripheralFermenter extends IEPeripheral
 			throws LuaException, InterruptedException
 	{
 		TileEntityFermenter te = (TileEntityFermenter) getTileEntity(TileEntityFermenter.class);
+		if (te==null)
+			throw new LuaException("The fermenter was removed");
 		switch (method)
 		{
 		case 0://recipe
@@ -84,6 +86,6 @@ public class PeripheralFermenter extends IEPeripheral
 	{
 
 		TileEntityFermenter te = (TileEntityFermenter) super.getTileEntity(type);
-		return te==null?null:te.master();
+		return te;
 	}
 }

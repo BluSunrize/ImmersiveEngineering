@@ -33,7 +33,7 @@ public class PeripheralDieselGenerator extends IEPeripheral
 	{
 		TileEntityDieselGenerator te = (TileEntityDieselGenerator) getTileEntity(TileEntityDieselGenerator.class);
 		if (te==null)
-			return null;
+			throw new LuaException("The diesel generator was removed");
 		switch (method)
 		{
 		case 0://set enabled
@@ -52,7 +52,7 @@ public class PeripheralDieselGenerator extends IEPeripheral
 	@Override
 	public void attach(IComputerAccess computer)
 	{
-		TileEntityDieselGenerator te = (TileEntityDieselGenerator) getTileEntity(TileEntityDieselGenerator.class);
+		TileEntityDieselGenerator te = (TileEntityDieselGenerator) w.getTileEntity(x, y, z);
 		if (te==null)
 			return;
 		te.computerControlled = true;
@@ -62,7 +62,7 @@ public class PeripheralDieselGenerator extends IEPeripheral
 	@Override
 	public void detach(IComputerAccess computer)
 	{
-		TileEntityDieselGenerator te = (TileEntityDieselGenerator) getTileEntity(TileEntityDieselGenerator.class);
+		TileEntityDieselGenerator te = (TileEntityDieselGenerator) w.getTileEntity(x, y, z);
 		if (te==null)
 			return;
 		te.computerControlled = false;
@@ -71,6 +71,6 @@ public class PeripheralDieselGenerator extends IEPeripheral
 	protected TileEntity getTileEntity(Class<? extends TileEntity> type)
 	{
 		TileEntityDieselGenerator te = (TileEntityDieselGenerator) super.getTileEntity(type);
-		return te==null?null:te.master();
+		return te;
 	}
 }

@@ -1,11 +1,9 @@
 package blusunrize.immersiveengineering.common.util.compat.computercraft;
 
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
-import blusunrize.immersiveengineering.common.util.IELogger;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
-import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -18,8 +16,6 @@ public class PeripheralCrusher extends IEPeripheral
 		super(w, _x, _y, _z);
 	}
 
-	World w;
-	int x, y, z;
 	@Override
 	public String getType()
 	{
@@ -90,7 +86,7 @@ public class PeripheralCrusher extends IEPeripheral
 	@Override
 	public void attach(IComputerAccess computer)
 	{
-		TileEntityCrusher te = (TileEntityCrusher) getTileEntity(TileEntityCrusher.class);
+		TileEntityCrusher te = (TileEntityCrusher) w.getTileEntity(x, y, z);
 		if (te==null)
 			return;
 		te.computerControlled = true;
@@ -100,7 +96,7 @@ public class PeripheralCrusher extends IEPeripheral
 	@Override
 	public void detach(IComputerAccess computer)
 	{
-		TileEntityCrusher te = (TileEntityCrusher) getTileEntity(TileEntityCrusher.class);
+		TileEntityCrusher te = (TileEntityCrusher) w.getTileEntity(x, y, z);
 		if (te==null)
 			return;
 		te.computerControlled = false;
@@ -109,6 +105,6 @@ public class PeripheralCrusher extends IEPeripheral
 	protected TileEntity getTileEntity(Class<? extends TileEntity> type)
 	{
 		TileEntityCrusher te = (TileEntityCrusher) super.getTileEntity(type);
-		return te==null?null:te.master();
+		return te;
 	}
 }

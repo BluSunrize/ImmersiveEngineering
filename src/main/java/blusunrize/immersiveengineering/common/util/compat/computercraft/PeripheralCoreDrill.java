@@ -34,7 +34,7 @@ public class PeripheralCoreDrill extends IEPeripheral
 		TileEntitySampleDrill te = (TileEntitySampleDrill) getTileEntity(TileEntitySampleDrill.class);
 		IELogger.info(te);
 		if (te==null)
-			return null;
+			throw new LuaException("The sample drill was removed");
 		switch (method)
 		{
 		case 0://sample progress

@@ -34,6 +34,8 @@ public class PeripheralSqueezer extends IEPeripheral
 			throws LuaException, InterruptedException
 	{
 		TileEntitySqueezer te = (TileEntitySqueezer) getTileEntity(TileEntitySqueezer.class);
+		if (te==null)
+			throw new LuaException("The squeezer was removed");
 		switch (method)
 		{
 		case 0://recipe
@@ -84,6 +86,6 @@ public class PeripheralSqueezer extends IEPeripheral
 	{
 
 		TileEntitySqueezer te = (TileEntitySqueezer) super.getTileEntity(type);
-		return te==null?null:te.master();
+		return te;
 	}
 }

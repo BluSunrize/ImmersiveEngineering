@@ -3,11 +3,9 @@ package blusunrize.immersiveengineering.common.util.compat.computercraft;
 import java.util.Map;
 
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityArcFurnace;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
-import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
@@ -37,7 +35,7 @@ public class PeripheralArcFurnace extends IEPeripheral
 	{
 		TileEntityArcFurnace te = (TileEntityArcFurnace) getTileEntity(TileEntityArcFurnace.class);
 		if (te==null)
-			return null;
+			throw new LuaException("The arc furnace was removed");
 		switch (method)
 		{
 		case 0: //set RS simulation
@@ -94,7 +92,7 @@ public class PeripheralArcFurnace extends IEPeripheral
 	@Override
 	public void attach(IComputerAccess computer)
 	{
-		TileEntityArcFurnace te = (TileEntityArcFurnace) getTileEntity(TileEntityArcFurnace.class);
+		TileEntityArcFurnace te = (TileEntityArcFurnace) w.getTileEntity(x, y, z);
 		if (te!=null)
 		{
 			te.computerControlled = true;
@@ -105,7 +103,7 @@ public class PeripheralArcFurnace extends IEPeripheral
 	@Override
 	public void detach(IComputerAccess computer)
 	{
-		TileEntityArcFurnace te = (TileEntityArcFurnace) getTileEntity(TileEntityArcFurnace.class);
+		TileEntityArcFurnace te = (TileEntityArcFurnace) w.getTileEntity(x, y, z);
 		if (te!=null)
 			te.computerControlled = false;
 	}
@@ -114,7 +112,7 @@ public class PeripheralArcFurnace extends IEPeripheral
 	protected TileEntity getTileEntity(Class<? extends TileEntity> type)
 	{
 		TileEntityArcFurnace te = (TileEntityArcFurnace) super.getTileEntity(type);
-		return te==null?null:te.master();
+		return te;
 	}
 
 }
