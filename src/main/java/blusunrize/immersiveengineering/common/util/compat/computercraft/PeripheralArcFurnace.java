@@ -6,7 +6,6 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityArcFurnace;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 public class PeripheralArcFurnace extends IEPeripheral
@@ -106,13 +105,6 @@ public class PeripheralArcFurnace extends IEPeripheral
 		TileEntityArcFurnace te = (TileEntityArcFurnace) w.getTileEntity(x, y, z);
 		if (te!=null)
 			te.computerControlled = false;
-	}
-	
-	@Override
-	protected TileEntity getTileEntity(Class<? extends TileEntity> type)
-	{
-		TileEntityArcFurnace te = (TileEntityArcFurnace) super.getTileEntity(type);
-		return te;
 	}
 
 }

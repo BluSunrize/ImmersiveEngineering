@@ -6,7 +6,6 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFermenter;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 public class PeripheralFermenter extends IEPeripheral
@@ -81,11 +80,4 @@ public class PeripheralFermenter extends IEPeripheral
 	@Override
 	public void detach(IComputerAccess computer)
 	{}
-	@Override
-	protected TileEntity getTileEntity(Class<? extends TileEntity> type)
-	{
-
-		TileEntityFermenter te = (TileEntityFermenter) super.getTileEntity(type);
-		return te;
-	}
 }

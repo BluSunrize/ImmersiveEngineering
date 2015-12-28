@@ -29,16 +29,16 @@ public class ComputercraftHelper extends IECompatModule
 					new ManualPages.Text(ManualHelper.getManual(), "computer.general2"),
 					new ManualPages.Text(ManualHelper.getManual(), "computer.general3"),
 					new ManualPages.Text(ManualHelper.getManual(), "computer.general4"));
-			ManualHelper.getManual().addEntry("arcfurnace", "computers", new ManualPages.Text(ManualHelper.getManual(), "computer.arcFurnace0"),
+			ManualHelper.getManual().addEntry("computer.arcfurnace", "computers", new ManualPages.Text(ManualHelper.getManual(), "computer.arcFurnace0"),
 					new ManualPages.Text(ManualHelper.getManual(), "computer.arcFurnace1"),
 					new ManualPages.Text(ManualHelper.getManual(), "computer.arcFurnace2"));
 			ManualHelper.getManual().addEntry("computer.sampleDrill", "computers", new ManualPages.Text(ManualHelper.getManual(), "computer.sampleDrill0"),
 					new ManualPages.Text(ManualHelper.getManual(), "computer.sampleDrill1"));
-			ManualHelper.getManual().addEntry("crusher", "computers", new ManualPages.Text(ManualHelper.getManual(), "computer.crusher0"),
+			ManualHelper.getManual().addEntry("computer.crusher", "computers", new ManualPages.Text(ManualHelper.getManual(), "computer.crusher0"),
 					new ManualPages.Text(ManualHelper.getManual(), "computer.crusher1"));
-			ManualHelper.getManual().addEntry("dieselgen", "computers", new ManualPages.Text(ManualHelper.getManual(), "computer.dieselgen0"));
-			ManualHelper.getManual().addEntry("eMeter", "computers", new ManualPages.Text(ManualHelper.getManual(), "computer.energymeter0"));
-			ManualHelper.getManual().addEntry("excavator", "computers", new ManualPages.Text(ManualHelper.getManual(), "computer.excavator0"));
+			ManualHelper.getManual().addEntry("computer.dieselgen", "computers", new ManualPages.Text(ManualHelper.getManual(), "computer.dieselgen0"));
+			ManualHelper.getManual().addEntry("computer.energymeter", "computers", new ManualPages.Text(ManualHelper.getManual(), "computer.energymeter0"));
+			ManualHelper.getManual().addEntry("computer.excavator", "computers", new ManualPages.Text(ManualHelper.getManual(), "computer.excavator0"));
 			ManualHelper.getManual().addEntry("computer.squeezerAndFermenter", "computers", new ManualPages.Text(ManualHelper.getManual(), "computer.squeezerAndFermenter0"),
 					new ManualPages.Text(ManualHelper.getManual(), "computer.squeezerAndFermenter1"),
 					new ManualPages.Text(ManualHelper.getManual(), "computer.squeezerAndFermenter2"));
@@ -46,6 +46,8 @@ public class ComputercraftHelper extends IECompatModule
 					new ManualPages.Text(ManualHelper.getManual(), "computer.floodlight1"));
 			ManualHelper.getManual().addEntry("computer.refinery", "computers", new ManualPages.Text(ManualHelper.getManual(), "computer.refinery0"),
 					new ManualPages.Text(ManualHelper.getManual(), "computer.refinery1"));
+			ManualHelper.getManual().addEntry("computer.assembler", "computers", new ManualPages.Text(ManualHelper.getManual(), "computer.assembler0"),
+					new ManualPages.Text(ManualHelper.getManual(), "computer.assembler1"));
 		}
 	}
 

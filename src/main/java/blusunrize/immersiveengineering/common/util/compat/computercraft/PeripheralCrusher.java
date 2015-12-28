@@ -5,7 +5,6 @@ import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 public class PeripheralCrusher extends IEPeripheral
@@ -100,11 +99,5 @@ public class PeripheralCrusher extends IEPeripheral
 		if (te==null)
 			return;
 		te.computerControlled = false;
-	}
-	@Override
-	protected TileEntity getTileEntity(Class<? extends TileEntity> type)
-	{
-		TileEntityCrusher te = (TileEntityCrusher) super.getTileEntity(type);
-		return te;
 	}
 }

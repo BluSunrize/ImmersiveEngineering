@@ -5,7 +5,6 @@ import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 public class PeripheralExcavator extends IEPeripheral
@@ -79,11 +78,5 @@ public static final String[] cmds = {"isActive", "setEnabled", "getEnergyStored"
 			return false;
 		PeripheralExcavator otherPer = (PeripheralExcavator) other;
 		return w==otherPer.w&&x==otherPer.x&&y==otherPer.y&&z==otherPer.z;
-	}
-	@Override
-	protected TileEntity getTileEntity(Class<? extends TileEntity> type)
-	{
-		TileEntityExcavator te = (TileEntityExcavator) super.getTileEntity(type);
-		return te;
 	}
 }

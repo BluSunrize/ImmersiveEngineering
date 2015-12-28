@@ -7,7 +7,6 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityRefinery;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidTank;
 
@@ -126,11 +125,5 @@ public class PeripheralRefinery extends IEPeripheral
 		if (te==null)
 			return;
 		te.computerControlled = false;
-	}
-	@Override
-	protected TileEntity getTileEntity(Class<? extends TileEntity> type)
-	{
-		TileEntityRefinery te = (TileEntityRefinery) super.getTileEntity(type);
-		return te;
 	}
 }

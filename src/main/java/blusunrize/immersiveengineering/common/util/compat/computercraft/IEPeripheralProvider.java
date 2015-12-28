@@ -2,6 +2,7 @@ package blusunrize.immersiveengineering.common.util.compat.computercraft;
 
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityArcFurnace;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityAssembler;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityDieselGenerator;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityEnergyMeter;
@@ -90,6 +91,12 @@ public class IEPeripheralProvider implements IPeripheralProvider
 			{
 				TileEntitySqueezer sq = (TileEntitySqueezer) te;
 				return new PeripheralSqueezer(world, x-sq.offset[0], y-sq.offset[1], z-sq.offset[2]);
+			}
+			if (te instanceof TileEntityAssembler)
+			{
+				TileEntityAssembler assembler = (TileEntityAssembler) te;
+				if (assembler.offset[1]==-1)
+					return new PeripheralAssembler(world, x-assembler.offset[0], y-assembler.offset[1], z-assembler.offset[2]);
 			}
 		}
 		return null;

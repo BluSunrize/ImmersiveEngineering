@@ -4,7 +4,6 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityDieselGener
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 public class PeripheralDieselGenerator extends IEPeripheral
@@ -66,11 +65,5 @@ public class PeripheralDieselGenerator extends IEPeripheral
 		if (te==null)
 			return;
 		te.computerControlled = false;
-	}
-	@Override
-	protected TileEntity getTileEntity(Class<? extends TileEntity> type)
-	{
-		TileEntityDieselGenerator te = (TileEntityDieselGenerator) super.getTileEntity(type);
-		return te;
 	}
 }
