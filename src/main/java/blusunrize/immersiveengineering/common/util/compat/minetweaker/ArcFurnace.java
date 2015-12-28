@@ -27,7 +27,8 @@ public class ArcFurnace
 			adds[i] = MTHelper.toObject(additives[i]);
 
 		ArcFurnaceRecipe r = new ArcFurnaceRecipe(MTHelper.toStack(output), oInput, MTHelper.toStack(slag), time, energyPerTick, adds);
-		r.setSpecialRecipeType(specialRecipeType);
+		if(specialRecipeType!=null)
+			r.setSpecialRecipeType(specialRecipeType);
 		MineTweakerAPI.apply(new Add(r));
 	}
 
