@@ -89,8 +89,10 @@ public class EntityRailgunShot extends EntityIEProjectile
 			if(mop.entityHit!=null)
 			{
 				if(getAmmoProperties()!=null)
+				{
 					if(!getAmmoProperties().overrideHitEntity(mop.entityHit, getShooter()))
 						mop.entityHit.attackEntityFrom(IEDamageSources.causeRailgunDamage(this, getShooter()), (float)getAmmoProperties().damage);
+				}
 			}
 		}
 	}

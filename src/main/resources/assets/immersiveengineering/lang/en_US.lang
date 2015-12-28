@@ -252,6 +252,9 @@ item.ImmersiveEngineering.toolupgrade.revolverBayonet.name=Bayonet
 item.ImmersiveEngineering.toolupgrade.revolverMagazine.name=Extended Magazine
 item.ImmersiveEngineering.toolupgrade.revolverElectro.name=Amplifier Electron Tubes
 item.ImmersiveEngineering.toolupgrade.chemthrowerFocus.name=Focused Nozzle
+item.ImmersiveEngineering.toolupgrade.railgunScope.name=Precision Scope
+item.ImmersiveEngineering.toolupgrade.railgunCapacitors.name=Additional Capacitors
+
 
 item.ImmersiveEngineering.blueprint.name=Engineer's Blueprint
 
@@ -398,6 +401,8 @@ desc.ImmersiveEngineering.flavour.toolupgrade.revolverBayonet=Adds melee damage 
 desc.ImmersiveEngineering.flavour.toolupgrade.revolverMagazine=Increases the Revolver's magazine size
 desc.ImmersiveEngineering.flavour.toolupgrade.revolverElectro=Revolver shots inflict shock damage
 desc.ImmersiveEngineering.flavour.toolupgrade.chemthrowerFocus=Decreases spread and increases range of the Chemical Thrower
+desc.ImmersiveEngineering.flavour.toolupgrade.railgunScope=Allows Railgun to zoom in
+desc.ImmersiveEngineering.flavour.toolupgrade.railgunCapacitors=Reduces charge time and increases energy storage of the Railgun
 
 gui.ImmersiveEngineering.empty=Empty
 

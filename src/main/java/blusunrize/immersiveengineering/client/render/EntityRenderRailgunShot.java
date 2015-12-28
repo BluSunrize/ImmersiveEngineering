@@ -18,6 +18,22 @@ public class EntityRenderRailgunShot extends Render
 	@Override
 	public void doRender(Entity entity, double x, double y, double z, float f0, float f1)
 	{
+		double yaw = entity.prevRotationYaw + (entity.rotationYaw - entity.prevRotationYaw) * f1 - 90.0F;
+		double pitch = entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * f1;
+
+		ItemStack ammo = ((EntityRailgunShot)entity).getAmmo();
+		int[][] colourMap = {{0x777777,0xa4a4a4}};
+		if(ammo!=null)
+		{
+			RailgunHandler.RailgunProjectileProperties prop = RailgunHandler.getProjectileProperties(ammo);
+			colourMap = prop!=null?prop.colourMap:colourMap;
+		}
+		
+		renderRailgunProjectile(x,y,z, yaw, pitch, colourMap);
+	}
+
+	public static void renderRailgunProjectile(double x, double y, double z, double yaw, double pitch, int[][] colourMap)
+	{
 		GL11.glPushMatrix();
 		GL11.glTranslated(x, y, z);
 		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
@@ -29,19 +45,11 @@ public class EntityRenderRailgunShot extends Render
 		OpenGlHelper.glBlendFunc(770, 771, 1, 0);
 
 		GL11.glDisable(GL11.GL_CULL_FACE);
-		GL11.glRotatef(entity.prevRotationYaw + (entity.rotationYaw - entity.prevRotationYaw) * f1 - 90.0F, 0.0F, 1.0F, 0.0F);
-		GL11.glRotatef(entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * f1, 0.0F, 0.0F, 1.0F);
+		GL11.glRotated(yaw, 0.0F, 1.0F, 0.0F);
+		GL11.glRotated(pitch, 0.0F, 0.0F, 1.0F);
 
 		GL11.glScalef(.25f, .25f, .25f);
 
-		ItemStack ammo = ((EntityRailgunShot)entity).getAmmo();
-
-		int[][] colourMap = {{0x777777,0xa4a4a4}};
-		if(ammo!=null)
-		{
-			RailgunHandler.RailgunProjectileProperties prop = RailgunHandler.getProjectileProperties(ammo);
-			colourMap = prop!=null?prop.colourMap:colourMap;
-		}
 		if(colourMap.length==1)
 		{
 			colourMap = new int[][]{colourMap[0],colourMap[0]};
@@ -120,6 +128,7 @@ public class EntityRenderRailgunShot extends Render
 		GL11.glDisable(GL12.GL_RESCALE_NORMAL);
 		GL11.glPopMatrix();
 	}
+
 
 	@Override
 	protected ResourceLocation getEntityTexture(Entity p_110775_1_)

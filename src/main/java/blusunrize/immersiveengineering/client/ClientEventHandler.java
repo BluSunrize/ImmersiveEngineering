@@ -30,7 +30,6 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOve
 import blusunrize.immersiveengineering.common.gui.ContainerRevolver;
 import blusunrize.immersiveengineering.common.items.ItemChemthrower;
 import blusunrize.immersiveengineering.common.items.ItemDrill;
-import blusunrize.immersiveengineering.common.items.ItemRailgun;
 import blusunrize.immersiveengineering.common.items.ItemRevolver;
 import blusunrize.immersiveengineering.common.items.ItemSkyhook;
 import blusunrize.immersiveengineering.common.util.IELogger;
@@ -353,9 +352,7 @@ public class ClientEventHandler
 				int resMin = Math.min(width,height);
 				float offsetX = (width-resMin)/2f;
 				float offsetY = (height-resMin)/2f;
-				GL11.glTranslatef(offsetX,offsetY,0);
-				ClientUtils.drawTexturedRect(0,0,resMin,resMin, 0f,1f,0f,1f);
-				GL11.glTranslatef(-offsetX,-offsetY,0);
+
 				if(resMin==width)
 				{
 					ClientUtils.drawColouredRect(0,0, width,(int)offsetY+1, 0xff000000);
@@ -366,6 +363,56 @@ public class ClientEventHandler
 					ClientUtils.drawColouredRect(0,0, (int)offsetX+1,height, 0xff000000);
 					ClientUtils.drawColouredRect((int)offsetX+resMin,0, (int)offsetX+1,height, 0xff000000);
 				}
+				GL11.glEnable(GL11.GL_BLEND);
+				OpenGlHelper.glBlendFunc(770, 771, 1, 0);
+
+				GL11.glTranslatef(offsetX,offsetY,0);
+				ClientUtils.drawTexturedRect(0,0,resMin,resMin, 0f,1f,0f,1f);
+
+				ClientUtils.bindTexture("immersiveengineering:textures/gui/hudElements.png");
+				ClientUtils.drawTexturedRect(218/256f*resMin,64/256f*resMin, 24/256f*resMin,128/256f*resMin, 64/256f,88/256f,96/256f,224/256f);
+				ItemStack equipped = ClientUtils.mc().thePlayer.getCurrentEquippedItem();
+				if(equipped!=null && equipped.getItem() instanceof IZoomTool)
+				{
+					IZoomTool tool = (IZoomTool)equipped.getItem();
+					float[] steps = tool.getZoomSteps(equipped, ClientUtils.mc().thePlayer);
+					if(steps!=null && steps.length>1)
+					{
+						int curStep = -1;
+						float dist=0;
+
+						float totalOffset = 0;
+						float stepLength = 118/(float)steps.length;
+						float stepOffset = (stepLength-7)/2f;
+						GL11.glTranslatef(223/256f*resMin,64/256f*resMin, 0);
+						GL11.glTranslatef(0,(5+stepOffset)/256*resMin,0);
+						for(int i=0; i<steps.length; i++)
+						{
+							ClientUtils.drawTexturedRect(0,0, 8/256f*resMin,7/256f*resMin, 88/256f,96/256f,96/256f,103/256f);
+							GL11.glTranslatef(0,stepLength/256*resMin,0);
+							totalOffset += stepLength;
+
+							if(curStep==-1 || Math.abs(steps[i]-ZoomHandler.fovZoom)<dist)
+							{
+								curStep = i;
+								dist = Math.abs(steps[i]-ZoomHandler.fovZoom);
+							}
+						}
+						GL11.glTranslatef(0,-totalOffset/256*resMin,0);
+
+						if(curStep>=0 && curStep<steps.length)
+						{
+							GL11.glTranslatef(6/256f*resMin,curStep*stepLength/256*resMin,0);
+							ClientUtils.drawTexturedRect(0,0, 8/256f*resMin,7/256f*resMin, 88/256f,98/256f,103/256f,110/256f);
+							ClientUtils.font().drawString((1/steps[curStep])+"x", (int)(16/256f*resMin),0, 0xffffff);
+							GL11.glTranslatef(-6/256f*resMin,-curStep*stepLength/256*resMin,0);
+						}
+						GL11.glTranslatef(0,-((5+stepOffset)/256*resMin),0);
+						GL11.glTranslatef(-223/256f*resMin,-64/256f*resMin, 0);
+					}
+				}	
+
+				GL11.glTranslatef(-offsetX,-offsetY,0);
 			}
 		}
 	}
@@ -378,8 +425,6 @@ public class ClientEventHandler
 			EntityPlayer player = ClientUtils.mc().thePlayer;
 			if(player.getCurrentEquippedItem()!=null)
 			{
-
-
 				ItemStack equipped = player.getCurrentEquippedItem();
 				if(OreDictionary.itemMatches(new ItemStack(IEContent.itemTool,1,2), equipped, false) || OreDictionary.itemMatches(new ItemStack(IEContent.itemWireCoil,1,OreDictionary.WILDCARD_VALUE), equipped, false) )
 				{
@@ -500,30 +545,30 @@ public class ClientEventHandler
 					}
 					GL11.glPopMatrix();
 				}
-				else if(equipped.getItem() instanceof ItemRailgun)
-				{
-					float dx = event.resolution.getScaledWidth()-32-48;
-					float dy = event.resolution.getScaledHeight()-40;
-					ClientUtils.bindTexture("immersiveengineering:textures/gui/hudElements.png");
-					GL11.glColor4f(1, 1, 1, 1);
-					GL11.glPushMatrix();
-					GL11.glEnable(GL11.GL_BLEND);
-					GL11.glTranslated(dx, dy, 0);
-
-					int duration = player.getItemInUseDuration();
-					int chargeTime = ((ItemRailgun)equipped.getItem()).getChargeTime(equipped);
-					int chargeLevel = Math.min(99, (int)(duration/(float)chargeTime*100));
-					//					System.out.println("");
-					//					ClientUtils.drawTexturedRect(0,0, 64,32, 0/256f,64/256f, 96/256f,128/256f);
-
-					GL11.glScalef(1.5f,1.5f,1.5f);
-					int col = Config.getBoolean("nixietubeFont")?Lib.colour_nixieTubeText:0xffffff;
-					ClientProxy.nixieFont.setDrawTubeFlag(false);
-					//					ClientProxy.nixieFont.drawString((chargeLevel<10?"0"+chargeLevel:""+chargeLevel), 19,3, col);
-					ClientProxy.nixieFont.setDrawTubeFlag(true);
-
-					GL11.glPopMatrix();
-				}
+				//				else if(equipped.getItem() instanceof ItemRailgun)
+				//				{
+				//					float dx = event.resolution.getScaledWidth()-32-48;
+				//					float dy = event.resolution.getScaledHeight()-40;
+				//					ClientUtils.bindTexture("immersiveengineering:textures/gui/hudElements.png");
+				//					GL11.glColor4f(1, 1, 1, 1);
+				//					GL11.glPushMatrix();
+				//					GL11.glEnable(GL11.GL_BLEND);
+				//					GL11.glTranslated(dx, dy, 0);
+				//
+				//					int duration = player.getItemInUseDuration();
+				//					int chargeTime = ((ItemRailgun)equipped.getItem()).getChargeTime(equipped);
+				//					int chargeLevel = Math.min(99, (int)(duration/(float)chargeTime*100));
+				//					//					System.out.println("");
+				//					//					ClientUtils.drawTexturedRect(0,0, 64,32, 0/256f,64/256f, 96/256f,128/256f);
+				//
+				//					GL11.glScalef(1.5f,1.5f,1.5f);
+				//					int col = Config.getBoolean("nixietubeFont")?Lib.colour_nixieTubeText:0xffffff;
+				//					ClientProxy.nixieFont.setDrawTubeFlag(false);
+				//					//					ClientProxy.nixieFont.drawString((chargeLevel<10?"0"+chargeLevel:""+chargeLevel), 19,3, col);
+				//					ClientProxy.nixieFont.setDrawTubeFlag(true);
+				//
+				//					GL11.glPopMatrix();
+				//				}
 
 				MovingObjectPosition mop = ClientUtils.mc().objectMouseOver;
 				if(mop!=null)
@@ -601,7 +646,7 @@ public class ClientEventHandler
 		EntityPlayer player = ClientUtils.mc().thePlayer;
 		if(player.getCurrentEquippedItem()!=null && player.getCurrentEquippedItem().getItem() instanceof IZoomTool)
 		{
-			if(player.isSneaking())
+			if(player.isSneaking() && player.onGround)
 			{
 				ItemStack equipped = player.getCurrentEquippedItem();
 				IZoomTool tool = (IZoomTool)equipped.getItem();
@@ -815,7 +860,7 @@ public class ClientEventHandler
 	{
 	}
 	@SubscribeEvent()
-	public void renderLivingPre(RenderLivingEvent.Pre event)
+	public void onRenderLivingPre(RenderLivingEvent.Pre event)
 	{
 		if(event.entity.getEntityData().hasKey("headshot"))
 		{
@@ -827,11 +872,11 @@ public class ClientEventHandler
 		}
 	}
 	@SubscribeEvent()
-	public void renderLivingPre(RenderLivingEvent.Post event)
+	public void onRenderLivingPost(RenderLivingEvent.Post event)
 	{
 		if(event.entity.getEntityData().hasKey("headshot"))
 		{
-			ModelBase model = ObfuscationReflectionHelper.getPrivateValue(RendererLivingEntity.class, event.renderer, "mainModel");
+			ModelBase model = event.renderer.mainModel;
 			if(model instanceof ModelBiped)
 				((ModelBiped)model).bipedHead.showModel=true;
 			else if(model instanceof ModelVillager)
