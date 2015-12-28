@@ -1,3 +1,42 @@
+#####Version 0.6.5
+- added the ability to apply shaders to balloons
+- added recipe to switch between wooden stairs (thanks malte0811)
+- added the ability to extinguish fires with a water-filled ChemThrower
+- reworked the ShaderRegistry system, alloweing for far better API access
+	- added Shader Grab Bags, random loot bags of a certain rarity level
+	- added recipes to convert shaders into lowerclass loot bags
+	- added Shader Bags to drop from bosses
+	- added Shader Bags to be tradeable from villagers
+	- added a new Achievement relating to Shader Bags
+	- added a function to define custom texture paths for shaders
+- added the ability to apply shaders to drills
+- added the "Warbird" shader
+- added the crystal/dust shaders "Glacis", "Solum" and "Aero"
+- added caching of previous entries to the manual for backtracking
+- added comparator support to barrels, crates and the chargign station
+- added the "Cosmic" Shader. The pinacle of avarice.
+- added more Botania compat: Tiny Potatoes will carry revolvers based on their name
+- added the Railgun (still kinda WIP) that will fire metal rods at high speeds
+	- it has a zoom upgrade and awesome sounds
+	- it will fire rail and rebar from Railcraft
+- added recipeType parameter to the ArcFurance Minetweaker compat (thanks mdfntr) 
+- fixed clientsided energy transfers (thanks malte0811)
+- fixed sync issues and minor issues (thanks malte0811)
+- fixed copious amounts of copper generated from crushing ores (thanks cobra)
+- fixed missing localization for Casserite and Wolframite Veins
+- fixed multiple issues with squeezer and fermenter(thanks cobra)
+- fixed multiple TileEntity internals, improving performance (thanks malte0811)
+- fixed clientside NPE with Voltmeter (thanks cobra)
+- fixed sawdust recipe missing from crusher
+- fixed ArcFurnace manual entry stating automatic insertion of electrodes as possible
+- fixed wires not dropping in singleplayer (thanks malte0811)
+- fixed models for Workbench + Core Sample Drill
+- fixed broken textures on barrels, caused by Christmas Crates 
+- fixed model of the drill (thanks Glassmaker)
+- optimized renderbounds, useless null checks, ArrayList capacities (thanks cobra)
+- updated
+
+
 #####Version 0.6.4 - BUILT
 - added an API for the the FurnaceHeater
 	- this fixes the dupe with Natura's Netherrack Furnace
