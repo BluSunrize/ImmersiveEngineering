@@ -502,8 +502,8 @@ public class ClientEventHandler
 					int h = 62;
 					double uMin = 179/256f;
 					double uMax = 210/256f;
-					double vMin = 9/96f;
-					double vMax = 71/96f;
+					double vMin = 9/256f;
+					double vMax = 71/256f;
 					ClientUtils.drawTexturedRect(-24,-68, w,h, uMin,uMax,vMin,vMax);
 
 					GL11.glTranslated(-23,-37,0);
