@@ -15,6 +15,7 @@ public abstract class ShaderCase
 	protected final int[] colourUnderlying;
 	protected final int[] colourPrimary;
 	protected final int[] colourSecondary;
+	protected int[] colourOverlay;
 	protected final static int[] defaultWhite = {255,255,255,255};
 	protected String overlayType="0";
 	protected String baseTexturePath="";
@@ -22,9 +23,10 @@ public abstract class ShaderCase
 	public ShaderCase(String overlayType, int[] colourUnderlying, int[] colourPrimary, int[] colourSecondary, String baseTexturePath)
 	{
 		this.overlayType = overlayType;
-		this.colourUnderlying = colourUnderlying; 
-		this.colourPrimary = colourPrimary; 
-		this.colourSecondary = colourSecondary; 
+		this.colourUnderlying = colourUnderlying;
+		this.colourPrimary = colourPrimary;
+		this.colourSecondary = colourSecondary;
+		this.colourOverlay = defaultWhite;
 		this.baseTexturePath = baseTexturePath;
 	}
 	
@@ -51,6 +53,11 @@ public abstract class ShaderCase
 	public ShaderCase setBaseTexturePath(String path)
 	{
 		baseTexturePath = path;
+		return this;
+	}
+	public ShaderCase setOverlayColour(int... col)
+	{
+		colourOverlay = col;
 		return this;
 	}
 	

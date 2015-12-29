@@ -247,7 +247,7 @@ public class ItemRenderRailgun implements IItemRenderer
 		float scale = .03125f;
 		GL11.glScalef(scale,scale,scale);
 		GL11.glDepthMask(false);
-		GL11.glDepthFunc(GL11.GL_ALWAYS);
+		GL11.glDepthFunc(GL11.GL_GEQUAL);
 		GL11.glDisable(GL11.GL_LIGHTING);
 		int col = Config.getBoolean("nixietubeFont")?Lib.colour_nixieTubeText:0xffffff;
 		ClientProxy.nixieFont.setDrawTubeFlag(false);

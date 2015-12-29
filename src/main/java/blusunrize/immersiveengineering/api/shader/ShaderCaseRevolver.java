@@ -21,7 +21,7 @@ public class ShaderCaseRevolver extends ShaderCase
 		this.colourBlade = colourBlade;
 		this.additionalTexture = additionalTexture;
 	}
-	
+
 	@Override
 	public String getShaderType()
 	{
@@ -49,7 +49,7 @@ public class ShaderCaseRevolver extends ShaderCase
 			return i_revolverUncoloured;
 		if(pass==maxPass-(hasUncoloured?2:1) && i_revolverAdditional!=null)
 			return i_revolverAdditional;
-		
+
 		switch(modelPart)
 		{
 		case "revolver_frame":
@@ -74,8 +74,12 @@ public class ShaderCaseRevolver extends ShaderCase
 	@Override
 	public int[] getRGBAColourModifier(ItemStack shader, ItemStack item, String modelPart, int pass)
 	{
-		if(!shader.hasTagCompound() || pass==2&&(modelPart.equals("barrel") || modelPart.equals("dev_scope")||modelPart.equals("player_electro_0")||modelPart.equals("player_electro_1")))
+		int maxPass = getPasses(shader, item, modelPart);
+		boolean hasUncoloured = modelPart.equals("barrel")||modelPart.equals("dev_scope")||modelPart.equals("player_mag")||modelPart.equals("dev_mag")||modelPart.equals("player_electro_0")||modelPart.equals("player_electro_1");
+		if(hasUncoloured&&pass==maxPass-1)
 			return defaultWhite;
+		if(pass==maxPass-(hasUncoloured?2:1) && i_revolverAdditional!=null)
+			return colourOverlay;
 
 		int i=getTextureType(modelPart,pass); //0 == grip, 1==main, 2==detail, 3==blade
 		if(i==0)
@@ -89,7 +93,7 @@ public class ShaderCaseRevolver extends ShaderCase
 		
 		return defaultWhite;
 	}
-	
+
 	public int getTextureType(String modelPart, int pass)
 	{
 		int i=0; //0 == grip, 1==main, 2==detail, 3==blade
@@ -150,13 +154,13 @@ public class ShaderCaseRevolver extends ShaderCase
 			else
 				GL11.glEnable(GL11.GL_CULL_FACE);
 		}
-		
+
 		if(glowLayer>-1 && (glowLayer&(getTextureType(modelPart,pass)+1))==1)
 		{
 			if(pre)
 			{
 				GL11.glDisable(GL11.GL_LIGHTING);
-			Tessellator.instance.setBrightness(0xffffff);
+				Tessellator.instance.setBrightness(0xffffff);
 			}
 			else
 				GL11.glEnable(GL11.GL_LIGHTING);

@@ -11,7 +11,14 @@ import java.util.Random;
 
 import com.google.common.collect.ArrayListMultimap;
 
+import blusunrize.immersiveengineering.api.ManualHelper;
+import blusunrize.lib.manual.ManualInstance.ManualEntry;
+import blusunrize.lib.manual.ManualPages;
+import blusunrize.lib.manual.ManualPages.PositionedItemStack;
 import net.minecraft.item.EnumRarity;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 
 public class ShaderRegistry
 {
@@ -133,6 +140,9 @@ public class ShaderRegistry
 		return shader;
 	}
 
+	public static ManualEntry manualEntry;
+	public static Item itemShader;
+	public static Item itemShaderBag;
 	public static void compileWeight()
 	{
 		totalWeight.clear();
@@ -164,6 +174,52 @@ public class ShaderRegistry
 				return Integer.compare(ShaderRegistry.rarityWeightMap.get(enum0), ShaderRegistry.rarityWeightMap.get(enum1));
 			}});
 
+		if(manualEntry!=null)
+		{
+			ArrayList<PositionedItemStack[]> recipes = new ArrayList();
+			ItemStack[] shaderBags = new ItemStack[ShaderRegistry.sortedRarityMap.size()];
+			recipes = new ArrayList();
+			for(int i=0; i<ShaderRegistry.sortedRarityMap.size(); i++)
+			{
+				EnumRarity outputRarity = ShaderRegistry.sortedRarityMap.get(i);
+				shaderBags[i] = new ItemStack(itemShaderBag);
+				shaderBags[i].setTagCompound(new NBTTagCompound());
+				shaderBags[i].getTagCompound().setString("rarity", outputRarity.toString());
+				ArrayList<EnumRarity> upperRarities = ShaderRegistry.getHigherRarities(outputRarity);
+				if(!upperRarities.isEmpty())
+				{
+					ArrayList<ItemStack> inputList = new ArrayList();
+					for(EnumRarity r : upperRarities)
+					{
+						ItemStack bag = new ItemStack(itemShaderBag);
+						bag.setTagCompound(new NBTTagCompound());
+						bag.getTagCompound().setString("rarity",  r.toString());
+						inputList.add(bag);
+					}
+					ItemStack s0 = new ItemStack(itemShaderBag,2);
+					s0.setTagCompound(new NBTTagCompound());
+					s0.getTagCompound().setString("rarity", outputRarity.toString());
+					if(!inputList.isEmpty())
+						recipes.add(new PositionedItemStack[]{ new PositionedItemStack(inputList, 33, 0), new PositionedItemStack(s0, 69, 0)});
+					inputList = new ArrayList();
+					for(ShaderRegistryEntry entry : ShaderRegistry.shaderRegistry.values())
+						if(upperRarities.contains(entry.getRarity()))
+						{
+							ItemStack shader = new ItemStack(itemShader);
+							shader.setTagCompound(new NBTTagCompound());
+							shader.getTagCompound().setString("shader_name",  entry.getName());
+							inputList.add(shader);
+						}
+					ItemStack s1 = new ItemStack(itemShaderBag);
+					s1.setTagCompound(new NBTTagCompound());
+					s1.getTagCompound().setString("rarity", outputRarity.toString());
+					if(!inputList.isEmpty())
+						recipes.add(new PositionedItemStack[]{ new PositionedItemStack(inputList, 33, 0), new PositionedItemStack(s1, 69, 0)});
+				}
+			}
+			manualEntry.getPages()[1] = new ManualPages.ItemDisplay(ManualHelper.getManual(), "shader1", shaderBags);
+			manualEntry.getPages()[2] = new ManualPages.CraftingMulti(ManualHelper.getManual(), "shader2", (Object[])recipes.toArray(new PositionedItemStack[recipes.size()][3]));
+		}
 	}
 	public static void recalculatePlayerTotalWeight(String player)
 	{

@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.api.ManualPageMultiblock;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.energy.DieselHandler;
 import blusunrize.immersiveengineering.api.energy.ThermoelectricHandler;
+import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.client.fx.EntityFXBlockParts;
 import blusunrize.immersiveengineering.client.fx.EntityFXItemParts;
@@ -330,8 +331,11 @@ public class ClientProxy extends CommonProxy
 		ExcavatorHandler.handleMineralManual();
 		int blueprint = BlueprintCraftingRecipe.blueprintCategories.indexOf("electrode");
 		ManualHelper.addEntry("graphite", ManualHelper.CAT_GENERAL, new ManualPages.Text(ManualHelper.getManual(), "graphite0"),new ManualPages.Crafting(ManualHelper.getManual(), "graphite1", new ItemStack(IEContent.itemBlueprint,1,blueprint)));
-		ManualHelper.addEntry("shader", ManualHelper.CAT_GENERAL, new ManualPages.Text(ManualHelper.getManual(), "shader0"));
-
+		ManualHelper.addEntry("shader", ManualHelper.CAT_GENERAL, new ManualPages.Text(ManualHelper.getManual(), "shader0"), new ManualPages.ItemDisplay(ManualHelper.getManual(), "shader1"), new ManualPages.CraftingMulti(ManualHelper.getManual(), "shader2"));
+		ShaderRegistry.manualEntry = ManualHelper.getManual().getEntry("shader");
+		ShaderRegistry.itemShader = IEContent.itemShader;
+		ShaderRegistry.itemShaderBag = IEContent.itemShaderBag;
+		
 		ManualHelper.addEntry("treatedwood", ManualHelper.CAT_CONSTRUCTION,
 				new ManualPages.Text(ManualHelper.getManual(), "treatedwood0"), 
 				new ManualPages.Crafting(ManualHelper.getManual(), "", new ItemStack(IEContent.blockTreatedWood,1,0),new ItemStack(IEContent.blockWoodenDecoration,1,2),new ItemStack(IEContent.blockWoodenStair)),
@@ -345,6 +349,7 @@ public class ClientProxy extends CommonProxy
 			storageBlocks[i] = new ItemStack(IEContent.blockStorage,1,i);
 			storageSlabs[i] = new ItemStack(IEContent.blockStorageSlabs,1,i);
 		}
+		ManualHelper.addEntry("crate", ManualHelper.CAT_CONSTRUCTION, new ManualPages.Crafting(ManualHelper.getManual(), "crate0", new ItemStack(IEContent.blockWoodenDevice,1,4)));
 		ManualHelper.addEntry("barrel", ManualHelper.CAT_CONSTRUCTION, new ManualPages.Crafting(ManualHelper.getManual(), "barrel0", new ItemStack(IEContent.blockWoodenDevice,1,6)));
 		ManualHelper.addEntry("metalconstruction", ManualHelper.CAT_CONSTRUCTION,
 				new ManualPages.Text(ManualHelper.getManual(), "metalconstruction0"),
@@ -445,7 +450,7 @@ public class ClientProxy extends CommonProxy
 		ManualHelper.addEntry("bottlingMachine", ManualHelper.CAT_MACHINES,
 				new ManualPageMultiblock(ManualHelper.getManual(), "bottlingMachine0", MultiblockBottlingMachine.instance),
 				new ManualPages.Text(ManualHelper.getManual(), "bottlingMachine1"));
-		ManualHelper.addEntry("chargingStation", ManualHelper.CAT_MACHINES, new ManualPages.Crafting(ManualHelper.getManual(), "chargingStation0", new ItemStack(IEContent.blockMetalDevice2,1,BlockMetalDevices2.META_chargingStation)));
+		ManualHelper.addEntry("chargingStation", ManualHelper.CAT_MACHINES, new ManualPages.Crafting(ManualHelper.getManual(), "chargingStation0", new ItemStack(IEContent.blockMetalDevice2,1,BlockMetalDevices2.META_chargingStation)),new ManualPages.Text(ManualHelper.getManual(), "chargingStation1"));
 		ManualHelper.addEntry("jerrycan", ManualHelper.CAT_MACHINES, new ManualPages.Crafting(ManualHelper.getManual(), "jerrycan0", new ItemStack(IEContent.itemJerrycan)));
 		ManualHelper.addEntry("drill", ManualHelper.CAT_MACHINES,
 				new ManualPages.CraftingMulti(ManualHelper.getManual(), "drill0", new ItemStack(IEContent.itemDrill,1,0), new ItemStack(IEContent.itemMaterial,1,9)),
@@ -491,6 +496,11 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.CraftingMulti(ManualHelper.getManual(), "chemthrower0", new ItemStack(IEContent.itemChemthrower,1,0), new ItemStack(IEContent.itemMaterial,1,9), new ItemStack(IEContent.itemToolUpgrades,1,0)),
 				new ManualPages.Crafting(ManualHelper.getManual(), "chemthrower1", new ItemStack(IEContent.itemToolUpgrades,1,3)),
 				new ManualPages.Crafting(ManualHelper.getManual(), "chemthrower2", new ItemStack(IEContent.itemToolUpgrades,1,7)));
+		ManualHelper.addEntry("railgun", ManualHelper.CAT_MACHINES,
+				new ManualPages.CraftingMulti(ManualHelper.getManual(), "railgun0", new ItemStack(IEContent.itemRailgun,1,0), new ItemStack(IEContent.itemMaterial,1,9)),
+				new ManualPages.Text(ManualHelper.getManual(), "railgun1"),
+				new ManualPages.Crafting(ManualHelper.getManual(), "railgun2", new ItemStack(IEContent.itemToolUpgrades,1,9)),
+				new ManualPages.Crafting(ManualHelper.getManual(), "railgun3", new ItemStack(IEContent.itemToolUpgrades,1,8)));
 
 		sortedMap = DieselHandler.getPlantoilValuesSorted(true);
 		table = formatToTable_ItemIntHashmap(sortedMap,"mB");	

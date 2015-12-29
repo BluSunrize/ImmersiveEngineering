@@ -61,7 +61,7 @@ public class ShaderCaseChemthrower extends ShaderCase
 		if(pass==maxPass-1 && hasUncoloured)//uncoloured
 			return defaultWhite;
 		if(pass==maxPass-(hasUncoloured?2:1) && i_chemthrowerAdditional!=null)
-			return defaultWhite;
+			return colourOverlay;
 
 		int i=getTextureType(modelPart,pass); //0 == grip, 1==main, 2==detail
 		if(i==0)

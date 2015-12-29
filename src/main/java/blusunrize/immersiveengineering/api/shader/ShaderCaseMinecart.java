@@ -48,7 +48,7 @@ public class ShaderCaseMinecart extends ShaderCase
 	public int[] getRGBAColourModifier(ItemStack shader, ItemStack item, String modelPart, int pass)
 	{
 		if(pass==2 && additionalTexture!=null)
-			return defaultWhite;
+			return colourOverlay;
 
 		if(pass==0)
 			return colourPrimary;

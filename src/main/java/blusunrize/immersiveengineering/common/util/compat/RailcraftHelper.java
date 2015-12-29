@@ -7,6 +7,7 @@ import java.util.Map;
 import blusunrize.immersiveengineering.api.shader.ShaderCaseMinecart;
 import blusunrize.immersiveengineering.api.tool.RailgunHandler;
 import blusunrize.immersiveengineering.client.models.ModelShaderMinecart;
+import blusunrize.immersiveengineering.common.Config;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -46,6 +47,7 @@ public class RailcraftHelper extends IECompatModule
 			rebarColourMap[1+ i*3+2] = rebarColourMap[0];
 		}
 		RailgunHandler.registerProjectileProperties(new ItemStack(itemRebar), 6,1.25).setColourMap(rebarColourMap);
+		Config.setBoolean("literalRailGun", true);
 	}
 
 	@Override

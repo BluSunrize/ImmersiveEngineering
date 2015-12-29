@@ -115,6 +115,8 @@ public class IERecipes
 		addOredictRecipe(new ItemStack(IEContent.itemDrillhead,1,1), "SS ","BBS","SS ", 'B',"blockIron", 'S',"ingotIron");
 
 		addOredictRecipe(new ItemStack(IEContent.itemChemthrower,1,0), " OG"," EG","PB ", 'P',new ItemStack(IEContent.blockMetalDevice2,1,BlockMetalDevices2.META_fluidPipe), 'O',new ItemStack(IEContent.itemToolUpgrades,1,0), 'B',Items.bucket, 'E',new ItemStack(IEContent.blockMetalDecoration,1,BlockMetalDecoration.META_heavyEngineering), 'G',new ItemStack(IEContent.itemMaterial,1,9));
+		
+		addOredictRecipe(new ItemStack(IEContent.itemRailgun,1,0), " HG","CBH","BC ", 'C',electrumCoil, 'H',new ItemStack(IEContent.blockMetalDevice,1,BlockMetalDevices.META_capacitorHV), 'B',new ItemStack(IEContent.itemMaterial,1,7), 'G',new ItemStack(IEContent.itemMaterial,1,9));
 
 		addOredictRecipe(new ItemStack(IEContent.itemToolUpgrades,1,0), "BI ","IBI"," IC", 'B',Items.bucket, 'I',"dyeBlue", 'C',componentIron);
 		for (ItemStack container : Utils.getContainersFilledWith(new FluidStack(IEContent.fluidPlantoil,1000)))
@@ -125,6 +127,8 @@ public class IERecipes
 		addOredictRecipe(new ItemStack(IEContent.itemToolUpgrades,1,5), " CS","C C","IC ", 'I',componentIron, 'S',"ingotSteel", 'C',"ingotCopper");
 		addOredictRecipe(new ItemStack(IEContent.itemToolUpgrades,1,6), " G ","GEG","GEG", 'E',electrumCoil, 'G',"blockGlass");
 		addOredictRecipe(new ItemStack(IEContent.itemToolUpgrades,1,7), " SS","PPH"," SS", 'P',new ItemStack(IEContent.blockMetalDevice2,1,BlockMetalDevices2.META_fluidPipe), 'H',Blocks.hopper, 'S',"ingotSteel");
+		addOredictRecipe(new ItemStack(IEContent.itemToolUpgrades,1,8), "GC ","C C"," CG", 'G',"paneGlassColorless", 'C',"ingotCopper");
+		addOredictRecipe(new ItemStack(IEContent.itemToolUpgrades,1,9), "WWW","HHH", 'W',new ItemStack(IEContent.itemWireCoil,1,2), 'H',new ItemStack(IEContent.blockMetalDevice,1,BlockMetalDevices.META_capacitorHV));
 
 		addShapelessOredictRecipe(new ItemStack(IEContent.itemMetal,2,15), "dustCopper","dustNickel");
 		addShapelessOredictRecipe(new ItemStack(IEContent.itemMetal,2,16), "dustSilver","dustGold");
@@ -141,7 +145,9 @@ public class IERecipes
 		addOredictRecipe(new ItemStack(IEContent.itemMaterial,1,10), "I  ","II "," II", 'I',"ingotSteel");
 		addOredictRecipe(componentIron, "I I"," C ","I I", 'I',"ingotIron",'C',"ingotCopper");
 		addOredictRecipe(componentSteel, "I I"," C ","I I", 'I',"ingotSteel",'C',"ingotCopper");
-
+		addOredictRecipe(new ItemStack(IEContent.itemMaterial,4,14), "I","I", 'I',"ingotIron");
+		addOredictRecipe(new ItemStack(IEContent.itemMaterial,4,15), "I","I", 'I',"ingotSteel");
+		
 		addOredictRecipe(new ItemStack(IEContent.itemWireCoil,4,0), " I ","ISI"," I ", 'I',"ingotCopper", 'S',"stickWood");
 		addOredictRecipe(new ItemStack(IEContent.itemWireCoil,4,1), " I ","ISI"," I ", 'I',"ingotElectrum", 'S',"stickWood");
 		addOredictRecipe(new ItemStack(IEContent.itemWireCoil,4,2), " I ","ASA"," I ", 'I',"ingotSteel", 'A',"ingotAluminum", 'S',"stickWood");

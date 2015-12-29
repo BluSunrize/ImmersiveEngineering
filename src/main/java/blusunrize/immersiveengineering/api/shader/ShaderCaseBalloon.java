@@ -36,7 +36,7 @@ public class ShaderCaseBalloon extends ShaderCase
 	public int[] getRGBAColourModifier(ItemStack shader, ItemStack item, String modelPart, int pass)
 	{
 		if(pass==2 && additionalTexture!=null)
-			return defaultWhite;
+			return colourOverlay;
 		return pass==1?colourSecondary : colourPrimary;
 	}
 

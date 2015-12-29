@@ -72,7 +72,7 @@ public class Config
 
 		cableProperty = config.get("general", "Cable loss", new double[]{.05,.025,.025,1,1}, "The percentage of power lost every 16 blocks of distance for the cable tiers (copper, electrum, HV, Structural Rope & Cable(no transfer) )");
 		if(cableProperty.getDoubleList().length<5)
-			cableProperty.set(new double[]{.05,.025,.1,1,1});
+			cableProperty.set(new double[]{.05,.025,.025,1,1});
 		setDoubleArray("cableLossRatio", cableProperty.getDoubleList());
 
 		cableProperty = config.get("general", "Cable colouration", new int[]{0xd4804a,0xedad62,0x6f6f6f, 0x967e6d,0x6f6f6f}, "");

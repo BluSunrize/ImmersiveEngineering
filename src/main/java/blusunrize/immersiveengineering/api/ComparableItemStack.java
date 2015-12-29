@@ -12,6 +12,8 @@ public class ComparableItemStack
 
 	public ComparableItemStack(ItemStack stack)
 	{
+		if(stack==null)
+			throw new RuntimeException("You cannot instantiate a ComparableItemStack with null for an Item!");
 		this.stack = stack;
 		int[] oids = OreDictionary.getOreIDs(stack);
 		if(oids!=null && oids.length>0)

@@ -48,8 +48,10 @@ public class ShaderCaseRailgun extends ShaderCase
 	{
 		int maxPass = getPasses(shader, item, modelPart);
 		boolean hasUncoloured = modelPart.equals("sled")||modelPart.equals("wires")||modelPart.equals("tubes")||modelPart.equals("frame")||modelPart.equals("barrel")||modelPart.equals("upgrade_speed")||modelPart.equals("upgrade_scope");
-		if((hasUncoloured&&pass==maxPass-1)||(pass==maxPass-(hasUncoloured?2:1) && i_railgunAdditional!=null))
+		if(hasUncoloured&&pass==maxPass-1)
 			return defaultWhite;
+		if(pass==maxPass-(hasUncoloured?2:1) && i_railgunAdditional!=null)
+			return colourOverlay;
 
 		int i=getTextureType(modelPart,pass); //0 == grip, 1==main, 2==detail
 		if(i==0)

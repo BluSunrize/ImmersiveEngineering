@@ -13,13 +13,13 @@
 - added the "Warbird" shader
 - added the crystal/dust shaders "Glacis", "Solum" and "Aero"
 - added caching of previous entries to the manual for backtracking
-- added comparator support to barrels, crates and the chargign station
+- added comparator support to barrels, crates and the charging station
 - added the "Cosmic" Shader. The pinacle of avarice.
 - added more Botania compat: Tiny Potatoes will carry revolvers based on their name
 - added the Railgun (still kinda WIP) that will fire metal rods at high speeds
 	- it has a zoom upgrade and awesome sounds
 	- it will fire rail and rebar from Railcraft
-- added recipeType parameter to the ArcFurance Minetweaker compat (thanks mdfntr) 
+- added recipeType parameter to the ArcFurnace Minetweaker compat (thanks mdfntr) 
 - fixed clientsided energy transfers (thanks malte0811)
 - fixed sync issues and minor issues (thanks malte0811)
 - fixed copious amounts of copper generated from crushing ores (thanks cobra)
