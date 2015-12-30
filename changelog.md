@@ -1,7 +1,7 @@
 #####Version 0.6.5
 - added the ability to apply shaders to balloons
 - added recipe to switch between wooden stairs (thanks malte0811)
-- added the ability to extinguish fires with a water-filled ChemThrower
+- added the ability to extinguish fires and hurt blazes with a water-filled ChemThrower
 - reworked the ShaderRegistry system, alloweing for far better API access
 	- added Shader Grab Bags, random loot bags of a certain rarity level
 	- added recipes to convert shaders into lowerclass loot bags
@@ -19,7 +19,10 @@
 - added the Railgun (still kinda WIP) that will fire metal rods at high speeds
 	- it has a zoom upgrade and awesome sounds
 	- it will fire rail and rebar from Railcraft
-- added recipeType parameter to the ArcFurnace Minetweaker compat (thanks mdfntr) 
+- added recipeType parameter to the ArcFurnace Minetweaker compat (thanks mdfntr)
+- added "Radiant" and "Hollow" shaders
+- added "Fox" shader
+- added documentation of the Wooden Crate to the manual (how come I never did that?)
 - fixed clientsided energy transfers (thanks malte0811)
 - fixed sync issues and minor issues (thanks malte0811)
 - fixed copious amounts of copper generated from crushing ores (thanks cobra)
@@ -34,7 +37,6 @@
 - fixed broken textures on barrels, caused by Christmas Crates 
 - fixed model of the drill (thanks Glassmaker)
 - optimized renderbounds, useless null checks, ArrayList capacities (thanks cobra)
-- updated
 
 
 #####Version 0.6.4 - BUILT
