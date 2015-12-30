@@ -427,6 +427,9 @@ chat.ImmersiveEngineering.info.coreDrill.result.mineral=§7Core Sample evaluated
 chat.ImmersiveEngineering.info.coreDrill.result.depl=§7Mineral vein at %1$s§7 integrity
 chat.ImmersiveEngineering.info.coreDrill.result.none=Core Sample evaluated, no minerals found
 chat.ImmersiveEngineering.info.coreDrill.infinite=Infinite
+
+chat.ImmersiveEngineering.info.pump.placeCobble.true=This pump will now replace fluids with cobblestone.
+chat.ImmersiveEngineering.info.pump.placeCobble.false=This pump will no longer replace fluid blocks with cobblestone. §6WARNING:§f This can cause lag and is not adviseable when dealing with large amounts of fluid!
 		
 chat.ImmersiveEngineering.info.energyTransfered=Average energy transferred over the last %1$s ticks: %2$s RF/t
 
@@ -502,6 +505,8 @@ achievement.immersiveengineering.skyhookPro=Skyline Master
 achievement.immersiveengineering.skyhookPro.desc=Travel a total of 1km with the Skyhook
 achievement.immersiveengineering.craftChemthrower=Spray and Pray
 achievement.immersiveengineering.craftChemthrower.desc=Craft the Chemical Thrower
+achievement.immersiveengineering.craftRailgun=Fortune's Legacy
+achievement.immersiveengineering.craftRailgun.desc=Craft the Railgun
 achievement.immersiveengineering.mbSilo=Sheetmetal Stash
 achievement.immersiveengineering.mbSilo.desc=Form the Silo Multiblock
 achievement.immersiveengineering.mbCrusher=Hazardous Machinery
@@ -761,6 +766,7 @@ ie.manual.entry.fluidPipes0=Transporting fluids has become quite essential in th
 ie.manual.entry.fluidPipes1=You can rightclick the connection piece of a pipe with an Engineer's Hammer to prevent it from connecting to that side.<br>Fluid Pipes can be covered with wooden or steel scaffolding. Simply rightclick a piece of scaffolding onto a pipe to cover it. Break the pipe to retrieve the scaffolding.
 ie.manual.entry.fluidPipes2=Fluid Pumps have three essential functions. They can be used to insert into pipes at high pressure, to transfer fluids much faster, or they can pick up fluids from the world. Using your hammer on the base of the pump will switch the sides between in- and output.
 ie.manual.entry.fluidPipes3=In order for the pump to pick up fluid blocks, it will need a power input at the top and a redstone signal. Pumps can also be used to extract from tanks and other fluid containers that do not have an automatic output. This will also require a redstone signal, but won't consume power.
+ie.manual.entry.fluidPipes4=<config;b;pump_infiniteWater;Water blocks will serve as an infinite fluid source for the pump, as long as more than 3 blocks are connected.<br><br>;><config;b;pump_placeCobble;Fluid blocks that were picked up will be replaced with cobblestone to reduce the lag of flowing fluids. This behaviour can be toggled off and on by using a wirecutter on the pump.;>
 
 ie.manual.entry.sorter.name=Item Router
 ie.manual.entry.sorter.subtext=Left foot yellow, right hand green

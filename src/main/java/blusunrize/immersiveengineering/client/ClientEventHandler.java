@@ -41,7 +41,6 @@ import blusunrize.immersiveengineering.common.util.compat.GregTechHelper;
 import blusunrize.immersiveengineering.common.util.network.MessageRequestBlockUpdate;
 import cofh.api.energy.IEnergyReceiver;
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.relauncher.Side;
@@ -55,7 +54,6 @@ import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
-import net.minecraft.client.renderer.entity.RendererLivingEntity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -864,12 +862,18 @@ public class ClientEventHandler
 	{
 		if(event.entity.getEntityData().hasKey("headshot"))
 		{
-			ModelBase model = ObfuscationReflectionHelper.getPrivateValue(RendererLivingEntity.class, event.renderer, "mainModel");
+			ModelBase model = event.renderer.mainModel;
 			if(model instanceof ModelBiped)
 				((ModelBiped)model).bipedHead.showModel=false;
 			else if(model instanceof ModelVillager)
 				((ModelVillager)model).villagerHead.showModel=false;
 		}
+//		if(OreDictionary.itemMatches(new ItemStack(IEContent.itemRailgun),event.entity.getEquipmentInSlot(0),true))
+//		{
+//			ModelBase model = event.renderer.mainModel;
+//			if(model instanceof ModelBiped)
+//				((ModelBiped)model).bipedLeftArm.rotateAngleX=.9f;
+//		}
 	}
 	@SubscribeEvent()
 	public void onRenderLivingPost(RenderLivingEvent.Post event)

@@ -335,7 +335,7 @@ public class ClientProxy extends CommonProxy
 		ShaderRegistry.manualEntry = ManualHelper.getManual().getEntry("shader");
 		ShaderRegistry.itemShader = IEContent.itemShader;
 		ShaderRegistry.itemShaderBag = IEContent.itemShaderBag;
-		
+
 		ManualHelper.addEntry("treatedwood", ManualHelper.CAT_CONSTRUCTION,
 				new ManualPages.Text(ManualHelper.getManual(), "treatedwood0"), 
 				new ManualPages.Crafting(ManualHelper.getManual(), "", new ItemStack(IEContent.blockTreatedWood,1,0),new ItemStack(IEContent.blockWoodenDecoration,1,2),new ItemStack(IEContent.blockWoodenStair)),
@@ -484,11 +484,16 @@ public class ClientProxy extends CommonProxy
 			pages.add(new ManualPages.ItemDisplay(ManualHelper.getManual(), "bulletsBotania1", new ItemStack(IEContent.itemBullet,1,8)));
 		}
 		ManualHelper.addEntry("bullets", ManualHelper.CAT_MACHINES, pages.toArray(new IManualPage[pages.size()]));
-		ManualHelper.addEntry("fluidPipes", ManualHelper.CAT_MACHINES,
-				new ManualPages.Crafting(ManualHelper.getManual(), "fluidPipes0", new ItemStack(IEContent.blockMetalDevice2,1,BlockMetalDevices2.META_fluidPipe)),
-				new ManualPages.Text(ManualHelper.getManual(), "fluidPipes1"),
-				new ManualPages.Crafting(ManualHelper.getManual(), "fluidPipes2", new ItemStack(IEContent.blockMetalDevice2,1,BlockMetalDevices2.META_fluidPump)),
-				new ManualPages.Text(ManualHelper.getManual(), "fluidPipes3"));
+
+		pages = new ArrayList<IManualPage>();
+
+		pages.add(new ManualPages.Crafting(ManualHelper.getManual(), "fluidPipes0", new ItemStack(IEContent.blockMetalDevice2,1,BlockMetalDevices2.META_fluidPipe)));
+		pages.add(new ManualPages.Text(ManualHelper.getManual(), "fluidPipes1"));
+		pages.add(new ManualPages.Crafting(ManualHelper.getManual(), "fluidPipes2", new ItemStack(IEContent.blockMetalDevice2,1,BlockMetalDevices2.META_fluidPump)));
+		pages.add(new ManualPages.Text(ManualHelper.getManual(), "fluidPipes3"));
+		if(Config.getBoolean("pump_infiniteWater")||Config.getBoolean("pump_placeCobble"))
+			pages.add(new ManualPages.Text(ManualHelper.getManual(), "fluidPipes4"));
+		ManualHelper.addEntry("fluidPipes", ManualHelper.CAT_MACHINES,pages.toArray(new IManualPage[pages.size()]));
 		ManualHelper.addEntry("skyhook", ManualHelper.CAT_MACHINES,
 				new ManualPages.CraftingMulti(ManualHelper.getManual(), "skyhook0", new ItemStack(IEContent.itemSkyhook), new ItemStack(IEContent.itemMaterial,1,9)),
 				new ManualPages.Text(ManualHelper.getManual(), "skyhook1"));

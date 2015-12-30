@@ -17,6 +17,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
+import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumChatFormatting;
@@ -125,11 +126,11 @@ public class ItemRailgun extends ItemUpgradeableTool implements IShaderEquipable
 	//		return multimap;
 	//	}
 
-	//	@Override
-	//	public EnumAction getItemUseAction(ItemStack p_77661_1_)
-	//	{
-	//		return EnumAction.bow;
-	//	}
+	@Override
+	public EnumAction getItemUseAction(ItemStack p_77661_1_)
+	{
+		return EnumAction.bow;
+	}
 
 	@Override
 	public void onUpdate(ItemStack stack, World world, Entity ent, int slot, boolean inHand)
@@ -190,7 +191,8 @@ public class ItemRailgun extends ItemUpgradeableTool implements IShaderEquipable
 			{
 				ItemStack ammo = player.inventory.mainInventory[ammoSlot];
 				Vec3 vec = player.getLookVec();
-				EntityRailgunShot shot = new EntityRailgunShot(player.worldObj, player, vec.xCoord*1.5,vec.yCoord*1.5,vec.zCoord*1.5, Utils.copyStackWithAmount(ammo, 1));
+				float speed = 20;
+				EntityRailgunShot shot = new EntityRailgunShot(player.worldObj, player, vec.xCoord*speed,vec.yCoord*speed,vec.zCoord*speed, Utils.copyStackWithAmount(ammo, 1));
 				player.inventory.decrStackSize(ammoSlot, 1);
 				player.playSound("immersiveengineering:railgunFire", 1, .5f+(.5f*player.getRNG().nextFloat()));
 				this.extractEnergy(stack, energy, false);
@@ -234,7 +236,7 @@ public class ItemRailgun extends ItemUpgradeableTool implements IShaderEquipable
 	@Override
 	public void removeFromWorkbench(EntityPlayer player, ItemStack stack)
 	{
-		ItemStack[] contents = this.getContainedItems(stack);
+		//		ItemStack[] contents = this.getContainedItems(stack);
 		//		if(contents[18]!=null&&contents[19]!=null)
 		//			player.triggerAchievement(IEAchievements.upgradeRevolver);
 	}

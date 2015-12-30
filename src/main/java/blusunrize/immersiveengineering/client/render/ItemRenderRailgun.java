@@ -22,6 +22,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
+import net.minecraft.util.MathHelper;
 import net.minecraftforge.client.IItemRenderer;
 import net.minecraftforge.client.model.obj.GroupObject;
 import net.minecraftforge.client.model.obj.WavefrontObject;
@@ -49,17 +50,44 @@ public class ItemRenderRailgun implements IItemRenderer
 		EntityLivingBase user = null;
 		if(type==ItemRenderType.EQUIPPED_FIRST_PERSON)
 		{
+			user = (EntityLivingBase) data[1];
+			if(user instanceof EntityPlayer && ((EntityPlayer)user).getItemInUseCount()>0)
+			{
+				float partial = ClientUtils.timer().renderPartialTicks;
+				float f10 = (float)item.getMaxItemUseDuration() - ((float)((EntityPlayer)user).getItemInUseCount() - partial + 1.0F);
+				float f11 = f10 / 20.0F;
+				f11 = (f11 * f11 + f11 * 2.0F) / 3.0F;
+				if (f11 > 1.0F)
+					f11 = 1.0F;
+				float f12 = 1.0F + f11 * 0.2F;
+				
+				GL11.glRotatef(335.0F, 0.0F, 0.0F, -1.0F);
+				GL11.glRotatef(50.0F, 0.0F, -1.0F, 0.0F);
+				GL11.glTranslatef(0.0F, 0.5F, 0.0F);
+				GL11.glScalef(1.0F, 1.0F, 1/f12);
+				GL11.glTranslatef(0.0F, -0.5F, 0.0F);
+				GL11.glRotatef(-50.0F, 0.0F, -1.0F, 0.0F);
+				GL11.glRotatef(-335.0F, 0.0F, 0.0F, -1.0F);
+				GL11.glTranslatef(0.0F, 0.0F, -f11 * 0.1F);
+				if (f11 > 0.1F)
+					GL11.glTranslatef(0.0F, -(MathHelper.sin((f10 - 0.1F) * 1.3F) * 0.01F * (f11 - 0.1F)), 0.0F);
+				GL11.glTranslatef(0.9F, -0.2F, 0.0F);
+				GL11.glRotatef(-8.0F, -1.0F, 0.0F, 0.0F);
+				GL11.glRotatef(-12.0F, 0.0F, -1.0F, 0.0F);
+				GL11.glRotatef(-18.0F, 0.0F, 0.0F, -1.0F);
+			}
+			
 			float scale = .375f;
 			GL11.glRotatef(42, 0, 1, 0);
 			GL11.glTranslatef(-.1875f,1f,.25f);
-			user = (EntityLivingBase) data[1];
 			if(ZoomHandler.isZooming)
 			{
 				GL11.glRotatef(3, 0, 1, 0);
 				GL11.glTranslatef(-1.6f,.5f,-.9375f);
 			}
 			else if(user instanceof EntityPlayer && ((EntityPlayer)user).getItemInUseCount()>0)
-				GL11.glTranslatef(0,0,-.25f);
+			{
+			}
 			GL11.glScalef(.25f,scale,scale);
 		}
 		else if(type==ItemRenderType.EQUIPPED)
@@ -108,15 +136,11 @@ public class ItemRenderRailgun implements IItemRenderer
 		ShaderCase sCase = (shader!=null && shader.getItem() instanceof IShaderItem)?((IShaderItem)shader.getItem()).getShaderCase(shader, item, "railgun"):null;
 
 		if(sCase==null)
-		{
 			ClientUtils.renderWavefrontWithIconUVs(modelobj, icon, parts);
-			ClientUtils.renderWavefrontWithIconUVs(modelobj, icon, "tubes");
-		}
 		else
 		{
 			boolean inventory = type==ItemRenderType.INVENTORY;
 			List<String> renderParts = new ArrayList(Arrays.asList(parts));
-			renderParts.add("tubes");
 			for(GroupObject obj : modelobj.groupObjects)
 				if(renderParts.contains(obj.name))
 				{
@@ -240,6 +264,7 @@ public class ItemRenderRailgun implements IItemRenderer
 			}
 		}
 		//		chargeLevel = 69;
+		GL11.glPushMatrix();
 		GL11.glTranslatef(-2.5f,.7f,.03f);
 		GL11.glRotatef(90, 0, 1, 0);
 		GL11.glRotatef(180, 0, 0, 1);
@@ -247,7 +272,6 @@ public class ItemRenderRailgun implements IItemRenderer
 		float scale = .03125f;
 		GL11.glScalef(scale,scale,scale);
 		GL11.glDepthMask(false);
-		GL11.glDepthFunc(GL11.GL_GEQUAL);
 		GL11.glDisable(GL11.GL_LIGHTING);
 		int col = Config.getBoolean("nixietubeFont")?Lib.colour_nixieTubeText:0xffffff;
 		ClientProxy.nixieFont.setDrawTubeFlag(false);
@@ -255,10 +279,12 @@ public class ItemRenderRailgun implements IItemRenderer
 		ClientProxy.nixieFont.drawString(""+(chargeLevel%10), 0,0, col);
 		ClientProxy.nixieFont.setDrawTubeFlag(true);
 		GL11.glEnable(GL11.GL_LIGHTING);
-		GL11.glDepthFunc(GL11.GL_LEQUAL);
 		GL11.glDepthMask(true);
 		GL11.glScalef(1/scale,1/scale,1/scale);
-
+		GL11.glColor4f(1, 1, 1, 1);
+		GL11.glPopMatrix();
+		ClientUtils.bindAtlas(1);
+		ClientUtils.renderWavefrontWithIconUVs(modelobj, icon, "tubes");
 		GL11.glDisable(3042);
 		GL11.glPopMatrix();
 	}

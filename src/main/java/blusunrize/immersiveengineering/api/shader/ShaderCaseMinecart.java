@@ -19,7 +19,7 @@ public class ShaderCaseMinecart extends ShaderCase
 	{
 		super(overlayType, defaultWhite,colourPrimary,colourSecondary, "immersiveengineering:textures/models/shaders/minecart_");
 		this.additionalTexture = additionalTexture;
-		if(overlayType=="1" || overlayType=="2" || overlayType=="7")
+		if(overlayType.equals("1") || overlayType.equals("2") || overlayType.equals("7"))
 		{
 			overlaySides[1] = false;
 			overlaySides[2] = false;

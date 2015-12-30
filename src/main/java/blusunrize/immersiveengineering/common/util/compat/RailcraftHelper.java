@@ -31,11 +31,11 @@ public class RailcraftHelper extends IECompatModule
 	public void init()
 	{
 		Item itemRail = GameRegistry.findItem("Railcraft", "part.rail");
-		RailgunHandler.registerProjectileProperties(new ItemStack(itemRail,1,0), 6,1.25).setColourMap(new int[][]{{0xa4a4a4,0x686868}});
-		RailgunHandler.registerProjectileProperties(new ItemStack(itemRail,1,1), 5,1.375).setColourMap(new int[][]{{0xa4a4a4,0xa4a4a4,0x686868, 0xddb82c,0xc9901f}, {0xa4a4a4,0xa4a4a4,0x686868, 0xf5cc2d,0xddb82c},{0xa4a4a4,0xa4a4a4,0x686868, 0xf5cc2d,0xddb82c}, {0xa4a4a4,0xa4a4a4,0x686868, 0xddb82c,0xc9901f}});
-		RailgunHandler.registerProjectileProperties(new ItemStack(itemRail,1,3), 6,1).setColourMap(new int[][]{{0x999999,0xa4a4a4,0xa4a4a4, 0xc9901f,0xc9901f,0xba851d}});
-		RailgunHandler.registerProjectileProperties(new ItemStack(itemRail,1,4), 7,1.375).setColourMap(new int[][]{{0x686868,0x808080,0x808080, 0x9a6033,0x9a6033,0xb8723d}});
-		RailgunHandler.registerProjectileProperties(new ItemStack(itemRail,1,5), 6,1).setColourMap(new int[][]{{0x999999,0xa4a4a4,0xa4a4a4, 0x9a6033,0x9a6033,0xa86938}});
+		RailgunHandler.registerProjectileProperties(new ItemStack(itemRail,1,0), 7,1.25).setColourMap(new int[][]{{0xa4a4a4,0x686868}});
+		RailgunHandler.registerProjectileProperties(new ItemStack(itemRail,1,1), 6,1.375).setColourMap(new int[][]{{0xa4a4a4,0xa4a4a4,0x686868, 0xddb82c,0xc9901f}, {0xa4a4a4,0xa4a4a4,0x686868, 0xf5cc2d,0xddb82c},{0xa4a4a4,0xa4a4a4,0x686868, 0xf5cc2d,0xddb82c}, {0xa4a4a4,0xa4a4a4,0x686868, 0xddb82c,0xc9901f}});
+		RailgunHandler.registerProjectileProperties(new ItemStack(itemRail,1,3), 7,1).setColourMap(new int[][]{{0x999999,0xa4a4a4,0xa4a4a4, 0xc9901f,0xc9901f,0xba851d}});
+		RailgunHandler.registerProjectileProperties(new ItemStack(itemRail,1,4), 8,1.375).setColourMap(new int[][]{{0x686868,0x808080,0x808080, 0x9a6033,0x9a6033,0xb8723d}});
+		RailgunHandler.registerProjectileProperties(new ItemStack(itemRail,1,5), 7,1).setColourMap(new int[][]{{0x999999,0xa4a4a4,0xa4a4a4, 0x9a6033,0x9a6033,0xa86938}});
 		
 		Item itemRebar = GameRegistry.findItem("Railcraft", "part.rebar");
 		int[][] rebarColourMap = new int[8*3+1][];
@@ -46,7 +46,7 @@ public class RailcraftHelper extends IECompatModule
 			rebarColourMap[1+ i*3] = rebarColourMap[1+ i*3+1] = rebarColourMap[1];
 			rebarColourMap[1+ i*3+2] = rebarColourMap[0];
 		}
-		RailgunHandler.registerProjectileProperties(new ItemStack(itemRebar), 6,1.25).setColourMap(rebarColourMap);
+		RailgunHandler.registerProjectileProperties(new ItemStack(itemRebar), 7,1.25).setColourMap(rebarColourMap);
 		Config.setBoolean("literalRailGun", true);
 	}
 

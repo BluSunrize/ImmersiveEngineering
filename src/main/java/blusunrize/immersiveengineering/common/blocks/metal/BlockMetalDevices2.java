@@ -6,6 +6,8 @@ import java.util.List;
 import blusunrize.immersiveengineering.api.AdvancedAABB;
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.client.render.BlockRenderMetalDevices2;
+import blusunrize.immersiveengineering.common.Config;
+import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ICustomBoundingboxes;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenBarrel;
@@ -269,17 +271,25 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 			}
 			return true;
 		}
-		else if(Utils.isHammer(player.getCurrentEquippedItem()) && te instanceof TileEntityFluidPump)
+		else if(te instanceof TileEntityFluidPump)
 		{
 			TileEntityFluidPump pump = (TileEntityFluidPump) te;
-			if (!pump.dummy)
+			if(!pump.dummy)
 			{
-				if (!world.isRemote)
+				if(!world.isRemote)
 				{
-					if(player.isSneaking())
-						side = ForgeDirection.OPPOSITES[side];
-					pump.toggleSide(side);
-					world.markBlockForUpdate(x, y, z);
+					if(Utils.isHammer(player.getCurrentEquippedItem()))
+					{
+						if(player.isSneaking())
+							side = ForgeDirection.OPPOSITES[side];
+						pump.toggleSide(side);
+						world.markBlockForUpdate(x, y, z);
+					}
+					else if(Config.getBoolean("pump_placeCobble") && OreDictionary.itemMatches(new ItemStack(IEContent.itemTool,1,1), player.getCurrentEquippedItem(), true))
+					{
+						pump.placeCobble = !pump.placeCobble;
+						player.addChatMessage(new ChatComponentTranslation(Lib.CHAT_INFO+"pump.placeCobble."+pump.placeCobble));
+					}
 				}
 				return true;
 			}

@@ -11,10 +11,14 @@ import blusunrize.immersiveengineering.api.shader.ShaderCaseMinecart;
 import blusunrize.immersiveengineering.api.shader.ShaderCaseRailgun;
 import blusunrize.immersiveengineering.api.shader.ShaderCaseRevolver;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
+import blusunrize.immersiveengineering.api.tool.RailgunHandler;
 import blusunrize.immersiveengineering.client.ClientEventHandler;
 import blusunrize.immersiveengineering.client.ClientProxy;
 import blusunrize.immersiveengineering.client.ClientUtils;
+import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.item.EnumRarity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 
@@ -58,6 +62,16 @@ public class AvaritiaHelper extends IECompatModule
 		EnumRarity trash = EnumRarity.valueOf("TRASH");
 		if(trash!=null)
 			ShaderRegistry.rarityWeightMap.put(trash,11);
+		
+		if(Loader.isModLoaded("TConstruct"))
+		{
+			Item itemToolrod = GameRegistry.findItem("TConstruct", "toolRod");
+			if(itemToolrod!=null)
+			{
+				RailgunHandler.registerProjectileProperties(new ItemStack(itemToolrod,1,500), 20,20).setColourMap(new int[][]{{0xa4a8c0,0x0e0e0e,0x0e0e0e,0x0e0e0e,0x0e0e0e,0x1c1c1c,0x1c1c1c,0xa4a8c0}});
+				RailgunHandler.registerProjectileProperties(new ItemStack(itemToolrod,1,501), 800,2).setColourMap(new int[][]{{0xe64452,0xe64452,0xe64452, 0xff425f,0xff425f},{0xd85085,0xd85085,0xd85085, 0xce41b2,0xce41b2},{0xec64f1,0xec64f1,0xec64f1, 0xf255f9,0xf255f9},{0xb146ff,0xb146ff,0xb146ff, 0x522ac8,0x522ac8},{0x7c74ee,0x7c74ee,0x7c74ee, 0x4a4ad5,0x4a4ad5},{0x6dc6f1,0x6dc6f1,0x6dc6f1, 0x57bdd9,0x57bdd9},{0x70d0a4,0x70d0a4,0x70d0a4, 0x74af93,0x74af93},{0x70c354,0x70c354,0x70c354, 0x34aa34,0x34aa34},{0x7de026,0x7de026,0x7de026, 0x219c21,0x219c21},{0xbcec13,0xbcec13,0xbcec13, 0x779202,0x779202},{0xedd02d,0xedd02d,0xedd02d, 0x928509,0x928509},{0xef725a,0xef725a,0xef725a, 0xef5739,0xef5739}});
+			}
+		}
 	}
 
 	static Field f_z_inventoryRender;

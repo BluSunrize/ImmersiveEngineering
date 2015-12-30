@@ -45,11 +45,12 @@ public class ItemShader extends ItemIEBase implements IShaderItem
 		addShader("Dragon's Breath", 1, EnumRarity.uncommon, new int[]{25,25,25,255}, new int[]{51,63,43,255}, new int[]{138,138,138,255},new int[]{138,138,138,255}, "shark",true,null);
 		addShader("Falconmoon", 3, EnumRarity.common, new int[]{103,99,107,255}, new int[]{244,238,235,255}, new int[]{45,45,45,255},new int[]{244,238,235,255});
 		addShader("Magnum", 1, EnumRarity.common, new int[]{86,56,44,255},new int[]{220,220,220,255},new int[]{160,160,160,255},new int[]{220,220,220,255});
+		addShader("Fox", 2, EnumRarity.uncommon, new int[]{45,45,45,255}, new int[]{212,126,49,255}, new int[]{234,234,234,255},new int[]{234,234,234,255});
 		addShader("Vault-Tec", 0, EnumRarity.common, new int[]{86,56,44,255},new int[]{26,71,133,255},new int[]{192,170,80,255},new int[]{170,170,170,255});
 		addShader("Sponsor", 0, EnumRarity.epic, new int[]{25,25,25,255}, new int[]{247,27,36,255}, new int[]{255,255,255,255},new int[]{170,170,170,255}, "sponsor",false,null);
 		((ShaderCaseMinecart)ShaderRegistry.getShader("Sponsor", "minecart")).mirrorSideForPass[2]=false;
 		addShader("Mass Fusion", 3, EnumRarity.rare, new int[]{110,90,55,255}, new int[]{57,71,48,255}, new int[]{84,84,84,255}, new int[]{170,170,170,255}, "fusion",true,null);
-
+		
 		addShader("StormFlower", 1, EnumRarity.common, new int[]{39,52,39,255},new int[]{40,111,48,255},new int[]{75,146,85,255},new int[]{40,111,48,255});
 		addShader("Mil\u00f3", 2, EnumRarity.uncommon, new int[]{59,27,16,255},new int[]{103,0,4,255},new int[]{206,126,16,255},new int[]{103,0,4,255});
 		addShader("Trident", 2, EnumRarity.uncommon, new int[]{81,81,81,255},new int[]{168,168,168,255},new int[]{41,211,255,255},new int[]{175,175,175,255});

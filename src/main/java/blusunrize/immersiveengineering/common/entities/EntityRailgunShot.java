@@ -4,6 +4,7 @@ import blusunrize.immersiveengineering.api.tool.RailgunHandler;
 import blusunrize.immersiveengineering.api.tool.RailgunHandler.RailgunProjectileProperties;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MovingObjectPosition;
@@ -96,6 +97,18 @@ public class EntityRailgunShot extends EntityIEProjectile
 			}
 		}
 	}
+
+	@Override
+    public void onCollideWithPlayer(EntityPlayer player)
+    {
+        if(!this.worldObj.isRemote && this.inGround && this.getAmmo()!=null)
+            if(player.inventory.addItemStackToInventory(this.getAmmo().copy()))
+            {
+                this.playSound("random.pop", 0.2F, ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+                this.setDead();
+            }
+    }
+
 
 	@Override
 	public void writeEntityToNBT(NBTTagCompound nbt)
