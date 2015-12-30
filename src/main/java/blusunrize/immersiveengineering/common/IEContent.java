@@ -454,7 +454,7 @@ public class IEContent
 		EntityRegistry.registerModEntity(EntityRevolvershotHoming.class, "revolverShotHoming", 3, ImmersiveEngineering.instance, 64, 1, true);
 		EntityRegistry.registerModEntity(EntityWolfpackShot.class, "revolverShotWolfpack", 4, ImmersiveEngineering.instance, 64, 1, true);		
 		EntityRegistry.registerModEntity(EntityChemthrowerShot.class, "chemthrowerShot", 5, ImmersiveEngineering.instance, 64, 1, true);
-		EntityRegistry.registerModEntity(EntityRailgunShot.class, "railgunShot", 6, ImmersiveEngineering.instance, 32, 5, true);
+		EntityRegistry.registerModEntity(EntityRailgunShot.class, "railgunShot", 6, ImmersiveEngineering.instance, 64, 5, true);
 		int villagerId = Config.getInt("villager_engineer");
 		VillagerRegistry.instance().registerVillagerId(villagerId);
 		VillagerRegistry.instance().registerVillageCreationHandler(new VillageEngineersHouse.VillageManager());

@@ -77,6 +77,11 @@ public class EntityRailgunShot extends EntityIEProjectile
 	@Override
 	public void onEntityUpdate()
 	{
+		// For testign Desync
+		//		if(worldObj instanceof WorldServer)
+		//			((WorldServer)worldObj).func_147487_a("flame", posX,posY,posZ, 0, 0,0,0, 1);
+		//		else
+		//			worldObj.spawnParticle("smoke", posX, posY, posZ, 0, 0, 0);
 		if(this.getAmmo() == null && this.worldObj.isRemote)
 			this.ammo = getAmmoSynced();
 		super.onEntityUpdate();

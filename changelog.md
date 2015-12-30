@@ -1,3 +1,7 @@
+#####Version 0.6.5.1
+- hotfix, fixing Server crashes with the Botania compat!
+- fixed converstion recipe for wooden planks
+
 #####Version 0.6.5 - BUILT
 - added the ability to apply shaders to balloons
 - added recipe to switch between wooden stairs (thanks malte0811)

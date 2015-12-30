@@ -180,7 +180,7 @@ public class ImmersiveEngineering
 	public static class ThreadContributorSpecialsDownloader extends Thread
 	{
 		public static ThreadContributorSpecialsDownloader activeThread;
-		
+
 		public ThreadContributorSpecialsDownloader()
 		{
 			setName("Immersive Engineering Contributors Thread");

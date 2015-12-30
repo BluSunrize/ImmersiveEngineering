@@ -15,8 +15,11 @@ import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDevices;
 import blusunrize.immersiveengineering.common.items.ItemRevolver;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Items;
@@ -53,7 +56,8 @@ public class BotaniaHelper extends IECompatModule
 
 		ShaderRegistry.rarityWeightMap.put(EnumRarity.valueOf("RELIC"),2);
 		ShaderRegistry.registerShader("Spectral", "5", EnumRarity.epic, new int[]{26,26,40,220},new int[]{0,70,49,220},new int[]{40,40,50,220},new int[]{5,10,8,180}, null,false,true);
-		MinecraftForge.EVENT_BUS.register(this);
+		if(FMLCommonHandler.instance().getEffectiveSide()==Side.CLIENT)
+			MinecraftForge.EVENT_BUS.register(this);
 	}
 
 	@Override
@@ -103,6 +107,7 @@ public class BotaniaHelper extends IECompatModule
 
 	EntityItem revolverEntity;
 	@SubscribeEvent()
+	@SideOnly(Side.CLIENT)
 	public void onPotatoRender(TinyPotatoRenderEvent event)
 	{
 		if(event.tile.getWorldObj()==null)

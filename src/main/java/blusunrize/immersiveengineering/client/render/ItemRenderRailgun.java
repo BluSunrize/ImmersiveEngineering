@@ -105,7 +105,7 @@ public class ItemRenderRailgun implements IItemRenderer
 		}
 		else if(type==ItemRenderType.ENTITY)
 		{
-			float scale = .5f;
+			float scale = .25f;
 			GL11.glRotatef(45, 0, 1, 0);
 			if(RenderItem.renderInFrame)
 			{
@@ -115,7 +115,10 @@ public class ItemRenderRailgun implements IItemRenderer
 				GL11.glTranslatef(.125f,.1f,-.01f);
 			}
 			else
+			{
 				GL11.glRotatef(45, 0, 1, 0);
+				GL11.glTranslatef(0,.25f,0);
+			}
 			GL11.glScalef(scale,scale, scale);
 		}
 		else if(type==ItemRenderType.INVENTORY)

@@ -36,27 +36,27 @@ public class IEDamageSources
 
 	public static DamageSource causeCasullDamage(EntityRevolvershot shot, Entity shooter)
 	{
-		return new IEDamageSource_Indirect(Lib.DMG_RevolverCasull, shot, shooter).setProjectile();
+		return new IEDamageSource_Indirect(Lib.DMG_RevolverCasull, shot, shooter);
 	}
 	public static DamageSource causePiercingDamage(EntityRevolvershot shot, Entity shooter)
 	{
-		return new IEDamageSource_Indirect(Lib.DMG_RevolverAP, shot, shooter).setDamageBypassesArmor().setProjectile();
+		return new IEDamageSource_Indirect(Lib.DMG_RevolverAP, shot, shooter).setDamageBypassesArmor();
 	}
 	public static DamageSource causeBuckshotDamage(EntityRevolvershot shot, Entity shooter)
 	{
-		return new IEDamageSource_Indirect(Lib.DMG_RevolverBuck, shot, shooter).setProjectile();
+		return new IEDamageSource_Indirect(Lib.DMG_RevolverBuck, shot, shooter);
 	}
 	public static DamageSource causeDragonsbreathDamage(EntityRevolvershot shot, Entity shooter)
 	{
-		return new IEDamageSource_Indirect(Lib.DMG_RevolverDragon, shot, shooter).setFireDamage().setProjectile();
+		return new IEDamageSource_Indirect(Lib.DMG_RevolverDragon, shot, shooter).setFireDamage();
 	}
 	public static DamageSource causeHomingDamage(EntityRevolvershot shot, Entity shooter)
 	{
-		return new IEDamageSource_Indirect(Lib.DMG_RevolverHoming, shot, shooter).setProjectile();
+		return new IEDamageSource_Indirect(Lib.DMG_RevolverHoming, shot, shooter);
 	}
 	public static DamageSource causeWolfpackDamage(EntityRevolvershot shot, Entity shooter)
 	{
-		return new IEDamageSource_Indirect(Lib.DMG_RevolverWolfpack, shot, shooter).setProjectile();
+		return new IEDamageSource_Indirect(Lib.DMG_RevolverWolfpack, shot, shooter);
 	}
 	public static DamageSource causeSilverDamage(EntityRevolvershot shot, Entity shooter)
 	{
@@ -67,7 +67,7 @@ public class IEDamageSources
 	}
 	public static DamageSource causePotionDamage(EntityRevolvershot shot, EntityLivingBase shooter)
 	{
-		return new IEDamageSource_Indirect(Lib.DMG_RevolverPotion, shot, shooter).setProjectile();
+		return new IEDamageSource_Indirect(Lib.DMG_RevolverPotion, shot, shooter);
 	}
 
 	public static DamageSource causeAcidDamage()
@@ -82,6 +82,6 @@ public class IEDamageSources
 	
 	public static DamageSource causeRailgunDamage(EntityRailgunShot shot, Entity shooter)
 	{
-		return new IEDamageSource_Indirect(Lib.DMG_Railgun, shot, shooter).setDamageBypassesArmor().setProjectile();
+		return new IEDamageSource_Indirect(Lib.DMG_Railgun, shot, shooter).setDamageBypassesArmor();
 	}
 }

@@ -166,7 +166,7 @@ public class IERecipes
 			addOredictRecipe(new ItemStack(IEContent.blockTreatedWood,8,0), "WWW","WCW","WWW", 'W',"plankWood",'C',container);
 		addOredictRecipe(new ItemStack(IEContent.blockTreatedWood,1,0), "W","W", 'W',new ItemStack(IEContent.blockWoodenDecoration,1,2));
 		for(int i=0; i<IEContent.blockTreatedWood.subNames.length; i++)
-			addShapelessOredictRecipe(new ItemStack(IEContent.blockTreatedWood,1, i-1<IEContent.blockTreatedWood.subNames.length?i+1:0), new ItemStack(IEContent.blockTreatedWood,1,i));
+			addShapelessOredictRecipe(new ItemStack(IEContent.blockTreatedWood,1, i==IEContent.blockTreatedWood.subNames.length-1?0:i+1), new ItemStack(IEContent.blockTreatedWood,1,i));
 		addOredictRecipe(new ItemStack(IEContent.blockWoodenDecoration,2,1), "SSS","SSS", 'S',"treatedStick");
 		addOredictRecipe(new ItemStack(IEContent.blockWoodenDecoration,6,2), "WWW", 'W',"plankTreatedWood");
 		addOredictRecipe(new ItemStack(IEContent.blockWoodenDecoration,6,5), "WWW"," S ","S S", 'W',"plankTreatedWood",'S',new ItemStack(IEContent.blockWoodenDecoration,1,1));
