@@ -1,6 +1,8 @@
-#####Version 0.6.5.1
-- hotfix, fixing Server crashes with the Botania compat!
+#####Version 0.6.5.1 - BUILT
+- hotfix!
+- fixed Server crashes with the Botania compat!
 - fixed converstion recipe for wooden planks
+- fixed missing localization of the railgun damage
 
 #####Version 0.6.5 - BUILT
 - added the ability to apply shaders to balloons
