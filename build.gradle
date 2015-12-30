@@ -17,7 +17,7 @@ buildscript {
 
 apply plugin: 'forge'
 
-version = "0.6.5-pre"
+version = "0.6.5"
 group= "blusunrize"
 archivesBaseName = "ImmersiveEngineering"
 

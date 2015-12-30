@@ -1,4 +1,4 @@
-#####Version 0.6.5
+#####Version 0.6.5 - BUILT
 - added the ability to apply shaders to balloons
 - added recipe to switch between wooden stairs (thanks malte0811)
 - added the ability to extinguish fires and hurt blazes with a water-filled ChemThrower
