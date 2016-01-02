@@ -83,14 +83,14 @@ public abstract class IECompatModule
 	}
 	//We don't want this to happen multiple times after all >_>
 	public static boolean serverStartingDone = false;
-	public static void doModulesServerStarting()
+	public static void doModulesLoadComplete()
 	{
 		if(!serverStartingDone)
 		{
 			serverStartingDone = true;
 			for(IECompatModule compat : IECompatModule.modules)
 				try{
-					compat.serverStarting();
+					compat.loadComplete();
 				}catch (Exception exception){
 					IELogger.error("Compat module for "+compat+" could not be initialized");
 				exception.printStackTrace();
@@ -101,5 +101,5 @@ public abstract class IECompatModule
 	public abstract void preInit();
 	public abstract void init();
 	public abstract void postInit();
-	public void serverStarting(){}
+	public void loadComplete(){}
 }

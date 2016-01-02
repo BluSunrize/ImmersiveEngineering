@@ -37,6 +37,7 @@ import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLLoadCompleteEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartedEvent;
@@ -52,7 +53,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 
-@Mod(modid=ImmersiveEngineering.MODID,name=ImmersiveEngineering.MODNAME,version = ImmersiveEngineering.VERSION, dependencies="after:Railcraft;before:TConstruct;after:ThermalFoundation")
+@Mod(modid=ImmersiveEngineering.MODID,name=ImmersiveEngineering.MODNAME,version = ImmersiveEngineering.VERSION, dependencies="after:Railcraft;before:TConstruct;after:ThermalFoundation;after:Avaritia")
 public class ImmersiveEngineering
 {
 	public static final String MODID = "ImmersiveEngineering";
@@ -126,14 +127,18 @@ public class ImmersiveEngineering
 		new ThreadContributorSpecialsDownloader();
 		IECompatModule.doModulesPostInit();
 	}
+	@Mod.EventHandler
+	public void loadComplete(FMLLoadCompleteEvent event)
+	{
+		IECompatModule.doModulesLoadComplete();
+		ShaderRegistry.compileWeight();
+	}
 
 	@Mod.EventHandler
 	public void serverStarting(FMLServerStartingEvent event)
 	{
 		proxy.serverStarting();
 		event.registerServerCommand(new CommandHandler());
-		IECompatModule.doModulesServerStarting();
-		ShaderRegistry.compileWeight();
 		IEVillagerTradeHandler.instance.addShaderTrades();
 	}
 	@Mod.EventHandler

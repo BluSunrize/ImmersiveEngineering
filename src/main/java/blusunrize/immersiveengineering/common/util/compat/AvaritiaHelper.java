@@ -54,11 +54,6 @@ public class AvaritiaHelper extends IECompatModule
 	@Override
 	public void postInit()
 	{
-	}
-
-	@Override
-	public void serverStarting()
-	{
 		EnumRarity trash = EnumRarity.valueOf("TRASH");
 		if(trash!=null)
 			ShaderRegistry.rarityWeightMap.put(trash,11);
