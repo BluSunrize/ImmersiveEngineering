@@ -259,8 +259,8 @@ item.ImmersiveEngineering.blueprint.name=技士のブループリント
 
 item.ImmersiveEngineering.graphiteElectrode.name=炭素電極
 
-item.ImmersiveEngineering.shader.name=リボルバースキン
-item.ImmersiveEngineering.shaderBag.name=リボルバースキン福袋
+item.ImmersiveEngineering.shader.name=ガジェットスキン
+item.ImmersiveEngineering.shaderBag.name=ガジェットスキン福袋
 
 item.ImmersiveEngineering.jerrycan.name=ジェリー缶
 
@@ -400,7 +400,7 @@ desc.ImmersiveEngineering.flavour.toolupgrade.drillCapacity=採掘ドリルの�
 desc.ImmersiveEngineering.flavour.toolupgrade.revolverBayonet=リボルバーの攻撃力を追加します。
 desc.ImmersiveEngineering.flavour.toolupgrade.revolverMagazine=リボルバーのマガジンを増やします。
 desc.ImmersiveEngineering.flavour.toolupgrade.revolverElectro=リボルバーの銃撃で相手をスタンできるようにします。
-desc.ImmersiveEngineering.flavour.toolupgrade.chemthrowerFocus=ケミカル放射器の散布範囲を広げ、<br>散布幅を減らします。
+desc.ImmersiveEngineering.flavour.toolupgrade.chemthrowerFocus=ケミカル放射器の散布範囲を広げ、散布幅を減らします。
 desc.ImmersiveEngineering.flavour.toolupgrade.railgunScope=レールガンでズームできるようにします。
 desc.ImmersiveEngineering.flavour.toolupgrade.railgunCapacitors=レールガンのチャージ時間を減らしエネルギーの貯蓄量を増やします。
 
@@ -458,13 +458,13 @@ death.attack.ieRevolver_casull=%1$sは%2$sに撃ち殺されてしまった
 death.attack.ieRevolver_armorPiercing=%1$sは%2$sに撃ちぬかれてしまった
 death.attack.ieRevolver_buckshot=%1$sは%2$sに蜂の巣にされてしまった
 death.attack.ieRevolver_dragonsbreath=%1$sは%2$sに焼却された
-death.attack.ieRevolver_homing=%1$sは%2$sの弾丸に付きまとわれた
+death.attack.ieRevolver_homing=%1$sは%2$sのホーミング弾に追いつかれてしまった
 death.attack.ieRevolver_wolfpack=%1$sは%2$sのオオカミたちにずたずたにされた
 death.attack.ieRevolver_silver=%1$sは%2$sの銀の弾丸で浄化された
 death.attack.ieRevolver_potion=%1$sは%2$sのポーション弾を浴びて死んだ
 death.attack.ieCrushed=%1$sはぐちゃぐちゃに粉砕されてしまった
 death.attack.ieAcid=%1$sは酸で溶かされてしまった
-death.attack.ieRailgun=%1$は%2$sのレールガンで撃ち貫かれてしまった
+death.attack.ieRailgun=%1$sは%2$sに撃ち貫かれてしまった
 
 #ACHIEVEMENTS
 achievement.immersiveengineering.openManual=RTFM
@@ -563,14 +563,14 @@ ie.manual.entry.updateNews_4.name=What's new in v0.6.4
 ie.manual.entry.updateNews_4.subtext=Old, new; borrowed and Blu
 ie.manual.entry.updateNews_40=Dear Engineer!<br><br>The past update has brought only little changes.<br>The energy transmission is fixed again, the engineer it that broke has been dunked into cold water as punishment.<br>The <link;furnaceHeater;§o§nFurnace §o§nHeater§r> has seen some improvements that now allow it to heat up Alchemical Furnaces from Thaumcraft or Evaporators from Cutting Edge.<br><br>That's all for now, let's hope it stays sufficiently stable.
 
-#概要とリソース(Overview and Resources)
+#メニュー項目
 ie.manual.category.general.name=概要とリソース
-ie.manual.category.construction.name=Construction
-ie.manual.category.energy.name=Power, wires, generators
-ie.manual.category.machines.name=Tools and Simple Machines
-ie.manual.category.heavymachines.name=Heavy Machinery
+ie.manual.category.construction.name=構造体
+ie.manual.category.energy.name=電力・配線・発電
+ie.manual.category.machines.name=道具及び簡単な機械
+ie.manual.category.heavymachines.name=重機械
 
-#マニュアル->概要と材料->導入(Introduction)
+#導入(Introduction)
 ie.manual.entry.introduction.name=導入
 ie.manual.entry.introduction.subtext=Getting into Engineering
 
@@ -579,7 +579,7 @@ ie.manual.entry.introduction1=Energy is transmitted between §lconnectors§r by 
 
 ie.manual.entry.introductionHammer=The Engineer's Hammer is the most important tool at your disposal. It will be used to form multiblocks like the Coke Oven and Blast Furnace<config;b;crushingOreRecipe;, crushing ores into dust ; >or configuring blocks like Wooden Posts.
 
-#マニュアル->概要と材料->鉱石(Ores)
+#鉱石(Ores)
 ie.manual.entry.ores.name=鉱石
 ie.manual.entry.ores.subtext=Diggy diggy hole
 
@@ -589,7 +589,7 @@ ie.manual.entry.oresLead=§lLead Ore§r is found in the world between layers <co
 ie.manual.entry.oresSilver=§lSilver Ore§r is found in the world between layers <config;iA;ore_silver;1> and <config;iA;ore_silver;2>, and requires an Iron Pickaxe to harvest.<br><br>The ore will smelt into silver ingots, which alloy with gold to create electrum, a far more effective conductor.
 ie.manual.entry.oresNickel=§lNickel Ore§r is found in the world between layers <config;iA;ore_nickel;1> and <config;iA;ore_nickel;2>, and requires an Iron Pickaxe to harvest.<br><br>The ore will smelt into nickel ingots, which alloy with copper to create constantan, a heat resistant conductor used in the creation of <link;generator;§o§nThermoelectric §o§nGenerators§r;1>.
 
-#マニュアル->概要と材料->鉱石処理(Ore Processing)
+#鉱石処理(Ore Processing)
 ie.manual.entry.oreProcessing.name=鉱石処理
 ie.manual.entry.oreProcessing.subtext=
 
@@ -601,13 +601,13 @@ ie.manual.entry.alloys.name=合金
 ie.manual.entry.alloys.subtext=
 ie.manual.entry.alloys0=Mixing dusts creates an alloy blend that can then be smelted into alloyed ingots. Constantan has thermo-electric properties and is used in creating the <link;generator;§o§nthermoelectric §o§ngenerator§r;1> and electrum is an excellent electric conductor used in <link;wiring;§o§nmedium-voltage §o§narchitecture§r>.
 
-#マニュアル->概要と材料->工業用大麻(Industrial Hemp)
+#工業用大麻(Industrial Hemp)
 ie.manual.entry.hemp.name=工業用大麻
 ie.manual.entry.hemp.subtext=530 fabric it
 
 ie.manual.entry.hemp0=Industrial Hemp is a remarkable plant! Not only are its seeds useful for the the creation of <link;biodiesel;§o§nBiodiesel§r>, the hemp fibers are also vital in the creation of <link;generator;§o§nImproved §o§nWindmills§r;3>. The seeds can be gathered by breaking tall grass.
 
-#マニュアルｰ>概要と材料ｰ>コークス炉(Coke Oven)
+#コークス炉(Coke Oven)
 ie.manual.entry.cokeoven.name=コークス炉
 ie.manual.entry.cokeoven.subtext=Hot topic!
 
@@ -615,7 +615,7 @@ ie.manual.entry.cokeoven0=The Coke Oven is the first important machine you will 
 
 ie.manual.entry.cokeovenBlock=To form a Coke Oven, arrange 27 of these blocks in a 3x3x3 cube, and rightclick one of the sides' center blocks with an Engineer's Hammer.<br>See the following page for a diagram.
 
-#マニュアルｰ>概要と材料ｰ>含浸木材(Treated Wood)
+#含浸木材(Treated Wood)
 ie.manual.entry.treatedwood.name=含浸木材
 ie.manual.entry.treatedwood.subtext=Highly Durable
 
@@ -645,19 +645,19 @@ ie.manual.entry.barrel.name=木樽
 ie.manual.entry.barrel.subtext=Doesn't roll
 ie.manual.entry.barrel0=Wooden barrels are simple containers that can store fluid. They will store up to 12 buckets, but because they are wooden, they can't store any gasses or hot fluids.<br>Rightclicking the top or bottom side of the barrel with a Hammer will switch between in-, output or no connection.
 
-#ジェリー缶
+#ジェリー缶(Jerry Can)
 ie.manual.entry.jerrycan.name=ジェリー缶
 ie.manual.entry.jerrycan.subtext=Better than buckets
 ie.manual.entry.jerrycan0=Jerrycans are simple metal containers used to carry fluids. They can store up to 10 buckets and can pour that fluid into the world as well as into machines. They can not pick up fluids. Additionally, they can be used to refill other fluid-consuming items like the <link;drill;§o§nMining §o§nDrill§r> by crafting them together.
 
-#マニュアル->概要と材料ｰ>グラファイト(Graphite)
+#グラファイト(Graphite)
 ie.manual.entry.graphite.name=グラファイト
 ie.manual.entry.graphite.subtext=Coal stuff
 
 ie.manual.entry.graphite0=Highly Ordered Pyrolytic Graphite (HOP) is a complex, highly compressed, carbon material used in special engineering constructs.<br>HOP Graphite Dust is created by compressing eight pieces of Coke Dust in the <link;biodiesel;§o§nIndustrial §o§nSqueezer§r;1>. That dust can then be smelted into an ingot.
 ie.manual.entry.graphite1=The most common use for HOP Graphite is the creation of electrodes to be used in the <link;arcfurnace;§o§nArc §o§nFurnace§r>. These electrodes are created with an <link;blueprints;§o§nEngineer's §o§nBlueprint§r>, which you can<config;b;arcfurnace_electrodeCrafting; craft,> find in certain chests or trade with a villager.
 
-#マニュアルｰ>エネルギー、導線、発電ｰ>基本的な配線(Basic Wiring)
+#基本的な配線(Basic Wiring)
 ie.manual.entry.wiring.name=基本的な配線
 ie.manual.entry.wiring.subtext=Bzzzt!
 
@@ -677,7 +677,7 @@ ie.manual.entry.wiringCutters=The §lWire Cutters§r are used to removed all the
 
 ie.manual.entry.wiringVoltmeter=The §lVoltmeter§r is used to measure connections. Rightclick a capacitor to read its current storage or sneak+rightclick two connectors to calculate the average loss between them.
 
-#マニュアルｰ>エネルギー、導線、発電ｰ>発電(Power Generation)
+#発電(Power Generation)
 ie.manual.entry.generator.name=発電
 ie.manual.entry.generator.subtext=
 
@@ -689,7 +689,7 @@ ie.manual.entry.generatorWatermill=The Water Wheel is a fairly easy way of power
 
 ie.manual.entry.generatorWindmillImproved=The improved Windmill is an upgrade to the windmills. While it has twice the output it's also more pricey to create, requiring tough fabric made from industrial hemp. Break tall grass to aquire hemp seeds.
 
-#マニュアル->エネルギー、導線、発電ｰ>ブレーカースイッチ(Breaker Switch)
+#ブレーカースイッチ(Breaker Switch)
 ie.manual.entry.breaker.name=ブレーカースイッチ
 ie.manual.entry.breaker.subtext=Clap on - Clap off
 
@@ -702,26 +702,26 @@ ie.manual.entry.eMeter.name=モニタリング変圧器
 ie.manual.entry.eMeter.subtext=88 Flux per hour!
 ie.manual.entry.eMeter0=The Current Transformer is a measurement device for electrical power. It can be hooked up in any powerline and will keep track of energy transferred through it, returning an average RF/t upon rightclick.
 
-#マニュアルｰ>エネルギー、導線、発電->熱電発電機(Thermoelectric Generator)
+#マニュアルｰ>エネルギー、導線、発電>熱電発電機(Thermoelectric Generator)
 ie.manual.entry.thermoElectric.name=熱電発電機
 ie.manual.entry.thermoElectric.subtext=Hot and Cold
 
 ie.manual.entry.thermoElectric0=Thermoelectric Generators are another option of power generation and work without the use of any mechanical parts, instead they use the temperature gradients between two sources.
 ie.manual.entry.thermoElectric1=Placing a hot fluid on one side and a colder fluid on the opposing side generates energy based on the difference between the two temperatures.<br>The following list contains other, non-fluid, blocks, which can be used as sources of temperature.
 
-#マニュアル->概要と材料ｰ>高炉(Blast Furnace)
+#マニュアル>概要と材料>高炉(Blast Furnace)
 ie.manual.entry.blastfurnace.name=高炉
 ie.manual.entry.blastfurnace.subtext=Even hotter topic!
 
 ie.manual.entry.blastfurnace0=The Blast Furnace is used to increase the carbon contents in iron, turning it into steel. To achieve this, only pure, high-carbon fuels may be used for the furnace, specifically coal coke and charcoal.<br>The steel created in the blast furnace is an integral part of high-voltage architecture.
 ie.manual.entry.blastfurnaceBlock=To form a Blast Furnace, arrange 27 of these blocks in a 3x3x3 cube, and rightclick one of the sides' center blocks with an Engineer's Hammer.<br>See the following page for a diagram.
 
-#マニュアルｰ>概要と材料ｰ>鋼の構造体(Steel Constructions)
-ie.manual.entry.steelconstruction.name=鋼の構造体
-ie.manual.entry.steelconstruction.subtext=Riveting
-
-ie.manual.entry.steelconstruction0=Steel is not only an integral part of high-voltage architectures, it is also quite useful in, well, architecture. Steel scaffolding can be used to quickly create climbable structures, steel fencing keeps baddies at bay and structural arms make for great attachment points for your HV relays.
-ie.manual.entry.steelconstruction1=Structural Connectors work similarly to normal connectors, but instead of transferring energy, they are purely decorative.<br>They won't accept normal wires, but Hemp Rope and Steel Cable (see next page).<br>You can also rotate them by rightclicking them with an Engineer's Hammer.
+#金属製構造体(Steel Constructions)
+ie.manual.entry.metalconstruction.name=金属製構造体
+ie.manual.entry.metalconstruction.subtext=Riveting
+ie.manual.entry.metalconstruction0=Apart from Treated Wood, processed metals make for common construction blocks. You can craft almost any metal into blocks and slabs, or hammer iron ingots into a sheetmetal block.
+ie.manual.entry.metalconstruction1=Steel is not only an integral part of high-voltage architectures, it is also quite useful in, well, architecture. Steel scaffolding can be used to quickly create climbable structures, steel fencing keeps baddies at bay and structural arms make for great attachment points for your HV relays.
+ie.manual.entry.metalconstruction2=Structural Connectors work similarly to normal connectors, but instead of transferring energy, they are purely decorative.<br>They won't accept normal wires, but Hemp Rope and Steel Cable (see next page).<br>You can also rotate them by rightclicking them with an Engineer's Hammer.
 
 #技術的な灯火(Engineered Lighting)
 ie.manual.entry.lighting.name=技術的な灯火
@@ -739,12 +739,12 @@ ie.manual.entry.tanksilo1=Silos offer space for a lot of items of the same type,
 ie.manual.entry.tanksilo2=Items must be input through the top and extracted from the bottom. Applying a redstone signal to the bottom block will make it output automatically. The multiblock is formed by clicking a middle block of the second layer.
 ie.manual.entry.tanksilo3=Attaching a comparator to the output block makes it emit a redstone signal proportional to how full the tank/silo is. Attaching a comparator to one of the top 6 (silos) or top 4 (tanks) layers causes it to emit a signal proportional to how full the corresponding 1/6 (silos) or 1/4 (tanks) of the storage is. For example, a comparator attached to the second layer of a tank would not emit any signal until the tank is 1/4 full and have a signal strength of 15 if the tank is half full or more.
 
-#金属バレル(Metal Barrel)
+#マニュアルｰ>構造体ｰ>金属バレル(Metal Barrel)
 ie.manual.entry.metalbarrel.name=金属バレル
 ie.manual.entry.metalbarrel.subtext=一斗缶を感じる
 ie.manual.entry.metalbarrel0=Metal barrels work exactly like <link;barrel;§o§nWooden §o§nBarrels§r;>. They store the same amount of fluid and their in- and outputs are configured the same way, but unlike the wooden version, these can store gasses and hot fluids.
 
-#組立機(Assembler)
+#マニュアルｰ>組立機(Assembler)
 ie.manual.entry.assembler.name=組立機
 ie.manual.entry.assembler.subtext=Some assembly required
 ie.manual.entry.assembler0=The Assembler is a complex machine capable of crafting items, similar to how a player would.<br>To form the structure, build it like demonstrated above and use the hammer on one of the conveyors.
@@ -901,7 +901,7 @@ ie.manual.entry.skyhook0=The Engineer's Skyhook is a motorized grabber system de
 ie.manual.entry.skyhook1=Simply hold the right mousebutton while close to a connector and you will be attached to the wire.<br>Releasing the button at any time or sneaking will cause you to dismount.<br>You can not start in the middle of a wire, you must attach at a connector.
 
 #ガジェットスキン(Shaders)
-ie.manual.entry.shader.name=ガジェット好きん
+ie.manual.entry.shader.name=ガジェットスキン
 ie.manual.entry.shader.subtext=Blue! No, yellow!
 ie.manual.entry.shader0=Shaders are items you can find in the world or aquire by trading with villagers. They don't have a purpose by themselves, but they can be equipped to <link;revolver;§o§nRevolvers§r>, <link;drill;§o§nDrills§r>, <link;chemthrower;§o§nChemical §o§nThrowers§r> or <link;railgun;§o§nRailguns§r>(and possibly other things you still have to discover) to change the designs of the item. Simply put the item in an <link;workbench;§o§nEngineer's §o§nWorkbench§r> and equip the shader in the appropriate slot.<br>You can also apply them to a Minecart or a <link;balloon;§o§nBallon§r> by rightclicking!
 ie.manual.entry.shader1=Shader Grabbags are items containing a random shader. They can be found in crates, traded from villagers or dropped by bosses. The rarity of the contained shader is equal to, or better than the rarity of the bag. When using a bag, you are more likely to get a shader you do not yet own, than one you already posess.
@@ -909,7 +909,7 @@ ie.manual.entry.shader2=Shaders bags can be crafted back into two bags of a lowe
 
 #レールガン(Railgun)
 ie.manual.entry.railgun.name=レールガン
-ie.manual.entry.railgun.subtext=超電磁砲(ガチ)
+ie.manual.entry.railgun.subtext=超電磁砲
 ie.manual.entry.railgun0=The Railgun (or more accurately the Portable Induction Catapult) is a marvel of engineering. It consists of two rails through which an electric current flows and accelerates a sled, and by that, a projectile.<br>The process is energy intensive but will accelerate various projectiles to high speeds.
 ie.manual.entry.railgun1=To launch a projectile from your inventory, click and hold the use button till the charge level reaches 99, then release.<br><br>Valid projectiles include, for instance, §6iron§r and §6steel rods§r<config;b;literalRailGun;, §6rebar§r and almost §6every rail§r from Railcraft;>, as well as §6graphite electrodes§r.
 ie.manual.entry.railgun2=As with other IE tools, the railgun can be modified in the <link;workbench;§o§nEngineer's §o§nWorkbench§r> and be customized with <link;shader;§o§nShaders§r>.<br><br>The §6Additional Capacitors§r increase the energy storage of the railgun and also greatly reduce its charge time.
@@ -917,7 +917,7 @@ ie.manual.entry.railgun3=The §6Precision Scope§r allows you to zoom in with th
 
 #マニュアルｰ>工具と機械ｰ>粉砕機(Crusher)
 ie.manual.entry.crusher.name=粉砕機
-ie.manual.entry.crusher.subtext=Keep your hands out!
+ie.manual.entry.crusher.subtext=手を近づけないで！
 
 ie.manual.entry.crusher0=Crushing an ore is an effective way of increasing their yield, for each ore creates two dusts which you can then smelt. This industrial-size crusher is a quick way of doing so. The machine will consume up to <config;i;crusher_consumption> RF/t, and its processing speed depends on the power supplied.
 ie.manual.entry.crusher1=However, it is not only used for crushing ores. Every living being to fall into the machine will take grave damage and the crusher will output the relevant drops. Likewise, all items that cannot be processed will be destroyed.<br>Applying a redstone signal to the control panel at the front will halt the crushers process.<br>The structure is formed by right clicking the central block of the front. The front is the wide side of the structure which has a light engineering block at the bottom.
