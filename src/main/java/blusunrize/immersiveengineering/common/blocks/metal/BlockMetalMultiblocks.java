@@ -386,6 +386,8 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 			return true;
 		if (te instanceof TileEntityAssembler)
 			return ((TileEntityAssembler)te).offset[1]==-1;
+		if (te instanceof TileEntityBottlingMachine)
+			return ((TileEntityBottlingMachine)te).offset[1]==0&&((TileEntityBottlingMachine)te).pos!=0&&((TileEntityBottlingMachine)te).pos!=2;
 		return super.isSideSolid(world, x, y, z, side);
 	}
 

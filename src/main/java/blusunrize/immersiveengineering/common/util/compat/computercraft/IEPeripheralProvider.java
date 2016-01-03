@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.common.util.compat.computercraft;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityArcFurnace;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityAssembler;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBottlingMachine;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityDieselGenerator;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityEnergyMeter;
@@ -97,6 +98,16 @@ public class IEPeripheralProvider implements IPeripheralProvider
 				TileEntityAssembler assembler = (TileEntityAssembler) te;
 				if (assembler.offset[1]==-1)
 					return new PeripheralAssembler(world, x-assembler.offset[0], y-assembler.offset[1], z-assembler.offset[2]);
+				else
+					return null;
+			}
+			if (te instanceof TileEntityBottlingMachine)
+			{
+				TileEntityBottlingMachine bott = (TileEntityBottlingMachine) te;
+				if (bott.offset[1]==0&&bott.pos!=0&&bott.pos!=2)
+					return new PeripheralBottlingMachine(world, x-bott.offset[0], y, z-bott.offset[2]);
+				else
+					return null;
 			}
 		}
 		return null;
