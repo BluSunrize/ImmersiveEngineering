@@ -491,33 +491,29 @@ achievement.immersiveengineering.placeFloodlight.desc=投光機を設置する
 achievement.immersiveengineering.craftWorkbench=冶金の時間
 achievement.immersiveengineering.craftWorkbench.desc=技師用工具台の作成
 achievement.immersiveengineering.makeRevolver=よい1日になる
-achievement.immersiveengineering.makeRevolver.desc=リボルバー
 achievement.immersiveengineering.upgradeRevolver=Shalashaska
-achievement.immersiveengineering.upgradeRevolver.desc=Apply the maximum Upgrades to the Revolver
 achievement.immersiveengineering.makeWolfPack=Beauty of Destruction
-achievement.immersiveengineering.makeWolfPack.desc=Craft a Wolfpack Cartridge
-achievement.immersiveengineering.makeDrill=Power Pick
-achievement.immersiveengineering.makeDrill.desc=Craft the Mining Drill
 achievement.immersiveengineering.upgradeDrill=Big Daddy
-achievement.immersiveengineering.upgradeDrill.desc=Apply the maximum Upgrades to the Mining Drill
+achievement.immersiveengineering.makeRevolver.desc=リボルバーの作成
+achievement.immersiveengineering.upgradeRevolver.desc=リボルバーに最大アップグレードを積む
+achievement.immersiveengineering.makeWolfPack.desc=狼群団の作成
+achievement.immersiveengineering.makeDrill=強力な採掘
+achievement.immersiveengineering.makeDrill.desc=採掘ドリルの作成
+achievement.immersiveengineering.upgradeDrill.desc=採掘ドリルに最大アップグレードを積む
 achievement.immersiveengineering.makeSkyhook=Booker, catch!
-achievement.immersiveengineering.makeSkyhook.desc=Craft the Engineer's Skyhook
+achievement.immersiveengineering.makeSkyhook.desc=スカイフックの作成
 achievement.immersiveengineering.skyhookPro=Skyline Master
-achievement.immersiveengineering.skyhookPro.desc=Travel a total of 1km with the Skyhook
+achievement.immersiveengineering.skyhookPro.desc=スカイフックで合計1000ブロック移動する
 achievement.immersiveengineering.mbSilo=Sheetmetal Stash
-achievement.immersiveengineering.mbSilo.desc=Form the Silo Multiblock
+achievement.immersiveengineering.mbSilo.desc=サイロを組み立てる
 achievement.immersiveengineering.mbCrusher=Hazardous Machinery
-achievement.immersiveengineering.mbCrusher.desc=Form the Crusher Multiblock
+achievement.immersiveengineering.mbCrusher.desc=粉砕機を組み立てる
 achievement.immersiveengineering.mbDieselGen=Bad for the Environment
-achievement.immersiveengineering.mbDieselGen.desc=Form the Diesel Generator Multiblock
+achievement.immersiveengineering.mbDieselGen.desc=ディーゼル発電機を組み立てる
 achievement.immersiveengineering.mbExcavator=Diggy Diggy Hole
-achievement.immersiveengineering.mbExcavator.desc=Form the Excavator Multiblock
+achievement.immersiveengineering.mbExcavator.desc=掘削機を組み立てる
 achievement.immersiveengineering.mbArcFurnace=The Hottest Topic
-achievement.immersiveengineering.mbArcFurnace.desc=Form the Arc Furnace Multiblock
-achievement.immersiveengineering.mbExcavator=Diggy Diggy Hole
-achievement.immersiveengineering.mbExcavator.desc=Form the Excavator Multiblock
-achievement.immersiveengineering.mbArcFurnace=The Hottest Topic
-achievement.immersiveengineering.mbArcFurnace.desc=Form the Arc Furnace Multiblock
+achievement.immersiveengineering.mbArcFurnace.desc=アーク炉を組み立てる
 
 achievement.immersiveengineering.secret_birthdayParty=Grunt Birthday Party
 achievement.immersiveengineering.secret_birthdayParty.desc=Light a match...
@@ -741,7 +737,7 @@ ie.manual.entry.tanksilo3=Attaching a comparator to the output block makes it em
 
 #マニュアルｰ>構造体ｰ>金属バレル(Metal Barrel)
 ie.manual.entry.metalbarrel.name=金属バレル
-ie.manual.entry.metalbarrel.subtext=一斗缶を感じる
+ie.manual.entry.metalbarrel.subtext=Doesn't roll
 ie.manual.entry.metalbarrel0=Metal barrels work exactly like <link;barrel;§o§nWooden §o§nBarrels§r;>. They store the same amount of fluid and their in- and outputs are configured the same way, but unlike the wooden version, these can store gasses and hot fluids.
 
 #マニュアルｰ>組立機(Assembler)
