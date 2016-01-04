@@ -10,6 +10,12 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockFerme
 import blusunrize.immersiveengineering.common.util.Utils;
 import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyReceiver;
+import cpw.mods.fml.common.Optional;
+import li.cil.oc.api.machine.Arguments;
+import li.cil.oc.api.machine.Callback;
+import li.cil.oc.api.machine.Context;
+import li.cil.oc.api.network.SidedComponent;
+import li.cil.oc.api.network.SimpleComponent;
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -25,8 +31,9 @@ import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.oredict.OreDictionary;
+import scala.reflect.internal.Types.SimpleTypeProxy;
 
-public class TileEntityFermenter extends TileEntityMultiblockPart implements IFluidHandler, ISidedInventory, IEnergyReceiver
+public class TileEntityFermenter extends TileEntityMultiblockPart implements IFluidHandler, ISidedInventory, IEnergyReceiver, SimpleComponent, SidedComponent
 {
 	public int facing = 2;
 	public FluidTank tank = new FluidTank(12000);
@@ -534,5 +541,101 @@ public class TileEntityFermenter extends TileEntityMultiblockPart implements IFl
 		if(this.master()!=null)
 			return this.master().energyStorage.getMaxEnergyStored();
 		return energyStorage.getMaxEnergyStored();
+	}
+	@Override
+	public boolean canConnectNode(ForgeDirection arg0) {
+		if (arg0.offsetX!=0&&arg0.offsetX!=Math.signum(offset[0]))
+			return false;
+		if (arg0.offsetY!=0&&arg0.offsetY!=Math.signum(offset[1]))
+			return false;
+		if (arg0.offsetZ!=0&&arg0.offsetZ!=Math.signum(offset[2]))
+			return false;
+		return true;
+	}
+	@Override
+	public String getComponentName() {
+		return "ie_fermenter";
+	}
+
+	@Optional.Method(modid = "OpenComputers")
+	@Callback(doc = "function(slot:int):table, table, table, int -- returns the recipe for the specified input slot")
+	public Object[] getRecipe(Context context, Arguments args)
+	{
+		int slot = args.checkInteger(0);
+		if (slot<0||slot>8)
+			throw new IllegalArgumentException("Input slots are 0-8");
+		TileEntityFermenter master = ocMaster();
+		FermenterRecipe recipe = DieselHandler.findFermenterRecipe(master.getStackInSlot(slot));
+		if (recipe!=null)
+			return new Object[]{master.getStackInSlot(slot), recipe.output, recipe.fluid, recipe.time};
+		else
+			return null;
+	}
+
+	@Optional.Method(modid = "OpenComputers")
+	@Callback(doc = "function(slot:int) -- returns the stack in the specified input slot")
+	public Object[] getInputStack(Context context, Arguments args)
+	{
+		int slot = args.checkInteger(0);
+		if (slot<0||slot>8)
+			throw new IllegalArgumentException("Input slots are 0-8");
+		return new Object[]{ocMaster().getStackInSlot(slot)};
+	}
+	
+	@Optional.Method(modid = "OpenComputers")
+	@Callback(doc = "function():table -- returns the stack in the output slot")
+	public Object[] getOutputStack(Context context, Arguments args)
+	{
+		return new Object[]{ocMaster().getStackInSlot(11)};
+	}
+	
+	@Optional.Method(modid = "OpenComputers")
+	@Callback(doc = "function():table -- returns the output fluid tank")
+	public Object[] getFluid(Context context, Arguments args)
+	{
+		return new Object[]{Utils.saveFluidTank(ocMaster().tank)};
+	}
+	
+	@Optional.Method(modid = "OpenComputers")
+	@Callback(doc = "function():table -- returns the stack in the empty cannisters slot")
+	public Object[] getEmptyCannisters(Context context, Arguments args)
+	{
+		return new Object[]{ocMaster().getStackInSlot(9)};
+	}
+	
+	@Optional.Method(modid = "OpenComputers")
+	@Callback(doc = "function():table -- returns the stack in the filled cannisters slot")
+	public Object[] getFilledCannisters(Context context, Arguments args)
+	{
+		return new Object[]{ocMaster().getStackInSlot(10)};
+	}
+
+	@Optional.Method(modid = "OpenComputers")
+	@Callback(doc = "function():int -- returns the current fermenting progress")
+	public Object[] getProgress(Context context, Arguments args)
+	{
+		return new Object[]{ocMaster().tick};
+	}
+
+	@Optional.Method(modid = "OpenComputers")
+	@Callback(doc = "function():int -- returns the maximum amount of energy stored")
+	public Object[] getMaxEnergyStored(Context context, Arguments args)
+	{
+		return new Object[]{ocMaster().energyStorage.getMaxEnergyStored()};
+	}
+
+	@Optional.Method(modid = "OpenComputers")
+	@Callback(doc = "function():int -- returns the amount of energy stored")
+	public Object[] getEnergyStored(Context context, Arguments args)
+	{
+		return new Object[]{ocMaster().energyStorage.getEnergyStored()};
+	}
+	
+
+
+	private TileEntityFermenter ocMaster()
+	{
+		TileEntityFermenter master = master();
+		return master==null?this:master;
 	}
 }

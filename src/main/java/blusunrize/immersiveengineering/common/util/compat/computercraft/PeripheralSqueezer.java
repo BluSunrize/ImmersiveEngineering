@@ -1,4 +1,7 @@
 package blusunrize.immersiveengineering.common.util.compat.computercraft;
+import static blusunrize.immersiveengineering.common.util.Utils.saveStack;
+import static blusunrize.immersiveengineering.common.util.Utils.saveFluidTank;
+import static blusunrize.immersiveengineering.common.util.Utils.saveFluidStack;
 
 import blusunrize.immersiveengineering.api.energy.DieselHandler;
 import blusunrize.immersiveengineering.api.energy.DieselHandler.SqueezerRecipe;

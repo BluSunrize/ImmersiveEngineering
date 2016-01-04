@@ -1,5 +1,7 @@
 package blusunrize.immersiveengineering.common.util.compat.computercraft;
 
+import static blusunrize.immersiveengineering.common.util.Utils.saveStack;
+
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;

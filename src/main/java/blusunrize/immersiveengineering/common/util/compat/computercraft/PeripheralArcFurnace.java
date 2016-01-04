@@ -1,5 +1,7 @@
 package blusunrize.immersiveengineering.common.util.compat.computercraft;
 
+import static blusunrize.immersiveengineering.common.util.Utils.saveStack;
+
 import java.util.Map;
 
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityArcFurnace;
@@ -78,7 +80,7 @@ public class PeripheralArcFurnace extends IEPeripheral
 				throw new LuaException("Wrong amount of arguments, needs one integer");
 			slot = (int)(double)arguments[0];
 			if (slot<0||slot>2)
-				throw new LuaException("Output slots are 0-2");
+				throw new LuaException("Electrode slots are 0-2");
 			return new Object[]{saveStack(te.getStackInSlot(slot+23))};
 		case 8: //max energy
 			return new Object[]{te.energyStorage.getMaxEnergyStored()};

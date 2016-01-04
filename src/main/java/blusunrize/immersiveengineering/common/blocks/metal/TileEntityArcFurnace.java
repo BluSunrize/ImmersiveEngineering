@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Map;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
@@ -15,8 +16,16 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyReceiver;
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import dan200.computercraft.api.lua.LuaException;
+import li.cil.oc.api.machine.Arguments;
+import li.cil.oc.api.machine.Callback;
+import li.cil.oc.api.machine.Context;
+import li.cil.oc.api.network.Node;
+import li.cil.oc.api.network.SidedComponent;
+import li.cil.oc.api.network.SimpleComponent;
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -31,7 +40,7 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.oredict.OreDictionary;
 
-public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IEnergyReceiver, ISidedInventory
+public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IEnergyReceiver, ISidedInventory, SimpleComponent, SidedComponent
 {
 	public int facing = 3;
 	public EnergyStorage energyStorage = new EnergyStorage(64000);
@@ -709,4 +718,119 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 			return master.energyStorage.getMaxEnergyStored();
 		return energyStorage.getMaxEnergyStored();
 	}
+
+	@Override
+	public boolean canConnectNode(ForgeDirection arg0) {
+		return pos==25&&facing==arg0.ordinal();
+	}
+
+	@Override
+	public String getComponentName() {
+		return "ie_arc_furnace";
+	}
+
+	@Optional.Method(modid = "OpenComputers")
+	// "override" what gets injected by OC's class transformer
+	public void onConnect(Node node)
+	{
+		TileEntityArcFurnace master = master();
+		master.computerControlled = true;
+		master.computerOn = true;
+	}
+
+	@Optional.Method(modid = "OpenComputers")
+	// "override" what gets injected by OC's class transformer
+	public void onDisconnect(Node node)
+	{
+		master().computerControlled = false;
+	}
+
+	@Optional.Method(modid = "OpenComputers")
+	@Callback(doc = "function():int -- gets the maximum amount of energy stored")
+	public Object[] getMaxEnergyStored(Context context, Arguments args)
+	{
+		return new Object[]{master().energyStorage.getMaxEnergyStored()};
+	}
+
+	@Optional.Method(modid = "OpenComputers")
+	@Callback(doc = "function():int -- gets the amount of energy stored")
+	public Object[] getEnergyStored(Context context, Arguments args)
+	{
+		return new Object[]{master().energyStorage.getEnergyStored()};
+	}
+
+	@Optional.Method(modid = "OpenComputers")
+	@Callback(doc = "function(on:boolean) -- gets the amount of energy stored")
+	public Object[] setEnabled(Context context, Arguments args)
+	{
+		master().computerOn = args.checkBoolean(0);
+		return null;
+	}
+
+	@Optional.Method(modid = "OpenComputers")
+	@Callback(doc = "function():boolean -- checks whether the arc furnace is currently active")
+	public Object[] isActive(Context context, Arguments args)
+	{
+		return new Object[]{master().active};
+	}
+
+	@Optional.Method(modid = "OpenComputers")
+	@Callback(doc = "function(stack:int):table -- returns the specified input stack as described in the manual")
+	public Object[] getInputStack(Context context, Arguments args)
+	{
+		int slot = args.checkInteger(0);
+		if (slot<0||slot>11)
+			throw new IllegalArgumentException("Input slots are 0-11");
+		TileEntityArcFurnace master = master();
+		Map<String, Object> stack = Utils.saveStack(master.getStackInSlot(slot));
+		stack.put("progress", master.process[slot]);
+		stack.put("maxProgress", master.processMax[slot]);
+		return new Object[]{stack};
+	}
+
+	@Optional.Method(modid = "OpenComputers")
+	@Callback(doc = "function(stack:int):table -- returns the specified output stack")
+	public Object[] getOutputStack(Context context, Arguments args)
+	{
+		int slot = args.checkInteger(0);
+		if (slot<0||slot>5)
+			throw new IllegalArgumentException("Output slots are 0-5");
+		return new Object[]{master().getStackInSlot(slot+16)};
+	}
+
+	@Optional.Method(modid = "OpenComputers")
+	@Callback(doc = "function(stack:int):table -- returns the specified additive stack")
+	public Object[] getAdditiveStack(Context context, Arguments args)
+	{
+		int slot = args.checkInteger(0);
+		if (slot<0||slot>3)
+			throw new IllegalArgumentException("Additive slots are 0-3");
+		return new Object[]{master().getStackInSlot(slot+12)};
+	}
+
+	@Optional.Method(modid = "OpenComputers")
+	@Callback(doc = "function():table -- returns the slag stack")
+	public Object[] getSlagStack(Context context, Arguments args)
+	{
+		return new Object[]{master().getStackInSlot(22)};
+	}
+
+	@Optional.Method(modid = "OpenComputers")
+	@Callback(doc = "function():boolean -- checks whether the arc furnace has all 3 electrodes")
+	public Object[] hasElectrodes(Context context, Arguments args)
+	{
+		TileEntityArcFurnace master = master();
+		return new Object[]{master.electrodes[0]&&master.electrodes[1]&&master.electrodes[2]};
+	}
+
+	@Optional.Method(modid = "OpenComputers")
+	@Callback(doc = "function(electrode:int):table -- returns the specified electrode as an item stack")
+	public Object[] getElectrode(Context context, Arguments args)
+	{
+		int slot = args.checkInteger(0);
+		if (slot<0||slot>2)
+			throw new IllegalArgumentException("Electrode slots are 0-2");
+		return new Object[]{master().getStackInSlot(slot+23)};
+	}
+
 }

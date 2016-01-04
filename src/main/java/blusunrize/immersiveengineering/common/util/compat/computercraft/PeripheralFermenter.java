@@ -1,5 +1,9 @@
 package blusunrize.immersiveengineering.common.util.compat.computercraft;
 
+import static blusunrize.immersiveengineering.common.util.Utils.saveFluidStack;
+import static blusunrize.immersiveengineering.common.util.Utils.saveFluidTank;
+import static blusunrize.immersiveengineering.common.util.Utils.saveStack;
+
 import blusunrize.immersiveengineering.api.energy.DieselHandler;
 import blusunrize.immersiveengineering.api.energy.DieselHandler.FermenterRecipe;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFermenter;

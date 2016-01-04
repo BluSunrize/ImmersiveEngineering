@@ -70,7 +70,7 @@ public class PeripheralFloodlight extends IEPeripheral
 		case 6://stored energy
 			return new Object[]{te.energyStorage};
 		case 7://max energy stored
-			return new Object[]{60};
+			return new Object[]{80};
 		}
 		return null;
 	}

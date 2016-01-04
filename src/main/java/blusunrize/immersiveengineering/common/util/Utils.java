@@ -4,9 +4,11 @@ import java.lang.reflect.Method;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import net.minecraft.block.Block;
@@ -21,6 +23,7 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
@@ -991,5 +994,45 @@ public class Utils
 				invList.appendTag(itemTag);
 			}
 		return invList;
+	}
+
+	public static Map<String, Object> saveStack(ItemStack stack)
+	{
+		HashMap<String, Object> ret = new HashMap<>();
+		if (stack!=null&&stack.getItem()!=null)
+		{
+			ret.put("size", stack.stackSize);
+			ret.put("name", Item.itemRegistry.getNameForObject(stack.getItem()));
+			ret.put("nameUnlocalized", stack.getUnlocalizedName());
+			ret.put("label", stack.getDisplayName());
+			ret.put("damage", stack.getItemDamage());
+			ret.put("maxDamage", stack.getMaxDamage());
+			ret.put("maxSize", stack.getMaxStackSize());
+			ret.put("hasTag", stack.hasTagCompound());
+		}
+		return ret;
+	}
+	public static Map<String, Object> saveFluidTank(FluidTank tank)
+	{
+		HashMap<String, Object> ret = new HashMap<>();
+		if (tank!=null&&tank.getFluid()!=null)
+		{
+			ret.put("name", tank.getFluid().getFluid().getUnlocalizedName());
+			ret.put("amount", tank.getFluidAmount());
+			ret.put("capacity", tank.getCapacity());
+			ret.put("hasTag", tank.getFluid().tag!=null);
+		}
+		return ret;
+	}
+	public static Map<String, Object> saveFluidStack(FluidStack tank)
+	{
+		HashMap<String, Object> ret = new HashMap<>();
+		if (tank!=null&&tank.getFluid()!=null)
+		{
+			ret.put("name", tank.getFluid().getUnlocalizedName());
+			ret.put("amount", tank.amount);
+			ret.put("hasTag", tank.tag!=null);
+		}
+		return ret;
 	}
 }

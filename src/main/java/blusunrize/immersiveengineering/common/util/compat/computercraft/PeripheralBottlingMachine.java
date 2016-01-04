@@ -1,4 +1,6 @@
 package blusunrize.immersiveengineering.common.util.compat.computercraft;
+import static blusunrize.immersiveengineering.common.util.Utils.saveFluidTank;
+import static blusunrize.immersiveengineering.common.util.Utils.saveStack;
 
 import java.util.Map;
 
