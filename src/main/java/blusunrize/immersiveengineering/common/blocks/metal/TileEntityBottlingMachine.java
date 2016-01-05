@@ -267,7 +267,7 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockPart implemen
 
 		if(formed && !worldObj.isRemote)
 		{
-			//			int f = facing;
+			int f = facing;
 			TileEntity master = master();
 			if(master==null)
 				master = this;
@@ -276,9 +276,9 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockPart implemen
 			int startY = master.yCoord;
 			int startZ = master.zCoord;
 
-			for(int yy=-1;yy<=1;yy++)
-				for(int zz=-1;zz<=1;zz++)
-					for(int xx=-1;xx<=1;xx++)
+			for(int yy=0;yy<=1;yy++)
+				for(int zz=(f==3?0:-1);zz<=(f==2?0:1);zz++)
+					for(int xx=(f==5?0:-1);xx<=(f==4?0:1);xx++)
 					{
 						ItemStack s = null;
 						int prevPos = 0;

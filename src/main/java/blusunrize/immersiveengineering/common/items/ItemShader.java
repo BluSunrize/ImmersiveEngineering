@@ -66,6 +66,7 @@ public class ItemShader extends ItemIEBase implements IShaderItem
 		addShader("Angel's Thesis", 2, EnumRarity.epic, new int[]{30,30,30,255},new int[]{117,70,151,255},new int[]{119,185,61,255},new int[]{80,80,80,255}, null,false,null);
 
 		addShader("Warbird", 7, EnumRarity.uncommon, new int[]{49,54,64,255},new int[]{216,215,208,255},new int[]{235,172,0,255},new int[]{216,215,208,255});
+		addShader("Matrix", 7, EnumRarity.rare, new int[]{5,63,60,255},new int[]{225,225,255,255},new int[]{212,255,255,255},new int[]{255,255,255,255}, "pipes",true,new int[]{132,221,216,255});
 
 		addShader("Glacis", 6, EnumRarity.rare, new int[]{73,155,194,255}, new int[]{118,208,249,200}, new int[]{189,255,253,200}, new int[]{189,255,253,200});
 		addShader("Solum", 3, EnumRarity.rare, new int[]{104,90,72,255}, new int[]{208,161,111,200}, new int[]{148,116,96,180}, new int[]{148,116,96,180});

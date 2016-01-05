@@ -2,14 +2,16 @@ package blusunrize.immersiveengineering.client.render;
 
 import java.util.ArrayList;
 
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
+import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.ModelIEObj;
 import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IColouredTile;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDevices2;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFluidPipe;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.IIcon;
 
 public class TileRenderFluidPipe extends TileRenderIE
 {
@@ -234,12 +236,13 @@ public class TileRenderFluidPipe extends TileRenderIE
 				if(((TileEntityFluidPipe)tile).getConnectionStyle(i)==1)
 					connectionCaps.add(CONNECTIONS[i]);
 
-
-
+			float r = (((IColouredTile)tile).getColour()>>16&255)/255f;
+			float g = (((IColouredTile)tile).getColour()>>8&255)/255f;
+			float b = (((IColouredTile)tile).getColour()&255)/255f;
 			if(!parts.isEmpty())
-				model.render(tile, tes, translationMatrix, rotationMatrix, 1, false, parts.toArray(new String[parts.size()]));
+				ClientUtils.renderStaticWavefrontModel(tile, model.model, tes, translationMatrix, rotationMatrix, 1,false, r,g,b, parts.toArray(new String[parts.size()]));
 			if(!connectionCaps.isEmpty())
-				model.render(tile, tes, translationMatrix, new Matrix4(), 1, false, connectionCaps.toArray(new String[connectionCaps.size()]));
+				ClientUtils.renderStaticWavefrontModel(tile, model.model, tes, translationMatrix, new Matrix4(), 1,false, r,g,b, connectionCaps.toArray(new String[connectionCaps.size()]));
 		}
 	}
 
