@@ -1,8 +1,24 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 
+import blusunrize.immersiveengineering.common.Config;
+import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockAssembler;
+import blusunrize.immersiveengineering.common.util.Utils;
+import cofh.api.energy.EnergyStorage;
+import cofh.api.energy.IEnergyReceiver;
+import cpw.mods.fml.common.Optional;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import li.cil.oc.api.machine.Arguments;
+import li.cil.oc.api.machine.Callback;
+import li.cil.oc.api.machine.Context;
+import li.cil.oc.api.network.Node;
+import li.cil.oc.api.network.SidedComponent;
+import li.cil.oc.api.network.SimpleComponent;
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -25,16 +41,8 @@ import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
-import blusunrize.immersiveengineering.common.Config;
-import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockAssembler;
-import blusunrize.immersiveengineering.common.util.Utils;
-import cofh.api.energy.EnergyStorage;
-import cofh.api.energy.IEnergyReceiver;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
-public class TileEntityAssembler extends TileEntityMultiblockPart implements ISidedInventory, IEnergyReceiver, IFluidHandler
+public class TileEntityAssembler extends TileEntityMultiblockPart implements ISidedInventory, IEnergyReceiver, IFluidHandler, SimpleComponent, SidedComponent
 {
 	public int facing = 2;
 	public EnergyStorage energyStorage = new EnergyStorage(16000);
@@ -860,4 +868,128 @@ public class TileEntityAssembler extends TileEntityMultiblockPart implements ISi
 			recalculateOutput();
 		}
 	}
+
+	@Override
+	public boolean canConnectNode(ForgeDirection side)
+	{
+		if (offset[1]!=-1)
+			return false;
+		if (side.offsetX!=0&&side.offsetX!=Math.signum(offset[0]))
+			return false;
+		if (side.offsetZ!=0&&side.offsetZ!=Math.signum(offset[2]))
+			return false;
+		return true;
+	}
+
+	@Override
+	public String getComponentName()
+	{
+		return "ie_assembler";
+	}
+
+	@Optional.Method(modid = "OpenComputers")
+	// "override" what gets injected by OC's class transformer
+	public void onConnect(Node node)
+	{
+		TileEntityAssembler master = master();
+		master.computerControlled = true;
+		master.computerOn[0] = true;
+		master.computerOn[1] = true;
+		master.computerOn[2] = true;
+	}
+
+	@Optional.Method(modid = "OpenComputers")
+	// "override" what gets injected by OC's class transformer
+	public void onDisconnect(Node node)
+	{
+		master().computerControlled = false;
+	}
+
+	@Optional.Method(modid = "OpenComputers")
+	@Callback(doc = "function(recipe:int):boolean -- get whether the ingredients for the specified recipe are available")
+	public Object[] hasIngredients(Context context, Arguments args)
+	{
+		int recipe = args.checkInteger(0);
+		if (recipe>2||recipe<0)
+			throw new IllegalArgumentException("Only recipes 0-2 are available");
+		TileEntityAssembler master = master();
+		if (master.patterns[recipe].inv[9]==null)
+			throw new IllegalArgumentException("The requested recipe is invalid");
+		ArrayList<ItemStack> queryList = new ArrayList<>();
+		for(ItemStack stack : master.inventory)
+			if(stack!=null)
+				queryList.add(stack.copy());
+		return new Object[]{master.hasIngredients(master.patterns[recipe], queryList)};
+	}
+
+	@Optional.Method(modid = "OpenComputers")
+	@Callback(doc = "function(recipe:int) -- enables or disables the specified recipe")
+	public Object[] setEnabled(Context context, Arguments args)
+	{
+		boolean on = args.checkBoolean(1);
+		int recipe = args.checkInteger(0);
+		if (recipe>2||recipe<0)
+			throw new IllegalArgumentException("Only recipes 0-2 are available");
+		master().computerOn[recipe] = on;
+		return null;
+	}
+
+	@Optional.Method(modid = "OpenComputers")
+	@Callback(doc = "function(recipe:int):table -- get the recipe in the specified position")
+	public Object[] getRecipe(Context context, Arguments args)
+	{
+		int recipe = args.checkInteger(0);
+		if (recipe>2||recipe<0)
+			throw new IllegalArgumentException("Only recipes 0-2 are available");
+		TileEntityAssembler te = master();
+		HashMap<String, Object> ret = new HashMap<>();
+		for (int i = 0;i<9;i++)
+			ret.put("in"+(i+1), te.patterns[recipe].inv[i]);
+		ret.put("out", te.patterns[recipe].inv[9]);
+		return new Object[]{ret};
+	}
+
+	@Optional.Method(modid = "OpenComputers")
+	@Callback(doc = "function(recipe:int):boolean -- check whether the recipe in the specified position has an output")
+	public Object[] isValidRecipe(Context context, Arguments args)
+	{
+		int recipe = args.checkInteger(0);
+		if (recipe>2||recipe<0)
+			throw new IllegalArgumentException("Only recipes 0-2 are available");
+		return new Object[]{master().patterns[recipe].inv[9]!=null};
+	}
+
+	@Optional.Method(modid = "OpenComputers")
+	@Callback(doc = "function(tank:int):table -- gets the specified tank")
+	public Object[] getTank(Context context, Arguments args)
+	{
+		int tank = args.checkInteger(0);
+		if (tank>2||tank<0)
+			throw new IllegalArgumentException("Only tanks 0-2 are available");
+		return new Object[]{Utils.saveFluidTank(master().tanks[tank])};
+	}
+
+	@Optional.Method(modid = "OpenComputers")
+	@Callback(doc = "function():int -- returns the maximum amount of energy that can be stored")
+	public Object[] getMaxEnergyStored(Context context, Arguments args)
+	{
+		return new Object[]{master().energyStorage.getMaxEnergyStored()};
+	}
+
+	@Optional.Method(modid = "OpenComputers")
+	@Callback(doc = "function():int -- returns the amount of energy stored")
+	public Object[] getEnergyStored(Context context, Arguments args)
+	{
+		return new Object[]{master().energyStorage.getEnergyStored()};
+	}
+	@Optional.Method(modid = "OpenComputers")
+	@Callback(doc = "function(slot:int):table -- returns the stack in the specified slot")
+	public Object[] getStackInSlot(Context context, Arguments args)
+	{
+		int slot = args.checkInteger(0);
+		if (slot<0||slot>17)
+			throw new IllegalArgumentException("Only slots 0-17 are available");
+		return new Object[]{master().inventory[slot]};
+	}
+
 }

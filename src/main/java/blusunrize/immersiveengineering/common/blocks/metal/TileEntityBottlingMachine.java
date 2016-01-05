@@ -18,18 +18,32 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.oredict.OreDictionary;
+
+import static blusunrize.immersiveengineering.common.util.Utils.saveStack;
+
+import java.util.ArrayList;
+import java.util.Map;
+
 import blusunrize.immersiveengineering.api.crafting.BottlingMachineRecipe;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockBottlingMachine;
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.compat.computercraft.PeripheralBottlingMachine;
 import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyReceiver;
+import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import dan200.computercraft.api.lua.LuaException;
+import li.cil.oc.api.machine.Arguments;
+import li.cil.oc.api.machine.Callback;
+import li.cil.oc.api.machine.Context;
+import li.cil.oc.api.network.Node;
+import li.cil.oc.api.network.SidedComponent;
+import li.cil.oc.api.network.SimpleComponent;
 
-public class TileEntityBottlingMachine extends TileEntityMultiblockPart implements ISidedInventory, IEnergyReceiver, IFluidHandler
+public class TileEntityBottlingMachine extends TileEntityMultiblockPart implements ISidedInventory, IEnergyReceiver, IFluidHandler, SimpleComponent, SidedComponent
 {
 	public int facing = 2;
 	public EnergyStorage energyStorage = new EnergyStorage(16000);
@@ -570,22 +584,22 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockPart implemen
 	public int getFilledCannister(int id) throws LuaException
 	{
 		int currId = -1;
-		int currVal = 0;
+		int currVal = 72;
 		while (id>=0) {
-			int max = Integer.MAX_VALUE;
-			int maxId = -1;
+			int min = Integer.MAX_VALUE;
+			int minId = -1;
 			for (int i = 0;i<5;i++)
 			{
-				if (process[i]>max&&process[i]<currVal)
+				if (process[i]<min&&process[i]>currVal)
 				{
-					max = process[i];
-					maxId = i;
+					min = process[i];
+					minId = i;
 				}
 			}
-			if (max<=72)
-				throw new LuaException("Not enough filled cannisters found");
-			currId = maxId;
-			currVal = max;
+			if (minId<0)
+				throw new LuaException("Not enough empty cannisters found");
+			currId = minId;
+			currVal = min;
 			id--;
 		}
 		return currId;
@@ -598,5 +612,152 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockPart implemen
 				count++;
 		return count;
 	}
-	
+	@Override
+	public boolean canConnectNode(ForgeDirection side)
+	{
+		if (offset[1]!=0||pos==0||pos==2||side==ForgeDirection.UP)
+			return false;
+		if (side==ForgeDirection.DOWN)
+			return true;
+		int axis = -1;
+		switch (side)
+		{
+		case NORTH:
+		case SOUTH:
+			axis = 2;
+			break;
+		case EAST:
+		case WEST:
+			axis = 0;
+			break;
+		default:
+			return false;
+		}
+		if (offset[axis]==0&&side.getOpposite().ordinal()==facing)
+			return true;
+		if (side.offsetX!=0&&side.offsetX!=Math.signum(offset[0]))
+			return false;
+		if (side.offsetZ!=0&&side.offsetZ!=Math.signum(offset[2]))
+			return false;
+		return true;
+	}
+
+	@Override
+	public String getComponentName()
+	{
+		return "ie_bottling_machine";
+	}
+
+	@Optional.Method(modid = "OpenComputers")
+	// "override" what gets injected by OC's class transformer
+	public void onConnect(Node node)
+	{
+		TileEntityBottlingMachine master = ocMaster();
+		master.computerControlled = true;
+		master.computerOn = true;
+	}
+
+	@Optional.Method(modid = "OpenComputers")
+	// "override" what gets injected by OC's class transformer
+	public void onDisconnect(Node node)
+	{
+		ocMaster().computerControlled = false;
+	}
+
+	@Optional.Method(modid = "OpenComputers")
+	@Callback(doc = "function():table -- returns the internal fluid tank")
+	public Object[] getFluid(Context context, Arguments args)
+	{
+		return new Object[]{Utils.saveFluidTank(ocMaster().tank)};
+	}
+
+	@Optional.Method(modid = "OpenComputers")
+	@Callback(doc = "function(pos:int):table -- returns the empty cannister at the specified position")
+	public Object[] getEmptyCannister(Context context, Arguments args)
+	{
+		int param = args.checkInteger(0);
+		if (param<0||param>4)
+			throw new IllegalArgumentException("Only 0-4 are valid cannister positions");
+		TileEntityBottlingMachine master = ocMaster();
+		int id;
+		try
+		{
+			id = master.getEmptyCannister(param);
+		}
+		catch (LuaException e)
+		{
+			throw new IllegalArgumentException(e.getMessage());
+		}
+		Map<String, Object> map = saveStack(master.inventory[id]);
+		map.put("process", master.process[id]);
+		return new Object[]{map};
+	}
+
+	@Optional.Method(modid = "OpenComputers")
+	@Callback(doc = "function():int -- returns amount of empty cannisters")
+	public Object[] getEmptyCannisterCount(Context context, Arguments args)
+	{
+		TileEntityBottlingMachine master = ocMaster();
+		return new Object[]{master.getEmptyCount()};
+	}
+
+	@Optional.Method(modid = "OpenComputers")
+	@Callback(doc = "function(pos:int):table -- returns the filled cannister at the specified position")
+	public Object[] getFilledCannister(Context context, Arguments args)
+	{
+		int param = args.checkInteger(0);
+		if (param<0||param>4)
+			throw new IllegalArgumentException("Only 0-4 are valid cannister positions");
+		TileEntityBottlingMachine master = ocMaster();
+		int id;
+		try
+		{
+			id = master.getFilledCannister(param);
+		}
+		catch (LuaException e)
+		{
+			throw new IllegalArgumentException(e.getMessage());
+		}
+		Map<String, Object> map = saveStack(master.inventory[id]);
+		map.put("process", master.process[id]);
+		return new Object[]{map};
+	}
+
+	@Optional.Method(modid = "OpenComputers")
+	@Callback(doc = "function():int -- returns the amount of filled cannisters")
+	public Object[] getFilledCannisterCount(Context context, Arguments args)
+	{
+		TileEntityBottlingMachine master = ocMaster();
+		return new Object[]{master.getFilledCount()};
+	}
+
+	@Optional.Method(modid = "OpenComputers")
+	@Callback(doc = "function(on:boolean) -- turns the bottling machine on or off")
+	public Object[] setEnabled(Context context, Arguments args)
+	{
+		boolean on = args.checkBoolean(0);
+		ocMaster().computerOn = on;
+		return null;
+	}
+
+	@Optional.Method(modid = "OpenComputers")
+	@Callback(doc = "function():int -- returns the maximum amount of energy that can be stored")
+	public Object[] getMaxEnergyStored(Context context, Arguments args)
+	{
+		return new Object[]{ocMaster().energyStorage.getMaxEnergyStored()};
+	}
+
+	@Optional.Method(modid = "OpenComputers")
+	@Callback(doc = "function():int -- returns the amount of energy stored")
+	public Object[] getEnergyStored(Context context, Arguments args)
+	{
+		return new Object[]{ocMaster().energyStorage.getEnergyStored()};
+	}
+
+
+	private TileEntityBottlingMachine ocMaster()
+	{
+		TileEntityBottlingMachine master = master();
+		return master==null?this:master;
+	}
 }
