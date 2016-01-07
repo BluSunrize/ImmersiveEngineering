@@ -15,6 +15,7 @@ public class CommandHandler extends CommandBase
 	{
 		commands.add(new CommandHelp());
 		commands.add(new CommandMineral());
+		commands.add(new CommandShaders());
 	}
 
 	@Override

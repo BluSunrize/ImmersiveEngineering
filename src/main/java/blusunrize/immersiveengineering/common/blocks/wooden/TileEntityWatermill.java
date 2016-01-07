@@ -57,7 +57,7 @@ public class TileEntityWatermill extends TileEntityIEBase
 					&& tileEntity instanceof TileEntityWatermill
 					&& ((TileEntityWatermill)tileEntity).offset[0]==0
 					&& ((TileEntityWatermill)tileEntity).offset[1]==0
-					&& ((TileEntityWatermill)tileEntity).facing==facing
+					&& ( ((TileEntityWatermill)tileEntity).facing==facing || ((TileEntityWatermill)tileEntity).facing==ForgeDirection.OPPOSITES[facing] )
 					&& !((TileEntityWatermill)tileEntity).isBlocked())
 			{
 				power += ((TileEntityWatermill)tileEntity).getPower();
@@ -70,6 +70,7 @@ public class TileEntityWatermill extends TileEntityIEBase
 			rotation += perTick;
 			rotation %= 1;
 			for(int l2=1; l2<l; l2++)
+			{
 				tileEntity = worldObj.getTileEntity(xCoord+fd.offsetX*l2,yCoord,zCoord+fd.offsetZ*l2);
 				if(tileEntity instanceof TileEntityWatermill)
 				{
@@ -77,6 +78,7 @@ public class TileEntityWatermill extends TileEntityIEBase
 					((TileEntityWatermill)tileEntity).canTurn = canTurn;
 					((TileEntityWatermill)tileEntity).multiblock = true;
 				}
+			}
 
 			if(!worldObj.isRemote)
 			{
@@ -128,7 +130,7 @@ public class TileEntityWatermill extends TileEntityIEBase
 			rotationVec = Vec3.createVectorHelper(0, 0, 0);
 			rotationVec = Utils.addVectors(rotationVec, getHorizontalVec());
 			rotationVec = Utils.addVectors(rotationVec, getVerticalVec());
-//			worldObj.addBlockEvent(xCoord, yCoord, zCoord, getBlockType(), (int)((float)rotationVec.xCoord*10000f), (int)((float)rotationVec.zCoord*10000f));
+			//			worldObj.addBlockEvent(xCoord, yCoord, zCoord, getBlockType(), (int)((float)rotationVec.xCoord*10000f), (int)((float)rotationVec.zCoord*10000f));
 		}
 		return rotationVec;
 	}
@@ -213,19 +215,24 @@ public class TileEntityWatermill extends TileEntityIEBase
 	}
 
 	@SideOnly(Side.CLIENT)
+	private AxisAlignedBB renderAABB;
+	@SideOnly(Side.CLIENT)
 	@Override
 	public AxisAlignedBB getRenderBoundingBox()
 	{
-		if(offset[0]==0&&offset[1]==0)
-			return AxisAlignedBB.getBoundingBox(xCoord-(facing<=3?2:0),yCoord-2,zCoord-(facing<=3?0:2), xCoord+(facing<=3?3:0),yCoord+3,zCoord+(facing<=3?0:3));
-		return AxisAlignedBB.getBoundingBox(xCoord,yCoord,zCoord, xCoord,yCoord,zCoord);
+		if(renderAABB==null)
+			if(offset[0]==0&&offset[1]==0)
+				renderAABB = AxisAlignedBB.getBoundingBox(xCoord-(facing<=3?2:0),yCoord-2,zCoord-(facing<=3?0:2), xCoord+(facing<=3?3:0),yCoord+3,zCoord+(facing<=3?0:3));
+			else
+				renderAABB = AxisAlignedBB.getBoundingBox(xCoord,yCoord,zCoord, xCoord,yCoord,zCoord);
+		return renderAABB;
 	}
 	@Override
 	public double getMaxRenderDistanceSquared()
 	{
 		return super.getMaxRenderDistanceSquared()*Config.getDouble("increasedTileRenderdistance");
-//		if(Config.getBoolean("increasedTileRenderdistance"))
-//			return super.getMaxRenderDistanceSquared()*1.5;
-//		return super.getMaxRenderDistanceSquared();
+		//		if(Config.getBoolean("increasedTileRenderdistance"))
+		//			return super.getMaxRenderDistanceSquared()*1.5;
+		//		return super.getMaxRenderDistanceSquared();
 	}
 }

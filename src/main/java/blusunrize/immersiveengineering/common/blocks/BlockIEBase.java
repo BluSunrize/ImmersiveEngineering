@@ -22,6 +22,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IColouredTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ICustomBoundingboxes;
 import blusunrize.immersiveengineering.common.util.Lib;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -103,6 +104,14 @@ public abstract class BlockIEBase extends BlockContainer
 			return this.lightOpacities[meta];
         return getLightOpacity();
     }
+	@Override
+    public int colorMultiplier(IBlockAccess world, int x, int y, int z)
+    {
+		TileEntity tile = world.getTileEntity(x, y, z);
+		if(tile instanceof IColouredTile)
+			((IColouredTile)tile).getColour();
+        return 16777215;
+    }
 	
 	@Override
 	public int damageDropped(int meta)
@@ -135,7 +144,7 @@ public abstract class BlockIEBase extends BlockContainer
 	public int getFireSpreadSpeed(IBlockAccess world, int x, int y, int z, ForgeDirection face)
 	{
 		return isFlammable?5:0;
-	}			
+	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
@@ -298,6 +307,8 @@ public abstract class BlockIEBase extends BlockContainer
 		public BlockIESimple(String name, Material mat, Class<? extends ItemBlockIEBase> itemBlock, String... subNames)
 		{
 			super(name, mat, 1, itemBlock, subNames);
+			for(int i=0;i<subNames.length;i++)
+				this.setMetaLightOpacity(i, 255);
 		}
 
 		@Override

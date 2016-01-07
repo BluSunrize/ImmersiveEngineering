@@ -2,45 +2,28 @@ package blusunrize.immersiveengineering.common;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 
-import net.minecraft.block.material.Material;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.EnumCreatureType;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
-import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
-import net.minecraftforge.event.AnvilUpdateEvent;
-import net.minecraftforge.event.entity.living.EnderTeleportEvent;
-import net.minecraftforge.event.entity.living.LivingDropsEvent;
-import net.minecraftforge.event.entity.living.LivingEvent.LivingJumpEvent;
-import net.minecraftforge.event.entity.living.LivingHurtEvent;
-import net.minecraftforge.event.entity.living.LivingSpawnEvent;
-import net.minecraftforge.event.entity.player.EntityInteractEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.oredict.OreDictionary;
 import WayofTime.alchemicalWizardry.api.event.TeleposeEvent;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.energy.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler.Connection;
+import blusunrize.immersiveengineering.api.shader.IShaderItem;
+import blusunrize.immersiveengineering.api.shader.ShaderCaseMinecart;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralMix;
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
+import blusunrize.immersiveengineering.client.models.ModelShaderMinecart;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISpawnInterdiction;
 import blusunrize.immersiveengineering.common.blocks.TileEntityImmersiveConnectable;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMultiblockPart;
+import blusunrize.immersiveengineering.common.entities.EntityPropertiesShaderCart;
 import blusunrize.immersiveengineering.common.items.ItemDrill;
 import blusunrize.immersiveengineering.common.util.IEAchievements;
 import blusunrize.immersiveengineering.common.util.IELogger;
@@ -48,8 +31,10 @@ import blusunrize.immersiveengineering.common.util.IEPotions;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.network.MessageMinecartShaderSync;
 import blusunrize.immersiveengineering.common.util.network.MessageMineralListSync;
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import cpw.mods.fml.common.eventhandler.Event;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -58,6 +43,40 @@ import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.WorldTickEvent;
 import cpw.mods.fml.relauncher.Side;
+import net.minecraft.block.material.Material;
+import net.minecraft.client.model.ModelMinecart;
+import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.entity.RenderMinecart;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.EnumCreatureType;
+import net.minecraft.entity.boss.EntityWither;
+import net.minecraft.entity.boss.IBossDisplayData;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.item.EntityMinecart;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.EnumRarity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.Vec3;
+import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
+import net.minecraftforge.event.AnvilUpdateEvent;
+import net.minecraftforge.event.entity.EntityEvent.EntityConstructing;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.living.EnderTeleportEvent;
+import net.minecraftforge.event.entity.living.LivingDropsEvent;
+import net.minecraftforge.event.entity.living.LivingEvent.LivingJumpEvent;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.event.entity.living.LivingSpawnEvent;
+import net.minecraftforge.event.entity.player.EntityInteractEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.world.BlockEvent;
+import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.oredict.OreDictionary;
 
 public class EventHandler
 {
@@ -91,6 +110,19 @@ public class EventHandler
 		}
 		 */
 		//		}
+		if(FMLCommonHandler.instance().getEffectiveSide()==Side.CLIENT)
+		{
+			if(!ModelShaderMinecart.rendersReplaced)
+			{
+				for(Object render : RenderManager.instance.entityRenderMap.values())
+					if(RenderMinecart.class.isAssignableFrom(render.getClass()))
+					{
+						ModelMinecart wrapped = ObfuscationReflectionHelper.getPrivateValue(RenderMinecart.class, (RenderMinecart) render, "field_77013_a", "modelMinecart");
+						ObfuscationReflectionHelper.setPrivateValue(RenderMinecart.class,(RenderMinecart)render, (ModelMinecart)new ModelShaderMinecart(wrapped), "field_77013_a","modelMinecart");
+					}
+				ModelShaderMinecart.rendersReplaced = true;
+			}
+		}
 	}
 	//transferPerTick
 	@SubscribeEvent
@@ -103,6 +135,41 @@ public class EventHandler
 	{
 		IESaveData.setDirty(0);
 	}
+
+	@SubscribeEvent
+	public void onEntityConstructing(EntityConstructing event)
+	{
+		if(event.entity instanceof EntityMinecart)
+		{
+			for(Class<? extends EntityMinecart> invalid : ShaderCaseMinecart.invalidMinecartClasses)
+				if(invalid.isAssignableFrom(event.entity.getClass())) return;
+			event.entity.registerExtendedProperties(EntityPropertiesShaderCart.PROPERTY_NAME, new EntityPropertiesShaderCart());
+		}
+	}
+	@SubscribeEvent
+	public void onEntityJoiningWorld(EntityJoinWorldEvent event)
+	{
+		if(event.entity.worldObj.isRemote && event.entity instanceof EntityMinecart && event.entity.getExtendedProperties(EntityPropertiesShaderCart.PROPERTY_NAME)!=null)
+			ImmersiveEngineering.packetHandler.sendToServer(new MessageMinecartShaderSync(event.entity,null));
+	}
+	@SubscribeEvent
+	public void onEntityInteract(EntityInteractEvent event)
+	{
+		if(event.target instanceof EntityLivingBase && OreDictionary.itemMatches(new ItemStack(IEContent.itemRevolver,1,OreDictionary.WILDCARD_VALUE), event.entityPlayer.getCurrentEquippedItem(), false))
+			event.setCanceled(true);
+		if(!event.entityPlayer.worldObj.isRemote && event.target instanceof EntityMinecart && event.entityPlayer.getCurrentEquippedItem()!=null && event.entityPlayer.getCurrentEquippedItem().getItem() instanceof IShaderItem)
+		{
+			EntityPropertiesShaderCart properties = (EntityPropertiesShaderCart)event.target.getExtendedProperties(EntityPropertiesShaderCart.PROPERTY_NAME);
+			if(properties!=null)
+			{
+				properties.setShader(Utils.copyStackWithAmount(event.entityPlayer.getCurrentEquippedItem(), 1));
+				ImmersiveEngineering.packetHandler.sendTo(new MessageMinecartShaderSync(event.target,properties), (EntityPlayerMP)event.entityPlayer);
+				event.setCanceled(true);
+			}
+		}
+	}
+
+
 
 	@SubscribeEvent
 	public void onWorldTick(WorldTickEvent event)
@@ -188,8 +255,12 @@ public class EventHandler
 	}
 
 	public static HashMap<UUID, TileEntityCrusher> crusherMap = new HashMap<UUID, TileEntityCrusher>();
+	public static HashSet<Class<? extends EntityLiving>> listOfBoringBosses = new HashSet();
+	static{
+		listOfBoringBosses.add(EntityWither.class);
+	}
 	@SubscribeEvent(priority=EventPriority.LOWEST)
-	public void onLivingDrops(LivingDropsEvent event)
+	public void onLivingDropsLowest(LivingDropsEvent event)
 	{
 		if(!event.isCanceled() && Lib.DMG_Crusher.equals(event.source.getDamageType()))
 		{
@@ -202,6 +273,24 @@ public class EventHandler
 				crusherMap.remove(event.entityLiving.getUniqueID());
 				event.setCanceled(true);
 			}
+		}
+	}
+	@SubscribeEvent
+	public void onLivingDrops(LivingDropsEvent event)
+	{
+		if(!event.isCanceled() && event.entityLiving instanceof IBossDisplayData)
+		{
+			EnumRarity r = EnumRarity.epic;
+			if(event.lootingLevel<3)
+				for(Class<? extends EntityLiving> boring : listOfBoringBosses)
+					if(boring.isAssignableFrom(event.entityLiving.getClass()))
+					{
+						r = EnumRarity.rare;
+						break;
+					}
+			ItemStack bag = new ItemStack(IEContent.itemShaderBag);
+			ItemNBTHelper.setString(bag, "rarity", r.toString());
+			event.drops.add(new EntityItem(event.entityLiving.worldObj, event.entityLiving.posX,event.entityLiving.posY,event.entityLiving.posZ, bag));
 		}
 	}
 
@@ -241,20 +330,14 @@ public class EventHandler
 					if(interdictor instanceof TileEntity)
 					{
 						if(((TileEntity)interdictor).isInvalid() || ((TileEntity)interdictor).getWorldObj()==null)
-						{
 							it.remove();
-							continue;
-						}
 						else if( ((TileEntity)interdictor).getWorldObj().provider.dimensionId==event.entity.worldObj.provider.dimensionId && ((TileEntity)interdictor).getDistanceFrom(event.entity.posX, event.entity.posY, event.entity.posZ)<=interdictor.getInterdictionRangeSquared())
 							event.setResult(Event.Result.DENY);
 					}
 					else if(interdictor instanceof Entity)
 					{
 						if(((Entity)interdictor).isDead || ((Entity)interdictor).worldObj==null)
-						{
 							it.remove();
-							continue;
-						}
 						else if(((Entity)interdictor).worldObj.provider.dimensionId==event.entity.worldObj.provider.dimensionId && ((Entity)interdictor).getDistanceSqToEntity(event.entity)<=interdictor.getInterdictionRangeSquared())
 							event.setResult(Event.Result.DENY);
 					}
@@ -277,20 +360,14 @@ public class EventHandler
 					if(interdictor instanceof TileEntity)
 					{
 						if(((TileEntity)interdictor).isInvalid() || ((TileEntity)interdictor).getWorldObj()==null)
-						{
 							it.remove();
-							continue;
-						}
 						else if( ((TileEntity)interdictor).getWorldObj().provider.dimensionId==event.entity.worldObj.provider.dimensionId && ((TileEntity)interdictor).getDistanceFrom(event.entity.posX, event.entity.posY, event.entity.posZ)<=interdictor.getInterdictionRangeSquared())
 							event.setResult(Event.Result.DENY);
 					}
 					else if(interdictor instanceof Entity)
 					{
 						if(((Entity)interdictor).isDead || ((Entity)interdictor).worldObj==null)
-						{
 							it.remove();
-							continue;
-						}
 						else if(((Entity)interdictor).worldObj.provider.dimensionId==event.entity.worldObj.provider.dimensionId && ((Entity)interdictor).getDistanceSqToEntity(event.entity)<=interdictor.getInterdictionRangeSquared())
 							event.setResult(Event.Result.DENY);
 					}
@@ -300,17 +377,23 @@ public class EventHandler
 	}
 
 	@SubscribeEvent
-	public void onEntityInteract(EntityInteractEvent event)
-	{
-		if(event.target instanceof EntityLivingBase && OreDictionary.itemMatches(new ItemStack(IEContent.itemRevolver,1,OreDictionary.WILDCARD_VALUE), event.entityPlayer.getCurrentEquippedItem(), false))
-			event.setCanceled(true);
-	}
-
-	@SubscribeEvent
 	public void onItemCrafted(ItemCraftedEvent event)
 	{
-		if(event.player!=null && OreDictionary.itemMatches(new ItemStack(IEContent.itemTool,1,0), event.crafting, true))
-			event.player.triggerAchievement(IEAchievements.craftHammer);
+		if(event.player!=null)
+			for(IEAchievements.AchievementIE achievement : IEAchievements.normalCraftingAchievements)
+			{
+				if(achievement.triggerItems!=null && achievement.triggerItems.length>0)
+				{
+					for(ItemStack trigger : achievement.triggerItems)
+						if(OreDictionary.itemMatches(trigger, event.crafting, true))
+						{
+							event.player.triggerAchievement(achievement);
+							break;
+						}
+				}
+				else if(OreDictionary.itemMatches(achievement.theItemStack, event.crafting, true))
+					event.player.triggerAchievement(achievement);
+			}
 
 		if(event.crafting!=null && ItemNBTHelper.hasKey(event.crafting, "jerrycanFilling"))
 		{
@@ -327,6 +410,26 @@ public class EventHandler
 			}
 			ItemNBTHelper.remove(event.crafting, "jerrycanFilling");	
 		}
+	}
+
+	@SubscribeEvent(priority=EventPriority.LOWEST)
+	public void onBlockPlaced(BlockEvent.PlaceEvent event)
+	{
+		if(event.player!=null && !event.isCanceled())
+			for(IEAchievements.AchievementIE achievement : IEAchievements.placementAchievements)
+			{
+				if(achievement.triggerItems!=null && achievement.triggerItems.length>0)
+				{
+					for(ItemStack trigger : achievement.triggerItems)
+						if(OreDictionary.itemMatches(trigger, event.itemInHand, true))
+						{
+							event.player.triggerAchievement(achievement);
+							break;
+						}
+				}
+				else if(OreDictionary.itemMatches(achievement.theItemStack, event.itemInHand, true))
+					event.player.triggerAchievement(achievement);
+			}
 	}
 
 	@SubscribeEvent()

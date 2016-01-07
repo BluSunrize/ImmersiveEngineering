@@ -47,9 +47,11 @@ public abstract class IECompatModule
 		moduleClasses.put("TConstruct", TConstructHelper.class);
 		moduleClasses.put("Mekanism", MekanismHelper.class);
 		moduleClasses.put("cuttingedge", CuttingEdgeHelper.class);
+		moduleClasses.put("Railcraft", RailcraftHelper.class);
+		moduleClasses.put("Avaritia", AvaritiaHelper.class);
 	}
 
-	public static void preInitModules()
+	public static void doModulesPreInit()
 	{
 		for(Entry<String, Class<? extends IECompatModule>> e : moduleClasses.entrySet())
 			if(Loader.isModLoaded(e.getKey()) && Config.getBoolean("compat_"+e.getKey()))
@@ -58,11 +60,46 @@ public abstract class IECompatModule
 					modules.add(m);
 					m.preInit();
 				}catch (Exception exception){
-					IELogger.error("Compat module for "+e.getKey()+" could not be initialized. Report this!");
+					IELogger.error("Compat module for "+e.getKey()+" could not be preInitialized. Report this!");
 				}
+	}
+	public static void doModulesInit()
+	{
+		for(IECompatModule compat : IECompatModule.modules)
+			try{
+				compat.init();
+			}catch (Exception exception){
+				IELogger.error("Compat module for "+compat+" could not be initialized");
+			}
+	}
+	public static void doModulesPostInit()
+	{
+		for(IECompatModule compat : IECompatModule.modules)
+			try{
+				compat.postInit();
+			}catch (Exception exception){
+				IELogger.error("Compat module for "+compat+" could not be initialized");
+			}
+	}
+	//We don't want this to happen multiple times after all >_>
+	public static boolean serverStartingDone = false;
+	public static void doModulesLoadComplete()
+	{
+		if(!serverStartingDone)
+		{
+			serverStartingDone = true;
+			for(IECompatModule compat : IECompatModule.modules)
+				try{
+					compat.loadComplete();
+				}catch (Exception exception){
+					IELogger.error("Compat module for "+compat+" could not be initialized");
+				exception.printStackTrace();
+				}
+		}
 	}
 
 	public abstract void preInit();
 	public abstract void init();
 	public abstract void postInit();
+	public void loadComplete(){}
 }

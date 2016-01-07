@@ -1,4 +1,63 @@
-#####Version 0.6.3
+#####Version 0.6.5.1 - BUILT
+- hotfix!
+- fixed Server crashes with the Botania compat!
+- fixed converstion recipe for wooden planks
+- fixed missing localization of the railgun damage
+
+#####Version 0.6.5 - BUILT
+- added the ability to apply shaders to balloons
+- added recipe to switch between wooden stairs (thanks malte0811)
+- added the ability to extinguish fires and hurt blazes with a water-filled ChemThrower
+- reworked the ShaderRegistry system, alloweing for far better API access
+	- added Shader Grab Bags, random loot bags of a certain rarity level
+	- added recipes to convert shaders into lowerclass loot bags
+	- added Shader Bags to drop from bosses
+	- added Shader Bags to be tradeable from villagers
+	- added a new Achievement relating to Shader Bags
+	- added a function to define custom texture paths for shaders
+- added the ability to apply shaders to drills
+- added the "Warbird" shader
+- added the crystal/dust shaders "Glacis", "Solum" and "Aero"
+- added caching of previous entries to the manual for backtracking
+- added comparator support to barrels, crates and the charging station
+- added the "Cosmic" Shader. The pinacle of avarice.
+- added more Botania compat: Tiny Potatoes will carry revolvers based on their name
+- added the Railgun (still kinda WIP) that will fire metal rods at high speeds
+	- it has a zoom upgrade and awesome sounds
+	- it will fire rail and rebar from Railcraft
+- added recipeType parameter to the ArcFurnace Minetweaker compat (thanks mdfntr)
+- added "Radiant" and "Hollow" shaders
+- added "Fox" shader
+- added documentation of the Wooden Crate to the manual (how come I never did that?)
+- fixed clientsided energy transfers (thanks malte0811)
+- fixed sync issues and minor issues (thanks malte0811)
+- fixed copious amounts of copper generated from crushing ores (thanks cobra)
+- fixed missing localization for Casserite and Wolframite Veins
+- fixed multiple issues with squeezer and fermenter(thanks cobra)
+- fixed multiple TileEntity internals, improving performance (thanks malte0811)
+- fixed clientside NPE with Voltmeter (thanks cobra)
+- fixed sawdust recipe missing from crusher
+- fixed ArcFurnace manual entry stating automatic insertion of electrodes as possible
+- fixed wires not dropping in singleplayer (thanks malte0811)
+- fixed models for Workbench + Core Sample Drill
+- fixed broken textures on barrels, caused by Christmas Crates 
+- fixed model of the drill (thanks Glassmaker)
+- optimized renderbounds, useless null checks, ArrayList capacities (thanks cobra)
+
+
+#####Version 0.6.4 - BUILT
+- added an API for the the FurnaceHeater
+	- this fixes the dupe with Natura's Netherrack Furnace
+	- adds compatability for Thaucmraft's Alchemical Furnace
+	- adds compatability for CuttingEdge's Evaporator
+- added the "Qrow" Shader
+- fixed energy not being transmitted (thanks cobra)
+- fixed minecart shaders not syncing on servers (thanks cobra)
+- fixed NPE upon joining servers
+- updated zh_CN.lang
+
+
+#####Version 0.6.3 - BUILT
 - added the Chemical Thrower! A device that shoots fluids at people to varying effects! Also supports shaders!
 - added potioneffects to IE, these are used by the Chemthrower
 - added an interface to allow addons to make their own wooden posts that transformers can attach to (thanks UnwrittenFun)
@@ -12,13 +71,26 @@
 - added Current Transformer, a block based energy meter
 - added a 3D item render to the voltmeter, and allowed it to show energystorage on mouse-over (shoutout to Tage for the model! :D)
 - added the "Mass Fusion" Shader
+- added the "Angel's Thesis" Shader
+- added Shader support for Minecarts
+- added compat with Botania, Magnet Ring wont pull items from conveyors now
+- added Balloons! They are like Structural Connectors but they fly and glow and can be dyed
+- added the Skyhook! Now officially implemented, hopefully no longer stuttery and with its own manual entry!
+- added stairs for the other two treated woods and for concrete
+- gave concrete an entry in the manual and changed the recipe
 - fleshed out the Item Router. Now has OreDict, NBT and fuzzy filtering and matching buttons in the GUI
 - removed the ability to insert and extract graphite electrodes from the Arc Furnace
 - changed fluid pipes to be smarter about their connections (thanks cobra)
 - changed manual entries on mineral veins to be sorted alphabetically. Also changed the handling of dimension names, might fix the relevant bugs.
 - changed the HUD for the Drill a little
-- changed the redstone breaker to relay the redstone signal trough it in a straight line
 - changed wooden crates to no longer be allowed inside eachother. This was a potential for NBT overflow
+- changed ingots to no longer be crushable
+- changed ores to only crush into a single piece of dust
+- changed Arc Furnace to distribute inputs equally across its slots
+- changed villager houses to maybe have shaders in the crates
+- changed Drill Heads to have +100% durability
+- changed Drills to be able to dig grass
+- changed certain ingame overlays to use a new font, styled to look like Nixie Tubes. You can disable this in the config
 - fixed bottling machine not accepting fluids correctly
 - fixed fluid dupe bug (thanks cobra)
 - fixed silo having pipes connect to everywhere
@@ -34,10 +106,16 @@
 - fixed multiple clientside desyncs (thanks malte0811)
 - fixed (possibly) the desyncing of the SkyHook
 - fixed connectors to have limited output as well rather than just accepting everything
+- fixed conveyors rendering the wrong way on some sides
+- fixed light opacity on mutliple blocks
+- fixed StackOverflow when using tesseracts with IE wires
+- fixed derped lightign on stairs
+- fixed connected sides on metal scaffolding
 - updated zh_CN.lang
 - updated fr_FR.lang
 - added es_ES.lang
 - Oathkeeper
+- Super Chief
 
 
 #####Version 0.6.2 - BUILT

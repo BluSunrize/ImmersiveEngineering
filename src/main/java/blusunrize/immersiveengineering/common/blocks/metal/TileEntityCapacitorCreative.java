@@ -6,6 +6,13 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 public class TileEntityCapacitorCreative extends TileEntityCapacitorLV {
 
+	public TileEntityCapacitorCreative()
+	{
+		super();
+		for(int i=0; i<sideConfig.length; i++)
+			sideConfig[i] = 1;
+	}
+
 	@Override
 	public int receiveEnergy(ForgeDirection from, int maxReceive,
 			boolean simulate) {

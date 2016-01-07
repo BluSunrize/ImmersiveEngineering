@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.common;
 
+import java.util.Calendar;
 import java.util.HashMap;
 
 import net.minecraftforge.common.config.Configuration;
@@ -71,7 +72,7 @@ public class Config
 
 		cableProperty = config.get("general", "Cable loss", new double[]{.05,.025,.025,1,1}, "The percentage of power lost every 16 blocks of distance for the cable tiers (copper, electrum, HV, Structural Rope & Cable(no transfer) )");
 		if(cableProperty.getDoubleList().length<5)
-			cableProperty.set(new double[]{.05,.025,.1,1,1});
+			cableProperty.set(new double[]{.05,.025,.025,1,1});
 		setDoubleArray("cableLossRatio", cableProperty.getDoubleList());
 
 		cableProperty = config.get("general", "Cable colouration", new int[]{0xd4804a,0xedad62,0x6f6f6f, 0x967e6d,0x6f6f6f}, "");
@@ -88,12 +89,15 @@ public class Config
 		IEApi.revolverTextureSheetID = getInt("revolverSheetID");
 		setBoolean("increasedRenderboxes", config.get("general", "Increased Renderboxes", true, "By default all devices that accept cables have increased renderbounds to show cables even if the block itself is not in view. Disabling this reduces them to their minimum sizes, which might improve FPS on low-power PCs").getBoolean());
 		setBoolean("colourblindSupport", config.get("general", "ColourblindSupport", false, "Support for colourblind people, gives a text-based output on capacitor sides").getBoolean());
+		setBoolean("nixietubeFont", config.get("general", "NixietubeFont", true, "Set this to false to disable the super awesome looking nixie tube front for the voltmeter and other things").getBoolean());
 		setBoolean("adjustManualScale", config.get("general", "AutoscaleManual", true, "Set this to false to disable tge manual's forced change of GUI scale").getBoolean());
 		setDouble("increasedTileRenderdistance", config.get("general", "Increased Tile Renderdistance", 1.5, "Increase the distance at which certain TileEntities (specifically windmills) are still visible. This is a modifier, so set it to 1 for default render distance, to 2 for doubled distance and so on.").getDouble());
 		setBoolean("disableHammerCrushing", config.get("general", "Disable Hammer Crushing", false, "Set this to true to completely disable the ore-crushing recipes with the Engineers Hammer").getBoolean());
 		setStringArray("preferredOres", config.get("general", "Preferred Ores", new String[]{"ImmersiveEngineering","ThermalFoundation"}, "A list of preferred Mod IDs that results of IE processes should stem from, aka which mod you want the copper to come from. This affects the ores dug by the excavator, as well as those crushing recipes that don't have associated IE items. This list is in order of priority.").getStringList());
 		setBoolean("showUpdateNews", config.get("general", "Show Update News", true, "Set this to false to hide the update news in the manual").getBoolean());
 
+		Calendar calendar = Calendar.getInstance();
+		setBoolean("christmas", calendar.get(2)+1==12);
 
 		setBoolean("ic2compat", config.get("general", "IC2 Compatability", true, "Set this to false to prevent wires from accepting and outputting EU").getBoolean());
 		setBoolean("gregtechcompat", config.get("general", "GregTech Compatability", true, "Set this to false to prevent wires from outputting GregTech EU").getBoolean());
@@ -151,6 +155,7 @@ public class Config
 		setInt("pump_consumption", config.get("machines", "Fluid Pump: Consumed", 250, "The RF the Fluid Pump will consume to pick up a fluid block in the world").getInt());
 		setInt("pump_consumption_accelerate", config.get("machines", "Fluid Pump: Acceleration", 5, "The RF the Fluid Pump will consume pressurize+accellerate fluids, increasing the transferrate").getInt());
 		setBoolean("pump_infiniteWater", config.get("machines", "Fluid Pump: Infinite Water", true, "Set this to false to disable the fluid pump being able to draw infinite water from sources").getBoolean());
+		setBoolean("pump_placeCobble", config.get("machines", "Fluid Pump: Cobble", true, "If this is set to true (default) the pump will replace fluids it picks up with cobblestone in order to reduce lag caused by flowing fluids.").getBoolean());
 		setInt("assembler_consumption", config.get("machines", "Assembler: Consumed", 80, "The RF the Assembler will consume to craft an item from a recipe").getInt());
 		setInt("bottlingMachine_consumption", config.get("machines", "Bottling: Consumed", 8, "The RF the Bottling Machine will consume per tick, when filling items").getInt());
 		setInt("charger_consumption", config.get("machines", "ChargingStation: Charge", 4000, "The RF per tick the Charging Station can insert into an item").getInt());
@@ -175,6 +180,8 @@ public class Config
 		setDouble("BulletDamage-Potion", config.get("tools", "BulletDamage-Potion", 1d, "The amount of base damage a Phial Cartridge inflicts").getDouble());
 		
 		setInt("chemthrower_consumption", config.get("tools", "ChemThrower: Consumed", 10, "The mb of fluid the Chemical Thrower will consume per tick of usage").getInt());
+		
+		setInt("railgun_consumption", config.get("tools", "Railgun: Consumed", 800, "The base amount of RF consumed per shot by the Railgun").getInt());
 
 		for(String key : IECompatModule.moduleClasses.keySet())
 			setBoolean("compat_"+key, config.get("compatability", "Enable Compatmodule: "+key, true, "Set this to false to disable IE's built in compatability with "+key).getBoolean());

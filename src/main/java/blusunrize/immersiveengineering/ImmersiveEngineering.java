@@ -4,43 +4,40 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Arrays;
 
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonStreamParser;
+
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.WireType;
+import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.common.CommonProxy;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.EventHandler;
 import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.IERecipes;
 import blusunrize.immersiveengineering.common.IESaveData;
+import blusunrize.immersiveengineering.common.IEVillagerTradeHandler;
 import blusunrize.immersiveengineering.common.crafting.ArcRecyclingThreadHandler;
 import blusunrize.immersiveengineering.common.items.ItemRevolver;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.commands.CommandHandler;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
+import blusunrize.immersiveengineering.common.util.network.MessageMinecartShaderSync;
 import blusunrize.immersiveengineering.common.util.network.MessageMineralListSync;
+import blusunrize.immersiveengineering.common.util.network.MessageRequestBlockUpdate;
 import blusunrize.immersiveengineering.common.util.network.MessageSkyhookSync;
 import blusunrize.immersiveengineering.common.util.network.MessageSpeedloaderSync;
 import blusunrize.immersiveengineering.common.util.network.MessageTileSync;
 import blusunrize.immersiveengineering.common.world.IEWorldGen;
-
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonStreamParser;
-
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLLoadCompleteEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartedEvent;
@@ -49,14 +46,20 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
 
-@Mod(modid=ImmersiveEngineering.MODID,name=ImmersiveEngineering.MODNAME,version = ImmersiveEngineering.VERSION, dependencies="after:Railcraft;before:TConstruct;after:ThermalFoundation")
+@Mod(modid=ImmersiveEngineering.MODID,name=ImmersiveEngineering.MODNAME,version = ImmersiveEngineering.VERSION, dependencies="after:Railcraft;before:TConstruct;after:ThermalFoundation;after:Avaritia")
 public class ImmersiveEngineering
 {
 	public static final String MODID = "ImmersiveEngineering";
 	public static final String MODNAME = "Immersive Engineering";
 	public static final String VERSION = "${version}";
-	public static final double VERSION_D = .63;
+	public static final double VERSION_D = .65;
 
 	@Mod.Instance(MODID)
 	public static ImmersiveEngineering instance = new ImmersiveEngineering();
@@ -87,7 +90,7 @@ public class ImmersiveEngineering
 		IEApi.prefixToIngotMap.put("gear", new Integer[]{4,1});
 		IEApi.prefixToIngotMap.put("rod", new Integer[]{2,1});
 		IEApi.prefixToIngotMap.put("fence", new Integer[]{6,16});
-		IECompatModule.preInitModules();
+		IECompatModule.doModulesPreInit();
 	}
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent event)
@@ -105,33 +108,38 @@ public class ImmersiveEngineering
 		Lib.GREG = Loader.isModLoaded("gregtech") && Config.getBoolean("gregtechcompat");
 		Config.setBoolean("ic2Manual", Lib.IC2);
 		Config.setBoolean("gregManual", Lib.GREG);
-		for(IECompatModule compat : IECompatModule.modules)
-			compat.init();
-
+		IECompatModule.doModulesInit();
 		int messageId = 0;
 		packetHandler.registerMessage(MessageMineralListSync.Handler.class, MessageMineralListSync.class, messageId++, Side.CLIENT);
 		packetHandler.registerMessage(MessageTileSync.Handler.class, MessageTileSync.class, messageId++, Side.SERVER);
 		packetHandler.registerMessage(MessageSpeedloaderSync.Handler.class, MessageSpeedloaderSync.class, messageId++, Side.CLIENT);
 		packetHandler.registerMessage(MessageSkyhookSync.Handler.class, MessageSkyhookSync.class, messageId++, Side.CLIENT);
+		packetHandler.registerMessage(MessageMinecartShaderSync.HandlerServer.class, MessageMinecartShaderSync.class, messageId++, Side.SERVER);
+		packetHandler.registerMessage(MessageMinecartShaderSync.HandlerClient.class, MessageMinecartShaderSync.class, messageId++, Side.CLIENT);
+		packetHandler.registerMessage(MessageRequestBlockUpdate.Handler.class, MessageRequestBlockUpdate.class, messageId++, Side.SERVER);
 	}
 	@Mod.EventHandler
 	public void postInit(FMLPostInitializationEvent event)
 	{
-		IERecipes.postInitCrusherAndArcRecipes();
-		for(IECompatModule compat : IECompatModule.modules)
-			compat.postInit();
-
-		ExcavatorHandler.recalculateChances();
 		IEContent.postInit();
+		ExcavatorHandler.recalculateChances(true);
 		proxy.postInit();
-
 		new ThreadContributorSpecialsDownloader();
+		IECompatModule.doModulesPostInit();
+	}
+	@Mod.EventHandler
+	public void loadComplete(FMLLoadCompleteEvent event)
+	{
+		IECompatModule.doModulesLoadComplete();
+		ShaderRegistry.compileWeight();
 	}
 
 	@Mod.EventHandler
 	public void serverStarting(FMLServerStartingEvent event)
 	{
-		event.registerServerCommand(new CommandHandler());	
+		proxy.serverStarting();
+		event.registerServerCommand(new CommandHandler());
+		IEVillagerTradeHandler.instance.addShaderTrades();
 	}
 	@Mod.EventHandler
 	public void serverStarted(FMLServerStartedEvent event)
@@ -176,11 +184,14 @@ public class ImmersiveEngineering
 
 	public static class ThreadContributorSpecialsDownloader extends Thread
 	{
+		public static ThreadContributorSpecialsDownloader activeThread;
+
 		public ThreadContributorSpecialsDownloader()
 		{
 			setName("Immersive Engineering Contributors Thread");
 			setDaemon(true);
 			start();
+			activeThread = this;
 		}
 
 		@Override

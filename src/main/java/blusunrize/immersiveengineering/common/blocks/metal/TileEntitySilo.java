@@ -165,8 +165,9 @@ public class TileEntitySilo extends TileEntityMultiblockPart implements ISidedIn
 	{
 		if(!formed)
 			return null;
-		if(master()!=null)
-			return master().getStackInSlot(slot);
+		TileEntitySilo master = master();
+		if(master!=null)
+			return master.getStackInSlot(slot);
 		return slot==0?inputStack: outputStack;
 	}
 	@Override
@@ -175,8 +176,9 @@ public class TileEntitySilo extends TileEntityMultiblockPart implements ISidedIn
 		updateComparatorValuesPart1();
 		if(!formed)
 			return null;
-		if(master()!=null)
-			return master().decrStackSize(slot,amount);
+		TileEntitySilo master = master();
+		if(master!=null)
+			return master.decrStackSize(slot,amount);
 
 		if(this.outputStack==null)
 			return null;
@@ -201,9 +203,10 @@ public class TileEntitySilo extends TileEntityMultiblockPart implements ISidedIn
 		updateComparatorValuesPart1();
 		if(!formed)
 			return;
-		if(master()!=null)
+		TileEntitySilo master = master();
+		if(master!=null)
 		{
-			master().setInventorySlotContents(slot,stack);
+			master.setInventorySlotContents(slot,stack);
 			return;
 		}
 		if(slot==0)
@@ -240,8 +243,9 @@ public class TileEntitySilo extends TileEntityMultiblockPart implements ISidedIn
 	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack stack)
 	{
-		if(master()!=null)
-			return master().isItemValidForSlot(slot,stack);
+		TileEntitySilo master = master();
+		if(master!=null)
+			return master.isItemValidForSlot(slot,stack);
 		return this.identStack==null || OreDictionary.itemMatches(identStack, stack, true);
 	}
 	@Override
@@ -256,18 +260,19 @@ public class TileEntitySilo extends TileEntityMultiblockPart implements ISidedIn
 	{
 		if(!formed || pos!=58 || slot!=0 || stack==null)
 			return false;
-		if(master()!=null)
-			return master().identStack==null || (OreDictionary.itemMatches(master().identStack, stack, true)&&master().storageAmount<maxStorage); 
-		else
-			return identStack==null || (OreDictionary.itemMatches(identStack, stack, true)&&master().storageAmount<maxStorage); 
+		TileEntitySilo master = master();
+		if(master!=null)
+			return master.identStack==null || (OreDictionary.itemMatches(master.identStack, stack, true)&&master.storageAmount<maxStorage); 
+		return false; 
 	}
 	@Override
 	public boolean canExtractItem(int slot, ItemStack stack, int side)
 	{
 		if(!formed || pos!=4 || slot!=1 || stack==null)
 			return false;
-		if(master()!=null)
-			return master().outputStack!=null && OreDictionary.itemMatches(master().identStack, stack, true); 
+		TileEntitySilo master = master();
+		if(master!=null)
+			return master.outputStack!=null && OreDictionary.itemMatches(master.identStack, stack, true); 
 		else
 			return this.outputStack!=null && OreDictionary.itemMatches(identStack, stack, true);
 	}
@@ -339,13 +344,18 @@ public class TileEntitySilo extends TileEntityMultiblockPart implements ISidedIn
 		forceUpdate = false;
 	}
 
+	@SideOnly(Side.CLIENT)
+	private AxisAlignedBB renderAABB;
 	@Override
 	@SideOnly(Side.CLIENT)
 	public AxisAlignedBB getRenderBoundingBox()
 	{
-		if(pos==4)
-			return AxisAlignedBB.getBoundingBox(xCoord-1,yCoord,zCoord-1, xCoord+2,yCoord+7,zCoord+2);
-		return AxisAlignedBB.getBoundingBox(xCoord,yCoord,zCoord, xCoord,yCoord,zCoord);
+		if(renderAABB==null)
+			if(pos==4)
+				renderAABB = AxisAlignedBB.getBoundingBox(xCoord-1,yCoord,zCoord-1, xCoord+2,yCoord+7,zCoord+2);
+			else
+				renderAABB = AxisAlignedBB.getBoundingBox(xCoord,yCoord,zCoord, xCoord,yCoord,zCoord);
+		return renderAABB;
 	}
 	@Override
 	@SideOnly(Side.CLIENT)
@@ -414,11 +424,11 @@ public class TileEntitySilo extends TileEntityMultiblockPart implements ISidedIn
 		{
 			return (15*storageAmount)/maxStorage;
 		}
-		if (offset[1]>=1&&offset[1]<=6&&master()!=null) { //6 layers of storage
-			TileEntitySilo t = master();
+		TileEntitySilo master = master();
+		if (offset[1]>=1&&offset[1]<=6&&master!=null) { //6 layers of storage
 			int layer = offset[1]-1;
 			int vol = maxStorage/6;
-			int filled = t.storageAmount-layer*vol;
+			int filled = master.storageAmount-layer*vol;
 			int ret = Math.min(15, Math.max(0, (15*filled)/vol));
 			return ret;
 		}

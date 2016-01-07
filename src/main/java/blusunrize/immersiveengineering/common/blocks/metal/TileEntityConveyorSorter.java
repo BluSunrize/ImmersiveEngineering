@@ -2,6 +2,8 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import java.util.ArrayList;
 
+import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
+import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -10,15 +12,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.oredict.OreDictionary;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
-import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
-import blusunrize.immersiveengineering.common.util.Utils;
 
-public class TileEntityConveyorSorter extends TileEntityIEBase implements ISidedInventory, IBlockOverlayText
+public class TileEntityConveyorSorter extends TileEntityIEBase implements ISidedInventory
 {
 	public SorterInventory filter;
 	public int[] sideFilter = {0,0,0,0,0,0};//OreDict,nbt,fuzzy
@@ -130,10 +127,10 @@ public class TileEntityConveyorSorter extends TileEntityIEBase implements ISided
 		if(isRouting || stack==null)
 			return new Integer[][]{{},{},{},{}};
 		this.isRouting = true;
-		ArrayList<Integer> validFilteredInvOuts = new ArrayList<Integer>();
-		ArrayList<Integer> validFilteredEntityOuts = new ArrayList<Integer>();
-		ArrayList<Integer> validUnfilteredInvOuts = new ArrayList<Integer>();
-		ArrayList<Integer> validUnfilteredEntityOuts = new ArrayList<Integer>();
+		ArrayList<Integer> validFilteredInvOuts = new ArrayList<Integer>(6);
+		ArrayList<Integer> validFilteredEntityOuts = new ArrayList<Integer>(6);
+		ArrayList<Integer> validUnfilteredInvOuts = new ArrayList<Integer>(6);
+		ArrayList<Integer> validUnfilteredEntityOuts = new ArrayList<Integer>(6);
 		for(int side=0; side<6; side++)
 			if(side!=inputSide)
 			{
@@ -146,18 +143,18 @@ public class TileEntityConveyorSorter extends TileEntityIEBase implements ISided
 						{
 							unmapped = false;
 							
-							System.out.println("filter "+Integer.toBinaryString(this.sideFilter[side])+" ore:"+doOredict(side)+", nbt:"+doNBT(side)+", fuzzy:"+doFuzzy(side));
-							
 							boolean b = OreDictionary.itemMatches(filterStack, stack, true);
 							
 							if(!b && doFuzzy(side))
 								b = filterStack.getItem().equals(stack.getItem());
 							
 							if(!b && doOredict(side))
-								for(int allowedOid : OreDictionary.getOreIDs(filterStack))
-									for(int oid : OreDictionary.getOreIDs(stack))
-										if(oid==allowedOid)
-											b=true;
+								for (String name:OreDictionary.getOreNames())
+									if (Utils.compareToOreName(stack, name)&&Utils.compareToOreName(filterStack, name))
+									{
+										b = true;
+										break;
+									}
 							
 							if(doNBT(side))
 								b &= ItemStack.areItemStackTagsEqual(filterStack, stack);
@@ -458,13 +455,6 @@ public class TileEntityConveyorSorter extends TileEntityIEBase implements ISided
 		}
 	}
 
-	public void toggleSide(int side)
-	{
-		//		oreDictFilter[side]++;
-		//		if(oreDictFilter[side]>0)
-		//			oreDictFilter[side]=-1;
-		//		worldObj.addBlockEvent(xCoord, yCoord, zCoord, getBlockType(), 0, 0);
-	}
 	@Override
 	public boolean receiveClientEvent(int id, int arg)
 	{
@@ -474,16 +464,5 @@ public class TileEntityConveyorSorter extends TileEntityIEBase implements ISided
 			return true;
 		}
 		return false;
-	}
-
-	@Override
-	public String[] getOverlayText(EntityPlayer player, MovingObjectPosition mop, boolean hammer)
-	{
-		if(hammer)
-			return new String []{
-				StatCollector.translateToLocal("desc.ImmersiveEngineering.info.blockSide."+ForgeDirection.getOrientation(mop.sideHit)),
-				//				StatCollector.translateToLocal("desc.ImmersiveEngineering.info.oreDict."+(oreDictFilter[mop.sideHit]==-1?"off":"on"))
-		};
-		return null;
 	}
 }

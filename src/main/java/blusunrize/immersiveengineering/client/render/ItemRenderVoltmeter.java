@@ -80,14 +80,17 @@ public class ItemRenderVoltmeter implements IItemRenderer
 		if(type==ItemRenderType.EQUIPPED_FIRST_PERSON)
 		{
 			MovingObjectPosition mop = ClientUtils.mc().objectMouseOver;
-			TileEntity tileEntity = ClientUtils.mc().thePlayer.worldObj.getTileEntity(mop.blockX, mop.blockY, mop.blockZ);
-			if(tileEntity instanceof IEnergyReceiver)
+			if(mop!=null)
 			{
-				ForgeDirection fd = ForgeDirection.getOrientation(mop.sideHit);
-				int maxStorage = ((IEnergyReceiver)tileEntity).getMaxEnergyStored(fd);
-				int storage = ((IEnergyReceiver)tileEntity).getEnergyStored(fd);
-				if(maxStorage>0)
-					angle = storage/(float)maxStorage*60;
+				TileEntity tileEntity = ClientUtils.mc().thePlayer.worldObj.getTileEntity(mop.blockX, mop.blockY, mop.blockZ);
+				if(tileEntity instanceof IEnergyReceiver)
+				{
+					ForgeDirection fd = ForgeDirection.getOrientation(mop.sideHit);
+					int maxStorage = ((IEnergyReceiver) tileEntity).getMaxEnergyStored(fd);
+					int storage = ((IEnergyReceiver) tileEntity).getEnergyStored(fd);
+					if(maxStorage>0)
+						angle = storage/(float) maxStorage*60;
+				}
 			}
 		}
 		GL11.glRotatef(-angle, 0.0F, 0.0F, 1.0F);

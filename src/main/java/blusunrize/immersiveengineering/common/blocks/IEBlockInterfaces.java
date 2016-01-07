@@ -23,6 +23,7 @@ public class IEBlockInterfaces
 	public interface IBlockOverlayText
 	{
 		public String[] getOverlayText(EntityPlayer player, MovingObjectPosition mop, boolean hammer);
+		public boolean useNixieFont(EntityPlayer player, MovingObjectPosition mop);
 	}
 
 	public interface ISoundTile
@@ -32,5 +33,11 @@ public class IEBlockInterfaces
 	public interface ISpawnInterdiction
 	{
 		public double getInterdictionRangeSquared();
+	}
+	
+	public interface IColouredTile
+	{
+		public int getColour();
+		public void setColour(int colour);
 	}
 }

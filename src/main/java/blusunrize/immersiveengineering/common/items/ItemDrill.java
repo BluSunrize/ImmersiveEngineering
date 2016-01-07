@@ -4,6 +4,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Multimap;
+
+import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.shader.IShaderEquipableItem;
+import blusunrize.immersiveengineering.api.tool.IDrillHead;
+import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.gui.IESlot;
+import blusunrize.immersiveengineering.common.util.IEAchievements;
+import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.util.Lib;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityLivingBase;
@@ -25,20 +36,10 @@ import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidContainerItem;
-import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.tool.IDrillHead;
-import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.gui.IESlot;
-import blusunrize.immersiveengineering.common.util.IEAchievements;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import blusunrize.immersiveengineering.common.util.Lib;
 
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Multimap;
-
-public class ItemDrill extends ItemUpgradeableTool implements IFluidContainerItem
+public class ItemDrill extends ItemUpgradeableTool implements IShaderEquipableItem, IFluidContainerItem
 {
-	public static Material[] validMaterials = {Material.anvil,Material.clay,Material.glass,Material.ground,Material.ice,Material.iron,Material.packedIce,Material.piston,Material.rock,Material.sand, Material.snow};
+	public static Material[] validMaterials = {Material.anvil,Material.clay,Material.glass,Material.grass,Material.ground,Material.ice,Material.iron,Material.packedIce,Material.piston,Material.rock,Material.sand, Material.snow};
 
 	public ItemDrill()
 	{
@@ -47,7 +48,7 @@ public class ItemDrill extends ItemUpgradeableTool implements IFluidContainerIte
 	@Override
 	public int getInternalSlots(ItemStack stack)
 	{
-		return 4;
+		return 5;
 	}
 	@Override
 	public Slot[] getWorkbenchSlots(Container container, ItemStack stack, IInventory invItem)
@@ -57,7 +58,8 @@ public class ItemDrill extends ItemUpgradeableTool implements IFluidContainerIte
 				new IESlot.DrillHead(container, invItem,0, 98,22),
 				new IESlot.Upgrades(container, invItem,1,  78,42, "DRILL", stack, true),
 				new IESlot.Upgrades(container, invItem,2,  98,52, "DRILL", stack, true),
-				new IESlot.Upgrades(container, invItem,3, 118,42, "DRILL", stack, true)
+				new IESlot.Upgrades(container, invItem,3, 118,42, "DRILL", stack, true),
+				new IESlot.Shader(container, invItem,4,150,32, stack)
 				};
 	}
 	@Override
@@ -87,10 +89,33 @@ public class ItemDrill extends ItemUpgradeableTool implements IFluidContainerIte
 			ItemNBTHelper.setFluidStack(stack, "fuel", fs);
 		}
 	}
+	@Override
+	public void setShaderItem(ItemStack stack, ItemStack shader)
+	{
+		ItemStack[] contained = this.getContainedItems(stack);
+		contained[4] =  shader;
+		this.setContainedItems(stack, contained);
+	}
+	
+	@Override
+	public ItemStack getShaderItem(ItemStack stack)
+	{
+		ItemStack[] contained = this.getContainedItems(stack);
+		return contained[4];
+	}
+	@Override
+	public String getShaderType()
+	{
+		return "drill";
+	}
 
 	@Override
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean adv)
 	{
+		ItemStack shader = getShaderItem(stack);
+		if(shader!=null)
+			list.add(EnumChatFormatting.DARK_GRAY+shader.getDisplayName());
+		
 		FluidStack fs = getFluid(stack);
 		if(fs!=null)
 			list.add(StatCollector.translateToLocal("desc.ImmersiveEngineering.flavour.drill.fuel")+" "+fs.amount+"/"+getCapacity(stack)+"mB");
@@ -145,13 +170,6 @@ public class ItemDrill extends ItemUpgradeableTool implements IFluidContainerIte
 		return EnumAction.bow;
 	}
 
-	@Override
-	public void onCreated(ItemStack stack, World world, EntityPlayer player)
-	{
-		if(stack==null || player==null)
-			return;
-		player.triggerAchievement(IEAchievements.makeDrill);
-	}
 	@Override
 	public void removeFromWorkbench(EntityPlayer player, ItemStack stack)
 	{

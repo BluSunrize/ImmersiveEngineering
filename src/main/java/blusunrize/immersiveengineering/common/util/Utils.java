@@ -50,6 +50,7 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.DirectionalChunkCoords;
 import blusunrize.immersiveengineering.api.energy.IImmersiveConnectable;
 import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.registry.GameData;
 
 public class Utils
@@ -183,6 +184,14 @@ public class Utils
 			}catch(Exception e){}
 		}
 		return StatCollector.translateToLocal(Lib.DESC_INFO+"mininglvl."+Math.max(-1, Math.min(lvl, 6)));
+	}
+
+	public static String getModVersion(String modid)
+	{
+		for(ModContainer container : Loader.instance().getActiveModList())
+			if(container.getModId().equalsIgnoreCase(modid))
+				return container.getVersion();
+		return "";
 	}
 
 	public static boolean tilePositionMatch(TileEntity tile0, TileEntity tile1)
@@ -945,5 +954,42 @@ public class Utils
 				ret.add(cc);
 		}
 		return ret;
+	}
+
+	/**
+	 * get tile entity without loading currently unloaded chunks
+	 * @return return value of {@link net.minecraft.world.IBlockAccess#getTileEntity(int, int, int)} or always null if chunk is not loaded
+	 */
+	public static TileEntity getExistingTileEntity(World world, int x, int y, int z)
+	{
+		if(world.blockExists(x, y, z))
+			return world.getTileEntity(x, y, z);
+		return null;
+	}
+	public static ItemStack[] readInventory(NBTTagList nbt, int size)
+	{
+		ItemStack[] inv = new ItemStack[size];
+		int max = nbt.tagCount();
+		for (int i = 0;i<max;i++)
+		{
+			NBTTagCompound itemTag = nbt.getCompoundTagAt(i);
+			int slot = itemTag.getByte("Slot") & 255;
+			if(slot>=0 && slot<size)
+				inv[slot] = ItemStack.loadItemStackFromNBT(itemTag);
+		}
+		return inv;
+	}
+	public static NBTTagList writeInventory(ItemStack[] inv)
+	{
+		NBTTagList invList = new NBTTagList();
+		for(int i=0; i<inv.length; i++)
+			if(inv[i] != null)
+			{
+				NBTTagCompound itemTag = new NBTTagCompound();
+				itemTag.setByte("Slot", (byte)i);
+				inv[i].writeToNBT(itemTag);
+				invList.appendTag(itemTag);
+			}
+		return invList;
 	}
 }

@@ -3,6 +3,16 @@ package blusunrize.immersiveengineering.common.blocks.wooden;
 import java.util.ArrayList;
 import java.util.List;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.IPostBlock;
+import blusunrize.immersiveengineering.client.render.BlockRenderWoodenDevices;
+import blusunrize.immersiveengineering.common.Config;
+import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
+import blusunrize.immersiveengineering.common.util.Lib;
+import blusunrize.immersiveengineering.common.util.Utils;
+import cpw.mods.fml.common.Optional;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -10,6 +20,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Container;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -24,15 +35,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidContainerItem;
-import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.IPostBlock;
-import blusunrize.immersiveengineering.client.render.BlockRenderWoodenDevices;
-import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
-import blusunrize.immersiveengineering.common.util.Lib;
-import blusunrize.immersiveengineering.common.util.Utils;
-import cpw.mods.fml.common.Optional;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 @Optional.Interface(iface = "blusunrize.aquatweaks.api.IAquaConnectable", modid = "AquaTweaks")
 public class BlockWoodenDevices extends BlockIEBase implements IPostBlock, blusunrize.aquatweaks.api.IAquaConnectable
@@ -41,7 +43,7 @@ public class BlockWoodenDevices extends BlockIEBase implements IPostBlock, blusu
 
 	public BlockWoodenDevices()
 	{
-		super("woodenDevice", Material.wood, 1, ItemBlockWoodenDevices.class, "post","watermill","windmill","windmillAdvanced","crate","modificationWorkbench","barrel");
+		super("woodenDevice", Material.wood, Config.getBoolean("christmas")?2:1, ItemBlockWoodenDevices.class, "post","watermill","windmill","windmillAdvanced","crate","modificationWorkbench","barrel");
 		this.setHardness(2.0F);
 		this.setResistance(5.0F);
 		this.setMetaLightOpacity(4, 255);
@@ -63,14 +65,19 @@ public class BlockWoodenDevices extends BlockIEBase implements IPostBlock, blusu
 	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister iconRegister)
 	{
-		icons[0][0] = iconRegister.registerIcon("immersiveengineering:woodenPost");
-		icons[1][0] = iconRegister.registerIcon("immersiveengineering:treatedWood");
-		icons[2][0] = iconRegister.registerIcon("immersiveengineering:treatedWood");
-		icons[3][0] = iconRegister.registerIcon("immersiveengineering:treatedWood");
-		icons[4][0] = iconRegister.registerIcon("immersiveengineering:woodenCrate");
-		icons[5][0] = iconRegister.registerIcon("immersiveengineering:workbench");
-		icons[6][0] = iconRegister.registerIcon("immersiveengineering:woodBarrel");
-
+		for(int i=0; i<this.iconDimensions; i++)
+		{
+			icons[0][i] = iconRegister.registerIcon("immersiveengineering:woodenPost");
+			icons[1][i] = iconRegister.registerIcon("immersiveengineering:treatedWood");
+			icons[2][i] = iconRegister.registerIcon("immersiveengineering:treatedWood");
+			icons[3][i] = iconRegister.registerIcon("immersiveengineering:treatedWood");
+			if(Config.getBoolean("christmas"))
+				icons[4][i] = iconRegister.registerIcon("immersiveengineering:woodenCrateChristmas"+i);
+			else
+				icons[4][i] = iconRegister.registerIcon("immersiveengineering:woodenCrate");
+			icons[5][i] = iconRegister.registerIcon("immersiveengineering:workbench");
+			icons[6][i] = iconRegister.registerIcon("immersiveengineering:woodBarrel");
+		}
 		iconBarrel[0] = iconRegister.registerIcon("immersiveengineering:woodBarrel_top_none");
 		iconBarrel[1] = iconRegister.registerIcon("immersiveengineering:woodBarrel_top_in");
 		iconBarrel[2] = iconRegister.registerIcon("immersiveengineering:woodBarrel_top_out");
@@ -222,9 +229,10 @@ public class BlockWoodenDevices extends BlockIEBase implements IPostBlock, blusu
 			double a = (ay<0?360-ax:ax)+22.25; 
 			int sel = ((4-(int)(a/45f)+6)%8);
 
-			if(((TileEntityWindmillAdvanced)te).dye[sel] == Utils.getDye(player.getCurrentEquippedItem()))
+			int heldDye = Utils.getDye(player.getCurrentEquippedItem());
+			if(((TileEntityWindmillAdvanced)te).dye[sel] == heldDye)
 				return false;
-			((TileEntityWindmillAdvanced)te).dye[sel] = (byte) Utils.getDye(player.getCurrentEquippedItem());
+			((TileEntityWindmillAdvanced)te).dye[sel] = (byte)heldDye;
 			if(!player.capabilities.isCreativeMode)
 				player.getCurrentEquippedItem().stackSize--;
 			return true;
@@ -254,42 +262,45 @@ public class BlockWoodenDevices extends BlockIEBase implements IPostBlock, blusu
 		}
 		if(te instanceof TileEntityWoodenBarrel)
 		{
-			if(!world.isRemote)
+			TileEntityWoodenBarrel barrel = (TileEntityWoodenBarrel)te;
+			if(!world.isRemote && Utils.isHammer(player.getCurrentEquippedItem()) && side<2)
 			{
-				TileEntityWoodenBarrel barrel = (TileEntityWoodenBarrel)te;
-				if(Utils.isHammer(player.getCurrentEquippedItem()) && side<2)
+				if(player.isSneaking())
+					side = ForgeDirection.OPPOSITES[side];
+				barrel.toggleSide(side);
+			}
+			else
+			{
+				FluidStack f = Utils.getFluidFromItemStack(player.getCurrentEquippedItem());
+				if(f!=null)
+					if(f.getFluid().isGaseous(f))
+						player.addChatComponentMessage(new ChatComponentTranslation(Lib.CHAT_INFO+"noGasAllowed"));
+					else if(f.getFluid().getTemperature(f)>=TileEntityWoodenBarrel.IGNITION_TEMPERATURE)
+						player.addChatComponentMessage(new ChatComponentTranslation(Lib.CHAT_INFO+"tooHot"));
+					else if(Utils.fillFluidHandlerWithPlayerItem(world, barrel, player))
+					{
+						world.markBlockForUpdate(x, y, z);
+						return true;
+					}
+				if(Utils.fillFluidHandlerWithPlayerItem(world, barrel, player))
 				{
-					if(player.isSneaking())
-						side = ForgeDirection.OPPOSITES[side];
-					barrel.toggleSide(side);
+					barrel.markDirty();
+					world.markBlockForUpdate(barrel.xCoord,barrel.yCoord,barrel.zCoord);
+					return true;
 				}
-				else if(!player.isSneaking())
+				if(Utils.fillPlayerItemFromFluidHandler(world, barrel, player, barrel.tank.getFluid()))
 				{
-					FluidStack f = Utils.getFluidFromItemStack(player.getCurrentEquippedItem());
-					if(f!=null)
-						if(f.getFluid().isGaseous(f))
-							player.addChatComponentMessage(new ChatComponentTranslation(Lib.CHAT_INFO+"noGasAllowed"));
-						else if(f.getFluid().getTemperature(f)>=TileEntityWoodenBarrel.IGNITION_TEMPERATURE)
-							player.addChatComponentMessage(new ChatComponentTranslation(Lib.CHAT_INFO+"tooHot"));
-						else if(Utils.fillFluidHandlerWithPlayerItem(world, barrel, player))
-						{
-							world.markBlockForUpdate(x, y, z);
-							return true;
-						}
-					if(Utils.fillPlayerItemFromFluidHandler(world, barrel, player, barrel.tank.getFluid()))
-					{
-						world.markBlockForUpdate(x, y, z);
-						return true;
-					}
-					if(player.getCurrentEquippedItem()!=null && player.getCurrentEquippedItem().getItem() instanceof IFluidContainerItem)
-					{
-						world.markBlockForUpdate(x, y, z);
-						return true;
-					}
-
+					barrel.markDirty();
+					world.markBlockForUpdate(barrel.xCoord,barrel.yCoord,barrel.zCoord);
+					return true;
+				}
+				if(player.getCurrentEquippedItem()!=null && player.getCurrentEquippedItem().getItem() instanceof IFluidContainerItem)
+				{
+					barrel.markDirty();
+					world.markBlockForUpdate(barrel.xCoord,barrel.yCoord,barrel.zCoord);
+					return true;
 				}
 			}
-			return true;
 		}
 		return false;
 	}
@@ -312,7 +323,7 @@ public class BlockWoodenDevices extends BlockIEBase implements IPostBlock, blusu
 			}
 		}
 	}
-	
+
 	@Override
 	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z, EntityPlayer player)
 	{
@@ -328,7 +339,7 @@ public class BlockWoodenDevices extends BlockIEBase implements IPostBlock, blusu
 		}
 		return super.getPickBlock(target, world, x, y, z, player);
 	}
-	
+
 	@Override
 	public void onBlockHarvested(World world, int x, int y, int z, int meta, EntityPlayer player)
 	{
@@ -386,6 +397,28 @@ public class BlockWoodenDevices extends BlockIEBase implements IPostBlock, blusu
 		super.onBlockExploded(world, x, y, z, explosion);
 	}
 
+	@Override
+	public boolean hasComparatorInputOverride()
+	{
+		return true;
+	}
+
+	@Override
+	public int getComparatorInputOverride(World world, int x, int y, int z, int side)
+	{
+		TileEntity te = world.getTileEntity(x, y, z);
+		if(te instanceof TileEntityWoodenCrate)
+		{
+			return Container.calcRedstoneFromInventory((TileEntityWoodenCrate)te);
+		}
+		else if(te instanceof TileEntityWoodenBarrel)
+		{
+			TileEntityWoodenBarrel barrel = (TileEntityWoodenBarrel)te;
+			return (int)(15*(barrel.tank.getFluidAmount()/(float)barrel.tank.getCapacity()));
+		}
+		return 0;
+	}
+	
 	@Override
 	public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int metadata, int fortune)
 	{

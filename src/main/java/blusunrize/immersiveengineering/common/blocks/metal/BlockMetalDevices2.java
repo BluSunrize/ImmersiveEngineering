@@ -3,38 +3,13 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.Direction;
-import net.minecraft.util.IIcon;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
-import net.minecraft.world.Explosion;
-import net.minecraft.world.IBlockAccess;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidContainerItem;
-import net.minecraftforge.fluids.IFluidHandler;
-import net.minecraftforge.oredict.OreDictionary;
 import blusunrize.immersiveengineering.api.AdvancedAABB;
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler;
-import blusunrize.immersiveengineering.api.fluid.PipeConnection;
 import blusunrize.immersiveengineering.client.render.BlockRenderMetalDevices2;
+import blusunrize.immersiveengineering.common.Config;
+import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IColouredTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ICustomBoundingboxes;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenBarrel;
 import blusunrize.immersiveengineering.common.util.Lib;
@@ -45,6 +20,30 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.passive.EntitySheep;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.IIcon;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.Vec3;
+import net.minecraft.world.Explosion;
+import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fluids.IFluidContainerItem;
+import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.oredict.OreDictionary;
 
 @Optional.Interface(iface = "blusunrize.aquatweaks.api.IAquaConnectable", modid = "AquaTweaks")
 public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingboxes, blusunrize.aquatweaks.api.IAquaConnectable
@@ -74,7 +73,6 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 		setResistance(15.0F);
 		this.setMetaLightOpacity(META_barrel, 255);
 	}
-
 
 	@Override
 	public boolean allowHammerHarvest(int meta)
@@ -202,6 +200,29 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
 	{
 		TileEntity te = world.getTileEntity(x, y, z);
+		if(te instanceof IColouredTile)
+		{
+			int dye = Utils.getDye(player.getCurrentEquippedItem());
+			if(dye>=0)
+			{
+				float r = (((IColouredTile)te).getColour()>>16&255)/255f;
+				float g = (((IColouredTile)te).getColour()>>8&255)/255f;
+				float b = (((IColouredTile)te).getColour()&255)/255f;
+				r += EntitySheep.fleeceColorTable[15-dye][0];
+				g += EntitySheep.fleeceColorTable[15-dye][1];
+				b += EntitySheep.fleeceColorTable[15-dye][2];
+				r /= 2;
+				g /= 2;
+				b /= 2;
+				int newColour = (int)(r*255);
+				newColour = (newColour<<8) + (int)(g*255);
+				newColour = (newColour<<8) + (int)(b*255);
+				((IColouredTile)te).setColour(newColour);
+				te.markDirty();
+				world.markBlockForUpdate(x, y, z);
+				return true;
+			}
+		}
 		if(!player.isSneaking() && te instanceof TileEntityBreakerSwitch && !(te instanceof TileEntityRedstoneBreaker))
 		{
 			if(!world.isRemote)
@@ -250,24 +271,8 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 				}
 				player.addChatComponentMessage(new ChatComponentTranslation(Lib.CHAT_INFO+"energyTransfered",size,transferred));
 			}
+			return true;
 
-		}
-		else if(te instanceof TileEntityFluidPipe_old)
-		{
-			if(!world.isRemote) {
-				TileEntityFluidPipe_old fluidPipe = ((TileEntityFluidPipe_old) te);
-				if(Utils.isHammer(player.getCurrentEquippedItem()))
-				{
-					//					if (++fluidPipe.mode > 2) {
-					//						fluidPipe.mode = 0;
-					//					}
-					fluidPipe.markDirty();
-					world.markBlockForUpdate(x, y, z);
-					return true;
-				}
-				else
-					player.addChatMessage(new ChatComponentText("Server Connections: " + fluidPipe.connections.size()));
-			}
 		}
 		else if(Utils.isHammer(player.getCurrentEquippedItem()) && te instanceof TileEntityFloodlight)
 		{
@@ -290,17 +295,25 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 			}
 			return true;
 		}
-		else if(Utils.isHammer(player.getCurrentEquippedItem()) && te instanceof TileEntityFluidPump)
+		else if(te instanceof TileEntityFluidPump)
 		{
 			TileEntityFluidPump pump = (TileEntityFluidPump) te;
-			if (!pump.dummy)
+			if(!pump.dummy)
 			{
-				if (!world.isRemote)
+				if(!world.isRemote)
 				{
-					if(player.isSneaking())
-						side = ForgeDirection.OPPOSITES[side];
-					pump.toggleSide(side);
-					world.markBlockForUpdate(x, y, z);
+					if(Utils.isHammer(player.getCurrentEquippedItem()))
+					{
+						if(player.isSneaking())
+							side = ForgeDirection.OPPOSITES[side];
+						pump.toggleSide(side);
+						world.markBlockForUpdate(x, y, z);
+					}
+					else if(Config.getBoolean("pump_placeCobble") && OreDictionary.itemMatches(new ItemStack(IEContent.itemTool,1,1), player.getCurrentEquippedItem(), true))
+					{
+						pump.placeCobble = !pump.placeCobble;
+						player.addChatMessage(new ChatComponentTranslation(Lib.CHAT_INFO+"pump.placeCobble."+pump.placeCobble));
+					}
 				}
 				return true;
 			}
@@ -374,37 +387,34 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 		}
 		else if(te instanceof TileEntityWoodenBarrel)
 		{
-			if(!world.isRemote)
+			TileEntityWoodenBarrel barrel = (TileEntityWoodenBarrel)te;
+			if(!world.isRemote && Utils.isHammer(player.getCurrentEquippedItem()) && side<2)
 			{
-				TileEntityWoodenBarrel barrel = (TileEntityWoodenBarrel)te;
-				if(Utils.isHammer(player.getCurrentEquippedItem()) && side<2)
+				if(player.isSneaking())
+					side = ForgeDirection.OPPOSITES[side];
+				barrel.toggleSide(side);
+			}
+			else
+			{
+				if(Utils.fillFluidHandlerWithPlayerItem(world, barrel, player))
 				{
-					if(player.isSneaking())
-						side = ForgeDirection.OPPOSITES[side];
-					barrel.toggleSide(side);
+					barrel.markDirty();
+					world.markBlockForUpdate(barrel.xCoord,barrel.yCoord,barrel.zCoord);
+					return true;
 				}
-				else if(!player.isSneaking())
+				if(Utils.fillPlayerItemFromFluidHandler(world, barrel, player, barrel.tank.getFluid()))
 				{
-					FluidStack f = Utils.getFluidFromItemStack(player.getCurrentEquippedItem());
-					if(f!=null && Utils.fillFluidHandlerWithPlayerItem(world, barrel, player))
-					{
-						world.markBlockForUpdate(x, y, z);
-						return true;
-					}
-					if(Utils.fillPlayerItemFromFluidHandler(world, barrel, player, barrel.tank.getFluid()))
-					{
-						world.markBlockForUpdate(x, y, z);
-						return true;
-					}
-					if(player.getCurrentEquippedItem()!=null && player.getCurrentEquippedItem().getItem() instanceof IFluidContainerItem)
-					{
-						world.markBlockForUpdate(x, y, z);
-						return true;
-					}
-
+					barrel.markDirty();
+					world.markBlockForUpdate(barrel.xCoord,barrel.yCoord,barrel.zCoord);
+					return true;
+				}
+				if(player.getCurrentEquippedItem()!=null && player.getCurrentEquippedItem().getItem() instanceof IFluidContainerItem)
+				{
+					barrel.markDirty();
+					world.markBlockForUpdate(barrel.xCoord,barrel.yCoord,barrel.zCoord);
+					return true;
 				}
 			}
-			return true;
 		}
 		else if(te instanceof TileEntityCapacitorCreative && Utils.isHammer(player.getCurrentEquippedItem()))
 		{
@@ -464,35 +474,6 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 			TileEntityFloodlight light = ((TileEntityFloodlight)te);
 
 			this.setBlockBounds(light.side/2==2?0:.0625f,light.side/2==0?0:.0625f,light.side/2==1?0:.0625f, light.side/2==2?1:.9375f,light.side/2==0?1:.9375f,light.side/2==1?1:.9375f);
-		}
-		else if (te instanceof TileEntityFluidPipe_old)
-		{
-			TileEntityFluidPipe_old pipe = ((TileEntityFluidPipe_old) te);
-			if(pipe.connections.size()==0)
-				this.setBlockBounds(.125f,0,.125f, .875f,1,.875f);
-			else
-			{
-				byte connections = 0;
-				for(PipeConnection connection : pipe.connections)
-					if(connection.direction != ForgeDirection.UNKNOWN)
-						connections = (byte) (connections | 1 << connection.direction.ordinal());
-				if(pipe.connections.size()==1)
-				{
-					byte tempCon = connections;
-					for(int i = 0; i < 6; i++)
-						if((tempCon & (1 << i)) >> i == 1)
-							connections = (byte) (connections | 1 << ForgeDirection.OPPOSITES[i]);
-				}
-
-				if(connections == 48) // 110000
-					this.setBlockBounds(0,.125f,.125f, 1,.875f,.875f);
-				else if(connections == 12) // 001100
-					this.setBlockBounds(.125f,.125f,0, .875f,.875f,1);
-				else if(connections == 3) // 000011
-					this.setBlockBounds(.125f,0,.125f, .875f,1,.875f);
-				else
-					this.setBlockBounds(0,0,0, 1,1,1);
-			}
 		}
 		else if (te instanceof TileEntityFluidPipe)
 			this.setBlockBounds(.25f,.25f,.25f,.75f,.75f,.75f);
@@ -983,29 +964,36 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 	//		}
 	//	}
 
+
+	@Override
+	public boolean hasComparatorInputOverride()
+	{
+		return true;
+	}
+
+	@Override
+	public int getComparatorInputOverride(World world, int x, int y, int z, int side)
+	{
+		TileEntity te = world.getTileEntity(x, y, z);
+		if(te instanceof TileEntityWoodenBarrel)
+		{
+			TileEntityWoodenBarrel barrel = (TileEntityWoodenBarrel)te;
+			return (int)(15*(barrel.tank.getFluidAmount()/(float)barrel.tank.getCapacity()));
+		}
+		else if(te instanceof TileEntityChargingStation)
+			return ((TileEntityChargingStation)te).comparatorOutput;
+		return 0;
+	}
+
 	@Override
 	public int isProvidingWeakPower(IBlockAccess world, int x, int y, int z, int side)
 	{
 		TileEntity te = world.getTileEntity(x, y, z);
-		if(te instanceof TileEntityBreakerSwitch)
+		if(te instanceof TileEntityBreakerSwitch && !(te instanceof TileEntityRedstoneBreaker))
 		{
 			TileEntityBreakerSwitch breaker = (TileEntityBreakerSwitch)te;
-			if(te instanceof TileEntityRedstoneBreaker && side>1)
-			{
-				int mcDir = Direction.facingToDirection[side];
-				int x2 = x + Direction.offsetX[mcDir];
-				int z2 = z + Direction.offsetZ[mcDir];
-				if(world.getTileEntity(x2, y, z2) instanceof TileEntityRedstoneBreaker)
-					return 0;
-				int signal = te.getWorldObj().getIndirectPowerLevelTo(x2, y, z2, Direction.directionToFacing[mcDir]);
-				int rsStrength = signal >= 15 ? signal : Math.max(signal, world.getBlock(x2, y, z2) == Blocks.redstone_wire ? world.getBlockMetadata(x2, y, z2) : 0);
-				return rsStrength-1;
-			}
-			else
-			{
-				boolean power = (breaker.active&&!breaker.inverted) || (!breaker.active&&breaker.inverted);
-				return power?15:0;
-			}
+			boolean power = (breaker.active&&!breaker.inverted) || (!breaker.active&&breaker.inverted);
+			return power?15:0;
 		}
 		return 0;
 	}
@@ -1030,7 +1018,7 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 	@Override
 	public boolean canConnectRedstone(IBlockAccess world, int x, int y, int z, int side)
 	{
-		if(world.getBlockMetadata(x, y, z)==META_breakerSwitch || world.getBlockMetadata(x, y, z)==META_redstoneBreaker)
+		if(world.getBlockMetadata(x, y, z)==META_breakerSwitch)
 			return super.canConnectRedstone(world, x, y, z, side);
 		return false;
 	}
@@ -1049,12 +1037,12 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 	public boolean shouldRenderFluid(IBlockAccess world, int x, int y, int z)
 	{
 		int meta = world.getBlockMetadata(x, y, z);
-		return meta==META_breakerSwitch||meta==META_electricLantern||meta==META_floodlight||meta==META_fluidPipe;
+		return meta==META_breakerSwitch||meta==META_electricLantern||meta==META_floodlight||meta==META_fluidPipe||meta==META_redstoneBreaker;
 	}
 	@Optional.Method(modid = "AquaTweaks")
 	public boolean canConnectTo(IBlockAccess world, int x, int y, int z, int side)
 	{
 		int meta = world.getBlockMetadata(x, y, z);
-		return meta==META_breakerSwitch||meta==META_electricLantern||meta==META_floodlight||meta==META_fluidPipe;
+		return meta==META_breakerSwitch||meta==META_electricLantern||meta==META_floodlight||meta==META_fluidPipe||meta==META_redstoneBreaker;
 	}
 }

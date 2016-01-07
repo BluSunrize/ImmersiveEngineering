@@ -1,12 +1,21 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import java.util.HashMap;
+
+import blusunrize.immersiveengineering.api.energy.DieselHandler;
+import blusunrize.immersiveengineering.api.energy.DieselHandler.FermenterRecipe;
+import blusunrize.immersiveengineering.common.Config;
+import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockFermenter;
+import blusunrize.immersiveengineering.common.util.Utils;
+import cofh.api.energy.EnergyStorage;
+import cofh.api.energy.IEnergyReceiver;
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
@@ -16,14 +25,6 @@ import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.oredict.OreDictionary;
-import blusunrize.immersiveengineering.api.energy.DieselHandler;
-import blusunrize.immersiveengineering.api.energy.DieselHandler.FermenterRecipe;
-import blusunrize.immersiveengineering.common.Config;
-import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockFermenter;
-import blusunrize.immersiveengineering.common.util.Utils;
-import cofh.api.energy.EnergyStorage;
-import cofh.api.energy.IEnergyReceiver;
 
 public class TileEntityFermenter extends TileEntityMultiblockPart implements IFluidHandler, ISidedInventory, IEnergyReceiver
 {
@@ -105,7 +106,7 @@ public class TileEntityFermenter extends TileEntityMultiblockPart implements IFl
 								int outLimit = recipe.output==null?9: ((64-(inventory[11]!=null?inventory[11].stackSize:0))/recipe.output.stackSize);
 								int fluidLimit = recipe.fluid==null?9: ((tank.getCapacity()-tank.getFluidAmount())/recipe.fluid.amount);
 								int taken = Math.min(Math.min(inputs,stack.stackSize/recipeInputSize), Math.min(outLimit,fluidLimit));
-								//								
+
 								if(taken>0)
 								{
 									this.decrStackSize(i, taken*recipeInputSize);
@@ -121,21 +122,6 @@ public class TileEntityFermenter extends TileEntityMultiblockPart implements IFl
 								}
 							}
 
-							//							int f = DieselHandler.getPlantoilOutput(stack);
-							//							if(f>0)
-							//							{
-							//								int fSpace = tank.getCapacity()-tank.getFluidAmount();
-							//								int taken = Math.min(inputs, Math.min(stack.stackSize, fSpace/f));
-							//								if(taken>0)
-							//								{
-							//									tank.fill(new FluidStack(IEContent.fluidPlantoil,f*taken), true);
-							//									this.decrStackSize(i, taken);
-							//									inputs-=taken;
-							//									update = true;
-							//								}
-							//								else
-							//									continue;
-							//							}
 							if(inputs<=0 || tank.getFluidAmount()>=tank.getCapacity())
 								break;
 						}
@@ -158,26 +144,33 @@ public class TileEntityFermenter extends TileEntityMultiblockPart implements IFl
 					update = true;
 				}
 
-				if(tank.getFluidAmount()>0 && tank.getFluid()!=null)
+				if(tank.getFluid()!=null && tank.getFluidAmount()>0)
 				{
-					int connected=0;
+					HashMap<ForgeDirection, IFluidHandler> targets = new HashMap<>(4);
+					ForgeDirection direction;
+					TileEntity te;
 					for(int f=2; f<6; f++)
 					{
-						TileEntity te = worldObj.getTileEntity(xCoord+(f==4?-2:f==5?2:0),yCoord-1,zCoord+(f==2?-2:f==3?2:0));
-						if(te!=null && te instanceof IFluidHandler && ((IFluidHandler)te).canFill(ForgeDirection.getOrientation(f).getOpposite(), this.tank.getFluid().getFluid()))
-							connected++;
+						direction = ForgeDirection.getOrientation(f);
+						te = Utils.getExistingTileEntity(worldObj, xCoord+direction.offsetX*2, yCoord-1, zCoord+direction.offsetZ*2);
+						if(te instanceof IFluidHandler && ((IFluidHandler)te).canFill(direction.getOpposite(), this.tank.getFluid().getFluid()))
+							targets.put(direction, (IFluidHandler) te);
 					}
-					if(connected!=0)
+					if(targets.size()>0)
 					{
-						int out = Math.min(144,tank.getFluidAmount())/connected;
-						for(int f=2; f<6; f++)
+						int out = (int) Math.ceil(Math.min(144, tank.getFluidAmount()) / (float) targets.size());
+						IFluidHandler fluidHandler;
+						for(ForgeDirection targetDirection: targets.keySet())
 						{
-							TileEntity te = worldObj.getTileEntity(xCoord+(f==4?-2:f==5?2:0),yCoord-1,zCoord+(f==2?-2:f==3?2:0));
-							if(te!=null && te instanceof IFluidHandler && this.tank.getFluid()!=null && ((IFluidHandler)te).canFill(ForgeDirection.getOrientation(f).getOpposite(), this.tank.getFluid().getFluid()))
+							if(tank.getFluid()==null || tank.getFluidAmount()<1)
+								break;
+
+							fluidHandler = targets.get(targetDirection);
+							int accepted = fluidHandler.fill(targetDirection.getOpposite(), new FluidStack(this.tank.getFluid().getFluid(), out), false);
+							if(accepted>0)
 							{
-								int accepted = ((IFluidHandler)te).fill(ForgeDirection.getOrientation(f).getOpposite(), new FluidStack(this.tank.getFluid().getFluid(),out), false);
 								FluidStack drained = this.tank.drain(accepted, true);
-								((IFluidHandler)te).fill(ForgeDirection.getOrientation(f).getOpposite(), drained, true);
+								fluidHandler.fill(targetDirection.getOpposite(), drained, true);
 								update = true;
 							}
 						}
@@ -255,14 +248,7 @@ public class TileEntityFermenter extends TileEntityMultiblockPart implements IFl
 		processMaxTime = nbt.getInteger("processMaxTime");
 		if(!descPacket)
 		{
-			NBTTagList invList = nbt.getTagList("inventory", 10);
-			for (int i=0; i<invList.tagCount(); i++)
-			{
-				NBTTagCompound itemTag = invList.getCompoundTagAt(i);
-				int slot = itemTag.getByte("Slot") & 255;
-				if(slot>=0 && slot<this.inventory.length)
-					this.inventory[slot] = ItemStack.loadItemStackFromNBT(itemTag);
-			}
+			inventory = Utils.readInventory(nbt.getTagList("inventory", 10), 12);
 		}
 	}
 	@Override
@@ -277,16 +263,7 @@ public class TileEntityFermenter extends TileEntityMultiblockPart implements IFl
 		nbt.setInteger("processMaxTime", processMaxTime);
 		if(!descPacket)
 		{
-			NBTTagList invList = new NBTTagList();
-			for(int i=0; i<this.inventory.length; i++)
-				if(this.inventory[i] != null)
-				{
-					NBTTagCompound itemTag = new NBTTagCompound();
-					itemTag.setByte("Slot", (byte)i);
-					this.inventory[i].writeToNBT(itemTag);
-					invList.appendTag(itemTag);
-				}
-			nbt.setTag("inventory", invList);
+			nbt.setTag("inventory", Utils.writeInventory(inventory));
 		}
 	}
 

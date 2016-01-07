@@ -1,12 +1,21 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import java.util.HashMap;
+
+import blusunrize.immersiveengineering.api.energy.DieselHandler;
+import blusunrize.immersiveengineering.api.energy.DieselHandler.SqueezerRecipe;
+import blusunrize.immersiveengineering.common.Config;
+import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockSqueezer;
+import blusunrize.immersiveengineering.common.util.Utils;
+import cofh.api.energy.EnergyStorage;
+import cofh.api.energy.IEnergyReceiver;
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
@@ -16,14 +25,6 @@ import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.oredict.OreDictionary;
-import blusunrize.immersiveengineering.api.energy.DieselHandler;
-import blusunrize.immersiveengineering.api.energy.DieselHandler.SqueezerRecipe;
-import blusunrize.immersiveengineering.common.Config;
-import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockSqueezer;
-import blusunrize.immersiveengineering.common.util.Utils;
-import cofh.api.energy.EnergyStorage;
-import cofh.api.energy.IEnergyReceiver;
 
 public class TileEntitySqueezer extends TileEntityMultiblockPart implements IFluidHandler, ISidedInventory, IEnergyReceiver
 {
@@ -121,21 +122,6 @@ public class TileEntitySqueezer extends TileEntityMultiblockPart implements IFlu
 								}
 							}
 
-							//							int f = DieselHandler.getPlantoilOutput(stack);
-							//							if(f>0)
-							//							{
-							//								int fSpace = tank.getCapacity()-tank.getFluidAmount();
-							//								int taken = Math.min(inputs, Math.min(stack.stackSize, fSpace/f));
-							//								if(taken>0)
-							//								{
-							//									tank.fill(new FluidStack(IEContent.fluidPlantoil,f*taken), true);
-							//									this.decrStackSize(i, taken);
-							//									inputs-=taken;
-							//									update = true;
-							//								}
-							//								else
-							//									continue;
-							//							}
 							if(inputs<=0 || tank.getFluidAmount()>=tank.getCapacity())
 								break;
 						}
@@ -158,26 +144,33 @@ public class TileEntitySqueezer extends TileEntityMultiblockPart implements IFlu
 					update = true;
 				}
 
-				if(tank.getFluidAmount()>0 && tank.getFluid()!=null)
+				if(tank.getFluid()!=null && tank.getFluidAmount()>0)
 				{
-					int connected=0;
+					HashMap<ForgeDirection, IFluidHandler> targets = new HashMap<>(4);
+					ForgeDirection direction;
+					TileEntity te;
 					for(int f=2; f<6; f++)
 					{
-						TileEntity te = worldObj.getTileEntity(xCoord+(f==4?-2:f==5?2:0),yCoord-1,zCoord+(f==2?-2:f==3?2:0));
-						if(te!=null && te instanceof IFluidHandler && ((IFluidHandler)te).canFill(ForgeDirection.getOrientation(f).getOpposite(), this.tank.getFluid().getFluid()))
-							connected++;
+						direction = ForgeDirection.getOrientation(f);
+						te = Utils.getExistingTileEntity(worldObj, xCoord+direction.offsetX*2, yCoord-1, zCoord+direction.offsetZ*2);
+						if(te instanceof IFluidHandler && ((IFluidHandler)te).canFill(direction.getOpposite(), this.tank.getFluid().getFluid()))
+							targets.put(direction, (IFluidHandler) te);
 					}
-					if(connected!=0)
+					if(targets.size()>0)
 					{
-						int out = Math.min(144,tank.getFluidAmount())/connected;
-						for(int f=2; f<6; f++)
+						int out = (int) Math.ceil(Math.min(144, tank.getFluidAmount()) / (float) targets.size());
+						IFluidHandler fluidHandler;
+						for(ForgeDirection targetDirection: targets.keySet())
 						{
-							TileEntity te = worldObj.getTileEntity(xCoord+(f==4?-2:f==5?2:0),yCoord-1,zCoord+(f==2?-2:f==3?2:0));
-							if(te!=null && te instanceof IFluidHandler && this.tank.getFluid()!=null && ((IFluidHandler)te).canFill(ForgeDirection.getOrientation(f).getOpposite(), this.tank.getFluid().getFluid()))
+							if(tank.getFluid()==null || tank.getFluidAmount()<1)
+								break;
+
+							fluidHandler = targets.get(targetDirection);
+							int accepted = fluidHandler.fill(targetDirection.getOpposite(), new FluidStack(this.tank.getFluid().getFluid(), out), false);
+							if(accepted>0)
 							{
-								int accepted = ((IFluidHandler)te).fill(ForgeDirection.getOrientation(f).getOpposite(), new FluidStack(this.tank.getFluid().getFluid(),out), false);
 								FluidStack drained = this.tank.drain(accepted, true);
-								((IFluidHandler)te).fill(ForgeDirection.getOrientation(f).getOpposite(), drained, true);
+								fluidHandler.fill(targetDirection.getOpposite(), drained, true);
 								update = true;
 							}
 						}
@@ -255,14 +248,7 @@ public class TileEntitySqueezer extends TileEntityMultiblockPart implements IFlu
 		processMaxTime = nbt.getInteger("processMaxTime");
 		if(!descPacket)
 		{
-			NBTTagList invList = nbt.getTagList("inventory", 10);
-			for (int i=0; i<invList.tagCount(); i++)
-			{
-				NBTTagCompound itemTag = invList.getCompoundTagAt(i);
-				int slot = itemTag.getByte("Slot") & 255;
-				if(slot>=0 && slot<this.inventory.length)
-					this.inventory[slot] = ItemStack.loadItemStackFromNBT(itemTag);
-			}
+			inventory = Utils.readInventory(nbt.getTagList("inventory", 10), 12);
 		}
 	}
 	@Override
@@ -277,16 +263,7 @@ public class TileEntitySqueezer extends TileEntityMultiblockPart implements IFlu
 		nbt.setInteger("processMaxTime", processMaxTime);
 		if(!descPacket)
 		{
-			NBTTagList invList = new NBTTagList();
-			for(int i=0; i<this.inventory.length; i++)
-				if(this.inventory[i] != null)
-				{
-					NBTTagCompound itemTag = new NBTTagCompound();
-					itemTag.setByte("Slot", (byte)i);
-					this.inventory[i].writeToNBT(itemTag);
-					invList.appendTag(itemTag);
-				}
-			nbt.setTag("inventory", invList);
+			nbt.setTag("inventory", Utils.writeInventory(inventory));
 		}
 	}
 
@@ -301,11 +278,12 @@ public class TileEntitySqueezer extends TileEntityMultiblockPart implements IFlu
 	{
 		if(!formed)
 			return null;
-		if(master()!=null)
+		TileEntitySqueezer master = master();
+		if(master!=null)
 		{
 			if(pos!=1&&pos!=9&&pos!=11&&pos!=19)
 				return null;
-			return master().drain(from,resource,doDrain);
+			return master.drain(from,resource,doDrain);
 		}
 		else if(resource!=null)
 			return drain(from, resource.amount, doDrain);
@@ -316,11 +294,12 @@ public class TileEntitySqueezer extends TileEntityMultiblockPart implements IFlu
 	{
 		if(!formed)
 			return null;
-		if(master()!=null)
+		TileEntitySqueezer master = master();
+		if(master!=null)
 		{
 			if(pos!=1&&pos!=9&&pos!=11&&pos!=19)
 				return null;
-			return master().drain(from,maxDrain,doDrain);
+			return master.drain(from,maxDrain,doDrain);
 		}
 		else
 		{
@@ -346,7 +325,10 @@ public class TileEntitySqueezer extends TileEntityMultiblockPart implements IFlu
 	public FluidTankInfo[] getTankInfo(ForgeDirection from)
 	{
 		if((pos==1||pos==9||pos==11||pos==19) && from.ordinal()>1)
-			return new FluidTankInfo[]{(master()!=null)?master().tank.getInfo():tank.getInfo()};
+		{
+			TileEntitySqueezer master = master();
+			return new FluidTankInfo[]{(master!=null)?master.tank.getInfo():tank.getInfo()};
+		}
 		return new FluidTankInfo[0];
 	}
 
@@ -408,8 +390,9 @@ public class TileEntitySqueezer extends TileEntityMultiblockPart implements IFlu
 	{
 		if(!formed)
 			return null;
-		if(master()!=null)
-			return master().getStackInSlot(slot);
+		TileEntitySqueezer master = master();
+		if(master!=null)
+			return master.getStackInSlot(slot);
 		if(slot<inventory.length)
 			return inventory[slot];
 		return null;
@@ -419,8 +402,9 @@ public class TileEntitySqueezer extends TileEntityMultiblockPart implements IFlu
 	{
 		if(!formed)
 			return null;
-		if(master()!=null)
-			return master().decrStackSize(slot,amount);
+		TileEntitySqueezer master = master();
+		if(master!=null)
+			return master.decrStackSize(slot,amount);
 		ItemStack stack = getStackInSlot(slot);
 		if(stack != null)
 			if(stack.stackSize <= amount)
@@ -438,8 +422,9 @@ public class TileEntitySqueezer extends TileEntityMultiblockPart implements IFlu
 	{
 		if(!formed)
 			return null;
-		if(master()!=null)
-			return master().getStackInSlotOnClosing(slot);
+		TileEntitySqueezer master = master();
+		if(master!=null)
+			return master.getStackInSlotOnClosing(slot);
 		ItemStack stack = getStackInSlot(slot);
 		if (stack != null)
 			setInventorySlotContents(slot, null);
@@ -450,9 +435,10 @@ public class TileEntitySqueezer extends TileEntityMultiblockPart implements IFlu
 	{
 		if(!formed)
 			return;
-		if(master()!=null)
+		TileEntitySqueezer master = master();
+		if(master!=null)
 		{
-			master().setInventorySlotContents(slot,stack);
+			master.setInventorySlotContents(slot,stack);
 			return;
 		}
 		inventory[slot] = stack;
@@ -492,8 +478,9 @@ public class TileEntitySqueezer extends TileEntityMultiblockPart implements IFlu
 	{
 		if(!formed)
 			return false;
-		if(master()!=null)
-			return master().isItemValidForSlot(slot,stack);
+		TileEntitySqueezer master = master();
+		if(master!=null)
+			return master.isItemValidForSlot(slot,stack);
 		return slot<9?DieselHandler.findSqueezerRecipe(stack)!=null:
 			(slot==9 && FluidContainerRegistry.isEmptyContainer(stack));
 	}
@@ -502,8 +489,9 @@ public class TileEntitySqueezer extends TileEntityMultiblockPart implements IFlu
 	{
 		if(!formed)
 			return new int[0];
-		if(master()!=null)
-			return master().getAccessibleSlotsFromSide(side);
+		TileEntitySqueezer master = master();
+		if(master!=null)
+			return master.getAccessibleSlotsFromSide(side);
 		return new int[]{0,1,2,3,4,5,6,7,8,9,10,11};
 	}
 	@Override
@@ -511,8 +499,9 @@ public class TileEntitySqueezer extends TileEntityMultiblockPart implements IFlu
 	{
 		if(!formed)
 			return false;
-		if(master()!=null)
-			return master().canInsertItem(slot,stack,side);
+		TileEntitySqueezer master = master();
+		if(master!=null)
+			return master.canInsertItem(slot,stack,side);
 		return isItemValidForSlot(slot,stack);
 	}
 	@Override
@@ -520,8 +509,9 @@ public class TileEntitySqueezer extends TileEntityMultiblockPart implements IFlu
 	{
 		if(!formed)
 			return false;
-		if(master()!=null)
-			return master().canExtractItem(slot,stack,side);
+		TileEntitySqueezer master = master();
+		if(master!=null)
+			return master.canExtractItem(slot,stack,side);
 		return slot==10||slot==11;
 	}
 
@@ -533,13 +523,13 @@ public class TileEntitySqueezer extends TileEntityMultiblockPart implements IFlu
 	@Override
 	public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate)
 	{
-		if(formed && this.master()!=null &&((pos==10 && from==ForgeDirection.DOWN)||(pos==16 && from==ForgeDirection.UP)))
+		TileEntitySqueezer master = master();
+		if(formed && master!=null &&((pos==10 && from==ForgeDirection.DOWN)||(pos==16 && from==ForgeDirection.UP)))
 		{
-			TileEntitySqueezer master = master();
 			int rec = master.energyStorage.receiveEnergy(maxReceive, simulate);
 			master.markDirty();
 			if(rec>0)
-				worldObj.markBlockForUpdate(master().xCoord, master().yCoord, master().zCoord);
+				worldObj.markBlockForUpdate(master.xCoord, master.yCoord, master.zCoord);
 			return rec;
 		}
 		return 0;
@@ -547,15 +537,17 @@ public class TileEntitySqueezer extends TileEntityMultiblockPart implements IFlu
 	@Override
 	public int getEnergyStored(ForgeDirection from)
 	{
-		if(this.master()!=null)
-			return this.master().energyStorage.getEnergyStored();
+		TileEntitySqueezer master = master();
+		if(master!=null)
+			return master.energyStorage.getEnergyStored();
 		return energyStorage.getEnergyStored();
 	}
 	@Override
 	public int getMaxEnergyStored(ForgeDirection from)
 	{
-		if(this.master()!=null)
-			return this.master().energyStorage.getMaxEnergyStored();
+		TileEntitySqueezer master = master();
+		if(master!=null)
+			return master.energyStorage.getMaxEnergyStored();
 		return energyStorage.getMaxEnergyStored();
 	}
 }

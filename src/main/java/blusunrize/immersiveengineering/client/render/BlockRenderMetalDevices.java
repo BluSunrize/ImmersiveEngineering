@@ -266,7 +266,19 @@ public class BlockRenderMetalDevices implements ISimpleBlockRenderingHandler
 					Vec3.createVectorHelper(f==4||f==5||connectedBelts[3]?1:.9375, y10+.125, f==2||f==3||connectedBelts[0]?0:.0625),
 					Vec3.createVectorHelper(f==4||f==5||connectedBelts[3]?1:.9375, y11+.125, f==2||f==3||connectedBelts[1]?1:.9375)
 			};
+			if(f==2)
+				renderer.uvRotateEast = 3;
+			if(f==3)
+				renderer.uvRotateWest = 3;
+			if(f==4)
+				renderer.uvRotateNorth = 3;
+			if(f==5)
+				renderer.uvRotateSouth = 3;
 			ClientUtils.drawWorldSubBlock(renderer, world, block, x, y, z, vs);
+			renderer.uvRotateWest = 0;
+			renderer.uvRotateEast = 0;
+			renderer.uvRotateNorth = 0;
+			renderer.uvRotateSouth = 0;
 
 			renderer.setOverrideBlockTexture(block.getIcon(f==2||f==3?2:4,metadata));
 			if(f==2||f==3)

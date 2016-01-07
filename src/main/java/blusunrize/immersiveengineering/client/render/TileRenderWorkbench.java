@@ -52,7 +52,7 @@ public class TileRenderWorkbench extends TileRenderIE
 			GL11.glDisable(GL11.GL_CULL_FACE);
 		}
 		ClientUtils.bindAtlas(0);
-		model.model.renderAll();
+//		model.model.renderAll();
 		if(mirror)
 		{
 			GL11.glScaled(-1, 1, 1);
@@ -115,7 +115,6 @@ public class TileRenderWorkbench extends TileRenderIE
 		if(mirror)
 			translationMatrix.scale(new Vertex(f<4?-1:1,1,f>3?-1:1));
 		rotationMatrix.rotate(Math.toRadians(angle), 0.0, 1.0, 0.0);
-
-		//		model.render(tile, tes, translationMatrix, rotationMatrix, true, mirror);
+		model.render(tile, tes, translationMatrix, rotationMatrix, 0, mirror);
 	}
 }

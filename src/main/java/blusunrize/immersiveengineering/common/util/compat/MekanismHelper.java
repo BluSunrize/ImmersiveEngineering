@@ -7,8 +7,6 @@ import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEf
 import blusunrize.immersiveengineering.common.IERecipes;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
 
-
-
 public class MekanismHelper extends IECompatModule
 {
 	@Override

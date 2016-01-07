@@ -1,19 +1,18 @@
 package blusunrize.immersiveengineering.common.entities;
 
+import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler;
+import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEffect;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
-import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler;
-import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEffect;
 
 public class EntityChemthrowerShot extends EntityIEProjectile
 {
@@ -124,18 +123,18 @@ public class EntityChemthrowerShot extends EntityIEProjectile
 		}
 	}
 
-	@Override
-	protected void writeEntityToNBT(NBTTagCompound nbt)
-	{
-		super.writeEntityToNBT(nbt);
-		if(this.fluid!=null)
-			nbt.setString("fluid", this.fluid.getName());
-	}
-
-	@Override
-	protected void readEntityFromNBT(NBTTagCompound nbt)
-	{
-		super.readEntityFromNBT(nbt);
-		this.fluid = FluidRegistry.getFluid(nbt.getString("fluid"));
-	}
+//	@Override
+//	protected void writeEntityToNBT(NBTTagCompound nbt)
+//	{
+//		super.writeEntityToNBT(nbt);
+//		if(this.fluid!=null)
+//			nbt.setString("fluid", this.fluid.getName());
+//	}
+//
+//	@Override
+//	protected void readEntityFromNBT(NBTTagCompound nbt)
+//	{
+//		super.readEntityFromNBT(nbt);
+//		this.fluid = FluidRegistry.getFluid(nbt.getString("fluid"));
+//	}
 }

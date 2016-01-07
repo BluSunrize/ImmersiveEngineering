@@ -94,6 +94,11 @@ public class TileEntityWoodenBarrel extends TileEntityIEBase implements IFluidHa
 		}
 		return null;
 	}
+	@Override
+	public boolean useNixieFont(EntityPlayer player, MovingObjectPosition mop)
+	{
+		return false;
+	}
 
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)

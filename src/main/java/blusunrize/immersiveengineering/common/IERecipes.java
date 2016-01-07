@@ -4,18 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.FurnaceRecipes;
-import net.minecraft.util.WeightedRandomChestContent;
-import net.minecraftforge.common.ChestGenHooks;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.oredict.OreDictionary;
-import net.minecraftforge.oredict.RecipeSorter;
-import net.minecraftforge.oredict.ShapedOreRecipe;
-import net.minecraftforge.oredict.ShapelessOreRecipe;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEApi;
@@ -30,9 +18,22 @@ import blusunrize.immersiveengineering.common.crafting.RecipeJerrycan;
 import blusunrize.immersiveengineering.common.crafting.RecipeOreCrushing;
 import blusunrize.immersiveengineering.common.crafting.RecipePotionBullets;
 import blusunrize.immersiveengineering.common.crafting.RecipeRevolver;
+import blusunrize.immersiveengineering.common.crafting.RecipeShaderBags;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.compat.NetherOresHelper;
 import cpw.mods.fml.common.registry.GameRegistry;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.FurnaceRecipes;
+import net.minecraft.util.WeightedRandomChestContent;
+import net.minecraftforge.common.ChestGenHooks;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.oredict.RecipeSorter;
+import net.minecraftforge.oredict.ShapedOreRecipe;
+import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 public class IERecipes
 {
@@ -114,6 +115,8 @@ public class IERecipes
 		addOredictRecipe(new ItemStack(IEContent.itemDrillhead,1,1), "SS ","BBS","SS ", 'B',"blockIron", 'S',"ingotIron");
 
 		addOredictRecipe(new ItemStack(IEContent.itemChemthrower,1,0), " OG"," EG","PB ", 'P',new ItemStack(IEContent.blockMetalDevice2,1,BlockMetalDevices2.META_fluidPipe), 'O',new ItemStack(IEContent.itemToolUpgrades,1,0), 'B',Items.bucket, 'E',new ItemStack(IEContent.blockMetalDecoration,1,BlockMetalDecoration.META_heavyEngineering), 'G',new ItemStack(IEContent.itemMaterial,1,9));
+		
+		addOredictRecipe(new ItemStack(IEContent.itemRailgun,1,0), " HG","CBH","BC ", 'C',electrumCoil, 'H',new ItemStack(IEContent.blockMetalDevice,1,BlockMetalDevices.META_capacitorHV), 'B',new ItemStack(IEContent.itemMaterial,1,7), 'G',new ItemStack(IEContent.itemMaterial,1,9));
 
 		addOredictRecipe(new ItemStack(IEContent.itemToolUpgrades,1,0), "BI ","IBI"," IC", 'B',Items.bucket, 'I',"dyeBlue", 'C',componentIron);
 		for (ItemStack container : Utils.getContainersFilledWith(new FluidStack(IEContent.fluidPlantoil,1000)))
@@ -124,6 +127,8 @@ public class IERecipes
 		addOredictRecipe(new ItemStack(IEContent.itemToolUpgrades,1,5), " CS","C C","IC ", 'I',componentIron, 'S',"ingotSteel", 'C',"ingotCopper");
 		addOredictRecipe(new ItemStack(IEContent.itemToolUpgrades,1,6), " G ","GEG","GEG", 'E',electrumCoil, 'G',"blockGlass");
 		addOredictRecipe(new ItemStack(IEContent.itemToolUpgrades,1,7), " SS","PPH"," SS", 'P',new ItemStack(IEContent.blockMetalDevice2,1,BlockMetalDevices2.META_fluidPipe), 'H',Blocks.hopper, 'S',"ingotSteel");
+		addOredictRecipe(new ItemStack(IEContent.itemToolUpgrades,1,8), "GC ","C C"," CG", 'G',"paneGlassColorless", 'C',"ingotCopper");
+		addOredictRecipe(new ItemStack(IEContent.itemToolUpgrades,1,9), "WWW","HHH", 'W',new ItemStack(IEContent.itemWireCoil,1,2), 'H',new ItemStack(IEContent.blockMetalDevice,1,BlockMetalDevices.META_capacitorHV));
 
 		addShapelessOredictRecipe(new ItemStack(IEContent.itemMetal,2,15), "dustCopper","dustNickel");
 		addShapelessOredictRecipe(new ItemStack(IEContent.itemMetal,2,16), "dustSilver","dustGold");
@@ -133,14 +138,16 @@ public class IERecipes
 		addOredictRecipe(new ItemStack(IEContent.itemMaterial,1,2), "BB ","SSB","SS ", 'B',"plankTreatedWood", 'S',"treatedStick");
 		addShapelessOredictRecipe(new ItemStack(Items.string), new ItemStack(IEContent.itemMaterial,1,3),new ItemStack(IEContent.itemMaterial,1,3),new ItemStack(IEContent.itemMaterial,1,3));
 		addOredictRecipe(new ItemStack(IEContent.itemMaterial,1,4), "HHH","HSH","HHH", 'H',new ItemStack(IEContent.itemMaterial,1,3), 'S',"stickWood");
-		addShapelessOredictRecipe(new ItemStack(IEContent.itemMaterial,1,5), new ItemStack(IEContent.itemMaterial,1,2),new ItemStack(IEContent.itemMaterial,1,4),new ItemStack(IEContent.itemMaterial,1,4),new ItemStack(IEContent.itemMaterial,1,4),new ItemStack(IEContent.itemMaterial,1,4));
+		addShapelessOredictRecipe(new ItemStack(IEContent.itemMaterial,1,5), new ItemStack(IEContent.itemMaterial,1,2),"fabricHemp","fabricHemp","fabricHemp","fabricHemp");
 		addOredictRecipe(new ItemStack(IEContent.itemMaterial,1,7), "III", 'I',"ingotSteel");
 		addOredictRecipe(new ItemStack(IEContent.itemMaterial,1,8), " I ","ICI"," I ", 'I',"ingotSteel",'C',componentIron);
 		addOredictRecipe(new ItemStack(IEContent.itemMaterial,1,9), "SS","IS","SS", 'I',"ingotCopper",'S',"treatedStick");
 		addOredictRecipe(new ItemStack(IEContent.itemMaterial,1,10), "I  ","II "," II", 'I',"ingotSteel");
 		addOredictRecipe(componentIron, "I I"," C ","I I", 'I',"ingotIron",'C',"ingotCopper");
 		addOredictRecipe(componentSteel, "I I"," C ","I I", 'I',"ingotSteel",'C',"ingotCopper");
-
+		addOredictRecipe(new ItemStack(IEContent.itemMaterial,4,14), "I","I", 'I',"ingotIron");
+		addOredictRecipe(new ItemStack(IEContent.itemMaterial,4,15), "I","I", 'I',"ingotSteel");
+		
 		addOredictRecipe(new ItemStack(IEContent.itemWireCoil,4,0), " I ","ISI"," I ", 'I',"ingotCopper", 'S',"stickWood");
 		addOredictRecipe(new ItemStack(IEContent.itemWireCoil,4,1), " I ","ISI"," I ", 'I',"ingotElectrum", 'S',"stickWood");
 		addOredictRecipe(new ItemStack(IEContent.itemWireCoil,4,2), " I ","ASA"," I ", 'I',"ingotSteel", 'A',"ingotAluminum", 'S',"stickWood");
@@ -152,16 +159,25 @@ public class IERecipes
 		addOredictRecipe(new ItemStack(IEContent.itemJerrycan), " II","IBB","IBB", 'I',"ingotIron",'B',Items.bucket);
 		GameRegistry.addRecipe(new RecipeJerrycan());
 		RecipeSorter.register(ImmersiveEngineering.MODID+":jerrycan", RecipeJerrycan.class, RecipeSorter.Category.SHAPELESS, "after:forge:shapelessore");
-
+		
+		GameRegistry.addRecipe(new RecipeShaderBags());
+		
 		for(ItemStack container : Utils.getContainersFilledWith(new FluidStack(IEContent.fluidCreosote,1000)))
 			addOredictRecipe(new ItemStack(IEContent.blockTreatedWood,8,0), "WWW","WCW","WWW", 'W',"plankWood",'C',container);
 		addOredictRecipe(new ItemStack(IEContent.blockTreatedWood,1,0), "W","W", 'W',new ItemStack(IEContent.blockWoodenDecoration,1,2));
 		for(int i=0; i<IEContent.blockTreatedWood.subNames.length; i++)
-			addShapelessOredictRecipe(new ItemStack(IEContent.blockTreatedWood,1, i-1<IEContent.blockTreatedWood.subNames.length?i+1:0), new ItemStack(IEContent.blockTreatedWood,1,i));
+			addShapelessOredictRecipe(new ItemStack(IEContent.blockTreatedWood,1, i==IEContent.blockTreatedWood.subNames.length-1?0:i+1), new ItemStack(IEContent.blockTreatedWood,1,i));
 		addOredictRecipe(new ItemStack(IEContent.blockWoodenDecoration,2,1), "SSS","SSS", 'S',"treatedStick");
 		addOredictRecipe(new ItemStack(IEContent.blockWoodenDecoration,6,2), "WWW", 'W',"plankTreatedWood");
 		addOredictRecipe(new ItemStack(IEContent.blockWoodenDecoration,6,5), "WWW"," S ","S S", 'W',"plankTreatedWood",'S',new ItemStack(IEContent.blockWoodenDecoration,1,1));
-		addOredictRecipe(new ItemStack(IEContent.blockWoodenStair,4,0), "  W"," WW","WWW", 'W',"plankTreatedWood").setMirrored(true);
+		addOredictRecipe(new ItemStack(IEContent.blockWoodenStair,4,0), "  W"," WW","WWW", 'W',new ItemStack(IEContent.blockTreatedWood,1,0)).setMirrored(true);
+		addOredictRecipe(new ItemStack(IEContent.blockWoodenStair1,4,0), "  W"," WW","WWW", 'W',new ItemStack(IEContent.blockTreatedWood,1,1)).setMirrored(true);
+		addOredictRecipe(new ItemStack(IEContent.blockWoodenStair2,4,0), "  W"," WW","WWW", 'W',new ItemStack(IEContent.blockTreatedWood,1,2)).setMirrored(true);
+
+		GameRegistry.addShapelessRecipe(new ItemStack(IEContent.blockWoodenStair,1,0), new ItemStack(IEContent.blockWoodenStair2,1,0));
+		GameRegistry.addShapelessRecipe(new ItemStack(IEContent.blockWoodenStair1,1,0), new ItemStack(IEContent.blockWoodenStair,1,0));
+		GameRegistry.addShapelessRecipe(new ItemStack(IEContent.blockWoodenStair2,1,0), new ItemStack(IEContent.blockWoodenStair1,1,0));
+
 		addOredictRecipe(new ItemStack(IEContent.blockWoodenDecoration,4,6), "WW","WF","W ", 'W',"plankTreatedWood",'F',new ItemStack(IEContent.blockWoodenDecoration,1,1));
 
 		addOredictRecipe(new ItemStack(IEContent.blockWoodenDevice,1,0), "F","F","S", 'F',new ItemStack(IEContent.blockWoodenDecoration,1,1),'S',"bricksStone");
@@ -176,10 +192,15 @@ public class IERecipes
 		addOredictRecipe(new ItemStack(IEContent.blockStoneDecoration,2,1), "CBC","BSB","CBC", 'S',"sandstone",'C',Items.clay_ball,'B',"ingotBrick");
 		addOredictRecipe(new ItemStack(IEContent.blockStoneDecoration,2,2), "NBN","BDB","NBN", 'D',Items.blaze_powder,'N',"ingotBrickNether",'B',"ingotBrick");
 		addTwoWayStorageRecipe(new ItemStack(IEContent.blockStoneDecoration,1,3), new ItemStack(IEContent.itemMaterial,1,6));
-		addOredictRecipe(new ItemStack(IEContent.blockStoneDecoration,8,4), "SCS","GSG","SCS", 'C',Items.clay_ball,'S',"itemSlag",'G',Blocks.gravel);
+		addOredictRecipe(new ItemStack(IEContent.blockStoneDecoration,8,4), "SCS","GBG","SCS", 'C',Items.clay_ball,'S',"sand",'G',Blocks.gravel,'B',Items.water_bucket);
+		addOredictRecipe(new ItemStack(IEContent.blockStoneDecoration,12,4), "SCS","GBG","SCS", 'C',Items.clay_ball,'S',"itemSlag",'G',Blocks.gravel,'B',Items.water_bucket);
 		addShapelessOredictRecipe(new ItemStack(IEContent.blockStoneDecoration,1,4), new ItemStack(IEContent.blockStoneDecoration,1,5));
 		addOredictRecipe(new ItemStack(IEContent.blockStoneDecoration,4,5), "CC","CC", 'C',new ItemStack(IEContent.blockStoneDecoration,1,4));
 		addOredictRecipe(new ItemStack(IEContent.blockStoneDevice,2,4), " G ","IDI"," G ", 'G',"blockGlass",'I',"dustIron",'D',"dyeGreen");
+		addOredictRecipe(new ItemStack(IEContent.blockConcreteStair,4,0), "  C"," CC","CCC", 'C',new ItemStack(IEContent.blockStoneDecoration,1,4)).setMirrored(true);
+		addOredictRecipe(new ItemStack(IEContent.blockConcreteTileStair,4,0), "  C"," CC","CCC", 'C',new ItemStack(IEContent.blockStoneDecoration,1,5)).setMirrored(true);
+		GameRegistry.addShapedRecipe(new ItemStack(IEContent.blockConcreteStair, 4), "CC", "CC", 'C', new ItemStack(IEContent.blockConcreteTileStair));
+		GameRegistry.addShapedRecipe(new ItemStack(IEContent.blockConcreteTileStair, 4), "CC", "CC", 'C', new ItemStack(IEContent.blockConcreteStair));
 
 		addTwoWayStorageRecipe(new ItemStack(Items.iron_ingot), new ItemStack(IEContent.itemMetal,1,21));
 		for(int i=0; i<=7; i++)
@@ -248,6 +269,7 @@ public class IERecipes
 		addShapelessOredictRecipe(new ItemStack(IEContent.blockMetalDecoration,1,BlockMetalDecoration.META_aluminiumScaffolding), new ItemStack(IEContent.blockMetalDecoration,1,BlockMetalDecoration.META_aluminiumScaffolding2));
 		addOredictRecipe(new ItemStack(IEContent.blockMetalDecoration, 4,BlockMetalDecoration.META_aluminiumStructuralArm), "B  ","BB ","BBB", 'B',new ItemStack(IEContent.blockMetalDecoration,1,BlockMetalDecoration.META_aluminiumScaffolding)).setMirrored(true);
 
+		addOredictRecipe(new ItemStack(IEContent.blockClothDevice, 2,0), " F ","FTF"," S ", 'F',"fabricHemp", 'T',Blocks.torch, 'S',"slabTreatedWood");
 
 		addOredictRecipe(new ItemStack(IEContent.blockMetalMultiblocks, 2,BlockMetalMultiblocks.META_squeezer), "IPI","GDG","IPI", 'I',"ingotIron",'D',"dyeGreen",'G',componentIron,'P',Blocks.piston);
 		addOredictRecipe(new ItemStack(IEContent.blockMetalMultiblocks, 2,BlockMetalMultiblocks.META_fermenter), "IPI","GDG","IPI", 'I',"ingotIron",'D',"dyeBlue",'G',componentIron,'P',Blocks.piston);
@@ -346,14 +368,14 @@ public class IERecipes
 			oreOutputModifier.put("Firestone", new ItemStack(item));
 		oreOutputSecondaries.put("Nikolite", new Object[]{Items.diamond,.025f});
 
-		CrusherRecipe.addRecipe(new ItemStack(Blocks.sand), "cobblestone", 3200);
+		CrusherRecipe.addRecipe(new ItemStack(Blocks.gravel), "cobblestone", 1600);
+		CrusherRecipe.addRecipe(new ItemStack(Blocks.sand), Blocks.gravel, 1600);
 		CrusherRecipe.addRecipe(new ItemStack(Blocks.sand), "blockGlass", 3200);
 		CrusherRecipe.addRecipe(new ItemStack(Items.quartz,4), "blockQuartz", 3200);
 		CrusherRecipe.addRecipe(new ItemStack(Items.glowstone_dust,4), "glowstone", 3200);
 		addCrusherRecipe(new ItemStack(Items.blaze_powder,4), "rodBlaze", 3200, "dustSulfur",.5f);
 		addCrusherRecipe(new ItemStack(Items.dye,6,15), Items.bone, 3200);
 		addItemToOreDictCrusherRecipe("dustCoal",1, new ItemStack(Items.coal), 2400);
-		addItemToOreDictCrusherRecipe("dustWood",2, "logWood", 2400);
 		addItemToOreDictCrusherRecipe("dustObsidian",4, Blocks.obsidian, 6000);
 		for(int i=0; i<16; i++)
 		{
@@ -369,12 +391,12 @@ public class IERecipes
 		{
 			RecipeSorter.register(ImmersiveEngineering.MODID+":hammerCrushing", RecipeOreCrushing.class, RecipeSorter.Category.SHAPELESS, "after:forge:shapelessore");
 			addHammerCrushingRecipe("Iron",new ItemStack(IEContent.itemMetal,1,8));
-			addHammerCrushingRecipe("Gold",new ItemStack(IEContent.itemMetal,9));
-			addHammerCrushingRecipe("Copper",new ItemStack(IEContent.itemMetal,10));
-			addHammerCrushingRecipe("Aluminum",new ItemStack(IEContent.itemMetal,11));
-			addHammerCrushingRecipe("Lead",new ItemStack(IEContent.itemMetal,12));
-			addHammerCrushingRecipe("Silver",new ItemStack(IEContent.itemMetal,13));
-			addHammerCrushingRecipe("Nickel",new ItemStack(IEContent.itemMetal,14));
+			addHammerCrushingRecipe("Gold",new ItemStack(IEContent.itemMetal,1,9));
+			addHammerCrushingRecipe("Copper",new ItemStack(IEContent.itemMetal,1,10));
+			addHammerCrushingRecipe("Aluminum",new ItemStack(IEContent.itemMetal,1,11));
+			addHammerCrushingRecipe("Lead",new ItemStack(IEContent.itemMetal,1,12));
+			addHammerCrushingRecipe("Silver",new ItemStack(IEContent.itemMetal,1,13));
+			addHammerCrushingRecipe("Nickel",new ItemStack(IEContent.itemMetal,1,14));
 		}
 
 		for(String name : OreDictionary.getOreNames())

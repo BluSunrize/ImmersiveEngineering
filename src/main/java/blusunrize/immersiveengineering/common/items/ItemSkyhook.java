@@ -3,6 +3,14 @@ package blusunrize.immersiveengineering.common.items;
 import java.util.HashMap;
 import java.util.List;
 
+import com.google.common.collect.Multimap;
+
+import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler.Connection;
+import blusunrize.immersiveengineering.common.entities.EntitySkylineHook;
+import blusunrize.immersiveengineering.common.gui.IESlot;
+import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.util.Lib;
+import blusunrize.immersiveengineering.common.util.SkylineHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -14,15 +22,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
-import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler.Connection;
-import blusunrize.immersiveengineering.common.entities.EntitySkylineHook;
-import blusunrize.immersiveengineering.common.gui.IESlot;
-import blusunrize.immersiveengineering.common.util.IEAchievements;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import blusunrize.immersiveengineering.common.util.Lib;
-import blusunrize.immersiveengineering.common.util.SkylineHelper;
-
-import com.google.common.collect.Multimap;
 
 public class ItemSkyhook extends ItemUpgradeableTool
 {
@@ -103,14 +102,6 @@ public class ItemSkyhook extends ItemUpgradeableTool
 		return 72000;
 	}
 
-	@Override
-	public void onCreated(ItemStack stack, World world, EntityPlayer player)
-	{
-		if(stack==null || player==null)
-			return;
-		player.triggerAchievement(IEAchievements.makeSkyhook);
-	}
-	
 	@Override
 	public void onPlayerStoppedUsing(ItemStack stack, World world, EntityPlayer player, int ticks)
 	{

@@ -2,21 +2,21 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import java.util.ArrayList;
 
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Vec3;
 import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.api.energy.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.api.energy.WireType;
 import blusunrize.immersiveengineering.common.blocks.TileEntityImmersiveConnectable;
 import blusunrize.immersiveengineering.common.util.Utils;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Vec3;
 
 public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable
 {
 	public int facing=3;
 	public int lastEnergyPassed = 0;
-	public ArrayList<Integer> lastPackets = new ArrayList<Integer>();
+	public ArrayList<Integer> lastPackets = new ArrayList<Integer>(25);
 	public boolean dummy=false;
 
 	@Override

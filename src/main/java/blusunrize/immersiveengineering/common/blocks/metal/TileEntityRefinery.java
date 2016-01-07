@@ -1,22 +1,5 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import net.minecraft.block.Block;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.ISidedInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidContainerRegistry;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
-import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.IFluidHandler;
-import net.minecraftforge.oredict.OreDictionary;
 import blusunrize.immersiveengineering.api.energy.DieselHandler;
 import blusunrize.immersiveengineering.api.energy.DieselHandler.RefineryRecipe;
 import blusunrize.immersiveengineering.common.Config;
@@ -27,6 +10,22 @@ import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyReceiver;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.block.Block;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.ISidedInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.FluidTankInfo;
+import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.oredict.OreDictionary;
 
 public class TileEntityRefinery extends TileEntityMultiblockPart implements IFluidHandler, IEnergyReceiver, ISidedInventory
 {
@@ -113,27 +112,33 @@ public class TileEntityRefinery extends TileEntityMultiblockPart implements IFlu
 		if(!formed || pos!=17)
 			return;
 
-		if(!worldObj.isRemote && !worldObj.isBlockIndirectlyGettingPowered(xCoord+(facing==4?-1:facing==5?1:facing==2?-2:2),yCoord+1,zCoord+(facing==2?-1:facing==3?1:facing==4?2:-2)))
+		if(!worldObj.isRemote)
 		{
 			boolean update = false;
-			RefineryRecipe recipe = getRecipe();
-			if(recipe!=null)
+			int prevAmount = tank2.getFluidAmount();
+			if (!worldObj.isBlockIndirectlyGettingPowered(xCoord+(facing==4?-1:facing==5?1:facing==2?-2:2),yCoord+1,zCoord+(facing==2?-1:facing==3?1:facing==4?2:-2)))
 			{
-				int consumed = Config.getInt("refinery_consumption");
-				if(energyStorage.extractEnergy(consumed, true)==consumed && tank2.fill(recipe.output.copy(), false)==recipe.output.amount)
+				RefineryRecipe recipe = getRecipe();
+				if(recipe!=null)
 				{
-					energyStorage.extractEnergy(consumed, false);
-					int drain0 = tank0.getFluid().isFluidEqual(recipe.input0)?recipe.input0.amount: recipe.input1.amount;
-					int drain1 = tank0.getFluid().isFluidEqual(recipe.input0)?recipe.input1.amount: recipe.input0.amount;
-					tank0.drain(drain0, true);
-					tank1.drain(drain1, true);
-					tank2.fill(recipe.output.copy(), true);
-					update = true;
+					int consumed = Config.getInt("refinery_consumption");
+					if(energyStorage.extractEnergy(consumed, true)==consumed && tank2.fill(recipe.output.copy(), false)==recipe.output.amount)
+					{
+						int drain0 = tank0.getFluid().isFluidEqual(recipe.input0)?recipe.input0.amount: recipe.input1.amount;
+						int drain1 = tank0.getFluid().isFluidEqual(recipe.input0)?recipe.input1.amount: recipe.input0.amount;
+						if(tank0.getFluidAmount()>=drain0 && tank1.getFluidAmount()>=drain1)
+						{
+							energyStorage.extractEnergy(consumed, false);
+							tank0.drain(drain0, true);
+							tank1.drain(drain1, true);
+							tank2.fill(recipe.output.copy(), true);
+							update = true;
+						}
+					}
 				}
 			}
 			if(tank2.getFluidAmount()>0)
 			{
-				int prevAmount = tank2.getFluidAmount();
 				ItemStack filledContainer = Utils.fillFluidContainer(tank2, inventory[4], inventory[5]);
 				if(filledContainer!=null)
 				{
@@ -144,15 +149,12 @@ public class TileEntityRefinery extends TileEntityMultiblockPart implements IFlu
 					this.decrStackSize(4, filledContainer.stackSize);
 					update = true;
 				}
-				else if(prevAmount!=tank2.getFluidAmount())
-					update = true;
-
 				if(tank2.getFluidAmount()>0)
 				{
 					ForgeDirection f = ForgeDirection.getOrientation(facing);
 					int out = Math.min(144,tank2.getFluidAmount());
-					TileEntity te = worldObj.getTileEntity(xCoord+f.offsetX*2,yCoord,zCoord+f.offsetZ*2);
-					if(te!=null && te instanceof IFluidHandler && ((IFluidHandler)te).canFill(f.getOpposite(), tank2.getFluid().getFluid()))
+					TileEntity te = Utils.getExistingTileEntity(worldObj, xCoord+f.offsetX*2, yCoord, zCoord+f.offsetZ*2);
+					if(te instanceof IFluidHandler && ((IFluidHandler) te).canFill(f.getOpposite(), tank2.getFluid().getFluid()))
 					{
 						int accepted = ((IFluidHandler)te).fill(f.getOpposite(), new FluidStack(tank2.getFluid().getFluid(),out), false);
 						FluidStack drained = this.tank2.drain(accepted, true);
@@ -160,6 +162,8 @@ public class TileEntityRefinery extends TileEntityMultiblockPart implements IFlu
 					}
 				}
 			}
+			if (tank2.getFluidAmount()!=prevAmount)
+				update = true;
 
 			ItemStack emptyContainer = Utils.drainFluidContainer(tank0, inventory[0]);
 			if(emptyContainer!=null)
@@ -211,14 +215,7 @@ public class TileEntityRefinery extends TileEntityMultiblockPart implements IFlu
 		energyStorage.readFromNBT(nbt);
 		if(!descPacket)
 		{
-			NBTTagList invList = nbt.getTagList("inventory", 10);
-			for (int i=0; i<invList.tagCount(); i++)
-			{
-				NBTTagCompound itemTag = invList.getCompoundTagAt(i);
-				int slot = itemTag.getByte("Slot") & 255;
-				if(slot>=0 && slot<this.inventory.length)
-					this.inventory[slot] = ItemStack.loadItemStackFromNBT(itemTag);
-			}
+			inventory = Utils.readInventory(nbt.getTagList("inventory", 10), 6);
 		}
 	}
 	@Override
@@ -235,16 +232,7 @@ public class TileEntityRefinery extends TileEntityMultiblockPart implements IFlu
 		energyStorage.writeToNBT(nbt);
 		if(!descPacket)
 		{
-			NBTTagList invList = new NBTTagList();
-			for(int i=0; i<this.inventory.length; i++)
-				if(this.inventory[i] != null)
-				{
-					NBTTagCompound itemTag = new NBTTagCompound();
-					itemTag.setByte("Slot", (byte)i);
-					this.inventory[i].writeToNBT(itemTag);
-					invList.appendTag(itemTag);
-				}
-			nbt.setTag("inventory", invList);
+			nbt.setTag("inventory", Utils.writeInventory(inventory));
 		}
 	}
 
@@ -338,26 +326,31 @@ public class TileEntityRefinery extends TileEntityMultiblockPart implements IFlu
 			return new FluidTankInfo[0];
 		switch(pos)
 		{
-			case 2:
-				return new FluidTankInfo[]{(master()!=null)?master().tank2.getInfo():tank2.getInfo()};
-			case 15:
-			case 19:
-				TileEntityRefinery master = master();
-				if(master!=null)
-					return new FluidTankInfo[]{master.tank0.getInfo(), master.tank1.getInfo()};
-				return new FluidTankInfo[]{tank0.getInfo(), tank1.getInfo()};
-			default:
-				return new FluidTankInfo[0];
+		case 2:
+			return new FluidTankInfo[]{(master()!=null)?master().tank2.getInfo():tank2.getInfo()};
+		case 15:
+		case 19:
+			TileEntityRefinery master = master();
+			if(master!=null)
+				return new FluidTankInfo[]{master.tank0.getInfo(), master.tank1.getInfo()};
+			return new FluidTankInfo[]{tank0.getInfo(), tank1.getInfo()};
+		default:
+			return new FluidTankInfo[0];
 		}
 	}
 
+	@SideOnly(Side.CLIENT)
+	private AxisAlignedBB renderAABB;
 	@Override
 	@SideOnly(Side.CLIENT)
 	public AxisAlignedBB getRenderBoundingBox()
 	{
-		if(pos==17)
-			return AxisAlignedBB.getBoundingBox(xCoord-(facing==2||facing==3?2:1),yCoord,zCoord-(facing==4||facing==5?2:1), xCoord+(facing==2||facing==3?3:2),yCoord+3,zCoord+(facing==4||facing==5?3:2));
-		return AxisAlignedBB.getBoundingBox(xCoord,yCoord,zCoord, xCoord,yCoord,zCoord);
+		if(renderAABB==null)
+			if(pos==17)
+				renderAABB = AxisAlignedBB.getBoundingBox(xCoord-(facing==2||facing==3?2:1),yCoord,zCoord-(facing==4||facing==5?2:1), xCoord+(facing==2||facing==3?3:2),yCoord+3,zCoord+(facing==4||facing==5?3:2));
+			else
+				renderAABB = AxisAlignedBB.getBoundingBox(xCoord,yCoord,zCoord, xCoord,yCoord,zCoord);
+		return renderAABB;
 	}
 	@Override
 	@SideOnly(Side.CLIENT)

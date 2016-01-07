@@ -362,7 +362,6 @@ public class ItemRevolver extends ItemUpgradeableTool implements IShaderEquipabl
 
 		if(stack.getItemDamage()==1)
 			return;
-		player.triggerAchievement(IEAchievements.makeRevolver);
 		String uuid = player.getUniqueID().toString();
 		if(specialRevolvers.containsKey(uuid))
 		{

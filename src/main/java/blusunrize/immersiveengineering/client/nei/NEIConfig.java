@@ -1,57 +1,56 @@
 package blusunrize.immersiveengineering.client.nei;
 
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.oredict.OreDictionary;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.client.gui.GuiAssembler;
 import blusunrize.immersiveengineering.common.IEContent;
 import codechicken.nei.api.API;
 import codechicken.nei.api.IConfigureNEI;
+import codechicken.nei.recipe.ICraftingHandler;
+import codechicken.nei.recipe.IUsageHandler;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.oredict.OreDictionary;
 
 public class NEIConfig implements IConfigureNEI
 {
 	@Override
 	public void loadConfig()
 	{
-		API.registerRecipeHandler(new NEIHammerCrushingHandler());
-		API.registerUsageHandler(new NEIHammerCrushingHandler());
+		registerDualHandler(new NEIHammerCrushingHandler());
+		registerDualHandler(new NEIShaderBagHandler());
 
-		API.registerRecipeHandler(new NEICokeOvenHandler());
-		API.registerUsageHandler(new NEICokeOvenHandler());
-		API.registerRecipeHandler(new NEIBlastFurnaceHandler());
-		API.registerUsageHandler(new NEIBlastFurnaceHandler());
+		registerDualHandler(new NEIBlueprintHandler());
+		
+		registerDualHandler(new NEICokeOvenHandler());
+		registerDualHandler(new NEIBlastFurnaceHandler());
 
-		API.registerRecipeHandler(new NEICrusherHandler());
-		API.registerUsageHandler(new NEICrusherHandler());
-
-		API.registerRecipeHandler(new NEIBlueprintHandler());
-		API.registerUsageHandler(new NEIBlueprintHandler());
-
-		API.registerRecipeHandler(new NEISqueezerHandler());
-		API.registerUsageHandler(new NEISqueezerHandler());
-		API.registerRecipeHandler(new NEIFermenterHandler());
-		API.registerUsageHandler(new NEIFermenterHandler());
-		API.registerRecipeHandler(new NEIRefineryHandler());
-		API.registerUsageHandler(new NEIRefineryHandler());
-
+		registerDualHandler(new NEISqueezerHandler());
+		registerDualHandler(new NEIFermenterHandler());
+		registerDualHandler(new NEIRefineryHandler());
+		
+		registerDualHandler(new NEIBottlingMachineHandler());
+		
+		registerDualHandler(new NEICrusherHandler());
+		
 		for(String s : ArcFurnaceRecipe.specialRecipeTypes)
 		{
 			NEIArcFurnaceHandler handler = NEIArcFurnaceHandler.createSubHandler(s);
-			API.registerRecipeHandler(handler);
-			API.registerUsageHandler(handler);
+			registerDualHandler(handler);
 		}
-		API.registerRecipeHandler(new NEIArcFurnaceHandler());
-		API.registerUsageHandler(new NEIArcFurnaceHandler());
+		registerDualHandler(new NEIArcFurnaceHandler());
 
-		API.registerRecipeHandler(new NEIBottlingMachineHandler());
-		API.registerUsageHandler(new NEIBottlingMachineHandler());
 
 		API.hideItem(new ItemStack(IEContent.blockFakeLight,1,OreDictionary.WILDCARD_VALUE));
 		API.hideItem(new ItemStack(IEContent.itemFakeIcons,1,OreDictionary.WILDCARD_VALUE));
 
 		API.registerGuiOverlay(GuiAssembler.class, "crafting", new AssemblerNEIHelper.StackPositioner());
 		API.registerGuiOverlayHandler(GuiAssembler.class, new AssemblerNEIHelper.OverlayHandler(), "crafting");
+	}
+	
+	void registerDualHandler(Object handler)
+	{
+		API.registerRecipeHandler((ICraftingHandler) handler);
+		API.registerUsageHandler((IUsageHandler) handler);
 	}
 
 

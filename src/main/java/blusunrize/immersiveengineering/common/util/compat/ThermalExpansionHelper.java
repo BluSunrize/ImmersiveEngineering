@@ -1,15 +1,16 @@
 package blusunrize.immersiveengineering.common.util.compat;
 
+import blusunrize.immersiveengineering.api.crafting.BottlingMachineRecipe;
+import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.IERecipes;
+import cpw.mods.fml.common.event.FMLInterModComms;
+import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
-import blusunrize.immersiveengineering.api.crafting.BottlingMachineRecipe;
-import blusunrize.immersiveengineering.common.IEContent;
-import cpw.mods.fml.common.event.FMLInterModComms;
-import cpw.mods.fml.common.registry.GameRegistry;
 
 public class ThermalExpansionHelper extends IECompatModule
 {
@@ -24,6 +25,8 @@ public class ThermalExpansionHelper extends IECompatModule
 		//Constantan
 		addSmelterRecipe(new ItemStack(IEContent.itemMetal,2,5), new ItemStack(IEContent.itemMetal,1,0),new ItemStack(IEContent.itemMetal,1,4), 2400, null,0);
 		addSmelterRecipe(new ItemStack(IEContent.itemMetal,2,5), new ItemStack(IEContent.itemMetal,1,10),new ItemStack(IEContent.itemMetal,1,14), 1600, null,0);
+
+		IERecipes.addItemToOreDictCrusherRecipe("dustWood",2, "logWood", 2400);
 	}
 
 	@Override

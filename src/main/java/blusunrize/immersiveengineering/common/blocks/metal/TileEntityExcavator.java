@@ -380,9 +380,9 @@ public class TileEntityExcavator extends TileEntityMultiblockPart implements IEn
 	@Override
 	public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate)
 	{
-		if(formed && this.master()!=null && (pos==11||pos==14||pos==17) && from!=ForgeDirection.UP&&from!=ForgeDirection.DOWN)
+		TileEntityExcavator master = master();
+		if(formed && master!=null && (pos==11||pos==14||pos==17) && from!=ForgeDirection.UP&&from!=ForgeDirection.DOWN)
 		{
-			TileEntityExcavator master = master();
 			int rec = master.energyStorage.receiveEnergy(maxReceive, simulate);
 			master.markDirty();
 			return rec;
@@ -392,25 +392,32 @@ public class TileEntityExcavator extends TileEntityMultiblockPart implements IEn
 	@Override
 	public int getEnergyStored(ForgeDirection from)
 	{
-		if(this.master()!=null)
-			return this.master().energyStorage.getEnergyStored();
+		TileEntityExcavator master = master();
+		if(master!=null)
+			return master.energyStorage.getEnergyStored();
 		return energyStorage.getEnergyStored();
 	}
 	@Override
 	public int getMaxEnergyStored(ForgeDirection from)
 	{
-		if(this.master()!=null)
-			return this.master().energyStorage.getMaxEnergyStored();
+		TileEntityExcavator master = master();
+		if(master!=null)
+			return master.energyStorage.getMaxEnergyStored();
 		return energyStorage.getMaxEnergyStored();
 	}
 
+	@SideOnly(Side.CLIENT)
+	private AxisAlignedBB renderAABB;
 	@Override
 	@SideOnly(Side.CLIENT)
 	public AxisAlignedBB getRenderBoundingBox()
 	{
-		if(pos==4)
-			return AxisAlignedBB.getBoundingBox(xCoord-(facing==5?5:facing==4?0:1),yCoord-1,zCoord-(facing==3?5:facing==2?0:1), xCoord+(facing==4?6:facing==5?1:2),yCoord+2,zCoord+(facing==2?6:facing==3?1:2));
-		return AxisAlignedBB.getBoundingBox(xCoord,yCoord,zCoord, xCoord,yCoord,zCoord);
+		if(renderAABB==null)
+			if(pos==4)
+				renderAABB = AxisAlignedBB.getBoundingBox(xCoord-(facing==5?5:facing==4?0:1),yCoord-1,zCoord-(facing==3?5:facing==2?0:1), xCoord+(facing==4?6:facing==5?1:2),yCoord+2,zCoord+(facing==2?6:facing==3?1:2));
+			else
+				renderAABB = AxisAlignedBB.getBoundingBox(xCoord,yCoord,zCoord, xCoord,yCoord,zCoord);
+		return renderAABB;
 	}
 	@Override
 	@SideOnly(Side.CLIENT)

@@ -15,13 +15,19 @@ public abstract class ShaderCase
 	protected final int[] colourUnderlying;
 	protected final int[] colourPrimary;
 	protected final int[] colourSecondary;
+	protected int[] colourOverlay;
 	protected final static int[] defaultWhite = {255,255,255,255};
+	protected String overlayType="0";
+	protected String baseTexturePath="";
 	
-	public ShaderCase(int[] colourUnderlying, int[] colourPrimary, int[] colourSecondary)
+	public ShaderCase(String overlayType, int[] colourUnderlying, int[] colourPrimary, int[] colourSecondary, String baseTexturePath)
 	{
-		this.colourUnderlying = colourUnderlying; 
-		this.colourPrimary = colourPrimary; 
-		this.colourSecondary = colourSecondary; 
+		this.overlayType = overlayType;
+		this.colourUnderlying = colourUnderlying;
+		this.colourPrimary = colourPrimary;
+		this.colourSecondary = colourSecondary;
+		this.colourOverlay = defaultWhite;
+		this.baseTexturePath = baseTexturePath;
 	}
 	
 	public int[] getUnderlyingColour()
@@ -36,7 +42,24 @@ public abstract class ShaderCase
 	{
 		return colourSecondary;
 	}
-	
+	public String getOverlayType()
+	{
+		return overlayType;
+	}
+	public String getBaseTexturePath()
+	{
+		return baseTexturePath;
+	}
+	public ShaderCase setBaseTexturePath(String path)
+	{
+		baseTexturePath = path;
+		return this;
+	}
+	public ShaderCase setOverlayColour(int... col)
+	{
+		colourOverlay = col;
+		return this;
+	}
 	
 	/**
 	 * @return A string representing which item this shader case applies to. e.g.: "revolver"
@@ -68,5 +91,5 @@ public abstract class ShaderCase
 	 * @param pre indicates whether this is before or after the part was rendered
 	 * @return make specific changes to the render, like GL calls
 	 */
-	public abstract void modifyRender(ItemStack shader, ItemStack item, String modelPart, int pass, boolean pre);
+	public abstract void modifyRender(ItemStack shader, ItemStack item, String modelPart, int pass, boolean pre, boolean inventory);
 }

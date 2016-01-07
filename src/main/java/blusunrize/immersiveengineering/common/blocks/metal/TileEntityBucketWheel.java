@@ -1,18 +1,18 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import net.minecraft.block.Block;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockBucketWheel;
+import blusunrize.immersiveengineering.common.util.Utils;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.block.Block;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
 
 public class TileEntityBucketWheel extends TileEntityMultiblockPart
 {
@@ -38,15 +38,7 @@ public class TileEntityBucketWheel extends TileEntityMultiblockPart
 		facing = nbt.getInteger("facing");
 		float nbtRot = nbt.getFloat("rotation");
 		rotation = (Math.abs(nbtRot-rotation)>5*(float)Config.getDouble("excavator_speed"))?nbtRot:rotation; // avoid stuttering due to packet delays
-		NBTTagList invList = nbt.getTagList("digStacks", 10);
-		digStacks = new ItemStack[8];
-		for (int i=0; i<invList.tagCount(); i++)
-		{
-			NBTTagCompound itemTag = invList.getCompoundTagAt(i);
-			int slot = itemTag.getByte("Slot") & 255;
-			if(slot>=0 && slot<this.digStacks.length)
-				this.digStacks[slot] = ItemStack.loadItemStackFromNBT(itemTag);
-		}
+		digStacks = Utils.readInventory(nbt.getTagList("digStacks", 10), 8);
 		active = nbt.getBoolean("active");
 		particleStack = nbt.hasKey("particleStack")?ItemStack.loadItemStackFromNBT(nbt.getCompoundTag("particleStack")):null;
 	}
@@ -56,16 +48,7 @@ public class TileEntityBucketWheel extends TileEntityMultiblockPart
 		super.writeCustomNBT(nbt, descPacket);
 		nbt.setInteger("facing", facing);
 		nbt.setFloat("rotation", rotation);
-		NBTTagList invList = new NBTTagList();
-		for(int i=0; i<this.digStacks.length; i++)
-			if(this.digStacks[i] != null)
-			{
-				NBTTagCompound itemTag = new NBTTagCompound();
-				itemTag.setByte("Slot", (byte)i);
-				this.digStacks[i].writeToNBT(itemTag);
-				invList.appendTag(itemTag);
-			}
-		nbt.setTag("digStacks", invList);
+		nbt.setTag("digStacks", Utils.writeInventory(digStacks));
 		nbt.setBoolean("active", active);
 		if(particleStack!=null)
 			nbt.setTag("particleStack", particleStack.writeToNBT(new NBTTagCompound()));
@@ -144,13 +127,18 @@ public class TileEntityBucketWheel extends TileEntityMultiblockPart
 		return true;
 	}
 
+	@SideOnly(Side.CLIENT)
+	private AxisAlignedBB renderAABB;
 	@Override
 	@SideOnly(Side.CLIENT)
 	public AxisAlignedBB getRenderBoundingBox()
 	{
-		if(pos==24)
-			return AxisAlignedBB.getBoundingBox(xCoord-(facing<4?3:0),yCoord-3,zCoord-(facing>3?3:0), xCoord+(facing<4?4:1),yCoord+4,zCoord+(facing>3?4:1));
-		return AxisAlignedBB.getBoundingBox(xCoord,yCoord,zCoord, xCoord,yCoord,zCoord);
+		if(renderAABB==null)
+			if(pos==24)
+				renderAABB = AxisAlignedBB.getBoundingBox(xCoord-(facing<4?3:0),yCoord-3,zCoord-(facing>3?3:0), xCoord+(facing<4?4:1),yCoord+4,zCoord+(facing>3?4:1));
+			else
+				renderAABB = AxisAlignedBB.getBoundingBox(xCoord,yCoord,zCoord, xCoord,yCoord,zCoord);
+		return renderAABB;
 	}
 	@Override
 	@SideOnly(Side.CLIENT)

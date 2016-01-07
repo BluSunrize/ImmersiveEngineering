@@ -4,9 +4,6 @@ import java.awt.Rectangle;
 import java.util.Arrays;
 import java.util.List;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.StatCollector;
-import net.minecraftforge.oredict.OreDictionary;
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.IERecipes;
@@ -14,6 +11,9 @@ import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.Utils;
 import codechicken.nei.PositionedStack;
 import codechicken.nei.recipe.TemplateRecipeHandler;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.StatCollector;
+import net.minecraftforge.oredict.OreDictionary;
 
 public class NEIHammerCrushingHandler extends TemplateRecipeHandler
 {

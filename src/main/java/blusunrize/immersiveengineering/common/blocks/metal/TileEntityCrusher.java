@@ -3,20 +3,6 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import java.util.ArrayList;
 import java.util.List;
 
-import mods.railcraft.api.crafting.IRockCrusherRecipe;
-import mods.railcraft.api.crafting.RailcraftCraftingManager;
-import net.minecraft.block.Block;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.ISidedInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraftforge.common.util.ForgeDirection;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.CrusherRecipe;
 import blusunrize.immersiveengineering.common.Config;
@@ -31,6 +17,20 @@ import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyReceiver;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import mods.railcraft.api.crafting.IRockCrusherRecipe;
+import mods.railcraft.api.crafting.RailcraftCraftingManager;
+import net.minecraft.block.Block;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.ISidedInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraftforge.common.util.ForgeDirection;
 
 public class TileEntityCrusher extends TileEntityMultiblockPart implements IEnergyReceiver, ISidedInventory, ISoundTile
 {
@@ -180,7 +180,10 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 									inputs.set(0, inputStack);
 								else
 									inputs.remove(0);
-								active = false;
+								if (!startRecipe())
+								{
+									active = false;
+								}
 								update = true;
 							}
 							else
@@ -213,21 +216,7 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 					}
 					else
 					{
-						ItemStack inputStack = inputs.get(0);
-						CrusherRecipe recipe = CrusherRecipe.findRecipe(inputStack);
-						boolean b = true;
-						if(recipe!=null)
-						{
-							if(inputStack.stackSize>=(recipe.input instanceof ItemStack?((ItemStack)recipe.input).stackSize:1))
-								this.process = recipe.energy;
-							else
-								b = false;
-						}
-						else if(RailcraftCraftingManager.rockCrusher!=null && RailcraftCraftingManager.rockCrusher.getRecipe(inputStack)!=null)
-							this.process = 4000;
-						else
-							inputs.remove(0);
-						if(b)
+						if(startRecipe())
 						{
 							active = true;
 							update = true;
@@ -246,6 +235,26 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 			}
 
 		}
+	}
+	boolean startRecipe()
+	{
+		if (inputs.isEmpty())
+			return false;
+		ItemStack inputStack = inputs.get(0);
+		CrusherRecipe recipe = CrusherRecipe.findRecipe(inputStack);
+		boolean b = true;
+		if(recipe!=null)
+		{
+			if(inputStack.stackSize>=(recipe.input instanceof ItemStack?((ItemStack)recipe.input).stackSize:1))
+				this.process = recipe.energy;
+			else
+				b = false;
+		}
+		else if(RailcraftCraftingManager.rockCrusher!=null && RailcraftCraftingManager.rockCrusher.getRecipe(inputStack)!=null)
+			this.process = 4000;
+		else
+			inputs.remove(0);
+		return b;
 	}
 
 	boolean isValidInput(ItemStack stack)
@@ -341,12 +350,17 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 	}
 
 	@SideOnly(Side.CLIENT)
+	private AxisAlignedBB renderAABB;
+	@SideOnly(Side.CLIENT)
 	@Override
 	public AxisAlignedBB getRenderBoundingBox()
 	{
-		if(pos==17)
-			return AxisAlignedBB.getBoundingBox(xCoord-(facing==2||facing==3?2:1),yCoord,zCoord-(facing==4||facing==5?2:1), xCoord+(facing==2||facing==3?3:2),yCoord+3,zCoord+(facing==4||facing==5?3:2));
-		return AxisAlignedBB.getBoundingBox(xCoord,yCoord,zCoord, xCoord,yCoord,zCoord);
+		if(renderAABB==null)
+			if(pos==17)
+				renderAABB = AxisAlignedBB.getBoundingBox(xCoord-(facing==2||facing==3?2:1),yCoord,zCoord-(facing==4||facing==5?2:1), xCoord+(facing==2||facing==3?3:2),yCoord+3,zCoord+(facing==4||facing==5?3:2));
+			else
+				renderAABB = AxisAlignedBB.getBoundingBox(xCoord,yCoord,zCoord, xCoord,yCoord,zCoord);
+		return renderAABB;
 	}
 	@Override
 	@SideOnly(Side.CLIENT)
@@ -498,8 +512,9 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 	{
 		if(!formed || pos!=27)
 			return;
-		if(master()!=null)
-			master().addStackToInputs(stack);
+		TileEntityCrusher master = master();
+		if(master!=null)
+			master.addStackToInputs(stack);
 	}
 	@Override
 	public String getInventoryName()
@@ -534,7 +549,7 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 	{
 		if(!formed || pos!=27)
 			return false;
-		return CrusherRecipe.findRecipe(stack)!=null;
+		return isValidInput(stack);
 	}
 	@Override
 	public int[] getAccessibleSlotsFromSide(int side)
@@ -560,9 +575,9 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 	@Override
 	public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate)
 	{
-		if(formed && this.master()!=null && pos==20 && from==ForgeDirection.UP)
+		TileEntityCrusher master = master();
+		if(formed && master!=null && pos==20 && from==ForgeDirection.UP)
 		{
-			TileEntityCrusher master = master();
 			int rec = master.energyStorage.receiveEnergy(maxReceive, simulate);
 			master.markDirty();
 			return rec;
@@ -572,15 +587,17 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 	@Override
 	public int getEnergyStored(ForgeDirection from)
 	{
-		if(this.master()!=null)
-			return this.master().energyStorage.getEnergyStored();
+		TileEntityCrusher master = master();
+		if(master!=null)
+			return master.energyStorage.getEnergyStored();
 		return energyStorage.getEnergyStored();
 	}
 	@Override
 	public int getMaxEnergyStored(ForgeDirection from)
 	{
-		if(this.master()!=null)
-			return this.master().energyStorage.getMaxEnergyStored();
+		TileEntityCrusher master = master();
+		if(master!=null)
+			return master.energyStorage.getMaxEnergyStored();
 		return energyStorage.getMaxEnergyStored();
 	}
 }

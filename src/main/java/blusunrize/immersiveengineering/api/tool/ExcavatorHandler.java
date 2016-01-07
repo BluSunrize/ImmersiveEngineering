@@ -55,17 +55,19 @@ public class ExcavatorHandler
 		mineralList.put(mix, mineralWeight);
 		return mix;
 	}
-	public static void recalculateChances()
+	public static void recalculateChances(boolean mutePackets)
 	{
 		for(Map.Entry<MineralMix, Integer> e : mineralList.entrySet())
 			e.getKey().recalculateChances();
+		dimensionBasedTotalWeight.clear();
 		if(FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER)
 		{
 			HashMap<MineralMix,Integer> packetMap = new HashMap<MineralMix,Integer>(); 
 			for(Map.Entry<MineralMix,Integer> e: ExcavatorHandler.mineralList.entrySet())
 				if(e.getKey()!=null && e.getValue()!=null)
 					packetMap.put(e.getKey(), e.getValue());
-			ImmersiveEngineering.packetHandler.sendToAll(new MessageMineralListSync(packetMap));
+			if(!mutePackets)
+				ImmersiveEngineering.packetHandler.sendToAll(new MessageMineralListSync(packetMap));
 		}
 	}
 	public static int getDimensionTotalWeight(int dim)

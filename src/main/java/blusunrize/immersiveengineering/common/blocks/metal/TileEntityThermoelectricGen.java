@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockDynamicLiquid;
 import net.minecraft.block.BlockStaticLiquid;
 import net.minecraft.block.material.Material;
@@ -60,15 +61,16 @@ public class TileEntityThermoelectricGen extends TileEntityIEBase implements IEn
 	}
 	Fluid getFluid(int x, int y, int z)
 	{
-		Fluid f = FluidRegistry.lookupFluidForBlock(worldObj.getBlock(x, y, z));
-		if(f==null && worldObj.getBlock(x, y, z) instanceof BlockDynamicLiquid && worldObj.getBlockMetadata(x, y, z)==0)
-			if(worldObj.getBlock(x, y, z).getMaterial().equals(Material.water))
+		Block b = worldObj.getBlock(x, y, z);
+		Fluid f = FluidRegistry.lookupFluidForBlock(b);
+		if(f==null && b instanceof BlockDynamicLiquid && worldObj.getBlockMetadata(x, y, z)==0)
+			if(b.getMaterial().equals(Material.water))
 				f = FluidRegistry.WATER;
-			else if(worldObj.getBlock(x, y, z).getMaterial().equals(Material.lava))
+			else if(b.getMaterial().equals(Material.lava))
 				f = FluidRegistry.LAVA;
-		if(worldObj.getBlock(x, y, z) instanceof IFluidBlock && !((IFluidBlock)worldObj.getBlock(x, y, z)).canDrain(worldObj, x, y, z))
+		if(b instanceof IFluidBlock && !((IFluidBlock)b).canDrain(worldObj, x, y, z))
 			return null;
-		if(worldObj.getBlock(x, y, z) instanceof BlockStaticLiquid && worldObj.getBlockMetadata(x, y, z)!=0)
+		if(b instanceof BlockStaticLiquid && worldObj.getBlockMetadata(x, y, z)!=0)
 			return null;
 		if(f==null)
 			return null;

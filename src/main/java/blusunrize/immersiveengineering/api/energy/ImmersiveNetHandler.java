@@ -157,7 +157,7 @@ public class ImmersiveNetHandler
 	/**
 	 * Clears all connections to and from this node.
 	 */
-	public void clearAllConnectionsFor(ChunkCoordinates node, World world)
+	public void clearAllConnectionsFor(ChunkCoordinates node, World world, boolean doDrops)
 	{
 		if(getMultimap(world.provider.dimensionId).containsKey(node))
 			getMultimap(world.provider.dimensionId).get(node).clear();
@@ -194,7 +194,7 @@ public class ImmersiveNetHandler
 						double dx = node.posX+.5+Math.signum(con.start.posX-con.end.posX);
 						double dy = node.posY+.5+Math.signum(con.start.posY-con.end.posY);
 						double dz = node.posZ+.5+Math.signum(con.start.posZ-con.end.posZ);
-						if(world.getGameRules().getGameRuleBooleanValue("doTileDrops"))
+						if(doDrops&&world.getGameRules().getGameRuleBooleanValue("doTileDrops"))
 							world.spawnEntityInWorld(new EntityItem(world, dx,dy,dz, con.cableType.getWireCoil()));
 						if(world.blockExists(con.start.posX,con.start.posY,con.start.posZ))
 							world.addBlockEvent(con.start.posX, con.start.posY, con.start.posZ, world.getBlock(con.start.posX,con.start.posY,con.start.posZ),-1,0);

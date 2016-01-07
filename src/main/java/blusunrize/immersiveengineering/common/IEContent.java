@@ -2,24 +2,8 @@ package blusunrize.immersiveengineering.common;
 
 import java.util.List;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionEffect;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.gen.structure.MapGenStructureIO;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidContainerRegistry;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.oredict.OreDictionary;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.ComparableItemStack;
 import blusunrize.immersiveengineering.api.MultiblockHandler;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.CokeOvenRecipe;
@@ -27,16 +11,22 @@ import blusunrize.immersiveengineering.api.energy.DieselHandler;
 import blusunrize.immersiveengineering.api.energy.ThermoelectricHandler;
 import blusunrize.immersiveengineering.api.energy.WireType;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler;
+import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEffect_Extinguish;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEffect_Potion;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
+import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler;
+import blusunrize.immersiveengineering.api.tool.RailgunHandler;
 import blusunrize.immersiveengineering.common.blocks.BlockFakeLight;
 import blusunrize.immersiveengineering.common.blocks.BlockFakeLight.TileEntityFakeLight;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase.BlockIESimple;
 import blusunrize.immersiveengineering.common.blocks.BlockIESlabs;
+import blusunrize.immersiveengineering.common.blocks.BlockIEStairs;
 import blusunrize.immersiveengineering.common.blocks.BlockStorage;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIESlab;
+import blusunrize.immersiveengineering.common.blocks.cloth.BlockClothDevices;
+import blusunrize.immersiveengineering.common.blocks.cloth.TileEntityBalloon;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDecoration;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDecoration2;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDevices;
@@ -67,7 +57,6 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityExcavator;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFermenter;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFloodlight;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFluidPipe;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFluidPipe_old;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFluidPump;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFurnaceHeater;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityLantern;
@@ -106,7 +95,6 @@ import blusunrize.immersiveengineering.common.blocks.stone.BlockStoneDecoration;
 import blusunrize.immersiveengineering.common.blocks.stone.BlockStoneDevices;
 import blusunrize.immersiveengineering.common.blocks.stone.TileEntityBlastFurnace;
 import blusunrize.immersiveengineering.common.blocks.stone.TileEntityCokeOven;
-import blusunrize.immersiveengineering.common.blocks.wooden.BlockIEWoodenStairs;
 import blusunrize.immersiveengineering.common.blocks.wooden.BlockWoodenDecoration;
 import blusunrize.immersiveengineering.common.blocks.wooden.BlockWoodenDevices;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityModWorkbench;
@@ -119,6 +107,7 @@ import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenCrat
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenPost;
 import blusunrize.immersiveengineering.common.crafting.IEFuelHandler;
 import blusunrize.immersiveengineering.common.entities.EntityChemthrowerShot;
+import blusunrize.immersiveengineering.common.entities.EntityRailgunShot;
 import blusunrize.immersiveengineering.common.entities.EntityRevolvershot;
 import blusunrize.immersiveengineering.common.entities.EntityRevolvershotHoming;
 import blusunrize.immersiveengineering.common.entities.EntitySkycrate;
@@ -134,8 +123,10 @@ import blusunrize.immersiveengineering.common.items.ItemIEBase;
 import blusunrize.immersiveengineering.common.items.ItemIESeed;
 import blusunrize.immersiveengineering.common.items.ItemIETool;
 import blusunrize.immersiveengineering.common.items.ItemJerrycan;
+import blusunrize.immersiveengineering.common.items.ItemRailgun;
 import blusunrize.immersiveengineering.common.items.ItemRevolver;
 import blusunrize.immersiveengineering.common.items.ItemShader;
+import blusunrize.immersiveengineering.common.items.ItemShaderBag;
 import blusunrize.immersiveengineering.common.items.ItemSkyhook;
 import blusunrize.immersiveengineering.common.items.ItemToolUpgrade;
 import blusunrize.immersiveengineering.common.items.ItemWireCoil;
@@ -148,6 +139,24 @@ import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.VillagerRegistry;
+import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionEffect;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityFurnace;
+import net.minecraft.world.gen.structure.MapGenStructureIO;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.oredict.OreDictionary;
 
 public class IEContent
 {
@@ -163,10 +172,15 @@ public class IEContent
 	public static BlockIEBase blockWoodenDecoration;
 	public static BlockIEBase blockTreatedWood;
 	public static Block blockWoodenStair;
+	public static Block blockWoodenStair1;
+	public static Block blockWoodenStair2;
 	public static BlockIEBase blockStoneDevice;
 	public static BlockIEBase blockStoneDecoration;
+	public static Block blockConcreteStair;
+	public static Block blockConcreteTileStair;
 	public static Block blockCrop;
 	public static Block blockFakeLight;
+	public static BlockIEBase blockClothDevice;
 	public static ItemIEBase itemMetal;
 	public static ItemIEBase itemMaterial;
 	public static ItemIEBase itemSeeds;
@@ -182,9 +196,11 @@ public class IEContent
 	public static ItemIEBase itemBlueprint;
 	public static ItemIEBase itemGraphiteElectrode;
 	public static ItemIEBase itemShader;
+	public static ItemIEBase itemShaderBag;
 	public static ItemIEBase itemFakeIcons;
 	public static ItemIEBase itemJerrycan;
 	public static ItemIEBase itemChemthrower;
+	public static ItemIEBase itemRailgun;
 	public static Fluid fluidCreosote;
 	public static boolean IECreosote=false;
 	public static Fluid fluidPlantoil;
@@ -207,11 +223,16 @@ public class IEContent
 		blockWoodenDevice = new BlockWoodenDevices().setFlammable(true);
 		blockWoodenDecoration = new BlockWoodenDecoration().setFlammable(true);
 		blockTreatedWood = (BlockIEBase)new BlockIESimple("treatedWood",Material.wood,ItemBlockIEBase.class, "0","1","2").setFlammable(true).setHasFlavour(true).setHardness(2f).setResistance(5f);
-		blockWoodenStair = new BlockIEWoodenStairs();
+		blockWoodenStair = new BlockIEStairs("woodenStairs",blockTreatedWood,0).setFlammable(true).setHasFlavour(true);
+		blockWoodenStair1 = new BlockIEStairs("woodenStairs1",blockTreatedWood,1).setFlammable(true).setHasFlavour(true);
+		blockWoodenStair2 = new BlockIEStairs("woodenStairs2",blockTreatedWood,2).setFlammable(true).setHasFlavour(true);
 		blockStoneDevice = new BlockStoneDevices();
 		blockStoneDecoration = new BlockStoneDecoration();
+		blockConcreteStair = new BlockIEStairs("concreteStairs",blockStoneDecoration,4);
+		blockConcreteTileStair = new BlockIEStairs("concreteTileStairs",blockStoneDecoration,5);
 		blockCrop = new BlockIECrop("hemp", "0B","1B","2B","3B","4B","0T");
 		blockFakeLight = new BlockFakeLight();
+		blockClothDevice = new BlockClothDevices();
 
 		itemMetal = new ItemIEBase("metal", 64,
 				"ingotCopper","ingotAluminum","ingotLead","ingotSilver","ingotNickel","ingotConstantan","ingotElectrum","ingotSteel",  
@@ -224,7 +245,7 @@ public class IEContent
 				"treatedStick","waterwheelSegment","windmillBlade","hempFiber","fabric","windmillBladeAdvanced",
 				"coalCoke",
 				"gunpartBarrel","gunpartDrum","gunpartGrip","gunpartHammer",
-				"componentIron","componentSteel","slag");
+				"componentIron","componentSteel","slag", "stickIron","stickSteel");
 
 		itemSeeds = new ItemIESeed(blockCrop,"hemp");
 		MinecraftForge.addGrassSeed(new ItemStack(itemSeeds), 5);
@@ -258,7 +279,8 @@ public class IEContent
 		itemBlueprint = new ItemEngineersBlueprint();
 		itemGraphiteElectrode = new ItemGraphiteElectrode();
 		itemShader = new ItemShader();
-		itemFakeIcons =  new ItemIEBase("fakeIcon", 1, "birthday")
+		itemShaderBag = new ItemShaderBag();
+		itemFakeIcons =  new ItemIEBase("fakeIcon", 1, "birthday","lucky")
 		{
 			@Override
 			public void getSubItems(Item item, CreativeTabs tab, List list)
@@ -267,6 +289,7 @@ public class IEContent
 		};
 		itemJerrycan = new ItemJerrycan();
 		itemChemthrower = new ItemChemthrower();
+		itemRailgun= new ItemRailgun();
 
 		fluidCreosote = FluidRegistry.getFluid("creosote");
 		if(fluidCreosote==null)
@@ -317,6 +340,8 @@ public class IEContent
 		OreDictionary.registerOre("fenceSteel", new ItemStack(blockMetalDecoration,1,BlockMetalDecoration.META_fence));
 		OreDictionary.registerOre("fenceAluminum", new ItemStack(blockMetalDecoration,1,BlockMetalDecoration.META_aluminiumFence));
 		OreDictionary.registerOre("itemSlag", new ItemStack(itemMaterial,1,13));
+		OreDictionary.registerOre("stickIron", new ItemStack(itemMaterial,1,14));
+		OreDictionary.registerOre("stickSteel", new ItemStack(itemMaterial,1,15));
 		//Vanilla OreDict
 		OreDictionary.registerOre("bricksStone", new ItemStack(Blocks.stonebrick));
 		OreDictionary.registerOre("blockIce", new ItemStack(Blocks.ice));
@@ -412,7 +437,6 @@ public class IEContent
 		registerTile(TileEntityEnergyMeter.class);
 		registerTile(TileEntityElectricLantern.class);
 		registerTile(TileEntityFloodlight.class);
-		registerTile(TileEntityFluidPipe_old.class);
 		registerTile(TileEntityFluidPipe.class);
 		registerTile(TileEntityFluidPump.class);
 		registerTile(TileEntityMetalBarrel.class);
@@ -425,6 +449,8 @@ public class IEContent
 		registerTile(TileEntityCokeOven.class);
 		registerTile(TileEntityBlastFurnace.class);
 
+		registerTile(TileEntityBalloon.class);
+
 		/**ENTITIES*/
 		EntityRegistry.registerModEntity(EntityRevolvershot.class, "revolverShot", 0, ImmersiveEngineering.instance, 64, 1, true);
 		EntityRegistry.registerModEntity(EntitySkylineHook.class, "skylineHook", 1, ImmersiveEngineering.instance, 64, 1, true);
@@ -432,6 +458,7 @@ public class IEContent
 		EntityRegistry.registerModEntity(EntityRevolvershotHoming.class, "revolverShotHoming", 3, ImmersiveEngineering.instance, 64, 1, true);
 		EntityRegistry.registerModEntity(EntityWolfpackShot.class, "revolverShotWolfpack", 4, ImmersiveEngineering.instance, 64, 1, true);		
 		EntityRegistry.registerModEntity(EntityChemthrowerShot.class, "chemthrowerShot", 5, ImmersiveEngineering.instance, 64, 1, true);
+		EntityRegistry.registerModEntity(EntityRailgunShot.class, "railgunShot", 6, ImmersiveEngineering.instance, 64, 5, true);
 		int villagerId = Config.getInt("villager_engineer");
 		VillagerRegistry.instance().registerVillagerId(villagerId);
 		VillagerRegistry.instance().registerVillageCreationHandler(new VillageEngineersHouse.VillageManager());
@@ -470,6 +497,7 @@ public class IEContent
 		DieselHandler.registerFuel(FluidRegistry.getFluid("fuel"), 375);
 		DieselHandler.registerFuel(FluidRegistry.getFluid("diesel"), 175);
 
+		ChemthrowerHandler.registerEffect(FluidRegistry.WATER, new ChemthrowerEffect_Extinguish());
 		ChemthrowerHandler.registerEffect(fluidCreosote, new ChemthrowerEffect_Potion(null,0, IEPotions.flammable,140,0));
 		ChemthrowerHandler.registerFlammable(fluidCreosote);
 		ChemthrowerHandler.registerEffect(fluidBiodiesel, new ChemthrowerEffect_Potion(null,0, IEPotions.flammable,140,1));
@@ -488,6 +516,14 @@ public class IEContent
 		ChemthrowerHandler.registerEffect("rocket_fuel", new ChemthrowerEffect_Potion(null,0, IEPotions.flammable,60,2));
 		ChemthrowerHandler.registerFlammable("rocket_fuel");
 
+		RailgunHandler.registerProjectileProperties(new ComparableItemStack("stickIron"), 7, 1.25).setColourMap(new int[][]{{0xd8d8d8,0xd8d8d8,0xd8d8d8,0xa8a8a8,0x686868,0x686868}});
+		RailgunHandler.registerProjectileProperties(new ComparableItemStack("stickSteel"), 9, 1.25).setColourMap(new int[][]{{0xb4b4b4,0xb4b4b4,0xb4b4b4,0x7a7a7a,0x555555,0x555555}});
+		RailgunHandler.registerProjectileProperties(new ComparableItemStack(new ItemStack(itemGraphiteElectrode)), 12, .9).setColourMap(new int[][]{{0x242424,0x242424,0x242424,0x171717,0x171717,0x0a0a0a}});
+		
+		ExternalHeaterHandler.defaultFurnaceEnergyCost = Config.getInt("heater_consumption");
+		ExternalHeaterHandler.defaultFurnaceSpeedupCost= Config.getInt("heater_speedupConsumption");
+		ExternalHeaterHandler.registerHeatableAdapter(TileEntityFurnace.class, new ExternalHeaterHandler.DefaultFurnaceAdapter());
+		
 
 		DieselHandler.addSqueezerRecipe(new ItemStack(itemMetal,8,17), 240, null, new ItemStack(itemMetal,1,19));
 		DieselHandler.addSqueezerRecipe(Items.wheat_seeds, 80, new FluidStack(fluidPlantoil, 80), null);
@@ -558,12 +594,14 @@ public class IEContent
 
 	public static void postInit()
 	{
+		IERecipes.postInitCrusherAndArcRecipes();
 		//Villager Trades
 		//These are done so late to account for Blueprints added by addons
 		int villagerId = Config.getInt("villager_engineer");
-		VillagerRegistry.instance().registerVillageTradeHandler(villagerId, new IEVillagerTradeHandler());
+		IEVillagerTradeHandler.instance = new IEVillagerTradeHandler();
+		VillagerRegistry.instance().registerVillageTradeHandler(villagerId, IEVillagerTradeHandler.instance);
 	}
-
+	
 	public static void registerToOreDict(String type, ItemIEBase item, int... metas)
 	{
 		if(metas==null||metas.length<1)

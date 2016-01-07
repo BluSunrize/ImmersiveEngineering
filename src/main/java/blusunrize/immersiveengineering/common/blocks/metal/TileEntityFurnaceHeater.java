@@ -1,17 +1,18 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import net.minecraft.block.BlockFurnace;
+import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler;
+import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler.IExternalHeatable;
+import blusunrize.immersiveengineering.common.Config;
+import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
+import cofh.api.energy.EnergyStorage;
+import cofh.api.energy.IEnergyReceiver;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraftforge.common.util.ForgeDirection;
-import blusunrize.immersiveengineering.common.Config;
-import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
-import cofh.api.energy.EnergyStorage;
-import cofh.api.energy.IEnergyReceiver;
 
 public class TileEntityFurnaceHeater extends TileEntityIEBase implements IEnergyReceiver
 {
@@ -30,41 +31,21 @@ public class TileEntityFurnaceHeater extends TileEntityIEBase implements IEnergy
 			for(ForgeDirection fd : ForgeDirection.VALID_DIRECTIONS)
 			{
 				TileEntity tileEntity = worldObj.getTileEntity(xCoord+fd.offsetX, yCoord+fd.offsetY, zCoord+fd.offsetZ);
-				if(tileEntity instanceof TileEntityFurnace)
-				{
-					TileEntityFurnace furnace = (TileEntityFurnace) tileEntity;
-					boolean canHeat = canHeat(furnace);
-					if(canHeat||worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord))
+				int consumed = 0;
+				if(tileEntity!=null)
+					if(tileEntity instanceof ExternalHeaterHandler.IExternalHeatable)
+						consumed = ((IExternalHeatable)tileEntity).doHeatTick(energyStorage.getEnergyStored(), worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord));
+					else
 					{
-						boolean burning = furnace.isBurning();
-						if(furnace.furnaceBurnTime<200)
-						{
-							int heatAttempt = 4;
-							int heatEnergyRatio = Math.max(1, Config.getInt("heater_consumption"));
-							int energy = this.energyStorage.extractEnergy(heatAttempt*heatEnergyRatio, true);
-							int heat = energy/heatEnergyRatio;
-
-							if(heat>0)
-							{
-								furnace.furnaceBurnTime += heat;
-								this.energyStorage.extractEnergy(heat*heatEnergyRatio, false);
-								if(!burning)
-									BlockFurnace.updateFurnaceBlockState(furnace.furnaceBurnTime>0, worldObj, furnace.xCoord, furnace.yCoord, furnace.zCoord);
-								if(!active)
-									active = true;
-							}
-						}
-						if(canHeat&&furnace.furnaceBurnTime>=200&&furnace.furnaceCookTime<199)
-						{
-							int energy = Config.getInt("heater_speedupConsumption");
-							if(this.energyStorage.extractEnergy(energy, false)>=energy)
-							{
-								furnace.furnaceCookTime += 1;
-								if(!active)
-									active = true;
-							}
-						}
+						ExternalHeaterHandler.HeatableAdapter adapter = ExternalHeaterHandler.getHeatableAdapter(tileEntity.getClass());
+						if(adapter!=null)
+							consumed = adapter.doHeatTick(tileEntity, energyStorage.getEnergyStored(), worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord));
 					}
+				if(consumed>0)
+				{
+					this.energyStorage.extractEnergy(consumed, false);
+					if(!active)
+						active = true;
 				}
 			}
 			if(active!=a)
@@ -91,9 +72,8 @@ public class TileEntityFurnaceHeater extends TileEntityIEBase implements IEnergy
 			return false;
 		int stackSize = existingOutput.stackSize+output.stackSize;
 		return stackSize<=furnace.getInventoryStackLimit() && stackSize<=output.getMaxStackSize();
-
 	}
-	
+
 	public boolean showActiveTexture()
 	{
 		return active || worldObj.isBlockIndirectlyGettingPowered(xCoord,yCoord,zCoord);

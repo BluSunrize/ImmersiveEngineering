@@ -398,13 +398,6 @@ public class BlockMetalDevices extends BlockIEBase implements blusunrize.aquatwe
 				player.openGui(ImmersiveEngineering.instance, Lib.GUIID_Sorter, world, x, y, z);
 				return true;
 			}
-			else if(Utils.isHammer(player.getCurrentEquippedItem()))
-			{
-				((TileEntityConveyorSorter)te).toggleSide(side);
-				te.markDirty();
-				world.func_147451_t(x, y, z);
-				return true;
-			}
 		}
 		if(te instanceof TileEntitySampleDrill)
 		{
@@ -431,12 +424,15 @@ public class BlockMetalDevices extends BlockIEBase implements blusunrize.aquatwe
 						player.addChatMessage(new ChatComponentTranslation(Lib.CHAT_INFO+"coreDrill.result.none").setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GRAY)));
 					else
 					{
-						String min = StatCollector.translateToLocal(Lib.DESC_INFO+"mineral."+mineral.name);
+						String name = Lib.DESC_INFO+"mineral."+mineral.name;
+						String localizedName = StatCollector.translateToLocal(name);
+						if(name.equals(localizedName))
+							localizedName = mineral.name;
 						MineralWorldInfo info = ExcavatorHandler.getMineralWorldInfo(world, chunkX, chunkZ);
 						boolean deplOverride = info.depletion<0;
 						if(ExcavatorHandler.mineralVeinCapacity<0||deplOverride)
-							min = StatCollector.translateToLocal(Lib.CHAT_INFO+"coreDrill.infinite")+" "+min;
-						player.addChatMessage(new ChatComponentTranslation(Lib.CHAT_INFO+"coreDrill.result.mineral",min));
+							localizedName = StatCollector.translateToLocal(Lib.CHAT_INFO+"coreDrill.infinite")+" "+localizedName;
+						player.addChatMessage(new ChatComponentTranslation(Lib.CHAT_INFO+"coreDrill.result.mineral",localizedName));
 						if(ExcavatorHandler.mineralVeinCapacity>0&&!deplOverride)
 						{
 							String f = Utils.formatDouble((Config.getInt("excavator_depletion")-info.depletion)/(float)Config.getInt("excavator_depletion")*100,"0.##")+"%";

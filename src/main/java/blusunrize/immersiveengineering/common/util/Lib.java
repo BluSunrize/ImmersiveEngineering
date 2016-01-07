@@ -30,6 +30,8 @@ public class Lib
 	public static final int GUIID_ArcFurnace = 10;
 	public static final int GUIID_Assembler = 11;
 	
+	public static final int colour_nixieTubeText = 0xff9900;
+	
 	public static String DMG_RevolverCasull="ieRevolver_casull";
 	public static String DMG_RevolverAP="ieRevolver_armorPiercing";
 	public static String DMG_RevolverBuck="ieRevolver_buckshot";
@@ -40,6 +42,7 @@ public class Lib
 	public static String DMG_RevolverPotion = "ieRevolver_potion";
 	public static String DMG_Crusher="ieCrushed";
 	public static String DMG_Acid="ieAcid";
+	public static String DMG_Railgun = "ieRailgun";
 	
 	public static boolean IC2 = false;
 	public static boolean GREG = false;

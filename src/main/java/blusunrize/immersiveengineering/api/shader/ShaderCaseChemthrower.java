@@ -6,16 +6,14 @@ import net.minecraft.util.IIcon;
 
 public class ShaderCaseChemthrower extends ShaderCase
 {
-	public int overlayType=0;
 	public String additionalTexture = null;
 	public int glowLayer = -1;
 	public boolean renderCageOnBase = true;
 	public boolean tanksUncoloured = true;
 
-	public ShaderCaseChemthrower(int overlayType, int[] colourGrip, int[] colourPrimary, int[] colourSecondary, boolean cageOnBase, boolean tanksUncoloured, String additionalTexture)
+	public ShaderCaseChemthrower(String overlayType, int[] colourGrip, int[] colourPrimary, int[] colourSecondary, boolean cageOnBase, boolean tanksUncoloured, String additionalTexture)
 	{
-		super(colourGrip,colourPrimary,colourSecondary);
-		this.overlayType = overlayType;
+		super(overlayType, colourGrip,colourPrimary,colourSecondary,"immersiveengineering:shaders/chemthrower_");
 		this.additionalTexture = additionalTexture;
 		this.renderCageOnBase = cageOnBase;
 		this.tanksUncoloured = tanksUncoloured;
@@ -63,7 +61,7 @@ public class ShaderCaseChemthrower extends ShaderCase
 		if(pass==maxPass-1 && hasUncoloured)//uncoloured
 			return defaultWhite;
 		if(pass==maxPass-(hasUncoloured?2:1) && i_chemthrowerAdditional!=null)
-			return defaultWhite;
+			return colourOverlay;
 
 		int i=getTextureType(modelPart,pass); //0 == grip, 1==main, 2==detail
 		if(i==0)
@@ -93,15 +91,15 @@ public class ShaderCaseChemthrower extends ShaderCase
 		if(sheetID==1)
 		{
 			i_chemthrowerBase = ir.registerIcon("immersiveengineering:shaders/chemthrower_0");
-			i_chemthrowerOverlay = ir.registerIcon("immersiveengineering:shaders/chemthrower_1_"+this.overlayType);
+			i_chemthrowerOverlay = ir.registerIcon(this.baseTexturePath+"1_"+this.overlayType);
 			i_chemthrowerUncoloured = ir.registerIcon("immersiveengineering:shaders/chemthrower_uncoloured");
 			if(this.additionalTexture!=null)
-				i_chemthrowerAdditional = ir.registerIcon("immersiveengineering:shaders/chemthrower_"+additionalTexture);
+				i_chemthrowerAdditional = ir.registerIcon(this.baseTexturePath+additionalTexture);
 		}
 	}
 
 	@Override
-	public void modifyRender(ItemStack shader, ItemStack item, String modelPart, int pass, boolean pre)
+	public void modifyRender(ItemStack shader, ItemStack item, String modelPart, int pass, boolean pre, boolean inventory)
 	{
 	}
 }

@@ -7,7 +7,6 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -69,25 +68,16 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockPart implemen
 		for(int i=0; i<inventory.length; i++)
 			if(inventory[i]!=null)
 			{
-				if(process[i]>72)
+				if(this.energyStorage.extractEnergy(consumed, true)==consumed)
 				{
-					if(this.energyStorage.extractEnergy(consumed, true)==consumed)
+					this.energyStorage.extractEnergy(consumed, false);
+					if(process[i]++<=72)
 					{
-						this.energyStorage.extractEnergy(consumed, false);
-						process[i]++;
-					}
-				}
-				else
-				{
-					ItemStack filled = getFilledItem(inventory[i], false);
-					if(this.energyStorage.extractEnergy(consumed, true)==consumed)
-					{
+						ItemStack filled = getFilledItem(inventory[i], false);
 						if(predictedOutput[i]==null || !OreDictionary.itemMatches(filled, predictedOutput[i],true))
 							predictedOutput[i]=filled;
-						this.energyStorage.extractEnergy(consumed, false);
-						if(process[i]==0)
+						if(process[i]==1)
 							update = true;
-						process[i]++;
 						if(filled!=null && process[i]>72)
 							inventory[i] = getFilledItem(inventory[i], true).copy();
 					}
@@ -189,24 +179,8 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockPart implemen
 
 		tank.readFromNBT(nbt.getCompoundTag("tank"));
 
-		NBTTagList invList = nbt.getTagList("inventory", 10);
-		this.inventory = new ItemStack[5];
-		for(int i=0; i<invList.tagCount(); i++)
-		{
-			NBTTagCompound itemTag = invList.getCompoundTagAt(i);
-			int slot = itemTag.getByte("Slot") & 255;
-			if(slot>=0 && slot<this.inventory.length)
-				this.inventory[slot] = ItemStack.loadItemStackFromNBT(itemTag);
-		}
-		NBTTagList finishedList = nbt.getTagList("predictedOutput", 10);
-		this.predictedOutput = new ItemStack[5];
-		for(int i=0; i<finishedList.tagCount(); i++)
-		{
-			NBTTagCompound itemTag = finishedList.getCompoundTagAt(i);
-			int slot = itemTag.getByte("Slot") & 255;
-			if(slot>=0 && slot<this.predictedOutput.length)
-				this.predictedOutput[slot] = ItemStack.loadItemStackFromNBT(itemTag);
-		}
+		this.inventory = Utils.readInventory(nbt.getTagList("inventory", 10), 5);
+		this.predictedOutput = Utils.readInventory(nbt.getTagList("predictedOutput", 10), 5);
 		process = nbt.getIntArray("process");
 	}
 	@Override
@@ -219,27 +193,9 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockPart implemen
 		NBTTagCompound tankTag = tank.writeToNBT(new NBTTagCompound());
 		nbt.setTag("tank", tankTag);
 
-		NBTTagList invList = new NBTTagList();
-		for(int i=0; i<this.inventory.length; i++)
-			if(this.inventory[i] != null)
-			{
-				NBTTagCompound itemTag = new NBTTagCompound();
-				itemTag.setByte("Slot", (byte)i);
-				this.inventory[i].writeToNBT(itemTag);
-				invList.appendTag(itemTag);
-			}
-		nbt.setTag("inventory", invList);
+		nbt.setTag("inventory", Utils.writeInventory(inventory));
 
-		NBTTagList finishedList = new NBTTagList();
-		for(int i=0; i<this.predictedOutput.length; i++)
-			if(this.predictedOutput[i] != null)
-			{
-				NBTTagCompound itemTag = new NBTTagCompound();
-				itemTag.setByte("Slot", (byte)i);
-				this.predictedOutput[i].writeToNBT(itemTag);
-				finishedList.appendTag(itemTag);
-			}
-		nbt.setTag("predictedOutput", finishedList);
+		nbt.setTag("predictedOutput", Utils.writeInventory(predictedOutput));
 
 		nbt.setIntArray("process", process);
 	}
@@ -250,13 +206,18 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockPart implemen
 		return false;
 	}
 
+	@SideOnly(Side.CLIENT)
+	private AxisAlignedBB renderAABB;
 	@Override
 	@SideOnly(Side.CLIENT)
 	public AxisAlignedBB getRenderBoundingBox()
 	{
-		if(pos==4)
-			return AxisAlignedBB.getBoundingBox(xCoord-1,yCoord,zCoord-1, xCoord+2,yCoord+2,zCoord+2);
-		return AxisAlignedBB.getBoundingBox(xCoord,yCoord,zCoord, xCoord,yCoord,zCoord);
+		if(renderAABB==null)
+			if(pos==4)
+				renderAABB = AxisAlignedBB.getBoundingBox(xCoord-1,yCoord,zCoord-1, xCoord+2,yCoord+2,zCoord+2);
+			else
+				renderAABB = AxisAlignedBB.getBoundingBox(xCoord,yCoord,zCoord, xCoord,yCoord,zCoord);
+		return renderAABB;
 	}
 	@Override
 	@SideOnly(Side.CLIENT)
@@ -306,7 +267,7 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockPart implemen
 
 		if(formed && !worldObj.isRemote)
 		{
-			//			int f = facing;
+			int f = facing;
 			TileEntity master = master();
 			if(master==null)
 				master = this;
@@ -315,9 +276,9 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockPart implemen
 			int startY = master.yCoord;
 			int startZ = master.zCoord;
 
-			for(int yy=-1;yy<=1;yy++)
-				for(int zz=-1;zz<=1;zz++)
-					for(int xx=-1;xx<=1;xx++)
+			for(int yy=0;yy<=1;yy++)
+				for(int zz=(f==3?0:-1);zz<=(f==2?0:1);zz++)
+					for(int xx=(f==5?0:-1);xx<=(f==4?0:1);xx++)
 					{
 						ItemStack s = null;
 						int prevPos = 0;
@@ -365,8 +326,9 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockPart implemen
 	{
 		if(!formed)
 			return null;
-		if(master()!=null)
-			return master().getStackInSlot(slot);
+		TileEntityBottlingMachine master = master();
+		if(master!=null)
+			return master.getStackInSlot(slot);
 		if(slot<inventory.length)
 			return inventory[slot];
 		return null;
@@ -376,8 +338,9 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockPart implemen
 	{
 		if(!formed)
 			return null;
-		if(master()!=null)
-			return master().decrStackSize(slot,amount);
+		TileEntityBottlingMachine master = master();
+		if(master!=null)
+			return master.decrStackSize(slot,amount);
 		ItemStack stack = getStackInSlot(slot);
 		if(stack != null)
 			if(stack.stackSize <= amount)
@@ -396,8 +359,9 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockPart implemen
 	{
 		if(!formed)
 			return null;
-		if(master()!=null)
-			return master().getStackInSlotOnClosing(slot);
+		TileEntityBottlingMachine master = master();
+		if(master!=null)
+			return master.getStackInSlotOnClosing(slot);
 		ItemStack stack = getStackInSlot(slot);
 		if(stack != null)
 			setInventorySlotContents(slot, null);
@@ -408,9 +372,10 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockPart implemen
 	{
 		if(!formed||worldObj.isRemote)
 			return;
-		if(master()!=null)
+		TileEntityBottlingMachine master = master();
+		if(master!=null)
 		{
-			master().setInventorySlotContents(slot,stack);
+			master.setInventorySlotContents(slot,stack);
 			return;
 		}
 		inventory[slot] = stack;
@@ -452,8 +417,9 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockPart implemen
 	{
 		if(!formed||stack==null)
 			return false;
-		if(master()!=null)
-			return master().isItemValidForSlot(slot,stack);
+		TileEntityBottlingMachine master = master();
+		if(master!=null)
+			return master.isItemValidForSlot(slot,stack);
 		return true;//this.getFilledItem(stack, false)!=null;
 	}
 	@Override
@@ -493,13 +459,13 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockPart implemen
 	@Override
 	public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate)
 	{
-		if(formed && pos==10 && from==ForgeDirection.UP && this.master()!=null)
+		TileEntityBottlingMachine master = master();
+		if(formed && pos==10 && from==ForgeDirection.UP && master!=null)
 		{
-			TileEntityBottlingMachine master = master();
 			int rec = master.energyStorage.receiveEnergy(maxReceive, simulate);
 			master.markDirty();
 			if(rec>0)
-				worldObj.markBlockForUpdate(master().xCoord, master().yCoord, master().zCoord);
+				worldObj.markBlockForUpdate(master.xCoord, master.yCoord, master.zCoord);
 			return rec;
 		}
 		return 0;
@@ -507,15 +473,17 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockPart implemen
 	@Override
 	public int getEnergyStored(ForgeDirection from)
 	{
-		if(this.master()!=null)
-			return this.master().energyStorage.getEnergyStored();
+		TileEntityBottlingMachine master = master();
+		if(master!=null)
+			return master.energyStorage.getEnergyStored();
 		return energyStorage.getEnergyStored();
 	}
 	@Override
 	public int getMaxEnergyStored(ForgeDirection from)
 	{
-		if(this.master()!=null)
-			return this.master().energyStorage.getMaxEnergyStored();
+		TileEntityBottlingMachine master = master();
+		if(master!=null)
+			return master.energyStorage.getMaxEnergyStored();
 		return energyStorage.getMaxEnergyStored();
 	}
 
@@ -524,8 +492,9 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockPart implemen
 	{
 		if(resource==null)
 			return 0;
-		if(master()!=null && canFill(from, resource.getFluid()))
-			return master().fill(from, resource, doFill);
+		TileEntityBottlingMachine master = master();
+		if(master!=null && canFill(from, resource.getFluid()))
+			return master.fill(from, resource, doFill);
 		int fill = tank.fill(resource, doFill);
 		if(fill>0)
 		{
@@ -559,7 +528,8 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockPart implemen
 	{
 		if(pos==4 && from==ForgeDirection.getOrientation(facing).getOpposite())
 		{
-			return new FluidTankInfo[]{(master()!=null)?master().tank.getInfo():tank.getInfo()};
+			TileEntityBottlingMachine master = master();
+			return new FluidTankInfo[]{(master!=null)?master.tank.getInfo():tank.getInfo()};
 		}
 		return new FluidTankInfo[0];
 	}

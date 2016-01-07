@@ -7,10 +7,24 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
+
+import blusunrize.immersiveengineering.api.energy.IImmersiveConnectable;
+import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler;
+import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler.Connection;
+import blusunrize.immersiveengineering.client.render.TileRenderIE;
+import blusunrize.immersiveengineering.common.util.IESound;
+import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
+import codechicken.lib.gui.GuiDraw;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound.AttenuationType;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.model.ModelBox;
+import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.RenderHelper;
@@ -26,6 +40,7 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
+import net.minecraft.util.Timer;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -38,20 +53,10 @@ import net.minecraftforge.client.model.obj.WavefrontObject;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidTank;
 
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
-
-import blusunrize.immersiveengineering.api.energy.IImmersiveConnectable;
-import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler;
-import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler.Connection;
-import blusunrize.immersiveengineering.client.render.TileRenderIE;
-import blusunrize.immersiveengineering.common.util.IESound;
-import blusunrize.immersiveengineering.common.util.Utils;
-import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
-import codechicken.lib.gui.GuiDraw;
-
 public class ClientUtils
 {
+	public static final AxisAlignedBB standardBlockAABB = AxisAlignedBB.getBoundingBox(0, 0, 0, 1, 1, 1);
+
 	// MOD SPECIFIC METHODS
 	public static void renderAttachedConnections(TileEntity tile)
 	{
@@ -307,6 +312,10 @@ public class ClientUtils
 	{
 		return mc().fontRenderer;
 	}
+	public static Timer timer()
+	{
+		return mc().timer;
+	}
 
 	public static String getResourceNameForItemStack(ItemStack stack)
 	{
@@ -336,6 +345,29 @@ public class ClientUtils
 		}
 		return "";
 	}
+	
+	static int[] chatColours = {
+			0x000000,//BLACK
+			0x0000AA,//DARK_BLUE
+			0x00AA00,//DARK_GREEN
+			0x00AAAA,//DARK_AQUA
+			0xAA0000,//DARK_RED
+			0xAA00AA,//DARK_PURPLE
+			0xFFAA00,//GOLD
+			0xAAAAAA,//GRAY
+			0x555555,//DARK_GRAY
+			0x5555FF,//BLUE
+			0x55FF55,//GREEN
+			0x55FFFF,//AQUA
+			0xFF5555,//RED
+			0xFF55FF,//LIGHT_PURPLE
+			0xFFFF55,//YELLOW
+			0xFFFFFF//WHITE
+	};
+	public static int getFormattingColour(EnumChatFormatting rarityColor)
+	{
+		return rarityColor.ordinal()<16?chatColours[rarityColor.ordinal()]:0;
+	}
 
 	public static IESound generatePositionedIESound(String soundName, float volume, float pitch, boolean repeat, int delay, double x, double y, double z)
 	{
@@ -343,6 +375,32 @@ public class ClientUtils
 		sound.evaluateVolume();
 		ClientUtils.mc().getSoundHandler().playSound(sound);
 		return sound;
+	}
+
+	public static ModelRenderer[] copyModelRenderers(ModelBase model, ModelRenderer... oldRenderers)
+	{
+		ModelRenderer[] newRenderers = new ModelRenderer[oldRenderers.length];
+		for(int i=0; i<newRenderers.length; i++)
+			if(oldRenderers[i]!=null)
+			{
+				newRenderers[i] = new ModelRenderer(model, oldRenderers[i].boxName);
+				int toX = oldRenderers[i].textureOffsetX;
+				int toY = oldRenderers[i].textureOffsetY;
+				newRenderers[i].setTextureOffset(toX,toY);
+				newRenderers[i].mirror = oldRenderers[i].mirror;
+				ArrayList<ModelBox> newCubes = new ArrayList<ModelBox>();
+				for(ModelBox cube :  (List<ModelBox>)oldRenderers[i].cubeList)
+					newCubes.add(new ModelBox(newRenderers[i],toX,toY, cube.posX1,cube.posY1,cube.posZ1, (int)(cube.posX2-cube.posX1),(int)(cube.posY2-cube.posY1),(int)(cube.posZ2-cube.posZ1), 0));
+				newRenderers[i].cubeList = newCubes;
+				newRenderers[i].setRotationPoint(oldRenderers[i].rotationPointX,oldRenderers[i].rotationPointY,oldRenderers[i].rotationPointZ);
+				newRenderers[i].rotateAngleX = oldRenderers[i].rotateAngleX;
+				newRenderers[i].rotateAngleY = oldRenderers[i].rotateAngleY;
+				newRenderers[i].rotateAngleZ = oldRenderers[i].rotateAngleZ;
+				newRenderers[i].offsetX = oldRenderers[i].offsetX;
+				newRenderers[i].offsetY = oldRenderers[i].offsetY;
+				newRenderers[i].offsetZ = oldRenderers[i].offsetZ;
+			}
+		return newRenderers;
 	}
 
 	public static void handleStaticTileRenderer(TileEntity tile)
@@ -370,9 +428,13 @@ public class ClientUtils
 	 */
 	public static void renderStaticWavefrontModel(TileEntity tile, WavefrontObject model, Tessellator tes, Matrix4 translationMatrix, Matrix4 rotationMatrix, int offsetLighting, boolean invertFaces, float colR, float colG, float colB, String... renderedParts)
 	{
-		if(tile.getWorldObj()!=null)
+		renderStaticWavefrontModel(tile.getWorldObj(),tile.xCoord,tile.yCoord,tile.zCoord, model, tes, translationMatrix, rotationMatrix, offsetLighting, invertFaces, colR,colG,colB, renderedParts);
+	}
+	public static void renderStaticWavefrontModel(IBlockAccess world, int x, int y, int z, WavefrontObject model, Tessellator tes, Matrix4 translationMatrix, Matrix4 rotationMatrix, int offsetLighting, boolean invertFaces, float colR, float colG, float colB, String... renderedParts)
+	{
+		if(world!=null)
 		{
-			int lb = tile.getWorldObj().getLightBrightnessForSkyBlocks(tile.xCoord, tile.yCoord, tile.zCoord, 0);
+			int lb = world.getLightBrightnessForSkyBlocks(x, y, z, 0);
 			int lb_j = lb % 65536;
 			int lb_k = lb / 65536;
 			OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)lb_j / 1.0F, (float)lb_k / 1.0F);
@@ -402,16 +464,10 @@ public class ClientUtils
 					float biggestNormal = Math.max(Math.abs(normalCopy.y), Math.max(Math.abs(normalCopy.x),Math.abs(normalCopy.z)));
 					int side = biggestNormal==Math.abs(normalCopy.y)?(normalCopy.y<0?0:1): biggestNormal==Math.abs(normalCopy.z)?(normalCopy.z<0?2:3): (normalCopy.x<0?4:5);
 
-					//					HashMap<String,BlockLightingInfo> light = new HashMap<String,BlockLightingInfo>();
-					//					BlockLightingInfo completeLight = null;
-					//					if(offsetLighting==0 && tile.getWorldObj()!=null)
-					//						completeLight = calculateBlockLighting(side, tile.getWorldObj(), tile.getBlockType(), tile.xCoord,tile.yCoord,tile.zCoord, 1,1,1, AxisAlignedBB.getBoundingBox(tile.xCoord,tile.yCoord,tile.zCoord, tile.xCoord+1,tile.yCoord+1,tile.zCoord+1));
-
 					BlockLightingInfo faceLight = null;
-					if(offsetLighting==0 && tile.getWorldObj()!=null)
-						faceLight = calculateBlockLighting(side, tile.getWorldObj(), tile.getBlockType(), tile.xCoord,tile.yCoord,tile.zCoord, colR,colG,colB, AxisAlignedBB.getBoundingBox(0,0,0,1,1,1));
-					//						faceLight = calculateBlockLighting(side, tile.getWorldObj(), tile.getBlockType(), tile.xCoord,tile.yCoord,tile.zCoord, 1,1,1, tile.getBlockType().getCollisionBoundingBoxFromPool(tile.getWorldObj(), tile.xCoord, tile.yCoord, tile.zCoord).addCoord(-tile.xCoord,-tile.yCoord,-tile.zCoord));
-					else if(offsetLighting==1 && tile.getWorldObj()!=null)
+					if(offsetLighting==0 && world!=null)
+						faceLight = calculateBlockLighting(side, world, world.getBlock(x,y,z), x,y,z, colR,colG,colB, standardBlockAABB);
+					else if(offsetLighting==1 && world!=null)
 					{
 						double faceMinX = face.vertices[0].x;
 						double faceMinY = face.vertices[0].y;
@@ -428,7 +484,7 @@ public class ClientUtils
 							faceMaxY = Math.max(faceMaxY, face.vertices[i].y);
 							faceMaxZ = Math.max(faceMaxZ, face.vertices[i].z);
 						}
-						faceLight = calculateBlockLighting(side, tile.getWorldObj(), tile.getBlockType(), tile.xCoord,tile.yCoord,tile.zCoord, colR,colG,colB, AxisAlignedBB.getBoundingBox(faceMinX,faceMinY,faceMinZ, faceMaxX,faceMaxY,faceMaxZ));
+						faceLight = calculateBlockLighting(side, world, world.getBlock(x, y, z), x,y,z, colR,colG,colB, AxisAlignedBB.getBoundingBox(faceMinX,faceMinY,faceMinZ, faceMaxX,faceMaxY,faceMaxZ));
 					}
 
 					tes.setNormal(face.faceNormal.x, face.faceNormal.y, face.faceNormal.z);
@@ -443,30 +499,6 @@ public class ClientUtils
 						vertexCopy.z = vertex.z;
 						rotationMatrix.apply(vertexCopy);
 						translationMatrix.apply(vertexCopy);
-
-						//						if(offsetLighting==1 && tile.getWorldObj()!=null)
-						//						{	
-						//							String key = Math.round(tile.xCoord+vertex.x)+";"+Math.round(tile.yCoord+vertex.y)+";"+Math.round(tile.zCoord+vertex.z);
-						//							BlockLightingInfo info = light.get(key);
-						//							if(info==null)
-						//							{
-						//								info = calculateBlockLighting(side, tile.getWorldObj(), tile.getBlockType(), (int)Math.round(tile.xCoord+vertex.x),(int)Math.round(tile.yCoord+vertex.y),(int)Math.round(tile.zCoord+vertex.z), 1,1,1);
-						//								light.put(key, info);
-						//							}
-						//							tes.setBrightness(corner==0?info.brightnessTopLeft: corner==1?info.brightnessBottomLeft: corner==2?info.brightnessBottomRight: info.brightnessTopRight);
-						//							float r = corner==0?info.colorRedTopLeft: corner==1?info.colorRedBottomLeft: corner==2?info.colorRedBottomRight: info.colorRedTopRight;
-						//							float g = corner==0?info.colorGreenTopLeft: corner==1?info.colorGreenBottomLeft: corner==2?info.colorGreenBottomRight: info.colorGreenTopRight;
-						//							float b = corner==0?info.colorBlueTopLeft: corner==1?info.colorBlueBottomLeft: corner==2?info.colorBlueBottomRight: info.colorBlueTopRight;
-						//							tes.setColorOpaque_F(r, g, b);
-						//						}
-						//						else if(offsetLighting==0 && tile.getWorldObj()!=null && completeLight!=null)
-						//						{	
-						//							tes.setBrightness(corner==0?completeLight.brightnessTopLeft: corner==1?completeLight.brightnessBottomLeft: corner==2?completeLight.brightnessBottomRight: completeLight.brightnessTopRight);
-						//							float r = corner==0?completeLight.colorRedTopLeft: corner==1?completeLight.colorRedBottomLeft: corner==2?completeLight.colorRedBottomRight: completeLight.colorRedTopRight;
-						//							float g = corner==0?completeLight.colorGreenTopLeft: corner==1?completeLight.colorGreenBottomLeft: corner==2?completeLight.colorGreenBottomRight: completeLight.colorGreenTopRight;
-						//							float b = corner==0?completeLight.colorBlueTopLeft: corner==1?completeLight.colorBlueBottomLeft: corner==2?completeLight.colorBlueBottomRight: completeLight.colorBlueTopRight;
-						//							tes.setColorOpaque_F(r, g, b);
-						//						}
 						if(faceLight!=null)
 						{
 							tes.setBrightness(corner==0?faceLight.brightnessTopLeft: corner==1?faceLight.brightnessBottomLeft: corner==2?faceLight.brightnessBottomRight: faceLight.brightnessTopRight);
@@ -475,7 +507,11 @@ public class ClientUtils
 							float b = corner==0?faceLight.colorBlueTopLeft: corner==1?faceLight.colorBlueBottomLeft: corner==2?faceLight.colorBlueBottomRight: faceLight.colorBlueTopRight;
 							tes.setColorOpaque_F(r, g, b);
 						}
-
+						else if(world!=null)
+						{
+							tes.setBrightness(0xb000b0);
+							tes.setColorOpaque_F(colR,colG,colB);
+						}
 
 						if(face.textureCoordinates!=null && face.textureCoordinates.length>0)
 						{
@@ -487,6 +523,114 @@ public class ClientUtils
 							tes.addVertex(vertexCopy.x, vertexCopy.y, vertexCopy.z);
 						}
 					}
+				}
+		}
+	}
+	public static void renderStaticWavefrontModelWithIcon(TileEntity tile, WavefrontObject model, IIcon icon, Tessellator tes, Matrix4 translationMatrix, Matrix4 rotationMatrix, int offsetLighting, boolean invertFaces, float colR, float colG, float colB, String... renderedParts)
+	{
+		renderStaticWavefrontModelWithIcon(tile.getWorldObj(),tile.xCoord,tile.yCoord,tile.zCoord, model, icon, tes, translationMatrix, rotationMatrix, offsetLighting, invertFaces, colR,colG,colB, renderedParts);
+	}
+	public static void renderStaticWavefrontModelWithIcon(IBlockAccess world, int x, int y, int z, WavefrontObject model, IIcon icon, Tessellator tes, Matrix4 translationMatrix, Matrix4 rotationMatrix, int offsetLighting, boolean invertFaces, float colR, float colG, float colB, String... renderedParts)
+	{
+		if(icon==null)
+			return;
+		if(world!=null)
+		{
+			int lb = world.getLightBrightnessForSkyBlocks(x, y, z, 0);
+			int lb_j = lb % 65536;
+			int lb_k = lb / 65536;
+			OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)lb_j / 1.0F, (float)lb_k / 1.0F);
+		}
+		Vertex normalCopy = new Vertex(0,0,0);
+
+		float minU = icon.getInterpolatedU(0);
+		float sizeU = icon.getInterpolatedU(16) - minU;
+		float minV = icon.getInterpolatedV(0);
+		float sizeV = icon.getInterpolatedV(16) - minV;
+		float baseOffsetU = (16f/icon.getIconWidth())*.0005F;
+		float baseOffsetV = (16f/icon.getIconHeight())*.0005F;
+
+		for(GroupObject groupObject : model.groupObjects)
+		{
+			boolean render = false;
+			if(renderedParts==null || renderedParts.length<1)
+				render = true;
+			else
+				for(String s : renderedParts)
+					if(groupObject.name.equalsIgnoreCase(s))
+						render = true;
+			if(render)
+				for(Face face : groupObject.faces)
+				{
+					if(face.faceNormal == null)
+						face.faceNormal = face.calculateFaceNormal();
+
+					normalCopy.x = face.faceNormal.x;
+					normalCopy.y = face.faceNormal.y;
+					normalCopy.z = face.faceNormal.z;
+					rotationMatrix.apply(normalCopy);
+					float biggestNormal = Math.max(Math.abs(normalCopy.y), Math.max(Math.abs(normalCopy.x),Math.abs(normalCopy.z)));
+					int side = biggestNormal==Math.abs(normalCopy.y)?(normalCopy.y<0?0:1): biggestNormal==Math.abs(normalCopy.z)?(normalCopy.z<0?2:3): (normalCopy.x<0?4:5);
+
+					BlockLightingInfo faceLight = null;
+					if(offsetLighting==0 && world!=null)
+						faceLight = calculateBlockLighting(side, world, world.getBlock(x,y,z), x,y,z, colR,colG,colB, standardBlockAABB);
+					else if(offsetLighting==1 && world!=null)
+					{
+						double faceMinX = face.vertices[0].x;
+						double faceMinY = face.vertices[0].y;
+						double faceMinZ = face.vertices[0].z;
+						double faceMaxX = face.vertices[0].x;
+						double faceMaxY = face.vertices[0].y;
+						double faceMaxZ = face.vertices[0].z;
+						for(int i=1; i<face.vertices.length; ++i)
+						{
+							faceMinX = Math.min(faceMinX, face.vertices[i].x);
+							faceMinY = Math.min(faceMinY, face.vertices[i].y);
+							faceMinZ = Math.min(faceMinZ, face.vertices[i].z);
+							faceMaxX = Math.max(faceMaxX, face.vertices[i].x);
+							faceMaxY = Math.max(faceMaxY, face.vertices[i].y);
+							faceMaxZ = Math.max(faceMaxZ, face.vertices[i].z);
+						}
+						faceLight = calculateBlockLighting(side, world, world.getBlock(x, y, z), x,y,z, colR,colG,colB, AxisAlignedBB.getBoundingBox(faceMinX,faceMinY,faceMinZ, faceMaxX,faceMaxY,faceMaxZ));
+					}
+
+					tes.setNormal(face.faceNormal.x, face.faceNormal.y, face.faceNormal.z);
+
+					float averageU = 0F;
+					float averageV = 0F;
+					if(face.textureCoordinates!=null && face.textureCoordinates.length>0)
+					{
+						for(int i=0; i<face.textureCoordinates.length; ++i)
+						{
+							averageU += face.textureCoordinates[i].u;
+							averageV += face.textureCoordinates[i].v;
+						}
+						averageU = averageU / face.textureCoordinates.length;
+						averageV = averageV / face.textureCoordinates.length;
+					}
+
+					TextureCoordinate[] oldUVs = new TextureCoordinate[face.textureCoordinates.length];
+					for(int v=0; v<face.vertices.length; ++v)
+					{
+						float offsetU, offsetV;
+						offsetU = baseOffsetU;
+						offsetV = baseOffsetV;
+						if (face.textureCoordinates[v].u > averageU)
+							offsetU = -offsetU;
+						if (face.textureCoordinates[v].v > averageV)
+							offsetV = -offsetV;
+
+						oldUVs[v] = face.textureCoordinates[v];
+						TextureCoordinate textureCoordinate = face.textureCoordinates[v];
+						face.textureCoordinates[v] = new TextureCoordinate(
+								minU + sizeU * (textureCoordinate.u+offsetU),
+								minV + sizeV * (textureCoordinate.v+offsetV)
+								);
+					}
+					addFaceToWorldRender(face, tes, faceLight, translationMatrix, rotationMatrix, invertFaces, colR, colG, colB);
+					for(int v=0; v<face.vertices.length; ++v)
+						face.textureCoordinates[v] = new TextureCoordinate(oldUVs[v].u,oldUVs[v].v);
 				}
 		}
 	}
@@ -605,6 +749,46 @@ public class ClientUtils
 				face.textureCoordinates[v] = new TextureCoordinate(oldUVs[v].u,oldUVs[v].v);
 		}
 	}
+
+	public static void addFaceToWorldRender(Face face, Tessellator tes, BlockLightingInfo light, Matrix4 translationMatrix, Matrix4 rotationMatrix, boolean invert, float colR, float colG, float colB)
+	{
+		Vertex vertexCopy = new Vertex(0,0,0);
+		for(int i=0; i<face.vertices.length; ++i)
+		{
+			int target = !invert?i:(face.vertices.length-1-i);
+			int corner = (int)(target/(float)face.vertices.length*4);
+			Vertex vertex = face.vertices[target];
+			vertexCopy.x = vertex.x;
+			vertexCopy.y = vertex.y;
+			vertexCopy.z = vertex.z;
+			rotationMatrix.apply(vertexCopy);
+			translationMatrix.apply(vertexCopy);
+			if(light!=null)
+			{
+				tes.setBrightness(corner==0?light.brightnessTopLeft: corner==1?light.brightnessBottomLeft: corner==2?light.brightnessBottomRight: light.brightnessTopRight);
+				float r = corner==0?light.colorRedTopLeft: corner==1?light.colorRedBottomLeft: corner==2?light.colorRedBottomRight: light.colorRedTopRight;
+				float g = corner==0?light.colorGreenTopLeft: corner==1?light.colorGreenBottomLeft: corner==2?light.colorGreenBottomRight: light.colorGreenTopRight;
+				float b = corner==0?light.colorBlueTopLeft: corner==1?light.colorBlueBottomLeft: corner==2?light.colorBlueBottomRight: light.colorBlueTopRight;
+				tes.setColorOpaque_F(r, g, b);
+			}
+			else
+			{
+				tes.setBrightness(0xb000b0);
+				tes.setColorOpaque_F(colR,colG,colB);
+			}
+
+			if(face.textureCoordinates!=null && face.textureCoordinates.length>0)
+			{
+				TextureCoordinate textureCoordinate = face.textureCoordinates[target];
+				tes.addVertexWithUV(vertexCopy.x, vertexCopy.y, vertexCopy.z, textureCoordinate.u, textureCoordinate.v);
+			}
+			else
+			{
+				tes.addVertex(vertexCopy.x, vertexCopy.y, vertexCopy.z);
+			}
+		}
+	}
+
 
 	public static void renderItemIn2D(IIcon icon, double[] uv, int width, int height, float depth)
 	{
@@ -1043,7 +1227,7 @@ public class ClientUtils
 	}
 	public static BlockLightingInfo calculateBlockLighting(int side, IBlockAccess world, Block block, int x, int y, int z, float colR, float colG, float colB)
 	{
-		return calculateBlockLighting(side, world, block, x,y,z, colR,colG,colB, AxisAlignedBB.getBoundingBox(0,0,0, 1,1,1));
+		return calculateBlockLighting(side, world, block, x,y,z, colR,colG,colB, standardBlockAABB);
 	}
 	public static BlockLightingInfo calculateBlockLighting(int side, IBlockAccess world, Block block, int x, int y, int z, float colR, float colG, float colB, AxisAlignedBB bounds)
 	{
@@ -1762,10 +1946,11 @@ public class ClientUtils
 		Tessellator tes = tes();
 		boolean flag = false;
 		BlockLightingInfo info;
+		AxisAlignedBB lightBounds = bounds.getOffsetBoundingBox(-x, -y, -z);
 		// SIDE 0
 		if(block.shouldSideBeRendered(world, x, y, z, 0))
 		{
-			info = calculateBlockLighting(0, world, block, x,y,z, 1,1,1, bounds);
+			info = calculateBlockLighting(0, world, block, x,y,z, 1,1,1, lightBounds);
 			tes.setColorOpaque_F(info.colorRedTopLeft, info.colorGreenTopLeft, info.colorBlueTopLeft);
 			tes.setBrightness(info.brightnessTopLeft);
 			tes.addVertexWithUV(bounds.minX, bounds.minY, bounds.maxZ, uv[0][0], uv[0][3]);
@@ -1783,7 +1968,7 @@ public class ClientUtils
 		// SIDE 1
 		if(block.shouldSideBeRendered(world, x, y, z, 1))
 		{
-			info = calculateBlockLighting(1, world, block, x,y,z, 1,1,1, bounds);
+			info = calculateBlockLighting(1, world, block, x,y,z, 1,1,1, lightBounds);
 			tes.setColorOpaque_F(info.colorRedTopLeft, info.colorGreenTopLeft, info.colorBlueTopLeft);
 			tes.setBrightness(info.brightnessTopLeft);
 			tes.addVertexWithUV(bounds.maxX, bounds.maxY, bounds.maxZ, uv[1][1], uv[1][3]);
@@ -1801,7 +1986,7 @@ public class ClientUtils
 		// SIDE 2
 		if(block.shouldSideBeRendered(world, x, y, z, 2))
 		{
-			info = calculateBlockLighting(2, world, block, x,y,z, 1,1,1, bounds);
+			info = calculateBlockLighting(2, world, block, x,y,z, 1,1,1, lightBounds);
 			tes.setColorOpaque_F(info.colorRedTopLeft, info.colorGreenTopLeft, info.colorBlueTopLeft);
 			tes.setBrightness(info.brightnessTopLeft);
 			tes.addVertexWithUV(bounds.minX, bounds.maxY, bounds.minZ, uv[2][1], uv[2][2]);
@@ -1819,7 +2004,7 @@ public class ClientUtils
 		// SIDE 3
 		if(block.shouldSideBeRendered(world, x, y, z, 3))
 		{
-			info = calculateBlockLighting(3, world, block, x,y,z, 1,1,1, bounds);
+			info = calculateBlockLighting(3, world, block, x,y,z, 1,1,1, lightBounds);
 			tes.setColorOpaque_F(info.colorRedTopLeft, info.colorGreenTopLeft, info.colorBlueTopLeft);
 			tes.setBrightness(info.brightnessTopLeft);
 			tes.addVertexWithUV(bounds.minX, bounds.maxY, bounds.maxZ, uv[3][0], uv[3][2]);
@@ -1837,7 +2022,7 @@ public class ClientUtils
 		// SIDE 4
 		if(block.shouldSideBeRendered(world, x, y, z, 4))
 		{
-			info = calculateBlockLighting(4, world, block, x,y,z, 1,1,1, bounds);
+			info = calculateBlockLighting(4, world, block, x,y,z, 1,1,1, lightBounds);
 			tes.setColorOpaque_F(info.colorRedTopLeft, info.colorGreenTopLeft, info.colorBlueTopLeft);
 			tes.setBrightness(info.brightnessTopLeft);
 			tes.addVertexWithUV(bounds.minX, bounds.maxY, bounds.maxZ, uv[4][1], uv[4][2]);
@@ -1855,7 +2040,7 @@ public class ClientUtils
 		// SIDE 5
 		if(block.shouldSideBeRendered(world, x, y, z, 5))
 		{
-			info = calculateBlockLighting(5, world, block, x,y,z, 1,1,1, bounds);
+			info = calculateBlockLighting(5, world, block, x,y,z, 1,1,1, lightBounds);
 			tes.setColorOpaque_F(info.colorRedTopLeft, info.colorGreenTopLeft, info.colorBlueTopLeft);
 			tes.setBrightness(info.brightnessTopLeft);
 			tes.addVertexWithUV(bounds.maxX, bounds.minY, bounds.maxZ, uv[5][0], uv[5][3]);

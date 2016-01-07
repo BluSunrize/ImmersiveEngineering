@@ -12,6 +12,7 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
+import blusunrize.immersiveengineering.common.util.IEAchievements;
 import blusunrize.immersiveengineering.common.util.Lib;
 
 public class ItemBlockWoodenDevices extends ItemBlockIEBase
@@ -55,7 +56,9 @@ public class ItemBlockWoodenDevices extends ItemBlockIEBase
 	{
 		int playerViewQuarter = MathHelper.floor_double(player.rotationYaw * 4.0F / 360.0F + 0.5D) & 3;
 		int f = playerViewQuarter==0 ? 2:playerViewQuarter==1 ? 5:playerViewQuarter==2 ? 3: 4;
-
+		if(meta>=1&&meta<=3)
+			f = side;
+		
 		if(meta==0)
 		{
 			for(int i=0;i<=3;i++)
@@ -129,11 +132,14 @@ public class ItemBlockWoodenDevices extends ItemBlockIEBase
 			}
 		}
 		else if(tileEntity instanceof TileEntityWindmill)
+		{
+			player.triggerAchievement(IEAchievements.placeWindmill);
 			((TileEntityWindmill)tileEntity).facing=f;
+		}
 		else if(tileEntity instanceof TileEntityWoodenCrate)
 		{
 			if(stack.hasTagCompound())
-				((TileEntityWoodenCrate)tileEntity).readInv(stack.getTagCompound());
+				((TileEntityWoodenCrate)tileEntity).readCustomNBT(stack.getTagCompound(), false);
 		}
 		else if(tileEntity instanceof TileEntityModWorkbench)
 		{

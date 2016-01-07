@@ -1,12 +1,15 @@
 package blusunrize.immersiveengineering.common.blocks.stone;
 
+import blusunrize.immersiveengineering.api.crafting.CokeOvenRecipe;
+import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMultiblockPart;
+import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
@@ -16,10 +19,6 @@ import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.oredict.OreDictionary;
-import blusunrize.immersiveengineering.api.crafting.CokeOvenRecipe;
-import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMultiblockPart;
-import blusunrize.immersiveengineering.common.util.Utils;
 
 public class TileEntityCokeOven extends TileEntityMultiblockPart implements ISidedInventory, IFluidHandler
 {
@@ -102,15 +101,12 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart implements ISid
 					processMax=0;
 					active=false;
 				}
-				else
+				CokeOvenRecipe recipe = getRecipe();
+				if(recipe!=null)
 				{
-					CokeOvenRecipe recipe = getRecipe();
-					if(recipe!=null)
-					{
-						this.process=recipe.time;
-						this.processMax=process;
-						this.active=true;
-					}
+					this.process=recipe.time;
+					this.processMax=process;
+					this.active=true;
 				}
 			}
 
@@ -186,8 +182,9 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart implements ISid
 	{
 		if(!formed)
 			return null;
-		if(master()!=null)
-			return master().getStackInSlot(slot);
+		TileEntityCokeOven master = master();
+		if(master!=null)
+			return master.getStackInSlot(slot);
 		if(slot<inventory.length)
 			return inventory[slot];
 		return null;
@@ -198,8 +195,9 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart implements ISid
 	{
 		if(!formed)
 			return null;
-		if(master()!=null)
-			return master().decrStackSize(slot,amount);
+		TileEntityCokeOven master = master();
+		if(master!=null)
+			return master.decrStackSize(slot,amount);
 		ItemStack stack = getStackInSlot(slot);
 		if(stack != null)
 			if(stack.stackSize <= amount)
@@ -218,8 +216,9 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart implements ISid
 	{
 		if(!formed)
 			return null;
-		if(master()!=null)
-			return master().getStackInSlotOnClosing(slot);
+		TileEntityCokeOven master = master();
+		if(master!=null)
+			return master.getStackInSlotOnClosing(slot);
 		ItemStack stack = getStackInSlot(slot);
 		if (stack != null)
 			setInventorySlotContents(slot, null);
@@ -231,9 +230,10 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart implements ISid
 	{
 		if(!formed)
 			return;
-		if(master()!=null)
+		TileEntityCokeOven master = master();
+		if(master!=null)
 		{
-			master().setInventorySlotContents(slot,stack);
+			master.setInventorySlotContents(slot,stack);
 			return;
 		}
 		inventory[slot] = stack;
@@ -279,8 +279,9 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart implements ISid
 	{
 		if(!formed)
 			return false;
-		if(master()!=null)
-			return master().isItemValidForSlot(slot,stack);
+		TileEntityCokeOven master = master();
+		if(master!=null)
+			return master.isItemValidForSlot(slot,stack);
 		if(slot==0)
 			return stack!=null && CokeOvenRecipe.findRecipe(stack)!=null;
 		if(slot==2)
@@ -293,8 +294,9 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart implements ISid
 	{
 		if(!formed)
 			return new int[0];
-		if(master()!=null)
-			return master().getAccessibleSlotsFromSide(side);
+		TileEntityCokeOven master = master();
+		if(master!=null)
+			return master.getAccessibleSlotsFromSide(side);
 		return new int[]{0,1,2,3};
 	}
 
@@ -303,8 +305,9 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart implements ISid
 	{
 		if(!formed)
 			return false;
-		if(master()!=null)
-			return master().canInsertItem(slot,stack,side);
+		TileEntityCokeOven master = master();
+		if(master!=null)
+			return master.canInsertItem(slot,stack,side);
 		return (slot==0 || slot==2)&&this.isItemValidForSlot(slot, stack);
 	}
 
@@ -313,8 +316,9 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart implements ISid
 	{
 		if(!formed)
 			return false;
-		if(master()!=null)
-			return master().canExtractItem(slot,stack,side);
+		TileEntityCokeOven master = master();
+		if(master!=null)
+			return master.canExtractItem(slot,stack,side);
 		return slot==1 || slot==3;
 	}
 
@@ -333,14 +337,7 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart implements ISid
 		tank.readFromNBT(nbt.getCompoundTag("tank"));
 		if(!descPacket)
 		{
-			NBTTagList invList = nbt.getTagList("inventory", 10);
-			for (int i=0; i<invList.tagCount(); i++)
-			{
-				NBTTagCompound itemTag = invList.getCompoundTagAt(i);
-				int slot = itemTag.getByte("Slot") & 255;
-				if(slot>=0 && slot<this.inventory.length)
-					this.inventory[slot] = ItemStack.loadItemStackFromNBT(itemTag);
-			}
+			inventory = Utils.readInventory(nbt.getTagList("inventory", 10), 4);
 		}
 	}
 
@@ -358,16 +355,7 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart implements ISid
 		nbt.setTag("tank", tankTag);
 		if(!descPacket)
 		{
-			NBTTagList invList = new NBTTagList();
-			for(int i=0; i<this.inventory.length; i++)
-				if(this.inventory[i] != null)
-				{
-					NBTTagCompound itemTag = new NBTTagCompound();
-					itemTag.setByte("Slot", (byte)i);
-					this.inventory[i].writeToNBT(itemTag);
-					invList.appendTag(itemTag);
-				}
-			nbt.setTag("inventory", invList);
+			nbt.setTag("inventory", Utils.writeInventory(inventory));
 		}
 	}
 
@@ -425,8 +413,9 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart implements ISid
 	{
 		if(!formed)
 			return null;
-		if(master()!=null)
-			return master().drain(from,resource,doDrain);
+		TileEntityCokeOven master = master();
+		if(master!=null)
+			return master.drain(from,resource,doDrain);
 		if(resource!=null)
 		{
 			return drain(from, resource.amount, doDrain);
@@ -438,8 +427,9 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart implements ISid
 	{
 		if(!formed)
 			return null;
-		if(master()!=null)
-			return master().drain(from,maxDrain,doDrain);
+		TileEntityCokeOven master = master();
+		if(master!=null)
+			return master.drain(from,maxDrain,doDrain);
 		markDirty();
 		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 		return tank.drain(maxDrain, doDrain);
@@ -461,8 +451,9 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart implements ISid
 	{
 		if(!formed)
 			return new FluidTankInfo[]{};
-		if(master()!=null)
-			return master().getTankInfo(from);
+		TileEntityCokeOven master = master();
+		if(master!=null)
+			return master.getTankInfo(from);
 		return new FluidTankInfo[]{tank.getInfo()};
 	}
 }

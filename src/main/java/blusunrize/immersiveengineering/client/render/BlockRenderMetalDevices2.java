@@ -186,7 +186,8 @@ public class BlockRenderMetalDevices2 implements ISimpleBlockRenderingHandler
 			{
 				TileEntityFloodlight tile = (TileEntityFloodlight) world.getTileEntity(x, y, z);
 				ClientUtils.handleStaticTileRenderer(tile);
-				ClientUtils.renderAttachedConnections(tile);
+				if(renderPass==0)
+					ClientUtils.renderAttachedConnections(tile);
 				return true;
 			}
 			else if(metadata==BlockMetalDevices2.META_fluidPipe)
