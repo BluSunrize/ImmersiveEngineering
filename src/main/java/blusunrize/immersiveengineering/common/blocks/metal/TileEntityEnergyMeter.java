@@ -162,7 +162,7 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 	@Override
 	public String getComponentName()
 	{
-		return "energy_meter";
+		return "IE:currentTransformer";
 	}
 
 	@Optional.Method(modid = "OpenComputers")

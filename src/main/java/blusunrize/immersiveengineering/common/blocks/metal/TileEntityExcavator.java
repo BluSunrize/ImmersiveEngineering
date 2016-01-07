@@ -2,7 +2,17 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import java.util.ArrayList;
 
+import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
+import blusunrize.immersiveengineering.common.Config;
+import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockExcavator;
+import blusunrize.immersiveengineering.common.util.FakePlayerUtil;
+import blusunrize.immersiveengineering.common.util.Utils;
+import cofh.api.energy.EnergyStorage;
+import cofh.api.energy.IEnergyReceiver;
 import cpw.mods.fml.common.Optional;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
@@ -23,16 +33,6 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.event.ForgeEventFactory;
-import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
-import blusunrize.immersiveengineering.common.Config;
-import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockExcavator;
-import blusunrize.immersiveengineering.common.util.FakePlayerUtil;
-import blusunrize.immersiveengineering.common.util.Utils;
-import cofh.api.energy.EnergyStorage;
-import cofh.api.energy.IEnergyReceiver;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 @Optional.InterfaceList({
 		@Optional.Interface(iface = "li.cil.oc.api.network.SidedComponent", modid = "OpenComputers"),
@@ -473,7 +473,7 @@ public class TileEntityExcavator extends TileEntityMultiblockPart implements IEn
 	@Override
 	public String getComponentName()
 	{
-		return "ie_excavator";
+		return "IE:excavator";
 	}
 
 	@Optional.Method(modid = "OpenComputers")

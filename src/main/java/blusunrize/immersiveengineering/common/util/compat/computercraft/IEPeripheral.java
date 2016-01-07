@@ -1,18 +1,11 @@
 package blusunrize.immersiveengineering.common.util.compat.computercraft;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import blusunrize.immersiveengineering.common.EventHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import dan200.computercraft.api.peripheral.IPeripheral;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
 
 public abstract class IEPeripheral implements IPeripheral
 {

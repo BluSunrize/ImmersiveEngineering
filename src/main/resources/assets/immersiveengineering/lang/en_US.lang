@@ -886,8 +886,8 @@ ie.manual.entry.computer.floodlight1=§lwaitForTimeout()§r: waits until the flo
 
 ie.manual.entry.computer.refinery.name=Refinery
 ie.manual.entry.computer.refinery.subtext=STOP ASKING
-ie.manual.entry.computer.refinery0=§lgetInputFluid(int tank)§r: returns the specified input tank (0 or 1)<br>§lgetOutputTank()§r: returns the output tank<br>§lgetRecipe()§r: returns 3 tables describing the current recipe: the input fluids and the output fluid<br>§lsetEnabled(boolean on)§r: allows or disallows the refinery to run<br>§lisValidRecipe()§r: returns whether a recipe with the current input fluids exists<br>§lgetEmptyCannisters(int tank)§r: returns the stack of
-ie.manual.entry.computer.refinery1=empty cannisters for the specified tank (0 and 1: inputs, 2: output)<br>§lgetFullCannisters(int tank)§r: returns the stack of full cannisters for the specified tank (0 and 1: inputs, 2: output)<br>§lgetMaxEnergyStored()§r: returns the maximum of energy that can be stored in this refinery<br>§lgetEnergyStored()§r: returns the amount of energy stored in the refinery
+ie.manual.entry.computer.refinery0=§lgetInputFluidTanks()§r: returns a table storing the input tanks in the keys "input0" and "input1"<br>§lgetOutputTank()§r: returns the output tank<br>§lgetRecipe()§r: returns a table containing the input fluids in the keys "input0" and "input1" and the output fluid in the key "output"<br>§lsetEnabled(boolean on)§r: allows or disallows the refinery to run<br>§lisValidRecipe()§r: returns whether a recipe with the current input fluids exists
+ie.manual.entry.computer.refinery1=§lgetEmptyCannisters()§r: returns a table containing the stacks of empty cannisters, the keys "input0" and "input1" for the input tanks, the key "output" for the output tank<br>§lgetMaxEnergyStored()§r: returns the maximum of energy that can be stored in this refinery<br>§lgetEnergyStored()§r: returns the amount of energy stored in the refinery
 
 ie.manual.entry.computer.assembler.name=Assembler
 ie.manual.entry.computer.assembler.subtext=Some assembly required

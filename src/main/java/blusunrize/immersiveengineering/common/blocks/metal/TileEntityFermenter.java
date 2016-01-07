@@ -31,8 +31,10 @@ import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.oredict.OreDictionary;
-import scala.reflect.internal.Types.SimpleTypeProxy;
 
+@Optional.InterfaceList({
+	@Optional.Interface(iface = "li.cil.oc.api.network.SidedComponent", modid = "OpenComputers"),
+	@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")})
 public class TileEntityFermenter extends TileEntityMultiblockPart implements IFluidHandler, ISidedInventory, IEnergyReceiver, SimpleComponent, SidedComponent
 {
 	public int facing = 2;
@@ -554,7 +556,7 @@ public class TileEntityFermenter extends TileEntityMultiblockPart implements IFl
 	}
 	@Override
 	public String getComponentName() {
-		return "ie_fermenter";
+		return "IE:fermenter";
 	}
 
 	@Optional.Method(modid = "OpenComputers")

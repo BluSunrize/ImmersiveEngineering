@@ -1,5 +1,7 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import java.util.HashMap;
+
 import blusunrize.immersiveengineering.api.energy.DieselHandler;
 import blusunrize.immersiveengineering.api.energy.DieselHandler.RefineryRecipe;
 import blusunrize.immersiveengineering.common.Config;
@@ -33,8 +35,6 @@ import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.oredict.OreDictionary;
-
-import java.util.HashMap;
 
 @Optional.InterfaceList({
 		@Optional.Interface(iface = "li.cil.oc.api.network.SidedComponent", modid = "OpenComputers"),
@@ -137,7 +137,7 @@ public class TileEntityRefinery extends TileEntityMultiblockPart implements IFlu
 				enabled = !worldObj.isBlockIndirectlyGettingPowered(xCoord+(facing==4?-1:facing==5?1:facing==2?-2:2),yCoord+1,zCoord+(facing==2?-1:facing==3?1:facing==4?2:-2));
 			if (enabled)
 			{
-				RefineryRecipe recipe = getRecipe();
+				RefineryRecipe recipe = getRecipe(true);
 				if(recipe!=null)
 				{
 					int consumed = Config.getInt("refinery_consumption");
@@ -213,12 +213,12 @@ public class TileEntityRefinery extends TileEntityMultiblockPart implements IFlu
 		}
 	}
 
-	public RefineryRecipe getRecipe()
+	public RefineryRecipe getRecipe(boolean checkCapacity)
 	{
 		RefineryRecipe recipe = DieselHandler.findRefineryRecipe(tank0.getFluid(), tank1.getFluid());
 		if(recipe==null)
 			return null;
-		if(tank2.getFluid()==null || (tank2.getFluid().isFluidEqual(recipe.output) && tank2.getFluidAmount()+recipe.output.amount<=tank2.getCapacity()))
+		if(tank2.getFluid()==null || (tank2.getFluid().isFluidEqual(recipe.output) && (!checkCapacity||tank2.getFluidAmount()+recipe.output.amount<=tank2.getCapacity())))
 			return recipe;
 		return null;
 	}
@@ -630,14 +630,16 @@ public class TileEntityRefinery extends TileEntityMultiblockPart implements IFlu
 	@Override
 	public String getComponentName()
 	{
-		return "ie_refinery";
+		return "IE:refinery";
 	}
 
 	@Optional.Method(modid = "OpenComputers")
 	// "override" what gets injected by OC's class transformer
 	public void onConnect(Node node)
 	{
-		master().computerControlled = true;
+		TileEntityRefinery master = master();
+		master.computerControlled = true;
+		master.computerOn = true;
 	}
 
 	@Optional.Method(modid = "OpenComputers")
@@ -645,13 +647,6 @@ public class TileEntityRefinery extends TileEntityMultiblockPart implements IFlu
 	public void onDisconnect(Node node)
 	{
 		master().computerControlled = false;
-	}
-
-	@Optional.Method(modid = "OpenComputers")
-	@Callback(doc = "function():boolean -- get whether the refinery is enabled")
-	public Object[] getEnabled(Context context, Arguments args)
-	{
-		return new Object[]{master().computerOn};
 	}
 
 	@Optional.Method(modid = "OpenComputers")
@@ -689,7 +684,7 @@ public class TileEntityRefinery extends TileEntityMultiblockPart implements IFlu
 
 	@Optional.Method(modid = "OpenComputers")
 	@Callback(doc = "function():table -- get tankinfo for output tank")
-	public Object[] getOutputFluidTank(Context context, Arguments args)
+	public Object[] getOutputTank(Context context, Arguments args)
 	{
 		return new Object[]{master().tank2.getInfo()};
 	}
@@ -698,9 +693,9 @@ public class TileEntityRefinery extends TileEntityMultiblockPart implements IFlu
 	@Callback(doc = "function():table -- get current recipe")
 	public Object[] getRecipe(Context context, Arguments args)
 	{
-		RefineryRecipe recipe = master().getRecipe();
+		RefineryRecipe recipe = master().getRecipe(false);
 		if(recipe==null)
-			return null;
+			throw new IllegalArgumentException("The recipe of the refinery is invalid");
 		HashMap<String, FluidStack> ret = new HashMap<>(3);
 		ret.put("input0", recipe.input0);
 		ret.put("input1", recipe.input1);
@@ -712,12 +707,12 @@ public class TileEntityRefinery extends TileEntityMultiblockPart implements IFlu
 	@Callback(doc = "function():boolean -- check whether a valid recipe exists for the current inputs")
 	public Object[] isValidRecipe(Context context, Arguments args)
 	{
-		return new Object[]{master().getRecipe()!=null};
+		return new Object[]{master().getRecipe(false)!=null};
 	}
 
 	@Optional.Method(modid = "OpenComputers")
 	@Callback(doc = "function():table -- return item input slot contents for both input and output tanks")
-	public Object[] getEmptyCanisters(Context context, Arguments args)
+	public Object[] getEmptyCannister(Context context, Arguments args)
 	{
 		TileEntityRefinery te = master();
 		HashMap<String, ItemStack> ret = new HashMap<>(3);
@@ -729,7 +724,7 @@ public class TileEntityRefinery extends TileEntityMultiblockPart implements IFlu
 
 	@Optional.Method(modid = "OpenComputers")
 	@Callback(doc = "function():table -- return item output slot contents for both input and output tanks")
-	public Object[] getFullCanisters(Context context, Arguments args)
+	public Object[] getFullCannisters(Context context, Arguments args)
 	{
 		TileEntityRefinery te = master();
 		HashMap<String, ItemStack> ret = new HashMap<>(3);

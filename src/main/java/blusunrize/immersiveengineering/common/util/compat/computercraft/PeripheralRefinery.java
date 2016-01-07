@@ -3,7 +3,7 @@ import static blusunrize.immersiveengineering.common.util.Utils.saveFluidStack;
 import static blusunrize.immersiveengineering.common.util.Utils.saveFluidTank;
 import static blusunrize.immersiveengineering.common.util.Utils.saveStack;
 
-import java.util.Map;
+import java.util.HashMap;
 
 import blusunrize.immersiveengineering.api.energy.DieselHandler.RefineryRecipe;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityRefinery;
@@ -11,11 +11,10 @@ import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.FluidTank;
 
 public class PeripheralRefinery extends IEPeripheral
 {
-	public static final String[] cmds = {"getInputFluid", "getOutputTank", "getRecipe", "setEnabled", "isValidRecipe", "getEmptyCanisters", "getFullCanisters", "getMaxEnergyStored", "getEnergyStored"};
+	public static final String[] cmds = {"getInputFluidTanks", "getOutputTank", "getRecipe", "setEnabled", "isValidRecipe", "getEmptyCannisters", "getFullCannisters", "getMaxEnergyStored", "getEnergyStored"};
 	public PeripheralRefinery(World w, int _x, int _y, int _z)
 	{
 		super(w, _x, _y, _z);
@@ -44,27 +43,21 @@ public class PeripheralRefinery extends IEPeripheral
 		switch (method)
 		{
 		case 0://getFluid
-			if (arguments.length!=1||!(arguments[0] instanceof Double))
-				throw new LuaException("Wrong amount of arguments, needs one integer");
-			int tank = (int)(double)arguments[0];
-			if (tank<0||tank>1)
-				throw new LuaException("Only tanks 0 and 1 are available");
-			FluidTank write;
-			if (tank==0)
-				write = te.tank0;
-			else
-				write = te.tank1;
-			return new Object[]{saveFluidTank(write)};
+			HashMap<String, Object> ret = new HashMap<>(2);
+			ret.put("input0", saveFluidTank(te.tank0));
+			ret.put("input1", saveFluidTank(te.tank1));
+			return new Object[]{ret};
 		case 1://Output
 			return new Object[]{saveFluidTank(te.tank2)};
 		case 2://recipe
-			RefineryRecipe ref = te.getRecipe();
+			RefineryRecipe ref = te.getRecipe(false);
 			if (ref==null)
 				throw new LuaException("The recipe of the refinery is invalid");
-			Map<String, Object> in1 = saveFluidStack(ref.input0);
-			Map<String, Object> in2 = saveFluidStack(ref.input1);
-			Map<String, Object> out = saveFluidStack(ref.output);
-			return new Object[]{in1, in2, out};
+			ret = new HashMap<>(3);
+			ret.put("input0", saveFluidStack(ref.input0));
+			ret.put("input1", saveFluidStack(ref.input1));
+			ret.put("output", saveFluidStack(ref.output));
+			return new Object[]{ret};
 		case 3://setEnabled
 			if (arguments.length!=1||!(arguments[0] instanceof Boolean))
 				throw new LuaException("Wrong amount of arguments, needs one boolean");
@@ -72,37 +65,19 @@ public class PeripheralRefinery extends IEPeripheral
 			te.computerOn = param;
 			return null;
 		case 4://isValid
-			return new Object[]{te.getRecipe()!=null};
-		case 5://Empty canisters
-			if (arguments.length!=1||!(arguments[0] instanceof Double))
-				throw new LuaException("Wrong amount of arguments, needs one integer");
-			int id = (int)(double)arguments[0];
-			if (id>2||id<0)
-				throw new LuaException("Empty canisters can be requested for tanks 0, 1 and 2");
-			switch (id)
-			{
-			case 0:
-				return new Object[]{saveStack(te.inventory[1])};
-			case 1:
-				return new Object[]{saveStack(te.inventory[3])};
-			case 2:
-				return new Object[]{saveStack(te.inventory[4])};
-			}
-		case 6://full canisters
-			if (arguments.length!=1||!(arguments[0] instanceof Double))
-				throw new LuaException("Wrong amount of arguments, needs one integer");
-			id = (int)(double)arguments[0];
-			if (id>2||id<0)
-				throw new LuaException("Empty canisters can be requested for tanks 0, 1 and 2");
-			switch (id)
-			{
-			case 0:
-				return new Object[]{saveStack(te.inventory[0])};
-			case 1:
-				return new Object[]{saveStack(te.inventory[2])};
-			case 2:
-				return new Object[]{saveStack(te.inventory[5])};
-			}
+			return new Object[]{te.getRecipe(false)!=null};
+		case 5://Empty cannisters
+			ret = new HashMap<>(3);
+			ret.put("input0", saveStack(te.inventory[1]));
+			ret.put("input1", saveStack(te.inventory[3]));
+			ret.put("output", saveStack(te.inventory[4]));
+			return new Object[]{ret};
+		case 6://full cannisters
+			ret = new HashMap<>(3);
+			ret.put("input0", saveStack(te.inventory[0]));
+			ret.put("input1", saveStack(te.inventory[2]));
+			ret.put("output", saveStack(te.inventory[5]));
+			return new Object[]{ret};
 		case 7://max energy
 			return new Object[]{te.energyStorage.getMaxEnergyStored()};
 		case 8://current energy

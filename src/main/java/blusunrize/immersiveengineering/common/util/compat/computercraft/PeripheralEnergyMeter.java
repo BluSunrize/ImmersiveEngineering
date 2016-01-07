@@ -13,7 +13,7 @@ public class PeripheralEnergyMeter extends IEPeripheral {
 		super(w, _x, _y, _z);
 	}
 
-	final static String[] cmds = {"getAvgEnergy"};
+	final static String[] cmds = {"getLastMeasurements"};
 	@Override
 	public String getType()
 	{

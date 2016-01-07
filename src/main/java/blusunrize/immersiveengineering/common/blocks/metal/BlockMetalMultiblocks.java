@@ -3,6 +3,17 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import java.util.ArrayList;
 import java.util.List;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.client.render.BlockRenderMetalMultiblocks;
+import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ICustomBoundingboxes;
+import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
+import blusunrize.immersiveengineering.common.util.Lib;
+import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.compat.opencomputers.TileEntityDieselGeneratorOC;
+import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -23,15 +34,6 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.IFluidContainerItem;
-import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.client.render.BlockRenderMetalMultiblocks;
-import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ICustomBoundingboxes;
-import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
-import blusunrize.immersiveengineering.common.util.Lib;
-import blusunrize.immersiveengineering.common.util.Utils;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundingboxes
 {
@@ -256,6 +258,7 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 			if(((TileEntityDieselGenerator)curr).pos==40 && Utils.isHammer(player.getCurrentEquippedItem()))
 			{
 				master.mirrored = !master.mirrored;
+				master.mirror();
 				master.markDirty();
 				world.markBlockForUpdate(master.xCoord, master.yCoord, master.zCoord);
 			}
@@ -563,7 +566,10 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 		case META_lightningRod:
 			return new TileEntityLightningRod();
 		case META_dieselGenerator:
-			return new TileEntityDieselGenerator();
+			if (TileEntityDieselGenerator.isOCLoaded)
+				return new TileEntityDieselGeneratorOC();
+			else
+				return new TileEntityDieselGenerator();
 		case META_squeezer:
 			return new TileEntitySqueezer();
 		case META_fermenter:

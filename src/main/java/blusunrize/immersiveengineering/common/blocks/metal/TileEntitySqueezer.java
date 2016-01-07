@@ -3,7 +3,6 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import java.util.HashMap;
 
 import blusunrize.immersiveengineering.api.energy.DieselHandler;
-import blusunrize.immersiveengineering.api.energy.DieselHandler.FermenterRecipe;
 import blusunrize.immersiveengineering.api.energy.DieselHandler.SqueezerRecipe;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.IEContent;
@@ -33,6 +32,9 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.oredict.OreDictionary;
 
+@Optional.InterfaceList({
+	@Optional.Interface(iface = "li.cil.oc.api.network.SidedComponent", modid = "OpenComputers"),
+	@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")})
 public class TileEntitySqueezer extends TileEntityMultiblockPart implements IFluidHandler, ISidedInventory, IEnergyReceiver, SimpleComponent, SidedComponent
 {
 	public int facing = 2;
@@ -455,7 +457,7 @@ public class TileEntitySqueezer extends TileEntityMultiblockPart implements IFlu
 	@Override
 	public String getInventoryName()
 	{
-		return "IESqueezer";
+		return "IE:squeezer";
 	}
 	@Override
 	public boolean hasCustomInventoryName()

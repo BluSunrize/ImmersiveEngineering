@@ -1,12 +1,17 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.energy.DieselHandler;
+import blusunrize.immersiveengineering.common.Config;
+import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundTile;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockDieselGenerator;
+import blusunrize.immersiveengineering.common.util.IESound;
+import cofh.api.energy.IEnergyConnection;
+import cofh.api.energy.IEnergyReceiver;
 import cpw.mods.fml.common.Optional;
-import li.cil.oc.api.machine.Arguments;
-import li.cil.oc.api.machine.Callback;
-import li.cil.oc.api.machine.Context;
-import li.cil.oc.api.network.Node;
-import li.cil.oc.api.network.SidedComponent;
-import li.cil.oc.api.network.SimpleComponent;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
@@ -19,22 +24,11 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
-import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.energy.DieselHandler;
-import blusunrize.immersiveengineering.common.Config;
-import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundTile;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockDieselGenerator;
-import blusunrize.immersiveengineering.common.util.IESound;
-import cofh.api.energy.IEnergyConnection;
-import cofh.api.energy.IEnergyReceiver;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 @Optional.InterfaceList({
 		@Optional.Interface(iface = "li.cil.oc.api.network.SidedComponent", modid = "OpenComputers"),
 		@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")})
-public class TileEntityDieselGenerator extends TileEntityMultiblockPart implements IFluidHandler, ISoundTile, IEnergyConnection, SidedComponent, SimpleComponent
+public class TileEntityDieselGenerator extends TileEntityMultiblockPart implements IFluidHandler, ISoundTile, IEnergyConnection
 {
 	public int facing = 2;
 	public FluidTank tank = new FluidTank(8000);
@@ -47,6 +41,8 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockPart implemen
 
 	public boolean computerControlled = false;
 	public boolean computerActivated = false;
+	
+	public static boolean isOCLoaded = false;
 
 	@Override
 	public TileEntityDieselGenerator master()
@@ -425,61 +421,7 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockPart implemen
 	{
 		return (pos>=38&&pos<=41) && from==ForgeDirection.UP;
 	}
-
-	@Optional.Method(modid = "OpenComputers")
-	@Override
-	public boolean canConnectNode(ForgeDirection side)
-	{
-		return (pos==21 && !master().mirrored) || (pos==23 && master().mirrored);
-	}
-
-	@Optional.Method(modid = "OpenComputers")
-	@Override
-	public String getComponentName()
-	{
-		return "ie_diesel_generator";
-	}
-
-	@Optional.Method(modid = "OpenComputers")
-	// "override" what gets injected by OC's class transformer
-	public void onConnect(Node node)
-	{
-		master().computerControlled = true;
-	}
-
-	@Optional.Method(modid = "OpenComputers")
-	// "override" what gets injected by OC's class transformer
-	public void onDisconnect(Node node)
-	{
-		master().computerControlled = false;
-	}
-
-	@Optional.Method(modid = "OpenComputers")
-	@Callback(doc = "function():boolean -- get whether the generator is enabled to run when it can")
-	public Object[] getEnabled(Context context, Arguments args)
-	{
-		return new Object[]{master().computerActivated};
-	}
-
-	@Optional.Method(modid = "OpenComputers")
-	@Callback(doc = "function(enable:boolean) -- allow or disallow the generator to run when it can")
-	public Object[] setEnabled(Context context, Arguments args)
-	{
-		master().computerActivated = args.checkBoolean(0);
-		return null;
-	}
-
-	@Optional.Method(modid = "OpenComputers")
-	@Callback(doc = "function():boolean -- get whether the generator is currently producing energy")
-	public Object[] isRunning(Context context, Arguments args)
-	{
-		return new Object[]{master().active};
-	}
-
-	@Optional.Method(modid = "OpenComputers")
-	@Callback(doc = "function():table -- get information about the internal fuel tank")
-	public Object[] getTankInfo(Context context, Arguments args)
-	{
-		return new Object[]{master().tank.getInfo()};
-	}
+	//called AFTER mirrored is changed
+	public void mirror()
+	{}
 }

@@ -1,7 +1,15 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
+import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralWorldInfo;
+import blusunrize.immersiveengineering.common.Config;
+import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.util.Lib;
+import cofh.api.energy.EnergyStorage;
+import cofh.api.energy.IEnergyReceiver;
 import cpw.mods.fml.common.Optional;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
@@ -12,14 +20,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
-import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
-import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralWorldInfo;
-import blusunrize.immersiveengineering.common.Config;
-import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
-import cofh.api.energy.EnergyStorage;
-import cofh.api.energy.IEnergyReceiver;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 @Optional.InterfaceList({
 		@Optional.Interface(iface = "li.cil.oc.api.network.SidedComponent", modid = "OpenComputers"),
@@ -169,7 +169,7 @@ public class TileEntitySampleDrill extends TileEntityIEBase implements IEnergyRe
 	@Override
 	public String getComponentName()
 	{
-		return "ie_sample_drill";
+		return "IE:sampleDrill";
 	}
 
 	/*

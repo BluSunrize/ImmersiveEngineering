@@ -42,6 +42,9 @@ import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
+@Optional.InterfaceList({
+	@Optional.Interface(iface = "li.cil.oc.api.network.SidedComponent", modid = "OpenComputers"),
+	@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")})
 public class TileEntityAssembler extends TileEntityMultiblockPart implements ISidedInventory, IEnergyReceiver, IFluidHandler, SimpleComponent, SidedComponent
 {
 	public int facing = 2;
@@ -884,7 +887,7 @@ public class TileEntityAssembler extends TileEntityMultiblockPart implements ISi
 	@Override
 	public String getComponentName()
 	{
-		return "ie_assembler";
+		return "IE:assembler";
 	}
 
 	@Optional.Method(modid = "OpenComputers")

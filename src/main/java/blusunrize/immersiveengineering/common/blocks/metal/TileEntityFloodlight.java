@@ -5,12 +5,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChunkCoordinates;
-import net.minecraft.util.Vec3;
-import net.minecraft.world.EnumSkyBlock;
-import net.minecraftforge.common.util.ForgeDirection;
 import blusunrize.immersiveengineering.api.energy.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.common.IEContent;
@@ -27,7 +21,16 @@ import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.network.Node;
 import li.cil.oc.api.network.SidedComponent;
 import li.cil.oc.api.network.SimpleComponent;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.Vec3;
+import net.minecraft.world.EnumSkyBlock;
+import net.minecraftforge.common.util.ForgeDirection;
 
+@Optional.InterfaceList({
+	@Optional.Interface(iface = "li.cil.oc.api.network.SidedComponent", modid = "OpenComputers"),
+	@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")})
 public class TileEntityFloodlight extends TileEntityImmersiveConnectable implements SimpleComponent, SidedComponent
 {
 	public int energyStorage = 0;
@@ -394,7 +397,7 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 
 	@Override
 	public String getComponentName() {
-		return "ie_floodlight";
+		return "IE:floodlight";
 	}
 	@Optional.Method(modid = "OpenComputers")
 	// "override" what gets injected by OC's class transformer

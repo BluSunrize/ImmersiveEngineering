@@ -19,7 +19,6 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import dan200.computercraft.api.lua.LuaException;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
@@ -40,6 +39,9 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.oredict.OreDictionary;
 
+@Optional.InterfaceList({
+	@Optional.Interface(iface = "li.cil.oc.api.network.SidedComponent", modid = "OpenComputers"),
+	@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")})
 public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IEnergyReceiver, ISidedInventory, SimpleComponent, SidedComponent
 {
 	public int facing = 3;
@@ -726,7 +728,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 
 	@Override
 	public String getComponentName() {
-		return "ie_arc_furnace";
+		return "IE:arcFurnace";
 	}
 
 	@Optional.Method(modid = "OpenComputers")

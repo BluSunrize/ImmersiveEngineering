@@ -1,9 +1,7 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.CrusherRecipe;
@@ -42,8 +40,8 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
 
 @Optional.InterfaceList({
-		@Optional.Interface(iface = "li.cil.oc.api.network.SidedComponent", modid = "OpenComputers"),
-		@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")})
+	@Optional.Interface(iface = "li.cil.oc.api.network.SidedComponent", modid = "OpenComputers"),
+	@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")})
 public class TileEntityCrusher extends TileEntityMultiblockPart implements IEnergyReceiver, ISidedInventory, ISoundTile, SidedComponent, SimpleComponent
 {
 	public int facing = 2;
@@ -632,14 +630,16 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 	@Override
 	public String getComponentName()
 	{
-		return "ie_crusher";
+		return "IE:crusher";
 	}
 
 	@Optional.Method(modid = "OpenComputers")
 	// "override" what gets injected by OC's class transformer
 	public void onConnect(Node node)
 	{
-		master().computerControlled = true;
+		TileEntityCrusher master = master();
+		master.computerControlled = true;
+		master.computerOn = true;
 	}
 
 	@Optional.Method(modid = "OpenComputers")
@@ -647,13 +647,6 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 	public void onDisconnect(Node node)
 	{
 		master().computerControlled = false;
-	}
-
-	@Optional.Method(modid = "OpenComputers")
-	@Callback(doc = "function():boolean -- get whether the crusher is enabled")
-	public Object[] getEnabled(Context context, Arguments args)
-	{
-		return new Object[]{master().computerOn};
 	}
 
 	@Optional.Method(modid = "OpenComputers")
@@ -679,16 +672,53 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 	}
 
 	@Optional.Method(modid = "OpenComputers")
-	@Callback(doc = "function():boolean -- get whether the crusher is currently running")
-	public Object[] isRunning(Context context, Arguments args)
+	@Callback(doc = "function():boolean -- get whether the crusher is currently crushing items")
+	public Object[] isActive(Context context, Arguments args)
 	{
 		return new Object[]{master().active};
 	}
 
 	@Optional.Method(modid = "OpenComputers")
-	@Callback(doc = "function():table -- get input queue")
-	public Object[] getInputQueue(Context context, Arguments args)
+	@Callback(doc = "function(n:int):table -- get the n'th stack in the input queue")
+	public Object[] getInputStack(Context context, Arguments args)
 	{
-		return new Object[]{master().inputs};
+		int slot = args.checkInteger(0);
+		TileEntityCrusher master = master();
+		if (slot<0||slot>=master.inputs.size())
+			throw new IllegalArgumentException("The requested place in the queue does not exist");
+		return new Object[]{master.inputs.get(slot)};
+	}
+
+	@Optional.Method(modid = "OpenComputers")
+	@Callback(doc = "function():int -- get the current grinding progress in RF")
+	public Object[] getCurrentProgress(Context context, Arguments args)
+	{
+		TileEntityCrusher master = master();
+		if (master.inputs.isEmpty())
+			throw new IllegalArgumentException("The crusher doesn't have any inputs");
+		int time = master.getRecipeTime(master.inputs.get(0))-master.process;
+		if (time<=0)
+			throw new IllegalArgumentException("The current crusher recipe is invalid");
+		return new Object[]{time};
+	}
+
+	@Optional.Method(modid = "OpenComputers")
+	@Callback(doc = "function():int -- get the grinding progress in RF at which the current grinding will be done")
+	public Object[] getCurrentMaxProgress(Context context, Arguments args)
+	{
+		TileEntityCrusher master = master();
+		if (master.inputs.isEmpty())
+			throw new IllegalArgumentException("The crusher doesn't have any inputs");
+		int time = master.getRecipeTime(master.inputs.get(0));
+		if (time<=0)
+			throw new IllegalArgumentException("The current crusher recipe is invalid");
+		return new Object[]{time};
+	}
+
+	@Optional.Method(modid = "OpenComputers")
+	@Callback(doc = "function():int -- get the length of the input queue")
+	public Object[] getQueueLength(Context context, Arguments args)
+	{
+		return new Object[]{master().inputs.size()};
 	}
 }

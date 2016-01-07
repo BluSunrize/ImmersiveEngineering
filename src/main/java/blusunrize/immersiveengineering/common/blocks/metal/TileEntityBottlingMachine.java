@@ -1,5 +1,26 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import static blusunrize.immersiveengineering.common.util.Utils.saveStack;
+
+import java.util.Map;
+
+import blusunrize.immersiveengineering.api.crafting.BottlingMachineRecipe;
+import blusunrize.immersiveengineering.common.Config;
+import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockBottlingMachine;
+import blusunrize.immersiveengineering.common.util.Utils;
+import cofh.api.energy.EnergyStorage;
+import cofh.api.energy.IEnergyReceiver;
+import cpw.mods.fml.common.Optional;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import dan200.computercraft.api.lua.LuaException;
+import li.cil.oc.api.machine.Arguments;
+import li.cil.oc.api.machine.Callback;
+import li.cil.oc.api.machine.Context;
+import li.cil.oc.api.network.Node;
+import li.cil.oc.api.network.SidedComponent;
+import li.cil.oc.api.network.SimpleComponent;
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -19,30 +40,9 @@ import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.oredict.OreDictionary;
 
-import static blusunrize.immersiveengineering.common.util.Utils.saveStack;
-
-import java.util.ArrayList;
-import java.util.Map;
-
-import blusunrize.immersiveengineering.api.crafting.BottlingMachineRecipe;
-import blusunrize.immersiveengineering.common.Config;
-import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockBottlingMachine;
-import blusunrize.immersiveengineering.common.util.Utils;
-import blusunrize.immersiveengineering.common.util.compat.computercraft.PeripheralBottlingMachine;
-import cofh.api.energy.EnergyStorage;
-import cofh.api.energy.IEnergyReceiver;
-import cpw.mods.fml.common.Optional;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import dan200.computercraft.api.lua.LuaException;
-import li.cil.oc.api.machine.Arguments;
-import li.cil.oc.api.machine.Callback;
-import li.cil.oc.api.machine.Context;
-import li.cil.oc.api.network.Node;
-import li.cil.oc.api.network.SidedComponent;
-import li.cil.oc.api.network.SimpleComponent;
-
+@Optional.InterfaceList({
+	@Optional.Interface(iface = "li.cil.oc.api.network.SidedComponent", modid = "OpenComputers"),
+	@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")})
 public class TileEntityBottlingMachine extends TileEntityMultiblockPart implements ISidedInventory, IEnergyReceiver, IFluidHandler, SimpleComponent, SidedComponent
 {
 	public int facing = 2;
@@ -645,7 +645,7 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockPart implemen
 	@Override
 	public String getComponentName()
 	{
-		return "ie_bottling_machine";
+		return "IE:bottlingMachine";
 	}
 
 	@Optional.Method(modid = "OpenComputers")
