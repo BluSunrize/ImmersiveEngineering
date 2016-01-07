@@ -1,9 +1,9 @@
 package blusunrize.immersiveengineering.common;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
+import java.util.UUID;
+
+import com.mojang.authlib.GameProfile;
+
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityArcFurnace;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityAssembler;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBucketWheel;
@@ -30,6 +30,11 @@ import blusunrize.immersiveengineering.common.gui.ContainerSqueezer;
 import blusunrize.immersiveengineering.common.items.ItemRevolver;
 import blusunrize.immersiveengineering.common.util.Lib;
 import cpw.mods.fml.common.network.IGuiHandler;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 
 public class CommonProxy implements IGuiHandler
 {
@@ -107,5 +112,9 @@ public class CommonProxy implements IGuiHandler
 	public World getClientWorld()
 	{
 		return null;
+	}
+	public String getNameFromUUID(String uuid)
+	{
+		return MinecraftServer.getServer().func_147130_as().fillProfileProperties(new GameProfile(UUID.fromString(uuid.replaceAll("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})", "$1-$2-$3-$4-$5")), null), false).getName();
 	}
 }

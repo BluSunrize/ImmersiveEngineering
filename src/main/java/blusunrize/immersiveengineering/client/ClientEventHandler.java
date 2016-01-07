@@ -17,6 +17,8 @@ import blusunrize.immersiveengineering.api.energy.WireType;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
+import blusunrize.immersiveengineering.api.tool.ZoomHandler;
+import blusunrize.immersiveengineering.api.tool.ZoomHandler.IZoomTool;
 import blusunrize.immersiveengineering.client.fx.ParticleRenderer;
 import blusunrize.immersiveengineering.client.gui.GuiBlastFurnace;
 import blusunrize.immersiveengineering.client.models.ModelIEObj;
@@ -39,7 +41,6 @@ import blusunrize.immersiveengineering.common.util.compat.GregTechHelper;
 import blusunrize.immersiveengineering.common.util.network.MessageRequestBlockUpdate;
 import cofh.api.energy.IEnergyReceiver;
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.relauncher.Side;
@@ -53,7 +54,6 @@ import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
-import net.minecraft.client.renderer.entity.RendererLivingEntity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -68,6 +68,8 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.client.GuiIngameForge;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
+import net.minecraftforge.client.event.FOVUpdateEvent;
+import net.minecraftforge.client.event.MouseEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
@@ -85,6 +87,10 @@ import net.minecraftforge.oredict.OreDictionary;
 
 public class ClientEventHandler
 {
+	public static IIcon iconItemBlank;
+	public static int itemSheetWidth;
+	public static int itemSheetHeight;
+
 	@SubscribeEvent()
 	public void textureStich(TextureStitchEvent.Pre event)
 	{
@@ -101,6 +107,10 @@ public class ClientEventHandler
 			WireType.iconDefaultWire = event.map.registerIcon("immersiveengineering:wire");
 			TileRenderArcFurnace.hotMetal_flow = event.map.registerIcon("immersiveengineering:fluid/hotMetal_flow");
 			TileRenderArcFurnace.hotMetal_still = event.map.registerIcon("immersiveengineering:fluid/hotMetal_still");
+		}
+		if(event.map.getTextureType()==1)
+		{
+			iconItemBlank = event.map.registerIcon("immersiveengineering:white");
 		}
 		if(event.map.getTextureType()==Config.getInt("revolverSheetID"))
 		{
@@ -120,6 +130,11 @@ public class ClientEventHandler
 				WavefrontObject model = modelIE.rebindModel();
 				rebindUVsToIcon(model, modelIE);
 			}
+		if(event.map.getTextureType()==1)
+		{
+			itemSheetWidth = GL11.glGetTexLevelParameteri(GL11.GL_TEXTURE_2D, 0, GL11.GL_TEXTURE_WIDTH);
+			itemSheetHeight = GL11.glGetTexLevelParameteri(GL11.GL_TEXTURE_2D, 0, GL11.GL_TEXTURE_HEIGHT);
+		}
 		//
 		//		if(event.map.getTextureType()==Config.getInt("revolverSheetID"))
 		//		{
@@ -322,7 +337,86 @@ public class ClientEventHandler
 	}
 
 	@SubscribeEvent()
-	public void renderOverlay(RenderGameOverlayEvent.Post event)
+	public void onRenderOverlayPre(RenderGameOverlayEvent.Pre event)
+	{
+		if(ZoomHandler.isZooming && event.type==RenderGameOverlayEvent.ElementType.CROSSHAIRS)
+		{
+			event.setCanceled(true);
+			if(ZoomHandler.isZooming)
+			{
+				ClientUtils.bindTexture("immersiveengineering:textures/gui/scope.png");
+				int width = event.resolution.getScaledWidth();
+				int height = event.resolution.getScaledHeight();
+				int resMin = Math.min(width,height);
+				float offsetX = (width-resMin)/2f;
+				float offsetY = (height-resMin)/2f;
+
+				if(resMin==width)
+				{
+					ClientUtils.drawColouredRect(0,0, width,(int)offsetY+1, 0xff000000);
+					ClientUtils.drawColouredRect(0,(int)offsetY+resMin, width,(int)offsetY+1, 0xff000000);
+				}
+				else
+				{
+					ClientUtils.drawColouredRect(0,0, (int)offsetX+1,height, 0xff000000);
+					ClientUtils.drawColouredRect((int)offsetX+resMin,0, (int)offsetX+1,height, 0xff000000);
+				}
+				GL11.glEnable(GL11.GL_BLEND);
+				OpenGlHelper.glBlendFunc(770, 771, 1, 0);
+
+				GL11.glTranslatef(offsetX,offsetY,0);
+				ClientUtils.drawTexturedRect(0,0,resMin,resMin, 0f,1f,0f,1f);
+
+				ClientUtils.bindTexture("immersiveengineering:textures/gui/hudElements.png");
+				ClientUtils.drawTexturedRect(218/256f*resMin,64/256f*resMin, 24/256f*resMin,128/256f*resMin, 64/256f,88/256f,96/256f,224/256f);
+				ItemStack equipped = ClientUtils.mc().thePlayer.getCurrentEquippedItem();
+				if(equipped!=null && equipped.getItem() instanceof IZoomTool)
+				{
+					IZoomTool tool = (IZoomTool)equipped.getItem();
+					float[] steps = tool.getZoomSteps(equipped, ClientUtils.mc().thePlayer);
+					if(steps!=null && steps.length>1)
+					{
+						int curStep = -1;
+						float dist=0;
+
+						float totalOffset = 0;
+						float stepLength = 118/(float)steps.length;
+						float stepOffset = (stepLength-7)/2f;
+						GL11.glTranslatef(223/256f*resMin,64/256f*resMin, 0);
+						GL11.glTranslatef(0,(5+stepOffset)/256*resMin,0);
+						for(int i=0; i<steps.length; i++)
+						{
+							ClientUtils.drawTexturedRect(0,0, 8/256f*resMin,7/256f*resMin, 88/256f,96/256f,96/256f,103/256f);
+							GL11.glTranslatef(0,stepLength/256*resMin,0);
+							totalOffset += stepLength;
+
+							if(curStep==-1 || Math.abs(steps[i]-ZoomHandler.fovZoom)<dist)
+							{
+								curStep = i;
+								dist = Math.abs(steps[i]-ZoomHandler.fovZoom);
+							}
+						}
+						GL11.glTranslatef(0,-totalOffset/256*resMin,0);
+
+						if(curStep>=0 && curStep<steps.length)
+						{
+							GL11.glTranslatef(6/256f*resMin,curStep*stepLength/256*resMin,0);
+							ClientUtils.drawTexturedRect(0,0, 8/256f*resMin,7/256f*resMin, 88/256f,98/256f,103/256f,110/256f);
+							ClientUtils.font().drawString((1/steps[curStep])+"x", (int)(16/256f*resMin),0, 0xffffff);
+							GL11.glTranslatef(-6/256f*resMin,-curStep*stepLength/256*resMin,0);
+						}
+						GL11.glTranslatef(0,-((5+stepOffset)/256*resMin),0);
+						GL11.glTranslatef(-223/256f*resMin,-64/256f*resMin, 0);
+					}
+				}	
+
+				GL11.glTranslatef(-offsetX,-offsetY,0);
+			}
+		}
+	}
+
+	@SubscribeEvent()
+	public void onRenderOverlayPost(RenderGameOverlayEvent.Post event)
 	{
 		if(ClientUtils.mc().thePlayer!=null && event.type == RenderGameOverlayEvent.ElementType.TEXT)
 		{
@@ -396,7 +490,7 @@ public class ClientEventHandler
 						||equipped.getItem() instanceof ItemChemthrower)
 				{
 					boolean drill = equipped.getItem() instanceof ItemDrill;
-					ClientUtils.bindTexture("immersiveengineering:textures/gui/fuelGauge.png");
+					ClientUtils.bindTexture("immersiveengineering:textures/gui/hudElements.png");
 					GL11.glColor4f(1, 1, 1, 1);
 					float dx = event.resolution.getScaledWidth()-16;
 					float dy = event.resolution.getScaledHeight();
@@ -406,8 +500,8 @@ public class ClientEventHandler
 					int h = 62;
 					double uMin = 179/256f;
 					double uMax = 210/256f;
-					double vMin = 9/96f;
-					double vMax = 71/96f;
+					double vMin = 9/256f;
+					double vMax = 71/256f;
 					ClientUtils.drawTexturedRect(-24,-68, w,h, uMin,uMax,vMin,vMax);
 
 					GL11.glTranslated(-23,-37,0);
@@ -418,7 +512,7 @@ public class ClientEventHandler
 					float cap = (float)((IFluidContainerItem)equipped.getItem()).getCapacity(equipped);
 					float angle = 83-(166* amount/cap);
 					GL11.glRotatef(angle, 0, 0, 1);
-					ClientUtils.drawTexturedRect(6,-2, 24,4, 91/256f,123/256f, 80/96f,87/96f);
+					ClientUtils.drawTexturedRect(6,-2, 24,4, 91/256f,123/256f, 80/256f,87/256f);
 					GL11.glRotatef(-angle, 0, 0, 1);
 					//					for(int i=0; i<=8; i++)
 					//					{
@@ -430,7 +524,7 @@ public class ClientEventHandler
 					GL11.glTranslated(23,37,0);
 					if(drill)
 					{
-						ClientUtils.drawTexturedRect(-54,-73, 66,72, 108/256f,174/256f, 4/96f,76/96f);
+						ClientUtils.drawTexturedRect(-54,-73, 66,72, 108/256f,174/256f, 4/256f,76/256f);
 						RenderItem ir = RenderItem.getInstance();
 						ItemStack head = ((ItemDrill)equipped.getItem()).getHead(equipped);
 						if(head!=null)
@@ -442,13 +536,37 @@ public class ClientEventHandler
 					}
 					else
 					{
-						ClientUtils.drawTexturedRect(-41,-73, 53,72, 8/256f,61/256f, 4/96f,76/96f);
+						ClientUtils.drawTexturedRect(-41,-73, 53,72, 8/256f,61/256f, 4/256f,76/256f);
 						boolean ignite = ItemNBTHelper.getBoolean(equipped, "ignite");
-						ClientUtils.drawTexturedRect(-32,-43, 12,12, 66/256f,78/256f, (ignite?21:9)/96f,(ignite?33:21)/96f);
+						ClientUtils.drawTexturedRect(-32,-43, 12,12, 66/256f,78/256f, (ignite?21:9)/256f,(ignite?33:21)/256f);
 
 					}
 					GL11.glPopMatrix();
 				}
+				//				else if(equipped.getItem() instanceof ItemRailgun)
+				//				{
+				//					float dx = event.resolution.getScaledWidth()-32-48;
+				//					float dy = event.resolution.getScaledHeight()-40;
+				//					ClientUtils.bindTexture("immersiveengineering:textures/gui/hudElements.png");
+				//					GL11.glColor4f(1, 1, 1, 1);
+				//					GL11.glPushMatrix();
+				//					GL11.glEnable(GL11.GL_BLEND);
+				//					GL11.glTranslated(dx, dy, 0);
+				//
+				//					int duration = player.getItemInUseDuration();
+				//					int chargeTime = ((ItemRailgun)equipped.getItem()).getChargeTime(equipped);
+				//					int chargeLevel = Math.min(99, (int)(duration/(float)chargeTime*100));
+				//					//					System.out.println("");
+				//					//					ClientUtils.drawTexturedRect(0,0, 64,32, 0/256f,64/256f, 96/256f,128/256f);
+				//
+				//					GL11.glScalef(1.5f,1.5f,1.5f);
+				//					int col = Config.getBoolean("nixietubeFont")?Lib.colour_nixieTubeText:0xffffff;
+				//					ClientProxy.nixieFont.setDrawTubeFlag(false);
+				//					//					ClientProxy.nixieFont.drawString((chargeLevel<10?"0"+chargeLevel:""+chargeLevel), 19,3, col);
+				//					ClientProxy.nixieFont.setDrawTubeFlag(true);
+				//
+				//					GL11.glPopMatrix();
+				//				}
 
 				MovingObjectPosition mop = ClientUtils.mc().objectMouseOver;
 				if(mop!=null)
@@ -489,8 +607,8 @@ public class ClientEventHandler
 							for(String s : text)
 								if(s!=null)
 								{
-									int w = ClientProxy.nixieFont.getStringWidth(s);
-									ClientProxy.nixieFont.drawString(s, event.resolution.getScaledWidth()/2-w/2, event.resolution.getScaledHeight()/2-4-text.length*(ClientProxy.nixieFont.FONT_HEIGHT+2)+(i++)*(ClientProxy.nixieFont.FONT_HEIGHT+2), col, true);
+									int w = ClientProxy.nixieFontOptional.getStringWidth(s);
+									ClientProxy.nixieFontOptional.drawString(s, event.resolution.getScaledWidth()/2-w/2, event.resolution.getScaledHeight()/2-4-text.length*(ClientProxy.nixieFontOptional.FONT_HEIGHT+2)+(i++)*(ClientProxy.nixieFontOptional.FONT_HEIGHT+2), col, true);
 								}
 						}
 					}
@@ -508,7 +626,7 @@ public class ClientEventHandler
 					boolean useNixie = overlayBlock.useNixieFont(ClientUtils.mc().thePlayer, mop);
 					if(text!=null && text.length>0)
 					{
-						FontRenderer font = useNixie?ClientProxy.nixieFont:ClientUtils.font();
+						FontRenderer font = useNixie?ClientProxy.nixieFontOptional:ClientUtils.font();
 						int col = (useNixie&&Config.getBoolean("nixietubeFont"))?Lib.colour_nixieTubeText:0xffffff;
 						int i = 0;
 						for(String s : text)
@@ -519,6 +637,86 @@ public class ClientEventHandler
 			}
 		}
 	}
+
+	@SubscribeEvent()
+	public void onFOVUpdate(FOVUpdateEvent event)
+	{
+		EntityPlayer player = ClientUtils.mc().thePlayer;
+		if(player.getCurrentEquippedItem()!=null && player.getCurrentEquippedItem().getItem() instanceof IZoomTool)
+		{
+			if(player.isSneaking() && player.onGround)
+			{
+				ItemStack equipped = player.getCurrentEquippedItem();
+				IZoomTool tool = (IZoomTool)equipped.getItem();
+				if(tool.canZoom(equipped, player))
+				{
+					if(!ZoomHandler.isZooming)
+					{
+						float[] steps = tool.getZoomSteps(equipped, player);
+						if(steps!=null && steps.length>0)
+						{
+							int curStep = -1;
+							float dist=0;
+							for(int i=0; i<steps.length; i++)
+								if(curStep==-1 || Math.abs(steps[i]-ZoomHandler.fovZoom)<dist)
+								{
+									curStep = i;
+									dist = Math.abs(steps[i]-ZoomHandler.fovZoom);
+								}
+							if(curStep!=-1)
+								ZoomHandler.fovZoom = steps[curStep];
+							else 
+								ZoomHandler.fovZoom = event.fov;
+						}
+						ZoomHandler.isZooming = true;
+					}
+					event.newfov = ZoomHandler.fovZoom;
+				}
+				else if(ZoomHandler.isZooming)
+					ZoomHandler.isZooming = false;
+			}
+			else if(ZoomHandler.isZooming)
+				ZoomHandler.isZooming = false;
+		}
+		else if(ZoomHandler.isZooming)
+			ZoomHandler.isZooming = false;
+	}
+	@SubscribeEvent
+	public void onMouseEvent(MouseEvent event)
+	{
+		if(event.dwheel != 0)
+		{
+			EntityPlayer player = ClientUtils.mc().thePlayer;
+			if(player.getCurrentEquippedItem()!=null && player.getCurrentEquippedItem().getItem() instanceof IZoomTool && player.isSneaking())
+			{
+				ItemStack equipped = player.getCurrentEquippedItem();
+				IZoomTool tool = (IZoomTool)equipped.getItem();
+				if(tool.canZoom(equipped, player))
+				{
+					float[] steps = tool.getZoomSteps(equipped, player);
+					if(steps!=null && steps.length>0)
+					{
+						int curStep = -1;
+						float dist=0;
+						for(int i=0; i<steps.length; i++)
+							if(curStep==-1 || Math.abs(steps[i]-ZoomHandler.fovZoom)<dist)
+							{
+								curStep = i;
+								dist = Math.abs(steps[i]-ZoomHandler.fovZoom);
+							}
+						if(curStep!=-1)
+						{
+							int newStep = curStep+(event.dwheel>0?-1:1);
+							if(newStep>=0 && newStep<steps.length)
+								ZoomHandler.fovZoom = steps[newStep];
+							event.setCanceled(true);
+						}
+					}
+				}
+			}
+		}
+	}
+
 
 	@SubscribeEvent()
 	public void renderAdditionalBlockBounds(DrawBlockHighlightEvent event)
@@ -660,23 +858,29 @@ public class ClientEventHandler
 	{
 	}
 	@SubscribeEvent()
-	public void renderLivingPre(RenderLivingEvent.Pre event)
+	public void onRenderLivingPre(RenderLivingEvent.Pre event)
 	{
 		if(event.entity.getEntityData().hasKey("headshot"))
 		{
-			ModelBase model = ObfuscationReflectionHelper.getPrivateValue(RendererLivingEntity.class, event.renderer, "mainModel");
+			ModelBase model = event.renderer.mainModel;
 			if(model instanceof ModelBiped)
 				((ModelBiped)model).bipedHead.showModel=false;
 			else if(model instanceof ModelVillager)
 				((ModelVillager)model).villagerHead.showModel=false;
 		}
+//		if(OreDictionary.itemMatches(new ItemStack(IEContent.itemRailgun),event.entity.getEquipmentInSlot(0),true))
+//		{
+//			ModelBase model = event.renderer.mainModel;
+//			if(model instanceof ModelBiped)
+//				((ModelBiped)model).bipedLeftArm.rotateAngleX=.9f;
+//		}
 	}
 	@SubscribeEvent()
-	public void renderLivingPre(RenderLivingEvent.Post event)
+	public void onRenderLivingPost(RenderLivingEvent.Post event)
 	{
 		if(event.entity.getEntityData().hasKey("headshot"))
 		{
-			ModelBase model = ObfuscationReflectionHelper.getPrivateValue(RendererLivingEntity.class, event.renderer, "mainModel");
+			ModelBase model = event.renderer.mainModel;
 			if(model instanceof ModelBiped)
 				((ModelBiped)model).bipedHead.showModel=true;
 			else if(model instanceof ModelVillager)

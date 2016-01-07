@@ -2,6 +2,10 @@ package blusunrize.immersiveengineering.client;
 
 import java.util.LinkedHashSet;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.resources.IReloadableResourceManager;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
@@ -15,7 +19,16 @@ public class IEManualInstance extends ManualInstance
 {
 	public IEManualInstance()
 	{
-		super(ClientUtils.font(), "immersiveengineering:textures/gui/manual.png");
+		super(new FontRenderer(ClientUtils.mc().gameSettings, new ResourceLocation("textures/font/ascii.png"), ClientUtils.mc().renderEngine, false), "immersiveengineering:textures/gui/manual.png");
+		
+		this.fontRenderer.colorCode[0+6] = 0xf78034;
+		this.fontRenderer.colorCode[16+6] = 0x3e200d;
+		if (Minecraft.getMinecraft().gameSettings.language != null)
+		{
+			this.fontRenderer.setUnicodeFlag(ClientUtils.mc().getLanguageManager().isCurrentLocaleUnicode());
+			this.fontRenderer.setBidiFlag(ClientUtils.mc().getLanguageManager().isCurrentLanguageBidirectional());
+		}
+		((IReloadableResourceManager)ClientUtils.mc().getResourceManager()).registerReloadListener(this.fontRenderer);
 	}
 
 	@Override

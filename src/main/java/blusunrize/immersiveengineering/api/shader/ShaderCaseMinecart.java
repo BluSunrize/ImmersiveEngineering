@@ -19,7 +19,7 @@ public class ShaderCaseMinecart extends ShaderCase
 	{
 		super(overlayType, defaultWhite,colourPrimary,colourSecondary, "immersiveengineering:textures/models/shaders/minecart_");
 		this.additionalTexture = additionalTexture;
-		if(overlayType=="1" || overlayType=="2" || overlayType=="7")
+		if(overlayType.equals("1") || overlayType.equals("2") || overlayType.equals("7"))
 		{
 			overlaySides[1] = false;
 			overlaySides[2] = false;
@@ -48,7 +48,7 @@ public class ShaderCaseMinecart extends ShaderCase
 	public int[] getRGBAColourModifier(ItemStack shader, ItemStack item, String modelPart, int pass)
 	{
 		if(pass==2 && additionalTexture!=null)
-			return defaultWhite;
+			return colourOverlay;
 
 		if(pass==0)
 			return colourPrimary;
@@ -63,7 +63,7 @@ public class ShaderCaseMinecart extends ShaderCase
 	}
 
 	@Override
-	public void modifyRender(ItemStack shader, ItemStack item, String modelPart, int pass, boolean pre)
+	public void modifyRender(ItemStack shader, ItemStack item, String modelPart, int pass, boolean pre, boolean inventory)
 	{
 	}
 }

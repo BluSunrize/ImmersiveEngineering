@@ -1,19 +1,20 @@
 package blusunrize.immersiveengineering.client.render;
 
-import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.entity.RenderItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
-import net.minecraftforge.client.IItemRenderer;
-import net.minecraftforge.client.model.obj.GroupObject;
-import net.minecraftforge.client.model.obj.WavefrontObject;
-
 import org.lwjgl.opengl.GL11;
 
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.items.ItemChemthrower;
+import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.entity.RenderItem;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.IIcon;
+import net.minecraftforge.client.IItemRenderer;
+import net.minecraftforge.client.model.obj.GroupObject;
+import net.minecraftforge.client.model.obj.WavefrontObject;
 
 public class ItemRenderChemthrower implements IItemRenderer
 {
@@ -37,7 +38,8 @@ public class ItemRenderChemthrower implements IItemRenderer
 
 		if(type==ItemRenderType.EQUIPPED_FIRST_PERSON)
 		{
-			if(ClientUtils.mc().thePlayer.getItemInUseCount()>0)
+			EntityLivingBase user = (EntityLivingBase) data[1];
+			if(user instanceof EntityPlayer && ((EntityPlayer)user).getItemInUseCount()>0)
 			{
 				GL11.glRotatef(65, 0, 1, 0);
 				GL11.glRotatef(15, 0, 0, 1);
@@ -107,6 +109,7 @@ public class ItemRenderChemthrower implements IItemRenderer
 		}
 		else
 		{
+			boolean inventory = type==ItemRenderType.INVENTORY;
 			for(GroupObject obj : modelobj.groupObjects)
 			{
 				if(obj.name=="cage")
@@ -120,12 +123,12 @@ public class ItemRenderChemthrower implements IItemRenderer
 					if(col==null||col.length<4)
 						col= new int[]{255,255,255,255};
 
-					sCase.modifyRender(shader, item, obj.name, pass, true);
+					sCase.modifyRender(shader, item, obj.name, pass, true, inventory);
 					ClientUtils.tes().startDrawing(obj.glDrawingMode);
 					ClientUtils.tes().setColorRGBA(col[0], col[1], col[2], col[3]);
 					ClientUtils.tessellateWavefrontGroupObjectWithIconUVs(obj, ic);
 					ClientUtils.tes().draw();
-					sCase.modifyRender(shader, item, obj.name, pass, false);
+					sCase.modifyRender(shader, item, obj.name, pass, false, inventory);
 				}
 				if(obj.name=="cage")
 					GL11.glEnable(GL11.GL_CULL_FACE);

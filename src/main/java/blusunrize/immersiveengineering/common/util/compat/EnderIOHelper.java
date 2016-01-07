@@ -23,7 +23,7 @@ public class EnderIOHelper extends IECompatModule
 		IERecipes.addOreDictAlloyingRecipe("ingotEnergeticAlloy",1, "Gold", 200,512, "dustRedstone","dustGlowstone");
 		Item itemPowder = GameRegistry.findItem("EnderIO", "itemPowderIngot");
 		Object dustEnderPearl = ApiUtils.isExistingOreName("dustEnderPearl")?"dustEnderPearl": new ItemStack(itemPowder,1,5);
-		IERecipes.addOreDictAlloyingRecipe("ingotPhasedGold",1, "Gold", 200,512, "dustRedstone","dustGlowstone",dustEnderPearl);
+		IERecipes.addOreDictAlloyingRecipe("ingotPhasedGold",1, "EnergeticAlloy", 200,512, dustEnderPearl);
 		IERecipes.addOreDictAlloyingRecipe("ingotPhasedIron",1, "Iron", 200,512, dustEnderPearl);
 		IERecipes.addOreDictAlloyingRecipe("ingotConductiveIron",1, "Iron", 100,512, "dustRedstone");
 		IERecipes.addOreDictAlloyingRecipe("ingotDarkSteel",1, "Iron", 400,512, "dustCoal","dustObsidian");

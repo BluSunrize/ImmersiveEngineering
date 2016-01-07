@@ -184,6 +184,8 @@ item.ImmersiveEngineering.material.gunpartHammer.name=Revolver Hammer
 item.ImmersiveEngineering.material.componentIron.name=Iron Mechanical Component
 item.ImmersiveEngineering.material.componentSteel.name=Steel Mechanical Component
 item.ImmersiveEngineering.material.slag.name=Slag
+item.ImmersiveEngineering.material.stickIron.name=Iron Rod
+item.ImmersiveEngineering.material.stickSteel.name=Steel Rod
 item.ImmersiveEngineering.seed.hemp.name=Industrial Hemp Seeds
 
 item.ImmersiveEngineering.fluidContainers.bottleCreosote.name=Bottle of Creosote Oil
@@ -250,6 +252,9 @@ item.ImmersiveEngineering.toolupgrade.revolverBayonet.name=Bayonet
 item.ImmersiveEngineering.toolupgrade.revolverMagazine.name=Extended Magazine
 item.ImmersiveEngineering.toolupgrade.revolverElectro.name=Amplifier Electron Tubes
 item.ImmersiveEngineering.toolupgrade.chemthrowerFocus.name=Focused Nozzle
+item.ImmersiveEngineering.toolupgrade.railgunScope.name=Precision Scope
+item.ImmersiveEngineering.toolupgrade.railgunCapacitors.name=Additional Capacitors
+
 
 item.ImmersiveEngineering.blueprint.name=Engineer's Blueprint
 
@@ -262,6 +267,7 @@ item.ImmersiveEngineering.jerrycan.name=Jerrycan
 
 item.ImmersiveEngineering.chemthrower.name=Chemical Thrower
 
+item.ImmersiveEngineering.railgun.name=Railgun
 
 #CREATIVE
 itemGroup.ImmersiveEngineering=Immersive Engineering
@@ -343,6 +349,7 @@ desc.ImmersiveEngineering.info.shader.applyTo=Can be applied to:
 desc.ImmersiveEngineering.info.shader.revolver=Revolver
 desc.ImmersiveEngineering.info.shader.chemthrower=Chemical Thrower
 desc.ImmersiveEngineering.info.shader.drill=Mining Drill
+desc.ImmersiveEngineering.info.shader.railgun=Railgun
 desc.ImmersiveEngineering.info.shader.minecart=Minecart
 desc.ImmersiveEngineering.info.shader.balloon=Balloon
 
@@ -394,6 +401,8 @@ desc.ImmersiveEngineering.flavour.toolupgrade.revolverBayonet=Adds melee damage 
 desc.ImmersiveEngineering.flavour.toolupgrade.revolverMagazine=Increases the Revolver's magazine size
 desc.ImmersiveEngineering.flavour.toolupgrade.revolverElectro=Revolver shots inflict shock damage
 desc.ImmersiveEngineering.flavour.toolupgrade.chemthrowerFocus=Decreases spread and increases range of the Chemical Thrower
+desc.ImmersiveEngineering.flavour.toolupgrade.railgunScope=Allows Railgun to zoom in
+desc.ImmersiveEngineering.flavour.toolupgrade.railgunCapacitors=Reduces charge time and increases energy storage of the Railgun
 
 gui.ImmersiveEngineering.empty=Empty
 
@@ -418,6 +427,9 @@ chat.ImmersiveEngineering.info.coreDrill.result.mineral=§7Core Sample evaluated
 chat.ImmersiveEngineering.info.coreDrill.result.depl=§7Mineral vein at %1$s§7 integrity
 chat.ImmersiveEngineering.info.coreDrill.result.none=Core Sample evaluated, no minerals found
 chat.ImmersiveEngineering.info.coreDrill.infinite=Infinite
+
+chat.ImmersiveEngineering.info.pump.placeCobble.true=This pump will now replace fluids with cobblestone.
+chat.ImmersiveEngineering.info.pump.placeCobble.false=This pump will no longer replace fluid blocks with cobblestone. §6WARNING:§f This can cause lag and is not adviseable when dealing with large amounts of fluid!
 		
 chat.ImmersiveEngineering.info.energyTransfered=Average energy transferred over the last %1$s ticks: %2$s RF/t
 
@@ -452,6 +464,7 @@ death.attack.ieRevolver_silver=%1$s was purified by %2$s's silver bullet
 death.attack.ieRevolver_potion=%1$s was doused by %2$s's phial shot
 death.attack.ieCrushed=%1$s was crushed
 death.attack.ieAcid=%1$s was dissolved in acid
+death.attack.ieRailgun=%1$s was pierced by %2$s's Railgun
 
 #ACHIEVEMENTS
 achievement.immersiveengineering.openManual=RTFM
@@ -493,6 +506,8 @@ achievement.immersiveengineering.skyhookPro=Skyline Master
 achievement.immersiveengineering.skyhookPro.desc=Travel a total of 1km with the Skyhook
 achievement.immersiveengineering.craftChemthrower=Spray and Pray
 achievement.immersiveengineering.craftChemthrower.desc=Craft the Chemical Thrower
+achievement.immersiveengineering.craftRailgun=Fortune's Legacy
+achievement.immersiveengineering.craftRailgun.desc=Craft the Railgun
 achievement.immersiveengineering.mbSilo=Sheetmetal Stash
 achievement.immersiveengineering.mbSilo.desc=Form the Silo Multiblock
 achievement.immersiveengineering.mbCrusher=Hazardous Machinery
@@ -602,6 +617,10 @@ ie.manual.entry.balloon.subtext=...just make 99 of them
 ie.manual.entry.balloon0=Balloons are sacks of fabric with a heatsource below to keep them afloat. They will also emit light, but despite the torch, they are not a fire hazard.<br>Balloons can be placed like normal blocks, or, when no block is targeted, they will be placed in the air infront of you.
 ie.manual.entry.balloon1=Similar to <link;metalconstruction;§o§nStructural §o§nConnectors§r;5>, you can attach Hemp Rope and Steel Cable to the balloon.<br>Sneak-clicking allows you to set a height offset for the balloon, allowing you to place it up to 5 blocks above the target.<br>You can also use dyes on a placed balloon; which part you dye depends on where you target it.<br>Rightclicking with an Engineer's Hammer will toggle the balloon's design between horizontal or vertical stripes.
 
+ie.manual.entry.crate.name=Wooden Storage Crate
+ie.manual.entry.crate.subtext=Move that gear up!
+ie.manual.entry.crate0=Wooden storage crates are blocks quite similar to a chest. Crafted with treated wood, they offer 27 slots of storage, however, when broken, they will keep that storage, allowing you to move them together with their contents.<br>Like chests, they will output a comparator signal based on the amount of items stored.
+
 ie.manual.entry.barrel.name=Wooden Barrel
 ie.manual.entry.barrel.subtext=Doesn't roll
 ie.manual.entry.barrel0=Wooden barrels are simple containers that can store fluid. They will store up to 12 buckets, but because they are wooden, they can't store any gasses or hot fluids.<br>Rightclicking the top or bottom side of the barrel with a Hammer will switch between in-, output or no connection.
@@ -694,6 +713,7 @@ ie.manual.entry.bottlingMachine1=Fluid is input through the central port on the 
 ie.manual.entry.chargingStation.name=Charging Station
 ie.manual.entry.chargingStation.subtext=
 ie.manual.entry.chargingStation0=The Charging Station is a device that allows you to charge tools and other items. Energy can be input through the bottom or the back and items can be placed in manually or inserted automatically.<config;b;ic2Manual; The Charging Station will work for EU-powered items as well.;>
+ie.manual.entry.chargingStation1=The electron tubes at the frotn give a feedback about the current charge of the item, but the block will also output a comparator signal for the same purposes.
 
 ie.manual.entry.highvoltage.name=High-Voltage
 ie.manual.entry.highvoltage.subtext=You can't shake the shock
@@ -715,7 +735,7 @@ ie.manual.entry.blueprints1=To create the items detailed in the Blueprint, you i
 ie.manual.entry.dieselgen.name=Diesel Generator
 ie.manual.entry.dieselgen.subtext=Better than volume: More volume.
 ie.manual.entry.dieselgen0=High-Voltage architecture might be fascinating, but it's not very useful unless you have a generator that can actually create the required output for it.<br>The Diesel Generator is one of the few ways of generating this sort of energy. It is created as a complex multiblock structure and will run off of <link;biodiesel;§o§nBiodiesel§r> or other types of combustible fuel. Due to its high output, it will work through fuel very quickly, so make sure you have a sufficient fuel production to run it.
-ie.manual.entry.dieselgen1=The structure is built from Engine, Generator and Radiator blocks. Arrange them in the shape shown on the following side and hit either the central generator or central radiator with an Engineer's Hammer.
+ie.manual.entry.dieselgen1=The structure is built from Engine, Generator and Radiator blocks. Arrange them in the shape shown above and hit either the central generator or central radiator with an Engineer's Hammer.
 ie.manual.entry.dieselgen2=Fuel is to be input at the bottom corners of the generator, whereas energy will be output to up to three connection on the top. The <config;i;dieselGen_output>RF/t the generator outputs will be split between all connected points.<br>The small terminal on the side will turn off the generator if supplied with a redstone signal.<br>You can mirror the generator by clicking the top-center of the Generator Block side with an Engineer's Hammer. 
 ie.manual.entry.dieselgen3=The following table lists all valid fuels for the Diesel Generator and for how long in seconds (ticks) they burn. 
 
@@ -747,6 +767,7 @@ ie.manual.entry.fluidPipes0=Transporting fluids has become quite essential in th
 ie.manual.entry.fluidPipes1=You can rightclick the connection piece of a pipe with an Engineer's Hammer to prevent it from connecting to that side.<br>Fluid Pipes can be covered with wooden or steel scaffolding. Simply rightclick a piece of scaffolding onto a pipe to cover it. Break the pipe to retrieve the scaffolding.
 ie.manual.entry.fluidPipes2=Fluid Pumps have three essential functions. They can be used to insert into pipes at high pressure, to transfer fluids much faster, or they can pick up fluids from the world. Using your hammer on the base of the pump will switch the sides between in- and output.
 ie.manual.entry.fluidPipes3=In order for the pump to pick up fluid blocks, it will need a power input at the top and a redstone signal. Pumps can also be used to extract from tanks and other fluid containers that do not have an automatic output. This will also require a redstone signal, but won't consume power.
+ie.manual.entry.fluidPipes4=<config;b;pump_infiniteWater;Water blocks will serve as an infinite fluid source for the pump, as long as more than 3 blocks are connected.<br><br>;><config;b;pump_placeCobble;Fluid blocks that were picked up will be replaced with cobblestone to reduce the lag of flowing fluids. This behaviour can be toggled off and on by using a wirecutter on the pump.;>
 
 ie.manual.entry.sorter.name=Item Router
 ie.manual.entry.sorter.subtext=Left foot yellow, right hand green
@@ -756,19 +777,19 @@ ie.manual.entry.sorter1=When an item enters the router, it will be routed to an 
 ie.manual.entry.drill.name=Mining Drill
 ie.manual.entry.drill.subtext=My drill will pierce the Bedrock!
 ie.manual.entry.drill0=The handheld, diesel-powered drill is a big advancement in mining. With exchangeable drill heads and upgrades, its properties are almost entirely modifiable. To modify it, place it in an <link;workbench;§o§nEngineer's §o§nWorkbench§r>.<br>The drill runs off of <link;biodiesel;§o§nBiodiesel§r> and can be filled directly in the refinery.
-ie.manual.entry.drill1=The Drill Head determines the base mining level, speed, and size, as well as the attack damage. As you dig blocks, the drill head takes damage, but it can be repaired in an anvil.
+ie.manual.entry.drill1=The §6Drill Head§r determines the base §6mining level§r, §6speed§r, and §6size§r, as well as the §6attack damage§r. As you dig blocks, the drill head takes damage, but it can be repaired in an anvil.
 ie.manual.entry.drill2=As the drill is powered by a combustion engine, it will not run underwater unless you equip it with the Pressurized Air Tank Upgrade. However, with this upgrade equipped, it will not only run while submerged, but also ignore the slowdown usually experienced when digging in water.
-ie.manual.entry.drill3=The Advanced Lubrication System applies additional lubricant to the drill at a regular basis, allowing it to run and dig faster.
-ie.manual.entry.drill4=By adding Additional Augers to the drill, it's destructive potential against living creatures is increased. The upgrade stacks up to three and each will add an additional point of attack damage.
-ie.manual.entry.drill5=The Large Fuel Tank allows the drill to store more fuel internally, extending the time you can use it before refilling.
+ie.manual.entry.drill3=The §6Advanced Lubrication System§r applies additional lubricant to the drill at a regular basis, allowing it to run and dig faster.
+ie.manual.entry.drill4=By adding §6Additional Augers§r to the drill, it's destructive potential against living creatures is increased. The upgrade stacks up to three and each will add an additional point of attack damage.
+ie.manual.entry.drill5=The §6Large Fuel Tank§r allows the drill to store more fuel internally, extending the time you can use it before refilling.
 
 ie.manual.entry.revolver.name=Revolver
 ie.manual.entry.revolver.subtext=Wanted: Dead or Alive
 ie.manual.entry.revolver0=The Revolver, a more elegant weapon from a more civilized age, is an achievement of small mechanics. Small being relative here, since this weapon is chambered for 12-gauge.<br>Similar to the Mining Drill, the Revolver will allow for modification in the <link;workbench;§o§nEngineer's §o§nWorkbench§r>, as detailed on the last pages.
 ie.manual.entry.revolver1=There are different <link;bullets;§o§ntypes §o§nof §o§nammunition§r;> the Revolver will accept. To load it, sneak+rightclick the weapon, then place cartridges into the slots.<br>A loaded Speedloader in your inventory will be used to refill the revolver after you've fired your last shot.
-ie.manual.entry.revolver2=By attaching a bayonet to the revolver, you outfit it with close-quarter-combat capabilities, allowing for melee damage as powerful as an Iron Sword.
-ie.manual.entry.revolver3=The Extended Magazine allows loading 6 more cartridges into the revolver. This magazine does not get refilled by a speedloader.
-ie.manual.entry.revolver4=The Amplifying Electron Tubes apply an electric shock to fired projectiles. This shock persists till it hits the target (don't ask how it works) and is passed on. The target will be stunned for a fraction of a second and all powered equipment they may be using will suffer a slight discharge.
+ie.manual.entry.revolver2=By attaching a §6bayonet§r to the revolver, you outfit it with close-quarter-combat capabilities, allowing for melee damage as powerful as an Iron Sword.
+ie.manual.entry.revolver3=The §6Extended Magazine§r allows loading 6 more cartridges into the revolver. This magazine does not get refilled by a speedloader.
+ie.manual.entry.revolver4=The §6Amplifying Electron Tubes§r apply an electric shock to fired projectiles. This shock persists till it hits the target (don't ask how it works) and is passed on. The target will be stunned for a fraction of a second and all powered equipment they may be using will suffer a slight discharge.
 
 ie.manual.entry.bullets.name=Revolver Cartridges
 ie.manual.entry.bullets.subtext=
@@ -788,8 +809,8 @@ ie.manual.entry.bulletsBotania1=§lWolfpack §lCartridges§r are a collection of
 ie.manual.entry.chemthrower.name=Chemical Thrower
 ie.manual.entry.chemthrower.subtext=
 ie.manual.entry.chemthrower0=The Chemical Thrower is a device that propels fluids from its internal tank. The device can be loaded with any fluid, liquid or gas, and, on right click, will spray it out.<br>It also features a function to ignite the fluid, if it is flammable. To toggle the pilot light, sneak and rightclick.
-ie.manual.entry.chemthrower1=Like some other tools, the chemical thrower can be modified in the <link;workbench;§o§nEngineer's §o§nWorkbench§r>. These upgrades affect the size of the tank, range and spread.<br><br>The Large Tank increases the fluid capacity of the Chemical Thrower by 2000 mb. 
-ie.manual.entry.chemthrower2=The Focused Nozzle decreases the spread of fluids sprayed out and also slightly increases their range, allowing you to hit further targets with more precision.
+ie.manual.entry.chemthrower1=Like some other tools, the chemical thrower can be modified in the <link;workbench;§o§nEngineer's §o§nWorkbench§r>. These upgrades affect the size of the tank, range and spread.<br><br>The §6Large Tank§r increases the fluid capacity of the Chemical Thrower by 2000 mb. 
+ie.manual.entry.chemthrower2=The §6Focused Nozzle§r decreases the spread of fluids sprayed out and also slightly increases their range, allowing you to hit further targets with more precision.
 
 ie.manual.entry.skyhook.name=Engineer's Skyhook
 ie.manual.entry.skyhook.subtext=Booker, catch!
@@ -798,7 +819,17 @@ ie.manual.entry.skyhook1=Simply hold the right mousebutton while close to a conn
 
 ie.manual.entry.shader.name=Shaders
 ie.manual.entry.shader.subtext=Blue! No, yellow!
-ie.manual.entry.shader0=Shaders are items you can find in the world or acquire by trading with villagers. They don't have a purpose by themselves, but they can be equipped to <link;revolver;§o§nRevolvers§r>, <link;drill;§o§nDrills§r> or <link;chemthrower;§o§nChemical §o§nThrowers§r>(and possibly other things you still have to discover) to change the designs of the item. Simply put the item in an <link;workbench;§o§nEngineer's §o§nWorkbench§r> and equip the shader in the appropriate slot.<br>You can also apply them to a Minecart or a <link;balloon;§o§nBallon§r> by rightclicking!
+
+ie.manual.entry.shader0=Shaders are items you can find in the world or acquire by trading with villagers. They don't have a purpose by themselves, but they can be equipped to <link;revolver;§o§nRevolvers§r>, <link;drill;§o§nDrills§r>, <link;chemthrower;§o§nChemical §o§nThrowers§r> or <link;railgun;§o§nRailguns§r>(and possibly other things you still have to discover) to change the designs of the item. Simply put the item in an <link;workbench;§o§nEngineer's §o§nWorkbench§r> and equip the shader in the appropriate slot.<br>You can also apply them to a Minecart or a <link;balloon;§o§nBallon§r> by rightclicking!
+ie.manual.entry.shader1=Shader Grabbags are items containing a random shader. They can be found in crates, traded from villagers or dropped by bosses. The rarity of the contained shader is equal to, or better than the rarity of the bag. When using a bag, you are more likely to get a shader you do not yet own, than one you already posess.
+ie.manual.entry.shader2=Shaders bags can be crafted back into two bags of a lower level as a way to give you a chance of retrying. Shaders themselves can also be crafted into a single bag of the lower level.
+
+ie.manual.entry.railgun.name=Railgun
+ie.manual.entry.railgun.subtext=Velocitas Eradico
+ie.manual.entry.railgun0=The Railgun (or more accurately the Portable Induction Catapult) is a marvel of engineering. It consists of two rails through which an electric current flows and accelerates a sled, and by that, a projectile.<br>The process is energy intensive but will accelerate various projectiles to high speeds.
+ie.manual.entry.railgun1=To launch a projectile from your inventory, click and hold the use button till the charge level reaches 99, then release.<br><br>Valid projectiles include, for instance, §6iron§r and §6steel rods§r<config;b;literalRailGun;, §6rebar§r and almost §6every rail§r from Railcraft;>, as well as §6graphite electrodes§r.
+ie.manual.entry.railgun2=As with other IE tools, the railgun can be modified in the <link;workbench;§o§nEngineer's §o§nWorkbench§r> and be customized with <link;shader;§o§nShaders§r>.<br><br>The §6Additional Capacitors§r increase the energy storage of the railgun and also greatly reduce its charge time.
+ie.manual.entry.railgun3=The §6Precision Scope§r allows you to zoom in with the railgun. Sneak to use the scope and use the mouse wheel to switch between magnification levels.
 
 ie.manual.entry.crusher.name=Crusher
 ie.manual.entry.crusher.subtext=Keep your hands out!

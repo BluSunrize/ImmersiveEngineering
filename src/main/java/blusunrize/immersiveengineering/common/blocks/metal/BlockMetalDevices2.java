@@ -6,7 +6,10 @@ import java.util.List;
 import blusunrize.immersiveengineering.api.AdvancedAABB;
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.client.render.BlockRenderMetalDevices2;
+import blusunrize.immersiveengineering.common.Config;
+import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IColouredTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ICustomBoundingboxes;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenBarrel;
 import blusunrize.immersiveengineering.common.util.Lib;
@@ -23,6 +26,7 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -69,7 +73,6 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 		setResistance(15.0F);
 		this.setMetaLightOpacity(META_barrel, 255);
 	}
-
 
 	@Override
 	public boolean allowHammerHarvest(int meta)
@@ -197,6 +200,29 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
 	{
 		TileEntity te = world.getTileEntity(x, y, z);
+		if(te instanceof IColouredTile)
+		{
+			int dye = Utils.getDye(player.getCurrentEquippedItem());
+			if(dye>=0)
+			{
+				float r = (((IColouredTile)te).getColour()>>16&255)/255f;
+				float g = (((IColouredTile)te).getColour()>>8&255)/255f;
+				float b = (((IColouredTile)te).getColour()&255)/255f;
+				r += EntitySheep.fleeceColorTable[15-dye][0];
+				g += EntitySheep.fleeceColorTable[15-dye][1];
+				b += EntitySheep.fleeceColorTable[15-dye][2];
+				r /= 2;
+				g /= 2;
+				b /= 2;
+				int newColour = (int)(r*255);
+				newColour = (newColour<<8) + (int)(g*255);
+				newColour = (newColour<<8) + (int)(b*255);
+				((IColouredTile)te).setColour(newColour);
+				te.markDirty();
+				world.markBlockForUpdate(x, y, z);
+				return true;
+			}
+		}
 		if(!player.isSneaking() && te instanceof TileEntityBreakerSwitch && !(te instanceof TileEntityRedstoneBreaker))
 		{
 			if(!world.isRemote)
@@ -252,17 +278,25 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 			}
 			return true;
 		}
-		else if(Utils.isHammer(player.getCurrentEquippedItem()) && te instanceof TileEntityFluidPump)
+		else if(te instanceof TileEntityFluidPump)
 		{
 			TileEntityFluidPump pump = (TileEntityFluidPump) te;
-			if (!pump.dummy)
+			if(!pump.dummy)
 			{
-				if (!world.isRemote)
+				if(!world.isRemote)
 				{
-					if(player.isSneaking())
-						side = ForgeDirection.OPPOSITES[side];
-					pump.toggleSide(side);
-					world.markBlockForUpdate(x, y, z);
+					if(Utils.isHammer(player.getCurrentEquippedItem()))
+					{
+						if(player.isSneaking())
+							side = ForgeDirection.OPPOSITES[side];
+						pump.toggleSide(side);
+						world.markBlockForUpdate(x, y, z);
+					}
+					else if(Config.getBoolean("pump_placeCobble") && OreDictionary.itemMatches(new ItemStack(IEContent.itemTool,1,1), player.getCurrentEquippedItem(), true))
+					{
+						pump.placeCobble = !pump.placeCobble;
+						player.addChatMessage(new ChatComponentTranslation(Lib.CHAT_INFO+"pump.placeCobble."+pump.placeCobble));
+					}
 				}
 				return true;
 			}

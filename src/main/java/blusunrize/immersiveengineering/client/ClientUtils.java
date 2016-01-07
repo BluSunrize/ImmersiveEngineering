@@ -40,6 +40,7 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
+import net.minecraft.util.Timer;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -310,6 +311,10 @@ public class ClientUtils
 	public static FontRenderer font()
 	{
 		return mc().fontRenderer;
+	}
+	public static Timer timer()
+	{
+		return mc().timer;
 	}
 
 	public static String getResourceNameForItemStack(ItemStack stack)

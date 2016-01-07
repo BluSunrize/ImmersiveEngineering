@@ -64,7 +64,7 @@ public class ItemShaderBag extends ItemIEBase
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
 	{
 		if(!world.isRemote)
-			if(ShaderRegistry.totalWeight.containsKey(stack.getRarity()) && ShaderRegistry.totalWeight.get(stack.getRarity())>0)
+			if(ShaderRegistry.totalWeight.containsKey(stack.getRarity()))
 			{
 				String shader = ShaderRegistry.getRandomShader(player.getCommandSenderName(), player.getRNG(), stack.getRarity(), true);
 				if(shader==null || shader.isEmpty())

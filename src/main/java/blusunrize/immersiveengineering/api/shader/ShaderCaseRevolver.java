@@ -21,7 +21,7 @@ public class ShaderCaseRevolver extends ShaderCase
 		this.colourBlade = colourBlade;
 		this.additionalTexture = additionalTexture;
 	}
-	
+
 	@Override
 	public String getShaderType()
 	{
@@ -43,7 +43,11 @@ public class ShaderCaseRevolver extends ShaderCase
 	public IIcon getReplacementIcon(ItemStack shader, ItemStack item, String modelPart, int pass)
 	{
 		int maxPass = getPasses(shader, item, modelPart);
-		if(pass==maxPass-1 && i_revolverAdditional!=null)
+
+		boolean hasUncoloured = modelPart.equals("barrel")||modelPart.equals("dev_scope")||modelPart.equals("player_mag")||modelPart.equals("dev_mag")||modelPart.equals("player_electro_0")||modelPart.equals("player_electro_1");
+		if(pass==maxPass-1 && hasUncoloured)//uncoloured
+			return i_revolverUncoloured;
+		if(pass==maxPass-(hasUncoloured?2:1) && i_revolverAdditional!=null)
 			return i_revolverAdditional;
 
 		switch(modelPart)
@@ -56,16 +60,13 @@ public class ShaderCaseRevolver extends ShaderCase
 		case "dev_mag":
 		case "player_electro_0":
 		case "player_electro_1":
-			return pass==0?i_revolverBase: pass==1?i_revolverOverlay: i_revolverUncoloured;
-		case "cosmetic_compensator":
-			return i_revolverOverlay;
-		case "bayonet_attachment":
-			if(pass==0)
-				return i_revolverGrip;
-			return i_revolverOverlay;
 		case "player_bayonet":
 		case "dev_bayonet":
-			return pass==0?i_revolverBase:i_revolverOverlay;
+			return pass==0?i_revolverBase: i_revolverOverlay;
+		case "bayonet_attachment":
+			return pass==0?i_revolverGrip: i_revolverOverlay;
+		case "cosmetic_compensator":
+			return i_revolverOverlay;
 		}
 		return i_revolverBase;
 	}
@@ -73,42 +74,26 @@ public class ShaderCaseRevolver extends ShaderCase
 	@Override
 	public int[] getRGBAColourModifier(ItemStack shader, ItemStack item, String modelPart, int pass)
 	{
-		if(!shader.hasTagCompound() || pass==2&&(modelPart.equals("barrel") || modelPart.equals("dev_scope")||modelPart.equals("player_electro_0")||modelPart.equals("player_electro_1")))
+		int maxPass = getPasses(shader, item, modelPart);
+		boolean hasUncoloured = modelPart.equals("barrel")||modelPart.equals("dev_scope")||modelPart.equals("player_mag")||modelPart.equals("dev_mag")||modelPart.equals("player_electro_0")||modelPart.equals("player_electro_1");
+		if(hasUncoloured&&pass==maxPass-1)
 			return defaultWhite;
+		if(pass==maxPass-(hasUncoloured?2:1) && i_revolverAdditional!=null)
+			return colourOverlay;
 
 		int i=getTextureType(modelPart,pass); //0 == grip, 1==main, 2==detail, 3==blade
 		if(i==0)
-//			return new int[]{40,40,50,220};
 			return colourUnderlying;
 		if(i==1)
-//			return new int[]{26,26,40,220};
 			return colourPrimary;
 		if(i==2)
-//			return new int[]{0,70,49,220};
 			return colourSecondary;
 		if(i==3)
-//			return new int[]{5,10,8,180};
 			return colourBlade;
 		
 		return defaultWhite;
-//		0x000000,//BLACK
-//		0x0000AA,//DARK_BLUE
-//		0x00AA00,//DARK_GREEN
-//		0x00AAAA,//DARK_AQUA
-//		0xAA0000,//DARK_RED
-//		0xAA00AA,//DARK_PURPLE
-//		0xFFAA00,//GOLD
-//		0xAAAAAA,//GRAY
-//		0x555555,//DARK_GRAY
-//		0x5555FF,//BLUE
-//		0x55FF55,//GREEN
-//		0x55FFFF,//AQUA
-//		0xFF5555,//RED
-//		0xFF55FF,//LIGHT_PURPLE
-//		0xFFFF55,//YELLOW
-//		0xFFFFFF//WHITE
 	}
-	
+
 	public int getTextureType(String modelPart, int pass)
 	{
 		int i=0; //0 == grip, 1==main, 2==detail, 3==blade
@@ -160,7 +145,7 @@ public class ShaderCaseRevolver extends ShaderCase
 	}
 
 	@Override
-	public void modifyRender(ItemStack shader, ItemStack item, String modelPart, int pass, boolean pre)
+	public void modifyRender(ItemStack shader, ItemStack item, String modelPart, int pass, boolean pre, boolean inventory)
 	{
 		if(modelPart.equals("cosmetic_compensator"))
 		{
@@ -169,13 +154,13 @@ public class ShaderCaseRevolver extends ShaderCase
 			else
 				GL11.glEnable(GL11.GL_CULL_FACE);
 		}
-		
+
 		if(glowLayer>-1 && (glowLayer&(getTextureType(modelPart,pass)+1))==1)
 		{
 			if(pre)
 			{
 				GL11.glDisable(GL11.GL_LIGHTING);
-			Tessellator.instance.setBrightness(0xffffff);
+				Tessellator.instance.setBrightness(0xffffff);
 			}
 			else
 				GL11.glEnable(GL11.GL_LIGHTING);

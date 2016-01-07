@@ -8,21 +8,26 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import blusunrize.immersiveengineering.common.Config;
+import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IColouredTile;
+import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
+import blusunrize.immersiveengineering.common.util.Utils;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.relauncher.Side;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.*;
-import blusunrize.immersiveengineering.common.Config;
-import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
-import blusunrize.immersiveengineering.common.util.Utils;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.relauncher.Side;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.FluidTankInfo;
+import net.minecraftforge.fluids.IFluidHandler;
 
-public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidHandler
+public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidHandler, IColouredTile
 {
 	static ConcurrentHashMap<ChunkCoordinates, Set<DirectionalFluidOutput>> indirectConnections = new ConcurrentHashMap<ChunkCoordinates, Set<DirectionalFluidOutput>>();
 	public static ArrayList<ItemStack> validScaffoldCoverings = new ArrayList<ItemStack>();
@@ -36,6 +41,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidHandl
 
 	public int[] sideConfig = new int[] {0,0,0,0,0,0};
 	public ItemStack scaffoldCovering = null;
+	public int colour = 0xffffff;
 
 	@Override
 	public boolean canUpdate()
@@ -109,6 +115,17 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidHandl
 			indirectConnections.clear();
 	}
 
+	@Override
+	public int getColour()
+	{
+		return this.colour;
+	}
+
+	@Override
+	public void setColour(int colour)
+	{
+		this.colour = colour;
+	}
 
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
@@ -117,6 +134,8 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidHandl
 		if(sideConfig==null || sideConfig.length!=6)
 			sideConfig = new int[]{0,0,0,0,0,0};
 		scaffoldCovering = ItemStack.loadItemStackFromNBT(nbt.getCompoundTag("scaffold"));
+		if(nbt.hasKey("colour"))
+			colour = nbt.getInteger("colour");
 	}
 
 	@Override
@@ -125,6 +144,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidHandl
 		nbt.setIntArray("sideConfig", sideConfig);
 		if(scaffoldCovering!=null)
 			nbt.setTag("scaffold", (scaffoldCovering.writeToNBT(new NBTTagCompound())));
+		nbt.setInteger("colour", colour);
 	}
 
 

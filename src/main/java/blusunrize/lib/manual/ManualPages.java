@@ -4,6 +4,15 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
+
+import com.google.common.collect.ArrayListMultimap;
+
+import blusunrize.lib.manual.gui.GuiButtonManualLink;
+import blusunrize.lib.manual.gui.GuiButtonManualNavigation;
+import blusunrize.lib.manual.gui.GuiManual;
+import cpw.mods.fml.relauncher.ReflectionHelper;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
@@ -16,18 +25,6 @@ import net.minecraft.util.StatCollector;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
-
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
-
-import blusunrize.immersiveengineering.api.ApiUtils;
-import blusunrize.lib.manual.gui.GuiButtonManualLink;
-import blusunrize.lib.manual.gui.GuiButtonManualNavigation;
-import blusunrize.lib.manual.gui.GuiManual;
-
-import com.google.common.collect.ArrayListMultimap;
-
-import cpw.mods.fml.relauncher.ReflectionHelper;
 
 public abstract class ManualPages implements IManualPage
 {
@@ -102,7 +99,8 @@ public abstract class ManualPages implements IManualPage
 		public void renderPage(GuiManual gui, int x, int y, int mx, int my)
 		{
 			if(localizedText!=null&&!localizedText.isEmpty())
-				manual.fontRenderer.drawSplitString(localizedText, x,y, 120, manual.getTextColour());
+				ManualUtils.drawSplitString(manual.fontRenderer, localizedText, x,y, 120, manual.getTextColour());
+			//				manual.fontRenderer.drawSplitString(localizedText, x,y, 120, manual.getTextColour());
 		}
 
 		@Override
@@ -175,7 +173,8 @@ public abstract class ManualPages implements IManualPage
 				}
 
 			if(localizedText!=null&&!localizedText.isEmpty())
-				manual.fontRenderer.drawSplitString(localizedText, x,y+yOff, 120, manual.getTextColour());
+				ManualUtils.drawSplitString(manual.fontRenderer, localizedText, x,y+yOff, 120, manual.getTextColour());
+			//			manual.fontRenderer.drawSplitString(localizedText, x,y+yOff, 120, manual.getTextColour());
 		}
 
 		@Override
@@ -244,7 +243,8 @@ public abstract class ManualPages implements IManualPage
 		public void renderPage(GuiManual gui, int x, int y, int mx, int my)
 		{	
 			if(localizedText!=null&&!localizedText.isEmpty())
-				manual.fontRenderer.drawSplitString(localizedText, x,y, 120, manual.getTextColour());
+				ManualUtils.drawSplitString(manual.fontRenderer, localizedText, x,y, 120, manual.getTextColour());
+			//			manual.fontRenderer.drawSplitString(localizedText, x,y, 120, manual.getTextColour());
 
 			if(localizedTable!=null)
 			{
@@ -275,7 +275,8 @@ public abstract class ManualPages implements IManualPage
 						{
 							int xx = textOff.length>0&&j>0?textOff[j-1]:x;
 							int w = Math.max(10, 120-(j>0?textOff[j-1]-x:0));
-							manual.fontRenderer.drawSplitString(localizedTable[i][j], xx,y+textHeight+yOff, w, manual.getTextColour());
+							ManualUtils.drawSplitString(manual.fontRenderer, localizedTable[i][j], xx,y+textHeight+yOff, w, manual.getTextColour());
+							//							manual.fontRenderer.drawSplitString(localizedTable[i][j], xx,y+textHeight+yOff, w, manual.getTextColour());
 							if(j!=0)
 							{
 								int l = manual.fontRenderer.listFormattedStringToWidth(localizedTable[i][j], w).size();
@@ -319,12 +320,20 @@ public abstract class ManualPages implements IManualPage
 		public void initPage(GuiManual gui, int x, int y, List<GuiButton> pageButtons)
 		{
 			int length = stacks.length;
-			float scale = length>7?1f: length>4?1.5f: 2f;
-			int line0 = (int)(2/scale*4);
-			int line1 = line0-1;
-			int lineSum = line0+line1;
-			int lines = (length/lineSum*2)+(length%lineSum/line0)+(length%lineSum%line0>0?1:0);
-			int yOffset = lines*(int)(18*scale);
+			int yOffset = 0;
+			if(length>0)
+			{
+				float scale = length>7?1f: length>4?1.5f: 2f;
+				int line0 = (int)(8/scale);
+				int line1 = line0-1;
+				int lineSum = line0+line1;
+				int lines = (length/lineSum*2)+(length%lineSum/line0)+(length%lineSum%line0>0?1:0);
+				float equalPerLine = length/(float)lines;
+				line1 = (int)Math.floor(equalPerLine);
+				line0 = (int)Math.ceil(equalPerLine);
+				lineSum = line0+line1;
+				yOffset = lines*(int)(18*scale);
+			}
 			super.initPage(gui, x, y+yOffset, pageButtons);
 		}
 
@@ -333,42 +342,56 @@ public abstract class ManualPages implements IManualPage
 		{
 			GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 			RenderHelper.enableGUIStandardItemLighting();
-
+			ItemStack highlighted = null;
+			int yOffset = 0;
 			int length = stacks.length;
-			float scale = length>7?1f: length>4?1.5f: 2f;
-			int line0 = (int)(2/scale*4);
-			int line1 = line0-1;
-			int lineSum = line0+line1;
-			int lines = (length/lineSum*2)+(length%lineSum/line0)+(length%lineSum%line0>0?1:0);
-			GL11.glScalef(scale,scale,scale);
-			RenderItem.getInstance().renderWithColor=true;
-			int yOffset = lines*(int)(18*scale);
-			for(int line=0; line<lines; line++)
+			if(length>0)
 			{
-				int perLine = line%2==0?line0:line1;
-				if(line==0 && perLine>length)
-					perLine = length;
-				int w2 = perLine*(int)(16*scale)/2;
-				for(int i=0; i<perLine; i++)
+				float scale = length>8?1f: length>3?1.5f: 2f;
+				int line0 = (int)(7.5/scale);
+				int line1 = line0-1;
+				int lineSum = line0+line1;
+				int lines = (length/lineSum*2)+(length%lineSum/line0)+(length%lineSum%line0>0?1:0);
+				float equalPerLine = length/(float)lines;
+				line1 = (int)Math.floor(equalPerLine);
+				line0 = (int)Math.ceil(equalPerLine);
+				lineSum = line0+line1;
+				int lastLines = length%lineSum;
+				int lastLine = lastLines==line0?line0: lastLines==0?line1: lastLines%line0;
+				GL11.glScalef(scale,scale,scale);
+				RenderItem.getInstance().renderWithColor=true;
+				yOffset = lines*(int)(18*scale);
+				for(int line=0; line<lines; line++)
 				{
-					int item = line/2*lineSum+line%2*line0+i;
-					if(item>=length)
-						break;
-					int xx = x+60-w2 + i*(int)(16*scale);
-					xx = (int)(xx/scale);
-					int yy = y+(lines<2?4:0)+line*(int)(16*scale);
-					yy = (int)(yy/scale);
-					RenderItem.getInstance().renderItemAndEffectIntoGUI(manual.fontRenderer, ManualUtils.mc().renderEngine, stacks[item], xx,yy);
+					int perLine = line==lines-1?lastLine: line%2==0?line0:line1;
+					if(line==0 && perLine>length)
+						perLine = length;
+					int w2 = perLine*(int)(18*scale)/2;
+					for(int i=0; i<perLine; i++)
+					{
+						int item = line/2*lineSum+line%2*line0+i;
+						if(item>=length)
+							break;
+						int xx = x+60-w2 + (int)(i*18*scale);
+						int yy = y+(lines<2?4:0)+line*(int)(18*scale);
+						RenderItem.getInstance().renderItemAndEffectIntoGUI(manual.fontRenderer, ManualUtils.mc().renderEngine, stacks[item], (int)(xx/scale),(int)(yy/scale));
+						if(mx>=xx&&mx<xx+(16*scale) && my>=yy&&my<yy+(16*scale))
+							highlighted = stacks[item];
+					}
 				}
+				GL11.glScalef(1/scale,1/scale,1/scale);
 			}
-			GL11.glScalef(1/scale,1/scale,1/scale);
-
 			RenderHelper.disableStandardItemLighting();
 			GL11.glDisable(GL12.GL_RESCALE_NORMAL);
 			GL11.glEnable(GL11.GL_BLEND);
-
 			if(localizedText!=null&&!localizedText.isEmpty())
-				manual.fontRenderer.drawSplitString(localizedText, x,y+yOffset, 120, manual.getTextColour());
+				ManualUtils.drawSplitString(manual.fontRenderer, localizedText, x,y+yOffset, 120, manual.getTextColour());
+			//			manual.fontRenderer.drawSplitString(localizedText, x,y+yOffset, 120, manual.getTextColour());
+
+			manual.fontRenderer.setUnicodeFlag(false);
+			if(highlighted!=null)
+				gui.renderToolTip(highlighted, mx, my);
+			RenderHelper.disableStandardItemLighting();
 		}
 
 		@Override
@@ -559,7 +582,8 @@ public abstract class ManualPages implements IManualPage
 
 			manual.fontRenderer.setUnicodeFlag(uni);
 			if(localizedText!=null&&!localizedText.isEmpty())
-				manual.fontRenderer.drawSplitString(localizedText, x,y+totalYOff-2, 120, manual.getTextColour());
+				ManualUtils.drawSplitString(manual.fontRenderer, localizedText, x,y+totalYOff-2, 120, manual.getTextColour());
+			//			manual.fontRenderer.drawSplitString(localizedText, x,y+totalYOff-2, 120, manual.getTextColour());
 
 			manual.fontRenderer.setUnicodeFlag(false);
 			if(highlighted!=null)
@@ -604,7 +628,7 @@ public abstract class ManualPages implements IManualPage
 				}
 				else if(stack instanceof String)
 				{
-					if(ApiUtils.isExistingOreName((String)stack))
+					if(ManualUtils.isExistingOreName((String)stack))
 						for(ItemStack subStack: OreDictionary.getOres((String)stack))
 							if(subStack.getDisplayName().toLowerCase().contains(searchTag))
 								return true;
@@ -749,7 +773,8 @@ public abstract class ManualPages implements IManualPage
 						gui.drawGradientRect(x+pstack.x, y+pstack.y, x+pstack.x+16,y+pstack.y+16, 0x33666666,0x33666666);
 					}
 				ManualUtils.bindTexture(manual.texture);
-				ManualUtils.drawTexturedRect(x+maxX-17,y+yOff/2-5, 16,10, 256, 0,16, 226,236);
+				ManualUtils.drawTexturedRect(x+maxX-17,y+yOff/2-5, 16,10, 0/256f,16/256f, 226/256f,236/256f);
+
 			}
 
 			GL11.glTranslated(0, 0, 300);
@@ -776,7 +801,8 @@ public abstract class ManualPages implements IManualPage
 
 			manual.fontRenderer.setUnicodeFlag(uni);
 			if(localizedText!=null&&!localizedText.isEmpty())
-				manual.fontRenderer.drawSplitString(localizedText, x,y+yOff+2, 120, manual.getTextColour());
+				ManualUtils.drawSplitString(manual.fontRenderer, localizedText, x,y+yOff+2, 120, manual.getTextColour());
+			//			manual.fontRenderer.drawSplitString(localizedText, x,y+yOff+2, 120, manual.getTextColour());
 
 			manual.fontRenderer.setUnicodeFlag(false);
 			if(highlighted!=null)
@@ -824,7 +850,7 @@ public abstract class ManualPages implements IManualPage
 					}
 					else if(stack.stack instanceof String)
 					{
-						if(ApiUtils.isExistingOreName((String)stack.stack))
+						if(ManualUtils.isExistingOreName((String)stack.stack))
 							for(ItemStack subStack: OreDictionary.getOres((String)stack.stack))
 								if(subStack.getDisplayName().toLowerCase().contains(searchTag))
 									return true;

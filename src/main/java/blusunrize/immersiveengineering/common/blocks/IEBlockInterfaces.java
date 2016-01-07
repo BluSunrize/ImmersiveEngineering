@@ -34,4 +34,10 @@ public class IEBlockInterfaces
 	{
 		public double getInterdictionRangeSquared();
 	}
+	
+	public interface IColouredTile
+	{
+		public int getColour();
+		public void setColour(int colour);
+	}
 }

@@ -3,14 +3,6 @@ package blusunrize.immersiveengineering.client.render;
 import java.util.Arrays;
 import java.util.List;
 
-import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.entity.RenderItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
-import net.minecraftforge.client.IItemRenderer;
-import net.minecraftforge.client.model.obj.GroupObject;
-import net.minecraftforge.client.model.obj.WavefrontObject;
-
 import org.lwjgl.opengl.GL11;
 
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
@@ -19,6 +11,13 @@ import blusunrize.immersiveengineering.client.ClientProxy;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.ModelRevolverVariable;
 import blusunrize.immersiveengineering.common.items.ItemRevolver;
+import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.entity.RenderItem;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.IIcon;
+import net.minecraftforge.client.IItemRenderer;
+import net.minecraftforge.client.model.obj.GroupObject;
+import net.minecraftforge.client.model.obj.WavefrontObject;
 
 public class ItemRenderRevolver implements IItemRenderer
 {
@@ -91,6 +90,7 @@ public class ItemRenderRevolver implements IItemRenderer
 			ClientUtils.renderWavefrontWithIconUVs(modelobj, icon, parts);
 		else
 		{
+			boolean inventory = type==ItemRenderType.INVENTORY;
 			List<String> renderParts = Arrays.asList(parts);
 			for(GroupObject obj : modelobj.groupObjects)
 				if(renderParts.contains(obj.name))
@@ -104,12 +104,12 @@ public class ItemRenderRevolver implements IItemRenderer
 						if(col==null||col.length<4)
 							col= new int[]{255,255,255,255};
 						
-						sCase.modifyRender(shader, item, obj.name, pass, true);
+						sCase.modifyRender(shader, item, obj.name, pass, true, inventory);
 						ClientUtils.tes().startDrawing(obj.glDrawingMode);
 						ClientUtils.tes().setColorRGBA(col[0], col[1], col[2], col[3]);
 						ClientUtils.tessellateWavefrontGroupObjectWithIconUVs(obj, ic);
 						ClientUtils.tes().draw();
-						sCase.modifyRender(shader, item, obj.name, pass, false);
+						sCase.modifyRender(shader, item, obj.name, pass, false, inventory);
 					}
 				}
 		}

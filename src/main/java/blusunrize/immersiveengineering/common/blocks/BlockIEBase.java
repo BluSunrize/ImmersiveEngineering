@@ -22,6 +22,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IColouredTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ICustomBoundingboxes;
 import blusunrize.immersiveengineering.common.util.Lib;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -102,6 +103,14 @@ public abstract class BlockIEBase extends BlockContainer
 		if(meta>=0&&meta<this.lightOpacities.length)
 			return this.lightOpacities[meta];
         return getLightOpacity();
+    }
+	@Override
+    public int colorMultiplier(IBlockAccess world, int x, int y, int z)
+    {
+		TileEntity tile = world.getTileEntity(x, y, z);
+		if(tile instanceof IColouredTile)
+			((IColouredTile)tile).getColour();
+        return 16777215;
     }
 	
 	@Override

@@ -11,7 +11,14 @@ import java.util.Random;
 
 import com.google.common.collect.ArrayListMultimap;
 
+import blusunrize.immersiveengineering.api.ManualHelper;
+import blusunrize.lib.manual.ManualInstance.ManualEntry;
+import blusunrize.lib.manual.ManualPages;
+import blusunrize.lib.manual.ManualPages.PositionedItemStack;
 import net.minecraft.item.EnumRarity;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 
 public class ShaderRegistry
 {
@@ -55,6 +62,7 @@ public class ShaderRegistry
 		registerShader_Revolver(name, overlayType, rarity, colourBackground, colourPrimary, colourSecondary, colourBlade, additionalTexture);
 		registerShader_Chemthrower(name, overlayType, rarity, colourBackground, colourPrimary, colourSecondary, true,false, additionalTexture);
 		registerShader_Drill(name, overlayType, rarity, colourBackground, colourPrimary, colourSecondary, additionalTexture);
+		registerShader_Railgun(name, overlayType, rarity, colourBackground, colourPrimary, colourSecondary, additionalTexture);
 		registerShader_Minecart(name, overlayType, rarity, colourPrimary, colourSecondary, additionalTexture);
 		registerShader_Balloon(name, overlayType, rarity, colourPrimary, colourSecondary, additionalTexture);
 		return shaderRegistry.get(name).setCrateLoot(loot).setBagLoot(bags);
@@ -95,6 +103,18 @@ public class ShaderRegistry
 
 		return shader;
 	}
+	public static ShaderCaseRailgun registerShader_Railgun(String name, String overlayType, EnumRarity rarity, int[] colourGrip, int[] colourPrimary, int[] colourSecondary, String additionalTexture)
+	{
+		if(!shaderList.contains(name))
+			shaderList.add(name);
+		ShaderCaseRailgun shader = new ShaderCaseRailgun(overlayType, colourGrip, colourPrimary, colourSecondary, additionalTexture);
+		if(!shaderRegistry.containsKey(name))
+			shaderRegistry.put(name, new ShaderRegistryEntry(name, rarity, shader));
+		else
+			shaderRegistry.get(name).addCase(shader);
+
+		return shader;
+	}
 	public static ShaderCaseMinecart registerShader_Minecart(String name, String overlayType, EnumRarity rarity, int[] colourPrimary, int[] colourSecondary, String additionalTexture)
 	{
 		if(!shaderList.contains(name))
@@ -120,6 +140,9 @@ public class ShaderRegistry
 		return shader;
 	}
 
+	public static ManualEntry manualEntry;
+	public static Item itemShader;
+	public static Item itemShaderBag;
 	public static void compileWeight()
 	{
 		totalWeight.clear();
@@ -130,7 +153,7 @@ public class ShaderRegistry
 			{
 				int entryRarityWeight = rarityWeightMap.get(entry.getRarity());
 				for(Map.Entry<EnumRarity,Integer> weightedRarity : rarityWeightMap.entrySet())
-					if(weightedRarity.getValue()>=entryRarityWeight)
+					if(entry.getIsInLowerBags()?(weightedRarity.getValue()>=entryRarityWeight):(weightedRarity.getValue()==entryRarityWeight))
 					{
 						int i = totalWeight.containsKey(weightedRarity.getKey())?totalWeight.get(weightedRarity.getKey()):0;
 						totalWeight.put(weightedRarity.getKey(), i+entry.getWeight() );
@@ -151,6 +174,52 @@ public class ShaderRegistry
 				return Integer.compare(ShaderRegistry.rarityWeightMap.get(enum0), ShaderRegistry.rarityWeightMap.get(enum1));
 			}});
 
+		if(manualEntry!=null)
+		{
+			ArrayList<PositionedItemStack[]> recipes = new ArrayList();
+			ItemStack[] shaderBags = new ItemStack[ShaderRegistry.sortedRarityMap.size()];
+			recipes = new ArrayList();
+			for(int i=0; i<ShaderRegistry.sortedRarityMap.size(); i++)
+			{
+				EnumRarity outputRarity = ShaderRegistry.sortedRarityMap.get(i);
+				shaderBags[i] = new ItemStack(itemShaderBag);
+				shaderBags[i].setTagCompound(new NBTTagCompound());
+				shaderBags[i].getTagCompound().setString("rarity", outputRarity.toString());
+				ArrayList<EnumRarity> upperRarities = ShaderRegistry.getHigherRarities(outputRarity);
+				if(!upperRarities.isEmpty())
+				{
+					ArrayList<ItemStack> inputList = new ArrayList();
+					for(EnumRarity r : upperRarities)
+					{
+						ItemStack bag = new ItemStack(itemShaderBag);
+						bag.setTagCompound(new NBTTagCompound());
+						bag.getTagCompound().setString("rarity",  r.toString());
+						inputList.add(bag);
+					}
+					ItemStack s0 = new ItemStack(itemShaderBag,2);
+					s0.setTagCompound(new NBTTagCompound());
+					s0.getTagCompound().setString("rarity", outputRarity.toString());
+					if(!inputList.isEmpty())
+						recipes.add(new PositionedItemStack[]{ new PositionedItemStack(inputList, 33, 0), new PositionedItemStack(s0, 69, 0)});
+					inputList = new ArrayList();
+					for(ShaderRegistryEntry entry : ShaderRegistry.shaderRegistry.values())
+						if(upperRarities.contains(entry.getRarity()))
+						{
+							ItemStack shader = new ItemStack(itemShader);
+							shader.setTagCompound(new NBTTagCompound());
+							shader.getTagCompound().setString("shader_name",  entry.getName());
+							inputList.add(shader);
+						}
+					ItemStack s1 = new ItemStack(itemShaderBag);
+					s1.setTagCompound(new NBTTagCompound());
+					s1.getTagCompound().setString("rarity", outputRarity.toString());
+					if(!inputList.isEmpty())
+						recipes.add(new PositionedItemStack[]{ new PositionedItemStack(inputList, 33, 0), new PositionedItemStack(s1, 69, 0)});
+				}
+			}
+			manualEntry.getPages()[1] = new ManualPages.ItemDisplay(ManualHelper.getManual(), "shader1", shaderBags);
+			manualEntry.getPages()[2] = new ManualPages.CraftingMulti(ManualHelper.getManual(), "shader2", (Object[])recipes.toArray(new PositionedItemStack[recipes.size()][3]));
+		}
 	}
 	public static void recalculatePlayerTotalWeight(String player)
 	{
@@ -164,7 +233,7 @@ public class ShaderRegistry
 			{
 				int entryRarityWeight = rarityWeightMap.get(entry.getRarity());
 				for(Map.Entry<EnumRarity,Integer> weightedRarity : rarityWeightMap.entrySet())
-					if(weightedRarity.getValue()>=entryRarityWeight)
+					if(entry.getIsInLowerBags()?(weightedRarity.getValue()>=entryRarityWeight):(weightedRarity.getValue()==entryRarityWeight))
 					{
 						int weight = playerTotalWeight.get(player).containsKey(weightedRarity.getKey())? playerTotalWeight.get(player).get(weightedRarity.getKey()):0;
 						int value =  entry.getWeight();
@@ -182,21 +251,25 @@ public class ShaderRegistry
 		total = playerTotalWeight.get(player).get(minRarity);
 
 		String shader = null;
-		int weight = rand.nextInt(total);
+		int minWeight = rarityWeightMap.get(minRarity);
+		int weight = total<1?total:rand.nextInt(total);
 		for(ShaderRegistryEntry entry : shaderRegistry.values())
 			if(entry.getIsBagLoot())
-				if(rarityWeightMap.get(minRarity)>=rarityWeightMap.get(entry.getRarity()))
+			{
+				int entryRarityWeight = rarityWeightMap.get(entry.getRarity());
+				if(entry.getIsInLowerBags()?(minWeight>=entryRarityWeight):(minWeight==entryRarityWeight))
 				{
 					int value = entry.getWeight();
 					if(receivedShaders.get(player).contains(entry.getName()))
 						value = 1;
 					weight -=value;
-					if(weight<0)
+					if(weight<=0)
 					{
 						shader = entry.getName();
 						break;
 					}
 				}
+			}
 		if(addToReceived)
 		{
 			if(!receivedShaders.get(player).contains(shader))
@@ -271,6 +344,7 @@ public class ShaderRegistry
 		public int weight;
 		public boolean isCrateLoot;
 		public boolean isBagLoot;
+		public boolean isInLowerBags = true;
 
 		public ShaderRegistryEntry(String name, EnumRarity rarity, List<ShaderCase> cases)
 		{
@@ -337,6 +411,15 @@ public class ShaderRegistry
 		public boolean getIsBagLoot()
 		{
 			return this.isBagLoot;
+		}
+		public ShaderRegistryEntry setInLowerBags(boolean b)
+		{
+			this.isInLowerBags = b;
+			return this;
+		}
+		public boolean getIsInLowerBags()
+		{
+			return this.isInLowerBags;
 		}
 	}
 }

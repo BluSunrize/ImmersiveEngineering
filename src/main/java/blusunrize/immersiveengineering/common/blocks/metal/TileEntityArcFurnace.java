@@ -266,6 +266,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 						if(this.getStackInSlot(i).attemptDamageItem(1, worldObj.rand))
 						{
 							this.setInventorySlotContents(i, null);
+							updateClient = true;
 							update = true;
 						}
 				}

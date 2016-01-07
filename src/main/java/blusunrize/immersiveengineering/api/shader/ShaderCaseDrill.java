@@ -38,7 +38,7 @@ public class ShaderCaseDrill extends ShaderCase
 			return i_drillUncoloured;
 		if(pass==maxPass-2 && i_drillAdditional!=null)
 			return i_drillAdditional;
-		
+
 		return pass==0?i_drillBase: i_drillOverlay;
 	}
 
@@ -46,8 +46,10 @@ public class ShaderCaseDrill extends ShaderCase
 	public int[] getRGBAColourModifier(ItemStack shader, ItemStack item, String modelPart, int pass)
 	{
 		int maxPass = getPasses(shader, item, modelPart);
-		if((pass==maxPass-1)||(pass==maxPass-2 && i_drillAdditional!=null))
+		if(pass==maxPass-1)
 			return defaultWhite;
+		if(pass==maxPass-2 && i_drillAdditional!=null)
+			return colourOverlay;
 
 		int i=getTextureType(modelPart,pass); //0 == grip, 1==main, 2==detail
 		if(i==0)
@@ -85,7 +87,7 @@ public class ShaderCaseDrill extends ShaderCase
 	}
 
 	@Override
-	public void modifyRender(ItemStack shader, ItemStack item, String modelPart, int pass, boolean pre)
+	public void modifyRender(ItemStack shader, ItemStack item, String modelPart, int pass, boolean pre, boolean inventory)
 	{
 	}
 }

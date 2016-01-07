@@ -27,6 +27,7 @@ public class TileEntityFluidPump extends TileEntityIEBase implements IFluidHandl
 	public boolean dummy = true;
 	public FluidTank tank = new FluidTank(4000);
 	public EnergyStorage energyStorage = new EnergyStorage(8000);
+	public boolean placeCobble = true;
 
 	boolean checkingArea = false;
 	Fluid searchFluid = null;
@@ -97,7 +98,8 @@ public class TileEntityFluidPump extends TileEntityIEBase implements IFluidHandl
 						//						if(rainbow>9)
 						//							rainbow++;
 						//						worldObj.setBlock( cc.posX,cc.posY,cc.posZ, Blocks.stained_glass,rainbow, 0x3);
-						worldObj.setBlock( cc.posX,cc.posY,cc.posZ, Blocks.cobblestone);
+						if(Config.getBoolean("pump_placeCobble") && placeCobble)
+							worldObj.setBlock( cc.posX,cc.posY,cc.posZ, Blocks.cobblestone);
 						this.tank.fill(fs, true);
 						closedList.remove(target);
 					}
@@ -225,6 +227,8 @@ public class TileEntityFluidPump extends TileEntityIEBase implements IFluidHandl
 		if(sideConfig==null || sideConfig.length!=6)
 			sideConfig = new int[]{0,-1,-1,-1,-1,-1};
 		dummy = nbt.getBoolean("dummy");
+		if(nbt.hasKey("placeCobble"))
+			placeCobble = nbt.getBoolean("placeCobble");
 		tank.readFromNBT(nbt.getCompoundTag("tank"));
 		energyStorage.readFromNBT(nbt);
 		if(descPacket)
@@ -236,6 +240,7 @@ public class TileEntityFluidPump extends TileEntityIEBase implements IFluidHandl
 	{
 		nbt.setIntArray("sideConfig", sideConfig);
 		nbt.setBoolean("dummy", dummy);
+		nbt.setBoolean("placeCobble", placeCobble);
 		nbt.setTag("tank", tank.writeToNBT(new NBTTagCompound()));
 		energyStorage.writeToNBT(nbt);
 	}

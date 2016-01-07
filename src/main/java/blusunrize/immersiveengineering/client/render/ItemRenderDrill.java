@@ -134,6 +134,7 @@ public class ItemRenderDrill implements IItemRenderer
 			ClientUtils.renderWavefrontWithIconUVs(model, icon, parts);
 		else
 		{
+			boolean inventory = type==ItemRenderType.INVENTORY;
 			List<String> renderParts = Arrays.asList(parts);
 			for(GroupObject obj : model.groupObjects)
 				if(renderParts.contains(obj.name))
@@ -147,12 +148,12 @@ public class ItemRenderDrill implements IItemRenderer
 						if(col==null||col.length<4)
 							col= new int[]{255,255,255,255};
 
-						sCase.modifyRender(shader, item, obj.name, pass, true);
+						sCase.modifyRender(shader, item, obj.name, pass, true, inventory);
 						ClientUtils.tes().startDrawing(obj.glDrawingMode);
 						ClientUtils.tes().setColorRGBA(col[0], col[1], col[2], col[3]);
 						ClientUtils.tessellateWavefrontGroupObjectWithIconUVs(obj, ic);
 						ClientUtils.tes().draw();
-						sCase.modifyRender(shader, item, obj.name, pass, false);
+						sCase.modifyRender(shader, item, obj.name, pass, false, inventory);
 					}
 				}
 		}

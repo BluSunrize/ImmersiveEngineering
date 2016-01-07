@@ -56,7 +56,7 @@ public class ItemBlockWoodenDevices extends ItemBlockIEBase
 	{
 		int playerViewQuarter = MathHelper.floor_double(player.rotationYaw * 4.0F / 360.0F + 0.5D) & 3;
 		int f = playerViewQuarter==0 ? 2:playerViewQuarter==1 ? 5:playerViewQuarter==2 ? 3: 4;
-		if(meta>=1||meta<=3)
+		if(meta>=1&&meta<=3)
 			f = side;
 		
 		if(meta==0)

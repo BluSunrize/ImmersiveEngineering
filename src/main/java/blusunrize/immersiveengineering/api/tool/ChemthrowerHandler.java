@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.api.tool;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -7,6 +8,8 @@ import java.util.HashSet;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFire;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.monster.EntityBlaze;
+import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
@@ -173,10 +176,15 @@ public class ChemthrowerHandler
 	}
 	public static class ChemthrowerEffect_Extinguish extends ChemthrowerEffect
 	{
+		@Override
 		public void applyToEntity(EntityLivingBase target, EntityPlayer shooter, ItemStack thrower, Fluid fluid)
 		{
 			if(target.isBurning())
 				target.extinguish();
+
+			if(target instanceof EntityBlaze || target instanceof EntityEnderman)
+				if(target.attackEntityFrom(DamageSource.drown, 3))
+					target.hurtResistantTime = (int)(target.hurtResistantTime*.75);
 		}
 		@Override
 		public void applyToBlock(World worldObj, MovingObjectPosition mop, EntityPlayer shooter, ItemStack thrower, Fluid fluid)

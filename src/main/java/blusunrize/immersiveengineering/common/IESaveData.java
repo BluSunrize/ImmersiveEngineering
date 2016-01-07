@@ -69,10 +69,14 @@ public class IESaveData extends WorldSavedData
 			NBTTagCompound tag = receivedShaderList.getCompoundTagAt(i);
 			String player = tag.getString("player"); 
 			ShaderRegistry.receivedShaders.get(player).clear();
-			
+
 			NBTTagList playerReceived = tag.getTagList("received", 8);
 			for(int j=0; j<playerReceived.tagCount(); j++)
-				ShaderRegistry.receivedShaders.put(player, playerReceived.getStringTagAt(j));
+			{
+				String s = playerReceived.getStringTagAt(j);
+				if(s!=null && !s.isEmpty())
+					ShaderRegistry.receivedShaders.put(player, s);
+			}
 		}
 	}
 
@@ -108,7 +112,7 @@ public class IESaveData extends WorldSavedData
 				mineralList.appendTag(tag);
 			}
 		nbt.setTag("mineralDepletion", mineralList);
-		
+
 
 		NBTTagList receivedShaderList = new NBTTagList();
 		for(String player : ShaderRegistry.receivedShaders.keySet())
@@ -117,7 +121,8 @@ public class IESaveData extends WorldSavedData
 			tag.setString("player", player);
 			NBTTagList playerReceived = new NBTTagList();
 			for(String shader : ShaderRegistry.receivedShaders.get(player))
-				playerReceived.appendTag(new NBTTagString(shader));
+				if(shader!=null && !shader.isEmpty())
+					playerReceived.appendTag(new NBTTagString(shader));
 			tag.setTag("received", playerReceived);
 			receivedShaderList.appendTag(tag);
 		}

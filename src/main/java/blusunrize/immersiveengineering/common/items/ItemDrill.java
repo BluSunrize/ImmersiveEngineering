@@ -112,6 +112,10 @@ public class ItemDrill extends ItemUpgradeableTool implements IShaderEquipableIt
 	@Override
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean adv)
 	{
+		ItemStack shader = getShaderItem(stack);
+		if(shader!=null)
+			list.add(EnumChatFormatting.DARK_GRAY+shader.getDisplayName());
+		
 		FluidStack fs = getFluid(stack);
 		if(fs!=null)
 			list.add(StatCollector.translateToLocal("desc.ImmersiveEngineering.flavour.drill.fuel")+" "+fs.amount+"/"+getCapacity(stack)+"mB");
