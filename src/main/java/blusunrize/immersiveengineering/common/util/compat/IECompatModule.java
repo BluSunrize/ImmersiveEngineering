@@ -11,6 +11,7 @@ import blusunrize.immersiveengineering.common.util.compat.computercraft.Computer
 import blusunrize.immersiveengineering.common.util.compat.hydcraft.HydCraftHelper;
 import blusunrize.immersiveengineering.common.util.compat.mfr.MFRHelper;
 import blusunrize.immersiveengineering.common.util.compat.minetweaker.MTHelper;
+import blusunrize.immersiveengineering.common.util.compat.opencomputers.OCHelper;
 import blusunrize.immersiveengineering.common.util.compat.waila.WailaHelper;
 import cpw.mods.fml.common.Loader;
 
@@ -51,6 +52,7 @@ public abstract class IECompatModule
 		moduleClasses.put("Railcraft", RailcraftHelper.class);
 		moduleClasses.put("Avaritia", AvaritiaHelper.class);
 		moduleClasses.put("ComputerCraft", ComputercraftHelper.class);
+		moduleClasses.put("OpenComputers", OCHelper.class);
 	}
 
 	public static void doModulesPreInit()
@@ -59,6 +61,7 @@ public abstract class IECompatModule
 			if(Loader.isModLoaded(e.getKey()) && Config.getBoolean("compat_"+e.getKey()))
 				try{
 					IECompatModule m = e.getValue().newInstance();
+					IELogger.info("Loading compat module: "+m);
 					modules.add(m);
 					m.preInit();
 				}catch (Exception exception){

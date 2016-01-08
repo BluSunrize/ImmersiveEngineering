@@ -7,24 +7,15 @@ import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.util.Lib;
 import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyReceiver;
-import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import li.cil.oc.api.machine.Arguments;
-import li.cil.oc.api.machine.Callback;
-import li.cil.oc.api.machine.Context;
-import li.cil.oc.api.network.SidedComponent;
-import li.cil.oc.api.network.SimpleComponent;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 
-@Optional.InterfaceList({
-		@Optional.Interface(iface = "li.cil.oc.api.network.SidedComponent", modid = "OpenComputers"),
-		@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")})
-public class TileEntitySampleDrill extends TileEntityIEBase implements IEnergyReceiver, SidedComponent, SimpleComponent
+public class TileEntitySampleDrill extends TileEntityIEBase implements IEnergyReceiver
 {
 	public EnergyStorage energyStorage = new EnergyStorage(8000);
 	public int pos=0;
@@ -158,69 +149,4 @@ public class TileEntitySampleDrill extends TileEntityIEBase implements IEnergyRe
 		return energyStorage.getMaxEnergyStored();
 	}
 
-	@Optional.Method(modid = "OpenComputers")
-	@Override
-	public boolean canConnectNode(ForgeDirection side)
-	{
-		return (pos==0);
-	}
-
-	@Optional.Method(modid = "OpenComputers")
-	@Override
-	public String getComponentName()
-	{
-		return "IE:sampleDrill";
-	}
-
-	/*
-	 only the master will connect, so we don't need to check or find it before calling the getters.
-	 */
-	@Optional.Method(modid = "OpenComputers")
-	@Callback
-	public Object[] getSampleProgress(Context context, Arguments args)
-	{
-		return new Object[]{getSampleProgress()};
-	}
-	@Optional.Method(modid = "OpenComputers")
-	@Callback
-	public Object[] isSamplingFinished(Context context, Arguments args)
-	{
-		return new Object[]{isSamplingFinished()};
-	}
-	@Optional.Method(modid = "OpenComputers")
-	@Callback
-	public Object[] getVeinUnlocalizedName(Context context, Arguments args)
-	{
-		if(isSamplingFinished())
-			return new Object[]{getVeinUnlocalizedName()};
-		return new Object[0];
-	}
-	@Optional.Method(modid = "OpenComputers")
-	@Callback
-	public Object[] getVeinLocalizedName(Context context, Arguments args)
-	{
-		if(isSamplingFinished())
-			return new Object[]{getVeinLocalizedName()};
-		return new Object[0];
-	}
-	@Optional.Method(modid = "OpenComputers")
-	@Callback
-	public Object[] getVeinIntegrity(Context context, Arguments args)
-	{
-		if(isSamplingFinished())
-			return new Object[]{getVeinIntegrity()};
-		return new Object[0];
-	}
-	@Optional.Method(modid = "OpenComputers")
-	@Callback
-	public Object[] getEnergyStored(Context context, Arguments args)
-	{
-		return new Object[]{energyStorage.getEnergyStored()};
-	}
-	@Optional.Method(modid = "OpenComputers")
-	@Callback
-	public Object[] getMaxEnergyStored(Context context, Arguments args)
-	{
-		return new Object[]{energyStorage.getMaxEnergyStored()};
-	}
 }

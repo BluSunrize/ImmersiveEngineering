@@ -5,12 +5,13 @@ import java.util.List;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.client.render.BlockRenderMetalMultiblocks;
+import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ICustomBoundingboxes;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
+import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.Utils;
-import blusunrize.immersiveengineering.common.util.compat.opencomputers.TileEntityDieselGeneratorOC;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -27,6 +28,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
@@ -259,6 +261,23 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 			{
 				master.mirrored = !master.mirrored;
 				master.mirror();
+				int axis;
+				ForgeDirection dir = ForgeDirection.getOrientation(master.facing);
+				if (dir==ForgeDirection.EAST||dir==ForgeDirection.WEST)
+					axis = 2;
+				else
+					axis = 0;
+				ChunkCoordinates gen = new ChunkCoordinates(master.xCoord+(axis==0?1:-dir.offsetX), master.yCoord, master.zCoord+(axis==2?1:-dir.offsetZ));
+				ChunkCoordinates adapter = new ChunkCoordinates(master.xCoord+(axis==0?2:-dir.offsetX), master.yCoord, master.zCoord+(axis==2?2:-dir.offsetZ));
+				Block b = world.getBlock(adapter.posX, adapter.posY, adapter.posZ);
+				if (b!=null)
+					b.onNeighborChange(world, adapter.posX, adapter.posY, adapter.posZ, gen.posX, gen.posY, gen.posZ);
+				gen = new ChunkCoordinates(master.xCoord-(axis==0?1:-dir.offsetX), master.yCoord, master.zCoord-(axis==2?1:dir.offsetZ));
+				adapter = new ChunkCoordinates(master.xCoord-(axis==0?2:-dir.offsetX), master.yCoord, master.zCoord-(axis==2?2:dir.offsetZ));
+				b = world.getBlock(adapter.posX, adapter.posY, adapter.posZ);
+				if (b!=null)
+					b.onNeighborChange(world, adapter.posX, adapter.posY, adapter.posZ, gen.posX, gen.posY, gen.posZ);
+				
 				master.markDirty();
 				world.markBlockForUpdate(master.xCoord, master.yCoord, master.zCoord);
 			}
@@ -566,10 +585,7 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 		case META_lightningRod:
 			return new TileEntityLightningRod();
 		case META_dieselGenerator:
-			if (TileEntityDieselGenerator.isOCLoaded)
-				return new TileEntityDieselGeneratorOC();
-			else
-				return new TileEntityDieselGenerator();
+			return new TileEntityDieselGenerator();
 		case META_squeezer:
 			return new TileEntitySqueezer();
 		case META_fermenter:

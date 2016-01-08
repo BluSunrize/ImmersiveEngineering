@@ -10,15 +10,8 @@ import blusunrize.immersiveengineering.common.util.FakePlayerUtil;
 import blusunrize.immersiveengineering.common.util.Utils;
 import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyReceiver;
-import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import li.cil.oc.api.machine.Arguments;
-import li.cil.oc.api.machine.Callback;
-import li.cil.oc.api.machine.Context;
-import li.cil.oc.api.network.Node;
-import li.cil.oc.api.network.SidedComponent;
-import li.cil.oc.api.network.SimpleComponent;
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Blocks;
@@ -34,10 +27,7 @@ import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.event.ForgeEventFactory;
 
-@Optional.InterfaceList({
-		@Optional.Interface(iface = "li.cil.oc.api.network.SidedComponent", modid = "OpenComputers"),
-		@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")})
-public class TileEntityExcavator extends TileEntityMultiblockPart implements IEnergyReceiver, SidedComponent, SimpleComponent
+public class TileEntityExcavator extends TileEntityMultiblockPart implements IEnergyReceiver
 {
 	public int facing = 2;
 	public EnergyStorage energyStorage = new EnergyStorage(64000);
@@ -460,69 +450,5 @@ public class TileEntityExcavator extends TileEntityMultiblockPart implements IEn
 		else if(pos==53)
 			return new float[]{fl==4?.375f: fl==5?.5f:0,0,fl==2?.375f:fl==3?.5f:0,  fl==4?.5f:fl==5?.625f:1,1,fl==2?.5f:fl==3?.625f:1};
 		return new float[]{0,0,0,1,1,1};
-	}
-
-	@Optional.Method(modid = "OpenComputers")
-	@Override
-	public boolean canConnectNode(ForgeDirection side)
-	{
-		return (pos==3 && side.ordinal()==facing);
-	}
-
-	@Optional.Method(modid = "OpenComputers")
-	@Override
-	public String getComponentName()
-	{
-		return "IE:excavator";
-	}
-
-	@Optional.Method(modid = "OpenComputers")
-	// "override" what gets injected by OC's class transformer
-	public void onConnect(Node node)
-	{
-		master().computerControlled = true;
-	}
-
-	@Optional.Method(modid = "OpenComputers")
-	// "override" what gets injected by OC's class transformer
-	public void onDisconnect(Node node)
-	{
-		master().computerControlled = false;
-	}
-
-	@Optional.Method(modid = "OpenComputers")
-		 @Callback(doc = "function():boolean -- get whether the excavator is enabled")
-		 public Object[] getEnabled(Context context, Arguments args)
-{
-	return new Object[]{master().computerOn};
-}
-
-	@Optional.Method(modid = "OpenComputers")
-	@Callback(doc = "function(enable:boolean) -- enable or disable the excavator")
-	public Object[] setEnabled(Context context, Arguments args)
-	{
-		master().computerOn = args.checkBoolean(0);
-		return null;
-	}
-
-	@Optional.Method(modid = "OpenComputers")
-	@Callback(doc = "function():number -- get energy storage capacity")
-	public Object[] getEnergyStored(Context context, Arguments args)
-	{
-		return new Object[]{master().energyStorage.getEnergyStored()};
-	}
-
-	@Optional.Method(modid = "OpenComputers")
-	@Callback(doc = "function():number -- get currently stored energy")
-	public Object[] getMaxEnergyStored(Context context, Arguments args)
-	{
-		return new Object[]{master().energyStorage.getMaxEnergyStored()};
-	}
-
-	@Optional.Method(modid = "OpenComputers")
-	@Callback(doc = "function():boolean -- get whether the excavator is currently running")
-	public Object[] isRunning(Context context, Arguments args)
-	{
-		return new Object[]{master().active};
 	}
 }

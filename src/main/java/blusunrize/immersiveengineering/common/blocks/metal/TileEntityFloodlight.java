@@ -13,25 +13,14 @@ import blusunrize.immersiveengineering.common.blocks.TileEntityImmersiveConnecta
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
-import li.cil.oc.api.machine.Arguments;
-import li.cil.oc.api.machine.Callback;
-import li.cil.oc.api.machine.Context;
-import li.cil.oc.api.network.Node;
-import li.cil.oc.api.network.SidedComponent;
-import li.cil.oc.api.network.SimpleComponent;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.EnumSkyBlock;
-import net.minecraftforge.common.util.ForgeDirection;
 
-@Optional.InterfaceList({
-	@Optional.Interface(iface = "li.cil.oc.api.network.SidedComponent", modid = "OpenComputers"),
-	@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")})
-public class TileEntityFloodlight extends TileEntityImmersiveConnectable implements SimpleComponent, SidedComponent
+public class TileEntityFloodlight extends TileEntityImmersiveConnectable
 {
 	public int energyStorage = 0;
 	public boolean active = false;
@@ -388,83 +377,5 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 	public boolean canComputerTurn()
 	{
 		return computerTurnCooldown<=0||!active;
-	}
-
-	@Override
-	public boolean canConnectNode(ForgeDirection arg0) {
-		return arg0.getOpposite().ordinal()==side;
-	}
-
-	@Override
-	public String getComponentName() {
-		return "IE:floodlight";
-	}
-	@Optional.Method(modid = "OpenComputers")
-	// "override" what gets injected by OC's class transformer
-	public void onConnect(Node node)
-	{
-		computerControlled = true;
-		computerOn = true;
-	}
-
-	@Optional.Method(modid = "OpenComputers")
-	// "override" what gets injected by OC's class transformer
-	public void onDisconnect(Node node)
-	{
-		computerControlled = false;
-	}
-
-	@Optional.Method(modid = "OpenComputers")
-	@Callback(doc = "function():int -- gets the maximum amount of energy stored")
-	public Object[] getMaxEnergyStored(Context context, Arguments args)
-	{
-		return new Object[]{80};
-	}
-
-	@Optional.Method(modid = "OpenComputers")
-	@Callback(doc = "function():int -- gets the amount of energy stored")
-	public Object[] getEnergyStored(Context context, Arguments args)
-	{
-		return new Object[]{energyStorage};
-	}
-
-	@Optional.Method(modid = "OpenComputers")
-	@Callback(doc = "function(up:boolean) -- turns the floodlight")
-	public Object[] turnAroundXZ(Context context, Arguments args)
-	{
-		boolean up = args.checkBoolean(0);
-		turnX(up, true);
-		return null;
-	}
-
-	@Optional.Method(modid = "OpenComputers")
-	@Callback(doc = "function(direction:boolean) -- turns the floodlight")
-	public Object[] turnAroundY(Context context, Arguments args)
-	{
-		boolean dir = args.checkBoolean(0);
-		turnY(dir, true);
-		return null;
-	}
-
-	@Optional.Method(modid = "OpenComputers")
-	@Callback(doc = "function():boolean -- checks whether the floodlight can turn again yet")
-	public Object[] canTurnAroundY(Context context, Arguments args)
-	{
-		return new Object[] {canComputerTurn()};
-	}
-
-	@Optional.Method(modid = "OpenComputers")
-	@Callback(doc = "function(on:boolean) -- turns the floodlight on and off")
-	public Object[] setEnabled(Context context, Arguments args)
-	{
-		computerOn = args.checkBoolean(0);
-		return null;
-	}
-
-	@Optional.Method(modid = "OpenComputers")
-	@Callback(doc = "function():boolean -- checks whether the floodlight is on")
-	public Object[] isActive(Context context, Arguments args)
-	{
-		return new Object[]{active};
 	}
 }

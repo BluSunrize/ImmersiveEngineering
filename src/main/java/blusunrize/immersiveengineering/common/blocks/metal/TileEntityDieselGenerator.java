@@ -9,7 +9,6 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockDiese
 import blusunrize.immersiveengineering.common.util.IESound;
 import cofh.api.energy.IEnergyConnection;
 import cofh.api.energy.IEnergyReceiver;
-import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
@@ -25,9 +24,6 @@ import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 
-@Optional.InterfaceList({
-		@Optional.Interface(iface = "li.cil.oc.api.network.SidedComponent", modid = "OpenComputers"),
-		@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")})
 public class TileEntityDieselGenerator extends TileEntityMultiblockPart implements IFluidHandler, ISoundTile, IEnergyConnection
 {
 	public int facing = 2;
@@ -41,8 +37,6 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockPart implemen
 
 	public boolean computerControlled = false;
 	public boolean computerActivated = false;
-	
-	public static boolean isOCLoaded = false;
 
 	@Override
 	public TileEntityDieselGenerator master()
