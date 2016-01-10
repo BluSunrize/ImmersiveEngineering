@@ -184,6 +184,8 @@ item.ImmersiveEngineering.material.gunpartHammer.name=击锤
 item.ImmersiveEngineering.material.componentIron.name=铁质机械零件
 item.ImmersiveEngineering.material.componentSteel.name=钢质机械零件
 item.ImmersiveEngineering.material.slag.name=矿渣
+item.ImmersiveEngineering.material.stickIron.name=铁杆
+item.ImmersiveEngineering.material.stickSteel.name=钢杆
 item.ImmersiveEngineering.seed.hemp.name=工业大麻种子
 
 item.ImmersiveEngineering.fluidContainers.bottleCreosote.name=杂酚油瓶
@@ -250,17 +252,22 @@ item.ImmersiveEngineering.toolupgrade.revolverBayonet.name=刺刀
 item.ImmersiveEngineering.toolupgrade.revolverMagazine.name=扩充弹夹
 item.ImmersiveEngineering.toolupgrade.revolverElectro.name=加强电子管
 item.ImmersiveEngineering.toolupgrade.chemthrowerFocus.name=聚焦喷嘴
+item.ImmersiveEngineering.toolupgrade.railgunScope.name=瞄准镜
+item.ImmersiveEngineering.toolupgrade.railgunCapacitors.name=附加电容器
+
 
 item.ImmersiveEngineering.blueprint.name=工程师蓝图
 
 item.ImmersiveEngineering.graphiteElectrode.name=石墨电极
 
 item.ImmersiveEngineering.shader.name=皮肤
+item.ImmersiveEngineering.shaderBag.name=聚合皮肤
 
 item.ImmersiveEngineering.jerrycan.name=油罐
 
 item.ImmersiveEngineering.chemthrower.name=化学喷射器
 
+item.ImmersiveEngineering.railgun.name=轨道炮
 
 #CREATIVE
 itemGroup.ImmersiveEngineering=Immersive Engineering
@@ -307,11 +314,14 @@ desc.ImmersiveEngineering.info.mininglvl.6=§5玛玉灵§d+
 
 desc.ImmersiveEngineering.info.durability=耐久：%1$s
 
+desc.ImmersiveEngineering.info.holdShift=§6按住 Shift§r
+
 desc.ImmersiveEngineering.info.mineral.Iron=铁矿
 desc.ImmersiveEngineering.info.mineral.Magnetite=磁铁矿
 desc.ImmersiveEngineering.info.mineral.Pyrite=黄铁矿
 desc.ImmersiveEngineering.info.mineral.Bauxite=铝土矿
 desc.ImmersiveEngineering.info.mineral.Copper=铜矿
+desc.ImmersiveEngineering.info.mineral.Cassiterite=锡矿
 desc.ImmersiveEngineering.info.mineral.Gold=金矿
 desc.ImmersiveEngineering.info.mineral.Nickel=镍矿
 desc.ImmersiveEngineering.info.mineral.Platinum=铂矿
@@ -322,6 +332,7 @@ desc.ImmersiveEngineering.info.mineral.Lead=铅矿
 desc.ImmersiveEngineering.info.mineral.Silver=银矿
 desc.ImmersiveEngineering.info.mineral.Lapis=青金石矿
 desc.ImmersiveEngineering.info.mineral.Coal=煤矿
+desc.ImmersiveEngineering.info.mineral.Wolframite=钨矿
 
 desc.ImmersiveEngineering.info.reqMaterial=所需材料:
 desc.ImmersiveEngineering.info.chance=概率:
@@ -333,6 +344,14 @@ desc.ImmersiveEngineering.info.blueprint.specialBullet=特种子弹
 desc.ImmersiveEngineering.info.blueprint.electrode=电弧炉电极
 
 desc.ImmersiveEngineering.info.electrodeIntegrity=完整度
+
+desc.ImmersiveEngineering.info.shader.applyTo=可应用于:
+desc.ImmersiveEngineering.info.shader.revolver=左轮手枪
+desc.ImmersiveEngineering.info.shader.chemthrower=化学喷射器
+desc.ImmersiveEngineering.info.shader.drill=挖掘机
+desc.ImmersiveEngineering.info.shader.railgun=轨道炮
+desc.ImmersiveEngineering.info.shader.minecart=矿车
+desc.ImmersiveEngineering.info.shader.balloon=气球
 
 desc.ImmersiveEngineering.flavour.treatedWood.0=横纹木板
 desc.ImmersiveEngineering.flavour.treatedWood.1=纵纹木板
@@ -382,6 +401,8 @@ desc.ImmersiveEngineering.flavour.toolupgrade.revolverBayonet=为左轮手枪添
 desc.ImmersiveEngineering.flavour.toolupgrade.revolverMagazine=提升左轮手枪弹夹容量
 desc.ImmersiveEngineering.flavour.toolupgrade.revolverElectro=左轮手枪射击造成电击伤害
 desc.ImmersiveEngineering.flavour.toolupgrade.chemthrowerFocus=减少化学喷射器的喷射速度，并增加其范围
+desc.ImmersiveEngineering.flavour.toolupgrade.railgunScope=可以让轨道炮视野放大
+desc.ImmersiveEngineering.flavour.toolupgrade.railgunCapacitors=减少的充电时间，并增加轨道炮的能量存储
 
 gui.ImmersiveEngineering.empty=空
 
@@ -409,6 +430,9 @@ chat.ImmersiveEngineering.info.coreDrill.infinite=无限
 		
 chat.ImmersiveEngineering.info.energyTransfered=%1$sticks内平均能量流动: %2$s RF/t
 
+chat.ImmersiveEngineering.info.pump.placeCobble.true=这个泵可以将液体替换为圆石.
+chat.ImmersiveEngineering.info.pump.placeCobble.false=这个泵可以将不再把液体替换为圆石. §6警告:§f 在处理大量液体时可能会产生延迟不建议使用!
+
 chat.ImmersiveEngineering.command.available=§6可用命令：§r %1$s
 chat.ImmersiveEngineering.command.help.help=§6用法：/ie help <命令> [子命令...]§r<br> 获取指定命令的详细信息，也可指定子命令以获得对应信息
 chat.ImmersiveEngineering.command.mineral.help=§6用法：/ie mineral <list|get|set|setDepletion>§r
@@ -422,6 +446,9 @@ chat.ImmersiveEngineering.command.mineral.set.sucess=矿物重载已设定为'%1
 chat.ImmersiveEngineering.command.mineral.set.clear=矿物重载(%1$s)已清除。
 chat.ImmersiveEngineering.command.mineral.setDepletion.NFE=错误：'%1$s'不是一个有效数字
 chat.ImmersiveEngineering.command.mineral.setDepletion.sucess=矿物开采量已设定为'%1$s'
+chat.ImmersiveEngineering.command.shaders.help=§6用法: /ie shaders <clear>§r
+chat.ImmersiveEngineering.command.shaders.clear.help=§6用法: /ie shaders clear [player]§r<br> 给指定的玩家清除皮肤。 如果没有指定玩家则清除自己的.
+chat.ImmersiveEngineering.command.shaders.clear.sucess=皮肤已被清除'%1$s'
 
 #RECIPES
 recipe.ImmersiveEngineering.hammerCrushing=粉碎
@@ -437,6 +464,7 @@ death.attack.ieRevolver_silver=%1$s被%2$s的银弹所净化
 death.attack.ieRevolver_potion=%2$s的弹头里的药水溅到了%1$s身上
 death.attack.ieCrushed=%1$s被粉碎
 death.attack.ieAcid=%1$s被酸液腐蚀分解掉了
+death.attack.ieRailgun=%1$s被%2$s's的轨道炮刺穿
 
 #ACHIEVEMENTS
 achievement.immersiveengineering.openManual=请阅读下面的说明书
@@ -449,20 +477,37 @@ achievement.immersiveengineering.blastfurnace=真正的热门话题
 achievement.immersiveengineering.blastfurnace.desc=建造一台高炉
 achievement.immersiveengineering.makeSteel=升级
 achievement.immersiveengineering.makeSteel.desc=获得钢锭
-achievement.immersiveengineering.makeRevolver=来让我们高兴一下
-achievement.immersiveengineering.makeRevolver.desc=制作一把左轮手枪
+
+achievement.immersiveengineering.placeConveyor=到处都是路
+achievement.immersiveengineering.placeConveyor.desc=放置传送带
+achievement.immersiveengineering.placeWindmill=风车的土地
+achievement.immersiveengineering.placeWindmill.desc=放置一个风车
+achievement.immersiveengineering.craftHeater=传播温暖
+achievement.immersiveengineering.craftHeater.desc=制作一个外置加热器
+achievement.immersiveengineering.craftPump=压力作用下
+achievement.immersiveengineering.craftPump.desc=制作一个流体泵
+achievement.immersiveengineering.placeFloodlight=Aziz! Light!
+achievement.immersiveengineering.placeFloodlight.desc=放置一个泛光灯
+achievement.immersiveengineering.craftWorkbench=朋克时间
+achievement.immersiveengineering.craftWorkbench.desc=制作一个工程师工作台
+achievement.immersiveengineering.craftRevolver=来让我们高兴一下
+achievement.immersiveengineering.craftRevolver.desc=制作一把左轮手枪
 achievement.immersiveengineering.upgradeRevolver=Shalashaska
 achievement.immersiveengineering.upgradeRevolver.desc=给左轮手枪加装尽可能多的升级
-achievement.immersiveengineering.makeWolfPack=毁灭之美
-achievement.immersiveengineering.makeWolfPack.desc=制造狼群弹头
-achievement.immersiveengineering.makeDrill=储能镐
-achievement.immersiveengineering.makeDrill.desc=制作采矿钻头
+achievement.immersiveengineering.craftWolfPack=毁灭之美
+achievement.immersiveengineering.craftWolfPack.desc=制造狼群弹头
+achievement.immersiveengineering.craftDrill=储能镐
+achievement.immersiveengineering.craftDrill.desc=制作采矿钻头
 achievement.immersiveengineering.upgradeDrill=Big Daddy
 achievement.immersiveengineering.upgradeDrill.desc=给采矿钻头加装尽可能多的升级
-achievement.immersiveengineering.makeSkyhook=Booker, catch!
-achievement.immersiveengineering.makeSkyhook.desc=制作工程师天钩
+achievement.immersiveengineering.craftSkyhook=Booker, catch!
+achievement.immersiveengineering.craftSkyhook.desc=制作工程师天钩
 achievement.immersiveengineering.skyhookPro=天际线大师
 achievement.immersiveengineering.skyhookPro.desc=使用天钩滑行至少一千米
+achievement.immersiveengineering.craftChemthrower=Spray and Pray
+achievement.immersiveengineering.craftChemthrower.desc=制作一个化学喷射器
+achievement.immersiveengineering.craftRailgun=财富的赠送
+achievement.immersiveengineering.craftRailgun.desc=制作一个轨道炮
 achievement.immersiveengineering.mbSilo=金属片掩盖的秘密仓库
 achievement.immersiveengineering.mbSilo.desc=建造筒仓
 achievement.immersiveengineering.mbCrusher=危险机械
@@ -476,6 +521,10 @@ achievement.immersiveengineering.mbArcFurnace.desc=建造电弧炉
 
 achievement.immersiveengineering.secret_birthdayParty=Grunt Birthday Party
 achievement.immersiveengineering.secret_birthdayParty.desc=擦亮火柴...
+achievement.immersiveengineering.secret_luckOfTheDraw=抽奖的运气
+achievement.immersiveengineering.secret_luckOfTheDraw.desc=全有即全无
+
+
 
 stat.skyhookOneCm=使用天钩滑行的距离
 
@@ -510,6 +559,10 @@ ie.manual.entry.updateNews_30=亲爱的工程师们!<br><br>这次的更新为Im
 ie.manual.entry.updateNews_31=科研部门的另一项新发明是<link;chargingStation;§o§n充 §o§n电站§r>,它能够让你将能量导入到你的物品当中为其充电.<br>助理工程师"眼镜蛇"也展示了他的最新发明,<link;conveyor;§o§n卸货传送带§r;2>,它能够将通过它的物品放置到它下方的存储容器中.<br>比<link;sorter;§o§n物品路由器§r>更棒的是,它能够通过设置矿物辞典,NBT数据或模糊筛选来对物品进行过滤!
 ie.manual.entry.updateNews_32=其它一些值得一提的变动均和传输与装饰相关:<br>- <link;shader;§o§n皮肤§r> 现在能够被使用在矿车上<br>- <link;skyhook;§o§n工程师天钩§r> 一个能让你在电网上高速滑行并赶超矿车的工具<br>- <link;balloon;§o§n气球§r> 能够让你更方便的高空悬挂接线器并为之前提到的天钩搭建架空索<br>- <link;concrete;§o§n混凝土§r> 当你从空索上掉落时为你提供一个硬着陆~
 ie.manual.entry.updateNews_33=最后,财政部门因为无法准确追踪我们的用电量而时常找我们麻烦.在经过激烈的争论之后,他们给了我们一份有关<link;eMeter;§o§n电流 §o§n互感器§r>的蓝图,一种能够测量流通能量的仪器.不用说,当他们知道电弧炉的真正能耗之后他们变得更加不开心了.
+
+ie.manual.entry.updateNews_4.name=版本0.6.4更新内容
+ie.manual.entry.updateNews_4.subtext=Old, new; borrowed and Blu
+ie.manual.entry.updateNews_40=亲爱的工程师们!<br><br>这次更新的变化不大.<br>能量传输系统的区块短路bug被修复了.<br><link;furnaceHeater;§o§n炉 §o§n加热器§r>第二电弧炉加强了，可以和神秘的炼金炉和Cutting Edge的电力蒸馏器配合.<br><br>这就是所有,我们希望让它保持足够稳定.
 
 ie.manual.category.general.name=概念和资源
 ie.manual.category.construction.name=建筑结构
@@ -563,6 +616,10 @@ ie.manual.entry.balloon.name=气球
 ie.manual.entry.balloon.subtext=...制作99个就对了
 ie.manual.entry.balloon0=气球其实就是一个麻布袋下面加一个加热装置让它们保持悬浮.它们同样会释放光亮,但不同于火把,他们并没有火灾隐患.<br>气球能够像其它方块一样放置,或者,当没有目标方块时,它们会被放置在你前方的空气方块中.
 ie.manual.entry.balloon1=同<link;metalconstruction;§o§n钢制接线器§r;5>类似,你可以将麻绳或钢线连接到上面.<br>潜行右击可以设置气球的放置高度差,允许你将其放置在目标方块上方最多5格高的地方.<br>你还可以对已放置的气球使用染料;染色的部位取决于你对准的部位.<br>手持工程师锤右键气球会改变条纹形状.
+
+ie.manual.entry.crate.name=木制储物箱
+ie.manual.entry.crate.subtext=移动装备了!
+ie.manual.entry.crate0=木质储存箱非常类似于箱子. 用处理过的木材精致而成,他有27个物品槽,打破的时候物品不会掉出来,可以跟箱子一起移动.<br>像箱子,他们将输出基于物品的量的比较器信号.
 
 ie.manual.entry.barrel.name=木桶
 ie.manual.entry.barrel.subtext=拒绝滚动
@@ -656,6 +713,7 @@ ie.manual.entry.bottlingMachine1=液体的输入端位于底层中央,物品通�
 ie.manual.entry.chargingStation.name=充电站
 ie.manual.entry.chargingStation.subtext=
 ie.manual.entry.chargingStation0=充电站允许你为工具或其它物品进行充电.能量能够从底部或后部输入,而物品可以手动放入或自动输入.<config;b;ic2Manual;充电站同样兼容使用EU的工具.;>
+ie.manual.entry.chargingStation1=在前面的电子管得到物品的电流充电反馈时，充电站也将输出一个相同的比较器信号.
 
 ie.manual.entry.highvoltage.name=高压
 ie.manual.entry.highvoltage.subtext=你无法撼动的冲击
@@ -709,6 +767,7 @@ ie.manual.entry.fluidPipes0=液体传输在工程业变得越发重要.输液管
 ie.manual.entry.fluidPipes1=你可以通过用工程师锤右击一个管道来防止它连接那一侧.<br>输液管可以嵌入木制或钢制脚手架中.只需手持脚手架右击管道即可.破坏管道会返还脚手架.
 ie.manual.entry.fluidPipes2=液泵有两个重要功能.它们能够用于将液体高压泵入管道中,让传输速率变快,或者它们还能够从世界当中抽取液体.用工程师锤右击液泵底部会转换输入输出端.
 ie.manual.entry.fluidPipes3=为了使液泵能够抽取液体方块,它需要从顶部接受能量以及一个红石信号.液泵同样能够用于从一些无法自动输出的储罐或液体容器中抽取液体.这同样需要红石信号,不过并不需要能量.
+ie.manual.entry.fluidPipes4=<config;b;pump_infiniteWater;泵抽取的水方块超过3x3，将当做无限水源.<br><br>;><config;b;pump_placeCobble;被抽取的水将以圆石取代，以减少流动水. 这种模式可以用工程师剪线钳关闭.;>
 
 ie.manual.entry.sorter.name=物品路由器
 ie.manual.entry.sorter.subtext=左脚放黄色上,右手放绿色上
@@ -761,7 +820,16 @@ ie.manual.entry.skyhook1=只需在接近接线器时按住右键,你就会勾住
 ie.manual.entry.shader.name=皮肤
 ie.manual.entry.shader.subtext=蓝色! 不,黄色!
 ie.manual.entry.shader0=皮肤是一些你能够在世界当中找到或与村民交易获得的物品.它们本身没有什么功能,但它们可以装配到<link;revolver;§o§n左轮手枪§r>上(或者其它等待你发现的东西上)来改变物品设计.简单的将它们放入<link;workbench;§o§n工 §o§n程师装配台§r>并将皮肤放入合适的装配栏中即可.
+ie.manual.entry.shader1=聚合皮肤是一种随机皮肤. 可以在地牢箱子中找到,或者和村民交易以及怪物掉落. 所包含的皮肤非常稀有. 当使用一个袋子，你更有可能得到你还没有的皮肤，比如你已经拥有一个着色器.
+ie.manual.entry.shader2=Shaders bags can be crafted back into two bags of a lower level as a way to give you a chance of retrying. Shaders themselves can also be crafted into a single bag of the lower level.
 
+ie.manual.entry.railgun.name=轨道炮
+ie.manual.entry.railgun.subtext=Velocitas Eradico
+ie.manual.entry.railgun0=轨道炮（或者更准确地说是便携式电磁发射器）是工程的奇迹. 它有两个导轨流通电流,从而给子弹提供加速.<br>这是个能量强化的过程,会加速各种高速度的弹丸.
+ie.manual.entry.railgun1=按住鼠标右键,一直充电到99%，然后发射物品栏的子弹.<br><br>子弹包括,§6铁杆§r 和 §6钢杆§r<config;b;literalRailGun;, §6rebar§r and almost §6every rail§r from Railcraft;>, as well as §6graphite electrodes§r.
+ie.manual.entry.railgun2=和其它IE工具一样, 轨道炮可以在 <link;workbench;§o§n工程师 §o§n装配台§r> 修改和定制 <link;shader;§o§n皮肤§r>.<br><br>§6附加电容§r 可以增加轨道炮的能量储存和减少充电时间.
+ie.manual.entry.railgun3=§6瞄准镜§r可以增加视野距离. shift试用瞄准镜，鼠标滚轮调节视角.
+4
 ie.manual.entry.crusher.name=粉碎机
 ie.manual.entry.crusher.subtext=管好你的手!
 ie.manual.entry.crusher0=粉碎矿物是提高产量的有效途径,因为每个矿物都可以加工得到两份可以烧制的矿粉.这台工业级粉碎机让这个过程变得更加方便.机器的持续运作最大需要<config;i;crusher_consumption>RF/t的能量,其加工速度取决于能源供应量.
