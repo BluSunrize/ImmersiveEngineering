@@ -828,7 +828,7 @@ ie.manual.entry.railgun.subtext=Velocitas Eradico
 ie.manual.entry.railgun0=轨道炮（或者更准确地说是便携式电磁发射器）是工程的奇迹. 它有两个导轨流通电流,从而给子弹提供加速.<br>这是个能量强化的过程,会加速各种高速度的弹丸.
 ie.manual.entry.railgun1=按住鼠标右键,一直充电到99%，然后发射物品栏的子弹.<br><br>子弹包括,§6铁杆§r 和 §6钢杆§r<config;b;literalRailGun;, §6rebar§r and almost §6every rail§r from Railcraft;>, as well as §6graphite electrodes§r.
 ie.manual.entry.railgun2=和其它IE工具一样, 轨道炮可以在 <link;workbench;§o§n工程师 §o§n装配台§r> 修改和定制 <link;shader;§o§n皮肤§r>.<br><br>§6附加电容§r 可以增加轨道炮的能量储存和减少充电时间.
-ie.manual.entry.railgun3=§6瞄准镜§r可以增加视野距离. shift试用瞄准镜，鼠标滚轮调节视角.
+ie.manual.entry.railgun3=§6瞄准镜§r可以增加视野距离. shift使用瞄准镜，鼠标滚轮调节视角.
 4
 ie.manual.entry.crusher.name=粉碎机
 ie.manual.entry.crusher.subtext=管好你的手!
