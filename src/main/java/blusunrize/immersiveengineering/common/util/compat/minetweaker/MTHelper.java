@@ -58,6 +58,8 @@ public class MTHelper extends IECompatModule
 	/** Helper Methods */
 	public static ItemStack toStack(IItemStack iStack)
 	{
+		if(iStack!=null)
+			return null;
 		return getItemStack(iStack);
 	}
 	public static Object toObject(IIngredient iStack)

@@ -59,7 +59,7 @@ public class ImmersiveEngineering
 	public static final String MODID = "ImmersiveEngineering";
 	public static final String MODNAME = "Immersive Engineering";
 	public static final String VERSION = "${version}";
-	public static final double VERSION_D = .65;
+	public static final double VERSION_D = .7;
 
 	@Mod.Instance(MODID)
 	public static ImmersiveEngineering instance = new ImmersiveEngineering();
@@ -89,7 +89,7 @@ public class ImmersiveEngineering
 		IEApi.prefixToIngotMap.put("plate", new Integer[]{1,1});
 		IEApi.prefixToIngotMap.put("gear", new Integer[]{4,1});
 		IEApi.prefixToIngotMap.put("rod", new Integer[]{2,1});
-		IEApi.prefixToIngotMap.put("fence", new Integer[]{6,16});
+		IEApi.prefixToIngotMap.put("fence", new Integer[]{3,2});
 		IECompatModule.doModulesPreInit();
 	}
 	@Mod.EventHandler

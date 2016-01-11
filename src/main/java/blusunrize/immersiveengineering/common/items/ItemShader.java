@@ -50,7 +50,7 @@ public class ItemShader extends ItemIEBase implements IShaderItem
 		addShader("Sponsor", 0, EnumRarity.epic, new int[]{25,25,25,255}, new int[]{247,27,36,255}, new int[]{255,255,255,255},new int[]{170,170,170,255}, "sponsor",false,null);
 		((ShaderCaseMinecart)ShaderRegistry.getShader("Sponsor", "minecart")).mirrorSideForPass[2]=false;
 		addShader("Mass Fusion", 3, EnumRarity.rare, new int[]{110,90,55,255}, new int[]{57,71,48,255}, new int[]{84,84,84,255}, new int[]{170,170,170,255}, "fusion",true,null);
-		
+
 		addShader("StormFlower", 1, EnumRarity.common, new int[]{39,52,39,255},new int[]{40,111,48,255},new int[]{75,146,85,255},new int[]{40,111,48,255});
 		addShader("Mil\u00f3", 2, EnumRarity.uncommon, new int[]{59,27,16,255},new int[]{103,0,4,255},new int[]{206,126,16,255},new int[]{103,0,4,255});
 		addShader("Trident", 2, EnumRarity.uncommon, new int[]{81,81,81,255},new int[]{168,168,168,255},new int[]{41,211,255,255},new int[]{175,175,175,255});
@@ -74,6 +74,8 @@ public class ItemShader extends ItemIEBase implements IShaderItem
 
 		addShader("Radiant", 3, EnumRarity.uncommon, new int[]{163,110,171,255},new int[]{248,219,188,255},new int[]{199,154,177,255},new int[]{216,216,227,255}, "pipes",true,new int[]{241,201,30,255});
 		addShader("Hollow", 4, EnumRarity.uncommon, new int[]{84,45,28,255},new int[]{238,197,229,255},new int[]{204,137,128,255},new int[]{196,161,170,255}, "pipes",true,new int[]{196,152,56,255});
+
+		addShader("ONE PAAAAAAAAAWWWWNCH", 0, EnumRarity.uncommon, new int[]{151,62,46,255}, new int[]{233,192,102,255}, new int[]{255,255,255,255}, new int[]{255,255,255,255});
 	}
 
 	@Override

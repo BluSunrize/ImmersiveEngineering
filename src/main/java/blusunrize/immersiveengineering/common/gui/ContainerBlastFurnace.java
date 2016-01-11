@@ -25,8 +25,9 @@ public class ContainerBlastFurnace extends Container
 			}
 		});
 		this.addSlotToContainer(new IESlot.BlastFuel(this, tile, 1, 52, 53));
-		this.addSlotToContainer(new IESlot.Output(this, tile, 2,112, 35));
-		slotCount=3;
+		this.addSlotToContainer(new IESlot.Output(this, tile, 2,112, 17));
+		this.addSlotToContainer(new IESlot.Output(this, tile, 3,112, 53));
+		slotCount=4;
 
 		for (int i = 0; i < 3; i++)
 			for (int j = 0; j < 9; j++)

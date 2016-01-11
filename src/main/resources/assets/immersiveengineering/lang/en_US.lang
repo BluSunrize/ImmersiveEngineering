@@ -55,6 +55,7 @@ tile.ImmersiveEngineering.metalMultiblock.tank.name=Fluid Tank
 tile.ImmersiveEngineering.metalMultiblock.silo.name=Item Silo
 tile.ImmersiveEngineering.metalMultiblock.assembler.name=Assembler
 tile.ImmersiveEngineering.metalMultiblock.bottlingMachine.name=Bottling Machine
+tile.ImmersiveEngineering.metalMultiblock.metalPress.name=Metal Press
 
 tile.ImmersiveEngineering.metalDecoration.fence.name=Steel Fence
 tile.ImmersiveEngineering.metalDecoration.scaffolding.name=Steel Scaffolding
@@ -72,6 +73,9 @@ tile.ImmersiveEngineering.metalDecoration.aluminiumFence.name=Aluminium Fence
 tile.ImmersiveEngineering.metalDecoration.aluminiumScaffolding.name=Aluminium Scaffolding
 tile.ImmersiveEngineering.metalDecoration.aluminiumScaffolding2.name=Aluminium Scaffolding
 tile.ImmersiveEngineering.metalDecoration.aluminiumStructuralArm.name=Aluminium Structural Arm
+tile.ImmersiveEngineering.metalDecoration2.sheetMetalAlu.name=Aluminium Sheet Metal Block
+tile.ImmersiveEngineering.metalDecoration2.sheetMetalLead.name=Lead Sheet Metal Block
+tile.ImmersiveEngineering.metalDecoration2.sheetMetalSteel.name=Steel Sheet Metal Block
 
 tile.ImmersiveEngineering.metalDevice2.breakerSwitch.name=Breaker Switch
 tile.ImmersiveEngineering.metalDevice2.energyMeter.name=Current Transformer
@@ -83,6 +87,7 @@ tile.ImmersiveEngineering.metalDevice2.barrel.name=Metal Barrel
 tile.ImmersiveEngineering.metalDevice2.capacitorCreative.name=Creative Capacitor
 tile.ImmersiveEngineering.metalDevice2.redstoneBreaker.name=Redstone Breaker
 tile.ImmersiveEngineering.metalDevice2.chargingStation.name=Charging Station
+tile.ImmersiveEngineering.metalDevice2.blastFurnacePreheater.name=Blast Furnace Preheater
 
 tile.ImmersiveEngineering.treatedWood.0.name=Treated Wood Planks
 tile.ImmersiveEngineering.treatedWood.1.name=Treated Wood Planks
@@ -110,9 +115,10 @@ tile.ImmersiveEngineering.woodenStairs2.name=Treated Wood Stairs
 
 tile.ImmersiveEngineering.stoneDevice.hempcrete.name=Hempcrete
 tile.ImmersiveEngineering.stoneDevice.cokeOven.name=Coke Oven
-tile.ImmersiveEngineering.stoneDevice.blastFurnace.name=Blast Furnace
+tile.ImmersiveEngineering.stoneDevice.blastFurnace.name=Crude Blast Furnace
 tile.ImmersiveEngineering.stoneDevice.coalCoke.name=Block of Coal Coke
 tile.ImmersiveEngineering.stoneDevice.insulatorGlass.name=Insulating Glass
+tile.ImmersiveEngineering.stoneDevice.blastFurnaceAdvanced.name=Improved Blast Furnace
 
 tile.ImmersiveEngineering.stoneDecoration.hempcrete.name=Hempcrete
 tile.ImmersiveEngineering.stoneDecoration.cokeBrick.name=Coke Brick
@@ -120,6 +126,7 @@ tile.ImmersiveEngineering.stoneDecoration.blastBrick.name=Blast Brick
 tile.ImmersiveEngineering.stoneDecoration.coalCoke.name=Block of Coal Coke
 tile.ImmersiveEngineering.stoneDecoration.concrete.name=Concrete
 tile.ImmersiveEngineering.stoneDecoration.concreteTile.name=Concrete Tile
+tile.ImmersiveEngineering.stoneDecoration.blastBrickReinforced.name=Reinforced Blast Brick
 tile.ImmersiveEngineering.concreteStairs.name=Concrete Stairs
 tile.ImmersiveEngineering.concreteTileStairs.name=Concrete Tile Stairs
 
@@ -179,7 +186,6 @@ item.ImmersiveEngineering.metal.plateElectrum.name=Electrum Plate
 item.ImmersiveEngineering.metal.plateSteel.name=Steel Plate
 
 
-
 item.ImmersiveEngineering.material.treatedStick.name=Treated Stick
 item.ImmersiveEngineering.material.waterwheelSegment.name=Waterwheel Segment
 item.ImmersiveEngineering.material.windmillBlade.name=Windmill Blade
@@ -196,6 +202,7 @@ item.ImmersiveEngineering.material.componentSteel.name=Steel Mechanical Componen
 item.ImmersiveEngineering.material.slag.name=Slag
 item.ImmersiveEngineering.material.stickIron.name=Iron Rod
 item.ImmersiveEngineering.material.stickSteel.name=Steel Rod
+item.ImmersiveEngineering.material.stickAluminum.name=Aluminium Rod
 item.ImmersiveEngineering.seed.hemp.name=Industrial Hemp Seeds
 
 item.ImmersiveEngineering.fluidContainers.bottleCreosote.name=Bottle of Creosote Oil
@@ -278,6 +285,10 @@ item.ImmersiveEngineering.jerrycan.name=Jerrycan
 item.ImmersiveEngineering.chemthrower.name=Chemical Thrower
 
 item.ImmersiveEngineering.railgun.name=Railgun
+
+item.ImmersiveEngineering.mold.plate.name=Metal Press Mold: Plate
+item.ImmersiveEngineering.mold.gear.name=Metal Press Mold: Gear
+item.ImmersiveEngineering.mold.rod.name=Metal Press Mold: Rod
 
 #CREATIVE
 itemGroup.ImmersiveEngineering=Immersive Engineering
@@ -518,6 +529,8 @@ achievement.immersiveengineering.craftChemthrower=Spray and Pray
 achievement.immersiveengineering.craftChemthrower.desc=Craft the Chemical Thrower
 achievement.immersiveengineering.craftRailgun=Fortune's Legacy
 achievement.immersiveengineering.craftRailgun.desc=Craft the Railgun
+achievement.immersiveengineering.mbImprovedBlastFurnace=Refined Arts
+achievement.immersiveengineering.mbImprovedBlastFurnace.desc=Form the Improved Blast Furnace
 achievement.immersiveengineering.mbSilo=Sheetmetal Stash
 achievement.immersiveengineering.mbSilo.desc=Form the Silo Multiblock
 achievement.immersiveengineering.mbCrusher=Hazardous Machinery
@@ -574,6 +587,11 @@ ie.manual.entry.updateNews_4.name=What's new in v0.6.4
 ie.manual.entry.updateNews_4.subtext=Old, new; borrowed and Blu
 ie.manual.entry.updateNews_40=Dear Engineer!<br><br>The past update has brought only little changes.<br>The energy transmission is fixed again, the engineer it that broke has been dunked into cold water as punishment.<br>The <link;furnaceHeater;§o§nFurnace §o§nHeater§r> has seen some improvements that now allow it to heat up Alchemical Furnaces from Thaumcraft or Evaporators from Cutting Edge.<br><br>That's all for now, let's hope it stays sufficiently stable.
 
+ie.manual.entry.updateNews_5.name=What's new in v0.7.0
+ie.manual.entry.updateNews_5.subtext=Old, new; borrowed and Blu
+ie.manual.entry.updateNews_50=Dear Engineer!<br><br>The new version of IE you are playing features some major changes compared to previous versions!<br>A new component has been added in the form of <link;plates;§o§nMetal §o§nPlates§r>. These plates don't entirely replace ingots, but are necessary for a few recipes. Plates can be made with an Engineer's Hammer or in a <link;metalPress;§o§nMetal §o§nPress§r>.
+ie.manual.entry.updateNews_51=Among the uses for these new plates is the creation of the <link;improvedBlastfurnace;§o§nImproved §o§nBlast §o§nFurnace§r> out of Reinforced Blast Bricks. This new Blast Furnace is a much faster way of creating steel and automateable. The "old" Blast Furnace has been aptly named <link;blastfurnace;§o§nCrude §o§nBlast §o§nFurnace§r> and cannot be automated. Both Furnaces create slag now.<br>The <link;arcfurnace;§o§nArc §o§nFurnace§r> has also seen a rebalance to go along with this. Its steel costs being reduced and instead using reinforced blast bricks, making it a direct upgrade.  
+
 ie.manual.category.general.name=Overview and Resources
 ie.manual.category.construction.name=Construction
 ie.manual.category.energy.name=Power, wires, generators
@@ -584,7 +602,7 @@ ie.manual.entry.introduction.name=Introduction
 ie.manual.entry.introduction.subtext=Getting into Engineering
 ie.manual.entry.introduction0=Greetings, fellow engineer, and welcome to Immersive Engineering. This journal shall serve as your guide for setting up all the new machines and functions this mod has to offer.<br>Let's start with the basics first: Immersive Engineering is built around the concept of retrofuturistic generation and transfer of energy. The energy used in this mod is Redstone Flux, a trait shared with many other mods currently available.
 ie.manual.entry.introduction1=Energy is transmitted between §lconnectors§r by the use of §lwires§r. Wires can only bridge a limited distance of blocks, so you will need to use more connectors as §lrelays§r between the wires.<br>You have the choice between three different types of wire, which differ in transferrates, <config;iA;cableTransferRate;l3> RF/tick. To switch between different types of wire, you will need to use §ltransformers§r.
-ie.manual.entry.introductionHammer=The Engineer's Hammer is the most important tool at your disposal. It will be used to form multiblocks like the Coke Oven and Blast Furnace<config;b;crushingOreRecipe;, crushing ores into dust ; >or configuring blocks like Wooden Posts.
+ie.manual.entry.introductionHammer=The Engineer's Hammer is the most important tool at your disposal. It will be used to form multiblocks like the Coke Oven and Blast Furnace, crushing ores into dust, hammering ingots into plates or configuring blocks like Wooden Posts.
 
 ie.manual.entry.ores.name=Ores
 ie.manual.entry.ores.subtext=Diggy diggy hole
@@ -595,12 +613,16 @@ ie.manual.entry.oresSilver=§lSilver Ore§r is found in the world between layers
 ie.manual.entry.oresNickel=§lNickel Ore§r is found in the world between layers <config;iA;ore_nickel;1> and <config;iA;ore_nickel;2>, and requires an Iron Pickaxe to harvest.<br><br>The ore will smelt into nickel ingots, which alloy with copper to create constantan, a heat resistant conductor used in the creation of <link;generator;§o§nThermoelectric §o§nGenerators§r;1>.
 
 ie.manual.entry.oreProcessing.name=Ore Processing
-ie.manual.entry.oreProcessing.subtext=
+ie.manual.entry.oreProcessing.subtext=Crush crush crush
 ie.manual.entry.oreProcessing0=Crafting ores with an Engineer's Hammer allows you to crush them into dusts. This dust can be smelted into ingots, but more importantly, is used to <link;alloys;§o§ncreate §o§nmetallic §o§nalloys§r>.
 
 ie.manual.entry.alloys.name=Alloys
-ie.manual.entry.alloys.subtext=
+ie.manual.entry.alloys.subtext=Mixin' it up
 ie.manual.entry.alloys0=Mixing dusts creates an alloy blend that can then be smelted into alloyed ingots. Constantan has thermo-electric properties and is used in creating the <link;generator;§o§nthermoelectric §o§ngenerator§r;1> and electrum is an excellent electric conductor used in <link;wiring;§o§nmedium-voltage §o§narchitecture§r>.
+
+ie.manual.entry.plates.name=Metal Plates
+ie.manual.entry.plates.subtext=Flat as a flounder
+ie.manual.entry.plates0=Metal Plates are a crafting material required for the creation of some machines or blocks. They are made by hammering an ingot with an Engineer's Hammer or in a <link;metalPress;§o§nMetal §o§nPress§r>.
 
 ie.manual.entry.hemp.name=Industrial Hemp
 ie.manual.entry.hemp.subtext=530 fabric it
@@ -680,10 +702,18 @@ ie.manual.entry.thermoElectric.subtext=Hot and Cold
 ie.manual.entry.thermoElectric0=Thermoelectric Generators are another option of power generation and work without the use of any mechanical parts, instead they use the temperature gradients between two sources.
 ie.manual.entry.thermoElectric1=Placing a hot fluid on one side and a colder fluid on the opposing side generates energy based on the difference between the two temperatures.<br>The following list contains other, non-fluid blocks, which can be used as sources of temperature.
 
-ie.manual.entry.blastfurnace.name=Blast Furnace
-ie.manual.entry.blastfurnace.subtext=Even hotter topic!
-ie.manual.entry.blastfurnace0=The Blast Furnace is used to increase the carbon contents in iron, turning it into steel. To achieve this, only pure, high-carbon fuels may be used for the furnace, specifically coal coke and charcoal.<br>The steel created in the blast furnace is an integral part of high-voltage architecture.
+ie.manual.entry.blastfurnace.name=Crude Blast Furnace
+ie.manual.entry.blastfurnace.subtext=Simple Steel
+ie.manual.entry.blastfurnace0=The Crude Blast Furnace is used to increase the carbon contents in iron, turning it into steel. To achieve this, only pure, high-carbon fuels may be used for the furnace, specifically coal coke and charcoal.<br><br>Along with steel, the furnace will also create slag, which you must remove or the furnace will cease to function. While technically a waste product, you can use slag to create concrete.
 ie.manual.entry.blastfurnaceBlock=To form a Blast Furnace, arrange 27 of these blocks in a 3x3x3 cube, and rightclick one of the sides' center blocks with an Engineer's Hammer.<br>See the following page for a diagram.
+ie.manual.entry.blastfurnace1=The Crude Blast Furnace is not automateable. All in- and outputs must be arranged manually through its GUI. If you want to automate the creation of steel, you should probably look into creating an <link;improvedBlastfurnace;§o§nImproved §o§nBlast §o§nFurnace§r;>.
+
+ie.manual.entry.improvedBlastfurnace.name=Improved Blast Furnace
+ie.manual.entry.improvedBlastfurnace.subtext=Industrialized Refinement
+ie.manual.entry.improvedBlastfurnace0=The Improved Blast Furnace is a much more professional way of <link;blastfurnace;§o§ncreating §o§nsteel§r;>. Not only does it allow the automation of in- and outputs, it can also be outfitted with preheaters to speed up the refinement process by addition of hot air.<br>The furnace is made from reinforced bricks, so you'd be advised to spend your first batches of steel on this upgrade.
+ie.manual.entry.improvedBlastfurnace1=The structure of the Furnace is similar to its crude predecessor, but the bricks have been reinforced and a hopper was added at the top to funnel in the inputs.
+ie.manual.entry.improvedBlastfurnace2=Steel is output at the front of the furnace, slag at the back, and the furnace will automatically output to connected inventories or conveyor belts. Iron and Coal Coke are fed in through the top.
+ie.manual.entry.improvedBlastfurnace3=Blast Furnace Preheaters are used to heat up air and then blow it into the furnace to speed up the refinement process of iron. Each furnace can have up to two preheaters connected to the ports on the each side, and each preheater requires <config;i;preheater_consumption>  RF/t to operate.
 
 ie.manual.entry.metalconstruction.name=Metal Constructions
 ie.manual.entry.metalconstruction.subtext=Riveting
@@ -708,6 +738,12 @@ ie.manual.entry.tanksilo3=Attaching a comparator to the output block makes it em
 ie.manual.entry.metalbarrel.name=Metal Barrel
 ie.manual.entry.metalbarrel.subtext=Doesn't roll
 ie.manual.entry.metalbarrel0=Metal barrels work exactly like <link;barrel;§o§nWooden §o§nBarrels§r;>. They store the same amount of fluid and their in- and outputs are configured the same way, but unlike the wooden version, these can store gasses and hot fluids. 
+
+ie.manual.entry.metalPress.name=Metal Press
+ie.manual.entry.metalPress.subtext=Under Pressure!
+ie.manual.entry.metalPress0=The Metal Press is an automated way of shaping metal. It uses a high pressure piston to press a mold onto an ingot, forming it into a plate, rod or other metal components.<br>The structure is created as shown above, to form the multiblock, click the piston with an Engineer's Hammer.
+ie.manual.entry.metalPress1=Power is input through the top, and items through the conveyors, obviously in the direction of movement.
+ie.manual.entry.metalPress2=To actually work, the metal press requires a mold to be attached to the piston. Molds are crafted as shown above and can be inserted into the metal press by right-clicking the multiblock with a mold in hand.
 
 ie.manual.entry.assembler.name=Assembler
 ie.manual.entry.assembler.subtext=Some assembly required

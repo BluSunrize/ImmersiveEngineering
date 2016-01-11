@@ -15,15 +15,17 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class BlockMetalDecoration2 extends BlockIEBase
 {
 	public static final int META_sheetMetalAlu=0;
-	public static final int META_sheetMetalSteel=1;
+	public static final int META_sheetMetalLead=1;
+	public static final int META_sheetMetalSteel=2;
 
 	public BlockMetalDecoration2()
 	{
 		super("metalDecoration2", Material.iron,1, ItemBlockMetalDecorations.class, 
-				"sheetMetalAlu","sheetMetalSteel");
+				"sheetMetalAlu","sheetMetalLead","sheetMetalSteel");
 		setHardness(3.0F);
 		setResistance(15.0F);
 		this.setMetaLightOpacity(META_sheetMetalAlu, 255);
+		this.setMetaLightOpacity(META_sheetMetalLead, 255);
 		this.setMetaLightOpacity(META_sheetMetalSteel, 255);
 	}
 
@@ -55,6 +57,7 @@ public class BlockMetalDecoration2 extends BlockIEBase
 	public void registerBlockIcons(IIconRegister iconRegister)
 	{
 		icons[META_sheetMetalAlu][0] = iconRegister.registerIcon("immersiveengineering:metalDeco2_sheetMetalAlu");
+		icons[META_sheetMetalLead][0] = iconRegister.registerIcon("immersiveengineering:metalDeco2_sheetMetalLead");
 		icons[META_sheetMetalSteel][0] = iconRegister.registerIcon("immersiveengineering:metalDeco2_sheetMetalSteel");
 	}
 

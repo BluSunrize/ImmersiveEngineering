@@ -92,7 +92,8 @@ public class Config
 		setBoolean("nixietubeFont", config.get("general", "NixietubeFont", true, "Set this to false to disable the super awesome looking nixie tube front for the voltmeter and other things").getBoolean());
 		setBoolean("adjustManualScale", config.get("general", "AutoscaleManual", true, "Set this to false to disable tge manual's forced change of GUI scale").getBoolean());
 		setDouble("increasedTileRenderdistance", config.get("general", "Increased Tile Renderdistance", 1.5, "Increase the distance at which certain TileEntities (specifically windmills) are still visible. This is a modifier, so set it to 1 for default render distance, to 2 for doubled distance and so on.").getDouble());
-		setBoolean("disableHammerCrushing", config.get("general", "Disable Hammer Crushing", false, "Set this to true to completely disable the ore-crushing recipes with the Engineers Hammer").getBoolean());
+		setBoolean("disableHammerCrushing", config.get("general", "", false, "Set this to true to completely disable the ore-crushing recipes with the Engineers Hammer").getBoolean());
+		setInt("hammerDurabiliy", config.get("general", "Hammer Durability", 100, "The maximum durability of the Engineer's Hammer. Used up when hammering ingots into plates.").getInt());
 		setStringArray("preferredOres", config.get("general", "Preferred Ores", new String[]{"ImmersiveEngineering","ThermalFoundation"}, "A list of preferred Mod IDs that results of IE processes should stem from, aka which mod you want the copper to come from. This affects the ores dug by the excavator, as well as those crushing recipes that don't have associated IE items. This list is in order of priority.").getStringList());
 		setBoolean("showUpdateNews", config.get("general", "Show Update News", true, "Set this to false to hide the update news in the manual").getBoolean());
 
@@ -159,6 +160,7 @@ public class Config
 		setInt("assembler_consumption", config.get("machines", "Assembler: Consumed", 80, "The RF the Assembler will consume to craft an item from a recipe").getInt());
 		setInt("bottlingMachine_consumption", config.get("machines", "Bottling: Consumed", 8, "The RF the Bottling Machine will consume per tick, when filling items").getInt());
 		setInt("charger_consumption", config.get("machines", "ChargingStation: Charge", 4000, "The RF per tick the Charging Station can insert into an item").getInt());
+		setInt("preheater_consumption", config.get("machines", "BlastFurnacePreheater: Charge", 32, "The RF per tick the Blast Furnace Preheater will consume to speed up the Blast Furnace").getInt());
 		
 
 		setIntArray("ore_copper", config.get("oregen", "Copper", new int[]{8, 40,72, 8,100}, "Generation config for Copper Ore. Parameters: Blocks per vein, lowest possible Y, highest possible Y, veins per chunk, chance for vein to spawn (out of 100). Set vein size to 0 to disable the generation").getIntList());

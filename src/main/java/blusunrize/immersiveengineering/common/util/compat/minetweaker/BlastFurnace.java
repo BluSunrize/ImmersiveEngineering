@@ -10,6 +10,7 @@ import minetweaker.MineTweakerAPI;
 import minetweaker.api.item.IIngredient;
 import minetweaker.api.item.IItemStack;
 import net.minecraft.item.ItemStack;
+import stanhebben.zenscript.annotations.Optional;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 import blusunrize.immersiveengineering.api.ApiUtils;
@@ -20,13 +21,13 @@ import blusunrize.immersiveengineering.common.util.Utils;
 public class BlastFurnace
 {
 	@ZenMethod
-	public static void addRecipe(IItemStack output, IIngredient input, int time)
+	public static void addRecipe(IItemStack output, IIngredient input, int time,  @Optional IItemStack slag)
 	{
 		Object oInput = MTHelper.toObject(input);
 		if(oInput==null)
 			return;
 
-		BlastFurnaceRecipe r = new BlastFurnaceRecipe(MTHelper.toStack(output), oInput, time);
+		BlastFurnaceRecipe r = new BlastFurnaceRecipe(MTHelper.toStack(output), oInput, time, MTHelper.toStack(slag));
 		MineTweakerAPI.apply(new Add(r));
 	}
 

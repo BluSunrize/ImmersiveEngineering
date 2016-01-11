@@ -19,19 +19,21 @@ public class BlastFurnaceRecipe
 {
 	public final Object input;
 	public final ItemStack output;
+	public final ItemStack slag;
 	public final int time;
 
-	public BlastFurnaceRecipe(ItemStack output, Object input, int time)
+	public BlastFurnaceRecipe(ItemStack output, Object input, int time, ItemStack slag)
 	{
 		this.output=output;
 		this.input=ApiUtils.convertToValidRecipeInput(input);
 		this.time=time;
+		this.slag=slag;
 	}
 
 	public static ArrayList<BlastFurnaceRecipe> recipeList = new ArrayList<BlastFurnaceRecipe>();
-	public static void addRecipe(ItemStack output, Object input, int time)
+	public static void addRecipe(ItemStack output, Object input, int time, ItemStack slag)
 	{
-		BlastFurnaceRecipe recipe = new BlastFurnaceRecipe(output, input, time);
+		BlastFurnaceRecipe recipe = new BlastFurnaceRecipe(output, input, time, slag);
 		if(recipe.input!=null)
 			recipeList.add(recipe);
 	}

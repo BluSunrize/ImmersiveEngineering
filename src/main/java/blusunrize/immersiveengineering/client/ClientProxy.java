@@ -8,6 +8,7 @@ import java.util.UUID;
 
 import com.mojang.authlib.GameProfile;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.ManualHelper;
@@ -52,6 +53,8 @@ import blusunrize.immersiveengineering.client.render.ItemRenderVoltmeter;
 import blusunrize.immersiveengineering.client.render.TileRenderArcFurnace;
 import blusunrize.immersiveengineering.client.render.TileRenderAssembler;
 import blusunrize.immersiveengineering.client.render.TileRenderBalloon;
+import blusunrize.immersiveengineering.client.render.TileRenderBlastFurnaceAdvanced;
+import blusunrize.immersiveengineering.client.render.TileRenderBlastFurnacePreheater;
 import blusunrize.immersiveengineering.client.render.TileRenderBottlingMachine;
 import blusunrize.immersiveengineering.client.render.TileRenderBreakerSwitch;
 import blusunrize.immersiveengineering.client.render.TileRenderBucketWheel;
@@ -69,6 +72,7 @@ import blusunrize.immersiveengineering.client.render.TileRenderFloodlight;
 import blusunrize.immersiveengineering.client.render.TileRenderFluidPipe;
 import blusunrize.immersiveengineering.client.render.TileRenderFluidPump;
 import blusunrize.immersiveengineering.client.render.TileRenderLantern;
+import blusunrize.immersiveengineering.client.render.TileRenderMetalPress;
 import blusunrize.immersiveengineering.client.render.TileRenderPost;
 import blusunrize.immersiveengineering.client.render.TileRenderRedstoneBreaker;
 import blusunrize.immersiveengineering.client.render.TileRenderRefinery;
@@ -93,6 +97,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDevices2;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityArcFurnace;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityAssembler;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBlastFurnacePreheater;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBottlingMachine;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBreakerSwitch;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBucketWheel;
@@ -112,6 +117,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFloodlight;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFluidPipe;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFluidPump;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityLantern;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMetalPress;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityRedstoneBreaker;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityRefinery;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityRelayHV;
@@ -124,6 +130,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTransformer
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockArcFurnace;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockAssembler;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockBlastFurnace;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockBlastFurnaceAdvanced;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockBottlingMachine;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockBucketWheel;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockCokeOven;
@@ -133,11 +140,13 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockExcav
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockExcavatorDemo;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockFermenter;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockLightningRod;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockMetalPress;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockRefinery;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockSheetmetalTank;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockSilo;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockSqueezer;
 import blusunrize.immersiveengineering.common.blocks.stone.TileEntityBlastFurnace;
+import blusunrize.immersiveengineering.common.blocks.stone.TileEntityBlastFurnaceAdvanced;
 import blusunrize.immersiveengineering.common.blocks.stone.TileEntityCokeOven;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityModWorkbench;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWallmount;
@@ -220,6 +229,7 @@ public class ClientProxy extends CommonProxy
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFluidPump.class, new TileRenderFluidPump());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityRedstoneBreaker.class, new TileRenderRedstoneBreaker());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityChargingStation.class, new TileRenderChargingStation());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityBlastFurnacePreheater.class, new TileRenderBlastFurnacePreheater());
 		// MULTIBLOCKS
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityDieselGenerator.class, new TileRenderDieselGenerator());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityRefinery.class, new TileRenderRefinery());
@@ -231,6 +241,7 @@ public class ClientProxy extends CommonProxy
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntitySilo.class, new TileRenderSilo());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityAssembler.class, new TileRenderAssembler());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityBottlingMachine.class, new TileRenderBottlingMachine());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityMetalPress.class, new TileRenderMetalPress());
 		//WOOD
 		RenderingRegistry.registerBlockHandler(new BlockRenderWoodenDevices());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityWoodenPost.class, new TileRenderPost());
@@ -243,6 +254,7 @@ public class ClientProxy extends CommonProxy
 		RenderingRegistry.registerBlockHandler(new BlockRenderWoodenDecoration());
 		//STONE
 		RenderingRegistry.registerBlockHandler(new BlockRenderStoneDevices());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityBlastFurnaceAdvanced.class, new TileRenderBlastFurnaceAdvanced());
 		//CLOTH
 		RenderingRegistry.registerBlockHandler(new BlockRenderClothDevices());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityBalloon.class, new TileRenderBalloon());
@@ -281,8 +293,10 @@ public class ClientProxy extends CommonProxy
 	public void postInit()
 	{
 		ManualHelper.ieManualInstance = new IEManualInstance();
-		int subVersion = 0;
-		while(!(ManualHelper.ieManualInstance.formatEntryName("updateNews_"+subVersion).equals("ie.manual.entry.updateNews_"+subVersion+".name")))
+		int maxSubVersion = 0;
+		while(!(ManualHelper.ieManualInstance.formatEntryName("updateNews_"+maxSubVersion).equals("ie.manual.entry.updateNews_"+maxSubVersion+".name")))
+			maxSubVersion++;
+		for(int subVersion=(maxSubVersion-1); subVersion>=0; subVersion--)
 		{
 			ArrayList<IManualPage> pages = new ArrayList<IManualPage>();
 			int i=0;
@@ -293,7 +307,6 @@ public class ClientProxy extends CommonProxy
 				i++;
 			}
 			ManualHelper.addEntry("updateNews_"+subVersion, ManualHelper.CAT_UPDATE, pages.toArray(new IManualPage[pages.size()]));
-			subVersion++;
 		}
 
 		ManualHelper.addEntry("introduction", ManualHelper.CAT_GENERAL,
@@ -317,6 +330,12 @@ public class ClientProxy extends CommonProxy
 		ManualHelper.addEntry("alloys", ManualHelper.CAT_GENERAL, new ManualPages.CraftingMulti(ManualHelper.getManual(), "alloys0", (Object[])new PositionedItemStack[][]{
 			new PositionedItemStack[]{new PositionedItemStack(OreDictionary.getOres("dustCopper"),24,0), new PositionedItemStack(OreDictionary.getOres("dustNickel"),42,0), new PositionedItemStack(new ItemStack(IEContent.itemMetal,2,15),78,0)},
 			new PositionedItemStack[]{new PositionedItemStack(OreDictionary.getOres("dustGold"),24,0), new PositionedItemStack(OreDictionary.getOres("dustSilver"),42,0), new PositionedItemStack(new ItemStack(IEContent.itemMetal,2,16),78,0)}}));
+		ManualHelper.addEntry("plates", ManualHelper.CAT_GENERAL, new ManualPages.CraftingMulti(ManualHelper.getManual(), "plates0",(Object[])new PositionedItemStack[][]{
+			new PositionedItemStack[]{new PositionedItemStack(OreDictionary.getOres("ingotIron"),24,0), new PositionedItemStack(new ItemStack(IEContent.itemTool,1,0), 42, 0), new PositionedItemStack(new ItemStack(IEContent.itemMetal,1,30),78,0)},
+			new PositionedItemStack[]{new PositionedItemStack(OreDictionary.getOres("ingotAluminum"),24,0), new PositionedItemStack(new ItemStack(IEContent.itemTool,1,0), 42, 0), new PositionedItemStack(new ItemStack(IEContent.itemMetal,1,32),78,0)},
+			new PositionedItemStack[]{new PositionedItemStack(OreDictionary.getOres("ingotLead"),24,0), new PositionedItemStack(new ItemStack(IEContent.itemTool,1,0), 42, 0), new PositionedItemStack(new ItemStack(IEContent.itemMetal,1,33),78,0)},
+			new PositionedItemStack[]{new PositionedItemStack(OreDictionary.getOres("ingotConstantan"),24,0), new PositionedItemStack(new ItemStack(IEContent.itemTool,1,0), 42, 0), new PositionedItemStack(new ItemStack(IEContent.itemMetal,1,36),78,0)},
+			new PositionedItemStack[]{new PositionedItemStack(OreDictionary.getOres("ingotSteel"),24,0), new PositionedItemStack(new ItemStack(IEContent.itemTool,1,0), 42, 0), new PositionedItemStack(new ItemStack(IEContent.itemMetal,1,38),78,0)}})); 
 		ManualHelper.addEntry("hemp", ManualHelper.CAT_GENERAL,
 				new ManualPages.ItemDisplay(ManualHelper.getManual(), "hemp0", new ItemStack(IEContent.blockCrop,1,5),new ItemStack(IEContent.itemSeeds)),
 				new ManualPages.Crafting(ManualHelper.getManual(), "hemp1", new ItemStack(IEContent.itemMaterial,1,4)));
@@ -327,7 +346,7 @@ public class ClientProxy extends CommonProxy
 		ManualHelper.addEntry("blastfurnace", ManualHelper.CAT_GENERAL,
 				new ManualPages.Text(ManualHelper.getManual(), "blastfurnace0"),
 				new ManualPages.Crafting(ManualHelper.getManual(), "blastfurnaceBlock", new ItemStack(IEContent.blockStoneDecoration,1,2)),
-				new ManualPageMultiblock(ManualHelper.getManual(), "", MultiblockBlastFurnace.instance));
+				new ManualPageMultiblock(ManualHelper.getManual(), "blastfurnace1", MultiblockBlastFurnace.instance));
 		ExcavatorHandler.handleMineralManual();
 		int blueprint = BlueprintCraftingRecipe.blueprintCategories.indexOf("electrode");
 		ManualHelper.addEntry("graphite", ManualHelper.CAT_GENERAL, new ManualPages.Text(ManualHelper.getManual(), "graphite0"),new ManualPages.Crafting(ManualHelper.getManual(), "graphite1", new ItemStack(IEContent.itemBlueprint,1,blueprint)));
@@ -443,13 +462,6 @@ public class ClientProxy extends CommonProxy
 		ManualHelper.addEntry("sorter", ManualHelper.CAT_MACHINES,
 				new ManualPages.Crafting(ManualHelper.getManual(), "sorter0", new ItemStack(IEContent.blockMetalDevice,1,BlockMetalDevices.META_sorter)),
 				new ManualPages.Text(ManualHelper.getManual(), "sorter1"));
-		ManualHelper.addEntry("assembler", ManualHelper.CAT_MACHINES,
-				new ManualPageMultiblock(ManualHelper.getManual(), "assembler0", MultiblockAssembler.instance),
-				new ManualPages.Text(ManualHelper.getManual(), "assembler1"),
-				new ManualPages.Text(ManualHelper.getManual(), "assembler2"));
-		ManualHelper.addEntry("bottlingMachine", ManualHelper.CAT_MACHINES,
-				new ManualPageMultiblock(ManualHelper.getManual(), "bottlingMachine0", MultiblockBottlingMachine.instance),
-				new ManualPages.Text(ManualHelper.getManual(), "bottlingMachine1"));
 		ManualHelper.addEntry("chargingStation", ManualHelper.CAT_MACHINES, new ManualPages.Crafting(ManualHelper.getManual(), "chargingStation0", new ItemStack(IEContent.blockMetalDevice2,1,BlockMetalDevices2.META_chargingStation)),new ManualPages.Text(ManualHelper.getManual(), "chargingStation1"));
 		ManualHelper.addEntry("jerrycan", ManualHelper.CAT_MACHINES, new ManualPages.Crafting(ManualHelper.getManual(), "jerrycan0", new ItemStack(IEContent.itemJerrycan)));
 		ManualHelper.addEntry("drill", ManualHelper.CAT_MACHINES,
@@ -507,6 +519,27 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.Crafting(ManualHelper.getManual(), "railgun2", new ItemStack(IEContent.itemToolUpgrades,1,9)),
 				new ManualPages.Crafting(ManualHelper.getManual(), "railgun3", new ItemStack(IEContent.itemToolUpgrades,1,8)));
 
+		ManualHelper.addEntry("improvedBlastfurnace", ManualHelper.CAT_HEAVYMACHINES,
+				new ManualPages.Crafting(ManualHelper.getManual(), "improvedBlastfurnace0", new ItemStack(IEContent.blockStoneDecoration,1,6)),
+				new ManualPageMultiblock(ManualHelper.getManual(), "improvedBlastfurnace1", MultiblockBlastFurnaceAdvanced.instance),
+				new ManualPages.Text(ManualHelper.getManual(), "improvedBlastfurnace2"),
+				new ManualPages.Crafting(ManualHelper.getManual(), "improvedBlastfurnace3", new ItemStack(IEContent.blockMetalDevice2,1,BlockMetalDevices2.META_blastFurnacePreheater)));
+		ManualHelper.addEntry("crusher", ManualHelper.CAT_HEAVYMACHINES,
+				new ManualPageMultiblock(ManualHelper.getManual(), "crusher0", MultiblockCrusher.instance),
+				new ManualPages.Text(ManualHelper.getManual(), "crusher1"));
+		ArrayList<ItemStack> stacks = new ArrayList<ItemStack>();
+		IEContent.itemMold.getSubItems(IEContent.itemMold,ImmersiveEngineering.creativeTab, stacks);
+		ManualHelper.addEntry("metalPress", ManualHelper.CAT_HEAVYMACHINES,
+				new ManualPageMultiblock(ManualHelper.getManual(), "metalPress0", MultiblockMetalPress.instance),
+				new ManualPages.Text(ManualHelper.getManual(), "metalPress1"),
+				new ManualPages.CraftingMulti(ManualHelper.getManual(), "metalPress2", (Object[])stacks.toArray(new ItemStack[stacks.size()])));
+		ManualHelper.addEntry("assembler", ManualHelper.CAT_HEAVYMACHINES,
+				new ManualPageMultiblock(ManualHelper.getManual(), "assembler0", MultiblockAssembler.instance),
+				new ManualPages.Text(ManualHelper.getManual(), "assembler1"),
+				new ManualPages.Text(ManualHelper.getManual(), "assembler2"));
+		ManualHelper.addEntry("bottlingMachine", ManualHelper.CAT_HEAVYMACHINES,
+				new ManualPageMultiblock(ManualHelper.getManual(), "bottlingMachine0", MultiblockBottlingMachine.instance),
+				new ManualPages.Text(ManualHelper.getManual(), "bottlingMachine1"));
 		sortedMap = DieselHandler.getPlantoilValuesSorted(true);
 		table = formatToTable_ItemIntHashmap(sortedMap,"mB");	
 		sortedMap = DieselHandler.getEthanolValuesSorted(true);
@@ -520,9 +553,6 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.Table(ManualHelper.getManual(), "biodiesel2T", table2, false),
 				new ManualPageMultiblock(ManualHelper.getManual(), "biodiesel3", MultiblockRefinery.instance),
 				new ManualPages.Text(ManualHelper.getManual(), "biodiesel4"));
-		ManualHelper.addEntry("crusher", ManualHelper.CAT_HEAVYMACHINES,
-				new ManualPageMultiblock(ManualHelper.getManual(), "crusher0", MultiblockCrusher.instance),
-				new ManualPages.Text(ManualHelper.getManual(), "crusher1"));
 		ManualHelper.addEntry("arcfurnace", ManualHelper.CAT_HEAVYMACHINES,
 				new ManualPageMultiblock(ManualHelper.getManual(), "arcfurnace0", MultiblockArcFurnace.instance),
 				new ManualPages.Text(ManualHelper.getManual(), "arcfurnace1"),

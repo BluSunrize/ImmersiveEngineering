@@ -5,6 +5,7 @@ import java.util.List;
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
+import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
 import blusunrize.immersiveengineering.api.shader.IShaderEquipableItem;
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
 import blusunrize.immersiveengineering.api.tool.IBullet;
@@ -370,6 +371,19 @@ public abstract class IESlot extends Slot
 		public boolean isItemValid(ItemStack itemStack)
 		{
 			return itemStack!=null && IEContent.itemGraphiteElectrode.equals(itemStack.getItem());
+		}
+	}
+	
+	public static class ExtruderMould extends IESlot
+	{
+		public ExtruderMould(Container container, IInventory inv, int id, int x, int y)
+		{
+			super(container, inv, id, x, y);
+		}
+		@Override
+		public boolean isItemValid(ItemStack itemStack)
+		{
+			return itemStack!=null && MetalPressRecipe.isValidMold(itemStack);
 		}
 	}
 }

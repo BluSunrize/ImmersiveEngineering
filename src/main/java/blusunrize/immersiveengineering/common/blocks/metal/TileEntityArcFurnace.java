@@ -385,6 +385,8 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 				return new float[]{fw==3?.125f:0,0,fw==4?.125f:0, fw==2?.875f:1,pos%25/5==3?.5f:1,fw==5?.875f:1};
 			else if(pos%5==4)
 				return new float[]{fw==2?.125f:0,0,fw==5?.125f:0, fw==3?.875f:1,pos%25/5==3?.5f:1,fw==4?.875f:1};
+			else
+				return new float[]{0,.5f,0 ,1,1,1};
 		}
 		else if(pos<75)
 		{

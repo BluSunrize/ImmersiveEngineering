@@ -30,6 +30,8 @@ public class NEIConfig implements IConfigureNEI
 		
 		registerDualHandler(new NEIBottlingMachineHandler());
 		
+		registerDualHandler(new NEIMetalPressHandler());
+		
 		registerDualHandler(new NEICrusherHandler());
 		
 		for(String s : ArcFurnaceRecipe.specialRecipeTypes)

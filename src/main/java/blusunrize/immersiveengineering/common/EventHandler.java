@@ -110,7 +110,7 @@ public class EventHandler
 		}
 		 */
 		//		}
-		if(FMLCommonHandler.instance().getEffectiveSide()==Side.CLIENT)
+		if(event.world.isRemote)
 		{
 			if(!ModelShaderMinecart.rendersReplaced)
 			{
