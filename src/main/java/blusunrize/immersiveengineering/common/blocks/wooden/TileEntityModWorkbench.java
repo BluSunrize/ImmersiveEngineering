@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
+import blusunrize.immersiveengineering.common.items.ItemUpgradeableTool;
 import blusunrize.immersiveengineering.common.util.Utils;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -97,7 +98,9 @@ public class TileEntityModWorkbench extends TileEntityIEBase implements IInvento
 	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack stack)
 	{
-		return true;
+		if (dummy)
+			return false;
+		return stack!=null&&stack.getItem() instanceof ItemUpgradeableTool;
 	}
 	
 	@Override
