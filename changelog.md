@@ -10,7 +10,7 @@
 	- added the "Improved Blast Furnace". It can accept preheaters to increase its speed and is automateable
 	- both Blast Furnaces create Slag
 	- changed the recipe for the Arc Furnace. It uses less steel and reuses the blastbricks of the Improved Blast Furnace
-	- THe amount of blastbricks stays consistent throughout the recipes, with the intent of the player UPGRADING the Furnaces
+	- the amount of blastbricks stays consistent throughout the recipes, with the intent of the player UPGRADING the Furnaces
 
 
 ==============

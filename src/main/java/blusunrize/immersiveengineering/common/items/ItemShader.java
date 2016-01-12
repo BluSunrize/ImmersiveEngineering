@@ -74,8 +74,6 @@ public class ItemShader extends ItemIEBase implements IShaderItem
 
 		addShader("Radiant", 3, EnumRarity.uncommon, new int[]{163,110,171,255},new int[]{248,219,188,255},new int[]{199,154,177,255},new int[]{216,216,227,255}, "pipes",true,new int[]{241,201,30,255});
 		addShader("Hollow", 4, EnumRarity.uncommon, new int[]{84,45,28,255},new int[]{238,197,229,255},new int[]{204,137,128,255},new int[]{196,161,170,255}, "pipes",true,new int[]{196,152,56,255});
-
-		addShader("ONE PAAAAAAAAAWWWWNCH", 0, EnumRarity.uncommon, new int[]{151,62,46,255}, new int[]{233,192,102,255}, new int[]{255,255,255,255}, new int[]{255,255,255,255});
 	}
 
 	@Override

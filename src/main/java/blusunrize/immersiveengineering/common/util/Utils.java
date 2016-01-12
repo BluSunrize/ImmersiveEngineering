@@ -68,18 +68,22 @@ public class Utils
 	}
 	public static boolean stackMatchesObject(ItemStack stack, Object o)
 	{
+		return stackMatchesObject(stack, o, false);
+	}
+	public static boolean stackMatchesObject(ItemStack stack, Object o, boolean checkNBT)
+	{
 		if(o instanceof ItemStack)
-			return OreDictionary.itemMatches((ItemStack)o, stack, false);
+			return OreDictionary.itemMatches((ItemStack)o, stack, false) && (!checkNBT || ((ItemStack)o).getItemDamage()==OreDictionary.WILDCARD_VALUE || ItemStack.areItemStackTagsEqual((ItemStack)o, stack));
 		else if(o instanceof ArrayList)
 		{
 			for(Object io : (ArrayList)o)
-				if(io instanceof ItemStack && OreDictionary.itemMatches((ItemStack)io, stack, false))
+				if(io instanceof ItemStack && OreDictionary.itemMatches((ItemStack)io, stack, false) && (!checkNBT || ((ItemStack)io).getItemDamage()==OreDictionary.WILDCARD_VALUE || ItemStack.areItemStackTagsEqual((ItemStack)io, stack)))
 					return true;
 		}
 		else if(o instanceof ItemStack[])
 		{
 			for(ItemStack io : (ItemStack[])o)
-				if(OreDictionary.itemMatches((ItemStack)io, stack, false))
+				if(OreDictionary.itemMatches(io, stack, false) && (!checkNBT || io.getItemDamage()==OreDictionary.WILDCARD_VALUE || ItemStack.areItemStackTagsEqual(io, stack)))
 					return true;
 		}
 		else if(o instanceof String)
