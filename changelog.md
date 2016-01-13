@@ -1,17 +1,17 @@
-#####Version 0.7.0
+#####Version 0.7.0 - BUILT
 - rebalanced the entirety of everything!
-	- added metal plates. They are made with the Engineer's Hammer or the Metal Press
-	- they are used in multiple recipes
-- Metal Plates:
-	- metal plates are made by crafting an ingot with an Engineer's Hammer
-	- the hammer takes damage 
-- Blast Furnaces:
-	- nerfed the old Blast Furnace. It is called "Crude Blast Furnace" now and can NOT be automated
-	- added the "Improved Blast Furnace". It can accept preheaters to increase its speed and is automateable
-	- both Blast Furnaces create Slag
-	- changed the recipe for the Arc Furnace. It uses less steel and reuses the blastbricks of the Improved Blast Furnace
-	- the amount of blastbricks stays consistent throughout the recipes, with the intent of the player UPGRADING the Furnaces
-
+	- Metal Plates:
+		- added metal plates. They are made with the Engineer's Hammer or the Metal Press
+		- the hammer takes damage
+		- they are used in multiple recipes
+	- Blast Furnaces:
+		- nerfed the old Blast Furnace. It is called "Crude Blast Furnace" now and can NOT be automated
+		- added the "Improved Blast Furnace". It can accept preheaters to increase its speed and is automateable
+		- both Blast Furnaces create Slag
+		- changed the recipe for the Arc Furnace. It uses less steel and reuses the blastbricks of the Improved Blast Furnace
+		- the amount of blastbricks stays consistent throughout the recipes, with the intent of the player UPGRADING the Furnaces
+- added the Engineer's Toolbox, a convenient way to carry IE tools, wires and other items
+- general fixes to lots of stuff
 
 ==============
 ##### 0.6 VERSIONS ######
