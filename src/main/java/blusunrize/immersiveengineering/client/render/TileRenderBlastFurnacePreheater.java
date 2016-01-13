@@ -20,22 +20,19 @@ public class TileRenderBlastFurnacePreheater extends TileRenderIE
 			GL11.glTranslated(x+.5, y+.5, z+.5);
 			GL11.glRotatef(preheater.facing==2?180f: preheater.facing==4?-90f: preheater.facing==5?90f :0, 0,1,0);
 			ClientUtils.bindAtlas(0);
-			if (preheater.active)
+			long tick = tile.getWorldObj().getTotalWorldTime();
+			if(preheater.active && tick>preheater.lastRenderTick)
 			{
-				long tick = tile.getWorldObj().getTotalWorldTime();
-				if (tick>preheater.lastRenderTick)
-				{
-					int dif = (int) (preheater.lastRenderTick==-1?0:tick-preheater.lastRenderTick);
-					preheater.angle+=20f*dif;
-					preheater.angle %= 360;
-					preheater.lastRenderTick = tick;
-				}
+				int dif = (int) (preheater.lastRenderTick==-1?0:tick-preheater.lastRenderTick);
+				preheater.angle+=20f*dif;
+				preheater.angle %= 360;
 			}
+			preheater.lastRenderTick = tick;
 			GL11.glRotatef(preheater.angle+(preheater.active ? (f * 20) : 0), 0,0,1);
 			TileRenderBlastFurnaceAdvanced.model.model.renderOnly("fan");
 			GL11.glRotatef(-preheater.angle-(preheater.active ? (f * 20) : 0), 0,0,1);
 
-			if (preheater.active)
+			if(preheater.active)
 			{
 				GL11.glScalef(1.001f, .94f, 1.001f);
 				TileRenderBlastFurnaceAdvanced.model.model.renderOnly("preheater_active");

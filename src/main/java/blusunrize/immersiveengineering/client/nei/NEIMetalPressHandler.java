@@ -116,20 +116,12 @@ public class NEIMetalPressHandler extends TemplateRecipeHandler
 	@Override
 	public void drawBackground(int recipe)
 	{
-		GL11.glColor4f(1, 1, 1, 1);
-//		changeTexture(getGuiTexture());
-//		drawTexturedModalRect(-5,0, 0,8, 176, 68);
 		CachedMetalPressRecipe r = (CachedMetalPressRecipe) this.arecipes.get(recipe%arecipes.size());
 		if(r!=null)
 		{
 			try{
 
-			int timer = 30;
-			GL11.glColor4f(.5f, .5f, .5f, 1);
-
 			GL11.glColor4f(1, 1, 1, 1);
-//			drawTexturedModalRect(74,8, 82,35, 20,16);
-//			drawTexturedModalRect(74,8, 179,14, (int)((cycleticks%timer)/(float)timer*20),16);
 
 			GL11.glPushMatrix();
 			GL11.glTranslatef(32, 25, 100);

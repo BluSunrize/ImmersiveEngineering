@@ -60,6 +60,7 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart implements 
 			{			
 				if(process>0)
 				{
+					int processSpeed = getProcessSpeed();
 					if(inventory[0]==null)
 					{
 						process=0;
@@ -67,11 +68,11 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart implements 
 					}
 					else
 					{
-						process-=getProcessSpeed();
+						process-=processSpeed;
 						if(!active)
 							active=true;
 					}
-					burnTime-=getProcessSpeed();
+					burnTime-=processSpeed;
 					worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 				}
 

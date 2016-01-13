@@ -272,7 +272,6 @@ item.ImmersiveEngineering.toolupgrade.chemthrowerFocus.name=Focused Nozzle
 item.ImmersiveEngineering.toolupgrade.railgunScope.name=Precision Scope
 item.ImmersiveEngineering.toolupgrade.railgunCapacitors.name=Additional Capacitors
 
-
 item.ImmersiveEngineering.blueprint.name=Engineer's Blueprint
 
 item.ImmersiveEngineering.graphiteElectrode.name=Graphite Electrode
@@ -290,11 +289,15 @@ item.ImmersiveEngineering.mold.plate.name=Metal Press Mold: Plate
 item.ImmersiveEngineering.mold.gear.name=Metal Press Mold: Gear
 item.ImmersiveEngineering.mold.rod.name=Metal Press Mold: Rod
 
+item.ImmersiveEngineering.toolbox.name=Engineer's Toolbox
+
 #CREATIVE
 itemGroup.ImmersiveEngineering=Immersive Engineering
 
 #DESCRIPTIONS
 description.villager.profession.immersiveengineering.villager_engineer=Engineer
+
+desc.ImmersiveEngineering.name.blastFurnace=Blast Furnace
 
 desc.ImmersiveEngineering.info.attachedTo=Linking from %1$s, %2$s, %3$s
 desc.ImmersiveEngineering.info.attachedToDim=Linking from %1$s, %2$s, %3$s in Dimension %4$s
@@ -373,6 +376,11 @@ desc.ImmersiveEngineering.info.shader.drill=Mining Drill
 desc.ImmersiveEngineering.info.shader.railgun=Railgun
 desc.ImmersiveEngineering.info.shader.minecart=Minecart
 desc.ImmersiveEngineering.info.shader.balloon=Balloon
+
+desc.ImmersiveEngineering.info.toolbox.food=Food
+desc.ImmersiveEngineering.info.toolbox.tool=Tools
+desc.ImmersiveEngineering.info.toolbox.wire=Wiring
+desc.ImmersiveEngineering.info.toolbox.any=Anything
 
 desc.ImmersiveEngineering.flavour.treatedWood.0=Horizontal Planks
 desc.ImmersiveEngineering.flavour.treatedWood.1=Vertical Planks
@@ -660,6 +668,10 @@ ie.manual.entry.barrel0=Wooden barrels are simple containers that can store flui
 ie.manual.entry.jerrycan.name=Jerrycan
 ie.manual.entry.jerrycan.subtext=Better than buckets
 ie.manual.entry.jerrycan0=Jerrycans are simple metal containers used to carry fluids. They can store up to 10 buckets and can pour that fluid into the world as well as into machines. They can not pick up fluids. Additionally, they can be used to refill other fluid-consuming items like the <link;drill;§o§nMining §o§nDrill§r> by crafting them together.
+
+ie.manual.entry.toolbox.name=Engineer's Toolbox
+ie.manual.entry.toolbox.subtext=The Engineer's Handbag
+ie.manual.entry.toolbox0=The toolbox is a simple, carried container, used to store all the essentials of an engineer! Hovering over the relevant slots tells you what they will accept.<br>'Food' and 'Anything' are quite self-explanatory, 'Wiring' slots are for coils, connectors and similar items, and 'Tools' will store any IE tool as well as picks, shovels and axes!
 
 ie.manual.entry.graphite.name=Graphite
 ie.manual.entry.graphite.subtext=Coal stuff

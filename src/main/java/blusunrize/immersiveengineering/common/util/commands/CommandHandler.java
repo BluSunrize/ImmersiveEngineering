@@ -61,6 +61,33 @@ public class CommandHandler extends CommandBase
 	@Override
 	public void processCommand(ICommandSender sender, String[] args)
 	{
+		ArrayList<String> list = new ArrayList<String>();
+		String assemble = null;
+		for(String ss : args)
+		{
+			ss = ss.trim();
+			if(assemble!=null)
+			{
+				assemble += " "+ss;
+				if(ss.endsWith(">"))
+				{
+					list.add(assemble.substring(1, assemble.length()-1));
+					assemble = null;
+				}
+			}
+			else if(ss.startsWith("<")&&!ss.endsWith(">"))
+				assemble = ss;
+			else
+			{
+				if(ss.startsWith("<"))
+					ss = ss.substring(1);
+				if(ss.endsWith(">"))
+					ss = ss.substring(0,ss.length()-1);
+				list.add(ss);
+			}
+		}
+		args = list.toArray(new String[list.size()]);
+
 		if(args.length>0)
 			for(IESubCommand com : commands)
 			{

@@ -166,7 +166,11 @@ public class IERecipes
 		addOredictRecipe(new ItemStack(IEContent.itemJerrycan), " II","IBB","IBB", 'I',"ingotIron",'B',Items.bucket);
 		GameRegistry.addRecipe(new RecipeJerrycan());
 		RecipeSorter.register(ImmersiveEngineering.MODID+":jerrycan", RecipeJerrycan.class, RecipeSorter.Category.SHAPELESS, "after:forge:shapelessore");
-
+		
+		addOredictRecipe(new ItemStack(IEContent.itemToolbox), "PPP","RCR", 'P',"plateAluminum",'C',new ItemStack(IEContent.blockWoodenDevice,1,4),'R',"dyeRed");
+		if(OreDictionary.doesOreNameExist("plateAluminium"))
+			addOredictRecipe(new ItemStack(IEContent.itemToolbox), "PPP","RCR", 'P',"plateAluminium",'C',new ItemStack(IEContent.blockWoodenDevice,1,4),'R',"dyeRed");
+			
 		GameRegistry.addRecipe(new RecipeShaderBags());
 
 		for(ItemStack container : Utils.getContainersFilledWith(new FluidStack(IEContent.fluidCreosote,1000)))

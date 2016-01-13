@@ -5,7 +5,6 @@ import java.util.List;
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
-import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
 import blusunrize.immersiveengineering.api.shader.IShaderEquipableItem;
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
 import blusunrize.immersiveengineering.api.tool.IBullet;
@@ -373,17 +372,31 @@ public abstract class IESlot extends Slot
 			return itemStack!=null && IEContent.itemGraphiteElectrode.equals(itemStack.getItem());
 		}
 	}
-	
-	public static class ExtruderMould extends IESlot
+
+	public static class ContainerCallback extends IESlot
 	{
-		public ExtruderMould(Container container, IInventory inv, int id, int x, int y)
+		public ContainerCallback(Container container, IInventory inv, int id, int x, int y)
 		{
 			super(container, inv, id, x, y);
 		}
 		@Override
 		public boolean isItemValid(ItemStack itemStack)
 		{
-			return itemStack!=null && MetalPressRecipe.isValidMold(itemStack);
+			if(this.container instanceof ICallbackContainer)
+				return ((ICallbackContainer)this.container).canInsert(itemStack, slotNumber, this);
+			return true;
 		}
+		@Override
+		public boolean canTakeStack(EntityPlayer player)
+		{
+			if(this.container instanceof ICallbackContainer)
+				return ((ICallbackContainer)this.container).canTake(this.getStack(), slotNumber, this);
+			return true;
+		}
+	}
+	public static interface ICallbackContainer
+	{
+		public boolean canInsert(ItemStack stack, int slotNumer, Slot slotObject);
+		public boolean canTake(ItemStack stack, int slotNumer, Slot slotObject);
 	}
 }

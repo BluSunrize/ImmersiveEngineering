@@ -77,7 +77,7 @@ public class NEIBlastFurnaceHandler extends TemplateRecipeHandler
 	@Override
 	public String getRecipeName()
 	{
-		return StatCollector.translateToLocal("tile.ImmersiveEngineering.stoneDevice.blastFurnace.name");
+		return StatCollector.translateToLocal("desc.ImmersiveEngineering.name.blastFurnace");
 	}
 	@Override
 	public String getGuiTexture()

@@ -27,7 +27,9 @@ import blusunrize.immersiveengineering.common.gui.ContainerRefinery;
 import blusunrize.immersiveengineering.common.gui.ContainerRevolver;
 import blusunrize.immersiveengineering.common.gui.ContainerSorter;
 import blusunrize.immersiveengineering.common.gui.ContainerSqueezer;
+import blusunrize.immersiveengineering.common.gui.ContainerToolbox;
 import blusunrize.immersiveengineering.common.items.ItemRevolver;
+import blusunrize.immersiveengineering.common.items.ItemToolbox;
 import blusunrize.immersiveengineering.common.util.Lib;
 import cpw.mods.fml.common.network.IGuiHandler;
 import net.minecraft.entity.player.EntityPlayer;
@@ -68,6 +70,8 @@ public class CommonProxy implements IGuiHandler
 			return new ContainerArcFurnace(player.inventory, (TileEntityArcFurnace) te);
 		if(ID==Lib.GUIID_Assembler && te instanceof TileEntityAssembler)
 			return new ContainerAssembler(player.inventory, (TileEntityAssembler) te);
+		if(ID==Lib.GUIID_Toolbox && player.getCurrentEquippedItem()!=null && player.getCurrentEquippedItem().getItem() instanceof ItemToolbox)
+			return new ContainerToolbox(player.inventory, world);
 		return null;
 	}
 

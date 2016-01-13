@@ -135,6 +135,7 @@ import blusunrize.immersiveengineering.common.items.ItemShader;
 import blusunrize.immersiveengineering.common.items.ItemShaderBag;
 import blusunrize.immersiveengineering.common.items.ItemSkyhook;
 import blusunrize.immersiveengineering.common.items.ItemToolUpgrade;
+import blusunrize.immersiveengineering.common.items.ItemToolbox;
 import blusunrize.immersiveengineering.common.items.ItemWireCoil;
 import blusunrize.immersiveengineering.common.util.IEAchievements;
 import blusunrize.immersiveengineering.common.util.IELogger;
@@ -192,6 +193,7 @@ public class IEContent
 	public static ItemIEBase itemSeeds;
 	public static ItemIEBase itemWireCoil;
 	public static ItemIEBase itemTool;
+	public static ItemIEBase itemToolbox;
 	public static ItemIEBase itemRevolver;
 	public static ItemIEBase itemBullet;
 	public static ItemIEBase itemFluidContainers;
@@ -259,6 +261,7 @@ public class IEContent
 		itemWireCoil = new ItemWireCoil();
 		WireType.ieWireCoil = itemWireCoil;
 		itemTool = new ItemIETool();
+		itemToolbox = new ItemToolbox();
 		itemRevolver = new ItemRevolver();
 		itemBullet = new ItemBullet();
 		itemFluidContainers = new ItemIEBase("fluidContainers", 64, "bottleCreosote","bucketCreosote",  "bottlePlantoil","bucketPlantoil",  "bottleEthanol","bucketEthanol", "bottleBiodiesel","bucketBiodiesel")
