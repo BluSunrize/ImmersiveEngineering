@@ -869,12 +869,12 @@ public class ClientEventHandler
 			else if(model instanceof ModelVillager)
 				((ModelVillager)model).villagerHead.showModel=false;
 		}
-//		if(OreDictionary.itemMatches(new ItemStack(IEContent.itemRailgun),event.entity.getEquipmentInSlot(0),true))
-//		{
-//			ModelBase model = event.renderer.mainModel;
-//			if(model instanceof ModelBiped)
-//				((ModelBiped)model).bipedLeftArm.rotateAngleX=.9f;
-//		}
+		//		if(OreDictionary.itemMatches(new ItemStack(IEContent.itemRailgun),event.entity.getEquipmentInSlot(0),true))
+		//		{
+		//			ModelBase model = event.renderer.mainModel;
+		//			if(model instanceof ModelBiped)
+		//				((ModelBiped)model).bipedLeftArm.rotateAngleX=.9f;
+		//		}
 	}
 	@SubscribeEvent()
 	public void onRenderLivingPost(RenderLivingEvent.Post event)
