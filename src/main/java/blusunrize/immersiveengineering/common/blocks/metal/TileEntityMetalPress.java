@@ -31,6 +31,8 @@ public class TileEntityMetalPress extends TileEntityMultiblockPart implements IS
 	public MetalPressRecipe[] curRecipes = new MetalPressRecipe[3];
 	public int[] process = new int[3];
 	public ItemStack mold = null;
+	public boolean active;
+	public static final int MAX_PROCESS = 120;
 
 	@Override
 	public TileEntityMetalPress master()
@@ -58,14 +60,32 @@ public class TileEntityMetalPress extends TileEntityMultiblockPart implements IS
 	@Override
 	public void updateEntity()
 	{
-		if(!formed || pos!=4 || worldObj.isRemote)
+		if(!formed || pos!=4)
 			return;
+		if (worldObj.isRemote)
+		{
+			if (!active)
+				return;
+			for (int i = 0;i<process.length;i++)
+			{
+				if (process[i]>=0)
+				{
+					process[i]++;
+					if (process[i]>MAX_PROCESS)
+					{
+						inventory[i] = null;
+						process[i] = -1;
+					}
+				}
+			}
+			return;
+		}
 
 		boolean update = false;
 		for(int i=0; i<inventory.length; i++)
 			if(inventory[i]!=null)
 			{
-				if(process[i]>=120)
+				if(process[i]>=MAX_PROCESS)
 				{
 					ItemStack output = inventory[i].copy();
 					TileEntity inventoryTile = this.worldObj.getTileEntity(xCoord+(facing==4?-2:facing==5?2:0),yCoord,zCoord+(facing==2?-2:facing==3?2:0));
@@ -81,6 +101,7 @@ public class TileEntityMetalPress extends TileEntityMultiblockPart implements IS
 						ei.motionZ = (0.075F * fd.offsetZ);
 						this.worldObj.spawnEntityInWorld(ei);
 					}
+					curRecipes[i] = null;
 					process[i]=-1;
 					inventory[i]=null;
 					update = true;
@@ -88,8 +109,8 @@ public class TileEntityMetalPress extends TileEntityMultiblockPart implements IS
 				if(curRecipes[i]==null)
 					curRecipes[i] = MetalPressRecipe.findRecipe(mold, inventory[i]);
 
-				int perTick = curRecipes[i]!=null?curRecipes[i].energy/120:0;
-				if(perTick==0 || this.energyStorage.extractEnergy(perTick, true)==perTick)
+				int perTick = curRecipes[i]!=null?curRecipes[i].energy/MAX_PROCESS:0;
+				if((perTick==0 || this.energyStorage.extractEnergy(perTick, true)==perTick)&&process[i]>=0)
 				{
 					this.energyStorage.extractEnergy(perTick, false);
 					if(process[i]++==60 && curRecipes[i]!=null)
@@ -97,6 +118,16 @@ public class TileEntityMetalPress extends TileEntityMultiblockPart implements IS
 						this.inventory[i] = curRecipes[i].output.copy();
 						update = true;
 					}
+					if (!active)
+					{
+						active = true;
+						update = true;
+					}
+				}
+				else if (active)
+				{
+					active = false;
+					update = true;
 				}
 			}
 
@@ -111,16 +142,20 @@ public class TileEntityMetalPress extends TileEntityMultiblockPart implements IS
 	{
 		if(master()!=null)
 			return master().getNextProcessID();
+		int lowestProcess = Integer.MAX_VALUE;
 		for(int i=0; i<inventory.length; i++)
 			if(inventory[i]==null)
 			{
-				int lowestProcess = 200;
-				for(int j=0; j<inventory.length; j++)
+				if (lowestProcess==Integer.MAX_VALUE)
 				{
-					if(inventory[j]!=null && process[j]<lowestProcess)
-						lowestProcess = process[j];
+					lowestProcess = 200;
+					for(int j=0; j<inventory.length; j++)
+					{
+						if(inventory[j]!=null && process[j]<lowestProcess && process[j]>=0)
+							lowestProcess = process[j];
+					}
 				}
-				if(lowestProcess==200 || lowestProcess>40)
+				if(lowestProcess>40)
 					return i;
 				else
 					return -1;
@@ -133,10 +168,15 @@ public class TileEntityMetalPress extends TileEntityMultiblockPart implements IS
 	{
 		super.readCustomNBT(nbt, descPacket);
 		facing = nbt.getInteger("facing");
-		process = nbt.getIntArray("process");
-		energyStorage.readFromNBT(nbt);
+		int[] processTmp = nbt.getIntArray("process");
 		inventory = Utils.readInventory(nbt.getTagList("inventory", 10), 3);
+		for (int i = 0;i<processTmp.length;i++)
+			if ((process[i]<0^processTmp[i]<0)||!descPacket)
+				process[i] = processTmp[i];
+		energyStorage.readFromNBT(nbt);
 		mold = ItemStack.loadItemStackFromNBT(nbt.getCompoundTag("mold"));
+		if (descPacket)
+			active = nbt.getBoolean("active");
 	}
 	@Override
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
@@ -148,6 +188,8 @@ public class TileEntityMetalPress extends TileEntityMultiblockPart implements IS
 		nbt.setTag("inventory", Utils.writeInventory(inventory));
 		if(this.mold!=null)
 			nbt.setTag("mold", this.mold.writeToNBT(new NBTTagCompound()));
+		if (descPacket)
+			nbt.setBoolean("active", active);
 	}
 
 	@Override
@@ -308,6 +350,7 @@ public class TileEntityMetalPress extends TileEntityMultiblockPart implements IS
 			return;
 		}
 		inventory[slot] = stack;
+		process[slot] = stack!=null?0:-1;
 		if (stack != null && stack.stackSize > getInventoryStackLimit())
 			stack.stackSize = getInventoryStackLimit();
 		this.markDirty();

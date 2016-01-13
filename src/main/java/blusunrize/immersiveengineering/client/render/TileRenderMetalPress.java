@@ -100,7 +100,7 @@ public class TileRenderMetalPress extends TileRenderIE
 
 		GL11.glTranslated(0,1.15,1.46);
 		for(int i=0; i<press.inventory.length; i++)
-			if(press.inventory[i]!=null && press.process[i]<119)
+			if(press.inventory[i]!=null && press.process[i]<119 && press.process[i]>=0)
 			{
 				GL11.glTranslated(0,0,-2.5*shift[i]);
 				ItemStack stack = press.inventory[i];
