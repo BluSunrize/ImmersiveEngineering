@@ -59,6 +59,7 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 	public static final int META_capacitorCreative=8;
 	public static final int META_redstoneBreaker = 9;
 	public static final int META_chargingStation = 10;
+	public static final int META_blastFurnacePreheater = 11;
 
 	IIcon[] iconPump = new IIcon[7];
 	IIcon iconFloodlightGlass;
@@ -68,7 +69,7 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 	public BlockMetalDevices2()
 	{
 		super("metalDevice2", Material.iron, 1, ItemBlockMetalDevices2.class,
-				"breakerSwitch","skycrateDispenser","energyMeter","electricLantern","floodlight","fluidPipe", "fluidPump", "barrel", "capacitorCreative", "redstoneBreaker","chargingStation");
+				"breakerSwitch","skycrateDispenser","energyMeter","electricLantern","floodlight","fluidPipe", "fluidPump", "barrel", "capacitorCreative", "redstoneBreaker","chargingStation","blastFurnacePreheater");
 		setHardness(3.0F);
 		setResistance(15.0F);
 		this.setMetaLightOpacity(META_barrel, 255);
@@ -93,6 +94,7 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 		list.add(new ItemStack(item, 1, 8));
 		list.add(new ItemStack(item, 1, 9));
 		list.add(new ItemStack(item, 1,10));
+		list.add(new ItemStack(item, 1,11));
 
 		//		for(int i=0; i<subNames.length; i++)
 		//		{
@@ -502,6 +504,10 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 			int f = ((TileEntityChargingStation)te).facing;
 			this.setBlockBounds(f<4?.125f:0, 0, f>3?.125f:0, f<4?.875f:1,1,f>3?.875f:1);
 		}
+		else if(te instanceof TileEntityBlastFurnacePreheater && ((TileEntityBlastFurnacePreheater)te).dummy>0)
+		{
+			this.setBlockBounds(.0625f,0,.0625f, .9375f,1,.9375f);
+		}
 		else
 			this.setBlockBounds(0,0,0,1,1,1);
 	}
@@ -727,6 +733,8 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 			return new TileEntityRedstoneBreaker();
 		case META_chargingStation:
 			return new TileEntityChargingStation();
+		case META_blastFurnacePreheater:
+			return new TileEntityBlastFurnacePreheater();
 		}
 		return null;
 	}
@@ -776,6 +784,13 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 				entityitem.delayBeforeCanPickup = 10;
 				world.spawnEntityInWorld(entityitem);
 			}
+		}
+		if(te instanceof TileEntityBlastFurnacePreheater)
+		{
+			int startY = y-((TileEntityBlastFurnacePreheater) te).dummy;
+			for(int i=0; i<3; i++)
+				if(world.getTileEntity(x, startY+i, z) instanceof TileEntityBlastFurnacePreheater)
+					world.setBlockToAir(x, startY+i, z);
 		}
 		super.breakBlock(world, x, y, z, par5, par6);
 	}

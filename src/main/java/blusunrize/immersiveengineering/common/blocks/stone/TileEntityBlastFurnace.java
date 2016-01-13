@@ -15,7 +15,7 @@ import net.minecraftforge.oredict.OreDictionary;
 
 public class TileEntityBlastFurnace extends TileEntityMultiblockPart implements ISidedInventory
 {
-	ItemStack[] inventory = new ItemStack[3];
+	ItemStack[] inventory = new ItemStack[4];
 	public int facing = 2;
 	public int process = 0;
 	public int processMax = 0;
@@ -60,6 +60,7 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart implements 
 			{			
 				if(process>0)
 				{
+					int processSpeed = getProcessSpeed();
 					if(inventory[0]==null)
 					{
 						process=0;
@@ -67,11 +68,11 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart implements 
 					}
 					else
 					{
-						process--;
+						process-=processSpeed;
 						if(!active)
 							active=true;
 					}
-					burnTime--;
+					burnTime-=processSpeed;
 					worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 				}
 
@@ -82,11 +83,15 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart implements 
 						BlastFurnaceRecipe recipe = getRecipe();
 						if(recipe!=null)
 						{
-							this.decrStackSize(0, 1);
+							this.decrStackSize(0, recipe.input instanceof ItemStack?((ItemStack)recipe.input).stackSize:1);
 							if(inventory[2]!=null)
 								inventory[2].stackSize+=recipe.output.copy().stackSize;
 							else
 								inventory[2] = recipe.output.copy();
+							if(inventory[3]!=null)
+								inventory[3].stackSize+=recipe.slag.copy().stackSize;
+							else
+								inventory[3] = recipe.slag.copy();
 						}
 						processMax=0;
 						active=false;
@@ -146,7 +151,14 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart implements 
 			return null;
 		if(inventory[2]==null || (OreDictionary.itemMatches(inventory[2],recipe.output,true) && inventory[2].stackSize+recipe.output.stackSize<=getInventoryStackLimit()) )
 			return recipe;
+		if(inventory[3]==null || (OreDictionary.itemMatches(inventory[3],recipe.slag,true) && inventory[3].stackSize+recipe.slag.stackSize<=getInventoryStackLimit()) )
+			return recipe;
 		return null;
+	}
+
+	protected int getProcessSpeed()
+	{
+		return 1;
 	}
 
 	@Override
@@ -284,12 +296,13 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart implements 
 	@Override
 	public int[] getAccessibleSlotsFromSide(int side)
 	{
-		if(!formed)
-			return new int[0];
-		TileEntityBlastFurnace master = master();
-		if(master!=null)
-			return master.getAccessibleSlotsFromSide(side);
-		return new int[]{0,1,2};
+		//You're no longer automateable, hah!
+		//		if(!formed)
+		return new int[0];
+		//		TileEntityBlastFurnace master = master();
+		//		if(master!=null)
+		//			return master.getAccessibleSlotsFromSide(side);
+		//		return new int[]{0,1,2};
 	}
 
 	@Override
@@ -328,7 +341,7 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart implements 
 		lastBurnTime = nbt.getInteger("lastBurnTime");
 		if(!descPacket)
 		{
-			inventory = Utils.readInventory(nbt.getTagList("inventory", 10), 3);
+			inventory = Utils.readInventory(nbt.getTagList("inventory", 10), 4);
 		}
 	}
 
@@ -352,6 +365,11 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart implements 
 	public void invalidate()
 	{
 		super.invalidate();
+		this.disassemble();
+	}
+
+	protected void disassemble()
+	{
 		if(formed && !worldObj.isRemote)
 		{
 			int startX = xCoord - offset[0];

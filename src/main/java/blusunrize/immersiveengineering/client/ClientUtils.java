@@ -696,7 +696,7 @@ public class ClientUtils
 		tes().startDrawing(glDrawingMode);
 		for(GroupObject go : model.groupObjects)
 			if(go.glDrawingMode==glDrawingMode)
-				if(renderParts.contains(go.name))
+				if(renderParts.isEmpty() || renderParts.contains(go.name))
 					tessellateWavefrontGroupObjectWithIconUVs(go, icon);
 		tes().draw();
 	}

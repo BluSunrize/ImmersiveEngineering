@@ -1,12 +1,5 @@
 package blusunrize.immersiveengineering.client.render;
 
-import net.minecraft.block.Block;
-import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
-import net.minecraft.world.IBlockAccess;
-
 import org.lwjgl.opengl.GL11;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
@@ -19,6 +12,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityDieselGener
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityExcavator;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFermenter;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityLightningRod;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMetalPress;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityRefinery;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySqueezer;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockArcFurnace;
@@ -26,11 +20,18 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockBucke
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockCrusher;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockDieselGenerator;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockExcavatorDemo;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockMetalPress;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockRefinery;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockSheetmetalTank;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockSilo;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;
+import net.minecraft.block.Block;
+import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.IIcon;
+import net.minecraft.world.IBlockAccess;
 
 public class BlockRenderMetalMultiblocks implements ISimpleBlockRenderingHandler
 {
@@ -185,6 +186,13 @@ public class BlockRenderMetalMultiblocks implements ISimpleBlockRenderingHandler
 				MultiblockSilo.instance.renderFormedStructure();
 				GL11.glEnable(32826);
 			}
+			else if(metadata==BlockMetalMultiblocks.META_metalPress)
+			{
+				GL11.glScalef(.5f, .5f, .5f);
+				GL11.glRotatef(180, 0, 1, 0);
+				MultiblockMetalPress.instance.renderFormedStructure();
+				GL11.glEnable(32826);
+			}
 		}catch(Exception e)
 		{
 			e.printStackTrace();
@@ -261,6 +269,8 @@ public class BlockRenderMetalMultiblocks implements ISimpleBlockRenderingHandler
 		else if(te instanceof TileEntityAssembler && ((TileEntityAssembler)te).pos==4)
 			ClientUtils.handleStaticTileRenderer(te);
 		else if(te instanceof TileEntityBottlingMachine && ((TileEntityBottlingMachine)te).pos==4)
+			ClientUtils.handleStaticTileRenderer(te);
+		else if(te instanceof TileEntityMetalPress && ((TileEntityMetalPress)te).pos==4)
 			ClientUtils.handleStaticTileRenderer(te);
 		return false;
 	}

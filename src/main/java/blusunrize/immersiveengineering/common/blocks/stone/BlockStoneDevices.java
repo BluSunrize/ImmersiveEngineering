@@ -3,6 +3,11 @@ package blusunrize.immersiveengineering.common.blocks.stone;
 import java.util.ArrayList;
 import java.util.List;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.client.render.BlockRenderStoneDevices;
+import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMultiblockPart;
+import blusunrize.immersiveengineering.common.util.Lib;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -14,16 +19,12 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.client.render.BlockRenderStoneDevices;
-import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMultiblockPart;
-import blusunrize.immersiveengineering.common.util.Lib;
 
 public class BlockStoneDevices extends BlockIEBase
 {
@@ -32,7 +33,7 @@ public class BlockStoneDevices extends BlockIEBase
 
 	public BlockStoneDevices()
 	{
-		super("stoneDevice", Material.rock, 1, ItemBlockStoneDevices.class, "hempcrete","cokeOven","blastFurnace","coalCoke","insulatorGlass");
+		super("stoneDevice", Material.rock, 1, ItemBlockStoneDevices.class, "hempcrete","cokeOven","blastFurnace","coalCoke","insulatorGlass","blastFurnaceAdvanced");
 		setHardness(2.0F);
 		setResistance(20f);
 	}
@@ -95,6 +96,35 @@ public class BlockStoneDevices extends BlockIEBase
 	public boolean isSideSolid(IBlockAccess world, int x, int y, int z, ForgeDirection side)
 	{
 		return true;
+	}
+	
+
+	@Override
+	public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
+	{
+		TileEntity te = world.getTileEntity(x, y, z);
+		if(te instanceof TileEntityMultiblockPart)
+		{
+			float[] bounds = ((TileEntityMultiblockPart)te).getBlockBounds();
+			if(bounds!=null && bounds.length>5)
+				this.setBlockBounds(bounds[0],bounds[1],bounds[2], bounds[3],bounds[4],bounds[5]);
+			else
+				this.setBlockBounds(0,0,0,1,1,1);
+		}
+		else
+			this.setBlockBounds(0,0,0,1,1,1);
+	}
+	@Override
+	public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z)
+	{
+		this.setBlockBoundsBasedOnState(world,x,y,z);
+		return super.getCollisionBoundingBoxFromPool(world, x, y, z);
+	}
+	@Override
+	public AxisAlignedBB getSelectedBoundingBoxFromPool(World world, int x, int y, int z)
+	{
+		this.setBlockBoundsBasedOnState(world,x,y,z);
+		return super.getCollisionBoundingBoxFromPool(world, x, y, z);
 	}
 
 	@Override
@@ -214,7 +244,7 @@ public class BlockStoneDevices extends BlockIEBase
 	@Override
 	public boolean hasTileEntity(int meta)
 	{
-		return meta==1||meta==2;
+		return meta==1||meta==2||meta==5;
 	}
 	@Override
 	public TileEntity createNewTileEntity(World world, int meta)
@@ -225,6 +255,8 @@ public class BlockStoneDevices extends BlockIEBase
 			return new TileEntityCokeOven();
 		case 2:
 			return new TileEntityBlastFurnace();
+		case 5:
+			return new TileEntityBlastFurnaceAdvanced();
 		}
 		return null;
 	}

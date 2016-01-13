@@ -22,6 +22,7 @@ import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.api.energy.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler.AbstractConnection;
+import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.IESaveData;
 import blusunrize.immersiveengineering.common.util.IEAchievements;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
@@ -37,14 +38,21 @@ import cpw.mods.fml.common.Optional;
 @Optional.Interface(iface = "cofh.api.item.IToolHammer", modid = "CoFHAPI|item")
 public class ItemIETool extends ItemIEBase implements cofh.api.item.IToolHammer
 {
+	static int hammerMaxDamage;
 	public ItemIETool()
 	{
 		super("tool", 1, "hammer","wirecutter","voltmeter","manual");
+		hammerMaxDamage = Config.getInt("hammerDurabiliy");
 	}
 
 	@Override
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean adv)
 	{
+		if(adv && stack.getItemDamage()==0)
+		{
+			int nbtDamage = ItemNBTHelper.getInt(stack, "hammerDmg");
+			list.add("Durability: " + (hammerMaxDamage-nbtDamage)+" / "+hammerMaxDamage);
+		}
 		if(ItemNBTHelper.hasKey(stack, "linkingPos"))
 		{
 			int[] link = ItemNBTHelper.getIntArray(stack, "linkingPos");
@@ -61,7 +69,17 @@ public class ItemIETool extends ItemIEBase implements cofh.api.item.IToolHammer
 	@Override
 	public ItemStack getContainerItem(ItemStack stack)
 	{
-		return stack.getItemDamage()==0?stack: null;
+		if(stack.getItemDamage()==0)
+		{
+			int nbtDamage = ItemNBTHelper.getInt(stack, "hammerDmg")+1;
+			if(nbtDamage<hammerMaxDamage)
+			{
+				ItemStack container = stack.copy();
+				ItemNBTHelper.setInt(container, "hammerDmg", nbtDamage);
+				return container;
+			}
+		}
+		return null;
 	}
 	@Override
 	public boolean doesContainerItemLeaveCraftingGrid(ItemStack stack)
@@ -231,6 +249,27 @@ public class ItemIETool extends ItemIEBase implements cofh.api.item.IToolHammer
 			return 2;
 		else
 			return -1;
+	}
+
+	@Override
+	public boolean showDurabilityBar(ItemStack stack)
+	{
+		return stack.getItemDamage()==0&&ItemNBTHelper.getInt(stack, "hammerDmg")>0;
+	}
+	@Override
+	public double getDurabilityForDisplay(ItemStack stack)
+	{
+		return ItemNBTHelper.getInt(stack, "hammerDmg") / (double)hammerMaxDamage;
+	}
+	@Override
+	public int getMaxDamage(ItemStack stack)
+	{
+		return hammerMaxDamage;
+	}
+	@Override
+	public boolean isDamaged(ItemStack stack)
+	{
+		return false;
 	}
 
 	@Override

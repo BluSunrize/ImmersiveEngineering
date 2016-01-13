@@ -38,9 +38,11 @@ public class MultiblockArcFurnace implements IMultiblock
 							structure[h][w][l] = new ItemStack(Items.cauldron);
 						else if(l==2&&(w==0||w==4))
 							structure[h][w][l] = new ItemStack(IEContent.blockStorage,1,7);
-						else if((l==0&&w==0)||(l>2&&(w==0||w==4)))
+						else if(l==0&&w==0)
+							m = BlockMetalDecoration.META_lightEngineering;
+						else if(l>2&&(w==0||w==4))
 							m = BlockMetalDecoration.META_scaffolding;
-						else if(l==4&& w>0&&w<4)
+						else if(l==4)
 							m = BlockMetalDecoration.META_heavyEngineering;
 						else
 							structure[h][w][l] = new ItemStack(IEContent.blockStorageSlabs,1,7);
@@ -49,15 +51,21 @@ public class MultiblockArcFurnace implements IMultiblock
 					{
 						if((l==0&&w==0)||(l==4&&w>0&&w<4))
 							m = BlockMetalDecoration.META_lightEngineering;
-						else if((w==0||w==4)&&l>1)
+						else if((w==0||w==4)&&(l==2||l==4))
 							m = BlockMetalDecoration.META_heavyEngineering;
+						else if((w==0||w==4)&&l==3)
+							m = BlockMetalDecoration.META_scaffolding;
+						else if((w>0&&w<4)&&(l==2||l==3))
+							structure[h][w][l] = new ItemStack(IEContent.blockStoneDecoration,1,6);
 					}
 					else if(h==2)
 					{
 						if(l==4)
 							m = BlockMetalDecoration.META_lightEngineering;
-						else if((w>0&&w<4)||l==2)
+						else if(l==2 && (w==0||w==4))
 							structure[h][w][l] = new ItemStack(IEContent.blockStorage,1,7);
+						else if(w>0&&w<4)
+							structure[h][w][l] = new ItemStack(IEContent.blockStoneDecoration,1,6);
 					}
 					else if(h==3)
 					{
@@ -66,7 +74,7 @@ public class MultiblockArcFurnace implements IMultiblock
 						else if(l==4 && (w==1||w==3))
 							m = BlockMetalDecoration.META_scaffolding;
 						else if(l>0&&w>0&&w<4)
-							structure[h][w][l] = new ItemStack(IEContent.blockStorage,1,7);
+							structure[h][w][l] = new ItemStack(IEContent.blockStoneDecoration,1,6);
 					}
 					else if(h==4)
 					{
@@ -226,10 +234,10 @@ public class MultiblockArcFurnace implements IMultiblock
 		return new ItemStack[]{
 				new ItemStack(Items.cauldron),
 				new ItemStack(IEContent.blockStorageSlabs,14,7),
-				new ItemStack(IEContent.blockStorage,25,7),
-				new ItemStack(IEContent.blockMetalDecoration,13,BlockMetalDecoration.META_lightEngineering),
-				new ItemStack(IEContent.blockMetalDecoration,9,BlockMetalDecoration.META_heavyEngineering),
-				new ItemStack(IEContent.blockMetalDecoration,9,BlockMetalDecoration.META_scaffolding)};
+				new ItemStack(IEContent.blockStorage,4,7),
+				new ItemStack(IEContent.blockMetalDecoration,14,BlockMetalDecoration.META_lightEngineering),
+				new ItemStack(IEContent.blockMetalDecoration,7,BlockMetalDecoration.META_heavyEngineering),
+				new ItemStack(IEContent.blockMetalDecoration,10,BlockMetalDecoration.META_scaffolding)};
 	}
 	@Override
 	public float getManualScale()

@@ -87,6 +87,7 @@ public class EventHandler
 	{
 		if(ImmersiveNetHandler.INSTANCE==null)
 			ImmersiveNetHandler.INSTANCE = new ImmersiveNetHandler();
+		TileEntityCrusher.recipeCache.clear();
 		//		if(event.world.provider.dimensionId==0)
 		//		{
 		/**
@@ -110,7 +111,7 @@ public class EventHandler
 		}
 		 */
 		//		}
-		if(FMLCommonHandler.instance().getEffectiveSide()==Side.CLIENT)
+		if(event.world.isRemote)
 		{
 			if(!ModelShaderMinecart.rendersReplaced)
 			{
@@ -267,9 +268,11 @@ public class EventHandler
 			TileEntityCrusher crusher = crusherMap.get(event.entityLiving.getUniqueID());
 			if(crusher!=null)
 			{
+				ArrayList<ItemStack> out = new ArrayList<>();
 				for(EntityItem item: event.drops)
 					if(item!=null && item.getEntityItem()!=null)
-						crusher.outputItem(item.getEntityItem());
+						out.add(item.getEntityItem());
+				crusher.outputItems(out);
 				crusherMap.remove(event.entityLiving.getUniqueID());
 				event.setCanceled(true);
 			}

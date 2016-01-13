@@ -15,6 +15,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import blusunrize.immersiveengineering.api.ManualHelper;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import cpw.mods.fml.relauncher.ReflectionHelper;
@@ -58,6 +59,8 @@ public class MTHelper extends IECompatModule
 	/** Helper Methods */
 	public static ItemStack toStack(IItemStack iStack)
 	{
+		if(iStack!=null)
+			return null;
 		return getItemStack(iStack);
 	}
 	public static Object toObject(IIngredient iStack)
@@ -100,6 +103,7 @@ public class MTHelper extends IECompatModule
 			ExcavatorHandler.recalculateChances(false);
 			if (ManualHelper.ieManualInstance!=null)
 				ManualHelper.ieManualInstance.recalculateAllRecipes();
+			TileEntityCrusher.recipeCache.clear();
 		}
 	}
 
