@@ -14,7 +14,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 public class PeripheralAssembler extends IEPeripheral {
-	public static final String[] cmds = {"hasIngredients", "setEnabled", "getRecipe", "isValidRecipe", "getTank", "getMaxEnergyStored", "getEnergyStored", "getStackInSlot"};
+	public static final String[] cmds = {"hasIngredients", "setEnabled", "getRecipe", "isValidRecipe", "getTank", "getMaxEnergyStored", "getEnergyStored", "getStackInSlot", "getBufferStack"};
 	public PeripheralAssembler(World w, int _x, int _y, int _z) {
 		super(w, _x, _y, _z);
 	}
@@ -95,6 +95,13 @@ public class PeripheralAssembler extends IEPeripheral {
 			if (slot>17||slot<0)
 				throw new LuaException("Only slots 0-17 are available");
 			return new Object[]{saveStack(te.getStackInSlot(slot))};
+		case 8://buffer slot
+			if (arguments.length!=1||!(arguments[0] instanceof Integer)&&!(arguments[0] instanceof Double))
+				throw new LuaException("Wrong amount of arguments, needs one integer");
+			recipe = (int)(double)arguments[0];
+			if (recipe>2||recipe<0)
+				throw new LuaException("Only recipes 0-2 are available");
+			return new Object[]{saveStack(te.inventory[18+recipe])};
 		}
 		return null;
 	}

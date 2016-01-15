@@ -981,7 +981,7 @@ ie.manual.entry.computer.refinery1=§lgetEmptyCannisters()§r: returns a table c
 ie.manual.entry.computer.assembler.name=Assembler
 ie.manual.entry.computer.assembler.subtext=Some assembly required
 ie.manual.entry.computer.assembler0=The bottom row of an assembler can be connected to a computer.<br>§lhasIngredients(int recipe)§r: returns whether the ingredients for the specified recipe (0-2) are available<br>§lsetEnabled(int slot, boolean on)§r: enables or disables the specified recipe (0-2). If a recipe is disabled, it will not be crafted even if the materials are available.<br>§lgetRecipe(int recipe)l§r: returns a table containing the specified recipe (0-2). The keys "in1", "in2", ..., "in9" store the recipe inputs, the key "out"
-ie.manual.entry.computer.assembler1=stores the output<br>§lgetTank(int tank)§r: returns the specified tank (0-2)<br>§lgetMaxEnergyStored()§r: returns the maximum amount of energy that can be stored in the assembler<br>§lgetEnergyStored()§r: returns the amount of energy stored in the assembler<br>§lgetStackInSlot(int slot)§r: returns the stack in the specified input slot.
+ie.manual.entry.computer.assembler1=stores the output<br>§lgetTank(int tank)§r: returns the specified tank (0-2)<br>§lgetMaxEnergyStored()§r: returns the maximum amount of energy that can be stored in the assembler<br>§lgetEnergyStored()§r: returns the amount of energy stored in the assembler<br>§lgetStackInSlot(int slot)§r: returns the stack in the specified input slot.<br>§lgetBufferStack(recipe:int)§r: returns the output buffer slot for the specified recipe (0-2)
 
 ie.manual.entry.computer.bottlingMachine.name=Bottling Machine
 ie.manual.entry.computer.bottlingMachine.subtext=Fill 'er up!

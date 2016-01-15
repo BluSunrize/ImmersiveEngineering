@@ -157,5 +157,14 @@ public class AssemblerDriver extends DriverTileEntity
 				throw new IllegalArgumentException("Only slots 0-17 are available");
 			return new Object[]{getTileEntity().inventory[slot]};
 		}
+		@Callback(doc = "function(slot:int):table -- returns the stack in the output slot of the specified recipe")
+		public Object[] getBufferStack(Context context, Arguments args)
+		{
+			int slot = args.checkInteger(0);
+			if (slot<0||slot>2)
+				throw new IllegalArgumentException("Only recipes 0-2 are available");
+			return new Object[]{getTileEntity().inventory[18+slot]};
+		}
+		
 	}
 }
