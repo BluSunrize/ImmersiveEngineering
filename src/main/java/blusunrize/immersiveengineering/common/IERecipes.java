@@ -166,11 +166,11 @@ public class IERecipes
 		addOredictRecipe(new ItemStack(IEContent.itemJerrycan), " II","IBB","IBB", 'I',"ingotIron",'B',Items.bucket);
 		GameRegistry.addRecipe(new RecipeJerrycan());
 		RecipeSorter.register(ImmersiveEngineering.MODID+":jerrycan", RecipeJerrycan.class, RecipeSorter.Category.SHAPELESS, "after:forge:shapelessore");
-		
+
 		addOredictRecipe(new ItemStack(IEContent.itemToolbox), "PPP","RCR", 'P',"plateAluminum",'C',new ItemStack(IEContent.blockWoodenDevice,1,4),'R',"dyeRed");
 		if(OreDictionary.doesOreNameExist("plateAluminium"))
 			addOredictRecipe(new ItemStack(IEContent.itemToolbox), "PPP","RCR", 'P',"plateAluminium",'C',new ItemStack(IEContent.blockWoodenDevice,1,4),'R',"dyeRed");
-			
+
 		GameRegistry.addRecipe(new RecipeShaderBags());
 
 		for(ItemStack container : Utils.getContainersFilledWith(new FluidStack(IEContent.fluidCreosote,1000)))
@@ -482,7 +482,6 @@ public class IERecipes
 				}
 				else if(name.startsWith("plate"))
 				{
-					IEContent.itemMold.setMetaUnhidden(1);
 					String ore = name.substring("plate".length());
 					if(ApiUtils.isExistingOreName("ingot"+ore))
 					{
@@ -503,12 +502,11 @@ public class IERecipes
 				else if(name.startsWith("stick")||name.startsWith("rod"))
 				{
 					String ore = name.startsWith("stick")?name.substring("stick".length()):name.substring("rod".length());
-					if(!ore.equalsIgnoreCase("iron")&&!ore.equalsIgnoreCase("steel")&&!ore.equalsIgnoreCase("aluminum"))
-						if(ApiUtils.isExistingOreName("ingot"+ore))
-						{
-							registeredMoldBases.putAll("rod",OreDictionary.getOres(name));
-							MetalPressRecipe.addRecipe(Utils.copyStackWithAmount(IEApi.getPreferredOreStack(name),2), "ingot"+ore, new ItemStack(IEContent.itemMold,1,2), 2400);
-						}
+					if(ApiUtils.isExistingOreName("ingot"+ore))
+					{
+						registeredMoldBases.putAll("rod",OreDictionary.getOres(name));
+						MetalPressRecipe.addRecipe(Utils.copyStackWithAmount(IEApi.getPreferredOreStack(name),2), "ingot"+ore, new ItemStack(IEContent.itemMold,1,2), 2400);
+					}
 				}
 		if(registeredMoldBases.containsKey("plate"))
 			GameRegistry.addRecipe(new RecipeShapedArrayList(new ItemStack(IEContent.itemMold,1,0), " P ","PCP"," P ", 'P',"plateSteel",'C',registeredMoldBases.get("plate")));

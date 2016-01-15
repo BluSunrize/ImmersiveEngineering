@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.common.crafting;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +23,7 @@ public class RecipeShapedArrayList extends ShapedOreRecipe
 
 			for(Map.Entry<Integer, List> entry : replacements.entrySet())
 				if(entry.getKey()>=0 && entry.getKey()<rInput.length)
-					rInput[entry.getKey()] = entry.getValue();
+					rInput[entry.getKey()] = new ArrayList<>(entry.getValue());
 			
 			f_Input.set(this, rInput);
 		}catch(Exception e)
