@@ -38,7 +38,7 @@ public class TileEntityAssembler extends TileEntityMultiblockPart implements ISi
 {
 	public int facing = 2;
 	public EnergyStorage energyStorage = new EnergyStorage(16000);
-	public ItemStack[] inventory = new ItemStack[18];
+	public ItemStack[] inventory = new ItemStack[18+3];
 	public CrafterPatternInventory[] patterns = {new CrafterPatternInventory(this),new CrafterPatternInventory(this),new CrafterPatternInventory(this)};
 	public FluidTank[] tanks = {new FluidTank(8000),new FluidTank(8000),new FluidTank(8000)};
 	public boolean computerControlled = false;
@@ -77,7 +77,7 @@ public class TileEntityAssembler extends TileEntityMultiblockPart implements ISi
 			if (computerControlled&&!computerOn[p])
 				continue;
 			CrafterPatternInventory pattern = patterns[p];
-			if(pattern.inv[9]!=null)
+			if(pattern.inv[9]!=null && canOutput(pattern.inv[9], p))
 			{
 				ItemStack output = pattern.inv[9].copy();
 				ArrayList<ItemStack> queryList = new ArrayList();//List of all available inputs in the inventory
@@ -125,7 +125,7 @@ public class TileEntityAssembler extends TileEntityMultiblockPart implements ISi
 							if(query instanceof ItemStack && oreInputs!=null)
 								for(int iOre=0; iOre<oreInputs.length; iOre++)
 									if(!usedOreSlots.contains(Integer.valueOf(iOre)))
-										if(Utils.stackMatchesObject((ItemStack)query, oreInputs[iOre]))
+										if(Utils.stackMatchesObject((ItemStack)query, oreInputs[iOre], true))
 										{
 											query = oreInputs[iOre];
 											querySize = 1;
@@ -148,7 +148,9 @@ public class TileEntityAssembler extends TileEntityMultiblockPart implements ISi
 		TileEntity inventory = this.worldObj.getTileEntity(xCoord+(facing==4?2:facing==5?-2:0),yCoord,zCoord+(facing==2?2:facing==3?-2:0));
 		for(int buffer=0; buffer<outputBuffer.length; buffer++)
 			if(outputBuffer[buffer]!=null && outputBuffer[buffer].length>0)
-				for(ItemStack output : outputBuffer[buffer])
+				for(int iOutput=0; iOutput<outputBuffer[buffer].length; iOutput++)
+				{
+					ItemStack output = outputBuffer[buffer][iOutput];
 					if(output!=null && output.stackSize>0)	
 					{
 						boolean isRecipeIngredient = false;
@@ -166,7 +168,6 @@ public class TileEntityAssembler extends TileEntityMultiblockPart implements ISi
 							}
 
 						}
-
 						if(!isRecipeIngredient)
 							if((inventory instanceof ISidedInventory && ((ISidedInventory)inventory).getAccessibleSlotsFromSide(facing).length>0)
 									||(inventory instanceof IInventory && ((IInventory)inventory).getSizeInventory()>0))
@@ -177,20 +178,33 @@ public class TileEntityAssembler extends TileEntityMultiblockPart implements ISi
 							}
 
 						int free = -1;
-						for(int i=0; i<this.inventory.length; i++)
+						if(iOutput==0)//Main recipe output
 						{
-							if(this.inventory[i]==null && free<0)
-								free = i;
-							else if(this.inventory[i]!=null && OreDictionary.itemMatches(output, this.inventory[i], true) && this.inventory[i].stackSize+output.stackSize<=this.inventory[i].getMaxStackSize())
+							if(this.inventory[18+buffer]==null && free<0)
+								free = 18+buffer;
+							else if(this.inventory[18+buffer]!=null && OreDictionary.itemMatches(output, this.inventory[18+buffer], true) && this.inventory[18+buffer].stackSize+output.stackSize<=this.inventory[18+buffer].getMaxStackSize())
 							{
-								this.inventory[i].stackSize += output.stackSize;
+								this.inventory[18+buffer].stackSize += output.stackSize;
 								free = -1;
 								break;
 							}
 						}
+						else
+							for(int i=0; i<this.inventory.length; i++)
+							{
+								if(this.inventory[i]==null && free<0)
+									free = i;
+								else if(this.inventory[i]!=null && OreDictionary.itemMatches(output, this.inventory[i], true) && this.inventory[i].stackSize+output.stackSize<=this.inventory[i].getMaxStackSize())
+								{
+									this.inventory[i].stackSize += output.stackSize;
+									free = -1;
+									break;
+								}
+							}
 						if(free>=0)
 							this.inventory[free] = output.copy();
 					}
+				}
 
 		if(update)
 		{
@@ -211,7 +225,7 @@ public class TileEntityAssembler extends TileEntityMultiblockPart implements ISi
 				}
 
 		for(int i=0; i<inventory.length; i++)
-			if(inventory[i]!=null && Utils.stackMatchesObject(inventory[i], query))
+			if(inventory[i]!=null && Utils.stackMatchesObject(inventory[i], query, true))
 			{
 				int taken = Math.min(querySize, inventory[i].stackSize);
 				boolean doTake = true;
@@ -277,7 +291,7 @@ public class TileEntityAssembler extends TileEntityMultiblockPart implements ISi
 				{
 					for(int iOre=0; iOre<oreInputs.length; iOre++)
 						if(!usedOreSlots.contains(Integer.valueOf(iOre)))
-							if(Utils.stackMatchesObject((ItemStack)query, oreInputs[iOre]))
+							if(Utils.stackMatchesObject((ItemStack)query, oreInputs[iOre], true))
 							{
 								query = oreInputs[iOre];
 								querySize = 1;
@@ -289,7 +303,7 @@ public class TileEntityAssembler extends TileEntityMultiblockPart implements ISi
 				while(it.hasNext())
 				{
 					ItemStack next = it.next();
-					if(Utils.stackMatchesObject(next, query))
+					if(Utils.stackMatchesObject(next, query, true))
 					{
 						int taken = Math.min(querySize, next.stackSize);
 						next.stackSize -= taken;
@@ -308,7 +322,15 @@ public class TileEntityAssembler extends TileEntityMultiblockPart implements ISi
 			}
 		return match;
 	}
-
+	
+	public boolean canOutput(ItemStack output, int iPattern)
+	{
+		if(this.inventory[18+iPattern]==null)
+			return true;
+		else if(this.inventory[18+iPattern]!=null && OreDictionary.itemMatches(output, this.inventory[18+iPattern], true) && this.inventory[18+iPattern].stackSize+output.stackSize<=this.inventory[18+iPattern].getMaxStackSize())
+			return true;
+		return false;
+	}
 
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
@@ -323,7 +345,7 @@ public class TileEntityAssembler extends TileEntityMultiblockPart implements ISi
 
 		if(!descPacket)
 		{
-			inventory = Utils.readInventory(nbt.getTagList("inventory", 10), 18);
+			inventory = Utils.readInventory(nbt.getTagList("inventory", 10), 21);
 			for(int iPattern=0; iPattern<patterns.length; iPattern++)
 			{
 				NBTTagList patternList = nbt.getTagList("pattern"+iPattern, 10);
@@ -593,7 +615,7 @@ public class TileEntityAssembler extends TileEntityMultiblockPart implements ISi
 		if(!formed||stack==null)
 			return false;
 		TileEntityAssembler master = master();
-		if(master!=null)
+		if(master!=null && slot<18)
 			return master.isItemValidForSlot(slot,stack);
 		return true;
 	}
@@ -794,6 +816,32 @@ public class TileEntityAssembler extends TileEntityMultiblockPart implements ISi
 				invC.setInventorySlotContents(j, inv[j]);
 			this.recipe = Utils.findRecipe(invC, tile.getWorldObj());
 			this.inv[9] = recipe!=null?recipe.getCraftingResult(invC):null;
+		}
+
+		public ArrayList<ItemStack> getTotalPossibleOutputs()
+		{
+			ArrayList<ItemStack> outputList = new ArrayList<ItemStack>();
+			outputList.add(inv[9].copy());
+			for(int i=0; i<9; i++)
+			{
+				if(FluidContainerRegistry.getFluidForFilledItem(inv[i])!=null)
+				{
+					FluidStack fs = FluidContainerRegistry.getFluidForFilledItem(inv[i]);
+					boolean hasFluid = false;
+					for(FluidTank tank : tile.tanks)
+						if(tank.getFluid()!=null && tank.getFluid().containsFluid(fs))
+						{
+							hasFluid=true;
+							break;
+						}
+					if(hasFluid)
+						continue;
+				}
+				ItemStack container = inv[i].getItem().getContainerItem(inv[i]);
+				if(container!=null && inv[i].getItem().doesContainerItemLeaveCraftingGrid(inv[i]))
+					outputList.add(container.copy());
+			}
+			return outputList;
 		}
 
 		@Override

@@ -4,15 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
 import blusunrize.immersiveengineering.client.render.BlockRenderMetalMultiblocks;
-import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ICustomBoundingboxes;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
-import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.Utils;
-import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
@@ -52,13 +50,14 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 	public static final int META_silo=10;
 	public static final int META_assembler=11;
 	public static final int META_bottlingMachine=12;
+	public static final int META_metalPress=13;
 	public BlockMetalMultiblocks()
 	{
 		super("metalMultiblock", Material.iron, 4, ItemBlockIEBase.class,
 				"lightningRod","dieselGenerator",
 				"industrialSqueezer","fermenter","refinery",
 				"crusher","bucketWheel","excavator","arcFurnace",
-				"tank","silo","assembler","bottlingMachine");
+				"tank","silo","assembler","bottlingMachine","metalPress");
 		setHardness(3.0F);
 		setResistance(15.0F);
 	}
@@ -74,7 +73,7 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 	public void getSubBlocks(Item item, CreativeTabs tab, List list)
 	{
 		for(int i=0; i<subNames.length; i++)
-			if(i!=META_dieselGenerator && i!=META_refinery && i!=META_crusher && i!=META_bucketWheel && i!=META_excavator && i!=META_arcFurnace && i!=META_tank && i!=META_silo && i!=META_assembler && i!=META_bottlingMachine)
+			if(i==META_lightningRod || i==META_squeezer || i==META_fermenter)
 				list.add(new ItemStack(item, 1, i));
 	}
 
@@ -106,6 +105,7 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 		icons[META_arcFurnace][0] = iconRegister.registerIcon("immersiveengineering:metal_multiblock_arcFurnace");
 		icons[META_assembler][0] = iconRegister.registerIcon("immersiveengineering:metal_multiblock_assembler");
 		icons[META_bottlingMachine][0] = iconRegister.registerIcon("immersiveengineering:metal_multiblock_bottlingMachine");
+		icons[META_metalPress][0] = iconRegister.registerIcon("immersiveengineering:metal_multiblock_metalPress");
 		for(int i=0;i<4;i++)
 		{
 			icons[6][i] = iconRegister.registerIcon("immersiveengineering:storage_Steel");
@@ -351,6 +351,37 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 				return true;
 			}
 		}
+		else if(curr instanceof TileEntityMetalPress)
+		{
+			if(((TileEntityMetalPress)curr).formed)
+			{
+				TileEntityMetalPress te = ((TileEntityMetalPress)curr);
+				TileEntityMetalPress master = te.master();
+				if(master==null)
+					master = te;
+				if(player.isSneaking() && master.mold!=null)
+				{
+					if(player.getCurrentEquippedItem()==null)
+						player.setCurrentItemOrArmor(0, master.mold.copy());
+					else if(!world.isRemote)
+						player.entityDropItem(master.mold.copy(),0);
+					master.mold=null;
+					return true;
+				}
+				else if(MetalPressRecipe.isValidMold(player.getCurrentEquippedItem()))
+				{
+					ItemStack tempMould = master.mold!=null?master.mold.copy():null;
+					master.mold = Utils.copyStackWithAmount(player.getCurrentEquippedItem(),1);
+					player.inventory.decrStackSize(player.inventory.currentItem, 1);
+					if(tempMould!=null)
+						if(player.getCurrentEquippedItem()==null)
+							player.setCurrentItemOrArmor(0, tempMould);
+						else if(!world.isRemote)
+							player.entityDropItem(tempMould,0);
+					return true;
+				}
+			}
+		}
 		return false;
 	}
 
@@ -369,13 +400,13 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 			else if((tile.pos==21&&!tile.master().mirrored) || (tile.pos==23&&tile.master().mirrored))
 				return true;
 		}
-		if(te instanceof TileEntityRefinery)
+		else if(te instanceof TileEntityRefinery)
 		{
 			TileEntityRefinery tile = (TileEntityRefinery)te;
 			if(tile.pos==9 && side.ordinal()==tile.facing)
 				return true;
 		}
-		if(te instanceof TileEntityCrusher)
+		else if(te instanceof TileEntityCrusher)
 		{
 			TileEntityCrusher tile = (TileEntityCrusher)te;
 			if(tile.pos%5==0)
@@ -383,13 +414,13 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 			else if(tile.pos==9 && side.ordinal()==tile.facing)
 				return true;
 		}
-		if(te instanceof TileEntityExcavator)
+		else if(te instanceof TileEntityExcavator)
 		{
 			TileEntityExcavator tile = (TileEntityExcavator)te;
 			if(tile.pos<27)
 				return true;
 		}
-		if(te instanceof TileEntityArcFurnace)
+		else if(te instanceof TileEntityArcFurnace)
 		{
 			TileEntityArcFurnace tile = (TileEntityArcFurnace)te;
 			if(tile.pos==2 || tile.pos==25 || tile.pos==52)
@@ -399,17 +430,22 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 			if( (tile.pos>=21&&tile.pos<=23) || (tile.pos>=46&&tile.pos<=48) || (tile.pos>=71&&tile.pos<=73))
 				return side.getOpposite().ordinal()==tile.facing;
 		}
-		if(te instanceof TileEntitySheetmetalTank || te instanceof TileEntitySilo)
+		else if(te instanceof TileEntitySheetmetalTank || te instanceof TileEntitySilo)
 		{
 			TileEntityMultiblockPart tile = (TileEntityMultiblockPart)te;
 			return tile.pos==4||tile.pos==(tile instanceof TileEntitySilo?58:40)||(tile.pos>=18&&tile.pos<(tile instanceof TileEntitySilo?54:36));
 		}
-		if (te instanceof TileEntityFermenter||te instanceof TileEntitySqueezer)
+		else if (te instanceof TileEntityFermenter||te instanceof TileEntitySqueezer)
 			return true;
-		if (te instanceof TileEntityAssembler)
+		else if (te instanceof TileEntityAssembler)
 			return ((TileEntityAssembler)te).offset[1]==-1;
-		if (te instanceof TileEntityBottlingMachine)
+		else if (te instanceof TileEntityBottlingMachine)
 			return ((TileEntityBottlingMachine)te).offset[1]==0&&((TileEntityBottlingMachine)te).pos!=0&&((TileEntityBottlingMachine)te).pos!=2;
+		else if(te instanceof TileEntityMetalPress)
+		{
+			TileEntityMetalPress tile = (TileEntityMetalPress)te;
+			return tile.pos>2?side==ForgeDirection.UP:side==ForgeDirection.DOWN;
+		}
 		return super.isSideSolid(world, x, y, z, side);
 	}
 
@@ -608,6 +644,8 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 			return new TileEntityAssembler();
 		case META_bottlingMachine:
 			return new TileEntityBottlingMachine();
+		case META_metalPress:
+			return new TileEntityMetalPress();
 		}
 		return null;
 	}

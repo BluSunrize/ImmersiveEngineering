@@ -2,8 +2,12 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.ComparableItemStack;
 import blusunrize.immersiveengineering.api.crafting.CrusherRecipe;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.EventHandler;
@@ -15,12 +19,12 @@ import blusunrize.immersiveengineering.common.util.IESound;
 import blusunrize.immersiveengineering.common.util.Utils;
 import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyReceiver;
-import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mods.railcraft.api.crafting.IRockCrusherRecipe;
 import mods.railcraft.api.crafting.RailcraftCraftingManager;
 import net.minecraft.block.Block;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -49,6 +53,8 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 	public boolean computerOn;
 	@SideOnly(Side.CLIENT)
 	ItemStack particleStack;
+	
+	public static final Map<ComparableItemStack, CrusherRecipe> recipeCache = new ConcurrentHashMap<>();
 
 	@Override
 	public TileEntityCrusher master()
@@ -108,39 +114,44 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 			{
 				int power = Config.getInt("crusher_consumption");
 				AxisAlignedBB aabb = AxisAlignedBB.getBoundingBox(xCoord-.5625,yCoord+1.5,zCoord-.5625, xCoord+1.5625,yCoord+2.875,zCoord+1.5625);
-				List<EntityItem> itemList = worldObj.getEntitiesWithinAABB(EntityItem.class, aabb);
-				if(!itemList.isEmpty() && hasPower)
-					for(EntityItem e : itemList)
+				List entityList = worldObj.getEntitiesWithinAABB(Entity.class, aabb);
+				boolean hurtLiving = false;
+				if(!entityList.isEmpty() && hasPower)
+					for(Object o : entityList)
 					{
-						ItemStack input = ((EntityItem)e).getEntityItem();
-						if(!isValidInput(input))
+						if (o instanceof EntityItem)
 						{
-							e.setDead();
-							grindingTimer = 10;
-							update = true;
-							continue;
-						}
-						addStackToInputs(input);
-						update = true;
-						e.setDead();
-					}
-				List<EntityLivingBase> livingList = worldObj.getEntitiesWithinAABB(EntityLivingBase.class, aabb);
-				if(!livingList.isEmpty())
-				{
-					for(EntityLivingBase e : livingList)
-						if(!e.isDead && e.getHealth()>0)
-						{
-							int consumed = this.energyStorage.extractEnergy(power, false);
-							if(consumed>0)
+							EntityItem e = (EntityItem) o;
+							ItemStack input = e.getEntityItem();
+							if(!isValidInput(input))
 							{
-								e.attackEntityFrom(IEDamageSources.causeCrusherDamage(), consumed/20f);
-								EventHandler.crusherMap.put(e.getUniqueID(), this);
-								mobGrinding = true;
+								e.setDead();
+								grindingTimer = 10;
+								update = true;
+								continue;
 							}
+							addStackToInputs(input);
 							update = true;
+							e.setDead();
 						}
-				}
-				else if(process<=0&&mobGrinding)
+						if (o instanceof EntityLivingBase)
+						{
+							EntityLivingBase e = (EntityLivingBase) o;
+							if(!e.isDead && e.getHealth()>0)
+							{
+								int consumed = this.energyStorage.extractEnergy(power, false);
+								if(consumed>0)
+								{
+									e.attackEntityFrom(IEDamageSources.causeCrusherDamage(), consumed/20f);
+									EventHandler.crusherMap.put(e.getUniqueID(), this);
+									mobGrinding = true;
+								}
+								update = true;
+							}
+							hurtLiving = true;
+						}
+					}
+				if(!hurtLiving&&process<=0&&mobGrinding)
 				{
 					mobGrinding = false;
 					update = true;
@@ -170,19 +181,20 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 					{
 						ItemStack inputStack = inputs.get(0);
 
-						CrusherRecipe recipe = CrusherRecipe.findRecipe(inputStack);
+						CrusherRecipe recipe = getRecipe(inputStack);
 						if(recipe!=null)
 						{
 							if(inputStack.stackSize>=(recipe.input instanceof ItemStack?((ItemStack)recipe.input).stackSize:1))
 							{
+								ArrayList<ItemStack> out = new ArrayList<>();
 								ItemStack outputStack = recipe.output;
 								if(outputStack!=null)
-									outputItem(outputStack.copy());
+									out.add(outputStack);
 								if(recipe.secondaryOutput!=null)
 									for(int i=0; i<recipe.secondaryOutput.length; i++)
 										if(worldObj.rand.nextFloat()<recipe.secondaryChance[i])
-											outputItem(recipe.secondaryOutput[i]);
-
+											out.add(recipe.secondaryOutput[i]);
+								outputItems(out);
 								inputStack.stackSize-= (recipe.input instanceof ItemStack)? ((ItemStack)recipe.input).stackSize: 1;
 								if(inputStack.stackSize>0)
 									inputs.set(0, inputStack);
@@ -199,27 +211,6 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 								active = false;
 								update = true;
 							}
-						}
-						else if(RailcraftCraftingManager.rockCrusher!=null && RailcraftCraftingManager.rockCrusher.getRecipe(inputStack)!=null)
-						{
-							IRockCrusherRecipe rcrecipe = RailcraftCraftingManager.rockCrusher.getRecipe(inputStack);
-							List<ItemStack> outputs = rcrecipe.getRandomizedOuputs();
-							for(ItemStack out : outputs)
-								if(out!=null)
-									outputItem(out.copy());
-							inputStack.stackSize-= rcrecipe.getInput().stackSize;
-							if(inputStack.stackSize>0)
-								inputs.set(0, inputStack);
-							else
-								inputs.remove(0);
-							active = false;
-							update = true;
-						}
-						else
-						{
-							inputs.remove(0);
-							active = false;
-							update = true;
 						}
 					}
 					else
@@ -257,20 +248,49 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 	}
 	public int getRecipeTime(ItemStack in)
 	{
-		CrusherRecipe recipe = CrusherRecipe.findRecipe(in);
+		CrusherRecipe recipe = getRecipe(in);
 		if(recipe!=null)
-		{
 			if(in.stackSize>=(recipe.input instanceof ItemStack?((ItemStack)recipe.input).stackSize:1))
 				return recipe.energy;
-		}
-		else if(RailcraftCraftingManager.rockCrusher!=null && RailcraftCraftingManager.rockCrusher.getRecipe(in)!=null)
-			return 4000;
 		return -1;
 	}
 
+	public CrusherRecipe getRecipe(ItemStack in)
+	{
+		ComparableItemStack comp = new ComparableItemStack(in.copy());
+		comp.stack.stackTagCompound = null;
+		comp.stack.stackSize = 1;
+		comp.useNBT = false;
+		if (recipeCache.containsKey(comp))
+			return recipeCache.get(comp);
+		CrusherRecipe ret = CrusherRecipe.findRecipe(in);
+		if (ret==null&&RailcraftCraftingManager.rockCrusher!=null)
+		{
+			IRockCrusherRecipe crush = RailcraftCraftingManager.rockCrusher.getRecipe(in);
+			if (crush!=null)
+			{
+				List<Entry<ItemStack, Float>> out = crush.getOutputs();
+				int outCount = out.size();
+				float[] outProbabilities = new float[outCount];
+				ItemStack[] outStacks = new ItemStack[outCount];
+				for (int i = 0;i<outCount;i++)
+				{
+					Entry<ItemStack, Float> entry = out.get(i);
+					outProbabilities[i] = entry.getValue();
+					outStacks[i] = entry.getKey();
+				}
+				ret = new CrusherRecipe(null, Utils.copyStackWithAmount(in, 1), 4000);
+				ret.secondaryChance = outProbabilities;
+				ret.secondaryOutput = outStacks;
+			}
+		}
+		recipeCache.put(comp, ret);
+		return ret;
+	}
+	
 	boolean isValidInput(ItemStack stack)
 	{
-		return CrusherRecipe.findRecipe(stack)!=null || (RailcraftCraftingManager.rockCrusher!=null && RailcraftCraftingManager.rockCrusher.getRecipe(stack)!=null);
+		return getRecipe(stack)!=null;
 	}
 	public boolean addStackToInputs(ItemStack stack)
 	{
@@ -283,22 +303,30 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 		this.inputs.add(stack);
 		return true;
 	}
-	public void outputItem(ItemStack stack)
+	public void outputItems(List<ItemStack> stacks)
 	{
 		TileEntity inventory = this.worldObj.getTileEntity(xCoord+(facing==4?-2:facing==5?2:0),yCoord,zCoord+(facing==2?-2:facing==3?2:0));
-		if(isInventory(inventory, ForgeDirection.OPPOSITES[facing]))
+		boolean isInv = isInventory(inventory, ForgeDirection.OPPOSITES[facing]);
+		
+		for (int i = 0;i<stacks.size();i++)
 		{
-			stack = Utils.insertStackIntoInventory((IInventory)inventory, stack, ForgeDirection.OPPOSITES[facing]);
-		}
-
-		if(stack != null)
-		{
-			ForgeDirection fd = ForgeDirection.getOrientation(facing);
-			EntityItem ei = new EntityItem(worldObj, xCoord+.5+fd.offsetX*2, yCoord+.5, zCoord+.5+fd.offsetZ*2, stack.copy());
-			ei.motionX = (0.075F * fd.offsetX);
-			ei.motionY = 0.025000000372529D;
-			ei.motionZ = (0.075F * fd.offsetZ);
-			this.worldObj.spawnEntityInWorld(ei);
+			ItemStack stack = stacks.get(i);
+			if(stack==null)
+				continue;
+			if (isInv)
+			{
+				stack = Utils.insertStackIntoInventory((IInventory) inventory, stack, ForgeDirection.OPPOSITES[facing]);
+			}
+			if (stack != null)
+			{
+				ForgeDirection fd = ForgeDirection.getOrientation(facing);
+				EntityItem ei = new EntityItem(worldObj, xCoord + .5 + fd.offsetX * 2, yCoord + .5,
+						zCoord + .5 + fd.offsetZ * 2, stack.copy());
+				ei.motionX = (0.075F * fd.offsetX);
+				ei.motionY = 0.025000000372529D;
+				ei.motionZ = (0.075F * fd.offsetZ);
+				this.worldObj.spawnEntityInWorld(ei);
+			} 
 		}
 	}
 	boolean isInventory(TileEntity tile, int side)

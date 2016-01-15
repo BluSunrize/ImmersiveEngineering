@@ -7,6 +7,7 @@ import blusunrize.immersiveengineering.api.ComparableItemStack;
 import blusunrize.immersiveengineering.api.MultiblockHandler;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.CokeOvenRecipe;
+import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
 import blusunrize.immersiveengineering.api.energy.DieselHandler;
 import blusunrize.immersiveengineering.api.energy.ThermoelectricHandler;
 import blusunrize.immersiveengineering.api.energy.WireType;
@@ -28,11 +29,13 @@ import blusunrize.immersiveengineering.common.blocks.TileEntityIESlab;
 import blusunrize.immersiveengineering.common.blocks.cloth.BlockClothDevices;
 import blusunrize.immersiveengineering.common.blocks.cloth.TileEntityBalloon;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDecoration;
+import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDecoration2;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDevices;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDevices2;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityArcFurnace;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityAssembler;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBlastFurnacePreheater;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBottlingMachine;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBreakerSwitch;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBucketWheel;
@@ -61,6 +64,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFurnaceHeat
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityLantern;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityLightningRod;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMetalBarrel;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMetalPress;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityRedstoneBreaker;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityRefinery;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityRelayHV;
@@ -77,6 +81,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityWallmountMe
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockArcFurnace;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockAssembler;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockBlastFurnace;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockBlastFurnaceAdvanced;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockBottlingMachine;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockBucketWheel;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockCokeOven;
@@ -85,6 +90,7 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockDiese
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockExcavator;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockFermenter;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockLightningRod;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockMetalPress;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockRefinery;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockSheetmetalTank;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockSilo;
@@ -93,6 +99,7 @@ import blusunrize.immersiveengineering.common.blocks.plant.BlockIECrop;
 import blusunrize.immersiveengineering.common.blocks.stone.BlockStoneDecoration;
 import blusunrize.immersiveengineering.common.blocks.stone.BlockStoneDevices;
 import blusunrize.immersiveengineering.common.blocks.stone.TileEntityBlastFurnace;
+import blusunrize.immersiveengineering.common.blocks.stone.TileEntityBlastFurnaceAdvanced;
 import blusunrize.immersiveengineering.common.blocks.stone.TileEntityCokeOven;
 import blusunrize.immersiveengineering.common.blocks.wooden.BlockWoodenDecoration;
 import blusunrize.immersiveengineering.common.blocks.wooden.BlockWoodenDevices;
@@ -128,6 +135,7 @@ import blusunrize.immersiveengineering.common.items.ItemShader;
 import blusunrize.immersiveengineering.common.items.ItemShaderBag;
 import blusunrize.immersiveengineering.common.items.ItemSkyhook;
 import blusunrize.immersiveengineering.common.items.ItemToolUpgrade;
+import blusunrize.immersiveengineering.common.items.ItemToolbox;
 import blusunrize.immersiveengineering.common.items.ItemWireCoil;
 import blusunrize.immersiveengineering.common.util.IEAchievements;
 import blusunrize.immersiveengineering.common.util.IELogger;
@@ -165,6 +173,7 @@ public class IEContent
 	public static BlockIEBase blockMetalDevice;
 	public static BlockIEBase blockMetalDevice2;
 	public static BlockIEBase blockMetalDecoration;
+	public static BlockIEBase blockMetalDecoration2;
 	public static BlockIEBase blockMetalMultiblocks;
 	public static BlockIEBase blockWoodenDevice;
 	public static BlockIEBase blockWoodenDecoration;
@@ -184,6 +193,7 @@ public class IEContent
 	public static ItemIEBase itemSeeds;
 	public static ItemIEBase itemWireCoil;
 	public static ItemIEBase itemTool;
+	public static ItemIEBase itemToolbox;
 	public static ItemIEBase itemRevolver;
 	public static ItemIEBase itemBullet;
 	public static ItemIEBase itemFluidContainers;
@@ -199,6 +209,7 @@ public class IEContent
 	public static ItemIEBase itemJerrycan;
 	public static ItemIEBase itemChemthrower;
 	public static ItemIEBase itemRailgun;
+	public static ItemIEBase itemMold;
 	public static Fluid fluidCreosote;
 	public static boolean IECreosote=false;
 	public static Fluid fluidPlantoil;
@@ -216,6 +227,7 @@ public class IEContent
 		blockMetalDevice = new BlockMetalDevices();
 		blockMetalDevice2 = new BlockMetalDevices2();
 		blockMetalDecoration = new BlockMetalDecoration();
+		blockMetalDecoration2 = new BlockMetalDecoration2();
 		blockMetalMultiblocks = new BlockMetalMultiblocks();
 		blockWoodenDevice = new BlockWoodenDevices().setFlammable(true);
 		blockWoodenDecoration = new BlockWoodenDecoration().setFlammable(true);
@@ -235,19 +247,21 @@ public class IEContent
 				"ingotCopper","ingotAluminum","ingotLead","ingotSilver","ingotNickel","ingotConstantan","ingotElectrum","ingotSteel",  
 				"dustIron","dustGold","dustCopper","dustAluminum","dustLead","dustSilver","dustNickel","dustConstantan","dustElectrum",
 				"dustCoke","dustQuartz","dustHOPGraphite","ingotHOPGraphite",
-				"nuggetIron","nuggetCopper","nuggetAluminum","nuggetLead","nuggetSilver","nuggetNickel","nuggetConstantan","nuggetElectrum","nuggetSteel");
+				"nuggetIron","nuggetCopper","nuggetAluminum","nuggetLead","nuggetSilver","nuggetNickel","nuggetConstantan","nuggetElectrum","nuggetSteel",
+				"plateIron","plateCopper","plateAluminum","plateLead","plateSilver","plateNickel","plateConstantan","plateElectrum","plateSteel").setMetaHidden(31,34,35,37);
 
 		itemMaterial = new ItemIEBase("material", 64,
 				"treatedStick","waterwheelSegment","windmillBlade","hempFiber","fabric","windmillBladeAdvanced",
 				"coalCoke",
 				"gunpartBarrel","gunpartDrum","gunpartGrip","gunpartHammer",
-				"componentIron","componentSteel","slag", "stickIron","stickSteel");
+				"componentIron","componentSteel","slag", "stickIron","stickSteel","stickAluminum");
 
 		itemSeeds = new ItemIESeed(blockCrop,"hemp");
 		MinecraftForge.addGrassSeed(new ItemStack(itemSeeds), 5);
 		itemWireCoil = new ItemWireCoil();
 		WireType.ieWireCoil = itemWireCoil;
 		itemTool = new ItemIETool();
+		itemToolbox = new ItemToolbox();
 		itemRevolver = new ItemRevolver();
 		itemBullet = new ItemBullet();
 		itemFluidContainers = new ItemIEBase("fluidContainers", 64, "bottleCreosote","bucketCreosote",  "bottlePlantoil","bucketPlantoil",  "bottleEthanol","bucketEthanol", "bottleBiodiesel","bucketBiodiesel")
@@ -286,6 +300,7 @@ public class IEContent
 		itemJerrycan = new ItemJerrycan();
 		itemChemthrower = new ItemChemthrower();
 		itemRailgun= new ItemRailgun();
+		itemMold = new ItemIEBase("mold", 1, "plate","gear","rod").setMetaHidden(1);
 
 		fluidCreosote = FluidRegistry.getFluid("creosote");
 		if(fluidCreosote==null)
@@ -338,6 +353,7 @@ public class IEContent
 		OreDictionary.registerOre("itemSlag", new ItemStack(itemMaterial,1,13));
 		OreDictionary.registerOre("stickIron", new ItemStack(itemMaterial,1,14));
 		OreDictionary.registerOre("stickSteel", new ItemStack(itemMaterial,1,15));
+		OreDictionary.registerOre("stickAluminum", new ItemStack(itemMaterial,1,16));
 		//Vanilla OreDict
 		OreDictionary.registerOre("bricksStone", new ItemStack(Blocks.stonebrick));
 		OreDictionary.registerOre("blockIce", new ItemStack(Blocks.ice));
@@ -422,6 +438,7 @@ public class IEContent
 		registerTile(TileEntitySilo.class);
 		registerTile(TileEntityAssembler.class);
 		registerTile(TileEntityBottlingMachine.class);
+		registerTile(TileEntityMetalPress.class);
 
 		registerTile(TileEntityStructuralArm.class);
 		registerTile(TileEntityConnectorStructural.class);
@@ -439,11 +456,13 @@ public class IEContent
 		registerTile(TileEntityCapacitorCreative.class);
 		registerTile(TileEntityRedstoneBreaker.class);
 		registerTile(TileEntityChargingStation.class);
+		registerTile(TileEntityBlastFurnacePreheater.class);
 
 		registerTile(TileEntityFakeLight.class);
 
 		registerTile(TileEntityCokeOven.class);
 		registerTile(TileEntityBlastFurnace.class);
+		registerTile(TileEntityBlastFurnaceAdvanced.class);
 
 		registerTile(TileEntityBalloon.class);
 
@@ -476,8 +495,8 @@ public class IEContent
 		CokeOvenRecipe.addRecipe(new ItemStack(itemMaterial,1,6), new ItemStack(Items.coal), 1800, 500);
 		CokeOvenRecipe.addRecipe(new ItemStack(blockStoneDecoration,1,3), "blockCoal", 1800*9, 5000);
 		CokeOvenRecipe.addRecipe(new ItemStack(Items.coal,1,1), "logWood", 900, 250);
-		BlastFurnaceRecipe.addRecipe(new ItemStack(itemMetal,1,7), "ingotIron", 1200);
-		BlastFurnaceRecipe.addRecipe(new ItemStack(blockStorage,1,7), "blockIron", 1200*9);
+		BlastFurnaceRecipe.addRecipe(new ItemStack(itemMetal,1,7), "ingotIron", 1200, new ItemStack(IEContent.itemMaterial,1,13));
+		BlastFurnaceRecipe.addRecipe(new ItemStack(blockStorage,1,7), "blockIron", 1200*9, new ItemStack(IEContent.itemMaterial,9,13));
 
 		BlastFurnaceRecipe.addBlastFuel("fuelCoke", 1200);
 		BlastFurnaceRecipe.addBlastFuel("blockFuelCoke", 1200*10);
@@ -485,6 +504,22 @@ public class IEContent
 		BlastFurnaceRecipe.addBlastFuel("blockCharcoal", 300*10);
 		GameRegistry.registerFuelHandler(new IEFuelHandler());
 
+
+		ItemStack plateMold = new ItemStack(itemMold,1,0);
+		MetalPressRecipe.addRecipe(new ItemStack(itemMetal,1,30), "ingotIron", plateMold, 2400);
+		//MetalPressRecipe.addRecipe(new ItemStack(itemMetal,1,31), "ingotCopper", plateMould, 2400);
+		MetalPressRecipe.addRecipe(new ItemStack(itemMetal,1,32), "ingotAluminum", plateMold, 2400);
+		MetalPressRecipe.addRecipe(new ItemStack(itemMetal,1,33), "ingotLead", plateMold, 2400);
+		//MetalPressRecipe.addRecipe(new ItemStack(itemMetal,1,34), "ingotSilver", plateMould, 2400, 200);
+		//MetalPressRecipe.addRecipe(new ItemStack(itemMetal,1,35), "ingotNickel", plateMould, 2400);
+		MetalPressRecipe.addRecipe(new ItemStack(itemMetal,1,36), "ingotConstantan", plateMold, 2400);
+		//MetalPressRecipe.addRecipe(new ItemStack(itemMetal,1,37), "ingotElectrum", plateMould, 2400);
+		MetalPressRecipe.addRecipe(new ItemStack(itemMetal,1,38), "ingotSteel", plateMold, 2400);
+		ItemStack rodMold = new ItemStack(itemMold,1,2);
+		MetalPressRecipe.addRecipe(new ItemStack(itemMaterial,2,14), "ingotIron", rodMold, 2400);
+		MetalPressRecipe.addRecipe(new ItemStack(itemMaterial,2,15), "ingotSteel", rodMold, 2400);
+		MetalPressRecipe.addRecipe(new ItemStack(itemMaterial,2,16), "ingotAluminum", rodMold, 2400);
+		
 		IERecipes.initCrusherRecipes();
 
 		IERecipes.initArcSmeltingRecipes();
@@ -514,12 +549,13 @@ public class IEContent
 
 		RailgunHandler.registerProjectileProperties(new ComparableItemStack("stickIron"), 7, 1.25).setColourMap(new int[][]{{0xd8d8d8,0xd8d8d8,0xd8d8d8,0xa8a8a8,0x686868,0x686868}});
 		RailgunHandler.registerProjectileProperties(new ComparableItemStack("stickSteel"), 9, 1.25).setColourMap(new int[][]{{0xb4b4b4,0xb4b4b4,0xb4b4b4,0x7a7a7a,0x555555,0x555555}});
+		RailgunHandler.registerProjectileProperties(new ComparableItemStack("stickAluminum"), 6, 1.0625).setColourMap(new int[][]{{0xd9ecea,0xd9ecea,0xd9ecea,0xaebebc,0x9aa7a6,0x9aa7a6}});
 		RailgunHandler.registerProjectileProperties(new ComparableItemStack(new ItemStack(itemGraphiteElectrode)), 12, .9).setColourMap(new int[][]{{0x242424,0x242424,0x242424,0x171717,0x171717,0x0a0a0a}});
-		
+
 		ExternalHeaterHandler.defaultFurnaceEnergyCost = Config.getInt("heater_consumption");
 		ExternalHeaterHandler.defaultFurnaceSpeedupCost= Config.getInt("heater_speedupConsumption");
 		ExternalHeaterHandler.registerHeatableAdapter(TileEntityFurnace.class, new ExternalHeaterHandler.DefaultFurnaceAdapter());
-		
+
 
 		DieselHandler.addSqueezerRecipe(new ItemStack(itemMetal,8,17), 240, null, new ItemStack(itemMetal,1,19));
 		DieselHandler.addSqueezerRecipe(Items.wheat_seeds, 80, new FluidStack(fluidPlantoil, 80), null);
@@ -563,6 +599,7 @@ public class IEContent
 
 		MultiblockHandler.registerMultiblock(MultiblockCokeOven.instance);
 		MultiblockHandler.registerMultiblock(MultiblockBlastFurnace.instance);
+		MultiblockHandler.registerMultiblock(MultiblockBlastFurnaceAdvanced.instance);
 		MultiblockHandler.registerMultiblock(MultiblockDieselGenerator.instance);
 		MultiblockHandler.registerMultiblock(MultiblockSqueezer.instance);
 		MultiblockHandler.registerMultiblock(MultiblockFermenter.instance);
@@ -576,6 +613,7 @@ public class IEContent
 		MultiblockHandler.registerMultiblock(MultiblockSilo.instance);
 		MultiblockHandler.registerMultiblock(MultiblockAssembler.instance);
 		MultiblockHandler.registerMultiblock(MultiblockBottlingMachine.instance);
+		MultiblockHandler.registerMultiblock(MultiblockMetalPress.instance);
 
 		IEAchievements.init();
 
@@ -597,7 +635,7 @@ public class IEContent
 		IEVillagerTradeHandler.instance = new IEVillagerTradeHandler();
 		VillagerRegistry.instance().registerVillageTradeHandler(villagerId, IEVillagerTradeHandler.instance);
 	}
-	
+
 	public static void registerToOreDict(String type, ItemIEBase item, int... metas)
 	{
 		if(metas==null||metas.length<1)

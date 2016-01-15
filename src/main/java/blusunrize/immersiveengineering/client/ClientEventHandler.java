@@ -160,6 +160,8 @@ public class ClientEventHandler
 		for(GroupObject groupObject : model.groupObjects)
 		{
 			IIcon icon = modelIE.getBlockIcon(groupObject.name);
+			if(icon==null)
+				continue;
 			float minU = icon.getInterpolatedU(0);
 			float sizeU = icon.getInterpolatedU(16) - minU;
 			float minV = icon.getInterpolatedV(0);
@@ -556,7 +558,6 @@ public class ClientEventHandler
 				//					int duration = player.getItemInUseDuration();
 				//					int chargeTime = ((ItemRailgun)equipped.getItem()).getChargeTime(equipped);
 				//					int chargeLevel = Math.min(99, (int)(duration/(float)chargeTime*100));
-				//					//					System.out.println("");
 				//					//					ClientUtils.drawTexturedRect(0,0, 64,32, 0/256f,64/256f, 96/256f,128/256f);
 				//
 				//					GL11.glScalef(1.5f,1.5f,1.5f);
@@ -868,12 +869,12 @@ public class ClientEventHandler
 			else if(model instanceof ModelVillager)
 				((ModelVillager)model).villagerHead.showModel=false;
 		}
-//		if(OreDictionary.itemMatches(new ItemStack(IEContent.itemRailgun),event.entity.getEquipmentInSlot(0),true))
-//		{
-//			ModelBase model = event.renderer.mainModel;
-//			if(model instanceof ModelBiped)
-//				((ModelBiped)model).bipedLeftArm.rotateAngleX=.9f;
-//		}
+		//		if(OreDictionary.itemMatches(new ItemStack(IEContent.itemRailgun),event.entity.getEquipmentInSlot(0),true))
+		//		{
+		//			ModelBase model = event.renderer.mainModel;
+		//			if(model instanceof ModelBiped)
+		//				((ModelBiped)model).bipedLeftArm.rotateAngleX=.9f;
+		//		}
 	}
 	@SubscribeEvent()
 	public void onRenderLivingPost(RenderLivingEvent.Post event)

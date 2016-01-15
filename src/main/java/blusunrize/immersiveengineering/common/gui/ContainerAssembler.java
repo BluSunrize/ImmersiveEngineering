@@ -1,12 +1,12 @@
 package blusunrize.immersiveengineering.common.gui;
 
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityAssembler;
+import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityAssembler;
-import blusunrize.immersiveengineering.common.util.Utils;
 
 public class ContainerAssembler extends Container
 {
@@ -24,13 +24,12 @@ public class ContainerAssembler extends Container
 				int y = 7+ (j/3)*18;
 				this.addSlotToContainer(new IESlot.Ghost(this, tile.patterns[i], j, x, y));
 			}
-			this.addSlotToContainer(new IESlot.ItemDisplay(this, tile.patterns[i], 9, 27+i*58, 64));
+			this.addSlotToContainer(new IESlot.Output(this, tile, 18+i, 27+i*58, 64));
 		}
-		slotCount=30;
-
-		for(int i=0; i<tile.getSizeInventory(); i++)
+		for(int i=0; i<18; i++)
 			this.addSlotToContainer(new Slot(tile, i, 13+(i%9)*18, 87+(i/9)*18));
-
+		slotCount=21;
+		
 		for(int i=0; i<3; i++)
 			for(int j=0; j<9; j++)
 				addSlotToContainer(new Slot(inventoryPlayer, j+i*9+9, 13+j*18, 137+i*18));
@@ -93,35 +92,33 @@ public class ContainerAssembler extends Container
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slot)
 	{
-		return null;
-		//		ItemStack stack = null;
-		//		Slot slotObject = (Slot) inventorySlots.get(slot);
-		//
-		//		if (slotObject != null && slotObject.getHasStack())
-		//		{
-		//			ItemStack stackInSlot = slotObject.getStack();
-		//			stack = stackInSlot.copy();
-		//
-		//			if (slot < slotCount)
-		//			{
-		//				if(!this.mergeItemStack(stackInSlot, slotCount, (slotCount + 36), true))
-		//					return null;
-		//			}
-		//			else
-		//			{
-		//				if(!this.mergeItemStack(stackInSlot, 0,9, false))
-		//					return null;
-		//			}
-		//
-		//			if (stackInSlot.stackSize == 0)
-		//				slotObject.putStack(null);
-		//			else
-		//				slotObject.onSlotChanged();
-		//
-		//			if (stackInSlot.stackSize == stack.stackSize)
-		//				return null;
-		//			slotObject.onPickupFromSlot(player, stackInSlot);
-		//		}
-		//		return stack;
+		ItemStack stack = null;
+		Slot slotObject = (Slot) inventorySlots.get(slot);
+
+		if(slotObject != null && slotObject.getHasStack() && !(slotObject instanceof IESlot.Ghost))
+		{
+			ItemStack stackInSlot = slotObject.getStack();
+			stack = stackInSlot.copy();
+			if(slot<48)
+			{
+				if(!this.mergeItemStack(stackInSlot, 48,(48+36), true))
+					return null;
+			}
+			else
+			{
+				if(!this.mergeItemStack(stackInSlot, 30,48, false))
+					return null;
+			}
+
+			if (stackInSlot.stackSize == 0)
+				slotObject.putStack(null);
+			else
+				slotObject.onSlotChanged();
+
+			if (stackInSlot.stackSize == stack.stackSize)
+				return null;
+			slotObject.onPickupFromSlot(player, stackInSlot);
+		}
+		return stack;
 	}
 }

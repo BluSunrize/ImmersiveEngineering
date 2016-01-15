@@ -47,6 +47,7 @@ public class IEAchievements
 	public static Achievement craftRailgun;
 	public static Achievement craftWolfPack;
 
+	public static Achievement mbImprovedBlastFurnace;
 	public static Achievement mbSilo;
 	public static Achievement mbCrusher;
 	public static Achievement mbDieselGen;
@@ -72,6 +73,7 @@ public class IEAchievements
 		craftPump = new AchievementIE("craftPump", 2, 3, new ItemStack(IEContent.blockMetalDevice2,1,6), openManual).setNormalCrafting();
 		placeFloodlight = new AchievementIE("placeFloodlight", -2, 4, new ItemStack(IEContent.blockMetalDevice2,1,4), openManual).setPlacement();
 		
+		mbImprovedBlastFurnace = new AchievementIE("mbImprovedBlastFurnace", 6, -4, new ItemStack(IEContent.blockStoneDevice,1,5), makeSteel).setSpecial();
 		mbSilo = new AchievementIE("mbSilo", 6, -3, new ItemStack(IEContent.blockMetalMultiblocks,1,BlockMetalMultiblocks.META_silo), craftHammer).setSpecial();
 		mbCrusher = new AchievementIE("mbCrusher", 6, -2, new ItemStack(IEContent.blockMetalMultiblocks,1,BlockMetalMultiblocks.META_crusher), craftHammer).setSpecial();
 		mbDieselGen = new AchievementIE("mbDieselGen", 6, -1, new ItemStack(IEContent.blockMetalMultiblocks,1,BlockMetalMultiblocks.META_dieselGenerator), craftHammer).setSpecial();

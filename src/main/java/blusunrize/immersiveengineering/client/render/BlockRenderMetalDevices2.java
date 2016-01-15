@@ -1,18 +1,11 @@
 package blusunrize.immersiveengineering.client.render;
 
-import net.minecraft.block.Block;
-import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.world.IBlockAccess;
-
 import org.lwjgl.opengl.GL11;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDevices2;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBlastFurnacePreheater;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBreakerSwitch;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityChargingStation;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityElectricLantern;
@@ -24,6 +17,13 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityRedstoneBre
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;
+import net.minecraft.block.Block;
+import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.world.IBlockAccess;
 
 public class BlockRenderMetalDevices2 implements ISimpleBlockRenderingHandler
 {
@@ -140,6 +140,14 @@ public class BlockRenderMetalDevices2 implements ISimpleBlockRenderingHandler
 				ClientUtils.handleStaticTileRenderer(tile);
 				Tessellator.instance.draw();
 			}
+			else if(metadata==BlockMetalDevices2.META_blastFurnacePreheater)
+			{
+				GL11.glScalef(0.4375f, 0.4375f, 0.4375f);
+				GL11.glTranslatef(-.5f,-1.25f,-.5f);
+				Tessellator.instance.startDrawingQuads();
+				ClientUtils.handleStaticTileRenderer(new TileEntityBlastFurnacePreheater());
+				Tessellator.instance.draw();
+			}
 
 		}catch(Exception e)
 		{
@@ -241,6 +249,15 @@ public class BlockRenderMetalDevices2 implements ISimpleBlockRenderingHandler
 				TileEntityChargingStation tile = (TileEntityChargingStation)world.getTileEntity(x, y, z);
 				ClientUtils.handleStaticTileRenderer(tile);
 				return true;
+			}
+			else if(metadata==BlockMetalDevices2.META_blastFurnacePreheater)
+			{
+				TileEntityBlastFurnacePreheater tile = (TileEntityBlastFurnacePreheater)world.getTileEntity(x, y, z);
+				if(tile.dummy==0)
+				{
+					ClientUtils.handleStaticTileRenderer(tile);
+					return true;
+				}
 			}
 		return false;
 	}

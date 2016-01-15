@@ -29,6 +29,7 @@ public class Lib
 	public static final int GUIID_Workbench = 9;
 	public static final int GUIID_ArcFurnace = 10;
 	public static final int GUIID_Assembler = 11;
+	public static final int GUIID_Toolbox = 12;
 	
 	public static final int colour_nixieTubeText = 0xff9900;
 	

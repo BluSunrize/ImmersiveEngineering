@@ -2,6 +2,10 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import java.util.List;
 
+import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
+import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenBarrel;
+import blusunrize.immersiveengineering.common.util.Lib;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -12,10 +16,6 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidStack;
-import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
-import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenBarrel;
-import blusunrize.immersiveengineering.common.util.Lib;
 
 public class ItemBlockMetalDevices2 extends ItemBlockIEBase
 {
@@ -54,6 +54,9 @@ public class ItemBlockMetalDevices2 extends ItemBlockIEBase
 
 		if(meta==BlockMetalDevices2.META_fluidPump || meta==BlockMetalDevices2.META_energyMeter)
 			if(!world.isAirBlock(x, y+1, z))
+				return false;
+		if(meta==BlockMetalDevices2.META_blastFurnacePreheater)
+			if(!world.isAirBlock(x, y+1, z) || !world.isAirBlock(x, y+2, z))
 				return false;
 
 		boolean ret = super.placeBlockAt(stack, player, world, x, y, z, side, hitX, hitY, hitZ, meta);
@@ -98,6 +101,16 @@ public class ItemBlockMetalDevices2 extends ItemBlockIEBase
 		else if(tileEntity instanceof TileEntityChargingStation)
 		{
 			((TileEntityChargingStation)tileEntity).facing = f;
+		}
+		else if(tileEntity instanceof TileEntityBlastFurnacePreheater)
+		{
+			((TileEntityBlastFurnacePreheater)tileEntity).facing = f;
+			for(int i=1; i<=2; i++)
+			{
+				world.setBlock(x, y+i, z, IEContent.blockMetalDevice2, BlockMetalDevices2.META_blastFurnacePreheater, 3);
+				((TileEntityBlastFurnacePreheater)world.getTileEntity(x, y+i, z)).dummy = i;
+				((TileEntityBlastFurnacePreheater)world.getTileEntity(x, y+i, z)).facing = f;
+			}
 		}
 		return ret;
 	}

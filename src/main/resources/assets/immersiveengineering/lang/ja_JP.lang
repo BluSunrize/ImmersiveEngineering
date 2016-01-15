@@ -55,6 +55,7 @@ tile.ImmersiveEngineering.metalMultiblock.tank.name=液体タンク
 tile.ImmersiveEngineering.metalMultiblock.silo.name=サイロ
 tile.ImmersiveEngineering.metalMultiblock.assembler.name=組立機
 tile.ImmersiveEngineering.metalMultiblock.bottlingMachine.name=瓶詰機
+tile.ImmersiveEngineering.metalMultiblock.metalPress.name=金属プレス機
 
 tile.ImmersiveEngineering.metalDecoration.fence.name=鋼柵
 tile.ImmersiveEngineering.metalDecoration.scaffolding.name=鋼足場
@@ -66,12 +67,15 @@ tile.ImmersiveEngineering.metalDecoration.generator.name=ジェネレーター�
 tile.ImmersiveEngineering.metalDecoration.lightEngineering.name=軽機構ブロック
 tile.ImmersiveEngineering.metalDecoration.connectorStructural.name=装飾用ケーブルコネクター
 tile.ImmersiveEngineering.metalDecoration.wallMount.name=鋼壁掛け
-tile.ImmersiveEngineering.metalDecoration.sheetMetal.name=金属板ブロック
+tile.ImmersiveEngineering.metalDecoration.sheetMetal.name=鉄板金ブロック
 tile.ImmersiveEngineering.metalDecoration.scaffolding2.name=鋼足場
 tile.ImmersiveEngineering.metalDecoration.aluminiumFence.name=アルミ柵
 tile.ImmersiveEngineering.metalDecoration.aluminiumScaffolding.name=アルミ足場
 tile.ImmersiveEngineering.metalDecoration.aluminiumScaffolding2.name=アルミ足場
 tile.ImmersiveEngineering.metalDecoration.aluminiumStructuralArm.name=アルミ腕金
+tile.ImmersiveEngineering.metalDecoration2.sheetMetalAlu.name=アルミ板金ブロック
+tile.ImmersiveEngineering.metalDecoration2.sheetMetalLead.name=鉛板金ブロック
+tile.ImmersiveEngineering.metalDecoration2.sheetMetalSteel.name=鋼板金ブロック
 
 tile.ImmersiveEngineering.metalDevice2.breakerSwitch.name=ブレーカースイッチ
 tile.ImmersiveEngineering.metalDevice2.energyMeter.name=モニタリング変圧器
@@ -83,6 +87,7 @@ tile.ImmersiveEngineering.metalDevice2.barrel.name=金属バレル
 tile.ImmersiveEngineering.metalDevice2.capacitorCreative.name=クリエイティブキャパシタ
 tile.ImmersiveEngineering.metalDevice2.redstoneBreaker.name=レッドストーン制御ブレーカー
 tile.ImmersiveEngineering.metalDevice2.chargingStation.name=充電台
+tile.ImmersiveEngineering.metalDevice2.blastFurnacePreheater.name=高炉予熱器
 
 tile.ImmersiveEngineering.treatedWood.0.name=防腐木材
 tile.ImmersiveEngineering.treatedWood.1.name=防腐木材
@@ -113,10 +118,12 @@ tile.ImmersiveEngineering.stoneDevice.cokeOven.name=コークス炉
 tile.ImmersiveEngineering.stoneDevice.blastFurnace.name=高炉
 tile.ImmersiveEngineering.stoneDevice.coalCoke.name=コークスブロック
 tile.ImmersiveEngineering.stoneDevice.insulatorGlass.name=絶縁ガラス
+tile.ImmersiveEngineering.stoneDevice.blastFurnaceAdvanced.name=改良型高炉
 
 tile.ImmersiveEngineering.stoneDecoration.hempcrete.name=ヘンプクリート
 tile.ImmersiveEngineering.stoneDecoration.cokeBrick.name=コークス炉用レンガ
 tile.ImmersiveEngineering.stoneDecoration.blastBrick.name=高炉用レンガ
+tile.ImmersiveEngineering.stoneDecoration.blastBrickReinforced.name=強化された高炉用レンガ
 tile.ImmersiveEngineering.stoneDecoration.coalCoke.name=コークスブロック
 tile.ImmersiveEngineering.stoneDecoration.concrete.name=コンクリート
 tile.ImmersiveEngineering.stoneDecoration.concreteTile.name=コンクリートタイル
@@ -168,6 +175,15 @@ item.ImmersiveEngineering.metal.nuggetNickel.name=ニッケル塊
 item.ImmersiveEngineering.metal.nuggetConstantan.name=白銅塊
 item.ImmersiveEngineering.metal.nuggetElectrum.name=エレクトラム塊
 item.ImmersiveEngineering.metal.nuggetSteel.name=鋼塊
+item.ImmersiveEngineering.metal.plateIron.name=鉄板
+item.ImmersiveEngineering.metal.plateCopper.name=銅板
+item.ImmersiveEngineering.metal.plateAluminum.name=アルミ板
+item.ImmersiveEngineering.metal.plateLead.name=鉛板
+item.ImmersiveEngineering.metal.plateSilver.name=銀板
+item.ImmersiveEngineering.metal.plateNickel.name=ニッケル板
+item.ImmersiveEngineering.metal.plateConstantan.name=白銅板
+item.ImmersiveEngineering.metal.plateElectrum.name=エレクトラム板
+item.ImmersiveEngineering.metal.plateSteel.name=鋼板
 
 
 item.ImmersiveEngineering.material.treatedStick.name=含浸木棒
@@ -184,8 +200,9 @@ item.ImmersiveEngineering.material.gunpartHammer.name=撃鉄
 item.ImmersiveEngineering.material.componentIron.name=鉄製機械部品
 item.ImmersiveEngineering.material.componentSteel.name=鋼製機械部品
 item.ImmersiveEngineering.material.slag.name=鉱滓
-item.ImmersiveEngineering.material.stickIron.name=鉄の棒材
-item.ImmersiveEngineering.material.stickSteel.name=鋼の棒材
+item.ImmersiveEngineering.material.stickIron.name=鉄の棒
+item.ImmersiveEngineering.material.stickSteel.name=鋼の棒
+item.ImmersiveEngineering.material.stickAluminum.name=アルミの棒
 item.ImmersiveEngineering.seed.hemp.name=工業用大麻の種
 
 item.ImmersiveEngineering.fluidContainers.bottleCreosote.name=クレオソート油入り瓶
@@ -262,18 +279,25 @@ item.ImmersiveEngineering.graphiteElectrode.name=炭素電極
 item.ImmersiveEngineering.shader.name=ガジェットスキン
 item.ImmersiveEngineering.shaderBag.name=ガジェットスキン福袋
 
+item.ImmersiveEngineering.toolbox.name=ツールボックス
+
 item.ImmersiveEngineering.jerrycan.name=ジェリー缶
 
 item.ImmersiveEngineering.chemthrower.name=ケミカル放射器
 
-#とある科学の
 item.ImmersiveEngineering.railgun.name=レールガン
+
+item.ImmersiveEngineering.mold.plate.name=金型:板材
+item.ImmersiveEngineering.mold.gear.name=金型:歯車
+item.ImmersiveEngineering.mold.rod.name=金型:棒材
 
 #CREATIVE
 itemGroup.ImmersiveEngineering=Immersive Engineering
 
 #DESCRIPTIONS
 description.villager.profession.immersiveengineering.villager_engineer=エンジニア
+
+desc.ImmersiveEngineering.name.blastFurnace=高炉
 
 desc.ImmersiveEngineering.info.attachedTo=接続中:%1$s, %2$s, %3$sから
 desc.ImmersiveEngineering.info.attachedToDim=接続中:ディメンション%4$sの%1$s, %2$s, %3$sから
@@ -352,6 +376,11 @@ desc.ImmersiveEngineering.info.shader.drill=採掘ドリル
 desc.ImmersiveEngineering.info.shader.railgun=レールガン
 desc.ImmersiveEngineering.info.shader.minecart=トロッコ
 desc.ImmersiveEngineering.info.shader.balloon=支持気球
+
+desc.ImmersiveEngineering.info.toolbox.food=食料
+desc.ImmersiveEngineering.info.toolbox.tool=工具
+desc.ImmersiveEngineering.info.toolbox.wire=配線
+desc.ImmersiveEngineering.info.toolbox.any=なんでも
 
 desc.ImmersiveEngineering.flavour.treatedWood.0=並行
 desc.ImmersiveEngineering.flavour.treatedWood.1=垂直
@@ -478,7 +507,7 @@ achievement.immersiveengineering.blastfurnace.desc=高炉の作成
 achievement.immersiveengineering.makeSteel=アップグレード
 achievement.immersiveengineering.makeSteel.desc=鋼インゴットの作成
 
-achievement.immersiveengineering.placeConveyor=道なき道
+achievement.immersiveengineering.placeConveyor=道無き道
 achievement.immersiveengineering.placeConveyor.desc=ベルトコンベアを設置する
 achievement.immersiveengineering.placeWindmill=風車よ地に
 achievement.immersiveengineering.placeWindmill.desc=風車を設置する
@@ -490,20 +519,26 @@ achievement.immersiveengineering.placeFloodlight=Aziz! Light!
 achievement.immersiveengineering.placeFloodlight.desc=投光機を設置する
 achievement.immersiveengineering.craftWorkbench=冶金の時間
 achievement.immersiveengineering.craftWorkbench.desc=技師用工具台の作成
-achievement.immersiveengineering.makeRevolver=よい1日になる
+achievement.immersiveengineering.craftRevolver=良い１日になる
+achievement.immersiveengineering.craftRevolver.desc=リボルバーの作成
 achievement.immersiveengineering.upgradeRevolver=Shalashaska
-achievement.immersiveengineering.makeWolfPack=Beauty of Destruction
+achievement.immersiveengineering.upgradeRevolver.desc=リボルバーにアップグレードを最大まで積む
+achievement.immersiveengineering.craftWolfPack=Beauty of Destruction
+achievement.immersiveengineering.craftWolfPack.desc=狼群弾の作成
+achievement.immersiveengineering.craftDrill=強力な採掘
+achievement.immersiveengineering.craftDrill.desc=採掘ドリルの作成
 achievement.immersiveengineering.upgradeDrill=Big Daddy
-achievement.immersiveengineering.makeRevolver.desc=リボルバーの作成
-achievement.immersiveengineering.upgradeRevolver.desc=リボルバーに最大アップグレードを積む
-achievement.immersiveengineering.makeWolfPack.desc=狼群団の作成
-achievement.immersiveengineering.makeDrill=強力な採掘
-achievement.immersiveengineering.makeDrill.desc=採掘ドリルの作成
-achievement.immersiveengineering.upgradeDrill.desc=採掘ドリルに最大アップグレードを積む
-achievement.immersiveengineering.makeSkyhook=Booker, catch!
-achievement.immersiveengineering.makeSkyhook.desc=スカイフックの作成
+achievement.immersiveengineering.upgradeDrill.desc=採掘ドリルにアップグレードを最大まで積む
+achievement.immersiveengineering.craftSkyhook=Booker, catch!
+achievement.immersiveengineering.craftSkyhook.desc=スカイフックの作成
 achievement.immersiveengineering.skyhookPro=Skyline Master
-achievement.immersiveengineering.skyhookPro.desc=スカイフックで合計1000ブロック移動する
+achievement.immersiveengineering.skyhookPro.desc=スカイフックで計1000ブロック移動する
+achievement.immersiveengineering.craftChemthrower=Spray and Pray
+achievement.immersiveengineering.craftChemthrower.desc=ケミカル放射器の作成
+achievement.immersiveengineering.craftRailgun=Fortune's Legacy
+achievement.immersiveengineering.craftRailgun.desc=レールガンの作成
+achievement.immersiveengineering.mbImprovedBlastFurnace=Refined Arts
+achievement.immersiveengineering.mbImprovedBlastFurnace.desc=改良型高炉を組み立てる
 achievement.immersiveengineering.mbSilo=Sheetmetal Stash
 achievement.immersiveengineering.mbSilo.desc=サイロを組み立てる
 achievement.immersiveengineering.mbCrusher=Hazardous Machinery
@@ -522,6 +557,10 @@ achievement.immersiveengineering.secret_luckOfTheDraw.desc=All or nothing
 
 stat.skyhookOneCm=スカイフックで移動した距離
 
+immersiveengineering.potion.flammable=可燃性
+immersiveengineering.potion.slippery=つるつる
+immersiveengineering.potion.conductive=導電性
+immersiveengineering.potion.sticky=べたべた
 
 #マニュアル(Manual)
 #ie.manual.entry..name=
@@ -558,6 +597,11 @@ ie.manual.entry.updateNews_33=Finally, the financial department has been hasslin
 ie.manual.entry.updateNews_4.name=What's new in v0.6.4
 ie.manual.entry.updateNews_4.subtext=Old, new; borrowed and Blu
 ie.manual.entry.updateNews_40=Dear Engineer!<br><br>The past update has brought only little changes.<br>The energy transmission is fixed again, the engineer it that broke has been dunked into cold water as punishment.<br>The <link;furnaceHeater;§o§nFurnace §o§nHeater§r> has seen some improvements that now allow it to heat up Alchemical Furnaces from Thaumcraft or Evaporators from Cutting Edge.<br><br>That's all for now, let's hope it stays sufficiently stable.
+
+ie.manual.entry.updateNews_5.name=What's new in v0.7.0
+ie.manual.entry.updateNews_5.subtext=Old, new; borrowed and Blu
+ie.manual.entry.updateNews_50=Dear Engineer!<br><br>The new version of IE you are playing features some major changes compared to previous versions!<br>A new component has been added in the form of <link;plates;§o§nMetal §o§nPlates§r>. These plates don't entirely replace ingots, but are necessary for a few recipes. Plates can be made with an Engineer's Hammer or in a <link;metalPress;§o§nMetal §o§nPress§r>.
+ie.manual.entry.updateNews_51=Among the uses for these new plates is the creation of the <link;improvedBlastfurnace;§o§nImproved §o§nBlast §o§nFurnace§r> out of Reinforced Blast Bricks. This new Blast Furnace is a much faster way of creating steel and automateable. The "old" Blast Furnace has been aptly named <link;blastfurnace;§o§nCrude §o§nBlast §o§nFurnace§r> and cannot be automated. Both Furnaces create slag now.<br>The <link;arcfurnace;§o§nArc §o§nFurnace§r> has also seen a rebalance to go along with this. Its steel costs being reduced and instead using reinforced blast bricks, making it a direct upgrade.  
 
 #メニュー項目
 ie.manual.category.general.name=概要とリソース

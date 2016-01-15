@@ -878,31 +878,41 @@ public abstract class ManualPages implements IManualPage
 			String[] resultParts = result.split(" ");
 			for(String part : resultParts)
 				repList.add(new String[]{part,segment[1],page});
+			repList.add(null);
 			text = text.replaceFirst(rep, result);
 		}
 
 
 		List<String> list = helper.fontRenderer.listFormattedStringToWidth(text, width);
 
-		Iterator<String[]> itRep = repList.iterator();
-		while(itRep.hasNext())
+		int linkIdx = 0;
+		for(int yOff = 0; yOff<list.size(); yOff++)
 		{
-			String[] rep = itRep.next();
-			for(int yOff = 0; yOff<list.size(); yOff++)
+			for(; linkIdx<repList.size(); linkIdx++)
 			{
-				String s = list.get(yOff);
-				if((start=s.indexOf(rep[0]))>=0)
+				String[] rep = repList.get(linkIdx);
+				if(rep==null)
 				{
-					int bx = helper.fontRenderer.getStringWidth(s.substring(0,start));
-					int by = yOff*helper.fontRenderer.FONT_HEIGHT;
-					String bkey = rep[1];
-					int bw = helper.fontRenderer.getStringWidth(rep[0]);
-					int bpage = 0;
-					try{
-						bpage = Integer.parseInt(rep[2]);
-					}catch(Exception e){}
-					pageButtons.add(new GuiButtonManualLink(gui, 900+overflow, x+bx,y+by, bw,(int)(helper.fontRenderer.FONT_HEIGHT*1.5), bkey, rep[0], bpage));
+					linkIdx++;
 					break;
+				}
+				else
+				{
+					String s = list.get(yOff);
+					if((start=s.indexOf(rep[0]))>=0)
+					{
+						int bx = helper.fontRenderer.getStringWidth(s.substring(0,start));
+						int by = yOff*helper.fontRenderer.FONT_HEIGHT;
+						String bkey = rep[1];
+						int bw = helper.fontRenderer.getStringWidth(rep[0]);
+						int bpage = 0;
+						try{
+							bpage = Integer.parseInt(rep[2]);
+						}catch(Exception e){}
+						pageButtons.add(new GuiButtonManualLink(gui, 900+overflow, x+bx,y+by, bw,(int)(helper.fontRenderer.FONT_HEIGHT*1.5), bkey, rep[0], bpage));
+					}
+					else
+						break;
 				}
 			}
 		}
