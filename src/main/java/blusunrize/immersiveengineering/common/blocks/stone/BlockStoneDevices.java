@@ -74,7 +74,7 @@ public class BlockStoneDevices extends BlockIEBase
 	@Override
 	public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int metadata, int fortune)
 	{
-		if(metadata==1||metadata==2)
+		if(metadata==1||metadata==2||metadata==5)
 			return new ArrayList<ItemStack>();
 		return super.getDrops(world, x, y, z, metadata, fortune);
 	}
