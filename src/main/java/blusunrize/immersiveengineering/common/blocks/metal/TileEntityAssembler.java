@@ -41,7 +41,8 @@ public class TileEntityAssembler extends TileEntityMultiblockPart implements ISi
 	public ItemStack[] inventory = new ItemStack[18+3];
 	public CrafterPatternInventory[] patterns = {new CrafterPatternInventory(this),new CrafterPatternInventory(this),new CrafterPatternInventory(this)};
 	public FluidTank[] tanks = {new FluidTank(8000),new FluidTank(8000),new FluidTank(8000)};
-
+	public boolean computerControlled = false;
+	public boolean[] computerOn = new boolean[3];
 
 	@Override
 	public TileEntityAssembler master()
@@ -73,6 +74,8 @@ public class TileEntityAssembler extends TileEntityMultiblockPart implements ISi
 		ItemStack[][] outputBuffer = new ItemStack[patterns.length][0];
 		for(int p=0; p<patterns.length; p++)
 		{
+			if (computerControlled&&!computerOn[p])
+				continue;
 			CrafterPatternInventory pattern = patterns[p];
 			if(pattern.inv[9]!=null && canOutput(pattern.inv[9], p))
 			{
@@ -905,4 +908,5 @@ public class TileEntityAssembler extends TileEntityMultiblockPart implements ISi
 			recalculateOutput();
 		}
 	}
+
 }

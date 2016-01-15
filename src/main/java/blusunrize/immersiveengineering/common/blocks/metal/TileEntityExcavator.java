@@ -2,6 +2,16 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import java.util.ArrayList;
 
+import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
+import blusunrize.immersiveengineering.common.Config;
+import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockExcavator;
+import blusunrize.immersiveengineering.common.util.FakePlayerUtil;
+import blusunrize.immersiveengineering.common.util.Utils;
+import cofh.api.energy.EnergyStorage;
+import cofh.api.energy.IEnergyReceiver;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Blocks;
@@ -16,22 +26,14 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.event.ForgeEventFactory;
-import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
-import blusunrize.immersiveengineering.common.Config;
-import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockExcavator;
-import blusunrize.immersiveengineering.common.util.FakePlayerUtil;
-import blusunrize.immersiveengineering.common.util.Utils;
-import cofh.api.energy.EnergyStorage;
-import cofh.api.energy.IEnergyReceiver;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class TileEntityExcavator extends TileEntityMultiblockPart implements IEnergyReceiver
 {
 	public int facing = 2;
 	public EnergyStorage energyStorage = new EnergyStorage(64000);
 	public boolean active = false;
+	public boolean computerControlled;
+	public boolean computerOn;
 
 	@Override
 	public ItemStack getOriginalBlock()
@@ -97,10 +99,14 @@ public class TileEntityExcavator extends TileEntityMultiblockPart implements IEn
 							}
 						}
 			}
-
 			boolean update = false;
 			ExcavatorHandler.MineralMix mineral = ExcavatorHandler.getRandomMineral(worldObj, wheelAxis[0]>>4, wheelAxis[2]>>4);
-			if(wheel!=null && !worldObj.isBlockIndirectlyGettingPowered(xCoord+(facing==3?-1:facing==2?1:0)*(mirrored?-1:1),yCoord,zCoord+(facing==4?-1:facing==5?1:0)*(mirrored?-1:1)))
+			boolean enabled;
+			if (computerControlled)
+				enabled = computerOn;
+			else
+				enabled = !worldObj.isBlockIndirectlyGettingPowered(xCoord+(facing==3?-1:facing==2?1:0)*(mirrored?-1:1),yCoord,zCoord+(facing==4?-1:facing==5?1:0)*(mirrored?-1:1));
+			if(wheel!=null && enabled)
 			{
 				int consumed = Config.getInt("excavator_consumption");
 				int extracted = energyStorage.extractEnergy(consumed, true);
@@ -445,5 +451,4 @@ public class TileEntityExcavator extends TileEntityMultiblockPart implements IEn
 			return new float[]{fl==4?.375f: fl==5?.5f:0,0,fl==2?.375f:fl==3?.5f:0,  fl==4?.5f:fl==5?.625f:1,1,fl==2?.5f:fl==3?.625f:1};
 		return new float[]{0,0,0,1,1,1};
 	}
-
 }

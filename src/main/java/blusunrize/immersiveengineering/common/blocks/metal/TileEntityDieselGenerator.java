@@ -1,5 +1,16 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.energy.DieselHandler;
+import blusunrize.immersiveengineering.common.Config;
+import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundTile;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockDieselGenerator;
+import blusunrize.immersiveengineering.common.util.IESound;
+import cofh.api.energy.IEnergyConnection;
+import cofh.api.energy.IEnergyReceiver;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
@@ -12,17 +23,6 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
-import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.energy.DieselHandler;
-import blusunrize.immersiveengineering.common.Config;
-import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundTile;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockDieselGenerator;
-import blusunrize.immersiveengineering.common.util.IESound;
-import cofh.api.energy.IEnergyConnection;
-import cofh.api.energy.IEnergyReceiver;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class TileEntityDieselGenerator extends TileEntityMultiblockPart implements IFluidHandler, ISoundTile, IEnergyConnection
 {
@@ -34,6 +34,9 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockPart implemen
 	public float fanRotation=0;
 	public int fanFadeIn=0;
 	public int fanFadeOut=0;
+
+	public boolean computerControlled = false;
+	public boolean computerActivated = false;
 
 	@Override
 	public TileEntityDieselGenerator master()
@@ -95,9 +98,13 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockPart implemen
 		else
 		{
 			boolean prevActive = active;
-			boolean rs = worldObj.isBlockIndirectlyGettingPowered(xCoord+(facing==4||facing==(mirrored?2:3)?1:-1), yCoord, zCoord+(facing==2||facing==(mirrored?5:4)?1:-1));
+			boolean run;
+			if(computerControlled)
+				run = computerActivated;
+			else
+				run = !worldObj.isBlockIndirectlyGettingPowered(xCoord+(facing==4||facing==(mirrored?2:3)?1:-1), yCoord, zCoord+(facing==2||facing==(mirrored?5:4)?1:-1));
 
-			if(!rs && tank.getFluid()!=null && tank.getFluid().getFluid()!=null)
+			if(run && tank.getFluid()!=null && tank.getFluid().getFluid()!=null)
 			{
 				int burnTime = DieselHandler.getBurnTime(tank.getFluid().getFluid());
 				int fluidConsumed = 1000/burnTime;
@@ -408,4 +415,7 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockPart implemen
 	{
 		return (pos>=38&&pos<=41) && from==ForgeDirection.UP;
 	}
+	//called AFTER mirrored is changed
+	public void mirror()
+	{}
 }

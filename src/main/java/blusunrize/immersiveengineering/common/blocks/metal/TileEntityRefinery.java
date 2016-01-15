@@ -35,6 +35,8 @@ public class TileEntityRefinery extends TileEntityMultiblockPart implements IFlu
 	public FluidTank tank2 = new FluidTank(12000);
 	public EnergyStorage energyStorage = new EnergyStorage(32000,Math.max(256, Config.getInt("refinery_consumption")));
 	public ItemStack[] inventory = new ItemStack[6];
+	public boolean computerControlled;
+	public boolean computerOn;
 
 	@Override
 	public TileEntityRefinery master()
@@ -116,9 +118,14 @@ public class TileEntityRefinery extends TileEntityMultiblockPart implements IFlu
 		{
 			boolean update = false;
 			int prevAmount = tank2.getFluidAmount();
-			if (!worldObj.isBlockIndirectlyGettingPowered(xCoord+(facing==4?-1:facing==5?1:facing==2?-2:2),yCoord+1,zCoord+(facing==2?-1:facing==3?1:facing==4?2:-2)))
+			boolean enabled;
+			if (computerControlled)
+				enabled = computerOn;
+			else
+				enabled = !worldObj.isBlockIndirectlyGettingPowered(xCoord+(facing==4?-1:facing==5?1:facing==2?-2:2),yCoord+1,zCoord+(facing==2?-1:facing==3?1:facing==4?2:-2));
+			if (enabled)
 			{
-				RefineryRecipe recipe = getRecipe();
+				RefineryRecipe recipe = getRecipe(true);
 				if(recipe!=null)
 				{
 					int consumed = Config.getInt("refinery_consumption");
@@ -194,12 +201,12 @@ public class TileEntityRefinery extends TileEntityMultiblockPart implements IFlu
 		}
 	}
 
-	public RefineryRecipe getRecipe()
+	public RefineryRecipe getRecipe(boolean checkCapacity)
 	{
 		RefineryRecipe recipe = DieselHandler.findRefineryRecipe(tank0.getFluid(), tank1.getFluid());
 		if(recipe==null)
 			return null;
-		if(tank2.getFluid()==null || (tank2.getFluid().isFluidEqual(recipe.output) && tank2.getFluidAmount()+recipe.output.amount<=tank2.getCapacity()))
+		if(tank2.getFluid()==null || (tank2.getFluid().isFluidEqual(recipe.output) && (!checkCapacity||tank2.getFluidAmount()+recipe.output.amount<=tank2.getCapacity())))
 			return recipe;
 		return null;
 	}
@@ -601,4 +608,5 @@ public class TileEntityRefinery extends TileEntityMultiblockPart implements IFlu
 			return master().canExtractItem(slot,stack,side);
 		return slot==1||slot==3||slot==5;
 	}
+
 }

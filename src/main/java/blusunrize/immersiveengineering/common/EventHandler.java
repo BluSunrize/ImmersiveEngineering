@@ -1,11 +1,14 @@
 package blusunrize.immersiveengineering.common;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import WayofTime.alchemicalWizardry.api.event.TeleposeEvent;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
@@ -31,6 +34,7 @@ import blusunrize.immersiveengineering.common.util.IEPotions;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.compat.computercraft.TileEntityRequest;
 import blusunrize.immersiveengineering.common.util.network.MessageMinecartShaderSync;
 import blusunrize.immersiveengineering.common.util.network.MessageMineralListSync;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -82,6 +86,8 @@ public class EventHandler
 {
 	public static ArrayList<ISpawnInterdiction> interdictionTiles = new ArrayList<ISpawnInterdiction>();
 	public static boolean validateConnsNextTick = false;
+	public static Set<TileEntityRequest> ccRequestedTEs = Collections.newSetFromMap(new ConcurrentHashMap<TileEntityRequest, Boolean>());
+	public static Set<TileEntityRequest> cachedRequestResults = Collections.newSetFromMap(new ConcurrentHashMap<TileEntityRequest, Boolean>());
 	@SubscribeEvent
 	public void onLoad(WorldEvent.Load event)
 	{
@@ -216,6 +222,34 @@ public class EventHandler
 					ImmersiveNetHandler.INSTANCE.removeConnection(event.world, e.getKey());
 				}
 			ImmersiveNetHandler.INSTANCE.getTransferedRates(event.world.provider.dimensionId).clear();
+			// CC tile entity requests
+			Iterator<TileEntityRequest> it;
+			it = cachedRequestResults.iterator();
+			while (it.hasNext())
+			{
+				TileEntityRequest req = it.next();
+				if (!ccRequestedTEs.contains(req))
+				{
+					it.remove();
+					continue;
+				}
+				req.te = req.w.getTileEntity(req.x, req.y, req.z);
+			}
+			it = ccRequestedTEs.iterator();
+			int timeout = 100;
+			while (it.hasNext() && timeout > 0)
+			{
+				TileEntityRequest req = it.next();
+				synchronized (req)
+				{
+					req.te = req.w.getTileEntity(req.x, req.y, req.z);
+					req.checked = true;
+					req.notifyAll();
+				}
+				it.remove();
+				timeout--;
+				cachedRequestResults.add(req);
+			}
 		}
 	}
 
@@ -485,5 +519,43 @@ public class EventHandler
 				}
 			}
 		}
+	}
+	public static TileEntity requestTE(World w, int x, int y, int z)
+	{
+		TileEntityRequest req = new TileEntityRequest(w, x, y, z);
+		TileEntity te = null;
+		Iterator<TileEntityRequest> it = cachedRequestResults.iterator();
+		while (it.hasNext())
+		{
+			TileEntityRequest curr = it.next();
+			if (req.equals(curr))
+				te = curr.te;
+		}
+		if (te!=null)
+			return te;
+		synchronized (req)
+		{
+			ccRequestedTEs.add(req);
+			int timeout = 100;
+			while (!req.checked&&timeout>0)
+			{
+				// i don't really know why this is necessary, but the requests sometimes time out without this
+				if (!ccRequestedTEs.contains(req))
+					ccRequestedTEs.add(req);
+				try
+				{
+					req.wait(50);
+				}
+				catch (InterruptedException e)
+				{}
+				timeout--;
+			}
+			if (!req.checked)
+			{
+				IELogger.info("Timeout while requesting a TileEntity");
+				return w.getTileEntity(x, y, z);
+			}
+		}
+		return req.te;
 	}
 }

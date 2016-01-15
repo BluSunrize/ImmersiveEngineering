@@ -448,7 +448,7 @@ public class TileEntitySqueezer extends TileEntityMultiblockPart implements IFlu
 	@Override
 	public String getInventoryName()
 	{
-		return "IESqueezer";
+		return "IE:squeezer";
 	}
 	@Override
 	public boolean hasCustomInventoryName()
