@@ -1,5 +1,7 @@
 package blusunrize.immersiveengineering.api.crafting;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import com.google.common.collect.ArrayListMultimap;
@@ -7,6 +9,7 @@ import com.google.common.collect.ArrayListMultimap;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.ComparableItemStack;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.oredict.OreDictionary;
 
 /**
  * @author BluSunrize - 07.01.2016
@@ -36,7 +39,7 @@ public class MetalPressRecipe
 			((ItemStack)this.input).stackSize = size;
 		return this;
 	}
-	
+
 
 	public static ArrayListMultimap<ComparableItemStack, MetalPressRecipe> recipeList = ArrayListMultimap.create();
 	public static MetalPressRecipe addRecipe(ItemStack output, Object input, ItemStack mold, int energy)
@@ -56,22 +59,25 @@ public class MetalPressRecipe
 				return recipe;
 		return null;
 	}
-//	public static List<ExtruderRecipe> removeRecipes(ItemStack stack)
-//	{
-//		List<ExtruderRecipe> list = new ArrayList();
-//		Iterator<ExtruderRecipe> it = recipeList.iterator();
-//		while(it.hasNext())
-//		{
-//			ExtruderRecipe ir = it.next();
-//			if(OreDictionary.itemMatches(ir.output, stack, true))
-//			{
-//				list.add(ir);
-//				it.remove();
-//			}
-//		}
-//		return list;
-//	}
-	
+	public static List<MetalPressRecipe> removeRecipes(ItemStack output)
+	{
+		List<MetalPressRecipe> list = new ArrayList();
+		for(ComparableItemStack mold : recipeList.keySet())
+		{
+			Iterator<MetalPressRecipe> it = recipeList.get(mold).iterator();
+			while(it.hasNext())
+			{
+				MetalPressRecipe ir = it.next();
+				if(OreDictionary.itemMatches(ir.output, output, true))
+				{
+					list.add(ir);
+					it.remove();
+				}
+			}
+		}
+		return list;
+	}
+
 	public static boolean isValidMold(ItemStack itemStack)
 	{
 		if(itemStack==null)

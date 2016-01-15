@@ -9,6 +9,7 @@ import minetweaker.api.item.IIngredient;
 import minetweaker.api.item.IItemStack;
 import minetweaker.api.item.IngredientStack;
 import minetweaker.api.liquid.ILiquidStack;
+import minetweaker.api.minecraft.MineTweakerMC;
 import minetweaker.api.oredict.IOreDictEntry;
 import minetweaker.util.IEventHandler;
 import net.minecraft.item.ItemStack;
@@ -45,6 +46,7 @@ public class MTHelper extends IECompatModule
 		MineTweakerAPI.registerClass(Excavator.class);
 		MineTweakerAPI.registerClass(Excavator.MTMineralMix.class);
 		MineTweakerAPI.registerClass(BottlingMachine.class);
+		MineTweakerAPI.registerClass(MetalPress.class);
 		try{
 			MineTweakerImplementationAPI.onPostReload(new ExcavatorEventHandler());
 		}catch(Exception e)
@@ -59,7 +61,7 @@ public class MTHelper extends IECompatModule
 	/** Helper Methods */
 	public static ItemStack toStack(IItemStack iStack)
 	{
-		if(iStack!=null)
+		if(iStack==null)
 			return null;
 		return getItemStack(iStack);
 	}

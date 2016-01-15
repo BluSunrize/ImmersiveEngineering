@@ -30,8 +30,7 @@ public class RecipeShapedArrayList extends ShapedOreRecipe
 			e.printStackTrace();
 		}
 	}
-
-
+	
 	public static Object[] saveIngredients(Object... recipe)
 	{
 		replacements = new HashMap<Integer, List>();
