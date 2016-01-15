@@ -26,6 +26,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
@@ -259,6 +260,24 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 			if(((TileEntityDieselGenerator)curr).pos==40 && Utils.isHammer(player.getCurrentEquippedItem()))
 			{
 				master.mirrored = !master.mirrored;
+				master.mirror();
+				int axis;
+				ForgeDirection dir = ForgeDirection.getOrientation(master.facing);
+				if (dir==ForgeDirection.EAST||dir==ForgeDirection.WEST)
+					axis = 2;
+				else
+					axis = 0;
+				ChunkCoordinates gen = new ChunkCoordinates(master.xCoord+(axis==0?1:-dir.offsetX), master.yCoord, master.zCoord+(axis==2?1:-dir.offsetZ));
+				ChunkCoordinates adapter = new ChunkCoordinates(master.xCoord+(axis==0?2:-dir.offsetX), master.yCoord, master.zCoord+(axis==2?2:-dir.offsetZ));
+				Block b = world.getBlock(adapter.posX, adapter.posY, adapter.posZ);
+				if (b!=null)
+					b.onNeighborChange(world, adapter.posX, adapter.posY, adapter.posZ, gen.posX, gen.posY, gen.posZ);
+				gen = new ChunkCoordinates(master.xCoord-(axis==0?1:-dir.offsetX), master.yCoord, master.zCoord-(axis==2?1:dir.offsetZ));
+				adapter = new ChunkCoordinates(master.xCoord-(axis==0?2:-dir.offsetX), master.yCoord, master.zCoord-(axis==2?2:dir.offsetZ));
+				b = world.getBlock(adapter.posX, adapter.posY, adapter.posZ);
+				if (b!=null)
+					b.onNeighborChange(world, adapter.posX, adapter.posY, adapter.posZ, gen.posX, gen.posY, gen.posZ);
+				
 				master.markDirty();
 				world.markBlockForUpdate(master.xCoord, master.yCoord, master.zCoord);
 			}
@@ -416,6 +435,12 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 			TileEntityMultiblockPart tile = (TileEntityMultiblockPart)te;
 			return tile.pos==4||tile.pos==(tile instanceof TileEntitySilo?58:40)||(tile.pos>=18&&tile.pos<(tile instanceof TileEntitySilo?54:36));
 		}
+		else if (te instanceof TileEntityFermenter||te instanceof TileEntitySqueezer)
+			return true;
+		else if (te instanceof TileEntityAssembler)
+			return ((TileEntityAssembler)te).offset[1]==-1;
+		else if (te instanceof TileEntityBottlingMachine)
+			return ((TileEntityBottlingMachine)te).offset[1]==0&&((TileEntityBottlingMachine)te).pos!=0&&((TileEntityBottlingMachine)te).pos!=2;
 		else if(te instanceof TileEntityMetalPress)
 		{
 			TileEntityMetalPress tile = (TileEntityMetalPress)te;

@@ -406,36 +406,30 @@ public class BlockMetalDevices extends BlockIEBase implements blusunrize.aquatwe
 			if(!world.isRemote && te2 instanceof TileEntitySampleDrill)
 			{
 				TileEntitySampleDrill drill = (TileEntitySampleDrill)te2;
-				int process = drill.process;
 				int chunkX = (x>>4);
 				int chunkZ = (z>>4);
 				String s0 = (chunkX*16)+", "+(chunkZ*16);
 				String s1 = (chunkX*16+16)+", "+(chunkZ*16+16);
 				player.addChatMessage(new ChatComponentTranslation(Lib.CHAT_INFO+"forChunk", s0,s1).setChatStyle(new ChatStyle().setColor(EnumChatFormatting.DARK_GRAY)));
-				if(process<Config.getInt("coredrill_time"))
+				if(!drill.isSamplingFinished())
 				{
-					float f = process/(float)Config.getInt("coredrill_time");
+					float f = drill.getSampleProgress();
 					player.addChatMessage(new ChatComponentTranslation(Lib.CHAT_INFO+"coreDrill.progress",(int)(f*100)+"%").setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GRAY)));
 				}
 				else
 				{
-					ExcavatorHandler.MineralMix mineral = ExcavatorHandler.getRandomMineral(world, chunkX, chunkZ);
-					if(mineral==null)
+					String mineralName = drill.getVeinLocalizedName();
+					if(mineralName==null)
 						player.addChatMessage(new ChatComponentTranslation(Lib.CHAT_INFO+"coreDrill.result.none").setChatStyle(new ChatStyle().setColor(EnumChatFormatting.GRAY)));
 					else
 					{
-						String name = Lib.DESC_INFO+"mineral."+mineral.name;
-						String localizedName = StatCollector.translateToLocal(name);
-						if(name.equals(localizedName))
-							localizedName = mineral.name;
-						MineralWorldInfo info = ExcavatorHandler.getMineralWorldInfo(world, chunkX, chunkZ);
-						boolean deplOverride = info.depletion<0;
-						if(ExcavatorHandler.mineralVeinCapacity<0||deplOverride)
-							localizedName = StatCollector.translateToLocal(Lib.CHAT_INFO+"coreDrill.infinite")+" "+localizedName;
-						player.addChatMessage(new ChatComponentTranslation(Lib.CHAT_INFO+"coreDrill.result.mineral",localizedName));
-						if(ExcavatorHandler.mineralVeinCapacity>0&&!deplOverride)
+						float veinIntegrity = drill.getVeinIntegrity();
+						if(veinIntegrity<0)
+							mineralName = StatCollector.translateToLocal(Lib.CHAT_INFO+"coreDrill.infinite")+" "+mineralName;
+						player.addChatMessage(new ChatComponentTranslation(Lib.CHAT_INFO+"coreDrill.result.mineral",mineralName));
+						if(veinIntegrity>0)
 						{
-							String f = Utils.formatDouble((Config.getInt("excavator_depletion")-info.depletion)/(float)Config.getInt("excavator_depletion")*100,"0.##")+"%";
+							String f = Utils.formatDouble(veinIntegrity*100,"0.##")+"%";
 							player.addChatMessage(new ChatComponentTranslation(Lib.CHAT_INFO+"coreDrill.result.depl",f));
 						}
 					}
@@ -531,6 +525,12 @@ public class BlockMetalDevices extends BlockIEBase implements blusunrize.aquatwe
 			return true;
 		if(meta==META_dynamo||meta==META_thermoelectricGen||meta==META_furnaceHeater)
 			return true;
+		if (meta==META_sampleDrill)
+		{
+			TileEntity te = world.getTileEntity(x, y, z);
+			if (te instanceof TileEntitySampleDrill&&((TileEntitySampleDrill)te).pos==0)
+				return true;
+		}
 		return false;
 	}
 

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
@@ -42,6 +41,8 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 	public boolean[] electrodes = new boolean[3];
 	@SideOnly(Side.CLIENT)
 	public int pouringMetal;
+	public boolean computerControlled;
+	public boolean computerOn;
 
 	@Override
 	public TileEntityArcFurnace master()
@@ -104,8 +105,12 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 				}
 			}
 		}
-
-		if(worldObj.isBlockIndirectlyGettingPowered(xCoord+(facing==4?-2:facing==5?2:facing==(mirrored?2:3)?-2:2), yCoord-1, zCoord+(facing==2?-2:facing==3?2:facing==(mirrored?5:4)?-2:2)))
+		boolean enabled;
+		if (computerControlled)
+			enabled = computerOn;
+		else
+			enabled = !worldObj.isBlockIndirectlyGettingPowered(xCoord+(facing==4?-2:facing==5?2:facing==(mirrored?2:3)?-2:2), yCoord-1, zCoord+(facing==2?-2:facing==3?2:facing==(mirrored?5:4)?-2:2));
+		if(!enabled)
 		{
 			if(active)
 			{
@@ -204,18 +209,22 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 									if(outputs[iOut]!=null && outputSlots[iOut]!=-1)
 									{
 										int outputSlot = outputSlots[iOut];
-										if(inventory[outputSlot]!=null)
-											inventory[outputSlot].stackSize+= outputs[iOut].stackSize;
-										else if(inventory[outputSlot]==null)
-											inventory[outputSlot] = outputs[iOut].copy();
+										synchronized (inventory) {
+											if (inventory[outputSlot] != null)
+												inventory[outputSlot].stackSize += outputs[iOut].stackSize;
+											else if (inventory[outputSlot] == null)
+												inventory[outputSlot] = outputs[iOut].copy();
+										}
 										worldObj.addBlockEvent(xCoord,yCoord,zCoord, this.getBlockType(), 0,40);
 									}
 								if(recipe.slag!=null)
 								{
-									if(inventory[22]!=null)
-										inventory[22].stackSize+= recipe.slag.stackSize;
-									else if(inventory[22]==null)
-										inventory[22] = recipe.slag.copy();
+									synchronized (inventory) {
+										if (inventory[22] != null)
+											inventory[22].stackSize += recipe.slag.stackSize;
+										else if (inventory[22] == null)
+											inventory[22] = recipe.slag.copy();
+									}
 								}
 								for(int i2=0; i2<4; i2++)
 									additives[i2] = (inventory[12+i2]!=null?inventory[12+i2].copy():null);

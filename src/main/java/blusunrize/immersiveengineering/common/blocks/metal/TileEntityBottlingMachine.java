@@ -1,5 +1,15 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import blusunrize.immersiveengineering.api.crafting.BottlingMachineRecipe;
+import blusunrize.immersiveengineering.common.Config;
+import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockBottlingMachine;
+import blusunrize.immersiveengineering.common.util.Utils;
+import cofh.api.energy.EnergyStorage;
+import cofh.api.energy.IEnergyReceiver;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -18,15 +28,6 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.oredict.OreDictionary;
-import blusunrize.immersiveengineering.api.crafting.BottlingMachineRecipe;
-import blusunrize.immersiveengineering.common.Config;
-import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockBottlingMachine;
-import blusunrize.immersiveengineering.common.util.Utils;
-import cofh.api.energy.EnergyStorage;
-import cofh.api.energy.IEnergyReceiver;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class TileEntityBottlingMachine extends TileEntityMultiblockPart implements ISidedInventory, IEnergyReceiver, IFluidHandler
 {
@@ -36,7 +37,8 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockPart implemen
 	public int[] process = new int[5];
 	public FluidTank tank = new FluidTank(32000);
 	public ItemStack[] predictedOutput = new ItemStack[5];
-
+	public boolean computerControlled = false;
+	public boolean computerOn = false;
 
 	@Override
 	public TileEntityBottlingMachine master()
@@ -61,7 +63,7 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockPart implemen
 		if(!formed || pos!=4)
 			return;
 
-		if(worldObj.isRemote)
+		if(worldObj.isRemote||(computerControlled&&!computerOn))
 			return;
 		boolean update = false;
 		int consumed = Config.getInt("bottlingMachine_consumption");
@@ -533,4 +535,68 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockPart implemen
 		}
 		return new FluidTankInfo[0];
 	}
+	//For computer support. These methods DON'T check whether they are running for the master tile entity
+	public int getEmptyCannister(int id) throws LuaException
+	{
+		int currId = -1;
+		int currVal = 0;
+		while (id>=0) {
+			int min = Integer.MAX_VALUE;
+			int minId = -1;
+			for (int i = 0;i<5;i++)
+			{
+				if (process[i]<min&&process[i]>currVal)
+				{
+					min = process[i];
+					minId = i;
+				}
+			}
+			if (min>72)
+				throw new LuaException("Not enough empty cannisters found");
+			currId = minId;
+			currVal = min;
+			id--;
+		}
+		return currId;
+	}
+	public int getEmptyCount()
+	{
+		int count = 0;
+		for (int i = 0;i<5;i++)
+			if (process[i]>-1&&process[i]<=72)
+				count++;
+		return count;
+	}
+	public int getFilledCannister(int id) throws LuaException
+	{
+		int currId = -1;
+		int currVal = 72;
+		while (id>=0) {
+			int min = Integer.MAX_VALUE;
+			int minId = -1;
+			for (int i = 0;i<5;i++)
+			{
+				if (process[i]<min&&process[i]>currVal)
+				{
+					min = process[i];
+					minId = i;
+				}
+			}
+			if (minId<0)
+				throw new LuaException("Not enough empty cannisters found");
+			currId = minId;
+			currVal = min;
+			id--;
+		}
+		return currId;
+	}
+	public int getFilledCount()
+	{
+		int count = 0;
+		for (int i = 0;i<5;i++)
+			if (process[i]>72)
+				count++;
+		return count;
+	}
+
 }

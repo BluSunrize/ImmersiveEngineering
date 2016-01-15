@@ -5,11 +5,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChunkCoordinates;
-import net.minecraft.util.Vec3;
-import net.minecraft.world.EnumSkyBlock;
 import blusunrize.immersiveengineering.api.energy.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.common.IEContent;
@@ -19,6 +14,11 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.Vec3;
+import net.minecraft.world.EnumSkyBlock;
 
 public class TileEntityFloodlight extends TileEntityImmersiveConnectable
 {
@@ -33,6 +33,10 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable
 	public List<ChunkCoordinates> lightsToBeRemoved = new ArrayList();
 	final int timeBetweenSwitches = 20;
 	int switchCooldown = 0;
+	public int computerTurnCooldown = 0;
+	public boolean computerControlled;
+	public boolean computerOn;
+	private boolean shouldUpdate = true;
 
 	@Override
 	public void updateEntity()
@@ -40,7 +44,19 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable
 		if(worldObj.isRemote)
 			return;
 		boolean b = active;
-		if(energyStorage>=(!active?50:5) && !worldObj.isBlockIndirectlyGettingPowered(xCoord,yCoord,zCoord)&&switchCooldown<=0)
+		boolean enabled;
+		if (shouldUpdate)
+		{
+			updateFakeLights(true, active);
+			markDirty();
+			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+			shouldUpdate = false;
+		}
+		if (computerControlled)
+			enabled = computerOn;
+		else
+			enabled = !worldObj.isBlockIndirectlyGettingPowered(xCoord,yCoord,zCoord);
+		if(energyStorage>=(!active?50:5) && enabled&&switchCooldown<=0)
 		{
 			energyStorage-=5;
 			if(!active)
@@ -52,6 +68,12 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable
 			switchCooldown = timeBetweenSwitches;
 		}
 		switchCooldown--;
+		computerTurnCooldown--;
+		if (computerTurnCooldown==0)
+			synchronized (this)
+			{
+				this.notifyAll();
+			}
 		if(active!=b || worldObj.getTotalWorldTime()%512==((xCoord^zCoord)&511))
 		{
 			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
@@ -280,25 +302,25 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable
 
 		switch(side)
 		{
-			case 0:
-			case 1:
-				x = (Math.abs(xDif)>=Math.abs(zDif))? (xDif>=0)?.9375: .0625: .5;
-				y = (side==0)?.9375: .0625;
-				z = (Math.abs(zDif)>Math.abs(xDif))? (zDif>=0)?.9375: .0625: .5;
-				break;
-			case 2:
-			case 3:
-				x = (Math.abs(xDif)>=Math.abs(yDif))? (xDif>=0)?.9375: .0625: .5;
-				y = (Math.abs(yDif)>Math.abs(xDif))? (yDif>=0)?.9375: .0625: .5;
-				z = (side==2)?.9375: .0625;
-				break;
-			case 4:
-			case 5:
-			default:
-				x = (side==4)?.9375: .0625;
-				y = (Math.abs(yDif)>=Math.abs(zDif))? (yDif>=0)?.9375: .0625: .5;
-				z = (Math.abs(zDif)>Math.abs(yDif))? (zDif>=0)?.9375: .0625: .5;
-				break;
+		case 0:
+		case 1:
+			x = (Math.abs(xDif)>=Math.abs(zDif))? (xDif>=0)?.9375: .0625: .5;
+			y = (side==0)?.9375: .0625;
+			z = (Math.abs(zDif)>Math.abs(xDif))? (zDif>=0)?.9375: .0625: .5;
+			break;
+		case 2:
+		case 3:
+			x = (Math.abs(xDif)>=Math.abs(yDif))? (xDif>=0)?.9375: .0625: .5;
+			y = (Math.abs(yDif)>Math.abs(xDif))? (yDif>=0)?.9375: .0625: .5;
+			z = (side==2)?.9375: .0625;
+			break;
+		case 4:
+		case 5:
+		default:
+			x = (side==4)?.9375: .0625;
+			y = (Math.abs(yDif)>=Math.abs(zDif))? (yDif>=0)?.9375: .0625: .5;
+			z = (Math.abs(zDif)>Math.abs(yDif))? (zDif>=0)?.9375: .0625: .5;
+			break;
 		}
 
 		return Vec3.createVectorHelper(x,y,z);
@@ -313,26 +335,47 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable
 
 		switch(side)
 		{
-			case 0:
-			case 1:
-				x = (Math.abs(xDif)>=Math.abs(zDif))? (xDif>=0)?.9375: .0625: .5;
-				y = (side==0)?.9375: .0625;
-				z = (Math.abs(zDif)>Math.abs(xDif))? (zDif>=0)?.9375: .0625: .5;
-				break;
-			case 2:
-			case 3:
-				x = (Math.abs(xDif)>=Math.abs(yDif))? (xDif>=0)?.9375: .0625: .5;
-				y = (Math.abs(yDif)>Math.abs(xDif))? (yDif>=0)?.9375: .0625: .5;
-				z = (side==2)?.9375: .0625;
-				break;
-			case 4:
-			case 5:
-			default:
-				x = (side==4)?.9375: .0625;
-				y = (Math.abs(yDif)>=Math.abs(zDif))? (yDif>=0)?.9375: .0625: .5;
-				z = (Math.abs(zDif)>Math.abs(yDif))? (zDif>=0)?.9375: .0625: .5;
-				break;
+		case 0:
+		case 1:
+			x = (Math.abs(xDif)>=Math.abs(zDif))? (xDif>=0)?.9375: .0625: .5;
+			y = (side==0)?.9375: .0625;
+			z = (Math.abs(zDif)>Math.abs(xDif))? (zDif>=0)?.9375: .0625: .5;
+			break;
+		case 2:
+		case 3:
+			x = (Math.abs(xDif)>=Math.abs(yDif))? (xDif>=0)?.9375: .0625: .5;
+			y = (Math.abs(yDif)>Math.abs(xDif))? (yDif>=0)?.9375: .0625: .5;
+			z = (side==2)?.9375: .0625;
+			break;
+		case 4:
+		case 5:
+		default:
+			x = (side==4)?.9375: .0625;
+			y = (Math.abs(yDif)>=Math.abs(zDif))? (yDif>=0)?.9375: .0625: .5;
+			z = (Math.abs(zDif)>Math.abs(yDif))? (zDif>=0)?.9375: .0625: .5;
+			break;
 		}
 		return Vec3.createVectorHelper(x,y,z);
+	}
+	public void turnY(boolean down, boolean computer)
+	{
+		rotY += down? -11.25: 11.25;
+		rotY %= 360;
+		if (computer)
+			computerTurnCooldown = 20;
+		shouldUpdate = true;
+	}
+	public void turnX(boolean up, boolean computer)
+	{
+		float newX = (rotX+(up? 11.25f: -11.25f))%360;
+		if(newX>=-11.25 && newX<=191.25)
+			rotX = newX;
+		if (computer)
+			computerTurnCooldown = 20;
+		shouldUpdate = true;
+	}
+	public boolean canComputerTurn()
+	{
+		return computerTurnCooldown<=0||!active;
 	}
 }
