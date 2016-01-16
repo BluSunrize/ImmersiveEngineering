@@ -71,6 +71,7 @@ public class ItemShader extends ItemIEBase implements IShaderItem
 		addShader("Glacis", 6, EnumRarity.rare, new int[]{73,155,194,255}, new int[]{118,208,249,200}, new int[]{189,255,253,200}, new int[]{189,255,253,200});
 		addShader("Solum", 3, EnumRarity.rare, new int[]{104,90,72,255}, new int[]{208,161,111,200}, new int[]{148,116,96,180}, new int[]{148,116,96,180});
 		addShader("Aero", 1, EnumRarity.rare, new int[]{99,159,98,255}, new int[]{120,233,128,220}, new int[]{232,255,220,160}, new int[]{120,233,128,220});
+		addShader("Phoenix", 5, EnumRarity.rare, new int[]{117,0,0,255}, new int[]{208,0,0,255}, new int[]{255,127,0,255}, new int[]{255,127,0,255});
 
 		addShader("Radiant", 3, EnumRarity.uncommon, new int[]{163,110,171,255},new int[]{248,219,188,255},new int[]{199,154,177,255},new int[]{216,216,227,255}, "pipes",true,new int[]{241,201,30,255});
 		addShader("Hollow", 4, EnumRarity.uncommon, new int[]{84,45,28,255},new int[]{238,197,229,255},new int[]{204,137,128,255},new int[]{196,161,170,255}, "pipes",true,new int[]{196,152,56,255});

@@ -22,6 +22,7 @@ public abstract class IECompatModule
 
 	static
 	{
+		moduleClasses.put("appliedenergistics2", AppliedEnergisticsHelper.class);
 		moduleClasses.put("MineFactoryReloaded", MFRHelper.class);
 		moduleClasses.put("MineTweaker3", MTHelper.class);
 		moduleClasses.put("denseores", DenseOresHelper.class);
