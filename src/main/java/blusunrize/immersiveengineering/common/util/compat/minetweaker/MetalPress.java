@@ -32,8 +32,6 @@ public class MetalPress
 				r.setInputSize(inputSize);
 			MineTweakerAPI.apply(new Add(r));
 		}
-		else
-			System.out.println("SOut:"+output+"|"+sOut+", sMold:"+mold+"|"+sMold);
 	}
 
 	private static class Add implements IUndoableAction

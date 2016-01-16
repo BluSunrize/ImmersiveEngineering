@@ -18,6 +18,8 @@ public class BlockStoneDecoration extends BlockIEBase
 				"hempcrete","cokeBrick","blastBrick","coalCoke","concrete","concreteTile","blastBrickReinforced");
 		this.setHardness(2.0F);
 		this.setResistance(20.0F);
+		for(int i=0; i<this.subNames.length; i++)
+			this.setMetaLightOpacity(i, 255);
 	}
 
 	@Override
