@@ -235,6 +235,7 @@ public class MultiblockArcFurnace implements IMultiblock
 				new ItemStack(Items.cauldron),
 				new ItemStack(IEContent.blockStorageSlabs,14,7),
 				new ItemStack(IEContent.blockStorage,4,7),
+				new ItemStack(IEContent.blockStoneDecoration,27,6),
 				new ItemStack(IEContent.blockMetalDecoration,14,BlockMetalDecoration.META_lightEngineering),
 				new ItemStack(IEContent.blockMetalDecoration,7,BlockMetalDecoration.META_heavyEngineering),
 				new ItemStack(IEContent.blockMetalDecoration,10,BlockMetalDecoration.META_scaffolding)};
