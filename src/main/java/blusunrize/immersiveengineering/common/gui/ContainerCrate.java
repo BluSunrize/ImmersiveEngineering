@@ -1,14 +1,16 @@
 package blusunrize.immersiveengineering.common.gui;
 
+import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenCrate;
+import invtweaks.api.container.ChestContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
-import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenCrate;
 
+@ChestContainer
 public class ContainerCrate extends Container
 {
 	int slotCount;

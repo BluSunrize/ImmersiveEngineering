@@ -1,3 +1,16 @@
+#####Version 0.7.1
+- added OpenComputers and ComputerCraft support. Massive thanks to malte0811 and cobra for making that possible!
+- added MineTweaker compat for the Metal Press
+- added InvTweaks support to the Wooden Crates
+- fixed recipes for molds (thanks malte)
+- fixed Improved Blast Furnace dropping itself (thanks malte)
+- fixed links in the manual
+- fixed light opacity on stone decoration blocks
+- fixed component list of the Arc Furnace
+- fixed outputting of the metal press
+- updated zh_CN.lang
+- updated jp_JP.lang
+
 #####Version 0.7.0 - BUILT
 - rebalanced the entirety of everything!
 	- Metal Plates:

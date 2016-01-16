@@ -89,9 +89,8 @@ public class TileEntityMetalPress extends TileEntityMultiblockPart implements IS
 				{
 					ItemStack output = inventory[i].copy();
 					TileEntity inventoryTile = this.worldObj.getTileEntity(xCoord+(facing==4?-2:facing==5?2:0),yCoord,zCoord+(facing==2?-2:facing==3?2:0));
-					if((inventoryTile instanceof ISidedInventory && ((ISidedInventory)inventoryTile).getAccessibleSlotsFromSide(ForgeDirection.OPPOSITES[facing]).length>0)
-							||(inventoryTile instanceof IInventory && ((IInventory)inventoryTile).getSizeInventory()>0))
-						output = Utils.insertStackIntoInventory((IInventory)inventoryTile, output, facing);
+					if(inventoryTile instanceof IInventory)
+						output = Utils.insertStackIntoInventory((IInventory)inventoryTile, output, ForgeDirection.OPPOSITES[facing]);
 					if(output!=null)
 					{
 						ForgeDirection fd = ForgeDirection.getOrientation(facing);
