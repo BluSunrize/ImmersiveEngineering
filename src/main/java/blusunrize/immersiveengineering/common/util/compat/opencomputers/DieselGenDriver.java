@@ -43,7 +43,6 @@ public class DieselGenDriver extends DriverTileEntity
 			super(w, x, y, z, TileEntityDieselGenerator.class);
 		}
 
-		@Optional.Method(modid = "OpenComputers")
 		@Callback(doc = "function(enable:boolean) -- allow or disallow the generator to run when it can")
 		public Object[] setEnabled(Context context, Arguments args)
 		{
@@ -51,14 +50,12 @@ public class DieselGenDriver extends DriverTileEntity
 			return null;
 		}
 
-		@Optional.Method(modid = "OpenComputers")
 		@Callback(doc = "function():boolean -- get whether the generator is currently producing energy")
 		public Object[] isActive(Context context, Arguments args)
 		{
 			return new Object[]{getTileEntity().active};
 		}
 
-		@Optional.Method(modid = "OpenComputers")
 		@Callback(doc = "function():table -- get information about the internal fuel tank")
 		public Object[] getTankInfo(Context context, Arguments args)
 		{
@@ -75,8 +72,7 @@ public class DieselGenDriver extends DriverTileEntity
 			return 1000;
 		}
 
-		@Optional.Method(modid = "OpenComputers")
-		// "override" what gets injected by OC's class transformer
+		@Override
 		public void onConnect(Node node)
 		{
 			TileEntityDieselGenerator te = getTileEntity();
@@ -87,8 +83,7 @@ public class DieselGenDriver extends DriverTileEntity
 			}
 		}
 
-		@Optional.Method(modid = "OpenComputers")
-		// "override" what gets injected by OC's class transformer
+		@Override
 		public void onDisconnect(Node node)
 		{
 			TileEntityDieselGenerator te = getTileEntity();

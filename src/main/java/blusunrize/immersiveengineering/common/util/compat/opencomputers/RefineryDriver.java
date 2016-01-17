@@ -60,7 +60,7 @@ public class RefineryDriver extends DriverTileEntity
 			super(w, x, y, z, teClass);
 		}
 
-		// "override" what gets injected by OC's class transformer
+		@Override
 		public void onConnect(Node node)
 		{
 			TileEntityRefinery master = getTileEntity();
@@ -71,7 +71,7 @@ public class RefineryDriver extends DriverTileEntity
 			}
 		}
 
-		// "override" what gets injected by OC's class transformer
+		@Override
 		public void onDisconnect(Node node)
 		{
 			TileEntityRefinery te = getTileEntity();

@@ -61,7 +61,7 @@ public class BottlingMachineDriver extends DriverTileEntity
 			super(w, x, y, z, teClass);
 		}
 
-		// "override" what gets injected by OC's class transformer
+		@Override
 		public void onConnect(Node node)
 		{
 			TileEntityBottlingMachine master = getTileEntity();
@@ -72,7 +72,7 @@ public class BottlingMachineDriver extends DriverTileEntity
 			}
 		}
 
-		// "override" what gets injected by OC's class transformer
+		@Override
 		public void onDisconnect(Node node)
 		{
 			TileEntityBottlingMachine te = getTileEntity();

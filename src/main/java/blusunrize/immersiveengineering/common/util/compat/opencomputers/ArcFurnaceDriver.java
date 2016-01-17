@@ -57,7 +57,7 @@ public class ArcFurnaceDriver extends DriverTileEntity
 			super(w, x, y, z, teClass);
 		}
 
-		// "override" what gets injected by OC's class transformer
+		@Override
 		public void onConnect(Node node)
 		{
 			TileEntityArcFurnace master = getTileEntity();
@@ -68,7 +68,7 @@ public class ArcFurnaceDriver extends DriverTileEntity
 			}
 		}
 
-		// "override" what gets injected by OC's class transformer
+		@Override
 		public void onDisconnect(Node node)
 		{
 			TileEntityArcFurnace te = getTileEntity();
