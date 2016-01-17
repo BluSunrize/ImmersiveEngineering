@@ -53,8 +53,9 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 	public boolean computerOn;
 	@SideOnly(Side.CLIENT)
 	ItemStack particleStack;
-	
+
 	public static final Map<ComparableItemStack, CrusherRecipe> recipeCache = new ConcurrentHashMap<>();
+	public static final CrusherRecipe CRUSHER_NULL = new CrusherRecipe(null, "", 0);
 
 	@Override
 	public TileEntityCrusher master()
@@ -261,8 +262,11 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 		comp.stack.stackTagCompound = null;
 		comp.stack.stackSize = 1;
 		comp.useNBT = false;
-		if (recipeCache.containsKey(comp))
-			return recipeCache.get(comp);
+		if(recipeCache.containsKey(comp))
+		{
+			CrusherRecipe r = recipeCache.get(comp);
+			return r==CRUSHER_NULL?null:r;
+		}
 		CrusherRecipe ret = CrusherRecipe.findRecipe(in);
 		if (ret==null&&RailcraftCraftingManager.rockCrusher!=null)
 		{
@@ -284,10 +288,12 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 				ret.secondaryOutput = outStacks;
 			}
 		}
+		if(ret==null)
+			ret = CRUSHER_NULL;
 		recipeCache.put(comp, ret);
-		return ret;
+		return ret==CRUSHER_NULL?null:ret;
 	}
-	
+
 	boolean isValidInput(ItemStack stack)
 	{
 		return getRecipe(stack)!=null;
@@ -307,7 +313,7 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 	{
 		TileEntity inventory = this.worldObj.getTileEntity(xCoord+(facing==4?-2:facing==5?2:0),yCoord,zCoord+(facing==2?-2:facing==3?2:0));
 		boolean isInv = isInventory(inventory, ForgeDirection.OPPOSITES[facing]);
-		
+
 		for (int i = 0;i<stacks.size();i++)
 		{
 			ItemStack stack = stacks.get(i);
