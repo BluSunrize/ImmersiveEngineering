@@ -2,6 +2,7 @@
 - hotfix again!
 - fixed crashes caused by Crushign invalid items
 - fixed NEI handler on for Blastfurnace
+- fixed multiblocks sometimes being invisible
 
 #####Version 0.7.1.1 - BUILT
 - hotfix!
