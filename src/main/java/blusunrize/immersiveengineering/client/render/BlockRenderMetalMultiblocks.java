@@ -257,21 +257,45 @@ public class BlockRenderMetalMultiblocks implements ISimpleBlockRenderingHandler
 			return renderer.renderStandardBlock(block, x, y, z);
 		}
 		else if(te instanceof TileEntityDieselGenerator && ((TileEntityDieselGenerator)te).pos==31)
+		{
 			ClientUtils.handleStaticTileRenderer(te);
+			return true;
+		}
 		else if(te instanceof TileEntityRefinery && ((TileEntityRefinery)te).pos==17)
+		{
 			ClientUtils.handleStaticTileRenderer(te);
+			return true;
+		}
 		else if(te instanceof TileEntityCrusher && ((TileEntityCrusher)te).pos==17)
+		{
 			ClientUtils.handleStaticTileRenderer(te);
+			return true;
+		}
 		else if(te instanceof TileEntityExcavator && ((TileEntityExcavator)te).pos==4)
+		{
 			ClientUtils.handleStaticTileRenderer(te);
+			return true;
+		}
 		else if(te instanceof TileEntityArcFurnace && ((TileEntityArcFurnace)te).pos==62)
+		{
 			ClientUtils.handleStaticTileRenderer(te);
+			return true;
+		}
 		else if(te instanceof TileEntityAssembler && ((TileEntityAssembler)te).pos==4)
+		{
 			ClientUtils.handleStaticTileRenderer(te);
+			return true;
+		}
 		else if(te instanceof TileEntityBottlingMachine && ((TileEntityBottlingMachine)te).pos==4)
+		{
 			ClientUtils.handleStaticTileRenderer(te);
+			return true;
+		}
 		else if(te instanceof TileEntityMetalPress && ((TileEntityMetalPress)te).pos==4)
+		{
 			ClientUtils.handleStaticTileRenderer(te);
+			return true;
+		}
 		return false;
 	}
 
