@@ -61,7 +61,7 @@ public class BottlingMachineDriver extends DriverTileEntity
 			super(w, x, y, z, teClass);
 		}
 
-		// "override" what gets injected by OC's class transformer
+		@Override
 		public void onConnect(Node node)
 		{
 			TileEntityBottlingMachine master = getTileEntity();
@@ -72,7 +72,7 @@ public class BottlingMachineDriver extends DriverTileEntity
 			}
 		}
 
-		// "override" what gets injected by OC's class transformer
+		@Override
 		public void onDisconnect(Node node)
 		{
 			TileEntityBottlingMachine te = getTileEntity();
@@ -92,15 +92,7 @@ public class BottlingMachineDriver extends DriverTileEntity
 			if (param<0||param>4)
 				throw new IllegalArgumentException("Only 0-4 are valid cannister positions");
 			TileEntityBottlingMachine master = getTileEntity();
-			int id;
-			try
-			{
-				id = master.getEmptyCannister(param);
-			}
-			catch (LuaException e)
-			{
-				throw new IllegalArgumentException(e.getMessage());
-			}
+			int id = master.getEmptyCannister(param);
 			Map<String, Object> map = saveStack(master.inventory[id]);
 			map.put("process", master.process[id]);
 			return new Object[]{map};
@@ -120,15 +112,7 @@ public class BottlingMachineDriver extends DriverTileEntity
 			if (param<0||param>4)
 				throw new IllegalArgumentException("Only 0-4 are valid cannister positions");
 			TileEntityBottlingMachine master = getTileEntity();
-			int id;
-			try
-			{
-				id = master.getFilledCannister(param);
-			}
-			catch (LuaException e)
-			{
-				throw new IllegalArgumentException(e.getMessage());
-			}
+			int id = master.getFilledCannister(param);
 			Map<String, Object> map = saveStack(master.inventory[id]);
 			map.put("process", master.process[id]);
 			return new Object[]{map};

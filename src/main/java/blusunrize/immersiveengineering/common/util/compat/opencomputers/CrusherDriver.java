@@ -117,7 +117,8 @@ public class CrusherDriver extends DriverTileEntity
 		public int priority() {
 			return 1000;
 		}
-		// "override" what gets injected by OC's class transformer
+
+		@Override
 		public void onConnect(Node node)
 		{
 			TileEntityCrusher te = getTileEntity();
@@ -128,7 +129,7 @@ public class CrusherDriver extends DriverTileEntity
 			}
 		}
 
-		// "override" what gets injected by OC's class transformer
+		@Override
 		public void onDisconnect(Node node)
 		{
 			TileEntityCrusher te = getTileEntity();

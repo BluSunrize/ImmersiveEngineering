@@ -52,7 +52,8 @@ public class FloodlightDriver extends DriverTileEntity
 		{
 			return 1000;
 		}
-		// "override" what gets injected by OC's class transformer
+
+		@Override
 		public void onConnect(Node node)
 		{
 			TileEntityFloodlight te = getTileEntity();
@@ -60,7 +61,8 @@ public class FloodlightDriver extends DriverTileEntity
 			te.computerOn = true;
 		}
 
-		// "override" what gets injected by OC's class transformer
+
+		@Override
 		public void onDisconnect(Node node)
 		{
 			TileEntityFloodlight te = getTileEntity();

@@ -53,7 +53,7 @@ public class ExcavatorDriver extends DriverTileEntity
 			return 1000;
 		}
 
-		// "override" what gets injected by OC's class transformer
+		@Override
 		public void onConnect(Node node)
 		{
 			TileEntityExcavator te = getTileEntity();
@@ -64,7 +64,7 @@ public class ExcavatorDriver extends DriverTileEntity
 			}
 		}
 
-		// "override" what gets injected by OC's class transformer
+		@Override
 		public void onDisconnect(Node node)
 		{
 			TileEntityExcavator te = getTileEntity();

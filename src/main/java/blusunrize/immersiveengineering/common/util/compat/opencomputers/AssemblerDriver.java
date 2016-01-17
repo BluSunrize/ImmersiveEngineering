@@ -59,7 +59,7 @@ public class AssemblerDriver extends DriverTileEntity
 			super(w, x, y, z, teClass);
 		}
 
-		// "override" what gets injected by OC's class transformer
+		@Override
 		public void onConnect(Node node)
 		{
 			TileEntityAssembler master = getTileEntity();
@@ -72,7 +72,7 @@ public class AssemblerDriver extends DriverTileEntity
 			}
 		}
 
-		// "override" what gets injected by OC's class transformer
+		@Override
 		public void onDisconnect(Node node)
 		{
 			TileEntityAssembler te = getTileEntity();
