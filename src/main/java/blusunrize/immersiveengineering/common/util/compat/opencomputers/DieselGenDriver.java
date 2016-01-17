@@ -1,7 +1,6 @@
 package blusunrize.immersiveengineering.common.util.compat.opencomputers;
 
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityDieselGenerator;
-import cpw.mods.fml.common.Optional;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;

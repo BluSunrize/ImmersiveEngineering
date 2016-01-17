@@ -1,3 +1,8 @@
+#####Version 0.7.1.1
+- hotfix!
+- fixed crashes caused by lack of Computer Craft
+- updated ingame changelog
+
 #####Version 0.7.1 - BUILT
 - added OpenComputers and ComputerCraft support. Massive thanks to malte0811 and cobra for making that possible!
 - added MineTweaker compat for the Metal Press

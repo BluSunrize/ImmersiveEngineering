@@ -600,6 +600,10 @@ ie.manual.entry.updateNews_5.subtext=Old, new; borrowed and Blu
 ie.manual.entry.updateNews_50=Dear Engineer!<br><br>The new version of IE you are playing features some major changes compared to previous versions!<br>A new component has been added in the form of <link;plates;§o§nMetal §o§nPlates§r>. These plates don't entirely replace ingots, but are necessary for a few recipes. Plates can be made with an Engineer's Hammer or in a <link;metalPress;§o§nMetal §o§nPress§r>.
 ie.manual.entry.updateNews_51=Among the uses for these new plates is the creation of the <link;improvedBlastfurnace;§o§nImproved §o§nBlast §o§nFurnace§r> out of Reinforced Blast Bricks. This new Blast Furnace is a much faster way of creating steel and automateable. The "old" Blast Furnace has been aptly named <link;blastfurnace;§o§nCrude §o§nBlast §o§nFurnace§r> and cannot be automated. Both Furnaces create slag now.<br>The <link;arcfurnace;§o§nArc §o§nFurnace§r> has also seen a rebalance to go along with this. Its steel costs being reduced and instead using reinforced blast bricks, making it a direct upgrade.  
 
+ie.manual.entry.updateNews_6.name=What's new in v0.7.1
+ie.manual.entry.updateNews_6.subtext=Old, new; borrowed and Blu
+ie.manual.entry.updateNews_60=Dear Engineer!<br><br>The past update has brought some new features and changes to Immersive Engineering. The biggest of them is the inclusion of <link;computer.general;§o§nComputer §o§nsupport§r> (obviously only available if you are using a mod that adds computers).<br>Other smaller changes include Inventory Tweaks support on the Wooden Crate and various bugfixes.
+
 ie.manual.category.general.name=Overview and Resources
 ie.manual.category.construction.name=Construction
 ie.manual.category.energy.name=Power, wires, generators
