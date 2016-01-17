@@ -16,7 +16,7 @@ public class NEIConfig implements IConfigureNEI
 	@Override
 	public void loadConfig()
 	{
-		registerDualHandler(new NEIHammerCrushingHandler());
+		//registerDualHandler(new NEIHammerCrushingHandler());
 		registerDualHandler(new NEIShaderBagHandler());
 
 		registerDualHandler(new NEIBlueprintHandler());
