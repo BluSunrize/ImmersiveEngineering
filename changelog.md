@@ -1,4 +1,4 @@
-#####Version 0.7.1.1
+#####Version 0.7.1.1 - BUILT
 - hotfix!
 - fixed crashes caused by lack of Computer Craft
 - updated ingame changelog
