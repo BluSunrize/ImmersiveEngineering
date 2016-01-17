@@ -47,7 +47,15 @@ public class PeripheralBottlingMachine extends IEPeripheral {
 			int param = (int)(double) arguments[0];
 			if (param<0||param>4)
 				throw new LuaException("Only 0-4 are valid cannister positions");
-			int id = te.getEmptyCannister(param);
+			int id;
+			try
+			{
+				id = te.getEmptyCannister(param);
+			}
+			catch (IllegalArgumentException e)
+			{
+				throw new LuaException(e.getMessage());
+			}
 			Map<String, Object> map = saveStack(te.inventory[id]);
 			map.put("process", te.process[id]);
 			return new Object[]{map};
@@ -59,7 +67,14 @@ public class PeripheralBottlingMachine extends IEPeripheral {
 			param = (int)(double) arguments[0];
 			if (param<0||param>4)
 				throw new LuaException("Only 0-4 are valid cannister positions");
-			id = te.getFilledCannister(param);
+			try
+			{
+				id = te.getFilledCannister(param);
+			}
+			catch (IllegalArgumentException e)
+			{
+				throw new LuaException(e.getMessage());
+			}
 			map = saveStack(te.inventory[id]);
 			map.put("process", te.process[id]);
 			return new Object[]{map};

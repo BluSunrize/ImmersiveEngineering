@@ -9,7 +9,6 @@ import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyReceiver;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -536,7 +535,7 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockPart implemen
 		return new FluidTankInfo[0];
 	}
 	//For computer support. These methods DON'T check whether they are running for the master tile entity
-	public int getEmptyCannister(int id) throws LuaException
+	public int getEmptyCannister(int id) throws IllegalArgumentException
 	{
 		int currId = -1;
 		int currVal = 0;
@@ -552,7 +551,7 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockPart implemen
 				}
 			}
 			if (min>72)
-				throw new LuaException("Not enough empty cannisters found");
+				throw new IllegalArgumentException("Not enough empty cannisters found");
 			currId = minId;
 			currVal = min;
 			id--;
@@ -567,7 +566,7 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockPart implemen
 				count++;
 		return count;
 	}
-	public int getFilledCannister(int id) throws LuaException
+	public int getFilledCannister(int id) throws IllegalArgumentException
 	{
 		int currId = -1;
 		int currVal = 72;
@@ -583,7 +582,7 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockPart implemen
 				}
 			}
 			if (minId<0)
-				throw new LuaException("Not enough empty cannisters found");
+				throw new IllegalArgumentException("Not enough empty cannisters found");
 			currId = minId;
 			currVal = min;
 			id--;
