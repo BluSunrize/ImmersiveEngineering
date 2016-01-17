@@ -1,7 +1,8 @@
-#####Version 0.7.1
+#####Version 0.7.1 - BUILT
 - added OpenComputers and ComputerCraft support. Massive thanks to malte0811 and cobra for making that possible!
 - added MineTweaker compat for the Metal Press
 - added InvTweaks support to the Wooden Crates
+- added AE2 things to be processable in the Crusher
 - fixed recipes for molds (thanks malte)
 - fixed Improved Blast Furnace dropping itself (thanks malte)
 - fixed links in the manual
