@@ -5,6 +5,7 @@ import static codechicken.lib.gui.GuiDraw.drawTexturedModalRect;
 
 import java.awt.Rectangle;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.lwjgl.opengl.GL11;
@@ -26,6 +27,7 @@ public class NEIBlastFurnaceHandler extends TemplateRecipeHandler
 	{
 		PositionedStack input;
 		PositionedStack output;
+		PositionedStack slag;
 		public int time;
 		List<PositionedStack> fuels = new ArrayList();
 		public CachedBlastFurnaceRecipe(BlastFurnaceRecipe recipe)
@@ -34,16 +36,18 @@ public class NEIBlastFurnaceHandler extends TemplateRecipeHandler
 			if(in instanceof String)
 				in = OreDictionary.getOres((String)in);
 			input = new PositionedStack(in, 47, 9);
-			output = new PositionedStack(recipe.output, 107,27);
+			output = new PositionedStack(recipe.output, 107,9);
+			slag = new PositionedStack(recipe.slag, 107,45);
 			time = recipe.time;
 
 			for(Object fuel : BlastFurnaceRecipe.blastFuels.keySet())
 				fuels.add( new PositionedStack(fuel, 47,45) );
 		}
 		@Override
-		public PositionedStack getOtherStack()
+		public List<PositionedStack> getOtherStacks()
 		{
-			return fuels.get((NEIBlastFurnaceHandler.this.cycleticks/20)%fuels.size());
+			return Arrays.asList(fuels.get((NEIBlastFurnaceHandler.this.cycleticks/20)%fuels.size()),
+					slag);
 		}
 		@Override
 		public PositionedStack getIngredient()
@@ -136,7 +140,7 @@ public class NEIBlastFurnaceHandler extends TemplateRecipeHandler
 		if(r!=null)
 		{
 			String s = r.time+" Ticks";
-			ClientUtils.font().drawString(s, 115-ClientUtils.font().getStringWidth(s)/2,53, 0xaaaaaa, true);
+			ClientUtils.font().drawString(s, 120-ClientUtils.font().getStringWidth(s)/2,32, 0xaaaaaa, true);
 		}
 	}
 
