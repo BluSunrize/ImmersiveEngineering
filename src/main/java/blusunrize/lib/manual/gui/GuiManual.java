@@ -36,6 +36,7 @@ public class GuiManual extends GuiScreen
 	public static ArrayList<String> previousSelectedEntry = new ArrayList();
 	public static int page;
 	public static GuiManual activeManual;
+	private static String categoryBeforeSearch = null;
 
 	ManualInstance manual;
 	String texture;
@@ -409,11 +410,19 @@ public class GuiManual extends GuiScreen
 			String search = searchField.getText();
 			if(search==null || search.trim().isEmpty())
 			{
+				if (categoryBeforeSearch!=null)
+				{
+					selectedCategory = categoryBeforeSearch;
+					categoryBeforeSearch = null;
+				}
 				hasSuggestions = -1;
 				this.initGui();
 			}
 			else
 			{
+				if (categoryBeforeSearch==null)
+					categoryBeforeSearch = selectedCategory;
+				selectedCategory = "SomeStringThatIsntACategory";
 				search = search.toLowerCase();
 				ArrayList<String> lHeaders = new ArrayList<String>();
 				HashMap<String, String> lSpellcheck = new HashMap<String, String>();
