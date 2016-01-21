@@ -110,13 +110,11 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 		TileEntity capacitor = worldObj.getTileEntity(xCoord+fd.offsetX, yCoord+fd.offsetY, zCoord+fd.offsetZ);
 		int ret = 0;
 		if(capacitor instanceof IEnergyReceiver && ((IEnergyReceiver)capacitor).canConnectEnergy(fd.getOpposite()))
-		{
 			ret = ((IEnergyReceiver)capacitor).receiveEnergy(fd.getOpposite(), toAccept, simulate);
-		}
 		else if(Lib.IC2 && IC2Helper.isAcceptingEnergySink(capacitor, this, fd.getOpposite()))
 		{
 			double left = IC2Helper.injectEnergy(capacitor, fd.getOpposite(), ModCompatability.convertRFtoEU(toAccept, getIC2Tier()), canTakeHV()?(256*256): canTakeMV()?(128*128) : (32*32), simulate);
-			ret = amount-ModCompatability.convertEUtoRF(left);
+			ret = toAccept-ModCompatability.convertEUtoRF(left);
 		}
 		else if(Lib.GREG && GregTechHelper.gregtech_isValidEnergyOutput(capacitor))
 		{
