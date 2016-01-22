@@ -37,7 +37,8 @@ public class NEIBlastFurnaceHandler extends TemplateRecipeHandler
 				in = OreDictionary.getOres((String)in);
 			input = new PositionedStack(in, 47, 9);
 			output = new PositionedStack(recipe.output, 107,9);
-			slag = new PositionedStack(recipe.slag, 107,45);
+			if (recipe.slag!=null)
+				slag = new PositionedStack(recipe.slag, 107,45);
 			time = recipe.time;
 
 			for(Object fuel : BlastFurnaceRecipe.blastFuels.keySet())
@@ -46,8 +47,11 @@ public class NEIBlastFurnaceHandler extends TemplateRecipeHandler
 		@Override
 		public List<PositionedStack> getOtherStacks()
 		{
-			return Arrays.asList(fuels.get((NEIBlastFurnaceHandler.this.cycleticks/20)%fuels.size()),
-					slag);
+			if (slag!=null)
+				return Arrays.asList(fuels.get((NEIBlastFurnaceHandler.this.cycleticks/20)%fuels.size()),
+						slag);
+			else
+				return Arrays.asList(fuels.get((NEIBlastFurnaceHandler.this.cycleticks/20)%fuels.size()));
 		}
 		@Override
 		public PositionedStack getIngredient()

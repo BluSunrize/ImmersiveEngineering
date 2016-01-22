@@ -33,9 +33,11 @@ public class NEIMetalPressHandler extends TemplateRecipeHandler
 			if(in instanceof String)
 				in = OreDictionary.getOres((String)in);
 			if(in instanceof List)
+			{
 				in = new ArrayList<ItemStack>((List)in);
-			for(ItemStack s : (ArrayList<ItemStack>)in)
-				s.stackSize = recipe.inputSize;
+				for(ItemStack s : (ArrayList<ItemStack>)in)
+					s.stackSize = recipe.inputSize;
+			}
 			input = new PositionedStack(in, 44, 9);
 			mould = new PositionedStack(recipe.mold.oreID!=-1?OreDictionary.getOres(OreDictionary.getOreName(recipe.mold.oreID)):recipe.mold.stack, 75, 9);
 			output = new PositionedStack(recipe.output, 107,9);
@@ -121,32 +123,32 @@ public class NEIMetalPressHandler extends TemplateRecipeHandler
 		{
 			try{
 
-			GL11.glColor4f(1, 1, 1, 1);
+				GL11.glColor4f(1, 1, 1, 1);
 
-			GL11.glPushMatrix();
-			GL11.glTranslatef(32, 25, 100);
-			GL11.glRotatef(-25, 1, 0, 0);
-			GL11.glRotatef(-120, 0, 1, 0);
-			GL11.glScalef(12, -12, 12);
-			TileEntityMetalPress tile = new TileEntityMetalPress();
-			tile.pos=4;
-			tile.formed=true;
-			ClientUtils.bindAtlas(0);
-			ClientUtils.tes().startDrawingQuads();
-			ClientUtils.handleStaticTileRenderer(tile, false);
-			ClientUtils.tes().draw();
-			TileEntityRendererDispatcher.instance.renderTileEntityAt(tile, 0.0D, 0.0D, 0.0D, 0.0F);
-			GL11.glPopMatrix();
+				GL11.glPushMatrix();
+				GL11.glTranslatef(32, 25, 100);
+				GL11.glRotatef(-25, 1, 0, 0);
+				GL11.glRotatef(-120, 0, 1, 0);
+				GL11.glScalef(12, -12, 12);
+				TileEntityMetalPress tile = new TileEntityMetalPress();
+				tile.pos=4;
+				tile.formed=true;
+				ClientUtils.bindAtlas(0);
+				ClientUtils.tes().startDrawingQuads();
+				ClientUtils.handleStaticTileRenderer(tile, false);
+				ClientUtils.tes().draw();
+				TileEntityRendererDispatcher.instance.renderTileEntityAt(tile, 0.0D, 0.0D, 0.0D, 0.0F);
+				GL11.glPopMatrix();
 
-			ClientUtils.drawSlot(r.input.relx,r.input.rely, 16,16);
-			ClientUtils.drawSlot(r.mould.relx,r.mould.rely,16,16);
-			ClientUtils.drawSlot(r.output.relx,r.output.rely, 20,20);
+				ClientUtils.drawSlot(r.input.relx,r.input.rely, 16,16);
+				ClientUtils.drawSlot(r.mould.relx,r.mould.rely,16,16);
+				ClientUtils.drawSlot(r.output.relx,r.output.rely, 20,20);
 			}catch(Exception e)
 			{
 				e.printStackTrace();
 			}
 		}
-	
+
 	}
 
 }
