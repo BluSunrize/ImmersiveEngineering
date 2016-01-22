@@ -597,10 +597,6 @@ ie.manual.entry.updateNews_5.subtext=Old, new; borrowed and Blu
 ie.manual.entry.updateNews_50=亲爱的工程师们!<br><br>你现在使用的新版本IE相比于之前的版本有一些重要改动!<br><link;plates;§o§n金属板§r>作为一种新型材料添加到新版本中.这些板材并没有完全取代金属锭,但对于一些合成表来说不可或缺.板材可以通过工程师锤或<link;metalPress;§o§n金属冲压机§r>进行制作.
 ie.manual.entry.updateNews_51=这些金属般的用途之一就是用于制作强化高炉砖来搭建<link;improvedBlastfurnace;§o§n精制 §o§n高炉§r>.这种新型高炉能够更快的冶炼钢铁并且能够自动化."旧"高炉被重新命名为<link;blastfurnace;§o§n粗制高炉§r>并且已经无法自动化生产.现在两种高炉均会产出炉渣.<br><link;arcfurnace;§o§n电弧炉§r>也伴随之进行了新的平衡.它的钢材耗量被降低许多,部分材料被强化高炉砖所代替.  
 
-ie.manual.entry.updateNews_6.name=What's new in v0.7.1
-ie.manual.entry.updateNews_6.subtext=Old, new; borrowed and Blu
-ie.manual.entry.updateNews_60=Dear Engineer!<br><br>The past update has brought some new features and changes to Immersive Engineering. The biggest of them is the inclusion of <link;computer.general;§o§nComputer §o§nsupport§r> (obviously only available if you are using a mod that adds computers).<br>Other smaller changes include Inventory Tweaks support on the Wooden Crate and various bugfixes.
-
 ie.manual.category.general.name=概念和资源
 ie.manual.category.construction.name=建筑结构
 ie.manual.category.energy.name=能量,线缆,发电机
