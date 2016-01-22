@@ -48,14 +48,14 @@ public class MetalPressRecipe
 		recipeList.put(r.mold, r);
 		return r;
 	}
-	public static MetalPressRecipe findRecipe(ItemStack mould, ItemStack input)
+	public static MetalPressRecipe findRecipe(ItemStack mould, ItemStack input, boolean checkStackSize)
 	{
 		if(mould==null || input==null)
 			return null;
 		ComparableItemStack comp = ApiUtils.createComparableItemStack(mould);
 		List<MetalPressRecipe> list = recipeList.get(comp);
 		for(MetalPressRecipe recipe : list)
-			if(ApiUtils.stackMatchesObject(input, recipe.input) && (input.stackSize>=recipe.inputSize))
+			if(ApiUtils.stackMatchesObject(input, recipe.input) && (!checkStackSize||input.stackSize>=recipe.inputSize))
 				return recipe;
 		return null;
 	}
