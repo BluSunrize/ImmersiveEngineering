@@ -19,10 +19,10 @@ public class ExcavatorDriver extends DriverTileEntity
 		TileEntity te = w.getTileEntity(x, y, z);
 		if (te instanceof TileEntityExcavator)
 		{
-			TileEntityExcavator master = ((TileEntityExcavator)te).master();
+			TileEntityExcavator exc = (TileEntityExcavator)te;
 			int pos = ((TileEntityExcavator)te).pos;
 			if (pos==3)
-				return new ExcavatorEnvironment(w, master.xCoord, master.yCoord, master.zCoord);
+				return new ExcavatorEnvironment(w, exc.xCoord-exc.offset[0], exc.yCoord-exc.offset[1], exc.zCoord-exc.offset[2]);
 		}
 		return null;
 	}

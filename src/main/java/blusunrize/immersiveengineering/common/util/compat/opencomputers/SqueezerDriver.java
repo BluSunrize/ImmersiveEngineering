@@ -21,8 +21,8 @@ public class SqueezerDriver extends DriverTileEntity
 		TileEntity te = w.getTileEntity(x, y, z);
 		if (te instanceof TileEntitySqueezer)
 		{
-			TileEntitySqueezer master = ((TileEntitySqueezer)te).master();
-			return new FermenterEnvironment(w, master.xCoord, master.yCoord, master.zCoord);
+			TileEntitySqueezer squeezer = (TileEntitySqueezer)te;
+			return new FermenterEnvironment(w, squeezer.xCoord-squeezer.offset[0], squeezer.yCoord-squeezer.offset[1], squeezer.zCoord-squeezer.offset[2]);
 		}
 		return null;
 	}

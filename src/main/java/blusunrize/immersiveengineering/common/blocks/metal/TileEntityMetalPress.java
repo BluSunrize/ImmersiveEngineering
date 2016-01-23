@@ -1,8 +1,5 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import java.util.List;
-
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.IEContent;
@@ -225,6 +222,8 @@ public class TileEntityMetalPress extends TileEntityMultiblockPart implements IS
 	@SideOnly(Side.CLIENT)
 	public AxisAlignedBB getRenderBoundingBox()
 	{
+		if (!formed)
+			return AxisAlignedBB.getBoundingBox(xCoord,yCoord,zCoord, xCoord,yCoord,zCoord);
 		if(renderAABB==null)
 			if(pos==4)
 				renderAABB = AxisAlignedBB.getBoundingBox(xCoord-1,yCoord-1,zCoord-1, xCoord+2,yCoord+2,zCoord+2);
@@ -261,7 +260,13 @@ public class TileEntityMetalPress extends TileEntityMultiblockPart implements IS
 	public void invalidate()
 	{
 		super.invalidate();
-
+		
+		if (!worldObj.isRemote&&pos==4&&mold!=null)
+		{
+			EntityItem moldDrop = new EntityItem(worldObj, xCoord+.5, yCoord+.5, zCoord+.5, mold);
+			worldObj.spawnEntityInWorld(moldDrop);
+		}
+		
 		if(formed && !worldObj.isRemote)
 		{
 			int f = facing;

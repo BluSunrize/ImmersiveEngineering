@@ -21,8 +21,8 @@ public class FermenterDriver extends DriverTileEntity
 		TileEntity te = w.getTileEntity(x, y, z);
 		if (te instanceof TileEntityFermenter)
 		{
-			TileEntityFermenter master = ((TileEntityFermenter)te).master();
-			return new FermenterEnvironment(w, master.xCoord, master.yCoord, master.zCoord);
+			TileEntityFermenter ferment = (TileEntityFermenter)te;
+			return new FermenterEnvironment(w, ferment.xCoord-ferment.offset[0], ferment.yCoord-ferment.offset[1], ferment.zCoord-ferment.offset[2]);
 		}
 		return null;
 	}
