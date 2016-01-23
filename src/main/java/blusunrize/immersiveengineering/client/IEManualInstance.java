@@ -169,6 +169,9 @@ public class IEManualInstance extends ManualInstance
 	@Override
 	public boolean showEntryInList(ManualEntry entry)
 	{
+		if (entry==null||entry.getCategory()==null)
+			return false;
+		
 		if(entry.getCategory().equalsIgnoreCase(ManualHelper.CAT_UPDATE))
 			return Config.getBoolean("showUpdateNews");
 

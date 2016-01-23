@@ -97,7 +97,7 @@ public class ItemWireCoil extends ItemIEBase implements IWireCoil
 						player.addChatMessage(new ChatComponentTranslation(Lib.CHAT_WARN+"sameConnection"));
 					else if( distance > type.getMaxLength())
 						player.addChatMessage(new ChatComponentTranslation(Lib.CHAT_WARN+"tooFar"));
-					else if(!(tileEntityLinkingPos instanceof IImmersiveConnectable))
+					else if(!(tileEntityLinkingPos instanceof IImmersiveConnectable)||!((IImmersiveConnectable)tileEntityLinkingPos).canConnectCable(getWireType(stack), target))
 						player.addChatMessage(new ChatComponentTranslation(Lib.CHAT_WARN+"invalidPoint"));
 					else
 					{
