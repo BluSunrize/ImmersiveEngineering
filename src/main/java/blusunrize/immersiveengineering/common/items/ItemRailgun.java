@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.List;
 
 import blusunrize.immersiveengineering.api.shader.IShaderEquipableItem;
+import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.api.tool.RailgunHandler;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler.IZoomTool;
 import blusunrize.immersiveengineering.common.Config;
@@ -25,7 +26,7 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
-public class ItemRailgun extends ItemUpgradeableTool implements IShaderEquipableItem, IEnergyContainerItem, IZoomTool
+public class ItemRailgun extends ItemUpgradeableTool implements IShaderEquipableItem, IEnergyContainerItem, IZoomTool, ITool
 {
 	public ItemRailgun()
 	{
@@ -305,5 +306,10 @@ public class ItemRailgun extends ItemUpgradeableTool implements IShaderEquipable
 	public float[] getZoomSteps(ItemStack stack, EntityPlayer player)
 	{
 		return zoomSteps;
+	}
+
+	@Override
+	public boolean isTool(ItemStack item) {
+		return true;
 	}
 }
