@@ -185,7 +185,6 @@ item.ImmersiveEngineering.metal.plateConstantan.name=康铜板
 item.ImmersiveEngineering.metal.plateElectrum.name=琥珀金板
 item.ImmersiveEngineering.metal.plateSteel.name=钢板
 
-
 item.ImmersiveEngineering.material.treatedStick.name=防腐木棍
 item.ImmersiveEngineering.material.waterwheelSegment.name=水车部件
 item.ImmersiveEngineering.material.windmillBlade.name=风车叶片
@@ -235,11 +234,11 @@ item.ImmersiveEngineering.revolver.oathkeeper.name=誓约之守护
 item.ImmersiveEngineering.revolver.bee.name=黄蜂左轮
 item.ImmersiveEngineering.revolver.fenrir.name=芬里尔巨狼
 item.ImmersiveEngineering.revolver.earthshaker.name=§b撼地者§r
-item.ImmersiveEngineering.revolver.warlord.name=The Repulsor
-item.ImmersiveEngineering.revolver.superchief.name=The Super Chief
+item.ImmersiveEngineering.revolver.warlord.name=光束
+item.ImmersiveEngineering.revolver.superchief.name=超级领袖
 item.ImmersiveEngineering.revolver.noName.name=无名
-item.ImmersiveEngineering.revolver.patreonBlu.name=§6Last Word§r
-item.ImmersiveEngineering.revolver.patreonHazard.name=§4Twisted Phantom§r
+item.ImmersiveEngineering.revolver.patreonBlu.name=§6遗言§r
+item.ImmersiveEngineering.revolver.patreonHazard.name=§4扭曲的幻影§r
 
 item.ImmersiveEngineering.bullet.emptyCasing.name=小型空弹壳
 item.ImmersiveEngineering.bullet.emptyShell.name=大型空弹壳
@@ -252,8 +251,8 @@ item.ImmersiveEngineering.bullet.homing.name=叶绿弹
 item.ImmersiveEngineering.bullet.wolfpack.name=狼群弹
 item.ImmersiveEngineering.bullet.silver.name=银弹
 item.ImmersiveEngineering.bullet.potion.name=药剂弹头
-item.ImmersiveEngineering.bullet.potion.splash.name=Splash Phial Cartridge
-item.ImmersiveEngineering.bullet.potion.linger.name=Lingering Phial Cartridge
+item.ImmersiveEngineering.bullet.potion.splash.name=飞溅药剂弹头
+item.ImmersiveEngineering.bullet.potion.linger.name=持久药剂弹头
 
 item.ImmersiveEngineering.drill.diesel.name=采矿机械钻
 item.ImmersiveEngineering.drillhead.iron.name=铁制钻头
@@ -270,7 +269,7 @@ item.ImmersiveEngineering.toolupgrade.revolverMagazine.name=扩充弹夹
 item.ImmersiveEngineering.toolupgrade.revolverElectro.name=加强电子管
 item.ImmersiveEngineering.toolupgrade.chemthrowerFocus.name=聚焦喷嘴
 item.ImmersiveEngineering.toolupgrade.railgunScope.name=瞄准镜
-item.ImmersiveEngineering.toolupgrade.railgunCapacitors.name=附加电容器
+item.ImmersiveEngineering.toolupgrade.railgunCapacitors.name=附加电容
 
 item.ImmersiveEngineering.blueprint.name=工程师蓝图
 
@@ -394,21 +393,21 @@ desc.ImmersiveEngineering.flavour.barrelTemp=不能储存高温液体
 desc.ImmersiveEngineering.flavour.coil.construction0=仅装饰用途
 desc.ImmersiveEngineering.flavour.coil.construction1=不传输能量
 desc.ImmersiveEngineering.flavour.revolver=让你们高兴高兴!
-desc.ImmersiveEngineering.flavour.revolver.dev=Regicide!
+desc.ImmersiveEngineering.flavour.revolver.dev=弑君!
 desc.ImmersiveEngineering.flavour.revolver.infinity=你只需要一点infinity
 desc.ImmersiveEngineering.flavour.revolver.sns=鲜血,汗水,蒸汽,钢铁
 desc.ImmersiveEngineering.flavour.revolver.nerf=儿童可安全玩耍
 desc.ImmersiveEngineering.flavour.revolver.oblivion=往昔之忆
 desc.ImmersiveEngineering.flavour.revolver.oathkeeper=寻路者
 desc.ImmersiveEngineering.flavour.revolver.bee=苦痛
-desc.ImmersiveEngineering.flavour.revolver.fenrir=There's nothing I don't cherish!
-desc.ImmersiveEngineering.flavour.revolver.earthshaker=Lingering Will
-desc.ImmersiveEngineering.flavour.revolver.warlord=Don't take my toys away!
+desc.ImmersiveEngineering.flavour.revolver.fenrir=没什么我不珍惜!
+desc.ImmersiveEngineering.flavour.revolver.earthshaker=挥之不去的意志
+desc.ImmersiveEngineering.flavour.revolver.warlord=不要带走我的玩具!
 desc.ImmersiveEngineering.flavour.revolver.superchief=CHOO CHOO!
-desc.ImmersiveEngineering.flavour.revolver.rommie=Targeting AI 'Rommie' included!
-desc.ImmersiveEngineering.flavour.revolver.noName=Peering Into Darkness
+desc.ImmersiveEngineering.flavour.revolver.rommie=包括针对AI“Rommie”！
+desc.ImmersiveEngineering.flavour.revolver.noName=窥视到黑暗
 desc.ImmersiveEngineering.flavour.revolver.patreonBlu=猎人的选择
-desc.ImmersiveEngineering.flavour.revolver.patreonHazard=Exclusive DLC Content
+desc.ImmersiveEngineering.flavour.revolver.patreonHazard=独家DLC
 
 desc.ImmersiveEngineering.flavour.drill.noHead=未装配钻头
 desc.ImmersiveEngineering.flavour.drill.headDamage=钻头状态:
@@ -431,7 +430,7 @@ desc.ImmersiveEngineering.flavour.toolupgrade.revolverMagazine=提升左轮手�
 desc.ImmersiveEngineering.flavour.toolupgrade.revolverElectro=左轮手枪射击造成电击伤害
 desc.ImmersiveEngineering.flavour.toolupgrade.chemthrowerFocus=减少化学喷射器的喷射速度,并增加其范围
 desc.ImmersiveEngineering.flavour.toolupgrade.railgunScope=可以让轨道炮视野放大
-desc.ImmersiveEngineering.flavour.toolupgrade.railgunCapacitors=减少的充电时间,并增加轨道炮的能量存储
+desc.ImmersiveEngineering.flavour.toolupgrade.railgunCapacitors=减少充电时间,并增加轨道炮的能量存储
 
 gui.ImmersiveEngineering.empty=空
 
@@ -555,14 +554,12 @@ achievement.immersiveengineering.secret_birthdayParty.desc=擦亮火柴...
 achievement.immersiveengineering.secret_luckOfTheDraw=抽奖的运气
 achievement.immersiveengineering.secret_luckOfTheDraw.desc=全有即全无
 
-
-
 stat.skyhookOneCm=使用天钩滑行的距离
 
-immersiveengineering.potion.flammable=Flammable
-immersiveengineering.potion.slippery=Slippery
-immersiveengineering.potion.conductive=Conductive
-immersiveengineering.potion.sticky=Sticky
+immersiveengineering.potion.flammable=易燃
+immersiveengineering.potion.slippery=滑
+immersiveengineering.potion.conductive=导电
+immersiveengineering.potion.sticky=粘性
 
 #MANUAL
 #ie.manual.entry..name=
