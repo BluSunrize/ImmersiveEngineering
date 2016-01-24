@@ -4,6 +4,10 @@ import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityArcFurnace;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityAssembler;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBottlingMachine;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCapacitorCreative;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCapacitorHV;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCapacitorLV;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCapacitorMV;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityDieselGenerator;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityEnergyMeter;
@@ -108,6 +112,20 @@ public class IEPeripheralProvider implements IPeripheralProvider
 					return new PeripheralBottlingMachine(world, x-bott.offset[0], y, z-bott.offset[2]);
 				else
 					return null;
+			}
+			if (te instanceof TileEntityCapacitorLV)
+			{
+
+				String type = "";
+				if (te instanceof TileEntityCapacitorCreative)
+					type = "creative";
+				else if (te instanceof TileEntityCapacitorHV)
+					type = "hv";
+				else if (te instanceof TileEntityCapacitorMV)
+					type = "mv";
+				else if (te instanceof TileEntityCapacitorLV)
+					type = "lv";
+				return new PeripheralCapacitor(world, x, y, z, type);
 			}
 		}
 		return null;

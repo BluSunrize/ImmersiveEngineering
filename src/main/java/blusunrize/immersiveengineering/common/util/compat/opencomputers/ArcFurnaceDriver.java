@@ -26,8 +26,8 @@ public class ArcFurnaceDriver extends DriverTileEntity
 			int pos = ((TileEntityArcFurnace)te).pos;
 			if (pos==25)
 			{
-				TileEntityArcFurnace master = ((TileEntityArcFurnace)te).master();
-				return new ArcFurnaceEnvironment(w, master.xCoord, master.yCoord, master.zCoord, TileEntityArcFurnace.class);
+				TileEntityArcFurnace arc = (TileEntityArcFurnace)te;
+				return new ArcFurnaceEnvironment(w, arc.xCoord-arc.offset[0], arc.yCoord-arc.offset[1], arc.zCoord-arc.offset[2], TileEntityArcFurnace.class);
 			}
 		}
 		return null;

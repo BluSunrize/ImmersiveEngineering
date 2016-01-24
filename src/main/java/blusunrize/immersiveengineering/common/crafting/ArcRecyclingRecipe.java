@@ -47,6 +47,12 @@ public class ArcRecyclingRecipe extends ArcFurnaceRecipe
 	}
 	public boolean matches(ItemStack input, ItemStack[] additives)
 	{
-		return input!=null&&this.input!=null && this.input instanceof ItemStack && input.getItem().equals(((ItemStack)this.input).getItem());
+		if (input!=null && this.input instanceof ItemStack)
+		{
+			boolean ignoreMeta = input.isItemStackDamageable();
+			ItemStack inStack = (ItemStack) this.input;
+			return input.getItem().equals(inStack.getItem()) && (ignoreMeta || inStack.getItemDamage()==input.getItemDamage());
+		}
+		return false;
 	}
 }

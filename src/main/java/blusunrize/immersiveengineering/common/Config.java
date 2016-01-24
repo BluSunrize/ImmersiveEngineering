@@ -184,7 +184,8 @@ public class Config
 		setInt("chemthrower_consumption", config.get("tools", "ChemThrower: Consumed", 10, "The mb of fluid the Chemical Thrower will consume per tick of usage").getInt());
 		
 		setInt("railgun_consumption", config.get("tools", "Railgun: Consumed", 800, "The base amount of RF consumed per shot by the Railgun").getInt());
-
+		setDouble("railgun_damage_multiplier", config.get("tools", "Railgun: Damage multiplier", 1D, "When something is hurt by a railgun, the default damage for the used projectile is multiplied by this value").getDouble());
+		
 		for(String key : IECompatModule.moduleClasses.keySet())
 			setBoolean("compat_"+key, config.get("compatability", "Enable Compatmodule: "+key, true, "Set this to false to disable IE's built in compatability with "+key).getBoolean());
 

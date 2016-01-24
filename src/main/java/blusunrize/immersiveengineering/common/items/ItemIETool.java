@@ -22,6 +22,7 @@ import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.api.energy.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler.AbstractConnection;
+import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.IESaveData;
 import blusunrize.immersiveengineering.common.util.IEAchievements;
@@ -36,7 +37,7 @@ import com.google.common.collect.ImmutableSet;
 import cpw.mods.fml.common.Optional;
 
 @Optional.Interface(iface = "cofh.api.item.IToolHammer", modid = "CoFHAPI|item")
-public class ItemIETool extends ItemIEBase implements cofh.api.item.IToolHammer
+public class ItemIETool extends ItemIEBase implements cofh.api.item.IToolHammer, ITool
 {
 	static int hammerMaxDamage;
 	public ItemIETool()
@@ -298,5 +299,10 @@ public class ItemIETool extends ItemIEBase implements cofh.api.item.IToolHammer
 	@Optional.Method(modid = "CoFHAPI|item")
 	public void toolUsed(ItemStack stack, EntityLivingBase living, int x, int y, int z)
 	{
+	}
+
+	@Override
+	public boolean isTool(ItemStack item) {
+		return item.getItemDamage()!=3;
 	}
 }

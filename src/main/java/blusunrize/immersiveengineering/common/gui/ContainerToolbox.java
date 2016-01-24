@@ -2,6 +2,7 @@ package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.api.energy.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.IWireCoil;
+import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.gui.IESlot.ICallbackContainer;
 import blusunrize.immersiveengineering.common.items.ItemToolbox;
@@ -76,9 +77,9 @@ public class ContainerToolbox extends Container implements ICallbackContainer
 			return stack.getItem() instanceof ItemFood;
 		else if(slotNumer<10)
 		{
-			if(stack.getItem() instanceof ItemTool || stack.getItem().equals(IEContent.itemTool))
-				return true;
-			if(stack.getItem().equals(IEContent.itemDrill) || stack.getItem().equals(IEContent.itemRevolver) || stack.getItem().equals(IEContent.itemChemthrower) || stack.getItem().equals(IEContent.itemRailgun))
+			if (stack.getItem() instanceof ITool)
+				return ((ITool)stack.getItem()).isTool(stack);
+			if(stack.getItem() instanceof ItemTool)
 				return true;
 		}
 		else if(slotNumer<16)

@@ -29,8 +29,8 @@ public class RefineryDriver extends DriverTileEntity
 			int pos = ((TileEntityRefinery)te).pos;
 			if (pos==9)
 			{
-				TileEntityRefinery master = ((TileEntityRefinery)te).master();
-				return new RefineryEnvironment(w, master.xCoord, master.yCoord, master.zCoord, TileEntityRefinery.class);
+				TileEntityRefinery ref = (TileEntityRefinery)te;
+				return new RefineryEnvironment(w, ref.xCoord-ref.offset[0], ref.yCoord-ref.offset[1], ref.zCoord-ref.offset[2], TileEntityRefinery.class);
 			}
 		}
 		return null;

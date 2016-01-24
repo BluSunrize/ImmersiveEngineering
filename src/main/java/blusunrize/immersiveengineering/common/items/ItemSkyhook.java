@@ -6,6 +6,7 @@ import java.util.List;
 import com.google.common.collect.Multimap;
 
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler.Connection;
+import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.common.entities.EntitySkylineHook;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
@@ -23,7 +24,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
-public class ItemSkyhook extends ItemUpgradeableTool
+public class ItemSkyhook extends ItemUpgradeableTool implements ITool
 {
 	public ItemSkyhook()
 	{
@@ -137,6 +138,12 @@ public class ItemSkyhook extends ItemUpgradeableTool
 	public int getInternalSlots(ItemStack stack)
 	{
 		return 2;
+	}
+
+	@Override
+	public boolean isTool(ItemStack item)
+	{
+		return true;
 	}
 
 }

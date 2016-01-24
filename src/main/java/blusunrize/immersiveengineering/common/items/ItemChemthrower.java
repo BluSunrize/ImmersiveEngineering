@@ -4,6 +4,7 @@ import java.util.List;
 
 import blusunrize.immersiveengineering.api.shader.IShaderEquipableItem;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler;
+import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.entities.EntityChemthrowerShot;
 import blusunrize.immersiveengineering.common.gui.IESlot;
@@ -22,7 +23,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidContainerItem;
 
-public class ItemChemthrower extends ItemUpgradeableTool implements IShaderEquipableItem, IFluidContainerItem
+public class ItemChemthrower extends ItemUpgradeableTool implements IShaderEquipableItem, IFluidContainerItem, ITool
 {
 	public ItemChemthrower()
 	{
@@ -241,6 +242,12 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IShaderEquip
 	public int getInternalSlots(ItemStack stack)
 	{
 		return 4;
+	}
+
+	@Override
+	public boolean isTool(ItemStack item)
+	{
+		return true;
 	}
 
 }

@@ -694,6 +694,8 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 			TileEntity te = world.getTileEntity(x, y, z);
 			return te instanceof TileEntityEnergyMeter&&((TileEntityEnergyMeter)te).dummy;
 		}
+		else if (meta==META_capacitorCreative)
+			return true;
 		return false;
 	}
 

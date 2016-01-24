@@ -28,8 +28,8 @@ public class AssemblerDriver extends DriverTileEntity
 			int offsetY = ((TileEntityAssembler)te).offset[1];
 			if (offsetY==-1)
 			{
-				TileEntityAssembler master = ((TileEntityAssembler)te).master();
-				return new AssemblerEnvironment(w, master.xCoord, master.yCoord, master.zCoord, TileEntityAssembler.class);
+				TileEntityAssembler assembler = (TileEntityAssembler)te;
+				return new AssemblerEnvironment(w, assembler.xCoord-assembler.offset[0], assembler.yCoord-assembler.offset[1], assembler.zCoord-assembler.offset[2], TileEntityAssembler.class);
 			}
 		}
 		return null;

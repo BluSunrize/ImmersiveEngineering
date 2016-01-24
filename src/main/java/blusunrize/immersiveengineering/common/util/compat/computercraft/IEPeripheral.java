@@ -22,7 +22,7 @@ public abstract class IEPeripheral implements IPeripheral
 	{
 		boolean usePipeline = FMLCommonHandler.instance().getEffectiveSide()!=Side.SERVER;
 		TileEntity te = usePipeline?EventHandler.requestTE(w, x, y, z):w.getTileEntity(x, y, z);
-		if (te!=null&&te.getClass().equals(type))
+		if (te!=null&&type.isAssignableFrom(te.getClass()))
 			return te;
 		return null;
 	}

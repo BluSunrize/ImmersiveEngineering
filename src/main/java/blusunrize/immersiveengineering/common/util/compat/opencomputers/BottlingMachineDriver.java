@@ -29,8 +29,8 @@ public class BottlingMachineDriver extends DriverTileEntity
 			int pos = ((TileEntityBottlingMachine)te).pos;
 			if (offsetY==0&&pos!=0&&pos!=2)
 			{
-				TileEntityBottlingMachine master = ((TileEntityBottlingMachine)te).master();
-				return new BottlingMachineEnvironment(w, master.xCoord, master.yCoord, master.zCoord, TileEntityBottlingMachine.class);
+				TileEntityBottlingMachine bottle = (TileEntityBottlingMachine)te;
+				return new BottlingMachineEnvironment(w, bottle.xCoord-bottle.offset[0], bottle.yCoord-bottle.offset[1], bottle.zCoord-bottle.offset[2], TileEntityBottlingMachine.class);
 			}
 		}
 		return null;

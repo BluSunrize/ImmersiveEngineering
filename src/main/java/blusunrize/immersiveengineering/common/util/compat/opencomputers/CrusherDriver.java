@@ -23,8 +23,8 @@ public class CrusherDriver extends DriverTileEntity
 			int pos = ((TileEntityCrusher)te).pos;
 			if (pos==9)
 			{
-				TileEntityCrusher master = ((TileEntityCrusher)te).master();
-				return new CrusherEnvironment(w, master.xCoord, master.yCoord, master.zCoord, TileEntityCrusher.class);
+				TileEntityCrusher crush = (TileEntityCrusher)te;
+				return new CrusherEnvironment(w, crush.xCoord-crush.offset[0], crush.yCoord-crush.offset[1], crush.zCoord-crush.offset[2], TileEntityCrusher.class);
 			}
 		}
 		return null;

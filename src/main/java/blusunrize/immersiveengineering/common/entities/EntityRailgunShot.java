@@ -2,6 +2,7 @@ package blusunrize.immersiveengineering.common.entities;
 
 import blusunrize.immersiveengineering.api.tool.RailgunHandler;
 import blusunrize.immersiveengineering.api.tool.RailgunHandler.RailgunProjectileProperties;
+import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -97,7 +98,7 @@ public class EntityRailgunShot extends EntityIEProjectile
 				if(getAmmoProperties()!=null)
 				{
 					if(!getAmmoProperties().overrideHitEntity(mop.entityHit, getShooter()))
-						mop.entityHit.attackEntityFrom(IEDamageSources.causeRailgunDamage(this, getShooter()), (float)getAmmoProperties().damage);
+						mop.entityHit.attackEntityFrom(IEDamageSources.causeRailgunDamage(this, getShooter()), (float)(getAmmoProperties().damage*Config.getDouble("railgun_damage_multiplier")));
 				}
 			}
 		}

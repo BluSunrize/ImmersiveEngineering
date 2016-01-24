@@ -28,6 +28,7 @@ import net.minecraft.world.World;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.shader.IShaderEquipableItem;
 import blusunrize.immersiveengineering.api.tool.IBullet;
+import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.util.IEAchievements;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
@@ -40,7 +41,7 @@ import com.google.common.collect.Multimap;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class ItemRevolver extends ItemUpgradeableTool implements IShaderEquipableItem
+public class ItemRevolver extends ItemUpgradeableTool implements IShaderEquipableItem, ITool
 {
 	public ItemRevolver()
 	{
@@ -441,5 +442,12 @@ public class ItemRevolver extends ItemUpgradeableTool implements IShaderEquipabl
 			this.baseUpgrades=baseUpgrades;
 			this.renderAdditions=renderAdditions;
 		}
+	}
+
+
+	@Override
+	public boolean isTool(ItemStack item)
+	{
+		return item.getItemDamage()!=1;
 	}
 }

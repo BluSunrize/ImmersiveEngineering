@@ -10,6 +10,7 @@ import com.google.common.collect.Multimap;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.shader.IShaderEquipableItem;
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
+import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.util.IEAchievements;
@@ -37,7 +38,7 @@ import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidContainerItem;
 
-public class ItemDrill extends ItemUpgradeableTool implements IShaderEquipableItem, IFluidContainerItem
+public class ItemDrill extends ItemUpgradeableTool implements IShaderEquipableItem, IFluidContainerItem, ITool
 {
 	public static Material[] validMaterials = {Material.anvil,Material.clay,Material.glass,Material.grass,Material.ground,Material.ice,Material.iron,Material.packedIce,Material.piston,Material.rock,Material.sand, Material.snow};
 
@@ -451,4 +452,9 @@ public class ItemDrill extends ItemUpgradeableTool implements IShaderEquipableIt
 		return stack;
 	}
 	/*===================================== FLUIDS END =================================*/
+	@Override
+	public boolean isTool(ItemStack item)
+	{
+		return true;
+	}
 }

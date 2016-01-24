@@ -41,6 +41,7 @@ public class GeneralComputerHelper {
 			ManualHelper.getManual().addEntry("computer.bottlingMachine", "computers", new ManualPages.Text(ManualHelper.getManual(), "computer.bottlingMachine0"),
 					new ManualPages.Text(ManualHelper.getManual(), "computer.bottlingMachine1"),
 					new ManualPages.Text(ManualHelper.getManual(), "computer.bottlingMachine2"));
+			ManualHelper.getManual().addEntry("computer.capacitor", "computers", new ManualPages.Text(ManualHelper.getManual(), "computer.capacitor0"));
 		}
 	}
 }

@@ -133,6 +133,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 					if(recipe!=null)
 					{
 						int[] outputSlots = null;
+						ItemStack[] outUpToNow = new ItemStack[6];
 						ItemStack[] outputs = recipe.getOutputs(this.getStackInSlot(i),additives);
 						if(outputs!=null && outputs.length>0)
 						{
@@ -144,12 +145,35 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 								ItemStack out = outputs[iOut];
 								boolean b0 = false;
 								for(int j=16; j<22; j++)
-									if(inventory[j]==null || (OreDictionary.itemMatches(inventory[j],out,false) && inventory[j].stackSize+out.stackSize<=inventory[j].getMaxStackSize()) )
+								{
+									int outSize = out.stackSize;
+									int maxSize = out.getMaxStackSize(); 
+									if (inventory[j]!=null)
+									{
+										outSize+=inventory[j].stackSize;
+										maxSize = Math.min(maxSize, inventory[j].getMaxStackSize());
+									}
+									if (outUpToNow[j-16]!=null)
+									{
+										outSize+=outUpToNow[j-16].stackSize;
+										maxSize = Math.min(maxSize, outUpToNow[j-16].getMaxStackSize());
+									}
+									boolean matches = true;
+									if (inventory[j]!=null&&!OreDictionary.itemMatches(inventory[j],out,false))
+										matches = false;
+									else if (outUpToNow[j-16]!=null&&!OreDictionary.itemMatches(outUpToNow[j-16],out,false))
+										matches = false;
+									if(matches && outSize<=maxSize)
 									{
 										b0 = true;
 										outputSlots[iOut] = j;
+										if (outUpToNow[j-16]==null)
+											outUpToNow[j-16] = out.copy();
+										else
+											outUpToNow[j-16].stackSize+=out.stackSize;
 										break;
 									}
+								}
 								if(!b0)
 								{
 									spaceForOutput = false;
