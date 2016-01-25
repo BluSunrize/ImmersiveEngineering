@@ -44,20 +44,20 @@ public class PeripheralSqueezer extends IEPeripheral
 			if (arguments.length!=1||!(arguments[0] instanceof Double))
 				throw new LuaException("Wrong amount of arguments, needs one integer");
 			int slot = (int) (double)arguments[0];
-			if (slot<0||slot>8)
-				throw new LuaException("Input slots are numbers 0-8");
-			SqueezerRecipe recipe = DieselHandler.findSqueezerRecipe(te.getStackInSlot(slot));
+			if (slot<1||slot>9)
+				throw new LuaException("Input slots are numbers 1-9");
+			SqueezerRecipe recipe = DieselHandler.findSqueezerRecipe(te.getStackInSlot(slot-1));
 			if (recipe!=null)
-				return new Object[]{saveStack(te.getStackInSlot(slot)), saveStack(recipe.output), saveFluidStack(recipe.fluid), recipe.time};
+				return new Object[]{saveStack(te.getStackInSlot(slot-1)), saveStack(recipe.output), saveFluidStack(recipe.fluid), recipe.time};
 			else
 				return new Object[]{"No recipe found"};
 		case 1://Input stack
 			if (arguments.length!=1||!(arguments[0] instanceof Double))
 				throw new LuaException("Wrong amount of arguments, needs one integer");
 			slot = (int) (double)arguments[0];
-			if (slot<0||slot>8)
-				throw new LuaException("Input slots are numbers 0-8");
-			return new Object[]{saveStack(te.getStackInSlot(slot))};
+			if (slot<1||slot>9)
+				throw new LuaException("Input slots are numbers 1-9");
+			return new Object[]{saveStack(te.getStackInSlot(slot-1))};
 		case 2://output item stack
 			return new Object[]{saveStack(te.getStackInSlot(11))};
 		case 3://fluid tank

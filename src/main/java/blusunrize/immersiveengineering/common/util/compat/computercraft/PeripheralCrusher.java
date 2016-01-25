@@ -57,9 +57,9 @@ public class PeripheralCrusher extends IEPeripheral
 			int id = (int) (double)arguments[0];
 			ItemStack stack;
 			synchronized (te.inputs) {
-				if (id<0||id>=te.inputs.size())
+				if (id<1||id>te.inputs.size())
 					throw new LuaException("The requested place in the queue does not exist");
-				stack = te.inputs.get(id);
+				stack = te.inputs.get(id-1);
 			}
 			return new Object[]{saveStack(stack)};
 		case 4://max progress
