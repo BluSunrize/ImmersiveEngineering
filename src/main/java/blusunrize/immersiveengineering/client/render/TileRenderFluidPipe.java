@@ -187,15 +187,13 @@ public class TileRenderFluidPipe extends TileRenderIE
 					}
 					else if(straightY)
 					{
-						//default y+- z- x+
-						if((connections&8)!=0)//z+
-						{
-							rotationMatrix.rotate(Math.PI/2, 0,0,1);
-							if((connections&16)!=0)//x-
-								rotationMatrix.rotate(Math.PI/2, 0,0,1);
-						}
-						else if((connections&16)!=0)//x-
-							rotationMatrix.rotate(-Math.PI/2, 0,0,1);
+						rotationMatrix.rotate(Math.PI/2, 1, 0, 0);
+						if ((connections&20)==20)
+							rotationMatrix.rotate(-Math.PI/2, 0, 0, 1);
+						else if ((connections&24)==24)
+							rotationMatrix.rotate(Math.PI, 0, 0, 1);
+						else if ((connections&40)==40)
+							rotationMatrix.rotate(Math.PI/2, 0, 0, 1);
 					}
 					else
 					{
