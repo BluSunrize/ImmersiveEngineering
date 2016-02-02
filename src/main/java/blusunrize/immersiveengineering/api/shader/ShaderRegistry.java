@@ -270,7 +270,7 @@ public class ShaderRegistry
 					}
 				}
 			}
-		if(addToReceived)
+		if(addToReceived&&shader!=null&&!shader.isEmpty()&&player!=null&&!player.isEmpty())
 		{
 			if(!receivedShaders.get(player).contains(shader))
 				receivedShaders.put(player, shader);
