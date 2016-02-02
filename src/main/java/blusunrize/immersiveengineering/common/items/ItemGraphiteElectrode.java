@@ -68,11 +68,15 @@ public class ItemGraphiteElectrode extends ItemIEBase
 	@Override
 	public int getDamage(ItemStack stack)
 	{
-		return ItemNBTHelper.getInt(stack, "graphDmg");
+		return 0;
 	}
 	@Override
 	public void setDamage(ItemStack stack, int damage)
 	{
 		ItemNBTHelper.setInt(stack, "graphDmg", damage);
+	}
+	public void damage(ItemStack s, int dmg)
+	{
+		ItemNBTHelper.setInt(s, "graphDmg", dmg+ItemNBTHelper.getInt(s, "graphDmg"));
 	}
 }
