@@ -785,6 +785,23 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 				if(world.getTileEntity(x, startY+i, z) instanceof TileEntityBlastFurnacePreheater)
 					world.setBlockToAir(x, startY+i, z);
 		}
+		if (te instanceof TileEntityChargingStation)
+		{
+			ItemStack s = ((TileEntityChargingStation)te).inventory;
+			if (s!=null)
+			{
+				float fx = (float) (world.rand.nextGaussian() * 0.8F + 0.1F);
+				float fz = (float) (world.rand.nextGaussian() * 0.8F + 0.1F);
+
+				EntityItem entityitem = new EntityItem(world, x+fx, y+.5, z+fz, s);
+				entityitem.motionX = world.rand.nextGaussian()*.05;
+				entityitem.motionY = world.rand.nextGaussian()*.05+.2;
+				entityitem.motionZ = world.rand.nextGaussian()*.05;
+				if(s.hasTagCompound())
+					entityitem.getEntityItem().setTagCompound((NBTTagCompound)s.getTagCompound().copy());
+				world.spawnEntityInWorld(entityitem);
+			}
+		}
 		super.breakBlock(world, x, y, z, par5, par6);
 	}
 	@Override
