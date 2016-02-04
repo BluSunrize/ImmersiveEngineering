@@ -129,6 +129,9 @@ tile.ImmersiveEngineering.stoneDecoration.concreteTile.name=Concrete Tile
 tile.ImmersiveEngineering.stoneDecoration.blastBrickReinforced.name=Reinforced Blast Brick
 tile.ImmersiveEngineering.concreteStairs.name=Concrete Stairs
 tile.ImmersiveEngineering.concreteTileStairs.name=Concrete Tile Stairs
+tile.ImmersiveEngineering.stoneSlab.hempcrete.name=Hempcrete Slab
+tile.ImmersiveEngineering.stoneSlab.concrete.name=Concrete Slab
+tile.ImmersiveEngineering.stoneSlab.concreteTile.name=Concrete Tile Slab
 
 tile.ImmersiveEngineering.hemp.name=Industrial Hemp
 
