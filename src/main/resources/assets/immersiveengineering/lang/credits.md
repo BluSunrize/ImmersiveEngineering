@@ -9,9 +9,9 @@ CODE
 - UnwrittenFun for the basis of fluid transport as well as many a bugfix and fancy new features!
 
 LOCALIZATION
+- de_De.lang - XFactHD
+- en_ES.lang - berinhardt
 - fr_FR.lang - Mazdallier, webmilo
 - ja_JP.lang - karakufire
 - ru_RU.lang - Remeh84 & Adaptivity
 - zh_CN.lang - 3TUSK, crafteverywhere, bakaxyf, IamAchang, UUUii, CannonFotter & Joccob
-- de_De.lang - XFactHD
-- en_ES.lang - berinhardt
