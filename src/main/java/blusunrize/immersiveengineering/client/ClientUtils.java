@@ -501,7 +501,11 @@ public class ClientUtils
 						translationMatrix.apply(vertexCopy);
 						if(faceLight!=null)
 						{
-							tes.setBrightness(corner==0?faceLight.brightnessTopLeft: corner==1?faceLight.brightnessBottomLeft: corner==2?faceLight.brightnessBottomRight: faceLight.brightnessTopRight);
+							int bright = corner==0?faceLight.brightnessTopLeft: corner==1?faceLight.brightnessBottomLeft: corner==2?faceLight.brightnessBottomRight: faceLight.brightnessTopRight;
+							int last = bright&255;
+							if (last>247)
+								bright-=last;
+							tes.setBrightness(bright);
 							float r = corner==0?faceLight.colorRedTopLeft: corner==1?faceLight.colorRedBottomLeft: corner==2?faceLight.colorRedBottomRight: faceLight.colorRedTopRight;
 							float g = corner==0?faceLight.colorGreenTopLeft: corner==1?faceLight.colorGreenBottomLeft: corner==2?faceLight.colorGreenBottomRight: faceLight.colorGreenTopRight;
 							float b = corner==0?faceLight.colorBlueTopLeft: corner==1?faceLight.colorBlueBottomLeft: corner==2?faceLight.colorBlueBottomRight: faceLight.colorBlueTopRight;
