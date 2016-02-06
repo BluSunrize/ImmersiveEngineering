@@ -62,19 +62,15 @@
 
 {
 "uuid":["07c11943-628b-4671-a331-84899d08e538",
-"58d506e2-7ee7-4774-8b22-c7a57eda488b","4f1b6e70-4a7d-45e0-a69e-3550d528cd89",
+"58d506e2-7ee7-4774-8b22-c7a57eda488b",
 "ab2ad2a5-56e4-4849-ad62-816a30bb1213",
-"6fc60329-9b36-4f59-a991-62ceaab06363",
-"c1e2225d-af3d-4836-bf8a-3db1a486c3f6",
 "d3442da1-5173-4cc0-af9f-4af5cf296886",
 "4e90ce5b-5852-4de5-a1bc-ddb6a899eb7c",
 "c2320ea5-f43f-4cc6-9aa9-d8336b177550",
 "35f5c812-8d52-4120-a7f2-92e8e7e9cb04",
-"5389306d-cbd5-48e4-8e18-7291519f064f",
 "2af273f0-f7f8-4c05-a319-117e6bdc0fba",
 "e880fd46-7d62-45a4-a7dc-62df14c2fdba",
-"4fcd4cf9-aca9-4016-841e-27cf19b245f1",
-"a5ea0925-0afa-48eb-9512-58027bda77d1"
+"4fcd4cf9-aca9-4016-841e-27cf19b245f1"
 ],
 "tag":"patreonHazard","flavour":"","baseUpgrades":{},"renderAdditions":["dev_scope"]
 }
@@ -86,7 +82,6 @@
 "7dd988d3-8cb6-4d38-b6dd-4b425fa271d4",
 "a0040b7e-4f85-407f-b532-e398ad77bcce",
 "5637d6e4-1211-45a7-ba06-719685b8c28a",
-"6712dff7-a5d3-4a55-9c25-33b50e173ee1",
 "2025b40c-ac8a-4f03-a4df-a546b618afb2",
 "40766944-d2a8-49c5-8623-fed8da1e526d",
 "d4f46d8e-eee2-48ef-aa91-1b32fd19cd9c"
