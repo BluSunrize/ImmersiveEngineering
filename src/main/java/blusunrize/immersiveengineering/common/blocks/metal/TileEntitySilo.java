@@ -246,7 +246,7 @@ public class TileEntitySilo extends TileEntityMultiblockPart implements ISidedIn
 		TileEntitySilo master = master();
 		if(master!=null)
 			return master.isItemValidForSlot(slot,stack);
-		return this.identStack==null || OreDictionary.itemMatches(identStack, stack, true);
+		return this.identStack==null || (OreDictionary.itemMatches(identStack, stack, true) && ItemStack.areItemStackTagsEqual(stack, identStack));
 	}
 	@Override
 	public int[] getAccessibleSlotsFromSide(int side)
@@ -262,7 +262,7 @@ public class TileEntitySilo extends TileEntityMultiblockPart implements ISidedIn
 			return false;
 		TileEntitySilo master = master();
 		if(master!=null)
-			return master.identStack==null || (OreDictionary.itemMatches(master.identStack, stack, true)&&master.storageAmount<maxStorage); 
+			return master.identStack==null || (OreDictionary.itemMatches(master.identStack, stack, true) && ItemStack.areItemStackTagsEqual(stack, master.identStack)&& master.storageAmount<maxStorage); 
 		return false; 
 	}
 	@Override
@@ -272,9 +272,9 @@ public class TileEntitySilo extends TileEntityMultiblockPart implements ISidedIn
 			return false;
 		TileEntitySilo master = master();
 		if(master!=null)
-			return master.outputStack!=null && OreDictionary.itemMatches(master.identStack, stack, true); 
+			return master.outputStack!=null && OreDictionary.itemMatches(master.identStack, stack, true) && ItemStack.areItemStackTagsEqual(stack, master.identStack); 
 		else
-			return this.outputStack!=null && OreDictionary.itemMatches(identStack, stack, true);
+			return this.outputStack!=null && OreDictionary.itemMatches(identStack, stack, true) && ItemStack.areItemStackTagsEqual(stack, identStack);
 	}
 
 	@Override

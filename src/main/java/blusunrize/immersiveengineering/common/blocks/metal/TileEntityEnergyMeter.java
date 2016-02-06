@@ -8,21 +8,11 @@ import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler.Connection
 import blusunrize.immersiveengineering.api.energy.WireType;
 import blusunrize.immersiveengineering.common.blocks.TileEntityImmersiveConnectable;
 import blusunrize.immersiveengineering.common.util.Utils;
-import cpw.mods.fml.common.Optional;
-import li.cil.oc.api.machine.Arguments;
-import li.cil.oc.api.machine.Callback;
-import li.cil.oc.api.machine.Context;
-import li.cil.oc.api.network.SidedComponent;
-import li.cil.oc.api.network.SimpleComponent;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Vec3;
-import net.minecraftforge.common.util.ForgeDirection;
 
-@Optional.InterfaceList({
-		@Optional.Interface(iface = "li.cil.oc.api.network.SidedComponent", modid = "OpenComputers"),
-		@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")})
-public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implements SidedComponent, SimpleComponent
+public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable
 {
 	public int facing=3;
 	public int lastEnergyPassed = 0;
@@ -153,22 +143,4 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 		return sum/te.lastPackets.size();
 	}
 
-	@Override
-	public boolean canConnectNode(ForgeDirection side)
-	{
-		return dummy;
-	}
-
-	@Override
-	public String getComponentName()
-	{
-		return "IE:currentTransformer";
-	}
-
-	@Optional.Method(modid = "OpenComputers")
-	@Callback
-	public Object[] getLastMeasurements(Context context, Arguments args)
-	{
-		return new Object[]{getAveragePower()};
-	}
 }

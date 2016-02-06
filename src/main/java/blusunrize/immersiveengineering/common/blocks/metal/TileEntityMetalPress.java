@@ -442,10 +442,7 @@ public class TileEntityMetalPress extends TileEntityMultiblockPart implements IS
 		if(master!=null)
 			return master.isItemValidForSlot(slot,stack);
 		if(this.mold!=null)
-		{
-			MetalPressRecipe recipe = MetalPressRecipe.findRecipe(mold, stack, false);
-			return recipe!=null&&(inventory[slot]==null||OreDictionary.itemMatches(stack, inventory[slot], true));
-		}
+			return inventory[slot]==null||OreDictionary.itemMatches(stack, inventory[slot], true);
 		return true;
 	}
 	@Override

@@ -527,7 +527,7 @@ public class ImmersiveNetHandler
 			{
 				float length = c.length/(float)c.cableType.getMaxLength();
 				float baseLoss = (float)c.cableType.getLossRatio();
-				float mod = (((connectorMaxInput-energyInput)/(float)connectorMaxInput)/.25f)*.1f;
+				float mod = ((connectorMaxInput-energyInput)/(float)connectorMaxInput)*.4f;
 				f += length*(baseLoss+baseLoss*mod);
 			}
 			return Math.min(f,1);

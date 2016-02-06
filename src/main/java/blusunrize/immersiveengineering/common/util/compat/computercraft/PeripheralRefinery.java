@@ -44,8 +44,8 @@ public class PeripheralRefinery extends IEPeripheral
 		{
 		case 0://getFluid
 			HashMap<String, Object> ret = new HashMap<>(2);
-			ret.put("input0", saveFluidTank(te.tank0));
-			ret.put("input1", saveFluidTank(te.tank1));
+			ret.put("input1", saveFluidTank(te.tank0));
+			ret.put("input2", saveFluidTank(te.tank1));
 			return new Object[]{ret};
 		case 1://Output
 			return new Object[]{saveFluidTank(te.tank2)};
@@ -54,8 +54,8 @@ public class PeripheralRefinery extends IEPeripheral
 			if (ref==null)
 				throw new LuaException("The recipe of the refinery is invalid");
 			ret = new HashMap<>(3);
-			ret.put("input0", saveFluidStack(ref.input0));
-			ret.put("input1", saveFluidStack(ref.input1));
+			ret.put("input1", saveFluidStack(ref.input0));
+			ret.put("input2", saveFluidStack(ref.input1));
 			ret.put("output", saveFluidStack(ref.output));
 			return new Object[]{ret};
 		case 3://setEnabled
@@ -68,14 +68,14 @@ public class PeripheralRefinery extends IEPeripheral
 			return new Object[]{te.getRecipe(false)!=null};
 		case 5://Empty cannisters
 			ret = new HashMap<>(3);
-			ret.put("input0", saveStack(te.inventory[1]));
-			ret.put("input1", saveStack(te.inventory[3]));
+			ret.put("input1", saveStack(te.inventory[1]));
+			ret.put("input2", saveStack(te.inventory[3]));
 			ret.put("output", saveStack(te.inventory[4]));
 			return new Object[]{ret};
 		case 6://full cannisters
 			ret = new HashMap<>(3);
-			ret.put("input0", saveStack(te.inventory[0]));
-			ret.put("input1", saveStack(te.inventory[2]));
+			ret.put("input1", saveStack(te.inventory[0]));
+			ret.put("input2", saveStack(te.inventory[2]));
 			ret.put("output", saveStack(te.inventory[5]));
 			return new Object[]{ret};
 		case 7://max energy

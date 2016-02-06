@@ -170,6 +170,7 @@ public class IEContent
 	public static BlockIEBase blockOres;
 	public static BlockIEBase blockStorage;
 	public static BlockIEBase blockStorageSlabs;
+	public static BlockIEBase blockStoneSlabs;
 	public static BlockIEBase blockMetalDevice;
 	public static BlockIEBase blockMetalDevice2;
 	public static BlockIEBase blockMetalDecoration;
@@ -224,6 +225,7 @@ public class IEContent
 		blockOres = (BlockIEBase) new BlockIESimple("ore",Material.rock,ItemBlockIEBase.class, "Copper","Aluminum","Lead","Silver","Nickel").setHardness(3f).setResistance(5f);
 		blockStorage = (BlockIEBase) new BlockStorage("Copper","Aluminum","Lead","Silver","Nickel","Constantan","Electrum","Steel", "CoilCopper","CoilElectrum","CoilHV").setHardness(4f).setResistance(5f);
 		blockStorageSlabs = (BlockIEBase) new BlockIESlabs("storageSlab","storage_",Material.iron,"Copper","Aluminum","Lead","Silver","Nickel","Constantan","Electrum","Steel").setHardness(4f).setResistance(5f);
+		blockStoneSlabs = (BlockIEBase) new BlockIESlabs("stoneSlab", "stoneDecoration_", Material.rock, "hempcrete", "concrete", "concreteTile");
 		blockMetalDevice = new BlockMetalDevices();
 		blockMetalDevice2 = new BlockMetalDevices2();
 		blockMetalDecoration = new BlockMetalDecoration();

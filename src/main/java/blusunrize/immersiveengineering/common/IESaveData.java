@@ -117,6 +117,9 @@ public class IESaveData extends WorldSavedData
 		NBTTagList receivedShaderList = new NBTTagList();
 		for(String player : ShaderRegistry.receivedShaders.keySet())
 		{
+			//just to be safe
+			if (player==null||player.isEmpty())
+				continue;
 			NBTTagCompound tag = new NBTTagCompound();
 			tag.setString("player", player);
 			NBTTagList playerReceived = new NBTTagList();

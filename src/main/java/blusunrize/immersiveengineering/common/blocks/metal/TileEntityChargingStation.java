@@ -20,7 +20,7 @@ public class TileEntityChargingStation extends TileEntityIEBase implements IEner
 	public EnergyStorage energyStorage = new EnergyStorage(32000,Math.max(1024, Config.getInt("charger_consumption")));
 	public int facing = 2;
 	public ItemStack inventory;
-	private boolean charging = true;
+	private boolean charging = false;
 	public int comparatorOutput=0;
 
 	@Override
@@ -101,7 +101,7 @@ public class TileEntityChargingStation extends TileEntityIEBase implements IEner
 					}
 				}
 			}
-			else if (energyStorage.getEnergyStored()==energyStorage.getMaxEnergyStored())
+			else if (energyStorage.getEnergyStored()>=energyStorage.getMaxEnergyStored()*.95)
 			{
 				charging = true;
 				worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);

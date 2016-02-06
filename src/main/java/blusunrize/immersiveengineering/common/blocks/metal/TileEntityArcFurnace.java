@@ -4,12 +4,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockArcFurnace;
+import blusunrize.immersiveengineering.common.items.ItemGraphiteElectrode;
 import blusunrize.immersiveengineering.common.util.Utils;
 import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyReceiver;
@@ -275,12 +277,20 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 				if(damageElectrodes)
 				{
 					for(int i=23; i<26; i++)
-						if(this.getStackInSlot(i).attemptDamageItem(1, worldObj.rand))
+					{
+						ItemStack electrode = getStackInSlot(i);
+						if (electrode.getItem() instanceof ItemGraphiteElectrode)
 						{
-							this.setInventorySlotContents(i, null);
-							updateClient = true;
-							update = true;
+							ItemGraphiteElectrode elec = (ItemGraphiteElectrode) electrode.getItem();
+							elec.damage(electrode, 1);
+							if (elec.getDurabilityForDisplay(electrode)>=1)
+							{
+								this.setInventorySlotContents(i, null);
+								updateClient = true;
+								update = true;
+							}
 						}
+					}
 				}
 				else if(active)
 				{

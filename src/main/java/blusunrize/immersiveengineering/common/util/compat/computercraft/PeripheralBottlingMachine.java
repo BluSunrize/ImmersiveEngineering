@@ -45,12 +45,12 @@ public class PeripheralBottlingMachine extends IEPeripheral {
 			if (arguments.length!=1||!(arguments[0] instanceof Double))
 				throw new LuaException("Wrong amount of arguments, needs one integer");
 			int param = (int)(double) arguments[0];
-			if (param<0||param>4)
-				throw new LuaException("Only 0-4 are valid cannister positions");
+			if (param<1||param>5)
+				throw new LuaException("Only 1-5 are valid cannister positions");
 			int id;
 			try
 			{
-				id = te.getEmptyCannister(param);
+				id = te.getEmptyCannister(param-1);
 			}
 			catch (IllegalArgumentException e)
 			{
@@ -65,11 +65,11 @@ public class PeripheralBottlingMachine extends IEPeripheral {
 			if (arguments.length!=1||!(arguments[0] instanceof Double))
 				throw new LuaException("Wrong amount of arguments, needs one integer");
 			param = (int)(double) arguments[0];
-			if (param<0||param>4)
-				throw new LuaException("Only 0-4 are valid cannister positions");
+			if (param<1||param>5)
+				throw new LuaException("Only 1-5 are valid cannister positions");
 			try
 			{
-				id = te.getFilledCannister(param);
+				id = te.getFilledCannister(param-1);
 			}
 			catch (IllegalArgumentException e)
 			{

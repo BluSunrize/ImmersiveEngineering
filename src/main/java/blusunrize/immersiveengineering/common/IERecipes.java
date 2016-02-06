@@ -222,6 +222,13 @@ public class IERecipes
 			addOredictRecipe(new ItemStack(IEContent.blockStorageSlabs,6,i), "III", 'I',new ItemStack(IEContent.blockStorage,1,i));
 			addOredictRecipe(new ItemStack(IEContent.blockStorage,1,i), "I","I", 'I',new ItemStack(IEContent.blockStorageSlabs,1,i));
 		}
+		GameRegistry.addRecipe(new ItemStack(IEContent.blockStoneSlabs, 6, 0), "sss", 's', new ItemStack(IEContent.blockStoneDecoration, 1, 0));
+		GameRegistry.addRecipe(new ItemStack(IEContent.blockStoneSlabs, 6, 1), "sss", 's', new ItemStack(IEContent.blockStoneDecoration, 1, 4));
+		GameRegistry.addRecipe(new ItemStack(IEContent.blockStoneSlabs, 6, 2), "sss", 's', new ItemStack(IEContent.blockStoneDecoration, 1, 5));
+		GameRegistry.addRecipe(new ItemStack(IEContent.blockStoneDecoration, 1, 0), "s", "s", 's', new ItemStack(IEContent.blockStoneSlabs, 1, 0));
+		GameRegistry.addRecipe(new ItemStack(IEContent.blockStoneDecoration, 1, 4), "s", "s", 's', new ItemStack(IEContent.blockStoneSlabs, 1, 1));
+		GameRegistry.addRecipe(new ItemStack(IEContent.blockStoneDecoration, 1, 5), "s", "s", 's', new ItemStack(IEContent.blockStoneSlabs, 1, 2));
+
 		for(int i=0; i<=8; i++)
 			if(!IEContent.itemMetal.hiddenMeta[30+i])
 				addShapelessOredictRecipe(new ItemStack(IEContent.itemMetal,1,30+i), "ingot"+metals[i],new ItemStack(IEContent.itemTool,1,0));
