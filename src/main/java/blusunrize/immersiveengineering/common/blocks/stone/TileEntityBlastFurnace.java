@@ -124,7 +124,8 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart implements 
 
 			if(a!=active)
 			{
-
+				if (!active)
+					turnOff();
 				this.markDirty();
 				int xMin= facing==5?-2: facing==4?0:-1;
 				int xMax= facing==5? 0: facing==4?2: 1;
@@ -161,6 +162,9 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart implements 
 		return 1;
 	}
 
+	protected void turnOff()
+	{}
+	
 	@Override
 	public boolean receiveClientEvent(int id, int arg)
 	{

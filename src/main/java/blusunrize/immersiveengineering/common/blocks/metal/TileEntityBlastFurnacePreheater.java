@@ -45,6 +45,12 @@ public class TileEntityBlastFurnacePreheater extends TileEntityIEBase implements
 		return 0;
 	}
 	
+	public void turnOff()
+	{
+		active = false;
+		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+	}
+	
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{

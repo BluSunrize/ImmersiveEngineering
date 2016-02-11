@@ -327,7 +327,7 @@ public class TileEntityAssembler extends TileEntityMultiblockPart implements ISi
 	{
 		if(this.inventory[18+iPattern]==null)
 			return true;
-		else if(this.inventory[18+iPattern]!=null && OreDictionary.itemMatches(output, this.inventory[18+iPattern], true) && this.inventory[18+iPattern].stackSize+output.stackSize<=this.inventory[18+iPattern].getMaxStackSize())
+		else if(OreDictionary.itemMatches(output, this.inventory[18+iPattern], true) && ItemStack.areItemStackTagsEqual(output, this.inventory[18+iPattern]) && this.inventory[18+iPattern].stackSize+output.stackSize<=this.inventory[18+iPattern].getMaxStackSize())
 			return true;
 		return false;
 	}
