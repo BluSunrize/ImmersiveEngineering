@@ -584,7 +584,7 @@ public class Utils
 				if(filledContainer!=null)
 				{
 					FluidStack fs = FluidContainerRegistry.getFluidForFilledItem(filledContainer);
-					if(fs.amount<=tank.getFluidAmount() && (containerOut==null || OreDictionary.itemMatches(containerOut, filledContainer, true)))
+					if(fs.amount<=tank.getFluidAmount() && (containerOut==null || (OreDictionary.itemMatches(containerOut, filledContainer, true)&&ItemStack.areItemStackTagsEqual(containerOut, filledContainer))))
 					{
 						tank.drain(fs.amount, true);
 						return filledContainer;

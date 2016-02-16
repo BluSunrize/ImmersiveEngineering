@@ -62,14 +62,8 @@ public class ComparableItemStack
 		if(!OreDictionary.itemMatches(stack,otherStack, false))
 			return false;
 		if(this.useNBT)
-		{
-			if(this.stack.stackTagCompound==null && otherStack.stackTagCompound!=null)
+			if(!ItemStack.areItemStackTagsEqual(stack, otherStack))
 				return false;
-			if(this.stack.stackTagCompound!=null && otherStack.stackTagCompound==null)
-				return false;
-			if(!this.stack.stackTagCompound.equals(otherStack.stackTagCompound))
-				return false;
-		}
 		return true;
 	}
 }

@@ -88,10 +88,13 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart implements 
 								inventory[2].stackSize+=recipe.output.copy().stackSize;
 							else
 								inventory[2] = recipe.output.copy();
-							if(inventory[3]!=null)
-								inventory[3].stackSize+=recipe.slag.copy().stackSize;
-							else
-								inventory[3] = recipe.slag.copy();
+							if (recipe.slag!=null)
+							{
+								if(inventory[3]!=null)
+									inventory[3].stackSize+=recipe.slag.copy().stackSize;
+								else
+									inventory[3] = recipe.slag.copy();
+							}
 						}
 						processMax=0;
 						active=false;
@@ -124,7 +127,8 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart implements 
 
 			if(a!=active)
 			{
-
+				if (!active)
+					turnOff();
 				this.markDirty();
 				int xMin= facing==5?-2: facing==4?0:-1;
 				int xMax= facing==5? 0: facing==4?2: 1;
@@ -149,17 +153,22 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart implements 
 		BlastFurnaceRecipe recipe = BlastFurnaceRecipe.findRecipe(inventory[0]);
 		if(recipe==null)
 			return null;
-		if(inventory[2]==null || (OreDictionary.itemMatches(inventory[2],recipe.output,true) && inventory[2].stackSize+recipe.output.stackSize<=getInventoryStackLimit()) )
-			return recipe;
-		if(inventory[3]==null || (OreDictionary.itemMatches(inventory[3],recipe.slag,true) && inventory[3].stackSize+recipe.slag.stackSize<=getInventoryStackLimit()) )
-			return recipe;
-		return null;
+		if (recipe.input instanceof ItemStack&&((ItemStack)recipe.input).stackSize>inventory[0].stackSize)
+			return null;
+		if(inventory[2]!=null && (!OreDictionary.itemMatches(inventory[2],recipe.output,true) || inventory[2].stackSize+recipe.output.stackSize>getInventoryStackLimit()) )
+			return null;
+		if(inventory[3]!=null && recipe.slag!=null && (!OreDictionary.itemMatches(inventory[3],recipe.slag,true) || inventory[3].stackSize+recipe.slag.stackSize>getInventoryStackLimit()) )
+			return null;
+		return recipe;
 	}
 
 	protected int getProcessSpeed()
 	{
 		return 1;
 	}
+
+	protected void turnOff()
+	{}
 
 	@Override
 	public boolean receiveClientEvent(int id, int arg)

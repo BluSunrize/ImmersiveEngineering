@@ -98,18 +98,25 @@ public class TileEntityBlastFurnaceAdvanced extends TileEntityBlastFurnace
 	protected int getProcessSpeed()
 	{
 		int i = 1;
-		for(int w=-2; w<=2; w+=4)
-		{
-			int xx = facing==4?1: facing==5?-1: facing==2?-w:w;
-			int zz = facing==2?1: facing==3?-1: facing==4?w:-w;
-			int phf = facing<4?(xx<0?4:5): (zz<0?2:3);
-			if(worldObj.getTileEntity(xCoord+xx, yCoord-1, zCoord+zz) instanceof TileEntityBlastFurnacePreheater)
-			{
-				if( ((TileEntityBlastFurnacePreheater)worldObj.getTileEntity(xCoord+xx, yCoord-1, zCoord+zz)).facing==phf)
-					i += ((TileEntityBlastFurnacePreheater)worldObj.getTileEntity(xCoord+xx, yCoord-1, zCoord+zz)).doSpeedup();
-			}
-		}
+		TileEntityBlastFurnacePreheater heater = getHeater(false);
+		if (heater!=null)
+			i += heater.doSpeedup();
+		heater = getHeater(true);
+		if (heater!=null)
+			i += heater.doSpeedup();
 		return i;
+	}
+	private TileEntityBlastFurnacePreheater getHeater(boolean first)
+	{
+		int w = first?-2:2;
+		int xx = facing==4?1: facing==5?-1: facing==2?-w:w;
+		int zz = facing==2?1: facing==3?-1: facing==4?w:-w;
+		int phf = facing<4?(xx<0?4:5): (zz<0?2:3);
+		TileEntity te = worldObj.getTileEntity(xCoord+xx, yCoord-1, zCoord+zz);
+		if(te instanceof TileEntityBlastFurnacePreheater)
+			if (((TileEntityBlastFurnacePreheater)te).facing==phf)
+				return (TileEntityBlastFurnacePreheater) te;
+		return null;
 	}
 
 	@Override
@@ -198,5 +205,17 @@ public class TileEntityBlastFurnaceAdvanced extends TileEntityBlastFurnace
 							}
 						}
 		}
+	}
+	@Override
+	protected void turnOff()
+	{
+		super.turnOff();
+		TileEntityBlastFurnacePreheater heater = getHeater(false);
+		if (heater!=null)
+			heater.turnOff();
+		heater = getHeater(true);
+		if (heater!=null)
+			heater.turnOff();
+		
 	}
 }
