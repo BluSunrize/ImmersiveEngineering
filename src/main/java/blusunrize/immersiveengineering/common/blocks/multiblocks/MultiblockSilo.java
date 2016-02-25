@@ -19,9 +19,12 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class MultiblockSilo implements IMultiblock
 {
 	public static MultiblockSilo instance = new MultiblockSilo();
+	private static final TileEntitySilo silo = new TileEntitySilo();
 
 	static ItemStack[][][] structure = new ItemStack[7][3][3];
 	static{
+		silo.formed=true;
+		silo.pos=4;
 		for(int h=0;h<7;h++)
 			for(int l=0;l<3;l++)
 				for(int w=0;w<3;w++)
@@ -63,10 +66,7 @@ public class MultiblockSilo implements IMultiblock
 	@SideOnly(Side.CLIENT)
 	public void renderFormedStructure()
 	{
-		TileEntitySilo te = new TileEntitySilo();
-		te.formed=true;
-		te.pos=4;
-		TileEntityRendererDispatcher.instance.renderTileEntityAt(te, -.5D, -3.5D, -.5D, 0.0F);
+		TileEntityRendererDispatcher.instance.renderTileEntityAt(silo, -.5D, -3.5D, -.5D, 0.0F);
 	}
 
 	@Override

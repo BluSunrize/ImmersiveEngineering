@@ -22,7 +22,11 @@ public class MultiblockCrusher implements IMultiblock
 {
 	public static MultiblockCrusher instance = new MultiblockCrusher();
 	static ItemStack[][][] structure = new ItemStack[3][5][3];
+	private static final TileEntityCrusher crush = new TileEntityCrusher();
 	static{
+		crush.formed=true;
+		crush.pos=17;
+		crush.facing=4;
 		for(int h=0;h<3;h++)
 			for(int l=0;l<5;l++)
 				for(int w=0;w<3;w++)
@@ -67,17 +71,13 @@ public class MultiblockCrusher implements IMultiblock
 	@SideOnly(Side.CLIENT)
 	public void renderFormedStructure()
 	{
-		TileEntityCrusher te = new TileEntityCrusher();
-		te.formed=true;
-		te.pos=17;
-		te.facing=4;
 		ClientUtils.bindAtlas(0);
 		ClientUtils.tes().startDrawingQuads();
 		ClientUtils.tes().setTranslation(-1f, -1, 0);
-		ClientUtils.handleStaticTileRenderer(te, false);
+		ClientUtils.handleStaticTileRenderer(crush, false);
 		ClientUtils.tes().draw();
 		ClientUtils.tes().setTranslation(0,0,0);
-		TileEntityRendererDispatcher.instance.renderTileEntityAt(te, -1D, -1D, .0D, 0.0F);
+		TileEntityRendererDispatcher.instance.renderTileEntityAt(crush, -1D, -1D, .0D, 0.0F);
 	}
 	@Override
 	public float getManualScale()

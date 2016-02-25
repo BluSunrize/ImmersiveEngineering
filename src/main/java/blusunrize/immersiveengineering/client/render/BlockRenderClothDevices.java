@@ -15,7 +15,7 @@ public class BlockRenderClothDevices implements ISimpleBlockRenderingHandler
 {
 	public static int renderID = RenderingRegistry.getNextAvailableRenderId();
 	public static int renderPass;
-
+	private static final TileEntityBalloon balloon = new TileEntityBalloon();
 	@Override
 	public void renderInventoryBlock(Block block, int metadata, int modelId, RenderBlocks renderer)
 	{
@@ -24,7 +24,7 @@ public class BlockRenderClothDevices implements ISimpleBlockRenderingHandler
 			if(metadata==0)
 			{
 				Tessellator.instance.startDrawingQuads();
-				ClientUtils.handleStaticTileRenderer(new TileEntityBalloon());
+				ClientUtils.handleStaticTileRenderer(balloon);
 				Tessellator.instance.draw();
 			}
 		}catch(Exception e)

@@ -23,7 +23,9 @@ import cpw.mods.fml.client.registry.RenderingRegistry;
 public class BlockRenderMetalDecoration implements ISimpleBlockRenderingHandler
 {
 	public static int renderID = RenderingRegistry.getNextAvailableRenderId();
-
+	private static final TileEntityLantern lantern = new TileEntityLantern();
+	private static final TileEntityConnectorStructural conn = new TileEntityConnectorStructural();
+	private static final TileEntityWallmountMetal wall = new TileEntityWallmountMetal();
 	@Override
 	public void renderInventoryBlock(Block block, int metadata, int modelId, RenderBlocks renderer)
 	{
@@ -50,7 +52,7 @@ public class BlockRenderMetalDecoration implements ISimpleBlockRenderingHandler
 			else if(metadata==BlockMetalDecoration.META_lantern)
 			{
 				Tessellator.instance.startDrawingQuads();
-				ClientUtils.handleStaticTileRenderer(new TileEntityLantern());
+				ClientUtils.handleStaticTileRenderer(lantern);
 				Tessellator.instance.draw();
 			}
 			else if(metadata==BlockMetalDecoration.META_structuralArm||metadata==BlockMetalDecoration.META_aluminiumStructuralArm)
@@ -112,13 +114,13 @@ public class BlockRenderMetalDecoration implements ISimpleBlockRenderingHandler
 			else if(metadata==BlockMetalDecoration.META_connectorStructural)
 			{
 				Tessellator.instance.startDrawingQuads();
-				ClientUtils.handleStaticTileRenderer(new TileEntityConnectorStructural());
+				ClientUtils.handleStaticTileRenderer(conn);
 				Tessellator.instance.draw();
 			}
 			else if(metadata==BlockMetalDecoration.META_wallMount)
 			{
 				Tessellator.instance.startDrawingQuads();
-				ClientUtils.handleStaticTileRenderer(new TileEntityWallmountMetal());
+				ClientUtils.handleStaticTileRenderer(wall);
 				Tessellator.instance.draw();
 			}
 			else

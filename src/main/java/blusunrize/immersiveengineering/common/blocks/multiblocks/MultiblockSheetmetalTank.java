@@ -18,9 +18,11 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class MultiblockSheetmetalTank implements IMultiblock
 {
 	public static MultiblockSheetmetalTank instance = new MultiblockSheetmetalTank();
-
+	private static final TileEntitySheetmetalTank tank = new TileEntitySheetmetalTank();
 	static ItemStack[][][] structure = new ItemStack[5][3][3];
 	static{
+		tank.formed=true;
+		tank.pos=4;
 		for(int h=0;h<5;h++)
 			for(int l=0;l<3;l++)
 				for(int w=0;w<3;w++)
@@ -62,10 +64,7 @@ public class MultiblockSheetmetalTank implements IMultiblock
 	@SideOnly(Side.CLIENT)
 	public void renderFormedStructure()
 	{
-		TileEntitySheetmetalTank te = new TileEntitySheetmetalTank();
-		te.formed=true;
-		te.pos=4;
-		TileEntityRendererDispatcher.instance.renderTileEntityAt(te, -.5D, -2.5D, -.5D, 0.0F);
+		TileEntityRendererDispatcher.instance.renderTileEntityAt(tank, -.5D, -2.5D, -.5D, 0.0F);
 	}
 
 	@Override

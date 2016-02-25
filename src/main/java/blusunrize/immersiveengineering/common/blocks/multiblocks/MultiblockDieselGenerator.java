@@ -20,9 +20,11 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class MultiblockDieselGenerator implements IMultiblock
 {
 	public static MultiblockDieselGenerator instance = new MultiblockDieselGenerator();
-
+	private static final TileEntityDieselGenerator gen = new TileEntityDieselGenerator();
 	static ItemStack[][][] structure = new ItemStack[3][5][3];
 	static{
+		gen.formed=true;
+		gen.pos=31;
 		for(int h=0;h<3;h++)
 			for(int l=0;l<5;l++)
 				for(int w=0;w<3;w++)
@@ -53,16 +55,13 @@ public class MultiblockDieselGenerator implements IMultiblock
 	@SideOnly(Side.CLIENT)
 	public void renderFormedStructure()
 	{
-		TileEntityDieselGenerator te = new TileEntityDieselGenerator();
-		te.formed=true;
-		te.pos=31;
 		ClientUtils.bindAtlas(0);
 		ClientUtils.tes().startDrawingQuads();
 		ClientUtils.tes().setTranslation(-.5,-.5,-1.5);
-		ClientUtils.handleStaticTileRenderer(te, false);
+		ClientUtils.handleStaticTileRenderer(gen, false);
 		ClientUtils.tes().setTranslation(0,0,0);
 		ClientUtils.tes().draw();
-		TileEntityRendererDispatcher.instance.renderTileEntityAt(te, -.5D, -.5D, -1.5D, 0.0F);
+		TileEntityRendererDispatcher.instance.renderTileEntityAt(gen, -.5D, -.5D, -1.5D, 0.0F);
 	}
 	@Override
 	public float getManualScale()

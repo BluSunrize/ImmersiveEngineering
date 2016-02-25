@@ -16,7 +16,7 @@ import cpw.mods.fml.client.registry.RenderingRegistry;
 public class BlockRenderWoodenDecoration implements ISimpleBlockRenderingHandler
 {
 	public static int renderID = RenderingRegistry.getNextAvailableRenderId();
-
+	private static final TileEntityWallmount wallmount = new TileEntityWallmount();
 	@Override
 	public void renderInventoryBlock(Block block, int metadata, int modelId, RenderBlocks renderer)
 	{
@@ -56,7 +56,7 @@ public class BlockRenderWoodenDecoration implements ISimpleBlockRenderingHandler
 			else if(metadata==6)
 			{
 				Tessellator.instance.startDrawingQuads();
-				ClientUtils.handleStaticTileRenderer(new TileEntityWallmount());
+				ClientUtils.handleStaticTileRenderer(wallmount);
 				Tessellator.instance.draw();
 			}
 		}catch(Exception e)

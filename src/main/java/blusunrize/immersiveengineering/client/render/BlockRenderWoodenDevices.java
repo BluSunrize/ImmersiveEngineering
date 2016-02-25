@@ -19,7 +19,15 @@ import net.minecraft.world.IBlockAccess;
 public class BlockRenderWoodenDevices implements ISimpleBlockRenderingHandler
 {
 	public static int renderID = RenderingRegistry.getNextAvailableRenderId();
-
+	private static final TileEntityWoodenPost woodenPost = new TileEntityWoodenPost();
+	private static final TileEntityWatermill waterMill = new TileEntityWatermill();
+	private static final TileEntityWindmill windMill = new TileEntityWindmill();
+	private static final TileEntityWindmillAdvanced windMillAdv = new TileEntityWindmillAdvanced();
+	private static final TileEntityModWorkbench workbench = new TileEntityModWorkbench();
+	static
+	{
+		workbench.facing=3;
+	}
 	@Override
 	public void renderInventoryBlock(Block block, int metadata, int modelId, RenderBlocks renderer)
 	{
@@ -30,23 +38,23 @@ public class BlockRenderWoodenDevices implements ISimpleBlockRenderingHandler
 				GL11.glScalef(.5f, .33f, .5f);
 				GL11.glTranslatef(-.5f, -2F, -.5f);
 				Tessellator.instance.startDrawingQuads();
-				ClientUtils.handleStaticTileRenderer(new TileEntityWoodenPost());
+				ClientUtils.handleStaticTileRenderer(woodenPost);
 				Tessellator.instance.draw();
 			}
 			else if(metadata==1)
 			{
 				GL11.glScalef(.25f, .25f, .25f);
-				TileEntityRendererDispatcher.instance.renderTileEntityAt(new TileEntityWatermill(), 0.0D, 0.0D, 0.0D, 0.0F);
+				TileEntityRendererDispatcher.instance.renderTileEntityAt(waterMill, 0.0D, 0.0D, 0.0D, 0.0F);
 			}
 			else if(metadata==2)
 			{
 				GL11.glScalef(.125f, .125f, .125f);
-				TileEntityRendererDispatcher.instance.renderTileEntityAt(new TileEntityWindmill(), 0.0D, 0.0D, 0.0D, 0.0F);
+				TileEntityRendererDispatcher.instance.renderTileEntityAt(windMill, 0.0D, 0.0D, 0.0D, 0.0F);
 			}
 			else if(metadata==3)
 			{
 				GL11.glScalef(.125f, .125f, .125f);
-				TileEntityRendererDispatcher.instance.renderTileEntityAt(new TileEntityWindmillAdvanced(), 0.0D, 0.0D, 0.0D, 0.0F);
+				TileEntityRendererDispatcher.instance.renderTileEntityAt(windMillAdv, 0.0D, 0.0D, 0.0D, 0.0F);
 			}
 			else if(metadata==4)
 			{
@@ -57,10 +65,8 @@ public class BlockRenderWoodenDevices implements ISimpleBlockRenderingHandler
 			{
 				GL11.glScalef(.75f, .75f, .75f);
 				GL11.glTranslatef(-.75f, -.5F, -.25f);
-				TileEntityModWorkbench tile = new TileEntityModWorkbench();
-				tile.facing=3;
 				Tessellator.instance.startDrawingQuads();
-				ClientUtils.handleStaticTileRenderer(tile);
+				ClientUtils.handleStaticTileRenderer(workbench);
 				Tessellator.instance.draw();
 //				TileEntityRendererDispatcher.instance.renderTileEntityAt(tile, 0,0,0,0);
 			}

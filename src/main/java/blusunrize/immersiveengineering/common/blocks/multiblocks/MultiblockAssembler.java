@@ -25,6 +25,7 @@ public class MultiblockAssembler implements IMultiblock
 {
 	public static MultiblockAssembler instance = new MultiblockAssembler();
 	static ItemStack[][][] structure = new ItemStack[3][3][3];
+	private static final TileEntityAssembler assemble = new TileEntityAssembler();
 	static{
 		for(int h=0;h<3;h++)
 			for(int l=0;l<3;l++)
@@ -78,11 +79,10 @@ public class MultiblockAssembler implements IMultiblock
 	@SideOnly(Side.CLIENT)
 	public void renderFormedStructure()
 	{
-		TileEntityAssembler te = new TileEntityAssembler();
 		ClientUtils.bindAtlas(0);
 		ClientUtils.tes().startDrawingQuads();
 		ClientUtils.tes().setTranslation(-.5f,-1.5f,-.5f);
-		ClientUtils.handleStaticTileRenderer(te, false);
+		ClientUtils.handleStaticTileRenderer(assemble, false);
 		ClientUtils.tes().draw();
 		ClientUtils.tes().setTranslation(0,0,0);
 	}
@@ -97,7 +97,7 @@ public class MultiblockAssembler implements IMultiblock
 	{
 		return "IE:Assembler";
 	}
-	
+
 	@Override
 	public boolean isBlockTrigger(Block b, int meta)
 	{
@@ -174,18 +174,18 @@ public class MultiblockAssembler implements IMultiblock
 					int yy = startY+ h;
 					int zz = startZ+ (side==2?l: side==3?-l: side==5?-w : w);
 
-						world.setBlock(xx, yy, zz, IEContent.blockMetalMultiblocks, BlockMetalMultiblocks.META_assembler, 0x3);
-						TileEntity curr = world.getTileEntity(xx, yy, zz);
-						if(curr instanceof TileEntityAssembler)
-						{
-							TileEntityAssembler tile = (TileEntityAssembler)curr;
-							tile.facing=side;
-							tile.formed=true;
-							tile.pos = (h+1)*9 + l*3 + (w+1);
-							tile.offset = new int[]{(side==4?l-1: side==5?1-l: side==2?-w: w),h,(side==2?l-1: side==3?1-l: side==5?-w: w)};
-						}
+					world.setBlock(xx, yy, zz, IEContent.blockMetalMultiblocks, BlockMetalMultiblocks.META_assembler, 0x3);
+					TileEntity curr = world.getTileEntity(xx, yy, zz);
+					if(curr instanceof TileEntityAssembler)
+					{
+						TileEntityAssembler tile = (TileEntityAssembler)curr;
+						tile.facing=side;
+						tile.formed=true;
+						tile.pos = (h+1)*9 + l*3 + (w+1);
+						tile.offset = new int[]{(side==4?l-1: side==5?1-l: side==2?-w: w),h,(side==2?l-1: side==3?1-l: side==5?-w: w)};
 					}
-//			player.triggerAchievement(IEAchievements.mbCrusher);
+				}
+		//			player.triggerAchievement(IEAchievements.mbCrusher);
 		return true;
 	}
 
