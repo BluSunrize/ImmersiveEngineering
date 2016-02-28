@@ -83,16 +83,16 @@ public class AssemblerDriver extends DriverTileEntity
 		public Object[] hasIngredients(Context context, Arguments args)
 		{
 			int recipe = args.checkInteger(0);
-			if (recipe>2||recipe<0)
-				throw new IllegalArgumentException("Only recipes 0-2 are available");
+			if (recipe>3||recipe<1)
+				throw new IllegalArgumentException("Only recipes 1-3 are available");
 			TileEntityAssembler master = getTileEntity();
-			if (master.patterns[recipe].inv[9]==null)
+			if (master.patterns[recipe-1].inv[9]==null)
 				throw new IllegalArgumentException("The requested recipe is invalid");
 			ArrayList<ItemStack> queryList = new ArrayList<>();
 			for(ItemStack stack : master.inventory)
 				if(stack!=null)
 					queryList.add(stack.copy());
-			return new Object[]{master.hasIngredients(master.patterns[recipe], queryList)};
+			return new Object[]{master.hasIngredients(master.patterns[recipe-1], queryList)};
 		}
 
 		@Callback(doc = "function(recipe:int) -- enables or disables the specified recipe")
@@ -100,9 +100,9 @@ public class AssemblerDriver extends DriverTileEntity
 		{
 			boolean on = args.checkBoolean(1);
 			int recipe = args.checkInteger(0);
-			if (recipe>2||recipe<0)
-				throw new IllegalArgumentException("Only recipes 0-2 are available");
-			getTileEntity().computerOn[recipe] = on;
+			if (recipe>3||recipe<1)
+				throw new IllegalArgumentException("Only recipes 1-3 are available");
+			getTileEntity().computerOn[recipe-1] = on;
 			return null;
 		}
 
@@ -110,13 +110,13 @@ public class AssemblerDriver extends DriverTileEntity
 		public Object[] getRecipe(Context context, Arguments args)
 		{
 			int recipe = args.checkInteger(0);
-			if (recipe>2||recipe<0)
-				throw new IllegalArgumentException("Only recipes 0-2 are available");
+			if (recipe>3||recipe<1)
+				throw new IllegalArgumentException("Only recipes 1-3 are available");
 			TileEntityAssembler te = getTileEntity();
 			HashMap<String, Object> ret = new HashMap<>();
 			for (int i = 0;i<9;i++)
-				ret.put("in"+(i+1), te.patterns[recipe].inv[i]);
-			ret.put("out", te.patterns[recipe].inv[9]);
+				ret.put("in"+(i+1), te.patterns[recipe-1].inv[i]);
+			ret.put("out", te.patterns[recipe-1].inv[9]);
 			return new Object[]{ret};
 		}
 
@@ -124,18 +124,18 @@ public class AssemblerDriver extends DriverTileEntity
 		public Object[] isValidRecipe(Context context, Arguments args)
 		{
 			int recipe = args.checkInteger(0);
-			if (recipe>2||recipe<0)
-				throw new IllegalArgumentException("Only recipes 0-2 are available");
-			return new Object[]{getTileEntity().patterns[recipe].inv[9]!=null};
+			if (recipe>3||recipe<1)
+				throw new IllegalArgumentException("Only recipes 1-3 are available");
+			return new Object[]{getTileEntity().patterns[recipe-1].inv[9]!=null};
 		}
 
 		@Callback(doc = "function(tank:int):table -- gets the specified tank")
 		public Object[] getTank(Context context, Arguments args)
 		{
 			int tank = args.checkInteger(0);
-			if (tank>2||tank<0)
-				throw new IllegalArgumentException("Only tanks 0-2 are available");
-			return new Object[]{Utils.saveFluidTank(getTileEntity().tanks[tank])};
+			if (tank>3||tank<1)
+				throw new IllegalArgumentException("Only tanks 1-3 are available");
+			return new Object[]{Utils.saveFluidTank(getTileEntity().tanks[tank-1])};
 		}
 
 		@Callback(doc = "function():int -- returns the maximum amount of energy that can be stored")
@@ -153,17 +153,17 @@ public class AssemblerDriver extends DriverTileEntity
 		public Object[] getStackInSlot(Context context, Arguments args)
 		{
 			int slot = args.checkInteger(0);
-			if (slot<0||slot>17)
-				throw new IllegalArgumentException("Only slots 0-17 are available");
-			return new Object[]{getTileEntity().inventory[slot]};
+			if (slot<1||slot>18)
+				throw new IllegalArgumentException("Only slots 1-18 are available");
+			return new Object[]{getTileEntity().inventory[slot-1]};
 		}
 		@Callback(doc = "function(slot:int):table -- returns the stack in the output slot of the specified recipe")
 		public Object[] getBufferStack(Context context, Arguments args)
 		{
 			int slot = args.checkInteger(0);
-			if (slot<0||slot>2)
-				throw new IllegalArgumentException("Only recipes 0-2 are available");
-			return new Object[]{getTileEntity().inventory[18+slot]};
+			if (slot<1||slot>3)
+				throw new IllegalArgumentException("Only recipes 1-3 are available");
+			return new Object[]{getTileEntity().inventory[17+slot]};
 		}
 		
 	}

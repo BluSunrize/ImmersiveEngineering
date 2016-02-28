@@ -963,7 +963,7 @@ ie.manual.entry.computer.dieselgen0=§lsetEnabled(boolean active)§r: allows or 
 
 ie.manual.entry.computer.energymeter.name=Current Transformer (computers)
 ie.manual.entry.computer.energymeter.subtext=88 Flux per hour!
-ie.manual.entry.computer.energymeter0=The bottom block of a current transformer can be connected to a computer. It will provide a single method, §LgetAvgEnergy§r , that returns the average amount of energy per tick that was transferred through the transformer during the last 20 ticks.
+ie.manual.entry.computer.energymeter0=The bottom block of a current transformer can be connected to a computer. It will provide a single method, §lgetAvgEnergy()§r , that returns the average amount of energy per tick that was transferred through the transformer during the last 20 ticks.
 
 ie.manual.entry.computer.excavator.name=Excavator (computers)
 ie.manual.entry.computer.excavator.subtext=Better than Dwarves

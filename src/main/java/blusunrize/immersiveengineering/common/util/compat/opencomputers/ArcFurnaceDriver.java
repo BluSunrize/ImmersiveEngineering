@@ -4,6 +4,8 @@ import java.util.Map;
 
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityArcFurnace;
+import blusunrize.immersiveengineering.common.items.ItemGraphiteElectrode;
+import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
@@ -11,6 +13,7 @@ import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.network.ManagedEnvironment;
 import li.cil.oc.api.network.Node;
 import li.cil.oc.api.prefab.DriverTileEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
@@ -105,12 +108,12 @@ public class ArcFurnaceDriver extends DriverTileEntity
 		public Object[] getInputStack(Context context, Arguments args)
 		{
 			int slot = args.checkInteger(0);
-			if (slot<0||slot>11)
-				throw new IllegalArgumentException("Input slots are 0-11");
+			if (slot<1||slot>12)
+				throw new IllegalArgumentException("Input slots are 1-12");
 			TileEntityArcFurnace master = getTileEntity();
-			Map<String, Object> stack = Utils.saveStack(master.getStackInSlot(slot));
-			stack.put("progress", master.process[slot]);
-			stack.put("maxProgress", master.processMax[slot]);
+			Map<String, Object> stack = Utils.saveStack(master.getStackInSlot(slot-1));
+			stack.put("progress", master.process[slot-1]);
+			stack.put("maxProgress", master.processMax[slot-1]);
 			return new Object[]{stack};
 		}
 
@@ -118,18 +121,18 @@ public class ArcFurnaceDriver extends DriverTileEntity
 		public Object[] getOutputStack(Context context, Arguments args)
 		{
 			int slot = args.checkInteger(0);
-			if (slot<0||slot>5)
-				throw new IllegalArgumentException("Output slots are 0-5");
-			return new Object[]{getTileEntity().getStackInSlot(slot+16)};
+			if (slot<1||slot>6)
+				throw new IllegalArgumentException("Output slots are 1-6");
+			return new Object[]{getTileEntity().getStackInSlot(slot+15)};
 		}
 
 		@Callback(doc = "function(stack:int):table -- returns the specified additive stack")
 		public Object[] getAdditiveStack(Context context, Arguments args)
 		{
 			int slot = args.checkInteger(0);
-			if (slot<0||slot>3)
-				throw new IllegalArgumentException("Additive slots are 0-3");
-			return new Object[]{getTileEntity().getStackInSlot(slot+12)};
+			if (slot<1||slot>4)
+				throw new IllegalArgumentException("Additive slots are 1-4");
+			return new Object[]{getTileEntity().getStackInSlot(slot+11)};
 		}
 
 		@Callback(doc = "function():table -- returns the slag stack")
@@ -149,9 +152,13 @@ public class ArcFurnaceDriver extends DriverTileEntity
 		public Object[] getElectrode(Context context, Arguments args)
 		{
 			int slot = args.checkInteger(0);
-			if (slot<0||slot>2)
-				throw new IllegalArgumentException("Electrode slots are 0-2");
-			return new Object[]{getTileEntity().getStackInSlot(slot+23)};
+			if (slot<1||slot>3)
+				throw new IllegalArgumentException("Electrode slots are 1-3");
+			ItemStack stack = getTileEntity().getStackInSlot(slot+22);
+			Map<String, Object> map = Utils.saveStack(stack);
+			if (stack!=null&&stack.getItem() instanceof ItemGraphiteElectrode)
+				map.put("damage", ItemNBTHelper.getInt(stack, "graphDmg"));
+			return new Object[]{map};
 		}
 	}
 }
