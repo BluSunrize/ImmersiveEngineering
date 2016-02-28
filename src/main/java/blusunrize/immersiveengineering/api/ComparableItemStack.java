@@ -61,7 +61,7 @@ public class ComparableItemStack
 			return this.oreID == ((ComparableItemStack)object).oreID;
 
 		ItemStack otherStack = ((ComparableItemStack)object).stack;
-		if(!OreDictionary.itemMatches(stack,otherStack, !ignoreOreDict))
+		if(!OreDictionary.itemMatches(stack,otherStack, false))
 			return false;
 		if(this.useNBT)
 			if(!ItemStack.areItemStackTagsEqual(stack, otherStack))
