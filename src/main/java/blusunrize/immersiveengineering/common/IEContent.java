@@ -526,6 +526,11 @@ public class IEContent
 
 		IERecipes.initArcSmeltingRecipes();
 
+		DieselHandler.registerDrillFuel(fluidBiodiesel);
+		DieselHandler.registerDrillFuel(FluidRegistry.getFluid("fuel"));
+		DieselHandler.registerDrillFuel(FluidRegistry.getFluid("biofuel"));
+		DieselHandler.registerDrillFuel(FluidRegistry.getFluid("diesel"));
+		
 		DieselHandler.registerFuel(fluidBiodiesel, 125);
 		DieselHandler.registerFuel(FluidRegistry.getFluid("fuel"), 375);
 		DieselHandler.registerFuel(FluidRegistry.getFluid("diesel"), 175);

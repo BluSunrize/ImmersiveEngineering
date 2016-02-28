@@ -8,10 +8,10 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.energy.DieselHandler;
 import blusunrize.immersiveengineering.api.shader.IShaderEquipableItem;
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
 import blusunrize.immersiveengineering.api.tool.ITool;
-import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.util.IEAchievements;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
@@ -144,7 +144,7 @@ public class ItemDrill extends ItemUpgradeableTool implements IShaderEquipableIt
 	@Override
 	public boolean onEntitySwing(EntityLivingBase entityLiving, ItemStack stack)
 	{
-		if(canDrillBeUsed(stack, entityLiving))
+		if(canDrillBeUsed(stack, entityLiving) && getHead(stack)!=null)
 		{
 			if(!animationTimer.containsKey(entityLiving.getCommandSenderName()))
 				animationTimer.put(entityLiving.getCommandSenderName(), 40);
@@ -415,16 +415,17 @@ public class ItemDrill extends ItemUpgradeableTool implements IShaderEquipableIt
 	{
 		return 2000+getUpgrades(container).getInteger("capacity");
 	}
+	
 	@Override
 	public int fill(ItemStack container, FluidStack resource, boolean doFill)
 	{
-		if(resource!=null && IEContent.fluidBiodiesel.equals(resource.getFluid()))
+		if(resource!=null && DieselHandler.isValidDrillFuel(resource.getFluid()))
 		{
 			FluidStack fs = getFluid(container);
 			int space = fs==null?getCapacity(container): getCapacity(container)-fs.amount;
 			int accepted = Math.min(space, resource.amount);
 			if(fs==null)
-				fs = new FluidStack(IEContent.fluidBiodiesel, accepted);
+				fs = new FluidStack(resource, accepted);
 			else
 				fs.amount += accepted;
 			if(doFill)

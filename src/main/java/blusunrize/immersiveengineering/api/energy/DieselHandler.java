@@ -2,16 +2,18 @@ package blusunrize.immersiveengineering.api.energy;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.common.IEContent;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
-import blusunrize.immersiveengineering.api.ApiUtils;
-import blusunrize.immersiveengineering.common.IEContent;
 
 /**
  * @author BluSunrize - 23.04.2015
@@ -21,6 +23,7 @@ import blusunrize.immersiveengineering.common.IEContent;
 public class DieselHandler
 {
 	static HashMap<String, Integer> dieselGenBurnTime = new HashMap<String, Integer>();
+	static Set<Fluid> drillFuel = new HashSet<Fluid>();
 	/**
 	 * @param fuel the fluid to be used as fuel
 	 * @param time the total burn time gained from 1000 mB
@@ -49,6 +52,16 @@ public class DieselHandler
 	public static Map<String, Integer> getFuelValuesSorted(boolean inverse)
 	{
 		return ApiUtils.sortMap(dieselGenBurnTime, inverse);
+	}
+
+	public static void registerDrillFuel(Fluid fuel)
+	{
+		if(fuel!=null)
+			drillFuel.add(fuel);
+	}
+	public static boolean isValidDrillFuel(Fluid fuel)
+	{
+		return fuel!=null && drillFuel.contains(fuel);
 	}
 
 	public static class SqueezerRecipe
