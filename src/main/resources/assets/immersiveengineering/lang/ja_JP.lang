@@ -129,6 +129,9 @@ tile.ImmersiveEngineering.stoneDecoration.concrete.name=コンクリート
 tile.ImmersiveEngineering.stoneDecoration.concreteTile.name=コンクリートタイル
 tile.ImmersiveEngineering.concreteStairs.name=コンクリートの階段
 tile.ImmersiveEngineering.concreteTileStairs.name=コンクリートタイルの階段
+tile.ImmersiveEngineering.stoneSlab.hempcrete.name=ヘンプクリートのハーフブロック
+tile.ImmersiveEngineering.stoneSlab.concrete.name=コンクリートのハーフブロック
+tile.ImmersiveEngineering.stoneSlab.concreteTile.name=コンクリートタイルのハーフブロック
 
 tile.ImmersiveEngineering.hemp.name=工業用大麻
 
