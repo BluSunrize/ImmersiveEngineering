@@ -1,6 +1,32 @@
+#####Version 0.7.2
+- Last update for 1.7, hopefully!
+- instead of adding it to every entry of the changelog: A lot of these fixes were done by malte, cheers to him for that =P
+- added computer support for capacitors
+- added damage multiplier config for the railgun
+- added ITool interface allowing the skyhook and other items to go into the Toolbox now
+- added concrete, tile and hempcrete slabs
+- added biodiesel as valid fuel for railcraft boilers
+- added the ability for the drill to take other fuels
+- added a blacklist for fluids the jerrycan can accept
+- changed barrels to autooutput on the bottom upon placement
+- fixed conversion issues within the arc furnace
+- fixed connectors receiving too much power when connected to IC2 machines
+- fixed metal press being terrible with sized-input recipes
+- fixed lots of NEI crashes
+- fixed illegal connections of wires
+- fixed rendering of the Metal Press multiple times and it's functionality
+- fixed lots of other rendering issues
+- fixed multiple things around computer compat, I don't understand half of it, honestly =P
+- fixed charging station being derped
+- fixed a dupebug
+- fixed blastfurnace crashing when a recipe misses slag
+- fixed villagers buying metadata emeralds
+- updated zh_CN.lang
+
+
 #####Version 0.7.1.2 - BUILT
 - hotfix again!
-- fixed crashes caused by Crushign invalid items
+- fixed crashes caused by Crushing invalid items
 - fixed NEI handler on for Blastfurnace
 - fixed multiblocks sometimes being invisible
 
