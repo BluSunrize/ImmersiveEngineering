@@ -74,9 +74,9 @@ public class CrusherDriver extends DriverTileEntity
 		{
 			int slot = args.checkInteger(0);
 			TileEntityCrusher master = getTileEntity();
-			if (slot<0||slot>=master.inputs.size())
+			if (slot<1||slot>master.inputs.size())
 				throw new IllegalArgumentException("The requested place in the queue does not exist");
-			return new Object[]{master.inputs.get(slot)};
+			return new Object[]{master.inputs.get(slot-1)};
 		}
 
 		@Callback(doc = "function():int -- get the current grinding progress in RF")

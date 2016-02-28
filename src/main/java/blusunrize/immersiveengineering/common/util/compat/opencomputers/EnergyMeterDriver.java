@@ -58,7 +58,7 @@ public class EnergyMeterDriver extends DriverTileEntity
 		{}
 
 		@Callback(doc = "function():int -- returns the average amount of energy transferred during the last 20 ticks")
-		public Object[] getLastMeasurements(Context context, Arguments args)
+		public Object[] getAvgEnergy(Context context, Arguments args)
 		{
 			return new Object[]{getTileEntity().getAveragePower()};
 		}

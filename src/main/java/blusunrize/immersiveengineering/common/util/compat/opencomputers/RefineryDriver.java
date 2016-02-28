@@ -103,8 +103,8 @@ public class RefineryDriver extends DriverTileEntity
 		{
 			TileEntityRefinery master = getTileEntity();
 			HashMap<String, FluidTankInfo> ret = new HashMap<>(2);
-			ret.put("input0",master.tank0.getInfo());
-			ret.put("input1",master.tank1.getInfo());
+			ret.put("input1",master.tank0.getInfo());
+			ret.put("input2",master.tank1.getInfo());
 			return new Object[]{ret};
 		}
 
@@ -121,8 +121,8 @@ public class RefineryDriver extends DriverTileEntity
 			if(recipe==null)
 				throw new IllegalArgumentException("The recipe of the refinery is invalid");
 			HashMap<String, FluidStack> ret = new HashMap<>(3);
-			ret.put("input0", recipe.input0);
-			ret.put("input1", recipe.input1);
+			ret.put("input1", recipe.input0);
+			ret.put("input2", recipe.input1);
 			ret.put("output", recipe.output);
 			return new Object[]{ret};
 		}
@@ -138,8 +138,8 @@ public class RefineryDriver extends DriverTileEntity
 		{
 			TileEntityRefinery te = getTileEntity();
 			HashMap<String, ItemStack> ret = new HashMap<>(3);
-			ret.put("input0", te.inventory[1]);
-			ret.put("input1", te.inventory[3]);
+			ret.put("input1", te.inventory[1]);
+			ret.put("input2", te.inventory[3]);
 			ret.put("output", te.inventory[4]);
 			return new Object[]{ret};
 		}
@@ -149,8 +149,8 @@ public class RefineryDriver extends DriverTileEntity
 		{
 			TileEntityRefinery te = getTileEntity();
 			HashMap<String, ItemStack> ret = new HashMap<>(3);
-			ret.put("input0", te.inventory[0]);
-			ret.put("input1", te.inventory[2]);
+			ret.put("input1", te.inventory[0]);
+			ret.put("input2", te.inventory[2]);
 			ret.put("output", te.inventory[5]);
 			return new Object[]{ret};
 		}
