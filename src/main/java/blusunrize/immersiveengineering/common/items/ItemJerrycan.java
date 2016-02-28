@@ -1,7 +1,12 @@
 package blusunrize.immersiveengineering.common.items;
 
+import java.util.HashSet;
 import java.util.List;
 
+import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.util.Utils;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
@@ -12,13 +17,11 @@ import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.IFluidHandler;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import blusunrize.immersiveengineering.common.util.Utils;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemJerrycan extends ItemIEBase implements IFluidContainerItem
 {
+	public static HashSet<String> blacklist = new HashSet();
+	
 	public ItemJerrycan()
 	{
 		super("jerrycan", 1);
@@ -95,7 +98,7 @@ public class ItemJerrycan extends ItemIEBase implements IFluidContainerItem
 	@Override
 	public int fill(ItemStack container, FluidStack resource, boolean doFill)
 	{
-		if(resource!=null)
+		if(resource!=null && resource.getFluid()!=null && !blacklist.contains(resource.getFluid().getName()))
 		{
 			FluidStack fs = getFluid(container);
 			if(fs==null || resource.isFluidEqual(fs))
