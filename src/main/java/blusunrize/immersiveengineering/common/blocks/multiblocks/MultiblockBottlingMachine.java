@@ -27,7 +27,10 @@ public class MultiblockBottlingMachine implements IMultiblock
 {
 	public static MultiblockBottlingMachine instance = new MultiblockBottlingMachine();
 	static ItemStack[][][] structure = new ItemStack[2][2][3];
+	private static final TileEntityBottlingMachine bottle = new TileEntityBottlingMachine();
 	static{
+		bottle.pos = 4;
+		bottle.formed=true;
 		for(int h=0;h<2;h++)
 			for(int l=0;l<2;l++)
 				for(int w=0;w<3;w++)
@@ -77,17 +80,14 @@ public class MultiblockBottlingMachine implements IMultiblock
 	@SideOnly(Side.CLIENT)
 	public void renderFormedStructure()
 	{
-		TileEntityBottlingMachine te = new TileEntityBottlingMachine();
-		te.pos = 4;
-		te.formed=true;
 		ClientUtils.bindAtlas(0);
 		GL11.glRotatef(180, 0, 1, 0);
 		ClientUtils.tes().startDrawingQuads();
 		ClientUtils.tes().setTranslation(-.5f,-1.5f,-.5f);
-		ClientUtils.handleStaticTileRenderer(te, false);
+		ClientUtils.handleStaticTileRenderer(bottle, false);
 		ClientUtils.tes().draw();
 		ClientUtils.tes().setTranslation(0,0,0);
-		TileEntityRendererDispatcher.instance.renderTileEntityAt(te, -.5D, -1.5D, -.5D, 0.0F);
+		TileEntityRendererDispatcher.instance.renderTileEntityAt(bottle, -.5D, -1.5D, -.5D, 0.0F);
 	}
 	@Override
 	public float getManualScale()

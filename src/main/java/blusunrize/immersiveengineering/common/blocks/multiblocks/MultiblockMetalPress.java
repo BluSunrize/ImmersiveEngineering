@@ -25,6 +25,7 @@ public class MultiblockMetalPress implements IMultiblock
 {
 	public static MultiblockMetalPress instance = new MultiblockMetalPress();
 	static ItemStack[][][] structure = new ItemStack[3][3][1];
+	private static final TileEntityMetalPress press = new TileEntityMetalPress();
 	static{
 		for(int h=0;h<3;h++)
 			for(int l=0;l<3;l++)
@@ -65,11 +66,10 @@ public class MultiblockMetalPress implements IMultiblock
 	@SideOnly(Side.CLIENT)
 	public void renderFormedStructure()
 	{
-		TileEntityMetalPress te = new TileEntityMetalPress();
 		ClientUtils.bindAtlas(0);
 		ClientUtils.tes().startDrawingQuads();
 		ClientUtils.tes().setTranslation(-.5f,-.5f,-.5f);
-		ClientUtils.handleStaticTileRenderer(te, false);
+		ClientUtils.handleStaticTileRenderer(press, false);
 		ClientUtils.tes().draw();
 		ClientUtils.tes().setTranslation(0,0,0);
 	}

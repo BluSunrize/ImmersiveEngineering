@@ -29,7 +29,15 @@ public class BlockRenderMetalDevices2 implements ISimpleBlockRenderingHandler
 {
 	public static int renderID = RenderingRegistry.getNextAvailableRenderId();
 	public static int renderPass = 0;
-
+	private static final TileEntityBlastFurnacePreheater heat = new TileEntityBlastFurnacePreheater();
+	private static final TileEntityBreakerSwitch breaker = new TileEntityBreakerSwitch();
+	private static final TileEntityChargingStation charge = new TileEntityChargingStation();
+	private static final TileEntityElectricLantern lantern = new TileEntityElectricLantern();
+	private static final TileEntityFloodlight flood = new TileEntityFloodlight();
+	private static final TileEntityFluidPipe pipe = new TileEntityFluidPipe();
+	private static final TileEntityFluidPump pump = new TileEntityFluidPump();
+	private static final TileEntityRedstoneBreaker redBreaker = new TileEntityRedstoneBreaker();
+	private static final TileEntityEnergyMeter meter = new TileEntityEnergyMeter();
 	@Override
 	public void renderInventoryBlock(Block block, int metadata, int modelId, RenderBlocks renderer)
 	{
@@ -41,7 +49,7 @@ public class BlockRenderMetalDevices2 implements ISimpleBlockRenderingHandler
 				GL11.glScalef(1.25f, 1.25f, 1.25f);
 				GL11.glRotatef(-90, 1,0,0);
 				Tessellator.instance.startDrawingQuads();
-				ClientUtils.handleStaticTileRenderer(new TileEntityBreakerSwitch());
+				ClientUtils.handleStaticTileRenderer(breaker);
 				Tessellator.instance.draw();
 			}
 			else if(metadata==BlockMetalDevices2.META_energyMeter)
@@ -49,28 +57,27 @@ public class BlockRenderMetalDevices2 implements ISimpleBlockRenderingHandler
 				GL11.glScalef(.75f,.75f,.75f);
 				GL11.glTranslatef(0,.625f,0);
 				Tessellator.instance.startDrawingQuads();
-				ClientUtils.handleStaticTileRenderer(new TileEntityEnergyMeter());
+				ClientUtils.handleStaticTileRenderer(meter);
 				Tessellator.instance.draw();
 			}
 			else if(metadata==BlockMetalDevices2.META_electricLantern)
 			{
 				Tessellator.instance.startDrawingQuads();
-				ClientUtils.handleStaticTileRenderer(new TileEntityElectricLantern());
+				ClientUtils.handleStaticTileRenderer(lantern);
 				Tessellator.instance.draw();
 			}
 			else if(metadata==BlockMetalDevices2.META_floodlight)
 			{
 				Tessellator.instance.startDrawingQuads();
-				TileEntityFloodlight tile = new TileEntityFloodlight();
-				TileEntitySpecialRenderer tesr = TileEntityRendererDispatcher.instance.getSpecialRenderer(tile);
+				TileEntitySpecialRenderer tesr = TileEntityRendererDispatcher.instance.getSpecialRenderer(flood);
 				if(tesr instanceof TileRenderFloodlight)
-					((TileRenderFloodlight)tesr).model.render(tile, Tessellator.instance, new Matrix4().translate(0,.125,0),new Matrix4().rotate(Math.PI,0,1,0), 0,false);
+					((TileRenderFloodlight)tesr).model.render(flood, Tessellator.instance, new Matrix4().translate(0,.125,0),new Matrix4().rotate(Math.PI,0,1,0), 0,false);
 				Tessellator.instance.draw();
 			}
 			else if(metadata==BlockMetalDevices2.META_fluidPipe)
 			{
 				Tessellator.instance.startDrawingQuads();
-				ClientUtils.handleStaticTileRenderer(new TileEntityFluidPipe());
+				ClientUtils.handleStaticTileRenderer(pipe);
 				Tessellator.instance.draw();
 			}
 			else if(metadata==BlockMetalDevices2.META_fluidPump)
@@ -106,7 +113,7 @@ public class BlockRenderMetalDevices2 implements ISimpleBlockRenderingHandler
 				Tessellator.instance.draw();
 
 				Tessellator.instance.startDrawingQuads();
-				ClientUtils.handleStaticTileRenderer(new TileEntityFluidPump());
+				ClientUtils.handleStaticTileRenderer(pump);
 				Tessellator.instance.draw();
 				GL11.glPopMatrix();
 			}
@@ -125,19 +132,18 @@ public class BlockRenderMetalDevices2 implements ISimpleBlockRenderingHandler
 			{
 				GL11.glTranslatef(-.5f,-.5f,-.5f);
 				Tessellator.instance.startDrawingQuads();
-				ClientUtils.handleStaticTileRenderer(new TileEntityRedstoneBreaker());
+				ClientUtils.handleStaticTileRenderer(redBreaker);
 				Tessellator.instance.draw();
 			}
 			else if(metadata==BlockMetalDevices2.META_chargingStation)
 			{
 				Tessellator.instance.startDrawingQuads();
-				TileEntityChargingStation tile = new TileEntityChargingStation();
 				GL11.glRotatef(-180, 0,1,0);
 				GL11.glTranslatef(-.5f,-.5f,-.5f);
 				renderPass = 0;
-				ClientUtils.handleStaticTileRenderer(tile);
+				ClientUtils.handleStaticTileRenderer(charge);
 				renderPass = 1;
-				ClientUtils.handleStaticTileRenderer(tile);
+				ClientUtils.handleStaticTileRenderer(charge);
 				Tessellator.instance.draw();
 			}
 			else if(metadata==BlockMetalDevices2.META_blastFurnacePreheater)
@@ -145,7 +151,7 @@ public class BlockRenderMetalDevices2 implements ISimpleBlockRenderingHandler
 				GL11.glScalef(0.4375f, 0.4375f, 0.4375f);
 				GL11.glTranslatef(-.5f,-1.25f,-.5f);
 				Tessellator.instance.startDrawingQuads();
-				ClientUtils.handleStaticTileRenderer(new TileEntityBlastFurnacePreheater());
+				ClientUtils.handleStaticTileRenderer(heat);
 				Tessellator.instance.draw();
 			}
 

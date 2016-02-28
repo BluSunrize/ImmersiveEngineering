@@ -18,7 +18,11 @@ public class MultiblockRefinery implements IMultiblock
 {
 	public static MultiblockRefinery instance = new MultiblockRefinery();
 	static ItemStack[][][] structure = new ItemStack[3][5][3];
+	private static final TileEntityRefinery ref = new TileEntityRefinery();
 	static{
+		ref.formed=true;
+		ref.pos=17;
+		ref.facing=4;
 		for(int w=0;w<5;w++)
 			for(int l=0;l<3;l++)
 				for(int h=0;h<3;h++)
@@ -63,14 +67,10 @@ public class MultiblockRefinery implements IMultiblock
 	@SideOnly(Side.CLIENT)
 	public void renderFormedStructure()
 	{
-		TileEntityRefinery te = new TileEntityRefinery();
-		te.formed=true;
-		te.pos=17;
-		te.facing=4;
 		ClientUtils.bindAtlas(0);
 		ClientUtils.tes().startDrawingQuads();
 		ClientUtils.tes().setTranslation(-.5,-1.5,-.5);
-		ClientUtils.handleStaticTileRenderer(te, false);
+		ClientUtils.handleStaticTileRenderer(ref, false);
 		ClientUtils.tes().setTranslation(0,0,0);
 		ClientUtils.tes().draw();
 	}

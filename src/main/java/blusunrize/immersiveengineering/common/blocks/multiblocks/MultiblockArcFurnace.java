@@ -24,9 +24,13 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class MultiblockArcFurnace implements IMultiblock
 {
 	public static MultiblockArcFurnace instance = new MultiblockArcFurnace();
+	private static final TileEntityArcFurnace furn = new TileEntityArcFurnace();
 
 	static ItemStack[][][] structure = new ItemStack[5][5][5];
 	static{
+		furn.formed=true;
+		furn.pos=62;
+		furn.facing=4;
 		for(int h=0;h<5;h++)
 			for(int l=0;l<5;l++)
 				for(int w=0;w<5;w++)
@@ -113,14 +117,10 @@ public class MultiblockArcFurnace implements IMultiblock
 	@SideOnly(Side.CLIENT)
 	public void renderFormedStructure()
 	{
-		TileEntityArcFurnace te = new TileEntityArcFurnace();
-		te.formed=true;
-		te.pos=62;
-		te.facing=4;
 		ClientUtils.bindAtlas(0);
 		ClientUtils.tes().startDrawingQuads();
 		ClientUtils.tes().setTranslation(-.5,-.5,-.5);
-		ClientUtils.handleStaticTileRenderer(te, false);
+		ClientUtils.handleStaticTileRenderer(furn, false);
 		ClientUtils.tes().setTranslation(0,0,0);
 		ClientUtils.tes().draw();
 	}

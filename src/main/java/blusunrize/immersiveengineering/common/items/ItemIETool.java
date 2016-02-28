@@ -157,14 +157,17 @@ public class ItemIETool extends ItemIEBase implements cofh.api.item.IToolHammer,
 						if(pos[0]==world.provider.dimensionId)
 						{
 							IImmersiveConnectable nodeHere = (IImmersiveConnectable)tileEntity;
-							IImmersiveConnectable nodeLink = (IImmersiveConnectable)world.getTileEntity(pos[1], pos[2], pos[3]);
-							if(nodeLink!=null)
+							TileEntity te2 = world.getTileEntity(pos[1], pos[2], pos[3]);
+							if (!(te2 instanceof IImmersiveConnectable))
 							{
-								Set<AbstractConnection> connections = ImmersiveNetHandler.INSTANCE.getIndirectEnergyConnections(Utils.toCC(nodeLink), world);
-								for(AbstractConnection con : connections)
-									if(Utils.toCC(nodeHere).equals(con.end))
-										player.addChatComponentMessage(new ChatComponentTranslation(Lib.CHAT_INFO+"averageLoss",Utils.formatDouble(con.getAverageLossRate()*100, "###.000")));
+								player.addChatMessage(new ChatComponentTranslation(Lib.CHAT_WARN+"invalidPoint"));
+								return true;
 							}
+							IImmersiveConnectable nodeLink = (IImmersiveConnectable)te2;
+							Set<AbstractConnection> connections = ImmersiveNetHandler.INSTANCE.getIndirectEnergyConnections(Utils.toCC(nodeLink), world);
+							for(AbstractConnection con : connections)
+								if(Utils.toCC(nodeHere).equals(con.end))
+									player.addChatComponentMessage(new ChatComponentTranslation(Lib.CHAT_INFO+"averageLoss",Utils.formatDouble(con.getAverageLossRate()*100, "###.000")));
 						}
 						ItemNBTHelper.remove(stack, "linkingPos");
 					}

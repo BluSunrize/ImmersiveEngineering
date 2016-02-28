@@ -22,9 +22,10 @@ public class MultiblockBlastFurnaceAdvanced implements IMultiblock
 {
 
 	public static MultiblockBlastFurnaceAdvanced instance = new MultiblockBlastFurnaceAdvanced();
-
+	private static final TileEntityBlastFurnaceAdvanced furnace = new TileEntityBlastFurnaceAdvanced();
 	static ItemStack[][][] structure = new ItemStack[4][3][3];
 	static{
+		furnace.facing = 3;
 		for(int h=0;h<4;h++)
 			for(int l=0;l<3;l++)
 				for(int w=0;w<3;w++)
@@ -58,9 +59,7 @@ public class MultiblockBlastFurnaceAdvanced implements IMultiblock
 		ClientUtils.bindAtlas(0);
 		ClientUtils.tes().startDrawingQuads();
 		ClientUtils.tes().setTranslation(-.5, -1, .5);
-		TileEntityBlastFurnaceAdvanced tile = new TileEntityBlastFurnaceAdvanced();
-		tile.facing = 3;
-		ClientUtils.handleStaticTileRenderer(tile, false);
+		ClientUtils.handleStaticTileRenderer(furnace, false);
 		ClientUtils.tes().setTranslation(0,0,0);
 		ClientUtils.tes().draw();
 	}
