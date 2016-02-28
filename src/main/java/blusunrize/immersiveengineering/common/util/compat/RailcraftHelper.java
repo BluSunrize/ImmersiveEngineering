@@ -8,7 +8,9 @@ import blusunrize.immersiveengineering.api.shader.ShaderCaseMinecart;
 import blusunrize.immersiveengineering.api.tool.RailgunHandler;
 import blusunrize.immersiveengineering.client.models.ModelShaderMinecart;
 import blusunrize.immersiveengineering.common.Config;
+import blusunrize.immersiveengineering.common.IEContent;
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.event.FMLInterModComms;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -36,7 +38,7 @@ public class RailcraftHelper extends IECompatModule
 		RailgunHandler.registerProjectileProperties(new ItemStack(itemRail,1,3), 7,1).setColourMap(new int[][]{{0x999999,0xa4a4a4,0xa4a4a4, 0xc9901f,0xc9901f,0xba851d}});
 		RailgunHandler.registerProjectileProperties(new ItemStack(itemRail,1,4), 8,1.375).setColourMap(new int[][]{{0x686868,0x808080,0x808080, 0x3e2e60,0x3e2e60,0x31254d}});
 		RailgunHandler.registerProjectileProperties(new ItemStack(itemRail,1,5), 7,1).setColourMap(new int[][]{{0x999999,0xa4a4a4,0xa4a4a4, 0x9a6033,0x9a6033,0xa86938}});
-		
+
 		Item itemRebar = GameRegistry.findItem("Railcraft", "part.rebar");
 		int[][] rebarColourMap = new int[8*3+1][];
 		rebarColourMap[0] = new int[]{0x4a2700, 0x592f00,0x592f00,0x592f00, 0x4a2700};
@@ -48,6 +50,8 @@ public class RailcraftHelper extends IECompatModule
 		}
 		RailgunHandler.registerProjectileProperties(new ItemStack(itemRebar), 7,1.25).setColourMap(rebarColourMap);
 		Config.setBoolean("literalRailGun", true);
+
+		FMLInterModComms.sendMessage("Railcraft", "boiler-fuel-liquid", IEContent.fluidBiodiesel.getName()+"@16000");
 	}
 
 	@Override
@@ -71,7 +75,7 @@ public class RailcraftHelper extends IECompatModule
 				for(Map.Entry<Class, ModelBase> e : modelMap.entrySet())
 					if(e.getValue().getClass().getName().endsWith("ModelLowSidesMinecart"))
 						e.setValue(new ModelShaderLowSidesMinecart());
-				
+
 				ShaderCaseMinecart.invalidMinecartClasses.add((Class<? extends EntityMinecart>)Class.forName("mods.railcraft.common.carts.EntityLocomotive"));
 				ShaderCaseMinecart.invalidMinecartClasses.add((Class<? extends EntityMinecart>)Class.forName("mods.railcraft.common.carts.EntityTunnelBore"));
 			}catch(Exception e){
@@ -94,21 +98,21 @@ public class RailcraftHelper extends IECompatModule
 			this.sideModels[3] = new ModelRenderer(this, 0, 0);
 			this.sideModels[4] = new ModelRenderer(this, 0, 0);
 			this.sideModels[4].mirror = true;
-		    this.sideModels[3].addBox(-length/2+2, -height-1, -1, length-4, height, 2, 0);
-		    this.sideModels[3].setRotationPoint(0, yOffset, -width/2+1);
-		    this.sideModels[4].addBox(-length/2+2, -height-1, -1, length-4, height, 2, 0);
-		    this.sideModels[4].setRotationPoint(0, yOffset, width/2-1);
+			this.sideModels[3].addBox(-length/2+2, -height-1, -1, length-4, height, 2, 0);
+			this.sideModels[3].setRotationPoint(0, yOffset, -width/2+1);
+			this.sideModels[4].addBox(-length/2+2, -height-1, -1, length-4, height, 2, 0);
+			this.sideModels[4].setRotationPoint(0, yOffset, width/2-1);
 			this.sideModels[3].rotateAngleY = (float)Math.PI;
 			this.sideModelsMirrored[3] = new ModelRenderer(this, 0, 0);
 			this.sideModelsMirrored[4] = new ModelRenderer(this, 0, 0);
 			this.sideModelsMirrored[4].mirror = true;
-		    this.sideModelsMirrored[3].addBox(-length/2+2, -height-1, -1, length-4, height, 2, 0);
-		    this.sideModelsMirrored[3].setRotationPoint(0, yOffset, -width/2+1);
-		    this.sideModelsMirrored[4].addBox(-length/2+2, -height-1, -1, length-4, height, 2, 0);
-		    this.sideModelsMirrored[4].setRotationPoint(0, yOffset, width/2-1);
+			this.sideModelsMirrored[3].addBox(-length/2+2, -height-1, -1, length-4, height, 2, 0);
+			this.sideModelsMirrored[3].setRotationPoint(0, yOffset, -width/2+1);
+			this.sideModelsMirrored[4].addBox(-length/2+2, -height-1, -1, length-4, height, 2, 0);
+			this.sideModelsMirrored[4].setRotationPoint(0, yOffset, width/2-1);
 			this.sideModelsMirrored[3].rotateAngleY = (float)Math.PI;
 		}
-		
+
 
 		@Override
 		public void render(Entity entity, float f0, float f1, float f2, float f3, float f4, float f5)
