@@ -19,7 +19,7 @@ import blusunrize.immersiveengineering.common.util.Utils;
 
 public class TileEntityWoodenBarrel extends TileEntityIEBase implements IFluidHandler, IBlockOverlayText
 {
-	public int[] sideConfig = {-1,0};
+	public int[] sideConfig = {1,0};
 	public FluidTank tank = new FluidTank(12000);
 	public static final int IGNITION_TEMPERATURE = 573;
 

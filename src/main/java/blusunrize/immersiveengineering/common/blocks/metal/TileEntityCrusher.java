@@ -262,7 +262,7 @@ public class TileEntityCrusher extends TileEntityMultiblockPart implements IEner
 		comp.stack.stackTagCompound = null;
 		comp.stack.stackSize = 1;
 		comp.useNBT = false;
-        comp.ignoreOreDict = true;
+		comp.ignoreOreDict = true;
 		if(recipeCache.containsKey(comp))
 		{
 			CrusherRecipe r = recipeCache.get(comp);

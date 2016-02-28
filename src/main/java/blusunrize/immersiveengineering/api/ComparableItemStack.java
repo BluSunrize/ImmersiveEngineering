@@ -1,6 +1,5 @@
 package blusunrize.immersiveengineering.api;
 
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -8,7 +7,7 @@ public class ComparableItemStack
 {
 	public ItemStack stack;
 	public boolean useNBT;
-    public boolean ignoreOreDict;
+	public boolean ignoreOreDict;
 	public int oreID=-1;
 
 	public ComparableItemStack(ItemStack stack)
@@ -16,9 +15,9 @@ public class ComparableItemStack
 		if(stack==null)
 			throw new RuntimeException("You cannot instantiate a ComparableItemStack with null for an Item!");
 		this.stack = stack;
-        int[] oids = OreDictionary.getOreIDs(stack);
-        if(oids!=null && oids.length>0)
-            this.oreID = oids[0];
+		int[] oids = OreDictionary.getOreIDs(stack);
+		if(oids!=null && oids.length>0)
+			this.oreID = oids[0];
 	}
 	public ComparableItemStack(String oreName)
 	{
