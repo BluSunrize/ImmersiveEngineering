@@ -5,9 +5,12 @@ import static blusunrize.immersiveengineering.common.util.Utils.saveStack;
 import java.util.Map;
 
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityArcFurnace;
+import blusunrize.immersiveengineering.common.items.ItemGraphiteElectrode;
+import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
+import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 public class PeripheralArcFurnace extends IEPeripheral
@@ -81,7 +84,11 @@ public class PeripheralArcFurnace extends IEPeripheral
 			slot = (int)(double)arguments[0];
 			if (slot<1||slot>3)
 				throw new LuaException("Electrode slots are 1-3");
-			return new Object[]{saveStack(te.getStackInSlot(slot+22))};
+			ItemStack stack = te.getStackInSlot(slot+22);
+			Map<String, Object> map = saveStack(stack);
+			if (stack!=null&&stack.getItem() instanceof ItemGraphiteElectrode)
+				map.put("damage", ItemNBTHelper.getInt(stack, "graphDmg"));
+			return new Object[]{map};
 		case 8: //max energy
 			return new Object[]{te.energyStorage.getMaxEnergyStored()};
 		case 9:

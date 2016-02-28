@@ -582,7 +582,7 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockPart implemen
 				}
 			}
 			if (minId<0)
-				throw new IllegalArgumentException("Not enough empty cannisters found");
+				throw new IllegalArgumentException("Not enough filled cannisters found");
 			currId = minId;
 			currVal = min;
 			id--;

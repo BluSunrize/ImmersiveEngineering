@@ -88,10 +88,10 @@ public class BottlingMachineDriver extends DriverTileEntity
 		public Object[] getEmptyCannister(Context context, Arguments args)
 		{
 			int param = args.checkInteger(0);
-			if (param<0||param>4)
-				throw new IllegalArgumentException("Only 0-4 are valid cannister positions");
+			if (param<1||param>5)
+				throw new IllegalArgumentException("Only 1-5 are valid cannister positions");
 			TileEntityBottlingMachine master = getTileEntity();
-			int id = master.getEmptyCannister(param);
+			int id = master.getEmptyCannister(param-1);
 			Map<String, Object> map = saveStack(master.inventory[id]);
 			map.put("process", master.process[id]);
 			return new Object[]{map};
@@ -108,10 +108,10 @@ public class BottlingMachineDriver extends DriverTileEntity
 		public Object[] getFilledCannister(Context context, Arguments args)
 		{
 			int param = args.checkInteger(0);
-			if (param<0||param>4)
-				throw new IllegalArgumentException("Only 0-4 are valid cannister positions");
+			if (param<1||param>5)
+				throw new IllegalArgumentException("Only 1-5 are valid cannister positions");
 			TileEntityBottlingMachine master = getTileEntity();
-			int id = master.getFilledCannister(param);
+			int id = master.getFilledCannister(param-1);
 			Map<String, Object> map = saveStack(master.inventory[id]);
 			map.put("process", master.process[id]);
 			return new Object[]{map};

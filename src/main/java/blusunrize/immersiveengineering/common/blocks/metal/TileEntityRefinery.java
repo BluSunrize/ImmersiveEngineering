@@ -144,7 +144,7 @@ public class TileEntityRefinery extends TileEntityMultiblockPart implements IFlu
 					}
 				}
 			}
-			if(tank2.getFluidAmount()>0)
+			if(tank2.getFluidAmount()>0&&(inventory[5]==null||inventory[5].stackSize<inventory[5].getMaxStackSize()))
 			{
 				ItemStack filledContainer = Utils.fillFluidContainer(tank2, inventory[4], inventory[5]);
 				if(filledContainer!=null)

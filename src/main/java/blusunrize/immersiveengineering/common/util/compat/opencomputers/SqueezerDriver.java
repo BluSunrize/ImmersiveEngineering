@@ -57,12 +57,12 @@ public class SqueezerDriver extends DriverTileEntity
 		public Object[] getRecipe(Context context, Arguments args)
 		{
 			int slot = args.checkInteger(0);
-			if (slot<0||slot>8)
-				throw new IllegalArgumentException("Input slots are 0-8");
+			if (slot<1||slot>9)
+				throw new IllegalArgumentException("Input slots are 1-9");
 			TileEntitySqueezer master = getTileEntity();
-			SqueezerRecipe recipe = DieselHandler.findSqueezerRecipe(master.getStackInSlot(slot));
+			SqueezerRecipe recipe = DieselHandler.findSqueezerRecipe(master.getStackInSlot(slot-1));
 			if (recipe!=null)
-				return new Object[]{master.getStackInSlot(slot), recipe.output, recipe.fluid, recipe.time};
+				return new Object[]{master.getStackInSlot(slot-1), recipe.output, recipe.fluid, recipe.time};
 			else
 				return null;
 		}
@@ -71,9 +71,9 @@ public class SqueezerDriver extends DriverTileEntity
 		public Object[] getInputStack(Context context, Arguments args)
 		{
 			int slot = args.checkInteger(0);
-			if (slot<0||slot>8)
-				throw new IllegalArgumentException("Input slots are 0-8");
-			return new Object[]{getTileEntity().getStackInSlot(slot)};
+			if (slot<1||slot>9)
+				throw new IllegalArgumentException("Input slots are 1-9");
+			return new Object[]{getTileEntity().getStackInSlot(slot-1)};
 		}
 		
 		@Callback(doc = "function():table -- returns the stack in the output slot")
