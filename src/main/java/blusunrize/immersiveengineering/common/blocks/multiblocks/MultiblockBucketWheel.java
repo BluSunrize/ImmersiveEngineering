@@ -19,7 +19,11 @@ public class MultiblockBucketWheel implements IMultiblock
 {
 	public static MultiblockBucketWheel instance = new MultiblockBucketWheel();
 	static ItemStack[][][] structure = new ItemStack[7][7][1];
+	private static final TileEntityBucketWheel wheel = new TileEntityBucketWheel();
 	static{
+		wheel.formed=true;
+		wheel.pos=24;
+		wheel.facing=4;
 		for(int h=0;h<7;h++)
 			for(int l=0;l<7;l++)
 			{
@@ -59,11 +63,7 @@ public class MultiblockBucketWheel implements IMultiblock
 	@SideOnly(Side.CLIENT)
 	public void renderFormedStructure()
 	{
-		TileEntityBucketWheel te = new TileEntityBucketWheel();
-		te.formed=true;
-		te.pos=24;
-		te.facing=4;
-		TileEntityRendererDispatcher.instance.renderTileEntityAt(te, -.5D, 0.0D, -.5D, 0.0F);
+		TileEntityRendererDispatcher.instance.renderTileEntityAt(wheel, -.5D, 0.0D, -.5D, 0.0F);
 	}
 
 	@Override

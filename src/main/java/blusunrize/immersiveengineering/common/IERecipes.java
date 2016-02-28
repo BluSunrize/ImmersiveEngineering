@@ -98,8 +98,8 @@ public class IERecipes
 			BlueprintCraftingRecipe.addRecipe("specialBullet", new ItemStack(IEContent.itemBullet,1,6), new ItemStack(IEContent.itemBullet,1,1),Items.gunpowder,"dustAluminium","dustAluminium");
 		BlueprintCraftingRecipe.addRecipe("specialBullet", new ItemStack(IEContent.itemBullet,1,10), new ItemStack(IEContent.itemBullet,1,0),Items.gunpowder,"dustQuartz",Items.glass_bottle);
 
-		BlueprintCraftingRecipe.addVillagerTrade("bullet", new ItemStack(Items.emerald,1,2));
-		BlueprintCraftingRecipe.addVillagerTrade("specialBullet", new ItemStack(Items.emerald,1,7));
+		BlueprintCraftingRecipe.addVillagerTrade("bullet", new ItemStack(Items.emerald,2));
+		BlueprintCraftingRecipe.addVillagerTrade("specialBullet", new ItemStack(Items.emerald,7));
 		GameRegistry.addRecipe(new RecipePotionBullets());
 		RecipeSorter.register(ImmersiveEngineering.MODID+":potionBullet", RecipePotionBullets.class, RecipeSorter.Category.SHAPELESS, "after:forge:shapelessore");
 
@@ -107,7 +107,7 @@ public class IERecipes
 		addOredictRecipe(new ItemStack(IEContent.itemBlueprint,1,blueprint), "JKL","DDD","PPP", 'J',Items.gunpowder,'K',"ingotCopper",'L',Items.gunpowder, 'D',"dyeBlue",'P',Items.paper);
 
 		BlueprintCraftingRecipe.addRecipe("electrode", new ItemStack(IEContent.itemGraphiteElectrode), "ingotHOPGraphite","ingotHOPGraphite","ingotHOPGraphite","ingotHOPGraphite");
-		BlueprintCraftingRecipe.addVillagerTrade("electrode", new ItemStack(Items.emerald,1,18));
+		BlueprintCraftingRecipe.addVillagerTrade("electrode", new ItemStack(Items.emerald,18));
 		blueprint = BlueprintCraftingRecipe.blueprintCategories.indexOf("electrode");
 		ChestGenHooks.getInfo(ChestGenHooks.STRONGHOLD_LIBRARY).addItem(new WeightedRandomChestContent(new ItemStack(IEContent.itemBlueprint,1,blueprint), 1,1, 10));
 		ChestGenHooks.getInfo(ChestGenHooks.VILLAGE_BLACKSMITH).addItem(new WeightedRandomChestContent(new ItemStack(IEContent.itemBlueprint,1,blueprint), 1,1, 2));

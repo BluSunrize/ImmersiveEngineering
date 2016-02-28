@@ -17,9 +17,16 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class MultiblockExcavatorDemo implements IMultiblock
 {
 	public static MultiblockExcavatorDemo instance = new MultiblockExcavatorDemo();
-
+	private static final TileEntityBucketWheel wheel = new TileEntityBucketWheel();
+	private static final TileEntityExcavator exc = new TileEntityExcavator();
 	static ItemStack[][][] structure = new ItemStack[7][8][3];
 	static{
+		exc.formed=true;
+		exc.pos=4;
+		exc.facing=3;
+		wheel.formed=true;
+		wheel.pos=24;
+		wheel.facing=4;
 		for(int l=0;l<6;l++)
 			for(int w=0;w<3;w++)
 				for(int h=0;h<3;h++)
@@ -89,22 +96,14 @@ public class MultiblockExcavatorDemo implements IMultiblock
 	@SideOnly(Side.CLIENT)
 	public void renderFormedStructure()
 	{
-		TileEntityExcavator te = new TileEntityExcavator();
-		te.formed=true;
-		te.pos=4;
-		te.facing=3;
 		ClientUtils.bindAtlas(0);
 		ClientUtils.tes().startDrawingQuads();
 		ClientUtils.tes().setTranslation(-.5,-.5,3.5);
-		ClientUtils.handleStaticTileRenderer(te, false);
+		ClientUtils.handleStaticTileRenderer(exc, false);
 		ClientUtils.tes().setTranslation(0,0,0);
 		ClientUtils.tes().draw();
 
-		TileEntityBucketWheel te2 = new TileEntityBucketWheel();
-		te2.formed=true;
-		te2.pos=24;
-		te2.facing=4;
-		TileEntityRendererDispatcher.instance.renderTileEntityAt(te2, -.5D, -.5D, -.5D, 0.0F);
+		TileEntityRendererDispatcher.instance.renderTileEntityAt(wheel, -.5D, -.5D, -.5D, 0.0F);
 	}
 	@Override
 	public float getManualScale()

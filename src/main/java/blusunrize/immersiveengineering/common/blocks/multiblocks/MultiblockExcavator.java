@@ -23,7 +23,11 @@ public class MultiblockExcavator implements IMultiblock
 	public static MultiblockExcavator instance = new MultiblockExcavator();
 	
 	static ItemStack[][][] structure = new ItemStack[3][6][3];
+	private static final TileEntityExcavator exc = new TileEntityExcavator();
 	static{
+		exc.formed=true;
+		exc.pos=4;
+		exc.facing=3;
 		for(int l=0;l<6;l++)
 			for(int w=0;w<3;w++)
 				for(int h=0;h<3;h++)
@@ -80,14 +84,10 @@ public class MultiblockExcavator implements IMultiblock
 	@SideOnly(Side.CLIENT)
 	public void renderFormedStructure()
 	{
-		TileEntityExcavator te = new TileEntityExcavator();
-		te.formed=true;
-		te.pos=4;
-		te.facing=3;
 		ClientUtils.bindAtlas(0);
 		ClientUtils.tes().startDrawingQuads();
 		ClientUtils.tes().setTranslation(-.5,-.5,2.5);
-		ClientUtils.handleStaticTileRenderer(te, false);
+		ClientUtils.handleStaticTileRenderer(exc, false);
 		ClientUtils.tes().setTranslation(0,0,0);
 		ClientUtils.tes().draw();
 	}

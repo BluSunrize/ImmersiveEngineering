@@ -27,7 +27,13 @@ import cpw.mods.fml.client.registry.RenderingRegistry;
 public class BlockRenderMetalDevices implements ISimpleBlockRenderingHandler
 {
 	public static int renderID = RenderingRegistry.getNextAvailableRenderId();
-
+	private static final TileEntityConnectorLV connLv = new TileEntityConnectorLV();
+	private static final TileEntityConnectorMV connMv = new TileEntityConnectorMV();
+	private static final TileEntityConnectorHV connHv = new TileEntityConnectorHV();
+	private static final TileEntityRelayHV relayHv = new TileEntityRelayHV();
+	private static final TileEntityTransformer transform = new TileEntityTransformer();
+	private static final TileEntityTransformerHV transformHv = new TileEntityTransformerHV();
+	private static final TileEntitySampleDrill drill = new TileEntitySampleDrill();
 	@Override
 	public void renderInventoryBlock(Block block, int metadata, int modelId, RenderBlocks renderer)
 	{
@@ -38,7 +44,7 @@ public class BlockRenderMetalDevices implements ISimpleBlockRenderingHandler
 			{
 				GL11.glScalef(1.25f, 1.25f, 1.25f);
 				Tessellator.instance.startDrawingQuads();
-				ClientUtils.handleStaticTileRenderer(new TileEntityConnectorLV());
+				ClientUtils.handleStaticTileRenderer(connLv);
 				Tessellator.instance.draw();
 			}
 			else if(metadata==BlockMetalDevices.META_capacitorLV)
@@ -51,7 +57,7 @@ public class BlockRenderMetalDevices implements ISimpleBlockRenderingHandler
 			{
 				GL11.glScalef(1.25f, 1.25f, 1.25f);
 				Tessellator.instance.startDrawingQuads();
-				ClientUtils.handleStaticTileRenderer(new TileEntityConnectorMV());
+				ClientUtils.handleStaticTileRenderer(connMv);
 				Tessellator.instance.draw();
 			}
 			else if(metadata==BlockMetalDevices.META_capacitorMV)
@@ -64,21 +70,21 @@ public class BlockRenderMetalDevices implements ISimpleBlockRenderingHandler
 			{
 				GL11.glScalef(.5f,.5f,.5f);
 				Tessellator.instance.startDrawingQuads();
-				ClientUtils.handleStaticTileRenderer(new TileEntityTransformer());
+				ClientUtils.handleStaticTileRenderer(transform);
 				Tessellator.instance.draw();
 			}
 			else if(metadata==BlockMetalDevices.META_relayHV)
 			{
 				GL11.glScalef(1f, 1f, 1f);
 				Tessellator.instance.startDrawingQuads();
-				ClientUtils.handleStaticTileRenderer(new TileEntityRelayHV());
+				ClientUtils.handleStaticTileRenderer(relayHv);
 				Tessellator.instance.draw();
 			}
 			else if(metadata==BlockMetalDevices.META_connectorHV)
 			{
 				GL11.glScalef(1.25f, 1.25f, 1.25f);
 				Tessellator.instance.startDrawingQuads();
-				ClientUtils.handleStaticTileRenderer(new TileEntityConnectorHV());
+				ClientUtils.handleStaticTileRenderer(connHv);
 				Tessellator.instance.draw();
 			}
 			else if(metadata==BlockMetalDevices.META_capacitorHV)
@@ -91,7 +97,7 @@ public class BlockRenderMetalDevices implements ISimpleBlockRenderingHandler
 			{
 				GL11.glScalef(.5f,.5f,.5f);
 				Tessellator.instance.startDrawingQuads();
-				ClientUtils.handleStaticTileRenderer(new TileEntityTransformerHV());
+				ClientUtils.handleStaticTileRenderer(transformHv);
 				Tessellator.instance.draw();
 			}
 			else if(metadata==BlockMetalDevices.META_dynamo)
@@ -128,7 +134,7 @@ public class BlockRenderMetalDevices implements ISimpleBlockRenderingHandler
 			{
 				GL11.glScalef(.5f,.5f,.5f);
 				GL11.glTranslatef(0,-1f,0);
-				TileEntityRendererDispatcher.instance.renderTileEntityAt(new TileEntitySampleDrill(), 0.0D, 0.0D, 0.0D, 0.0F);
+				TileEntityRendererDispatcher.instance.renderTileEntityAt(drill, 0.0D, 0.0D, 0.0D, 0.0F);
 			}
 		}catch(Exception e)
 		{
