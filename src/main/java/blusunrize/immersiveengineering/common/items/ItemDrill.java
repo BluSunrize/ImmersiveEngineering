@@ -335,6 +335,12 @@ public class ItemDrill extends ItemUpgradeableTool implements IShaderEquipableIt
 		int diameter = ((IDrillHead)head.getItem()).getMiningSize(head)+getUpgrades(stack).getInteger("size");
 		int depth = ((IDrillHead)head.getItem()).getMiningDepth(head)+getUpgrades(stack).getInteger("depth");
 
+		Block b = world.getBlock(ix, iy, iz);
+		float maxHardness = 1;
+		if (b!=null&&!b.isAir(world, ix, iy, iz))
+			maxHardness = b.getPlayerRelativeBlockHardness(player, world, ix, iy, iz)*0.8F;
+		if (maxHardness<0)
+			maxHardness = 0;
 		int startX=ix;
 		int startY=iy;
 		int startZ=iz;
@@ -370,8 +376,8 @@ public class ItemDrill extends ItemUpgradeableTool implements IShaderEquipableIt
 						continue;
 					Block block = world.getBlock(x, y, z);
 					int meta = world.getBlockMetadata(x, y, z);
-
-					if(block!=null && !block.isAir(world, x, y, z) && block.getPlayerRelativeBlockHardness(player, world, x, y, z) != 0)
+					float h = block.getPlayerRelativeBlockHardness(player, world, x, y, z);
+					if(block!=null && !block.isAir(world, x, y, z) && h>maxHardness)
 					{
 						if(!this.canBreakExtraBlock(world, block, x, y, z, meta, player, stack, head, true))
 							continue;
