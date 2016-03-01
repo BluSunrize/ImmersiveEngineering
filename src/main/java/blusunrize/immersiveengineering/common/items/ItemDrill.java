@@ -16,6 +16,8 @@ import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.util.IEAchievements;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Lib;
+import blusunrize.immersiveengineering.common.util.network.MessageDrill;
+import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityLivingBase;
@@ -150,6 +152,11 @@ public class ItemDrill extends ItemUpgradeableTool implements IShaderEquipableIt
 				animationTimer.put(entityLiving.getCommandSenderName(), 40);
 			else if(animationTimer.get(entityLiving.getCommandSenderName())<20)
 				animationTimer.put(entityLiving.getCommandSenderName(), 20);
+			if (!entityLiving.worldObj.isRemote)
+			{
+				ImmersiveEngineering.packetHandler.sendToAllAround(new MessageDrill(entityLiving.getCommandSenderName(), (byte)(int)animationTimer.get(entityLiving.getCommandSenderName())),
+						new TargetPoint(entityLiving.dimension, entityLiving.posX, entityLiving.posY, entityLiving.posZ, 64));
+			}
 			return true;
 		}
 		return false;

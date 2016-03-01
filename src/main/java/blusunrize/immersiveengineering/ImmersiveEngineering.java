@@ -25,6 +25,7 @@ import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.commands.CommandHandler;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
+import blusunrize.immersiveengineering.common.util.network.MessageDrill;
 import blusunrize.immersiveengineering.common.util.network.MessageMinecartShaderSync;
 import blusunrize.immersiveengineering.common.util.network.MessageMineralListSync;
 import blusunrize.immersiveengineering.common.util.network.MessageRequestBlockUpdate;
@@ -117,6 +118,7 @@ public class ImmersiveEngineering
 		packetHandler.registerMessage(MessageMinecartShaderSync.HandlerServer.class, MessageMinecartShaderSync.class, messageId++, Side.SERVER);
 		packetHandler.registerMessage(MessageMinecartShaderSync.HandlerClient.class, MessageMinecartShaderSync.class, messageId++, Side.CLIENT);
 		packetHandler.registerMessage(MessageRequestBlockUpdate.Handler.class, MessageRequestBlockUpdate.class, messageId++, Side.SERVER);
+		packetHandler.registerMessage(MessageDrill.Handler.class, MessageDrill.class, messageId++, Side.CLIENT);
 	}
 	@Mod.EventHandler
 	public void postInit(FMLPostInitializationEvent event)

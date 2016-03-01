@@ -89,6 +89,34 @@ public class ItemRenderDrill implements IItemRenderer
 			GL11.glRotatef(5, 0, 1, 0);
 			GL11.glTranslatef(-.125f,-1f,-.3f);
 			GL11.glScalef(1.5f,1.5f,1.5f);
+			EntityLivingBase user = null;
+			try{
+				user = (EntityLivingBase) data[1];
+			}catch(Exception e){}
+			if(user!=null)
+			{
+				if(ItemDrill.animationTimer==null)
+					ItemDrill.animationTimer = new HashMap<String,Integer>();
+				try{
+					if(ItemDrill.animationTimer.containsKey(user.getCommandSenderName()))
+					{
+						Integer timer = ItemDrill.animationTimer.get(user.getCommandSenderName());
+
+						float push = (20-(timer-20))/20f;
+						GL11.glTranslatef(push*.25f,0,0);
+
+						timer--;
+						if(timer<=0)
+							ItemDrill.animationTimer.remove(user.getCommandSenderName());
+						else
+							ItemDrill.animationTimer.put(user.getCommandSenderName(), timer);
+					}
+				}
+				catch(Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
 		}
 		else if(type==ItemRenderType.ENTITY)
 		{
