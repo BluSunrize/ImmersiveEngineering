@@ -16,6 +16,8 @@ import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.util.IEAchievements;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Lib;
+import blusunrize.immersiveengineering.common.util.network.MessageDrill;
+import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityLivingBase;
@@ -150,6 +152,11 @@ public class ItemDrill extends ItemUpgradeableTool implements IShaderEquipableIt
 				animationTimer.put(entityLiving.getCommandSenderName(), 40);
 			else if(animationTimer.get(entityLiving.getCommandSenderName())<20)
 				animationTimer.put(entityLiving.getCommandSenderName(), 20);
+			if (!entityLiving.worldObj.isRemote)
+			{
+				ImmersiveEngineering.packetHandler.sendToAllAround(new MessageDrill(entityLiving.getCommandSenderName(), (byte)(int)animationTimer.get(entityLiving.getCommandSenderName())),
+						new TargetPoint(entityLiving.dimension, entityLiving.posX, entityLiving.posY, entityLiving.posZ, 64));
+			}
 			return true;
 		}
 		return false;
@@ -335,6 +342,12 @@ public class ItemDrill extends ItemUpgradeableTool implements IShaderEquipableIt
 		int diameter = ((IDrillHead)head.getItem()).getMiningSize(head)+getUpgrades(stack).getInteger("size");
 		int depth = ((IDrillHead)head.getItem()).getMiningDepth(head)+getUpgrades(stack).getInteger("depth");
 
+		Block b = world.getBlock(ix, iy, iz);
+		float maxHardness = 1;
+		if (b!=null&&!b.isAir(world, ix, iy, iz))
+			maxHardness = b.getPlayerRelativeBlockHardness(player, world, ix, iy, iz)*0.8F;
+		if (maxHardness<0)
+			maxHardness = 0;
 		int startX=ix;
 		int startY=iy;
 		int startZ=iz;
@@ -370,8 +383,8 @@ public class ItemDrill extends ItemUpgradeableTool implements IShaderEquipableIt
 						continue;
 					Block block = world.getBlock(x, y, z);
 					int meta = world.getBlockMetadata(x, y, z);
-
-					if(block!=null && !block.isAir(world, x, y, z) && block.getPlayerRelativeBlockHardness(player, world, x, y, z) != 0)
+					float h = block.getPlayerRelativeBlockHardness(player, world, x, y, z);
+					if(block!=null && !block.isAir(world, x, y, z) && h>maxHardness)
 					{
 						if(!this.canBreakExtraBlock(world, block, x, y, z, meta, player, stack, head, true))
 							continue;
