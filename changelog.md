@@ -1,4 +1,4 @@
-#####Version 0.7.2
+#####Version 0.7.2 - BUILT
 - Last update for 1.7, hopefully!
 - instead of adding it to every entry of the changelog: A lot of these fixes were done by malte, cheers to him for that =P
 - added computer support for capacitors
@@ -21,6 +21,8 @@
 - fixed a dupebug
 - fixed blastfurnace crashing when a recipe misses slag
 - fixed villagers buying metadata emeralds
+- fixed drill animations
+- fixed drill ignoring hardness of neighbouring blocks
 - updated zh_CN.lang
 
 
