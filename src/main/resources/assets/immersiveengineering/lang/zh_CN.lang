@@ -129,6 +129,9 @@ tile.ImmersiveEngineering.stoneDecoration.concreteTile.name=混凝土砖
 tile.ImmersiveEngineering.stoneDecoration.blastBrickReinforced.name=强化高炉砖
 tile.ImmersiveEngineering.concreteStairs.name=混凝土楼梯
 tile.ImmersiveEngineering.concreteTileStairs.name=混凝土砖楼梯
+tile.ImmersiveEngineering.stoneSlab.hempcrete.name=麻凝土台阶
+tile.ImmersiveEngineering.stoneSlab.concrete.name=混凝土台阶
+tile.ImmersiveEngineering.stoneSlab.concreteTile.name=混凝土砖台阶
 
 tile.ImmersiveEngineering.hemp.name=工业大麻
 
@@ -184,6 +187,7 @@ item.ImmersiveEngineering.metal.plateNickel.name=镍板
 item.ImmersiveEngineering.metal.plateConstantan.name=康铜板
 item.ImmersiveEngineering.metal.plateElectrum.name=琥珀金板
 item.ImmersiveEngineering.metal.plateSteel.name=钢板
+
 
 item.ImmersiveEngineering.material.treatedStick.name=防腐木棍
 item.ImmersiveEngineering.material.waterwheelSegment.name=水车部件
@@ -553,6 +557,8 @@ achievement.immersiveengineering.secret_birthdayParty=Grunt Birthday Party
 achievement.immersiveengineering.secret_birthdayParty.desc=擦亮火柴...
 achievement.immersiveengineering.secret_luckOfTheDraw=抽奖的运气
 achievement.immersiveengineering.secret_luckOfTheDraw.desc=全有即全无
+
+
 
 stat.skyhookOneCm=使用天钩滑行的距离
 
@@ -989,3 +995,7 @@ ie.manual.entry.computer.bottlingMachine.subtext=Fill 'er up!
 ie.manual.entry.computer.bottlingMachine0=The block in the bottom middle of the front of a bottling machine and the back bottom row can be connected to a computer. A cannister is considered filled if it has passed the black box on the conveyor.<br>§lgetFluid()§r: returns the internal fluid tank of the bottling machine<br>§lgetEmptyCannister(int n)§r: returns the n'th empty cannister, starting where the cannisters enter the machine. The table contains the current filling progress in ticks in the key "process". A bottle is filled
 ie.manual.entry.computer.bottlingMachine1=at progress 72 and output at progress 120.<br>§lgetEmptyCannisterCount()§r: returns the amount of empty cannisters in the bottling machine<br>§lgetFilledCannister(int n)§r: returns the n'th filled cannister, starting at the black box. The returned table contains the filling progress stored in the key "process".<br>§lgetFilledCannisterCount()§r: returns the amount of filled cannisters in the bottling machine<br>§lgetEnergyStored()§r: returns
 ie.manual.entry.computer.bottlingMachine2=the amount of energy stored in the bottling machine<br>§lgetMaxEnergyStored()§r: returns the maximum amount of energy stored in this bottling machine<br>§lsetEnabled(boolean on)§r: turns the bottling machine on or off
+
+ie.manual.entry.computer.capacitor.name=Capacitors (computers)
+ie.manual.entry.computer.capacitor.subtext=Many Farads at a lot of Volts
+ie.manual.entry.computer.capacitor0=Any capacitor can be connected to a computer on any side.<br>§lgetEnergyStored()§r: returns the amount of energy that is stored<br>§lgetMaxEnergyStored()§r: returns the amount of energy that can be stored
