@@ -32,7 +32,6 @@ public class PeripheralCoreDrill extends IEPeripheral
 			throws LuaException, InterruptedException
 	{
 		TileEntitySampleDrill te = (TileEntitySampleDrill) getTileEntity(TileEntitySampleDrill.class);
-		IELogger.info(te);
 		if (te==null)
 			throw new LuaException("The sample drill was removed");
 		switch (method)

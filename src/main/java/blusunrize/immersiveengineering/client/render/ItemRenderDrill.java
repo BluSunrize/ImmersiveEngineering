@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.client.render;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.lwjgl.opengl.GL11;
 
@@ -60,7 +61,7 @@ public class ItemRenderDrill implements IItemRenderer
 			if(user!=null)
 			{
 				if(ItemDrill.animationTimer==null)
-					ItemDrill.animationTimer = new HashMap<String,Integer>();
+					ItemDrill.animationTimer = new ConcurrentHashMap<String,Integer>();
 				try{
 					if(ItemDrill.animationTimer.containsKey(user.getCommandSenderName()))
 					{
@@ -69,11 +70,6 @@ public class ItemRenderDrill implements IItemRenderer
 						float push = (20-(timer-20))/20f;
 						GL11.glTranslatef(push*.25f,0,0);
 
-						timer--;
-						if(timer<=0)
-							ItemDrill.animationTimer.remove(user.getCommandSenderName());
-						else
-							ItemDrill.animationTimer.put(user.getCommandSenderName(), timer);
 					}
 				}
 				catch(Exception e)
@@ -96,7 +92,7 @@ public class ItemRenderDrill implements IItemRenderer
 			if(user!=null)
 			{
 				if(ItemDrill.animationTimer==null)
-					ItemDrill.animationTimer = new HashMap<String,Integer>();
+					ItemDrill.animationTimer = new ConcurrentHashMap<String,Integer>();
 				try{
 					if(ItemDrill.animationTimer.containsKey(user.getCommandSenderName()))
 					{
@@ -105,11 +101,6 @@ public class ItemRenderDrill implements IItemRenderer
 						float push = (20-(timer-20))/20f;
 						GL11.glTranslatef(push*.25f,0,0);
 
-						timer--;
-						if(timer<=0)
-							ItemDrill.animationTimer.remove(user.getCommandSenderName());
-						else
-							ItemDrill.animationTimer.put(user.getCommandSenderName(), timer);
 					}
 				}
 				catch(Exception e)

@@ -45,6 +45,7 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.relauncher.Side;
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBiped;
@@ -207,7 +208,7 @@ public class ClientEventHandler
 	@SubscribeEvent
 	public void onPlayerTick(TickEvent.PlayerTickEvent event)
 	{
-		if(event.side.isClient() && event.phase==TickEvent.Phase.START && event.player!=null && event.player==ClientUtils.mc().renderViewEntity)
+		if(event.side.isClient() && event.phase==TickEvent.Phase.START && event.player==ClientUtils.mc().renderViewEntity)
 		{
 			skyhookGrabableConnections.clear();
 			EntityPlayer player = event.player;
@@ -252,10 +253,23 @@ public class ClientEventHandler
 				if(player.getItemInUseCount() <= 0)
 				{
 					player.clearItemInUse();
-					player.setItemInUse(stack, 2147483647);
+					player.setItemInUse(stack, Integer.MAX_VALUE);
 				}
 			}
-
+			if (!Minecraft.getMinecraft().isIntegratedServerRunning()&&ItemDrill.animationTimer!=null&&ItemDrill.animationTimer.containsKey(player.getCommandSenderName()))
+			{
+				synchronized (ItemDrill.animationTimer)
+				{
+					Integer timer = ItemDrill.animationTimer.get(player.getCommandSenderName());
+					timer--;
+					if (timer < 18&&timer>15)
+						timer = 20;
+					if (timer>0)
+						ItemDrill.animationTimer.put(player.getCommandSenderName(), timer);
+					else
+						ItemDrill.animationTimer.remove(player.getCommandSenderName());
+				}
+			}
 		}
 	}
 
