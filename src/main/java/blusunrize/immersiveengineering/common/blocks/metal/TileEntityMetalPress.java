@@ -472,7 +472,9 @@ public class TileEntityMetalPress extends TileEntityMultiblockPart implements IS
 			if (!isItemValidForSlot(slot,stack))
 				return false;
 			TileEntityMetalPress master = master();
-			return master.inventory[slot]==null||master.inventory[slot].stackSize+stack.stackSize<=getInventoryStackLimit();
+			if (master.inventory[slot]==null)
+				return stack.stackSize<=master.getInventoryStackLimit();
+			return master.inventory[slot].stackSize+stack.stackSize<=master.getInventoryStackLimit();
 		}
 		return false;
 	}
