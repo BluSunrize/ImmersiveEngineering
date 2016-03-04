@@ -478,15 +478,18 @@ public class Utils
 				return stack;
 			for (int i=0; i<slots.length && stack!=null; i++)
 			{
-				if (sidedInv.canInsertItem(slots[i], stack, side))
+				ItemStack existingStack = inventory.getStackInSlot(slots[i]);
+				if (existingStack==null)
+					continue;
+				ItemStack toInsert = copyStackWithAmount(stack, Math.min(existingStack.getMaxStackSize(), inventory.getInventoryStackLimit())-existingStack.stackSize);
+				if (sidedInv.canInsertItem(slots[i], toInsert, side))
 				{
-					ItemStack existingStack = inventory.getStackInSlot(slots[i]);
 					if(OreDictionary.itemMatches(existingStack, stack, true)&&ItemStack.areItemStackTagsEqual(stack, existingStack))
 						stack = addToOccupiedSlot(sidedInv, slots[i], stack, existingStack);
 				}
 			}
 			for (int i=0; i<slots.length && stack!=null; i++)
-				if (inventory.getStackInSlot(slots[i]) == null && sidedInv.canInsertItem(slots[i], stack, side))
+				if (inventory.getStackInSlot(slots[i]) == null && sidedInv.canInsertItem(slots[i], copyStackWithAmount(stack, inventory.getInventoryStackLimit()), side))
 					stack = addToEmptyInventorySlot(sidedInv, slots[i], stack);
 		}
 		else
@@ -551,7 +554,7 @@ public class Utils
 						return true;
 					else
 						if(OreDictionary.itemMatches(existingStack, stack, true)&&ItemStack.areItemStackTagsEqual(stack, existingStack))
-							if(existingStack.stackSize+stack.stackSize<inventory.getInventoryStackLimit() && existingStack.stackSize+stack.stackSize<existingStack.getMaxStackSize())
+							if(existingStack.stackSize+stack.stackSize<=inventory.getInventoryStackLimit() && existingStack.stackSize+stack.stackSize<=existingStack.getMaxStackSize())
 								return true;
 				}
 			}
@@ -567,7 +570,7 @@ public class Utils
 						return true;
 					else
 						if(OreDictionary.itemMatches(existingStack, stack, true)&&ItemStack.areItemStackTagsEqual(stack, existingStack))
-							if(existingStack.stackSize+stack.stackSize<inventory.getInventoryStackLimit() && existingStack.stackSize+stack.stackSize<existingStack.getMaxStackSize())
+							if(existingStack.stackSize+stack.stackSize<=inventory.getInventoryStackLimit() && existingStack.stackSize+stack.stackSize<=existingStack.getMaxStackSize())
 								return true;
 				}
 		}

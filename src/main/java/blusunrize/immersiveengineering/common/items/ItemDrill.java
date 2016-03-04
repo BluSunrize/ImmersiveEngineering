@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.common.items;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
@@ -14,6 +15,7 @@ import blusunrize.immersiveengineering.api.tool.IDrillHead;
 import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.util.IEAchievements;
+import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.network.MessageDrill;
@@ -58,11 +60,11 @@ public class ItemDrill extends ItemUpgradeableTool implements IShaderEquipableIt
 	{
 		return new Slot[]
 				{
-				new IESlot.DrillHead(container, invItem,0, 98,22),
-				new IESlot.Upgrades(container, invItem,1,  78,42, "DRILL", stack, true),
-				new IESlot.Upgrades(container, invItem,2,  98,52, "DRILL", stack, true),
-				new IESlot.Upgrades(container, invItem,3, 118,42, "DRILL", stack, true),
-				new IESlot.Shader(container, invItem,4,150,32, stack)
+						new IESlot.DrillHead(container, invItem,0, 98,22),
+						new IESlot.Upgrades(container, invItem,1,  78,42, "DRILL", stack, true),
+						new IESlot.Upgrades(container, invItem,2,  98,52, "DRILL", stack, true),
+						new IESlot.Upgrades(container, invItem,3, 118,42, "DRILL", stack, true),
+						new IESlot.Shader(container, invItem,4,150,32, stack)
 				};
 	}
 	@Override
@@ -99,7 +101,7 @@ public class ItemDrill extends ItemUpgradeableTool implements IShaderEquipableIt
 		contained[4] =  shader;
 		this.setContainedItems(stack, contained);
 	}
-	
+
 	@Override
 	public ItemStack getShaderItem(ItemStack stack)
 	{
@@ -118,7 +120,7 @@ public class ItemDrill extends ItemUpgradeableTool implements IShaderEquipableIt
 		ItemStack shader = getShaderItem(stack);
 		if(shader!=null)
 			list.add(EnumChatFormatting.DARK_GRAY+shader.getDisplayName());
-		
+
 		FluidStack fs = getFluid(stack);
 		if(fs!=null)
 			list.add(StatCollector.translateToLocal("desc.ImmersiveEngineering.flavour.drill.fuel")+" "+fs.amount+"/"+getCapacity(stack)+"mB");
@@ -142,26 +144,32 @@ public class ItemDrill extends ItemUpgradeableTool implements IShaderEquipableIt
 	{
 		return true;
 	}
-	public static HashMap<String, Integer> animationTimer = new HashMap<String, Integer>();
+	public static ConcurrentHashMap<String, Integer> animationTimer = new ConcurrentHashMap<String, Integer>();
+	public static long lastUpdate = 0;
 	@Override
 	public boolean onEntitySwing(EntityLivingBase entityLiving, ItemStack stack)
 	{
 		if(canDrillBeUsed(stack, entityLiving) && getHead(stack)!=null)
 		{
-			if(!animationTimer.containsKey(entityLiving.getCommandSenderName()))
-				animationTimer.put(entityLiving.getCommandSenderName(), 40);
-			else if(animationTimer.get(entityLiving.getCommandSenderName())<20)
-				animationTimer.put(entityLiving.getCommandSenderName(), 20);
 			if (!entityLiving.worldObj.isRemote)
 			{
-				ImmersiveEngineering.packetHandler.sendToAllAround(new MessageDrill(entityLiving.getCommandSenderName(), (byte)(int)animationTimer.get(entityLiving.getCommandSenderName())),
-						new TargetPoint(entityLiving.dimension, entityLiving.posX, entityLiving.posY, entityLiving.posZ, 64));
+				synchronized (ItemDrill.animationTimer)
+				{
+					if(!animationTimer.containsKey(entityLiving.getCommandSenderName()))
+					{
+						animationTimer.put(entityLiving.getCommandSenderName(), 40);
+						ImmersiveEngineering.packetHandler.sendToAllAround(new MessageDrill(entityLiving.getCommandSenderName(), true),
+								new TargetPoint(entityLiving.dimension, entityLiving.posX, entityLiving.posY, entityLiving.posZ, 64));
+					}
+					else if(animationTimer.get(entityLiving.getCommandSenderName())<18)
+						animationTimer.put(entityLiving.getCommandSenderName(), 20);
+				}
 			}
 			return true;
 		}
 		return false;
 	}
-	
+
 	@Override
 	public double getDurabilityForDisplay(ItemStack stack)
 	{
@@ -185,7 +193,7 @@ public class ItemDrill extends ItemUpgradeableTool implements IShaderEquipableIt
 		if(contents[0]!=null&&contents[1]!=null&&contents[2]!=null&&contents[3]!=null)
 			player.triggerAchievement(IEAchievements.upgradeDrill);
 	}
-	
+
 	/*INVENTORY STUFF*/
 	public ItemStack getHead(ItemStack drill)
 	{
@@ -428,7 +436,7 @@ public class ItemDrill extends ItemUpgradeableTool implements IShaderEquipableIt
 	{
 		return 2000+getUpgrades(container).getInteger("capacity");
 	}
-	
+
 	@Override
 	public int fill(ItemStack container, FluidStack resource, boolean doFill)
 	{

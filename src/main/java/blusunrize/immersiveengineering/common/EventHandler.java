@@ -35,6 +35,7 @@ import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Lib;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.compat.computercraft.TileEntityRequest;
+import blusunrize.immersiveengineering.common.util.network.MessageDrill;
 import blusunrize.immersiveengineering.common.util.network.MessageMinecartShaderSync;
 import blusunrize.immersiveengineering.common.util.network.MessageMineralListSync;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -63,6 +64,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
@@ -249,6 +251,25 @@ public class EventHandler
 				it.remove();
 				timeout--;
 				cachedRequestResults.add(req);
+			}
+			if (ItemDrill.animationTimer!=null&&event.world.getTotalWorldTime()!=ItemDrill.lastUpdate)
+			{
+				synchronized (ItemDrill.animationTimer)
+				{
+					for (String name:ItemDrill.animationTimer.keySet())
+					{
+						Integer timer = ItemDrill.animationTimer.get(name);
+						timer--;
+						if (timer<=0)
+						{
+							ItemDrill.animationTimer.remove(name);
+							ImmersiveEngineering.packetHandler.sendToAll(new MessageDrill(name, false));
+						}
+						else
+							ItemDrill.animationTimer.put(name, timer);
+					}
+				}
+				ItemDrill.lastUpdate = event.world.getTotalWorldTime();
 			}
 		}
 	}

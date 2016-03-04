@@ -1,9 +1,15 @@
 package blusunrize.immersiveengineering.common.util.network;
 
 import io.netty.buffer.ByteBuf;
+import net.minecraft.client.Minecraft;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.integrated.IntegratedServer;
+
 import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 import blusunrize.immersiveengineering.common.items.ItemDrill;
+import blusunrize.immersiveengineering.common.util.IELogger;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
@@ -14,10 +20,10 @@ import cpw.mods.fml.relauncher.Side;
 public class MessageDrill implements IMessage
 {
 	String player;
-	byte val;
-	public MessageDrill(String p, byte v)
+	boolean start;
+	public MessageDrill(String p, boolean s)
 	{
-		val = v;
+		start = s;
 		player = p;
 	}
 	public MessageDrill()
@@ -27,14 +33,14 @@ public class MessageDrill implements IMessage
 	@Override
 	public void fromBytes(ByteBuf buf)
 	{
-		val = buf.readByte();
+		start = buf.readBoolean();
 		player = ByteBufUtils.readUTF8String(buf);
 	}
 
 	@Override
 	public void toBytes(ByteBuf buf)
 	{
-		buf.writeByte(val);
+		buf.writeBoolean(start);
 		ByteBufUtils.writeUTF8String(buf, player);
 	}
 
@@ -46,8 +52,17 @@ public class MessageDrill implements IMessage
 			if (FMLCommonHandler.instance().getEffectiveSide()==Side.CLIENT)
 			{
 				if (ItemDrill.animationTimer==null)
-					ItemDrill.animationTimer = new HashMap<>();
-				ItemDrill.animationTimer.put(message.player, (int)message.val);
+					ItemDrill.animationTimer = new ConcurrentHashMap<>();
+				if (message.start)
+					synchronized (ItemDrill.animationTimer)
+					{
+						ItemDrill.animationTimer.put(message.player, 40);
+					}
+				else if (!Minecraft.getMinecraft().isIntegratedServerRunning())
+					synchronized (ItemDrill.animationTimer)
+					{
+						ItemDrill.animationTimer.put(message.player, 15);
+					}
 			}
 			return null;
 		}
