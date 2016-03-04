@@ -21,6 +21,7 @@ version = "0.7.2"
 group= "blusunrize"
 archivesBaseName = "ImmersiveEngineering"
 
+apply plugin: 'java'
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 

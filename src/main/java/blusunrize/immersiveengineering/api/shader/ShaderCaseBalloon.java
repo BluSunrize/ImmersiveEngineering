@@ -8,9 +8,9 @@ public class ShaderCaseBalloon extends ShaderCase
 {
 	public String additionalTexture = null;
 
-	public ShaderCaseBalloon(String overlayType, int[] colourPrimary, int[] colourSecondary, String additionalTexture)
+	public ShaderCaseBalloon(String overlayType, int[] colourUnderlying, int[] colourPrimary, int[] colourSecondary, String additionalTexture)
 	{
-		super(overlayType, defaultWhite,colourPrimary,colourSecondary, "immersiveengineering:shaders/balloon_");
+		super(overlayType, colourUnderlying,colourPrimary,colourSecondary, "immersiveengineering:shaders/balloon_");
 		this.additionalTexture = additionalTexture;
 	}
 

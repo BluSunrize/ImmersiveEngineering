@@ -49,7 +49,7 @@ public class AvaritiaHelper extends IECompatModule
 				new CosmicShaderCaseDrill(overlayType, colourBackground, colourPrimary, colourSecondary, null),
 				new CosmicShaderCaseChemthrower(overlayType, colourBackground, colourPrimary, colourSecondary, true,false, null),
 				new CosmicShaderCaseRailgun(overlayType, colourBackground, colourPrimary, colourSecondary, null),
-				new CosmicShaderCaseMinecart(overlayType, colourPrimary, colourSecondary, null)).setBagLoot(true).setInLowerBags(false));
+				new CosmicShaderCaseMinecart(overlayType, colourBackground, colourPrimary, colourSecondary, null)).setBagLoot(true).setInLowerBags(false));
 	}
 	@Override
 	public void postInit()
@@ -200,9 +200,9 @@ public class AvaritiaHelper extends IECompatModule
 	}
 	static class CosmicShaderCaseMinecart extends ShaderCaseMinecart
 	{
-		public CosmicShaderCaseMinecart(String overlayType, int[] colourPrimary, int[] colourSecondary, String additionalTexture)
+		public CosmicShaderCaseMinecart(String overlayType, int[] colourUnderlying, int[] colourPrimary, int[] colourSecondary, String additionalTexture)
 		{
-			super(overlayType, colourPrimary, colourSecondary, additionalTexture);
+			super(overlayType, colourUnderlying, colourPrimary, colourSecondary, additionalTexture);
 		}
 		@Override
 		public int getPasses(ItemStack shader, ItemStack item, String modelPart)

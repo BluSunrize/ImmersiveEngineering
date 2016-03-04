@@ -11,19 +11,20 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ChunkCoordinates;
-import net.minecraft.util.Vec3;
-import net.minecraft.world.World;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.common.IESaveData;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.Vec3;
+import net.minecraft.world.World;
 
 public class ImmersiveNetHandler
 {
@@ -116,7 +117,7 @@ public class ImmersiveNetHandler
 	}
 	public Set<Integer> getRelevantDimensions()
 	{
-		return directConnections.keySet();//TODO This will break on Java8. Remember to ask cobra >_>
+		return ((Map)directConnections).keySet();//TODO This will break on Java8. Remember to ask cobra >_>
 	}
 	public Collection<Connection> getAllConnections(World world)
 	{

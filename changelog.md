@@ -1,3 +1,12 @@
+#####Version 0.7.3
+- So much about that last update, eh? >_>
+- added 2 new Shaders: In honour of the TP:HD release, Twili and Usurper
+- fixed the Java 8 compilation error by using a cast
+- fixed the drill animations a bit more (thanks malte)
+- fixed the item router and the conveyorbelts being derpy with some stacksizes (thanks malte)
+- fixed shader items lacking colouration on their lowest layer. This is an API change, but I doubt it affects anyone.
+- updated zh_CN.lang
+
 #####Version 0.7.2 - BUILT
 - Last update for 1.7, hopefully!
 - instead of adding it to every entry of the changelog: A lot of these fixes were done by malte, cheers to him for that =P

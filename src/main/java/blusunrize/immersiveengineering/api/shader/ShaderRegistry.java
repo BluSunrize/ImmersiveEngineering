@@ -63,8 +63,8 @@ public class ShaderRegistry
 		registerShader_Chemthrower(name, overlayType, rarity, colourBackground, colourPrimary, colourSecondary, true,false, additionalTexture);
 		registerShader_Drill(name, overlayType, rarity, colourBackground, colourPrimary, colourSecondary, additionalTexture);
 		registerShader_Railgun(name, overlayType, rarity, colourBackground, colourPrimary, colourSecondary, additionalTexture);
-		registerShader_Minecart(name, overlayType, rarity, colourPrimary, colourSecondary, additionalTexture);
-		registerShader_Balloon(name, overlayType, rarity, colourPrimary, colourSecondary, additionalTexture);
+		registerShader_Minecart(name, overlayType, rarity, colourBackground, colourPrimary, colourSecondary, additionalTexture);
+		registerShader_Balloon(name, overlayType, rarity, colourBackground, colourPrimary, colourSecondary, additionalTexture);
 		return shaderRegistry.get(name).setCrateLoot(loot).setBagLoot(bags);
 	}
 
@@ -115,11 +115,11 @@ public class ShaderRegistry
 
 		return shader;
 	}
-	public static ShaderCaseMinecart registerShader_Minecart(String name, String overlayType, EnumRarity rarity, int[] colourPrimary, int[] colourSecondary, String additionalTexture)
+	public static ShaderCaseMinecart registerShader_Minecart(String name, String overlayType, EnumRarity rarity, int[] colourUnderlying, int[] colourPrimary, int[] colourSecondary, String additionalTexture)
 	{
 		if(!shaderList.contains(name))
 			shaderList.add(name);
-		ShaderCaseMinecart shader = new ShaderCaseMinecart(overlayType, colourPrimary, colourSecondary, additionalTexture);
+		ShaderCaseMinecart shader = new ShaderCaseMinecart(overlayType, colourUnderlying, colourPrimary, colourSecondary, additionalTexture);
 		if(!shaderRegistry.containsKey(name))
 			shaderRegistry.put(name, new ShaderRegistryEntry(name, rarity, shader));
 		else
@@ -127,11 +127,11 @@ public class ShaderRegistry
 
 		return shader;
 	}
-	public static ShaderCaseBalloon registerShader_Balloon(String name, String overlayType, EnumRarity rarity, int[] colourPrimary, int[] colourSecondary, String additionalTexture)
+	public static ShaderCaseBalloon registerShader_Balloon(String name, String overlayType, EnumRarity rarity, int[] colourUnderlying, int[] colourPrimary, int[] colourSecondary, String additionalTexture)
 	{
 		if(!shaderList.contains(name))
 			shaderList.add(name);
-		ShaderCaseBalloon shader = new ShaderCaseBalloon(overlayType, colourPrimary, colourSecondary, additionalTexture);
+		ShaderCaseBalloon shader = new ShaderCaseBalloon(overlayType, colourUnderlying, colourPrimary, colourSecondary, additionalTexture);
 		if(!shaderRegistry.containsKey(name))
 			shaderRegistry.put(name, new ShaderRegistryEntry(name, rarity, shader));
 		else

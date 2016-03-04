@@ -15,9 +15,9 @@ public class ShaderCaseMinecart extends ShaderCase
 	public boolean[] overlaySides = {true, true,true,true,true, true,true};
 	public boolean[] mirrorSideForPass = {true,true,true,true};
 
-	public ShaderCaseMinecart(String overlayType, int[] colourPrimary, int[] colourSecondary, String additionalTexture)
+	public ShaderCaseMinecart(String overlayType, int[] colourUnderlying, int[] colourPrimary, int[] colourSecondary, String additionalTexture)
 	{
-		super(overlayType, defaultWhite,colourPrimary,colourSecondary, "immersiveengineering:textures/models/shaders/minecart_");
+		super(overlayType, colourUnderlying,colourPrimary,colourSecondary, "immersiveengineering:textures/models/shaders/minecart_");
 		this.additionalTexture = additionalTexture;
 		if(overlayType.equals("1") || overlayType.equals("2") || overlayType.equals("7"))
 		{
