@@ -1,4 +1,4 @@
-#####Version 0.7.3
+#####Version 0.7.3 - BUILT
 - So much about that last update, eh? >_>
 - added 2 new Shaders: In honour of the TP:HD release, Twili and Usurper
 - fixed the Java 8 compilation error by using a cast
