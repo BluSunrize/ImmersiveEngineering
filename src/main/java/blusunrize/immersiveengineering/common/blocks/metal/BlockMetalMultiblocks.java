@@ -277,7 +277,7 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 				b = world.getBlock(adapter.posX, adapter.posY, adapter.posZ);
 				if (b!=null)
 					b.onNeighborChange(world, adapter.posX, adapter.posY, adapter.posZ, gen.posX, gen.posY, gen.posZ);
-				
+
 				master.markDirty();
 				world.markBlockForUpdate(master.xCoord, master.yCoord, master.zCoord);
 			}
@@ -650,12 +650,14 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 		return null;
 	}
 	@Override
-	public boolean hasComparatorInputOverride() {
+	public boolean hasComparatorInputOverride()
+	{
 		return true;
 	}
 	@Override
 	public int getComparatorInputOverride(World world, int x,
-			int y, int z, int side) {
+			int y, int z, int side)
+	{
 		TileEntity te = world.getTileEntity(x, y, z);
 		if (te instanceof TileEntitySilo)
 		{
@@ -667,5 +669,21 @@ public class BlockMetalMultiblocks extends BlockIEBase implements ICustomBoundin
 		}
 		return super.getComparatorInputOverride(world, x, y,
 				z, side);
+	}
+	@Override
+	public void onEntityCollidedWithBlock(World w, int x, int y, int z,
+			Entity e)
+	{
+		if (w.isRemote||!(e instanceof EntityItem))
+			return;
+		TileEntity te = w.getTileEntity(x, y, z);
+		if (te instanceof TileEntityMetalPress&&((TileEntityMetalPress)te).pos==3&&w.getTotalWorldTime()%10==(x^z)%10)
+		{
+			ItemStack s = Utils.insertStackIntoInventory((IInventory)te, ((EntityItem)e).getEntityItem(), ForgeDirection.OPPOSITES[((TileEntityMetalPress)te).facing]);
+			if (s==null||s.stackSize==0)
+				e.setDead();
+			else if (s.stackSize!=((EntityItem)e).getEntityItem().stackSize)
+				((EntityItem)e).setEntityItemStack(s);
+		}
 	}
 }
