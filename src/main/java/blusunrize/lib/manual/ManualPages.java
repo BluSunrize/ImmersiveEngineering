@@ -9,6 +9,7 @@ import org.lwjgl.opengl.GL12;
 
 import com.google.common.collect.ArrayListMultimap;
 
+import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.lib.manual.gui.GuiButtonManualLink;
 import blusunrize.lib.manual.gui.GuiButtonManualNavigation;
 import blusunrize.lib.manual.gui.GuiManual;
@@ -470,6 +471,16 @@ public abstract class ManualPages implements IManualPage
 					w = ((ShapedRecipes)rec).recipeWidth;
 					h = ((ShapedRecipes)rec).recipeHeight;
 				}
+				else
+				{
+					try {
+						IELogger.info("Found custom IRecipe with output "+rec.getRecipeOutput());
+					} catch (Exception x) {
+						IELogger.info("Found custom IRecipe with unknown output");
+					}
+					return;
+				}
+				
 				Object[] ingredients = new Object[ingredientsPre.length];
 				for(int iO=0; iO<ingredientsPre.length; iO++)
 				{
