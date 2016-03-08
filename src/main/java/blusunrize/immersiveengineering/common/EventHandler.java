@@ -256,7 +256,7 @@ public class EventHandler
 			{
 				synchronized (ItemDrill.animationTimer)
 				{
-					for (String name:ItemDrill.animationTimer.keySet())
+					for (String name:((Map<String, Integer>)ItemDrill.animationTimer).keySet())
 					{
 						Integer timer = ItemDrill.animationTimer.get(name);
 						timer--;

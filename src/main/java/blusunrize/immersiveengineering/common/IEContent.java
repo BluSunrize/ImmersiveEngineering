@@ -274,6 +274,11 @@ public class IEContent
 				return true;
 			}
 			@Override
+			public boolean hasContainerItem()
+			{
+				return true;
+			}
+			@Override
 			public ItemStack getContainerItem(ItemStack stack)
 			{
 				return stack.getItemDamage()%2==0?new ItemStack(Items.glass_bottle): new ItemStack(Items.bucket);
