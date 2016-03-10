@@ -525,13 +525,13 @@ public class Utils
 		if (stack.stackSize + existingStack.stackSize > stackLimit) {
 			int stackDiff = stackLimit - existingStack.stackSize;
 			existingStack.stackSize = stackLimit;
-			stack.stackSize -= stackDiff;
+			stack = copyStackWithAmount(stack, stack.stackSize-stackDiff);
 			inventory.setInventorySlotContents(slot, existingStack);
 			return stack;
 		}
 		existingStack.stackSize += Math.min(stack.stackSize, stackLimit);
 		inventory.setInventorySlotContents(slot, existingStack);
-		return stackLimit >= stack.stackSize ? null : stack.splitStack(stack.stackSize - stackLimit);
+		return null;
 	}
 
 
