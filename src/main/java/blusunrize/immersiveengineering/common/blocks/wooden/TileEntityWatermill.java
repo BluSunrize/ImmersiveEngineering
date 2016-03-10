@@ -28,12 +28,7 @@ public class TileEntityWatermill extends TileEntityIEBase
 	{
 		if(offset[0]!=0||offset[1]!=0)
 			return;
-		if( 
-				//				!(worldObj.getBlock(xCoord-(facing<=3?2:0), yCoord+2, zCoord-(facing<=3?0:2)).isReplaceable(worldObj, xCoord-(facing<=3?2:0), yCoord+2, zCoord-(facing<=3?0:2)))
-				//				|| !(worldObj.getBlock(xCoord+(facing<=3?2:0), yCoord+2, zCoord+(facing<=3?0:2)).isReplaceable(worldObj, xCoord+(facing<=3?2:0), yCoord+2, zCoord+(facing<=3?0:2)))
-				//				|| !(worldObj.getBlock(xCoord-(facing<=3?2:0), yCoord-2, zCoord-(facing<=3?0:2)).isReplaceable(worldObj, xCoord-(facing<=3?2:0), yCoord-2, zCoord-(facing<=3?0:2)))
-				//				|| !(worldObj.getBlock(xCoord+(facing<=3?2:0), yCoord-2, zCoord+(facing<=3?0:2)).isReplaceable(worldObj, xCoord+(facing<=3?2:0), yCoord-2, zCoord+(facing<=3?0:2))))
-				isBlocked())
+		if(isBlocked())
 		{
 			canTurn=false;
 			return;
@@ -48,17 +43,13 @@ public class TileEntityWatermill extends TileEntityIEBase
 		prevRotation = rotation;
 
 		ForgeDirection fd = ForgeDirection.getOrientation(facing);
-		if(worldObj.getTileEntity(xCoord-fd.offsetX,yCoord,zCoord-fd.offsetZ) instanceof TileEntityDynamo)
+		if(worldObj.getTileEntity(xCoord-fd.offsetX,yCoord,zCoord-fd.offsetZ) instanceof TileEntityDynamo&&!multiblock)
 		{
 			double power = getPower();
 			int l=1;
 			TileEntity tileEntity = worldObj.getTileEntity(xCoord+fd.offsetX*l,yCoord,zCoord+fd.offsetZ*l);
 			while (l<3
-					&& tileEntity instanceof TileEntityWatermill
-					&& ((TileEntityWatermill)tileEntity).offset[0]==0
-					&& ((TileEntityWatermill)tileEntity).offset[1]==0
-					&& ( ((TileEntityWatermill)tileEntity).facing==facing || ((TileEntityWatermill)tileEntity).facing==ForgeDirection.OPPOSITES[facing] )
-					&& !((TileEntityWatermill)tileEntity).isBlocked())
+					&& canUse(tileEntity))
 			{
 				power += ((TileEntityWatermill)tileEntity).getPower();
 				l++;
@@ -99,6 +90,18 @@ public class TileEntityWatermill extends TileEntityIEBase
 		}
 		if(multiblock)
 			multiblock=false;
+	}
+
+	private boolean canUse(TileEntity tileEntity)
+	{
+		if (!(tileEntity instanceof TileEntityWatermill))
+			return false;
+		TileEntityWatermill wm = (TileEntityWatermill) tileEntity;
+		return wm.offset[0]==0
+				&& wm.offset[1]==0
+				&& ( wm.facing==facing || wm.facing==ForgeDirection.OPPOSITES[facing] )
+				&& !wm.isBlocked()
+				&& !wm.multiblock;
 	}
 
 	public boolean isBlocked()
