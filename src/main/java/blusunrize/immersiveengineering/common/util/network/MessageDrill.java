@@ -1,21 +1,16 @@
 package blusunrize.immersiveengineering.common.util.network;
 
-import io.netty.buffer.ByteBuf;
-import net.minecraft.client.Minecraft;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.integrated.IntegratedServer;
-
-import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 import blusunrize.immersiveengineering.common.items.ItemDrill;
-import blusunrize.immersiveengineering.common.util.IELogger;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import cpw.mods.fml.relauncher.Side;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.client.Minecraft;
 
 public class MessageDrill implements IMessage
 {

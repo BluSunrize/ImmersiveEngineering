@@ -1,5 +1,6 @@
-#####Version 0.7.4
+#####Version 0.7.4 - BUILT
 - most fixes were done by malte again =P
+- added blacklist for entities that can drop shader bags. CustomNPCs doesn't understand what "boss" means >_>
 - fixed non-standard recipes crashing the book
 - fixed a crash relating to RFTools dimensions
 - fixed TCon not returning empty buckets when their tanks are clicked
@@ -9,9 +10,8 @@
 - fixed invalid recipe inputs created by minetweaker
 - fixed the crusher rewriting its own recipes when outputting
 - fixed power exploits on waterwheels
-- fixed derypy blockign detection on the windmills
+- fixed derpy blocking detection on the windmills
 - changed metal press to accept items thrown onto it
-
 
 #####Version 0.7.3 - BUILT
 - So much about that last update, eh? >_>
