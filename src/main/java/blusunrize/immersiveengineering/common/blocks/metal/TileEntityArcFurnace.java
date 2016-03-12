@@ -422,13 +422,23 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 		}
 		else if(pos==25)
 			return new float[]{fl==5?.5f:0,0,fl==3?.5f:0, fl==4?.5f:1,1,fl==2?.5f:1};
+		else if (pos==40||pos==44)
+		{
+			if (pos==44)
+				fl+=(fl%2==0?1:-1);
+			return new float[]{fl==3?.125f:(fl==2?.625f:0),.125f,fl==4?.125f:(fl==5?.625f:0), fl==2?.875f:(fl==3?.375f:1),0.375F,fl==5?.875f:(fl==4?.375f:1)};
+		}
 		else if(pos<50)
 		{
 			if(pos%5==0)
 				return new float[]{fw==3?.125f:0,0,fw==4?.125f:0, fw==2?.875f:1,pos%25/5==3?.5f:1,fw==5?.875f:1};
 			else if(pos%5==4)
 				return new float[]{fw==2?.125f:0,0,fw==5?.125f:0, fw==3?.875f:1,pos%25/5==3?.5f:1,fw==4?.875f:1};
-			else
+			else if (pos==43)
+				return new float[]{fl==4||fl==3?0:.125f, 0.5f,fl==2||fl==4?0:.125f, fl==5||fl==2?1:.875f,1,fl==3||fl==5?1:.875f};
+			else if (pos==41)
+				return new float[]{fl==3||fl==4?0:.125f, 0.5f,fl==2||fl==5?0:.125f, fl==2||fl==5?1:.875f,1,fl==4||fl==3?1:.875f};
+			else if (pos>48||pos<46)
 				return new float[]{0,.5f,0 ,1,1,1};
 		}
 		else if(pos<75)

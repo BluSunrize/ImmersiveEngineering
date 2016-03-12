@@ -126,8 +126,12 @@ public class EventHandler
 				for(Object render : RenderManager.instance.entityRenderMap.values())
 					if(RenderMinecart.class.isAssignableFrom(render.getClass()))
 					{
-						ModelMinecart wrapped = ObfuscationReflectionHelper.getPrivateValue(RenderMinecart.class, (RenderMinecart) render, "field_77013_a", "modelMinecart");
-						ObfuscationReflectionHelper.setPrivateValue(RenderMinecart.class,(RenderMinecart)render, (ModelMinecart)new ModelShaderMinecart(wrapped), "field_77013_a","modelMinecart");
+						Object o = ObfuscationReflectionHelper.getPrivateValue(RenderMinecart.class, (RenderMinecart) render, "field_77013_a", "modelMinecart");
+						if (o instanceof ModelMinecart)
+						{
+							ModelMinecart wrapped = (ModelMinecart) o;
+							ObfuscationReflectionHelper.setPrivateValue(RenderMinecart.class, (RenderMinecart) render, (ModelMinecart) new ModelShaderMinecart(wrapped), "field_77013_a", "modelMinecart");
+						}
 					}
 				ModelShaderMinecart.rendersReplaced = true;
 			}
@@ -256,7 +260,7 @@ public class EventHandler
 			{
 				synchronized (ItemDrill.animationTimer)
 				{
-					for (String name:ItemDrill.animationTimer.keySet())
+					for (String name:((Map<String, Integer>)ItemDrill.animationTimer).keySet())
 					{
 						Integer timer = ItemDrill.animationTimer.get(name);
 						timer--;

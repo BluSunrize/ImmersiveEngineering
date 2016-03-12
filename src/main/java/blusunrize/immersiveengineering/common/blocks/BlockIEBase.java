@@ -99,6 +99,11 @@ public abstract class BlockIEBase extends BlockContainer
 	@Override
     public int getLightOpacity(IBlockAccess world, int x, int y, int z)
     {
+		if (!(world instanceof World))
+			return 255;
+		World w = (World) world;
+		if (!w.blockExists(x, y, z))
+			return 255;
 		int meta = world.getBlockMetadata(x,y,z);
 		if(meta>=0&&meta<this.lightOpacities.length)
 			return this.lightOpacities[meta];

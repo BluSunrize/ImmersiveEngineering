@@ -20,9 +20,17 @@ public class Crusher
 	{
 		Object oInput = MTHelper.toObject(input);
 		if(oInput==null)
+		{
+			MineTweakerAPI.getLogger().logError("Did not add crusher recipe for "+output.getDisplayName()+", input was null");
 			return;
+		}
 
 		CrusherRecipe r = new CrusherRecipe(MTHelper.toStack(output), oInput, energy);
+		if(r.input==null)
+		{
+			MineTweakerAPI.getLogger().logError("Did not add crusher recipe for "+output.getDisplayName()+", converted input was null");
+			return;
+		}
 		if(secondaryOutput!=null)
 			r.addToSecondaryOutput(MTHelper.toStack(secondaryOutput), (float)secondaryChance);
 		MineTweakerAPI.apply(new Add(r));
