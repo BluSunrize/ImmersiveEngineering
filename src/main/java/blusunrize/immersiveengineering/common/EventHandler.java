@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -64,7 +65,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
@@ -339,13 +339,17 @@ public class EventHandler
 		if(!event.isCanceled() && event.entityLiving instanceof IBossDisplayData)
 		{
 			EnumRarity r = EnumRarity.epic;
-			if(event.lootingLevel<3)
-				for(Class<? extends EntityLiving> boring : listOfBoringBosses)
-					if(boring.isAssignableFrom(event.entityLiving.getClass()))
-					{
-						r = EnumRarity.rare;
-						break;
-					}
+			for(Class<? extends EntityLiving> boring : listOfBoringBosses)
+				if(boring.isAssignableFrom(event.entityLiving.getClass()))
+				{
+					r = EnumRarity.rare;
+					break;
+				}
+			String entityName = event.entityLiving.getClass().getSimpleName().toLowerCase();
+			for(String name : Config.getStringArray("blacklistBosses"))
+				if(name.toLowerCase(Locale.US).equals(entityName))
+					return;
+
 			ItemStack bag = new ItemStack(IEContent.itemShaderBag);
 			ItemNBTHelper.setString(bag, "rarity", r.toString());
 			event.drops.add(new EntityItem(event.entityLiving.worldObj, event.entityLiving.posX,event.entityLiving.posY,event.entityLiving.posZ, bag));

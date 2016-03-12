@@ -1,3 +1,18 @@
+#####Version 0.7.4
+- most fixes were done by malte again =P
+- fixed non-standard recipes crashing the book
+- fixed a crash relating to RFTools dimensions
+- fixed TCon not returning empty buckets when their tanks are clicked
+- fixed another Java 8 keySet derp
+- fixed minecart shaders when trying to override non-standard models
+- fixed arc furnace hitbox
+- fixed invalid recipe inputs created by minetweaker
+- fixed the crusher rewriting its own recipes when outputting
+- fixed power exploits on waterwheels
+- fixed derypy blockign detection on the windmills
+- changed metal press to accept items thrown onto it
+
+
 #####Version 0.7.3 - BUILT
 - So much about that last update, eh? >_>
 - added 2 new Shaders: In honour of the TP:HD release, Twili and Usurper
