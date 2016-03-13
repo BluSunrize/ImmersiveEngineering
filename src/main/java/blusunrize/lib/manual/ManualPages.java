@@ -444,73 +444,14 @@ public abstract class ManualPages implements IManualPage
 		{
 			if(rec.getRecipeOutput()!=null && ManualUtils.stackMatchesObject(rec.getRecipeOutput(), stack))
 			{
-				Object[] ingredientsPre=null;
-				int w=0;
-				int h=0;
-				if(rec instanceof ShapelessRecipes)
+				Object[] val = ManualUtils.getRecipeForDisplay(rec);
+				if (val!=null&&val.length==3)
 				{
-					ingredientsPre = ((ShapelessRecipes)rec).recipeItems.toArray();
-					w = ingredientsPre.length>6?3: ingredientsPre.length>1?2: 1;
-					h = ingredientsPre.length>4?3: ingredientsPre.length>2?2: 1;
+					this.recipes.put(key, (PositionedItemStack[])val[2]);
+					int h = (Integer) val[1];
+					if(h*18>yOff[iStack])
+						yOff[iStack]=h*18;
 				}
-				else if(rec instanceof ShapelessOreRecipe)
-				{
-					ingredientsPre = ((ShapelessOreRecipe)rec).getInput().toArray();
-					w = ingredientsPre.length>6?3: ingredientsPre.length>1?2: 1;
-					h = ingredientsPre.length>4?3: ingredientsPre.length>2?2: 1;
-				}
-				else if(rec instanceof ShapedOreRecipe)
-				{
-					ingredientsPre = ((ShapedOreRecipe)rec).getInput();
-					w = ReflectionHelper.getPrivateValue(ShapedOreRecipe.class, (ShapedOreRecipe)rec, "width");
-					h = ReflectionHelper.getPrivateValue(ShapedOreRecipe.class, (ShapedOreRecipe)rec, "height");
-				}
-				else if(rec instanceof ShapedRecipes)
-				{
-					ingredientsPre = ((ShapedRecipes)rec).recipeItems;
-					w = ((ShapedRecipes)rec).recipeWidth;
-					h = ((ShapedRecipes)rec).recipeHeight;
-				}
-				else
-				{
-					try {
-						IELogger.info("Found custom IRecipe with output "+rec.getRecipeOutput());
-					} catch (Exception x) {
-						IELogger.info("Found custom IRecipe with unknown output");
-					}
-					return;
-				}
-				
-				Object[] ingredients = new Object[ingredientsPre.length];
-				for(int iO=0; iO<ingredientsPre.length; iO++)
-				{
-					if(ingredientsPre[iO] instanceof List)
-					{
-						ingredients[iO] = new ArrayList((List)ingredientsPre[iO]);
-						Iterator<ItemStack> itValidate = ((ArrayList<ItemStack>)ingredients[iO]).iterator();
-						while(itValidate.hasNext())
-						{
-							ItemStack stVal = itValidate.next();
-							if(stVal==null || stVal.getItem()==null || stVal.getDisplayName()==null)
-								itValidate.remove();
-						}
-					}
-					else
-						ingredients[iO] = ingredientsPre[iO];
-				}
-				if(ingredients!=null)
-				{
-					PositionedItemStack[] pIngredients = new PositionedItemStack[ingredients.length+1];
-					int xBase = (120-(w+2)*18)/2;
-					for(int hh=0; hh<h; hh++)
-						for(int ww=0; ww<w; ww++)
-							if(hh*w+ww<ingredients.length)
-								pIngredients[hh*w+ww] = new PositionedItemStack(ingredients[hh*w+ww], xBase+ww*18,hh*18);
-					pIngredients[pIngredients.length-1] = new PositionedItemStack(rec.getRecipeOutput(), xBase+w*18+18, (int)(h/2f*18)-8);
-					this.recipes.put(key, pIngredients);
-				}
-				if(h*18>yOff[iStack])
-					yOff[iStack]=h*18;
 			}
 		}
 
@@ -687,67 +628,16 @@ public abstract class ManualPages implements IManualPage
 							Object stack = stacks[iStack];
 							if(((IRecipe)o).getRecipeOutput()!=null && ManualUtils.stackMatchesObject(((IRecipe)o).getRecipeOutput(), stack))
 							{
-								IRecipe r = (IRecipe)o;
-								Object[] ingredientsPre=null;
-								int w=0;
-								int h=0;
-								if(r instanceof ShapelessRecipes)
-								{
-									ingredientsPre = ((ShapelessRecipes)r).recipeItems.toArray();
-									w = ingredientsPre.length>6?3: ingredientsPre.length>1?2: 1;
-									h = ingredientsPre.length>4?3: ingredientsPre.length>2?2: 1;
-								}
-								else if(r instanceof ShapelessOreRecipe)
-								{
-									ingredientsPre = ((ShapelessOreRecipe)r).getInput().toArray();
-									w = ingredientsPre.length>6?3: ingredientsPre.length>1?2: 1;
-									h = ingredientsPre.length>4?3: ingredientsPre.length>2?2: 1;
-								}
-								else if(r instanceof ShapedOreRecipe)
-								{
-									ingredientsPre = ((ShapedOreRecipe)r).getInput();
-									w = ReflectionHelper.getPrivateValue(ShapedOreRecipe.class, (ShapedOreRecipe)r, "width");
-									h = ReflectionHelper.getPrivateValue(ShapedOreRecipe.class, (ShapedOreRecipe)r, "height");
-								}
-								else if(r instanceof ShapedRecipes)
-								{
-									ingredientsPre = ((ShapedRecipes)r).recipeItems;
-									w = ((ShapedRecipes)r).recipeWidth;
-									h = ((ShapedRecipes)r).recipeHeight;
-								}
-								Object[] ingredients = new Object[ingredientsPre.length];
-								for(int iO=0; iO<ingredientsPre.length; iO++)
-								{
-									if(ingredientsPre[iO] instanceof List)
-									{
-										ingredients[iO] = new ArrayList((List)ingredientsPre[iO]);
-										Iterator<ItemStack> itValidate = ((ArrayList<ItemStack>)ingredients[iO]).iterator();
-										while(itValidate.hasNext())
-										{
-											ItemStack stVal = itValidate.next();
-											if(stVal==null || stVal.getItem()==null || stVal.getDisplayName()==null)
-												itValidate.remove();
-										}
-									}
+								Object[] val = ManualUtils.getRecipeForDisplay((IRecipe)o);
+								if (val!=null&&val.length==3) {
+									if (iStack < this.recipes.size())
+										this.recipes.add(iStack, (PositionedItemStack[]) val[2]);
 									else
-										ingredients[iO] = ingredientsPre[iO];
+										this.recipes.add((PositionedItemStack[]) val[2]);
+									int h = (Integer) val[1];
+									if (h * 18 > yOff)
+										yOff = h * 18;
 								}
-								if(ingredients!=null)
-								{
-									PositionedItemStack[] pIngredients = new PositionedItemStack[ingredients.length+1];
-									int xBase = (120-(w+2)*18)/2;
-									for(int hh=0; hh<h; hh++)
-										for(int ww=0; ww<w; ww++)
-											if(hh*w+ww<ingredients.length)
-												pIngredients[hh*w+ww] = new PositionedItemStack(ingredients[hh*w+ww], xBase+ww*18,hh*18);
-									pIngredients[pIngredients.length-1] = new PositionedItemStack(((IRecipe)o).getRecipeOutput(), xBase+w*18+18, (int)(h/2f*18)-8);
-									if(iStack<this.recipes.size())
-										this.recipes.add(iStack,pIngredients);
-									else
-										this.recipes.add(pIngredients);
-								}
-								if(h*18>yOff)
-									yOff=h*18;
 							}
 						}
 					}
