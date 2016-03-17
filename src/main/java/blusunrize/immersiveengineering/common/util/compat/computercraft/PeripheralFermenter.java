@@ -14,7 +14,7 @@ import net.minecraft.world.World;
 
 public class PeripheralFermenter extends IEPeripheral
 {
-
+	public static final String[] cmds = {"getRecipe", "getInputStack", "getOutputStack", "getFluid", "getEmptyCannisters", "getFilledCannisters", "getEnergyStored", "getMaxEnergyStored", "getProgress"};
 	public PeripheralFermenter(World w, int _x, int _y, int _z)
 	{
 		super(w, _x, _y, _z);
@@ -29,7 +29,7 @@ public class PeripheralFermenter extends IEPeripheral
 	@Override
 	public String[] getMethodNames()
 	{
-		return new String[]{"getRecipe", "getInpuStack", "getOutputStack", "getFluid", "getEmptyCannisters", "getFilledCannisters", "getEnergyStored", "getMaxEnergyStored", "getProgress"};
+		return cmds;
 	}
 
 	@Override
@@ -45,7 +45,7 @@ public class PeripheralFermenter extends IEPeripheral
 			if (arguments.length!=1||!(arguments[0] instanceof Double))
 				throw new LuaException("Wrong amount of arguments, needs one integer");
 			int slot = (int) (double)arguments[0];
-			if (slot<2||slot>9)
+			if (slot<1||slot>9)
 				throw new LuaException("Input slots are numbers 1-9");
 			FermenterRecipe recipe = DieselHandler.findFermenterRecipe(te.getStackInSlot(slot-1));
 			if (recipe!=null)

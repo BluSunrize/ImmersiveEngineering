@@ -180,7 +180,8 @@ public class ContainerToolbox extends Container implements ICallbackContainer
 		if (!this.worldObj.isRemote)
 		{
 			((ItemToolbox)this.toolbox.getItem()).setContainedItems(this.toolbox, ((InventoryStorageItem)this.input).stackList);
-			if(!this.toolbox.equals(this.player.getCurrentEquippedItem()))
+			ItemStack hand = this.player.getCurrentEquippedItem();
+			if(hand!=null&&!this.toolbox.equals(hand))
 				this.player.setCurrentItemOrArmor(0, this.toolbox);
 			this.player.inventory.markDirty();
 		}

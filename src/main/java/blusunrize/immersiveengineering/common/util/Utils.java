@@ -767,7 +767,7 @@ public class Utils
 		{
 			IFluidContainerItem container = (IFluidContainerItem)equipped.getItem();
 			fluid = container.getFluid(equipped);
-			if(handler.fill(ForgeDirection.UNKNOWN, fluid, false)>0)
+			if(fluid!=null&&handler.fill(ForgeDirection.UNKNOWN, fluid, false)>0)
 			{
 				if(world.isRemote)
 					return true;
