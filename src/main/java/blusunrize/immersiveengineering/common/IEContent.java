@@ -1,11 +1,14 @@
 package blusunrize.immersiveengineering.common;
 
+import static blusunrize.immersiveengineering.common.world.VillageEngineersHouse.crate;
+
 import java.util.List;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ComparableItemStack;
 import blusunrize.immersiveengineering.api.MultiblockHandler;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
+import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.crafting.CokeOvenRecipe;
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
 import blusunrize.immersiveengineering.api.energy.DieselHandler;
@@ -157,7 +160,9 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
+import net.minecraft.util.WeightedRandomChestContent;
 import net.minecraft.world.gen.structure.MapGenStructureIO;
+import net.minecraftforge.common.ChestGenHooks;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
@@ -483,7 +488,8 @@ public class IEContent
 		EntityRegistry.registerModEntity(EntityRailgunShot.class, "railgunShot", 6, ImmersiveEngineering.instance, 64, 5, true);
 		int villagerId = Config.getInt("villager_engineer");
 		VillagerRegistry.instance().registerVillagerId(villagerId);
-		VillagerRegistry.instance().registerVillageCreationHandler(new VillageEngineersHouse.VillageManager());
+		if (Config.getBoolean("buildVillage"))
+			VillagerRegistry.instance().registerVillageCreationHandler(new VillageEngineersHouse.VillageManager());
 		try{
 			MapGenStructureIO.func_143031_a(VillageEngineersHouse.class, "IEVillageEngineersHouse");
 		}catch (Exception e){
@@ -636,6 +642,22 @@ public class IEContent
 			if(rcCube!=null)
 				OreDictionary.registerOre("blockFuelCoke", new ItemStack(rcCube,1,0));
 		}
+		/*VILLAGE LOOT*/
+
+		ChestGenHooks.getInfo(crate).setMax(9);
+		ChestGenHooks.getInfo(crate).setMin(3);
+		ChestGenHooks.getInfo(crate).addItem(new WeightedRandomChestContent(IEContent.itemMaterial,0, 2,7, 20));
+		ChestGenHooks.getInfo(crate).addItem(new WeightedRandomChestContent(IEContent.itemMaterial,11, 1,2, 8));
+		ChestGenHooks.getInfo(crate).addItem(new WeightedRandomChestContent(IEContent.itemMaterial,12, 1,1, 5));
+		ChestGenHooks.getInfo(crate).addItem(new WeightedRandomChestContent(IEContent.itemMetal,0, 2,5, 16));
+		ChestGenHooks.getInfo(crate).addItem(new WeightedRandomChestContent(IEContent.itemMetal,1, 1,4, 10));
+		ChestGenHooks.getInfo(crate).addItem(new WeightedRandomChestContent(IEContent.itemMetal,2, 1,4, 10));
+		ChestGenHooks.getInfo(crate).addItem(new WeightedRandomChestContent(IEContent.itemMetal,7, 1,4, 8));
+		ChestGenHooks.getInfo(crate).addItem(new WeightedRandomChestContent(IEContent.itemBlueprint,BlueprintCraftingRecipe.blueprintCategories.indexOf("bullet"), 1,1, 5));
+		ChestGenHooks.getInfo(crate).addItem(new WeightedRandomChestContent(IEContent.itemBlueprint,BlueprintCraftingRecipe.blueprintCategories.indexOf("specialBullet"), 1,1, 2));
+		ChestGenHooks.getInfo(crate).addItem(new WeightedRandomChestContent(IEContent.itemBlueprint,BlueprintCraftingRecipe.blueprintCategories.indexOf("electrode"), 1,1, 1));
+		ChestGenHooks.getInfo(crate).addItem(new WeightedRandomChestContent(IEContent.itemShader,0, 1,1, 5));
+		VillageEngineersHouse.crateContents = ChestGenHooks.getInfo(crate);
 	}
 
 	public static void postInit()
