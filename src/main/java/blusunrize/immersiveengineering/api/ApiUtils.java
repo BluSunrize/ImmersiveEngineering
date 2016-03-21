@@ -15,6 +15,7 @@ import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
+import blusunrize.immersiveengineering.api.energy.IICProxy;
 import blusunrize.immersiveengineering.api.energy.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.api.energy.WireType;
@@ -177,6 +178,8 @@ public class ApiUtils
 			return (ChunkCoordinates)object;
 		if(object instanceof TileEntity)
 			return new ChunkCoordinates(((TileEntity)object).xCoord,((TileEntity)object).yCoord,((TileEntity)object).zCoord);
+		if (object instanceof IICProxy)
+			return ((IICProxy)object).getPos();
 		return null;
 	}
 	public static IImmersiveConnectable toIIC(Object object, World world)

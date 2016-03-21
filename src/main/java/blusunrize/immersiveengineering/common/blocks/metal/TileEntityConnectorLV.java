@@ -76,6 +76,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 	@Override
 	public void onChunkUnload()
 	{
+		super.onChunkUnload();
 		unload();
 	}
 

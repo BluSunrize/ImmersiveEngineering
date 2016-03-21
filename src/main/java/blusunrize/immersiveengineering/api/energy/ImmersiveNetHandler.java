@@ -15,24 +15,25 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
-import blusunrize.immersiveengineering.api.TargetingInfo;
-import blusunrize.immersiveengineering.common.IESaveData;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.relauncher.Side;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
+import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.DimensionBlockPos;
+import blusunrize.immersiveengineering.api.TargetingInfo;
+import blusunrize.immersiveengineering.common.IESaveData;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.relauncher.Side;
 
 public class ImmersiveNetHandler
 {
 	public static ImmersiveNetHandler INSTANCE;
 	public ConcurrentHashMap<Integer, ConcurrentHashMap<ChunkCoordinates, Set<Connection>>> directConnections = new ConcurrentHashMap<Integer, ConcurrentHashMap<ChunkCoordinates, Set<Connection>>>();
 	public ConcurrentHashMap<ChunkCoordinates, Set<AbstractConnection>> indirectConnections = new ConcurrentHashMap<ChunkCoordinates, Set<AbstractConnection>>();
-	public HashMap<Integer, HashMap<Connection, Integer>> transferPerTick = new HashMap<Integer, HashMap<Connection,Integer>>();
-
+	public ConcurrentHashMap<Integer, ConcurrentHashMap<Connection, Integer>> transferPerTick = new ConcurrentHashMap<Integer, ConcurrentHashMap<Connection,Integer>>();
+	public ConcurrentHashMap<DimensionBlockPos, IICProxy> proxies = new ConcurrentHashMap<>();
 	private ConcurrentHashMap<ChunkCoordinates, Set<Connection>> getMultimap(int dimension)
 	{
 		if (directConnections.get(dimension) == null)
@@ -42,10 +43,10 @@ public class ImmersiveNetHandler
 		}
 		return directConnections.get(dimension);
 	}
-	public HashMap<Connection, Integer> getTransferedRates(int dimension)
+	public Map<Connection, Integer> getTransferedRates(int dimension)
 	{
 		if (!transferPerTick.containsKey(dimension))
-			transferPerTick.put(dimension, new HashMap<Connection,Integer>());
+			transferPerTick.put(dimension, new ConcurrentHashMap<Connection,Integer>());
 		return transferPerTick.get(dimension);
 	}
 
@@ -83,7 +84,20 @@ public class ImmersiveNetHandler
 			indirectConnections.clear();
 		IESaveData.setDirty(world);
 	}
-	
+	public void setProxy(DimensionBlockPos position, IICProxy proxy)
+	{
+		if (proxy!=null)
+			proxies.put(position, proxy);
+		else if (proxies.containsKey(position))
+			proxies.remove(position);
+	}
+	public void addProxy(IICProxy p)
+	{
+		if (p==null)
+			return;
+		ChunkCoordinates pos = p.getPos();
+		setProxy(new DimensionBlockPos(p.getDimension(), pos.posX, pos.posY, pos.posZ), p);
+	}
 	public void removeConnection(World world, Connection con)
 	{
 		if(con==null||world==null)
@@ -97,13 +111,10 @@ public class ImmersiveNetHandler
 				if(con.hasSameConnectors(itCon))
 				{
 					it.remove();
-					IImmersiveConnectable iic = toIIC(itCon.end, world);
-					if(iic!=null)
-						iic.removeCable(itCon);
-					iic = toIIC(itCon.start, world);
-					if(iic!=null)
-						iic.removeCable(itCon);
-
+					
+					remove(itCon.end, world, itCon);
+					remove(itCon.start, world, itCon);
+					
 					if(world.blockExists(itCon.start.posX,itCon.start.posY,itCon.start.posZ))
 						world.addBlockEvent(itCon.start.posX, itCon.start.posY, itCon.start.posZ, world.getBlock(itCon.start.posX,itCon.start.posY,itCon.start.posZ),-1,0);
 					if(world.blockExists(itCon.end.posX,itCon.end.posY,itCon.end.posZ))
@@ -114,6 +125,17 @@ public class ImmersiveNetHandler
 		if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
 			indirectConnections.clear();
 		IESaveData.setDirty(world.provider.dimensionId);
+	}
+	private void remove(ChunkCoordinates cc, World w, Connection c) {
+		IImmersiveConnectable iic = toIIC(cc, w);
+		if(iic!=null)
+			iic.removeCable(c);
+		else
+		{
+			DimensionBlockPos pos = new DimensionBlockPos(w.provider.dimensionId, cc.posX, cc.posY, cc.posZ);
+			if (proxies.containsKey(pos))
+				proxies.get(pos).removeCable(c);
+		}
 	}
 	public Set<Integer> getRelevantDimensions()
 	{
@@ -162,9 +184,7 @@ public class ImmersiveNetHandler
 	{
 		if(getMultimap(world.provider.dimensionId).containsKey(node))
 			getMultimap(world.provider.dimensionId).get(node).clear();
-		IImmersiveConnectable iic = toIIC(node, world);
-		if(iic!=null)
-			iic.removeCable(null);
+		remove(node, world, null);
 		//		ConcurrentSkipListSet<Connection> itlist = new ConcurrentSkipListSet<Connection>();
 		//		for (ConcurrentSkipListSet<Connection> conl : getMultimap(world.provider.dimensionId).values())
 		//			itlist.addAll(conl);
@@ -180,16 +200,8 @@ public class ImmersiveNetHandler
 				if(node.equals(con.start) || node.equals(con.end))
 				{
 					it.remove();
-					IImmersiveConnectable other;
-					if (node.equals(con.start))
-						other = toIIC(con.end, world);
-					else
-						other = toIIC(con.start, world);
-					if (iic!=null)
-						iic.removeCable(con);
-					if (other!=null)
-						other.removeCable(con);
-
+					remove(con.end, world, con);
+					remove(con.start, world, con);
 					if(node.equals(con.end))
 					{
 						double dx = node.posX+.5+Math.signum(con.start.posX-con.end.posX);
@@ -233,15 +245,8 @@ public class ImmersiveNetHandler
 					if(node.equals(con.start) || node.equals(con.end))
 					{
 						it.remove();
-						IImmersiveConnectable other;
-						if (node.equals(con.start))
-							other = toIIC(con.end, world);
-						else
-							other = toIIC(con.start, world);
-						if (iic!=null)
-							iic.removeCable(con);
-						if (other!=null)
-							other.removeCable(con);
+						remove(con.end, world, con);
+						remove(con.start, world, con);
 						if(node.equals(con.end))
 						{
 							double dx = node.posX+.5+Math.signum(con.start.posX-con.end.posX);
@@ -254,7 +259,7 @@ public class ImmersiveNetHandler
 						}
 						else
 							if(world.blockExists(con.end.posX,con.end.posY,con.end.posZ))
-									world.addBlockEvent(con.end.posX, con.end.posY, con.end.posZ, world.getBlock(con.end.posX,con.end.posY,con.end.posZ),-1,0);
+								world.addBlockEvent(con.end.posX, con.end.posY, con.end.posZ, world.getBlock(con.end.posX,con.end.posY,con.end.posZ),-1,0);
 					}
 			}
 		}
@@ -346,6 +351,12 @@ public class ImmersiveNetHandler
 			for(Connection con : conL)
 			{
 				IImmersiveConnectable end = toIIC(con.end, world);
+				if (end==null)
+				{
+					DimensionBlockPos p = new DimensionBlockPos(world.provider.dimensionId, con.end.posX, con.end.posY, con.end.posZ);
+					if (proxies.containsKey(p))
+						end = proxies.get(p);
+				}
 				if(end!=null)
 				{
 					openList.add(end);
@@ -396,6 +407,12 @@ public class ImmersiveNetHandler
 						if(next.allowEnergyToPass(con))
 						{
 							IImmersiveConnectable end = toIIC(con.end, world);
+							if (end==null)
+							{
+								DimensionBlockPos p = new DimensionBlockPos(world.provider.dimensionId, con.end.posX, con.end.posY, con.end.posZ);
+								if (proxies.containsKey(p))
+									end = proxies.get(p);
+							}
 							if(end!=null && !checked.contains(con.end) && !openList.contains(end))
 							{
 								openList.add(end);
@@ -498,17 +515,17 @@ public class ImmersiveNetHandler
 				return distComp;
 			if (start.posX!=o.start.posX)
 				return start.posX>o.start.posX?1:-1;
-			if (start.posY!=o.start.posY)
-				return start.posY>o.start.posY?1:-1;
-			if (start.posZ!=o.start.posZ)
-				return start.posZ>o.start.posZ?1:-1;
-			if (end.posX!=o.end.posX)
-				return end.posX>o.end.posX?1:-1;
-			if (end.posY!=o.end.posY)
-				return end.posY>o.end.posY?1:-1;
-			if (end.posZ!=o.end.posZ)
-				return end.posZ>o.end.posZ?1:-1;
-			return 0;
+				if (start.posY!=o.start.posY)
+					return start.posY>o.start.posY?1:-1;
+					if (start.posZ!=o.start.posZ)
+						return start.posZ>o.start.posZ?1:-1;
+						if (end.posX!=o.end.posX)
+							return end.posX>o.end.posX?1:-1;
+							if (end.posY!=o.end.posY)
+								return end.posY>o.end.posY?1:-1;
+								if (end.posZ!=o.end.posZ)
+									return end.posZ>o.end.posZ?1:-1;
+									return 0;
 		}
 	}
 

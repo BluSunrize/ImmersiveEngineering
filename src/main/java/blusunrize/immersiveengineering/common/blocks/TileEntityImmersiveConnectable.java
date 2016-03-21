@@ -10,7 +10,9 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.DimensionBlockPos;
 import blusunrize.immersiveengineering.api.TargetingInfo;
+import blusunrize.immersiveengineering.api.energy.IICProxy;
 import blusunrize.immersiveengineering.api.energy.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler.Connection;
@@ -47,6 +49,7 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 	public void onEnergyPassthrough(int amount)
 	{
 	}
+	
 	@Override
 	public boolean allowEnergyToPass(Connection con)
 	{
@@ -106,7 +109,18 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 		this.markDirty();
 		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 	}
-
+	@Override
+	public void onChunkUnload()
+	{
+		super.onChunkUnload();
+		if (!worldObj.isRemote)
+			ImmersiveNetHandler.INSTANCE.setProxy(new DimensionBlockPos(this), new IICProxy(this));
+	}
+	@Override
+	public void validate() {
+		super.validate();
+		ImmersiveNetHandler.INSTANCE.resetCachedIndirectConnections();
+	}
 	@Override
 	public Packet getDescriptionPacket()
 	{
@@ -234,7 +248,7 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 			}
 		}catch(Exception e)
 		{
-			IELogger.error("TileEntityImmersiveConenctable encountered MASSIVE error writing NBT. You shoudl probably report this.");
+			IELogger.error("TileEntityImmersiveConenctable encountered MASSIVE error writing NBT. You should probably report this.");
 		}
 	}
 }
