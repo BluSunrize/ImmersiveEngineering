@@ -141,17 +141,7 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IShaderEquip
 		return 72000;
 	}
 
-	@Override
-	public void clearUpgrades(ItemStack stack)
-	{
-		super.clearUpgrades(stack);
-		FluidStack fs = getFluid(stack);
-		if(fs!=null && fs.amount > getCapacity(stack))
-		{
-			fs.amount = getCapacity(stack);
-			ItemNBTHelper.setFluidStack(stack, "fluid", fs);
-		}
-	}
+
 
 	@Override
 	public FluidStack getFluid(ItemStack container)
@@ -248,6 +238,17 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IShaderEquip
 	public boolean isTool(ItemStack item)
 	{
 		return true;
+	}
+
+	@Override
+	public void finishUpgradeRecalculation(ItemStack stack)
+	{
+		FluidStack fs = getFluid(stack);
+		if(fs!=null && fs.amount > getCapacity(stack))
+		{
+			fs.amount = getCapacity(stack);
+			ItemNBTHelper.setFluidStack(stack, "fluid", fs);
+		}
 	}
 
 }

@@ -23,6 +23,9 @@ public interface IUpgradeableTool extends IInternalStorageItem
 	
 	public void clearUpgrades(ItemStack stack);
 	
+	public void finishUpgradeRecalculation(ItemStack stack);
+	
+	
 	/**
 	 * Iterate through the stored items and apply upgrades. For an example implementation, see ItemUpgradeableTool in the IE source
 	 */

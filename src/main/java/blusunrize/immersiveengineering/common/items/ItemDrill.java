@@ -82,9 +82,8 @@ public class ItemDrill extends ItemUpgradeableTool implements IShaderEquipableIt
 		}
 	}
 	@Override
-	public void clearUpgrades(ItemStack stack)
+	public void finishUpgradeRecalculation(ItemStack stack)
 	{
-		super.clearUpgrades(stack);
 		FluidStack fs = getFluid(stack);
 		if(fs!=null && fs.amount > getCapacity(stack))
 		{

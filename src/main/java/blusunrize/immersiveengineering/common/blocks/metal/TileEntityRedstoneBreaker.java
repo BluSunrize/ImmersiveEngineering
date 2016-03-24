@@ -45,6 +45,8 @@ public class TileEntityRedstoneBreaker extends TileEntityBreakerSwitch
 	{
 		int lowestDif=100;
 		Connection lowestCon=null;
+		if (ImmersiveNetHandler.INSTANCE==null||ImmersiveNetHandler.INSTANCE.getConnections(worldObj, new ChunkCoordinates(xCoord,yCoord,zCoord))==null)
+			return Vec3.createVectorHelper(0, 0, 0);
 		for(Connection otherCon : ImmersiveNetHandler.INSTANCE.getConnections(worldObj, new ChunkCoordinates(xCoord,yCoord,zCoord)))
 		{
 			int xDif = (otherCon==null||otherCon.start==null||otherCon.end==null)?0: (otherCon.start.equals(Utils.toCC(this))&&otherCon.end!=null)? otherCon.end.posX-xCoord: (otherCon.end.equals(Utils.toCC(this))&& otherCon.start!=null)?otherCon.start.posX-xCoord: 0;

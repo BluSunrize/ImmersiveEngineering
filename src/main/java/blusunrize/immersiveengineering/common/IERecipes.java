@@ -417,7 +417,7 @@ public class IERecipes
 	}
 	public static void postInitCrusherAndArcRecipes()
 	{
-		boolean allowHammerCrushing = !Config.getBoolean("disableHammerCrushing");
+		final boolean allowHammerCrushing = !Config.getBoolean("disableHammerCrushing");
 		ArrayListMultimap<String, ItemStack> registeredMoldBases = ArrayListMultimap.create();
 		for(String name : OreDictionary.getOreNames())
 			if(ApiUtils.isExistingOreName(name))
@@ -437,11 +437,6 @@ public class IERecipes
 							{
 								ItemStack preferredDust = IEApi.getPreferredOreStack("dust"+ore);
 								out = Utils.copyStackWithAmount(preferredDust, 2);
-								if(allowHammerCrushing)
-								{
-									addShapelessOredictRecipe(preferredDust, name,new ItemStack(IEContent.itemTool));
-									hammerCrushingList.add(ore);
-								}
 							}
 						}
 					}
@@ -451,6 +446,11 @@ public class IERecipes
 						Object s = secondaries!=null&&secondaries.length>1?secondaries[0]: null;
 						Float f = secondaries!=null&&secondaries.length>1&&secondaries[1] instanceof Float?(Float)secondaries[1]: 0;
 						addOreProcessingRecipe(out, ore, 6000, true, s, f);
+						if(allowHammerCrushing)
+						{
+							addShapelessOredictRecipe(Utils.copyStackWithAmount(out, 1), name,new ItemStack(IEContent.itemTool));
+							hammerCrushingList.add(ore);
+						}
 					}
 					out = arcOutputModifier.get(ore);
 					if(out==null)
