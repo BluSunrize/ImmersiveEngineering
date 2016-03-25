@@ -668,6 +668,8 @@ public class Utils
 
 	public static boolean fillPlayerItemFromFluidHandler(World world, IFluidHandler handler, EntityPlayer player, FluidStack tankFluid)
 	{
+		if (tankFluid==null)
+			return false;
 		ItemStack equipped = player.getCurrentEquippedItem();
 		if(equipped==null)
 			return false;
