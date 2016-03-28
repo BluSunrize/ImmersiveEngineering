@@ -1007,6 +1007,8 @@ public class BlockMetalDevices2 extends BlockIEBase implements ICustomBoundingbo
 		}
 		else if(te instanceof TileEntityChargingStation)
 			return ((TileEntityChargingStation)te).comparatorOutput;
+		else if (te instanceof TileEntityEnergyMeter)
+			return ((TileEntityEnergyMeter)te).compVal;
 		return 0;
 	}
 

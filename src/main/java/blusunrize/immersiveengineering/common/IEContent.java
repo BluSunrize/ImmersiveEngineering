@@ -230,7 +230,7 @@ public class IEContent
 		blockOres = (BlockIEBase) new BlockIESimple("ore",Material.rock,ItemBlockIEBase.class, "Copper","Aluminum","Lead","Silver","Nickel").setHardness(3f).setResistance(5f);
 		blockStorage = (BlockIEBase) new BlockStorage("Copper","Aluminum","Lead","Silver","Nickel","Constantan","Electrum","Steel", "CoilCopper","CoilElectrum","CoilHV").setHardness(4f).setResistance(5f);
 		blockStorageSlabs = (BlockIEBase) new BlockIESlabs("storageSlab","storage_",Material.iron,"Copper","Aluminum","Lead","Silver","Nickel","Constantan","Electrum","Steel").setHardness(4f).setResistance(5f);
-		blockStoneSlabs = (BlockIEBase) new BlockIESlabs("stoneSlab", "stoneDecoration_", Material.rock, "hempcrete", "concrete", "concreteTile");
+		blockStoneSlabs = (BlockIEBase) new BlockIESlabs("stoneSlab", "stoneDecoration_", Material.rock, "hempcrete", "concrete", "concreteTile").setHardness(4f).setResistance(5f);
 		blockMetalDevice = new BlockMetalDevices();
 		blockMetalDevice2 = new BlockMetalDevices2();
 		blockMetalDecoration = new BlockMetalDecoration();
