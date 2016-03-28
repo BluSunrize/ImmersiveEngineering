@@ -1,14 +1,5 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
-import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.MathHelper;
-import net.minecraft.world.World;
-import net.minecraftforge.oredict.OreDictionary;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.client.ClientUtils;
@@ -18,8 +9,20 @@ import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalMultiblocks
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityArcFurnace;
 import blusunrize.immersiveengineering.common.util.IEAchievements;
 import blusunrize.immersiveengineering.common.util.Utils;
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import mods.railcraft.common.blocks.aesthetics.EnumBlockMaterial;
+import mods.railcraft.common.blocks.aesthetics.slab.TileSlab;
+import net.minecraft.block.Block;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.MathHelper;
+import net.minecraft.world.World;
+import net.minecraftforge.oredict.OreDictionary;
 
 public class MultiblockArcFurnace implements IMultiblock
 {
@@ -219,6 +222,22 @@ public class MultiblockArcFurnace implements IMultiblock
 						{
 							//Steelblocks should have OreDict checks
 							if(!Utils.compareToOreName(checkStack, "blockSteel"))
+								return false;
+						}
+						else if(OreDictionary.itemMatches(structure[h+2][w+2][l+2], new ItemStack(IEContent.blockStorageSlabs,1,7), true))
+						{
+							//check for railcrafts TE slabs
+							TileEntity te = world.getTileEntity(xx,yy,zz);
+							if (Loader.isModLoaded("Railcraft")&&te!=null&&te.getClass().getName().equals("mods.railcraft.common.blocks.aesthetics.slab.TileSlab"))
+							{
+								TileSlab sl = (TileSlab) te;
+								if (sl.isDoubleSlab())
+									return false;
+								if (sl.getBottomSlab()!=EnumBlockMaterial.STEEL)
+									return false;
+							}
+							//other slabs should be in the oredict
+							else if(!Utils.compareToOreName(checkStack, "slabSteel"))
 								return false;
 						}
 						else
