@@ -1,5 +1,10 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map.Entry;
+
+import blusunrize.immersiveengineering.api.ComparableItemStack;
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.IEContent;
@@ -33,6 +38,7 @@ public class TileEntityMetalPress extends TileEntityMultiblockPart implements IS
 	public static final int MAX_PROCESS = 120;
 	public int stopped = -1;
 	private int stoppedReqSize = -1;
+	public static HashMap<ComparableItemStack, Integer> minSizePerMold;
 
 	@Override
 	public TileEntityMetalPress master()
@@ -418,7 +424,20 @@ public class TileEntityMetalPress extends TileEntityMultiblockPart implements IS
 				stoppedReqSize = -1;
 			}
 		}
-		return 1;
+		if (minSizePerMold==null||minSizePerMold.isEmpty())
+		{
+			minSizePerMold = new HashMap<>(MetalPressRecipe.recipeList.size());
+			for (Entry<ComparableItemStack, Collection<MetalPressRecipe>> r:MetalPressRecipe.recipeList.asMap().entrySet())
+			{
+				int min = Integer.MAX_VALUE;
+				for (MetalPressRecipe p:r.getValue())
+					if (p.inputSize<min)
+						min = p.inputSize;
+				minSizePerMold.put(r.getKey(), min);
+			}
+		}
+		ComparableItemStack compStack = new ComparableItemStack(mold);
+		return minSizePerMold.containsKey(compStack)?minSizePerMold.get(compStack):1;
 	}
 	@Override
 	public boolean isUseableByPlayer(EntityPlayer player)

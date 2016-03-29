@@ -50,8 +50,6 @@ public class IESaveData extends WorldSavedData
 				}
 			}
 		}
-		
-		Minecraft.getMinecraft().mouseHelper.ungrabMouseCursor();
 		NBTTagList l = nbt.getTagList("iicProxies", 10);
 		int max = l.tagCount();
 		for (int i = 0;i<max;i++)
