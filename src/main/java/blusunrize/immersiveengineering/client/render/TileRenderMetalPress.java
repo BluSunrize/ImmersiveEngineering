@@ -74,6 +74,8 @@ public class TileRenderMetalPress extends TileRenderIE
 		ClientUtils.tes().startDrawingQuads();
 		model.render(tile, ClientUtils.tes(), new Matrix4(),new Matrix4(), 0, false, "piston");
 		ClientUtils.tes().draw();
+
+		GL11.glDisable(GL11.GL_LIGHTING);
 		if(press.mold!=null)
 		{
 			GL11.glPushMatrix();
@@ -114,6 +116,7 @@ public class TileRenderMetalPress extends TileRenderIE
 				GL11.glRotatef(90, 1,0,0);
 				GL11.glTranslated(0,0,2.5*shift[i]);
 			}
+		GL11.glEnable(GL11.GL_LIGHTING);
 		GL11.glPopMatrix();
 	}
 

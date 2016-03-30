@@ -436,6 +436,8 @@ public class TileEntityMetalPress extends TileEntityMultiblockPart implements IS
 				minSizePerMold.put(r.getKey(), min);
 			}
 		}
+		if (mold==null)
+			return 1;
 		ComparableItemStack compStack = new ComparableItemStack(mold);
 		return minSizePerMold.containsKey(compStack)?minSizePerMold.get(compStack):1;
 	}

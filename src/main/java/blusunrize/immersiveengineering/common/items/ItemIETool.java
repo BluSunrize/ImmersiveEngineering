@@ -5,8 +5,10 @@ import java.util.List;
 import java.util.Set;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockPistonBase;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
@@ -111,13 +113,28 @@ public class ItemIETool extends ItemIEBase implements cofh.api.item.IToolHammer,
 				for(IMultiblock mb : MultiblockHandler.getMultiblocks())
 					if(mb.isBlockTrigger(world.getBlock(x, y, z), world.getBlockMetadata(x, y, z)))
 					{
+						boolean allowed = true;
 						if(interdictedMultiblocks!=null)
 							for(String s : interdictedMultiblocks)
 								if(mb.getUniqueName().equalsIgnoreCase(s))
-									return false;
-						if(mb.createStructure(world, x, y, z, side, player))
+								{
+									allowed = false;
+									break;
+								}
+						if(allowed&&mb.createStructure(world, x, y, z, side, player))
 							return true;
 					}
+				if (world.getBlock(x, y, z)==Blocks.piston)
+				{
+					int meta = world.getBlockMetadata(x, y, z);
+					if (!BlockPistonBase.isExtended(meta))
+					{
+						int dir = BlockPistonBase.getPistonOrientation(meta);
+						dir = (dir+1)%6;
+						world.setBlockMetadataWithNotify(x, y, z, meta-(meta&7)+dir, 3);
+					}
+
+				}
 				return false;
 			}
 			else if(stack.getItemDamage()==1 && tileEntity instanceof IImmersiveConnectable)
