@@ -1,4 +1,5 @@
-#####Version 0.7.5
+#####Version 0.7.5 - BUILT
+- shoutouts to malte for excellent maintenance once again =3
 - added config to disable villager houses
 - added villager house crate to the ChestGen hooks, name is "ieVillagerCrates", should work with Minetweaker
 - added comparator support to Transformers
