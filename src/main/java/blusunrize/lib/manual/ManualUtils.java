@@ -11,12 +11,20 @@ import java.util.List;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
+import blusunrize.immersiveengineering.common.util.IELogger;
+import blusunrize.lib.manual.ManualPages.PositionedItemStack;
+import cpw.mods.fml.relauncher.ReflectionHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.ShapedRecipes;
+import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.oredict.ShapedOreRecipe;
+import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 public class ManualUtils
 {
@@ -148,5 +156,77 @@ public class ManualUtils
 		if(!resourceMap.containsKey(path))
 			resourceMap.put(path, rl);
 		return rl;
+	}
+	/**
+	 * 
+	 * @return either null (unknown recipe type) or an Object[] with content as follows
+	 * 			index 0: width of the recipe
+	 * 			index 1: height of the recipe
+	 * 			index 2: recipe as PositionedItemStack[]
+	 */
+	public static Object[] getRecipeForDisplay(IRecipe rec)
+	{
+		Object[] ingredientsPre=null;
+		int w=0;
+		int h=0;
+		if(rec instanceof ShapelessRecipes)
+		{
+			ingredientsPre = ((ShapelessRecipes)rec).recipeItems.toArray();
+			w = ingredientsPre.length>6?3: ingredientsPre.length>1?2: 1;
+			h = ingredientsPre.length>4?3: ingredientsPre.length>2?2: 1;
+		}
+		else if(rec instanceof ShapelessOreRecipe)
+		{
+			ingredientsPre = ((ShapelessOreRecipe)rec).getInput().toArray();
+			w = ingredientsPre.length>6?3: ingredientsPre.length>1?2: 1;
+			h = ingredientsPre.length>4?3: ingredientsPre.length>2?2: 1;
+		}
+		else if(rec instanceof ShapedOreRecipe)
+		{
+			ingredientsPre = ((ShapedOreRecipe)rec).getInput();
+			w = ReflectionHelper.getPrivateValue(ShapedOreRecipe.class, (ShapedOreRecipe)rec, "width");
+			h = ReflectionHelper.getPrivateValue(ShapedOreRecipe.class, (ShapedOreRecipe)rec, "height");
+		}
+		else if(rec instanceof ShapedRecipes)
+		{
+			ingredientsPre = ((ShapedRecipes)rec).recipeItems;
+			w = ((ShapedRecipes)rec).recipeWidth;
+			h = ((ShapedRecipes)rec).recipeHeight;
+		}
+		else
+		{
+			try {
+				IELogger.info("Found custom IRecipe with output "+rec.getRecipeOutput());
+			} catch (Exception x) {
+				IELogger.info("Found custom IRecipe with unknown output");
+			}
+			return null;
+		}
+
+		Object[] ingredients = new Object[ingredientsPre.length];
+		for(int iO=0; iO<ingredientsPre.length; iO++)
+		{
+			if(ingredientsPre[iO] instanceof List)
+			{
+				ingredients[iO] = new ArrayList((List)ingredientsPre[iO]);
+				Iterator<ItemStack> itValidate = ((ArrayList<ItemStack>)ingredients[iO]).iterator();
+				while(itValidate.hasNext())
+				{
+					ItemStack stVal = itValidate.next();
+					if(stVal==null || stVal.getItem()==null || stVal.getDisplayName()==null)
+						itValidate.remove();
+				}
+			}
+			else
+				ingredients[iO] = ingredientsPre[iO];
+		}
+		PositionedItemStack[] pIngredients = new PositionedItemStack[ingredients.length+1];
+		int xBase = (120-(w+2)*18)/2;
+		for(int hh=0; hh<h; hh++)
+			for(int ww=0; ww<w; ww++)
+				if(hh*w+ww<ingredients.length)
+					pIngredients[hh*w+ww] = new PositionedItemStack(ingredients[hh*w+ww], xBase+ww*18,hh*18);
+		pIngredients[pIngredients.length-1] = new PositionedItemStack(rec.getRecipeOutput(), xBase+w*18+18, (int)(h/2f*18)-8);
+		return new Object[]{w, h, pIngredients};
 	}
 }

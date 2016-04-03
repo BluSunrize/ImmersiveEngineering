@@ -33,6 +33,9 @@ public abstract class ItemUpgradeableTool extends ItemInternalStorage implements
 		ItemNBTHelper.remove(stack, "upgrades");
 	}
 	@Override
+	public void finishUpgradeRecalculation(ItemStack stack)
+	{}
+	@Override
 	public void recalculateUpgrades(ItemStack stack)
 	{
 		clearUpgrades(stack);
@@ -70,6 +73,7 @@ public abstract class ItemUpgradeableTool extends ItemInternalStorage implements
 				upgradeTag.setString(key, (String)o);
 		}
 		ItemNBTHelper.setTagCompound(stack, "upgrades", upgradeTag);
+		finishUpgradeRecalculation(stack);
 	}
 	public NBTTagCompound getUpgradeBase(ItemStack stack)
 	{

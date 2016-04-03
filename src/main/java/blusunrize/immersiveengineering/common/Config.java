@@ -100,6 +100,7 @@ public class Config
 		setStringArray("preferredOres", config.get("general", "Preferred Ores", new String[]{"ImmersiveEngineering","ThermalFoundation"}, "A list of preferred Mod IDs that results of IE processes should stem from, aka which mod you want the copper to come from. This affects the ores dug by the excavator, as well as those crushing recipes that don't have associated IE items. This list is in order of priority.").getStringList());
 		setBoolean("showUpdateNews", config.get("general", "Show Update News", true, "Set this to false to hide the update news in the manual").getBoolean());
 		setStringArray("blacklistBosses", config.get("general", "Shaderbag Blacklist", new String[]{"entitynpc", "entitycustomnpc"}, "A list entity class names that can not drop shader bags. This is necessary because some developers use the IBossDisplayData interface on entities that aren't actually bosses.").getStringList());
+		setBoolean("buildVillage", config.get("general", "Enable Village House", true, "Set this to false to prevent the engineer's village house from being generated").getBoolean());
 		
 		Calendar calendar = Calendar.getInstance();
 		setBoolean("christmas", calendar.get(2)+1==12);

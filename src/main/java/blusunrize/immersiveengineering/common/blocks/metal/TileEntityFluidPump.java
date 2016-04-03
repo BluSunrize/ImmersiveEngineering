@@ -136,7 +136,7 @@ public class TileEntityFluidPump extends TileEntityIEBase implements IFluidHandl
 			if(!checked.contains(next))
 			{
 				FluidStack fs = Utils.drainFluidBlock(worldObj, next.posX,next.posY,next.posZ, false);
-				if(fs!=null && fs.getFluid()!=FluidRegistry.WATER && (searchFluid==null || fs.getFluid()==searchFluid))
+				if(fs!=null && (fs.getFluid()!=FluidRegistry.WATER||!Config.getBoolean("pump_infiniteWater")) && (searchFluid==null || fs.getFluid()==searchFluid))
 				{
 					if(searchFluid==null)
 						searchFluid = fs.getFluid();
@@ -145,7 +145,7 @@ public class TileEntityFluidPump extends TileEntityIEBase implements IFluidHandl
 					{
 						ChunkCoordinates cc2 = new ChunkCoordinates(next.posX+fd.offsetX,next.posY+fd.offsetY,next.posZ+fd.offsetZ);
 						FluidStack fs2 = Utils.drainFluidBlock(worldObj, cc2.posX,cc2.posY,cc2.posZ, false);
-						if(!checked.contains(cc2) && !closedList.contains(cc2) && !openList.contains(cc2) && fs2!=null && fs2.getFluid()!=FluidRegistry.WATER && (searchFluid==null || fs2.getFluid()==searchFluid))
+						if(!checked.contains(cc2) && !closedList.contains(cc2) && !openList.contains(cc2) && fs2!=null && (fs2.getFluid()!=FluidRegistry.WATER||!Config.getBoolean("pump_infiniteWater")) && (searchFluid==null || fs2.getFluid()==searchFluid))
 							openList.add(cc2);
 					}
 				}

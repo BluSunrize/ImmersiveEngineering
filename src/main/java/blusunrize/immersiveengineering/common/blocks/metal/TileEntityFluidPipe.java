@@ -184,11 +184,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidHandl
 			int f = 0;
 			for(DirectionalFluidOutput output : sorting.keySet())
 			{
-				int limit = (resource.tag!=null&&resource.tag.hasKey("pressurized"))||canOutputPressurized(output.output, false)?1000: 50;
-				int tileSpecificAcceptedFluid = Math.min(limit, canAccept);
-
-				float prio = sorting.get(output)/(float)sum;
-				int amount = (int)(tileSpecificAcceptedFluid*prio);
+				int amount = sorting.get(output);
 				int r = output.output.fill(output.direction.getOpposite(), Utils.copyFluidStackWithAmount(resource, amount, true), doFill);
 				if(r>50)
 					canOutputPressurized(output.output, true);

@@ -25,7 +25,7 @@ public abstract class ManagedEnvironmentIE<T extends TileEntityIEBase> extends M
 	protected T getTileEntity()
 	{
 		TileEntity te = w.getTileEntity(x, y, z);
-		if (te!=null&&te.getClass()==myClass)
+		if (te!=null&&myClass.isAssignableFrom(te.getClass()))
 			return (T) te;
 		return null;
 	}

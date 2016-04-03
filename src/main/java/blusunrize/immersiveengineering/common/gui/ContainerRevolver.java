@@ -161,7 +161,8 @@ public class ContainerRevolver extends Container
 		if (!this.worldObj.isRemote)
 		{
 			((ItemRevolver)this.revolver.getItem()).setBullets(this.revolver, ((InventoryStorageItem)this.input).stackList);
-			if (!this.player.getCurrentEquippedItem().equals(this.revolver))
+			ItemStack hand = this.player.getCurrentEquippedItem();
+			if (hand!=null&&!hand.equals(this.revolver))
 				this.player.setCurrentItemOrArmor(0, this.revolver);
 			this.player.inventory.markDirty();
 		}

@@ -13,7 +13,7 @@ import net.minecraft.world.World;
 
 public class PeripheralSqueezer extends IEPeripheral
 {
-
+	public static final String[] cmds = {"getRecipe", "getInputStack", "getOutputStack", "getFluid", "getEmptyCannisters", "getFilledCannisters", "getEnergyStored", "getMaxEnergyStored", "getProgress"};
 	public PeripheralSqueezer(World w, int _x, int _y, int _z)
 	{
 		super(w, _x, _y, _z);
@@ -28,7 +28,7 @@ public class PeripheralSqueezer extends IEPeripheral
 	@Override
 	public String[] getMethodNames()
 	{
-		return new String[]{"getRecipe", "getInpuStack", "getOutputStack", "getFluid", "getEmptyCannisters", "getFilledCannisters", "getEnergyStored", "getMaxEnergyStored", "getProgress"};
+		return cmds;
 	}
 
 	@Override

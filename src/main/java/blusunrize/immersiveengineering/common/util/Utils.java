@@ -668,6 +668,8 @@ public class Utils
 
 	public static boolean fillPlayerItemFromFluidHandler(World world, IFluidHandler handler, EntityPlayer player, FluidStack tankFluid)
 	{
+		if (tankFluid==null)
+			return false;
 		ItemStack equipped = player.getCurrentEquippedItem();
 		if(equipped==null)
 			return false;
@@ -767,7 +769,7 @@ public class Utils
 		{
 			IFluidContainerItem container = (IFluidContainerItem)equipped.getItem();
 			fluid = container.getFluid(equipped);
-			if(handler.fill(ForgeDirection.UNKNOWN, fluid, false)>0)
+			if(fluid!=null&&handler.fill(ForgeDirection.UNKNOWN, fluid, false)>0)
 			{
 				if(world.isRemote)
 					return true;

@@ -6,6 +6,7 @@ import static minetweaker.api.minecraft.MineTweakerMC.getLiquidStack;
 import blusunrize.immersiveengineering.api.ManualHelper;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMetalPress;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import cpw.mods.fml.relauncher.ReflectionHelper;
@@ -106,6 +107,7 @@ public class MTHelper extends IECompatModule
 			if (ManualHelper.ieManualInstance!=null)
 				ManualHelper.ieManualInstance.recalculateAllRecipes();
 			TileEntityCrusher.recipeCache.clear();
+			TileEntityMetalPress.minSizePerMold = null;
 		}
 	}
 

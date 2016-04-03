@@ -4,6 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import blusunrize.immersiveengineering.common.Config;
+import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDecoration;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityLantern;
+import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenCrate;
+import cpw.mods.fml.common.registry.VillagerRegistry.IVillageCreationHandler;
 import net.minecraft.entity.EntityHanging;
 import net.minecraft.entity.item.EntityItemFrame;
 import net.minecraft.init.Blocks;
@@ -20,31 +26,11 @@ import net.minecraft.world.gen.structure.StructureVillagePieces;
 import net.minecraft.world.gen.structure.StructureVillagePieces.PieceWeight;
 import net.minecraft.world.gen.structure.StructureVillagePieces.Start;
 import net.minecraftforge.common.ChestGenHooks;
-import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
-import blusunrize.immersiveengineering.common.Config;
-import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalDecoration;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityLantern;
-import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenCrate;
-import cpw.mods.fml.common.registry.VillagerRegistry.IVillageCreationHandler;
 
 public class VillageEngineersHouse extends StructureVillagePieces.Village
 {
-	static ChestGenHooks crateContents = new ChestGenHooks("IE:CRATES", 
-			new WeightedRandomChestContent[]{
-			new WeightedRandomChestContent(IEContent.itemMaterial,0, 2,7, 20),
-			new WeightedRandomChestContent(IEContent.itemMaterial,11, 1,2, 8),
-			new WeightedRandomChestContent(IEContent.itemMaterial,12, 1,1, 5),
-			new WeightedRandomChestContent(IEContent.itemMetal,0, 2,5, 16),
-			new WeightedRandomChestContent(IEContent.itemMetal,1, 1,4, 10),
-			new WeightedRandomChestContent(IEContent.itemMetal,2, 1,4, 10),
-			new WeightedRandomChestContent(IEContent.itemMetal,7, 1,4, 8),
-			new WeightedRandomChestContent(IEContent.itemBlueprint,BlueprintCraftingRecipe.blueprintCategories.indexOf("bullet"), 1,1, 5),
-			new WeightedRandomChestContent(IEContent.itemBlueprint,BlueprintCraftingRecipe.blueprintCategories.indexOf("specialBullet"), 1,1, 2),
-			new WeightedRandomChestContent(IEContent.itemBlueprint,BlueprintCraftingRecipe.blueprintCategories.indexOf("electrode"), 1,1, 1),
-			new WeightedRandomChestContent(IEContent.itemShader,0, 1,1, 5)
-	}
-	, 3,9);
+	public static ChestGenHooks crateContents;
+	public static final String crate = "ieVillageCrates";
 
 	public VillageEngineersHouse()
 	{

@@ -1,8 +1,11 @@
 package blusunrize.immersiveengineering.common;
 
 import java.util.Map;
+import java.util.Map.Entry;
 
+import blusunrize.immersiveengineering.api.DimensionBlockPos;
 import blusunrize.immersiveengineering.api.DimensionChunkCoords;
+import blusunrize.immersiveengineering.api.energy.IICProxy;
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
@@ -10,6 +13,7 @@ import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralWorldInfo;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
+import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
@@ -46,7 +50,11 @@ public class IESaveData extends WorldSavedData
 				}
 			}
 		}
-
+		NBTTagList l = nbt.getTagList("iicProxies", 10);
+		int max = l.tagCount();
+		for (int i = 0;i<max;i++)
+			ImmersiveNetHandler.INSTANCE.addProxy(IICProxy.readFromNBT(l.getCompoundTagAt(i)));
+		
 		EventHandler.validateConnsNextTick = true;
 
 		NBTTagList mineralList = nbt.getTagList("mineralDepletion", 10);
@@ -130,6 +138,14 @@ public class IESaveData extends WorldSavedData
 			receivedShaderList.appendTag(tag);
 		}
 		nbt.setTag("receivedShaderList", receivedShaderList);
+		
+		NBTTagList iicProxies = new NBTTagList();
+		for (Entry<DimensionBlockPos, IICProxy> prox:ImmersiveNetHandler.INSTANCE.proxies.entrySet())
+		{
+			NBTTagCompound c = prox.getValue().writeToNBT();
+			iicProxies.appendTag(c);
+		}
+		nbt.setTag("iicProxies", iicProxies);
 	}
 
 

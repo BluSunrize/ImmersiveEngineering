@@ -76,6 +76,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 	@Override
 	public void onChunkUnload()
 	{
+		super.onChunkUnload();
 		unload();
 	}
 
@@ -260,8 +261,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 					IImmersiveConnectable end = toIIC(con.end, worldObj);
 					if(con.cableType!=null && end!=null)
 					{
-						float prio = powerSorting.get(con)/(float)sum;
-						int output = (int)(powerForSort*prio);
+						int output = powerSorting.get(con);
 
 						int tempR = end.outputEnergy(Math.min(output, con.cableType.getTransferRate()), true, energyType);
 						int r = tempR;
@@ -318,7 +318,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 	@Optional.Method(modid = "IC2")
 	public double getDemandedEnergy()
 	{
-		return ModCompatability.convertRFtoEU(getMaxInput(), getIC2Tier());
+		return ModCompatability.convertRFtoEU(getMaxInput()-energyStored, getIC2Tier());
 	}
 	@Optional.Method(modid = "IC2")
 	public int getSinkTier()
@@ -333,12 +333,8 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 	public double injectEnergy(ForgeDirection directionFrom, double amount, double voltage)
 	{
 		int rf = ModCompatability.convertEUtoRF(amount);
-		if(rf>this.getMaxInput())//More Input than allowed results in blocking
-			return amount;
-		int rSimul = transferEnergy(rf, true, 1);
-		if(rSimul==0)//This will prevent full power void but allow partial transfer
-			return amount;
-		int r = transferEnergy(rf, false, 1);
+		int r = Math.min(getMaxInput()-energyStored, rf);
+		energyStored+=r;
 		double eu = ModCompatability.convertRFtoEU(r, getIC2Tier());
 		return amount-eu;
 	}

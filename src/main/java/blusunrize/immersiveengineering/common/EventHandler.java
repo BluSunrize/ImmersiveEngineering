@@ -9,10 +9,13 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
 import WayofTime.alchemicalWizardry.api.event.TeleposeEvent;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.DimensionBlockPos;
+import blusunrize.immersiveengineering.api.energy.IICProxy;
 import blusunrize.immersiveengineering.api.energy.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler.Connection;
@@ -214,7 +217,28 @@ public class EventHandler
 					IELogger.info("removed "+invalidConnectionsDropped+" invalid connections from world");
 				}
 			}
-
+			if (validateConnections)
+			{
+				int invalidProxies = 0;
+				Set<DimensionBlockPos> toRemove = new HashSet<>();
+				for (Entry<DimensionBlockPos, IICProxy> e:ImmersiveNetHandler.INSTANCE.proxies.entrySet())
+				{
+					DimensionBlockPos p = e.getKey();
+					World w = MinecraftServer.getServer().worldServerForDimension(p.dim);
+					if (w==null)
+					{
+						invalidProxies++;
+						toRemove.add(p);
+						continue;
+					}
+					if (!(w.getTileEntity(p.posX, p.posY, p.posZ) instanceof IImmersiveConnectable))
+					{
+						invalidProxies++;
+						toRemove.add(p);
+					}
+				}
+				IELogger.info("Removed "+invalidProxies+" invalid connector proxies (used to transfer power through unloaded chunks)");
+			}
 			validateConnsNextTick = false;
 		}
 		if(event.phase==TickEvent.Phase.END && FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER)

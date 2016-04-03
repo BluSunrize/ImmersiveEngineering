@@ -205,7 +205,10 @@ public class TileEntityAssembler extends TileEntityMultiblockPart implements ISi
 							this.inventory[free] = output.copy();
 					}
 				}
-
+		for (int i = 0;i<3;i++)
+			if((inventory instanceof ISidedInventory && ((ISidedInventory)inventory).getAccessibleSlotsFromSide(facing).length>0)
+					||(inventory instanceof IInventory && ((IInventory)inventory).getSizeInventory()>0))
+				this.inventory[18+i] = Utils.insertStackIntoInventory((IInventory)inventory, this.inventory[18+i], facing);
 		if(update)
 		{
 			this.markDirty();

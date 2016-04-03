@@ -1,9 +1,11 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import java.util.ArrayList;
+import java.util.Set;
 
 import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.api.energy.IImmersiveConnectable;
+import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.api.energy.WireType;
 import blusunrize.immersiveengineering.common.blocks.TileEntityImmersiveConnectable;
@@ -18,6 +20,8 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable
 	public int lastEnergyPassed = 0;
 	public ArrayList<Integer> lastPackets = new ArrayList<Integer>(25);
 	public boolean dummy=false;
+	private int maxTransfer = -1;
+	public int compVal = -1;
 
 	@Override
 	protected boolean canTakeLV()
@@ -45,10 +49,37 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable
 			lastPackets.add(lastEnergyPassed);
 			if (lastPackets.size() > 20)
 				lastPackets.remove(0);
+
+			if ((worldObj.getTotalWorldTime()&31)==((xCoord^zCoord)&31)||compVal<0)
+				updateComparatorValues();
 		}
 		lastEnergyPassed = 0;
 	}
 
+	private void updateComparatorValues()
+	{
+		if (maxTransfer<0)
+		{
+			Set<Connection> conns = ImmersiveNetHandler.INSTANCE.getConnections(worldObj, Utils.toCC(this));
+			if (conns==null)
+				return;
+			maxTransfer = 0;
+			for (Connection c:conns)
+				maxTransfer+=c.cableType.getTransferRate();
+		}
+		float percentage = (getAveragePower()*2)/(float) maxTransfer;
+		int oldComp = compVal;
+		compVal = (int)Math.min(Math.ceil(15*percentage), 15);
+		if (oldComp!=compVal)
+		{
+			TileEntity te = worldObj.getTileEntity(xCoord, yCoord-1, zCoord);
+			worldObj.func_147453_f(xCoord, yCoord, zCoord, getBlockType());
+			if (!(te instanceof TileEntityEnergyMeter))
+				return;
+			((TileEntityEnergyMeter)te).compVal = compVal;
+			worldObj.func_147453_f(xCoord, yCoord-1, zCoord, getBlockType());
+		}
+	}
 	@Override
 	public boolean canConnect()
 	{
@@ -83,9 +114,23 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable
 				((TileEntityEnergyMeter)above).connectCable(cableType, target);
 		}
 		else
+		{
 			super.connectCable(cableType, target);
+			if (!worldObj.isRemote)
+				maxTransfer+=cableType.getTransferRate();
+		}
 	}
-
+	@Override
+	public void removeCable(Connection connection) {
+		super.removeCable(connection);
+		if (!worldObj.isRemote)
+		{
+			if (connection==null)
+				maxTransfer = 0;
+			else
+				maxTransfer-=connection.cableType.getTransferRate();
+		}
+	}
 	@Override
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
