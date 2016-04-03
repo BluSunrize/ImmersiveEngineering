@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.common.util.compat;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Map;
 
@@ -21,6 +22,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 
 public class RailcraftHelper extends IECompatModule
 {
@@ -84,6 +86,30 @@ public class RailcraftHelper extends IECompatModule
 		}
 	}
 
+	static Class c_TileSlab;
+	static Method c_isDoubleSlab;
+	static Method c_getBottomSlab;
+	public static boolean isRCSlab(TileEntity tile)
+	{
+		if(c_TileSlab==null)
+		{
+			try{
+				c_TileSlab = Class.forName("mods.railcraft.common.blocks.aesthetics.slab.TileSlab");
+				c_isDoubleSlab = c_TileSlab.getMethod("isDoubleSlab");
+				c_getBottomSlab = c_TileSlab.getMethod("getBottomSlab");
+			}catch(Exception e){}
+		}
+		if(c_TileSlab!=null&&c_isDoubleSlab!=null&&c_getBottomSlab!=null)
+			return tile!=null && c_TileSlab.isAssignableFrom(tile.getClass());
+		return false;
+	}
+	public static boolean isSteelSlab(TileEntity tile)
+	{
+		try{
+			return (!(boolean)c_isDoubleSlab.invoke(tile) && c_getBottomSlab.invoke(tile).toString()=="STEEL");
+		}catch(Exception e){}
+		return false;
+	}
 
 	@SideOnly(Side.CLIENT)
 	public class ModelShaderLowSidesMinecart extends ModelShaderMinecart

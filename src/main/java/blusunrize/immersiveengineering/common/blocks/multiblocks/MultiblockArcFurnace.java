@@ -9,11 +9,10 @@ import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalMultiblocks
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityArcFurnace;
 import blusunrize.immersiveengineering.common.util.IEAchievements;
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.compat.RailcraftHelper;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import mods.railcraft.common.blocks.aesthetics.EnumBlockMaterial;
-import mods.railcraft.common.blocks.aesthetics.slab.TileSlab;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -133,7 +132,7 @@ public class MultiblockArcFurnace implements IMultiblock
 	{
 		return "IE:ArcFurnace";
 	}
-	
+
 	@Override
 	public boolean isBlockTrigger(Block b, int meta)
 	{
@@ -228,14 +227,16 @@ public class MultiblockArcFurnace implements IMultiblock
 						{
 							//check for railcrafts TE slabs
 							TileEntity te = world.getTileEntity(xx,yy,zz);
-							if (Loader.isModLoaded("Railcraft")&&te!=null&&te.getClass().getName().equals("mods.railcraft.common.blocks.aesthetics.slab.TileSlab"))
-							{
-								TileSlab sl = (TileSlab) te;
-								if (sl.isDoubleSlab())
-									return false;
-								if (sl.getBottomSlab()!=EnumBlockMaterial.STEEL)
-									return false;
-							}
+							//							if (Loader.isModLoaded("Railcraft")&&te!=null&&te.getClass().getName().equals("mods.railcraft.common.blocks.aesthetics.slab.TileSlab"))
+							//							{
+							//								TileSlab sl = (TileSlab) te;
+							//								if (sl.isDoubleSlab())
+							//									return false;
+							//								if (sl.getBottomSlab()!=EnumBlockMaterial.STEEL)
+							//									return false;
+							//							}
+							if(Loader.isModLoaded("Railcraft") && RailcraftHelper.isRCSlab(te))
+								return RailcraftHelper.isSteelSlab(te);
 							//other slabs should be in the oredict
 							else if(!Utils.compareToOreName(checkStack, "slabSteel"))
 								return false;

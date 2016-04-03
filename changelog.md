@@ -1,3 +1,25 @@
+#####Version 0.7.5
+- added config to disable villager houses
+- added villager house crate to the ChestGen hooks, name is "ieVillagerCrates", should work with Minetweaker
+- added comparator support to Transformers
+- changed arc furnace to accept any steel slab
+- changed engineer's hammer to be able to rotate pistons
+- fixed crash with custom IRecipes in the manual
+- fixed computer compat on Capacitors
+- fixed pump not pumping water when infinite sources where disabled
+- fixed computer compat for squeezer+fermenter
+- fixed jerrycan crashing when clicked on empty ExNihilo barrels
+- fixed revolver crashing when its GUI is closed and the revolver was removed (why would you even do that in the first place?!)
+- fixed energy net having load/unload issues
+- fixed drill voiding fluid when changing drillheads
+- fixed hammer crushing (again)
+- fixed assembler outputting its buffer
+- fixed fluid pipes voiding fluid when splitting it
+- fixed crashes with EIO tanks
+- fixed stone tiles breaking instantly
+- fixed shenanigans with IC2
+- fixed item accepting on Metal press a bit more
+
 #####Version 0.7.4 - BUILT
 - most fixes were done by malte again =P
 - added blacklist for entities that can drop shader bags. CustomNPCs doesn't understand what "boss" means >_>
