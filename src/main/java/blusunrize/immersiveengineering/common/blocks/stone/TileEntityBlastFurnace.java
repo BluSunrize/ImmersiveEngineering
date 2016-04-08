@@ -248,9 +248,19 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart implements 
 			master.setInventorySlotContents(slot,stack);
 			return;
 		}
+		ItemStack old = inventory[slot];
 		inventory[slot] = stack;
 		if (stack != null && stack.stackSize > getInventoryStackLimit())
 			stack.stackSize = getInventoryStackLimit();
+		if (slot==0&&(old==null||!Utils.stackMatchesObject(stack, old)))
+		{
+			BlastFurnaceRecipe recipe = getRecipe();
+			if(recipe!=null)
+			{
+				this.process=recipe.time;
+				this.processMax=process;
+			}
+		}
 	}
 
 	@Override

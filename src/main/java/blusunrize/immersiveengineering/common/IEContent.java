@@ -489,11 +489,13 @@ public class IEContent
 		int villagerId = Config.getInt("villager_engineer");
 		VillagerRegistry.instance().registerVillagerId(villagerId);
 		if (Config.getBoolean("buildVillage"))
+		{
 			VillagerRegistry.instance().registerVillageCreationHandler(new VillageEngineersHouse.VillageManager());
-		try{
-			MapGenStructureIO.func_143031_a(VillageEngineersHouse.class, "IEVillageEngineersHouse");
-		}catch (Exception e){
-			IELogger.error("Engineer's House not added to Villages");
+			try{
+				MapGenStructureIO.func_143031_a(VillageEngineersHouse.class, "IEVillageEngineersHouse");
+			}catch (Exception e){
+				IELogger.error("Engineer's House not added to Villages");
+			}
 		}
 
 		/**SMELTING*/
@@ -532,7 +534,7 @@ public class IEContent
 		MetalPressRecipe.addRecipe(new ItemStack(itemMaterial,2,14), "ingotIron", rodMold, 2400);
 		MetalPressRecipe.addRecipe(new ItemStack(itemMaterial,2,15), "ingotSteel", rodMold, 2400);
 		MetalPressRecipe.addRecipe(new ItemStack(itemMaterial,2,16), "ingotAluminum", rodMold, 2400);
-		
+
 		IERecipes.initCrusherRecipes();
 
 		IERecipes.initArcSmeltingRecipes();
@@ -541,7 +543,7 @@ public class IEContent
 		DieselHandler.registerDrillFuel(FluidRegistry.getFluid("fuel"));
 		DieselHandler.registerDrillFuel(FluidRegistry.getFluid("biofuel"));
 		DieselHandler.registerDrillFuel(FluidRegistry.getFluid("diesel"));
-		
+
 		DieselHandler.registerFuel(fluidBiodiesel, 125);
 		DieselHandler.registerFuel(FluidRegistry.getFluid("fuel"), 375);
 		DieselHandler.registerFuel(FluidRegistry.getFluid("diesel"), 175);
