@@ -504,7 +504,7 @@ public class BlockMetalDevices extends BlockIEBase implements blusunrize.aquatwe
 	public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z)
 	{
 		if(world.getBlockMetadata(x, y, z) == META_conveyorBelt || world.getBlockMetadata(x, y, z) == META_conveyorDropper )
-			return AxisAlignedBB.getBoundingBox(x, y, z, x+1, y, z + 1);
+			return AxisAlignedBB.getBoundingBox(x, y, z, x+1, y+.05, z + 1);
 		this.setBlockBoundsBasedOnState(world,x,y,z);
 		return super.getCollisionBoundingBoxFromPool(world, x, y, z);
 	}
