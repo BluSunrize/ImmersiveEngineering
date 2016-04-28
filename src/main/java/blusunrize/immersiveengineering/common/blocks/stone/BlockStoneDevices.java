@@ -8,6 +8,8 @@ import blusunrize.immersiveengineering.client.render.BlockRenderStoneDevices;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMultiblockPart;
 import blusunrize.immersiveengineering.common.util.Lib;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -128,6 +130,7 @@ public class BlockStoneDevices extends BlockIEBase
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister iconRegister)
 	{
 		for(int i=0; i<icons.length; i++)
@@ -138,12 +141,9 @@ public class BlockStoneDevices extends BlockIEBase
 		iconsBlastFurnace[0] = iconRegister.registerIcon("immersiveengineering:"+name+"_blastFurnace_off");
 		iconsBlastFurnace[1] = iconRegister.registerIcon("immersiveengineering:"+name+"_blastFurnace_on");
 	}
+
 	@Override
-	public IIcon getIcon(int side, int meta)
-	{
-		return super.getIcon(side, meta);
-	}
-	@Override
+	@SideOnly(Side.CLIENT)
 	public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side)
 	{
 		TileEntity te = world.getTileEntity(x, y, z);
@@ -169,12 +169,6 @@ public class BlockStoneDevices extends BlockIEBase
 		}
 
 		return super.getIcon(world, x, y, z, side);
-	}
-
-	@Override
-	public boolean shouldSideBeRendered(IBlockAccess world, int x, int y ,int z, int side)
-	{
-		return super.shouldSideBeRendered(world, x, y, z, side);
 	}
 
 	@Override

@@ -17,8 +17,10 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -121,6 +123,13 @@ public class TileEntityMetalPress extends TileEntityMultiblockPart implements IS
 					if(process[i]++==60 && curRecipes[i]!=null)
 					{
 						this.inventory[i] = curRecipes[i].output.copy();
+						update = true;
+					}
+					else if (process[i]==61&&mold!=null&&inventory[i].getItem()==Item.getItemFromBlock(Blocks.tnt))
+					{
+						worldObj.createExplosion(null, xCoord, yCoord, zCoord, 5, false);
+						inventory[i] = null;
+						process[i] = -1;
 						update = true;
 					}
 					if (!active)

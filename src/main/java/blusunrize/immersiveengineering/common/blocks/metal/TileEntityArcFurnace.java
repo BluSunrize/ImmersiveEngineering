@@ -134,6 +134,9 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 					ArcFurnaceRecipe recipe = ArcFurnaceRecipe.findRecipe(this.getStackInSlot(i), additives);
 					if(recipe!=null)
 					{
+						int inputSize = recipe.input instanceof ItemStack?((ItemStack)recipe.input).stackSize: 1;
+						if (this.getStackInSlot(i).stackSize<inputSize)
+							continue;
 						int[] outputSlots = null;
 						ItemStack[] outUpToNow = new ItemStack[6];
 						ItemStack[] outputs = recipe.getOutputs(this.getStackInSlot(i),additives);
@@ -213,8 +216,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 							}
 							if(process[i]>=processMax[i])
 							{
-								int taken = recipe.input instanceof ItemStack?((ItemStack)recipe.input).stackSize: 1;
-								this.decrStackSize(i, taken);
+								this.decrStackSize(i, inputSize);
 								for(Object add : recipe.additives)
 								{
 									int takenAdd = 	add instanceof ItemStack?((ItemStack)add).stackSize: 1;

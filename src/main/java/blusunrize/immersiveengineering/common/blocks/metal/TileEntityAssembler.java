@@ -153,22 +153,7 @@ public class TileEntityAssembler extends TileEntityMultiblockPart implements ISi
 					ItemStack output = outputBuffer[buffer][iOutput];
 					if(output!=null && output.stackSize>0)	
 					{
-						boolean isRecipeIngredient = false;
-						if(buffer-1<outputBuffer.length)
-						{
-							for(int p=buffer+1; p<patterns.length; p++)
-							{
-								CrafterPatternInventory pattern = patterns[p];
-								for(int i=0; i<9; i++)
-									if(pattern.inv[i]!=null && OreDictionary.itemMatches(pattern.inv[i], output, false))
-									{
-										isRecipeIngredient=true;
-										break;
-									}
-							}
-
-						}
-						if(!isRecipeIngredient)
+						if(!isRecipeIngredient(output, buffer))
 							if((inventory instanceof ISidedInventory && ((ISidedInventory)inventory).getAccessibleSlotsFromSide(facing).length>0)
 									||(inventory instanceof IInventory && ((IInventory)inventory).getSizeInventory()>0))
 							{
@@ -208,7 +193,8 @@ public class TileEntityAssembler extends TileEntityMultiblockPart implements ISi
 		for (int i = 0;i<3;i++)
 			if((inventory instanceof ISidedInventory && ((ISidedInventory)inventory).getAccessibleSlotsFromSide(facing).length>0)
 					||(inventory instanceof IInventory && ((IInventory)inventory).getSizeInventory()>0))
-				this.inventory[18+i] = Utils.insertStackIntoInventory((IInventory)inventory, this.inventory[18+i], facing);
+				if (!isRecipeIngredient(this.inventory[18+i], i))
+					this.inventory[18+i] = Utils.insertStackIntoInventory((IInventory)inventory, this.inventory[18+i], facing);
 		if(update)
 		{
 			this.markDirty();
@@ -332,6 +318,21 @@ public class TileEntityAssembler extends TileEntityMultiblockPart implements ISi
 			return true;
 		else if(OreDictionary.itemMatches(output, this.inventory[18+iPattern], true) && ItemStack.areItemStackTagsEqual(output, this.inventory[18+iPattern]) && this.inventory[18+iPattern].stackSize+output.stackSize<=this.inventory[18+iPattern].getMaxStackSize())
 			return true;
+		return false;
+	}
+	
+	public boolean isRecipeIngredient(ItemStack stack, int slot)
+	{
+		if(slot-1<patterns.length)
+		{
+			for(int p=slot+1; p<patterns.length; p++)
+			{
+				CrafterPatternInventory pattern = patterns[p];
+				for(int i=0; i<9; i++)
+					if(pattern.inv[i]!=null && OreDictionary.itemMatches(pattern.inv[i], stack, false))
+						return true;
+			}
+		}
 		return false;
 	}
 

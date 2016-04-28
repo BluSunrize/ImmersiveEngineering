@@ -1,5 +1,17 @@
 package blusunrize.immersiveengineering.common.entities;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.energy.IImmersiveConnectable;
+import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler.Connection;
+import blusunrize.immersiveengineering.common.items.ItemSkyhook;
+import blusunrize.immersiveengineering.common.util.IEAchievements;
+import blusunrize.immersiveengineering.common.util.IELogger;
+import blusunrize.immersiveengineering.common.util.SkylineHelper;
+import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.network.MessageSkyhookSync;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -12,17 +24,6 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
-import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.energy.IImmersiveConnectable;
-import blusunrize.immersiveengineering.api.energy.ImmersiveNetHandler.Connection;
-import blusunrize.immersiveengineering.common.items.ItemSkyhook;
-import blusunrize.immersiveengineering.common.util.IEAchievements;
-import blusunrize.immersiveengineering.common.util.IELogger;
-import blusunrize.immersiveengineering.common.util.SkylineHelper;
-import blusunrize.immersiveengineering.common.util.Utils;
-import blusunrize.immersiveengineering.common.util.network.MessageSkyhookSync;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class EntitySkylineHook extends Entity
 {
@@ -85,10 +86,28 @@ public class EntitySkylineHook extends Entity
 				ImmersiveEngineering.packetHandler.sendTo(new MessageSkyhookSync(this), (EntityPlayerMP)player);
 		}
 		super.onUpdate();
-		//		if(this.ticksExisted>40)
-		//			this.setDead();
-		//		if(worldObj.isRemote)
-		//			return;
+		if (worldObj.getTotalWorldTime()%3==0)
+		{
+			//		if(this.ticksExisted>40)
+			//			this.setDead();
+			//		if(worldObj.isRemote)
+			//			return;
+			//check whether ground is near
+			boolean upper = !isAir(worldObj, (int) posX, (int) posY - 1, (int) posZ);
+			boolean lower = !isAir(worldObj, (int) posX, (int) posY - 2, (int) posZ);
+			if (upper || lower)
+			{
+				setDead();
+				if (player instanceof EntityPlayerMP && !worldObj.isRemote)
+				{
+					if (upper)
+						setPlayerPos((EntityPlayerMP) player, player.posX, Math.ceil(player.posY) + 2.5, player.posZ);
+					else
+						setPlayerPos((EntityPlayerMP) player, player.posX, Math.ceil(player.posY) + 1.5, player.posZ);
+				}
+				return;
+			} 
+		}
 		if(subPoints!=null && targetPoint<subPoints.length-1)
 		{
 			double dist = subPoints[targetPoint].distanceTo(Vec3.createVectorHelper(posX,posY,posZ));
@@ -331,4 +350,16 @@ public class EntitySkylineHook extends Entity
 	//		// TODO Auto-generated method stub
 	//		
 	//	}
+	public boolean isAir(World w, int x, int y, int z)
+	{
+		ChunkCoordinates pos = new ChunkCoordinates(x, y, z);
+		if (connection!=null&&(pos.equals(connection.start)||pos.equals(connection.end)))
+			return true;
+		Block b = w.getBlock(x, y, z);
+		return b==null||b.isAir(w, x, y, z);
+	}
+	public void setPlayerPos(EntityPlayerMP player, double x, double y, double z)
+	{
+		player.playerNetServerHandler.setPlayerLocation(x, y, z, player.rotationYaw, player.rotationPitch);
+	}
 }

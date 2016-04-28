@@ -504,7 +504,7 @@ public class BlockMetalDevices extends BlockIEBase implements blusunrize.aquatwe
 	public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z)
 	{
 		if(world.getBlockMetadata(x, y, z) == META_conveyorBelt || world.getBlockMetadata(x, y, z) == META_conveyorDropper )
-			return AxisAlignedBB.getBoundingBox(x, y, z, x+1, y, z + 1);
+			return AxisAlignedBB.getBoundingBox(x, y, z, x+1, y+.05, z + 1);
 		this.setBlockBoundsBasedOnState(world,x,y,z);
 		return super.getCollisionBoundingBoxFromPool(world, x, y, z);
 	}
@@ -672,7 +672,6 @@ public class BlockMetalDevices extends BlockIEBase implements blusunrize.aquatwe
 			par5Entity.motionZ = vZ;
 			if(par5Entity instanceof EntityItem)
 			{
-				((EntityItem)par5Entity).age=0;
 				boolean contact;
 				boolean dropping = ((TileEntityConveyorBelt) te).dropping;
 				if(dropping)
@@ -686,6 +685,8 @@ public class BlockMetalDevices extends BlockIEBase implements blusunrize.aquatwe
 					te = world.getTileEntity(x+fd.offsetX,y+(tile.transportUp?1: tile.transportDown?-1: 0),z+fd.offsetZ);
 					contact = f==3? (par5Entity.posZ-z<=.2): f==2? (par5Entity.posZ-z>=.8): f==5? (par5Entity.posX-x<=.2): (par5Entity.posX-x>=.8);
 				}
+				if (!contact)
+					((EntityItem)par5Entity).age=0;
 				if (!world.isRemote)
 					if(contact && te instanceof IInventory)
 					{

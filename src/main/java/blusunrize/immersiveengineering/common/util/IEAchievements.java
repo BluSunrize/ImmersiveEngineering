@@ -89,9 +89,9 @@ public class IEAchievements
 		ItemStack revolver = new ItemStack(IEContent.itemRevolver);
 		((ItemRevolver)IEContent.itemRevolver).setContainedItems(revolver, upgrades);
 		((ItemRevolver)IEContent.itemRevolver).recalculateUpgrades(revolver);
-		upgradeRevolver = new AchievementIE("upgradeRevolver", 4, -7, revolver, craftRevolver);
+		upgradeRevolver = new AchievementIE("upgradeRevolver", 4, -6, revolver, craftRevolver);
 		if(Loader.isModLoaded("Botania")&&Config.getBoolean("compat_Botania"))
-			craftWolfPack = new AchievementIE("craftWolfPack", 4, -8, new ItemStack(IEContent.itemBullet,1,8), craftRevolver).setNormalCrafting().setSpecial();
+			craftWolfPack = new AchievementIE("craftWolfPack", 6, -7, new ItemStack(IEContent.itemBullet,1,8), craftRevolver).setNormalCrafting().setSpecial();
 		
 		ItemStack drill = new ItemStack(IEContent.itemDrill);
 		((ItemDrill)IEContent.itemDrill).setHead(drill, new ItemStack(IEContent.itemDrillhead));
@@ -111,9 +111,9 @@ public class IEAchievements
 		hook.addEnchantment(Enchantment.unbreaking, 1);
 		skyhookPro = new AchievementIE("skyhookPro", 0, -6, hook, craftSkyhook);
 		
-		craftChemthrower = new AchievementIE("craftChemthrower", 3, -6, IEContent.itemChemthrower, craftWorkbench).setNormalCrafting();
+		craftChemthrower = new AchievementIE("craftChemthrower", 3, -5, IEContent.itemChemthrower, craftWorkbench).setNormalCrafting();
 		
-		craftRailgun = new AchievementIE("craftRailgun", 1, -8, IEContent.itemRailgun, craftWorkbench).setNormalCrafting();
+		craftRailgun = new AchievementIE("craftRailgun", 1, -5, IEContent.itemRailgun, craftWorkbench).setNormalCrafting();
 		
 		secret_birthdayParty = new AchievementIE("secret_birthdayParty", -4,-2, new ItemStack(IEContent.itemFakeIcons,1,0), null).setSpecial();
 		secret_luckOfTheDraw = new AchievementIE("secret_luckOfTheDraw", -4, 0, new ItemStack(IEContent.itemFakeIcons,1,1), null).setSpecial();

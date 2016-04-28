@@ -72,13 +72,13 @@ public class IEPotions
 	}
 	public static int getNextPotionId(int start)
 	{
-		if((Potion.potionTypes != null) && (start > 0) && (start < Potion.potionTypes.length) && (Potion.potionTypes[start] == null))
-			return start;
-		start++;
-		if(start < 256)
-			start = getNextPotionId(start);
-		else
-			start = -1;
+		do
+			start++;
+		while (start<256&&
+				(Potion.potionTypes != null) && (start > 0) && (start < Potion.potionTypes.length)
+				&& (Potion.potionTypes[start] == null));
+		if (start>=256)
+			return -1;
 		return start;
 	}
 
