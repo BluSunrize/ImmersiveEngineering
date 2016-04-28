@@ -1,3 +1,16 @@
+#####Version 0.7.6 - BUILT
+- shoutouts to malte for excellent maintenance once again =3
+- changed items to allow despawning on conveyors, if they are colliding with an inventory they can't enter. Should make accidental lag machines less of a thing.
+- fixed bugs in the revolver container
+- fixed villager houses generating in BOP biomes
+- fixed exploit in Blast Furnace
+- fixed Arc Furnace ignoring input stacksizes in certain cases
+- fixed a crash on the achievement screen
+- fixed skyhook glitching people into blocks
+- fixed mobs spawning on conveyor belts
+- fixed assembler outputting stuff that should have stayed inside
+- fixed a lighting bug with Fastcraft
+
 #####Version 0.7.5 - BUILT
 - shoutouts to malte for excellent maintenance once again =3
 - added config to disable villager houses
