@@ -10,6 +10,7 @@
 - fixed mobs spawning on conveyor belts
 - fixed assembler outputting stuff that should have stayed inside
 - fixed a lighting bug with Fastcraft
+- fixed the lightning rod not connecting on north+south sides
 
 #####Version 0.7.5 - BUILT
 - shoutouts to malte for excellent maintenance once again =3

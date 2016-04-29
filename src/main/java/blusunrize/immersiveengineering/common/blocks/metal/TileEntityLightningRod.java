@@ -142,7 +142,7 @@ public class TileEntityLightningRod extends TileEntityMultiblockPart implements 
 	@Override
 	public boolean canConnectEnergy(ForgeDirection from)
 	{
-		ForgeDirection fd = pos==1?ForgeDirection.NORTH: pos==7?ForgeDirection.SOUTH: pos==3?ForgeDirection.EAST: ForgeDirection.WEST;
+		ForgeDirection fd = pos==1?ForgeDirection.SOUTH: pos==7?ForgeDirection.NORTH: pos==3?ForgeDirection.EAST: ForgeDirection.WEST;
 		return from==fd.getOpposite();
 	}
 
