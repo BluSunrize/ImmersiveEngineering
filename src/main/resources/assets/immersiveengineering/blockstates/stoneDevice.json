@@ -1,0 +1,84 @@
+{
+	"forge_marker": 1,
+	"defaults":
+	{
+		"transform": "forge:default-block",
+		"model": "immersiveengineering:ieThreeCubed",
+		"textures": {
+			"bottom": "immersiveengineering:blocks/stoneDevice_cokeOven",
+			"top": "#bottom",
+			"north": "#bottom",
+			"south": "#bottom",
+			"west": "#bottom",
+			"east": "#bottom",
+			"sideOff": "immersiveengineering:blocks/stoneDevice_cokeOven_off",
+			"sideOn": "immersiveengineering:blocks/stoneDevice_cokeOven_on",
+			"particle": "#bottom"
+		}
+	},
+	"variants":
+	{
+		"inventory,type=coke_oven": [{"textures": {"bottom": "immersiveengineering:blocks/stoneDevice_cokeOven","sideOff": "immersiveengineering:blocks/stoneDevice_cokeOven_off","north": "#sideOff","south": "#sideOff","west": "#sideOff","east": "#sideOff"},"transform": {"scale": 0.33}}],
+		"inventory,type=blast_furnace": [{"textures": {"bottom": "immersiveengineering:blocks/stoneDevice_blastFurnace","sideOff": "immersiveengineering:blocks/stoneDevice_blastFurnace_off","north": "#sideOff","south": "#sideOff","west": "#sideOff","east": "#sideOff"},"transform": {"scale": 0.33}}],
+		"inventory,type=blast_furnace_advanced": [{
+			"model": "immersiveengineering:blastfurnace_advanced.obj",
+			"custom": {"flip-v": true},
+			"transform": {
+			"scale": 0.33,
+			"rotation": {"y": -90 }
+			}
+		}],
+		"type":
+		{
+			"coke_oven": {"textures": {
+				"bottom": "immersiveengineering:blocks/stoneDevice_cokeOven",
+				"sideOff": "immersiveengineering:blocks/stoneDevice_cokeOven_off",
+				"sideOn": "immersiveengineering:blocks/stoneDevice_cokeOven_on",
+				"particle": "immersiveengineering:blocks/stoneDevice_cokeOven"
+			}},
+			"blast_furnace": {"textures": {
+				"bottom": "immersiveengineering:blocks/stoneDevice_blastFurnace",
+				"sideOff": "immersiveengineering:blocks/stoneDevice_blastFurnace_off",
+				"sideOn": "immersiveengineering:blocks/stoneDevice_blastFurnace_on",
+				"particle": "immersiveengineering:blocks/stoneDevice_blastFurnace"
+			}},
+			"blast_furnace_advanced": {
+				"model": "immersiveengineering:blastfurnace_advanced.obj",
+				"custom": { "flip-v": true },
+				"particle": "immersiveengineering:blocks/stoneDevice_blastFurnace"
+			}
+		},
+		"facing":
+		{
+			"north": { "transform": {
+				"rotation": {"y": 0 }
+			}},
+			"south": { "transform": {
+				"rotation": {"y": 180 }
+			}},
+			"west": { "transform": {
+				"rotation": {"y": 90 }
+			}},
+			"east": { "transform": {
+				"rotation": {"y": -90 }
+			}}
+		},
+		"*multiblockslave":
+		{
+			"false":{},
+			"true":{
+				"model": "builtin/generated"
+			}
+		},
+		//active texture
+		"boolean0":
+		{
+			"false":{"textures": {
+				"north": "#sideOff"
+			}},
+			"true":{"textures": {
+				"north": "#sideOn"
+			}}
+		}
+	}
+}

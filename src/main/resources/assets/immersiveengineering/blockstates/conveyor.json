@@ -1,0 +1,81 @@
+{
+	"forge_marker": 1,
+	"defaults":
+	{
+		"transform": "forge:default-block",
+		"model": "immersiveengineering:metalDevice/ieConveyor",
+		"submodel": {},
+		"textures": {
+			"conveyor": "immersiveengineering:blocks/conveyor",
+			"wall": "immersiveengineering:blocks/metalDevice1_dynamo_bottom"
+		}
+	},
+	"variants":
+	{
+		"inventory,type=conveyor": [{
+			"submodel": {
+				"wallLeft": { "model": "immersiveengineering:metalDevice/ieConveyorWallLeft"  },
+				"wallRight": { "model": "immersiveengineering:metalDevice/ieConveyorWallRight"  }
+			}
+		}],
+		"inventory,type=conveyor_dropper": [{
+			"submodel": {
+				"wallLeft": { "model": "immersiveengineering:metalDevice/ieConveyorWallLeft"  },
+				"wallRight": { "model": "immersiveengineering:metalDevice/ieConveyorWallRight"  }
+			},
+			"textures": {"conveyor": "immersiveengineering:blocks/conveyor_dropper"}
+		}],
+		"type":
+		{
+			"conveyor": {},
+			"conveyor_dropper": {
+				"textures": {"conveyor": "immersiveengineering:blocks/conveyor_dropper"}
+			}
+		},
+		"facing":
+		{
+			"down": { "transform": {
+				"rotation": {"x": -90 }
+			}},
+			"up": { "transform": {
+				"rotation": {"x": 90 }
+			}},
+			"north": { "transform": {
+				"rotation": {"y": 0 }
+			}},
+			"south": { "transform": {
+				"rotation": {"y": 180 }
+			}},
+			"west": { "transform": {
+				"rotation": {"y": 90 }
+			}},
+			"east": { "transform": {
+				"rotation": {"y": -90 }
+			}}
+		},
+		"conveyorwall_left":
+		{
+			"false":{},
+			"true":{
+				"submodel": {
+					"wallLeft": { "model": "immersiveengineering:metalDevice/ieConveyorWallLeft"  }
+				}
+			}
+		},
+		"conveyorwall_right":
+		{
+			"false":{},
+			"true":{
+				"submodel": {
+					"wallRight": { "model": "immersiveengineering:metalDevice/ieConveyorWallRight"  }
+				}
+			}
+		},
+		"conveyorupdown":
+		{
+			0:{},
+			1:{"model": "immersiveengineering:metalDevice/ieConveyorUp"},
+			2:{"model": "immersiveengineering:metalDevice/ieConveyorDown"}
+		}
+	}
+}

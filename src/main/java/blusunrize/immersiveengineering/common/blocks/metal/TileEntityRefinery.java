@@ -1,0 +1,534 @@
+package blusunrize.immersiveengineering.common.blocks.metal;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.google.common.collect.Lists;
+
+import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.crafting.RefineryRecipe;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedCollisionBounds;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedSelectionBounds;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGuiTile;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockRefinery;
+import blusunrize.immersiveengineering.common.util.Utils;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.FluidTankInfo;
+import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.oredict.OreDictionary;
+
+public class TileEntityRefinery extends TileEntityMultiblockMetal<TileEntityRefinery,RefineryRecipe> implements IAdvancedSelectionBounds,IAdvancedCollisionBounds, IFluidHandler, IGuiTile
+{
+	public TileEntityRefinery()
+	{
+		super(MultiblockRefinery.instance, new int[]{3,3,5}, 16000, true);
+	}
+	public FluidTank[] tanks = new FluidTank[]{new FluidTank(24000),new FluidTank(24000),new FluidTank(24000)};
+	public ItemStack[] inventory = new ItemStack[6];
+
+	@Override
+	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	{
+		super.readCustomNBT(nbt, descPacket);
+		tanks[0].readFromNBT(nbt.getCompoundTag("tank0"));
+		tanks[1].readFromNBT(nbt.getCompoundTag("tank1"));
+		tanks[2].readFromNBT(nbt.getCompoundTag("tank2"));
+		if(!descPacket)
+			inventory = Utils.readInventory(nbt.getTagList("inventory", 10), 6);
+	}
+	@Override
+	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	{
+		super.writeCustomNBT(nbt, descPacket);
+		nbt.setTag("tank0", tanks[0].writeToNBT(new NBTTagCompound()));
+		nbt.setTag("tank1", tanks[1].writeToNBT(new NBTTagCompound()));
+		nbt.setTag("tank2", tanks[2].writeToNBT(new NBTTagCompound()));
+		if(!descPacket)
+			nbt.setTag("inventory", Utils.writeInventory(inventory));
+	}
+
+	@Override
+	public void update()
+	{
+		super.update();
+		if(isDummy() || isRSDisabled() || worldObj.isRemote)
+			return;
+
+		boolean update = false;
+		if(energyStorage.getEnergyStored()>0 && processQueue.size()<this.getProcessQueueMaxLength())
+		{
+			if(tanks[0].getFluidAmount()>0 || tanks[1].getFluidAmount()>0)
+			{
+				RefineryRecipe recipe = RefineryRecipe.findRecipe(tanks[0].getFluid(), tanks[1].getFluid());
+				if(recipe!=null)
+				{
+					MultiblockProcessInMachine<RefineryRecipe> process = new MultiblockProcessInMachine(recipe).setInputTanks((tanks[0].getFluidAmount()>0&&tanks[1].getFluidAmount()>0)?new int[]{0,1}: tanks[0].getFluidAmount()>0?new int[]{0}: new int[]{1});
+					if(this.addProcessToQueue(process, true))
+					{
+						this.addProcessToQueue(process, false);
+						update = true;
+					}
+				}
+			}
+		}
+
+		if(this.tanks[2].getFluidAmount()>0)
+		{
+			ItemStack filledContainer = Utils.fillFluidContainer(tanks[2], inventory[4], inventory[5]);
+			if(filledContainer!=null)
+			{
+				if(inventory[5]!=null && OreDictionary.itemMatches(inventory[5], filledContainer, true))
+					inventory[5].stackSize+=filledContainer.stackSize;
+				else if(inventory[5]==null)
+					inventory[5] = filledContainer.copy();
+				if(--inventory[4].stackSize<=0)
+					inventory[4]=null;
+				update = true;
+			}
+			if(this.tanks[2].getFluidAmount()>0)
+			{
+				FluidStack out = Utils.copyFluidStackWithAmount(this.tanks[2].getFluid(), Math.min(this.tanks[2].getFluidAmount(), 80), false);
+				BlockPos outputPos = this.getPos().add(0,-1,0).offset(facing.getOpposite());
+				TileEntity te = worldObj.getTileEntity(outputPos);
+				if(te instanceof IFluidHandler && ((IFluidHandler)te).canFill(facing,out.getFluid()))
+				{
+					int accepted = ((IFluidHandler)te).fill(facing, out, false);
+					if(accepted>0)
+					{
+						int drained = ((IFluidHandler)te).fill(facing, Utils.copyFluidStackWithAmount(out,Math.min(out.amount, accepted),false), true);
+						this.tanks[2].drain(drained, true);
+						update=true;
+					}
+				}
+			}
+		}
+
+		ItemStack emptyContainer = Utils.drainFluidContainer(tanks[0], inventory[0]);
+		if(emptyContainer!=null)
+		{
+			if(inventory[1]!=null && OreDictionary.itemMatches(inventory[1], emptyContainer, true))
+				inventory[1].stackSize+=emptyContainer.stackSize;
+			else if(inventory[1]==null)
+				inventory[1] = emptyContainer.copy();
+			if(--inventory[0].stackSize<=0)
+				inventory[0]=null;
+			update = true;
+		}
+		emptyContainer = Utils.drainFluidContainer(tanks[1], inventory[2]);
+		if(emptyContainer!=null)
+		{
+			if(inventory[3]!=null && OreDictionary.itemMatches(inventory[3], emptyContainer, true))
+				inventory[3].stackSize+=emptyContainer.stackSize;
+			else if(inventory[3]==null)
+				inventory[3] = emptyContainer.copy();
+			if(--inventory[2].stackSize<=0)
+				inventory[2]=null;
+			update = true;
+		}
+
+		if(update)
+		{
+			this.markDirty();
+			worldObj.markBlockForUpdate(getPos());
+		}
+	}
+
+	@Override
+	public float[] getBlockBounds()
+	{
+		if(pos==0||pos==1||pos==3)
+			return new float[]{0,0,0, 1,.5f,1};
+		if(pos==19)
+			return new float[]{facing==EnumFacing.WEST?.5f:0,0,facing==EnumFacing.NORTH?.5f:0, facing==EnumFacing.EAST?.5f:1,1,facing==EnumFacing.SOUTH?.5f:1};
+		if(pos==27)
+			return new float[]{facing==EnumFacing.EAST?.5f:0,0,facing==EnumFacing.SOUTH?.5f:0, facing==EnumFacing.WEST?.5f:1,1,facing==EnumFacing.NORTH?.5f:1};
+		if(pos==17)
+			return new float[]{.0625f,0,.0625f, .9375f,1,.9375f};
+
+		return new float[]{0,0,0, 1,1,1};
+	}
+	@Override
+	public float[] getSpecialCollisionBounds()
+	{
+		return null;
+	}
+	@Override
+	public float[] getSpecialSelectionBounds()
+	{
+		return null;
+	}
+	@Override
+	public List<AxisAlignedBB> getAdvancedSelectionBounds()
+	{
+		EnumFacing fl = facing;
+		EnumFacing fw = facing.rotateY();
+		if(mirrored)
+			fw = fw.getOpposite();
+		if(pos==12)
+		{
+			List<AxisAlignedBB> list = Lists.newArrayList(AxisAlignedBB.fromBounds(0,0,0, 1,.5f,1).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+			float minX = fl==EnumFacing.EAST?.625f: fl==EnumFacing.WEST?.125f: .125f;
+			float maxX = fl==EnumFacing.WEST?.375f: fl==EnumFacing.EAST?.875f: .25f;
+			float minZ = fl==EnumFacing.SOUTH?.625f: fl==EnumFacing.NORTH?.125f: .125f;
+			float maxZ = fl==EnumFacing.NORTH?.375f: fl==EnumFacing.SOUTH?.875f: .25f;
+			list.add(AxisAlignedBB.fromBounds(minX,.5f,minZ, maxX,1,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+
+			minX = fl==EnumFacing.EAST?.625f: fl==EnumFacing.WEST?.125f: .75f;
+			maxX = fl==EnumFacing.WEST?.375f: fl==EnumFacing.EAST?.875f: .875f;
+			minZ = fl==EnumFacing.SOUTH?.625f: fl==EnumFacing.NORTH?.125f: .75f;
+			maxZ = fl==EnumFacing.NORTH?.375f: fl==EnumFacing.SOUTH?.875f: .875f;
+			list.add(AxisAlignedBB.fromBounds(minX,.5f,minZ, maxX,1,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+			return list;
+		}
+		if(pos==0||pos==4||pos==10||pos==14)
+		{
+			List<AxisAlignedBB> list = Lists.newArrayList(AxisAlignedBB.fromBounds(0,0,0, 1,.5f,1).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+			if(pos>=10)
+				fl = fl.getOpposite();
+			if(pos%10==0)
+				fw = fw.getOpposite();
+
+			float minX = fl==EnumFacing.WEST?0: fl==EnumFacing.EAST?.75f: fw==EnumFacing.WEST?.5f: .25f;
+			float maxX = fl==EnumFacing.EAST?1: fl==EnumFacing.WEST?.25f: fw==EnumFacing.EAST?.5f: .75f;
+			float minZ = fl==EnumFacing.NORTH?0: fl==EnumFacing.SOUTH?.75f: fw==EnumFacing.NORTH?.5f: .25f;
+			float maxZ = fl==EnumFacing.SOUTH?1: fl==EnumFacing.NORTH?.25f: fw==EnumFacing.SOUTH?.5f: .75f;
+			list.add(AxisAlignedBB.fromBounds(minX,.5f,minZ, maxX,1.375f,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+
+			if(pos==4)
+			{
+				minX = fl==EnumFacing.WEST?.625f: fl==EnumFacing.EAST?.125f: .125f;
+				maxX = fl==EnumFacing.EAST?.375f: fl==EnumFacing.WEST?.875f: .25f;
+				minZ = fl==EnumFacing.NORTH?.625f: fl==EnumFacing.SOUTH?.125f: .125f;
+				maxZ = fl==EnumFacing.SOUTH?.375f: fl==EnumFacing.NORTH?.875f: .25f;
+				list.add(AxisAlignedBB.fromBounds(minX,.5f,minZ, maxX,1,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+
+				minX = fl==EnumFacing.WEST?.625f: fl==EnumFacing.EAST?.125f: .75f;
+				maxX = fl==EnumFacing.EAST?.375f: fl==EnumFacing.WEST?.875f: .875f;
+				minZ = fl==EnumFacing.NORTH?.625f: fl==EnumFacing.SOUTH?.125f: .75f;
+				maxZ = fl==EnumFacing.SOUTH?.375f: fl==EnumFacing.NORTH?.875f: .875f;
+				list.add(AxisAlignedBB.fromBounds(minX,.5f,minZ, maxX,1,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+			}
+
+			return list;
+		}
+		if(pos==1||pos==3||pos==11||pos==13)
+		{
+			List<AxisAlignedBB> list = Lists.newArrayList(AxisAlignedBB.fromBounds(0,0,0, 1,.5f,1).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+			if(pos>=10)
+				fl = fl.getOpposite();
+			if(pos%10==1)
+				fw = fw.getOpposite();
+
+			float minX = fl==EnumFacing.WEST?0: fl==EnumFacing.EAST?.75f: fw==EnumFacing.WEST?.75f: 0;
+			float maxX = fl==EnumFacing.EAST?1: fl==EnumFacing.WEST?.25f: fw==EnumFacing.EAST?.25f: 1;
+			float minZ = fl==EnumFacing.NORTH?0: fl==EnumFacing.SOUTH?.75f: fw==EnumFacing.NORTH?.75f: 0;
+			float maxZ = fl==EnumFacing.SOUTH?1: fl==EnumFacing.NORTH?.25f: fw==EnumFacing.SOUTH?.25f: 1;
+			list.add(AxisAlignedBB.fromBounds(minX,.5f,minZ, maxX,1.375f,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+			return list;
+		}
+
+		if((pos==20||pos==24 || pos==25||pos==29)||(pos==35||pos==39 || pos==40||pos==44))
+		{
+			List<AxisAlignedBB> list = Lists.newArrayList();
+			if(pos%5==4)
+				fw = fw.getOpposite();
+			float minX = fl==EnumFacing.WEST?-.25f: fl==EnumFacing.EAST?-.25f: fw==EnumFacing.WEST?-1f: .5f;
+			float maxX = fl==EnumFacing.EAST?1.25f: fl==EnumFacing.WEST?1.25f: fw==EnumFacing.EAST?2: .5f;
+			float minZ = fl==EnumFacing.NORTH?-.25f: fl==EnumFacing.SOUTH?-.25f: fw==EnumFacing.NORTH?-1f: .5f;
+			float maxZ = fl==EnumFacing.SOUTH?1.25f: fl==EnumFacing.NORTH?1.25f: fw==EnumFacing.SOUTH?2: .5f;
+			float minY = pos<35?.5f:-.5f;
+			float maxY = pos<35?2f:1f;
+			if(pos%15>=10)
+			{
+				minX += fl==EnumFacing.WEST?1: fl==EnumFacing.EAST?-1: 0;
+				maxX += fl==EnumFacing.WEST?1: fl==EnumFacing.EAST?-1: 0;
+				minZ += fl==EnumFacing.NORTH?1: fl==EnumFacing.SOUTH?-1: 0;
+				maxZ += fl==EnumFacing.NORTH?1: fl==EnumFacing.SOUTH?-1: 0;
+			}
+			list.add(AxisAlignedBB.fromBounds(minX,minY,minZ, maxX,maxY,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+			return list;
+		}
+		if((pos==21||pos==23 || pos==26||pos==28)||(pos==36||pos==38 || pos==41||pos==43))
+		{
+			List<AxisAlignedBB> list = Lists.newArrayList();
+			if(pos%5==3)
+				fw = fw.getOpposite();
+			float minX = fl==EnumFacing.WEST?-.25f: fl==EnumFacing.EAST?-.25f: fw==EnumFacing.WEST?0f:-.5f;
+			float maxX = fl==EnumFacing.EAST?1.25f: fl==EnumFacing.WEST?1.25f: fw==EnumFacing.EAST?1f: 1.5f;
+			float minZ = fl==EnumFacing.NORTH?-.25f: fl==EnumFacing.SOUTH?-.25f: fw==EnumFacing.NORTH?0:-.5f;
+			float maxZ = fl==EnumFacing.SOUTH?1.25f: fl==EnumFacing.NORTH?1.25f: fw==EnumFacing.SOUTH?1f: 1.5f;
+			float minY = pos<35?.5f:-.5f;
+			float maxY = pos<35?2f:1f;
+			if(pos%15>=10)
+			{
+				minX += fl==EnumFacing.WEST?1: fl==EnumFacing.EAST?-1: 0;
+				maxX += fl==EnumFacing.WEST?1: fl==EnumFacing.EAST?-1: 0;
+				minZ += fl==EnumFacing.NORTH?1: fl==EnumFacing.SOUTH?-1: 0;
+				maxZ += fl==EnumFacing.NORTH?1: fl==EnumFacing.SOUTH?-1: 0;
+			}
+			list.add(AxisAlignedBB.fromBounds(minX,minY,minZ, maxX,maxY,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+			return list;
+		}
+		return null;
+	}
+	@Override
+	public boolean isOverrideBox(AxisAlignedBB box, EntityPlayer player, MovingObjectPosition mop, ArrayList<AxisAlignedBB> list)
+	{
+		return false;
+	}
+	@Override
+	public List<AxisAlignedBB> getAdvancedColisionBounds()
+	{
+		return getAdvancedSelectionBounds();
+	}
+
+	@Override
+	public int[] getEnergyPos()
+	{
+		return new int[]{27};
+	}
+	@Override
+	public int[] getRedstonePos()
+	{
+		return new int[]{19};
+	}
+
+	@Override
+	public boolean isInWorldProcessingMachine()
+	{
+		return false;
+	}
+	@Override
+	public boolean additionalCanProcessCheck(MultiblockProcess<RefineryRecipe> process)
+	{
+		return true;
+	}
+	@Override
+	public void doProcessOutput(ItemStack output)
+	{
+		BlockPos pos = getPos().offset(facing,2);
+		TileEntity inventoryTile = this.worldObj.getTileEntity(pos);
+		if(inventoryTile!=null)
+			output = Utils.insertStackIntoInventory(inventoryTile, output, facing.getOpposite());
+		if(output!=null)
+			Utils.dropStackAtPos(worldObj, pos, output, facing);
+	}
+	@Override
+	public void doProcessFluidOutput(FluidStack output)
+	{
+	}
+	@Override
+	public void onProcessFinish(MultiblockProcess<RefineryRecipe> process)
+	{
+	}
+	@Override
+	public int getMaxProcessPerTick()
+	{
+		return 1;
+	}
+	@Override
+	public int getProcessQueueMaxLength()
+	{
+		return 1;
+	}
+	@Override
+	public float getMinProcessDistance()
+	{
+		return 0;
+	}
+
+
+	@Override
+	public ItemStack[] getInventory()
+	{
+		return inventory;
+	}
+	@Override
+	public boolean isStackValid(int slot, ItemStack stack)
+	{
+		return true;
+	}
+	@Override
+	public int getSlotLimit(int slot)
+	{
+		return 64;
+	}
+	@Override
+	public int[] getOutputSlots()
+	{
+		return new int[0];
+	}
+	@Override
+	public int[] getOutputTanks()
+	{
+		return new int[]{2};
+	}
+	@Override
+	public FluidTank[] getInternalTanks()
+	{
+		return tanks;
+	}
+	@Override
+	public void doGraphicalUpdates(int slot)
+	{
+		this.markDirty();
+		worldObj.markBlockForUpdate(getPos());
+	}
+
+
+	@Override
+	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
+	{
+		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+			return true;
+		return super.hasCapability(capability, facing);
+	}
+	//	IItemHandler insertionHandler = new IEInventoryHandler(8, this, 0, new boolean[]{true,true,true,true,true,true,true,true}, new boolean[8]);
+	//	IItemHandler extractionHandler = new IEInventoryHandler(1, this, 8, new boolean[1], new boolean[]{true});
+	@Override
+	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
+	{
+		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+		{
+			//			TileEntityRefinery master = master();
+			//			if(master==null)
+			//				return null;
+			//			if(pos==15)
+			//				return (T)master.insertionHandler;
+			//			if(pos==13)
+			//				return (T)master.extractionHandler;
+			return null;
+		}
+		return super.getCapability(capability, facing);
+	}
+
+	@Override
+	public RefineryRecipe findRecipeForInsertion(ItemStack inserting)
+	{
+		return null;//RefineryRecipe.findRecipe(inserting);
+	}
+	@Override
+	protected RefineryRecipe readRecipeFromNBT(NBTTagCompound tag)
+	{
+		return RefineryRecipe.loadFromNBT(tag);
+	}
+	@Override
+	public boolean canOpenGui()
+	{
+		return formed;
+	}
+	@Override
+	public int getGuiID()
+	{
+		return Lib.GUIID_Refinery;
+	}
+	@Override
+	public TileEntity getGuiMaster()
+	{
+		return master();
+	}
+
+	@Override
+	public int fill(EnumFacing from, FluidStack resource, boolean doFill)
+	{
+		if(!formed || resource==null)
+			return 0;
+		if(!canFill(from, resource.getFluid()))
+			return 0;
+		TileEntityRefinery master = this.master();
+		if(master==null)
+			return 0;
+		int fill = 0;
+		if(resource.isFluidEqual(master.tanks[0].getFluid()))
+			fill = master.tanks[0].fill(resource, doFill);
+		else if(resource.isFluidEqual(master.tanks[1].getFluid()))
+			fill = master.tanks[1].fill(resource, doFill);
+		else if(master.tanks[0].getFluid()==null && master.tanks[1].getFluid()==null)
+		{
+			List<RefineryRecipe> incompleteRecipes = RefineryRecipe.findIncompleteRefineryRecipe(resource,null);
+			if(incompleteRecipes!=null && !incompleteRecipes.isEmpty())
+				fill = master.tanks[0].fill(resource, doFill);
+		}
+		else
+		{
+			int present = master.tanks[0].getFluid()!=null?0:1;
+			List<RefineryRecipe> incompleteRecipes = RefineryRecipe.findIncompleteRefineryRecipe(resource,master.tanks[present].getFluid());
+			if(incompleteRecipes!=null && !incompleteRecipes.isEmpty())
+				fill = master.tanks[present==0?1:0].fill(resource, doFill);
+		}
+		if(fill>0)
+		{
+			master.markDirty();
+			worldObj.markBlockForUpdate(master.getPos());
+		}
+		return fill;
+	}
+	@Override
+	public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain)
+	{
+		return resource==null?null:this.drain(from, resource.amount, doDrain);
+	}
+	@Override
+	public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain)
+	{
+		if(pos==2 && (from==null||from==facing))
+		{
+			TileEntityRefinery master = this.master();
+			if(master==null)
+				return null;
+			FluidStack fs = master.tanks[2].drain(maxDrain, doDrain);
+			if(fs!=null)
+			{
+				master.markDirty();
+				worldObj.markBlockForUpdate(master.getPos());
+			}
+			return fs;
+		}
+		return null;
+	}
+	@Override
+	public boolean canFill(EnumFacing from, Fluid fluid)
+	{
+		return (pos==5&&(from==null||from==facing.rotateY())) || (pos==9&&(from==null||from==facing.rotateYCCW()));
+	}
+	@Override
+	public boolean canDrain(EnumFacing from, Fluid fluid)
+	{
+		return pos==2 && (from==null||from==facing);
+	}
+	@Override
+	public FluidTankInfo[] getTankInfo(EnumFacing from)
+	{
+		if(pos==5&&(from==null||from==facing.rotateY()))
+		{
+			TileEntityRefinery master = master();
+			if(master!=null)
+				return new FluidTankInfo[]{master.tanks[0].getInfo(),master.tanks[1].getInfo()};
+		}
+		if(pos==9&&(from==null||from==facing.rotateYCCW()))
+		{
+			TileEntityRefinery master = master();
+			if(master!=null)
+				return new FluidTankInfo[]{master.tanks[0].getInfo(),master.tanks[1].getInfo()};
+		}
+		if(pos==2 && (from==null||from==facing))
+		{
+			TileEntityRefinery master = master();
+			if(master!=null)
+				return new FluidTankInfo[]{master.tanks[2].getInfo()};
+		}
+		return new FluidTankInfo[0];
+	}
+}

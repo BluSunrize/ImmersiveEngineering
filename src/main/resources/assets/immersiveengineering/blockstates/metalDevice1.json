@@ -1,0 +1,126 @@
+{
+	"forge_marker": 1,
+	"defaults":
+	{
+		"transform": "forge:default-block",
+		"model": "immersiveengineering:ieSixSides",
+		"textures": {
+			"bottom": "immersiveengineering:blocks/metalDevice1_thermoelectricGen_bottom",
+			"top": "immersiveengineering:blocks/metalDevice1_thermoelectricGen_top",
+			"north": "immersiveengineering:blocks/metalDevice1_thermoelectricGen_side",
+			"south": "immersiveengineering:blocks/metalDevice1_thermoelectricGen_side",
+			"west": "immersiveengineering:blocks/metalDevice1_thermoelectricGen_side",
+			"east": "immersiveengineering:blocks/metalDevice1_thermoelectricGen_side",
+			
+			"sideOff": "immersiveengineering:blocks/metalDevice1_furnaceHeater",
+			"sideOn": "immersiveengineering:blocks/metalDevice1_furnaceHeater_active"
+		}
+	},
+	"variants":
+	{
+		"inventory,type=blast_furnace_preheater": [{
+			"model": "immersiveengineering:metalDevice/blastfurnace_preheater.obj",
+			"custom": {"flip-v": true},
+			"transform": {
+				"scale": 0.5,
+				"firstperson": {},
+				"thirdperson": { "translation": [ 0, 0.09375, -0.171875 ], "rotation": [{ "x": 10 }, { "y": -45 }, { "z": 170 }], "scale": [ 0.5, 0.5, 0.5 ] },
+				"fixed": { "translation": [ 0, -0.125, 0 ], "rotation": [{ "y": -90 }] },
+				"gui": { "translation": [ 0, -0.25, 0 ], "rotation": [{ "y": -90 }] }
+			}
+		}],
+		"inventory,type=furnace_heater": [{"textures": {
+			"bottom": "immersiveengineering:blocks/metalDevice1_furnaceHeater",
+			"top": "immersiveengineering:blocks/metalDevice1_furnaceHeater",
+			"north": "immersiveengineering:blocks/metalDevice1_furnaceHeater",
+			"south": "immersiveengineering:blocks/metalDevice1_furnaceHeater",
+			"west": "immersiveengineering:blocks/metalDevice1_furnaceHeater",
+			"east": "immersiveengineering:blocks/metalDevice1_furnaceHeater"}
+		}],
+		"inventory,type=dynamo": [{"textures": {
+			"bottom": "immersiveengineering:blocks/metalDevice1_dynamo_bottom",
+			"top": "immersiveengineering:blocks/metalDevice1_dynamo_top",
+			"north": "immersiveengineering:blocks/metalDevice1_dynamo_front",
+			"south": "immersiveengineering:blocks/metalDevice1_dynamo_top",
+			"west": "immersiveengineering:blocks/metalDevice1_dynamo_side",
+			"east": "immersiveengineering:blocks/metalDevice1_dynamo_side"}
+		}],
+		"inventory,type=thermoelectric_gen": [{"textures": {
+			"bottom": "immersiveengineering:blocks/metalDevice1_thermoelectricGen_bottom",
+			"top": "immersiveengineering:blocks/metalDevice1_thermoelectricGen_top",
+			"north": "immersiveengineering:blocks/metalDevice1_thermoelectricGen_side",
+			"south": "immersiveengineering:blocks/metalDevice1_thermoelectricGen_side",
+			"west": "immersiveengineering:blocks/metalDevice1_thermoelectricGen_side",
+			"east": "immersiveengineering:blocks/metalDevice1_thermoelectricGen_side"}
+		}],
+		"type":
+		{
+			"blast_furnace_preheater": {
+				"model": "immersiveengineering:metalDevice/blastfurnace_preheater.obj",
+				"custom": { "flip-v": true }
+			},
+			"furnace_heater": {"textures": {
+				"bottom": "#sideOff",
+				"top": "#sideOff",
+				"north": "immersiveengineering:blocks/metalDevice1_furnaceHeater_socket",
+				"south": "#sideOff",
+				"west": "#sideOff",
+				"east": "#sideOff",
+				"sideOff": "immersiveengineering:blocks/metalDevice1_furnaceHeater",
+				"sideOn": "immersiveengineering:blocks/metalDevice1_furnaceHeater_active"
+			}},
+			"dynamo": {"textures": {
+				"bottom": "immersiveengineering:blocks/metalDevice1_dynamo_bottom",
+				"top": "immersiveengineering:blocks/metalDevice1_dynamo_top",
+				"north": "immersiveengineering:blocks/metalDevice1_dynamo_front",
+				"south": "immersiveengineering:blocks/metalDevice1_dynamo_bottom",
+				"west": "immersiveengineering:blocks/metalDevice1_dynamo_side",
+				"east": "immersiveengineering:blocks/metalDevice1_dynamo_side"
+			}},
+			"thermoelectric_gen": {"textures": {
+				"bottom": "immersiveengineering:blocks/metalDevice1_thermoelectricGen_bottom",
+				"top": "immersiveengineering:blocks/metalDevice1_thermoelectricGen_top",
+				"north": "immersiveengineering:blocks/metalDevice1_thermoelectricGen_side",
+				"south": "immersiveengineering:blocks/metalDevice1_thermoelectricGen_side",
+				"west": "immersiveengineering:blocks/metalDevice1_thermoelectricGen_side",
+				"east": "immersiveengineering:blocks/metalDevice1_thermoelectricGen_side"
+			}}
+		},
+		"facing":
+		{
+			"down": { "transform": {
+				"rotation": {"x": -90 }
+			}},
+			"up": { "transform": {
+				"rotation": {"x": 90 }
+			}},
+			"north": { "transform": {
+				"rotation": {"y": 0 }
+			}},
+			"south": { "transform": {
+				"rotation": {"y": 180 }
+			}},
+			"west": { "transform": {
+				"rotation": {"y": 90 }
+			}},
+			"east": { "transform": {
+				"rotation": {"y": -90 }
+			}}
+		},
+		"*multiblockslave":
+		{
+			"false":{},
+			"true":{
+				"model": "builtin/generated"
+			}
+		},
+		//active texture
+		"boolean0":
+		{
+			"false":{},
+			"true":{"textures": {
+				"sideOff": "#sideOn"
+			}}
+		}
+	}
+}

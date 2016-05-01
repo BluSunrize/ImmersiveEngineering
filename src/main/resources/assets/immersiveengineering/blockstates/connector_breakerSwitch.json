@@ -1,0 +1,59 @@
+{
+	"forge_marker": 1,
+	"defaults":
+	{
+		"transform": "forge:default-block",
+		"model": "immersiveengineering:connector/breakerSwitch_off.obj",
+		"custom": {
+			"flip-v": true
+		}
+	},
+	"variants":
+	{
+		"inventory,type=breakerswitch": [{
+			"transform": {
+				"firstperson": { "rotation": [{ "y": 90 }] },
+				"thirdperson": { "translation": [ 0, 0.09375, -0.171875 ], "rotation": [{ "x": 10 }, { "y": -45 }, { "z": 170 }] },
+				"fixed": { "translation": [ 0, -0.1875, 0 ] },
+				"gui": { "rotation": [{ "y": 180 }] }
+			}
+		}],
+		"type":
+		{
+			"breakerswitch": {}
+		},
+		"boolean0":
+		{
+			"false": {},
+			"true": {
+				"model": "immersiveengineering:connector/breakerSwitch_on.obj"
+			}
+		},
+		"facing":
+		{
+			"down": {},
+			"up": { "transform": {
+				"rotation": {"z": 180 }
+			}},
+			"north": { "transform": {
+				"rotation": {"x": 90 }
+			}},
+			"south": { "transform": {
+				"rotation": [{"x": 90 }, {"z": 180}]
+			}},
+			"west": { "transform": {
+				"rotation": [{"x": 90 }, {"z": -90}]
+			}},
+			"east": { "transform": {
+				"rotation": [{"x": 90 }, {"z": 90}]
+			}}
+		},
+		"*multiblockslave":
+		{
+			"false":{},
+			"true":{
+				"model": "builtin/generated"
+			}
+		}
+	}
+}

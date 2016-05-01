@@ -1,0 +1,62 @@
+{
+	"forge_marker": 1,
+	"defaults":
+	{
+		"transform": "forge:default-block",
+		"custom": { "flip-v": true },
+		"textures": {
+			"particle": "immersiveengineering:blocks/storage_steel"
+		}
+	},
+	"variants":
+	{
+		"inventory,type=arc_furnace": [{
+			"model": "immersiveengineering:metalMultiblock/arcFurnace.obj",
+			"transform": {
+				"scale": 0.21875,
+				"rotation": [{"y": 90 }],
+				"translation": [ 0.125, -0.125, 0 ]
+			}
+		}],
+		"type":
+		{
+			"arc_furnace": {
+			}
+		},
+		"facing":
+		{
+			"north": { "transform": {
+				"rotation": {"y": 0 }
+			}},
+			"south": { "transform": {
+				"rotation": {"y": 180 }
+			}},
+			"west": { "transform": {
+				"rotation": {"y": 90 }
+			}},
+			"east": { "transform": {
+				"rotation": {"y": -90 }
+			}}
+		},
+		"*multiblockslave":
+		{
+			"false":{},
+			"true":{
+				"model": "builtin/generated"
+			}
+		},
+		"+dynamicrender":
+		{
+			"false":{},
+			"true":{
+				"model": "immersiveengineering:metalMultiblock/arcFurnace_electrodes.obj"}
+		},
+		"boolean0": //Mirror
+		{
+			"false":{
+				"model": "immersiveengineering:metalMultiblock/arcFurnace.obj"},
+			"true":{
+				"model": "immersiveengineering:metalMultiblock/arcFurnace_mirrored.obj"}
+		}
+	}
+}

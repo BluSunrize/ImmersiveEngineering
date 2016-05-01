@@ -1,0 +1,7 @@
+{
+	"parent":"immersiveengineering:item/ieItemBase",
+	"textures": {
+		"layer0":"immersiveengineering:items/earmuffs",
+		"layer1":"immersiveengineering:items/earmuffs_overlay"
+	}
+}

@@ -1,0 +1,11 @@
+{
+	"dieselGenerator": { "category": "block", "sounds":["dieselGenerator"] },
+	"crusher": { "category": "block", "sounds":["crusher"] },
+	"birthdayParty": { "category": "neutral", "sounds":["birthdayParty"] },
+	"spray": { "category": "player", "sounds":["spray"] },
+	"spray_fire": { "category": "player", "sounds":["spray_fire"] },
+	"chargeFast": { "category": "neutral", "sounds":["chargeFast"] },
+	"chargeSlow": { "category": "neutral", "sounds":["chargeSlow"] },
+	"spark": { "category": "neutral", "sounds":["spark0","spark1","spark2"] },
+	"railgunFire": { "category": "neutral", "sounds":["railgunFire"] }
+}

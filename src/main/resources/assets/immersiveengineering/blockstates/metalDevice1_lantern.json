@@ -1,0 +1,53 @@
+{
+	"forge_marker": 1,
+	"defaults":
+	{
+		"transform": "forge:default-block",
+		"model": "immersiveengineering:metalDevice/eLantern.obj",
+		"custom": {"flip-v": true}
+	},
+	"variants":
+	{
+		"inventory,type=electric_lantern": [{
+		}],
+		"type":
+		{
+			"electric_lantern": {
+			}
+		},
+		"facing":
+		{
+			"down": { "transform": {
+				"rotation": {"x": -90 }
+			}},
+			"up": { "transform": {
+				"rotation": {"x": 90 }
+			}},
+			"north": { "transform": {
+				"rotation": {"y": 0 }
+			}},
+			"south": { "transform": {
+				"rotation": {"y": 180 }
+			}},
+			"west": { "transform": {
+				"rotation": {"y": 90 }
+			}},
+			"east": { "transform": {
+				"rotation": {"y": -90 }
+			}}
+		},
+		"*multiblockslave":
+		{
+			"false":{},
+			"true":{}
+		},
+		//active texture
+		"boolean0":
+		{
+			"false":{},
+			"true":{"textures": {
+				"#immersiveengineering:blocks/metalDevice1_electricLantern": "immersiveengineering:blocks/metalDevice1_electricLantern_on"
+			}}
+		}
+	}
+}

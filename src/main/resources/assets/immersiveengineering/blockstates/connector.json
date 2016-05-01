@@ -1,0 +1,79 @@
+{
+	"forge_marker": 1,
+	"defaults":
+	{
+		"transform": "forge:default-block",
+		"textures": {
+		},
+		"custom": {
+			"flip-v": true
+		}
+	},
+	"variants":
+	{
+		"inventory,type=connector_lv": [{"model": "immersiveengineering:connector/connectorLV.obj"}],
+		"inventory,type=relay_lv": [{"model": "immersiveengineering:connector/connectorLV.obj", "textures": { "#immersiveengineering:blocks/connector_connectorLV": "immersiveengineering:blocks/connector_relayLV" }}],
+		"inventory,type=connector_mv":	[{"model": "immersiveengineering:connector/connectorMV.obj"}],
+		"inventory,type=relay_mv":	[{"model": "immersiveengineering:connector/connectorMV.obj", "textures": { "#immersiveengineering:blocks/connector_connectorMV": "immersiveengineering:blocks/connector_relayMV" }}],
+		"inventory,type=connector_hv": [{"model": "immersiveengineering:connector/connectorHV.obj"}],
+		"inventory,type=relay_hv": [{"model": "immersiveengineering:connector/relayHV.obj"}],
+		"inventory,type=connector_structural": [{"model": "immersiveengineering:connector/connectorStructural.obj"}],
+		"type":
+		{
+			"connector_lv": {
+				"model": "immersiveengineering:connector/connectorLV.obj"
+			},
+			"relay_lv": {
+				"model": "immersiveengineering:connector/connectorLV.obj",
+				"textures": { "#immersiveengineering:blocks/connector_connectorLV": "immersiveengineering:blocks/connector_relayLV" }
+			},
+			"connector_mv":	{
+				"model": "immersiveengineering:connector/connectorMV.obj"
+			},
+			"relay_mv":	{
+				"model": "immersiveengineering:connector/connectorMV.obj",
+				"textures": { "#immersiveengineering:blocks/connector_connectorMV": "immersiveengineering:blocks/connector_relayMV" }
+			},
+			"connector_hv": {
+				"model": "immersiveengineering:connector/connectorHV.obj"
+			},
+			"relay_hv": {
+				"model": "immersiveengineering:connector/relayHV.obj"
+			},
+			"connector_structural": {
+				"model": "immersiveengineering:connector/connectorStructural.obj"
+			}
+		},
+		"facing":
+		{
+			"down": {},
+			"up": { "transform": {
+				"rotation": {"z": 180 }
+			}},
+			"north": { "transform": {
+				"rotation": {"x": 90 }
+			}},
+			"south": { "transform": {
+				"rotation": {"x": -90 }
+			}},
+			"west": { "transform": {
+				"rotation": {"z": -90 }
+			}},
+			"east": { "transform": {
+				"rotation": {"z": 90 }
+			}}
+		},
+		"boolean0":
+		{
+			"false":{},
+			"true":{}
+		},
+		"*multiblockslave":
+		{
+			"false":{},
+			"true":{
+				"model": "builtin/generated"
+			}
+		}
+	}
+}

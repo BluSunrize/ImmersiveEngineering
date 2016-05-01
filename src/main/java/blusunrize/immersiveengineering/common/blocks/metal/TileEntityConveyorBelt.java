@@ -1,0 +1,286 @@
+package blusunrize.immersiveengineering.common.blocks.metal;
+
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
+import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
+import blusunrize.immersiveengineering.common.util.Utils;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
+
+public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirectionalTile, IBlockBounds, IHammerInteraction
+{
+	public boolean transportUp=false;
+	public boolean transportDown=false;
+	public EnumFacing facing = EnumFacing.NORTH;
+	public boolean dropping=false;
+
+	public TileEntityConveyorBelt()
+	{
+		super();
+	}
+
+	public TileEntityConveyorBelt(boolean dropping)
+	{
+		super();
+		this.dropping = dropping;
+	}
+
+	@Override
+	public void onEntityCollision(World world, Entity entity)
+	{
+		if(entity!=null && !entity.isDead && !(entity instanceof EntityPlayer && ((EntityPlayer)entity).isSneaking()) && entity.posY-getPos().getY()>=0 && entity.posY-getPos().getY()<.5)
+		{
+			if(world.isBlockIndirectlyGettingPowered(pos)>0)
+				return;
+			double vBase = 1.15;
+			double vX = 0.1 * vBase*facing.getFrontOffsetX();
+			double vY = entity.motionY;
+			double vZ = 0.1 * vBase*facing.getFrontOffsetZ();
+
+			if(transportUp)
+				vY = 0.17D * vBase;
+			else if(transportDown)
+				vY = -0.07000000000000001D * vBase;
+
+			if(transportUp||transportDown)
+				entity.onGround = false;
+
+			if(facing==EnumFacing.WEST || facing==EnumFacing.EAST)
+			{
+				if(entity.posZ > getPos().getZ()+0.65D)
+					vZ = -0.1D * vBase;
+				else if(entity.posZ < getPos().getZ()+0.35D)
+					vZ = 0.1D * vBase;
+			}
+			else if(facing==EnumFacing.NORTH || facing==EnumFacing.SOUTH)
+			{
+				if(entity.posX > getPos().getX()+0.65D)
+					vX = -0.1D * vBase;
+				else if(entity.posX < getPos().getX()+0.35D)
+					vX = 0.1D * vBase;
+			}
+
+			entity.motionX = vX;
+			entity.motionY = vY;
+			entity.motionZ = vZ;
+			if(entity instanceof EntityItem)
+			{
+				((EntityItem)entity).setNoDespawn();
+				boolean contact;
+				TileEntity inventoryTile;
+				EnumFacing inventoryDir = facing;
+				if(dropping)
+				{
+					inventoryTile = world.getTileEntity(getPos().add(0,-1,0));
+					contact = Math.abs(facing.getAxis()==Axis.Z?(getPos().getZ()+.5-entity.posZ):(getPos().getX()+.5-entity.posX))<.2;
+					inventoryDir = EnumFacing.DOWN;
+				}
+				else
+				{
+					inventoryTile = world.getTileEntity(getPos().offset(inventoryDir).add(0,(transportUp?1: transportDown?-1: 0),0));
+					double distX = Math.abs(getPos().offset(inventoryDir).getX()+.5-entity.posX);
+					double distZ = Math.abs(getPos().offset(inventoryDir).getZ()+.5-entity.posZ);
+					contact = facing.getAxis()==Axis.Z?distZ<.7: distX<.7;
+				}
+				if(!world.isRemote)
+				{
+					if(contact && inventoryTile!=null && !(inventoryTile instanceof TileEntityConveyorBelt))
+					{
+						ItemStack stack = ((EntityItem)entity).getEntityItem();
+						if(stack!=null)
+						{
+							ItemStack ret = Utils.insertStackIntoInventory(inventoryTile, stack, facing.getOpposite());
+							if(ret==null)
+								entity.setDead();
+							else if(ret.stackSize<stack.stackSize)
+								((EntityItem)entity).setEntityItemStack(ret);
+						}
+					}
+					else if(dropping && contact && world.isAirBlock(getPos().add(0,-1,0)))
+					{
+						entity.motionX = 0;
+						entity.motionZ = 0;
+						entity.setPosition(getPos().getX()+.5, getPos().getY()-.5, getPos().getZ()+.5);
+					}
+				}
+			}
+		}
+	}
+
+	//i==0: Left, i==1: Right
+	public boolean renderWall(int i)
+	{
+		if(transportDown||transportUp)
+			return false;
+		EnumFacing side = i==0?facing.rotateYCCW():facing.rotateY();
+		BlockPos pos = getPos().offset(side);
+		TileEntity te = worldObj.getTileEntity(pos);
+		if(te instanceof TileEntityConveyorBelt && ((TileEntityConveyorBelt)te).facing==side.getOpposite())
+			return false;
+		else 
+		{
+			te = worldObj.getTileEntity(pos.add(0,-1,0));
+			if(te instanceof TileEntityConveyorBelt && ((TileEntityConveyorBelt)te).facing==side.getOpposite() && ((TileEntityConveyorBelt)te).transportUp)
+				return false;
+
+			te = worldObj.getTileEntity(pos.add(0,1,0));
+			if(te instanceof TileEntityConveyorBelt && ((TileEntityConveyorBelt)te).facing==side.getOpposite() && ((TileEntityConveyorBelt)te).transportDown)
+				return false;
+		}
+		return true;
+	}
+
+	@Override
+	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	{
+		transportUp = nbt.getBoolean("transportUp");
+		transportDown = nbt.getBoolean("transportDown");
+		facing = EnumFacing.getFront(nbt.getInteger("facing"));
+		dropping = nbt.getBoolean("dropping");
+		if(descPacket && worldObj!=null)
+			worldObj.markBlockForUpdate(getPos());
+	}
+
+	@Override
+	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	{
+		nbt.setBoolean("transportUp", transportUp);
+		nbt.setBoolean("transportDown", transportDown);
+		nbt.setInteger("facing", facing.ordinal());
+		nbt.setBoolean("dropping", dropping);
+	}
+
+	@Override
+	public EnumFacing getFacing()
+	{
+		return this.facing;
+	}
+	@Override
+	public void setFacing(EnumFacing facing)
+	{
+		this.facing = facing;
+	}
+	@Override
+	public int getFacingLimitation()
+	{
+		return 2;
+	}
+	@Override
+	public boolean mirrorFacingOnPlacement(EntityLivingBase placer)
+	{
+		return placer.isSneaking();
+	}
+	@Override
+	public boolean canHammerRotate(EnumFacing side, float hitX, float hitY, float hitZ, EntityLivingBase entity)
+	{
+		return !entity.isSneaking();
+	}
+
+	@Override
+	public boolean hammerUseSide(EnumFacing side, EntityPlayer player, float hitX, float hitY, float hitZ)
+	{
+		if(player.isSneaking())
+		{
+			if(transportUp)
+			{
+				transportUp = false;
+				transportDown = true;
+			}
+			else if(transportDown)
+				transportDown = false;
+			else
+				transportUp = true;
+			this.markDirty();
+			worldObj.markBlockForUpdate(getPos());
+			worldObj.addBlockEvent(getPos(), this.getBlockType(), 0, 0);
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public float[] getBlockBounds()
+	{
+		return new float[]{0,0,0,1,transportUp||transportDown?1.125f:.125f,1};
+	}
+	@Override
+	public float[] getSpecialCollisionBounds()
+	{
+		return new float[]{0,0,0,1,0,1};
+	}
+
+	@Override
+	public float[] getSpecialSelectionBounds()
+	{
+		return null;
+	}
+
+
+	@Override
+	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
+	{
+		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+			return true;
+		return super.hasCapability(capability, facing);
+	}
+	IItemHandler insertionHandler = new ConveyorInventoryHandler(this);
+	@Override
+	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
+	{
+		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+			return (T)insertionHandler;
+		return super.getCapability(capability, facing);
+	}
+
+	public static class ConveyorInventoryHandler implements IItemHandlerModifiable
+	{
+		TileEntityConveyorBelt conveyor;
+		public ConveyorInventoryHandler(TileEntityConveyorBelt conveyor)
+		{
+			this.conveyor = conveyor;
+		}
+
+		@Override
+		public int getSlots()
+		{
+			return 1;
+		}
+		@Override
+		public ItemStack getStackInSlot(int slot)
+		{
+			return null;
+		}
+
+		@Override
+		public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
+		{
+			if(!simulate)
+				conveyor.getWorld().spawnEntityInWorld(new EntityItem(conveyor.getWorld(),conveyor.getPos().getX()+.5,conveyor.getPos().getY()+.25,conveyor.getPos().getZ()+.5, stack.copy()));
+			return null;
+		}
+
+		@Override
+		public ItemStack extractItem(int slot, int amount, boolean simulate)
+		{
+			return null;
+		}
+		@Override
+		public void setStackInSlot(int slot, ItemStack stack)
+		{
+		}
+	}
+}

@@ -1,0 +1,178 @@
+package blusunrize.immersiveengineering.common.blocks.wooden;
+
+import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.tool.IConfigurableTool;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGuiTile;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
+import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
+import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumFacing.Axis;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+
+public class TileEntityModWorkbench extends TileEntityIEBase implements IIEInventory, IDirectionalTile, IHasDummyBlocks, IGuiTile
+{
+	ItemStack[] inventory = new ItemStack[1];
+	EnumFacing facing = EnumFacing.NORTH;
+	public boolean dummy = false;
+	public int dummyOffset=0;
+
+	@Override
+	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	{
+		facing = EnumFacing.getFront(nbt.getInteger("facing"));
+		dummy = nbt.getBoolean("dummy");
+		dummyOffset = nbt.getInteger("dummyOffset");
+		//		if(!descPacket)
+		//		{
+		//read inv
+		inventory = Utils.readInventory(nbt.getTagList("inventory", 10), 1);
+		//		}
+	}
+	@Override
+	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	{
+		nbt.setInteger("facing", facing.ordinal());
+		nbt.setBoolean("dummy", dummy);
+		nbt.setInteger("dummyOffset", dummyOffset);
+		//		if(!descPacket)
+		//		{
+		nbt.setTag("inventory", Utils.writeInventory(inventory));
+		//		}
+	}
+
+	@SideOnly(Side.CLIENT)
+	private AxisAlignedBB renderAABB;
+	@SideOnly(Side.CLIENT)
+	@Override
+	public AxisAlignedBB getRenderBoundingBox()
+	{
+		if(renderAABB==null)
+			renderAABB = new AxisAlignedBB(getPos().getX()-1,getPos().getY(),getPos().getZ()-1, getPos().getX()+2,getPos().getY()+2,getPos().getZ()+2);
+		return renderAABB;
+	}
+
+	@Override
+	public ItemStack[] getInventory()
+	{
+		return this.inventory;
+	}
+	@Override
+	public boolean isStackValid(int slot, ItemStack stack)
+	{
+		return true;
+	}
+	@Override
+	public int getSlotLimit(int slot)
+	{
+		return 1;
+	}
+	@Override
+	public void doGraphicalUpdates(int slot)
+	{
+	}
+
+	@Override
+	public EnumFacing getFacing()
+	{
+		return facing;
+	}
+	@Override
+	public void setFacing(EnumFacing facing)
+	{
+		this.facing = facing;
+	}
+	@Override
+	public int getFacingLimitation()
+	{
+		return 2;
+	}
+	@Override
+	public boolean mirrorFacingOnPlacement(EntityLivingBase placer)
+	{
+		return false;
+	}
+	@Override
+	public boolean canHammerRotate(EnumFacing side, float hitX, float hitY, float hitZ, EntityLivingBase entity)
+	{
+		return false;
+	}
+
+	@Override
+	public void receiveMessageFromClient(NBTTagCompound message)
+	{
+		if(inventory[0]!=null && inventory[0].getItem() instanceof IConfigurableTool)
+			for(String key : message.getKeySet())
+			{
+				if(key.startsWith("b_"))
+					((IConfigurableTool)inventory[0].getItem()).applyConfigOption(inventory[0], key.substring(2), message.getBoolean(key));
+				else if(key.startsWith("f_"))
+					((IConfigurableTool)inventory[0].getItem()).applyConfigOption(inventory[0], key.substring(2), message.getFloat(key));
+			}
+	}
+
+	@Override
+	public boolean isDummy()
+	{
+		return this.dummy;
+	}
+	@Override
+	public void placeDummies(BlockPos pos, IBlockState state, EnumFacing side, float hitX, float hitY, float hitZ)
+	{
+		EnumFacing dummyDir = facing.getAxis()==Axis.X?(hitZ<.5?EnumFacing.NORTH:EnumFacing.SOUTH):(hitX<.5?EnumFacing.WEST:EnumFacing.EAST);
+		boolean mirror = false;
+		BlockPos dummyPos = pos.offset(dummyDir);
+		if(!worldObj.getBlockState(dummyPos).getBlock().isReplaceable(worldObj, dummyPos))
+		{
+			dummyDir = dummyDir.getOpposite();
+			dummyPos = pos.offset(dummyDir);
+		}
+		mirror = dummyDir!=facing.rotateY();
+		dummyOffset=mirror?-1:1;
+		if(mirror)
+			this.dummy = true;
+		worldObj.setBlockState(dummyPos, state);
+		TileEntityModWorkbench tileEntityDummy = ((TileEntityModWorkbench)worldObj.getTileEntity(dummyPos));
+		tileEntityDummy.facing = this.facing;
+		tileEntityDummy.dummy = !mirror;
+		tileEntityDummy.dummyOffset=mirror?-1:1;
+	}
+	@Override
+	public void breakDummies(BlockPos pos, IBlockState state)
+	{
+		EnumFacing dummyDir = dummy?facing.rotateYCCW():facing.rotateY();
+		worldObj.setBlockToAir(pos.offset(dummyDir));
+	}
+
+	@Override
+	public boolean canOpenGui()
+	{
+		return true;
+	}
+	@Override
+	public int getGuiID()
+	{
+		return Lib.GUIID_Workbench;
+	}
+	@Override
+	public TileEntity getGuiMaster()
+	{
+		if(!dummy)
+			return this;
+		EnumFacing dummyDir = dummy?facing.rotateYCCW():facing.rotateY();
+		TileEntity tileEntityModWorkbench = worldObj.getTileEntity(pos.offset(dummyDir));
+		if(tileEntityModWorkbench instanceof TileEntityModWorkbench)
+			return (TileEntityModWorkbench)tileEntityModWorkbench;
+		return null;
+	}
+}

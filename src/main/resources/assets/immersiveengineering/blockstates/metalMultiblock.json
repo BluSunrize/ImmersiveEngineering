@@ -1,0 +1,80 @@
+{
+	"forge_marker": 1,
+	"defaults":
+	{
+		"transform": "forge:default-block",
+		"custom": { "flip-v": true },
+		"textures": {
+			"particle": "immersiveengineering:blocks/storage_steel"
+		}
+	},
+	"variants":
+	{
+		"inventory,type=tank": [{
+			"model": "immersiveengineering:metalMultiblock/tank.obj",
+			"transform": {
+				"scale": 0.25,
+				"rotation": {"y": -90 },
+				"translation": [ 0, -0.5, 0 ]
+			}
+		}],
+		"inventory,type=silo": [{
+			"model": "immersiveengineering:metalMultiblock/silo.obj",
+			"transform": {
+				"scale": 0.1875,
+				"rotation": {"y": -90 },
+				"translation": [ 0, -0.5, 0 ]
+			}
+		}],
+		"type":
+		{
+			"tank": {
+				"model": "immersiveengineering:metalMultiblock/tank.obj"
+			},
+			"silo": {
+				"model": "immersiveengineering:metalMultiblock/silo.obj"
+			},
+			"assembler": {
+			},
+			"fermenter": {
+			},
+			"refinery": {
+			},
+			"arc_furnace": {
+			}
+		},
+		"facing":
+		{
+			"north": { "transform": {
+				"rotation": {"y": 0 }
+			}},
+			"south": { "transform": {
+				"rotation": {"y": 180 }
+			}},
+			"west": { "transform": {
+				"rotation": {"y": 90 }
+			}},
+			"east": { "transform": {
+				"rotation": {"y": -90 }
+			}}
+		},
+		"*multiblockslave":
+		{
+			"false":{},
+			"true":{
+				"model": "builtin/generated"
+			}
+		},
+		"+dynamicrender":
+		{
+			"false":{},
+			"true":{}
+		},
+		"boolean0": //Mirror
+		{
+			"false":{},
+			"true":{
+			}
+		}
+	}
+}

@@ -1,0 +1,31 @@
+{
+	"forge_marker": 1,
+	"defaults":
+	{
+		"transform": "forge:default-block",
+		"textures": {"all": "immersiveengineering:blocks/clothDevice_cushion" },
+		"model": "cube_all",
+		"custom": {
+			"flip-v": true
+		}
+	},
+	"variants":
+	{
+		"inventory,type=cushion": [{"textures": {"all": "immersiveengineering:blocks/clothDevice_cushion"}}],
+		"inventory,type=balloon":	[{"model": "immersiveengineering:balloon.obj"}],
+		"type":
+		{
+			"cushion": {"textures": {"all": "immersiveengineering:blocks/clothDevice_cushion"}},
+			"balloon":	{"model": "immersiveengineering:balloon.obj"}
+		},
+		"facing":
+		{
+			"down": {},
+			"up": {},
+			"north": {},
+			"south": {},
+			"west": {},
+			"east": {}
+		}
+	}
+}

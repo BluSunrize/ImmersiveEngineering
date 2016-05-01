@@ -1,0 +1,123 @@
+{
+	"forge_marker": 1,
+	"defaults":
+	{
+		"transform": "forge:default-block",
+		"custom": { "flip-v": true },
+		"textures": {
+			"particle": "immmersiveengineering:blocks/storage_steel"
+		}
+	},
+	"variants":
+	{
+		"inventory,type=steel_post": [{
+			"model": "immersiveengineering:woodenDevice/woodenPost_inv.obj",
+			"textures": {"#immersiveengineering:blocks/woodenDevice_post": "immersiveengineering:blocks/metalDecoration2_steelPost"},
+			"custom": {"flip-v": true},
+			"transform": {
+				"scale": [ 0.75, 0.75, 0.75 ],
+				"firstperson": { "translation": [ 0, 0, 0 ], "scale": [ 0.5, 0.5, 0.5 ] },
+				"thirdperson": { "translation": [ 0, 0.09375, -0.171875 ], "rotation": [{ "x": 10 }, { "y": -45 }, { "z": 170 }], "scale": [ 0.1875, 0.1875, 0.1875 ] },
+				"fixed": { "scale": [ 0.5, 0.5, 0.5 ] },
+				"gui": { "translation": [ .125, -0.1875, -.125 ], "scale": [ 0.625, 0.5, 0.625 ] }
+			}
+		}],
+		"inventory,type=steel_wallmount": [{
+			"model": "immersiveengineering:woodenDevice/wallmount.obj",
+			"textures": {"#immersiveengineering:blocks/woodenDevice_wallmount": "immersiveengineering:blocks/metalDecoration2_steelWallmount"},
+			"custom": {"flip-v": true},
+			"transform": {
+				"firstperson": {},
+				"thirdperson": { "translation": [ 0, 0.09375, -0.171875 ], "rotation": [{ "x": 10 }, { "y": -45 }, { "z": 170 }], "scale": [ 0.5, 0.5, 0.5 ] },
+				"fixed": { "scale": [ 0.5, 0.5, 0.5 ] },
+				"gui": { "translation": [ .125, -0.0625, -.125 ], "rotation": [{ "y": 180 }] }
+			}
+		}],
+		"inventory,type=aluminum_post": [{
+			"model": "immersiveengineering:woodenDevice/woodenPost_inv.obj",
+			"textures": {"#immersiveengineering:blocks/woodenDevice_post": "immersiveengineering:blocks/metalDecoration2_aluminumPost"},
+			"custom": {"flip-v": true},
+			"transform": {
+				"scale": [ 0.75, 0.75, 0.75 ],
+				"firstperson": { "translation": [ 0, 0, 0 ], "scale": [ 0.5, 0.5, 0.5 ] },
+				"thirdperson": { "translation": [ 0, 0.09375, -0.171875 ], "rotation": [{ "x": 10 }, { "y": -45 }, { "z": 170 }], "scale": [ 0.1875, 0.1875, 0.1875 ] },
+				"fixed": { "scale": [ 0.5, 0.5, 0.5 ] },
+				"gui": { "translation": [ .125, -0.1875, -.125 ], "scale": [ 0.625, 0.5, 0.625 ] }
+			}
+		}],
+		"inventory,type=aluminum_wallmount": [{
+			"model": "immersiveengineering:woodenDevice/wallmount.obj",
+			"textures": {"#immersiveengineering:blocks/woodenDevice_wallmount": "immersiveengineering:blocks/metalDecoration2_aluminumWallmount"},
+			"custom": {"flip-v": true},
+			"transform": {
+				"firstperson": {},
+				"thirdperson": { "translation": [ 0, 0.09375, -0.171875 ], "rotation": [{ "x": 10 }, { "y": -45 }, { "z": 170 }], "scale": [ 0.5, 0.5, 0.5 ] },
+				"fixed": { "scale": [ 0.5, 0.5, 0.5 ] },
+				"gui": { "translation": [ .125, -0.0625, -.125 ], "rotation": [{ "y": 180 }] }
+			}
+		}],
+		"inventory,type=lantern": [{
+			"model": "immersiveengineering:lantern_inventory.obj",
+			"custom": {"flip-v": true},
+			"transform": {
+				"firstperson": {},
+				"thirdperson": { "translation": [ 0, 0.09375, -0.171875 ], "rotation": [{ "x": 10 }, { "y": -45 }, { "z": 170 }], "scale": [ 0.5, 0.5, 0.5 ] },
+				"fixed": { },
+				"gui": { "translation": [ 0,0,0 ] }
+			}
+		}],
+		"type":
+		{
+			"steel_post": {
+				"model": "immersiveengineering:woodenDevice/woodenPost.obj",
+				"textures": {"#immersiveengineering:blocks/woodenDevice_post": "immersiveengineering:blocks/metalDecoration2_steelPost"}
+			},
+			"steel_wallmount": {
+				"model": "immersiveengineering:woodenDevice/wallmount.obj",
+				"textures": {"#immersiveengineering:blocks/woodenDevice_wallmount": "immersiveengineering:blocks/metalDecoration2_steelWallmount"}
+			},
+			"aluminum_post": {
+				"model": "immersiveengineering:woodenDevice/woodenPost.obj",
+				"textures": {"#immersiveengineering:blocks/woodenDevice_post": "immersiveengineering:blocks/metalDecoration2_aluminumPost"}
+			},
+			"aluminum_wallmount": {
+				"model": "immersiveengineering:woodenDevice/wallmount.obj",
+				"textures": {"#immersiveengineering:blocks/woodenDevice_wallmount": "immersiveengineering:blocks/metalDecoration2_aluminumWallmount"}
+			},
+			"lantern": {
+				"model": "immersiveengineering:lantern.obj.ie"
+			}
+		},
+		"facing":
+		{
+			"down": {},
+			"up": {},
+			"north": { "transform": {
+				"rotation": {"y": 180 }
+			}},
+			"south": { "transform": {
+				"rotation": {"y": 0 }
+			}},
+			"west": { "transform": {
+				"rotation": {"y": -90 }
+			}},
+			"east": { "transform": {
+				"rotation": {"y": 90 }
+			}}
+		},
+		"*multiblockslave":
+		{
+			"false":{},
+			"true":{
+				"model": "builtin/generated"
+			}
+		},
+		"int_4":
+		{
+			0:{},
+			1:{"model": "immersiveengineering:woodenDevice/wallmount_inverted.obj"},
+			2:{"model": "immersiveengineering:woodenDevice/wallmount_sideways.obj"},
+			3:{"model": "immersiveengineering:woodenDevice/wallmount_sideways_inverted.obj"}
+		}
+	}
+}

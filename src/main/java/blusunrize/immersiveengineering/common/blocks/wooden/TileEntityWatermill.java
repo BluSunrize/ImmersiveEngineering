@@ -1,0 +1,313 @@
+package blusunrize.immersiveengineering.common.blocks.wooden;
+
+import java.util.ArrayList;
+
+import blusunrize.immersiveengineering.common.Config;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasObjProperty;
+import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityDynamo;
+import blusunrize.immersiveengineering.common.util.Utils;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.ITickable;
+import net.minecraft.util.Vec3;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+
+public class TileEntityWatermill extends TileEntityIEBase implements ITickable, IDirectionalTile, IHasDummyBlocks, IHasObjProperty
+{
+	public EnumFacing facing = EnumFacing.NORTH;
+	public int[] offset={0,0};
+	public float rotation=0;
+	private Vec3 rotationVec = null;
+	public boolean canTurn = false;
+	public boolean multiblock = false;
+	public float prevRotation = 0;
+
+	@Override
+	public void update()
+	{
+		if(offset[0]!=0||offset[1]!=0||worldObj==null)
+			return;
+		if( 
+				//				!(worldObj.getBlock(xCoord-(facing<=3?2:0), yCoord+2, zCoord-(facing<=3?0:2)).isReplaceable(worldObj, xCoord-(facing<=3?2:0), yCoord+2, zCoord-(facing<=3?0:2)))
+				//				|| !(worldObj.getBlock(xCoord+(facing<=3?2:0), yCoord+2, zCoord+(facing<=3?0:2)).isReplaceable(worldObj, xCoord+(facing<=3?2:0), yCoord+2, zCoord+(facing<=3?0:2)))
+				//				|| !(worldObj.getBlock(xCoord-(facing<=3?2:0), yCoord-2, zCoord-(facing<=3?0:2)).isReplaceable(worldObj, xCoord-(facing<=3?2:0), yCoord-2, zCoord-(facing<=3?0:2)))
+				//				|| !(worldObj.getBlock(xCoord+(facing<=3?2:0), yCoord-2, zCoord+(facing<=3?0:2)).isReplaceable(worldObj, xCoord+(facing<=3?2:0), yCoord-2, zCoord+(facing<=3?0:2))))
+				isBlocked())
+		{
+			canTurn=false;
+			return;
+		}
+		else
+			canTurn=getRotationVec().lengthVector()!=0;
+
+		if(!multiblock /*&& worldObj.isRemote*/ )//&& worldObj.getTotalWorldTime()%256==((getPos().getX()^getPos().getZ())&255))
+		{
+			rotationVec=null;
+		}
+		prevRotation = rotation;
+
+		if(worldObj.getTileEntity(getPos().offset(facing.getOpposite())) instanceof TileEntityDynamo)
+		{
+			double power = getPower();
+			int l=1;
+			TileEntity tileEntity = worldObj.getTileEntity(getPos().offset(facing, l));
+			while (l<3
+					&& tileEntity instanceof TileEntityWatermill
+					&& ((TileEntityWatermill)tileEntity).offset[0]==0
+					&& ((TileEntityWatermill)tileEntity).offset[1]==0
+					&& ( ((TileEntityWatermill)tileEntity).facing==facing || ((TileEntityWatermill)tileEntity).facing==facing.getOpposite() )
+					&& !((TileEntityWatermill)tileEntity).isBlocked())
+			{
+				power += ((TileEntityWatermill)tileEntity).getPower();
+				l++;
+				tileEntity = worldObj.getTileEntity(getPos().offset(facing, l));
+			}
+
+			double perTick = 360f/1440 * (1/360f) * power/l;
+			canTurn = perTick!=0;
+			rotation += perTick;
+			rotation %= 1;
+			for(int l2=1; l2<l; l2++)
+			{
+				tileEntity = worldObj.getTileEntity(getPos().offset(facing, l2));
+				if(tileEntity instanceof TileEntityWatermill)
+				{
+					((TileEntityWatermill)tileEntity).rotation = rotation;
+					((TileEntityWatermill)tileEntity).canTurn = canTurn;
+					((TileEntityWatermill)tileEntity).multiblock = true;
+				}
+			}
+
+			if(!worldObj.isRemote)
+			{
+				TileEntityDynamo dynamo = (TileEntityDynamo)worldObj.getTileEntity(getPos().offset(facing.getOpposite()));
+				//				if((facing.getAxis()==Axis.Z)&&dynamo.facing!=2&&dynamo.facing!=3)
+				//					return;
+				//				else if((facing.getAxis()==Axis.X)&&dynamo.facing!=4&&dynamo.facing!=5)
+				//					return;
+				dynamo.inputRotation(Math.abs(power*.75), facing.getOpposite());
+			}
+		}
+		else if(!multiblock)
+		{
+			double perTick = 360f/1440 * (1/360f) * getPower();
+			canTurn = perTick!=0;
+			rotation += perTick;
+			rotation %= 1;
+		}
+		if(multiblock)
+			multiblock=false;
+	}
+
+	public boolean isBlocked()
+	{
+		if(worldObj==null)
+			return true;
+		for(EnumFacing fdY : new EnumFacing[]{EnumFacing.UP,EnumFacing.DOWN})
+			for(EnumFacing fdW : facing.getAxis()==Axis.Z?new EnumFacing[]{EnumFacing.EAST,EnumFacing.WEST}: new EnumFacing[]{EnumFacing.SOUTH,EnumFacing.NORTH})
+			{
+				BlockPos pos = getPos().offset(fdW,2).offset(fdY,2);
+				IBlockState state = worldObj.getBlockState(pos);
+				if(state==null)
+					return false;
+				if(state.getBlock().isSideSolid(worldObj, pos, fdW.getOpposite()))
+					return true;
+				if(state.getBlock().isSideSolid(worldObj, pos, fdY.getOpposite()))
+					return true;
+			}
+		return false;
+	}
+
+	public double getPower()
+	{
+		return facing.getAxis()==Axis.Z?-getRotationVec().xCoord:getRotationVec().zCoord;
+	}
+	public void resetRotationVec()
+	{
+		rotationVec=null;
+	}
+	public Vec3 getRotationVec()
+	{
+		if(rotationVec==null)
+		{
+			rotationVec = new Vec3(0, 0, 0);
+			Vec3 dirHoz = getHorizontalVec();
+			Vec3 dirVer = getVerticalVec();
+			rotationVec = Utils.addVectors(rotationVec, dirHoz);
+			rotationVec = Utils.addVectors(rotationVec, dirVer);
+			//			worldObj.addBlockEvent(xCoord, yCoord, zCoord, getBlockType(), (int)((float)rotationVec.xCoord*10000f), (int)((float)rotationVec.zCoord*10000f));
+		}
+		return rotationVec;
+	}
+
+	Vec3 getHorizontalVec()
+	{
+		Vec3 dir = new Vec3(0, 0, 0);
+		boolean faceZ = facing.ordinal()<=3;
+		dir = Utils.addVectors(dir, Utils.getFlowVector(worldObj, getPos().add(-(faceZ?1:0), +3, -(faceZ?0:1))));
+		dir = Utils.addVectors(dir, Utils.getFlowVector(worldObj, getPos().add(0, +3, 0)));
+		dir = Utils.addVectors(dir, Utils.getFlowVector(worldObj, getPos().add(+(faceZ?1:0), +3, +(faceZ?0:1))));
+
+		dir = Utils.addVectors(dir, Utils.getFlowVector(worldObj, getPos().add(-(faceZ?2:0), +2, -(faceZ?0:2))));
+		dir = Utils.addVectors(dir, Utils.getFlowVector(worldObj, getPos().add(+(faceZ?2:0), +2, +(faceZ?0:2))));
+
+		dir = Utils.getFlowVector(worldObj, getPos().add(-(faceZ?2:0), -2, -(faceZ?0:2))).subtract(dir);
+		dir = Utils.getFlowVector(worldObj, getPos().add(+(faceZ?2:0), -2, +(faceZ?0:2))).subtract(dir);
+		dir = Utils.getFlowVector(worldObj, getPos().add(-(faceZ?1:0), -3, -(faceZ?0:1))).subtract(dir);
+		dir = Utils.getFlowVector(worldObj, getPos().add(0, -3, 0)).subtract(dir);
+		dir = Utils.getFlowVector(worldObj, getPos().add(+(faceZ?1:0), -3, +(faceZ?0:1))).subtract(dir);
+
+		return dir;
+	}
+	Vec3 getVerticalVec()
+	{
+		Vec3 dir = new Vec3(0, 0, 0);
+
+		Vec3 dirNeg = new Vec3(0, 0, 0);
+		dirNeg = Utils.addVectors(dirNeg, Utils.getFlowVector(worldObj, getPos().add(-(facing.getAxis()==Axis.Z?2:0), 2,-(facing.getAxis()==Axis.Z?0:2))));
+		dirNeg = Utils.addVectors(dirNeg, Utils.getFlowVector(worldObj, getPos().add(-(facing.getAxis()==Axis.Z?3:0), 1,-(facing.getAxis()==Axis.Z?0:3))));
+		dirNeg = Utils.addVectors(dirNeg, Utils.getFlowVector(worldObj, getPos().add(-(facing.getAxis()==Axis.Z?3:0), 0,-(facing.getAxis()==Axis.Z?0:3))));
+		dirNeg = Utils.addVectors(dirNeg, Utils.getFlowVector(worldObj, getPos().add(-(facing.getAxis()==Axis.Z?3:0),-1,-(facing.getAxis()==Axis.Z?0:3))));
+		dirNeg = Utils.addVectors(dirNeg, Utils.getFlowVector(worldObj, getPos().add(-(facing.getAxis()==Axis.Z?2:0),-2,-(facing.getAxis()==Axis.Z?0:2))));
+		Vec3 dirPos = new Vec3(0, 0, 0);
+		dirPos = Utils.addVectors(dirPos, Utils.getFlowVector(worldObj, getPos().add((facing.getAxis()==Axis.Z?2:0), 2,(facing.getAxis()==Axis.Z?0:2))));
+		dirPos = Utils.addVectors(dirPos, Utils.getFlowVector(worldObj, getPos().add((facing.getAxis()==Axis.Z?3:0), 1,(facing.getAxis()==Axis.Z?0:3))));
+		dirPos = Utils.addVectors(dirPos, Utils.getFlowVector(worldObj, getPos().add((facing.getAxis()==Axis.Z?3:0), 0,(facing.getAxis()==Axis.Z?0:3))));
+		dirPos = Utils.addVectors(dirPos, Utils.getFlowVector(worldObj, getPos().add((facing.getAxis()==Axis.Z?3:0),-1,(facing.getAxis()==Axis.Z?0:3))));
+		dirPos = Utils.addVectors(dirPos, Utils.getFlowVector(worldObj, getPos().add((facing.getAxis()==Axis.Z?2:0),-2,(facing.getAxis()==Axis.Z?0:2))));
+		if(facing.getAxis()==Axis.Z)
+			dir = dir.addVector(-dirNeg.yCoord+dirPos.yCoord,0,0);
+		else
+			dir = dir.addVector(0,0,-dirNeg.yCoord+dirPos.yCoord);
+		return dir;
+	}
+
+	public static boolean _Immovable()
+	{
+		return true;
+	}
+
+	@Override
+	public boolean receiveClientEvent(int id, int arg)
+	{
+		rotationVec = new Vec3(id/10000f, 0, arg/10000f);
+		return true;
+	}
+	@Override
+	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	{
+		facing = EnumFacing.getFront(nbt.getInteger("facing"));
+		prevRotation = nbt.getFloat("prevRotation");
+		offset = nbt.getIntArray("offset");
+		rotation = nbt.getFloat("rotation");
+
+		if(offset==null||offset.length<2)
+			offset=new int[]{0,0};
+	}
+	@Override
+	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
+	{
+		nbt.setInteger("facing", facing.ordinal());
+		nbt.setFloat("prevRotation", prevRotation);
+		nbt.setIntArray("offset", offset);
+		nbt.setFloat("rotation", rotation);
+	}
+
+	@SideOnly(Side.CLIENT)
+	private AxisAlignedBB renderAABB;
+	@SideOnly(Side.CLIENT)
+	@Override
+	public AxisAlignedBB getRenderBoundingBox()
+	{
+		if(renderAABB==null)
+			if(offset[0]==0&&offset[1]==0)
+				renderAABB = AxisAlignedBB.fromBounds(getPos().getX()-(facing.getAxis()==Axis.Z?2:0),getPos().getY()-2,getPos().getZ()-(facing.getAxis()==Axis.Z?0:2), getPos().getX()+(facing.getAxis()==Axis.Z?3:0),getPos().getY()+3,getPos().getZ()+(facing.getAxis()==Axis.Z?0:3));
+			else
+				renderAABB = AxisAlignedBB.fromBounds(getPos().getX(),getPos().getY(),getPos().getZ(), getPos().getX()+1,getPos().getY()+1,getPos().getZ()+1);
+		return renderAABB;
+	}
+	@Override
+	public double getMaxRenderDistanceSquared()
+	{
+		return super.getMaxRenderDistanceSquared()*Config.getDouble("increasedTileRenderdistance");
+		//		if(Config.getBoolean("increasedTileRenderdistance"))
+		//			return super.getMaxRenderDistanceSquared()*1.5;
+		//		return super.getMaxRenderDistanceSquared();
+	}
+
+	@Override
+	public EnumFacing getFacing()
+	{
+		return facing;
+	}
+	@Override
+	public void setFacing(EnumFacing facing)
+	{
+		this.facing = facing;	
+	}
+	@Override
+	public int getFacingLimitation()
+	{
+		return 2;
+	}
+	@Override
+	public boolean mirrorFacingOnPlacement(EntityLivingBase placer)
+	{
+		return true;
+	}
+	@Override
+	public boolean canHammerRotate(EnumFacing side, float hitX, float hitY, float hitZ, EntityLivingBase entity)
+	{
+		return false;
+	}
+
+	@Override
+	public boolean isDummy()
+	{
+		return offset[0]!=0||offset[1]!=0;
+	}
+	@Override
+	public void placeDummies(BlockPos pos, IBlockState state, EnumFacing side, float hitX, float hitY, float hitZ)
+	{
+		for(int hh=-2; hh<=2; hh++)
+			for(int ww=-2; ww<=2; ww++)
+				if((hh>-2&&hh<2)||(ww>-2&&ww<2))
+				{
+					BlockPos pos2 = pos.add(facing.getAxis()==Axis.Z?ww:0, hh, facing.getAxis()==Axis.Z?0:ww);
+					worldObj.setBlockState(pos2, state);
+					TileEntityWatermill dummy = (TileEntityWatermill)worldObj.getTileEntity(pos2);
+					dummy.facing = facing;
+					dummy.offset = new int[]{ww,hh};
+				}
+	}
+	@Override
+	public void breakDummies(BlockPos pos, IBlockState state)
+	{
+		BlockPos initPos = pos.add(facing.getAxis()==Axis.Z?-offset[0]:0, -offset[1], facing.getAxis()==Axis.Z?0:facing.getAxis()==Axis.Z?-offset[0]:0);
+		for(int hh=-2; hh<=2; hh++)
+			for(int ww=-2; ww<=2; ww++)
+				if((hh>-2&&hh<2)||(ww>-2&&ww<2))
+				{
+					BlockPos pos2 = pos.add(facing.getAxis()==Axis.Z?ww:0, hh, facing.getAxis()==Axis.Z?0:ww);
+					if(worldObj.getTileEntity(pos2) instanceof TileEntityWatermill)
+						worldObj.setBlockToAir(pos2);
+				}
+	}
+
+	static ArrayList<String> emptyDisplayList = new ArrayList();
+	@Override
+	public ArrayList<String> compileDisplayList()
+	{
+		return emptyDisplayList;
+	}
+}

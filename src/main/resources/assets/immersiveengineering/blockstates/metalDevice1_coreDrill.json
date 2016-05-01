@@ -1,0 +1,48 @@
+{
+	"forge_marker": 1,
+	"defaults":
+	{
+		"transform": "forge:default-block",
+		"model": "immersiveengineering:metalDevice/coreDrill.obj.ie",
+		"custom": {"flip-v": true}
+	},
+	"variants":
+	{
+		"inventory,type=sample_drill": [{
+			"transform": {
+				"scale": 0.5,
+				"firstperson": {},
+				"thirdperson": { "translation": [ 0, 0.09375, -0.171875 ], "rotation": [{ "x": 10 }, { "y": -45 }, { "z": 170 }], "scale": [ 0.5, 0.5, 0.5 ] },
+				"fixed": { "translation": [ 0, -0.125, 0 ], "rotation": [{ "y": -90 }] },
+				"gui": { "translation": [ 0, -0.25, 0 ], "rotation": [{ "y": -90 }] }
+			}
+		}],
+		"type":
+		{
+			"sample_drill": {
+			}
+		},
+		"facing":
+		{
+			"down": {},
+			"up": {},
+			"north": {},
+			"south": {},
+			"west": {},
+			"east": {}
+		},
+		"*multiblockslave":
+		{
+			"false":{},
+			"true":{
+				"model": "builtin/generated"
+			}
+		},
+		//active texture
+		"boolean0":
+		{
+			"false":{},
+			"true":{}
+		}
+	}
+}

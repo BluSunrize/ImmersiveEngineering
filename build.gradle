@@ -1,0 +1,72 @@
+def mainVersion = "0.8"
+def buildNumber = "23"
+
+// For those who want the bleeding edge
+buildscript {
+    repositories {
+        jcenter()
+        maven {
+            name = "forge"
+            url = "http://files.minecraftforge.net/maven"
+        }
+    }
+    dependencies {
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
+    }
+}
+apply plugin: 'net.minecraftforge.gradle.forge'
+
+/*
+// for people who want stable - not yet functional for MC 1.8.8 - we require the forgegradle 2.1 snapshot
+plugins {
+    id "net.minecraftforge.gradle.forge" version "2.0.2"
+}
+*/
+version = "${mainVersion}-${buildNumber}"
+group= "blusunrize" 
+archivesBaseName = "ImmersiveEngineering"
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+minecraft {
+    version = "1.8.9-11.15.1.1855"
+    runDir = "run"
+    
+    mappings = "stable_20"
+}
+
+repositories {
+	maven { url "http://dvs1.progwml6.com/files/maven" }
+	maven { url "http://mobiusstrip.eu/maven" }
+}
+
+dependencies {
+	deobfCompile "mezz.jei:jei_1.8.9:2.25.+"
+	
+	compile ("mcp.mobius.waila:Waila:1.6.0-B3_1.8.8:dev") {
+		exclude group: 'mcp.mobius.waila'
+	}
+}
+
+jar {
+	manifest {
+		attributes 'FMLAT': 'ImmersiveEngineering_at.cfg'
+	}
+}
+
+
+processResources
+{
+    inputs.property "version", project.version
+    inputs.property "mcversion", project.minecraft.version
+    
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
+        expand 'version':project.version, 'mcversion':project.minecraft.version
+    }
+        
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
+    }
+}

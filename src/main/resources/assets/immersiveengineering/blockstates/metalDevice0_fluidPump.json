@@ -1,0 +1,89 @@
+{
+	"forge_marker": 1,
+	"defaults":
+	{
+		"transform": "forge:default-block",
+		"model": "immersiveengineering:ieSixSides",
+		"textures": {
+			"particle": "#top",
+			"bottom": "#bottomNone",
+			"top": "#topNone",
+			"north": "#sideNone",
+			"south": "#sideNone",
+			"west": "#sideNone",
+			"east": "#sideNone",
+			
+			"bottomIn": "immersiveengineering:blocks/metalDevice0_fluidPump_bottom_in",
+			"bottomOut": "immersiveengineering:blocks/metalDevice0_fluidPump_bottom_out",
+			"bottomNone": "immersiveengineering:blocks/metalDevice0_fluidPump_bottom_none",
+			"topIn": "immersiveengineering:blocks/metalDevice0_fluidPump_bottom_in",
+			"topOut": "immersiveengineering:blocks/metalDevice0_fluidPump_bottom_out",
+			"topNone": "immersiveengineering:blocks/metalDevice0_fluidPump_bottom_none",
+			"sideIn": "immersiveengineering:blocks/metalDevice0_fluidPump_side_in",
+			"sideOut": "immersiveengineering:blocks/metalDevice0_fluidPump_side_out",
+			"sideNone": "immersiveengineering:blocks/metalDevice0_fluidPump_side_none"
+		}
+	},
+	"variants":
+	{
+		"inventory,type=fluid_pump": [{
+			"model": "immersiveengineering:metalDevice/fluidPump_inv.obj",
+			"custom": {"flip-v": true},
+			"transform": {
+				"scale": 0.625,
+				"firstperson": {},
+				"thirdperson": { "translation": [ 0, 0.09375, -0.171875 ], "rotation": [{ "x": 10 }, { "y": -45 }, { "z": 170 }], "scale": [ 0.5, 0.5, 0.5 ] },
+				"fixed": { "translation": [ 0, -0.125, 0 ], "rotation": [{ "y": -90 }] },
+				"gui": { "translation": [ 0, -0.125, 0 ], "rotation": [{ "y": -90 }] }
+			}
+		}],
+		"type":
+		{
+			"fluid_pump": {}
+		},
+		"sideconfig_down":
+		{
+			"none":{},
+			"input":{"textures": {"bottom": "#bottomIn"}},
+			"output":{"textures": {"bottom": "#bottomOut"}}
+		},
+		"sideconfig_up":
+		{
+			"none":{},
+			"input":{"textures": {"top": "#topIn"}},
+			"output":{"textures": {"top": "#topOut"}}
+		},
+		"sideconfig_north":
+		{
+			"none":{},
+			"input":{"textures": {"north": "#sideIn"}},
+			"output":{"textures": {"north": "#sideOut"}}
+		},
+		"sideconfig_south":
+		{
+			"none":{},
+			"input":{"textures": {"south": "#sideIn"}},
+			"output":{"textures": {"south": "#sideOut"}}
+		},
+		"sideconfig_east":
+		{
+			"none":{},
+			"input":{"textures": {"east": "#sideIn"}},
+			"output":{"textures": {"east": "#sideOut"}}
+		},
+		"sideconfig_west":
+		{
+			"none":{},
+			"input":{"textures": {"west": "#sideIn"}},
+			"output":{"textures": {"west": "#sideOut"}}
+		},
+		"*multiblockslave":
+		{
+			"false":{},
+			"true":{
+				"model": "immersiveengineering:metalDevice/fluidPump.obj",
+				"custom": { "flip-v": true }
+			}
+		}
+	}
+}

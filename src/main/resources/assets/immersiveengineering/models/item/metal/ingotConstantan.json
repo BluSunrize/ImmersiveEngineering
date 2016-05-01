@@ -1,0 +1,6 @@
+{
+	"parent":"immersiveengineering:item/ieItemBase",
+	"textures": {
+		"layer0":"immersiveengineering:items/metal_ingotConstantan"
+	}
+}
