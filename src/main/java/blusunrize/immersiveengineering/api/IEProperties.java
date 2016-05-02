@@ -2,9 +2,11 @@ package blusunrize.immersiveengineering.api;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Set;
 
 import com.google.common.collect.ImmutableSet;
 
+import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.properties.PropertyHelper;
@@ -20,6 +22,8 @@ public class IEProperties
 
 	public static final PropertyBoolInverted MULTIBLOCKSLAVE = PropertyBoolInverted.create("*multiblockslave");//Name starts with an asterisk to ensure priority when overriding models
 	public static final PropertyBoolInverted DYNAMICRENDER = PropertyBoolInverted.create("+dynamicrender");//Name starts with a plus to ensure priority over anything but the multiblockslave property
+	public static final PropertySet CONNECTIONS = new PropertySet("conns");
+	
 	public static final PropertyEnum[] SIDECONFIG = {
 			PropertyEnum.create("sideconfig_down", IEEnums.SideConfig.class),
 			PropertyEnum.create("sideconfig_up", IEEnums.SideConfig.class),
@@ -47,6 +51,7 @@ public class IEProperties
 
 	public static final PropertyBoolInverted[] CONVEYORWALLS = {PropertyBoolInverted.create("conveyorwall_left"), PropertyBoolInverted.create("conveyorwall_right")};
 	public static final PropertyInteger CONVEYORUPDOWN = PropertyInteger.create("conveyorupdown", 0,2);
+//	public static final Property
 
 	public static final IUnlistedProperty<HashMap> OBJ_TEXTURE_REMAP = new IUnlistedProperty<HashMap>()
 	{
@@ -87,6 +92,34 @@ public class IEProperties
 		}
 		public String getName(Boolean value)
 		{
+			return value.toString();
+		}
+	}
+	@SuppressWarnings("rawtypes")
+	public static class PropertySet implements IUnlistedProperty<Set> {
+		String name;
+		public PropertySet(String n) {
+			name = n;
+		}
+		@Override
+		public String getName() {
+			return name;
+		}
+
+		@Override
+		public boolean isValid(Set value) {
+			if (value==null)
+				return false;
+			return true;
+		}
+
+		@Override
+		public Class<Set> getType() {
+			return Set.class;
+		}
+
+		@Override
+		public String valueToString(Set value) {
 			return value.toString();
 		}
 	}

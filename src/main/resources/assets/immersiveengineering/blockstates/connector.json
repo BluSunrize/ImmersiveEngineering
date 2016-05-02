@@ -4,9 +4,6 @@
 	{
 		"transform": "forge:default-block",
 		"textures": {
-		},
-		"custom": {
-			"flip-v": true
 		}
 	},
 	"variants":
@@ -21,27 +18,25 @@
 		"type":
 		{
 			"connector_lv": {
-				"model": "immersiveengineering:connector/connectorLV.obj"
+				"model": "immersiveengineering:smartmodel/conn_conn_lv"
 			},
 			"relay_lv": {
-				"model": "immersiveengineering:connector/connectorLV.obj",
-				"textures": { "#immersiveengineering:blocks/connector_connectorLV": "immersiveengineering:blocks/connector_relayLV" }
+				"model": "immersiveengineering:smartmodel/conn_rel_lv"
 			},
 			"connector_mv":	{
-				"model": "immersiveengineering:connector/connectorMV.obj"
+				"model": "immersiveengineering:smartmodel/conn_conn_mv"
 			},
 			"relay_mv":	{
-				"model": "immersiveengineering:connector/connectorMV.obj",
-				"textures": { "#immersiveengineering:blocks/connector_connectorMV": "immersiveengineering:blocks/connector_relayMV" }
+				"model": "immersiveengineering:smartmodel/conn_rel_mv"
 			},
 			"connector_hv": {
-				"model": "immersiveengineering:connector/connectorHV.obj"
+				"model": "immersiveengineering:smartmodel/conn_conn_hv"
 			},
 			"relay_hv": {
-				"model": "immersiveengineering:connector/relayHV.obj"
+				"model": "immersiveengineering:smartmodel/conn_rel_hv"
 			},
 			"connector_structural": {
-				"model": "immersiveengineering:connector/connectorStructural.obj"
+				"model": "immersiveengineering:smartmodel/conn_conn_struct"
 			}
 		},
 		"facing":

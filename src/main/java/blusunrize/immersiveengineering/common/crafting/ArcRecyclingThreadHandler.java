@@ -260,7 +260,7 @@ public class ArcRecyclingThreadHandler
 				return true;
 			if(!calc.isValid())
 				return false;
-			System.out.println("Re-Validate "+stack+" with "+calc.stack);
+//			System.out.println("Re-Validate "+stack+" with "+calc.stack);
 			Iterator<ItemStack> it = queriedSubcomponents.iterator();
 			while(it.hasNext())
 			{
@@ -283,10 +283,10 @@ public class ArcRecyclingThreadHandler
 					it.remove();
 				}
 			}
-			for(Map.Entry<ItemStack, Double> entry : outputs.entrySet())
-			{
-				System.out.println("  -"+entry.getKey()+": "+entry.getValue());
-			}
+//			for(Map.Entry<ItemStack, Double> entry : outputs.entrySet())
+//			{
+//				System.out.println("  -"+entry.getKey()+": "+entry.getValue());
+//			}
 			return isValid();
 		}
 	}

@@ -3,14 +3,12 @@
 	"defaults":
 	{
 		"transform": "forge:default-block",
-		"model": "immersiveengineering:connector/transformer_mv_left.obj",
-		"custom": {
-			"flip-v": true
-		}
+		"model": "immersiveengineering:smartmodel/conn_transformer_mv_left"
 	},
 	"variants":
 	{
 		"inventory,type=transformer": [{
+			"model": "immersiveengineering:connector/transformer_mv_left.obj",
 			"transform": {
 				"firstperson": { "scale": [ 0.5, 0.5, 0.5 ], "rotation": [{ "y": 90 }] },
 				"thirdperson": { "translation": [ 0, 0.09375, -0.171875 ], "rotation": [{ "x": 10 }, { "y": -45 }, { "z": 170 }], "scale": [ 0.1875, 0.1875, 0.1875 ] },
@@ -26,7 +24,7 @@
 		{
 			"false": {},
 			"true": {
-				"model": "immersiveengineering:connector/transformer_mv_right.obj"
+				"model": "immersiveengineering:smartmodel/conn_transformer_mv_right"
 			}
 		},
 		"facing":

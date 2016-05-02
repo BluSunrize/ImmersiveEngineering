@@ -2,6 +2,7 @@ package blusunrize.immersiveengineering.client;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -19,6 +20,7 @@ import com.mojang.authlib.GameProfile;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEApi;
+import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.ManualHelper;
 import blusunrize.immersiveengineering.api.ManualPageMultiblock;
@@ -43,6 +45,7 @@ import blusunrize.immersiveengineering.client.gui.GuiSqueezer;
 import blusunrize.immersiveengineering.client.gui.GuiToolbox;
 import blusunrize.immersiveengineering.client.models.ModelShaderMinecart;
 import blusunrize.immersiveengineering.client.models.obj.IEOBJLoader;
+import blusunrize.immersiveengineering.client.models.smart.ConnLoader;
 import blusunrize.immersiveengineering.client.render.EntityRenderChemthrowerShot;
 import blusunrize.immersiveengineering.client.render.EntityRenderGrapplingHook;
 import blusunrize.immersiveengineering.client.render.EntityRenderIEExplosive;
@@ -152,6 +155,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.ItemMeshDefinition;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
+import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraft.client.renderer.entity.ArmorStandRenderer;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderBiped;
@@ -348,6 +352,7 @@ public class ClientProxy extends CommonProxy
 			public Render createRenderFor(RenderManager manager){
 				return new EntityRenderIEExplosive(manager);
 			}});
+		ModelLoaderRegistry.registerLoader(new ConnLoader());
 	}
 
 	@Override
@@ -376,7 +381,7 @@ public class ClientProxy extends CommonProxy
 		//		RenderingRegistry.registerBlockHandler(new BlockRenderMetalDevices2());
 		//		RenderingRegistry.registerBlockHandler(new BlockRenderMetalDecoration());
 		//		RenderingRegistry.registerBlockHandler(new BlockRenderMetalMultiblocks());
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityImmersiveConnectable.class, new TileRenderImmersiveConnectable());
+//		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityImmersiveConnectable.class, new TileRenderImmersiveConnectable());
 		//		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityConnectorLV.class, new TileRenderConnectorLV());
 		//		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityConnectorMV.class, new TileRenderConnectorMV());
 		//		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTransformer.class, new TileRenderTransformer());

@@ -3,14 +3,12 @@
 	"defaults":
 	{
 		"transform": "forge:default-block",
-		"model": "immersiveengineering:connector/redstoneBreaker.obj",
-		"custom": {
-			"flip-v": true
-		}
+		"model": "immersiveengineering:smartmodel/conn_redstoneBreaker"
 	},
 	"variants":
 	{
 		"inventory,type=redstone_breaker": [{
+			"model": "immersiveengineering:connector/redstoneBreaker.obj",
 			"transform": {
 				"firstperson": { "rotation": [{ "y": 90 }] },
 				"thirdperson": { "translation": [ 0, 0.09375, -0.171875 ], "rotation": [{ "x": 10 }, { "y": -45 }, { "z": 170 }] },
