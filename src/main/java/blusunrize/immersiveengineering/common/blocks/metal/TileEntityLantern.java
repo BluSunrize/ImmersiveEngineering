@@ -7,12 +7,13 @@ import com.google.common.collect.Lists;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasObjProperty;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ILightValue;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 
-public class TileEntityLantern extends TileEntityIEBase implements IDirectionalTile, IHasObjProperty, IBlockBounds
+public class TileEntityLantern extends TileEntityIEBase implements IDirectionalTile, IHasObjProperty, IBlockBounds, ILightValue
 {
 	public EnumFacing facing = EnumFacing.NORTH;
 
@@ -86,5 +87,11 @@ public class TileEntityLantern extends TileEntityIEBase implements IDirectionalT
 				return displayList[0];
 		
 		return displayList[3];
+	}
+
+	@Override
+	public int getLightValue()
+	{
+		return 14;
 	}
 }
