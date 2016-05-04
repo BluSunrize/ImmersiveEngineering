@@ -23,6 +23,7 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 	public static float timeModifier = 1;
 
 	public final IngredientStack input;
+	public final String oreInputString;
 	public final IngredientStack[] additives;
 	public final ItemStack output;
 	public final ItemStack slag;
@@ -35,6 +36,7 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 	{
 		this.output = output;
 		this.input = ApiUtils.createIngredientStack(input);
+		this.oreInputString = input instanceof String?(String)input: null;
 		this.slag = slag;
 		this.totalProcessTime = (int)Math.floor(time*timeModifier);
 		this.totalProcessEnergy = (int)Math.floor(energyPerTick*energyModifier)*totalProcessTime;
