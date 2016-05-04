@@ -181,7 +181,7 @@ public class TileEntityWoodenPost extends TileEntityIEBase implements IHasDummyB
 	@Override
 	public boolean hammerUseSide(EnumFacing side, EntityPlayer player, float hitX, float hitY, float hitZ)
 	{
-		if(this.dummy==3)
+		if(this.dummy==3 && side.getAxis()!=Axis.Y)
 		{
 			BlockPos offsetPos = getPos().offset(side);
 			//No Arms if space is blocked
