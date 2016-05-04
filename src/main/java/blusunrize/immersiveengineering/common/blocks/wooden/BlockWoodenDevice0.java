@@ -24,6 +24,8 @@ import net.minecraft.world.World;
 
 public class BlockWoodenDevice0 extends BlockIETileProvider
 {
+	boolean isExploding = false;
+
 	public BlockWoodenDevice0()
 	{
 		super("woodenDevice0",Material.wood, PropertyEnum.create("type", BlockTypes_WoodenDevice0.class), ItemBlockIEBase.class, IEProperties.FACING_HORIZONTAL, IEProperties.SIDECONFIG[0], IEProperties.SIDECONFIG[1], IEProperties.MULTIBLOCKSLAVE);
@@ -110,6 +112,20 @@ public class BlockWoodenDevice0 extends BlockIETileProvider
 		}
 		return super.onBlockActivated(world, pos, state, player, side, hitX, hitY, hitZ);
 	}
+	@Override
+	public boolean canDropFromExplosion(Explosion explosionIn)
+	{
+		isExploding = true;
+		return super.canDropFromExplosion(explosionIn);
+	}
+	@Override
+	public void dropBlockAsItemWithChance(World worldIn, BlockPos pos, IBlockState state, float chance, int fortune)
+	{
+		if(!isExploding || this.getExplosivesType(state)<0)
+			super.dropBlockAsItemWithChance(worldIn, pos, state, chance, fortune);
+		isExploding = false;
+	}
+
 	@Override
 	public void onNeighborBlockChange(World world, BlockPos pos, IBlockState state, Block block)
 	{

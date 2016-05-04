@@ -50,11 +50,14 @@ public class IEInventoryHandler implements IItemHandlerModifiable
 	@Override
 	public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
 	{
+//		System.out.println("attempt: "+stack);
 		if(!canInsert[slot] || stack==null)
 			return stack;
+//		System.out.println("1");
 
 		if(!inv.isStackValid(this.slotOffset + slot, stack))
 			return stack;
+//		System.out.println("2");
 		
 		int offsetSlot = this.slotOffset+slot;
 		ItemStack currentStack = inv.getInventory()[offsetSlot];

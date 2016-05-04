@@ -1,9 +1,8 @@
 package blusunrize.immersiveengineering.common.blocks.stone;
 
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.IEProperties.PropertyBoolInverted;
-import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.CokeOvenRecipe;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.BlockIEMultiblock;
@@ -23,9 +22,11 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
+import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.oredict.OreDictionary;
@@ -332,7 +333,13 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart<TileEntityCokeO
 	@Override
 	public boolean isStackValid(int slot, ItemStack stack)
 	{
-		return slot==0?BlastFurnaceRecipe.findRecipe(stack)!=null: slot==1?BlastFurnaceRecipe.isValidBlastFuel(stack): false;
+		if(stack==null)
+			return false;
+		if(slot==0)
+			return CokeOvenRecipe.findRecipe(stack)!=null;
+		if(slot==2)
+			return FluidContainerRegistry.isEmptyContainer(stack) || stack.getItem() instanceof IFluidContainerItem;
+		return false;
 	}
 	@Override
 	public int getSlotLimit(int slot)
@@ -356,7 +363,13 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart<TileEntityCokeO
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
 	{
 		if(capability==net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-			return (T)invHandler;
+		{
+			TileEntityCokeOven master = master();
+			//			System.out.println("master: "+master);
+			if(master==null)
+				return null;
+			return (T)master.invHandler;
+		}
 		return super.getCapability(capability, facing);
 	}
 }
