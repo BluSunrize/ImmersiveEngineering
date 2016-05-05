@@ -25,7 +25,7 @@ public class EntityIEExplosive extends EntityTNTPrimed
 
 	static int dataMarker_block = 12;
 	static int dataMarker_meta = 13;
-	static int dataMarker_fuse = 13;
+	static int dataMarker_fuse = 14;
 
 	public EntityIEExplosive(World world)
 	{

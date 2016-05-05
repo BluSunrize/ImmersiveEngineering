@@ -23,9 +23,11 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
+import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.oredict.OreDictionary;
@@ -327,12 +329,15 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart<TileEntityCokeO
 	@Override
 	public ItemStack[] getInventory()
 	{
+		TileEntityCokeOven master = master();
+		if (master!=null)
+			return master.inventory;
 		return this.inventory;
 	}
 	@Override
 	public boolean isStackValid(int slot, ItemStack stack)
 	{
-		return slot==0?BlastFurnaceRecipe.findRecipe(stack)!=null: slot==1?BlastFurnaceRecipe.isValidBlastFuel(stack): false;
+		return slot==0?CokeOvenRecipe.findRecipe(stack)!=null:(slot==2?FluidContainerRegistry.isEmptyContainer(stack)||stack.getItem() instanceof IFluidContainerItem: false);
 	}
 	@Override
 	public int getSlotLimit(int slot)

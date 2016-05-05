@@ -277,7 +277,7 @@ public abstract class BlockIETileProvider extends BlockIEBase implements ITileEn
 	{
 		TileEntity te = world.getTileEntity(pos);
 		if(te instanceof ILightValue)
-			((ILightValue)te).getLightValue();
+			return ((ILightValue)te).getLightValue();
 		return 0;
 	}
 
