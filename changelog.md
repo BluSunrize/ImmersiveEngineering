@@ -1,4 +1,4 @@
-#####Version 0.8-24
+#####Version 0.8-24 - BUILT
 - massive shoutout to Malte for figuring out some proper wire rendering! :D
 - added compat for DenseOres (crushing/smelting) 
 - fixed lanterns not emitting light

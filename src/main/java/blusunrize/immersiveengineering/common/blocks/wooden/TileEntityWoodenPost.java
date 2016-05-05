@@ -174,8 +174,20 @@ public class TileEntityWoodenPost extends TileEntityIEBase implements IHasDummyB
 	{
 		if(dummy<=3)
 			for(int i=0; i<=3; i++)
+			{
 				if(worldObj.getTileEntity(getPos().add(0,-dummy,0).add(0,i,0)) instanceof TileEntityWoodenPost)
 					worldObj.setBlockToAir(getPos().add(0,-dummy,0).add(0,i,0));
+				if(i==3)
+				{
+					TileEntity te;
+					for(EnumFacing facing : EnumFacing.HORIZONTALS)
+					{
+						te = worldObj.getTileEntity(getPos().add(0,-dummy,0).add(0,i,0).offset(facing));
+						if(te instanceof TileEntityWoodenPost && ((TileEntityWoodenPost) te).dummy==(3+facing.ordinal()))
+							worldObj.setBlockToAir(getPos().add(0,-dummy,0).add(0,i,0).offset(facing));
+					}
+				}
+			}
 	}
 
 	@Override
