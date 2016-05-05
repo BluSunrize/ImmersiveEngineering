@@ -368,7 +368,6 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart<TileEntityCokeO
 		if(capability==net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
 			TileEntityCokeOven master = master();
-			//			System.out.println("master: "+master);
 			if(master==null)
 				return null;
 			return (T)master.invHandler;
