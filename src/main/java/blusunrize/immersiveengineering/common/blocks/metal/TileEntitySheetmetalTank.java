@@ -233,16 +233,17 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart<TileEntit
 	@Override
 	public FluidTankInfo[] getTankInfo(EnumFacing from)
 	{
-		if (pos==4||pos==40) {
+		if (pos==4||pos==40)
+		{
 			if (!formed)
 				return new FluidTankInfo[] {};
 			TileEntitySheetmetalTank master = master();
-			if (master != null)
+			if(master!=null && (offset[0]!=0||offset[1]!=0||offset[2]!=0))
 				return master.getTankInfo(from);
 			return new FluidTankInfo[] { tank.getInfo() };
-		} else {
-			return new FluidTankInfo[0];
 		}
+		else
+			return new FluidTankInfo[0];
 	}
 
 	@Override

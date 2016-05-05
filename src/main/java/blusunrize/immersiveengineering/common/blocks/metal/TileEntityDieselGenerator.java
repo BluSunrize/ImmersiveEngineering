@@ -500,7 +500,7 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockMetal<TileEnt
 		if((pos==0&&(from==null||from==facing.rotateY())) || (pos==2&&(from==null||from==facing.rotateYCCW())))
 		{
 			TileEntityDieselGenerator master = master();
-			if(master!=null)
+			if(master!=null && (offset[0]!=0||offset[1]!=0||offset[2]!=0))
 				return new FluidTankInfo[]{master.tanks[0].getInfo()};
 		}
 		return new FluidTankInfo[0];
