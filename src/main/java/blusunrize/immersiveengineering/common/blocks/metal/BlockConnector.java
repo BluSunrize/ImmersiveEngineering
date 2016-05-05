@@ -67,7 +67,8 @@ public class BlockConnector extends BlockIETileProvider
 		return null;
 	}
 	@Override
-	protected BlockState createBlockState() {
+	protected BlockState createBlockState()
+	{
 		BlockState base = super.createBlockState();
 		IUnlistedProperty[] unlisted = (IUnlistedProperty[]) ((base instanceof ExtendedBlockState)?((ExtendedBlockState)base).getUnlistedProperties().toArray():new IUnlistedProperty[0]);
 		unlisted = Arrays.copyOf(unlisted, unlisted.length+1);
@@ -75,8 +76,10 @@ public class BlockConnector extends BlockIETileProvider
 		return new ExtendedBlockState(this, base.getProperties().toArray(new IProperty[0]), unlisted);
 	}
 	@Override
-	public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos) {
-		if (state instanceof IExtendedBlockState) {
+	public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos)
+	{
+		if (state instanceof IExtendedBlockState)
+		{
 			IExtendedBlockState ext = (IExtendedBlockState) state;
 			TileEntity te = world.getTileEntity(pos);
 			if (!(te instanceof TileEntityImmersiveConnectable))

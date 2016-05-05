@@ -22,61 +22,72 @@ import net.minecraftforge.client.model.ISmartBlockModel;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
 
-public class ConnModelReal implements IFlexibleBakedModel, ISmartBlockModel {
+public class ConnModelReal implements IFlexibleBakedModel, ISmartBlockModel
+{
 
 	TextureAtlasSprite textureAtlasSprite = Minecraft.getMinecraft().getTextureMapBlocks()
-			.getAtlasSprite(ImmersiveEngineering.MODID.toLowerCase()+":blocks/wire");
+			.getAtlasSprite(ImmersiveEngineering.MODID.toLowerCase() + ":blocks/wire");
 	public static final HashMap<ExtBlockstateAdapter, IBakedModel> cache = new HashMap<>();
 	IBakedModel base;
+
 	public ConnModelReal(IBakedModel basic)
 	{
 		base = basic;
 	}
 
 	@Override
-	public boolean isAmbientOcclusion() {
+	public boolean isAmbientOcclusion()
+	{
 		return false;
 	}
 
 	@Override
-	public boolean isGui3d() {
+	public boolean isGui3d()
+	{
 		return false;
 	}
 
 	@Override
-	public boolean isBuiltInRenderer() {
+	public boolean isBuiltInRenderer()
+	{
 		return false;
 	}
 
 	@Override
-	public TextureAtlasSprite getParticleTexture() {
+	public TextureAtlasSprite getParticleTexture()
+	{
 		return base.getParticleTexture();
 	}
 
 	@Override
-	public ItemCameraTransforms getItemCameraTransforms() {
+	public ItemCameraTransforms getItemCameraTransforms()
+	{
 		return ItemCameraTransforms.DEFAULT;
 	}
 
 	@Override
-	public List<BakedQuad> getFaceQuads(EnumFacing side) {
+	public List<BakedQuad> getFaceQuads(EnumFacing side)
+	{
 		return base.getFaceQuads(side);
 	}
 
 	@Override
-	public List<BakedQuad> getGeneralQuads() {
+	public List<BakedQuad> getGeneralQuads()
+	{
 		return base.getGeneralQuads();
 	}
 
 	@Override
-	public VertexFormat getFormat() {
+	public VertexFormat getFormat()
+	{
 		return Attributes.DEFAULT_BAKED_FORMAT;
 	}
 
-
 	@Override
-	public IBakedModel handleBlockState(IBlockState iBlockState) {
-		if (iBlockState instanceof IExtendedBlockState) {
+	public IBakedModel handleBlockState(IBlockState iBlockState)
+	{
+		if (iBlockState instanceof IExtendedBlockState)
+		{
 			IExtendedBlockState iExtendedBlockState = (IExtendedBlockState) iBlockState;
 			ExtBlockstateAdapter ad = new ExtBlockstateAdapter(iExtendedBlockState);
 			if (cache.containsKey(ad))
@@ -92,6 +103,7 @@ public class ConnModelReal implements IFlexibleBakedModel, ISmartBlockModel {
 	{
 		IBakedModel basic;
 		List<BakedQuad> list;
+
 		public AssembledBakedModel(IBakedModel b)
 		{
 			basic = b;
@@ -105,75 +117,92 @@ public class ConnModelReal implements IFlexibleBakedModel, ISmartBlockModel {
 			list.addAll(basic.getGeneralQuads());
 		}
 
-
 		@Override
-		public List<BakedQuad> getFaceQuads(EnumFacing side) {
+		public List<BakedQuad> getFaceQuads(EnumFacing side)
+		{
 			return ImmutableList.of();
 		}
 
 		@Override
-		public List<BakedQuad> getGeneralQuads() {
+		public List<BakedQuad> getGeneralQuads()
+		{
 			return list;
 		}
 
 		@Override
-		public boolean isAmbientOcclusion() {
+		public boolean isAmbientOcclusion()
+		{
 			return false;
 		}
 
 		@Override
-		public boolean isGui3d() {
+		public boolean isGui3d()
+		{
 			return false;
 		}
 
 		@Override
-		public boolean isBuiltInRenderer() {
+		public boolean isBuiltInRenderer()
+		{
 			return false;
 		}
 
 		@Override
-		public TextureAtlasSprite getParticleTexture() {
+		public TextureAtlasSprite getParticleTexture()
+		{
 			return base.getParticleTexture();
 		}
+
 		@Override
-		public ItemCameraTransforms getItemCameraTransforms() {
+		public ItemCameraTransforms getItemCameraTransforms()
+		{
 			return ItemCameraTransforms.DEFAULT;
 		}
 
 	}
-	private class ExtBlockstateAdapter {
+
+	private class ExtBlockstateAdapter
+	{
 		final IExtendedBlockState state;
-		public ExtBlockstateAdapter(IExtendedBlockState s) {
+
+		public ExtBlockstateAdapter(IExtendedBlockState s)
+		{
 			state = s;
 		}
+
 		@Override
-		public boolean equals(Object obj) {
-			if (obj==this)
+		public boolean equals(Object obj)
+		{
+			if (obj == this)
 				return true;
 			if (!(obj instanceof ExtBlockstateAdapter))
 				return false;
 			ExtBlockstateAdapter o = (ExtBlockstateAdapter) obj;
-			for (IProperty i:state.getPropertyNames()) {
+			for (IProperty i : state.getPropertyNames())
+			{
 				Object valOther = o.state.getValue(i);
-				if (valOther==null||!valOther.equals(state.getValue(i)))
+				if (valOther == null || !valOther.equals(state.getValue(i)))
 					return false;
 			}
-			for (IUnlistedProperty i:state.getUnlistedNames()) {
+			for (IUnlistedProperty i : state.getUnlistedNames())
+			{
 				Object valOther = o.state.getValue(i);
-				if (valOther==null||!valOther.equals(state.getValue(i)))
+				if (valOther == null || !valOther.equals(state.getValue(i)))
 					return false;
 			}
-			
+
 			return true;
 		}
+
 		@Override
-		public int hashCode() {
+		public int hashCode()
+		{
 			int val = 1;
-			for (Object o:state.getProperties().values())
-				val+=o.hashCode();
-			for (Object o:state.getUnlistedProperties().values())
-				val+=o.hashCode();
-			
+			for (Object o : state.getProperties().values())
+				val += o.hashCode();
+			for (Object o : state.getUnlistedProperties().values())
+				val += o.hashCode();
+
 			return val;
 		}
 	}

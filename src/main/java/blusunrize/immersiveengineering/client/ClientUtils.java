@@ -1248,33 +1248,37 @@ public class ClientUtils
 		}
 	}
 
-	public static List<BakedQuad> convertConnectionFromBlockstate(IExtendedBlockState s, TextureAtlasSprite t) {
+	public static List<BakedQuad> convertConnectionFromBlockstate(IExtendedBlockState s, TextureAtlasSprite t)
+	{
 		List<BakedQuad> ret = new ArrayList<>();
 		Set<Connection> conns = s.getValue(IEProperties.CONNECTIONS);
-		if (conns==null)
+		if (conns == null)
 			return ret;
 		Vector3f dir = new Vector3f();
 		Vector3f cross = new Vector3f();
 		Vector3f tmp = new Vector3f();
-		
+
 		Vector3f up = new Vector3f(0, 1, 0);
-		for (Connection conn:conns) {
+		for (Connection conn : conns)
+		{
 			Vec3[] f = conn.catenaryVertices;
-			if (f.length<1)
+			if (f.length < 1)
 				continue;
 			int color = conn.cableType.getColour(conn);
 			Vector3f start = new Vector3f(conn.start.getX(), conn.start.getY(), conn.start.getZ());
-			float radius = (float) (conn.cableType.getRenderDiameter()/2);
-			for (int i = 1;i<f.length;i++) {
-				int j = i-1;
-				Vector3f here = new Vector3f((float)f[i].xCoord, (float)f[i].yCoord, (float)f[i].zCoord);
+			float radius = (float) (conn.cableType.getRenderDiameter() / 2);
+			for (int i = 1; i < f.length; i++)
+			{
+				int j = i - 1;
+				Vector3f here = new Vector3f((float) f[i].xCoord, (float) f[i].yCoord, (float) f[i].zCoord);
 				Vector3f.sub(here, start, here);
-				Vector3f there = new Vector3f((float)f[j].xCoord, (float)f[j].yCoord, (float)f[j].zCoord);
+				Vector3f there = new Vector3f((float) f[j].xCoord, (float) f[j].yCoord, (float) f[j].zCoord);
 				Vector3f.sub(there, start, there);
-				boolean vertical = here.x==there.x&&here.z==there.z;
+				boolean vertical = here.x == there.x && here.z == there.z;
 				int[] data;
 				int[] dataInv;
-				if (!vertical) {
+				if (!vertical)
+				{
 					Vector3f.sub(here, there, dir);
 					Vector3f.cross(up, dir, cross);
 					cross.scale(radius / cross.length());
@@ -1296,7 +1300,6 @@ public class ClientUtils
 				storeVertexData(dataInv, 0, tmp, t, 16, 0, color);
 				ret.add(new BakedQuad(data, -1, EnumFacing.DOWN));
 				ret.add(new BakedQuad(dataInv, -1, EnumFacing.UP));
-				
 
 				data = new int[28];
 				dataInv = new int[28];
@@ -1304,8 +1307,7 @@ public class ClientUtils
 				{
 					Vector3f.cross(cross, dir, cross);
 					cross.scale(radius / cross.length());
-				}
-				else
+				} else
 					cross.set(0, 0, radius);
 				Vector3f.add(here, cross, tmp);
 				storeVertexData(data, 0, tmp, t, 0, 0, color);
@@ -1321,14 +1323,14 @@ public class ClientUtils
 				storeVertexData(dataInv, 0, tmp, t, 16, 0, color);
 				ret.add(new BakedQuad(data, -1, EnumFacing.WEST));
 				ret.add(new BakedQuad(dataInv, -1, EnumFacing.EAST));
-				
-				
+
 			}
 		}
 		return ret;
 	}
 
-	private static void storeVertexData(int[] faceData, int storeIndex, Vector3f position, TextureAtlasSprite t, int u, int v, int color)
+	private static void storeVertexData(int[] faceData, int storeIndex, Vector3f position, TextureAtlasSprite t, int u,
+			int v, int color)
 	{
 		int i = storeIndex * 7;
 		faceData[i] = Float.floatToRawIntBits(position.x);
@@ -1338,12 +1340,13 @@ public class ClientUtils
 		faceData[i + 4] = Float.floatToRawIntBits(t.getInterpolatedU(u));
 		faceData[i + 5] = Float.floatToRawIntBits(t.getInterpolatedV(v));
 	}
+
 	private static int invertRgb(int in)
 	{
-		int ret = in&(255<<8);
-		ret+=(in>>16)&255;
-		ret+=(in&255)<<16;
-//		IELogger.info(Integer.toHexString(in)+"::"+Integer.toHexString(ret));
+		int ret = in & (255 << 8);
+		ret += (in >> 16) & 255;
+		ret += (in & 255) << 16;
+		// IELogger.info(Integer.toHexString(in)+"::"+Integer.toHexString(ret));
 		return ret;
 	}
 }

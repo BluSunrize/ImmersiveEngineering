@@ -95,31 +95,40 @@ public class IEProperties
 			return value.toString();
 		}
 	}
+
 	@SuppressWarnings("rawtypes")
-	public static class PropertySet implements IUnlistedProperty<Set> {
+	public static class PropertySet implements IUnlistedProperty<Set>
+	{
 		String name;
-		public PropertySet(String n) {
+
+		public PropertySet(String n)
+		{
 			name = n;
 		}
+
 		@Override
-		public String getName() {
+		public String getName()
+		{
 			return name;
 		}
 
 		@Override
-		public boolean isValid(Set value) {
-			if (value==null)
+		public boolean isValid(Set value)
+		{
+			if (value == null)
 				return false;
 			return true;
 		}
 
 		@Override
-		public Class<Set> getType() {
+		public Class<Set> getType()
+		{
 			return Set.class;
 		}
 
 		@Override
-		public String valueToString(Set value) {
+		public String valueToString(Set value)
+		{
 			return value.toString();
 		}
 	}

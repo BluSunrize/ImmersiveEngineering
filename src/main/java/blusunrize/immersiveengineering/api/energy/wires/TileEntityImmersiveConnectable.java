@@ -246,30 +246,34 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 			IELogger.error("TileEntityImmersiveConenctable encountered MASSIVE error writing NBT. You shoudl probably report this.");
 		}
 	}
-	public Set<Connection> genConnBlockstate() {
+
+	public Set<Connection> genConnBlockstate()
+	{
 		Set<Connection> conns = ImmersiveNetHandler.INSTANCE.getConnections(worldObj, pos);
-		if (conns==null)
+		if (conns == null)
 			return ImmutableSet.of();
-		Set<Connection> ret = new HashSet<Connection>() {
+		Set<Connection> ret = new HashSet<Connection>()
+		{
 			@Override
-			public boolean equals(Object o) {
-				if (o==this)
+			public boolean equals(Object o)
+			{
+				if (o == this)
 					return true;
 				if (!(o instanceof HashSet))
 					return false;
 				HashSet<Connection> other = (HashSet<Connection>) o;
-				if (other.size()!=this.size())
+				if (other.size() != this.size())
 					return false;
-				for (Connection c:this)
+				for (Connection c : this)
 					if (!other.contains(c))
 						return false;
 				return true;
 			}
 		};
-		for (Connection c:conns)
+		for (Connection c : conns)
 		{
-			//generate subvertices
-			if (c.end.compareTo(pos)>=0)
+			// generate subvertices
+			if (c.end.compareTo(pos) >= 0)
 				continue;
 			c.getSubVertices(worldObj);
 			ret.add(c);
