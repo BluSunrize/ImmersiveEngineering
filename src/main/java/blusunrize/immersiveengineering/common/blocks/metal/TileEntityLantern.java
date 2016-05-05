@@ -92,6 +92,6 @@ public class TileEntityLantern extends TileEntityIEBase implements IDirectionalT
 	@Override
 	public int getLightValue()
 	{
-		return 15;
+		return 14;
 	}
 }

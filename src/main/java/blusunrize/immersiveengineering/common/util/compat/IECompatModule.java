@@ -20,7 +20,7 @@ public abstract class IECompatModule
 		moduleClasses.put("Waila", WailaHelper.class);
 //		moduleClasses.put("MineFactoryReloaded", MFRHelper.class);
 //		moduleClasses.put("MineTweaker3", MTHelper.class);
-//		moduleClasses.put("denseores", DenseOresHelper.class);
+		moduleClasses.put("denseores", DenseOresHelper.class);
 //		moduleClasses.put("EE3", EE3Helper.class);
 //		moduleClasses.put("ForgeMicroblock", FMPHelper.class);
 //		moduleClasses.put("Forestry", ForestryHelper.class);

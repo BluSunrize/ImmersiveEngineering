@@ -57,13 +57,14 @@ public class IEDamageSources
 	{
 		return new IEDamageSource_Indirect(Lib.DMG_RevolverWolfpack, shot, shooter);
 	}
-//	public static DamageSource causeSilverDamage(EntityRevolvershot shot, Entity shooter)
-//	{
+	public static DamageSource causeSilverDamage(EntityRevolvershot shot, Entity shooter)
+	{
 //		EntityDamageSourceIndirectSilver silver = new EntityDamageSourceIndirectSilver(shot, shooter);
 //		silver.setProjectile();
 //		silver.damageType = Lib.DMG_RevolverSilver;
 //		return silver;
-//	}
+		return new IEDamageSource_Indirect(Lib.DMG_RevolverSilver, shot, shooter);
+	}
 	public static DamageSource causePotionDamage(EntityRevolvershot shot, EntityLivingBase shooter)
 	{
 		return new IEDamageSource_Indirect(Lib.DMG_RevolverPotion, shot, shooter);
