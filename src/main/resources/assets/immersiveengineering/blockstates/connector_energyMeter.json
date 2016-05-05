@@ -3,22 +3,18 @@
 	"defaults":
 	{
 		"transform": "forge:default-block",
-		"model": "immersiveengineering:connector/eMeter.obj",
-		"custom": {
-			"flip-v": true
-		}
+		"model": "immersiveengineering:smartmodel/conn_eMeter"
 	},
 	"variants":
 	{
 		"inventory,type=energy_meter": [{
 			"model": "immersiveengineering:connector/eMeter.obj",
-			"custom": {"flip-v": true},
 			"transform": {
 				"scale": .75,
 				"firstperson": {},
 				"thirdperson": { "translation": [ 0, 0.09375, -0.171875 ], "rotation": [{ "x": 10 }, { "y": -45 }, { "z": 170 }], "scale": [ 0.5, 0.5, 0.5 ] },
 				"fixed": { "translation": [ 0, -0.125, 0 ], "rotation": [{ "y": -90 }] },
-				"gui": { "translation": [ 0, -0.125, 0 ], "rotation": [{ "y": 90 }] }
+				"gui": { "translation": [ 0, 0.25, 0 ], "rotation": [{ "y": 90 }] }
 			}
 		}],
 		"type":
@@ -49,10 +45,10 @@
 		},
 		"*multiblockslave":
 		{
-			"false":{},
-			"true":{
+			"false":{
 				"model": "builtin/generated"
-			}
+			},
+			"true":{}
 		}
 	}
 }

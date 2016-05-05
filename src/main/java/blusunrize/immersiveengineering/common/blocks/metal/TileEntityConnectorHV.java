@@ -1,9 +1,8 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
-import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
+import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.Vec3;
 
@@ -20,11 +19,11 @@ public class TileEntityConnectorHV extends TileEntityConnectorMV
 		return false;
 	}
 
-	@Override
-	public boolean canConnectCable(WireType cableType, TargetingInfo target)
-	{
-		return limitType==null&&super.canConnectCable(cableType, target);
-	}
+//	@Override
+//	public boolean canConnectCable(WireType cableType, TargetingInfo target)
+//	{
+//		return limitType==null&&super.canConnectCable(cableType, target);
+//	}
 
 	@Override
 	public Vec3 getRaytraceOffset(IImmersiveConnectable link)

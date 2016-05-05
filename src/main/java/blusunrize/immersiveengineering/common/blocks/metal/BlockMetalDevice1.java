@@ -1,10 +1,15 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import java.util.Arrays;
+
 import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConnectable;
 import blusunrize.immersiveengineering.common.blocks.BlockIETileProvider;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyEnum;
+import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -15,6 +20,9 @@ import net.minecraft.util.EnumWorldBlockLayer;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.obj.OBJModel.OBJProperty;
+import net.minecraftforge.common.property.ExtendedBlockState;
+import net.minecraftforge.common.property.IExtendedBlockState;
+import net.minecraftforge.common.property.IUnlistedProperty;
 
 public class BlockMetalDevice1 extends BlockIETileProvider
 {
@@ -62,12 +70,24 @@ public class BlockMetalDevice1 extends BlockIETileProvider
 		return null;
 	}
 
-
 	@Override
-	public IBlockState getActualState(IBlockState state, IBlockAccess world, BlockPos pos)
+	protected BlockState createBlockState()
+	{
+		BlockState base = super.createBlockState();
+		IUnlistedProperty[] unlisted = (IUnlistedProperty[]) ((base instanceof ExtendedBlockState)?((ExtendedBlockState)base).getUnlistedProperties().toArray(new IUnlistedProperty[0]):new IUnlistedProperty[0]);
+		unlisted = Arrays.copyOf(unlisted, unlisted.length+1);
+		unlisted[unlisted.length-1] = IEProperties.CONNECTIONS;
+		return new ExtendedBlockState(this, base.getProperties().toArray(new IProperty[0]), unlisted);
+	}
+	@Override
+	public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos)
 	{
 		state = super.getActualState(state, world, pos);
 		TileEntity tile = world.getTileEntity(pos);
+		if (tile instanceof TileEntityImmersiveConnectable&&state instanceof IExtendedBlockState)
+			state = ((IExtendedBlockState)state).withProperty(IEProperties.CONNECTIONS, ((TileEntityImmersiveConnectable)tile).genConnBlockstate());
+		if (tile instanceof TileEntityElectricLantern)
+			state = state.withProperty(IEProperties.BOOLEANS[0], ((TileEntityElectricLantern) tile).active);
 		return state;
 	}
 

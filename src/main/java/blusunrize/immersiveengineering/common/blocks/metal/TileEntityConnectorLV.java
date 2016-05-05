@@ -119,7 +119,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 		if(isRelay())
 			return false;
 		TileEntity tile = worldObj.getTileEntity(getPos().offset(facing));
-		return tile !=null && (tile instanceof IFluxReceiver );// || (Lib.IC2 && IC2Helper.isEnergySink(tile)) || (Lib.GREG && GregTechHelper.gregtech_isValidEnergyOutput(tile)));
+		return (tile instanceof IFluxReceiver||tile instanceof IEnergyReceiver);// || (Lib.IC2 && IC2Helper.isEnergySink(tile)) || (Lib.GREG && GregTechHelper.gregtech_isValidEnergyOutput(tile)));
 	}
 	@Override
 	public int outputEnergy(int amount, boolean simulate, int energyType)

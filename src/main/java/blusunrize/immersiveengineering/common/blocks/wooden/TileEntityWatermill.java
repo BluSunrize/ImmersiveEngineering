@@ -31,6 +31,7 @@ public class TileEntityWatermill extends TileEntityIEBase implements ITickable, 
 	public boolean canTurn = false;
 	public boolean multiblock = false;
 	public float prevRotation = 0;
+	private boolean formed = true;
 
 	@Override
 	public void update()
@@ -293,14 +294,20 @@ public class TileEntityWatermill extends TileEntityIEBase implements ITickable, 
 	@Override
 	public void breakDummies(BlockPos pos, IBlockState state)
 	{
-		BlockPos initPos = pos.add(facing.getAxis()==Axis.Z?-offset[0]:0, -offset[1], facing.getAxis()==Axis.Z?0:facing.getAxis()==Axis.Z?-offset[0]:0);
+		if (!formed)
+			return;
+		BlockPos initPos = pos.add(facing.getAxis()==Axis.Z?-offset[0]:0, -offset[1], facing.getAxis()==Axis.X?-offset[0]:0);
 		for(int hh=-2; hh<=2; hh++)
 			for(int ww=-2; ww<=2; ww++)
 				if((hh>-2&&hh<2)||(ww>-2&&ww<2))
 				{
-					BlockPos pos2 = pos.add(facing.getAxis()==Axis.Z?ww:0, hh, facing.getAxis()==Axis.Z?0:ww);
-					if(worldObj.getTileEntity(pos2) instanceof TileEntityWatermill)
+					BlockPos pos2 = initPos.add(facing.getAxis()==Axis.Z?ww:0, hh, facing.getAxis()==Axis.X?ww:0);
+					TileEntity te = worldObj.getTileEntity(pos2);
+					if(te instanceof TileEntityWatermill)
+					{
+						((TileEntityWatermill) te).formed = false;
 						worldObj.setBlockToAir(pos2);
+					}
 				}
 	}
 

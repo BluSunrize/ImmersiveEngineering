@@ -3,14 +3,12 @@
 	"defaults":
 	{
 		"transform": "forge:default-block",
-		"model": "immersiveengineering:connector/breakerSwitch_off.obj",
-		"custom": {
-			"flip-v": true
-		}
+		"model": "immersiveengineering:smartmodel/conn_breaker_off"
 	},
 	"variants":
 	{
 		"inventory,type=breakerswitch": [{
+			"model": "immersiveengineering:connector/breakerSwitch_off.obj",
 			"transform": {
 				"firstperson": { "rotation": [{ "y": 90 }] },
 				"thirdperson": { "translation": [ 0, 0.09375, -0.171875 ], "rotation": [{ "x": 10 }, { "y": -45 }, { "z": 170 }] },
@@ -26,7 +24,7 @@
 		{
 			"false": {},
 			"true": {
-				"model": "immersiveengineering:connector/breakerSwitch_on.obj"
+				"model": "immersiveengineering:smartmodel/conn_breaker_on"
 			}
 		},
 		"facing":

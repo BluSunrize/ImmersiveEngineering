@@ -238,7 +238,7 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart<TileEntit
 			if (!formed)
 				return new FluidTankInfo[] {};
 			TileEntitySheetmetalTank master = master();
-			if(master!=null && (offset[0]!=0||offset[1]!=0||offset[2]!=0))
+			if (master != null&&master!=this)
 				return master.getTankInfo(from);
 			return new FluidTankInfo[] { tank.getInfo() };
 		}

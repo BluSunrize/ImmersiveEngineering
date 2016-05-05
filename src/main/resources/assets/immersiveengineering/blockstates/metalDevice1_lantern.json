@@ -3,12 +3,12 @@
 	"defaults":
 	{
 		"transform": "forge:default-block",
-		"model": "immersiveengineering:metalDevice/eLantern.obj",
-		"custom": {"flip-v": true}
+		"model": "immersiveengineering:smartmodel/conn_eLantern"
 	},
 	"variants":
 	{
 		"inventory,type=electric_lantern": [{
+		"model": "immersiveengineering:metalDevice/eLantern.obj"
 		}],
 		"type":
 		{
@@ -45,9 +45,9 @@
 		"boolean0":
 		{
 			"false":{},
-			"true":{"textures": {
-				"#immersiveengineering:blocks/metalDevice1_electricLantern": "immersiveengineering:blocks/metalDevice1_electricLantern_on"
-			}}
+			"true":{
+				"model": "immersiveengineering:smartmodel/conn_eLantern_on"
+			}
 		}
 	}
 }

@@ -1,5 +1,7 @@
 package blusunrize.immersiveengineering.api;
 
+import static blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection.vertices;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -237,7 +239,7 @@ public class ApiUtils
 		boolean vertical = connection.end.getX()==connection.start.getX() && connection.end.getZ()==connection.start.getZ();
 
 		if(vertical)
-			return new Vec3[]{new Vec3(end.xCoord, end.yCoord, end.zCoord)};
+			return new Vec3[]{new Vec3(start.xCoord, start.yCoord, start.zCoord), new Vec3(end.xCoord, end.yCoord, end.zCoord)};
 
 		double dx = (end.xCoord)-(start.xCoord);
 		double dy = (end.yCoord)-(start.yCoord);
@@ -257,12 +259,12 @@ public class ApiUtils
 		double p = (0+dw-a*Math.log((k+dy)/(k-dy)))*0.5;
 		double q = (dy+0-k*Math.cosh(l)/Math.sinh(l))*0.5;
 
-		int vertices = 16;
 		Vec3[] vex = new Vec3[vertices];
 
-		for(int i=0; i<vertices; i++)
+		vex[0] = new Vec3(start.xCoord, start.yCoord, start.zCoord);
+		for(int i=1; i<vertices; i++)
 		{
-			float n1 = (i+1)/(float)vertices;
+			float n1 = i/(float)vertices;
 			double x1 = 0 + dx * n1;
 			double z1 = 0 + dz * n1;
 			double y1 = a * Math.cosh((( Math.sqrt(x1*x1+z1*z1) )-p)/a)+q;

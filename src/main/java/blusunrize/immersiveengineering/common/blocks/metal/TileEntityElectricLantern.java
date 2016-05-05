@@ -9,6 +9,7 @@ import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.EventHandler;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IActiveState;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ILightValue;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISpawnInterdiction;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IUsesBooleanProperty;
 import net.minecraft.nbt.NBTTagCompound;
@@ -17,7 +18,7 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.EnumSkyBlock;
 
-public class TileEntityElectricLantern extends TileEntityImmersiveConnectable implements ISpawnInterdiction, ITickable, IBlockBounds, IActiveState
+public class TileEntityElectricLantern extends TileEntityImmersiveConnectable implements ISpawnInterdiction, ITickable, IBlockBounds, IActiveState, ILightValue
 {
 	public int energyStorage = 0;
 	public boolean active = false;
@@ -97,6 +98,11 @@ public class TileEntityElectricLantern extends TileEntityImmersiveConnectable im
 		return true;
 	}
 	@Override
+	protected boolean isRelay()
+	{
+		return true;
+	}
+	@Override
 	public int outputEnergy(int amount, boolean simulate, int energyType)
 	{
 		if(amount>0 && energyStorage<10)
@@ -169,5 +175,11 @@ public class TileEntityElectricLantern extends TileEntityImmersiveConnectable im
 	public boolean getIsActive()
 	{
 		return active;
+	}
+
+	@Override
+	public int getLightValue()
+	{
+		return active?15:0;
 	}
 }

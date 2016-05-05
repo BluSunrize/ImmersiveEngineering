@@ -328,6 +328,9 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart<TileEntityCokeO
 	@Override
 	public ItemStack[] getInventory()
 	{
+		TileEntityCokeOven master = master();
+		if (master!=null)
+			return master.inventory;
 		return this.inventory;
 	}
 	@Override

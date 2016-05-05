@@ -259,7 +259,7 @@ public class IEContent
 		blockStorage = (BlockIEBase)new BlockIEBase("storage",Material.iron, PropertyEnum.create("type", BlockTypes_MetalsIE.class), ItemBlockIEBase.class).setHardness(5.0F).setResistance(10.0F);
 		blockStorageSlabs = (BlockIESlab)new BlockIESlab("storageSlab",Material.iron, PropertyEnum.create("type", BlockTypes_MetalsIE.class)).setHardness(5.0F).setResistance(10.0F);
 		blockStoneDecoration = (BlockIEBase)new BlockIEBase("stoneDecoration",Material.rock, PropertyEnum.create("type", BlockTypes_StoneDecoration.class), ItemBlockIEBase.class).setHardness(2.0F).setResistance(10.0F);
-		blockStoneDecorationSlabs = (BlockIEBase)new BlockIEBase("stoneDecorationSlab",Material.rock, PropertyEnum.create("type", BlockTypes_StoneDecoration.class), ItemBlockIEBase.class).setMetaHidden(3,8).setHardness(2.0F).setResistance(10.0F);
+		blockStoneDecorationSlabs = (BlockIEBase)new BlockIESlab("stoneDecorationSlab",Material.rock, PropertyEnum.create("type", BlockTypes_StoneDecoration.class)).setMetaHidden(3,8).setHardness(2.0F).setResistance(10.0F);
 		blockStoneStair_hempcrete = new BlockIEStairs("stoneDecorationStairs_hempcrete",blockStoneDecoration.getStateFromMeta(BlockTypes_StoneDecoration.HEMPCRETE.getMeta()));
 		blockStoneStair_concrete0 = new BlockIEStairs("stoneDecorationStairs_concrete",blockStoneDecoration.getStateFromMeta(BlockTypes_StoneDecoration.CONCRETE.getMeta()));
 		blockStoneStair_concrete1 = new BlockIEStairs("stoneDecorationStairs_concrete_tile",blockStoneDecoration.getStateFromMeta(BlockTypes_StoneDecoration.CONCRETE_TILE.getMeta()));

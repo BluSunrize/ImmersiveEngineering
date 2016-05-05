@@ -424,7 +424,8 @@ public class ImmersiveNetHandler
 		public WireType cableType;
 		public int length;
 		public Vec3[] catenaryVertices;
-
+		public static final int vertices = 17;
+		
 		public Connection(BlockPos start, BlockPos end, WireType cableType, int length)
 		{
 			this.start=start;
