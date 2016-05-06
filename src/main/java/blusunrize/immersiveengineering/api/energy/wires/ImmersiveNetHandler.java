@@ -332,9 +332,17 @@ public class ImmersiveNetHandler
 		return closedList;
 	}
 	 */
+	
 	public Set<AbstractConnection> getIndirectEnergyConnections(BlockPos node, World world)
 	{
-		if(indirectConnections.containsKey(node))
+		return getIndirectEnergyConnections(node, world, false);
+	}
+	/**
+	 * return values are cached if and only if ignoreIsEnergyOutput is false
+	 */
+	public Set<AbstractConnection> getIndirectEnergyConnections(BlockPos node, World world, boolean ignoreIsEnergyOutput)
+	{
+		if(!ignoreIsEnergyOutput&&indirectConnections.containsKey(node))
 			return indirectConnections.get(node);
 
 		List<IImmersiveConnectable> openList = new ArrayList<IImmersiveConnectable>();
@@ -363,7 +371,7 @@ public class ImmersiveNetHandler
 			next = openList.get(0);
 			if(!checked.contains(toBlockPos(next)))
 			{
-				if(next.isEnergyOutput())
+				if(ignoreIsEnergyOutput||next.isEnergyOutput())
 				{
 					BlockPos last = toBlockPos(next);
 					WireType averageType = null;
@@ -408,7 +416,7 @@ public class ImmersiveNetHandler
 			}
 			openList.remove(0);
 		}
-		if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
+		if(!ignoreIsEnergyOutput&&FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
 		{
 			if(!indirectConnections.containsKey(node))
 				indirectConnections.put(node, newSetFromMap(new ConcurrentHashMap<AbstractConnection, Boolean>()));

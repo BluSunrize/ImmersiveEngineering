@@ -158,7 +158,7 @@ public class ItemIETool extends ItemIEBase implements ITool
 							IImmersiveConnectable nodeLink = (IImmersiveConnectable)tileEntityLinkingPos;
 							if(nodeLink!=null)
 							{
-								Set<AbstractConnection> connections = ImmersiveNetHandler.INSTANCE.getIndirectEnergyConnections(Utils.toCC(nodeLink), world);
+								Set<AbstractConnection> connections = ImmersiveNetHandler.INSTANCE.getIndirectEnergyConnections(Utils.toCC(nodeLink), world, true);
 								for(AbstractConnection con : connections)
 									if(Utils.toCC(nodeHere).equals(con.end))
 										player.addChatComponentMessage(new ChatComponentTranslation(Lib.CHAT_INFO+"averageLoss",Utils.formatDouble(con.getAverageLossRate()*100, "###.000")));
