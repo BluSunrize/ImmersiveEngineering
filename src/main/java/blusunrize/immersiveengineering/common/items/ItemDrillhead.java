@@ -5,6 +5,7 @@ import java.util.List;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
 import blusunrize.immersiveengineering.common.IEContent;
@@ -75,7 +76,7 @@ public class ItemDrillhead extends ItemIEBase implements IDrillHead
 		for(int i=0;i<getSubNames().length;i++)
 		{
 			ItemStack s = new ItemStack(this,1,i);
-			if(!OreDictionary.getOres(getHeadPerm(s).repairMaterial).isEmpty())
+			if(ApiUtils.isExistingOreName(getHeadPerm(s).repairMaterial))
 				list.add(s);
 		}
 

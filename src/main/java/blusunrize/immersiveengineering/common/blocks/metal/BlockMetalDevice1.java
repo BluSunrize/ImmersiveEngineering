@@ -82,7 +82,7 @@ public class BlockMetalDevice1 extends BlockIETileProvider
 	@Override
 	public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos)
 	{
-		state = super.getActualState(state, world, pos);
+		state = super.getExtendedState(state, world, pos);
 		TileEntity tile = world.getTileEntity(pos);
 		if (tile instanceof TileEntityImmersiveConnectable&&state instanceof IExtendedBlockState)
 			state = ((IExtendedBlockState)state).withProperty(IEProperties.CONNECTIONS, ((TileEntityImmersiveConnectable)tile).genConnBlockstate());

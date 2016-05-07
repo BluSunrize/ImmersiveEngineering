@@ -3,7 +3,6 @@ package blusunrize.immersiveengineering.common;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 
 import com.google.common.collect.ArrayListMultimap;
 
@@ -450,13 +449,14 @@ public class IERecipes
 			oreOutputModifier.put("Firestone", new ItemStack(item));
 		oreOutputSecondaries.put("Nikolite", new Object[]{Items.diamond,.025f});
 
-		CrusherRecipe.addRecipe(new ItemStack(Blocks.gravel), "cobblestone", 1600);
-		CrusherRecipe.addRecipe(new ItemStack(Blocks.sand), Blocks.gravel, 1600);
-		CrusherRecipe.addRecipe(new ItemStack(Blocks.sand), "blockGlass", 3200);
-		CrusherRecipe.addRecipe(new ItemStack(Items.quartz,4), "blockQuartz", 3200);
-		CrusherRecipe.addRecipe(new ItemStack(Items.glowstone_dust,4), "glowstone", 3200);
+		addCrusherRecipe(new ItemStack(Blocks.gravel), "cobblestone", 1600);
+		addCrusherRecipe(new ItemStack(Blocks.sand), Blocks.gravel, 1600);
+		addCrusherRecipe(new ItemStack(Blocks.sand), "blockGlass", 3200);
+		addCrusherRecipe(new ItemStack(Items.quartz,4), "blockQuartz", 3200);
+		addCrusherRecipe(new ItemStack(Items.glowstone_dust,4), "glowstone", 3200);
 		addCrusherRecipe(new ItemStack(Items.blaze_powder,4), "rodBlaze", 3200, "dustSulfur",.5f);
 		addCrusherRecipe(new ItemStack(Items.dye,6,15), Items.bone, 3200);
+		addCrusherRecipe(new ItemStack(IEContent.itemMaterial,1,17), "fuelCoke", 2400);
 		addItemToOreDictCrusherRecipe("dustCoal",1, new ItemStack(Items.coal), 2400);
 		addItemToOreDictCrusherRecipe("dustObsidian",4, Blocks.obsidian, 6000);
 		for(int i=0; i<16; i++)
@@ -478,13 +478,11 @@ public class IERecipes
 					ItemStack out = oreOutputModifier.get(ore);
 					if(out==null)
 					{
-						List<ItemStack> gems = OreDictionary.getOres("gem"+ore);
-						if(!gems.isEmpty())
+						if(ApiUtils.isExistingOreName("gem"+ore))
 							out = Utils.copyStackWithAmount(IEApi.getPreferredOreStack("gem"+ore), 2);
 						else
 						{
-							List<ItemStack> dusts = OreDictionary.getOres("dust"+ore);
-							if(!dusts.isEmpty())
+							if(ApiUtils.isExistingOreName("dust"+ore))
 							{
 								ItemStack preferredDust = IEApi.getPreferredOreStack("dust"+ore);
 								out = Utils.copyStackWithAmount(preferredDust, 2);
@@ -506,8 +504,7 @@ public class IERecipes
 					out = arcOutputModifier.get(ore);
 					if(out==null)
 					{
-						List<ItemStack> ingots = OreDictionary.getOres("ingot"+ore);
-						if(!ingots.isEmpty())
+						if(ApiUtils.isExistingOreName("ingot"+ore))
 							out = Utils.copyStackWithAmount(IEApi.getPreferredOreStack("ingot"+ore),2);
 					}
 					if(out!=null && !arcBlacklist.contains(ore))
@@ -516,8 +513,7 @@ public class IERecipes
 				else if(name.startsWith("gem"))
 				{
 					String ore = name.substring("gem".length());
-					List<ItemStack> dusts = OreDictionary.getOres("dust"+ore);
-					if(!dusts.isEmpty())
+					if(ApiUtils.isExistingOreName("dust"+ore))
 						addCrusherRecipe(IEApi.getPreferredOreStack("dust"+ore), "gem"+ore, 6000, null,0);
 				}
 				else if(name.startsWith("dust"))
@@ -526,15 +522,14 @@ public class IERecipes
 					ItemStack out = arcOutputModifier.get(ore);
 					if(out==null)
 					{
-						List<ItemStack> ingots = OreDictionary.getOres("ingot"+ore);
-						if(!ingots.isEmpty())
+						if(ApiUtils.isExistingOreName("ingot"+ore))
 							out = IEApi.getPreferredOreStack("ingot"+ore);
 					}
 					else
 						out = Utils.copyStackWithAmount(out, out.stackSize/2);
 					if(out!=null && !arcBlacklist.contains(ore))
 						addArcRecipe(out, "dust"+ore, 100,512, null);
-					if(OreDictionary.doesOreNameExist("ingot"+ore))
+					if(ApiUtils.isExistingOreName("ingot"+ore))
 						addCrusherRecipe(IEApi.getPreferredOreStack("dust"+ore), "ingot"+ore, 3600, null,0);
 				}
 				else if(name.startsWith("plate"))
