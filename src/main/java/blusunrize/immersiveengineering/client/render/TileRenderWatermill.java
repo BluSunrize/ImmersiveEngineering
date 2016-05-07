@@ -50,7 +50,7 @@ public class TileRenderWatermill extends TileEntitySpecialRenderer<TileEntityWat
 			GlStateManager.shadeModel(7424);
 		GlStateManager.pushMatrix();
 		GlStateManager.translate(x+.5, y+.5, z+.5);
-		GlStateManager.rotate(tile.facing.getAxis()==Axis.X?-90:180, 0, 1, 0);
+		GlStateManager.rotate(tile.facing.getAxis()==Axis.X?90:0, 0, 1, 0);
 
 		float rot = 360*tile.rotation-(!tile.canTurn||tile.rotation==0||tile.rotation-tile.prevRotation<4?0:tile.facing.getAxis()==Axis.X?-f:f);
 		GlStateManager.rotate(rot, 0,0,1);
