@@ -216,16 +216,19 @@ public class IESmartObjModel extends OBJBakedModel
 							if(tempSprite==null)
 								tempSprite = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(this.getModel().getMatLib().getMaterial(f.getMaterialName()).getTexture().getTextureLocation().toString());
 						}
-						UnpackedBakedQuad.Builder builder = new UnpackedBakedQuad.Builder(getFormat());
-						builder.setQuadOrientation(EnumFacing.getFacingFromVector(f.getNormal().x, f.getNormal().y, f.getNormal().z));
-						builder.setQuadColored();
-						builder.setQuadTint(pass);
-						Normal faceNormal = f.getNormal();
-						putVertexData(builder, f.getVertices()[0], faceNormal, TextureCoordinate.getDefaultUVs()[0], tempSprite, colour);
-						putVertexData(builder, f.getVertices()[1], faceNormal, TextureCoordinate.getDefaultUVs()[1], tempSprite, colour);
-						putVertexData(builder, f.getVertices()[2], faceNormal, TextureCoordinate.getDefaultUVs()[2], tempSprite, colour);
-						putVertexData(builder, f.getVertices()[3], faceNormal, TextureCoordinate.getDefaultUVs()[3], tempSprite, colour);
-						bakedQuads.add(builder.build());
+						if(tempSprite!=null)
+						{
+							UnpackedBakedQuad.Builder builder = new UnpackedBakedQuad.Builder(getFormat());
+							builder.setQuadOrientation(EnumFacing.getFacingFromVector(f.getNormal().x, f.getNormal().y, f.getNormal().z));
+							builder.setQuadColored();
+							builder.setQuadTint(pass);
+							Normal faceNormal = f.getNormal();
+							putVertexData(builder, f.getVertices()[0], faceNormal, TextureCoordinate.getDefaultUVs()[0], tempSprite, colour);
+							putVertexData(builder, f.getVertices()[1], faceNormal, TextureCoordinate.getDefaultUVs()[1], tempSprite, colour);
+							putVertexData(builder, f.getVertices()[2], faceNormal, TextureCoordinate.getDefaultUVs()[2], tempSprite, colour);
+							putVertexData(builder, f.getVertices()[3], faceNormal, TextureCoordinate.getDefaultUVs()[3], tempSprite, colour);
+							bakedQuads.add(builder.build());
+						}
 					}
 				}
 			}
