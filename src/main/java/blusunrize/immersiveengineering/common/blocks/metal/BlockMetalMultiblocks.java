@@ -355,28 +355,26 @@ public class BlockMetalMultiblocks extends BlockIEMultiblock
 				else if(tile.pos==23)
 					return side==(tile.mirrored?tile.facing.rotateYCCW():tile.facing.rotateY());
 			}
+			else if(te instanceof TileEntityExcavator)
+			{
+				if(tile.pos%18<9 || (tile.pos>=18&&tile.pos<36))
+					return true;
+			}
+			else if(te instanceof TileEntityArcFurnace)
+			{
+				if(tile.pos==2 || tile.pos==25 || tile.pos==52)
+					return side.getOpposite()==tile.facing || (tile.pos==52?side==EnumFacing.UP:false);
+				if(tile.pos==82 || tile.pos==86 || tile.pos==88 || tile.pos==112)
+					return side==EnumFacing.UP;
+				if( (tile.pos>=21&&tile.pos<=23) || (tile.pos>=46&&tile.pos<=48) || (tile.pos>=71&&tile.pos<=73))
+					return side==tile.facing;
+			}
 		}
 		//		if(te instanceof TileEntityRefinery)
 		//		{
 		//			TileEntityRefinery tile = (TileEntityRefinery)te;
 		//			if(tile.pos==9 && side.ordinal()==tile.facing)
 		//				return true;
-		//		}
-		if(te instanceof TileEntityExcavator)
-		{
-			TileEntityExcavator tile = (TileEntityExcavator)te;
-			if(tile.pos%18<9 || (tile.pos>=18&&tile.pos<36))
-				return true;
-		}
-		//		if(te instanceof TileEntityArcFurnace)
-		//		{
-		//			TileEntityArcFurnace tile = (TileEntityArcFurnace)te;
-		//			if(tile.pos==2 || tile.pos==25 || tile.pos==52)
-		//				return side.ordinal()==tile.facing || (tile.pos==52?side==ForgeDirection.UP:false);
-		//			if(tile.pos==82 || tile.pos==86 || tile.pos==88 || tile.pos==112)
-		//				return side==ForgeDirection.UP;
-		//			if( (tile.pos>=21&&tile.pos<=23) || (tile.pos>=46&&tile.pos<=48) || (tile.pos>=71&&tile.pos<=73))
-		//				return side.getOpposite().ordinal()==tile.facing;
 		//		}
 		return super.isSideSolid(world, pos, side);
 	}
