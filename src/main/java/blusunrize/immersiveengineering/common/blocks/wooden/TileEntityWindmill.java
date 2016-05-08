@@ -81,9 +81,9 @@ public class TileEntityWindmill extends TileEntityIEBase implements ITickable, I
 					return false;
 		}
 
+		int blocked = 0;
 		for(int hh=-6;hh<=6;hh++)
 		{
-			int blocked = 0;
 			int r=Math.abs(hh)==6?1: Math.abs(hh)==5?3: Math.abs(hh)==4?4: Math.abs(hh)>1?5: 6;
 			for(int ww=-r;ww<=r;ww++)
 			{
@@ -96,8 +96,7 @@ public class TileEntityWindmill extends TileEntityIEBase implements ITickable, I
 					else if(worldObj.getTileEntity(getPos().add(xx,hh,zz)) instanceof TileEntityWindmill)
 					{
 						blocked+=20;
-						turnSpeed++;
-						turnSpeed-=180;
+						turnSpeed-=179;
 					}
 					else
 						blocked++;
@@ -105,8 +104,6 @@ public class TileEntityWindmill extends TileEntityIEBase implements ITickable, I
 			}
 			if(blocked>100)
 				return false;
-			else if(blocked>50)
-				return true;
 		}
 
 		return true;

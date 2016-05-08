@@ -5,13 +5,13 @@ import java.util.Set;
 
 import org.lwjgl.opengl.GL11;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -59,7 +59,7 @@ public class TileRenderImmersiveConnectable extends TileEntitySpecialRenderer
 					TileEntity tileEnd = te.getWorld().getTileEntity(con.end);
 					if(tileEnd instanceof IImmersiveConnectable)
 					{
-						ClientUtils.tessellateConnection(con, (IImmersiveConnectable)te, Utils.toIIC(tileEnd, te.getWorld()), con.cableType.getIcon(con));
+						ClientUtils.tessellateConnection(con, (IImmersiveConnectable)te, ApiUtils.toIIC(tileEnd, te.getWorld()), con.cableType.getIcon(con));
 					}
 				}
 

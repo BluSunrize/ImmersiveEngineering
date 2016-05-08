@@ -11,11 +11,14 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.DimensionBlockPos;
 import blusunrize.immersiveengineering.api.TargetingInfo;
+import blusunrize.immersiveengineering.client.models.smart.ConnModelReal;
 import blusunrize.immersiveengineering.common.IESaveData;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.nbt.NBTTagCompound;
@@ -28,10 +31,11 @@ import net.minecraftforge.fml.relauncher.Side;
 public class ImmersiveNetHandler
 {
 	public static ImmersiveNetHandler INSTANCE;
-	public ConcurrentHashMap<Integer, ConcurrentHashMap<BlockPos, Set<Connection>>> directConnections = new ConcurrentHashMap<Integer, ConcurrentHashMap<BlockPos, Set<Connection>>>();
-	public ConcurrentHashMap<BlockPos, Set<AbstractConnection>> indirectConnections = new ConcurrentHashMap<BlockPos, Set<AbstractConnection>>();
-	public HashMap<Integer, HashMap<Connection, Integer>> transferPerTick = new HashMap<Integer, HashMap<Connection,Integer>>();
-
+	public Map<Integer, ConcurrentHashMap<BlockPos, Set<Connection>>> directConnections = new ConcurrentHashMap<Integer, ConcurrentHashMap<BlockPos, Set<Connection>>>();
+	public Map<BlockPos, Set<AbstractConnection>> indirectConnections = new ConcurrentHashMap<BlockPos, Set<AbstractConnection>>();
+	public Map<Integer, HashMap<Connection, Integer>> transferPerTick = new HashMap<Integer, HashMap<Connection,Integer>>();
+	public Map<DimensionBlockPos, IICProxy> proxies = new ConcurrentHashMap<>();
+	
 	private ConcurrentHashMap<BlockPos, Set<Connection>> getMultimap(int dimension)
 	{
 		if (directConnections.get(dimension) == null)
@@ -56,8 +60,7 @@ public class ImmersiveNetHandler
 		if(!getMultimap(world.provider.getDimensionId()).containsKey(connection))
 			getMultimap(world.provider.getDimensionId()).put(connection, newSetFromMap(new ConcurrentHashMap<Connection, Boolean>()));
 		getMultimap(world.provider.getDimensionId()).get(connection).add(new Connection(connection, node, cableType, distance));
-		if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
-			indirectConnections.clear();
+		resetCachedIndirectConnections();
 		if(world.isBlockLoaded(node))
 			world.addBlockEvent(node, world.getBlockState(node).getBlock(),-1,0);
 		if(world.isBlockLoaded(connection))
@@ -69,8 +72,7 @@ public class ImmersiveNetHandler
 		if(!getMultimap(world.provider.getDimensionId()).containsKey(node))
 			getMultimap(world.provider.getDimensionId()).put(node, newSetFromMap(new ConcurrentHashMap<Connection, Boolean>()));
 		getMultimap(world.provider.getDimensionId()).get(node).add(con);
-		if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
-			indirectConnections.clear();
+		resetCachedIndirectConnections();
 		IESaveData.setDirty(world.provider.getDimensionId());
 	}
 	public void addConnection(int world, BlockPos node, Connection con)
@@ -78,8 +80,7 @@ public class ImmersiveNetHandler
 		if(!getMultimap(world).containsKey(node))
 			getMultimap(world).put(node, newSetFromMap(new ConcurrentHashMap<Connection, Boolean>()));
 		getMultimap(world).get(node).add(con);
-		if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
-			indirectConnections.clear();
+		resetCachedIndirectConnections();
 		IESaveData.setDirty(world);
 	}
 
@@ -110,8 +111,7 @@ public class ImmersiveNetHandler
 				}
 			}
 		}
-		if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
-			indirectConnections.clear();
+		resetCachedIndirectConnections();
 		IESaveData.setDirty(world.provider.getDimensionId());
 	}
 	public Set<Integer> getRelevantDimensions()
@@ -130,8 +130,7 @@ public class ImmersiveNetHandler
 		if(world!=null && world.provider!=null)
 		{
 			ConcurrentHashMap<BlockPos, Set<Connection>> map = getMultimap(world.provider.getDimensionId());
-			if(map.containsKey(node))
-				return map.get(node);
+			return map.get(node);
 		}
 		return null;
 	}
@@ -147,14 +146,15 @@ public class ImmersiveNetHandler
 	{
 		if(getMultimap(world.provider.getDimensionId()).containsKey(node))
 			getMultimap(world.provider.getDimensionId()).get(node).clear();
-		if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
-			indirectConnections.clear();
+		resetCachedIndirectConnections();
 	}
 
 	public void resetCachedIndirectConnections()
 	{
 		if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
 			indirectConnections.clear();
+		else
+			ConnModelReal.cache.clear();
 	}
 
 	/**
@@ -211,8 +211,20 @@ public class ImmersiveNetHandler
 		if(world.isBlockLoaded(node))
 			world.addBlockEvent(node, world.getBlockState(node).getBlock(),-1,0);
 		IESaveData.setDirty(world.provider.getDimensionId());
-		if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
-			indirectConnections.clear();
+		resetCachedIndirectConnections();
+	}
+	public void setProxy(DimensionBlockPos pos, IICProxy p)
+	{
+		if (p==null)
+			proxies.remove(pos);
+		else
+			proxies.put(pos, p);
+	}
+	public void addProxy(IICProxy p)
+	{
+		if (p==null)
+			return;
+		setProxy(new DimensionBlockPos(p.getPos(), p.getDimension()), p);
 	}
 
 	/**
@@ -264,8 +276,7 @@ public class ImmersiveNetHandler
 			world.addBlockEvent(node, world.getBlockState(node).getBlock(),-1,0);
 
 		IESaveData.setDirty(world.provider.getDimensionId());
-		if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
-			indirectConnections.clear();
+		resetCachedIndirectConnections();
 	}
 
 	/*
@@ -384,12 +395,12 @@ public class ImmersiveNetHandler
 						if(last!=null)
 						{
 
-							Set<Connection> conLB = getConnections(world, prev);
+							Set<Connection> conLB = getConnections(world, last);
 							if(conLB!=null)
 								for(Connection conB : conLB)
-									if(conB.end.equals(last))
+									if(conB.end.equals(prev))
 									{
-										connectionParts.add(conB);
+										connectionParts.add(0, conB);
 										distance += conB.length;
 										if(averageType==null || conB.cableType.getTransferRate()<averageType.getTransferRate())
 											averageType = conB.cableType;

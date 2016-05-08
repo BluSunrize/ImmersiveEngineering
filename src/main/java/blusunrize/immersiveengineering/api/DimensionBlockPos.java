@@ -1,0 +1,62 @@
+package blusunrize.immersiveengineering.api;
+
+import net.minecraft.util.BlockPos;
+import net.minecraft.world.World;
+
+public class DimensionBlockPos extends BlockPos
+{
+	public int dimension;
+	public DimensionBlockPos(int x, int y, int z, int dim)
+	{
+		super(x, y, z);
+		dimension = dim;
+	}
+	public DimensionBlockPos(int x, int y, int z, World w)
+	{
+		this(x, y, z, w.provider.getDimensionId());
+	}
+	public DimensionBlockPos(BlockPos pos, World w)
+	{
+		this(pos.getX(), pos.getY(), pos.getZ(), w.provider.getDimensionId());
+	}
+	public DimensionBlockPos(BlockPos pos, int dim)
+	{
+		this(pos.getX(), pos.getY(), pos.getZ(), dim);
+	}
+
+	@Override
+	public int hashCode()
+	{
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + dimension;
+		result = prime * result + getX();
+		result = prime * result + getY();
+		result = prime * result + getZ();
+		return result;
+	}
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		DimensionBlockPos other = (DimensionBlockPos) obj;
+		if (dimension != other.dimension)
+			return false;
+		if (getX() != other.getX())
+			return false;
+		if (getY() != other.getY())
+			return false;
+		if (getZ() != other.getZ())
+			return false;
+		return true;
+	}
+	@Override
+	public String toString() {
+		return "Dimension: "+dimension+" Pos: "+super.toString();
+	}
+}

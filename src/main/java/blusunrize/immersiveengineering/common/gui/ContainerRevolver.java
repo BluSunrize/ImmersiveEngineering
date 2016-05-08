@@ -152,7 +152,7 @@ public class ContainerRevolver extends Container
 	@Override
 	public ItemStack slotClick(int par1, int par2, int par3, EntityPlayer par4EntityPlayer)
 	{
-		if(par1 == this.blockedSlot || (par3!=0&&par2==par4EntityPlayer.inventory.currentItem))
+		if(par1 == this.blockedSlot || (par3==2&&par2==par4EntityPlayer.inventory.currentItem))
 			return null;		
 		((ItemRevolver)this.revolver.getItem()).setBullets(this.revolver, ((InventoryStorageItem)this.input).stackList);
 
@@ -166,7 +166,8 @@ public class ContainerRevolver extends Container
 		if (!this.worldObj.isRemote)
 		{
 			((ItemRevolver)this.revolver.getItem()).setBullets(this.revolver, ((InventoryStorageItem)this.input).stackList);
-			if (!this.player.getCurrentEquippedItem().equals(this.revolver))
+			ItemStack hand = this.player.getCurrentEquippedItem();
+			if (hand!=null&&!hand.equals(this.revolver))
 				this.player.setCurrentItemOrArmor(0, this.revolver);
 			this.player.inventory.markDirty();
 		}

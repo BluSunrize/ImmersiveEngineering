@@ -9,8 +9,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
+import blusunrize.immersiveengineering.api.energy.wires.IICProxy;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
+import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import net.minecraft.block.Block;
@@ -214,21 +217,37 @@ public class ApiUtils
 			return (BlockPos)object;
 		if(object instanceof TileEntity)
 			return ((TileEntity)object).getPos();
+		if (object instanceof IICProxy)
+			return ((IICProxy) object).getPos();
 		return null;
 	}
 	public static IImmersiveConnectable toIIC(Object object, World world)
 	{
+		return toIIC(object, world, true);
+	}
+
+
+	public static IImmersiveConnectable toIIC(Object object, World world, boolean allowProxies)
+	{
 		if(object instanceof IImmersiveConnectable)
 			return (IImmersiveConnectable)object;
-		else if(object instanceof BlockPos && world!=null && world.isBlockLoaded((BlockPos)object))
+		else if(object instanceof BlockPos)
 		{
-			TileEntity te = world.getTileEntity((BlockPos)object);
-			if(te instanceof IImmersiveConnectable)
-				return (IImmersiveConnectable) te;
+			if (world!=null && world.isBlockLoaded((BlockPos)object))
+			{
+				TileEntity te = world.getTileEntity((BlockPos)object);
+				if(te instanceof IImmersiveConnectable)
+					return (IImmersiveConnectable) te;
+			}
+			if (allowProxies)
+			{
+				DimensionBlockPos pos = new DimensionBlockPos((BlockPos)object, world);
+				if (ImmersiveNetHandler.INSTANCE.proxies.containsKey(pos))
+					return ImmersiveNetHandler.INSTANCE.proxies.get(pos);
+			}
 		}
 		return null;
 	}
-
 	public static Vec3 addVectors(Vec3 vec0, Vec3 vec1)
 	{
 		return vec0.addVector(vec1.xCoord,vec1.yCoord,vec1.zCoord);

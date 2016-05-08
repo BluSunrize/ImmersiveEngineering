@@ -33,6 +33,7 @@ minecraft {
     version = "1.8.9-11.15.1.1855"
     runDir = "run"
     
+	replace '${version}', project.version
     mappings = "stable_20"
 }
 

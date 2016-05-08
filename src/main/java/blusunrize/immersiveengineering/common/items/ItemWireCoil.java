@@ -130,7 +130,7 @@ public class ItemWireCoil extends ItemIEBase implements IWireCoil
 							if(canSee)
 							{
 								TargetingInfo targetLink = TargetingInfo.readFromNBT(stack.getTagCompound());
-								ImmersiveNetHandler.INSTANCE.addConnection(world, Utils.toCC(nodeHere), Utils.toCC(nodeLink), distanceSq, type);
+								ImmersiveNetHandler.INSTANCE.addConnection(world, Utils.toCC(nodeHere), Utils.toCC(nodeLink), (int)Math.sqrt(distanceSq), type);
 								
 								nodeHere.connectCable(type, target);
 								nodeLink.connectCable(type, targetLink);

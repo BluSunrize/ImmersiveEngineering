@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.common.entities;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.common.items.ItemSkyhook;
@@ -117,7 +118,7 @@ public class EntitySkylineHook extends Entity
 		if(target!=null&&targetPoint==subPoints.length-1)
 		{
 			TileEntity end = this.worldObj.getTileEntity(target);
-			IImmersiveConnectable iicEnd = Utils.toIIC(end, worldObj);
+			IImmersiveConnectable iicEnd = ApiUtils.toIIC(end, worldObj);
 			if(iicEnd==null)
 			{
 				this.setDead();

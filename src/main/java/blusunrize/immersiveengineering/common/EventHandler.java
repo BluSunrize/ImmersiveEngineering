@@ -5,10 +5,14 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.UUID;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.DimensionBlockPos;
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.energy.wires.IICProxy;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
@@ -49,6 +53,7 @@ import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.MovingObjectPosition;
@@ -189,7 +194,28 @@ public class EventHandler
 					IELogger.info("removed "+invalidConnectionsDropped+" invalid connections from world");
 				}
 			}
-
+			int invalidProxies = 0;
+			Set<DimensionBlockPos> toRemove = new HashSet<>();
+			for (Entry<DimensionBlockPos, IICProxy> e:ImmersiveNetHandler.INSTANCE.proxies.entrySet())
+			{
+				DimensionBlockPos p = e.getKey();
+				World w = MinecraftServer.getServer().worldServerForDimension(p.dimension);
+				if (w!=null&&w.isBlockLoaded(p))
+					toRemove.add(p);
+				if (validateConnections&&w==null)
+				{
+					invalidProxies++;
+					toRemove.add(p);
+					continue;
+				}
+				if (validateConnections&&!(w.getTileEntity(p) instanceof IImmersiveConnectable))
+				{
+					invalidProxies++;
+					toRemove.add(p);
+				}
+			}
+			if (invalidProxies>0)
+				IELogger.info("Removed "+invalidProxies+" invalid connector proxies (used to transfer power through unloaded chunks)");
 			validateConnsNextTick = false;
 		}
 		if(event.phase==TickEvent.Phase.END && FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER)
