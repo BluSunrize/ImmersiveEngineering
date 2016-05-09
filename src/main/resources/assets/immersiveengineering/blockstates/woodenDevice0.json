@@ -45,6 +45,7 @@
 				}
 		 }],
 		"inventory,type=gunpowder_barrel": [{ "textures": { "side": "immersiveengineering:blocks/woodenDevice_gunpowderBarrel", "bottom": "immersiveengineering:blocks/woodenDevice_barrel_top_none", "top": "immersiveengineering:blocks/woodenDevice_gunpowderBarrel_top"} }],
+		"inventory,type=reinforced_crate": [{ "textures": { "side": "immersiveengineering:blocks/woodenDevice_reinforcedCrate", "top": "immersiveengineering:blocks/woodenDevice_reinforcedCrate", "bottom": "immersiveengineering:blocks/woodenDevice_reinforcedCrate"} }],
 		
 		"type":
 		{
@@ -83,9 +84,18 @@
 			},
 			"gunpowder_barrel": {
 				"textures": {
+					"particle": "immersiveengineering:blocks/woodenDevice_gunpowderBarrel",
 					"side": "immersiveengineering:blocks/woodenDevice_gunpowderBarrel",
 					"topNone": "immersiveengineering:blocks/woodenDevice_gunpowderBarrel_top",
 					"bottomNone": "immersiveengineering:blocks/woodenDevice_barrel_top_none"
+				}
+			},
+			"reinforced_crate": {
+				"textures": {
+					"particle": "immersiveengineering:blocks/woodenDevice_reinforcedCrate",
+					"side": "immersiveengineering:blocks/woodenDevice_reinforcedCrate",
+					"topNone": "immersiveengineering:blocks/woodenDevice_reinforcedCrate",
+					"bottomNone": "immersiveengineering:blocks/woodenDevice_reinforcedCrate"
 				}
 			}
 		},

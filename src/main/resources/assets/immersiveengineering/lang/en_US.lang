@@ -71,6 +71,7 @@ tile.ImmersiveEngineering.woodenDevice0.crate.name=Wooden Storage Crate
 tile.ImmersiveEngineering.woodenDevice0.workbench.name=Engineer's Workbench
 tile.ImmersiveEngineering.woodenDevice0.sorter.name=Item Router
 tile.ImmersiveEngineering.woodenDevice0.gunpowder_barrel.name=Gunpowder Barrel
+tile.ImmersiveEngineering.woodenDevice0.reinforced_crate.name=Reinforced Storage Crate
 tile.ImmersiveEngineering.woodenDevice1.watermill.name=Water Wheel
 tile.ImmersiveEngineering.woodenDevice1.windmill.name=Windmill
 tile.ImmersiveEngineering.woodenDevice1.windmill_advanced.name=Improved Windmill
@@ -747,6 +748,7 @@ ie.manual.entry.balloon1=Similar to <link;metalconstruction;§o§nStructural §o
 ie.manual.entry.crate.name=Wooden Storage Crate
 ie.manual.entry.crate.subtext=Move that gear up!
 ie.manual.entry.crate0=Wooden storage crates are blocks quite similar to a chest. Crafted with treated wood, they offer 27 slots of storage, however, when broken, they will keep that storage, allowing you to move them together with their contents.<br>Like chests, they will output a comparator signal based on the amount of items stored.
+ie.manual.entry.crate1=The reinforced storage crate offers the same capacity as a normal crate, but unlike them, these creates are impervious to explosions. No longer will pesky creepers or ill-placed mining charges destroy your valueables!<br>The upgrade recipe will keep the contents of the crate.
 
 ie.manual.entry.barrel.name=Wooden Barrel
 ie.manual.entry.barrel.subtext=Doesn't roll

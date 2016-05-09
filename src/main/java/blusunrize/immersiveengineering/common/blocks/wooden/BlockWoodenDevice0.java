@@ -125,6 +125,13 @@ public class BlockWoodenDevice0 extends BlockIETileProvider
 			super.dropBlockAsItemWithChance(worldIn, pos, state, chance, fortune);
 		isExploding = false;
 	}
+	@Override
+	public float getExplosionResistance(World world, BlockPos pos, Entity exploder, Explosion explosion)
+	{
+		if(this.getMetaFromState(world.getBlockState(pos))==BlockTypes_WoodenDevice0.REINFORCED_CRATE.getMeta())
+			return 1200000;
+		return super.getExplosionResistance(world, pos, exploder, explosion);
+	}
 
 	@Override
 	public void onNeighborBlockChange(World world, BlockPos pos, IBlockState state, Block block)
@@ -361,6 +368,8 @@ public class BlockWoodenDevice0 extends BlockIETileProvider
 			return new TileEntityWoodenBarrel();
 		case SORTER:
 			return new TileEntitySorter();
+		case REINFORCED_CRATE:
+			return new TileEntityWoodenCrate();
 		}
 		return null;
 	}
