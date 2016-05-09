@@ -36,6 +36,7 @@ import net.minecraftforge.common.ChestGenHooks;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.RecipeSorter;
+import net.minecraftforge.oredict.RecipeSorter.Category;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
@@ -515,13 +516,25 @@ public class IERecipes
 						MetalPressRecipe.addRecipe(Utils.copyStackWithAmount(IEApi.getPreferredOreStack(name),2), "ingot"+ore, new ItemStack(IEContent.itemMold,1,2), 2400);
 					}
 				}
+		boolean addedAny = false;
 		if(registeredMoldBases.containsKey("plate"))
+		{
 			GameRegistry.addRecipe(new RecipeShapedArrayList(new ItemStack(IEContent.itemMold,1,0), " P ","PCP"," P ", 'P',"plateSteel",'C',registeredMoldBases.get("plate")));
+			addedAny = true;
+		}
 		if(registeredMoldBases.containsKey("gear"))
+		{
 			GameRegistry.addRecipe(new RecipeShapedArrayList(new ItemStack(IEContent.itemMold,1,1), " P ","PCP"," P ", 'P',"plateSteel",'C',registeredMoldBases.get("gear")));
+			addedAny = true;
+		}
 		if(registeredMoldBases.containsKey("rod"))
+		{
 			GameRegistry.addRecipe(new RecipeShapedArrayList(new ItemStack(IEContent.itemMold,1,2), " P ","PCP"," P ", 'P',"plateSteel",'C',registeredMoldBases.get("rod")));
-
+			addedAny = true;
+		}
+		if (addedAny)
+			RecipeSorter.register(ImmersiveEngineering.MODID.toLowerCase()+":ArrayListShaped", RecipeShapedArrayList.class, Category.SHAPED, "after:forge:shapedore");
+		RecipeSorter.register(ImmersiveEngineering.MODID.toLowerCase()+":ShaderBags", RecipeShaderBags.class, Category.SHAPELESS, "after:forge:shapedore");
 		Config.setBoolean("crushingOreRecipe", !hammerCrushingList.isEmpty());
 	}
 
