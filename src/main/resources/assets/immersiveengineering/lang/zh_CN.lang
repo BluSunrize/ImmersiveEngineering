@@ -71,6 +71,7 @@ tile.ImmersiveEngineering.woodenDevice0.crate.name=木质储存箱
 tile.ImmersiveEngineering.woodenDevice0.workbench.name=工程师装配台
 tile.ImmersiveEngineering.woodenDevice0.sorter.name=物品路由器
 tile.ImmersiveEngineering.woodenDevice0.gunpowder_barrel.name=火药桶
+tile.ImmersiveEngineering.woodenDevice0.reinforced_crate.name=强化储存箱
 tile.ImmersiveEngineering.woodenDevice1.watermill.name=水车
 tile.ImmersiveEngineering.woodenDevice1.windmill.name=风车
 tile.ImmersiveEngineering.woodenDevice1.windmill_advanced.name=改良风车
@@ -747,6 +748,7 @@ ie.manual.entry.balloon1=同<link;metalconstruction;§o§n钢制接线器§r;5>�
 ie.manual.entry.crate.name=木制储物箱
 ie.manual.entry.crate.subtext=移动装备了!
 ie.manual.entry.crate0=木质储存箱和普通箱子十分相近.它由处理过的木材精致而成,内有27个物品格,但被打破时物品不会掉出来,玩家籍此可以携带大量物品.<br>和箱子一样,它也可以根据物品的量输出比较器信号.
+ie.manual.entry.crate1=强化储物箱拥有和普通木质储物箱一样的容积,但强化版本提供了更好的抗爆性能.从此你再也不用担心那些惹人厌的爬行者或者误放的采矿炸药把你价值连城的箱子炸掉了!<br>同时,在储物箱升级时,其内容物也会得到保留.
 
 ie.manual.entry.barrel.name=木桶
 ie.manual.entry.barrel.subtext=拒绝滚动
