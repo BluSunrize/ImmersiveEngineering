@@ -1,3 +1,6 @@
+#####Version 0.7.7 - BUILT
+- fixed the potion ID error and some minor bugs (thanks malte)
+
 #####Version 0.7.6 - BUILT
 - shoutouts to malte for excellent maintenance once again =3
 - changed items to allow despawning on conveyors, if they are colliding with an inventory they can't enter. Should make accidental lag machines less of a thing.
