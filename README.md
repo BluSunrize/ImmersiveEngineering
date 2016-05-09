@@ -1,4 +1,4 @@
-![Logo](https://raw.githubusercontent.com/BluSunrize/ImmersiveEngineering/1.8.9/src/main/resources/assets/immersiveengineering/logo.png)
+![Logo](https://raw.githubusercontent.com/BluSunrize/ImmersiveEngineering/master/src/main/resources/assets/immersiveengineering/logo.png)
 ==============
 
 A retro-futuristic tech mod!
