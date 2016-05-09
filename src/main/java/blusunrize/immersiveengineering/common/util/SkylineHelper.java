@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.common.util;
 
 import java.util.Set;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
@@ -49,8 +50,8 @@ public class SkylineHelper
 	{
 		BlockPos cc0 = connection.end==Utils.toCC(start)?connection.start:connection.end;
 		BlockPos cc1 = connection.end==Utils.toCC(start)?connection.end:connection.start;
-		IImmersiveConnectable iicStart = Utils.toIIC(cc1, player.worldObj);
-		IImmersiveConnectable iicEnd = Utils.toIIC(cc0, player.worldObj);
+		IImmersiveConnectable iicStart = ApiUtils.toIIC(cc1, player.worldObj);
+		IImmersiveConnectable iicEnd = ApiUtils.toIIC(cc0, player.worldObj);
 		Vec3 vStart = new Vec3(cc1);
 		Vec3 vEnd = new Vec3(cc0);
 

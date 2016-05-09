@@ -124,10 +124,13 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart<TileEntityB
 								inventory[2].stackSize+=recipe.output.copy().stackSize;
 							else
 								inventory[2] = recipe.output.copy();
-							if(inventory[3]!=null)
-								inventory[3].stackSize+=recipe.slag.copy().stackSize;
-							else
-								inventory[3] = recipe.slag.copy();
+							if (recipe.slag!=null)
+							{
+								if(inventory[3]!=null)
+									inventory[3].stackSize+=recipe.slag.copy().stackSize;
+								else
+									inventory[3] = recipe.slag.copy();
+							}
 						}
 						processMax=0;
 						active=false;
@@ -181,7 +184,8 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart<TileEntityB
 		BlastFurnaceRecipe recipe = BlastFurnaceRecipe.findRecipe(inventory[0]);
 		if(recipe==null)
 			return null;
-		if((inventory[2]==null || (OreDictionary.itemMatches(inventory[2],recipe.output,true) && inventory[2].stackSize+recipe.output.stackSize<=getSlotLimit(2)) )
+		if((inventory[0].stackSize>=((recipe.input instanceof ItemStack)?((ItemStack)recipe.input).stackSize:1)
+				&& inventory[2]==null || (OreDictionary.itemMatches(inventory[2],recipe.output,true) && inventory[2].stackSize+recipe.output.stackSize<=getSlotLimit(2)) )
 				&& (inventory[3]==null || (OreDictionary.itemMatches(inventory[3],recipe.slag,true) && inventory[3].stackSize+recipe.slag.stackSize<=getSlotLimit(3)) ))
 			return recipe;
 		return null;

@@ -52,6 +52,8 @@ public interface IImmersiveConnectable
 	
 	/**
 	 * return false to stop checking for available outputs from this point onward
+	 * @param con: the connection through which energy enters. May be null, in that
+	 * case true should be returned if and only if all connections allow energy to pass
 	 */
 	public boolean allowEnergyToPass(Connection con);
 
@@ -75,11 +77,4 @@ public interface IImmersiveConnectable
 	 * @return Where the cable should attach
 	 */
 	public Vec3 getConnectionOffset(Connection con);
-
-//	@Override
-//	public void onEnergyPassthrough(int amount, boolean simulate, int energyType)
-//	{
-//		if(!simulate)
-//			energyPassed +=amount;
-//	}
 }

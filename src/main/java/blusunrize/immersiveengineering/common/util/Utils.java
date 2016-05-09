@@ -154,19 +154,6 @@ public class Utils
 		return null;
 	}
 
-	public static IImmersiveConnectable toIIC(Object object, World world)
-	{
-		if(object instanceof IImmersiveConnectable)
-			return (IImmersiveConnectable)object;
-		else if(object instanceof BlockPos && world!=null && world.isBlockLoaded((BlockPos)object))
-		{
-			TileEntity te = world.getTileEntity((BlockPos)object);
-			if(te instanceof IImmersiveConnectable)
-				return (IImmersiveConnectable) te;
-		}
-		return null;
-	}
-
 	public static boolean isBlockAt(World world, BlockPos pos, Block b, int meta)
 	{
 		IBlockState state = world.getBlockState(pos);
@@ -816,7 +803,7 @@ public class Utils
 		{
 			IFluidContainerItem container = (IFluidContainerItem)equipped.getItem();
 			fluid = container.getFluid(equipped);
-			if(handler.fill(null, fluid, false)>0)
+			if(fluid!=null&&handler.fill(null, fluid, false)>0)
 			{
 				if(world.isRemote)
 					return true;

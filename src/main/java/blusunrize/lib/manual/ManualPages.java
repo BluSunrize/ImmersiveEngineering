@@ -473,6 +473,8 @@ public abstract class ManualPages implements IManualPage
 					w = ((ShapedRecipes)rec).recipeWidth;
 					h = ((ShapedRecipes)rec).recipeHeight;
 				}
+				else
+					return;
 				Object[] ingredients = new Object[ingredientsPre.length];
 				for(int iO=0; iO<ingredientsPre.length; iO++)
 				{
@@ -708,6 +710,8 @@ public abstract class ManualPages implements IManualPage
 									w = ((ShapedRecipes)r).recipeWidth;
 									h = ((ShapedRecipes)r).recipeHeight;
 								}
+								else
+									continue;
 								Object[] ingredients = new Object[ingredientsPre.length];
 								for(int iO=0; iO<ingredientsPre.length; iO++)
 								{

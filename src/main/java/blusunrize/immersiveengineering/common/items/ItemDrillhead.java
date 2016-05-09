@@ -217,7 +217,8 @@ public class ItemDrillhead extends ItemIEBase implements IDrillHead
 					BlockPos pos = startPos.add((side.getAxis()==Axis.X?dd: dw), (side.getAxis()==Axis.Y?dd: dh), (side.getAxis()==Axis.Y?dh: side.getAxis()==Axis.X?dw: dd));
 					if(pos.equals(mop.getBlockPos()))
 						continue;
-					float h = world.getBlockState(pos).getBlock().getPlayerRelativeBlockHardness(player, world, pos);
+					block = world.getBlockState(pos).getBlock();
+					float h = block.getPlayerRelativeBlockHardness(player, world, pos);
 					if(block.canHarvestBlock(world, pos, player) && ((ItemDrill)IEContent.itemDrill).isEffective(block.getMaterial()) && h>maxHardness)
 						b.add(pos);
 				}

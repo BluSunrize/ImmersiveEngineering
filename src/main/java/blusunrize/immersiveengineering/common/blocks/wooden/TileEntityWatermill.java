@@ -38,12 +38,7 @@ public class TileEntityWatermill extends TileEntityIEBase implements ITickable, 
 	{
 		if(offset[0]!=0||offset[1]!=0||worldObj==null)
 			return;
-		if( 
-				//				!(worldObj.getBlock(xCoord-(facing<=3?2:0), yCoord+2, zCoord-(facing<=3?0:2)).isReplaceable(worldObj, xCoord-(facing<=3?2:0), yCoord+2, zCoord-(facing<=3?0:2)))
-				//				|| !(worldObj.getBlock(xCoord+(facing<=3?2:0), yCoord+2, zCoord+(facing<=3?0:2)).isReplaceable(worldObj, xCoord+(facing<=3?2:0), yCoord+2, zCoord+(facing<=3?0:2)))
-				//				|| !(worldObj.getBlock(xCoord-(facing<=3?2:0), yCoord-2, zCoord-(facing<=3?0:2)).isReplaceable(worldObj, xCoord-(facing<=3?2:0), yCoord-2, zCoord-(facing<=3?0:2)))
-				//				|| !(worldObj.getBlock(xCoord+(facing<=3?2:0), yCoord-2, zCoord+(facing<=3?0:2)).isReplaceable(worldObj, xCoord+(facing<=3?2:0), yCoord-2, zCoord+(facing<=3?0:2))))
-				isBlocked())
+		if(isBlocked())
 		{
 			canTurn=false;
 			return;
@@ -51,30 +46,26 @@ public class TileEntityWatermill extends TileEntityIEBase implements ITickable, 
 		else
 			canTurn=getRotationVec().lengthVector()!=0;
 
-		if(!multiblock /*&& worldObj.isRemote*/ )//&& worldObj.getTotalWorldTime()%256==((getPos().getX()^getPos().getZ())&255))
+		if(worldObj.getTotalWorldTime()%256==((getPos().getX()^getPos().getZ())&255)) 
 		{
 			rotationVec=null;
 		}
 		prevRotation = rotation;
 
-		if(worldObj.getTileEntity(getPos().offset(facing.getOpposite())) instanceof TileEntityDynamo)
+		if(!multiblock&&worldObj.getTileEntity(getPos().offset(facing.getOpposite())) instanceof TileEntityDynamo)
 		{
 			double power = getPower();
 			int l=1;
 			TileEntity tileEntity = worldObj.getTileEntity(getPos().offset(facing, l));
 			while (l<3
-					&& tileEntity instanceof TileEntityWatermill
-					&& ((TileEntityWatermill)tileEntity).offset[0]==0
-					&& ((TileEntityWatermill)tileEntity).offset[1]==0
-					&& ( ((TileEntityWatermill)tileEntity).facing==facing || ((TileEntityWatermill)tileEntity).facing==facing.getOpposite() )
-					&& !((TileEntityWatermill)tileEntity).isBlocked())
+					&& canUse(tileEntity))
 			{
 				power += ((TileEntityWatermill)tileEntity).getPower();
 				l++;
 				tileEntity = worldObj.getTileEntity(getPos().offset(facing, l));
 			}
 
-			double perTick = 360f/1440 * (1/360f) * power/l;
+			double perTick = 1f/1440 * power/l;
 			canTurn = perTick!=0;
 			rotation += perTick;
 			rotation %= 1;
@@ -101,13 +92,22 @@ public class TileEntityWatermill extends TileEntityIEBase implements ITickable, 
 		}
 		else if(!multiblock)
 		{
-			double perTick = 360f/1440 * (1/360f) * getPower();
+			double perTick = 1f/1440 * getPower();
 			canTurn = perTick!=0;
 			rotation += perTick;
 			rotation %= 1;
 		}
 		if(multiblock)
 			multiblock=false;
+	}
+	private boolean canUse(TileEntity tileEntity)
+	{
+		return tileEntity instanceof TileEntityWatermill
+				&& ((TileEntityWatermill)tileEntity).offset[0]==0
+				&& ((TileEntityWatermill)tileEntity).offset[1]==0
+				&& ( ((TileEntityWatermill)tileEntity).facing==facing || ((TileEntityWatermill)tileEntity).facing==facing.getOpposite() )
+				&& !((TileEntityWatermill)tileEntity).isBlocked()
+				&&!((TileEntityWatermill)tileEntity).multiblock;
 	}
 
 	public boolean isBlocked()
@@ -162,11 +162,11 @@ public class TileEntityWatermill extends TileEntityIEBase implements ITickable, 
 		dir = Utils.addVectors(dir, Utils.getFlowVector(worldObj, getPos().add(-(faceZ?2:0), +2, -(faceZ?0:2))));
 		dir = Utils.addVectors(dir, Utils.getFlowVector(worldObj, getPos().add(+(faceZ?2:0), +2, +(faceZ?0:2))));
 
-		dir = Utils.getFlowVector(worldObj, getPos().add(-(faceZ?2:0), -2, -(faceZ?0:2))).subtract(dir);
-		dir = Utils.getFlowVector(worldObj, getPos().add(+(faceZ?2:0), -2, +(faceZ?0:2))).subtract(dir);
-		dir = Utils.getFlowVector(worldObj, getPos().add(-(faceZ?1:0), -3, -(faceZ?0:1))).subtract(dir);
-		dir = Utils.getFlowVector(worldObj, getPos().add(0, -3, 0)).subtract(dir);
-		dir = Utils.getFlowVector(worldObj, getPos().add(+(faceZ?1:0), -3, +(faceZ?0:1))).subtract(dir);
+		dir = dir.subtract(Utils.getFlowVector(worldObj, getPos().add(-(faceZ?2:0), -2, -(faceZ?0:2))));
+		dir = dir.subtract(Utils.getFlowVector(worldObj, getPos().add(+(faceZ?2:0), -2, +(faceZ?0:2))));
+		dir = dir.subtract(Utils.getFlowVector(worldObj, getPos().add(-(faceZ?1:0), -3, -(faceZ?0:1))));
+		dir = dir.subtract(Utils.getFlowVector(worldObj, getPos().add(0, -3, 0)));
+		dir = dir.subtract(Utils.getFlowVector(worldObj, getPos().add(+(faceZ?1:0), -3, +(faceZ?0:1))));
 
 		return dir;
 	}
@@ -187,9 +187,9 @@ public class TileEntityWatermill extends TileEntityIEBase implements ITickable, 
 		dirPos = Utils.addVectors(dirPos, Utils.getFlowVector(worldObj, getPos().add((facing.getAxis()==Axis.Z?3:0),-1,(facing.getAxis()==Axis.Z?0:3))));
 		dirPos = Utils.addVectors(dirPos, Utils.getFlowVector(worldObj, getPos().add((facing.getAxis()==Axis.Z?2:0),-2,(facing.getAxis()==Axis.Z?0:2))));
 		if(facing.getAxis()==Axis.Z)
-			dir = dir.addVector(-dirNeg.yCoord+dirPos.yCoord,0,0);
+			dir = dir.addVector(dirNeg.yCoord-dirPos.yCoord,0,0);
 		else
-			dir = dir.addVector(0,0,-dirNeg.yCoord+dirPos.yCoord);
+			dir = dir.addVector(0,0,dirNeg.yCoord-dirPos.yCoord);
 		return dir;
 	}
 

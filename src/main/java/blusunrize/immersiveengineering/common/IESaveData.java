@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.common;
 import java.util.Map;
 
 import blusunrize.immersiveengineering.api.DimensionChunkCoords;
+import blusunrize.immersiveengineering.api.energy.wires.IICProxy;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
@@ -47,6 +48,10 @@ public class IESaveData extends WorldSavedData
 			}
 		}
 
+		NBTTagList proxies = nbt.getTagList("iicProxies", 10);
+		for (int i = 0;i<proxies.tagCount();i++)
+			ImmersiveNetHandler.INSTANCE.addProxy(IICProxy.readFromNBT(proxies.getCompoundTagAt(i)));
+		
 		EventHandler.validateConnsNextTick = true;
 
 		NBTTagList mineralList = nbt.getTagList("mineralDepletion", 10);
@@ -102,6 +107,11 @@ public class IESaveData extends WorldSavedData
 				nbt.setTag("connectionList"+dim, connectionList);
 			}
 		}
+		
+		NBTTagList proxies = new NBTTagList();
+		for (IICProxy iic:ImmersiveNetHandler.INSTANCE.proxies.values())
+			proxies.appendTag(iic.writeToNBT());
+		nbt.setTag("iicProxies", proxies);
 
 		NBTTagList mineralList = new NBTTagList();
 		for(Map.Entry<DimensionChunkCoords,MineralWorldInfo> e: ExcavatorHandler.mineralCache.entrySet())

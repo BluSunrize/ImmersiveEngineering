@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxProvider;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
@@ -14,6 +15,7 @@ import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConne
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
+import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.Utils;
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
@@ -21,6 +23,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.MathHelper;
@@ -37,6 +40,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 	public int currentTickAccepted=0;
 	public static int[] connectorInputValues = {};
 	public int energyStored=0;
+	boolean firstTick = true;
 
 	@Override
 	public void update()
@@ -58,6 +62,15 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 				}
 			}
 			currentTickAccepted = 0;
+		}
+		else if (firstTick)
+		{
+			Set<Connection> conns = ImmersiveNetHandler.INSTANCE.getConnections(worldObj, pos);
+			if (conns!=null)
+				for (Connection conn:conns)
+					if (pos.compareTo(conn.end)<0&&worldObj.isBlockLoaded(conn.end))
+						worldObj.markBlockForUpdate(conn.end);
+			firstTick = false;
 		}
 	}
 	//	@Override
@@ -278,7 +291,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 			HashMap<AbstractConnection,Integer> powerSorting = new HashMap<AbstractConnection,Integer>();
 			for(AbstractConnection con : outputs)
 			{
-				IImmersiveConnectable end = Utils.toIIC(con.end, worldObj);
+				IImmersiveConnectable end = ApiUtils.toIIC(con.end, worldObj);
 				if(con.cableType!=null && end!=null)
 				{
 					int atmOut = Math.min(powerForSort,con.cableType.getTransferRate());
@@ -294,7 +307,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 			if(sum>0)
 				for(AbstractConnection con : powerSorting.keySet())
 				{
-					IImmersiveConnectable end = Utils.toIIC(con.end, worldObj);
+					IImmersiveConnectable end = ApiUtils.toIIC(con.end, worldObj);
 					if(con.cableType!=null && end!=null)
 					{
 						float prio = powerSorting.get(con)/(float)sum;
@@ -319,8 +332,8 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 							if(!simulate)
 							{
 								ImmersiveNetHandler.INSTANCE.getTransferedRates(worldObj.provider.getDimensionId()).put(sub,transferredPerCon);
-								IImmersiveConnectable subStart = Utils.toIIC(sub.start,worldObj);
-								IImmersiveConnectable subEnd = Utils.toIIC(sub.end,worldObj);
+								IImmersiveConnectable subStart = ApiUtils.toIIC(sub.start,worldObj);
+								IImmersiveConnectable subEnd = ApiUtils.toIIC(sub.end,worldObj);
 								if(subStart!=null && passedConnectors.add(subStart))
 									subStart.onEnergyPassthrough((int)(r-r*intermediaryLoss));
 								if(subEnd!=null && passedConnectors.add(subEnd))

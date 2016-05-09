@@ -1,10 +1,7 @@
 package blusunrize.immersiveengineering.api.energy.wires;
 
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
 import com.google.common.collect.ImmutableSet;
@@ -22,7 +19,6 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.util.BlockPos;
-import net.minecraft.util.Vec3;
 
 public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase implements IImmersiveConnectable
 {
@@ -40,7 +36,6 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 	{
 		return false;
 	}
-
 	protected boolean isRelay()
 	{
 		return false;
@@ -243,7 +238,7 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 			//			}
 		}catch(Exception e)
 		{
-			IELogger.error("TileEntityImmersiveConenctable encountered MASSIVE error writing NBT. You shoudl probably report this.");
+			IELogger.error("TileEntityImmersiveConenctable encountered MASSIVE error writing NBT. You should probably report this.");
 		}
 	}
 
@@ -275,10 +270,25 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 			// generate subvertices
 			if (c.end.compareTo(pos) >= 0)
 				continue;
+			IImmersiveConnectable end = ApiUtils.toIIC(c.end, worldObj, false);
+			if (end==null)
+				continue;
 			c.getSubVertices(worldObj);
 			ret.add(c);
 		}
 
 		return ret;
+	}
+	@Override
+	public void onChunkUnload()
+	{
+		super.onChunkUnload();
+		ImmersiveNetHandler.INSTANCE.addProxy(new IICProxy(this));
+	}
+	@Override
+	public void validate()
+	{
+		super.validate();
+		ImmersiveNetHandler.INSTANCE.resetCachedIndirectConnections();
 	}
 }
