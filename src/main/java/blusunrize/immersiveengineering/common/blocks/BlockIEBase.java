@@ -1,7 +1,9 @@
 package blusunrize.immersiveengineering.common.blocks;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.google.common.collect.Sets;
@@ -46,7 +48,7 @@ public class BlockIEBase<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 	boolean[] hasFlavour;
 	protected Set<EnumWorldBlockLayer> renderLayers = Sets.newHashSet(EnumWorldBlockLayer.SOLID);
 	protected Set<EnumWorldBlockLayer>[] metaRenderLayers;
-
+	protected Map<Integer, Integer> metaLightOpacities = new HashMap<>();
 	public BlockIEBase(String name, Material material, PropertyEnum<E> mainProperty, Class<? extends ItemBlockIEBase> itemBlock, Object... additionalProperties)
 	{
 		super(setTempProperties(material, mainProperty, additionalProperties));
@@ -188,9 +190,10 @@ public class BlockIEBase<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 	{
 		this.renderLayers = Sets.newHashSet(layer);
 	}
-	protected void setMetaBlockLayer(int meta, EnumWorldBlockLayer... layer)
+	public BlockIEBase<E> setMetaBlockLayer(int meta, EnumWorldBlockLayer... layer)
 	{
 		this.metaRenderLayers[Math.max(0, Math.min(meta, this.metaRenderLayers.length-1))] = Sets.newHashSet(layer);
+		return this;
 	}
 	@Override
 	public boolean canRenderInLayer(EnumWorldBlockLayer layer)
@@ -203,6 +206,24 @@ public class BlockIEBase<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 		}
 		return renderLayers.contains(layer);
 	}
+	public BlockIEBase<E> setMetaLightOpacity(int meta, int opacity)
+	{
+		metaLightOpacities.put(meta, opacity);
+		return this;
+	}
+	@Override
+    public int getLightOpacity(IBlockAccess w, BlockPos pos)
+    {
+        if (!(w instanceof World))
+        	return getLightOpacity();
+        World world = (World) w;
+        if (!world.isBlockLoaded(pos))
+        	return getLightOpacity();
+        int meta = getMetaFromState(world.getBlockState(pos));
+        if (metaLightOpacities.containsKey(meta))
+        	return metaLightOpacities.get(meta);
+        return getLightOpacity();
+    }
 	@Override
 	public int getRenderType()
 	{
@@ -332,7 +353,10 @@ public class BlockIEBase<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 	{
 		return false;
 	}
-
+	public boolean isOpaqueCube()
+	{
+		return false;
+	}
 	public static interface IBlockEnum extends IStringSerializable
 	{
 		public String getName();

@@ -163,6 +163,7 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
+import net.minecraft.util.EnumWorldBlockLayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.gen.structure.MapGenStructureIO;
 import net.minecraftforge.common.MinecraftForge;
@@ -258,7 +259,8 @@ public class IEContent
 		blockOre = (BlockIEBase)new BlockIEBase("ore",Material.rock, PropertyEnum.create("type", BlockTypes_Ore.class), ItemBlockIEBase.class).setHardness(3.0F).setResistance(5.0F);
 		blockStorage = (BlockIEBase)new BlockIEBase("storage",Material.iron, PropertyEnum.create("type", BlockTypes_MetalsIE.class), ItemBlockIEBase.class).setHardness(5.0F).setResistance(10.0F);
 		blockStorageSlabs = (BlockIESlab)new BlockIESlab("storageSlab",Material.iron, PropertyEnum.create("type", BlockTypes_MetalsIE.class)).setHardness(5.0F).setResistance(10.0F);
-		blockStoneDecoration = (BlockIEBase)new BlockIEBase("stoneDecoration",Material.rock, PropertyEnum.create("type", BlockTypes_StoneDecoration.class), ItemBlockIEBase.class).setHardness(2.0F).setResistance(10.0F);
+		int insGlassMeta = BlockTypes_StoneDecoration.INSULATING_GLASS.getMeta();
+		blockStoneDecoration = (BlockIEBase)new BlockIEBase("stoneDecoration",Material.rock, PropertyEnum.create("type", BlockTypes_StoneDecoration.class), ItemBlockIEBase.class).setMetaBlockLayer(insGlassMeta, EnumWorldBlockLayer.TRANSLUCENT).setMetaLightOpacity(insGlassMeta, 0).setHardness(2.0F).setResistance(10.0F);
 		blockStoneDecorationSlabs = (BlockIEBase)new BlockIESlab("stoneDecorationSlab",Material.rock, PropertyEnum.create("type", BlockTypes_StoneDecoration.class)).setMetaHidden(3,8).setHardness(2.0F).setResistance(10.0F);
 		blockStoneStair_hempcrete = new BlockIEStairs("stoneDecorationStairs_hempcrete",blockStoneDecoration.getStateFromMeta(BlockTypes_StoneDecoration.HEMPCRETE.getMeta()));
 		blockStoneStair_concrete0 = new BlockIEStairs("stoneDecorationStairs_concrete",blockStoneDecoration.getStateFromMeta(BlockTypes_StoneDecoration.CONCRETE.getMeta()));

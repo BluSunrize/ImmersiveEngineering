@@ -57,18 +57,20 @@ public class IEPotions
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 	public static int getNextPotionId(int start)
 	{
-		if((Potion.potionTypes != null) && (start > 0) && (start < Potion.potionTypes.length) && (Potion.potionTypes[start] == null))
-			return start;
-		start++;
-		if(start < 256)
-			start = getNextPotionId(start);
-		else
-			start = -1;
+		if (Potion.potionTypes == null)
+			return -2;
+		if (start<0)
+			start = 0;
+		int max = Math.min(Potion.potionTypes.length, 256);
+		while (start<max && (Potion.potionTypes[start] != null))
+			start++;
+		if (start>=256)
+			return -1;
 		return start;
 	}
 
