@@ -1,3 +1,19 @@
+#####Version 0.8-25
+- wires can transfer across unloaded chunks now! :D (thanks Malte)
+- added reinforced (creeper-proof) storage crates
+- changed voltmeter to allow measuring between two non-output points (thanks Malte)
+- fixed an NPE in rendering
+- fixed fluid pipes not rendering properly
+- fixed invalidly added recipe to create dusts where no ignots exist
+- fixed missing coke dust recipe
+- fixed Arc Furnace not having solid sides
+- fixed NPE in Improve Blast Furnace's capabilities
+- fixed Crash with the Mining Drill (thanks Malte)
+- fixed watermill outputting less than it should because of broken math (thanks Malte)
+- fixed extremely high losses on wires (thanks Malte)
+- ported miscelanous other fixes from 1.7 (thanks Malte)
+- added zh_CN localization (thanks to 3TUSK, Amamiya-Nagisa, bakaxyf, CannonFotter, crafteverywhere, IamAchang, Joccob, LYDfalse, UUUii)
+
 #####Version 0.8-24 - BUILT
 - massive shoutout to Malte for figuring out some proper wire rendering! :D
 - added compat for DenseOres (crushing/smelting) 
