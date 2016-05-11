@@ -325,6 +325,11 @@ public class IEContent
 			{
 				return stack.getItemDamage()%2==0?16:1;
 			}
+			@Override
+			public boolean isMetaHidden(int meta)
+			{
+				return meta%2==1;
+			}
 		};
 		itemWireCoil = new ItemWireCoil();
 		WireType.ieWireCoil = itemWireCoil;

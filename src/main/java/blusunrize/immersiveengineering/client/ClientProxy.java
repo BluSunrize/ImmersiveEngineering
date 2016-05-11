@@ -349,7 +349,7 @@ public class ClientProxy extends CommonProxy
 				return new EntityRenderIEExplosive(manager);
 			}});
 		ModelLoaderRegistry.registerLoader(new ConnLoader());
-		
+
 
 		for(IECompatModule compat : IECompatModule.modules)
 			try{
@@ -385,7 +385,7 @@ public class ClientProxy extends CommonProxy
 		//		RenderingRegistry.registerBlockHandler(new BlockRenderMetalDevices2());
 		//		RenderingRegistry.registerBlockHandler(new BlockRenderMetalDecoration());
 		//		RenderingRegistry.registerBlockHandler(new BlockRenderMetalMultiblocks());
-//		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityImmersiveConnectable.class, new TileRenderImmersiveConnectable());
+		//		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityImmersiveConnectable.class, new TileRenderImmersiveConnectable());
 		//		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityConnectorLV.class, new TileRenderConnectorLV());
 		//		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityConnectorMV.class, new TileRenderConnectorMV());
 		//		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTransformer.class, new TileRenderTransformer());
@@ -697,28 +697,28 @@ public class ClientProxy extends CommonProxy
 		}
 		ManualHelper.addEntry("bullets", ManualHelper.CAT_MACHINES, pages.toArray(new IManualPage[pages.size()]));
 		ManualHelper.addEntry("maneuverGear", ManualHelper.CAT_MACHINES, new ManualPages.Crafting(ManualHelper.getManual(), "maneuverGear0", new ItemStack(IEContent.itemManeuverGear)), new ManualPages.Text(ManualHelper.getManual(),"maneuverGear1"), new ManualPages.Text(ManualHelper.getManual(),"maneuverGear2"));
-		//
-		//		pages = new ArrayList<IManualPage>();
-		//
-		//		pages.add(new ManualPages.Crafting(ManualHelper.getManual(), "fluidPipes0", new ItemStack(IEContent.blockMetalDevice2,1,BlockMetalDevices2.META_fluidPipe)));
-		//		pages.add(new ManualPages.Text(ManualHelper.getManual(), "fluidPipes1"));
-		//		pages.add(new ManualPages.Crafting(ManualHelper.getManual(), "fluidPipes2", new ItemStack(IEContent.blockMetalDevice2,1,BlockMetalDevices2.META_fluidPump)));
-		//		pages.add(new ManualPages.Text(ManualHelper.getManual(), "fluidPipes3"));
-		//		if(Config.getBoolean("pump_infiniteWater")||Config.getBoolean("pump_placeCobble"))
-		//			pages.add(new ManualPages.Text(ManualHelper.getManual(), "fluidPipes4"));
-		//		ManualHelper.addEntry("fluidPipes", ManualHelper.CAT_MACHINES,pages.toArray(new IManualPage[pages.size()]));
+
+		pages = new ArrayList<IManualPage>();
+
+		pages.add(new ManualPages.Crafting(ManualHelper.getManual(), "fluidPipes0", new ItemStack(IEContent.blockMetalDevice1,1,BlockTypes_MetalDevice1.FLUID_PIPE.getMeta())));
+		pages.add(new ManualPages.Text(ManualHelper.getManual(), "fluidPipes1"));
+		pages.add(new ManualPages.Crafting(ManualHelper.getManual(), "fluidPipes2", new ItemStack(IEContent.blockMetalDevice0,1,BlockTypes_MetalDevice0.FLUID_PUMP.getMeta())));
+		pages.add(new ManualPages.Text(ManualHelper.getManual(), "fluidPipes3"));
+		if(Config.getBoolean("pump_infiniteWater")||Config.getBoolean("pump_placeCobble"))
+			pages.add(new ManualPages.Text(ManualHelper.getManual(), "fluidPipes4"));
+		ManualHelper.addEntry("fluidPipes", ManualHelper.CAT_MACHINES,pages.toArray(new IManualPage[pages.size()]));
 		//		ManualHelper.addEntry("skyhook", ManualHelper.CAT_MACHINES,
 		//				new ManualPages.CraftingMulti(ManualHelper.getManual(), "skyhook0", new ItemStack(IEContent.itemSkyhook), new ItemStack(IEContent.itemMaterial,1,9)),
 		//				new ManualPages.Text(ManualHelper.getManual(), "skyhook1"));
-		//		ManualHelper.addEntry("chemthrower", ManualHelper.CAT_MACHINES,
-		//				new ManualPages.CraftingMulti(ManualHelper.getManual(), "chemthrower0", new ItemStack(IEContent.itemChemthrower,1,0), new ItemStack(IEContent.itemMaterial,1,9), new ItemStack(IEContent.itemToolUpgrades,1,0)),
-		//				new ManualPages.Crafting(ManualHelper.getManual(), "chemthrower1", new ItemStack(IEContent.itemToolUpgrades,1,3)),
-		//				new ManualPages.Crafting(ManualHelper.getManual(), "chemthrower2", new ItemStack(IEContent.itemToolUpgrades,1,7)));
-		//		ManualHelper.addEntry("railgun", ManualHelper.CAT_MACHINES,
-		//				new ManualPages.CraftingMulti(ManualHelper.getManual(), "railgun0", new ItemStack(IEContent.itemRailgun,1,0), new ItemStack(IEContent.itemMaterial,1,9)),
-		//				new ManualPages.Text(ManualHelper.getManual(), "railgun1"),
-		//				new ManualPages.Crafting(ManualHelper.getManual(), "railgun2", new ItemStack(IEContent.itemToolUpgrades,1,9)),
-		//				new ManualPages.Crafting(ManualHelper.getManual(), "railgun3", new ItemStack(IEContent.itemToolUpgrades,1,8)));
+		ManualHelper.addEntry("chemthrower", ManualHelper.CAT_MACHINES,
+				new ManualPages.CraftingMulti(ManualHelper.getManual(), "chemthrower0", new ItemStack(IEContent.itemChemthrower,1,0), new ItemStack(IEContent.itemMaterial,1,9), new ItemStack(IEContent.itemToolUpgrades,1,0)),
+				new ManualPages.Crafting(ManualHelper.getManual(), "chemthrower1", new ItemStack(IEContent.itemToolUpgrades,1,3)),
+				new ManualPages.Crafting(ManualHelper.getManual(), "chemthrower2", new ItemStack(IEContent.itemToolUpgrades,1,7)));
+		ManualHelper.addEntry("railgun", ManualHelper.CAT_MACHINES,
+				new ManualPages.CraftingMulti(ManualHelper.getManual(), "railgun0", new ItemStack(IEContent.itemRailgun,1,0), new ItemStack(IEContent.itemMaterial,1,9)),
+				new ManualPages.Text(ManualHelper.getManual(), "railgun1"),
+				new ManualPages.Crafting(ManualHelper.getManual(), "railgun2", new ItemStack(IEContent.itemToolUpgrades,1,9)),
+				new ManualPages.Crafting(ManualHelper.getManual(), "railgun3", new ItemStack(IEContent.itemToolUpgrades,1,8)));
 
 		ManualHelper.addEntry("improvedBlastfurnace", ManualHelper.CAT_HEAVYMACHINES,
 				new ManualPages.Crafting(ManualHelper.getManual(), "improvedBlastfurnace0", new ItemStack(IEContent.blockStoneDecoration,1,BlockTypes_StoneDecoration.BLASTBRICK_REINFORCED.getMeta())),
@@ -776,7 +776,7 @@ public class ClientProxy extends CommonProxy
 				new ManualPageMultiblock(ManualHelper.getManual(), "", MultiblockBucketWheel.instance),
 				new ManualPageMultiblock(ManualHelper.getManual(), "", MultiblockExcavatorDemo.instance),
 				new ManualPages.Text(ManualHelper.getManual(), "excavator1"));
-		
+
 
 		for(IECompatModule compat : IECompatModule.modules)
 			try{
