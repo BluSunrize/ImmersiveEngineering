@@ -167,6 +167,8 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 		try{
 			if(nbt.hasKey("limitType"))
 				limitType = ApiUtils.getWireTypeFromNBT(nbt, "limitType");
+			else
+				limitType = null;
 
 			//			int[] prevPos = nbt.getIntArray("prevPos");
 			//			if(prevPos!=null && prevPos.length>3 && FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER)

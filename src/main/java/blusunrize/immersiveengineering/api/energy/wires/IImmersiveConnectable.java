@@ -1,5 +1,10 @@
 package blusunrize.immersiveengineering.api.energy.wires;
 
+import java.util.Set;
+
+import com.google.common.collect.ImmutableSet;
+
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import net.minecraft.util.BlockPos;
@@ -77,4 +82,11 @@ public interface IImmersiveConnectable
 	 * @return Where the cable should attach
 	 */
 	public Vec3 getConnectionOffset(Connection con);
+	/**
+	 * returns a set of Blocks to be ignored when raytracing
+	 */
+	public default Set<BlockPos> getIgnored(IImmersiveConnectable other)
+	{
+		return ImmutableSet.of(ApiUtils.toBlockPos(this));
+	}
 }

@@ -2,7 +2,9 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
@@ -93,6 +95,8 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 		facing = EnumFacing.getFront(nbt.getInteger("facing"));
 		if(nbt.hasKey("secondCable"))
 			secondCable = ApiUtils.getWireTypeFromNBT(nbt, "secondCable");
+		else
+			secondCable = null;
 		dummy = nbt.getInteger("dummy");
 		postAttached = nbt.getInteger("postAttached");
 	}
@@ -376,5 +380,9 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 		if(box.expand(.002,.002,.002).isVecInside(mop.hitVec))
 			return true;	
 		return false;
+	}
+	@Override
+	public Set<BlockPos> getIgnored(IImmersiveConnectable other) {
+		return ImmutableSet.of(pos.up(), pos.up(2));
 	}
 }

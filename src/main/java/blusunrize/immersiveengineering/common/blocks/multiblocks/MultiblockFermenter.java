@@ -162,6 +162,8 @@ public class MultiblockFermenter implements IMultiblock
 						tile.pos = (h+1)*9 + (l+1)*3 + (w+1);
 						tile.offset = new int[]{(side==EnumFacing.WEST?-l: side==EnumFacing.EAST?l: side==EnumFacing.NORTH?ww: -ww),h,(side==EnumFacing.NORTH?-l: side==EnumFacing.SOUTH?l: side==EnumFacing.EAST?ww : -ww)};
 						tile.mirrored=mirror;
+						tile.markDirty();
+						world.addBlockEvent(pos2, IEContent.blockMetalMultiblock, 255, 0);
 					}
 				}
 		return true;

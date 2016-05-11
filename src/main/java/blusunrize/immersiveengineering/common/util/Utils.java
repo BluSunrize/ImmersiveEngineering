@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.DirectionalBlockPos;
@@ -960,7 +961,7 @@ public class Utils
 	{
 		return new Vec3(v.xCoord*s, v.yCoord*s, v.zCoord*s);
 	}
-	public static BlockPos rayTraceForFirst(Vec3 start, Vec3 end, World w, HashSet<BlockPos> ignore)
+	public static BlockPos rayTraceForFirst(Vec3 start, Vec3 end, World w, Set<BlockPos> ignore)
 	{
 		HashSet<BlockPos> trace = rayTrace(start, end, w);
 		for (BlockPos cc:ignore)

@@ -90,7 +90,8 @@ public class MultiblockCokeOven implements IMultiblock
 					int zz = f==EnumFacing.NORTH?l: f==EnumFacing.SOUTH?-l: f==EnumFacing.EAST?w:-w;
 
 					world.setBlockState(pos.add(xx, h, zz), IEContent.blockStoneDevice.getStateFromMeta(0));
-					TileEntity curr = world.getTileEntity(pos.add(xx, h, zz));
+					BlockPos pos2 = pos.add(xx, h, zz);
+					TileEntity curr = world.getTileEntity(pos2);
 					if(curr instanceof TileEntityCokeOven)
 					{
 						TileEntityCokeOven currBlast = (TileEntityCokeOven) curr;
@@ -99,6 +100,7 @@ public class MultiblockCokeOven implements IMultiblock
 						currBlast.facing=f.getOpposite();
 						currBlast.formed=true;
 						currBlast.markDirty();
+						world.addBlockEvent(pos2, IEContent.blockStoneDevice, 255, 0);
 					}
 				}
 		return true;

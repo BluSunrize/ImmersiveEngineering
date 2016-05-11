@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.common.items;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -126,7 +127,10 @@ public class ItemWireCoil extends ItemIEBase implements IWireCoil
 						{
 							Vec3 rtOff0 = nodeHere.getRaytraceOffset(nodeLink).addVector(masterPos.getX(), masterPos.getY(), masterPos.getZ());
 							Vec3 rtOff1 = nodeLink.getRaytraceOffset(nodeHere).addVector(linkPos.getX(), linkPos.getY(), linkPos.getZ());
-							boolean canSee = Utils.canBlocksSeeOther(world, masterPos, linkPos, rtOff0,rtOff1);
+							Set<BlockPos> ignore = new HashSet<>();
+							ignore.addAll(nodeHere.getIgnored(nodeLink));
+							ignore.addAll(nodeLink.getIgnored(nodeHere));
+							boolean canSee = Utils.rayTraceForFirst(rtOff0, rtOff1, world, ignore)==null;
 							if(canSee)
 							{
 								TargetingInfo targetLink = TargetingInfo.readFromNBT(stack.getTagCompound());
