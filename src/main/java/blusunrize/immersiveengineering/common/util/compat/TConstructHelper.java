@@ -1,47 +1,107 @@
 package blusunrize.immersiveengineering.common.util.compat;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler;
+import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEffect_Potion;
 import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.IERecipes;
+import blusunrize.immersiveengineering.common.util.IEPotions;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionEffect;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.event.FMLInterModComms;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
+import slimeknights.tconstruct.TinkerIntegration;
+import slimeknights.tconstruct.library.TinkerRegistry;
+import slimeknights.tconstruct.library.client.MaterialRenderInfo;
+import slimeknights.tconstruct.library.materials.ExtraMaterialStats;
+import slimeknights.tconstruct.library.materials.HandleMaterialStats;
+import slimeknights.tconstruct.library.materials.HeadMaterialStats;
+import slimeknights.tconstruct.library.materials.Material;
+import slimeknights.tconstruct.library.traits.AbstractTrait;
+import slimeknights.tconstruct.library.utils.HarvestLevels;
+import slimeknights.tconstruct.tools.TinkerMaterials;
 
 public class TConstructHelper extends IECompatModule
 {
+	public static final Material treatedWood = new Material("treatedwood", 0x653522);
+	public static final Material constantan = new Material("constantan", 0xf0816a);
+	public static final AbstractTrait thermalInversion = new TraitThermalInversion();
+
 	@Override
 	public void preInit()
 	{
 		sendFluidForMelting("Uranium", 0x596552, 600);
 		Fluid fluidCons = sendFluidForMelting("Constantan", 0xf7866c, 518);
 		sendAlloyForMelting(new FluidStack(fluidCons, 2), "copper",1, "nickel",1);
+		//		FluidStack output = fluids.get(0);
+		//		FluidStack[] input = new FluidStack[fluids.size()-1];
+		//		input = fluids.subList(1, fluids.size()).toArray(input);
+		//		TinkerRegistry.registerAlloy(new FluidStack(fluidCons, 2), new FluidStack[]{new FluidStack(fluidCons, 2)});
 
 		FMLInterModComms.sendMessage("tconstruct", "blacklistMelting", new ItemStack(IEContent.itemBullet, 1, OreDictionary.WILDCARD_VALUE));
+
+
+		treatedWood.setCraftable(true);
+		treatedWood.addItem("stickTreatedWood", 1, Material.VALUE_Shard);
+		treatedWood.addItem("plankTreatedWood", 1, Material.VALUE_Ingot);
+		treatedWood.setRepresentativeItem(new ItemStack(IEContent.blockTreatedWood,1,OreDictionary.WILDCARD_VALUE));
+		treatedWood.addTrait(TinkerMaterials.ecological, HeadMaterialStats.TYPE);
+		treatedWood.addTrait(TinkerMaterials.ecological);
+		TinkerRegistry.addMaterialStats(treatedWood,
+				new HeadMaterialStats(25, 2.00f, 2.00f, HarvestLevels.STONE),
+				new HandleMaterialStats(1.0f, 35),
+				new ExtraMaterialStats(20));
+		TinkerIntegration.integrate(treatedWood).integrate();
+
+		constantan.setCastable(true);
+		constantan.addItem("ingotConstantan", 1, Material.VALUE_Ingot);
+		constantan.setRepresentativeItem(new ItemStack(IEContent.itemMetal,1,6));
+		constantan.addTrait(thermalInversion);
+		TinkerRegistry.addMaterialStats(constantan,
+				new HeadMaterialStats(25, 4.70f, 4.00f, HarvestLevels.DIAMOND),
+				new HandleMaterialStats(0.8f, 60),
+				new ExtraMaterialStats(60));
+		TinkerIntegration.integrate(constantan, fluidCons, "Constantan").toolforge().integrate();
 	}
 
 	@Override
 	public void init()
 	{
-		//		IERecipes.addOreDictAlloyingRecipe("ingotAluminumBrass",4, "Copper", 100,512, "dustAluminum","dustAluminum","dustAluminum");
-		//
-		//		IERecipes.addOredictRecipe(new ItemStack(IEContent.blockClothDevice, 2,0), " F ","FTF"," S ", 'F',"fabricHemp", 'T',"torchStone", 'S',"slabTreatedWood");
-		//
+		if(ApiUtils.isExistingOreName("ingotAluminumBrass"))
+			IERecipes.addOreDictAlloyingRecipe("ingotAluminumBrass",4, "Copper", 100,512, "dustAluminum","dustAluminum","dustAluminum");
 		//		ChemthrowerHandler.registerEffect("glue", new ChemthrowerEffect_Potion(null,0, IEPotions.sticky,100,1));
-		//		ChemthrowerHandler.registerEffect("slime.blue", new ChemthrowerEffect_Potion(null,0, IEPotions.sticky,100,1));
-		//		
+		ChemthrowerHandler.registerEffect("blueslime", new ChemthrowerEffect_Potion(null,0, IEPotions.sticky,100,1));
+		ChemthrowerHandler.registerEffect("purpleslime", new ChemthrowerEffect_Potion(null,0, IEPotions.sticky,100,2));
 		//		RailgunHandler.registerProjectileProperties(new ComparableItemStack("rodIron"), 7, 1.25).setColourMap(new int[][]{{0xd8d8d8,0xd8d8d8,0xd8d8d8,0xa8a8a8,0x686868,0x686868}});
 		//		RailgunHandler.registerProjectileProperties(new ComparableItemStack("rodSteel"), 9, 1.25).setColourMap(new int[][]{{0xb4b4b4,0xb4b4b4,0xb4b4b4,0x7a7a7a,0x555555,0x555555}});
 		//		RailgunHandler.registerProjectileProperties(new ComparableItemStack("ironRod"), 7, 1.25).setColourMap(new int[][]{{0xd8d8d8,0xd8d8d8,0xd8d8d8,0xa8a8a8,0x686868,0x686868}});
 		//		RailgunHandler.registerProjectileProperties(new ComparableItemStack("steelRod"), 9, 1.25).setColourMap(new int[][]{{0xb4b4b4,0xb4b4b4,0xb4b4b4,0x7a7a7a,0x555555,0x555555}});
+
 	}
 
 	@Override
 	public void postInit()
 	{
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void clientPostInit()
+	{
+		treatedWood.setRenderInfo(new MaterialRenderInfo.BlockTexture("immersiveengineering:blocks/treatedWood_horizontal"));
+		constantan.setRenderInfo(new MaterialRenderInfo.Metal(0xae5d4c, 0.1f, 0.2f, 0f));
 	}
 
 	public static Fluid sendFluidForMelting(String ore, int colour, int temp)
@@ -60,11 +120,11 @@ public class TConstructHelper extends IECompatModule
 		assert(input.length%2==0);
 		FluidStack[] inputStacks = new FluidStack[input.length/2];
 		for(int i=0; i<inputStacks.length; i++)
-			if(input[i] instanceof String && input[i+1] instanceof Integer)
+			if(input[i*2] instanceof String && input[i*2+1] instanceof Integer)
 			{
-				Fluid f = FluidRegistry.getFluid((String)input[i]);
+				Fluid f = FluidRegistry.getFluid((String)input[i*2]);
 				if(f!=null)
-					inputStacks[i] = new FluidStack(f, (Integer)input[i+1]);
+					inputStacks[i] = new FluidStack(f, (Integer)input[i*2+1]);
 			}
 
 		NBTTagList tagList = new NBTTagList();
@@ -75,7 +135,9 @@ public class TConstructHelper extends IECompatModule
 
 		NBTTagCompound message = new NBTTagCompound();
 		message.setTag("alloy", tagList);
-		FMLInterModComms.sendMessage("tconstruct", "alloy", message);
+		//		FMLInterModComms.sendMessage("tconstruct", "alloy", message);
+		//	For some reason IMC on this is broken? So direct interaction is required. Oh well.
+		TinkerRegistry.registerAlloy(output, inputStacks);
 	}
 
 
@@ -99,6 +161,32 @@ public class TConstructHelper extends IECompatModule
 		public int getColor()
 		{
 			return colour;
+		}
+	}
+
+	public static class TraitThermalInversion extends AbstractTrait
+	{
+		public TraitThermalInversion()
+		{
+			super("thermalinversion", 0xf3826a);
+		}
+
+		@Override
+		public void afterHit(ItemStack tool, EntityLivingBase player, EntityLivingBase target, float damageDealt, boolean wasCritical, boolean wasHit)
+		{
+			if(target.isEntityAlive() && wasHit)
+			{
+				BlockPos pos = player.getPosition();
+				BiomeGenBase biome = player.worldObj.getBiomeGenForCoords(pos);
+				float tempDif = biome.getFloatTemperature(pos)-0.5f;
+				if(tempDif!=0)
+				{
+					if(tempDif<0 && !target.isImmuneToFire())
+						target.setFire((int)Math.floor(tempDif*3));
+					else if(tempDif>0)
+						target.addPotionEffect(new PotionEffect(Potion.moveSlowdown.getId(),4,(int)Math.floor(tempDif*2)));
+				}
+			}
 		}
 	}
 }

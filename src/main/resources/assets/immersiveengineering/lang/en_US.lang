@@ -178,17 +178,13 @@ tile.ImmersiveEngineering.hemp.name=Industrial Hemp
 tile.ImmersiveEngineering.clothDevice.cushion.name=Jump Cushion
 tile.ImmersiveEngineering.clothDevice.balloon.name=Balloon
 
-#Hydraulicraft Support
+#Hydraulicraft Compat
 tile.harvesterTrolley.ieCrop.name=Industrial Hemp Harvester Trolley 
 
 fluid.creosote=Creosote Oil
 fluid.plantoil=Plant Oil
 fluid.ethanol=Ethanol
 fluid.biodiesel=Biodiesel
-#TCon Fluids
-fluid.uranium=Molten Uranium
-fluid.constantan=Molten Constantan
-
 
 # ITEMS
 item.ImmersiveEngineering.metal.ingotCopper.name=Copper Ingot
@@ -347,6 +343,14 @@ itemGroup.ImmersiveEngineering=Immersive Engineering
 
 #ENTITIES
 entity.ImmersiveEngineering.explosive.name=Explosive
+
+#TINKERS CONSTRUCT COMPAT
+fluid.uranium=Molten Uranium
+fluid.constantan=Molten Constantan
+material.treatedwood.name=Treated Wood
+material.constantan.name=Constantan
+modifier.thermalinversion.name=Thermal Inversion
+modifier.thermalinversion.desc=§oHot & Cold!§r\nHitting an enemy in a hot or cold environment will chill or burn them.
 
 #DESCRIPTIONS
 description.villager.profession.immersiveengineering.villager_engineer=Engineer

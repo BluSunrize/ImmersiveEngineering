@@ -9,6 +9,8 @@ import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.compat.waila.WailaHelper;
 import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public abstract class IECompatModule
 {
@@ -100,4 +102,10 @@ public abstract class IECompatModule
 	public abstract void init();
 	public abstract void postInit();
 	public void loadComplete(){}
+	@SideOnly(Side.CLIENT)
+	public void clientPreInit(){}
+	@SideOnly(Side.CLIENT)
+	public void clientInit(){}
+	@SideOnly(Side.CLIENT)
+	public void clientPostInit(){}
 }

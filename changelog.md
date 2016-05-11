@@ -11,7 +11,8 @@
 - fixed Crash with the Mining Drill (thanks Malte)
 - fixed watermill outputting less than it should because of broken math (thanks Malte)
 - fixed extremely high losses on wires (thanks Malte)
-- ported miscelanous other fixes from 1.7 (thanks Malte)
+- fixed insulating glass being opaque (thanks Malte)
+- ported miscellaneous other fixes from 1.7 (thanks Malte)
 - added zh_CN localization (thanks to 3TUSK, Amamiya-Nagisa, bakaxyf, CannonFotter, crafteverywhere, IamAchang, Joccob, LYDfalse, UUUii)
 
 #####Version 0.8-24 - BUILT

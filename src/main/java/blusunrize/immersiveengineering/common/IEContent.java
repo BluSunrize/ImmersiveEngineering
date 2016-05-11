@@ -624,10 +624,10 @@ public class IEContent
 		ChemthrowerHandler.registerEffect("rocket_fuel", new ChemthrowerEffect_Potion(null,0, IEPotions.flammable,60,2));
 		ChemthrowerHandler.registerFlammable("rocket_fuel");
 
-		RailgunHandler.registerProjectileProperties(new ComparableItemStack("stickIron"), 7, 1.25).setColourMap(new int[][]{{0xd8d8d8,0xd8d8d8,0xd8d8d8,0xa8a8a8,0x686868,0x686868}});
-		RailgunHandler.registerProjectileProperties(new ComparableItemStack("stickAluminum"), 6, 1.05).setColourMap(new int[][]{{0xd8d8d8,0xd8d8d8,0xd8d8d8,0xa8a8a8,0x686868,0x686868}});
-		RailgunHandler.registerProjectileProperties(new ComparableItemStack("stickSteel"), 9, 1.25).setColourMap(new int[][]{{0xb4b4b4,0xb4b4b4,0xb4b4b4,0x7a7a7a,0x555555,0x555555}});
-		RailgunHandler.registerProjectileProperties(new ComparableItemStack(new ItemStack(itemGraphiteElectrode)), 12, .9).setColourMap(new int[][]{{0x242424,0x242424,0x242424,0x171717,0x171717,0x0a0a0a}});
+		RailgunHandler.registerProjectileProperties(new ComparableItemStack("stickIron"), 10, 1.25).setColourMap(new int[][]{{0xd8d8d8,0xd8d8d8,0xd8d8d8,0xa8a8a8,0x686868,0x686868}});
+		RailgunHandler.registerProjectileProperties(new ComparableItemStack("stickAluminum"), 9, 1.05).setColourMap(new int[][]{{0xd8d8d8,0xd8d8d8,0xd8d8d8,0xa8a8a8,0x686868,0x686868}});
+		RailgunHandler.registerProjectileProperties(new ComparableItemStack("stickSteel"), 12, 1.25).setColourMap(new int[][]{{0xb4b4b4,0xb4b4b4,0xb4b4b4,0x7a7a7a,0x555555,0x555555}});
+		RailgunHandler.registerProjectileProperties(new ComparableItemStack(new ItemStack(itemGraphiteElectrode)), 16, .9).setColourMap(new int[][]{{0x242424,0x242424,0x242424,0x171717,0x171717,0x0a0a0a}});
 
 		ExternalHeaterHandler.defaultFurnaceEnergyCost = Config.getInt("heater_consumption");
 		ExternalHeaterHandler.defaultFurnaceSpeedupCost= Config.getInt("heater_speedupConsumption");

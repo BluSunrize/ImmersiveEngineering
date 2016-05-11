@@ -133,6 +133,7 @@ import blusunrize.immersiveengineering.common.items.ItemToolbox;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
+import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import blusunrize.immersiveengineering.common.util.sound.IETileSound;
 import blusunrize.lib.manual.IManualPage;
 import blusunrize.lib.manual.ManualInstance.ManualEntry;
@@ -348,6 +349,14 @@ public class ClientProxy extends CommonProxy
 				return new EntityRenderIEExplosive(manager);
 			}});
 		ModelLoaderRegistry.registerLoader(new ConnLoader());
+		
+
+		for(IECompatModule compat : IECompatModule.modules)
+			try{
+				compat.clientPreInit();
+			}catch (Exception exception){
+				IELogger.error("Compat module for "+compat+" could not be client pre-initialized");
+			}
 	}
 
 	@Override
@@ -446,6 +455,12 @@ public class ClientProxy extends CommonProxy
 		render = skinMap.get("slim");
 		render.addLayer(new IEBipedLayerRenderer());
 
+		for(IECompatModule compat : IECompatModule.modules)
+			try{
+				compat.clientInit();
+			}catch (Exception exception){
+				IELogger.error("Compat module for "+compat+" could not be client initialized");
+			}
 	}
 
 	@Override
@@ -761,6 +776,14 @@ public class ClientProxy extends CommonProxy
 				new ManualPageMultiblock(ManualHelper.getManual(), "", MultiblockBucketWheel.instance),
 				new ManualPageMultiblock(ManualHelper.getManual(), "", MultiblockExcavatorDemo.instance),
 				new ManualPages.Text(ManualHelper.getManual(), "excavator1"));
+		
+
+		for(IECompatModule compat : IECompatModule.modules)
+			try{
+				compat.clientPostInit();
+			}catch (Exception exception){
+				IELogger.error("Compat module for "+compat+" could not be client posi-initialized");
+			}
 	}
 	static ManualEntry mineralEntry;
 	public static void handleMineralManual()

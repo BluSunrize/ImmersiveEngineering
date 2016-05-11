@@ -190,7 +190,7 @@ public class IERecipes
 		//CLOTH DEVICES
 		//
 		addOredictRecipe(new ItemStack(IEContent.blockClothDevice,3,BlockTypes_ClothDevice.CUSHION.getMeta()), "FFF","F F","FFF", 'F',"fabricHemp");
-		addOredictRecipe(new ItemStack(IEContent.blockClothDevice,2,BlockTypes_ClothDevice.BALLOON.getMeta()), " F ","FTF"," S ", 'F',"fabricHemp", 'T',Blocks.torch, 'S',"slabTreatedWood");
+		addOredictRecipe(new ItemStack(IEContent.blockClothDevice,2,BlockTypes_ClothDevice.BALLOON.getMeta()), " F ","FTF"," S ", 'F',"fabricHemp", 'T',"torch", 'S',"slabTreatedWood");
 
 		//
 		//STONE DECORACTION
