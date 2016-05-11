@@ -140,7 +140,8 @@ public class MultiblockSheetmetalTank implements IMultiblock
 					int zz = f==EnumFacing.NORTH?l: f==EnumFacing.SOUTH?-l: f==EnumFacing.EAST?w:-w;
 
 					world.setBlockState(pos.add(xx, h, zz), IEContent.blockMetalMultiblock.getStateFromMeta(BlockTypes_MetalMultiblock.TANK.getMeta()));
-					TileEntity curr = world.getTileEntity(pos.add(xx, h, zz));
+					BlockPos pos2 = pos.add(xx, h, zz);
+					TileEntity curr = world.getTileEntity(pos2);
 					if(curr instanceof TileEntitySheetmetalTank)
 					{
 						TileEntitySheetmetalTank currTank = (TileEntitySheetmetalTank) curr;
@@ -150,6 +151,7 @@ public class MultiblockSheetmetalTank implements IMultiblock
 						currTank.formed=true;
 						currTank.offset=new int[]{xx,h,zz};
 						currTank.markDirty();
+						world.addBlockEvent(pos2, IEContent.blockMetalMultiblock, 255, 0);
 					}
 				}
 		return true;

@@ -172,6 +172,8 @@ public class MultiblockMetalPress implements IMultiblock
 					tile.formed=true;
 					tile.pos = (h+1)*3 + (l+1);
 					tile.offset = new int[]{(dir==EnumFacing.WEST?-l: dir==EnumFacing.EAST?l: 0),h,(dir==EnumFacing.NORTH?-l: dir==EnumFacing.SOUTH?l: 0)};
+					tile.markDirty();
+					world.addBlockEvent(pos2, IEContent.blockMetalMultiblock, 255, 0);
 				}
 			}
 		player.triggerAchievement(IEAchievements.mbMetalPress);

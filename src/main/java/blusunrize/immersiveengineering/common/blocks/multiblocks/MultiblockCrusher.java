@@ -157,6 +157,8 @@ public class MultiblockCrusher implements IMultiblock
 							tile.pos = (h+1)*15 + l*5 + (w+2);
 							tile.offset = new int[]{(side==EnumFacing.WEST?-l+1: side==EnumFacing.EAST?l-1: side==EnumFacing.NORTH?ww: -ww),h,(side==EnumFacing.NORTH?-l+1: side==EnumFacing.SOUTH?l-1: side==EnumFacing.EAST?ww : -ww)};
 							tile.mirrored = mirrored;
+							tile.markDirty();
+							world.addBlockEvent(pos2, IEContent.blockMetalMultiblock, 255, 0);
 						}
 					}
 			player.triggerAchievement(IEAchievements.mbCrusher);

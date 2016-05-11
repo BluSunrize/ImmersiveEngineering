@@ -253,8 +253,13 @@ public class BlockIEBase<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 		IBlockState state = this.blockState.getBaseState().withProperty(this.property, enumValues[0]);
 		for(int i=0; i<this.additionalProperties.length; i++)
 			if(this.additionalProperties[i]!=null && !this.additionalProperties[i].getAllowedValues().isEmpty())
-				state = state.withProperty(this.additionalProperties[i], this.additionalProperties[i].getAllowedValues().toArray()[0]);
+				state = applyProperty(state, additionalProperties[i], additionalProperties[i].getAllowedValues().iterator().next());
 		return state;
+	}
+	
+	protected <V extends Comparable<V>> IBlockState applyProperty(IBlockState in, IProperty<V> prop, Object val)
+	{
+		return in.withProperty(prop, (V)val);
 	}
 
 	public void onIEBlockPlacedBy(World world, BlockPos pos, IBlockState state, EnumFacing side, float hitX, float hitY, float hitZ, EntityLivingBase placer, ItemStack stack)
@@ -291,7 +296,7 @@ public class BlockIEBase<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 	{
 		for(int i=0; i<this.additionalProperties.length; i++)
 			if(this.additionalProperties[i]!=null && !this.additionalProperties[i].getAllowedValues().isEmpty())
-				state = state.withProperty(this.additionalProperties[i], this.additionalProperties[i].getAllowedValues().toArray()[0]);
+				state = applyProperty(state, this.additionalProperties[i], this.additionalProperties[i].getAllowedValues().toArray()[0]);
 		return state;
 	}
 	@Override
@@ -300,7 +305,7 @@ public class BlockIEBase<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 		IBlockState state = this.getDefaultState().withProperty(this.property, fromMeta(meta));
 		for(int i=0; i<this.additionalProperties.length; i++)
 			if(this.additionalProperties[i]!=null && !this.additionalProperties[i].getAllowedValues().isEmpty())
-				state = state.withProperty(this.additionalProperties[i], this.additionalProperties[i].getAllowedValues().toArray()[0]);
+				state = applyProperty(state, this.additionalProperties[i], this.additionalProperties[i].getAllowedValues().toArray()[0]);
 		return state;
 		//		return this.getDefaultState().withProperty(this.property, fromMeta(meta));
 	}
@@ -347,6 +352,16 @@ public class BlockIEBase<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 			this.stepSound = Block.soundTypeStone;
 		else if(this.blockMaterial==Material.wood||this.blockMaterial==Material.cactus)
 			this.stepSound = Block.soundTypeWood;
+	}
+
+	public boolean onBlockEventReceived(World worldIn, BlockPos pos, IBlockState state, int eventID, int eventParam)
+	{
+		if (worldIn.isRemote&&eventID==255)
+		{
+			worldIn.markBlockForUpdate(pos);
+			return true;
+		}
+		return super.onBlockEventReceived(worldIn, pos, state, eventID, eventParam);
 	}
 
 	public boolean allowHammerHarvest(IBlockState blockState)

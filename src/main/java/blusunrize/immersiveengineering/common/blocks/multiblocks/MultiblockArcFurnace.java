@@ -193,6 +193,8 @@ public class MultiblockArcFurnace implements IMultiblock
 								tile.pos = h*25 + l*5 + (w+2);
 								tile.offset = new int[]{(side==EnumFacing.WEST?-l+2: side==EnumFacing.EAST?l-2: side==EnumFacing.NORTH?ww: -ww),h-1,(side==EnumFacing.NORTH?-l+2: side==EnumFacing.SOUTH?l-2: side==EnumFacing.EAST?ww : -ww)};
 								tile.mirrored = mirrored;
+								tile.markDirty();
+								world.addBlockEvent(pos2, IEContent.blockMetalMultiblock, 255, 0);
 							}
 						}
 			player.triggerAchievement(IEAchievements.mbArcFurnace);

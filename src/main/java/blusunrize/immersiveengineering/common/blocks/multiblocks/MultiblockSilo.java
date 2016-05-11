@@ -141,7 +141,8 @@ public class MultiblockSilo implements IMultiblock
 					int zz = f==EnumFacing.NORTH?l: f==EnumFacing.SOUTH?-l: f==EnumFacing.EAST?w:-w;
 
 					world.setBlockState(pos.add(xx, h, zz), IEContent.blockMetalMultiblock.getStateFromMeta(BlockTypes_MetalMultiblock.SILO.getMeta()));
-					TileEntity curr = world.getTileEntity(pos.add(xx, h, zz));
+					BlockPos pos2 = pos.add(xx, h, zz);
+					TileEntity curr = world.getTileEntity(pos2);
 					if(curr instanceof TileEntitySilo)
 					{
 						TileEntitySilo currTank = (TileEntitySilo) curr;
@@ -151,6 +152,7 @@ public class MultiblockSilo implements IMultiblock
 						currTank.formed=true;
 						currTank.offset=new int[]{xx,h,zz};
 						currTank.markDirty();
+						world.addBlockEvent(pos2, IEContent.blockMetalMultiblock, 255, 0);
 					}
 				}
 		player.triggerAchievement(IEAchievements.mbSilo);

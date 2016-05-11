@@ -157,12 +157,6 @@ public abstract class BlockIETileProvider extends BlockIEBase implements ITileEn
 
 		return state;
 	}
-	protected IBlockState applyProperty(IBlockState state, IProperty property, Object value)
-	{
-		if(state.getProperties().containsKey(property))
-			state = state.withProperty(property, value);
-		return state;
-	}
 
 	@Override
 	public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos)

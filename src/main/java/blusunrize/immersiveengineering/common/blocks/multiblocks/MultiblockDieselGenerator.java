@@ -167,6 +167,8 @@ public class MultiblockDieselGenerator implements IMultiblock
 							tile.pos = (h+1)*15 + l*3 + (w+1);
 							tile.offset = new int[]{(side==EnumFacing.WEST?-l+2: side==EnumFacing.EAST?l-2: side==EnumFacing.NORTH?ww: -ww),h,(side==EnumFacing.NORTH?-l+2: side==EnumFacing.SOUTH?l-2: side==EnumFacing.EAST?ww : -ww)};
 							tile.mirrored=mirror;
+							tile.markDirty();
+							world.addBlockEvent(pos2, IEContent.blockMetalMultiblock, 255, 0);
 						}
 					}
 			player.triggerAchievement(IEAchievements.mbDieselGen);

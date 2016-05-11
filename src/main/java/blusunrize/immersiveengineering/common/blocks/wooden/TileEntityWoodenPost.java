@@ -167,6 +167,7 @@ public class TileEntityWoodenPost extends TileEntityIEBase implements IHasDummyB
 		{
 			worldObj.setBlockState(pos.add(0,i,0), state);
 			((TileEntityWoodenPost)worldObj.getTileEntity(pos.add(0,i,0))).dummy = (byte)i;
+			worldObj.addBlockEvent(pos.add(0, i, 0), getBlockType(), 255, 0);
 		}
 	}
 	@Override

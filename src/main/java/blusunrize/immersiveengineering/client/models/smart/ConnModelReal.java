@@ -161,7 +161,7 @@ public class ConnModelReal implements IFlexibleBakedModel, ISmartBlockModel
 
 	}
 
-	private class ExtBlockstateAdapter
+	public static class ExtBlockstateAdapter
 	{
 		final IExtendedBlockState state;
 

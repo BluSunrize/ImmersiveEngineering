@@ -117,7 +117,8 @@ public class MultiblockBlastFurnaceAdvanced implements IMultiblock
 						int zz = f==EnumFacing.NORTH?l: f==EnumFacing.SOUTH?-l: f==EnumFacing.EAST?w:-w;
 
 						world.setBlockState(pos.add(xx, h, zz), IEContent.blockStoneDevice.getStateFromMeta(2));
-						TileEntity curr = world.getTileEntity(pos.add(xx, h, zz));
+						BlockPos pos2 = pos.add(xx, h, zz);
+						TileEntity curr = world.getTileEntity(pos2);
 						if(curr instanceof TileEntityBlastFurnace)
 						{
 							TileEntityBlastFurnace currBlast = (TileEntityBlastFurnace) curr;
@@ -126,6 +127,7 @@ public class MultiblockBlastFurnaceAdvanced implements IMultiblock
 							currBlast.facing=f.getOpposite();
 							currBlast.formed=true;
 							currBlast.markDirty();
+							world.addBlockEvent(pos2, IEContent.blockStoneDevice, 255, 0);
 						}
 					}
 		player.triggerAchievement(IEAchievements.mbImprovedBlastFurnace);
