@@ -23,6 +23,7 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.shader.IShaderEquipableItem;
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
+import blusunrize.immersiveengineering.client.models.smart.ConnModelReal.ExtBlockstateAdapter;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -293,8 +294,8 @@ public class IESmartObjModel extends OBJBakedModel
 		if(state instanceof IExtendedBlockState)
 		{
 			IExtendedBlockState exState = (IExtendedBlockState) state;
-			int hash = getExtendedStateHash(exState);
-			if(!modelCache.containsKey(hash))
+			ExtBlockstateAdapter adapter = new ExtBlockstateAdapter(exState);
+			if(!modelCache.containsKey(adapter))
 			{
 				IESmartObjModel model = null;
 				if(exState.getUnlistedNames().contains(OBJProperty.instance))
@@ -312,9 +313,9 @@ public class IESmartObjModel extends OBJBakedModel
 				if(model==null)
 					model = new IESmartObjModel(baseModel, getModel(), this.getState(), getFormat(), getTextures(), transformationMap);
 				model.tempState = state;
-				modelCache.put(hash, model);
+				modelCache.put(adapter, model);
 			}
-			return modelCache.get(hash);
+			return modelCache.get(adapter);
 		}
 		return this;
 	}
@@ -323,7 +324,7 @@ public class IESmartObjModel extends OBJBakedModel
 		return state.hashCode()*31 + state.getUnlistedProperties().hashCode();
 	}
 
-	static HashMap<Integer, IESmartObjModel> modelCache = new HashMap();
+	static HashMap<ExtBlockstateAdapter, IESmartObjModel> modelCache = new HashMap<>();
 	//	private final LoadingCache<Integer, IESmartObjModel> ieobjcache = CacheBuilder.newBuilder().maximumSize(20).build(new CacheLoader<Integer, IESmartObjModel>()
 	//	{
 	//		public IESmartObjModel load(IModelState state) throws Exception
