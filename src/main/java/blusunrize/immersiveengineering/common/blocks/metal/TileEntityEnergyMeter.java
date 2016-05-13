@@ -2,17 +2,20 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import com.google.common.collect.Lists;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
+import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedCollisionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedSelectionBounds;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparatorOverride;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
@@ -32,12 +35,13 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 
-public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implements ITickable, IDirectionalTile, IHasDummyBlocks, IAdvancedCollisionBounds,IAdvancedSelectionBounds, IPlayerInteraction
+public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implements ITickable, IDirectionalTile, IHasDummyBlocks, IAdvancedCollisionBounds,IAdvancedSelectionBounds, IPlayerInteraction, IComparatorOverride
 {
 	public EnumFacing facing = EnumFacing.NORTH;
 	public int lastEnergyPassed = 0;
 	public ArrayList<Integer> lastPackets = new ArrayList<Integer>(25);
 	public boolean dummy=true;
+	private int compVal = -1;
 
 	@Override
 	protected boolean canTakeLV()
@@ -82,6 +86,8 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 	@Override
 	public void update()
 	{
+		if (!worldObj.isRemote&&((worldObj.getTotalWorldTime()&31)==(pos.toLong()&31)||compVal<0))
+			updateComparatorValues();
 		if(dummy || worldObj.isRemote)
 			return;
 		//Yes, this might tick in between different connectors sending power, but since this is a block for statistical evaluation over a tick, that is irrelevant.
@@ -266,5 +272,28 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 	public boolean canHammerRotate(EnumFacing side, float hitX, float hitY, float hitZ, EntityLivingBase entity)
 	{
 		return false;
+	}
+	private void updateComparatorValues()
+	{
+		int oldVal = compVal;
+		int maxTrans = 0;
+		Set<Connection> conns = ImmersiveNetHandler.INSTANCE.getConnections(worldObj, dummy?pos.up():pos);
+		if (conns==null)
+		{
+			compVal = 0;
+			return;
+		}
+		for (Connection c:conns)
+			maxTrans+=c.cableType.getTransferRate();
+		maxTrans/=2;
+		double val = getAveragePower()/(double)maxTrans;
+		compVal = (int) Math.ceil(15*val);
+		if (oldVal!=compVal)
+			worldObj.updateComparatorOutputLevel(pos, getBlockType());
+	}
+	@Override
+	public int getComparatorInputOverride()
+	{
+		return compVal;
 	}
 }
