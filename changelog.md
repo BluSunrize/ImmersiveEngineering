@@ -1,4 +1,20 @@
-#####Version 0.8-25
+#####Version 0.8-26
+- IE REQUIRES JAVA 8 NOW!
+- added a load of Tinkers Construct compat:
+	- Treated Wood tool material. Similar to normal wood, but no splinters
+	- Constantan tool material. Additional weapon effects based on biome temperature
+	- Slime Fluids works in the chemthrower again
+	- fixed smeltery alloy recipe for Constantan
+- re-added InvTweaks compat to the Wooden Crates
+- re-added Railgun and Chemthrower documentation to the manual
+- buffed the default damage of the Railgun
+- fixed Multiblocks looking derpy when formed (thanks Malte)
+- fixed connection offsets on transformers (thanks Malte)
+- improved connections on transformers (thanks Malte)
+- fixed connections on pipes looking weird and broken (thanks Malte)
+ 
+
+#####Version 0.8-25 - BUILT
 - wires can transfer across unloaded chunks now! :D (thanks Malte)
 - added reinforced (creeper-proof) storage crates
 - changed voltmeter to allow measuring between two non-output points (thanks Malte)
@@ -14,6 +30,7 @@
 - fixed insulating glass being opaque (thanks Malte)
 - ported miscellaneous other fixes from 1.7 (thanks Malte)
 - added zh_CN localization (thanks to 3TUSK, Amamiya-Nagisa, bakaxyf, CannonFotter, crafteverywhere, IamAchang, Joccob, LYDfalse, UUUii)
+
 
 #####Version 0.8-24 - BUILT
 - massive shoutout to Malte for figuring out some proper wire rendering! :D
