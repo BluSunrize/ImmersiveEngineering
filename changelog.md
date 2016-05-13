@@ -1,4 +1,4 @@
-#####Version 0.8-26
+#####Version 0.8-26 - BUILT
 - IE REQUIRES JAVA 8 NOW!
 - added a load of Tinkers Construct compat:
 	- Treated Wood tool material. Similar to normal wood, but no splinters
