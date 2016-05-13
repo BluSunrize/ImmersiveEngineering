@@ -271,7 +271,11 @@ public class EntityRevolvershot extends Entity
 			else if(bulletType==6)
 				damageSrc = IEDamageSources.causeWolfpackDamage(this, shootingEntity);
 			else if(bulletType==7)
+			{
 				damageSrc = IEDamageSources.causeSilverDamage(this, shootingEntity);
+				if(mop.entityHit instanceof EntityLivingBase && ((EntityLivingBase)mop.entityHit).isEntityUndead())
+					damage *= 1.75;
+			}
 			else if(bulletType==8)
 				damageSrc = IEDamageSources.causePotionDamage(this, shootingEntity);
 

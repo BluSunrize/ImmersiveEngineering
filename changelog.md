@@ -8,6 +8,7 @@
 - re-added InvTweaks compat to the Wooden Crates
 - re-added Railgun and Chemthrower documentation to the manual
 - buffed the default damage of the Railgun
+- changed silver bullets to do extra damage to undead (Witchery isn't updated, so they'd be useless otherwise)
 - fixed Multiblocks looking derpy when formed (thanks Malte)
 - fixed connection offsets on transformers (thanks Malte)
 - improved connections on transformers (thanks Malte)
