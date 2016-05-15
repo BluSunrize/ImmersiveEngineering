@@ -4,7 +4,8 @@
 	{
 		"transform": "forge:default-block",
 		"textures": {
-		}
+		},
+		"custom": { "flip-v": true }
 	},
 	"variants":
 	{

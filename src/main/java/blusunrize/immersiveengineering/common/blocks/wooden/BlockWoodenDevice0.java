@@ -158,14 +158,6 @@ public class BlockWoodenDevice0 extends BlockIETileProvider
 		super.onBlockExploded(world, pos, explosionIn);
 	}
 	@Override
-	public void onBlockDestroyedByPlayer(World world, BlockPos pos, IBlockState state)
-	{
-		super.onBlockDestroyedByPlayer(world, pos, state);
-		int explosivesType = this.getExplosivesType(state);
-//		if(explosivesType>=0)
-//			this.doExplosion(world, pos, state, null, explosivesType);
-	}
-	@Override
 	public void onEntityCollidedWithBlock(World world, BlockPos pos, IBlockState state, Entity entity)
 	{
 		super.onEntityCollidedWithBlock(world, pos, state, entity);
