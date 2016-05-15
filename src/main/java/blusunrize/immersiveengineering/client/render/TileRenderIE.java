@@ -10,7 +10,8 @@ public abstract class TileRenderIE extends TileEntitySpecialRenderer
 	@Override
 	public void renderTileEntityAt(TileEntity tile, double x, double y, double z, float partialTicks, int destroyStage)
 	{
-		renderDynamic(tile, x,y,z, partialTicks, destroyStage);
+		if (tile.getWorld().isBlockLoaded(tile.getPos()))
+			renderDynamic(tile, x,y,z, partialTicks, destroyStage);
 	}
 
 	public abstract void renderDynamic(TileEntity tile, double x, double y, double z, float partialTicks, int destroyStage);

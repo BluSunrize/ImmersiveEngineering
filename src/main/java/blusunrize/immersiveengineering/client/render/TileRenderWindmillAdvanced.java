@@ -29,8 +29,8 @@ public class TileRenderWindmillAdvanced extends TileEntitySpecialRenderer<TileEn
 	@Override
 	public void renderTileEntityAt(TileEntityWindmillAdvanced tile, double x, double y, double z, float f, int destroyStage)
 	{
-//		if(true)
-//			return;
+		if (!tile.getWorld().isBlockLoaded(tile.getPos()))
+			return;
 		final BlockRendererDispatcher blockRenderer = Minecraft.getMinecraft().getBlockRendererDispatcher();
 		BlockPos blockPos = tile.getPos();
 		IBlockState state = getWorld().getBlockState(blockPos);

@@ -23,7 +23,7 @@ public class TileRenderSqueezer extends TileEntitySpecialRenderer<TileEntitySque
 	@Override
 	public void renderTileEntityAt(TileEntitySqueezer te, double x, double y, double z, float partialTicks, int destroyStage)
 	{
-		if(te.isDummy())
+		if(te.isDummy()||!te.getWorld().isBlockLoaded(te.getPos()))
 			return;
 		
 		final BlockRendererDispatcher blockRenderer = Minecraft.getMinecraft().getBlockRendererDispatcher();

@@ -22,7 +22,7 @@ public class TileRenderWorkbench extends TileEntitySpecialRenderer<TileEntityMod
 	@Override
 	public void renderTileEntityAt(TileEntityModWorkbench te, double x, double y, double z, float partialTicks, int destroyStage)
 	{
-		if(te.dummy)
+		if(te.dummy||!te.getWorld().isBlockLoaded(te.getPos()))
 			return;
 
 		GlStateManager.pushMatrix();

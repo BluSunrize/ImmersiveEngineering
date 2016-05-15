@@ -160,7 +160,7 @@ public class TConstructHelper extends IECompatModule
 		@Override
 		public int getColor()
 		{
-			return colour;
+			return colour|0xff000000;
 		}
 	}
 

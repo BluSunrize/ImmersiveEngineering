@@ -35,6 +35,8 @@ public class TileRenderBucketWheel extends TileEntitySpecialRenderer<TileEntityB
 	@Override
 	public void renderTileEntityAt(TileEntityBucketWheel tile, double x, double y, double z, float f, int destroyStage)
 	{
+		if (!tile.getWorld().isBlockLoaded(tile.getPos()))
+			return;
 		final BlockRendererDispatcher blockRenderer = Minecraft.getMinecraft().getBlockRendererDispatcher();
 		IBlockState state = tile.getWorld().getBlockState(tile.getPos());
 		BlockPos blockPos = tile.getPos();

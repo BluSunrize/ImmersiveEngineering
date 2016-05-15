@@ -30,6 +30,8 @@ public class TileRenderWatermill extends TileEntitySpecialRenderer<TileEntityWat
 	@Override
 	public void renderTileEntityAt(TileEntityWatermill tile, double x, double y, double z, float f, int destroyStage)
 	{
+		if (tile.isDummy()||!tile.getWorld().isBlockLoaded(tile.getPos()))
+			return;
 		final BlockRendererDispatcher blockRenderer = Minecraft.getMinecraft().getBlockRendererDispatcher();
 		IBlockState state = tile.getWorld().getBlockState(tile.getPos());
 		BlockPos blockPos = tile.getPos();
