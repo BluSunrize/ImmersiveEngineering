@@ -71,6 +71,8 @@ public class ConnLoader implements ICustomModelLoader
 		textureReplacements.put("eLantern_on",
 				ImmutableMap.of("#immersiveengineering:blocks/metalDevice1_electricLantern",
 						"immersiveengineering:blocks/metalDevice1_electricLantern_on"));
+		baseModels.put("balloon",
+				new ResourceLocation("immersiveengineering:block/balloon.obj"));
 	}
 
 	@Override
@@ -82,8 +84,7 @@ public class ConnLoader implements ICustomModelLoader
 	@Override
 	public boolean accepts(ResourceLocation modelLocation)
 	{
-		return modelLocation.getResourceDomain().equalsIgnoreCase(ImmersiveEngineering.MODID.toLowerCase())
-				&& modelLocation.getResourcePath().contains(RESOURCE_LOCATION);
+		return modelLocation.getResourcePath().contains(RESOURCE_LOCATION);
 	}
 
 	@Override
