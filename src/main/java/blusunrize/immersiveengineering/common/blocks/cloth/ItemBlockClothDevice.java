@@ -34,7 +34,7 @@ public class ItemBlockClothDevice extends ItemBlockIEBase
 			bPos = bPos.up(offset);
 			if (worldIn.isAirBlock(bPos))
 			{
-				if (worldIn.isRemote)
+				if (!worldIn.isRemote)
 					worldIn.setBlockState(bPos, IEContent.blockClothDevice.getStateFromMeta(BlockTypes_ClothDevice.BALLOON.getMeta()));
 				return itemStackIn.splitStack(1);
 			}

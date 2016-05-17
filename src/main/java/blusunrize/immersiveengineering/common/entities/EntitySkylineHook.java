@@ -176,6 +176,12 @@ public class EntitySkylineHook extends Entity
 			int distTrvl = Math.round(MathHelper.sqrt_double(dx*dx + dy*dy + dz*dz) * 100.0F);
 			if(distTrvl>0)
 				player.addStat(IEAchievements.statDistanceSkyhook, distTrvl);
+			if (!worldObj.isRemote&&SkylineHelper.isInBlock(player, worldObj))
+			{
+				setDead();
+				player.setPosition(posX-3*dx, posY-3*dy+getMountedYOffset(),posZ-3*dz);
+			}
+
 			//TODO
 //			if(player instanceof EntityPlayerMP)
 //				if(((EntityPlayerMP)player).getStatFile().func_150870_b(IEAchievements.statDistanceSkyhook)>100000)
