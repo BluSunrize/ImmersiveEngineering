@@ -212,7 +212,7 @@ public class IERecipes
 		addStairRecipe(IEContent.blockStoneStair_hempcrete, new ItemStack(IEContent.blockStoneDecoration,1,BlockTypes_StoneDecoration.HEMPCRETE.getMeta()));
 		addStairRecipe(IEContent.blockStoneStair_concrete0, new ItemStack(IEContent.blockStoneDecoration,1,BlockTypes_StoneDecoration.CONCRETE.getMeta()));
 		addStairRecipe(IEContent.blockStoneStair_concrete1, new ItemStack(IEContent.blockStoneDecoration,1,BlockTypes_StoneDecoration.CONCRETE_TILE.getMeta()));
-		addStairRecipe(IEContent.blockStoneStair_concrete2, new ItemStack(IEContent.blockStoneDecoration,1,BlockTypes_StoneDecoration.CONCRETE_TILE.getMeta()));
+		addStairRecipe(IEContent.blockStoneStair_concrete2, new ItemStack(IEContent.blockStoneDecoration,1,BlockTypes_StoneDecoration.CONCRETE_LEADED.getMeta()));
 		GameRegistry.addShapelessRecipe(new ItemStack(IEContent.blockStoneStair_concrete0,1,0), new ItemStack(IEContent.blockStoneStair_concrete1,1,0));
 		GameRegistry.addShapelessRecipe(new ItemStack(IEContent.blockStoneStair_concrete1,1,0), new ItemStack(IEContent.blockStoneStair_concrete0,1,0));
 
