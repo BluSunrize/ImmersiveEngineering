@@ -38,7 +38,7 @@ public class MultiblockSilo implements IMultiblock
 						else if(l==1&&w==1)
 							structure[h][l][w]=new ItemStack(IEContent.blockSheetmetal,1,BlockTypes_MetalsAll.IRON.getMeta());
 					}
-					else if(h<1||h>3 || w!=1||l!=1)
+					else if(h<1||h>5 || w!=1||l!=1)
 						structure[h][l][w]=new ItemStack(IEContent.blockSheetmetal,1,BlockTypes_MetalsAll.IRON.getMeta());
 				}
 	}
