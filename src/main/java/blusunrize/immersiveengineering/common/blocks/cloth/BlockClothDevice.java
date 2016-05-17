@@ -26,7 +26,7 @@ public class BlockClothDevice extends BlockIETileProvider
 {
 	public BlockClothDevice()
 	{
-		super("clothDevice", Material.cloth, PropertyEnum.create("type", BlockTypes_ClothDevice.class), ItemBlockIEBase.class, IEProperties.FACING_ALL);
+		super("clothDevice", Material.cloth, PropertyEnum.create("type", BlockTypes_ClothDevice.class), ItemBlockClothDevice.class, IEProperties.FACING_ALL);
 		setHardness(0.8F);
 	}
 	
