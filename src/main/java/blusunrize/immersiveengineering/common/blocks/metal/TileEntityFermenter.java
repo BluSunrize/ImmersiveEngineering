@@ -31,6 +31,7 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.oredict.OreDictionary;
 
 public class TileEntityFermenter extends TileEntityMultiblockMetal<TileEntityFermenter,FermenterRecipe> implements IAdvancedSelectionBounds,IAdvancedCollisionBounds, IFluidHandler, IGuiTile
 {
@@ -122,6 +123,20 @@ public class TileEntityFermenter extends TileEntityMultiblockMetal<TileEntityFer
 						int drained = ((IFluidHandler)te).fill(fw.getOpposite(), Utils.copyFluidStackWithAmount(out,Math.min(out.amount, accepted),false), true);
 						this.tanks[0].drain(drained, true);
 						update=true;
+					}
+				}
+				ItemStack empty = getInventory()[9];
+				if (empty!=null&&tanks[0].getFluidAmount()>0)
+				{
+					ItemStack full = Utils.fillFluidContainer(tanks[0], empty, getInventory()[10]);
+					if (full!=null)
+					{
+						if (getInventory()[10]!=null&&OreDictionary.itemMatches(full, getInventory()[10], true))
+							getInventory()[10].stackSize+=full.stackSize;
+						else
+							getInventory()[10] = full;
+						if(--inventory[9].stackSize<=0)
+							inventory[9]=null;
 					}
 				}
 			}
