@@ -523,7 +523,7 @@ public class TileEntityRefinery extends TileEntityMultiblockMetal<TileEntityRefi
 			if(master!=null)
 				return new FluidTankInfo[]{master.tanks[0].getInfo(),master.tanks[1].getInfo()};
 		}
-		if(pos==2 && (from==null||from==facing))
+		if(pos==2 && (from==null||from==facing.getOpposite()))
 		{
 			TileEntityRefinery master = master();
 			if(master!=null)
