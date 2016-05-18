@@ -77,10 +77,18 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 			entity.motionX = vX;
 			entity.motionY = vY;
 			entity.motionZ = vZ;
+			double distX = Math.abs(getPos().offset(facing).getX()+.5-entity.posX);
+			double distZ = Math.abs(getPos().offset(facing).getZ()+.5-entity.posZ);
+			double treshold = .9;
+			boolean contact = facing.getAxis()==Axis.Z?distZ<treshold: distX<treshold;
+			if (contact&&transportUp)
+			{
+				double move = .4;
+				entity.setPosition(entity.posX+move*facing.getFrontOffsetX(), entity.posY+1.75*move, entity.posZ+move*facing.getFrontOffsetZ());
+			}
 			if(entity instanceof EntityItem)
 			{
 				((EntityItem)entity).setNoDespawn();
-				boolean contact;
 				TileEntity inventoryTile;
 				EnumFacing inventoryDir = facing;
 				if(dropping)
@@ -92,8 +100,6 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 				else
 				{
 					inventoryTile = world.getTileEntity(getPos().offset(inventoryDir).add(0,(transportUp?1: transportDown?-1: 0),0));
-					double distX = Math.abs(getPos().offset(inventoryDir).getX()+.5-entity.posX);
-					double distZ = Math.abs(getPos().offset(inventoryDir).getZ()+.5-entity.posZ);
 					contact = facing.getAxis()==Axis.Z?distZ<.7: distX<.7;
 				}
 				if(!world.isRemote)
