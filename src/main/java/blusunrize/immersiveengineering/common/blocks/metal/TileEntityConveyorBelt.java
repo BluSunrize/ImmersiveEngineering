@@ -103,7 +103,7 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 						ItemStack stack = ((EntityItem)entity).getEntityItem();
 						if(stack!=null)
 						{
-							ItemStack ret = Utils.insertStackIntoInventory(inventoryTile, stack, facing.getOpposite());
+							ItemStack ret = Utils.insertStackIntoInventory(inventoryTile, stack, inventoryDir.getOpposite());
 							if(ret==null)
 								entity.setDead();
 							else if(ret.stackSize<stack.stackSize)
