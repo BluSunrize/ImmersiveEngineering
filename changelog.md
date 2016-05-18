@@ -1,3 +1,22 @@
+#####Version 0.8-27
+- re-added documentation on biodiesel (thanks Malte)
+- changed the plantoil value for hemp seeds back to what it was in 1.7.10
+- changed internal rendering of connectors to use vflip again rather than flipped textures (thanks Malte)
+- added comparator support to the current transformer (thanks Malte)
+- fixed sheetmetal tanks showing the wrong structure in the manual
+- fixed recipe for leaded concrete stairs
+- fixed gunpowder barrels exploding when punched
+- fixed pipes not visually connecting to refinery
+- fixed the arc furnace only processing one item at a time (thanks Malte)
+- fixed the arc furnace voiding items if the first output slot is full (thanks Malte)
+- fixed TESR render crash (I still totally blame Vanilla/Forge for that) (thanks Malte)
+- fixed invisible molten metals in Tinkers compat (thanks Malte)
+- fixed pipes not transferring properly (thanks Malte)
+- fixed invisible wires on balloons (thanks Malte)
+- fixed balloons not being placeable in mid air (thanks Malte)
+- fixed bottles not getting filled in squeezer/fermenter (thanks Malte)
+- fixed Skyhook pulling people into walls (thanks Malte)
+
 #####Version 0.8-26 - BUILT
 - IE REQUIRES JAVA 8 NOW!
 - added a load of Tinkers Construct compat:
