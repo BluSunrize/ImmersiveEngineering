@@ -445,7 +445,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 	@Override
 	public int getMaxProcessPerTick()
 	{
-		return 1;
+		return 12;
 	}
 	@Override
 	public int getProcessQueueMaxLength()

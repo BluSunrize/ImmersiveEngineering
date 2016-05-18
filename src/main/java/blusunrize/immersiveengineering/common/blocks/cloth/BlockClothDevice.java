@@ -1,16 +1,24 @@
 package blusunrize.immersiveengineering.common.blocks.cloth;
 
+import java.util.Arrays;
+
 import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConnectable;
 import blusunrize.immersiveengineering.common.blocks.BlockIETileProvider;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyEnum;
+import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.property.ExtendedBlockState;
+import net.minecraftforge.common.property.IExtendedBlockState;
+import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -18,7 +26,7 @@ public class BlockClothDevice extends BlockIETileProvider
 {
 	public BlockClothDevice()
 	{
-		super("clothDevice", Material.cloth, PropertyEnum.create("type", BlockTypes_ClothDevice.class), ItemBlockIEBase.class, IEProperties.FACING_ALL);
+		super("clothDevice", Material.cloth, PropertyEnum.create("type", BlockTypes_ClothDevice.class), ItemBlockClothDevice.class, IEProperties.FACING_ALL);
 		setHardness(0.8F);
 	}
 	
@@ -62,6 +70,26 @@ public class BlockClothDevice extends BlockIETileProvider
             entityIn.fall(fallDistance, 0.0F);
 //        }
     }
+	@Override
+	protected BlockState createBlockState() {
+		BlockState base = super.createBlockState();
+		IUnlistedProperty[] unlisted = (IUnlistedProperty[]) ((base instanceof ExtendedBlockState)?((ExtendedBlockState)base).getUnlistedProperties().toArray():new IUnlistedProperty[0]);
+		unlisted = Arrays.copyOf(unlisted, unlisted.length+1);
+		unlisted[unlisted.length-1] = IEProperties.CONNECTIONS;
+		return new ExtendedBlockState(this, base.getProperties().toArray(new IProperty[0]), unlisted);
+	}
+	@Override
+	public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos) {
+		if (state instanceof IExtendedBlockState)
+		{
+			IExtendedBlockState ext = (IExtendedBlockState) state;
+			TileEntity te = world.getTileEntity(pos);
+			if (!(te instanceof TileEntityImmersiveConnectable))
+				return state;
+			state = ext.withProperty(IEProperties.CONNECTIONS, ((TileEntityImmersiveConnectable)te).genConnBlockstate());
+		}
+		return state;
+	}
 
 //	@Override
 //	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)

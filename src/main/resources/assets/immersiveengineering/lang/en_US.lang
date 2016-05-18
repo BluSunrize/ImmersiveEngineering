@@ -907,14 +907,6 @@ ie.manual.entry.refinery.subtext=Fluid mixing!
 ie.manual.entry.refinery0=The Refinery is a complex multiblock that can refine one or two fluids into another. The most common application of this is the refinement of <link;squeezer;Plant Oil> and <link;fermenter;Ethanol> into Biodiesel.
 ie.manual.entry.refinery1=To form the structure, rightclick the Heavy Engineering Block on the middle layer.<br>Fluids are input through the two ports on either side of the block and output through the orange marked port at the front.
 
-ie.manual.entry.biodiesel0=Combustible fuels are an easy to use and efficient fuel source. But with oil being a depletable resource, something renewable would be much preferable. Biodiesel is the solution! By combining plant oil and ethanol, you can create a combustible fluid that will burn in the <link;dieselgen;§o§nDiesel §o§nGenerator§r>.
-ie.manual.entry.biodiesel1=Plant Oil is created by processing various seeds in the industrial squeezer. Create the structure pictured above and click one of the sides with an Engineer's Hammer to form it. Power is input at the top or bottom, fluids are output through any of the ports at the bottom of each side.
-ie.manual.entry.biodiesel1T=The following list shows various items that can be squeezed into plant oil, and the amount they produce.
-ie.manual.entry.biodiesel2=Ethanol is gained by fermenting sugarcane or other fruit. The fermenter's structure is created in a similar manner to that of the squeezer, as such power in- and fluid outputs are identical.
-ie.manual.entry.biodiesel2T=The following list shows various items that can be fermented into ethanol, and the amount they produce.
-ie.manual.entry.biodiesel3=Lastly, in order to refine plant oil and ethanol into Biodiesel, you will need to insert both fluids into a refinery and supply it with power. The structure is created as shown above and formed by clicking the center of the front with an Engineer's Hammer.
-ie.manual.entry.biodiesel4=The front of the refinery serves as fluid output, whereas the inputs are found on the smaller sides. Energy is supplied through the connector at the back. Applying a redstone signal to the control panel on the right will halt the refinery's process.
-
 ie.manual.entry.dieselgen.name=Diesel Generator
 ie.manual.entry.dieselgen.subtext=Better than volume: More volume.
 ie.manual.entry.dieselgen0=High-Voltage architecture might be fascinating, but it's not very useful unless you have a generator that can actually create the required output for it.<br>The Diesel Generator is one of the few ways of generating this sort of energy. It is created as a complex multiblock structure and will run off of <link;biodiesel;§o§nBiodiesel§r> or other types of combustible fuel. Due to its high output, it will work through fuel very quickly, so make sure you have a sufficient fuel production to run it.
@@ -925,12 +917,12 @@ ie.manual.entry.dieselgen3=The following table lists all valid fuels for the Die
 ie.manual.entry.biodiesel.name=Biodiesel
 ie.manual.entry.biodiesel.subtext=Green power!
 ie.manual.entry.biodiesel0=Combustible fuels are an easy to use and efficient fuel source. But with oil being a depletable resource, something renewable would be much preferable. Biodiesel is the solution! By combining plant oil and ethanol, you can create a combustible fluid that will burn in the <link;dieselgen;§o§nDiesel §o§nGenerator§r>.
-ie.manual.entry.biodiesel1=Plant Oil is created by processing various seeds in the industrial squeezer. Create the structure pictured above and click one of the sides with an Engineer's Hammer to form it. Power is input at the top or bottom, fluids are output through any of the ports at the bottom of each side.
-ie.manual.entry.biodiesel1T=The following list shows various items that can be squeezed into plant oil, and the amount they produce.
+ie.manual.entry.biodiesel1=Plant Oil is created by processing various seeds in the industrial squeezer. Create the structure pictured above and click one of the sides with an Engineer's Hammer to form it. Power is input at the top or bottom, fluids are output through any of the ports at the
+ie.manual.entry.biodiesel1T=bottom of each side.<br>The following list shows various items that can be squeezed into plant oil, and the amount they produce.
 ie.manual.entry.biodiesel2=Ethanol is gained by fermenting sugarcane or other fruit. The fermenter's structure is created in a similar manner to that of the squeezer, as such power in- and fluid outputs are identical.
 ie.manual.entry.biodiesel2T=The following list shows various items that can be fermented into ethanol, and the amount they produce.
-ie.manual.entry.biodiesel3=Lastly, in order to refine plant oil and ethanol into Biodiesel, you will need to insert both fluids into a refinery and supply it with power. The structure is created as shown above and formed by clicking the center of the front with an Engineer's Hammer.
-ie.manual.entry.biodiesel4=The front of the refinery serves as fluid output, whereas the inputs are found on the smaller sides. Energy is supplied through the connector at the back. Applying a redstone signal to the control panel on the right will halt the refinery's process.
+ie.manual.entry.biodiesel3=Lastly, in order to refine plant oil and ethanol into Biodiesel, you will need to insert both fluids into a refinery and supply it with power. The structure is created as shown above and formed by clicking the center of the front with an
+ie.manual.entry.biodiesel4=Engineer's Hammer.<br>The front of the refinery serves as fluid output, whereas the inputs are found on the smaller sides. Energy is supplied through the connector at the back. Applying a redstone signal to the control panel on the right will halt the refinery's process.
 
 ie.manual.entry.conveyor.name=Conveyor Belts
 ie.manual.entry.conveyor.subtext=Who needs rails anyway?

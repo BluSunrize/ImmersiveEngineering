@@ -382,7 +382,7 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 						if(output!=null)
 						{
 							boolean canOutput = false;
-							if(outputSlots==null)// || outputSlots.length<2 || outputSlots[1]-outputSlots[0]==0) I don't quite remember why I did this.. O_o
+							if(outputSlots==null)
 								canOutput = true;
 							else
 							{
@@ -466,11 +466,11 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 				int[] outputSlots = multiblock.getOutputSlots();
 				for(ItemStack output : outputs)
 					if(output!=null)
-						if(outputSlots==null || multiblock.getInventory()==null || outputSlots.length<2 || outputSlots[1]-outputSlots[0]==0)
+						if(outputSlots==null || multiblock.getInventory()==null)
 							multiblock.doProcessOutput(output.copy());
 						else
 						{
-							for(int iOutputSlot=outputSlots[0]; iOutputSlot<outputSlots[1]; iOutputSlot++)
+							for(int iOutputSlot:outputSlots)
 							{
 								ItemStack s = multiblock.getInventory()[iOutputSlot];
 								if(s==null)

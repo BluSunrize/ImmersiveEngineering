@@ -386,38 +386,10 @@ public class TileEntityRefinery extends TileEntityMultiblockMetal<TileEntityRefi
 		this.markDirty();
 		worldObj.markBlockForUpdate(getPos());
 	}
-
-
-	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
-	{
-		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-			return true;
-		return super.hasCapability(capability, facing);
-	}
-	//	IItemHandler insertionHandler = new IEInventoryHandler(8, this, 0, new boolean[]{true,true,true,true,true,true,true,true}, new boolean[8]);
-	//	IItemHandler extractionHandler = new IEInventoryHandler(1, this, 8, new boolean[1], new boolean[]{true});
-	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
-	{
-		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-		{
-			//			TileEntityRefinery master = master();
-			//			if(master==null)
-			//				return null;
-			//			if(pos==15)
-			//				return (T)master.insertionHandler;
-			//			if(pos==13)
-			//				return (T)master.extractionHandler;
-			return null;
-		}
-		return super.getCapability(capability, facing);
-	}
-
 	@Override
 	public RefineryRecipe findRecipeForInsertion(ItemStack inserting)
 	{
-		return null;//RefineryRecipe.findRecipe(inserting);
+		return null;
 	}
 	@Override
 	protected RefineryRecipe readRecipeFromNBT(NBTTagCompound tag)

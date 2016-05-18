@@ -16,7 +16,7 @@ import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.tileentity.TileEntity;
-
+// not used any more
 public class TileRenderImmersiveConnectable extends TileEntitySpecialRenderer
 {
 	@Override

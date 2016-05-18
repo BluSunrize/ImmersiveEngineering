@@ -3,6 +3,7 @@
 	"defaults":
 	{
 		"transform": "forge:default-block",
+		"custom": { "flip-v": true },
 		"model": "immersiveengineering:smartmodel/conn_eMeter"
 	},
 	"variants":

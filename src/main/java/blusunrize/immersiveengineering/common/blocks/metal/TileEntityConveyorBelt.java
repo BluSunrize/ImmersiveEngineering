@@ -220,7 +220,7 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 	@Override
 	public float[] getSpecialCollisionBounds()
 	{
-		return new float[]{0,0,0,1,0,1};
+		return new float[]{0,0,0,1,.05F,1};
 	}
 
 	@Override

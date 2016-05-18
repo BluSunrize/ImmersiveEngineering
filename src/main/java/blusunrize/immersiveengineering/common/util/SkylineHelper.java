@@ -12,8 +12,10 @@ import blusunrize.immersiveengineering.common.items.ItemSkyhook;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.Vec3;
+import net.minecraft.util.BlockPos.MutableBlockPos;
 import net.minecraft.world.World;
 
 public class SkylineHelper
@@ -137,5 +139,21 @@ public class SkylineHelper
 		Vec3 movementVec = new Vec3(target.xCoord-start.xCoord, target.yCoord-start.yCoord, target.zCoord-start.zCoord);
 		int lPixel = (int)Math.max(1, (movementVec.lengthVector()/(.125*speed)));
 		return new Vec3(movementVec.xCoord/lPixel, movementVec.yCoord/lPixel, movementVec.zCoord/lPixel);
+	}
+	public static boolean isInBlock(EntityPlayer player, World w)
+	{
+		BlockPos init = player.getPosition();
+		AxisAlignedBB hitbox = player.getEntityBoundingBox();
+		hitbox = new AxisAlignedBB(hitbox.minX-1, hitbox.minY-1, hitbox.minZ-1, hitbox.maxX, hitbox.maxY, hitbox.maxZ);
+		
+		for (int xOff = 0;xOff<2;xOff++)
+			for (int yOff = 0;yOff<3;yOff++)
+				for (int zOff = 0;zOff<2;zOff++)
+				{
+					Vec3 v = new Vec3(init.getX()+xOff, init.getY()+yOff, init.getZ()+zOff);
+					if (hitbox.isVecInside(v)&&!w.isAirBlock(new BlockPos(v)))
+						return true;
+				}
+		return false;
 	}
 }

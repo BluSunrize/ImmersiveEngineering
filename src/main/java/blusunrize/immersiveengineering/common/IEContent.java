@@ -641,7 +641,7 @@ public class IEContent
 		SqueezerRecipe.addRecipe(new FluidStack(fluidPlantoil, 80), null, Items.wheat_seeds, 6400);
 		SqueezerRecipe.addRecipe(new FluidStack(fluidPlantoil, 80), null, Items.pumpkin_seeds, 6400);
 		SqueezerRecipe.addRecipe(new FluidStack(fluidPlantoil, 80), null, Items.melon_seeds, 6400);
-		SqueezerRecipe.addRecipe(new FluidStack(fluidPlantoil, 80), null, itemSeeds, 6400);
+		SqueezerRecipe.addRecipe(new FluidStack(fluidPlantoil, 120), null, itemSeeds, 6400);
 		SqueezerRecipe.addRecipe(null, new ItemStack(itemMaterial,1,18), new ItemStack(itemMaterial,8,17), 19200);
 
 		FermenterRecipe.addRecipe(new FluidStack(fluidEthanol,80), null, Items.reeds, 6400);
