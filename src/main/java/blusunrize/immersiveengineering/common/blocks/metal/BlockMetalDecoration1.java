@@ -10,6 +10,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.AxisAlignedBB;
@@ -19,7 +20,7 @@ import net.minecraft.util.EnumWorldBlockLayer;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockMetalDecoration1 extends BlockIEBase
+public class BlockMetalDecoration1 extends BlockIEBase<BlockTypes_MetalDecoration1>
 {
 	public BlockMetalDecoration1()
 	{
@@ -201,5 +202,9 @@ public class BlockMetalDecoration1 extends BlockIEBase
 	{
 		this.setBlockBoundsBasedOnState(world, pos);
 		return super.getSelectedBoundingBox(world, pos);
+	}
+	@Override
+	public boolean isLadder(IBlockAccess world, BlockPos pos, EntityLivingBase entity) {
+		return world.getBlockState(pos).getValue(property).getMeta()%4!=0;
 	}
 }

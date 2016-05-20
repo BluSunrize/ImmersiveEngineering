@@ -18,6 +18,7 @@ import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -372,6 +373,36 @@ public class BlockIEBase<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 	{
 		return false;
 	}
+	@Override
+	public void onEntityCollidedWithBlock(World worldIn, BlockPos pos, IBlockState state, Entity entityIn)
+	{
+		super.onEntityCollidedWithBlock(worldIn, pos, state, entityIn);
+		if (entityIn instanceof EntityLivingBase&&!((EntityLivingBase) entityIn).isOnLadder()&&isLadder(worldIn, pos, (EntityLivingBase)entityIn))
+		{
+			float f5 = 0.15F;
+			if (entityIn.motionX < (double)(-f5))
+				entityIn.motionX = (double)(-f5);
+			if (entityIn.motionX > (double)f5)
+				entityIn.motionX = (double)f5;
+			if (entityIn.motionZ < (double)(-f5))
+				entityIn.motionZ = (double)(-f5);
+			if (entityIn.motionZ > (double)f5)
+				entityIn.motionZ = (double)f5;
+
+			entityIn.fallDistance = 0.0F;
+			if (entityIn.motionY < -0.15D)
+				entityIn.motionY = -0.15D;
+
+			if(entityIn.motionY<0 && entityIn instanceof EntityPlayer && entityIn.isSneaking())
+			{
+				entityIn.motionY=.05;
+				return;
+			}
+			if(entityIn.isCollidedHorizontally)
+				entityIn.motionY=.2;
+		}
+	}
+
 	public static interface IBlockEnum extends IStringSerializable
 	{
 		public String getName();
