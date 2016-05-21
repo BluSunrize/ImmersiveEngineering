@@ -80,6 +80,7 @@ import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -924,5 +925,19 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 			else if(model instanceof ModelVillager)
 				((ModelVillager)model).villagerHead.showModel=true;
 		}
+	}
+	boolean blendOn;
+	@SubscribeEvent(priority=EventPriority.LOWEST)
+	public void onRenderTickLowest(TickEvent.RenderTickEvent ev)
+	{
+		if (blendOn)
+			GL11.glEnable(GL11.GL_BLEND);
+		else
+			GL11.glDisable(GL11.GL_BLEND);
+	}
+	@SubscribeEvent(priority=EventPriority.HIGHEST)
+	public void onRenderTickHighest(TickEvent.RenderTickEvent ev)
+	{
+		blendOn = GL11.glGetBoolean(GL11.GL_BLEND);
 	}
 }
