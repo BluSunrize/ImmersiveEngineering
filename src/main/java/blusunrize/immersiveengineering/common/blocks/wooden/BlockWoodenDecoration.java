@@ -1,7 +1,7 @@
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
+import blusunrize.immersiveengineering.common.blocks.BlockIEBase.IELadderBlock;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFence;
@@ -18,7 +18,7 @@ import net.minecraft.util.EnumWorldBlockLayer;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockWoodenDecoration extends BlockIEBase<BlockTypes_WoodenDecoration>
+public class BlockWoodenDecoration extends IELadderBlock<BlockTypes_WoodenDecoration>
 {
 	public BlockWoodenDecoration()
 	{

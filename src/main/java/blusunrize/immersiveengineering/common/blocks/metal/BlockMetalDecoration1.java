@@ -1,7 +1,7 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
+import blusunrize.immersiveengineering.common.blocks.BlockIEBase.IELadderBlock;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFence;
@@ -20,7 +20,7 @@ import net.minecraft.util.EnumWorldBlockLayer;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockMetalDecoration1 extends BlockIEBase<BlockTypes_MetalDecoration1>
+public class BlockMetalDecoration1 extends IELadderBlock<BlockTypes_MetalDecoration1>
 {
 	public BlockMetalDecoration1()
 	{
@@ -44,37 +44,6 @@ public class BlockMetalDecoration1 extends BlockIEBase<BlockTypes_MetalDecoratio
 	public boolean isOpaqueCube()
 	{
 		return false;
-	}
-
-	@Override
-	public void onEntityCollidedWithBlock(World world, BlockPos pos, Entity ent)
-	{
-		int meta = this.getMetaFromState(world.getBlockState(pos));
-		if(meta==BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_0.getMeta()||meta==BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_1.getMeta()||meta==BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_2.getMeta()
-				||meta==BlockTypes_MetalDecoration1.ALUMINUM_SCAFFOLDING_0.getMeta()||meta==BlockTypes_MetalDecoration1.ALUMINUM_SCAFFOLDING_1.getMeta()||meta==BlockTypes_MetalDecoration1.ALUMINUM_SCAFFOLDING_2.getMeta())
-		{
-			float f5 = 0.15F;
-			if (ent.motionX < (double)(-f5))
-				ent.motionX = (double)(-f5);
-			if (ent.motionX > (double)f5)
-				ent.motionX = (double)f5;
-			if (ent.motionZ < (double)(-f5))
-				ent.motionZ = (double)(-f5);
-			if (ent.motionZ > (double)f5)
-				ent.motionZ = (double)f5;
-
-			ent.fallDistance = 0.0F;
-			if (ent.motionY < -0.15D)
-				ent.motionY = -0.15D;
-
-			if(ent.motionY<0 && ent instanceof EntityPlayer && ent.isSneaking())
-			{
-				ent.motionY=.05;
-				return;
-			}
-			if(ent.isCollidedHorizontally)
-				ent.motionY=.2;
-		}
 	}
 
 	@Override
