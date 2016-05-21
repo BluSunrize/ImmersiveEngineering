@@ -79,6 +79,8 @@ public class ItemManeuverGear extends ItemArmor implements baubles.api.IBauble, 
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
 	{
+		if (player.worldObj.isRemote)
+			return stack;
 		if(Lib.BAUBLES)
 		{
 			ItemStack belt = BaublesHelper.getBauble(player, 3);
