@@ -242,6 +242,7 @@ public abstract class BlockIETileProvider extends BlockIEBase implements ITileEn
 						((IDirectionalTile)tile).setFacing(f);
 						tile.markDirty();
 						world.markBlockForUpdate(tile.getPos());
+						world.addBlockEvent(tile.getPos(), tile.getBlockType(), 255, 0);
 						return true;
 		}
 		if(tile instanceof IHammerInteraction && Utils.isHammer(player.getCurrentEquippedItem()))
