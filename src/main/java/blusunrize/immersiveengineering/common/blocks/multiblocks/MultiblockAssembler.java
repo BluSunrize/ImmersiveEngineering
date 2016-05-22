@@ -38,6 +38,8 @@ public class MultiblockAssembler implements IMultiblock
 					{
 						if(l==1&&w!=1)
 							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0,1,BlockTypes_MetalDecoration0.RS_ENGINEERING.getMeta());
+						else if(l==1&&w==1)
+							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0,1,BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta());
 						else
 							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration1,1,BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_0.getMeta());
 					}
@@ -53,7 +55,7 @@ public class MultiblockAssembler implements IMultiblock
 					else if(h==2)
 					{
 						if(w==1)
-							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0,1,BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta());
+							structure[h][l][w] = new ItemStack(IEContent.blockSheetmetal,1,BlockTypes_MetalsAll.IRON.getMeta());
 						else
 							structure[h][l][w] = new ItemStack(IEContent.blockSheetmetalSlabs,1,BlockTypes_MetalsAll.IRON.getMeta());
 					}
@@ -62,36 +64,6 @@ public class MultiblockAssembler implements IMultiblock
 	@Override
 	public ItemStack[][][] getStructureManual()
 	{
-		structure = new ItemStack[3][3][3];
-			for(int h=0;h<3;h++)
-				for(int l=0;l<3;l++)
-					for(int w=0;w<3;w++)
-					{
-						if(h==0)
-						{
-							if(l==1&&w!=1)
-								structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0,1,BlockTypes_MetalDecoration0.RS_ENGINEERING.getMeta());
-							else
-								structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration1,1,BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_0.getMeta());
-						}
-						else if(h==1)
-						{
-							if(w==0 || w==2)
-								structure[h][l][w] = new ItemStack(IEContent.blockSheetmetal,1,BlockTypes_MetalsAll.IRON.getMeta());
-							else if(l==1)
-								structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0,1,BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta());
-							else
-								structure[h][l][w] = new ItemStack(IEContent.blockConveyor,1,BlockTypes_Conveyor.CONVEYOR.getMeta());
-						}
-						else if(h==2)
-						{
-							if(w==1)
-								structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0,1,BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta());
-							else
-								structure[h][l][w] = new ItemStack(IEContent.blockSheetmetalSlabs,1,BlockTypes_MetalsAll.IRON.getMeta());
-						}
-					}
-		
 		return structure;
 	}
 	@Override
@@ -150,6 +122,8 @@ public class MultiblockAssembler implements IMultiblock
 	{
 		if(side.getAxis()==Axis.Y)
 			side = EnumFacing.fromAngle(player.rotationYaw);
+		else
+			side = side.getOpposite();
 
 		boolean mirror = false;
 		for(int l=0;l<3;l++)
@@ -164,18 +138,17 @@ public class MultiblockAssembler implements IMultiblock
 						if(l==1&&w!=0)
 						{
 							if(!Utils.isBlockAt(world, pos2, IEContent.blockMetalDecoration0, BlockTypes_MetalDecoration0.RS_ENGINEERING.getMeta()))
-								{
-								System.out.println("missing: RSEng at "+pos2);
 								return false;
-								}
+						}
+						else if(l==1&&w==0)
+						{
+							if(!Utils.isBlockAt(world, pos2, IEContent.blockMetalDecoration0, BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta()))
+								return false;
 						}
 						else
 						{
 							if(!Utils.isOreBlockAt(world, pos2, "scaffoldingSteel"))
-							{
-								System.out.println("missing: scaffold at "+pos2);
 								return false;
-								}
 						}
 					}
 					else if(h==0)
@@ -183,45 +156,30 @@ public class MultiblockAssembler implements IMultiblock
 						if(w==-1 || w==1)
 						{
 							if(!Utils.isOreBlockAt(world, pos2, "blockSheetmetalIron"))
-							{
-								System.out.println("missing: sheetmetal at "+pos2);
 								return false;
-								}
 						}
 						else if(l==1)
 						{
 							if(!Utils.isBlockAt(world, pos2, IEContent.blockMetalDecoration0, BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta()))
-							{
-								System.out.println("missing: LightEng at "+pos2);
 								return false;
-								}
 						}
 						else
 						{
 							if(!Utils.isBlockAt(world, pos2, IEContent.blockConveyor, BlockTypes_Conveyor.CONVEYOR.getMeta()))
-							{
-								System.out.println("missing: Conveyor at "+pos2);
 								return false;
-								}
 						}
 					}
 					else if(h==1)
 					{
 						if(w==0)
 						{
-							if(!Utils.isBlockAt(world, pos2, IEContent.blockMetalDecoration0, BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta()))
-							{
-								System.out.println("missing: LightEng at "+pos2);
+							if(!Utils.isOreBlockAt(world, pos2, "blockSheetmetalIron"))
 								return false;
-								}
 						}
 						else
 						{
 							if(!Utils.isOreBlockAt(world, pos2, "slabSheetmetalIron"))
-							{
-								System.out.println("missing: SheetSlab at "+pos2);
 								return false;
-								}
 						}
 					}
 				}
@@ -251,103 +209,13 @@ public class MultiblockAssembler implements IMultiblock
 		return true;
 	}
 
-	boolean structureCheck(World world, BlockPos startPos, EnumFacing dir, boolean mirror)
-	{
-		for(int l=0;l<6;l++)
-			for(int w=-1;w<=1;w++)
-				for(int h=-1;h<=1;h++)
-				{
-					if(l>0&&w==0)
-						continue;
-
-					int ww = mirror?-w:w;
-					BlockPos pos = startPos.offset(dir, l).offset(dir.rotateY(), ww).add(0, h, 0);
-
-					if(l==0)
-					{
-						if(w==-1&&h==0)
-						{
-							if(!Utils.isBlockAt(world, pos, IEContent.blockMetalDecoration0, BlockTypes_MetalDecoration0.RS_ENGINEERING.getMeta()))
-								return false;
-						}
-						else if((w==0&&h==0)||(w==-1&&h==1))
-						{
-							if(!Utils.isBlockAt(world, pos, IEContent.blockMetalDecoration0, BlockTypes_MetalDecoration0.HEAVY_ENGINEERING.getMeta()))
-								return false;
-						}
-						else if(w==-1&&h==-1)
-						{
-							if(!Utils.isBlockAt(world, pos, IEContent.blockMetalDecoration0, BlockTypes_MetalDecoration0.RADIATOR.getMeta()))
-								return false;
-						}
-						else
-						{
-							if(!Utils.isOreBlockAt(world, pos, "blockSheetmetalSteel"))
-								return false;
-						}
-					}
-					else if(w==-1)
-					{
-						if(l<3 && h==1)
-						{
-							if(!Utils.isBlockAt(world, pos, IEContent.blockMetalDecoration0, BlockTypes_MetalDecoration0.RADIATOR.getMeta()))
-								return false;
-						}
-						else if(l<3)
-						{
-							if(!Utils.isOreBlockAt(world, pos, "blockSheetmetalSteel"))
-								return false;
-						}
-						else if(h==-1)
-						{
-							if(!Utils.isOreBlockAt(world, pos, "scaffoldingSteel"))
-								return false;
-						}
-						else
-						{
-							if(!Utils.isBlockAt(world, pos, IEContent.blockMetalDecoration0, BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta()))
-								return false;
-						}
-					}
-					else if(w==1)
-					{
-						if(l==1)
-						{
-							if(!Utils.isBlockAt(world, pos, IEContent.blockMetalDecoration0, BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta()))
-								return false;
-						}
-						else if(l==2)
-						{
-							if(!Utils.isOreBlockAt(world, pos, "blockSheetmetalSteel"))
-								return false;
-						}
-						else if(h==-1)
-						{
-							if(!Utils.isOreBlockAt(world, pos, "scaffoldingSteel"))
-								return false;
-						}
-						else if(h==0)
-						{
-							if(!Utils.isBlockAt(world, pos, IEContent.blockMetalDecoration0, BlockTypes_MetalDecoration0.HEAVY_ENGINEERING.getMeta()))
-								return false;
-						}
-						else
-						{
-							if(!Utils.isOreBlockAt(world, pos, "blockSheetmetalSteel"))
-								return false;
-						}
-					}
-				}
-		return true;
-	}
-
 	static final ItemStack[] materials = new ItemStack[]{
 			new ItemStack(IEContent.blockMetalDecoration1,6,BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_0.getMeta()),
-			new ItemStack(IEContent.blockSheetmetal,15,BlockTypes_MetalsAll.STEEL.getMeta()),
-			new ItemStack(IEContent.blockMetalDecoration0,1,BlockTypes_MetalDecoration0.RS_ENGINEERING.getMeta()),
-			new ItemStack(IEContent.blockMetalDecoration0,9,BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta()),
-			new ItemStack(IEContent.blockMetalDecoration0,5,BlockTypes_MetalDecoration0.HEAVY_ENGINEERING.getMeta()),
-			new ItemStack(IEContent.blockMetalDecoration0,3,BlockTypes_MetalDecoration0.RADIATOR.getMeta())};
+			new ItemStack(IEContent.blockSheetmetal,9,BlockTypes_MetalsAll.IRON.getMeta()),
+			new ItemStack(IEContent.blockSheetmetalSlabs,6,BlockTypes_MetalsAll.IRON.getMeta()),
+			new ItemStack(IEContent.blockMetalDecoration0,2,BlockTypes_MetalDecoration0.RS_ENGINEERING.getMeta()),
+			new ItemStack(IEContent.blockMetalDecoration0,2,BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta()),
+			new ItemStack(IEContent.blockConveyor,2,BlockTypes_Conveyor.CONVEYOR.getMeta())};
 	@Override
 	public ItemStack[] getTotalMaterials()
 	{

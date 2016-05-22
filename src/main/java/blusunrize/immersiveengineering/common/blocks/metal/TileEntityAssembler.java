@@ -9,6 +9,7 @@ import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGuiTile;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockAssembler;
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
@@ -22,12 +23,15 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IChatComponent;
 import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
@@ -466,6 +470,32 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 
 
 	@Override
+	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
+	{
+		if((pos==10||pos==16)&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+			return (pos==10&&facing==this.facing.getOpposite())||(pos==16&&facing==this.facing);
+		return super.hasCapability(capability, facing);
+	}
+	IItemHandler insertionHandler = new IEInventoryHandler(18, this, 0, true, false);
+	IItemHandler extractionHandler = new IEInventoryHandler(3, this, 18, false, true);
+	@Override
+	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
+	{
+		if((pos==10||pos==16)&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+		{
+			TileEntityAssembler master = master();
+			if(master==null)
+				return null;
+			if(pos==10&&facing==this.facing.getOpposite())
+				return (T)master.insertionHandler;
+			if(pos==16&&facing==this.facing)
+				return (T)master.extractionHandler;
+			return null;
+		}
+		return super.getCapability(capability, facing);
+	}
+
+	@Override
 	public IMultiblockRecipe findRecipeForInsertion(ItemStack inserting)
 	{
 		return null;
@@ -474,6 +504,87 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 	protected IMultiblockRecipe readRecipeFromNBT(NBTTagCompound tag)
 	{
 		return null;
+	}
+	
+
+	@Override
+	public boolean canOpenGui()
+	{
+		return formed;
+	}
+	@Override
+	public int getGuiID()
+	{
+		return Lib.GUIID_Assembler;
+	}
+	@Override
+	public TileEntity getGuiMaster()
+	{
+		return master();
+	}
+
+	@Override
+	public int fill(EnumFacing from, FluidStack resource, boolean doFill)
+	{
+		if(!formed || resource==null)
+			return 0;
+		if(!canFill(from, resource.getFluid()))
+			return 0;
+		TileEntityAssembler master = this.master();
+		if(master==null)
+			return 0;
+
+		int fill = -1;
+		for(FluidTank tank : master.tanks)
+			if(tank.getFluid()!=null && tank.getFluid().isFluidEqual(resource))
+			{
+				fill = tank.fill(resource, doFill);
+				break;
+			}
+		if(fill==-1)
+			for(FluidTank tank : master.tanks)
+			{
+				fill = tank.fill(resource, doFill);
+				if(fill>0)
+					break;
+			}
+		if(fill>0)
+		{
+			master.markDirty();
+			worldObj.markBlockForUpdate(master.getPos());
+		}
+		return fill<0?0:fill;
+	}
+	@Override
+	public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain)
+	{
+		return resource==null?null:this.drain(from, resource.amount, doDrain);
+	}
+	@Override
+	public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain)
+	{
+		return null;
+	}
+	@Override
+	public boolean canFill(EnumFacing from, Fluid fluid)
+	{
+		return pos==1&&(from==null||from==facing.getOpposite());
+	}
+	@Override
+	public boolean canDrain(EnumFacing from, Fluid fluid)
+	{
+		return false;
+	}
+	@Override
+	public FluidTankInfo[] getTankInfo(EnumFacing from)
+	{
+		if(pos==1&&(from==null||from==facing.getOpposite()))
+		{
+			TileEntityAssembler master = master();
+			if(master!=null && (offset[0]!=0||offset[1]!=0||offset[2]!=0))
+				return new FluidTankInfo[]{master.tanks[0].getInfo(),master.tanks[1].getInfo(),master.tanks[2].getInfo()};
+		}
+		return new FluidTankInfo[0];
 	}
 
 	public static class CrafterPatternInventory implements IInventory
@@ -651,85 +762,5 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 		{
 			return 0;
 		}
-	}
-
-	@Override
-	public boolean canOpenGui()
-	{
-		return formed;
-	}
-	@Override
-	public int getGuiID()
-	{
-		return Lib.GUIID_Assembler;
-	}
-	@Override
-	public TileEntity getGuiMaster()
-	{
-		return master();
-	}
-
-	@Override
-	public int fill(EnumFacing from, FluidStack resource, boolean doFill)
-	{
-		if(!formed || resource==null)
-			return 0;
-		if(!canFill(from, resource.getFluid()))
-			return 0;
-		TileEntityAssembler master = this.master();
-		if(master==null)
-			return 0;
-
-		int fill = -1;
-		for(FluidTank tank : master.tanks)
-			if(tank.getFluid()!=null && tank.getFluid().isFluidEqual(resource))
-			{
-				fill = tank.fill(resource, doFill);
-				break;
-			}
-		if(fill==-1)
-			for(FluidTank tank : master.tanks)
-			{
-				fill = tank.fill(resource, doFill);
-				if(fill>0)
-					break;
-			}
-		if(fill>0)
-		{
-			master.markDirty();
-			worldObj.markBlockForUpdate(master.getPos());
-		}
-		return fill<0?0:fill;
-	}
-	@Override
-	public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain)
-	{
-		return resource==null?null:this.drain(from, resource.amount, doDrain);
-	}
-	@Override
-	public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain)
-	{
-		return null;
-	}
-	@Override
-	public boolean canFill(EnumFacing from, Fluid fluid)
-	{
-		return pos==1&&(from==null||from==facing.getOpposite());
-	}
-	@Override
-	public boolean canDrain(EnumFacing from, Fluid fluid)
-	{
-		return false;
-	}
-	@Override
-	public FluidTankInfo[] getTankInfo(EnumFacing from)
-	{
-		if(pos==1&&(from==null||from==facing.getOpposite()))
-		{
-			TileEntityAssembler master = master();
-			if(master!=null && (offset[0]!=0||offset[1]!=0||offset[2]!=0))
-				return new FluidTankInfo[]{master.tanks[0].getInfo(),master.tanks[1].getInfo(),master.tanks[2].getInfo()};
-		}
-		return new FluidTankInfo[0];
 	}
 }
