@@ -495,7 +495,8 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.ItemDisplay(ManualHelper.getManual(), "oresBauxite", new ItemStack(IEContent.blockOre,1,1),new ItemStack(IEContent.itemMetal,1,1)),
 				new ManualPages.ItemDisplay(ManualHelper.getManual(), "oresLead", new ItemStack(IEContent.blockOre,1,2),new ItemStack(IEContent.itemMetal,1,2)),
 				new ManualPages.ItemDisplay(ManualHelper.getManual(), "oresSilver", new ItemStack(IEContent.blockOre,1,3),new ItemStack(IEContent.itemMetal,1,3)),
-				new ManualPages.ItemDisplay(ManualHelper.getManual(), "oresNickel", new ItemStack(IEContent.blockOre,1,4),new ItemStack(IEContent.itemMetal,1,4)));
+				new ManualPages.ItemDisplay(ManualHelper.getManual(), "oresNickel", new ItemStack(IEContent.blockOre,1,4),new ItemStack(IEContent.itemMetal,1,4)),
+				new ManualPages.ItemDisplay(ManualHelper.getManual(), "oresUranium", new ItemStack(IEContent.blockOre,1,5),new ItemStack(IEContent.itemMetal,1,5)));
 		tempRecipeList = new ArrayList();
 		if(!IERecipes.hammerCrushingList.isEmpty())
 		{
@@ -753,18 +754,18 @@ public class ClientProxy extends CommonProxy
 		//		ManualHelper.addEntry("bottlingMachine", ManualHelper.CAT_MACHINES,
 		//				new ManualPageMultiblock(ManualHelper.getManual(), "bottlingMachine0", MultiblockBottlingMachine.instance),
 		//				new ManualPages.Text(ManualHelper.getManual(), "bottlingMachine1"));
-				sortedMap = SqueezerRecipe.getFluidValuesSorted(IEContent.fluidPlantoil, true);
-				table = formatToTable_ItemIntHashmap(sortedMap,"mB");	
-				sortedMap = FermenterRecipe.getFluidValuesSorted(IEContent.fluidEthanol, true);
-				String[][] table2 = formatToTable_ItemIntHashmap(sortedMap,"mB");
-				ManualHelper.addEntry("biodiesel", ManualHelper.CAT_HEAVYMACHINES,
-						new ManualPages.Text(ManualHelper.getManual(), "biodiesel0"),
-						new ManualPageMultiblock(ManualHelper.getManual(), "biodiesel1", MultiblockSqueezer.instance),
-						new ManualPages.Table(ManualHelper.getManual(), "biodiesel1T", table, false),
-						new ManualPageMultiblock(ManualHelper.getManual(), "biodiesel2", MultiblockFermenter.instance),
-						new ManualPages.Table(ManualHelper.getManual(), "biodiesel2T", table2, false),
-						new ManualPageMultiblock(ManualHelper.getManual(), "biodiesel3", MultiblockRefinery.instance),
-						new ManualPages.Text(ManualHelper.getManual(), "biodiesel4"));
+		sortedMap = SqueezerRecipe.getFluidValuesSorted(IEContent.fluidPlantoil, true);
+		table = formatToTable_ItemIntHashmap(sortedMap,"mB");	
+		sortedMap = FermenterRecipe.getFluidValuesSorted(IEContent.fluidEthanol, true);
+		String[][] table2 = formatToTable_ItemIntHashmap(sortedMap,"mB");
+		ManualHelper.addEntry("biodiesel", ManualHelper.CAT_HEAVYMACHINES,
+				new ManualPages.Text(ManualHelper.getManual(), "biodiesel0"),
+				new ManualPageMultiblock(ManualHelper.getManual(), "biodiesel1", MultiblockSqueezer.instance),
+				new ManualPages.Table(ManualHelper.getManual(), "biodiesel1T", table, false),
+				new ManualPageMultiblock(ManualHelper.getManual(), "biodiesel2", MultiblockFermenter.instance),
+				new ManualPages.Table(ManualHelper.getManual(), "biodiesel2T", table2, false),
+				new ManualPageMultiblock(ManualHelper.getManual(), "biodiesel3", MultiblockRefinery.instance),
+				new ManualPages.Text(ManualHelper.getManual(), "biodiesel4"));
 		ManualHelper.addEntry("arcfurnace", ManualHelper.CAT_HEAVYMACHINES,
 				new ManualPageMultiblock(ManualHelper.getManual(), "arcfurnace0", MultiblockArcFurnace.instance),
 				new ManualPages.Text(ManualHelper.getManual(), "arcfurnace1"),
