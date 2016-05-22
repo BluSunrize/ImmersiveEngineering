@@ -4,7 +4,7 @@
 - changed internal rendering of connectors to use vflip again rather than flipped textures (thanks Malte)
 - added comparator support to the current transformer (thanks Malte)
 - added a hacky workaround for WAILA making wires look bad (WAILA should fix this, but we'll manage) (thanks Malte)
-- Added page for Uranium Ore.
+- added page for Uranium Ore block
 - fixed sheetmetal tanks showing the wrong structure in the manual
 - fixed recipe for leaded concrete stairs
 - fixed gunpowder barrels exploding when punched
