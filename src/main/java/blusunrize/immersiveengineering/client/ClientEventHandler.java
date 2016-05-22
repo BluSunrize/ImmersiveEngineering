@@ -84,6 +84,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -928,29 +929,26 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 		}
 	}
 	
-	//=============================================
-	//All this stuff to fix WAILA. Bleigh.
-	//=============================================
+	//====================================================================
+	//This stuff is necessary to work around a rendering issue with WAILA.
+	//====================================================================
 	
 	boolean blendOn;
 	@SubscribeEvent(priority=EventPriority.LOWEST)
 	public void onRenderTickLowest(TickEvent.RenderTickEvent ev)
 	{
+		if (ev.phase!=Phase.START)
+			return;
 		if (blendOn)
-			GL11.glEnable(GL11.GL_BLEND);
+			GlStateManager.enableBlend();
 		else
-			GL11.glDisable(GL11.GL_BLEND);
+			GlStateManager.disableBlend();
 	}
 	@SubscribeEvent(priority=EventPriority.HIGHEST)
 	public void onRenderTickHighest(TickEvent.RenderTickEvent ev)
 	{
+		if (ev.phase!=Phase.START)
+			return;
 		blendOn = GL11.glGetBoolean(GL11.GL_BLEND);
-	}
-	@SubscribeEvent(priority=EventPriority.HIGHEST)
-	public void onRenderFog(RenderFogEvent event)
-	{
-		if(event.fogMode==-1)//-1 is Skybox
-			if(!blendOn)
-				GL11.glEnable(GL11.GL_BLEND);
 	}
 }
