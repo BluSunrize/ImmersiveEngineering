@@ -249,8 +249,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IShaderEquipabl
 					{
 						((IBullet)bullets[0].getItem()).spawnBullet(player, bullets[0], getUpgrades(revolver).getBoolean("electro"));
 						bullets[0]= ((IBullet)bullets[0].getItem()).getCasing(bullets[0]);
-						world.playSoundAtEntity(player, "fireworks.blast", .6f, 1);
-						world.playSoundAtEntity(player, "mob.wither.shoot", .3f, 5f);
+						world.playSoundAtEntity(player, "immersiveengineering:revolverFire", 1, 1);
 					}
 					else
 						world.playSoundAtEntity(player, "note.hat", .6f, 3);
