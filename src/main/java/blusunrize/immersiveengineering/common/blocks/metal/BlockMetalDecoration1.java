@@ -1,7 +1,7 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
+import blusunrize.immersiveengineering.common.blocks.BlockIEBase.IELadderBlock;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFence;
@@ -10,6 +10,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.AxisAlignedBB;
@@ -19,7 +20,7 @@ import net.minecraft.util.EnumWorldBlockLayer;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockMetalDecoration1 extends BlockIEBase
+public class BlockMetalDecoration1 extends IELadderBlock<BlockTypes_MetalDecoration1>
 {
 	public BlockMetalDecoration1()
 	{
@@ -43,37 +44,6 @@ public class BlockMetalDecoration1 extends BlockIEBase
 	public boolean isOpaqueCube()
 	{
 		return false;
-	}
-
-	@Override
-	public void onEntityCollidedWithBlock(World world, BlockPos pos, Entity ent)
-	{
-		int meta = this.getMetaFromState(world.getBlockState(pos));
-		if(meta==BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_0.getMeta()||meta==BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_1.getMeta()||meta==BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_2.getMeta()
-				||meta==BlockTypes_MetalDecoration1.ALUMINUM_SCAFFOLDING_0.getMeta()||meta==BlockTypes_MetalDecoration1.ALUMINUM_SCAFFOLDING_1.getMeta()||meta==BlockTypes_MetalDecoration1.ALUMINUM_SCAFFOLDING_2.getMeta())
-		{
-			float f5 = 0.15F;
-			if (ent.motionX < (double)(-f5))
-				ent.motionX = (double)(-f5);
-			if (ent.motionX > (double)f5)
-				ent.motionX = (double)f5;
-			if (ent.motionZ < (double)(-f5))
-				ent.motionZ = (double)(-f5);
-			if (ent.motionZ > (double)f5)
-				ent.motionZ = (double)f5;
-
-			ent.fallDistance = 0.0F;
-			if (ent.motionY < -0.15D)
-				ent.motionY = -0.15D;
-
-			if(ent.motionY<0 && ent instanceof EntityPlayer && ent.isSneaking())
-			{
-				ent.motionY=.05;
-				return;
-			}
-			if(ent.isCollidedHorizontally)
-				ent.motionY=.2;
-		}
 	}
 
 	@Override
@@ -201,5 +171,9 @@ public class BlockMetalDecoration1 extends BlockIEBase
 	{
 		this.setBlockBoundsBasedOnState(world, pos);
 		return super.getSelectedBoundingBox(world, pos);
+	}
+	@Override
+	public boolean isLadder(IBlockAccess world, BlockPos pos, EntityLivingBase entity) {
+		return world.getBlockState(pos).getValue(property).getMeta()%4!=0;
 	}
 }

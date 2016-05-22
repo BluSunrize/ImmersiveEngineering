@@ -1,7 +1,7 @@
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
+import blusunrize.immersiveengineering.common.blocks.BlockIEBase.IELadderBlock;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFence;
@@ -9,7 +9,7 @@ import net.minecraft.block.BlockFenceGate;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
@@ -18,7 +18,7 @@ import net.minecraft.util.EnumWorldBlockLayer;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockWoodenDecoration extends BlockIEBase
+public class BlockWoodenDecoration extends IELadderBlock<BlockTypes_WoodenDecoration>
 {
 	public BlockWoodenDecoration()
 	{
@@ -42,37 +42,6 @@ public class BlockWoodenDecoration extends BlockIEBase
 	public boolean isOpaqueCube()
 	{
 		return false;
-	}
-
-	@Override
-	public void onEntityCollidedWithBlock(World world, BlockPos pos, Entity ent)
-	{
-		//		if(world.getBlockState(pos).equals(this.getStateFromMeta(meta))
-		//				
-		//				getBlockMetadata(x, y, z)==META_scaffolding||world.getBlockMetadata(x, y, z)==META_scaffolding2||world.getBlockMetadata(x, y, z)==META_aluminiumScaffolding||world.getBlockMetadata(x, y, z)==META_aluminiumScaffolding2)
-		//		{
-		//			float f5 = 0.15F;
-		//			if (ent.motionX < (double)(-f5))
-		//				ent.motionX = (double)(-f5);
-		//			if (ent.motionX > (double)f5)
-		//				ent.motionX = (double)f5;
-		//			if (ent.motionZ < (double)(-f5))
-		//				ent.motionZ = (double)(-f5);
-		//			if (ent.motionZ > (double)f5)
-		//				ent.motionZ = (double)f5;
-		//
-		//			ent.fallDistance = 0.0F;
-		//			if (ent.motionY < -0.15D)
-		//				ent.motionY = -0.15D;
-		//
-		//			if(ent.motionY<0 && ent instanceof EntityPlayer && ent.isSneaking())
-		//			{
-		//				ent.motionY=.05;
-		//				return;
-		//			}
-		//			if(ent.isCollidedHorizontally)
-		//				ent.motionY=.2;
-		//		}
 	}
 
 	@Override
@@ -213,5 +182,10 @@ public class BlockWoodenDecoration extends BlockIEBase
 	{
 		this.setBlockBoundsBasedOnState(world, pos);
 		return super.getSelectedBoundingBox(world, pos);
+	}
+	@Override
+	public boolean isLadder(IBlockAccess world, BlockPos pos, EntityLivingBase entity)
+	{
+		return world.getBlockState(pos).getValue(property)==BlockTypes_WoodenDecoration.SCAFFOLDING;
 	}
 }

@@ -298,7 +298,7 @@ public class TileEntityCrusher extends TileEntityMultiblockMetal<TileEntityCrush
 	public void onEntityCollision(World world, Entity entity)
 	{
 		boolean bpos = pos==16||pos==17||pos==18||pos==21||pos==22||pos==23||pos==26||pos==27||pos==28;		
-		if(bpos && !world.isRemote && entity!=null && !entity.isDead)
+		if(bpos && !world.isRemote && entity!=null && !entity.isDead&&!isRSDisabled())
 		{
 			if(entity instanceof EntityItem && ((EntityItem)entity).getEntityItem()!=null)
 			{

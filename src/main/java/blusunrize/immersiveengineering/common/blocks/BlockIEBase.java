@@ -18,6 +18,7 @@ import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -49,6 +50,7 @@ public class BlockIEBase<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 	protected Set<EnumWorldBlockLayer> renderLayers = Sets.newHashSet(EnumWorldBlockLayer.SOLID);
 	protected Set<EnumWorldBlockLayer>[] metaRenderLayers;
 	protected Map<Integer, Integer> metaLightOpacities = new HashMap<>();
+	private boolean opaqueCube = false;
 	public BlockIEBase(String name, Material material, PropertyEnum<E> mainProperty, Class<? extends ItemBlockIEBase> itemBlock, Object... additionalProperties)
 	{
 		super(setTempProperties(material, mainProperty, additionalProperties));
@@ -370,12 +372,55 @@ public class BlockIEBase<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 	}
 	public boolean isOpaqueCube()
 	{
-		return false;
+		return opaqueCube;
+	}
+	public BlockIEBase<E> setOpaque(boolean isOpaque)
+	{
+		opaqueCube = isOpaque;
+		fullBlock = isOpaque;
+		return this;
 	}
 	public static interface IBlockEnum extends IStringSerializable
 	{
 		public String getName();
 		public int getMeta();
 		public boolean listForCreative();
+	}
+	public static abstract class IELadderBlock<E extends Enum<E> & BlockIEBase.IBlockEnum> extends BlockIEBase<E>
+	{
+		public IELadderBlock(String name, Material material, PropertyEnum<E> mainProperty,
+				Class<? extends ItemBlockIEBase> itemBlock, Object... additionalProperties) {
+			super(name, material, mainProperty, itemBlock, additionalProperties);
+		}
+
+		@Override
+		public void onEntityCollidedWithBlock(World worldIn, BlockPos pos, IBlockState state, Entity entityIn)
+		{
+			super.onEntityCollidedWithBlock(worldIn, pos, state, entityIn);
+			if (entityIn instanceof EntityLivingBase&&!((EntityLivingBase) entityIn).isOnLadder()&&isLadder(worldIn, pos, (EntityLivingBase)entityIn))
+			{
+				float f5 = 0.15F;
+				if (entityIn.motionX < -f5)
+					entityIn.motionX = -f5;
+				if (entityIn.motionX > 5)
+					entityIn.motionX = f5;
+				if (entityIn.motionZ < -f5)
+					entityIn.motionZ = -f5;
+				if (entityIn.motionZ > f5)
+					entityIn.motionZ = f5;
+	
+				entityIn.fallDistance = 0.0F;
+				if (entityIn.motionY < -0.15D)
+					entityIn.motionY = -0.15D;
+	
+				if(entityIn.motionY<0 && entityIn instanceof EntityPlayer && entityIn.isSneaking())
+				{
+					entityIn.motionY=.05;
+					return;
+				}
+				if(entityIn.isCollidedHorizontally)
+					entityIn.motionY=.2;
+			}
+		}
 	}
 }

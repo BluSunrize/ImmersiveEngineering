@@ -256,8 +256,8 @@ public class IEContent
 	
 	public static void preInit()
 	{
-		blockOre = (BlockIEBase)new BlockIEBase("ore",Material.rock, PropertyEnum.create("type", BlockTypes_Ore.class), ItemBlockIEBase.class).setHardness(3.0F).setResistance(5.0F);
-		blockStorage = (BlockIEBase)new BlockIEBase("storage",Material.iron, PropertyEnum.create("type", BlockTypes_MetalsIE.class), ItemBlockIEBase.class).setHardness(5.0F).setResistance(10.0F);
+		blockOre = (BlockIEBase)new BlockIEBase("ore",Material.rock, PropertyEnum.create("type", BlockTypes_Ore.class), ItemBlockIEBase.class).setOpaque(true).setHardness(3.0F).setResistance(5.0F);
+		blockStorage = (BlockIEBase)new BlockIEBase("storage",Material.iron, PropertyEnum.create("type", BlockTypes_MetalsIE.class), ItemBlockIEBase.class).setOpaque(true).setHardness(5.0F).setResistance(10.0F);
 		blockStorageSlabs = (BlockIESlab)new BlockIESlab("storageSlab",Material.iron, PropertyEnum.create("type", BlockTypes_MetalsIE.class)).setHardness(5.0F).setResistance(10.0F);
 		int insGlassMeta = BlockTypes_StoneDecoration.INSULATING_GLASS.getMeta();
 		blockStoneDecoration = (BlockIEBase)new BlockIEBase("stoneDecoration",Material.rock, PropertyEnum.create("type", BlockTypes_StoneDecoration.class), ItemBlockIEBase.class).setMetaBlockLayer(insGlassMeta, EnumWorldBlockLayer.TRANSLUCENT).setMetaLightOpacity(insGlassMeta, 0).setHardness(2.0F).setResistance(10.0F);
@@ -269,7 +269,7 @@ public class IEContent
 
 		blockStoneDevice = new BlockStoneDevice();
 
-		blockTreatedWood = (BlockIEBase)new BlockIEBase("treatedWood",Material.wood, PropertyEnum.create("type", BlockTypes_TreatedWood.class), ItemBlockIEBase.class).setHasFlavour().setHardness(2.0F).setResistance(5.0F);
+		blockTreatedWood = (BlockIEBase)new BlockIEBase("treatedWood",Material.wood, PropertyEnum.create("type", BlockTypes_TreatedWood.class), ItemBlockIEBase.class).setOpaque(true).setHasFlavour().setHardness(2.0F).setResistance(5.0F);
 		blockTreatedWoodSlabs = (BlockIESlab)new BlockIESlab("treatedWoodSlab",Material.wood, PropertyEnum.create("type", BlockTypes_TreatedWood.class)).setHasFlavour().setHardness(2.0F).setResistance(5.0F);
 		blockWoodenStair = new BlockIEStairs("treatedWoodStairs0",blockTreatedWood.getStateFromMeta(0)).setHasFlavour(true);
 		blockWoodenStair1 = new BlockIEStairs("treatedWoodStairs1",blockTreatedWood.getStateFromMeta(1)).setHasFlavour(true);
@@ -281,7 +281,7 @@ public class IEContent
 		blockCrop = new BlockIECrop("hemp", PropertyEnum.create("type", BlockTypes_Hemp.class));
 		blockClothDevice = new BlockClothDevice();
 
-		blockSheetmetal = (BlockIEBase)new BlockIEBase("sheetmetal",Material.iron, PropertyEnum.create("type", BlockTypes_MetalsAll.class), ItemBlockIEBase.class).setMetaHidden(0,3,4,5,7,10).setHardness(3.0F).setResistance(10.0F);
+		blockSheetmetal = (BlockIEBase)new BlockIEBase("sheetmetal",Material.iron, PropertyEnum.create("type", BlockTypes_MetalsAll.class), ItemBlockIEBase.class).setOpaque(true).setMetaHidden(0,3,4,5,7,10).setHardness(3.0F).setResistance(10.0F);
 		blockSheetmetalSlabs = (BlockIESlab)new BlockIESlab("sheetmetalSlab",Material.iron, PropertyEnum.create("type", BlockTypes_MetalsAll.class)).setMetaHidden(0,3,4,5,7,10).setHardness(3.0F).setResistance(10.0F);
 		blockMetalDecoration0 = (BlockIEBase)new BlockIEBase("metalDecoration0",Material.iron, PropertyEnum.create("type", BlockTypes_MetalDecoration0.class), ItemBlockIEBase.class).setHardness(3.0F).setResistance(15.0F);
 		blockMetalDecoration1 = new BlockMetalDecoration1();

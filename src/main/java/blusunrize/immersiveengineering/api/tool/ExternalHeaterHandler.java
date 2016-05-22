@@ -3,6 +3,8 @@ package blusunrize.immersiveengineering.api.tool;
 import java.util.HashMap;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockFurnace;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
@@ -129,8 +131,8 @@ public class ExternalHeaterHandler
 		public void updateFurnace(TileEntity tileEntity, boolean active)
 		{
 			Block containing = tileEntity.getBlockType();
-//			if(containing==Blocks.furnace || containing==Blocks.lit_furnace)
-//				BlockFurnace.updateFurnaceBlockState(active, tileEntity.getWorld(), tileEntity.getPos());
+			if(containing==Blocks.furnace)
+				BlockFurnace.setState(active, tileEntity.getWorld(), tileEntity.getPos());
 //			else
 			{
 				//Fix for Natura, might work on other furnaces that extend the vanilla one and use the variable name "active". Let's hope. xD
