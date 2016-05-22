@@ -70,6 +70,7 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.client.GuiIngameForge;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
+import net.minecraftforge.client.event.EntityViewRenderEvent.RenderFogEvent;
 import net.minecraftforge.client.event.FOVUpdateEvent;
 import net.minecraftforge.client.event.MouseEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -926,6 +927,11 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 				((ModelVillager)model).villagerHead.showModel=true;
 		}
 	}
+	
+	//=============================================
+	//All this stuff to fix WAILA. Bleigh.
+	//=============================================
+	
 	boolean blendOn;
 	@SubscribeEvent(priority=EventPriority.LOWEST)
 	public void onRenderTickLowest(TickEvent.RenderTickEvent ev)
@@ -939,5 +945,12 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 	public void onRenderTickHighest(TickEvent.RenderTickEvent ev)
 	{
 		blendOn = GL11.glGetBoolean(GL11.GL_BLEND);
+	}
+	@SubscribeEvent(priority=EventPriority.HIGHEST)
+	public void onRenderFog(RenderFogEvent event)
+	{
+		if(event.fogMode==-1)//-1 is Skybox
+			if(!blendOn)
+				GL11.glEnable(GL11.GL_BLEND);
 	}
 }
