@@ -211,7 +211,7 @@ public class Config
 		setDouble("BulletDamage-Silver", config.get("tools", "BulletDamage-Silver", 10d, "The amount of damage a silver bullet inflicts").getDouble());
 		setDouble("BulletDamage-Potion", config.get("tools", "BulletDamage-Potion", 1d, "The amount of base damage a Phial Cartridge inflicts").getDouble());
 		
-		setStringArray("EarDefenders_SoundBlacklist", config.get("tools", "EarDefenders: Blacklist", new String[]{}, "A list of soudns that shoudl not be muffled by the Ear Defenders. Adding to this list requires knowledge of the correct sound resource names.").getStringList());
+		setStringArray("EarDefenders_SoundBlacklist", config.get("tools", "EarDefenders: Blacklist", new String[]{}, "A list of sounds that should not be muffled by the Ear Defenders. Adding to this list requires knowledge of the correct sound resource names.").getStringList());
 		
 		//setInt("chemthrower_consumption", config.get("tools", "ChemThrower: Consumed", 10, "The mb of fluid the Chemical Thrower will consume per tick of usage").getInt());
 		
