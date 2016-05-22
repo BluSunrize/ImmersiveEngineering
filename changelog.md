@@ -1,9 +1,12 @@
 #####Version 0.8-27
 - re-added documentation on biodiesel (thanks Malte)
+- re-added the Assembler! For all your autocrafting needs!
 - changed the plantoil value for hemp seeds back to what it was in 1.7.10
 - changed internal rendering of connectors to use vflip again rather than flipped textures (thanks Malte)
 - added comparator support to the current transformer (thanks Malte)
 - added a hacky workaround for WAILA making wires look bad (WAILA should fix this, but we'll manage) (thanks Malte)
+- added a manual page for Uranium Ore
+- added a proper sound to the revolver firing
 - fixed sheetmetal tanks showing the wrong structure in the manual
 - fixed recipe for leaded concrete stairs
 - fixed gunpowder barrels exploding when punched

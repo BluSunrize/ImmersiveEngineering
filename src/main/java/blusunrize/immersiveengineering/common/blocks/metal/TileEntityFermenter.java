@@ -356,7 +356,7 @@ public class TileEntityFermenter extends TileEntityMultiblockMetal<TileEntityFer
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
 	{
-		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+		if((pos==15||pos==13)&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 			return true;
 		return super.hasCapability(capability, facing);
 	}
@@ -365,7 +365,7 @@ public class TileEntityFermenter extends TileEntityMultiblockMetal<TileEntityFer
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
 	{
-		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+		if((pos==15||pos==13)&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
 			TileEntityFermenter master = master();
 			if(master==null)

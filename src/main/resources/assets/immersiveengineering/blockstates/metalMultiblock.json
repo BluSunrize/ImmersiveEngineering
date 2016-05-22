@@ -26,6 +26,14 @@
 				"translation": [ 0, -0.5, 0 ]
 			}
 		}],
+		"inventory,type=assembler": [{
+			"model": "immersiveengineering:metalMultiblock/assembler.obj",
+			"transform": {
+				"scale": 0.375,
+				"rotation": {"y": -90 },
+				"translation": [ 0, 0, 0 ]
+			}
+		}],
 		"type":
 		{
 			"tank": {
@@ -35,6 +43,7 @@
 				"model": "immersiveengineering:metalMultiblock/silo.obj"
 			},
 			"assembler": {
+				"model": "immersiveengineering:metalMultiblock/assembler.obj"
 			},
 			"fermenter": {
 			},

@@ -41,6 +41,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.BlockMetalMultiblocks
 import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalDecoration0;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalDecoration1;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityArcFurnace;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityAssembler;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBlastFurnacePreheater;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBreakerSwitch;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBucketWheel;
@@ -80,6 +81,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityThermoelect
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTransformer;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTransformerHV;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockArcFurnace;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockAssembler;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockBlastFurnace;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockBlastFurnaceAdvanced;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockBucketWheel;
@@ -253,7 +255,7 @@ public class IEContent
 	static{
 		FluidRegistry.enableUniversalBucket();
 	}
-	
+
 	public static void preInit()
 	{
 		blockOre = (BlockIEBase)new BlockIEBase("ore",Material.rock, PropertyEnum.create("type", BlockTypes_Ore.class), ItemBlockIEBase.class).setOpaque(true).setHardness(3.0F).setResistance(5.0F);
@@ -526,7 +528,7 @@ public class IEContent
 		registerTile(TileEntityCrusher.class);
 		registerTile(TileEntitySheetmetalTank.class);
 		registerTile(TileEntitySilo.class);
-		//		registerTile(TileEntityAssembler.class);
+		registerTile(TileEntityAssembler.class);
 		//		registerTile(TileEntityAutoWorkbench.class);
 		//		registerTile(TileEntityBottlingMachine.class);
 		//		registerTile(TileEntityLightningRod.class);
@@ -598,7 +600,7 @@ public class IEContent
 		IERecipes.initCrusherRecipes();
 
 		IERecipes.initArcSmeltingRecipes();
-		
+
 		ItemStack shoddyElectrode = new ItemStack(itemGraphiteElectrode);
 		shoddyElectrode.setItemDamage(ItemGraphiteElectrode.electrodeMaxDamage/2);
 		MetalPressRecipe.addRecipe(shoddyElectrode, "ingotHOPGraphite", new ItemStack(IEContent.itemMold,1,2), 4800).setInputSize(4);
@@ -687,7 +689,7 @@ public class IEContent
 		MultiblockHandler.registerMultiblock(MultiblockCrusher.instance);
 		MultiblockHandler.registerMultiblock(MultiblockSheetmetalTank.instance);
 		MultiblockHandler.registerMultiblock(MultiblockSilo.instance);
-		//		MultiblockHandler.registerMultiblock(MultiblockAssembler.instance);
+		MultiblockHandler.registerMultiblock(MultiblockAssembler.instance);
 		//		MultiblockHandler.registerMultiblock(MultiblockBottlingMachine.instance);
 		MultiblockHandler.registerMultiblock(MultiblockSqueezer.instance);
 		MultiblockHandler.registerMultiblock(MultiblockFermenter.instance);

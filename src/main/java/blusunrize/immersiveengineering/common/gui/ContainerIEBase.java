@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.common.gui;
 
+import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -26,7 +27,52 @@ public class ContainerIEBase<T extends TileEntity> extends Container
 		return inv.isUseableByPlayer(player);
 	}
 
+	@Override
+	public ItemStack slotClick(int id, int button, int modifier, EntityPlayer player)
+	{
+		Slot slot = id<0?null: (Slot)this.inventorySlots.get(id);
+		if(!(slot instanceof IESlot.Ghost))
+			return super.slotClick(id, button, modifier, player);
+		//Spooky Ghost Slots!!!!
+		ItemStack stack = null;
+		ItemStack stackSlot = slot.getStack();
+		if(stackSlot!=null)
+			stack = stackSlot.copy();
 
+		if (button==2)
+			slot.putStack(null);
+		else if(button==0||button==1)
+		{
+			InventoryPlayer playerInv = player.inventory;
+			ItemStack stackHeld = playerInv.getItemStack();
+			if (stackSlot == null)
+			{
+				if(stackHeld != null && slot.isItemValid(stackHeld))
+				{
+					slot.putStack(Utils.copyStackWithAmount(stackHeld, 1));
+				}
+			}
+			else if (stackHeld == null)
+			{
+				slot.putStack(null);
+			}
+			else if (slot.isItemValid(stackHeld))
+			{
+				slot.putStack(Utils.copyStackWithAmount(stackHeld, 1));
+			}
+		}
+		else if (button == 5)
+		{
+			InventoryPlayer playerInv = player.inventory;
+			ItemStack stackHeld = playerInv.getItemStack();
+			if (!slot.getHasStack())
+			{
+				slot.putStack(Utils.copyStackWithAmount(stackHeld, 1));
+			}
+		}
+		return stack;
+	}
+	
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slot)
 	{

@@ -32,6 +32,7 @@ import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.client.fx.EntityFXSparks;
 import blusunrize.immersiveengineering.client.gui.GuiArcFurnace;
+import blusunrize.immersiveengineering.client.gui.GuiAssembler;
 import blusunrize.immersiveengineering.client.gui.GuiBlastFurnace;
 import blusunrize.immersiveengineering.client.gui.GuiCokeOven;
 import blusunrize.immersiveengineering.client.gui.GuiCrate;
@@ -82,6 +83,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalDecor
 import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalDevice0;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalDevice1;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityArcFurnace;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityAssembler;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBucketWheel;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityChargingStation;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
@@ -95,6 +97,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySheetmetalT
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySilo;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySqueezer;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockArcFurnace;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockAssembler;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockBlastFurnace;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockBlastFurnaceAdvanced;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockBucketWheel;
@@ -747,10 +750,10 @@ public class ClientProxy extends CommonProxy
 				new ManualPageMultiblock(ManualHelper.getManual(), "refinery0", MultiblockRefinery.instance),
 				new ManualPages.Text(ManualHelper.getManual(), "refinery1"));
 		//		ArrayList<ItemStack> stacks = new ArrayList<ItemStack>();
-		//		ManualHelper.addEntry("assembler", ManualHelper.CAT_MACHINES,
-		//				new ManualPageMultiblock(ManualHelper.getManual(), "assembler0", MultiblockAssembler.instance),
-		//				new ManualPages.Text(ManualHelper.getManual(), "assembler1"),
-		//				new ManualPages.Text(ManualHelper.getManual(), "assembler2"));
+		ManualHelper.addEntry("assembler", ManualHelper.CAT_MACHINES,
+				new ManualPageMultiblock(ManualHelper.getManual(), "assembler0", MultiblockAssembler.instance),
+				new ManualPages.Text(ManualHelper.getManual(), "assembler1"),
+				new ManualPages.Text(ManualHelper.getManual(), "assembler2"));
 		//		ManualHelper.addEntry("bottlingMachine", ManualHelper.CAT_MACHINES,
 		//				new ManualPageMultiblock(ManualHelper.getManual(), "bottlingMachine0", MultiblockBottlingMachine.instance),
 		//				new ManualPages.Text(ManualHelper.getManual(), "bottlingMachine1"));
@@ -970,8 +973,8 @@ public class ClientProxy extends CommonProxy
 			return new GuiRefinery(player.inventory, (TileEntityRefinery) te);
 		if(ID==Lib.GUIID_ArcFurnace && te instanceof TileEntityArcFurnace)
 			return new GuiArcFurnace(player.inventory, (TileEntityArcFurnace) te);
-		//		if(ID==Lib.GUIID_Assembler && te instanceof TileEntityAssembler)
-		//			return new GuiAssembler(player.inventory, (TileEntityAssembler) te);
+		if(ID==Lib.GUIID_Assembler && te instanceof TileEntityAssembler)
+			return new GuiAssembler(player.inventory, (TileEntityAssembler) te);
 		return null;
 	}
 
