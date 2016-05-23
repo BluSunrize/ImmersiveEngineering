@@ -18,7 +18,7 @@ public class BlockConveyor extends BlockIETileProvider
 {
 	public BlockConveyor()
 	{
-		super("conveyor",Material.iron, PropertyEnum.create("type", BlockTypes_Conveyor.class), ItemBlockIEBase.class,  IEProperties.FACING_ALL,IEProperties.CONVEYORWALLS[0],IEProperties.CONVEYORWALLS[1],IEProperties.CONVEYORUPDOWN);
+		super("conveyor",Material.iron, PropertyEnum.create("type", BlockTypes_Conveyor.class), ItemBlockIEBase.class,  IEProperties.FACING_ALL,IEProperties.CONVEYORWALLS[0],IEProperties.CONVEYORWALLS[1],IEProperties.CONVEYORUPDOWN,IEProperties.BOOLEANS[0]);
 		this.setHardness(3.0F);
 		this.setResistance(15.0F);
 	}

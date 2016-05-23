@@ -1,8 +1,12 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.api.IEProperties.PropertyBoolInverted;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IActiveState;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IUsesBooleanProperty;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.entity.Entity;
@@ -21,7 +25,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
-public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirectionalTile, IBlockBounds, IHammerInteraction
+public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirectionalTile, IActiveState, IBlockBounds, IHammerInteraction
 {
 	public boolean transportUp=false;
 	public boolean transportDown=false;
@@ -235,6 +239,16 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 		return null;
 	}
 
+	@Override
+	public PropertyBoolInverted getBoolProperty(Class<? extends IUsesBooleanProperty> inf)
+	{
+		return IEProperties.BOOLEANS[0];
+	}
+	@Override
+	public boolean getIsActive()
+	{
+		return worldObj.isBlockIndirectlyGettingPowered(pos)<=0;
+	}
 
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing)

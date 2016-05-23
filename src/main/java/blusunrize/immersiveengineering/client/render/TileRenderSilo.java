@@ -1,7 +1,5 @@
 package blusunrize.immersiveengineering.client.render;
 
-import org.lwjgl.opengl.GL11;
-
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySilo;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -17,19 +15,19 @@ public class TileRenderSilo extends TileEntitySpecialRenderer<TileEntitySilo>
 	{
 		if(!tile.formed || tile.pos!=4||!tile.getWorld().isBlockLoaded(tile.getPos()))
 			return;
-		GL11.glPushMatrix();
+		GlStateManager.pushMatrix();
 
-		GL11.glTranslated(x+.5, y, z+.5);
+		GlStateManager.translate(x+.5, y, z+.5);
 
 		if(tile.identStack!=null)
 		{
-			GL11.glTranslatef(0,5,0);
+			GlStateManager.translate(0,5,0);
 			float baseScale = .0625f;
 			float itemScale = .75f;
 			float flatScale = .001f;
 			baseScale *= itemScale;
 			float textScale = .375f;
-			GL11.glScalef(baseScale,-baseScale,baseScale);
+			GlStateManager.scale(baseScale,-baseScale,baseScale);
 			ItemStack stack = Utils.copyStackWithAmount(tile.identStack, tile.storageAmount);
 			String s = ""+stack.stackSize;
 			float w = this.getFontRenderer().getStringWidth(s);
@@ -42,32 +40,32 @@ public class TileRenderSilo extends TileEntitySpecialRenderer<TileEntitySilo>
 			for(int i=0; i<4; i++)
 			{
 				GlStateManager.pushMatrix();
-				GL11.glTranslatef(xx,0,zz);
-				GL11.glScalef(1,1,flatScale);
+				GlStateManager.translate(xx,0,zz);
+				GlStateManager.scale(1,1,flatScale);
 				ClientUtils.mc().getRenderItem().renderItemAndEffectIntoGUI(stack, 0, 0);
-				GL11.glScalef(1,1,1/flatScale);
+				GlStateManager.scale(1,1,1/flatScale);
 				
-				GL11.glDisable(GL11.GL_LIGHTING);
-				GL11.glDepthMask(false);
-				GL11.glTranslatef(8-w/2,17,.001f);
-				GL11.glScalef(textScale,textScale,1);
+				GlStateManager.disableLighting();
+				GlStateManager.depthMask(false);
+				GlStateManager.translate(8-w/2,17,.001f);
+				GlStateManager.scale(textScale,textScale,1);
 				ClientUtils.font().drawString(""+stack.stackSize, 0,0,0x888888, true);
-				GL11.glScalef(1/textScale,1/textScale,1);
-				GL11.glTranslatef(-(8-w/2),-17,-.001f);
-				GL11.glDepthMask(true);
-				GL11.glEnable(GL11.GL_LIGHTING);
+				GlStateManager.scale(1/textScale,1/textScale,1);
+				GlStateManager.translate(-(8-w/2),-17,-.001f);
+				GlStateManager.depthMask(true);
+				GlStateManager.enableLighting();
 
-				GL11.glTranslatef(-xx,0,-zz);
+				GlStateManager.translate(-xx,0,-zz);
 				GlStateManager.popMatrix();
-				GL11.glRotatef(90, 0,1,0);
+				GlStateManager.rotate(90, 0,1,0);
 
-				GL11.glEnable(3008);
-				GL11.glAlphaFunc(516, 0.1F);
-				GL11.glEnable(3042);
+				GlStateManager.enableAlpha();
+				GlStateManager.alphaFunc(516, 0.1F);
+				GlStateManager.enableBlend();
 				OpenGlHelper.glBlendFunc(770, 771, 1, 0);
 			}
 		}
-		GL11.glPopMatrix();
+		GlStateManager.popMatrix();
 	}
 
 }

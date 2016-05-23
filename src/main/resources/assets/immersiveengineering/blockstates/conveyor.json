@@ -7,6 +7,7 @@
 		"submodel": {},
 		"textures": {
 			"conveyor": "immersiveengineering:blocks/conveyor",
+			"conveyorOff": "immersiveengineering:blocks/conveyor_off",
 			"wall": "immersiveengineering:blocks/metalDevice1_dynamo_bottom"
 		}
 	},
@@ -33,11 +34,15 @@
 		{
 			"conveyor": {},
 			"conveyor_dropper": {
-				"textures": {"conveyor": "immersiveengineering:blocks/conveyor_dropper"}
+				"textures": {
+					"conveyor": "immersiveengineering:blocks/conveyor_dropper",
+					"conveyorOff": "immersiveengineering:blocks/conveyor_dropper_off"}
 			},
 			"conveyor_vertical": {
 				"model": "immersiveengineering:metalDevice/ieConveyorVertical",
-				"textures": {"conveyor": "immersiveengineering:blocks/conveyor_vertical"}
+				"textures": {
+					"conveyor": "immersiveengineering:blocks/conveyor_vertical",
+					"conveyorOff": "immersiveengineering:blocks/conveyor_vertical_off"}
 			}
 		},
 		"facing":
@@ -84,6 +89,12 @@
 			0:{},
 			1:{"model": "immersiveengineering:metalDevice/ieConveyorUp"},
 			2:{"model": "immersiveengineering:metalDevice/ieConveyorDown"}
+		},
+		//active texture
+		"boolean0":
+		{
+			"false":{"textures": {"conveyor": "#conveyorOff"}},
+			"true":{}
 		}
 	}
 }

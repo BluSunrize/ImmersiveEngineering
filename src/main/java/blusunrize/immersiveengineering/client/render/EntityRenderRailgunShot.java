@@ -1,11 +1,11 @@
 package blusunrize.immersiveengineering.client.render;
 
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 
 import blusunrize.immersiveengineering.api.tool.RailgunHandler;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.entities.EntityRailgunShot;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
@@ -42,22 +42,22 @@ public class EntityRenderRailgunShot extends Render
 
 	public static void renderRailgunProjectile(double x, double y, double z, double yaw, double pitch, int[][] colourMap)
 	{
-		GL11.glPushMatrix();
-		GL11.glTranslated(x, y, z);
-		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+		GlStateManager.pushMatrix();
+		GlStateManager.translate(x, y, z);
+		GlStateManager.enableRescaleNormal();
 		Tessellator tes = ClientUtils.tes();
 		WorldRenderer worldrenderer = ClientUtils.tes().getWorldRenderer();
 
-		GL11.glDisable(GL11.GL_TEXTURE_2D);
-		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glDisable(GL11.GL_ALPHA_TEST);
+		GlStateManager.disableTexture2D();
+		GlStateManager.enableBlend();
+		GlStateManager.disableAlpha();
 		OpenGlHelper.glBlendFunc(770, 771, 1, 0);
 
-		GL11.glDisable(GL11.GL_CULL_FACE);
-		GL11.glRotated(yaw, 0.0F, 1.0F, 0.0F);
-		GL11.glRotated(pitch, 0.0F, 0.0F, 1.0F);
+		GlStateManager.disableCull();
+		GlStateManager.rotate((float)yaw, 0.0F, 1.0F, 0.0F);
+		GlStateManager.rotate((float)pitch, 0.0F, 0.0F, 1.0F);
 
-		GL11.glScalef(.25f, .25f, .25f);
+		GlStateManager.scale(.25f, .25f, .25f);
 
 		if(colourMap.length==1)
 		{
@@ -74,13 +74,13 @@ public class EntityRenderRailgunShot extends Render
 		float widthStep = height/colWidth;
 		float lengthStep = length/colLength;
 
-		GL11.glTranslatef(-length*.85f,0,0);
+		GlStateManager.translate(-length*.85f,0,0);
 		worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
 		int colR;
 		int colG;
 		int colB;
 		//Front&Back
-		GL11.glColor4f(1f, 1f, 1f, 1f);
+		GlStateManager.color(1f, 1f, 1f, 1f);
 		for(int i=0; i<colWidth; i++)
 		{
 			colR = (colourMap[0][i]>>16)&255;
@@ -137,13 +137,13 @@ public class EntityRenderRailgunShot extends Render
 			}
 		tes.draw();
 
-		GL11.glDisable(GL11.GL_BLEND);
-		GL11.glEnable(GL11.GL_ALPHA_TEST);
-		GL11.glEnable(GL11.GL_TEXTURE_2D);
+		GlStateManager.enableBlend();
+		GlStateManager.enableAlpha();
+		GlStateManager.enableTexture2D();
 
-		GL11.glEnable(GL11.GL_CULL_FACE);
-		GL11.glDisable(GL12.GL_RESCALE_NORMAL);
-		GL11.glPopMatrix();
+		GlStateManager.enableCull();
+		GlStateManager.disableRescaleNormal();
+		GlStateManager.popMatrix();
 	}
 
 
