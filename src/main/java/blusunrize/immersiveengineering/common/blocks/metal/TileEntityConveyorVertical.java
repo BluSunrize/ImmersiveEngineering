@@ -53,6 +53,9 @@ public class TileEntityConveyorVertical extends TileEntityConveyorBelt
 						vX = 0.1D * vBase;
 				}
 			}
+			//Little boost at the top of a conveyor to help players and minecarts to get off
+			if(contact && !(world.getTileEntity(getPos().add(0,1,0)) instanceof TileEntityConveyorVertical))
+				vY *= 2.25;
 
 			entity.onGround = false;
 			entity.motionX = vX;
