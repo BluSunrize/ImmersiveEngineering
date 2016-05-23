@@ -88,6 +88,8 @@ public class BlockConveyor extends BlockIETileProvider
 			return new TileEntityConveyorBelt();
 		case CONVEYOR_DROPPER:
 			return new TileEntityConveyorBelt(true);
+		case CONVEYOR_VERTICAL:
+			return new TileEntityConveyorVertical();
 		}
 		return null;
 	}

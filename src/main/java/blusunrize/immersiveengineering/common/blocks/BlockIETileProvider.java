@@ -23,13 +23,14 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummy
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasObjProperty;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ILightValue;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IMirrorAble;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.INeighbourChangeTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ITileDrop;
 import blusunrize.immersiveengineering.common.util.Utils;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockPistonBase;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.IBlockState;
@@ -172,7 +173,7 @@ public abstract class BlockIETileProvider extends BlockIEBase implements ITileEn
 			if(te instanceof IDynamicTexture)
 				state = ((IExtendedBlockState)state).withProperty(IEProperties.OBJ_TEXTURE_REMAP, ((IDynamicTexture)te).getTextureReplacements());
 		}
-		
+
 		return state;
 	}
 
@@ -220,7 +221,7 @@ public abstract class BlockIETileProvider extends BlockIEBase implements ITileEn
 	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
 		TileEntity tile = world.getTileEntity(pos);
-		
+
 		if(tile instanceof IConfigurableSides && Utils.isHammer(player.getCurrentEquippedItem()) && !world.isRemote)
 		{
 			int iSide = player.isSneaking()?side.getOpposite().ordinal():side.ordinal(); 
@@ -265,6 +266,14 @@ public abstract class BlockIETileProvider extends BlockIEBase implements ITileEn
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public void onNeighborBlockChange(World world, BlockPos pos, IBlockState state, Block neighborBlock)
+	{
+		TileEntity tile = world.getTileEntity(pos);
+		if(tile instanceof INeighbourChangeTile && !world.isRemote)
+			((INeighbourChangeTile)tile).onNeighborBlockChange(world, pos, state, neighborBlock);
 	}
 
 	@Override

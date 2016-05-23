@@ -27,6 +27,7 @@
 - fixed IE blocks not being chiselable (thanks Malte)
 - fixed maneuver gear dupe bug (thanks Malte)
 - fixed furnaces not lighting up when using external heater (thanks Malte)
+- fixed scaffolding not being placeable while jumping (thanks Malte)
 
 #####Version 0.8-26 - BUILT
 - IE REQUIRES JAVA 8 NOW!

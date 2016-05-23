@@ -6,6 +6,7 @@ import java.util.List;
 
 import blusunrize.immersiveengineering.api.IEEnums;
 import blusunrize.immersiveengineering.api.IEProperties.PropertyBoolInverted;
+import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.IBlockState;
@@ -17,6 +18,7 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.world.World;
 import net.minecraftforge.client.model.obj.OBJModel.OBJState;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -165,5 +167,10 @@ public class IEBlockInterfaces
 		public boolean canOpenGui();
 		public int getGuiID();
 		public TileEntity getGuiMaster();
+	}
+	
+	public interface INeighbourChangeTile
+	{
+		public void onNeighborBlockChange(World world, BlockPos pos, IBlockState state, Block neighborBlock);
 	}
 }

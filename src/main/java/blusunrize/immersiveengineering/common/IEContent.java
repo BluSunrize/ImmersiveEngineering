@@ -55,6 +55,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorLV
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorMV;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorStructural;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConveyorBelt;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConveyorVertical;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityDieselGenerator;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityDynamo;
@@ -517,12 +518,13 @@ public class IEContent
 		registerTile(TileEntityFurnaceHeater.class);
 		registerTile(TileEntityDynamo.class);
 		registerTile(TileEntityThermoelectricGen.class);
-		registerTile(TileEntityConveyorBelt.class);
 		registerTile(TileEntityElectricLantern.class);
 		registerTile(TileEntityChargingStation.class);
 		registerTile(TileEntityFluidPipe.class);
 		registerTile(TileEntitySampleDrill.class);
 
+		registerTile(TileEntityConveyorBelt.class);
+		registerTile(TileEntityConveyorVertical.class);
 
 		registerTile(TileEntityMetalPress.class);
 		registerTile(TileEntityCrusher.class);
