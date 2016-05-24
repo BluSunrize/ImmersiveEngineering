@@ -29,6 +29,7 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
@@ -297,14 +298,18 @@ public class TileEntityCrusher extends TileEntityMultiblockMetal<TileEntityCrush
 	@Override
 	public void onEntityCollision(World world, Entity entity)
 	{
-		boolean bpos = pos==16||pos==17||pos==18||pos==21||pos==22||pos==23||pos==26||pos==27||pos==28;		
+		boolean bpos = pos==16||pos==17||pos==18||pos==21||pos==22||pos==23||pos==26||pos==27||pos==28;
 		if(bpos && !world.isRemote && entity!=null && !entity.isDead&&!isRSDisabled())
 		{
+			TileEntityCrusher master = master();
+			if(master==null)
+				return;
+			Vec3 center = new Vec3(master.getPos()).addVector(.5,.75,.5);
+			AxisAlignedBB crusherInternal = AxisAlignedBB.fromBounds(center.xCoord-1.0625,center.yCoord,center.zCoord-1.0625, center.xCoord+1.0625,center.yCoord+1.25,center.zCoord+1.0625);
+			if(!entity.getEntityBoundingBox().intersectsWith(crusherInternal))
+				return;
 			if(entity instanceof EntityItem && ((EntityItem)entity).getEntityItem()!=null)
 			{
-				TileEntityCrusher master = master();
-				if(master==null)
-					return;
 				ItemStack stack = ((EntityItem)entity).getEntityItem();
 				if(stack==null)
 					return;
@@ -329,9 +334,6 @@ public class TileEntityCrusher extends TileEntityMultiblockMetal<TileEntityCrush
 			}
 			else if(entity instanceof EntityLivingBase && ( !(entity instanceof EntityPlayer) || !((EntityPlayer)entity).capabilities.disableDamage) )
 			{
-				TileEntityCrusher master = master();
-				if(master==null)
-					return;
 				int consumed = master.energyStorage.extractEnergy(80, true);
 				if(consumed>0)
 				{
