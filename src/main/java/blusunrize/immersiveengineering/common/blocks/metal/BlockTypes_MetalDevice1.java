@@ -12,7 +12,8 @@ public enum BlockTypes_MetalDevice1 implements IStringSerializable, BlockIEBase.
 	ELECTRIC_LANTERN,
 	CHARGING_STATION,
 	FLUID_PIPE,
-	SAMPLE_DRILL;
+	SAMPLE_DRILL,
+	TESLA_COIL;
 
 	@Override
 	public String getName()

@@ -53,6 +53,17 @@
 			"west": "immersiveengineering:blocks/metalDevice1_thermoelectricGen_side",
 			"east": "immersiveengineering:blocks/metalDevice1_thermoelectricGen_side"}
 		}],
+		"inventory,type=tesla_coil": [{
+			"model": "immersiveengineering:metalDevice/teslacoil.obj",
+			"custom": {"flip-v": true},
+			"transform": {
+				"scale": [ 1, 1, 1 ],
+				"firstperson": {"scale": [ 0.625, 0.625, 0.625 ]},
+				"thirdperson": { "translation": [ 0, 0.09375, -0.171875 ], "rotation": [{ "x": 10 }, { "y": -45 }, { "z": 170 }], "scale": [ 0.3125, 0.3125, 0.3125 ] },
+				"fixed": { "translation": [ 0, -0.125, 0 ], "rotation": [{ "y": -90 }], "scale": [ 0.625, 0.625, 0.625 ] },
+				"gui": { "translation": [ 0, -0.125, 0 ], "rotation": [{ "y": -90 }], "scale": [ 0.625, 0.625, 0.625 ] }
+			}
+		}],
 		"type":
 		{
 			"blast_furnace_preheater": {
@@ -84,7 +95,11 @@
 				"south": "immersiveengineering:blocks/metalDevice1_thermoelectricGen_side",
 				"west": "immersiveengineering:blocks/metalDevice1_thermoelectricGen_side",
 				"east": "immersiveengineering:blocks/metalDevice1_thermoelectricGen_side"
-			}}
+			}},
+			"tesla_coil": {
+				"model": "immersiveengineering:metalDevice/teslacoil.obj",
+				"custom": { "flip-v": true }
+			}
 		},
 		"facing":
 		{

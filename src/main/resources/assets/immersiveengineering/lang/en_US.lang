@@ -150,9 +150,11 @@ tile.ImmersiveEngineering.metalDevice1.electric_lantern.name=Powered Lantern
 tile.ImmersiveEngineering.metalDevice1.charging_station.name=Charging Station
 tile.ImmersiveEngineering.metalDevice1.fluid_pipe.name=Fluid Pipe
 tile.ImmersiveEngineering.metalDevice1.sample_drill.name=Core Sample Drill
+tile.ImmersiveEngineering.metalDevice1.tesla_coil.name=Tesla Coil
 
 tile.ImmersiveEngineering.conveyor.conveyor.name=Conveyor Belt
 tile.ImmersiveEngineering.conveyor.conveyor_dropper.name=Dropping Conveyor Belt
+tile.ImmersiveEngineering.conveyor.conveyor_vertical.name=Vertical Conveyor Belt
 
 tile.ImmersiveEngineering.metalMultiblock.metal_press.name=Metal Press
 tile.ImmersiveEngineering.metalMultiblock.crusher.name=Crusher

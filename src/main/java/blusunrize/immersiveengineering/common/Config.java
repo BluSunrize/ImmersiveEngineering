@@ -118,6 +118,7 @@ public class Config
 		TileEntityConnectorLV.connectorInputValues = propConnectorInput.getIntList();
 		setIntArray("wireConnectorInput", propConnectorInput.getIntList());
 
+		//Capacitors
 		setInt("capacitorLV_storage", config.get("machines", "Capacitor LV: RF Storage", 100000, "The maximum amount of RF that can be stored in a low-voltage capacitor").getInt());
 		setInt("capacitorLV_input", config.get("machines", "Capacitor LV: Input", 256, "The maximum amount of RF that can be input into a low-voltage capacitor (by IE net or other means)").getInt());
 		setInt("capacitorLV_output", config.get("machines", "Capacitor LV: Output", 256, "The maximum amount of RF that can be output from a low-voltage capacitor (by IE net or other means)").getInt());
@@ -130,14 +131,30 @@ public class Config
 		setInt("capacitorHV_input", config.get("machines", "Capacitor HV: Input", 4096, "The maximum amount of RF that can be input into a high-voltage capacitor (by IE net or other means)").getInt());
 		setInt("capacitorHV_output", config.get("machines", "Capacitor HV: Output", 4096, "The maximum amount of RF that can be output from a high-voltage capacitor (by IE net or other means)").getInt());
 
+		//Generators
 		setDouble("dynamo_output", config.get("machines", "Dynamo: Output", 3d, "The base RF that is output by the dynamo. This will be modified by the rotation modifier of the attached water- or windmill").getDouble());
 		setDouble("thermoelectric_output", config.get("machines", "Thermoelectric: Output", 1d, "Output modifier for the energy created by the Thermoelectric Generator").getDouble());
 		//setInt("lightning_output", config.get("machines", "Lightning Rod: Output", 4*4000000, "The RF that will be output by the lightning rod when it is struck").getInt());
 		setInt("dieselGen_output", config.get("machines", "Diesel Generator: Output", 4096, "The RF per tick that the Diesel Generator will output. The burn time of the fuel determines the total output").getInt());
 
+		//Simple Machines
 		setInt("heater_consumption", config.get("machines", "Heater: RF per Heat", 8, "The RF per tick consumed to add one heat to a furnace. Creates up to 4 heat in the startup time and then 1 heat per tick to keep it running").getInt());
 		setInt("heater_speedupConsumption", config.get("machines", "Heater: Speedup", 24, "The RF per tick consumed to double the speed of the furnace. Only happens if furnace is at maximum heat.").getInt());
+		setInt("preheater_consumption", config.get("machines", "BlastFurnacePreheater: Charge", 32, "The RF per tick the Blast Furnace Preheater will consume to speed up the Blast Furnace").getInt());
+		setInt("coredrill_time", config.get("machines", "Core Sample Drill: Evaluation Time", 200, "The length in ticks it takes for the Core Sample Drill to figure out which mineral is found in a chunk").getInt());
+		setInt("coredrill_consumption", config.get("machines", "Core Sample Drill: Consumption", 40, "The RF per tick consumed by the Core Sample Drill").getInt());
+		setInt("pump_consumption", config.get("machines", "Fluid Pump: Consumed", 250, "The RF the Fluid Pump will consume to pick up a fluid block in the world").getInt());
+		setInt("pump_consumption_accelerate", config.get("machines", "Fluid Pump: Acceleration", 5, "The RF the Fluid Pump will consume pressurize+accellerate fluids, increasing the transferrate").getInt());
+		setBoolean("pump_infiniteWater", config.get("machines", "Fluid Pump: Infinite Water", true, "Set this to false to disable the fluid pump being able to draw infinite water from sources").getBoolean());
+		setBoolean("pump_placeCobble", config.get("machines", "Fluid Pump: Cobble", true, "If this is set to true (default) the pump will replace fluids it picks up with cobblestone in order to reduce lag caused by flowing fluids.").getBoolean());
 		setInt("charger_consumption", config.get("machines", "ChargingStation: Charge", 256, "The RF per tick the Charging Station can insert into an item").getInt());
+		
+		//Lights
+		setBoolean("lantern_spawnPrevent", config.get("machines", "Powered Lantern: Spawn Prevention", true, "Set this to false to disable the mob-spawn prevention of the Powered Lantern").getBoolean());
+		setBoolean("floodlight_spawnPrevent", config.get("machines", "Floodlight: Spawn Prevention", true, "Set this to false to disable the mob-spawn prevention of the Floodlight").getBoolean());
+
+
+		//Multiblock Recipes
 		MetalPressRecipe.energyModifier = (float)config.get("machines", "Metal Press: EnergyModifier", 1d, "A modifier to apply to the energy costs of every MetalPress recipe").getDouble();
 		MetalPressRecipe.timeModifier = (float)config.get("machines", "Metal Press: TimeModifier", 1d, "A modifier to apply to the time of every MetalPress recipe").getDouble();
 		CrusherRecipe.energyModifier = (float)config.get("machines", "Crusher: EnergyModifier", 1d, "A modifier to apply to the energy costs of every Crusher recipe").getDouble();
@@ -150,13 +167,13 @@ public class Config
 		RefineryRecipe.timeModifier = (float)config.get("machines", "Refinery: TimeModifier", 1d, "A modifier to apply to the time of every Refinery recipe").getDouble();
 		ArcFurnaceRecipe.energyModifier = (float)config.get("machines", "Arc Furnace: EnergyModifier", 1d, "A modifier to apply to the energy costs of every Arc Furnace recipe").getDouble();
 		ArcFurnaceRecipe.timeModifier = (float)config.get("machines", "Arc Furnace: TimeModifier", 1d, "A modifier to apply to the time of every Arc Furnace recipe").getDouble();
-	
-		
-		//setInt("crusher_consumption", config.get("machines", "Crusher: Consumed", 120, "The RF per tick consumed by the Crusher. Will also directly influence the speed.").getInt());
-		//setInt("squeezer_consumption", config.get("machines", "Squeezer: Consumed", 10, "The RF per tick per item that the Squeezer will consume to create Plant Oil").getInt());
-		//setInt("fermenter_consumption", config.get("machines", "Fermenter: Consumed", 10, "The RF per tick per item that the Fermenter will consume to create Ethanol").getInt());
-		//setInt("refinery_consumption", config.get("machines", "Refinery: Consumed", 80, "The RF per tick the Refinery will consume to mix two fluids").getInt());
+		setInt("arcfurnace_electrodeDamage", config.get("machines", "Arc Furnace: Graphite Electrodes", 96000, "The maximum amount of damage Graphite Electrodes can take. While the furnace is working, electrodes sustain 1 damage per tick, so this is effectively the lifetime in ticks. The default value of 96000 makes them last for 8 consecutive ingame days").getInt());
+		setBoolean("arcfurnace_electrodeCrafting", config.get("machines", "Arc Furnace: Craftable Blueprint", false, "Set this to true to make the blueprint for graphite electrodes craftable in addition to villager/dungeon loot").getBoolean());
+		setBoolean("arcfurnace_recycle", config.get("machines", "Arc Furnace: Recycling", true, "Set this to false to disable the Arc Furnace's recycling of armors and tools").getBoolean());
 
+		//Other Multiblock machines
+		setInt("assembler_consumption", config.get("machines", "Assembler: Consumed", 80, "The RF the Assembler will consume to craft an item from a recipe").getInt());
+		//setInt("bottlingMachine_consumption", config.get("machines", "Bottling: Consumed", 8, "The RF the Bottling Machine will consume per tick, when filling items").getInt());
 		setInt("excavator_consumption", config.get("machines", "Excavator: Consumed", 4096, "The RF per tick the Excavator will consume to dig").getInt());
 		setDouble("excavator_speed", config.get("machines", "Excavator: Speed", 1d, "The speed of the Excavator. Basically translates to how many degrees per tick it will turn.").getDouble());
 		setBoolean("excavator_particles", config.get("machines", "Excavator: Particles", true, "Set this to false to disable the ridiculous amounts of particles the Excavator spawns").getBoolean());
@@ -164,24 +181,6 @@ public class Config
 		setInt("excavator_depletion", config.get("machines", "Excavator: Mineral Depletion", 38400, "The maximum amount of yield one can get out of a chunk with the excavator. Set a number smaller than zero to make it infinite").getInt());
 		//setInt("excavator_depletion_days", getInt("excavator_depletion")*45/24000);
 		setIntArray("excavator_dimBlacklist", config.get("machines", "Excavator: Mineral Dimension Blacklist", new int[]{1}, "List of dimensions that can't contain minerals. Default: The End.").getIntList());
-		
-		setInt("coredrill_time", config.get("machines", "Core Sample Drill: Evaluation Time", 200, "The length in ticks it takes for the Core Sample Drill to figure out which mineral is found in a chunk").getInt());
-		setInt("coredrill_consumption", config.get("machines", "Core Sample Drill: Consumption", 40, "The RF per tick consumed by the Core Sample Drill").getInt());
-
-		setInt("arcfurnace_electrodeDamage", config.get("machines", "Arc Furnace: Graphite Electrodes", 96000, "The maximum amount of damage Graphite Electrodes can take. While the furnace is working, electrodes sustain 1 damage per tick, so this is effectively the lifetime in ticks. The default value of 96000 makes them last for 8 consecutive ingame days").getInt());
-		setBoolean("arcfurnace_electrodeCrafting", config.get("machines", "Arc Furnace: Craftable Blueprint", false, "Set this to true to make the blueprint for graphite electrodes craftable in addition to villager/dungeon loot").getBoolean());
-		setBoolean("arcfurnace_recycle", config.get("machines", "Arc Furnace: Recycling", true, "Set this to false to disable the Arc Furnace's recycling of armors and tools").getBoolean());
-		
-		setBoolean("lantern_spawnPrevent", config.get("machines", "Powered Lantern: Spawn Prevention", true, "Set this to false to disable the mob-spawn prevention of the Powered Lantern").getBoolean());
-		setBoolean("floodlight_spawnPrevent", config.get("machines", "Floodlight: Spawn Prevention", true, "Set this to false to disable the mob-spawn prevention of the Floodlight").getBoolean());
-		
-		setInt("pump_consumption", config.get("machines", "Fluid Pump: Consumed", 250, "The RF the Fluid Pump will consume to pick up a fluid block in the world").getInt());
-		setInt("pump_consumption_accelerate", config.get("machines", "Fluid Pump: Acceleration", 5, "The RF the Fluid Pump will consume pressurize+accellerate fluids, increasing the transferrate").getInt());
-		setBoolean("pump_infiniteWater", config.get("machines", "Fluid Pump: Infinite Water", true, "Set this to false to disable the fluid pump being able to draw infinite water from sources").getBoolean());
-		setBoolean("pump_placeCobble", config.get("machines", "Fluid Pump: Cobble", true, "If this is set to true (default) the pump will replace fluids it picks up with cobblestone in order to reduce lag caused by flowing fluids.").getBoolean());
-		//setInt("assembler_consumption", config.get("machines", "Assembler: Consumed", 80, "The RF the Assembler will consume to craft an item from a recipe").getInt());
-		//setInt("bottlingMachine_consumption", config.get("machines", "Bottling: Consumed", 8, "The RF the Bottling Machine will consume per tick, when filling items").getInt());
-		
 
 		setIntArray("ore_copper", config.get("oregen", "Copper", new int[]{8, 40,72, 8,100}, "Generation config for Copper Ore. Parameters: Vein size, lowest possible Y, highest possible Y, veins per chunk, chance for vein to spawn (out of 100). Set vein size to 0 to disable the generation").getIntList());
 		setIntArray("ore_bauxite", config.get("oregen", "Bauxite", new int[]{4, 40,85, 8,100}, "Generation config for Bauxite Ore. Parameters: Vein size, lowest possible Y, highest possible Y, veins per chunk, chance for vein to spawn (out of 100). Set vein size to 0 to disable the generation").getIntList());
@@ -199,7 +198,8 @@ public class Config
 		setBoolean("retrogen_silver", config.get("oregen", "retrogen_Silver", false, "Set this to true to allow retro-generation of Silver Ore.").getBoolean());
 		setBoolean("retrogen_nickel", config.get("oregen", "retrogen_Nickel", false, "Set this to true to allow retro-generation of Nickel Ore.").getBoolean());
 		setBoolean("retrogen_uranium", config.get("oregen", "retrogen_Uranium", false, "Set this to true to allow retro-generation of Uranium Ore.").getBoolean());
-		
+
+		//Tools
 		//setBoolean("hardmodeBulletRecipes", config.get("tools", "Bullets: Hardmode Recipes", false, "Enable this to use the old, harder bullet recipes(require one ingot per bullet)").getBoolean());
 		setDouble("BulletDamage-Casull", config.get("tools", "BulletDamage-Casull", 10d, "The amount of base damage a Casull Cartridge inflicts").getDouble());
 		setDouble("BulletDamage-AP", config.get("tools", "BulletDamage-AP", 10d, "The amount of base damage an ArmorPiercing Cartridge inflicts").getDouble());
@@ -210,13 +210,14 @@ public class Config
 		setDouble("BulletDamage-WolfpackPart", config.get("tools", "BulletDamage-WolfpackPart", 4d, "The amount of damage the sub-projectiles of the Wolfpack Cartridge inflict").getDouble());
 		setDouble("BulletDamage-Silver", config.get("tools", "BulletDamage-Silver", 10d, "The amount of damage a silver bullet inflicts").getDouble());
 		setDouble("BulletDamage-Potion", config.get("tools", "BulletDamage-Potion", 1d, "The amount of base damage a Phial Cartridge inflicts").getDouble());
-		
-		setStringArray("EarDefenders_SoundBlacklist", config.get("tools", "EarDefenders: Blacklist", new String[]{}, "A list of sounds that should not be muffled by the Ear Defenders. Adding to this list requires knowledge of the correct sound resource names.").getStringList());
-		
-		//setInt("chemthrower_consumption", config.get("tools", "ChemThrower: Consumed", 10, "The mb of fluid the Chemical Thrower will consume per tick of usage").getInt());
-		
-		//setInt("railgun_consumption", config.get("tools", "Railgun: Consumed", 800, "The base amount of RF consumed per shot by the Railgun").getInt());
 
+		setStringArray("EarDefenders_SoundBlacklist", config.get("tools", "EarDefenders: Blacklist", new String[]{}, "A list of sounds that should not be muffled by the Ear Defenders. Adding to this list requires knowledge of the correct sound resource names.").getStringList());
+
+		setInt("chemthrower_consumption", config.get("tools", "ChemThrower: Consumed", 10, "The mb of fluid the Chemical Thrower will consume per tick of usage").getInt());
+
+		setInt("railgun_consumption", config.get("tools", "Railgun: Consumed", 800, "The base amount of RF consumed per shot by the Railgun").getInt());
+
+		//Compat
 		for(String key : IECompatModule.moduleClasses.keySet())
 			setBoolean("compat_"+key, config.get("compatability", "Enable Compatmodule: "+key, true, "Set this to false to disable IE's built in compatability with "+key).getBoolean());
 
@@ -261,7 +262,7 @@ public class Config
 	{
 		return config_string.get(key);
 	}
-	
+
 	public static void setDoubleArray(String key, double[] dA)
 	{
 		config_doubleArray.put(key, dA);

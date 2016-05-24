@@ -103,11 +103,11 @@ public class BlockMetalDevice1 extends BlockIETileProvider
 	@Override
 	public boolean isSideSolid(IBlockAccess world, BlockPos pos, EnumFacing side)
 	{
-		//		int meta = world.getBlockMetadata(x, y, z);
-		//		if(meta==META_capacitorLV||meta==META_capacitorMV||meta==META_capacitorHV)
-		//			return true;
-		//		if(meta==META_dynamo||meta==META_thermoelectricGen||meta==META_furnaceHeater)
-		//			return true;
+		TileEntity tile = world.getTileEntity(pos); 
+		if(tile instanceof TileEntityTeslaCoil)
+			return !((TileEntityTeslaCoil)tile).dummy;
+		if(tile instanceof TileEntityElectricLantern || tile instanceof TileEntityChargingStation)
+			return false;
 		return true;
 	}
 
@@ -132,6 +132,8 @@ public class BlockMetalDevice1 extends BlockIETileProvider
 			return new TileEntityFluidPipe();
 		case SAMPLE_DRILL:
 			return new TileEntitySampleDrill();
+		case TESLA_COIL:
+			return new TileEntityTeslaCoil();
 
 			//		case 0://CONNECTOR_LV
 			//		case 1://CONNECTOR_MV

@@ -28,7 +28,6 @@ public class TileEntityBlastFurnacePreheater extends TileEntityIEBase implements
 		int consumed = Config.getInt("preheater_consumption"); 
 		if(this.energyStorage.extractEnergy(consumed, true)==consumed)
 		{
-
 			if (!active)
 			{
 				active = true;

@@ -78,6 +78,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySampleDrill
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySheetmetalTank;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySilo;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySqueezer;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTeslaCoil;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityThermoelectricGen;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTransformer;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTransformerHV;
@@ -522,6 +523,7 @@ public class IEContent
 		registerTile(TileEntityChargingStation.class);
 		registerTile(TileEntityFluidPipe.class);
 		registerTile(TileEntitySampleDrill.class);
+		registerTile(TileEntityTeslaCoil.class);
 
 		registerTile(TileEntityConveyorBelt.class);
 		registerTile(TileEntityConveyorVertical.class);
