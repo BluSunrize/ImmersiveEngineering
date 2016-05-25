@@ -11,12 +11,13 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
-public class BlockStoneDevice extends BlockIEMultiblock
+public class BlockStoneDevice extends BlockIEMultiblock<BlockTypes_StoneDevices>
 {
 	public BlockStoneDevice()
 	{
@@ -26,7 +27,7 @@ public class BlockStoneDevice extends BlockIEMultiblock
 	}
 
 	@Override
-	public void getSubBlocks(Item item, CreativeTabs tab, List list)
+	public void getSubBlocks(Item item, CreativeTabs tab, List<ItemStack> list)
 	{
 		super.getSubBlocks(item, tab, list);
 	}

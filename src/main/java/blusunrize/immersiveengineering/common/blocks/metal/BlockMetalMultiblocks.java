@@ -14,7 +14,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.obj.OBJModel.OBJProperty;
 
-public class BlockMetalMultiblocks extends BlockIEMultiblock
+public class BlockMetalMultiblocks extends BlockIEMultiblock<BlockTypes_MetalMultiblock>
 {
 	public static final int META_lightningRod=0;
 	public static final int META_dieselGenerator=1;

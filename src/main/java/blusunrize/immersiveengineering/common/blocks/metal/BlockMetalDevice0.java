@@ -15,7 +15,7 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockMetalDevice0 extends BlockIETileProvider
+public class BlockMetalDevice0 extends BlockIETileProvider<BlockTypes_MetalDevice0>
 {
 	public BlockMetalDevice0()
 	{

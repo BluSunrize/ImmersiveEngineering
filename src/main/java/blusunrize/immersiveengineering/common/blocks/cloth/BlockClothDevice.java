@@ -21,7 +21,7 @@ import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockClothDevice extends BlockIETileProvider
+public class BlockClothDevice extends BlockIETileProvider<BlockTypes_ClothDevice>
 {
 	public BlockClothDevice()
 	{

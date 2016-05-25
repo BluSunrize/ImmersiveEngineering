@@ -51,9 +51,9 @@ import net.minecraftforge.client.model.obj.OBJModel.OBJProperty;
 import net.minecraftforge.client.model.obj.OBJModel.OBJState;
 import net.minecraftforge.common.property.IExtendedBlockState;
 
-public abstract class BlockIETileProvider extends BlockIEBase implements ITileEntityProvider
+public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlockEnum> extends BlockIEBase<E> implements ITileEntityProvider
 {
-	public BlockIETileProvider(String name, Material material, PropertyEnum mainProperty, Class<? extends ItemBlockIEBase> itemBlock, Object... additionalProperties)
+	public BlockIETileProvider(String name, Material material, PropertyEnum<E> mainProperty, Class<? extends ItemBlockIEBase> itemBlock, Object... additionalProperties)
 	{
 		super(name, material, mainProperty, itemBlock, additionalProperties);
 	}

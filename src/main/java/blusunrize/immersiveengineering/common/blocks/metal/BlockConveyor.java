@@ -14,7 +14,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockConveyor extends BlockIETileProvider
+public class BlockConveyor extends BlockIETileProvider<BlockTypes_Conveyor>
 {
 	public BlockConveyor()
 	{
@@ -63,10 +63,10 @@ public class BlockConveyor extends BlockIETileProvider
 			TileEntityConveyorBelt conveyer = (TileEntityConveyorBelt)tile;
 			EnumFacing f = conveyer.facing;
 			tile = world.getTileEntity(pos.offset(f).add(0,1,0));
-			if(tile instanceof TileEntityConveyorBelt && !(tile instanceof TileEntityConveyorVertical) && ((TileEntityConveyorBelt)tile).facing!=f.getOpposite())
+			if(tile instanceof TileEntityConveyorBelt&&!(tile instanceof TileEntityConveyorVertical) && ((TileEntityConveyorBelt)tile).facing!=f.getOpposite())
 				conveyer.transportUp = true;
 			tile = world.getTileEntity(pos.offset(f.getOpposite()).add(0,1,0));
-			if(tile instanceof TileEntityConveyorBelt && !(tile instanceof TileEntityConveyorVertical) && ((TileEntityConveyorBelt)tile).facing==f)
+			if(tile instanceof TileEntityConveyorBelt&&!(tile instanceof TileEntityConveyorVertical) && ((TileEntityConveyorBelt)tile).facing==f)
 				conveyer.transportDown = true;
 			if(conveyer.transportUp && conveyer.transportDown)
 				conveyer.transportDown = false;

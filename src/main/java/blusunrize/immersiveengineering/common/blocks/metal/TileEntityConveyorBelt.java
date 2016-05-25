@@ -77,7 +77,7 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 				else if(entity.posX < getPos().getX()+0.35D)
 					vX = 0.1D * vBase;
 			}
-
+			entity.fallDistance = 0;
 			entity.motionX = vX;
 			entity.motionY = vY;
 			entity.motionZ = vZ;
@@ -85,7 +85,7 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 			double distZ = Math.abs(getPos().offset(facing).getZ()+.5-entity.posZ);
 			double treshold = .9;
 			boolean contact = facing.getAxis()==Axis.Z?distZ<treshold: distX<treshold;
-			if (contact&&transportUp)
+			if (contact&&transportUp&&!world.getBlockState(getPos().offset(facing).up()).getBlock().isFullBlock())
 			{
 				double move = .4;
 				entity.setPosition(entity.posX+move*facing.getFrontOffsetX(), entity.posY+1.75*move, entity.posZ+move*facing.getFrontOffsetZ());

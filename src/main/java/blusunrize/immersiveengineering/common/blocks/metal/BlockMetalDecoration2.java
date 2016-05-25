@@ -6,7 +6,6 @@ import java.util.List;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.blocks.BlockIETileProvider;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
-import blusunrize.immersiveengineering.common.blocks.wooden.BlockTypes_WoodenDevice1;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWallmount;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenPost;
 import net.minecraft.block.material.Material;
@@ -23,7 +22,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.obj.OBJModel.OBJProperty;
 
-public class BlockMetalDecoration2 extends BlockIETileProvider
+public class BlockMetalDecoration2 extends BlockIETileProvider<BlockTypes_MetalDecoration2>
 {
 	public BlockMetalDecoration2()
 	{
@@ -52,7 +51,7 @@ public class BlockMetalDecoration2 extends BlockIETileProvider
 	public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune)
 	{
 		if(this.getMetaFromState(state)==BlockTypes_MetalDecoration2.ALUMINUM_POST.getMeta()||this.getMetaFromState(state)==BlockTypes_MetalDecoration2.STEEL_POST.getMeta())
-			return new ArrayList();
+			return new ArrayList<>();
 		return super.getDrops(world, pos, state, fortune);
 	}
 	@Override
