@@ -3,10 +3,13 @@
 - re-added the Assembler! For all your autocrafting needs!
 - changed the plantoil value for hemp seeds back to what it was in 1.7.10
 - changed internal rendering of connectors to use vflip again rather than flipped textures (thanks Malte)
+- changed conveyor belts to halt their animation when red
 - added comparator support to the current transformer (thanks Malte)
 - added a hacky workaround for WAILA making wires look bad (WAILA should fix this, but we'll manage) (thanks Malte)
 - added a manual page for Uranium Ore
 - added a proper sound to the revolver firing
+- added the Tesla Coil! It will shock you!
+- added the ability to allow Tinkers Tools to the toolbox, as well as a better API to allow adding them (thanks Malte)
 - fixed sheetmetal tanks showing the wrong structure in the manual
 - fixed recipe for leaded concrete stairs
 - fixed gunpowder barrels exploding when punched
@@ -28,6 +31,9 @@
 - fixed maneuver gear dupe bug (thanks Malte)
 - fixed furnaces not lighting up when using external heater (thanks Malte)
 - fixed scaffolding not being placeable while jumping (thanks Malte)
+- fixed preheaters not consuming power correctly and not having a manual entry
+- fixed crusher crushing entities on collision
+
 
 #####Version 0.8-26 - BUILT
 - IE REQUIRES JAVA 8 NOW!
