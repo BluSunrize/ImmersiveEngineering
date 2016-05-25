@@ -126,7 +126,7 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 						topFirst = !topFirst;
 					}
 				}
-
+				
 				if(targetFound)
 				{
 					EnumFacing f;
@@ -136,6 +136,7 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 						f = tx<0?EnumFacing.WEST:EnumFacing.EAST;
 					coilPos = coilPos.addVector(f.getAxis()==Axis.X?f.getFrontOffsetX()*.375:((worldObj.rand.nextDouble()-.5)*.75), 0, f.getAxis()==Axis.Z?f.getFrontOffsetZ()*.375:((worldObj.rand.nextDouble()-.5)*.75));
 					effectMap.put(getPos(), new LightningAnimation(coilPos, new Vec3(getPos()).addVector(tx,ty,tz)));
+					worldObj.playSound(getPos().getX(),getPos().getY(),getPos().getZ(), "immersiveengineering:tesla", 2.5F,0.5F+worldObj.rand.nextFloat(), true);
 				}
 			}
 		}
@@ -159,6 +160,7 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 				Vec3 coilPos = new Vec3(getPos()).addVector(.5,1.5+worldObj.rand.nextDouble()*.25,.5);
 				coilPos = coilPos.addVector(f.getAxis()==Axis.X?f.getFrontOffsetX()*.375:((worldObj.rand.nextDouble()-.5)*.75), 0, f.getAxis()==Axis.Z?f.getFrontOffsetZ()*.375:((worldObj.rand.nextDouble()-.5)*.75));
 				effectMap.put(getPos(), new LightningAnimation(coilPos,(EntityLivingBase)target));
+				worldObj.playSoundEffect(getPos().getX()+.5,getPos().getY()+1.5,getPos().getZ()+.5, "immersiveengineering:tesla", 2.5F,0.5F+worldObj.rand.nextFloat());
 			}
 		}
 	}

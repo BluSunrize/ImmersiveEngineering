@@ -8,5 +8,6 @@
 	"chargeFast": { "category": "neutral", "sounds":["chargeFast"] },
 	"chargeSlow": { "category": "neutral", "sounds":["chargeSlow"] },
 	"spark": { "category": "neutral", "sounds":["spark0","spark1","spark2"] },
-	"railgunFire": { "category": "neutral", "sounds":["railgunFire"] }
+	"railgunFire": { "category": "neutral", "sounds":["railgunFire"] },
+	"tesla": { "category": "block", "sounds":["tesla"] }
 }
