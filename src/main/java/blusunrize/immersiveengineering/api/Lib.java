@@ -46,6 +46,7 @@ public class Lib
 	public static String DMG_RevolverSilver = "ieRevolver_silver";
 	public static String DMG_RevolverPotion = "ieRevolver_potion";
 	public static String DMG_Crusher="ieCrushed";
+	public static String DMG_Tesla="ieTesla";
 	public static String DMG_Acid="ieAcid";
 	public static String DMG_Railgun = "ieRailgun";
 

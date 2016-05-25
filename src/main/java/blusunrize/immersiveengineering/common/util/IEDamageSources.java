@@ -80,6 +80,11 @@ public class IEDamageSources
 		return new IEDamageSource(Lib.DMG_Crusher);
 	}
 	
+	public static DamageSource causeTeslaDamage()
+	{
+		return new IEDamageSource(Lib.DMG_Tesla);
+	}
+	
 	public static DamageSource causeRailgunDamage(EntityRailgunShot shot, Entity shooter)
 	{
 		return new IEDamageSource_Indirect(Lib.DMG_Railgun, shot, shooter).setDamageBypassesArmor();

@@ -71,7 +71,7 @@ public class Config
 		}
 		setBoolean("validateConnections", connectionValidation.getBoolean());
 
-		Property wireProperty = config.get("general", "Wire transfer rates", new int[]{2048,8192,32768,0,0}, "The transfer rates in RF/t for the wire tiers (copper, electrum, HV, Structural Rope & Cable(no transfer) )");
+		Property wireProperty = config.get("general", "Wire transfer rates", new int[]{2048,8192,32768,0,0}, "The transfer rates in Flux/t for the wire tiers (copper, electrum, HV, Structural Rope & Cable(no transfer) )");
 		if(wireProperty.getIntList().length<5)
 			wireProperty.set(new int[]{2048,8192,32768,0,0});
 		setIntArray("wireTransferRate", wireProperty.getIntList());
@@ -108,7 +108,7 @@ public class Config
 
 		setBoolean("ic2compat", config.get("general", "IC2 Compatability", true, "Set this to false to prevent wires from accepting and outputting EU").getBoolean());
 		setBoolean("gregtechcompat", config.get("general", "GregTech Compatability", true, "Set this to false to prevent wires from outputting GregTech EU").getBoolean());
-		setInt("euConversion", config.get("general", "EU Conversion", 4, "The amount of RF that equal 1 EU. 4 by default, so 4RF == 1EU and .25EU == 1RF").getInt());
+		setInt("euConversion", config.get("general", "EU Conversion", 4, "The amount of Flux that equal 1 EU. 4 by default, so 4Flux == 1EU and .25EU == 1Flux").getInt());
 
 		setInt("villager_engineer", config.get("general", "Villager ID: Engineer", 512, "The villager ID for the Engineer Villager. Change if it conflicts").getInt());
 
@@ -119,35 +119,38 @@ public class Config
 		setIntArray("wireConnectorInput", propConnectorInput.getIntList());
 
 		//Capacitors
-		setInt("capacitorLV_storage", config.get("machines", "Capacitor LV: RF Storage", 100000, "The maximum amount of RF that can be stored in a low-voltage capacitor").getInt());
-		setInt("capacitorLV_input", config.get("machines", "Capacitor LV: Input", 256, "The maximum amount of RF that can be input into a low-voltage capacitor (by IE net or other means)").getInt());
-		setInt("capacitorLV_output", config.get("machines", "Capacitor LV: Output", 256, "The maximum amount of RF that can be output from a low-voltage capacitor (by IE net or other means)").getInt());
+		setInt("capacitorLV_storage", config.get("machines", "Capacitor LV: Flux Storage", 100000, "The maximum amount of Flux that can be stored in a low-voltage capacitor").getInt());
+		setInt("capacitorLV_input", config.get("machines", "Capacitor LV: Input", 256, "The maximum amount of Flux that can be input into a low-voltage capacitor (by IE net or other means)").getInt());
+		setInt("capacitorLV_output", config.get("machines", "Capacitor LV: Output", 256, "The maximum amount of Flux that can be output from a low-voltage capacitor (by IE net or other means)").getInt());
 
-		setInt("capacitorMV_storage", config.get("machines", "Capacitor MV: RF Storage", 1000000, "The maximum amount of RF that can be stored in a medium-voltage capacitor").getInt());
-		setInt("capacitorMV_input", config.get("machines", "Capacitor MV: Input", 1024, "The maximum amount of RF that can be input into a medium-voltage capacitor (by IE net or other means)").getInt());
-		setInt("capacitorMV_output", config.get("machines", "Capacitor MV: Output", 1024, "The maximum amount of RF that can be output from a medium-voltage capacitor (by IE net or other means)").getInt());
+		setInt("capacitorMV_storage", config.get("machines", "Capacitor MV: Flux Storage", 1000000, "The maximum amount of Flux that can be stored in a medium-voltage capacitor").getInt());
+		setInt("capacitorMV_input", config.get("machines", "Capacitor MV: Input", 1024, "The maximum amount of Flux that can be input into a medium-voltage capacitor (by IE net or other means)").getInt());
+		setInt("capacitorMV_output", config.get("machines", "Capacitor MV: Output", 1024, "The maximum amount of Flux that can be output from a medium-voltage capacitor (by IE net or other means)").getInt());
 
-		setInt("capacitorHV_storage", config.get("machines", "Capacitor HV: RF Storage", 4000000, "The maximum amount of RF that can be stored in a high-voltage capacitor").getInt());
-		setInt("capacitorHV_input", config.get("machines", "Capacitor HV: Input", 4096, "The maximum amount of RF that can be input into a high-voltage capacitor (by IE net or other means)").getInt());
-		setInt("capacitorHV_output", config.get("machines", "Capacitor HV: Output", 4096, "The maximum amount of RF that can be output from a high-voltage capacitor (by IE net or other means)").getInt());
+		setInt("capacitorHV_storage", config.get("machines", "Capacitor HV: Flux Storage", 4000000, "The maximum amount of Flux that can be stored in a high-voltage capacitor").getInt());
+		setInt("capacitorHV_input", config.get("machines", "Capacitor HV: Input", 4096, "The maximum amount of Flux that can be input into a high-voltage capacitor (by IE net or other means)").getInt());
+		setInt("capacitorHV_output", config.get("machines", "Capacitor HV: Output", 4096, "The maximum amount of Flux that can be output from a high-voltage capacitor (by IE net or other means)").getInt());
 
 		//Generators
-		setDouble("dynamo_output", config.get("machines", "Dynamo: Output", 3d, "The base RF that is output by the dynamo. This will be modified by the rotation modifier of the attached water- or windmill").getDouble());
+		setDouble("dynamo_output", config.get("machines", "Dynamo: Output", 3d, "The base Flux that is output by the dynamo. This will be modified by the rotation modifier of the attached water- or windmill").getDouble());
 		setDouble("thermoelectric_output", config.get("machines", "Thermoelectric: Output", 1d, "Output modifier for the energy created by the Thermoelectric Generator").getDouble());
-		//setInt("lightning_output", config.get("machines", "Lightning Rod: Output", 4*4000000, "The RF that will be output by the lightning rod when it is struck").getInt());
-		setInt("dieselGen_output", config.get("machines", "Diesel Generator: Output", 4096, "The RF per tick that the Diesel Generator will output. The burn time of the fuel determines the total output").getInt());
+		//setInt("lightning_output", config.get("machines", "Lightning Rod: Output", 4*4000000, "The Flux that will be output by the lightning rod when it is struck").getInt());
+		setInt("dieselGen_output", config.get("machines", "Diesel Generator: Output", 4096, "The Flux per tick that the Diesel Generator will output. The burn time of the fuel determines the total output").getInt());
 
 		//Simple Machines
-		setInt("heater_consumption", config.get("machines", "Heater: RF per Heat", 8, "The RF per tick consumed to add one heat to a furnace. Creates up to 4 heat in the startup time and then 1 heat per tick to keep it running").getInt());
-		setInt("heater_speedupConsumption", config.get("machines", "Heater: Speedup", 24, "The RF per tick consumed to double the speed of the furnace. Only happens if furnace is at maximum heat.").getInt());
-		setInt("preheater_consumption", config.get("machines", "BlastFurnacePreheater: Charge", 32, "The RF per tick the Blast Furnace Preheater will consume to speed up the Blast Furnace").getInt());
+		setInt("heater_consumption", config.get("machines", "Heater: Flux per Heat", 8, "The Flux per tick consumed to add one heat to a furnace. Creates up to 4 heat in the startup time and then 1 heat per tick to keep it running").getInt());
+		setInt("heater_speedupConsumption", config.get("machines", "Heater: Speedup", 24, "The Flux per tick consumed to double the speed of the furnace. Only happens if furnace is at maximum heat.").getInt());
+		setInt("preheater_consumption", config.get("machines", "BlastFurnacePreheater: Charge", 32, "The Flux per tick the Blast Furnace Preheater will consume to speed up the Blast Furnace").getInt());
 		setInt("coredrill_time", config.get("machines", "Core Sample Drill: Evaluation Time", 200, "The length in ticks it takes for the Core Sample Drill to figure out which mineral is found in a chunk").getInt());
-		setInt("coredrill_consumption", config.get("machines", "Core Sample Drill: Consumption", 40, "The RF per tick consumed by the Core Sample Drill").getInt());
-		setInt("pump_consumption", config.get("machines", "Fluid Pump: Consumed", 250, "The RF the Fluid Pump will consume to pick up a fluid block in the world").getInt());
-		setInt("pump_consumption_accelerate", config.get("machines", "Fluid Pump: Acceleration", 5, "The RF the Fluid Pump will consume pressurize+accellerate fluids, increasing the transferrate").getInt());
+		setInt("coredrill_consumption", config.get("machines", "Core Sample Drill: Consumption", 40, "The Flux per tick consumed by the Core Sample Drill").getInt());
+		setInt("pump_consumption", config.get("machines", "Fluid Pump: Consumed", 250, "The Flux the Fluid Pump will consume to pick up a fluid block in the world").getInt());
+		setInt("pump_consumption_accelerate", config.get("machines", "Fluid Pump: Acceleration", 5, "The Flux the Fluid Pump will consume pressurize+accellerate fluids, increasing the transferrate").getInt());
 		setBoolean("pump_infiniteWater", config.get("machines", "Fluid Pump: Infinite Water", true, "Set this to false to disable the fluid pump being able to draw infinite water from sources").getBoolean());
 		setBoolean("pump_placeCobble", config.get("machines", "Fluid Pump: Cobble", true, "If this is set to true (default) the pump will replace fluids it picks up with cobblestone in order to reduce lag caused by flowing fluids.").getBoolean());
-		setInt("charger_consumption", config.get("machines", "ChargingStation: Charge", 256, "The RF per tick the Charging Station can insert into an item").getInt());
+		setInt("charger_consumption", config.get("machines", "ChargingStation: Charge", 256, "The Flux per tick the Charging Station can insert into an item").getInt());
+		setInt("teslacoil_consumption", config.get("machines", "TeslaCoil: Passive", 256, "The Flux per tick the Tesla Coil will consume, simply by being active").getInt());
+		setInt("teslacoil_consumption_active", config.get("machines", "TeslaCoil: Active", 512, "The amount of Flux the Tesla Coil will consume when shocking an entity").getInt());
+		setDouble("teslacoil_damage", config.get("machines", "TeslaCoil: Damage", 6, "The amount of damage the Tesla Coil will do when shocking an entity").getInt());
 		
 		//Lights
 		setBoolean("lantern_spawnPrevent", config.get("machines", "Powered Lantern: Spawn Prevention", true, "Set this to false to disable the mob-spawn prevention of the Powered Lantern").getBoolean());
@@ -172,9 +175,9 @@ public class Config
 		setBoolean("arcfurnace_recycle", config.get("machines", "Arc Furnace: Recycling", true, "Set this to false to disable the Arc Furnace's recycling of armors and tools").getBoolean());
 
 		//Other Multiblock machines
-		setInt("assembler_consumption", config.get("machines", "Assembler: Consumed", 80, "The RF the Assembler will consume to craft an item from a recipe").getInt());
-		//setInt("bottlingMachine_consumption", config.get("machines", "Bottling: Consumed", 8, "The RF the Bottling Machine will consume per tick, when filling items").getInt());
-		setInt("excavator_consumption", config.get("machines", "Excavator: Consumed", 4096, "The RF per tick the Excavator will consume to dig").getInt());
+		setInt("assembler_consumption", config.get("machines", "Assembler: Consumed", 80, "The Flux the Assembler will consume to craft an item from a recipe").getInt());
+		//setInt("bottlingMachine_consumption", config.get("machines", "Bottling: Consumed", 8, "The Flux the Bottling Machine will consume per tick, when filling items").getInt());
+		setInt("excavator_consumption", config.get("machines", "Excavator: Consumed", 4096, "The Flux per tick the Excavator will consume to dig").getInt());
 		setDouble("excavator_speed", config.get("machines", "Excavator: Speed", 1d, "The speed of the Excavator. Basically translates to how many degrees per tick it will turn.").getDouble());
 		setBoolean("excavator_particles", config.get("machines", "Excavator: Particles", true, "Set this to false to disable the ridiculous amounts of particles the Excavator spawns").getBoolean());
 		setDouble("excavator_chance", config.get("machines", "Excavator: Mineral Chance", .2d, "The chance that a given chunk will contain a mineral vein.").getDouble());
@@ -215,7 +218,7 @@ public class Config
 
 		setInt("chemthrower_consumption", config.get("tools", "ChemThrower: Consumed", 10, "The mb of fluid the Chemical Thrower will consume per tick of usage").getInt());
 
-		setInt("railgun_consumption", config.get("tools", "Railgun: Consumed", 800, "The base amount of RF consumed per shot by the Railgun").getInt());
+		setInt("railgun_consumption", config.get("tools", "Railgun: Consumed", 800, "The base amount of Flux consumed per shot by the Railgun").getInt());
 
 		//Compat
 		for(String key : IECompatModule.moduleClasses.keySet())

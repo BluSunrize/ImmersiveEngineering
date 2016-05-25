@@ -41,6 +41,9 @@ public abstract class TileEntityIEBase extends TileEntity
 	public void receiveMessageFromClient(NBTTagCompound message)
 	{
 	}
+	public void receiveMessageFromServer(NBTTagCompound message)
+	{
+	}
 	
 	public void onEntityCollision(World world, Entity entity)
 	{

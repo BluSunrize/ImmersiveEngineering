@@ -585,6 +585,7 @@ death.attack.ieRevolver_silver=%1$s was purified by %2$s's silver bullet
 death.attack.ieRevolver_potion=%1$s was doused by %2$s's phial shot
 death.attack.ieCrushed=%1$s was crushed
 death.attack.ieAcid=%1$s was dissolved in acid
+death.attack.ieTesla=%1$s was fried by a Tesla Coil
 death.attack.ieRailgun=%1$s was pierced by %2$s's Railgun
 
 #ACHIEVEMENTS
@@ -930,14 +931,20 @@ ie.manual.entry.biodiesel4=Engineer's Hammer.<br>The front of the refinery serve
 ie.manual.entry.conveyor.name=Conveyor Belts
 ie.manual.entry.conveyor.subtext=Who needs rails anyway?
 ie.manual.entry.conveyor0=Conveyor Belts are an easy way of transporting all sorts of things around your base. While they are strong enough to move living creatures like cows or sheep, their true strength lies in transporting items.<br>Throwing items atop them will have the items move along the belt. Should the belt lead into an inventory, the item will be inserted.
-ie.manual.entry.conveyor1=Blocks like hoppers will be able to drop items onto the belts. Use an Engineer's Hammer to rotate the belts (rightclick) or adjust whether they should run up- or downwards (sneak + rightclick).<br>By default, conveyors face the same way the player is facing. Sneaking while placing them will instead make them face towards the player.
+ie.manual.entry.conveyor1=Blocks like hoppers will be able to drop items onto the belts. Use an Engineer's Hammer to rotate the belts (rightclick) or adjust whether they should run up- or downwards (sneak + rightclick).<br>By default, conveyors face the same way the player is facing. Sneaking while placing them will instead make them face towards the player.<br>Using a redstone signal on a conveyor will turn it off.
 ie.manual.entry.conveyor2=The Dropping Conveyor Belt is quite simply a conveyor with a hatch in the middle, allowing it to drop items that pass over it downwards.<br>Items will be inserted into inventories below or simply dropped if there is an empty space below the conveyor.
+ie.manual.entry.conveyor3=The Vertical Conveyor Belt is a belt meant to be mounted on walls. Using the buckets attached to it, it will lift entities straight up. Despite the use of the term "bucket", it will not lift fluids.<br>This belt can insert into inventories above it or simply expel items over the edge at the top onto more conveyors.
 
 ie.manual.entry.furnaceHeater.name=External Heater
 ie.manual.entry.furnaceHeater.subtext=Now you're cooking with flux!
 ie.manual.entry.furnaceHeater0=The External Heater does exactly what its name implies, it generates thermal energy from Flux. When placed next to a normal furnace, this thermal energy will power the furnace, allowing it to smelt without any fuel inside it.
 ie.manual.entry.furnaceHeater1=Click a side of the heater with a hammer to make it an energy acceptor, sneak to target the opposing side.<br>The heater will consume §o<config;i;heater_consumption> Flux/t§r for each heat unit added. During the initial phase of the furnace, the heater will produce up to §o4§r units of heat per tick, but as soon as the furnace reaches maximum temperature, it will only require §o1§r unit of heat to keep it going.
 ie.manual.entry.furnaceHeater2=Even better, while the furnace is at maximum temperature, the heater will consume an additional §o<config;i;heater_speedupConsumption> Flux/t§r to increase the furnace's processing speed.<br>The heater will only affect a furnace with a valid input and space in the output slot, in order to conserve energy. However, you can apply a redstone signal to the heater to disable that functionality and have it keep the furnace at full heat.
+
+ie.manual.entry.teslaCoil.name=Tesla Coil
+ie.manual.entry.teslaCoil.subtext=This one goes up to 11
+ie.manual.entry.teslaCoil0=The Tesla Coil started as a concept of wireless energy transfer. However, due to its potentially high loss rates and it's rather interesting property of frying every living being in a 6 meter radius, it was quickly converted into an Engineer's dream of home defense.
+ie.manual.entry.teslaCoil1=The upkeep cost of this machine is high, clocking in at a regular <config;i;teslacoil_consumption> Flux in passive consumption plus an additional <config;i;teslacoil_consumption_active> every time it applies damage.<br>The coil is disabled unless supplied with a redstone signal. Rightclicking it with an Engineer's Hammer will invert this behaviour.
 
 ie.manual.entry.fluidPipes.name=Fluid Transport
 ie.manual.entry.fluidPipes.subtext=Professional Plumber

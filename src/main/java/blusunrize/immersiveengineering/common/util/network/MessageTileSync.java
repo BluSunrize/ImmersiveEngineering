@@ -45,7 +45,7 @@ public class MessageTileSync implements IMessage
 		ByteBufUtils.writeTag(buf,this.nbt); 
 	}
 
-	public static class Handler implements IMessageHandler<MessageTileSync, IMessage>
+	public static class HandlerServer implements IMessageHandler<MessageTileSync, IMessage>
 	{
 		@Override
 		public IMessage onMessage(MessageTileSync message, MessageContext ctx)
@@ -56,6 +56,21 @@ public class MessageTileSync implements IMessage
 				TileEntity tile = world.getTileEntity(message.pos);
 				if(tile instanceof TileEntityIEBase)
 					((TileEntityIEBase)tile).receiveMessageFromClient(message.nbt);
+			}
+			return null;
+		}
+	}
+	public static class HandlerClient implements IMessageHandler<MessageTileSync, IMessage>
+	{
+		@Override
+		public IMessage onMessage(MessageTileSync message, MessageContext ctx)
+		{
+			World world = DimensionManager.getWorld(message.dimension);
+			if(world!=null)
+			{
+				TileEntity tile = world.getTileEntity(message.pos);
+				if(tile instanceof TileEntityIEBase)
+					((TileEntityIEBase)tile).receiveMessageFromServer(message.nbt);
 			}
 			return null;
 		}

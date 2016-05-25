@@ -63,6 +63,7 @@ import blusunrize.immersiveengineering.client.render.TileRenderSampleDrill;
 import blusunrize.immersiveengineering.client.render.TileRenderSheetmetalTank;
 import blusunrize.immersiveengineering.client.render.TileRenderSilo;
 import blusunrize.immersiveengineering.client.render.TileRenderSqueezer;
+import blusunrize.immersiveengineering.client.render.TileRenderTeslaCoil;
 import blusunrize.immersiveengineering.client.render.TileRenderWatermill;
 import blusunrize.immersiveengineering.client.render.TileRenderWindmill;
 import blusunrize.immersiveengineering.client.render.TileRenderWindmillAdvanced;
@@ -96,6 +97,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySampleDrill
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySheetmetalTank;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySilo;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySqueezer;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTeslaCoil;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockArcFurnace;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockAssembler;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockBlastFurnace;
@@ -408,6 +410,7 @@ public class ClientProxy extends CommonProxy
 		//		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityRedstoneBreaker.class, new TileRenderRedstoneBreaker());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityChargingStation.class, new TileRenderChargingStation());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntitySampleDrill.class, new TileRenderSampleDrill());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTeslaCoil.class, new TileRenderTeslaCoil());
 		// MULTIBLOCKS
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityMetalPress.class, new TileRenderMetalPress());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityCrusher.class, new TileRenderCrusher());
@@ -653,7 +656,8 @@ public class ClientProxy extends CommonProxy
 		ManualHelper.addEntry("conveyor", ManualHelper.CAT_MACHINES,
 				new ManualPages.Crafting(ManualHelper.getManual(), "conveyor0", new ItemStack(IEContent.blockConveyor,1,BlockTypes_Conveyor.CONVEYOR.getMeta())),
 				new ManualPages.Text(ManualHelper.getManual(), "conveyor1"),
-				new ManualPages.Crafting(ManualHelper.getManual(), "conveyor2", new ItemStack(IEContent.blockConveyor,1,BlockTypes_Conveyor.CONVEYOR_DROPPER.getMeta())));
+				new ManualPages.Crafting(ManualHelper.getManual(), "conveyor2", new ItemStack(IEContent.blockConveyor,1,BlockTypes_Conveyor.CONVEYOR_DROPPER.getMeta())),
+				new ManualPages.Crafting(ManualHelper.getManual(), "conveyor3", new ItemStack(IEContent.blockConveyor,1,BlockTypes_Conveyor.CONVEYOR_VERTICAL.getMeta())));
 		ManualHelper.addEntry("furnaceHeater", ManualHelper.CAT_MACHINES,
 				new ManualPages.Crafting(ManualHelper.getManual(), "furnaceHeater0", new ItemStack(IEContent.blockMetalDevice1,1,BlockTypes_MetalDevice1.FURNACE_HEATER.getMeta())),
 				new ManualPages.Text(ManualHelper.getManual(), "furnaceHeater1"),
@@ -661,7 +665,16 @@ public class ClientProxy extends CommonProxy
 		ManualHelper.addEntry("sorter", ManualHelper.CAT_MACHINES,
 				new ManualPages.Crafting(ManualHelper.getManual(), "sorter0", new ItemStack(IEContent.blockWoodenDevice0,1,BlockTypes_WoodenDevice0.SORTER.getMeta())),
 				new ManualPages.Text(ManualHelper.getManual(), "sorter1"));
+		ArrayList<IManualPage> pages = new ArrayList<IManualPage>();
+		pages.add(new ManualPages.Crafting(ManualHelper.getManual(), "fluidPipes0", new ItemStack(IEContent.blockMetalDevice1,1,BlockTypes_MetalDevice1.FLUID_PIPE.getMeta())));
+		pages.add(new ManualPages.Text(ManualHelper.getManual(), "fluidPipes1"));
+		pages.add(new ManualPages.Crafting(ManualHelper.getManual(), "fluidPipes2", new ItemStack(IEContent.blockMetalDevice0,1,BlockTypes_MetalDevice0.FLUID_PUMP.getMeta())));
+		pages.add(new ManualPages.Text(ManualHelper.getManual(), "fluidPipes3"));
+		if(Config.getBoolean("pump_infiniteWater")||Config.getBoolean("pump_placeCobble"))
+			pages.add(new ManualPages.Text(ManualHelper.getManual(), "fluidPipes4"));
+		ManualHelper.addEntry("fluidPipes", ManualHelper.CAT_MACHINES,pages.toArray(new IManualPage[pages.size()]));
 		ManualHelper.addEntry("chargingStation", ManualHelper.CAT_MACHINES, new ManualPages.Crafting(ManualHelper.getManual(), "chargingStation0", new ItemStack(IEContent.blockMetalDevice1,1,BlockTypes_MetalDevice1.CHARGING_STATION.getMeta())),new ManualPages.Text(ManualHelper.getManual(), "chargingStation1"));
+		ManualHelper.addEntry("teslaCoil", ManualHelper.CAT_MACHINES, new ManualPages.Crafting(ManualHelper.getManual(), "teslaCoil0", new ItemStack(IEContent.blockMetalDevice1,1,BlockTypes_MetalDevice1.TESLA_COIL.getMeta())),new ManualPages.Text(ManualHelper.getManual(), "teslaCoil1"));
 		ManualHelper.addEntry("jerrycan", ManualHelper.CAT_MACHINES, new ManualPages.Crafting(ManualHelper.getManual(), "jerrycan0", new ItemStack(IEContent.itemJerrycan)));
 		tempItemList = new ArrayList();
 		for(int i=0; i<16; i++)
@@ -686,7 +699,7 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.Crafting(ManualHelper.getManual(), "revolver2", new ItemStack(IEContent.itemToolUpgrades,1,4)),
 				new ManualPages.Crafting(ManualHelper.getManual(), "revolver3", new ItemStack(IEContent.itemToolUpgrades,1,5)),
 				new ManualPages.Crafting(ManualHelper.getManual(), "revolver4", new ItemStack(IEContent.itemToolUpgrades,1,6)));
-		ArrayList<IManualPage> pages = new ArrayList<IManualPage>();
+		pages = new ArrayList<IManualPage>();
 		pages.add(new ManualPages.Crafting(ManualHelper.getManual(), "bullets0", new ItemStack(IEContent.itemBlueprint,1,blueprint_bullet)));
 		pages.add(new ManualPages.CraftingMulti(ManualHelper.getManual(), "bullets1", new ItemStack(IEContent.itemBullet,1,0),new ItemStack(IEContent.itemBullet,1,1), new ItemStack(IEContent.itemMold,1,3)));
 		pages.add(new ManualPages.ItemDisplay(ManualHelper.getManual(), "bullets2", new ItemStack(IEContent.itemBullet,1,2)));
@@ -703,16 +716,6 @@ public class ClientProxy extends CommonProxy
 		}
 		ManualHelper.addEntry("bullets", ManualHelper.CAT_MACHINES, pages.toArray(new IManualPage[pages.size()]));
 		ManualHelper.addEntry("maneuverGear", ManualHelper.CAT_MACHINES, new ManualPages.Crafting(ManualHelper.getManual(), "maneuverGear0", new ItemStack(IEContent.itemManeuverGear)), new ManualPages.Text(ManualHelper.getManual(),"maneuverGear1"), new ManualPages.Text(ManualHelper.getManual(),"maneuverGear2"));
-
-		pages = new ArrayList<IManualPage>();
-
-		pages.add(new ManualPages.Crafting(ManualHelper.getManual(), "fluidPipes0", new ItemStack(IEContent.blockMetalDevice1,1,BlockTypes_MetalDevice1.FLUID_PIPE.getMeta())));
-		pages.add(new ManualPages.Text(ManualHelper.getManual(), "fluidPipes1"));
-		pages.add(new ManualPages.Crafting(ManualHelper.getManual(), "fluidPipes2", new ItemStack(IEContent.blockMetalDevice0,1,BlockTypes_MetalDevice0.FLUID_PUMP.getMeta())));
-		pages.add(new ManualPages.Text(ManualHelper.getManual(), "fluidPipes3"));
-		if(Config.getBoolean("pump_infiniteWater")||Config.getBoolean("pump_placeCobble"))
-			pages.add(new ManualPages.Text(ManualHelper.getManual(), "fluidPipes4"));
-		ManualHelper.addEntry("fluidPipes", ManualHelper.CAT_MACHINES,pages.toArray(new IManualPage[pages.size()]));
 		//		ManualHelper.addEntry("skyhook", ManualHelper.CAT_MACHINES,
 		//				new ManualPages.CraftingMulti(ManualHelper.getManual(), "skyhook0", new ItemStack(IEContent.itemSkyhook), new ItemStack(IEContent.itemMaterial,1,9)),
 		//				new ManualPages.Text(ManualHelper.getManual(), "skyhook1"));
@@ -737,6 +740,10 @@ public class ClientProxy extends CommonProxy
 				new ManualPageMultiblock(ManualHelper.getManual(), "metalPress0", MultiblockMetalPress.instance),
 				new ManualPages.Text(ManualHelper.getManual(), "metalPress1"),
 				new ManualPages.CraftingMulti(ManualHelper.getManual(), "metalPress2", (Object[])tempItemList.toArray(new ItemStack[tempItemList.size()])));
+		ManualHelper.addEntry("assembler", ManualHelper.CAT_MACHINES,
+				new ManualPageMultiblock(ManualHelper.getManual(), "assembler0", MultiblockAssembler.instance),
+				new ManualPages.Text(ManualHelper.getManual(), "assembler1"),
+				new ManualPages.Text(ManualHelper.getManual(), "assembler2"));
 		ManualHelper.addEntry("crusher", ManualHelper.CAT_HEAVYMACHINES,
 				new ManualPageMultiblock(ManualHelper.getManual(), "crusher0", MultiblockCrusher.instance),
 				new ManualPages.Text(ManualHelper.getManual(), "crusher1"));
@@ -750,10 +757,6 @@ public class ClientProxy extends CommonProxy
 				new ManualPageMultiblock(ManualHelper.getManual(), "refinery0", MultiblockRefinery.instance),
 				new ManualPages.Text(ManualHelper.getManual(), "refinery1"));
 		//		ArrayList<ItemStack> stacks = new ArrayList<ItemStack>();
-		ManualHelper.addEntry("assembler", ManualHelper.CAT_MACHINES,
-				new ManualPageMultiblock(ManualHelper.getManual(), "assembler0", MultiblockAssembler.instance),
-				new ManualPages.Text(ManualHelper.getManual(), "assembler1"),
-				new ManualPages.Text(ManualHelper.getManual(), "assembler2"));
 		//		ManualHelper.addEntry("bottlingMachine", ManualHelper.CAT_MACHINES,
 		//				new ManualPageMultiblock(ManualHelper.getManual(), "bottlingMachine0", MultiblockBottlingMachine.instance),
 		//				new ManualPages.Text(ManualHelper.getManual(), "bottlingMachine1"));

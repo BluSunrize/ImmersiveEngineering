@@ -90,7 +90,6 @@ public class TileEntityConveyorVertical extends TileEntityConveyorBelt
 	{
 		return false;
 	}
-
 	@Override
 	public boolean mirrorFacingOnPlacement(EntityLivingBase placer)
 	{
@@ -99,29 +98,7 @@ public class TileEntityConveyorVertical extends TileEntityConveyorBelt
 	@Override
 	public boolean canHammerRotate(EnumFacing side, float hitX, float hitY, float hitZ, EntityLivingBase entity)
 	{
-		return false;
-	}
-
-	@Override
-	public boolean hammerUseSide(EnumFacing side, EntityPlayer player, float hitX, float hitY, float hitZ)
-	{
-		//		if(player.isSneaking())
-		//		{
-		//			if(transportUp)
-		//			{
-		//				transportUp = false;
-		//				transportDown = true;
-		//			}
-		//			else if(transportDown)
-		//				transportDown = false;
-		//			else
-		//				transportUp = true;
-		//			this.markDirty();
-		//			worldObj.markBlockForUpdate(getPos());
-		//			worldObj.addBlockEvent(getPos(), this.getBlockType(), 0, 0);
-		//			return true;
-		//		}
-		return false;
+		return true;
 	}
 
 	@Override

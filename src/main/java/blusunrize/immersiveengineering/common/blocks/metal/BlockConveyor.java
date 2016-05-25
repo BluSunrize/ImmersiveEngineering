@@ -44,7 +44,7 @@ public class BlockConveyor extends BlockIETileProvider
 	{
 		state = super.getActualState(state, world, pos);
 		TileEntity tile = world.getTileEntity(pos);
-		if(tile instanceof TileEntityConveyorBelt)
+		if(tile instanceof TileEntityConveyorBelt && !(tile instanceof TileEntityConveyorVertical))
 		{
 			for(int i=0; i<IEProperties.CONVEYORWALLS.length; i++)
 				state = state.withProperty(IEProperties.CONVEYORWALLS[i], ((TileEntityConveyorBelt)tile).renderWall(i));
@@ -58,15 +58,15 @@ public class BlockConveyor extends BlockIETileProvider
 	{
 		super.onIEBlockPlacedBy(world, pos, state, side, hitX, hitY, hitZ, placer, stack);
 		TileEntity tile = world.getTileEntity(pos);
-		if(tile instanceof TileEntityConveyorBelt)
+		if(tile instanceof TileEntityConveyorBelt && !(tile instanceof TileEntityConveyorVertical))
 		{
 			TileEntityConveyorBelt conveyer = (TileEntityConveyorBelt)tile;
 			EnumFacing f = conveyer.facing;
 			tile = world.getTileEntity(pos.offset(f).add(0,1,0));
-			if(tile instanceof TileEntityConveyorBelt && ((TileEntityConveyorBelt)tile).facing!=f.getOpposite())
+			if(tile instanceof TileEntityConveyorBelt && !(tile instanceof TileEntityConveyorVertical) && ((TileEntityConveyorBelt)tile).facing!=f.getOpposite())
 				conveyer.transportUp = true;
 			tile = world.getTileEntity(pos.offset(f.getOpposite()).add(0,1,0));
-			if(tile instanceof TileEntityConveyorBelt && ((TileEntityConveyorBelt)tile).facing==f)
+			if(tile instanceof TileEntityConveyorBelt && !(tile instanceof TileEntityConveyorVertical) && ((TileEntityConveyorBelt)tile).facing==f)
 				conveyer.transportDown = true;
 			if(conveyer.transportUp && conveyer.transportDown)
 				conveyer.transportDown = false;
@@ -76,7 +76,12 @@ public class BlockConveyor extends BlockIETileProvider
 	@Override
 	public boolean isSideSolid(IBlockAccess world, BlockPos pos, EnumFacing side)
 	{
-		return side==EnumFacing.DOWN;
+		TileEntity te = world.getTileEntity(pos);
+		if(te instanceof TileEntityConveyorVertical)
+			return side==((TileEntityConveyorVertical)te).facing;
+		else if(te instanceof TileEntityConveyorBelt)
+			return side==EnumFacing.DOWN && !((TileEntityConveyorBelt)te).transportUp&&!((TileEntityConveyorBelt)te).transportDown;
+		return false;
 	}
 
 	@Override
@@ -92,5 +97,16 @@ public class BlockConveyor extends BlockIETileProvider
 			return new TileEntityConveyorVertical();
 		}
 		return null;
+	}
+
+	@Override
+	public boolean allowHammerHarvest(IBlockState blockState)
+	{
+		return true;
+	}
+	@Override
+	public boolean isToolEffective(String type, IBlockState state)
+	{
+		return type.equals("IE_HAMMER")||super.isToolEffective(type, state);
 	}
 }
