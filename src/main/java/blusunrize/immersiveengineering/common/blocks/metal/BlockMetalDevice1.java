@@ -25,7 +25,7 @@ import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
 
-public class BlockMetalDevice1 extends BlockIETileProvider
+public class BlockMetalDevice1 extends BlockIETileProvider<BlockTypes_MetalDevice1>
 {
 	public BlockMetalDevice1()
 	{

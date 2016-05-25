@@ -21,7 +21,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.obj.OBJModel.OBJProperty;
 
-public class BlockWoodenDevice1 extends BlockIETileProvider
+public class BlockWoodenDevice1 extends BlockIETileProvider<BlockTypes_WoodenDevice1>
 {
 	public BlockWoodenDevice1()
 	{
@@ -50,7 +50,7 @@ public class BlockWoodenDevice1 extends BlockIETileProvider
 	public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune)
 	{
 		if(this.getMetaFromState(state)==BlockTypes_WoodenDevice1.POST.getMeta())
-			return new ArrayList();
+			return new ArrayList<>();
 		return super.getDrops(world, pos, state, fortune);
 	}
 	@Override

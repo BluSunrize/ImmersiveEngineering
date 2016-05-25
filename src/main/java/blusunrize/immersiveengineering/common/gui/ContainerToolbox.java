@@ -1,20 +1,15 @@
 package blusunrize.immersiveengineering.common.gui;
 
-import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
-import blusunrize.immersiveengineering.api.energy.wires.IWireCoil;
-import blusunrize.immersiveengineering.api.tool.ITool;
+import blusunrize.immersiveengineering.api.tool.ToolboxHandler;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.gui.IESlot.ICallbackContainer;
 import blusunrize.immersiveengineering.common.items.ItemToolbox;
-import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
-import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemTool;
 import net.minecraft.world.World;
 
 public class ContainerToolbox extends Container implements ICallbackContainer
@@ -74,30 +69,13 @@ public class ContainerToolbox extends Container implements ICallbackContainer
 		if(IEContent.itemToolbox.equals(stack.getItem()))
 			return false;
 		if(slotNumer<3)
-			return stack.getItem() instanceof ItemFood;
+			return ToolboxHandler.isFood(stack);
 		else if(slotNumer<10)
-		{
-			if (stack.getItem() instanceof ITool)
-				return ((ITool)stack.getItem()).isTool(stack);
-			if(stack.getItem() instanceof ItemTool)
-				return true;
-		}
+			return ToolboxHandler.isTool(stack);
 		else if(slotNumer<16)
-		{
-			if(stack.getItem() instanceof IWireCoil)
-				return true;
-			if(Block.getBlockFromItem(stack.getItem())!=null)
-			{
-				Block block = Block.getBlockFromItem(stack.getItem());
-				if(block.hasTileEntity(block.getStateFromMeta(stack.getItemDamage())))
-					return block.createTileEntity(worldObj, block.getStateFromMeta(stack.getItemDamage())) instanceof IImmersiveConnectable;
-			}
-		}
+			return ToolboxHandler.isWiring(stack, worldObj);
 		else
-		{
 			return true;
-		}
-		return false;
 	}
 	@Override
 	public boolean canTake(ItemStack stack, int slotNumer, Slot slotObject)

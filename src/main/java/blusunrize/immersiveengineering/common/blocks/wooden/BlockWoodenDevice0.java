@@ -22,7 +22,7 @@ import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 
-public class BlockWoodenDevice0 extends BlockIETileProvider
+public class BlockWoodenDevice0 extends BlockIETileProvider<BlockTypes_WoodenDevice0>
 {
 	boolean isExploding = false;
 

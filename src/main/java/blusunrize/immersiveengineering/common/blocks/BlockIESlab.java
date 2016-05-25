@@ -17,11 +17,11 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockIESlab extends BlockIETileProvider
+public class BlockIESlab<E extends Enum<E>&BlockIEBase.IBlockEnum> extends BlockIETileProvider<E>
 {
 	public static final PropertyInteger prop_SlabType = PropertyInteger.create("slabtype", 0,2);
 
-	public BlockIESlab(String name, Material material, PropertyEnum property)
+	public BlockIESlab(String name, Material material, PropertyEnum<E> property)
 	{
 		super(name, material, property, ItemBlockIESlabs.class, prop_SlabType);
 	}
