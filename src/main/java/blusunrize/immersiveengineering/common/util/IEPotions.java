@@ -17,6 +17,7 @@ public class IEPotions
 	public static Potion slippery;
 	public static Potion conductive;
 	public static Potion sticky;
+	public static Potion stunned;
 
 	public static void init()
 	{
@@ -26,8 +27,9 @@ public class IEPotions
 		slippery = new IEPotion(new ResourceLocation("ie.slippery"), true,0x171003,0, false,1).setPotionName("immersiveengineering.potion.slippery");
 		conductive = new IEPotion(new ResourceLocation("ie.conductive"), true,0x690000,0, false,2).setPotionName("immersiveengineering.potion.conductive");
 		sticky = new IEPotion(new ResourceLocation("ie.sticky"), true,0x9c6800,0, false,3).setPotionName("immersiveengineering.potion.sticky").registerPotionAttributeModifier(SharedMonsterAttributes.movementSpeed, new UUID(potionUUIDBase,01L).toString(), -0.50000000298023224D, 2);
-
-		IEApi.potions = new Potion[]{flammable,slippery,conductive,sticky};
+		stunned = new IEPotion(new ResourceLocation("ie.stunned"), true,0x624a98,0, false,4).setPotionName("immersiveengineering.potion.stunned");
+		
+		IEApi.potions = new Potion[]{flammable,slippery,conductive,sticky,stunned};
 	}
 
 	public static void extendPotionArray(int extendBy)

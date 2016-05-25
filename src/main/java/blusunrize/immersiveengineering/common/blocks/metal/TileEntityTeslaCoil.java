@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummy
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
+import blusunrize.immersiveengineering.common.util.IEPotions;
 import blusunrize.immersiveengineering.common.util.network.MessageTileSync;
 import cofh.api.energy.IEnergyReceiver;
 import net.minecraft.block.state.IBlockState;
@@ -25,6 +26,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
@@ -76,6 +78,7 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 							energyStorage.extractEnergy(energyDrain,false);
 							int prevFire = target.fire;
 							target.fire = 1;
+							target.addPotionEffect(new PotionEffect(IEPotions.stunned.getId(),128));
 							target.attackEntityFrom(dmgsrc, (float)Config.getDouble("teslacoil_damage"));
 							target.fire = prevFire;
 							NBTTagCompound tag = new NBTTagCompound();

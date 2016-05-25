@@ -661,6 +661,7 @@ immersiveengineering.potion.flammable=Flammable
 immersiveengineering.potion.slippery=Slippery
 immersiveengineering.potion.conductive=Conductive
 immersiveengineering.potion.sticky=Sticky
+immersiveengineering.potion.stunned=Stunned
 
 #MANUAL
 #ie.manual.entry..name=
@@ -944,7 +945,7 @@ ie.manual.entry.furnaceHeater2=Even better, while the furnace is at maximum temp
 ie.manual.entry.teslaCoil.name=Tesla Coil
 ie.manual.entry.teslaCoil.subtext=This one goes up to 11
 ie.manual.entry.teslaCoil0=The Tesla Coil started as a concept of wireless energy transfer. However, due to its potentially high loss rates and it's rather interesting property of frying every living being in a 6 meter radius, it was quickly converted into an Engineer's dream of home defense.
-ie.manual.entry.teslaCoil1=The upkeep cost of this machine is high, clocking in at a regular <config;i;teslacoil_consumption> Flux in passive consumption plus an additional <config;i;teslacoil_consumption_active> every time it applies damage.<br>The coil is disabled unless supplied with a redstone signal. Rightclicking it with an Engineer's Hammer will invert this behaviour.
+ie.manual.entry.teslaCoil1=The upkeep cost of this machine is high, clocking in at a regular <config;i;teslacoil_consumption> Flux in passive consumption plus an additional <config;i;teslacoil_consumption_active> every time it applies damage.<br>The coil is disabled unless supplied with a redstone signal. Rightclicking it with an Engineer's Hammer will invert this behaviour.<br>In addition to damage, the shocks will also apply a lingering debuff, "Stunned", preventing the entity from teleporting.
 
 ie.manual.entry.fluidPipes.name=Fluid Transport
 ie.manual.entry.fluidPipes.subtext=Professional Plumber

@@ -53,7 +53,6 @@ import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.MovingObjectPosition;
@@ -403,18 +402,20 @@ public class EventHandler
 						if(((TileEntity)interdictor).isInvalid() || ((TileEntity)interdictor).getWorld()==null)
 							it.remove();
 						else if( ((TileEntity)interdictor).getWorld().provider.getDimensionId()==event.entity.worldObj.provider.getDimensionId() && ((TileEntity)interdictor).getDistanceSq(event.entity.posX, event.entity.posY, event.entity.posZ)<=interdictor.getInterdictionRangeSquared())
-							event.setResult(Event.Result.DENY);
+							event.setCanceled(true);
 					}
 					else if(interdictor instanceof Entity)
 					{
 						if(((Entity)interdictor).isDead || ((Entity)interdictor).worldObj==null)
 							it.remove();
 						else if(((Entity)interdictor).worldObj.provider.getDimensionId()==event.entity.worldObj.provider.getDimensionId() && ((Entity)interdictor).getDistanceSqToEntity(event.entity)<=interdictor.getInterdictionRangeSquared())
-							event.setResult(Event.Result.DENY);
+							event.setCanceled(true);
 					}
 				}
 			}
 		}
+		if(event.entityLiving.getActivePotionEffect(IEPotions.stunned)!=null)
+			event.setCanceled(true);
 	}
 	@SubscribeEvent
 	public void onEntitySpawnCheck(LivingSpawnEvent.CheckSpawn event)
