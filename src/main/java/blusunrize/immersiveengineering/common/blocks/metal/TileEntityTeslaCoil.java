@@ -53,7 +53,7 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 			return;
 		int timeKey = getPos().getX()^getPos().getZ();
 		int energyDrain = Config.getInt("teslacoil_consumption");
-		if(!dummy && worldObj.getTotalWorldTime()%32==(timeKey&31) && (worldObj.isBlockIndirectlyGettingPowered(getPos())>0^redstoneControlInverted) && energyStorage.getEnergyStored()>=energyDrain)
+		if(worldObj.getTotalWorldTime()%32==(timeKey&31) && (worldObj.isBlockIndirectlyGettingPowered(getPos())>0^redstoneControlInverted) && energyStorage.getEnergyStored()>=energyDrain)
 		{
 			if(!worldObj.isRemote)
 				this.energyStorage.extractEnergy(energyDrain,false);
@@ -95,7 +95,7 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 				tH += tH<0?-2:2;
 
 				BlockPos targetBlock = getPos().add(facing.getAxis()==Axis.X?0:tH, facing.getAxis()==Axis.Y?0:tV, facing.getAxis()==Axis.Y?tV:facing.getAxis()==Axis.X?tH:0);
-				double tL;
+				double tL=0;
 				boolean targetFound = false;
 				if(!worldObj.isAirBlock(targetBlock))
 				{
@@ -130,15 +130,15 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 								state.getBlock().setBlockBoundsBasedOnState(worldObj, targetBlock2);
 								tL = facing.getAxis()==Axis.Y?(targetBlock2.getY()-getPos().getY()): facing.getAxis()==Axis.Z?(targetBlock2.getZ()-getPos().getZ()): (targetBlock2.getZ()-getPos().getZ());
 								EnumFacing tempF = positiveFirst?facing:facing.getOpposite();
-								if(facing==EnumFacing.UP)
+								if(tempF==EnumFacing.UP)
 									tL += state.getBlock().getBlockBoundsMaxY();
-								else if(facing==EnumFacing.DOWN)
+								else if(tempF==EnumFacing.DOWN)
 									tL += state.getBlock().getBlockBoundsMinY();
-								else if(facing==EnumFacing.NORTH)
+								else if(tempF==EnumFacing.NORTH)
 									tL += state.getBlock().getBlockBoundsMinZ();
-								else if(facing==EnumFacing.SOUTH)
+								else if(tempF==EnumFacing.SOUTH)
 									tL += state.getBlock().getBlockBoundsMaxZ();
-								else if(facing==EnumFacing.WEST)
+								else if(tempF==EnumFacing.WEST)
 									tL += state.getBlock().getBlockBoundsMinX();
 								else
 									tL += state.getBlock().getBlockBoundsMaxX();
@@ -154,28 +154,51 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 
 				if(targetFound)
 				{
-					double tx = facing.getAxis()==Axis.X?0:tH;
-					double ty = facing.getAxis()==Axis.Y?0:tV;
-					double tz = facing.getAxis()==Axis.Y?tV:facing.getAxis()==Axis.X?tH:0;
-					
-					EnumFacing f;
-					if(facing.getAxis()!=Axis.Z && Math.abs(tz)>Math.abs(tx) && Math.abs(tz)>Math.abs(ty))
-						f = tz<0?EnumFacing.NORTH:EnumFacing.SOUTH;
-					else if(facing.getAxis()!=Axis.X && Math.abs(tx)>Math.abs(tz) && Math.abs(tx)>Math.abs(ty))
-						f = tx<0?EnumFacing.WEST:EnumFacing.EAST;
+					double tx = facing.getAxis()==Axis.X?tL:tH;
+					double ty = facing.getAxis()==Axis.Y?tL:tV;
+					double tz = facing.getAxis()==Axis.Y?tV:facing.getAxis()==Axis.X?tH:tL;
+
+					EnumFacing f = null;
+					if(facing.getAxis()==Axis.Y)
+					{
+						if(Math.abs(tz)>Math.abs(tx))
+							f = tz<0?EnumFacing.NORTH:EnumFacing.SOUTH;
+						else 
+							f = tx<0?EnumFacing.WEST:EnumFacing.EAST;
+					}
+					else if(facing.getAxis()==Axis.Z)
+					{
+						if(Math.abs(ty)>Math.abs(tx))
+							f = ty<0?EnumFacing.DOWN:EnumFacing.UP;
+						else 
+							f = tx<0?EnumFacing.WEST:EnumFacing.EAST;
+					}
 					else
-						f = ty<0?EnumFacing.DOWN:EnumFacing.UP;
+					{
+						if(Math.abs(ty)>Math.abs(tz))
+							f = ty<0?EnumFacing.DOWN:EnumFacing.UP;
+						else 
+							f = tz<0?EnumFacing.NORTH:EnumFacing.SOUTH;
+					}
 
-					double verticalOffset = 1.5+worldObj.rand.nextDouble()*.25;
+					double verticalOffset = 1+worldObj.rand.nextDouble()*.25;
 					Vec3 coilPos = new Vec3(getPos()).addVector(.5,.5,.5);
-					coilPos = coilPos.addVector(f.getAxis()==Axis.X?f.getFrontOffsetX()*.375: facing.getAxis()!=Axis.X?((worldObj.rand.nextDouble()-.5)*.75): facing.getFrontOffsetX()*verticalOffset, 0,0);
-					coilPos = coilPos.addVector(f.getAxis()==Axis.Y?f.getFrontOffsetY()*.375: facing.getAxis()!=Axis.Y?((worldObj.rand.nextDouble()-.5)*.75): facing.getFrontOffsetY()*verticalOffset, 0,0);
-					coilPos = coilPos.addVector(f.getAxis()==Axis.Z?f.getFrontOffsetZ()*.375: facing.getAxis()!=Axis.Z?((worldObj.rand.nextDouble()-.5)*.75): facing.getFrontOffsetZ()*verticalOffset, 0,0);
-
+					//Vertical offset
+					coilPos = coilPos.addVector(facing.getFrontOffsetX()*verticalOffset, facing.getFrontOffsetY()*verticalOffset, facing.getFrontOffsetZ()*verticalOffset);
+					//offset to direction
+					if(f!=null)
+					{
+						coilPos = coilPos.addVector(f.getFrontOffsetX()*.375, f.getFrontOffsetY()*.375, f.getFrontOffsetZ()*.375);
+						//random side offset
+						f = f.rotateAround(facing.getAxis());
+						double dShift = (worldObj.rand.nextDouble()-.5)*.75;
+						coilPos = coilPos.addVector(f.getFrontOffsetX()*dShift, f.getFrontOffsetY()*dShift, f.getFrontOffsetZ()*dShift);
+					}
 					effectMap.put(getPos(), new LightningAnimation(coilPos, new Vec3(getPos()).addVector(tx,ty,tz)));
 					worldObj.playSound(coilPos.xCoord,coilPos.yCoord,coilPos.zCoord, "immersiveengineering:tesla", 2.5F,0.5F+worldObj.rand.nextFloat(), true);
 				}
 			}
+			this.markDirty();
 		}
 	}
 
@@ -187,23 +210,45 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 			Entity target = worldObj.getEntityByID(message.getInteger("targetEntity"));
 			if(target instanceof EntityLivingBase)
 			{
-				Vec3 coilPos = new Vec3(getPos()).addVector(.5,.5,.5);
-
 				double dx = target.posX-getPos().getX();
 				double dy = target.posY-getPos().getY();
 				double dz = target.posZ-getPos().getZ();
-				EnumFacing f;
-				if(facing.getAxis()!=Axis.Z && Math.abs(dz)>Math.abs(dx) && Math.abs(dz)>Math.abs(dy))
-					f = dz<0?EnumFacing.NORTH:EnumFacing.SOUTH;
-				else if(facing.getAxis()!=Axis.X && Math.abs(dx)>Math.abs(dz) && Math.abs(dx)>Math.abs(dy))
-					f = dx<0?EnumFacing.WEST:EnumFacing.EAST;
-				else
-					f = dy<0?EnumFacing.DOWN:EnumFacing.UP;
 
-				double verticalOffset = 1.5+worldObj.rand.nextDouble()*.25;
-				coilPos = coilPos.addVector(f.getAxis()==Axis.X?f.getFrontOffsetX()*.375: facing.getAxis()!=Axis.X?((worldObj.rand.nextDouble()-.5)*.75): facing.getFrontOffsetX()*verticalOffset, 0,0);
-				coilPos = coilPos.addVector(f.getAxis()==Axis.Y?f.getFrontOffsetY()*.375: facing.getAxis()!=Axis.Y?((worldObj.rand.nextDouble()-.5)*.75): facing.getFrontOffsetY()*verticalOffset, 0,0);
-				coilPos = coilPos.addVector(f.getAxis()==Axis.Z?f.getFrontOffsetZ()*.375: facing.getAxis()!=Axis.Z?((worldObj.rand.nextDouble()-.5)*.75): facing.getFrontOffsetZ()*verticalOffset, 0,0);
+				EnumFacing f = null;
+				if(facing.getAxis()==Axis.Y)
+				{
+					if(Math.abs(dz)>Math.abs(dx))
+						f = dz<0?EnumFacing.NORTH:EnumFacing.SOUTH;
+					else 
+						f = dx<0?EnumFacing.WEST:EnumFacing.EAST;
+				}
+				else if(facing.getAxis()==Axis.Z)
+				{
+					if(Math.abs(dy)>Math.abs(dx))
+						f = dy<0?EnumFacing.DOWN:EnumFacing.UP;
+					else 
+						f = dx<0?EnumFacing.WEST:EnumFacing.EAST;
+				}
+				else
+				{
+					if(Math.abs(dy)>Math.abs(dz))
+						f = dy<0?EnumFacing.DOWN:EnumFacing.UP;
+					else 
+						f = dz<0?EnumFacing.NORTH:EnumFacing.SOUTH;
+				}
+				double verticalOffset = 1+worldObj.rand.nextDouble()*.25;
+				Vec3 coilPos = new Vec3(getPos()).addVector(.5,.5,.5);
+				//Vertical offset
+				coilPos = coilPos.addVector(facing.getFrontOffsetX()*verticalOffset, facing.getFrontOffsetY()*verticalOffset, facing.getFrontOffsetZ()*verticalOffset);
+				//offset to direction
+				if(f!=null)
+				{
+					coilPos = coilPos.addVector(f.getFrontOffsetX()*.375, f.getFrontOffsetY()*.375, f.getFrontOffsetZ()*.375);
+					//random side offset
+					f = f.rotateAround(facing.getAxis());
+					double dShift = (worldObj.rand.nextDouble()-.5)*.75;
+					coilPos = coilPos.addVector(f.getFrontOffsetX()*dShift, f.getFrontOffsetY()*dShift, f.getFrontOffsetZ()*dShift);
+				}
 
 				effectMap.put(getPos(), new LightningAnimation(coilPos,(EntityLivingBase)target));
 				worldObj.playSoundEffect(coilPos.xCoord,coilPos.yCoord,coilPos.zCoord, "immersiveengineering:tesla", 2.5F,0.5F+worldObj.rand.nextFloat());
@@ -225,7 +270,8 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 	{
 		nbt.setBoolean("dummy", dummy);
 		nbt.setBoolean("redstoneInverted", redstoneControlInverted);
-		nbt.setInteger("facing", facing.ordinal());
+		if(facing!=null)
+			nbt.setInteger("facing", facing.ordinal());
 		energyStorage.writeToNBT(nbt);
 	}
 
@@ -331,8 +377,8 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 	public void breakDummies(BlockPos pos, IBlockState state)
 	{
 		for(int i=0; i<=1; i++)
-			if(worldObj.getTileEntity(getPos().offset(facing, dummy?-1:0).offset(facing)) instanceof TileEntityTeslaCoil)
-				worldObj.setBlockToAir(getPos().offset(facing, dummy?-1:0).offset(facing));
+			if(worldObj.getTileEntity(getPos().offset(facing, dummy?-1:0).offset(facing, i)) instanceof TileEntityTeslaCoil)
+				worldObj.setBlockToAir(getPos().offset(facing, dummy?-1:0).offset(facing, i));
 	}
 
 	@Override
@@ -343,7 +389,14 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 	@Override
 	public int receiveEnergy(EnumFacing from, int energy, boolean simulate)
 	{
-		return energyStorage.receiveEnergy(energy, simulate);
+		if(dummy)
+			return 0;
+
+		int rec = energyStorage.receiveEnergy(energy, simulate);
+		markDirty();
+		if(rec>0)
+			worldObj.markBlockForUpdate(getPos());
+		return rec;
 	}
 	@Override
 	public int getEnergyStored(EnumFacing from)
@@ -431,8 +484,6 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 					offX = Math.abs(offX)*(end.xCoord-sub.xCoord);
 					offZ = Math.abs(offZ)*(end.zCoord-sub.zCoord);
 				}
-				//				fixPointDist
-				//				sub = ;
 				subPoints.add(sub.addVector(offX,offY,offZ));
 			}
 		}
