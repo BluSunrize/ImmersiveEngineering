@@ -82,7 +82,7 @@ public class IEDamageSources
 	
 	public static DamageSource causeTeslaDamage()
 	{
-		return new IEDamageSource(Lib.DMG_Tesla);
+		return new IEDamageSource(Lib.DMG_Tesla).setDamageBypassesArmor();
 	}
 	
 	public static DamageSource causeRailgunDamage(EntityRailgunShot shot, Entity shooter)

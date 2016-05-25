@@ -68,6 +68,8 @@ public class BlockMetalDevice1 extends BlockIETileProvider
 			return "pipe";
 		else if(BlockTypes_MetalDevice1.values()[meta]==BlockTypes_MetalDevice1.SAMPLE_DRILL)
 			return "coreDrill";
+//		else if(BlockTypes_MetalDevice1.values()[meta]==BlockTypes_MetalDevice1.TESLA_COIL)
+//			return "teslaCoil";
 		return null;
 	}
 

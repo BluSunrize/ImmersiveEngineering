@@ -58,10 +58,10 @@
 			"custom": {"flip-v": true},
 			"transform": {
 				"scale": [ 1, 1, 1 ],
-				"firstperson": {"scale": [ 0.625, 0.625, 0.625 ]},
-				"thirdperson": { "translation": [ 0, 0.09375, -0.171875 ], "rotation": [{ "x": 10 }, { "y": -45 }, { "z": 170 }], "scale": [ 0.3125, 0.3125, 0.3125 ] },
-				"fixed": { "translation": [ 0, -0.125, 0 ], "rotation": [{ "y": -90 }], "scale": [ 0.625, 0.625, 0.625 ] },
-				"gui": { "translation": [ 0, -0.125, 0 ], "rotation": [{ "y": -90 }], "scale": [ 0.625, 0.625, 0.625 ] }
+				"firstperson": {"scale": [ 0.625, 0.625, 0.625 ], "rotation": [{ "x": -90 }]},
+				"thirdperson": { "translation": [ 0, 0.09375, -0.171875 ], "rotation": [{ "x": 110 }, { "y": -45 }, { "z": 170 }], "scale": [ 0.3125, 0.3125, 0.3125 ] },
+				"fixed": { "translation": [ 0, -0.125, 0 ], "rotation": [{ "y": -90 },{ "x": 90 }], "scale": [ 0.625, 0.625, 0.625 ] },
+				"gui": { "translation": [ 0, -0.125, 0 ], "rotation": [{ "y": -90 },{ "x": 90 }], "scale": [ 0.625, 0.625, 0.625 ] },
 			}
 		}],
 		"type":
