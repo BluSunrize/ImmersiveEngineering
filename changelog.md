@@ -1,4 +1,4 @@
-#####Version 0.8-27
+#####Version 0.8-27 - BUILT
 - re-added documentation on biodiesel (thanks Malte)
 - re-added the Assembler! For all your autocrafting needs!
 - changed the plantoil value for hemp seeds back to what it was in 1.7.10
@@ -26,7 +26,7 @@
 - fixed Dropping Conveyors not dropping (thanks Malte)
 - fixed entities getting stuck on uphill conveyors (thanks Malte)
 - fixed scaffolding not beign climbable (thanks Malte)
-- fixed hte crusher still hurting entities even when turned off (thanks Malte)
+- fixed the crusher still hurting entities even when turned off (thanks Malte)
 - fixed IE blocks not being chiselable (thanks Malte)
 - fixed maneuver gear dupe bug (thanks Malte)
 - fixed furnaces not lighting up when using external heater (thanks Malte)
