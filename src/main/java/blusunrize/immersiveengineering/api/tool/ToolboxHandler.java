@@ -27,7 +27,7 @@ public class ToolboxHandler {
 		{
 			Block b = Block.getBlockFromItem(s.getItem());
 			int meta = s.getItemDamage();
-			IBlockState defaultState = b.getStateFromMeta(meta);
+			IBlockState defaultState = b==null?null:b.getStateFromMeta(meta);
 			return b!=null&&b.hasTileEntity(defaultState)&&(b.createTileEntity(w, defaultState) instanceof IImmersiveConnectable);
 		}
 		);
