@@ -4,6 +4,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
+import net.minecraft.network.play.INetHandlerPlayClient;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -26,7 +27,7 @@ public abstract class TileEntityIEBase extends TileEntity
 	public abstract void writeCustomNBT(NBTTagCompound nbt, boolean descPacket);
 	
 	@Override
-	public Packet getDescriptionPacket()
+	public Packet<INetHandlerPlayClient> getDescriptionPacket()
 	{
 		NBTTagCompound nbttagcompound = new NBTTagCompound();
 		this.writeCustomNBT(nbttagcompound, true);
@@ -47,5 +48,15 @@ public abstract class TileEntityIEBase extends TileEntity
 	
 	public void onEntityCollision(World world, Entity entity)
 	{
+	}
+	@Override
+	public boolean receiveClientEvent(int id, int type)
+	{
+		if (id==0||id==255)
+		{
+			worldObj.markBlockForUpdate(getPos());
+			return true;
+		}
+		return super.receiveClientEvent(id, type);
 	}
 }

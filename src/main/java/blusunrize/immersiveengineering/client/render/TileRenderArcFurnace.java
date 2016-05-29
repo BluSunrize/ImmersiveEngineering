@@ -31,7 +31,7 @@ public class TileRenderArcFurnace extends TileEntitySpecialRenderer<TileEntityAr
 	@Override
 	public void renderTileEntityAt(TileEntityArcFurnace te, double x, double y, double z, float partialTicks, int destroyStage)
 	{
-		if(te.isDummy()||!te.getWorld().isBlockLoaded(te.getPos()))
+		if(te.isDummy()||!te.getWorld().isBlockLoaded(te.getPos(), false))
 			return;
 		List<String> renderedParts = null;
 		for(int i=0; i<3; i++)
