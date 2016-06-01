@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummy
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
+import blusunrize.immersiveengineering.common.util.IEDamageSources.TeslaDamageSource;
 import blusunrize.immersiveengineering.common.util.IEPotions;
 import blusunrize.immersiveengineering.common.util.network.MessageTileSync;
 import cofh.api.energy.IEnergyReceiver;
@@ -31,7 +32,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.ITickable;
@@ -45,6 +45,7 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 	public FluxStorage energyStorage = new FluxStorage(48000);
 	public boolean redstoneControlInverted = false;
 	public EnumFacing facing = EnumFacing.UP;
+	public boolean lowPower = false;
 	@SideOnly(Side.CLIENT)
 	public static ArrayListMultimap<BlockPos,LightningAnimation> effectMap = ArrayListMultimap.create();
 
@@ -55,17 +56,21 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 			return;
 		int timeKey = getPos().getX()^getPos().getZ();
 		int energyDrain = Config.getInt("teslacoil_consumption");
-		if(worldObj.getTotalWorldTime()%32==(timeKey&31) && (worldObj.isBlockIndirectlyGettingPowered(getPos())>0^redstoneControlInverted) && energyStorage.getEnergyStored()>=energyDrain)
+		if (lowPower)
+			energyDrain/=2;
+		if(worldObj.getTotalWorldTime()%32==(timeKey&31) && canRun(energyDrain))
 		{
 			if(!worldObj.isRemote)
 				this.energyStorage.extractEnergy(energyDrain,false);
 
 			double radius = 6;
+			if (lowPower)
+				radius/=2;
 			AxisAlignedBB aabb = AxisAlignedBB.fromBounds(getPos().getX()-radius,getPos().getY()-radius,getPos().getZ()-radius, getPos().getX()+radius,getPos().getY()+radius,getPos().getZ()+radius);
 			List<EntityLivingBase> targets = worldObj.getEntitiesWithinAABB(EntityLivingBase.class, aabb);
 			if(!targets.isEmpty())
 			{
-				DamageSource dmgsrc = IEDamageSources.causeTeslaDamage();
+				TeslaDamageSource dmgsrc = IEDamageSources.causeTeslaDamage((float)Config.getDouble("teslacoil_damage"), lowPower);
 				int randomTarget = worldObj.rand.nextInt(targets.size());
 				EntityLivingBase target = targets.get(randomTarget);
 				if(target!=null)
@@ -73,14 +78,18 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 					if(!worldObj.isRemote)
 					{
 						energyDrain = Config.getInt("teslacoil_consumption_active");
+						if (lowPower)
+							energyDrain/=2;
 						if(energyStorage.extractEnergy(energyDrain,true)==energyDrain)
 						{
 							energyStorage.extractEnergy(energyDrain,false);
-							int prevFire = target.fire;
-							target.fire = 1;
-							target.addPotionEffect(new PotionEffect(IEPotions.stunned.getId(),128));
-							target.attackEntityFrom(dmgsrc, (float)Config.getDouble("teslacoil_damage"));
-							target.fire = prevFire;
+							if (dmgsrc.apply(target))
+							{
+								int prevFire = target.fire;
+								target.fire = 1;
+								target.addPotionEffect(new PotionEffect(IEPotions.stunned.getId(),128));
+								target.fire = prevFire;
+							}
 							NBTTagCompound tag = new NBTTagCompound();
 							tag.setInteger("targetEntity", target.getEntityId());
 							ImmersiveEngineering.packetHandler.sendToAll(new MessageTileSync(this, tag));
@@ -93,6 +102,11 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 				//target up to 4 blocks away
 				double tV = (worldObj.rand.nextDouble()-.5)*8;
 				double tH = (worldObj.rand.nextDouble()-.5)*8;
+				if (lowPower)
+				{
+					tV/=2;
+					tH/=2;
+				}
 				//Minimal distance to the coil is 2 blocks
 				tV += tV<0?-2:2;
 				tH += tH<0?-2:2;
@@ -264,6 +278,7 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 	{
 		dummy = nbt.getBoolean("dummy");
 		redstoneControlInverted = nbt.getBoolean("redstoneInverted");
+		lowPower = nbt.getBoolean("lowPower");
 		facing = EnumFacing.getFront(nbt.getInteger("facing"));
 		energyStorage.readFromNBT(nbt);
 	}
@@ -273,6 +288,7 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 	{
 		nbt.setBoolean("dummy", dummy);
 		nbt.setBoolean("redstoneInverted", redstoneControlInverted);
+		nbt.setBoolean("lowPower", lowPower);
 		if(facing!=null)
 			nbt.setInteger("facing", facing.ordinal());
 		energyStorage.writeToNBT(nbt);
@@ -331,10 +347,27 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 				return ((TileEntityTeslaCoil)te).hammerUseSide(side, player, hitX, hitY, hitZ);
 			return false;
 		}
-		redstoneControlInverted = !redstoneControlInverted;
-		ChatUtils.sendServerNoSpamMessages(player, new ChatComponentTranslation(Lib.CHAT_INFO+"rsControl."+(redstoneControlInverted?"invertedOn":"invertedOff")));
-		markDirty();
-		worldObj.markBlockForUpdate(getPos());
+		if (player.isSneaking())
+		{
+			int energyDrain = Config.getInt("teslacoil_consumption");
+			if (lowPower)
+				energyDrain/=2;
+			if (canRun(energyDrain))
+				player.attackEntityFrom(IEDamageSources.causeTeslaPrimaryDamage(), Float.MAX_VALUE);
+			else
+			{
+				lowPower = !lowPower;
+				ChatUtils.sendServerNoSpamMessages(player, new ChatComponentTranslation(Lib.CHAT_INFO+"tesla."+(lowPower?"lowPower":"highPower")));
+				markDirty();
+			}
+		}
+		else
+		{
+			redstoneControlInverted = !redstoneControlInverted;
+			ChatUtils.sendServerNoSpamMessages(player, new ChatComponentTranslation(Lib.CHAT_INFO+"rsControl."+(redstoneControlInverted?"invertedOn":"invertedOff")));
+			markDirty();
+			worldObj.markBlockForUpdate(getPos());
+		}
 		return true;
 	}
 
@@ -425,6 +458,10 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 		}
 		return energyStorage.getMaxEnergyStored();
 	}
+	private boolean canRun(int energyDrain)
+	{
+		return (worldObj.isBlockIndirectlyGettingPowered(getPos())>0^redstoneControlInverted) && energyStorage.getEnergyStored()>=energyDrain;
+	}
 
 	public static class LightningAnimation
 	{
@@ -433,7 +470,7 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 		public Vec3 targetPos;
 		public int timer = 40;
 
-		public List<Vec3> subPoints = new ArrayList();
+		public List<Vec3> subPoints = new ArrayList<>();
 		private Vec3 prevTarget;
 
 		public LightningAnimation(Vec3 startPos, EntityLivingBase targetEntity)

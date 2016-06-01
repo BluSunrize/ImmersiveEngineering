@@ -1,10 +1,15 @@
 package blusunrize.immersiveengineering.common.util;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.tool.ITeslaEquipment;
 import blusunrize.immersiveengineering.common.entities.EntityRailgunShot;
 import blusunrize.immersiveengineering.common.entities.EntityRevolvershot;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSource;
 import net.minecraft.util.EntityDamageSourceIndirect;
@@ -30,6 +35,34 @@ public class IEDamageSources
 		public IEDamageSource(String tag)
 		{
 			super(tag);
+		}
+	}
+	public static class TeslaDamageSource extends DamageSource
+	{
+		public boolean isLowPower;
+		public float dmg;
+		public TeslaDamageSource(String tag, boolean lowPower, float amount)
+		{
+			super(tag);
+			isLowPower = lowPower;
+			dmg = amount;
+			setDamageBypassesArmor();
+		}
+		public boolean apply(Entity e)
+		{
+			if (e instanceof EntityLivingBase)
+			{
+				Map<String, Object> cache = new HashMap<>();
+				for (int i = 0;i<=4;i++)
+				{
+					ItemStack s = ((EntityLivingBase)e).getEquipmentInSlot(i);
+					if (s!=null&&s.getItem() instanceof ITeslaEquipment)
+						((ITeslaEquipment)s.getItem()).onStrike(s, i, (EntityLivingBase)e, cache, this);
+				}
+			}
+			if (dmg>0)
+				e.attackEntityFrom(this, dmg);
+			return dmg>0;
 		}
 	}
 
@@ -80,13 +113,16 @@ public class IEDamageSources
 		return new IEDamageSource(Lib.DMG_Crusher);
 	}
 	
-	public static DamageSource causeTeslaDamage()
+	public static TeslaDamageSource causeTeslaDamage(float amount, boolean lowPower)
 	{
-		return new IEDamageSource(Lib.DMG_Tesla).setDamageBypassesArmor();
+		return new TeslaDamageSource(Lib.DMG_Tesla, lowPower, amount);
 	}
 	
 	public static DamageSource causeRailgunDamage(EntityRailgunShot shot, Entity shooter)
 	{
 		return new IEDamageSource_Indirect(Lib.DMG_Railgun, shot, shooter).setDamageBypassesArmor();
+	}
+	public static DamageSource causeTeslaPrimaryDamage() {
+		return new IEDamageSource(Lib.DMG_Tesla_prim).setDamageBypassesArmor();
 	}
 }

@@ -135,6 +135,7 @@ import blusunrize.immersiveengineering.common.items.ItemDrill;
 import blusunrize.immersiveengineering.common.items.ItemDrillhead;
 import blusunrize.immersiveengineering.common.items.ItemEarmuffs;
 import blusunrize.immersiveengineering.common.items.ItemEngineersBlueprint;
+import blusunrize.immersiveengineering.common.items.ItemFaradaySuit;
 import blusunrize.immersiveengineering.common.items.ItemGraphiteElectrode;
 import blusunrize.immersiveengineering.common.items.ItemIEBase;
 import blusunrize.immersiveengineering.common.items.ItemIESeed;
@@ -171,6 +172,7 @@ import net.minecraft.util.EnumWorldBlockLayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.gen.structure.MapGenStructureIO;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -242,6 +244,7 @@ public class IEContent
 	public static Item itemEarmuffs;
 	public static ItemIEBase itemCoresample;
 	public static ItemIEBase itemGraphiteElectrode;
+	public static ItemFaradaySuit[] itemsFaradaySuit = new ItemFaradaySuit[4];
 
 	public static ItemIEBase itemFakeIcons;
 
@@ -356,6 +359,9 @@ public class IEContent
 		itemEarmuffs = new ItemEarmuffs();
 		itemCoresample = new ItemCoresample();
 		itemGraphiteElectrode = new ItemGraphiteElectrode();
+		ItemFaradaySuit.mat = EnumHelper.addArmorMaterial("faradayChains", "immersiveEngineering:faradaySuit", 1, new int[]{1, 3, 2, 1}, 0);
+		for (int i = 0;i<itemsFaradaySuit.length;i++)
+			itemsFaradaySuit[i] = new ItemFaradaySuit(i);
 
 
 		itemFakeIcons = new ItemIEBase("fakeIcon", 1, "birthday","lucky")
