@@ -668,6 +668,7 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 		@Override
 		public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
 		{
+			stack = stack.copy();
 			IMultiblockRecipe recipe = this.multiblock.findRecipeForInsertion(stack);
 			if(recipe==null)
 				return stack;

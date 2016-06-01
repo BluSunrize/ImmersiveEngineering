@@ -463,6 +463,7 @@ public class TileEntitySilo extends TileEntityMultiblockPart<TileEntitySilo> //i
 		@Override
 		public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
 		{
+			stack = stack.copy();
 			TileEntitySilo silo = this.silo.master();
 			int space = maxStorage-silo.storageAmount;
 			if(slot!=0 || space<1 || stack==null || (silo.identStack!=null && !ItemHandlerHelper.canItemStacksStack(silo.identStack,stack)))
