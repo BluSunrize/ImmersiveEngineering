@@ -1,5 +1,7 @@
 package blusunrize.immersiveengineering.common.util.compat;
 
+import ic2.api.energy.EnergyNet;
+import ic2.api.energy.IEnergyNet;
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.api.energy.tile.IEnergySink;
@@ -25,19 +27,25 @@ public class IC2Helper extends IECompatModule
 
 	public static boolean isEnergySink(TileEntity sink)
 	{
-		return sink instanceof IEnergySink;
+		TileEntity ret = EnergyNet.instance.getTileEntity(sink.getWorldObj(), sink.xCoord, sink.yCoord, sink.zCoord);
+		if (ret == null) return false;
+		return ret instanceof IEnergySink;
 	}
 	public static boolean isAcceptingEnergySink(TileEntity sink, TileEntity tile, ForgeDirection fd)
 	{
-		return sink instanceof IEnergySink && ((IEnergySink)sink).acceptsEnergyFrom(tile, fd);
+		TileEntity ret = EnergyNet.instance.getTileEntity(sink.getWorldObj(), sink.xCoord, sink.yCoord, sink.zCoord);
+		if (ret == null) return false;
+		return ret instanceof IEnergySink && ((IEnergySink)ret).acceptsEnergyFrom(tile, fd);
 	}
 
 	public static double injectEnergy(TileEntity sink, ForgeDirection fd, double amount, double voltage, boolean simulate)
 	{
-		double demanded = Math.max(0, ((IEnergySink)sink).getDemandedEnergy());
+		TileEntity ret = EnergyNet.instance.getTileEntity(sink.getWorldObj(), sink.xCoord, sink.yCoord, sink.zCoord);
+		if (ret == null || !(ret instanceof IEnergySink)) return amount;
+		double demanded = Math.max(0, ((IEnergySink)ret).getDemandedEnergy());
 		double accepted = Math.min(demanded, amount);
 		if(!simulate)
-			((IEnergySink)sink).injectEnergy(fd, amount, voltage);
+			((IEnergySink)ret).injectEnergy(fd, amount, voltage);
 		return amount-accepted;
 	}
 	
