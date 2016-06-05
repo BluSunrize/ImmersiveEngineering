@@ -71,6 +71,14 @@ public class ConnLoader implements ICustomModelLoader
 		textureReplacements.put("eLantern_on",
 				ImmutableMap.of("#immersiveengineering:blocks/metalDevice1_electricLantern",
 						"immersiveengineering:blocks/metalDevice1_electricLantern_on"));
+		baseModels.put("floodlight",
+				new ResourceLocation("immersiveengineering:block/metalDevice/floodlight.obj.ie"));
+		baseModels.put("floodlight_on",
+				new ResourceLocation("immersiveengineering:block/metalDevice/floodlight.obj.ie"));
+		textureReplacements.put("floodlight_on",
+				ImmutableMap.of("#immersiveengineering:blocks/metalDevice1_floodlight",
+						"immersiveengineering:blocks/metalDevice1_floodlight_on"));
+		
 		baseModels.put("balloon",
 				new ResourceLocation("immersiveengineering:block/balloon.obj"));
 	}

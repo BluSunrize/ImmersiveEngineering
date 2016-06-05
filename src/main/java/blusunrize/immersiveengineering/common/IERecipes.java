@@ -299,14 +299,14 @@ public class IERecipes
 		addOredictRecipe(new ItemStack(IEContent.blockMetalDevice1,8, BlockTypes_MetalDevice1.FLUID_PIPE.getMeta()), "PPP","   ","PPP", 'P',"plateIron");
 		addOredictRecipe(new ItemStack(IEContent.blockMetalDevice1,1, BlockTypes_MetalDevice1.SAMPLE_DRILL.getMeta()), "SFS","SFS","BFB", 'F',"fenceSteel",'S',"scaffoldingSteel",'B',new ItemStack(IEContent.blockMetalDecoration0,1,BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta()));
 		addOredictRecipe(new ItemStack(IEContent.blockMetalDevice1,1, BlockTypes_MetalDevice1.TESLA_COIL.getMeta()), "III"," C ","MCM", 'I',"ingotAluminum",'C',copperCoil,'M',new ItemStack(IEContent.blockMetalDevice0,1,BlockTypes_MetalDevice0.CAPACITOR_MV.getMeta()));
+		addOredictRecipe(new ItemStack(IEContent.blockMetalDevice1,1, BlockTypes_MetalDevice1.FLOODLIGHT.getMeta()), "III","PGC","ILI", 'I',"ingotIron",'P',"paneGlass",'G',"glowstone",'C',copperCoil,'L',componentIron);
 
 		addOredictRecipe(new ItemStack(IEContent.blockConveyor,8, BlockTypes_Conveyor.CONVEYOR.getMeta()), "LLL","IRI", 'I',"ingotIron",'R',"dustRedstone",'L',Items.leather);
 		addOredictRecipe(new ItemStack(IEContent.blockConveyor,1, BlockTypes_Conveyor.CONVEYOR_DROPPER.getMeta()), "C","H", 'C',new ItemStack(IEContent.blockConveyor,1,BlockTypes_Conveyor.CONVEYOR.getMeta()),'H',Blocks.hopper);
 		addOredictRecipe(new ItemStack(IEContent.blockConveyor,3, BlockTypes_Conveyor.CONVEYOR_VERTICAL.getMeta()), "CI","C ","CI", 'C',new ItemStack(IEContent.blockConveyor,1,BlockTypes_Conveyor.CONVEYOR.getMeta()),'I',"ingotIron");
 
 
-		//		addOredictRecipe(new ItemStack(IEContent.blockMetalDevice2,1, BlockMetalDevices2.META_floodlight), "III","PGC","ILI", 'I',"ingotIron",'P',"paneGlass",'G',"glowstone",'C',copperCoil,'L',componentIron);
-
+		
 		//		addOredictRecipe(new ItemStack(IEContent.blockMetalMultiblocks, 1,BlockMetalMultiblocks.META_lightningRod), "IFI","CBC","IHI", 'I',"ingotSteel",'F',new ItemStack(IEContent.blockMetalDecoration,1,BlockMetalDecoration.META_fence),'B',new ItemStack(IEContent.blockMetalDevice,1,BlockMetalDevice.META_capacitorHV),'C',electrumCoil,'H',hvCoil);
 	}
 	public static ShapedOreRecipe addOredictRecipe(ItemStack output, Object... recipe)

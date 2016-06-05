@@ -6,7 +6,7 @@ import java.util.Set;
 
 import com.google.common.collect.ImmutableSet;
 
-import blusunrize.immersiveengineering.api.energy.wires.WireType;
+import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.properties.PropertyHelper;
@@ -74,7 +74,28 @@ public class IEProperties
 			return value.toString();
 		}
 	};
-
+	public static final IUnlistedProperty<IOBJModelCallback> OBJ_MODEL_CALLBACK = new IUnlistedProperty<IOBJModelCallback>()
+	{
+		public String getName()
+		{
+			return "obj_model_callback";
+		}
+		@Override
+		public boolean isValid(IOBJModelCallback value)
+		{
+			return true;
+		}
+		@Override
+		public Class<IOBJModelCallback> getType() {
+			return IOBJModelCallback.class;
+		}
+		@Override
+		public String valueToString(IOBJModelCallback value)
+		{
+			return value.toString();
+		}
+	};
+	
 	public static class PropertyBoolInverted extends PropertyHelper<Boolean>
 	{
 		private final ImmutableSet<Boolean> allowedValues = ImmutableSet.<Boolean>of(Boolean.valueOf(false), Boolean.valueOf(true));

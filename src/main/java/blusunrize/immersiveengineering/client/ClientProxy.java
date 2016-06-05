@@ -588,8 +588,8 @@ public class ClientProxy extends CommonProxy
 		ManualHelper.addEntry("lighting", ManualHelper.CAT_CONSTRUCTION,
 				new ManualPages.Crafting(ManualHelper.getManual(), "lighting0", new ItemStack(IEContent.blockMetalDecoration2,1,BlockTypes_MetalDecoration2.LANTERN.getMeta())),
 				new ManualPages.Crafting(ManualHelper.getManual(), "lighting1", new ItemStack(IEContent.blockMetalDevice1,1,BlockTypes_MetalDevice1.ELECTRIC_LANTERN.getMeta())),
-				new ManualPages.Text(ManualHelper.getManual(), "lighting2"));
-		//new ManualPages.Crafting(ManualHelper.getManual(), "lighting3", new ItemStack(IEContent.blockMetalDevice2,1,BlockMetalDevices2.META_floodlight)));
+				new ManualPages.Text(ManualHelper.getManual(), "lighting2"),
+				new ManualPages.Crafting(ManualHelper.getManual(), "lighting3", new ItemStack(IEContent.blockMetalDevice1,1,BlockTypes_MetalDevice1.FLOODLIGHT.getMeta())));
 		ManualHelper.addEntry("tank", ManualHelper.CAT_CONSTRUCTION,
 				new ManualPageMultiblock(ManualHelper.getManual(), "tank0", MultiblockSheetmetalTank.instance),
 				new ManualPages.Text(ManualHelper.getManual(), "tank1"));

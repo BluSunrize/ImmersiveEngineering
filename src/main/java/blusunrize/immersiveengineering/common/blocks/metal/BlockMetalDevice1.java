@@ -29,11 +29,12 @@ public class BlockMetalDevice1 extends BlockIETileProvider<BlockTypes_MetalDevic
 {
 	public BlockMetalDevice1()
 	{
-		super("metalDevice1",Material.iron, PropertyEnum.create("type", BlockTypes_MetalDevice1.class), ItemBlockIEBase.class,  IEProperties.FACING_ALL,IEProperties.MULTIBLOCKSLAVE,IEProperties.BOOLEANS[0],OBJProperty.instance);
+		super("metalDevice1",Material.iron, PropertyEnum.create("type", BlockTypes_MetalDevice1.class), ItemBlockIEBase.class,  IEProperties.FACING_ALL,IEProperties.MULTIBLOCKSLAVE,IEProperties.BOOLEANS[0],OBJProperty.instance,IEProperties.OBJ_MODEL_CALLBACK);
 		this.setHardness(3.0F);
 		this.setResistance(15.0F);
 		this.setMetaBlockLayer(BlockTypes_MetalDevice1.CHARGING_STATION.getMeta(), EnumWorldBlockLayer.SOLID,EnumWorldBlockLayer.TRANSLUCENT);
 		this.setMetaBlockLayer(BlockTypes_MetalDevice1.SAMPLE_DRILL.getMeta(), EnumWorldBlockLayer.CUTOUT);
+		this.setMetaBlockLayer(BlockTypes_MetalDevice1.FLOODLIGHT.getMeta(), EnumWorldBlockLayer.SOLID,EnumWorldBlockLayer.TRANSLUCENT);
 	}
 
 	@Override
@@ -68,8 +69,10 @@ public class BlockMetalDevice1 extends BlockIETileProvider<BlockTypes_MetalDevic
 			return "pipe";
 		else if(BlockTypes_MetalDevice1.values()[meta]==BlockTypes_MetalDevice1.SAMPLE_DRILL)
 			return "coreDrill";
-//		else if(BlockTypes_MetalDevice1.values()[meta]==BlockTypes_MetalDevice1.TESLA_COIL)
-//			return "teslaCoil";
+		else if(BlockTypes_MetalDevice1.values()[meta]==BlockTypes_MetalDevice1.FLOODLIGHT)
+			return "floodlight";
+		//		else if(BlockTypes_MetalDevice1.values()[meta]==BlockTypes_MetalDevice1.TESLA_COIL)
+		//			return "teslaCoil";
 		return null;
 	}
 
@@ -87,10 +90,12 @@ public class BlockMetalDevice1 extends BlockIETileProvider<BlockTypes_MetalDevic
 	{
 		state = super.getExtendedState(state, world, pos);
 		TileEntity tile = world.getTileEntity(pos);
-		if (tile instanceof TileEntityImmersiveConnectable&&state instanceof IExtendedBlockState)
+		if(tile instanceof TileEntityImmersiveConnectable&&state instanceof IExtendedBlockState)
 			state = ((IExtendedBlockState)state).withProperty(IEProperties.CONNECTIONS, ((TileEntityImmersiveConnectable)tile).genConnBlockstate());
-		if (tile instanceof TileEntityElectricLantern)
+		if(tile instanceof TileEntityElectricLantern)
 			state = state.withProperty(IEProperties.BOOLEANS[0], ((TileEntityElectricLantern) tile).active);
+		if(tile instanceof TileEntityFloodlight)
+			state = state.withProperty(IEProperties.BOOLEANS[0], ((TileEntityFloodlight) tile).active);
 		return state;
 	}
 
@@ -136,6 +141,8 @@ public class BlockMetalDevice1 extends BlockIETileProvider<BlockTypes_MetalDevic
 			return new TileEntitySampleDrill();
 		case TESLA_COIL:
 			return new TileEntityTeslaCoil();
+		case FLOODLIGHT:
+			return new TileEntityFloodlight();
 
 			//		case 0://CONNECTOR_LV
 			//		case 1://CONNECTOR_MV

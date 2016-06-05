@@ -33,8 +33,10 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.TRSRTransformation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ItemRailgun extends ItemUpgradeableTool implements IShaderEquipableItem, IFluxContainerItem,IEnergyContainerItem, IZoomTool, ITool, IOBJModelCallback
+public class ItemRailgun extends ItemUpgradeableTool implements IShaderEquipableItem, IFluxContainerItem,IEnergyContainerItem, IZoomTool, ITool, IOBJModelCallback<ItemStack>
 {
 	public ItemRailgun()
 	{
@@ -309,16 +311,19 @@ public class ItemRailgun extends ItemUpgradeableTool implements IShaderEquipable
 		return true;
 	}
 
+	@SideOnly(Side.CLIENT)
 	@Override
 	public TextureAtlasSprite getTextureReplacement(ItemStack stack, String material)
 	{
 		return null;
 	}
+	@SideOnly(Side.CLIENT)
 	@Override
 	public boolean shouldRenderGroup(ItemStack stack, String group)
 	{
 		return true;
 	}
+	@SideOnly(Side.CLIENT)
 	@Override
 	public Optional<TRSRTransformation> applyTransformations(ItemStack stack, String group, Optional<TRSRTransformation> transform)
 	{
@@ -331,6 +336,7 @@ public class ItemRailgun extends ItemUpgradeableTool implements IShaderEquipable
 		//		}
 		return transform;
 	}
+	@SideOnly(Side.CLIENT)
 	@Override
 	public Matrix4 handlePerspective(ItemStack stack, TransformType cameraTransformType, Matrix4 perspective)
 	{

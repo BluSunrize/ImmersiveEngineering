@@ -6,6 +6,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
+import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IActiveState;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedCollisionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedDirectionalTile;
@@ -172,6 +173,8 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 				state = ((IExtendedBlockState)state).withProperty(OBJProperty.instance, new OBJState(((IHasObjProperty)te).compileDisplayList(), true));
 			if(te instanceof IDynamicTexture)
 				state = ((IExtendedBlockState)state).withProperty(IEProperties.OBJ_TEXTURE_REMAP, ((IDynamicTexture)te).getTextureReplacements());
+			if(te instanceof IOBJModelCallback)
+				state = ((IExtendedBlockState)state).withProperty(IEProperties.OBJ_MODEL_CALLBACK, (IOBJModelCallback)te);
 		}
 
 		return state;

@@ -151,6 +151,7 @@ tile.ImmersiveEngineering.metalDevice1.charging_station.name=Charging Station
 tile.ImmersiveEngineering.metalDevice1.fluid_pipe.name=Fluid Pipe
 tile.ImmersiveEngineering.metalDevice1.sample_drill.name=Core Sample Drill
 tile.ImmersiveEngineering.metalDevice1.tesla_coil.name=Tesla Coil
+tile.ImmersiveEngineering.metalDevice1.floodlight.name=Floodlight
 
 tile.ImmersiveEngineering.conveyor.conveyor.name=Conveyor Belt
 tile.ImmersiveEngineering.conveyor.conveyor_dropper.name=Dropping Conveyor Belt
@@ -172,8 +173,6 @@ tile.ImmersiveEngineering.metalMultiblock.bucket_wheel.name=Bucket Wheel
 tile.ImmersiveEngineering.metalMultiblock.arc_furnace.name=Arc Furnace
 
 tile.ImmersiveEngineering.metalDecoration.structuralArm.name=Structural Arm
-
-tile.ImmersiveEngineering.metalDevice2.floodlight.name=Floodlight
 
 tile.ImmersiveEngineering.hemp.name=Industrial Hemp
 

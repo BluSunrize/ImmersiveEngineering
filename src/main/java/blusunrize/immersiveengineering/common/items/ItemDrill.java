@@ -44,8 +44,10 @@ import net.minecraftforge.client.model.TRSRTransformation;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidContainerItem;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ItemDrill extends ItemUpgradeableTool implements IShaderEquipableItem, IFluidContainerItem, IOBJModelCallback, ITool
+public class ItemDrill extends ItemUpgradeableTool implements IShaderEquipableItem, IFluidContainerItem, IOBJModelCallback<ItemStack>, ITool
 {
 	public static Material[] validMaterials = {Material.anvil,Material.clay,Material.glass,Material.grass,Material.ground,Material.ice,Material.iron,Material.packedIce,Material.piston,Material.rock,Material.sand, Material.snow};
 
@@ -162,6 +164,7 @@ public class ItemDrill extends ItemUpgradeableTool implements IShaderEquipableIt
 		return false;
 	}
 
+	@SideOnly(Side.CLIENT)
 	@Override
 	public TextureAtlasSprite getTextureReplacement(ItemStack stack, String material)
 	{
@@ -172,6 +175,7 @@ public class ItemDrill extends ItemUpgradeableTool implements IShaderEquipableIt
 		}
 		return null;
 	}
+	@SideOnly(Side.CLIENT)
 	@Override
 	public boolean shouldRenderGroup(ItemStack stack, String group)
 	{
@@ -196,6 +200,7 @@ public class ItemDrill extends ItemUpgradeableTool implements IShaderEquipableIt
 			}
 			return false;
 	}
+	@SideOnly(Side.CLIENT)
 	@Override
 	public Optional<TRSRTransformation> applyTransformations(ItemStack stack, String group, Optional<TRSRTransformation> transform)
 	{
@@ -217,6 +222,7 @@ public class ItemDrill extends ItemUpgradeableTool implements IShaderEquipableIt
 		}
 		return transform;
 	}
+	@SideOnly(Side.CLIENT)
 	@Override
 	public Matrix4 handlePerspective(ItemStack stack, TransformType cameraTransformType, Matrix4 perspective)
 	{

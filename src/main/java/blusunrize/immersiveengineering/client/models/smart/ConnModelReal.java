@@ -1,9 +1,11 @@
 package blusunrize.immersiveengineering.client.models.smart;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.client.ClientUtils;
@@ -114,6 +116,8 @@ public class ConnModelReal implements IFlexibleBakedModel, ISmartBlockModel
 		{
 			list = ClientUtils.convertConnectionFromBlockstate(iExtendedBlockState, tex);
 			basic = b;
+			if(basic instanceof ISmartBlockModel)
+				((ISmartBlockModel)basic).handleBlockState(iExtendedBlockState);
 			list.addAll(basic.getGeneralQuads());
 		}
 
@@ -126,7 +130,8 @@ public class ConnModelReal implements IFlexibleBakedModel, ISmartBlockModel
 		@Override
 		public List<BakedQuad> getGeneralQuads()
 		{
-			return list;
+			List<BakedQuad> quadList = Collections.synchronizedList(Lists.newArrayList(list));
+			return quadList;
 		}
 
 		@Override

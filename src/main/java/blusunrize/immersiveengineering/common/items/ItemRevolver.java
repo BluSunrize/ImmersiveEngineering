@@ -46,7 +46,7 @@ import net.minecraftforge.client.model.TRSRTransformation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ItemRevolver extends ItemUpgradeableTool implements IShaderEquipableItem, IOBJModelCallback, ITool
+public class ItemRevolver extends ItemUpgradeableTool implements IShaderEquipableItem, IOBJModelCallback<ItemStack>, ITool
 {
 	public ItemRevolver()
 	{
@@ -78,9 +78,9 @@ public class ItemRevolver extends ItemUpgradeableTool implements IShaderEquipabl
 	{
 		return new Slot[]
 				{
-				new IESlot.Upgrades(container, invItem,18+0, 80,32, "REVOLVER", stack, true),
-				new IESlot.Upgrades(container, invItem,18+1,100,32, "REVOLVER", stack, true),
-				new IESlot.Shader(container, invItem,20,130,32, stack)
+						new IESlot.Upgrades(container, invItem,18+0, 80,32, "REVOLVER", stack, true),
+						new IESlot.Upgrades(container, invItem,18+1,100,32, "REVOLVER", stack, true),
+						new IESlot.Shader(container, invItem,20,130,32, stack)
 				};
 	}
 	@Override
@@ -312,6 +312,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IShaderEquipabl
 
 
 
+	@SideOnly(Side.CLIENT)
 	@Override
 	public TextureAtlasSprite getTextureReplacement(ItemStack stack, String material)
 	{
@@ -321,12 +322,13 @@ public class ItemRevolver extends ItemUpgradeableTool implements IShaderEquipabl
 		else
 			return this.revolverDefaultTexture;
 	}
+	@SideOnly(Side.CLIENT)
 	@Override
 	public boolean shouldRenderGroup(ItemStack stack, String group)
 	{
 		if(group.equals("revolver_frame")||group.equals("barrel")||group.equals("cosmetic_compensator"))
 			return true;
-			
+
 		HashSet<String> render = new HashSet<String>();
 		String tag = ItemNBTHelper.getString(stack, "elite");
 		String flavour = ItemNBTHelper.getString(stack, "flavour");
@@ -359,11 +361,13 @@ public class ItemRevolver extends ItemUpgradeableTool implements IShaderEquipabl
 		}
 		return render.contains(group);
 	}
+	@SideOnly(Side.CLIENT)
 	@Override
 	public Optional<TRSRTransformation> applyTransformations(ItemStack stack, String group, Optional<TRSRTransformation> transform)
 	{
 		return transform;
 	}
+	@SideOnly(Side.CLIENT)
 	@Override
 	public Matrix4 handlePerspective(ItemStack stack, TransformType cameraTransformType, Matrix4 perspective)
 	{

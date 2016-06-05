@@ -6,6 +6,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import javax.vecmath.Quat4d;
+
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector3f;
 
@@ -1245,6 +1247,21 @@ public class ClientUtils
 				tooltip.add(tank.getFluidAmount()+"/"+tank.getCapacity()+"mB");
 			}
 		}
+	}
+
+	public static Quat4d degreeToQuaterion(double x, double y, double z)
+	{
+		x = Math.toRadians(x);
+		y = Math.toRadians(y);
+		z = Math.toRadians(z);
+		Quat4d qYaw = new Quat4d(0,Math.sin(y/2),0, Math.cos(y/2));
+		Quat4d qPitch = new Quat4d(Math.sin(x/2),0,0, Math.cos(x/2));
+		Quat4d qRoll = new Quat4d(0,0,Math.sin(z/2), Math.cos(z/2));
+
+		Quat4d quat = qYaw;
+		quat.mul(qRoll);
+		quat.mul(qPitch);
+		return quat;
 	}
 
 	public static List<BakedQuad> convertConnectionFromBlockstate(IExtendedBlockState s, TextureAtlasSprite t)

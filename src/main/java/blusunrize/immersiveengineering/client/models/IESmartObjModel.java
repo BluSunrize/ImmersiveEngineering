@@ -133,21 +133,35 @@ public class IESmartObjModel extends OBJBakedModel
 	@Override
 	public List<BakedQuad> getGeneralQuads()
 	{
-		if(bakedQuads==null)
+		//		if(bakedQuads==null)
 		{
 			bakedQuads = Collections.synchronizedSet(new LinkedHashSet<BakedQuad>());
 			ItemStack shader = null;
 			ShaderCase sCase = null;
+			IOBJModelCallback callback = null;
+			Object callbackObject = null;
 			if(this.tempStack!=null && tempStack.getItem() instanceof IShaderEquipableItem)
 			{
 				shader = ((IShaderEquipableItem)tempStack.getItem()).getShaderItem(tempStack);
 				if(shader!=null && shader.getItem() instanceof IShaderItem)
 					sCase = ((IShaderItem)shader.getItem()).getShaderCase(shader, tempStack, ((IShaderEquipableItem)tempStack.getItem()).getShaderType());
 			}
+			//System.out.println("Has callback: "+ (this.tempState instanceof IExtendedBlockState && ((IExtendedBlockState)this.tempState).getUnlistedNames().contains(IEProperties.OBJ_MODEL_CALLBACK)) );			
+			if(this.tempStack!=null && tempStack.getItem() instanceof IOBJModelCallback)
+			{
+				callback = (IOBJModelCallback)tempStack.getItem();
+				callbackObject = this.tempStack;
+			}
+			else if(this.tempState!=null && this.tempState instanceof IExtendedBlockState && ((IExtendedBlockState)this.tempState).getUnlistedNames().contains(IEProperties.OBJ_MODEL_CALLBACK))
+			{
+				callback = ((IExtendedBlockState)this.tempState).getValue(IEProperties.OBJ_MODEL_CALLBACK); 
+				callbackObject = this.tempState;
+			}
+
 			for(Group g : getModel().getMatLib().getGroups().values())
 			{
-				if(this.tempStack!=null && tempStack.getItem() instanceof IOBJModelCallback)
-					if(!((IOBJModelCallback)tempStack.getItem()).shouldRenderGroup(tempStack, g.getName()))
+				if(callback!=null)
+					if(!callback.shouldRenderGroup(callbackObject, g.getName()))
 						continue;
 				int maxPasses = 1;
 				if(sCase!=null)
@@ -159,16 +173,16 @@ public class IESmartObjModel extends OBJBakedModel
 					OBJState state = (OBJState)this.getState();
 					if(state.parent != null)
 						transform = state.parent.apply(Optional.<IModelPart>absent());
-					if(this.tempStack!=null && tempStack.getItem() instanceof IOBJModelCallback)
-						transform = ((IOBJModelCallback)tempStack.getItem()).applyTransformations(tempStack, g.getName(), transform);
+					if(callback!=null)
+						transform = callback.applyTransformations(callbackObject, g.getName(), transform);
 					if(state.getGroupsWithVisibility(true).contains(g.getName()))
 						faces.addAll(g.applyTransform(transform));
 				}
 				else
 				{
 					transform = getState().apply(Optional.<IModelPart>absent());
-					if(this.tempStack!=null && tempStack.getItem() instanceof IOBJModelCallback)
-						transform = ((IOBJModelCallback)tempStack.getItem()).applyTransformations(tempStack, g.getName(), transform);
+					if(callback!=null)
+						transform = callback.applyTransformations(callbackObject, g.getName(), transform);
 					faces.addAll(g.applyTransform(transform));
 				}
 
@@ -205,8 +219,8 @@ public class IESmartObjModel extends OBJBakedModel
 						{
 							if(sCase!=null)
 								tempSprite = sCase.getReplacementSprite(shader, tempStack, g.getName(), pass);
-							if(tempSprite==null && this.tempStack!=null && tempStack.getItem() instanceof IOBJModelCallback)
-								tempSprite = ((IOBJModelCallback)tempStack.getItem()).getTextureReplacement(tempStack, f.getMaterialName());
+							if(tempSprite==null && callback!=null)
+								tempSprite = callback.getTextureReplacement(callbackObject, f.getMaterialName());
 							if(tempSprite==null && this.tempState!=null && this.tempState instanceof IExtendedBlockState && ((IExtendedBlockState)this.tempState).getUnlistedNames().contains(IEProperties.OBJ_TEXTURE_REMAP))
 							{
 								HashMap<String,String> map = ((IExtendedBlockState)this.tempState).getValue(IEProperties.OBJ_TEXTURE_REMAP); 
@@ -264,16 +278,21 @@ public class IESmartObjModel extends OBJBakedModel
 					builder.put(e, d*colour[0], d*colour[1], d*colour[2], 1*colour[3]);
 				break;
 			case UV:
-				if(!v.hasTextureCoordinate())
-					builder.put(e,
-							sprite.getInterpolatedU(defUV.u * 16),
-							sprite.getInterpolatedV((1-defUV.v) * 16),//Can't access v-flip in customdata. Might change in future Forge versions
-							0, 1);
+				if(sprite!=null)//Double Safety. I have no idea how it even happens, but it somehow did .-.
+					if(!v.hasTextureCoordinate())
+						builder.put(e,
+								sprite.getInterpolatedU(defUV.u * 16),
+								sprite.getInterpolatedV((1-defUV.v) * 16),//Can't access v-flip in customdata. Might change in future Forge versions
+								0, 1);
+					else
+					{
+						builder.put(e,
+								sprite.getInterpolatedU(v.getTextureCoordinate().u * 16),
+								sprite.getInterpolatedV((1-v.getTextureCoordinate().v) * 16),
+								0, 1);
+					}
 				else
-					builder.put(e,
-							sprite.getInterpolatedU(v.getTextureCoordinate().u * 16),
-							sprite.getInterpolatedV((1-v.getTextureCoordinate().v) * 16),
-							0, 1);
+					builder.put(e);
 				break;
 			case NORMAL:
 				if(!v.hasNormal())
@@ -293,6 +312,7 @@ public class IESmartObjModel extends OBJBakedModel
 		this.tempState = state;
 		if(state instanceof IExtendedBlockState)
 		{
+			modelCache.clear();
 			IExtendedBlockState exState = (IExtendedBlockState) state;
 			ExtBlockstateAdapter adapter = new ExtBlockstateAdapter(exState);
 			if(!modelCache.containsKey(adapter))

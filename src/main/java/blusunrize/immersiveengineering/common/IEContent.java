@@ -21,6 +21,8 @@ import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEf
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler;
 import blusunrize.immersiveengineering.api.tool.RailgunHandler;
+import blusunrize.immersiveengineering.common.blocks.BlockFakeLight;
+import blusunrize.immersiveengineering.common.blocks.BlockFakeLight.TileEntityFakeLight;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
 import blusunrize.immersiveengineering.common.blocks.BlockIESlab;
 import blusunrize.immersiveengineering.common.blocks.BlockIEStairs;
@@ -63,6 +65,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityElectricLan
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityEnergyMeter;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityExcavator;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFermenter;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFloodlight;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFluidPipe;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFluidPump;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFurnaceHeater;
@@ -205,6 +208,7 @@ public class IEContent
 	public static BlockIEBase blockWoodenDevice1;
 	public static Block blockCrop;
 	public static BlockIEBase blockClothDevice;
+	public static Block blockFakeLight;
 
 	public static BlockIEBase blockSheetmetal;
 	public static BlockIEBase blockSheetmetalSlabs;
@@ -245,7 +249,6 @@ public class IEContent
 
 	public static ItemIEBase itemFakeIcons;
 
-	//	public static Block blockFakeLight;
 	//	public static BlockIEBase blockClothDevice;
 	public static Fluid fluidCreosote;
 	public static Fluid fluidPlantoil;
@@ -284,6 +287,7 @@ public class IEContent
 		blockWoodenDevice1 = new BlockWoodenDevice1();
 		blockCrop = new BlockIECrop("hemp", PropertyEnum.create("type", BlockTypes_Hemp.class));
 		blockClothDevice = new BlockClothDevice();
+		blockFakeLight = new BlockFakeLight();
 
 		blockSheetmetal = (BlockIEBase)new BlockIEBase("sheetmetal",Material.iron, PropertyEnum.create("type", BlockTypes_MetalsAll.class), ItemBlockIEBase.class).setOpaque(true).setMetaHidden(0,3,4,5,7,10).setHardness(3.0F).setResistance(10.0F);
 		blockSheetmetalSlabs = (BlockIESlab)new BlockIESlab("sheetmetalSlab",Material.iron, PropertyEnum.create("type", BlockTypes_MetalsAll.class)).setMetaHidden(0,3,4,5,7,10).setHardness(3.0F).setResistance(10.0F);
@@ -378,7 +382,6 @@ public class IEContent
 		//		blockStoneDecoration = new BlockStoneDecoration();
 		//		blockConcreteStair = new BlockIEStairs("concreteStairs",blockStoneDecoration,4);
 		//		blockConcreteTileStair = new BlockIEStairs("concreteTileStairs",blockStoneDecoration,5);
-		//		blockFakeLight = new BlockFakeLight();
 		//		blockClothDevice = new BlockClothDevices();
 		//
 
@@ -524,6 +527,7 @@ public class IEContent
 		registerTile(TileEntityFluidPipe.class);
 		registerTile(TileEntitySampleDrill.class);
 		registerTile(TileEntityTeslaCoil.class);
+		registerTile(TileEntityFloodlight.class);
 
 		registerTile(TileEntityConveyorBelt.class);
 		registerTile(TileEntityConveyorVertical.class);
@@ -547,7 +551,7 @@ public class IEContent
 		//		registerTile(TileEntitySkycrateDispenser.class);
 		//		registerTile(TileEntityFloodlight.class);
 		//
-		//		registerTile(TileEntityFakeLight.class);
+		registerTile(TileEntityFakeLight.class);
 
 
 

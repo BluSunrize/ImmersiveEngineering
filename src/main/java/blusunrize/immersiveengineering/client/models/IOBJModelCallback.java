@@ -5,14 +5,20 @@ import com.google.common.base.Optional;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.model.TRSRTransformation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SuppressWarnings("deprecation")
-public interface IOBJModelCallback
+//T must be ItemStack for Items or IBlockState for TileEntities implementing this
+public interface IOBJModelCallback<T>
 {
-	public TextureAtlasSprite getTextureReplacement(ItemStack stack, String material);
-	public boolean shouldRenderGroup(ItemStack stack, String group);
-	public Optional<TRSRTransformation> applyTransformations(ItemStack stack, String group, Optional<TRSRTransformation> transform);
-	public Matrix4 handlePerspective(ItemStack stack, TransformType cameraTransformType, Matrix4 perspective);
+	@SideOnly(Side.CLIENT)
+	public TextureAtlasSprite getTextureReplacement(T object, String material);
+	@SideOnly(Side.CLIENT)
+	public boolean shouldRenderGroup(T object, String group);
+	@SideOnly(Side.CLIENT)
+	public Optional<TRSRTransformation> applyTransformations(T object, String group, Optional<TRSRTransformation> transform);
+	@SideOnly(Side.CLIENT)
+	public Matrix4 handlePerspective(T Object, TransformType cameraTransformType, Matrix4 perspective);
 }
