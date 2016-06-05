@@ -146,7 +146,14 @@ public class IERecipes
 		addOredictRecipe(new ItemStack(IEContent.itemEarmuffs), " S ","S S","W W", 'S',"stickIron",'W',new ItemStack(Blocks.wool,1,OreDictionary.WILDCARD_VALUE));
 		GameRegistry.addRecipe(new RecipeEarmuffs());
 		RecipeSorter.register(ImmersiveEngineering.MODID+":earmuffs", RecipeEarmuffs.class, RecipeSorter.Category.SHAPELESS, "after:forge:shapelessore");
-
+		
+		addOredictRecipe(new ItemStack(IEContent.itemsFaradaySuit[0]), "AAA", "A A", 'A', "plateAluminum");
+		addOredictRecipe(new ItemStack(IEContent.itemsFaradaySuit[1]), "A A", "AAA", "AAA", 'A', "plateAluminum");
+		addOredictRecipe(new ItemStack(IEContent.itemsFaradaySuit[2]), "AAA", "A A", "A A", 'A', "plateAluminum");
+		addOredictRecipe(new ItemStack(IEContent.itemsFaradaySuit[3]), "A A", "A A", 'A', "plateAluminum");
+		
+		addOredictRecipe(new ItemStack(IEContent.itemFluorescentTube), "GEG", "GgG", "GgG", 'G', "blockGlass", 'E', new ItemStack(IEContent.itemGraphiteElectrode), 'g', "dustGlowstone");
+		
 		//
 		//TREATED WOOD
 		//

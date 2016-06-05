@@ -123,6 +123,7 @@ import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenCrat
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenPost;
 import blusunrize.immersiveengineering.common.crafting.IEFuelHandler;
 import blusunrize.immersiveengineering.common.entities.EntityChemthrowerShot;
+import blusunrize.immersiveengineering.common.entities.EntityFluorescentTube;
 import blusunrize.immersiveengineering.common.entities.EntityGrapplingHook;
 import blusunrize.immersiveengineering.common.entities.EntityIEExplosive;
 import blusunrize.immersiveengineering.common.entities.EntityRailgunShot;
@@ -138,6 +139,8 @@ import blusunrize.immersiveengineering.common.items.ItemDrill;
 import blusunrize.immersiveengineering.common.items.ItemDrillhead;
 import blusunrize.immersiveengineering.common.items.ItemEarmuffs;
 import blusunrize.immersiveengineering.common.items.ItemEngineersBlueprint;
+import blusunrize.immersiveengineering.common.items.ItemFaradaySuit;
+import blusunrize.immersiveengineering.common.items.ItemFluorescentTube;
 import blusunrize.immersiveengineering.common.items.ItemGraphiteElectrode;
 import blusunrize.immersiveengineering.common.items.ItemIEBase;
 import blusunrize.immersiveengineering.common.items.ItemIESeed;
@@ -174,6 +177,7 @@ import net.minecraft.util.EnumWorldBlockLayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.gen.structure.MapGenStructureIO;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -246,7 +250,9 @@ public class IEContent
 	public static Item itemEarmuffs;
 	public static ItemIEBase itemCoresample;
 	public static ItemIEBase itemGraphiteElectrode;
-
+	public static ItemFaradaySuit[] itemsFaradaySuit = new ItemFaradaySuit[4];
+	public static ItemIEBase itemFluorescentTube;
+	
 	public static ItemIEBase itemFakeIcons;
 
 	//	public static BlockIEBase blockClothDevice;
@@ -360,7 +366,10 @@ public class IEContent
 		itemEarmuffs = new ItemEarmuffs();
 		itemCoresample = new ItemCoresample();
 		itemGraphiteElectrode = new ItemGraphiteElectrode();
-
+		ItemFaradaySuit.mat = EnumHelper.addArmorMaterial("faradayChains", "immersiveEngineering:faradaySuit", 1, new int[]{1, 3, 2, 1}, 0);
+		for (int i = 0;i<itemsFaradaySuit.length;i++)
+			itemsFaradaySuit[i] = new ItemFaradaySuit(i);
+		itemFluorescentTube = new ItemFluorescentTube();
 
 		itemFakeIcons = new ItemIEBase("fakeIcon", 1, "birthday","lucky")
 		{
@@ -567,6 +576,7 @@ public class IEContent
 		EntityRegistry.registerModEntity(EntityRailgunShot.class, "railgunShot", i++, ImmersiveEngineering.instance, 64, 5, true);
 		EntityRegistry.registerModEntity(EntityRevolvershotFlare.class, "revolverShotFlare", i++, ImmersiveEngineering.instance, 64, 1, true);		
 		EntityRegistry.registerModEntity(EntityIEExplosive.class, "explosive", i++, ImmersiveEngineering.instance, 64, 1, true);		
+		EntityRegistry.registerModEntity(EntityFluorescentTube.class, "fluorescentTube", i++, ImmersiveEngineering.instance, 64, 1, true);		
 
 		//		villagerProfession_engineer = new VillagerProfession("immersiveengineering:engineer", "immersiveengineering:textures/models/villager_engineer.png");
 		//		{

@@ -180,7 +180,7 @@ public class EntityRevolvershot extends Entity
 				vec31 = new Vec3(movingobjectposition.hitVec.xCoord, movingobjectposition.hitVec.yCoord, movingobjectposition.hitVec.zCoord);
 
 			Entity entity = null;
-			List list = this.worldObj.getEntitiesWithinAABBExcludingEntity(this, this.getEntityBoundingBox().addCoord(this.motionX, this.motionY, this.motionZ).expand(1.0D, 1.0D, 1.0D));
+			List<Entity> list = this.worldObj.getEntitiesWithinAABBExcludingEntity(this, this.getEntityBoundingBox().addCoord(this.motionX, this.motionY, this.motionZ).expand(1.0D, 1.0D, 1.0D));
 			double d0 = 0.0D;
 
 			for (int i = 0; i < list.size(); ++i)
@@ -280,6 +280,7 @@ public class EntityRevolvershot extends Entity
 				damageSrc = IEDamageSources.causePotionDamage(this, shootingEntity);
 
 			if(damageSrc!=null)
+			{
 				if(headshot)
 				{
 					damage *= 1.5;
@@ -297,14 +298,15 @@ public class EntityRevolvershot extends Entity
 					}
 				}
 
-			if(!this.worldObj.isRemote)
-			{
-				if(mop.entityHit.attackEntityFrom(damageSrc, (float)damage))
+				if(!this.worldObj.isRemote)
 				{
-					if(bulletType==2)
-						mop.entityHit.hurtResistantTime=0;
-					if(bulletType==4)
-						mop.entityHit.setFire(3);
+					if(mop.entityHit.attackEntityFrom(damageSrc, (float)damage))
+					{
+						if(bulletType==2)
+							mop.entityHit.hurtResistantTime=0;
+						if(bulletType==4)
+							mop.entityHit.setFire(3);
+					}
 				}
 			}
 		}

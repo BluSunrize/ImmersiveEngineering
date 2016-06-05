@@ -16,7 +16,7 @@ public class TileRenderSheetmetalTank extends TileEntitySpecialRenderer<TileEnti
 	@Override
 	public void renderTileEntityAt(TileEntitySheetmetalTank tile, double x, double y, double z, float f, int destroyStage)
 	{
-		if(!tile.formed || tile.pos!=4||!tile.getWorld().isBlockLoaded(tile.getPos()))
+		if(!tile.formed || tile.pos!=4||!tile.getWorld().isBlockLoaded(tile.getPos(), false))
 			return;
 		GlStateManager.pushMatrix();
 

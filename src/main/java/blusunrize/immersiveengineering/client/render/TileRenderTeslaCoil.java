@@ -20,7 +20,7 @@ public class TileRenderTeslaCoil extends TileEntitySpecialRenderer<TileEntityTes
 	@Override
 	public void renderTileEntityAt(TileEntityTeslaCoil tile, double x, double y, double z, float partialTicks, int destroyStage)
 	{
-		if(tile.isDummy()||!tile.getWorld().isBlockLoaded(tile.getPos()))
+		if(tile.isDummy()||!tile.getWorld().isBlockLoaded(tile.getPos(), false))
 			return;
 		Iterator<LightningAnimation> animationIt = TileEntityTeslaCoil.effectMap.get(tile.getPos()).iterator();
 
