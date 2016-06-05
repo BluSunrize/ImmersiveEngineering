@@ -1348,4 +1348,39 @@ public class ClientUtils
 		// IELogger.info(Integer.toHexString(in)+"::"+Integer.toHexString(ret));
 		return ret;
 	}
+
+	public static void renderBox(WorldRenderer wr, double x0, double y0, double z0, double x1, double y1, double z1, double u0, double v0, double u1, double v1)
+	{
+		wr.pos(x0, y0, z1).tex(u0, v0).endVertex();
+		wr.pos(x1, y0, z1).tex(u1, v0).endVertex();
+		wr.pos(x1, y1, z1).tex(u1, v1).endVertex();
+		wr.pos(x0, y1, z1).tex(u0, v1).endVertex();
+
+		wr.pos(x0, y1, z0).tex(u0, v0).endVertex();
+		wr.pos(x1, y1, z0).tex(u1, v0).endVertex();
+		wr.pos(x1, y0, z0).tex(u1, v1).endVertex();
+		wr.pos(x0, y0, z0).tex(u0, v1).endVertex();
+
+
+		wr.pos(x0, y0, z0).tex(u0, v0).endVertex();
+		wr.pos(x1, y0, z0).tex(u1, v0).endVertex();
+		wr.pos(x1, y0, z1).tex(u1, v1).endVertex();
+		wr.pos(x0, y0, z1).tex(u0, v1).endVertex();
+
+		wr.pos(x0, y1, z1).tex(u0, v0).endVertex();
+		wr.pos(x1, y1, z1).tex(u1, v0).endVertex();
+		wr.pos(x1, y1, z0).tex(u1, v1).endVertex();
+		wr.pos(x0, y1, z0).tex(u0, v1).endVertex();
+
+
+		wr.pos(x0, y0, z0).tex(u0, v0).endVertex();
+		wr.pos(x0, y0, z1).tex(u1, v0).endVertex();
+		wr.pos(x0, y1, z1).tex(u1, v1).endVertex();
+		wr.pos(x0, y1, z0).tex(u0, v1).endVertex();
+
+		wr.pos(x1, y1, z0).tex(u0, v0).endVertex();
+		wr.pos(x1, y1, z1).tex(u1, v0).endVertex();
+		wr.pos(x1, y0, z1).tex(u1, v1).endVertex();
+		wr.pos(x1, y0, z0).tex(u0, v1).endVertex();
+	}
 }
