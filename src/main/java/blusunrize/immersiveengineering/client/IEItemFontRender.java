@@ -15,6 +15,10 @@ public class IEItemFontRender extends FontRenderer
 {
 	int[] backupColours;
 	String colourFormattingKeys = "0123456789abcdef";
+	public float customSpaceWidth = 4f;
+	public float spacingModifier = 0f;
+	public boolean verticalBoldness = false;
+
 	public IEItemFontRender()
 	{
 		super(ClientUtils.mc().gameSettings, new ResourceLocation("textures/font/ascii.png"), ClientUtils.mc().renderEngine, false);
@@ -65,7 +69,124 @@ public class IEItemFontRender extends FontRenderer
 				text = text.replace(s, rep);
 			}
 		}
-		super.renderStringAtPos(text, shadow);
+		if(verticalBoldness)
+		{
+			float startX = this.posX;
+			float startY = this.posY;
+			float yOffset = this.getUnicodeFlag()?.5f:1;
+
+			super.renderStringAtPos(text, shadow);
+			this.posY=startY+yOffset;
+			this.posX=startX;
+			super.renderStringAtPos(text, shadow);
+			this.posY-=yOffset;
+		}
+		else
+			super.renderStringAtPos(text, shadow);
+
 		this.colorCode = Arrays.copyOf(backupColours, 32);
+	}
+
+	@Override
+	public float func_181559_a(char ch, boolean italic)
+	{
+		if(ch==32)
+			return customSpaceWidth;
+		return super.func_181559_a(ch, italic)+spacingModifier;
+	}
+	public float getCharWidthFloat(char character)
+	{
+		if(character==32)
+			return customSpaceWidth;
+		return super.getCharWidth(character)+spacingModifier;
+	}
+	@Override
+	public int getCharWidth(char character)
+	{
+		return (int)this.getCharWidthFloat(character);
+	}
+	@Override
+	public int getStringWidth(String text)
+	{
+		if (text==null)
+			return 0;
+		else
+		{
+			float i = 0;
+			boolean flag = false;
+			for(int j=0; j<text.length(); ++j)
+			{
+				char c0 = text.charAt(j);
+				float k = this.getCharWidthFloat(c0);
+				if(k<0 && j<text.length()-1)
+				{
+					++j;
+					c0 = text.charAt(j);
+
+					if(c0!=108 && c0!=76)
+					{
+						if(c0==114 || c0==82)
+							flag = false;
+					}
+					else
+						flag = true;
+					k = 0;
+				}
+
+				i += k;
+				if(flag && k>0)
+					++i;
+			}
+			return (int)i;
+		}
+	}
+	@Override
+	public int sizeStringToWidth(String str, int wrapWidth)
+	{
+		int i = str.length();
+		float j = 0;
+		int k = 0;
+		int l = -1;
+
+		for(boolean flag = false; k<i; ++k)
+		{
+			char c0 = str.charAt(k);
+			switch(c0)
+			{
+			case '\n':
+				--k;
+				break;
+			case ' ':
+				l = k;
+			default:
+				j += this.getCharWidthFloat(c0);
+				if(flag)
+					++j;
+				break;
+			case '\u00a7':
+				if (k < i - 1)
+				{
+					++k;
+					char c1 = str.charAt(k);
+
+					if (c1 != 108 && c1 != 76)
+					{
+						if(c1 == 114 || c1 == 82 || (c1>=48&&c1<=57 || c1>=97&&c1<=102 || c1>=65&&c1<=70))
+							flag = false;
+					}
+					else
+						flag = true;
+				}
+			}
+			if(c0 == 10)
+			{
+				++k;
+				l = k;
+				break;
+			}
+			if(j>wrapWidth)
+				break;
+		}
+		return k!=i && l!=-1 && l<k?l:k;
 	}
 }

@@ -77,6 +77,8 @@ public class GuiManual extends GuiScreen
 			this.height = res.getScaledHeight();
 			Minecraft.getMinecraft().gameSettings.guiScale=1;
 		}
+		this.manual.openManual();
+
 		guiLeft =  (this.width - this.xSize) / 2;
 		guiTop =  (this.height - this.ySize) / 2;
 		boolean textField = false;
@@ -149,6 +151,7 @@ public class GuiManual extends GuiScreen
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		boolean uni = manual.fontRenderer.getUnicodeFlag();
 		manual.fontRenderer.setUnicodeFlag(true);
+		manual.entryRenderPre();
 
 		ManualUtils.bindTexture(texture);
 		this.drawTexturedModalRect(guiLeft,guiTop, 0,0, xSize,ySize);
@@ -196,11 +199,13 @@ public class GuiManual extends GuiScreen
 			if(page<entry.getPages().length-1)
 				this.drawTexturedModalRect(guiLeft+136,guiTop+179, 0,226+(b1?20:0), 16,10);
 
+			manual.titleRenderPre();
 			//Title
 			this.drawCenteredStringScaled(manual.fontRenderer, EnumChatFormatting.BOLD+manual.formatEntryName(entry.getName()), guiLeft+xSize/2,guiTop+14, manual.getTitleColour(), 1, true);
 			this.drawCenteredStringScaled(manual.fontRenderer, manual.formatEntrySubtext(entry.getName()), guiLeft+xSize/2,guiTop+22, manual.getSubTitleColour(), 1, true);
 			//Page Number
 			this.drawCenteredStringScaled(manual.fontRenderer, EnumChatFormatting.BOLD.toString()+(page+1), guiLeft+xSize/2,guiTop+183, manual.getPagenumberColour(), 1, false);
+			manual.titleRenderPost();
 
 			GL11.glColor3f(1,1,1);
 			IManualPage mPage = (page<0||page>=entry.getPages().length)?null: entry.getPages()[page];
@@ -213,7 +218,9 @@ public class GuiManual extends GuiScreen
 		else
 		{
 			String title = manual.manualContents.containsKey(selectedCategory)?manual.formatCategoryName(selectedCategory) : manual.getManualName();
+			manual.titleRenderPre();
 			this.drawCenteredStringScaled(manual.fontRenderer, EnumChatFormatting.BOLD+title, guiLeft+xSize/2,guiTop+12, manual.getTitleColour(), 1, true);
+			manual.titleRenderPost();
 		}
 		if(this.searchField!=null)
 		{
@@ -224,12 +231,14 @@ public class GuiManual extends GuiScreen
 		}
 		manual.fontRenderer.setUnicodeFlag(uni);
 		super.drawScreen(mx, my, f);
-        GlStateManager.enableBlend();
+		GlStateManager.enableBlend();
+		manual.entryRenderPost();
 	}
 
 	@Override
 	public void onGuiClosed()
 	{
+		this.manual.closeManual();
 		super.onGuiClosed();
 		if(prevGuiScale!=-1 && manual.allowGuiRescale())
 			Minecraft.getMinecraft().gameSettings.guiScale = prevGuiScale;
@@ -317,7 +326,9 @@ public class GuiManual extends GuiScreen
 	@Override
 	public void drawHoveringText(List text, int x, int y, FontRenderer font)
 	{
+		manual.tooltipRenderPre();
 		super.drawHoveringText(text,x,y,font);
+		manual.tooltipRenderPost();
 	}
 
 	@Override

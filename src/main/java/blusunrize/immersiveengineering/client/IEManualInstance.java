@@ -10,10 +10,9 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.lib.manual.IManualPage;
 import blusunrize.lib.manual.ManualInstance;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
@@ -22,7 +21,7 @@ public class IEManualInstance extends ManualInstance
 {
 	public IEManualInstance()
 	{
-		super(new FontRenderer(ClientUtils.mc().gameSettings, new ResourceLocation("textures/font/ascii.png"), ClientUtils.mc().renderEngine, false), "immersiveengineering:textures/gui/manual.png");
+		super(new IEItemFontRender(), "immersiveengineering:textures/gui/manual.png");
 
 		this.fontRenderer.colorCode[0+6] = 0xf78034;
 		this.fontRenderer.colorCode[16+6] = 0x3e200d;
@@ -150,9 +149,83 @@ public class IEManualInstance extends ManualInstance
 				}
 			s = s.replaceFirst(rep, result);
 		}
+
+		if(improveReadability())
+		{
+			overflow=0;
+			int end = 0;
+			while( (start=s.indexOf(EnumChatFormatting.RESET.toString(),end))>=0 && overflow<50)
+			{
+				overflow++;
+				end = start+EnumChatFormatting.RESET.toString().length();
+				s = s.substring(0,end)+EnumChatFormatting.BOLD.toString()+s.substring(end);
+			}
+			s = EnumChatFormatting.BOLD + s;
+		}
 		return s;
 	}
 
+
+	@Override
+	public void openManual()
+	{
+		if(improveReadability())
+		{
+			((IEItemFontRender)this.fontRenderer).spacingModifier=-.5f;
+			((IEItemFontRender)this.fontRenderer).customSpaceWidth=1f;
+		}
+	}
+	@Override
+	public void titleRenderPre()
+	{
+		if(improveReadability())
+		{
+			((IEItemFontRender)this.fontRenderer).spacingModifier=.5f;
+			((IEItemFontRender)this.fontRenderer).customSpaceWidth=4f;
+		}
+	}
+	@Override
+	public void titleRenderPost()
+	{
+		if(improveReadability())
+		{
+			((IEItemFontRender)this.fontRenderer).spacingModifier=-.5f;
+			((IEItemFontRender)this.fontRenderer).customSpaceWidth=1f;
+		}
+	}
+	@Override
+	public void entryRenderPre()
+	{
+		if(improveReadability())
+			((IEItemFontRender)this.fontRenderer).verticalBoldness=true;
+	}
+	public void entryRenderPost()
+	{
+		if(improveReadability())
+			((IEItemFontRender)this.fontRenderer).verticalBoldness=false;
+	}
+	@Override
+	public void tooltipRenderPre()
+	{
+		if(improveReadability())
+		{
+			((IEItemFontRender)this.fontRenderer).spacingModifier=0f;
+			((IEItemFontRender)this.fontRenderer).customSpaceWidth=4f;
+			((IEItemFontRender)this.fontRenderer).verticalBoldness=false;
+		}
+	}
+	@Override
+	public void tooltipRenderPost()
+	{
+		if(improveReadability())
+		{
+			((IEItemFontRender)this.fontRenderer).spacingModifier=-.5f;
+			((IEItemFontRender)this.fontRenderer).customSpaceWidth=1f;
+			((IEItemFontRender)this.fontRenderer).verticalBoldness=true;
+		}
+	}
+
+	
 	@Override
 	public String getManualName()
 	{
@@ -174,12 +247,12 @@ public class IEManualInstance extends ManualInstance
 	@Override
 	public String formatCategoryName(String s)
 	{
-		return StatCollector.translateToLocal("ie.manual.category."+s+".name");
+		return (improveReadability()?EnumChatFormatting.BOLD:"")+StatCollector.translateToLocal("ie.manual.category."+s+".name");
 	}
 	@Override
 	public String formatEntryName(String s)
 	{
-		return StatCollector.translateToLocal("ie.manual.entry."+s+".name");
+		return (improveReadability()?EnumChatFormatting.BOLD:"")+StatCollector.translateToLocal("ie.manual.entry."+s+".name");
 	}
 	@Override
 	public String formatEntrySubtext(String s)
@@ -212,7 +285,7 @@ public class IEManualInstance extends ManualInstance
 	@Override
 	public int getTextColour()
 	{
-		return 0x555555;
+		return improveReadability()?0:0x555555;
 	}
 	@Override
 	public int getHighlightColour()
@@ -229,5 +302,10 @@ public class IEManualInstance extends ManualInstance
 	public boolean allowGuiRescale()
 	{
 		return Config.getBoolean("adjustManualScale");
+	}
+	@Override
+	public boolean improveReadability()
+	{
+		return Config.getBoolean("badEyesight");
 	}
 }

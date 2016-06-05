@@ -6,6 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.util.EnumChatFormatting;
 
 public class GuiButtonManualLink extends GuiButton
 {
@@ -19,6 +20,8 @@ public class GuiButtonManualLink extends GuiButton
 		this.gui = gui;
 		this.key = key;
 		this.localized = localized;
+		if(gui.manual.improveReadability())
+			this.localized = EnumChatFormatting.BOLD+localized;
 		this.pageLinked = pageLinked;
 	}
 

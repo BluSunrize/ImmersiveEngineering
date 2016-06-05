@@ -31,6 +31,16 @@ public abstract class ManualInstance
 	public abstract int getHighlightColour();
 	public abstract int getPagenumberColour();
 	public abstract boolean allowGuiRescale();
+	public abstract boolean improveReadability();
+
+	public void openManual(){}
+	public void closeManual(){}
+	public void titleRenderPre(){}
+	public void titleRenderPost(){}
+	public void entryRenderPre(){}
+	public void entryRenderPost(){}
+	public void tooltipRenderPre(){}
+	public void tooltipRenderPost(){}
 
 	public GuiManual getGui()
 	{
