@@ -50,6 +50,7 @@ public class IEInventoryHandler implements IItemHandlerModifiable
 	@Override
 	public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
 	{
+		stack = stack.copy();
 		if(!canInsert[slot] || stack==null)
 			return stack;
 

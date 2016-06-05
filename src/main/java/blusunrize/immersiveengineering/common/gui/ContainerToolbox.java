@@ -135,6 +135,11 @@ public class ContainerToolbox extends Container implements ICallbackContainer
 			if (stackInSlot.stackSize == stack.stackSize)
 				return null;
 			slotObject.onPickupFromSlot(player, stack);
+			((ItemToolbox)this.toolbox.getItem()).setContainedItems(this.toolbox, ((InventoryStorageItem)this.input).stackList);
+			ItemStack hand = player.getCurrentEquippedItem();
+			if (hand!=null&&!hand.equals(toolbox))
+				player.setCurrentItemOrArmor(0, toolbox);
+			player.inventory.markDirty();
 		}
 		return stack;
 	}
@@ -148,11 +153,16 @@ public class ContainerToolbox extends Container implements ICallbackContainer
 	@Override
 	public ItemStack slotClick(int par1, int par2, int par3, EntityPlayer par4EntityPlayer)
 	{
-		if(par1 == this.blockedSlot || (par3!=0&&par2==par4EntityPlayer.inventory.currentItem))
-			return null;		
+		if(par1 == this.blockedSlot || (par3==2&&par2==par4EntityPlayer.inventory.currentItem))
+			return null;
+		ItemStack ret = super.slotClick(par1, par2, par3, par4EntityPlayer);
 		((ItemToolbox)this.toolbox.getItem()).setContainedItems(this.toolbox, ((InventoryStorageItem)this.input).stackList);
+		ItemStack hand = player.getCurrentEquippedItem();
+		if (hand!=null&&!hand.equals(toolbox))
+			player.setCurrentItemOrArmor(0, toolbox);
+		player.inventory.markDirty();
 
-		return super.slotClick(par1, par2, par3, par4EntityPlayer);
+		return ret;
 	}
 
 	@Override

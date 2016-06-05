@@ -28,7 +28,7 @@ public class TileRenderSampleDrill extends TileEntitySpecialRenderer<TileEntityS
 	@Override
 	public void renderTileEntityAt(TileEntitySampleDrill tile, double x, double y, double z, float partialTicks, int destroyStage)
 	{
-		if(tile.isDummy()||!tile.getWorld().isBlockLoaded(tile.getPos()))
+		if(tile.isDummy()||!tile.getWorld().isBlockLoaded(tile.getPos(), false))
 			return;
 
 		final BlockRendererDispatcher blockRenderer = Minecraft.getMinecraft().getBlockRendererDispatcher();

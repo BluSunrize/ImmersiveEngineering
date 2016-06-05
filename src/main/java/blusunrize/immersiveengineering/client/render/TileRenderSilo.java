@@ -13,7 +13,7 @@ public class TileRenderSilo extends TileEntitySpecialRenderer<TileEntitySilo>
 	@Override
 	public void renderTileEntityAt(TileEntitySilo tile, double x, double y, double z, float f, int destroyStage)
 	{
-		if(!tile.formed || tile.pos!=4||!tile.getWorld().isBlockLoaded(tile.getPos()))
+		if(!tile.formed || tile.pos!=4||!tile.getWorld().isBlockLoaded(tile.getPos(), false))
 			return;
 		GlStateManager.pushMatrix();
 

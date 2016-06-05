@@ -22,7 +22,7 @@ public class TileRenderWorkbench extends TileEntitySpecialRenderer<TileEntityMod
 	@Override
 	public void renderTileEntityAt(TileEntityModWorkbench te, double x, double y, double z, float partialTicks, int destroyStage)
 	{
-		if(te.dummy||!te.getWorld().isBlockLoaded(te.getPos()))
+		if(te.dummy||!te.getWorld().isBlockLoaded(te.getPos(), false))
 			return;
 
 		GlStateManager.pushMatrix();
@@ -31,7 +31,6 @@ public class TileRenderWorkbench extends TileEntitySpecialRenderer<TileEntityMod
 		int facing = te.getFacing().ordinal();
 		int off = te.dummyOffset;
 
-		boolean mirror = facing==2?off>0: facing==3?off<0: facing==4?off<0: facing==5?off>0 : false;
 		float angle = facing==2?180:facing==4?-90:facing==5?90:0;
 
 //		GL11.glPushMatrix();

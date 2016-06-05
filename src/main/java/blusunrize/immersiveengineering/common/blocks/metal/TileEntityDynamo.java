@@ -59,8 +59,8 @@ public class TileEntityDynamo extends TileEntityIEBase implements IFluxConnectio
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		facing = EnumFacing.getFront(nbt.getInteger("facing"));
-		if(descPacket && worldObj!=null)
-			worldObj.markBlockForUpdate(getPos());
+//		if(descPacket && worldObj!=null)
+//			worldObj.markBlockForUpdate(getPos());
 	}
 	@Override
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
