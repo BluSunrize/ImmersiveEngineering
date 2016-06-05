@@ -47,6 +47,7 @@ import blusunrize.immersiveengineering.client.models.ModelShaderMinecart;
 import blusunrize.immersiveengineering.client.models.obj.IEOBJLoader;
 import blusunrize.immersiveengineering.client.models.smart.ConnLoader;
 import blusunrize.immersiveengineering.client.render.EntityRenderChemthrowerShot;
+import blusunrize.immersiveengineering.client.render.EntityRenderFluorescentTube;
 import blusunrize.immersiveengineering.client.render.EntityRenderGrapplingHook;
 import blusunrize.immersiveengineering.client.render.EntityRenderIEExplosive;
 import blusunrize.immersiveengineering.client.render.EntityRenderNone;
@@ -127,6 +128,7 @@ import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWindmill;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWindmillAdvanced;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenCrate;
 import blusunrize.immersiveengineering.common.entities.EntityChemthrowerShot;
+import blusunrize.immersiveengineering.common.entities.EntityFluorescentTube;
 import blusunrize.immersiveengineering.common.entities.EntityGrapplingHook;
 import blusunrize.immersiveengineering.common.entities.EntityIEExplosive;
 import blusunrize.immersiveengineering.common.entities.EntityRailgunShot;
@@ -354,6 +356,11 @@ public class ClientProxy extends CommonProxy
 			@Override
 			public Render createRenderFor(RenderManager manager){
 				return new EntityRenderIEExplosive(manager);
+			}});
+		RenderingRegistry.registerEntityRenderingHandler(EntityFluorescentTube.class, new IRenderFactory(){
+			@Override
+			public Render createRenderFor(RenderManager manager){
+				return new EntityRenderFluorescentTube(manager);
 			}});
 		ModelLoaderRegistry.registerLoader(new ConnLoader());
 
@@ -677,10 +684,11 @@ public class ClientProxy extends CommonProxy
 		ManualHelper.addEntry("teslaCoil", ManualHelper.CAT_MACHINES,
 				new ManualPages.Crafting(ManualHelper.getManual(), "teslaCoil0", new ItemStack(IEContent.blockMetalDevice1,1,BlockTypes_MetalDevice1.TESLA_COIL.getMeta())),
 				new ManualPages.Text(ManualHelper.getManual(), "teslaCoil1"),
-				new ManualPages.CraftingMulti(ManualHelper.getManual(), "teslaCoil2", new ItemStack(IEContent.itemsFaradaySuit[0]), new ItemStack(IEContent.itemsFaradaySuit[1]), new ItemStack(IEContent.itemsFaradaySuit[2]), new ItemStack(IEContent.itemsFaradaySuit[3])),
-				new ManualPages.Text(ManualHelper.getManual(), "teslaCoil3"));
+				new ManualPages.CraftingMulti(ManualHelper.getManual(), "teslaCoil2", new ItemStack(IEContent.itemsFaradaySuit[0]), new ItemStack(IEContent.itemsFaradaySuit[1]), new ItemStack(IEContent.itemsFaradaySuit[2]), new ItemStack(IEContent.itemsFaradaySuit[3]), new ItemStack(IEContent.itemFluorescentTube)),
+				new ManualPages.Text(ManualHelper.getManual(), "teslaCoil3"),
+				new ManualPages.Text(ManualHelper.getManual(), "teslaCoil4"));
 		ManualHelper.addEntry("jerrycan", ManualHelper.CAT_MACHINES, new ManualPages.Crafting(ManualHelper.getManual(), "jerrycan0", new ItemStack(IEContent.itemJerrycan)));
-		tempItemList = new ArrayList();
+		tempItemList = new ArrayList<>();
 		for(int i=0; i<16; i++)
 			tempItemList.add(ItemNBTHelper.stackWithData(new ItemStack(IEContent.itemEarmuffs), "IE:EarmuffColour",EnumDyeColor.byDyeDamage(i).getMapColor().colorValue));
 		ManualHelper.addEntry("earmuffs", ManualHelper.CAT_MACHINES,

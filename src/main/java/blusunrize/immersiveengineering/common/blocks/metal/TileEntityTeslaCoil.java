@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 import com.google.common.collect.ArrayListMultimap;
 
@@ -10,6 +11,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
+import blusunrize.immersiveengineering.api.tool.ITeslaEntity;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
@@ -66,13 +68,19 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 			double radius = 6;
 			if (lowPower)
 				radius/=2;
-			AxisAlignedBB aabb = AxisAlignedBB.fromBounds(getPos().getX()-radius,getPos().getY()-radius,getPos().getZ()-radius, getPos().getX()+radius,getPos().getY()+radius,getPos().getZ()+radius);
-			List<EntityLivingBase> targets = worldObj.getEntitiesWithinAABB(EntityLivingBase.class, aabb);
+			AxisAlignedBB aabbSmall = AxisAlignedBB.fromBounds(getPos().getX()+.5-radius,getPos().getY()+.5-radius,getPos().getZ()+.5-radius, getPos().getX()+.5+radius,getPos().getY()+.5+radius,getPos().getZ()+.5+radius);
+			AxisAlignedBB aabb = aabbSmall.expand(radius/2, radius/2, radius/2);
+			List<Entity> targetsAll = worldObj.getEntitiesWithinAABB(Entity.class, aabb);
+			if (!worldObj.isRemote)
+				for (Entity e:targetsAll)
+					if (e instanceof ITeslaEntity)
+						((ITeslaEntity) e).onHit(this, lowPower);
+			List<Entity> targets = targetsAll.stream().filter((e)->(e instanceof EntityLivingBase&&aabbSmall.intersectsWith(e.getEntityBoundingBox()))).collect(Collectors.toList());
 			if(!targets.isEmpty())
 			{
 				TeslaDamageSource dmgsrc = IEDamageSources.causeTeslaDamage((float)Config.getDouble("teslacoil_damage"), lowPower);
 				int randomTarget = worldObj.rand.nextInt(targets.size());
-				EntityLivingBase target = targets.get(randomTarget);
+				EntityLivingBase target = (EntityLivingBase) targets.get(randomTarget);
 				if(target!=null)
 				{
 					if(!worldObj.isRemote)
