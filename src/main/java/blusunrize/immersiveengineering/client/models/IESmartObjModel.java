@@ -278,21 +278,18 @@ public class IESmartObjModel extends OBJBakedModel
 					builder.put(e, d*colour[0], d*colour[1], d*colour[2], 1*colour[3]);
 				break;
 			case UV:
-				if(sprite!=null)//Double Safety. I have no idea how it even happens, but it somehow did .-.
-					if(!v.hasTextureCoordinate())
-						builder.put(e,
-								sprite.getInterpolatedU(defUV.u * 16),
-								sprite.getInterpolatedV((1-defUV.v) * 16),//Can't access v-flip in customdata. Might change in future Forge versions
-								0, 1);
-					else
-					{
-						builder.put(e,
-								sprite.getInterpolatedU(v.getTextureCoordinate().u * 16),
-								sprite.getInterpolatedV((1-v.getTextureCoordinate().v) * 16),
-								0, 1);
-					}
+				if(sprite==null)//Double Safety. I have no idea how it even happens, but it somehow did .-.
+					sprite = Minecraft.getMinecraft().getTextureMapBlocks().getMissingSprite();
+				if(!v.hasTextureCoordinate())
+					builder.put(e,
+							sprite.getInterpolatedU(defUV.u * 16),
+							sprite.getInterpolatedV((1-defUV.v) * 16),//Can't access v-flip in customdata. Might change in future Forge versions
+							0, 1);
 				else
-					builder.put(e);
+					builder.put(e,
+							sprite.getInterpolatedU(v.getTextureCoordinate().u * 16),
+							sprite.getInterpolatedV((1-v.getTextureCoordinate().v) * 16),
+							0, 1);
 				break;
 			case NORMAL:
 				if(!v.hasNormal())

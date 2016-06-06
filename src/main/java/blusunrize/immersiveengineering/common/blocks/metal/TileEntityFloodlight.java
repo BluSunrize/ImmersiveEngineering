@@ -23,7 +23,6 @@ import blusunrize.immersiveengineering.common.blocks.BlockFakeLight.TileEntityFa
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IActiveState;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedDirectionalTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ILightValue;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISpawnInterdiction;
@@ -80,7 +79,6 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 			worldObj.markBlockForUpdate(getPos());
 			shouldUpdate = false;
 		}
-		energyStorage = 100;
 		enabled = worldObj.isBlockIndirectlyGettingPowered(getPos())>0;
 		if(energyStorage>=(!active?50:5) && enabled&&switchCooldown<=0)
 		{
@@ -111,8 +109,8 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 			while(it.hasNext() && timeout++<16)
 			{
 				BlockPos cc = it.next();
-				worldObj.setBlockState(cc, Blocks.glass.getDefaultState(), 2);
-				//				worldObj.setBlockState(cc, IEContent.blockFakeLight.getStateFromMeta(0), 2);
+//				worldObj.setBlockState(cc, Blocks.glass.getDefaultState(), 2);
+								worldObj.setBlockState(cc, IEContent.blockFakeLight.getStateFromMeta(0), 2);
 				TileEntity te = worldObj.getTileEntity(cc);
 				if (te instanceof TileEntityFakeLight)
 					((TileEntityFakeLight)te).floodlightCoords = new int[]{getPos().getX(),getPos().getX(),getPos().getX()};
@@ -151,6 +149,7 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 		if(genNew)
 		{
 			float angle =(float)( facing==EnumFacing.NORTH?180: facing==EnumFacing.EAST?90: facing==EnumFacing.WEST?-90: 0);
+			float yRotation = rotY;
 			double angleX = Math.toRadians(rotX);
 
 			Vec3[] rays = {
@@ -163,11 +162,25 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 				mat.scale(1, -1, 1);
 			else if(side!=EnumFacing.UP)
 			{
-				mat.rotate(Math.PI/2, facing.getAxis()==Axis.Z?-1:0,0,facing.getAxis()==Axis.X?-1:0);
-//				angle = facing==EnumFacing.DOWN?180: facing==EnumFacing.NORTH?-90: facing==EnumFacing.SOUTH?90: angle;
+				angle = facing==EnumFacing.DOWN?180: facing==EnumFacing.NORTH?-90: facing==EnumFacing.SOUTH?90: angle;
+				if(side.getAxis()==Axis.X)
+				{
+					mat.rotate(Math.PI/2,-1,0,0);
+					mat.rotate(Math.PI/2, 0,0,-side.getAxisDirection().getOffset());
+				}
+				else
+				{
+					mat.rotate(Math.PI/2,-1,0,0);
+					if(side==EnumFacing.SOUTH)//I dunno why south is giving me so much trouble, but this works, so who cares
+					{
+						mat.rotate(Math.PI, 0,0,1);
+						if(facing.getAxis()==Axis.X)
+							angle = -angle;
+					}
+				}
 			}
 
-			double angleY = Math.toRadians(angle+rotY);
+			double angleY = Math.toRadians(angle+yRotation);
 			mat.rotate(angleY, 0,1,0);
 			mat.rotate(-angleX, 1,0,0);
 			rays[0] = mat.apply(rays[0]);
@@ -198,8 +211,7 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 			rays[11] = mat.apply(rays[11]);
 			mat.rotate(Math.PI/8, 0,1,0);
 			rays[12] = mat.apply(rays[12]);
-			//			rays.length
-			for(int ray=0; ray<1; ray++)
+			for(int ray=0; ray<rays.length; ray++)
 			{
 				int offset = ray==0?0: ray<4?3: 1;
 				placeLightAlongVector(rays[ray], offset, tempRemove);
@@ -444,10 +456,7 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 			this.rotY %= 360;
 		}
 		else
-		{
-			this.rotX += player.isSneaking()?-11.25:11.25;
-			this.rotX %= 360;
-		}
+			this.rotX = Math.min(191.25f, Math.max(-11.25f, rotX+(player.isSneaking()?-11.25f:11.25f)));
 		markDirty();
 		worldObj.markBlockForUpdate(getPos());
 		worldObj.addBlockEvent(getPos(), getBlockType(), 255, 0);

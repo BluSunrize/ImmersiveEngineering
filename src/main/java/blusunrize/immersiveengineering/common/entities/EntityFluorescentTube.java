@@ -137,8 +137,8 @@ public class EntityFluorescentTube extends Entity implements ITeslaEntity
 		return !isDead;
 	}
 	@Override
-	public AxisAlignedBB getEntityBoundingBox() {
-		// TODO Auto-generated method stub
+	public AxisAlignedBB getEntityBoundingBox()
+	{
 		return super.getEntityBoundingBox();
 	}
 	@Override
