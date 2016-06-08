@@ -1362,7 +1362,6 @@ public class ClientUtils
 		int ret = in & (255 << 8);
 		ret += (in >> 16) & 255;
 		ret += (in & 255) << 16;
-		// IELogger.info(Integer.toHexString(in)+"::"+Integer.toHexString(ret));
 		return ret;
 	}
 
@@ -1399,5 +1398,12 @@ public class ClientUtils
 		wr.pos(x1, y1, z1).tex(u1, v0).endVertex();
 		wr.pos(x1, y0, z1).tex(u1, v1).endVertex();
 		wr.pos(x1, y0, z0).tex(u0, v1).endVertex();
+	}
+	public static int intFromRgb(float[] rgb)
+	{
+		int ret = (int)(255*rgb[0]);
+		ret = (ret<<8)+(int)(255*rgb[1]);
+		ret = (ret<<8)+(int)(255*rgb[2]);
+		return ret;
 	}
 }

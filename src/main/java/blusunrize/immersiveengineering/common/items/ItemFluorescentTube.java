@@ -1,5 +1,7 @@
 package blusunrize.immersiveengineering.common.items;
 
+import java.util.List;
+
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool.ToolConfig.ToolConfigBoolean;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool.ToolConfig.ToolConfigFloat;
@@ -10,6 +12,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.StatCollector;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
@@ -97,5 +100,14 @@ public class ItemFluorescentTube extends ItemIEBase implements IConfigurableTool
 	public String fomatConfigDescription(ItemStack stack, ToolConfig config)
 	{
 		return config.name;
+	}
+	@Override
+	public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced)
+	{
+		super.addInformation(stack, playerIn, tooltip, advanced);
+		float[] rgb = getRGB(stack);
+		tooltip.add(StatCollector.translateToLocalFormatted("desc.ImmersiveEngineering.info.colour.red", rgb[0]));
+		tooltip.add(StatCollector.translateToLocalFormatted("desc.ImmersiveEngineering.info.colour.green", rgb[1]));
+		tooltip.add(StatCollector.translateToLocalFormatted("desc.ImmersiveEngineering.info.colour.blue", rgb[2]));
 	}
 }

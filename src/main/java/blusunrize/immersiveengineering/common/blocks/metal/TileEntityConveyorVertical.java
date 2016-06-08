@@ -32,7 +32,9 @@ public class TileEntityConveyorVertical extends TileEntityConveyorBelt
 
 			double vX = entity.motionX;
 			double vY = 0.1 * vBase;
-			double vZ = entity.motionZ; 
+			double vZ = entity.motionZ;
+			if (entity.motionY<0)
+				vY+=entity.motionY*.9;
 
 			if(!(entity instanceof EntityPlayer))
 			{
@@ -57,7 +59,10 @@ public class TileEntityConveyorVertical extends TileEntityConveyorBelt
 			if(contact && !(world.getTileEntity(getPos().add(0,1,0)) instanceof TileEntityConveyorVertical))
 				vY *= 2.25;
 			entity.onGround = false;
-			entity.fallDistance = 0;
+			if (entity.fallDistance<3)
+				entity.fallDistance = 0;
+			else
+				entity.fallDistance*=.9;
 			entity.motionX = vX;
 			entity.motionY = vY;
 			entity.motionZ = vZ;
