@@ -120,6 +120,12 @@ public class IEBlockInterfaces
 	{
 		public boolean getIsActive();
 	}
+	
+	public interface IDualState extends IUsesBooleanProperty
+	{
+		public boolean getIsSecondState();
+	}
+	
 	public interface IMirrorAble extends IUsesBooleanProperty
 	{
 		public boolean getIsMirrored();

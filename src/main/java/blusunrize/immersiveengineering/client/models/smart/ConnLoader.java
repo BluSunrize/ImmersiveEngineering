@@ -63,6 +63,8 @@ public class ConnLoader implements ICustomModelLoader
 				new ResourceLocation("immersiveengineering:block/connector/transformer_mv_left.obj"));
 		baseModels.put("transformer_mv_right",
 				new ResourceLocation("immersiveengineering:block/connector/transformer_mv_right.obj"));
+		baseModels.put("transformer_mv_post",
+				new ResourceLocation("immersiveengineering:block/connector/transformerPost.obj"));
 		
 		baseModels.put("eLantern",
 				new ResourceLocation("immersiveengineering:block/metalDevice/eLantern.obj"));
@@ -148,7 +150,8 @@ public class ConnLoader implements ICustomModelLoader
 					ret.add(new ResourceLocation(tex));
 				ret.add(new ResourceLocation(ImmersiveEngineering.MODID.toLowerCase() + ":blocks/wire"));
 				return ret;
-			} catch (IOException e)
+			}
+			catch (IOException e)
 			{
 				throw new RuntimeException(e);
 			}
@@ -160,11 +163,16 @@ public class ConnLoader implements ICustomModelLoader
 		{
 			try
 			{
-				IModel model = ((OBJModel) ModelLoaderRegistry.getModel(base)).retexture(texReplace);
-				OBJModel obj = (OBJModel) model;
-				model = obj.process(ImmutableMap.of("flip-v", "true"));
+				IModel model = ModelLoaderRegistry.getModel(base);
+				if (model instanceof OBJModel)
+				{
+					model = ((OBJModel) model).retexture(texReplace);
+					OBJModel obj = (OBJModel) model;
+					model = obj.process(ImmutableMap.of("flip-v", "true"));
+				}
 				return new ConnModelReal(model.bake(state, Attributes.DEFAULT_BAKED_FORMAT, bakedTextureGetter));
-			} catch (IOException e)
+			}
+			catch (IOException e)
 			{
 				throw new RuntimeException(e);
 			}

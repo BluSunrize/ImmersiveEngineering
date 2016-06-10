@@ -28,6 +28,11 @@
 				"model": "immersiveengineering:smartmodel/conn_breaker_on"
 			}
 		},
+		"boolean1":
+		{
+			"false":{},
+			"true":{}
+		},
 		"facing":
 		{
 			"down": {},

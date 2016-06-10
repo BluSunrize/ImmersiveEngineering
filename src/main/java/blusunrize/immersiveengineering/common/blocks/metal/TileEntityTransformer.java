@@ -17,6 +17,7 @@ import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConne
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedSelectionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDualState;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IMirrorAble;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IUsesBooleanProperty;
@@ -34,12 +35,12 @@ import net.minecraft.util.Vec3;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class TileEntityTransformer extends TileEntityImmersiveConnectable implements IDirectionalTile, IMirrorAble, IHasDummyBlocks, IAdvancedSelectionBounds
+public class TileEntityTransformer extends TileEntityImmersiveConnectable implements IDirectionalTile, IMirrorAble, IHasDummyBlocks, IAdvancedSelectionBounds, IDualState
 {
 	WireType secondCable;
 	public EnumFacing facing=EnumFacing.NORTH;
 	public int dummy=0;
-	public int postAttached=0;
+	public boolean onPost=false;
 
 	public static boolean _Immovable()
 	{
@@ -86,7 +87,7 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 		if(secondCable!=null)
 			nbt.setString("secondCable", secondCable.getUniqueName());
 		nbt.setInteger("dummy", dummy);
-		nbt.setInteger("postAttached", postAttached);
+		nbt.setBoolean("postAttached", onPost);
 	}
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
@@ -98,7 +99,7 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 		else
 			secondCable = null;
 		dummy = nbt.getInteger("dummy");
-		postAttached = nbt.getInteger("postAttached");
+		onPost = nbt.getBoolean("postAttached");
 	}
 
 	@Override
@@ -181,7 +182,7 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 	@Override
 	public Vec3 getRaytraceOffset(IImmersiveConnectable link)
 	{
-		if(postAttached>0)
+		if(onPost)
 			return new Vec3(.5, 1.5, .5);
 		return new Vec3(.5, 2.75, .5);
 	}
@@ -189,12 +190,12 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 	public Vec3 getConnectionOffset(Connection con)
 	{
 		boolean b = con.cableType==limitType;
-		if(postAttached>0)
+		if(onPost)
 		{
 			if(b)
-				return new Vec3(.5+(postAttached==4?.4375: postAttached==5?-.4375: 0),1.4375,.5+(postAttached==2?.4375: postAttached==3?-.4375: 0));
+				return new Vec3(.5+(facing==EnumFacing.EAST?.4375: facing==EnumFacing.WEST?-.4375: 0),1.4375,.5+(facing==EnumFacing.SOUTH?.4375: facing==EnumFacing.NORTH?-.4375: 0));
 			else
-				return new Vec3(.5+(postAttached==4?-.0625: postAttached==5?.0625: 0),.25,.5+(postAttached==2?-.0625: postAttached==3?.0625: 0));
+				return new Vec3(.5+(facing==EnumFacing.EAST?-.0625: facing==EnumFacing.WEST?.0625: 0),.25,.5+(facing==EnumFacing.SOUTH?-.0625: facing==EnumFacing.NORTH?.0625: 0));
 		}
 		else
 		{
@@ -214,7 +215,7 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 
 	public int getTargetedConnector(TargetingInfo target)
 	{
-		if(postAttached>0)
+		if(onPost)
 		{
 			if(target.hitY>=.5)
 				return 0;
@@ -275,11 +276,13 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 	@Override
 	public PropertyBoolInverted getBoolProperty(Class<? extends IUsesBooleanProperty> inf)
 	{
-		return inf==IMirrorAble.class?IEProperties.BOOLEANS[0]:null;
+		return inf==IMirrorAble.class?IEProperties.BOOLEANS[0]:inf==IDualState.class?IEProperties.BOOLEANS[1]:null;
 	}
 	@Override
 	public boolean getIsMirrored()
 	{
+		if (onPost)
+			return false;
 		WireType lower = this instanceof TileEntityTransformerHV?WireType.ELECTRUM:WireType.COPPER;
 		boolean b = (limitType!=null&&lower.equals(limitType))||(secondCable!=null&&!lower.equals(secondCable));
 		return !b;
@@ -316,19 +319,32 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 	{
 		return dummy!=0;
 	}
+	public boolean isOnPost()
+	{
+		return onPost;
+	}
 	@Override
 	public void placeDummies(BlockPos pos, IBlockState state, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
-		for(int i=1; i<=2; i++)
+		if (state.getValue(IEProperties.BOOLEANS[1]))
 		{
-			worldObj.setBlockState(pos.add(0,i,0), state);
-			((TileEntityTransformer)worldObj.getTileEntity(pos.add(0,i,0))).dummy = i;
-			((TileEntityTransformer)worldObj.getTileEntity(pos.add(0,i,0))).facing = this.facing;
+			onPost = true;
+			markDirty();
+			worldObj.markBlockForUpdate(pos);
 		}
+		else
+			for(int i=1; i<=2; i++)
+			{
+				worldObj.setBlockState(pos.add(0,i,0), state);
+				((TileEntityTransformer)worldObj.getTileEntity(pos.add(0,i,0))).dummy = i;
+				((TileEntityTransformer)worldObj.getTileEntity(pos.add(0,i,0))).facing = this.facing;
+			}
 	}
 	@Override
 	public void breakDummies(BlockPos pos, IBlockState state)
 	{
+		if (state.getValue(IEProperties.BOOLEANS[1]))
+			return;
 		for(int i=0; i<=2; i++)
 			worldObj.setBlockToAir(getPos().add(0,-dummy,0).add(0,i,0));
 	}
@@ -338,6 +354,13 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 	{
 		if(dummy==2)
 			return new float[]{facing.getAxis()==Axis.Z?0:.3125f, 0, facing.getAxis()==Axis.X?0:.3125f, facing.getAxis()==Axis.Z?1:.6875f,this instanceof TileEntityTransformerHV?.75f:.5625f,facing.getAxis()==Axis.X?1:.6875f};
+		if (onPost)
+			return new float[]{facing.getAxis()==Axis.Z?.25F:facing==EnumFacing.WEST?-.375F:.6875F,
+					0,
+					facing.getAxis()==Axis.X?.25F:facing==EnumFacing.NORTH?-.375F:.6875F,
+					facing.getAxis()==Axis.Z?.75F:facing==EnumFacing.EAST?1.375F:.3125F,
+					1,
+					facing.getAxis()==Axis.X?.75F:facing==EnumFacing.SOUTH?1.375F:.3125F};
 		return null;
 	}
 
@@ -382,7 +405,16 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 		return false;
 	}
 	@Override
-	public Set<BlockPos> getIgnored(IImmersiveConnectable other) {
+	public Set<BlockPos> getIgnored(IImmersiveConnectable other)
+	{
+		if (onPost)
+			return super.getIgnored(other);
 		return ImmutableSet.of(pos.up(), pos.up(2));
+	}
+
+	@Override
+	public boolean getIsSecondState()
+	{
+		return onPost;
 	}
 }

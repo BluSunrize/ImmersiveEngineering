@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.api.IPostBlock;
 import blusunrize.immersiveengineering.common.blocks.BlockIETileProvider;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWallmount;
@@ -22,7 +23,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.obj.OBJModel.OBJProperty;
 
-public class BlockMetalDecoration2 extends BlockIETileProvider<BlockTypes_MetalDecoration2>
+public class BlockMetalDecoration2 extends BlockIETileProvider<BlockTypes_MetalDecoration2> implements IPostBlock
 {
 	public BlockMetalDecoration2()
 	{
@@ -100,6 +101,15 @@ public class BlockMetalDecoration2 extends BlockIETileProvider<BlockTypes_MetalD
 			return new TileEntityLantern();
 		}
 		return null;
+	}
+
+	@Override
+	public boolean canConnectTransformer(IBlockAccess world, BlockPos pos)
+	{
+		IBlockState state = world.getBlockState(pos);
+		BlockTypes_MetalDecoration2 type = state.getValue(property);
+		boolean slave = state.getValue(IEProperties.MULTIBLOCKSLAVE);
+		return slave&&(type==BlockTypes_MetalDecoration2.STEEL_POST||type==BlockTypes_MetalDecoration2.ALUMINUM_POST);
 	}
 
 }

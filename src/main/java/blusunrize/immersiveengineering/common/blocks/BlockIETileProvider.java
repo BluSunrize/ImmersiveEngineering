@@ -17,6 +17,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBou
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IColouredTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IConfigurableSides;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDualState;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDynamicTexture;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGuiTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
@@ -148,6 +149,9 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 
 		if(tile instanceof IActiveState)
 			state = applyProperty(state, ((IActiveState)tile).getBoolProperty(IActiveState.class), ((IActiveState)tile).getIsActive());
+
+		if(tile instanceof IDualState)
+			state = applyProperty(state, ((IDualState)tile).getBoolProperty(IDualState.class), ((IDualState)tile).getIsSecondState());
 
 		if(tile instanceof TileEntityMultiblockPart)
 			state = applyProperty(state, IEProperties.MULTIBLOCKSLAVE, ((TileEntityMultiblockPart)tile).isDummy());

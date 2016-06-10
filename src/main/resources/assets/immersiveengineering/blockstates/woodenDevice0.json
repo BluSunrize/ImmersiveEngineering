@@ -27,9 +27,14 @@
 			"model": "immersiveengineering:woodenDevice/workbench.obj",
 			"custom": {"flip-v": true},
 			"transform": {
-				"scale": 0.625,
-				"rotation": {"y": 90 },
-				"translation": [.25, 0, 0]
+				"scale": .8,
+				"rotation": {"y": 90},
+				"translation": [.25, 0, 0],
+				"thirdperson": {
+					"scale": .6,
+					"translation": [0, .2, 0],
+					"rotation":{"z": 180 }
+				}
 			}
 		}],
 		"inventory,type=sorter": [{ 

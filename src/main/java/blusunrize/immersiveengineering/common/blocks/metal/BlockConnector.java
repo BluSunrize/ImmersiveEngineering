@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import java.util.Arrays;
 
 import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.api.IPostBlock;
 import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConnectable;
 import blusunrize.immersiveengineering.common.blocks.BlockIETileProvider;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
@@ -12,6 +13,7 @@ import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
@@ -25,7 +27,7 @@ public class BlockConnector extends BlockIETileProvider<BlockTypes_Connector>
 {
 	public BlockConnector()
 	{
-		super("connector",Material.iron, PropertyEnum.create("type", BlockTypes_Connector.class), ItemBlockIEBase.class, IEProperties.FACING_ALL,IEProperties.BOOLEANS[0],IEProperties.MULTIBLOCKSLAVE);
+		super("connector",Material.iron, PropertyEnum.create("type", BlockTypes_Connector.class), ItemBlockIEBase.class, IEProperties.FACING_ALL,IEProperties.BOOLEANS[0],IEProperties.BOOLEANS[1],IEProperties.MULTIBLOCKSLAVE);
 		setHardness(3.0F);
 		setResistance(15.0F);
 	}
@@ -140,5 +142,20 @@ public class BlockConnector extends BlockIETileProvider<BlockTypes_Connector>
 			return new TileEntityEnergyMeter();
 		}
 		return null;
+	}
+	@Override
+	public IBlockState onBlockPlaced(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ,
+			int meta, EntityLivingBase placer)
+	{
+		IBlockState ret = super.onBlockPlaced(world, pos, facing, hitX, hitY, hitZ, meta, placer);
+		if (meta==BlockTypes_Connector.TRANSFORMER.getMeta())
+		{
+			BlockPos pos2 = pos.offset(facing, -1);
+			IBlockState placedAgainst = world.getBlockState(pos2);
+			Block block = placedAgainst.getBlock();
+			if (block instanceof IPostBlock&&((IPostBlock)block).canConnectTransformer(world, pos2))
+				ret = ret.withProperty(IEProperties.BOOLEANS[1], true);
+		}
+		return ret;
 	}
 }

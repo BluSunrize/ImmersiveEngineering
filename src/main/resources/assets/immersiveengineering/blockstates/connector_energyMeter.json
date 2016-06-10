@@ -27,6 +27,11 @@
 			"false": {},
 			"true": {}
 		},
+		"boolean1":
+		{
+			"false": {},
+			"true": {}
+		},
 		"facing":
 		{
 			"down": {},
