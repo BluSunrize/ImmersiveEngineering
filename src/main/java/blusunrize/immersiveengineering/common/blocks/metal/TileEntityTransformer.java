@@ -343,7 +343,7 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 	@Override
 	public void breakDummies(BlockPos pos, IBlockState state)
 	{
-		if (state.getValue(IEProperties.BOOLEANS[1]))
+		if (onPost)
 			return;
 		for(int i=0; i<=2; i++)
 			worldObj.setBlockToAir(getPos().add(0,-dummy,0).add(0,i,0));

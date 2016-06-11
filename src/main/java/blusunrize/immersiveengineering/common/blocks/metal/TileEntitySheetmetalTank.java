@@ -50,7 +50,8 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart<TileEntit
 	{
 		if(Utils.isFluidRelatedItemStack(player.getCurrentEquippedItem()))
 		{
-			FluidStack fs = master()!=null?master().tank.getFluid():this.tank.getFluid();
+			TileEntitySheetmetalTank master = master();
+			FluidStack fs = master!=null?master.tank.getFluid():this.tank.getFluid();
 			String s = null;
 			if(fs!=null)
 				s = fs.getLocalizedName()+": "+fs.amount+"mB";
@@ -193,7 +194,7 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart<TileEntit
 		if(!canDrain(from, resource!=null?resource.getFluid():null))
 			return null;
 		TileEntitySheetmetalTank master = master();
-		if(master!=null)
+		if(master!=this)
 			return master.drain(from,resource,doDrain);
 		if(resource!=null)
 			return drain(from, resource.amount, doDrain);
@@ -238,12 +239,10 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart<TileEntit
 			if (!formed)
 				return new FluidTankInfo[] {};
 			TileEntitySheetmetalTank master = master();
-			if (master != null&&master!=this)
-				return master.getTankInfo(from);
-			return new FluidTankInfo[] { tank.getInfo() };
+			if (master!=null)
+				return new FluidTankInfo[] { master.tank.getInfo() };
 		}
-		else
-			return new FluidTankInfo[0];
+		return new FluidTankInfo[0];
 	}
 
 	@Override
