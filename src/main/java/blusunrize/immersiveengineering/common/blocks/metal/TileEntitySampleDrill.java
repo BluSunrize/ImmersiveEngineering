@@ -36,7 +36,7 @@ public class TileEntitySampleDrill extends TileEntityIEBase implements ITickable
 	public int dummy=0;
 	public int process=0;
 	public boolean active = false;
-	ItemStack sample;
+	public ItemStack sample;
 
 	public static boolean _Immovable()
 	{
@@ -82,19 +82,15 @@ public class TileEntitySampleDrill extends TileEntityIEBase implements ITickable
 	}
 	public String getVein()
 	{
-		ExcavatorHandler.MineralMix mineral = ExcavatorHandler.getRandomMineral(worldObj, (getPos().getX()>>4), (getPos().getZ()>>4));
-		return mineral==null?null: mineral.name;
+		if (sample==null)
+			return "";
+		return sample.getTagCompound().getString("mineral");
 	}
-	public float getVeinIntegrity()
+	public int getExpectedVeinYield()
 	{
-		MineralWorldInfo info = ExcavatorHandler.getMineralWorldInfo(worldObj, (getPos().getX()>>4), (getPos().getZ()>>4));
-		boolean deplOverride = info.depletion<0;
-		if(ExcavatorHandler.mineralVeinCapacity<0||deplOverride)
-			return 1;
-		else if(info.mineralOverride==null && info.mineral==null)
-			return 0;
-		else
-			return (Config.getInt("excavator_depletion")-info.depletion)/(float)Config.getInt("excavator_depletion");
+		if (sample==null)
+			return -1;
+		return ExcavatorHandler.mineralVeinCapacity-sample.getTagCompound().getInteger("depletion");
 	}
 
 	public ItemStack createCoreSample(World world, int chunkX, int chunkZ, MineralWorldInfo info)

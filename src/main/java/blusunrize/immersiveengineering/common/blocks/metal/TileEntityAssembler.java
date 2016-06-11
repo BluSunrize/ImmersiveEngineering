@@ -38,6 +38,7 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAssembler,IMultiblockRecipe> implements IFluidHandler, IGuiTile// IAdvancedSelectionBounds,IAdvancedCollisionBounds
 {
+	public boolean[] computerOn = new boolean[3];
 	public TileEntityAssembler()
 	{
 		super(MultiblockAssembler.instance, new int[]{3,3,3}, 32000, true);
@@ -83,7 +84,6 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 			}
 		}
 	}
-
 	@Override
 	public void update()
 	{
@@ -96,10 +96,10 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 		for(int p=0; p<patterns.length; p++)
 		{
 			CrafterPatternInventory pattern = patterns[p];
-			if(pattern.inv[9]!=null && canOutput(pattern.inv[9], p))
+			if(computerOn[p]&&pattern.inv[9]!=null && canOutput(pattern.inv[9], p))
 			{
 				ItemStack output = pattern.inv[9].copy();
-				ArrayList<ItemStack> queryList = new ArrayList();//List of all available inputs in the inventory
+				ArrayList<ItemStack> queryList = new ArrayList<>();//List of all available inputs in the inventory
 				for(ItemStack[] bufferedStacks : outputBuffer)
 					for(ItemStack stack : bufferedStacks)
 						if(stack!=null)
@@ -114,7 +114,7 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 					ArrayList<ItemStack> outputList = new ArrayList<ItemStack>();//List of all outputs for the current recipe. This includes discarded containers
 					outputList.add(output);
 					Object[] oreInputs = null;
-					ArrayList<Integer> usedOreSlots = new ArrayList();
+					ArrayList<Integer> usedOreSlots = new ArrayList<>();
 					if(pattern.recipe instanceof ShapedOreRecipe||pattern.recipe instanceof ShapelessOreRecipe)
 					{
 						oreInputs = pattern.recipe instanceof ShapedOreRecipe?((ShapedOreRecipe)pattern.recipe).getInput():((ShapelessOreRecipe)pattern.recipe).getInput().toArray();
@@ -383,7 +383,7 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 	@Override
 	public int[] getRedstonePos()
 	{
-		return new int[]{4,6};
+		return new int[]{3,5};
 	}
 
 	@Override
