@@ -35,7 +35,7 @@ public class TileRenderBucketWheel extends TileEntitySpecialRenderer<TileEntityB
 	@Override
 	public void renderTileEntityAt(TileEntityBucketWheel tile, double x, double y, double z, float f, int destroyStage)
 	{
-		if (!tile.getWorld().isBlockLoaded(tile.getPos(), false))
+		if (!tile.getWorld().isBlockLoaded(tile.getPos(), false)||tile.isDummy())
 			return;
 		final BlockRendererDispatcher blockRenderer = Minecraft.getMinecraft().getBlockRendererDispatcher();
 		IBlockState state = tile.getWorld().getBlockState(tile.getPos());
@@ -74,8 +74,8 @@ public class TileRenderBucketWheel extends TileEntitySpecialRenderer<TileEntityB
 		GlStateManager.pushMatrix();
 		GlStateManager.translate(x+.5, y+.5, z+.5);
 		
-
-		GlStateManager.rotate(tile.facing==EnumFacing.NORTH?180: tile.facing==EnumFacing.EAST?90: tile.facing==EnumFacing.WEST?-90: 0, 0, 1, 0);
+		EnumFacing facing = state.getValue(IEProperties.FACING_HORIZONTAL);
+		GlStateManager.rotate(facing==EnumFacing.NORTH?180: facing==EnumFacing.EAST?90: facing==EnumFacing.WEST?-90: 0, 0, 1, 0);
 
 		if(tile.mirrored)
 		{
