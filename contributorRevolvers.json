@@ -10,6 +10,10 @@
 "uuid":["48a16fc8-bc1f-4e72-84e9-7ec73b7d8ea1"],
 "tag":"infinity","flavour":"","baseUpgrades":{"melee":10.0},"renderAdditions":["bayonet_attachment","player_bayonet"]
 }
+{
+"uuid":["insertMaltesUUIDHere"],
+"tag":"tesla","flavour":"","baseUpgrades":{},"renderAdditions":[]
+}
 
 {
 "uuid":["e8b46b33-3e17-4b64-8d07-9af116df7d3b","58d506e2-7ee7-4774-8b22-c7a57eda488b","df0f4696-8a55-4777-b49d-6b38d6e1b501","b72d87ce-fa98-4a5a-b5a0-5db51a018d09"],
