@@ -95,8 +95,8 @@ public class IESmartObjModel extends OBJBakedModel
 		ComparableItemStack comp = ApiUtils.createComparableItemStack(stack);
 		if(comp==null)
 			return this;
-//		if(this.cachedBakedItemModels.containsKey(comp))
-//			return this.cachedBakedItemModels.get(comp);
+		if(this.cachedBakedItemModels.containsKey(comp))
+			return this.cachedBakedItemModels.get(comp);
 
 		ImmutableMap.Builder<String, TextureAtlasSprite> builder = ImmutableMap.builder();
 		builder.put(ModelLoader.White.loc.toString(), ModelLoader.White.instance);
