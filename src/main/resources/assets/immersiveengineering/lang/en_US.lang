@@ -336,12 +336,13 @@ item.ImmersiveEngineering.jerrycan.name=Jerrycan
 item.ImmersiveEngineering.chemthrower.name=Chemical Thrower
 item.ImmersiveEngineering.railgun.name=Railgun
 item.ImmersiveEngineering.maneuverGear.name=3D Maneuver Gear
+item.ImmersiveEngineering.earmuffs.name=Ear Defenders
+item.ImmersiveEngineering.coresample.name=Core Sample
 item.ImmersiveEngineering.faradaySuit0.name=Faraday Helmet
 item.ImmersiveEngineering.faradaySuit1.name=Faraday Chestplate
 item.ImmersiveEngineering.faradaySuit2.name=Faraday Leggings
 item.ImmersiveEngineering.faradaySuit3.name=Faraday Boots
-item.ImmersiveEngineering.earmuffs.name=Ear Defenders
-item.ImmersiveEngineering.coresample.name=Core Sample
+item.ImmersiveEngineering.fluorescentTube.name=Fluorescent Tube
 
 #CREATIVE
 itemGroup.ImmersiveEngineering=Immersive Engineering

@@ -130,13 +130,13 @@ public class ShaderCaseRevolver extends ShaderCase
 	@Override
 	public void stichTextures(TextureMap map, int sheetID)
 	{
-//		i_revolverBase = map.registerSprite(new ResourceLocation("immersiveengineering:revolvers/shaders/revolver_0"));
-//		i_revolverOverlay = map.registerSprite(new ResourceLocation(this.baseTexturePath+"1_"+this.overlayType));
-//		i_revolverGrip = map.registerSprite(new ResourceLocation("immersiveengineering:revolvers/shaders/revolver_grip"));
-//		i_revolverUncoloured = map.registerSprite(new ResourceLocation("immersiveengineering:revolvers/shaders/revolver_uncoloured"));
-//		if(this.additionalTexture!=null)
-//			i_revolverAdditional = map.registerSprite(new ResourceLocation(this.baseTexturePath+additionalTexture));
-	
+		//		i_revolverBase = map.registerSprite(new ResourceLocation("immersiveengineering:revolvers/shaders/revolver_0"));
+		//		i_revolverOverlay = map.registerSprite(new ResourceLocation(this.baseTexturePath+"1_"+this.overlayType));
+		//		i_revolverGrip = map.registerSprite(new ResourceLocation("immersiveengineering:revolvers/shaders/revolver_grip"));
+		//		i_revolverUncoloured = map.registerSprite(new ResourceLocation("immersiveengineering:revolvers/shaders/revolver_uncoloured"));
+		//		if(this.additionalTexture!=null)
+		//			i_revolverAdditional = map.registerSprite(new ResourceLocation(this.baseTexturePath+additionalTexture));
+
 		i_revolverBase = ApiUtils.getRegisterSprite(map, "immersiveengineering:revolvers/shaders/revolver_0");
 		i_revolverOverlay = ApiUtils.getRegisterSprite(map, this.baseTexturePath+"1_"+this.overlayType);
 		i_revolverGrip = ApiUtils.getRegisterSprite(map, "immersiveengineering:revolvers/shaders/revolver_grip");

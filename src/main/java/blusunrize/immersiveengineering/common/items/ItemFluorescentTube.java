@@ -5,8 +5,10 @@ import java.util.List;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool.ToolConfig.ToolConfigBoolean;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool.ToolConfig.ToolConfigFloat;
+import blusunrize.immersiveengineering.client.ClientProxy;
 import blusunrize.immersiveengineering.common.entities.EntityFluorescentTube;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -15,6 +17,8 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.StatCollector;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemFluorescentTube extends ItemIEBase implements IConfigurableTool
 {
@@ -24,8 +28,7 @@ public class ItemFluorescentTube extends ItemIEBase implements IConfigurableTool
 		super("fluorescentTube", 1);
 	}
 	@Override
-	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side,
-			float hitX, float hitY, float hitZ)
+	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
 		if (side==EnumFacing.UP)
 		{
@@ -109,5 +112,23 @@ public class ItemFluorescentTube extends ItemIEBase implements IConfigurableTool
 		tooltip.add(StatCollector.translateToLocalFormatted("desc.ImmersiveEngineering.info.colour.red", rgb[0]));
 		tooltip.add(StatCollector.translateToLocalFormatted("desc.ImmersiveEngineering.info.colour.green", rgb[1]));
 		tooltip.add(StatCollector.translateToLocalFormatted("desc.ImmersiveEngineering.info.colour.blue", rgb[2]));
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public FontRenderer getFontRenderer(ItemStack stack)
+	{
+		return ClientProxy.itemFont;
+	}
+	@Override
+	public int getColorFromItemStack(ItemStack stack, int pass)
+	{
+		if(pass==0)
+		{
+			float[] fRGB = getRGB(stack);
+			int iRGB = (((int)(fRGB[0]*255)<<16)+((int)(fRGB[1]*255)<<8)+(int)(fRGB[2]*255));
+			return iRGB;
+		}
+		return super.getColorFromItemStack(stack, pass);
 	}
 }
