@@ -77,7 +77,8 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 				else if(entity.posX < getPos().getX()+0.35D)
 					vX = 0.1D * vBase;
 			}
-			entity.fallDistance = 0;
+			if (entity.fallDistance<3)
+				entity.fallDistance = 0;
 			entity.motionX = vX;
 			entity.motionY = vY;
 			entity.motionZ = vZ;

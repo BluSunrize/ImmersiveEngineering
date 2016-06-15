@@ -375,6 +375,10 @@ desc.ImmersiveEngineering.info.hour=%1$sh
 desc.ImmersiveEngineering.info.minute=%1$sm
 desc.ImmersiveEngineering.info.second=%1$ss
 
+desc.ImmersiveEngineering.info.colour.red=Red: %1s
+desc.ImmersiveEngineering.info.colour.green=Green: %1s
+desc.ImmersiveEngineering.info.colour.blue=Blue: %1s
+
 desc.ImmersiveEngineering.info.blockSide.facing=Facing Side
 desc.ImmersiveEngineering.info.blockSide.opposite=Opposite Side
 desc.ImmersiveEngineering.info.blockSide.down=Bottom Side

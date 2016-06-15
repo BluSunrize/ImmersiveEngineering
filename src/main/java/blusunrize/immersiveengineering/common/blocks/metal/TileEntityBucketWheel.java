@@ -26,7 +26,7 @@ import net.minecraft.util.EnumFacing.Axis;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class TileEntityBucketWheel extends TileEntityMultiblockPart implements IHasObjProperty, IDynamicTexture
+public class TileEntityBucketWheel extends TileEntityMultiblockPart<TileEntityBucketWheel> implements IHasObjProperty, IDynamicTexture
 {
 	public float rotation = 0;
 	public ItemStack[] digStacks = new ItemStack[8];
@@ -143,7 +143,7 @@ public class TileEntityBucketWheel extends TileEntityMultiblockPart implements I
 		
 		return texMap;
 	}
-	static ArrayList<String> emptyDisplayList = new ArrayList();
+	static ArrayList<String> emptyDisplayList = new ArrayList<>();
 	@Override
 	public ArrayList<String> compileDisplayList()
 	{

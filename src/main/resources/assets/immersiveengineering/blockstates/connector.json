@@ -64,6 +64,11 @@
 			"false":{},
 			"true":{}
 		},
+		"boolean1":
+		{
+			"false":{},
+			"true":{}
+		},
 		"*multiblockslave":
 		{
 			"false":{},

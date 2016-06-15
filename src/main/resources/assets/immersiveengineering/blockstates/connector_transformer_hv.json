@@ -28,6 +28,11 @@
 				"model": "immersiveengineering:smartmodel/conn_transformer_hv_right"
 			}
 		},
+		"boolean1":
+		{
+			"false":{},
+			"true":{}
+		},
 		"facing":
 		{
 			"down": {},

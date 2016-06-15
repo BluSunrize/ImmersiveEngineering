@@ -313,7 +313,7 @@ public class TileEntityCrusher extends TileEntityMultiblockMetal<TileEntityCrush
 				ItemStack stack = ((EntityItem)entity).getEntityItem();
 				if(stack==null)
 					return;
-				IMultiblockRecipe recipe = master.findRecipeForInsertion(stack);
+				CrusherRecipe recipe = master.findRecipeForInsertion(stack);
 				if(recipe==null)
 					return;
 				ItemStack displayStack = null;
@@ -323,10 +323,10 @@ public class TileEntityCrusher extends TileEntityMultiblockMetal<TileEntityCrush
 						displayStack = Utils.copyStackWithAmount(stack, ingr.inputSize);
 						break;
 					}
-				MultiblockProcess process = new MultiblockProcessInWorld(recipe, displayStack, .5f);
-				if(master.addProcessToQueue(process, true))
+				MultiblockProcess<CrusherRecipe> process = new MultiblockProcessInWorld<CrusherRecipe>(recipe, displayStack, .5f);
+				if(master.addProcessToQueue(process, true, true))
 				{
-					master.addProcessToQueue(process, false);
+					master.addProcessToQueue(process, false, true);
 					stack.stackSize -= displayStack.stackSize;
 					if(stack.stackSize<=0)
 						entity.setDead();

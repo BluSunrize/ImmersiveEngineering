@@ -29,6 +29,7 @@ import blusunrize.immersiveengineering.common.gui.ContainerRevolver;
 import blusunrize.immersiveengineering.common.items.ItemChemthrower;
 import blusunrize.immersiveengineering.common.items.ItemDrill;
 import blusunrize.immersiveengineering.common.items.ItemEarmuffs;
+import blusunrize.immersiveengineering.common.items.ItemFluorescentTube;
 import blusunrize.immersiveengineering.common.items.ItemRevolver;
 import blusunrize.immersiveengineering.common.items.ItemSkyhook;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
@@ -402,9 +403,14 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 						if(link!=null&&link.length>3)
 						{
 							String s = StatCollector.translateToLocalFormatted(Lib.DESC_INFO+"attachedTo", link[1],link[2],link[3]);
-							ClientUtils.font().drawString(s, event.resolution.getScaledWidth()/2 - ClientUtils.font().getStringWidth(s)/2, event.resolution.getScaledHeight()-GuiIngameForge.left_height-10, WireType.ELECTRUM.getColour(null), true);
+							ClientUtils.font().drawString(s, event.resolution.getScaledWidth()/2 - ClientUtils.font().getStringWidth(s)/2, event.resolution.getScaledHeight()-GuiIngameForge.left_height-20, WireType.ELECTRUM.getColour(null), true);
 						}
 					}
+				}
+				else if (OreDictionary.itemMatches(equipped, new ItemStack(IEContent.itemFluorescentTube), false))
+				{
+					String s = StatCollector.translateToLocalFormatted("desc.ImmersiveEngineering.info.colour", "#"+ItemFluorescentTube.hexColorString(equipped));
+					ClientUtils.font().drawString(s, event.resolution.getScaledWidth()/2 - ClientUtils.font().getStringWidth(s)/2, event.resolution.getScaledHeight()-GuiIngameForge.left_height-20, ItemFluorescentTube.getRGBInt(equipped), true);
 				}
 				else if(equipped.getItem() instanceof ItemRevolver && equipped.getItemDamage()!=2)
 				{

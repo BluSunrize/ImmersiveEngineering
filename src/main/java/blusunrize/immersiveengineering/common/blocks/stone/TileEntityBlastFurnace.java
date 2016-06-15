@@ -53,8 +53,7 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart<TileEntityB
 	@Override
 	public TileEntity getGuiMaster()
 	{
-		TileEntity master = this.master();
-		return master!=null?master:this;
+		return master();
 	}
 
 	@Override

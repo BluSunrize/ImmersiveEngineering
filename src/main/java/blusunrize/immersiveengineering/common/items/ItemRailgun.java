@@ -321,6 +321,10 @@ public class ItemRailgun extends ItemUpgradeableTool implements IShaderEquipable
 	@Override
 	public boolean shouldRenderGroup(ItemStack stack, String group)
 	{
+		if (group.equals("upgrade_scope"))
+			return getUpgrades(stack).getBoolean("scope");
+		if (group.equals("upgrade_speed"))
+			return getUpgrades(stack).getDouble("speed")>0;
 		return true;
 	}
 	@SideOnly(Side.CLIENT)
@@ -342,7 +346,12 @@ public class ItemRailgun extends ItemUpgradeableTool implements IShaderEquipable
 	{
 		//		if(stack.)
 		if(ItemNBTHelper.getBoolean(stack, "inUse"))
-			perspective = perspective.translate(0, -.5, -.375).rotate(Math.toRadians(8), 0, 1, 0).rotate(Math.toRadians(-12), 1, 0, 0).rotate(Math.toRadians(8), 0, 0, 1);
+		{
+			if (cameraTransformType==TransformType.THIRD_PERSON)
+				perspective = perspective.translate(-.75, -2, -.5).rotate(Math.toRadians(-78), 0, 0, 1);
+			else
+				perspective = perspective.translate(0, -.5, -.375).rotate(Math.toRadians(8), 0, 1, 0).rotate(Math.toRadians(-12), 1, 0, 0).rotate(Math.toRadians(8), 0, 0, 1);
+		}
 		return perspective;
 	}
 }

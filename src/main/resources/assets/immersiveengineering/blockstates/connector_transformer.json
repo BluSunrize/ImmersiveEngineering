@@ -28,6 +28,13 @@
 				"model": "immersiveengineering:smartmodel/conn_transformer_mv_right"
 			}
 		},
+		"boolean1":
+		{
+			"false":{},
+			"true":{
+				"model": "immersiveengineering:smartmodel/conn_transformer_mv_post"
+			}
+		},
 		"facing":
 		{
 			"down": {},

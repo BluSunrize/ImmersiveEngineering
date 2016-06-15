@@ -62,8 +62,7 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart<TileEntityCokeO
 	@Override
 	public TileEntity getGuiMaster()
 	{
-		TileEntity master = this.master();
-		return master!=null?master:this;
+		return master();
 	}
 
 	@Override

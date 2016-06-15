@@ -105,7 +105,12 @@ public class ItemFluorescentTube extends ItemIEBase implements IConfigurableTool
 	{
 		return config.name;
 	}
-
+	@SideOnly(Side.CLIENT)
+	@Override
+	public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean advanced)
+	{
+		list.add(StatCollector.translateToLocalFormatted(Lib.DESC_INFO+"colour", "#"+hexColorString(stack)));
+	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
@@ -113,22 +118,23 @@ public class ItemFluorescentTube extends ItemIEBase implements IConfigurableTool
 	{
 		return ClientProxy.itemFont;
 	}
-	@SideOnly(Side.CLIENT)
-	@Override
-	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean advanced)
-	{
-		String hexCol = Integer.toHexString(this.getColorFromItemStack(stack, 0));
-		list.add(StatCollector.translateToLocalFormatted(Lib.DESC_INFO+"colour", "<hexcol="+hexCol+":#"+hexCol+">"));
-	}
 	@Override
 	public int getColorFromItemStack(ItemStack stack, int pass)
 	{
 		if(pass==0)
-		{
-			float[] fRGB = getRGB(stack);
-			int iRGB = (((int)(fRGB[0]*255)<<16)+((int)(fRGB[1]*255)<<8)+(int)(fRGB[2]*255));
-			return iRGB;
-		}
+			return getRGBInt(stack);
 		return super.getColorFromItemStack(stack, pass);
+	}
+	public static int getRGBInt(ItemStack stack)
+	{
+		float[] fRGB = getRGB(stack);
+		return (((int)(fRGB[0]*255)<<16)+((int)(fRGB[1]*255)<<8)+(int)(fRGB[2]*255));
+	}
+	public static String hexColorString(ItemStack stack)
+	{
+		String hexCol = Integer.toHexString(getRGBInt(stack));
+		while (hexCol.length()<6)
+			hexCol = "0"+hexCol;
+		return hexCol;
 	}
 }

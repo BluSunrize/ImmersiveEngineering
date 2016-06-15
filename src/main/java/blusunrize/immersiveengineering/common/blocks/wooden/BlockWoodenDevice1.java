@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.api.IPostBlock;
 import blusunrize.immersiveengineering.common.blocks.BlockIETileProvider;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
 import net.minecraft.block.material.Material;
@@ -21,7 +22,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.obj.OBJModel.OBJProperty;
 
-public class BlockWoodenDevice1 extends BlockIETileProvider<BlockTypes_WoodenDevice1>
+public class BlockWoodenDevice1 extends BlockIETileProvider<BlockTypes_WoodenDevice1> implements IPostBlock
 {
 	public BlockWoodenDevice1()
 	{
@@ -311,5 +312,14 @@ public class BlockWoodenDevice1 extends BlockIETileProvider<BlockTypes_WoodenDev
 			return new TileEntityWallmount();
 		}
 		return null;
+	}
+
+	@Override
+	public boolean canConnectTransformer(IBlockAccess world, BlockPos pos)
+	{
+		IBlockState state = world.getBlockState(pos);
+		BlockTypes_WoodenDevice1 type = state.getValue(property);
+		boolean slave = state.getValue(IEProperties.MULTIBLOCKSLAVE);
+		return slave&&type==BlockTypes_WoodenDevice1.POST;
 	}
 }
