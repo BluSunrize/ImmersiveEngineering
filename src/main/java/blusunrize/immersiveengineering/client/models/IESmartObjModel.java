@@ -95,8 +95,8 @@ public class IESmartObjModel extends OBJBakedModel
 		ComparableItemStack comp = ApiUtils.createComparableItemStack(stack);
 		if(comp==null)
 			return this;
-		if(this.cachedBakedItemModels.containsKey(comp))
-			return this.cachedBakedItemModels.get(comp);
+//		if(this.cachedBakedItemModels.containsKey(comp))
+//			return this.cachedBakedItemModels.get(comp);
 
 		ImmutableMap.Builder<String, TextureAtlasSprite> builder = ImmutableMap.builder();
 		builder.put(ModelLoader.White.loc.toString(), ModelLoader.White.instance);
@@ -133,7 +133,7 @@ public class IESmartObjModel extends OBJBakedModel
 	@Override
 	public List<BakedQuad> getGeneralQuads()
 	{
-		//		if(bakedQuads==null)
+		if(bakedQuads==null)
 		{
 			bakedQuads = Collections.synchronizedSet(new LinkedHashSet<BakedQuad>());
 			ItemStack shader = null;
@@ -146,7 +146,6 @@ public class IESmartObjModel extends OBJBakedModel
 				if(shader!=null && shader.getItem() instanceof IShaderItem)
 					sCase = ((IShaderItem)shader.getItem()).getShaderCase(shader, tempStack, ((IShaderEquipableItem)tempStack.getItem()).getShaderType());
 			}
-			//System.out.println("Has callback: "+ (this.tempState instanceof IExtendedBlockState && ((IExtendedBlockState)this.tempState).getUnlistedNames().contains(IEProperties.OBJ_MODEL_CALLBACK)) );			
 			if(this.tempStack!=null && tempStack.getItem() instanceof IOBJModelCallback)
 			{
 				callback = (IOBJModelCallback)tempStack.getItem();
