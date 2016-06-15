@@ -2,6 +2,7 @@ package blusunrize.immersiveengineering.common.items;
 
 import java.util.List;
 
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool.ToolConfig.ToolConfigBoolean;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool.ToolConfig.ToolConfigFloat;
@@ -104,14 +105,11 @@ public class ItemFluorescentTube extends ItemIEBase implements IConfigurableTool
 	{
 		return config.name;
 	}
+	@SideOnly(Side.CLIENT)
 	@Override
-	public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced)
+	public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean advanced)
 	{
-		super.addInformation(stack, playerIn, tooltip, advanced);
-		float[] rgb = getRGB(stack);
-		tooltip.add(StatCollector.translateToLocalFormatted("desc.ImmersiveEngineering.info.colour.red", rgb[0]));
-		tooltip.add(StatCollector.translateToLocalFormatted("desc.ImmersiveEngineering.info.colour.green", rgb[1]));
-		tooltip.add(StatCollector.translateToLocalFormatted("desc.ImmersiveEngineering.info.colour.blue", rgb[2]));
+		list.add(StatCollector.translateToLocalFormatted(Lib.DESC_INFO+"colour", "#"+hexColorString(stack)));
 	}
 
 	@Override
@@ -124,11 +122,19 @@ public class ItemFluorescentTube extends ItemIEBase implements IConfigurableTool
 	public int getColorFromItemStack(ItemStack stack, int pass)
 	{
 		if(pass==0)
-		{
-			float[] fRGB = getRGB(stack);
-			int iRGB = (((int)(fRGB[0]*255)<<16)+((int)(fRGB[1]*255)<<8)+(int)(fRGB[2]*255));
-			return iRGB;
-		}
+			return getRGBInt(stack);
 		return super.getColorFromItemStack(stack, pass);
+	}
+	public static int getRGBInt(ItemStack stack)
+	{
+		float[] fRGB = getRGB(stack);
+		return (((int)(fRGB[0]*255)<<16)+((int)(fRGB[1]*255)<<8)+(int)(fRGB[2]*255));
+	}
+	public static String hexColorString(ItemStack stack)
+	{
+		String hexCol = Integer.toHexString(getRGBInt(stack));
+		while (hexCol.length()<6)
+			hexCol = "0"+hexCol;
+		return hexCol;
 	}
 }

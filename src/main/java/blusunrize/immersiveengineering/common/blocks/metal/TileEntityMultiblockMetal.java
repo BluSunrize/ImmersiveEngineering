@@ -6,8 +6,8 @@ import java.util.List;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.IEProperties.PropertyBoolInverted;
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.api.crafting.IMultiblockRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
@@ -292,7 +292,7 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 	//	=================================
 	//		PROCESS MANAGEMENT
 	//	=================================
-	public List<MultiblockProcess> processQueue = new ArrayList<MultiblockProcess>();
+	public List<MultiblockProcess<R>> processQueue = new ArrayList<MultiblockProcess<R>>();
 	public int tickedProcesses = 0;
 	@Override
 	public void update()
@@ -302,7 +302,7 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 
 		int max = getMaxProcessPerTick();
 		int i = 0;
-		Iterator<MultiblockProcess> processIterator = processQueue.iterator();
+		Iterator<MultiblockProcess<R>> processIterator = processQueue.iterator();
 		tickedProcesses = 0;
 		while(processIterator.hasNext() && i++<max)
 		{
@@ -330,6 +330,22 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 	public abstract boolean isInWorldProcessingMachine();
 	public boolean addProcessToQueue(MultiblockProcess<R> process, boolean simulate)
 	{
+		return addProcessToQueue(process, simulate, false);
+	}
+	public boolean addProcessToQueue(MultiblockProcess<R> process, boolean simulate, boolean addToPrevious)
+	{
+		if (addToPrevious&&process instanceof MultiblockProcessInWorld)
+		{
+			ItemStack input = ((MultiblockProcessInWorld<R>)process).inputItem;
+			for (MultiblockProcess<R> curr:processQueue)
+				if (curr instanceof MultiblockProcessInWorld&&Utils.stackMatchesObject(input, ((MultiblockProcessInWorld) curr).inputItem))
+					if (input.stackSize+((MultiblockProcessInWorld) curr).inputItem.stackSize<=input.getMaxStackSize())
+					{
+						if (!simulate)
+							((MultiblockProcessInWorld) curr).inputItem.stackSize+=input.stackSize;
+						return true;
+					}
+		}
 		if(getProcessQueueMaxLength()<0 || processQueue.size() < getProcessQueueMaxLength())
 		{
 			float dist = 1;
@@ -642,6 +658,24 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 		{
 			nbt.setTag("process_inputItem", inputItem.writeToNBT(new NBTTagCompound()));
 			nbt.setFloat("process_transformationPoint", transformationPoint);
+		}
+		@Override
+		protected void processFinish(TileEntityMultiblockMetal multiblock)
+		{
+			super.processFinish(multiblock);
+			int size = -1;
+			for (IngredientStack s:recipe.getItemInputs())
+				if (s.matchesItemStackIgnoringSize(inputItem))
+				{
+					size = s.inputSize;
+					break;
+				}
+			if (size>0&&inputItem.stackSize>size)
+			{
+				inputItem.splitStack(size);
+				processTick = 0;
+				clearProcess = false;
+			}
 		}
 	}
 

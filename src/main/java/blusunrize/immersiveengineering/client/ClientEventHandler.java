@@ -409,9 +409,8 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 				}
 				else if (OreDictionary.itemMatches(equipped, new ItemStack(IEContent.itemFluorescentTube), false))
 				{
-					float[] rgb = ItemFluorescentTube.getRGB(equipped);
-					String s = StatCollector.translateToLocalFormatted("desc.ImmersiveEngineering.info.colour.red", rgb[0])+", "+StatCollector.translateToLocalFormatted("desc.ImmersiveEngineering.info.colour.green", rgb[1])+", "+StatCollector.translateToLocalFormatted("desc.ImmersiveEngineering.info.colour.blue", rgb[2]);
-					ClientUtils.font().drawString(s, event.resolution.getScaledWidth()/2 - ClientUtils.font().getStringWidth(s)/2, event.resolution.getScaledHeight()-GuiIngameForge.left_height-20, ClientUtils.intFromRgb(rgb), true);
+					String s = StatCollector.translateToLocalFormatted("desc.ImmersiveEngineering.info.colour", "#"+ItemFluorescentTube.hexColorString(equipped));
+					ClientUtils.font().drawString(s, event.resolution.getScaledWidth()/2 - ClientUtils.font().getStringWidth(s)/2, event.resolution.getScaledHeight()-GuiIngameForge.left_height-20, ItemFluorescentTube.getRGBInt(equipped), true);
 				}
 				else if(equipped.getItem() instanceof ItemRevolver && equipped.getItemDamage()!=2)
 				{
