@@ -162,6 +162,7 @@ public class ManualPageMultiblock extends ManualPages
 									Block b = Block.getBlockFromItem(row[w].getItem());
 
 									ManualUtils.mc().getTextureManager().bindTexture(TextureMap.locationBlocksTexture);
+									
 									GL11.glPushMatrix();
 									GL11.glTranslatef(w-structureWidth/2-.5f, h-structureHeight/2, l-structureLength/2+.5f);
 									if(!multiblock.overwriteBlockRender(row[w], iterator++) && b!=null)

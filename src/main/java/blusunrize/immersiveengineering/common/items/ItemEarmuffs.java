@@ -80,6 +80,17 @@ public class ItemEarmuffs extends ItemArmor implements ISpecialArmor, IConfigura
 			return 0x486c94;
 		return ItemNBTHelper.getInt(stack, "IE:EarmuffColour");
 	}
+	@Override
+    public void removeColor(ItemStack stack)
+    {
+		if(ItemNBTHelper.hasKey(stack, "IE:EarmuffColour"))
+			ItemNBTHelper.remove(stack, "IE:EarmuffColour");
+    }
+	@Override
+    public void setColor(ItemStack stack, int color)
+    {
+		ItemNBTHelper.setInt(stack, "IE:EarmuffColour", color);
+    }
 
 	@Override
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean adv)
