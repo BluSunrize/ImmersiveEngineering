@@ -7,7 +7,6 @@ import java.util.Random;
 import com.google.common.collect.Lists;
 
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
-import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenCrate;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -202,7 +201,8 @@ public class VillageEngineersHouse extends StructureVillagePieces.Village
 			e.printStackTrace();
 		}
 
-		this.spawnVillagers(world, box, 4, 1, 2, 1);
+		//There are no vilalgers to spawn! :V
+		//this.spawnVillagers(world, box, 4, 1, 2, 1);
 		return true;
 	}
 
@@ -232,10 +232,10 @@ public class VillageEngineersHouse extends StructureVillagePieces.Village
 		BlockPos pos = new BlockPos(i1,j1,k1);
 		if(box.isVecInside(pos))
 		{
-//			world.setBlock(pos, IEContent.blockMetalDecoration0,BlockMetalDecoration1.META_lantern, 2);
-//			TileEntity tile = world.getTileEntity(pos);
-//			if(tile instanceof TileEntityLantern)
-//				((TileEntityLantern)tile).facing = facing;
+			//			world.setBlock(pos, IEContent.blockMetalDecoration0,BlockMetalDecoration1.META_lantern, 2);
+			//			TileEntity tile = world.getTileEntity(pos);
+			//			if(tile instanceof TileEntityLantern)
+			//				((TileEntityLantern)tile).facing = facing;
 			return true;
 		}
 		else
@@ -257,7 +257,9 @@ public class VillageEngineersHouse extends StructureVillagePieces.Village
 	@Override
 	protected int func_180779_c(int i, int previousProfession)
 	{
-		return Config.getInt("villager_engineer");
+		//Changed to return Smith while Engineers don't exist
+		return 3;
+		//return Config.getInt("villager_engineer");
 	}
 
 	public static class VillageManager implements IVillageCreationHandler
