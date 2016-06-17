@@ -51,21 +51,25 @@ public class TileRenderMetalPress extends TileEntitySpecialRenderer<TileEntityMe
 			MultiblockProcess process = te.processQueue.get(i);
 			if(process==null)
 				continue;
+			float transportTime = 52.5f/(float)process.maxTicks;
+			float pressTime = 3.75f/(float)process.maxTicks;
 			float fProcess = process.processTick/(float)process.maxTicks;
-			if(fProcess<.4375f)
-				shift[i] = fProcess/.4375f*.5f;
-			else if(fProcess<.5625f)
+			if(fProcess<transportTime)
+				shift[i] = fProcess/transportTime*.5f;
+			else if(fProcess<(1-transportTime))
 				shift[i] = .5f;
 			else
-				shift[i] = .5f+ (fProcess-.5625f)/.4375f*.5f;
+				shift[i] = .5f+ (fProcess-(1-transportTime))/transportTime*.5f;
 			if(te.mold!=null)
-				if(fProcess>=.4375f&&fProcess<.5625f)
-					if(fProcess<.46875f)
-						piston = (fProcess-.4375f)/.03125f;
-					else if(fProcess<.53125f)
+				if(fProcess>=transportTime&&fProcess<(1-transportTime))
+				{
+					if(fProcess<(transportTime+pressTime))
+						piston = (fProcess-transportTime)/pressTime;
+					else if(fProcess<(1-transportTime-pressTime))
 						piston = 1;
 					else
-						piston = 1 - (fProcess-.53125f)/.03125f;
+						piston = 1 - (fProcess-(1-transportTime-pressTime))/pressTime;
+				}
 		}
 		GlStateManager.translate(0,-piston*.6875f,0);
 

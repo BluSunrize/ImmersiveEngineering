@@ -425,7 +425,7 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 		return 0;
 	}
 	@Override
-	public float getMinProcessDistance()
+	public float getMinProcessDistance(MultiblockProcess<IMultiblockRecipe> process)
 	{
 		return 0;
 	}

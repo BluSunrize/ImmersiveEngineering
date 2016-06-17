@@ -309,7 +309,7 @@ public class TileEntityFermenter extends TileEntityMultiblockMetal<TileEntityFer
 		return 8;
 	}
 	@Override
-	public float getMinProcessDistance()
+	public float getMinProcessDistance(MultiblockProcess<FermenterRecipe> process)
 	{
 		return 0;
 	}

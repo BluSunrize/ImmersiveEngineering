@@ -382,7 +382,7 @@ public class TileEntitySqueezer extends TileEntityMultiblockMetal<TileEntitySque
 		return 8;
 	}
 	@Override
-	public float getMinProcessDistance()
+	public float getMinProcessDistance(MultiblockProcess<SqueezerRecipe> process)
 	{
 		return 0;
 	}

@@ -326,7 +326,7 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 	public abstract void onProcessFinish(MultiblockProcess<R> process);
 	public abstract int getMaxProcessPerTick();
 	public abstract int getProcessQueueMaxLength();
-	public abstract float getMinProcessDistance();
+	public abstract float getMinProcessDistance(MultiblockProcess<R> process);
 	public abstract boolean isInWorldProcessingMachine();
 	public boolean addProcessToQueue(MultiblockProcess<R> process, boolean simulate)
 	{
@@ -348,16 +348,12 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 		}
 		if(getProcessQueueMaxLength()<0 || processQueue.size() < getProcessQueueMaxLength())
 		{
-			float dist = 1;
 			if(processQueue.size()>0)
 			{
 				MultiblockProcess p = processQueue.get(processQueue.size()-1);
-				if(p!=null)
-					dist = p.processTick/(float)p.maxTicks;
+				if((p.processTick/(float)p.maxTicks)<getMinProcessDistance(p))
+					return false;
 			}
-			if(dist<getMinProcessDistance())
-				return false;
-
 			if(!simulate)
 				processQueue.add(process);
 			return true;
@@ -380,7 +376,7 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 			this.maxTicks = this.recipe.getTotalProcessTime();
 			this.energyPerTick = this.recipe.getTotalProcessEnergy()/this.maxTicks;
 		}
-		
+
 		protected List<ItemStack> getRecipeItemOutputs(TileEntityMultiblockMetal multiblock)
 		{
 			return recipe.getItemOutputs();
@@ -545,7 +541,7 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 			this.inputTanks = inputTanks;
 			return this;
 		}
-		
+
 		public int[] getInputSlots()
 		{
 			return this.inputSlots;

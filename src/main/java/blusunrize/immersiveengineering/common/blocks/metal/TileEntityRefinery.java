@@ -20,13 +20,11 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MovingObjectPosition;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.oredict.OreDictionary;
 
 public class TileEntityRefinery extends TileEntityMultiblockMetal<TileEntityRefinery,RefineryRecipe> implements IAdvancedSelectionBounds,IAdvancedCollisionBounds, IFluidHandler, IGuiTile
@@ -344,7 +342,7 @@ public class TileEntityRefinery extends TileEntityMultiblockMetal<TileEntityRefi
 		return 1;
 	}
 	@Override
-	public float getMinProcessDistance()
+	public float getMinProcessDistance(MultiblockProcess<RefineryRecipe> process)
 	{
 		return 0;
 	}

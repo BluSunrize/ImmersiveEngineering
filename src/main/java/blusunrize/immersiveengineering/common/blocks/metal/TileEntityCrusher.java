@@ -6,7 +6,6 @@ import java.util.List;
 import com.google.common.collect.Lists;
 
 import blusunrize.immersiveengineering.api.crafting.CrusherRecipe;
-import blusunrize.immersiveengineering.api.crafting.IMultiblockRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.EventHandler;
@@ -395,7 +394,7 @@ public class TileEntityCrusher extends TileEntityMultiblockMetal<TileEntityCrush
 		return -1;
 	}
 	@Override
-	public float getMinProcessDistance()
+	public float getMinProcessDistance(MultiblockProcess<CrusherRecipe> process)
 	{
 		return 0;
 	}

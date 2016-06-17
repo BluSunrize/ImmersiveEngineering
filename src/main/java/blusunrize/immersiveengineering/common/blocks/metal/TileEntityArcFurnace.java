@@ -453,7 +453,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 		return 12;
 	}
 	@Override
-	public float getMinProcessDistance()
+	public float getMinProcessDistance(MultiblockProcess<ArcFurnaceRecipe> process)
 	{
 		return 0;
 	}

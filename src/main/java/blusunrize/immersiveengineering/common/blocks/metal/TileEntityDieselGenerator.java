@@ -373,7 +373,7 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockMetal<TileEnt
 		return 0;
 	}
 	@Override
-	public float getMinProcessDistance()
+	public float getMinProcessDistance(MultiblockProcess<IMultiblockRecipe> process)
 	{
 		return 0;
 	}

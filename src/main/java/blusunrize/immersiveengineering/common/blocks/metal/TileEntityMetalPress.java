@@ -129,7 +129,8 @@ public class TileEntityMetalPress extends TileEntityMultiblockMetal<TileEntityMe
 					displayStack = Utils.copyStackWithAmount(stack, ingr.inputSize);
 					break;
 				}
-			MultiblockProcess process = new MultiblockProcessInWorld(recipe, displayStack, .5f);
+			float transformationPoint = 56.25f/(float)recipe.getTotalProcessTime();
+			MultiblockProcess process = new MultiblockProcessInWorld(recipe, displayStack, transformationPoint);
 			if(master.addProcessToQueue(process, true))
 			{
 				master.addProcessToQueue(process, false);
@@ -190,9 +191,9 @@ public class TileEntityMetalPress extends TileEntityMultiblockMetal<TileEntityMe
 		return 3;
 	}
 	@Override
-	public float getMinProcessDistance()
+	public float getMinProcessDistance(MultiblockProcess<MetalPressRecipe> process)
 	{
-		return .33f;
+		return (process.recipe.getTotalProcessTime()-56.25f)/(float)process.recipe.getTotalProcessTime();
 	}
 
 
