@@ -49,7 +49,7 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 	public EnumFacing facing = EnumFacing.UP;
 	public boolean lowPower = false;
 	@SideOnly(Side.CLIENT)
-	public static ArrayListMultimap<BlockPos,LightningAnimation> effectMap = ArrayListMultimap.create();
+	public static ArrayListMultimap<BlockPos,LightningAnimation> effectMap;
 
 	@Override
 	public void update()

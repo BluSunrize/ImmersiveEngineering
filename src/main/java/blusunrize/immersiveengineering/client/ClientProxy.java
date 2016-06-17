@@ -13,6 +13,7 @@ import java.util.UUID;
 
 import org.lwjgl.input.Keyboard;
 
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
 import com.mojang.authlib.GameProfile;
 
@@ -393,6 +394,7 @@ public class ClientProxy extends CommonProxy
 		nixieFontOptional = Config.getBoolean("nixietubeFont")?new IENixieFontRender():ClientUtils.font();
 		nixieFont = new IENixieFontRender();
 		itemFont = new IEItemFontRender();
+		TileEntityTeslaCoil.effectMap = ArrayListMultimap.create();
 
 		//		//METAL
 		//		RenderingRegistry.registerBlockHandler(new BlockRenderMetalDevices());
