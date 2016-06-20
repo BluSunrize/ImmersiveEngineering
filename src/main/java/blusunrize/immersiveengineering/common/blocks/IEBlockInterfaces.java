@@ -97,7 +97,14 @@ public class IEBlockInterfaces
 	public interface IConfigurableSides
 	{
 		public IEEnums.SideConfig getSideConfig(int side);
-		public void toggleSide(int side);
+		public default boolean toggleSide(int side, EntityPlayer p)
+		{
+			toggleSide(side);
+			return true;
+		}
+		@Deprecated
+		public default void toggleSide(int side)
+		{}
 	}
 
 	public interface ITileDrop
