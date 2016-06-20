@@ -117,7 +117,7 @@ public class ConnModelReal implements IFlexibleBakedModel, ISmartBlockModel
 			list = ClientUtils.convertConnectionFromBlockstate(iExtendedBlockState, tex);
 			basic = b;
 			if(basic instanceof ISmartBlockModel)
-				((ISmartBlockModel)basic).handleBlockState(iExtendedBlockState);
+				basic = ((ISmartBlockModel)basic).handleBlockState(iExtendedBlockState);
 			list.addAll(basic.getGeneralQuads());
 		}
 
