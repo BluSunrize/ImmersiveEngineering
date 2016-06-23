@@ -1,6 +1,8 @@
 {
 	"dieselGenerator": { "category": "block", "sounds":["dieselGenerator"] },
 	"crusher": { "category": "block", "sounds":["crusher"] },
+	"metalPressPiston": { "category": "block", "sounds":["metalPressPiston"] },
+	"metalPressSmash": { "category": "block", "sounds":["metalPressSmash"] },
 	"birthdayParty": { "category": "neutral", "sounds":["birthdayParty"] },
 	"revolverFire": { "category": "neutral", "sounds":["revolverFire"] },
 	"spray": { "category": "player", "sounds":["spray"] },

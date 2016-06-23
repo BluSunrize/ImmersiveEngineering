@@ -1,9 +1,12 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import java.util.Iterator;
+
 import blusunrize.immersiveengineering.api.crafting.IMultiblockRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMultiblockMetal.MultiblockProcess;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockMetalPress;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.entity.Entity;
@@ -41,6 +44,26 @@ public class TileEntityMetalPress extends TileEntityMultiblockMetal<TileEntityMe
 	//	{
 	//	}
 
+	@Override
+	public void update()
+	{
+		super.update();
+		if(isDummy() || isRSDisabled() || worldObj.isRemote)
+			return;
+		for(MultiblockProcess process : processQueue)
+		{
+			float tick = 1/(float)process.maxTicks;
+			float transportTime = 52.5f*tick;
+			float pressTime = 3.75f*tick;
+			float fProcess = process.processTick*tick;
+			if(fProcess>=transportTime && fProcess<transportTime+tick)
+				worldObj.playSoundEffect(getPos().getX()+.5,getPos().getY()+.5,getPos().getZ()+.5, "immersiveengineering:metalPressPiston", .3f,1);
+			if(fProcess>=(transportTime+pressTime) && fProcess<(transportTime+pressTime+tick))
+				worldObj.playSoundEffect(getPos().getX()+.5,getPos().getY()+.5,getPos().getZ()+.5, "immersiveengineering:metalPressSmash", .3f,1);
+			if(fProcess>=(1-transportTime) && fProcess<(1-transportTime+tick))
+				worldObj.playSoundEffect(getPos().getX()+.5,getPos().getY()+.5,getPos().getZ()+.5, "immersiveengineering:metalPressPiston", .3f,1);
+		}
+	}
 
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
