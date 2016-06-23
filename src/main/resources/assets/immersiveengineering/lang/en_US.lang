@@ -251,6 +251,11 @@ item.ImmersiveEngineering.material.gunpartHammer.name=Revolver Hammer
 item.ImmersiveEngineering.material.dustCoke.name=Coke Dust
 item.ImmersiveEngineering.material.dustHOPGraphite.name=HOP Graphite Dust
 item.ImmersiveEngineering.material.ingotHOPGraphite.name=HOP Graphite Ingot
+item.ImmersiveEngineering.material.wireCopper.name=Copper Wire
+item.ImmersiveEngineering.material.wireElectrum.name=Electrum Wire
+item.ImmersiveEngineering.material.wireAluminum.name=Aluminium Wire
+item.ImmersiveEngineering.material.wireSteel.name=Steel Wire
+
 
 item.ImmersiveEngineering.seed.hemp.name=Industrial Hemp Seeds
 
@@ -329,6 +334,7 @@ item.ImmersiveEngineering.mold.plate.name=Metal Press Mold: Plate
 item.ImmersiveEngineering.mold.gear.name=Metal Press Mold: Gear
 item.ImmersiveEngineering.mold.rod.name=Metal Press Mold: Rod
 item.ImmersiveEngineering.mold.bulletCasing.name=Metal Press Mold: Bullet Casing
+item.ImmersiveEngineering.mold.wire.name=Metal Press Mold: Wire
 
 item.ImmersiveEngineering.graphiteElectrode.name=Graphite Electrode
 item.ImmersiveEngineering.shader.name=Shader

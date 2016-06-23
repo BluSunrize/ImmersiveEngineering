@@ -313,7 +313,8 @@ public class IEContent
 				"componentIron","componentSteel",
 				"waterwheelSegment","windmillBlade","windmillBladeAdvanced",
 				"woodenGrip","gunpartBarrel","gunpartDrum","gunpartHammer",
-				"dustCoke","dustHOPGraphite","ingotHOPGraphite");
+				"dustCoke","dustHOPGraphite","ingotHOPGraphite",
+				"wireCopper","wireElectrum","wireAluminum","wireSteel");
 		itemMetal = new ItemIEBase("metal",64,
 				"ingotCopper","ingotAluminum","ingotLead","ingotSilver","ingotNickel","ingotUranium","ingotConstantan","ingotElectrum","ingotSteel",
 				"dustCopper","dustAluminum","dustLead","dustSilver","dustNickel","dustUranium","dustConstantan","dustElectrum","dustSteel","dustIron","dustGold",
@@ -352,7 +353,7 @@ public class IEContent
 		itemDrill = new ItemDrill();
 		itemDrillhead = new ItemDrillhead();
 		itemJerrycan = new ItemJerrycan();
-		itemMold = new ItemIEBase("mold", 1, "plate","gear","rod","bulletCasing").setMetaHidden(1);
+		itemMold = new ItemIEBase("mold", 1, "plate","gear","rod","bulletCasing","wire").setMetaHidden(1);
 		itemBlueprint = new ItemEngineersBlueprint().setRegisterSubModels(false);
 		itemRevolver = new ItemRevolver();
 		itemBullet = new ItemBullet();
@@ -427,6 +428,10 @@ public class IEContent
 		OreDictionary.registerOre("dustCoke", new ItemStack(itemMaterial,1,17));
 		OreDictionary.registerOre("dustHOPGraphite", new ItemStack(itemMaterial,1,18));
 		OreDictionary.registerOre("ingotHOPGraphite", new ItemStack(itemMaterial,1,19));
+		OreDictionary.registerOre("wireCopper", new ItemStack(itemMaterial,1,20));
+		OreDictionary.registerOre("wireElectrum", new ItemStack(itemMaterial,1,21));
+		OreDictionary.registerOre("wireAluminum", new ItemStack(itemMaterial,1,22));
+		OreDictionary.registerOre("wireSteel", new ItemStack(itemMaterial,1,23));
 
 		OreDictionary.registerOre("plankTreatedWood", new ItemStack(blockTreatedWood,1,OreDictionary.WILDCARD_VALUE));
 		OreDictionary.registerOre("slabTreatedWood", new ItemStack(blockTreatedWoodSlabs,1,OreDictionary.WILDCARD_VALUE));
