@@ -24,6 +24,7 @@ public class BlockStoneDevice extends BlockIEMultiblock<BlockTypes_StoneDevices>
 		super("stoneDevice",Material.rock, PropertyEnum.create("type", BlockTypes_StoneDevices.class), ItemBlockIEBase.class, IEProperties.BOOLEANS[0]);
 		setHardness(2.0F);
 		setResistance(20f);
+		lightOpacity = 0;
 	}
 
 	@Override

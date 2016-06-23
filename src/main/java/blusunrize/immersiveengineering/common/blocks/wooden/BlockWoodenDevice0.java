@@ -31,6 +31,7 @@ public class BlockWoodenDevice0 extends BlockIETileProvider<BlockTypes_WoodenDev
 		super("woodenDevice0",Material.wood, PropertyEnum.create("type", BlockTypes_WoodenDevice0.class), ItemBlockIEBase.class, IEProperties.FACING_HORIZONTAL, IEProperties.SIDECONFIG[0], IEProperties.SIDECONFIG[1], IEProperties.MULTIBLOCKSLAVE);
 		this.setHardness(2.0F);
 		this.setResistance(5.0F);
+		setMetaLightOpacity(BlockTypes_WoodenDevice0.WORKBENCH.getMeta(), 0);
 	}
 
 	@Override

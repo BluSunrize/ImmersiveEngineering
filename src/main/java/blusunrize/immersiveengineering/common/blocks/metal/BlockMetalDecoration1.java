@@ -28,6 +28,7 @@ public class BlockMetalDecoration1 extends IELadderBlock<BlockTypes_MetalDecorat
 		this.setHardness(3.0F);
 		this.setResistance(15.0F);
 		this.setBlockLayer(EnumWorldBlockLayer.CUTOUT_MIPPED);
+		lightOpacity = 0;
 	}
 
 	@Override

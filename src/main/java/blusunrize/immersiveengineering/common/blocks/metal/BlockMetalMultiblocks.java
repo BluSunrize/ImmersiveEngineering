@@ -36,6 +36,7 @@ public class BlockMetalMultiblocks extends BlockIEMultiblock<BlockTypes_MetalMul
 		setResistance(15.0F);
 		this.setMetaBlockLayer(BlockTypes_MetalMultiblock.TANK.getMeta(), EnumWorldBlockLayer.CUTOUT);
 		this.setMetaBlockLayer(BlockTypes_MetalMultiblock.DIESEL_GENERATOR.getMeta(), EnumWorldBlockLayer.CUTOUT);
+		lightOpacity = 0;
 	}
 
 	@Override
