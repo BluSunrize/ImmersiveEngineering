@@ -4,6 +4,7 @@
 - re-added the ability for the pump to not create cobblestone and improved the pump (thanks Malte)
 - added the Faraday Suit, an armor to survive tesla coils and allow for lightshows! (code by Malte, art by Mr. Hazard)
 - added sound and nicer animations to the metal press
+- added new textures for the Capacitors! Celebrating IE's one year of public release! :D
 - changed recipes for WireCoil. They now take wire which is made out of plate with shears/wirecutters or with the metal press
 - changed wirecutters to take durability damage when removing wires from connectors
 - added fluorescent tubes. They glow when near a tesla coil! (thanks Malte)
