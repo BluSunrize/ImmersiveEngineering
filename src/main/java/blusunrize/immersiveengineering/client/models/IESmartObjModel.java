@@ -33,7 +33,6 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.IFlexibleBakedModel;
@@ -57,8 +56,7 @@ import net.minecraftforge.common.property.IExtendedBlockState;
 @SuppressWarnings("deprecation")
 public class IESmartObjModel extends OBJBakedModel
 {
-	Map<ComparableItemStack, IBakedModel> cachedBakedItemModels = new ConcurrentHashMap<ComparableItemStack, IBakedModel>();
-	Map<TileEntity, IBakedModel> cachedBakedTileModels = new ConcurrentHashMap<TileEntity, IBakedModel>();
+	static Map<ComparableItemStack, IBakedModel> cachedBakedItemModels = new ConcurrentHashMap<ComparableItemStack, IBakedModel>();
 	IBakedModel baseModel;
 	HashMap<TransformType, Matrix4> transformationMap = new HashMap<TransformType, Matrix4>();
 	Set<BakedQuad> bakedQuads;
@@ -308,7 +306,6 @@ public class IESmartObjModel extends OBJBakedModel
 		this.tempState = state;
 		if(state instanceof IExtendedBlockState)
 		{
-			modelCache.clear();
 			IExtendedBlockState exState = (IExtendedBlockState) state;
 			ExtBlockstateAdapter adapter = new ExtBlockstateAdapter(exState);
 			if(!modelCache.containsKey(adapter))

@@ -26,6 +26,7 @@ public class BlockWoodenDecoration extends IELadderBlock<BlockTypes_WoodenDecora
 		this.setHardness(2.0F);
 		this.setResistance(5.0F);
 		this.setBlockLayer(EnumWorldBlockLayer.CUTOUT);
+		lightOpacity = 0;
 	}
 
 	@Override

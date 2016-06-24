@@ -30,6 +30,7 @@ public class BlockConnector extends BlockIETileProvider<BlockTypes_Connector>
 		super("connector",Material.iron, PropertyEnum.create("type", BlockTypes_Connector.class), ItemBlockIEBase.class, IEProperties.FACING_ALL,IEProperties.BOOLEANS[0],IEProperties.BOOLEANS[1],IEProperties.MULTIBLOCKSLAVE);
 		setHardness(3.0F);
 		setResistance(15.0F);
+		lightOpacity = 0;
 	}
 
 	@Override

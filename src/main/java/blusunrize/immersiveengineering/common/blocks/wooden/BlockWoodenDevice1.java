@@ -29,6 +29,7 @@ public class BlockWoodenDevice1 extends BlockIETileProvider<BlockTypes_WoodenDev
 		super("woodenDevice1",Material.wood, PropertyEnum.create("type", BlockTypes_WoodenDevice1.class), ItemBlockIEBase.class, IEProperties.FACING_ALL, IEProperties.MULTIBLOCKSLAVE, IEProperties.INT_4, OBJProperty.instance);
 		this.setHardness(2.0F);
 		this.setResistance(5.0F);
+		lightOpacity = 0;
 	}
 
 	@Override

@@ -391,6 +391,12 @@ public class Utils
 		return null;
 	}
 
+	public static Fluid getRelatedFluid(World w, BlockPos pos)
+	{
+		Block b = w.getBlockState(pos).getBlock();
+		return FluidRegistry.lookupFluidForBlock(b);
+	}
+	
 	public static boolean placeFluidBlock(World world, BlockPos pos, FluidStack fluid)
 	{
 		if(fluid==null || fluid.getFluid()==null)

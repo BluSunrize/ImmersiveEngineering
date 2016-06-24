@@ -29,6 +29,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.INeighbou
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ITileDrop;
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockPistonBase;
 import net.minecraft.block.ITileEntityProvider;
@@ -52,6 +53,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.model.obj.OBJModel.OBJProperty;
 import net.minecraftforge.client.model.obj.OBJModel.OBJState;
 import net.minecraftforge.common.property.IExtendedBlockState;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 
 public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlockEnum> extends BlockIEBase<E> implements ITileEntityProvider
 {
@@ -70,6 +73,17 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 	public void breakBlock(World world, BlockPos pos, IBlockState state)
 	{
 		TileEntity tile = world.getTileEntity(pos);
+		if (tile.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null))
+		{
+			IItemHandler h = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+			if (h instanceof IEInventoryHandler)
+				for (int i = 0;i<h.getSlots();i++)
+					if (h.getStackInSlot(i)!=null)
+					{
+						spawnAsEntity(world, pos, h.getStackInSlot(i));
+						((IEInventoryHandler) h).setStackInSlot(i, null);
+					}
+		}
 		if(tile instanceof IHasDummyBlocks)
 		{
 			((IHasDummyBlocks)tile).breakDummies(pos, state);
@@ -232,9 +246,8 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 		if(tile instanceof IConfigurableSides && Utils.isHammer(player.getCurrentEquippedItem()) && !world.isRemote)
 		{
 			int iSide = player.isSneaking()?side.getOpposite().ordinal():side.ordinal(); 
-			if(!world.isRemote)
-				((IConfigurableSides)tile).toggleSide(iSide);
-			return true;
+			if(!world.isRemote&&((IConfigurableSides)tile).toggleSide(iSide, player))
+				return true;
 		}
 		if(tile instanceof IDirectionalTile && Utils.isHammer(player.getCurrentEquippedItem()) && ((IDirectionalTile)tile).canHammerRotate(side, hitX, hitY, hitZ, player) && !world.isRemote)
 		{
