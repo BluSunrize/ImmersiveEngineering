@@ -84,6 +84,7 @@ public class BlockIEBase<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 		this.adjustSound();
 		GameRegistry.registerBlock(this, itemBlock, name);
 		IEContent.registeredIEBlocks.add(this);
+		lightOpacity = 255;
 	}
 
 	@Override

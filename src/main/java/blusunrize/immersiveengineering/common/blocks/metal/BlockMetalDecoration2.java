@@ -30,6 +30,7 @@ public class BlockMetalDecoration2 extends BlockIETileProvider<BlockTypes_MetalD
 		super("metalDecoration2", Material.iron, PropertyEnum.create("type", BlockTypes_MetalDecoration2.class), ItemBlockIEBase.class, IEProperties.FACING_ALL,IEProperties.MULTIBLOCKSLAVE,IEProperties.INT_4,OBJProperty.instance);
 		this.setHardness(3.0F);
 		this.setResistance(15.0F);
+		lightOpacity = 0;
 	}
 
 	@Override

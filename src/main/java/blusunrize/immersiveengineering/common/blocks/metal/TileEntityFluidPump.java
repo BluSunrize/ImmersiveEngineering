@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
 import blusunrize.immersiveengineering.api.fluid.IFluidPipe;
 import blusunrize.immersiveengineering.common.Config;
@@ -12,14 +13,17 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IConfigur
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFluidPipe.DirectionalFluidOutput;
+import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyReceiver;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraftforge.fluids.Fluid;
@@ -87,7 +91,7 @@ public class TileEntityFluidPump extends TileEntityIEBase implements ITickable, 
 						}
 					}
 				}
-			if(worldObj.getTotalWorldTime()%40==((getPos().getX()^getPos().getZ())&39))
+			if(worldObj.getTotalWorldTime()%40==((getPos().getX()^getPos().getZ()))%40)
 			{
 				if(closedList.isEmpty())
 					prepareAreaCheck();
@@ -144,17 +148,19 @@ public class TileEntityFluidPump extends TileEntityIEBase implements ITickable, 
 			next = openList.get(0);
 			if(!checked.contains(next))
 			{
-				FluidStack fs = Utils.drainFluidBlock(worldObj, next, false);
-				if(fs!=null && (fs.getFluid()!=FluidRegistry.WATER||!Config.getBoolean("pump_infiniteWater")) && (searchFluid==null || fs.getFluid()==searchFluid))
+				Fluid fluid = Utils.getRelatedFluid(worldObj, next);
+				if(fluid!=null && (fluid!=FluidRegistry.WATER||!Config.getBoolean("pump_infiniteWater")) && (searchFluid==null || fluid==searchFluid))
 				{
 					if(searchFluid==null)
-						searchFluid = fs.getFluid();
-					closedList.add(next);
+						searchFluid = fluid;
+					
+					if (Utils.drainFluidBlock(worldObj, next, false)!=null)
+							closedList.add(next);
 					for(EnumFacing f : EnumFacing.values())
 					{
 						BlockPos pos2 = next.offset(f);
-						FluidStack fs2 = Utils.drainFluidBlock(worldObj, pos2, false);
-						if(!checked.contains(pos2) && !closedList.contains(pos2) && !openList.contains(pos2) && fs2!=null && (fs2.getFluid()!=FluidRegistry.WATER||!Config.getBoolean("pump_infiniteWater")) && (searchFluid==null || fs2.getFluid()==searchFluid))
+						fluid = Utils.getRelatedFluid(worldObj, pos2);
+						if(!checked.contains(pos2) && !closedList.contains(pos2) && !openList.contains(pos2) && fluid!=null && (fluid!=FluidRegistry.WATER||!Config.getBoolean("pump_infiniteWater")) && (searchFluid==null || fluid==searchFluid))
 							openList.add(pos2);
 					}
 				}
@@ -259,7 +265,7 @@ public class TileEntityFluidPump extends TileEntityIEBase implements ITickable, 
 		return (side>=0&&side<6)?SideConfig.values()[this.sideConfig[side]+1]: SideConfig.NONE;
 	}
 	@Override
-	public void toggleSide(int side)
+	public boolean toggleSide(int side, EntityPlayer p)
 	{
 		if(side!=1 && !dummy)
 		{
@@ -269,7 +275,22 @@ public class TileEntityFluidPump extends TileEntityIEBase implements ITickable, 
 			this.markDirty();
 			worldObj.markBlockForUpdate(getPos());
 			worldObj.addBlockEvent(getPos(), this.getBlockType(), 0, 0);
+			return true;
 		}
+		else if (p.isSneaking())
+		{
+			TileEntityFluidPump master = this;
+			if (dummy)
+			{
+				TileEntity tmp = worldObj.getTileEntity(pos.down());
+				if (tmp instanceof TileEntityFluidPump)
+					master = (TileEntityFluidPump) tmp;
+			}
+			master.placeCobble = !master.placeCobble;
+			ChatUtils.sendServerNoSpamMessages(p, new ChatComponentTranslation(Lib.CHAT_INFO+"pump.placeCobble."+master.placeCobble));
+			return true;
+		}
+		return false;
 	}
 
 	@Override
