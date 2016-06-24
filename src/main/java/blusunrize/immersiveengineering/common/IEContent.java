@@ -320,7 +320,7 @@ public class IEContent
 				"dustCopper","dustAluminum","dustLead","dustSilver","dustNickel","dustUranium","dustConstantan","dustElectrum","dustSteel","dustIron","dustGold",
 				"nuggetCopper","nuggetAluminum","nuggetLead","nuggetSilver","nuggetNickel","nuggetUranium","nuggetConstantan","nuggetElectrum","nuggetSteel","nuggetIron",
 				"plateCopper","plateAluminum","plateLead","plateSilver","plateNickel","plateUranium","plateConstantan","plateElectrum","plateSteel","plateIron","plateGold"
-				).setMetaHidden(30,33,34,35,37,40);
+				).setMetaHidden(33,34,35,40);
 		itemTool = new ItemIETool();
 		itemToolbox = new ItemToolbox();
 		itemFluidContainers = new ItemIEBase("fluidContainers", 64, "bottleCreosote","bucketCreosote",  "bottlePlantoil","bucketPlantoil",  "bottleEthanol","bucketEthanol", "bottleBiodiesel","bucketBiodiesel")

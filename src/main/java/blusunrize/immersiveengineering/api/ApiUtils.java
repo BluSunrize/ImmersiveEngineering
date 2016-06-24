@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.api.energy.wires.IICProxy;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
@@ -330,19 +329,31 @@ public class ApiUtils
 			throw new RuntimeException("Recipe Inputs must always be ItemStack, Item, Block or String (OreDictionary name), "+input+" is invalid");
 	}
 
-	public static IngredientStack createIngredientStack(Object input)
+	public static IngredientStack createIngredientStack(Object input, boolean preferWildcard)
 	{
 		if(input instanceof ItemStack)
 			return new IngredientStack((ItemStack)input);
 		else if(input instanceof Item)
+		{
+			if(preferWildcard)
+				return new IngredientStack(new ItemStack((Item)input,1,OreDictionary.WILDCARD_VALUE));
 			return new IngredientStack(new ItemStack((Item)input));
+		}
 		else if(input instanceof Block)
+		{
+			if(preferWildcard)
+				return new IngredientStack(new ItemStack((Block)input,1,OreDictionary.WILDCARD_VALUE));
 			return new IngredientStack(new ItemStack((Block)input));
+		}
 		else if(input instanceof List && ((List)input).isEmpty() && ((List)input).get(0) instanceof ItemStack)
 			return new IngredientStack(((List<ItemStack>)input));
 		else if(input instanceof String)
 			return new IngredientStack((String)input);
 		throw new RuntimeException("Recipe Ingredients must always be ItemStack, Item, Block, List<ItemStack> or String (OreDictionary name); "+input+" is invalid");
+	}
+	public static IngredientStack createIngredientStack(Object input)
+	{
+		return createIngredientStack(input, false);
 	}
 
 	public static ItemStack getItemStackFromObject(Object o)

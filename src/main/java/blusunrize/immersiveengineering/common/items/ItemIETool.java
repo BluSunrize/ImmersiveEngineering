@@ -39,10 +39,12 @@ import net.minecraft.world.World;
 public class ItemIETool extends ItemIEBase implements ITool
 {
 	static int hammerMaxDamage;
+	static int cutterMaxDamage;
 	public ItemIETool()
 	{
 		super("tool", 1, "hammer","wirecutter","voltmeter","manual");
 		hammerMaxDamage = Config.getInt("hammerDurabiliy");
+		cutterMaxDamage = Config.getInt("cutterDurabiliy");
 	}
 
 	@Override
@@ -54,12 +56,18 @@ public class ItemIETool extends ItemIEBase implements ITool
 			if(link!=null&&link.length>3)
 				list.add(StatCollector.translateToLocalFormatted(Lib.DESC_INFO+"attachedToDim", link[1],link[2],link[3],link[0]));
 		}
+		if(adv && stack.getItemDamage()<2)
+		{
+			int nbtDamage = ItemNBTHelper.getInt(stack, stack.getItemDamage()==0?"hammerDmg":"cutterDmg");
+			int maxDamage = stack.getItemDamage()==0?hammerMaxDamage:cutterMaxDamage;
+			list.add("Durability: "+(maxDamage-nbtDamage)+" / "+maxDamage);
+		}
 	}
 
 	@Override
 	public boolean hasContainerItem(ItemStack stack)
 	{
-		return stack.getItemDamage()==0;
+		return stack.getItemDamage()<2;
 	}
 	@Override
 	public ItemStack getContainerItem(ItemStack stack)
@@ -71,6 +79,16 @@ public class ItemIETool extends ItemIEBase implements ITool
 			{
 				ItemStack container = stack.copy();
 				ItemNBTHelper.setInt(container, "hammerDmg", nbtDamage);
+				return container;
+			}
+		}
+		else if(stack.getItemDamage()==1)
+		{
+			int nbtDamage = ItemNBTHelper.getInt(stack, "cutterDmg")+1;
+			if(nbtDamage<cutterMaxDamage)
+			{
+				ItemStack container = stack.copy();
+				ItemNBTHelper.setInt(container, "cutterDmg", nbtDamage);
 				return container;
 			}
 		}
@@ -261,12 +279,20 @@ public class ItemIETool extends ItemIEBase implements ITool
 	@Override
 	public boolean showDurabilityBar(ItemStack stack)
 	{
-		return stack.getItemDamage()==0&&ItemNBTHelper.getInt(stack, "hammerDmg")>0;
+		if(stack.getItemDamage()==0)
+			return (ItemNBTHelper.getInt(stack, "hammerDmg")>0);
+		else if(stack.getItemDamage()==1)
+			return (ItemNBTHelper.getInt(stack, "cutterDmg")>0);
+		return false;
 	}
 	@Override
 	public double getDurabilityForDisplay(ItemStack stack)
 	{
-		return ItemNBTHelper.getInt(stack, "hammerDmg") / (double)hammerMaxDamage;
+		if(stack.getItemDamage()==0)
+			return ItemNBTHelper.getInt(stack, "hammerDmg") / (double)hammerMaxDamage;
+		else if(stack.getItemDamage()==1)
+			return ItemNBTHelper.getInt(stack, "cutterDmg") / (double)cutterMaxDamage;
+		return 0;
 	}
 	@Override
 	public boolean isDamaged(ItemStack stack)

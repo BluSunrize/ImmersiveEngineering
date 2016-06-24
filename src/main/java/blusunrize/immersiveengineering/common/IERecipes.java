@@ -34,6 +34,7 @@ import blusunrize.immersiveengineering.common.crafting.RecipeRevolver;
 import blusunrize.immersiveengineering.common.crafting.RecipeShaderBags;
 import blusunrize.immersiveengineering.common.crafting.RecipeShapedArrayList;
 import blusunrize.immersiveengineering.common.crafting.RecipeShapedOreNBTCopy;
+import blusunrize.immersiveengineering.common.crafting.RecipeToolDamage;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.Block;
@@ -57,6 +58,8 @@ public class IERecipes
 	public static void initCraftingRecipes()
 	{
 		RecipeSorter.register(ImmersiveEngineering.MODID+":shapedArrayList", RecipeShapedArrayList.class, RecipeSorter.Category.SHAPED, "after:forge:shapedore");
+		RecipeSorter.register(ImmersiveEngineering.MODID+":shapedNBTCopy", RecipeShapedOreNBTCopy.class, RecipeSorter.Category.SHAPED, "after:forge:shapedore");
+		RecipeSorter.register(ImmersiveEngineering.MODID+":shapedArrayList", RecipeToolDamage.class, RecipeSorter.Category.SHAPELESS, "after:forge:shapedore");
 
 		ItemStack copperCoil = new ItemStack(IEContent.blockMetalDecoration0,1,BlockTypes_MetalDecoration0.COIL_LV.getMeta());
 		ItemStack electrumCoil = new ItemStack(IEContent.blockMetalDecoration0,1,BlockTypes_MetalDecoration0.COIL_MV.getMeta());
@@ -82,6 +85,16 @@ public class IERecipes
 		addOredictRecipe(new ItemStack(IEContent.itemMaterial,1,14), "III", 'I',"ingotSteel");
 		addOredictRecipe(new ItemStack(IEContent.itemMaterial,1,15), " I ","ICI"," I ", 'I',"ingotSteel",'C',componentIron);
 		addOredictRecipe(new ItemStack(IEContent.itemMaterial,1,16), "I  ","II "," II", 'I',"ingotSteel");
+
+		addShapelessOredictRecipe(new ItemStack(IEContent.itemMaterial,1,20), "plateCopper",new ItemStack(IEContent.itemTool,1,1));
+		GameRegistry.addRecipe(new RecipeToolDamage(new ItemStack(IEContent.itemMaterial,1,20),1, "plateCopper",Items.shears));
+		addShapelessOredictRecipe(new ItemStack(IEContent.itemMaterial,1,21), "plateElectrum",new ItemStack(IEContent.itemTool,1,1));
+		GameRegistry.addRecipe(new RecipeToolDamage(new ItemStack(IEContent.itemMaterial,1,21),1, "plateElectrum",Items.shears));
+		addShapelessOredictRecipe(new ItemStack(IEContent.itemMaterial,1,22), "plateAluminum",new ItemStack(IEContent.itemTool,1,1));
+		GameRegistry.addRecipe(new RecipeToolDamage(new ItemStack(IEContent.itemMaterial,1,22),1, "plateAluminum",Items.shears));
+		addShapelessOredictRecipe(new ItemStack(IEContent.itemMaterial,1,23), "plateSteel",new ItemStack(IEContent.itemTool,1,1));
+		GameRegistry.addRecipe(new RecipeToolDamage(new ItemStack(IEContent.itemMaterial,1,23),1, "plateSteel",Items.shears));
+		
 		//		addOredictRecipe(new ItemStack(IEContent.itemMaterial,4,14), "I","I", 'I',"ingotIron");
 		//		addOredrrictRecipe(new ItemStack(IEContent.itemMaterial,4,15), "I","I", 'I',"ingotSteel");
 

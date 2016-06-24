@@ -78,7 +78,7 @@ public class IngredientStack
 		}
 		return false;
 	}
-	
+
 	public ItemStack getExampleStack()
 	{
 		ItemStack ret = stack;
@@ -116,7 +116,7 @@ public class IngredientStack
 		}
 		return true;
 	}
-	
+
 	public boolean matchesItemStackIgnoringSize(ItemStack input)
 	{
 		if(this.oreName!=null)
