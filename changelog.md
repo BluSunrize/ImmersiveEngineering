@@ -1,7 +1,11 @@
 #####Version 0.8-28
 - re-added the Floodlight back in
 - re-added the transformers that can attach to posts (thanks Malte)
+- re-added the ability for the pump to not create cobblestone and improved the pump (thanks Malte)
 - added the Faraday Suit, an armor to survive tesla coils and allow for lightshows! (code by Malte, art by Mr. Hazard)
+- added sound and nicer animations to the metal press
+- changed recipes for WireCoil. They now take wire which is made out of plate with shears/wirecutters or with the metal press
+- changed wirecutters to take durability damage when removing wires from connectors
 - added fluorescent tubes. They glow when near a tesla coil! (thanks Malte)
 - added a "Bad Eyesight" config to make the manual render in darker, bold font. Can mess up formatting
 - fixed a crash and dupe bug with the toolbox (thanks Malte)
@@ -11,6 +15,7 @@
 - fixed a crash when pumping fluids out of sheetmetal tanks (thanks Malte)
 - fixed rotation bug on the bucketwheel (thanks Malte)
 - fixed a bug where houses try to spawn the nonexistent villager
+- fixed most IE blocks letting through light when they shouldn't (thanks Malte)
 
 #####Version 0.8-27 - BUILT
 - re-added documentation on biodiesel (thanks Malte)

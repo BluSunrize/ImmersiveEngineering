@@ -139,6 +139,15 @@ public class ItemIETool extends ItemIEBase implements ITool
 				IImmersiveConnectable nodeHere = (IImmersiveConnectable)tileEntity;
 				ImmersiveNetHandler.INSTANCE.clearAllConnectionsFor(Utils.toCC(nodeHere),world, new TargetingInfo(side,hitX,hitY,hitZ));
 				IESaveData.setDirty(world.provider.getDimensionId());
+
+				int nbtDamage = ItemNBTHelper.getInt(stack, "cutterDmg")+1;
+				if(nbtDamage<cutterMaxDamage)
+					ItemNBTHelper.setInt(stack, "cutterDmg", nbtDamage);
+				else
+				{
+					player.renderBrokenItemStack(stack);
+					player.setCurrentItemOrArmor(0, null);
+				}
 				return true;
 			}
 			else if(stack.getItemDamage()==2)
