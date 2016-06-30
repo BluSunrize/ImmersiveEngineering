@@ -585,6 +585,7 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 		@Override
 		protected void processFinish(TileEntityMultiblockMetal multiblock)
 		{
+			super.processFinish(multiblock);
 			ItemStack[] inv = multiblock.getInventory();
 			if(inv!=null && this.inputSlots!=null)
 			{
@@ -615,7 +616,6 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 							}
 					}
 			}
-			super.processFinish(multiblock);
 		}
 		@Override
 		protected void writeExtraDataToNBT(NBTTagCompound nbt)
