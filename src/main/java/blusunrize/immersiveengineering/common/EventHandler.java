@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.common;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -8,6 +9,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.DimensionBlockPos;
@@ -36,6 +38,7 @@ import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.ManeuverGearHelper;
 import blusunrize.immersiveengineering.common.util.ManeuverGearHelper.HookMode;
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.compat.computercraft.TileEntityRequest;
 import blusunrize.immersiveengineering.common.util.network.MessageMinecartShaderSync;
 import blusunrize.immersiveengineering.common.util.network.MessageMineralListSync;
 import net.minecraft.block.material.Material;
@@ -53,6 +56,7 @@ import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.MovingObjectPosition;
@@ -88,6 +92,8 @@ public class EventHandler
 	public static ArrayList<ISpawnInterdiction> interdictionTiles = new ArrayList<ISpawnInterdiction>();
 	public static boolean validateConnsNextTick = false;
 	public static HashSet<IEExplosion> currentExplosions = new HashSet<IEExplosion>();
+	public static Set<TileEntityRequest> ccRequestedTEs = Collections.newSetFromMap(new ConcurrentHashMap<TileEntityRequest, Boolean>());
+	public static Set<TileEntityRequest> cachedRequestResults = Collections.newSetFromMap(new ConcurrentHashMap<TileEntityRequest, Boolean>());
 	@SubscribeEvent
 	public void onLoad(WorldEvent.Load event)
 	{
@@ -228,6 +234,34 @@ public class EventHandler
 					ImmersiveNetHandler.INSTANCE.removeConnection(event.world, e.getKey());
 				}
 			ImmersiveNetHandler.INSTANCE.getTransferedRates(event.world.provider.getDimensionId()).clear();
+			// CC tile entity requests
+			Iterator<TileEntityRequest> it;
+			it = cachedRequestResults.iterator();
+			while (it.hasNext())
+			{
+				TileEntityRequest req = it.next();
+				if (!ccRequestedTEs.contains(req))
+				{
+					it.remove();
+					continue;
+				}
+				req.te = req.w.getTileEntity(req.pos);
+			}
+			it = ccRequestedTEs.iterator();
+			int timeout = 100;
+			while (it.hasNext() && timeout > 0)
+			{
+				TileEntityRequest req = it.next();
+				synchronized (req)
+				{
+					req.te = req.w.getTileEntity(req.pos);
+					req.checked = true;
+					req.notifyAll();
+				}
+				it.remove();
+				timeout--;
+				cachedRequestResults.add(req);
+			}
 		}
 		if(event.phase==TickEvent.Phase.START)
 		{
@@ -554,5 +588,43 @@ public class EventHandler
 				}
 			}
 		}
+	}
+	public static TileEntity requestTE(World w, BlockPos pos)
+	{
+		TileEntityRequest req = new TileEntityRequest(w, pos);
+		TileEntity te = null;
+		Iterator<TileEntityRequest> it = cachedRequestResults.iterator();
+		while (it.hasNext())
+		{
+			TileEntityRequest curr = it.next();
+			if (req.equals(curr))
+				te = curr.te;
+		}
+		if (te!=null)
+			return te;
+		synchronized (req)
+		{
+			ccRequestedTEs.add(req);
+			int timeout = 100;
+			while (!req.checked&&timeout>0)
+			{
+				// i don't really know why this is necessary, but the requests sometimes time out without this
+				if (!ccRequestedTEs.contains(req))
+					ccRequestedTEs.add(req);
+				try
+				{
+					req.wait(50);
+				}
+				catch (InterruptedException e)
+				{}
+				timeout--;
+			}
+			if (!req.checked)
+			{
+				IELogger.info("Timeout while requesting a TileEntity");
+				return w.getTileEntity(pos);
+			}
+		}
+		return req.te;
 	}
 }

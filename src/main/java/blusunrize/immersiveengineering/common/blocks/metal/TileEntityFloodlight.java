@@ -73,7 +73,12 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 		if(worldObj.isRemote)
 			return;
 		if (turnCooldown>0)
+		{
 			turnCooldown--;
+			if (turnCooldown==0)
+				notifyAll();
+		}
+		
 		boolean b = active;
 		boolean enabled;
 		if (shouldUpdate)

@@ -7,6 +7,7 @@ import java.util.Set;
 
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.util.IELogger;
+import blusunrize.immersiveengineering.common.util.compat.computercraft.ComputercraftHelper;
 import blusunrize.immersiveengineering.common.util.compat.opencomputers.OCHelper;
 import blusunrize.immersiveengineering.common.util.compat.waila.WailaHelper;
 import net.minecraftforge.fml.common.Loader;
@@ -51,6 +52,7 @@ public abstract class IECompatModule
 //		moduleClasses.put("Railcraft", RailcraftHelper.class);
 //		moduleClasses.put("Avaritia", AvaritiaHelper.class);
 		moduleClasses.put("OpenComputers", OCHelper.class);
+		moduleClasses.put("ComputerCraft", ComputercraftHelper.class);
 	}
 
 	public static void doModulesPreInit()

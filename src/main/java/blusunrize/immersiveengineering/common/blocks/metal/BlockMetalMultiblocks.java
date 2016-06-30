@@ -323,6 +323,8 @@ public class BlockMetalMultiblocks extends BlockIEMultiblock<BlockTypes_MetalMul
 		if(te instanceof TileEntityMultiblockPart)
 		{
 			TileEntityMultiblockPart tile = (TileEntityMultiblockPart)te;
+			if (tile instanceof TileEntityMultiblockMetal&&((TileEntityMultiblockMetal)tile).isRedstonePos())
+				return true;
 			if(te instanceof TileEntityMetalPress)
 			{
 				return tile.pos<3 || (tile.pos==7&&side==EnumFacing.UP);

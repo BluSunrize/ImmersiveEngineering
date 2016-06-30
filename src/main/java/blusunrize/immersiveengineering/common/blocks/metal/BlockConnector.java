@@ -94,6 +94,9 @@ public class BlockConnector extends BlockIETileProvider<BlockTypes_Connector>
 	@Override
 	public boolean isSideSolid(IBlockAccess world, BlockPos pos, EnumFacing side)
 	{
+		IBlockState s = world.getBlockState(pos);
+		if (s.getValue(property)==BlockTypes_Connector.ENERGY_METER)
+			return true;
 		return false;
 	}
 

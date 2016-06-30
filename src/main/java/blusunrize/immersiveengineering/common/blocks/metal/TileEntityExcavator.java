@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvanced
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedSelectionBounds;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockExcavator;
 import blusunrize.immersiveengineering.common.util.FakePlayerUtil;
+import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -97,7 +98,6 @@ public class TileEntityExcavator extends TileEntityMultiblockMetal<TileEntityExc
 
 				if(!isRSDisabled())
 				{
-					boolean update = false;
 					ExcavatorHandler.MineralMix mineral = ExcavatorHandler.getRandomMineral(worldObj, wheelPos.getX()>>4, wheelPos.getZ()>>4);
 
 					int consumed = Config.getInt("excavator_consumption");
@@ -106,7 +106,6 @@ public class TileEntityExcavator extends TileEntityMultiblockMetal<TileEntityExc
 					{
 						energyStorage.extractEnergy(consumed, false);
 						active = true;
-						update = true;
 						
 						if(target>=0 && target<8)
 						{

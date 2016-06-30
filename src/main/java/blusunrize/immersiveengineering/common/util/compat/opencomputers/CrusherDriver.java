@@ -74,7 +74,6 @@ public class CrusherDriver extends DriverSidedTileEntity
 		{
 			return new Object[]{getTileEntity().shouldRenderAsActive()};
 		}
-		//TODO document changes in the manual
 		@Callback(doc = "function(n:int):table -- get the n'th stack in the input queue with additional information as described in the manual")
 		public Object[] getInputStack(Context context, Arguments args)
 		{

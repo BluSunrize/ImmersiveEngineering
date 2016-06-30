@@ -106,7 +106,8 @@ public class RefineryDriver extends DriverSidedTileEntity
 		@Callback(doc = "function():table -- get current recipe")
 		public Object[] getRecipe(Context context, Arguments args)
 		{
-			RefineryRecipe recipe = getTileEntity().processQueue.get(0).recipe;
+			TileEntityRefinery te = getTileEntity();
+			RefineryRecipe recipe = RefineryRecipe.findRecipe(te.tanks[0].getFluid(), te.tanks[1].getFluid());
 			if(recipe==null)
 				throw new IllegalArgumentException("The recipe of the refinery is invalid");
 			HashMap<String, FluidStack> ret = new HashMap<>(3);

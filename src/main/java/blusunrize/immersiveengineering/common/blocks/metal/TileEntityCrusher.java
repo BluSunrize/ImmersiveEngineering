@@ -67,11 +67,6 @@ public class TileEntityCrusher extends TileEntityMultiblockMetal<TileEntityCrush
 			for(int i=0;i<invList.tagCount();i++)
 				inputs.add( ItemStack.loadItemStackFromNBT(invList.getCompoundTagAt(i)));
 		}
-		else
-		{
-			controllingComputers = nbt.getBoolean("computerControlled")?1:0;
-			computerOn = nbt.getBoolean("computerOn");
-		}
 	}
 	@Override
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
@@ -83,11 +78,6 @@ public class TileEntityCrusher extends TileEntityMultiblockMetal<TileEntityCrush
 			for(ItemStack s : inputs)
 				invList.appendTag(s.writeToNBT(new NBTTagCompound()));
 			nbt.setTag("inputs", invList);
-		}
-		else
-		{
-			nbt.setBoolean("computerControlled", controllingComputers>0);
-			nbt.setBoolean("computerOn", computerOn);
 		}
 	}
 

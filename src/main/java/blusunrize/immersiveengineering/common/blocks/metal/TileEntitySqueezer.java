@@ -73,7 +73,7 @@ public class TileEntitySqueezer extends TileEntityMultiblockMetal<TileEntitySque
 		{
 			if(this.processQueue.isEmpty() && animation_piston<.6875)
 				animation_piston = Math.min(.6875f, animation_piston+.03125f);
-			else if(!this.processQueue.isEmpty() && energyStorage.getEnergyStored()>0)
+			else if(shouldRenderAsActive())
 			{
 				if(animation_down)
 					animation_piston = Math.max(0, animation_piston-.03125f);

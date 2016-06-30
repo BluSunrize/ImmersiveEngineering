@@ -635,7 +635,7 @@ public class Utils
 				if(filledContainer!=null)
 				{
 					FluidStack fs = FluidContainerRegistry.getFluidForFilledItem(filledContainer);
-					if(fs.amount<=tank.getFluidAmount() && (containerOut==null || OreDictionary.itemMatches(containerOut, filledContainer, true)))
+					if(fs.amount<=tank.getFluidAmount() && filledContainer.stackSize+(containerOut!=null?containerOut.stackSize:0)<=filledContainer.getMaxStackSize() && (containerOut==null || OreDictionary.itemMatches(containerOut, filledContainer, true)))
 					{
 						tank.drain(fs.amount, true);
 						return filledContainer;
@@ -651,7 +651,7 @@ public class Utils
 				{
 					ItemStack filledContainer = copyStackWithAmount(containerIn,1);
 					int filled = iContainer.fill(filledContainer, tank.getFluid(), true);
-					if(containerOut==null || (OreDictionary.itemMatches(containerOut, filledContainer, true) && ItemStack.areItemStackTagsEqual(filledContainer, containerOut) ))
+					if((containerOut==null || (OreDictionary.itemMatches(containerOut, filledContainer, true) && ItemStack.areItemStackTagsEqual(filledContainer, containerOut) && containerOut.stackSize<containerOut.getMaxStackSize())))
 					{
 						tank.drain(filled, true);
 						return filledContainer;
@@ -668,7 +668,7 @@ public class Utils
 					{
 						ItemStack filledContainer = copyStackWithAmount(containerIn,1);
 						int filled = iContainer.fill(filledContainer, tank.getFluid(), true);
-						if(containerOut==null || (OreDictionary.itemMatches(containerOut, filledContainer, true) && ItemStack.areItemStackTagsEqual(filledContainer, containerOut) && containerOut.stackSize+1<containerOut.getMaxStackSize() ))
+						if(containerOut==null || (OreDictionary.itemMatches(containerOut, filledContainer, true) && ItemStack.areItemStackTagsEqual(filledContainer, containerOut) && containerOut.stackSize<containerOut.getMaxStackSize() ))
 						{
 							tank.drain(filled, true);
 							return filledContainer;
