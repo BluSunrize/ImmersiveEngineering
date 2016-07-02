@@ -16,7 +16,7 @@
 }
 
 {
-"uuid":["e8b46b33-3e17-4b64-8d07-9af116df7d3b","58d506e2-7ee7-4774-8b22-c7a57eda488b","df0f4696-8a55-4777-b49d-6b38d6e1b501","b72d87ce-fa98-4a5a-b5a0-5db51a018d09"],
+"uuid":["e8b46b33-3e17-4b64-8d07-9af116df7d3b","58d506e2-7ee7-4774-8b22-c7a57eda488b","df0f4696-8a55-4777-b49d-6b38d6e1b501","79eb1269-7b59-46d1-8864-282882044e93"],
 "tag":"sns","flavour":"","baseUpgrades":{"speed":0.3},"renderAdditions":["dev_scope"]
 }
 
