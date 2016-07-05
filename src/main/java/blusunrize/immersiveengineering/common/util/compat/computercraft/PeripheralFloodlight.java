@@ -31,7 +31,7 @@ public class PeripheralFloodlight extends IEPeripheral
 	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments)
 			throws LuaException, InterruptedException
 	{
-		TileEntityFloodlight te = (TileEntityFloodlight) getTileEntity(TileEntityFloodlight.class);
+		TileEntityFloodlight te = getTileEntity(TileEntityFloodlight.class);
 		if(te==null)
 			throw new LuaException("The floodlight was removed");
 		switch (method)

@@ -36,7 +36,7 @@ public class PeripheralCrusher extends IEPeripheral
 	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments)
 			throws LuaException, InterruptedException
 	{
-		TileEntityCrusher te = (TileEntityCrusher) getTileEntity(TileEntityCrusher.class);
+		TileEntityCrusher te = getTileEntity(TileEntityCrusher.class);
 		if (te==null)
 			throw new LuaException("The crusher was removed");
 		switch (method)

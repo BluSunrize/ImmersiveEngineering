@@ -32,7 +32,7 @@ public static final String[] cmds = {"isActive", "setEnabled", "getEnergyStored"
 	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments)
 			throws LuaException, InterruptedException
 	{
-		TileEntityExcavator te = (TileEntityExcavator) getTileEntity(TileEntityExcavator.class);
+		TileEntityExcavator te = getTileEntity(TileEntityExcavator.class);
 		if (te==null)
 			throw new LuaException("The excavator was removed");
 		switch (method)

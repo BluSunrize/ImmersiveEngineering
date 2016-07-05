@@ -33,7 +33,7 @@ public class PeripheralDieselGenerator extends IEPeripheral
 	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments)
 			throws LuaException, InterruptedException
 	{
-		TileEntityDieselGenerator te = (TileEntityDieselGenerator) getTileEntity(TileEntityDieselGenerator.class);
+		TileEntityDieselGenerator te = getTileEntity(TileEntityDieselGenerator.class);
 		if (te==null)
 			throw new LuaException("The diesel generator was removed");
 		switch (method)

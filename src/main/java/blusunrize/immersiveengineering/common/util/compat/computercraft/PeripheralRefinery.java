@@ -38,7 +38,7 @@ public class PeripheralRefinery extends IEPeripheral
 			throws LuaException, InterruptedException
 	{
 
-		TileEntityRefinery te = (TileEntityRefinery) getTileEntity(TileEntityRefinery.class);
+		TileEntityRefinery te = getTileEntity(TileEntityRefinery.class);
 		if (te==null)
 			throw new LuaException("The refinery was removed");
 		switch (method)

@@ -35,7 +35,7 @@ public class PeripheralSqueezer extends IEPeripheral
 	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments)
 			throws LuaException, InterruptedException
 	{
-		TileEntitySqueezer te = (TileEntitySqueezer) getTileEntity(TileEntitySqueezer.class);
+		TileEntitySqueezer te = getTileEntity(TileEntitySqueezer.class);
 		if (te==null)
 			throw new LuaException("The squeezer was removed");
 		switch (method)

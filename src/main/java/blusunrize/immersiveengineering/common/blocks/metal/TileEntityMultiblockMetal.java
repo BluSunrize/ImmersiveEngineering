@@ -382,7 +382,7 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 
 	public boolean shouldRenderAsActive()
 	{
-		return (controllingComputers<=0||computerOn)&&getEnergyStored(null)>0 && !isRSDisabled() && !processQueue.isEmpty();
+		return getEnergyStored(null)>0 && !isRSDisabled() && !processQueue.isEmpty();
 	}
 
 	public static abstract class MultiblockProcess<R extends IMultiblockRecipe>

@@ -12,7 +12,6 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvanced
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedSelectionBounds;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockExcavator;
 import blusunrize.immersiveengineering.common.util.FakePlayerUtil;
-import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;

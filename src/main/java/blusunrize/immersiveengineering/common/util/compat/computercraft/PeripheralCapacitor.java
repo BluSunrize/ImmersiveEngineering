@@ -35,7 +35,7 @@ public class PeripheralCapacitor extends IEPeripheral
 	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments)
 			throws LuaException, InterruptedException
 	{
-		TileEntityCapacitorLV te = (TileEntityCapacitorLV) getTileEntity(TileEntityCapacitorLV.class);
+		TileEntityCapacitorLV te = getTileEntity(TileEntityCapacitorLV.class);
 		if (te==null)
 			throw new LuaException("The capacitor was removed");
 		if (method==0) //energy stored

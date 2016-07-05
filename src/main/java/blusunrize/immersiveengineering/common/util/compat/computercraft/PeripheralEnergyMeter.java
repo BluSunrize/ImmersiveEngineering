@@ -33,7 +33,7 @@ public class PeripheralEnergyMeter extends IEPeripheral {
 	{
 		if (method==0)
 		{
-			TileEntityEnergyMeter te = (TileEntityEnergyMeter) getTileEntity(TileEntityEnergyMeter.class);
+			TileEntityEnergyMeter te = getTileEntity(TileEntityEnergyMeter.class);
 			if (te!=null)
 				return new Object[]{te.getAveragePower()};
 			else

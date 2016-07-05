@@ -35,7 +35,7 @@ public class PeripheralFermenter extends IEPeripheral
 	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments)
 			throws LuaException, InterruptedException
 	{
-		TileEntityFermenter te = (TileEntityFermenter) getTileEntity(TileEntityFermenter.class);
+		TileEntityFermenter te = getTileEntity(TileEntityFermenter.class);
 		if (te==null)
 			throw new LuaException("The squeezer was removed");
 		switch (method)

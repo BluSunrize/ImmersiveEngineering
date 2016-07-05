@@ -38,7 +38,7 @@ public class PeripheralAssembler extends IEPeripheral
 	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments)
 			throws LuaException, InterruptedException
 	{
-		TileEntityAssembler te = (TileEntityAssembler) getTileEntity(TileEntityAssembler.class);
+		TileEntityAssembler te = getTileEntity(TileEntityAssembler.class);
 		if (te==null)
 			throw new LuaException("The assembler was removed");
 		switch (method)
@@ -115,7 +115,7 @@ public class PeripheralAssembler extends IEPeripheral
 	@Override
 	public void attach(IComputerAccess computer)
 	{
-		TileEntityAssembler te = (TileEntityAssembler) getTileEntity(TileEntityAssembler.class);
+		TileEntityAssembler te = getTileEntity(TileEntityAssembler.class);
 		if (te==null)
 			return;
 		te.controllingComputers++;
@@ -127,7 +127,7 @@ public class PeripheralAssembler extends IEPeripheral
 	@Override
 	public void detach(IComputerAccess computer)
 	{
-		TileEntityAssembler te = (TileEntityAssembler) getTileEntity(TileEntityAssembler.class);
+		TileEntityAssembler te = getTileEntity(TileEntityAssembler.class);
 		if (te!=null)
 			te.controllingComputers--;
 	}

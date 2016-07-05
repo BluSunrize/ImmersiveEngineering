@@ -17,12 +17,12 @@ public abstract class IEPeripheral implements IPeripheral
 		this.w = w;
 		pos = p;
 	}
-	protected TileEntity getTileEntity(Class<? extends TileEntity> type)
+	protected <T extends TileEntity> T getTileEntity(Class<T> type)
 	{
 		boolean usePipeline = FMLCommonHandler.instance().getEffectiveSide()!=Side.SERVER;
 		TileEntity te = usePipeline?EventHandler.requestTE(w, pos):w.getTileEntity(pos);
 		if (te!=null&&type.isAssignableFrom(te.getClass()))
-			return te;
+			return (T)te;
 		return null;
 	}
 	@Override

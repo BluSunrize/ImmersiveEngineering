@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFloodlight;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityRefinery;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySampleDrill;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySqueezer;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTeslaCoil;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.peripheral.IPeripheralProvider;
 import net.minecraft.tileentity.TileEntity;
@@ -111,6 +112,11 @@ public class IEPeripheralProvider implements IPeripheralProvider
 					return new PeripheralAssembler(world, pos.add(-assembler.offset[0], -assembler.offset[1], -assembler.offset[2]));
 				else
 					return null;
+			}
+			if (te instanceof TileEntityTeslaCoil)
+			{
+				BlockPos pos2 = (((TileEntityTeslaCoil) te).isDummy()?pos.down():pos);
+				return new PeripheralTeslaCoil(world, pos2);
 			}
 			if (te instanceof TileEntityCapacitorLV)
 			{

@@ -41,7 +41,7 @@ public class PeripheralArcFurnace extends IEPeripheral
 	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments)
 			throws LuaException, InterruptedException
 	{
-		TileEntityArcFurnace te = (TileEntityArcFurnace) getTileEntity(TileEntityArcFurnace.class);
+		TileEntityArcFurnace te = getTileEntity(TileEntityArcFurnace.class);
 		if (te==null)
 			throw new LuaException("The arc furnace was removed");
 		switch (method)
