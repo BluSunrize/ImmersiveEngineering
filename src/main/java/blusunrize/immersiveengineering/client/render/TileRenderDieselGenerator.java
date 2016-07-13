@@ -23,7 +23,7 @@ public class TileRenderDieselGenerator extends TileEntitySpecialRenderer<TileEnt
 	@Override
 	public void renderTileEntityAt(TileEntityDieselGenerator te, double x, double y, double z, float partialTicks, int destroyStage)
 	{
-		if(te.isDummy()||!te.getWorld().isBlockLoaded(te.getPos(), false))
+		if(!te.formed||te.isDummy()||!te.getWorld().isBlockLoaded(te.getPos(), false))
 			return;
 		
 		final BlockRendererDispatcher blockRenderer = Minecraft.getMinecraft().getBlockRendererDispatcher();
@@ -67,8 +67,7 @@ public class TileRenderDieselGenerator extends TileEntitySpecialRenderer<TileEnt
 		worldRenderer.setTranslation(0.0D, 0.0D, 0.0D);
 		tessellator.draw();
 		
-		RenderHelper.enableStandardItemLighting();
-		
 		GlStateManager.popMatrix();
+		RenderHelper.enableStandardItemLighting();
 	}
 }
