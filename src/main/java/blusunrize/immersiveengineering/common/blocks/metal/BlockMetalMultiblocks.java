@@ -6,6 +6,7 @@ import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
 import blusunrize.immersiveengineering.common.blocks.TileEntityMultiblockPart;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
@@ -564,4 +565,9 @@ public class BlockMetalMultiblocks extends BlockIEMultiblock<BlockTypes_MetalMul
 	//		return super.getComparatorInputOverride(world, x, y,
 	//				z, side);
 	//	}
+	@Override
+	public boolean allowHammerHarvest(IBlockState state)
+	{
+		return true;
+	}
 }

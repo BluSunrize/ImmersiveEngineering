@@ -207,4 +207,9 @@ public class BlockMetalDevice0 extends BlockIETileProvider<BlockTypes_MetalDevic
 		}
 		return null;
 	}
+	@Override
+	public boolean allowHammerHarvest(IBlockState state)
+	{
+		return true;
+	}
 }

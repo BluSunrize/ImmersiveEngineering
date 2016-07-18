@@ -323,4 +323,10 @@ public class BlockWoodenDevice1 extends BlockIETileProvider<BlockTypes_WoodenDev
 		boolean slave = state.getValue(IEProperties.MULTIBLOCKSLAVE);
 		return slave&&type==BlockTypes_WoodenDevice1.POST;
 	}
+
+	@Override
+	public boolean allowHammerHarvest(IBlockState state)
+	{
+		return true;
+	}
 }

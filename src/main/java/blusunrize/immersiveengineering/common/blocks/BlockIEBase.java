@@ -9,6 +9,7 @@ import java.util.Set;
 import com.google.common.collect.Sets;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IIEMetaBlock;
 import net.minecraft.block.Block;
@@ -381,6 +382,13 @@ public class BlockIEBase<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 		fullBlock = isOpaque;
 		return this;
 	}
+	@Override
+	public boolean isToolEffective(String type, IBlockState state)
+    {
+		if (allowHammerHarvest(state)&&type.equals(Lib.TOOL_HAMMER))
+			return true;
+		return super.isToolEffective(type, state);
+    }
 	public static interface IBlockEnum extends IStringSerializable
 	{
 		public String getName();

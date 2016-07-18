@@ -363,7 +363,14 @@ public class BlockWoodenDevice0 extends BlockIETileProvider<BlockTypes_WoodenDev
 			return new TileEntitySorter();
 		case REINFORCED_CRATE:
 			return new TileEntityWoodenCrate();
+		default:
+			return null;
 		}
-		return null;
+	}
+
+	@Override
+	public boolean allowHammerHarvest(IBlockState state)
+	{
+		return true;
 	}
 }

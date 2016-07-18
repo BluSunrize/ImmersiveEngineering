@@ -177,4 +177,10 @@ public class BlockMetalDecoration1 extends IELadderBlock<BlockTypes_MetalDecorat
 	public boolean isLadder(IBlockAccess world, BlockPos pos, EntityLivingBase entity) {
 		return world.getBlockState(pos).getValue(property).getMeta()%4!=0;
 	}
+
+	@Override
+	public boolean allowHammerHarvest(IBlockState state)
+	{
+		return true;
+	}
 }
