@@ -25,6 +25,7 @@ import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumFacing.Axis;
 import net.minecraftforge.client.model.ISmartBlockModel;
 import net.minecraftforge.client.model.obj.OBJModel.OBJProperty;
 import net.minecraftforge.client.model.obj.OBJModel.OBJState;
@@ -45,7 +46,7 @@ public class TileRenderBucketWheel extends TileEntitySpecialRenderer<TileEntityB
 		if(state instanceof IExtendedBlockState)
 		{
 			ArrayList<String> list = Lists.newArrayList("bucketWheel");
-			HashMap<String,String> texMap = new HashMap();
+			HashMap<String,String> texMap = new HashMap<>();
 			for(int i=0; i<tile.digStacks.length; i++)
 				if(tile.digStacks[i]!=null)
 				{
@@ -74,8 +75,8 @@ public class TileRenderBucketWheel extends TileEntitySpecialRenderer<TileEntityB
 		GlStateManager.pushMatrix();
 		GlStateManager.translate(x+.5, y+.5, z+.5);
 		
-		EnumFacing facing = state.getValue(IEProperties.FACING_HORIZONTAL);
-		GlStateManager.rotate(facing==EnumFacing.NORTH?180: facing==EnumFacing.EAST?90: facing==EnumFacing.WEST?-90: 0, 0, 1, 0);
+		EnumFacing facing = tile.facing;
+		GlStateManager.rotate(facing.getAxis()==Axis.X?90:-90, 0, 1, 0);
 
 		if(tile.mirrored)
 		{
@@ -84,7 +85,7 @@ public class TileRenderBucketWheel extends TileEntitySpecialRenderer<TileEntityB
 		}
 		
 		float rot =  tile.rotation+(float)(tile.active?Config.getDouble("excavator_speed")*f:0);
-		GlStateManager.rotate(rot, 0,0,1);
+		GlStateManager.rotate(rot, facing==EnumFacing.NORTH?1:(facing==EnumFacing.SOUTH?-1:0),0,facing==EnumFacing.EAST?1:(facing==EnumFacing.WEST?-1:0));
 
 		worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
 		worldRenderer.setTranslation( -.5-blockPos.getX(), -.5- blockPos.getY(),  -.5-blockPos.getZ());
