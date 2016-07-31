@@ -1,24 +1,21 @@
 package blusunrize.immersiveengineering.common.items;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
-
 import blusunrize.immersiveengineering.api.Lib;
-import com.google.common.base.Optional;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Multimap;
-
 import blusunrize.immersiveengineering.api.energy.DieselHandler;
 import blusunrize.immersiveengineering.api.shader.IShaderEquipableItem;
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
 import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.gui.IESlot;
+import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IAdvancedFluidItem;
 import blusunrize.immersiveengineering.common.util.IEAchievements;
+import blusunrize.immersiveengineering.common.util.IEItemFluidHandler;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
+import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Multimap;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -39,17 +36,23 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.play.server.SPacketBlockChange;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
-import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidContainerItem;
+import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ItemDrill extends ItemUpgradeableTool implements IShaderEquipableItem, IFluidContainerItem, IOBJModelCallback<ItemStack>, ITool
+import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
+
+public class ItemDrill extends ItemUpgradeableTool implements IShaderEquipableItem, IAdvancedFluidItem, IOBJModelCallback<ItemStack>, ITool
 {
 	public static Material[] validMaterials = {Material.ANVIL,Material.CLAY,Material.GLASS,Material.GRASS,Material.GROUND,Material.ICE,Material.IRON,Material.PACKED_ICE,Material.PISTON,Material.ROCK,Material.SAND, Material.SNOW};
 
@@ -83,11 +86,11 @@ public class ItemDrill extends ItemUpgradeableTool implements IShaderEquipableIt
 	public void recalculateUpgrades(ItemStack stack)
 	{
 		super.recalculateUpgrades(stack);
-		FluidStack fs = this.getFluid(stack);
-		if(fs!=null && fs.amount>this.getCapacity(stack))
+		FluidStack fs = getFluid(stack);
+		if(fs!=null && fs.amount>this.getCapacity(stack,2000))
 		{
-			fs.amount = this.getCapacity(stack);
-			ItemNBTHelper.setFluidStack(stack, "fuel",fs);
+			fs.amount = this.getCapacity(stack,2000);
+			ItemNBTHelper.setFluidStack(stack, "Fluid",fs);
 		}
 	}
 	@Override
@@ -95,10 +98,10 @@ public class ItemDrill extends ItemUpgradeableTool implements IShaderEquipableIt
 	{
 		super.clearUpgrades(stack);
 		FluidStack fs = getFluid(stack);
-		if(fs!=null && fs.amount > getCapacity(stack))
+		if(fs!=null && fs.amount > getCapacity(stack,2000))
 		{
-			fs.amount = getCapacity(stack);
-			ItemNBTHelper.setFluidStack(stack, "fuel", fs);
+			fs.amount = getCapacity(stack,2000);
+			ItemNBTHelper.setFluidStack(stack, "Fluid", fs);
 		}
 	}
 	@Override
@@ -130,7 +133,7 @@ public class ItemDrill extends ItemUpgradeableTool implements IShaderEquipableIt
 
 		FluidStack fs = getFluid(stack);
 		if(fs!=null)
-			list.add(I18n.format(Lib.DESC_FLAVOUR+"drill.fuel")+" "+fs.amount+"/"+getCapacity(stack)+"mB");
+			list.add(I18n.format(Lib.DESC_FLAVOUR+"drill.fuel")+" "+fs.amount+"/"+getCapacity(stack,2000)+"mB");
 		else
 			list.add(I18n.format(Lib.DESC_FLAVOUR+"drill.empty"));
 		if(getHead(stack)==null)
@@ -293,7 +296,7 @@ public class ItemDrill extends ItemUpgradeableTool implements IShaderEquipableIt
 	}
 	public boolean isDrillBroken(ItemStack stack)
 	{
-		return getHeadDamage(stack)>=getMaxHeadDamage(stack) || this.getFluid(stack)==null || this.getFluid(stack).amount<1;
+		return getHeadDamage(stack)>=getMaxHeadDamage(stack) || getFluid(stack)==null || getFluid(stack).amount<1;
 	}
 
 	//	@Override
@@ -326,7 +329,8 @@ public class ItemDrill extends ItemUpgradeableTool implements IShaderEquipableIt
 				}
 				((IDrillHead)head.getItem()).damageHead(head, dmg);
 				this.setHead(stack, head);
-				this.drain(stack, 1, true);
+				IFluidHandler handler = FluidUtil.getFluidHandler(stack);
+				handler.drain(1, true);
 			}
 		}
 
@@ -472,54 +476,19 @@ public class ItemDrill extends ItemUpgradeableTool implements IShaderEquipableIt
 		return false;
 	}
 
-	/*FLUID STUFF*/
 	@Override
-	public FluidStack getFluid(ItemStack container)
+	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt)
 	{
-		return ItemNBTHelper.getFluidStack(container, "fuel");
+		return new IEItemFluidHandler(stack, 2000);
 	}
 	@Override
-	public int getCapacity(ItemStack container)
+	public int getCapacity(ItemStack container, int baseCapacity)
 	{
-		return 2000+getUpgrades(container).getInteger("capacity");
+		return baseCapacity+getUpgrades(container).getInteger("capacity");
 	}
 	@Override
-	public int fill(ItemStack container, FluidStack resource, boolean doFill)
+	public boolean allowFluid(ItemStack container, FluidStack fluid)
 	{
-		if(resource!=null && DieselHandler.isValidDrillFuel(resource.getFluid()))
-		{
-			FluidStack fs = getFluid(container);
-			if(fs!=null && !fs.isFluidEqual(resource))
-				return 0;
-			int space = fs==null?getCapacity(container): getCapacity(container)-fs.amount;
-			int accepted = Math.min(space, resource.amount);
-			if(fs==null)
-				fs = new FluidStack(resource, accepted);
-			else
-				fs.amount += accepted;
-			if(doFill)
-				ItemNBTHelper.setFluidStack(container, "fuel", fs);
-			return accepted;
-		}
-		return 0;
+		return fluid!=null && DieselHandler.isValidDrillFuel(fluid.getFluid());
 	}
-	@Override
-	public FluidStack drain(ItemStack container, int maxDrain, boolean doDrain)
-	{
-		FluidStack fs = getFluid(container);
-		if(fs == null)
-			return null;
-		int drained = Math.min(maxDrain, fs.amount);
-		FluidStack stack = new FluidStack(fs, drained);
-		if(doDrain)
-		{
-			fs.amount -= drained;
-			if(fs.amount <= 0)
-				ItemNBTHelper.remove(container, "fuel");
-			else
-				ItemNBTHelper.setFluidStack(container, "fuel", fs);
-		}
-		return stack;
-	}
-	/*===================================== FLUIDS END =================================*/
 }

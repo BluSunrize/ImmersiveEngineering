@@ -7,6 +7,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
 
 public class ItemNBTHelper
 {
@@ -151,22 +152,17 @@ public class ItemNBTHelper
 		if(val!=null && val.getFluid()!=null)
 		{
 			NBTTagCompound tag = getTagCompound(stack, key);
-			tag.setString("fluid", val.getFluid().getName());
-			tag.setInteger("amount", val.amount);
-			setTagCompound(stack, key, tag);
+			setTagCompound(stack, FluidHandlerItemStack.FLUID_NBT_KEY, val.writeToNBT(new NBTTagCompound()));
 		}
 		else
-			remove(stack, "fluid");
+			remove(stack, FluidHandlerItemStack.FLUID_NBT_KEY);
 	}
 	public static FluidStack getFluidStack(ItemStack stack, String key)
 	{
 		if(hasTag(stack))
 		{
 			NBTTagCompound tag = getTagCompound(stack, key);
-			String name = tag.getString("fluid");
-			int amount = tag.getInteger("amount");
-			if(FluidRegistry.getFluid(name)!=null)
-				return new FluidStack(FluidRegistry.getFluid(name), amount);
+			return FluidStack.loadFluidStackFromNBT(tag.getCompoundTag(FluidHandlerItemStack.FLUID_NBT_KEY));
 		}
 		return null;
 	}

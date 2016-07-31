@@ -10,6 +10,8 @@ import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.entities.EntityChemthrowerShot;
 import blusunrize.immersiveengineering.common.gui.IESlot;
+import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IAdvancedFluidItem;
+import blusunrize.immersiveengineering.common.util.IEItemFluidHandler;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.client.resources.I18n;
@@ -21,14 +23,17 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidContainerItem;
+import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
 
-public class ItemChemthrower extends ItemUpgradeableTool implements IShaderEquipableItem, IFluidContainerItem, ITool
+public class ItemChemthrower extends ItemUpgradeableTool implements IAdvancedFluidItem, IShaderEquipableItem, ITool
 {
 	public ItemChemthrower()
 	{
@@ -46,7 +51,7 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IShaderEquip
 		if(fs!=null)
 		{
 			TextFormatting rarity = fs.getFluid().getRarity()==EnumRarity.COMMON? TextFormatting.GRAY:fs.getFluid().getRarity().rarityColor;
-			list.add(rarity+fs.getLocalizedName()+ TextFormatting.GRAY+": "+fs.amount+"/"+getCapacity(stack)+"mB");
+			list.add(rarity+fs.getLocalizedName()+ TextFormatting.GRAY+": "+fs.amount+"/"+getCapacity(stack,2000)+"mB");
 		}
 		else
 			list.add(I18n.format(Lib.DESC_FLAVOUR+"drill.empty"));
@@ -131,12 +136,11 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IShaderEquip
 		if(fs!=null)
 		{
 			int duration = getMaxItemUseDuration(stack)-timeLeft;
-			int consumed = Config.getInt("chemthrower_consumption");
-			fs.amount -= consumed*duration;
+			fs.amount -=  Config.getInt("chemthrower_consumption")*duration;
 			if(fs.amount <= 0)
-				ItemNBTHelper.remove(stack, "fluid");
+				ItemNBTHelper.remove(stack, "Fluid");
 			else
-				ItemNBTHelper.setFluidStack(stack, "fluid", fs);
+				ItemNBTHelper.setFluidStack(stack, "Fluid", fs);
 		}
 	}
 
@@ -151,61 +155,22 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IShaderEquip
 	{
 		super.clearUpgrades(stack);
 		FluidStack fs = getFluid(stack);
-		if(fs!=null && fs.amount > getCapacity(stack))
+		if(fs!=null && fs.amount > getCapacity(stack,2000))
 		{
-			fs.amount = getCapacity(stack);
-			ItemNBTHelper.setFluidStack(stack, "fluid", fs);
+			fs.amount = getCapacity(stack,2000);
+			ItemNBTHelper.setFluidStack(stack, "Fluid", fs);
 		}
 	}
 
 	@Override
-	public FluidStack getFluid(ItemStack container)
+	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt)
 	{
-		return ItemNBTHelper.getFluidStack(container, "fluid");
+		return new IEItemFluidHandler(stack, 2000);
 	}
 	@Override
-	public int getCapacity(ItemStack container)
+	public int getCapacity(ItemStack stack, int baseCapacity)
 	{
-		return 2000+getUpgrades(container).getInteger("capacity");
-	}
-	@Override
-	public int fill(ItemStack container, FluidStack resource, boolean doFill)
-	{
-		if(resource!=null)
-		{
-			FluidStack fs = getFluid(container);
-			if(fs==null || fs.amount<0 || fs.isFluidEqual(resource))
-			{
-				int space = fs==null?getCapacity(container): getCapacity(container)-fs.amount;
-				int accepted = Math.min(space, resource.amount);
-				if(fs==null)
-					fs = new FluidStack(resource, accepted);
-				else
-					fs.amount += accepted;
-				if(doFill)
-					ItemNBTHelper.setFluidStack(container, "fluid", fs);
-				return accepted;
-			}
-		}
-		return 0;
-	}
-	@Override
-	public FluidStack drain(ItemStack container, int maxDrain, boolean doDrain)
-	{
-		FluidStack fs = getFluid(container);
-		if(fs == null)
-			return null;
-		int drained = Math.min(maxDrain, fs.amount);
-		FluidStack stack = new FluidStack(fs, drained);
-		if(doDrain)
-		{
-			fs.amount -= drained;
-			if(fs.amount <= 0)
-				ItemNBTHelper.remove(container, "fluid");
-			else
-				ItemNBTHelper.setFluidStack(container, "fluid", fs);
-		}
-		return stack;
+		return baseCapacity+getUpgrades(stack).getInteger("capacity");
 	}
 
 	@Override

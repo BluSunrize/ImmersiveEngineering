@@ -1,25 +1,5 @@
 package blusunrize.immersiveengineering.client;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import blusunrize.immersiveengineering.client.models.IESmartObjModel;
-import net.minecraft.client.model.ModelBiped.ArmPose;
-import net.minecraft.client.renderer.*;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.EnumHandSide;
-import net.minecraft.util.math.*;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidUtil;
-import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.GL11;
-
-import com.google.common.collect.ImmutableList;
-
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
@@ -30,18 +10,14 @@ import blusunrize.immersiveengineering.api.tool.IDrillHead;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler.IZoomTool;
 import blusunrize.immersiveengineering.client.gui.GuiBlastFurnace;
+import blusunrize.immersiveengineering.client.models.IESmartObjModel;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedSelectionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
 import blusunrize.immersiveengineering.common.entities.EntityGrapplingHook;
 import blusunrize.immersiveengineering.common.gui.ContainerRevolver;
-import blusunrize.immersiveengineering.common.items.ItemChemthrower;
-import blusunrize.immersiveengineering.common.items.ItemDrill;
-import blusunrize.immersiveengineering.common.items.ItemEarmuffs;
-import blusunrize.immersiveengineering.common.items.ItemFluorescentTube;
-import blusunrize.immersiveengineering.common.items.ItemRevolver;
-import blusunrize.immersiveengineering.common.items.ItemSkyhook;
+import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.ManeuverGearHelper;
 import blusunrize.immersiveengineering.common.util.ManeuverGearHelper.ManeuverGearOperator;
@@ -51,6 +27,7 @@ import blusunrize.immersiveengineering.common.util.network.MessageGrapplingHook;
 import blusunrize.immersiveengineering.common.util.network.MessageRequestBlockUpdate;
 import blusunrize.immersiveengineering.common.util.sound.IEMuffledSound;
 import blusunrize.immersiveengineering.common.util.sound.IEMuffledTickableSound;
+import com.google.common.collect.ImmutableList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ITickableSound;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -58,32 +35,36 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBiped;
+import net.minecraft.client.model.ModelBiped.ArmPose;
 import net.minecraft.client.model.ModelVillager;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
-import net.minecraft.client.renderer.RenderItem;
+import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.client.resources.IResourceManagerReloadListener;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.client.GuiIngameForge;
-import net.minecraftforge.client.event.DrawBlockHighlightEvent;
-import net.minecraftforge.client.event.FOVUpdateEvent;
-import net.minecraftforge.client.event.MouseEvent;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.client.event.RenderLivingEvent;
+import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidContainerItem;
+import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -91,6 +72,13 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.oredict.OreDictionary;
+import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.GL11;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class ClientEventHandler implements IResourceManagerReloadListener
 {
@@ -215,6 +203,9 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 		{
 			for(int oid : OreDictionary.getOreIDs(event.getItemStack()))
 				event.getToolTip().add(TextFormatting.GRAY + OreDictionary.getOreName(oid));
+//			FluidStack fs = FluidUtil.getFluidContained(event.getItemStack());
+//			if(fs!=null && fs.getFluid()!=null)
+//				event.getToolTip().add("Fluid: "+ FluidRegistry.getFluidName(fs));
 		}
 	}
 
@@ -493,43 +484,56 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 						ClientUtils.drawTexturedRect(-24,-68, w,h, uMin,uMax,vMin,vMax);
 
 						GL11.glTranslated(-23,-37,0);
-						FluidStack fuel = ((IFluidContainerItem)equipped.getItem()).getFluid(equipped);
-						int amount = fuel!=null?fuel.amount:0;
-						if(!drill && player.isHandActive())
-							amount -= player.getItemInUseCount()*Config.getInt("chemthrower_consumption");
-						float cap = (float)((IFluidContainerItem)equipped.getItem()).getCapacity(equipped);
-						float angle = 83-(166* amount/cap);
-						GL11.glRotatef(angle, 0, 0, 1);
-						ClientUtils.drawTexturedRect(6,-2, 24,4, 91/256f,123/256f, 80/256f,87/256f);
-						GL11.glRotatef(-angle, 0, 0, 1);
-						//					for(int i=0; i<=8; i++)
-						//					{
-						//						float angle = 83-(166/8f)*i;
-						//						GL11.glRotatef(angle, 0, 0, 1);
-						//						ClientUtils.drawTexturedRect(6,-2, 24,4, 91/256f,123/256f, 80/96f,87/96f);
-						//						GL11.glRotatef(-angle, 0, 0, 1);
-						//					}
-						GL11.glTranslated(23,37,0);
-						if(drill)
+						IFluidHandler handler = FluidUtil.getFluidHandler(equipped);
+						int capacity = -1;
+						if(handler!=null)
 						{
-							ClientUtils.drawTexturedRect(-54,-73, 66,72, 108/256f,174/256f, 4/256f,76/256f);
-							RenderItem ir = ClientUtils.mc().getRenderItem();
-							ItemStack head = ((ItemDrill)equipped.getItem()).getHead(equipped);
-							if(head!=null)
+							IFluidTankProperties[] props = handler.getTankProperties();
+							if(props!=null&&props.length>0)
+								capacity = props[0].getCapacity();
+						}
+						if(capacity>-1)
+						{
+							FluidStack fuel = FluidUtil.getFluidContained(equipped);
+							int amount = fuel != null ? fuel.amount : 0;
+							if(!drill && player.isHandActive())
 							{
-								ir.renderItemIntoGUI(head, -51,-45);
-								ir.renderItemOverlayIntoGUI(head.getItem().getFontRenderer(head), head, -51,-45, null);
-								RenderHelper.disableStandardItemLighting();
+								int use = player.getItemInUseMaxCount();
+								amount -= use * Config.getInt("chemthrower_consumption");
 							}
-						}
-						else
-						{
-							ClientUtils.drawTexturedRect(-41,-73, 53,72, 8/256f,61/256f, 4/256f,76/256f);
-							boolean ignite = ItemNBTHelper.getBoolean(equipped, "ignite");
-							ClientUtils.drawTexturedRect(-32,-43, 12,12, 66/256f,78/256f, (ignite?21:9)/256f,(ignite?33:21)/256f);
+							float cap = (float) capacity;
+							float angle = 83 - (166 * amount / cap);
+							GL11.glRotatef(angle, 0, 0, 1);
+							ClientUtils.drawTexturedRect(6, -2, 24, 4, 91 / 256f, 123 / 256f, 80 / 256f, 87 / 256f);
+							GL11.glRotatef(-angle, 0, 0, 1);
+							//					for(int i=0; i<=8; i++)
+							//					{
+							//						float angle = 83-(166/8f)*i;
+							//						GL11.glRotatef(angle, 0, 0, 1);
+							//						ClientUtils.drawTexturedRect(6,-2, 24,4, 91/256f,123/256f, 80/96f,87/96f);
+							//						GL11.glRotatef(-angle, 0, 0, 1);
+							//					}
+							GL11.glTranslated(23, 37, 0);
+							if(drill)
+							{
+								ClientUtils.drawTexturedRect(-54, -73, 66, 72, 108 / 256f, 174 / 256f, 4 / 256f, 76 / 256f);
+								RenderItem ir = ClientUtils.mc().getRenderItem();
+								ItemStack head = ((ItemDrill) equipped.getItem()).getHead(equipped);
+								if(head != null)
+								{
+									ir.renderItemIntoGUI(head, -51, -45);
+									ir.renderItemOverlayIntoGUI(head.getItem().getFontRenderer(head), head, -51, -45, null);
+									RenderHelper.disableStandardItemLighting();
+								}
+							} else
+							{
+								ClientUtils.drawTexturedRect(-41, -73, 53, 72, 8 / 256f, 61 / 256f, 4 / 256f, 76 / 256f);
+								boolean ignite = ItemNBTHelper.getBoolean(equipped, "ignite");
+								ClientUtils.drawTexturedRect(-32, -43, 12, 12, 66 / 256f, 78 / 256f, (ignite ? 21 : 9) / 256f, (ignite ? 33 : 21) / 256f);
 
+							}
+							GL11.glPopMatrix();
 						}
-						GL11.glPopMatrix();
 					}
 					//				else if(equipped.getItem() instanceof ItemRailgun)
 					//				{
