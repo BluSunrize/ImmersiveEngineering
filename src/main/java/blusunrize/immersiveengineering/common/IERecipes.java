@@ -138,8 +138,6 @@ public class IERecipes
 		GameRegistry.addRecipe(new RecipeShaderBags());
 		RecipeSorter.register(ImmersiveEngineering.MODID+":shaderbags", RecipeShaderBags.class, Category.SHAPELESS, "after:forge:shapelessore");
 
-		addOredictRecipe(new ItemStack(IEContent.itemManeuverGear), " C ","GTG","WLW", 'C',new ItemStack(Items.LEATHER_CHESTPLATE),'G',componentSteel,'T',new ItemStack(IEContent.itemToolUpgrades,1,0),'W',new ItemStack(IEContent.itemWireCoil,1,4),'L',new ItemStack(Items.LEATHER_LEGGINGS));
-
 		addOredictRecipe(new ItemStack(IEContent.itemEarmuffs), " S ","S S","W W", 'S',"stickIron",'W',new ItemStack(Blocks.WOOL,1,OreDictionary.WILDCARD_VALUE));
 		GameRegistry.addRecipe(new RecipeEarmuffs());
 		RecipeSorter.register(ImmersiveEngineering.MODID+":earmuffs", RecipeEarmuffs.class, Category.SHAPELESS, "after:forge:shapelessore");

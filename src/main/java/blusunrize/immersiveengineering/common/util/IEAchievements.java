@@ -1,8 +1,5 @@
 package blusunrize.immersiveengineering.common.util;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.IEContent;
@@ -15,7 +12,6 @@ import blusunrize.immersiveengineering.common.blocks.wooden.BlockTypes_WoodenDev
 import blusunrize.immersiveengineering.common.items.ItemDrill;
 import blusunrize.immersiveengineering.common.items.ItemRevolver;
 import net.minecraft.block.Block;
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.init.Enchantments;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -25,6 +21,9 @@ import net.minecraft.stats.StatList;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.AchievementPage;
 import net.minecraftforge.fml.common.Loader;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class IEAchievements
 {
@@ -124,8 +123,7 @@ public class IEAchievements
 		craftChemthrower = new AchievementIE("craftChemthrower", 3, -5, IEContent.itemChemthrower, craftWorkbench).setNormalCrafting();
 
 		//craftRailgun = new AchievementIE("craftRailgun", 1, -8, IEContent.itemRailgun, craftWorkbench).setNormalCrafting();
-		craftManeuverGear = new AchievementIE("craftManeuverGear", 3, -7, IEContent.itemManeuverGear, craftWorkbench).setNormalCrafting();
-		
+
 		secret_birthdayParty = new AchievementIE("secret_birthdayParty", -4,-1, new ItemStack(IEContent.itemFakeIcons,1,0), null).setSpecial();
 		secret_luckOfTheDraw = new AchievementIE("secret_luckOfTheDraw", -4, 1, new ItemStack(IEContent.itemFakeIcons,1,1), null).setSpecial();
 

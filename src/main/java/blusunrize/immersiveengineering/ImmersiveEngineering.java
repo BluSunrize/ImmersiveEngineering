@@ -1,66 +1,43 @@
 package blusunrize.immersiveengineering;
 
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.util.Arrays;
-
-import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
-import blusunrize.immersiveengineering.common.util.IESounds;
-import blusunrize.immersiveengineering.common.world.VillageEngineersHouse;
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonStreamParser;
-
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
-import blusunrize.immersiveengineering.common.CommonProxy;
-import blusunrize.immersiveengineering.common.Config;
-import blusunrize.immersiveengineering.common.EventHandler;
-import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.IESaveData;
+import blusunrize.immersiveengineering.common.*;
 import blusunrize.immersiveengineering.common.crafting.ArcRecyclingThreadHandler;
 import blusunrize.immersiveengineering.common.items.ItemRevolver;
 import blusunrize.immersiveengineering.common.util.IELogger;
+import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.commands.CommandHandler;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
-import blusunrize.immersiveengineering.common.util.network.MessageGrapplingHook;
-import blusunrize.immersiveengineering.common.util.network.MessageMinecartShaderSync;
-import blusunrize.immersiveengineering.common.util.network.MessageMineralListSync;
-import blusunrize.immersiveengineering.common.util.network.MessageNoSpamChatComponents;
-import blusunrize.immersiveengineering.common.util.network.MessageRequestBlockUpdate;
-import blusunrize.immersiveengineering.common.util.network.MessageSkyhookSync;
-import blusunrize.immersiveengineering.common.util.network.MessageSpeedloaderSync;
-import blusunrize.immersiveengineering.common.util.network.MessageTileSync;
+import blusunrize.immersiveengineering.common.util.network.*;
 import blusunrize.immersiveengineering.common.world.IEWorldGen;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonStreamParser;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraft.world.storage.loot.LootTableList;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
-import net.minecraftforge.fml.common.event.FMLModIdMappingEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLServerStartedEvent;
-import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.common.registry.IForgeRegistryEntry;
 import net.minecraftforge.fml.relauncher.Side;
-import slimeknights.tconstruct.library.Util;
+
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.util.Arrays;
 
 @Mod(modid=ImmersiveEngineering.MODID,name=ImmersiveEngineering.MODNAME,version = ImmersiveEngineering.VERSION, dependencies="after:Railcraft;after:tconstruct;before:JEI;after:ThermalFoundation;after:Avaritia")
 public class ImmersiveEngineering
@@ -133,7 +110,6 @@ public class ImmersiveEngineering
 		packetHandler.registerMessage(MessageMinecartShaderSync.HandlerClient.class, MessageMinecartShaderSync.class, messageId++, Side.CLIENT);
 		packetHandler.registerMessage(MessageRequestBlockUpdate.Handler.class, MessageRequestBlockUpdate.class, messageId++, Side.SERVER);
 		packetHandler.registerMessage(MessageNoSpamChatComponents.Handler.class, MessageNoSpamChatComponents.class, messageId++, Side.CLIENT);
-		packetHandler.registerMessage(MessageGrapplingHook.Handler.class, MessageGrapplingHook.class, messageId++, Side.SERVER);
 	}
 	@Mod.EventHandler
 	public void postInit(FMLPostInitializationEvent event)

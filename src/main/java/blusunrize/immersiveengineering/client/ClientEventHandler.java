@@ -15,15 +15,11 @@ import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedSelectionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
-import blusunrize.immersiveengineering.common.entities.EntityGrapplingHook;
 import blusunrize.immersiveengineering.common.gui.ContainerRevolver;
 import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import blusunrize.immersiveengineering.common.util.ManeuverGearHelper;
-import blusunrize.immersiveengineering.common.util.ManeuverGearHelper.ManeuverGearOperator;
 import blusunrize.immersiveengineering.common.util.SkylineHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
-import blusunrize.immersiveengineering.common.util.network.MessageGrapplingHook;
 import blusunrize.immersiveengineering.common.util.network.MessageRequestBlockUpdate;
 import blusunrize.immersiveengineering.common.util.sound.IEMuffledSound;
 import blusunrize.immersiveengineering.common.util.sound.IEMuffledTickableSound;
@@ -32,7 +28,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ITickableSound;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelBiped.ArmPose;
@@ -72,7 +67,6 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.oredict.OreDictionary;
-import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
@@ -148,41 +142,6 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 //			}
 //
 //		}
-
-		if(event.side.isClient() && event.phase == Phase.END)
-		{
-			int max = 5;
-			if(ClientProxy.keybind_3DGear.isKeyDown() && ManeuverGearHelper.isPlayerWearing3DMG(event.player))
-			{
-				if(ClientProxy.timestamp_3DGear>-1 && ClientProxy.timestamp_3DGear<max)
-				{
-					ImmersiveEngineering.packetHandler.sendToServer(new MessageGrapplingHook(event.player,ManeuverGearOperator.RETRACT_ALL));
-					ClientProxy.timestamp_3DGear = 0;
-				}
-				else
-					ClientProxy.timestamp_3DGear = max;
-			}
-			else if(ClientProxy.timestamp_3DGear>-1)
-			{
-				ClientProxy.timestamp_3DGear--;
-			}
-
-			for(int button=0; button<2; button++)
-				if(!Mouse.isButtonDown(button) && ClientProxy.timestamp_3DGear_Mouse[button]>-1)
-				{
-					ClientProxy.timestamp_3DGear_Mouse[button]--;
-					if(ClientProxy.timestamp_3DGear_Mouse[button]<0)
-					{
-						EntityGrapplingHook hook = ManeuverGearHelper.getHooks(ClientUtils.mc().thePlayer)[button];
-						if(hook==null || hook.isDead)
-							ImmersiveEngineering.packetHandler.sendToServer(new MessageGrapplingHook(ClientUtils.mc().thePlayer,button==0?ManeuverGearOperator.PRESS_0:ManeuverGearOperator.PRESS_1));
-					}
-				}
-			if(ClientProxy.keybind_3DGear.isKeyDown() && ManeuverGearHelper.isPlayerWearing3DMG(ClientUtils.mc().thePlayer) && ClientUtils.mc().thePlayer.movementInput.jump)
-			{
-				ManeuverGearHelper.doGasJump(ClientUtils.mc().thePlayer);
-			}
-		}
 	}
 
 	@SubscribeEvent
@@ -629,27 +588,6 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 				}
 			}
 		}
-		if(ClientProxy.keybind_3DGear.isKeyDown() && ManeuverGearHelper.isPlayerWearing3DMG(ClientUtils.mc().thePlayer) && event.getType() == RenderGameOverlayEvent.ElementType.FOOD)
-		{
-			float gas = ItemNBTHelper.getFloat(ManeuverGearHelper.getPlayer3DMG(ClientUtils.mc().thePlayer),"gas");
-			int width = event.getResolution().getScaledWidth();
-			int height = event.getResolution().getScaledHeight();
-			int left = width / 2 + 91;
-			int top = height - GuiIngameForge.right_height;
-			ClientUtils.bindTexture("immersiveengineering:textures/models/maneuverGear.png");
-			GlStateManager.enableBlend();
-			ClientUtils.drawTexturedRect(left-81,top, 81,9, 47/128f,128/128f,0/64f,9/64f);
-			int gasBar = (int)Math.floor(gas*45);
-			if(gasBar>0)
-				ClientUtils.drawTexturedRect(left-2-gasBar,top+2, gasBar,5, (128-gasBar)/128f,128/128f,9/64f,14/64f);
-			EntityGrapplingHook[] hooks = ManeuverGearHelper.getHooks(ClientUtils.mc().thePlayer);
-			for(int i=0; i<2; i++)
-				if(hooks[i]==null || hooks[i].isDead)
-					ClientUtils.drawTexturedRect(left-81+i*11,top, 10,9, (47+i*11)/128f,(57+i*11)/128f,9/64f,18/64f);
-
-			GuiIngameForge.right_height += 10;
-			ClientUtils.bindTexture(Gui.ICONS.getResourceDomain()+":"+Gui.ICONS.getResourcePath());
-		}
 	}
 
 	@SubscribeEvent()
@@ -728,32 +666,6 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 					}
 				}
 			}
-		}
-		if(ClientProxy.keybind_3DGear.isKeyDown() && ManeuverGearHelper.isPlayerWearing3DMG(ClientUtils.mc().thePlayer))
-		{
-			if(event.getButton()==0||event.getButton()==1)
-			{
-				int button = event.getButton();
-				int max = 3;
-				if(event.isButtonstate())
-				{
-					if(ClientProxy.timestamp_3DGear_Mouse[button]>-1 && ClientProxy.timestamp_3DGear_Mouse[button]<max)
-					{
-						ImmersiveEngineering.packetHandler.sendToServer(new MessageGrapplingHook(ClientUtils.mc().thePlayer,button==0?ManeuverGearOperator.RETRACT_0:ManeuverGearOperator.RETRACT_1));
-						ClientProxy.timestamp_3DGear_Mouse[button] = -1;
-					}
-					else
-					{
-						EntityGrapplingHook hook = ManeuverGearHelper.getHooks(ClientUtils.mc().thePlayer)[button];
-						if(hook!=null && !hook.isDead)
-							ImmersiveEngineering.packetHandler.sendToServer(new MessageGrapplingHook(ClientUtils.mc().thePlayer,button==0?ManeuverGearOperator.PRESS_0:ManeuverGearOperator.PRESS_1));
-						ClientProxy.timestamp_3DGear_Mouse[button] = max;
-					}
-				}
-				else
-					ImmersiveEngineering.packetHandler.sendToServer(new MessageGrapplingHook(ClientUtils.mc().thePlayer,button==0?ManeuverGearOperator.RELEASE_0:ManeuverGearOperator.RELEASE_1));
-			}
-			event.setCanceled(true);
 		}
 	}
 

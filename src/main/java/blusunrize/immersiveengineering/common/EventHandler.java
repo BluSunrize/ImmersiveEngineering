@@ -3,7 +3,6 @@ package blusunrize.immersiveengineering.common;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.DimensionBlockPos;
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.energy.wires.IICProxy;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
@@ -16,12 +15,8 @@ import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISpawnInterdiction;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
 import blusunrize.immersiveengineering.common.entities.CapabilityHandler_CartShaders;
-import blusunrize.immersiveengineering.common.entities.EntityGrapplingHook;
 import blusunrize.immersiveengineering.common.items.ItemDrill;
-import blusunrize.immersiveengineering.common.items.ItemEngineersBlueprint;
-import blusunrize.immersiveengineering.common.items.ItemManeuverGear;
 import blusunrize.immersiveengineering.common.util.*;
-import blusunrize.immersiveengineering.common.util.ManeuverGearHelper.HookMode;
 import blusunrize.immersiveengineering.common.util.network.MessageMinecartShaderSync;
 import blusunrize.immersiveengineering.common.util.network.MessageMineralListSync;
 import net.minecraft.block.material.Material;
@@ -31,13 +26,10 @@ import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.entity.boss.EntityWither;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.item.EntityMinecart;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Items;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
@@ -45,7 +37,8 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
-import net.minecraft.world.storage.loot.*;
+import net.minecraft.world.storage.loot.LootEntry;
+import net.minecraft.world.storage.loot.LootPool;
 import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.LootTableLoadEvent;
@@ -66,7 +59,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.ItemCraftedEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.PlayerTickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.oredict.OreDictionary;
@@ -276,32 +268,6 @@ public class EventHandler
 	}
 
 	@SubscribeEvent
-	public void onPlayerTick(PlayerTickEvent event)
-	{
-		if(ManeuverGearHelper.isPlayerWearing3DMG(event.player))
-		{
-			EntityGrapplingHook[] hooks = ManeuverGearHelper.getHooks(event.player);
-			Vec3d newMotion = new Vec3d(0,0,0);
-			int vec = 0;
-			for(int i=0; i<2; i++)
-				if(hooks[i]!=null && hooks[i].getHookMode()==HookMode.REELING)
-				{
-					double speed = hooks[i].getHookSpeed();
-					Vec3d hookMotion = new Vec3d((hooks[i].posX-event.player.posX)*speed, (hooks[i].posY-(event.player.posY+event.player.height/2))*speed, (hooks[i].posZ-event.player.posZ)*speed).normalize();
-					newMotion = newMotion.add(hookMotion);
-					vec++;
-				}
-			if(vec>0)
-			{
-				event.player.motionX = newMotion.xCoord/vec;
-				event.player.motionY = newMotion.yCoord/vec;
-				event.player.motionZ = newMotion.zCoord/vec;
-				event.player.fallDistance = 0;
-			}
-		}
-	}
-
-	@SubscribeEvent
 	public void onLogin(PlayerLoggedInEvent event)
 	{
 		if(!event.player.worldObj.isRemote)
@@ -390,23 +356,6 @@ public class EventHandler
 			int amp = event.getEntityLiving().getActivePotionEffect(IEPotions.conductive).getAmplifier();
 			float mod = 1.5f + ((amp*amp)*.5f);
 			event.setAmount(event.getAmount()*mod);
-		}
-		if(event.getEntityLiving() instanceof EntityPlayer && event.getSource()==DamageSource.fall && ManeuverGearHelper.isPlayerWearing3DMG((EntityPlayer)event.getEntityLiving()))
-		{
-			ItemStack gear = ManeuverGearHelper.getPlayer3DMG((EntityPlayer)event.getEntityLiving());
-			if(gear!=null)
-			{
-				float gas = ItemNBTHelper.getFloat(gear, "gas");
-				int reduce = (int)Math.min(event.getAmount(), Math.floor(gas/ItemManeuverGear.jumpCost));
-				if(reduce>0)
-				{
-					event.setAmount(event.getAmount()-reduce);
-					gas -= reduce*ItemManeuverGear.jumpCost;
-					ItemNBTHelper.setFloat(gear, "gas", gas);
-					ItemNBTHelper.setInt(gear, "cooldown", ItemManeuverGear.rechargeCooldown);
-					ManeuverGearHelper.updatePlayer3DMG((EntityPlayer)event.getEntityLiving(), gear);
-				}
-			}
 		}
 	}
 	@SubscribeEvent

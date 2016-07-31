@@ -342,7 +342,6 @@ item.immersiveengineering.shaderBag.name=Shader Grabbag
 item.immersiveengineering.jerrycan.name=Jerrycan
 item.immersiveengineering.chemthrower.name=Chemical Thrower
 item.immersiveengineering.railgun.name=Railgun
-item.immersiveengineering.maneuverGear.name=3D Maneuver Gear
 item.immersiveengineering.earmuffs.name=Ear Defenders
 item.immersiveengineering.coresample.name=Core Sample
 item.immersiveengineering.faradaySuit_head.name=Faraday Helmet
@@ -367,8 +366,6 @@ modifier.thermalinversion.desc=§oHot & Cold!§r\nHitting an enemy in a hot or c
 
 #DESCRIPTIONS
 description.villager.profession.immersiveengineering.villager_engineer=Engineer
-
-key.immersiveengineering.3dgear=3D Maneuver Gear
 
 desc.immersiveengineering.info.attachedTo=Linking from %1$s, %2$s, %3$s
 desc.immersiveengineering.info.attachedToDim=Linking from %1$s, %2$s, %3$s in Dimension %4$s
@@ -649,8 +646,6 @@ achievement.immersiveengineering.craftChemthrower=Spray and Pray
 achievement.immersiveengineering.craftChemthrower.desc=Craft the Chemical Thrower
 achievement.immersiveengineering.craftRailgun=Fortune's Legacy
 achievement.immersiveengineering.craftRailgun.desc=Craft the Railgun
-achievement.immersiveengineering.craftManeuverGear=Flügel der Freiheit
-achievement.immersiveengineering.craftManeuverGear.desc=Craft the 3D Maneuver Gear
 
 achievement.immersiveengineering.mbImprovedBlastFurnace=Next Level Blasting
 achievement.immersiveengineering.mbImprovedBlastFurnace.desc=Form the Improved Blast Furnace

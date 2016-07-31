@@ -3,7 +3,6 @@ package blusunrize.immersiveengineering.common.util;
 import com.sun.istack.internal.NotNull;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.init.Items;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.village.MerchantRecipe;
 import net.minecraft.village.MerchantRecipeList;

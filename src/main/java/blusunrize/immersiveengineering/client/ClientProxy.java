@@ -2,7 +2,6 @@ package blusunrize.immersiveengineering.client;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.*;
-import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.crafting.FermenterRecipe;
 import blusunrize.immersiveengineering.api.crafting.SqueezerRecipe;
 import blusunrize.immersiveengineering.api.energy.ThermoelectricHandler;
@@ -32,11 +31,9 @@ import blusunrize.immersiveengineering.common.blocks.stone.TileEntityBlastFurnac
 import blusunrize.immersiveengineering.common.blocks.stone.TileEntityCokeOven;
 import blusunrize.immersiveengineering.common.blocks.wooden.*;
 import blusunrize.immersiveengineering.common.entities.*;
-import blusunrize.immersiveengineering.common.gui.ContainerRevolver;
-import blusunrize.immersiveengineering.common.gui.ContainerToolbox;
-import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IGuiItem;
+import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.items.ItemDrillhead.DrillHeadPerm;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
@@ -71,7 +68,6 @@ import net.minecraft.client.renderer.entity.*;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.resources.IReloadableResourceManager;
-import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -89,9 +85,8 @@ import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.obj.OBJLoader;
-import net.minecraftforge.client.model.obj.OBJModel.OBJProperty;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.property.*;
+import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.Properties;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
@@ -100,7 +95,6 @@ import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameData;
 import net.minecraftforge.oredict.OreDictionary;
-import org.lwjgl.input.Keyboard;
 
 import java.text.DecimalFormat;
 import java.util.*;
@@ -117,7 +111,6 @@ public class ClientProxy extends CommonProxy
 
 	public static long[] timestamp_3DGear_Mouse={-1,-1};
 	public static long timestamp_3DGear=-1;
-	public static KeyBinding keybind_3DGear = new KeyBinding("key.immersiveengineering.3dgear", Keyboard.KEY_B, "key.categories.movement");
 
 	@Override
 	public void preInit()
@@ -268,11 +261,6 @@ public class ClientProxy extends CommonProxy
 			public Render createRenderFor(RenderManager manager){
 				return new EntityRenderNone(manager);
 			}});
-		RenderingRegistry.registerEntityRenderingHandler(EntityGrapplingHook.class, new IRenderFactory(){
-			@Override
-			public Render createRenderFor(RenderManager manager){
-				return new EntityRenderGrapplingHook(manager);
-			}});
 		RenderingRegistry.registerEntityRenderingHandler(EntityChemthrowerShot.class, new IRenderFactory(){
 			@Override
 			public Render createRenderFor(RenderManager manager){
@@ -316,7 +304,6 @@ public class ClientProxy extends CommonProxy
 		MinecraftForge.EVENT_BUS.register(handler);
 		((IReloadableResourceManager)ClientUtils.mc().getResourceManager()).registerReloadListener(handler);
 
-		ClientRegistry.registerKeyBinding(keybind_3DGear);
 		//		revolverTextureMap = new TextureMap("textures/revolvers",true);
 		//		revolverTextureMap.setMipmapLevels(Minecraft.getMinecraft().gameSettings.mipmapLevels);
 		//		Minecraft.getMinecraft().renderEngine.loadTickableTexture(revolverTextureResource, revolverTextureMap);
@@ -676,10 +663,9 @@ public class ClientProxy extends CommonProxy
 			pages.add(new ManualPages.ItemDisplay(ManualHelper.getManual(), "bulletsBotania1", new ItemStack(IEContent.itemBullet,1,8)));
 		}
 		ManualHelper.addEntry("bullets", ManualHelper.CAT_MACHINES, pages.toArray(new IManualPage[pages.size()]));
-		ManualHelper.addEntry("maneuverGear", ManualHelper.CAT_MACHINES, new ManualPages.Crafting(ManualHelper.getManual(), "maneuverGear0", new ItemStack(IEContent.itemManeuverGear)), new ManualPages.Text(ManualHelper.getManual(),"maneuverGear1"), new ManualPages.Text(ManualHelper.getManual(),"maneuverGear2"));
-		//		ManualHelper.addEntry("skyhook", ManualHelper.CAT_MACHINES,
-		//				new ManualPages.CraftingMulti(ManualHelper.getManual(), "skyhook0", new ItemStack(IEContent.itemSkyhook), new ItemStack(IEContent.itemMaterial,1,9)),
-		//				new ManualPages.Text(ManualHelper.getManual(), "skyhook1"));
+		ManualHelper.addEntry("skyhook", ManualHelper.CAT_MACHINES,
+				new ManualPages.CraftingMulti(ManualHelper.getManual(), "skyhook0", new ItemStack(IEContent.itemSkyhook), new ItemStack(IEContent.itemMaterial, 1, 9)),
+				new ManualPages.Text(ManualHelper.getManual(), "skyhook1"));
 		ManualHelper.addEntry("chemthrower", ManualHelper.CAT_MACHINES,
 				new ManualPages.CraftingMulti(ManualHelper.getManual(), "chemthrower0", new ItemStack(IEContent.itemChemthrower,1,0), new ItemStack(IEContent.itemMaterial,1,9), new ItemStack(IEContent.itemToolUpgrades,1,0)),
 				new ManualPages.Crafting(ManualHelper.getManual(), "chemthrower1", new ItemStack(IEContent.itemToolUpgrades,1,3)),
