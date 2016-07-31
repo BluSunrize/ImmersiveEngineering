@@ -39,11 +39,13 @@ public abstract class MultiblockRecipe implements IMultiblockRecipe, IJEIRecipe
 	}
 
 	int totalProcessTime;
+	@Override
 	public int getTotalProcessTime()
 	{
 		return this.totalProcessTime;
 	}
 	int totalProcessEnergy;
+	@Override
 	public int getTotalProcessEnergy()
 	{
 		return this.totalProcessEnergy;

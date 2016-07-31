@@ -6,8 +6,9 @@ import java.util.List;
 import blusunrize.immersiveengineering.api.Lib;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentTranslation;
 
 public class CommandHandler extends CommandBase
 {
@@ -26,7 +27,7 @@ public class CommandHandler extends CommandBase
 	}
 
 	@Override
-	public List addTabCompletionOptions(ICommandSender sender, String[] args, BlockPos pos)
+	public List getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
 	{
 		ArrayList<String> list = new ArrayList<String>();
 		if(args.length>0)
@@ -41,7 +42,7 @@ public class CommandHandler extends CommandBase
 				{
 					String[] redArgs = new String[args.length-1];
 					System.arraycopy(args,1, redArgs,0, redArgs.length);
-					ArrayList<String> subCommands = sub.getSubCommands(redArgs);	
+					ArrayList<String> subCommands = sub.getSubCommands(server, redArgs);
 					if(subCommands!=null)
 						list.addAll(subCommands);
 				}
@@ -60,13 +61,13 @@ public class CommandHandler extends CommandBase
 	}
 
 	@Override
-	public void processCommand(ICommandSender sender, String[] args)
+	public void execute(MinecraftServer server, ICommandSender sender, String[] args)
 	{
 		if(args.length>0)
 			for(IESubCommand com : commands)
 			{
 				if(com.getIdent().equalsIgnoreCase(args[0]))
-					com.perform(sender, args);
+					com.perform(server, sender, args);
 			}
 		else
 		{
@@ -74,18 +75,18 @@ public class CommandHandler extends CommandBase
 			int i=0;
 			for(IESubCommand com : CommandHandler.commands)
 				sub += ((i++)>0?", ":"")+com.getIdent();
-			sender.addChatMessage(new ChatComponentTranslation(Lib.CHAT_COMMAND+"available",sub));
+			sender.addChatMessage(new TextComponentTranslation(Lib.CHAT_COMMAND+"available",sub));
 		}
 	}
 
-	public static abstract class IESubCommand
+	public abstract static class IESubCommand
 	{
 		public abstract String getIdent();
-		public abstract void perform(ICommandSender sender, String[] args);
+		public abstract void perform(MinecraftServer server, ICommandSender sender, String[] args);
 		public String getHelp(String subIdent)
 		{
 			return Lib.CHAT_COMMAND+getIdent()+subIdent+".help";
 		}
-		public abstract ArrayList<String> getSubCommands(String[] args);
+		public abstract ArrayList<String> getSubCommands(MinecraftServer server, String[] args);
 	}
 }

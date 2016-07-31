@@ -236,7 +236,7 @@ public class Config
 	public static boolean getBoolean(String key)
 	{
 		Boolean b = config_boolean.get(key);
-		return b!=null?b.booleanValue():false;
+		return b != null && b.booleanValue();
 	}
 
 	public static void setInt(String key, int i)

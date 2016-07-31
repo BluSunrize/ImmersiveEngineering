@@ -2,11 +2,12 @@ package blusunrize.immersiveengineering.common.util.commands;
 
 import java.util.ArrayList;
 
+import net.minecraft.client.resources.I18n;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.StatCollector;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 import blusunrize.immersiveengineering.api.DimensionChunkCoords;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
@@ -24,11 +25,11 @@ public class CommandMineral extends IESubCommand
 	}
 
 	@Override
-	public void perform(ICommandSender sender, String[] args)
+	public void perform(MinecraftServer server, ICommandSender sender, String[] args)
 	{
 		if(args.length>1)
 		{
-			DimensionChunkCoords coords = new DimensionChunkCoords(sender.getEntityWorld().provider.getDimensionId(), (sender.getPosition().getX()>>4), (sender.getPosition().getZ()>>4));
+			DimensionChunkCoords coords = new DimensionChunkCoords(sender.getEntityWorld().provider.getDimension(), (sender.getPosition().getX()>>4), (sender.getPosition().getZ()>>4));
 			switch(args[1])
 			{
 			case "list":
@@ -36,17 +37,17 @@ public class CommandMineral extends IESubCommand
 				int i=0;
 				for(MineralMix mm : ExcavatorHandler.mineralList.keySet())
 					s += ((i++)>0?", ":"")+mm.name;
-				sender.addChatMessage(new ChatComponentText(s));
+				sender.addChatMessage(new TextComponentString(s));
 				break;
 			case "get":
 				MineralWorldInfo info = ExcavatorHandler.getMineralWorldInfo(sender.getEntityWorld(), coords.chunkXPos, coords.chunkZPos);
-				sender.addChatMessage(new ChatComponentTranslation(Lib.CHAT_COMMAND+getIdent()+".get",EnumChatFormatting.GOLD+(info.mineral!=null?info.mineral.name:"null")+EnumChatFormatting.RESET,EnumChatFormatting.GOLD+(info.mineralOverride!=null?info.mineralOverride.name:"null")+EnumChatFormatting.RESET,EnumChatFormatting.GOLD+(""+info.depletion)+EnumChatFormatting.RESET));
+				sender.addChatMessage(new TextComponentTranslation(Lib.CHAT_COMMAND+getIdent()+".get", TextFormatting.GOLD+(info.mineral!=null?info.mineral.name:"null")+ TextFormatting.RESET, TextFormatting.GOLD+(info.mineralOverride!=null?info.mineralOverride.name:"null")+ TextFormatting.RESET, TextFormatting.GOLD+(""+info.depletion)+ TextFormatting.RESET));
 				break;
 			case "set":
 				info = ExcavatorHandler.getMineralWorldInfo(sender.getEntityWorld(),coords.chunkXPos,coords.chunkZPos);
 				if(args.length<3)
 				{
-					sender.addChatMessage(new ChatComponentTranslation(Lib.CHAT_COMMAND+getIdent()+".set.clear",info.mineralOverride!=null?info.mineralOverride.name:"null"));
+					sender.addChatMessage(new TextComponentTranslation(Lib.CHAT_COMMAND+getIdent()+".set.clear",info.mineralOverride!=null?info.mineralOverride.name:"null"));
 					info.mineralOverride=null;
 					return;
 				}
@@ -57,20 +58,20 @@ public class CommandMineral extends IESubCommand
 						mineral=mm;
 				if(mineral==null)
 				{
-					sender.addChatMessage(new ChatComponentTranslation(Lib.CHAT_COMMAND+getIdent()+".set.invalidMineral",args[2]));
+					sender.addChatMessage(new TextComponentTranslation(Lib.CHAT_COMMAND+getIdent()+".set.invalidMineral",args[2]));
 					return;
 				}
 				info.mineralOverride = mineral;
-				sender.addChatMessage(new ChatComponentTranslation(Lib.CHAT_COMMAND+getIdent()+".set.sucess",mineral.name));
-				IESaveData.setDirty(sender.getEntityWorld().provider.getDimensionId());
+				sender.addChatMessage(new TextComponentTranslation(Lib.CHAT_COMMAND+getIdent()+".set.sucess",mineral.name));
+				IESaveData.setDirty(sender.getEntityWorld().provider.getDimension());
 				break;
 			case "setDepletion":
 				info = ExcavatorHandler.getMineralWorldInfo(sender.getEntityWorld(),coords.chunkXPos,coords.chunkZPos);
 				if(args.length<3)
 				{
-					String h = StatCollector.translateToLocal(getHelp(".setDepletion"));
+					String h = I18n.format(getHelp(".setDepletion"));
 					for(String str : h.split("<br>"))
-						sender.addChatMessage(new ChatComponentText(str));
+						sender.addChatMessage(new TextComponentString(str));
 					return;
 				}
 				int depl = 0;
@@ -78,25 +79,25 @@ public class CommandMineral extends IESubCommand
 					depl = Integer.parseInt(args[2].trim());
 				}catch(Exception e)
 				{
-					sender.addChatMessage(new ChatComponentTranslation(Lib.CHAT_COMMAND+getIdent()+".setDepletion.NFE",args[2].trim()));
+					sender.addChatMessage(new TextComponentTranslation(Lib.CHAT_COMMAND+getIdent()+".setDepletion.NFE",args[2].trim()));
 					return;
 				}
 				info.depletion = depl;
-				sender.addChatMessage(new ChatComponentTranslation(Lib.CHAT_COMMAND+getIdent()+".setDepletion.sucess",(depl<0?StatCollector.translateToLocal(Lib.CHAT_INFO+"coreDrill.infinite"):Integer.toString(depl))));
-				IESaveData.setDirty(sender.getEntityWorld().provider.getDimensionId());
+				sender.addChatMessage(new TextComponentTranslation(Lib.CHAT_COMMAND+getIdent()+".setDepletion.sucess",(depl<0? I18n.format(Lib.CHAT_INFO+"coreDrill.infinite"):Integer.toString(depl))));
+				IESaveData.setDirty(sender.getEntityWorld().provider.getDimension());
 				break;
 			default:
-				sender.addChatMessage(new ChatComponentTranslation(getHelp("")));
+				sender.addChatMessage(new TextComponentTranslation(getHelp("")));
 				break;
 			}
 		}
 		else
-			sender.addChatMessage(new ChatComponentTranslation(getHelp("")));
+			sender.addChatMessage(new TextComponentTranslation(getHelp("")));
 
 	}
 
 	@Override
-	public ArrayList<String> getSubCommands(String[] args)
+	public ArrayList<String> getSubCommands(MinecraftServer server, String[]args)
 	{
 		ArrayList<String> list = new ArrayList<String>();
 		// subcommand argument autocomplete

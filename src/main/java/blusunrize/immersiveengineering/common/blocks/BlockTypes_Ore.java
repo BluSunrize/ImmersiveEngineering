@@ -14,7 +14,7 @@ public enum BlockTypes_Ore implements IStringSerializable, BlockIEBase.IBlockEnu
 	@Override
 	public String getName()
 	{
-		return this.toString();
+		return this.toString().toLowerCase();
 	}
 	@Override
 	public int getMeta()

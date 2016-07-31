@@ -1,27 +1,11 @@
 package blusunrize.immersiveengineering.client;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
-import javax.vecmath.Quat4d;
-
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.util.vector.Vector3f;
-
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
-import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.common.util.sound.IETileSound;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockChest;
-import net.minecraft.block.BlockEnderChest;
-import net.minecraft.block.BlockSign;
-import net.minecraft.block.BlockSkull;
+import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -30,31 +14,33 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.renderer.BlockRendererDispatcher;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.Timer;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidTank;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.util.vector.Vector3f;
+
+import javax.vecmath.Quat4d;
+import java.util.*;
 
 public class ClientUtils
 {
@@ -82,7 +68,7 @@ public class ClientUtils
 	//		}
 	//	}
 	//
-	public static void tessellateConnection(ImmersiveNetHandler.Connection connection, IImmersiveConnectable start, IImmersiveConnectable end, TextureAtlasSprite sprite)
+	public static void tessellateConnection(Connection connection, IImmersiveConnectable start, IImmersiveConnectable end, TextureAtlasSprite sprite)
 	{
 		if(connection==null || start==null || end==null)
 			return;
@@ -91,16 +77,16 @@ public class ClientUtils
 		int[] rgba = new int[]{col>>16&255, col>>8&255, col&255, 255};
 		tessellateConnection(connection, start, end, rgba, r, sprite);
 	}
-	public static void tessellateConnection(ImmersiveNetHandler.Connection connection, IImmersiveConnectable start, IImmersiveConnectable end, int[] rgba, double radius, TextureAtlasSprite sprite)
+	public static void tessellateConnection(Connection connection, IImmersiveConnectable start, IImmersiveConnectable end, int[] rgba, double radius, TextureAtlasSprite sprite)
 	{
 		if(connection==null || start==null || end==null || connection.end==null || connection.start==null)
 			return;
-		Vec3 startOffset = start.getConnectionOffset(connection);
-		Vec3 endOffset = end.getConnectionOffset(connection);
+		Vec3d startOffset = start.getConnectionOffset(connection);
+		Vec3d endOffset = end.getConnectionOffset(connection);
 		if(startOffset==null)
-			startOffset=new Vec3(.5,.5,.5);
+			startOffset=new Vec3d(.5,.5,.5);
 		if(endOffset==null)
-			endOffset=new Vec3(.5,.5,.5);
+			endOffset=new Vec3d(.5,.5,.5);
 		double dx = (connection.end.getX()+endOffset.xCoord)-(connection.start.getX()+startOffset.xCoord);
 		double dy = (connection.end.getY()+endOffset.yCoord)-(connection.start.getY()+startOffset.yCoord);
 		double dz = (connection.end.getZ()+endOffset.zCoord)-(connection.start.getZ()+startOffset.zCoord);
@@ -112,9 +98,9 @@ public class ClientUtils
 		double rmodx = dz/dw;
 		double rmodz = dx/dw;
 
-		Vec3[] vertex = connection.getSubVertices(world);
+		Vec3d[] vertex = connection.getSubVertices(world);
 		//		Vec3 initPos = new Vec3(connection.start.getX()+startOffset.xCoord, connection.start.getY()+startOffset.yCoord, connection.start.getZ()+startOffset.zCoord);
-		Vec3 initPos = new Vec3(startOffset.xCoord, startOffset.yCoord, startOffset.zCoord);
+		Vec3d initPos = new Vec3d(startOffset.xCoord, startOffset.yCoord, startOffset.zCoord);
 
 		double uMin = sprite.getMinU();
 		double uMax = sprite.getMaxU();
@@ -125,7 +111,7 @@ public class ClientUtils
 		boolean b = (dx<0&&dz<=0)||(dz<0&&dx<=0)||(dz<0&&dx>0);
 
 
-		WorldRenderer worldrenderer = tes.getWorldRenderer();
+		VertexBuffer worldrenderer = tes.getBuffer();
 		//		worldrenderer.pos(x, y+h, 0).tex(uv[0], uv[3]).endVertex();
 		//		worldrenderer.pos(x+w, y+h, 0).tex(uv[1], uv[3]).endVertex();
 		//		worldrenderer.pos(x+w, y, 0).tex(uv[1], uv[2]).endVertex();
@@ -180,8 +166,8 @@ public class ClientUtils
 			double u1 = uMin;
 			for(int i=b?(vertex.length-1):0; (b?(i>=0):(i<vertex.length)); i+=(b?-1:1))
 			{
-				Vec3 v0 = i>0?vertex[i-1].subtract(connection.start.getX(), connection.start.getY(), connection.start.getZ()):initPos;
-				Vec3 v1 = vertex[i].subtract(connection.start.getX(), connection.start.getY(), connection.start.getZ());
+				Vec3d v0 = i>0?vertex[i-1].subtract(connection.start.getX(), connection.start.getY(), connection.start.getZ()):initPos;
+				Vec3d v1 = vertex[i].subtract(connection.start.getX(), connection.start.getY(), connection.start.getZ());
 
 				//				double u0 = uMin;
 				//				double u1 = uMax;
@@ -271,7 +257,7 @@ public class ClientUtils
 	}
 	public static void bindAtlas()
 	{
-		mc().getTextureManager().bindTexture(TextureMap.locationBlocksTexture);
+		mc().getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
 	}
 	public static ResourceLocation getResource(String path)
 	{
@@ -300,7 +286,7 @@ public class ClientUtils
 		return mc().timer;
 	}
 
-	public static enum TimestampFormat
+	public enum TimestampFormat
 	{
 		D,
 		H,
@@ -333,7 +319,7 @@ public class ClientUtils
 		for(TimestampFormat core : TimestampFormat.coreValues)
 			if(format.containsFormat(core) && timestamp>=core.getTickCut())
 			{
-				s += StatCollector.translateToLocalFormatted(Lib.DESC_INFO+core.getLocalKey(), Long.toString(timestamp/core.getTickCut()));
+				s += I18n.format(Lib.DESC_INFO+core.getLocalKey(), Long.toString(timestamp/core.getTickCut()));
 				timestamp %= core.getTickCut();
 			}
 		return s;
@@ -386,7 +372,7 @@ public class ClientUtils
 			0xFFFF55,//YELLOW
 			0xFFFFFF//WHITE
 	};
-	public static int getFormattingColour(EnumChatFormatting rarityColor)
+	public static int getFormattingColour(TextFormatting rarityColor)
 	{
 		return rarityColor.ordinal()<16?chatColours[rarityColor.ordinal()]:0;
 	}
@@ -401,7 +387,7 @@ public class ClientUtils
 
 	public static IETileSound generatePositionedIESound(String soundName, float volume, float pitch, boolean repeat, int delay, BlockPos pos)
 	{
-		IETileSound sound = new IETileSound(new ResourceLocation(soundName), volume,pitch, repeat,delay, pos, AttenuationType.LINEAR);
+		IETileSound sound = new IETileSound(new ResourceLocation(soundName), volume,pitch, repeat,delay, pos, AttenuationType.LINEAR, SoundCategory.BLOCKS);
 		sound.evaluateVolume();
 		ClientUtils.mc().getSoundHandler().playSound(sound);
 		return sound;
@@ -419,7 +405,7 @@ public class ClientUtils
 				newRenderers[i].setTextureOffset(toX,toY);
 				newRenderers[i].mirror = oldRenderers[i].mirror;
 				ArrayList<ModelBox> newCubes = new ArrayList<ModelBox>();
-				for(ModelBox cube :  (List<ModelBox>)oldRenderers[i].cubeList)
+				for(ModelBox cube : oldRenderers[i].cubeList)
 					newCubes.add(new ModelBox(newRenderers[i],toX,toY, cube.posX1,cube.posY1,cube.posZ1, (int)(cube.posX2-cube.posX1),(int)(cube.posY2-cube.posY1),(int)(cube.posZ2-cube.posZ1), 0));
 				newRenderers[i].cubeList = newCubes;
 				newRenderers[i].setRotationPoint(oldRenderers[i].rotationPointX,oldRenderers[i].rotationPointY,oldRenderers[i].rotationPointZ);
@@ -941,7 +927,7 @@ public class ClientUtils
 	//	}
 
 	//Cheers boni =P
-	public static void drawBlockDamageTexture(Tessellator tessellatorIn, WorldRenderer worldRendererIn, Entity entityIn, float partialTicks, World world, List<BlockPos> blocks)
+	public static void drawBlockDamageTexture(Tessellator tessellatorIn, VertexBuffer worldRendererIn, Entity entityIn, float partialTicks, World world, List<BlockPos> blocks)
 	{
 		double d0 = entityIn.lastTickPosX + (entityIn.posX - entityIn.lastTickPosX) * (double)partialTicks;
 		double d1 = entityIn.lastTickPosY + (entityIn.posY - entityIn.lastTickPosY) * (double)partialTicks;
@@ -950,7 +936,7 @@ public class ClientUtils
 		int progress = (int)(Minecraft.getMinecraft().playerController.curBlockDamageMP*10f) - 1; // 0-10
 		if(progress < 0)
 			return;
-		renderEngine.bindTexture(TextureMap.locationBlocksTexture);
+		renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
 		//preRenderDamagedBlocks BEGIN
 		GlStateManager.tryBlendFuncSeparate(774, 768, 1, 0);
 		GlStateManager.enableBlend();
@@ -976,7 +962,7 @@ public class ClientUtils
 			if (!hasBreak)
 			{
 				IBlockState iblockstate = world.getBlockState(blockpos);
-				if (iblockstate.getBlock().getMaterial() != Material.air)
+				if (iblockstate.getMaterial() != Material.AIR)
 				{
 					TextureAtlasSprite textureatlassprite = destroyBlockIcons[progress];
 					BlockRendererDispatcher blockrendererdispatcher = Minecraft.getMinecraft().getBlockRendererDispatcher();
@@ -1004,7 +990,7 @@ public class ClientUtils
 		GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
 		GlStateManager.shadeModel(GL11.GL_SMOOTH);
 		Tessellator tessellator = Tessellator.getInstance();
-		WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+		VertexBuffer worldrenderer = tessellator.getBuffer();
 		worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
 		worldrenderer.pos(x, y+h, 0).color(colour>>16&255, colour>>8&255, colour&255, colour>>24&255).endVertex();
 		worldrenderer.pos(x+w, y+h, 0).color(colour>>16&255, colour>>8&255, colour&255, colour>>24&255).endVertex();
@@ -1032,7 +1018,7 @@ public class ClientUtils
 		GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
 		GlStateManager.shadeModel(GL11.GL_SMOOTH);
 		Tessellator tessellator = Tessellator.getInstance();
-		WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+		VertexBuffer worldrenderer = tessellator.getBuffer();
 		worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
 		worldrenderer.pos(x1, y0, 0).color(f1, f2, f3, f).endVertex();
 		worldrenderer.pos(x0, y0, 0).color(f1, f2, f3, f).endVertex();
@@ -1047,7 +1033,7 @@ public class ClientUtils
 	public static void drawTexturedRect(float x, float y, float w, float h, double... uv)
 	{
 		Tessellator tessellator = Tessellator.getInstance();
-		WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+		VertexBuffer worldrenderer = tessellator.getBuffer();
 		worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
 		worldrenderer.pos(x, y+h, 0).tex(uv[0], uv[3]).endVertex();
 		worldrenderer.pos(x+w, y+h, 0).tex(uv[1], uv[3]).endVertex();
@@ -1062,7 +1048,7 @@ public class ClientUtils
 	}
 	public static void drawRepeatedFluidSprite(Fluid fluid, float x, float y, float w, float h)
 	{
-		bindTexture(TextureMap.locationBlocksTexture.toString());
+		bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE.toString());
 		TextureAtlasSprite sprite = mc().getTextureMapBlocks().getAtlasSprite(fluid.getStill().toString());
 		if(sprite != null)
 		{
@@ -1117,7 +1103,7 @@ public class ClientUtils
 			if (k == 0)
 				list.set(k, stack.getRarity().rarityColor + (String)list.get(k));
 			else
-				list.set(k, EnumChatFormatting.GRAY + (String)list.get(k));
+				list.set(k, TextFormatting.GRAY + (String)list.get(k));
 
 		FontRenderer font = stack.getItem().getFontRenderer(stack);
 		drawHoveringText(list, x, y, (font == null ? font() : font));
@@ -1204,7 +1190,7 @@ public class ClientUtils
 
 			for (int i2 = 0; i2 < list.size(); ++i2)
 			{
-				String s1 = (String)list.get(i2);
+				String s1 = list.get(i2);
 				font.drawStringWithShadow(s1, j2, k2, -1);
 
 				if (i2 == 0)
@@ -1243,7 +1229,7 @@ public class ClientUtils
 				if(tank.getFluid()!=null && tank.getFluid().getFluid()!=null)
 					tooltip.add(tank.getFluid().getLocalizedName());
 				else
-					tooltip.add(StatCollector.translateToLocal("gui.ImmersiveEngineering.empty"));
+					tooltip.add(I18n.format("gui.immersiveengineering.empty"));
 				tooltip.add(tank.getFluidAmount()+"/"+tank.getCapacity()+"mB");
 			}
 		}
@@ -1277,7 +1263,7 @@ public class ClientUtils
 		Vector3f up = new Vector3f(0, 1, 0);
 		for (Connection conn : conns)
 		{
-			Vec3[] f = conn.catenaryVertices;
+			Vec3d[] f = conn.catenaryVertices;
 			if (f.length < 1)
 				continue;
 			int color = conn.cableType.getColour(conn);
@@ -1314,8 +1300,8 @@ public class ClientUtils
 				Vector3f.add(there, cross, tmp);
 				storeVertexData(data, 3, tmp, t, 16, 0, color);
 				storeVertexData(dataInv, 0, tmp, t, 16, 0, color);
-				ret.add(new BakedQuad(data, -1, EnumFacing.DOWN));
-				ret.add(new BakedQuad(dataInv, -1, EnumFacing.UP));
+				ret.add(new BakedQuad(data, -1, EnumFacing.DOWN, t, true, DefaultVertexFormats.BLOCK));
+				ret.add(new BakedQuad(dataInv, -1, EnumFacing.UP, t, true, DefaultVertexFormats.BLOCK));
 
 				data = new int[28];
 				dataInv = new int[28];
@@ -1337,8 +1323,8 @@ public class ClientUtils
 				Vector3f.add(there, cross, tmp);
 				storeVertexData(data, 3, tmp, t, 16, 0, color);
 				storeVertexData(dataInv, 0, tmp, t, 16, 0, color);
-				ret.add(new BakedQuad(data, -1, EnumFacing.WEST));
-				ret.add(new BakedQuad(dataInv, -1, EnumFacing.EAST));
+				ret.add(new BakedQuad(data, -1, EnumFacing.WEST, t, true, DefaultVertexFormats.BLOCK));
+				ret.add(new BakedQuad(dataInv, -1, EnumFacing.EAST, t, true, DefaultVertexFormats.BLOCK));
 
 			}
 		}
@@ -1365,7 +1351,7 @@ public class ClientUtils
 		return ret;
 	}
 
-	public static void renderBox(WorldRenderer wr, double x0, double y0, double z0, double x1, double y1, double z1, double u0, double v0, double u1, double v1)
+	public static void renderBox(VertexBuffer wr, double x0, double y0, double z0, double x1, double y1, double z1, double u0, double v0, double u1, double v1)
 	{
 		wr.pos(x0, y0, z1).tex(u0, v0).endVertex();
 		wr.pos(x1, y0, z1).tex(u1, v0).endVertex();

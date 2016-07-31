@@ -3,18 +3,21 @@
 	"defaults":
 	{
 		"transform": "forge:default-block",
+		"custom": { "flip-v": true },
 		"model": "immersiveengineering:smartmodel/conn_transformer_hv_left"
 	},
 	"variants":
 	{
 		"inventory,type=transformer_hv": [{
 			"model": "immersiveengineering:connector/transformer_hv_left.obj",
-			"custom": { "flip-v": true },
 			"transform": {
-				"firstperson": { "scale": [ 0.5, 0.5, 0.5 ], "rotation": [{ "y": 90 }] },
-				"thirdperson": { "translation": [ 0, 0.09375, -0.171875 ], "rotation": [{ "x": 10 }, { "y": -45 }, { "z": 170 }], "scale": [ 0.1875, 0.1875, 0.1875 ] },
-				"fixed": { "scale": [ 0.6, 0.6, 0.6 ], "translation": [ 0, -0.1875, 0 ] },
-				"gui": { "scale": [ 0.5, 0.5, 0.5 ], "rotation": [{ "y": -90 }], "translation": [ 0, -0.25, 0 ] }
+				"scale": [ 0.25, 0.25, 0.25 ],
+				"firstperson_righthand": { "scale": [ 0.75, 0.75, 0.75 ], "rotation": [{ "y": 180 }] },
+				"firstperson_lefthand": { "scale": [ 0.75, 0.75, 0.75 ], "rotation": [{ "y": 180 }] },
+				"thirdperson_righthand": { "translation": [ 0, 0.09375, -0.171875 ], "rotation": [{ "x": 70 }, { "y": 70 }] },
+				"thirdperson_lefthand": { "translation": [ 0, 0.09375, -0.171875 ], "rotation": [{ "x": 70 }, { "y": 70 }] },
+				"fixed": {"scale": [ 2,2,2 ], "translation": [ 0, -0.25, 0 ], "rotation": [{ "y": 0 }]},
+				"gui": { "translation": [ 0, -0.1875, 0 ], "rotation": [{ "x": 30 },{ "y": 135 }], "scale": [ 1.5, 1.5, 1.5 ] }
 			}
 		}],
 		"type":
@@ -50,7 +53,7 @@
 				"rotation": {"y": 90 }
 			}}
 		},
-		"*multiblockslave":
+		"_0multiblockslave":
 		{
 			"false":{},
 			"true":{

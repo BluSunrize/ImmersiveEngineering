@@ -44,7 +44,7 @@ public class BlastFurnaceRecipeWrapper extends BlankRecipeWrapper
 	}
 	
 	@Override
-	public void drawInfo(@Nonnull Minecraft minecraft, int recipeWidth, int recipeHeight)
+	public void drawInfo(@Nonnull Minecraft minecraft, int recipeWidth, int recipeHeight, int mouseX, int mouseY)
 	{
 	}
 

@@ -6,9 +6,12 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 public class ItemBlockClothDevice extends ItemBlockIEBase
@@ -19,15 +22,15 @@ public class ItemBlockClothDevice extends ItemBlockIEBase
 		super(b);
 	}
 	@Override
-	public ItemStack onItemRightClick(ItemStack itemStackIn, World worldIn, EntityPlayer playerIn)
+	public ActionResult<ItemStack> onItemRightClick(ItemStack itemStackIn, World worldIn, EntityPlayer playerIn, EnumHand hand)
 	{
 		if (itemStackIn.getItemDamage()!=BlockTypes_ClothDevice.BALLOON.getMeta())
-			return super.onItemRightClick(itemStackIn, worldIn, playerIn);
+			return super.onItemRightClick(itemStackIn, worldIn, playerIn, hand);
 		if (playerIn.isSneaking())
 			increaseOffset(itemStackIn);
 		else
 		{
-			Vec3 pos = playerIn.getPositionVector().addVector(0, playerIn.getEyeHeight(), 0).add(playerIn.getLookVec());
+			Vec3d pos = playerIn.getPositionVector().addVector(0, playerIn.getEyeHeight(), 0).add(playerIn.getLookVec());
 			BlockPos bPos = new BlockPos(pos);
 			NBTTagCompound nbt = itemStackIn.getTagCompound();
 			int offset = nbt==null?0:nbt.getByte("offset");
@@ -36,20 +39,20 @@ public class ItemBlockClothDevice extends ItemBlockIEBase
 			{
 				if (!worldIn.isRemote)
 					worldIn.setBlockState(bPos, IEContent.blockClothDevice.getStateFromMeta(BlockTypes_ClothDevice.BALLOON.getMeta()));
-				return itemStackIn.splitStack(1);
+				return new ActionResult(EnumActionResult.SUCCESS, itemStackIn.splitStack(1));
 			}
 		}
-		return itemStackIn;
+		return new ActionResult(EnumActionResult.PASS, itemStackIn);
 	}
 	@Override
-	public boolean onItemUse(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ)
+	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
 		if (playerIn.isSneaking())
 		{
 			increaseOffset(stack);
-			return true;
+			return EnumActionResult.SUCCESS;
 		}
-		return super.onItemUse(stack, playerIn, worldIn, pos, side, hitX, hitY, hitZ);
+		return super.onItemUse(stack, playerIn, worldIn, pos, hand, side, hitX, hitY, hitZ);
 	}
 	@Override
 	public String getItemStackDisplayName(ItemStack stack)

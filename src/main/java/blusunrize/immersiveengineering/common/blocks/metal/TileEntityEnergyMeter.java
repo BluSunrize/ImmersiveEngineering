@@ -24,16 +24,18 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.*;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.ITickable;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 
 public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implements ITickable, IDirectionalTile, IHasDummyBlocks, IAdvancedCollisionBounds,IAdvancedSelectionBounds, IPlayerInteraction, IComparatorOverride
 {
@@ -66,7 +68,7 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 	}
 
 	@Override
-	public boolean interact(EnumFacing side, EntityPlayer player, float hitX, float hitY, float hitZ)
+	public boolean interact(EnumFacing side, EntityPlayer player, EnumHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
 		int transfer = getAveragePower();
 		int packets = lastPackets.size();
@@ -79,7 +81,7 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 		String transferred = "0";
 		if(transfer>0)
 			transferred = Utils.formatDouble(transfer, "0.###");
-		ChatUtils.sendServerNoSpamMessages(player, new ChatComponentTranslation(Lib.CHAT_INFO+"energyTransfered",packets,transferred));
+		ChatUtils.sendServerNoSpamMessages(player, new TextComponentTranslation(Lib.CHAT_INFO+"energyTransfered",packets,transferred));
 		return true;
 	}
 
@@ -150,24 +152,24 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 	}
 
 	@Override
-	public Vec3 getRaytraceOffset(IImmersiveConnectable link)
+	public Vec3d getRaytraceOffset(IImmersiveConnectable link)
 	{
 		int xDif = ((TileEntity)link).getPos().getX()-getPos().getX();
 		int zDif = ((TileEntity)link).getPos().getZ()-getPos().getZ();
 		if(facing.getAxis()==Axis.X)
-			return new Vec3(.5,.4375,zDif>0?.8125:.1875);
+			return new Vec3d(.5,.4375,zDif>0?.8125:.1875);
 		else
-			return new Vec3(xDif>0?.8125:.1875,.4375,.5);
+			return new Vec3d(xDif>0?.8125:.1875,.4375,.5);
 	}
 	@Override
-	public Vec3 getConnectionOffset(Connection con)
+	public Vec3d getConnectionOffset(Connection con)
 	{
 		int xDif = (con==null||con.start==null||con.end==null)?0: (con.start.equals(Utils.toCC(this))&&con.end!=null)? con.end.getX()-getPos().getX(): (con.end.equals(Utils.toCC(this))&& con.start!=null)?con.start.getX()-getPos().getX(): 0;
 		int zDif = (con==null||con.start==null||con.end==null)?0: (con.start.equals(Utils.toCC(this))&&con.end!=null)? con.end.getZ()-getPos().getZ(): (con.end.equals(Utils.toCC(this))&& con.start!=null)?con.start.getZ()-getPos().getZ(): 0;
 		if(facing.getAxis()==Axis.X)
-			return new Vec3(.5,.4375,zDif>0?.8125:.1875);
+			return new Vec3d(.5,.4375,zDif>0?.8125:.1875);
 		else
-			return new Vec3(xDif>0?.8125:.1875,.4375,.5);
+			return new Vec3d(xDif>0?.8125:.1875,.4375,.5);
 	}
 
 	@Override
@@ -214,16 +216,7 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 	@Override
 	public float[] getBlockBounds()
 	{
-		return null;
-	}
-	@Override
-	public float[] getSpecialCollisionBounds()
-	{
-		return null;
-	}
-	@Override
-	public float[] getSpecialSelectionBounds()
-	{
+//		return new float[]{0,0,0,1,1,1};
 		return null;
 	}
 	@Override
@@ -238,7 +231,7 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 		return list;
 	}
 	@Override
-	public boolean isOverrideBox(AxisAlignedBB box, EntityPlayer player, MovingObjectPosition mop, ArrayList<AxisAlignedBB> list)
+	public boolean isOverrideBox(AxisAlignedBB box, EntityPlayer player, RayTraceResult mop, ArrayList<AxisAlignedBB> list)
 	{
 		return false;
 	}

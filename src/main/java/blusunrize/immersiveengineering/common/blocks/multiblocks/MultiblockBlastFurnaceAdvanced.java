@@ -16,7 +16,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -33,7 +33,7 @@ public class MultiblockBlastFurnaceAdvanced implements IMultiblock
 			for(int l=0;l<3;l++)
 				for(int w=0;w<3;w++)
 					if(h==3 && w==1 && l==1)
-						structure[h][l][w]=new ItemStack(Blocks.hopper);
+						structure[h][l][w]=new ItemStack(Blocks.HOPPER);
 					else if(h<3)
 						structure[h][l][w]=new ItemStack(IEContent.blockStoneDecoration,1,BlockTypes_StoneDecoration.BLASTBRICK_REINFORCED.getMeta());
 	}
@@ -98,7 +98,7 @@ public class MultiblockBlastFurnaceAdvanced implements IMultiblock
 					{
 						if(h==2)
 						{
-							if(!Utils.isBlockAt(world, pos.add(xx, h, zz), Blocks.hopper, -1))
+							if(!Utils.isBlockAt(world, pos.add(xx, h, zz), Blocks.HOPPER, -1))
 								return false;
 						}
 						else
@@ -130,11 +130,11 @@ public class MultiblockBlastFurnaceAdvanced implements IMultiblock
 							world.addBlockEvent(pos2, IEContent.blockStoneDevice, 255, 0);
 						}
 					}
-		player.triggerAchievement(IEAchievements.mbImprovedBlastFurnace);
+		player.addStat(IEAchievements.mbImprovedBlastFurnace);
 		return true;
 	}
 
-	static final ItemStack[] materials = new ItemStack[]{new ItemStack(IEContent.blockStoneDecoration,27,BlockTypes_StoneDecoration.BLASTBRICK_REINFORCED.getMeta()),new ItemStack(Blocks.hopper)};
+	static final ItemStack[] materials = new ItemStack[]{new ItemStack(IEContent.blockStoneDecoration,27,BlockTypes_StoneDecoration.BLASTBRICK_REINFORCED.getMeta()),new ItemStack(Blocks.HOPPER)};
 	@Override
 	public ItemStack[] getTotalMaterials()
 	{

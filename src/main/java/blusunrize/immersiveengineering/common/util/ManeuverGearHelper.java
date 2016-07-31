@@ -10,12 +10,12 @@ import blusunrize.immersiveengineering.common.items.ItemManeuverGear;
 import blusunrize.immersiveengineering.common.util.compat.BaublesHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.oredict.OreDictionary;
 
 public class ManeuverGearHelper
 {
-	public static enum ManeuverGearOperator
+	public enum ManeuverGearOperator
 	{
 		PRESS_0,
 		PRESS_1,
@@ -24,13 +24,13 @@ public class ManeuverGearHelper
 		RETRACT_0,
 		RETRACT_1,
 		RETRACT_ALL,
-		PRESS_SPACE;
+		PRESS_SPACE
 	}
-	public static enum HookMode
+	public enum HookMode
 	{
 		LAUNCHING,
 		REELING,
-		RETURNING;
+		RETURNING
 	}
 
 	private static HashMap<String, EntityGrapplingHook[]> hookMap = new HashMap();
@@ -51,7 +51,7 @@ public class ManeuverGearHelper
 		if((hooks[hook]==null || hooks[hook].isDead) && doHookRFCheck(player, true))
 		{
 			doHookRFCheck(player, false);
-			Vec3 vec = player.getLookVec();
+			Vec3d vec = player.getLookVec();
 			EntityGrapplingHook entityHook = new EntityGrapplingHook(player.worldObj, player, vec.xCoord,vec.yCoord,vec.zCoord);
 			entityHook.setHookNr(hook);
 			entityHook.setHookMode(HookMode.LAUNCHING);
@@ -101,7 +101,7 @@ public class ManeuverGearHelper
 			float speed = 2f;
 			//			if(speed > 0.925f)
 			//				speed = 0.925f;
-			Vec3 vec = player.getLookVec();
+			Vec3d vec = player.getLookVec();
 			player.motionX = vec.xCoord*speed;
 			player.motionY = vec.yCoord*.375*speed;
 			player.motionZ = vec.zCoord*speed;
@@ -120,30 +120,32 @@ public class ManeuverGearHelper
 	{
 		if(gearStack==null)
 			gearStack = new ItemStack(IEContent.itemManeuverGear,1,OreDictionary.WILDCARD_VALUE);
-		if(Lib.BAUBLES)
-		{
-			ItemStack belt = BaublesHelper.getBauble(player, 3);
-			if(OreDictionary.itemMatches(gearStack, belt, false))
-				return belt;
-		}
-		ItemStack leggings = player.getCurrentArmor(1);
-		if(OreDictionary.itemMatches(gearStack, leggings, false))
-			return leggings;
+		//ToDo: remove Maneuver Gear entirely
+//		if(Lib.BAUBLES)
+//		{
+//			ItemStack belt = BaublesHelper.getBauble(player, 3);
+//			if(OreDictionary.itemMatches(gearStack, belt, false))
+//				return belt;
+//		}
+//		ItemStack leggings = player.getCurrentArmor(1);
+//		if(OreDictionary.itemMatches(gearStack, leggings, false))
+//			return leggings;
 		return null;
 	}
 	public static void updatePlayer3DMG(EntityPlayer player, ItemStack gear)
 	{
 		if(gearStack==null)
 			gearStack = new ItemStack(IEContent.itemManeuverGear,1,OreDictionary.WILDCARD_VALUE);
-		if(Lib.BAUBLES)
-		{
-			ItemStack belt = BaublesHelper.getBauble(player, 3);
-			if(OreDictionary.itemMatches(gearStack, belt, false))
-				BaublesHelper.setBauble(player, 3, gear);
-		}
-		ItemStack leggings = player.getCurrentArmor(1);
-		if(OreDictionary.itemMatches(gearStack, leggings, false))
-			player.setCurrentItemOrArmor(2, gear);
+		//ToDo: remove Maneuver Gear entirely
+//		if(Lib.BAUBLES)
+//		{
+//			ItemStack belt = BaublesHelper.getBauble(player, 3);
+//			if(OreDictionary.itemMatches(gearStack, belt, false))
+//				BaublesHelper.setBauble(player, 3, gear);
+//		}
+//		ItemStack leggings = player.getCurrentArmor(1);
+//		if(OreDictionary.itemMatches(gearStack, leggings, false))
+//			player.setCurrentItemOrArmor(2, gear);
 	}
 	public static boolean doHookRFCheck(EntityPlayer player, boolean simulate)
 	{

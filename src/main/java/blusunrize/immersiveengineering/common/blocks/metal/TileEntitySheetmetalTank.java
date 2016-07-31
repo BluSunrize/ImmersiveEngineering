@@ -11,26 +11,22 @@ import blusunrize.immersiveengineering.common.blocks.TileEntityMultiblockPart;
 import blusunrize.immersiveengineering.common.blocks.wooden.BlockTypes_WoodenDecoration;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.Block;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.StatCollector;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
-import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.IFluidContainerItem;
-import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraftforge.fluids.*;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class TileEntitySheetmetalTank extends TileEntityMultiblockPart<TileEntitySheetmetalTank> implements IFluidHandler, IBlockOverlayText, IPlayerInteraction, IComparatorOverride
+public class TileEntitySheetmetalTank extends TileEntityMultiblockPart<TileEntitySheetmetalTank> implements IBlockOverlayText, IPlayerInteraction, IComparatorOverride
 {
 	public FluidTank tank = new FluidTank(512000);
 	private int[] oldComps = new int[4];
@@ -46,9 +42,9 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart<TileEntit
 	//	}
 
 	@Override
-	public String[] getOverlayText(EntityPlayer player, MovingObjectPosition mop, boolean hammer)
+	public String[] getOverlayText(EntityPlayer player, RayTraceResult mop, boolean hammer)
 	{
-		if(Utils.isFluidRelatedItemStack(player.getCurrentEquippedItem()))
+		if(Utils.isFluidRelatedItemStack(player.getHeldItem(EnumHand.MAIN_HAND)))
 		{
 			TileEntitySheetmetalTank master = master();
 			FluidStack fs = master!=null?master.tank.getFluid():this.tank.getFluid();
@@ -56,13 +52,13 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart<TileEntit
 			if(fs!=null)
 				s = fs.getLocalizedName()+": "+fs.amount+"mB";
 			else
-				s = StatCollector.translateToLocal(Lib.GUI+"empty");
+				s = I18n.format(Lib.GUI+"empty");
 			return new String[]{s};
 		}
 		return null;
 	}
 	@Override
-	public boolean useNixieFont(EntityPlayer player, MovingObjectPosition mop)
+	public boolean useNixieFont(EntityPlayer player, RayTraceResult mop)
 	{
 		return false;
 	}
@@ -83,7 +79,7 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart<TileEntit
 						int accepted = ((IFluidHandler)te).fill(f.getOpposite(), new FluidStack(tank.getFluid().getFluid(),out), false);
 						FluidStack drained = this.tank.drain(accepted, true);
 						((IFluidHandler)te).fill(f.getOpposite(), drained, true);
-						worldObj.markBlockForUpdate(getPos());
+						this.markContainingBlockForUpdate(null);
 						updateComparatorValuesPart2();
 					}
 				}
@@ -112,16 +108,6 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart<TileEntit
 		if(pos==0||pos==2||pos==6||pos==8)
 			return new float[]{.375f,0,.375f,.625f,1,.625f};
 		return new float[]{0,0,0,1,1,1};
-	}
-	@Override
-	public float[] getSpecialCollisionBounds()
-	{
-		return null;
-	}
-	@Override
-	public float[] getSpecialSelectionBounds()
-	{
-		return null;
 	}
 
 	@Override
@@ -169,105 +155,34 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart<TileEntit
 	}
 
 	@Override
-	public int fill(EnumFacing from, FluidStack resource, boolean doFill)
+	protected FluidTank[] getAccessibleFluidTanks(EnumFacing side)
 	{
-		if(!canFill(from, resource!=null?resource.getFluid():null))
-			return 0;
 		TileEntitySheetmetalTank master = master();
-		if(master!=null)
-		{
-			master.updateComparatorValuesPart1();
-			int f = master.tank.fill(resource, doFill);
-			if(f>0 && doFill)
-			{
-				master.markDirty();
-				worldObj.markBlockForUpdate(master.getPos());
-				master.updateComparatorValuesPart2();
-			}
-			return f;
-		}
-		return 0;
+		if(master!=null && (pos==4||pos==40))
+			return new FluidTank[]{tank};
+		return new FluidTank[0];
 	}
 	@Override
-	public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain)
+	protected boolean canFillTankFrom(int iTank, EnumFacing side, FluidStack resource)
 	{
-		if(!canDrain(from, resource!=null?resource.getFluid():null))
-			return null;
-		TileEntitySheetmetalTank master = master();
-		if(master!=this)
-			return master.drain(from,resource,doDrain);
-		if(resource!=null)
-			return drain(from, resource.amount, doDrain);
-		return null;
+		return pos==4||pos==40;
 	}
 	@Override
-	public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain)
+	protected boolean canDrainTankFrom(int iTank, EnumFacing side)
 	{
-		if(!canDrain(from, null))
-			return null;
-		TileEntitySheetmetalTank master = master();
-		if(master!=null)
-		{
-			master.updateComparatorValuesPart1();
-			FluidStack fs = master.tank.drain(maxDrain, doDrain);
-			if(fs!=null && fs.amount>0 && doDrain)
-			{
-				master.markDirty();
-				worldObj.markBlockForUpdate(master.getPos());
-				//Block updates for comparators
-				master.updateComparatorValuesPart2();
-			}
-			return fs;
-		}
-		return null;
-	}
-	@Override
-	public boolean canFill(EnumFacing from, Fluid fluid)
-	{
-		return formed&&(pos==4||pos==40);
-	}
-	@Override
-	public boolean canDrain(EnumFacing from, Fluid fluid)
-	{
-		return formed&&pos==4;
-	}
-	@Override
-	public FluidTankInfo[] getTankInfo(EnumFacing from)
-	{
-		if (pos==4||pos==40)
-		{
-			if (!formed)
-				return new FluidTankInfo[] {};
-			TileEntitySheetmetalTank master = master();
-			if (master!=null)
-				return new FluidTankInfo[] { master.tank.getInfo() };
-		}
-		return new FluidTankInfo[0];
+		return pos==4;
 	}
 
 	@Override
-	public boolean interact(EnumFacing side, EntityPlayer player, float hitX, float hitY, float hitZ)
+	public boolean interact(EnumFacing side, EntityPlayer player, EnumHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
 		TileEntitySheetmetalTank master = this.master();
 		if(master!=null)
 		{
-			FluidStack f = Utils.getFluidFromItemStack(player.getCurrentEquippedItem());
-			if(f!=null && Utils.fillFluidHandlerWithPlayerItem(worldObj, master, player))
+			FluidStack f = FluidUtil.getFluidContained(heldItem);
+			if(FluidUtil.interactWithFluidHandler(heldItem, master.tank, player))
 			{
-				this.markDirty();
-				worldObj.markBlockForUpdate(master.getPos());
-				return true;
-			}
-			if(Utils.fillPlayerItemFromFluidHandler(worldObj, master, player, master.tank.getFluid()))
-			{
-				this.markDirty();
-				worldObj.markBlockForUpdate(master.getPos());
-				return true;
-			}
-			if(player.getCurrentEquippedItem()!=null && player.getCurrentEquippedItem().getItem() instanceof IFluidContainerItem)
-			{
-				this.markDirty();
-				worldObj.markBlockForUpdate(master.getPos());
+				this.updateMasterBlock(null, true);
 				return true;
 			}
 		}
@@ -294,6 +209,7 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart<TileEntit
 		return super.getMaxRenderDistanceSquared()*Config.getDouble("increasedTileRenderdistance");
 	}
 
+	@Override
 	public int getComparatorInputOverride()
 	{
 		if (pos==4)

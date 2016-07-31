@@ -8,7 +8,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -28,14 +31,14 @@ public class ItemBlockIESlabs extends ItemBlockIEBase
 	}
 
 	@Override
-	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ)
+	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
-        IBlockState iblockstate = world.getBlockState(pos);
+		IBlockState iblockstate = world.getBlockState(pos);
         Block localBlock = iblockstate.getBlock();
 		BlockPos posThere = pos;
 		BlockPos posOffset = pos.offset(side);
 
-        if(localBlock == Blocks.snow_layer && localBlock.isReplaceable(world, pos))
+        if(localBlock == Blocks.SNOW_LAYER && localBlock.isReplaceable(world, pos))
             side = EnumFacing.UP;
         else if(!localBlock.isReplaceable(world, pos))
             pos = pos.offset(side);
@@ -58,17 +61,17 @@ public class ItemBlockIESlabs extends ItemBlockIEBase
 			}
 		}
 		else
-			return super.onItemUse(stack,player,world,pos,side,hitX,hitY,hitZ);
+			return super.onItemUse(stack,player,world,pos,hand,side,hitX,hitY,hitZ);
 		if(stackSlab!=null)
 		{
 			stackSlab.slabType=2;
-			world.markBlockForUpdate(stackSlab.getPos());
-			world.playSoundEffect(stackSlab.getPos().getX()+.5, stackSlab.getPos().getY()+.5, stackSlab.getPos().getZ()+.5, this.block.stepSound.getPlaceSound(), (this.block.stepSound.getVolume() + 1.0F) / 2.0F, this.block.stepSound.getFrequency() * 0.8F);
+			stackSlab.markContainingBlockForUpdate(null);
+			world.playSound(stackSlab.getPos().getX()+.5, stackSlab.getPos().getY()+.5, stackSlab.getPos().getZ()+.5, this.block.getSoundType().getPlaceSound(), SoundCategory.BLOCKS, (this.block.getSoundType().getVolume() + 1.0F) / 2.0F, this.block.getSoundType().getPitch() * 0.8F, false);
 			--stack.stackSize;
-			return true;
+			return EnumActionResult.SUCCESS;
 		}
 		else
-			return super.onItemUse(stack,player,world,pos,side,hitX,hitY,hitZ);
+			return super.onItemUse(stack,player,world,pos,hand,side,hitX,hitY,hitZ);
 	}
 
 	@Override

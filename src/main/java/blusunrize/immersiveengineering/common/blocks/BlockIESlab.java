@@ -11,8 +11,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -71,18 +71,18 @@ public class BlockIESlab<E extends Enum<E>&BlockIEBase.IBlockEnum> extends Block
 	}
 
 	@Override
-	public void harvestBlock(World world, EntityPlayer player, BlockPos pos, IBlockState state, TileEntity tile)
+	public void harvestBlock(World world, EntityPlayer player, BlockPos pos, IBlockState state, TileEntity tile, ItemStack stack)
 	{
 		if(tile instanceof TileEntityIESlab && !player.capabilities.isCreativeMode)
 		{
 			spawnAsEntity(world, pos, new ItemStack(this, ((TileEntityIESlab)tile).slabType==2?2:1 , this.getMetaFromState(state)));
 			return;
 		}
-		super.harvestBlock(world, player, pos, state, tile);
+		super.harvestBlock(world, player, pos, state, tile, stack);
 	}
 
 	@Override
-	public boolean isSideSolid(IBlockAccess world, BlockPos pos, EnumFacing side)
+	public boolean isSideSolid(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side)
 	{
 		TileEntity te = world.getTileEntity(pos);
 		if(te instanceof TileEntityIESlab)
@@ -97,47 +97,35 @@ public class BlockIESlab<E extends Enum<E>&BlockIEBase.IBlockEnum> extends Block
 	}
 
 	@Override
-	public void addCollisionBoxesToList(World world, BlockPos pos, IBlockState state, AxisAlignedBB mask, List<AxisAlignedBB> list, Entity ent)
-	{
-		this.setBlockBoundsBasedOnState(world, pos);
-		super.addCollisionBoxesToList(world, pos, state, mask, list, ent);
-	}
-
-	@Override
-	public void setBlockBoundsBasedOnState(IBlockAccess world, BlockPos pos)
+	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos)
 	{
 		TileEntity te = world.getTileEntity(pos);
 		if(te instanceof TileEntityIESlab)
 		{
 			int type = ((TileEntityIESlab)te).slabType;
 			if(type==0)
-				this.setBlockBounds(0,0,0, 1,.5f,1);
+				return new AxisAlignedBB(0,0,0, 1,.5f,1);
 			else if(type==1)
-				this.setBlockBounds(0,.5f,0, 1,1,1);
+				return new AxisAlignedBB(0,.5f,0, 1,1,1);
 			else
-				this.setBlockBounds(0,0,0,1,1,1);
+			return FULL_BLOCK_AABB;
 		}
 		else
-			this.setBlockBounds(0,0,0,1,.5f,1);
-	}
-	@Override
-	public void setBlockBoundsForItemRender()
-	{
-		this.setBlockBounds(0,0,0,1,.5f,1);
+			return new AxisAlignedBB(0,0,0,1,.5f,1);
 	}
 
 	@Override
-	public boolean isFullBlock()
+	public boolean isFullBlock(IBlockState state)
 	{
 		return false;
 	}
 	@Override
-	public boolean isFullCube()
+	public boolean isFullCube(IBlockState state)
 	{
 		return false;
 	}
 	@Override
-	public boolean isOpaqueCube()
+	public boolean isOpaqueCube(IBlockState state)
 	{
 		return false;
 	}

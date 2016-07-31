@@ -1,13 +1,17 @@
 package blusunrize.immersiveengineering.common.entities;
 
 import blusunrize.immersiveengineering.common.util.IEExplosion;
+import com.google.common.base.Optional;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityTNTPrimed;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.BlockPos;
+import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
@@ -19,13 +23,11 @@ public class EntityIEExplosive extends EntityTNTPrimed
 	boolean explosionSmoke = true;
 	boolean explosionFire = false;
 	float explosionDropChance;
-	public Block block;
-	public int meta;
+	public IBlockState block;
 	String name;
 
-	static int dataMarker_block = 12;
-	static int dataMarker_meta = 13;
-	static int dataMarker_fuse = 14;
+	private static final DataParameter<Optional<IBlockState>> dataMarker_block = EntityDataManager.<Optional<IBlockState>>createKey(EntityIEProjectile.class, DataSerializers.OPTIONAL_BLOCK_STATE);
+	private static final DataParameter<Integer> dataMarker_fuse = EntityDataManager.<Integer>createKey(EntityIEProjectile.class, DataSerializers.VARINT);
 
 	public EntityIEExplosive(World world)
 	{
@@ -35,8 +37,7 @@ public class EntityIEExplosive extends EntityTNTPrimed
 	{
 		super(world, x, y, z, igniter);
 		this.explosionPower = explosionPower;
-		this.block = blockstate.getBlock();
-		this.meta = blockstate.getBlock().getMetaFromState(blockstate);
+		this.block = blockstate;
 		this.explosionDropChance = 1/explosionPower;
 		this.setBlockSynced();
 	}
@@ -65,25 +66,22 @@ public class EntityIEExplosive extends EntityTNTPrimed
 	protected void entityInit()
 	{
 		super.entityInit();
-		this.dataWatcher.addObject(dataMarker_block, "");
-		this.dataWatcher.addObject(dataMarker_meta, Integer.valueOf(0));
-		this.dataWatcher.addObject(dataMarker_fuse, Integer.valueOf(0));
+		this.dataManager.register(dataMarker_block, Optional.absent());
+		this.dataManager.register(dataMarker_fuse, Integer.valueOf(0));
 	}
 
 	public void setBlockSynced()
 	{
 		if(this.block!=null)
 		{
-			this.dataWatcher.updateObject(dataMarker_block, this.block.getRegistryName());
-			this.dataWatcher.updateObject(dataMarker_meta, this.meta);
-			this.dataWatcher.updateObject(dataMarker_fuse, this.fuse);
+			this.dataManager.set(dataMarker_block, Optional.of(this.block));
+			this.dataManager.set(dataMarker_fuse, this.getFuse());
 		}
 	}
 	public void getBlockSynced()
 	{
-		this.block = Block.getBlockFromName(this.dataWatcher.getWatchableObjectString(dataMarker_block));
-		this.meta = this.dataWatcher.getWatchableObjectInt(dataMarker_meta);
-		this.fuse = this.dataWatcher.getWatchableObjectInt(dataMarker_fuse);
+		this.block = this.dataManager.get(dataMarker_block).get();
+		this.setFuse(this.dataManager.get(dataMarker_fuse));
 	}
 
 	@Override
@@ -91,7 +89,7 @@ public class EntityIEExplosive extends EntityTNTPrimed
 	{
 		if(this.block!=null && name==null)
 		{
-			ItemStack s = new ItemStack(this.block,1,this.meta);
+			ItemStack s = new ItemStack(this.block.getBlock(),1,this.block.getBlock().getMetaFromState(this.block));
 			if(s!=null && s.getItem()!=null)
 				name = s.getDisplayName();
 		}
@@ -108,10 +106,7 @@ public class EntityIEExplosive extends EntityTNTPrimed
 		tagCompound.setBoolean("explosionSmoke", explosionSmoke);
 		tagCompound.setBoolean("explosionFire", explosionFire);
 		if(this.block!=null)
-		{
-			tagCompound.setString("block", this.block.getRegistryName());
-			tagCompound.setInteger("meta", this.meta);
-		}
+			tagCompound.setInteger("block",Block.getStateId(this.block));
 	}
 	@Override
 	protected void readEntityFromNBT(NBTTagCompound tagCompound)
@@ -121,10 +116,7 @@ public class EntityIEExplosive extends EntityTNTPrimed
 		explosionSmoke = tagCompound.getBoolean("explosionSmoke");
 		explosionFire = tagCompound.getBoolean("explosionFire");
 		if(tagCompound.hasKey("block"))
-		{
-			this.block = Block.getBlockFromName(tagCompound.getString("block"));
-			this.meta = tagCompound.getInteger("meta");
-		}
+			this.block = Block.getStateById(tagCompound.getInteger("block"));
 	}
 
 
@@ -149,8 +141,9 @@ public class EntityIEExplosive extends EntityTNTPrimed
 			this.motionZ *= 0.699999988079071D;
 			this.motionY *= -0.5D;
 		}
-
-		if(this.fuse--<=0)
+		int newFuse = this.getFuse()-1;
+		this.setFuse(newFuse);
+		if(newFuse--<=0)
 		{
 			this.setDead();
 
@@ -167,7 +160,7 @@ public class EntityIEExplosive extends EntityTNTPrimed
 		else
 		{
 			this.handleWaterMovement();
-			this.worldObj.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, this.posX, this.posY + 0.5D, this.posZ, 0.0D, 0.0D, 0.0D, new int[0]);
+			this.worldObj.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, this.posX, this.posY + 0.5D, this.posZ, 0.0D, 0.0D, 0.0D);
 		}
 	}
 }

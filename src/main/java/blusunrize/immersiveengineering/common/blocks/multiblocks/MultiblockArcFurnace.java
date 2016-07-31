@@ -22,7 +22,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -41,7 +41,7 @@ public class MultiblockArcFurnace implements IMultiblock
 					if(h==0)
 					{
 						if(l==0&&w==2)
-							structure[h][l][w] = new ItemStack(Items.cauldron);
+							structure[h][l][w] = new ItemStack(Items.CAULDRON);
 						else if(l==2&&(w==0||w==4))
 							structure[h][l][w] = new ItemStack(IEContent.blockStorage,1,BlockTypes_MetalsIE.STEEL.getMeta());
 						else if(l==0&&w==0)
@@ -147,7 +147,7 @@ public class MultiblockArcFurnace implements IMultiblock
 	@Override
 	public boolean isBlockTrigger(IBlockState state)
 	{
-		return state.getBlock()==Blocks.cauldron;
+		return state.getBlock()==Blocks.CAULDRON;
 	}
 
 	@Override
@@ -197,7 +197,7 @@ public class MultiblockArcFurnace implements IMultiblock
 								world.addBlockEvent(pos2, IEContent.blockMetalMultiblock, 255, 0);
 							}
 						}
-			player.triggerAchievement(IEAchievements.mbArcFurnace);
+			player.addStat(IEAchievements.mbArcFurnace);
 		}
 		return b;
 	}
@@ -214,9 +214,9 @@ public class MultiblockArcFurnace implements IMultiblock
 
 						if(world.isAirBlock(pos))
 							return false;
-						if(OreDictionary.itemMatches(structure[h][l][w+2], new ItemStack(Items.cauldron), true))
+						if(OreDictionary.itemMatches(structure[h][l][w+2], new ItemStack(Items.CAULDRON), true))
 						{
-							if(!Utils.isBlockAt(world, pos, Blocks.cauldron, OreDictionary.WILDCARD_VALUE))
+							if(!Utils.isBlockAt(world, pos, Blocks.CAULDRON, OreDictionary.WILDCARD_VALUE))
 								return false;
 						}
 						else if(OreDictionary.itemMatches(structure[h][l][w+2], new ItemStack(IEContent.blockMetalDecoration1,1,BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_0.getMeta()), true))
@@ -251,7 +251,7 @@ public class MultiblockArcFurnace implements IMultiblock
 	}
 
 	static final ItemStack[] materials = new ItemStack[]{
-			new ItemStack(Items.cauldron),
+			new ItemStack(Items.CAULDRON),
 			new ItemStack(IEContent.blockSheetmetalSlabs,14,BlockTypes_MetalsAll.STEEL.getMeta()),
 			new ItemStack(IEContent.blockSheetmetal,8,BlockTypes_MetalsAll.STEEL.getMeta()),
 			new ItemStack(IEContent.blockStorage,6,BlockTypes_MetalsIE.STEEL.getMeta()),

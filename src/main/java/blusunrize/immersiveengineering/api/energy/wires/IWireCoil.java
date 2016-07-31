@@ -9,5 +9,5 @@ import net.minecraft.item.ItemStack;
  */
 public interface IWireCoil
 {
-	public abstract WireType getWireType(ItemStack stack);
+	WireType getWireType(ItemStack stack);
 }

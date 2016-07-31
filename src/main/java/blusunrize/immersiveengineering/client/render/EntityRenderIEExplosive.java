@@ -8,7 +8,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.ResourceLocation;
 
 public class EntityRenderIEExplosive extends Render<EntityIEExplosive>
@@ -28,9 +28,9 @@ public class EntityRenderIEExplosive extends Render<EntityIEExplosive>
         GlStateManager.pushMatrix();
         GlStateManager.translate((float)x, (float)y + 0.5F, (float)z);
 
-        if(entity.fuse-partialTicks+1 < 10)
+        if(entity.getFuse()-partialTicks+1 < 10)
         {
-            float f = 1.0F - ((float)entity.fuse - partialTicks + 1.0F) / 10.0F;
+            float f = 1.0F - ((float)entity.getFuse() - partialTicks + 1.0F) / 10.0F;
             f = MathHelper.clamp_float(f, 0.0F, 1.0F);
             f = f * f;
             f = f * f;
@@ -38,14 +38,13 @@ public class EntityRenderIEExplosive extends Render<EntityIEExplosive>
             GlStateManager.scale(f1, f1, f1);
         }
         
-        IBlockState state = entity.block.getStateFromMeta(entity.meta);
-        float f2 = (1-(entity.fuse-partialTicks+1)/100F) * .8F;
+        float f2 = (1-(entity.getFuse()-partialTicks+1)/100F) * .8F;
         this.bindEntityTexture(entity);
         GlStateManager.translate(-0.5F, -0.5F, 0.5F);
-        blockrendererdispatcher.renderBlockBrightness(state, entity.getBrightness(partialTicks));
+        blockrendererdispatcher.renderBlockBrightness(entity.block, entity.getBrightness(partialTicks));
         GlStateManager.translate(0.0F, 0.0F, 1.0F);
 
-        if(entity.fuse/5%2 == 0)
+        if(entity.getFuse()/5%2 == 0)
         {
             GlStateManager.disableTexture2D();
             GlStateManager.disableLighting();
@@ -54,7 +53,7 @@ public class EntityRenderIEExplosive extends Render<EntityIEExplosive>
             GlStateManager.color(1.0F, 1.0F, 1.0F, f2);
             GlStateManager.doPolygonOffset(-3.0F, -3.0F);
             GlStateManager.enablePolygonOffset();
-            blockrendererdispatcher.renderBlockBrightness(state, 1.0F);
+            blockrendererdispatcher.renderBlockBrightness(entity.block, 1.0F);
             GlStateManager.doPolygonOffset(0.0F, 0.0F);
             GlStateManager.disablePolygonOffset();
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
@@ -70,6 +69,6 @@ public class EntityRenderIEExplosive extends Render<EntityIEExplosive>
 	@Override
     protected ResourceLocation getEntityTexture(EntityIEExplosive entity)
     {
-        return TextureMap.locationBlocksTexture;
+        return TextureMap.LOCATION_BLOCKS_TEXTURE;
     }
 }

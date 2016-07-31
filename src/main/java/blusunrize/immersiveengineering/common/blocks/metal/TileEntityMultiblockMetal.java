@@ -28,13 +28,20 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.FluidTankProperties;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
+
+import javax.annotation.Nullable;
 
 public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMetal<T, R>, R extends IMultiblockRecipe> extends TileEntityMultiblockPart<T> implements IIEInventory, IFluxReceiver,IEnergyReceiver, IHammerInteraction, IMirrorAble
 {
@@ -111,7 +118,6 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 		return tag;
 	}
 
-
 	//	=================================
 	//		ENERGY MANAGEMENT
 	//	=================================
@@ -133,13 +139,11 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 	{
 		if(canConnectEnergy(from))
 		{
-			TileEntityMultiblockMetal master = (TileEntityMultiblockMetal)this.master();
+			TileEntityMultiblockMetal master = this.master();
 			if(master==null)
 				return 0;
 			int rec = master.energyStorage.receiveEnergy(energy, simulate);
-			master.markDirty();
-			if(rec>0)
-				worldObj.markBlockForUpdate(master.getPos());
+			this.updateMasterBlock(null, rec>0);
 			return rec;
 		}
 		return 0;
@@ -147,12 +151,12 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 	@Override
 	public int getEnergyStored(EnumFacing from)
 	{
-		return ((TileEntityMultiblockMetal)this.master()).energyStorage.getEnergyStored();
+		return this.master().energyStorage.getEnergyStored();
 	}
 	@Override
 	public int getMaxEnergyStored(EnumFacing from)
 	{
-		return ((TileEntityMultiblockMetal)this.master()).energyStorage.getMaxEnergyStored();
+		return this.master().energyStorage.getMaxEnergyStored();
 	}
 
 
@@ -176,9 +180,8 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 		{
 			TileEntityMultiblockMetal master = master();
 			master.redstoneControlInverted = !master.redstoneControlInverted;
-			ChatUtils.sendServerNoSpamMessages(player, new ChatComponentTranslation(Lib.CHAT_INFO+"rsControl."+(master.redstoneControlInverted?"invertedOn":"invertedOff")));
-			master.markDirty();
-			worldObj.markBlockForUpdate(master.getPos());
+			ChatUtils.sendServerNoSpamMessages(player, new TextComponentTranslation(Lib.CHAT_INFO+"rsControl."+(master.redstoneControlInverted?"invertedOn":"invertedOff")));
+			this.updateMasterBlock(null, true);
 			return true;
 		}
 		return false;
@@ -194,7 +197,7 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 			if(tile!=null)
 			{
 				boolean b = worldObj.isBlockIndirectlyGettingPowered(tile.getPos())>0;
-				return redstoneControlInverted?!b:b;
+				return redstoneControlInverted != b;
 			}
 		}
 		return false;
@@ -361,7 +364,7 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 		return false;
 	}
 
-	public static abstract class MultiblockProcess<R extends IMultiblockRecipe>
+	public abstract static class MultiblockProcess<R extends IMultiblockRecipe>
 	{
 		public R recipe;
 		public int processTick;
@@ -712,7 +715,7 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 			if(multiblock.addProcessToQueue(new MultiblockProcessInWorld(recipe, displayStack, transformationPoint), simulate))
 			{
 				multiblock.markDirty();
-				multiblock.worldObj.markBlockForUpdate(multiblock.getPos());
+				multiblock.markContainingBlockForUpdate(null);
 				stack.stackSize -= displayStack.stackSize;
 				if(stack.stackSize<=0)
 					stack = null;

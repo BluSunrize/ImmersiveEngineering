@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.common.util.compat.jei.workbench;
 
+import blusunrize.immersiveengineering.common.items.ItemEngineersBlueprint;
 import com.google.common.collect.Lists;
 
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
@@ -21,7 +22,7 @@ public class WorkbenchRecipeCategory extends IERecipeCategory
 	private final IDrawable slotDrawable;
 	public WorkbenchRecipeCategory(IGuiHelper helper)
 	{
-		super("workbench","tile.ImmersiveEngineering.woodenDevice0.workbench.name", helper.createDrawable(background, 0,0, 176,74), WorkbenchRecipeWrapper.class);
+		super("workbench","tile.immersiveengineering.woodenDevice0.workbench.name", helper.createDrawable(background, 0,0, 176,74), WorkbenchRecipeWrapper.class);
 		slotDrawable = helper.getSlotDrawable();
 	}
 
@@ -35,7 +36,7 @@ public class WorkbenchRecipeCategory extends IERecipeCategory
 		{
 			WorkbenchRecipeWrapper recipe = (WorkbenchRecipeWrapper) recipeWrapper;
 			inputSlots = new int[recipe.recipeInputs.length][];
-			guiItemStacks.set(0, Lists.newArrayList(new ItemStack(IEContent.itemBlueprint,1,BlueprintCraftingRecipe.blueprintCategories.indexOf(recipe.blueprintCategory))));
+			guiItemStacks.set(0, Lists.newArrayList(ItemEngineersBlueprint.getTypedBlueprint(recipe.blueprintCategory)));
 			inputSlots[0] = new int[]{102,3};
 			for(int i=0; i<recipe.recipeInputs.length; i++)
 			{

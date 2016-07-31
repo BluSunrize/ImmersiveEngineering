@@ -26,12 +26,12 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.*;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -176,41 +176,41 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 			this.limitType = null;
 		if(type==secondCable)
 			this.secondCable = null;
-		worldObj.markBlockForUpdate(getPos());
+		this.markContainingBlockForUpdate(null);
 	}
 
 	@Override
-	public Vec3 getRaytraceOffset(IImmersiveConnectable link)
+	public Vec3d getRaytraceOffset(IImmersiveConnectable link)
 	{
 		if(onPost)
-			return new Vec3(.5, 1.5, .5);
-		return new Vec3(.5, 2.75, .5);
+			return new Vec3d(.5, 1.5, .5);
+		return new Vec3d(.5, 2.75, .5);
 	}
 	@Override
-	public Vec3 getConnectionOffset(Connection con)
+	public Vec3d getConnectionOffset(Connection con)
 	{
 		boolean b = con.cableType==limitType;
 		if(onPost)
 		{
 			if(b)
-				return new Vec3(.5+(facing==EnumFacing.EAST?.4375: facing==EnumFacing.WEST?-.4375: 0),1.4375,.5+(facing==EnumFacing.SOUTH?.4375: facing==EnumFacing.NORTH?-.4375: 0));
+				return new Vec3d(.5+(facing==EnumFacing.EAST?.4375: facing==EnumFacing.WEST?-.4375: 0),1.4375,.5+(facing==EnumFacing.SOUTH?.4375: facing==EnumFacing.NORTH?-.4375: 0));
 			else
-				return new Vec3(.5+(facing==EnumFacing.EAST?-.0625: facing==EnumFacing.WEST?.0625: 0),.25,.5+(facing==EnumFacing.SOUTH?-.0625: facing==EnumFacing.NORTH?.0625: 0));
+				return new Vec3d(.5+(facing==EnumFacing.EAST?-.0625: facing==EnumFacing.WEST?.0625: 0),.25,.5+(facing==EnumFacing.SOUTH?-.0625: facing==EnumFacing.NORTH?.0625: 0));
 		}
 		else
 		{
 			double conRadius = con.cableType.getRenderDiameter()/2;
 			double offset = con.cableType==WireType.COPPER?-.0625: con.cableType==WireType.ELECTRUM?.0625: .25; 
 			if(facing==EnumFacing.NORTH)
-				return new Vec3(b?.8125:.1875, 2.5+offset-conRadius, .5);
+				return new Vec3d(b?.8125:.1875, 2.5+offset-conRadius, .5);
 			if(facing==EnumFacing.SOUTH)
-				return new Vec3(b?.1875:.8125, 2.5+offset-conRadius, .5);
+				return new Vec3d(b?.1875:.8125, 2.5+offset-conRadius, .5);
 			if(facing==EnumFacing.WEST)
-				return new Vec3(.5, 2.5+offset-conRadius, b?.1875:.8125);
+				return new Vec3d(.5, 2.5+offset-conRadius, b?.1875:.8125);
 			if(facing==EnumFacing.EAST)
-				return new Vec3(.5, 2.5+offset-conRadius, b?.8125:.1875);
+				return new Vec3d(.5, 2.5+offset-conRadius, b?.8125:.1875);
 		}
-		return new Vec3(.5,.5,.5);
+		return new Vec3d(.5,.5,.5);
 	}
 
 	public int getTargetedConnector(TargetingInfo target)
@@ -270,7 +270,7 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 		//			else
 		//				renderAABB = AxisAlignedBB.getBoundingBox(xCoord, yCoord, zCoord, xCoord, yCoord, zCoord);
 		//		}
-		return AxisAlignedBB.fromBounds(getPos().getX()-16,getPos().getY()-16,getPos().getZ()-16, getPos().getX()+16,getPos().getY()+16,getPos().getZ()+16);
+		return new AxisAlignedBB(getPos().getX()-16,getPos().getY()-16,getPos().getZ()-16, getPos().getX()+16,getPos().getY()+16,getPos().getZ()+16);
 	}
 
 	@Override
@@ -330,7 +330,7 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 		{
 			onPost = true;
 			markDirty();
-			worldObj.markBlockForUpdate(pos);
+			this.markContainingBlockForUpdate(null);
 		}
 		else
 			for(int i=1; i<=2; i++)
@@ -365,17 +365,6 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 	}
 
 	@Override
-	public float[] getSpecialCollisionBounds()
-	{
-		return null;
-	}
-	@Override
-	public float[] getSpecialSelectionBounds()
-	{
-		return null;
-	}
-
-	@Override
 	public List<AxisAlignedBB> getAdvancedSelectionBounds()
 	{
 		if(dummy==2)
@@ -398,11 +387,9 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 	}
 
 	@Override
-	public boolean isOverrideBox(AxisAlignedBB box, EntityPlayer player, MovingObjectPosition mop, ArrayList<AxisAlignedBB> list)
+	public boolean isOverrideBox(AxisAlignedBB box, EntityPlayer player, RayTraceResult mop, ArrayList<AxisAlignedBB> list)
 	{
-		if(box.expand(.002,.002,.002).isVecInside(mop.hitVec))
-			return true;	
-		return false;
+		return box.expand(.002, .002, .002).isVecInside(mop.hitVec);
 	}
 	@Override
 	public Set<BlockPos> getIgnored(IImmersiveConnectable other)

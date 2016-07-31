@@ -2,12 +2,15 @@ package blusunrize.immersiveengineering.common.crafting;
 
 import java.util.List;
 
+import blusunrize.immersiveengineering.common.items.IEItemInterfaces;
+import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
 import com.google.common.collect.Lists;
 
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.entity.passive.EntitySheep;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemArmor;
@@ -23,14 +26,14 @@ public class RecipeEarmuffs implements IRecipe
 	{
 		ItemStack earmuffs = null;
 		ItemStack armor = null;
-		List<ItemStack> list = Lists.<ItemStack>newArrayList();
+		List<ItemStack> list = Lists.newArrayList();
 		for(int i=0;i<inv.getSizeInventory();i++)
 		{
 			ItemStack stackInSlot = inv.getStackInSlot(i);
 			if(stackInSlot!=null)
 				if(earmuffs==null && IEContent.itemEarmuffs.equals(stackInSlot.getItem()))
 					earmuffs = stackInSlot;
-				else if(armor==null && stackInSlot.getItem() instanceof ItemArmor && ((ItemArmor)stackInSlot.getItem()).armorType==0 && !IEContent.itemEarmuffs.equals(stackInSlot.getItem()))
+				else if(armor==null && stackInSlot.getItem() instanceof ItemArmor && ((ItemArmor)stackInSlot.getItem()).getEquipmentSlot()== EntityEquipmentSlot.HEAD && !IEContent.itemEarmuffs.equals(stackInSlot.getItem()))
 					armor = stackInSlot;
 				else if(Utils.isDye(stackInSlot))
 					list.add(stackInSlot);
@@ -59,7 +62,7 @@ public class RecipeEarmuffs implements IRecipe
 				if(earmuffs==null && IEContent.itemEarmuffs.equals(stackInSlot.getItem()))
 				{
 					earmuffs = stackInSlot;
-					int colour = earmuffs.getItem().getColorFromItemStack(earmuffs, 0);
+					int colour = ((IColouredItem)earmuffs.getItem()).getColourForIEItem(earmuffs, 0);
 					float r = (float)(colour >> 16 & 255) / 255.0F;
 					float g = (float)(colour >> 8 & 255) / 255.0F;
 					float b = (float)(colour & 255) / 255.0F;
@@ -71,7 +74,7 @@ public class RecipeEarmuffs implements IRecipe
 				}
 				else if(Utils.isDye(stackInSlot))
 				{
-					float[] afloat = EntitySheep.func_175513_a(EnumDyeColor.byDyeDamage(Utils.getDye(stackInSlot)));
+					float[] afloat = EntitySheep.getDyeRgb(EnumDyeColor.byDyeDamage(Utils.getDye(stackInSlot)));
 					int r = (int)(afloat[0] * 255.0F);
 					int g = (int)(afloat[1] * 255.0F);
 					int b = (int)(afloat[2] * 255.0F);
@@ -81,7 +84,7 @@ public class RecipeEarmuffs implements IRecipe
 					colourArray[2] += b;
 					++totalColourSets;
 				}
-				else if(armor==null && stackInSlot.getItem() instanceof ItemArmor && ((ItemArmor)stackInSlot.getItem()).armorType==0 && !IEContent.itemEarmuffs.equals(stackInSlot.getItem()))
+				else if(armor==null && stackInSlot.getItem() instanceof ItemArmor && ((ItemArmor)stackInSlot.getItem()).armorType==EntityEquipmentSlot.HEAD && !IEContent.itemEarmuffs.equals(stackInSlot.getItem()))
 					armor = stackInSlot;
 		}
 

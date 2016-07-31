@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Set;
 
+import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableSet;
 
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
@@ -20,8 +21,8 @@ public class IEProperties
 	public static final PropertyDirection FACING_HORIZONTAL = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
 	public static final PropertyDirection FACING_VERTICAL = PropertyDirection.create("facing", EnumFacing.Plane.VERTICAL);
 
-	public static final PropertyBoolInverted MULTIBLOCKSLAVE = PropertyBoolInverted.create("*multiblockslave");//Name starts with an asterisk to ensure priority when overriding models
-	public static final PropertyBoolInverted DYNAMICRENDER = PropertyBoolInverted.create("+dynamicrender");//Name starts with a plus to ensure priority over anything but the multiblockslave property
+	public static final PropertyBoolInverted MULTIBLOCKSLAVE = PropertyBoolInverted.create("_0multiblockslave");//Name starts with '_0' to ensure priority when overriding models
+	public static final PropertyBoolInverted DYNAMICRENDER = PropertyBoolInverted.create("_1dynamicrender");//Name starts with '_1' to ensure priority over anything but the multiblockslave property
 	public static final PropertySet CONNECTIONS = new PropertySet("conns");
 	
 	public static final PropertyEnum[] SIDECONFIG = {
@@ -55,6 +56,7 @@ public class IEProperties
 
 	public static final IUnlistedProperty<HashMap> OBJ_TEXTURE_REMAP = new IUnlistedProperty<HashMap>()
 	{
+		@Override
 		public String getName()
 		{
 			return "obj_texture_remap";
@@ -76,6 +78,7 @@ public class IEProperties
 	};
 	public static final IUnlistedProperty<IOBJModelCallback> OBJ_MODEL_CALLBACK = new IUnlistedProperty<IOBJModelCallback>()
 	{
+		@Override
 		public String getName()
 		{
 			return "obj_model_callback";
@@ -98,19 +101,26 @@ public class IEProperties
 	
 	public static class PropertyBoolInverted extends PropertyHelper<Boolean>
 	{
-		private final ImmutableSet<Boolean> allowedValues = ImmutableSet.<Boolean>of(Boolean.valueOf(false), Boolean.valueOf(true));
+		private final ImmutableSet<Boolean> allowedValues = ImmutableSet.of(Boolean.valueOf(false), Boolean.valueOf(true));
 		protected PropertyBoolInverted(String name)
 		{
 			super(name, Boolean.class);
 		}
+		@Override
 		public Collection<Boolean> getAllowedValues()
 		{
 			return this.allowedValues;
+		}
+		@Override
+		public Optional<Boolean> parseValue(String value)
+		{
+			return Optional.of(Boolean.getBoolean(value));
 		}
 		public static PropertyBoolInverted create(String name)
 		{
 			return new PropertyBoolInverted(name);
 		}
+		@Override
 		public String getName(Boolean value)
 		{
 			return value.toString();
@@ -136,9 +146,7 @@ public class IEProperties
 		@Override
 		public boolean isValid(Set value)
 		{
-			if (value == null)
-				return false;
-			return true;
+			return value != null;
 		}
 
 		@Override

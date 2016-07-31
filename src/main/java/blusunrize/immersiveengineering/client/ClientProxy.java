@@ -1,28 +1,7 @@
 package blusunrize.immersiveengineering.client;
 
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.UUID;
-
-import org.lwjgl.input.Keyboard;
-
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Lists;
-import com.mojang.authlib.GameProfile;
-
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.ApiUtils;
-import blusunrize.immersiveengineering.api.IEApi;
-import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.api.ManualHelper;
-import blusunrize.immersiveengineering.api.ManualPageMultiblock;
+import blusunrize.immersiveengineering.api.*;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.crafting.FermenterRecipe;
 import blusunrize.immersiveengineering.api.crafting.SqueezerRecipe;
@@ -32,114 +11,33 @@ import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.client.fx.EntityFXSparks;
-import blusunrize.immersiveengineering.client.gui.GuiArcFurnace;
-import blusunrize.immersiveengineering.client.gui.GuiAssembler;
-import blusunrize.immersiveengineering.client.gui.GuiBlastFurnace;
-import blusunrize.immersiveengineering.client.gui.GuiCokeOven;
-import blusunrize.immersiveengineering.client.gui.GuiCrate;
-import blusunrize.immersiveengineering.client.gui.GuiFermenter;
-import blusunrize.immersiveengineering.client.gui.GuiModWorkbench;
-import blusunrize.immersiveengineering.client.gui.GuiRefinery;
-import blusunrize.immersiveengineering.client.gui.GuiRevolver;
-import blusunrize.immersiveengineering.client.gui.GuiSorter;
-import blusunrize.immersiveengineering.client.gui.GuiSqueezer;
-import blusunrize.immersiveengineering.client.gui.GuiToolbox;
+import blusunrize.immersiveengineering.client.gui.*;
 import blusunrize.immersiveengineering.client.models.ModelShaderMinecart;
 import blusunrize.immersiveengineering.client.models.obj.IEOBJLoader;
 import blusunrize.immersiveengineering.client.models.smart.ConnLoader;
-import blusunrize.immersiveengineering.client.render.EntityRenderChemthrowerShot;
-import blusunrize.immersiveengineering.client.render.EntityRenderFluorescentTube;
-import blusunrize.immersiveengineering.client.render.EntityRenderGrapplingHook;
-import blusunrize.immersiveengineering.client.render.EntityRenderIEExplosive;
-import blusunrize.immersiveengineering.client.render.EntityRenderNone;
-import blusunrize.immersiveengineering.client.render.EntityRenderRailgunShot;
-import blusunrize.immersiveengineering.client.render.EntityRenderRevolvershot;
-import blusunrize.immersiveengineering.client.render.IEBipedLayerRenderer;
-import blusunrize.immersiveengineering.client.render.TileRenderArcFurnace;
-import blusunrize.immersiveengineering.client.render.TileRenderBucketWheel;
-import blusunrize.immersiveengineering.client.render.TileRenderChargingStation;
-import blusunrize.immersiveengineering.client.render.TileRenderCrusher;
-import blusunrize.immersiveengineering.client.render.TileRenderDieselGenerator;
-import blusunrize.immersiveengineering.client.render.TileRenderMetalPress;
-import blusunrize.immersiveengineering.client.render.TileRenderSampleDrill;
-import blusunrize.immersiveengineering.client.render.TileRenderSheetmetalTank;
-import blusunrize.immersiveengineering.client.render.TileRenderSilo;
-import blusunrize.immersiveengineering.client.render.TileRenderSqueezer;
-import blusunrize.immersiveengineering.client.render.TileRenderTeslaCoil;
-import blusunrize.immersiveengineering.client.render.TileRenderWatermill;
-import blusunrize.immersiveengineering.client.render.TileRenderWindmill;
-import blusunrize.immersiveengineering.client.render.TileRenderWindmillAdvanced;
-import blusunrize.immersiveengineering.client.render.TileRenderWorkbench;
+import blusunrize.immersiveengineering.client.render.*;
 import blusunrize.immersiveengineering.common.CommonProxy;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.IERecipes;
 import blusunrize.immersiveengineering.common.blocks.BlockTypes_MetalsAll;
 import blusunrize.immersiveengineering.common.blocks.BlockTypes_MetalsIE;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGuiTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IIEMetaBlock;
 import blusunrize.immersiveengineering.common.blocks.cloth.BlockTypes_ClothDevice;
-import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_Connector;
-import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_Conveyor;
-import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalDecoration0;
-import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalDecoration1;
-import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalDecoration2;
-import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalDevice0;
-import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalDevice1;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityArcFurnace;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityAssembler;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBucketWheel;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityChargingStation;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityDieselGenerator;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFermenter;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFluidPipe;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMetalPress;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityRefinery;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySampleDrill;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySheetmetalTank;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySilo;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySqueezer;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTeslaCoil;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockArcFurnace;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockAssembler;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockBlastFurnace;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockBlastFurnaceAdvanced;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockBucketWheel;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockCokeOven;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockCrusher;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockDieselGenerator;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockExcavator;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockExcavatorDemo;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockFermenter;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockMetalPress;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockRefinery;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockSheetmetalTank;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockSilo;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockSqueezer;
+import blusunrize.immersiveengineering.common.blocks.metal.*;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.*;
 import blusunrize.immersiveengineering.common.blocks.stone.BlockTypes_StoneDecoration;
 import blusunrize.immersiveengineering.common.blocks.stone.TileEntityBlastFurnace;
 import blusunrize.immersiveengineering.common.blocks.stone.TileEntityCokeOven;
-import blusunrize.immersiveengineering.common.blocks.wooden.BlockTypes_WoodenDecoration;
-import blusunrize.immersiveengineering.common.blocks.wooden.BlockTypes_WoodenDevice0;
-import blusunrize.immersiveengineering.common.blocks.wooden.BlockTypes_WoodenDevice1;
-import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityModWorkbench;
-import blusunrize.immersiveengineering.common.blocks.wooden.TileEntitySorter;
-import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWatermill;
-import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWindmill;
-import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWindmillAdvanced;
-import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenCrate;
-import blusunrize.immersiveengineering.common.entities.EntityChemthrowerShot;
-import blusunrize.immersiveengineering.common.entities.EntityFluorescentTube;
-import blusunrize.immersiveengineering.common.entities.EntityGrapplingHook;
-import blusunrize.immersiveengineering.common.entities.EntityIEExplosive;
-import blusunrize.immersiveengineering.common.entities.EntityRailgunShot;
-import blusunrize.immersiveengineering.common.entities.EntityRevolvershot;
-import blusunrize.immersiveengineering.common.entities.EntitySkylineHook;
-import blusunrize.immersiveengineering.common.items.ItemDrillhead;
+import blusunrize.immersiveengineering.common.blocks.wooden.*;
+import blusunrize.immersiveengineering.common.entities.*;
+import blusunrize.immersiveengineering.common.gui.ContainerRevolver;
+import blusunrize.immersiveengineering.common.gui.ContainerToolbox;
+import blusunrize.immersiveengineering.common.items.*;
+import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
+import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IGuiItem;
 import blusunrize.immersiveengineering.common.items.ItemDrillhead.DrillHeadPerm;
-import blusunrize.immersiveengineering.common.items.ItemIEBase;
-import blusunrize.immersiveengineering.common.items.ItemRevolver;
-import blusunrize.immersiveengineering.common.items.ItemToolbox;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
@@ -149,51 +47,52 @@ import blusunrize.lib.manual.IManualPage;
 import blusunrize.lib.manual.ManualInstance.ManualEntry;
 import blusunrize.lib.manual.ManualPages;
 import blusunrize.lib.manual.ManualPages.PositionedItemStack;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Lists;
+import com.mojang.authlib.GameProfile;
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.model.ModelMinecart;
-import net.minecraft.client.particle.EntityFX;
-import net.minecraft.client.particle.EntityReddustFX;
+import net.minecraft.client.particle.Particle;
+import net.minecraft.client.particle.ParticleRedstone;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.ItemMeshDefinition;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
-import net.minecraft.client.renderer.entity.ArmorStandRenderer;
-import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.entity.RenderBiped;
-import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.renderer.entity.RenderMinecart;
-import net.minecraft.client.renderer.entity.RenderPlayer;
+import net.minecraft.client.renderer.block.model.ModelBakery;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.color.IItemColor;
+import net.minecraft.client.renderer.entity.*;
 import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.client.resources.IReloadableResourceManager;
-import net.minecraft.client.resources.model.IBakedModel;
-import net.minecraft.client.resources.model.ModelBakery;
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.client.model.ISmartBlockModel;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.client.model.obj.OBJModel.OBJProperty;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.property.IExtendedBlockState;
+import net.minecraftforge.common.property.*;
+import net.minecraftforge.common.property.Properties;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
@@ -201,6 +100,11 @@ import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameData;
 import net.minecraftforge.oredict.OreDictionary;
+import org.lwjgl.input.Keyboard;
+
+import java.text.DecimalFormat;
+import java.util.*;
+import java.util.Map.Entry;
 
 @SuppressWarnings("deprecation")
 public class ClientProxy extends CommonProxy
@@ -219,12 +123,13 @@ public class ClientProxy extends CommonProxy
 	public void preInit()
 	{
 		ModelLoaderRegistry.registerLoader(IEOBJLoader.instance);
-		OBJLoader.instance.addDomain("immersiveengineering");
+		OBJLoader.INSTANCE.addDomain("immersiveengineering");
+		IEOBJLoader.instance.addDomain("immersiveengineering");
 
 		for(Block block : IEContent.registeredIEBlocks)
 		{
 			Item blockItem = Item.getItemFromBlock(block);
-			final ResourceLocation loc = (ResourceLocation)GameData.getBlockRegistry().getNameForObject(block);
+			final ResourceLocation loc = GameData.getBlockRegistry().getNameForObject(block);
 			if(block instanceof IIEMetaBlock)
 			{
 				IIEMetaBlock ieMetaBlock = (IIEMetaBlock)block;
@@ -237,11 +142,17 @@ public class ClientProxy extends CommonProxy
 					String prop = "inventory,"+ieMetaBlock.getMetaProperty().getName()+"="+ieMetaBlock.getMetaEnums()[meta].toString().toLowerCase(Locale.US);
 					if(ieMetaBlock.useCustomStateMapper())
 					{
-						String custom = ieMetaBlock.getCustomStateMapping(meta);
+						String custom = ieMetaBlock.getCustomStateMapping(meta, true);
 						if(custom!=null)
 							location += "_"+custom;
 					}
-					ModelLoader.setCustomModelResourceLocation(blockItem, meta, new ModelResourceLocation(location, prop));
+					try
+					{
+						ModelLoader.setCustomModelResourceLocation(blockItem, meta, new ModelResourceLocation(location, prop));
+					}catch(NullPointerException npe)
+					{
+						throw new RuntimeException("WELP! apparently "+ieMetaBlock+" lacks an item!", npe);
+					}
 				}
 			}
 			else
@@ -254,7 +165,7 @@ public class ClientProxy extends CommonProxy
 			{
 				ItemIEBase ieMetaItem = (ItemIEBase)item;
 				if(ieMetaItem.registerSubModels && ieMetaItem.getSubNames()!=null && ieMetaItem.getSubNames().length>0)
-				{			
+				{
 					for(int meta=0; meta<ieMetaItem.getSubNames().length; meta++)
 					{
 						ResourceLocation loc = new ResourceLocation("immersiveengineering",ieMetaItem.itemName+"/"+ieMetaItem.getSubNames()[meta]);
@@ -268,6 +179,7 @@ public class ClientProxy extends CommonProxy
 					ModelBakery.registerItemVariants(ieMetaItem, loc);
 					ModelLoader.setCustomMeshDefinition(ieMetaItem, new ItemMeshDefinition()
 					{
+						@Override
 						public ModelResourceLocation getModelLocation(ItemStack stack)
 						{
 							return new ModelResourceLocation(loc, "inventory");
@@ -277,10 +189,11 @@ public class ClientProxy extends CommonProxy
 			}
 			else
 			{
-				final ResourceLocation loc = (ResourceLocation)GameData.getItemRegistry().getNameForObject(item);
+				final ResourceLocation loc = GameData.getItemRegistry().getNameForObject(item);
 				ModelBakery.registerItemVariants(item, loc);
 				ModelLoader.setCustomMeshDefinition(item, new ItemMeshDefinition()
 				{
+					@Override
 					public ModelResourceLocation getModelLocation(ItemStack stack)
 					{
 						return new ModelResourceLocation(loc, "inventory");
@@ -289,44 +202,61 @@ public class ClientProxy extends CommonProxy
 			}
 		}
 		ImmersiveModelRegistry.instance.registerCustomItemModel(new ItemStack(IEContent.itemTool,1,2), new ImmersiveModelRegistry.ItemModelReplacement("immersiveengineering:models/item/tool/voltmeter.obj")
-				.setTransformations(TransformType.FIRST_PERSON, new Matrix4().translate(-.25, .375, .3125).rotate(-Math.PI*.5, 0, 1, 0))
-				.setTransformations(TransformType.THIRD_PERSON, new Matrix4().translate(.15625, .0390625, -.15625).scale(.625f,.625f,.625f).rotate(-Math.PI*.5, 0, 1, 0).rotate(Math.PI*1.5, 0, 0, 1).rotate(Math.PI, 1, 0, 0))
-				.setTransformations(TransformType.GUI, new Matrix4().scale(1.75f,1.75f,1.75f).rotate(Math.PI*.75, 0, 1, 0).rotate(Math.toRadians(-30), 1, 0, 0).translate(.25,.22,0))
-				.setTransformations(TransformType.FIXED, new Matrix4().translate(-.5, .5, -.5).scale(2,2,2).rotate(Math.PI, 0, 1, 0))
-				.setTransformations(TransformType.GROUND, new Matrix4().translate(.5,.5,.5).scale(2,2,2)));
+				.setTransformations(TransformType.FIRST_PERSON_RIGHT_HAND, new Matrix4().translate(-.25, .375, .3125).rotate(-Math.PI*.5, 0, 1, 0))
+				.setTransformations(TransformType.FIRST_PERSON_LEFT_HAND, new Matrix4().translate(-.25, .375, -.625).rotate(-Math.PI*.5, 0, 1, 0))
+				.setTransformations(TransformType.THIRD_PERSON_RIGHT_HAND, new Matrix4().translate(-0.25, .125, .25).scale(.625f,.625f,.625f).rotate(-Math.PI*.375, 0, 1, 0))
+				.setTransformations(TransformType.THIRD_PERSON_LEFT_HAND, new Matrix4().translate(-0.5, .125, -.3125).scale(.625f,.625f,.625f).rotate(-Math.PI*.375, 0, 1, 0))
+				.setTransformations(TransformType.FIXED, new Matrix4().translate(-.5,.5,-.5).scale(1,1,1).rotate(Math.PI, 0, 1, 0))
+				.setTransformations(TransformType.GUI, new Matrix4().translate(0,.5,0).scale(1.125,1.125,1.125).rotate(-Math.PI*.25, 0, 1, 0))
+				.setTransformations(TransformType.GROUND, new Matrix4().translate(.25,.25,.25).scale(.5,.5,.5)));
+
 		ImmersiveModelRegistry.instance.registerCustomItemModel(new ItemStack(IEContent.itemToolbox), new ImmersiveModelRegistry.ItemModelReplacement("immersiveengineering:models/item/toolbox.obj")
-				.setTransformations(TransformType.FIRST_PERSON, new Matrix4().translate(-.25,.5,-.25).rotate(Math.PI, 0,1,0))
-				.setTransformations(TransformType.THIRD_PERSON, new Matrix4().translate(-.1953125, -.05859375, .1171875).scale(.625,.625,.625).rotate(Math.PI, 0, 1, 0).rotate(Math.PI, 1, 0, 0))
-				.setTransformations(TransformType.GUI, new Matrix4().translate(.25,.5,.25))
-				.setTransformations(TransformType.FIXED, new Matrix4().translate(.375,.75,-.4).scale(1.5,1.5,1.5).rotate(Math.PI/2, 0,1,0))
-				.setTransformations(TransformType.GROUND, new Matrix4().translate(.375,.75,.375).scale(1.5,1.5,1.5)));
+				.setTransformations(TransformType.FIRST_PERSON_RIGHT_HAND, new Matrix4().scale(.375,.375,.375).translate(-.75, 1.25, .3125).rotate(-Math.PI*.75, 0, 1, 0))
+				.setTransformations(TransformType.FIRST_PERSON_LEFT_HAND, new Matrix4().scale(.375,.375,.375).translate(-.125, 1.25, .9375).rotate(Math.PI*.25, 0, 1, 0))
+				.setTransformations(TransformType.THIRD_PERSON_RIGHT_HAND, new Matrix4().translate(-.25, .1875, .3125).scale(.625,.625,.625).rotate(Math.PI, 0, 1, 0).rotate(-Math.PI*.5, 1, 0, 0))
+				.setTransformations(TransformType.THIRD_PERSON_LEFT_HAND, new Matrix4().translate(-.25, -.4375, .3125).scale(.625,.625,.625).rotate(Math.PI*.5, 1, 0, 0))
+				.setTransformations(TransformType.FIXED, new Matrix4().translate(.5,.875,-.5).scale(1,1,1).rotate(Math.PI*.5, 0, 1, 0))
+				.setTransformations(TransformType.GUI, new Matrix4().translate(-.625,.75,0).scale(.875,.875,.875).rotate(-Math.PI*.6875, 0, 1, 0))
+				.setTransformations(TransformType.GROUND, new Matrix4().translate(.25,.5,.25).scale(.5,.5,.5)));
 
 		ImmersiveModelRegistry.instance.registerCustomItemModel(new ItemStack(IEContent.itemRevolver,1,0), new ImmersiveModelRegistry.ItemModelReplacement("immersiveengineering:models/item/revolver/revolver.obj")
-				.setTransformations(TransformType.FIRST_PERSON, new Matrix4().rotate(Math.toRadians(-140), 0,1,0).scale(.375, .5, .5).translate(-.5, .4375, .125))
-				.setTransformations(TransformType.THIRD_PERSON, new Matrix4().translate(0, .15625, -.15625).scale(.125, .125, .125).rotate(Math.toRadians(-90), 0,1,0).rotate(Math.toRadians(180), 1,0,0).rotate(Math.toRadians(70), 0,0,1))
-				.setTransformations(TransformType.GUI, new Matrix4().translate(-.078125, -.0781225, -.15625).scale(.3125, .3125, .3125).rotate(Math.toRadians(120), 0,1,0).rotate(Math.toRadians(-40), 0,0,1))
-				.setTransformations(TransformType.FIXED, new Matrix4().translate(-.25, 0,-.0625).scale(.375, .375, .375).rotate(Math.PI, 0, 1, 0).rotate(Math.toRadians(-40), 0, 0, 1))
-				.setTransformations(TransformType.GROUND, new Matrix4().translate(.125, 0, 0).scale(.5, .5, .5)));
+				.setTransformations(TransformType.FIRST_PERSON_RIGHT_HAND, new Matrix4().rotate(Math.toRadians(-90), 0,1,0).scale(.1875, .25, .25).translate(-.5, .4375, .5))
+				.setTransformations(TransformType.FIRST_PERSON_LEFT_HAND, new Matrix4().rotate(Math.toRadians(90), 0,1,0).scale(.1875, .25, .25).translate(.45, .4375, .5))
+				.setTransformations(TransformType.THIRD_PERSON_RIGHT_HAND, new Matrix4().translate(-.125, .125,-.125).scale(.125, .125, .125).rotate(Math.toRadians(-90), 0,1,0).rotate(Math.toRadians(-10), 0,0,1))
+				.setTransformations(TransformType.THIRD_PERSON_LEFT_HAND, new Matrix4().translate(.0, .0625,-.125).scale(.125, .125, .125).rotate(Math.toRadians(90), 0,1,0).rotate(Math.toRadians(0), 0,0,1))
+				.setTransformations(TransformType.GUI, new Matrix4().translate(.1875, -.0781225, -.15625).scale(.2, .2, .2).rotate(Math.toRadians(-40), 0,1,0).rotate(Math.toRadians(-35), 0,0,1))
+				.setTransformations(TransformType.FIXED, new Matrix4().translate(-.25, 0,-.0625).scale(.1875, .1875, .1875).rotate(Math.PI, 0, 1, 0).rotate(Math.toRadians(-40), 0, 0, 1))
+				.setTransformations(TransformType.GROUND, new Matrix4().translate(.125, 0, .0625).scale(.125, .125, .125)));
 
 		ImmersiveModelRegistry.instance.registerCustomItemModel(new ItemStack(IEContent.itemDrill,1,0), new ImmersiveModelRegistry.ItemModelReplacement("immersiveengineering:models/item/drill/drill_diesel.obj")
-				.setTransformations(TransformType.FIRST_PERSON, new Matrix4().translate(0, .5, .125).scale(.875, .875, .875).rotate(Math.toRadians(40), 0,1,0))
-				.setTransformations(TransformType.THIRD_PERSON, new Matrix4().translate(-.0625, .4375, -.25).scale(.625, .625, .625).rotate(Math.toRadians(260), 1,0,0).rotate(Math.toRadians(-80), 0,1,0))
-				.setTransformations(TransformType.GUI, new Matrix4().translate(.125, .25, .25))
-				.setTransformations(TransformType.FIXED, new Matrix4().translate(-.125, .25, .25).rotate(Math.toRadians(40), 0,0,1).scale(1.25,1.25,1.25))
-				.setTransformations(TransformType.GROUND, new Matrix4().translate(.125, .25, .375).scale(1.5, 1.5, 1.5)));
+				.setTransformations(TransformType.FIRST_PERSON_RIGHT_HAND, new Matrix4().scale(.375,.375,.375).translate(-.25, 1, .5).rotate(Math.PI*.5, 0, 1, 0))
+				.setTransformations(TransformType.FIRST_PERSON_LEFT_HAND, new Matrix4().scale(.375,.375,.375).translate(-1.5, 1.125, .875).rotate(-Math.PI*.5, 0, 1, 0))
+				.setTransformations(TransformType.THIRD_PERSON_RIGHT_HAND, new Matrix4().translate(.0625, .9375, .25).scale(.75,.75,.75).rotate(Math.PI*.75, 0, 1, 0).rotate(Math.PI*.375, 0, 0, 1).rotate(-Math.PI*.25, 1, 0, 0))
+				.setTransformations(TransformType.THIRD_PERSON_LEFT_HAND, new Matrix4().translate(.0625, .9375, .25).scale(-.75,.75,.75).rotate(-Math.PI*.75, 0, 1, 0).rotate(-Math.PI*.375, 0, 0, 1).rotate(-Math.PI*.25, 1, 0, 0))
+				.setTransformations(TransformType.FIXED, new Matrix4().translate(.1875,.0625,.15625).scale(.4375,.4375,.4375).rotate(-Math.PI*.25, 0, 0, 1))
+				.setTransformations(TransformType.GUI, new Matrix4().translate(-.5,.25,0).scale(.75,.75,.75).rotate(-Math.PI*.6875, 0, 1, 0).rotate(-Math.PI*.125, 0, 0, 1))
+				.setTransformations(TransformType.GROUND, new Matrix4().translate(.125,.25,.25).scale(.5,.5,.5)));
+
 
 		ImmersiveModelRegistry.instance.registerCustomItemModel(new ItemStack(IEContent.itemChemthrower,1,0), new ImmersiveModelRegistry.ItemModelReplacement("immersiveengineering:models/item/chemthrower.obj")
-				.setTransformations(TransformType.FIRST_PERSON, new Matrix4().translate(0, .25, .125).scale(.5, .5, .5).rotate(Math.toRadians(40), 0,1,0))
-				.setTransformations(TransformType.THIRD_PERSON, new Matrix4().translate(.1875, .0625, -.3125).scale(.375, .375, .375).rotate(Math.toRadians(200), 1,0,0).rotate(Math.toRadians(-30), 0,1,0))
-				.setTransformations(TransformType.GUI, new Matrix4().scale(.5, .5, .5).translate(.125, .375, 0))
-				.setTransformations(TransformType.FIXED, new Matrix4().translate(-.125, .125, .125).rotate(Math.toRadians(40), 0,0,1).scale(.625,.625,.625))
-				.setTransformations(TransformType.GROUND, new Matrix4().translate(-.0625, .375, .1875).scale(.75, .75, .75)));
+				.setTransformations(TransformType.FIRST_PERSON_RIGHT_HAND, new Matrix4().scale(.375,.375,.375).translate(-.25, 1, .5).rotate(Math.PI*.5, 0, 1, 0))
+				.setTransformations(TransformType.FIRST_PERSON_LEFT_HAND, new Matrix4().scale(.25,.25,.25).translate(-.5, 1.25, .75).rotate(-Math.PI*.5, 0, 1, 0))
+				.setTransformations(TransformType.THIRD_PERSON_RIGHT_HAND, new Matrix4().translate(-.25, .625, -.25).scale(.5,.5,.5).rotate(Math.PI*.75, 0, 1, 0).rotate(Math.PI*.25, 0, 0, 1).rotate(-Math.PI*.25, 1, 0, 0))
+				.setTransformations(TransformType.THIRD_PERSON_LEFT_HAND, new Matrix4().translate(-.25, -.4375, .3125).scale(.625,.625,.625).rotate(Math.PI*.5, 1, 0, 0))
+				.setTransformations(TransformType.FIXED, new Matrix4().translate(.125,.125,-.25).scale(.3125,.3125,.3125).rotate(Math.PI, 0, 1, 0).rotate(Math.PI*.25, 0, 0, 1))
+				.setTransformations(TransformType.GUI, new Matrix4().translate(-.1875,.3125,0).scale(.4375,.4375,.4375).rotate(-Math.PI*.6875, 0, 1, 0).rotate(-Math.PI*.125, 0, 0, 1))
+				.setTransformations(TransformType.GROUND, new Matrix4().translate(0,.25,.125).scale(.25,.25,.25)));
+
+
 		ImmersiveModelRegistry.instance.registerCustomItemModel(new ItemStack(IEContent.itemRailgun,1,0), new ImmersiveModelRegistry.ItemModelReplacement("immersiveengineering:models/item/railgun.obj")
-				.setTransformations(TransformType.FIRST_PERSON, new Matrix4().translate(0, .25, .125).scale(.375, .375, .375).rotate(Math.toRadians(40), 0,1,0))
-				.setTransformations(TransformType.THIRD_PERSON, new Matrix4().translate(-.0625, .125, -.375).scale(.1875, .1875, .1875).rotate(Math.toRadians(200), 1,0,0).rotate(Math.toRadians(-90), 0,1,0))
-				.setTransformations(TransformType.GUI, new Matrix4().scale(.1875, .25, .1875).rotate(-Math.PI/2, 0,1,0).translate(.125, .375, 0))
-				.setTransformations(TransformType.FIXED, new Matrix4().translate(.0625, .1875, .0625).rotate(Math.toRadians(40), 0,0,1).scale(.25,.25,.25))
-				.setTransformations(TransformType.GROUND, new Matrix4().translate(.1875, .125, .125).scale(.375, .375, .375)));
+				.setTransformations(TransformType.FIRST_PERSON_RIGHT_HAND, new Matrix4().scale(.125,.125,.125).translate(-.5, 1.5, .5).rotate(Math.PI*.46875, 0, 1, 0))
+				.setTransformations(TransformType.FIRST_PERSON_LEFT_HAND, new Matrix4().scale(.125,.125,.125).translate(-1.75, 1.625, .875).rotate(-Math.PI*.46875, 0, 1, 0))
+				.setTransformations(TransformType.THIRD_PERSON_RIGHT_HAND, new Matrix4().translate(0, .5625, -.09375).scale(.1875,.1875,.1875).rotate(Math.PI*.53125, 0, 1, 0).rotate(Math.PI*.34375, 0, 0, 1))
+				.setTransformations(TransformType.THIRD_PERSON_LEFT_HAND, new Matrix4().translate(-.1875, .5625, -.09375).scale(.1875,.1875,.1875).rotate(-Math.PI*.46875, 0, 1, 0).rotate(-Math.PI*.34375, 0, 0, 1))
+				.setTransformations(TransformType.FIXED, new Matrix4().translate(.1875,.0625,.0625).scale(.125,.125,.125).rotate(-Math.PI*.25, 0, 0, 1))
+				.setTransformations(TransformType.GUI, new Matrix4().translate(-.1875,0,0).scale(.1875,.1875,.1875).rotate(-Math.PI*.6875, 0, 1, 0).rotate(-Math.PI*.1875, 0, 0, 1))
+				.setTransformations(TransformType.GROUND, new Matrix4().translate(.125,.125,.0625).scale(.125,.125,.125)));
+
 
 		RenderingRegistry.registerEntityRenderingHandler(EntityRevolvershot.class, new IRenderFactory(){
 			@Override
@@ -364,8 +294,10 @@ public class ClientProxy extends CommonProxy
 				return new EntityRenderFluorescentTube(manager);
 			}});
 		ModelLoaderRegistry.registerLoader(new ConnLoader());
-
-
+	}
+	@Override
+	public void preInitSidedCompat()
+	{
 		for(IECompatModule compat : IECompatModule.modules)
 			try{
 				compat.clientPreInit();
@@ -373,6 +305,7 @@ public class ClientProxy extends CommonProxy
 				IELogger.error("Compat module for "+compat+" could not be client pre-initialized");
 			}
 	}
+
 
 	@Override
 	public void init()
@@ -383,7 +316,7 @@ public class ClientProxy extends CommonProxy
 		MinecraftForge.EVENT_BUS.register(handler);
 		((IReloadableResourceManager)ClientUtils.mc().getResourceManager()).registerReloadListener(handler);
 
-		ClientRegistry.registerKeyBinding(keybind_3DGear);	
+		ClientRegistry.registerKeyBinding(keybind_3DGear);
 		//		revolverTextureMap = new TextureMap("textures/revolvers",true);
 		//		revolverTextureMap.setMipmapLevels(Minecraft.getMinecraft().gameSettings.mipmapLevels);
 		//		Minecraft.getMinecraft().renderEngine.loadTickableTexture(revolverTextureResource, revolverTextureMap);
@@ -466,17 +399,33 @@ public class ClientProxy extends CommonProxy
 		//		VillagerRegistry.instance().registerVillagerSkin(villagerId, new ResourceLocation("immersiveengineering:textures/models/villager_engineer.png"));
 
 
+		/**Colours*/
+		for(Item item : IEContent.registeredIEItems)
+			if(item instanceof IColouredItem && ((IColouredItem)item).hasCustomItemColours())
+				ClientUtils.mc().getItemColors().registerItemColorHandler(new IItemColor()
+				{
+					@Override
+					public int getColorFromItemstack(ItemStack stack, int tintIndex)
+					{
+						return ((IColouredItem)item).getColourForIEItem(stack, tintIndex);
+					}
+				}, item);
+
+		/**Render Layers*/
 		Map<String, RenderPlayer> skinMap = Minecraft.getMinecraft().getRenderManager().getSkinMap();
 		RenderPlayer render = skinMap.get("default");
 		render.addLayer(new IEBipedLayerRenderer());
 		render = skinMap.get("slim");
 		render.addLayer(new IEBipedLayerRenderer());
-
+	}
+	@Override
+	public void initSidedCompat()
+	{
 		for(IECompatModule compat : IECompatModule.modules)
 			try{
 				compat.clientInit();
 			}catch (Exception exception){
-				IELogger.error("Compat module for "+compat+" could not be client initialized");
+				IELogger.error("Compat module for "+compat+" could not be client pre-initialized");
 			}
 	}
 
@@ -521,14 +470,14 @@ public class ClientProxy extends CommonProxy
 				ManualHelper.addEntry("oreProcessing", ManualHelper.CAT_GENERAL, new ManualPages.CraftingMulti(ManualHelper.getManual(), "oreProcessing0", (Object[])tempRecipeList.toArray(new PositionedItemStack[tempRecipeList.size()][3])));
 		}
 		ManualHelper.addEntry("alloys", ManualHelper.CAT_GENERAL, new ManualPages.CraftingMulti(ManualHelper.getManual(), "alloys0", (Object[])new PositionedItemStack[][]{
-			new PositionedItemStack[]{new PositionedItemStack(OreDictionary.getOres("dustCopper"),24,0), new PositionedItemStack(OreDictionary.getOres("dustNickel"),42,0), new PositionedItemStack(new ItemStack(IEContent.itemMetal,2,15),78,0)},
-			new PositionedItemStack[]{new PositionedItemStack(OreDictionary.getOres("dustGold"),24,0), new PositionedItemStack(OreDictionary.getOres("dustSilver"),42,0), new PositionedItemStack(new ItemStack(IEContent.itemMetal,2,16),78,0)}}));
+				new PositionedItemStack[]{new PositionedItemStack(OreDictionary.getOres("dustCopper"),24,0), new PositionedItemStack(OreDictionary.getOres("dustNickel"),42,0), new PositionedItemStack(new ItemStack(IEContent.itemMetal,2,15),78,0)},
+				new PositionedItemStack[]{new PositionedItemStack(OreDictionary.getOres("dustGold"),24,0), new PositionedItemStack(OreDictionary.getOres("dustSilver"),42,0), new PositionedItemStack(new ItemStack(IEContent.itemMetal,2,16),78,0)}}));
 		ManualHelper.addEntry("plates", ManualHelper.CAT_GENERAL, new ManualPages.CraftingMulti(ManualHelper.getManual(), "plates0",(Object[])new PositionedItemStack[][]{
-			new PositionedItemStack[]{new PositionedItemStack(OreDictionary.getOres("ingotIron"),24,0), new PositionedItemStack(new ItemStack(IEContent.itemTool,1,0), 42, 0), new PositionedItemStack(new ItemStack(IEContent.itemMetal,1,39),78,0)},
-			new PositionedItemStack[]{new PositionedItemStack(OreDictionary.getOres("ingotAluminum"),24,0), new PositionedItemStack(new ItemStack(IEContent.itemTool,1,0), 42, 0), new PositionedItemStack(new ItemStack(IEContent.itemMetal,1,31),78,0)},
-			new PositionedItemStack[]{new PositionedItemStack(OreDictionary.getOres("ingotLead"),24,0), new PositionedItemStack(new ItemStack(IEContent.itemTool,1,0), 42, 0), new PositionedItemStack(new ItemStack(IEContent.itemMetal,1,32),78,0)},
-			new PositionedItemStack[]{new PositionedItemStack(OreDictionary.getOres("ingotConstantan"),24,0), new PositionedItemStack(new ItemStack(IEContent.itemTool,1,0), 42, 0), new PositionedItemStack(new ItemStack(IEContent.itemMetal,1,36),78,0)},
-			new PositionedItemStack[]{new PositionedItemStack(OreDictionary.getOres("ingotSteel"),24,0), new PositionedItemStack(new ItemStack(IEContent.itemTool,1,0), 42, 0), new PositionedItemStack(new ItemStack(IEContent.itemMetal,1,38),78,0)}}));
+				new PositionedItemStack[]{new PositionedItemStack(OreDictionary.getOres("ingotIron"),24,0), new PositionedItemStack(new ItemStack(IEContent.itemTool,1,0), 42, 0), new PositionedItemStack(new ItemStack(IEContent.itemMetal,1,39),78,0)},
+				new PositionedItemStack[]{new PositionedItemStack(OreDictionary.getOres("ingotAluminum"),24,0), new PositionedItemStack(new ItemStack(IEContent.itemTool,1,0), 42, 0), new PositionedItemStack(new ItemStack(IEContent.itemMetal,1,31),78,0)},
+				new PositionedItemStack[]{new PositionedItemStack(OreDictionary.getOres("ingotLead"),24,0), new PositionedItemStack(new ItemStack(IEContent.itemTool,1,0), 42, 0), new PositionedItemStack(new ItemStack(IEContent.itemMetal,1,32),78,0)},
+				new PositionedItemStack[]{new PositionedItemStack(OreDictionary.getOres("ingotConstantan"),24,0), new PositionedItemStack(new ItemStack(IEContent.itemTool,1,0), 42, 0), new PositionedItemStack(new ItemStack(IEContent.itemMetal,1,36),78,0)},
+				new PositionedItemStack[]{new PositionedItemStack(OreDictionary.getOres("ingotSteel"),24,0), new PositionedItemStack(new ItemStack(IEContent.itemTool,1,0), 42, 0), new PositionedItemStack(new ItemStack(IEContent.itemMetal,1,38),78,0)}}));
 		ManualHelper.addEntry("hemp", ManualHelper.CAT_GENERAL,
 				new ManualPages.ItemDisplay(ManualHelper.getManual(), "hemp0", new ItemStack(IEContent.blockCrop,1,5),new ItemStack(IEContent.itemSeeds)),
 				new ManualPages.Crafting(ManualHelper.getManual(), "hemp1", new ItemStack(IEContent.itemMaterial,1,5)),
@@ -542,15 +491,14 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.Crafting(ManualHelper.getManual(), "blastfurnaceBlock", new ItemStack(IEContent.blockStoneDecoration,1,BlockTypes_StoneDecoration.BLASTBRICK.getMeta())),
 				new ManualPageMultiblock(ManualHelper.getManual(), "blastfurnace1", MultiblockBlastFurnace.instance));
 		handleMineralManual();
-		int blueprint = BlueprintCraftingRecipe.blueprintCategories.indexOf("electrode");
-		ManualHelper.addEntry("graphite", ManualHelper.CAT_GENERAL, new ManualPages.Text(ManualHelper.getManual(), "graphite0"),new ManualPages.Crafting(ManualHelper.getManual(), "graphite1", new ItemStack(IEContent.itemBlueprint,1,blueprint)));
+		ManualHelper.addEntry("graphite", ManualHelper.CAT_GENERAL, new ManualPages.Text(ManualHelper.getManual(), "graphite0"),new ManualPages.Crafting(ManualHelper.getManual(), "graphite1", ItemEngineersBlueprint.getTypedBlueprint("electrode")));
 		ManualHelper.addEntry("shader", ManualHelper.CAT_GENERAL, new ManualPages.Text(ManualHelper.getManual(), "shader0"), new ManualPages.ItemDisplay(ManualHelper.getManual(), "shader1"), new ManualPages.CraftingMulti(ManualHelper.getManual(), "shader2"));
 		ShaderRegistry.manualEntry = ManualHelper.getManual().getEntry("shader");
 		ShaderRegistry.itemShader = IEContent.itemShader;
 		ShaderRegistry.itemShaderBag = IEContent.itemShaderBag;
 
 		ManualHelper.addEntry("treatedwood", ManualHelper.CAT_CONSTRUCTION,
-				new ManualPages.Crafting(ManualHelper.getManual(), "treatedwood0",  new ItemStack(IEContent.blockTreatedWood,1,0)), 
+				new ManualPages.Crafting(ManualHelper.getManual(), "treatedwood0",  new ItemStack(IEContent.blockTreatedWood,1,0)),
 				new ManualPages.Crafting(ManualHelper.getManual(), "", new ItemStack(IEContent.blockTreatedWood,1,1), new ItemStack(IEContent.blockTreatedWood,1,2), new ItemStack(IEContent.blockTreatedWoodSlabs,1,OreDictionary.WILDCARD_VALUE)),
 				new ManualPages.Crafting(ManualHelper.getManual(), "", new ItemStack(IEContent.blockWoodenStair)),
 				new ManualPages.Crafting(ManualHelper.getManual(), "", new ItemStack(IEContent.itemMaterial,1,0),new ItemStack(IEContent.blockWoodenDecoration,1,BlockTypes_WoodenDecoration.FENCE.getMeta()),new ItemStack(IEContent.blockWoodenDecoration,1,BlockTypes_WoodenDecoration.SCAFFOLDING.getMeta())),
@@ -614,7 +562,7 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.Image(ManualHelper.getManual(), "wiring2", "immersiveengineering:textures/misc/wiring.png;0;0;110;40", "immersiveengineering:textures/misc/wiring.png;0;40;110;30"),
 				new ManualPages.Image(ManualHelper.getManual(), "wiring3", "immersiveengineering:textures/misc/wiring.png;0;70;110;60", "immersiveengineering:textures/misc/wiring.png;0;130;110;60"),
 				new ManualPages.Text(ManualHelper.getManual(), "wiring4"),
-				new ManualPages.CraftingMulti(ManualHelper.getManual(), "wiringConnector", 
+				new ManualPages.CraftingMulti(ManualHelper.getManual(), "wiringConnector",
 						new ItemStack(IEContent.blockConnectors,1,BlockTypes_Connector.CONNECTOR_LV.getMeta()),new ItemStack(IEContent.blockConnectors,1,BlockTypes_Connector.RELAY_LV.getMeta()),
 						new ItemStack(IEContent.blockConnectors,1,BlockTypes_Connector.CONNECTOR_MV.getMeta()),new ItemStack(IEContent.blockConnectors,1,BlockTypes_Connector.RELAY_HV.getMeta()),
 						new ItemStack(IEContent.blockConnectors,1,BlockTypes_Connector.CONNECTOR_HV.getMeta()),new ItemStack(IEContent.blockConnectors,1,BlockTypes_Connector.RELAY_HV.getMeta())),
@@ -631,7 +579,7 @@ public class ClientProxy extends CommonProxy
 		ManualHelper.getManual().addEntry("breaker", ManualHelper.CAT_ENERGY, new ManualPages.Crafting(ManualHelper.getManual(), "breaker0", new ItemStack(IEContent.blockConnectors,1,BlockTypes_Connector.BREAKERSWITCH.getMeta()))   ,new ManualPages.Text(ManualHelper.getManual(), "breaker1"), new ManualPages.Crafting(ManualHelper.getManual(), "breaker2", new ItemStack(IEContent.blockConnectors,1,BlockTypes_Connector.REDSTONE_BREAKER.getMeta())));
 		ManualHelper.getManual().addEntry("eMeter", ManualHelper.CAT_ENERGY, new ManualPages.Crafting(ManualHelper.getManual(), "eMeter0", new ItemStack(IEContent.blockConnectors,1,BlockTypes_Connector.ENERGY_METER.getMeta())));
 		Map<String,Integer> sortedMap = ThermoelectricHandler.getThermalValuesSorted(true);
-		String[][] table = formatToTable_ItemIntHashmap(sortedMap,"K");	
+		String[][] table = formatToTable_ItemIntHashmap(sortedMap,"K");
 		ManualHelper.getManual().addEntry("thermoElectric", ManualHelper.CAT_ENERGY,
 				new ManualPages.Crafting(ManualHelper.getManual(), "thermoElectric0", new ItemStack(IEContent.blockMetalDevice1,1,BlockTypes_MetalDevice1.THERMOELECTRIC_GEN.getMeta())),
 				new ManualPages.Table(ManualHelper.getManual(), "thermoElectric1", table, false));
@@ -656,7 +604,7 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.Text(ManualHelper.getManual(), "dieselgen2")
 				//,
 				//				new ManualPages.Table(ManualHelper.getManual(), "dieselgen3", table, false)
-				);
+		);
 		//		ManualHelper.addEntry("lightningrod", ManualHelper.CAT_ENERGY,
 		//				new ManualPages.Crafting(ManualHelper.getManual(), "lightningrod0",  new ItemStack(IEContent.blockMetalMultiblocks,1,BlockMetalMultiblocks.META_lightningRod)),
 		//				new ManualPageMultiblock(ManualHelper.getManual(), "lightningrod1", MultiblockLightningRod.instance),
@@ -696,8 +644,8 @@ public class ClientProxy extends CommonProxy
 		ManualHelper.addEntry("earmuffs", ManualHelper.CAT_MACHINES,
 				new ManualPages.Crafting(ManualHelper.getManual(), "earmuffs0", new ItemStack(IEContent.itemEarmuffs)),
 				new ManualPages.CraftingMulti(ManualHelper.getManual(), "earmuffs1",(Object[])new PositionedItemStack[][]{
-					new PositionedItemStack[]{new PositionedItemStack(new ItemStack(IEContent.itemEarmuffs),24,0), new PositionedItemStack(new ItemStack(Items.dye,1,OreDictionary.WILDCARD_VALUE), 42, 0), new PositionedItemStack(tempItemList,78,0)},
-					new PositionedItemStack[]{new PositionedItemStack(new ItemStack(IEContent.itemEarmuffs),24,0), new PositionedItemStack(Lists.newArrayList(new ItemStack(Items.leather_helmet),new ItemStack(Items.iron_helmet)), 42, 0), new PositionedItemStack(Lists.newArrayList(ItemNBTHelper.stackWithData(new ItemStack(Items.leather_helmet),"IE:Earmuffs",true),ItemNBTHelper.stackWithData(new ItemStack(Items.iron_helmet),"IE:Earmuffs",true)),78,0)}}));
+						new PositionedItemStack[]{new PositionedItemStack(new ItemStack(IEContent.itemEarmuffs),24,0), new PositionedItemStack(new ItemStack(Items.DYE,1,OreDictionary.WILDCARD_VALUE), 42, 0), new PositionedItemStack(tempItemList,78,0)},
+						new PositionedItemStack[]{new PositionedItemStack(new ItemStack(IEContent.itemEarmuffs),24,0), new PositionedItemStack(Lists.newArrayList(new ItemStack(Items.LEATHER_HELMET),new ItemStack(Items.IRON_HELMET)), 42, 0), new PositionedItemStack(Lists.newArrayList(ItemNBTHelper.stackWithData(new ItemStack(Items.LEATHER_HELMET),"IE:Earmuffs",true),ItemNBTHelper.stackWithData(new ItemStack(Items.IRON_HELMET),"IE:Earmuffs",true)),78,0)}}));
 		ManualHelper.addEntry("toolbox", ManualHelper.CAT_MACHINES, new ManualPages.Crafting(ManualHelper.getManual(), "toolbox0", new ItemStack(IEContent.itemToolbox)));
 		ManualHelper.addEntry("drill", ManualHelper.CAT_MACHINES,
 				new ManualPages.CraftingMulti(ManualHelper.getManual(), "drill0", new ItemStack(IEContent.itemDrill,1,0), new ItemStack(IEContent.itemMaterial,1,9)),
@@ -706,7 +654,6 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.Crafting(ManualHelper.getManual(), "drill3", new ItemStack(IEContent.itemToolUpgrades,1,1)),
 				new ManualPages.Crafting(ManualHelper.getManual(), "drill4", new ItemStack(IEContent.itemToolUpgrades,1,2)),
 				new ManualPages.Crafting(ManualHelper.getManual(), "drill5", new ItemStack(IEContent.itemToolUpgrades,1,3)));
-		int blueprint_bullet = BlueprintCraftingRecipe.blueprintCategories.indexOf("bullet");
 		ManualHelper.addEntry("revolver", ManualHelper.CAT_MACHINES,
 				new ManualPages.CraftingMulti(ManualHelper.getManual(), "revolver0", new ItemStack(IEContent.itemRevolver,1,0), new ItemStack(IEContent.itemMaterial,1,7),new ItemStack(IEContent.itemMaterial,1,8),new ItemStack(IEContent.itemMaterial,1,9),new ItemStack(IEContent.itemMaterial,1,10)),
 				new ManualPages.CraftingMulti(ManualHelper.getManual(), "revolver1", new ItemStack(IEContent.itemRevolver,1,1)),
@@ -714,7 +661,7 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.Crafting(ManualHelper.getManual(), "revolver3", new ItemStack(IEContent.itemToolUpgrades,1,5)),
 				new ManualPages.Crafting(ManualHelper.getManual(), "revolver4", new ItemStack(IEContent.itemToolUpgrades,1,6)));
 		pages = new ArrayList<IManualPage>();
-		pages.add(new ManualPages.Crafting(ManualHelper.getManual(), "bullets0", new ItemStack(IEContent.itemBlueprint,1,blueprint_bullet)));
+		pages.add(new ManualPages.Crafting(ManualHelper.getManual(), "bullets0", ItemEngineersBlueprint.getTypedBlueprint("bullet")));
 		pages.add(new ManualPages.CraftingMulti(ManualHelper.getManual(), "bullets1", new ItemStack(IEContent.itemBullet,1,0),new ItemStack(IEContent.itemBullet,1,1), new ItemStack(IEContent.itemMold,1,3)));
 		pages.add(new ManualPages.ItemDisplay(ManualHelper.getManual(), "bullets2", new ItemStack(IEContent.itemBullet,1,2)));
 		pages.add(new ManualPages.ItemDisplay(ManualHelper.getManual(), "bullets3", new ItemStack(IEContent.itemBullet,1,3)));
@@ -775,7 +722,7 @@ public class ClientProxy extends CommonProxy
 		//				new ManualPageMultiblock(ManualHelper.getManual(), "bottlingMachine0", MultiblockBottlingMachine.instance),
 		//				new ManualPages.Text(ManualHelper.getManual(), "bottlingMachine1"));
 		sortedMap = SqueezerRecipe.getFluidValuesSorted(IEContent.fluidPlantoil, true);
-		table = formatToTable_ItemIntHashmap(sortedMap,"mB");	
+		table = formatToTable_ItemIntHashmap(sortedMap,"mB");
 		sortedMap = FermenterRecipe.getFluidValuesSorted(IEContent.fluidEthanol, true);
 		String[][] table2 = formatToTable_ItemIntHashmap(sortedMap,"mB");
 		ManualHelper.addEntry("biodiesel", ManualHelper.CAT_HEAVYMACHINES,
@@ -798,13 +745,15 @@ public class ClientProxy extends CommonProxy
 				new ManualPageMultiblock(ManualHelper.getManual(), "", MultiblockBucketWheel.instance),
 				new ManualPageMultiblock(ManualHelper.getManual(), "", MultiblockExcavatorDemo.instance),
 				new ManualPages.Text(ManualHelper.getManual(), "excavator1"));
-
-
+	}
+	@Override
+	public void postInitSidedCompat()
+	{
 		for(IECompatModule compat : IECompatModule.modules)
 			try{
 				compat.clientPostInit();
 			}catch (Exception exception){
-				IELogger.error("Compat module for "+compat+" could not be client posi-initialized");
+				IELogger.error("Compat module for "+compat+" could not be client pre-initialized");
 			}
 	}
 	static ManualEntry mineralEntry;
@@ -828,12 +777,12 @@ public class ClientProxy extends CommonProxy
 				public int compare(Integer paramT1, Integer paramT2)
 				{
 					String name1 = Lib.DESC_INFO+"mineral."+minerals[paramT1].name;
-					String localizedName1 = StatCollector.translateToLocal(name1);
+					String localizedName1 = I18n.format(name1);
 					if(localizedName1==name1)
 						localizedName1 = minerals[paramT1].name;
 
 					String name2 = Lib.DESC_INFO+"mineral."+minerals[paramT2].name;
-					String localizedName2 = StatCollector.translateToLocal(name2);
+					String localizedName2 = I18n.format(name2);
 					if(localizedName2==name2)
 						localizedName2 = minerals[paramT2].name;
 					return localizedName1.compareToIgnoreCase(localizedName2);
@@ -842,7 +791,7 @@ public class ClientProxy extends CommonProxy
 			for(int i : mineralIndices)
 			{
 				String name = Lib.DESC_INFO+"mineral."+minerals[i].name;
-				String localizedName = StatCollector.translateToLocal(name);
+				String localizedName = I18n.format(name);
 				if(localizedName==name)
 					localizedName = minerals[i].name;
 
@@ -852,22 +801,22 @@ public class ClientProxy extends CommonProxy
 					String validDims = "";
 					for(int dim : minerals[i].dimensionWhitelist)
 						validDims += (!validDims.isEmpty()?", ":"")+"<dim;"+dim+">";
-					s0 = StatCollector.translateToLocalFormatted("ie.manual.entry.mineralsDimValid",localizedName,validDims);
+					s0 = I18n.format("ie.manual.entry.mineralsDimValid",localizedName,validDims);
 				}
 				else if(minerals[i].dimensionBlacklist!=null && minerals[i].dimensionBlacklist.length>0)
 				{
 					String invalidDims = "";
 					for(int dim : minerals[i].dimensionBlacklist)
 						invalidDims += (!invalidDims.isEmpty()?", ":"")+"<dim;"+dim+">";
-					s0 = StatCollector.translateToLocalFormatted("ie.manual.entry.mineralsDimInvalid",localizedName,invalidDims);
+					s0 = I18n.format("ie.manual.entry.mineralsDimInvalid",localizedName,invalidDims);
 				}
 				else
-					s0 = StatCollector.translateToLocalFormatted("ie.manual.entry.mineralsDimAny",localizedName);
+					s0 = I18n.format("ie.manual.entry.mineralsDimAny",localizedName);
 
 				ArrayList<Integer> formattedOutputs = new ArrayList<Integer>();
 				for(int j=0; j<minerals[i].oreOutput.length; j++)
 					formattedOutputs.add(j);
-				final int fi = i; 
+				final int fi = i;
 				Collections.sort(formattedOutputs, new Comparator<Integer>(){
 					@Override
 					public int compare(Integer paramT1, Integer paramT2)
@@ -885,7 +834,7 @@ public class ClientProxy extends CommonProxy
 						s1 += "<br>" + new DecimalFormat("00.00").format(minerals[i].recalculatedChances[sorted]*100).replaceAll("\\G0"," ")+"% "+minerals[i].oreOutput[sorted].getDisplayName();
 						sortedOres[j] = minerals[i].oreOutput[sorted];
 					}
-				String s2 = StatCollector.translateToLocalFormatted("ie.manual.entry.minerals3", s0,s1);
+				String s2 = I18n.format("ie.manual.entry.minerals3", s0,s1);
 				pages.add(new ManualPages.ItemDisplay(ManualHelper.getManual(), s2, sortedOres));
 			}
 
@@ -900,7 +849,7 @@ public class ClientProxy extends CommonProxy
 				mineralEntry = ManualHelper.getManual().getEntry("minerals");
 			}
 		}
-	}	
+	}
 	static String[][][] formatToTable_ExcavatorMinerals()
 	{
 		ExcavatorHandler.MineralMix[] minerals = ExcavatorHandler.mineralList.keySet().toArray(new ExcavatorHandler.MineralMix[0]);
@@ -911,7 +860,7 @@ public class ClientProxy extends CommonProxy
 			if(minerals[i].isValid())
 			{
 				String name = Lib.DESC_INFO+"mineral."+minerals[i].name;
-				if(StatCollector.translateToLocal(name)==name)
+				if(I18n.format(name)==name)
 					name = minerals[i].name;
 				multiTables[curTable][i][0] = name;
 				multiTables[curTable][i][1] = "";
@@ -943,55 +892,89 @@ public class ClientProxy extends CommonProxy
 	public void textureStich(TextureStitchEvent.Pre event)
 	{
 		IELogger.info("Stitching Revolver Textures!");
-		((ItemRevolver)IEContent.itemRevolver).stichRevolverTextures(event.map);
+		((ItemRevolver)IEContent.itemRevolver).stichRevolverTextures(event.getMap());
 		for(ShaderRegistry.ShaderRegistryEntry entry : ShaderRegistry.shaderRegistry.values())
 			for(ShaderCase sCase : entry.getCases())
-				sCase.stichTextures(event.map, 0);
+				sCase.stichTextures(event.getMap(), 0);
 		for(DrillHeadPerm p : ((ItemDrillhead)IEContent.itemDrillhead).perms)
-			p.sprite = ApiUtils.getRegisterSprite(event.map, p.texture);
-		WireType.iconDefaultWire = ApiUtils.getRegisterSprite(event.map, "immersiveengineering:blocks/wire");
+			p.sprite = ApiUtils.getRegisterSprite(event.getMap(), p.texture);
+		WireType.iconDefaultWire = ApiUtils.getRegisterSprite(event.getMap(), "immersiveengineering:blocks/wire");
 
-		ApiUtils.getRegisterSprite(event.map, IEContent.fluidCreosote.getStill());
-		ApiUtils.getRegisterSprite(event.map, IEContent.fluidCreosote.getFlowing());
-		ApiUtils.getRegisterSprite(event.map, IEContent.fluidPlantoil.getStill());
-		ApiUtils.getRegisterSprite(event.map, IEContent.fluidPlantoil.getFlowing());
-		ApiUtils.getRegisterSprite(event.map, IEContent.fluidEthanol.getStill());
-		ApiUtils.getRegisterSprite(event.map, IEContent.fluidEthanol.getFlowing());
-		ApiUtils.getRegisterSprite(event.map, IEContent.fluidBiodiesel.getStill());
-		ApiUtils.getRegisterSprite(event.map, IEContent.fluidBiodiesel.getFlowing());
-		ApiUtils.getRegisterSprite(event.map, "immersiveengineering:items/shader_slot");
+		ApiUtils.getRegisterSprite(event.getMap(), IEContent.fluidCreosote.getStill());
+		ApiUtils.getRegisterSprite(event.getMap(), IEContent.fluidCreosote.getFlowing());
+		ApiUtils.getRegisterSprite(event.getMap(), IEContent.fluidPlantoil.getStill());
+		ApiUtils.getRegisterSprite(event.getMap(), IEContent.fluidPlantoil.getFlowing());
+		ApiUtils.getRegisterSprite(event.getMap(), IEContent.fluidEthanol.getStill());
+		ApiUtils.getRegisterSprite(event.getMap(), IEContent.fluidEthanol.getFlowing());
+		ApiUtils.getRegisterSprite(event.getMap(), IEContent.fluidBiodiesel.getStill());
+		ApiUtils.getRegisterSprite(event.getMap(), IEContent.fluidBiodiesel.getFlowing());
+		ApiUtils.getRegisterSprite(event.getMap(), "immersiveengineering:items/shader_slot");
 	}
 
 	@Override
 	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z)
 	{
-		TileEntity te = world.getTileEntity(new BlockPos(x,y,z));
-		if(ID==Lib.GUIID_Manual && ManualHelper.getManual()!=null && player.getCurrentEquippedItem()!=null && OreDictionary.itemMatches(new ItemStack(IEContent.itemTool,1,3), player.getCurrentEquippedItem(), false))
-			return ManualHelper.getManual().getGui();
-		if(ID==Lib.GUIID_CokeOven && te instanceof TileEntityCokeOven)
-			return new GuiCokeOven(player.inventory, (TileEntityCokeOven) te);
-		if(ID==Lib.GUIID_BlastFurnace && te instanceof TileEntityBlastFurnace)
-			return new GuiBlastFurnace(player.inventory, (TileEntityBlastFurnace) te);
-		if(ID==Lib.GUIID_WoodenCrate && te instanceof TileEntityWoodenCrate)
-			return new GuiCrate(player.inventory, (TileEntityWoodenCrate) te);
-		if(ID==Lib.GUIID_Workbench && te instanceof TileEntityModWorkbench)
-			return new GuiModWorkbench(player.inventory, (TileEntityModWorkbench) te);
-		if(ID==Lib.GUIID_Revolver && player.getCurrentEquippedItem()!=null && player.getCurrentEquippedItem().getItem() instanceof ItemRevolver)
-			return new GuiRevolver(player.inventory, world);
-		if(ID==Lib.GUIID_Toolbox && player.getCurrentEquippedItem()!=null && player.getCurrentEquippedItem().getItem() instanceof ItemToolbox)
-			return new GuiToolbox(player.inventory, world);
-		if(ID==Lib.GUIID_Sorter && te instanceof TileEntitySorter)
-			return new GuiSorter(player.inventory, (TileEntitySorter) te);
-		if(ID==Lib.GUIID_Squeezer && te instanceof TileEntitySqueezer)
-			return new GuiSqueezer(player.inventory, (TileEntitySqueezer) te);
-		if(ID==Lib.GUIID_Fermenter && te instanceof TileEntityFermenter)
-			return new GuiFermenter(player.inventory, (TileEntityFermenter) te);
-		if(ID==Lib.GUIID_Refinery && te instanceof TileEntityRefinery)
-			return new GuiRefinery(player.inventory, (TileEntityRefinery) te);
-		if(ID==Lib.GUIID_ArcFurnace && te instanceof TileEntityArcFurnace)
-			return new GuiArcFurnace(player.inventory, (TileEntityArcFurnace) te);
-		if(ID==Lib.GUIID_Assembler && te instanceof TileEntityAssembler)
-			return new GuiAssembler(player.inventory, (TileEntityAssembler) te);
+		if(ID>=Lib.GUIID_Base_Item)
+		{
+			EntityEquipmentSlot slot = EntityEquipmentSlot.values()[ID/100];
+			ID %= 100;//Slot determined, get actual ID
+			ItemStack item = player.getItemStackFromSlot(slot);
+			if(item!=null && item.getItem() instanceof IGuiItem && ((IGuiItem)item.getItem()).getGuiID(item)==ID)
+			{
+				if(ID==Lib.GUIID_Manual && ManualHelper.getManual()!=null && OreDictionary.itemMatches(new ItemStack(IEContent.itemTool,1,3), item, false))
+					return ManualHelper.getManual().getGui();
+				if(ID==Lib.GUIID_Revolver && item.getItem() instanceof ItemRevolver)
+					return new GuiRevolver(player.inventory, world, slot, item);
+				if(ID==Lib.GUIID_Toolbox && item.getItem() instanceof ItemToolbox)
+					return new GuiToolbox(player.inventory, world, slot, item);
+			}
+		}
+
+		if(ID>=Lib.GUIID_Base_Item)
+		{
+			ItemStack item = null;
+			for (EnumHand hand : EnumHand.values())
+			{
+				ItemStack held = player.getHeldItem(hand);
+				if(held!=null && held.getItem() instanceof IGuiItem && ((IGuiItem)held.getItem()).getGuiID(held)==ID)
+					item = held;
+			}
+			if(item!=null)
+			{
+
+			}
+		}
+		else
+		{
+			TileEntity te = world.getTileEntity(new BlockPos(x,y,z));
+			if(te instanceof IGuiTile)
+			{
+				Object gui = null;
+				if(ID==Lib.GUIID_CokeOven && te instanceof TileEntityCokeOven)
+					gui = new GuiCokeOven(player.inventory, (TileEntityCokeOven) te);
+				if(ID==Lib.GUIID_BlastFurnace && te instanceof TileEntityBlastFurnace)
+					gui = new GuiBlastFurnace(player.inventory, (TileEntityBlastFurnace) te);
+				if(ID==Lib.GUIID_WoodenCrate && te instanceof TileEntityWoodenCrate)
+					gui = new GuiCrate(player.inventory, (TileEntityWoodenCrate) te);
+				if(ID==Lib.GUIID_Workbench && te instanceof TileEntityModWorkbench)
+					gui = new GuiModWorkbench(player.inventory, (TileEntityModWorkbench) te);
+				if(ID==Lib.GUIID_Sorter && te instanceof TileEntitySorter)
+					gui = new GuiSorter(player.inventory, (TileEntitySorter) te);
+				if(ID==Lib.GUIID_Squeezer && te instanceof TileEntitySqueezer)
+					gui = new GuiSqueezer(player.inventory, (TileEntitySqueezer) te);
+				if(ID==Lib.GUIID_Fermenter && te instanceof TileEntityFermenter)
+					gui = new GuiFermenter(player.inventory, (TileEntityFermenter) te);
+				if(ID==Lib.GUIID_Refinery && te instanceof TileEntityRefinery)
+					gui = new GuiRefinery(player.inventory, (TileEntityRefinery) te);
+				if(ID==Lib.GUIID_ArcFurnace && te instanceof TileEntityArcFurnace)
+					gui = new GuiArcFurnace(player.inventory, (TileEntityArcFurnace) te);
+				if(ID==Lib.GUIID_Assembler && te instanceof TileEntityAssembler)
+					gui = new GuiAssembler(player.inventory, (TileEntityAssembler) te);
+				if(gui!=null)
+					((IGuiTile)te).onGuiOpened(player, true);
+				return gui;
+			}
+		}
 		return null;
 	}
 
@@ -1093,7 +1076,7 @@ public class ClientProxy extends CommonProxy
 				{
 					Object wrapped = ObfuscationReflectionHelper.getPrivateValue(RenderMinecart.class, (RenderMinecart) render, "field_77013_a", "modelMinecart");
 					if(wrapped instanceof ModelMinecart)
-						ObfuscationReflectionHelper.setPrivateValue(RenderMinecart.class,(RenderMinecart)render, (ModelMinecart)new ModelShaderMinecart((ModelMinecart) wrapped), "field_77013_a","modelMinecart");
+						ObfuscationReflectionHelper.setPrivateValue(RenderMinecart.class,(RenderMinecart)render, new ModelShaderMinecart((ModelMinecart) wrapped), "field_77013_a","modelMinecart");
 				}
 			ModelShaderMinecart.rendersReplaced = true;
 		}
@@ -1102,8 +1085,8 @@ public class ClientProxy extends CommonProxy
 			for(Object render : ClientUtils.mc().getRenderManager().entityRenderMap.values())
 				if(RenderBiped.class.isAssignableFrom(render.getClass()))
 					((RenderBiped)render).addLayer(new IEBipedLayerRenderer());
-				else if(ArmorStandRenderer.class.isAssignableFrom(render.getClass()))
-					((ArmorStandRenderer)render).addLayer(new IEBipedLayerRenderer());
+				else if(RenderArmorStand.class.isAssignableFrom(render.getClass()))
+					((RenderArmorStand)render).addLayer(new IEBipedLayerRenderer());
 			IEBipedLayerRenderer.rendersAssigned = true;
 		}
 	}
@@ -1154,13 +1137,13 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void spawnSparkFX(World world, double x, double y, double z, double mx, double my, double mz)
 	{
-		EntityFX particle = new EntityFXSparks(world, x,y,z, mx,my,mz);
+		Particle particle = new EntityFXSparks(world, x,y,z, mx,my,mz);
 		Minecraft.getMinecraft().effectRenderer.addEffect(particle);
 	}
 	@Override
 	public void spawnRedstoneFX(World world, double x, double y, double z, double mx, double my, double mz, float size, float r, float g, float b)
 	{
-		EntityReddustFX particle = (EntityReddustFX)ClientUtils.mc().effectRenderer.spawnEffectParticle(EnumParticleTypes.REDSTONE.getParticleID(), x,y,z, 0,0,0);
+		ParticleRedstone particle = (ParticleRedstone)ClientUtils.mc().effectRenderer.spawnEffectParticle(EnumParticleTypes.REDSTONE.getParticleID(), x,y,z, 0,0,0);
 		particle.motionX*=mx;
 		particle.motionY*=my;
 		particle.motionZ*=mz;
@@ -1172,7 +1155,7 @@ public class ClientProxy extends CommonProxy
 	public void draw3DBlockCauldron()
 	{
 		final BlockRendererDispatcher blockRenderer = Minecraft.getMinecraft().getBlockRendererDispatcher();
-		IBlockState state = Blocks.cauldron.getDefaultState();
+		IBlockState state = Blocks.CAULDRON.getDefaultState();
 		IBakedModel model = blockRenderer.getBlockModelShapes().getModelForState(state);
 
 		RenderHelper.disableStandardItemLighting();
@@ -1183,8 +1166,6 @@ public class ClientProxy extends CommonProxy
 			GlStateManager.shadeModel(7425);
 		else
 			GlStateManager.shadeModel(7424);
-		if(model instanceof ISmartBlockModel)
-			model = ((ISmartBlockModel) model).handleBlockState(state);
 		blockRenderer.getBlockModelRenderer().renderModelBrightness(model, state, .75f, false);
 	}
 	@Override
@@ -1194,7 +1175,7 @@ public class ClientProxy extends CommonProxy
 		IBlockState state = IEContent.blockMetalDevice1.getStateFromMeta(BlockTypes_MetalDevice1.FLUID_PIPE.getMeta());
 		IBakedModel model = blockRenderer.getBlockModelShapes().getModelForState(state);
 		if(state instanceof IExtendedBlockState)
-			state = ((IExtendedBlockState)state).withProperty(OBJProperty.instance, TileEntityFluidPipe.getStateFromKey(configuration));
+			state = ((IExtendedBlockState)state).withProperty(Properties.AnimationProperty, TileEntityFluidPipe.getStateFromKey(configuration));
 
 		RenderHelper.disableStandardItemLighting();
 		GlStateManager.blendFunc(770, 771);
@@ -1204,14 +1185,14 @@ public class ClientProxy extends CommonProxy
 			GlStateManager.shadeModel(7425);
 		else
 			GlStateManager.shadeModel(7424);
-		if(model instanceof ISmartBlockModel)
-			model = ((ISmartBlockModel) model).handleBlockState(state);
+//		if(model instanceof ISmartBlockModel)
+//			model = ((ISmartBlockModel) model).handleBlockState(state);
 		blockRenderer.getBlockModelRenderer().renderModelBrightness(model, state, .75f, false);
 	}
 
 	static String[][] formatToTable_ItemIntHashmap(Map<String, Integer> map, String valueType)
 	{
-		Map.Entry<String,Integer>[] sortedMapArray = map.entrySet().toArray(new Map.Entry[0]);
+		Entry<String,Integer>[] sortedMapArray = map.entrySet().toArray(new Entry[0]);
 		ArrayList<String[]> list = new ArrayList();
 		try{
 			for(int i=0; i<sortedMapArray.length; i++)
@@ -1240,7 +1221,7 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public String[] splitStringOnWidth(String s, int w)
 	{
-		return ((List<String>)ClientUtils.font().listFormattedStringToWidth(s, w)).toArray(new String[0]);
+		return ClientUtils.font().listFormattedStringToWidth(s, w).toArray(new String[0]);
 	}
 
 	@Override

@@ -5,14 +5,15 @@ import java.util.Arrays;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConnectable;
 import blusunrize.immersiveengineering.common.blocks.BlockIETileProvider;
+import blusunrize.immersiveengineering.common.blocks.wooden.BlockTypes_WoodenDevice0;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyEnum;
-import net.minecraft.block.state.BlockState;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.property.ExtendedBlockState;
@@ -25,23 +26,23 @@ public class BlockClothDevice extends BlockIETileProvider<BlockTypes_ClothDevice
 {
 	public BlockClothDevice()
 	{
-		super("clothDevice", Material.cloth, PropertyEnum.create("type", BlockTypes_ClothDevice.class), ItemBlockClothDevice.class, IEProperties.FACING_ALL);
+		super("clothDevice", Material.CLOTH, PropertyEnum.create("type", BlockTypes_ClothDevice.class), ItemBlockClothDevice.class, IEProperties.FACING_ALL);
 		setHardness(0.8F);
-		lightOpacity = 0;
+		setMetaLightOpacity(1, 0);
 	}
 	
 	@Override
-	public boolean isFullBlock()
+	public boolean isFullBlock(IBlockState state)
 	{
 		return false;
 	}
 	@Override
-	public boolean isFullCube()
+	public boolean isFullCube(IBlockState state)
 	{
 		return false;
 	}
 	@Override
-	public boolean isOpaqueCube()
+	public boolean isOpaqueCube(IBlockState state)
 	{
 		return false;
 	}
@@ -52,11 +53,12 @@ public class BlockClothDevice extends BlockIETileProvider<BlockTypes_ClothDevice
         return 16777215;
     }
 
-    @SideOnly(Side.CLIENT)
-    public int colorMultiplier(IBlockAccess worldIn, BlockPos pos, int renderPass)
-    {
-        return 16777215;
-    }
+//    @Override
+//	@SideOnly(Side.CLIENT)
+//    public int colorMultiplier(IBlockAccess worldIn, BlockPos pos, int renderPass)
+//    {
+//        return 16777215;
+//    }
 	
 	@Override
     public void onFallenUpon(World worldIn, BlockPos pos, Entity entityIn, float fallDistance)
@@ -71,8 +73,8 @@ public class BlockClothDevice extends BlockIETileProvider<BlockTypes_ClothDevice
 //        }
     }
 	@Override
-	protected BlockState createBlockState() {
-		BlockState base = super.createBlockState();
+	protected BlockStateContainer createBlockState() {
+		BlockStateContainer base = super.createBlockState();
 		IUnlistedProperty[] unlisted = (IUnlistedProperty[]) ((base instanceof ExtendedBlockState)?((ExtendedBlockState)base).getUnlistedProperties().toArray():new IUnlistedProperty[0]);
 		unlisted = Arrays.copyOf(unlisted, unlisted.length+1);
 		unlisted[unlisted.length-1] = IEProperties.CONNECTIONS;

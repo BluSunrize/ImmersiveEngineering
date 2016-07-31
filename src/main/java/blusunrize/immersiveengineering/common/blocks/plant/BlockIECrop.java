@@ -8,23 +8,21 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IIEMetaBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockBush;
-import net.minecraft.block.BlockFarmland;
-import net.minecraft.block.IGrowable;
+import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyEnum;
-import net.minecraft.block.state.BlockState;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumWorldBlockLayer;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.GameRegistry;
@@ -32,7 +30,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 public class BlockIECrop<E extends Enum<E> & BlockIEBase.IBlockEnum> extends BlockBush implements IGrowable, IIEMetaBlock
 {
 	protected static IProperty[] tempProperties;
-	protected static EnumWorldBlockLayer currentRenderLayer;
+	protected static BlockRenderLayer currentRenderLayer;
 
 	public final String name;
 	public final PropertyEnum<E> property;
@@ -40,19 +38,18 @@ public class BlockIECrop<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 
 	public BlockIECrop(String name, PropertyEnum<E> mainProperty)
 	{
-		super(setTempProperties(Material.plants, mainProperty));
+		super(setTempProperties(Material.PLANTS, mainProperty));
 		this.name = name;
 		this.property = mainProperty;
 		this.enumValues = mainProperty.getValueClass().getEnumConstants();
 		this.setDefaultState(getInitDefaultState());
 		this.setUnlocalizedName(ImmersiveEngineering.MODID+"."+name);
 		this.setTickRandomly(true);
-		this.setBlockBounds(0,0,0, 1,.25f,1);
-		this.setCreativeTab((CreativeTabs)null);
+		this.setCreativeTab(null);
 		this.setHardness(0.0F);
-		this.setStepSound(soundTypeGrass);
+		this.setSoundType(SoundType.PLANT);
 		this.disableStats();
-		GameRegistry.registerBlock(this, name);
+		ImmersiveEngineering.registerBlock(this, new ItemBlock(this), name);
 		IEContent.registeredIEBlocks.add(this);
 	}
 
@@ -83,7 +80,7 @@ public class BlockIECrop<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 		return false;
 	}
 	@Override
-	public String getCustomStateMapping(int meta)
+	public String getCustomStateMapping(int meta, boolean itemBlock)
 	{
 		return null;
 	}
@@ -95,11 +92,11 @@ public class BlockIECrop<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 		return material;
 	}
 
-	protected BlockState createNotTempBlockState()
+	protected BlockStateContainer createNotTempBlockState()
 	{
 		IProperty[] array = new IProperty[1];
 		array[0] = this.property;
-		return new BlockState(this, array);
+		return new BlockStateContainer(this, array);
 	}
 	protected IBlockState getInitDefaultState()
 	{
@@ -112,9 +109,9 @@ public class BlockIECrop<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 	}
 
 	@Override
-	protected BlockState createBlockState()
+	protected BlockStateContainer createBlockState()
 	{
-		return this.property!=null?createNotTempBlockState(): new BlockState(this, tempProperties);
+		return this.property!=null?createNotTempBlockState(): new BlockStateContainer(this, tempProperties);
 	}
 	@Override
 	public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack)
@@ -164,17 +161,14 @@ public class BlockIECrop<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 		return b;
 	}
 
+	static final AxisAlignedBB box0 = new AxisAlignedBB(0,0,0, 1,.375f,1);
+	static final AxisAlignedBB box1 = new AxisAlignedBB(0,0,0, 1,.625f,1);
+	static final AxisAlignedBB box2 = new AxisAlignedBB(0,0,0, 1,.875f,1);
 	@Override
-	public void setBlockBoundsBasedOnState(IBlockAccess world, BlockPos pos)
+	public AxisAlignedBB getSelectedBoundingBox(IBlockState state, World world, BlockPos pos)
 	{
 		int meta = this.getMetaFromState(world.getBlockState(pos));
-		this.setBlockBounds(0,0,0,1,meta==0?.375f: meta==1?.625f: meta==2?.875f: 1,1);
-	}
-	@Override
-	public AxisAlignedBB getSelectedBoundingBox(World world, BlockPos pos)
-	{
-		this.setBlockBoundsBasedOnState(world,pos);
-		return super.getSelectedBoundingBox(world, pos);
+		return meta==0?box0: meta==1?box1: meta==2?box2: FULL_BLOCK_AABB;
 	}
 	@Override
 	public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune)
@@ -193,9 +187,9 @@ public class BlockIECrop<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 		return ret;
 	}
 	@Override
-	public void onNeighborBlockChange(World world, BlockPos pos, IBlockState state, Block block)
+	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block block)
 	{
-		super.onNeighborBlockChange(world, pos, state, block);
+		super.neighborChanged(state, world, pos, block);
 		if(this.getMetaFromState(state)<getMaxMeta(0))
 			world.notifyBlockOfStateChange(pos.add(0,1,0), this);
 	}
@@ -236,9 +230,10 @@ public class BlockIECrop<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 	}
 
 	@Override
-	protected boolean canPlaceBlockOn(Block block)
+	public boolean canPlaceBlockAt(World worldIn, BlockPos pos)
 	{
-		return block!=null && (block==this || block.equals(Blocks.farmland) || block instanceof BlockFarmland);
+		IBlockState soil = worldIn.getBlockState(pos.down());
+		return super.canPlaceBlockAt(worldIn, pos) && soil.getBlock().canSustainPlant(soil, worldIn, pos.down(), net.minecraft.util.EnumFacing.UP, this);
 	}
 
 	//isNotGrown

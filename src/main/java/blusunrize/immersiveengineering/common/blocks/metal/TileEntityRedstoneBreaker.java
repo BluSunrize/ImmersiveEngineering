@@ -6,7 +6,7 @@ import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Conn
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.ITickable;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.Vec3d;
 
 public class TileEntityRedstoneBreaker extends TileEntityBreakerSwitch implements ITickable
 {
@@ -43,14 +43,14 @@ public class TileEntityRedstoneBreaker extends TileEntityBreakerSwitch implement
 	}
 
 	@Override
-	public Vec3 getRaytraceOffset(IImmersiveConnectable link)
+	public Vec3d getRaytraceOffset(IImmersiveConnectable link)
 	{
 		if(sideAttached==0)
-			return new Vec3(facing==EnumFacing.WEST?1:facing==EnumFacing.EAST?0:.5, .5, facing==EnumFacing.NORTH?1:facing==EnumFacing.SOUTH?0:.5);
-		return new Vec3(.5,facing==EnumFacing.DOWN?1:0,.5);
+			return new Vec3d(facing==EnumFacing.WEST?1:facing==EnumFacing.EAST?0:.5, .5, facing==EnumFacing.NORTH?1:facing==EnumFacing.SOUTH?0:.5);
+		return new Vec3d(.5,facing==EnumFacing.DOWN?1:0,.5);
 	}
 	@Override
-	public Vec3 getConnectionOffset(Connection con)
+	public Vec3d getConnectionOffset(Connection con)
 	{
 		int lowestDif=100;
 		Connection lowestCon=null;
@@ -69,15 +69,15 @@ public class TileEntityRedstoneBreaker extends TileEntityBreakerSwitch implement
 		if(facing.getAxis()==Axis.Y)
 		{
 			double h = facing==EnumFacing.DOWN?1.03125:-.03125;
-			return new Vec3(con.hasSameConnectors(lowestCon)?.125:.875,h,.5);
+			return new Vec3d(con.hasSameConnectors(lowestCon)?.125:.875,h,.5);
 			//	return new Vec3(facing.getAxis()==Axis.X?.5:.125,h,facing.getAxis()==Axis.X?.125:.5);
 			//	return new Vec3(facing.getAxis()==Axis.X?.5:.875,h,facing.getAxis()==Axis.X?.875:.5);
 		}
 		else
 		{
 			if(con.hasSameConnectors(lowestCon))
-				return new Vec3(facing==EnumFacing.WEST?1.03125:facing==EnumFacing.EAST?-.03125:.125, .5, facing==EnumFacing.NORTH?1.03125:facing==EnumFacing.SOUTH?-.03125:.125);
-			return new Vec3(facing==EnumFacing.WEST?1.03125:facing==EnumFacing.EAST?-.03125:.875, .5, facing==EnumFacing.NORTH?1.03125:facing==EnumFacing.SOUTH?-.03125:.875);
+				return new Vec3d(facing==EnumFacing.WEST?1.03125:facing==EnumFacing.EAST?-.03125:.125, .5, facing==EnumFacing.NORTH?1.03125:facing==EnumFacing.SOUTH?-.03125:.125);
+			return new Vec3d(facing==EnumFacing.WEST?1.03125:facing==EnumFacing.EAST?-.03125:.875, .5, facing==EnumFacing.NORTH?1.03125:facing==EnumFacing.SOUTH?-.03125:.875);
 		}
 	}
 }

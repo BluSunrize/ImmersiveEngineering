@@ -1,15 +1,13 @@
 package blusunrize.immersiveengineering.client.fx;
 
-import net.minecraft.client.particle.EntityFX;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
+import com.google.common.collect.ArrayListMultimap;
+import net.minecraft.client.particle.Particle;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
-import com.google.common.collect.ArrayListMultimap;
-
-public abstract class EntityFXIEBase extends EntityFX
+public abstract class EntityFXIEBase extends Particle
 {
 	public static ArrayListMultimap<String, EntityFXIEBase> queuedRenders = ArrayListMultimap.create();
 	public static ArrayListMultimap<String, EntityFXIEBase> queuedDepthIgnoringRenders = ArrayListMultimap.create();
@@ -36,7 +34,7 @@ public abstract class EntityFXIEBase extends EntityFX
 	}
 
 	@Override
-	public void renderParticle(WorldRenderer worldRendererIn, Entity entityIn, float partialTicks, float f3, float f4, float f5, float f6, float f7)
+	public void renderParticle(VertexBuffer worldRendererIn, Entity entityIn, float partialTicks, float f3, float f4, float f5, float f6, float f7)
 	{
 		this.partialTicks=partialTicks;
 		this.f3=f3;
@@ -60,7 +58,7 @@ public abstract class EntityFXIEBase extends EntityFX
 	{
 		return vanillaParticleTextures;
 	}
-	public void tessellateFromQueue(WorldRenderer worldRendererIn)
+	public void tessellateFromQueue(VertexBuffer worldRendererIn)
 	{
 		float f6 = (float)this.particleTextureIndexX / 16.0F;
 		float f7 = f6 + 0.0624375F;
@@ -68,12 +66,12 @@ public abstract class EntityFXIEBase extends EntityFX
 		float f9 = f8 + 0.0624375F;
 		float f10 = 0.1F * this.particleScale;
 
-		if (this.particleIcon != null)
+		if (this.particleTexture != null)
 		{
-			f6 = this.particleIcon.getMinU();
-			f7 = this.particleIcon.getMaxU();
-			f8 = this.particleIcon.getMinV();
-			f9 = this.particleIcon.getMaxV();
+			f6 = this.particleTexture.getMinU();
+			f7 = this.particleTexture.getMaxU();
+			f8 = this.particleTexture.getMinV();
+			f9 = this.particleTexture.getMaxV();
 		}
 
 		float f11 = (float)(this.prevPosX + (this.posX - this.prevPosX) * (double)partialTicks - interpPosX);

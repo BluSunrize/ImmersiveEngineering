@@ -1,34 +1,28 @@
 package blusunrize.immersiveengineering.client.render;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import org.lwjgl.opengl.GL11;
-
-import com.google.common.collect.Lists;
-
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBucketWheel;
+import com.google.common.collect.Lists;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BlockRendererDispatcher;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.init.Blocks;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
-import net.minecraftforge.client.model.ISmartBlockModel;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.model.obj.OBJModel.OBJProperty;
 import net.minecraftforge.client.model.obj.OBJModel.OBJState;
 import net.minecraftforge.common.property.IExtendedBlockState;
+import net.minecraftforge.common.property.Properties;
+import org.lwjgl.opengl.GL11;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class TileRenderBucketWheel extends TileEntitySpecialRenderer<TileEntityBucketWheel>
 {
@@ -41,7 +35,7 @@ public class TileRenderBucketWheel extends TileEntitySpecialRenderer<TileEntityB
 		IBlockState state = tile.getWorld().getBlockState(tile.getPos());
 		BlockPos blockPos = tile.getPos();
 		state = state.withProperty(IEProperties.DYNAMICRENDER, true);
-		IBakedModel model = blockRenderer.getModelFromBlockState(state, getWorld(), blockPos);
+		IBakedModel model = blockRenderer.getModelForState(state);
 		if(state instanceof IExtendedBlockState)
 		{
 			ArrayList<String> list = Lists.newArrayList("bucketWheel");
@@ -51,18 +45,18 @@ public class TileRenderBucketWheel extends TileEntitySpecialRenderer<TileEntityB
 				{
 					list.add("dig"+i);
 					Block b = Block.getBlockFromItem(tile.digStacks[i].getItem());
-					IBlockState digState = b!=null?b.getStateFromMeta(tile.digStacks[i].getMetadata()): Blocks.stone.getDefaultState();
+					IBlockState digState = b!=null?b.getStateFromMeta(tile.digStacks[i].getMetadata()): Blocks.STONE.getDefaultState();
 					IBakedModel digModel = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getModelForState(digState);
 					if(digModel!=null && digModel.getParticleTexture()!=null)
 						texMap.put("dig"+i, digModel.getParticleTexture().getIconName());
 				}
-			state = ((IExtendedBlockState)state).withProperty(OBJProperty.instance, new OBJState(list, true));
+			state = ((IExtendedBlockState)state).withProperty(Properties.AnimationProperty, new OBJState(list, true));
 			state = ((IExtendedBlockState)state).withProperty(IEProperties.OBJ_TEXTURE_REMAP, texMap);
 		}
 
 		Tessellator tessellator = Tessellator.getInstance();
-		WorldRenderer worldRenderer = tessellator.getWorldRenderer();
-		bindTexture(TextureMap.locationBlocksTexture);
+		VertexBuffer worldRenderer = tessellator.getBuffer();
+		bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
 		RenderHelper.disableStandardItemLighting();
 		GlStateManager.blendFunc(770, 771);
 		GlStateManager.enableBlend();
@@ -89,9 +83,7 @@ public class TileRenderBucketWheel extends TileEntitySpecialRenderer<TileEntityB
 		worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
 		worldRenderer.setTranslation( -.5-blockPos.getX(), -.5- blockPos.getY(),  -.5-blockPos.getZ());
 		worldRenderer.color(255, 255, 255, 255);
-		if(model instanceof ISmartBlockModel)
-			model = ((ISmartBlockModel) model).handleBlockState(state);
-		blockRenderer.getBlockModelRenderer().renderModel(tile.getWorld(), model, state, tile.getPos(), worldRenderer);
+		blockRenderer.getBlockModelRenderer().renderModel(tile.getWorld(), model, state, tile.getPos(), worldRenderer, true);
 		worldRenderer.setTranslation(0.0D, 0.0D, 0.0D);
 		tessellator.draw();
 		GlStateManager.popMatrix();

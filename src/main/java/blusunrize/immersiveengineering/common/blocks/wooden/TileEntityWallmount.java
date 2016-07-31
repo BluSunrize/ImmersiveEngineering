@@ -114,14 +114,4 @@ public class TileEntityWallmount extends TileEntityIEBase implements IBlockBound
 		float maxZ = towards==EnumFacing.SOUTH?1:.6875f;
 		return new float[]{minX,minY,minZ, maxX,maxY,maxZ};
 	}
-	@Override
-	public float[] getSpecialCollisionBounds()
-	{
-		return null;
-	}
-	@Override
-	public float[] getSpecialSelectionBounds()
-	{
-		return null;
-	}
 }

@@ -12,17 +12,17 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.Attributes;
 import net.minecraftforge.client.model.ICustomModelLoader;
-import net.minecraftforge.client.model.IFlexibleBakedModel;
 import net.minecraftforge.client.model.IModel;
-import net.minecraftforge.client.model.IModelState;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.obj.OBJModel;
+import net.minecraftforge.common.model.IModelState;
 
 public class ConnLoader implements ICustomModelLoader
 {
@@ -151,15 +151,14 @@ public class ConnLoader implements ICustomModelLoader
 				ret.add(new ResourceLocation(ImmersiveEngineering.MODID.toLowerCase() + ":blocks/wire"));
 				return ret;
 			}
-			catch (IOException e)
+			catch (Exception e)
 			{
 				throw new RuntimeException(e);
 			}
 		}
 
 		@Override
-		public IFlexibleBakedModel bake(IModelState state, VertexFormat format,
-				Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter)
+		public IBakedModel bake(IModelState state, VertexFormat format,	Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter)
 		{
 			try
 			{
@@ -172,7 +171,7 @@ public class ConnLoader implements ICustomModelLoader
 				}
 				return new ConnModelReal(model.bake(state, Attributes.DEFAULT_BAKED_FORMAT, bakedTextureGetter));
 			}
-			catch (IOException e)
+			catch (Exception e)
 			{
 				throw new RuntimeException(e);
 			}

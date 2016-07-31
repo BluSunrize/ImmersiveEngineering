@@ -16,7 +16,7 @@ public class SqueezerRecipeCategory extends IERecipeCategory
 	
 	public SqueezerRecipeCategory(IGuiHelper helper)
 	{
-		super("squeezer","tile.ImmersiveEngineering.metalMultiblock.squeezer.name", helper.createDrawable(background, 6,12, 164,59), SqueezerRecipeWrapper.class);
+		super("squeezer","tile.immersiveengineering.metalMultiblock.squeezer.name", helper.createDrawable(background, 6,12, 164,59), SqueezerRecipeWrapper.class);
 		tankOverlay = helper.createDrawable(background, 177,31, 16,47, -2,2,-2,2);
 	}
 	

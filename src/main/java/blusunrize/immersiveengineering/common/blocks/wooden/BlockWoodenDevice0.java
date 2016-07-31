@@ -13,13 +13,17 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.init.Items;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Explosion;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 public class BlockWoodenDevice0 extends BlockIETileProvider<BlockTypes_WoodenDevice0>
@@ -28,24 +32,24 @@ public class BlockWoodenDevice0 extends BlockIETileProvider<BlockTypes_WoodenDev
 
 	public BlockWoodenDevice0()
 	{
-		super("woodenDevice0",Material.wood, PropertyEnum.create("type", BlockTypes_WoodenDevice0.class), ItemBlockIEBase.class, IEProperties.FACING_HORIZONTAL, IEProperties.SIDECONFIG[0], IEProperties.SIDECONFIG[1], IEProperties.MULTIBLOCKSLAVE);
+		super("woodenDevice0",Material.WOOD, PropertyEnum.create("type", BlockTypes_WoodenDevice0.class), ItemBlockIEBase.class, IEProperties.FACING_HORIZONTAL, IEProperties.SIDECONFIG[0], IEProperties.SIDECONFIG[1], IEProperties.MULTIBLOCKSLAVE);
 		this.setHardness(2.0F);
 		this.setResistance(5.0F);
 		setMetaLightOpacity(BlockTypes_WoodenDevice0.WORKBENCH.getMeta(), 0);
 	}
 
 	@Override
-	public boolean isFullBlock()
+	public boolean isFullBlock(IBlockState state)
 	{
 		return false;
 	}
 	@Override
-	public boolean isFullCube()
+	public boolean isFullCube(IBlockState state)
 	{
 		return false;
 	}
 	@Override
-	public boolean isOpaqueCube()
+	public boolean isOpaqueCube(IBlockState state)
 	{
 		return false;
 	}
@@ -66,7 +70,7 @@ public class BlockWoodenDevice0 extends BlockIETileProvider<BlockTypes_WoodenDev
 			{
 				EntityIEExplosive explosive = new EntityIEExplosive(world, pos, igniter, state, 4).setDropChance(1);
 				world.spawnEntityInWorld(explosive);
-				world.playSoundAtEntity(explosive, "game.tnt.primed", 1.0F, 1.0F);
+				world.playSound((EntityPlayer)null, explosive.posX, explosive.posY, explosive.posZ, SoundEvents.ENTITY_TNT_PRIMED, SoundCategory.BLOCKS, 1.0F, 1.0F);
 				world.setBlockToAir(pos);
 			}
 		}
@@ -94,24 +98,24 @@ public class BlockWoodenDevice0 extends BlockIETileProvider<BlockTypes_WoodenDev
 
 
 	@Override
-	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumFacing side, float hitX, float hitY, float hitZ)
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack stack, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
 		int explosivesType = this.getExplosivesType(state);
-		if(explosivesType>=0 && player.getCurrentEquippedItem()!=null)
+		if(explosivesType>=0 && stack!=null)
 		{
-			Item item = player.getCurrentEquippedItem().getItem();
+			Item item = stack.getItem();
 
-			if(item==Items.flint_and_steel||item==Items.fire_charge)
+			if(item==Items.FLINT_AND_STEEL||item==Items.FIRE_CHARGE)
 			{
 				this.doExplosion(world, pos, state, player, explosivesType);
-				if(item==Items.flint_and_steel)
-					player.getCurrentEquippedItem().damageItem(1, player);
+				if(item==Items.FLINT_AND_STEEL)
+					stack.damageItem(1, player);
 				else if (!player.capabilities.isCreativeMode)
-					--player.getCurrentEquippedItem().stackSize;
+					--stack.stackSize;
 				return true;
 			}
 		}
-		return super.onBlockActivated(world, pos, state, player, side, hitX, hitY, hitZ);
+		return super.onBlockActivated(world, pos, state, player, hand, stack, side, hitX, hitY, hitZ);
 	}
 	@Override
 	public boolean canDropFromExplosion(Explosion explosionIn)
@@ -135,12 +139,12 @@ public class BlockWoodenDevice0 extends BlockIETileProvider<BlockTypes_WoodenDev
 	}
 
 	@Override
-	public void onNeighborBlockChange(World world, BlockPos pos, IBlockState state, Block block)
+	public void onNeighborChange(IBlockAccess world, BlockPos pos, BlockPos neighbour)
 	{
-		super.onNeighborBlockChange(world, pos, state, block);
-		int explosivesType = this.getExplosivesType(state);
-		if(explosivesType>=0 && world.isBlockPowered(pos))
-			this.doExplosion(world, pos, state, null, explosivesType);
+		super.onNeighborChange(world, pos, neighbour);
+		int explosivesType = this.getExplosivesType(world.getBlockState(pos));
+		if(world instanceof World && explosivesType>=0 && ((World)world).isBlockPowered(pos))
+			this.doExplosion((World)world, pos, world.getBlockState(pos), null, explosivesType);
 	}
 	@Override
 	public void onBlockAdded(World world, BlockPos pos, IBlockState state)
@@ -163,7 +167,7 @@ public class BlockWoodenDevice0 extends BlockIETileProvider<BlockTypes_WoodenDev
 	{
 		super.onEntityCollidedWithBlock(world, pos, state, entity);
 		int explosivesType = this.getExplosivesType(state);
-		if(!world.isRemote && entity instanceof EntityArrow && ((EntityArrow)entity).isBurning() && explosivesType>=0)
+		if(!world.isRemote && entity instanceof EntityArrow && entity.isBurning() && explosivesType>=0)
 			this.doExplosion(world, pos, state, ((EntityArrow)entity).shootingEntity instanceof EntityLivingBase?(EntityLivingBase)((EntityArrow)entity).shootingEntity:null, explosivesType);
 	}
 
@@ -353,16 +357,16 @@ public class BlockWoodenDevice0 extends BlockIETileProvider<BlockTypes_WoodenDev
 	{
 		switch(BlockTypes_WoodenDevice0.values()[meta])
 		{
-		case CRATE:
-			return new TileEntityWoodenCrate();
-		case WORKBENCH:
-			return new TileEntityModWorkbench();
-		case BARREL:
-			return new TileEntityWoodenBarrel();
-		case SORTER:
-			return new TileEntitySorter();
-		case REINFORCED_CRATE:
-			return new TileEntityWoodenCrate();
+			case CRATE:
+				return new TileEntityWoodenCrate();
+			case WORKBENCH:
+				return new TileEntityModWorkbench();
+			case BARREL:
+				return new TileEntityWoodenBarrel();
+			case SORTER:
+				return new TileEntitySorter();
+			case REINFORCED_CRATE:
+				return new TileEntityWoodenCrate();
 		}
 		return null;
 	}

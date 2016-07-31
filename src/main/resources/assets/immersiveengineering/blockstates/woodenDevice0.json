@@ -27,13 +27,13 @@
 			"model": "immersiveengineering:woodenDevice/workbench.obj",
 			"custom": {"flip-v": true},
 			"transform": {
-				"scale": .8,
-				"rotation": {"y": 90},
-				"translation": [.25, 0, 0],
+				"scale": 0.5,
+				"rotation": [{"x": 37.5}, {"y": 45}],
+				"translation": [-0.1875, -0.1875, 0],
 				"thirdperson": {
-					"scale": .6,
-					"translation": [0, .2, 0],
-					"rotation":{"z": 180 }
+					"scale": 0.6,
+					"translation": [0, 0.2, 0],
+					"rotation":{"x": 62.5 }
 				}
 			}
 		}],
@@ -137,7 +137,7 @@
 			"input":{"textures": {"top": "#topIn"}},
 			"output":{"textures": {"top": "#topOut"}}
 		},
-		"*multiblockslave":
+		"_0multiblockslave":
 		{
 			"false":{},
 			"true":{

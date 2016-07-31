@@ -4,6 +4,7 @@ import blusunrize.immersiveengineering.common.blocks.wooden.TileEntitySorter;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -39,9 +40,9 @@ public class ContainerSorter extends Container
 	}
 
 	@Override
-	public ItemStack slotClick(int id, int button, int modifier, EntityPlayer player)
+	public ItemStack slotClick(int id, int button, ClickType modifier, EntityPlayer player)
 	{
-		Slot slot = id<0?null: (Slot)this.inventorySlots.get(id);
+		Slot slot = id<0?null: this.inventorySlots.get(id);
 		if(!(slot instanceof IESlot.Ghost))
 			return super.slotClick(id, button, modifier, player);
 

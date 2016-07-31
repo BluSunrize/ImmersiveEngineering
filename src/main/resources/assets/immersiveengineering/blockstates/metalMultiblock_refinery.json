@@ -15,7 +15,7 @@
 			"transform": {
 				"scale": 0.25,
 				"rotation": [{"y": -90 }],
-				"translation": [ -.25, .0625, 0 ]
+				"translation": [ -0.25, 0.0625, 0 ]
 			}
 		}],
 		"type":
@@ -38,14 +38,14 @@
 				"rotation": {"y": -90 }
 			}}
 		},
-		"*multiblockslave":
+		"_0multiblockslave":
 		{
 			"false":{},
 			"true":{
 				"model": "builtin/generated"
 			}
 		},
-		"+dynamicrender":
+		"_1dynamicrender":
 		{
 			"false":{},
 			"true":{}

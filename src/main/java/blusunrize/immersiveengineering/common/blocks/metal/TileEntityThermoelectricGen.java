@@ -13,7 +13,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraftforge.fluids.Fluid;
@@ -68,9 +68,9 @@ public class TileEntityThermoelectricGen extends TileEntityIEBase implements ITi
 		Block b = state.getBlock();
 		Fluid f = FluidRegistry.lookupFluidForBlock(b);
 		if(f==null && b instanceof BlockDynamicLiquid && b.getMetaFromState(state)==0)
-			if(b.getMaterial().equals(Material.water))
+			if(state.getMaterial().equals(Material.WATER))
 				f = FluidRegistry.WATER;
-			else if(b.getMaterial().equals(Material.lava))
+			else if(state.getMaterial().equals(Material.LAVA))
 				f = FluidRegistry.LAVA;
 		if(b instanceof IFluidBlock && !((IFluidBlock)b).canDrain(worldObj, pos))
 			return null;

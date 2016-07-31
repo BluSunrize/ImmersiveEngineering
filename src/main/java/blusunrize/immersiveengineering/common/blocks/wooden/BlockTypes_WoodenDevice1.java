@@ -14,7 +14,7 @@ public enum BlockTypes_WoodenDevice1 implements IStringSerializable, BlockIEBase
 	@Override
 	public String getName()
 	{
-		return this.toString();
+		return this.toString().toLowerCase();
 	}
 	@Override
 	public int getMeta()

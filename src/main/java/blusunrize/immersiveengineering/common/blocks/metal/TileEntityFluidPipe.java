@@ -1,47 +1,42 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import static java.util.Collections.newSetFromMap;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-
-import com.google.common.collect.Lists;
-
 import blusunrize.immersiveengineering.api.AdvancedAABB;
 import blusunrize.immersiveengineering.api.fluid.IFluidPipe;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedCollisionBounds;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedHasObjProperty;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedSelectionBounds;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IColouredTile;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
+import com.google.common.collect.Lists;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraftforge.client.model.TRSRTransformation;
 import net.minecraftforge.client.model.obj.OBJModel.OBJState;
-import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.FluidTankProperties;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 
-public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe, IFluidHandler, IAdvancedHasObjProperty, IColouredTile, IHammerInteraction, IAdvancedSelectionBounds,IAdvancedCollisionBounds
+import javax.annotation.Nullable;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+
+import static java.util.Collections.newSetFromMap;
+
+public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe, IAdvancedHasObjProperty, IColouredTile, IHammerInteraction, IAdvancedSelectionBounds,IAdvancedCollisionBounds
 {
 	static ConcurrentHashMap<BlockPos, Set<DirectionalFluidOutput>> indirectConnections = new ConcurrentHashMap<BlockPos, Set<DirectionalFluidOutput>>();
 	public static ArrayList<ItemStack> validScaffoldCoverings = new ArrayList<ItemStack>();
@@ -70,33 +65,35 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 			BlockPos next = openList.get(0);
 			if(world.isBlockLoaded(next))
 			{
-				TileEntity te = world.getTileEntity(next);
-				if(!closedList.contains(next) && (te instanceof IFluidPipe))
+				TileEntity pipeTile = world.getTileEntity(next);
+				if(!closedList.contains(next) && (pipeTile instanceof IFluidPipe))
 				{
-					if(te instanceof TileEntityFluidPipe)
+					if(pipeTile instanceof TileEntityFluidPipe)
 						closedList.add(next);
-					FluidTankInfo[] tankInfo;
+					IFluidTankProperties[] tankInfo;
 					for(int i=0; i<6; i++)
 					{
 						//						boolean b = (te instanceof TileEntityFluidPipe)? (((TileEntityFluidPipe) te).sideConfig[i]==0): (((TileEntityFluidPump) te).sideConfig[i]==1);
 						EnumFacing fd = EnumFacing.getFront(i);
-						if(((IFluidPipe)te).hasOutputConnection(fd))
+						if(((IFluidPipe)pipeTile).hasOutputConnection(fd))
 						{
 							BlockPos nextPos = next.offset(fd);
 							if(world.isBlockLoaded(nextPos))
 							{
-								TileEntity te2 = world.getTileEntity(nextPos);
-								if(te2 instanceof TileEntityFluidPipe)
-									openList.add(nextPos);
-								else if(te2 instanceof IFluidHandler)
-								{
-									tankInfo = ((IFluidHandler) te2).getTankInfo(fd.getOpposite());
-									if(tankInfo!=null && tankInfo.length>0)
+								TileEntity adjacentTile = world.getTileEntity(nextPos);
+								if(adjacentTile!=null)
+									if(adjacentTile instanceof TileEntityFluidPipe)
+										openList.add(nextPos);
+									else if(adjacentTile.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, fd.getOpposite()))
 									{
-										IFluidHandler handler = (IFluidHandler) te2;
-										fluidHandlers.add(new DirectionalFluidOutput(handler, fd));
+										IFluidHandler handler = adjacentTile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, fd.getOpposite());
+										if(handler!=null)
+										{
+											tankInfo = handler.getTankProperties();
+											if(tankInfo != null && tankInfo.length > 0)
+												fluidHandlers.add(new DirectionalFluidOutput(handler, adjacentTile, fd));
+										}
 									}
-								}
 							}
 						}
 					}
@@ -142,123 +139,140 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 	}
 
 
-	@Override
-	public int fill(EnumFacing from, FluidStack resource, boolean doFill)
-	{
-		if(resource==null || from==null || sideConfig[from.ordinal()]!=0 || worldObj.isRemote)
-			return 0;
-
-		int canAccept = resource.amount;
-		if(canAccept<=0)
-			return 0;
-
-
-		ArrayList<DirectionalFluidOutput> outputList = new ArrayList(getConnectedFluidHandlers(getPos(), worldObj));
-		if(outputList.size()<1)
-			//NO OUTPUTS!
-			return 0;
-		BlockPos ccFrom = new BlockPos(getPos().offset(from));
-		int sum = 0;
-		HashMap<DirectionalFluidOutput,Integer> sorting = new HashMap<DirectionalFluidOutput,Integer>();
-		for(DirectionalFluidOutput output : outputList)
-		{
-			BlockPos cc = Utils.toCC(output.output);
-			if(!cc.equals(ccFrom) && worldObj.isBlockLoaded(cc) && output.output.canFill(output.direction.getOpposite(), resource.getFluid()))
-			{
-				int limit = (resource.tag!=null&&resource.tag.hasKey("pressurized"))||canOutputPressurized(output.output, false)?1000: 50;
-				int tileSpecificAcceptedFluid = Math.min(limit, canAccept);
-				int temp = output.output.fill(output.direction.getOpposite(), Utils.copyFluidStackWithAmount(resource, tileSpecificAcceptedFluid,true), false);
-				if(temp>0)
-				{
-					sorting.put(output, temp);
-					sum += temp;
-				}
-			}
-		}
-		if(sum>0)
-		{
-			int f = 0;
-			for(DirectionalFluidOutput output : sorting.keySet())
-			{
-				int limit = (resource.tag!=null&&resource.tag.hasKey("pressurized"))||canOutputPressurized(output.output, false)?1000: 50;
-				int tileSpecificAcceptedFluid = Math.min(limit, canAccept);
-
-				float prio = sorting.get(output)/(float)sum;
-				int amount = (int)(tileSpecificAcceptedFluid*prio);
-				int r = output.output.fill(output.direction.getOpposite(), Utils.copyFluidStackWithAmount(resource, amount, true), doFill);
-				if(r>50)
-					canOutputPressurized(output.output, true);
-				f += r;
-				canAccept -= r;
-				if(canAccept<=0)
-					break;
-			}
-			return f;
-		}
-		return 0;
-	}
-
-	boolean canOutputPressurized(IFluidHandler output, boolean consumePower)
+	boolean canOutputPressurized(TileEntity output, boolean consumePower)
 	{
 		if(output instanceof IFluidPipe)
 			return ((IFluidPipe)output).canOutputPressurized(consumePower);
 		return false;
 	}
 
+	PipeFluidHandler[] sidedHandlers = {new PipeFluidHandler(this, EnumFacing.DOWN),new PipeFluidHandler(this, EnumFacing.UP),new PipeFluidHandler(this, EnumFacing.NORTH),new PipeFluidHandler(this, EnumFacing.SOUTH),new PipeFluidHandler(this, EnumFacing.WEST),new PipeFluidHandler(this, EnumFacing.EAST)};
 	@Override
-	public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain)
+	public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing)
 	{
-		return null;
+		if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && facing!=null&&sideConfig[facing.ordinal()]==0)
+			return true;
+		return super.hasCapability(capability, facing);
+	}
+	@Override
+	public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing)
+	{
+		if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && facing!=null&&sideConfig[facing.ordinal()]==0)
+			return (T)sidedHandlers[facing.ordinal()];
+		return super.getCapability(capability, facing);
 	}
 
-	@Override
-	public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain)
+	static class PipeFluidHandler implements IFluidHandler
 	{
-		return null;
-	}
+		TileEntityFluidPipe pipe;
+		EnumFacing facing;
 
-	@Override
-	public boolean canFill(EnumFacing from, Fluid fluid)
-	{
-		return from!=null&&sideConfig[from.ordinal()]==0;
-	}
+		public PipeFluidHandler(TileEntityFluidPipe pipe, EnumFacing facing)
+		{
+			this.pipe = pipe;
+			this.facing = facing;
+		}
 
-	@Override
-	public boolean canDrain(EnumFacing from, Fluid fluid)
-	{
-		return false;
-	}
+		@Override
+		public IFluidTankProperties[] getTankProperties()
+		{
+			return new IFluidTankProperties[]{new FluidTankProperties(null, 1000, true, false)};
+		}
+		@Override
+		public int fill(FluidStack resource, boolean doFill)
+		{
+//		if(resource==null || from==null || sideConfig[from.ordinal()]!=0 || worldObj.isRemote)
+//			return 0;
+			int canAccept = resource.amount;
+			if(canAccept <= 0)
+				return 0;
+			ArrayList<DirectionalFluidOutput> outputList = new ArrayList(getConnectedFluidHandlers(pipe.getPos(), pipe.worldObj));
 
-	@Override
-	public FluidTankInfo[] getTankInfo(EnumFacing from)
-	{
-		return new FluidTankInfo[]{new FluidTank(1000).getInfo()};
-	}
+			BlockPos ccFrom2 = new BlockPos(pipe.getPos().offset(facing));
+			if(outputList.size() < 1)
+//NO OUTPUTS!
+				return 0;
+			BlockPos ccFrom = new BlockPos(pipe.getPos().offset(facing));
+			int sum = 0;
+			HashMap<DirectionalFluidOutput, Integer> sorting = new HashMap<DirectionalFluidOutput, Integer>();
+			for(DirectionalFluidOutput output : outputList)
+			{
+				BlockPos cc = Utils.toCC(output.containingTile);
+				if(!cc.equals(ccFrom) && pipe.worldObj.isBlockLoaded(cc) && !pipe.equals(output.containingTile))
+				//&& output.output.canFill(output.direction.getOpposite(), resource.getFluid()))
+				{
+					int limit = (resource.tag != null && resource.tag.hasKey("pressurized")) || pipe.canOutputPressurized(output.containingTile, false) ? 1000 : 50;
+					int tileSpecificAcceptedFluid = Math.min(limit, canAccept);
+					int temp = output.output.fill(Utils.copyFluidStackWithAmount(resource, tileSpecificAcceptedFluid, true), false);
+					if(temp > 0)
+					{
+						sorting.put(output, temp);
+						sum += temp;
+					}
+				}
+			}
+			if(sum > 0)
+			{
+				int f = 0;
+				for(DirectionalFluidOutput output : sorting.keySet())
+				{
+					int limit = (resource.tag != null && resource.tag.hasKey("pressurized")) || pipe.canOutputPressurized(output.containingTile, false) ? 1000 : 50;
+					int tileSpecificAcceptedFluid = Math.min(limit, canAccept);
+					float prio = sorting.get(output) / (float) sum;
+					int amount = (int) (tileSpecificAcceptedFluid * prio);
+					int r = output.output.fill(Utils.copyFluidStackWithAmount(resource, amount, true), doFill);
+					if(r > 50)
+						pipe.canOutputPressurized(output.containingTile, true);
+					f += r;
+					canAccept -= r;
+					if(canAccept <= 0)
+						break;
+				}
+				return f;
+			}
+			return 0;
+		}
 
+		@Nullable
+		@Override
+		public FluidStack drain(FluidStack resource, boolean doDrain)
+		{
+			return null;
+		}
+		@Nullable
+		@Override
+		public FluidStack drain(int maxDrain, boolean doDrain)
+		{
+			return null;
+		}
+	}
 	public static class DirectionalFluidOutput
 	{
 		IFluidHandler output;
 		EnumFacing direction;
-
-		public DirectionalFluidOutput(IFluidHandler output, EnumFacing direction)
+		TileEntity containingTile;
+		public DirectionalFluidOutput(IFluidHandler output, TileEntity containingTile, EnumFacing direction)
 		{
 			this.output = output;
 			this.direction = direction;
+			this.containingTile = containingTile;
 		}
 	}
 
 	public byte getConnectionByte()
 	{
 		byte connections = 0;
-		FluidTankInfo[] tankInfo;
+		IFluidTankProperties[] tankInfo;
 		for(int i=5; i>=0; i--)
 		{
 			//			TileEntity con = worldObj.getTileEntity(xCoord+(i==4?-1: i==5?1: 0),yCoord+(i==0?-1: i==1?1: 0),zCoord+(i==2?-1: i==3?1: 0));
-			TileEntity con = worldObj.getTileEntity(getPos().offset(EnumFacing.getFront(i)));
+			EnumFacing dir = EnumFacing.getFront(i);
+			TileEntity con = worldObj.getTileEntity(getPos().offset(dir));
 			connections <<= 1;
-			if(sideConfig[i]==0 && con instanceof IFluidHandler)
+			if(sideConfig[i]==0 && con!=null && con.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, dir.getOpposite()))
 			{
-				tankInfo = ((IFluidHandler) con).getTankInfo(EnumFacing.getFront(i).getOpposite());
+				IFluidHandler handler = con.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, dir.getOpposite());
+				tankInfo = handler!=null?handler.getTankProperties():null;
 				if(tankInfo!=null && tankInfo.length>0)
 					connections |= 1;
 			}
@@ -268,15 +282,17 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 	public byte getAvailableConnectionByte()
 	{
 		byte connections = 0;
-		FluidTankInfo[] tankInfo;
+		IFluidTankProperties[] tankInfo;
 		for(int i=5; i>=0; i--)
 		{
 			//			TileEntity con = worldObj.getTileEntity(xCoord+(i==4?-1: i==5?1: 0),yCoord+(i==0?-1: i==1?1: 0),zCoord+(i==2?-1: i==3?1: 0));
-			TileEntity con = worldObj.getTileEntity(getPos().offset(EnumFacing.getFront(i)));
+			EnumFacing dir = EnumFacing.getFront(i);
+			TileEntity con = worldObj.getTileEntity(getPos().offset(dir));
 			connections <<= 1;
-			if(con instanceof IFluidHandler)
+			if(con!=null && con.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, dir.getOpposite()))
 			{
-				tankInfo = ((IFluidHandler) con).getTankInfo(EnumFacing.getFront(i).getOpposite());
+				IFluidHandler handler = con.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, dir.getOpposite());
+				tankInfo = handler!=null?handler.getTankProperties():null;
 				if(tankInfo!=null && tankInfo.length>0)
 					connections |= 1;
 			}
@@ -315,7 +331,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 		TileEntity connected = worldObj.getTileEntity(getPos().offset(fd));
 		if(connected instanceof TileEntityFluidPipe)
 		{
-			((TileEntityFluidPipe)connected).sideConfig[fd.getOpposite().ordinal()] = sideConfig[side]; 
+			((TileEntityFluidPipe)connected).sideConfig[fd.getOpposite().ordinal()] = sideConfig[side];
 			connected.markDirty();
 			worldObj.addBlockEvent(getPos().offset(fd), getBlockType(), 0,0);
 		}
@@ -326,7 +342,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 	{
 		if(id==0)
 		{
-			this.worldObj.markBlockForUpdate(getPos());
+			this.markContainingBlockForUpdate(null);
 			return true;
 		}
 		return false;
@@ -334,16 +350,6 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 
 	@Override
 	public float[] getBlockBounds()
-	{
-		return null;
-	}
-	@Override
-	public float[] getSpecialCollisionBounds()
-	{
-		return null;
-	}
-	@Override
-	public float[] getSpecialSelectionBounds()
 	{
 		return null;
 	}
@@ -414,7 +420,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 	}
 
 	@Override
-	public boolean isOverrideBox(AxisAlignedBB box, EntityPlayer player, MovingObjectPosition mop, ArrayList<AxisAlignedBB> list)
+	public boolean isOverrideBox(AxisAlignedBB box, EntityPlayer player, RayTraceResult mop, ArrayList<AxisAlignedBB> list)
 	{
 		if(box instanceof AdvancedAABB)
 		{
@@ -455,224 +461,224 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 			boolean straightX = (connections&48)==48;
 			switch(totalConnections)
 			{
-			case 0://stub
-				parts.add("center");
-				break;
-			case 1://stopper
-				parts.add("stopper");
+				case 0://stub
+					parts.add("center");
+					break;
+				case 1://stopper
+					parts.add("stopper");
 
-				//default: y-
-				if((connections&2)!=0)//y+
-					rotationMatrix.rotate(Math.PI, 0,0,1);
-				else if((connections&4)!=0)//z-
-					rotationMatrix.rotate(Math.PI/2, 1,0,0);
-				else if((connections&8)!=0)//z+
-					rotationMatrix.rotate(-Math.PI/2, 1,0,0);
-				else if((connections&16)!=0)//x-
-					rotationMatrix.rotate(-Math.PI/2, 0,0,1);
-				else if((connections&32)!=0)//x+
-					rotationMatrix.rotate(Math.PI/2, 0,0,1);
-				parts.add("con_yMin");
-				break;
-			case 2://straight or curve
-				if(straightY)
-				{
-					parts.add("pipe_y");
-					if(getConnectionStyle(0)==1)
-						parts.add("con_yMin");
-					if(getConnectionStyle(1)==1)
-						parts.add("con_yMax");
-				}
-				else if(straightZ)
-				{
-					parts.add("pipe_z");
-					if(getConnectionStyle(2)==1)
-						parts.add("con_zMin");
-					if(getConnectionStyle(3)==1)
-						parts.add("con_zMax");
-				}
-				else if(straightX)
-				{
-					parts.add("pipe_x");
-					if(getConnectionStyle(4)==1)
-						parts.add("con_xMin");
-					if(getConnectionStyle(5)==1)
-						parts.add("con_xMax");
-				}
-				else
-				{
-					parts.add("curve");
-					parts.add("con_yMin");
-					parts.add("con_zMin");
-					byte connectTo = (byte)(connections&60);
-					if((connections&3)!=0)//curve to top or bottom
-					{
-						if(connectTo==16)//x-
-							rotationMatrix.rotate(Math.PI/2, 0,1,0);
-						else if(connectTo==32)//x+
-							rotationMatrix.rotate(-Math.PI/2, 0,1,0);
-						else if(connectTo==8)//z+
-							rotationMatrix.rotate(Math.PI, 0,1,0);
-						if((connections&2)!=0)//flip to top
-							rotationMatrix.rotate(Math.PI, 0,0,1);
-
-						//default: Curve to z-
-					}
-					else//curve to horizontal
-					{
-						rotationMatrix.rotate(-Math.PI/2, 0,0,1);
-						if(connectTo==40)//z+ to x+
-							rotationMatrix.rotate(Math.PI, 1,0,0);
-						else if(connectTo==24)//z+ to x-
-							rotationMatrix.rotate(-Math.PI/2, 1,0,0);
-						else if(connectTo==36)//z- to x+
-							rotationMatrix.rotate(Math.PI/2, 1,0,0);
-						//default: z- to x-
-					}
-				}
-				break;
-			case 3://tcross or tcurve
-				if(straightX||straightZ||straightY)//has straight connect
-				{
-					parts.add("tcross");
-					parts.add("con_yMin");
-					parts.add("con_zMin");
-					parts.add("con_zMax");
-					if(straightX)
-					{
-						rotationMatrix.rotate(Math.PI/2, 0,1,0);
-						if((connections&4)!=0)//z-
-							rotationMatrix.rotate(Math.PI/2, 0,0,1);
-						else if((connections&8)!=0)//z+
-							rotationMatrix.rotate(-Math.PI/2, 0,0,1);
-						else if((connections&2)!=0)//y+
-							rotationMatrix.rotate(Math.PI, 0,0,1);
-						//default: Curve to y-
-					}
-					else if(straightY)
-					{
-						rotationMatrix.rotate(Math.PI/2, 1,0,0);
-						if((connections&16)!=0)//x-
-							rotationMatrix.rotate(-Math.PI/2, 0,0,1);
-						else if((connections&32)!=0)//x+
-							rotationMatrix.rotate(Math.PI/2, 0,0,1);
-						else if((connections&8)!=0)//z+
-							rotationMatrix.rotate(Math.PI, 0,0,1);
-						//default: Curve to z-
-					}
-					else //default:z straight
-					{
-						if((connections&16)!=0)//x-
-							rotationMatrix.rotate(-Math.PI/2, 0,0,1);
-						else if((connections&32)!=0)//x+
-							rotationMatrix.rotate(Math.PI/2, 0,0,1);
-						else if((connections&2)!=0)//y+
-							rotationMatrix.rotate(Math.PI, 0,0,1);
-						//default: Curve to y-
-					}
-				}
-				else //tcurve
-				{
-					parts.add("tcurve");
-					parts.add("con_yMin");
-					parts.add("con_zMin");
-					parts.add("con_xMax");
-					//default y-, z-, x+
-					if((connections&8)!=0)//z+
-					{
-						if((connections&16)!=0)//x-
-							rotationMatrix.rotate(Math.PI, 0,1,0);
-						else 
-							rotationMatrix.rotate(-Math.PI/2, 0,1,0);
-					}
-					else//z-
-					{
-						if((connections&16)!=0)//x-
-							rotationMatrix.rotate(Math.PI/2, 0,1,0);
-					}
+					//default: y-
 					if((connections&2)!=0)//y+
+						rotationMatrix.rotate(Math.PI, 0,0,1);
+					else if((connections&4)!=0)//z-
+						rotationMatrix.rotate(Math.PI/2, 1,0,0);
+					else if((connections&8)!=0)//z+
+						rotationMatrix.rotate(-Math.PI/2, 1,0,0);
+					else if((connections&16)!=0)//x-
+						rotationMatrix.rotate(-Math.PI/2, 0,0,1);
+					else if((connections&32)!=0)//x+
 						rotationMatrix.rotate(Math.PI/2, 0,0,1);
-				}
-				break;
-			case 4://cross or complex tcross
-				boolean cross = (straightX&&straightZ)||(straightX&&straightY)||(straightZ&&straightY);
-				if(cross)
-				{
-					parts.add("cross");
+					parts.add("con_yMin");
+					break;
+				case 2://straight or curve
+					if(straightY)
+					{
+						parts.add("pipe_y");
+						if(getConnectionStyle(0)==1)
+							parts.add("con_yMin");
+						if(getConnectionStyle(1)==1)
+							parts.add("con_yMax");
+					}
+					else if(straightZ)
+					{
+						parts.add("pipe_z");
+						if(getConnectionStyle(2)==1)
+							parts.add("con_zMin");
+						if(getConnectionStyle(3)==1)
+							parts.add("con_zMax");
+					}
+					else if(straightX)
+					{
+						parts.add("pipe_x");
+						if(getConnectionStyle(4)==1)
+							parts.add("con_xMin");
+						if(getConnectionStyle(5)==1)
+							parts.add("con_xMax");
+					}
+					else
+					{
+						parts.add("curve");
+						parts.add("con_yMin");
+						parts.add("con_zMin");
+						byte connectTo = (byte)(connections&60);
+						if((connections&3)!=0)//curve to top or bottom
+						{
+							if(connectTo==16)//x-
+								rotationMatrix.rotate(Math.PI/2, 0,1,0);
+							else if(connectTo==32)//x+
+								rotationMatrix.rotate(-Math.PI/2, 0,1,0);
+							else if(connectTo==8)//z+
+								rotationMatrix.rotate(Math.PI, 0,1,0);
+							if((connections&2)!=0)//flip to top
+								rotationMatrix.rotate(Math.PI, 0,0,1);
+
+							//default: Curve to z-
+						}
+						else//curve to horizontal
+						{
+							rotationMatrix.rotate(-Math.PI/2, 0,0,1);
+							if(connectTo==40)//z+ to x+
+								rotationMatrix.rotate(Math.PI, 1,0,0);
+							else if(connectTo==24)//z+ to x-
+								rotationMatrix.rotate(-Math.PI/2, 1,0,0);
+							else if(connectTo==36)//z- to x+
+								rotationMatrix.rotate(Math.PI/2, 1,0,0);
+							//default: z- to x-
+						}
+					}
+					break;
+				case 3://tcross or tcurve
+					if(straightX||straightZ||straightY)//has straight connect
+					{
+						parts.add("tcross");
+						parts.add("con_yMin");
+						parts.add("con_zMin");
+						parts.add("con_zMax");
+						if(straightX)
+						{
+							rotationMatrix.rotate(Math.PI/2, 0,1,0);
+							if((connections&4)!=0)//z-
+								rotationMatrix.rotate(Math.PI/2, 0,0,1);
+							else if((connections&8)!=0)//z+
+								rotationMatrix.rotate(-Math.PI/2, 0,0,1);
+							else if((connections&2)!=0)//y+
+								rotationMatrix.rotate(Math.PI, 0,0,1);
+							//default: Curve to y-
+						}
+						else if(straightY)
+						{
+							rotationMatrix.rotate(Math.PI/2, 1,0,0);
+							if((connections&16)!=0)//x-
+								rotationMatrix.rotate(-Math.PI/2, 0,0,1);
+							else if((connections&32)!=0)//x+
+								rotationMatrix.rotate(Math.PI/2, 0,0,1);
+							else if((connections&8)!=0)//z+
+								rotationMatrix.rotate(Math.PI, 0,0,1);
+							//default: Curve to z-
+						}
+						else //default:z straight
+						{
+							if((connections&16)!=0)//x-
+								rotationMatrix.rotate(-Math.PI/2, 0,0,1);
+							else if((connections&32)!=0)//x+
+								rotationMatrix.rotate(Math.PI/2, 0,0,1);
+							else if((connections&2)!=0)//y+
+								rotationMatrix.rotate(Math.PI, 0,0,1);
+							//default: Curve to y-
+						}
+					}
+					else //tcurve
+					{
+						parts.add("tcurve");
+						parts.add("con_yMin");
+						parts.add("con_zMin");
+						parts.add("con_xMax");
+						//default y-, z-, x+
+						if((connections&8)!=0)//z+
+						{
+							if((connections&16)!=0)//x-
+								rotationMatrix.rotate(Math.PI, 0,1,0);
+							else
+								rotationMatrix.rotate(-Math.PI/2, 0,1,0);
+						}
+						else//z-
+						{
+							if((connections&16)!=0)//x-
+								rotationMatrix.rotate(Math.PI/2, 0,1,0);
+						}
+						if((connections&2)!=0)//y+
+							rotationMatrix.rotate(Math.PI/2, 0,0,1);
+					}
+					break;
+				case 4://cross or complex tcross
+					boolean cross = (straightX&&straightZ)||(straightX&&straightY)||(straightZ&&straightY);
+					if(cross)
+					{
+						parts.add("cross");
+						parts.add("con_yMin");
+						parts.add("con_yMax");
+						parts.add("con_zMin");
+						parts.add("con_zMax");
+						if(!straightY)//x and z
+							rotationMatrix.rotate(Math.PI/2, 0,0,1);
+						else if(straightX)//x and y
+							rotationMatrix.rotate(Math.PI/2, 0,1,0);
+					}
+					else
+					{
+						parts.add("tcross2");
+						parts.add("con_yMin");
+						parts.add("con_zMin");
+						parts.add("con_zMax");
+						parts.add("con_xMax");
+						if(straightZ)
+						{
+							//default y- z+- x+
+							if((connections&16)!=0)//x-
+								rotationMatrix.rotate(Math.PI, 0,1,0);
+							if((connections&2)!=0)//y+
+								rotationMatrix.rotate(Math.PI/2, 0,0,1);
+						}
+						else if(straightY)
+						{
+							//default y+- z- x+
+							if((connections&8)!=0)//z+
+							{
+								rotationMatrix.rotate(Math.PI/2, 0,0,1);
+								if((connections&16)!=0)//x-
+									rotationMatrix.rotate(Math.PI/2, 0,0,1);
+							}
+							else if((connections&16)!=0)//x-
+								rotationMatrix.rotate(-Math.PI/2, 0,0,1);
+						}
+						else
+						{
+							rotationMatrix.rotate(Math.PI/2, 0,1,0);
+							//default y- z- x+-
+							if((connections&8)!=0)//z+
+								rotationMatrix.rotate(Math.PI, 0,1,0);
+							if((connections&2)!=0)//y+
+								rotationMatrix.rotate(Math.PI/2, 0,0,1);
+						}
+					}
+					break;
+				case 5://complete tcross
+					parts.add("tcross3");
 					parts.add("con_yMin");
 					parts.add("con_yMax");
 					parts.add("con_zMin");
 					parts.add("con_zMax");
-					if(!straightY)//x and z
-						rotationMatrix.rotate(Math.PI/2, 0,0,1);
-					else if(straightX)//x and y
-						rotationMatrix.rotate(Math.PI/2, 0,1,0);
-				}
-				else
-				{
-					parts.add("tcross2");
-					parts.add("con_yMin");
-					parts.add("con_zMin");
-					parts.add("con_zMax");
 					parts.add("con_xMax");
+					//default y+- z+- x+
 					if(straightZ)
 					{
-						//default y- z+- x+
-						if((connections&16)!=0)//x-
-							rotationMatrix.rotate(Math.PI, 0,1,0);
-						if((connections&2)!=0)//y+
-							rotationMatrix.rotate(Math.PI/2, 0,0,1);
-					}
-					else if(straightY)
-					{
-						//default y+- z- x+
-						if((connections&8)!=0)//z+
+						if(straightY)
 						{
-							rotationMatrix.rotate(Math.PI/2, 0,0,1);
 							if((connections&16)!=0)//x-
-								rotationMatrix.rotate(Math.PI/2, 0,0,1);
+								rotationMatrix.rotate(Math.PI, 0,1,0);
 						}
-						else if((connections&16)!=0)//x-
-							rotationMatrix.rotate(-Math.PI/2, 0,0,1);
-					}
-					else
-					{
-						rotationMatrix.rotate(Math.PI/2, 0,1,0);
-						//default y- z- x+-
-						if((connections&8)!=0)//z+
-							rotationMatrix.rotate(Math.PI, 0,1,0);
-						if((connections&2)!=0)//y+
-							rotationMatrix.rotate(Math.PI/2, 0,0,1);
-					}
-				}
-				break;
-			case 5://complete tcross
-				parts.add("tcross3");
-				parts.add("con_yMin");
-				parts.add("con_yMax");
-				parts.add("con_zMin");
-				parts.add("con_zMax");
-				parts.add("con_xMax");
-				//default y+- z+- x+
-				if(straightZ)
-				{
-					if(straightY)
-					{
-						if((connections&16)!=0)//x-
-							rotationMatrix.rotate(Math.PI, 0,1,0);
+						else if(straightX)
+							rotationMatrix.rotate(((connections&2)!=0)?(Math.PI/2):(-Math.PI/2), 0,0,1);
 					}
 					else if(straightX)
-						rotationMatrix.rotate(((connections&2)!=0)?(Math.PI/2):(-Math.PI/2), 0,0,1);
-				}
-				else if(straightX)
-				{
-					rotationMatrix.rotate(Math.PI/2, 0,1,0);
-					if((connections&8)!=0)//z+
-						rotationMatrix.rotate(Math.PI, 0,1,0);
-				}
-				break;
-			case 6://Full Crossing
-				break;
+					{
+						rotationMatrix.rotate(Math.PI/2, 0,1,0);
+						if((connections&8)!=0)//z+
+							rotationMatrix.rotate(Math.PI, 0,1,0);
+					}
+					break;
+				case 6://Full Crossing
+					break;
 			}
 			//			connetionParts
 			//			for(int i=0; i<6; i++)
@@ -689,7 +695,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 		}
 		return cachedOBJStates.get(key);
 	}
-	
+
 	public static OBJState getStateFromKey(String key)
 	{
 		if(!cachedOBJStates.containsKey(key))
@@ -704,224 +710,224 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 			boolean straightX = (connections&48)==48;
 			switch(totalConnections)
 			{
-			case 0://stub
-				parts.add("center");
-				break;
-			case 1://stopper
-				parts.add("stopper");
+				case 0://stub
+					parts.add("center");
+					break;
+				case 1://stopper
+					parts.add("stopper");
 
-				//default: y-
-				if((connections&2)!=0)//y+
-					rotationMatrix.rotate(Math.PI, 0,0,1);
-				else if((connections&4)!=0)//z-
-					rotationMatrix.rotate(Math.PI/2, 1,0,0);
-				else if((connections&8)!=0)//z+
-					rotationMatrix.rotate(-Math.PI/2, 1,0,0);
-				else if((connections&16)!=0)//x-
-					rotationMatrix.rotate(-Math.PI/2, 0,0,1);
-				else if((connections&32)!=0)//x+
-					rotationMatrix.rotate(Math.PI/2, 0,0,1);
-				parts.add("con_yMin");
-				break;
-			case 2://straight or curve
-				if(straightY)
-				{
-					parts.add("pipe_y");
-					if(key.charAt(5)=='2')
-						parts.add("con_yMin");
-					if(key.charAt(4)==1)
-						parts.add("con_yMax");
-				}
-				else if(straightZ)
-				{
-					parts.add("pipe_z");
-					if(key.charAt(3)=='2')
-						parts.add("con_zMin");
-					if(key.charAt(2)=='2')
-						parts.add("con_zMax");
-				}
-				else if(straightX)
-				{
-					parts.add("pipe_x");
-					if(key.charAt(1)=='2')
-						parts.add("con_xMin");
-					if(key.charAt(0)=='2')
-						parts.add("con_xMax");
-				}
-				else
-				{
-					parts.add("curve");
-					parts.add("con_yMin");
-					parts.add("con_zMin");
-					byte connectTo = (byte)(connections&60);
-					if((connections&3)!=0)//curve to top or bottom
-					{
-						if(connectTo==16)//x-
-							rotationMatrix.rotate(Math.PI/2, 0,1,0);
-						else if(connectTo==32)//x+
-							rotationMatrix.rotate(-Math.PI/2, 0,1,0);
-						else if(connectTo==8)//z+
-							rotationMatrix.rotate(Math.PI, 0,1,0);
-						if((connections&2)!=0)//flip to top
-							rotationMatrix.rotate(Math.PI, 0,0,1);
-
-						//default: Curve to z-
-					}
-					else//curve to horizontal
-					{
-						rotationMatrix.rotate(-Math.PI/2, 0,0,1);
-						if(connectTo==40)//z+ to x+
-							rotationMatrix.rotate(Math.PI, 1,0,0);
-						else if(connectTo==24)//z+ to x-
-							rotationMatrix.rotate(-Math.PI/2, 1,0,0);
-						else if(connectTo==36)//z- to x+
-							rotationMatrix.rotate(Math.PI/2, 1,0,0);
-						//default: z- to x-
-					}
-				}
-				break;
-			case 3://tcross or tcurve
-				if(straightX||straightZ||straightY)//has straight connect
-				{
-					parts.add("tcross");
-					parts.add("con_yMin");
-					parts.add("con_zMin");
-					parts.add("con_zMax");
-					if(straightX)
-					{
-						rotationMatrix.rotate(Math.PI/2, 0,1,0);
-						if((connections&4)!=0)//z-
-							rotationMatrix.rotate(Math.PI/2, 0,0,1);
-						else if((connections&8)!=0)//z+
-							rotationMatrix.rotate(-Math.PI/2, 0,0,1);
-						else if((connections&2)!=0)//y+
-							rotationMatrix.rotate(Math.PI, 0,0,1);
-						//default: Curve to y-
-					}
-					else if(straightY)
-					{
-						rotationMatrix.rotate(Math.PI/2, 1,0,0);
-						if((connections&16)!=0)//x-
-							rotationMatrix.rotate(-Math.PI/2, 0,0,1);
-						else if((connections&32)!=0)//x+
-							rotationMatrix.rotate(Math.PI/2, 0,0,1);
-						else if((connections&8)!=0)//z+
-							rotationMatrix.rotate(Math.PI, 0,0,1);
-						//default: Curve to z-
-					}
-					else //default:z straight
-					{
-						if((connections&16)!=0)//x-
-							rotationMatrix.rotate(-Math.PI/2, 0,0,1);
-						else if((connections&32)!=0)//x+
-							rotationMatrix.rotate(Math.PI/2, 0,0,1);
-						else if((connections&2)!=0)//y+
-							rotationMatrix.rotate(Math.PI, 0,0,1);
-						//default: Curve to y-
-					}
-				}
-				else //tcurve
-				{
-					parts.add("tcurve");
-					parts.add("con_yMin");
-					parts.add("con_zMin");
-					parts.add("con_xMax");
-					//default y-, z-, x+
-					if((connections&8)!=0)//z+
-					{
-						if((connections&16)!=0)//x-
-							rotationMatrix.rotate(Math.PI, 0,1,0);
-						else 
-							rotationMatrix.rotate(-Math.PI/2, 0,1,0);
-					}
-					else//z-
-					{
-						if((connections&16)!=0)//x-
-							rotationMatrix.rotate(Math.PI/2, 0,1,0);
-					}
+					//default: y-
 					if((connections&2)!=0)//y+
+						rotationMatrix.rotate(Math.PI, 0,0,1);
+					else if((connections&4)!=0)//z-
+						rotationMatrix.rotate(Math.PI/2, 1,0,0);
+					else if((connections&8)!=0)//z+
+						rotationMatrix.rotate(-Math.PI/2, 1,0,0);
+					else if((connections&16)!=0)//x-
+						rotationMatrix.rotate(-Math.PI/2, 0,0,1);
+					else if((connections&32)!=0)//x+
 						rotationMatrix.rotate(Math.PI/2, 0,0,1);
-				}
-				break;
-			case 4://cross or complex tcross
-				boolean cross = (straightX&&straightZ)||(straightX&&straightY)||(straightZ&&straightY);
-				if(cross)
-				{
-					parts.add("cross");
+					parts.add("con_yMin");
+					break;
+				case 2://straight or curve
+					if(straightY)
+					{
+						parts.add("pipe_y");
+						if(key.charAt(5)=='2')
+							parts.add("con_yMin");
+						if(key.charAt(4)==1)
+							parts.add("con_yMax");
+					}
+					else if(straightZ)
+					{
+						parts.add("pipe_z");
+						if(key.charAt(3)=='2')
+							parts.add("con_zMin");
+						if(key.charAt(2)=='2')
+							parts.add("con_zMax");
+					}
+					else if(straightX)
+					{
+						parts.add("pipe_x");
+						if(key.charAt(1)=='2')
+							parts.add("con_xMin");
+						if(key.charAt(0)=='2')
+							parts.add("con_xMax");
+					}
+					else
+					{
+						parts.add("curve");
+						parts.add("con_yMin");
+						parts.add("con_zMin");
+						byte connectTo = (byte)(connections&60);
+						if((connections&3)!=0)//curve to top or bottom
+						{
+							if(connectTo==16)//x-
+								rotationMatrix.rotate(Math.PI/2, 0,1,0);
+							else if(connectTo==32)//x+
+								rotationMatrix.rotate(-Math.PI/2, 0,1,0);
+							else if(connectTo==8)//z+
+								rotationMatrix.rotate(Math.PI, 0,1,0);
+							if((connections&2)!=0)//flip to top
+								rotationMatrix.rotate(Math.PI, 0,0,1);
+
+							//default: Curve to z-
+						}
+						else//curve to horizontal
+						{
+							rotationMatrix.rotate(-Math.PI/2, 0,0,1);
+							if(connectTo==40)//z+ to x+
+								rotationMatrix.rotate(Math.PI, 1,0,0);
+							else if(connectTo==24)//z+ to x-
+								rotationMatrix.rotate(-Math.PI/2, 1,0,0);
+							else if(connectTo==36)//z- to x+
+								rotationMatrix.rotate(Math.PI/2, 1,0,0);
+							//default: z- to x-
+						}
+					}
+					break;
+				case 3://tcross or tcurve
+					if(straightX||straightZ||straightY)//has straight connect
+					{
+						parts.add("tcross");
+						parts.add("con_yMin");
+						parts.add("con_zMin");
+						parts.add("con_zMax");
+						if(straightX)
+						{
+							rotationMatrix.rotate(Math.PI/2, 0,1,0);
+							if((connections&4)!=0)//z-
+								rotationMatrix.rotate(Math.PI/2, 0,0,1);
+							else if((connections&8)!=0)//z+
+								rotationMatrix.rotate(-Math.PI/2, 0,0,1);
+							else if((connections&2)!=0)//y+
+								rotationMatrix.rotate(Math.PI, 0,0,1);
+							//default: Curve to y-
+						}
+						else if(straightY)
+						{
+							rotationMatrix.rotate(Math.PI/2, 1,0,0);
+							if((connections&16)!=0)//x-
+								rotationMatrix.rotate(-Math.PI/2, 0,0,1);
+							else if((connections&32)!=0)//x+
+								rotationMatrix.rotate(Math.PI/2, 0,0,1);
+							else if((connections&8)!=0)//z+
+								rotationMatrix.rotate(Math.PI, 0,0,1);
+							//default: Curve to z-
+						}
+						else //default:z straight
+						{
+							if((connections&16)!=0)//x-
+								rotationMatrix.rotate(-Math.PI/2, 0,0,1);
+							else if((connections&32)!=0)//x+
+								rotationMatrix.rotate(Math.PI/2, 0,0,1);
+							else if((connections&2)!=0)//y+
+								rotationMatrix.rotate(Math.PI, 0,0,1);
+							//default: Curve to y-
+						}
+					}
+					else //tcurve
+					{
+						parts.add("tcurve");
+						parts.add("con_yMin");
+						parts.add("con_zMin");
+						parts.add("con_xMax");
+						//default y-, z-, x+
+						if((connections&8)!=0)//z+
+						{
+							if((connections&16)!=0)//x-
+								rotationMatrix.rotate(Math.PI, 0,1,0);
+							else
+								rotationMatrix.rotate(-Math.PI/2, 0,1,0);
+						}
+						else//z-
+						{
+							if((connections&16)!=0)//x-
+								rotationMatrix.rotate(Math.PI/2, 0,1,0);
+						}
+						if((connections&2)!=0)//y+
+							rotationMatrix.rotate(Math.PI/2, 0,0,1);
+					}
+					break;
+				case 4://cross or complex tcross
+					boolean cross = (straightX&&straightZ)||(straightX&&straightY)||(straightZ&&straightY);
+					if(cross)
+					{
+						parts.add("cross");
+						parts.add("con_yMin");
+						parts.add("con_yMax");
+						parts.add("con_zMin");
+						parts.add("con_zMax");
+						if(!straightY)//x and z
+							rotationMatrix.rotate(Math.PI/2, 0,0,1);
+						else if(straightX)//x and y
+							rotationMatrix.rotate(Math.PI/2, 0,1,0);
+					}
+					else
+					{
+						parts.add("tcross2");
+						parts.add("con_yMin");
+						parts.add("con_zMin");
+						parts.add("con_zMax");
+						parts.add("con_xMax");
+						if(straightZ)
+						{
+							//default y- z+- x+
+							if((connections&16)!=0)//x-
+								rotationMatrix.rotate(Math.PI, 0,1,0);
+							if((connections&2)!=0)//y+
+								rotationMatrix.rotate(Math.PI/2, 0,0,1);
+						}
+						else if(straightY)
+						{
+							//default y+- z- x+
+							if((connections&8)!=0)//z+
+							{
+								rotationMatrix.rotate(Math.PI/2, 0,0,1);
+								if((connections&16)!=0)//x-
+									rotationMatrix.rotate(Math.PI/2, 0,0,1);
+							}
+							else if((connections&16)!=0)//x-
+								rotationMatrix.rotate(-Math.PI/2, 0,0,1);
+						}
+						else
+						{
+							rotationMatrix.rotate(Math.PI/2, 0,1,0);
+							//default y- z- x+-
+							if((connections&8)!=0)//z+
+								rotationMatrix.rotate(Math.PI, 0,1,0);
+							if((connections&2)!=0)//y+
+								rotationMatrix.rotate(Math.PI/2, 0,0,1);
+						}
+					}
+					break;
+				case 5://complete tcross
+					parts.add("tcross3");
 					parts.add("con_yMin");
 					parts.add("con_yMax");
 					parts.add("con_zMin");
 					parts.add("con_zMax");
-					if(!straightY)//x and z
-						rotationMatrix.rotate(Math.PI/2, 0,0,1);
-					else if(straightX)//x and y
-						rotationMatrix.rotate(Math.PI/2, 0,1,0);
-				}
-				else
-				{
-					parts.add("tcross2");
-					parts.add("con_yMin");
-					parts.add("con_zMin");
-					parts.add("con_zMax");
 					parts.add("con_xMax");
+					//default y+- z+- x+
 					if(straightZ)
 					{
-						//default y- z+- x+
-						if((connections&16)!=0)//x-
-							rotationMatrix.rotate(Math.PI, 0,1,0);
-						if((connections&2)!=0)//y+
-							rotationMatrix.rotate(Math.PI/2, 0,0,1);
-					}
-					else if(straightY)
-					{
-						//default y+- z- x+
-						if((connections&8)!=0)//z+
+						if(straightY)
 						{
-							rotationMatrix.rotate(Math.PI/2, 0,0,1);
 							if((connections&16)!=0)//x-
-								rotationMatrix.rotate(Math.PI/2, 0,0,1);
+								rotationMatrix.rotate(Math.PI, 0,1,0);
 						}
-						else if((connections&16)!=0)//x-
-							rotationMatrix.rotate(-Math.PI/2, 0,0,1);
-					}
-					else
-					{
-						rotationMatrix.rotate(Math.PI/2, 0,1,0);
-						//default y- z- x+-
-						if((connections&8)!=0)//z+
-							rotationMatrix.rotate(Math.PI, 0,1,0);
-						if((connections&2)!=0)//y+
-							rotationMatrix.rotate(Math.PI/2, 0,0,1);
-					}
-				}
-				break;
-			case 5://complete tcross
-				parts.add("tcross3");
-				parts.add("con_yMin");
-				parts.add("con_yMax");
-				parts.add("con_zMin");
-				parts.add("con_zMax");
-				parts.add("con_xMax");
-				//default y+- z+- x+
-				if(straightZ)
-				{
-					if(straightY)
-					{
-						if((connections&16)!=0)//x-
-							rotationMatrix.rotate(Math.PI, 0,1,0);
+						else if(straightX)
+							rotationMatrix.rotate(((connections&2)!=0)?(Math.PI/2):(-Math.PI/2), 0,0,1);
 					}
 					else if(straightX)
-						rotationMatrix.rotate(((connections&2)!=0)?(Math.PI/2):(-Math.PI/2), 0,0,1);
-				}
-				else if(straightX)
-				{
-					rotationMatrix.rotate(Math.PI/2, 0,1,0);
-					if((connections&8)!=0)//z+
-						rotationMatrix.rotate(Math.PI, 0,1,0);
-				}
-				break;
-			case 6://Full Crossing
-				break;
+					{
+						rotationMatrix.rotate(Math.PI/2, 0,1,0);
+						if((connections&8)!=0)//z+
+							rotationMatrix.rotate(Math.PI, 0,1,0);
+					}
+					break;
+				case 6://Full Crossing
+					break;
 			}
 			//			connetionParts
 			//			for(int i=0; i<6; i++)
@@ -955,14 +961,14 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 		for(AxisAlignedBB box : boxes)
 			if(box instanceof AdvancedAABB)
 			{
-				if(box.expand(.002,.002,.002).isVecInside(new Vec3(getPos().getX()+hitX, getPos().getY()+hitY, getPos().getZ()+hitZ)))
+				if(box.expand(.002,.002,.002).isVecInside(new Vec3d(getPos().getX()+hitX, getPos().getY()+hitY, getPos().getZ()+hitZ)))
 					if(box instanceof AdvancedAABB)
 						fd = ((AdvancedAABB)box).fd;
 			}
 		if(fd!=null)
 		{
 			toggleSide(fd.ordinal());
-			worldObj.markBlockForUpdate(getPos());
+			this.markContainingBlockForUpdate(null);
 			TileEntityFluidPipe.indirectConnections.clear();
 			return true;
 		}
@@ -977,6 +983,6 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 	@Override
 	public boolean hasOutputConnection(EnumFacing side)
 	{
-		return side==null?false: sideConfig[side.ordinal()]==0;
+		return side != null && sideConfig[side.ordinal()] == 0;
 	}
 }

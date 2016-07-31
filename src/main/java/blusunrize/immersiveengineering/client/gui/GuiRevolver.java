@@ -2,6 +2,8 @@ package blusunrize.immersiveengineering.client.gui;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 import org.lwjgl.opengl.GL11;
@@ -13,11 +15,11 @@ import blusunrize.immersiveengineering.common.items.ItemRevolver;
 public class GuiRevolver extends GuiContainer
 {
 	int bullets = 0;
-	public GuiRevolver(InventoryPlayer inventoryPlayer, World world)
+	public GuiRevolver(InventoryPlayer inventoryPlayer, World world, EntityEquipmentSlot slot, ItemStack revolver)
 	{
-		super(new ContainerRevolver(inventoryPlayer, world));
-		if(inventoryPlayer.player.getCurrentEquippedItem()!=null && inventoryPlayer.player.getCurrentEquippedItem().getItem() instanceof ItemRevolver)
-			bullets =  ((ItemRevolver)inventoryPlayer.player.getCurrentEquippedItem().getItem()).getBulletSlotAmount(inventoryPlayer.player.getCurrentEquippedItem());
+		super(new ContainerRevolver(inventoryPlayer, world, slot, revolver));
+		if(revolver!=null && revolver.getItem() instanceof ItemRevolver)
+			bullets =  ((ItemRevolver)revolver.getItem()).getBulletSlotAmount(revolver);
 	}
 
 	@Override

@@ -2,7 +2,7 @@ package blusunrize.immersiveengineering.common.entities;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
@@ -28,7 +28,8 @@ public class EntityWolfpackShot extends EntityRevolvershotHoming
 		redirectionSpeed = .1875;
 	}
 
-	protected void onImpact(MovingObjectPosition mop)
+	@Override
+	protected void onImpact(RayTraceResult mop)
 	{
 		if(!this.worldObj.isRemote && mop.entityHit != null)
 		{

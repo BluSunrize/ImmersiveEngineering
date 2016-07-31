@@ -26,6 +26,13 @@
 			},
 			"textures": {"conveyor": "immersiveengineering:blocks/conveyor_dropper"}
 		}],
+		"inventory,type=conveyor_extract": [{
+			"submodel": {
+				"wallLeft": { "model": "immersiveengineering:metalDevice/ieConveyorWallLeft"  },
+				"wallRight": { "model": "immersiveengineering:metalDevice/ieConveyorWallRight"  }
+			},
+			"textures": {"conveyor": "immersiveengineering:blocks/conveyor_dropper"}
+		}],
 		"inventory,type=conveyor_vertical": [{
 			"model": "immersiveengineering:metalDevice/ieConveyorVertical",
 			"textures": {"conveyor": "immersiveengineering:blocks/conveyor_vertical"}

@@ -1,27 +1,21 @@
 package blusunrize.immersiveengineering.client.render;
 
-import org.lwjgl.opengl.GL11;
-
-import com.google.common.collect.Lists;
-
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySampleDrill;
+import com.google.common.collect.Lists;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BlockRendererDispatcher;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.resources.model.IBakedModel;
-import net.minecraft.util.BlockPos;
-import net.minecraftforge.client.model.ISmartBlockModel;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.model.obj.OBJModel.OBJProperty;
 import net.minecraftforge.client.model.obj.OBJModel.OBJState;
 import net.minecraftforge.common.property.IExtendedBlockState;
+import net.minecraftforge.common.property.Properties;
+import org.lwjgl.opengl.GL11;
 
 public class TileRenderSampleDrill extends TileEntitySpecialRenderer<TileEntitySampleDrill>
 {
@@ -34,13 +28,14 @@ public class TileRenderSampleDrill extends TileEntitySpecialRenderer<TileEntityS
 		final BlockRendererDispatcher blockRenderer = Minecraft.getMinecraft().getBlockRendererDispatcher();
 		IBlockState state = tile.getWorld().getBlockState(tile.getPos());
 		BlockPos blockPos = tile.getPos();
-		IBakedModel model = blockRenderer.getModelFromBlockState(state, getWorld(), blockPos);
+		IBakedModel model = blockRenderer.getModelForState(state);
+//				.getModelFromBlockState(state, getWorld(), blockPos);
 		if(state instanceof IExtendedBlockState)
-			state = ((IExtendedBlockState)state).withProperty(OBJProperty.instance, new OBJState(Lists.newArrayList("drill"), true));
+			state = ((IExtendedBlockState)state).withProperty(Properties.AnimationProperty, new OBJState(Lists.newArrayList("drill"), true));
 
 		Tessellator tessellator = Tessellator.getInstance();
-		WorldRenderer worldRenderer = tessellator.getWorldRenderer();
-		bindTexture(TextureMap.locationBlocksTexture);
+		VertexBuffer worldRenderer = tessellator.getBuffer();
+		bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
 		RenderHelper.disableStandardItemLighting();
 		GlStateManager.blendFunc(770, 771);
 		GlStateManager.enableBlend();
@@ -68,9 +63,7 @@ public class TileRenderSampleDrill extends TileEntitySpecialRenderer<TileEntityS
 		worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
 		worldRenderer.setTranslation( -.5-blockPos.getX(), -.5- blockPos.getY(),  -.5-blockPos.getZ());
 		worldRenderer.color(255, 255, 255, 255);
-		if(model instanceof ISmartBlockModel)
-			model = ((ISmartBlockModel) model).handleBlockState(state);
-		blockRenderer.getBlockModelRenderer().renderModel(tile.getWorld(), model, state, tile.getPos(), worldRenderer);
+		blockRenderer.getBlockModelRenderer().renderModel(tile.getWorld(), model, state, tile.getPos(), worldRenderer, true);
 		worldRenderer.setTranslation(0.0D, 0.0D, 0.0D);
 		tessellator.draw();
 		GlStateManager.popMatrix();

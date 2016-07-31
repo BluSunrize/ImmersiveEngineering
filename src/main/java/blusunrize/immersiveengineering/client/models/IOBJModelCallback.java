@@ -1,11 +1,10 @@
 package blusunrize.immersiveengineering.client.models;
 
-import com.google.common.base.Optional;
-
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
+import com.google.common.base.Optional;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraftforge.client.model.TRSRTransformation;
+import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -14,11 +13,11 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public interface IOBJModelCallback<T>
 {
 	@SideOnly(Side.CLIENT)
-	public TextureAtlasSprite getTextureReplacement(T object, String material);
+	TextureAtlasSprite getTextureReplacement(T object, String material);
 	@SideOnly(Side.CLIENT)
-	public boolean shouldRenderGroup(T object, String group);
+	boolean shouldRenderGroup(T object, String group);
 	@SideOnly(Side.CLIENT)
-	public Optional<TRSRTransformation> applyTransformations(T object, String group, Optional<TRSRTransformation> transform);
+	Optional<TRSRTransformation> applyTransformations(T object, String group, Optional<TRSRTransformation> transform);
 	@SideOnly(Side.CLIENT)
-	public Matrix4 handlePerspective(T Object, TransformType cameraTransformType, Matrix4 perspective);
+	Matrix4 handlePerspective(T Object, TransformType cameraTransformType, Matrix4 perspective);
 }

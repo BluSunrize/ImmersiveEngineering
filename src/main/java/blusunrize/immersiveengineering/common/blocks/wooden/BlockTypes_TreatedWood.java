@@ -12,7 +12,7 @@ public enum BlockTypes_TreatedWood implements IStringSerializable, BlockIEBase.I
 	@Override
 	public String getName()
 	{
-		return this.toString();
+		return this.toString().toLowerCase();
 	}
 	@Override
 	public int getMeta()

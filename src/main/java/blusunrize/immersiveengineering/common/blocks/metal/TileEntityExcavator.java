@@ -22,11 +22,11 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
-import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.ForgeEventFactory;
@@ -91,7 +91,7 @@ public class TileEntityExcavator extends TileEntityMultiblockMetal<TileEntityExc
 								((TileEntityBucketWheel)te).facing = fRot;
 								((TileEntityBucketWheel)te).mirrored = this.mirrored;
 								te.markDirty();
-								worldObj.markBlockForUpdate(te.getPos());
+								this.markContainingBlockForUpdate(null);
 							}
 						}
 
@@ -118,7 +118,7 @@ public class TileEntityExcavator extends TileEntityMultiblockMetal<TileEntityExc
 								{
 									wheel.digStacks[(target+4)%8] = blocking;
 									wheel.markDirty();
-									worldObj.markBlockForUpdate(wheelPos);
+									this.markContainingBlockForUpdate(null);
 								}
 								else if(mineral!=null 
 										&& !worldObj.isAirBlock(lowGroundPos.offset(facing, -2))
@@ -134,7 +134,7 @@ public class TileEntityExcavator extends TileEntityMultiblockMetal<TileEntityExc
 									{
 										wheel.digStacks[(target+4)%8] = ore;
 										wheel.markDirty();
-										worldObj.markBlockForUpdate(wheelPos);
+										this.markContainingBlockForUpdate(null);
 									}
 									ExcavatorHandler.depleteMinerals(worldObj, wheelPos.getX()>>4, wheelPos.getZ()>>4);
 								}
@@ -143,11 +143,11 @@ public class TileEntityExcavator extends TileEntityMultiblockMetal<TileEntityExc
 							{
 								this.doProcessOutput(wheel.digStacks[target].copy());
 								Block b = Block.getBlockFromItem(wheel.digStacks[target].getItem());
-								if(b!=null&&b!=Blocks.air)
+								if(b!=null&&b!=Blocks.AIR)
 									wheel.particleStack = wheel.digStacks[target].copy();
 								wheel.digStacks[target] = null;
 								wheel.markDirty();
-								worldObj.markBlockForUpdate(wheelPos);
+								this.markContainingBlockForUpdate(null);
 							}
 						}
 					}
@@ -221,12 +221,12 @@ public class TileEntityExcavator extends TileEntityMultiblockMetal<TileEntityExc
 		FakePlayer fakePlayer = FakePlayerUtil.getFakePlayer((WorldServer) worldObj);
 		IBlockState blockstate = worldObj.getBlockState(pos);
 		Block block = blockstate.getBlock();
-		if(block!=null && !worldObj.isAirBlock(pos) && block.getPlayerRelativeBlockHardness(fakePlayer, worldObj, pos)!=0)
+		if(block!=null && !worldObj.isAirBlock(pos) && blockstate.getPlayerRelativeBlockHardness(fakePlayer, worldObj, pos)!=0)
 		{
 			if(!block.canHarvestBlock(worldObj, pos, fakePlayer))
 				return null;
 			block.onBlockHarvested(worldObj, pos, blockstate, fakePlayer);
-			if(block.removedByPlayer(worldObj, pos, fakePlayer, true))
+			if(block.removedByPlayer(blockstate, worldObj, pos, fakePlayer, true))
 			{
 				block.onBlockDestroyedByPlayer( worldObj, pos, blockstate);
 				if(block.canSilkHarvest(worldObj, pos, blockstate, fakePlayer))
@@ -247,14 +247,14 @@ public class TileEntityExcavator extends TileEntityMultiblockMetal<TileEntityExc
 							EntityItem ei = new EntityItem(worldObj, pos.getX()+.5,pos.getY()+.5,pos.getZ()+.5, items.get(i).copy());
 							this.worldObj.spawnEntityInWorld(ei);
 						}
-					worldObj.playAuxSFX(2001, pos, Block.getStateId(blockstate));
+					worldObj.playEvent(2001, pos, Block.getStateId(blockstate));
 					if(items.size()>0)
 						return items.get(0);
 				}
 				else
 				{
-					block.harvestBlock(worldObj, fakePlayer, pos, blockstate, worldObj.getTileEntity(pos));
-					worldObj.playAuxSFX(2001, pos, Block.getStateId(blockstate));
+					block.harvestBlock(worldObj, fakePlayer, pos, blockstate, worldObj.getTileEntity(pos), null);
+					worldObj.playEvent(2001, pos, Block.getStateId(blockstate));
 				}
 			}
 		}
@@ -296,16 +296,6 @@ public class TileEntityExcavator extends TileEntityMultiblockMetal<TileEntityExc
 		return new float[]{0,0,0, 1,1,1};
 	}
 	@Override
-	public float[] getSpecialCollisionBounds()
-	{
-		return null;
-	}
-	@Override
-	public float[] getSpecialSelectionBounds()
-	{
-		return null;
-	}
-	@Override
 	public List<AxisAlignedBB> getAdvancedSelectionBounds()
 	{
 		EnumFacing fl = facing;
@@ -315,37 +305,37 @@ public class TileEntityExcavator extends TileEntityMultiblockMetal<TileEntityExc
 
 		if(pos==5||pos==23||pos==41)
 		{
-			List list = Lists.newArrayList(AxisAlignedBB.fromBounds(fw==EnumFacing.WEST?.5f:0,0,fw==EnumFacing.NORTH?.5f:0, fw==EnumFacing.EAST?.5f:1,1,fw==EnumFacing.SOUTH?.5f:1).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
-			list.add(AxisAlignedBB.fromBounds(fw==EnumFacing.EAST?.5f:fw==EnumFacing.WEST?0:.25f,.25f,fw==EnumFacing.SOUTH?.5f:fw==EnumFacing.NORTH?0:.25f, fw==EnumFacing.WEST?.5f:fw==EnumFacing.EAST?1:.75f,.75f,fw==EnumFacing.NORTH?.5f:fw==EnumFacing.SOUTH?1:.75f).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+			List list = Lists.newArrayList(new AxisAlignedBB(fw==EnumFacing.WEST?.5f:0,0,fw==EnumFacing.NORTH?.5f:0, fw==EnumFacing.EAST?.5f:1,1,fw==EnumFacing.SOUTH?.5f:1).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+			list.add(new AxisAlignedBB(fw==EnumFacing.EAST?.5f:fw==EnumFacing.WEST?0:.25f,.25f,fw==EnumFacing.SOUTH?.5f:fw==EnumFacing.NORTH?0:.25f, fw==EnumFacing.WEST?.5f:fw==EnumFacing.EAST?1:.75f,.75f,fw==EnumFacing.NORTH?.5f:fw==EnumFacing.SOUTH?1:.75f).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
 			return list;
 		}
 		else if(pos==9||pos==12||pos==15)
 		{
-			List list = Lists.newArrayList(AxisAlignedBB.fromBounds(fw==EnumFacing.EAST?.5f:0,0,fw==EnumFacing.SOUTH?.5f:0, fw==EnumFacing.WEST?.5f:1,1,fw==EnumFacing.NORTH?.5f:1).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+			List list = Lists.newArrayList(new AxisAlignedBB(fw==EnumFacing.EAST?.5f:0,0,fw==EnumFacing.SOUTH?.5f:0, fw==EnumFacing.WEST?.5f:1,1,fw==EnumFacing.NORTH?.5f:1).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
 			if(pos==9)
-				list.add(AxisAlignedBB.fromBounds(fw==EnumFacing.WEST||fl==EnumFacing.EAST?.5f:0,.5f,fw==EnumFacing.NORTH||fl==EnumFacing.SOUTH?.5f:0, fw==EnumFacing.EAST||fl==EnumFacing.WEST?.5f:1,1,fw==EnumFacing.SOUTH||fl==EnumFacing.NORTH?.5f:1).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+				list.add(new AxisAlignedBB(fw==EnumFacing.WEST||fl==EnumFacing.EAST?.5f:0,.5f,fw==EnumFacing.NORTH||fl==EnumFacing.SOUTH?.5f:0, fw==EnumFacing.EAST||fl==EnumFacing.WEST?.5f:1,1,fw==EnumFacing.SOUTH||fl==EnumFacing.NORTH?.5f:1).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
 			else if(pos==12)
-				list.add(AxisAlignedBB.fromBounds(fw==EnumFacing.WEST?.5f:0,.5f,fw==EnumFacing.NORTH?.5f:0, fw==EnumFacing.EAST?.5f:1,1,fw==EnumFacing.SOUTH?.5f:1).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+				list.add(new AxisAlignedBB(fw==EnumFacing.WEST?.5f:0,.5f,fw==EnumFacing.NORTH?.5f:0, fw==EnumFacing.EAST?.5f:1,1,fw==EnumFacing.SOUTH?.5f:1).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
 			else
-				list.add(AxisAlignedBB.fromBounds(fw==EnumFacing.WEST||fl==EnumFacing.WEST?.5f:0,.5f,fw==EnumFacing.NORTH||fl==EnumFacing.NORTH?.5f:0, fw==EnumFacing.EAST||fl==EnumFacing.EAST?.5f:1,1,fw==EnumFacing.SOUTH||fl==EnumFacing.SOUTH?.5f:1).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+				list.add(new AxisAlignedBB(fw==EnumFacing.WEST||fl==EnumFacing.WEST?.5f:0,.5f,fw==EnumFacing.NORTH||fl==EnumFacing.NORTH?.5f:0, fw==EnumFacing.EAST||fl==EnumFacing.EAST?.5f:1,1,fw==EnumFacing.SOUTH||fl==EnumFacing.SOUTH?.5f:1).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
 			return list;
 		}
 		else if(pos==47)
 		{
-			List list = Lists.newArrayList(AxisAlignedBB.fromBounds(fl==EnumFacing.EAST?.5f:fl==EnumFacing.WEST?.375f:0,0,fl==EnumFacing.SOUTH?.5f:fl==EnumFacing.NORTH?.375f:0, fl==EnumFacing.WEST?.5f:fl==EnumFacing.EAST?.625f:1,1,fl==EnumFacing.NORTH?.5f:fl==EnumFacing.SOUTH?.625f:1).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
-			list.add(AxisAlignedBB.fromBounds(fl==EnumFacing.EAST?.625f:fw==EnumFacing.EAST?.875f:0,0,fl==EnumFacing.SOUTH?.625f:fw==EnumFacing.SOUTH?.875f:0, fl==EnumFacing.WEST?.375f:fw==EnumFacing.WEST?.125f:1,1,fl==EnumFacing.NORTH?.375f:fw==EnumFacing.NORTH?.125f:1).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+			List list = Lists.newArrayList(new AxisAlignedBB(fl==EnumFacing.EAST?.5f:fl==EnumFacing.WEST?.375f:0,0,fl==EnumFacing.SOUTH?.5f:fl==EnumFacing.NORTH?.375f:0, fl==EnumFacing.WEST?.5f:fl==EnumFacing.EAST?.625f:1,1,fl==EnumFacing.NORTH?.5f:fl==EnumFacing.SOUTH?.625f:1).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+			list.add(new AxisAlignedBB(fl==EnumFacing.EAST?.625f:fw==EnumFacing.EAST?.875f:0,0,fl==EnumFacing.SOUTH?.625f:fw==EnumFacing.SOUTH?.875f:0, fl==EnumFacing.WEST?.375f:fw==EnumFacing.WEST?.125f:1,1,fl==EnumFacing.NORTH?.375f:fw==EnumFacing.NORTH?.125f:1).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
 			return list;
 		}
 		else if(pos==53)
 		{
-			List list = Lists.newArrayList(AxisAlignedBB.fromBounds(fl==EnumFacing.WEST?.5f:fl==EnumFacing.EAST?.375f:0,0,fl==EnumFacing.NORTH?.5f:fl==EnumFacing.SOUTH?.375f:0, fl==EnumFacing.EAST?.5f:fl==EnumFacing.WEST?.625f:1,1,fl==EnumFacing.SOUTH?.5f:fl==EnumFacing.NORTH?.625f:1).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
-			list.add(AxisAlignedBB.fromBounds(fl==EnumFacing.WEST?.625f:fw==EnumFacing.EAST?.875f:0,0,fl==EnumFacing.NORTH?.625f:fw==EnumFacing.SOUTH?.875f:0, fl==EnumFacing.EAST?.375f:fw==EnumFacing.WEST?.125f:1,1,fl==EnumFacing.SOUTH?.375f:fw==EnumFacing.NORTH?.125f:1).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+			List list = Lists.newArrayList(new AxisAlignedBB(fl==EnumFacing.WEST?.5f:fl==EnumFacing.EAST?.375f:0,0,fl==EnumFacing.NORTH?.5f:fl==EnumFacing.SOUTH?.375f:0, fl==EnumFacing.EAST?.5f:fl==EnumFacing.WEST?.625f:1,1,fl==EnumFacing.SOUTH?.5f:fl==EnumFacing.NORTH?.625f:1).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+			list.add(new AxisAlignedBB(fl==EnumFacing.WEST?.625f:fw==EnumFacing.EAST?.875f:0,0,fl==EnumFacing.NORTH?.625f:fw==EnumFacing.SOUTH?.875f:0, fl==EnumFacing.EAST?.375f:fw==EnumFacing.WEST?.125f:1,1,fl==EnumFacing.SOUTH?.375f:fw==EnumFacing.NORTH?.125f:1).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
 			return list;
 		}
 		return null;
 	}
 	@Override
-	public boolean isOverrideBox(AxisAlignedBB box, EntityPlayer player, MovingObjectPosition mop, ArrayList<AxisAlignedBB> list)
+	public boolean isOverrideBox(AxisAlignedBB box, EntityPlayer player, RayTraceResult mop, ArrayList<AxisAlignedBB> list)
 	{
 		return false;
 	}
@@ -442,10 +432,25 @@ public class TileEntityExcavator extends TileEntityMultiblockMetal<TileEntityExc
 		return null;
 	}
 	@Override
+	protected FluidTank[] getAccessibleFluidTanks(EnumFacing side)
+	{
+		return new FluidTank[0];
+	}
+	@Override
+	protected boolean canFillTankFrom(int iTank, EnumFacing side, FluidStack resources)
+	{
+		return false;
+	}
+	@Override
+	protected boolean canDrainTankFrom(int iTank, EnumFacing side)
+	{
+		return false;
+	}
+	@Override
 	public void doGraphicalUpdates(int slot)
 	{
 		this.markDirty();
-		worldObj.markBlockForUpdate(getPos());
+		this.markContainingBlockForUpdate(null);
 	}
 
 

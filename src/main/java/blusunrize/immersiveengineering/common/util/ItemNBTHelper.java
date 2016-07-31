@@ -22,7 +22,7 @@ public class ItemNBTHelper
 	}
 	public static boolean hasKey(ItemStack stack, String key)
 	{
-		return hasTag(stack) ? getTag(stack).hasKey(key) : false;
+		return hasTag(stack) && getTag(stack).hasKey(key);
 	}
 
 	public static void remove(ItemStack stack, String key)
@@ -91,7 +91,7 @@ public class ItemNBTHelper
 	}
 	public static boolean getBoolean(ItemStack stack, String key)
 	{
-		return hasTag(stack) ? getTag(stack).getBoolean(key) : false;
+		return hasTag(stack) && getTag(stack).getBoolean(key);
 	}
 
 	public static void setTagCompound(ItemStack stack, String key, NBTTagCompound val)
@@ -125,7 +125,9 @@ public class ItemNBTHelper
 			--delayedSounds[i];
 			if(delayedSounds[i]<=0)
 			{
-				ent.worldObj.playSoundAtEntity(ent, getString(stack, "delayedSound_"+nbtKey+"_sound"), getFloat(stack, "delayedSound_"+nbtKey+"_volume"), getFloat(stack, "delayedSound_"+nbtKey+"_pitch"));
+				//ToDo: Delayed Sounds could be nicer anyway.
+//				ent.playSound();
+//				ent.worldObj.playSoundAtEntity(ent, getString(stack, "delayedSound_"+nbtKey+"_sound"), getFloat(stack, "delayedSound_"+nbtKey+"_volume"), getFloat(stack, "delayedSound_"+nbtKey+"_pitch"));
 			}
 			else
 				++l;

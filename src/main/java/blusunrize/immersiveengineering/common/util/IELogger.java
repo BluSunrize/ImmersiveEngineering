@@ -10,7 +10,7 @@ public class IELogger
 	public static boolean debug = false;
 	public static void log(Level logLevel, Object object)
 	{
-		FMLLog.log(ImmersiveEngineering.MODID, logLevel, String.valueOf(object), new Object[0]);
+		FMLLog.log(ImmersiveEngineering.MODID, logLevel, String.valueOf(object));
 	}
 
 	public static void error(Object object)

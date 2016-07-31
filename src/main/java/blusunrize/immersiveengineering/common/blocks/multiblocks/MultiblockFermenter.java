@@ -19,7 +19,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -50,7 +50,7 @@ public class MultiblockFermenter implements IMultiblock
 						else if(l==0&&w==2)
 							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0,1,BlockTypes_MetalDecoration0.RS_ENGINEERING.getMeta());
 						else if(l>0 && w<2)
-							structure[h][l][w] = new ItemStack(Items.cauldron);
+							structure[h][l][w] = new ItemStack(Items.CAULDRON);
 					}
 					else if(h==2)
 					{
@@ -122,7 +122,7 @@ public class MultiblockFermenter implements IMultiblock
 	@Override
 	public boolean isBlockTrigger(IBlockState state)
 	{
-		return state.getBlock()==Blocks.cauldron;
+		return state.getBlock()==Blocks.CAULDRON;
 	}
 
 	@Override
@@ -213,7 +213,7 @@ public class MultiblockFermenter implements IMultiblock
 						}
 						else if(l>-1 && w<1)
 						{
-							if(!Utils.isBlockAt(world, pos, Blocks.cauldron, 0))
+							if(!Utils.isBlockAt(world, pos, Blocks.CAULDRON, 0))
 								return false;
 						}
 					}
@@ -234,7 +234,7 @@ public class MultiblockFermenter implements IMultiblock
 			new ItemStack(IEContent.blockMetalDevice1,2,BlockTypes_MetalDevice1.FLUID_PIPE.getMeta()),
 			new ItemStack(IEContent.blockMetalDecoration0,1,BlockTypes_MetalDecoration0.RS_ENGINEERING.getMeta()),
 			new ItemStack(IEContent.blockMetalDecoration0,2,BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta()),
-			new ItemStack(Items.cauldron,4,0),
+			new ItemStack(Items.CAULDRON,4,0),
 			new ItemStack(IEContent.blockSheetmetal,4,BlockTypes_MetalsAll.IRON.getMeta())};
 	@Override
 	public ItemStack[] getTotalMaterials()

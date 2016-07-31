@@ -1,8 +1,9 @@
 package blusunrize.immersiveengineering.common.util.network;
 
 import io.netty.buffer.ByteBuf;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -43,10 +44,11 @@ public class MessageRequestBlockUpdate implements IMessage
 		{
 			if(FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER)
 			{
-				World w = MinecraftServer.getServer().worldServerForDimension(message.dim);
+				World w = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(message.dim);
 				if(w!=null)
 				{
-					w.markBlockForUpdate(message.pos);
+					IBlockState state = w.getBlockState(message.pos);
+					w.notifyBlockUpdate(message.pos, state,state, 3);
 				}
 			}
 			return null;

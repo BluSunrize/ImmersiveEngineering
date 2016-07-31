@@ -4,6 +4,9 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Arrays;
 
+import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
+import blusunrize.immersiveengineering.common.util.IESounds;
+import blusunrize.immersiveengineering.common.world.VillageEngineersHouse;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonStreamParser;
@@ -32,11 +35,15 @@ import blusunrize.immersiveengineering.common.util.network.MessageSkyhookSync;
 import blusunrize.immersiveengineering.common.util.network.MessageSpeedloaderSync;
 import blusunrize.immersiveengineering.common.util.network.MessageTileSync;
 import blusunrize.immersiveengineering.common.world.IEWorldGen;
+import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraft.world.storage.loot.LootTableList;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
@@ -51,12 +58,14 @@ import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.common.registry.IForgeRegistryEntry;
 import net.minecraftforge.fml.relauncher.Side;
+import slimeknights.tconstruct.library.Util;
 
 @Mod(modid=ImmersiveEngineering.MODID,name=ImmersiveEngineering.MODNAME,version = ImmersiveEngineering.VERSION, dependencies="after:Railcraft;after:tconstruct;before:JEI;after:ThermalFoundation;after:Avaritia")
 public class ImmersiveEngineering
 {
-	public static final String MODID = "ImmersiveEngineering";
+	public static final String MODID = "immersiveengineering";
 	public static final String MODNAME = "Immersive Engineering";
 	public static final String VERSION = "${version}";
 	public static final double VERSION_D = .8;
@@ -92,6 +101,7 @@ public class ImmersiveEngineering
 		IEApi.prefixToIngotMap.put("rod", new Integer[]{2,1});
 		IEApi.prefixToIngotMap.put("fence", new Integer[]{5,3});
 		IECompatModule.doModulesPreInit();
+		proxy.preInitSidedCompat();
 	}
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent event)
@@ -100,17 +110,19 @@ public class ImmersiveEngineering
 		IEWorldGen ieWorldGen = new IEWorldGen();
 		GameRegistry.registerWorldGenerator(ieWorldGen, 0);
 		MinecraftForge.EVENT_BUS.register(ieWorldGen);
-		
+
 		MinecraftForge.EVENT_BUS.register(new EventHandler());
 		NetworkRegistry.INSTANCE.registerGuiHandler(instance, proxy);
 		proxy.init();
 
+		IESounds.init();
 
 //		Lib.IC2 = Loader.isModLoaded("IC2") && Config.getBoolean("ic2compat");
 //		Lib.GREG = Loader.isModLoaded("gregtech") && Config.getBoolean("gregtechcompat");
 //		Config.setBoolean("ic2Manual", Lib.IC2);
 //		Config.setBoolean("gregManual", Lib.GREG);
 		IECompatModule.doModulesInit();
+		proxy.initSidedCompat();
 		int messageId = 0;
 		packetHandler.registerMessage(MessageMineralListSync.Handler.class, MessageMineralListSync.class, messageId++, Side.CLIENT);
 		packetHandler.registerMessage(MessageTileSync.HandlerServer.class, MessageTileSync.class, messageId++, Side.SERVER);
@@ -131,6 +143,7 @@ public class ImmersiveEngineering
 		proxy.postInit();
 		new ThreadContributorSpecialsDownloader();
 		IECompatModule.doModulesPostInit();
+		proxy.postInitSidedCompat();
 		ShaderRegistry.compileWeight();
 	}
 	@Mod.EventHandler
@@ -142,15 +155,14 @@ public class ImmersiveEngineering
 	public void modIDMapping(FMLModIdMappingEvent event)
 	{
 	}
-	
-	
+
+
 
 	@Mod.EventHandler
 	public void serverStarting(FMLServerStartingEvent event)
 	{
 		proxy.serverStarting();
 		event.registerServerCommand(new CommandHandler());
-//		IEVillagerTradeHandler.instance.addShaderTrades();
 	}
 	@Mod.EventHandler
 	public void serverStarted(FMLServerStartedEvent event)
@@ -159,7 +171,7 @@ public class ImmersiveEngineering
 			ImmersiveNetHandler.INSTANCE = new ImmersiveNetHandler();
 		if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
 		{
-			World world = MinecraftServer.getServer().getEntityWorld();
+			World world = FMLCommonHandler.instance().getMinecraftServerInstance().getEntityWorld();
 			if(!world.isRemote)
 			{
 				IELogger.info("WorldData loading");
@@ -172,12 +184,32 @@ public class ImmersiveEngineering
 				}
 				else
 					IELogger.info("WorldData retrieved");
-				IESaveData.setInstance(world.provider.getDimensionId(), worldData);
+				IESaveData.setInstance(world.provider.getDimension(), worldData);
 			}
 		}
 		if(Config.getBoolean("arcfurnace_recycle"))
 			ArcRecyclingThreadHandler.doRecipeProfiling();
 	}
+
+	public static <T extends IForgeRegistryEntry<?>> T register(T object, String name)
+	{
+		object.setRegistryName(new ResourceLocation(MODID, name));
+		return GameRegistry.register(object);
+	}
+	public static Block registerBlock(Block block, ItemBlock itemBlock, String name)
+	{
+		block = register(block, name);
+		register(itemBlock, name);
+		return block;
+	}
+	public static Block registerBlock(Block block, Class<? extends ItemBlock> itemBlock, String name)
+	{
+		try{
+			return registerBlock(block, itemBlock.getConstructor(Block.class).newInstance(block), name);
+		}catch(Exception e){e.printStackTrace();}
+		return null;
+	}
+
 
 	public static CreativeTabs creativeTab = new CreativeTabs(MODID)
 	{

@@ -32,7 +32,7 @@ public class ModelShaderMinecart extends ModelMinecart
 		this.sideModelsMirrored = ClientUtils.copyModelRenderers(model, model.sideModels);
 		sideModelsMirrored[4].mirror = true;
 		ArrayList<ModelBox> newCubes = new ArrayList<ModelBox>();
-		for(ModelBox cube :  (List<ModelBox>)sideModelsMirrored[4].cubeList)
+		for(ModelBox cube : sideModelsMirrored[4].cubeList)
 			newCubes.add(new ModelBox(sideModelsMirrored[4], 0,0, cube.posX1,cube.posY1,cube.posZ1, (int)(cube.posX2-cube.posX1),(int)(cube.posY2-cube.posY1),(int)(cube.posZ2-cube.posZ1), 0));
 		sideModelsMirrored[4].cubeList = newCubes;
 	}

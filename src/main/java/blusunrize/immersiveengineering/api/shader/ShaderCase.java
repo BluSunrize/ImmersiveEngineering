@@ -16,7 +16,7 @@ public abstract class ShaderCase
 	protected final int[] colourPrimary;
 	protected final int[] colourSecondary;
 	protected int[] colourOverlay;
-	protected final static int[] defaultWhite = {255,255,255,255};
+	protected static final int[] defaultWhite = {255,255,255,255};
 	protected String overlayType="0";
 	protected String baseTexturePath="";
 	

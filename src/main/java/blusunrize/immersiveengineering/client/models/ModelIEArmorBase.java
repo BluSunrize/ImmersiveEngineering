@@ -7,7 +7,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.monster.EntityZombie;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.MathHelper;
 
 public abstract class ModelIEArmorBase extends ModelBiped
 {
@@ -22,8 +22,8 @@ public abstract class ModelIEArmorBase extends ModelBiped
 		if(entity instanceof EntityLivingBase)
 		{
 			isChild = ((EntityLivingBase)entity).isChild();
-			isSneak = ((EntityLivingBase)entity).isSneaking();
-			isRiding = ((EntityLivingBase)entity).isRiding();
+			isSneak = entity.isSneaking();
+			isRiding = entity.isRiding();
 			this.setLivingAnimations((EntityLivingBase)entity, p_78088_2_, p_78088_3_, ClientUtils.timer().renderPartialTicks);
 		}
 		super.render(entity, p_78088_2_, p_78088_3_, p_78088_4_, p_78088_5_, p_78088_6_, scale);
@@ -59,23 +59,23 @@ public abstract class ModelIEArmorBase extends ModelBiped
 				this.bipedRightLeg.rotateAngleY = 0.3141593F;
 				this.bipedLeftLeg.rotateAngleY = -0.3141593F;
 			}
-			if (this.heldItemLeft!=0)
-				this.bipedLeftArm.rotateAngleX = (this.bipedLeftArm.rotateAngleX * 0.5F - 0.3141593F * this.heldItemLeft);
-			this.bipedRightArm.rotateAngleY = 0.0F;
-			this.bipedRightArm.rotateAngleZ = 0.0F;
-			switch (this.heldItemRight)
-			{
-			case 0: 
-			case 2: 
-			default: 
-				break;
-			case 1: 
-				this.bipedRightArm.rotateAngleX = (this.bipedRightArm.rotateAngleX * 0.5F - 0.3141593F * this.heldItemRight);
-				break;
-			case 3: 
-				this.bipedRightArm.rotateAngleX = (this.bipedRightArm.rotateAngleX * 0.5F - 0.3141593F * this.heldItemRight);
-				this.bipedRightArm.rotateAngleY = -0.5235988F;
-			}
+//			if (this.leftArmPose!=0)
+//				this.bipedLeftArm.rotateAngleX = (this.bipedLeftArm.rotateAngleX * 0.5F - 0.3141593F * this.heldItemLeft);
+//			this.bipedRightArm.rotateAngleY = 0.0F;
+//			this.bipedRightArm.rotateAngleZ = 0.0F;
+//			switch (this.heldItemRight)
+//			{
+//			case 0:
+//			case 2:
+//			default:
+//				break;
+//			case 1:
+//				this.bipedRightArm.rotateAngleX = (this.bipedRightArm.rotateAngleX * 0.5F - 0.3141593F * this.heldItemRight);
+//				break;
+//			case 3:
+//				this.bipedRightArm.rotateAngleX = (this.bipedRightArm.rotateAngleX * 0.5F - 0.3141593F * this.heldItemRight);
+//				this.bipedRightArm.rotateAngleY = -0.5235988F;
+//			}
 			this.bipedLeftArm.rotateAngleY = 0.0F;
 			if(this.swingProgress > -9990.0F)
 			{
@@ -130,23 +130,23 @@ public abstract class ModelIEArmorBase extends ModelBiped
 			this.bipedLeftArm.rotateAngleZ -= MathHelper.cos(p_78087_3_ * 0.09F) * 0.05F + 0.05F;
 			this.bipedRightArm.rotateAngleX += MathHelper.sin(p_78087_3_ * 0.067F) * 0.05F;
 			this.bipedLeftArm.rotateAngleX -= MathHelper.sin(p_78087_3_ * 0.067F) * 0.05F;
-			if(this.aimedBow)
-			{
-				float f6 = 0.0F;
-				float f7 = 0.0F;
-				this.bipedRightArm.rotateAngleZ = 0.0F;
-				this.bipedLeftArm.rotateAngleZ = 0.0F;
-				this.bipedRightArm.rotateAngleY = (-(0.1F - f6 * 0.6F) + this.bipedHead.rotateAngleY);
-				this.bipedLeftArm.rotateAngleY = (0.1F - f6 * 0.6F + this.bipedHead.rotateAngleY + 0.4F);
-				this.bipedRightArm.rotateAngleX = (-1.570796F + this.bipedHead.rotateAngleX);
-				this.bipedLeftArm.rotateAngleX = (-1.570796F + this.bipedHead.rotateAngleX);
-				this.bipedRightArm.rotateAngleX -= f6 * 1.2F - f7 * 0.4F;
-				this.bipedLeftArm.rotateAngleX -= f6 * 1.2F - f7 * 0.4F;
-				this.bipedRightArm.rotateAngleZ += MathHelper.cos(p_78087_3_ * 0.09F) * 0.05F + 0.05F;
-				this.bipedLeftArm.rotateAngleZ -= MathHelper.cos(p_78087_3_ * 0.09F) * 0.05F + 0.05F;
-				this.bipedRightArm.rotateAngleX += MathHelper.sin(p_78087_3_ * 0.067F) * 0.05F;
-				this.bipedLeftArm.rotateAngleX -= MathHelper.sin(p_78087_3_ * 0.067F) * 0.05F;
-			}
+//			if(this.aimedBow)
+//			{
+//				float f6 = 0.0F;
+//				float f7 = 0.0F;
+//				this.bipedRightArm.rotateAngleZ = 0.0F;
+//				this.bipedLeftArm.rotateAngleZ = 0.0F;
+//				this.bipedRightArm.rotateAngleY = (-(0.1F - f6 * 0.6F) + this.bipedHead.rotateAngleY);
+//				this.bipedLeftArm.rotateAngleY = (0.1F - f6 * 0.6F + this.bipedHead.rotateAngleY + 0.4F);
+//				this.bipedRightArm.rotateAngleX = (-1.570796F + this.bipedHead.rotateAngleX);
+//				this.bipedLeftArm.rotateAngleX = (-1.570796F + this.bipedHead.rotateAngleX);
+//				this.bipedRightArm.rotateAngleX -= f6 * 1.2F - f7 * 0.4F;
+//				this.bipedLeftArm.rotateAngleX -= f6 * 1.2F - f7 * 0.4F;
+//				this.bipedRightArm.rotateAngleZ += MathHelper.cos(p_78087_3_ * 0.09F) * 0.05F + 0.05F;
+//				this.bipedLeftArm.rotateAngleZ -= MathHelper.cos(p_78087_3_ * 0.09F) * 0.05F + 0.05F;
+//				this.bipedRightArm.rotateAngleX += MathHelper.sin(p_78087_3_ * 0.067F) * 0.05F;
+//				this.bipedLeftArm.rotateAngleX -= MathHelper.sin(p_78087_3_ * 0.067F) * 0.05F;
+//			}
 			copyModelAngles(this.bipedHead, this.bipedHeadwear);
 		}
 	}

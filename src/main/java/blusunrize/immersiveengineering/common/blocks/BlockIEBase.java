@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.common.blocks;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,20 +13,22 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IIEMetaBlock;
 import net.minecraft.block.Block;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyEnum;
-import net.minecraft.block.state.BlockState;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumWorldBlockLayer;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -47,8 +50,8 @@ public class BlockIEBase<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 	public final E[] enumValues;
 	boolean[] isMetaHidden;
 	boolean[] hasFlavour;
-	protected Set<EnumWorldBlockLayer> renderLayers = Sets.newHashSet(EnumWorldBlockLayer.SOLID);
-	protected Set<EnumWorldBlockLayer>[] metaRenderLayers;
+	protected Set<BlockRenderLayer> renderLayers = Sets.newHashSet(BlockRenderLayer.SOLID);
+	protected Set<BlockRenderLayer>[] metaRenderLayers;
 	protected Map<Integer, Integer> metaLightOpacities = new HashMap<>();
 	private boolean opaqueCube = false;
 	public BlockIEBase(String name, Material material, PropertyEnum<E> mainProperty, Class<? extends ItemBlockIEBase> itemBlock, Object... additionalProperties)
@@ -82,7 +85,7 @@ public class BlockIEBase<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 		this.setUnlocalizedName(ImmersiveEngineering.MODID+"."+name);
 		this.setCreativeTab(ImmersiveEngineering.creativeTab);
 		this.adjustSound();
-		GameRegistry.registerBlock(this, itemBlock, name);
+		ImmersiveEngineering.registerBlock(this, itemBlock, name);
 		IEContent.registeredIEBlocks.add(this);
 		lightOpacity = 255;
 	}
@@ -117,7 +120,7 @@ public class BlockIEBase<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 		return false;
 	}
 	@Override
-	public String getCustomStateMapping(int meta)
+	public String getCustomStateMapping(int meta, boolean itemBlock)
 	{
 		return null;
 	}
@@ -189,17 +192,17 @@ public class BlockIEBase<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 		return this.hasFlavour[Math.max(0, Math.min(stack.getItemDamage(), this.hasFlavour.length-1))];
 	}
 
-	protected void setBlockLayer(EnumWorldBlockLayer... layer)
+	protected void setBlockLayer(BlockRenderLayer... layer)
 	{
 		this.renderLayers = Sets.newHashSet(layer);
 	}
-	public BlockIEBase<E> setMetaBlockLayer(int meta, EnumWorldBlockLayer... layer)
+	public BlockIEBase<E> setMetaBlockLayer(int meta, BlockRenderLayer... layer)
 	{
 		this.metaRenderLayers[Math.max(0, Math.min(meta, this.metaRenderLayers.length-1))] = Sets.newHashSet(layer);
 		return this;
 	}
 	@Override
-	public boolean canRenderInLayer(EnumWorldBlockLayer layer)
+	public boolean canRenderInLayer(BlockRenderLayer layer)
 	{
 		if(cachedTileRequestState!=null)
 		{
@@ -215,22 +218,12 @@ public class BlockIEBase<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 		return this;
 	}
 	@Override
-    public int getLightOpacity(IBlockAccess w, BlockPos pos)
+    public int getLightOpacity(IBlockState state, IBlockAccess w, BlockPos pos)
     {
-        if (!(w instanceof World))
-        	return getLightOpacity();
-        World world = (World) w;
-        if (!world.isBlockLoaded(pos))
-        	return getLightOpacity();
-        int meta = getMetaFromState(world.getBlockState(pos));
+        int meta = getMetaFromState(state);
         if (metaLightOpacities.containsKey(meta))
         	return metaLightOpacities.get(meta);
-        return getLightOpacity();
-    }
-	@Override
-	public int getRenderType()
-	{
-		return 3;
+		return super.getLightOpacity(state,w,pos);
 	}
 	//This is a ridiculously hacky workaround, I would not recommend it to anyone.
 	protected static IBlockState cachedTileRequestState;
@@ -241,7 +234,7 @@ public class BlockIEBase<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 		return super.hasTileEntity(state);
 	}
 
-	protected BlockState createNotTempBlockState()
+	protected BlockStateContainer createNotTempBlockState()
 	{
 		IProperty[] array = new IProperty[1+this.additionalProperties.length];
 		array[0] = this.property;
@@ -249,7 +242,7 @@ public class BlockIEBase<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 			array[1+i] = this.additionalProperties[i];
 		if(this.additionalUnlistedProperties.length>0)
 			return new ExtendedBlockState(this, array, additionalUnlistedProperties);
-		return new BlockState(this, array);
+		return new BlockStateContainer(this, array);
 	}
 	protected IBlockState getInitDefaultState()
 	{
@@ -274,13 +267,13 @@ public class BlockIEBase<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 	}
 
 	@Override
-	protected BlockState createBlockState()
+	protected BlockStateContainer createBlockState()
 	{
 		if(this.property!=null)
 			return createNotTempBlockState();
 		if(tempUnlistedProperties.length>0)
 			return new ExtendedBlockState(this, tempProperties, tempUnlistedProperties);
-		return new BlockState(this, tempProperties);
+		return new BlockStateContainer(this, tempProperties);
 	}
 	@Override
 	public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack)
@@ -335,36 +328,37 @@ public class BlockIEBase<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 
 	void adjustSound()
 	{
-		if(this.blockMaterial==Material.anvil)
-			this.stepSound = Block.soundTypeAnvil;
-		else if(this.blockMaterial==Material.carpet||this.blockMaterial==Material.cloth)
-			this.stepSound = Block.soundTypeCloth;
-		else if(this.blockMaterial==Material.glass||this.blockMaterial==Material.ice)
-			this.stepSound = Block.soundTypeGlass;
-		else if(this.blockMaterial==Material.grass||this.blockMaterial==Material.tnt||this.blockMaterial==Material.plants||this.blockMaterial==Material.vine)
-			this.stepSound = Block.soundTypeGrass;
-		else if(this.blockMaterial==Material.ground)
-			this.stepSound = Block.soundTypeGravel;
-		else if(this.blockMaterial==Material.iron)
-			this.stepSound = Block.soundTypeMetal;
-		else if(this.blockMaterial==Material.sand)
-			this.stepSound = Block.soundTypeSand;
-		else if(this.blockMaterial==Material.snow)
-			this.stepSound = Block.soundTypeSnow;
-		else if(this.blockMaterial==Material.rock)
-			this.stepSound = Block.soundTypeStone;
-		else if(this.blockMaterial==Material.wood||this.blockMaterial==Material.cactus)
-			this.stepSound = Block.soundTypeWood;
+		if(this.blockMaterial==Material.ANVIL)
+			this.blockSoundType = SoundType.ANVIL;
+		else if(this.blockMaterial==Material.CARPET||this.blockMaterial==Material.CLOTH)
+			this.blockSoundType = SoundType.CLOTH;
+		else if(this.blockMaterial==Material.GLASS||this.blockMaterial==Material.ICE)
+			this.blockSoundType = SoundType.GLASS;
+		else if(this.blockMaterial==Material.GRASS||this.blockMaterial==Material.TNT||this.blockMaterial==Material.PLANTS||this.blockMaterial==Material.VINE)
+			this.blockSoundType = SoundType.PLANT;
+		else if(this.blockMaterial==Material.GROUND)
+			this.blockSoundType = SoundType.GROUND;
+		else if(this.blockMaterial==Material.IRON)
+			this.blockSoundType = SoundType.METAL;
+		else if(this.blockMaterial==Material.SAND)
+			this.blockSoundType = SoundType.SAND;
+		else if(this.blockMaterial==Material.SNOW)
+			this.blockSoundType = SoundType.SNOW;
+		else if(this.blockMaterial==Material.ROCK)
+			this.blockSoundType = SoundType.STONE;
+		else if(this.blockMaterial==Material.WOOD||this.blockMaterial==Material.CACTUS)
+			this.blockSoundType = SoundType.WOOD;
 	}
 
-	public boolean onBlockEventReceived(World worldIn, BlockPos pos, IBlockState state, int eventID, int eventParam)
+	@Override
+	public boolean eventReceived(IBlockState state, World worldIn, BlockPos pos, int eventID, int eventParam)
 	{
 		if (worldIn.isRemote&&eventID==255)
 		{
-			worldIn.markBlockForUpdate(pos);
+			worldIn.notifyBlockUpdate(pos,state,state,3);
 			return true;
 		}
-		return super.onBlockEventReceived(worldIn, pos, state, eventID, eventParam);
+		return super.eventReceived(state, worldIn, pos, eventID, eventParam);
 	}
 
 	public boolean allowHammerHarvest(IBlockState blockState)
@@ -381,13 +375,14 @@ public class BlockIEBase<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 		fullBlock = isOpaque;
 		return this;
 	}
-	public static interface IBlockEnum extends IStringSerializable
+	public interface IBlockEnum extends IStringSerializable
 	{
-		public String getName();
-		public int getMeta();
-		public boolean listForCreative();
+		@Override
+		String getName();
+		int getMeta();
+		boolean listForCreative();
 	}
-	public static abstract class IELadderBlock<E extends Enum<E> & BlockIEBase.IBlockEnum> extends BlockIEBase<E>
+	public abstract static class IELadderBlock<E extends Enum<E> & IBlockEnum> extends BlockIEBase<E>
 	{
 		public IELadderBlock(String name, Material material, PropertyEnum<E> mainProperty,
 				Class<? extends ItemBlockIEBase> itemBlock, Object... additionalProperties) {
@@ -398,7 +393,7 @@ public class BlockIEBase<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 		public void onEntityCollidedWithBlock(World worldIn, BlockPos pos, IBlockState state, Entity entityIn)
 		{
 			super.onEntityCollidedWithBlock(worldIn, pos, state, entityIn);
-			if (entityIn instanceof EntityLivingBase&&!((EntityLivingBase) entityIn).isOnLadder()&&isLadder(worldIn, pos, (EntityLivingBase)entityIn))
+			if (entityIn instanceof EntityLivingBase&&!((EntityLivingBase) entityIn).isOnLadder()&&isLadder(state, worldIn, pos, (EntityLivingBase)entityIn))
 			{
 				float f5 = 0.15F;
 				if (entityIn.motionX < -f5)

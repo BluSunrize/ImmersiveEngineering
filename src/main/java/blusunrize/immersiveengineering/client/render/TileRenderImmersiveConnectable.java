@@ -12,7 +12,7 @@ import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Conn
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.tileentity.TileEntity;
@@ -43,7 +43,7 @@ public class TileRenderImmersiveConnectable extends TileEntitySpecialRenderer
 			Set<Connection> outputs = ImmersiveNetHandler.INSTANCE.getConnections(te.getWorld(), Utils.toCC(te));
 			if(outputs!=null)
 			{
-				WorldRenderer worldrenderer = ClientUtils.tes().getWorldRenderer();
+				VertexBuffer worldrenderer = ClientUtils.tes().getBuffer();
 				worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
 				//		GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, 10497.0F);
 				//		GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, 10497.0F);
@@ -52,10 +52,10 @@ public class TileRenderImmersiveConnectable extends TileEntitySpecialRenderer
 				GlStateManager.enableBlend();
 				GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
-				Iterator<ImmersiveNetHandler.Connection> itCon = outputs.iterator();
+				Iterator<Connection> itCon = outputs.iterator();
 				while(itCon.hasNext())
 				{
-					ImmersiveNetHandler.Connection con = itCon.next();
+					Connection con = itCon.next();
 					TileEntity tileEnd = te.getWorld().getTileEntity(con.end);
 					if(tileEnd instanceof IImmersiveConnectable)
 					{

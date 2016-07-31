@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -22,8 +23,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.math.RayTraceResult;
 
 public class TileEntityCapacitorLV extends TileEntityIEBase implements ITickable, IFluxProvider,IFluxReceiver,IEnergyProvider,IEnergyReceiver, IBlockOverlayText, IConfigurableSides, IComparatorOverride, ITileDrop
 {
@@ -100,7 +100,7 @@ public class TileEntityCapacitorLV extends TileEntityIEBase implements ITickable
 		if(sideConfig[side]>1)
 			sideConfig[side]=-1;
 		this.markDirty();
-		worldObj.markBlockForUpdate(getPos());
+		this.markContainingBlockForUpdate(null);
 		worldObj.addBlockEvent(getPos(), this.getBlockType(), 0, 0);
 	}
 	@Override
@@ -108,7 +108,7 @@ public class TileEntityCapacitorLV extends TileEntityIEBase implements ITickable
 	{
 		if(id==0)
 		{
-			this.worldObj.markBlockForUpdate(getPos());
+			this.markContainingBlockForUpdate(null);
 			return true;
 		}
 		return false;
@@ -145,9 +145,7 @@ public class TileEntityCapacitorLV extends TileEntityIEBase implements ITickable
 	@Override
 	public boolean canConnectEnergy(EnumFacing fd)
 	{
-		if(fd.ordinal()>=sideConfig.length || sideConfig[fd.ordinal()]<0)
-			return false;
-		return true;
+		return !(fd.ordinal() >= sideConfig.length || sideConfig[fd.ordinal()] < 0);
 	}
 	@Override
 	public int extractEnergy(EnumFacing fd, int amount, boolean simulate)
@@ -155,7 +153,7 @@ public class TileEntityCapacitorLV extends TileEntityIEBase implements ITickable
 		if(worldObj.isRemote || fd.ordinal()>=sideConfig.length || sideConfig[fd.ordinal()]!=1)
 			return 0;
 		int r = energyStorage.extractEnergy(amount, simulate);
-		worldObj.markBlockForUpdate(getPos());
+		this.markContainingBlockForUpdate(null);
 		return r;
 	}
 	@Override
@@ -177,23 +175,23 @@ public class TileEntityCapacitorLV extends TileEntityIEBase implements ITickable
 		return r;
 	}
 	@Override
-	public String[] getOverlayText(EntityPlayer player, MovingObjectPosition mop, boolean hammer)
+	public String[] getOverlayText(EntityPlayer player, RayTraceResult mop, boolean hammer)
 	{
 		if(hammer && Config.getBoolean("colourblindSupport"))
 		{
 			int i = sideConfig[Math.min(sideConfig.length-1, mop.sideHit.ordinal())];
 			int j = sideConfig[Math.min(sideConfig.length-1, mop.sideHit.getOpposite().ordinal())];
 			return new String[]{
-					StatCollector.translateToLocal(Lib.DESC_INFO+"blockSide.facing")
-					+": "+StatCollector.translateToLocal(Lib.DESC_INFO+"blockSide.connectEnergy."+i),
-					StatCollector.translateToLocal(Lib.DESC_INFO+"blockSide.opposite")
-					+": "+StatCollector.translateToLocal(Lib.DESC_INFO+"blockSide.connectEnergy."+j)
+					I18n.format(Lib.DESC_INFO+"blockSide.facing")
+					+": "+ I18n.format(Lib.DESC_INFO+"blockSide.connectEnergy."+i),
+					I18n.format(Lib.DESC_INFO+"blockSide.opposite")
+					+": "+ I18n.format(Lib.DESC_INFO+"blockSide.connectEnergy."+j)
 			};
 		}
 		return null;
 	}
 	@Override
-	public boolean useNixieFont(EntityPlayer player, MovingObjectPosition mop)
+	public boolean useNixieFont(EntityPlayer player, RayTraceResult mop)
 	{
 		return false;
 	}

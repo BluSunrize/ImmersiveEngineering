@@ -10,9 +10,9 @@ import net.minecraft.item.ItemStack;
  */
 public interface IBullet
 {
-	public boolean canSpawnBullet(ItemStack bulletStack);
+	boolean canSpawnBullet(ItemStack bulletStack);
 
-	public void spawnBullet(EntityPlayer player, ItemStack bulletStack, boolean electro);
+	void spawnBullet(EntityPlayer player, ItemStack bulletStack, boolean electro);
 	
-	public ItemStack getCasing(ItemStack stack);
+	ItemStack getCasing(ItemStack stack);
 }

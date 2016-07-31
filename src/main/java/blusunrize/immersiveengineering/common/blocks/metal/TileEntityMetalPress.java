@@ -1,22 +1,22 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import java.util.Iterator;
-
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.IMultiblockRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMultiblockMetal.MultiblockProcess;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockMetalPress;
+import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.*;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
@@ -57,11 +57,11 @@ public class TileEntityMetalPress extends TileEntityMultiblockMetal<TileEntityMe
 			float pressTime = 3.75f*tick;
 			float fProcess = process.processTick*tick;
 			if(fProcess>=transportTime && fProcess<transportTime+tick)
-				worldObj.playSoundEffect(getPos().getX()+.5,getPos().getY()+.5,getPos().getZ()+.5, "immersiveengineering:metalPressPiston", .3f,1);
+				worldObj.playSound(getPos().getX()+.5,getPos().getY()+.5,getPos().getZ()+.5, IESounds.metalpress_piston, SoundCategory.BLOCKS, .3f,1, true);
 			if(fProcess>=(transportTime+pressTime) && fProcess<(transportTime+pressTime+tick))
-				worldObj.playSoundEffect(getPos().getX()+.5,getPos().getY()+.5,getPos().getZ()+.5, "immersiveengineering:metalPressSmash", .3f,1);
+				worldObj.playSound(getPos().getX()+.5,getPos().getY()+.5,getPos().getZ()+.5, IESounds.metalpress_smash, SoundCategory.BLOCKS, .3f,1, true);
 			if(fProcess>=(1-transportTime) && fProcess<(1-transportTime+tick))
-				worldObj.playSoundEffect(getPos().getX()+.5,getPos().getY()+.5,getPos().getZ()+.5, "immersiveengineering:metalPressPiston", .3f,1);
+				worldObj.playSound(getPos().getX()+.5,getPos().getY()+.5,getPos().getZ()+.5, IESounds.metalpress_piston, SoundCategory.BLOCKS, .3f,1, true);
 		}
 	}
 
@@ -80,33 +80,34 @@ public class TileEntityMetalPress extends TileEntityMultiblockMetal<TileEntityMe
 	}
 
 	@Override
-	public boolean interact(EnumFacing side, EntityPlayer player, float hitX, float hitY, float hitZ)
+	public boolean interact(EnumFacing side, EntityPlayer player, EnumHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
 		TileEntityMetalPress master = master();
 		if(master!=null)
 			if(player.isSneaking() && master.mold!=null)
 			{
-				if(player.getCurrentEquippedItem()==null)
-					player.setCurrentItemOrArmor(0, master.mold.copy());
+				if(heldItem==null)
+					player.setHeldItem(hand, master.mold.copy());
 				else if(!worldObj.isRemote)
 					player.entityDropItem(master.mold.copy(),0);
 				master.mold=null;
-				master.markDirty();
-				worldObj.markBlockForUpdate(master.getPos());
+				this.updateMasterBlock(null, true);
 				return true;
 			}
-			else if(MetalPressRecipe.isValidMold(player.getCurrentEquippedItem()))
+			else if(MetalPressRecipe.isValidMold(heldItem))
 			{
 				ItemStack tempMold = master.mold!=null?master.mold.copy():null;
-				master.mold = Utils.copyStackWithAmount(player.getCurrentEquippedItem(),1);
-				player.inventory.decrStackSize(player.inventory.currentItem, 1);
+				master.mold = Utils.copyStackWithAmount(heldItem,1);
+				if(heldItem.stackSize--<=0)
+					heldItem = null;
+				else
+					player.setHeldItem(hand, heldItem);
 				if(tempMold!=null)
-					if(player.getCurrentEquippedItem()==null)
-						player.setCurrentItemOrArmor(0, tempMold);
+					if(heldItem==null)
+						player.setHeldItem(hand, tempMold);
 					else if(!worldObj.isRemote)
 						player.entityDropItem(tempMold,0);
-				master.markDirty();
-				worldObj.markBlockForUpdate(master.getPos());
+				this.updateMasterBlock(null, true);
 				return true;
 			}
 		return false;
@@ -119,16 +120,6 @@ public class TileEntityMetalPress extends TileEntityMultiblockMetal<TileEntityMe
 		if(pos==3||pos==5)
 			return new float[]{0,0,0, 1,.125f,1};
 		return new float[]{0,0,0, 1,1,1};
-	}
-	@Override
-	public float[] getSpecialCollisionBounds()
-	{
-		return null;
-	}
-	@Override
-	public float[] getSpecialSelectionBounds()
-	{
-		return null;
 	}
 
 	@Override
@@ -251,10 +242,25 @@ public class TileEntityMetalPress extends TileEntityMultiblockMetal<TileEntityMe
 		return null;
 	}
 	@Override
+	protected FluidTank[] getAccessibleFluidTanks(EnumFacing side)
+	{
+		return new FluidTank[0];
+	}
+	@Override
+	protected boolean canFillTankFrom(int iTank, EnumFacing side, FluidStack resources)
+	{
+		return false;
+	}
+	@Override
+	protected boolean canDrainTankFrom(int iTank, EnumFacing side)
+	{
+		return false;
+	}
+	@Override
 	public void doGraphicalUpdates(int slot)
 	{
 		this.markDirty();
-		worldObj.markBlockForUpdate(getPos());
+		this.markContainingBlockForUpdate(null);
 	}
 
 

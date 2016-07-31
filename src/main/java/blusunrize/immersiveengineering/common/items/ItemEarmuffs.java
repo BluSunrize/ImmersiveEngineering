@@ -1,10 +1,5 @@
 package blusunrize.immersiveengineering.common.items;
 
-import java.util.LinkedHashSet;
-import java.util.List;
-
-import com.google.common.collect.Sets;
-
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool;
@@ -14,35 +9,41 @@ import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.client.ClientProxy;
 import blusunrize.immersiveengineering.client.models.ModelEarmuffs;
 import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import com.google.common.collect.Sets;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.model.ModelBiped;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.ISpecialArmor;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ItemEarmuffs extends ItemArmor implements ISpecialArmor, IConfigurableTool, ITool
+import java.util.LinkedHashSet;
+import java.util.List;
+
+public class ItemEarmuffs extends ItemArmor implements ISpecialArmor, IConfigurableTool, ITool, IColouredItem
 {
 	public ItemEarmuffs()
 	{
-		super(ArmorMaterial.LEATHER, 0, 0);
+		super(ArmorMaterial.LEATHER, 0, EntityEquipmentSlot.HEAD);
 		String name = "earmuffs";
 		this.setUnlocalizedName(ImmersiveEngineering.MODID+"."+name);
 		this.setCreativeTab(ImmersiveEngineering.creativeTab);
-		GameRegistry.registerItem(this, name);
+		ImmersiveEngineering.register(this, name);
 		IEContent.registeredIEItems.add(this);
 	}
 
 	@Override
-	public String getArmorTexture(ItemStack stack, Entity entity, int slot, String type)
+	public String getArmorTexture(ItemStack stack, Entity entity, EntityEquipmentSlot slot, String type)
 	{
 		if(type=="overlay")
 			return "immersiveengineering:textures/models/earmuffs_overlay.png";
@@ -53,14 +54,19 @@ public class ItemEarmuffs extends ItemArmor implements ISpecialArmor, IConfigura
 	ModelBiped armorModel;
 	@Override
 	@SideOnly(Side.CLIENT)
-	public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, int armorSlot, ModelBiped _default)
+	public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, EntityEquipmentSlot armorSlot, ModelBiped _default)
 	{
 		ModelEarmuffs model = ModelEarmuffs.getModel();
 		return model;
 	}
 
 	@Override
-	public int getColorFromItemStack(ItemStack stack, int renderPass)
+	public boolean hasCustomItemColours()
+	{
+		return true;
+	}
+	@Override
+	public int getColourForIEItem(ItemStack stack, int renderPass)
 	{
 		if(renderPass==1)
 			return 0xffffff;
@@ -95,8 +101,8 @@ public class ItemEarmuffs extends ItemArmor implements ISpecialArmor, IConfigura
 	@Override
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean adv)
 	{
-		String hexCol = Integer.toHexString(this.getColorFromItemStack(stack, 0));
-		list.add(StatCollector.translateToLocalFormatted(Lib.DESC_INFO+"colour", "<hexcol="+hexCol+":#"+hexCol+">"));
+		String hexCol = Integer.toHexString(this.getColourForIEItem(stack, 0));
+		list.add(I18n.format(Lib.DESC_INFO+"colour", "<hexcol="+hexCol+":#"+hexCol+">"));
 	}
 	@Override
 	@SideOnly(Side.CLIENT)
@@ -173,8 +179,8 @@ public class ItemEarmuffs extends ItemArmor implements ISpecialArmor, IConfigura
 	public String fomatConfigName(ItemStack stack, ToolConfig config)
 	{
 		if(config instanceof ToolConfigFloat)
-			return StatCollector.translateToLocal(Lib.GUI_CONFIG+"earmuffs.noisegate");
-		return StatCollector.translateToLocal(Lib.GUI_CONFIG+"earmuffs.soundcategory."+config.name);
+			return I18n.format(Lib.GUI_CONFIG+"earmuffs.noisegate");
+		return I18n.format(Lib.GUI_CONFIG+"earmuffs.soundcategory."+config.name);
 	}
 	@Override
 	public String fomatConfigDescription(ItemStack stack, ToolConfig config)

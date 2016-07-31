@@ -7,9 +7,10 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class IICProxy implements IImmersiveConnectable
 {
@@ -26,7 +27,7 @@ public class IICProxy implements IImmersiveConnectable
 	{
 		if (!(te instanceof IImmersiveConnectable))
 			throw new IllegalArgumentException("Can't create an IICProxy for a null/non-IIC TileEntity");
-		dim = te.getWorld().provider.getDimensionId();
+		dim = te.getWorld().provider.getDimension();
 		canEnergyPass = ((IImmersiveConnectable)te).allowEnergyToPass(null);
 		pos = Utils.toCC(te);
 	}
@@ -47,7 +48,7 @@ public class IICProxy implements IImmersiveConnectable
 	public void removeCable(Connection connection)
 	{
 		//this will load the chunk the TE is in for 1 tick since it needs to be notified about the removed wires
-		World w = MinecraftServer.getServer().worldServerForDimension(dim);
+		World w = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(dim);
 		if (w==null)
 		{
 			IELogger.warn("Tried to remove a wire in dimension "+dim+" which does not exist");
@@ -90,12 +91,12 @@ public class IICProxy implements IImmersiveConnectable
 	public void onEnergyPassthrough(int amount)
 	{}
 	@Override
-	public Vec3 getRaytraceOffset(IImmersiveConnectable link)
+	public Vec3d getRaytraceOffset(IImmersiveConnectable link)
 	{
 		return null;
 	}
 	@Override
-	public Vec3 getConnectionOffset(Connection con)
+	public Vec3d getConnectionOffset(Connection con)
 	{
 		return null;
 	}

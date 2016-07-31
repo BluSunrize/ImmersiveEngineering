@@ -17,7 +17,7 @@ import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -74,17 +74,17 @@ public class MultiblockDieselGenerator implements IMultiblock
 		}
 		if(iterator==4)
 		{
-			ImmersiveEngineering.proxy.drawSpecificFluidPipe("000020");
+			ImmersiveEngineering.proxy.drawSpecificFluidPipe("020000");
 			return true;
 		}
 		if(iterator==7)
 		{
-			ImmersiveEngineering.proxy.drawSpecificFluidPipe("000022");
+			ImmersiveEngineering.proxy.drawSpecificFluidPipe("220000");
 			return true;
 		}
 		if(iterator==10)
 		{
-			ImmersiveEngineering.proxy.drawSpecificFluidPipe("000002");
+			ImmersiveEngineering.proxy.drawSpecificFluidPipe("200000");
 			return true;
 		}
 		return false;
@@ -171,7 +171,7 @@ public class MultiblockDieselGenerator implements IMultiblock
 							world.addBlockEvent(pos2, IEContent.blockMetalMultiblock, 255, 0);
 						}
 					}
-			player.triggerAchievement(IEAchievements.mbDieselGen);
+			player.addStat(IEAchievements.mbDieselGen);
 		}
 		return b;
 	}

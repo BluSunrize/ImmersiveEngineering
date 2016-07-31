@@ -1,12 +1,5 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import com.google.common.collect.Lists;
-
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.IMultiblockRecipe;
@@ -18,15 +11,16 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundTil
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockArcFurnace;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
+import com.google.common.collect.Lists;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
-import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
@@ -35,6 +29,11 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityArcFurnace,ArcFurnaceRecipe> implements ISoundTile,IGuiTile, IAdvancedSelectionBounds,IAdvancedCollisionBounds
 {
@@ -163,7 +162,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 		//			else
 		//				renderAABB = AxisAlignedBB.getBoundingBox(xCoord,yCoord,zCoord, xCoord,yCoord,zCoord);
 		//		return renderAABB;
-		return AxisAlignedBB.fromBounds(getPos().getX()-(facing.getAxis()==Axis.Z?2:1),getPos().getY(),getPos().getZ()-(facing.getAxis()==Axis.X?2:1), getPos().getX()+(facing.getAxis()==Axis.Z?3:2),getPos().getY()+3,getPos().getZ()+(facing.getAxis()==Axis.X?3:2));
+		return new AxisAlignedBB(getPos().getX()-(facing.getAxis()==Axis.Z?2:1),getPos().getY(),getPos().getZ()-(facing.getAxis()==Axis.X?2:1), getPos().getX()+(facing.getAxis()==Axis.Z?3:2),getPos().getY()+3,getPos().getZ()+(facing.getAxis()==Axis.X?3:2));
 	}
 	@Override
 	@SideOnly(Side.CLIENT)
@@ -225,16 +224,6 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 		return new float[]{0,0,0,1,1,1};
 	}
 	@Override
-	public float[] getSpecialCollisionBounds()
-	{
-		return null;
-	}
-	@Override
-	public float[] getSpecialSelectionBounds()
-	{
-		return null;
-	}
-	@Override
 	public List<AxisAlignedBB> getAdvancedSelectionBounds()
 	{
 		if(pos%15==7)
@@ -245,18 +234,18 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 			fw = fw.getOpposite();
 		if(pos==0)
 		{
-			List<AxisAlignedBB> list = Lists.newArrayList(AxisAlignedBB.fromBounds(0,0,0, 1,.5f,1).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(0,0,0, 1,.5f,1).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
 			float minX = fl==EnumFacing.WEST?.625f: fl==EnumFacing.EAST?.125f: .125f;
 			float maxX = fl==EnumFacing.EAST?.375f: fl==EnumFacing.WEST?.875f: .25f;
 			float minZ = fl==EnumFacing.NORTH?.625f: fl==EnumFacing.SOUTH?.125f: .125f;
 			float maxZ = fl==EnumFacing.SOUTH?.375f: fl==EnumFacing.NORTH?.875f: .25f;
-			list.add(AxisAlignedBB.fromBounds(minX,.5f,minZ, maxX,1,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+			list.add(new AxisAlignedBB(minX,.5f,minZ, maxX,1,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
 
 			minX = fl==EnumFacing.WEST?.625f: fl==EnumFacing.EAST?.125f: .75f;
 			maxX = fl==EnumFacing.EAST?.375f: fl==EnumFacing.WEST?.875f: .875f;
 			minZ = fl==EnumFacing.NORTH?.625f: fl==EnumFacing.SOUTH?.125f: .75f;
 			maxZ = fl==EnumFacing.SOUTH?.375f: fl==EnumFacing.NORTH?.875f: .875f;
-			list.add(AxisAlignedBB.fromBounds(minX,.5f,minZ, maxX,1,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+			list.add(new AxisAlignedBB(minX,.5f,minZ, maxX,1,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
 			return list;
 		}
 		else if(pos>=46&&pos<=48)
@@ -265,18 +254,18 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 			float maxX = fl==EnumFacing.EAST?.75f:1;
 			float minZ = fl==EnumFacing.NORTH?.25f:0;
 			float maxZ = fl==EnumFacing.SOUTH?.75f:1;
-			List<AxisAlignedBB> list = Lists.newArrayList(AxisAlignedBB.fromBounds(minX,0,minZ,maxX,1,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(minX,0,minZ,maxX,1,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
 
 			minX = fl==EnumFacing.WEST?0: fl==EnumFacing.EAST?.75f: .25f;
 			maxX = fl==EnumFacing.EAST?1: fl==EnumFacing.WEST?.25f: .75f;
 			minZ = fl==EnumFacing.NORTH?0: fl==EnumFacing.SOUTH?.75f: .25f;
 			maxZ = fl==EnumFacing.SOUTH?1: fl==EnumFacing.NORTH?.25f: .75f;
-			list.add(AxisAlignedBB.fromBounds(minX,.25f,minZ, maxX,.75,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+			list.add(new AxisAlignedBB(minX,.25f,minZ, maxX,.75,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
 			return list;
 		}
 		else if(pos%25>=10 && (pos%5==0||pos%5==4))
 		{
-			List<AxisAlignedBB> list = pos<25?Lists.newArrayList(AxisAlignedBB.fromBounds(0,0,0, 1,.5f,1).offset(getPos().getX(),getPos().getY(),getPos().getZ())):new ArrayList(2);
+			List<AxisAlignedBB> list = pos<25?Lists.newArrayList(new AxisAlignedBB(0,0,0, 1,.5f,1).offset(getPos().getX(),getPos().getY(),getPos().getZ())):new ArrayList(2);
 			if(pos%5==4)
 				fw = fw.getOpposite();
 			float minX = fw==EnumFacing.EAST?.5f: 0;
@@ -284,14 +273,14 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 			float minZ = fw==EnumFacing.SOUTH?.5f: 0;
 			float maxZ = fw==EnumFacing.NORTH?.5f: 1;
 			if(pos%25/5!=3)
-				list.add(AxisAlignedBB.fromBounds(minX,pos<25?.5:0,minZ, maxX,1,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+				list.add(new AxisAlignedBB(minX,pos<25?.5:0,minZ, maxX,1,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
 			if(pos<25)
 			{
 				minX = fw==EnumFacing.EAST?.125f: fw==EnumFacing.WEST?.625f: fl==EnumFacing.EAST?.375f:-1.625f;
 				maxX = fw==EnumFacing.EAST?.375f: fw==EnumFacing.WEST?.875f: fl==EnumFacing.WEST?.625f: 2.625f;
 				minZ = fw==EnumFacing.SOUTH?.125f: fw==EnumFacing.NORTH?.625f: fl==EnumFacing.SOUTH?.375f:-1.625f;
 				maxZ = fw==EnumFacing.SOUTH?.375f: fw==EnumFacing.NORTH?.875f: fl==EnumFacing.NORTH?.625f: 2.625f;
-				AxisAlignedBB aabb = AxisAlignedBB.fromBounds(minX,.6875,minZ, maxX,.9375,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ());
+				AxisAlignedBB aabb = new AxisAlignedBB(minX,.6875,minZ, maxX,.9375,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ());
 				aabb = aabb.offset(-fl.getFrontOffsetX()*(pos%25-10)/5,0,-fl.getFrontOffsetZ()*(pos%25-10)/5);
 				list.add(aabb);
 
@@ -299,7 +288,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 				maxX = fw==EnumFacing.EAST?.5f: fw==EnumFacing.WEST?.625f: fl==EnumFacing.WEST?.625f: .625f;
 				minZ = fw==EnumFacing.SOUTH?.375f: fw==EnumFacing.NORTH?.5f: fl==EnumFacing.SOUTH?.375f: .375f;
 				maxZ = fw==EnumFacing.SOUTH?.5f: fw==EnumFacing.NORTH?.625f: fl==EnumFacing.NORTH?.625f: .625f;
-				aabb = AxisAlignedBB.fromBounds(minX,.6875,minZ, maxX,.9375,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ());
+				aabb = new AxisAlignedBB(minX,.6875,minZ, maxX,.9375,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ());
 				aabb = aabb.offset(-fl.getFrontOffsetX()*(pos%25-10)/5,0,-fl.getFrontOffsetZ()*(pos%25-10)/5);
 				list.add(aabb);
 
@@ -307,7 +296,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 				maxX = fw==EnumFacing.EAST?.5f: fw==EnumFacing.WEST?.625f: fl==EnumFacing.WEST?-1.375f: 2.625f;
 				minZ = fw==EnumFacing.SOUTH?.375f: fw==EnumFacing.NORTH?.5f: fl==EnumFacing.SOUTH?2.375f:-1.625f;
 				maxZ = fw==EnumFacing.SOUTH?.5f: fw==EnumFacing.NORTH?.625f: fl==EnumFacing.NORTH?-1.375f: 2.625f;
-				aabb = AxisAlignedBB.fromBounds(minX,.6875,minZ, maxX,.9375,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ());
+				aabb = new AxisAlignedBB(minX,.6875,minZ, maxX,.9375,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ());
 				aabb = aabb.offset(-fl.getFrontOffsetX()*(pos%25-10)/5,0,-fl.getFrontOffsetZ()*(pos%25-10)/5);
 				list.add(aabb);
 			}
@@ -317,7 +306,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 				maxX = fw==EnumFacing.EAST?.375f: fw==EnumFacing.WEST?.875f: fl==EnumFacing.WEST?.625f: 2.625f;
 				minZ = fw==EnumFacing.SOUTH?.125f: fw==EnumFacing.NORTH?.625f: fl==EnumFacing.SOUTH?.375f:-1.625f;
 				maxZ = fw==EnumFacing.SOUTH?.375f: fw==EnumFacing.NORTH?.875f: fl==EnumFacing.NORTH?.625f: 2.625f;
-				AxisAlignedBB aabb = AxisAlignedBB.fromBounds(minX,.125,minZ, maxX,.375,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ());
+				AxisAlignedBB aabb = new AxisAlignedBB(minX,.125,minZ, maxX,.375,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ());
 				aabb = aabb.offset(-fl.getFrontOffsetX()*(pos%25-10)/5,0,-fl.getFrontOffsetZ()*(pos%25-10)/5);
 				list.add(aabb);
 
@@ -325,7 +314,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 				maxX = fw==EnumFacing.EAST?.5f: fw==EnumFacing.WEST?.625f: fl==EnumFacing.WEST?.625f: .625f;
 				minZ = fw==EnumFacing.SOUTH?.375f: fw==EnumFacing.NORTH?.5f: fl==EnumFacing.SOUTH?.375f: .375f;
 				maxZ = fw==EnumFacing.SOUTH?.5f: fw==EnumFacing.NORTH?.625f: fl==EnumFacing.NORTH?.625f: .625f;
-				aabb = AxisAlignedBB.fromBounds(minX,.125,minZ, maxX,.375,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ());
+				aabb = new AxisAlignedBB(minX,.125,minZ, maxX,.375,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ());
 				aabb = aabb.offset(-fl.getFrontOffsetX()*(pos%25-10)/5,0,-fl.getFrontOffsetZ()*(pos%25-10)/5);
 				if(pos%5==0)
 					aabb = aabb.offset(0,.6875,0);
@@ -336,7 +325,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 					maxX = fw==EnumFacing.EAST?.375f: fw==EnumFacing.WEST?.875f: fl==EnumFacing.WEST?.625f: .625f;
 					minZ = fw==EnumFacing.SOUTH?.125f: fw==EnumFacing.NORTH?.625f: fl==EnumFacing.SOUTH?.375f: .375f;
 					maxZ = fw==EnumFacing.SOUTH?.375f: fw==EnumFacing.NORTH?.875f: fl==EnumFacing.NORTH?.625f: .625f;
-					aabb = AxisAlignedBB.fromBounds(minX,.375,minZ, maxX,1.0625,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ());
+					aabb = new AxisAlignedBB(minX,.375,minZ, maxX,1.0625,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ());
 					aabb = aabb.offset(-fl.getFrontOffsetX()*(pos%25-10)/5,0,-fl.getFrontOffsetZ()*(pos%25-10)/5);
 					list.add(aabb);
 				}
@@ -344,7 +333,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 				maxX = fw==EnumFacing.EAST?.5f: fw==EnumFacing.WEST?.625f: fl==EnumFacing.WEST?-1.375f: 2.625f;
 				minZ = fw==EnumFacing.SOUTH?.375f: fw==EnumFacing.NORTH?.5f: fl==EnumFacing.SOUTH?2.375f:-1.625f;
 				maxZ = fw==EnumFacing.SOUTH?.5f: fw==EnumFacing.NORTH?.625f: fl==EnumFacing.NORTH?-1.375f: 2.625f;
-				aabb = AxisAlignedBB.fromBounds(minX,.125,minZ, maxX,.375,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ());
+				aabb = new AxisAlignedBB(minX,.125,minZ, maxX,.375,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ());
 				aabb = aabb.offset(-fl.getFrontOffsetX()*(pos%25-10)/5,0,-fl.getFrontOffsetZ()*(pos%25-10)/5);
 				list.add(aabb);
 			}
@@ -354,14 +343,14 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 				maxX = fw==EnumFacing.EAST?.5f: fw==EnumFacing.WEST?.625f: .75f;
 				minZ = fw==EnumFacing.SOUTH?.375f: fw==EnumFacing.NORTH?.5f: .25f;
 				maxZ = fw==EnumFacing.SOUTH?.5f: fw==EnumFacing.NORTH?.625f: .75f;
-				list.add(AxisAlignedBB.fromBounds(minX,.25,minZ, maxX,.75,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+				list.add(new AxisAlignedBB(minX,.25,minZ, maxX,.75,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
 			}
 			return list;
 		}
 		return null;
 	}
 	@Override
-	public boolean isOverrideBox(AxisAlignedBB box, EntityPlayer player, MovingObjectPosition mop, ArrayList<AxisAlignedBB> list)
+	public boolean isOverrideBox(AxisAlignedBB box, EntityPlayer player, RayTraceResult mop, ArrayList<AxisAlignedBB> list)
 	{
 		return false;
 	}
@@ -489,6 +478,21 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 	public FluidTank[] getInternalTanks()
 	{
 		return null;
+	}
+	@Override
+	protected FluidTank[] getAccessibleFluidTanks(EnumFacing side)
+	{
+		return new FluidTank[0];
+	}
+	@Override
+	protected boolean canFillTankFrom(int iTank, EnumFacing side, FluidStack resources)
+	{
+		return false;
+	}
+	@Override
+	protected boolean canDrainTankFrom(int iTank, EnumFacing side)
+	{
+		return false;
 	}
 	@Override
 	public void doGraphicalUpdates(int slot)

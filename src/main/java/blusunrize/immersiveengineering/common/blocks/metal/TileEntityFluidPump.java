@@ -1,8 +1,5 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
@@ -22,18 +19,21 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
-import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fluids.*;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidTankProperties;
 
-public class TileEntityFluidPump extends TileEntityIEBase implements ITickable, IBlockBounds, IHasDummyBlocks, IConfigurableSides, IFluidHandler, IFluidPipe, IFluxReceiver,IEnergyReceiver
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.HashMap;
+
+public class TileEntityFluidPump extends TileEntityIEBase implements ITickable, IBlockBounds, IHasDummyBlocks, IConfigurableSides, IFluidPipe, IFluxReceiver,IEnergyReceiver
 {
 	public int[] sideConfig = new int[] {0,-1,-1,-1,-1,-1};
 	public boolean dummy = false;
@@ -64,24 +64,25 @@ public class TileEntityFluidPump extends TileEntityIEBase implements ITickable, 
 				if(sideConfig[f.ordinal()]==0)
 				{
 					TileEntity tile = worldObj.getTileEntity(getPos().offset(f));
-					if(tile instanceof IFluidHandler)
+					if(tile!=null && tile.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, f.getOpposite()))
 					{
-						FluidStack drain = ((IFluidHandler)tile).drain(f.getOpposite(), 500, false);
-						if(drain==null || drain.amount<=0)
-							continue;
-						if(((IFluidHandler)tile).canDrain(f.getOpposite(), drain.getFluid()))
+						IFluidHandler handler = tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, f.getOpposite());
+						if(handler!=null)
 						{
+							FluidStack drain = handler.drain(500, false);
+							if(drain==null || drain.amount<=0)
+								continue;
 							int out = this.outputFluid(drain, false);
-							((IFluidHandler)tile).drain(f.getOpposite(), out, true);
+							handler.drain(out, true);
 						}
 					}
-					else if(worldObj.getTotalWorldTime()%20==((getPos().getX()^getPos().getZ())&19) && worldObj.getBlockState(getPos().offset(f)).getBlock()==Blocks.water && Config.getBoolean("pump_infiniteWater") && tank.fill(new FluidStack(FluidRegistry.WATER,1000), false)==1000 && this.energyStorage.extractEnergy(Config.getInt("pump_consumption"), true)>=Config.getInt("pump_consumption"))
+					else if(worldObj.getTotalWorldTime()%20==((getPos().getX()^getPos().getZ())&19) && worldObj.getBlockState(getPos().offset(f)).getBlock()==Blocks.WATER && Config.getBoolean("pump_infiniteWater") && tank.fill(new FluidStack(FluidRegistry.WATER,1000), false)==1000 && this.energyStorage.extractEnergy(Config.getInt("pump_consumption"), true)>=Config.getInt("pump_consumption"))
 					{
 						int connectedSources = 0;
 						for(EnumFacing f2 : EnumFacing.HORIZONTALS)
 						{
 							IBlockState waterState = worldObj.getBlockState(getPos().offset(f).offset(f2));
-							if(waterState.getBlock()==Blocks.water && Blocks.water.getMetaFromState(waterState)==0)
+							if(waterState.getBlock()==Blocks.WATER && Blocks.WATER.getMetaFromState(waterState)==0)
 								connectedSources++;
 						}
 						if(connectedSources>1)
@@ -113,7 +114,7 @@ public class TileEntityFluidPump extends TileEntityIEBase implements ITickable, 
 						//							rainbow++;
 						//						worldObj.setBlock( cc.posX,cc.posY,cc.posZ, Blocks.stained_glass,rainbow, 0x3);
 						if(Config.getBoolean("pump_placeCobble") && placeCobble)
-							worldObj.setBlockState(pos, Blocks.cobblestone.getDefaultState());
+							worldObj.setBlockState(pos, Blocks.COBBLESTONE.getDefaultState());
 						this.tank.fill(fs, true);
 						closedList.remove(target);
 					}
@@ -153,9 +154,9 @@ public class TileEntityFluidPump extends TileEntityIEBase implements ITickable, 
 				{
 					if(searchFluid==null)
 						searchFluid = fluid;
-					
+
 					if (Utils.drainFluidBlock(worldObj, next, false)!=null)
-							closedList.add(next);
+						closedList.add(next);
 					for(EnumFacing f : EnumFacing.values())
 					{
 						BlockPos pos2 = next.offset(f);
@@ -189,19 +190,23 @@ public class TileEntityFluidPump extends TileEntityIEBase implements ITickable, 
 			if(sideConfig[f.ordinal()]==1)
 			{
 				TileEntity tile = worldObj.getTileEntity(getPos().offset(f));
-				if(tile instanceof IFluidHandler && ((IFluidHandler)tile).canFill(f.getOpposite(), fs.getFluid()))
+				if(tile!=null && tile.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, f.getOpposite()))
 				{
-					FluidStack insertResource = new FluidStack(fs.getFluid(), fs.amount);
-					if(tile instanceof TileEntityFluidPipe && this.energyStorage.extractEnergy(accelPower,true)>=accelPower)
+					IFluidHandler handler = tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, f.getOpposite());
+					if(handler != null)
 					{
-						insertResource.tag = new NBTTagCompound();
-						insertResource.tag.setBoolean("pressurized", true);
-					}
-					int temp = ((IFluidHandler)tile).fill(f.getOpposite(), insertResource, false);
-					if(temp>0)
-					{
-						sorting.put(new DirectionalFluidOutput((IFluidHandler)tile, f), temp);
-						sum += temp;
+						FluidStack insertResource = new FluidStack(fs.getFluid(), fs.amount);
+						if (tile instanceof TileEntityFluidPipe && this.energyStorage.extractEnergy(accelPower, true) >= accelPower)
+						{
+							insertResource.tag = new NBTTagCompound();
+							insertResource.tag.setBoolean("pressurized", true);
+						}
+						int temp = handler.fill(insertResource, false);
+						if (temp > 0)
+						{
+							sorting.put(new DirectionalFluidOutput(handler, tile, f), temp);
+							sum += temp;
+						}
 					}
 				}
 			}
@@ -216,13 +221,13 @@ public class TileEntityFluidPump extends TileEntityIEBase implements ITickable, 
 				if(i++ == sorting.size()-1)
 					amount = canAccept;
 				FluidStack insertResource = new FluidStack(fs.getFluid(), amount);
-				if(output.output instanceof TileEntityFluidPipe && this.energyStorage.extractEnergy(accelPower,true)>=accelPower)
+				if(output.containingTile instanceof TileEntityFluidPipe && this.energyStorage.extractEnergy(accelPower,true)>=accelPower)
 				{
 					this.energyStorage.extractEnergy(accelPower,false);
 					insertResource.tag = new NBTTagCompound();
 					insertResource.tag.setBoolean("pressurized", true);
 				}
-				int r = output.output.fill(output.direction.getOpposite(), insertResource, !simulate);
+				int r = output.output.fill(insertResource, !simulate);
 				f += r;
 				canAccept -= r;
 				if(canAccept<=0)
@@ -246,7 +251,7 @@ public class TileEntityFluidPump extends TileEntityIEBase implements ITickable, 
 		tank.readFromNBT(nbt.getCompoundTag("tank"));
 		energyStorage.readFromNBT(nbt);
 		if(descPacket)
-			worldObj.markBlockForUpdate(getPos());
+			this.markContainingBlockForUpdate(null);
 	}
 
 	@Override
@@ -267,13 +272,14 @@ public class TileEntityFluidPump extends TileEntityIEBase implements ITickable, 
 	@Override
 	public boolean toggleSide(int side, EntityPlayer p)
 	{
+		System.out.println("toggle dat pump, "+side+", "+dummy);
 		if(side!=1 && !dummy)
 		{
 			sideConfig[side]++;
 			if(sideConfig[side]>1)
 				sideConfig[side]=-1;
 			this.markDirty();
-			worldObj.markBlockForUpdate(getPos());
+			this.markContainingBlockForUpdate(null);
 			worldObj.addBlockEvent(getPos(), this.getBlockType(), 0, 0);
 			return true;
 		}
@@ -287,53 +293,68 @@ public class TileEntityFluidPump extends TileEntityIEBase implements ITickable, 
 					master = (TileEntityFluidPump) tmp;
 			}
 			master.placeCobble = !master.placeCobble;
-			ChatUtils.sendServerNoSpamMessages(p, new ChatComponentTranslation(Lib.CHAT_INFO+"pump.placeCobble."+master.placeCobble));
+			ChatUtils.sendServerNoSpamMessages(p, new TextComponentTranslation(Lib.CHAT_INFO+"pump.placeCobble."+master.placeCobble));
 			return true;
 		}
 		return false;
 	}
 
+	SidedFluidHandler[] sidedFluidHandler = new SidedFluidHandler[6];
 	@Override
-	public int fill(EnumFacing from, FluidStack resource, boolean doFill)
+	public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing)
 	{
-		if(resource==null || dummy || from==null || sideConfig[from.ordinal()]!=0)
-			return 0;
-		return this.tank.fill(resource, doFill);
+		if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && facing!=null && !dummy)
+			return true;
+		return super.hasCapability(capability, facing);
+	}
+	@Override
+	public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing)
+	{
+		if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && facing!=null && !dummy)
+		{
+			if(sidedFluidHandler[facing.ordinal()]==null)
+				sidedFluidHandler[facing.ordinal()] = new SidedFluidHandler(this, facing);
+			return (T)sidedFluidHandler[facing.ordinal()];
+		}
+		return super.getCapability(capability, facing);
 	}
 
-	@Override
-	public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain)
+	static class SidedFluidHandler implements IFluidHandler
 	{
-		if(resource==null)
-			return null;
-		return this.drain(from, resource.amount, doDrain);
-	}
+		TileEntityFluidPump pump;
+		EnumFacing facing;
+		SidedFluidHandler(TileEntityFluidPump pump, EnumFacing facing)
+		{
+			this.pump = pump;
+			this.facing = facing;
+		}
 
-	@Override
-	public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain)
-	{
-		if(dummy || from==null || sideConfig[from.ordinal()]!=1)
-			return null;
-		return tank.drain(maxDrain, doDrain);
-	}
-
-	@Override
-	public boolean canFill(EnumFacing from, Fluid fluid)
-	{
-		return !dummy && (from==null || sideConfig[from.ordinal()]==0);
-	}
-
-	@Override
-	public boolean canDrain(EnumFacing from, Fluid fluid)
-	{
-		return !dummy && (from==null || sideConfig[from.ordinal()]==1);
-	}
-	@Override
-	public FluidTankInfo[] getTankInfo(EnumFacing from)
-	{
-		if(!dummy && (from==null || sideConfig[from.ordinal()]!=-1))
-			return new FluidTankInfo[]{tank.getInfo()};
-		return new FluidTankInfo[0];
+		@Override
+		public int fill(FluidStack resource, boolean doFill)
+		{
+			if (resource == null || pump.sideConfig[facing.ordinal()]!=0)
+				return 0;
+			return pump.tank.fill(resource, doFill);
+		}
+		@Override
+		public FluidStack drain(FluidStack resource, boolean doDrain)
+		{
+			if (resource == null)
+				return null;
+			return this.drain(resource.amount, doDrain);
+		}
+		@Override
+		public FluidStack drain(int maxDrain, boolean doDrain)
+		{
+			if (pump.sideConfig[facing.ordinal()]!=1)
+				return null;
+			return pump.tank.drain(maxDrain, doDrain);
+		}
+		@Override
+		public IFluidTankProperties[] getTankProperties()
+		{
+			return pump.tank.getTankProperties();
+		}
 	}
 
 	@Override
@@ -348,7 +369,7 @@ public class TileEntityFluidPump extends TileEntityIEBase implements ITickable, 
 		if(dummy)
 		{
 			TileEntity te = worldObj.getTileEntity(getPos().add(0,-1,0));
-			if(te instanceof TileEntityFluidPump)	
+			if(te instanceof TileEntityFluidPump)
 				return ((TileEntityFluidPump)te).receiveEnergy(from, maxReceive, simulate);
 			return 0;
 		}
@@ -361,7 +382,7 @@ public class TileEntityFluidPump extends TileEntityIEBase implements ITickable, 
 		if(dummy)
 		{
 			TileEntity te = worldObj.getTileEntity(getPos().add(0,-1,0));
-			if(te instanceof TileEntityFluidPump)	
+			if(te instanceof TileEntityFluidPump)
 				return ((TileEntityFluidPump)te).getEnergyStored(from);
 			return 0;
 		}
@@ -374,7 +395,7 @@ public class TileEntityFluidPump extends TileEntityIEBase implements ITickable, 
 		if(dummy)
 		{
 			TileEntity te = worldObj.getTileEntity(getPos().add(0,-1,0));
-			if(te instanceof TileEntityFluidPump)	
+			if(te instanceof TileEntityFluidPump)
 				return ((TileEntityFluidPump)te).getMaxEnergyStored(from);
 			return 0;
 		}
@@ -407,16 +428,6 @@ public class TileEntityFluidPump extends TileEntityIEBase implements ITickable, 
 		if(!dummy)
 			return null;
 		return new float[]{.1875f,0,.1875f, .8125f,1,.8125f};
-	}
-	@Override
-	public float[] getSpecialCollisionBounds()
-	{
-		return null;
-	}
-	@Override
-	public float[] getSpecialSelectionBounds()
-	{
-		return null;
 	}
 
 	@Override

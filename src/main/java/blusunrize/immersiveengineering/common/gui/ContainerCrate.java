@@ -20,7 +20,11 @@ public class ContainerCrate extends ContainerIEBase
 				@Override
 				public boolean isItemValid(ItemStack stack)
 				{
-					return !OreDictionary.itemMatches(new ItemStack(IEContent.blockWoodenDevice0,1,4), stack, true);
+					if(OreDictionary.itemMatches(new ItemStack(IEContent.blockWoodenDevice0,1,0), stack, true))
+						return false;
+					if(OreDictionary.itemMatches(new ItemStack(IEContent.blockWoodenDevice0,1,5), stack, true))
+						return false;
+					return true;
 				}
 			});
 		this.slotCount=tile.getInventory().length;

@@ -16,7 +16,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.world.World;
@@ -60,7 +60,7 @@ public class MultiblockCrusher implements IMultiblock
 							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration1,1,BlockTypes_MetalDecoration1.STEEL_FENCE.getMeta());
 					}
 					else if(h==2)
-						structure[h][l][w] = new ItemStack(Blocks.hopper);
+						structure[h][l][w] = new ItemStack(Blocks.HOPPER);
 				}
 	}
 	@Override
@@ -161,7 +161,7 @@ public class MultiblockCrusher implements IMultiblock
 							world.addBlockEvent(pos2, IEContent.blockMetalMultiblock, 255, 0);
 						}
 					}
-			player.triggerAchievement(IEAchievements.mbCrusher);
+			player.addStat(IEAchievements.mbCrusher);
 		}
 		return b;
 	}
@@ -223,7 +223,7 @@ public class MultiblockCrusher implements IMultiblock
 					}
 					else if(h==1)
 					{
-						if(!Utils.isBlockAt(world, pos, Blocks.hopper, -1))
+						if(!Utils.isBlockAt(world, pos, Blocks.HOPPER, -1))
 							return false;
 					}
 				}
@@ -235,7 +235,7 @@ public class MultiblockCrusher implements IMultiblock
 			new ItemStack(IEContent.blockMetalDecoration0,1,BlockTypes_MetalDecoration0.RS_ENGINEERING.getMeta()),
 			new ItemStack(IEContent.blockMetalDecoration0,10,BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta()),
 			new ItemStack(IEContent.blockMetalDecoration1,8,BlockTypes_MetalDecoration1.STEEL_FENCE.getMeta()),
-			new ItemStack(Blocks.hopper,9)};
+			new ItemStack(Blocks.HOPPER,9)};
 	@Override
 	public ItemStack[] getTotalMaterials()
 	{

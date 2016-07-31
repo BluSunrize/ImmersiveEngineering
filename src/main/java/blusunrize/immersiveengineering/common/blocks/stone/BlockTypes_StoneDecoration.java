@@ -18,7 +18,7 @@ public enum BlockTypes_StoneDecoration implements IStringSerializable, BlockIEBa
 	@Override
 	public String getName()
 	{
-		return this.toString();
+		return this.toString().toLowerCase();
 	}
 	@Override
 	public int getMeta()

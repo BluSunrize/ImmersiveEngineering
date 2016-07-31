@@ -18,7 +18,7 @@ public class RefineryRecipeCategory extends IERecipeCategory
 
 	public RefineryRecipeCategory(IGuiHelper helper)
 	{
-		super("refinery","tile.ImmersiveEngineering.metalMultiblock.refinery.name", helper.createDrawable(background, 6,10, 164,62), RefineryRecipeWrapper.class);
+		super("refinery","tile.immersiveengineering.metalMultiblock.refinery.name", helper.createDrawable(background, 6,10, 164,62), RefineryRecipeWrapper.class);
 		tankOverlay = helper.createDrawable(background, 177,31, 16,47, -2,2,-2,2);
 	}
 

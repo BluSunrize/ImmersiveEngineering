@@ -1,10 +1,5 @@
 package blusunrize.immersiveengineering.client.gui;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.lwjgl.opengl.GL11;
-
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientUtils;
@@ -16,13 +11,16 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
+import org.lwjgl.opengl.GL11;
+
+import java.util.ArrayList;
 
 public class GuiSorter extends GuiContainer
 {
@@ -38,16 +36,16 @@ public class GuiSorter extends GuiContainer
 	public void drawScreen(int mx, int my, float partial)
 	{
 		super.drawScreen(mx, my, partial);
-		for(GuiButton button : (List<GuiButton>)this.buttonList)
+		for(GuiButton button : this.buttonList)
 		{
 			if(button instanceof ButtonSorter)
 				if(mx>button.xPosition&&mx<button.xPosition+18 && my>button.yPosition&&my<button.yPosition+18)
 				{
 					ArrayList<String> tooltip = new ArrayList<String>();
 					int type = ((ButtonSorter)button).type;
-					String[] split = StatCollector.translateToLocal(Lib.DESC_INFO+"filter."+(type==0?"oreDict":type==1?"nbt":"fuzzy")).split("<br>");
+					String[] split = I18n.format(Lib.DESC_INFO + "filter." + (type == 0 ? "oreDict" : type == 1 ? "nbt" : "fuzzy")).split("<br>");
 					for(int i=0; i<split.length; i++)
-						tooltip.add((i==0?EnumChatFormatting.WHITE:EnumChatFormatting.GRAY)+split[i]);
+						tooltip.add((i==0? TextFormatting.WHITE: TextFormatting.GRAY)+split[i]);
 					ClientUtils.drawHoveringText(tooltip, mx, my, fontRendererObj, guiLeft+xSize,-1);
 					RenderHelper.enableGUIStandardItemLighting();
 				}
@@ -65,7 +63,7 @@ public class GuiSorter extends GuiContainer
 		{
 			int x = guiLeft+ 30+ (side/2)*58;
 			int y = guiTop+ 44+ (side%2)*76;
-			String s = StatCollector.translateToLocal("desc.ImmersiveEngineering.info.blockSide."+EnumFacing.getFront(side).toString()).substring(0, 1);
+			String s = I18n.format("desc.ImmersiveEngineering.info.blockSide."+EnumFacing.getFront(side).toString()).substring(0, 1);
 			GL11.glEnable(3042);
 			ClientUtils.font().drawString(s, x-(ClientUtils.font().getStringWidth(s)/2), y, 0xaacccccc, true);
 		}

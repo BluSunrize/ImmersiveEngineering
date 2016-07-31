@@ -2,10 +2,11 @@ package blusunrize.immersiveengineering.common.util.commands;
 
 import java.util.ArrayList;
 
+import net.minecraft.client.resources.I18n;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.StatCollector;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.util.commands.CommandHandler.IESubCommand;
 
@@ -18,7 +19,7 @@ public class CommandHelp extends IESubCommand
 	}
 
 	@Override
-	public void perform(ICommandSender sender, String[] args)
+	public void perform(MinecraftServer server, ICommandSender sender, String[] args)
 	{
 		if(args.length>1)
 		{
@@ -29,27 +30,27 @@ public class CommandHelp extends IESubCommand
 			{
 				if(com.getIdent().equalsIgnoreCase(args[1]))
 				{
-					String h = StatCollector.translateToLocal(com.getHelp(sub));
+					String h = I18n.format(com.getHelp(sub));
 					for(String s : h.split("<br>"))
-						sender.addChatMessage(new ChatComponentText(s));
+						sender.addChatMessage(new TextComponentString(s));
 				}
 			}
 		}
 		else
 		{
-			String h = StatCollector.translateToLocal(getHelp(""));
+			String h = I18n.format(getHelp(""));
 			for(String s : h.split("<br>"))
-				sender.addChatMessage(new ChatComponentText(s));
+				sender.addChatMessage(new TextComponentString(s));
 			String sub = "";
 			int i=0;
 			for(IESubCommand com : CommandHandler.commands)
 				sub += ((i++)>0?", ":"")+com.getIdent();
-			sender.addChatMessage(new ChatComponentTranslation(Lib.CHAT_COMMAND+"available",sub));
+			sender.addChatMessage(new TextComponentTranslation(Lib.CHAT_COMMAND+"available",sub));
 		}
 	}
 
 	@Override
-	public ArrayList<String> getSubCommands(String[] args)
+	public ArrayList<String> getSubCommands(MinecraftServer server, String[] args)
 	{
 		ArrayList<String> list = new ArrayList<>();
 		for(IESubCommand sub : CommandHandler.commands)
@@ -64,7 +65,7 @@ public class CommandHelp extends IESubCommand
 				{
 					String[] redArgs = new String[args.length-1];
 					System.arraycopy(args, 1, redArgs, 0, redArgs.length);
-					ArrayList<String> subCommands = sub.getSubCommands(redArgs);
+					ArrayList<String> subCommands = sub.getSubCommands(server, redArgs);
 					if(subCommands!=null)
 						list.addAll(subCommands);
 				}

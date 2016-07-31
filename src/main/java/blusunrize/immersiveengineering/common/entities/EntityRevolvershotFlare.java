@@ -1,19 +1,24 @@
 package blusunrize.immersiveengineering.common.entities;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import com.google.common.base.Optional;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
+import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 
 public class EntityRevolvershotFlare extends EntityRevolvershot
 {
 	boolean shootUp = false;
 	public int colour = -1;
-	final static int dataMarker_colour = 13;
+	private static final DataParameter<Integer> dataMarker_colour = EntityDataManager.<Integer>createKey(EntityIEProjectile.class, DataSerializers.VARINT);
 
 	public EntityRevolvershotFlare(World world)
 	{
@@ -35,16 +40,16 @@ public class EntityRevolvershotFlare extends EntityRevolvershot
 	protected void entityInit()
 	{
 		super.entityInit();
-		this.dataWatcher.addObject(dataMarker_colour, Integer.valueOf(-1));
+		this.dataManager.register(dataMarker_colour, Integer.valueOf(-1));
 	}
 
 	public void setColourSynced()
 	{
-		this.dataWatcher.updateObject(dataMarker_colour, colour);
+		this.dataManager.set(dataMarker_colour, colour);
 	}
 	public int getColourSynced()
 	{
-		return this.dataWatcher.getWatchableObjectInt(dataMarker_colour);
+		return this.dataManager.get(dataMarker_colour);
 	}
 	public int getColour()
 	{
@@ -66,7 +71,7 @@ public class EntityRevolvershotFlare extends EntityRevolvershot
 			if(ticksExisted>40)
 				for(int i=0; i<20; i++)
 				{
-					Vec3 v = new Vec3(worldObj.rand.nextDouble()-.5,worldObj.rand.nextDouble()-.5,worldObj.rand.nextDouble()-.5);
+					Vec3d v = new Vec3d(worldObj.rand.nextDouble()-.5,worldObj.rand.nextDouble()-.5,worldObj.rand.nextDouble()-.5);
 					ImmersiveEngineering.proxy.spawnRedstoneFX(worldObj, posX+v.xCoord,posY+v.yCoord,posZ+v.zCoord, v.xCoord/10,v.yCoord/10,v.zCoord/10, 1, r,g,b);
 				}
 		}
@@ -80,14 +85,14 @@ public class EntityRevolvershotFlare extends EntityRevolvershot
 			float b = (getColour()&255)/255f;
 			for(int i=0; i<80; i++)
 			{
-				Vec3 v = new Vec3((worldObj.rand.nextDouble()-.5)*i>40?2:1,(worldObj.rand.nextDouble()-.5)*i>40?2:1,(worldObj.rand.nextDouble()-.5)*i>40?2:1);
+				Vec3d v = new Vec3d((worldObj.rand.nextDouble()-.5)*i>40?2:1,(worldObj.rand.nextDouble()-.5)*i>40?2:1,(worldObj.rand.nextDouble()-.5)*i>40?2:1);
 				ImmersiveEngineering.proxy.spawnRedstoneFX(worldObj, posX+v.xCoord,posY+v.yCoord,posZ+v.zCoord, v.xCoord/10,v.yCoord/10,v.zCoord/10, 1, r,g,b);
 			}
 		}
 	}
 
 	@Override
-	protected void onImpact(MovingObjectPosition mop)
+	protected void onImpact(RayTraceResult mop)
 	{
 		if(ticksExisted<=40)
 		{
@@ -101,14 +106,14 @@ public class EntityRevolvershotFlare extends EntityRevolvershot
 				{
 					BlockPos pos = mop.getBlockPos().offset(mop.sideHit);
 					if(this.worldObj.isAirBlock(pos))
-						this.worldObj.setBlockState(pos, Blocks.fire.getDefaultState());
+						this.worldObj.setBlockState(pos, Blocks.FIRE.getDefaultState());
 				}
 			float r = (getColour()>>16&255)/255f;
 			float g = (getColour()>>8&255)/255f;
 			float b = (getColour()&255)/255f;
 			for(int i=0; i<80; i++)
 			{
-				Vec3 v = new Vec3((worldObj.rand.nextDouble()-.5)*i>40?2:1,(worldObj.rand.nextDouble()-.5)*i>40?2:1,(worldObj.rand.nextDouble()-.5)*i>40?2:1);
+				Vec3d v = new Vec3d((worldObj.rand.nextDouble()-.5)*i>40?2:1,(worldObj.rand.nextDouble()-.5)*i>40?2:1,(worldObj.rand.nextDouble()-.5)*i>40?2:1);
 				ImmersiveEngineering.proxy.spawnRedstoneFX(worldObj, posX+v.xCoord,posY+v.yCoord,posZ+v.zCoord, v.xCoord/10,v.yCoord/10,v.zCoord/10, 1, r,g,b);
 			}
 		}

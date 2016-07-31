@@ -49,7 +49,6 @@ public class ShaderRegistry
 	/**The total weight in relation to the player. This takes into account shaders the player has gotten, which then result in less weight*/
 	public static HashMap<String, HashMap<EnumRarity,Integer>> playerTotalWeight = new HashMap<String, HashMap<EnumRarity,Integer>>();
 
-
 	public static ShaderCase getShader(String name, String shaderType)
 	{
 		if(shaderRegistry.containsKey(name))

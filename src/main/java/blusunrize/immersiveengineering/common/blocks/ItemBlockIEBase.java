@@ -6,20 +6,22 @@ import java.util.Locale;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -56,10 +58,10 @@ public class ItemBlockIEBase extends ItemBlock
 		{
 			String subName = ((BlockIEBase)this.block).getStateFromMeta(stack.getItemDamage()).getValue(((BlockIEBase)this.block).property).toString().toLowerCase(Locale.US);
 			String flavourKey = Lib.DESC_FLAVOUR+((BlockIEBase)this.block).name+"."+subName;
-			list.add(EnumChatFormatting.GRAY.toString()+StatCollector.translateToLocal(flavourKey));
+			list.add(TextFormatting.GRAY.toString()+ I18n.format(flavourKey));
 		}
 		if(ItemNBTHelper.hasKey(stack, "energyStorage"))
-			list.add(StatCollector.translateToLocalFormatted("desc.ImmersiveEngineering.info.energyStored", ItemNBTHelper.getInt(stack, "energyStorage")));
+			list.add(I18n.format("desc.ImmersiveEngineering.info.energyStored", ItemNBTHelper.getInt(stack, "energyStorage")));
 		if(ItemNBTHelper.hasKey(stack, "tank"))
 		{
 			FluidStack fs = FluidStack.loadFluidStackFromNBT(ItemNBTHelper.getTagCompound(stack, "tank"));
@@ -83,8 +85,7 @@ public class ItemBlockIEBase extends ItemBlock
 		return ret;
 	}
 	@Override
-	public boolean onItemUse(ItemStack stack, EntityPlayer playerIn, World world, BlockPos pos, EnumFacing side,
-			float hitX, float hitY, float hitZ)
+	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
 		IBlockState iblockstate = world.getBlockState(pos);
 		Block block = iblockstate.getBlock();
@@ -95,30 +96,31 @@ public class ItemBlockIEBase extends ItemBlock
 			iblockstate = world.getBlockState(pos);
 			block = iblockstate.getBlock();
 		}
-		if (stack.stackSize>0&&playerIn.canPlayerEdit(pos, side, stack))
+		if (stack.stackSize>0&&player.canPlayerEdit(pos, side, stack))
 		{
 			if (!world.isRemote&&canBlockBePlaced(world, pos, side, stack))
 			{
 				int i = this.getMetadata(stack.getMetadata());
-				IBlockState iblockstate1 = this.block.onBlockPlaced(world, pos, side, hitX, hitY, hitZ, i, playerIn);
+				IBlockState iblockstate1 = this.block.onBlockPlaced(world, pos, side, hitX, hitY, hitZ, i, player);
 
-				if (placeBlockAt(stack, playerIn, world, pos, side, hitX, hitY, hitZ, iblockstate1))
+				if (placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, iblockstate1))
 				{
-					world.playSoundEffect((double)((float)pos.getX() + 0.5F), (double)((float)pos.getY() + 0.5F), (double)((float)pos.getZ() + 0.5F), this.block.stepSound.getPlaceSound(), (this.block.stepSound.getVolume() + 1.0F) / 2.0F, this.block.stepSound.getFrequency() * 0.8F);
-					if (!playerIn.capabilities.isCreativeMode)
+					SoundType soundtype = this.block.getSoundType();
+					world.playSound(player, pos, soundtype.getPlaceSound(), SoundCategory.BLOCKS, (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F);
+					if(!player.capabilities.isCreativeMode)
 						--stack.stackSize;
 				}
 			}
-			return true;
+			return EnumActionResult.SUCCESS;
 		}
-		return false;
+		return EnumActionResult.FAIL;
 	}
 	@Override
-	public boolean canPlaceBlockOnSide(World worldIn, BlockPos pos, EnumFacing side, EntityPlayer player,
-			ItemStack stack) {
+	public boolean canPlaceBlockOnSide(World worldIn, BlockPos pos, EnumFacing side, EntityPlayer player, ItemStack stack)
+	{
         Block block = worldIn.getBlockState(pos).getBlock();
 
-        if (block == Blocks.snow_layer && block.isReplaceable(worldIn, pos))
+        if (block == Blocks.SNOW_LAYER && block.isReplaceable(worldIn, pos))
         {
             side = EnumFacing.UP;
         }
@@ -133,7 +135,7 @@ public class ItemBlockIEBase extends ItemBlock
 	{
 		BlockIEBase blockIn = (BlockIEBase) this.block;
 		Block block = w.getBlockState(pos).getBlock();
-		AxisAlignedBB axisalignedbb = blockIn.getCollisionBoundingBox(w, pos, blockIn.getStateFromMeta(stack.getItemDamage()));
+		AxisAlignedBB axisalignedbb = blockIn.getCollisionBoundingBox( blockIn.getStateFromMeta(stack.getItemDamage()), w, pos);
 		if (axisalignedbb != null && !w.checkNoEntityCollision(axisalignedbb, null)) return false;
 		return block.isReplaceable(w, pos) && blockIn.canReplace(w, pos, side, stack);
 	}

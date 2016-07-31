@@ -4,6 +4,7 @@ import java.util.Map;
 
 import blusunrize.immersiveengineering.common.util.IEDamageSources.TeslaDamageSource;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 
 public interface ITeslaEquipment
@@ -16,5 +17,5 @@ public interface ITeslaEquipment
 	 * @param cache A way for different ITeslaEquipment items to communicate with each other. It is empty when starting to check the equipment and is discarded after checking is done
 	 * @param dmg The damage source that would be used. Set the amount to 0 to prevent any damage from being done
 	 */
-	public void onStrike(ItemStack s, int eqSlot, EntityLivingBase p, Map<String, Object> cache, TeslaDamageSource dmg);
+	void onStrike(ItemStack s, EntityEquipmentSlot eqSlot, EntityLivingBase p, Map<String, Object> cache, TeslaDamageSource dmg);
 }

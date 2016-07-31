@@ -15,7 +15,7 @@ public class EntityFXBlockParts extends EntityFXItemParts
 	@Override
 	public ResourceLocation getParticleTexture()
 	{
-		return TextureMap.locationBlocksTexture;
+		return TextureMap.LOCATION_BLOCKS_TEXTURE;
 	}
 	@Override
 	public String getParticleName()

@@ -38,18 +38,18 @@
 				"rotation": {"y": -90 }
 			}}
 		},
-		"*multiblockslave":
+		"_0multiblockslave":
 		{
 			"false":{},
 			"true":{
 				"model": "builtin/generated"
 			}
 		},
-		"+dynamicrender":
+		"_1dynamicrender":
 		{
 			"false":{},
 			"true":{
-				"model": "immersiveengineering:metalMultiblock/arcFurnace_electrodes.obj"}
+				"model": "immersiveengineering:metalMultiblock/arcFurnace_electrodes.obj.ie"}
 		},
 		"boolean0": //Mirror
 		{

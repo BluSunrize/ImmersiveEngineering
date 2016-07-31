@@ -14,8 +14,8 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraftforge.fml.relauncher.Side;
@@ -96,11 +96,11 @@ public class TileEntityWoodenPost extends TileEntityIEBase implements IHasDummyB
 			for(Enum meta : postMetaProperties)
 				if(state.getProperties().containsValue(meta))
 					return false;
-			state.getBlock().setBlockBoundsBasedOnState(worldObj, pos);
-			double minX = state.getBlock().getBlockBoundsMinX();
-			double maxX = state.getBlock().getBlockBoundsMaxX();
-			double minZ = state.getBlock().getBlockBoundsMinZ();
-			double maxZ = state.getBlock().getBlockBoundsMaxZ();
+			AxisAlignedBB boundingBox = state.getBoundingBox(worldObj, pos);
+			double minX = boundingBox.minX;
+			double maxX = boundingBox.maxX;
+			double minZ = boundingBox.minZ;
+			double maxZ = boundingBox.maxZ;
 			boolean connect = dir==EnumFacing.NORTH?maxZ==1: dir==EnumFacing.SOUTH?minZ==0: dir==EnumFacing.WEST?maxX==1: minX==0;
 			return connect && ((dir.getAxis()==Axis.Z && minX>0&&maxX<1)||(dir.getAxis()==Axis.X && minZ>0&&maxZ<1));
 		}
@@ -114,8 +114,8 @@ public class TileEntityWoodenPost extends TileEntityIEBase implements IHasDummyB
 			if(worldObj.isAirBlock(pos))
 				return false;
 			IBlockState state = worldObj.getBlockState(pos);
-			state.getBlock().setBlockBoundsBasedOnState(worldObj, pos);
-			return dir==EnumFacing.UP?state.getBlock().getBlockBoundsMinY()==0: dir==EnumFacing.DOWN?state.getBlock().getBlockBoundsMaxY()==1: false;
+			AxisAlignedBB boundingBox = state.getBoundingBox(worldObj, pos);
+			return dir==EnumFacing.UP?boundingBox.minY==0: dir == EnumFacing.DOWN && boundingBox.maxY == 1;
 		}
 		return false;
 	}
@@ -142,16 +142,6 @@ public class TileEntityWoodenPost extends TileEntityIEBase implements IHasDummyB
 			return new float[]{.3125f,down,.3125f, 1,up,.6875f};
 		if(dummy-3==5)
 			return new float[]{0,down,.3125f, .6875f,up,.6875f};
-		return null;
-	}
-	@Override
-	public float[] getSpecialCollisionBounds()
-	{
-		return null;
-	}
-	@Override
-	public float[] getSpecialSelectionBounds()
-	{
 		return null;
 	}
 
@@ -210,9 +200,14 @@ public class TileEntityWoodenPost extends TileEntityIEBase implements IHasDummyB
 
 			worldObj.setBlockState(offsetPos, worldObj.getBlockState(getPos()));
 			((TileEntityWoodenPost)worldObj.getTileEntity(offsetPos)).dummy = (byte)(3+side.ordinal());
-			worldObj.markBlockForUpdate(getPos().add(0,-3,0));
+			this.markBlockForUpdate(getPos().add(0,-3,0), null);
 		}
-
+		else if(this.dummy>3)
+		{
+			EnumFacing f = EnumFacing.getFront(dummy-3).getOpposite();
+			this.worldObj.setBlockToAir(getPos());
+			this.markBlockForUpdate(getPos().offset(f).add(0,-3,0), null);
+		}
 		return false;
 	}
 }

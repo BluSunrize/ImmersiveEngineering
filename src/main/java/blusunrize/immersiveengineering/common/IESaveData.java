@@ -86,7 +86,7 @@ public class IESaveData extends WorldSavedData
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbt)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbt)
 	{
 		Integer[] relDim = ImmersiveNetHandler.INSTANCE.getRelevantDimensions().toArray(new Integer[0]);
 		int[] savedDimensions = new int[relDim.length];
@@ -96,7 +96,7 @@ public class IESaveData extends WorldSavedData
 		nbt.setIntArray("savedDimensions", savedDimensions);
 		for(int dim: savedDimensions)
 		{
-			World world = MinecraftServer.getServer().worldServerForDimension(dim);
+			World world = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(dim);
 			if(world!=null)
 			{
 				NBTTagList connectionList = new NBTTagList();
@@ -137,6 +137,7 @@ public class IESaveData extends WorldSavedData
 			receivedShaderList.appendTag(tag);
 		}
 		nbt.setTag("receivedShaderList", receivedShaderList);
+		return nbt;
 	}
 
 

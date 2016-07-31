@@ -2,29 +2,17 @@
 	"forge_marker": 1,
 	"defaults":
 	{
-		"transform": "forge:default-block",
+		"model": "stairs",
+		"uvlock": true,
 		"textures": {
-			"bottom": "immersiveengineering:blocks/stoneDecoration_concrete_tile",
-			"top": "immersiveengineering:blocks/stoneDecoration_concrete_tile",
-			"side": "immersiveengineering:blocks/stoneDecoration_concrete_tile"
-		},
-		"model": "cube_all"
+			"all": "immersiveengineering:blocks/stoneDecoration_concrete_tile",
+			"bottom": "#all",
+			"top": "#all",
+			"side": "#all"
+		}
 	},
 	"variants": {
-		"inventory": [{ "model": "minecraft:stairs",
-		"transform": {
-			"thirdperson": {
-				"rotation": [ {"x": 10}, {"y": -45}, {"z": 180} ],
-				"translation": [ 0, 0.09375, -0.171875 ],
-				"scale": [ 0.375, 0.375, 0.375 ]
-			},
-			"gui": { "rotation": [{ "y": 180 }] }
-		},
-		"textures": {
-			"bottom": "immersiveengineering:blocks/stoneDecoration_concrete_tile",
-			"top": "immersiveengineering:blocks/stoneDecoration_concrete_tile",
-			"side": "immersiveengineering:blocks/stoneDecoration_concrete_tile"
-		} }],
+		"inventory": [{}],
 		"facing=east,half=bottom,shape=straight":  { "model": "minecraft:stairs" },
 		"facing=west,half=bottom,shape=straight":  { "model": "minecraft:stairs", "y": 180, "uvlock": true },
 		"facing=south,half=bottom,shape=straight": { "model": "minecraft:stairs", "y": 90, "uvlock": true },

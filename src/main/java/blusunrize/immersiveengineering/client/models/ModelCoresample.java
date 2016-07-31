@@ -1,13 +1,14 @@
 package blusunrize.immersiveengineering.client.models;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
+import javax.annotation.Nullable;
 import javax.vecmath.Matrix4f;
 
+import net.minecraft.client.renderer.block.model.*;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.world.World;
+import net.minecraftforge.common.model.TRSRTransformation;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
@@ -22,26 +23,20 @@ import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.model.IFlexibleBakedModel;
 import net.minecraftforge.client.model.IPerspectiveAwareModel;
-import net.minecraftforge.client.model.ISmartItemModel;
-import net.minecraftforge.client.model.TRSRTransformation;
 import net.minecraftforge.client.model.pipeline.LightUtil;
 import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
 
 @SuppressWarnings("deprecation")
-public class ModelCoresample implements ISmartItemModel, IPerspectiveAwareModel
+public class ModelCoresample implements IBakedModel, IPerspectiveAwareModel
 {
 	Set<BakedQuad> bakedQuads;
 	static List<BakedQuad> emptyQuads = Lists.newArrayList();
@@ -55,14 +50,15 @@ public class ModelCoresample implements ISmartItemModel, IPerspectiveAwareModel
 	{
 		this(null);
 	}
-	@Override
-	public List<BakedQuad> getFaceQuads(EnumFacing p_177551_1_)
-	{
-		return emptyQuads;
-	}
+	static HashMap<String, ModelCoresample> modelCache = new HashMap();
+//	@Override
+//	public List<BakedQuad> getFaceQuads(EnumFacing p_177551_1_)
+//	{
+//		return emptyQuads;
+//	}
 
 	@Override
-	public List<BakedQuad> getGeneralQuads()
+	public List<BakedQuad> getQuads(@Nullable IBlockState blockState, @Nullable EnumFacing side, long rand)
 	{
 		if(bakedQuads==null)
 		{
@@ -82,7 +78,7 @@ public class ModelCoresample implements ISmartItemModel, IPerspectiveAwareModel
 						{
 							int weight = Math.max(2, Math.round(16*mineral.recalculatedChances[i]));
 							Block b = Block.getBlockFromItem(mineral.oreOutput[i].getItem());
-							IBlockState state = b!=null?b.getStateFromMeta(mineral.oreOutput[i].getMetadata()): Blocks.stone.getDefaultState();
+							IBlockState state = b!=null?b.getStateFromMeta(mineral.oreOutput[i].getMetadata()): Blocks.STONE.getDefaultState();
 							IBakedModel model = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getModelForState(state);
 							if(model!=null && model.getParticleTexture()!=null)
 								textureOre.put(model.getParticleTexture(), weight);
@@ -158,7 +154,7 @@ public class ModelCoresample implements ISmartItemModel, IPerspectiveAwareModel
 	{
 		UnpackedBakedQuad.Builder builder = new UnpackedBakedQuad.Builder(DefaultVertexFormats.ITEM);
 		builder.setQuadOrientation(EnumFacing.getFacingFromVector(normal.x, normal.y, normal.z));
-		builder.setQuadColored();
+//		builder.setQuadColored();
 		for(int i=0; i<vertices.length; i++)
 		{
 			builder.put(0, vertices[i].x, vertices[i].y, vertices[i].z, 1);//Pos
@@ -198,40 +194,55 @@ public class ModelCoresample implements ISmartItemModel, IPerspectiveAwareModel
 		return ItemCameraTransforms.DEFAULT;
 	}
 
-	static HashMap<String, IBakedModel> modelCache = new HashMap();
 	@Override
-	public IBakedModel handleItemState(ItemStack stack)
+	public ItemOverrideList getOverrides()
 	{
-		if(ItemNBTHelper.hasKey(stack, "mineral"))
+		return overrideList;
+	}
+
+
+	ItemOverrideList overrideList = new ItemOverrideList(new ArrayList())
+	{
+		@Override
+		public IBakedModel handleItemState(IBakedModel originalModel, ItemStack stack, World world, EntityLivingBase entity)
 		{
-			String name = ItemNBTHelper.getString(stack, "mineral");
-			if(name!=null && !name.isEmpty())
+			if(ItemNBTHelper.hasKey(stack, "mineral"))
 			{
-				if(!modelCache.containsKey(name))
-					for(MineralMix mix : ExcavatorHandler.mineralList.keySet())
-						if(name.equals(mix.name))
-							modelCache.put(name, new ModelCoresample(mix));
-				return modelCache.get(name);
+				String name = ItemNBTHelper.getString(stack, "mineral");
+				if(name!=null && !name.isEmpty())
+				{
+					if(!modelCache.containsKey(name))
+						for(MineralMix mix : ExcavatorHandler.mineralList.keySet())
+							if(name.equals(mix.name))
+								modelCache.put(name, new ModelCoresample(mix));
+					modelCache.get(name);
+				}
 			}
+			return originalModel;
 		}
-		return this;
-	}
-	@Override
-	public VertexFormat getFormat()
-	{
-		return DefaultVertexFormats.ITEM;
-	}
+	};
+
+//	@Override
+//	public IBakedModel handleItemState(ItemStack stack)
+//	{
+//		return this;
+//	}
+//	@Override
+//	public VertexFormat getFormat()
+//	{
+//		return DefaultVertexFormats.ITEM;
+//	}
 
 	static HashMap<TransformType, Matrix4> transformationMap = new HashMap<TransformType, Matrix4>();
 	static{
-		transformationMap.put(TransformType.FIRST_PERSON, new Matrix4().translate(0, .28, 0).rotate(Math.toRadians(180), 1,0,0).rotate(Math.toRadians(-90), 0,1,0));
-		transformationMap.put(TransformType.THIRD_PERSON, new Matrix4().translate(0, .0625, -.125).scale(.625, .625, .625).rotate(Math.toRadians(30), 1,0,0).rotate(Math.toRadians(130), 0,1,0));
+//		transformationMap.put(TransformType.FIRST_PERSON, new Matrix4().translate(0, .28, 0).rotate(Math.toRadians(180), 1,0,0).rotate(Math.toRadians(-90), 0,1,0));
+//		transformationMap.put(TransformType.THIRD_PERSON, new Matrix4().translate(0, .0625, -.125).scale(.625, .625, .625).rotate(Math.toRadians(30), 1,0,0).rotate(Math.toRadians(130), 0,1,0));
 		transformationMap.put(TransformType.GUI, new Matrix4().scale(1.25,1.25,1.25).rotate(Math.toRadians(180), 1,0,0).rotate(Math.toRadians(20), 0,1,0).rotate(Math.toRadians(-30), 0,0,1));
 		transformationMap.put(TransformType.FIXED, new Matrix4().scale(1.5,1.5,1.5).rotate(Math.toRadians(180), 1,0,0));
 		transformationMap.put(TransformType.GROUND, new Matrix4().scale(1.5,1.5,1.5).rotate(Math.toRadians(180), 1,0,0));
 	}
 	@Override
-	public Pair<? extends IFlexibleBakedModel, Matrix4f> handlePerspective(TransformType cameraTransformType)
+	public Pair<? extends IBakedModel, Matrix4f> handlePerspective(TransformType cameraTransformType)
 	{
 		if(transformationMap==null)
 			return  Pair.of(this, TRSRTransformation.identity().getMatrix());

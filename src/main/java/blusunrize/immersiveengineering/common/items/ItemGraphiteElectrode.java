@@ -2,12 +2,12 @@ package blusunrize.immersiveengineering.common.items;
 
 import java.util.List;
 
+import net.minecraft.client.resources.I18n;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.Config;
@@ -30,7 +30,7 @@ public class ItemGraphiteElectrode extends ItemIEBase
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean adv)
 	{
 		float integrity = 100-(float)getDurabilityForDisplay(stack)*100f;
-		list.add( String.format("%s %.2f %%", StatCollector.translateToLocal(Lib.DESC_INFO+"electrodeIntegrity"),integrity) );
+		list.add( String.format("%s %.2f %%", I18n.format(Lib.DESC_INFO+"electrodeIntegrity"),integrity) );
 		if(super.getDamage(stack)!=0)
 			list.add("This item is deprecated. Hold it in your inventory to update it.");
 	}

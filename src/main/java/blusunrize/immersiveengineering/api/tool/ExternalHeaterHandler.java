@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFurnace;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
@@ -22,7 +23,7 @@ public class ExternalHeaterHandler
 	 * 
 	 * An interface to be implemented by TileEntities that want to allow direct interaction with the external heater
 	 */
-	public static interface IExternalHeatable
+	public interface IExternalHeatable
 	{
 		/** 
 		 * Called each tick<br>
@@ -31,7 +32,7 @@ public class ExternalHeaterHandler
 		 * @param redstone whether a redstone signal is applied to the furnace heater. To keep the target warm, but not do speed increases
 		 * @return the amount of RF consumed that tick. Should be lower or equal to "energyAvailable", obviously
 		 */
-		public int doHeatTick(int energyAvailable, boolean redstone);
+		int doHeatTick(int energyAvailable, boolean redstone);
 	}
 
 	public static HashMap<Class<? extends TileEntity>, HeatableAdapter> adapterMap = new HashMap<Class<? extends TileEntity>, HeatableAdapter>();
@@ -40,13 +41,13 @@ public class ExternalHeaterHandler
 	 * 
 	 * An adapter to appyl to TileEntities that can't implement the IExternalHeatable interface
 	 */
-	public static abstract class HeatableAdapter<E extends TileEntity>
+	public abstract static class HeatableAdapter<E extends TileEntity>
 	{
 		/** 
 		 * Called each tick<br>
 		 * Handle fueling as well as possible smelting speed increases here
 		 * @param energyAvailable the amount of RF the furnace heater has stored and can supply
-		 * @param redstone whether a redstone signal is applied to the furnace heater. To keep the target warm, but not do speed increases
+		 * @param canHeat whether a redstone signal is applied to the furnace heater. To keep the target warm, but not do speed increases
 		 * @return the amount of RF consumed that tick. Should be lower or equal to "energyAvailable", obviously
 		 */
 		public abstract int doHeatTick(E tileEntity, int energyAvailable, boolean canHeat);
@@ -64,7 +65,7 @@ public class ExternalHeaterHandler
 	 */
 	public static HeatableAdapter getHeatableAdapter(Class<? extends TileEntity> c)
 	{
-		HeatableAdapter adapter = (HeatableAdapter)adapterMap.get(c);
+		HeatableAdapter adapter = adapterMap.get(c);
 		if(adapter == null && c!=TileEntity.class && c.getSuperclass()!=TileEntity.class)
 		{
 			adapter = getHeatableAdapter((Class<? extends TileEntity>)c.getSuperclass());
@@ -131,7 +132,7 @@ public class ExternalHeaterHandler
 		public void updateFurnace(TileEntity tileEntity, boolean active)
 		{
 			Block containing = tileEntity.getBlockType();
-			if(containing==Blocks.furnace)
+			if(containing==Blocks.FURNACE)
 				BlockFurnace.setState(active, tileEntity.getWorld(), tileEntity.getPos());
 //			else
 			{
@@ -141,7 +142,8 @@ public class ExternalHeaterHandler
 				nbt.setBoolean("active", active);
 				nbt.setBoolean("Active", active);
 				tileEntity.readFromNBT(nbt);
-				tileEntity.getWorld().markBlockForUpdate(tileEntity.getPos());
+				IBlockState state = tileEntity.getWorld().getBlockState(tileEntity.getPos());
+				tileEntity.getWorld().notifyBlockUpdate(tileEntity.getPos(), state,state, 3);
 			}
 		}
 	}

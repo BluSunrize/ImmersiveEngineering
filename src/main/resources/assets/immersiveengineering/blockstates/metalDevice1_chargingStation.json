@@ -49,7 +49,7 @@
 				"rotation": {"y": -90 }
 			}}
 		},
-		"*multiblockslave":
+		"_0multiblockslave":
 		{
 			"false":{},
 			"true":{}

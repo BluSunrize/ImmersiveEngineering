@@ -7,17 +7,18 @@ import blusunrize.immersiveengineering.common.EventHandler;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ILightValue;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISpawnInterdiction;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFloodlight;
+import net.minecraft.block.material.EnumPushReaction;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.ITickable;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
@@ -25,7 +26,7 @@ public class BlockFakeLight extends BlockIETileProvider
 {
 	public BlockFakeLight()
 	{
-		super("fakeLight", Material.air, PropertyEnum.create("type", BlockTypes_FakeLight.class), ItemBlockIEBase.class);
+		super("fakeLight", Material.AIR, PropertyEnum.create("type", BlockTypes_FakeLight.class), ItemBlockIEBase.class);
 	}
 
 	@Override
@@ -34,23 +35,18 @@ public class BlockFakeLight extends BlockIETileProvider
 		return false;
 	}
 	@Override
-	public int getRenderType()
-	{
-		return -1;
-	}
-	@Override
-	public boolean isAir(IBlockAccess world, BlockPos pos)
+	public boolean isAir(IBlockState state, IBlockAccess world, BlockPos pos)
 	{
 		return true;
 	}
 
 	@Override
-	public AxisAlignedBB getCollisionBoundingBox(World world, BlockPos pos, IBlockState state)
+	public AxisAlignedBB getCollisionBoundingBox(IBlockState state, World world, BlockPos pos)
 	{
 		return null;
 	}
 	@Override
-	public AxisAlignedBB getSelectedBoundingBox(World world, BlockPos pos)
+	public AxisAlignedBB getSelectedBoundingBox(IBlockState state, World world, BlockPos pos)
 	{
 		return null;
 	}
@@ -72,17 +68,17 @@ public class BlockFakeLight extends BlockIETileProvider
 		return false;
 	}
 	@Override
-	public MovingObjectPosition collisionRayTrace(World par1World, BlockPos pos, Vec3 par5Vec3, Vec3 par6Vec3)
+	public RayTraceResult collisionRayTrace(IBlockState state, World par1World, BlockPos pos, Vec3d par5Vec3, Vec3d par6Vec3)
 	{
 		return null;
 	}
 	@Override
-	public int getMobilityFlag()
+	public EnumPushReaction getMobilityFlag(IBlockState state)
 	{
-		return 1;
+		return EnumPushReaction.DESTROY;
 	}
 	@Override
-	public boolean canBeReplacedByLeaves(IBlockAccess world, BlockPos pos)
+	public boolean canBeReplacedByLeaves(IBlockState state, IBlockAccess world, BlockPos pos)
 	{
 		return true;
 	}

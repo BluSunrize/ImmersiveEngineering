@@ -8,7 +8,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
+
+import java.util.List;
 
 public class TileEntityConveyorVertical extends TileEntityConveyorBelt
 {
@@ -116,7 +119,7 @@ public class TileEntityConveyorVertical extends TileEntityConveyorBelt
 		return new float[]{minX,0,minZ,maxX,1,maxZ};
 	}
 	@Override
-	public float[] getSpecialCollisionBounds()
+	public List<AxisAlignedBB> getAdvancedColisionBounds()
 	{
 		return null;
 	}

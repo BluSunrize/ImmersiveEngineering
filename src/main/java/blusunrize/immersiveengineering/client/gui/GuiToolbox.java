@@ -1,25 +1,26 @@
 package blusunrize.immersiveengineering.client.gui;
 
-import java.util.ArrayList;
-
-import org.lwjgl.opengl.GL11;
-
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.gui.ContainerToolbox;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.inventory.Slot;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.StatCollector;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import org.lwjgl.opengl.GL11;
+
+import java.util.ArrayList;
 
 public class GuiToolbox extends GuiContainer
 {
-	public GuiToolbox(InventoryPlayer inventoryPlayer, World world)
+	public GuiToolbox(InventoryPlayer inventoryPlayer, World world, EntityEquipmentSlot slot, ItemStack toolbox)
 	{
-		super(new ContainerToolbox(inventoryPlayer, world));
+		super(new ContainerToolbox(inventoryPlayer, world, slot, toolbox));
 		this.ySize=238;
 	}
 
@@ -31,7 +32,7 @@ public class GuiToolbox extends GuiContainer
 		int slot = -1;
 		for(int i=0; i<((ContainerToolbox)this.inventorySlots).internalSlots; i++)
 		{
-			Slot s = (Slot)this.inventorySlots.inventorySlots.get(i);
+			Slot s = this.inventorySlots.inventorySlots.get(i);
 			if(!s.getHasStack() && mx>guiLeft+s.xDisplayPosition&&mx<guiLeft+s.xDisplayPosition+16 && my>guiTop+s.yDisplayPosition&&my<guiTop+s.yDisplayPosition+16)
 				slot = i;
 		}
@@ -39,7 +40,7 @@ public class GuiToolbox extends GuiContainer
 		if(slot>=0)
 			ss = slot<3?"food": slot<10?"tool": slot<16?"wire": "any";
 		if(ss!=null)
-			tooltip.add(EnumChatFormatting.GRAY+StatCollector.translateToLocal(Lib.DESC_INFO+"toolbox."+ss));
+			tooltip.add(TextFormatting.GRAY+ I18n.format(Lib.DESC_INFO+"toolbox."+ss));
 		if(!tooltip.isEmpty())
 		{
 			ClientUtils.drawHoveringText(tooltip, mx, my, fontRendererObj, guiLeft+xSize,-1);

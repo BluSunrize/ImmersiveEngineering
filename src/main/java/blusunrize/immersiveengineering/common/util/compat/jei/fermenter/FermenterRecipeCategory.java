@@ -9,6 +9,8 @@ import mezz.jei.api.recipe.IRecipeWrapper;
 import mezz.jei.util.Log;
 import net.minecraft.util.ResourceLocation;
 
+import javax.annotation.Nonnull;
+
 public class FermenterRecipeCategory extends IERecipeCategory
 {
 	public static ResourceLocation background = new ResourceLocation("immersiveengineering:textures/gui/fermenter.png");
@@ -16,7 +18,7 @@ public class FermenterRecipeCategory extends IERecipeCategory
 	
 	public FermenterRecipeCategory(IGuiHelper helper)
 	{
-		super("fermenter","tile.ImmersiveEngineering.metalMultiblock.fermenter.name", helper.createDrawable(background, 6,12, 164,59), FermenterRecipeWrapper.class);
+		super("fermenter","tile.immersiveengineering.metalMultiblock.fermenter.name", helper.createDrawable(background, 6,12, 164,59), FermenterRecipeWrapper.class);
 		tankOverlay = helper.createDrawable(background, 177,31, 16,47, -2,2,-2,2);
 	}
 	

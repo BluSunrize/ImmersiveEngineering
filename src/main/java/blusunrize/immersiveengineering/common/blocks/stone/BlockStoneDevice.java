@@ -13,7 +13,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
@@ -21,7 +22,7 @@ public class BlockStoneDevice extends BlockIEMultiblock<BlockTypes_StoneDevices>
 {
 	public BlockStoneDevice()
 	{
-		super("stoneDevice",Material.rock, PropertyEnum.create("type", BlockTypes_StoneDevices.class), ItemBlockIEBase.class, IEProperties.BOOLEANS[0]);
+		super("stoneDevice",Material.ROCK, PropertyEnum.create("type", BlockTypes_StoneDevices.class), ItemBlockIEBase.class, IEProperties.BOOLEANS[0]);
 		setHardness(2.0F);
 		setResistance(20f);
 		lightOpacity = 0;
@@ -34,25 +35,19 @@ public class BlockStoneDevice extends BlockIEMultiblock<BlockTypes_StoneDevices>
 	}
 
 	@Override
-	public boolean isFullBlock()
+	public boolean isFullBlock(IBlockState state)
 	{
 		return false;
 	}
 	@Override
-	public boolean isFullCube()
+	public boolean isFullCube(IBlockState state)
 	{
 		return false;
 	}
 	@Override
-	public boolean isOpaqueCube()
+	public boolean isOpaqueCube(IBlockState state)
 	{
 		return false;
-	}
-
-	@Override
-	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumFacing side, float hitX, float hitY, float hitZ)
-	{
-		return super.onBlockActivated(world, pos, state, player, side, hitX, hitY, hitZ);
 	}
 
 	@Override

@@ -4,7 +4,7 @@ import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.Vec3d;
 
 public class TileEntityConnectorHV extends TileEntityConnectorMV
 {
@@ -26,17 +26,17 @@ public class TileEntityConnectorHV extends TileEntityConnectorMV
 //	}
 
 	@Override
-	public Vec3 getRaytraceOffset(IImmersiveConnectable link)
+	public Vec3d getRaytraceOffset(IImmersiveConnectable link)
 	{
 		EnumFacing side = facing.getOpposite();
-		return new Vec3(.5+side.getFrontOffsetX()*.3125, .5+side.getFrontOffsetY()*.3125, .5+side.getFrontOffsetZ()*.3125);
+		return new Vec3d(.5+side.getFrontOffsetX()*.3125, .5+side.getFrontOffsetY()*.3125, .5+side.getFrontOffsetZ()*.3125);
 	}
 	@Override
-	public Vec3 getConnectionOffset(Connection con)
+	public Vec3d getConnectionOffset(Connection con)
 	{
 		EnumFacing side = facing.getOpposite();
 		double conRadius = con.cableType.getRenderDiameter()/2;
-		return new Vec3(.5+side.getFrontOffsetX()*(.25-conRadius), .5+side.getFrontOffsetY()*(.25-conRadius), .5+side.getFrontOffsetZ()*(.25-conRadius));
+		return new Vec3d(.5+side.getFrontOffsetX()*(.25-conRadius), .5+side.getFrontOffsetY()*(.25-conRadius), .5+side.getFrontOffsetZ()*(.25-conRadius));
 	}
 
 	@Override

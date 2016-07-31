@@ -18,11 +18,13 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IUsesBool
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.Vec3;
 import net.minecraft.util.EnumFacing.Axis;
 
 public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable implements IBlockBounds, IDirectionalTile, IActiveState, IHammerInteraction, IPlayerInteraction
@@ -88,7 +90,7 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 			wires--;
 		if(wires<=0)
 			limitType=null;
-		worldObj.markBlockForUpdate(getPos());
+		this.markContainingBlockForUpdate(null);
 	}
 
 	@Override
@@ -113,25 +115,25 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 	}
 
 	@Override
-	public Vec3 getRaytraceOffset(IImmersiveConnectable link)
+	public Vec3d getRaytraceOffset(IImmersiveConnectable link)
 	{
-		return new Vec3(.5,.5,.5);
+		return new Vec3d(.5,.5,.5);
 	}
 	@Override
-	public Vec3 getConnectionOffset(Connection con)
+	public Vec3d getConnectionOffset(Connection con)
 	{
 		BlockPos here = getPos();
 		if(facing.getAxis()==Axis.Y)
 		{
 			int xDif = (con==null||con.start==null||con.end==null)?0: (con.start.equals(here)&&con.end!=null)? con.end.getX()-here.getX(): (con.end.equals(here)&& con.start!=null)?con.start.getX()-here.getX(): 0;
-			return new Vec3(xDif<0?.25:.75, facing==EnumFacing.UP?.875:.125, .5);
+			return new Vec3d(xDif<0?.25:.75, facing==EnumFacing.UP?.875:.125, .5);
 		}
 		else
 		{
 			int xDif = (con==null||con.start==null||con.end==null)?0: (con.start.equals(here)&&con.end!=null)? con.end.getX()-here.getX(): (con.end.equals(here)&& con.start!=null)?con.start.getX()-here.getX(): 0;
 			int zDif = (con==null||con.start==null||con.end==null)?0: (con.start.equals(here)&&con.end!=null)? con.end.getZ()-here.getZ(): (con.end.equals(here)&& con.start!=null)?con.start.getZ()-here.getZ(): 0;
 
-			return new Vec3(facing==EnumFacing.WEST?.125:facing==EnumFacing.EAST?.875:xDif<0?.25:.75, .5, facing==EnumFacing.NORTH?.125:facing==EnumFacing.SOUTH?.875:zDif<0?.25:.75);
+			return new Vec3d(facing==EnumFacing.WEST?.125:facing==EnumFacing.EAST?.875:xDif<0?.25:.75, .5, facing==EnumFacing.NORTH?.125:facing==EnumFacing.SOUTH?.875:zDif<0?.25:.75);
 		}
 	}
 
@@ -139,12 +141,12 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 	public boolean hammerUseSide(EnumFacing side, EntityPlayer player, float hitX, float hitY, float hitZ)
 	{
 		inverted = !inverted;
-		ChatUtils.sendServerNoSpamMessages(player, new ChatComponentTranslation(Lib.CHAT_INFO+"rsSignal."+(inverted?"invertedOn":"invertedOff")));
+		ChatUtils.sendServerNoSpamMessages(player, new TextComponentTranslation(Lib.CHAT_INFO+"rsSignal."+(inverted?"invertedOn":"invertedOff")));
 		notifyNeighbours();
 		return true;
 	}
 	@Override
-	public boolean interact(EnumFacing side, EntityPlayer player, float hitX, float hitY, float hitZ)
+	public boolean interact(EnumFacing side, EntityPlayer player, EnumHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
 		active = !active;
 		ImmersiveNetHandler.INSTANCE.resetCachedIndirectConnections();
@@ -166,7 +168,7 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 		if(super.receiveClientEvent(id, arg))
 			return true;
 		this.active = id==1;
-		this.worldObj.markBlockForUpdate(getPos());
+		this.markContainingBlockForUpdate(null);
 		return true;
 	}
 	@Override
@@ -177,7 +179,7 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 	@Override
 	public boolean getIsActive()
 	{
-		return inverted?!active:active;
+		return inverted != active;
 	}
 	@Override
 	public EnumFacing getFacing()
@@ -214,15 +216,5 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 			return new float[]{.25f,.5f,.1875f, .75f,1,.8125f};
 
 		return new float[]{facing==EnumFacing.WEST?0:facing==EnumFacing.EAST?.5f:.25f,.1875f,facing==EnumFacing.NORTH?0:facing==EnumFacing.SOUTH?.5f:.25f, facing==EnumFacing.WEST?.5f:facing==EnumFacing.EAST?1:.75f,.8125f,facing==EnumFacing.NORTH?.5f:facing==EnumFacing.SOUTH?1:.75f};
-	}
-	@Override
-	public float[] getSpecialCollisionBounds()
-	{
-		return null;
-	}
-	@Override
-	public float[] getSpecialSelectionBounds()
-	{
-		return null;
 	}
 }

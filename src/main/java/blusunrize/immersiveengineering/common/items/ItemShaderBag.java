@@ -12,9 +12,13 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.omg.PortableInterceptor.SUCCESSFUL;
 
 public class ItemShaderBag extends ItemIEBase
 {
@@ -23,12 +27,22 @@ public class ItemShaderBag extends ItemIEBase
 		super("shaderBag", 64);
 	}
 
+//	@Override
+//	@SideOnly(Side.CLIENT)
+//	public int getColorFromItemStack(ItemStack stack, int pass)
+//	{
+//		EnumRarity rarity = this.getRarity(stack);
+//		return ClientUtils.getFormattingColour(rarity.rarityColor);
+//	}
 	@Override
-	@SideOnly(Side.CLIENT)
-	public int getColorFromItemStack(ItemStack stack, int pass)
+	public boolean hasCustomItemColours()
+{
+	return true;
+}
+	@Override
+	public int getColourForIEItem(ItemStack stack, int pass)
 	{
-		EnumRarity rarity = this.getRarity(stack);
-		return ClientUtils.getFormattingColour(rarity.rarityColor);
+		return ClientUtils.getFormattingColour(this.getRarity(stack).rarityColor);
 	}
 
 	@Override
@@ -61,24 +75,24 @@ public class ItemShaderBag extends ItemIEBase
 	}
 
 	@Override
-	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
+	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand)
 	{
 		if(!world.isRemote)
 			if(ShaderRegistry.totalWeight.containsKey(stack.getRarity()))
 			{
 				String shader = ShaderRegistry.getRandomShader(player.getName(), player.getRNG(), stack.getRarity(), true);
 				if(shader==null || shader.isEmpty())
-					return stack;
+					return new ActionResult(EnumActionResult.FAIL, stack);
 				ItemStack shaderItem = new ItemStack(IEContent.itemShader);
 				ItemNBTHelper.setString(shaderItem, "shader_name", shader);
 				if(ShaderRegistry.sortedRarityMap.indexOf(ShaderRegistry.shaderRegistry.get(shader).getRarity())<=ShaderRegistry.sortedRarityMap.indexOf(EnumRarity.EPIC) && ShaderRegistry.sortedRarityMap.indexOf(stack.getRarity())>=ShaderRegistry.sortedRarityMap.indexOf(EnumRarity.COMMON))
-					player.triggerAchievement(IEAchievements.secret_luckOfTheDraw);
+					player.addStat(IEAchievements.secret_luckOfTheDraw);
 				stack.stackSize--;
 				if(stack.stackSize<=0)
-					return shaderItem;
+					return new ActionResult(EnumActionResult.SUCCESS, shaderItem);
 				if(!player.inventory.addItemStackToInventory(shaderItem))
 					player.dropItem(shaderItem, false, true);
 			}
-		return stack;
+		return new ActionResult(EnumActionResult.PASS, stack);
 	}
 }

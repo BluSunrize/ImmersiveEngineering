@@ -12,17 +12,22 @@ import blusunrize.immersiveengineering.common.entities.EntitySkylineHook;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.SkylineHelper;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class ItemSkyhook extends ItemUpgradeableTool implements ITool
@@ -35,7 +40,7 @@ public class ItemSkyhook extends ItemUpgradeableTool implements ITool
 	@Override
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean adv)
 	{
-		list.add(StatCollector.translateToLocal(Lib.DESC_FLAVOUR+"skyhook"));
+		list.add(I18n.format(Lib.DESC_FLAVOUR+"skyhook"));
 	}
 
 	@Override
@@ -48,18 +53,18 @@ public class ItemSkyhook extends ItemUpgradeableTool implements ITool
 		}
 	}
 	@Override
-	public Multimap getAttributeModifiers(ItemStack stack)
+	public Multimap getAttributeModifiers(EntityEquipmentSlot slot, ItemStack stack)
 	{
 		float dmg = 5+ItemNBTHelper.getFloat(stack, "fallDamageBoost");
-		Multimap multimap = super.getAttributeModifiers(stack);
-		multimap.put(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName(), new AttributeModifier(itemModifierUUID, "Weapon modifier", dmg, 0));
+		Multimap multimap = super.getAttributeModifiers(slot, stack);
+		multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getAttributeUnlocalizedName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", dmg, 0));
 		return multimap;
 	}
 
 	public static HashMap<String, EntitySkylineHook> existingHooks = new HashMap<String, EntitySkylineHook>();
 
 	@Override
-	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
+	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand)
 	{
 		TileEntity connector = null;
 		double lastDist = 0;
@@ -88,9 +93,10 @@ public class ItemSkyhook extends ItemUpgradeableTool implements ITool
 		if(line!=null&&connector!=null)
 		{
 			SkylineHelper.spawnHook(player, connector, line);
-			player.setItemInUse(stack, this.getMaxItemUseDuration(stack));
+			player.setActiveHand(hand);
+			return new ActionResult(EnumActionResult.SUCCESS, stack);
 		}
-		return stack;
+		return new ActionResult(EnumActionResult.PASS,stack);
 	}
 
 	public float getSkylineSpeed(ItemStack stack)
@@ -105,7 +111,7 @@ public class ItemSkyhook extends ItemUpgradeableTool implements ITool
 	}
 
 	@Override
-	public void onPlayerStoppedUsing(ItemStack stack, World world, EntityPlayer player, int ticks)
+	public void onPlayerStoppedUsing(ItemStack stack, World world, EntityLivingBase player, int ticks)
 	{
 		if(existingHooks.containsKey(player.getName()))
 		{

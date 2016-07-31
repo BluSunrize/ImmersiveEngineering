@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
+import net.minecraft.util.math.BlockPos;
 import org.lwjgl.opengl.GL11;
 
 import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
@@ -20,7 +21,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -44,7 +44,7 @@ public class MultiblockMetalPress implements IMultiblock
 				else if(h==1)
 				{
 					if(l==1)
-						structure[h][l][0] = new ItemStack(Blocks.piston,1,0);
+						structure[h][l][0] = new ItemStack(Blocks.PISTON,1,0);
 					else
 						structure[h][l][0] = new ItemStack(IEContent.blockConveyor,1, BlockTypes_Conveyor.CONVEYOR.getMeta());
 				}
@@ -103,7 +103,7 @@ public class MultiblockMetalPress implements IMultiblock
 	@Override
 	public boolean isBlockTrigger(IBlockState state)
 	{
-		return state.getBlock()==Blocks.piston && (state.getBlock().getMetaFromState(state)==0);
+		return state.getBlock()==Blocks.PISTON && (state.getBlock().getMetaFromState(state)==0);
 	}
 
 	@Override
@@ -140,7 +140,7 @@ public class MultiblockMetalPress implements IMultiblock
 				{
 					if(l==0)
 					{
-						if(!Utils.isBlockAt(world, pos2, Blocks.piston, 0))
+						if(!Utils.isBlockAt(world, pos2, Blocks.PISTON, 0))
 							return false;
 					}
 					else
@@ -176,14 +176,14 @@ public class MultiblockMetalPress implements IMultiblock
 					world.addBlockEvent(pos2, IEContent.blockMetalMultiblock, 255, 0);
 				}
 			}
-		player.triggerAchievement(IEAchievements.mbMetalPress);
+		player.addStat(IEAchievements.mbMetalPress);
 		return true;
 	}
 
 	static final ItemStack[] materials = new ItemStack[]{
 			new ItemStack(IEContent.blockMetalDecoration1,2,BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_0.getMeta()),
 			new ItemStack(IEContent.blockMetalDecoration0,1,BlockTypes_MetalDecoration0.RS_ENGINEERING.getMeta()),
-			new ItemStack(Blocks.piston),
+			new ItemStack(Blocks.PISTON),
 			new ItemStack(IEContent.blockConveyor,2,BlockTypes_Conveyor.CONVEYOR.getMeta()),
 			new ItemStack(IEContent.blockMetalDecoration0,1,BlockTypes_MetalDecoration0.HEAVY_ENGINEERING.getMeta())};
 	@Override

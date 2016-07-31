@@ -8,7 +8,7 @@ import blusunrize.immersiveengineering.common.IEContent;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.event.FMLInterModComms;
 
@@ -76,7 +76,7 @@ public class ThaumcraftHelper extends IECompatModule
 			int energyConsumed = 0;
 			try{
 				int time = f_furnaceBurnTime.getInt(tileEntity);
-				boolean canSmelt = redstone?true:canSmelt(tileEntity);
+				boolean canSmelt = redstone || canSmelt(tileEntity);
 				if(canSmelt)
 				{
 					if(time<200)

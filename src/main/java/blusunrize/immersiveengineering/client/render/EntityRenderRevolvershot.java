@@ -1,16 +1,15 @@
 package blusunrize.immersiveengineering.client.render;
 
-import org.lwjgl.opengl.GL11;
-
 import blusunrize.immersiveengineering.client.ClientUtils;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
+import org.lwjgl.opengl.GL11;
 
 public class EntityRenderRevolvershot extends Render
 {
@@ -27,7 +26,7 @@ public class EntityRenderRevolvershot extends Render
 		GlStateManager.translate(x, y, z);
 		GlStateManager.enableRescaleNormal();
 		Tessellator tessellator = ClientUtils.tes();
-		WorldRenderer worldrenderer = ClientUtils.tes().getWorldRenderer();
+		VertexBuffer worldrenderer = ClientUtils.tes().getBuffer();
 
 		//		float f2 = 0.0F;
 		//		float f3 = 0.5F;

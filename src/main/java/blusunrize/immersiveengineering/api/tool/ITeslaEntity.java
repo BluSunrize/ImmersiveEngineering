@@ -4,5 +4,5 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTeslaCoil;
 
 public interface ITeslaEntity
 {
-	public void onHit(TileEntityTeslaCoil te, boolean lowPower);
+	void onHit(TileEntityTeslaCoil te, boolean lowPower);
 }

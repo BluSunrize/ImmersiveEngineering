@@ -1,8 +1,5 @@
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IPostBlock;
 import blusunrize.immersiveengineering.common.blocks.BlockIETileProvider;
@@ -15,35 +12,39 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.obj.OBJModel.OBJProperty;
+import net.minecraftforge.common.property.Properties;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class BlockWoodenDevice1 extends BlockIETileProvider<BlockTypes_WoodenDevice1> implements IPostBlock
 {
 	public BlockWoodenDevice1()
 	{
-		super("woodenDevice1",Material.wood, PropertyEnum.create("type", BlockTypes_WoodenDevice1.class), ItemBlockIEBase.class, IEProperties.FACING_ALL, IEProperties.MULTIBLOCKSLAVE, IEProperties.INT_4, OBJProperty.instance);
+		super("woodenDevice1",Material.WOOD, PropertyEnum.create("type", BlockTypes_WoodenDevice1.class), ItemBlockIEBase.class, IEProperties.FACING_ALL, IEProperties.MULTIBLOCKSLAVE, IEProperties.INT_4,Properties.AnimationProperty);
 		this.setHardness(2.0F);
 		this.setResistance(5.0F);
 		lightOpacity = 0;
 	}
 
 	@Override
-	public boolean isFullBlock()
+	public boolean isFullBlock(IBlockState state)
 	{
 		return false;
 	}
 	@Override
-	public boolean isFullCube()
+	public boolean isFullCube(IBlockState state)
 	{
 		return false;
 	}
 	@Override
-	public boolean isOpaqueCube()
+	public boolean isOpaqueCube(IBlockState state)
 	{
 		return false;
 	}
@@ -68,18 +69,18 @@ public class BlockWoodenDevice1 extends BlockIETileProvider<BlockTypes_WoodenDev
 	}
 
 	@Override
-	public boolean isSideSolid(IBlockAccess world, BlockPos pos, EnumFacing side)
+	public boolean isSideSolid(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side)
 	{
 		TileEntity te = world.getTileEntity(pos);
 		if(te instanceof TileEntityWoodenPost)
 		{
 			return ((TileEntityWoodenPost)te).dummy==0?side==EnumFacing.DOWN: ((TileEntityWoodenPost)te).dummy==3?side==EnumFacing.UP: ((TileEntityWoodenPost)te).dummy>3?side.getAxis()==Axis.Y: side.getAxis()!=Axis.Y;
 		}
-		return super.isSideSolid(world, pos, side);
+		return super.isSideSolid(state, world, pos, side);
 	}
 
 	@Override
-	public boolean isLadder(IBlockAccess world, BlockPos pos, EntityLivingBase entity)
+	public boolean isLadder(IBlockState state, IBlockAccess world, BlockPos pos, EntityLivingBase entity)
 	{
 		return (world.getTileEntity(pos) instanceof TileEntityWoodenPost);
 	}

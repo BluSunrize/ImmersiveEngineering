@@ -4,6 +4,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Random;
 
+import blusunrize.immersiveengineering.common.IEContent;
+import net.minecraft.client.resources.I18n;
 import org.lwjgl.input.Keyboard;
 
 import blusunrize.immersiveengineering.api.Lib;
@@ -17,9 +19,6 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.StatCollector;
-import net.minecraft.util.WeightedRandomChestContent;
-import net.minecraftforge.common.ChestGenHooks;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -28,13 +27,13 @@ public class ItemEngineersBlueprint extends ItemUpgradeableTool
 	public ItemEngineersBlueprint()
 	{
 		super("blueprint", 1, null);
-		this.setHasSubtypes(true);
 	}
 
-	@Override
-	public String[] getSubNames()
+	public static ItemStack getTypedBlueprint(String type)
 	{
-		return BlueprintCraftingRecipe.blueprintCategories.toArray(new String[BlueprintCraftingRecipe.blueprintCategories.size()]);
+		ItemStack stack = new ItemStack(IEContent.itemBlueprint,1,0);
+		ItemNBTHelper.setString(stack, "blueprint", type);
+		return stack;
 	}
 
 	@Override
@@ -47,33 +46,18 @@ public class ItemEngineersBlueprint extends ItemUpgradeableTool
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean adv)
 	{
-		String[] sub = getSubNames();
-		if(stack.getItemDamage()<sub.length)
+		String key = ItemNBTHelper.getString(stack,"blueprint");
+		list.add(I18n.format(Lib.DESC_INFO+"blueprint."+key));
+		if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)||Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
 		{
-			list.add(StatCollector.translateToLocalFormatted(Lib.DESC_INFO+"blueprint."+sub[stack.getItemDamage()]));
-			if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)||Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
-			{
-				list.add(StatCollector.translateToLocal(Lib.DESC_INFO+"blueprint.creates1"));
-				BlueprintCraftingRecipe[] recipes = BlueprintCraftingRecipe.findRecipes(sub[stack.getItemDamage()]);
-				if(recipes.length>0)
-					for(int i=0; i<recipes.length; i++)
-						list.add(" "+recipes[i].output.getDisplayName());
-			}
-			else
-				list.add(StatCollector.translateToLocal(Lib.DESC_INFO+"blueprint.creates0"));
+			list.add(I18n.format(Lib.DESC_INFO+"blueprint.creates1"));
+			BlueprintCraftingRecipe[] recipes = BlueprintCraftingRecipe.findRecipes(key);
+			if(recipes.length>0)
+				for(int i=0; i<recipes.length; i++)
+					list.add(" "+recipes[i].output.getDisplayName());
 		}
-	}
-
-	@Override
-	public WeightedRandomChestContent getChestGenBase(ChestGenHooks chest, Random random, WeightedRandomChestContent original)
-	{
-		original.theItemId.setTagCompound(null);
-		if(random.nextDouble()<.125f)
-		{
-			original.theItemId.setStackDisplayName("Super Special BluPrintz");
-			ItemNBTHelper.setLore(original.theItemId, "Congratulations!","You have found an easter egg!");
-		}
-		return original;
+		else
+			list.add(I18n.format(Lib.DESC_INFO+"blueprint.creates0"));
 	}
 
 	@Override
@@ -93,37 +77,28 @@ public class ItemEngineersBlueprint extends ItemUpgradeableTool
 		slots.add( new IESlot.BlueprintInput(container, invItem, 4, 80,57, stack));
 		slots.add( new IESlot.BlueprintInput(container, invItem, 5, 98,57, stack));
 
-		String[] sub = getSubNames();
-		if(stack.getItemDamage()<sub.length)
-		{
-			BlueprintCraftingRecipe[] recipes = BlueprintCraftingRecipe.findRecipes(sub[stack.getItemDamage()]);
-			for(int i=0; i<recipes.length; i++)
-				slots.add( new IESlot.BlueprintOutput(container, invItem, 6+i, 134+(i%2*18), 57-(i/2 *18), stack, recipes[i]));
-		}
-
+		BlueprintCraftingRecipe[] recipes = BlueprintCraftingRecipe.findRecipes(ItemNBTHelper.getString(stack,"blueprint"));
+		for(int i=0; i<recipes.length; i++)
+			slots.add( new IESlot.BlueprintOutput(container, invItem, 6+i, 134+(i%2*18), 57-(i/2 *18), stack, recipes[i]));
 		return slots.toArray(new Slot[slots.size()]);
 	}
 
 	public void updateOutputs(ItemStack stack)
 	{
-		String[] sub = getSubNames();
-		if(stack.getItemDamage()<sub.length)
-		{
-			BlueprintCraftingRecipe[] recipes = BlueprintCraftingRecipe.findRecipes(sub[stack.getItemDamage()]);	
-			ItemStack[] stored = this.getContainedItems(stack);
-			ItemStack[] query = new ItemStack[6];
-			for(int i=0; i<stored.length; i++)
-				if(i<6)
-					query[i] = stored[i];
-				else
-				{
-					stored[i] = null;
-					int craftable = recipes[i-6].getMaxCrafted(query);
-					if(craftable>0)
-						stored[i] = Utils.copyStackWithAmount(recipes[i-6].output, Math.min(recipes[i-6].output.stackSize*craftable, 64));
-				}
-			this.setContainedItems(stack, stored);
-		}
+		BlueprintCraftingRecipe[] recipes = BlueprintCraftingRecipe.findRecipes(ItemNBTHelper.getString(stack,"blueprint"));
+		ItemStack[] stored = this.getContainedItems(stack);
+		ItemStack[] query = new ItemStack[6];
+		for(int i=0; i<stored.length; i++)
+			if(i<6)
+				query[i] = stored[i];
+			else
+			{
+				stored[i] = null;
+				int craftable = recipes[i-6].getMaxCrafted(query);
+				if(craftable>0)
+					stored[i] = Utils.copyStackWithAmount(recipes[i-6].output, Math.min(recipes[i-6].output.stackSize*craftable, 64));
+			}
+		this.setContainedItems(stack, stored);
 	}
 
 	public void reduceInputs(BlueprintCraftingRecipe recipe, ItemStack stack, ItemStack crafted, Container contained)
@@ -150,10 +125,7 @@ public class ItemEngineersBlueprint extends ItemUpgradeableTool
 	@Override
 	public int getInternalSlots(ItemStack stack)
 	{
-		String[] sub = getSubNames();
-		if(stack.getItemDamage()<sub.length)
-			return 6 + BlueprintCraftingRecipe.findRecipes(sub[stack.getItemDamage()]).length;
-		return 6;
+		return 6 + BlueprintCraftingRecipe.findRecipes(ItemNBTHelper.getString(stack, "blueprint")).length;
 	}
 
 	@Override

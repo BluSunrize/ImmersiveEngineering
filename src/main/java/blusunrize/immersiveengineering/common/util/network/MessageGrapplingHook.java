@@ -13,13 +13,14 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 public class MessageGrapplingHook implements IMessage
 {
+	//ToDo: Remove Maneuver Gear
 	int dimension;
 	int entityID;
 	ManeuverGearOperator operator;
 	
 	public MessageGrapplingHook(EntityPlayer player, ManeuverGearOperator operator)
 	{
-		this.dimension = player.worldObj.provider.getDimensionId();
+		this.dimension = player.worldObj.provider.getDimension();
 		this.entityID = player.getEntityId();
 		this.operator = operator;
 	}

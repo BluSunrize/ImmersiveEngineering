@@ -15,7 +15,7 @@ public enum BlockTypes_Hemp implements IStringSerializable, IBlockEnum
 	@Override
 	public String getName()
 	{
-		return this.toString();
+		return this.toString().toLowerCase();
 	}
 	@Override
 	public int getMeta()

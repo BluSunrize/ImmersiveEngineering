@@ -1,7 +1,5 @@
 package blusunrize.immersiveengineering.common.entities;
 
-import java.util.List;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -9,17 +7,19 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
+import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.*;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import java.util.List;
 
 public abstract class EntityIEProjectile extends EntityArrow//Yes I have to extend arrow or else it's all weird and broken >_>
 {
@@ -33,13 +33,13 @@ public abstract class EntityIEProjectile extends EntityArrow//Yes I have to exte
 	public int ticksInAir;
 
 	private int tickLimit=40;
-	final static int dataMarker_shooter = 12;
+	private static final DataParameter<String> dataMarker_shooter = EntityDataManager.<String>createKey(EntityIEProjectile.class, DataSerializers.STRING);
 
 	public EntityIEProjectile(World world)
 	{
 		super(world);
-		this.renderDistanceWeight=10;
 		this.setSize(.125f,.125f);
+		this.pickupStatus = PickupStatus.DISALLOWED;
 	}
 	public EntityIEProjectile(World world, double x, double y, double z, double ax, double ay, double az)
 	{
@@ -47,6 +47,7 @@ public abstract class EntityIEProjectile extends EntityArrow//Yes I have to exte
 		this.setSize(0.125F, 0.125F);
 		this.setLocationAndAngles(x, y, z, this.rotationYaw, this.rotationPitch);
 		this.setPosition(x, y, z);
+		this.pickupStatus = PickupStatus.DISALLOWED;
 	}
 	public EntityIEProjectile(World world, EntityLivingBase living, double ax, double ay, double az)
 	{
@@ -69,13 +70,14 @@ public abstract class EntityIEProjectile extends EntityArrow//Yes I have to exte
 		//		this.motionY = (double)(-MathHelper.sin(this.rotationPitch / 180.0F * (float)Math.PI));
 
 		this.setThrowableHeading(this.motionX, this.motionY, this.motionZ, 2*1.5F, 1.0F);
+		this.pickupStatus = PickupStatus.DISALLOWED;
 	}
 
 	@Override
 	protected void entityInit()
 	{
 		super.entityInit();
-		this.dataWatcher.addObject(dataMarker_shooter, "");
+		this.dataManager.register(dataMarker_shooter, "");
 	}
 
 
@@ -86,15 +88,21 @@ public abstract class EntityIEProjectile extends EntityArrow//Yes I have to exte
 
 	public void setShooterSynced()
 	{
-		this.dataWatcher.updateObject(dataMarker_shooter, this.shootingEntity.getName());
+		this.dataManager.set(dataMarker_shooter, this.shootingEntity.getName());
 	}
 	public EntityLivingBase getShooterSynced()
 	{
-		return this.worldObj.getPlayerEntityByName(this.dataWatcher.getWatchableObjectString(dataMarker_shooter));
+		return this.worldObj.getPlayerEntityByName(this.dataManager.get(dataMarker_shooter));
 	}
 	public Entity getShooter()
 	{
 		return shootingEntity;
+	}
+
+	@Override
+	protected ItemStack getArrowStack()
+	{
+		return null;
 	}
 
 	@Override
@@ -109,11 +117,10 @@ public abstract class EntityIEProjectile extends EntityArrow//Yes I have to exte
 		IBlockState iblockstate = this.worldObj.getBlockState(blockpos);
 		Block block = iblockstate.getBlock();
 
-		if (block.getMaterial() != Material.air)
+		if (block.getMaterial(iblockstate) != Material.AIR)
 		{
-			block.setBlockBoundsBasedOnState(this.worldObj, blockpos);
-			AxisAlignedBB axisalignedbb = block.getCollisionBoundingBox(this.worldObj, blockpos, iblockstate);
-			if(axisalignedbb != null && axisalignedbb.isVecInside(new Vec3(this.posX, this.posY, this.posZ)))
+			AxisAlignedBB axisalignedbb = block.getCollisionBoundingBox(iblockstate, this.worldObj, blockpos);
+			if(axisalignedbb != null && axisalignedbb.isVecInside(new Vec3d(this.posX, this.posY, this.posZ)))
 				this.inGround = true;
 		}
 
@@ -148,16 +155,16 @@ public abstract class EntityIEProjectile extends EntityArrow//Yes I have to exte
 				return;
 			}
 
-			Vec3 currentPos = new Vec3(this.posX, this.posY, this.posZ);
-			Vec3 nextPos = new Vec3(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
-			MovingObjectPosition mop = this.worldObj.rayTraceBlocks(currentPos, nextPos, false,true,false);
+			Vec3d currentPos = new Vec3d(this.posX, this.posY, this.posZ);
+			Vec3d nextPos = new Vec3d(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
+			RayTraceResult mop = this.worldObj.rayTraceBlocks(currentPos, nextPos, false,true,false);
 
-			currentPos = new Vec3(this.posX, this.posY, this.posZ);
+			currentPos = new Vec3d(this.posX, this.posY, this.posZ);
 
 			if(mop != null)
-				nextPos = new Vec3(mop.hitVec.xCoord, mop.hitVec.yCoord, mop.hitVec.zCoord);
+				nextPos = new Vec3d(mop.hitVec.xCoord, mop.hitVec.yCoord, mop.hitVec.zCoord);
 			else
-				nextPos = new Vec3(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
+				nextPos = new Vec3d(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
 
 			if(mop==null || mop.entityHit==null)
 			{
@@ -171,7 +178,7 @@ public abstract class EntityIEProjectile extends EntityArrow//Yes I have to exte
 					{
 						float f = 0.3F;
 						AxisAlignedBB axisalignedbb = entity1.getEntityBoundingBox().expand((double)f, (double)f, (double)f);
-						MovingObjectPosition movingobjectposition1 = axisalignedbb.calculateIntercept(currentPos, nextPos);
+						RayTraceResult movingobjectposition1 = axisalignedbb.calculateIntercept(currentPos, nextPos);
 
 						if (movingobjectposition1 != null)
 						{
@@ -185,7 +192,7 @@ public abstract class EntityIEProjectile extends EntityArrow//Yes I have to exte
 					}
 				}
 				if(entity!=null)
-					mop = new MovingObjectPosition(entity);
+					mop = new RayTraceResult(entity);
 			}
 
 			if(mop!=null)
@@ -197,7 +204,7 @@ public abstract class EntityIEProjectile extends EntityArrow//Yes I have to exte
 					this.onImpact(mop);
 					this.setDead();
 				}
-				else if(mop.typeOfHit==MovingObjectPosition.MovingObjectType.BLOCK)
+				else if(mop.typeOfHit== RayTraceResult.Type.BLOCK)
 				{
 					this.onImpact(mop);
 					this.blockX = mop.getBlockPos().getX();
@@ -219,8 +226,8 @@ public abstract class EntityIEProjectile extends EntityArrow//Yes I have to exte
 					//						this.setPosition(this.posX, this.posY, this.posZ);
 
 					this.inGround = true;
-					if(this.inBlock.getMaterial() != Material.air)
-						this.inBlock.onEntityCollidedWithBlock(this.worldObj, mop.getBlockPos(), this);
+					if(this.inBlock.getMaterial(state) != Material.AIR)
+						this.inBlock.onEntityCollidedWithBlock(this.worldObj, mop.getBlockPos(), state, this);
 					//						return;
 				}
 			}
@@ -293,7 +300,7 @@ public abstract class EntityIEProjectile extends EntityArrow//Yes I have to exte
 		return 100;
 	}
 
-	public abstract void onImpact(MovingObjectPosition mop);
+	public abstract void onImpact(RayTraceResult mop);
 
 	protected float getMotionDecayFactor()
 	{

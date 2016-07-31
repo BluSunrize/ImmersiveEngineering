@@ -9,6 +9,7 @@ import blusunrize.immersiveengineering.common.util.IEDamageSources.TeslaDamageSo
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.registry.GameRegistry;
@@ -16,26 +17,26 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 public class ItemFaradaySuit extends ItemArmor implements ITeslaEquipment
 {
 	public static ArmorMaterial mat;
-	public ItemFaradaySuit(int type)
+	public ItemFaradaySuit(EntityEquipmentSlot type)
 	{
 		super(mat, 0, type);
-		String name = "faradaySuit"+type;
+		String name = "faradaySuit_"+type.getName().toLowerCase();
 		this.setUnlocalizedName(ImmersiveEngineering.MODID+"."+name);
 		this.setCreativeTab(ImmersiveEngineering.creativeTab);
 		this.setMaxStackSize(1);
-		GameRegistry.registerItem(this, name);
+		ImmersiveEngineering.register(this, name);
 		IEContent.registeredIEItems.add(this);
 	}
 	
 	@Override
-	public void onStrike(ItemStack s, int eqSlot, EntityLivingBase p, Map<String, Object> cache, TeslaDamageSource dmg)
+	public void onStrike(ItemStack s, EntityEquipmentSlot eqSlot, EntityLivingBase p, Map<String, Object> cache, TeslaDamageSource dmg)
 	{
 		if(dmg.isLowPower)
 		{
 			if (cache.containsKey("faraday"))
-				cache.put("faraday", (1<<armorType)|((Integer)cache.get("faraday")));
+				cache.put("faraday", (1<<armorType.ordinal())|((Integer)cache.get("faraday")));
 			else
-				cache.put("faraday", 1<<armorType);
+				cache.put("faraday", 1<<armorType.ordinal());
 			if(cache.containsKey("faraday")&&(Integer)cache.get("faraday")==(1<<4)-1)
 				dmg.dmg = 0;
 		}
@@ -43,13 +44,13 @@ public class ItemFaradaySuit extends ItemArmor implements ITeslaEquipment
 		{
 			dmg.dmg*=1.2;
 			if((!(p instanceof EntityPlayer)||!((EntityPlayer)p).capabilities.isCreativeMode)&&s.attemptDamageItem(2, itemRand))
-				p.setCurrentItemOrArmor(eqSlot, null);
+				p.setItemStackToSlot(eqSlot, null);
 		}
 	}
 
 	@Override
-	public String getArmorTexture(ItemStack stack, Entity entity, int slot, String type)
+	public String getArmorTexture(ItemStack stack, Entity entity, EntityEquipmentSlot slot, String type)
 	{
-		return "immersiveengineering:textures/models/armor_faraday"+(slot==2?"_legs":"")+".png";
-	}	
+		return "immersiveengineering:textures/models/armor_faraday"+(slot==EntityEquipmentSlot.LEGS?"_legs":"")+".png";
+	}
 }

@@ -7,8 +7,8 @@ import com.google.common.collect.ImmutableSet;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 
 /**
  * @author BluSunrize - 08.03.2015
@@ -20,12 +20,12 @@ public interface IImmersiveConnectable
 	/**
 	 * @return if wires can directly connect to this
 	 */
-	public boolean canConnect();
+	boolean canConnect();
 	
 	/**
 	 * @return if the tile can in or output energy from/to the network
 	 */
-	public boolean isEnergyOutput();
+	boolean isEnergyOutput();
 	
 	/**
 	 * @param amount The amount of power input, in RF
@@ -33,59 +33,59 @@ public interface IImmersiveConnectable
 	 * @param energyType 0 for RF, 1 for EU
 	 * @return the amount of power that was output
 	 */
-	public int outputEnergy(int amount, boolean simulate, int energyType);
+	int outputEnergy(int amount, boolean simulate, int energyType);
 
 	/**
 	 * @return a blockPos to do the connection check for.<br>For multiblocks like transformers
 	 */
-	public BlockPos getConnectionMaster(WireType cableType, TargetingInfo target);
+	BlockPos getConnectionMaster(WireType cableType, TargetingInfo target);
 	
 	/**
 	 * @return whether you can connect the given CableType to the tile
 	 */
-	public boolean canConnectCable(WireType cableType, TargetingInfo target);
+	boolean canConnectCable(WireType cableType, TargetingInfo target);
 	
 	/**
 	 * fired when a cable is attached, use to limit the cables attached to one type
 	 */
-	public void connectCable(WireType cableType, TargetingInfo target);
+	void connectCable(WireType cableType, TargetingInfo target);
 	
 	/**
 	 * get the CableType limiter of the tile
 	 */
-	public WireType getCableLimiter(TargetingInfo target);
+	WireType getCableLimiter(TargetingInfo target);
 	
 	/**
 	 * return false to stop checking for available outputs from this point onward
 	 * @param con: the connection through which energy enters. May be null, in that
 	 * case true should be returned if and only if all connections allow energy to pass
 	 */
-	public boolean allowEnergyToPass(Connection con);
+	boolean allowEnergyToPass(Connection con);
 
 	/**
 	 * fired for every not-simulated energy packet passing through. Used for energy meter and stuff
 	 */
-	public void onEnergyPassthrough(int amount);
+	void onEnergyPassthrough(int amount);
 	
 	/**
 	 * used to reset the CableType limiter of the tile, provided it matches the given argument
 	 * acts as a wildcard, meaning if connection.CableType is null, you /always/ reset the limiter
 	 */
-	public void removeCable(Connection connection);
+	void removeCable(Connection connection);
 	
 	/**
 	 * @return the offset used when RayTracing to or from this block. This vector is based from the blocks /origin/
 	 */
-	public Vec3 getRaytraceOffset(IImmersiveConnectable link);
+	Vec3d getRaytraceOffset(IImmersiveConnectable link);
 	/**
 	 * Used for rendering only
 	 * @return Where the cable should attach
 	 */
-	public Vec3 getConnectionOffset(Connection con);
+	Vec3d getConnectionOffset(Connection con);
 	/**
 	 * returns a set of Blocks to be ignored when raytracing
 	 */
-	public default Set<BlockPos> getIgnored(IImmersiveConnectable other)
+	default Set<BlockPos> getIgnored(IImmersiveConnectable other)
 	{
 		return ImmutableSet.of(ApiUtils.toBlockPos(this));
 	}

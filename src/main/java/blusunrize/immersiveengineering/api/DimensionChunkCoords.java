@@ -1,14 +1,14 @@
 package blusunrize.immersiveengineering.api;
 
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.world.ChunkCoordIntPair;
+import net.minecraft.util.math.ChunkPos;
 
-public class DimensionChunkCoords extends ChunkCoordIntPair
+public class DimensionChunkCoords extends ChunkPos
 {
 	public int dimension;
 	public DimensionChunkCoords(int dimension, int x, int z)
 	{
-		super(x, z);
+		super(x,z);
 		this.dimension=dimension;
 	}
 

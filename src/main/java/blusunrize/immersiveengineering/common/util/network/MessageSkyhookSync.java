@@ -6,8 +6,8 @@ import blusunrize.immersiveengineering.common.entities.EntitySkylineHook;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -18,7 +18,7 @@ public class MessageSkyhookSync implements IMessage
 	int entityID;
 	Connection connection;
 	BlockPos target;
-	Vec3[] subPoints;
+	Vec3d[] subPoints;
 	int targetPoint;
 
 	public MessageSkyhookSync(EntitySkylineHook entity)
@@ -41,9 +41,9 @@ public class MessageSkyhookSync implements IMessage
 		connection = Connection.readFromNBT(tag);
 		target = new BlockPos(buf.readInt(),buf.readInt(),buf.readInt());
 		int l = buf.readInt();
-		subPoints = new Vec3[l];
+		subPoints = new Vec3d[l];
 		for(int i=0; i<l; i++)
-			subPoints[i] = new Vec3(buf.readDouble(), buf.readDouble(), buf.readDouble());
+			subPoints[i] = new Vec3d(buf.readDouble(), buf.readDouble(), buf.readDouble());
 		targetPoint = buf.readInt();
 	}
 
@@ -56,7 +56,7 @@ public class MessageSkyhookSync implements IMessage
 		buf.writeInt(target.getY());
 		buf.writeInt(target.getZ());
 		buf.writeInt(subPoints.length);
-		for(Vec3 v : subPoints)
+		for(Vec3d v : subPoints)
 		{
 			buf.writeDouble(v.xCoord);
 			buf.writeDouble(v.yCoord);

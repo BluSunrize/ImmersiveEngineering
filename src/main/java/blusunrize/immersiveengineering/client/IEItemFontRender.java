@@ -88,11 +88,11 @@ public class IEItemFontRender extends FontRenderer
 	}
 
 	@Override
-	public float func_181559_a(char ch, boolean italic)
+	protected float renderDefaultChar(int ch, boolean italic)
 	{
 		if(ch==32)
 			return customSpaceWidth;
-		return super.func_181559_a(ch, italic)+spacingModifier;
+		return super.renderDefaultChar(ch, italic)+spacingModifier;
 	}
 	public float getCharWidthFloat(char character)
 	{

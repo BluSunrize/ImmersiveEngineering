@@ -58,7 +58,7 @@ public abstract class IESlot extends Slot
 		{
 			super.onPickupFromSlot(player, stack);
 			if(player!=null && (this.container instanceof ContainerBlastFurnace || this.container instanceof ContainerArcFurnace) && ApiUtils.compareToOreName(stack, "ingotSteel"))
-				player.triggerAchievement(IEAchievements.makeSteel);
+				player.addStat(IEAchievements.makeSteel);
 		}
 	}
 	public static class FluidContainer extends IESlot
@@ -142,8 +142,8 @@ public abstract class IESlot extends Slot
 		public boolean isItemValid(ItemStack itemStack)
 		{
 			if(preventDoubles)
-				for(Slot slot : (List<Slot>)container.inventorySlots)
-					if(slot instanceof IESlot.Upgrades && ((IESlot.Upgrades)slot).preventDoubles && OreDictionary.itemMatches(slot.getStack(), itemStack, true))
+				for(Slot slot : container.inventorySlots)
+					if(slot instanceof Upgrades && ((Upgrades)slot).preventDoubles && OreDictionary.itemMatches(slot.getStack(), itemStack, true))
 						return false;
 			return itemStack!=null && itemStack.getItem() instanceof IUpgrade && ((IUpgrade)itemStack.getItem()).getUpgradeTypes(itemStack).contains(type) && ((IUpgrade)itemStack.getItem()).canApplyUpgrades(upgradeableTool, itemStack);
 		}
@@ -210,9 +210,7 @@ public abstract class IESlot extends Slot
 		@Override
 		public boolean canTakeStack(EntityPlayer player)
 		{
-			if(this.getStack()!=null && getStack().getItem() instanceof IUpgradeableTool && !((IUpgradeableTool)getStack().getItem()).canTakeFromWorkbench(getStack()))
-				return false;
-			return true;
+			return !(this.getStack() != null && getStack().getItem() instanceof IUpgradeableTool && !((IUpgradeableTool) getStack().getItem()).canTakeFromWorkbench(getStack()));
 		}
 		@Override
 		public void onPickupFromSlot(EntityPlayer player, ItemStack stack)
@@ -329,12 +327,12 @@ public abstract class IESlot extends Slot
 					for(ItemStack trigger : achievement.triggerItems)
 						if(OreDictionary.itemMatches(trigger, stack, true))
 						{
-							player.triggerAchievement(achievement);
+							player.addStat(achievement);
 							break;
 						}
 				}
 				else if(OreDictionary.itemMatches(achievement.theItemStack, stack, true))
-					player.triggerAchievement(achievement);
+					player.addStat(achievement);
 			}
 			this.inventory.markDirty();
 			super.onPickupFromSlot(player, stack);
@@ -399,9 +397,9 @@ public abstract class IESlot extends Slot
 			return true;
 		}
 	}
-	public static interface ICallbackContainer
+	public interface ICallbackContainer
 	{
-		public boolean canInsert(ItemStack stack, int slotNumer, Slot slotObject);
-		public boolean canTake(ItemStack stack, int slotNumer, Slot slotObject);
+		boolean canInsert(ItemStack stack, int slotNumer, Slot slotObject);
+		boolean canTake(ItemStack stack, int slotNumer, Slot slotObject);
 	}
 }

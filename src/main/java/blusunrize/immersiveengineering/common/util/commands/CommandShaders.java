@@ -8,7 +8,7 @@ import blusunrize.immersiveengineering.common.util.commands.CommandHandler.IESub
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.text.TextComponentTranslation;
 
 public class CommandShaders extends IESubCommand
 {
@@ -19,7 +19,7 @@ public class CommandShaders extends IESubCommand
 	}
 
 	@Override
-	public void perform(ICommandSender sender, String[] args)
+	public void perform(MinecraftServer server, ICommandSender sender, String[] args)
 	{
 		if(args.length>1)
 		{
@@ -30,20 +30,20 @@ public class CommandShaders extends IESubCommand
 				if(ShaderRegistry.receivedShaders.containsKey(player))
 					ShaderRegistry.receivedShaders.get(player).clear();
 				ShaderRegistry.recalculatePlayerTotalWeight(player);
-				sender.addChatMessage(new ChatComponentTranslation(Lib.CHAT_COMMAND+getIdent()+".clear.sucess",player));
+				sender.addChatMessage(new TextComponentTranslation(Lib.CHAT_COMMAND+getIdent()+".clear.sucess",player));
 				break;
 			default:
-				sender.addChatMessage(new ChatComponentTranslation(getHelp("")));
+				sender.addChatMessage(new TextComponentTranslation(getHelp("")));
 				break;
 			}
 		}
 		else
-			sender.addChatMessage(new ChatComponentTranslation(getHelp("")));
+			sender.addChatMessage(new TextComponentTranslation(getHelp("")));
 
 	}
 
 	@Override
-	public ArrayList<String> getSubCommands(String[] args)
+	public ArrayList<String> getSubCommands(MinecraftServer server, String[] args)
 	{
 		ArrayList<String> list = new ArrayList<String>();
 		if(args.length>1)
@@ -53,7 +53,7 @@ public class CommandShaders extends IESubCommand
 				case "clear":
 					if(args.length>2)
 						break;
-					list.addAll(CommandBase.getListOfStringsMatchingLastWord(args, MinecraftServer.getServer().getAllUsernames()));
+					list.addAll(CommandBase.getListOfStringsMatchingLastWord(args, server.getAllUsernames()));
 					break;
 			}
 			return list;

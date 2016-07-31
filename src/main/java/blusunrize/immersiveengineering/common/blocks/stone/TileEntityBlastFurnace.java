@@ -16,9 +16,11 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.oredict.OreDictionary;
 
 public class TileEntityBlastFurnace extends TileEntityMultiblockPart<TileEntityBlastFurnace> implements IIEInventory, IActiveState, IGuiTile
@@ -59,16 +61,6 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart<TileEntityB
 	@Override
 	public float[] getBlockBounds()
 	{
-		return new float[]{0,0,0,1,1,1};
-	}
-	@Override
-	public float[] getSpecialCollisionBounds()
-	{
-		return null;
-	}
-	@Override
-	public float[] getSpecialSelectionBounds()
-	{
 		return null;
 	}
 
@@ -108,7 +100,7 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart<TileEntityB
 							active=true;
 					}
 					burnTime-=processSpeed;
-					worldObj.markBlockForUpdate(getPos());
+					markContainingBlockForUpdate(null);
 				}
 
 				if(process<=0)
@@ -156,7 +148,7 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart<TileEntityB
 					burnTime += BlastFurnaceRecipe.getBlastFuelTime(inventory[1]);
 					lastBurnTime = BlastFurnaceRecipe.getBlastFuelTime(inventory[1]);
 					Utils.modifyInvStackSize(inventory, 1, -1);
-					worldObj.markBlockForUpdate(getPos());
+					markContainingBlockForUpdate(null);
 				}
 			}
 
@@ -172,7 +164,7 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart<TileEntityB
 							tileEntity = worldObj.getTileEntity(getPos().add(xx, yy, zz));
 							if(tileEntity!=null)
 								tileEntity.markDirty();
-							worldObj.markBlockForUpdate(getPos().add(xx, yy, zz));
+							markBlockForUpdate(getPos().add(xx, yy, zz), null);
 							worldObj.addBlockEvent(getPos().add(xx, yy, zz), IEContent.blockStoneDevice, 1,active?1:0);
 						}
 			}
@@ -203,7 +195,7 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart<TileEntityB
 		else if(id==1)
 			this.active = arg==1;
 		markDirty();
-		worldObj.markBlockForUpdate(getPos());
+		markContainingBlockForUpdate(null);
 		return true;
 	}
 
@@ -282,7 +274,7 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart<TileEntityB
 	@Override
 	public boolean isStackValid(int slot, ItemStack stack)
 	{
-		return slot==0?BlastFurnaceRecipe.findRecipe(stack)!=null: slot==1?BlastFurnaceRecipe.isValidBlastFuel(stack): false;
+		return slot==0?BlastFurnaceRecipe.findRecipe(stack)!=null: slot == 1 && BlastFurnaceRecipe.isValidBlastFuel(stack);
 	}
 	@Override
 	public int getSlotLimit(int slot)
@@ -293,6 +285,22 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart<TileEntityB
 	public void doGraphicalUpdates(int slot)
 	{
 	}
+	@Override
+	protected FluidTank[] getAccessibleFluidTanks(EnumFacing side)
+	{
+		return new FluidTank[0];
+	}
+	@Override
+	protected boolean canFillTankFrom(int iTank, EnumFacing side, FluidStack resources)
+	{
+		return false;
+	}
+	@Override
+	protected boolean canDrainTankFrom(int iTank, EnumFacing side)
+	{
+		return false;
+	}
+
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
 	{

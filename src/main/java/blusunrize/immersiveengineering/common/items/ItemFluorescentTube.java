@@ -10,13 +10,16 @@ import blusunrize.immersiveengineering.client.ClientProxy;
 import blusunrize.immersiveengineering.common.entities.EntityFluorescentTube;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.StatCollector;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -29,26 +32,26 @@ public class ItemFluorescentTube extends ItemIEBase implements IConfigurableTool
 		super("fluorescentTube", 1);
 	}
 	@Override
-	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ)
+	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
-		if (side==EnumFacing.UP)
+		if(side==EnumFacing.UP)
 		{
-			if (!world.isRemote)
+			if(!world.isRemote)
 			{
-				Vec3 look = player.getLookVec();
+				Vec3d look = player.getLookVec();
 				float angle = (float) Math.toDegrees(Math.atan2(look.xCoord, look.zCoord));
 				EntityFluorescentTube tube = new EntityFluorescentTube(world, stack.copy(), angle);
 				tube.setPosition(pos.getX()+hitX, pos.getY()+1.5, pos.getZ()+hitZ);
 				world.spawnEntityInWorld(tube);
 				stack.splitStack(1);
 				if (stack.stackSize>0)
-					player.setCurrentItemOrArmor(0, stack);
+					player.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, stack);
 				else
-					player.setCurrentItemOrArmor(0, null);
+					player.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, null);
 			}
-			return true;
+			return EnumActionResult.SUCCESS;
 		}
-		return super.onItemUse(stack, player, world, pos, side, hitX, hitY, hitZ);
+		return super.onItemUse(stack, player, world, pos, hand, side, hitX, hitY, hitZ);
 	}
 	public static float[] getRGB(ItemStack s)
 	{
@@ -109,7 +112,7 @@ public class ItemFluorescentTube extends ItemIEBase implements IConfigurableTool
 	@Override
 	public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean advanced)
 	{
-		list.add(StatCollector.translateToLocalFormatted(Lib.DESC_INFO+"colour", "#"+hexColorString(stack)));
+		list.add(I18n.format(Lib.DESC_INFO+"colour", "#"+hexColorString(stack)));
 	}
 
 	@Override
@@ -119,11 +122,16 @@ public class ItemFluorescentTube extends ItemIEBase implements IConfigurableTool
 		return ClientProxy.itemFont;
 	}
 	@Override
-	public int getColorFromItemStack(ItemStack stack, int pass)
+	public boolean hasCustomItemColours()
+	{
+		return true;
+	}
+	@Override
+	public int getColourForIEItem(ItemStack stack, int pass)
 	{
 		if(pass==0)
 			return getRGBInt(stack);
-		return super.getColorFromItemStack(stack, pass);
+		return super.getColourForIEItem(stack, pass);
 	}
 	public static int getRGBInt(ItemStack stack)
 	{

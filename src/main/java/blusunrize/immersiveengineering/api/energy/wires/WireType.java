@@ -60,11 +60,11 @@ public abstract class WireType
 	@SideOnly(Side.CLIENT)
 	public static TextureAtlasSprite iconDefaultWire;
 
-	public static WireType COPPER = new WireType.IEBASE(0);
-	public static WireType ELECTRUM = new WireType.IEBASE(1);
-	public static WireType STEEL = new WireType.IEBASE(2);
-	public static WireType STRUCTURE_ROPE = new WireType.IEBASE(3);
-	public static WireType STRUCTURE_STEEL = new WireType.IEBASE(4);
+	public static WireType COPPER = new IEBASE(0);
+	public static WireType ELECTRUM = new IEBASE(1);
+	public static WireType STEEL = new IEBASE(2);
+	public static WireType STRUCTURE_ROPE = new IEBASE(3);
+	public static WireType STRUCTURE_STEEL = new IEBASE(4);
 
 	/**
 	 * DO NOT SUBCLASS THIS.

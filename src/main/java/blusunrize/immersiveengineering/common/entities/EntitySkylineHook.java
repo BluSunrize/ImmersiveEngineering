@@ -17,11 +17,11 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -30,7 +30,7 @@ public class EntitySkylineHook extends Entity
 {
 	public Connection connection;
 	public BlockPos target;
-	public Vec3[] subPoints;
+	public Vec3d[] subPoints;
 	public int targetPoint=0;
 	public EntitySkylineHook(World world)
 	{
@@ -38,7 +38,7 @@ public class EntitySkylineHook extends Entity
 		this.setSize(.125f,.125f);
 		//		this.noClip=true;
 	}
-	public EntitySkylineHook(World world, double x, double y, double z, Connection connection, BlockPos target, Vec3[] subPoints)
+	public EntitySkylineHook(World world, double x, double y, double z, Connection connection, BlockPos target, Vec3d[] subPoints)
 	{
 		super(world);
 		//		this.noClip=true;
@@ -61,6 +61,7 @@ public class EntitySkylineHook extends Entity
 		while (this.rotationYaw - this.prevRotationYaw >= 180.0F)
 			this.prevRotationYaw += 360.0F;
 	}
+	@Override
 	protected void entityInit() {}
 
 
@@ -78,8 +79,8 @@ public class EntitySkylineHook extends Entity
 	public void onUpdate()
 	{
 		EntityPlayer player = null;
-		if(this.riddenByEntity instanceof EntityPlayer)
-			player = ((EntityPlayer)this.riddenByEntity);
+		if(this.getControllingPassenger() instanceof EntityPlayer)
+			player = ((EntityPlayer)this.getControllingPassenger());
 		if(this.ticksExisted==1&&!worldObj.isRemote)
 		{
 			IELogger.debug("init tick at "+System.currentTimeMillis());
@@ -93,7 +94,7 @@ public class EntitySkylineHook extends Entity
 		//			return;
 		if(subPoints!=null && targetPoint<subPoints.length-1)
 		{
-			double dist = subPoints[targetPoint].distanceTo(new Vec3(posX,posY,posZ));
+			double dist = subPoints[targetPoint].distanceTo(new Vec3d(posX,posY,posZ));
 			IELogger.debug("dist: "+dist);
 			if(dist<=0)
 			{
@@ -107,9 +108,9 @@ public class EntitySkylineHook extends Entity
 				return;
 			}
 			float speed = 2f;
-			if(player!=null && player.getCurrentEquippedItem()!=null&&player.getCurrentEquippedItem().getItem() instanceof ItemSkyhook)
-				speed = ((ItemSkyhook)player.getCurrentEquippedItem().getItem()).getSkylineSpeed(player.getCurrentEquippedItem());
-			Vec3 moveVec = SkylineHelper.getSubMovementVector(new Vec3(posX, posY, posZ), subPoints[targetPoint], speed);
+			if(player!=null && player.getActiveItemStack()!=null&&player.getActiveItemStack().getItem() instanceof ItemSkyhook)
+				speed = ((ItemSkyhook)player.getActiveItemStack().getItem()).getSkylineSpeed(player.getActiveItemStack());
+			Vec3d moveVec = SkylineHelper.getSubMovementVector(new Vec3d(posX, posY, posZ), subPoints[targetPoint], speed);
 			motionX = moveVec.xCoord;//*speed;
 			motionY = moveVec.yCoord;//*speed;
 			motionZ = moveVec.zCoord;//*speed;
@@ -124,11 +125,11 @@ public class EntitySkylineHook extends Entity
 				this.setDead();
 				return;
 			}
-			Vec3 vEnd = new Vec3(target.getX(), target.getY(), target.getZ());
+			Vec3d vEnd = new Vec3d(target.getX(), target.getY(), target.getZ());
 			vEnd = Utils.addVectors(vEnd, iicEnd.getConnectionOffset(connection));
 
 
-			double gDist = vEnd.distanceTo(new Vec3(posX, posY, posZ));
+			double gDist = vEnd.distanceTo(new Vec3d(posX, posY, posZ));
 			IELogger.debug("distance to goal: "+gDist);
 			if(gDist<=.3)
 			{
@@ -195,17 +196,19 @@ public class EntitySkylineHook extends Entity
 	{
 		this.setDead();
 		IELogger.debug("last tick at "+System.currentTimeMillis());
-		if(!(this.riddenByEntity instanceof EntityPlayer))
+		if(!(this.getControllingPassenger() instanceof EntityPlayer))
 			return;
-		ItemStack hook = ((EntityPlayer)this.riddenByEntity).getCurrentEquippedItem();
+		EntityPlayer player = (EntityPlayer)this.getControllingPassenger();
+		ItemStack hook = player.getActiveItemStack();
 		if(hook==null || !(hook.getItem() instanceof ItemSkyhook))
 			return;
-		Connection line = SkylineHelper.getTargetConnection(worldObj, target, (EntityLivingBase)this.riddenByEntity, connection);
+		Connection line = SkylineHelper.getTargetConnection(worldObj, target, player, connection);
 
 		if(line!=null)
 		{
-			((EntityPlayer)this.riddenByEntity).setItemInUse(hook, hook.getItem().getMaxItemUseDuration(hook));
-			SkylineHelper.spawnHook((EntityPlayer)this.riddenByEntity, end, line);
+			player.setActiveHand(player.getActiveHand());
+//					setItemInUse(hook, hook.getItem().getMaxItemUseDuration(hook));
+			SkylineHelper.spawnHook(player, end, line);
 			//					ChunkCoordinates cc0 = line.end==target?line.start:line.end;
 			//					ChunkCoordinates cc1 = line.end==target?line.end:line.start;
 			//					double dx = cc0.posX-cc1.posX;
@@ -223,15 +226,15 @@ public class EntitySkylineHook extends Entity
 		}
 		else
 		{
-			((EntityPlayer)this.riddenByEntity).motionX = motionX;
-			((EntityPlayer)this.riddenByEntity).motionY = motionY;
-			((EntityPlayer)this.riddenByEntity).motionZ = motionZ;
-			IELogger.debug("player motion: "+((EntityPlayer)this.riddenByEntity).motionX+","+((EntityPlayer)this.riddenByEntity).motionY+","+((EntityPlayer)this.riddenByEntity).motionZ);
+			player.motionX = motionX;
+			player.motionY = motionY;
+			player.motionZ = motionZ;
+			IELogger.debug("player motion: "+player.motionX+","+player.motionY+","+player.motionZ);
 		}
 	}
 
 	@Override
-	public Vec3 getLookVec()
+	public Vec3d getLookVec()
 	{
 		float f1;
 		float f2;
@@ -244,7 +247,7 @@ public class EntitySkylineHook extends Entity
 		f2 = MathHelper.sin(-this.rotationYaw * 0.017453292F - (float)Math.PI);
 		f3 = -MathHelper.cos(-this.rotationPitch * 0.017453292F);
 		f4 = MathHelper.sin(-this.rotationPitch * 0.017453292F);
-		return new Vec3((double)(f2 * f3), (double)f4, (double)(f1 * f3));
+		return new Vec3d((double)(f2 * f3), (double)f4, (double)(f1 * f3));
 		//		}
 		//		else
 		//		{
@@ -324,14 +327,4 @@ public class EntitySkylineHook extends Entity
 		return true;
 		//		return false;
 	}
-	//	@Override
-	//	protected void readEntityFromNBT(NBTTagCompound p_70037_1_) {
-	//		// TODO Auto-generated method stub
-	//		
-	//	}
-	//	@Override
-	//	protected void writeEntityToNBT(NBTTagCompound p_70014_1_) {
-	//		// TODO Auto-generated method stub
-	//		
-	//	}
 }

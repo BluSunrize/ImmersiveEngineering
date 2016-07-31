@@ -1,27 +1,29 @@
 package blusunrize.immersiveengineering.common.util;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
-
-import com.google.common.collect.Sets;
-
 import blusunrize.immersiveengineering.common.EventHandler;
+import com.google.common.collect.Sets;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.EnchantmentProtection;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
+
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Set;
 
 public class IEExplosion extends Explosion
 {
@@ -47,8 +49,8 @@ public class IEExplosion extends Explosion
 		for(;blockDestroyInt<max;blockDestroyInt++)
 		{
 			BlockPos pos = this.affectedBlockPositions.get(blockDestroyInt);
-
-			Block block = this.worldObj.getBlockState(pos).getBlock();
+			IBlockState state = this.worldObj.getBlockState(pos);
+			Block block = state.getBlock();
 
 //			if(spawnParticles)
 			{
@@ -67,11 +69,11 @@ public class IEExplosion extends Explosion
 				d3 = d3 * d7;
 				d4 = d4 * d7;
 				d5 = d5 * d7;
-				this.worldObj.spawnParticle(EnumParticleTypes.EXPLOSION_NORMAL, (d0 + this.explosionX * 1.0D) / 2.0D, (d1 + this.explosionY * 1.0D) / 2.0D, (d2 + this.explosionZ * 1.0D) / 2.0D, d3, d4, d5, new int[0]);
-				this.worldObj.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, d0, d1, d2, d3, d4, d5, new int[0]);
+				this.worldObj.spawnParticle(EnumParticleTypes.EXPLOSION_NORMAL, (d0 + this.explosionX * 1.0D) / 2.0D, (d1 + this.explosionY * 1.0D) / 2.0D, (d2 + this.explosionZ * 1.0D) / 2.0D, d3, d4, d5);
+				this.worldObj.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, d0, d1, d2, d3, d4, d5);
 			}
 
-			if(block.getMaterial() != Material.air)
+			if(state.getMaterial() != Material.AIR)
 			{
 				if(block.canDropFromExplosion(this))
 					block.dropBlockAsItemWithChance(this.worldObj, pos, this.worldObj.getBlockState(pos), dropChance, 0);
@@ -85,7 +87,7 @@ public class IEExplosion extends Explosion
 	@Override
     public void doExplosionA()
     {
-        Set<BlockPos> set = Sets.<BlockPos>newHashSet();
+        Set<BlockPos> set = Sets.newHashSet();
         int i = 16;
 
         for (int j = 0; j < 16; ++j)
@@ -110,9 +112,9 @@ public class IEExplosion extends Explosion
                             BlockPos blockpos = new BlockPos(d4, d6, d8);
                             IBlockState iblockstate = this.worldObj.getBlockState(blockpos);
 
-                            if (iblockstate.getBlock().getMaterial() != Material.air)
+                            if (iblockstate.getMaterial() != Material.AIR)
                             {
-                                float f2 = this.exploder != null ? this.exploder.getExplosionResistance(this, this.worldObj, blockpos, iblockstate) : iblockstate.getBlock().getExplosionResistance(worldObj, blockpos, (Entity)null, this);
+                                float f2 = this.exploder != null ? this.exploder.getExplosionResistance(this, this.worldObj, blockpos, iblockstate) : iblockstate.getBlock().getExplosionResistance(worldObj, blockpos, null, this);
                                 f -= (f2 + 0.3F) * 0.3F;
                             }
 
@@ -143,11 +145,11 @@ public class IEExplosion extends Explosion
         int j1 = MathHelper.floor_double(this.explosionZ + (double)f3 + 1.0D);
         List<Entity> list = this.worldObj.getEntitiesWithinAABBExcludingEntity(this.exploder, new AxisAlignedBB((double)k1, (double)i2, (double)j2, (double)l1, (double)i1, (double)j1));
         net.minecraftforge.event.ForgeEventFactory.onExplosionDetonate(this.worldObj, this, list, f3);
-        Vec3 vec3 = new Vec3(this.explosionX, this.explosionY, this.explosionZ);
+        Vec3d vec3 = new Vec3d(this.explosionX, this.explosionY, this.explosionZ);
 
         for(int k2 = 0; k2 < list.size(); ++k2)
         {
-            Entity entity = (Entity)list.get(k2);
+            Entity entity = list.get(k2);
             if(!entity.isImmuneToExplosions())
             {
                 double d12 = entity.getDistance(this.explosionX, this.explosionY, this.explosionZ) / (double)f3;
@@ -156,7 +158,7 @@ public class IEExplosion extends Explosion
                     double d5 = entity.posX - this.explosionX;
                     double d7 = entity.posY + (double)entity.getEyeHeight() - this.explosionY;
                     double d9 = entity.posZ - this.explosionZ;
-                    double d13 = (double)MathHelper.sqrt_double(d5 * d5 + d7 * d7 + d9 * d9);
+                    double d13 = (double) MathHelper.sqrt_double(d5 * d5 + d7 * d7 + d9 * d9);
                     if(d13 != 0.0D)
                     {
                         d5 = d5 / d13;
@@ -164,13 +166,13 @@ public class IEExplosion extends Explosion
                         d9 = d9 / d13;
                         double d14 = (double)this.worldObj.getBlockDensity(vec3, entity.getEntityBoundingBox());
                         double d10 = (1.0D - d12) * d14;
-                        entity.attackEntityFrom(DamageSource.setExplosionSource(this), (float)((int)((d10 * d10 + d10) / 2.0D * 8.0D * (double)f3 + 1.0D)));
-                        double d11 = EnchantmentProtection.func_92092_a(entity, d10);
+                        entity.attackEntityFrom(DamageSource.causeExplosionDamage(this), (float)((int)((d10 * d10 + d10) / 2.0D * 8.0D * (double)f3 + 1.0D)));
+                        double d11 = entity instanceof EntityLivingBase?EnchantmentProtection.getBlastDamageReduction((EntityLivingBase)entity, d10):d10;
                         entity.motionX += d5 * d11;
                         entity.motionY += d7 * d11;
                         entity.motionZ += d9 * d11;
                         if (entity instanceof EntityPlayer && !((EntityPlayer)entity).capabilities.disableDamage)
-                            this.playerKnockbackMap.put((EntityPlayer)entity, new Vec3(d5 * d10, d7 * d10, d9 * d10));
+                            this.playerKnockbackMap.put((EntityPlayer)entity, new Vec3d(d5 * d10, d7 * d10, d9 * d10));
                     }
                 }
             }
@@ -179,12 +181,12 @@ public class IEExplosion extends Explosion
 	@Override
 	public void doExplosionB(boolean spawnParticles)
 	{
-		this.worldObj.playSoundEffect(this.explosionX, this.explosionY, this.explosionZ, "random.explode", 4.0F, (1.0F + (this.worldObj.rand.nextFloat() - this.worldObj.rand.nextFloat()) * 0.2F) * 0.7F);
+		this.worldObj.playSound(this.explosionX, this.explosionY, this.explosionZ, SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.NEUTRAL, 4.0F, (1.0F + (this.worldObj.rand.nextFloat() - this.worldObj.rand.nextFloat()) * 0.2F) * 0.7F, true);
 
 		if(this.explosionSize >= 2.0F && this.isSmoking)
-			this.worldObj.spawnParticle(EnumParticleTypes.EXPLOSION_HUGE, this.explosionX, this.explosionY, this.explosionZ, 1.0D, 0.0D, 0.0D, new int[0]);
+			this.worldObj.spawnParticle(EnumParticleTypes.EXPLOSION_HUGE, this.explosionX, this.explosionY, this.explosionZ, 1.0D, 0.0D, 0.0D);
 		else
-			this.worldObj.spawnParticle(EnumParticleTypes.EXPLOSION_LARGE, this.explosionX, this.explosionY, this.explosionZ, 1.0D, 0.0D, 0.0D, new int[0]);
+			this.worldObj.spawnParticle(EnumParticleTypes.EXPLOSION_LARGE, this.explosionX, this.explosionY, this.explosionZ, 1.0D, 0.0D, 0.0D);
 
 		EventHandler.currentExplosions.add(this);
 //		if(this.isSmoking)

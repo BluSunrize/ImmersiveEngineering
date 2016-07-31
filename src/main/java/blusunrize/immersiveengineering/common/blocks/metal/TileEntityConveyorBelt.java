@@ -2,13 +2,10 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IEProperties.PropertyBoolInverted;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IActiveState;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IUsesBooleanProperty;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.util.Utils;
+import com.google.common.collect.Lists;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
@@ -16,7 +13,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.world.World;
@@ -25,7 +23,9 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
-public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirectionalTile, IActiveState, IBlockBounds, IHammerInteraction
+import java.util.List;
+
+public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirectionalTile, IActiveState, IAdvancedCollisionBounds, IHammerInteraction
 {
 	public boolean transportUp=false;
 	public boolean transportDown=false;
@@ -46,7 +46,7 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 	@Override
 	public void onEntityCollision(World world, Entity entity)
 	{
-		if(entity!=null && !entity.isDead && !(entity instanceof EntityPlayer && ((EntityPlayer)entity).isSneaking()) && entity.posY-getPos().getY()>=0 && entity.posY-getPos().getY()<.5)
+		if(entity!=null && !entity.isDead && !(entity instanceof EntityPlayer && entity.isSneaking()) && entity.posY-getPos().getY()>=0 && entity.posY-getPos().getY()<.5)
 		{
 			if(world.isBlockIndirectlyGettingPowered(pos)>0)
 				return;
@@ -86,7 +86,7 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 			double distZ = Math.abs(getPos().offset(facing).getZ()+.5-entity.posZ);
 			double treshold = .9;
 			boolean contact = facing.getAxis()==Axis.Z?distZ<treshold: distX<treshold;
-			if (contact&&transportUp&&!world.getBlockState(getPos().offset(facing).up()).getBlock().isFullBlock())
+			if (contact&&transportUp&&!world.getBlockState(getPos().offset(facing).up()).isFullBlock())
 			{
 				double move = .4;
 				entity.setPosition(entity.posX+move*facing.getFrontOffsetX(), entity.posY+1.75*move, entity.posZ+move*facing.getFrontOffsetZ());
@@ -163,7 +163,7 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 		facing = EnumFacing.getFront(nbt.getInteger("facing"));
 		dropping = nbt.getBoolean("dropping");
 		if(descPacket && worldObj!=null)
-			worldObj.markBlockForUpdate(getPos());
+			this.markContainingBlockForUpdate(null);
 	}
 
 	@Override
@@ -216,7 +216,7 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 			else
 				transportUp = true;
 			this.markDirty();
-			worldObj.markBlockForUpdate(getPos());
+			this.markContainingBlockForUpdate(null);
 			worldObj.addBlockEvent(getPos(), this.getBlockType(), 0, 0);
 			return true;
 		}
@@ -228,16 +228,11 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 	{
 		return new float[]{0,0,0,1,transportUp||transportDown?1.125f:.125f,1};
 	}
+	static AxisAlignedBB COLISIONBB = new AxisAlignedBB(0,0,0,1,.05F,1);
 	@Override
-	public float[] getSpecialCollisionBounds()
+	public List<AxisAlignedBB> getAdvancedColisionBounds()
 	{
-		return new float[]{0,0,0,1,.05F,1};
-	}
-
-	@Override
-	public float[] getSpecialSelectionBounds()
-	{
-		return null;
+		return Lists.newArrayList(COLISIONBB);
 	}
 
 	@Override

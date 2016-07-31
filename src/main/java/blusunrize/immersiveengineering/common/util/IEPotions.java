@@ -8,7 +8,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ResourceLocation;
 
 public class IEPotions
@@ -21,59 +23,13 @@ public class IEPotions
 
 	public static void init()
 	{
-		long potionUUIDBase = 109406000905L;
-
-		flammable = new IEPotion(new ResourceLocation("ie.flammable"), true,0x8f3f1f,0, false,0).setPotionName("immersiveengineering.potion.flammable");
-		slippery = new IEPotion(new ResourceLocation("ie.slippery"), true,0x171003,0, false,1).setPotionName("immersiveengineering.potion.slippery");
-		conductive = new IEPotion(new ResourceLocation("ie.conductive"), true,0x690000,0, false,2).setPotionName("immersiveengineering.potion.conductive");
-		sticky = new IEPotion(new ResourceLocation("ie.sticky"), true,0x9c6800,0, false,3).setPotionName("immersiveengineering.potion.sticky").registerPotionAttributeModifier(SharedMonsterAttributes.movementSpeed, new UUID(potionUUIDBase,01L).toString(), -0.50000000298023224D, 2);
-		stunned = new IEPotion(new ResourceLocation("ie.stunned"), true,0x624a98,0, false,4).setPotionName("immersiveengineering.potion.stunned");
+		flammable = new IEPotion(new ResourceLocation("ie.flammable"), true,0x8f3f1f,0, false,0, true,true).setPotionName("immersiveengineering.potion.flammable");
+		slippery = new IEPotion(new ResourceLocation("ie.slippery"), true,0x171003,0, false,1, true,true).setPotionName("immersiveengineering.potion.slippery");
+		conductive = new IEPotion(new ResourceLocation("ie.conductive"), true,0x690000,0, false,2, true,true).setPotionName("immersiveengineering.potion.conductive");
+		sticky = new IEPotion(new ResourceLocation("ie.sticky"), true,0x9c6800,0, false,3, true,true).setPotionName("immersiveengineering.potion.sticky").registerPotionAttributeModifier(SharedMonsterAttributes.MOVEMENT_SPEED, Utils.generateNewUUID().toString(), -0.50000000298023224D, 2);
+		stunned = new IEPotion(new ResourceLocation("ie.stunned"), true,0x624a98,0, false,4, true,true).setPotionName("immersiveengineering.potion.stunned");
 		
 		IEApi.potions = new Potion[]{flammable,slippery,conductive,sticky,stunned};
-	}
-
-	public static void extendPotionArray(int extendBy)
-	{
-		IELogger.info("Attempting to extend PotionArray by "+extendBy);
-		Potion[] potions = new Potion[Potion.potionTypes.length + extendBy];
-		for (int i = 0; i < Potion.potionTypes.length; i++)
-			potions[i] = Potion.potionTypes[i];
-		try
-		{
-			Field field = null;
-			Field[] fields = Potion.class.getDeclaredFields();
-			for (Field f : fields)
-				if (f.getType().toString().equals("class [Lnet.minecraft.potion.Potion;"))
-				{
-					field = f;
-					break;
-				}
-
-			field.setAccessible(true);
-			Field modifiersField = Field.class.getDeclaredField("modifiers");
-			modifiersField.setAccessible(true);
-			modifiersField.setInt(field, field.getModifiers() & 0xFFFFFFEF);
-			field.set(null, potions);
-			//			IELogger.info("Variable "+Potion.potionTypes.length);
-			//			IELogger.info("Reflection "+((Potion[])Potion.class.getFields()[0].get(null)).length);
-		}
-		catch (Exception e)
-		{
-			throw new RuntimeException(e);
-		}
-	}
-	public static int getNextPotionId(int start)
-	{
-		if (Potion.potionTypes == null)
-			return -2;
-		if (start<0)
-			start = 0;
-		int max = Math.min(Potion.potionTypes.length, 256);
-		while (start<max && (Potion.potionTypes[start] != null))
-			start++;
-		if (start>=256)
-			return -1;
-		return start;
 	}
 
 	public static class IEPotion extends Potion
@@ -81,12 +37,35 @@ public class IEPotions
 		static ResourceLocation tex = new ResourceLocation("immersiveengineering","textures/gui/potioneffects.png");
 		final int tickrate;
 		final boolean halfTickRateWIthAmplifier;
-		public IEPotion(ResourceLocation resource, boolean isBad, int colour, int tick, boolean halveTick, int icon)
+		boolean showInInventory = true;
+		boolean showInHud = true;
+		public IEPotion(ResourceLocation resource, boolean isBad, int colour, int tick, boolean halveTick, int icon, boolean showInInventory, boolean showInHud)
 		{
-			super(resource, isBad, colour);
+			super(isBad, colour);
+			this.setPotionName("potion." + resource.getResourcePath());
+			this.showInInventory = showInInventory;
+			this.showInHud = showInHud;
 			this.tickrate = tick;
 			this.halfTickRateWIthAmplifier = halveTick;
 			this.setIconIndex(icon%8, icon/8);
+
+			REGISTRY.register(-1, resource, this);
+		}
+
+		@Override
+		public boolean shouldRender(PotionEffect effect)
+		{
+			return showInInventory;
+		}
+		@Override
+		public boolean shouldRenderInvText(PotionEffect effect)
+		{
+			return showInInventory;
+		}
+		@Override
+		public boolean shouldRenderHUD(PotionEffect effect)
+		{
+			return showInHud;
 		}
 
 		@Override
@@ -101,7 +80,7 @@ public class IEPotions
 			if(tickrate<0)
 				return false;
 			int k = tickrate >> amplifier;
-			return k>0 ? duration%k == 0 : true;
+			return k <= 0 || duration % k == 0;
 		}
 		@Override
 		public void performEffect(EntityLivingBase living, int amplifier)
@@ -109,12 +88,13 @@ public class IEPotions
 			if(this==IEPotions.slippery)
 			{
 				if(living.onGround)
-					living.moveFlying(0,1, 0.005F);
-				if(!living.worldObj.isRemote && living.getRNG().nextInt(300)==0 && living.getEquipmentInSlot(0)!=null)
+					living.moveRelative(0,1, 0.005F);
+				EntityEquipmentSlot hand = living.getRNG().nextBoolean()?EntityEquipmentSlot.MAINHAND:EntityEquipmentSlot.OFFHAND;
+				if(!living.worldObj.isRemote && living.getRNG().nextInt(300)==0 && living.getItemStackFromSlot(hand)!=null)
 				{
-					EntityItem dropped = living.entityDropItem(living.getEquipmentInSlot(0).copy(), 1);
+					EntityItem dropped = living.entityDropItem(living.getItemStackFromSlot(hand).copy(), 1);
 					dropped.setPickupDelay(20);
-					living.setCurrentItemOrArmor(0, null);
+					living.setItemStackToSlot(hand, null);
 				}
 			}
 		}

@@ -1,10 +1,5 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.google.common.collect.Lists;
-
 import blusunrize.immersiveengineering.api.crafting.CrusherRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.common.Config;
@@ -15,6 +10,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundTil
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockCrusher;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import blusunrize.immersiveengineering.common.util.Utils;
+import com.google.common.collect.Lists;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
@@ -23,12 +19,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
@@ -37,6 +33,9 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TileEntityCrusher extends TileEntityMultiblockMetal<TileEntityCrusher,CrusherRecipe> implements ISoundTile, IAdvancedSelectionBounds,IAdvancedCollisionBounds
 {
@@ -105,7 +104,7 @@ public class TileEntityCrusher extends TileEntityMultiblockMetal<TileEntityCrush
 		//			else
 		//				renderAABB = AxisAlignedBB.getBoundingBox(xCoord,yCoord,zCoord, xCoord,yCoord,zCoord);
 		//		return renderAABB;
-		return AxisAlignedBB.fromBounds(getPos().getX()-(facing.getAxis()==Axis.Z?2:1),getPos().getY(),getPos().getZ()-(facing.getAxis()==Axis.X?2:1), getPos().getX()+(facing.getAxis()==Axis.Z?3:2),getPos().getY()+3,getPos().getZ()+(facing.getAxis()==Axis.X?3:2));
+		return new AxisAlignedBB(getPos().getX()-(facing.getAxis()==Axis.Z?2:1),getPos().getY(),getPos().getZ()-(facing.getAxis()==Axis.X?2:1), getPos().getX()+(facing.getAxis()==Axis.Z?3:2),getPos().getY()+3,getPos().getZ()+(facing.getAxis()==Axis.X?3:2));
 	}
 	@Override
 	@SideOnly(Side.CLIENT)
@@ -167,16 +166,6 @@ public class TileEntityCrusher extends TileEntityMultiblockMetal<TileEntityCrush
 		return new float[]{0,0,0,1,1,1};
 	}
 	@Override
-	public float[] getSpecialCollisionBounds()
-	{
-		return null;
-	}
-	@Override
-	public float[] getSpecialSelectionBounds()
-	{
-		return null;
-	}
-	@Override
 	public List<AxisAlignedBB> getAdvancedSelectionBounds()
 	{
 		if(pos%15==7)
@@ -187,18 +176,18 @@ public class TileEntityCrusher extends TileEntityMultiblockMetal<TileEntityCrush
 			fw = fw.getOpposite();
 		if(pos==4)
 		{
-			List<AxisAlignedBB> list = Lists.newArrayList(AxisAlignedBB.fromBounds(0,0,0, 1,.5f,1).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(0,0,0, 1,.5f,1).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
 			float minX = fl==EnumFacing.WEST?.625f: fl==EnumFacing.EAST?.125f: .125f;
 			float maxX = fl==EnumFacing.EAST?.375f: fl==EnumFacing.WEST?.875f: .25f;
 			float minZ = fl==EnumFacing.NORTH?.625f: fl==EnumFacing.SOUTH?.125f: .125f;
 			float maxZ = fl==EnumFacing.SOUTH?.375f: fl==EnumFacing.NORTH?.875f: .25f;
-			list.add(AxisAlignedBB.fromBounds(minX,.5f,minZ, maxX,1,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+			list.add(new AxisAlignedBB(minX,.5f,minZ, maxX,1,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
 
 			minX = fl==EnumFacing.WEST?.625f: fl==EnumFacing.EAST?.125f: .75f;
 			maxX = fl==EnumFacing.EAST?.375f: fl==EnumFacing.WEST?.875f: .875f;
 			minZ = fl==EnumFacing.NORTH?.625f: fl==EnumFacing.SOUTH?.125f: .75f;
 			maxZ = fl==EnumFacing.SOUTH?.375f: fl==EnumFacing.NORTH?.875f: .875f;
-			list.add(AxisAlignedBB.fromBounds(minX,.5f,minZ, maxX,1,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+			list.add(new AxisAlignedBB(minX,.5f,minZ, maxX,1,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
 			return list;
 		}
 		if((pos>20 && pos<24)||(pos>35 && pos<39))
@@ -210,7 +199,7 @@ public class TileEntityCrusher extends TileEntityMultiblockMetal<TileEntityCrush
 			float minZ = (pos%5==1&&fw==EnumFacing.SOUTH)||(pos%5==3&&fw==EnumFacing.NORTH)?.4375f: 0;
 			float maxZ = (pos%5==1&&fw==EnumFacing.NORTH)||(pos%5==3&&fw==EnumFacing.SOUTH)?.5625f: 1;
 			if(pos>20 && pos<24)
-				list.add(AxisAlignedBB.fromBounds(minX,.5f,minZ, maxX,.75f,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+				list.add(new AxisAlignedBB(minX,.5f,minZ, maxX,.75f,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
 			else
 				minY = 0;
 
@@ -218,7 +207,7 @@ public class TileEntityCrusher extends TileEntityMultiblockMetal<TileEntityCrush
 			maxX = (pos%5==1&&fw==EnumFacing.WEST)||(pos%5==3&&fw==EnumFacing.EAST)?.8125f: (pos%5==1&&fw==EnumFacing.EAST)||(pos%5==3&&fw==EnumFacing.WEST)?.4375f: 1;
 			minZ = (pos%5==1&&fw==EnumFacing.SOUTH)||(pos%5==3&&fw==EnumFacing.NORTH)?.1875f: (pos%5==1&&fw==EnumFacing.NORTH)||(pos%5==3&&fw==EnumFacing.SOUTH)?.5625f: 0;
 			maxZ = (pos%5==1&&fw==EnumFacing.NORTH)||(pos%5==3&&fw==EnumFacing.SOUTH)?.8125f: (pos%5==1&&fw==EnumFacing.SOUTH)||(pos%5==3&&fw==EnumFacing.NORTH)?.4375f :1;
-			list.add(AxisAlignedBB.fromBounds(minX,minY,minZ, maxX,1,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+			list.add(new AxisAlignedBB(minX,minY,minZ, maxX,1,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
 			return list;
 		}
 		if((pos>15 && pos<19)||(pos>30 && pos<34)||(pos>25 && pos<29)||(pos>40 && pos<44))
@@ -232,7 +221,7 @@ public class TileEntityCrusher extends TileEntityMultiblockMetal<TileEntityCrush
 			float minZ = (pos%5==1&&fw==EnumFacing.SOUTH)||(pos%5==3&&fw==EnumFacing.NORTH)?.4375f: fl==EnumFacing.SOUTH?.4375f: 0;
 			float maxZ = (pos%5==1&&fw==EnumFacing.NORTH)||(pos%5==3&&fw==EnumFacing.SOUTH)?.5625f: fl==EnumFacing.NORTH?.5625f: 1;
 			if((pos>15 && pos<19) || (pos>25 && pos<29))
-				list.add(AxisAlignedBB.fromBounds(minX,.5f,minZ, maxX,.75f,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+				list.add(new AxisAlignedBB(minX,.5f,minZ, maxX,.75f,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
 			else
 				minY = 0;
 
@@ -243,14 +232,14 @@ public class TileEntityCrusher extends TileEntityMultiblockMetal<TileEntityCrush
 			maxX = (pos%5==1&&fw==EnumFacing.WEST)||(pos%5==3&&fw==EnumFacing.EAST)?.8125f: fl==EnumFacing.WEST?.8125f: fl==EnumFacing.EAST?.4375f: 1;
 			minZ = (pos%5==1&&fw==EnumFacing.SOUTH)||(pos%5==3&&fw==EnumFacing.NORTH)?.1875f: fl==EnumFacing.SOUTH?.1875f: fl==EnumFacing.NORTH?.5625f: 0;
 			maxZ = (pos%5==1&&fw==EnumFacing.NORTH)||(pos%5==3&&fw==EnumFacing.SOUTH)?.8125f: fl==EnumFacing.NORTH?.8125f: fl==EnumFacing.SOUTH?.4375f: 1;
-			list.add(AxisAlignedBB.fromBounds(minX,minY,minZ, maxX,1,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+			list.add(new AxisAlignedBB(minX,minY,minZ, maxX,1,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
 			if(pos!=17&&pos!=32 && pos!=27&&pos!=42)
 			{
 				minX = (pos%5==1&&fw==EnumFacing.EAST)||(pos%5==3&&fw==EnumFacing.WEST)?.1875f: fl==EnumFacing.EAST?.4375f: fl==EnumFacing.WEST?0: .5625f;
 				maxX = (pos%5==1&&fw==EnumFacing.WEST)||(pos%5==3&&fw==EnumFacing.EAST)?.8125f: fl==EnumFacing.WEST?.5625f: fl==EnumFacing.EAST?1: .4375f;
 				minZ = (pos%5==1&&fw==EnumFacing.SOUTH)||(pos%5==3&&fw==EnumFacing.NORTH)?.1875f: fl==EnumFacing.SOUTH?.4375f: fl==EnumFacing.NORTH?0: .5625f;
 				maxZ = (pos%5==1&&fw==EnumFacing.NORTH)||(pos%5==3&&fw==EnumFacing.SOUTH)?.8125f: fl==EnumFacing.NORTH?.5625f: fl==EnumFacing.SOUTH?1: .4375f;
-				list.add(AxisAlignedBB.fromBounds(minX,minY,minZ, maxX,1,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+				list.add(new AxisAlignedBB(minX,minY,minZ, maxX,1,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
 
 				if(pos%15%10==1)
 					fw = fw.getOpposite();
@@ -260,14 +249,14 @@ public class TileEntityCrusher extends TileEntityMultiblockMetal<TileEntityCrush
 					maxX = fl==EnumFacing.EAST?.5f: fl==EnumFacing.WEST?.75f: fw==EnumFacing.EAST?.75f: .5f;
 					minZ = fl==EnumFacing.NORTH?.5f: fl==EnumFacing.SOUTH?.25f: fw==EnumFacing.SOUTH?.5f: .25f;
 					maxZ = fl==EnumFacing.SOUTH?.5f: fl==EnumFacing.NORTH?.75f: fw==EnumFacing.SOUTH?.75f: .5f;
-					list.add(AxisAlignedBB.fromBounds(minX,0,minZ, maxX,.5f,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+					list.add(new AxisAlignedBB(minX,0,minZ, maxX,.5f,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
 				}
 			}
 			return list;
 		}
 		if(pos==1||pos==3||pos==11||pos==13)
 		{
-			List<AxisAlignedBB> list = Lists.newArrayList(AxisAlignedBB.fromBounds(0,0,0, 1,.5f,1).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(0,0,0, 1,.5f,1).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
 			if(pos%15>9)
 				fl = fl.getOpposite();
 			if(pos%15%10==1)
@@ -276,7 +265,7 @@ public class TileEntityCrusher extends TileEntityMultiblockMetal<TileEntityCrush
 			float maxX = fl==EnumFacing.EAST?.5f: fl==EnumFacing.WEST?.75f: fw==EnumFacing.EAST?.75f: .5f;
 			float minZ = fl==EnumFacing.NORTH?.5f: fl==EnumFacing.SOUTH?.25f: fw==EnumFacing.SOUTH?.5f: .25f;
 			float maxZ = fl==EnumFacing.SOUTH?.5f: fl==EnumFacing.NORTH?.75f: fw==EnumFacing.SOUTH?.75f: .5f;
-			list.add(AxisAlignedBB.fromBounds(minX,.5f,minZ, maxX,1,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+			list.add(new AxisAlignedBB(minX,.5f,minZ, maxX,1,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
 
 			return list;
 		}
@@ -284,7 +273,7 @@ public class TileEntityCrusher extends TileEntityMultiblockMetal<TileEntityCrush
 		return null;
 	}
 	@Override
-	public boolean isOverrideBox(AxisAlignedBB box, EntityPlayer player, MovingObjectPosition mop, ArrayList<AxisAlignedBB> list)
+	public boolean isOverrideBox(AxisAlignedBB box, EntityPlayer player, RayTraceResult mop, ArrayList<AxisAlignedBB> list)
 	{
 		return false;
 	}
@@ -303,8 +292,8 @@ public class TileEntityCrusher extends TileEntityMultiblockMetal<TileEntityCrush
 			TileEntityCrusher master = master();
 			if(master==null)
 				return;
-			Vec3 center = new Vec3(master.getPos()).addVector(.5,.75,.5);
-			AxisAlignedBB crusherInternal = AxisAlignedBB.fromBounds(center.xCoord-1.0625,center.yCoord,center.zCoord-1.0625, center.xCoord+1.0625,center.yCoord+1.25,center.zCoord+1.0625);
+			Vec3d center = new Vec3d(master.getPos()).addVector(.5,.75,.5);
+			AxisAlignedBB crusherInternal = new AxisAlignedBB(center.xCoord-1.0625,center.yCoord,center.zCoord-1.0625, center.xCoord+1.0625,center.yCoord+1.25,center.zCoord+1.0625);
 			if(!entity.getEntityBoundingBox().intersectsWith(crusherInternal))
 				return;
 			if(entity instanceof EntityItem && ((EntityItem)entity).getEntityItem()!=null)
@@ -429,6 +418,21 @@ public class TileEntityCrusher extends TileEntityMultiblockMetal<TileEntityCrush
 	public FluidTank[] getInternalTanks()
 	{
 		return null;
+	}
+	@Override
+	protected FluidTank[] getAccessibleFluidTanks(EnumFacing side)
+	{
+		return new FluidTank[0];
+	}
+	@Override
+	protected boolean canFillTankFrom(int iTank, EnumFacing side, FluidStack resources)
+	{
+		return false;
+	}
+	@Override
+	protected boolean canDrainTankFrom(int iTank, EnumFacing side)
+	{
+		return false;
 	}
 	@Override
 	public void doGraphicalUpdates(int slot)

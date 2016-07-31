@@ -1,11 +1,5 @@
 package blusunrize.immersiveengineering.api;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
-
 import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
 import blusunrize.lib.manual.ManualInstance;
 import blusunrize.lib.manual.ManualPages;
@@ -19,9 +13,15 @@ import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.client.resources.I18n;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.TextFormatting;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ManualPageMultiblock extends ManualPages
 {
@@ -161,12 +161,20 @@ public class ManualPageMultiblock extends ManualPages
 									i++;
 									Block b = Block.getBlockFromItem(row[w].getItem());
 
-									ManualUtils.mc().getTextureManager().bindTexture(TextureMap.locationBlocksTexture);
-									
+									ManualUtils.mc().getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+
 									GL11.glPushMatrix();
 									GL11.glTranslatef(w-structureWidth/2-.5f, h-structureHeight/2, l-structureLength/2+.5f);
 									if(!multiblock.overwriteBlockRender(row[w], iterator++) && b!=null)
-										blockRender.renderBlockBrightness(b.getStateFromMeta(row[w].getItemDamage()), .75f);
+										blockRender.renderBlockBrightness(b.getStateFromMeta(row[w].getMetadata()), 1);
+//										blockRender.renderBlockBrightness(Blocks.DIRT.getDefaultState(), 1);
+//									{
+//										ItemStack stack = new ItemStack(ModBlocks.pylon, 1, state.getBlock().getMetaFromState(state));
+//										IBakedModel model = Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getItemModel(stack);
+//
+//									}
+//										blockRender.getBlockModelRenderer().renderModelBrightness(model, state, 1.0F, false);
+
 									GL11.glPopMatrix();
 									//								RenderItem.getInstance().renderItemIntoGUI(manual.fontRenderer, ManualUtils.mc().renderEngine, row[w], x+xx, y+yy);
 									if(mx>=x+xx&&mx<x+xx+16 && my>=y+yy&&my<y+yy+16)
@@ -195,7 +203,7 @@ public class ManualPageMultiblock extends ManualPages
 			if(this.multiblock.getTotalMaterials()!=null && mx>=x+116&&mx<x+122 && my>=y+yOffTotal/2-4&&my<y+yOffTotal/2+4)
 			{
 				ArrayList<String> components = new ArrayList();
-				components.add(StatCollector.translateToLocal("desc.ImmersiveEngineering.info.reqMaterial"));
+				components.add(I18n.format("desc.immersiveengineering.info.reqMaterial"));
 				int maxOff = 1;
 				for(ItemStack ss : this.multiblock.getTotalMaterials())
 					if((""+ss.stackSize).length()>maxOff)
@@ -210,7 +218,7 @@ public class ManualPageMultiblock extends ManualPages
 						if(indent>0)
 							for(int ii=0;ii<indent;ii++)
 								sIndent+="0";
-						components.add(""+EnumChatFormatting.GRAY+sIndent+ss.stackSize+"x "+EnumChatFormatting.RESET+ss.getRarity().rarityColor+ss.getDisplayName());
+						components.add(""+ TextFormatting.GRAY+sIndent+ss.stackSize+"x "+ TextFormatting.RESET+ss.getRarity().rarityColor+ss.getDisplayName());
 					}
 				gui.drawHoveringText(components, mx, my, manual.fontRenderer);
 			}

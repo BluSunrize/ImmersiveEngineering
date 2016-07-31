@@ -18,7 +18,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -54,7 +54,7 @@ public class MultiblockSqueezer implements IMultiblock
 					else if(h==2)
 					{
 						if(l==1&&w==1)
-							structure[h][l][w] = new ItemStack(Blocks.piston);
+							structure[h][l][w] = new ItemStack(Blocks.PISTON);
 						else if(l>0&&w<2)
 							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration1,1,BlockTypes_MetalDecoration1.STEEL_FENCE.getMeta());
 					}
@@ -217,7 +217,7 @@ public class MultiblockSqueezer implements IMultiblock
 					{
 						if(l==0&&w==0)
 						{
-							if(!Utils.isBlockAt(world, pos, Blocks.piston, -1))
+							if(!Utils.isBlockAt(world, pos, Blocks.PISTON, -1))
 								return false;
 						}
 						else if(l>-1&&w<1)
@@ -236,7 +236,7 @@ public class MultiblockSqueezer implements IMultiblock
 			new ItemStack(IEContent.blockMetalDecoration0,1,BlockTypes_MetalDecoration0.RS_ENGINEERING.getMeta()),
 			new ItemStack(IEContent.blockMetalDecoration0,2,BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta()),
 			new ItemStack(IEContent.blockWoodenDevice0,4,BlockTypes_WoodenDevice0.BARREL.getMeta()),
-			new ItemStack(Blocks.piston),
+			new ItemStack(Blocks.PISTON),
 			new ItemStack(IEContent.blockMetalDecoration1,3,BlockTypes_MetalDecoration1.STEEL_FENCE.getMeta())};
 	@Override
 	public ItemStack[] getTotalMaterials()

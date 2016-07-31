@@ -2,6 +2,8 @@ package blusunrize.immersiveengineering.client;
 
 import java.util.LinkedHashSet;
 
+import net.minecraft.client.resources.I18n;
+import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.input.Keyboard;
 
 import blusunrize.immersiveengineering.api.ManualHelper;
@@ -12,8 +14,6 @@ import blusunrize.lib.manual.ManualInstance;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 
@@ -37,7 +37,7 @@ public class IEManualInstance extends ManualInstance
 	public String formatText(String s)
 	{
 		String translKey = "ie.manual.entry."+s;
-		String translated = StatCollector.translateToLocal(translKey);
+		String translated = I18n.format(translKey);
 		if(translKey!=translated)
 			s = translated;
 		String splitKey = ";";
@@ -118,7 +118,7 @@ public class IEManualInstance extends ManualInstance
 				World world = DimensionManager.getWorld(dim);
 				if(world!=null && world.provider!=null)
 				{
-					String name = world.provider.getDimensionName();
+					String name = world.provider.getDimensionType().getName();
 					if(name.toLowerCase().startsWith("the "))
 						name = name.substring(4);
 					result = name;
@@ -154,13 +154,13 @@ public class IEManualInstance extends ManualInstance
 		{
 			overflow=0;
 			int end = 0;
-			while( (start=s.indexOf(EnumChatFormatting.RESET.toString(),end))>=0 && overflow<50)
+			while( (start=s.indexOf(TextFormatting.RESET.toString(),end))>=0 && overflow<50)
 			{
 				overflow++;
-				end = start+EnumChatFormatting.RESET.toString().length();
-				s = s.substring(0,end)+EnumChatFormatting.BOLD.toString()+s.substring(end);
+				end = start+ TextFormatting.RESET.toString().length();
+				s = s.substring(0,end)+ TextFormatting.BOLD.toString()+s.substring(end);
 			}
-			s = EnumChatFormatting.BOLD + s;
+			s = TextFormatting.BOLD + s;
 		}
 		return s;
 	}
@@ -199,6 +199,7 @@ public class IEManualInstance extends ManualInstance
 		if(improveReadability())
 			((IEItemFontRender)this.fontRenderer).verticalBoldness=true;
 	}
+	@Override
 	public void entryRenderPost()
 	{
 		if(improveReadability())
@@ -229,7 +230,7 @@ public class IEManualInstance extends ManualInstance
 	@Override
 	public String getManualName()
 	{
-		return StatCollector.translateToLocal("item.ImmersiveEngineering.tool.manual.name");
+		return I18n.format("item.immersiveengineering.tool.manual.name");
 	}
 	@Override
 	public void addEntry(String name, String category, IManualPage... pages)
@@ -247,17 +248,17 @@ public class IEManualInstance extends ManualInstance
 	@Override
 	public String formatCategoryName(String s)
 	{
-		return (improveReadability()?EnumChatFormatting.BOLD:"")+StatCollector.translateToLocal("ie.manual.category."+s+".name");
+		return (improveReadability()? TextFormatting.BOLD:"")+ I18n.format("ie.manual.category."+s+".name");
 	}
 	@Override
 	public String formatEntryName(String s)
 	{
-		return (improveReadability()?EnumChatFormatting.BOLD:"")+StatCollector.translateToLocal("ie.manual.entry."+s+".name");
+		return (improveReadability()? TextFormatting.BOLD:"")+ I18n.format("ie.manual.entry."+s+".name");
 	}
 	@Override
 	public String formatEntrySubtext(String s)
 	{
-		return StatCollector.translateToLocal("ie.manual.entry."+s+".subtext");
+		return I18n.format("ie.manual.entry."+s+".subtext");
 	}
 	@Override
 	public boolean showEntryInList(ManualEntry entry)

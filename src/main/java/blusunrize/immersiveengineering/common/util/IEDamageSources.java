@@ -9,6 +9,7 @@ import blusunrize.immersiveengineering.common.entities.EntityRailgunShot;
 import blusunrize.immersiveengineering.common.entities.EntityRevolvershot;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSource;
@@ -53,11 +54,11 @@ public class IEDamageSources
 			if (e instanceof EntityLivingBase)
 			{
 				Map<String, Object> cache = new HashMap<>();
-				for (int i = 0;i<=4;i++)
+				for(EntityEquipmentSlot slot : EntityEquipmentSlot.values())
 				{
-					ItemStack s = ((EntityLivingBase)e).getEquipmentInSlot(i);
+					ItemStack s = ((EntityLivingBase)e).getItemStackFromSlot(slot);
 					if (s!=null&&s.getItem() instanceof ITeslaEquipment)
-						((ITeslaEquipment)s.getItem()).onStrike(s, i, (EntityLivingBase)e, cache, this);
+						((ITeslaEquipment)s.getItem()).onStrike(s, slot, (EntityLivingBase)e, cache, this);
 				}
 			}
 			if (dmg>0)

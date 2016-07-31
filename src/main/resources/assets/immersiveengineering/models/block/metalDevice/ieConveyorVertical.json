@@ -1,6 +1,5 @@
 {
 	"elements": [
-	//Conveyor
 	{
 		"from": [ 1,0,0 ],
 		"to": [ 15,16,2 ],
@@ -13,7 +12,7 @@
 			"east": { "texture": "#wall", "uv": [0,0,2,16] }
 		}
 	},
-	//Walls
+
 	{
 		"from": [ 0,0,0 ],
 		"to": [ 1,16,3 ],

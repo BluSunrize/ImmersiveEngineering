@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.common.gui;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
@@ -28,11 +29,11 @@ public class ContainerIEBase<T extends TileEntity> extends Container
 	}
 
 	@Override
-	public ItemStack slotClick(int id, int button, int modifier, EntityPlayer player)
+	public ItemStack slotClick(int id, int button, ClickType clickType, EntityPlayer player)
 	{
-		Slot slot = id<0?null: (Slot)this.inventorySlots.get(id);
+		Slot slot = id<0?null: this.inventorySlots.get(id);
 		if(!(slot instanceof IESlot.Ghost))
-			return super.slotClick(id, button, modifier, player);
+			return super.slotClick(id, button, clickType, player);
 		//Spooky Ghost Slots!!!!
 		ItemStack stack = null;
 		ItemStack stackSlot = slot.getStack();
@@ -77,7 +78,7 @@ public class ContainerIEBase<T extends TileEntity> extends Container
 	public ItemStack transferStackInSlot(EntityPlayer player, int slot)
 	{
 		ItemStack stack = null;
-		Slot slotObject = (Slot) inventorySlots.get(slot);
+		Slot slotObject = inventorySlots.get(slot);
 
 		if(slotObject != null && slotObject.getHasStack())
 		{

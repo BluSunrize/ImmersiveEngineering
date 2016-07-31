@@ -18,10 +18,10 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
@@ -36,7 +36,7 @@ import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
-public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAssembler,IMultiblockRecipe> implements IFluidHandler, IGuiTile// IAdvancedSelectionBounds,IAdvancedCollisionBounds
+public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAssembler,IMultiblockRecipe> implements IGuiTile// IAdvancedSelectionBounds,IAdvancedCollisionBounds
 {
 	public TileEntityAssembler()
 	{
@@ -209,7 +209,7 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 		if(update)
 		{
 			this.markDirty();
-			worldObj.markBlockForUpdate(getPos());
+			this.markContainingBlockForUpdate(null);
 		}
 	}
 	public boolean consumeItem(Object query, int querySize, ItemStack[] inventory, ArrayList<ItemStack> containerItems)
@@ -220,7 +220,7 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 				{
 					tank.drain(((FluidStack)query).amount, true);
 					markDirty();
-					worldObj.markBlockForUpdate(getPos());
+					this.markContainingBlockForUpdate(null);
 					return true;
 				}
 		for(int i=0; i<inventory.length; i++)
@@ -364,16 +364,6 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 			xMax = .8125f;
 		return new float[]{xMin,yMin,zMin, xMax,yMax,zMax};
 	}
-	@Override
-	public float[] getSpecialCollisionBounds()
-	{
-		return null;
-	}
-	@Override
-	public float[] getSpecialSelectionBounds()
-	{
-		return null;
-	}
 
 	@Override
 	public int[] getEnergyPos()
@@ -465,7 +455,7 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 	public void doGraphicalUpdates(int slot)
 	{
 		this.markDirty();
-		worldObj.markBlockForUpdate(getPos());
+		this.markContainingBlockForUpdate(null);
 	}
 
 
@@ -495,6 +485,7 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 		return super.getCapability(capability, facing);
 	}
 
+
 	@Override
 	public IMultiblockRecipe findRecipeForInsertion(ItemStack inserting)
 	{
@@ -523,68 +514,25 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 		return master();
 	}
 
-	@Override
-	public int fill(EnumFacing from, FluidStack resource, boolean doFill)
-	{
-		if(!formed || resource==null)
-			return 0;
-		if(!canFill(from, resource.getFluid()))
-			return 0;
-		TileEntityAssembler master = this.master();
-		if(master==null)
-			return 0;
 
-		int fill = -1;
-		for(FluidTank tank : master.tanks)
-			if(tank.getFluid()!=null && tank.getFluid().isFluidEqual(resource))
-			{
-				fill = tank.fill(resource, doFill);
-				break;
-			}
-		if(fill==-1)
-			for(FluidTank tank : master.tanks)
-			{
-				fill = tank.fill(resource, doFill);
-				if(fill>0)
-					break;
-			}
-		if(fill>0)
-		{
-			master.markDirty();
-			worldObj.markBlockForUpdate(master.getPos());
-		}
-		return fill<0?0:fill;
+
+	@Override
+	protected FluidTank[] getAccessibleFluidTanks(EnumFacing side)
+	{
+		TileEntityAssembler master = master();
+		if(master!=null && pos==1&&(side==null||side==facing.getOpposite()))
+			return master.tanks;
+		return new FluidTank[0];
 	}
 	@Override
-	public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain)
+	protected boolean canFillTankFrom(int iTank, EnumFacing side, FluidStack resource)
 	{
-		return resource==null?null:this.drain(from, resource.amount, doDrain);
+		return true;
 	}
 	@Override
-	public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain)
+	protected boolean canDrainTankFrom(int iTank, EnumFacing side)
 	{
-		return null;
-	}
-	@Override
-	public boolean canFill(EnumFacing from, Fluid fluid)
-	{
-		return pos==1&&(from==null||from==facing.getOpposite());
-	}
-	@Override
-	public boolean canDrain(EnumFacing from, Fluid fluid)
-	{
-		return false;
-	}
-	@Override
-	public FluidTankInfo[] getTankInfo(EnumFacing from)
-	{
-		if(pos==1&&(from==null||from==facing.getOpposite()))
-		{
-			TileEntityAssembler master = master();
-			if(master!=null && (offset[0]!=0||offset[1]!=0||offset[2]!=0))
-				return new FluidTankInfo[]{master.tanks[0].getInfo(),master.tanks[1].getInfo(),master.tanks[2].getInfo()};
-		}
-		return new FluidTankInfo[0];
+		return true;
 	}
 
 	public static class CrafterPatternInventory implements IInventory
@@ -744,9 +692,9 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 		}
 
 		@Override
-		public IChatComponent getDisplayName()
+		public ITextComponent getDisplayName()
 		{
-			return new ChatComponentText(this.getName());
+			return new TextComponentString(this.getName());
 		}
 		@Override
 		public int getField(int id)

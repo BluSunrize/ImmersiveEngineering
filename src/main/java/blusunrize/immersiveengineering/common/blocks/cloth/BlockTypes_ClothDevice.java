@@ -11,7 +11,7 @@ public enum BlockTypes_ClothDevice implements IStringSerializable, BlockIEBase.I
 	@Override
 	public String getName()
 	{
-		return this.toString();
+		return this.toString().toLowerCase();
 	}
 	@Override
 	public int getMeta()

@@ -6,13 +6,15 @@ import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
 import blusunrize.immersiveengineering.common.blocks.TileEntityMultiblockPart;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumWorldBlockLayer;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.obj.OBJModel.OBJProperty;
+import net.minecraftforge.common.property.Properties;
 
 public class BlockMetalMultiblocks extends BlockIEMultiblock<BlockTypes_MetalMultiblock>
 {
@@ -31,26 +33,26 @@ public class BlockMetalMultiblocks extends BlockIEMultiblock<BlockTypes_MetalMul
 	public static final int META_bottlingMachine=12;
 	public BlockMetalMultiblocks()
 	{
-		super("metalMultiblock",Material.iron, PropertyEnum.create("type", BlockTypes_MetalMultiblock.class), ItemBlockIEBase.class, IEProperties.DYNAMICRENDER,IEProperties.BOOLEANS[0], OBJProperty.instance,IEProperties.OBJ_TEXTURE_REMAP);
+		super("metalMultiblock",Material.IRON, PropertyEnum.create("type", BlockTypes_MetalMultiblock.class), ItemBlockIEBase.class, IEProperties.DYNAMICRENDER,IEProperties.BOOLEANS[0],Properties.AnimationProperty,IEProperties.OBJ_TEXTURE_REMAP);
 		setHardness(3.0F);
 		setResistance(15.0F);
-		this.setMetaBlockLayer(BlockTypes_MetalMultiblock.TANK.getMeta(), EnumWorldBlockLayer.CUTOUT);
-		this.setMetaBlockLayer(BlockTypes_MetalMultiblock.DIESEL_GENERATOR.getMeta(), EnumWorldBlockLayer.CUTOUT);
+		this.setMetaBlockLayer(BlockTypes_MetalMultiblock.TANK.getMeta(), BlockRenderLayer.CUTOUT);
+		this.setMetaBlockLayer(BlockTypes_MetalMultiblock.DIESEL_GENERATOR.getMeta(), BlockRenderLayer.CUTOUT);
 		lightOpacity = 0;
 	}
 
 	@Override
-	public boolean isFullBlock()
+	public boolean isFullBlock(IBlockState state)
 	{
 		return false;
 	}
 	@Override
-	public boolean isFullCube()
+	public boolean isFullCube(IBlockState state)
 	{
 		return false;
 	}
 	@Override
-	public boolean isOpaqueCube()
+	public boolean isOpaqueCube(IBlockState state)
 	{
 		return false;
 	}
@@ -61,7 +63,7 @@ public class BlockMetalMultiblocks extends BlockIEMultiblock<BlockTypes_MetalMul
 		return true;
 	}
 	@Override
-	public String getCustomStateMapping(int meta)
+	public String getCustomStateMapping(int meta, boolean itemBlock)
 	{
 		if(BlockTypes_MetalMultiblock.values()[meta].needsCustomState())
 			return BlockTypes_MetalMultiblock.values()[meta].getCustomState();
@@ -317,7 +319,7 @@ public class BlockMetalMultiblocks extends BlockIEMultiblock<BlockTypes_MetalMul
 
 
 	@Override
-	public boolean isSideSolid(IBlockAccess world, BlockPos pos, EnumFacing side)
+	public boolean isSideSolid(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side)
 	{
 		TileEntity te = world.getTileEntity(pos);
 		if(te instanceof TileEntityMultiblockPart)
@@ -364,7 +366,7 @@ public class BlockMetalMultiblocks extends BlockIEMultiblock<BlockTypes_MetalMul
 			else if(te instanceof TileEntityArcFurnace)
 			{
 				if(tile.pos==2 || tile.pos==25 || tile.pos==52)
-					return side.getOpposite()==tile.facing || (tile.pos==52?side==EnumFacing.UP:false);
+					return side.getOpposite()==tile.facing || (tile.pos == 52 && side == EnumFacing.UP);
 				if(tile.pos==82 || tile.pos==86 || tile.pos==88 || tile.pos==112)
 					return side==EnumFacing.UP;
 				if( (tile.pos>=21&&tile.pos<=23) || (tile.pos>=46&&tile.pos<=48) || (tile.pos>=71&&tile.pos<=73))
@@ -377,7 +379,7 @@ public class BlockMetalMultiblocks extends BlockIEMultiblock<BlockTypes_MetalMul
 		//			if(tile.pos==9 && side.ordinal()==tile.facing)
 		//				return true;
 		//		}
-		return super.isSideSolid(world, pos, side);
+		return super.isSideSolid(state, world, pos, side);
 	}
 
 	//	@Override

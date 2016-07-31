@@ -1,9 +1,6 @@
 package blusunrize.immersiveengineering.common.items;
 
-import java.util.List;
-
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxContainerItem;
 import blusunrize.immersiveengineering.client.models.ModelManeuverGear;
 import blusunrize.immersiveengineering.common.IEContent;
@@ -11,17 +8,18 @@ import blusunrize.immersiveengineering.common.entities.EntityGrapplingHook;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.ManeuverGearHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
-import blusunrize.immersiveengineering.common.util.compat.BaublesHelper;
 import cofh.api.energy.IEnergyContainerItem;
 import net.minecraft.client.model.ModelBiped;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ISpecialArmor;
 import net.minecraftforge.fml.common.Optional;
@@ -29,9 +27,12 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import java.util.List;
+
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
-public class ItemManeuverGear extends ItemArmor implements baubles.api.IBauble, IFluxContainerItem, IEnergyContainerItem, ISpecialArmor
+public class ItemManeuverGear extends ItemArmor implements /*baubles.api.IBauble,*/ IFluxContainerItem, IEnergyContainerItem, ISpecialArmor
 {
+	//ToDo: Remove Maneuver Gear entirely!
 	public static int hookCost = 80;
 	public static int rechargeCooldown = 5*20;
 	public static int rechargeFlux = 20;
@@ -39,16 +40,16 @@ public class ItemManeuverGear extends ItemArmor implements baubles.api.IBauble, 
 
 	public ItemManeuverGear()
 	{
-		super(ArmorMaterial.LEATHER, 0, 2);
+		super(ArmorMaterial.LEATHER, 0, EntityEquipmentSlot.LEGS);
 		String name = "maneuverGear";
 		this.setUnlocalizedName(ImmersiveEngineering.MODID+"."+name);
 		this.setCreativeTab(ImmersiveEngineering.creativeTab);
-		GameRegistry.registerItem(this, name);
+		ImmersiveEngineering.register(this, name);
 		IEContent.registeredIEItems.add(this);
 	}
 
 	@Override
-	public String getArmorTexture(ItemStack stack, Entity entity, int slot, String type)
+	public String getArmorTexture(ItemStack stack, Entity entity, EntityEquipmentSlot slot, String type)
 	{
 		return "immersiveengineering:textures/models/maneuverGear.png";
 	}
@@ -57,7 +58,7 @@ public class ItemManeuverGear extends ItemArmor implements baubles.api.IBauble, 
 	ModelBiped armorModel;
 	@Override
 	@SideOnly(Side.CLIENT)
-	public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, int armorSlot, ModelBiped _default)
+	public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, EntityEquipmentSlot armorSlot, ModelBiped _default)
 	{
 		ModelManeuverGear model = ModelManeuverGear.getModel();
 		return model;
@@ -72,34 +73,35 @@ public class ItemManeuverGear extends ItemArmor implements baubles.api.IBauble, 
 	@Override
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean adv)
 	{
-		list.add(StatCollector.translateToLocalFormatted("desc.ImmersiveEngineering.info.energyStored", ItemNBTHelper.getInt(stack, "energy")));
-		list.add(StatCollector.translateToLocalFormatted("desc.ImmersiveEngineering.info.gasStored", Utils.formatDouble(ItemNBTHelper.getFloat(stack, "gas")*100,"0.###")+"%"));
+		list.add(I18n.format("desc.ImmersiveEngineering.info.energyStored", ItemNBTHelper.getInt(stack, "energy")));
+		list.add(I18n.format("desc.ImmersiveEngineering.info.gasStored", Utils.formatDouble(ItemNBTHelper.getFloat(stack, "gas")*100,"0.###")+"%"));
 	}
 
 	@Override
-	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
+	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand)
 	{
-		if (player.worldObj.isRemote)
-			return stack;
-		if(Lib.BAUBLES)
-		{
-			ItemStack belt = BaublesHelper.getBauble(player, 3);
-			if(belt==null)
-			{
-				BaublesHelper.setBauble(player, 3, stack.copy());
-				stack.stackSize = 0;
-				return stack;
-			}
-		}
+		return super.onItemRightClick(stack, world, player, hand);
+//		if (player.worldObj.isRemote)
+//			return new ActionResult(EnumActionResult.PASS,stack);
+//		if(Lib.BAUBLES)
+//		{
+//			ItemStack belt = BaublesHelper.getBauble(player, 3);
+//			if(belt==null)
+//			{
+//				BaublesHelper.setBauble(player, 3, stack.copy());
+//				stack.stackSize = 0;
+//				return stack;
+//			}
+//		}
 
-		int i = EntityLiving.getArmorPosition(stack) - 1;
-		ItemStack itemstack = player.getCurrentArmor(i);
-		if(itemstack == null)
-		{
-			player.setCurrentItemOrArmor(i + 1, stack.copy());
-			stack.stackSize = 0;
-		}
-		return stack;
+//		int i = EntityLiving.getArmorPosition(stack) - 1;
+//		ItemStack itemstack = player.getCurrentArmor(i);
+//		if(itemstack == null)
+//		{
+//			player.setCurrentItemOrArmor(i + 1, stack.copy());
+//			stack.stackSize = 0;
+//		}
+//		return stack;
 	}
 	@Override
 	public void onArmorTick(World world, EntityPlayer player, ItemStack stack)
@@ -134,39 +136,39 @@ public class ItemManeuverGear extends ItemArmor implements baubles.api.IBauble, 
 	}
 
 	@Override
-	public boolean isValidArmor(ItemStack stack, int armorType, Entity entity)
+	public boolean isValidArmor(ItemStack stack, EntityEquipmentSlot armorType, Entity entity)
 	{
 		return this.armorType == armorType && entity instanceof EntityPlayer && !ManeuverGearHelper.isPlayerWearing3DMG((EntityPlayer)entity);
 	}
 
-	@Override
-	public boolean canEquip(ItemStack stack, EntityLivingBase entity)
-	{
-		return entity instanceof EntityPlayer && !ManeuverGearHelper.isPlayerWearing3DMG((EntityPlayer)entity);
-	}
-	@Override
-	public boolean canUnequip(ItemStack stack, EntityLivingBase entity)
-	{
-		return true;
-	}
-	@Override
-	public baubles.api.BaubleType getBaubleType(ItemStack stack)
-	{
-		return baubles.api.BaubleType.BELT;
-	}
-	@Override
-	public void onEquipped(ItemStack stack, EntityLivingBase entity)
-	{
-	}
-	@Override
-	public void onUnequipped(ItemStack stack, EntityLivingBase entity)
-	{
-	}
-	@Override
-	public void onWornTick(ItemStack stack, EntityLivingBase entity)
-	{
-		onEquippedTick(entity, stack);
-	}
+//	@Override
+//	public boolean canEquip(ItemStack stack, EntityLivingBase entity)
+//	{
+//		return entity instanceof EntityPlayer && !ManeuverGearHelper.isPlayerWearing3DMG((EntityPlayer)entity);
+//	}
+//	@Override
+//	public boolean canUnequip(ItemStack stack, EntityLivingBase entity)
+//	{
+//		return true;
+//	}
+//	@Override
+//	public baubles.api.BaubleType getBaubleType(ItemStack stack)
+//	{
+//		return baubles.api.BaubleType.BELT;
+//	}
+//	@Override
+//	public void onEquipped(ItemStack stack, EntityLivingBase entity)
+//	{
+//	}
+//	@Override
+//	public void onUnequipped(ItemStack stack, EntityLivingBase entity)
+//	{
+//	}
+//	@Override
+//	public void onWornTick(ItemStack stack, EntityLivingBase entity)
+//	{
+//		onEquippedTick(entity, stack);
+//	}
 
 
 	@Override

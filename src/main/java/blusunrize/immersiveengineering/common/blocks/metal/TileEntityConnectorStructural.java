@@ -5,7 +5,7 @@ import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 
@@ -41,15 +41,15 @@ public class TileEntityConnectorStructural extends TileEntityConnectorLV
 		super.readCustomNBT(nbt, descPacket);
 		rotation = nbt.getFloat("rotation");
 		if(FMLCommonHandler.instance().getEffectiveSide()==Side.CLIENT && worldObj!=null)
-			worldObj.markBlockForUpdate(pos);
+			this.markContainingBlockForUpdate(null);
 	}
 
 	@Override
-	public Vec3 getConnectionOffset(Connection con)
+	public Vec3d getConnectionOffset(Connection con)
 	{
 		EnumFacing side = facing.getOpposite();
 		double conRadius = .03125;
-		return new Vec3(.5+side.getFrontOffsetX()*(-.125-conRadius), .5+side.getFrontOffsetY()*(-.125-conRadius), .5+side.getFrontOffsetZ()*(-.125-conRadius));
+		return new Vec3d(.5+side.getFrontOffsetX()*(-.125-conRadius), .5+side.getFrontOffsetY()*(-.125-conRadius), .5+side.getFrontOffsetZ()*(-.125-conRadius));
 	}
 
 	@Override

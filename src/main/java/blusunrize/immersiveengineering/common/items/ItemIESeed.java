@@ -4,7 +4,9 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -21,23 +23,24 @@ public class ItemIESeed extends ItemIEBase implements IPlantable
 	}
 
 	@Override
-	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ)
+	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
 		if(side != EnumFacing.UP)
-			return false;
+			return EnumActionResult.PASS;
 		else if (player.canPlayerEdit(pos, side, stack) && player.canPlayerEdit(pos.add(0,1,0), side, stack))
 		{
-			if(world.getBlockState(pos).getBlock().canSustainPlant(world, pos, EnumFacing.UP, this) && world.isAirBlock(pos.add(0,1,0)))
+			IBlockState state = world.getBlockState(pos);
+			if(state.getBlock().canSustainPlant(state, world, pos, EnumFacing.UP, this) && world.isAirBlock(pos.add(0,1,0)))
 			{
 				world.setBlockState(pos.add(0,1,0), this.cropBlock.getDefaultState());
 				--stack.stackSize;
-				return true;
+				return EnumActionResult.SUCCESS;
 			}
 			else
-				return false;
+				return EnumActionResult.PASS;
 		}
 		else
-			return false;
+			return EnumActionResult.PASS;
 	}
 
 	@Override

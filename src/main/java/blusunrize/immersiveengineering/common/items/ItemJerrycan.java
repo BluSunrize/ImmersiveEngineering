@@ -2,22 +2,28 @@ package blusunrize.immersiveengineering.common.items;
 
 import java.util.List;
 
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.items.wrapper.InvWrapper;
 
 public class ItemJerrycan extends ItemIEBase implements IFluidContainerItem
 {
@@ -33,21 +39,22 @@ public class ItemJerrycan extends ItemIEBase implements IFluidContainerItem
 		FluidStack fs = getFluid(stack);
 		if(fs!=null)
 		{
-			EnumChatFormatting rarity = fs.getFluid().getRarity()==EnumRarity.COMMON?EnumChatFormatting.GRAY:fs.getFluid().getRarity().rarityColor;
-			list.add(rarity+fs.getLocalizedName()+EnumChatFormatting.GRAY+": "+fs.amount+"/"+getCapacity(stack)+"mB");
+			TextFormatting rarity = fs.getFluid().getRarity()==EnumRarity.COMMON? TextFormatting.GRAY:fs.getFluid().getRarity().rarityColor;
+			list.add(rarity+fs.getLocalizedName()+ TextFormatting.GRAY+": "+fs.amount+"/"+getCapacity(stack)+"mB");
 		}
 		else
-			list.add(StatCollector.translateToLocal("desc.ImmersiveEngineering.flavour.drill.empty"));
+			list.add(I18n.format(Lib.DESC_FLAVOUR+"drill.empty"));
 	}
 
 	@Override
-	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ)
+	public EnumActionResult onItemUseFirst(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand)
 	{
 		if(!world.isRemote)
 		{
 			TileEntity tileEntity = world.getTileEntity(pos);
-			if(tileEntity instanceof IFluidHandler)
-				return Utils.fillFluidHandlerWithPlayerItem(world, (IFluidHandler)tileEntity, player);
+			if(tileEntity!=null && tileEntity.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY,null))
+				return FluidUtil.tryEmptyContainerAndStow(stack,tileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY,null),new InvWrapper(player.inventory),getFluid(stack).amount,player)?EnumActionResult.SUCCESS:EnumActionResult.FAIL;
+//						Utils.fillFluidHandlerWithPlayerItem(world, tileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY,null), player, hand, stack)?EnumActionResult.SUCCESS:EnumActionResult.FAIL;
 			else
 			{
 				FluidStack fs = this.getFluid(stack);
@@ -56,11 +63,11 @@ public class ItemJerrycan extends ItemIEBase implements IFluidContainerItem
 					if(fs.amount<=0)
 						fs = null;
 					ItemNBTHelper.setFluidStack(stack, "fluid", fs);
-					return true;
+					return EnumActionResult.SUCCESS;
 				}
 			}
 		}
-		return false;
+		return EnumActionResult.FAIL;
 	}
 
 	@Override

@@ -13,12 +13,12 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.ITickable;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -27,7 +27,7 @@ public class TileEntityWatermill extends TileEntityIEBase implements ITickable, 
 	public EnumFacing facing = EnumFacing.NORTH;
 	public int[] offset={0,0};
 	public float rotation=0;
-	private Vec3 rotationVec = null;
+	private Vec3d rotationVec = null;
 	public boolean canTurn = false;
 	public boolean multiblock = false;
 	public float prevRotation = 0;
@@ -121,9 +121,9 @@ public class TileEntityWatermill extends TileEntityIEBase implements ITickable, 
 				IBlockState state = worldObj.getBlockState(pos);
 				if(state==null)
 					return false;
-				if(state.getBlock().isSideSolid(worldObj, pos, fdW.getOpposite()))
+				if(state.isSideSolid(worldObj, pos, fdW.getOpposite()))
 					return true;
-				if(state.getBlock().isSideSolid(worldObj, pos, fdY.getOpposite()))
+				if(state.isSideSolid(worldObj, pos, fdY.getOpposite()))
 					return true;
 			}
 		return false;
@@ -137,13 +137,13 @@ public class TileEntityWatermill extends TileEntityIEBase implements ITickable, 
 	{
 		rotationVec=null;
 	}
-	public Vec3 getRotationVec()
+	public Vec3d getRotationVec()
 	{
 		if(rotationVec==null)
 		{
-			rotationVec = new Vec3(0, 0, 0);
-			Vec3 dirHoz = getHorizontalVec();
-			Vec3 dirVer = getVerticalVec();
+			rotationVec = new Vec3d(0, 0, 0);
+			Vec3d dirHoz = getHorizontalVec();
+			Vec3d dirVer = getVerticalVec();
 			rotationVec = Utils.addVectors(rotationVec, dirHoz);
 			rotationVec = Utils.addVectors(rotationVec, dirVer);
 			//			worldObj.addBlockEvent(xCoord, yCoord, zCoord, getBlockType(), (int)((float)rotationVec.xCoord*10000f), (int)((float)rotationVec.zCoord*10000f));
@@ -151,9 +151,9 @@ public class TileEntityWatermill extends TileEntityIEBase implements ITickable, 
 		return rotationVec;
 	}
 
-	Vec3 getHorizontalVec()
+	Vec3d getHorizontalVec()
 	{
-		Vec3 dir = new Vec3(0, 0, 0);
+		Vec3d dir = new Vec3d(0, 0, 0);
 		boolean faceZ = facing.ordinal()<=3;
 		dir = Utils.addVectors(dir, Utils.getFlowVector(worldObj, getPos().add(-(faceZ?1:0), +3, -(faceZ?0:1))));
 		dir = Utils.addVectors(dir, Utils.getFlowVector(worldObj, getPos().add(0, +3, 0)));
@@ -170,17 +170,17 @@ public class TileEntityWatermill extends TileEntityIEBase implements ITickable, 
 
 		return dir;
 	}
-	Vec3 getVerticalVec()
+	Vec3d getVerticalVec()
 	{
-		Vec3 dir = new Vec3(0, 0, 0);
+		Vec3d dir = new Vec3d(0, 0, 0);
 
-		Vec3 dirNeg = new Vec3(0, 0, 0);
+		Vec3d dirNeg = new Vec3d(0, 0, 0);
 		dirNeg = Utils.addVectors(dirNeg, Utils.getFlowVector(worldObj, getPos().add(-(facing.getAxis()==Axis.Z?2:0), 2,-(facing.getAxis()==Axis.Z?0:2))));
 		dirNeg = Utils.addVectors(dirNeg, Utils.getFlowVector(worldObj, getPos().add(-(facing.getAxis()==Axis.Z?3:0), 1,-(facing.getAxis()==Axis.Z?0:3))));
 		dirNeg = Utils.addVectors(dirNeg, Utils.getFlowVector(worldObj, getPos().add(-(facing.getAxis()==Axis.Z?3:0), 0,-(facing.getAxis()==Axis.Z?0:3))));
 		dirNeg = Utils.addVectors(dirNeg, Utils.getFlowVector(worldObj, getPos().add(-(facing.getAxis()==Axis.Z?3:0),-1,-(facing.getAxis()==Axis.Z?0:3))));
 		dirNeg = Utils.addVectors(dirNeg, Utils.getFlowVector(worldObj, getPos().add(-(facing.getAxis()==Axis.Z?2:0),-2,-(facing.getAxis()==Axis.Z?0:2))));
-		Vec3 dirPos = new Vec3(0, 0, 0);
+		Vec3d dirPos = new Vec3d(0, 0, 0);
 		dirPos = Utils.addVectors(dirPos, Utils.getFlowVector(worldObj, getPos().add((facing.getAxis()==Axis.Z?2:0), 2,(facing.getAxis()==Axis.Z?0:2))));
 		dirPos = Utils.addVectors(dirPos, Utils.getFlowVector(worldObj, getPos().add((facing.getAxis()==Axis.Z?3:0), 1,(facing.getAxis()==Axis.Z?0:3))));
 		dirPos = Utils.addVectors(dirPos, Utils.getFlowVector(worldObj, getPos().add((facing.getAxis()==Axis.Z?3:0), 0,(facing.getAxis()==Axis.Z?0:3))));
@@ -201,7 +201,7 @@ public class TileEntityWatermill extends TileEntityIEBase implements ITickable, 
 	@Override
 	public boolean receiveClientEvent(int id, int arg)
 	{
-		rotationVec = new Vec3(id/10000f, 0, arg/10000f);
+		rotationVec = new Vec3d(id/10000f, 0, arg/10000f);
 		return true;
 	}
 	@Override
@@ -232,9 +232,9 @@ public class TileEntityWatermill extends TileEntityIEBase implements ITickable, 
 	{
 		if(renderAABB==null)
 			if(offset[0]==0&&offset[1]==0)
-				renderAABB = AxisAlignedBB.fromBounds(getPos().getX()-(facing.getAxis()==Axis.Z?2:0),getPos().getY()-2,getPos().getZ()-(facing.getAxis()==Axis.Z?0:2), getPos().getX()+(facing.getAxis()==Axis.Z?3:0),getPos().getY()+3,getPos().getZ()+(facing.getAxis()==Axis.Z?0:3));
+				renderAABB = new AxisAlignedBB(getPos().getX()-(facing.getAxis()==Axis.Z?2:0),getPos().getY()-2,getPos().getZ()-(facing.getAxis()==Axis.Z?0:2), getPos().getX()+(facing.getAxis()==Axis.Z?3:0),getPos().getY()+3,getPos().getZ()+(facing.getAxis()==Axis.Z?0:3));
 			else
-				renderAABB = AxisAlignedBB.fromBounds(getPos().getX(),getPos().getY(),getPos().getZ(), getPos().getX()+1,getPos().getY()+1,getPos().getZ()+1);
+				renderAABB = new AxisAlignedBB(getPos().getX(),getPos().getY(),getPos().getZ(), getPos().getX()+1,getPos().getY()+1,getPos().getZ()+1);
 		return renderAABB;
 	}
 	@Override

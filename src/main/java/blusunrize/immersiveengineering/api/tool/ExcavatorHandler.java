@@ -93,7 +93,7 @@ public class ExcavatorHandler
 		if(world.isRemote)
 			return null;
 
-		int dim = world.provider.getDimensionId();
+		int dim = world.provider.getDimension();
 		DimensionChunkCoords coords = new DimensionChunkCoords(dim, chunkX,chunkZ);
 		MineralWorldInfo worldInfo = mineralCache.get(coords);
 		if(worldInfo==null)
@@ -127,7 +127,7 @@ public class ExcavatorHandler
 	{
 		MineralWorldInfo info = getMineralWorldInfo(world,chunkX,chunkZ);
 		info.depletion++;
-		IESaveData.setDirty(world.provider.getDimensionId());
+		IESaveData.setDirty(world.provider.getDimension());
 	}
 
 	public static class MineralMix

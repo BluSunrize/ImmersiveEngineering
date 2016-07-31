@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.client.render;
 
+import net.minecraft.client.renderer.VertexBuffer;
 import org.lwjgl.opengl.GL11;
 
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
@@ -8,7 +9,6 @@ import blusunrize.immersiveengineering.common.entities.EntityGrapplingHook;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -30,7 +30,7 @@ public class EntityRenderGrapplingHook extends Render<EntityGrapplingHook>
 		GlStateManager.translate(x, y, z);
 		GlStateManager.enableRescaleNormal();
 		Tessellator tes = ClientUtils.tes();
-		WorldRenderer worldrenderer = ClientUtils.tes().getWorldRenderer();
+		VertexBuffer worldrenderer = ClientUtils.tes().getBuffer();
 
 		GlStateManager.enableBlend();
 		GlStateManager.enableAlpha();

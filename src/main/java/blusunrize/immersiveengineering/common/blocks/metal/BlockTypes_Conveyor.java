@@ -12,7 +12,7 @@ public enum BlockTypes_Conveyor implements IStringSerializable, BlockIEBase.IBlo
 	@Override
 	public String getName()
 	{
-		return this.toString();
+		return this.toString().toLowerCase();
 	}
 	@Override
 	public int getMeta()

@@ -15,7 +15,7 @@ import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -155,7 +155,7 @@ public class MultiblockSilo implements IMultiblock
 						world.addBlockEvent(pos2, IEContent.blockMetalMultiblock, 255, 0);
 					}
 				}
-		player.triggerAchievement(IEAchievements.mbSilo);
+		player.addStat(IEAchievements.mbSilo);
 		return true;
 	}
 

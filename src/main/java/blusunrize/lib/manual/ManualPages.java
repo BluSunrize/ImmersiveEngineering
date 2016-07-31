@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import net.minecraft.client.resources.I18n;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
@@ -20,7 +21,6 @@ import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
-import net.minecraft.util.StatCollector;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
@@ -217,7 +217,7 @@ public abstract class ManualPages implements IManualPage
 					{
 						localizedTable[i] = new String[table[i].length];
 						for(int j=0; j<table[i].length; j++)
-							localizedTable[i][j] = StatCollector.translateToLocal(table[i][j]);
+							localizedTable[i][j] = I18n.format(table[i][j]);
 
 						if(table[i].length-1 > bars.length)
 						{

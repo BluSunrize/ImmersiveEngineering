@@ -16,7 +16,7 @@ public class CokeOvenRecipeCategory extends IERecipeCategory
 	
 	public CokeOvenRecipeCategory(IGuiHelper helper)
 	{
-		super("cokeoven","tile.ImmersiveEngineering.stoneDevice.coke_oven.name", helper.createDrawable(background, 8,13, 142, 60), CokeOvenRecipeWrapper.class);
+		super("cokeoven","tile.immersiveengineering.stoneDevice.coke_oven.name", helper.createDrawable(background, 8,13, 142, 60), CokeOvenRecipeWrapper.class);
 		tankOverlay = helper.createDrawable(background, 176,31, 16,47, -2,2,-2,2);
 	}
 	

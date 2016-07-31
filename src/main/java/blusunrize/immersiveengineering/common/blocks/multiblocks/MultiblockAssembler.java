@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
+import net.minecraft.util.math.BlockPos;
 import org.lwjgl.opengl.GL11;
 
 import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
@@ -18,7 +19,6 @@ import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.world.World;

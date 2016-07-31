@@ -16,19 +16,18 @@ import blusunrize.immersiveengineering.common.entities.EntityRevolvershotFlare;
 import blusunrize.immersiveengineering.common.entities.EntityRevolvershotHoming;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttribute;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemPotion;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.*;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.potion.PotionHelper;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.StatCollector;
-import net.minecraft.util.Vec3;
+import net.minecraft.potion.PotionUtils;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -65,7 +64,7 @@ public class ItemBullet extends ItemIEBase implements IBullet
 			ItemStack pot = ItemNBTHelper.getItemStack(stack, "potion");
 			if(pot!=null && pot.getItem() instanceof ItemPotion)
 			{
-				List effects = ((ItemPotion)pot.getItem()).getEffects(pot);
+				List effects = PotionUtils.getEffectsFromStack(pot);
 				HashMultimap hashmultimap = HashMultimap.create();
 				Iterator iterator1;
 				if(effects != null && !effects.isEmpty())
@@ -74,8 +73,8 @@ public class ItemBullet extends ItemIEBase implements IBullet
 					while(iterator1.hasNext())
 					{
 						PotionEffect potioneffect = (PotionEffect)iterator1.next();
-						String s1 = StatCollector.translateToLocal(potioneffect.getEffectName()).trim();
-						Potion potion = Potion.potionTypes[potioneffect.getPotionID()];
+						String s1 = I18n.format(potioneffect.getEffectName()).trim();
+						Potion potion = potioneffect.getPotion();
 						Map<IAttribute, AttributeModifier> map = potion.getAttributeModifierMap();
 
 						if(map!=null && map.size()>0)
@@ -91,24 +90,24 @@ public class ItemBullet extends ItemIEBase implements IBullet
 						}
 
 						if (potioneffect.getAmplifier()>0)
-							s1 = s1 + " " + StatCollector.translateToLocal("potion.potency." + potioneffect.getAmplifier()).trim();
+							s1 = s1 + " " + I18n.format("potion.potency." + potioneffect.getAmplifier()).trim();
 						if (potioneffect.getDuration()>20)
-							s1 = s1 + " (" + Potion.getDurationString(potioneffect) + ")";
+							s1 = s1 + " (" + Potion.getPotionDurationString(potioneffect,1) + ")";
 						if (potion.isBadEffect())
-							list.add(EnumChatFormatting.RED + s1);
+							list.add(TextFormatting.RED + s1);
 						else
-							list.add(EnumChatFormatting.GRAY + s1);
+							list.add(TextFormatting.GRAY + s1);
 					}
 				}
 				else
 				{
-					String s = StatCollector.translateToLocal("potion.empty").trim();
-					list.add(EnumChatFormatting.GRAY + s);
+					String s = I18n.format("potion.empty").trim();
+					list.add(TextFormatting.GRAY + s);
 				}
 				if(!hashmultimap.isEmpty())
 				{
 					list.add("");
-					list.add(EnumChatFormatting.DARK_PURPLE + StatCollector.translateToLocal("potion.effects.whenDrank"));
+					list.add(TextFormatting.DARK_PURPLE + I18n.format("potion.effects.whenDrank"));
 					iterator1 = hashmultimap.entries().iterator();
 
 					while(iterator1.hasNext())
@@ -124,11 +123,11 @@ public class ItemBullet extends ItemIEBase implements IBullet
 							d1 = attributemodifier2.getAmount() * 100.0D;
 
 						if (d0>0.0D)
-							list.add(EnumChatFormatting.BLUE + StatCollector.translateToLocalFormatted("attribute.modifier.plus." + attributemodifier2.getOperation(), new Object[] {ItemStack.DECIMALFORMAT.format(d1), StatCollector.translateToLocal("attribute.name." + (String)entry1.getKey())}));
+							list.add(TextFormatting.BLUE + I18n.format("attribute.modifier.plus." + attributemodifier2.getOperation(), ItemStack.DECIMALFORMAT.format(d1), I18n.format("attribute.name." + entry1.getKey())));
 						else if(d0<0.0D)
 						{
 							d1 *= -1.0D;
-							list.add(EnumChatFormatting.RED + StatCollector.translateToLocalFormatted("attribute.modifier.take." + attributemodifier2.getOperation(), new Object[] {ItemStack.DECIMALFORMAT.format(d1), StatCollector.translateToLocal("attribute.name." + (String)entry1.getKey())}));
+							list.add(TextFormatting.RED + I18n.format("attribute.modifier.take." + attributemodifier2.getOperation(), ItemStack.DECIMALFORMAT.format(d1), I18n.format("attribute.name." + entry1.getKey())));
 						}
 					}
 				}
@@ -136,8 +135,8 @@ public class ItemBullet extends ItemIEBase implements IBullet
 		}
 		else if(stack.getItemDamage()==11)
 		{
-			String hexCol = Integer.toHexString(this.getColorFromItemStack(stack, 1));
-			list.add(StatCollector.translateToLocalFormatted(Lib.DESC_INFO+"bullet.flareColour", "<hexcol="+hexCol+":#"+hexCol+">"));
+			String hexCol = Integer.toHexString(this.getColourForIEItem(stack, 1));
+			list.add(I18n.format(Lib.DESC_INFO+"bullet.flareColour", "<hexcol="+hexCol+":#"+hexCol+">"));
 		}
 	}
 	@Override
@@ -148,26 +147,32 @@ public class ItemBullet extends ItemIEBase implements IBullet
 			String s = this.getUnlocalizedNameInefficiently(stack);
 			ItemStack pot = ItemNBTHelper.getItemStack(stack, "potion");
 			if(pot!=null)
-				if(pot.getItem().getClass().getName().equalsIgnoreCase("ganymedes01.etfuturum.items.LingeringPotion"))
+				if(pot.getItem() instanceof ItemLingeringPotion)
 					s+=".linger";
-				else if(ItemPotion.isSplash(pot.getItemDamage()))
+				else if(pot.getItem() instanceof ItemSplashPotion)
 					s+=".splash";
-			return StatCollector.translateToLocal(s+".name").trim();
+			return I18n.format(s+".name").trim();
 		}
 		return super.getItemStackDisplayName(stack);
 	}
 
 	@Override
-	public int getColorFromItemStack(ItemStack stack, int pass)
+	public boolean hasCustomItemColours()
+	{
+		return true;
+	}
+	@Override
+	public int getColourForIEItem(ItemStack stack, int pass)
 	{
 		if(stack.getItemDamage()==10 && pass==1)
 		{
 			ItemStack pot = ItemNBTHelper.getItemStack(stack, "potion");
-			return PotionHelper.getLiquidColor(pot!=null?pot.getItemDamage():0, false);
+			if(pot!=null)
+				return PotionUtils.getPotionColorFromEffectList(PotionUtils.getEffectsFromStack(pot));
 		}
 		if(stack.getItemDamage()==11 && pass==1)
 			return ItemNBTHelper.hasKey(stack, "flareColour")?ItemNBTHelper.getInt(stack, "flareColour"):0xcc2e06;
-			return super.getColorFromItemStack(stack, pass);
+		return super.getColourForIEItem(stack, pass);
 	}
 
 	@Override
@@ -183,67 +188,67 @@ public class ItemBullet extends ItemIEBase implements IBullet
 	@Override
 	public void spawnBullet(EntityPlayer player, ItemStack bulletStack, boolean electro)
 	{
-		Vec3 vec = player.getLookVec();
+		Vec3d vec = player.getLookVec();
 		int type = bulletStack.getItemDamage()-2;
 		switch(type)
 		{
-		case 0://casull
-			doSpawnBullet(player, vec, vec, type, bulletStack, electro);
-			break;
-		case 1://armorPiercing
-			doSpawnBullet(player, vec, vec, type, bulletStack, electro);
-			break;
-		case 2://buckshot
-			for(int i=0; i<10; i++)
-			{
-				Vec3 vecDir = vec.addVector(player.getRNG().nextGaussian()*.1,player.getRNG().nextGaussian()*.1,player.getRNG().nextGaussian()*.1);
-				doSpawnBullet(player, vec, vecDir, type, bulletStack, electro);
-			}
-			break;
-		case 3://HE
-			doSpawnBullet(player, vec, vec, type, bulletStack, electro);
-			break;
-		case 4://dragonsbreath
-			for(int i=0; i<30; i++)
-			{
-				Vec3 vecDir = vec.addVector(player.getRNG().nextGaussian()*.1,player.getRNG().nextGaussian()*.1,player.getRNG().nextGaussian()*.1);
-				EntityRevolvershot shot = doSpawnBullet(player, vec, vecDir, type, bulletStack, electro);
-				shot.setTickLimit(10);
-				shot.setFire(3);
-			}
-			break;
-		case 5://homing
-			EntityRevolvershotHoming bullet = new EntityRevolvershotHoming(player.worldObj, player, vec.xCoord*1.5,vec.yCoord*1.5,vec.zCoord*1.5, type, bulletStack);
-			bullet.motionX = vec.xCoord;
-			bullet.motionY = vec.yCoord;
-			bullet.motionZ = vec.zCoord;
-			bullet.bulletElectro = electro;
-			player.worldObj.spawnEntityInWorld(bullet);
-			break;
-		case 6://wolfpack
-			doSpawnBullet(player, vec, vec, type, bulletStack, electro);
-			break;
-		case 7://Silver
-			doSpawnBullet(player, vec, vec, type, bulletStack, electro);
-			break;
-		case 8://Potion
-			EntityRevolvershot shot = doSpawnBullet(player, vec, vec, type, bulletStack, electro);
-			shot.bulletPotion = ItemNBTHelper.getItemStack(bulletStack, "potion");
-			break;
-		case 9://Flare
-			EntityRevolvershotFlare flare = new EntityRevolvershotFlare(player.worldObj, player, vec.xCoord*1.5,vec.yCoord*1.5,vec.zCoord*1.5, type, bulletStack);
-			flare.motionX = vec.xCoord;
-			flare.motionY = vec.yCoord;
-			flare.motionZ = vec.zCoord;
-			flare.bulletElectro = electro;
-			flare.colour = this.getColorFromItemStack(bulletStack, 1);
-			flare.setColourSynced();
-			player.worldObj.spawnEntityInWorld(flare);
-			break;
+			case 0://casull
+				doSpawnBullet(player, vec, vec, type, bulletStack, electro);
+				break;
+			case 1://armorPiercing
+				doSpawnBullet(player, vec, vec, type, bulletStack, electro);
+				break;
+			case 2://buckshot
+				for(int i=0; i<10; i++)
+				{
+					Vec3d vecDir = vec.addVector(player.getRNG().nextGaussian()*.1,player.getRNG().nextGaussian()*.1,player.getRNG().nextGaussian()*.1);
+					doSpawnBullet(player, vec, vecDir, type, bulletStack, electro);
+				}
+				break;
+			case 3://HE
+				doSpawnBullet(player, vec, vec, type, bulletStack, electro);
+				break;
+			case 4://dragonsbreath
+				for(int i=0; i<30; i++)
+				{
+					Vec3d vecDir = vec.addVector(player.getRNG().nextGaussian()*.1,player.getRNG().nextGaussian()*.1,player.getRNG().nextGaussian()*.1);
+					EntityRevolvershot shot = doSpawnBullet(player, vec, vecDir, type, bulletStack, electro);
+					shot.setTickLimit(10);
+					shot.setFire(3);
+				}
+				break;
+			case 5://homing
+				EntityRevolvershotHoming bullet = new EntityRevolvershotHoming(player.worldObj, player, vec.xCoord*1.5,vec.yCoord*1.5,vec.zCoord*1.5, type, bulletStack);
+				bullet.motionX = vec.xCoord;
+				bullet.motionY = vec.yCoord;
+				bullet.motionZ = vec.zCoord;
+				bullet.bulletElectro = electro;
+				player.worldObj.spawnEntityInWorld(bullet);
+				break;
+			case 6://wolfpack
+				doSpawnBullet(player, vec, vec, type, bulletStack, electro);
+				break;
+			case 7://Silver
+				doSpawnBullet(player, vec, vec, type, bulletStack, electro);
+				break;
+			case 8://Potion
+				EntityRevolvershot shot = doSpawnBullet(player, vec, vec, type, bulletStack, electro);
+				shot.bulletPotion = ItemNBTHelper.getItemStack(bulletStack, "potion");
+				break;
+			case 9://Flare
+				EntityRevolvershotFlare flare = new EntityRevolvershotFlare(player.worldObj, player, vec.xCoord*1.5,vec.yCoord*1.5,vec.zCoord*1.5, type, bulletStack);
+				flare.motionX = vec.xCoord;
+				flare.motionY = vec.yCoord;
+				flare.motionZ = vec.zCoord;
+				flare.bulletElectro = electro;
+				flare.colour = this.getColourForIEItem(bulletStack, 1);
+				flare.setColourSynced();
+				player.worldObj.spawnEntityInWorld(flare);
+				break;
 		}
 	}
 
-	EntityRevolvershot doSpawnBullet(EntityPlayer player, Vec3 vecSpawn, Vec3 vecDir, int type, ItemStack stack, boolean electro)
+	EntityRevolvershot doSpawnBullet(EntityPlayer player, Vec3d vecSpawn, Vec3d vecDir, int type, ItemStack stack, boolean electro)
 	{
 		EntityRevolvershot bullet = new EntityRevolvershot(player.worldObj, player, vecDir.xCoord*1.5,vecDir.yCoord*1.5,vecDir.zCoord*1.5, type, stack);
 		bullet.motionX = vecDir.xCoord;

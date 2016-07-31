@@ -47,7 +47,7 @@ public class DenseOresHelper extends IECompatModule
 
 					boolean c = false;
 					for(CrusherRecipe recipe: CrusherRecipe.recipeList)
-						if(recipe.oreInputString!=null && ((String)recipe.oreInputString).equals(baseOre))
+						if(recipe.oreInputString!=null && recipe.oreInputString.equals(baseOre))
 						{
 							ItemStack out = Utils.copyStackWithAmount(recipe.output, recipe.output.stackSize*4);
 							CrusherRecipe r = new CrusherRecipe(out, denseOre, (int)(recipe.getTotalProcessEnergy()/CrusherRecipe.energyModifier)*2);
@@ -66,7 +66,7 @@ public class DenseOresHelper extends IECompatModule
 						}
 					boolean a = false;
 					for(ArcFurnaceRecipe recipe: ArcFurnaceRecipe.recipeList)
-						if(recipe.oreInputString!=null && ((String)recipe.oreInputString).equals(baseOre))
+						if(recipe.oreInputString!=null && recipe.oreInputString.equals(baseOre))
 						{
 							ItemStack out = Utils.copyStackWithAmount(recipe.output, recipe.output.stackSize*4);
 							

@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.client.gui;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.opengl.GL11;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
@@ -26,7 +27,6 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.oredict.OreDictionary;
 
 public class GuiModWorkbench extends GuiContainer
@@ -122,7 +122,7 @@ public class GuiModWorkbench extends GuiContainer
 								inputs.add(toAdd.copy());
 						}
 						for(ItemStack ss : inputs)
-							tooltip.add(EnumChatFormatting.GRAY.toString()+ss.stackSize+"x "+ ss.getDisplayName());
+							tooltip.add(TextFormatting.GRAY.toString()+ss.stackSize+"x "+ ss.getDisplayName());
 
 						ClientUtils.drawHoveringText(tooltip, mx, my, fontRendererObj);
 						RenderHelper.enableGUIStandardItemLighting();

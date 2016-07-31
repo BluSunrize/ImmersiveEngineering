@@ -2,6 +2,7 @@ package blusunrize.immersiveengineering.client.gui;
 
 import java.util.ArrayList;
 
+import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.opengl.GL11;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
@@ -16,7 +17,6 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumChatFormatting;
 
 public class GuiAssembler extends GuiContainer
 {
@@ -34,9 +34,9 @@ public class GuiAssembler extends GuiContainer
 	{
 		super.initGui();
 		this.buttonList.clear();
-		this.buttonList.add(new GuiButton(0, guiLeft+49,guiTop+65, 10,10, EnumChatFormatting.GRAY+"\u2716"));
-		this.buttonList.add(new GuiButton(1, guiLeft+107,guiTop+65, 10,10, EnumChatFormatting.GRAY+"\u2716"));
-		this.buttonList.add(new GuiButton(2, guiLeft+165,guiTop+65, 10,10, EnumChatFormatting.GRAY+"\u2716"));
+		this.buttonList.add(new GuiButton(0, guiLeft+49,guiTop+65, 10,10, TextFormatting.GRAY+"\u2716"));
+		this.buttonList.add(new GuiButton(1, guiLeft+107,guiTop+65, 10,10, TextFormatting.GRAY+"\u2716"));
+		this.buttonList.add(new GuiButton(2, guiLeft+165,guiTop+65, 10,10, TextFormatting.GRAY+"\u2716"));
 	}
 	@Override
 	protected void actionPerformed(GuiButton button)
@@ -65,7 +65,7 @@ public class GuiAssembler extends GuiContainer
 					tooltip.add(tile.patterns[i].inv[9].getDisplayName());
 					tile.patterns[i].inv[9].getItem().addInformation(tile.patterns[i].inv[9], ClientUtils.mc().thePlayer, tooltip, false);
 					for(int j=0; j<tooltip.size(); j++)
-						tooltip.set(j, (j==0?tile.patterns[i].inv[9].getRarity().rarityColor:EnumChatFormatting.GRAY)+tooltip.get(j));
+						tooltip.set(j, (j==0?tile.patterns[i].inv[9].getRarity().rarityColor: TextFormatting.GRAY)+tooltip.get(j));
 				}
 
 		if(!tooltip.isEmpty())
@@ -106,7 +106,7 @@ public class GuiAssembler extends GuiContainer
 				if(font==null)
 					font = fontRendererObj;
 				itemRender.renderItemAndEffectIntoGUI(stack, guiLeft+27+i*58, guiTop+64);
-				itemRender.renderItemOverlayIntoGUI(font, stack, guiLeft+27+i*58, guiTop+64, EnumChatFormatting.GRAY.toString()+stack.stackSize);
+				itemRender.renderItemOverlayIntoGUI(font, stack, guiLeft+27+i*58, guiTop+64, TextFormatting.GRAY.toString()+stack.stackSize);
 				this.zLevel = 0.0F;
 				itemRender.zLevel = 0.0F;
 

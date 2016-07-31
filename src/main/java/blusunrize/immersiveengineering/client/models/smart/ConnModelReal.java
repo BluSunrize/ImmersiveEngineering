@@ -1,30 +1,26 @@
 package blusunrize.immersiveengineering.client.models.smart;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
-
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.client.ClientUtils;
+import com.google.common.collect.Lists;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.util.EnumFacing;
-import net.minecraftforge.client.model.Attributes;
-import net.minecraftforge.client.model.IFlexibleBakedModel;
-import net.minecraftforge.client.model.ISmartBlockModel;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
 
-public class ConnModelReal implements IFlexibleBakedModel, ISmartBlockModel
+import javax.annotation.Nullable;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+
+public class ConnModelReal implements IBakedModel
 {
 
 	TextureAtlasSprite textureAtlasSprite = Minecraft.getMinecraft().getTextureMapBlocks()
@@ -35,6 +31,22 @@ public class ConnModelReal implements IFlexibleBakedModel, ISmartBlockModel
 	public ConnModelReal(IBakedModel basic)
 	{
 		base = basic;
+	}
+
+	@Override
+	public List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable EnumFacing side, long rand)
+	{
+		if(state instanceof IExtendedBlockState)
+		{
+			IExtendedBlockState iExtendedBlockState = (IExtendedBlockState) state;
+			ExtBlockstateAdapter ad = new ExtBlockstateAdapter(iExtendedBlockState);
+			if (cache.containsKey(ad))
+				return cache.get(ad).getQuads(state, side, rand);
+			IBakedModel ret = new AssembledBakedModel(iExtendedBlockState, textureAtlasSprite, base, rand);
+			cache.put(ad, ret);
+			return ret.getQuads(state, side, rand);
+		}
+		return base.getQuads(state, side, rand);
 	}
 
 	@Override
@@ -68,70 +80,40 @@ public class ConnModelReal implements IFlexibleBakedModel, ISmartBlockModel
 	}
 
 	@Override
-	public List<BakedQuad> getFaceQuads(EnumFacing side)
+	public ItemOverrideList getOverrides()
 	{
-		return base.getFaceQuads(side);
-	}
-
-	@Override
-	public List<BakedQuad> getGeneralQuads()
-	{
-		return base.getGeneralQuads();
-	}
-
-	@Override
-	public VertexFormat getFormat()
-	{
-		return Attributes.DEFAULT_BAKED_FORMAT;
-	}
-
-	@Override
-	public IBakedModel handleBlockState(IBlockState iBlockState)
-	{
-		if (iBlockState instanceof IExtendedBlockState)
-		{
-			IExtendedBlockState iExtendedBlockState = (IExtendedBlockState) iBlockState;
-			ExtBlockstateAdapter ad = new ExtBlockstateAdapter(iExtendedBlockState);
-			if (cache.containsKey(ad))
-				return cache.get(ad);
-			IBakedModel ret = new AssembledBakedModel(iExtendedBlockState, textureAtlasSprite, base);
-			cache.put(ad, ret);
-			return ret;
-		}
-		return this;
+		return ItemOverrideList.NONE;
 	}
 
 	public class AssembledBakedModel implements IBakedModel
 	{
 		IBakedModel basic;
+		IExtendedBlockState extendedState;
 		List<BakedQuad> list;
+		TextureAtlasSprite texture;
 
-		public AssembledBakedModel(IBakedModel b)
+//		public AssembledBakedModel(IBakedModel b)
+//		{
+//			basic = b;
+//			list = b.getGeneralQuads();
+//		}
+
+		public AssembledBakedModel(IExtendedBlockState iExtendedBlockState, TextureAtlasSprite tex, IBakedModel b, long posRand)
 		{
 			basic = b;
-			list = b.getGeneralQuads();
-		}
-
-		public AssembledBakedModel(IExtendedBlockState iExtendedBlockState, TextureAtlasSprite tex, IBakedModel b)
-		{
-			list = ClientUtils.convertConnectionFromBlockstate(iExtendedBlockState, tex);
-			basic = b;
-			if(basic instanceof ISmartBlockModel)
-				basic = ((ISmartBlockModel)basic).handleBlockState(iExtendedBlockState);
-			list.addAll(basic.getGeneralQuads());
+			extendedState = iExtendedBlockState;
+			texture = tex;
 		}
 
 		@Override
-		public List<BakedQuad> getFaceQuads(EnumFacing side)
+		public List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable EnumFacing side, long rand)
 		{
-			return ImmutableList.of();
-		}
-
-		@Override
-		public List<BakedQuad> getGeneralQuads()
-		{
-			List<BakedQuad> quadList = Collections.synchronizedList(Lists.newArrayList(list));
-			return quadList;
+			if(list==null)
+			{
+				list = ClientUtils.convertConnectionFromBlockstate(extendedState, texture);
+				list.addAll(basic.getQuads(extendedState, side, rand));
+			}
+			return Collections.synchronizedList(Lists.newArrayList(list));
 		}
 
 		@Override
@@ -164,6 +146,12 @@ public class ConnModelReal implements IFlexibleBakedModel, ISmartBlockModel
 			return ItemCameraTransforms.DEFAULT;
 		}
 
+		@Override
+		public ItemOverrideList getOverrides()
+		{
+			return ItemOverrideList.NONE;
+		}
+
 	}
 
 	public static class ExtBlockstateAdapter
@@ -185,17 +173,22 @@ public class ConnModelReal implements IFlexibleBakedModel, ISmartBlockModel
 			ExtBlockstateAdapter o = (ExtBlockstateAdapter) obj;
 			for (IProperty i : state.getPropertyNames())
 			{
+				Object valThis = state.getValue(i);
 				Object valOther = o.state.getValue(i);
-				if (valOther == null || !valOther.equals(state.getValue(i)))
+				if(valThis==null&&valOther==null)
+					continue;
+				else if(valOther == null || !valOther.equals(state.getValue(i)))
 					return false;
 			}
-			for (IUnlistedProperty i : state.getUnlistedNames())
+			for(IUnlistedProperty i : state.getUnlistedNames())
 			{
+				Object valThis = state.getValue(i);
 				Object valOther = o.state.getValue(i);
-				if (valOther == null || !valOther.equals(state.getValue(i)))
+				if(valThis==null&&valOther==null)
+					continue;
+				else if (valOther == null || !valOther.equals(state.getValue(i)))
 					return false;
 			}
-
 			return true;
 		}
 

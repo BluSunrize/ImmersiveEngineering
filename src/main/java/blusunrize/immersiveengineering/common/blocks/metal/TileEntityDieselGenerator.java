@@ -20,19 +20,19 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 
-public class TileEntityDieselGenerator extends TileEntityMultiblockMetal<TileEntityDieselGenerator,IMultiblockRecipe> implements IAdvancedSelectionBounds,IAdvancedCollisionBounds, IFluidHandler, IGuiTile, ISoundTile
+public class TileEntityDieselGenerator extends TileEntityMultiblockMetal<TileEntityDieselGenerator,IMultiblockRecipe> implements IAdvancedSelectionBounds,IAdvancedCollisionBounds, IGuiTile, ISoundTile
 {
 	public TileEntityDieselGenerator()
 	{
@@ -164,7 +164,7 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockMetal<TileEnt
 			if(prevActive != active)
 			{
 				this.markDirty();
-				worldObj.markBlockForUpdate(getPos());
+				this.markContainingBlockForUpdate(null);
 			}
 		}
 	}
@@ -172,9 +172,9 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockMetal<TileEnt
 	{
 		TileEntity eTile = worldObj.getTileEntity(this.getBlockPosForPos(16+w).add(0,1,0));
 		if(eTile instanceof IFluxReceiver)
-			return (IFluxReceiver)eTile;
+			return eTile;
 		else if(eTile instanceof IEnergyReceiver)
-			return (IEnergyReceiver)eTile;
+			return eTile;
 		return null;
 	}
 
@@ -194,7 +194,7 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockMetal<TileEnt
 			return new float[]{fw==EnumFacing.EAST?.5f:(pos%15>11&&fl==EnumFacing.EAST)?-.125f:0,0,fw==EnumFacing.SOUTH?.5f:(pos%15>11&&fl==EnumFacing.SOUTH)?-.125f:0, fw==EnumFacing.WEST?.5f:(pos%15>11&&fl==EnumFacing.WEST)?1.125f:1,pos>30?.8125f:1,fw==EnumFacing.NORTH?.5f:(pos%15>11&&fl==EnumFacing.NORTH)?1.125f:1};
 		if(pos==43)
 			return new float[]{pos%15>11&&fl==EnumFacing.EAST?.375f:0,0,pos%15>11&&fl==EnumFacing.SOUTH?.375f:0, pos%15>11&&fl==EnumFacing.WEST?.625f:1,pos>30?.8125f:1,pos%15>11&&fl==EnumFacing.NORTH?.625f:1};
-	
+
 		if(pos>=15&&pos<=17)
 			return new float[]{0,.5f,0, 1,1,1};
 
@@ -225,16 +225,6 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockMetal<TileEnt
 		return new float[]{0,0,0, 1,1,1};
 	}
 	@Override
-	public float[] getSpecialCollisionBounds()
-	{
-		return null;
-	}
-	@Override
-	public float[] getSpecialSelectionBounds()
-	{
-		return null;
-	}
-	@Override
 	public List<AxisAlignedBB> getAdvancedSelectionBounds()
 	{
 		EnumFacing fl = facing;
@@ -244,33 +234,33 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockMetal<TileEnt
 
 		if(pos==16)
 		{
-			return Lists.newArrayList(AxisAlignedBB.fromBounds(0,.5f,0, 1,1,1).offset(getPos().getX(),getPos().getY(),getPos().getZ()),
-					AxisAlignedBB.fromBounds(fl==EnumFacing.WEST?-.625f:0,-.5f,fl==EnumFacing.NORTH?-.625f:0, fl==EnumFacing.EAST?1.375f:1,.5f,fl==EnumFacing.SOUTH?1.375f:1).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+			return Lists.newArrayList(new AxisAlignedBB(0,.5f,0, 1,1,1).offset(getPos().getX(),getPos().getY(),getPos().getZ()),
+					new AxisAlignedBB(fl==EnumFacing.WEST?-.625f:0,-.5f,fl==EnumFacing.NORTH?-.625f:0, fl==EnumFacing.EAST?1.375f:1,.5f,fl==EnumFacing.SOUTH?1.375f:1).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
 		}
 		if(pos==15||pos==17)
 		{
-			List<AxisAlignedBB> list = Lists.newArrayList(AxisAlignedBB.fromBounds(0,.5f,0, 1,1,1).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(0,.5f,0, 1,1,1).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
 			if(pos==17)
 				fw = fw.getOpposite();
-			list.add(AxisAlignedBB.fromBounds(fw==EnumFacing.EAST?.125f:fw==EnumFacing.WEST?.625f:.125f,0,fw==EnumFacing.SOUTH?.125f:fw==EnumFacing.NORTH?.625f:.125f, fw==EnumFacing.EAST?.375f:fw==EnumFacing.WEST?.875f:.375f,.5f,fw==EnumFacing.SOUTH?.375f:fw==EnumFacing.NORTH?.875f:.375f).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
-			list.add(AxisAlignedBB.fromBounds(fw==EnumFacing.EAST?.125f:fw==EnumFacing.WEST?.625f:.625f,0,fw==EnumFacing.SOUTH?.125f:fw==EnumFacing.NORTH?.625f:.625f, fw==EnumFacing.EAST?.375f:fw==EnumFacing.WEST?.875f:.875f,.5f,fw==EnumFacing.SOUTH?.375f:fw==EnumFacing.NORTH?.875f:.875f).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+			list.add(new AxisAlignedBB(fw==EnumFacing.EAST?.125f:fw==EnumFacing.WEST?.625f:.125f,0,fw==EnumFacing.SOUTH?.125f:fw==EnumFacing.NORTH?.625f:.125f, fw==EnumFacing.EAST?.375f:fw==EnumFacing.WEST?.875f:.375f,.5f,fw==EnumFacing.SOUTH?.375f:fw==EnumFacing.NORTH?.875f:.375f).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+			list.add(new AxisAlignedBB(fw==EnumFacing.EAST?.125f:fw==EnumFacing.WEST?.625f:.625f,0,fw==EnumFacing.SOUTH?.125f:fw==EnumFacing.NORTH?.625f:.625f, fw==EnumFacing.EAST?.375f:fw==EnumFacing.WEST?.875f:.875f,.5f,fw==EnumFacing.SOUTH?.375f:fw==EnumFacing.NORTH?.875f:.875f).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
 			return list;
 		}
 
 
 		if(pos==23)
 		{
-			float[] defaultBounds = this.getBlockBounds(); 
-			List<AxisAlignedBB> list = Lists.newArrayList(AxisAlignedBB.fromBounds(defaultBounds[0],defaultBounds[1],defaultBounds[2],defaultBounds[3],defaultBounds[4],defaultBounds[5]).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
-			list.add(AxisAlignedBB.fromBounds(fw==EnumFacing.EAST?.5f:fw==EnumFacing.WEST?0:.3125f,.25f,fw==EnumFacing.SOUTH?.5f:fw==EnumFacing.NORTH?0:.3125f, fw==EnumFacing.EAST?1:fw==EnumFacing.WEST?.5f:.6875f,.75f,fw==EnumFacing.SOUTH?1:fw==EnumFacing.NORTH?.5f:.6875f).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
-			list.add(AxisAlignedBB.fromBounds(fw==EnumFacing.EAST?.6875f:fw==EnumFacing.WEST?.1875f:.4375f,-.5f,fw==EnumFacing.SOUTH?.6875f:fw==EnumFacing.NORTH?.1875f:.4375f, fw==EnumFacing.EAST?.8125f:fw==EnumFacing.WEST?.3125f:.5625f,.25f,fw==EnumFacing.SOUTH?.8125f:fw==EnumFacing.NORTH?.3125f:.5625f).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+			float[] defaultBounds = this.getBlockBounds();
+			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(defaultBounds[0],defaultBounds[1],defaultBounds[2],defaultBounds[3],defaultBounds[4],defaultBounds[5]).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+			list.add(new AxisAlignedBB(fw==EnumFacing.EAST?.5f:fw==EnumFacing.WEST?0:.3125f,.25f,fw==EnumFacing.SOUTH?.5f:fw==EnumFacing.NORTH?0:.3125f, fw==EnumFacing.EAST?1:fw==EnumFacing.WEST?.5f:.6875f,.75f,fw==EnumFacing.SOUTH?1:fw==EnumFacing.NORTH?.5f:.6875f).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+			list.add(new AxisAlignedBB(fw==EnumFacing.EAST?.6875f:fw==EnumFacing.WEST?.1875f:.4375f,-.5f,fw==EnumFacing.SOUTH?.6875f:fw==EnumFacing.NORTH?.1875f:.4375f, fw==EnumFacing.EAST?.8125f:fw==EnumFacing.WEST?.3125f:.5625f,.25f,fw==EnumFacing.SOUTH?.8125f:fw==EnumFacing.NORTH?.3125f:.5625f).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
 			return list;
 		}
 
 		if(pos>2&&pos<15&&pos%3!=1)
 		{
-			float[] defaultBounds = this.getBlockBounds(); 
-			List<AxisAlignedBB> list = Lists.newArrayList(AxisAlignedBB.fromBounds(defaultBounds[0],defaultBounds[1],defaultBounds[2],defaultBounds[3],defaultBounds[4],defaultBounds[5]).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+			float[] defaultBounds = this.getBlockBounds();
+			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(defaultBounds[0],defaultBounds[1],defaultBounds[2],defaultBounds[3],defaultBounds[4],defaultBounds[5]).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
 			if(pos%3==2)
 				fw = fw.getOpposite();
 
@@ -280,21 +270,21 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockMetal<TileEnt
 				float maxX = fw==EnumFacing.WEST?.875f:fw==EnumFacing.EAST?1: fl==EnumFacing.EAST?.75f: .5f;
 				float minZ = fw==EnumFacing.NORTH?0: fw==EnumFacing.SOUTH?.125f: fl==EnumFacing.NORTH?.25f: .5f;
 				float maxZ = fw==EnumFacing.NORTH?.875f: fw==EnumFacing.SOUTH?1: fl==EnumFacing.SOUTH?.75f: .5f;
-				list.add(AxisAlignedBB.fromBounds(minX,.5625f,minZ, maxX,.8125f,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+				list.add(new AxisAlignedBB(minX,.5625f,minZ, maxX,.8125f,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
 
 				minX = fw==EnumFacing.WEST?.625f:fw==EnumFacing.EAST?.125f: fl==EnumFacing.EAST?0: .5f;
 				maxX = fw==EnumFacing.WEST?.875f:fw==EnumFacing.EAST?.375f: fl==EnumFacing.WEST?1: .5f;
 				minZ = fw==EnumFacing.NORTH?.625f: fw==EnumFacing.SOUTH?.125f: fl==EnumFacing.SOUTH?0: .5f;
 				maxZ = fw==EnumFacing.NORTH?.875f: fw==EnumFacing.SOUTH?.375f: fl==EnumFacing.NORTH?1: .5f;
-				list.add(AxisAlignedBB.fromBounds(minX,.5625f,minZ, maxX,.8125f,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+				list.add(new AxisAlignedBB(minX,.5625f,minZ, maxX,.8125f,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
 			}
-			else if(pos<12)	
+			else if(pos<12)
 			{
 				float minX = (fw==EnumFacing.WEST?0:fw==EnumFacing.EAST?.4375f: fl==EnumFacing.EAST?.25f: -.5625f) +(pos<=8?0: fl==EnumFacing.WEST?1: fl==EnumFacing.EAST?-1: 0);
 				float maxX = (fw==EnumFacing.WEST?.5626f:fw==EnumFacing.EAST?1: fl==EnumFacing.WEST?.75f: 1.4375f) +(pos<=8?0: fl==EnumFacing.WEST?1: fl==EnumFacing.EAST?-1: 0);
 				float minZ = (fw==EnumFacing.NORTH?0: fw==EnumFacing.SOUTH?.4375f: fl==EnumFacing.SOUTH?.25f: -.5625f) +(pos<=8?0: fl==EnumFacing.NORTH?1: fl==EnumFacing.SOUTH?-1: 0);
 				float maxZ = (fw==EnumFacing.NORTH?.5625f: fw==EnumFacing.SOUTH?1: fl==EnumFacing.NORTH?.75f: 1.4375f) +(pos<=8?0: fl==EnumFacing.NORTH?1: fl==EnumFacing.SOUTH?-1: 0);
-				list.add(AxisAlignedBB.fromBounds(minX,.5f,minZ, maxX,1,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+				list.add(new AxisAlignedBB(minX,.5f,minZ, maxX,1,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
 			}
 			if(pos>8)
 			{
@@ -302,24 +292,24 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockMetal<TileEnt
 				float maxX = (fw==EnumFacing.WEST?.625f:fw==EnumFacing.EAST?.4375f: fl==EnumFacing.EAST?.4375f: .8125f) +(pos<=11?0:fl==EnumFacing.WEST?1: fl==EnumFacing.EAST?-1: 0);
 				float minZ = (fw==EnumFacing.NORTH?.5625f: fw==EnumFacing.SOUTH?.375f: fl==EnumFacing.NORTH?.5625f: .1875f) +(pos<=11?0:fl==EnumFacing.NORTH?1: fl==EnumFacing.SOUTH?-1: 0);
 				float maxZ = (fw==EnumFacing.NORTH?.625f: fw==EnumFacing.SOUTH?.4375f: fl==EnumFacing.SOUTH?.4375f: .8125f) +(pos<=11?0:fl==EnumFacing.NORTH?1: fl==EnumFacing.SOUTH?-1: 0);
-				list.add(AxisAlignedBB.fromBounds(minX,.5625f,minZ, maxX,.8125f,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+				list.add(new AxisAlignedBB(minX,.5625f,minZ, maxX,.8125f,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
 				minX = (fw==EnumFacing.WEST?.5f:fw==EnumFacing.EAST?.375f: fl==EnumFacing.WEST?-.875f: 1.625f) +(pos<=11?0:fl==EnumFacing.WEST?1: fl==EnumFacing.EAST?-1: 0);
 				maxX = (fw==EnumFacing.WEST?.625f:fw==EnumFacing.EAST?.5f: fl==EnumFacing.EAST?1.875f: -.625f) +(pos<=11?0:fl==EnumFacing.WEST?1: fl==EnumFacing.EAST?-1: 0);
 				minZ = (fw==EnumFacing.NORTH?.5f: fw==EnumFacing.SOUTH?.375f: fl==EnumFacing.NORTH?-.875f: 1.625f) +(pos<=11?0:fl==EnumFacing.NORTH?1: fl==EnumFacing.SOUTH?-1: 0);
 				maxZ = (fw==EnumFacing.NORTH?.625f: fw==EnumFacing.SOUTH?.5f: fl==EnumFacing.SOUTH?1.875f: -.625f) +(pos<=11?0:fl==EnumFacing.NORTH?1: fl==EnumFacing.SOUTH?-1: 0);
-				list.add(AxisAlignedBB.fromBounds(minX,.5625f,minZ, maxX,.8125f,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+				list.add(new AxisAlignedBB(minX,.5625f,minZ, maxX,.8125f,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
 				minX = (fw==EnumFacing.WEST?.625f:fw==EnumFacing.EAST?.125f: fl==EnumFacing.EAST?.1875f: -.875f) +(pos<=11?0:fl==EnumFacing.WEST?1: fl==EnumFacing.EAST?-1: 0);
 				maxX = (fw==EnumFacing.WEST?.875f:fw==EnumFacing.EAST?.375f: fl==EnumFacing.WEST?.8125f: 1.875f) +(pos<=11?0:fl==EnumFacing.WEST?1: fl==EnumFacing.EAST?-1: 0);
 				minZ = (fw==EnumFacing.NORTH?.625f: fw==EnumFacing.SOUTH?.125f: fl==EnumFacing.SOUTH?.1875f: -.875f) +(pos<=11?0:fl==EnumFacing.NORTH?1: fl==EnumFacing.SOUTH?-1: 0);
 				maxZ = (fw==EnumFacing.NORTH?.875f: fw==EnumFacing.SOUTH?.375f: fl==EnumFacing.NORTH?.8125f: 1.875f) +(pos<=11?0:fl==EnumFacing.NORTH?1: fl==EnumFacing.SOUTH?-1: 0);
-				list.add(AxisAlignedBB.fromBounds(minX,.5625f,minZ, maxX,.8125f,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+				list.add(new AxisAlignedBB(minX,.5625f,minZ, maxX,.8125f,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
 			}
 			return list;
 		}
 		return null;
 	}
 	@Override
-	public boolean isOverrideBox(AxisAlignedBB box, EntityPlayer player, MovingObjectPosition mop, ArrayList<AxisAlignedBB> list)
+	public boolean isOverrideBox(AxisAlignedBB box, EntityPlayer player, RayTraceResult mop, ArrayList<AxisAlignedBB> list)
 	{
 		return false;
 	}
@@ -410,10 +400,28 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockMetal<TileEnt
 		return tanks;
 	}
 	@Override
+	protected FluidTank[] getAccessibleFluidTanks(EnumFacing side)
+	{
+		TileEntityDieselGenerator master = master();
+		if(master!=null && ((pos==0&&(side==null||side==facing.rotateY())) || (pos==2&&(side==null||side==facing.rotateYCCW()))))
+			return master.tanks;
+		return new FluidTank[0];
+	}
+	@Override
+	protected boolean canFillTankFrom(int iTank, EnumFacing side, FluidStack resources)
+	{
+		return true;
+	}
+	@Override
+	protected boolean canDrainTankFrom(int iTank, EnumFacing side)
+	{
+		return false;
+	}
+	@Override
 	public void doGraphicalUpdates(int slot)
 	{
 		this.markDirty();
-		worldObj.markBlockForUpdate(getPos());
+		this.markContainingBlockForUpdate(null);
 	}
 
 
@@ -441,69 +449,6 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockMetal<TileEnt
 	public TileEntity getGuiMaster()
 	{
 		return master();
-	}
-
-	@Override
-	public int fill(EnumFacing from, FluidStack resource, boolean doFill)
-	{
-		if(!formed || resource==null)
-			return 0;
-		if(!canFill(from, resource.getFluid()))
-			return 0;
-		TileEntityDieselGenerator master = this.master();
-		if(master==null)
-			return 0;
-		int fill = master.tanks[0].fill(resource, doFill);
-		if(fill>0)
-		{
-			master.markDirty();
-			worldObj.markBlockForUpdate(master.getPos());
-		}
-		return fill;
-	}
-	@Override
-	public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain)
-	{
-		return resource==null?null:this.drain(from, resource.amount, doDrain);
-	}
-	@Override
-	public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain)
-	{
-		//		if(pos==2 && (from==null||from==facing))
-		//		{
-		//			TileEntityDieselGenerator master = this.master();
-		//			if(master==null)
-		//				return null;
-		//			FluidStack fs = master.tanks[2].drain(maxDrain, doDrain);
-		//			if(fs!=null)
-		//			{
-		//				master.markDirty();
-		//				worldObj.markBlockForUpdate(master.getPos());
-		//			}
-		//			return fs;
-		//		}
-		return null;
-	}
-	@Override
-	public boolean canFill(EnumFacing from, Fluid fluid)
-	{
-		return DieselHandler.isValidFuel(fluid)&&((pos==0&&(from==null||from==facing.rotateY())) || (pos==2&&(from==null||from==facing.rotateYCCW())));
-	}
-	@Override
-	public boolean canDrain(EnumFacing from, Fluid fluid)
-	{
-		return pos==2 && (from==null||from==facing);
-	}
-	@Override
-	public FluidTankInfo[] getTankInfo(EnumFacing from)
-	{
-		if((pos==0&&(from==null||from==facing.rotateY())) || (pos==2&&(from==null||from==facing.rotateYCCW())))
-		{
-			TileEntityDieselGenerator master = master();
-			if(master!=null && (offset[0]!=0||offset[1]!=0||offset[2]!=0))
-				return new FluidTankInfo[]{master.tanks[0].getInfo()};
-		}
-		return new FluidTankInfo[0];
 	}
 
 	@Override

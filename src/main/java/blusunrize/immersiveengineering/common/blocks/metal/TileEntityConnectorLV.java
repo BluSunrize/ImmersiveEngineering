@@ -1,9 +1,5 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
-
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxProvider;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
@@ -15,21 +11,23 @@ import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConne
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
-import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.Utils;
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 //@Optional.Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "IC2")
 public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implements ITickable, IDirectionalTile, IFluxProvider,IFluxReceiver,IEnergyProvider,IEnergyReceiver, IBlockBounds//, ic2.api.energy.tile.IEnergySink
@@ -69,7 +67,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 			if (conns!=null)
 				for (Connection conn:conns)
 					if (pos.compareTo(conn.end)<0&&worldObj.isBlockLoaded(conn.end))
-						worldObj.markBlockForUpdate(conn.end);
+						this.markContainingBlockForUpdate(null);
 			firstTick = false;
 		}
 	}
@@ -189,17 +187,17 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 	}
 
 	@Override
-	public Vec3 getRaytraceOffset(IImmersiveConnectable link)
+	public Vec3d getRaytraceOffset(IImmersiveConnectable link)
 	{
 		EnumFacing side = facing.getOpposite();
-		return new Vec3(.5+side.getFrontOffsetX()*.0625, .5+side.getFrontOffsetY()*.0625, .5+side.getFrontOffsetZ()*.0625);
+		return new Vec3d(.5+side.getFrontOffsetX()*.0625, .5+side.getFrontOffsetY()*.0625, .5+side.getFrontOffsetZ()*.0625);
 	}
 	@Override
-	public Vec3 getConnectionOffset(Connection con)
+	public Vec3d getConnectionOffset(Connection con)
 	{
 		EnumFacing side = facing.getOpposite();
 		double conRadius = con.cableType.getRenderDiameter()/2;
-		return new Vec3(.5-conRadius*side.getFrontOffsetX(), .5-conRadius*side.getFrontOffsetY(), .5-conRadius*side.getFrontOffsetZ());
+		return new Vec3d(.5-conRadius*side.getFrontOffsetX(), .5-conRadius*side.getFrontOffsetY(), .5-conRadius*side.getFrontOffsetZ());
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -327,11 +325,11 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 							float mod = (((maxInput-tempR)/(float)maxInput)/.25f)*.1f;
 							intermediaryLoss = MathHelper.clamp_float(intermediaryLoss+length*(baseLoss+baseLoss*mod), 0,1);
 
-							int transferredPerCon = ImmersiveNetHandler.INSTANCE.getTransferedRates(worldObj.provider.getDimensionId()).containsKey(sub)?ImmersiveNetHandler.INSTANCE.getTransferedRates(worldObj.provider.getDimensionId()).get(sub):0;
+							int transferredPerCon = ImmersiveNetHandler.INSTANCE.getTransferedRates(worldObj.provider.getDimension()).containsKey(sub)?ImmersiveNetHandler.INSTANCE.getTransferedRates(worldObj.provider.getDimension()).get(sub):0;
 							transferredPerCon += r;
 							if(!simulate)
 							{
-								ImmersiveNetHandler.INSTANCE.getTransferedRates(worldObj.provider.getDimensionId()).put(sub,transferredPerCon);
+								ImmersiveNetHandler.INSTANCE.getTransferedRates(worldObj.provider.getDimension()).put(sub,transferredPerCon);
 								IImmersiveConnectable subStart = ApiUtils.toIIC(sub.start,worldObj);
 								IImmersiveConnectable subEnd = ApiUtils.toIIC(sub.end,worldObj);
 								if(subStart!=null && passedConnectors.add(subStart))
@@ -382,16 +380,6 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 			return new float[]{1-length,wMin,wMin,  1,wMax,wMax};
 		}
 		return new float[]{0,0,0,1,1,1};
-	}
-	@Override
-	public float[] getSpecialCollisionBounds()
-	{
-		return null;
-	}
-	@Override
-	public float[] getSpecialSelectionBounds()
-	{
-		return null;
 	}
 
 	//	@Optional.Method(modid = "IC2")

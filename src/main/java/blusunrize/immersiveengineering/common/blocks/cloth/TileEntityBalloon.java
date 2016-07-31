@@ -6,7 +6,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorSt
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.Vec3d;
 
 public class TileEntityBalloon extends TileEntityConnectorStructural
 {
@@ -50,14 +50,14 @@ public class TileEntityBalloon extends TileEntityConnectorStructural
 	{
 		if(id==0)
 		{
-			this.worldObj.markBlockForUpdate(pos);
+			this.markContainingBlockForUpdate(null);
 			return true;
 		}
 		return super.receiveClientEvent(id, arg);
 	}
 
 	@Override
-	public Vec3 getRaytraceOffset(IImmersiveConnectable link)
+	public Vec3d getRaytraceOffset(IImmersiveConnectable link)
 	{
 		int xDif = ((TileEntity)link).getPos().getX()-getPos().getX();
 		int zDif = ((TileEntity)link).getPos().getZ()-getPos().getZ();
@@ -66,15 +66,15 @@ public class TileEntityBalloon extends TileEntityConnectorStructural
 		{
 			double dist = Math.sqrt(xDif*xDif + zDif*zDif);
 			if(dist/Math.abs(yDif)<2.5)
-				return new Vec3(.5,.09375,.5);
+				return new Vec3d(.5,.09375,.5);
 		}
 		if(Math.abs(zDif)>Math.abs(xDif))
-			return new Vec3(.5,.09375,zDif>0?.8125:.1875);
+			return new Vec3d(.5,.09375,zDif>0?.8125:.1875);
 		else
-			return new Vec3(xDif>0?.8125:.1875,.09375,.5);
+			return new Vec3d(xDif>0?.8125:.1875,.09375,.5);
 	}
 	@Override
-	public Vec3 getConnectionOffset(Connection con)
+	public Vec3d getConnectionOffset(Connection con)
 	{
 		int xDif = (con==null||con.start==null||con.end==null)?0: (con.start.equals(this.getPos())&&con.end!=null)? con.end.getX()-getPos().getX(): (con.end.equals(this.getPos())&& con.start!=null)?con.start.getX()-getPos().getX(): 0;
 		int zDif = (con==null||con.start==null||con.end==null)?0: (con.start.equals(this.getPos())&&con.end!=null)? con.end.getZ()-getPos().getZ(): (con.end.equals(this.getPos())&& con.start!=null)?con.start.getZ()-getPos().getZ(): 0;
@@ -83,11 +83,11 @@ public class TileEntityBalloon extends TileEntityConnectorStructural
 		{
 			double dist = Math.sqrt(xDif*xDif + zDif*zDif);
 			if(dist/Math.abs(yDif)<2.5)
-				return new Vec3(.5,.09375,.5);
+				return new Vec3d(.5,.09375,.5);
 		}
 		if(Math.abs(zDif)>Math.abs(xDif))
-			return new Vec3(.5,.09375,zDif>0?.78125:.21875);
+			return new Vec3d(.5,.09375,zDif>0?.78125:.21875);
 		else
-			return new Vec3(xDif>0?.78125:.21875,.09375,.5);
+			return new Vec3d(xDif>0?.78125:.21875,.09375,.5);
 	}
 }

@@ -45,6 +45,8 @@ public abstract class IECompatModule
 		moduleClasses.put("Thaumcraft", ThaumcraftHelper.class);
 		moduleClasses.put("tconstruct", TConstructHelper.class);
 		moduleClasses.put("Baubles", BaublesHelper.class);
+		moduleClasses.put("chiselsandbits", ChiselsAndBitsHelper.class);
+
 //		moduleClasses.put("Mekanism", MekanismHelper.class);
 //		moduleClasses.put("cuttingedge", CuttingEdgeHelper.class);
 //		moduleClasses.put("Railcraft", RailcraftHelper.class);

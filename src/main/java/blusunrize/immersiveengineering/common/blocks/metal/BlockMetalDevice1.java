@@ -6,49 +6,55 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConnectable;
 import blusunrize.immersiveengineering.common.blocks.BlockIETileProvider;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
+import blusunrize.immersiveengineering.common.blocks.wooden.BlockTypes_WoodenDevice0;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyEnum;
-import net.minecraft.block.state.BlockState;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumWorldBlockLayer;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.obj.OBJModel.OBJProperty;
 import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
+import net.minecraftforge.common.property.Properties;
 
 public class BlockMetalDevice1 extends BlockIETileProvider<BlockTypes_MetalDevice1>
 {
 	public BlockMetalDevice1()
 	{
-		super("metalDevice1",Material.iron, PropertyEnum.create("type", BlockTypes_MetalDevice1.class), ItemBlockIEBase.class,  IEProperties.FACING_ALL,IEProperties.MULTIBLOCKSLAVE,IEProperties.BOOLEANS[0],OBJProperty.instance,IEProperties.OBJ_MODEL_CALLBACK);
+		super("metalDevice1",Material.IRON, PropertyEnum.create("type", BlockTypes_MetalDevice1.class), ItemBlockIEBase.class,  IEProperties.FACING_ALL,IEProperties.MULTIBLOCKSLAVE,IEProperties.BOOLEANS[0],Properties.AnimationProperty,IEProperties.OBJ_MODEL_CALLBACK);
 		this.setHardness(3.0F);
 		this.setResistance(15.0F);
-		this.setMetaBlockLayer(BlockTypes_MetalDevice1.CHARGING_STATION.getMeta(), EnumWorldBlockLayer.SOLID,EnumWorldBlockLayer.TRANSLUCENT);
-		this.setMetaBlockLayer(BlockTypes_MetalDevice1.SAMPLE_DRILL.getMeta(), EnumWorldBlockLayer.CUTOUT);
-		this.setMetaBlockLayer(BlockTypes_MetalDevice1.FLOODLIGHT.getMeta(), EnumWorldBlockLayer.SOLID,EnumWorldBlockLayer.TRANSLUCENT);
+		lightOpacity = 0;
+		this.setMetaBlockLayer(BlockTypes_MetalDevice1.CHARGING_STATION.getMeta(), BlockRenderLayer.SOLID, BlockRenderLayer.TRANSLUCENT);
+		this.setMetaBlockLayer(BlockTypes_MetalDevice1.SAMPLE_DRILL.getMeta(), BlockRenderLayer.CUTOUT);
+		this.setMetaBlockLayer(BlockTypes_MetalDevice1.FLOODLIGHT.getMeta(), BlockRenderLayer.SOLID, BlockRenderLayer.TRANSLUCENT);
+		this.setMetaLightOpacity(BlockTypes_MetalDevice1.FURNACE_HEATER.getMeta(), 255);
+		this.setMetaLightOpacity(BlockTypes_MetalDevice1.DYNAMO.getMeta(), 255);
+		this.setMetaLightOpacity(BlockTypes_MetalDevice1.THERMOELECTRIC_GEN.getMeta(), 255);
 	}
 
 	@Override
-	public boolean isFullBlock()
+	public boolean isFullBlock(IBlockState state)
 	{
 		return false;
 	}
 	@Override
-	public boolean isFullCube()
+	public boolean isFullCube(IBlockState state)
 	{
 		return false;
 	}
 	@Override
-	public boolean isOpaqueCube()
+	public boolean isOpaqueCube(IBlockState state)
 	{
 		return false;
 	}
@@ -59,7 +65,7 @@ public class BlockMetalDevice1 extends BlockIETileProvider<BlockTypes_MetalDevic
 		return true;
 	}
 	@Override
-	public String getCustomStateMapping(int meta)
+	public String getCustomStateMapping(int meta, boolean itemBlock)
 	{
 		if(BlockTypes_MetalDevice1.values()[meta]==BlockTypes_MetalDevice1.ELECTRIC_LANTERN)
 			return "lantern";
@@ -77,10 +83,10 @@ public class BlockMetalDevice1 extends BlockIETileProvider<BlockTypes_MetalDevic
 	}
 
 	@Override
-	protected BlockState createBlockState()
+	protected BlockStateContainer createBlockState()
 	{
-		BlockState base = super.createBlockState();
-		IUnlistedProperty[] unlisted = (IUnlistedProperty[]) ((base instanceof ExtendedBlockState)?((ExtendedBlockState)base).getUnlistedProperties().toArray(new IUnlistedProperty[0]):new IUnlistedProperty[0]);
+		BlockStateContainer base = super.createBlockState();
+		IUnlistedProperty[] unlisted = (base instanceof ExtendedBlockState)?((ExtendedBlockState)base).getUnlistedProperties().toArray(new IUnlistedProperty[0]):new IUnlistedProperty[0];
 		unlisted = Arrays.copyOf(unlisted, unlisted.length+1);
 		unlisted[unlisted.length-1] = IEProperties.CONNECTIONS;
 		return new ExtendedBlockState(this, base.getProperties().toArray(new IProperty[0]), unlisted);
@@ -108,14 +114,12 @@ public class BlockMetalDevice1 extends BlockIETileProvider<BlockTypes_MetalDevic
 	}
 
 	@Override
-	public boolean isSideSolid(IBlockAccess world, BlockPos pos, EnumFacing side)
+	public boolean isSideSolid(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side)
 	{
 		TileEntity tile = world.getTileEntity(pos); 
 		if(tile instanceof TileEntityTeslaCoil)
 			return !((TileEntityTeslaCoil)tile).dummy;
-		if(tile instanceof TileEntityElectricLantern || tile instanceof TileEntityChargingStation)
-			return false;
-		return true;
+		return !(tile instanceof TileEntityElectricLantern || tile instanceof TileEntityChargingStation);
 	}
 
 	@Override

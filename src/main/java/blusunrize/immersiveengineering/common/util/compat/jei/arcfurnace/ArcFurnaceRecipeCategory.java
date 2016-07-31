@@ -15,7 +15,7 @@ public class ArcFurnaceRecipeCategory extends IERecipeCategory
 	//	static ItemStack arcFurnaceStack;
 	public ArcFurnaceRecipeCategory(IGuiHelper helper, String recipeType, Class wrapperClass)
 	{
-		super("arcFurnace"+(recipeType!=null?"."+recipeType:""),"tile.ImmersiveEngineering.metalMultiblock.arc_furnace.name", helper.createBlankDrawable(140,50), wrapperClass);
+		super("arcFurnace"+(recipeType!=null?"."+recipeType:""),"tile.immersiveengineering.metalMultiblock.arc_furnace.name", helper.createBlankDrawable(140,50), wrapperClass);
 		slotDrawable = helper.getSlotDrawable();
 		if(recipeType!=null)
 			this.localizedName+=" - "+recipeType;

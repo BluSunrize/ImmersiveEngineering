@@ -37,14 +37,14 @@
 				"rotation": {"y": -90 }
 			}}
 		},
-		"*multiblockslave":
+		"_0multiblockslave":
 		{
 			"false":{},
 			"true":{
 				"model": "builtin/generated"
 			}
 		},
-		"+dynamicrender":
+		"_1dynamicrender":
 		{
 			"false":{
 				"model": "immersiveengineering:metalMultiblock/metalPress.obj"

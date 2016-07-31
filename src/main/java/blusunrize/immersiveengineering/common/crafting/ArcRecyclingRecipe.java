@@ -35,7 +35,7 @@ public class ArcRecyclingRecipe extends ArcFurnaceRecipe
 				if(type!=null)
 				{
 					ItemStack nuggets = IEApi.getPreferredOreStack("nugget"+type[1]);
-					outputList.add(Utils.copyStackWithAmount(nuggets,(int)nuggetOut));
+					outputList.add(Utils.copyStackWithAmount(nuggets, nuggetOut));
 				}
 			}
 		}
@@ -61,7 +61,7 @@ public class ArcRecyclingRecipe extends ArcFurnaceRecipe
 				if(type!=null)
 				{
 					ItemStack nuggets = IEApi.getPreferredOreStack("nugget"+type[1]);
-					outs.add(Utils.copyStackWithAmount(nuggets,(int)nuggetOut));
+					outs.add(Utils.copyStackWithAmount(nuggets, nuggetOut));
 				}
 			}
 		}

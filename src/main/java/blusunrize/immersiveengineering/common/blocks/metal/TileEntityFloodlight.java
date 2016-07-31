@@ -1,15 +1,5 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-
-import javax.vecmath.Matrix4f;
-import javax.vecmath.Vector3f;
-
-import com.google.common.base.Optional;
-
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IEProperties.PropertyBoolInverted;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
@@ -20,35 +10,36 @@ import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.EventHandler;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.BlockFakeLight.TileEntityFakeLight;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IActiveState;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedDirectionalTile;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ILightValue;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISpawnInterdiction;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IUsesBooleanProperty;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
+import com.google.common.base.Optional;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
-import net.minecraft.util.EnumWorldBlockLayer;
 import net.minecraft.util.ITickable;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraftforge.client.MinecraftForgeClient;
-import net.minecraftforge.client.model.TRSRTransformation;
+import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import javax.vecmath.Matrix4f;
+import javax.vecmath.Vector3f;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 
 public class TileEntityFloodlight extends TileEntityImmersiveConnectable implements ITickable, IAdvancedDirectionalTile, IHammerInteraction, ISpawnInterdiction, IBlockBounds, IActiveState, ILightValue, IOBJModelCallback<IBlockState>
 {
@@ -76,7 +67,7 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 		{
 			updateFakeLights(true, active);
 			markDirty();
-			worldObj.markBlockForUpdate(getPos());
+			this.markContainingBlockForUpdate(null);
 			shouldUpdate = false;
 		}
 		enabled = worldObj.isBlockIndirectlyGettingPowered(getPos())>0;
@@ -94,7 +85,7 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 		switchCooldown--;
 		if(active!=b || worldObj.getTotalWorldTime()%512==((getPos().getX()^getPos().getZ())&511))
 		{
-			worldObj.markBlockForUpdate(getPos());
+			this.markContainingBlockForUpdate(null);
 			updateFakeLights(true,active);
 		}
 		if(!active)
@@ -152,11 +143,11 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 			float yRotation = rotY;
 			double angleX = Math.toRadians(rotX);
 
-			Vec3[] rays = {
-					/*Straight*/new Vec3(0,0,1),
-					/*U,D,L,R*/new Vec3(0,0,1),new Vec3(0,0,1),new Vec3(0,0,1),new Vec3(0,0,1),
-					/*Intermediate*/new Vec3(0,0,1),new Vec3(0,0,1),new Vec3(0,0,1),new Vec3(0,0,1),
-					/*Diagonal*/new Vec3(0,0,1),new Vec3(0,0,1),new Vec3(0,0,1),new Vec3(0,0,1)};
+			Vec3d[] rays = {
+					/*Straight*/new Vec3d(0,0,1),
+					/*U,D,L,R*/new Vec3d(0,0,1),new Vec3d(0,0,1),new Vec3d(0,0,1),new Vec3d(0,0,1),
+					/*Intermediate*/new Vec3d(0,0,1),new Vec3d(0,0,1),new Vec3d(0,0,1),new Vec3d(0,0,1),
+					/*Diagonal*/new Vec3d(0,0,1),new Vec3d(0,0,1),new Vec3d(0,0,1),new Vec3d(0,0,1)};
 			Matrix4 mat = new Matrix4();
 			if(side==EnumFacing.DOWN)
 				mat.scale(1, -1, 1);
@@ -219,14 +210,14 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 		}
 		this.lightsToBeRemoved.addAll(tempRemove);
 	}
-	public void placeLightAlongVector(Vec3 vec, int offset, ArrayList<BlockPos> checklist)
+	public void placeLightAlongVector(Vec3d vec, int offset, ArrayList<BlockPos> checklist)
 	{
-		Vec3 light = new Vec3(getPos()).addVector(.5,.75,.5);
+		Vec3d light = new Vec3d(getPos()).addVector(.5,.75,.5);
 		int range = 32;
 		HashSet<BlockPos> ignore = new HashSet<BlockPos>();
 		ignore.add(getPos());
 		BlockPos hit = Utils.rayTraceForFirst(Utils.addVectors(vec,light), light.addVector(vec.xCoord*range,vec.yCoord*range,vec.zCoord*range), worldObj, ignore);
-		double maxDistance = hit!=null?new Vec3(hit).addVector(.5,.75,.5).squareDistanceTo(light):range*range;
+		double maxDistance = hit!=null?new Vec3d(hit).addVector(.5,.75,.5).squareDistanceTo(light):range*range;
 		for(int i=1+offset; i<=range; i++)
 		{
 			BlockPos target = getPos().add(Math.round(vec.xCoord*i), Math.round(vec.yCoord*i), Math.round(vec.zCoord*i));
@@ -281,7 +272,7 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 			fakeLights.add(new BlockPos(icc[0],icc[1],icc[2]));
 		}
 		if(FMLCommonHandler.instance().getEffectiveSide()==Side.CLIENT && worldObj!=null)
-			worldObj.markBlockForUpdate(getPos());
+			this.markContainingBlockForUpdate(null);
 	}
 
 	@Override
@@ -337,14 +328,14 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 	{
 		if(id==1)
 		{
-			worldObj.markBlockForUpdate(getPos());
+			this.markContainingBlockForUpdate(null);
 			worldObj.checkLightFor(EnumSkyBlock.BLOCK, getPos());
 			return true;
 		}
 		return super.receiveClientEvent(id, arg);
 	}
 	@Override
-	public Vec3 getRaytraceOffset(IImmersiveConnectable link)
+	public Vec3d getRaytraceOffset(IImmersiveConnectable link)
 	{
 
 		int xDif = ((TileEntity)link).getPos().getX()-getPos().getX();
@@ -373,10 +364,10 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 			z = (Math.abs(zDif)>Math.abs(yDif))? (zDif>=0)?.9375: .0625: .5;
 			break;
 		}
-		return new Vec3(x,y,z);
+		return new Vec3d(x,y,z);
 	}
 	@Override
-	public Vec3 getConnectionOffset(Connection con)
+	public Vec3d getConnectionOffset(Connection con)
 	{
 		int xDif = (con==null||con.start==null||con.end==null)?0: (con.start.equals(Utils.toCC(this))&&con.end!=null)? con.end.getX()-getPos().getX(): (con.end.equals(Utils.toCC(this))&& con.start!=null)?con.start.getX()-getPos().getX(): 0;
 		int yDif = (con==null||con.start==null||con.end==null)?0: (con.start.equals(Utils.toCC(this))&&con.end!=null)? con.end.getY()-getPos().getY(): (con.end.equals(Utils.toCC(this))&& con.start!=null)?con.start.getY()-getPos().getY(): 0;
@@ -404,7 +395,7 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 			z = (Math.abs(zDif)>Math.abs(yDif))? (zDif>=0)?.9375: .0625: .5;
 			break;
 		}
-		return new Vec3(x,y,z);
+		return new Vec3d(x,y,z);
 	}
 
 	@Override
@@ -418,16 +409,6 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 												side.getAxis()==Axis.Y?1:.9375f,
 														side.getAxis()==Axis.Z?1:.9375f
 		};
-	}
-	@Override
-	public float[] getSpecialCollisionBounds()
-	{
-		return null;
-	}
-	@Override
-	public float[] getSpecialSelectionBounds()
-	{
-		return null;
 	}
 
 	@Override
@@ -458,7 +439,7 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 		else
 			this.rotX = Math.min(191.25f, Math.max(-11.25f, rotX+(player.isSneaking()?-11.25f:11.25f)));
 		markDirty();
-		worldObj.markBlockForUpdate(getPos());
+		this.markContainingBlockForUpdate(null);
 		worldObj.addBlockEvent(getPos(), getBlockType(), 255, 0);
 		return true;
 	}
@@ -508,9 +489,9 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 	public boolean shouldRenderGroup(IBlockState object, String group)
 	{
 		if("glass".equals(group))
-			return MinecraftForgeClient.getRenderLayer()==EnumWorldBlockLayer.TRANSLUCENT;
+			return MinecraftForgeClient.getRenderLayer()== BlockRenderLayer.TRANSLUCENT;
 		else
-			return MinecraftForgeClient.getRenderLayer()==EnumWorldBlockLayer.SOLID;
+			return MinecraftForgeClient.getRenderLayer()== BlockRenderLayer.SOLID;
 	}
 	@SideOnly(Side.CLIENT)
 	@Override

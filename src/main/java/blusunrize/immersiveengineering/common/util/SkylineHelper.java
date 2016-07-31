@@ -12,10 +12,9 @@ import blusunrize.immersiveengineering.common.items.ItemSkyhook;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.Vec3;
-import net.minecraft.util.BlockPos.MutableBlockPos;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 public class SkylineHelper
@@ -28,7 +27,7 @@ public class SkylineHelper
 		Set<Connection> outputs = ImmersiveNetHandler.INSTANCE.getConnections(world, pos);
 		if(outputs!=null && outputs.size()>0)
 		{
-			Vec3 vec = living.getLookVec();
+			Vec3d vec = living.getLookVec();
 			vec = vec.normalize();
 			Connection line = null;
 			for(Connection c : outputs)
@@ -37,8 +36,8 @@ public class SkylineHelper
 						line = c;
 					else
 					{
-						Vec3 lineVec = new Vec3(line.end.getX()-line.start.getX(), line.end.getY()-line.start.getY(), line.end.getZ()-line.start.getZ()).normalize();
-						Vec3 conVec = new Vec3(c.end.getX()-c.start.getX(), c.end.getY()-c.start.getY(), c.end.getZ()-c.start.getZ()).normalize();
+						Vec3d lineVec = new Vec3d(line.end.getX()-line.start.getX(), line.end.getY()-line.start.getY(), line.end.getZ()-line.start.getZ()).normalize();
+						Vec3d conVec = new Vec3d(c.end.getX()-c.start.getX(), c.end.getY()-c.start.getY(), c.end.getZ()-c.start.getZ()).normalize();
 						if(conVec.distanceTo(vec)<lineVec.distanceTo(vec))
 							line = c;
 					}
@@ -54,15 +53,15 @@ public class SkylineHelper
 		BlockPos cc1 = connection.end==Utils.toCC(start)?connection.end:connection.start;
 		IImmersiveConnectable iicStart = ApiUtils.toIIC(cc1, player.worldObj);
 		IImmersiveConnectable iicEnd = ApiUtils.toIIC(cc0, player.worldObj);
-		Vec3 vStart = new Vec3(cc1);
-		Vec3 vEnd = new Vec3(cc0);
+		Vec3d vStart = new Vec3d(cc1);
+		Vec3d vEnd = new Vec3d(cc0);
 
 		if(iicStart!=null)
 			vStart = Utils.addVectors(vStart, iicStart.getConnectionOffset(connection));
 		if(iicEnd!=null)
 			vEnd = Utils.addVectors(vEnd, iicEnd.getConnectionOffset(connection));
 
-		Vec3[] steps = getConnectionCatenary(connection,vStart,vEnd);
+		Vec3d[] steps = getConnectionCatenary(connection,vStart,vEnd);
 
 		double dx = (steps[0].xCoord-vStart.xCoord);
 		double dy = (steps[0].yCoord-vStart.yCoord);
@@ -75,9 +74,9 @@ public class SkylineHelper
 
 		EntitySkylineHook hook = new EntitySkylineHook(player.worldObj, vStart.xCoord,vStart.yCoord,vStart.zCoord, connection, cc0, steps);
 		float speed = 1;
-		if(player.getCurrentEquippedItem()!=null&&player.getCurrentEquippedItem().getItem() instanceof ItemSkyhook)
-			speed = ((ItemSkyhook)player.getCurrentEquippedItem().getItem()).getSkylineSpeed(player.getCurrentEquippedItem());
-		Vec3 moveVec = getSubMovementVector(vStart, steps[0], speed);
+		if(player.getActiveItemStack()!=null&&player.getActiveItemStack().getItem() instanceof ItemSkyhook)
+			speed = ((ItemSkyhook)player.getActiveItemStack().getItem()).getSkylineSpeed(player.getActiveItemStack());
+		Vec3d moveVec = getSubMovementVector(vStart, steps[0], speed);
 		hook.motionX = moveVec.xCoord;//*speed;
 		hook.motionY = moveVec.yCoord;//*speed;
 		hook.motionZ = moveVec.zCoord;//*speed;
@@ -91,16 +90,16 @@ public class SkylineHelper
 		if(!player.worldObj.isRemote)
 			player.worldObj.spawnEntityInWorld(hook);
 		ItemSkyhook.existingHooks.put(player.getName(), hook);
-		player.mountEntity(hook);
+		player.startRiding(hook);
 		return hook;
 	}
 
-	public static Vec3[] getConnectionCatenary(Connection connection, Vec3 start, Vec3 end)
+	public static Vec3d[] getConnectionCatenary(Connection connection, Vec3d start, Vec3d end)
 	{
 		boolean vertical = connection.end.getX()==connection.start.getX() && connection.end.getZ()==connection.start.getZ();
 
 		if(vertical)
-			return new Vec3[]{new Vec3(end.xCoord, end.yCoord, end.zCoord)};
+			return new Vec3d[]{new Vec3d(end.xCoord, end.yCoord, end.zCoord)};
 
 		double dx = (end.xCoord)-(start.xCoord);
 		double dy = (end.yCoord)-(start.yCoord);
@@ -121,7 +120,7 @@ public class SkylineHelper
 		double q = (dy+0-k*Math.cosh(l)/Math.sinh(l))*0.5;
 
 		int vertices = 16;
-		Vec3[] vex = new Vec3[vertices];
+		Vec3d[] vex = new Vec3d[vertices];
 
 		for(int i=0; i<vertices; i++)
 		{
@@ -129,16 +128,16 @@ public class SkylineHelper
 			double x1 = 0 + dx * n1;
 			double z1 = 0 + dz * n1;
 			double y1 = a * Math.cosh((( Math.sqrt(x1*x1+z1*z1) )-p)/a)+q;
-			vex[i] = new Vec3(start.xCoord+x1, start.yCoord+y1, start.zCoord+z1);
+			vex[i] = new Vec3d(start.xCoord+x1, start.yCoord+y1, start.zCoord+z1);
 		}
 		return vex;
 	}
 
-	public static Vec3 getSubMovementVector(Vec3 start, Vec3 target, float speed)
+	public static Vec3d getSubMovementVector(Vec3d start, Vec3d target, float speed)
 	{
-		Vec3 movementVec = new Vec3(target.xCoord-start.xCoord, target.yCoord-start.yCoord, target.zCoord-start.zCoord);
+		Vec3d movementVec = new Vec3d(target.xCoord-start.xCoord, target.yCoord-start.yCoord, target.zCoord-start.zCoord);
 		int lPixel = (int)Math.max(1, (movementVec.lengthVector()/(.125*speed)));
-		return new Vec3(movementVec.xCoord/lPixel, movementVec.yCoord/lPixel, movementVec.zCoord/lPixel);
+		return new Vec3d(movementVec.xCoord/lPixel, movementVec.yCoord/lPixel, movementVec.zCoord/lPixel);
 	}
 	public static boolean isInBlock(EntityPlayer player, World w)
 	{
@@ -150,7 +149,7 @@ public class SkylineHelper
 			for (int yOff = 0;yOff<3;yOff++)
 				for (int zOff = 0;zOff<2;zOff++)
 				{
-					Vec3 v = new Vec3(init.getX()+xOff, init.getY()+yOff, init.getZ()+zOff);
+					Vec3d v = new Vec3d(init.getX()+xOff, init.getY()+yOff, init.getZ()+zOff);
 					if (hitbox.isVecInside(v)&&!w.isAirBlock(new BlockPos(v)))
 						return true;
 				}

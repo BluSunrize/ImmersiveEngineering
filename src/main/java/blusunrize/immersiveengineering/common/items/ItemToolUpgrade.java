@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.StatCollector;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.tool.IUpgrade;
@@ -28,7 +28,7 @@ public class ItemToolUpgrade extends ItemIEBase implements IUpgrade {
 	{
 		if(stack.getItemDamage()<getSubNames().length)
 		{
-			String[] flavour = ImmersiveEngineering.proxy.splitStringOnWidth(StatCollector.translateToLocal(Lib.DESC_FLAVOUR+"toolupgrade."+this.getSubNames()[stack.getItemDamage()]), 200);
+			String[] flavour = ImmersiveEngineering.proxy.splitStringOnWidth(I18n.format(Lib.DESC_FLAVOUR+"toolupgrade."+this.getSubNames()[stack.getItemDamage()]), 200);
 			for(String s : flavour)
 				list.add(s);
 		}

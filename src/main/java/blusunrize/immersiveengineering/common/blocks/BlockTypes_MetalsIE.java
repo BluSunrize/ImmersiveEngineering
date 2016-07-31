@@ -17,7 +17,7 @@ public enum BlockTypes_MetalsIE implements IStringSerializable, BlockIEBase.IBlo
 	@Override
 	public String getName()
 	{
-		return this.toString();
+		return this.toString().toLowerCase();
 	}
 	@Override
 	public int getMeta()

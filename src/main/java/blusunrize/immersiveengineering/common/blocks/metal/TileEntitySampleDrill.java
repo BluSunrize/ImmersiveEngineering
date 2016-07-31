@@ -21,12 +21,12 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.world.World;
-import net.minecraftforge.client.model.obj.OBJModel.OBJState;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -68,7 +68,7 @@ public class TileEntitySampleDrill extends TileEntityIEBase implements ITickable
 					this.sample = createCoreSample(worldObj, (getPos().getX()>>4), (getPos().getZ()>>4), info);
 				}
 				this.markDirty();
-				worldObj.markBlockForUpdate(getPos());
+				this.markContainingBlockForUpdate(null);
 			}
 	}
 
@@ -101,7 +101,7 @@ public class TileEntitySampleDrill extends TileEntityIEBase implements ITickable
 	{
 		ItemStack stack = new ItemStack(IEContent.itemCoresample);
 		ItemNBTHelper.setLong(stack, "timestamp", world.getTotalWorldTime());
-		ItemNBTHelper.setIntArray(stack, "coords", new int[]{world.provider.getDimensionId(), chunkX,chunkZ});
+		ItemNBTHelper.setIntArray(stack, "coords", new int[]{world.provider.getDimension(), chunkX,chunkZ});
 		if(info.mineralOverride!=null)
 			ItemNBTHelper.setString(stack, "mineral", info.mineralOverride.name);
 		else if(info.mineral!=null)
@@ -216,13 +216,13 @@ public class TileEntitySampleDrill extends TileEntityIEBase implements ITickable
 	}
 
 	@Override
-	public boolean interact(EnumFacing side, EntityPlayer player, float hitX, float hitY, float hitZ)
+	public boolean interact(EnumFacing side, EntityPlayer player, EnumHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
 		if(dummy!=0)
 		{
 			TileEntity te = worldObj.getTileEntity(getPos().add(0,-dummy,0));
 			if(te instanceof TileEntitySampleDrill)
-				return ((TileEntitySampleDrill)te).interact(side, player, hitX, hitY, hitZ);
+				return ((TileEntitySampleDrill)te).interact(side, player, hand, heldItem, hitX, hitY, hitZ);
 		}
 			
 		if(this.sample!=null)
@@ -232,14 +232,14 @@ public class TileEntitySampleDrill extends TileEntityIEBase implements ITickable
 			this.sample = null;
 			this.active = false;
 			markDirty();
-			worldObj.markBlockForUpdate(getPos());
+			this.markContainingBlockForUpdate(null);
 			return true;
 		}
 		else if(!this.active)
 		{
 			this.active = true;
 			markDirty();
-			worldObj.markBlockForUpdate(getPos());
+			this.markContainingBlockForUpdate(null);
 			return true;
 		}
 		return false;

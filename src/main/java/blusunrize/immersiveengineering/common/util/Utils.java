@@ -1,23 +1,21 @@
 package blusunrize.immersiveengineering.common.util;
 
-import java.lang.reflect.Method;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
-
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
+import com.google.common.base.Charsets;
+import com.google.common.collect.Lists;
+import com.google.common.io.Resources;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonParseException;
+import com.sun.istack.internal.Nullable;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -35,31 +33,34 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.StatCollector;
-import net.minecraft.util.Vec3;
-import net.minecraft.util.WeightedRandom;
-import net.minecraft.util.WeightedRandomChestContent;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.BlockFluidBase;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidContainerRegistry;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
-import net.minecraftforge.fluids.IFluidBlock;
-import net.minecraftforge.fluids.IFluidContainerItem;
-import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraft.world.storage.loot.*;
+import net.minecraft.world.storage.loot.conditions.LootCondition;
+import net.minecraft.world.storage.loot.conditions.LootConditionManager;
+import net.minecraft.world.storage.loot.functions.LootFunction;
+import net.minecraft.world.storage.loot.functions.LootFunctionManager;
+import net.minecraftforge.fluids.*;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.oredict.OreDictionary;
+
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.net.URL;
+import java.text.DecimalFormat;
+import java.util.*;
 
 public class Utils
 {
@@ -111,7 +112,7 @@ public class Utils
 	{
 		if(stack==null)
 			return -1;
-		if(stack.getItem().equals(Items.dye))
+		if(stack.getItem().equals(Items.DYE))
 			return stack.getItemDamage();
 		for(int dye=0;dye<dyeNames.length;dye++)
 			if(compareToOreName(stack,"dye"+dyeNames[dye]))
@@ -122,7 +123,7 @@ public class Utils
 	{
 		if(stack==null)
 			return false;
-		if(stack.getItem().equals(Items.dye))
+		if(stack.getItem().equals(Items.DYE))
 			return true;
 		for(int dye=0;dye<dyeNames.length;dye++)
 			if(compareToOreName(stack,"dye"+dyeNames[dye]))
@@ -142,6 +143,15 @@ public class Utils
 				fs.tag = null;
 		}
 		return fs;
+	}
+
+	static long UUIDBase = 109406000905L;
+	static long UUIDAdd = 01L;
+	public static UUID generateNewUUID()
+	{
+		UUID uuid = new UUID(UUIDBase,UUIDAdd);
+		UUIDAdd++;
+		return uuid;
 	}
 
 	public static BlockPos toCC(Object object)
@@ -203,7 +213,7 @@ public class Utils
 					return (String)m_getHarvestLevel.invoke(null, lvl);
 			}catch(Exception e){}
 		}
-		return StatCollector.translateToLocal(Lib.DESC_INFO+"mininglvl."+Math.max(-1, Math.min(lvl, 6)));
+		return I18n.format(Lib.DESC_INFO+"mininglvl."+Math.max(-1, Math.min(lvl, 6)));
 	}
 
 	public static String getModVersion(String modid)
@@ -219,7 +229,7 @@ public class Utils
 		return tile0.getPos().equals(tile1.getPos());
 	}
 
-	public static MovingObjectPosition getMovingObjectPositionFromPlayer(World world, EntityLivingBase living, boolean bool)
+	public static RayTraceResult getMovingObjectPositionFromPlayer(World world, EntityLivingBase living, boolean bool)
 	{
 		float f = 1.0F;
 		float f1 = living.prevRotationPitch + (living.rotationPitch - living.prevRotationPitch) * f;
@@ -227,7 +237,7 @@ public class Utils
 		double d0 = living.prevPosX + (living.posX - living.prevPosX) * (double)f;
 		double d1 = living.prevPosY + (living.posY - living.prevPosY) * (double)f + (double)(world.isRemote ? living.getEyeHeight() - (living instanceof EntityPlayer?((EntityPlayer)living).getDefaultEyeHeight():0) : living.getEyeHeight()); // isRemote check to revert changes to ray trace position due to adding the eye height clientside and player yOffset differences
 		double d2 = living.prevPosZ + (living.posZ - living.prevPosZ) * (double)f;
-		Vec3 vec3 = new Vec3(d0, d1, d2);
+		Vec3d vec3 = new Vec3d(d0, d1, d2);
 		float f3 = MathHelper.cos(-f2 * 0.017453292F - (float)Math.PI);
 		float f4 = MathHelper.sin(-f2 * 0.017453292F - (float)Math.PI);
 		float f5 = -MathHelper.cos(-f1 * 0.017453292F);
@@ -236,12 +246,12 @@ public class Utils
 		float f8 = f3 * f5;
 		double d3 = 5.0D;
 		if (living instanceof EntityPlayerMP)
-			d3 = ((EntityPlayerMP)living).theItemInWorldManager.getBlockReachDistance();
+			d3 = ((EntityPlayerMP)living).interactionManager.getBlockReachDistance();
 
-		Vec3 vec31 = vec3.addVector((double)f7 * d3, (double)f6 * d3, (double)f8 * d3);
+		Vec3d vec31 = vec3.addVector((double)f7 * d3, (double)f6 * d3, (double)f8 * d3);
 		return world.rayTraceBlocks(vec3, vec31, bool, !bool, false);
 	}
-	public static boolean canBlocksSeeOther(World world, BlockPos cc0, BlockPos cc1, Vec3 pos0, Vec3 pos1)
+	public static boolean canBlocksSeeOther(World world, BlockPos cc0, BlockPos cc1, Vec3d pos0, Vec3d pos1)
 	{
 		HashSet<BlockPos> inter = rayTrace(pos0, pos1, world);
 		Iterator<BlockPos> it = inter.iterator();
@@ -260,16 +270,17 @@ public class Utils
 		return stack.getItem().getToolClasses(stack).contains(Lib.TOOL_HAMMER);
 	}
 
-	public static Vec3 getFlowVector(World world, BlockPos pos)
+	public static Vec3d getFlowVector(World world, BlockPos pos)
 	{
-		if(world.getBlockState(pos).getBlock() instanceof BlockFluidBase)
-			return ((BlockFluidBase)world.getBlockState(pos).getBlock()).getFlowVector(world, pos);
-		else if( !(world.getBlockState(pos).getBlock() instanceof BlockLiquid))
-			return new Vec3(0, 0, 0);
+		IBlockState state = world.getBlockState(pos);
+		if(state.getBlock() instanceof BlockFluidBase)
+			return ((BlockFluidBase)state.getBlock()).getFlowVector(world, pos);
+		else if( !(state.getBlock() instanceof BlockLiquid))
+			return new Vec3d(0, 0, 0);
 
-		BlockLiquid block = (BlockLiquid)world.getBlockState(pos).getBlock();
-		Vec3 vec3 = new Vec3(0.0D, 0.0D, 0.0D);
-		Material mat = block.getMaterial();
+		BlockLiquid block = (BlockLiquid)state.getBlock();
+		Vec3d vec3 = new Vec3d(0.0D, 0.0D, 0.0D);
+		Material mat = state.getMaterial();
 		int i = getEffectiveFlowDecay(world, pos, mat);
 
 		for(EnumFacing enumfacing : EnumFacing.Plane.HORIZONTAL)
@@ -278,7 +289,7 @@ public class Utils
 			int j = getEffectiveFlowDecay(world, blockpos, mat);
 			if(j<0)
 			{
-				if(!world.getBlockState(blockpos).getBlock().getMaterial().blocksMovement())
+				if(!world.getBlockState(blockpos).getMaterial().blocksMovement())
 				{
 					j = getEffectiveFlowDecay(world, blockpos.down(), mat);
 					if(j>=0)
@@ -295,7 +306,7 @@ public class Utils
 			}
 		}
 
-		if(((Integer)world.getBlockState(pos).getValue(BlockLiquid.LEVEL)).intValue()>=8)
+		if(state.getValue(BlockLiquid.LEVEL).intValue()>=8)
 		{
 			for(EnumFacing enumfacing1 : EnumFacing.Plane.HORIZONTAL)
 			{
@@ -312,26 +323,24 @@ public class Utils
 	static int getEffectiveFlowDecay(IBlockAccess world, BlockPos pos, Material mat)
 	{
 		IBlockState state = world.getBlockState(pos);
-		if(state.getBlock().getMaterial() != mat)
+		if(state.getMaterial() != mat)
 			return -1;
 		int l = state.getBlock().getMetaFromState(state);
 		if (l >= 8)
 			l = 0;
 		return l;
 	}
-	public static Vec3 addVectors(Vec3 vec0, Vec3 vec1)
+	public static Vec3d addVectors(Vec3d vec0, Vec3d vec1)
 	{
 		return vec0.addVector(vec1.xCoord,vec1.yCoord,vec1.zCoord);
 	}
 
-	public static boolean isVecInEntityHead(EntityLivingBase entity, Vec3 vec)
+	public static boolean isVecInEntityHead(EntityLivingBase entity, Vec3d vec)
 	{
 		if(entity.height/entity.width<2)//Crude check to see if the entity is bipedal or at least upright (this should work for blazes)
 			return false;
 		double d = vec.yCoord-(entity.posY+entity.getEyeHeight());
-		if(Math.abs(d)<.25)
-			return true;
-		return false;
+		return Math.abs(d) < .25;
 	}
 
 	public static NBTTagCompound getRandomFireworkExplosion(Random rand, int preType)
@@ -349,7 +358,7 @@ public class Utils
 			if(j>6)
 				j+=2;
 			//no black, brown, light grey, grey or white
-			colors[i] = ItemDye.dyeColors[j];
+			colors[i] = ItemDye.DYE_COLORS[j];
 		}
 		expl.setIntArray("Colors", colors);
 		int type = preType>=0?preType: rand.nextInt(4);
@@ -396,20 +405,21 @@ public class Utils
 		Block b = w.getBlockState(pos).getBlock();
 		return FluidRegistry.lookupFluidForBlock(b);
 	}
-	
+
 	public static boolean placeFluidBlock(World world, BlockPos pos, FluidStack fluid)
 	{
 		if(fluid==null || fluid.getFluid()==null)
 			return false;
-		Block b = world.getBlockState(pos).getBlock();
+		IBlockState state = world.getBlockState(pos);
+		Block b = state.getBlock();
 		Block fluidBlock = fluid.getFluid().getBlock();
 
-		if(Blocks.water.equals(fluidBlock))
-			fluidBlock = Blocks.flowing_water;
-		else if(Blocks.lava.equals(fluidBlock))
-			fluidBlock = Blocks.flowing_lava;
+		if(Blocks.WATER.equals(fluidBlock))
+			fluidBlock = Blocks.FLOWING_WATER;
+		else if(Blocks.LAVA.equals(fluidBlock))
+			fluidBlock = Blocks.FLOWING_LAVA;
 
-		boolean canPlace = b==null||b.isAir(world,pos)||b.isReplaceable(world,pos);
+		boolean canPlace = b==null||b.isAir(state,world,pos)||b.isReplaceable(world,pos);
 
 		if(fluidBlock!=null && canPlace && fluid.amount>=1000)
 		{
@@ -428,14 +438,14 @@ public class Utils
 		return false;
 	}
 
-	public static Collection<ItemStack> getContainersFilledWith(FluidStack fluidStack)
-	{
-		List<ItemStack> containers = new ArrayList();
-		for (FluidContainerRegistry.FluidContainerData data : FluidContainerRegistry.getRegisteredFluidContainerData())
-			if(data.fluid.containsFluid(fluidStack))
-				containers.add(data.filledContainer);
-		return containers;
-	}
+//	public static Collection<ItemStack> getContainersFilledWith(FluidStack fluidStack)
+//	{
+//		List<ItemStack> containers = new ArrayList();
+//		for (FluidContainerRegistry.FluidContainerData data : FluidContainerRegistry.getRegisteredFluidContainerData())
+//			if(data.fluid.containsFluid(fluidStack))
+//				containers.add(data.filledContainer);
+//		return containers;
+//	}
 
 	//	public static String nameFromStack(ItemStack stack)
 	//	{
@@ -460,8 +470,8 @@ public class Utils
 	}
 	public static Block getBlockFromItem(Item item)
 	{
-		if(item==Items.cauldron)
-			return Blocks.cauldron;
+		if(item==Items.CAULDRON)
+			return Blocks.CAULDRON;
 		return Block.getBlockFromItem(item);
 	}
 
@@ -512,7 +522,7 @@ public class Utils
 	}
 	public static void dropStackAtPos(World world, BlockPos pos, ItemStack stack)
 	{
-		dropStackAtPos(world, pos, stack, null);	
+		dropStackAtPos(world, pos, stack, null);
 	}
 	//	public static ItemStack insertStackIntoInventory(IInventory inventory, ItemStack stack, EnumFacing side)
 	//	{
@@ -623,227 +633,57 @@ public class Utils
 	//		return false;
 	//	}
 
-	public static ItemStack fillFluidContainer(FluidTank tank, ItemStack containerIn, ItemStack containerOut)
+	public static ItemStack fillFluidContainer(IFluidHandler handler, ItemStack containerIn, ItemStack containerOut, @Nullable EntityPlayer player)
 	{
-		if(tank.getFluidAmount()>0 && containerIn!=null)
+		if(containerIn==null)
+			return null;
+		ItemStack full = FluidUtil.tryFillContainer(containerIn, handler, Integer.MAX_VALUE, player, false);
+		if(full!=null && (containerOut==null || OreDictionary.itemMatches(containerOut,full,true)))
 		{
-			if(FluidContainerRegistry.isEmptyContainer(containerIn))
-			{
-				ItemStack filledContainer = FluidContainerRegistry.fillFluidContainer(tank.getFluid(), containerIn);
-				if(filledContainer!=null)
-				{
-					FluidStack fs = FluidContainerRegistry.getFluidForFilledItem(filledContainer);
-					if(fs.amount<=tank.getFluidAmount() && (containerOut==null || OreDictionary.itemMatches(containerOut, filledContainer, true)))
-					{
-						tank.drain(fs.amount, true);
-						return filledContainer;
-					}
-				}
-			}
-			else if(containerIn.getItem() instanceof IFluidContainerItem)
-			{
-				IFluidContainerItem iContainer = (IFluidContainerItem)containerIn.getItem();
-				int available = tank.getFluidAmount();
-				int space = iContainer.getCapacity(containerIn)-(iContainer.getFluid(containerIn)==null?0:iContainer.getFluid(containerIn).amount);
-				if(available>=space && iContainer.fill(containerIn, tank.getFluid(), false)==space)//Fill in one go
-				{
-					ItemStack filledContainer = copyStackWithAmount(containerIn,1);
-					int filled = iContainer.fill(filledContainer, tank.getFluid(), true);
-					if(containerOut==null || (OreDictionary.itemMatches(containerOut, filledContainer, true) && ItemStack.areItemStackTagsEqual(filledContainer, containerOut) ))
-					{
-						tank.drain(filled, true);
-						return filledContainer;
-					}
-				}
-				else
-				{
-					if(containerIn.stackSize==1)
-					{
-						int filled = iContainer.fill(containerIn, tank.getFluid(), true);
-						tank.drain(filled, true);
-					}
-					else
-					{
-						ItemStack filledContainer = copyStackWithAmount(containerIn,1);
-						int filled = iContainer.fill(filledContainer, tank.getFluid(), true);
-						if(containerOut==null || (OreDictionary.itemMatches(containerOut, filledContainer, true) && ItemStack.areItemStackTagsEqual(filledContainer, containerOut) && containerOut.stackSize+1<containerOut.getMaxStackSize() ))
-						{
-							tank.drain(filled, true);
-							return filledContainer;
-						}
-					}
-				}
-			}
+			if(containerOut.stackSize+full.stackSize<=containerOut.getMaxStackSize())
+				return null;
+			return FluidUtil.tryFillContainer(containerIn, handler, Integer.MAX_VALUE, player, true);
 		}
 		return null;
 	}
-	public static ItemStack drainFluidContainer(FluidTank tank, ItemStack containerIn)
+	public static ItemStack drainFluidContainer(IFluidHandler handler, ItemStack containerIn, ItemStack containerOut, @Nullable EntityPlayer player)
 	{
-		if(containerIn!=null)
-			if(FluidContainerRegistry.isFilledContainer(containerIn))
-			{
-				FluidStack fs = FluidContainerRegistry.getFluidForFilledItem(containerIn);
-				if(fs!=null && tank.getFluidAmount()+fs.amount <= tank.getCapacity())
-				{
-					ItemStack emptyContainer = FluidContainerRegistry.drainFluidContainer(containerIn);
-					if(emptyContainer!=null && tank.fill(fs, true)==fs.amount)
-						return emptyContainer;
-				}
-			}
+		if(containerIn==null)
+			return null;
+		ItemStack empty = FluidUtil.tryEmptyContainer(containerIn, handler, Integer.MAX_VALUE, player, false);
+		if(empty!=null && (containerOut==null || OreDictionary.itemMatches(containerOut,empty,true)))
+		{
+			if(containerOut.stackSize+empty.stackSize<=containerOut.getMaxStackSize())
+				return null;
+			return FluidUtil.tryEmptyContainer(containerIn, handler, Integer.MAX_VALUE, player, true);
+		}
 		return null;
 	}
 
-	public static FluidStack getFluidFromItemStack(ItemStack stack)
-	{
-		if(stack==null)
-			return null;
-		FluidStack fluid = FluidContainerRegistry.getFluidForFilledItem(stack);
-		if(fluid != null)
-			return fluid;
-		else if(stack.getItem() instanceof IFluidContainerItem)
-			return ((IFluidContainerItem)stack.getItem()).getFluid(stack);
-		return null;
-	}
+//	public static FluidStack getFluidFromItemStack(ItemStack stack)
+//	{
+//		if(stack==null)
+//			return null;
+//		FluidStack fluid = FluidContainerRegistry.getFluidForFilledItem(stack);
+//		if(fluid != null)
+//			return fluid;
+//		else if(stack.getItem() instanceof IFluidContainerItem)
+//			return ((IFluidContainerItem)stack.getItem()).getFluid(stack);
+//		return null;
+//	}
 
 	public static boolean isFluidRelatedItemStack(ItemStack stack)
 	{
 		if(stack==null)
 			return false;
-		return FluidContainerRegistry.isContainer(stack)||stack.getItem() instanceof IFluidContainerItem;
-	}
-
-	public static boolean fillPlayerItemFromFluidHandler(World world, IFluidHandler handler, EntityPlayer player, FluidStack tankFluid)
-	{
-		ItemStack equipped = player.getCurrentEquippedItem();
-		if(equipped==null)
-			return false;
-		if(FluidContainerRegistry.isEmptyContainer(equipped))
-		{
-			ItemStack filledStack = FluidContainerRegistry.fillFluidContainer(tankFluid, equipped);
-			FluidStack fluid = FluidContainerRegistry.getFluidForFilledItem(filledStack);
-			if(fluid==null || filledStack==null)
-				return false;
-			if(world.isRemote)
-				return true;
-
-			if(!player.capabilities.isCreativeMode)
-				if(equipped.stackSize == 1)
-				{
-					player.inventory.setInventorySlotContents(player.inventory.currentItem, filledStack);
-					equipped.stackSize -= 1;
-					if (equipped.stackSize <= 0)
-						equipped = null;
-				}
-				else 
-				{
-					equipped.stackSize -= 1;
-					if(!player.inventory.addItemStackToInventory(filledStack))
-						player.dropItem(filledStack, false, true);
-					player.openContainer.detectAndSendChanges();
-					((EntityPlayerMP) player).updateCraftingInventory(player.openContainer, player.openContainer.getInventory());
-				}
-			handler.drain(null, fluid.amount, true);
-			return true;
-		}
-		else if(equipped.getItem() instanceof IFluidContainerItem)
-		{
-			IFluidContainerItem container = (IFluidContainerItem)equipped.getItem();
-			if(container.fill(equipped, tankFluid, false)>0)
-			{
-				if(world.isRemote)
-					return true;
-
-				int fill;
-				if(equipped.stackSize > 1)
-				{
-					ItemStack filled = copyStackWithAmount(equipped, 1);
-					equipped.stackSize -= 1;
-					fill = container.fill(filled, tankFluid, true);
-					if(!player.inventory.addItemStackToInventory(filled))
-						player.dropItem(filled, false, true);
-				}
-				else
-				{
-					fill = container.fill(equipped, tankFluid, true);
-				}
-				handler.drain(null, fill, true);
-				player.openContainer.detectAndSendChanges();
-				((EntityPlayerMP) player).updateCraftingInventory(player.openContainer, player.openContainer.getInventory());
-				return true;
-			}
-		}
-		return false;
-	}
-
-	public static boolean fillFluidHandlerWithPlayerItem(World world, IFluidHandler handler, EntityPlayer player)
-	{
-		ItemStack equipped = player.getCurrentEquippedItem();
-		if(equipped==null)
-			return false;
-		FluidStack fluid = FluidContainerRegistry.getFluidForFilledItem(equipped);
-		if(fluid != null)
-		{
-			if(handler.fill(null, fluid, false) == fluid.amount || player.capabilities.isCreativeMode)
-			{
-				if(world.isRemote)
-					return true;
-
-				ItemStack filledStack = FluidContainerRegistry.drainFluidContainer(equipped);
-				if (!player.capabilities.isCreativeMode)
-				{
-					if(equipped.stackSize==1)
-					{
-						player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
-						player.inventory.addItemStackToInventory(filledStack);
-					}
-					else
-					{
-						equipped.stackSize -= 1;
-						if(filledStack!=null && !player.inventory.addItemStackToInventory(filledStack))
-							player.dropItem(filledStack, false, true);
-					}
-					player.openContainer.detectAndSendChanges();
-					((EntityPlayerMP) player).updateCraftingInventory(player.openContainer, player.openContainer.getInventory());
-				}
-				handler.fill(null, fluid, true);
-				return true;
-			}
-		}
-		else if(equipped.getItem() instanceof IFluidContainerItem)
-		{
-			IFluidContainerItem container = (IFluidContainerItem)equipped.getItem();
-			fluid = container.getFluid(equipped);
-			if(fluid!=null&&handler.fill(null, fluid, false)>0)
-			{
-				if(world.isRemote)
-					return true;
-
-				int fill = handler.fill(null, fluid, true);
-				if(equipped.stackSize > 1)
-				{
-					ItemStack emptied = copyStackWithAmount(equipped, 1);
-					equipped.stackSize -= 1;
-					container.drain(emptied, fill, true);
-					if(!player.inventory.addItemStackToInventory(emptied))
-						player.dropItem(emptied, false, true);
-				}
-				else
-				{
-					container.drain(equipped, fill, true);
-				}
-				player.openContainer.detectAndSendChanges();
-				((EntityPlayerMP) player).updateCraftingInventory(player.openContainer, player.openContainer.getInventory());
-				return true;
-			}
-		}
-		return false;
+		return stack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
 	}
 
 	public static IRecipe findRecipe(InventoryCrafting crafting, World world)
 	{
 		for (int i=0; i<CraftingManager.getInstance().getRecipeList().size(); i++)
 		{
-			IRecipe irecipe = (IRecipe)CraftingManager.getInstance().getRecipeList().get(i);
+			IRecipe irecipe = CraftingManager.getInstance().getRecipeList().get(i);
 			if(irecipe.matches(crafting, world))
 				return irecipe;
 		}
@@ -867,32 +707,32 @@ public class Utils
 		}
 	}
 
-	public static HashSet<BlockPos> rayTrace(Vec3 start, Vec3 end, World world)
+	public static HashSet<BlockPos> rayTrace(Vec3d start, Vec3d end, World world)
 	{
 		HashSet<BlockPos> ret = new HashSet<BlockPos>();
 		HashSet<BlockPos> checked = new HashSet<BlockPos>();
 		// x
 		if (start.xCoord>end.xCoord)
 		{
-			Vec3 tmp = start;
+			Vec3d tmp = start;
 			start = end;
 			end = tmp;
 		}
 		double min = start.xCoord;
 		double dif =end.xCoord-min;
 		double lengthAdd = Math.ceil(min)-start.xCoord;
-		Vec3 mov = start.subtract(end);
+		Vec3d mov = start.subtract(end);
 		if (mov.xCoord!=0)
 		{
 			mov = scalarProd(mov, 1 / mov.xCoord);
-			ray(dif, mov, start, lengthAdd, ret, world, checked, Blocks.diamond_ore);
+			ray(dif, mov, start, lengthAdd, ret, world, checked, Blocks.DIAMOND_ORE);
 		}
 		// y
 		if (mov.yCoord!=0)
 		{
 			if (start.yCoord>end.yCoord)
 			{
-				Vec3 tmp = start;
+				Vec3d tmp = start;
 				start = end;
 				end = tmp;
 			}
@@ -902,7 +742,7 @@ public class Utils
 			mov = start.subtract(end);
 			mov = scalarProd(mov, 1/mov.yCoord);
 
-			ray(dif, mov, start, lengthAdd, ret, world, checked, Blocks.iron_ore);
+			ray(dif, mov, start, lengthAdd, ret, world, checked, Blocks.IRON_ORE);
 		}
 
 		// z
@@ -910,7 +750,7 @@ public class Utils
 		{
 			if (start.zCoord>end.zCoord)
 			{
-				Vec3 tmp = start;
+				Vec3d tmp = start;
 				start = end;
 				end = tmp;
 			}
@@ -920,23 +760,23 @@ public class Utils
 			mov = start.subtract(end);
 			mov = scalarProd(mov, 1 / mov.zCoord);
 
-			ray(dif, mov, start, lengthAdd, ret, world, checked, Blocks.gold_ore);
+			ray(dif, mov, start, lengthAdd, ret, world, checked, Blocks.GOLD_ORE);
 		}
 		return ret;
 	}
-	private static void ray(double dif, Vec3 mov, Vec3 start, double lengthAdd, HashSet<BlockPos> ret, World world, HashSet<BlockPos> checked, Block tmp)
+	private static void ray(double dif, Vec3d mov, Vec3d start, double lengthAdd, HashSet<BlockPos> ret, World world, HashSet<BlockPos> checked, Block tmp)
 	{
 		//Do NOT set this to true unless for debugging. Causes blocks to be placed along the traced ray
 		boolean place = false;
 		double standartOff = .0625;
 		for (int i = 0; i < dif; i++)
 		{
-			Vec3 pos = addVectors(start, scalarProd(mov, i + lengthAdd+standartOff));
-			Vec3 posNext = addVectors(start,
+			Vec3d pos = addVectors(start, scalarProd(mov, i + lengthAdd+standartOff));
+			Vec3d posNext = addVectors(start,
 					scalarProd(mov, i + 1 + lengthAdd+standartOff));
-			Vec3 posPrev = addVectors(start,
+			Vec3d posPrev = addVectors(start,
 					scalarProd(mov, i + lengthAdd-standartOff));
-			Vec3 posVeryPrev = addVectors(start,
+			Vec3d posVeryPrev = addVectors(start,
 					scalarProd(mov, i - 1 + lengthAdd-standartOff));
 
 			BlockPos blockPos = new BlockPos((int) Math.floor(pos.xCoord),
@@ -947,7 +787,7 @@ public class Utils
 			{
 				state = world.getBlockState(blockPos);
 				b = state.getBlock();
-				if (b.canCollideCheck(state, false) && b.collisionRayTrace(world, blockPos, pos, posNext) != null)
+				if (b.canCollideCheck(state, false) && state.collisionRayTrace(world, blockPos, pos, posNext) != null)
 					ret.add(blockPos);
 				//				if (place)
 				//					world.setBlockState(blockPos, tmp);
@@ -958,7 +798,7 @@ public class Utils
 			{
 				state = world.getBlockState(blockPos);
 				b = state.getBlock();
-				if (b.canCollideCheck(state, false) && b.collisionRayTrace(world, blockPos, posVeryPrev, posPrev) != null)
+				if (b.canCollideCheck(state, false) && state.collisionRayTrace(world, blockPos, posVeryPrev, posPrev) != null)
 					ret.add(blockPos);
 				//				if (place)
 				//					world.setBlock(blockPos.posX, blockPos.posY, blockPos.posZ, tmp);
@@ -966,11 +806,11 @@ public class Utils
 			}
 		}
 	}
-	public static Vec3 scalarProd(Vec3 v, double s)
+	public static Vec3d scalarProd(Vec3d v, double s)
 	{
-		return new Vec3(v.xCoord*s, v.yCoord*s, v.zCoord*s);
+		return new Vec3d(v.xCoord*s, v.yCoord*s, v.zCoord*s);
 	}
-	public static BlockPos rayTraceForFirst(Vec3 start, Vec3 end, World w, Set<BlockPos> ignore)
+	public static BlockPos rayTraceForFirst(Vec3d start, Vec3d end, World w, Set<BlockPos> ignore)
 	{
 		HashSet<BlockPos> trace = rayTrace(start, end, w);
 		for (BlockPos cc:ignore)
@@ -1010,7 +850,7 @@ public class Utils
 
 	/**
 	 * get tile entity without loading currently unloaded chunks
-	 * @return return value of {@link net.minecraft.world.IBlockAccess#getTileEntity(int, int, int)} or always null if chunk is not loaded
+	 * @return return value of {@link IBlockAccess#getTileEntity(BlockPos)} or always null if chunk is not loaded
 	 */
 	public static TileEntity getExistingTileEntity(World world, BlockPos pos)
 	{
@@ -1055,6 +895,74 @@ public class Utils
 		}
 	}
 
+	public static void shuffleLootItems(List<ItemStack> stacks, int slotAmount, Random rand)
+	{
+		List<ItemStack> list = Lists.<ItemStack>newArrayList();
+		Iterator<ItemStack> iterator = stacks.iterator();
+		while(iterator.hasNext())
+		{
+			ItemStack itemstack = (ItemStack)iterator.next();
+			if(itemstack.stackSize <= 0)
+				iterator.remove();
+			else if(itemstack.stackSize > 1)
+			{
+				list.add(itemstack);
+				iterator.remove();
+			}
+		}
+		slotAmount = slotAmount - stacks.size();
+		while(slotAmount>0 && list.size()>0)
+		{
+			ItemStack itemstack2 = (ItemStack)list.remove(MathHelper.getRandomIntegerInRange(rand, 0, list.size() - 1));
+			int i = MathHelper.getRandomIntegerInRange(rand, 1, itemstack2.stackSize / 2);
+			itemstack2.stackSize -= i;
+			ItemStack itemstack1 = itemstack2.copy();
+			itemstack1.stackSize = i;
+
+			if(itemstack2.stackSize>1 && rand.nextBoolean())
+				list.add(itemstack2);
+			else
+				stacks.add(itemstack2);
+
+			if(itemstack1.stackSize>1 && rand.nextBoolean())
+				list.add(itemstack1);
+			else
+				stacks.add(itemstack1);
+		}
+		stacks.addAll(list);
+		Collections.shuffle(stacks, rand);
+	}
+	private static final Gson GSON_INSTANCE = (new GsonBuilder()).registerTypeAdapter(RandomValueRange.class, new RandomValueRange.Serializer()).registerTypeAdapter(LootPool.class, new LootPool.Serializer()).registerTypeAdapter(LootTable.class, new LootTable.Serializer()).registerTypeHierarchyAdapter(LootEntry.class, new LootEntry.Serializer()).registerTypeHierarchyAdapter(LootFunction.class, new LootFunctionManager.Serializer()).registerTypeHierarchyAdapter(LootCondition.class, new LootConditionManager.Serializer()).registerTypeHierarchyAdapter(LootContext.EntityTarget.class, new LootContext.EntityTarget.Serializer()).create();
+	public static LootTable loadBuiltinLootTable(ResourceLocation resource)
+	{
+		URL url = Utils.class.getResource("/assets/" + resource.getResourceDomain() + "/loot_tables/" + resource.getResourcePath() + ".json");
+		if(url==null)
+			return LootTable.EMPTY_LOOT_TABLE;
+		else
+		{
+			String s;
+			try
+			{
+				s = Resources.toString(url, Charsets.UTF_8);
+			} catch(IOException ioexception)
+			{
+//				IELogger.warn(("Failed to load loot table " + resource.toString() + " from " + url.toString()));
+				ioexception.printStackTrace();
+				return LootTable.EMPTY_LOOT_TABLE;
+			}
+
+			try
+			{
+				return net.minecraftforge.common.ForgeHooks.loadLootTable(GSON_INSTANCE, resource, s, false);
+			} catch(JsonParseException jsonparseexception)
+			{
+//				IELogger.error(("Failed to load loot table " + resource.toString() + " from " + url.toString()));
+				jsonparseexception.printStackTrace();
+				return LootTable.EMPTY_LOOT_TABLE;
+			}
+		}
+	}
+
 	public static int calcRedstoneFromInventory(IIEInventory inv)
 	{
 		if(inv==null)
@@ -1074,18 +982,6 @@ public class Utils
 			}
 			f = f/(float)inv.getInventory().length;
 			return MathHelper.floor_float(f * 14.0F) + (i > 0 ? 1 : 0);
-		}
-	}
-
-	public static void generateChestContents(Random random, List<WeightedRandomChestContent> listIn, IIEInventory inv, int max)
-	{
-		for(int i=0; i<max; ++i)
-		{
-			WeightedRandomChestContent weightedrandomchestcontent = (WeightedRandomChestContent)WeightedRandom.getRandomItem(random, listIn);
-			ItemStack[] stacks = net.minecraftforge.common.ChestGenHooks.generateStacks(random, weightedrandomchestcontent.theItemId, weightedrandomchestcontent.minStackSize, weightedrandomchestcontent.maxStackSize);
-			ItemStack[] inventory = inv.getInventory();
-			for(ItemStack stack : stacks)
-				inventory[random.nextInt(inventory.length)] = stack;
 		}
 	}
 }

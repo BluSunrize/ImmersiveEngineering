@@ -38,7 +38,7 @@ public class RecipeRevolver implements IRecipe
 			if(stackInSlot!=null)
 			{
 				if(revolver==null && OreDictionary.itemMatches(new ItemStack(IEContent.itemRevolver,1,OreDictionary.WILDCARD_VALUE), stackInSlot, false) && stackInSlot.getItemDamage()!=1)
-					revolver = stackInSlot;
+					revolver = stackInSlot.copy();
 				else
 					return null;
 			}

@@ -11,11 +11,11 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyEnum;
-import net.minecraft.block.state.BlockState;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -27,24 +27,24 @@ public class BlockConnector extends BlockIETileProvider<BlockTypes_Connector>
 {
 	public BlockConnector()
 	{
-		super("connector",Material.iron, PropertyEnum.create("type", BlockTypes_Connector.class), ItemBlockIEBase.class, IEProperties.FACING_ALL,IEProperties.BOOLEANS[0],IEProperties.BOOLEANS[1],IEProperties.MULTIBLOCKSLAVE);
+		super("connector",Material.IRON, PropertyEnum.create("type", BlockTypes_Connector.class), ItemBlockIEBase.class, IEProperties.FACING_ALL,IEProperties.BOOLEANS[0],IEProperties.BOOLEANS[1],IEProperties.MULTIBLOCKSLAVE);
 		setHardness(3.0F);
 		setResistance(15.0F);
 		lightOpacity = 0;
 	}
 
 	@Override
-	public boolean isFullBlock()
+	public boolean isFullBlock(IBlockState state)
 	{
 		return false;
 	}
 	@Override
-	public boolean isFullCube()
+	public boolean isFullCube(IBlockState state)
 	{
 		return false;
 	}
 	@Override
-	public boolean isOpaqueCube()
+	public boolean isOpaqueCube(IBlockState state)
 	{
 		return false;
 	}
@@ -55,7 +55,7 @@ public class BlockConnector extends BlockIETileProvider<BlockTypes_Connector>
 		return true;
 	}
 	@Override
-	public String getCustomStateMapping(int meta)
+	public String getCustomStateMapping(int meta, boolean itemBlock)
 	{
 		if(meta==BlockTypes_Connector.TRANSFORMER.getMeta())
 			return "transformer";
@@ -70,9 +70,9 @@ public class BlockConnector extends BlockIETileProvider<BlockTypes_Connector>
 		return null;
 	}
 	@Override
-	protected BlockState createBlockState()
+	protected BlockStateContainer createBlockState()
 	{
-		BlockState base = super.createBlockState();
+		BlockStateContainer base = super.createBlockState();
 		IUnlistedProperty[] unlisted = (IUnlistedProperty[]) ((base instanceof ExtendedBlockState)?((ExtendedBlockState)base).getUnlistedProperties().toArray():new IUnlistedProperty[0]);
 		unlisted = Arrays.copyOf(unlisted, unlisted.length+1);
 		unlisted[unlisted.length-1] = IEProperties.CONNECTIONS;
@@ -92,13 +92,13 @@ public class BlockConnector extends BlockIETileProvider<BlockTypes_Connector>
 		return state;
 	}
 	@Override
-	public boolean isSideSolid(IBlockAccess world, BlockPos pos, EnumFacing side)
+	public boolean isSideSolid(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side)
 	{
 		return false;
 	}
 
 	@Override
-	public void onNeighborBlockChange(World world, BlockPos pos, IBlockState state, Block neighborBlock)
+	public void onNeighborChange(IBlockAccess world, BlockPos pos, BlockPos neighbor)
 	{
 		TileEntity te = world.getTileEntity(pos);
 		if(te instanceof TileEntityConnectorLV)
@@ -106,8 +106,8 @@ public class BlockConnector extends BlockIETileProvider<BlockTypes_Connector>
 			TileEntityConnectorLV relay = (TileEntityConnectorLV)te;
 			if(world.isAirBlock(pos.offset(relay.facing)))
 			{
-				this.dropBlockAsItem(world, pos, state, 0);
-				world.setBlockToAir(pos);
+				this.dropBlockAsItem(relay.getWorld(), pos, world.getBlockState(pos), 0);
+				relay.getWorld().setBlockToAir(pos);
 			}
 		}
 	}

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
@@ -21,7 +22,6 @@ import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
 
 public class GuiManual extends GuiScreen
 {
@@ -201,10 +201,10 @@ public class GuiManual extends GuiScreen
 
 			manual.titleRenderPre();
 			//Title
-			this.drawCenteredStringScaled(manual.fontRenderer, EnumChatFormatting.BOLD+manual.formatEntryName(entry.getName()), guiLeft+xSize/2,guiTop+14, manual.getTitleColour(), 1, true);
+			this.drawCenteredStringScaled(manual.fontRenderer, TextFormatting.BOLD+manual.formatEntryName(entry.getName()), guiLeft+xSize/2,guiTop+14, manual.getTitleColour(), 1, true);
 			this.drawCenteredStringScaled(manual.fontRenderer, manual.formatEntrySubtext(entry.getName()), guiLeft+xSize/2,guiTop+22, manual.getSubTitleColour(), 1, true);
 			//Page Number
-			this.drawCenteredStringScaled(manual.fontRenderer, EnumChatFormatting.BOLD.toString()+(page+1), guiLeft+xSize/2,guiTop+183, manual.getPagenumberColour(), 1, false);
+			this.drawCenteredStringScaled(manual.fontRenderer, TextFormatting.BOLD.toString()+(page+1), guiLeft+xSize/2,guiTop+183, manual.getPagenumberColour(), 1, false);
 			manual.titleRenderPost();
 
 			GL11.glColor3f(1,1,1);
@@ -219,7 +219,7 @@ public class GuiManual extends GuiScreen
 		{
 			String title = manual.manualContents.containsKey(selectedCategory)?manual.formatCategoryName(selectedCategory) : manual.getManualName();
 			manual.titleRenderPre();
-			this.drawCenteredStringScaled(manual.fontRenderer, EnumChatFormatting.BOLD+title, guiLeft+xSize/2,guiTop+12, manual.getTitleColour(), 1, true);
+			this.drawCenteredStringScaled(manual.fontRenderer, TextFormatting.BOLD+title, guiLeft+xSize/2,guiTop+12, manual.getTitleColour(), 1, true);
 			manual.titleRenderPost();
 		}
 		if(this.searchField!=null)

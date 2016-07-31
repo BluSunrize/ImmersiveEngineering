@@ -1,0 +1,15 @@
+{
+	"forge_marker": 1,
+	"defaults": {
+		"model": "forge:fluid",
+		"transform": "forge:default-item"
+	},
+	"variants": {
+		"uranium": [{
+			"custom": { "fluid": "uranium" }
+		}],
+		"constantan": [{
+			"custom": { "fluid": "constantan" }
+		}]
+	}
+}

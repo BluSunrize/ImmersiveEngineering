@@ -8,10 +8,14 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
+import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.MovingObjectPosition.MovingObjectType;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -19,7 +23,7 @@ import net.minecraftforge.fluids.FluidRegistry;
 public class EntityChemthrowerShot extends EntityIEProjectile
 {
 	private Fluid fluid;
-	final static int dataMarker_fluid = 13;
+	private static final DataParameter<String> dataMarker_fluid = EntityDataManager.<String>createKey(EntityChemthrowerShot.class, DataSerializers.STRING);
 
 	public EntityChemthrowerShot(World world)
 	{
@@ -41,17 +45,17 @@ public class EntityChemthrowerShot extends EntityIEProjectile
 	protected void entityInit()
 	{
 		super.entityInit();
-		this.dataWatcher.addObject(dataMarker_fluid, "");
+		this.dataManager.register(dataMarker_fluid, "");
 	}
 
 	public void setFluidSynced()
 	{
 		if(this.getFluid()!=null)
-			this.dataWatcher.updateObject(dataMarker_fluid, this.getFluid().getName());
+			this.dataManager.set(dataMarker_fluid, this.getFluid().getName());
 	}
 	public Fluid getFluidSynced()
 	{
-		return FluidRegistry.getFluid(this.dataWatcher.getWatchableObjectString(dataMarker_fluid));
+		return FluidRegistry.getFluid(this.dataManager.get(dataMarker_fluid));
 	}
 	public Fluid getFluid()
 	{
@@ -82,13 +86,13 @@ public class EntityChemthrowerShot extends EntityIEProjectile
 			this.fluid = getFluidSynced();
 		IBlockState state = worldObj.getBlockState(new BlockPos(posX,posY,posZ));
 		Block b = state.getBlock();
-		if(b!=null && this.canIgnite() && (b.getMaterial()==Material.fire||b.getMaterial()==Material.lava))
+		if(b!=null && this.canIgnite() && (state.getMaterial()==Material.FIRE||state.getMaterial()==Material.LAVA))
 			this.setFire(6);
 		super.onEntityUpdate();
 	}
 
 	@Override
-	public void onImpact(MovingObjectPosition mop)
+	public void onImpact(RayTraceResult mop)
 	{
 		if(!this.worldObj.isRemote && getFluid()!=null)
 		{
@@ -99,11 +103,11 @@ public class EntityChemthrowerShot extends EntityIEProjectile
 				ItemStack thrower = null;
 				EntityPlayer shooter = (EntityPlayer)this.getShooter();
 				if(shooter!=null)
-					thrower = shooter.getCurrentEquippedItem();
+					thrower = shooter.getHeldItem(EnumHand.MAIN_HAND);
 
-				if(mop.typeOfHit==MovingObjectType.ENTITY)
+				if(mop.typeOfHit== Type.ENTITY)
 					effect.applyToEntity((EntityLivingBase)mop.entityHit, shooter, thrower, fluid);
-				else if(mop.typeOfHit==MovingObjectType.BLOCK)
+				else if(mop.typeOfHit== Type.BLOCK)
 					effect.applyToBlock(worldObj, mop, shooter, thrower, fluid);
 			}
 			else if(mop.entityHit!=null && getFluid().getTemperature()>500)

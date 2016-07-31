@@ -13,8 +13,8 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraftforge.fml.relauncher.Side;
@@ -172,7 +172,7 @@ public class TileEntityModWorkbench extends TileEntityIEBase implements IIEInven
 		EnumFacing dummyDir = dummy?facing.rotateYCCW():facing.rotateY();
 		TileEntity tileEntityModWorkbench = worldObj.getTileEntity(pos.offset(dummyDir));
 		if(tileEntityModWorkbench instanceof TileEntityModWorkbench)
-			return (TileEntityModWorkbench)tileEntityModWorkbench;
+			return tileEntityModWorkbench;
 		return null;
 	}
 }

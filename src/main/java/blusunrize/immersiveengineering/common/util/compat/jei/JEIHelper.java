@@ -1,11 +1,5 @@
 package blusunrize.immersiveengineering.common.util.compat.jei;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
-import com.google.common.collect.Lists;
-
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.util.IELogger;
@@ -29,39 +23,24 @@ import blusunrize.immersiveengineering.common.util.compat.jei.squeezer.SqueezerR
 import blusunrize.immersiveengineering.common.util.compat.jei.squeezer.SqueezerRecipeWrapper;
 import blusunrize.immersiveengineering.common.util.compat.jei.workbench.WorkbenchRecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.workbench.WorkbenchRecipeWrapper;
-import mezz.jei.api.IGuiHelper;
-import mezz.jei.api.IItemRegistry;
-import mezz.jei.api.IJeiHelpers;
-import mezz.jei.api.IJeiRuntime;
-import mezz.jei.api.IModPlugin;
-import mezz.jei.api.IModRegistry;
-import mezz.jei.api.IRecipeRegistry;
-import mezz.jei.api.JEIPlugin;
+import com.google.common.collect.Lists;
+import mezz.jei.api.*;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 @JEIPlugin
 public class JEIHelper implements IModPlugin
 {
 	public static IJeiHelpers jeiHelpers;
-	public static IItemRegistry itemRegistry;
-	public static IRecipeRegistry recipeRegistry;
-
-	@Override
-	public void onJeiHelpersAvailable(IJeiHelpers jeiHelpersIn)
-	{
-		jeiHelpers = jeiHelpersIn;
-	}
-
-	@Override
-	public void onItemRegistryAvailable(IItemRegistry itemRegistryIn)
-	{
-		itemRegistry = itemRegistryIn;
-	}
 
 	@Override
 	public void register(IModRegistry registryIn)
 	{
+		jeiHelpers = registryIn.getJeiHelpers();
 		//Blacklist
 		jeiHelpers.getItemBlacklist().addItemToBlacklist(new ItemStack(IEContent.blockCrop,1,OreDictionary.WILDCARD_VALUE));
 		jeiHelpers.getItemBlacklist().addItemToBlacklist(new ItemStack(IEContent.itemFakeIcons,1,OreDictionary.WILDCARD_VALUE));
@@ -102,15 +81,8 @@ public class JEIHelper implements IModPlugin
 	}
 
 	@Override
-	public void onRecipeRegistryAvailable(IRecipeRegistry recipeRegistry)
-	{
-		JEIHelper.recipeRegistry = recipeRegistry;
-	}
-
-	@Override
 	public void onRuntimeAvailable(IJeiRuntime jeiRuntime)
 	{
-
 	}
 
 	public void initArcFurnaceRecipes(IModRegistry registryIn, IGuiHelper guiHelper)

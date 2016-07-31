@@ -10,19 +10,24 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 public class EntityFluorescentTube extends Entity implements ITeslaEntity
 {
-	static int marker_active = 12;
-	static int marker_r = 13;
-	static int marker_g = 14;
-	static int marker_b = 15;
-	static int marker_angleHorizontal = 16;
-
+	private static final DataParameter<Boolean> dataMarker_active = EntityDataManager.<Boolean>createKey(EntityChemthrowerShot.class, DataSerializers.BOOLEAN);
+	private static final DataParameter<Float> dataMarker_r = EntityDataManager.<Float>createKey(EntityChemthrowerShot.class, DataSerializers.FLOAT);
+	private static final DataParameter<Float> dataMarker_g = EntityDataManager.<Float>createKey(EntityChemthrowerShot.class, DataSerializers.FLOAT);
+	private static final DataParameter<Float> dataMarker_b = EntityDataManager.<Float>createKey(EntityChemthrowerShot.class, DataSerializers.FLOAT);
+	private static final DataParameter<Float> dataMarker_angleHorizontal = EntityDataManager.<Float>createKey(EntityChemthrowerShot.class, DataSerializers.FLOAT);
+	
 	private int timer = 0;
 	public boolean active = false;
 	public float[] rgb;
@@ -65,10 +70,10 @@ public class EntityFluorescentTube extends Entity implements ITeslaEntity
 		}
 		if (firstTick&&!worldObj.isRemote&&rgb!=null)
 		{
-			dataWatcher.updateObject(marker_r, rgb[0]);
-			dataWatcher.updateObject(marker_g, rgb[1]);
-			dataWatcher.updateObject(marker_b, rgb[2]);
-			dataWatcher.updateObject(marker_angleHorizontal, angleHorizontal);
+			dataManager.set(dataMarker_r, rgb[0]);
+			dataManager.set(dataMarker_g, rgb[1]);
+			dataManager.set(dataMarker_b, rgb[2]);
+			dataManager.set(dataMarker_angleHorizontal, angleHorizontal);
 			firstTick = false;
 		}
 		// tube logic
@@ -76,25 +81,25 @@ public class EntityFluorescentTube extends Entity implements ITeslaEntity
 		{
 			timer--;
 			if (timer<=0)
-				dataWatcher.updateObject(marker_active, (byte)-1);
+				dataManager.set(dataMarker_active, false);
 		}
 		if (worldObj.isRemote)
 		{
-			active = dataWatcher.getWatchableObjectByte(marker_active)>0;
-			rgb = new float[]{dataWatcher.getWatchableObjectFloat(marker_r),
-					dataWatcher.getWatchableObjectFloat(marker_g),
-					dataWatcher.getWatchableObjectFloat(marker_b)};
-			angleHorizontal = dataWatcher.getWatchableObjectFloat(marker_angleHorizontal);
+			active = dataManager.get(dataMarker_active);
+			rgb = new float[]{dataManager.get(dataMarker_r),
+					dataManager.get(dataMarker_g),
+					dataManager.get(dataMarker_b)};
+			angleHorizontal = dataManager.get(dataMarker_angleHorizontal);
 		}
 	}
 	@Override
 	protected void entityInit()
 	{
-		dataWatcher.addObject(marker_r, 1F);
-		dataWatcher.addObject(marker_g, 1F);
-		dataWatcher.addObject(marker_b, 1F);
-		dataWatcher.addObject(marker_active, Byte.valueOf((byte) 0));
-		dataWatcher.addObject(marker_angleHorizontal, 0F);
+		dataManager.register(dataMarker_r, 1F);
+		dataManager.register(dataMarker_g, 1F);
+		dataManager.register(dataMarker_b, 1F);
+		dataManager.register(dataMarker_active, false);
+		dataManager.register(dataMarker_angleHorizontal, 0F);
 	}
 
 	@Override
@@ -147,18 +152,19 @@ public class EntityFluorescentTube extends Entity implements ITeslaEntity
 		if (te.energyStorage.extractEnergy(1, false)>0)
 		{
 			timer = 35;
-			dataWatcher.updateObject(marker_active, (byte)1);
+			dataManager.set(dataMarker_active, true);
 		}
 	}
 	@Override
-	public boolean interactAt(EntityPlayer player, Vec3 targetVec3) {
-		if (Utils.isHammer(player.getEquipmentInSlot(0)))
+	public EnumActionResult applyPlayerInteraction(EntityPlayer player, Vec3d targetVec3, ItemStack stack, EnumHand hand)
+	{
+		if(Utils.isHammer(stack))
 		{
 			angleHorizontal+=(player.isSneaking()?10:1);
 			angleHorizontal%=360;
-			dataWatcher.updateObject(marker_angleHorizontal, angleHorizontal);
-			return true;
+			dataManager.set(dataMarker_angleHorizontal, angleHorizontal);
+			return EnumActionResult.SUCCESS;
 		}
-		return super.interactAt(player, targetVec3);
+		return super.applyPlayerInteraction(player, targetVec3, stack, hand);
 	}
 }

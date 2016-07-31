@@ -19,7 +19,7 @@ public class ToolboxHandler {
 	private static final List<Predicate<ItemStack>> foods = new ArrayList<>();
 	private static final List<BiPredicate<ItemStack, World>> wiring = new ArrayList<>();
 	static {
-		tools.add((s)->(s.getItem() instanceof ITool?((ITool)s.getItem()).isTool(s):false));
+		tools.add((s)->(s.getItem() instanceof ITool && ((ITool) s.getItem()).isTool(s)));
 		tools.add((s)->(s.getItem() instanceof ItemTool));
 		foods.add((s)->(s.getItem() instanceof ItemFood));
 		wiring.add((s, w)->(s.getItem() instanceof IWireCoil));

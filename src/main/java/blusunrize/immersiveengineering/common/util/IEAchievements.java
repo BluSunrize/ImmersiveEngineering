@@ -16,12 +16,13 @@ import blusunrize.immersiveengineering.common.items.ItemDrill;
 import blusunrize.immersiveengineering.common.items.ItemRevolver;
 import net.minecraft.block.Block;
 import net.minecraft.enchantment.Enchantment;
+import net.minecraft.init.Enchantments;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.stats.Achievement;
 import net.minecraft.stats.StatBase;
 import net.minecraft.stats.StatList;
-import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.AchievementPage;
 import net.minecraftforge.fml.common.Loader;
 
@@ -116,7 +117,7 @@ public class IEAchievements
 
 		//craftSkyhook = new AchievementIE("craftSkyhook", 1, -6, IEContent.itemSkyhook, craftWorkbench).setNormalCrafting();
 		ItemStack hook = new ItemStack(IEContent.itemSkyhook);
-		hook.addEnchantment(Enchantment.unbreaking, 1);
+		hook.addEnchantment(Enchantments.UNBREAKING, 1);
 		//skyhookPro = new AchievementIE("skyhookPro", 0, -6, hook, craftSkyhook);
 
 		
@@ -131,13 +132,13 @@ public class IEAchievements
 		ieAchievementPage = new AchievementPage(ImmersiveEngineering.MODNAME, AchievementIE.achievements.toArray(new Achievement[AchievementIE.achievements.size()]));
 		AchievementPage.registerAchievementPage(ieAchievementPage);
 
-		statDistanceSkyhook = new StatBase("stat.skyhookOneCm", new ChatComponentTranslation("stat.skyhookOneCm", new Object[0]), StatBase.distanceStatType)
+		statDistanceSkyhook = new StatBase("stat.skyhookOneCm", new TextComponentTranslation("stat.skyhookOneCm", new Object[0]), StatBase.distanceStatType)
 		{
 			@Override
 			public StatBase registerStat()
 			{
 				super.registerStat();
-				StatList.generalStats.add(12,this);
+				StatList.BASIC_STATS.add(12,this);
 				return this;
 			}
 		}.initIndependentStat().registerStat();

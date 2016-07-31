@@ -14,7 +14,7 @@ public class BlastFurnaceRecipeCategory extends IERecipeCategory
 	
 	public BlastFurnaceRecipeCategory(IGuiHelper helper)
 	{
-		super("blastfurnace","gui.ImmersiveEngineering.blastFurnace", helper.createDrawable(background, 8,8, 142, 65), BlastFurnaceRecipeWrapper.class);
+		super("blastfurnace","gui.immersiveengineering.blastFurnace", helper.createDrawable(background, 8,8, 142, 65), BlastFurnaceRecipeWrapper.class);
 	}
 	
 	@Override

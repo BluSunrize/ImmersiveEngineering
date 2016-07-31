@@ -11,7 +11,7 @@ public enum BlockTypes_WoodenDecoration implements IStringSerializable, BlockIEB
 	@Override
 	public String getName()
 	{
-		return this.toString();
+		return this.toString().toLowerCase();
 	}
 	@Override
 	public int getMeta()

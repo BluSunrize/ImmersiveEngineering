@@ -11,32 +11,32 @@ import net.minecraft.item.ItemStack;
  */
 public interface IConfigurableTool
 {
-	public boolean canConfigure(ItemStack stack);
+	boolean canConfigure(ItemStack stack);
 	
 	/**
 	 * Boolean options are checkboxes where checked equals true
 	 */
-	public ToolConfigBoolean[] getBooleanOptions(ItemStack stack);
+	ToolConfigBoolean[] getBooleanOptions(ItemStack stack);
 	/**
 	 * Float options are sliders
 	 */
-	public ToolConfigFloat[] getFloatOptions(ItemStack stack);
+	ToolConfigFloat[] getFloatOptions(ItemStack stack);
 	/**
 	 * Apply and store the config option on the given stack
 	 */
-	public void applyConfigOption(ItemStack stack, String key, Object value);
+	void applyConfigOption(ItemStack stack, String key, Object value);
 	
 	/**
 	 * @return a TRANSLATED name for the config option. Try to keep this short.
 	 */
-	public String fomatConfigName(ItemStack stack, ToolConfig config);
+	String fomatConfigName(ItemStack stack, ToolConfig config);
 	/**
 	 * @return a TRANSLATED name for the config option, displayed when hovering over it
 	 */
-	public String fomatConfigDescription(ItemStack stack, ToolConfig config);
+	String fomatConfigDescription(ItemStack stack, ToolConfig config);
 
 	
-	public static abstract class ToolConfig
+	abstract class ToolConfig
 	{
 		public int x;
 		public int y;

@@ -9,9 +9,9 @@ import net.minecraft.item.ItemStack;
  */
 public interface IInternalStorageItem
 {
-	public ItemStack[] getContainedItems(ItemStack stack);
+	ItemStack[] getContainedItems(ItemStack stack);
 	
-	public void setContainedItems(ItemStack stack, ItemStack[] stackList);
+	void setContainedItems(ItemStack stack, ItemStack[] stackList);
 	
-	public int getInternalSlots(ItemStack stack);
+	int getInternalSlots(ItemStack stack);
 }

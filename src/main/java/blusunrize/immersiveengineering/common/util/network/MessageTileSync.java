@@ -4,7 +4,7 @@ import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
@@ -19,7 +19,7 @@ public class MessageTileSync implements IMessage
 	NBTTagCompound nbt;
 	public MessageTileSync(TileEntityIEBase tile, NBTTagCompound nbt)
 	{
-		this.dimension = tile.getWorld().provider.getDimensionId();
+		this.dimension = tile.getWorld().provider.getDimension();
 		this.pos = tile.getPos();
 		this.nbt = nbt;
 	}

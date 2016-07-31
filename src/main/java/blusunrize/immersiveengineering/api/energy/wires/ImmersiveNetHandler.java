@@ -1,20 +1,5 @@
 package blusunrize.immersiveengineering.api.energy.wires;
 
-import static blusunrize.immersiveengineering.api.ApiUtils.addVectors;
-import static blusunrize.immersiveengineering.api.ApiUtils.getConnectionCatenary;
-import static blusunrize.immersiveengineering.api.ApiUtils.toBlockPos;
-import static blusunrize.immersiveengineering.api.ApiUtils.toIIC;
-import static java.util.Collections.newSetFromMap;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.DimensionBlockPos;
 import blusunrize.immersiveengineering.api.TargetingInfo;
@@ -22,18 +7,24 @@ import blusunrize.immersiveengineering.client.models.smart.ConnModelReal;
 import blusunrize.immersiveengineering.common.IESaveData;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+
+import static blusunrize.immersiveengineering.api.ApiUtils.*;
+import static java.util.Collections.newSetFromMap;
+
 public class ImmersiveNetHandler
 {
 	public static ImmersiveNetHandler INSTANCE;
-	public Map<Integer, ConcurrentHashMap<BlockPos, Set<Connection>>> directConnections = new ConcurrentHashMap<Integer, ConcurrentHashMap<BlockPos, Set<Connection>>>();
-	public Map<BlockPos, Set<AbstractConnection>> indirectConnections = new ConcurrentHashMap<BlockPos, Set<AbstractConnection>>();
-	public Map<Integer, HashMap<Connection, Integer>> transferPerTick = new HashMap<Integer, HashMap<Connection,Integer>>();
+	public Map<Integer, ConcurrentHashMap<BlockPos, Set<Connection>>> directConnections = new ConcurrentHashMap<>();
+	public Map<BlockPos, Set<AbstractConnection>> indirectConnections = new ConcurrentHashMap<>();
+	public Map<Integer, HashMap<Connection, Integer>> transferPerTick = new HashMap<>();
 	public Map<DimensionBlockPos, IICProxy> proxies = new ConcurrentHashMap<>();
 	
 	private ConcurrentHashMap<BlockPos, Set<Connection>> getMultimap(int dimension)
@@ -54,26 +45,26 @@ public class ImmersiveNetHandler
 
 	public void addConnection(World world, BlockPos node, BlockPos connection, int distance, WireType cableType)
 	{
-		if(!getMultimap(world.provider.getDimensionId()).containsKey(node))
-			getMultimap(world.provider.getDimensionId()).put(node, newSetFromMap(new ConcurrentHashMap<Connection, Boolean>()));
-		getMultimap(world.provider.getDimensionId()).get(node).add(new Connection(node, connection, cableType, distance));
-		if(!getMultimap(world.provider.getDimensionId()).containsKey(connection))
-			getMultimap(world.provider.getDimensionId()).put(connection, newSetFromMap(new ConcurrentHashMap<Connection, Boolean>()));
-		getMultimap(world.provider.getDimensionId()).get(connection).add(new Connection(connection, node, cableType, distance));
+		if(!getMultimap(world.provider.getDimension()).containsKey(node))
+			getMultimap(world.provider.getDimension()).put(node, newSetFromMap(new ConcurrentHashMap<Connection, Boolean>()));
+		getMultimap(world.provider.getDimension()).get(node).add(new Connection(node, connection, cableType, distance));
+		if(!getMultimap(world.provider.getDimension()).containsKey(connection))
+			getMultimap(world.provider.getDimension()).put(connection, newSetFromMap(new ConcurrentHashMap<Connection, Boolean>()));
+		getMultimap(world.provider.getDimension()).get(connection).add(new Connection(connection, node, cableType, distance));
 		resetCachedIndirectConnections();
 		if(world.isBlockLoaded(node))
 			world.addBlockEvent(node, world.getBlockState(node).getBlock(),-1,0);
 		if(world.isBlockLoaded(connection))
 			world.addBlockEvent(connection, world.getBlockState(connection).getBlock(),-1,0);
-		IESaveData.setDirty(world.provider.getDimensionId());
+		IESaveData.setDirty(world.provider.getDimension());
 	}
 	public void addConnection(World world, BlockPos node, Connection con)
 	{
-		if(!getMultimap(world.provider.getDimensionId()).containsKey(node))
-			getMultimap(world.provider.getDimensionId()).put(node, newSetFromMap(new ConcurrentHashMap<Connection, Boolean>()));
-		getMultimap(world.provider.getDimensionId()).get(node).add(con);
+		if(!getMultimap(world.provider.getDimension()).containsKey(node))
+			getMultimap(world.provider.getDimension()).put(node, newSetFromMap(new ConcurrentHashMap<Connection, Boolean>()));
+		getMultimap(world.provider.getDimension()).get(node).add(con);
 		resetCachedIndirectConnections();
-		IESaveData.setDirty(world.provider.getDimensionId());
+		IESaveData.setDirty(world.provider.getDimension());
 	}
 	public void addConnection(int world, BlockPos node, Connection con)
 	{
@@ -88,7 +79,7 @@ public class ImmersiveNetHandler
 	{
 		if(con==null||world==null)
 			return;
-		for (Set<Connection> conl : getMultimap(world.provider.getDimensionId()).values())
+		for (Set<Connection> conl : getMultimap(world.provider.getDimension()).values())
 		{
 			Iterator<Connection> it = conl.iterator();
 			while(it.hasNext())
@@ -112,16 +103,16 @@ public class ImmersiveNetHandler
 			}
 		}
 		resetCachedIndirectConnections();
-		IESaveData.setDirty(world.provider.getDimensionId());
+		IESaveData.setDirty(world.provider.getDimension());
 	}
 	public Set<Integer> getRelevantDimensions()
 	{
-		return directConnections.keySet();//TODO This will break on Java8. Remember to ask cobra >_>
+		return directConnections.keySet();
 	}
 	public Collection<Connection> getAllConnections(World world)
 	{
 		Set<Connection> ret = newSetFromMap(new ConcurrentHashMap<Connection, Boolean>());
-		for (Set<Connection> conlist : getMultimap(world.provider.getDimensionId()).values())
+		for (Set<Connection> conlist : getMultimap(world.provider.getDimension()).values())
 			ret.addAll(conlist);
 		return ret;
 	}
@@ -129,14 +120,14 @@ public class ImmersiveNetHandler
 	{
 		if(world!=null && world.provider!=null)
 		{
-			ConcurrentHashMap<BlockPos, Set<Connection>> map = getMultimap(world.provider.getDimensionId());
+			ConcurrentHashMap<BlockPos, Set<Connection>> map = getMultimap(world.provider.getDimension());
 			return map.get(node);
 		}
 		return null;
 	}
 	public void clearAllConnections(World world)
 	{
-		getMultimap(world.provider.getDimensionId()).clear();
+		getMultimap(world.provider.getDimension()).clear();
 	}
 	public void clearAllConnections(int world)
 	{
@@ -144,8 +135,8 @@ public class ImmersiveNetHandler
 	}
 	public void clearConnectionsOriginatingFrom(BlockPos node, World world)
 	{
-		if(getMultimap(world.provider.getDimensionId()).containsKey(node))
-			getMultimap(world.provider.getDimensionId()).get(node).clear();
+		if(getMultimap(world.provider.getDimension()).containsKey(node))
+			getMultimap(world.provider.getDimension()).get(node).clear();
 		resetCachedIndirectConnections();
 	}
 
@@ -162,17 +153,17 @@ public class ImmersiveNetHandler
 	 */
 	public void clearAllConnectionsFor(BlockPos node, World world, boolean doDrops)
 	{
-		if(getMultimap(world.provider.getDimensionId()).containsKey(node))
-			getMultimap(world.provider.getDimensionId()).get(node).clear();
+		if(getMultimap(world.provider.getDimension()).containsKey(node))
+			getMultimap(world.provider.getDimension()).get(node).clear();
 		IImmersiveConnectable iic = toIIC(node, world);
 		if(iic!=null)
 			iic.removeCable(null);
 		//		ConcurrentSkipListSet<Connection> itlist = new ConcurrentSkipListSet<Connection>();
-		//		for (ConcurrentSkipListSet<Connection> conl : getMultimap(world.provider.getDimensionId()).values())
+		//		for (ConcurrentSkipListSet<Connection> conl : getMultimap(world.provider.getDimension()).values())
 		//			itlist.addAll(conl);
 		//		Iterator<Connection> it = itlist.iterator();
 
-		for (Set<Connection> conl : getMultimap(world.provider.getDimensionId()).values())
+		for (Set<Connection> conl : getMultimap(world.provider.getDimension()).values())
 		{
 			Iterator<Connection> it = conl.iterator();
 
@@ -210,7 +201,7 @@ public class ImmersiveNetHandler
 		}
 		if(world.isBlockLoaded(node))
 			world.addBlockEvent(node, world.getBlockState(node).getBlock(),-1,0);
-		IESaveData.setDirty(world.provider.getDimensionId());
+		IESaveData.setDirty(world.provider.getDimension());
 		resetCachedIndirectConnections();
 	}
 	public void setProxy(DimensionBlockPos pos, IICProxy p)
@@ -237,7 +228,7 @@ public class ImmersiveNetHandler
 		WireType type = target==null?null : iic.getCableLimiter(target);
 		if(type==null)
 			return;
-		for (Set<Connection> conl : getMultimap(world.provider.getDimensionId()).values())
+		for (Set<Connection> conl : getMultimap(world.provider.getDimension()).values())
 		{
 			Iterator<Connection> it = conl.iterator();
 			while(it.hasNext())
@@ -275,7 +266,7 @@ public class ImmersiveNetHandler
 		if(world.isBlockLoaded(node))
 			world.addBlockEvent(node, world.getBlockState(node).getBlock(),-1,0);
 
-		IESaveData.setDirty(world.provider.getDimensionId());
+		IESaveData.setDirty(world.provider.getDimension());
 		resetCachedIndirectConnections();
 	}
 
@@ -442,7 +433,7 @@ public class ImmersiveNetHandler
 		public BlockPos end;
 		public WireType cableType;
 		public int length;
-		public Vec3[] catenaryVertices;
+		public Vec3d[] catenaryVertices;
 		public static final int vertices = 17;
 		
 		public Connection(BlockPos start, BlockPos end, WireType cableType, int length)
@@ -456,18 +447,18 @@ public class ImmersiveNetHandler
 		public boolean hasSameConnectors(Connection o) {
 			if(!(o instanceof Connection))
 				return false;
-			Connection con = (Connection)o;
+			Connection con = o;
 			boolean n0 = start.equals(con.start)&&end.equals(con.end);
 			boolean n1  =start.equals(con.end)&&end.equals(con.start);
 			return n0||n1;
 		}
 
-		public Vec3[] getSubVertices(World world)
+		public Vec3d[] getSubVertices(World world)
 		{
 			if(catenaryVertices==null)
 			{
-				Vec3 vStart = new Vec3(start.getX(),start.getY(),start.getZ());
-				Vec3 vEnd = new Vec3(end.getX(), end.getY(), end.getZ());
+				Vec3d vStart = new Vec3d(start.getX(),start.getY(),start.getZ());
+				Vec3d vEnd = new Vec3d(end.getX(), end.getY(), end.getZ());
 				IImmersiveConnectable iicStart = toIIC(start, world);
 				IImmersiveConnectable iicEnd = toIIC(end, world);
 				if(iicStart!=null)

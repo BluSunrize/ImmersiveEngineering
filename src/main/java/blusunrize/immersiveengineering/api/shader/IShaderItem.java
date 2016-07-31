@@ -4,5 +4,5 @@ import net.minecraft.item.ItemStack;
 
 public interface IShaderItem
 {
-	public ShaderCase getShaderCase(ItemStack shader, ItemStack item, String shaderType);
+	ShaderCase getShaderCase(ItemStack shader, ItemStack item, String shaderType);
 }

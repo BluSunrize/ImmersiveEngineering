@@ -16,18 +16,17 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraftforge.fluids.Fluid;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
-import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.oredict.OreDictionary;
 
-public class TileEntityRefinery extends TileEntityMultiblockMetal<TileEntityRefinery,RefineryRecipe> implements IAdvancedSelectionBounds,IAdvancedCollisionBounds, IFluidHandler, IGuiTile
+public class TileEntityRefinery extends TileEntityMultiblockMetal<TileEntityRefinery,RefineryRecipe> implements IAdvancedSelectionBounds,IAdvancedCollisionBounds, IGuiTile
 {
 	public TileEntityRefinery()
 	{
@@ -84,7 +83,7 @@ public class TileEntityRefinery extends TileEntityMultiblockMetal<TileEntityRefi
 
 		if(this.tanks[2].getFluidAmount()>0)
 		{
-			ItemStack filledContainer = Utils.fillFluidContainer(tanks[2], inventory[4], inventory[5]);
+			ItemStack filledContainer = Utils.fillFluidContainer(tanks[2], inventory[4], inventory[5], null);
 			if(filledContainer!=null)
 			{
 				if(inventory[5]!=null && OreDictionary.itemMatches(inventory[5], filledContainer, true))
@@ -99,13 +98,13 @@ public class TileEntityRefinery extends TileEntityMultiblockMetal<TileEntityRefi
 			{
 				FluidStack out = Utils.copyFluidStackWithAmount(this.tanks[2].getFluid(), Math.min(this.tanks[2].getFluidAmount(), 80), false);
 				BlockPos outputPos = this.getPos().add(0,-1,0).offset(facing.getOpposite());
-				TileEntity te = worldObj.getTileEntity(outputPos);
-				if(te instanceof IFluidHandler && ((IFluidHandler)te).canFill(facing,out.getFluid()))
+				IFluidHandler output = FluidUtil.getFluidHandler(worldObj, outputPos, facing);
+				if(output!=null)
 				{
-					int accepted = ((IFluidHandler)te).fill(facing, out, false);
+					int accepted = output.fill(out, false);
 					if(accepted>0)
 					{
-						int drained = ((IFluidHandler)te).fill(facing, Utils.copyFluidStackWithAmount(out,Math.min(out.amount, accepted),false), true);
+						int drained = output.fill(Utils.copyFluidStackWithAmount(out,Math.min(out.amount, accepted),false), true);
 						this.tanks[2].drain(drained, true);
 						update=true;
 					}
@@ -113,7 +112,7 @@ public class TileEntityRefinery extends TileEntityMultiblockMetal<TileEntityRefi
 			}
 		}
 
-		ItemStack emptyContainer = Utils.drainFluidContainer(tanks[0], inventory[0]);
+		ItemStack emptyContainer = Utils.drainFluidContainer(tanks[2], inventory[0], inventory[1], null);
 		if(emptyContainer!=null)
 		{
 			if(inventory[1]!=null && OreDictionary.itemMatches(inventory[1], emptyContainer, true))
@@ -124,7 +123,7 @@ public class TileEntityRefinery extends TileEntityMultiblockMetal<TileEntityRefi
 				inventory[0]=null;
 			update = true;
 		}
-		emptyContainer = Utils.drainFluidContainer(tanks[1], inventory[2]);
+		emptyContainer = Utils.drainFluidContainer(tanks[1], inventory[2], inventory[3], null);
 		if(emptyContainer!=null)
 		{
 			if(inventory[3]!=null && OreDictionary.itemMatches(inventory[3], emptyContainer, true))
@@ -139,7 +138,7 @@ public class TileEntityRefinery extends TileEntityMultiblockMetal<TileEntityRefi
 		if(update)
 		{
 			this.markDirty();
-			worldObj.markBlockForUpdate(getPos());
+			this.markContainingBlockForUpdate(null);
 		}
 	}
 
@@ -158,16 +157,6 @@ public class TileEntityRefinery extends TileEntityMultiblockMetal<TileEntityRefi
 		return new float[]{0,0,0, 1,1,1};
 	}
 	@Override
-	public float[] getSpecialCollisionBounds()
-	{
-		return null;
-	}
-	@Override
-	public float[] getSpecialSelectionBounds()
-	{
-		return null;
-	}
-	@Override
 	public List<AxisAlignedBB> getAdvancedSelectionBounds()
 	{
 		EnumFacing fl = facing;
@@ -176,23 +165,23 @@ public class TileEntityRefinery extends TileEntityMultiblockMetal<TileEntityRefi
 			fw = fw.getOpposite();
 		if(pos==12)
 		{
-			List<AxisAlignedBB> list = Lists.newArrayList(AxisAlignedBB.fromBounds(0,0,0, 1,.5f,1).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(0,0,0, 1,.5f,1).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
 			float minX = fl==EnumFacing.EAST?.625f: fl==EnumFacing.WEST?.125f: .125f;
 			float maxX = fl==EnumFacing.WEST?.375f: fl==EnumFacing.EAST?.875f: .25f;
 			float minZ = fl==EnumFacing.SOUTH?.625f: fl==EnumFacing.NORTH?.125f: .125f;
 			float maxZ = fl==EnumFacing.NORTH?.375f: fl==EnumFacing.SOUTH?.875f: .25f;
-			list.add(AxisAlignedBB.fromBounds(minX,.5f,minZ, maxX,1,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+			list.add(new AxisAlignedBB(minX,.5f,minZ, maxX,1,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
 
 			minX = fl==EnumFacing.EAST?.625f: fl==EnumFacing.WEST?.125f: .75f;
 			maxX = fl==EnumFacing.WEST?.375f: fl==EnumFacing.EAST?.875f: .875f;
 			minZ = fl==EnumFacing.SOUTH?.625f: fl==EnumFacing.NORTH?.125f: .75f;
 			maxZ = fl==EnumFacing.NORTH?.375f: fl==EnumFacing.SOUTH?.875f: .875f;
-			list.add(AxisAlignedBB.fromBounds(minX,.5f,minZ, maxX,1,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+			list.add(new AxisAlignedBB(minX,.5f,minZ, maxX,1,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
 			return list;
 		}
 		if(pos==0||pos==4||pos==10||pos==14)
 		{
-			List<AxisAlignedBB> list = Lists.newArrayList(AxisAlignedBB.fromBounds(0,0,0, 1,.5f,1).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(0,0,0, 1,.5f,1).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
 			if(pos>=10)
 				fl = fl.getOpposite();
 			if(pos%10==0)
@@ -202,7 +191,7 @@ public class TileEntityRefinery extends TileEntityMultiblockMetal<TileEntityRefi
 			float maxX = fl==EnumFacing.EAST?1: fl==EnumFacing.WEST?.25f: fw==EnumFacing.EAST?.5f: .75f;
 			float minZ = fl==EnumFacing.NORTH?0: fl==EnumFacing.SOUTH?.75f: fw==EnumFacing.NORTH?.5f: .25f;
 			float maxZ = fl==EnumFacing.SOUTH?1: fl==EnumFacing.NORTH?.25f: fw==EnumFacing.SOUTH?.5f: .75f;
-			list.add(AxisAlignedBB.fromBounds(minX,.5f,minZ, maxX,1.375f,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+			list.add(new AxisAlignedBB(minX,.5f,minZ, maxX,1.375f,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
 
 			if(pos==4)
 			{
@@ -210,20 +199,20 @@ public class TileEntityRefinery extends TileEntityMultiblockMetal<TileEntityRefi
 				maxX = fl==EnumFacing.EAST?.375f: fl==EnumFacing.WEST?.875f: .25f;
 				minZ = fl==EnumFacing.NORTH?.625f: fl==EnumFacing.SOUTH?.125f: .125f;
 				maxZ = fl==EnumFacing.SOUTH?.375f: fl==EnumFacing.NORTH?.875f: .25f;
-				list.add(AxisAlignedBB.fromBounds(minX,.5f,minZ, maxX,1,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+				list.add(new AxisAlignedBB(minX,.5f,minZ, maxX,1,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
 
 				minX = fl==EnumFacing.WEST?.625f: fl==EnumFacing.EAST?.125f: .75f;
 				maxX = fl==EnumFacing.EAST?.375f: fl==EnumFacing.WEST?.875f: .875f;
 				minZ = fl==EnumFacing.NORTH?.625f: fl==EnumFacing.SOUTH?.125f: .75f;
 				maxZ = fl==EnumFacing.SOUTH?.375f: fl==EnumFacing.NORTH?.875f: .875f;
-				list.add(AxisAlignedBB.fromBounds(minX,.5f,minZ, maxX,1,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+				list.add(new AxisAlignedBB(minX,.5f,minZ, maxX,1,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
 			}
 
 			return list;
 		}
 		if(pos==1||pos==3||pos==11||pos==13)
 		{
-			List<AxisAlignedBB> list = Lists.newArrayList(AxisAlignedBB.fromBounds(0,0,0, 1,.5f,1).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(0,0,0, 1,.5f,1).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
 			if(pos>=10)
 				fl = fl.getOpposite();
 			if(pos%10==1)
@@ -233,7 +222,7 @@ public class TileEntityRefinery extends TileEntityMultiblockMetal<TileEntityRefi
 			float maxX = fl==EnumFacing.EAST?1: fl==EnumFacing.WEST?.25f: fw==EnumFacing.EAST?.25f: 1;
 			float minZ = fl==EnumFacing.NORTH?0: fl==EnumFacing.SOUTH?.75f: fw==EnumFacing.NORTH?.75f: 0;
 			float maxZ = fl==EnumFacing.SOUTH?1: fl==EnumFacing.NORTH?.25f: fw==EnumFacing.SOUTH?.25f: 1;
-			list.add(AxisAlignedBB.fromBounds(minX,.5f,minZ, maxX,1.375f,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+			list.add(new AxisAlignedBB(minX,.5f,minZ, maxX,1.375f,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
 			return list;
 		}
 
@@ -255,7 +244,7 @@ public class TileEntityRefinery extends TileEntityMultiblockMetal<TileEntityRefi
 				minZ += fl==EnumFacing.NORTH?1: fl==EnumFacing.SOUTH?-1: 0;
 				maxZ += fl==EnumFacing.NORTH?1: fl==EnumFacing.SOUTH?-1: 0;
 			}
-			list.add(AxisAlignedBB.fromBounds(minX,minY,minZ, maxX,maxY,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+			list.add(new AxisAlignedBB(minX,minY,minZ, maxX,maxY,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
 			return list;
 		}
 		if((pos==21||pos==23 || pos==26||pos==28)||(pos==36||pos==38 || pos==41||pos==43))
@@ -276,13 +265,13 @@ public class TileEntityRefinery extends TileEntityMultiblockMetal<TileEntityRefi
 				minZ += fl==EnumFacing.NORTH?1: fl==EnumFacing.SOUTH?-1: 0;
 				maxZ += fl==EnumFacing.NORTH?1: fl==EnumFacing.SOUTH?-1: 0;
 			}
-			list.add(AxisAlignedBB.fromBounds(minX,minY,minZ, maxX,maxY,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+			list.add(new AxisAlignedBB(minX,minY,minZ, maxX,maxY,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
 			return list;
 		}
 		return null;
 	}
 	@Override
-	public boolean isOverrideBox(AxisAlignedBB box, EntityPlayer player, MovingObjectPosition mop, ArrayList<AxisAlignedBB> list)
+	public boolean isOverrideBox(AxisAlignedBB box, EntityPlayer player, RayTraceResult mop, ArrayList<AxisAlignedBB> list)
 	{
 		return false;
 	}
@@ -379,10 +368,49 @@ public class TileEntityRefinery extends TileEntityMultiblockMetal<TileEntityRefi
 		return tanks;
 	}
 	@Override
+	protected FluidTank[] getAccessibleFluidTanks(EnumFacing side)
+	{
+		TileEntityRefinery master = this.master();
+		if(master!=null)
+		{
+			if(pos == 2 && (side == null || side == facing))
+				return new FluidTank[]{master.tanks[2]};
+			if((pos == 5 && (side == null || side == facing.rotateY())) || (pos == 9 && (side == null || side == facing.rotateYCCW())))
+				return new FluidTank[]{master.tanks[0],master.tanks[1]};
+		}
+		return tanks;
+	}
+	@Override
+	protected boolean canFillTankFrom(int iTank, EnumFacing side, FluidStack resource)
+	{
+		if((pos==5&&(side==null||side==facing.rotateY())) || (pos==9&&(side==null||side==facing.rotateYCCW())))
+		{
+			TileEntityRefinery master = this.master();
+			if(master==null || master.tanks[iTank].getFluidAmount()>=master.tanks[iTank].getCapacity())
+				return false;
+			if(master.tanks[0].getFluid()==null && master.tanks[1].getFluid()==null)
+			{
+				List<RefineryRecipe> incompleteRecipes = RefineryRecipe.findIncompleteRefineryRecipe(resource,null);
+				return incompleteRecipes!=null && !incompleteRecipes.isEmpty();
+			}
+			else
+			{
+				List<RefineryRecipe> incompleteRecipes = RefineryRecipe.findIncompleteRefineryRecipe(resource,master.tanks[iTank==0?1:0].getFluid());
+				return incompleteRecipes!=null && !incompleteRecipes.isEmpty();
+			}
+		}
+		return false;
+	}
+	@Override
+	protected boolean canDrainTankFrom(int iTank, EnumFacing side)
+	{
+		return pos==2 && (side==null||side==facing);
+	}
+	@Override
 	public void doGraphicalUpdates(int slot)
 	{
 		this.markDirty();
-		worldObj.markBlockForUpdate(getPos());
+		this.markContainingBlockForUpdate(null);
 	}
 	@Override
 	public RefineryRecipe findRecipeForInsertion(ItemStack inserting)
@@ -408,97 +436,5 @@ public class TileEntityRefinery extends TileEntityMultiblockMetal<TileEntityRefi
 	public TileEntity getGuiMaster()
 	{
 		return master();
-	}
-
-	@Override
-	public int fill(EnumFacing from, FluidStack resource, boolean doFill)
-	{
-		if(!formed || resource==null)
-			return 0;
-		if(!canFill(from, resource.getFluid()))
-			return 0;
-		TileEntityRefinery master = this.master();
-		if(master==null)
-			return 0;
-		int fill = 0;
-		if(resource.isFluidEqual(master.tanks[0].getFluid()))
-			fill = master.tanks[0].fill(resource, doFill);
-		else if(resource.isFluidEqual(master.tanks[1].getFluid()))
-			fill = master.tanks[1].fill(resource, doFill);
-		else if(master.tanks[0].getFluid()==null && master.tanks[1].getFluid()==null)
-		{
-			List<RefineryRecipe> incompleteRecipes = RefineryRecipe.findIncompleteRefineryRecipe(resource,null);
-			if(incompleteRecipes!=null && !incompleteRecipes.isEmpty())
-				fill = master.tanks[0].fill(resource, doFill);
-		}
-		else
-		{
-			int present = master.tanks[0].getFluid()!=null?0:1;
-			List<RefineryRecipe> incompleteRecipes = RefineryRecipe.findIncompleteRefineryRecipe(resource,master.tanks[present].getFluid());
-			if(incompleteRecipes!=null && !incompleteRecipes.isEmpty())
-				fill = master.tanks[present==0?1:0].fill(resource, doFill);
-		}
-		if(fill>0)
-		{
-			master.markDirty();
-			worldObj.markBlockForUpdate(master.getPos());
-		}
-		return fill;
-	}
-	@Override
-	public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain)
-	{
-		return resource==null?null:this.drain(from, resource.amount, doDrain);
-	}
-	@Override
-	public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain)
-	{
-		if(pos==2 && (from==null||from==facing))
-		{
-			TileEntityRefinery master = this.master();
-			if(master==null)
-				return null;
-			FluidStack fs = master.tanks[2].drain(maxDrain, doDrain);
-			if(fs!=null)
-			{
-				master.markDirty();
-				worldObj.markBlockForUpdate(master.getPos());
-			}
-			return fs;
-		}
-		return null;
-	}
-	@Override
-	public boolean canFill(EnumFacing from, Fluid fluid)
-	{
-		return (pos==5&&(from==null||from==facing.rotateY())) || (pos==9&&(from==null||from==facing.rotateYCCW()));
-	}
-	@Override
-	public boolean canDrain(EnumFacing from, Fluid fluid)
-	{
-		return pos==2 && (from==null||from==facing);
-	}
-	@Override
-	public FluidTankInfo[] getTankInfo(EnumFacing from)
-	{
-		if(pos==5&&(from==null||from==facing.rotateY()))
-		{
-			TileEntityRefinery master = master();
-			if(master!=null)
-				return new FluidTankInfo[]{master.tanks[0].getInfo(),master.tanks[1].getInfo()};
-		}
-		if(pos==9&&(from==null||from==facing.rotateYCCW()))
-		{
-			TileEntityRefinery master = master();
-			if(master!=null)
-				return new FluidTankInfo[]{master.tanks[0].getInfo(),master.tanks[1].getInfo()};
-		}
-		if(pos==2 && (from==null||from==facing.getOpposite()))
-		{
-			TileEntityRefinery master = master();
-			if(master!=null)
-				return new FluidTankInfo[]{master.tanks[2].getInfo()};
-		}
-		return new FluidTankInfo[0];
 	}
 }

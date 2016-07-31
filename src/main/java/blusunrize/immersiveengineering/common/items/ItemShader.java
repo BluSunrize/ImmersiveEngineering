@@ -1,10 +1,5 @@
 package blusunrize.immersiveengineering.common.items;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
-
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
@@ -14,18 +9,19 @@ import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.lib.manual.ManualUtils;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.StatCollector;
-import net.minecraft.util.WeightedRandomChestContent;
-import net.minecraftforge.common.ChestGenHooks;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 public class ItemShader extends ItemIEBase implements IShaderItem
 {
@@ -129,18 +125,18 @@ public class ItemShader extends ItemIEBase implements IShaderItem
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean adv)
 	{
-		list.add(StatCollector.translateToLocal("Level: "+this.getRarity(stack).rarityColor+this.getRarity(stack).rarityName));
+		list.add(I18n.format("Level: "+this.getRarity(stack).rarityColor+this.getRarity(stack).rarityName));
 		if(!GuiScreen.isShiftKeyDown())
-			list.add(StatCollector.translateToLocal(Lib.DESC_INFO+"shader.applyTo")+" "+StatCollector.translateToLocal(Lib.DESC_INFO+"holdShift"));
+			list.add(I18n.format(Lib.DESC_INFO+"shader.applyTo")+" "+ I18n.format(Lib.DESC_INFO+"holdShift"));
 		else
 		{
-			list.add(StatCollector.translateToLocal(Lib.DESC_INFO+"shader.applyTo"));
+			list.add(I18n.format(Lib.DESC_INFO+"shader.applyTo"));
 			String name = getShaderName(stack);
 			if(name!=null && !name.isEmpty())
 			{
 				List<ShaderCase> array = ShaderRegistry.shaderRegistry.get(name).getCases();
 				for(ShaderCase sCase : array)
-					list.add(EnumChatFormatting.DARK_GRAY+" "+StatCollector.translateToLocal(Lib.DESC_INFO+"shader."+sCase.getShaderType()));
+					list.add(TextFormatting.DARK_GRAY+" "+ I18n.format(Lib.DESC_INFO+"shader."+sCase.getShaderType()));
 			}
 		}
 	}
@@ -157,15 +153,6 @@ public class ItemShader extends ItemIEBase implements IShaderItem
 		return ShaderRegistry.shaderRegistry.containsKey(s)?ShaderRegistry.shaderRegistry.get(s).getRarity():EnumRarity.COMMON;
 	}
 
-
-	@Override
-	public WeightedRandomChestContent getChestGenBase(ChestGenHooks chest, Random random, WeightedRandomChestContent original)
-	{
-		NBTTagCompound tag = new NBTTagCompound();
-		tag.setString("shader_name", ShaderRegistry.chestLootShaders.get(random.nextInt(ShaderRegistry.chestLootShaders.size())));
-		original.theItemId.setTagCompound(tag);
-		return original;
-	}
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void getSubItems(Item item, CreativeTabs tab, List list)
@@ -179,7 +166,12 @@ public class ItemShader extends ItemIEBase implements IShaderItem
 	}
 
 	@Override
-	public int getColorFromItemStack(ItemStack stack, int pass)
+	public boolean hasCustomItemColours()
+	{
+		return true;
+	}
+	@Override
+	public int getColourForIEItem(ItemStack stack, int pass)
 	{
 		String name = getShaderName(stack);
 		if(ShaderRegistry.shaderRegistry.containsKey(name))
@@ -193,6 +185,6 @@ public class ItemShader extends ItemIEBase implements IShaderItem
 					return (col[3]<<24)+(col[0]<<16)+(col[1]<<8)+col[2];
 			}
 		}
-		return super.getColorFromItemStack(stack, pass);
+		return super.getColourForIEItem(stack, pass);
 	}
 }

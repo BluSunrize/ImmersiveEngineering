@@ -23,7 +23,7 @@ public enum BlockTypes_MetalMultiblock implements IStringSerializable, BlockIEBa
 	ARC_FURNACE(true);
 
 	private boolean needsCustomState;
-	private BlockTypes_MetalMultiblock(boolean needsCustomState)
+	BlockTypes_MetalMultiblock(boolean needsCustomState)
 	{
 		this.needsCustomState = needsCustomState;
 	}
@@ -31,7 +31,7 @@ public enum BlockTypes_MetalMultiblock implements IStringSerializable, BlockIEBa
 	@Override
 	public String getName()
 	{
-		return this.toString();
+		return this.toString().toLowerCase();
 	}
 	@Override
 	public int getMeta()

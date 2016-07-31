@@ -7,7 +7,7 @@ import java.math.RoundingMode;
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.Vec3d;
 
 /**
  * Copyright (C) 2013 Chicken-Bones
@@ -370,14 +370,14 @@ public class Matrix4
 		vec.y += m13;
 		vec.z += m23;
 	}
-	private Vec3 mult3x3(Vec3 vec)
+	private Vec3d mult3x3(Vec3d vec)
 	{
 		double x = m00 * vec.xCoord + m01 * vec.yCoord + m02 * vec.zCoord;
 		double y = m10 * vec.xCoord + m11 * vec.yCoord + m12 * vec.zCoord;
 		double z = m20 * vec.xCoord + m21 * vec.yCoord + m22 * vec.zCoord;
-		return new Vec3(x,y,z);
+		return new Vec3d(x,y,z);
 	}
-	public Vec3 apply(Vec3 vec)
+	public Vec3d apply(Vec3d vec)
 	{
 		return mult3x3(vec).addVector(m03, m13, m23);
 	}

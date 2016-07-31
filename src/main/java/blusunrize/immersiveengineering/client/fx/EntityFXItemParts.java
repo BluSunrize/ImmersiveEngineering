@@ -1,10 +1,6 @@
 package blusunrize.immersiveengineering.client.fx;
 
-import net.minecraft.block.Block;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
-import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.item.ItemBlock;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -45,16 +41,16 @@ public class EntityFXItemParts extends EntityFXIEBase
 		return "itemParts";
 	}
 	@Override
-	public void tessellateFromQueue(WorldRenderer worldRendererIn)
+	public void tessellateFromQueue(VertexBuffer worldRendererIn)
 	{
-		if(item!=null && item.getItem()!=null && this.particleIcon!=null)
+		if(item!=null && item.getItem()!=null && this.particleTexture!=null)
 		{
 			float f10 = 0.025F * this.particleScale;
 
-			float uMin = this.particleIcon.getInterpolatedU((part%4)*4);
-			float uMax = this.particleIcon.getInterpolatedU((part%4+1)*4);
-			float vMin = this.particleIcon.getInterpolatedV((part/4)*4);
-			float vMax = this.particleIcon.getInterpolatedV((part/4+1)*4);
+			float uMin = this.particleTexture.getInterpolatedU((part%4)*4);
+			float uMax = this.particleTexture.getInterpolatedU((part%4+1)*4);
+			float vMin = this.particleTexture.getInterpolatedV((part/4)*4);
+			float vMax = this.particleTexture.getInterpolatedV((part/4+1)*4);
 
 			float f11 = (float)(this.prevPosX + (this.posX - this.prevPosX) * (double)partialTicks - interpPosX);
 			float f12 = (float)(this.prevPosY + (this.posY - this.prevPosY) * (double)partialTicks - interpPosY);

@@ -47,9 +47,9 @@ public class RecipeShapedArrayList extends ShapedOreRecipe
 				if(in instanceof List)
 				{
 					for(int j=0; j<shape.length(); j++)
-						if(chr.charValue()==shape.charAt(j))
+						if(chr==shape.charAt(j))
 							replacements.put(j, (List)in);
-					recipe[i+1] = Blocks.fire;
+					recipe[i+1] = Blocks.FIRE;
 				}
 			}
 		}

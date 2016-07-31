@@ -18,7 +18,7 @@ public class CrusherRecipeCategory extends IERecipeCategory
 	static ItemStack crusherStack;
 	public CrusherRecipeCategory(IGuiHelper helper)
 	{
-		super("crusher","tile.ImmersiveEngineering.metalMultiblock.crusher.name", helper.createBlankDrawable(140,50), CrusherRecipeWrapper.class);
+		super("crusher","tile.immersiveengineering.metalMultiblock.crusher.name", helper.createBlankDrawable(140,50), CrusherRecipeWrapper.class);
 		slotDrawable = helper.getSlotDrawable();
 		crusherStack = new ItemStack(IEContent.blockMetalMultiblock,1, BlockTypes_MetalMultiblock.CRUSHER.getMeta());
 	}

@@ -13,12 +13,12 @@ import mcp.mobius.waila.api.IWailaDataAccessor;
 import mcp.mobius.waila.api.IWailaDataProvider;
 import mcp.mobius.waila.api.IWailaRegistrar;
 import net.minecraft.block.Block;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -61,14 +61,14 @@ public class IEWailaDataProvider implements IWailaDataProvider
 			int min = ((BlockIECrop)b).getMinMeta(meta);
 			int max = ((BlockIECrop)b).getMaxMeta(meta);
 			if(min==max)
-				currenttip.add(String.format("%s : %s", StatCollector.translateToLocal("hud.msg.growth"), StatCollector.translateToLocal("hud.msg.mature")));
+				currenttip.add(String.format("%s : %s", I18n.format("hud.msg.growth"), I18n.format("hud.msg.mature")));
 			else
 			{
 				float growth = ((meta-min)/(float)(max-min))*100f;
 				if(growth < 100.0)
-					currenttip.add(String.format("%s : %.0f %%", StatCollector.translateToLocal("hud.msg.growth"), growth));
+					currenttip.add(String.format("%s : %.0f %%", I18n.format("hud.msg.growth"), growth));
 				else
-					currenttip.add(String.format("%s : %s", StatCollector.translateToLocal("hud.msg.growth"), StatCollector.translateToLocal("hud.msg.mature")));
+					currenttip.add(String.format("%s : %s", I18n.format("hud.msg.growth"), I18n.format("hud.msg.mature")));
 			}
 			return currenttip;
 		}
@@ -78,10 +78,10 @@ public class IEWailaDataProvider implements IWailaDataProvider
 			if(!tank.hasKey("Empty"))
 			{
 				FluidStack fluid = FluidStack.loadFluidStackFromNBT(tank);
-				currenttip.add(String.format("%s: %d / %d mB", new Object[] { fluid.getLocalizedName(), Integer.valueOf(fluid.amount), 12000 }));
+				currenttip.add(String.format("%s: %d / %d mB", fluid.getLocalizedName(), Integer.valueOf(fluid.amount), 12000));
 			}
 			else
-				currenttip.add(StatCollector.translateToLocal("hud.msg.empty"));
+				currenttip.add(I18n.format("hud.msg.empty"));
 		}
 		if(accessor.getNBTData().hasKey("Energy"))
 		{

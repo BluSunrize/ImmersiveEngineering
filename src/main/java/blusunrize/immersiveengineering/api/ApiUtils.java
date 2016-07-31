@@ -23,10 +23,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
@@ -39,8 +40,8 @@ public class ApiUtils
 			return false;
 		ItemStack comp = copyStackWithAmount(stack, 1);
 		List<ItemStack> s = OreDictionary.getOres(oreName);
-		for (ItemStack st:s)
-			if (ItemStack.areItemStacksEqual(comp, st))
+		for(ItemStack st:s)
+			if(OreDictionary.itemMatches(st, stack, false))
 				return true;
 		return false;
 	}
@@ -247,17 +248,17 @@ public class ApiUtils
 		}
 		return null;
 	}
-	public static Vec3 addVectors(Vec3 vec0, Vec3 vec1)
+	public static Vec3d addVectors(Vec3d vec0, Vec3d vec1)
 	{
 		return vec0.addVector(vec1.xCoord,vec1.yCoord,vec1.zCoord);
 	}
 
-	public static Vec3[] getConnectionCatenary(Connection connection, Vec3 start, Vec3 end)
+	public static Vec3d[] getConnectionCatenary(Connection connection, Vec3d start, Vec3d end)
 	{
 		boolean vertical = connection.end.getX()==connection.start.getX() && connection.end.getZ()==connection.start.getZ();
 
 		if(vertical)
-			return new Vec3[]{new Vec3(start.xCoord, start.yCoord, start.zCoord), new Vec3(end.xCoord, end.yCoord, end.zCoord)};
+			return new Vec3d[]{new Vec3d(start.xCoord, start.yCoord, start.zCoord), new Vec3d(end.xCoord, end.yCoord, end.zCoord)};
 
 		double dx = (end.xCoord)-(start.xCoord);
 		double dy = (end.yCoord)-(start.yCoord);
@@ -277,18 +278,18 @@ public class ApiUtils
 		double p = (0+dw-a*Math.log((k+dy)/(k-dy)))*0.5;
 		double q = (dy+0-k*Math.cosh(l)/Math.sinh(l))*0.5;
 
-		Vec3[] vex = new Vec3[vertices];
+		Vec3d[] vex = new Vec3d[vertices];
 
-		vex[0] = new Vec3(start.xCoord, start.yCoord, start.zCoord);
+		vex[0] = new Vec3d(start.xCoord, start.yCoord, start.zCoord);
 		for(int i=1; i<vertices; i++)
 		{
 			float n1 = i/(float)vertices;
 			double x1 = 0 + dx * n1;
 			double z1 = 0 + dz * n1;
 			double y1 = a * Math.cosh((( Math.sqrt(x1*x1+z1*z1) )-p)/a)+q;
-			vex[i] = new Vec3(start.xCoord+x1, start.yCoord+y1, start.zCoord+z1);
+			vex[i] = new Vec3d(start.xCoord+x1, start.yCoord+y1, start.zCoord+z1);
 		}
-		vex[vertices-1] = new Vec3(end.xCoord, end.yCoord, end.zCoord);
+		vex[vertices-1] = new Vec3d(end.xCoord, end.yCoord, end.zCoord);
 
 		return vex;
 	}
@@ -349,7 +350,9 @@ public class ApiUtils
 			return new IngredientStack(((List<ItemStack>)input));
 		else if(input instanceof String)
 			return new IngredientStack((String)input);
-		throw new RuntimeException("Recipe Ingredients must always be ItemStack, Item, Block, List<ItemStack> or String (OreDictionary name); "+input+" is invalid");
+		else if(input instanceof FluidStack)
+			return new IngredientStack((FluidStack)input);
+		throw new RuntimeException("Recipe Ingredients must always be ItemStack, Item, Block, List<ItemStack>, String (OreDictionary name) or FluidStack; "+input+" is invalid");
 	}
 	public static IngredientStack createIngredientStack(Object input)
 	{

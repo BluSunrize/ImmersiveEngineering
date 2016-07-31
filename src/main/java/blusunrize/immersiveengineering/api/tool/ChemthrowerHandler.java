@@ -14,7 +14,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
 
@@ -102,11 +102,11 @@ public class ChemthrowerHandler
 		return gasList.contains(fluidName);
 	}
 
-	public static abstract class ChemthrowerEffect
+	public abstract static class ChemthrowerEffect
 	{
 		public abstract void applyToEntity(EntityLivingBase target, EntityPlayer shooter, ItemStack thrower, Fluid fluid);
 
-		public abstract void applyToBlock(World worldObj, MovingObjectPosition mop, EntityPlayer shooter, ItemStack thrower, Fluid fluid);
+		public abstract void applyToBlock(World worldObj, RayTraceResult mop, EntityPlayer shooter, ItemStack thrower, Fluid fluid);
 	}
 	public static class ChemthrowerEffect_Damage extends ChemthrowerEffect
 	{
@@ -117,6 +117,7 @@ public class ChemthrowerHandler
 			this.source = source;
 			this.damage = damage;
 		}
+		@Override
 		public void applyToEntity(EntityLivingBase target, EntityPlayer shooter, ItemStack thrower, Fluid fluid)
 		{
 			if(this.source!=null)
@@ -130,7 +131,7 @@ public class ChemthrowerHandler
 			}
 		}
 		@Override
-		public void applyToBlock(World worldObj, MovingObjectPosition mop, EntityPlayer shooter, ItemStack thrower, Fluid fluid)
+		public void applyToBlock(World worldObj, RayTraceResult mop, EntityPlayer shooter, ItemStack thrower, Fluid fluid)
 		{
 		}
 	}
@@ -148,7 +149,7 @@ public class ChemthrowerHandler
 		}
 		public ChemthrowerEffect_Potion(DamageSource source, float damage, Potion potion, int duration, int amplifier)
 		{
-			this(source, damage, new PotionEffect(potion.id,duration,amplifier));
+			this(source, damage, new PotionEffect(potion,duration,amplifier));
 		}
 		public ChemthrowerEffect_Potion setEffectChance(int effectIndex, float chance)
 		{
@@ -166,7 +167,7 @@ public class ChemthrowerHandler
 					if(target.getRNG().nextFloat() < this.effectChances[iEffect])
 					{
 						PotionEffect e = this.potionEffects[iEffect];
-						PotionEffect newEffect = new PotionEffect(e.getPotionID(),e.getDuration(),e.getAmplifier());
+						PotionEffect newEffect = new PotionEffect(e.getPotion(),e.getDuration(),e.getAmplifier());
 						newEffect.setCurativeItems(new ArrayList(e.getCurativeItems()));
 						target.addPotionEffect(newEffect);
 					}
@@ -185,7 +186,7 @@ public class ChemthrowerHandler
 					target.hurtResistantTime = (int)(target.hurtResistantTime*.75);
 		}
 		@Override
-		public void applyToBlock(World worldObj, MovingObjectPosition mop, EntityPlayer shooter, ItemStack thrower, Fluid fluid)
+		public void applyToBlock(World worldObj, RayTraceResult mop, EntityPlayer shooter, ItemStack thrower, Fluid fluid)
 		{
 			Block b = worldObj.getBlockState(mop.getBlockPos().offset(mop.sideHit)).getBlock();
 			if(b instanceof BlockFire)

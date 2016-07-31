@@ -3,23 +3,28 @@ package blusunrize.immersiveengineering.common.entities;
 import blusunrize.immersiveengineering.api.tool.RailgunHandler;
 import blusunrize.immersiveengineering.api.tool.RailgunHandler.RailgunProjectileProperties;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
+import com.google.common.base.Optional;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 
 public class EntityRailgunShot extends EntityIEProjectile
 {
 	private ItemStack ammo;
-	final static int dataMarker_ammo = 13;
-	private RailgunHandler.RailgunProjectileProperties ammoProperties;
+	private static final DataParameter<Optional<ItemStack>> dataMarker_ammo = EntityDataManager.<Optional<ItemStack>>createKey(EntityIEProjectile.class, DataSerializers.OPTIONAL_ITEM_STACK);
+	private RailgunProjectileProperties ammoProperties;
 
 	public EntityRailgunShot(World world)
 	{
 		super(world);
 		this.setSize(.5f, .5f);
+		this.pickupStatus = PickupStatus.ALLOWED;
 	}
 	public EntityRailgunShot(World world, double x, double y, double z, double ax, double ay, double az, ItemStack ammo)
 	{
@@ -27,6 +32,7 @@ public class EntityRailgunShot extends EntityIEProjectile
 		this.setSize(.5f, .5f);
 		this.ammo = ammo;
 		this.setAmmoSynced();
+		this.pickupStatus = PickupStatus.ALLOWED;
 	}
 	public EntityRailgunShot(World world, EntityLivingBase living, double ax, double ay, double az, ItemStack ammo)
 	{
@@ -34,22 +40,29 @@ public class EntityRailgunShot extends EntityIEProjectile
 		this.setSize(.5f, .5f);
 		this.ammo = ammo;
 		this.setAmmoSynced();
+		this.pickupStatus = PickupStatus.ALLOWED;
 	}
 	@Override
 	protected void entityInit()
 	{
 		super.entityInit();
-		this.dataWatcher.addObjectByDataType(dataMarker_ammo, 5);
+		this.dataManager.register(dataMarker_ammo, Optional.absent());
+	}
+
+	@Override
+	protected ItemStack getArrowStack()
+	{
+		return ammo;
 	}
 
 	public void setAmmoSynced()
 	{
 		if(this.getAmmo()!=null)
-			this.dataWatcher.updateObject(dataMarker_ammo, getAmmo());
+			this.dataManager.set(dataMarker_ammo, Optional.of(getAmmo()));
 	}
 	public ItemStack getAmmoSynced()
 	{
-		return this.dataWatcher.getWatchableObjectItemStack(dataMarker_ammo);
+		return this.dataManager.get(dataMarker_ammo).get();
 	}
 	public ItemStack getAmmo()
 	{
@@ -88,7 +101,7 @@ public class EntityRailgunShot extends EntityIEProjectile
 	}
 
 	@Override
-	public void onImpact(MovingObjectPosition mop)
+	public void onImpact(RayTraceResult mop)
 	{
 		if(!this.worldObj.isRemote && getAmmo()!=null)
 		{
@@ -103,16 +116,16 @@ public class EntityRailgunShot extends EntityIEProjectile
 		}
 	}
 
-	@Override
-    public void onCollideWithPlayer(EntityPlayer player)
-    {
-        if(!this.worldObj.isRemote && this.inGround && this.getAmmo()!=null)
-            if(player.inventory.addItemStackToInventory(this.getAmmo().copy()))
-            {
-                this.playSound("random.pop", 0.2F, ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
-                this.setDead();
-            }
-    }
+//	@Override
+//    public void onCollideWithPlayer(EntityPlayer player)
+//    {
+//        if(!this.worldObj.isRemote && this.inGround && this.getAmmo()!=null)
+//            if(player.inventory.addItemStackToInventory(this.getAmmo().copy()))
+//            {
+//                this.playSound("random.pop", 0.2F, ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+//                this.setDead();
+//            }
+//    }
 
 
 	@Override

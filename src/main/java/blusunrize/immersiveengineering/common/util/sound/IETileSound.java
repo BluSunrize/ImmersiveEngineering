@@ -8,13 +8,23 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundTil
 import blusunrize.immersiveengineering.common.items.ItemEarmuffs;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.client.audio.ITickableSound;
+import net.minecraft.client.audio.Sound;
+import net.minecraft.client.audio.SoundEventAccessor;
+import net.minecraft.client.audio.SoundHandler;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.ResourceLocation;
+
+import javax.annotation.Nullable;
 
 public class IETileSound implements ITickableSound
 {
+	protected Sound sound;
+	private SoundEventAccessor soundEvent;
+	private SoundCategory category;
 	public AttenuationType attenuation;
 	public final ResourceLocation resource;
 	public float volume;
@@ -27,7 +37,7 @@ public class IETileSound implements ITickableSound
 	public int repeatDelay;
 	public float volumeAjustment=1;
 
-	public IETileSound(ResourceLocation sound, float volume, float pitch, boolean repeat, int repeatDelay, int x, int y, int z, AttenuationType attenuation)
+	public IETileSound(ResourceLocation sound, float volume, float pitch, boolean repeat, int repeatDelay, int x, int y, int z, AttenuationType attenuation, SoundCategory category)
 	{
 		this.attenuation = attenuation;
 		this.resource = sound;
@@ -39,10 +49,11 @@ public class IETileSound implements ITickableSound
 		this.canRepeat = repeat;
 		this.repeatDelay = repeatDelay;
 		origPos = new float[]{(float)x,(float)y,(float)z};
+		this.category = category;
 	}
-	public IETileSound(ResourceLocation sound, float volume, float pitch, boolean repeat, int repeatDelay, BlockPos pos, AttenuationType attenuation)
+	public IETileSound(ResourceLocation sound, float volume, float pitch, boolean repeat, int repeatDelay, BlockPos pos, AttenuationType attenuation, SoundCategory category)
 	{
-		this(sound, volume, pitch, repeat, repeatDelay, pos.getX(),pos.getY(),pos.getZ(), attenuation);
+		this(sound, volume, pitch, repeat, repeatDelay, pos.getX(),pos.getY(),pos.getZ(), attenuation, category);
 	}
 
 	public float[] origPos;
@@ -57,6 +68,29 @@ public class IETileSound implements ITickableSound
 	{
 		return resource;
 	}
+
+	@Nullable
+	@Override
+	public SoundEventAccessor createAccessor(SoundHandler handler)
+	{
+		this.soundEvent = handler.getAccessor(resource);
+		if(this.soundEvent == null)
+			this.sound = SoundHandler.MISSING_SOUND;
+		else
+			this.sound = this.soundEvent.cloneEntry();
+		return this.soundEvent;
+	}
+	@Override
+	public Sound getSound()
+	{
+		return sound;
+	}
+	@Override
+	public SoundCategory getCategory()
+	{
+		return category;
+	}
+
 	@Override
 	public float getVolume()
 	{
@@ -103,9 +137,9 @@ public class IETileSound implements ITickableSound
 	public void evaluateVolume()
 	{
 		volumeAjustment=1f;
-		if(ClientUtils.mc().thePlayer!=null && ClientUtils.mc().thePlayer.getCurrentArmor(3)!=null)
+		if(ClientUtils.mc().thePlayer!=null && ClientUtils.mc().thePlayer.getItemStackFromSlot(EntityEquipmentSlot.HEAD)!=null)
 		{
-			ItemStack stack = ClientUtils.mc().thePlayer.getCurrentArmor(3);
+			ItemStack stack = ClientUtils.mc().thePlayer.getItemStackFromSlot(EntityEquipmentSlot.HEAD);
 			if(ItemNBTHelper.hasKey(stack,"IE:Earmuffs"))
 				stack = ItemNBTHelper.getItemStack(stack, "IE:Earmuffs");
 			if(stack!=null && IEContent.itemEarmuffs.equals(stack.getItem()))

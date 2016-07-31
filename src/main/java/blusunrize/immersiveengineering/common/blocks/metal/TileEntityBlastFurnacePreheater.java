@@ -11,7 +11,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 
 public class TileEntityBlastFurnacePreheater extends TileEntityIEBase implements IFluxReceiver,IEnergyReceiver, IDirectionalTile, IHasDummyBlocks
@@ -31,7 +31,7 @@ public class TileEntityBlastFurnacePreheater extends TileEntityIEBase implements
 			if (!active)
 			{
 				active = true;
-				worldObj.markBlockForUpdate(getPos());
+				this.markContainingBlockForUpdate(null);
 			}
 			this.energyStorage.extractEnergy(consumed, false);
 			return 1;
@@ -39,7 +39,7 @@ public class TileEntityBlastFurnacePreheater extends TileEntityIEBase implements
 		if (active)
 		{
 			active = false;
-			worldObj.markBlockForUpdate(getPos());
+			this.markContainingBlockForUpdate(null);
 		}
 		return 0;
 	}
@@ -75,7 +75,7 @@ public class TileEntityBlastFurnacePreheater extends TileEntityIEBase implements
 		energyStorage.readFromNBT(nbt);
 		active = nbt.getBoolean("active");
 		if(descPacket)
-			worldObj.markBlockForUpdate(getPos());
+			this.markContainingBlockForUpdate(null);
 	}
 
 	@Override

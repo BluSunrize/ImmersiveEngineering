@@ -18,7 +18,7 @@ public class MetalPressRecipeCategory extends IERecipeCategory
 	static ItemStack metalPressStack;
 	public MetalPressRecipeCategory(IGuiHelper helper)
 	{
-		super("metalPress","tile.ImmersiveEngineering.metalMultiblock.metal_press.name", helper.createBlankDrawable(140,50), MetalPressRecipeWrapper.class);
+		super("metalPress","tile.immersiveengineering.metalMultiblock.metal_press.name", helper.createBlankDrawable(140,50), MetalPressRecipeWrapper.class);
 		slotDrawable = helper.getSlotDrawable();
 		metalPressStack = new ItemStack(IEContent.blockMetalMultiblock,1, BlockTypes_MetalMultiblock.METAL_PRESS.getMeta());
 	}

@@ -9,7 +9,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -18,24 +18,24 @@ public class BlockConveyor extends BlockIETileProvider<BlockTypes_Conveyor>
 {
 	public BlockConveyor()
 	{
-		super("conveyor",Material.iron, PropertyEnum.create("type", BlockTypes_Conveyor.class), ItemBlockIEBase.class,  IEProperties.FACING_ALL,IEProperties.CONVEYORWALLS[0],IEProperties.CONVEYORWALLS[1],IEProperties.CONVEYORUPDOWN,IEProperties.BOOLEANS[0]);
+		super("conveyor",Material.IRON, PropertyEnum.create("type", BlockTypes_Conveyor.class), ItemBlockIEBase.class,  IEProperties.FACING_ALL,IEProperties.CONVEYORWALLS[0],IEProperties.CONVEYORWALLS[1],IEProperties.CONVEYORUPDOWN,IEProperties.BOOLEANS[0]);
 		this.setHardness(3.0F);
 		this.setResistance(15.0F);
 		lightOpacity = 0;
 	}
 
 	@Override
-	public boolean isFullBlock()
+	public boolean isFullBlock(IBlockState state)
 	{
 		return false;
 	}
 	@Override
-	public boolean isFullCube()
+	public boolean isFullCube(IBlockState state)
 	{
 		return false;
 	}
 	@Override
-	public boolean isOpaqueCube()
+	public boolean isOpaqueCube(IBlockState state)
 	{
 		return false;
 	}
@@ -75,7 +75,7 @@ public class BlockConveyor extends BlockIETileProvider<BlockTypes_Conveyor>
 	}
 
 	@Override
-	public boolean isSideSolid(IBlockAccess world, BlockPos pos, EnumFacing side)
+	public boolean isSideSolid(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side)
 	{
 		TileEntity te = world.getTileEntity(pos);
 		if(te instanceof TileEntityConveyorVertical)

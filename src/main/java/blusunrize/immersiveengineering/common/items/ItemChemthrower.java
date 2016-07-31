@@ -2,13 +2,18 @@ package blusunrize.immersiveengineering.common.items;
 
 import java.util.List;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.shader.IShaderEquipableItem;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler;
 import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.entities.EntityChemthrowerShot;
 import blusunrize.immersiveengineering.common.gui.IESlot;
+import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import net.minecraft.client.resources.I18n;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
@@ -16,9 +21,9 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.StatCollector;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.*;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidContainerItem;
@@ -35,16 +40,16 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IShaderEquip
 	{
 		ItemStack shader = getShaderItem(stack);
 		if(shader!=null)
-			list.add(EnumChatFormatting.DARK_GRAY+shader.getDisplayName());
+			list.add(TextFormatting.DARK_GRAY+shader.getDisplayName());
 
 		FluidStack fs = getFluid(stack);
 		if(fs!=null)
 		{
-			EnumChatFormatting rarity = fs.getFluid().getRarity()==EnumRarity.COMMON?EnumChatFormatting.GRAY:fs.getFluid().getRarity().rarityColor;
-			list.add(rarity+fs.getLocalizedName()+EnumChatFormatting.GRAY+": "+fs.amount+"/"+getCapacity(stack)+"mB");
+			TextFormatting rarity = fs.getFluid().getRarity()==EnumRarity.COMMON? TextFormatting.GRAY:fs.getFluid().getRarity().rarityColor;
+			list.add(rarity+fs.getLocalizedName()+ TextFormatting.GRAY+": "+fs.amount+"/"+getCapacity(stack)+"mB");
 		}
 		else
-			list.add(StatCollector.translateToLocal("desc.ImmersiveEngineering.flavour.drill.empty"));
+			list.add(I18n.format(Lib.DESC_FLAVOUR+"drill.empty"));
 	}
 	@Override
 	public boolean isFull3D()
@@ -54,11 +59,11 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IShaderEquip
 	@Override
 	public EnumAction getItemUseAction(ItemStack p_77661_1_)
 	{
-		return EnumAction.BOW;
+		return EnumAction.NONE;
 	}
 
 	@Override
-	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
+	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand)
 	{
 		if(player.isSneaking())
 		{
@@ -66,12 +71,12 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IShaderEquip
 				ItemNBTHelper.setBoolean(stack, "ignite", !ItemNBTHelper.getBoolean(stack, "ignite"));
 		}
 		else
-			player.setItemInUse(stack, this.getMaxItemUseDuration(stack));
-		return stack;
+			player.setActiveHand(hand);
+		return new ActionResult(EnumActionResult.SUCCESS, stack);
 	}
 
 	@Override
-	public void onUsingTick(ItemStack stack, EntityPlayer player, int count)
+	public void onUsingTick(ItemStack stack, EntityLivingBase player, int count)
 	{
 		FluidStack fs = this.getFluid(stack);
 		if(fs!=null && fs.getFluid()!=null)
@@ -80,7 +85,7 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IShaderEquip
 			int consumed = Config.getInt("chemthrower_consumption");
 			if(consumed*duration<=fs.amount)
 			{
-				Vec3 v = player.getLookVec();
+				Vec3d v = player.getLookVec();
 				int split = 8;
 				boolean isGas = fs.getFluid().isGaseous()||ChemthrowerHandler.isGas(fs.getFluid());
 
@@ -95,7 +100,7 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IShaderEquip
 				boolean ignite = ChemthrowerHandler.isFlammable(fs.getFluid())&&ItemNBTHelper.getBoolean(stack, "ignite");
 				for(int i=0; i<split; i++)
 				{	
-					Vec3 vecDir = v.addVector(player.getRNG().nextGaussian()*scatter,player.getRNG().nextGaussian()*scatter,player.getRNG().nextGaussian()*scatter);
+					Vec3d vecDir = v.addVector(player.getRNG().nextGaussian()*scatter,player.getRNG().nextGaussian()*scatter,player.getRNG().nextGaussian()*scatter);
 					EntityChemthrowerShot chem = new EntityChemthrowerShot(player.worldObj, player, vecDir.xCoord*0.25,vecDir.yCoord*0.25,vecDir.zCoord*0.25, fs.getFluid());
 					chem.motionX = vecDir.xCoord*range;
 					chem.motionY = vecDir.yCoord*range;
@@ -108,19 +113,19 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IShaderEquip
 				if(count%4==0)
 				{
 					if(ignite)
-						player.playSound("immersiveengineering:spray_fire", .5f, 1.5f);
+						player.playSound(IESounds.sprayFire, .5f, 1.5f);
 					else
-						player.playSound("immersiveengineering:spray", .5f, .75f);
+						player.playSound(IESounds.spray, .5f, .75f);
 				}
 			}
 			else
-				player.stopUsingItem();
+				player.stopActiveHand();
 		}
 		else
-			player.stopUsingItem();
+			player.stopActiveHand();
 	}
 	@Override
-	public void onPlayerStoppedUsing(ItemStack stack, World world, EntityPlayer player, int timeLeft)
+	public void onPlayerStoppedUsing(ItemStack stack, World world, EntityLivingBase player, int timeLeft)
 	{
 		FluidStack fs = this.getFluid(stack);
 		if(fs!=null)

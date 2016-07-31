@@ -158,7 +158,7 @@
 			"input":{"textures": {"west": "#sideIn"}},
 			"output":{"textures": {"west": "#sideOut"}}
 		},
-		"*multiblockslave":
+		"_0multiblockslave":
 		{
 			"false":{},
 			"true":{}

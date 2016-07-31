@@ -4,7 +4,7 @@ import net.minecraft.util.IStringSerializable;
 
 public class IEEnums
 {
-	public static enum SideConfig implements IStringSerializable
+	public enum SideConfig implements IStringSerializable
 	{
 		NONE,
 		INPUT,
@@ -13,7 +13,7 @@ public class IEEnums
 		@Override
 		public String getName()
 		{
-			return this.toString();
+			return this.toString().toLowerCase();
 		}
 	}
 }

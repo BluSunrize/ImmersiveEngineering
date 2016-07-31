@@ -1,0 +1,18 @@
+{
+
+	"multipart": [
+		{   "apply": { "model": "immersiveengineering:aluminum_fence_post" }},
+		{   "when": { "north": "true" },
+			"apply": { "model": "immersiveengineering:aluminum_fence_side", "uvlock": true }
+		},
+		{   "when": { "east": "true" },
+			"apply": { "model": "immersiveengineering:aluminum_fence_side", "y": 90, "uvlock": true }
+		},
+		{   "when": { "south": "true" },
+			"apply": { "model": "immersiveengineering:aluminum_fence_side", "y": 180, "uvlock": true }
+		},
+		{   "when": { "west": "true" },
+			"apply": { "model": "immersiveengineering:aluminum_fence_side", "y": 270, "uvlock": true }
+		}
+	]
+}

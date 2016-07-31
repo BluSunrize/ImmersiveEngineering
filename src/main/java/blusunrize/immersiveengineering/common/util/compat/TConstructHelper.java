@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.common.util.compat;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEffect_Potion;
@@ -7,15 +8,26 @@ import blusunrize.immersiveengineering.api.tool.ToolboxHandler;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.IERecipes;
 import blusunrize.immersiveengineering.common.util.IEPotions;
+import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.ItemMeshDefinition;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.init.PotionTypes;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.util.BlockPos;
+import net.minecraft.potion.PotionUtils;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraft.world.biome.Biome;
+import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.fluids.BlockFluidClassic;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -25,6 +37,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
 import slimeknights.tconstruct.TinkerIntegration;
 import slimeknights.tconstruct.library.TinkerRegistry;
+import slimeknights.tconstruct.library.Util;
 import slimeknights.tconstruct.library.client.MaterialRenderInfo;
 import slimeknights.tconstruct.library.materials.ExtraMaterialStats;
 import slimeknights.tconstruct.library.materials.HandleMaterialStats;
@@ -35,18 +48,36 @@ import slimeknights.tconstruct.library.traits.AbstractTrait;
 import slimeknights.tconstruct.library.utils.HarvestLevels;
 import slimeknights.tconstruct.tools.TinkerMaterials;
 
+import javax.annotation.Nonnull;
+
 public class TConstructHelper extends IECompatModule
 {
 	public static final Material treatedWood = new Material("treatedwood", 0x653522);
 	public static final Material constantan = new Material("constantan", 0xf0816a);
 	public static final AbstractTrait thermalInversion = new TraitThermalInversion();
 
+	public static Fluid fluidUranium;
+	public static Block blockMoltenUranium;
+	public static Fluid fluidConstantan;
+	public static Block blockMoltenConstantan;
+
 	@Override
 	public void preInit()
 	{
-		sendFluidForMelting("Uranium", 0x596552, 600);
-		Fluid fluidCons = sendFluidForMelting("Constantan", 0xf7866c, 518);
-		sendAlloyForMelting(new FluidStack(fluidCons, 2), "copper",1, "nickel",1);
+		//		sendFluidForMelting("Uranium", 0x596552, 600);
+		fluidUranium = new FluidColouredMetal("uranium", 0x596552, 600);
+		sendFluidForMelting("Uranium", fluidUranium);
+		blockMoltenUranium = new BlockFluidClassic(fluidUranium, net.minecraft.block.material.Material.LAVA);
+		ImmersiveEngineering.registerBlock(blockMoltenUranium,ItemBlock.class,"molten_uranium");
+
+		//		Fluid fluidCons = sendFluidForMelting("Constantan", 0xf7866c, 518);
+		fluidConstantan = new FluidColouredMetal("constantan", 0xf7866c, 518);
+		sendFluidForMelting("Constantan", fluidUranium);
+		blockMoltenConstantan = new BlockFluidClassic(fluidConstantan, net.minecraft.block.material.Material.LAVA);
+		ImmersiveEngineering.registerBlock(blockMoltenConstantan,ItemBlock.class,"molten_constantan");
+
+
+		sendAlloyForMelting(new FluidStack(fluidConstantan, 2), "copper",1, "nickel",1);
 		//		FluidStack output = fluids.get(0);
 		//		FluidStack[] input = new FluidStack[fluids.size()-1];
 		//		input = fluids.subList(1, fluids.size()).toArray(input);
@@ -75,7 +106,7 @@ public class TConstructHelper extends IECompatModule
 				new HeadMaterialStats(25, 4.70f, 4.00f, HarvestLevels.DIAMOND),
 				new HandleMaterialStats(0.8f, 60),
 				new ExtraMaterialStats(60));
-		TinkerIntegration.integrate(constantan, fluidCons, "Constantan").toolforge().integrate();
+		TinkerIntegration.integrate(constantan, fluidConstantan, "Constantan").toolforge().integrate();
 		ToolboxHandler.addToolType((s)->(s.getItem() instanceof TinkersItem));
 	}
 
@@ -110,6 +141,16 @@ public class TConstructHelper extends IECompatModule
 	public static Fluid sendFluidForMelting(String ore, int colour, int temp)
 	{
 		Fluid fluid = new FluidColouredMetal(ore.toLowerCase(), colour, temp);
+		NBTTagCompound tag = new NBTTagCompound();
+		tag.setString("fluid", fluid.getName());
+		tag.setString("ore", ore);
+		tag.setBoolean("toolforge", true);
+		FMLInterModComms.sendMessage("tconstruct", "integrateSmeltery", tag);
+		return fluid;
+	}
+
+	public static Fluid sendFluidForMelting(String ore, Fluid fluid)
+	{
 		NBTTagCompound tag = new NBTTagCompound();
 		tag.setString("fluid", fluid.getName());
 		tag.setString("ore", ore);
@@ -180,16 +221,59 @@ public class TConstructHelper extends IECompatModule
 			if(target.isEntityAlive() && wasHit)
 			{
 				BlockPos pos = player.getPosition();
-				BiomeGenBase biome = player.worldObj.getBiomeGenForCoords(pos);
+				Biome biome = player.worldObj.getBiomeGenForCoords(pos);
 				float tempDif = biome.getFloatTemperature(pos)-0.5f;
 				if(tempDif!=0)
 				{
 					if(tempDif<0 && !target.isImmuneToFire())
 						target.setFire((int)Math.floor(tempDif*3));
 					else if(tempDif>0)
-						target.addPotionEffect(new PotionEffect(Potion.moveSlowdown.getId(),4,(int)Math.floor(tempDif*2)));
+						target.addPotionEffect(new PotionEffect(Potion.getPotionFromResourceLocation("slowness"),4,(int)Math.floor(tempDif*2)));
 				}
 			}
+		}
+	}
+
+
+	@SideOnly(Side.CLIENT)
+	@Override
+	public void clientPreInit()
+	{
+		System.out.println("TCON MODEL MAPPING");
+		mapFluidState(blockMoltenUranium, fluidUranium);
+		mapFluidState(blockMoltenConstantan, fluidConstantan);
+	}
+	@SideOnly(Side.CLIENT)
+	private static void mapFluidState(Block block, Fluid fluid)
+	{
+		Item item = Item.getItemFromBlock(block);
+		FluidStateMapper mapper = new FluidStateMapper(fluid);
+		if(item!=null)
+		{
+			ModelLoader.registerItemVariants(item);
+			ModelLoader.setCustomMeshDefinition(item, mapper);
+		}
+		ModelLoader.setCustomStateMapper(block, mapper);
+	}
+	@SideOnly(Side.CLIENT)
+	static class FluidStateMapper extends StateMapperBase implements ItemMeshDefinition
+	{
+		public final ModelResourceLocation location;
+		public FluidStateMapper(Fluid fluid)
+		{
+			this.location = new ModelResourceLocation(ImmersiveEngineering.MODID+":fluid_block", fluid.getName());
+		}
+		@Nonnull
+		@Override
+		protected ModelResourceLocation getModelResourceLocation(@Nonnull IBlockState state)
+		{
+			return location;
+		}
+		@Nonnull
+		@Override
+		public ModelResourceLocation getModelLocation(@Nonnull ItemStack stack)
+		{
+			return location;
 		}
 	}
 }

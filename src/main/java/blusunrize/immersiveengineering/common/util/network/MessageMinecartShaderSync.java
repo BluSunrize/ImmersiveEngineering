@@ -2,10 +2,12 @@ package blusunrize.immersiveengineering.common.util.network;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.client.models.ModelShaderMinecart;
-import blusunrize.immersiveengineering.common.entities.EntityPropertiesShaderCart;
+import blusunrize.immersiveengineering.common.entities.CapabilityHandler_CartShaders;
+import blusunrize.immersiveengineering.common.util.Utils;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityMinecart;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
@@ -22,10 +24,10 @@ public class MessageMinecartShaderSync implements IMessage
 	ItemStack shader;
 	public MessageMinecartShaderSync(Entity entity, Object o)
 	{
-		this.dimension = entity.worldObj.provider.getDimensionId();
+		this.dimension = entity.worldObj.provider.getDimension();
 		this.entityID = entity.getEntityId();
-		if(o instanceof EntityPropertiesShaderCart)
-			shader = ((EntityPropertiesShaderCart)o).getShader();
+		if(o instanceof CapabilityHandler_CartShaders)
+			shader = ((CapabilityHandler_CartShaders)o).getShader();
 		else
 			request = true;
 	}
@@ -50,7 +52,7 @@ public class MessageMinecartShaderSync implements IMessage
 		buf.writeInt(this.entityID);
 		buf.writeBoolean(this.request);
 		if(!request)
-			ByteBufUtils.writeItemStack(buf,this.shader); 
+			ByteBufUtils.writeItemStack(buf,this.shader);
 	}
 
 	public static class HandlerServer implements IMessageHandler<MessageMinecartShaderSync, IMessage>
@@ -62,11 +64,11 @@ public class MessageMinecartShaderSync implements IMessage
 			if(world!=null)
 			{
 				Entity entity = world.getEntityByID(message.entityID);
-				if(entity!=null)
+				if(entity!=null && entity.hasCapability(CapabilityHandler_CartShaders.SHADER_CAPABILITY, null))
 				{
-					EntityPropertiesShaderCart properties = (EntityPropertiesShaderCart)entity.getExtendedProperties(EntityPropertiesShaderCart.PROPERTY_NAME);
-					if(properties!=null)
-						ImmersiveEngineering.packetHandler.sendToAll(new MessageMinecartShaderSync(entity, properties));
+					CapabilityHandler_CartShaders handler = entity.getCapability(CapabilityHandler_CartShaders.SHADER_CAPABILITY, null);
+					if(handler!=null)
+						ImmersiveEngineering.packetHandler.sendToAll(new MessageMinecartShaderSync(entity, handler));
 				}
 			}
 			return null;

@@ -13,9 +13,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
@@ -393,9 +393,9 @@ public class TileEntitySorter extends TileEntityIEBase implements IGuiTile
 			return false;
 		}
 		@Override
-		public IChatComponent getDisplayName()
+		public ITextComponent getDisplayName()
 		{
-			return new ChatComponentText(getName());
+			return new TextComponentString(getName());
 		}
 
 		@Override
@@ -470,11 +470,6 @@ public class TileEntitySorter extends TileEntityIEBase implements IGuiTile
 	@Override
 	public boolean receiveClientEvent(int id, int arg)
 	{
-		if(id==0)
-		{
-			//			this.worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-			return true;
-		}
-		return false;
+		return id == 0;
 	}
 }

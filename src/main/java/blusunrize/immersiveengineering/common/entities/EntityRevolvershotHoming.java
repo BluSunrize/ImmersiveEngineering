@@ -2,8 +2,8 @@ package blusunrize.immersiveengineering.common.entities;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 public class EntityRevolvershotHoming extends EntityRevolvershot
@@ -34,7 +34,7 @@ public class EntityRevolvershotHoming extends EntityRevolvershot
 			EntityLivingBase target = getTarget();
 			if(target!=null)
 			{
-				Vec3 newMotion = new Vec3(
+				Vec3d newMotion = new Vec3d(
 						motionX*(1-redirectionSpeed)+ (target.posX-this.posX)*redirectionSpeed,
 						motionY*(1-redirectionSpeed)+ ((target.posY+target.height/2)-this.posY)*redirectionSpeed,
 						motionZ*(1-redirectionSpeed)+ (target.posZ-this.posZ)*redirectionSpeed).normalize();

@@ -17,9 +17,9 @@ public class BlockIEStairs extends BlockStairs
 		super(state);
 		this.name = name;
 		this.setUnlocalizedName(ImmersiveEngineering.MODID+"."+name);
-		GameRegistry.registerBlock(this, ItemBlockIEStairs.class, name);
 		this.setCreativeTab(ImmersiveEngineering.creativeTab);
 		this.useNeighborBrightness = true;
+		ImmersiveEngineering.registerBlock(this, ItemBlockIEStairs.class, name);
 		IEContent.registeredIEBlocks.add(this);
 	}
 	

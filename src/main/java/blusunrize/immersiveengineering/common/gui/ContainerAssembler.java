@@ -38,7 +38,7 @@ public class ContainerAssembler extends ContainerIEBase<TileEntityAssembler>
 	public ItemStack transferStackInSlot(EntityPlayer player, int slot)
 	{
 		ItemStack stack = null;
-		Slot slotObject = (Slot) inventorySlots.get(slot);
+		Slot slotObject = inventorySlots.get(slot);
 
 		if(slotObject != null && slotObject.getHasStack() && !(slotObject instanceof IESlot.Ghost))
 		{

@@ -16,10 +16,12 @@ import cofh.api.energy.IEnergyContainerItem;
 import cofh.api.energy.IEnergyReceiver;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.ITickable;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -80,7 +82,7 @@ public class TileEntityChargingStation extends TileEntityIEBase implements ITick
 				if (energyStorage.getEnergyStored()==0)
 				{
 					charging = false;
-					worldObj.markBlockForUpdate(getPos());
+					this.markContainingBlockForUpdate(null);
 					return;
 				}
 				if(inventory[0].getItem() instanceof IFluxContainerItem)
@@ -97,7 +99,7 @@ public class TileEntityChargingStation extends TileEntityIEBase implements ITick
 							container.receiveEnergy(inventory[0], accepted, false);
 						int energyDecNew = (10*container.getEnergyStored(inventory[0]))/max;
 						if (energyDec!=energyDecNew)
-							worldObj.markBlockForUpdate(getPos());
+							this.markContainingBlockForUpdate(null);
 					}
 				}
 				else if(inventory[0].getItem() instanceof IEnergyContainerItem)
@@ -114,7 +116,7 @@ public class TileEntityChargingStation extends TileEntityIEBase implements ITick
 							container.receiveEnergy(inventory[0], accepted, false);
 						int energyDecNew = (10*container.getEnergyStored(inventory[0]))/max;
 						if (energyDec!=energyDecNew)
-							worldObj.markBlockForUpdate(getPos());
+							this.markContainingBlockForUpdate(null);
 					}
 				}
 				else
@@ -138,7 +140,7 @@ public class TileEntityChargingStation extends TileEntityIEBase implements ITick
 			else if (energyStorage.getEnergyStored()>=energyStorage.getMaxEnergyStored()*.95)
 			{
 				charging = true;
-				worldObj.markBlockForUpdate(getPos());
+				this.markContainingBlockForUpdate(null);
 			}
 		}
 
@@ -191,7 +193,7 @@ public class TileEntityChargingStation extends TileEntityIEBase implements ITick
 	{
 		if(id==0)
 		{
-			this.worldObj.markBlockForUpdate(getPos());
+			this.markContainingBlockForUpdate(null);
 			return true;
 		}
 		return false;
@@ -257,16 +259,6 @@ public class TileEntityChargingStation extends TileEntityIEBase implements ITick
 	{
 		return new float[]{facing.getAxis()==Axis.X?0:.125f,0,facing.getAxis()==Axis.Z?0:.125f, facing.getAxis()==Axis.X?1:.875f,1,facing.getAxis()==Axis.Z?1:.875f};
 	}
-	@Override
-	public float[] getSpecialCollisionBounds()
-	{
-		return null;
-	}
-	@Override
-	public float[] getSpecialSelectionBounds()
-	{
-		return null;
-	}
 
 	@Override
 	public ItemStack[] getInventory()
@@ -287,7 +279,7 @@ public class TileEntityChargingStation extends TileEntityIEBase implements ITick
 	public void doGraphicalUpdates(int slot)
 	{
 		this.markDirty();
-		worldObj.markBlockForUpdate(getPos());
+		this.markContainingBlockForUpdate(null);
 	}
 
 	@Override
@@ -307,16 +299,15 @@ public class TileEntityChargingStation extends TileEntityIEBase implements ITick
 	}
 
 	@Override
-	public boolean interact(EnumFacing side, EntityPlayer player, float hitX, float hitY, float hitZ)
+	public boolean interact(EnumFacing side, EntityPlayer player, EnumHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
-		ItemStack equipped = player.getCurrentEquippedItem();
-		if(equipped!=null && (equipped.getItem() instanceof IFluxContainerItem || equipped.getItem() instanceof IEnergyContainerItem /*|| (Lib.IC2 && IC2Helper.isElectricItem(equipped))*/))
+		if(heldItem!=null && (heldItem.getItem() instanceof IFluxContainerItem || heldItem.getItem() instanceof IEnergyContainerItem /*|| (Lib.IC2 && IC2Helper.isElectricItem(equipped))*/))
 		{
 			ItemStack stored = inventory[0]!=null?inventory[0].copy():null;
-			inventory[0] = equipped.copy();
-			player.setCurrentItemOrArmor(0, stored);
+			inventory[0] = heldItem.copy();
+			player.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, stored);
 			markDirty();
-			worldObj.markBlockForUpdate(getPos());
+			this.markContainingBlockForUpdate(null);
 			return true;
 		}
 		else if(inventory[0]!=null)
@@ -325,7 +316,7 @@ public class TileEntityChargingStation extends TileEntityIEBase implements ITick
 				player.entityDropItem(inventory[0].copy(), .5f);
 			inventory[0] = null;
 			markDirty();
-			worldObj.markBlockForUpdate(getPos());
+			this.markContainingBlockForUpdate(null);
 			return true;
 		}
 		return false;

@@ -2,6 +2,7 @@ package blusunrize.immersiveengineering.common.crafting;
 
 import java.util.List;
 
+import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
 import com.google.common.collect.Lists;
 
 import blusunrize.immersiveengineering.common.IEContent;
@@ -21,7 +22,7 @@ public class RecipeFlareBullets implements IRecipe
 	public boolean matches(InventoryCrafting inv, World world)
 	{
 		ItemStack bullet = null;
-		List<ItemStack> list = Lists.<ItemStack>newArrayList();
+		List<ItemStack> list = Lists.newArrayList();
 		for(int i=0;i<inv.getSizeInventory();i++)
 		{
 			ItemStack stackInSlot = inv.getStackInSlot(i);
@@ -53,7 +54,7 @@ public class RecipeFlareBullets implements IRecipe
 				{
 					bullet = stackInSlot;
 
-					int colour = bullet.getItem().getColorFromItemStack(bullet, 1);
+					int colour = ((IColouredItem)bullet.getItem()).getColourForIEItem(bullet, 1);
 					float r = (float)(colour >> 16 & 255) / 255.0F;
 					float g = (float)(colour >> 8 & 255) / 255.0F;
 					float b = (float)(colour & 255) / 255.0F;
@@ -65,7 +66,7 @@ public class RecipeFlareBullets implements IRecipe
 				}
 				else if(Utils.isDye(stackInSlot))
 				{
-					float[] afloat = EntitySheep.func_175513_a(EnumDyeColor.byDyeDamage(Utils.getDye(stackInSlot)));
+					float[] afloat = EntitySheep.getDyeRgb(EnumDyeColor.byDyeDamage(Utils.getDye(stackInSlot)));
 					int r = (int)(afloat[0] * 255.0F);
 					int g = (int)(afloat[1] * 255.0F);
 					int b = (int)(afloat[2] * 255.0F);

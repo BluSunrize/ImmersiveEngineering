@@ -4,16 +4,20 @@ import blusunrize.immersiveengineering.common.util.ManeuverGearHelper;
 import blusunrize.immersiveengineering.common.util.ManeuverGearHelper.HookMode;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItemFrame;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
+import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 public class EntityGrapplingHook extends EntityIEProjectile
 {
-	final static int dataMarker_hookNr = 13;
-	final static int dataMarker_mode = 14;
+	private static final DataParameter<Integer> dataMarker_hookNr = EntityDataManager.<Integer>createKey(EntityGrapplingHook.class, DataSerializers.VARINT);
+	private static final DataParameter<Integer> dataMarker_mode = EntityDataManager.<Integer>createKey(EntityGrapplingHook.class, DataSerializers.VARINT);
 
 	int hookNr = -1;
 	HookMode hookMode = HookMode.LAUNCHING;
@@ -38,18 +42,18 @@ public class EntityGrapplingHook extends EntityIEProjectile
 	protected void entityInit()
 	{
 		super.entityInit();
-		this.dataWatcher.addObject(dataMarker_hookNr, Integer.valueOf(0));
-		this.dataWatcher.addObject(dataMarker_mode, Integer.valueOf(0));
+		this.dataManager.register(dataMarker_hookNr, Integer.valueOf(0));
+		this.dataManager.register(dataMarker_mode, Integer.valueOf(0));
 	}
 
 
 	public void setHookNrSynced()
 	{
-		this.dataWatcher.updateObject(dataMarker_hookNr, this.hookNr);
+		this.dataManager.set(dataMarker_hookNr, this.hookNr);
 	}
 	public int getHookNrSynced()
 	{
-		return this.dataWatcher.getWatchableObjectInt(dataMarker_hookNr);
+		return this.dataManager.get(dataMarker_hookNr);
 	}
 	public int getHookNr()
 	{
@@ -62,11 +66,11 @@ public class EntityGrapplingHook extends EntityIEProjectile
 
 	public void setHookModeSynced()
 	{
-		this.dataWatcher.updateObject(dataMarker_mode, this.hookMode.ordinal());
+		this.dataManager.set(dataMarker_mode, this.hookMode.ordinal());
 	}
 	public HookMode getHookModeSynced()
 	{
-		int i = this.dataWatcher.getWatchableObjectInt(dataMarker_mode);
+		int i = this.dataManager.get(dataMarker_mode);
 		if(i>=0 && i<HookMode.values().length)
 			return HookMode.values()[i];
 		return null;
@@ -123,7 +127,7 @@ public class EntityGrapplingHook extends EntityIEProjectile
 				this.inMeta=-1;
 
 				double redirectionSpeed = .25;
-				Vec3 newMotion = new Vec3(
+				Vec3d newMotion = new Vec3d(
 						motionX*(1-redirectionSpeed)+ (target.posX-this.posX)*redirectionSpeed,
 						motionY*(1-redirectionSpeed)+ ((target.posY+target.height/2)-this.posY)*redirectionSpeed,
 						motionZ*(1-redirectionSpeed)+ (target.posZ-this.posZ)*redirectionSpeed).normalize();
@@ -153,7 +157,7 @@ public class EntityGrapplingHook extends EntityIEProjectile
 
 
 	@Override
-	public void onImpact(MovingObjectPosition mop)
+	public void onImpact(RayTraceResult mop)
 	{
 	}
 

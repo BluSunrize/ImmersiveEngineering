@@ -6,7 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiNewChat;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -16,7 +16,7 @@ public class ChatUtils
 	private static int lastAdded;
 
 	@SideOnly(Side.CLIENT)//Credit goes to WayOfFlowingTime
-	public static void sendClientNoSpamMessages(IChatComponent[] messages)
+	public static void sendClientNoSpamMessages(ITextComponent[] messages)
 	{
 		GuiNewChat chat = Minecraft.getMinecraft().ingameGUI.getChatGUI();
 		for(int i=DELETION_ID+messages.length-1; i<=lastAdded; i++)
@@ -26,7 +26,7 @@ public class ChatUtils
 		lastAdded = DELETION_ID+messages.length-1;
 	}
 
-	public static void sendServerNoSpamMessages(EntityPlayer player, IChatComponent... messages)
+	public static void sendServerNoSpamMessages(EntityPlayer player, ITextComponent... messages)
 	{
 		if(messages.length>0 && player instanceof EntityPlayerMP)
 			ImmersiveEngineering.packetHandler.sendTo(new MessageNoSpamChatComponents(messages), (EntityPlayerMP)player);

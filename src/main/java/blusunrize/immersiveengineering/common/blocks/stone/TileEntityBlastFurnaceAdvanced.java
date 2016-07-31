@@ -9,7 +9,7 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraftforge.common.capabilities.Capability;
@@ -91,7 +91,7 @@ public class TileEntityBlastFurnaceAdvanced extends TileEntityBlastFurnace
 	public ItemStack getOriginalBlock()
 	{
 		if(this.pos == 31)
-			return new ItemStack(Blocks.hopper);
+			return new ItemStack(Blocks.HOPPER);
 		return new ItemStack(IEContent.blockStoneDecoration,1,2);
 	}
 

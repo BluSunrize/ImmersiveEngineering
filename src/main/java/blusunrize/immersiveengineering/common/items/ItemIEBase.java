@@ -1,9 +1,8 @@
 package blusunrize.immersiveengineering.common.items;
 
-import java.util.List;
-
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -11,7 +10,9 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ItemIEBase extends Item
+import java.util.List;
+
+public class ItemIEBase extends Item implements IColouredItem
 {
 	public String itemName;
 	protected String[] subNames;
@@ -27,7 +28,7 @@ public class ItemIEBase extends Item
 		this.itemName = name;
 		this.subNames = subNames!=null&&subNames.length>0?subNames:null;
 		this.isMetaHidden = new boolean[this.subNames!=null?this.subNames.length:1];
-		GameRegistry.registerItem(this, name);
+		ImmersiveEngineering.register(this, name);
 		IEContent.registeredIEItems.add(this);
 	}
 

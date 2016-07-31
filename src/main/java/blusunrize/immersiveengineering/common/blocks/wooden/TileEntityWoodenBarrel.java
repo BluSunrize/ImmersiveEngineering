@@ -1,38 +1,38 @@
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
-import blusunrize.immersiveengineering.api.IEEnums;
 import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.Config;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparatorOverride;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IConfigurableSides;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ITileDrop;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMetalBarrel;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.ITickable;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.StatCollector;
-import net.minecraftforge.fluids.Fluid;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
-import net.minecraftforge.fluids.FluidTankInfo;
+import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.IFluidContainerItem;
-import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidTankProperties;
 
-public class TileEntityWoodenBarrel extends TileEntityIEBase implements ITickable, IFluidHandler, IBlockOverlayText, IConfigurableSides, IPlayerInteraction, ITileDrop, IComparatorOverride
+import javax.annotation.Nullable;
+
+public class TileEntityWoodenBarrel extends TileEntityIEBase implements ITickable, IBlockOverlayText, IConfigurableSides, IPlayerInteraction, ITileDrop, IComparatorOverride
 {
 	public int[] sideConfig = {1,0};
 	public FluidTank tank = new FluidTank(12000);
@@ -51,31 +51,35 @@ public class TileEntityWoodenBarrel extends TileEntityIEBase implements ITickabl
 				EnumFacing f = EnumFacing.getFront(i);
 				int out = Math.min(40,tank.getFluidAmount());
 				TileEntity te = worldObj.getTileEntity(getPos().offset(f));
-				if(te!=null && te instanceof IFluidHandler && ((IFluidHandler)te).canFill(f.getOpposite(), tank.getFluid().getFluid()))
+				if(te!=null && te.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, f.getOpposite()))
 				{
-					int accepted = ((IFluidHandler)te).fill(f.getOpposite(), new FluidStack(tank.getFluid().getFluid(),out), false);
-					FluidStack drained = this.tank.drain(accepted, true);
-					((IFluidHandler)te).fill(f.getOpposite(), drained, true);
-					update = true;
+					IFluidHandler handler = te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, f.getOpposite());
+					if(handler!=null)
+					{
+						int accepted = handler.fill(new FluidStack(tank.getFluid().getFluid(), out), false);
+						FluidStack drained = this.tank.drain(accepted, true);
+						handler.fill(drained, true);
+						update = true;
+					}
 				}
 			}
 		if(update)
 		{
 			this.markDirty();
-			worldObj.markBlockForUpdate(getPos());
+			this.markContainingBlockForUpdate(null);
 		}
 	}
 
 	@Override
-	public String[] getOverlayText(EntityPlayer player, MovingObjectPosition mop, boolean hammer)
+	public String[] getOverlayText(EntityPlayer player, RayTraceResult mop, boolean hammer)
 	{
-		if(Utils.isFluidRelatedItemStack(player.getCurrentEquippedItem()))
+		if(Utils.isFluidRelatedItemStack(player.getHeldItem(EnumHand.MAIN_HAND)))
 		{
 			String s = null;
 			if(tank.getFluid()!=null)
 				s = tank.getFluid().getLocalizedName()+": "+tank.getFluidAmount()+"mB";
 			else
-				s = StatCollector.translateToLocal(Lib.GUI+"empty");
+				s = I18n.format(Lib.GUI+"empty");
 			return new String[]{s};
 		}
 		if(hammer && Config.getBoolean("colourblindSupport") && mop.sideHit.getAxis()==Axis.Y)
@@ -83,16 +87,16 @@ public class TileEntityWoodenBarrel extends TileEntityIEBase implements ITickabl
 			int i = sideConfig[Math.min(sideConfig.length-1, mop.sideHit.ordinal())];
 			int j = sideConfig[Math.min(sideConfig.length-1, mop.sideHit.getOpposite().ordinal())];
 			return new String[]{
-					StatCollector.translateToLocal(Lib.DESC_INFO+"blockSide.facing")
-					+": "+StatCollector.translateToLocal(Lib.DESC_INFO+"blockSide.connectFluid."+i),
-					StatCollector.translateToLocal(Lib.DESC_INFO+"blockSide.opposite")
-					+": "+StatCollector.translateToLocal(Lib.DESC_INFO+"blockSide.connectFluid."+j)
+					I18n.format(Lib.DESC_INFO+"blockSide.facing")
+							+": "+ I18n.format(Lib.DESC_INFO+"blockSide.connectFluid."+i),
+					I18n.format(Lib.DESC_INFO+"blockSide.opposite")
+							+": "+ I18n.format(Lib.DESC_INFO+"blockSide.connectFluid."+j)
 			};
 		}
 		return null;
 	}
 	@Override
-	public boolean useNixieFont(EntityPlayer player, MovingObjectPosition mop)
+	public boolean useNixieFont(EntityPlayer player, RayTraceResult mop)
 	{
 		return false;
 	}
@@ -124,20 +128,72 @@ public class TileEntityWoodenBarrel extends TileEntityIEBase implements ITickabl
 			nbt.setTag("tank", tankTag);
 	}
 
+	SidedFluidHandler[] sidedFluidHandler = {new SidedFluidHandler(this, EnumFacing.DOWN),new SidedFluidHandler(this, EnumFacing.UP)};
+	SidedFluidHandler nullsideFluidHandler = new SidedFluidHandler(this, null);
 	@Override
-	public int fill(EnumFacing from, FluidStack resource, boolean doFill)
+	public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing)
 	{
-		if(isFluidValid(resource) && canFill(from, resource.getFluid()))
+		if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && facing!=null && facing.getAxis()==Axis.Y)
+			return true;
+		return super.hasCapability(capability, facing);
+	}
+	@Override
+	public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing)
+	{
+		if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && (facing==null || facing.getAxis()==Axis.Y))
+			return (T)(facing==null?nullsideFluidHandler:sidedFluidHandler[facing.ordinal()]);
+		return super.getCapability(capability, facing);
+	}
+
+	static class SidedFluidHandler implements IFluidHandler
+	{
+		TileEntityWoodenBarrel barrel;
+		EnumFacing facing;
+		SidedFluidHandler(TileEntityWoodenBarrel barrel, EnumFacing facing)
 		{
-			int i = tank.fill(resource, doFill);
+			this.barrel = barrel;
+			this.facing = facing;
+		}
+
+		@Override
+		public int fill(FluidStack resource, boolean doFill)
+		{
+			if(resource == null || (facing!=null&&barrel.sideConfig[facing.ordinal()]!=0) || !barrel.isFluidValid(resource))
+				return 0;
+
+			int i = barrel.tank.fill(resource, doFill);
 			if(i>0)
 			{
-				this.markDirty();
-				worldObj.markBlockForUpdate(getPos());
+				barrel.markDirty();
+				barrel.markContainingBlockForUpdate(null);
 			}
 			return i;
 		}
-		return 0;
+		@Override
+		public FluidStack drain(FluidStack resource, boolean doDrain)
+		{
+			if(resource == null)
+				return null;
+			return this.drain(resource.amount, doDrain);
+		}
+		@Override
+		public FluidStack drain(int maxDrain, boolean doDrain)
+		{
+			if(facing!=null&&barrel.sideConfig[facing.ordinal()]!=1)
+				return null;
+			FluidStack f = barrel.tank.drain(maxDrain, doDrain);
+			if(f!=null && f.amount>0)
+			{
+				barrel.markDirty();
+				barrel.markContainingBlockForUpdate(null);
+			}
+			return f;
+		}
+		@Override
+		public IFluidTankProperties[] getTankProperties()
+		{
+			return barrel.tank.getTankProperties();
+		}
 	}
 
 	public boolean isFluidValid(FluidStack fluid)
@@ -146,53 +202,11 @@ public class TileEntityWoodenBarrel extends TileEntityIEBase implements ITickabl
 	}
 
 	@Override
-	public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain)
-	{
-		return this.drain(from, resource!=null?resource.amount:0, doDrain);
-	}
-
-	@Override
-	public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain)
-	{
-		if(canDrain(from,null))
-		{
-			FluidStack f = tank.drain(maxDrain, doDrain);
-			if(f!=null && f.amount>0)
-			{
-				this.markDirty();
-				worldObj.markBlockForUpdate(getPos());
-			}
-			return f;
-		}
-		return null;
-	}
-
-	@Override
-	public boolean canFill(EnumFacing from, Fluid fluid)
-	{
-		return (from==null || (from.ordinal()<2 && sideConfig[from.ordinal()]==0));
-	}
-
-	@Override
-	public boolean canDrain(EnumFacing from, Fluid fluid)
-	{
-		return (from==null || (from.ordinal()<2 && sideConfig[from.ordinal()]==1));
-	}
-
-	@Override
-	public FluidTankInfo[] getTankInfo(EnumFacing from)
-	{
-		if(from!=null && from.ordinal()<2 && sideConfig[from.ordinal()]!=-1)
-			return new FluidTankInfo[]{tank.getInfo()};
-		return new FluidTankInfo[0];
-	}
-
-	@Override
 	public SideConfig getSideConfig(int side)
 	{
 		if(side>1)
-			return IEEnums.SideConfig.NONE;
-		return IEEnums.SideConfig.values()[this.sideConfig[side]+1];
+			return SideConfig.NONE;
+		return SideConfig.values()[this.sideConfig[side]+1];
 	}
 	@Override
 	public void toggleSide(int side)
@@ -203,7 +217,7 @@ public class TileEntityWoodenBarrel extends TileEntityIEBase implements ITickabl
 		if(sideConfig[side]>1)
 			sideConfig[side]=-1;
 		this.markDirty();
-		worldObj.markBlockForUpdate(getPos());
+		this.markContainingBlockForUpdate(null);
 		worldObj.addBlockEvent(getPos(), this.getBlockType(), 0, 0);
 	}
 	@Override
@@ -211,40 +225,41 @@ public class TileEntityWoodenBarrel extends TileEntityIEBase implements ITickabl
 	{
 		if(id==0)
 		{
-			this.worldObj.markBlockForUpdate(getPos());
+			this.markContainingBlockForUpdate(null);
 			return true;
 		}
 		return false;
 	}
 
 	@Override
-	public boolean interact(EnumFacing side, EntityPlayer player, float hitX, float hitY, float hitZ)
+	public boolean interact(EnumFacing side, EntityPlayer player, EnumHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
-		FluidStack f = Utils.getFluidFromItemStack(player.getCurrentEquippedItem());
+		FluidStack f = FluidUtil.getFluidContained(heldItem);
 		boolean metal = this instanceof TileEntityMetalBarrel;
 		if(f!=null)
 			if(!metal && f.getFluid().isGaseous(f))
-				ChatUtils.sendServerNoSpamMessages(player, new ChatComponentTranslation(Lib.CHAT_INFO+"noGasAllowed"));
+				ChatUtils.sendServerNoSpamMessages(player, new TextComponentTranslation(Lib.CHAT_INFO+"noGasAllowed"));
 			else if(!metal && f.getFluid().getTemperature(f)>=TileEntityWoodenBarrel.IGNITION_TEMPERATURE)
-				ChatUtils.sendServerNoSpamMessages(player, new ChatComponentTranslation(Lib.CHAT_INFO+"tooHot"));
-			else if(Utils.fillFluidHandlerWithPlayerItem(worldObj, this, player))
-			{
-				this.markDirty();
-				worldObj.markBlockForUpdate(getPos());
-				return true;
-			}
-		if(Utils.fillPlayerItemFromFluidHandler(worldObj, this, player, this.tank.getFluid()))
+				ChatUtils.sendServerNoSpamMessages(player, new TextComponentTranslation(Lib.CHAT_INFO+"tooHot"));
+
+		if(FluidUtil.interactWithFluidHandler(heldItem, tank, player))
 		{
 			this.markDirty();
-			worldObj.markBlockForUpdate(getPos());
+			this.markContainingBlockForUpdate(null);
 			return true;
 		}
-		if(player.getCurrentEquippedItem()!=null && player.getCurrentEquippedItem().getItem() instanceof IFluidContainerItem)
-		{
-			this.markDirty();
-			worldObj.markBlockForUpdate(getPos());
-			return true;
-		}
+//			else if(Utils.fillFluidHandlerWithPlayerItem(worldObj, this.tank, player, hand, heldItem))
+//			{
+//				this.markDirty();
+//				this.markContainingBlockForUpdate(null);
+//				return true;
+//			}
+//		if(Utils.fillPlayerItemFromFluidHandler(worldObj, this.tank, player, hand, heldItem, this.tank.getFluid()))
+//		{
+//			this.markDirty();
+//			this.markContainingBlockForUpdate(null);
+//			return true;
+//		}
 		return false;
 	}
 

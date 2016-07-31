@@ -1,6 +1,6 @@
 package blusunrize.immersiveengineering.api;
 
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class DimensionBlockPos extends BlockPos
@@ -13,11 +13,11 @@ public class DimensionBlockPos extends BlockPos
 	}
 	public DimensionBlockPos(int x, int y, int z, World w)
 	{
-		this(x, y, z, w.provider.getDimensionId());
+		this(x, y, z, w.provider.getDimension());
 	}
 	public DimensionBlockPos(BlockPos pos, World w)
 	{
-		this(pos.getX(), pos.getY(), pos.getZ(), w.provider.getDimensionId());
+		this(pos.getX(), pos.getY(), pos.getZ(), w.provider.getDimension());
 	}
 	public DimensionBlockPos(BlockPos pos, int dim)
 	{
@@ -51,9 +51,7 @@ public class DimensionBlockPos extends BlockPos
 			return false;
 		if (getY() != other.getY())
 			return false;
-		if (getZ() != other.getZ())
-			return false;
-		return true;
+		return getZ() == other.getZ();
 	}
 	@Override
 	public String toString() {

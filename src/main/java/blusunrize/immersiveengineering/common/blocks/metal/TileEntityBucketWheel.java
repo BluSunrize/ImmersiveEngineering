@@ -13,16 +13,18 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.model.IBakedModel;
+import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -61,6 +63,22 @@ public class TileEntityBucketWheel extends TileEntityMultiblockPart<TileEntityBu
 		nbt.setBoolean("active", active);
 		if(particleStack!=null)
 			nbt.setTag("particleStack", particleStack.writeToNBT(new NBTTagCompound()));
+	}
+
+	@Override
+	protected FluidTank[] getAccessibleFluidTanks(EnumFacing side)
+	{
+		return new FluidTank[0];
+	}
+	@Override
+	protected boolean canFillTankFrom(int iTank, EnumFacing side, FluidStack resources)
+	{
+		return false;
+	}
+	@Override
+	protected boolean canDrainTankFrom(int iTank, EnumFacing side)
+	{
+		return false;
 	}
 
 	@Override
@@ -135,7 +153,7 @@ public class TileEntityBucketWheel extends TileEntityMultiblockPart<TileEntityBu
 			if(this.digStacks[i]!=null)
 			{
 				Block b = Block.getBlockFromItem(this.digStacks[i].getItem());
-				IBlockState state = b!=null?b.getStateFromMeta(this.digStacks[i].getMetadata()): Blocks.stone.getDefaultState();
+				IBlockState state = b!=null?b.getStateFromMeta(this.digStacks[i].getMetadata()): Blocks.STONE.getDefaultState();
 				IBakedModel model = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getModelForState(state);
 				if(model!=null && model.getParticleTexture()!=null)
 					texMap.put("dig"+i, model.getParticleTexture().getIconName());
@@ -193,15 +211,5 @@ public class TileEntityBucketWheel extends TileEntityMultiblockPart<TileEntityBu
 		else if(pos==19||pos==33)
 			return new float[]{facing==EnumFacing.SOUTH?.25f:0,0,facing==EnumFacing.EAST?.25f:0, facing==EnumFacing.NORTH?.75f:1,1,facing==EnumFacing.WEST?.75f:1};
 		return new float[]{0,0,0,1,1,1};
-	}
-	@Override
-	public float[] getSpecialCollisionBounds()
-	{
-		return null;
-	}
-	@Override
-	public float[] getSpecialSelectionBounds()
-	{
-		return null;
 	}
 }

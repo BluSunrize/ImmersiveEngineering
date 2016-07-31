@@ -24,7 +24,7 @@
 			"west": {},
 			"east": {}
 		},
-		"*multiblockslave":
+		"_0multiblockslave":
 		{
 			"false":{},
 			"true":{}

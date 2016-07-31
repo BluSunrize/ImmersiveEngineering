@@ -12,13 +12,14 @@ import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Conn
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.Utils;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
+import net.minecraft.util.math.BlockPos;
 
 public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase implements IImmersiveConnectable
 {
@@ -99,20 +100,23 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 	@Override
 	public void removeCable(Connection connection)
 	{
-		WireType type = connection!=null?connection.cableType:null;
-		Set<Connection> outputs = ImmersiveNetHandler.INSTANCE.getConnections(worldObj,Utils.toCC(this));
-		if (outputs==null||outputs.size()==0)
+		WireType type = connection != null ? connection.cableType : null;
+		Set<Connection> outputs = ImmersiveNetHandler.INSTANCE.getConnections(worldObj, Utils.toCC(this));
+		if(outputs == null || outputs.size() == 0)
 		{
-			if(type==limitType || type==null)
+			if(type == limitType || type == null)
 				this.limitType = null;
 		}
 		this.markDirty();
-		if(worldObj!=null)
-			worldObj.markBlockForUpdate(pos);
+		if(worldObj != null)
+		{
+			IBlockState state = worldObj.getBlockState(pos);
+			worldObj.notifyBlockUpdate(pos, state,state, 3);
+		}
 	}
 
 	@Override
-	public Packet getDescriptionPacket()
+	public SPacketUpdateTileEntity getUpdatePacket()
 	{
 		NBTTagCompound nbttagcompound = new NBTTagCompound();
 		this.writeToNBT(nbttagcompound);
@@ -125,10 +129,10 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 					connectionList.appendTag(con.writeToNBT());
 			nbttagcompound.setTag("connectionList", connectionList);
 		}
-		return new S35PacketUpdateTileEntity(this.pos, 3, nbttagcompound);
+		return new SPacketUpdateTileEntity(this.pos, 3, nbttagcompound);
 	}
 	@Override
-	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt)
+	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt)
 	{
 		NBTTagCompound nbt = pkt.getNbtCompound();
 		this.readFromNBT(nbt);
@@ -155,7 +159,8 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 	{
 		if(id==-1||id==255)
 		{
-			worldObj.markBlockForUpdate(pos);
+			IBlockState state = worldObj.getBlockState(pos);
+			worldObj.notifyBlockUpdate(pos, state,state, 3);
 			return true;
 		}
 		return false;

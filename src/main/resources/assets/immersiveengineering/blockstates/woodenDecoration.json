@@ -26,37 +26,25 @@
 				"textures": { "side": "immersiveengineering:blocks/woodenDecoration_scaffolding", "top": "immersiveengineering:blocks/woodenDecoration_scaffolding_top", "bottom": "immersiveengineering:blocks/woodenDecoration_scaffolding_top"}
 			}
 		},
-		"sideconnection_north":
+		"north":
 		{
 			"false":{},
-			"true":{
-				"submodel": {
-                    "fenceN": { "model": "fence_n", "uvlock": true  }
-                }}
+			"true":{}
 		},
-		"sideconnection_south":
+		"south":
 		{
 			"false":{},
-			"true":{
-				"submodel": {
-                    "fenceS": { "model": "fence_n", "y": 180, "uvlock": true }
-                }}
+			"true":{}
 		},
-		"sideconnection_east":
+		"east":
 		{
 			"false":{},
-			"true":{
-				"submodel": {
-                    "fenceE": { "model": "fence_n", "y": 90, "uvlock": true  }
-                }}
+			"true":{}
 		},
-		"sideconnection_west":
+		"west":
 		{
 			"false":{},
-			"true":{
-				"submodel": {
-                    "fenceW": { "model": "fence_n", "y": -90, "uvlock": true  }
-                }}
+			"true":{}
 		}
 	}
 }

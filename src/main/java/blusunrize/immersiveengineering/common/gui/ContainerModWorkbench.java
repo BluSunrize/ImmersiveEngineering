@@ -55,7 +55,7 @@ public class ContainerModWorkbench extends ContainerIEBase<TileEntityModWorkbenc
 				}
 
 			ItemStack[] cont = ((IUpgradeableTool)tool.getItem()).getContainedItems(tool);
-			((InventoryStorageItem)this.toolInv).stackList = cont;
+			this.toolInv.stackList = cont;
 		}
 
 		bindPlayerInv(inventoryPlayer);
@@ -66,7 +66,7 @@ public class ContainerModWorkbench extends ContainerIEBase<TileEntityModWorkbenc
 	public ItemStack transferStackInSlot(EntityPlayer player, int slot)
 	{
 		ItemStack stack = null;
-		Slot slotObject = (Slot) inventorySlots.get(slot);
+		Slot slotObject = inventorySlots.get(slot);
 
 		if (slotObject != null && slotObject.getHasStack())
 		{
@@ -95,7 +95,7 @@ public class ContainerModWorkbench extends ContainerIEBase<TileEntityModWorkbenc
 					boolean b = true;
 					for(int i=1; i<slotCount; i++)
 					{
-						Slot s = (Slot)inventorySlots.get(i);
+						Slot s = inventorySlots.get(i);
 						if(s!=null && s.isItemValid(stackInSlot))
 							if(this.mergeItemStack(stackInSlot, i, i+1, true))
 							{
@@ -125,6 +125,6 @@ public class ContainerModWorkbench extends ContainerIEBase<TileEntityModWorkbenc
 	public void onCraftMatrixChanged(IInventory p_75130_1_)
 	{
 		super.onCraftMatrixChanged(p_75130_1_);
-		tile.getWorld().markBlockForUpdate(tile.getPos());
+		tile.markContainingBlockForUpdate(null);
 	}
 }

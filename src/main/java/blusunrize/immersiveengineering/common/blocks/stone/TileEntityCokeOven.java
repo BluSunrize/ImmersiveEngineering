@@ -18,7 +18,7 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
@@ -31,7 +31,7 @@ import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.oredict.OreDictionary;
 
-public class TileEntityCokeOven extends TileEntityMultiblockPart<TileEntityCokeOven> implements IIEInventory, IFluidHandler, IActiveState, IGuiTile
+public class TileEntityCokeOven extends TileEntityMultiblockPart<TileEntityCokeOven> implements IIEInventory, IActiveState, IGuiTile
 {
 	public FluidTank tank = new FluidTank(12000);
 	ItemStack[] inventory = new ItemStack[4];
@@ -67,16 +67,6 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart<TileEntityCokeO
 
 	@Override
 	public float[] getBlockBounds()
-	{
-		return new float[]{0,0,0,1,1,1};
-	}
-	@Override
-	public float[] getSpecialCollisionBounds()
-	{
-		return null;
-	}
-	@Override
-	public float[] getSpecialSelectionBounds()
 	{
 		return null;
 	}
@@ -119,7 +109,7 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart<TileEntityCokeO
 					else
 						process--;
 				}
-				worldObj.markBlockForUpdate(getPos());
+				this.markContainingBlockForUpdate(null);
 			}
 			else
 			{
@@ -149,7 +139,7 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart<TileEntityCokeO
 
 			if(tank.getFluidAmount()>0 && tank.getFluid()!=null && (inventory[3]==null||inventory[3].stackSize+1<=inventory[3].getMaxStackSize()))
 			{
-				ItemStack filledContainer = Utils.fillFluidContainer(tank, inventory[2], inventory[3]);
+				ItemStack filledContainer = Utils.fillFluidContainer(tank, inventory[2], inventory[3], null);
 				if(filledContainer!=null)
 				{
 					if(inventory[3]!=null && OreDictionary.itemMatches(inventory[3], filledContainer, true))
@@ -172,7 +162,7 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart<TileEntityCokeO
 							tileEntity = worldObj.getTileEntity(getPos().add(xx, yy, zz));
 							if(tileEntity!=null)
 								tileEntity.markDirty();
-							worldObj.markBlockForUpdate(getPos().add(xx, yy, zz));
+							this.markBlockForUpdate(getPos().add(xx, yy, zz), null);
 							worldObj.addBlockEvent(getPos().add(xx, yy, zz), IEContent.blockStoneDevice, 1,active?1:0);
 						}
 			}
@@ -198,7 +188,7 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart<TileEntityCokeO
 		else if(id==1)
 			this.active = arg==1;
 		markDirty();
-		worldObj.markBlockForUpdate(this.getPos());
+		this.markContainingBlockForUpdate(null);
 		return true;
 	}
 
@@ -271,57 +261,22 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart<TileEntityCokeO
 	}
 
 	@Override
-	public int fill(EnumFacing from, FluidStack resource, boolean doFill)
+	protected FluidTank[] getAccessibleFluidTanks(EnumFacing side)
 	{
-		return 0;
-	}
-	@Override
-	public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain)
-	{
-		if(!formed)
-			return null;
 		TileEntityCokeOven master = master();
-		FluidStack fs = null;
 		if(master!=null)
-			fs = master.tank.drain(resource.amount,doDrain);
-		markDirty();
-		worldObj.markBlockForUpdate(this.getPos());
-		return fs;
+			return new FluidTank[]{master.tank};
+		return new FluidTank[0];
 	}
 	@Override
-	public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain)
-	{
-		if(!formed)
-			return null;
-		TileEntityCokeOven master = master();
-		FluidStack fs = null;
-		if(master!=null)
-			fs = master.tank.drain(maxDrain, doDrain);
-		markDirty();
-		worldObj.markBlockForUpdate(this.getPos());
-		return fs;
-	}
-	@Override
-	public boolean canFill(EnumFacing from, Fluid fluid)
+	protected boolean canFillTankFrom(int iTank, EnumFacing side, FluidStack resource)
 	{
 		return false;
 	}
 	@Override
-	public boolean canDrain(EnumFacing from, Fluid fluid)
+	protected boolean canDrainTankFrom(int iTank, EnumFacing side)
 	{
-		if(!formed)
-			return false;
 		return true;
-	}
-	@Override
-	public FluidTankInfo[] getTankInfo(EnumFacing from)
-	{
-		if(!formed)
-			return new FluidTankInfo[]{};
-		TileEntityCokeOven master = master();
-		if(master!=null)
-			return new FluidTankInfo[]{master.tank.getInfo()};
-		return new FluidTankInfo[0];
 	}
 
 	@Override
@@ -340,7 +295,7 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart<TileEntityCokeO
 		if(slot==0)
 			return CokeOvenRecipe.findRecipe(stack)!=null;
 		if(slot==2)
-			return FluidContainerRegistry.isEmptyContainer(stack) || stack.getItem() instanceof IFluidContainerItem;
+			return Utils.isFluidRelatedItemStack(stack);
 		return false;
 	}
 	@Override

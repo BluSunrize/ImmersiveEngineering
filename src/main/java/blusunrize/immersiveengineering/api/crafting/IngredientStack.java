@@ -4,9 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraftforge.common.ForgeModContainer;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidRegistry.FluidRegisterEvent;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.UniversalBucket;
 import net.minecraftforge.oredict.OreDictionary;
 
 public class IngredientStack
@@ -14,6 +21,7 @@ public class IngredientStack
 	public ItemStack stack;
 	public List<ItemStack> stackList;
 	public String oreName;
+	public FluidStack fluid;
 	public int inputSize;
 	public boolean useNBT;
 
@@ -39,6 +47,10 @@ public class IngredientStack
 	public IngredientStack(List<ItemStack> stackList)
 	{
 		this(stackList, 1);
+	}
+	public IngredientStack(FluidStack fluid)
+	{
+		this.fluid = fluid;
 	}
 
 
@@ -73,7 +85,7 @@ public class IngredientStack
 		else if(input instanceof String)
 		{
 			if(this.oreName!=null)
-				return this.oreName.equals((String)input);
+				return this.oreName.equals(input);
 			return ApiUtils.compareToOreName(stack, (String)input);
 		}
 		return false;
@@ -82,19 +94,40 @@ public class IngredientStack
 	public ItemStack getExampleStack()
 	{
 		ItemStack ret = stack;
-		if (ret==null&&stackList!=null&&stackList.size()>0)
+		if(ret==null&&stackList!=null&&stackList.size()>0)
 			ret = stackList.get(0);
-		if (ret==null&&oreName!=null)
+		if(ret==null&&oreName!=null)
 		{
 			List<ItemStack> ores = OreDictionary.getOres(oreName);
-			if (ores!=null&&ores.size()>0)
+			if(ores!=null&&ores.size()>0)
 				ret = ores.get(0);
 		}
+		if(ret==null&&fluid!=null&&ForgeModContainer.getInstance().universalBucket!=null)
+			ret = UniversalBucket.getFilledBucket(ForgeModContainer.getInstance().universalBucket, fluid.getFluid());
+		return ret;
+	}
+	public Object getShapedRecipeInput()
+	{
+		Object ret = stack;
+		if(ret==null&&stackList!=null&&stackList.size()>0)
+			ret = stackList;
+		if(ret==null&&oreName!=null)
+			ret = OreDictionary.getOres(oreName);
+		if(ret==null&&fluid!=null&&ForgeModContainer.getInstance().universalBucket!=null)
+			ret = UniversalBucket.getFilledBucket(ForgeModContainer.getInstance().universalBucket, fluid.getFluid());
 		return ret;
 	}
 
 	public boolean matchesItemStack(ItemStack input)
 	{
+		if(input==null)
+			return false;
+		if(this.fluid!=null)
+		{
+			FluidStack fs = FluidUtil.getFluidContained(input);
+			if(fs!=null && fs.containsFluid(fluid))
+				return true;
+		}
 		if(this.oreName!=null)
 			return ApiUtils.compareToOreName(input, oreName) && this.inputSize <= input.stackSize;
 		if(this.stackList!=null)
@@ -119,6 +152,12 @@ public class IngredientStack
 
 	public boolean matchesItemStackIgnoringSize(ItemStack input)
 	{
+		if(this.fluid!=null)
+		{
+			FluidStack fs = FluidUtil.getFluidContained(input);
+			if(fs!=null && fs.containsFluid(fluid))
+				return true;
+		}
 		if(this.oreName!=null)
 			return ApiUtils.compareToOreName(input, oreName);
 		if(this.stackList!=null)
@@ -146,6 +185,8 @@ public class IngredientStack
 	{
 		if(!(object instanceof IngredientStack))
 			return false;
+		if(this.fluid!=null && ((IngredientStack)object).fluid!=null)
+			return this.fluid.equals(((IngredientStack)object).fluid);
 		if(this.oreName!=null && ((IngredientStack)object).oreName!=null)
 			return this.oreName.equals(((IngredientStack)object).oreName);
 		if(this.stackList!=null)
@@ -186,10 +227,16 @@ public class IngredientStack
 
 	public NBTTagCompound writeToNBT(NBTTagCompound nbt)
 	{
-		if(this.oreName!=null)
+		if(this.fluid!=null)
+		{
+			nbt.setString("fluid", FluidRegistry.getFluidName(fluid));
+			nbt.setInteger("fluidAmount", fluid.amount);
+			nbt.setInteger("nbtType", 3);
+		}
+		else if(this.oreName!=null)
 		{
 			nbt.setString("oreName", oreName);
-			nbt.setInteger("nbtType", 0);
+			nbt.setInteger("nbtType", 2);
 		}
 		else if(this.stackList!=null)
 		{
@@ -203,7 +250,7 @@ public class IngredientStack
 		else
 		{
 			nbt.setTag("stack", stack.writeToNBT(new NBTTagCompound()));
-			nbt.setInteger("nbtType", 2);
+			nbt.setInteger("nbtType", 0);
 			nbt.setBoolean("useNBT", useNBT);
 		}
 		nbt.setInteger("inputSize", inputSize);
@@ -214,20 +261,23 @@ public class IngredientStack
 		if(nbt.hasKey("nbtType"))
 			switch(nbt.getInteger("nbtType"))
 			{
-			case 0:
-				return new IngredientStack(nbt.getString("oreName"), nbt.getInteger("inputSize"));
-			case 1:
-				NBTTagList list = nbt.getTagList("stackList", 10);
-				List<ItemStack> stackList = new ArrayList();
-				for(int i=0; i<list.tagCount(); i++)
-					stackList.add(ItemStack.loadItemStackFromNBT(list.getCompoundTagAt(i)));
-				return new IngredientStack(stackList, nbt.getInteger("inputSize"));
-			case 2:
-				ItemStack stack = ItemStack.loadItemStackFromNBT(nbt.getCompoundTag("stack"));
-				stack.stackSize = nbt.getInteger("inputSize");
-				IngredientStack ingr = new IngredientStack(stack);
-				ingr.useNBT = nbt.getBoolean("useNBT");
-				return ingr;
+				case 0:
+					ItemStack stack = ItemStack.loadItemStackFromNBT(nbt.getCompoundTag("stack"));
+					stack.stackSize = nbt.getInteger("inputSize");
+					IngredientStack ingr = new IngredientStack(stack);
+					ingr.useNBT = nbt.getBoolean("useNBT");
+					return ingr;
+				case 1:
+					NBTTagList list = nbt.getTagList("stackList", 10);
+					List<ItemStack> stackList = new ArrayList();
+					for(int i=0; i<list.tagCount(); i++)
+						stackList.add(ItemStack.loadItemStackFromNBT(list.getCompoundTagAt(i)));
+					return new IngredientStack(stackList, nbt.getInteger("inputSize"));
+				case 2:
+					return new IngredientStack(nbt.getString("oreName"), nbt.getInteger("inputSize"));
+				case 3:
+					FluidStack fs = new FluidStack(FluidRegistry.getFluid(nbt.getString("fluid")),nbt.getInteger("fluidAmount"));
+					return new IngredientStack(fs);
 			}
 		return null;
 	}

@@ -1,0 +1,303 @@
+{
+  "pools": [
+    {
+      "name": "immersiveengineering:engineers_village_house",
+      "rolls": 4,
+      "entries": [
+        {
+          "type": "item",
+          "entryName": "treated_stick",
+          "name": "immersiveengineering:material",
+          "weight": 20,
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 2,
+                "max": 7
+              }
+            }
+          ]
+        },
+        {
+          "type": "item",
+          "entryName": "iron_rod",
+          "name": "immersiveengineering:material",
+          "weight": 10,
+          "functions": [
+            {
+              "function": "set_data",
+              "data": 1
+            },
+            {
+              "function": "set_count",
+              "count": {
+                "min": 1,
+                "max": 4
+              }
+            }
+          ]
+        },
+        {
+          "type": "item",
+          "entryName": "steel_rod",
+          "name": "immersiveengineering:material",
+          "weight": 6,
+          "functions": [
+            {
+              "function": "set_data",
+              "data": 2
+            },
+            {
+              "function": "set_count",
+              "count": {
+                "min": 1,
+                "max": 4
+              }
+            }
+          ]
+        },
+        {
+          "type": "item",
+          "entryName": "aluminium_rod",
+          "name": "immersiveengineering:material",
+          "weight": 10,
+          "functions": [
+            {
+              "function": "set_data",
+              "data": 3
+            },
+            {
+              "function": "set_count",
+              "count": {
+                "min": 1,
+                "max": 4
+              }
+            }
+          ]
+        },
+
+        {
+          "type": "item",
+          "entryName": "hemp_fabric",
+          "name": "immersiveengineering:material",
+          "weight": 10,
+          "functions": [
+            {
+              "function": "set_data",
+              "data": 5
+            },
+            {
+              "function": "set_count",
+              "count": {
+                "min": 1,
+                "max": 3
+              }
+            }
+          ]
+        },
+        {
+          "type": "item",
+          "entryName": "coal_coke",
+          "name": "immersiveengineering:material",
+          "weight": 10,
+          "functions": [
+            {
+              "function": "set_data",
+              "data": 6
+            },
+            {
+              "function": "set_count",
+              "count": {
+                "min": 1,
+                "max": 3
+              }
+            }
+          ]
+        },
+
+        {
+          "type": "item",
+          "entryName": "iron_component",
+          "name": "immersiveengineering:material",
+          "weight": 8,
+          "functions": [
+            {
+              "function": "set_data",
+              "data": 8
+            },
+            {
+              "function": "set_count",
+              "count": {
+                "min": 1,
+                "max": 2
+              }
+            }
+          ]
+        },
+        {
+          "type": "item",
+          "entryName": "steel_component",
+          "name": "immersiveengineering:material",
+          "weight": 5,
+          "functions": [
+            {
+              "function": "set_data",
+              "data": 9
+            },
+            {
+              "function": "set_count",
+              "count": {
+                "min": 1,
+                "max": 1
+              }
+            }
+          ]
+        },
+
+        {
+          "type": "item",
+          "name": "minecraft:iron_ingot",
+          "weight": 10,
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 1,
+                "max": 4
+              }
+            }
+          ]
+        },
+        {
+          "type": "item",
+          "entryName": "copper_ingot",
+          "name": "immersiveengineering:metal",
+          "weight": 10,
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 1,
+                "max": 4
+              }
+            }
+          ]
+        },
+        {
+          "type": "item",
+          "entryName": "aluminium_ingot",
+          "name": "immersiveengineering:metal",
+          "weight": 10,
+          "functions": [
+            {
+              "function": "set_data",
+              "data": 1
+            },
+            {
+              "function": "set_count",
+              "count": {
+                "min": 1,
+                "max": 4
+              }
+            }
+          ]
+        },
+        {
+          "type": "item",
+          "entryName": "lead_nugget",
+          "name": "immersiveengineering:metal",
+          "weight": 9,
+          "functions": [
+            {
+              "function": "set_data",
+              "data": 22
+            },
+            {
+              "function": "set_count",
+              "count": {
+                "min": 1,
+                "max": 4
+              }
+            }
+          ]
+        },
+        {
+          "type": "item",
+          "entryName": "silver_nugget",
+          "name": "immersiveengineering:metal",
+          "weight": 7,
+          "functions": [
+            {
+              "function": "set_data",
+              "data": 23
+            },
+            {
+              "function": "set_count",
+              "count": {
+                "min": 1,
+                "max": 2
+              }
+            }
+          ]
+        },
+        {
+          "type": "item",
+          "entryName": "nugget_nickel",
+          "name": "immersiveengineering:metal",
+          "weight": 7,
+          "functions": [
+            {
+              "function": "set_data",
+              "data": 24
+            },
+            {
+              "function": "set_count",
+              "count": {
+                "min": 1,
+                "max": 2
+              }
+            }
+          ]
+        },
+
+        {
+          "type": "item",
+          "entryName": "blueprint_bullets",
+          "name": "immersiveengineering:blueprint",
+          "weight": 4,
+          "functions": [
+            {
+              "function": "set_nbt",
+              "tag": "{blueprint:\"bullet\"}"
+            }
+          ]
+        },
+        {
+          "type": "item",
+          "entryName": "blueprint_specialBullets",
+          "name": "immersiveengineering:blueprint",
+          "weight": 2,
+          "functions": [
+            {
+              "function": "set_nbt",
+              "tag": "{blueprint:\"specialBullet\"}"
+            }
+          ]
+        },
+        {
+          "type": "item",
+          "entryName": "blueprint_electrode",
+          "name": "immersiveengineering:blueprint",
+          "weight": 1,
+          "functions": [
+            {
+              "function": "set_nbt",
+              "tag": "{blueprint:\"electrode\"}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

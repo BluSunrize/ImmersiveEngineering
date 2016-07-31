@@ -9,9 +9,9 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
@@ -19,7 +19,7 @@ public class BlockMetalDevice0 extends BlockIETileProvider<BlockTypes_MetalDevic
 {
 	public BlockMetalDevice0()
 	{
-		super("metalDevice0",Material.iron, PropertyEnum.create("type", BlockTypes_MetalDevice0.class), ItemBlockIEBase.class, IEProperties.MULTIBLOCKSLAVE,IEProperties.SIDECONFIG[0],IEProperties.SIDECONFIG[1],IEProperties.SIDECONFIG[2],IEProperties.SIDECONFIG[3],IEProperties.SIDECONFIG[4],IEProperties.SIDECONFIG[5]);
+		super("metalDevice0",Material.IRON, PropertyEnum.create("type", BlockTypes_MetalDevice0.class), ItemBlockIEBase.class, IEProperties.MULTIBLOCKSLAVE,IEProperties.SIDECONFIG[0],IEProperties.SIDECONFIG[1],IEProperties.SIDECONFIG[2],IEProperties.SIDECONFIG[3],IEProperties.SIDECONFIG[4],IEProperties.SIDECONFIG[5]);
 		setHardness(3.0F);
 		setResistance(15.0F);
 	}
@@ -30,7 +30,7 @@ public class BlockMetalDevice0 extends BlockIETileProvider<BlockTypes_MetalDevic
 		return true;
 	}
 	@Override
-	public String getCustomStateMapping(int meta)
+	public String getCustomStateMapping(int meta, boolean itemBlock)
 	{
 		if(BlockTypes_MetalDevice0.values()[meta]==BlockTypes_MetalDevice0.FLUID_PUMP)
 			return "fluidPump";
@@ -54,7 +54,7 @@ public class BlockMetalDevice0 extends BlockIETileProvider<BlockTypes_MetalDevic
 	}
 
 	@Override
-	public ItemStack getPickBlock(MovingObjectPosition target, World world, BlockPos pos, EntityPlayer player)
+	public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player)
 	{
 //		TileEntity te = world.getTileEntity(pos);
 //		if(te instanceof TileEntityCapacitorLV)
@@ -66,7 +66,7 @@ public class BlockMetalDevice0 extends BlockIETileProvider<BlockTypes_MetalDevic
 //			ItemNBTHelper.setIntArray(stack, "sideConfig", sides);
 //			return stack;
 //		}
-		return super.getPickBlock(target, world, pos, player);
+		return super.getPickBlock(state, target, world, pos, player);
 	}
 	@Override
 	public void onBlockHarvested(World world, BlockPos pos, IBlockState state, EntityPlayer player)

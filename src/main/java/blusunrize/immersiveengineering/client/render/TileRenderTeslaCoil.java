@@ -3,6 +3,8 @@ package blusunrize.immersiveengineering.client.render;
 import java.util.Iterator;
 import java.util.List;
 
+import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.util.math.Vec3d;
 import org.lwjgl.opengl.GL11;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
@@ -10,10 +12,8 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTeslaCoil;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTeslaCoil.LightningAnimation;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.Vec3;
 
 public class TileRenderTeslaCoil extends TileEntitySpecialRenderer<TileEntityTeslaCoil>
 {
@@ -64,15 +64,15 @@ public class TileRenderTeslaCoil extends TileEntitySpecialRenderer<TileEntityTes
 		GlStateManager.color(rgba[0],rgba[1],rgba[2],rgba[3]);
 		GL11.glLineWidth(lineWidth);
 		Tessellator tes = ClientUtils.tes();
-		WorldRenderer worldrenderer = tes.getWorldRenderer();
+		VertexBuffer worldrenderer = tes.getBuffer();
 		worldrenderer.begin(GL11.GL_LINE_STRIP, DefaultVertexFormats.POSITION);
-		List<Vec3> subs = animation.subPoints;
+		List<Vec3d> subs = animation.subPoints;
 		worldrenderer.pos(animation.startPos.xCoord-tileX,animation.startPos.yCoord-tileY,animation.startPos.zCoord-tileZ).endVertex();
 		
 		for(int i=0; i<subs.size(); i++)
 			worldrenderer.pos(subs.get(i).xCoord-tileX,subs.get(i).yCoord-tileY,subs.get(i).zCoord-tileZ).endVertex();
 
-		Vec3 end = (animation.targetEntity!=null?animation.targetEntity.getPositionVector():animation.targetPos).addVector(-tileX,-tileY,-tileZ);
+		Vec3d end = (animation.targetEntity!=null?animation.targetEntity.getPositionVector():animation.targetPos).addVector(-tileX,-tileY,-tileZ);
 		worldrenderer.pos(end.xCoord,end.yCoord,end.zCoord).endVertex();
 
 		tes.draw();

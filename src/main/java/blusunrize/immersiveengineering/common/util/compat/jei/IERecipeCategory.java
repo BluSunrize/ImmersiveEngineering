@@ -5,7 +5,9 @@ import mezz.jei.api.recipe.IRecipeCategory;
 import mezz.jei.api.recipe.IRecipeHandler;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.StatCollector;
+import net.minecraft.client.resources.I18n;
+
+import javax.annotation.Nonnull;
 
 public abstract class IERecipeCategory<T> implements IRecipeCategory, IRecipeHandler<T>
 {
@@ -17,7 +19,7 @@ public abstract class IERecipeCategory<T> implements IRecipeCategory, IRecipeHan
 	public IERecipeCategory(String uniqueName, String localKey, IDrawable background, Class<T> wrapperClass)
 	{
 		this.uniqueName = uniqueName;
-		this.localizedName = StatCollector.translateToLocal(localKey);
+		this.localizedName = I18n.format(localKey);
 		this.background = background;
 		this.wrapperClass = wrapperClass;
 	}
@@ -58,6 +60,11 @@ public abstract class IERecipeCategory<T> implements IRecipeCategory, IRecipeHan
 
 	@Override
 	public String getRecipeCategoryUid()
+	{
+		return "ie."+uniqueName;
+	}
+	@Override
+	public String getRecipeCategoryUid(@Nonnull Object recipe)
 	{
 		return "ie."+uniqueName;
 	}

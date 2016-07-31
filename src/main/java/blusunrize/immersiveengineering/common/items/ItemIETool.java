@@ -4,6 +4,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import blusunrize.immersiveengineering.common.CommonProxy;
+import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IGuiItem;
 import com.google.common.collect.ImmutableSet;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
@@ -25,18 +27,23 @@ import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.RotationUtil;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.StatCollector;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class ItemIETool extends ItemIEBase implements ITool
+public class ItemIETool extends ItemIEBase implements ITool, IGuiItem
 {
 	static int hammerMaxDamage;
 	static int cutterMaxDamage;
@@ -48,13 +55,19 @@ public class ItemIETool extends ItemIEBase implements ITool
 	}
 
 	@Override
+	public int getGuiID(ItemStack stack)
+	{
+		return stack.getItemDamage()==3?Lib.GUIID_Manual:-1;
+	}
+
+	@Override
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean adv)
 	{
 		if(ItemNBTHelper.hasKey(stack, "linkingPos"))
 		{
 			int[] link = ItemNBTHelper.getIntArray(stack, "linkingPos");
 			if(link!=null&&link.length>3)
-				list.add(StatCollector.translateToLocalFormatted(Lib.DESC_INFO+"attachedToDim", link[1],link[2],link[3],link[0]));
+				list.add(I18n.format(Lib.DESC_INFO+"attachedToDim", link[1],link[2],link[3],link[0]));
 		}
 		if(adv && stack.getItemDamage()<2)
 		{
@@ -101,7 +114,7 @@ public class ItemIETool extends ItemIEBase implements ITool
 	//	}
 
 	@Override
-	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ)
+	public EnumActionResult onItemUseFirst(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand)
 	{
 		if(!world.isRemote)
 		{
@@ -126,19 +139,17 @@ public class ItemIETool extends ItemIEBase implements ITool
 						if(interdictedMultiblocks!=null)
 							for(String s : interdictedMultiblocks)
 								if(mb.getUniqueName().equalsIgnoreCase(s))
-									return false;
+									return EnumActionResult.FAIL;
 						if(mb.createStructure(world, pos, side, player))
-							return true;
+							return EnumActionResult.SUCCESS;
 					}
-				if(RotationUtil.rotateBlock(world, pos, side, player))
-					return true;
-				return false;
+				return RotationUtil.rotateBlock(world, pos, side, player)?EnumActionResult.SUCCESS:EnumActionResult.PASS;
 			}
 			else if(stack.getItemDamage()==1 && tileEntity instanceof IImmersiveConnectable)
 			{
 				IImmersiveConnectable nodeHere = (IImmersiveConnectable)tileEntity;
 				ImmersiveNetHandler.INSTANCE.clearAllConnectionsFor(Utils.toCC(nodeHere),world, new TargetingInfo(side,hitX,hitY,hitZ));
-				IESaveData.setDirty(world.provider.getDimensionId());
+				IESaveData.setDirty(world.provider.getDimension());
 
 				int nbtDamage = ItemNBTHelper.getInt(stack, "cutterDmg")+1;
 				if(nbtDamage<cutterMaxDamage)
@@ -146,9 +157,9 @@ public class ItemIETool extends ItemIEBase implements ITool
 				else
 				{
 					player.renderBrokenItemStack(stack);
-					player.setCurrentItemOrArmor(0, null);
+					player.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, null);
 				}
-				return true;
+				return EnumActionResult.SUCCESS;
 			}
 			else if(stack.getItemDamage()==2)
 			{
@@ -167,19 +178,19 @@ public class ItemIETool extends ItemIEBase implements ITool
 						stored = ((IFluxProvider)tileEntity).getEnergyStored(side);
 					}
 					if(max>0)
-						ChatUtils.sendServerNoSpamMessages(player, new ChatComponentTranslation(Lib.CHAT_INFO+"energyStorage", stored,max));
-					return true;
+						ChatUtils.sendServerNoSpamMessages(player, new TextComponentTranslation(Lib.CHAT_INFO+"energyStorage", stored,max));
+					return EnumActionResult.SUCCESS;
 				}
 				if(player.isSneaking() && tileEntity instanceof IImmersiveConnectable)
 				{
 					if(!ItemNBTHelper.hasKey(stack, "linkingPos"))
-						ItemNBTHelper.setIntArray(stack, "linkingPos", new int[]{world.provider.getDimensionId(),pos.getX(),pos.getY(),pos.getZ()});
+						ItemNBTHelper.setIntArray(stack, "linkingPos", new int[]{world.provider.getDimension(),pos.getX(),pos.getY(),pos.getZ()});
 					else
 					{
 						int[] array = ItemNBTHelper.getIntArray(stack, "linkingPos");
 						BlockPos linkPos = new BlockPos(array[1],array[2],array[3]);
 						TileEntity tileEntityLinkingPos = world.getTileEntity(linkPos);
-						if(array[0]==world.provider.getDimensionId())
+						if(array[0]==world.provider.getDimension())
 						{
 							IImmersiveConnectable nodeHere = (IImmersiveConnectable)tileEntity;
 							IImmersiveConnectable nodeLink = (IImmersiveConnectable)tileEntityLinkingPos;
@@ -188,12 +199,12 @@ public class ItemIETool extends ItemIEBase implements ITool
 								Set<AbstractConnection> connections = ImmersiveNetHandler.INSTANCE.getIndirectEnergyConnections(Utils.toCC(nodeLink), world, true);
 								for(AbstractConnection con : connections)
 									if(Utils.toCC(nodeHere).equals(con.end))
-										player.addChatComponentMessage(new ChatComponentTranslation(Lib.CHAT_INFO+"averageLoss",Utils.formatDouble(con.getAverageLossRate()*100, "###.000")));
+										player.addChatComponentMessage(new TextComponentTranslation(Lib.CHAT_INFO+"averageLoss",Utils.formatDouble(con.getAverageLossRate()*100, "###.000")));
 							}
 						}
 						ItemNBTHelper.remove(stack, "linkingPos");
 					}
-					return true;
+					return EnumActionResult.SUCCESS;
 				}
 			}
 			//						x += 6;
@@ -245,35 +256,32 @@ public class ItemIETool extends ItemIEBase implements ITool
 		{
 
 		}
-		return false;
+		return EnumActionResult.PASS;
 	}
 
 	@Override
-	public boolean itemInteractionForEntity(ItemStack stack, EntityPlayer player, EntityLivingBase entity)
+	public boolean itemInteractionForEntity(ItemStack stack, EntityPlayer player, EntityLivingBase entity, EnumHand hand)
 	{
-		if(!player.worldObj.isRemote && stack.getItemDamage()==0 && RotationUtil.rotateEntity(entity, player))
-			return true;
-		return false;
+		return !player.worldObj.isRemote && stack.getItemDamage() == 0 && RotationUtil.rotateEntity(entity, player);
 	}
 
 	@Override
-	public boolean doesSneakBypassUse(World world, BlockPos pos, EntityPlayer player)
+	public boolean doesSneakBypassUse(ItemStack stack, IBlockAccess world, BlockPos pos, EntityPlayer player)
 	{
-		if(player.getCurrentEquippedItem()!=null && this.equals(player.getCurrentEquippedItem().getItem()))
-			return player.getCurrentEquippedItem().getItemDamage()==0;
-		return false;
+		return stack.getItemDamage()==0;
 	}
 
 	@Override
-	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
+	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand)
 	{
 		if(stack.getItemDamage()==3)
 		{
-			player.triggerAchievement(IEAchievements.openManual);
+			player.addStat(IEAchievements.openManual);
 			if(world.isRemote)
-				player.openGui(ImmersiveEngineering.instance, Lib.GUIID_Manual, world, (int)player.posX,(int)player.posY,(int)player.posZ);
+				CommonProxy.openGuiForItem(player, hand==EnumHand.MAIN_HAND? EntityEquipmentSlot.MAINHAND:EntityEquipmentSlot.OFFHAND);
+			return new ActionResult(EnumActionResult.SUCCESS, stack);
 		}
-		return stack;
+		return new ActionResult(EnumActionResult.PASS, stack);
 	}
 
 	@Override
@@ -317,12 +325,12 @@ public class ItemIETool extends ItemIEBase implements ITool
 	}
 
 	@Override
-	public float getDigSpeed(ItemStack stack, IBlockState state)
+	public float getStrVsBlock(ItemStack stack, IBlockState state)
 	{
 		for(String type : this.getToolClasses(stack))
 			if(state.getBlock().isToolEffective(type, state))
 				return 6;
-		return super.getDigSpeed(stack, state);
+		return super.getStrVsBlock(stack, state);
 	}
 
 	@Override

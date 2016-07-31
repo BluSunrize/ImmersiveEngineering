@@ -1,15 +1,5 @@
 package blusunrize.immersiveengineering.common.items;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-
-import com.google.common.base.Optional;
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
-
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.Lib;
@@ -17,14 +7,22 @@ import blusunrize.immersiveengineering.api.shader.IShaderEquipableItem;
 import blusunrize.immersiveengineering.api.tool.IBullet;
 import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
+import blusunrize.immersiveengineering.common.CommonProxy;
 import blusunrize.immersiveengineering.common.gui.IESlot;
+import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IGuiItem;
 import blusunrize.immersiveengineering.common.util.IEAchievements;
+import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.common.util.network.MessageSpeedloaderSync;
+import com.google.common.base.Optional;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -32,27 +30,32 @@ import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.*;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
-import net.minecraftforge.client.model.TRSRTransformation;
+import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.oredict.OreDictionary;
 
-public class ItemRevolver extends ItemUpgradeableTool implements IShaderEquipableItem, IOBJModelCallback<ItemStack>, ITool
+import java.util.*;
+
+public class ItemRevolver extends ItemUpgradeableTool implements IShaderEquipableItem, IOBJModelCallback<ItemStack>, ITool, IGuiItem
 {
 	public ItemRevolver()
 	{
 		super("revolver", 1, "REVOLVER", "normal","speedloader");
 	}
-
+	public static UUID speedModUUID = Utils.generateNewUUID();
 	public HashMap<String, TextureAtlasSprite> revolverIcons = new HashMap();
 	public TextureAtlasSprite revolverDefaultTexture;
 	public void stichRevolverTextures(TextureMap map)
@@ -92,7 +95,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IShaderEquipabl
 	@Override
 	public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged)
 	{
-		return false;
+		return slotChanged|!ItemStack.areItemStacksEqual(getShaderItem(oldStack),getShaderItem(newStack))|super.shouldCauseReequipAnimation(oldStack,newStack,slotChanged);
 	}
 
 	@Override
@@ -135,15 +138,15 @@ public class ItemRevolver extends ItemUpgradeableTool implements IShaderEquipabl
 		{
 			String tag = getRevolverDisplayTag(stack);
 			if(!tag.isEmpty())
-				list.add(StatCollector.translateToLocal(Lib.DESC_FLAVOUR+"revolver."+tag));
+				list.add(I18n.format(Lib.DESC_FLAVOUR+"revolver."+tag));
 			else if(ItemNBTHelper.hasKey(stack, "flavour"))
-				list.add(StatCollector.translateToLocal(Lib.DESC_FLAVOUR+"revolver."+ItemNBTHelper.getString(stack, "flavour")));
+				list.add(I18n.format(Lib.DESC_FLAVOUR+"revolver."+ItemNBTHelper.getString(stack, "flavour")));
 			else if(stack.getItemDamage()==0)
-				list.add(StatCollector.translateToLocal(Lib.DESC_FLAVOUR+"revolver"));
+				list.add(I18n.format(Lib.DESC_FLAVOUR+"revolver"));
 
 			ItemStack shader = getShaderItem(stack);
 			if(shader!=null)
-				list.add(EnumChatFormatting.DARK_GRAY+shader.getDisplayName());
+				list.add(TextFormatting.DARK_GRAY+shader.getDisplayName());
 		}
 	}
 	@Override
@@ -164,15 +167,18 @@ public class ItemRevolver extends ItemUpgradeableTool implements IShaderEquipabl
 	}
 
 	@Override
-	public Multimap getAttributeModifiers(ItemStack stack)
+	public Multimap getAttributeModifiers(EntityEquipmentSlot slot, ItemStack stack)
 	{
-		Multimap multimap = super.getAttributeModifiers(stack);
-		double melee = getUpgrades(stack).getDouble("melee");
-		if(melee!=0)
-			multimap.put(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName(), new AttributeModifier(itemModifierUUID, "Weapon modifier", melee, 0));
-		double speed = getUpgrades(stack).getDouble("speed");
-		if(speed!=0)
-			multimap.put(SharedMonsterAttributes.movementSpeed.getAttributeUnlocalizedName(), new AttributeModifier(itemModifierUUID, "Weapon modifier", speed, 1));
+		Multimap multimap = super.getAttributeModifiers(slot, stack);
+		if(slot==EntityEquipmentSlot.MAINHAND)
+		{
+			double melee = getUpgrades(stack).getDouble("melee");
+			if(melee != 0)
+				multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getAttributeUnlocalizedName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", melee, 0));
+			double speed = getUpgrades(stack).getDouble("speed");
+			if(speed != 0)
+				multimap.put(SharedMonsterAttributes.MOVEMENT_SPEED.getAttributeUnlocalizedName(), new AttributeModifier(speedModUUID, "Weapon modifier", speed, 1));
+		}
 		return multimap;
 	}
 
@@ -200,18 +206,32 @@ public class ItemRevolver extends ItemUpgradeableTool implements IShaderEquipabl
 			if(l==0)
 				ItemNBTHelper.remove(stack, "blocked");
 		}
+		if(!world.isRemote && ItemNBTHelper.hasKey(stack, "cooldown"))
+		{
+			int cooldown = ItemNBTHelper.getInt(stack, "cooldown")-1;
+			if(cooldown<=0)
+				ItemNBTHelper.remove(stack, "cooldown");
+			else
+				ItemNBTHelper.setInt(stack, "cooldown", cooldown);
+		}
 	}
 	@Override
-	public ItemStack onItemRightClick(ItemStack revolver, World world, EntityPlayer player)
+	public ActionResult<ItemStack> onItemRightClick(ItemStack revolver, World world, EntityPlayer player, EnumHand hand)
 	{
 		if(!world.isRemote)
 		{
 			if(player.isSneaking() || revolver.getItemDamage()==1)
-				player.openGui(ImmersiveEngineering.instance, Lib.GUIID_Revolver, world, (int)player.posX,(int)player.posY,(int)player.posZ);
+			{
+				CommonProxy.openGuiForItem(player, hand==EnumHand.MAIN_HAND? EntityEquipmentSlot.MAINHAND:EntityEquipmentSlot.OFFHAND);
+				return new ActionResult(EnumActionResult.SUCCESS, revolver);
+			}
 			else if(this.getUpgrades(revolver).getBoolean("nerf"))
-				world.playSoundAtEntity(player, "random.pop", 1F, .6f);
+				player.playSound(SoundEvents.ENTITY_ITEM_PICKUP, 1f, .6f);
 			else
 			{
+				if(ItemNBTHelper.getInt(revolver, "cooldown")>0)
+					return new ActionResult(EnumActionResult.PASS, revolver);
+
 				ItemStack[] bullets = getBullets(revolver);
 
 				if(isEmpty(revolver))
@@ -228,7 +248,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IShaderEquipabl
 									world.spawnEntityInWorld(new EntityItem(world, player.posX,player.posY,player.posZ, b ));
 									dc++;
 								}
-							world.playSoundAtEntity(player, "fire.ignite", .5f, 3);
+							player.playSound(SoundEvents.ITEM_FLINTANDSTEEL_USE, .5f, 3f);
 							ItemNBTHelper.setDelayedSoundsForStack(revolver, "casings", "random.successful_hit",.05f,5, dc/2, 8,2);
 							setBullets(revolver, getBullets(loader));
 							setBullets(loader, new ItemStack[8]);
@@ -238,7 +258,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IShaderEquipabl
 								ImmersiveEngineering.packetHandler.sendTo(new MessageSpeedloaderSync(i), (EntityPlayerMP)player);
 
 							ItemNBTHelper.setBoolean(revolver, "blocked", true);
-							return revolver;
+							return new ActionResult(EnumActionResult.SUCCESS, revolver);
 						}
 					}
 				}
@@ -249,20 +269,22 @@ public class ItemRevolver extends ItemUpgradeableTool implements IShaderEquipabl
 					{
 						((IBullet)bullets[0].getItem()).spawnBullet(player, bullets[0], getUpgrades(revolver).getBoolean("electro"));
 						bullets[0]= ((IBullet)bullets[0].getItem()).getCasing(bullets[0]);
-						world.playSoundAtEntity(player, "immersiveengineering:revolverFire", 1, 1);
+						player.playSound(IESounds.revolverFire, 1f, 1f);
 					}
 					else
-						world.playSoundAtEntity(player, "note.hat", .6f, 3);
+						player.playSound(SoundEvents.BLOCK_NOTE_HAT, 1f, 1f);
 
 					ItemStack[] cycled = new ItemStack[getBulletSlotAmount(revolver)];
 					for(int i=1; i<cycled.length; i++)
 						cycled[i-1] = bullets[i];
 					cycled[cycled.length-1] = bullets[0];
 					setBullets(revolver, cycled);
+					ItemNBTHelper.setInt(revolver, "cooldown", 10);
+					return new ActionResult(EnumActionResult.SUCCESS, revolver);
 				}
 			}
 		}
-		return revolver;
+		return new ActionResult(EnumActionResult.FAIL, revolver);
 	}
 
 	public boolean isEmpty(ItemStack stack)
@@ -292,6 +314,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IShaderEquipabl
 	{
 		return 8+this.getUpgrades(revolver).getInteger("bullets");
 	}
+	@Override
 	public NBTTagCompound getUpgradeBase(ItemStack stack)
 	{
 		return ItemNBTHelper.getTagCompound(stack, "baseUpgrades");
@@ -478,11 +501,17 @@ public class ItemRevolver extends ItemUpgradeableTool implements IShaderEquipabl
 	{
 		ItemStack[] contents = this.getContainedItems(stack);
 		if(contents[18]!=null&&contents[19]!=null)
-			player.triggerAchievement(IEAchievements.upgradeRevolver);
+			player.addStat(IEAchievements.upgradeRevolver);
 	}
 
 	public static final ArrayListMultimap<String, SpecialRevolver> specialRevolvers = ArrayListMultimap.create();
 	public static final Map<String, SpecialRevolver> specialRevolversByTag = new HashMap<String, SpecialRevolver>();
+
+	@Override
+	public int getGuiID(ItemStack stack)
+	{
+		return Lib.GUIID_Revolver;
+	}
 
 
 	public static class SpecialRevolver

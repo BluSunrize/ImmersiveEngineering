@@ -6,30 +6,21 @@ import blusunrize.immersiveengineering.common.gui.IESlot.ICallbackContainer;
 import blusunrize.immersiveengineering.common.items.ItemToolbox;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Slot;
+import net.minecraft.inventory.*;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
 
-public class ContainerToolbox extends Container implements ICallbackContainer
+public class ContainerToolbox extends ContainerInternalStorageItem implements ICallbackContainer
 {
-	private World worldObj;
-	private int blockedSlot;
-	public IInventory input;
-	ItemStack toolbox = null;
-	EntityPlayer player = null;
-	public final int internalSlots;
-
-	public ContainerToolbox(InventoryPlayer iinventory, World world)
+	public ContainerToolbox(InventoryPlayer iinventory, World world, EntityEquipmentSlot slot, ItemStack toolbox)
 	{
-		this.worldObj = world;
-		this.player = iinventory.player;
-		this.toolbox = iinventory.getCurrentItem();
-		this.internalSlots = ((ItemToolbox)this.toolbox.getItem()).getInternalSlots(toolbox);
-		this.input = new InventoryStorageItem(this, toolbox);
-		this.blockedSlot = (iinventory.currentItem + 27 + internalSlots);
+		super(iinventory, world, slot, toolbox);
+	}
 
+	@Override
+	void addSlots(InventoryPlayer iinventory)
+	{
 		int i=0;
 		this.addSlotToContainer(new IESlot.ContainerCallback(this, this.input, i++, 48, 24));
 		this.addSlotToContainer(new IESlot.ContainerCallback(this, this.input, i++, 30, 42));
@@ -49,16 +40,6 @@ public class ContainerToolbox extends Container implements ICallbackContainer
 			this.addSlotToContainer(new IESlot.ContainerCallback(this, this.input, i++, 26+j*18, 112));
 
 		bindPlayerInventory(iinventory);
-
-		if (!world.isRemote)
-			try {
-				((InventoryStorageItem)this.input).stackList = ((ItemToolbox)this.toolbox.getItem()).getContainedItems(this.toolbox);
-			}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-		this.onCraftMatrixChanged(this.input);
 	}
 
 	@Override
@@ -90,92 +71,5 @@ public class ContainerToolbox extends Container implements ICallbackContainer
 
 		for (int i = 0; i < 9; i++)
 			this.addSlotToContainer(new Slot(inventoryPlayer, i, 8+i*18, 215));
-	}
-
-	@Override
-	public ItemStack transferStackInSlot(EntityPlayer par1EntityPlayer, int slot)
-	{
-		ItemStack stack = null;
-		Slot slotObject = (Slot) inventorySlots.get(slot);
-
-		if(slotObject != null && slotObject.getHasStack())
-		{
-			ItemStack stackInSlot = slotObject.getStack();
-			stack = stackInSlot.copy();
-
-			if(slot < internalSlots)
-			{
-				if(!this.mergeItemStack(stackInSlot, internalSlots, (internalSlots + 36), true))
-					return null;
-			}
-			else if(stackInSlot!=null)
-			{
-				boolean b = true;
-				for(int i=0; i<internalSlots; i++)
-				{
-					Slot s = (Slot)inventorySlots.get(i);
-					if(s!=null && s.isItemValid(stackInSlot))
-						if(this.mergeItemStack(stackInSlot, i, i+1, true))
-						{
-							b = false;
-							break;
-						}
-						else
-							continue;
-				}
-				if(b)
-					return null;
-			}
-
-			if (stackInSlot.stackSize == 0)
-				slotObject.putStack(null);
-			else
-				slotObject.onSlotChanged();
-
-			if (stackInSlot.stackSize == stack.stackSize)
-				return null;
-			slotObject.onPickupFromSlot(player, stack);
-			((ItemToolbox)this.toolbox.getItem()).setContainedItems(this.toolbox, ((InventoryStorageItem)this.input).stackList);
-			ItemStack hand = player.getCurrentEquippedItem();
-			if (hand!=null&&!hand.equals(toolbox))
-				player.setCurrentItemOrArmor(0, toolbox);
-			player.inventory.markDirty();
-		}
-		return stack;
-	}
-
-	@Override
-	public boolean canInteractWith(EntityPlayer entityplayer)
-	{
-		return true;
-	}
-
-	@Override
-	public ItemStack slotClick(int par1, int par2, int par3, EntityPlayer par4EntityPlayer)
-	{
-		if(par1 == this.blockedSlot || (par3==2&&par2==par4EntityPlayer.inventory.currentItem))
-			return null;
-		ItemStack ret = super.slotClick(par1, par2, par3, par4EntityPlayer);
-		((ItemToolbox)this.toolbox.getItem()).setContainedItems(this.toolbox, ((InventoryStorageItem)this.input).stackList);
-		ItemStack hand = player.getCurrentEquippedItem();
-		if (hand!=null&&!hand.equals(toolbox))
-			player.setCurrentItemOrArmor(0, toolbox);
-		player.inventory.markDirty();
-
-		return ret;
-	}
-
-	@Override
-	public void onContainerClosed(EntityPlayer par1EntityPlayer)
-	{
-		super.onContainerClosed(par1EntityPlayer);
-		if (!this.worldObj.isRemote)
-		{
-			((ItemToolbox)this.toolbox.getItem()).setContainedItems(this.toolbox, ((InventoryStorageItem)this.input).stackList);
-			ItemStack hand = this.player.getCurrentEquippedItem();
-			if (hand!=null&&!hand.equals(this.toolbox))
-				this.player.setCurrentItemOrArmor(0, this.toolbox);
-			this.player.inventory.markDirty();
-		}
 	}
 }

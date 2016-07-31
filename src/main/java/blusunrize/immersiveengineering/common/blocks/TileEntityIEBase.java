@@ -7,9 +7,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.INetHandlerPlayClient;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public abstract class TileEntityIEBase extends TileEntity
@@ -22,33 +22,39 @@ public abstract class TileEntityIEBase extends TileEntity
 	}
 	public abstract void readCustomNBT(NBTTagCompound nbt, boolean descPacket);
 	@Override
-	public void writeToNBT(NBTTagCompound nbt)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbt)
 	{
 		super.writeToNBT(nbt);
 		this.writeCustomNBT(nbt, false);
+		return nbt;
 	}
 	public abstract void writeCustomNBT(NBTTagCompound nbt, boolean descPacket);
-	
+
 	@Override
-	public Packet<INetHandlerPlayClient> getDescriptionPacket()
+	public SPacketUpdateTileEntity getUpdatePacket()
 	{
 		NBTTagCompound nbttagcompound = new NBTTagCompound();
 		this.writeCustomNBT(nbttagcompound, true);
-		return new S35PacketUpdateTileEntity(this.pos, 3, nbttagcompound);
+		return new SPacketUpdateTileEntity(this.pos, 3, nbttagcompound);
 	}
 	@Override
-	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt)
-    {
+	public NBTTagCompound getUpdateTag()
+	{
+		return this.writeToNBT(new NBTTagCompound());
+	}
+	@Override
+	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt)
+	{
 		this.readCustomNBT(pkt.getNbtCompound(), true);
-    }
-	
+	}
+
 	public void receiveMessageFromClient(NBTTagCompound message)
 	{
 	}
 	public void receiveMessageFromServer(NBTTagCompound message)
 	{
 	}
-	
+
 	public void onEntityCollision(World world, Entity entity)
 	{
 	}
@@ -57,7 +63,7 @@ public abstract class TileEntityIEBase extends TileEntity
 	{
 		if (id==0||id==255)
 		{
-			worldObj.markBlockForUpdate(getPos());
+			markContainingBlockForUpdate(null);
 			return true;
 		}
 		return super.receiveClientEvent(id, type);
@@ -66,12 +72,22 @@ public abstract class TileEntityIEBase extends TileEntity
 	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newState)
 	{
 		if (world.isBlockLoaded(pos))
-				newState = world.getBlockState(pos);
+			newState = world.getBlockState(pos);
 		if (oldState.getBlock()!=newState.getBlock()||!(oldState.getBlock() instanceof BlockIEBase)||!(newState.getBlock() instanceof BlockIEBase))
 			return true;
 		IProperty type = ((BlockIEBase)oldState.getBlock()).getMetaProperty();
-		if (oldState.getValue(type)!=newState.getValue(type))
-			return true;
-		return false;
+		return oldState.getValue(type) != newState.getValue(type);
+	}
+
+	public void markContainingBlockForUpdate(IBlockState newState)
+	{
+		markBlockForUpdate(getPos(), newState);
+	}
+	public void markBlockForUpdate(BlockPos pos, IBlockState newState)
+	{
+		IBlockState state = worldObj.getBlockState(getPos());
+		if(newState==null)
+			newState = state;
+		worldObj.notifyBlockUpdate(pos,state,newState,3);
 	}
 }

@@ -37,7 +37,7 @@ public class TileEntityFurnaceHeater extends TileEntityIEBase implements ITickab
 				TileEntity tileEntity = worldObj.getTileEntity(getPos().offset(fd));
 				int consumed = 0;
 				if(tileEntity!=null)
-					if(tileEntity instanceof ExternalHeaterHandler.IExternalHeatable)
+					if(tileEntity instanceof IExternalHeatable)
 						consumed = ((IExternalHeatable)tileEntity).doHeatTick(energyStorage.getEnergyStored(), worldObj.isBlockIndirectlyGettingPowered(getPos())>0);
 					else
 					{
@@ -55,7 +55,7 @@ public class TileEntityFurnaceHeater extends TileEntityIEBase implements ITickab
 			if(active!=a)
 			{
 				this.markDirty();
-				worldObj.markBlockForUpdate(getPos());
+				this.markContainingBlockForUpdate(null);
 				worldObj.addBlockEvent(getPos(), this.getBlockType(), 1,active?1:0);
 			}
 		}
@@ -106,7 +106,7 @@ public class TileEntityFurnaceHeater extends TileEntityIEBase implements ITickab
 	{
 		if(id==1)
 			this.active = arg==1;
-		this.worldObj.markBlockForUpdate(getPos());
+		this.markContainingBlockForUpdate(null);
 		return true;
 	}
 

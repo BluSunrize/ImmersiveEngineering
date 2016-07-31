@@ -10,7 +10,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityDynamo;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.ITickable;
@@ -133,7 +133,7 @@ public class TileEntityWindmill extends TileEntityIEBase implements ITickable, I
 	public AxisAlignedBB getRenderBoundingBox()
 	{
 		if(renderAABB==null)
-			renderAABB = AxisAlignedBB.fromBounds(getPos().getX()-(facing.getAxis()==Axis.Z?6:0),getPos().getY()-6,getPos().getZ()-(facing.getAxis()==Axis.Z?0:6), getPos().getX()+(facing.getAxis()==Axis.Z?7:0),getPos().getY()+7,getPos().getZ()+(facing.getAxis()==Axis.Z?0:7));
+			renderAABB = new AxisAlignedBB(getPos().getX()-(facing.getAxis()==Axis.Z?6:0),getPos().getY()-6,getPos().getZ()-(facing.getAxis()==Axis.Z?0:6), getPos().getX()+(facing.getAxis()==Axis.Z?7:0),getPos().getY()+7,getPos().getZ()+(facing.getAxis()==Axis.Z?0:7));
 		return renderAABB;
 	}
 	@Override

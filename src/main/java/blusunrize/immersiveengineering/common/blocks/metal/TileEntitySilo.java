@@ -11,10 +11,12 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -93,21 +95,27 @@ public class TileEntitySilo extends TileEntityMultiblockPart<TileEntitySilo> //i
 	}
 
 	@Override
+	protected FluidTank[] getAccessibleFluidTanks(EnumFacing side)
+	{
+		return new FluidTank[0];
+	}
+	@Override
+	protected boolean canFillTankFrom(int iTank, EnumFacing side, FluidStack resources)
+	{
+		return false;
+	}
+	@Override
+	protected boolean canDrainTankFrom(int iTank, EnumFacing side)
+	{
+		return false;
+	}
+
+	@Override
 	public float[] getBlockBounds()
 	{
 		if(pos==0||pos==2||pos==6||pos==8)
 			return new float[]{pos<6?0:.75f,0,pos==0||pos==6?0:.75f, pos>2?1:.25f,1,pos==2||pos==8?1f:.25f};
 		return new float[]{0,0,0,1,1,1};
-	}
-	@Override
-	public float[] getSpecialCollisionBounds()
-	{
-		return null;
-	}
-	@Override
-	public float[] getSpecialSelectionBounds()
-	{
-		return null;
 	}
 
 	@Override
@@ -342,7 +350,7 @@ public class TileEntitySilo extends TileEntityMultiblockPart<TileEntitySilo> //i
 			prevOutputStack = outputStack.copy();
 		}
 		if(storageAmount!=oldStorage||forceUpdate)
-			worldObj.markBlockForUpdate(getPos());
+			this.markContainingBlockForUpdate(null);
 		forceUpdate = false;
 	}
 

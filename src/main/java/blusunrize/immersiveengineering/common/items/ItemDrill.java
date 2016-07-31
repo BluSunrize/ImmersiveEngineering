@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
+import blusunrize.immersiveengineering.api.Lib;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -23,24 +24,25 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.play.server.S23PacketBlockChange;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.StatCollector;
+import net.minecraft.network.play.server.SPacketBlockChange;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
-import net.minecraftforge.client.model.TRSRTransformation;
+import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidContainerItem;
@@ -49,7 +51,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemDrill extends ItemUpgradeableTool implements IShaderEquipableItem, IFluidContainerItem, IOBJModelCallback<ItemStack>, ITool
 {
-	public static Material[] validMaterials = {Material.anvil,Material.clay,Material.glass,Material.grass,Material.ground,Material.ice,Material.iron,Material.packedIce,Material.piston,Material.rock,Material.sand, Material.snow};
+	public static Material[] validMaterials = {Material.ANVIL,Material.CLAY,Material.GLASS,Material.GRASS,Material.GROUND,Material.ICE,Material.IRON,Material.PACKED_ICE,Material.PISTON,Material.ROCK,Material.SAND, Material.SNOW};
 
 	public ItemDrill()
 	{
@@ -124,22 +126,22 @@ public class ItemDrill extends ItemUpgradeableTool implements IShaderEquipableIt
 	{
 		ItemStack shader = getShaderItem(stack);
 		if(shader!=null)
-			list.add(EnumChatFormatting.DARK_GRAY+shader.getDisplayName());
+			list.add(TextFormatting.DARK_GRAY+shader.getDisplayName());
 
 		FluidStack fs = getFluid(stack);
 		if(fs!=null)
-			list.add(StatCollector.translateToLocal("desc.ImmersiveEngineering.flavour.drill.fuel")+" "+fs.amount+"/"+getCapacity(stack)+"mB");
+			list.add(I18n.format(Lib.DESC_FLAVOUR+"drill.fuel")+" "+fs.amount+"/"+getCapacity(stack)+"mB");
 		else
-			list.add(StatCollector.translateToLocal("desc.ImmersiveEngineering.flavour.drill.empty"));
+			list.add(I18n.format(Lib.DESC_FLAVOUR+"drill.empty"));
 		if(getHead(stack)==null)
-			list.add(StatCollector.translateToLocal("desc.ImmersiveEngineering.flavour.drill.noHead"));
+			list.add(I18n.format(Lib.DESC_FLAVOUR+"drill.noHead"));
 		else
 		{
 			int maxDmg = getMaxHeadDamage(stack);
 			int dmg = maxDmg-getHeadDamage(stack);
 			float quote = dmg/(float)maxDmg;
-			String status = ""+(quote<.1?EnumChatFormatting.RED: quote<.3?EnumChatFormatting.GOLD: quote<.6?EnumChatFormatting.YELLOW: EnumChatFormatting.GREEN);
-			list.add(StatCollector.translateToLocal("desc.ImmersiveEngineering.flavour.drill.headDamage")+" "+status+dmg+"/"+maxDmg);
+			String status = ""+(quote<.1? TextFormatting.RED: quote<.3? TextFormatting.GOLD: quote<.6? TextFormatting.YELLOW: TextFormatting.GREEN);
+			list.add(I18n.format(Lib.DESC_FLAVOUR+"headDamage")+" "+status+dmg+"/"+maxDmg);
 		}
 	}
 
@@ -159,9 +161,8 @@ public class ItemDrill extends ItemUpgradeableTool implements IShaderEquipableIt
 				animationTimer.put(entityLiving.getName(), 40);
 			else if(animationTimer.get(entityLiving.getName())<20)
 				animationTimer.put(entityLiving.getName(), 20);
-			return true;
 		}
-		return false;
+		return true;
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -250,7 +251,7 @@ public class ItemDrill extends ItemUpgradeableTool implements IShaderEquipableIt
 	{
 		ItemStack[] contents = this.getContainedItems(stack);
 		if(contents[0]!=null&&contents[1]!=null&&contents[2]!=null&&contents[3]!=null)
-			player.triggerAchievement(IEAchievements.upgradeDrill);
+			player.addStat(IEAchievements.upgradeDrill);
 	}
 
 	/*INVENTORY STUFF*/
@@ -275,11 +276,9 @@ public class ItemDrill extends ItemUpgradeableTool implements IShaderEquipableIt
 
 	public boolean canDrillBeUsed(ItemStack drill, EntityLivingBase player)
 	{
-		if(drill.getItemDamage()==0 && player.isInsideOfMaterial(Material.water) && !getUpgrades(drill).getBoolean("waterproof"))
+		if(drill.getItemDamage()==0 && player.isInsideOfMaterial(Material.WATER) && !getUpgrades(drill).getBoolean("waterproof"))
 			return false;
-		if(drill.getItemDamage()==0 && getFluid(drill)==null)
-			return false;
-		return true;
+		return !(drill.getItemDamage() == 0 && getFluid(drill) == null);
 	}
 
 	public int getMaxHeadDamage(ItemStack stack)
@@ -311,9 +310,9 @@ public class ItemDrill extends ItemUpgradeableTool implements IShaderEquipableIt
 		return true;
 	}
 	@Override
-	public boolean onBlockDestroyed(ItemStack stack, World world, Block block, BlockPos pos, EntityLivingBase living)
+	public boolean onBlockDestroyed(ItemStack stack, World world, IBlockState state, BlockPos pos, EntityLivingBase living)
 	{
-		if((double)block.getBlockHardness(world, pos) != 0.0D)
+		if((double)state.getBlockHardness(world, pos) != 0.0D)
 		{
 			int dmg = ForgeHooks.isToolEffective(world, pos, stack)?1:3;
 			ItemStack head = getHead(stack);
@@ -339,12 +338,12 @@ public class ItemDrill extends ItemUpgradeableTool implements IShaderEquipableIt
 		return 0;
 	}
 	@Override
-	public Multimap getAttributeModifiers(ItemStack stack)
+	public Multimap getAttributeModifiers(EntityEquipmentSlot slot, ItemStack stack)
 	{
 		ItemStack head = getHead(stack);
-		Multimap multimap = super.getAttributeModifiers(stack);
-		if(head!=null)
-			multimap.put(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName(), new AttributeModifier(itemModifierUUID, "Tool modifier", ((IDrillHead)head.getItem()).getAttackDamage(head)+getUpgrades(stack).getInteger("damage"), 0));
+		Multimap multimap = super.getAttributeModifiers(slot, stack);
+		if(head!=null && slot==EntityEquipmentSlot.MAINHAND)
+			multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getAttributeUnlocalizedName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Tool modifier", ((IDrillHead)head.getItem()).getAttackDamage(head)+getUpgrades(stack).getInteger("damage"), 0));
 		return multimap;
 	}
 	@Override
@@ -371,27 +370,21 @@ public class ItemDrill extends ItemUpgradeableTool implements IShaderEquipableIt
 		return false;
 	}
 	@Override
-	public boolean canHarvestBlock(Block block, ItemStack stack)
+	public boolean canHarvestBlock(IBlockState state, ItemStack stack)
 	{
-		return isEffective(block.getMaterial()) && !isDrillBroken(stack);
+		return isEffective(state.getMaterial()) && !isDrillBroken(stack);
 	}
 	@Override
-	public float getStrVsBlock(ItemStack stack, Block block)
-	{
-		ItemStack head = getHead(stack);
-		return isEffective(block.getMaterial())&&head!=null&&!isDrillBroken(stack) ? ((IDrillHead)head.getItem()).getMiningSpeed(head)+ItemNBTHelper.getInt(stack, "speed") : 1.0F;
-	}
-	@Override
-	public float getDigSpeed(ItemStack stack, IBlockState state)
+	public float getStrVsBlock(ItemStack stack, IBlockState state)
 	{
 		ItemStack head = getHead(stack);
 		if(head!=null && !isDrillBroken(stack))
 			return ((IDrillHead)head.getItem()).getMiningSpeed(head)+ItemNBTHelper.getInt(stack, "speed");
-		return super.getDigSpeed(stack, state);
+		return super.getStrVsBlock(stack, state);
 	}
 	public boolean canBreakExtraBlock(World world, Block block, BlockPos pos, IBlockState state, EntityPlayer player, ItemStack drill, ItemStack head, boolean inWorld)
 	{
-		if(block.canHarvestBlock(world, pos, player) && isEffective(block.getMaterial()) && !isDrillBroken(drill))
+		if(block.canHarvestBlock(world, pos, player) && isEffective(state.getMaterial()) && !isDrillBroken(drill))
 		{
 			if(inWorld)
 				return !((IDrillHead)head.getItem()).beforeBlockbreak(drill, head, player);
@@ -406,7 +399,7 @@ public class ItemDrill extends ItemUpgradeableTool implements IShaderEquipableIt
 		World world = player.worldObj;
 		if(player.isSneaking() || world.isRemote || !(player instanceof EntityPlayerMP))
 			return false;
-		MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, player, true);
+		RayTraceResult mop = this.rayTrace(world, player, true);
 		ItemStack head = getHead(stack);
 		if(mop==null || head==null || this.isDrillBroken(stack))
 			return false;
@@ -447,33 +440,33 @@ public class ItemDrill extends ItemUpgradeableTool implements IShaderEquipableIt
 			IBlockState state = world.getBlockState(pos);
 			Block block = state.getBlock();
 
-			if(block!=null && !block.isAir(world, pos) && block.getPlayerRelativeBlockHardness(player, world, pos) != 0)
+			if(block!=null && !block.isAir(state, world, pos) && state.getPlayerRelativeBlockHardness(player, world, pos) != 0)
 			{
 				if(!this.canBreakExtraBlock(world, block, pos, state, player, stack, head, true))
 					continue;
-				int xpDropEvent = ForgeHooks.onBlockBreakEvent(world, ((EntityPlayerMP)player).theItemInWorldManager.getGameType(), (EntityPlayerMP) player, pos);
+				int xpDropEvent = ForgeHooks.onBlockBreakEvent(world, ((EntityPlayerMP)player).interactionManager.getGameType(), (EntityPlayerMP) player, pos);
 				if(xpDropEvent<0)
 					continue;
 
 				if(player.capabilities.isCreativeMode)
 				{
 					block.onBlockHarvested(world, pos, state, player);
-					if (block.removedByPlayer(world, pos, player, false))
+					if (block.removedByPlayer(state, world, pos, player, false))
 						block.onBlockDestroyedByPlayer(world, pos, state);
 				} 
 				else
 				{
 					block.onBlockHarvested(world, pos, state, player);
-					if(block.removedByPlayer(world, pos, player, true))
+					if(block.removedByPlayer(state, world, pos, player, true))
 					{
 						block.onBlockDestroyedByPlayer( world, pos, state);
-						block.harvestBlock(world, player, pos, state, world.getTileEntity(pos));
+						block.harvestBlock(world, player, pos, state, world.getTileEntity(pos), stack);
 						block.dropXpOnBlockBreak(world, pos, xpDropEvent);
 					}
-					player.getCurrentEquippedItem().onBlockDestroyed(world, block, pos, player);
+					stack.onBlockDestroyed(world, state, pos, player);
 				}
-				world.playAuxSFX(2001, pos, Block.getStateId(state));
-				((EntityPlayerMP)player).playerNetServerHandler.sendPacket(new S23PacketBlockChange(world, pos));
+				world.playEvent(2001, pos, Block.getStateId(state));
+				((EntityPlayerMP)player).connection.sendPacket(new SPacketBlockChange(world, pos));
 			}
 		}
 		return false;
