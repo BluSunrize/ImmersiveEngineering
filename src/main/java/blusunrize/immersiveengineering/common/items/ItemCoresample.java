@@ -1,7 +1,5 @@
 package blusunrize.immersiveengineering.common.items;
 
-import java.util.List;
-
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.client.ClientUtils;
@@ -15,6 +13,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import java.util.List;
 
 public class ItemCoresample extends ItemIEBase
 {
@@ -64,7 +64,7 @@ public class ItemCoresample extends ItemIEBase
 				list.add(I18n.format(Lib.CHAT_INFO+"coresample.infinite"));
 			else if(ItemNBTHelper.hasKey(stack, "depletion"))
 				list.add(I18n.format(Lib.CHAT_INFO+"coresample.yield", ExcavatorHandler.mineralVeinCapacity-ItemNBTHelper.getInt(stack, "depletion")));
-			
+
 			if(ItemNBTHelper.hasKey(stack, "timestamp") && world!=null)
 			{
 				long timestamp = ItemNBTHelper.getLong(stack, "timestamp");

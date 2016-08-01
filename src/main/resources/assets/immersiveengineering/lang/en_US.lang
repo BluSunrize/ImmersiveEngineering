@@ -351,7 +351,7 @@ item.immersiveengineering.faradaySuit_feet.name=Faraday Boots
 item.immersiveengineering.fluorescentTube.name=Fluorescent Tube
 
 #CREATIVE
-itemGroup.immersiveeengineering=Immersive Engineering
+itemGroup.immersiveengineering=Immersive Engineering
 
 #ENTITIES
 entity.immersiveengineering.explosive.name=Explosive

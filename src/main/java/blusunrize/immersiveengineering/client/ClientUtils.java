@@ -298,7 +298,7 @@ public class ClientUtils
 		DHMS,
 		DHM,
 		DH;
-		static TimestampFormat[] coreValues = {TimestampFormat.D,TimestampFormat.H,TimestampFormat.M,TimestampFormat.S}; 
+		static TimestampFormat[] coreValues = {TimestampFormat.D, TimestampFormat.H, TimestampFormat.M, TimestampFormat.S};
 
 		public boolean containsFormat(TimestampFormat format)
 		{
@@ -322,6 +322,13 @@ public class ClientUtils
 				s += I18n.format(Lib.DESC_INFO+core.getLocalKey(), Long.toString(timestamp/core.getTickCut()));
 				timestamp %= core.getTickCut();
 			}
+		if(s.isEmpty())
+			for(int i = TimestampFormat.coreValues.length - 1; i >= 0; i--)
+				if(format.containsFormat(TimestampFormat.coreValues[i]))
+				{
+					s = I18n.format(Lib.DESC_INFO + TimestampFormat.coreValues[i].getLocalKey(), 0);
+					break;
+				}
 		return s;
 	}
 
@@ -1332,7 +1339,7 @@ public class ClientUtils
 	}
 
 	private static void storeVertexData(int[] faceData, int storeIndex, Vector3f position, TextureAtlasSprite t, int u,
-			int v, int color)
+										int v, int color)
 	{
 		int i = storeIndex * 7;
 		faceData[i] = Float.floatToRawIntBits(position.x);
