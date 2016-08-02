@@ -1,17 +1,10 @@
 package blusunrize.immersiveengineering.common.blocks;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import com.google.common.collect.Sets;
-
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IIEMetaBlock;
+import com.google.common.collect.Sets;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
@@ -24,19 +17,19 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IStringSerializable;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import java.util.*;
 
 public class BlockIEBase<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Block implements IIEMetaBlock
 {
@@ -218,11 +211,11 @@ public class BlockIEBase<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 		return this;
 	}
 	@Override
-    public int getLightOpacity(IBlockState state, IBlockAccess w, BlockPos pos)
-    {
-        int meta = getMetaFromState(state);
-        if (metaLightOpacities.containsKey(meta))
-        	return metaLightOpacities.get(meta);
+	public int getLightOpacity(IBlockState state, IBlockAccess w, BlockPos pos)
+	{
+		int meta = getMetaFromState(state);
+		if(metaLightOpacities.containsKey(meta))
+			return metaLightOpacities.get(meta);
 		return super.getLightOpacity(state,w,pos);
 	}
 	//This is a ridiculously hacky workaround, I would not recommend it to anyone.
@@ -252,7 +245,7 @@ public class BlockIEBase<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 				state = applyProperty(state, additionalProperties[i], additionalProperties[i].getAllowedValues().iterator().next());
 		return state;
 	}
-	
+
 	protected <V extends Comparable<V>> IBlockState applyProperty(IBlockState in, IProperty<V> prop, Object val)
 	{
 		return in.withProperty(prop, (V)val);
@@ -375,6 +368,15 @@ public class BlockIEBase<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 		fullBlock = isOpaque;
 		return this;
 	}
+
+	@Override
+	public boolean isToolEffective(String type, IBlockState state)
+	{
+		if(allowHammerHarvest(state) && type.equals(Lib.TOOL_HAMMER))
+			return true;
+		return super.isToolEffective(type, state);
+	}
+
 	public interface IBlockEnum extends IStringSerializable
 	{
 		@Override
@@ -385,7 +387,8 @@ public class BlockIEBase<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 	public abstract static class IELadderBlock<E extends Enum<E> & IBlockEnum> extends BlockIEBase<E>
 	{
 		public IELadderBlock(String name, Material material, PropertyEnum<E> mainProperty,
-				Class<? extends ItemBlockIEBase> itemBlock, Object... additionalProperties) {
+							 Class<? extends ItemBlockIEBase> itemBlock, Object... additionalProperties)
+		{
 			super(name, material, mainProperty, itemBlock, additionalProperties);
 		}
 
@@ -404,11 +407,11 @@ public class BlockIEBase<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 					entityIn.motionZ = -f5;
 				if (entityIn.motionZ > f5)
 					entityIn.motionZ = f5;
-	
+
 				entityIn.fallDistance = 0.0F;
 				if (entityIn.motionY < -0.15D)
 					entityIn.motionY = -0.15D;
-	
+
 				if(entityIn.motionY<0 && entityIn instanceof EntityPlayer && entityIn.isSneaking())
 				{
 					entityIn.motionY=.05;

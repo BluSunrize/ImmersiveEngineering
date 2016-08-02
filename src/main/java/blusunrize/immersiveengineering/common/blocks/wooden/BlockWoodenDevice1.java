@@ -17,7 +17,6 @@ import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.client.model.obj.OBJModel.OBJProperty;
 import net.minecraftforge.common.property.Properties;
 
 import java.util.ArrayList;
@@ -323,5 +322,11 @@ public class BlockWoodenDevice1 extends BlockIETileProvider<BlockTypes_WoodenDev
 		BlockTypes_WoodenDevice1 type = state.getValue(property);
 		boolean slave = state.getValue(IEProperties.MULTIBLOCKSLAVE);
 		return slave&&type==BlockTypes_WoodenDevice1.POST;
+	}
+
+	@Override
+	public boolean allowHammerHarvest(IBlockState state)
+	{
+		return true;
 	}
 }
