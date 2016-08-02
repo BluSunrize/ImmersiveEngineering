@@ -12,7 +12,6 @@ import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.client.model.obj.OBJModel.OBJProperty;
 import net.minecraftforge.client.model.obj.OBJModel.OBJState;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.Properties;
@@ -25,7 +24,7 @@ public class TileRenderArcFurnace extends TileEntitySpecialRenderer<TileEntityAr
 	@Override
 	public void renderTileEntityAt(TileEntityArcFurnace te, double x, double y, double z, float partialTicks, int destroyStage)
 	{
-		if(te.isDummy()||!te.getWorld().isBlockLoaded(te.getPos(), false))
+		if(!te.formed || te.isDummy() || !te.getWorld().isBlockLoaded(te.getPos(), false))
 			return;
 		List<String> renderedParts = null;
 		for(int i=0; i<3; i++)
