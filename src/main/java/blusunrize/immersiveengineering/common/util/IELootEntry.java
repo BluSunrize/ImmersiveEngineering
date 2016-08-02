@@ -1,6 +1,5 @@
 package blusunrize.immersiveengineering.common.util;
 
-import com.sun.istack.internal.NotNull;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -15,6 +14,7 @@ import net.minecraft.world.storage.loot.functions.SetCount;
 import net.minecraft.world.storage.loot.functions.SetMetadata;
 import net.minecraft.world.storage.loot.functions.SetNBT;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -38,7 +38,8 @@ public class IELootEntry extends LootEntryItem
 	}
 
 	ItemStack stack;
-	public IELootEntry(String entryName, @NotNull ItemStack stack, int weight, int quality, LootFunction... functions)
+
+	public IELootEntry(String entryName, @Nonnull ItemStack stack, int weight, int quality, LootFunction... functions)
 	{
 		super(stack.getItem(), weight, quality, buildFunctions(stack, functions), new LootCondition[0], entryName);
 		this.stack = stack;

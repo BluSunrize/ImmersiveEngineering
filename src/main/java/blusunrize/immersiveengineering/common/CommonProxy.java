@@ -1,53 +1,30 @@
 package blusunrize.immersiveengineering.common;
 
-import java.util.UUID;
-
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGuiTile;
-import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IGuiItem;
-import com.mojang.authlib.GameProfile;
-
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityArcFurnace;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityAssembler;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBucketWheel;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFermenter;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityRefinery;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySqueezer;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGuiTile;
+import blusunrize.immersiveengineering.common.blocks.metal.*;
 import blusunrize.immersiveengineering.common.blocks.stone.TileEntityBlastFurnace;
 import blusunrize.immersiveengineering.common.blocks.stone.TileEntityCokeOven;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityModWorkbench;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntitySorter;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenCrate;
-import blusunrize.immersiveengineering.common.gui.ContainerArcFurnace;
-import blusunrize.immersiveengineering.common.gui.ContainerAssembler;
-import blusunrize.immersiveengineering.common.gui.ContainerBlastFurnace;
-import blusunrize.immersiveengineering.common.gui.ContainerCokeOven;
-import blusunrize.immersiveengineering.common.gui.ContainerCrate;
-import blusunrize.immersiveengineering.common.gui.ContainerFermenter;
-import blusunrize.immersiveengineering.common.gui.ContainerModWorkbench;
-import blusunrize.immersiveengineering.common.gui.ContainerRefinery;
-import blusunrize.immersiveengineering.common.gui.ContainerRevolver;
-import blusunrize.immersiveengineering.common.gui.ContainerSorter;
-import blusunrize.immersiveengineering.common.gui.ContainerSqueezer;
-import blusunrize.immersiveengineering.common.gui.ContainerToolbox;
+import blusunrize.immersiveengineering.common.gui.*;
+import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IGuiItem;
 import blusunrize.immersiveengineering.common.items.ItemRevolver;
 import blusunrize.immersiveengineering.common.items.ItemToolbox;
-import com.sun.istack.internal.NotNull;
+import com.mojang.authlib.GameProfile;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.IGuiHandler;
-import net.minecraftforge.fml.common.registry.GameData;
-import net.minecraftforge.fml.common.registry.IForgeRegistryEntry;
+
+import javax.annotation.Nonnull;
+import java.util.UUID;
 
 public class CommonProxy implements IGuiHandler
 {
@@ -60,11 +37,12 @@ public class CommonProxy implements IGuiHandler
 	public void serverStarting(){}
 	public void onWorldLoad(){}
 
-	public static <T extends TileEntity & IGuiTile> void openGuiForTile(@NotNull EntityPlayer player, @NotNull T tile)
+	public static <T extends TileEntity & IGuiTile> void openGuiForTile(@Nonnull EntityPlayer player, @Nonnull T tile)
 	{
-		player.openGui(ImmersiveEngineering.instance, tile.getGuiID(), ((TileEntity)tile).getWorld(), tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ());
+		player.openGui(ImmersiveEngineering.instance, tile.getGuiID(), tile.getWorld(), tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ());
 	}
-	public static void openGuiForItem(@NotNull EntityPlayer player, @NotNull EntityEquipmentSlot slot)
+
+	public static void openGuiForItem(@Nonnull EntityPlayer player, @Nonnull EntityEquipmentSlot slot)
 	{
 		ItemStack stack = player.getItemStackFromSlot(slot);
 		if(stack==null || !(stack.getItem() instanceof IGuiItem))

@@ -1,14 +1,5 @@
 package blusunrize.immersiveengineering.api;
 
-import static blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection.vertices;
-
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.api.energy.wires.IICProxy;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
@@ -23,14 +14,18 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
+
+import java.util.*;
+
+import static blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection.vertices;
 
 public class ApiUtils
 {
@@ -388,7 +383,8 @@ public class ApiUtils
 		sortedMap.putAll(map);
 		return sortedMap;
 	}
-	static class ValueComparator implements Comparator<String>
+
+	public static class ValueComparator implements java.util.Comparator<String>
 	{
 		Map<String, Integer> base;
 		boolean inverse;
@@ -398,8 +394,7 @@ public class ApiUtils
 			this.inverse = inverse;
 		}
 		@Override
-		//Cant return equal to keys separate
-		public int compare(String s0, String s1)
+		public int compare(String s0, String s1)//Cant return equal to keys separate
 		{
 			if(inverse)
 			{
@@ -415,6 +410,15 @@ public class ApiUtils
 				else
 					return 1;
 			}
+		}
+
+		@Override
+		public boolean equals(Object obj)
+		{
+			if(!(obj instanceof ValueComparator))
+				return false;
+			ValueComparator other = (ValueComparator) obj;
+			return other.base == base && other.inverse == inverse;
 		}
 	}
 

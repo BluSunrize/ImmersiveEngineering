@@ -134,7 +134,7 @@ public class VillageEngineersHouse extends Village
 		this.fillWithBlocks(world, box, 7,1,6, 7,5,6, IEContent.blockWoodenDecoration.getStateFromMeta(0),IEContent.blockWoodenDecoration.getStateFromMeta(0), false);
 
 		//Doors
-		this.placeDoorCurrentPosition(world, box, rand, 4,1,3, EnumFacing.NORTH);
+		this.func_189915_a(world, box, rand, 4, 1, 3, EnumFacing.NORTH, Blocks.OAK_DOOR);
 		System.out.println("generating doors at "+box.getCenter());
 		if(getCoordBaseMode()==EnumFacing.SOUTH || getCoordBaseMode()==EnumFacing.WEST)
 		{

@@ -2,8 +2,6 @@ package blusunrize.immersiveengineering.common.blocks;
 
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityAssembler;
-import com.sun.istack.internal.NotNull;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
@@ -19,6 +17,7 @@ import net.minecraftforge.fluids.capability.FluidTankPropertiesWrapper;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public abstract class TileEntityMultiblockPart<T extends TileEntityMultiblockPart<T>> extends TileEntityIEBase implements ITickable, IDirectionalTile, IBlockBounds
@@ -96,7 +95,7 @@ public abstract class TileEntityMultiblockPart<T extends TileEntityMultiblockPar
 	//	=================================
 	//		FLUID MANAGEMENT
 	//	=================================
-	@NotNull
+	@Nonnull
 	protected abstract FluidTank[] getAccessibleFluidTanks(EnumFacing side);
 	protected abstract boolean canFillTankFrom(int iTank, EnumFacing side, FluidStack resource);
 	protected abstract boolean canDrainTankFrom(int iTank, EnumFacing side);

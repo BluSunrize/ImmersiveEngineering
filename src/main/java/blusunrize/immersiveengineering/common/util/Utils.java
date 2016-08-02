@@ -10,7 +10,6 @@ import com.google.common.io.Resources;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParseException;
-import com.sun.istack.internal.Nullable;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.material.Material;
@@ -56,6 +55,7 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.oredict.OreDictionary;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.URL;
@@ -897,11 +897,11 @@ public class Utils
 
 	public static void shuffleLootItems(List<ItemStack> stacks, int slotAmount, Random rand)
 	{
-		List<ItemStack> list = Lists.<ItemStack>newArrayList();
+		List<ItemStack> list = Lists.newArrayList();
 		Iterator<ItemStack> iterator = stacks.iterator();
 		while(iterator.hasNext())
 		{
-			ItemStack itemstack = (ItemStack)iterator.next();
+			ItemStack itemstack = iterator.next();
 			if(itemstack.stackSize <= 0)
 				iterator.remove();
 			else if(itemstack.stackSize > 1)
@@ -913,7 +913,7 @@ public class Utils
 		slotAmount = slotAmount - stacks.size();
 		while(slotAmount>0 && list.size()>0)
 		{
-			ItemStack itemstack2 = (ItemStack)list.remove(MathHelper.getRandomIntegerInRange(rand, 0, list.size() - 1));
+			ItemStack itemstack2 = list.remove(MathHelper.getRandomIntegerInRange(rand, 0, list.size() - 1));
 			int i = MathHelper.getRandomIntegerInRange(rand, 1, itemstack2.stackSize / 2);
 			itemstack2.stackSize -= i;
 			ItemStack itemstack1 = itemstack2.copy();

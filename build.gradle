@@ -1,5 +1,5 @@
-def mainVersion = "0.9"
-def buildNumber = "29"
+def mainVersion = "0.10"
+def buildNumber = "30"
 
 // For those who want the bleeding edge
 buildscript {
@@ -30,7 +30,8 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 minecraft {
-    version = "1.9.4-12.17.0.1976"
+    version = "12.18.1.2024"
+    //"1.9.4-12.17.0.1976"
     runDir = "run"
     
     // the mappings can be changed at any time, and must be in the following format.
@@ -38,22 +39,32 @@ minecraft {
     // stable_#            stables are built at the discretion of the MCP team.
     // Use non-default mappings at your own risk. they may not allways work.
     // simply re-run your setup task after changing the mappings to update your workspace.
-    mappings = "snapshot_20160518"
+    mappings = "snapshot_20160701"
+    //"snapshot_20160518" 1.9
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
 }
 
 repositories {
-    maven { url "http://dvs1.progwml6.com/files/maven" }//JEI
-    maven { url "http://mobiusstrip.eu/maven" }//WAILA
+    maven { // JEI & Tinkers
+        name 'DVS1 Maven FS'
+        url 'http://dvs1.progwml6.com/files/maven'
+    }
+    maven { // WAILA
+        name "ProfMobius Maven FS"
+        url "http://mobiusstrip.eu/maven"
+    }
 }
 
 dependencies {
-    deobfCompile "mezz.jei:jei_1.9.4:3.6.+"
-    compile ("mcp.mobius.waila:Waila:1.7.0-B3_1.9.4:dev") {
-        exclude group: 'mcp.mobius.waila'
-    }
-    deobfCompile "slimeknights.mantle:Mantle:1.9.4-0.10.+"
-    deobfCompile "slimeknights:TConstruct:1.9.4-2.3.+"
+    //1.9 dependencies
+//    deobfCompile "mezz.jei:jei_1.9.4:3.6.+"
+//    deobfCompile "mcp.mobius.waila:Waila:1.7.0-B3_1.9.4"
+//    deobfCompile "slimeknights.mantle:Mantle:1.9.4-0.10.+"
+//    deobfCompile "slimeknights:TConstruct:1.9.4-2.3.+"
+    deobfCompile "mezz.jei:jei_1.10.2:3.7.+"
+    deobfCompile "mcp.mobius.waila:Waila:1.7.0-B3_1.9.4"
+    deobfCompile "slimeknights.mantle:Mantle:1.10-0.10.+"
+    deobfCompile "slimeknights:TConstruct:1.10-2.3.+"
 }
 
 jar {

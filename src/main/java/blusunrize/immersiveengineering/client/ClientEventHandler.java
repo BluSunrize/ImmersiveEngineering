@@ -703,11 +703,10 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 						}
 
 					if(overrideBox!=null)
-						RenderGlobal.drawSelectionBoundingBox(overrideBox.expand(f1,f1,f1).offset(px,py,pz));
+						RenderGlobal.func_189697_a(overrideBox.expand(f1, f1, f1).offset(px, py, pz), 0, 0, 0, 0);
 					else
 						for(AxisAlignedBB aabb : additionalBoxes.isEmpty()?boxes:additionalBoxes)
-							RenderGlobal.drawSelectionBoundingBox(aabb.expand(f1,f1,f1).offset(px,py,pz));
-
+							RenderGlobal.func_189697_a(aabb.expand(f1, f1, f1).offset(px, py, pz), 0, 0, 0, 0);
 					GL11.glDepthMask(true);
 					GL11.glEnable(GL11.GL_TEXTURE_2D);
 					GL11.glDisable(GL11.GL_BLEND);
