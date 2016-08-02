@@ -1,22 +1,16 @@
 package blusunrize.immersiveengineering.common;
 
-import java.util.Calendar;
-import java.util.HashMap;
-
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEApi;
-import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
-import blusunrize.immersiveengineering.api.crafting.CrusherRecipe;
-import blusunrize.immersiveengineering.api.crafting.FermenterRecipe;
-import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
-import blusunrize.immersiveengineering.api.crafting.RefineryRecipe;
-import blusunrize.immersiveengineering.api.crafting.SqueezerRecipe;
+import blusunrize.immersiveengineering.api.crafting.*;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorLV;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+
+import java.util.Calendar;
+import java.util.HashMap;
 
 public class Config
 {
@@ -33,36 +27,6 @@ public class Config
 	{
 		config = new Configuration(event.getSuggestedConfigurationFile());
 		config.load();
-
-		double currentVersion = ImmersiveEngineering.VERSION_D;
-		Property propLastVersion = config.get("general","LastVersion",.54, "The last version of IE that was run in this instance. DO NOT CHANGE THIS, IT WILL BREAK THINGS.");
-		//		Property propReGen = config.get("general", "RegenTransferValues", true);
-		double lastVersion = propLastVersion.getDouble();
-		if(lastVersion<currentVersion)
-		{
-			propLastVersion.set(currentVersion);
-			IELogger.info("The Previous Version of IE was outdated!");
-			if(lastVersion<.6)
-			{
-				IELogger.info("The config on transfer rates of IE wires will be reset to the default.");
-				config.getCategory("general").remove("Cable transfer rates");
-				config.getCategory("general").remove("Cable loss");
-			}
-			if(lastVersion<.61)
-			{
-				IELogger.info("The config on bullet damage will be reset to the default.");
-				config.getCategory("tools").remove("BulletDamage-Casull");
-				config.getCategory("tools").remove("BulletDamage-AP");
-				config.getCategory("tools").remove("BulletDamage-Buck");
-				config.getCategory("tools").remove("BulletDamage-Dragon");
-				config.getCategory("tools").remove("BulletDamage-Homing");
-				config.getCategory("tools").remove("BulletDamage-Wolfpack");
-				config.getCategory("tools").remove("BulletDamage-WolfpackPart");
-				config.getCategory("tools").remove("BulletDamage-Silver");
-				config.getCategory("tools").remove("BulletDamage-Potion");
-			}
-			config.getCategory("general").remove("Show Update News");
-		}
 
 		Property connectionValidation = config.get("general", "Validate Connections", false, "Drop connections with non-existing endpoints when loading the world. Use with care and backups and only when suspecting corrupted data. This option will check and load all connection endpoints and may slow down the world loading process.");
 		if(connectionValidation.getBoolean())
