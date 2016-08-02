@@ -1,3 +1,11 @@
+#####Version 0.10-30
+- UPDATE TO 1.10.2
+
+#####Version 0.9-29
+- UPDATE TO 1.9.4
+- mostly port, movign stuff to new fluid systems, capabilities, etc
+- moved 3D Maneuver gear. It didn't fit the style of hte mod and was incredibly glitchy
+
 #####Version 0.8-28
 - re-added the Floodlight back in
 - re-added the transformers that can attach to posts (thanks Malte)
