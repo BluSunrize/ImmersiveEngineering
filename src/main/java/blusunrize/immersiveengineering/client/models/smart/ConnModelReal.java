@@ -171,8 +171,10 @@ public class ConnModelReal implements IBakedModel
 			if (!(obj instanceof ExtBlockstateAdapter))
 				return false;
 			ExtBlockstateAdapter o = (ExtBlockstateAdapter) obj;
-			for (IProperty i : state.getPropertyNames())
+			for(IProperty<?> i : state.getPropertyNames())
 			{
+				if(!o.state.getProperties().containsKey(i))
+					return false;
 				Object valThis = state.getValue(i);
 				Object valOther = o.state.getValue(i);
 				if(valThis==null&&valOther==null)
@@ -180,8 +182,10 @@ public class ConnModelReal implements IBakedModel
 				else if(valOther == null || !valOther.equals(state.getValue(i)))
 					return false;
 			}
-			for(IUnlistedProperty i : state.getUnlistedNames())
+			for(IUnlistedProperty<?> i : state.getUnlistedNames())
 			{
+				if(!o.state.getUnlistedProperties().containsKey(i))
+					return false;
 				Object valThis = state.getValue(i);
 				Object valOther = o.state.getValue(i);
 				if(valThis==null&&valOther==null)
@@ -195,12 +199,12 @@ public class ConnModelReal implements IBakedModel
 		@Override
 		public int hashCode()
 		{
-			int val = 1;
+			int val = 0;
+			final int prime = 31;
 			for (Object o : state.getProperties().values())
-				val += o.hashCode();
+				val = prime * val + (o == null ? 0 : o.hashCode());
 			for (Object o : state.getUnlistedProperties().values())
-				val += o.hashCode();
-
+				val = prime * val + (o == null ? 0 : o.hashCode());
 			return val;
 		}
 	}
