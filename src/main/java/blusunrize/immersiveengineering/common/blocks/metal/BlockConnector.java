@@ -1,7 +1,5 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import java.util.Arrays;
-
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IPostBlock;
 import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConnectable;
@@ -15,13 +13,15 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
+
+import java.util.Arrays;
 
 public class BlockConnector extends BlockIETileProvider<BlockTypes_Connector>
 {
@@ -117,36 +117,35 @@ public class BlockConnector extends BlockIETileProvider<BlockTypes_Connector>
 	{
 		switch(BlockTypes_Connector.values()[meta])
 		{
-		case CONNECTOR_LV:
-			return new TileEntityConnectorLV();
-		case RELAY_LV:
-			return new TileEntityRelayLV();
-		case CONNECTOR_MV:
-			return new TileEntityConnectorMV();
-		case RELAY_MV:
-			return new TileEntityRelayMV();
-		case CONNECTOR_HV:
-			return new TileEntityConnectorHV();
-		case RELAY_HV:
-			return new TileEntityRelayHV();
-		case CONNECTOR_STRUCTURAL:
-			return new TileEntityConnectorStructural();
-		case TRANSFORMER:
-			return new TileEntityTransformer();
-		case TRANSFORMER_HV:
-			return new TileEntityTransformerHV();
-		case BREAKERSWITCH:
-			return new TileEntityBreakerSwitch();
-		case REDSTONE_BREAKER:
-			return new TileEntityRedstoneBreaker();
-		case ENERGY_METER:
-			return new TileEntityEnergyMeter();
+			case CONNECTOR_LV:
+				return new TileEntityConnectorLV();
+			case RELAY_LV:
+				return new TileEntityRelayLV();
+			case CONNECTOR_MV:
+				return new TileEntityConnectorMV();
+			case RELAY_MV:
+				return new TileEntityRelayMV();
+			case CONNECTOR_HV:
+				return new TileEntityConnectorHV();
+			case RELAY_HV:
+				return new TileEntityRelayHV();
+			case CONNECTOR_STRUCTURAL:
+				return new TileEntityConnectorStructural();
+			case TRANSFORMER:
+				return new TileEntityTransformer();
+			case TRANSFORMER_HV:
+				return new TileEntityTransformerHV();
+			case BREAKERSWITCH:
+				return new TileEntityBreakerSwitch();
+			case REDSTONE_BREAKER:
+				return new TileEntityRedstoneBreaker();
+			case ENERGY_METER:
+				return new TileEntityEnergyMeter();
 		}
 		return null;
 	}
 	@Override
-	public IBlockState onBlockPlaced(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ,
-			int meta, EntityLivingBase placer)
+	public IBlockState onBlockPlaced(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer)
 	{
 		IBlockState ret = super.onBlockPlaced(world, pos, facing, hitX, hitY, hitZ, meta, placer);
 		if (meta==BlockTypes_Connector.TRANSFORMER.getMeta())
@@ -158,5 +157,11 @@ public class BlockConnector extends BlockIETileProvider<BlockTypes_Connector>
 				ret = ret.withProperty(IEProperties.BOOLEANS[1], true);
 		}
 		return ret;
+	}
+
+	@Override
+	public boolean allowHammerHarvest(IBlockState state)
+	{
+		return true;
 	}
 }

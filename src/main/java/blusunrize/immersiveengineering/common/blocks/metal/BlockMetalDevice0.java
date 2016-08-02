@@ -9,8 +9,8 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -23,7 +23,7 @@ public class BlockMetalDevice0 extends BlockIETileProvider<BlockTypes_MetalDevic
 		setHardness(3.0F);
 		setResistance(15.0F);
 	}
-	
+
 	@Override
 	public boolean useCustomStateMapper()
 	{
@@ -192,19 +192,25 @@ public class BlockMetalDevice0 extends BlockIETileProvider<BlockTypes_MetalDevic
 	{
 		switch(BlockTypes_MetalDevice0.values()[meta])
 		{
-		case CAPACITOR_LV:
-			return new TileEntityCapacitorLV();
-		case CAPACITOR_MV:
-			return new TileEntityCapacitorMV();
-		case CAPACITOR_HV:
-			return new TileEntityCapacitorHV();
-		case CAPACITOR_CREATIVE:
-			return new TileEntityCapacitorCreative();
-		case BARREL:
-			return new TileEntityMetalBarrel();
-		case FLUID_PUMP:
-			return new TileEntityFluidPump();
+			case CAPACITOR_LV:
+				return new TileEntityCapacitorLV();
+			case CAPACITOR_MV:
+				return new TileEntityCapacitorMV();
+			case CAPACITOR_HV:
+				return new TileEntityCapacitorHV();
+			case CAPACITOR_CREATIVE:
+				return new TileEntityCapacitorCreative();
+			case BARREL:
+				return new TileEntityMetalBarrel();
+			case FLUID_PUMP:
+				return new TileEntityFluidPump();
 		}
 		return null;
+	}
+
+	@Override
+	public boolean allowHammerHarvest(IBlockState state)
+	{
+		return true;
 	}
 }

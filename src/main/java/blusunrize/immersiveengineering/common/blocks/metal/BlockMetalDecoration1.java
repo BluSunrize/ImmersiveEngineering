@@ -1,6 +1,5 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase.IELadderBlock;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
 import blusunrize.immersiveengineering.common.blocks.wooden.BlockTypes_WoodenDecoration;
@@ -13,10 +12,10 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Blocks;
+import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
@@ -197,5 +196,11 @@ public class BlockMetalDecoration1 extends IELadderBlock<BlockTypes_MetalDecorat
 	public boolean isLadder(IBlockState state, IBlockAccess world, BlockPos pos, EntityLivingBase entity)
 	{
 		return world.getBlockState(pos).getValue(property).getMeta()%4!=0;
+	}
+
+	@Override
+	public boolean allowHammerHarvest(IBlockState state)
+	{
+		return true;
 	}
 }

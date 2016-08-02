@@ -1,12 +1,9 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import java.util.Arrays;
-
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConnectable;
 import blusunrize.immersiveengineering.common.blocks.BlockIETileProvider;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
-import blusunrize.immersiveengineering.common.blocks.wooden.BlockTypes_WoodenDevice0;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyEnum;
@@ -17,15 +14,16 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.client.model.obj.OBJModel.OBJProperty;
 import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.common.property.Properties;
+
+import java.util.Arrays;
 
 public class BlockMetalDevice1 extends BlockIETileProvider<BlockTypes_MetalDevice1>
 {
@@ -116,7 +114,7 @@ public class BlockMetalDevice1 extends BlockIETileProvider<BlockTypes_MetalDevic
 	@Override
 	public boolean isSideSolid(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side)
 	{
-		TileEntity tile = world.getTileEntity(pos); 
+		TileEntity tile = world.getTileEntity(pos);
 		if(tile instanceof TileEntityTeslaCoil)
 			return !((TileEntityTeslaCoil)tile).dummy;
 		return !(tile instanceof TileEntityElectricLantern || tile instanceof TileEntityChargingStation);
@@ -127,26 +125,26 @@ public class BlockMetalDevice1 extends BlockIETileProvider<BlockTypes_MetalDevic
 	{
 		switch(BlockTypes_MetalDevice1.values()[meta])
 		{
-		case BLAST_FURNACE_PREHEATER:
-			return new TileEntityBlastFurnacePreheater();
-		case FURNACE_HEATER:
-			return new TileEntityFurnaceHeater();
-		case DYNAMO:
-			return new TileEntityDynamo();
-		case THERMOELECTRIC_GEN:
-			return new TileEntityThermoelectricGen();
-		case ELECTRIC_LANTERN:
-			return new TileEntityElectricLantern();
-		case CHARGING_STATION:
-			return new TileEntityChargingStation();
-		case FLUID_PIPE:
-			return new TileEntityFluidPipe();
-		case SAMPLE_DRILL:
-			return new TileEntitySampleDrill();
-		case TESLA_COIL:
-			return new TileEntityTeslaCoil();
-		case FLOODLIGHT:
-			return new TileEntityFloodlight();
+			case BLAST_FURNACE_PREHEATER:
+				return new TileEntityBlastFurnacePreheater();
+			case FURNACE_HEATER:
+				return new TileEntityFurnaceHeater();
+			case DYNAMO:
+				return new TileEntityDynamo();
+			case THERMOELECTRIC_GEN:
+				return new TileEntityThermoelectricGen();
+			case ELECTRIC_LANTERN:
+				return new TileEntityElectricLantern();
+			case CHARGING_STATION:
+				return new TileEntityChargingStation();
+			case FLUID_PIPE:
+				return new TileEntityFluidPipe();
+			case SAMPLE_DRILL:
+				return new TileEntitySampleDrill();
+			case TESLA_COIL:
+				return new TileEntityTeslaCoil();
+			case FLOODLIGHT:
+				return new TileEntityFloodlight();
 
 			//		case 0://CONNECTOR_LV
 			//		case 1://CONNECTOR_MV
@@ -336,5 +334,11 @@ public class BlockMetalDevice1 extends BlockIETileProvider<BlockTypes_MetalDevic
 	{
 		TileEntityFluidPipe.indirectConnections.clear();
 		return super.onBlockPlaced(worldIn, pos, facing, hitX, hitY, hitZ, meta, placer);
+	}
+
+	@Override
+	public boolean allowHammerHarvest(IBlockState state)
+	{
+		return true;
 	}
 }

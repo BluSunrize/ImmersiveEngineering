@@ -13,7 +13,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.client.model.obj.OBJModel.OBJProperty;
 import net.minecraftforge.common.property.Properties;
 
 public class BlockMetalMultiblocks extends BlockIEMultiblock<BlockTypes_MetalMultiblock>
@@ -566,4 +565,10 @@ public class BlockMetalMultiblocks extends BlockIEMultiblock<BlockTypes_MetalMul
 	//		return super.getComparatorInputOverride(world, x, y,
 	//				z, side);
 	//	}
+
+	@Override
+	public boolean allowHammerHarvest(IBlockState state)
+	{
+		return true;
+	}
 }

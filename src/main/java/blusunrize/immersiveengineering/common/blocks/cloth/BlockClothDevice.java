@@ -1,11 +1,8 @@
 package blusunrize.immersiveengineering.common.blocks.cloth;
 
-import java.util.Arrays;
-
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConnectable;
 import blusunrize.immersiveengineering.common.blocks.BlockIETileProvider;
-import blusunrize.immersiveengineering.common.blocks.wooden.BlockTypes_WoodenDevice0;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyEnum;
@@ -22,6 +19,8 @@ import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import java.util.Arrays;
+
 public class BlockClothDevice extends BlockIETileProvider<BlockTypes_ClothDevice>
 {
 	public BlockClothDevice()
@@ -30,7 +29,7 @@ public class BlockClothDevice extends BlockIETileProvider<BlockTypes_ClothDevice
 		setHardness(0.8F);
 		setMetaLightOpacity(1, 0);
 	}
-	
+
 	@Override
 	public boolean isFullBlock(IBlockState state)
 	{
@@ -47,11 +46,11 @@ public class BlockClothDevice extends BlockIETileProvider<BlockTypes_ClothDevice
 		return false;
 	}
 
-    @SideOnly(Side.CLIENT)
-    public int getRenderColor(IBlockState state)
-    {
-        return 16777215;
-    }
+	@SideOnly(Side.CLIENT)
+	public int getRenderColor(IBlockState state)
+	{
+		return 16777215;
+	}
 
 //    @Override
 //	@SideOnly(Side.CLIENT)
@@ -59,19 +58,19 @@ public class BlockClothDevice extends BlockIETileProvider<BlockTypes_ClothDevice
 //    {
 //        return 16777215;
 //    }
-	
+
 	@Override
-    public void onFallenUpon(World worldIn, BlockPos pos, Entity entityIn, float fallDistance)
-    {
+	public void onFallenUpon(World worldIn, BlockPos pos, Entity entityIn, float fallDistance)
+	{
 //        if(entityIn.isSneaking())
 //        {
 //            super.onFallenUpon(worldIn, pos, entityIn, fallDistance);
 //        }
 //        else
 //        {
-            entityIn.fall(fallDistance, 0.0F);
+		entityIn.fall(fallDistance, 0.0F);
 //        }
-    }
+	}
 	@Override
 	protected BlockStateContainer createBlockState() {
 		BlockStateContainer base = super.createBlockState();
@@ -93,6 +92,11 @@ public class BlockClothDevice extends BlockIETileProvider<BlockTypes_ClothDevice
 		return state;
 	}
 
+	@Override
+	public boolean allowHammerHarvest(IBlockState state)
+	{
+		return true;
+	}
 //	@Override
 //	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
 //	{
@@ -160,10 +164,10 @@ public class BlockClothDevice extends BlockIETileProvider<BlockTypes_ClothDevice
 	{
 		switch(BlockTypes_ClothDevice.values()[meta])
 		{
-		case CUSHION:
-			return null;
-		case BALLOON:
-			return new TileEntityBalloon();
+			case CUSHION:
+				return null;
+			case BALLOON:
+				return new TileEntityBalloon();
 		}
 		return null;
 	}
