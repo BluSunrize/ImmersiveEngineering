@@ -14,6 +14,7 @@ import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.model.obj.OBJModel.OBJState;
 import net.minecraftforge.common.property.IExtendedBlockState;
@@ -66,18 +67,18 @@ public class TileRenderBucketWheel extends TileEntitySpecialRenderer<TileEntityB
 			GlStateManager.shadeModel(7424);
 		GlStateManager.pushMatrix();
 		GlStateManager.translate(x+.5, y+.5, z+.5);
-		
-		EnumFacing facing = state.getValue(IEProperties.FACING_HORIZONTAL);
-		GlStateManager.rotate(facing==EnumFacing.NORTH?180: facing==EnumFacing.EAST?90: facing==EnumFacing.WEST?-90: 0, 0, 1, 0);
+
+		EnumFacing facing = tile.facing;
+		GlStateManager.rotate(facing.getAxis() == Axis.X ? 90 : -90, 0, 1, 0);
 
 		if(tile.mirrored)
 		{
 			GlStateManager.scale(1,1,-1);
 			GlStateManager.disableCull();
 		}
-		
+
 		float rot =  tile.rotation+(float)(tile.active?Config.getDouble("excavator_speed")*f:0);
-		GlStateManager.rotate(rot, 0,0,1);
+		GlStateManager.rotate(rot, facing == EnumFacing.NORTH ? 1 : (facing == EnumFacing.SOUTH ? -1 : 0), 0, facing == EnumFacing.EAST ? 1 : (facing == EnumFacing.WEST ? -1 : 0));
 
 		worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
 		worldRenderer.setTranslation( -.5-blockPos.getX(), -.5- blockPos.getY(),  -.5-blockPos.getZ());
@@ -87,7 +88,7 @@ public class TileRenderBucketWheel extends TileEntitySpecialRenderer<TileEntityB
 		tessellator.draw();
 		GlStateManager.popMatrix();
 		RenderHelper.enableStandardItemLighting();
-		
+
 		if(tile.mirrored)
 		{
 //			GlStateManager.scale(1,1,-1);
