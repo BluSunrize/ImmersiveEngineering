@@ -1,9 +1,5 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IEProperties.PropertyBoolInverted;
@@ -28,20 +24,17 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.util.EnumFacing;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.FluidTankProperties;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMetal<T, R>, R extends IMultiblockRecipe> extends TileEntityMultiblockPart<T> implements IIEInventory, IFluxReceiver,IEnergyReceiver, IHammerInteraction, IMirrorAble
 {
@@ -588,6 +581,7 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 		@Override
 		protected void processFinish(TileEntityMultiblockMetal multiblock)
 		{
+			super.processFinish(multiblock);
 			ItemStack[] inv = multiblock.getInventory();
 			if(inv!=null && this.inputSlots!=null)
 			{
@@ -618,7 +612,6 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 							}
 					}
 			}
-			super.processFinish(multiblock);
 		}
 		@Override
 		protected void writeExtraDataToNBT(NBTTagCompound nbt)
