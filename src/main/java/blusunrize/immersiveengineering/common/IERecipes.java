@@ -44,7 +44,7 @@ public class IERecipes
 	{
 		RecipeSorter.register(ImmersiveEngineering.MODID+":shapedArrayList", RecipeShapedArrayList.class, Category.SHAPED, "after:forge:shapedore");
 		RecipeSorter.register(ImmersiveEngineering.MODID+":shapedIngredient", RecipeShapedIngredient.class, Category.SHAPED, "after:forge:shapedore");
-		RecipeSorter.register(ImmersiveEngineering.MODID+":toolDamage", RecipeToolDamage.class, Category.SHAPELESS, "after:forge:shapedore");
+		RecipeSorter.register(ImmersiveEngineering.MODID + ":shapelessIngredient", RecipeShapelessIngredient.class, Category.SHAPELESS, "after:forge:shapedore");
 
 		ItemStack copperCoil = new ItemStack(IEContent.blockMetalDecoration0,1,BlockTypes_MetalDecoration0.COIL_LV.getMeta());
 		ItemStack electrumCoil = new ItemStack(IEContent.blockMetalDecoration0,1,BlockTypes_MetalDecoration0.COIL_MV.getMeta());
@@ -72,15 +72,6 @@ public class IERecipes
 		addOredictRecipe(new ItemStack(IEContent.itemMaterial,1,15), " I ","ICI"," I ", 'I',"ingotSteel",'C',componentIron);
 		addOredictRecipe(new ItemStack(IEContent.itemMaterial,1,16), "I  ","II "," II", 'I',"ingotSteel");
 
-
-//		addShapelessOredictRecipe(new ItemStack(IEContent.itemMaterial,1,20), "plateCopper",new ItemStack(IEContent.itemTool,1,1));
-//		GameRegistry.addRecipe(new RecipeToolDamage(new ItemStack(IEContent.itemMaterial,1,20),1, "plateCopper",Items.SHEARS));
-//		addShapelessOredictRecipe(new ItemStack(IEContent.itemMaterial,1,21), "plateElectrum",new ItemStack(IEContent.itemTool,1,1));
-//		GameRegistry.addRecipe(new RecipeToolDamage(new ItemStack(IEContent.itemMaterial,1,21),1, "plateElectrum",Items.SHEARS));
-//		addShapelessOredictRecipe(new ItemStack(IEContent.itemMaterial,1,22), "plateAluminum",new ItemStack(IEContent.itemTool,1,1));
-//		GameRegistry.addRecipe(new RecipeToolDamage(new ItemStack(IEContent.itemMaterial,1,22),1, "plateAluminum",Items.SHEARS));
-//		addShapelessOredictRecipe(new ItemStack(IEContent.itemMaterial,1,23), "plateSteel",new ItemStack(IEContent.itemTool,1,1));
-//		GameRegistry.addRecipe(new RecipeToolDamage(new ItemStack(IEContent.itemMaterial,1,23),1, "plateSteel",Items.SHEARS));
 		addShapelessIngredientRecipe(new ItemStack(IEContent.itemMaterial, 1, 20), "plateCopper", cutters).setToolDamageRecipe(1);
 		addShapelessIngredientRecipe(new ItemStack(IEContent.itemMaterial, 1, 21), "plateElectrum", cutters).setToolDamageRecipe(1);
 		addShapelessIngredientRecipe(new ItemStack(IEContent.itemMaterial, 1, 22), "plateAluminum", cutters).setToolDamageRecipe(1);

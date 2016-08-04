@@ -1,12 +1,18 @@
-#####Version 0.10-30
+#####Version 0.10-31 - BUILT
+- added Redstone Wire connector
+- fixed wire rendering
+- cleaned up recipes and manual a little
+- fixed crash with cart shaders
+
+#####Version 0.10-30 - BUILT
 - UPDATE TO 1.10.2
 
-#####Version 0.9-29
+#####Version 0.9-29 - BUILT
 - UPDATE TO 1.9.4
 - mostly port, movign stuff to new fluid systems, capabilities, etc
 - moved 3D Maneuver gear. It didn't fit the style of hte mod and was incredibly glitchy
 
-#####Version 0.8-28
+#####Version 0.8-28 - BUILT
 - re-added the Floodlight back in
 - re-added the transformers that can attach to posts (thanks Malte)
 - re-added the ability for the pump to not create cobblestone and improved the pump (thanks Malte)

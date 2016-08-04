@@ -64,7 +64,8 @@ public class CapabilityHandler_CartShaders implements ICapabilityProvider, INBTS
 	public NBTTagCompound serializeNBT()
 	{
 		NBTTagCompound nbt = new NBTTagCompound();
-		nbt.setTag("shader", shader.writeToNBT(new NBTTagCompound()));
+		if(shader != null)
+			nbt.setTag("shader", shader.writeToNBT(new NBTTagCompound()));
 		return nbt;
 	}
 

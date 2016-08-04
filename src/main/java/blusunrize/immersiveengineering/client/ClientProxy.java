@@ -554,7 +554,7 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.Text(ManualHelper.getManual(), "silo1"),
 				new ManualPages.Text(ManualHelper.getManual(), "silo2"));
 
-		ItemStack[] wires = {new ItemStack(IEContent.itemMaterial, 1, 20), new ItemStack(IEContent.itemWireCoil, 1, 0), new ItemStack(IEContent.itemMaterial, 1, 21), new ItemStack(IEContent.itemWireCoil, 1, 1), new ItemStack(IEContent.itemMaterial, 1, 22), new ItemStack(IEContent.itemMaterial, 1, 23), new ItemStack(IEContent.itemWireCoil, 1, 2)};
+		Object[] wires = {new ItemStack(IEContent.itemMaterial, 1, 20), new ItemStack(IEContent.itemWireCoil, 1, 0), new ItemStack(IEContent.itemMaterial, 1, 21), new ItemStack(IEContent.itemWireCoil, 1, 1), new ItemStack(IEContent.itemMaterial, 1, 22), new ItemStack(IEContent.itemMaterial, 1, 23), new ItemStack(IEContent.itemWireCoil, 1, 2)};
 		ManualHelper.addEntry("wiring", ManualHelper.CAT_ENERGY,
 				new ManualPages.Text(ManualHelper.getManual(), "wiring0"),
 				new ManualPages.CraftingMulti(ManualHelper.getManual(), "wiring1", wires),
