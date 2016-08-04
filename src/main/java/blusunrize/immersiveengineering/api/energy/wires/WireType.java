@@ -1,13 +1,13 @@
 package blusunrize.immersiveengineering.api.energy.wires;
 
-import java.util.LinkedHashSet;
-
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import java.util.LinkedHashSet;
 
 /**
  * @author BluSunrize - 08.03.2015<br>
@@ -50,13 +50,13 @@ public abstract class WireType
 	public abstract boolean isEnergyWire();
 
 	//THESE VALUES ARE FOR IE's OWN WIRES!
-	public static String[] uniqueNames = {"COPPER","ELECTRUM","STEEL","STRUCTURE_ROPE","STRUCTURE_STEEL"};
+	public static String[] uniqueNames = {"COPPER", "ELECTRUM", "STEEL", "STRUCTURE_ROPE", "STRUCTURE_STEEL", "REDSTONE"};
 	public static double[] wireLossRatio;
 	public static int[] wireTransferRate;
 	public static int[] wireColouration;
 	public static int[] wireLength;
 	public static Item ieWireCoil;
-	public static double[] renderDiameter = {.03125,.03125, .0625,.0625,.0625};
+	public static double[] renderDiameter = {.03125, .03125, .0625, .0625, .0625, .03125};
 	@SideOnly(Side.CLIENT)
 	public static TextureAtlasSprite iconDefaultWire;
 
@@ -65,6 +65,7 @@ public abstract class WireType
 	public static WireType STEEL = new IEBASE(2);
 	public static WireType STRUCTURE_ROPE = new IEBASE(3);
 	public static WireType STRUCTURE_STEEL = new IEBASE(4);
+	public static WireType REDSTONE = new IEBASE(5);
 
 	/**
 	 * DO NOT SUBCLASS THIS.

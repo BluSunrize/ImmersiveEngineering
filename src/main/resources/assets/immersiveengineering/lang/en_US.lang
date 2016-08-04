@@ -135,6 +135,7 @@ tile.immersiveengineering.connector.transformer_hv.name=HV Transformer
 tile.immersiveengineering.connector.breakerswitch.name=Breaker Switch
 tile.immersiveengineering.connector.redstone_breaker.name=Redstone Breaker
 tile.immersiveengineering.connector.energy_meter.name=Current Transformer
+tile.immersiveengineering.connector.connector_redstone.name=Redstone Wire Connector
 
 tile.immersiveengineering.metalDevice0.capacitor_lv.name=LV Capacitor
 tile.immersiveengineering.metalDevice0.capacitor_mv.name=MV Capacitor
@@ -178,6 +179,9 @@ tile.immersiveengineering.hemp.name=Industrial Hemp
 
 tile.immersiveengineering.clothDevice.cushion.name=Jump Cushion
 tile.immersiveengineering.clothDevice.balloon.name=Balloon
+
+tile.immersiveengineering.molten_uranium.name=Molten Uranium
+tile.immersiveengineering.molten_constantan.name=Molten Constantan
 
 #Hydraulicraft Compat
 tile.harvesterTrolley.ieCrop.name=Industrial Hemp Harvester Trolley 
@@ -273,6 +277,7 @@ item.immersiveengineering.wirecoil.electrum.name=MV Wire Coil
 item.immersiveengineering.wirecoil.hv.name=HV Wire Coil
 item.immersiveengineering.wirecoil.rope.name=Hemp Rope Coil
 item.immersiveengineering.wirecoil.structural.name=Steel Cable Coil
+item.immersiveengineering.wirecoil.redstone.name=Redstone Wire Coil
 item.immersiveengineering.tool.hammer.name=Engineer's Hammer
 item.immersiveengineering.tool.wirecutter.name=Engineer's Wire Cutters
 item.immersiveengineering.tool.voltmeter.name=Engineer's Voltmeter
@@ -391,6 +396,9 @@ desc.immersiveengineering.info.blockSide.north=North Side
 desc.immersiveengineering.info.blockSide.south=South Side
 desc.immersiveengineering.info.blockSide.west=West Side
 desc.immersiveengineering.info.blockSide.east=East Side
+desc.immersiveengineering.info.blockSide.io.-1=No Connection
+desc.immersiveengineering.info.blockSide.io.0=Input
+desc.immersiveengineering.info.blockSide.io.1=Output
 desc.immersiveengineering.info.blockSide.connectEnergy.-1=No Connection
 desc.immersiveengineering.info.blockSide.connectEnergy.0=Energy Input
 desc.immersiveengineering.info.blockSide.connectEnergy.1=Energy Output
@@ -469,6 +477,8 @@ desc.immersiveengineering.info.toolbox.food=Food
 desc.immersiveengineering.info.toolbox.tool=Tools
 desc.immersiveengineering.info.toolbox.wire=Wiring
 desc.immersiveengineering.info.toolbox.any=Anything
+
+desc.immersiveengineering.info.redstoneChannel=Channel: %1$s
 
 desc.immersiveengineering.flavour.treatedWood.horizontal=Horizontal Planks
 desc.immersiveengineering.flavour.treatedWood.vertical=Vertical Planks

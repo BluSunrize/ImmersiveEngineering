@@ -1,14 +1,13 @@
 package blusunrize.immersiveengineering.api.energy.wires;
 
-import java.util.Set;
-
-import com.google.common.collect.ImmutableSet;
-
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
+import com.google.common.collect.ImmutableSet;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+
+import java.util.Set;
 
 /**
  * @author BluSunrize - 08.03.2015
@@ -48,7 +47,7 @@ public interface IImmersiveConnectable
 	/**
 	 * fired when a cable is attached, use to limit the cables attached to one type
 	 */
-	void connectCable(WireType cableType, TargetingInfo target);
+	void connectCable(WireType cableType, TargetingInfo target, IImmersiveConnectable other);
 	
 	/**
 	 * get the CableType limiter of the tile

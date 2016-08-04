@@ -1,25 +1,25 @@
 package blusunrize.immersiveengineering.api.energy.wires;
 
 
-import java.util.HashSet;
-import java.util.Set;
-
-import com.google.common.collect.ImmutableSet;
-
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.Utils;
+import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.common.property.IExtendedBlockState;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase implements IImmersiveConnectable
 {
@@ -88,7 +88,7 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 		return limitType==null||(this.isRelay() && limitType==cableType);
 	}
 	@Override
-	public void connectCable(WireType cableType, TargetingInfo target)
+	public void connectCable(WireType cableType, TargetingInfo target, IImmersiveConnectable other)
 	{
 		this.limitType = cableType;
 	}
@@ -162,8 +162,20 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 			IBlockState state = worldObj.getBlockState(pos);
 			worldObj.notifyBlockUpdate(pos, state,state, 3);
 			return true;
+		} else if(id == 254)
+		{
+			IBlockState state = worldObj.getBlockState(pos);
+			if(state instanceof IExtendedBlockState)
+			{
+				state = state.getActualState(worldObj, getPos());
+				state = state.getBlock().getExtendedState(state, worldObj, getPos());
+				ImmersiveEngineering.proxy.removeStateFromSmartModelCache((IExtendedBlockState) state);
+				ImmersiveEngineering.proxy.removeStateFromConnectionModelCache((IExtendedBlockState) state);
+			}
+			worldObj.notifyBlockUpdate(pos, state, state, 3);
+			return true;
 		}
-		return false;
+		return super.receiveClientEvent(id, arg);
 	}
 
 	@Override

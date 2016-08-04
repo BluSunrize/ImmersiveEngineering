@@ -77,7 +77,7 @@ public class ImmersiveEngineering
 		IEApi.prefixToIngotMap.put("rod", new Integer[]{2,1});
 		IEApi.prefixToIngotMap.put("fence", new Integer[]{5,3});
 		IECompatModule.doModulesPreInit();
-		proxy.preInitSidedCompat();
+		proxy.preInitEnd();
 	}
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent event)
@@ -98,7 +98,7 @@ public class ImmersiveEngineering
 //		Config.setBoolean("ic2Manual", Lib.IC2);
 //		Config.setBoolean("gregManual", Lib.GREG);
 		IECompatModule.doModulesInit();
-		proxy.initSidedCompat();
+		proxy.initEnd();
 		int messageId = 0;
 		packetHandler.registerMessage(MessageMineralListSync.Handler.class, MessageMineralListSync.class, messageId++, Side.CLIENT);
 		packetHandler.registerMessage(MessageTileSync.HandlerServer.class, MessageTileSync.class, messageId++, Side.SERVER);
@@ -118,7 +118,7 @@ public class ImmersiveEngineering
 		proxy.postInit();
 		new ThreadContributorSpecialsDownloader();
 		IECompatModule.doModulesPostInit();
-		proxy.postInitSidedCompat();
+		proxy.postInitEnd();
 		ShaderRegistry.compileWeight();
 	}
 	@Mod.EventHandler

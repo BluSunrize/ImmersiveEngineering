@@ -5,7 +5,6 @@ import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Conn
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -80,7 +79,7 @@ public class IICProxy implements IImmersiveConnectable
 		return false;
 	}
 	@Override
-	public void connectCable(WireType cableType, TargetingInfo target)
+	public void connectCable(WireType cableType, TargetingInfo target, IImmersiveConnectable other)
 	{}
 	@Override
 	public WireType getCableLimiter(TargetingInfo target)
