@@ -175,7 +175,7 @@ public class ItemDrill extends ItemUpgradeableTool implements IShaderEquipableIt
 		if(material.equals("head") && this.getHead(stack)!=null && this.getHead(stack).getItem() instanceof IDrillHead)
 		{
 			TextureAtlasSprite spr = ((IDrillHead)this.getHead(stack).getItem()).getDrillTexture(stack, this.getHead(stack));
-			return spr; 
+			return spr;
 		}
 		return null;
 	}
@@ -190,19 +190,19 @@ public class ItemDrill extends ItemUpgradeableTool implements IShaderEquipableIt
 			return upgrades.getBoolean("waterproof");
 		if(group.equals("upgrade_speed"))
 			return upgrades.getInteger("speed")>0;
-			if(this.getHead(stack)!=null)
-			{
-				if(group.equals("drill_head"))
-					return true;
+		if(this.getHead(stack) != null)
+		{
+			if(group.equals("drill_head"))
+				return true;
 
-				if(group.equals("upgrade_damage0"))
-					return upgrades.getInteger("damage")>0;
-					if(group.equals("upgrade_damage1")||group.equals("upgrade_damage2"))
-						return upgrades.getInteger("damage")>1;
-						if(group.equals("upgrade_damage3")||group.equals("upgrade_damage4"))
-							return upgrades.getInteger("damage")>2;
-			}
-			return false;
+			if(group.equals("upgrade_damage0"))
+				return upgrades.getInteger("damage") > 0;
+			if(group.equals("upgrade_damage1") || group.equals("upgrade_damage2"))
+				return upgrades.getInteger("damage") > 1;
+			if(group.equals("upgrade_damage3") || group.equals("upgrade_damage4"))
+				return upgrades.getInteger("damage") > 2;
+		}
+		return false;
 	}
 	@SideOnly(Side.CLIENT)
 	@Override
@@ -344,10 +344,13 @@ public class ItemDrill extends ItemUpgradeableTool implements IShaderEquipableIt
 	@Override
 	public Multimap getAttributeModifiers(EntityEquipmentSlot slot, ItemStack stack)
 	{
-		ItemStack head = getHead(stack);
 		Multimap multimap = super.getAttributeModifiers(slot, stack);
-		if(head!=null && slot==EntityEquipmentSlot.MAINHAND)
-			multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getAttributeUnlocalizedName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Tool modifier", ((IDrillHead)head.getItem()).getAttackDamage(head)+getUpgrades(stack).getInteger("damage"), 0));
+		if(slot == EntityEquipmentSlot.MAINHAND)
+		{
+			ItemStack head = getHead(stack);
+			if(head != null)
+				multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getAttributeUnlocalizedName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Tool modifier", ((IDrillHead) head.getItem()).getAttackDamage(head) + getUpgrades(stack).getInteger("damage"), 0));
+		}
 		return multimap;
 	}
 	@Override
@@ -457,7 +460,7 @@ public class ItemDrill extends ItemUpgradeableTool implements IShaderEquipableIt
 					block.onBlockHarvested(world, pos, state, player);
 					if (block.removedByPlayer(state, world, pos, player, false))
 						block.onBlockDestroyedByPlayer(world, pos, state);
-				} 
+				}
 				else
 				{
 					block.onBlockHarvested(world, pos, state, player);

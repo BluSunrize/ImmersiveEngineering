@@ -1,31 +1,26 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.IEProperties.PropertyBoolInverted;
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IActiveState;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IUsesBooleanProperty;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Axis;
 
 public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable implements IBlockBounds, IDirectionalTile, IActiveState, IHammerInteraction, IPlayerInteraction
 {
@@ -69,7 +64,7 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 		return limitType==null || cableType==limitType;
 	}
 	@Override
-	public void connectCable(WireType cableType, TargetingInfo target)
+	public void connectCable(WireType cableType, TargetingInfo target, IImmersiveConnectable other)
 	{
 		if(this.limitType==null)
 			this.limitType = cableType;

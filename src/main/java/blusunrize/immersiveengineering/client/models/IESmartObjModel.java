@@ -1,30 +1,5 @@
 package blusunrize.immersiveengineering.client.models;
 
-import java.lang.reflect.Field;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-
-import javax.vecmath.Matrix4f;
-
-import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalDevice1;
-import com.google.common.collect.ImmutableList;
-import net.minecraft.block.properties.IProperty;
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ItemOverrideList;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.world.World;
-import net.minecraftforge.common.model.IModelPart;
-import net.minecraftforge.common.model.IModelState;
-import net.minecraftforge.common.model.TRSRTransformation;
-import net.minecraftforge.common.property.*;
-import net.minecraftforge.common.property.Properties;
-import org.apache.commons.lang3.tuple.Pair;
-
-import com.google.common.base.Optional;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
-
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.ComparableItemStack;
 import blusunrize.immersiveengineering.api.IEProperties;
@@ -33,27 +8,38 @@ import blusunrize.immersiveengineering.api.shader.IShaderItem;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.client.models.smart.ConnModelReal.ExtBlockstateAdapter;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
+import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
+import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.obj.OBJModel;
-import net.minecraftforge.client.model.obj.OBJModel.Face;
-import net.minecraftforge.client.model.obj.OBJModel.Group;
-import net.minecraftforge.client.model.obj.OBJModel.Normal;
-import net.minecraftforge.client.model.obj.OBJModel.OBJBakedModel;
-import net.minecraftforge.client.model.obj.OBJModel.OBJProperty;
-import net.minecraftforge.client.model.obj.OBJModel.OBJState;
-import net.minecraftforge.client.model.obj.OBJModel.TextureCoordinate;
-import net.minecraftforge.client.model.obj.OBJModel.Vertex;
+import net.minecraftforge.client.model.obj.OBJModel.*;
 import net.minecraftforge.client.model.pipeline.LightUtil;
 import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
+import net.minecraftforge.common.model.IModelState;
+import net.minecraftforge.common.model.TRSRTransformation;
+import net.minecraftforge.common.property.IExtendedBlockState;
+import net.minecraftforge.common.property.Properties;
+import org.apache.commons.lang3.tuple.Pair;
+
+import javax.vecmath.Matrix4f;
+import java.lang.reflect.Field;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 @SuppressWarnings("deprecation")
 public class IESmartObjModel extends OBJBakedModel
@@ -238,14 +224,14 @@ public class IESmartObjModel extends OBJBakedModel
 			{
 				OBJState state = (OBJState) this.getState();
 				if (state.parent != null)
-					transform = state.parent.apply(Optional.<IModelPart>absent());
+					transform = state.parent.apply(Optional.absent());
 				if (callback != null)
 					transform = callback.applyTransformations(callbackObject, g.getName(), transform);
 				if (state.getGroupsWithVisibility(true).contains(g.getName()))
 					faces.addAll(g.applyTransform(transform));
 			} else
 			{
-				transform = getState().apply(Optional.<IModelPart>absent());
+				transform = getState().apply(Optional.absent());
 				if (callback != null)
 					transform = callback.applyTransformations(callbackObject, g.getName(), transform);
 				faces.addAll(g.applyTransform(transform));
@@ -259,13 +245,14 @@ public class IESmartObjModel extends OBJBakedModel
 					int[] iCol = sCase.getRGBAColourModifier(shader, tempStack, g.getName(), pass);
 					for (int i = 0; i < iCol.length; i++)
 						colour[i] = iCol[i] / 255f;
-				} else if (tempState != null)
+				} else if(callback != null)
 				{
+					int iCol = callback.getRenderColour(callbackObject, g.getName());
 					//						int iCol = tempState.getBlock().colorMultiplier(ClientUtils.mc().theWorld, tempState, MinecraftForgeClient.getRenderPass());
-					//						colour[0] = (iCol>>16&255)/255f;
-					//						colour[1] = (iCol>>8&255)/255f;
-					//						colour[2] = (iCol&255)/255f;
-					//						colour[3] = (iCol>>24&255)/255f;
+					colour[0] = (iCol >> 16 & 255) / 255f;
+					colour[1] = (iCol >> 8 & 255) / 255f;
+					colour[2] = (iCol & 255) / 255f;
+					colour[3] = (iCol >> 24 & 255) / 255f;
 				}
 
 

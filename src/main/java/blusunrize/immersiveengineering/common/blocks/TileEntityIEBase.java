@@ -1,16 +1,16 @@
 package blusunrize.immersiveengineering.common.blocks;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.Packet;
-import net.minecraft.network.play.INetHandlerPlayClient;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.property.IExtendedBlockState;
 
 public abstract class TileEntityIEBase extends TileEntity
 {
@@ -61,9 +61,16 @@ public abstract class TileEntityIEBase extends TileEntity
 	@Override
 	public boolean receiveClientEvent(int id, int type)
 	{
-		if (id==0||id==255)
+		if(id == 0 || id == 255)
 		{
 			markContainingBlockForUpdate(null);
+			return true;
+		} else if(id == 254)
+		{
+			IBlockState state = worldObj.getBlockState(pos);
+			if(state instanceof IExtendedBlockState)
+				ImmersiveEngineering.proxy.removeStateFromSmartModelCache((IExtendedBlockState) state);
+			worldObj.notifyBlockUpdate(pos, state, state, 3);
 			return true;
 		}
 		return super.receiveClientEvent(id, type);
@@ -89,5 +96,6 @@ public abstract class TileEntityIEBase extends TileEntity
 		if(newState==null)
 			newState = state;
 		worldObj.notifyBlockUpdate(pos,state,newState,3);
+		worldObj.notifyNeighborsOfStateChange(pos, newState.getBlock());
 	}
 }

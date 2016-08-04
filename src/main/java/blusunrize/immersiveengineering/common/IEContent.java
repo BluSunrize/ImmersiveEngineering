@@ -399,6 +399,7 @@ public class IEContent
 		registerTile(TileEntityBreakerSwitch.class);
 		registerTile(TileEntityRedstoneBreaker.class);
 		registerTile(TileEntityEnergyMeter.class);
+		registerTile(TileEntityConnectorRedstone.class);
 
 		registerTile(TileEntityCapacitorLV.class);
 		registerTile(TileEntityCapacitorMV.class);

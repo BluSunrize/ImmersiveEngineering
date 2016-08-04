@@ -20,6 +20,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 
@@ -29,11 +30,20 @@ import java.util.UUID;
 public class CommonProxy implements IGuiHandler
 {
 	public void preInit(){}
-	public void preInitSidedCompat(){}
+
+	public void preInitEnd()
+	{
+	}
 	public void init(){}
-	public void initSidedCompat(){}
+
+	public void initEnd()
+	{
+	}
 	public void postInit(){}
-	public void postInitSidedCompat(){}
+
+	public void postInitEnd()
+	{
+	}
 	public void serverStarting(){}
 	public void onWorldLoad(){}
 
@@ -144,6 +154,14 @@ public class CommonProxy implements IGuiHandler
 		return FMLCommonHandler.instance().getMinecraftServerInstance().getMinecraftSessionService().fillProfileProperties(new GameProfile(UUID.fromString(uuid.replaceAll("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})", "$1-$2-$3-$4-$5")), null), false).getName();
 	}
 	public void reInitGui()
+	{
+	}
+
+	public void removeStateFromSmartModelCache(IExtendedBlockState state)
+	{
+	}
+
+	public void removeStateFromConnectionModelCache(IExtendedBlockState state)
 	{
 	}
 }

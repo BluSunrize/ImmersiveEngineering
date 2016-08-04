@@ -58,7 +58,7 @@ public class RecipeShapedIngredient extends ShapedOreRecipe
 		return this;
 	}
 
-	public RecipeShapedIngredient setNBTCopyTargetSlot(int slot)
+	public RecipeShapedIngredient setNBTCopyTargetRecipe(int slot)
 	{
 		this.nbtCopyTargetSlot = slot;
 		return this;

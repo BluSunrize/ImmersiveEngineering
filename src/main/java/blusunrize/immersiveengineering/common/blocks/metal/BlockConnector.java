@@ -27,7 +27,7 @@ public class BlockConnector extends BlockIETileProvider<BlockTypes_Connector>
 {
 	public BlockConnector()
 	{
-		super("connector",Material.IRON, PropertyEnum.create("type", BlockTypes_Connector.class), ItemBlockIEBase.class, IEProperties.FACING_ALL,IEProperties.BOOLEANS[0],IEProperties.BOOLEANS[1],IEProperties.MULTIBLOCKSLAVE);
+		super("connector", Material.IRON, PropertyEnum.create("type", BlockTypes_Connector.class), ItemBlockIEBase.class, IEProperties.FACING_ALL, IEProperties.BOOLEANS[0], IEProperties.BOOLEANS[1], IEProperties.MULTIBLOCKSLAVE, IEProperties.OBJ_MODEL_CALLBACK);
 		setHardness(3.0F);
 		setResistance(15.0F);
 		lightOpacity = 0;
@@ -45,6 +45,11 @@ public class BlockConnector extends BlockIETileProvider<BlockTypes_Connector>
 	}
 	@Override
 	public boolean isOpaqueCube(IBlockState state)
+	{
+		return false;
+	}
+	@Override
+	public boolean isNormalCube(IBlockState state, IBlockAccess world, BlockPos pos)
 	{
 		return false;
 	}
@@ -73,7 +78,7 @@ public class BlockConnector extends BlockIETileProvider<BlockTypes_Connector>
 	protected BlockStateContainer createBlockState()
 	{
 		BlockStateContainer base = super.createBlockState();
-		IUnlistedProperty[] unlisted = (IUnlistedProperty[]) ((base instanceof ExtendedBlockState)?((ExtendedBlockState)base).getUnlistedProperties().toArray():new IUnlistedProperty[0]);
+		IUnlistedProperty[] unlisted = (base instanceof ExtendedBlockState) ? ((ExtendedBlockState) base).getUnlistedProperties().toArray(new IUnlistedProperty[0]) : new IUnlistedProperty[0];
 		unlisted = Arrays.copyOf(unlisted, unlisted.length+1);
 		unlisted[unlisted.length-1] = IEProperties.CONNECTIONS;
 		return new ExtendedBlockState(this, base.getProperties().toArray(new IProperty[0]), unlisted);
@@ -81,7 +86,8 @@ public class BlockConnector extends BlockIETileProvider<BlockTypes_Connector>
 	@Override
 	public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos)
 	{
-		if (state instanceof IExtendedBlockState)
+		state = super.getExtendedState(state, world, pos);
+		if(state instanceof IExtendedBlockState)
 		{
 			IExtendedBlockState ext = (IExtendedBlockState) state;
 			TileEntity te = world.getTileEntity(pos);
@@ -98,17 +104,29 @@ public class BlockConnector extends BlockIETileProvider<BlockTypes_Connector>
 	}
 
 	@Override
-	public void onNeighborChange(IBlockAccess world, BlockPos pos, BlockPos neighbor)
+	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block blockIn)
 	{
 		TileEntity te = world.getTileEntity(pos);
 		if(te instanceof TileEntityConnectorLV)
 		{
-			TileEntityConnectorLV relay = (TileEntityConnectorLV)te;
-			if(world.isAirBlock(pos.offset(relay.facing)))
+			TileEntityConnectorLV connector = (TileEntityConnectorLV) te;
+			if(world.isAirBlock(pos.offset(connector.facing)))
 			{
-				this.dropBlockAsItem(relay.getWorld(), pos, world.getBlockState(pos), 0);
-				relay.getWorld().setBlockToAir(pos);
+				this.dropBlockAsItem(connector.getWorld(), pos, world.getBlockState(pos), 0);
+				connector.getWorld().setBlockToAir(pos);
+				return;
 			}
+		}
+		if(te instanceof TileEntityConnectorRedstone)
+		{
+			TileEntityConnectorRedstone connector = (TileEntityConnectorRedstone) te;
+			if(world.isAirBlock(pos.offset(connector.facing)))
+			{
+				this.dropBlockAsItem(connector.getWorld(), pos, world.getBlockState(pos), 0);
+				connector.getWorld().setBlockToAir(pos);
+				return;
+			}
+			connector.wireNetwork.updateValues();
 		}
 	}
 
@@ -141,6 +159,8 @@ public class BlockConnector extends BlockIETileProvider<BlockTypes_Connector>
 				return new TileEntityRedstoneBreaker();
 			case ENERGY_METER:
 				return new TileEntityEnergyMeter();
+			case CONNECTOR_REDSTONE:
+				return new TileEntityConnectorRedstone();
 		}
 		return null;
 	}

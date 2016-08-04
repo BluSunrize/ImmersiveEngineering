@@ -1,17 +1,9 @@
 package blusunrize.immersiveengineering.client.models.smart;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
@@ -23,6 +15,9 @@ import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.obj.OBJModel;
 import net.minecraftforge.common.model.IModelState;
+
+import java.io.IOException;
+import java.util.*;
 
 public class ConnLoader implements ICustomModelLoader
 {
@@ -47,6 +42,8 @@ public class ConnLoader implements ICustomModelLoader
 		baseModels.put("conn_struct",
 				new ResourceLocation("immersiveengineering:block/connector/connectorStructural.obj"));
 
+		baseModels.put("conn_redstone", new ResourceLocation("immersiveengineering:block/connector/connectorRedstone.obj.ie"));
+
 		baseModels.put("breaker_off",
 				new ResourceLocation("immersiveengineering:block/connector/breakerSwitch_off.obj"));
 		baseModels.put("breaker_on", new ResourceLocation("immersiveengineering:block/connector/breakerSwitch_on.obj"));
@@ -65,7 +62,7 @@ public class ConnLoader implements ICustomModelLoader
 				new ResourceLocation("immersiveengineering:block/connector/transformer_mv_right.obj"));
 		baseModels.put("transformer_mv_post",
 				new ResourceLocation("immersiveengineering:block/connector/transformerPost.obj"));
-		
+
 		baseModels.put("eLantern",
 				new ResourceLocation("immersiveengineering:block/metalDevice/eLantern.obj"));
 		baseModels.put("eLantern_on",

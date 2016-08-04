@@ -1,21 +1,15 @@
 package blusunrize.immersiveengineering.common.util.compat;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEffect_Potion;
 import blusunrize.immersiveengineering.api.tool.ToolboxHandler;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.IERecipes;
+import blusunrize.immersiveengineering.common.blocks.BlockIEFluid;
 import blusunrize.immersiveengineering.common.util.IEPotions;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.ItemMeshDefinition;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -24,8 +18,6 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.biome.Biome;
-import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.fluids.BlockFluidClassic;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -45,8 +37,6 @@ import slimeknights.tconstruct.library.traits.AbstractTrait;
 import slimeknights.tconstruct.library.utils.HarvestLevels;
 import slimeknights.tconstruct.tools.TinkerMaterials;
 
-import javax.annotation.Nonnull;
-
 public class TConstructHelper extends IECompatModule
 {
 	public static final Material treatedWood = new Material("treatedwood", 0x653522);
@@ -64,14 +54,12 @@ public class TConstructHelper extends IECompatModule
 		//		sendFluidForMelting("Uranium", 0x596552, 600);
 		fluidUranium = new FluidColouredMetal("uranium", 0x596552, 600);
 		sendFluidForMelting("Uranium", fluidUranium);
-		blockMoltenUranium = new BlockFluidClassic(fluidUranium, net.minecraft.block.material.Material.LAVA);
-		ImmersiveEngineering.registerBlock(blockMoltenUranium,ItemBlock.class,"molten_uranium");
+		blockMoltenUranium = new BlockIEFluid("molten_uranium", fluidUranium, net.minecraft.block.material.Material.LAVA);
 
 		//		Fluid fluidCons = sendFluidForMelting("Constantan", 0xf7866c, 518);
 		fluidConstantan = new FluidColouredMetal("constantan", 0xf7866c, 518);
 		sendFluidForMelting("Constantan", fluidUranium);
-		blockMoltenConstantan = new BlockFluidClassic(fluidConstantan, net.minecraft.block.material.Material.LAVA);
-		ImmersiveEngineering.registerBlock(blockMoltenConstantan,ItemBlock.class,"molten_constantan");
+		blockMoltenConstantan = new BlockIEFluid("molten_constantan", fluidConstantan, net.minecraft.block.material.Material.LAVA);
 
 
 		sendAlloyForMelting(new FluidStack(fluidConstantan, 2), "copper",1, "nickel",1);
@@ -230,47 +218,14 @@ public class TConstructHelper extends IECompatModule
 			}
 		}
 	}
-
-
-	@SideOnly(Side.CLIENT)
-	@Override
-	public void clientPreInit()
-	{
-		System.out.println("TCON MODEL MAPPING");
-		mapFluidState(blockMoltenUranium, fluidUranium);
-		mapFluidState(blockMoltenConstantan, fluidConstantan);
-	}
-	@SideOnly(Side.CLIENT)
-	private static void mapFluidState(Block block, Fluid fluid)
-	{
-		Item item = Item.getItemFromBlock(block);
-		FluidStateMapper mapper = new FluidStateMapper(fluid);
-		if(item!=null)
-		{
-			ModelLoader.registerItemVariants(item);
-			ModelLoader.setCustomMeshDefinition(item, mapper);
-		}
-		ModelLoader.setCustomStateMapper(block, mapper);
-	}
-	@SideOnly(Side.CLIENT)
-	static class FluidStateMapper extends StateMapperBase implements ItemMeshDefinition
-	{
-		public final ModelResourceLocation location;
-		public FluidStateMapper(Fluid fluid)
-		{
-			this.location = new ModelResourceLocation(ImmersiveEngineering.MODID+":fluid_block", fluid.getName());
-		}
-		@Nonnull
-		@Override
-		protected ModelResourceLocation getModelResourceLocation(@Nonnull IBlockState state)
-		{
-			return location;
-		}
-		@Nonnull
-		@Override
-		public ModelResourceLocation getModelLocation(@Nonnull ItemStack stack)
-		{
-			return location;
-		}
-	}
+//
+//
+//	@SideOnly(Side.CLIENT)
+//	@Override
+//	public void clientPreInit()
+//	{
+//		System.out.println("TCON MODEL MAPPING");
+//		mapFluidState(blockMoltenUranium, fluidUranium);
+//		mapFluidState(blockMoltenConstantan, fluidConstantan);
+//	}
 }

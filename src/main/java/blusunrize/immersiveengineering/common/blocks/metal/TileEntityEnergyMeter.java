@@ -1,11 +1,5 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
-import com.google.common.collect.Lists;
-
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
@@ -13,29 +7,29 @@ import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedCollisionBounds;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedSelectionBounds;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparatorOverride;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
+import com.google.common.collect.Lists;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.*;
-import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.TextComponentTranslation;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implements ITickable, IDirectionalTile, IHasDummyBlocks, IAdvancedCollisionBounds,IAdvancedSelectionBounds, IPlayerInteraction, IComparatorOverride
 {
@@ -124,16 +118,16 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 		return super.canConnectCable(cableType, target);
 	}
 	@Override
-	public void connectCable(WireType cableType, TargetingInfo target)
+	public void connectCable(WireType cableType, TargetingInfo target, IImmersiveConnectable other)
 	{
 		if(dummy)
 		{
 			TileEntity above = worldObj.getTileEntity(getPos().add(0,1,0));
 			if(above instanceof TileEntityEnergyMeter)
-				((TileEntityEnergyMeter)above).connectCable(cableType, target);
+				((TileEntityEnergyMeter) above).connectCable(cableType, target, other);
 		}
 		else
-			super.connectCable(cableType, target);
+			super.connectCable(cableType, target, other);
 	}
 
 	@Override

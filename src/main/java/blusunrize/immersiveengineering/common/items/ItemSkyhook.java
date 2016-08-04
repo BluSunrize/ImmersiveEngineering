@@ -1,10 +1,5 @@
 package blusunrize.immersiveengineering.common.items;
 
-import java.util.HashMap;
-import java.util.List;
-
-import com.google.common.collect.Multimap;
-
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.api.tool.ITool;
@@ -12,6 +7,7 @@ import blusunrize.immersiveengineering.common.entities.EntitySkylineHook;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.SkylineHelper;
+import com.google.common.collect.Multimap;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -29,6 +25,9 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+
+import java.util.HashMap;
+import java.util.List;
 
 public class ItemSkyhook extends ItemUpgradeableTool implements ITool
 {
@@ -55,9 +54,12 @@ public class ItemSkyhook extends ItemUpgradeableTool implements ITool
 	@Override
 	public Multimap getAttributeModifiers(EntityEquipmentSlot slot, ItemStack stack)
 	{
-		float dmg = 5+ItemNBTHelper.getFloat(stack, "fallDamageBoost");
 		Multimap multimap = super.getAttributeModifiers(slot, stack);
-		multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getAttributeUnlocalizedName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", dmg, 0));
+		if(slot == EntityEquipmentSlot.MAINHAND)
+		{
+			float dmg = 5 + ItemNBTHelper.getFloat(stack, "fallDamageBoost");
+			multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getAttributeUnlocalizedName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", dmg, 0));
+		}
 		return multimap;
 	}
 
@@ -136,8 +138,8 @@ public class ItemSkyhook extends ItemUpgradeableTool implements ITool
 	{
 		return new Slot[]
 				{
-				new IESlot.Upgrades(container, invItem,0, 102,42, "SKYHOOK", stack, true),
-				new IESlot.Upgrades(container, invItem,1, 102,22, "SKYHOOK", stack, true),
+						new IESlot.Upgrades(container, invItem, 0, 102, 42, "SKYHOOK", stack, true),
+						new IESlot.Upgrades(container, invItem, 1, 102, 22, "SKYHOOK", stack, true),
 				};
 	}
 

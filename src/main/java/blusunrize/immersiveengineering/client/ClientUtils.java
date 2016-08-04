@@ -20,6 +20,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
@@ -33,6 +34,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.client.model.obj.OBJModel.Normal;
+import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidTank;
@@ -47,6 +50,7 @@ public class ClientUtils
 	public static final AxisAlignedBB standardBlockAABB = new AxisAlignedBB(0, 0, 0, 1, 1, 1);
 	static HashMap<String, ResourceLocation> resourceMap = new HashMap<String, ResourceLocation>();
 	public static TextureAtlasSprite[] destroyBlockIcons = new TextureAtlasSprite[10];
+
 	//
 	//	// MOD SPECIFIC METHODS
 	//	public static void renderAttachedConnections(TileEntity tile)
@@ -70,33 +74,34 @@ public class ClientUtils
 	//
 	public static void tessellateConnection(Connection connection, IImmersiveConnectable start, IImmersiveConnectable end, TextureAtlasSprite sprite)
 	{
-		if(connection==null || start==null || end==null)
+		if(connection == null || start == null || end == null)
 			return;
 		int col = connection.cableType.getColour(connection);
-		double r = connection.cableType.getRenderDiameter()/2;
-		int[] rgba = new int[]{col>>16&255, col>>8&255, col&255, 255};
+		double r = connection.cableType.getRenderDiameter() / 2;
+		int[] rgba = new int[]{col >> 16 & 255, col >> 8 & 255, col & 255, 255};
 		tessellateConnection(connection, start, end, rgba, r, sprite);
 	}
+
 	public static void tessellateConnection(Connection connection, IImmersiveConnectable start, IImmersiveConnectable end, int[] rgba, double radius, TextureAtlasSprite sprite)
 	{
-		if(connection==null || start==null || end==null || connection.end==null || connection.start==null)
+		if(connection == null || start == null || end == null || connection.end == null || connection.start == null)
 			return;
 		Vec3d startOffset = start.getConnectionOffset(connection);
 		Vec3d endOffset = end.getConnectionOffset(connection);
-		if(startOffset==null)
-			startOffset=new Vec3d(.5,.5,.5);
-		if(endOffset==null)
-			endOffset=new Vec3d(.5,.5,.5);
-		double dx = (connection.end.getX()+endOffset.xCoord)-(connection.start.getX()+startOffset.xCoord);
-		double dy = (connection.end.getY()+endOffset.yCoord)-(connection.start.getY()+startOffset.yCoord);
-		double dz = (connection.end.getZ()+endOffset.zCoord)-(connection.start.getZ()+startOffset.zCoord);
-		double dw = Math.sqrt(dx*dx + dz*dz);
-		double d = Math.sqrt(dx*dx + dy*dy + dz*dz);
-		World world = ((TileEntity)start).getWorld();
+		if(startOffset == null)
+			startOffset = new Vec3d(.5, .5, .5);
+		if(endOffset == null)
+			endOffset = new Vec3d(.5, .5, .5);
+		double dx = (connection.end.getX() + endOffset.xCoord) - (connection.start.getX() + startOffset.xCoord);
+		double dy = (connection.end.getY() + endOffset.yCoord) - (connection.start.getY() + startOffset.yCoord);
+		double dz = (connection.end.getZ() + endOffset.zCoord) - (connection.start.getZ() + startOffset.zCoord);
+		double dw = Math.sqrt(dx * dx + dz * dz);
+		double d = Math.sqrt(dx * dx + dy * dy + dz * dz);
+		World world = ((TileEntity) start).getWorld();
 		Tessellator tes = tes();
 
-		double rmodx = dz/dw;
-		double rmodz = dx/dw;
+		double rmodx = dz / dw;
+		double rmodz = dx / dw;
 
 		Vec3d[] vertex = connection.getSubVertices(world);
 		//		Vec3 initPos = new Vec3(connection.start.getX()+startOffset.xCoord, connection.start.getY()+startOffset.yCoord, connection.start.getZ()+startOffset.zCoord);
@@ -106,9 +111,9 @@ public class ClientUtils
 		double uMax = sprite.getMaxU();
 		double vMin = sprite.getMinV();
 		double vMax = sprite.getMaxV();
-		double uD = uMax-uMin;
-		boolean vertical = connection.end.getX()==connection.start.getX() && connection.end.getZ()==connection.start.getZ();
-		boolean b = (dx<0&&dz<=0)||(dz<0&&dx<=0)||(dz<0&&dx>0);
+		double uD = uMax - uMin;
+		boolean vertical = connection.end.getX() == connection.start.getX() && connection.end.getZ() == connection.start.getZ();
+		boolean b = (dx < 0 && dz <= 0) || (dz < 0 && dx <= 0) || (dz < 0 && dx > 0);
 
 
 		VertexBuffer worldrenderer = tes.getBuffer();
@@ -120,83 +125,82 @@ public class ClientUtils
 		{
 			//			double uShift = Math.abs(dy)/ * uD;
 			//			worldrenderer.pos(x, y, z)
-			worldrenderer.setTranslation(initPos.xCoord,initPos.yCoord,initPos.zCoord);
+			worldrenderer.setTranslation(initPos.xCoord, initPos.yCoord, initPos.zCoord);
 
 			//			tes.addVertexWithUV(0-radius, 0, 0, b?uMax-uShift:uMin,vMin);
-			worldrenderer.pos(0-radius,0,0).tex(uMin,vMin).color(rgba[0],rgba[1],rgba[2], rgba[3]).endVertex();
+			worldrenderer.pos(0 - radius, 0, 0).tex(uMin, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
 			//			tes.addVertexWithUV(dx-radius, dy, dz, b?uMin:uMin+uShift,vMin);
-			worldrenderer.pos(dx-radius, dy, dz).tex(uMax,vMin).color(rgba[0],rgba[1],rgba[2], rgba[3]).endVertex();
+			worldrenderer.pos(dx - radius, dy, dz).tex(uMax, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
 			//			tes.addVertexWithUV(dx+radius, dy, dz, b?uMin:uMin+uShift,vMax);
-			worldrenderer.pos(dx+radius, dy, dz).tex(uMax,vMax).color(rgba[0],rgba[1],rgba[2], rgba[3]).endVertex();
+			worldrenderer.pos(dx + radius, dy, dz).tex(uMax, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
 			//			tes.addVertexWithUV(0+radius, 0, 0, b?uMax-uShift:uMin,vMax);
-			worldrenderer.pos(0+radius, 0, 0).tex(uMin,vMax).color(rgba[0],rgba[1],rgba[2], rgba[3]).endVertex();
+			worldrenderer.pos(0 + radius, 0, 0).tex(uMin, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
 
 			//			tes.addVertexWithUV(dx-radius, dy, dz, b?uMin:uMin+uShift,vMin);
-			worldrenderer.pos(dx-radius, dy, dz).tex(uMax,vMin).color(rgba[0],rgba[1],rgba[2], rgba[3]).endVertex();
+			worldrenderer.pos(dx - radius, dy, dz).tex(uMax, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
 			//			tes.addVertexWithUV(0-radius, 0, 0, b?uMax-uShift:uMin,vMin);
-			worldrenderer.pos(0-radius, 0, 0).tex(uMin,vMin).color(rgba[0],rgba[1],rgba[2], rgba[3]).endVertex();
+			worldrenderer.pos(0 - radius, 0, 0).tex(uMin, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
 			//			tes.addVertexWithUV(0+radius, 0, 0, b?uMax-uShift:uMin,vMax);
-			worldrenderer.pos(0+radius, 0, 0).tex(uMin,vMax).color(rgba[0],rgba[1],rgba[2], rgba[3]).endVertex();
+			worldrenderer.pos(0 + radius, 0, 0).tex(uMin, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
 			//			tes.addVertexWithUV(dx+radius, dy, dz, b?uMin:uMin+uShift,vMax);
-			worldrenderer.pos(dx+radius, dy, dz).tex(uMax,vMax).color(rgba[0],rgba[1],rgba[2], rgba[3]).endVertex();
+			worldrenderer.pos(dx + radius, dy, dz).tex(uMax, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
 
 
 			//			tes.addVertexWithUV(0, 0, 0-radius, b?uMax-uShift:uMin,vMin);
-			worldrenderer.pos(0, 0, 0-radius).tex(uMin,vMin).color(rgba[0],rgba[1],rgba[2], rgba[3]).endVertex();
+			worldrenderer.pos(0, 0, 0 - radius).tex(uMin, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
 			//			tes.addVertexWithUV(dx, dy, dz-radius, b?uMin:uMin+uShift,vMin);
-			worldrenderer.pos(dx, dy, dz-radius).tex(uMax,vMin).color(rgba[0],rgba[1],rgba[2], rgba[3]).endVertex();
+			worldrenderer.pos(dx, dy, dz - radius).tex(uMax, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
 			//			tes.addVertexWithUV(dx, dy, dz+radius, b?uMin:uMin+uShift,vMax);
-			worldrenderer.pos(dx, dy, dz+radius).tex(uMax,vMax).color(rgba[0],rgba[1],rgba[2], rgba[3]).endVertex();
+			worldrenderer.pos(dx, dy, dz + radius).tex(uMax, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
 			//			tes.addVertexWithUV(0, 0, 0+radius, b?uMax-uShift:uMin,vMax);
-			worldrenderer.pos(0, 0, 0+radius).tex(uMin,vMax).color(rgba[0],rgba[1],rgba[2], rgba[3]).endVertex();
+			worldrenderer.pos(0, 0, 0 + radius).tex(uMin, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
 
 			//			tes.addVertexWithUV(dx, dy, dz-radius, b?uMin:uMin+uShift,vMin);
-			worldrenderer.pos(dx, dy, dz-radius).tex(uMax,vMin).color(rgba[0],rgba[1],rgba[2], rgba[3]).endVertex();
+			worldrenderer.pos(dx, dy, dz - radius).tex(uMax, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
 			//			tes.addVertexWithUV(0, 0, 0-radius, b?uMax-uShift:uMin,vMin);
-			worldrenderer.pos(0, 0, 0-radius).tex(uMin,vMin).color(rgba[0],rgba[1],rgba[2], rgba[3]).endVertex();
+			worldrenderer.pos(0, 0, 0 - radius).tex(uMin, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
 			//			tes.addVertexWithUV(0, 0, 0+radius, b?uMax-uShift:uMin,vMax);
-			worldrenderer.pos(0, 0, 0+radius).tex(uMin,vMax).color(rgba[0],rgba[1],rgba[2], rgba[3]).endVertex();
+			worldrenderer.pos(0, 0, 0 + radius).tex(uMin, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
 			//			tes.addVertexWithUV(dx, dy, dz+radius, b?uMin:uMin+uShift,vMax);
-			worldrenderer.pos(dx, dy, dz+radius).tex(uMax,vMax).color(rgba[0],rgba[1],rgba[2], rgba[3]).endVertex();
+			worldrenderer.pos(dx, dy, dz + radius).tex(uMax, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
 			worldrenderer.setTranslation(0, 0, 0);
-		}
-		else
+		} else
 		{
 			double u0 = uMin;
 			double u1 = uMin;
-			for(int i=b?(vertex.length-1):0; (b?(i>=0):(i<vertex.length)); i+=(b?-1:1))
+			for(int i = b ? (vertex.length - 1) : 0; (b ? (i >= 0) : (i < vertex.length)); i += (b ? -1 : 1))
 			{
-				Vec3d v0 = i>0?vertex[i-1].subtract(connection.start.getX(), connection.start.getY(), connection.start.getZ()):initPos;
+				Vec3d v0 = i > 0 ? vertex[i - 1].subtract(connection.start.getX(), connection.start.getY(), connection.start.getZ()) : initPos;
 				Vec3d v1 = vertex[i].subtract(connection.start.getX(), connection.start.getY(), connection.start.getZ());
 
 				//				double u0 = uMin;
 				//				double u1 = uMax;
 				u0 = u1;
-				u1 = u0+(v0.distanceTo(v1)/d)*uD;
-				if((dx<0&&dz<=0)||(dz<0&&dx<=0)||(dz<0&&dx>0))
+				u1 = u0 + (v0.distanceTo(v1) / d) * uD;
+				if((dx < 0 && dz <= 0) || (dz < 0 && dx <= 0) || (dz < 0 && dx > 0))
 				{
 					u1 = uMin;
 					u0 = uMax;
 				}
-				worldrenderer.pos(v0.xCoord, v0.yCoord+radius, v0.zCoord).tex(u0,vMax).color(rgba[0],rgba[1],rgba[2], rgba[3]).endVertex();
-				worldrenderer.pos(v1.xCoord, v1.yCoord+radius, v1.zCoord).tex(u1,vMax).color(rgba[0],rgba[1],rgba[2], rgba[3]).endVertex();
-				worldrenderer.pos(v1.xCoord, v1.yCoord-radius, v1.zCoord).tex(u1,vMin).color(rgba[0],rgba[1],rgba[2], rgba[3]).endVertex();
-				worldrenderer.pos(v0.xCoord, v0.yCoord-radius, v0.zCoord).tex(u0,vMin).color(rgba[0],rgba[1],rgba[2], rgba[3]).endVertex();
+				worldrenderer.pos(v0.xCoord, v0.yCoord + radius, v0.zCoord).tex(u0, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+				worldrenderer.pos(v1.xCoord, v1.yCoord + radius, v1.zCoord).tex(u1, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+				worldrenderer.pos(v1.xCoord, v1.yCoord - radius, v1.zCoord).tex(u1, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+				worldrenderer.pos(v0.xCoord, v0.yCoord - radius, v0.zCoord).tex(u0, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
 
-				worldrenderer.pos(v1.xCoord, v1.yCoord+radius, v1.zCoord).tex(u1,vMax).color(rgba[0],rgba[1],rgba[2], rgba[3]).endVertex();
-				worldrenderer.pos(v0.xCoord, v0.yCoord+radius, v0.zCoord).tex(u0,vMax).color(rgba[0],rgba[1],rgba[2], rgba[3]).endVertex();
-				worldrenderer.pos(v0.xCoord, v0.yCoord-radius, v0.zCoord).tex(u0,vMin).color(rgba[0],rgba[1],rgba[2], rgba[3]).endVertex();
-				worldrenderer.pos(v1.xCoord, v1.yCoord-radius, v1.zCoord).tex(u1,vMin).color(rgba[0],rgba[1],rgba[2], rgba[3]).endVertex();
+				worldrenderer.pos(v1.xCoord, v1.yCoord + radius, v1.zCoord).tex(u1, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+				worldrenderer.pos(v0.xCoord, v0.yCoord + radius, v0.zCoord).tex(u0, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+				worldrenderer.pos(v0.xCoord, v0.yCoord - radius, v0.zCoord).tex(u0, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+				worldrenderer.pos(v1.xCoord, v1.yCoord - radius, v1.zCoord).tex(u1, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
 
-				worldrenderer.pos(v0.xCoord-radius*rmodx, v0.yCoord, v0.zCoord+radius*rmodz).tex(u0,vMax).color(rgba[0],rgba[1],rgba[2], rgba[3]).endVertex();
-				worldrenderer.pos(v1.xCoord-radius*rmodx, v1.yCoord, v1.zCoord+radius*rmodz).tex(u1,vMax).color(rgba[0],rgba[1],rgba[2], rgba[3]).endVertex();
-				worldrenderer.pos(v1.xCoord+radius*rmodx, v1.yCoord, v1.zCoord-radius*rmodz).tex(u1,vMin).color(rgba[0],rgba[1],rgba[2], rgba[3]).endVertex();
-				worldrenderer.pos(v0.xCoord+radius*rmodx, v0.yCoord, v0.zCoord-radius*rmodz).tex(u0,vMin).color(rgba[0],rgba[1],rgba[2], rgba[3]).endVertex();
+				worldrenderer.pos(v0.xCoord - radius * rmodx, v0.yCoord, v0.zCoord + radius * rmodz).tex(u0, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+				worldrenderer.pos(v1.xCoord - radius * rmodx, v1.yCoord, v1.zCoord + radius * rmodz).tex(u1, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+				worldrenderer.pos(v1.xCoord + radius * rmodx, v1.yCoord, v1.zCoord - radius * rmodz).tex(u1, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+				worldrenderer.pos(v0.xCoord + radius * rmodx, v0.yCoord, v0.zCoord - radius * rmodz).tex(u0, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
 
-				worldrenderer.pos(v1.xCoord-radius*rmodx, v1.yCoord, v1.zCoord+radius*rmodz).tex(u1,vMax).color(rgba[0],rgba[1],rgba[2], rgba[3]).endVertex();
-				worldrenderer.pos(v0.xCoord-radius*rmodx, v0.yCoord, v0.zCoord+radius*rmodz).tex(u0,vMax).color(rgba[0],rgba[1],rgba[2], rgba[3]).endVertex();
-				worldrenderer.pos(v0.xCoord+radius*rmodx, v0.yCoord, v0.zCoord-radius*rmodz).tex(u0,vMin).color(rgba[0],rgba[1],rgba[2], rgba[3]).endVertex();
-				worldrenderer.pos(v1.xCoord+radius*rmodx, v1.yCoord, v1.zCoord-radius*rmodz).tex(u1,vMin).color(rgba[0],rgba[1],rgba[2], rgba[3]).endVertex();
+				worldrenderer.pos(v1.xCoord - radius * rmodx, v1.yCoord, v1.zCoord + radius * rmodz).tex(u1, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+				worldrenderer.pos(v0.xCoord - radius * rmodx, v0.yCoord, v0.zCoord + radius * rmodz).tex(u0, vMax).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+				worldrenderer.pos(v0.xCoord + radius * rmodx, v0.yCoord, v0.zCoord - radius * rmodz).tex(u0, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
+				worldrenderer.pos(v1.xCoord + radius * rmodx, v1.yCoord, v1.zCoord - radius * rmodz).tex(u1, vMin).color(rgba[0], rgba[1], rgba[2], rgba[3]).endVertex();
 
 			}
 		}
@@ -247,18 +251,22 @@ public class ClientUtils
 	{
 		return Tessellator.getInstance();
 	}
+
 	public static Minecraft mc()
 	{
 		return Minecraft.getMinecraft();
 	}
+
 	public static void bindTexture(String path)
 	{
 		mc().getTextureManager().bindTexture(getResource(path));
 	}
+
 	public static void bindAtlas()
 	{
 		mc().getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
 	}
+
 	public static ResourceLocation getResource(String path)
 	{
 		ResourceLocation rl = resourceMap.containsKey(path) ? resourceMap.get(path) : new ResourceLocation(path);
@@ -266,10 +274,12 @@ public class ClientUtils
 			resourceMap.put(path, rl);
 		return rl;
 	}
+
 	public static TextureAtlasSprite getSprite(ResourceLocation rl)
 	{
 		return mc().getTextureMapBlocks().getAtlasSprite(rl.toString());
 	}
+
 	//	public static WavefrontObject getModel(String path)
 	//	{
 	//		ResourceLocation rl = resourceMap.containsKey(path) ? resourceMap.get(path) : new ResourceLocation(path);
@@ -281,6 +291,7 @@ public class ClientUtils
 	{
 		return mc().fontRendererObj;
 	}
+
 	public static Timer timer()
 	{
 		return mc().timer;
@@ -304,22 +315,25 @@ public class ClientUtils
 		{
 			return this.toString().contains(format.toString());
 		}
+
 		public long getTickCut()
 		{
-			return this==D?1728000L: this==H?72000L: this==M?1200L: this==S?20L: 1;
+			return this == D ? 1728000L : this == H ? 72000L : this == M ? 1200L : this == S ? 20L : 1;
 		}
+
 		public String getLocalKey()
 		{
-			return this==D?"day": this==H?"hour": this==M?"minute": this==S?"second": "";
+			return this == D ? "day" : this == H ? "hour" : this == M ? "minute" : this == S ? "second" : "";
 		}
 	}
+
 	public static String fomatTimestamp(long timestamp, TimestampFormat format)
 	{
 		String s = "";
 		for(TimestampFormat core : TimestampFormat.coreValues)
-			if(format.containsFormat(core) && timestamp>=core.getTickCut())
+			if(format.containsFormat(core) && timestamp >= core.getTickCut())
 			{
-				s += I18n.format(Lib.DESC_INFO+core.getLocalKey(), Long.toString(timestamp/core.getTickCut()));
+				s += I18n.format(Lib.DESC_INFO + core.getLocalKey(), Long.toString(timestamp / core.getTickCut()));
 				timestamp %= core.getTickCut();
 			}
 		if(s.isEmpty())
@@ -379,22 +393,23 @@ public class ClientUtils
 			0xFFFF55,//YELLOW
 			0xFFFFFF//WHITE
 	};
+
 	public static int getFormattingColour(TextFormatting rarityColor)
 	{
-		return rarityColor.ordinal()<16?chatColours[rarityColor.ordinal()]:0;
+		return rarityColor.ordinal() < 16 ? chatColours[rarityColor.ordinal()] : 0;
 	}
 
 	public static int getDarkenedTextColour(int colour)
 	{
-		int r = (colour>>16&255)/4;
-		int g = (colour>>8&255)/4;
-		int b = (colour&255)/4;
-		return r<<16 | g<< 8 | b;
+		int r = (colour >> 16 & 255) / 4;
+		int g = (colour >> 8 & 255) / 4;
+		int b = (colour & 255) / 4;
+		return r << 16 | g << 8 | b;
 	}
 
 	public static IETileSound generatePositionedIESound(String soundName, float volume, float pitch, boolean repeat, int delay, BlockPos pos)
 	{
-		IETileSound sound = new IETileSound(new ResourceLocation(soundName), volume,pitch, repeat,delay, pos, AttenuationType.LINEAR, SoundCategory.BLOCKS);
+		IETileSound sound = new IETileSound(new ResourceLocation(soundName), volume, pitch, repeat, delay, pos, AttenuationType.LINEAR, SoundCategory.BLOCKS);
 		sound.evaluateVolume();
 		ClientUtils.mc().getSoundHandler().playSound(sound);
 		return sound;
@@ -403,19 +418,19 @@ public class ClientUtils
 	public static ModelRenderer[] copyModelRenderers(ModelBase model, ModelRenderer... oldRenderers)
 	{
 		ModelRenderer[] newRenderers = new ModelRenderer[oldRenderers.length];
-		for(int i=0; i<newRenderers.length; i++)
-			if(oldRenderers[i]!=null)
+		for(int i = 0; i < newRenderers.length; i++)
+			if(oldRenderers[i] != null)
 			{
 				newRenderers[i] = new ModelRenderer(model, oldRenderers[i].boxName);
 				int toX = oldRenderers[i].textureOffsetX;
 				int toY = oldRenderers[i].textureOffsetY;
-				newRenderers[i].setTextureOffset(toX,toY);
+				newRenderers[i].setTextureOffset(toX, toY);
 				newRenderers[i].mirror = oldRenderers[i].mirror;
 				ArrayList<ModelBox> newCubes = new ArrayList<ModelBox>();
 				for(ModelBox cube : oldRenderers[i].cubeList)
-					newCubes.add(new ModelBox(newRenderers[i],toX,toY, cube.posX1,cube.posY1,cube.posZ1, (int)(cube.posX2-cube.posX1),(int)(cube.posY2-cube.posY1),(int)(cube.posZ2-cube.posZ1), 0));
+					newCubes.add(new ModelBox(newRenderers[i], toX, toY, cube.posX1, cube.posY1, cube.posZ1, (int) (cube.posX2 - cube.posX1), (int) (cube.posY2 - cube.posY1), (int) (cube.posZ2 - cube.posZ1), 0));
 				newRenderers[i].cubeList = newCubes;
-				newRenderers[i].setRotationPoint(oldRenderers[i].rotationPointX,oldRenderers[i].rotationPointY,oldRenderers[i].rotationPointZ);
+				newRenderers[i].setRotationPoint(oldRenderers[i].rotationPointX, oldRenderers[i].rotationPointY, oldRenderers[i].rotationPointZ);
 				newRenderers[i].rotateAngleX = oldRenderers[i].rotateAngleX;
 				newRenderers[i].rotateAngleY = oldRenderers[i].rotateAngleY;
 				newRenderers[i].rotateAngleZ = oldRenderers[i].rotateAngleZ;
@@ -936,11 +951,11 @@ public class ClientUtils
 	//Cheers boni =P
 	public static void drawBlockDamageTexture(Tessellator tessellatorIn, VertexBuffer worldRendererIn, Entity entityIn, float partialTicks, World world, List<BlockPos> blocks)
 	{
-		double d0 = entityIn.lastTickPosX + (entityIn.posX - entityIn.lastTickPosX) * (double)partialTicks;
-		double d1 = entityIn.lastTickPosY + (entityIn.posY - entityIn.lastTickPosY) * (double)partialTicks;
-		double d2 = entityIn.lastTickPosZ + (entityIn.posZ - entityIn.lastTickPosZ) * (double)partialTicks;
+		double d0 = entityIn.lastTickPosX + (entityIn.posX - entityIn.lastTickPosX) * (double) partialTicks;
+		double d1 = entityIn.lastTickPosY + (entityIn.posY - entityIn.lastTickPosY) * (double) partialTicks;
+		double d2 = entityIn.lastTickPosZ + (entityIn.posZ - entityIn.lastTickPosZ) * (double) partialTicks;
 		TextureManager renderEngine = Minecraft.getMinecraft().renderEngine;
-		int progress = (int)(Minecraft.getMinecraft().playerController.curBlockDamageMP*10f) - 1; // 0-10
+		int progress = (int) (Minecraft.getMinecraft().playerController.curBlockDamageMP * 10f) - 1; // 0-10
 		if(progress < 0)
 			return;
 		renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
@@ -957,19 +972,20 @@ public class ClientUtils
 		worldRendererIn.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
 		worldRendererIn.setTranslation(-d0, -d1, -d2);
 		//		worldRendererIn.markDirty();
-		for(BlockPos blockpos : blocks) {
-			double d3 = (double)blockpos.getX() - d0;
-			double d4 = (double)blockpos.getY() - d1;
-			double d5 = (double)blockpos.getZ() - d2;
+		for(BlockPos blockpos : blocks)
+		{
+			double d3 = (double) blockpos.getX() - d0;
+			double d4 = (double) blockpos.getY() - d1;
+			double d5 = (double) blockpos.getZ() - d2;
 			Block block = world.getBlockState(blockpos).getBlock();
 			TileEntity te = world.getTileEntity(blockpos);
 			boolean hasBreak = block instanceof BlockChest || block instanceof BlockEnderChest
 					|| block instanceof BlockSign || block instanceof BlockSkull;
-			if (!hasBreak) hasBreak = te != null && te.canRenderBreaking();
-			if (!hasBreak)
+			if(!hasBreak) hasBreak = te != null && te.canRenderBreaking();
+			if(!hasBreak)
 			{
 				IBlockState iblockstate = world.getBlockState(blockpos);
-				if (iblockstate.getMaterial() != Material.AIR)
+				if(iblockstate.getMaterial() != Material.AIR)
 				{
 					TextureAtlasSprite textureatlassprite = destroyBlockIcons[progress];
 					BlockRendererDispatcher blockrendererdispatcher = Minecraft.getMinecraft().getBlockRendererDispatcher();
@@ -999,26 +1015,27 @@ public class ClientUtils
 		Tessellator tessellator = Tessellator.getInstance();
 		VertexBuffer worldrenderer = tessellator.getBuffer();
 		worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
-		worldrenderer.pos(x, y+h, 0).color(colour>>16&255, colour>>8&255, colour&255, colour>>24&255).endVertex();
-		worldrenderer.pos(x+w, y+h, 0).color(colour>>16&255, colour>>8&255, colour&255, colour>>24&255).endVertex();
-		worldrenderer.pos(x+w, y, 0).color(colour>>16&255, colour>>8&255, colour&255, colour>>24&255).endVertex();
-		worldrenderer.pos(x, y, 0).color(colour>>16&255, colour>>8&255, colour&255, colour>>24&255).endVertex();
+		worldrenderer.pos(x, y + h, 0).color(colour >> 16 & 255, colour >> 8 & 255, colour & 255, colour >> 24 & 255).endVertex();
+		worldrenderer.pos(x + w, y + h, 0).color(colour >> 16 & 255, colour >> 8 & 255, colour & 255, colour >> 24 & 255).endVertex();
+		worldrenderer.pos(x + w, y, 0).color(colour >> 16 & 255, colour >> 8 & 255, colour & 255, colour >> 24 & 255).endVertex();
+		worldrenderer.pos(x, y, 0).color(colour >> 16 & 255, colour >> 8 & 255, colour & 255, colour >> 24 & 255).endVertex();
 		tessellator.draw();
 		GlStateManager.shadeModel(GL11.GL_FLAT);
 		GlStateManager.disableBlend();
 		GlStateManager.enableAlpha();
 		GlStateManager.enableTexture2D();
 	}
+
 	public static void drawGradientRect(int x0, int y0, int x1, int y1, int colour0, int colour1)
 	{
-		float f = (float)(colour0 >> 24 & 255) / 255.0F;
-		float f1 = (float)(colour0 >> 16 & 255) / 255.0F;
-		float f2 = (float)(colour0 >> 8 & 255) / 255.0F;
-		float f3 = (float)(colour0 & 255) / 255.0F;
-		float f4 = (float)(colour1 >> 24 & 255) / 255.0F;
-		float f5 = (float)(colour1 >> 16 & 255) / 255.0F;
-		float f6 = (float)(colour1 >> 8 & 255) / 255.0F;
-		float f7 = (float)(colour1 & 255) / 255.0F;
+		float f = (float) (colour0 >> 24 & 255) / 255.0F;
+		float f1 = (float) (colour0 >> 16 & 255) / 255.0F;
+		float f2 = (float) (colour0 >> 8 & 255) / 255.0F;
+		float f3 = (float) (colour0 & 255) / 255.0F;
+		float f4 = (float) (colour1 >> 24 & 255) / 255.0F;
+		float f5 = (float) (colour1 >> 16 & 255) / 255.0F;
+		float f6 = (float) (colour1 >> 8 & 255) / 255.0F;
+		float f7 = (float) (colour1 & 255) / 255.0F;
 		GlStateManager.disableTexture2D();
 		GlStateManager.enableBlend();
 		GlStateManager.disableAlpha();
@@ -1037,22 +1054,25 @@ public class ClientUtils
 		GlStateManager.enableAlpha();
 		GlStateManager.enableTexture2D();
 	}
+
 	public static void drawTexturedRect(float x, float y, float w, float h, double... uv)
 	{
 		Tessellator tessellator = Tessellator.getInstance();
 		VertexBuffer worldrenderer = tessellator.getBuffer();
 		worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-		worldrenderer.pos(x, y+h, 0).tex(uv[0], uv[3]).endVertex();
-		worldrenderer.pos(x+w, y+h, 0).tex(uv[1], uv[3]).endVertex();
-		worldrenderer.pos(x+w, y, 0).tex(uv[1], uv[2]).endVertex();
+		worldrenderer.pos(x, y + h, 0).tex(uv[0], uv[3]).endVertex();
+		worldrenderer.pos(x + w, y + h, 0).tex(uv[1], uv[3]).endVertex();
+		worldrenderer.pos(x + w, y, 0).tex(uv[1], uv[2]).endVertex();
 		worldrenderer.pos(x, y, 0).tex(uv[0], uv[2]).endVertex();
 		tessellator.draw();
 	}
+
 	public static void drawTexturedRect(int x, int y, int w, int h, float picSize, int... uv)
 	{
-		double[] d_uv = new double[]{uv[0]/picSize,uv[1]/picSize, uv[2]/picSize,uv[3]/picSize};
-		drawTexturedRect(x,y,w,h, d_uv);
+		double[] d_uv = new double[]{uv[0] / picSize, uv[1] / picSize, uv[2] / picSize, uv[3] / picSize};
+		drawTexturedRect(x, y, w, h, d_uv);
 	}
+
 	public static void drawRepeatedFluidSprite(Fluid fluid, float x, float y, float w, float h)
 	{
 		bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE.toString());
@@ -1061,31 +1081,32 @@ public class ClientUtils
 		{
 			int iW = sprite.getIconWidth();
 			int iH = sprite.getIconHeight();
-			if(iW>0 && iH>0)
-				drawRepeatedSprite(x,y,w,h, iW, iH, sprite.getMinU(),sprite.getMaxU(), sprite.getMinV(),sprite.getMaxV());
+			if(iW > 0 && iH > 0)
+				drawRepeatedSprite(x, y, w, h, iW, iH, sprite.getMinU(), sprite.getMaxU(), sprite.getMinV(), sprite.getMaxV());
 		}
 	}
+
 	public static void drawRepeatedSprite(float x, float y, float w, float h, int iconWidth, int iconHeight, float uMin, float uMax, float vMin, float vMax)
 	{
-		int iterMaxW = (int)(w/iconWidth);
-		int iterMaxH = (int)(h/iconHeight);
-		float leftoverW = w%iconWidth;
-		float leftoverH = h%iconHeight;
-		float leftoverWf = leftoverW/(float)iconWidth;
-		float leftoverHf = leftoverH/(float)iconHeight;
-		float iconUDif = uMax-uMin;
-		float iconVDif = vMax-vMin;
-		for(int ww=0; ww<iterMaxW; ww++)
+		int iterMaxW = (int) (w / iconWidth);
+		int iterMaxH = (int) (h / iconHeight);
+		float leftoverW = w % iconWidth;
+		float leftoverH = h % iconHeight;
+		float leftoverWf = leftoverW / (float) iconWidth;
+		float leftoverHf = leftoverH / (float) iconHeight;
+		float iconUDif = uMax - uMin;
+		float iconVDif = vMax - vMin;
+		for(int ww = 0; ww < iterMaxW; ww++)
 		{
-			for(int hh=0; hh<iterMaxH; hh++)
-				drawTexturedRect(x+ww*iconWidth, y+hh*iconHeight, iconWidth,iconHeight, uMin,uMax,vMin,vMax);
-			drawTexturedRect(x+ww*iconWidth, y+iterMaxH*iconHeight, iconWidth,leftoverH, uMin,uMax,vMin,(vMin+iconVDif*leftoverHf));
+			for(int hh = 0; hh < iterMaxH; hh++)
+				drawTexturedRect(x + ww * iconWidth, y + hh * iconHeight, iconWidth, iconHeight, uMin, uMax, vMin, vMax);
+			drawTexturedRect(x + ww * iconWidth, y + iterMaxH * iconHeight, iconWidth, leftoverH, uMin, uMax, vMin, (vMin + iconVDif * leftoverHf));
 		}
-		if(leftoverW>0)
+		if(leftoverW > 0)
 		{
-			for(int hh=0; hh<iterMaxH; hh++)
-				drawTexturedRect(x+iterMaxW*iconWidth, y+hh*iconHeight, leftoverW,iconHeight, uMin,(uMin+iconUDif*leftoverWf),vMin,vMax);
-			drawTexturedRect(x+iterMaxW*iconWidth, y+iterMaxH*iconHeight, leftoverW,leftoverH, uMin,(uMin+iconUDif*leftoverWf),vMin,(vMin+iconVDif*leftoverHf));
+			for(int hh = 0; hh < iterMaxH; hh++)
+				drawTexturedRect(x + iterMaxW * iconWidth, y + hh * iconHeight, leftoverW, iconHeight, uMin, (uMin + iconUDif * leftoverWf), vMin, vMax);
+			drawTexturedRect(x + iterMaxW * iconWidth, y + iterMaxH * iconHeight, leftoverW, leftoverH, uMin, (uMin + iconUDif * leftoverWf), vMin, (vMin + iconVDif * leftoverHf));
 		}
 	}
 	//	public static void drawSlot(int x, int y, int w, int h)
@@ -1106,11 +1127,11 @@ public class ClientUtils
 	{
 		List list = stack.getTooltip(mc().thePlayer, mc().gameSettings.advancedItemTooltips);
 
-		for (int k = 0; k < list.size(); ++k)
-			if (k == 0)
-				list.set(k, stack.getRarity().rarityColor + (String)list.get(k));
+		for(int k = 0; k < list.size(); ++k)
+			if(k == 0)
+				list.set(k, stack.getRarity().rarityColor + (String) list.get(k));
 			else
-				list.set(k, TextFormatting.GRAY + (String)list.get(k));
+				list.set(k, TextFormatting.GRAY + (String) list.get(k));
 
 		FontRenderer font = stack.getItem().getFontRenderer(stack);
 		drawHoveringText(list, x, y, (font == null ? font() : font));
@@ -1118,11 +1139,12 @@ public class ClientUtils
 
 	public static void drawHoveringText(List<String> list, int x, int y, FontRenderer font)
 	{
-		drawHoveringText(list, x,y, font, -1,-1);
+		drawHoveringText(list, x, y, font, -1, -1);
 	}
+
 	public static void drawHoveringText(List<String> list, int x, int y, FontRenderer font, int xSize, int ySize)
 	{
-		if (!list.isEmpty())
+		if(!list.isEmpty())
 		{
 			boolean uni = ClientUtils.font().getUnicodeFlag();
 			ClientUtils.font().setUnicodeFlag(false);
@@ -1146,25 +1168,25 @@ public class ClientUtils
 			int i1 = 8;
 
 			boolean shift = false;
-			if(xSize>0 && j2 + k > xSize)
+			if(xSize > 0 && j2 + k > xSize)
 			{
 				j2 -= 28 + k;
 				shift = true;
 			}
-			if(ySize>0 && k2 + i1 + 6 > ySize)
+			if(ySize > 0 && k2 + i1 + 6 > ySize)
 			{
 				k2 = ySize - i1 - 6;
 				shift = true;
 			}
-			if(!shift && mc().currentScreen!=null)
+			if(!shift && mc().currentScreen != null)
 			{
-				if (j2 + k > mc().currentScreen.width)
+				if(j2 + k > mc().currentScreen.width)
 					j2 -= 28 + k;
-				if (k2 + i1 + 6 > mc().currentScreen.height)
+				if(k2 + i1 + 6 > mc().currentScreen.height)
 					k2 = mc().currentScreen.height - i1 - 6;
 			}
 
-			if (list.size() > 1)
+			if(list.size() > 1)
 				i1 += 2 + (list.size() - 1) * 10;
 			//            this.zLevel = 300.0F;
 			//            this.itemRender.zLevel = 300.0F;
@@ -1193,14 +1215,14 @@ public class ClientUtils
 			drawGradientRect(j2 + k + 2, k2 - 3 + 1, j2 + k + 3, k2 + i1 + 3 - 1, k1, l1);
 			drawGradientRect(j2 - 3, k2 - 3, j2 + k + 3, k2 - 3 + 1, k1, k1);
 			drawGradientRect(j2 - 3, k2 + i1 + 2, j2 + k + 3, k2 + i1 + 3, l1, l1);
-			GL11.glTranslated(0, 0,-300);
+			GL11.glTranslated(0, 0, -300);
 
-			for (int i2 = 0; i2 < list.size(); ++i2)
+			for(int i2 = 0; i2 < list.size(); ++i2)
 			{
 				String s1 = list.get(i2);
 				font.drawStringWithShadow(s1, j2, k2, -1);
 
-				if (i2 == 0)
+				if(i2 == 0)
 					k2 += 2;
 
 				k2 += 10;
@@ -1217,27 +1239,26 @@ public class ClientUtils
 
 	public static void handleGuiTank(FluidTank tank, int x, int y, int w, int h, int oX, int oY, int oW, int oH, int mX, int mY, String originalTexture, ArrayList<String> tooltip)
 	{
-		if(tooltip==null)
+		if(tooltip == null)
 		{
-			if(tank.getFluid()!=null && tank.getFluid().getFluid()!=null)
+			if(tank.getFluid() != null && tank.getFluid().getFluid() != null)
 			{
-				int fluidHeight = (int)(h*(tank.getFluid().amount/(float)tank.getCapacity()));
-				drawRepeatedFluidSprite(tank.getFluid().getFluid(), x,y+h-fluidHeight, w, fluidHeight);
+				int fluidHeight = (int) (h * (tank.getFluid().amount / (float) tank.getCapacity()));
+				drawRepeatedFluidSprite(tank.getFluid().getFluid(), x, y + h - fluidHeight, w, fluidHeight);
 				bindTexture(originalTexture);
 			}
-			int xOff = (w-oW)/2;
-			int yOff = (h-oH)/2;
-			drawTexturedRect(x+xOff,y+yOff,oW,oH, 256f, oX,oX+oW,oY,oY+oH);
-		}
-		else
+			int xOff = (w - oW) / 2;
+			int yOff = (h - oH) / 2;
+			drawTexturedRect(x + xOff, y + yOff, oW, oH, 256f, oX, oX + oW, oY, oY + oH);
+		} else
 		{
-			if(mX>=x&&mX<x+w && mY>=y&&mY<y+h)
+			if(mX >= x && mX < x + w && mY >= y && mY < y + h)
 			{
-				if(tank.getFluid()!=null && tank.getFluid().getFluid()!=null)
+				if(tank.getFluid() != null && tank.getFluid().getFluid() != null)
 					tooltip.add(tank.getFluid().getLocalizedName());
 				else
 					tooltip.add(I18n.format("gui.immersiveengineering.empty"));
-				tooltip.add(tank.getFluidAmount()+"/"+tank.getCapacity()+"mB");
+				tooltip.add(tank.getFluidAmount() + "/" + tank.getCapacity() + "mB");
 			}
 		}
 	}
@@ -1247,9 +1268,9 @@ public class ClientUtils
 		x = Math.toRadians(x);
 		y = Math.toRadians(y);
 		z = Math.toRadians(z);
-		Quat4d qYaw = new Quat4d(0,Math.sin(y/2),0, Math.cos(y/2));
-		Quat4d qPitch = new Quat4d(Math.sin(x/2),0,0, Math.cos(x/2));
-		Quat4d qRoll = new Quat4d(0,0,Math.sin(z/2), Math.cos(z/2));
+		Quat4d qYaw = new Quat4d(0, Math.sin(y / 2), 0, Math.cos(y / 2));
+		Quat4d qPitch = new Quat4d(Math.sin(x / 2), 0, 0, Math.cos(x / 2));
+		Quat4d qRoll = new Quat4d(0, 0, Math.sin(z / 2), Math.cos(z / 2));
 
 		Quat4d quat = qYaw;
 		quat.mul(qRoll);
@@ -1261,22 +1282,22 @@ public class ClientUtils
 	{
 		List<BakedQuad> ret = new ArrayList<>();
 		Set<Connection> conns = s.getValue(IEProperties.CONNECTIONS);
-		if (conns == null)
+		if(conns == null)
 			return ret;
 		Vector3f dir = new Vector3f();
 		Vector3f cross = new Vector3f();
-		Vector3f tmp = new Vector3f();
 
 		Vector3f up = new Vector3f(0, 1, 0);
-		for (Connection conn : conns)
+		for(Connection conn : conns)
 		{
 			Vec3d[] f = conn.catenaryVertices;
-			if (f.length < 1)
+			if(f.length < 1)
 				continue;
 			int color = conn.cableType.getColour(conn);
+			float[] rgb = {(color >> 16 & 255) / 255f, (color >> 8 & 255) / 255f, (color & 255) / 255f, (color >> 24 & 255) / 255f};
 			Vector3f start = new Vector3f(conn.start.getX(), conn.start.getY(), conn.start.getZ());
 			float radius = (float) (conn.cableType.getRenderDiameter() / 2);
-			for (int i = 1; i < f.length; i++)
+			for(int i = 1; i < f.length; i++)
 			{
 				int j = i - 1;
 				Vector3f here = new Vector3f((float) f[i].xCoord, (float) f[i].yCoord, (float) f[i].zCoord);
@@ -1284,55 +1305,32 @@ public class ClientUtils
 				Vector3f there = new Vector3f((float) f[j].xCoord, (float) f[j].yCoord, (float) f[j].zCoord);
 				Vector3f.sub(there, start, there);
 				boolean vertical = here.x == there.x && here.z == there.z;
-				int[] data;
-				int[] dataInv;
-				if (!vertical)
+				if(!vertical)
 				{
 					Vector3f.sub(here, there, dir);
 					Vector3f.cross(up, dir, cross);
 					cross.scale(radius / cross.length());
 				} else
 					cross.set(radius, 0, 0);
-				data = new int[28];
-				dataInv = new int[28];
-				Vector3f.add(here, cross, tmp);
-				storeVertexData(data, 0, tmp, t, 0, 0, color);
-				storeVertexData(dataInv, 3, tmp, t, 0, 0, color);
-				Vector3f.sub(here, cross, tmp);
-				storeVertexData(data, 1, tmp, t, 0, 16, color);
-				storeVertexData(dataInv, 2, tmp, t, 0, 16, color);
-				Vector3f.sub(there, cross, tmp);
-				storeVertexData(data, 2, tmp, t, 16, 16, color);
-				storeVertexData(dataInv, 1, tmp, t, 16, 16, color);
-				Vector3f.add(there, cross, tmp);
-				storeVertexData(data, 3, tmp, t, 16, 0, color);
-				storeVertexData(dataInv, 0, tmp, t, 16, 0, color);
-				ret.add(new BakedQuad(data, -1, EnumFacing.DOWN, t, true, DefaultVertexFormats.BLOCK));
-				ret.add(new BakedQuad(dataInv, -1, EnumFacing.UP, t, true, DefaultVertexFormats.BLOCK));
+				Vector3f[] vertices = {Vector3f.add(here, cross, null),
+						Vector3f.sub(here, cross, null),
+						Vector3f.sub(there, cross, null),
+						Vector3f.add(there, cross, null)};
+				ret.add(createBakedQuad(DefaultVertexFormats.BLOCK, vertices, EnumFacing.DOWN, t, rgb, false));
+				ret.add(createBakedQuad(DefaultVertexFormats.BLOCK, vertices, EnumFacing.UP, t, rgb, true));
 
-				data = new int[28];
-				dataInv = new int[28];
-				if (!vertical)
+				if(!vertical)
 				{
 					Vector3f.cross(cross, dir, cross);
 					cross.scale(radius / cross.length());
 				} else
 					cross.set(0, 0, radius);
-				Vector3f.add(here, cross, tmp);
-				storeVertexData(data, 0, tmp, t, 0, 0, color);
-				storeVertexData(dataInv, 3, tmp, t, 0, 0, color);
-				Vector3f.sub(here, cross, tmp);
-				storeVertexData(data, 1, tmp, t, 0, 16, color);
-				storeVertexData(dataInv, 2, tmp, t, 0, 16, color);
-				Vector3f.sub(there, cross, tmp);
-				storeVertexData(data, 2, tmp, t, 16, 16, color);
-				storeVertexData(dataInv, 1, tmp, t, 16, 16, color);
-				Vector3f.add(there, cross, tmp);
-				storeVertexData(data, 3, tmp, t, 16, 0, color);
-				storeVertexData(dataInv, 0, tmp, t, 16, 0, color);
-				ret.add(new BakedQuad(data, -1, EnumFacing.WEST, t, true, DefaultVertexFormats.BLOCK));
-				ret.add(new BakedQuad(dataInv, -1, EnumFacing.EAST, t, true, DefaultVertexFormats.BLOCK));
-
+				vertices = new Vector3f[]{Vector3f.add(here, cross, null),
+						Vector3f.sub(here, cross, null),
+						Vector3f.sub(there, cross, null),
+						Vector3f.add(there, cross, null)};
+				ret.add(createBakedQuad(DefaultVertexFormats.BLOCK, vertices, EnumFacing.WEST, t, rgb, false));
+				ret.add(createBakedQuad(DefaultVertexFormats.BLOCK, vertices, EnumFacing.EAST, t, rgb, true));
 			}
 		}
 		return ret;
@@ -1348,6 +1346,46 @@ public class ClientUtils
 		faceData[i + 3] = invertRgb(color);
 		faceData[i + 4] = Float.floatToRawIntBits(t.getInterpolatedU(u));
 		faceData[i + 5] = Float.floatToRawIntBits(t.getInterpolatedV(v));
+	}
+
+	protected static BakedQuad createBakedQuad(VertexFormat format, Vector3f[] vertices, EnumFacing facing, TextureAtlasSprite sprite, float[] colour, boolean invert)
+	{
+		UnpackedBakedQuad.Builder builder = new UnpackedBakedQuad.Builder(format);
+		builder.setQuadOrientation(facing);
+		Normal faceNormal = new Normal(facing.getDirectionVec().getX(), facing.getDirectionVec().getY(), facing.getDirectionVec().getZ());
+		putVertexData(format, builder, vertices[invert ? 3 : 0], faceNormal, 0, 0, sprite, colour);
+		putVertexData(format, builder, vertices[invert ? 2 : 1], faceNormal, 0, 16, sprite, colour);
+		putVertexData(format, builder, vertices[invert ? 1 : 2], faceNormal, 16, 16, sprite, colour);
+		putVertexData(format, builder, vertices[invert ? 0 : 3], faceNormal, 16, 0, sprite, colour);
+		return builder.build();
+	}
+
+	protected static void putVertexData(VertexFormat format, UnpackedBakedQuad.Builder builder, Vector3f pos, Normal faceNormal, int u, int v, TextureAtlasSprite sprite, float[] colour)
+	{
+		for(int e = 0; e < format.getElementCount(); e++)
+			switch(format.getElement(e).getUsage())
+			{
+				case POSITION:
+					builder.put(e, pos.getX(), pos.getY(), pos.getZ(), 0);
+					break;
+				case COLOR:
+					float d = 1;//LightUtil.diffuseLight(faceNormal.x, faceNormal.y, faceNormal.z);
+					builder.put(e, d * colour[0], d * colour[1], d * colour[2], 1 * colour[3]);
+					break;
+				case UV:
+					if(sprite == null)//Double Safety. I have no idea how it even happens, but it somehow did .-.
+						sprite = Minecraft.getMinecraft().getTextureMapBlocks().getMissingSprite();
+					builder.put(e,
+							sprite.getInterpolatedU(u),
+							sprite.getInterpolatedV((v)),
+							0, 1);
+					break;
+				case NORMAL:
+					builder.put(e, faceNormal.x, faceNormal.y, faceNormal.z, 0);
+					break;
+				default:
+					builder.put(e);
+			}
 	}
 
 	private static int invertRgb(int in)

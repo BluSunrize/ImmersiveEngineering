@@ -20,4 +20,10 @@ public interface IOBJModelCallback<T>
 	Optional<TRSRTransformation> applyTransformations(T object, String group, Optional<TRSRTransformation> transform);
 	@SideOnly(Side.CLIENT)
 	Matrix4 handlePerspective(T Object, TransformType cameraTransformType, Matrix4 perspective);
+
+	@SideOnly(Side.CLIENT)
+	default int getRenderColour(T object, String group)
+	{
+		return 0xffffffff;
+	}
 }

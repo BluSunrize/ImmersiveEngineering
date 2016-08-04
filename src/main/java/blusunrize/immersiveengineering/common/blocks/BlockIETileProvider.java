@@ -8,6 +8,7 @@ import blusunrize.immersiveengineering.common.CommonProxy;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockPistonBase;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
@@ -222,10 +223,7 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 	@Override
 	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
-		if(hand!=EnumHand.MAIN_HAND)
-			return false;
 		TileEntity tile = world.getTileEntity(pos);
-
 		if(tile instanceof IConfigurableSides && Utils.isHammer(heldItem) && !world.isRemote)
 		{
 			int iSide = player.isSneaking()?side.getOpposite().ordinal():side.ordinal();
@@ -249,7 +247,7 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 			world.addBlockEvent(tile.getPos(), tile.getBlockType(), 255, 0);
 			return true;
 		}
-		if(tile instanceof IHammerInteraction && Utils.isHammer(heldItem))
+		if(tile instanceof IHammerInteraction && Utils.isHammer(heldItem) && !world.isRemote)
 		{
 			boolean b = ((IHammerInteraction)tile).hammerUseSide(side, player, hitX, hitY, hitZ);
 			if(b)
@@ -272,11 +270,11 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 	}
 
 	@Override
-	public void onNeighborChange(IBlockAccess world, BlockPos pos, BlockPos neighbour)
+	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block blockIn)
 	{
 		TileEntity tile = world.getTileEntity(pos);
-		if(tile instanceof INeighbourChangeTile && !tile.getWorld().isRemote)
-			((INeighbourChangeTile)tile).onNeighborBlockChange(pos, neighbour);
+//		if(tile instanceof INeighbourChangeTile && !tile.getWorld().isRemote)
+//			((INeighbourChangeTile)tile).onNeighborBlockChange(pos, neighbour);
 	}
 
 	@Override
@@ -437,6 +435,40 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 		if(te instanceof IEBlockInterfaces.IComparatorOverride)
 			return ((IEBlockInterfaces.IComparatorOverride)te).getComparatorInputOverride();
 		return 0;
+	}
+
+
+	@Override
+	public int getWeakPower(IBlockState blockState, IBlockAccess world, BlockPos pos, EnumFacing side)
+	{
+		TileEntity te = world.getTileEntity(pos);
+		if(te instanceof IEBlockInterfaces.IRedstoneOutput)
+			return ((IEBlockInterfaces.IRedstoneOutput) te).getWeakRSOutput(blockState, side);
+		return 0;
+	}
+
+	@Override
+	public int getStrongPower(IBlockState blockState, IBlockAccess world, BlockPos pos, EnumFacing side)
+	{
+		TileEntity te = world.getTileEntity(pos);
+		if(te instanceof IEBlockInterfaces.IRedstoneOutput)
+			return ((IEBlockInterfaces.IRedstoneOutput) te).getStrongRSOutput(blockState, side);
+		return 0;
+	}
+
+	@Override
+	public boolean canProvidePower(IBlockState state)
+	{
+		return true;
+	}
+
+	@Override
+	public boolean canConnectRedstone(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side)
+	{
+		TileEntity te = world.getTileEntity(pos);
+		if(te instanceof IEBlockInterfaces.IRedstoneOutput)
+			return ((IEBlockInterfaces.IRedstoneOutput) te).canConnectRedstone(state, side);
+		return false;
 	}
 
 	@Override

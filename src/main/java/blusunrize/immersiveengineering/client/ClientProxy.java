@@ -11,14 +11,18 @@ import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.client.fx.EntityFXSparks;
 import blusunrize.immersiveengineering.client.gui.*;
+import blusunrize.immersiveengineering.client.models.IESmartObjModel;
 import blusunrize.immersiveengineering.client.models.ModelShaderMinecart;
 import blusunrize.immersiveengineering.client.models.obj.IEOBJLoader;
 import blusunrize.immersiveengineering.client.models.smart.ConnLoader;
+import blusunrize.immersiveengineering.client.models.smart.ConnModelReal;
+import blusunrize.immersiveengineering.client.models.smart.ConnModelReal.ExtBlockstateAdapter;
 import blusunrize.immersiveengineering.client.render.*;
 import blusunrize.immersiveengineering.common.CommonProxy;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.IERecipes;
+import blusunrize.immersiveengineering.common.blocks.BlockIEFluid;
 import blusunrize.immersiveengineering.common.blocks.BlockTypes_MetalsAll;
 import blusunrize.immersiveengineering.common.blocks.BlockTypes_MetalsIE;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGuiTile;
@@ -63,6 +67,7 @@ import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.client.renderer.entity.*;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -88,6 +93,7 @@ import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.Properties;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
@@ -96,6 +102,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameData;
 import net.minecraftforge.oredict.OreDictionary;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.net.URL;
 import java.text.DecimalFormat;
@@ -121,81 +128,6 @@ public class ClientProxy extends CommonProxy
 		OBJLoader.INSTANCE.addDomain("immersiveengineering");
 		IEOBJLoader.instance.addDomain("immersiveengineering");
 
-		for(Block block : IEContent.registeredIEBlocks)
-		{
-			Item blockItem = Item.getItemFromBlock(block);
-			final ResourceLocation loc = GameData.getBlockRegistry().getNameForObject(block);
-			if(block instanceof IIEMetaBlock)
-			{
-				IIEMetaBlock ieMetaBlock = (IIEMetaBlock)block;
-				if(ieMetaBlock.useCustomStateMapper())
-					ModelLoader.setCustomStateMapper(block, IECustomStateMapper.instance);
-
-				for(int meta=0; meta<ieMetaBlock.getMetaEnums().length; meta++)
-				{
-					String location = loc.toString();
-					String prop = "inventory,"+ieMetaBlock.getMetaProperty().getName()+"="+ieMetaBlock.getMetaEnums()[meta].toString().toLowerCase(Locale.US);
-					if(ieMetaBlock.useCustomStateMapper())
-					{
-						String custom = ieMetaBlock.getCustomStateMapping(meta, true);
-						if(custom!=null)
-							location += "_"+custom;
-					}
-					try
-					{
-						ModelLoader.setCustomModelResourceLocation(blockItem, meta, new ModelResourceLocation(location, prop));
-					}catch(NullPointerException npe)
-					{
-						throw new RuntimeException("WELP! apparently "+ieMetaBlock+" lacks an item!", npe);
-					}
-				}
-			}
-			else
-				ModelLoader.setCustomModelResourceLocation(blockItem,0, new ModelResourceLocation(loc, "inventory"));
-		}
-
-		for(Item item : IEContent.registeredIEItems)
-		{
-			if(item instanceof ItemIEBase)
-			{
-				ItemIEBase ieMetaItem = (ItemIEBase)item;
-				if(ieMetaItem.registerSubModels && ieMetaItem.getSubNames()!=null && ieMetaItem.getSubNames().length>0)
-				{
-					for(int meta=0; meta<ieMetaItem.getSubNames().length; meta++)
-					{
-						ResourceLocation loc = new ResourceLocation("immersiveengineering",ieMetaItem.itemName+"/"+ieMetaItem.getSubNames()[meta]);
-						ModelBakery.registerItemVariants(ieMetaItem, loc);
-						ModelLoader.setCustomModelResourceLocation(ieMetaItem, meta, new ModelResourceLocation(loc, "inventory"));
-					}
-				}
-				else
-				{
-					final ResourceLocation loc = new ResourceLocation("immersiveengineering",ieMetaItem.itemName);
-					ModelBakery.registerItemVariants(ieMetaItem, loc);
-					ModelLoader.setCustomMeshDefinition(ieMetaItem, new ItemMeshDefinition()
-					{
-						@Override
-						public ModelResourceLocation getModelLocation(ItemStack stack)
-						{
-							return new ModelResourceLocation(loc, "inventory");
-						}
-					});
-				}
-			}
-			else
-			{
-				final ResourceLocation loc = GameData.getItemRegistry().getNameForObject(item);
-				ModelBakery.registerItemVariants(item, loc);
-				ModelLoader.setCustomMeshDefinition(item, new ItemMeshDefinition()
-				{
-					@Override
-					public ModelResourceLocation getModelLocation(ItemStack stack)
-					{
-						return new ModelResourceLocation(loc, "inventory");
-					}
-				});
-			}
-		}
 		ImmersiveModelRegistry.instance.registerCustomItemModel(new ItemStack(IEContent.itemTool,1,2), new ImmersiveModelRegistry.ItemModelReplacement("immersiveengineering:models/item/tool/voltmeter.obj")
 				.setTransformations(TransformType.FIRST_PERSON_RIGHT_HAND, new Matrix4().translate(-.25, .375, .3125).rotate(-Math.PI*.5, 0, 1, 0))
 				.setTransformations(TransformType.FIRST_PERSON_LEFT_HAND, new Matrix4().translate(-.25, .375, -.625).rotate(-Math.PI*.5, 0, 1, 0))
@@ -286,8 +218,85 @@ public class ClientProxy extends CommonProxy
 		ModelLoaderRegistry.registerLoader(new ConnLoader());
 	}
 	@Override
-	public void preInitSidedCompat()
+	public void preInitEnd()
 	{
+		//Going through registered stuff at the end of preInit, because of compat modules possibly adding items
+		for(Block block : IEContent.registeredIEBlocks)
+		{
+			Item blockItem = Item.getItemFromBlock(block);
+			final ResourceLocation loc = GameData.getBlockRegistry().getNameForObject(block);
+			if(block instanceof IIEMetaBlock)
+			{
+				IIEMetaBlock ieMetaBlock = (IIEMetaBlock) block;
+				if(ieMetaBlock.useCustomStateMapper())
+					ModelLoader.setCustomStateMapper(block, IECustomStateMapper.instance);
+
+				for(int meta = 0; meta < ieMetaBlock.getMetaEnums().length; meta++)
+				{
+					String location = loc.toString();
+					String prop = "inventory," + ieMetaBlock.getMetaProperty().getName() + "=" + ieMetaBlock.getMetaEnums()[meta].toString().toLowerCase(Locale.US);
+					if(ieMetaBlock.useCustomStateMapper())
+					{
+						String custom = ieMetaBlock.getCustomStateMapping(meta, true);
+						if(custom != null)
+							location += "_" + custom;
+					}
+					try
+					{
+						ModelLoader.setCustomModelResourceLocation(blockItem, meta, new ModelResourceLocation(location, prop));
+					} catch(NullPointerException npe)
+					{
+						throw new RuntimeException("WELP! apparently " + ieMetaBlock + " lacks an item!", npe);
+					}
+				}
+			} else if(block instanceof BlockIEFluid)
+				mapFluidState(block, ((BlockIEFluid) block).getFluid());
+			else
+				ModelLoader.setCustomModelResourceLocation(blockItem, 0, new ModelResourceLocation(loc, "inventory"));
+		}
+
+		for(Item item : IEContent.registeredIEItems)
+		{
+			if(item instanceof ItemIEBase)
+			{
+				ItemIEBase ieMetaItem = (ItemIEBase) item;
+				if(ieMetaItem.registerSubModels && ieMetaItem.getSubNames() != null && ieMetaItem.getSubNames().length > 0)
+				{
+					for(int meta = 0; meta < ieMetaItem.getSubNames().length; meta++)
+					{
+						ResourceLocation loc = new ResourceLocation("immersiveengineering", ieMetaItem.itemName + "/" + ieMetaItem.getSubNames()[meta]);
+						ModelBakery.registerItemVariants(ieMetaItem, loc);
+						ModelLoader.setCustomModelResourceLocation(ieMetaItem, meta, new ModelResourceLocation(loc, "inventory"));
+					}
+				} else
+				{
+					final ResourceLocation loc = new ResourceLocation("immersiveengineering", ieMetaItem.itemName);
+					ModelBakery.registerItemVariants(ieMetaItem, loc);
+					ModelLoader.setCustomMeshDefinition(ieMetaItem, new ItemMeshDefinition()
+					{
+						@Override
+						public ModelResourceLocation getModelLocation(ItemStack stack)
+						{
+							return new ModelResourceLocation(loc, "inventory");
+						}
+					});
+				}
+			} else
+			{
+				final ResourceLocation loc = GameData.getItemRegistry().getNameForObject(item);
+				ModelBakery.registerItemVariants(item, loc);
+				ModelLoader.setCustomMeshDefinition(item, new ItemMeshDefinition()
+				{
+					@Override
+					public ModelResourceLocation getModelLocation(ItemStack stack)
+					{
+						return new ModelResourceLocation(loc, "inventory");
+					}
+				});
+			}
+		}
+
+
 		for(IECompatModule compat : IECompatModule.modules)
 			try{
 				compat.clientPreInit();
@@ -407,7 +416,7 @@ public class ClientProxy extends CommonProxy
 		render.addLayer(new IEBipedLayerRenderer());
 	}
 	@Override
-	public void initSidedCompat()
+	public void initEnd()
 	{
 		for(IECompatModule compat : IECompatModule.modules)
 			try{
@@ -545,10 +554,10 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.Text(ManualHelper.getManual(), "silo1"),
 				new ManualPages.Text(ManualHelper.getManual(), "silo2"));
 
-
+		ItemStack[] wires = {new ItemStack(IEContent.itemMaterial, 1, 20), new ItemStack(IEContent.itemWireCoil, 1, 0), new ItemStack(IEContent.itemMaterial, 1, 21), new ItemStack(IEContent.itemWireCoil, 1, 1), new ItemStack(IEContent.itemMaterial, 1, 22), new ItemStack(IEContent.itemMaterial, 1, 23), new ItemStack(IEContent.itemWireCoil, 1, 2)};
 		ManualHelper.addEntry("wiring", ManualHelper.CAT_ENERGY,
 				new ManualPages.Text(ManualHelper.getManual(), "wiring0"),
-				new ManualPages.Crafting(ManualHelper.getManual(), "wiring1", new ItemStack(IEContent.itemWireCoil,1,OreDictionary.WILDCARD_VALUE)),
+				new ManualPages.CraftingMulti(ManualHelper.getManual(), "wiring1", wires),
 				new ManualPages.Image(ManualHelper.getManual(), "wiring2", "immersiveengineering:textures/misc/wiring.png;0;0;110;40", "immersiveengineering:textures/misc/wiring.png;0;40;110;30"),
 				new ManualPages.Image(ManualHelper.getManual(), "wiring3", "immersiveengineering:textures/misc/wiring.png;0;70;110;60", "immersiveengineering:textures/misc/wiring.png;0;130;110;60"),
 				new ManualPages.Text(ManualHelper.getManual(), "wiring4"),
@@ -570,6 +579,7 @@ public class ClientProxy extends CommonProxy
 		ManualHelper.getManual().addEntry("eMeter", ManualHelper.CAT_ENERGY, new ManualPages.Crafting(ManualHelper.getManual(), "eMeter0", new ItemStack(IEContent.blockConnectors,1,BlockTypes_Connector.ENERGY_METER.getMeta())));
 		Map<String,Integer> sortedMap = ThermoelectricHandler.getThermalValuesSorted(true);
 		String[][] table = formatToTable_ItemIntHashmap(sortedMap,"K");
+		ManualHelper.getManual().addEntry("redstoneWires", ManualHelper.CAT_ENERGY, new ManualPages.Crafting(ManualHelper.getManual(), "redstoneWires0", new ItemStack(IEContent.itemWireCoil, 1, 5)), new ManualPages.Crafting(ManualHelper.getManual(), "redstoneWires1", new ItemStack(IEContent.blockConnectors, 1, BlockTypes_Connector.CONNECTOR_REDSTONE.getMeta())));
 		ManualHelper.getManual().addEntry("thermoElectric", ManualHelper.CAT_ENERGY,
 				new ManualPages.Crafting(ManualHelper.getManual(), "thermoElectric0", new ItemStack(IEContent.blockMetalDevice1,1,BlockTypes_MetalDevice1.THERMOELECTRIC_GEN.getMeta())),
 				new ManualPages.Table(ManualHelper.getManual(), "thermoElectric1", table, false));
@@ -736,7 +746,7 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.Text(ManualHelper.getManual(), "excavator1"));
 	}
 	@Override
-	public void postInitSidedCompat()
+	public void postInitEnd()
 	{
 		for(IECompatModule compat : IECompatModule.modules)
 			try{
@@ -907,7 +917,9 @@ public class ClientProxy extends CommonProxy
 			s.close();
 			addToMap(readVersion, currVersion, readVersion, readLog, readVersionBuilt, entries);
 			//add to manual
-			for(Entry<String, String> e : entries.entrySet())
+			List<Entry<String, String>> entrySet = new ArrayList(entries.entrySet());
+			Collections.reverse(entrySet); //Iterate backwards to ahve newest version at the top
+			for(Entry<String, String> e : entrySet)
 			{
 				List<String> l = ManualHelper.getManual().fontRenderer.listFormattedStringToWidth(e.getValue().replace("\t", "  "), 120);
 				final int LINES_PER_PAGE = 16;
@@ -929,46 +941,27 @@ public class ClientProxy extends CommonProxy
 		fr.setUnicodeFlag(isUnicode);
 	}
 
-	private boolean isVersionGreaterOrEqual(String in1, String in2)
+	private int compareVersions(String checked, String current)
 	{
-		int pos1 = 0;
-		int pos2 = 0;
-		while(pos1 < in1.length() || pos2 < in2.length())
-		{
-			String num1 = "";
-			while(pos1 < in1.length() && !Character.isDigit(in1.charAt(pos1)))
-				pos1++;
-			while(pos1 < in1.length() && Character.isDigit(in1.charAt(pos1)))
-			{
-				num1 += in1.charAt(pos1);
-				pos1++;
-			}
-			String num2 = "";
-			while(pos2 < in2.length() && !Character.isDigit(in2.charAt(pos2)))
-				pos2++;
-			while(pos2 < in2.length() && Character.isDigit(in2.charAt(pos2)))
-			{
-				num2 += in2.charAt(pos2);
-				pos2++;
-			}
-			int n1 = num1.isEmpty() ? 0 : Integer.parseInt(num1);
-			int n2 = num2.isEmpty() ? 0 : Integer.parseInt(num2);
-			if(n1 != n2)
-				return n1 > n2;
-		}
-		return true;
+		String num1 = checked == null ? "0" : checked.replaceAll("[^0-9]", "");
+		String num2 = current == null ? "0" : current.replaceAll("[^0-9]", "");
+		int n1 = num1.isEmpty() ? 0 : Integer.parseInt(num1);
+		int n2 = num2.isEmpty() ? 0 : Integer.parseInt(num2);
+		return Integer.compare(n1, n2);
 	}
 
 	private void addToMap(String readVersion, String currVersion, String readversion, String readLog, boolean readVersionBuilt, Map<String, String> entries)
 	{
 		if(readVersion != null)
 		{
-			boolean greater = isVersionGreaterOrEqual(currVersion, readVersion);
-			if(readVersionBuilt || greater)
+			int compare = compareVersions(readVersion, currVersion);
+			if(readVersionBuilt || compare >= 0)
 			{
-				if(!greater)
+				if(compare > 0)
 					readVersion += " - NEW";
-				entries.put(readVersion + "\t", readLog);
+				else if(compare == 0)
+					readVersion += " - CURRENT";
+				entries.put(readVersion, readLog);
 			}
 		}
 	}
@@ -1333,5 +1326,53 @@ public class ClientProxy extends CommonProxy
 	{
 		if(ClientUtils.mc().currentScreen!=null)
 			ClientUtils.mc().currentScreen.initGui();
+	}
+
+	@Override
+	public void removeStateFromSmartModelCache(IExtendedBlockState state)
+	{
+		IESmartObjModel.modelCache.remove(new ExtBlockstateAdapter(state));
+	}
+
+	@Override
+	public void removeStateFromConnectionModelCache(IExtendedBlockState state)
+	{
+		ConnModelReal.cache.remove(new ExtBlockstateAdapter(state));
+	}
+
+	private static void mapFluidState(Block block, Fluid fluid)
+	{
+		Item item = Item.getItemFromBlock(block);
+		FluidStateMapper mapper = new FluidStateMapper(fluid);
+		if(item != null)
+		{
+			ModelLoader.registerItemVariants(item);
+			ModelLoader.setCustomMeshDefinition(item, mapper);
+		}
+		ModelLoader.setCustomStateMapper(block, mapper);
+	}
+
+	static class FluidStateMapper extends StateMapperBase implements ItemMeshDefinition
+	{
+		public final ModelResourceLocation location;
+
+		public FluidStateMapper(Fluid fluid)
+		{
+			this.location = new ModelResourceLocation(ImmersiveEngineering.MODID + ":fluid_block", fluid.getName());
+		}
+
+		@Nonnull
+		@Override
+		protected ModelResourceLocation getModelResourceLocation(@Nonnull IBlockState state)
+		{
+			return location;
+		}
+
+		@Nonnull
+		@Override
+		public ModelResourceLocation getModelLocation(@Nonnull ItemStack stack)
+		{
+			return location;
+		}
 	}
 }

@@ -1,21 +1,20 @@
 package blusunrize.immersiveengineering.client;
 
-import java.util.LinkedHashSet;
-
-import net.minecraft.client.resources.I18n;
-import net.minecraft.util.text.TextFormatting;
-import org.lwjgl.input.Keyboard;
-
 import blusunrize.immersiveengineering.api.ManualHelper;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.lib.manual.IManualPage;
 import blusunrize.lib.manual.ManualInstance;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
+import org.lwjgl.input.Keyboard;
+
+import java.util.LinkedHashSet;
 
 public class IEManualInstance extends ManualInstance
 {
@@ -38,7 +37,7 @@ public class IEManualInstance extends ManualInstance
 	{
 		String translKey = "ie.manual.entry."+s;
 		String translated = I18n.format(translKey);
-		if(translKey!=translated)
+		if(!translKey.equals(translated))
 			s = translated;
 		String splitKey = ";";
 
@@ -253,12 +252,16 @@ public class IEManualInstance extends ManualInstance
 	@Override
 	public String formatEntryName(String s)
 	{
-		return (improveReadability()? TextFormatting.BOLD:"")+ I18n.format("ie.manual.entry."+s+".name");
+		String unformatted = "ie.manual.entry." + s + ".name";
+		String formatted = I18n.format(unformatted);
+		return (improveReadability() ? TextFormatting.BOLD : "") + (unformatted.equals(formatted) ? s : formatted);
 	}
 	@Override
 	public String formatEntrySubtext(String s)
 	{
-		return I18n.format("ie.manual.entry."+s+".subtext");
+		String unformatted = "ie.manual.entry." + s + ".subtext";
+		String formatted = I18n.format(unformatted);
+		return unformatted.equals(formatted) ? "" : formatted;
 	}
 	@Override
 	public boolean showEntryInList(ManualEntry entry)

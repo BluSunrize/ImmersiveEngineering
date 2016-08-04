@@ -53,6 +53,7 @@ public class IERecipes
 		ItemStack componentSteel = new ItemStack(IEContent.itemMaterial,1,9);
 		ItemStack woodenGrip = new ItemStack(IEContent.itemMaterial,1,13);
 		String[] woodenSticks = new String[]{"stickWood", "stickTreatedWood"};
+		ItemStack[] cutters = new ItemStack[]{new ItemStack(IEContent.itemTool, 1, 1), new ItemStack(Items.SHEARS, 1, OreDictionary.WILDCARD_VALUE)};
 
 		addOredictRecipe(new ItemStack(IEContent.itemMaterial,4,0), "W","W", 'W',"plankTreatedWood");
 		addOredictRecipe(new ItemStack(IEContent.itemMaterial,4,1), "I","I", 'I',"ingotIron");
@@ -71,15 +72,20 @@ public class IERecipes
 		addOredictRecipe(new ItemStack(IEContent.itemMaterial,1,15), " I ","ICI"," I ", 'I',"ingotSteel",'C',componentIron);
 		addOredictRecipe(new ItemStack(IEContent.itemMaterial,1,16), "I  ","II "," II", 'I',"ingotSteel");
 
-		addShapelessOredictRecipe(new ItemStack(IEContent.itemMaterial,1,20), "plateCopper",new ItemStack(IEContent.itemTool,1,1));
-		GameRegistry.addRecipe(new RecipeToolDamage(new ItemStack(IEContent.itemMaterial,1,20),1, "plateCopper",Items.SHEARS));
-		addShapelessOredictRecipe(new ItemStack(IEContent.itemMaterial,1,21), "plateElectrum",new ItemStack(IEContent.itemTool,1,1));
-		GameRegistry.addRecipe(new RecipeToolDamage(new ItemStack(IEContent.itemMaterial,1,21),1, "plateElectrum",Items.SHEARS));
-		addShapelessOredictRecipe(new ItemStack(IEContent.itemMaterial,1,22), "plateAluminum",new ItemStack(IEContent.itemTool,1,1));
-		GameRegistry.addRecipe(new RecipeToolDamage(new ItemStack(IEContent.itemMaterial,1,22),1, "plateAluminum",Items.SHEARS));
-		addShapelessOredictRecipe(new ItemStack(IEContent.itemMaterial,1,23), "plateSteel",new ItemStack(IEContent.itemTool,1,1));
-		GameRegistry.addRecipe(new RecipeToolDamage(new ItemStack(IEContent.itemMaterial,1,23),1, "plateSteel",Items.SHEARS));
-		
+
+//		addShapelessOredictRecipe(new ItemStack(IEContent.itemMaterial,1,20), "plateCopper",new ItemStack(IEContent.itemTool,1,1));
+//		GameRegistry.addRecipe(new RecipeToolDamage(new ItemStack(IEContent.itemMaterial,1,20),1, "plateCopper",Items.SHEARS));
+//		addShapelessOredictRecipe(new ItemStack(IEContent.itemMaterial,1,21), "plateElectrum",new ItemStack(IEContent.itemTool,1,1));
+//		GameRegistry.addRecipe(new RecipeToolDamage(new ItemStack(IEContent.itemMaterial,1,21),1, "plateElectrum",Items.SHEARS));
+//		addShapelessOredictRecipe(new ItemStack(IEContent.itemMaterial,1,22), "plateAluminum",new ItemStack(IEContent.itemTool,1,1));
+//		GameRegistry.addRecipe(new RecipeToolDamage(new ItemStack(IEContent.itemMaterial,1,22),1, "plateAluminum",Items.SHEARS));
+//		addShapelessOredictRecipe(new ItemStack(IEContent.itemMaterial,1,23), "plateSteel",new ItemStack(IEContent.itemTool,1,1));
+//		GameRegistry.addRecipe(new RecipeToolDamage(new ItemStack(IEContent.itemMaterial,1,23),1, "plateSteel",Items.SHEARS));
+		addShapelessIngredientRecipe(new ItemStack(IEContent.itemMaterial, 1, 20), "plateCopper", cutters).setToolDamageRecipe(1);
+		addShapelessIngredientRecipe(new ItemStack(IEContent.itemMaterial, 1, 21), "plateElectrum", cutters).setToolDamageRecipe(1);
+		addShapelessIngredientRecipe(new ItemStack(IEContent.itemMaterial, 1, 22), "plateAluminum", cutters).setToolDamageRecipe(1);
+		addShapelessIngredientRecipe(new ItemStack(IEContent.itemMaterial, 1, 23), "plateSteel", cutters).setToolDamageRecipe(1);
+
 		//		addOredictRecipe(new ItemStack(IEContent.itemMaterial,4,14), "I","I", 'I',"ingotIron");
 		//		addOredrrictRecipe(new ItemStack(IEContent.itemMaterial,4,15), "I","I", 'I',"ingotSteel");
 
@@ -180,7 +186,7 @@ public class IERecipes
 		addOredictRecipe(new ItemStack(IEContent.blockWoodenDevice0,1,BlockTypes_WoodenDevice0.WORKBENCH.getMeta()), "WWW","B F", 'W',"plankTreatedWood",'B',"craftingTableWood",'F',"fenceTreatedWood");
 		addIngredientRecipe(new ItemStack(IEContent.blockWoodenDevice0, 1, BlockTypes_WoodenDevice0.SORTER.getMeta()), "WRW", "IBI", "WRW", 'I', "ingotIron", 'R', "dustRedstone", 'W', "plankTreatedWood", 'B', componentIron).allowQuarterTurn();
 		addOredictRecipe(new ItemStack(IEContent.blockWoodenDevice0,1,BlockTypes_WoodenDevice0.GUNPOWDER_BARREL.getMeta()), " F ","GBG","GGG", 'F',new ItemStack(IEContent.itemMaterial,1,4),'G',Items.GUNPOWDER,'B',new ItemStack(IEContent.blockWoodenDevice0,1,BlockTypes_WoodenDevice0.BARREL.getMeta()));
-		addIngredientRecipe(new ItemStack(IEContent.blockWoodenDevice0, 1, BlockTypes_WoodenDevice0.REINFORCED_CRATE.getMeta()), "WPW", "RCR", "WPW", 'W', "plankTreatedWood", 'P', "plateIron", 'R', "stickIron", 'C', new ItemStack(IEContent.blockWoodenDevice0, 1, BlockTypes_WoodenDevice0.CRATE.getMeta())).setNBTCopyTargetSlot(4).allowQuarterTurn();
+		addIngredientRecipe(new ItemStack(IEContent.blockWoodenDevice0, 1, BlockTypes_WoodenDevice0.REINFORCED_CRATE.getMeta()), "WPW", "RCR", "WPW", 'W', "plankTreatedWood", 'P', "plateIron", 'R', "stickIron", 'C', new ItemStack(IEContent.blockWoodenDevice0, 1, BlockTypes_WoodenDevice0.CRATE.getMeta())).setNBTCopyTargetRecipe(4).allowQuarterTurn();
 		addOredictRecipe(new ItemStack(IEContent.blockWoodenDevice1,1,BlockTypes_WoodenDevice1.WATERMILL.getMeta()), " P ","PIP"," P ", 'P',new ItemStack(IEContent.itemMaterial,1,10),'I',"ingotSteel");
 		addOredictRecipe(new ItemStack(IEContent.blockWoodenDevice1,1,BlockTypes_WoodenDevice1.WINDMILL.getMeta()), " P ","PIP"," P ", 'P',new ItemStack(IEContent.itemMaterial,1,11),'I',"ingotIron");
 		addOredictRecipe(new ItemStack(IEContent.blockWoodenDevice1,1,BlockTypes_WoodenDevice1.WINDMILL_ADVANCED.getMeta()), "PPP","PIP","PPP", 'P',new ItemStack(IEContent.itemMaterial,1,12),'I',"ingotSteel");
@@ -282,6 +288,7 @@ public class IERecipes
 		addOredictRecipe(new ItemStack(IEContent.blockConnectors, 1, BlockTypes_Connector.BREAKERSWITCH.getMeta()), " L ","CIC", 'L',Blocks.LEVER,'C',Blocks.HARDENED_CLAY,'I',"ingotCopper");
 		addOredictRecipe(new ItemStack(IEContent.blockConnectors, 1, BlockTypes_Connector.REDSTONE_BREAKER.getMeta()), "H H","ICI","IRI", 'H',new ItemStack(IEContent.blockConnectors,1,BlockTypes_Connector.CONNECTOR_HV.getMeta()), 'I',"ingotIron", 'C',Items.REPEATER, 'R',"dustRedstone");
 		addOredictRecipe(new ItemStack(IEContent.blockConnectors, 1, BlockTypes_Connector.ENERGY_METER.getMeta()), " M ","BCB","ICI", 'M',new ItemStack(IEContent.itemTool,1,2), 'B', Blocks.HARDENED_CLAY, 'I',"ingotIron", 'C',copperCoil);
+		addOredictRecipe(new ItemStack(IEContent.blockConnectors, 4, BlockTypes_Connector.CONNECTOR_REDSTONE.getMeta()), "III", "BRB", 'I', "nuggetElectrum", 'B', Blocks.HARDENED_CLAY, 'R', "dustRedstone");
 
 		//
 		//METAL DEVICES
@@ -337,9 +344,16 @@ public class IERecipes
 
 	public static RecipeShapedIngredient addIngredientRecipe(ItemStack output, Object... recipe)
 	{
-		RecipeShapedIngredient sor = new RecipeShapedIngredient(output, recipe);
-		GameRegistry.addRecipe(sor);
-		return sor;
+		RecipeShapedIngredient r = new RecipeShapedIngredient(output, recipe);
+		GameRegistry.addRecipe(r);
+		return r;
+	}
+
+	public static RecipeShapelessIngredient addShapelessIngredientRecipe(ItemStack output, Object... recipe)
+	{
+		RecipeShapelessIngredient r = new RecipeShapelessIngredient(output, recipe);
+		GameRegistry.addRecipe(r);
+		return r;
 	}
 
 	public static void initBlueprintRecipes()

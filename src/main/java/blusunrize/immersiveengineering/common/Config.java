@@ -35,24 +35,24 @@ public class Config
 		}
 		setBoolean("validateConnections", connectionValidation.getBoolean());
 
-		Property wireProperty = config.get("general", "Wire transfer rates", new int[]{2048,8192,32768,0,0}, "The transfer rates in Flux/t for the wire tiers (copper, electrum, HV, Structural Rope & Cable(no transfer) )");
-		if(wireProperty.getIntList().length<5)
-			wireProperty.set(new int[]{2048,8192,32768,0,0});
+		Property wireProperty = config.get("general", "Wire transfer rates", new int[]{2048, 8192, 32768, 0, 0, 0}, "The transfer rates in Flux/t for the wire tiers (copper, electrum, HV, Structural Rope, Cable & Redstone(no transfer) )");
+		if(wireProperty.getIntList().length < 6)
+			wireProperty.set(new int[]{2048, 8192, 32768, 0, 0, 0});
 		setIntArray("wireTransferRate", wireProperty.getIntList());
 
-		wireProperty = config.get("general", "Wire loss", new double[]{.05,.025,.025,1,1}, "The percentage of power lost every 16 blocks of distance for the wire tiers (copper, electrum, HV, Structural Rope & Cable(no transfer) )");
-		if(wireProperty.getDoubleList().length<5)
-			wireProperty.set(new double[]{.05,.025,.025,1,1});
+		wireProperty = config.get("general", "Wire loss", new double[]{.05, .025, .025, 1, 1, 1}, "The percentage of power lost every 16 blocks of distance for the wire tiers (copper, electrum, HV, Structural Rope, Cable & Redstone(no transfer) )");
+		if(wireProperty.getDoubleList().length < 6)
+			wireProperty.set(new double[]{.05, .025, .025, 1, 1, 1});
 		setDoubleArray("wireLossRatio", wireProperty.getDoubleList());
 
-		wireProperty = config.get("general", "Wire colouration", new int[]{0xd4804a,0xedad62,0x6f6f6f, 0x967e6d,0x6f6f6f}, "The RGB colourate of the wires.");
-		if(wireProperty.getIntList().length<5)
-			wireProperty.set(new int[]{0xb36c3f,0xeda045,0x6f6f6f, 0x967e6d,0x6f6f6f});
+		wireProperty = config.get("general", "Wire colouration", new int[]{0xd4804a, 0xedad62, 0x6f6f6f, 0x967e6d, 0x6f6f6f, 0xff2f2f}, "The RGB colourate of the wires.");
+		if(wireProperty.getIntList().length < 6)
+			wireProperty.set(new int[]{0xb36c3f, 0xeda045, 0x6f6f6f, 0x967e6d, 0x6f6f6f, 0xff2f2f});
 		setIntArray("wireColouration", wireProperty.getIntList());
 
-		wireProperty = config.get("general", "Wire length", new int[]{16,16,32,32,32}, "The maximum length wire can have. Copper and Electrum should be similar, Steel is meant for long range transport, Structural Rope & Cables are purely decorational");
-		if(wireProperty.getIntList().length<5)
-			wireProperty.set(new int[]{16,16,32,32,32});
+		wireProperty = config.get("general", "Wire length", new int[]{16, 16, 32, 32, 32, 32}, "The maximum length wire can have. Copper and Electrum should be similar, Steel is meant for long range transport, Structural Rope & Cables are purely decorational");
+		if(wireProperty.getIntList().length < 6)
+			wireProperty.set(new int[]{16, 16, 32, 32, 32, 32});
 		setIntArray("wireLength", wireProperty.getIntList());
 
 		setInt("revolverSheetID", config.get("general", "TextureSheet: Revolvers", 94, "The ID of the texture sheet used for revolvers. This should probably never conflict since not many mods do custom sheets.").getInt());

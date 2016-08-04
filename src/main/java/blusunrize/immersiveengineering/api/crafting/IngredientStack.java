@@ -1,20 +1,18 @@
 package blusunrize.immersiveengineering.api.crafting;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import blusunrize.immersiveengineering.api.ApiUtils;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.ForgeModContainer;
 import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidRegistry.FluidRegisterEvent;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.UniversalBucket;
 import net.minecraftforge.oredict.OreDictionary;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class IngredientStack
 {
@@ -189,21 +187,12 @@ public class IngredientStack
 			return this.fluid.equals(((IngredientStack)object).fluid);
 		if(this.oreName!=null && ((IngredientStack)object).oreName!=null)
 			return this.oreName.equals(((IngredientStack)object).oreName);
-		if(this.stackList!=null)
+		if(this.stackList != null && ((IngredientStack) object).stackList != null)
 		{
-			if(((IngredientStack)object).stack!=null)
-			{
-				for(ItemStack iStack : this.stackList)
-					if(OreDictionary.itemMatches(iStack, ((IngredientStack)object).stack, false))
+			for(ItemStack iStack : this.stackList)
+				for(ItemStack iStack2 : ((IngredientStack) object).stackList)
+					if(OreDictionary.itemMatches(iStack, iStack2, false))
 						return true;
-			}
-			else
-			{
-				for(ItemStack iStack : this.stackList)
-					for(ItemStack iStack2 : ((IngredientStack)object).stackList)
-						if(OreDictionary.itemMatches(iStack, iStack2, false))
-							return true;
-			}
 			return false;
 		}
 		if(this.stack!=null && ((IngredientStack)object).stack!=null)

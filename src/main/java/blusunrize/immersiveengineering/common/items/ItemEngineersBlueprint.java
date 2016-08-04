@@ -1,26 +1,26 @@
 package blusunrize.immersiveengineering.common.items;
 
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Random;
-
-import blusunrize.immersiveengineering.common.IEContent;
-import net.minecraft.client.resources.I18n;
-import org.lwjgl.input.Keyboard;
-
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
+import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.gui.ContainerModWorkbench;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
+import net.minecraft.client.resources.I18n;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.input.Keyboard;
+
+import java.util.LinkedHashSet;
+import java.util.List;
 
 public class ItemEngineersBlueprint extends ItemUpgradeableTool
 {
@@ -47,17 +47,32 @@ public class ItemEngineersBlueprint extends ItemUpgradeableTool
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean adv)
 	{
 		String key = ItemNBTHelper.getString(stack,"blueprint");
-		list.add(I18n.format(Lib.DESC_INFO+"blueprint."+key));
-		if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)||Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
+		if(key != null && !key.isEmpty() && BlueprintCraftingRecipe.blueprintCategories.contains(key))
 		{
-			list.add(I18n.format(Lib.DESC_INFO+"blueprint.creates1"));
-			BlueprintCraftingRecipe[] recipes = BlueprintCraftingRecipe.findRecipes(key);
-			if(recipes.length>0)
-				for(int i=0; i<recipes.length; i++)
-					list.add(" "+recipes[i].output.getDisplayName());
+			list.add(I18n.format(Lib.DESC_INFO + "blueprint." + key));
+			if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
+			{
+				list.add(I18n.format(Lib.DESC_INFO + "blueprint.creates1"));
+				BlueprintCraftingRecipe[] recipes = BlueprintCraftingRecipe.findRecipes(key);
+				if(recipes.length > 0)
+					for(int i = 0; i < recipes.length; i++)
+						list.add(" " + recipes[i].output.getDisplayName());
+			} else
+				list.add(I18n.format(Lib.DESC_INFO + "blueprint.creates0"));
 		}
-		else
-			list.add(I18n.format(Lib.DESC_INFO+"blueprint.creates0"));
+	}
+
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void getSubItems(Item item, CreativeTabs tab, List list)
+	{
+		for(String key : BlueprintCraftingRecipe.blueprintCategories)
+		{
+			ItemStack stack = new ItemStack(this);
+			ItemNBTHelper.setString(stack, "blueprint", key);
+			list.add(stack);
+		}
 	}
 
 	@Override

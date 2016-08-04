@@ -67,6 +67,18 @@ public class IEBlockInterfaces
 		int getComparatorInputOverride();
 	}
 
+	public interface IRedstoneOutput
+	{
+		default int getWeakRSOutput(IBlockState state, EnumFacing side)
+		{
+			return getStrongRSOutput(state, side);
+		}
+
+		int getStrongRSOutput(IBlockState state, EnumFacing side);
+
+		boolean canConnectRedstone(IBlockState state, EnumFacing side);
+	}
+
 	public interface ILightValue
 	{
 		int getLightValue();
@@ -177,7 +189,10 @@ public class IEBlockInterfaces
 		boolean canOpenGui();
 		int getGuiID();
 		TileEntity getGuiMaster();
-		default void onGuiOpened(EntityPlayer player, boolean clientside){};
+
+		default void onGuiOpened(EntityPlayer player, boolean clientside)
+		{
+		}
 	}
 	
 	public interface INeighbourChangeTile

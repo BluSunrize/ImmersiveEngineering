@@ -1,12 +1,5 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Lists;
-
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IEProperties.PropertyBoolInverted;
@@ -15,25 +8,26 @@ import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedSelectionBounds;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDualState;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IMirrorAble;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IUsesBooleanProperty;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Lists;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.*;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 public class TileEntityTransformer extends TileEntityImmersiveConnectable implements IDirectionalTile, IMirrorAble, IHasDummyBlocks, IAdvancedSelectionBounds, IDualState
 {
@@ -130,13 +124,13 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 		return false;
 	}
 	@Override
-	public void connectCable(WireType cableType, TargetingInfo target)
+	public void connectCable(WireType cableType, TargetingInfo target, IImmersiveConnectable other)
 	{
 		if(dummy!=0)
 		{
 			TileEntity master = worldObj.getTileEntity(getPos().add(0,-dummy,0));
 			if(master instanceof TileEntityTransformer)
-				((TileEntityTransformer)master).connectCable(cableType, target);
+				((TileEntityTransformer) master).connectCable(cableType, target, other);
 			return;
 		}
 		switch(getTargetedConnector(target))

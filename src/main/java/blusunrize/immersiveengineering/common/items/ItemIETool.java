@@ -1,14 +1,5 @@
 package blusunrize.immersiveengineering.common.items;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import blusunrize.immersiveengineering.common.CommonProxy;
-import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IGuiItem;
-import com.google.common.collect.ImmutableSet;
-
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.MultiblockHandler;
 import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
@@ -19,13 +10,13 @@ import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.AbstractConnection;
 import blusunrize.immersiveengineering.api.tool.ITool;
+import blusunrize.immersiveengineering.common.CommonProxy;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.IESaveData;
-import blusunrize.immersiveengineering.common.util.ChatUtils;
-import blusunrize.immersiveengineering.common.util.IEAchievements;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import blusunrize.immersiveengineering.common.util.RotationUtil;
-import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
+import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IGuiItem;
+import blusunrize.immersiveengineering.common.util.*;
+import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityLivingBase;
@@ -36,12 +27,16 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class ItemIETool extends ItemIEBase implements ITool, IGuiItem
 {
@@ -143,7 +138,8 @@ public class ItemIETool extends ItemIEBase implements ITool, IGuiItem
 						if(mb.createStructure(world, pos, side, player))
 							return EnumActionResult.SUCCESS;
 					}
-				return RotationUtil.rotateBlock(world, pos, side, player)?EnumActionResult.SUCCESS:EnumActionResult.PASS;
+				if(!(world.getTileEntity(pos) instanceof IDirectionalTile))
+					return RotationUtil.rotateBlock(world, pos, side, player) ? EnumActionResult.SUCCESS : EnumActionResult.PASS;
 			}
 			else if(stack.getItemDamage()==1 && tileEntity instanceof IImmersiveConnectable)
 			{
@@ -207,54 +203,6 @@ public class ItemIETool extends ItemIEBase implements ITool, IGuiItem
 					return EnumActionResult.SUCCESS;
 				}
 			}
-			//						x += 6;
-			//						y += 1;
-			//			
-			//						world.createExplosion(player, x+.5, y+.5, z+.5, 1.5f, true);
-			//			
-			//						float vex = 16;
-			//			
-			//						if(world instanceof WorldServer)
-			//							for(int i=0; i<vex; i++)
-			//							{
-			//								float angle = i*(360/vex);
-			//								float h = 0;
-			//								for(int j=0; j<16; j++)
-			//								{
-			//									float r = 1f-Math.min(j,5)*.0625f;
-			//									double xx = r*Math.cos(angle);
-			//									double zz = r*Math.sin(angle);
-			//									((WorldServer)world).func_147487_a("explode", x+xx, y+h,z+zz, 0, 0,0,0, 1);
-			//									((WorldServer)world).func_147487_a("largesmoke", x+xx,y+h,z+zz, 0, 0,.0,0, 1);
-			//									((WorldServer)world).func_147487_a("largesmoke", x+xx,y+h,z+zz, 0, 0,.0,0, 1);
-			//									//					world.spawnParticle("explode", x+xx, y+h,z+zz, 0,0,0);
-			//									//					world.spawnParticle("largesmoke", x+xx,y+h,z+zz, 0,.0,0);
-			//									//					world.spawnParticle("largesmoke", x+xx,y+h,z+zz, 0,.0,0);
-			//									if(i%2==0)
-			//										//						world.spawnParticle("angryVillager", x+xx, y+h,z+zz, 0,0,0);
-			//										((WorldServer)world).func_147487_a("angryVillager", x+xx, y+h,z+zz, 0, 0,0,0, 1);
-			//									h += .1875f;
-			//								}
-			//								for(int j=0; j<16; j++)
-			//								{
-			//									float r = (float)(Math.cos(112.5f-j*(45/16f)));
-			//									double xx = r*Math.cos(angle);
-			//									double zz = r*Math.sin(angle);
-			//									//					world.spawnParticle("explode", x+xx, y+h, z+zz, 0,.0,0);
-			//									//					world.spawnParticle("largesmoke", x+xx, y+h, z+zz, xx*.025,.0,zz*.025);
-			//									//					world.spawnParticle("largesmoke", x+xx, y+h, z+zz, xx*.05,.0,zz*.05);
-			//									//					world.spawnParticle("largesmoke", x+xx, y+h, z+zz, xx*.1,.0,zz*.1);
-			//									((WorldServer)world).func_147487_a("explode", x+xx, y+h, z+zz, 0, 0,.0,0, 1);
-			//									((WorldServer)world).func_147487_a("largesmoke", x+xx, y+h, z+zz, 0, xx*.025,.0,zz*.025, 1);
-			//									((WorldServer)world).func_147487_a("largesmoke", x+xx, y+h, z+zz, 0, xx*.05,.0,zz*.05, 1);
-			//									((WorldServer)world).func_147487_a("largesmoke", x+xx, y+h, z+zz, 0, xx*.1,.0,zz*.1, 1);
-			//									h += .0625f;
-			//								}
-			//							}
-		}
-		else
-		{
-
 		}
 		return EnumActionResult.PASS;
 	}
