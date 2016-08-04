@@ -340,9 +340,26 @@ public class ApiUtils
 			if(preferWildcard)
 				return new IngredientStack(new ItemStack((Block)input,1,OreDictionary.WILDCARD_VALUE));
 			return new IngredientStack(new ItemStack((Block)input));
+		} else if(input instanceof List && ((List) input).isEmpty())
+		{
+			if(((List) input).get(0) instanceof ItemStack)
+				return new IngredientStack(((List<ItemStack>) input));
+			else if(((List) input).get(0) instanceof String)
+			{
+				ArrayList<ItemStack> itemList = new ArrayList();
+				for(String s : ((List<String>) input))
+					itemList.addAll(OreDictionary.getOres(s));
+				return new IngredientStack(itemList);
+			}
+		} else if(input instanceof ItemStack[])
+			return new IngredientStack(Arrays.asList((ItemStack[]) input));
+		else if(input instanceof String[])
+		{
+			ArrayList<ItemStack> itemList = new ArrayList();
+			for(String s : ((String[]) input))
+				itemList.addAll(OreDictionary.getOres(s));
+			return new IngredientStack(itemList);
 		}
-		else if(input instanceof List && ((List)input).isEmpty() && ((List)input).get(0) instanceof ItemStack)
-			return new IngredientStack(((List<ItemStack>)input));
 		else if(input instanceof String)
 			return new IngredientStack((String)input);
 		else if(input instanceof FluidStack)

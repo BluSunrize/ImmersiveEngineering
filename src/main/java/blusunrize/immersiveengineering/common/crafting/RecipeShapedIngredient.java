@@ -9,16 +9,59 @@ import net.minecraftforge.oredict.ShapedOreRecipe;
 
 public class RecipeShapedIngredient extends ShapedOreRecipe
 {
-	IngredientStack[] ingredients;
 	static IngredientStack[] tempIngredients;
+
+	IngredientStack[] ingredients;
+	IngredientStack[] ingredientsQuarterTurn;
+	IngredientStack[] ingredientsEighthTurn;
+	int nbtCopyTargetSlot = -1;
 	public RecipeShapedIngredient(ItemStack result, Object... recipe)
 	{
 		super(result, saveIngredients(recipe));
-		ingredients = tempIngredients;
+		setIngredients(tempIngredients);
+		tempIngredients = null;
+	}
+
+	public RecipeShapedIngredient setIngredients(IngredientStack[] ingr)
+	{
+		ingredients = ingr;
 		for(int i=0; i<input.length; i++)
 			if(ingredients[i]!=null)
 				input[i] = ingredients[i].getShapedRecipeInput();
-		tempIngredients = null;
+		return this;
+	}
+
+	public RecipeShapedIngredient allowQuarterTurn()
+	{
+		ingredientsQuarterTurn = new IngredientStack[ingredients.length];
+		int maxH = (height - 1);
+		for(int h = 0; h < height; h++)
+			for(int w = 0; w < width; w++)
+				ingredientsQuarterTurn[w * height + (maxH - h)] = ingredients[h * width + w];
+		return this;
+	}
+
+	static int[] eighthTurnMap = {3, -1, -1, 3, 0, -3, 1, 1, -3};
+
+	public RecipeShapedIngredient allowEighthTurn()
+	{
+		if(width != 3 || height != 3)//Recipe won't allow 8th turn when not a 3x3 square
+			return this;
+		ingredientsEighthTurn = new IngredientStack[ingredients.length];
+		int maxH = (height - 1);
+		for(int h = 0; h < height; h++)
+			for(int w = 0; w < width; w++)
+			{
+				int i = h * width + w;
+				ingredientsEighthTurn[i + eighthTurnMap[i]] = ingredients[i];
+			}
+		return this;
+	}
+
+	public RecipeShapedIngredient setNBTCopyTargetSlot(int slot)
+	{
+		this.nbtCopyTargetSlot = slot;
+		return this;
 	}
 
 	public static Object[] saveIngredients(Object... recipe)
@@ -62,25 +105,59 @@ public class RecipeShapedIngredient extends ShapedOreRecipe
 	}
 
 	@Override
+	public ItemStack getCraftingResult(InventoryCrafting matrix)
+	{
+		if(nbtCopyTargetSlot >= 0)
+		{
+			ItemStack out = output.copy();
+			if(matrix.getStackInSlot(nbtCopyTargetSlot) != null && matrix.getStackInSlot(nbtCopyTargetSlot).hasTagCompound())
+				out.setTagCompound(matrix.getStackInSlot(nbtCopyTargetSlot).getTagCompound().copy());
+			return out;
+		} else
+			return super.getCraftingResult(matrix);
+	}
+
+	@Override
 	protected boolean checkMatch(InventoryCrafting inv, int startX, int startY, boolean mirror)
 	{
-		for(int x=0; x<MAX_CRAFT_GRID_WIDTH; x++)
-			for(int y=0; y<MAX_CRAFT_GRID_HEIGHT; y++)
+		if(checkMatchDo(inv, ingredients, startX, startY, mirror, false))
+			return true;
+		else if(ingredientsQuarterTurn != null && checkMatchDo(inv, ingredientsQuarterTurn, startX, startY, mirror, true))
+			return true;
+		else if(ingredientsEighthTurn != null && checkMatchDo(inv, ingredientsEighthTurn, startX, startY, mirror, false))
+			return true;
+		return false;
+	}
+
+	protected boolean checkMatchDo(InventoryCrafting inv, IngredientStack[] ingredients, int startX, int startY, boolean mirror, boolean rotate)
+	{
+		for(int x = 0; x < MAX_CRAFT_GRID_WIDTH; x++)
+			for(int y = 0; y < MAX_CRAFT_GRID_HEIGHT; y++)
 			{
-				int subX = x-startX;
-				int subY = y-startY;
+				int subX = x - startX;
+				int subY = y - startY;
 				IngredientStack target = null;
 
-				if(subX>=0 && subY>=0 && subX<width && subY<height)
-					if(mirror)
-						target = ingredients[width - subX - 1 + subY * width];
-					else
-						target = ingredients[subX + subY * width];
+				if(!rotate)
+				{
+					if(subX >= 0 && subY >= 0 && subX < width && subY < height)
+						if(mirror)
+							target = ingredients[width - subX - 1 + subY * width];
+						else
+							target = ingredients[subX + subY * width];
+				} else
+				{
+					if(subX >= 0 && subY >= 0 && subX < height && subY < width)
+						if(mirror)
+							target = ingredients[height - subX - 1 + subY * width];
+						else
+							target = ingredients[subY + subX * height];
+				}
 
 				ItemStack slot = inv.getStackInRowAndColumn(x, y);
-				if((target==null)!=(slot==null))
+				if((target == null) != (slot == null))
 					return false;
-				else if(target!=null && !target.matchesItemStack(slot))
+				else if(target != null && !target.matchesItemStack(slot))
 					return false;
 			}
 		return true;

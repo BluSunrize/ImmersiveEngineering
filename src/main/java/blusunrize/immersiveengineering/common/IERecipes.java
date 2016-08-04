@@ -44,7 +44,6 @@ public class IERecipes
 	{
 		RecipeSorter.register(ImmersiveEngineering.MODID+":shapedArrayList", RecipeShapedArrayList.class, Category.SHAPED, "after:forge:shapedore");
 		RecipeSorter.register(ImmersiveEngineering.MODID+":shapedIngredient", RecipeShapedIngredient.class, Category.SHAPED, "after:forge:shapedore");
-		RecipeSorter.register(ImmersiveEngineering.MODID+":shapedNBTCopy", RecipeShapedOreNBTCopy.class, Category.SHAPED, "after:forge:shapedore");
 		RecipeSorter.register(ImmersiveEngineering.MODID+":toolDamage", RecipeToolDamage.class, Category.SHAPELESS, "after:forge:shapedore");
 
 		ItemStack copperCoil = new ItemStack(IEContent.blockMetalDecoration0,1,BlockTypes_MetalDecoration0.COIL_LV.getMeta());
@@ -53,7 +52,7 @@ public class IERecipes
 		ItemStack componentIron = new ItemStack(IEContent.itemMaterial,1,8);
 		ItemStack componentSteel = new ItemStack(IEContent.itemMaterial,1,9);
 		ItemStack woodenGrip = new ItemStack(IEContent.itemMaterial,1,13);
-
+		String[] woodenSticks = new String[]{"stickWood", "stickTreatedWood"};
 
 		addOredictRecipe(new ItemStack(IEContent.itemMaterial,4,0), "W","W", 'W',"plankTreatedWood");
 		addOredictRecipe(new ItemStack(IEContent.itemMaterial,4,1), "I","I", 'I',"ingotIron");
@@ -85,9 +84,9 @@ public class IERecipes
 		//		addOredrrictRecipe(new ItemStack(IEContent.itemMaterial,4,15), "I","I", 'I',"ingotSteel");
 
 
-		addOredictRecipe(new ItemStack(IEContent.itemTool,1,0), " IF"," SI","S  ", 'I',"ingotIron", 'S',"stickWood", 'F',new ItemStack(Items.STRING));
-		addOredictRecipe(new ItemStack(IEContent.itemTool,1,1), "SI"," S", 'I',"ingotIron", 'S',"stickTreatedWood").setMirrored(true);
-		addOredictRecipe(new ItemStack(IEContent.itemTool,1,2), " P ","SCS", 'C',"ingotCopper", 'P',Items.COMPASS, 'S',"stickTreatedWood");
+		addIngredientRecipe(new ItemStack(IEContent.itemTool, 1, 0), " IF", " SI", "S  ", 'I', "ingotIron", 'S', woodenSticks, 'F', new ItemStack(Items.STRING));
+		addIngredientRecipe(new ItemStack(IEContent.itemTool, 1, 1), "SI", " S", 'I', "ingotIron", 'S', woodenSticks).setMirrored(true);
+		addIngredientRecipe(new ItemStack(IEContent.itemTool, 1, 2), " P ", "SCS", 'C', "ingotCopper", 'P', Items.COMPASS, 'S', woodenSticks);
 		addShapelessOredictRecipe(new ItemStack(IEContent.itemTool,1,3), Items.BOOK,Blocks.LEVER);
 		addOredictRecipe(new ItemStack(IEContent.itemRevolver,1,0), " I ","BDH","GIG", 'I',"ingotIron",'B',new ItemStack(IEContent.itemMaterial,1,14),'D',new ItemStack(IEContent.itemMaterial,1,15),'G',woodenGrip,'H',new ItemStack(IEContent.itemMaterial,1,16)).setMirrored(true);
 		addOredictRecipe(new ItemStack(IEContent.itemRevolver,1,1), "  I","IIS","  I", 'I',"ingotIron",'S',"ingotSteel");
@@ -111,7 +110,7 @@ public class IERecipes
 		addOredictRecipe(new ItemStack(IEContent.itemRailgun,1,0), " HG","CBH","BC ", 'C',electrumCoil, 'H',new ItemStack(IEContent.blockMetalDevice0,1,BlockTypes_MetalDevice0.CAPACITOR_HV.getMeta()), 'B',new ItemStack(IEContent.itemMaterial,1,14), 'G',woodenGrip);
 
 		addOredictRecipe(new ItemStack(IEContent.itemToolUpgrades,1,0), "BI ","IBI"," IC", 'B',Items.BUCKET, 'I',"dyeBlue", 'C',componentIron);
-		GameRegistry.addRecipe(new RecipeShapedIngredient(new ItemStack(IEContent.itemToolUpgrades,1,1), "BI ","IBI"," IC", 'B',new FluidStack(IEContent.fluidPlantoil,1000), 'I',"ingotIron", 'C',componentIron));
+		addIngredientRecipe(new ItemStack(IEContent.itemToolUpgrades, 1, 1), "BI ", "IBI", " IC", 'B', new FluidStack(IEContent.fluidPlantoil, 1000), 'I', "ingotIron", 'C', componentIron);
 		addOredictRecipe(new ItemStack(IEContent.itemToolUpgrades,1,2), "SSS"," C ", 'S',"ingotSteel", 'C',componentSteel);
 		addOredictRecipe(new ItemStack(IEContent.itemToolUpgrades,1,3), "CS ","SBO"," OB", 'C',componentIron, 'S',"ingotSteel", 'B',Items.BUCKET, 'O',"dyeRed");
 		addOredictRecipe(new ItemStack(IEContent.itemToolUpgrades,1,4), "SI","IW", 'S',Items.IRON_SWORD, 'I',"ingotSteel", 'W',"plankTreatedWood");
@@ -124,11 +123,12 @@ public class IERecipes
 		addShapelessOredictRecipe(new ItemStack(IEContent.itemMetal,2,15), "dustCopper","dustNickel");
 		addShapelessOredictRecipe(new ItemStack(IEContent.itemMetal,2,16), "dustSilver","dustGold");
 
-		addOredictRecipe(new ItemStack(IEContent.itemWireCoil,4,0), " I ","ISI"," I ", 'I',"wireCopper", 'S',"stickWood");
-		addOredictRecipe(new ItemStack(IEContent.itemWireCoil,4,1), " I ","ISI"," I ", 'I',"wireElectrum", 'S',"stickWood");
-		addOredictRecipe(new ItemStack(IEContent.itemWireCoil,4,2), " I ","ASA"," I ", 'I',"wireSteel", 'A',"wireAluminum", 'S',"stickWood");
-		addOredictRecipe(new ItemStack(IEContent.itemWireCoil,4,3), " I ","ISI"," I ", 'I',new ItemStack(IEContent.itemMaterial,1,4), 'S',"stickWood");
-		addOredictRecipe(new ItemStack(IEContent.itemWireCoil,4,4), " I ","ISI"," I ", 'I',"wireSteel", 'S',"stickWood");
+		addIngredientRecipe(new ItemStack(IEContent.itemWireCoil, 4, 0), " I ", "ISI", " I ", 'I', "wireCopper", 'S', woodenSticks);
+		addIngredientRecipe(new ItemStack(IEContent.itemWireCoil, 4, 1), " I ", "ISI", " I ", 'I', "wireElectrum", 'S', woodenSticks);
+		addIngredientRecipe(new ItemStack(IEContent.itemWireCoil, 4, 2), " I ", "ASA", " I ", 'I', "wireSteel", 'A', "wireAluminum", 'S', woodenSticks).allowQuarterTurn();
+		addIngredientRecipe(new ItemStack(IEContent.itemWireCoil, 4, 3), " I ", "ISI", " I ", 'I', new ItemStack(IEContent.itemMaterial, 1, 4), 'S', woodenSticks);
+		addIngredientRecipe(new ItemStack(IEContent.itemWireCoil, 4, 4), " I ", "ISI", " I ", 'I', "wireSteel", 'S', woodenSticks);
+		addIngredientRecipe(new ItemStack(IEContent.itemWireCoil, 4, 5), " I ", "ASA", " I ", 'I', "dustRedstone", 'A', "wireAluminum", 'S', woodenSticks).allowQuarterTurn();
 
 		addOredictRecipe(new ItemStack(IEContent.itemJerrycan), " II","IBB","IBB", 'I',"plateIron",'B',Items.BUCKET);
 		GameRegistry.addRecipe(new RecipeJerrycan());
@@ -152,7 +152,7 @@ public class IERecipes
 		//
 		//TREATED WOOD
 		//
-		GameRegistry.addRecipe(new RecipeShapedIngredient(new ItemStack(IEContent.blockTreatedWood,8,0), "WWW","WCW","WWW", 'W',"plankWood",'C',new FluidStack(IEContent.fluidCreosote,1000)));
+		addIngredientRecipe(new ItemStack(IEContent.blockTreatedWood, 8, 0), "WWW", "WCW", "WWW", 'W', "plankWood", 'C', new FluidStack(IEContent.fluidCreosote, 1000));
 		for(int i=0; i<IEContent.blockTreatedWood.enumValues.length; i++)
 		{
 			addShapelessOredictRecipe(new ItemStack(IEContent.blockTreatedWood,1, i==IEContent.blockTreatedWood.enumValues.length-1?0:i+1), new ItemStack(IEContent.blockTreatedWood,1,i));
@@ -178,9 +178,9 @@ public class IERecipes
 		addOredictRecipe(new ItemStack(IEContent.blockWoodenDevice0,1,BlockTypes_WoodenDevice0.CRATE.getMeta()), "WWW","W W","WWW", 'W',"plankTreatedWood");
 		addOredictRecipe(new ItemStack(IEContent.blockWoodenDevice0,1,BlockTypes_WoodenDevice0.BARREL.getMeta()), "SSS","W W","WWW", 'W',"plankTreatedWood",'S',"slabTreatedWood");
 		addOredictRecipe(new ItemStack(IEContent.blockWoodenDevice0,1,BlockTypes_WoodenDevice0.WORKBENCH.getMeta()), "WWW","B F", 'W',"plankTreatedWood",'B',"craftingTableWood",'F',"fenceTreatedWood");
-		addOredictRecipe(new ItemStack(IEContent.blockWoodenDevice0,1,BlockTypes_WoodenDevice0.SORTER.getMeta()), "WRW","IBI","WRW", 'I',"ingotIron",'R',"dustRedstone",'W',"plankTreatedWood",'B',componentIron);
+		addIngredientRecipe(new ItemStack(IEContent.blockWoodenDevice0, 1, BlockTypes_WoodenDevice0.SORTER.getMeta()), "WRW", "IBI", "WRW", 'I', "ingotIron", 'R', "dustRedstone", 'W', "plankTreatedWood", 'B', componentIron).allowQuarterTurn();
 		addOredictRecipe(new ItemStack(IEContent.blockWoodenDevice0,1,BlockTypes_WoodenDevice0.GUNPOWDER_BARREL.getMeta()), " F ","GBG","GGG", 'F',new ItemStack(IEContent.itemMaterial,1,4),'G',Items.GUNPOWDER,'B',new ItemStack(IEContent.blockWoodenDevice0,1,BlockTypes_WoodenDevice0.BARREL.getMeta()));
-		GameRegistry.addRecipe(new RecipeShapedOreNBTCopy(new ItemStack(IEContent.blockWoodenDevice0,1,BlockTypes_WoodenDevice0.REINFORCED_CRATE.getMeta()), 4, "WPW","RCR","WPW", 'W',"plankTreatedWood", 'P',"plateIron", 'R',"stickIron", 'C',new ItemStack(IEContent.blockWoodenDevice0,1,BlockTypes_WoodenDevice0.CRATE.getMeta())));
+		addIngredientRecipe(new ItemStack(IEContent.blockWoodenDevice0, 1, BlockTypes_WoodenDevice0.REINFORCED_CRATE.getMeta()), "WPW", "RCR", "WPW", 'W', "plankTreatedWood", 'P', "plateIron", 'R', "stickIron", 'C', new ItemStack(IEContent.blockWoodenDevice0, 1, BlockTypes_WoodenDevice0.CRATE.getMeta())).setNBTCopyTargetSlot(4).allowQuarterTurn();
 		addOredictRecipe(new ItemStack(IEContent.blockWoodenDevice1,1,BlockTypes_WoodenDevice1.WATERMILL.getMeta()), " P ","PIP"," P ", 'P',new ItemStack(IEContent.itemMaterial,1,10),'I',"ingotSteel");
 		addOredictRecipe(new ItemStack(IEContent.blockWoodenDevice1,1,BlockTypes_WoodenDevice1.WINDMILL.getMeta()), " P ","PIP"," P ", 'P',new ItemStack(IEContent.itemMaterial,1,11),'I',"ingotIron");
 		addOredictRecipe(new ItemStack(IEContent.blockWoodenDevice1,1,BlockTypes_WoodenDevice1.WINDMILL_ADVANCED.getMeta()), "PPP","PIP","PPP", 'P',new ItemStack(IEContent.itemMaterial,1,12),'I',"ingotSteel");
@@ -202,11 +202,11 @@ public class IERecipes
 		addTwoWayStorageRecipe(new ItemStack(IEContent.blockStoneDecoration,1,BlockTypes_StoneDecoration.COKE.getMeta()), new ItemStack(IEContent.itemMaterial,1,6));
 		addOredictRecipe(new ItemStack(IEContent.blockStoneDecoration,6,BlockTypes_StoneDecoration.HEMPCRETE.getMeta()), "CCC","HHH","CCC", 'C',Items.CLAY_BALL,'H',new ItemStack(IEContent.itemMaterial,1,4));
 
-		addOredictRecipe(new ItemStack(IEContent.blockStoneDecoration,8,BlockTypes_StoneDecoration.CONCRETE.getMeta()), "SCS","GBG","SCS", 'C',Items.CLAY_BALL,'S',"sand",'G',Blocks.GRAVEL,'B',Items.WATER_BUCKET);
-		addOredictRecipe(new ItemStack(IEContent.blockStoneDecoration,12,BlockTypes_StoneDecoration.CONCRETE.getMeta()), "SCS","GBG","SCS", 'C',Items.CLAY_BALL,'S',"itemSlag",'G',Blocks.GRAVEL,'B',Items.WATER_BUCKET);
+		addIngredientRecipe(new ItemStack(IEContent.blockStoneDecoration, 8, BlockTypes_StoneDecoration.CONCRETE.getMeta()), "SCS", "GBG", "SCS", 'C', Items.CLAY_BALL, 'S', "sand", 'G', Blocks.GRAVEL, 'B', Items.WATER_BUCKET).allowQuarterTurn();
+		addIngredientRecipe(new ItemStack(IEContent.blockStoneDecoration, 12, BlockTypes_StoneDecoration.CONCRETE.getMeta()), "SCS", "GBG", "SCS", 'C', Items.CLAY_BALL, 'S', "itemSlag", 'G', Blocks.GRAVEL, 'B', Items.WATER_BUCKET).allowQuarterTurn();
 		addShapelessOredictRecipe(new ItemStack(IEContent.blockStoneDecoration,1,BlockTypes_StoneDecoration.CONCRETE.getMeta()), new ItemStack(IEContent.blockStoneDecoration,1,BlockTypes_StoneDecoration.CONCRETE_TILE.getMeta()));
 		addOredictRecipe(new ItemStack(IEContent.blockStoneDecoration,4,BlockTypes_StoneDecoration.CONCRETE_TILE.getMeta()), "CC","CC", 'C',new ItemStack(IEContent.blockStoneDecoration,1,BlockTypes_StoneDecoration.CONCRETE.getMeta()));
-		addOredictRecipe(new ItemStack(IEContent.blockStoneDecoration,2,BlockTypes_StoneDecoration.INSULATING_GLASS.getMeta()), " G ","IDI"," G ", 'G',"blockGlass",'I',"dustIron",'D',"dyeGreen");
+		addIngredientRecipe(new ItemStack(IEContent.blockStoneDecoration, 2, BlockTypes_StoneDecoration.INSULATING_GLASS.getMeta()), " G ", "IDI", " G ", 'G', "blockGlass", 'I', "dustIron", 'D', "dyeGreen").allowQuarterTurn();
 		for(int i=0; i<=BlockTypes_StoneDecoration.values().length; i++)
 			if(!IEContent.blockStoneDecorationSlabs.isMetaHidden(i))
 				addTwoWaySlabRecipe(new ItemStack(IEContent.blockStoneDecorationSlabs,1,i), new ItemStack(IEContent.blockStoneDecoration,1,i));
@@ -245,11 +245,11 @@ public class IERecipes
 		addOredictRecipe(copperCoil, "WWW","WIW","WWW", 'I',"ingotIron",'W',new ItemStack(IEContent.itemWireCoil,1,0));
 		addOredictRecipe(electrumCoil, "WWW","WIW","WWW", 'I',"ingotIron",'W',new ItemStack(IEContent.itemWireCoil,1,1));
 		addOredictRecipe(hvCoil, "WWW","WIW","WWW", 'I',"ingotIron",'W',new ItemStack(IEContent.itemWireCoil,1,2));
-		addOredictRecipe(new ItemStack(IEContent.blockMetalDecoration0, 2, BlockTypes_MetalDecoration0.RS_ENGINEERING.getMeta()), "IRI","RCR","IRI", 'I',"ingotIron",'C',"ingotCopper",'R',"dustRedstone");
+		addIngredientRecipe(new ItemStack(IEContent.blockMetalDecoration0, 2, BlockTypes_MetalDecoration0.RS_ENGINEERING.getMeta()), "IRI", "RCR", "IRI", 'I', "ingotIron", 'C', "ingotCopper", 'R', "dustRedstone").allowEighthTurn();
 		addOredictRecipe(new ItemStack(IEContent.blockMetalDecoration0, 2, BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta()), "IGI","CCC","IGI", 'I',"ingotIron",'C',"ingotCopper",'G',componentIron);
 		addOredictRecipe(new ItemStack(IEContent.blockMetalDecoration0, 2, BlockTypes_MetalDecoration0.HEAVY_ENGINEERING.getMeta()), "IGI","PEP","IGI", 'I',"ingotSteel",'E',"ingotElectrum",'G',componentSteel,'P',Blocks.PISTON);
 		addOredictRecipe(new ItemStack(IEContent.blockMetalDecoration0, 2, BlockTypes_MetalDecoration0.GENERATOR.getMeta()), "III","EDE","III", 'I',"ingotSteel",'E',"ingotElectrum",'D',new ItemStack(IEContent.blockMetalDevice1,1, BlockTypes_MetalDevice1.DYNAMO.getMeta()));
-		addOredictRecipe(new ItemStack(IEContent.blockMetalDecoration0, 2, BlockTypes_MetalDecoration0.RADIATOR.getMeta()), "ICI","CBC","ICI", 'I',"ingotSteel",'C',"ingotCopper",'B',Items.WATER_BUCKET);
+		addIngredientRecipe(new ItemStack(IEContent.blockMetalDecoration0, 2, BlockTypes_MetalDecoration0.RADIATOR.getMeta()), "ICI", "CBC", "ICI", 'I', "ingotSteel", 'C', "ingotCopper", 'B', Items.WATER_BUCKET).allowEighthTurn();
 
 		addOredictRecipe(new ItemStack(IEContent.blockMetalDecoration1, 3, BlockTypes_MetalDecoration1.STEEL_FENCE.getMeta()), "IRI","IRI", 'I',"ingotSteel",'R',"stickSteel");
 		addOredictRecipe(new ItemStack(IEContent.blockMetalDecoration1, 6, BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_0.getMeta()), "III"," R ","R R", 'I',"ingotSteel",'R',"stickSteel");
@@ -335,6 +335,12 @@ public class IERecipes
 		addOredictRecipe(new ItemStack(stair,4,0), "  B"," BB","BBB", 'B',block).setMirrored(true);
 	}
 
+	public static RecipeShapedIngredient addIngredientRecipe(ItemStack output, Object... recipe)
+	{
+		RecipeShapedIngredient sor = new RecipeShapedIngredient(output, recipe);
+		GameRegistry.addRecipe(sor);
+		return sor;
+	}
 
 	public static void initBlueprintRecipes()
 	{
