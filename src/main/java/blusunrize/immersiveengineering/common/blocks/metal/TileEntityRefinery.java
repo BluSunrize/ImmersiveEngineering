@@ -61,7 +61,7 @@ public class TileEntityRefinery extends TileEntityMultiblockMetal<TileEntityRefi
 	public void update()
 	{
 		super.update();
-		if(isDummy() || isRSDisabled() || worldObj.isRemote)
+		if(worldObj.isRemote||isDummy())
 			return;
 
 		boolean update = false;

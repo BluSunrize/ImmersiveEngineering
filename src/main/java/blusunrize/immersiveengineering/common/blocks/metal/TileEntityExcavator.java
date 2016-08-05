@@ -97,7 +97,6 @@ public class TileEntityExcavator extends TileEntityMultiblockMetal<TileEntityExc
 
 				if(!isRSDisabled())
 				{
-					boolean update = false;
 					ExcavatorHandler.MineralMix mineral = ExcavatorHandler.getRandomMineral(worldObj, wheelPos.getX()>>4, wheelPos.getZ()>>4);
 
 					int consumed = Config.getInt("excavator_consumption");
@@ -106,7 +105,6 @@ public class TileEntityExcavator extends TileEntityMultiblockMetal<TileEntityExc
 					{
 						energyStorage.extractEnergy(consumed, false);
 						active = true;
-						update = true;
 						
 						if(target>=0 && target<8)
 						{
