@@ -113,4 +113,9 @@ public class BlockMetalDecoration2 extends BlockIETileProvider<BlockTypes_MetalD
 		return slave&&(type==BlockTypes_MetalDecoration2.STEEL_POST||type==BlockTypes_MetalDecoration2.ALUMINUM_POST);
 	}
 
+	@Override
+	public boolean allowHammerHarvest(IBlockState state)
+	{
+		return true;
+	}
 }

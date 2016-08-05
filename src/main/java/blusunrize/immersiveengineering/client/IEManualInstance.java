@@ -37,7 +37,8 @@ public class IEManualInstance extends ManualInstance
 	public String formatText(String s)
 	{
 		String translKey = "ie.manual.entry."+s;
-		String translated = StatCollector.translateToLocal(translKey);
+		//rough check to see whether the input is already translated
+		String translated = s.contains(" ")?s:StatCollector.translateToLocal(translKey);
 		if(translKey!=translated)
 			s = translated;
 		String splitKey = ";";
@@ -252,12 +253,12 @@ public class IEManualInstance extends ManualInstance
 	@Override
 	public String formatEntryName(String s)
 	{
-		return (improveReadability()?EnumChatFormatting.BOLD:"")+StatCollector.translateToLocal("ie.manual.entry."+s+".name");
+		return (improveReadability()?EnumChatFormatting.BOLD:"")+(s.endsWith("\t")?s.substring(0, s.length()-1):StatCollector.translateToLocal("ie.manual.entry."+s+".name"));
 	}
 	@Override
 	public String formatEntrySubtext(String s)
 	{
-		return StatCollector.translateToLocal("ie.manual.entry."+s+".subtext");
+		return s.endsWith("\t")?"":StatCollector.translateToLocal("ie.manual.entry."+s+".subtext");
 	}
 	@Override
 	public boolean showEntryInList(ManualEntry entry)

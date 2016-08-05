@@ -159,4 +159,10 @@ public class BlockConnector extends BlockIETileProvider<BlockTypes_Connector>
 		}
 		return ret;
 	}
+
+	@Override
+	public boolean allowHammerHarvest(IBlockState state)
+	{
+		return true;
+	}
 }

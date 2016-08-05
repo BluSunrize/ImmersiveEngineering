@@ -333,4 +333,9 @@ public class BlockMetalDevice1 extends BlockIETileProvider<BlockTypes_MetalDevic
 		TileEntityFluidPipe.indirectConnections.clear();
 		return super.onBlockPlaced(worldIn, pos, facing, hitX, hitY, hitZ, meta, placer);
 	}
+	@Override
+	public boolean allowHammerHarvest(IBlockState state)
+	{
+		return true;
+	}
 }

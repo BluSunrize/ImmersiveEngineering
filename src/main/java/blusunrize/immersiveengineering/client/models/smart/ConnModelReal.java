@@ -183,16 +183,22 @@ public class ConnModelReal implements IFlexibleBakedModel, ISmartBlockModel
 			if (!(obj instanceof ExtBlockstateAdapter))
 				return false;
 			ExtBlockstateAdapter o = (ExtBlockstateAdapter) obj;
-			for (IProperty i : state.getPropertyNames())
+			for (IProperty<?> i : state.getPropertyNames())
 			{
+				if (!o.state.getProperties().containsKey(i))
+					return false;
 				Object valOther = o.state.getValue(i);
-				if (valOther == null || !valOther.equals(state.getValue(i)))
+				Object valMine = o.state.getValue(i);
+				if ((valOther == null^valMine==null) || (valOther!=null&&!valOther.equals(state.getValue(i))))
 					return false;
 			}
-			for (IUnlistedProperty i : state.getUnlistedNames())
+			for (IUnlistedProperty<?> i : state.getUnlistedNames())
 			{
+				if (!o.state.getUnlistedProperties().containsKey(i))
+					return false;
 				Object valOther = o.state.getValue(i);
-				if (valOther == null || !valOther.equals(state.getValue(i)))
+				Object valMine = o.state.getValue(i);
+				if ((valOther == null^valMine==null) || (valOther!=null&&!valOther.equals(state.getValue(i))))
 					return false;
 			}
 
@@ -202,11 +208,12 @@ public class ConnModelReal implements IFlexibleBakedModel, ISmartBlockModel
 		@Override
 		public int hashCode()
 		{
-			int val = 1;
+			int val = 0;
+			final int prime = 31;
 			for (Object o : state.getProperties().values())
-				val += o.hashCode();
+				val = prime*val+(o==null?0:o.hashCode());
 			for (Object o : state.getUnlistedProperties().values())
-				val += o.hashCode();
+				val = prime*val+(o==null?0:o.hashCode());
 
 			return val;
 		}

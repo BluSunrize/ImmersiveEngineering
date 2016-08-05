@@ -7,6 +7,7 @@ import org.lwjgl.opengl.GL11;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
+import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool.ToolConfig.ToolConfigBoolean;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool.ToolConfig.ToolConfigFloat;
@@ -16,6 +17,7 @@ import blusunrize.immersiveengineering.client.gui.elements.GuiSliderIE;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityModWorkbench;
 import blusunrize.immersiveengineering.common.gui.ContainerModWorkbench;
 import blusunrize.immersiveengineering.common.gui.IESlot;
+import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.network.MessageTileSync;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
@@ -105,9 +107,9 @@ public class GuiModWorkbench extends GuiContainer
 						ArrayList<String> tooltip = new ArrayList<String>();
 						tooltip.add(recipe.output.getRarity().rarityColor+recipe.output.getDisplayName());
 						ArrayList<ItemStack> inputs = new ArrayList<ItemStack>();  
-						for(Object o : recipe.inputs)
+						for(IngredientStack stack : recipe.inputs)
 						{
-							ItemStack toAdd = (o instanceof ItemStack)?(ItemStack)o :(o instanceof List)?((List<ItemStack>)o).get(ClientUtils.mc().thePlayer.ticksExisted/10 %((ArrayList)o).size()): null;
+							ItemStack toAdd = Utils.copyStackWithAmount(stack.getExampleStack(), stack.inputSize);
 							if(toAdd==null)
 								continue;
 							boolean isNew = true;
