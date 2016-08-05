@@ -1284,89 +1284,72 @@ public class ClientProxy extends CommonProxy
 			String readLog = "";
 			String currVersion = ImmersiveEngineering.VERSION;
 			boolean readVersionBuilt = false;
-			while (s.hasNextLine())
+			while(s.hasNextLine())
 			{
 				String line = s.nextLine();
-				if (line.startsWith("#####"))
+				if(line.startsWith("#####"))
 				{
 					//add read log to map
 					addToMap(readVersion, currVersion, readVersion, readLog, readVersionBuilt, entries);
 					//parse new version
 					readVersion = "";
 					readLog = "";
-					for (int i = line.indexOf(' ')+1;i<line.length()&&line.charAt(i)!=' ';i++)
-						readVersion+=line.charAt(i);
+					for(int i = line.indexOf(' ') + 1; i < line.length() && line.charAt(i) != ' '; i++)
+						readVersion += line.charAt(i);
 					readVersionBuilt = line.endsWith("BUILT");
-				}
-				else
+				} else
 				{
-					readLog+=line+"\n";
+					readLog += line + "\n";
 				}
 			}
 			s.close();
 			addToMap(readVersion, currVersion, readVersion, readLog, readVersionBuilt, entries);
 			//add to manual
-			for (Entry<String, String> e:entries.entrySet())
+			List<Entry<String, String>> entrySet = new ArrayList(entries.entrySet());
+			Collections.reverse(entrySet); //Iterate backwards to ahve newest version at the top
+			for(Entry<String, String> e : entrySet)
 			{
 				List<String> l = ManualHelper.getManual().fontRenderer.listFormattedStringToWidth(e.getValue().replace("\t", "  "), 120);
 				final int LINES_PER_PAGE = 16;
-				int pageCount = l.size()/LINES_PER_PAGE+(l.size()%LINES_PER_PAGE==0?0:1);
+				int pageCount = l.size() / LINES_PER_PAGE + (l.size() % LINES_PER_PAGE == 0 ? 0 : 1);
 				ManualPages.Text[] pages = new ManualPages.Text[pageCount];
-				for (int i = 0;i<pageCount;i++)
+				for(int i = 0; i < pageCount; i++)
 				{
 					String nextPage = "";
-					for (int j = LINES_PER_PAGE*i;j<l.size()&&j<(i+1)*LINES_PER_PAGE;j++)
-						nextPage+=l.get(j)+"\n";
+					for(int j = LINES_PER_PAGE * i; j < l.size() && j < (i + 1) * LINES_PER_PAGE; j++)
+						nextPage += l.get(j) + "\n";
 					pages[i] = new ManualPages.Text(ManualHelper.getManual(), nextPage);
 				}
 				ManualHelper.addEntry(e.getKey(), ManualHelper.CAT_UPDATE, pages);
 			}
-		}
-		catch (IOException e)
+		} catch(IOException e)
 		{
 			e.printStackTrace();
 		}
 		fr.setUnicodeFlag(isUnicode);
 	}
-	private boolean isVersionGreaterOrEqual(String in1, String in2)
+
+	private int compareVersions(String checked, String current)
 	{
-		int pos1 = 0;
-		int pos2 = 0;
-		while (pos1<in1.length()||pos2<in2.length())
-		{
-			String num1 = "";
-			while (pos1<in1.length()&&!Character.isDigit(in1.charAt(pos1)))
-				pos1++;
-			while (pos1<in1.length()&&Character.isDigit(in1.charAt(pos1)))
-			{
-				num1+=in1.charAt(pos1);
-				pos1++;
-			}
-			String num2 = "";
-			while (pos2<in2.length()&&!Character.isDigit(in2.charAt(pos2)))
-				pos2++;
-			while (pos2<in2.length()&&Character.isDigit(in2.charAt(pos2)))
-			{
-				num2+=in2.charAt(pos2);
-				pos2++;
-			}
-			int n1 = num1.isEmpty()?0:Integer.parseInt(num1);
-			int n2 = num2.isEmpty()?0:Integer.parseInt(num2);
-			if (n1!=n2)
-				return n1>n2;
-		}
-		return true;
+		String num1 = checked == null ? "0" : checked.replaceAll("[^0-9]", "");
+		String num2 = current == null ? "0" : current.replaceAll("[^0-9]", "");
+		int n1 = num1.isEmpty() ? 0 : Integer.parseInt(num1);
+		int n2 = num2.isEmpty() ? 0 : Integer.parseInt(num2);
+		return Integer.compare(n1, n2);
 	}
+
 	private void addToMap(String readVersion, String currVersion, String readversion, String readLog, boolean readVersionBuilt, Map<String, String> entries)
 	{
-		if (readVersion!=null)
+		if(readVersion != null)
 		{
-			boolean greater = isVersionGreaterOrEqual(currVersion, readVersion);
-			if (readVersionBuilt||greater)
+			int compare = compareVersions(readVersion, currVersion);
+			if(readVersionBuilt || compare >= 0)
 			{
-				if (!greater)
-					readVersion+=" - NEW";
-				entries.put(readVersion+"\t", readLog);
+				if(compare > 0)
+					readVersion += " - NEW";
+				else if(compare == 0)
+					readVersion += " - CURRENT";
+				entries.put(readVersion, readLog);
 			}
 		}
 	}

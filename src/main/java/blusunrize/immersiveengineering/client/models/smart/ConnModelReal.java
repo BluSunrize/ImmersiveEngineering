@@ -188,8 +188,8 @@ public class ConnModelReal implements IFlexibleBakedModel, ISmartBlockModel
 				if (!o.state.getProperties().containsKey(i))
 					return false;
 				Object valOther = o.state.getValue(i);
-				Object valMine = o.state.getValue(i);
-				if ((valOther == null^valMine==null) || (valOther!=null&&!valOther.equals(state.getValue(i))))
+				Object valMine = state.getValue(i);
+				if ((valOther == null^valMine==null) || (valOther!=null&&!valOther.equals(valMine)))
 					return false;
 			}
 			for (IUnlistedProperty<?> i : state.getUnlistedNames())
@@ -197,8 +197,8 @@ public class ConnModelReal implements IFlexibleBakedModel, ISmartBlockModel
 				if (!o.state.getUnlistedProperties().containsKey(i))
 					return false;
 				Object valOther = o.state.getValue(i);
-				Object valMine = o.state.getValue(i);
-				if ((valOther == null^valMine==null) || (valOther!=null&&!valOther.equals(state.getValue(i))))
+				Object valMine = state.getValue(i);
+				if ((valOther == null^valMine==null) || (valOther!=null&&!valOther.equals(valMine)))
 					return false;
 			}
 
