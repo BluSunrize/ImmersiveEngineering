@@ -34,7 +34,6 @@ import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformT
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
@@ -58,18 +57,28 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 	public EnumFacing side = EnumFacing.UP;
 	public float rotY=0;
 	public float rotX=0;
-	public List<BlockPos> fakeLights = new ArrayList();
-	public List<BlockPos> lightsToBePlaced = new ArrayList();
-	public List<BlockPos> lightsToBeRemoved = new ArrayList();
+	public List<BlockPos> fakeLights = new ArrayList<>();
+	public List<BlockPos> lightsToBePlaced = new ArrayList<>();
+	public List<BlockPos> lightsToBeRemoved = new ArrayList<>();
 	final int timeBetweenSwitches = 20;
 	int switchCooldown = 0;
 	private boolean shouldUpdate = true;
+	public boolean computerOn = true;
+	public int controllingComputers = 0;
+	private int turnCooldown = 0;
 
 	@Override
 	public void update()
 	{
 		if(worldObj.isRemote)
 			return;
+		if (turnCooldown>0)
+		{
+			turnCooldown--;
+			if (turnCooldown==0)
+				notifyAll();
+		}
+		
 		boolean b = active;
 		boolean enabled;
 		if (shouldUpdate)
@@ -79,7 +88,7 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 			worldObj.markBlockForUpdate(getPos());
 			shouldUpdate = false;
 		}
-		enabled = worldObj.isBlockIndirectlyGettingPowered(getPos())>0;
+		enabled = (controllingComputers>0&&computerOn)||worldObj.isBlockIndirectlyGettingPowered(getPos())>0;
 		if(energyStorage>=(!active?50:5) && enabled&&switchCooldown<=0)
 		{
 			energyStorage-=5;
@@ -109,8 +118,8 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 			while(it.hasNext() && timeout++<16)
 			{
 				BlockPos cc = it.next();
-//				worldObj.setBlockState(cc, Blocks.glass.getDefaultState(), 2);
-								worldObj.setBlockState(cc, IEContent.blockFakeLight.getStateFromMeta(0), 2);
+				//				worldObj.setBlockState(cc, Blocks.glass.getDefaultState(), 2);
+				worldObj.setBlockState(cc, IEContent.blockFakeLight.getStateFromMeta(0), 2);
 				TileEntity te = worldObj.getTileEntity(cc);
 				if (te instanceof TileEntityFakeLight)
 					((TileEntityFakeLight)te).floodlightCoords = new int[]{getPos().getX(),getPos().getX(),getPos().getX()};
@@ -282,6 +291,11 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 		}
 		if(FMLCommonHandler.instance().getEffectiveSide()==Side.CLIENT && worldObj!=null)
 			worldObj.markBlockForUpdate(getPos());
+		if (descPacket)
+		{
+			controllingComputers = nbt.getBoolean("computerControlled")?1:0;
+			computerOn = nbt.getBoolean("computerOn");
+		}
 	}
 
 	@Override
@@ -299,6 +313,11 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 		{
 			BlockPos cc = fakeLights.get(i);
 			nbt.setIntArray("fakeLight_"+i, new int[]{cc.getX(),cc.getY(),cc.getZ()});
+		}
+		if (descPacket)
+		{
+			nbt.setBoolean("computerControlled", controllingComputers>0);
+			nbt.setBoolean("computerOn", computerOn);
 		}
 	}
 
@@ -451,15 +470,9 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 	public boolean hammerUseSide(EnumFacing side, EntityPlayer player, float hitX, float hitY, float hitZ)
 	{
 		if(side.getAxis()==this.side.getAxis())
-		{
-			this.rotY += player.isSneaking()?-11.25:11.25;
-			this.rotY %= 360;
-		}
+			turnY(player.isSneaking(), false);
 		else
-			this.rotX = Math.min(191.25f, Math.max(-11.25f, rotX+(player.isSneaking()?-11.25f:11.25f)));
-		markDirty();
-		worldObj.markBlockForUpdate(getPos());
-		worldObj.addBlockEvent(getPos(), getBlockType(), 255, 0);
+			turnX(player.isSneaking(), false);
 		return true;
 	}
 
@@ -579,5 +592,41 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 	public Matrix4 handlePerspective(IBlockState Object, TransformType cameraTransformType, Matrix4 perspective)
 	{
 		return perspective;
+	}
+	//computer stuff
+	public boolean canComputerTurn()
+	{
+		return turnCooldown<=0||!active;
+	}
+	public void turnX(boolean dir, boolean throwException)
+	{
+		if (!canComputerTurn())
+		{
+			if (throwException)
+				throw new IllegalArgumentException("The floodlight can't turn again yet.");
+			else
+				return;
+		}
+		this.rotX = Math.min(191.25f, Math.max(-11.25f, rotX+(dir?-11.25f:11.25f)));
+		markDirty();
+		worldObj.markBlockForUpdate(getPos());
+		worldObj.addBlockEvent(getPos(), getBlockType(), 255, 0);
+		turnCooldown = 20;
+	}
+	public void turnY(boolean dir, boolean throwException)
+	{
+		if (!canComputerTurn())
+		{
+			if (throwException)
+				throw new IllegalArgumentException("The floodlight can't turn again yet.");
+			else
+				return;
+		}
+		this.rotY += dir?-11.25:11.25;
+		this.rotY %= 360;
+		markDirty();
+		worldObj.markBlockForUpdate(getPos());
+		worldObj.addBlockEvent(getPos(), getBlockType(), 255, 0);
+		turnCooldown = 20;
 	}
 }

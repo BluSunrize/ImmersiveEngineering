@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
 import blusunrize.immersiveengineering.api.Lib;
@@ -75,11 +76,11 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 						//						update = true;
 					}
 
-			Set<Integer> usedInvSlots = new HashSet();
+			Set<Integer> usedInvSlots = new HashSet<Integer>();
 			//			final int[] usedInvSlots = new int[8];
-			for(MultiblockProcess process : processQueue)
+			for(MultiblockProcess<ArcFurnaceRecipe> process : processQueue)
 				if(process instanceof MultiblockProcessInMachine)
-					for(int i : ((MultiblockProcessInMachine)process).inputSlots)
+					for(int i : ((MultiblockProcessInMachine<ArcFurnaceRecipe>)process).inputSlots)
 						usedInvSlots.add(i);
 
 			//			Integer[] preferredSlots = new Integer[]{0,1,2,3,4,5,6,7};
@@ -388,26 +389,15 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 		return false;
 	}
 	@Override
+	public boolean shouldRenderAsActive()
+	{
+		return hasElectrodes()&&super.shouldRenderAsActive();
+	}
+	@Override
 	public boolean additionalCanProcessCheck(MultiblockProcess<ArcFurnaceRecipe> process)
 	{
-		for(int i=0; i<3; i++)
-		{
-			//			boolean b = this.getStackInSlot(23+i)!=null;
-			//			if(electrodes[i]!=b)
-			//				update = true;
-			//			electrodes[i] = b;
-			//			if(!electrodes[i])
-			//			{
-			//				hasElectrodes = false;
-			//				if(active)
-			//				{
-			//					active = false;
-			//					update = true;
-			//				}
-			//			}
-			if(this.inventory[23+i]==null)
-				return false;
-		}
+		if (!hasElectrodes())
+			return false;
 		if(process.recipe!=null && process.recipe.slag!=null)
 		{
 			if(this.inventory[22]==null)
@@ -499,7 +489,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
 	{
-		if((pos==2||pos==22||pos==86||pos==88) && capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+		if((pos==2||pos==22||pos==86||pos==88||facing==null) && capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 			return true;
 		return super.hasCapability(capability, facing);
 	}
@@ -590,5 +580,13 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 		{
 			super.writeExtraDataToNBT(nbt);
 		}
+	}
+
+	public boolean hasElectrodes()
+	{
+		for (int i = 23;i<26;i++)
+			if (inventory[i]==null)
+				return false;
+		return true;
 	}
 }

@@ -466,7 +466,7 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 		}
 		return energyStorage.getMaxEnergyStored();
 	}
-	private boolean canRun(int energyDrain)
+	public boolean canRun(int energyDrain)
 	{
 		return (worldObj.isBlockIndirectlyGettingPowered(getPos())>0^redstoneControlInverted) && energyStorage.getEnergyStored()>=energyDrain;
 	}

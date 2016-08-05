@@ -732,7 +732,7 @@ ie.manual.entry.oresBauxite=§lBauxite Ore§r is found in the world between laye
 ie.manual.entry.oresLead=§lLead Ore§r is found in the world between layers <config;iA;ore_lead;1> and <config;iA;ore_lead;2>, and requires an Iron Pickaxe to harvest.<br><br>The ore will smelt into lead ingots, which are used in creating capacitors.
 ie.manual.entry.oresSilver=§lSilver Ore§r is found in the world between layers <config;iA;ore_silver;1> and <config;iA;ore_silver;2>, and requires an Iron Pickaxe to harvest.<br><br>The ore will smelt into silver ingots, which alloy with gold to create electrum, a far more effective conductor.
 ie.manual.entry.oresNickel=§lNickel Ore§r is found in the world between layers <config;iA;ore_nickel;1> and <config;iA;ore_nickel;2>, and requires an Iron Pickaxe to harvest.<br><br>The ore will smelt into nickel ingots, which alloy with copper to create constantan, a heat resistant conductor used in the creation of <link;generator;§o§nThermoelectric §o§nGenerators§r;1>.
-ie.manual.entry.oresNickel=§lUranium Ore§r is found in the world between layers <config;iA;ore_uranium;1> and <config;iA;ore_uranium;2>, and requires an Iron Pickaxe to harvest.<br><br>The ore will smelt into uranium ingots, but there are currently not many uses for the metal. A uranium block can serve as a heatsource for the <link;generator;§o§nThermoelectric §o§nGenerator§r;1> and the metal will be used in future endeavours.
+ie.manual.entry.oresUranium=§lUranium Ore§r is found in the world between layers <config;iA;ore_uranium;1> and <config;iA;ore_uranium;2>, and requires an Iron Pickaxe to harvest.<br><br>The ore will smelt into uranium ingots, but there are currently not many uses for the metal. A uranium block can serve as a heatsource for the <link;generator;§o§nThermoelectric §o§nGenerator§r;1> and the metal will be used in future endeavours.
 
 ie.manual.entry.oreProcessing.name=Ore Processing
 ie.manual.entry.oreProcessing.subtext=Crush crush crush
@@ -1080,3 +1080,76 @@ ie.manual.entry.excavator.name=Excavator
 ie.manual.entry.excavator.subtext=Better than Dwarves
 ie.manual.entry.excavator0=The Excavator is one of the pinnacles of modern engineering. It is able to dig up <link;minerals;§o§nminerals§r;0> from veins inaccessible by normal mining. In return however, the excavator is a complex structure which requires <config;i;excavator_consumption> Flux/t in order to operate.
 ie.manual.entry.excavator1=The structure is comprised of two pieces: The engine shown on the first page and the bucket wheel displayed on the second, which fits into the 'braces' of the engine as displayed on the previous page. The energy input for the engine is on its side, the back features a redstone control panel and the item output.<br>As the excavator digs up ores, the yield of the vein slowly decreases, but a vein of minerals can last for <config;i;excavator_depletion_days> days of consecutive digging.
+
+ie.manual.category.computers.name=Computer support
+
+ie.manual.entry.computer.general.name=General information (computers)
+ie.manual.entry.computer.general.subtext=Technology from the future
+ie.manual.entry.computer.general0=Many of the machines described in this manual can be controlled using computers from OpenComputers or ComputerCraft. When using OpenComputers, an Adapter has to be used to connect the machine to the network. If the machine is a multiblock that has a redstone port, that is where you can attach your computer. Otherwise please check the machine-specific entry in this chapter. The following pages describe some commonly used return types.
+ie.manual.entry.computer.general1=§lItem stacks§r are a very common return type. They consist of a table containing these entries:<br>§lname§r: the internal name of the item, i.e. "minecraft:cobblestone" for cobblestone<br>§lsize§r: the size of the item stack<br>§lnameUnlocalized§r: the unlocalized name of the item, i.e. "tile.stonebrick" for cobblestone. Only available on ComputerCraft<br>§llabel§r: The name of the stack. Changes when the stack is renamed in an anvil.
+ie.manual.entry.computer.general2=§ldamage§r: The damage (or, in most cases, metadata) of the item stack<br>§lmaxDamage§r: The maximum amount of damage the item can have before breaking<br>§lmaxSize§r: the maximum stack size for this item. 64 in most cases<br>§lhasTag§r: whether the stack has a nbt tag
+ie.manual.entry.computer.general3=§lFluid stacks§r: A fluid stack represents some amount of a specific fluid that isn't necessarily in a tank. These entries are available in the returned table:<br>§lname§r: the unlocalized name of the fluid<br>§lamount§r: the amount of fluid, in millibuckets<br>§lhasTag§r: whether the fluid has a nbt tag
+ie.manual.entry.computer.general4=§lFluid tanks§r are similar to fluid stacks, with the difference that this fluid is inside a tank. The returned table has the same entries as the table for a fluid stack. Additionally the capacity of the tank the fluid is in is stored in the entry §lcapacity§r
+
+ie.manual.entry.computer.arcfurnace.name=Arc Furnace (computers)
+ie.manual.entry.computer.arcfurnace.subtext=Not a reactor 
+ie.manual.entry.computer.arcFurnace0=§lsetEnabled(boolean active)§r: allows or disallows the arc furnace to operate, as if a redstone signal was applied to the control panel<br>§lisActive()§r: returns a boolean that is true if the arc furnace is currently processing something and false otherwise<br>§lgetInputStack(int slot)§r:returns the stack in the specified input slot (1-12). The table additionally has the keys §lprogress§r and §lmaxProgress§r to store the current progress and the progress at which it will be finished on the
+ie.manual.entry.computer.arcFurnace1=specified slot (both values in ticks)<br>§lgetOutputStack(int slot)§r:returns the stack in the specified output slot(1-6)<br>§lgetAdditiveStack(int slot)§r: returns the stack in the specified additive slot (1-4)<br>§lgetSlagStack()§r: returns the stack in the slag slot<br>§lhasElectrodes()§r:returns a boolean indicating whether all 3 electrodes in the arc furnace are valid<br>§lgetElectrode(int slot)§r: returns the item stack of the specified electrode (1-4)
+ie.manual.entry.computer.arcFurnace2=§lgetMaxEnergyStored()§r: returns the maximum amount of energy that can be stored in this arc furnace<br>§lgetEnergyStored()§r: returns the amount of energy currently stored in this arc furnace
+
+ie.manual.entry.computer.sampleDrill.name=Core sample drill (computers)
+ie.manual.entry.computer.sampleDrill.subtext=Guaranteed representative samples 
+ie.manual.entry.computer.sampleDrill0=The sample drill can be connected to a computer on its bottom block.<br>§lgetSampleProgress()§r: returns the current sample progress, 1 means that the sampling is finished, 0 means that the sampling hasn't started yet<br>§lisSamplingFinished()§r: returns true if the drill has finished sampling, otherwise it returns false<br>§lgetVeinUnlocalizedName()§r: returns the unlocalized name of the found vein
+ie.manual.entry.computer.sampleDrill1=§lgetVeinLocalizedName()§r: returns the localized name of the found vein<br>§lgetVeinIntegrity()§r: returns the integrity of the vein, 1 represents a full vein, 0 an empty vein and -1 an infinite vein<br>§lgetEnergyStored()§r: returns the amount of energy stored in the drill<br>§lgetMaxEnergyStored()§r: returns the maximum amount of energy stored in this drill
+
+ie.manual.entry.computer.crusher.name=Crusher (computers)
+ie.manual.entry.computer.crusher.subtext=Keep your hands out!
+ie.manual.entry.computer.crusher0=§lgetQueueLength()§r: The amount of stacks that are waiting to be processed<br>§lsetEnabled(boolean active)§r: allows or disallows the crusher to operate, as if a redstone signal was applied to the control panel<br>§lisActive()§r: returns whether the crusher is currently crushing items<br>§lgetInputStack(int pos)§r: returns the stack in the specified position in the queue (the queue starts at 1). The returned table contains information on the progress and
+ie.manual.entry.computer.crusher1=maximum progress of the requested item in the key "progress" and "maxProgress".<br>§lgetMaxEnergyStored()§r: returns the maximum amount of energy stored in this crusher<br>§lgetEnergyStored()§r: returns the amount of energy that is stored in this crusher
+
+ie.manual.entry.computer.dieselgen.name=Diesel Generator (computers)
+ie.manual.entry.computer.dieselgen.subtext=Better than volume: More volume.
+ie.manual.entry.computer.dieselgen0=§lsetEnabled(boolean active)§r: allows or disallows the diesel generator to run<br>§lisActive()§r: returns whether the generator is running<br>§lgetTankInfo()§r: returns the internal diesel tank
+
+ie.manual.entry.computer.energymeter.name=Current Transformer (computers)
+ie.manual.entry.computer.energymeter.subtext=88 Flux per hour!
+ie.manual.entry.computer.energymeter0=The bottom block of a current transformer can be connected to a computer. It will provide a single method, §lgetAvgEnergy()§r , that returns the average amount of energy per tick that was transferred through the transformer during the last 20 ticks.
+
+ie.manual.entry.computer.excavator.name=Excavator (computers)
+ie.manual.entry.computer.excavator.subtext=Better than Dwarves
+ie.manual.entry.computer.excavator0=§lisActive()§r: returns whether the excavator is running. This does not say anything about the existence of a mineral vein<br>§lsetEnabled(boolean active)§r: allows or disallows the excavator to run<br>§lgetEnergyStored()§r: returns the amount of energy currently stored in this excavator<br>§lgetMaxEnergyStored()§r: returns the maximum amount of energy that can be stored in this excavator
+
+ie.manual.entry.computer.squeezerAndFermenter.name=Fermenter and squeezer (computers)
+ie.manual.entry.computer.squeezerAndFermenter.subtext=Double post
+ie.manual.entry.computer.squeezerAndFermenter0=The computer support for fermenters and squeezers is extremely similar.<br>§lgetRecipe(int slot)§r: returns 3 tables and 1 integer describing the recipe that has the item in the specified input slot (1-9) as the input. The first table is the input stack, the second table the output item, the third table the output fluid and the integer is the time it takes for this recipe to process. If no recipe is found, only the string "No recipe
+ie.manual.entry.computer.squeezerAndFermenter1=found" will be returned.<br>§lgetInputStack(int slot)§r: returns the stack in the specified input slot (1-9)<br>§lgetOutputStack()§r: returns the stack in the item output slot<br>§lgetFluid()§r: returns the output fluid tank<br>§lgetEmptyCannisters§r: returns the stack of empty cannisters in the top right slot<br>§lgetFilledCannisters()§r: returns the stack of filled cannisters in the bottom right<br>§lgetEnergyStored§r: returns the amount of energy stored in this machine
+ie.manual.entry.computer.squeezerAndFermenter2=§lgetMaxEnergyStored()§r: returns the maximum amount of energy that can be stored in this machine
+
+ie.manual.entry.computer.floodlight.name=Floodlight (computers)
+ie.manual.entry.computer.floodlight.subtext=NO IDEA
+ie.manual.entry.computer.floodlight0=The following assumes that the floodlight is placed on the ground. The floodlight can be connected to a computer on it's bottom face. After rotating a floodlight using a computer you have to wait for one second before you can rotate it again.<br>§lturnAroundXZ(boolean dir)§r: changes the pitch of the floodlight<br>§lturnAroundY(boolean dir)§r: turns the floodlight as if it was rightclicked on its top or bottom<br>§lcanTurn()§r: returns whether the floodlight can rotate again yet
+ie.manual.entry.computer.floodlight1=§lsetEnabled(boolean on)§r: turns the floodlight on or off<br>§lisActive()§r: returns whether this floodlight is currently active<br>§lgetEnergyStored()§r: returns the amount of energy stored in the floodlight<br>§lgetMaxEnergyStored()§r: returns the maximum amount of energy that can be stored in the floodlight
+
+ie.manual.entry.computer.refinery.name=Refinery (computers)
+ie.manual.entry.computer.refinery.subtext=STOP ASKING
+ie.manual.entry.computer.refinery0=§lgetInputFluidTanks()§r: returns a table storing the input tanks in the keys "input1" and "input2"<br>§lgetOutputTank()§r: returns the output tank<br>§lgetRecipe()§r: returns a table containing the input fluids in the keys "input1" and "input2" and the output fluid in the key "output"<br>§lsetEnabled(boolean on)§r: allows or disallows the refinery to run<br>§lisValidRecipe()§r: returns whether a recipe with the current input fluids exists
+ie.manual.entry.computer.refinery1=§lgetEmptyCannisters()§r: returns a table containing the stacks of empty cannisters, the keys "input1" and "input2" for the input tanks, the key "output" for the output tank<br>§lgetMaxEnergyStored()§r: returns the maximum of energy that can be stored in this refinery<br>§lgetEnergyStored()§r: returns the amount of energy stored in the refinery
+
+ie.manual.entry.computer.assembler.name=Assembler (computers)
+ie.manual.entry.computer.assembler.subtext=objdump -d
+ie.manual.entry.computer.assembler0=The bottom row of an assembler can be connected to a computer.<br>§lhasIngredients(int recipe)§r: returns whether the ingredients for the specified recipe (1-3) are available<br>§lsetEnabled(int slot, boolean on)§r: enables or disables the specified recipe (1-3). If a recipe is disabled, it will not be crafted even if the materials are available.<br>§lgetRecipe(int recipe)l§r: returns a table containing the specified recipe (0-2). The keys "in1", "in2", ..., "in9" store the recipe inputs, the key "out"
+ie.manual.entry.computer.assembler1=stores the output<br>§lgetTank(int tank)§r: returns the specified tank (1-3)<br>§lgetMaxEnergyStored()§r: returns the maximum amount of energy that can be stored in the assembler<br>§lgetEnergyStored()§r: returns the amount of energy stored in the assembler<br>§lgetStackInSlot(int slot)§r: returns the stack in the specified input slot (1-18).<br>§lgetBufferStack(recipe:int)§r: returns the output buffer slot for the specified recipe (1-3)
+
+ie.manual.entry.computer.bottlingMachine.name=Bottling Machine (computers)
+ie.manual.entry.computer.bottlingMachine.subtext=Fill 'er up!
+ie.manual.entry.computer.bottlingMachine0=The block in the bottom middle of the front of a bottling machine and the back bottom row can be connected to a computer. A cannister is considered filled if it has passed the black box on the conveyor.<br>§lgetFluid()§r: returns the internal fluid tank of the bottling machine<br>§lgetEmptyCannister(int n)§r: returns the n'th empty cannister, starting where the cannisters enter the machine. The table contains the current filling progress in ticks in the key "process". A bottle is filled
+ie.manual.entry.computer.bottlingMachine1=at progress 72 and output at progress 120.<br>§lgetEmptyCannisterCount()§r: returns the amount of empty cannisters in the bottling machine<br>§lgetFilledCannister(int n)§r: returns the n'th filled cannister, starting at the black box. The returned table contains the filling progress stored in the key "process".<br>§lgetFilledCannisterCount()§r: returns the amount of filled cannisters in the bottling machine<br>§lgetEnergyStored()§r: returns
+ie.manual.entry.computer.bottlingMachine2=the amount of energy stored in the bottling machine<br>§lgetMaxEnergyStored()§r: returns the maximum amount of energy stored in this bottling machine<br>§lsetEnabled(boolean on)§r: turns the bottling machine on or off
+
+ie.manual.entry.computer.capacitor.name=Capacitors (computers)
+ie.manual.entry.computer.capacitor.subtext=Many Farads at a lot of Volts
+ie.manual.entry.computer.capacitor0=Any capacitor can be connected to a computer on any side.<br>§lgetEnergyStored()§r: returns the amount of energy that is stored<br>§lgetMaxEnergyStored()§r: returns the amount of energy that can be stored
+
+ie.manual.entry.computer.teslaCoil.name=Tesla coil (computers)
+ie.manual.entry.computer.teslaCoil.subtext=No, it isn't an SSTC
+ie.manual.entry.computer.teslaCoil0=§lisActive()§r: returns whether the coil is currently active<br>§lsetRSMode(boolean)§r: changes whether the coil is switch on by a high or a low redstone signal<br>§lsetPowerMode(boolean)§r: changes whether the coil is running in high (true)- or low (false)-power mode (<link;teslaCoil;§o§nexplanation§r;2>). This command can only be used if the coil is not active.
