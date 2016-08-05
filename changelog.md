@@ -1,4 +1,16 @@
-#####Version 0.8-28
+#####Version 0.8-32
+- re-added Open Computers and Computer Craft support! (thanks Malte)
+- re-added the abiltiy for the hammer to break IE blocks (thanks Malte)
+- added a dynamic changelog system to the manual, based on githubs master branch
+- fixed the inputs for blueprint crafting not being shown when hovering over the output (thanks Malte)
+- fixed wooden crates accidentally dropping their contents (thanks Malte)
+- fixed bug in arc furnace recycling (thanks Malte)
+- fixed IE model caching (thanks Malte)
+- fixed accidental stacking of buckets in the refinery
+- fixed Bucket Wheel rendering (hopefully) (thanks Malte)
+- various minor fixes, wrapup on 1.8.9! (hopefully!)
+
+#####Version 0.8-28 - BUILT
 - re-added the Floodlight back in
 - re-added the transformers that can attach to posts (thanks Malte)
 - re-added the ability for the pump to not create cobblestone and improved the pump (thanks Malte)
