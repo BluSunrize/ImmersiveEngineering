@@ -285,7 +285,7 @@ public class IESmartObjModel extends OBJBakedModel
 					{
 						UnpackedBakedQuad.Builder builder = new UnpackedBakedQuad.Builder(getFormat());
 						builder.setQuadOrientation(EnumFacing.getFacingFromVector(f.getNormal().x, f.getNormal().y, f.getNormal().z));
-//							builder.setQuadColored();
+						builder.setTexture(tempSprite);
 						builder.setQuadTint(pass);
 						Normal faceNormal = f.getNormal();
 						putVertexData(builder, f.getVertices()[0], faceNormal, TextureCoordinate.getDefaultUVs()[0], tempSprite, colour);
