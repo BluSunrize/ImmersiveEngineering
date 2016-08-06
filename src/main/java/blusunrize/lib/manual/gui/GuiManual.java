@@ -1,27 +1,22 @@
 package blusunrize.lib.manual.gui;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
-import net.minecraft.util.text.TextFormatting;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.GL11;
-
 import blusunrize.lib.manual.IManualPage;
 import blusunrize.lib.manual.ManualInstance;
 import blusunrize.lib.manual.ManualInstance.ManualEntry;
 import blusunrize.lib.manual.ManualUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.gui.*;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.TextFormatting;
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.GL11;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class GuiManual extends GuiScreen
 {
@@ -103,7 +98,7 @@ public class GuiManual extends GuiScreen
 				if(manual.showEntryInList(e))
 					lHeaders.add(e.getName());
 			headers = lHeaders.toArray(new String[lHeaders.size()]);
-			this.buttonList.add(new GuiClickableList(this, 0, guiLeft+40,guiTop+20, 100,148, 1f, 1, headers));
+			this.buttonList.add(new GuiClickableList(this, 0, guiLeft + 40, guiTop + 20, 100, 168, 1f, 1, headers));
 			textField = true;
 		}
 		else if(manual.manualContents.containsKey(selectedCategory))
@@ -113,7 +108,7 @@ public class GuiManual extends GuiScreen
 				if(manual.showEntryInList(e))
 					lHeaders.add(e.getName());
 			headers = lHeaders.toArray(new String[lHeaders.size()]);
-			this.buttonList.add(new GuiClickableList(this, 0, guiLeft+40,guiTop+20, 100,148, 1f, 1, headers));
+			this.buttonList.add(new GuiClickableList(this, 0, guiLeft + 40, guiTop + 20, 100, 168, 1f, 1, headers));
 			textField = true;
 		}
 		else
@@ -123,7 +118,7 @@ public class GuiManual extends GuiScreen
 				if(manual.showCategoryInList(cat))
 					lHeaders.add(cat);
 			headers = lHeaders.toArray(new String[lHeaders.size()]);
-			this.buttonList.add(new GuiClickableList(this, 0, guiLeft+40,guiTop+20, 100,148, 1f, 0, headers));
+			this.buttonList.add(new GuiClickableList(this, 0, guiLeft + 40, guiTop + 20, 100, 168, 1f, 0, headers));
 			textField = true;
 		}
 		if(manual.manualContents.containsKey(selectedCategory) || manual.getEntry(selectedEntry)!=null)

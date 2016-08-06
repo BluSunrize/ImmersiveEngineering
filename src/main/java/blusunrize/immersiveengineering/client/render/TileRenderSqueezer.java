@@ -37,8 +37,9 @@ public class TileRenderSqueezer extends TileEntitySpecialRenderer<TileEntitySque
 			GlStateManager.scale(te.facing.getFrontOffsetX()==0?-1:1,1,te.facing.getFrontOffsetZ()==0?-1:1);
 		
 		float piston = te.animation_piston;
-		
-		
+		//Smoothstep!
+		piston = piston * piston * (3.0f - 2.0f * piston);
+
 //		float shift[] = new float[te.processQueue.size()];
 //		for(int i=0; i<shift.length; i++)
 //		{
