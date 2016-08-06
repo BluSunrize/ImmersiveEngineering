@@ -111,97 +111,90 @@ public class ItemIETool extends ItemIEBase implements ITool, IGuiItem
 	@Override
 	public EnumActionResult onItemUseFirst(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand)
 	{
-		if(!world.isRemote)
+		TileEntity tileEntity = world.getTileEntity(pos);
+		if(stack.getItemDamage() == 0)
 		{
-			TileEntity tileEntity = world.getTileEntity(pos);
-			//			int chunkX = (x>>4);
-			//			int chunkZ = (z>>4);
-			//			MineralWorldInfo info = ExcavatorHandler.getMineralWorldInfo(world, chunkX, chunkZ);
-			//			player.addChatMessage(new ChatComponentText("info for chunk; mineral: "+(info.mineral!=null?EnumChatFormatting.GREEN+info.mineral.name+EnumChatFormatting.RESET:"none")+"  override: "+(info.mineralOverride!=null?EnumChatFormatting.GREEN+info.mineralOverride.name+EnumChatFormatting.RESET:"none")+"  depletion: "+info.depletion));
-			if(stack.getItemDamage()==0)
+			if(world.isRemote)
+				return EnumActionResult.PASS;
+			String[] interdictedMultiblocks = null;
+			if(ItemNBTHelper.hasKey(stack, "multiblockInterdiction"))
 			{
-				String[] interdictedMultiblocks = null;
-				if(ItemNBTHelper.hasKey(stack, "multiblockInterdiction"))
-				{
-					NBTTagList list = stack.getTagCompound().getTagList("multiblockInterdiction", 8);
-					interdictedMultiblocks = new String[list.tagCount()];
-					for(int i=0; i<interdictedMultiblocks.length; i++)
-						interdictedMultiblocks[i] = list.getStringTagAt(i);
-				}
-				for(IMultiblock mb : MultiblockHandler.getMultiblocks())
-					if(mb.isBlockTrigger(world.getBlockState(pos)))
-					{
-						if(interdictedMultiblocks!=null)
-							for(String s : interdictedMultiblocks)
-								if(mb.getUniqueName().equalsIgnoreCase(s))
-									return EnumActionResult.FAIL;
-						if(mb.createStructure(world, pos, side, player))
-							return EnumActionResult.SUCCESS;
-					}
-				if(!(world.getTileEntity(pos) instanceof IDirectionalTile))
-					return RotationUtil.rotateBlock(world, pos, side, player) ? EnumActionResult.SUCCESS : EnumActionResult.PASS;
+				NBTTagList list = stack.getTagCompound().getTagList("multiblockInterdiction", 8);
+				interdictedMultiblocks = new String[list.tagCount()];
+				for(int i = 0; i < interdictedMultiblocks.length; i++)
+					interdictedMultiblocks[i] = list.getStringTagAt(i);
 			}
-			else if(stack.getItemDamage()==1 && tileEntity instanceof IImmersiveConnectable)
-			{
-				IImmersiveConnectable nodeHere = (IImmersiveConnectable)tileEntity;
-				ImmersiveNetHandler.INSTANCE.clearAllConnectionsFor(Utils.toCC(nodeHere),world, new TargetingInfo(side,hitX,hitY,hitZ));
-				IESaveData.setDirty(world.provider.getDimension());
+			for(IMultiblock mb : MultiblockHandler.getMultiblocks())
+				if(mb.isBlockTrigger(world.getBlockState(pos)))
+				{
+					if(interdictedMultiblocks != null)
+						for(String s : interdictedMultiblocks)
+							if(mb.getUniqueName().equalsIgnoreCase(s))
+								return EnumActionResult.FAIL;
+					if(mb.createStructure(world, pos, side, player))
+						return EnumActionResult.SUCCESS;
+				}
+			if(!(world.getTileEntity(pos) instanceof IDirectionalTile))
+				return RotationUtil.rotateBlock(world, pos, side, player) ? EnumActionResult.SUCCESS : EnumActionResult.PASS;
+		} else if(stack.getItemDamage() == 1 && tileEntity instanceof IImmersiveConnectable && !world.isRemote)
+		{
+			IImmersiveConnectable nodeHere = (IImmersiveConnectable) tileEntity;
+			ImmersiveNetHandler.INSTANCE.clearAllConnectionsFor(Utils.toCC(nodeHere), world, new TargetingInfo(side, hitX, hitY, hitZ));
+			IESaveData.setDirty(world.provider.getDimension());
 
-				int nbtDamage = ItemNBTHelper.getInt(stack, "cutterDmg")+1;
-				if(nbtDamage<cutterMaxDamage)
-					ItemNBTHelper.setInt(stack, "cutterDmg", nbtDamage);
+			int nbtDamage = ItemNBTHelper.getInt(stack, "cutterDmg") + 1;
+			if(nbtDamage < cutterMaxDamage)
+				ItemNBTHelper.setInt(stack, "cutterDmg", nbtDamage);
+			else
+			{
+				player.renderBrokenItemStack(stack);
+				player.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, null);
+			}
+			return EnumActionResult.SUCCESS;
+		} else if(stack.getItemDamage() == 2 && !world.isRemote)
+		{
+			if(!player.isSneaking() && (tileEntity instanceof IFluxReceiver || tileEntity instanceof IFluxProvider))
+			{
+				int max = 0;
+				int stored = 0;
+				if(tileEntity instanceof IFluxReceiver)
+				{
+					max = ((IFluxReceiver) tileEntity).getMaxEnergyStored(side);
+					stored = ((IFluxReceiver) tileEntity).getEnergyStored(side);
+				}
 				else
 				{
-					player.renderBrokenItemStack(stack);
-					player.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, null);
+					max = ((IFluxProvider) tileEntity).getMaxEnergyStored(side);
+					stored = ((IFluxProvider) tileEntity).getEnergyStored(side);
 				}
+				if(max > 0)
+					ChatUtils.sendServerNoSpamMessages(player, new TextComponentTranslation(Lib.CHAT_INFO + "energyStorage", stored, max));
 				return EnumActionResult.SUCCESS;
 			}
-			else if(stack.getItemDamage()==2)
+			if(player.isSneaking() && tileEntity instanceof IImmersiveConnectable)
 			{
-				if(!player.isSneaking() && (tileEntity instanceof IFluxReceiver || tileEntity instanceof IFluxProvider))
+				if(!ItemNBTHelper.hasKey(stack, "linkingPos"))
+					ItemNBTHelper.setIntArray(stack, "linkingPos", new int[]{world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ()});
+				else
 				{
-					int max = 0;
-					int stored = 0;
-					if(tileEntity instanceof IFluxReceiver)
+					int[] array = ItemNBTHelper.getIntArray(stack, "linkingPos");
+					BlockPos linkPos = new BlockPos(array[1], array[2], array[3]);
+					TileEntity tileEntityLinkingPos = world.getTileEntity(linkPos);
+					if(array[0] == world.provider.getDimension())
 					{
-						max = ((IFluxReceiver)tileEntity).getMaxEnergyStored(side);
-						stored = ((IFluxReceiver)tileEntity).getEnergyStored(side);
-					}
-					else
-					{
-						max = ((IFluxProvider)tileEntity).getMaxEnergyStored(side);
-						stored = ((IFluxProvider)tileEntity).getEnergyStored(side);
-					}
-					if(max>0)
-						ChatUtils.sendServerNoSpamMessages(player, new TextComponentTranslation(Lib.CHAT_INFO+"energyStorage", stored,max));
-					return EnumActionResult.SUCCESS;
-				}
-				if(player.isSneaking() && tileEntity instanceof IImmersiveConnectable)
-				{
-					if(!ItemNBTHelper.hasKey(stack, "linkingPos"))
-						ItemNBTHelper.setIntArray(stack, "linkingPos", new int[]{world.provider.getDimension(),pos.getX(),pos.getY(),pos.getZ()});
-					else
-					{
-						int[] array = ItemNBTHelper.getIntArray(stack, "linkingPos");
-						BlockPos linkPos = new BlockPos(array[1],array[2],array[3]);
-						TileEntity tileEntityLinkingPos = world.getTileEntity(linkPos);
-						if(array[0]==world.provider.getDimension())
+						IImmersiveConnectable nodeHere = (IImmersiveConnectable) tileEntity;
+						IImmersiveConnectable nodeLink = (IImmersiveConnectable) tileEntityLinkingPos;
+						if(nodeLink != null)
 						{
-							IImmersiveConnectable nodeHere = (IImmersiveConnectable)tileEntity;
-							IImmersiveConnectable nodeLink = (IImmersiveConnectable)tileEntityLinkingPos;
-							if(nodeLink!=null)
-							{
-								Set<AbstractConnection> connections = ImmersiveNetHandler.INSTANCE.getIndirectEnergyConnections(Utils.toCC(nodeLink), world, true);
-								for(AbstractConnection con : connections)
-									if(Utils.toCC(nodeHere).equals(con.end))
-										player.addChatComponentMessage(new TextComponentTranslation(Lib.CHAT_INFO+"averageLoss",Utils.formatDouble(con.getAverageLossRate()*100, "###.000")));
-							}
+							Set<AbstractConnection> connections = ImmersiveNetHandler.INSTANCE.getIndirectEnergyConnections(Utils.toCC(nodeLink), world, true);
+							for(AbstractConnection con : connections)
+								if(Utils.toCC(nodeHere).equals(con.end))
+									player.addChatComponentMessage(new TextComponentTranslation(Lib.CHAT_INFO + "averageLoss", Utils.formatDouble(con.getAverageLossRate() * 100, "###.000")));
 						}
-						ItemNBTHelper.remove(stack, "linkingPos");
 					}
-					return EnumActionResult.SUCCESS;
+					ItemNBTHelper.remove(stack, "linkingPos");
 				}
+				return EnumActionResult.SUCCESS;
 			}
 		}
 		return EnumActionResult.PASS;
