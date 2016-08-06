@@ -1,3 +1,9 @@
+#####Version 0.10-34 - BUILT
+- added TCon alloy recipes
+- fixed crash in earmuff recipe, using a client access method
+- fixed arc alloy recipes having too little output
+- prepping for FastTESR hopefully soon!
+
 #####Version 0.10-33 - BUILT
 - fixed crashes when break smart models, parsed texture into baked builder
 - fixed ItemRenders for multiblocks

@@ -98,8 +98,10 @@ public class TConstructHelper extends IECompatModule
 	@Override
 	public void init()
 	{
-		if(ApiUtils.isExistingOreName("ingotAluminumBrass"))
-			IERecipes.addOreDictAlloyingRecipe("ingotAluminumBrass",4, "Copper", 100,512, "dustAluminum","dustAluminum","dustAluminum");
+		if(ApiUtils.isExistingOreName("ingotAluBrass"))
+			IERecipes.addOreDictAlloyingRecipe("ingotAluBrass", 4, "Copper", 100, 512, "dustAluminum", "dustAluminum", "dustAluminum");
+		IERecipes.addOreDictAlloyingRecipe("ingotManyullyn", 1, "Cobalt", 200, 512, "ingotArdite");
+		IERecipes.addOreDictAlloyingRecipe("ingotManyullyn", 1, "Ardite", 200, 512, "ingotCobalt");
 		//		ChemthrowerHandler.registerEffect("glue", new ChemthrowerEffect_Potion(null,0, IEPotions.sticky,100,1));
 		ChemthrowerHandler.registerEffect("blueslime", new ChemthrowerEffect_Potion(null,0, IEPotions.sticky,100,1));
 		ChemthrowerHandler.registerEffect("purpleslime", new ChemthrowerEffect_Potion(null,0, IEPotions.sticky,100,2));
@@ -107,7 +109,6 @@ public class TConstructHelper extends IECompatModule
 		//		RailgunHandler.registerProjectileProperties(new ComparableItemStack("rodSteel"), 9, 1.25).setColourMap(new int[][]{{0xb4b4b4,0xb4b4b4,0xb4b4b4,0x7a7a7a,0x555555,0x555555}});
 		//		RailgunHandler.registerProjectileProperties(new ComparableItemStack("ironRod"), 7, 1.25).setColourMap(new int[][]{{0xd8d8d8,0xd8d8d8,0xd8d8d8,0xa8a8a8,0x686868,0x686868}});
 		//		RailgunHandler.registerProjectileProperties(new ComparableItemStack("steelRod"), 9, 1.25).setColourMap(new int[][]{{0xb4b4b4,0xb4b4b4,0xb4b4b4,0x7a7a7a,0x555555,0x555555}});
-
 	}
 
 	@Override

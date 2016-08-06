@@ -1,7 +1,5 @@
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
-import java.util.ArrayList;
-
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
@@ -13,14 +11,16 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import java.util.ArrayList;
 
 public class TileEntityWatermill extends TileEntityIEBase implements ITickable, IDirectionalTile, IHasDummyBlocks, IHasObjProperty
 {
@@ -32,6 +32,13 @@ public class TileEntityWatermill extends TileEntityIEBase implements ITickable, 
 	public boolean multiblock = false;
 	public float prevRotation = 0;
 	private boolean formed = true;
+
+	//Soon!
+//	@Override
+//	public boolean hasFastRenderer()
+//	{
+//		return true;
+//	}
 
 	@Override
 	public void update()

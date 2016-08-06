@@ -1,14 +1,10 @@
 package blusunrize.immersiveengineering.common.crafting;
 
-import java.util.List;
-
-import blusunrize.immersiveengineering.common.items.IEItemInterfaces;
-import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
-import com.google.common.collect.Lists;
-
 import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
+import com.google.common.collect.Lists;
 import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.inventory.InventoryCrafting;
@@ -18,6 +14,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
+
+import java.util.List;
 
 public class RecipeEarmuffs implements IRecipe
 {
@@ -33,7 +31,7 @@ public class RecipeEarmuffs implements IRecipe
 			if(stackInSlot!=null)
 				if(earmuffs==null && IEContent.itemEarmuffs.equals(stackInSlot.getItem()))
 					earmuffs = stackInSlot;
-				else if(armor==null && stackInSlot.getItem() instanceof ItemArmor && ((ItemArmor)stackInSlot.getItem()).getEquipmentSlot()== EntityEquipmentSlot.HEAD && !IEContent.itemEarmuffs.equals(stackInSlot.getItem()))
+				else if(armor == null && stackInSlot.getItem() instanceof ItemArmor && ((ItemArmor) stackInSlot.getItem()).armorType == EntityEquipmentSlot.HEAD && !IEContent.itemEarmuffs.equals(stackInSlot.getItem()))
 					armor = stackInSlot;
 				else if(Utils.isDye(stackInSlot))
 					list.add(stackInSlot);
