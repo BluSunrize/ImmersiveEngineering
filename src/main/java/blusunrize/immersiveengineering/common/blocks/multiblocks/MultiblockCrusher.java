@@ -16,9 +16,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -88,9 +88,11 @@ public class MultiblockCrusher implements IMultiblock
 	{
 		if(renderStack==null)
 			 renderStack = new ItemStack(IEContent.blockMetalMultiblock,1,BlockTypes_MetalMultiblock.CRUSHER.getMeta());
-		GlStateManager.scale(-8,8,8);
-		GlStateManager.rotate(-90, 0, 1, 0);
-		GlStateManager.translate(0, .0625, 0);
+		GlStateManager.scale(-5.5, 5.5, 5.5);
+		GlStateManager.translate(0, .09375, 0);
+		GlStateManager.rotate(225, 0, 1, 0);
+		GlStateManager.rotate(-20, 1, 0, 0);
+
 		GlStateManager.disableCull();
 		ClientUtils.mc().getRenderItem().renderItem(renderStack, ItemCameraTransforms.TransformType.GUI);
 		GlStateManager.enableCull();

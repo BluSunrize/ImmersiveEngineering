@@ -24,8 +24,15 @@
 			"model": "immersiveengineering:blastfurnace_advanced.obj",
 			"custom": {"flip-v": true},
 			"transform": {
-			"scale": 0.33,
-			"rotation": {"y": -90 }
+				"scale": 0.25,
+				"rotation": [
+					{
+						"x": 20
+					},
+					{
+						"y": -45
+					}
+				]
 			}
 		}],
 		"type":

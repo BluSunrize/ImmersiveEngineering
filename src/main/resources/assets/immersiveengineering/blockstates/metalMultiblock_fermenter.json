@@ -13,8 +13,15 @@
 		"inventory,type=fermenter": [{
 			"model": "immersiveengineering:metalMultiblock/fermenter.obj",
 			"transform": {
-				"scale": 0.4375,
-				"rotation": {"y": -90 }
+				"scale": 0.25,
+				"rotation": [
+					{
+						"x": 20
+					},
+					{
+						"y": -45
+					}
+				]
 			}
 		}],
 		"type":

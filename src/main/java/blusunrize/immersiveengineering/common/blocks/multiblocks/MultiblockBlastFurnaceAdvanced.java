@@ -1,7 +1,5 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
-import org.lwjgl.opengl.GL11;
-
 import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.IEContent;
@@ -16,11 +14,12 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.opengl.GL11;
 
 public class MultiblockBlastFurnaceAdvanced implements IMultiblock
 {
@@ -69,7 +68,9 @@ public class MultiblockBlastFurnaceAdvanced implements IMultiblock
 	{
 		if(renderStack==null)
 			renderStack = new ItemStack(IEContent.blockStoneDevice,1,BlockTypes_StoneDecoration.BLASTBRICK_REINFORCED.getMeta());
-		GlStateManager.scale(6,6,6);
+		GlStateManager.scale(4, 4, 4);
+		GlStateManager.rotate(45, 0, 1, 0);
+		GlStateManager.rotate(-20, 1, 0, 0);
 		ClientUtils.mc().getRenderItem().renderItem(renderStack, ItemCameraTransforms.TransformType.GUI);
 	}
 

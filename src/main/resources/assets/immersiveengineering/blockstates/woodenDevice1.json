@@ -19,7 +19,7 @@
 	"variants":
 	{
 		"inventory,type=watermill": [{
-			"model": "immersiveengineering:woodenDevice/watermill.obj",
+			"model": "immersiveengineering:woodenDevice/watermill.obj.ie",
 			"custom": {"flip-v": true},
 			"transform": {
 				"scale": [ 0.125, 0.125, 0.125 ],
@@ -32,7 +32,7 @@
 			}
 		}],
 		"inventory,type=windmill": [{
-			"model": "immersiveengineering:woodenDevice/windmill.obj",
+			"model": "immersiveengineering:woodenDevice/windmill.obj.ie",
 			"transform": "forge:default-block",
 			"custom": {"flip-v": true},
 			"transform": {
@@ -46,7 +46,7 @@
 			}
 		}],
 		"inventory,type=windmill_advanced": [{
-			"model": "immersiveengineering:woodenDevice/windmillAdvanced.obj",
+			"model": "immersiveengineering:woodenDevice/windmillAdvanced.obj.ie",
 			"transform": "forge:default-block",
 			"custom": {"flip-v": true},
 			"transform": {
@@ -88,13 +88,13 @@
 		"type":
 		{
 			"watermill": {
-				"model": "immersiveengineering:woodenDevice/watermill.obj"
+				"model": "immersiveengineering:woodenDevice/watermill.obj.ie"
 			},
 			"windmill": {
-				"model": "immersiveengineering:woodenDevice/windmill.obj"
+				"model": "immersiveengineering:woodenDevice/windmill.obj.ie"
 			},
 			"windmill_advanced": {
-				"model": "immersiveengineering:woodenDevice/windmillAdvanced.obj"
+				"model": "immersiveengineering:woodenDevice/windmillAdvanced.obj.ie"
 			},
 			"post": {
 				"model": "immersiveengineering:woodenDevice/woodenPost.obj.ie"

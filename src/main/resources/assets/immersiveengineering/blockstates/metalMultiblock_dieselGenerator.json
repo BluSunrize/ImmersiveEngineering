@@ -13,8 +13,15 @@
 		"inventory,type=diesel_generator": [{
 			"model": "immersiveengineering:metalMultiblock/dieselGenerator.obj",
 			"transform": {
-				"scale": 0.25
-				//"rotation": {"y": -90 }
+				"scale": 0.1875,
+				"rotation": [
+					{
+						"x": 20
+					},
+					{
+						"y": -45
+					}
+				]
 			}
 		}],
 		"type":

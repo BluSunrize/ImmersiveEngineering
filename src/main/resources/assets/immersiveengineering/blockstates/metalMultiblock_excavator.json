@@ -13,8 +13,20 @@
 		"inventory,type=excavator": [{
 			"model": "immersiveengineering:metalMultiblock/excavator.obj",
 			"transform": {
-				"scale": 0.25
-				//"rotation": {"y": -90 }
+				"scale": 0.1875,
+				"rotation": [
+					{
+						"x": 20
+					},
+					{
+						"y": 135
+					}
+				],
+				"translation": [
+					0.375,
+					0,
+					0
+				]
 			}
 		}],
 		"type":

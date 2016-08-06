@@ -22,8 +22,8 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -125,9 +125,12 @@ public class MultiblockArcFurnace implements IMultiblock
 	{
 		if(renderStack==null)
 			renderStack = new ItemStack(IEContent.blockMetalMultiblock,1,BlockTypes_MetalMultiblock.ARC_FURNACE.getMeta());
-		GlStateManager.scale(-9,9,9);
-		GlStateManager.rotate(90, 0, 1, 0);
-		GlStateManager.translate(-.0625, 0, 0);
+
+		GlStateManager.scale(-6.5, 6.5, 6.5);
+		GlStateManager.translate(.03125, .03125, .03125);
+		GlStateManager.rotate(225, 0, 1, 0);
+		GlStateManager.rotate(-20, 1, 0, 0);
+
 		GlStateManager.disableCull();
 		ClientUtils.mc().getRenderItem().renderItem(renderStack, ItemCameraTransforms.TransformType.GUI);
 		GlStateManager.enableCull();

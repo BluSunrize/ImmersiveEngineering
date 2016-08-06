@@ -5,11 +5,7 @@ import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.BlockTypes_MetalsAll;
-import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalDecoration0;
-import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalDecoration1;
-import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalDevice1;
-import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalMultiblock;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityRefinery;
+import blusunrize.immersiveengineering.common.blocks.metal.*;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.GlStateManager;
@@ -17,8 +13,8 @@ import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -97,9 +93,12 @@ public class MultiblockRefinery implements IMultiblock
 	{
 		if(renderStack==null)
 			renderStack = new ItemStack(IEContent.blockMetalMultiblock,1,BlockTypes_MetalMultiblock.REFINERY.getMeta());
-		GlStateManager.scale(-8,8,8);
-		GlStateManager.rotate(-90, 0, 1, 0);
-		GlStateManager.translate(0, .03125, 0);
+
+		GlStateManager.scale(-5.5, 5.5, 5.5);
+		GlStateManager.translate(-.09375, .09375, -.09375);
+		GlStateManager.rotate(225, 0, 1, 0);
+		GlStateManager.rotate(-20, 1, 0, 0);
+
 		GlStateManager.disableCull();
 		ClientUtils.mc().getRenderItem().renderItem(renderStack, ItemCameraTransforms.TransformType.GUI);
 		GlStateManager.enableCull();

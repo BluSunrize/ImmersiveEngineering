@@ -13,9 +13,20 @@
 		"inventory,type=refinery": [{
 			"model": "immersiveengineering:metalMultiblock/refinery.obj",
 			"transform": {
-				"scale": 0.25,
-				"rotation": [{"y": -90 }],
-				"translation": [ -0.25, 0.0625, 0 ]
+				"scale": 0.1875,
+				"rotation": [
+					{
+						"x": 20
+					},
+					{
+						"y": -45
+					}
+				],
+				"translation": [
+					-0.125,
+					0.0,
+					0
+				]
 			}
 		}],
 		"type":

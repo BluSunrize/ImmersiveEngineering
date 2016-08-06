@@ -1,17 +1,9 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
-import net.minecraft.util.math.BlockPos;
-import org.lwjgl.opengl.GL11;
-
 import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_Conveyor;
-import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalDecoration0;
-import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalDecoration1;
-import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalMultiblock;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConveyorBelt;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMetalPress;
+import blusunrize.immersiveengineering.common.blocks.metal.*;
 import blusunrize.immersiveengineering.common.util.IEAchievements;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.state.IBlockState;
@@ -22,9 +14,11 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.opengl.GL11;
 
 public class MultiblockMetalPress implements IMultiblock
 {
@@ -88,9 +82,10 @@ public class MultiblockMetalPress implements IMultiblock
 	{
 		if(renderStack==null)
 			renderStack = new ItemStack(IEContent.blockMetalMultiblock,1,BlockTypes_MetalMultiblock.METAL_PRESS.getMeta());
-		GlStateManager.scale(4.57,4.57,4.57);
-		GlStateManager.rotate(90, 0, 1, 0);
-		GlStateManager.translate(0, .11, 0);
+		GlStateManager.scale(4, 4, 4);
+		GlStateManager.translate(0, .125, 0);
+		GlStateManager.rotate(45, 0, 1, 0);
+		GlStateManager.rotate(-20, 1, 0, 0);
 		ClientUtils.mc().getRenderItem().renderItem(renderStack, ItemCameraTransforms.TransformType.GUI);
 	}
 

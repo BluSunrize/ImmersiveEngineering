@@ -13,24 +13,53 @@
 		"inventory,type=tank": [{
 			"model": "immersiveengineering:metalMultiblock/tank.obj",
 			"transform": {
-				"scale": 0.25,
-				"rotation": {"y": -90 },
-				"translation": [ 0, -0.5, 0 ]
+				"scale": 0.1875,
+				"rotation": [
+					{
+						"x": 20
+					},
+					{
+						"y": -45
+					}
+				],
+				"translation": [
+					0,
+					-0.25,
+					0
+				]
 			}
 		}],
 		"inventory,type=silo": [{
 			"model": "immersiveengineering:metalMultiblock/silo.obj",
 			"transform": {
-				"scale": 0.1875,
-				"rotation": {"y": -90 },
-				"translation": [ 0, -0.5, 0 ]
+				"scale": 0.125,
+				"rotation": [
+					{
+						"x": 20
+					},
+					{
+						"y": -45
+					}
+				],
+				"translation": [
+					0,
+					-0.25,
+					0
+				]
 			}
 		}],
 		"inventory,type=assembler": [{
 			"model": "immersiveengineering:metalMultiblock/assembler.obj",
 			"transform": {
-				"scale": 0.375,
-				"rotation": {"y": -90 },
+				"scale": 0.25,
+				"rotation": [
+					{
+						"x": 20
+					},
+					{
+						"y": -45
+					}
+				],
 				"translation": [ 0, 0, 0 ]
 			}
 		}],

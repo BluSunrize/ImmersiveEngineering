@@ -13,8 +13,8 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -108,12 +108,18 @@ public class MultiblockExcavatorDemo implements IMultiblock
 			renderStack = new ItemStack(IEContent.blockMetalMultiblock,1,BlockTypes_MetalMultiblock.EXCAVATOR.getMeta());
 		if(renderStack2==null)
 			renderStack2 = new ItemStack(IEContent.blockMetalMultiblock,1,BlockTypes_MetalMultiblock.BUCKET_WHEEL.getMeta());
-		GlStateManager.scale(-8,8,8);
-		GlStateManager.rotate(180, 0, 1, 0);
-		GlStateManager.translate(0, .0625, .25);
+		GlStateManager.scale(-5.5, 5.5, 5.5);
+		GlStateManager.translate(-.25, .09375, -.28125);
+		GlStateManager.rotate(45, 0, 1, 0);
+		GlStateManager.rotate(-20, 1, 0, 0);
 		GlStateManager.disableCull();
 		ClientUtils.mc().getRenderItem().renderItem(renderStack, ItemCameraTransforms.TransformType.GUI);
-		GlStateManager.translate(0, 0, -.5);
+		GlStateManager.rotate(20, 1, 0, 0);
+		GlStateManager.rotate(-45, 0, 1, 0);
+		GlStateManager.scale(1.25, 1.25, 1.25);
+		GlStateManager.translate(.22, 0, .3875);
+		GlStateManager.rotate(225, 0, 1, 0);
+		GlStateManager.rotate(-20, 1, 0, 0);
 		ClientUtils.mc().getRenderItem().renderItem(renderStack2, ItemCameraTransforms.TransformType.GUI);
 		GlStateManager.enableCull();
 	}

@@ -13,9 +13,20 @@
 		"inventory,type=arc_furnace": [{
 			"model": "immersiveengineering:metalMultiblock/arcFurnace.obj",
 			"transform": {
-				"scale": 0.21875,
-				"rotation": [{"y": 90 }],
-				"translation": [ 0.125, -0.125, 0 ]
+				"scale": 0.15625,
+				"rotation": [
+					{
+						"x": 20
+					},
+					{
+						"y": -45
+					}
+				],
+				"translation": [
+					0,
+					-0.125,
+					0
+				]
 			}
 		}],
 		"type":

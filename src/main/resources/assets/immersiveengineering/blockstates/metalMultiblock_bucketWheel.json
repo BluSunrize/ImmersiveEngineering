@@ -14,8 +14,15 @@
 		"inventory,type=bucket_wheel": [{
 			"model": "immersiveengineering:metalMultiblock/bucketWheel.obj.ie",
 			"transform": {
-				"scale": 0.25
-				//"rotation": {"y": -90 }
+				"scale": 0.15625,
+				"rotation": [
+					{
+						"x": 20
+					},
+					{
+						"y": -45
+					}
+				]
 			}
 		}],
 		"type":
