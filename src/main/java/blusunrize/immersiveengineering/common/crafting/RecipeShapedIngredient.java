@@ -5,6 +5,8 @@ import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.fluids.UniversalBucket;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
 public class RecipeShapedIngredient extends ShapedOreRecipe
@@ -115,6 +117,24 @@ public class RecipeShapedIngredient extends ShapedOreRecipe
 			return out;
 		} else
 			return super.getCraftingResult(matrix);
+	}
+
+	@Override
+	public ItemStack[] getRemainingItems(InventoryCrafting inv) //getRecipeLeftovers
+	{
+		ItemStack[] remains = ForgeHooks.defaultRecipeGetRemainingItems(inv);
+		for(int i = 0; i < inv.getSizeInventory(); i++)
+		{
+			ItemStack s = inv.getStackInSlot(i);
+			System.out.println("TEST " + i + " - " + s + " ~ " + s.getItem());
+			if(s != null && remains[i] == null && s.getItem() instanceof UniversalBucket)
+			{
+				ItemStack empty = ((UniversalBucket) s.getItem()).getEmpty();
+				if(empty != null)
+					remains[i] = empty.copy();
+			}
+		}
+		return remains;
 	}
 
 	@Override

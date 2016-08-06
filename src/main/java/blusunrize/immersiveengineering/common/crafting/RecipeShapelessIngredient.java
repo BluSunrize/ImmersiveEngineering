@@ -6,6 +6,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.UniversalBucket;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 import java.util.ArrayList;
@@ -89,24 +90,34 @@ public class RecipeShapelessIngredient extends ShapelessOreRecipe
 	@Override
 	public ItemStack[] getRemainingItems(InventoryCrafting inv)
 	{
-		ItemStack[] originalRemains = super.getRemainingItems(inv);
-		if(toolDamageSlot >= 0 && toolDamageSlot < ingredients.size())
-			for(int i = 0; i < originalRemains.length; i++)
+		ItemStack[] remains = super.getRemainingItems(inv);
+		for(int i = 0; i < remains.length; i++)
+		{
+			ItemStack s = inv.getStackInSlot(i);
+			ItemStack remain = remains[i];
+			if(toolDamageSlot >= 0 && toolDamageSlot < ingredients.size())
 			{
 				ItemStack tool = null;
-				if(originalRemains[i] == null && inv.getStackInSlot(i) != null && ingredients.get(toolDamageSlot).matchesItemStack(inv.getStackInSlot(i)))
-					tool = inv.getStackInSlot(i).copy();
-				else if(originalRemains[i] != null && ingredients.get(toolDamageSlot).matchesItemStack(originalRemains[i]))
-					tool = originalRemains[i];
+				if(remain == null && s != null && ingredients.get(toolDamageSlot).matchesItemStack(s))
+					tool = s.copy();
+				else if(remain != null && ingredients.get(toolDamageSlot).matchesItemStack(remain))
+					tool = remain;
 				if(tool != null && tool.getItem().isDamageable())
 				{
 					tool.setItemDamage(tool.getItemDamage() + 1);
 					if(tool.getItemDamage() > tool.getMaxDamage())
 						tool = null;
-					originalRemains[i] = tool;
+					remains[i] = tool;
 				}
 			}
-		return originalRemains;
+			if(s != null && remain == null && s.getItem() instanceof UniversalBucket)
+			{
+				ItemStack empty = ((UniversalBucket) s.getItem()).getEmpty();
+				if(empty != null)
+					remains[i] = empty.copy();
+			}
+		}
+		return remains;
 	}
 
 	@Override
