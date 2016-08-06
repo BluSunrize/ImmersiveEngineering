@@ -682,10 +682,10 @@ public class IERecipes
 		arcOutputModifier.put("Silver", new ItemStack(IEContent.itemMetal,2,3));
 		arcOutputModifier.put("Nickel", new ItemStack(IEContent.itemMetal,2,4));
 		//IE Alloys
-		addOreDictAlloyingRecipe(new ItemStack(IEContent.itemMetal,1,6), "Copper", 100,512, "dustNickel");
-		addOreDictAlloyingRecipe(new ItemStack(IEContent.itemMetal,1,6), "Nickel", 100,512, "dustCopper");
-		addOreDictAlloyingRecipe(new ItemStack(IEContent.itemMetal,1,7), "Gold", 100,512, "dustSilver");
-		addOreDictAlloyingRecipe(new ItemStack(IEContent.itemMetal,1,7), "Silver", 100,512, "dustGold");
+		addOreDictAlloyingRecipe(new ItemStack(IEContent.itemMetal,2,6), "Copper", 100,512, "dustNickel");
+		addOreDictAlloyingRecipe(new ItemStack(IEContent.itemMetal,2,6), "Nickel", 100,512, "dustCopper");
+		addOreDictAlloyingRecipe(new ItemStack(IEContent.itemMetal,2,7), "Gold", 100,512, "dustSilver");
+		addOreDictAlloyingRecipe(new ItemStack(IEContent.itemMetal,2,7), "Silver", 100,512, "dustGold");
 		//Common Alloys
 		addOreDictAlloyingRecipe("ingotInvar",3, "Nickel", 200,512, "dustIron","dustIron");
 		addOreDictAlloyingRecipe("ingotBronze",4, "Tin", 200,512, "dustCopper","dustCopper","dustCopper");
