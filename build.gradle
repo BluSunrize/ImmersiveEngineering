@@ -1,5 +1,5 @@
 def mainVersion = "0.10"
-def buildNumber = "31"
+def buildNumber = "33"
 
 // For those who want the bleeding edge
 buildscript {
@@ -30,7 +30,7 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 minecraft {
-    version = "12.18.1.2024"
+    version = "12.18.1.2046"
     //"1.9.4-12.17.0.1976"
     runDir = "run"
     
