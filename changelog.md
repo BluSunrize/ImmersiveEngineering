@@ -1,7 +1,16 @@
+#####Version 0.10-33 - BUILT
+- fixed crashes when break smart models, parsed texture into baked builder
+- fixed ItemRenders for multiblocks
+- fixed rendering of Wind- and Watermills
+- fixed entrylsits in the manual being short
+- fixed the forming of multiblocks scrambling the player's inventory
+- fixed treated wood recipe consuming buckets (Forge Bug, really...)
+- fixed machines crashign when fillign buckets internally
+
 #####Version 0.10-31 - BUILT
 - added Redstone Wire connector
-- fixed wire rendering
 - cleaned up recipes and manual a little
+- fixed wire rendering
 - fixed crash with cart shaders
 
 #####Version 0.10-30 - BUILT
