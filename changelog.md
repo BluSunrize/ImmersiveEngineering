@@ -1,4 +1,4 @@
-#####Version 0.8-32
+#####Version 0.8-32 - BUILT
 - re-added Open Computers and Computer Craft support! (thanks Malte)
 - re-added the abiltiy for the hammer to break IE blocks (thanks Malte)
 - added a dynamic changelog system to the manual, based on githubs master branch
