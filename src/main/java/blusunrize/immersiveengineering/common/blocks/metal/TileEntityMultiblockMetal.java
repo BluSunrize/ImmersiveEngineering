@@ -81,7 +81,11 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 				}
 			}
 		}
-
+		if(descPacket)
+		{
+			controllingComputers = nbt.getBoolean("computerControlled") ? 1 : 0;
+			computerOn = nbt.getBoolean("computerOn");
+		}
 	}
 	@Override
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
@@ -93,6 +97,11 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 		for(MultiblockProcess process : this.processQueue)
 			processNBT.appendTag(writeProcessToNBT(process));
 		nbt.setTag("processQueue", processNBT);
+		if(descPacket)
+		{
+			nbt.setBoolean("computerControlled", controllingComputers > 0);
+			nbt.setBoolean("computerOn", computerOn);
+		}
 	}
 	protected abstract R readRecipeFromNBT(NBTTagCompound tag);
 	protected MultiblockProcess loadProcessFromNBT(NBTTagCompound tag)
@@ -357,7 +366,7 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 				if(p != null)
 					dist = p.processTick / (float) p.maxTicks;
 			}
-			if(p == null || dist < getMinProcessDistance(p))
+			if(p != null && dist < getMinProcessDistance(p))
 				return false;
 
 			if(!simulate)
@@ -369,7 +378,7 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 
 	public boolean shouldRenderAsActive()
 	{
-		return getEnergyStored(null) > 0 && !isRSDisabled() && !processQueue.isEmpty();
+		return (controllingComputers <= 0 || computerOn) && getEnergyStored(null) > 0 && !isRSDisabled() && !processQueue.isEmpty();
 	}
 
 	public abstract static class MultiblockProcess<R extends IMultiblockRecipe>

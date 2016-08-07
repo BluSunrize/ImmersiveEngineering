@@ -66,17 +66,20 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 			return;
 		if(turnCooldown > 0)
 			turnCooldown--;
+		if(turnCooldown == 0)
+			notifyAll();
 		boolean b = active;
 		boolean enabled;
-		if (shouldUpdate)
+		if(shouldUpdate)
 		{
 			updateFakeLights(true, active);
 			markDirty();
 			this.markContainingBlockForUpdate(null);
 			shouldUpdate = false;
 		}
+
 		enabled = (controllingComputers > 0 && computerOn) || worldObj.isBlockIndirectlyGettingPowered(getPos()) > 0;
-		if(energyStorage>=(!active?50:5) && enabled&&switchCooldown<=0)
+		if(energyStorage >= (!active ? 50 : 5) && enabled && switchCooldown <= 0)
 		{
 			energyStorage-=5;
 			if(!active)
@@ -87,8 +90,9 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 			active=false;
 			switchCooldown = timeBetweenSwitches;
 		}
+
 		switchCooldown--;
-		if(active!=b || worldObj.getTotalWorldTime()%512==((getPos().getX()^getPos().getZ())&511))
+		if(active != b || worldObj.getTotalWorldTime() % 512 == ((getPos().getX() ^ getPos().getZ()) & 511))
 		{
 			this.markContainingBlockForUpdate(null);
 			updateFakeLights(true,active);
@@ -349,25 +353,25 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 		double x, y, z;
 		switch(side)
 		{
-		case DOWN:
-		case UP:
-			x = (Math.abs(xDif)>=Math.abs(zDif))? (xDif>=0)?.9375: .0625: .5;
-			y = (side==EnumFacing.DOWN)?.9375: .0625;
-			z = (Math.abs(zDif)>Math.abs(xDif))? (zDif>=0)?.9375: .0625: .5;
-			break;
-		case NORTH:
-		case SOUTH:
-			x = (Math.abs(xDif)>=Math.abs(yDif))? (xDif>=0)?.9375: .0625: .5;
-			y = (Math.abs(yDif)>Math.abs(xDif))? (yDif>=0)?.9375: .0625: .5;
-			z = (side==EnumFacing.NORTH)?.9375: .0625;
-			break;
-		case WEST:
-		case EAST:
-		default:
-			x = (side==EnumFacing.WEST)?.9375: .0625;
-			y = (Math.abs(yDif)>=Math.abs(zDif))? (yDif>=0)?.9375: .0625: .5;
-			z = (Math.abs(zDif)>Math.abs(yDif))? (zDif>=0)?.9375: .0625: .5;
-			break;
+			case DOWN:
+			case UP:
+				x = (Math.abs(xDif) >= Math.abs(zDif)) ? (xDif >= 0) ? .9375 : .0625 : .5;
+				y = (side == EnumFacing.DOWN) ? .9375 : .0625;
+				z = (Math.abs(zDif) > Math.abs(xDif)) ? (zDif >= 0) ? .9375 : .0625 : .5;
+				break;
+			case NORTH:
+			case SOUTH:
+				x = (Math.abs(xDif) >= Math.abs(yDif)) ? (xDif >= 0) ? .9375 : .0625 : .5;
+				y = (Math.abs(yDif) > Math.abs(xDif)) ? (yDif >= 0) ? .9375 : .0625 : .5;
+				z = (side == EnumFacing.NORTH) ? .9375 : .0625;
+				break;
+			case WEST:
+			case EAST:
+			default:
+				x = (side == EnumFacing.WEST) ? .9375 : .0625;
+				y = (Math.abs(yDif) >= Math.abs(zDif)) ? (yDif >= 0) ? .9375 : .0625 : .5;
+				z = (Math.abs(zDif) > Math.abs(yDif)) ? (zDif >= 0) ? .9375 : .0625 : .5;
+				break;
 		}
 		return new Vec3d(x,y,z);
 	}
@@ -380,25 +384,25 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 		double x, y, z;
 		switch(side)
 		{
-		case DOWN:
-		case UP:
-			x = (Math.abs(xDif)>=Math.abs(zDif))? (xDif>=0)?.9375: .0625: .5;
-			y = (side==EnumFacing.DOWN)?.9375: .0625;
-			z = (Math.abs(zDif)>Math.abs(xDif))? (zDif>=0)?.9375: .0625: .5;
-			break;
-		case NORTH:
-		case SOUTH:
-			x = (Math.abs(xDif)>=Math.abs(yDif))? (xDif>=0)?.9375: .0625: .5;
-			y = (Math.abs(yDif)>Math.abs(xDif))? (yDif>=0)?.9375: .0625: .5;
-			z = (side==EnumFacing.NORTH)?.9375: .0625;
-			break;
-		case WEST:
-		case EAST:
-		default:
-			x = (side==EnumFacing.WEST)?.9375: .0625;
-			y = (Math.abs(yDif)>=Math.abs(zDif))? (yDif>=0)?.9375: .0625: .5;
-			z = (Math.abs(zDif)>Math.abs(yDif))? (zDif>=0)?.9375: .0625: .5;
-			break;
+			case DOWN:
+			case UP:
+				x = (Math.abs(xDif) >= Math.abs(zDif)) ? (xDif >= 0) ? .9375 : .0625 : .5;
+				y = (side == EnumFacing.DOWN) ? .9375 : .0625;
+				z = (Math.abs(zDif) > Math.abs(xDif)) ? (zDif >= 0) ? .9375 : .0625 : .5;
+				break;
+			case NORTH:
+			case SOUTH:
+				x = (Math.abs(xDif) >= Math.abs(yDif)) ? (xDif >= 0) ? .9375 : .0625 : .5;
+				y = (Math.abs(yDif) > Math.abs(xDif)) ? (yDif >= 0) ? .9375 : .0625 : .5;
+				z = (side == EnumFacing.NORTH) ? .9375 : .0625;
+				break;
+			case WEST:
+			case EAST:
+			default:
+				x = (side == EnumFacing.WEST) ? .9375 : .0625;
+				y = (Math.abs(yDif) >= Math.abs(zDif)) ? (yDif >= 0) ? .9375 : .0625 : .5;
+				z = (Math.abs(zDif) > Math.abs(yDif)) ? (zDif >= 0) ? .9375 : .0625 : .5;
+				break;
 		}
 		return new Vec3d(x,y,z);
 	}
@@ -408,11 +412,11 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 	{
 		return new float[] {
 				side.getAxis()==Axis.X?0:.0625f,
-						side.getAxis()==Axis.Y?0:.0625f,
-								side.getAxis()==Axis.Z?0:.0625f,
-										side.getAxis()==Axis.X?1:.9375f,
-												side.getAxis()==Axis.Y?1:.9375f,
-														side.getAxis()==Axis.Z?1:.9375f
+				side.getAxis() == Axis.Y ? 0 : .0625f,
+				side.getAxis() == Axis.Z ? 0 : .0625f,
+				side.getAxis() == Axis.X ? 1 : .9375f,
+				side.getAxis() == Axis.Y ? 1 : .9375f,
+				side.getAxis() == Axis.Z ? 1 : .9375f
 		};
 	}
 
@@ -474,7 +478,7 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 		EnumFacing f = EnumFacing.fromAngle(placer.rotationYaw);
 		if(f==side.getOpposite())
 			f = placer.rotationPitch>0?EnumFacing.DOWN:EnumFacing.UP;
-			facing = f;
+		facing = f;
 	}
 
 	@SideOnly(Side.CLIENT)

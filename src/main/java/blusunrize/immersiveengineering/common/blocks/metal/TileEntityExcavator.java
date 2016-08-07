@@ -1,10 +1,5 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.google.common.collect.Lists;
-
 import blusunrize.immersiveengineering.api.crafting.IMultiblockRecipe;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.common.Config;
@@ -13,6 +8,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvanced
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockExcavator;
 import blusunrize.immersiveengineering.common.util.FakePlayerUtil;
 import blusunrize.immersiveengineering.common.util.Utils;
+import com.google.common.collect.Lists;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItem;
@@ -22,16 +18,19 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TileEntityExcavator extends TileEntityMultiblockMetal<TileEntityExcavator,IMultiblockRecipe> implements IAdvancedSelectionBounds,IAdvancedCollisionBounds
 {
@@ -97,7 +96,6 @@ public class TileEntityExcavator extends TileEntityMultiblockMetal<TileEntityExc
 
 				if(!isRSDisabled())
 				{
-					boolean update = false;
 					ExcavatorHandler.MineralMix mineral = ExcavatorHandler.getRandomMineral(worldObj, wheelPos.getX()>>4, wheelPos.getZ()>>4);
 
 					int consumed = Config.getInt("excavator_consumption");
@@ -106,7 +104,6 @@ public class TileEntityExcavator extends TileEntityMultiblockMetal<TileEntityExc
 					{
 						energyStorage.extractEnergy(consumed, false);
 						active = true;
-						update = true;
 						
 						if(target>=0 && target<8)
 						{
