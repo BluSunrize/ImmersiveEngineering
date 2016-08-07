@@ -65,6 +65,10 @@ public class TileEntityCrusher extends TileEntityMultiblockMetal<TileEntityCrush
 			inputs.clear();
 			for(int i=0;i<invList.tagCount();i++)
 				inputs.add( ItemStack.loadItemStackFromNBT(invList.getCompoundTagAt(i)));
+		} else
+		{
+			controllingComputers = nbt.getBoolean("computerControlled") ? 1 : 0;
+			computerOn = nbt.getBoolean("computerOn");
 		}
 	}
 	@Override
@@ -77,6 +81,10 @@ public class TileEntityCrusher extends TileEntityMultiblockMetal<TileEntityCrush
 			for(ItemStack s : inputs)
 				invList.appendTag(s.writeToNBT(new NBTTagCompound()));
 			nbt.setTag("inputs", invList);
+		} else
+		{
+			nbt.setBoolean("computerControlled", controllingComputers > 0);
+			nbt.setBoolean("computerOn", computerOn);
 		}
 	}
 
@@ -85,7 +93,7 @@ public class TileEntityCrusher extends TileEntityMultiblockMetal<TileEntityCrush
 	{
 		super.update();
 
-		if(!isDummy() && !isRSDisabled() && worldObj.isRemote && energyStorage.getEnergyStored()>0 && !this.processQueue.isEmpty())
+		if(worldObj.isRemote && shouldRenderAsActive())
 		{
 			animation_barrelRotation += 18f;
 			animation_barrelRotation %= 360f;

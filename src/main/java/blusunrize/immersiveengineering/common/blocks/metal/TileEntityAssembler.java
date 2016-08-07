@@ -1,8 +1,5 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.IMultiblockRecipe;
 import blusunrize.immersiveengineering.common.Config;
@@ -18,26 +15,27 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
-import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+
 public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAssembler,IMultiblockRecipe> implements IGuiTile// IAdvancedSelectionBounds,IAdvancedCollisionBounds
 {
+	public boolean[] computerOn = new boolean[3];
 	public TileEntityAssembler()
 	{
 		super(MultiblockAssembler.instance, new int[]{3,3,3}, 32000, true);
@@ -83,7 +81,6 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 			}
 		}
 	}
-
 	@Override
 	public void update()
 	{
@@ -96,10 +93,10 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 		for(int p=0; p<patterns.length; p++)
 		{
 			CrafterPatternInventory pattern = patterns[p];
-			if(pattern.inv[9]!=null && canOutput(pattern.inv[9], p))
+			if(computerOn[p] && pattern.inv[9] != null && canOutput(pattern.inv[9], p))
 			{
 				ItemStack output = pattern.inv[9].copy();
-				ArrayList<ItemStack> queryList = new ArrayList();//List of all available inputs in the inventory
+				ArrayList<ItemStack> queryList = new ArrayList<>();//List of all available inputs in the inventory
 				for(ItemStack[] bufferedStacks : outputBuffer)
 					for(ItemStack stack : bufferedStacks)
 						if(stack!=null)
@@ -114,7 +111,7 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 					ArrayList<ItemStack> outputList = new ArrayList<ItemStack>();//List of all outputs for the current recipe. This includes discarded containers
 					outputList.add(output);
 					Object[] oreInputs = null;
-					ArrayList<Integer> usedOreSlots = new ArrayList();
+					ArrayList<Integer> usedOreSlots = new ArrayList<>();
 					if(pattern.recipe instanceof ShapedOreRecipe||pattern.recipe instanceof ShapelessOreRecipe)
 					{
 						oreInputs = pattern.recipe instanceof ShapedOreRecipe?((ShapedOreRecipe)pattern.recipe).getInput():((ShapelessOreRecipe)pattern.recipe).getInput().toArray();
@@ -373,7 +370,7 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 	@Override
 	public int[] getRedstonePos()
 	{
-		return new int[]{4,6};
+		return new int[]{3, 5};
 	}
 
 	@Override

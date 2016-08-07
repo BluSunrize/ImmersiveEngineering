@@ -1,9 +1,5 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import java.util.ArrayList;
-
-import com.google.common.collect.Lists;
-
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralWorldInfo;
@@ -16,19 +12,22 @@ import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyReceiver;
+import com.google.common.collect.Lists;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ITickable;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import java.util.ArrayList;
 
 public class TileEntitySampleDrill extends TileEntityIEBase implements ITickable, IFluxReceiver, IEnergyReceiver, IHasDummyBlocks, IPlayerInteraction, IHasObjProperty
 {
@@ -36,7 +35,7 @@ public class TileEntitySampleDrill extends TileEntityIEBase implements ITickable
 	public int dummy=0;
 	public int process=0;
 	public boolean active = false;
-	ItemStack sample;
+	public ItemStack sample;
 
 	public static boolean _Immovable()
 	{
@@ -82,19 +81,16 @@ public class TileEntitySampleDrill extends TileEntityIEBase implements ITickable
 	}
 	public String getVein()
 	{
-		ExcavatorHandler.MineralMix mineral = ExcavatorHandler.getRandomMineral(worldObj, (getPos().getX()>>4), (getPos().getZ()>>4));
-		return mineral==null?null: mineral.name;
+		if(sample == null)
+			return "";
+		return sample.getTagCompound().getString("mineral");
 	}
-	public float getVeinIntegrity()
+
+	public int getExpectedVeinYield()
 	{
-		MineralWorldInfo info = ExcavatorHandler.getMineralWorldInfo(worldObj, (getPos().getX()>>4), (getPos().getZ()>>4));
-		boolean deplOverride = info.depletion<0;
-		if(ExcavatorHandler.mineralVeinCapacity<0||deplOverride)
-			return 1;
-		else if(info.mineralOverride==null && info.mineral==null)
-			return 0;
-		else
-			return (Config.getInt("excavator_depletion")-info.depletion)/(float)Config.getInt("excavator_depletion");
+		if(sample == null)
+			return -1;
+		return ExcavatorHandler.mineralVeinCapacity - sample.getTagCompound().getInteger("depletion");
 	}
 
 	public ItemStack createCoreSample(World world, int chunkX, int chunkZ, MineralWorldInfo info)

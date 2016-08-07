@@ -40,10 +40,12 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 {
 	/**H L W*/
 	protected final int[] structureDimensions;
-	protected final FluxStorageAdvanced energyStorage;
+	public final FluxStorageAdvanced energyStorage;
 	protected final boolean hasRedstoneControl;
 	protected final IMultiblock mutliblockInstance;
 	protected boolean redstoneControlInverted = false;
+	public int controllingComputers = 0;
+	public boolean computerOn = true;
 
 	public TileEntityMultiblockMetal(IMultiblock mutliblockInstance, int[] structureDimensions, int energyCapacity, boolean redstoneControl)
 	{
@@ -171,7 +173,7 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 	{
 		if(this.isRedstonePos())
 		{
-			TileEntityMultiblockMetal master = master();
+			TileEntityMultiblockMetal<T, R> master = master();
 			master.redstoneControlInverted = !master.redstoneControlInverted;
 			ChatUtils.sendServerNoSpamMessages(player, new TextComponentTranslation(Lib.CHAT_INFO+"rsControl."+(master.redstoneControlInverted?"invertedOn":"invertedOff")));
 			this.updateMasterBlock(null, true);
@@ -181,6 +183,8 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 	}
 	public boolean isRSDisabled()
 	{
+		if(controllingComputers > 0 && !computerOn)
+			return true;
 		int[] rsPositions = getRedstonePos();
 		if(rsPositions==null || rsPositions.length<1)
 			return false;
@@ -293,7 +297,8 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 	@Override
 	public void update()
 	{
-		if(isDummy() || isRSDisabled() || worldObj.isRemote)
+		tickedProcesses = 0;
+		if(worldObj.isRemote || isDummy() || isRSDisabled())
 			return;
 
 		int max = getMaxProcessPerTick();
@@ -302,7 +307,7 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 		tickedProcesses = 0;
 		while(processIterator.hasNext() && i++<max)
 		{
-			MultiblockProcess process = processIterator.next();
+			MultiblockProcess<R> process = processIterator.next();
 			if(process.canProcess(this))
 			{
 				process.doProcessTick(this);
@@ -344,17 +349,27 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 		}
 		if(getProcessQueueMaxLength()<0 || processQueue.size() < getProcessQueueMaxLength())
 		{
+			float dist = 1;
+			MultiblockProcess<R> p = null;
 			if(processQueue.size()>0)
 			{
-				MultiblockProcess p = processQueue.get(processQueue.size()-1);
-				if((p.processTick/(float)p.maxTicks)<getMinProcessDistance(p))
-					return false;
+				p = processQueue.get(processQueue.size() - 1);
+				if(p != null)
+					dist = p.processTick / (float) p.maxTicks;
 			}
+			if(p == null || dist < getMinProcessDistance(p))
+				return false;
+
 			if(!simulate)
 				processQueue.add(process);
 			return true;
 		}
 		return false;
+	}
+
+	public boolean shouldRenderAsActive()
+	{
+		return getEnergyStored(null) > 0 && !isRSDisabled() && !processQueue.isEmpty();
 	}
 
 	public abstract static class MultiblockProcess<R extends IMultiblockRecipe>
@@ -625,7 +640,7 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 
 	public static class MultiblockProcessInWorld<R extends IMultiblockRecipe> extends MultiblockProcess<R>
 	{
-		protected ItemStack inputItem;
+		public ItemStack inputItem;
 		protected float transformationPoint;
 		public MultiblockProcessInWorld(R recipe, ItemStack inputItem, float transformationPoint)
 		{
