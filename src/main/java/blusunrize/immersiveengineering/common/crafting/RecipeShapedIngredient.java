@@ -126,7 +126,6 @@ public class RecipeShapedIngredient extends ShapedOreRecipe
 		for(int i = 0; i < inv.getSizeInventory(); i++)
 		{
 			ItemStack s = inv.getStackInSlot(i);
-			System.out.println("TEST " + i + " - " + s + " ~ " + s.getItem());
 			if(s != null && remains[i] == null && s.getItem() instanceof UniversalBucket)
 			{
 				ItemStack empty = ((UniversalBucket) s.getItem()).getEmpty();
