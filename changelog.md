@@ -1,3 +1,8 @@
+#####Version 0.10-35
+- re-added Open Computers compat
+- moved waterwheel and windmills to FastTESR
+- fixed NPE in ShapedIngredientRecipe
+
 #####Version 0.10-34 - BUILT
 - added TCon alloy recipes
 - fixed crash in earmuff recipe, using a client access method

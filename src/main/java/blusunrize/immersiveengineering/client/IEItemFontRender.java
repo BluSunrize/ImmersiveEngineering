@@ -1,18 +1,26 @@
 package blusunrize.immersiveengineering.client;
 
-import java.util.Arrays;
-import java.util.HashMap;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import java.util.Arrays;
+import java.util.HashMap;
+
 @SideOnly(Side.CLIENT)
 public class IEItemFontRender extends FontRenderer
 {
+	static HashMap<Character, CharReplacement> unicodeReplacements = new HashMap();
+
+	static
+	{
+		unicodeReplacements.put((char) Integer.parseInt("260E", 16), new CharReplacement("immersiveengineering:textures/gui/hudElements.png", .5f, .75f, .5625f, .8125f));
+	}
+
 	int[] backupColours;
 	String colourFormattingKeys = "0123456789abcdef";
 	public float customSpaceWidth = 4f;
@@ -88,6 +96,15 @@ public class IEItemFontRender extends FontRenderer
 	}
 
 	@Override
+	protected float renderUnicodeChar(char ch, boolean italic)
+	{
+		CharReplacement cr = unicodeReplacements.get(ch);
+		if(cr != null)
+			return cr.replaceChar(posX, posY);
+		return super.renderUnicodeChar(ch, italic);
+	}
+
+	@Override
 	protected float renderDefaultChar(int ch, boolean italic)
 	{
 		if(ch==32)
@@ -153,30 +170,29 @@ public class IEItemFontRender extends FontRenderer
 			char c0 = str.charAt(k);
 			switch(c0)
 			{
-			case '\n':
-				--k;
-				break;
-			case ' ':
-				l = k;
-			default:
-				j += this.getCharWidthFloat(c0);
-				if(flag)
-					++j;
-				break;
-			case '\u00a7':
-				if (k < i - 1)
-				{
-					++k;
-					char c1 = str.charAt(k);
-
-					if (c1 != 108 && c1 != 76)
+				case '\n':
+					--k;
+					break;
+				case ' ':
+					l = k;
+				default:
+					j += this.getCharWidthFloat(c0);
+					if(flag)
+						++j;
+					break;
+				case '\u00a7':
+					if(k < i - 1)
 					{
-						if(c1 == 114 || c1 == 82 || (c1>=48&&c1<=57 || c1>=97&&c1<=102 || c1>=65&&c1<=70))
-							flag = false;
+						++k;
+						char c1 = str.charAt(k);
+
+						if(c1 != 108 && c1 != 76)
+						{
+							if(c1 == 114 || c1 == 82 || (c1 >= 48 && c1 <= 57 || c1 >= 97 && c1 <= 102 || c1 >= 65 && c1 <= 70))
+								flag = false;
+						} else
+							flag = true;
 					}
-					else
-						flag = true;
-				}
 			}
 			if(c0 == 10)
 			{
@@ -188,5 +204,49 @@ public class IEItemFontRender extends FontRenderer
 				break;
 		}
 		return k!=i && l!=-1 && l<k?l:k;
+	}
+
+	static class CharReplacement
+	{
+		private final String textureSheet;
+		private final float uMin;
+		private final float vMin;
+		private final float uMax;
+		private final float vMax;
+
+		public CharReplacement(String textureSheet, float uMin, float vMin, float uMax, float vMax)
+		{
+			this.textureSheet = textureSheet;
+			this.uMin = uMin;
+			this.vMin = vMin;
+			this.uMax = uMax;
+			this.vMax = vMax;
+		}
+
+		float replaceChar(float posX, float posY)
+		{
+			ClientUtils.bindTexture(textureSheet);
+//			int j = ch / 256;
+//			this.loadGlyphTexture(j);
+//			int k = i >>> 4;
+//			int l = i & 15;
+//			float f = (float)k;
+//			float f1 = (float)(l + 1);
+//			float f2 = (float)(ch % 16 * 88816) + f;
+//			float f3 = (float)((ch & 255) / 16 * 16);
+//			float f4 = f1 - f - 0.02F;
+//			float f5 = italic ? 1.0F : 0.0F;
+			GlStateManager.glBegin(5);
+			GlStateManager.glTexCoord2f(uMin, vMin);
+			GlStateManager.glVertex3f(posX, posY, 0.0F);
+			GlStateManager.glTexCoord2f(uMin, vMax);
+			GlStateManager.glVertex3f(posX, posY + 7.99F, 0.0F);
+			GlStateManager.glTexCoord2f(uMax, vMin);
+			GlStateManager.glVertex3f(posX + 7.99f, posY, 0.0F);
+			GlStateManager.glTexCoord2f(uMax, vMax);
+			GlStateManager.glVertex3f(posX + 7.99f, posY + 7.99F, 0.0F);
+			GlStateManager.glEnd();
+			return 8.02f;
+		}
 	}
 }

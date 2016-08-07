@@ -254,6 +254,7 @@ public class IEManualInstance extends ManualInstance
 	{
 		String unformatted = "ie.manual.entry." + s + ".name";
 		String formatted = I18n.format(unformatted);
+//		return "\uD83D\uDCBB";
 		return (improveReadability() ? TextFormatting.BOLD : "") + (unformatted.equals(formatted) ? s : formatted);
 	}
 	@Override
