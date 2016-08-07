@@ -74,18 +74,17 @@ public class TConstructHelper extends IECompatModule
 		treatedWood.setCraftable(true);
 		treatedWood.addItem("stickTreatedWood", 1, Material.VALUE_Shard);
 		treatedWood.addItem("plankTreatedWood", 1, Material.VALUE_Ingot);
-		treatedWood.setRepresentativeItem(new ItemStack(IEContent.blockTreatedWood,1,OreDictionary.WILDCARD_VALUE));
 		treatedWood.addTrait(TinkerMaterials.ecological, HeadMaterialStats.TYPE);
 		treatedWood.addTrait(TinkerMaterials.ecological);
 		TinkerRegistry.addMaterialStats(treatedWood,
 				new HeadMaterialStats(25, 2.00f, 2.00f, HarvestLevels.STONE),
 				new HandleMaterialStats(1.0f, 35),
 				new ExtraMaterialStats(20));
-		TinkerIntegration.integrate(treatedWood).integrate();
+		TinkerIntegration.integrate(treatedWood, "plankTreatedWood").integrate();
 
 		constantan.setCastable(true);
+		constantan.addItem("nuggetConstantan", 1, Material.VALUE_Nugget);
 		constantan.addItem("ingotConstantan", 1, Material.VALUE_Ingot);
-		constantan.setRepresentativeItem(new ItemStack(IEContent.itemMetal,1,6));
 		constantan.addTrait(thermalInversion);
 		TinkerRegistry.addMaterialStats(constantan,
 				new HeadMaterialStats(25, 4.70f, 4.00f, HarvestLevels.DIAMOND),
