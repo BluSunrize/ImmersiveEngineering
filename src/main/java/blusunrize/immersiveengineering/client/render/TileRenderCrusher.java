@@ -27,7 +27,7 @@ public class TileRenderCrusher extends TileEntitySpecialRenderer<TileEntityCrush
 		state = state.withProperty(IEProperties.DYNAMICRENDER, true);
 		IBakedModel model = blockRenderer.getBlockModelShapes().getModelForState(state);
 
-		boolean b = te.getEnergyStored(null)>0 && !te.isRSDisabled() && !te.processQueue.isEmpty();
+		boolean b = te.shouldRenderAsActive();
 		float angle = te.animation_barrelRotation+(b?18*partialTicks:0);
 		
 		Tessellator tessellator = Tessellator.getInstance();

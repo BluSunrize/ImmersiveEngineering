@@ -1,7 +1,5 @@
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
-import java.util.ArrayList;
-
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasObjProperty;
@@ -10,12 +8,14 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityDynamo;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import java.util.ArrayList;
 
 public class TileEntityWindmill extends TileEntityIEBase implements ITickable, IDirectionalTile, IHasObjProperty
 {
@@ -25,7 +25,13 @@ public class TileEntityWindmill extends TileEntityIEBase implements ITickable, I
 	public float turnSpeed=0;
 
 	public boolean canTurn = false;
-	
+
+	@Override
+	public boolean hasFastRenderer()
+	{
+		return true;
+	}
+
 	@Override
 	public void update()
 	{

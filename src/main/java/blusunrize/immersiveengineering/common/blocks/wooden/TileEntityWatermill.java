@@ -33,12 +33,11 @@ public class TileEntityWatermill extends TileEntityIEBase implements ITickable, 
 	public float prevRotation = 0;
 	private boolean formed = true;
 
-	//Soon!
-//	@Override
-//	public boolean hasFastRenderer()
-//	{
-//		return true;
-//	}
+	@Override
+	public boolean hasFastRenderer()
+	{
+		return true;
+	}
 
 	@Override
 	public void update()

@@ -37,7 +37,7 @@ public class TileRenderArcFurnace extends TileEntitySpecialRenderer<TileEntityAr
 			}
 		if(renderedParts==null)
 			return;
-		if(te.getEnergyStored(null)>0 && !te.isRSDisabled() && !te.processQueue.isEmpty())
+		if(te.shouldRenderAsActive())
 			renderedParts.add("active");
 		
 		final BlockRendererDispatcher blockRenderer = Minecraft.getMinecraft().getBlockRendererDispatcher();
