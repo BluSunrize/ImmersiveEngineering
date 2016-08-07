@@ -1,7 +1,8 @@
 #####Version 0.10-35
 - re-added Open Computers compat
-- moved waterwheel and windmills to FastTESR
+- cahnged waterwheel and windmills to use FastTESR
 - fixed NPE in ShapedIngredientRecipe
+- fixed Treated Wood display in the TCon Book
 
 #####Version 0.10-34 - BUILT
 - added TCon alloy recipes
