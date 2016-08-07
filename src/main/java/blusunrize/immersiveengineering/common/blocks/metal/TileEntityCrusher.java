@@ -39,7 +39,7 @@ import java.util.List;
 
 public class TileEntityCrusher extends TileEntityMultiblockMetal<TileEntityCrusher,CrusherRecipe> implements ISoundTile, IAdvancedSelectionBounds,IAdvancedCollisionBounds
 {
-	public List<ItemStack> inputs = new ArrayList();
+	public List<ItemStack> inputs = new ArrayList<>();
 	public int process = 0;
 
 	public float animation_barrelRotation=0;
@@ -85,7 +85,7 @@ public class TileEntityCrusher extends TileEntityMultiblockMetal<TileEntityCrush
 	{
 		super.update();
 
-		if(worldObj.isRemote && shouldRenderAsActive())
+		if(worldObj.isRemote && !isDummy() && shouldRenderAsActive())
 		{
 			animation_barrelRotation += 18f;
 			animation_barrelRotation %= 360f;

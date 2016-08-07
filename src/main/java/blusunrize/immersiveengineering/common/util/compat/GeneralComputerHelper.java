@@ -40,10 +40,11 @@ public class GeneralComputerHelper
 					new ManualPages.Text(ManualHelper.getManual(), "computer.refinery1"));
 			ManualHelper.getManual().addEntry("computer.assembler", "computers", new ManualPages.Text(ManualHelper.getManual(), "computer.assembler0"),
 					new ManualPages.Text(ManualHelper.getManual(), "computer.assembler1"));
-			ManualHelper.getManual().addEntry("computer.bottlingMachine", "computers", new ManualPages.Text(ManualHelper.getManual(), "computer.bottlingMachine0"),
-					new ManualPages.Text(ManualHelper.getManual(), "computer.bottlingMachine1"),
-					new ManualPages.Text(ManualHelper.getManual(), "computer.bottlingMachine2"));
+//			ManualHelper.getManual().addEntry("computer.bottlingMachine", "computers", new ManualPages.Text(ManualHelper.getManual(), "computer.bottlingMachine0"),
+//					new ManualPages.Text(ManualHelper.getManual(), "computer.bottlingMachine1"),
+//					new ManualPages.Text(ManualHelper.getManual(), "computer.bottlingMachine2"));
 			ManualHelper.getManual().addEntry("computer.capacitor", "computers", new ManualPages.Text(ManualHelper.getManual(), "computer.capacitor0"));
+			ManualHelper.getManual().addEntry("computer.teslaCoil", "computers", new ManualPages.Text(ManualHelper.getManual(), "computer.teslaCoil0"));
 		}
 	}
 }

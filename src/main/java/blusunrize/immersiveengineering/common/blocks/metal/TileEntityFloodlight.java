@@ -282,6 +282,11 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 		}
 		if(FMLCommonHandler.instance().getEffectiveSide()==Side.CLIENT && worldObj!=null)
 			this.markContainingBlockForUpdate(null);
+		if(descPacket)
+		{
+			controllingComputers = nbt.getBoolean("computerControlled") ? 1 : 0;
+			computerOn = nbt.getBoolean("computerOn");
+		}
 	}
 
 	@Override
@@ -299,6 +304,11 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 		{
 			BlockPos cc = fakeLights.get(i);
 			nbt.setIntArray("fakeLight_"+i, new int[]{cc.getX(),cc.getY(),cc.getZ()});
+		}
+		if(descPacket)
+		{
+			nbt.setBoolean("computerControlled", controllingComputers > 0);
+			nbt.setBoolean("computerOn", computerOn);
 		}
 	}
 
