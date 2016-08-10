@@ -1,26 +1,2 @@
-newmtl sail0
-map_Ka immersiveengineering:blocks/woodenDevice_windmillAdvanced
-
-newmtl sail1
-map_Ka immersiveengineering:blocks/woodenDevice_windmillAdvanced
-
-newmtl sail2
-map_Ka immersiveengineering:blocks/woodenDevice_windmillAdvanced
-
-newmtl sail3
-map_Ka immersiveengineering:blocks/woodenDevice_windmillAdvanced
-
-newmtl sail4
-map_Ka immersiveengineering:blocks/woodenDevice_windmillAdvanced
-
-newmtl sail5
-map_Ka immersiveengineering:blocks/woodenDevice_windmillAdvanced
-
-newmtl sail6
-map_Ka immersiveengineering:blocks/woodenDevice_windmillAdvanced
-
-newmtl sail7
-map_Ka immersiveengineering:blocks/woodenDevice_windmillAdvanced
-
 newmtl windmill
 map_Ka immersiveengineering:blocks/woodenDevice_windmillAdvanced
