@@ -22,6 +22,7 @@ import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.property.ExtendedBlockState;
@@ -46,6 +47,7 @@ public class BlockIEBase<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 	protected Set<BlockRenderLayer> renderLayers = Sets.newHashSet(BlockRenderLayer.SOLID);
 	protected Set<BlockRenderLayer>[] metaRenderLayers;
 	protected Map<Integer, Integer> metaLightOpacities = new HashMap<>();
+	protected Map<Integer, Integer> metaResistances = new HashMap<>();
 	private boolean opaqueCube = false;
 	public BlockIEBase(String name, Material material, PropertyEnum<E> mainProperty, Class<? extends ItemBlockIEBase> itemBlock, Object... additionalProperties)
 	{
@@ -218,6 +220,22 @@ public class BlockIEBase<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 			return metaLightOpacities.get(meta);
 		return super.getLightOpacity(state,w,pos);
 	}
+
+	public BlockIEBase<E> setMetaExplosionResistance(int meta, int resistance)
+	{
+		metaResistances.put(meta, resistance);
+		return this;
+	}
+
+	@Override
+	public float getExplosionResistance(World world, BlockPos pos, Entity exploder, Explosion explosion)
+	{
+		int meta = getMetaFromState(world.getBlockState(pos));
+		if(metaResistances.containsKey(meta))
+			return metaResistances.get(meta);
+		return super.getExplosionResistance(world, pos, exploder, explosion);
+	}
+
 	//This is a ridiculously hacky workaround, I would not recommend it to anyone.
 	protected static IBlockState cachedTileRequestState;
 	@Override
