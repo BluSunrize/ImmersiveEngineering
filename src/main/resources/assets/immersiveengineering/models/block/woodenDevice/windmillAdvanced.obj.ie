@@ -1,6 +1,6 @@
 # Reimagination of a model created by Damien A.W. Hazard
 mtllib windmillAdvanced.mtl
-usemtl wallmount
+usemtl windmill
 
 o windmill
 v 0.375000 0.625000 1.000000
