@@ -1,39 +1,38 @@
 package blusunrize.immersiveengineering.client.models;
 
-import java.util.*;
-
-import javax.annotation.Nullable;
-import javax.vecmath.Matrix4f;
-
-import net.minecraft.client.renderer.block.model.*;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.world.World;
-import net.minecraftforge.common.model.TRSRTransformation;
-import org.apache.commons.lang3.tuple.Pair;
-import org.lwjgl.util.vector.Vector2f;
-import org.lwjgl.util.vector.Vector3f;
-
-import com.google.common.collect.Lists;
-
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralMix;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
+import com.google.common.collect.Lists;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.IBakedModel;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
+import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.renderer.vertex.VertexFormat;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
 import net.minecraftforge.client.model.IPerspectiveAwareModel;
 import net.minecraftforge.client.model.pipeline.LightUtil;
 import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
+import net.minecraftforge.common.model.TRSRTransformation;
+import org.apache.commons.lang3.tuple.Pair;
+import org.lwjgl.util.vector.Vector2f;
+import org.lwjgl.util.vector.Vector3f;
+
+import javax.annotation.Nullable;
+import javax.vecmath.Matrix4f;
+import java.util.*;
 
 @SuppressWarnings("deprecation")
 public class ModelCoresample implements IBakedModel, IPerspectiveAwareModel
@@ -60,7 +59,7 @@ public class ModelCoresample implements IBakedModel, IPerspectiveAwareModel
 	@Override
 	public List<BakedQuad> getQuads(@Nullable IBlockState blockState, @Nullable EnumFacing side, long rand)
 	{
-		if(bakedQuads==null)
+//		if(bakedQuads==null)
 		{
 			try{
 				bakedQuads = Collections.synchronizedSet(new LinkedHashSet<BakedQuad>());
@@ -97,8 +96,8 @@ public class ModelCoresample implements IBakedModel, IPerspectiveAwareModel
 						new Vector2f(textureStone.getInterpolatedU(16*(wOff+width)),textureStone.getInterpolatedV(16*(dOff+depth))),
 						new Vector2f(textureStone.getInterpolatedU(16*(wOff+width)),textureStone.getInterpolatedV(16*dOff))};
 
-				putVertexData(new Vector3f(0,-1,0), new Vector3f[]{new Vector3f(wOff,0,dOff),new Vector3f(wOff+width,0,dOff),new Vector3f(wOff+width,0,dOff+depth),new Vector3f(wOff,0,dOff+depth)}, stoneUVs);
-				putVertexData(new Vector3f(0,1,0), new Vector3f[]{new Vector3f(wOff,length,dOff),new Vector3f(wOff,length,dOff+depth),new Vector3f(wOff+width,length,dOff+depth),new Vector3f(wOff+width,length,dOff)}, stoneUVs);
+				putVertexData(new Vector3f(0, -1, 0), new Vector3f[]{new Vector3f(wOff, 0, dOff), new Vector3f(wOff + width, 0, dOff), new Vector3f(wOff + width, 0, dOff + depth), new Vector3f(wOff, 0, dOff + depth)}, stoneUVs, textureStone);
+				putVertexData(new Vector3f(0, 1, 0), new Vector3f[]{new Vector3f(wOff, length, dOff), new Vector3f(wOff, length, dOff + depth), new Vector3f(wOff + width, length, dOff + depth), new Vector3f(wOff + width, length, dOff)}, stoneUVs, textureStone);
 				if(textureOre.isEmpty())
 				{
 					Vector2f[][] uvs = new Vector2f[4][];
@@ -109,10 +108,10 @@ public class ModelCoresample implements IBakedModel, IPerspectiveAwareModel
 								new Vector2f(textureStone.getInterpolatedU((j+1)*4),textureStone.getInterpolatedV(16)),
 								new Vector2f(textureStone.getInterpolatedU((j+1)*4),textureStone.getInterpolatedV(0))};
 
-					putVertexData(new Vector3f(0,0,-1), new Vector3f[]{new Vector3f(wOff,0,dOff),new Vector3f(wOff,length,dOff),new Vector3f(wOff+width,length,dOff),new Vector3f(wOff+width,0,dOff)}, uvs[0]);
-					putVertexData(new Vector3f(0,0,1), new Vector3f[]{new Vector3f(wOff+width,0,dOff+depth),new Vector3f(wOff+width,length,dOff+depth),new Vector3f(wOff,length,dOff+depth),new Vector3f(wOff,0,dOff+depth)}, uvs[2]);
-					putVertexData(new Vector3f(-1,0,0), new Vector3f[]{new Vector3f(wOff,0,dOff+depth),new Vector3f(wOff,length,dOff+depth),new Vector3f(wOff,length,dOff),new Vector3f(wOff,0,dOff)}, uvs[3]);
-					putVertexData(new Vector3f(1,0,0), new Vector3f[]{new Vector3f(wOff+width,0,dOff),new Vector3f(wOff+width,length,dOff),new Vector3f(wOff+width,length,dOff+depth),new Vector3f(wOff+width,0,dOff+depth)}, uvs[1]);
+					putVertexData(new Vector3f(0, 0, -1), new Vector3f[]{new Vector3f(wOff, 0, dOff), new Vector3f(wOff, length, dOff), new Vector3f(wOff + width, length, dOff), new Vector3f(wOff + width, 0, dOff)}, uvs[0], textureStone);
+					putVertexData(new Vector3f(0, 0, 1), new Vector3f[]{new Vector3f(wOff + width, 0, dOff + depth), new Vector3f(wOff + width, length, dOff + depth), new Vector3f(wOff, length, dOff + depth), new Vector3f(wOff, 0, dOff + depth)}, uvs[2], textureStone);
+					putVertexData(new Vector3f(-1, 0, 0), new Vector3f[]{new Vector3f(wOff, 0, dOff + depth), new Vector3f(wOff, length, dOff + depth), new Vector3f(wOff, length, dOff), new Vector3f(wOff, 0, dOff)}, uvs[3], textureStone);
+					putVertexData(new Vector3f(1, 0, 0), new Vector3f[]{new Vector3f(wOff + width, 0, dOff), new Vector3f(wOff + width, length, dOff), new Vector3f(wOff + width, length, dOff + depth), new Vector3f(wOff + width, 0, dOff + depth)}, uvs[1], textureStone);
 				}
 				else
 				{
@@ -130,10 +129,10 @@ public class ModelCoresample implements IBakedModel, IPerspectiveAwareModel
 									new Vector2f(sprite.getInterpolatedU((j+1)*4),sprite.getInterpolatedV(v))};
 
 						float h1 = weight/(float)pixelLength;
-						putVertexData(new Vector3f(0,0,-1), new Vector3f[]{new Vector3f(wOff,h,dOff),new Vector3f(wOff,h+h1,dOff),new Vector3f(wOff+width,h+h1,dOff),new Vector3f(wOff+width,h,dOff)}, uvs[0]);
-						putVertexData(new Vector3f(0,0,1), new Vector3f[]{new Vector3f(wOff+width,h,dOff+depth),new Vector3f(wOff+width,h+h1,dOff+depth),new Vector3f(wOff,h+h1,dOff+depth),new Vector3f(wOff,h,dOff+depth)}, uvs[2]);
-						putVertexData(new Vector3f(-1,0,0), new Vector3f[]{new Vector3f(wOff,h,dOff+depth),new Vector3f(wOff,h+h1,dOff+depth),new Vector3f(wOff,h+h1,dOff),new Vector3f(wOff,h,dOff)}, uvs[3]);
-						putVertexData(new Vector3f(1,0,0), new Vector3f[]{new Vector3f(wOff+width,h,dOff),new Vector3f(wOff+width,h+h1,dOff),new Vector3f(wOff+width,h+h1,dOff+depth),new Vector3f(wOff+width,h,dOff+depth)}, uvs[1]);
+						putVertexData(new Vector3f(0, 0, -1), new Vector3f[]{new Vector3f(wOff, h, dOff), new Vector3f(wOff, h + h1, dOff), new Vector3f(wOff + width, h + h1, dOff), new Vector3f(wOff + width, h, dOff)}, uvs[0], sprite);
+						putVertexData(new Vector3f(0, 0, 1), new Vector3f[]{new Vector3f(wOff + width, h, dOff + depth), new Vector3f(wOff + width, h + h1, dOff + depth), new Vector3f(wOff, h + h1, dOff + depth), new Vector3f(wOff, h, dOff + depth)}, uvs[2], sprite);
+						putVertexData(new Vector3f(-1, 0, 0), new Vector3f[]{new Vector3f(wOff, h, dOff + depth), new Vector3f(wOff, h + h1, dOff + depth), new Vector3f(wOff, h + h1, dOff), new Vector3f(wOff, h, dOff)}, uvs[3], sprite);
+						putVertexData(new Vector3f(1, 0, 0), new Vector3f[]{new Vector3f(wOff + width, h, dOff), new Vector3f(wOff + width, h + h1, dOff), new Vector3f(wOff + width, h + h1, dOff + depth), new Vector3f(wOff + width, h, dOff + depth)}, uvs[1], sprite);
 						h += h1;
 					}
 				}
@@ -150,10 +149,11 @@ public class ModelCoresample implements IBakedModel, IPerspectiveAwareModel
 		return emptyQuads;
 	}
 
-	protected final void putVertexData(Vector3f normal, Vector3f[] vertices, Vector2f[] uvs)
+	protected final void putVertexData(Vector3f normal, Vector3f[] vertices, Vector2f[] uvs, TextureAtlasSprite sprite)
 	{
 		UnpackedBakedQuad.Builder builder = new UnpackedBakedQuad.Builder(DefaultVertexFormats.ITEM);
 		builder.setQuadOrientation(EnumFacing.getFacingFromVector(normal.x, normal.y, normal.z));
+		builder.setTexture(sprite);
 //		builder.setQuadColored();
 		for(int i=0; i<vertices.length; i++)
 		{
@@ -215,7 +215,9 @@ public class ModelCoresample implements IBakedModel, IPerspectiveAwareModel
 						for(MineralMix mix : ExcavatorHandler.mineralList.keySet())
 							if(name.equals(mix.name))
 								modelCache.put(name, new ModelCoresample(mix));
-					modelCache.get(name);
+					IBakedModel model = modelCache.get(name);
+					if(model != null)
+						return model;
 				}
 			}
 			return originalModel;
@@ -235,8 +237,10 @@ public class ModelCoresample implements IBakedModel, IPerspectiveAwareModel
 
 	static HashMap<TransformType, Matrix4> transformationMap = new HashMap<TransformType, Matrix4>();
 	static{
-//		transformationMap.put(TransformType.FIRST_PERSON, new Matrix4().translate(0, .28, 0).rotate(Math.toRadians(180), 1,0,0).rotate(Math.toRadians(-90), 0,1,0));
-//		transformationMap.put(TransformType.THIRD_PERSON, new Matrix4().translate(0, .0625, -.125).scale(.625, .625, .625).rotate(Math.toRadians(30), 1,0,0).rotate(Math.toRadians(130), 0,1,0));
+		transformationMap.put(TransformType.FIRST_PERSON_LEFT_HAND, new Matrix4().translate(0, .28, 0).rotate(Math.toRadians(180), 1, 0, 0).rotate(Math.toRadians(-90), 0, 1, 0));
+		transformationMap.put(TransformType.FIRST_PERSON_RIGHT_HAND, new Matrix4().translate(0, .28, 0).rotate(Math.toRadians(180), 1, 0, 0).rotate(Math.toRadians(-90), 0, 1, 0));
+		transformationMap.put(TransformType.THIRD_PERSON_LEFT_HAND, new Matrix4().translate(0, .0625, -.125).scale(.625, .625, .625).rotate(Math.toRadians(30), 1, 0, 0).rotate(Math.toRadians(130), 0, 1, 0));
+		transformationMap.put(TransformType.THIRD_PERSON_RIGHT_HAND, new Matrix4().translate(0, .0625, -.125).scale(.625, .625, .625).rotate(Math.toRadians(30), 1, 0, 0).rotate(Math.toRadians(130), 0, 1, 0));
 		transformationMap.put(TransformType.GUI, new Matrix4().scale(1.25,1.25,1.25).rotate(Math.toRadians(180), 1,0,0).rotate(Math.toRadians(20), 0,1,0).rotate(Math.toRadians(-30), 0,0,1));
 		transformationMap.put(TransformType.FIXED, new Matrix4().scale(1.5,1.5,1.5).rotate(Math.toRadians(180), 1,0,0));
 		transformationMap.put(TransformType.GROUND, new Matrix4().scale(1.5,1.5,1.5).rotate(Math.toRadians(180), 1,0,0));
@@ -244,9 +248,9 @@ public class ModelCoresample implements IBakedModel, IPerspectiveAwareModel
 	@Override
 	public Pair<? extends IBakedModel, Matrix4f> handlePerspective(TransformType cameraTransformType)
 	{
-		if(transformationMap==null)
+//		if(transformationMap==null)
 			return  Pair.of(this, TRSRTransformation.identity().getMatrix());
-		Matrix4 matrix = transformationMap.containsKey(cameraTransformType)?transformationMap.get(cameraTransformType):new Matrix4();
-		return Pair.of(this, matrix.toMatrix4f());
+//		Matrix4 matrix = transformationMap.containsKey(cameraTransformType)?transformationMap.get(cameraTransformType):new Matrix4();
+//		return Pair.of(this, matrix.toMatrix4f());
 	}
 }

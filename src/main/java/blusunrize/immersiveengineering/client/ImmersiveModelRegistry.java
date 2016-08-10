@@ -30,7 +30,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @SuppressWarnings("deprecation")
-public class ImmersiveModelRegistry 
+public class ImmersiveModelRegistry
 {
 	public static ImmersiveModelRegistry instance = new ImmersiveModelRegistry();
 	private static final ImmutableMap<String, String> flipData = ImmutableMap.of("flip-v", String.valueOf(true));
@@ -56,7 +56,6 @@ public class ImmersiveModelRegistry
 				}
 			}
 		}
-		
 		ModelResourceLocation mLoc = new ModelResourceLocation(new ResourceLocation("immersiveengineering",IEContent.itemCoresample.itemName), "inventory");
 		event.getModelRegistry().putObject(mLoc, new ModelCoresample());
 	}
@@ -65,7 +64,7 @@ public class ImmersiveModelRegistry
 	{
 		if(stack.getItem() instanceof ItemIEBase)
 		{
-			ResourceLocation loc; 
+			ResourceLocation loc;
 			if(((ItemIEBase)stack.getItem()).getSubNames()!=null && ((ItemIEBase)stack.getItem()).getSubNames().length>0)
 				loc = new ResourceLocation("immersiveengineering",((ItemIEBase)stack.getItem()).itemName+"/"+((ItemIEBase)stack.getItem()).getSubNames()[stack.getItemDamage()]);
 			else
