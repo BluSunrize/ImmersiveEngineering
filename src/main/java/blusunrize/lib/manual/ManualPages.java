@@ -215,7 +215,8 @@ public abstract class ManualPages implements IManualPage
 					{
 						localizedTable[i] = new String[table[i].length];
 						for(int j=0; j<table[i].length; j++)
-							localizedTable[i][j] = I18n.format(table[i][j]);
+							if(table[i][j] != null)
+								localizedTable[i][j] = I18n.format(table[i][j]);
 
 						if(table[i].length-1 > bars.length)
 						{

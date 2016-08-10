@@ -35,10 +35,13 @@ public class IEManualInstance extends ManualInstance
 	@Override
 	public String formatText(String s)
 	{
-		String translKey = "ie.manual.entry."+s;
-		String translated = I18n.format(translKey);
-		if(!translKey.equals(translated))
-			s = translated;
+		if(!s.contains(" "))//if it contains spaces, it's probably already translated.
+		{
+			String translKey = "ie.manual.entry." + s;
+			String translated = I18n.format(translKey);
+			if(!translKey.equals(translated))
+				s = translated;
+		}
 		String splitKey = ";";
 
 		s = s.replaceAll("<br>", "\n");
@@ -225,7 +228,7 @@ public class IEManualInstance extends ManualInstance
 		}
 	}
 
-	
+
 	@Override
 	public String getManualName()
 	{

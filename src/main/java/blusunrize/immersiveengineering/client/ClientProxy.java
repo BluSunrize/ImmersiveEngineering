@@ -790,10 +790,13 @@ public class ClientProxy extends CommonProxy
 			});
 			for(int i : mineralIndices)
 			{
+				System.out.println("Mineral: " + minerals[i].name);
 				String name = Lib.DESC_INFO+"mineral."+minerals[i].name;
 				String localizedName = I18n.format(name);
 				if(localizedName==name)
 					localizedName = minerals[i].name;
+
+				System.out.println(" - name: " + localizedName);
 
 				String s0 = "";
 				if(minerals[i].dimensionWhitelist!=null && minerals[i].dimensionWhitelist.length>0)
@@ -812,6 +815,8 @@ public class ClientProxy extends CommonProxy
 				}
 				else
 					s0 = I18n.format("ie.manual.entry.mineralsDimAny",localizedName);
+
+				System.out.println(" - s0: " + s0);
 
 				ArrayList<Integer> formattedOutputs = new ArrayList<Integer>();
 				for(int j=0; j<minerals[i].oreOutput.length; j++)
@@ -834,13 +839,15 @@ public class ClientProxy extends CommonProxy
 						s1 += "<br>" + new DecimalFormat("00.00").format(minerals[i].recalculatedChances[sorted]*100).replaceAll("\\G0"," ")+"% "+minerals[i].oreOutput[sorted].getDisplayName();
 						sortedOres[j] = minerals[i].oreOutput[sorted];
 					}
+				System.out.println(" - s1: " + s1);
 				String s2 = I18n.format("ie.manual.entry.minerals3", s0,s1);
+				System.out.println(" - s2: " + s2);
 				pages.add(new ManualPages.ItemDisplay(ManualHelper.getManual(), s2, sortedOres));
 			}
 
-			String[][][] multiTables = formatToTable_ExcavatorMinerals();
-			for(String[][] minTable : multiTables)
-				pages.add(new ManualPages.Table(ManualHelper.getManual(), "", minTable,true));
+//			String[][][] multiTables = formatToTable_ExcavatorMinerals();
+//			for(String[][] minTable : multiTables)
+//				pages.add(new ManualPages.Table(ManualHelper.getManual(), "", minTable,true));
 			if(mineralEntry!=null)
 				mineralEntry.setPages(pages.toArray(new IManualPage[pages.size()]));
 			else
