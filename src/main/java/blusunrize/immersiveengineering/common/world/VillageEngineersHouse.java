@@ -135,7 +135,6 @@ public class VillageEngineersHouse extends Village
 
 		//Doors
 		this.func_189915_a(world, box, rand, 4, 1, 3, EnumFacing.NORTH, Blocks.OAK_DOOR);
-		System.out.println("generating doors at "+box.getCenter());
 		if(getCoordBaseMode()==EnumFacing.SOUTH || getCoordBaseMode()==EnumFacing.WEST)
 		{
 			this.placeDoor(world, box, rand, 3,5,5, EnumFacing.NORTH, EnumHingePosition.LEFT);
@@ -242,7 +241,6 @@ public class VillageEngineersHouse extends Village
 
 		EntityItemFrame e = new EntityItemFrame(world, new BlockPos(i1,j1,k1), side);
 		e.setDisplayedItem(stack);
-		System.out.println("Try to generate frame at "+e.posX+", "+e.posY+", "+e.posZ+" - valid: "+e.onValidSurface()+" against "+side);
 		if(e.onValidSurface() && world.getEntitiesWithinAABB(EntityHanging.class, new AxisAlignedBB(i1-.125,j1,k1-.125,i1+1.125,j1+1,k1+1.125)).isEmpty())
 			if(!world.isRemote)
 				world.spawnEntityInWorld(e);
