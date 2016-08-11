@@ -360,6 +360,9 @@ itemGroup.immersiveengineering=Immersive Engineering
 
 #ENTITIES
 entity.immersiveengineering.explosive.name=Explosive
+entity.Villager.immersiveengineering.engineer=Engineer
+entity.Villager.immersiveengineering.machinist=Machinist
+entity.Villager.immersiveengineering.electrician=Electrician
 
 #TINKERS CONSTRUCT COMPAT
 fluid.uranium=Molten Uranium
