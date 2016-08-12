@@ -1,3 +1,11 @@
+#####Version 0.10-36
+- added Hemp Seeds to Forestry's bags
+- changed Windmill and Improved Windmill to have models with 90% less polys. PERFORMANCE!
+- removed unnecesary debug outprints
+- fixed NPE in manual
+- fixed issues on the manual's mineral pages
+- fixed models for coresamples
+
 #####Version 0.10-35 - BUILT
 - re-added Open Computers compat
 - cahnged waterwheel and windmills to use FastTESR
