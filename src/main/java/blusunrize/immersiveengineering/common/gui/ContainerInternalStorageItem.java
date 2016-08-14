@@ -23,11 +23,10 @@ public abstract class ContainerInternalStorageItem extends Container
 		this.player = iinventory.player;
 		this.equipmentSlot = entityEquipmentSlot;
 		this.heldItem = heldItem;
-		this.internalSlots = ((IInternalStorageItem)this.heldItem.getItem()).getInternalSlots(heldItem);
 		this.input = new InventoryStorageItem(this, heldItem);
+		this.internalSlots = this.addSlots(iinventory);
 		this.blockedSlot = (iinventory.currentItem + 27 + internalSlots);
 
-		this.addSlots(iinventory);
 
 		if (!world.isRemote)
 			try {
@@ -40,7 +39,7 @@ public abstract class ContainerInternalStorageItem extends Container
 		this.onCraftMatrixChanged(this.input);
 	}
 
-	abstract void addSlots(InventoryPlayer iinventory);
+	abstract int addSlots(InventoryPlayer iinventory);
 
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer par1EntityPlayer, int slot)
@@ -118,7 +117,7 @@ public abstract class ContainerInternalStorageItem extends Container
 	{
 		((IInternalStorageItem)this.heldItem.getItem()).setContainedItems(this.heldItem, ((InventoryStorageItem)this.input).stackList);
 		ItemStack hand = player.getItemStackFromSlot(this.equipmentSlot);
-		if (hand!=null&&!hand.equals(heldItem))
+		if(hand != null && !hand.equals(heldItem))
 			player.setItemStackToSlot(this.equipmentSlot, this.heldItem);
 		player.inventory.markDirty();
 	}

@@ -1,12 +1,10 @@
 package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.common.items.ItemRevolver;
-import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.*;
+import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
 
 public class ContainerRevolver extends ContainerInternalStorageItem
@@ -47,12 +45,12 @@ public class ContainerRevolver extends ContainerInternalStorageItem
 	public ContainerRevolver(InventoryPlayer iinventory, World world, EntityEquipmentSlot slot, ItemStack revolver)
 	{
 		super(iinventory, world, slot, revolver);
-		this.revolverSlots = ((ItemRevolver)revolver.getItem()).getBulletSlotAmount(revolver);
 	}
 
 	@Override
-	void addSlots(InventoryPlayer iinventory)
+	int addSlots(InventoryPlayer iinventory)
 	{
+		this.revolverSlots = ((ItemRevolver) this.heldItem.getItem()).getBulletSlotAmount(heldItem);
 		int i = 0;
 		int w = revolverSlots >= 18 ? 150 : revolverSlots > 8 ? 136 : 74;
 		int off = (176 - w) / 2;
@@ -67,6 +65,7 @@ public class ContainerRevolver extends ContainerInternalStorageItem
 		this.addSlotToContainer(new IESlot.Bullet(this, this.input, i++, off + 2, 30, 1));
 		this.addSlotToContainer(new IESlot.Bullet(this, this.input, i++, off + 10, 11, 1));
 		this.bindPlayerInventory(iinventory);
+		return i;
 	}
 	protected void bindPlayerInventory(InventoryPlayer inventoryPlayer) {
 		for (int i = 0; i < 3; i++)

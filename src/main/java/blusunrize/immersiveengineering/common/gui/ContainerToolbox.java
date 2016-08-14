@@ -3,12 +3,10 @@ package blusunrize.immersiveengineering.common.gui;
 import blusunrize.immersiveengineering.api.tool.ToolboxHandler;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.gui.IESlot.ICallbackContainer;
-import blusunrize.immersiveengineering.common.items.ItemToolbox;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.*;
+import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
 
 public class ContainerToolbox extends ContainerInternalStorageItem implements ICallbackContainer
@@ -19,7 +17,7 @@ public class ContainerToolbox extends ContainerInternalStorageItem implements IC
 	}
 
 	@Override
-	void addSlots(InventoryPlayer iinventory)
+	int addSlots(InventoryPlayer iinventory)
 	{
 		int i=0;
 		this.addSlotToContainer(new IESlot.ContainerCallback(this, this.input, i++, 48, 24));
@@ -40,6 +38,7 @@ public class ContainerToolbox extends ContainerInternalStorageItem implements IC
 			this.addSlotToContainer(new IESlot.ContainerCallback(this, this.input, i++, 26+j*18, 112));
 
 		bindPlayerInventory(iinventory);
+		return i;
 	}
 
 	@Override
