@@ -1,8 +1,5 @@
 package blusunrize.immersiveengineering.common.util;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.tool.ITeslaEquipment;
 import blusunrize.immersiveengineering.common.entities.EntityRailgunShot;
@@ -14,6 +11,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSource;
 import net.minecraft.util.EntityDamageSourceIndirect;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class IEDamageSources
 {
@@ -99,7 +99,8 @@ public class IEDamageSources
 //		return silver;
 		return new IEDamageSource_Indirect(Lib.DMG_RevolverSilver, shot, shooter);
 	}
-	public static DamageSource causePotionDamage(EntityRevolvershot shot, EntityLivingBase shooter)
+
+	public static DamageSource causePotionDamage(EntityRevolvershot shot, Entity shooter)
 	{
 		return new IEDamageSource_Indirect(Lib.DMG_RevolverPotion, shot, shooter);
 	}

@@ -14,15 +14,12 @@ import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformT
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.client.model.obj.OBJModel;
-import net.minecraftforge.client.model.obj.OBJModel.OBJBakedModel;
-import net.minecraftforge.common.model.IModelState;
 import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
@@ -48,15 +45,18 @@ public class ImmersiveModelRegistry
 			Object object = event.getModelRegistry().getObject(entry.getKey());
 			if(object instanceof IBakedModel)
 			{
-				try {
-					IBakedModel existingModel = (IBakedModel)object;
-					event.getModelRegistry().putObject(entry.getKey(), createBakedObjItemModel(existingModel, entry.getValue(), new OBJModel.OBJState(Lists.newArrayList(OBJModel.Group.ALL), true), DefaultVertexFormats.ITEM));
-				} catch(Exception e) {
+				try
+				{
+					IBakedModel existingModel = (IBakedModel) object;
+					event.getModelRegistry().putObject(entry.getKey(), entry.getValue().createBakedModel(existingModel));
+//					event.getModelRegistry().putObject(entry.getKey(), createBakedObjItemModel(existingModel, entry.getValue(), n));
+				} catch(Exception e)
+				{
 					e.printStackTrace();
 				}
 			}
 		}
-		ModelResourceLocation mLoc = new ModelResourceLocation(new ResourceLocation("immersiveengineering",IEContent.itemCoresample.itemName), "inventory");
+		ModelResourceLocation mLoc = new ModelResourceLocation(new ResourceLocation("immersiveengineering", IEContent.itemCoresample.itemName), "inventory");
 		event.getModelRegistry().putObject(mLoc, new ModelCoresample());
 	}
 
@@ -65,70 +65,71 @@ public class ImmersiveModelRegistry
 		if(stack.getItem() instanceof ItemIEBase)
 		{
 			ResourceLocation loc;
-			if(((ItemIEBase)stack.getItem()).getSubNames()!=null && ((ItemIEBase)stack.getItem()).getSubNames().length>0)
-				loc = new ResourceLocation("immersiveengineering",((ItemIEBase)stack.getItem()).itemName+"/"+((ItemIEBase)stack.getItem()).getSubNames()[stack.getItemDamage()]);
+			if(((ItemIEBase) stack.getItem()).getSubNames() != null && ((ItemIEBase) stack.getItem()).getSubNames().length > 0)
+				loc = new ResourceLocation("immersiveengineering", ((ItemIEBase) stack.getItem()).itemName + "/" + ((ItemIEBase) stack.getItem()).getSubNames()[stack.getItemDamage()]);
 			else
-				loc = new ResourceLocation("immersiveengineering",((ItemIEBase)stack.getItem()).itemName);
+				loc = new ResourceLocation("immersiveengineering", ((ItemIEBase) stack.getItem()).itemName);
 			itemModelReplacements.put(new ModelResourceLocation(loc, "inventory"), replacement);
 		}
 	}
 
 
-	public static class ItemModelReplacement
+	public abstract static class ItemModelReplacement
+	{
+		public abstract IBakedModel createBakedModel(IBakedModel existingModel);
+	}
+
+	public static class ItemModelReplacement_OBJ extends ItemModelReplacement
 	{
 		String objPath;
 		HashMap<TransformType, Matrix4> transformationMap = new HashMap<TransformType, Matrix4>();
-		public ItemModelReplacement(String path)
+
+		public ItemModelReplacement_OBJ(String path)
 		{
 			this.objPath = path;
 			for(TransformType t : TransformType.values())
 				transformationMap.put(t, new Matrix4());
 		}
 
-		public ItemModelReplacement setTransformations(TransformType type, Matrix4 matrix)
+		public ItemModelReplacement_OBJ setTransformations(TransformType type, Matrix4 matrix)
 		{
 			this.transformationMap.put(type, matrix);
 			return this;
 		}
 
-
-		public OBJBakedModel createBakedModel(IBakedModel existingModel, OBJModel objModel, IModelState state, VertexFormat format, ImmutableMap<String, TextureAtlasSprite> textures)
+		@Override
+		public IBakedModel createBakedModel(IBakedModel existingModel)
 		{
-			return new IESmartObjModel(existingModel, objModel, state, format, textures, transformationMap);
-		}
-	}
-
-	public OBJBakedModel createBakedObjItemModel(IBakedModel existingModel, ItemModelReplacement replacement, IModelState state, VertexFormat format)
-	{
-		try {
-			Function<ResourceLocation, TextureAtlasSprite> textureGetter = new Function<ResourceLocation, TextureAtlasSprite>()
+			try
 			{
-				@Override
-				public TextureAtlasSprite apply(ResourceLocation location)
+				Function<ResourceLocation, TextureAtlasSprite> textureGetter = new Function<ResourceLocation, TextureAtlasSprite>()
 				{
-					return Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(location.toString());
-				}
-			};
-			ResourceLocation modelLocation = new ResourceLocation(replacement.objPath);
-			OBJModel objModel = (OBJModel)OBJLoader.INSTANCE.loadModel(modelLocation);
-			objModel = (OBJModel)objModel.process(flipData);
-			ImmutableMap.Builder<String, TextureAtlasSprite> builder = ImmutableMap.builder();
-			builder.put(ModelLoader.White.LOCATION.toString(), ModelLoader.White.INSTANCE);
-			TextureAtlasSprite missing = textureGetter.apply(new ResourceLocation("missingno"));
-			for(String s : objModel.getMatLib().getMaterialNames())
-				if(objModel.getMatLib().getMaterial(s).getTexture().getTextureLocation().getResourcePath().startsWith("#"))
-				{
-					FMLLog.severe("OBJLoader: Unresolved texture '%s' for obj model '%s'", objModel.getMatLib().getMaterial(s).getTexture().getTextureLocation().getResourcePath(), modelLocation);
-					builder.put(s, missing);
-				}
-				else
-					builder.put(s, textureGetter.apply(objModel.getMatLib().getMaterial(s).getTexture().getTextureLocation()));
+					@Override
+					public TextureAtlasSprite apply(ResourceLocation location)
+					{
+						return Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(location.toString());
+					}
+				};
+				ResourceLocation modelLocation = new ResourceLocation(objPath);
+				OBJModel objModel = (OBJModel) OBJLoader.INSTANCE.loadModel(modelLocation);
+				objModel = (OBJModel) objModel.process(flipData);
+				ImmutableMap.Builder<String, TextureAtlasSprite> builder = ImmutableMap.builder();
+				builder.put(ModelLoader.White.LOCATION.toString(), ModelLoader.White.INSTANCE);
+				TextureAtlasSprite missing = textureGetter.apply(new ResourceLocation("missingno"));
+				for(String s : objModel.getMatLib().getMaterialNames())
+					if(objModel.getMatLib().getMaterial(s).getTexture().getTextureLocation().getResourcePath().startsWith("#"))
+					{
+						FMLLog.severe("OBJLoader: Unresolved texture '%s' for obj model '%s'", objModel.getMatLib().getMaterial(s).getTexture().getTextureLocation().getResourcePath(), modelLocation);
+						builder.put(s, missing);
+					} else
+						builder.put(s, textureGetter.apply(objModel.getMatLib().getMaterial(s).getTexture().getTextureLocation()));
 
-			builder.put("missingno", missing);
-			return replacement.createBakedModel(existingModel, objModel, state, format, builder.build());
-		}catch (Exception e){
-			e.printStackTrace();
+				return new IESmartObjModel(existingModel, objModel, new OBJModel.OBJState(Lists.newArrayList(OBJModel.Group.ALL), true), DefaultVertexFormats.ITEM, builder.build(), transformationMap);
+			} catch(Exception e)
+			{
+				e.printStackTrace();
+			}
+			return null;
 		}
-		return null;
 	}
 }

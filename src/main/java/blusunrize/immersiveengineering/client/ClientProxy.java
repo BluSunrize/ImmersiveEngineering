@@ -8,10 +8,12 @@ import blusunrize.immersiveengineering.api.energy.ThermoelectricHandler;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
+import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.client.fx.EntityFXSparks;
 import blusunrize.immersiveengineering.client.gui.*;
 import blusunrize.immersiveengineering.client.models.IESmartObjModel;
+import blusunrize.immersiveengineering.client.models.ModelItemDynamicOverride;
 import blusunrize.immersiveengineering.client.models.ModelShaderMinecart;
 import blusunrize.immersiveengineering.client.models.obj.IEOBJLoader;
 import blusunrize.immersiveengineering.client.models.smart.ConnLoader;
@@ -128,7 +130,15 @@ public class ClientProxy extends CommonProxy
 		OBJLoader.INSTANCE.addDomain("immersiveengineering");
 		IEOBJLoader.instance.addDomain("immersiveengineering");
 
-		ImmersiveModelRegistry.instance.registerCustomItemModel(new ItemStack(IEContent.itemTool,1,2), new ImmersiveModelRegistry.ItemModelReplacement("immersiveengineering:models/item/tool/voltmeter.obj")
+		ImmersiveModelRegistry.instance.registerCustomItemModel(new ItemStack(IEContent.itemBullet, 1, 2), new ImmersiveModelRegistry.ItemModelReplacement()
+		{
+			@Override
+			public IBakedModel createBakedModel(IBakedModel existingModel)
+			{
+				return new ModelItemDynamicOverride(existingModel);
+			}
+		});
+		ImmersiveModelRegistry.instance.registerCustomItemModel(new ItemStack(IEContent.itemTool, 1, 2), new ImmersiveModelRegistry.ItemModelReplacement_OBJ("immersiveengineering:models/item/tool/voltmeter.obj")
 				.setTransformations(TransformType.FIRST_PERSON_RIGHT_HAND, new Matrix4().translate(-.25, .375, .3125).rotate(-Math.PI*.5, 0, 1, 0))
 				.setTransformations(TransformType.FIRST_PERSON_LEFT_HAND, new Matrix4().translate(-.25, .375, -.625).rotate(-Math.PI*.5, 0, 1, 0))
 				.setTransformations(TransformType.THIRD_PERSON_RIGHT_HAND, new Matrix4().translate(-0.25, .125, .25).scale(.625f,.625f,.625f).rotate(-Math.PI*.375, 0, 1, 0))
@@ -137,7 +147,7 @@ public class ClientProxy extends CommonProxy
 				.setTransformations(TransformType.GUI, new Matrix4().translate(0,.5,0).scale(1.125,1.125,1.125).rotate(-Math.PI*.25, 0, 1, 0))
 				.setTransformations(TransformType.GROUND, new Matrix4().translate(.25,.25,.25).scale(.5,.5,.5)));
 
-		ImmersiveModelRegistry.instance.registerCustomItemModel(new ItemStack(IEContent.itemToolbox), new ImmersiveModelRegistry.ItemModelReplacement("immersiveengineering:models/item/toolbox.obj")
+		ImmersiveModelRegistry.instance.registerCustomItemModel(new ItemStack(IEContent.itemToolbox), new ImmersiveModelRegistry.ItemModelReplacement_OBJ("immersiveengineering:models/item/toolbox.obj")
 				.setTransformations(TransformType.FIRST_PERSON_RIGHT_HAND, new Matrix4().scale(.375,.375,.375).translate(-.75, 1.25, .3125).rotate(-Math.PI*.75, 0, 1, 0))
 				.setTransformations(TransformType.FIRST_PERSON_LEFT_HAND, new Matrix4().scale(.375,.375,.375).translate(-.125, 1.25, .9375).rotate(Math.PI*.25, 0, 1, 0))
 				.setTransformations(TransformType.THIRD_PERSON_RIGHT_HAND, new Matrix4().translate(-.25, .1875, .3125).scale(.625,.625,.625).rotate(Math.PI, 0, 1, 0).rotate(-Math.PI*.5, 1, 0, 0))
@@ -146,7 +156,7 @@ public class ClientProxy extends CommonProxy
 				.setTransformations(TransformType.GUI, new Matrix4().translate(-.625,.75,0).scale(.875,.875,.875).rotate(-Math.PI*.6875, 0, 1, 0))
 				.setTransformations(TransformType.GROUND, new Matrix4().translate(.25,.5,.25).scale(.5,.5,.5)));
 
-		ImmersiveModelRegistry.instance.registerCustomItemModel(new ItemStack(IEContent.itemRevolver,1,0), new ImmersiveModelRegistry.ItemModelReplacement("immersiveengineering:models/item/revolver/revolver.obj")
+		ImmersiveModelRegistry.instance.registerCustomItemModel(new ItemStack(IEContent.itemRevolver, 1, 0), new ImmersiveModelRegistry.ItemModelReplacement_OBJ("immersiveengineering:models/item/revolver/revolver.obj")
 				.setTransformations(TransformType.FIRST_PERSON_RIGHT_HAND, new Matrix4().rotate(Math.toRadians(-90), 0,1,0).scale(.1875, .25, .25).translate(-.5, .4375, .5))
 				.setTransformations(TransformType.FIRST_PERSON_LEFT_HAND, new Matrix4().rotate(Math.toRadians(90), 0,1,0).scale(.1875, .25, .25).translate(.45, .4375, .5))
 				.setTransformations(TransformType.THIRD_PERSON_RIGHT_HAND, new Matrix4().translate(-.125, .125,-.125).scale(.125, .125, .125).rotate(Math.toRadians(-90), 0,1,0).rotate(Math.toRadians(-10), 0,0,1))
@@ -155,7 +165,7 @@ public class ClientProxy extends CommonProxy
 				.setTransformations(TransformType.FIXED, new Matrix4().translate(-.25, 0,-.0625).scale(.1875, .1875, .1875).rotate(Math.PI, 0, 1, 0).rotate(Math.toRadians(-40), 0, 0, 1))
 				.setTransformations(TransformType.GROUND, new Matrix4().translate(.125, 0, .0625).scale(.125, .125, .125)));
 
-		ImmersiveModelRegistry.instance.registerCustomItemModel(new ItemStack(IEContent.itemDrill,1,0), new ImmersiveModelRegistry.ItemModelReplacement("immersiveengineering:models/item/drill/drill_diesel.obj")
+		ImmersiveModelRegistry.instance.registerCustomItemModel(new ItemStack(IEContent.itemDrill, 1, 0), new ImmersiveModelRegistry.ItemModelReplacement_OBJ("immersiveengineering:models/item/drill/drill_diesel.obj")
 				.setTransformations(TransformType.FIRST_PERSON_RIGHT_HAND, new Matrix4().scale(.375,.375,.375).translate(-.25, 1, .5).rotate(Math.PI*.5, 0, 1, 0))
 				.setTransformations(TransformType.FIRST_PERSON_LEFT_HAND, new Matrix4().scale(.375,.375,.375).translate(-1.5, 1.125, .875).rotate(-Math.PI*.5, 0, 1, 0))
 				.setTransformations(TransformType.THIRD_PERSON_RIGHT_HAND, new Matrix4().translate(.0625, .9375, .25).scale(.75,.75,.75).rotate(Math.PI*.75, 0, 1, 0).rotate(Math.PI*.375, 0, 0, 1).rotate(-Math.PI*.25, 1, 0, 0))
@@ -165,7 +175,7 @@ public class ClientProxy extends CommonProxy
 				.setTransformations(TransformType.GROUND, new Matrix4().translate(.125,.25,.25).scale(.5,.5,.5)));
 
 
-		ImmersiveModelRegistry.instance.registerCustomItemModel(new ItemStack(IEContent.itemChemthrower,1,0), new ImmersiveModelRegistry.ItemModelReplacement("immersiveengineering:models/item/chemthrower.obj")
+		ImmersiveModelRegistry.instance.registerCustomItemModel(new ItemStack(IEContent.itemChemthrower, 1, 0), new ImmersiveModelRegistry.ItemModelReplacement_OBJ("immersiveengineering:models/item/chemthrower.obj")
 				.setTransformations(TransformType.FIRST_PERSON_RIGHT_HAND, new Matrix4().scale(.375,.375,.375).translate(-.25, 1, .5).rotate(Math.PI*.5, 0, 1, 0))
 				.setTransformations(TransformType.FIRST_PERSON_LEFT_HAND, new Matrix4().scale(.25,.25,.25).translate(-.5, 1.25, .75).rotate(-Math.PI*.5, 0, 1, 0))
 				.setTransformations(TransformType.THIRD_PERSON_RIGHT_HAND, new Matrix4().translate(-.25, .625, -.25).scale(.5,.5,.5).rotate(Math.PI*.75, 0, 1, 0).rotate(Math.PI*.25, 0, 0, 1).rotate(-Math.PI*.25, 1, 0, 0))
@@ -175,7 +185,7 @@ public class ClientProxy extends CommonProxy
 				.setTransformations(TransformType.GROUND, new Matrix4().translate(0,.25,.125).scale(.25,.25,.25)));
 
 
-		ImmersiveModelRegistry.instance.registerCustomItemModel(new ItemStack(IEContent.itemRailgun,1,0), new ImmersiveModelRegistry.ItemModelReplacement("immersiveengineering:models/item/railgun.obj")
+		ImmersiveModelRegistry.instance.registerCustomItemModel(new ItemStack(IEContent.itemRailgun, 1, 0), new ImmersiveModelRegistry.ItemModelReplacement_OBJ("immersiveengineering:models/item/railgun.obj")
 				.setTransformations(TransformType.FIRST_PERSON_RIGHT_HAND, new Matrix4().scale(.125,.125,.125).translate(-.5, 1.5, .5).rotate(Math.PI*.46875, 0, 1, 0))
 				.setTransformations(TransformType.FIRST_PERSON_LEFT_HAND, new Matrix4().scale(.125,.125,.125).translate(-1.75, 1.625, .875).rotate(-Math.PI*.46875, 0, 1, 0))
 				.setTransformations(TransformType.THIRD_PERSON_RIGHT_HAND, new Matrix4().translate(0, .5625, -.09375).scale(.1875,.1875,.1875).rotate(Math.PI*.53125, 0, 1, 0).rotate(Math.PI*.34375, 0, 0, 1))
@@ -790,13 +800,10 @@ public class ClientProxy extends CommonProxy
 			});
 			for(int i : mineralIndices)
 			{
-				System.out.println("Mineral: " + minerals[i].name);
 				String name = Lib.DESC_INFO+"mineral."+minerals[i].name;
 				String localizedName = I18n.format(name);
 				if(localizedName==name)
 					localizedName = minerals[i].name;
-
-				System.out.println(" - name: " + localizedName);
 
 				String s0 = "";
 				if(minerals[i].dimensionWhitelist!=null && minerals[i].dimensionWhitelist.length>0)
@@ -815,8 +822,6 @@ public class ClientProxy extends CommonProxy
 				}
 				else
 					s0 = I18n.format("ie.manual.entry.mineralsDimAny",localizedName);
-
-				System.out.println(" - s0: " + s0);
 
 				ArrayList<Integer> formattedOutputs = new ArrayList<Integer>();
 				for(int j=0; j<minerals[i].oreOutput.length; j++)
@@ -839,9 +844,7 @@ public class ClientProxy extends CommonProxy
 						s1 += "<br>" + new DecimalFormat("00.00").format(minerals[i].recalculatedChances[sorted]*100).replaceAll("\\G0"," ")+"% "+minerals[i].oreOutput[sorted].getDisplayName();
 						sortedOres[j] = minerals[i].oreOutput[sorted];
 					}
-				System.out.println(" - s1: " + s1);
 				String s2 = I18n.format("ie.manual.entry.minerals3", s0,s1);
-				System.out.println(" - s2: " + s2);
 				pages.add(new ManualPages.ItemDisplay(ManualHelper.getManual(), s2, sortedOres));
 			}
 
@@ -992,6 +995,9 @@ public class ClientProxy extends CommonProxy
 		for(DrillHeadPerm p : ((ItemDrillhead)IEContent.itemDrillhead).perms)
 			p.sprite = ApiUtils.getRegisterSprite(event.getMap(), p.texture);
 		WireType.iconDefaultWire = ApiUtils.getRegisterSprite(event.getMap(), "immersiveengineering:blocks/wire");
+		for(BulletHandler.IBullet bullet : BulletHandler.registry.values())
+			for(ResourceLocation rl : bullet.getTextures())
+				ApiUtils.getRegisterSprite(event.getMap(), rl);
 
 		ApiUtils.getRegisterSprite(event.getMap(), IEContent.fluidCreosote.getStill());
 		ApiUtils.getRegisterSprite(event.getMap(), IEContent.fluidCreosote.getFlowing());
