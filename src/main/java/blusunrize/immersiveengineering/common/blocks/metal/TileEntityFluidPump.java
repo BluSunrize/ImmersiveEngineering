@@ -24,7 +24,10 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fluids.*;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
@@ -272,7 +275,6 @@ public class TileEntityFluidPump extends TileEntityIEBase implements ITickable, 
 	@Override
 	public boolean toggleSide(int side, EntityPlayer p)
 	{
-		System.out.println("toggle dat pump, "+side+", "+dummy);
 		if(side!=1 && !dummy)
 		{
 			sideConfig[side]++;
