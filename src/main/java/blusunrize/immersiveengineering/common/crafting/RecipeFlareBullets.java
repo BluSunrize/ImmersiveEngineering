@@ -1,13 +1,11 @@
 package blusunrize.immersiveengineering.common.crafting;
 
-import java.util.List;
-
-import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
-import com.google.common.collect.Lists;
-
 import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
+import blusunrize.immersiveengineering.common.items.ItemBullet;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
+import com.google.common.collect.Lists;
 import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.EnumDyeColor;
@@ -15,6 +13,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
+
+import java.util.List;
 
 public class RecipeFlareBullets implements IRecipe
 {
@@ -28,7 +28,7 @@ public class RecipeFlareBullets implements IRecipe
 			ItemStack stackInSlot = inv.getStackInSlot(i);
 			if(stackInSlot!=null)
 			{
-				if(bullet==null && IEContent.itemBullet.equals(stackInSlot.getItem()) && stackInSlot.getItemDamage()==11)
+				if(bullet == null && IEContent.itemBullet.equals(stackInSlot.getItem()) && "flare".equals(ItemNBTHelper.getString(stackInSlot, "bullet")))
 					bullet = stackInSlot;
 				else if(Utils.isDye(stackInSlot))
 					list.add(stackInSlot);
@@ -50,7 +50,7 @@ public class RecipeFlareBullets implements IRecipe
 		{
 			ItemStack stackInSlot = inv.getStackInSlot(i);
 			if(stackInSlot!=null)
-				if(bullet==null && IEContent.itemBullet.equals(stackInSlot.getItem()) && stackInSlot.getItemDamage()==11)
+				if(bullet == null && IEContent.itemBullet.equals(stackInSlot.getItem()) && "flare".equals(ItemNBTHelper.getString(stackInSlot, "bullet")))
 				{
 					bullet = stackInSlot;
 
@@ -105,7 +105,7 @@ public class RecipeFlareBullets implements IRecipe
 	@Override
 	public ItemStack getRecipeOutput()
 	{
-		return new ItemStack(IEContent.itemBullet,1,10);
+		return ItemBullet.getBulletStack("flare");
 	}
 
 	@Override

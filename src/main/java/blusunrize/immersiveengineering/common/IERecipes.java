@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.common.blocks.wooden.BlockTypes_WoodenDec
 import blusunrize.immersiveengineering.common.blocks.wooden.BlockTypes_WoodenDevice0;
 import blusunrize.immersiveengineering.common.blocks.wooden.BlockTypes_WoodenDevice1;
 import blusunrize.immersiveengineering.common.crafting.*;
+import blusunrize.immersiveengineering.common.items.ItemBullet;
 import blusunrize.immersiveengineering.common.items.ItemEngineersBlueprint;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -352,38 +353,45 @@ public class IERecipes
 		//
 		//BULLETS
 		//
-
+//"homing","wolfpack"
 		//Casull
-		BlueprintCraftingRecipe.addRecipe("bullet", new ItemStack(IEContent.itemBullet,1,2), new ItemStack(IEContent.itemBullet,1,0),Items.GUNPOWDER,"nuggetLead","nuggetLead");
+		ItemStack bullet = ItemBullet.getBulletStack("casull");
+		BlueprintCraftingRecipe.addRecipe("bullet", bullet, new ItemStack(IEContent.itemBullet, 1, 0), Items.GUNPOWDER, "nuggetLead", "nuggetLead");
 		//Piercing
-		BlueprintCraftingRecipe.addRecipe("bullet", new ItemStack(IEContent.itemBullet,1,3), new ItemStack(IEContent.itemBullet,1,0),Items.GUNPOWDER,"nuggetSteel","nuggetSteel","nuggetConstantan","nuggetConstantan");
+		bullet = ItemBullet.getBulletStack("armorPiercing");
+		BlueprintCraftingRecipe.addRecipe("bullet", bullet, new ItemStack(IEContent.itemBullet, 1, 0), Items.GUNPOWDER, "nuggetSteel", "nuggetSteel", "nuggetConstantan", "nuggetConstantan");
 		if(ApiUtils.isExistingOreName("nuggetTungsten"))
-			BlueprintCraftingRecipe.addRecipe("bullet", new ItemStack(IEContent.itemBullet,1,3), new ItemStack(IEContent.itemBullet,1,0),Items.GUNPOWDER,"nuggetTungsten","nuggetTungsten");
+			BlueprintCraftingRecipe.addRecipe("bullet", bullet, new ItemStack(IEContent.itemBullet, 1, 0), Items.GUNPOWDER, "nuggetTungsten", "nuggetTungsten");
 		// We don't have depleted stuff atm
 		//		if(ApiUtils.isExistingOreName("nuggetCyanite"))
 		//			BlueprintCraftingRecipe.addRecipe("bullet", new ItemStack(IEContent.itemBullet,1,3), new ItemStack(IEContent.itemBullet,1,0),Items.gunpowder,"nuggetCyanite","nuggetCyanite");
 		//		else if(ApiUtils.isExistingOreName("ingotCyanite"))
 		//			BlueprintCraftingRecipe.addRecipe("bullet", new ItemStack(IEContent.itemBullet,3,3), new ItemStack(IEContent.itemBullet,3,0),new ItemStack(Items.gunpowder,3),"ingotCyanite");
-		//Silver, useless atm
-		//		BlueprintCraftingRecipe.addRecipe("bullet", new ItemStack(IEContent.itemBullet,1,9), new ItemStack(IEContent.itemBullet,1,0),Items.gunpowder,"nuggetLead","nuggetLead","nuggetSilver");
+		//Silver
+		bullet = ItemBullet.getBulletStack("silver");
+		BlueprintCraftingRecipe.addRecipe("bullet", bullet, new ItemStack(IEContent.itemBullet, 1, 0), Items.GUNPOWDER, "nuggetLead", "nuggetLead", "nuggetSilver");
 		//Buckshot
-		BlueprintCraftingRecipe.addRecipe("bullet", new ItemStack(IEContent.itemBullet,1,4), new ItemStack(IEContent.itemBullet,1,1),Items.GUNPOWDER,"dustIron");
+		bullet = ItemBullet.getBulletStack("buckshot");
+		BlueprintCraftingRecipe.addRecipe("bullet", bullet, new ItemStack(IEContent.itemBullet, 1, 1), Items.GUNPOWDER, "dustIron");
 		//HE
-		BlueprintCraftingRecipe.addRecipe("bullet", new ItemStack(IEContent.itemBullet,1,5), new ItemStack(IEContent.itemBullet,1,0),Items.GUNPOWDER,Blocks.TNT);
+		bullet = ItemBullet.getBulletStack("HE");
+		BlueprintCraftingRecipe.addRecipe("bullet", bullet, new ItemStack(IEContent.itemBullet, 1, 0), Items.GUNPOWDER, Blocks.TNT);
 		//Dragonsbreath
-		BlueprintCraftingRecipe.addRecipe("specialBullet", new ItemStack(IEContent.itemBullet,1,6), new ItemStack(IEContent.itemBullet,1,1),Items.GUNPOWDER,"dustAluminum","dustAluminum");
+		bullet = ItemBullet.getBulletStack("dragonsbreath");
+		BlueprintCraftingRecipe.addRecipe("specialBullet", bullet, new ItemStack(IEContent.itemBullet, 1, 1), Items.GUNPOWDER, "dustAluminum", "dustAluminum");
 		//Potion
-		BlueprintCraftingRecipe.addRecipe("specialBullet", new ItemStack(IEContent.itemBullet,1,10), new ItemStack(IEContent.itemBullet,1,0),Items.GUNPOWDER,Items.GLASS_BOTTLE);
+		bullet = ItemBullet.getBulletStack("potion");
+		BlueprintCraftingRecipe.addRecipe("specialBullet", bullet, new ItemStack(IEContent.itemBullet, 1, 0), Items.GUNPOWDER, Items.GLASS_BOTTLE);
 		GameRegistry.addRecipe(new RecipePotionBullets());
 		RecipeSorter.register(ImmersiveEngineering.MODID+":potionBullet", RecipePotionBullets.class, Category.SHAPELESS, "after:forge:shapelessore");
 		//Flare
-		ItemStack flare = new ItemStack(IEContent.itemBullet,1,11);
-		ItemNBTHelper.setInt(flare, "flareColour", 0xcc2e06);
-		BlueprintCraftingRecipe.addRecipe("specialBullet", flare.copy(), new ItemStack(IEContent.itemBullet,1,1),Items.GUNPOWDER,"dustAluminum","dyeRed");
-		ItemNBTHelper.setInt(flare, "flareColour", 0x2ca30b);
-		BlueprintCraftingRecipe.addRecipe("specialBullet", flare.copy(), new ItemStack(IEContent.itemBullet,1,1),Items.GUNPOWDER,"dustAluminum","dyeGreen");
-		ItemNBTHelper.setInt(flare, "flareColour", 0xffff82);
-		BlueprintCraftingRecipe.addRecipe("specialBullet", flare.copy(), new ItemStack(IEContent.itemBullet,1,1),Items.GUNPOWDER,"dustAluminum","dyeYellow");
+		bullet = ItemBullet.getBulletStack("flare");
+		ItemNBTHelper.setInt(bullet, "flareColour", 0xcc2e06);
+		BlueprintCraftingRecipe.addRecipe("specialBullet", bullet.copy(), new ItemStack(IEContent.itemBullet, 1, 1), Items.GUNPOWDER, "dustAluminum", "dyeRed");
+		ItemNBTHelper.setInt(bullet, "flareColour", 0x2ca30b);
+		BlueprintCraftingRecipe.addRecipe("specialBullet", bullet.copy(), new ItemStack(IEContent.itemBullet, 1, 1), Items.GUNPOWDER, "dustAluminum", "dyeGreen");
+		ItemNBTHelper.setInt(bullet, "flareColour", 0xffff82);
+		BlueprintCraftingRecipe.addRecipe("specialBullet", bullet.copy(), new ItemStack(IEContent.itemBullet, 1, 1), Items.GUNPOWDER, "dustAluminum", "dyeYellow");
 		GameRegistry.addRecipe(new RecipeFlareBullets());
 		RecipeSorter.register(ImmersiveEngineering.MODID+":flareBullet", RecipeFlareBullets.class, Category.SHAPELESS, "after:forge:shapelessore");
 

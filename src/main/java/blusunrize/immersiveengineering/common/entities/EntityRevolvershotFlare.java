@@ -1,8 +1,6 @@
 package blusunrize.immersiveengineering.common.entities;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import com.google.common.base.Optional;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -10,27 +8,29 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 public class EntityRevolvershotFlare extends EntityRevolvershot
 {
 	boolean shootUp = false;
 	public int colour = -1;
-	private static final DataParameter<Integer> dataMarker_colour = EntityDataManager.<Integer>createKey(EntityIEProjectile.class, DataSerializers.VARINT);
+	private static final DataParameter<Integer> dataMarker_colour = EntityDataManager.createKey(EntityIEProjectile.class, DataSerializers.VARINT);
 
 	public EntityRevolvershotFlare(World world)
 	{
 		super(world);
 		this.setTickLimit(400);
 	}
-	public EntityRevolvershotFlare(World world, double x, double y, double z, double ax, double ay, double az, int type)
+
+	public EntityRevolvershotFlare(World world, double x, double y, double z, double ax, double ay, double az, String type)
 	{
 		super(world, x, y, z, ax, ay, az, type);
 		this.setTickLimit(400);
 	}
-	public EntityRevolvershotFlare(World world, EntityLivingBase living, double ax, double ay, double az, int type, ItemStack stack)
+
+	public EntityRevolvershotFlare(World world, EntityLivingBase living, double ax, double ay, double az, String type, ItemStack stack)
 	{
 		super(world, living, ax, ay, az, type, stack);
 		this.setTickLimit(400);

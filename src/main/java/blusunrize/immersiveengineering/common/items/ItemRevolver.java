@@ -4,10 +4,12 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.shader.IShaderEquipableItem;
-import blusunrize.immersiveengineering.api.tool.IBullet;
+import blusunrize.immersiveengineering.api.tool.BulletHandler;
+import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
 import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.CommonProxy;
+import blusunrize.immersiveengineering.common.entities.EntityRevolvershot;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IGuiItem;
 import blusunrize.immersiveengineering.common.util.IEAchievements;
@@ -39,13 +41,15 @@ import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.*;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.*;
 
@@ -265,11 +269,30 @@ public class ItemRevolver extends ItemUpgradeableTool implements IShaderEquipabl
 
 				if(!ItemNBTHelper.getBoolean(revolver, "blocked"))
 				{
-					if(bullets[0]!=null && bullets[0].getItem() instanceof IBullet && ((IBullet)bullets[0].getItem()).canSpawnBullet(bullets[0]))
+					if(bullets[0] != null && bullets[0].getItem() instanceof ItemBullet && ItemNBTHelper.hasKey(bullets[0], "bullet"))
 					{
-						((IBullet)bullets[0].getItem()).spawnBullet(player, bullets[0], getUpgrades(revolver).getBoolean("electro"));
-						bullets[0]= ((IBullet)bullets[0].getItem()).getCasing(bullets[0]);
-						player.playSound(IESounds.revolverFire, 1f, 1f);
+						String key = ItemNBTHelper.getString(bullets[0], "bullet");
+						IBullet bullet = BulletHandler.getBullet(key);
+						if(bullet != null)
+						{
+							Vec3d vec = player.getLookVec();
+							boolean electro = getUpgrades(revolver).getBoolean("electro");
+							int count = bullet.getProjectileCount(player, bullets[0]);
+							if(count == 1)
+							{
+								Entity entBullet = getBullet(player, vec, vec, key, bullets[0], electro);
+								player.worldObj.spawnEntityInWorld(bullet.getProjectile(player, bullets[0], entBullet, electro));
+							} else
+								for(int i = 0; i < count; i++)
+								{
+									Vec3d vecDir = vec.addVector(player.getRNG().nextGaussian() * .1, player.getRNG().nextGaussian() * .1, player.getRNG().nextGaussian() * .1);
+									Entity entBullet = getBullet(player, vec, vecDir, key, bullets[0], electro);
+									player.worldObj.spawnEntityInWorld(bullet.getProjectile(player, bullets[0], entBullet, electro));
+								}
+							bullets[0] = bullet.getCasing(bullets[0]);
+							player.playSound(IESounds.revolverFire, 1f, 1f);
+						} else
+							player.playSound(SoundEvents.BLOCK_NOTE_HAT, 1f, 1f);
 					}
 					else
 						player.playSound(SoundEvents.BLOCK_NOTE_HAT, 1f, 1f);
@@ -287,12 +310,22 @@ public class ItemRevolver extends ItemUpgradeableTool implements IShaderEquipabl
 		return new ActionResult(EnumActionResult.FAIL, revolver);
 	}
 
+	EntityRevolvershot getBullet(EntityPlayer player, Vec3d vecSpawn, Vec3d vecDir, String type, ItemStack stack, boolean electro)
+	{
+		EntityRevolvershot bullet = new EntityRevolvershot(player.worldObj, player, vecDir.xCoord * 1.5, vecDir.yCoord * 1.5, vecDir.zCoord * 1.5, type, stack);
+		bullet.motionX = vecDir.xCoord;
+		bullet.motionY = vecDir.yCoord;
+		bullet.motionZ = vecDir.zCoord;
+		bullet.bulletElectro = electro;
+		return bullet;
+	}
+
 	public boolean isEmpty(ItemStack stack)
 	{
 		ItemStack[] bullets = getBullets(stack);
 		boolean empty = true;
 		for(ItemStack b : bullets)
-			if(b!=null && b.getItem() instanceof IBullet && ((IBullet)b.getItem()).canSpawnBullet(b))
+			if(b != null && b.getItem() instanceof ItemBullet && ItemNBTHelper.hasKey(b, "bullet"))
 				empty=false;
 		return empty;
 	}

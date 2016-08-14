@@ -1,14 +1,15 @@
 package blusunrize.immersiveengineering.common.crafting;
 
+import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.items.ItemBullet;
+import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemPotion;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
-import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import blusunrize.immersiveengineering.common.util.Utils;
 
 public class RecipePotionBullets implements IRecipe
 {
@@ -21,7 +22,7 @@ public class RecipePotionBullets implements IRecipe
 		{
 			ItemStack stackInSlot = inv.getStackInSlot(i);
 			if(stackInSlot!=null)
-				if(bullet==null && IEContent.itemBullet.equals(stackInSlot.getItem()) && stackInSlot.getItemDamage()==10)
+				if(bullet == null && IEContent.itemBullet.equals(stackInSlot.getItem()) && "potion".equals(ItemNBTHelper.getString(stackInSlot, "bullet")))
 					bullet = stackInSlot;
 				else if(potion==null && stackInSlot.getItem() instanceof ItemPotion)
 					potion = stackInSlot;
@@ -40,7 +41,7 @@ public class RecipePotionBullets implements IRecipe
 		{
 			ItemStack stackInSlot = inv.getStackInSlot(i);
 			if(stackInSlot!=null)
-				if(bullet==null && IEContent.itemBullet.equals(stackInSlot.getItem()) && stackInSlot.getItemDamage()==10)
+				if(bullet == null && IEContent.itemBullet.equals(stackInSlot.getItem()) && "potion".equals(ItemNBTHelper.getString(stackInSlot, "bullet")))
 					bullet = stackInSlot;
 				else if(potion==null && stackInSlot.getItem() instanceof ItemPotion)
 					potion = stackInSlot;
@@ -58,7 +59,7 @@ public class RecipePotionBullets implements IRecipe
 	@Override
 	public ItemStack getRecipeOutput()
 	{
-		return new ItemStack(IEContent.itemBullet,1,10);
+		return ItemBullet.getBulletStack("potion");
 	}
 
     @Override

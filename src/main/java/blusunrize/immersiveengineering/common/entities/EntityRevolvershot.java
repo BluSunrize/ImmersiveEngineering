@@ -1,24 +1,13 @@
 package blusunrize.immersiveengineering.common.entities;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxContainerItem;
-import blusunrize.immersiveengineering.common.Config;
-import blusunrize.immersiveengineering.common.util.IEAchievements;
-import blusunrize.immersiveengineering.common.util.IEDamageSources;
-import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.Utils;
-import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityAreaEffectCloud;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.item.ItemLingeringPotion;
-import net.minecraft.item.ItemPotion;
-import net.minecraft.item.ItemSplashPotion;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -27,9 +16,8 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.potion.PotionType;
-import net.minecraft.potion.PotionUtils;
-import net.minecraft.util.*;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.*;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -50,18 +38,19 @@ public class EntityRevolvershot extends Entity
 	private int ticksInAir;
 
 	private int tickLimit=40;
-	int bulletType = 0;
+	String bulletType;
 	public boolean bulletElectro = false;
 	public ItemStack bulletPotion = null;
 
-	private static final DataParameter<String> dataMarker_shooter = EntityDataManager.<String>createKey(EntityIEProjectile.class, DataSerializers.STRING);
+	private static final DataParameter<String> dataMarker_shooter = EntityDataManager.createKey(EntityIEProjectile.class, DataSerializers.STRING);
 
 	public EntityRevolvershot(World world)
 	{
 		super(world);
 		this.setSize(.125f,.125f);
 	}
-	public EntityRevolvershot(World world, double x, double y, double z, double ax, double ay, double az, int type)
+
+	public EntityRevolvershot(World world, double x, double y, double z, double ax, double ay, double az, String type)
 	{
 		super(world);
 		this.setSize(0.125F, 0.125F);
@@ -69,7 +58,8 @@ public class EntityRevolvershot extends Entity
 		this.setPosition(x, y, z);
 		this.bulletType = type;
 	}
-	public EntityRevolvershot(World world, EntityLivingBase living, double ax, double ay, double az, int type, ItemStack stack)
+
+	public EntityRevolvershot(World world, EntityLivingBase living, double ax, double ay, double az, String type, ItemStack stack)
 	{
 		super(world);
 		this.shootingEntity = living;
@@ -256,68 +246,67 @@ public class EntityRevolvershot extends Entity
 			if(mop.entityHit instanceof EntityLivingBase)
 				headshot = Utils.isVecInEntityHead((EntityLivingBase)mop.entityHit, new Vec3d(posX,posY,posZ));
 
-			String dmgKey = bulletType==0?"Casull" :bulletType==1?"AP":
-					bulletType==2?"Buck" :bulletType==4?"Dragon":
-							bulletType==5?"Homing" :bulletType==6?"Wolfpack":
-									bulletType==7?"Silver" :bulletType==8?"Potion": "";
-			double damage = Config.getDouble("BulletDamage-"+dmgKey);
-			DamageSource damageSrc = null;
-			if(bulletType==0)
-				damageSrc = IEDamageSources.causeCasullDamage(this, shootingEntity);
-			else if(bulletType==1)
-				damageSrc = IEDamageSources.causePiercingDamage(this, shootingEntity);
-			else if(bulletType==2)
-				damageSrc = IEDamageSources.causeBuckshotDamage(this, shootingEntity);
-			else if(bulletType==4)
-				damageSrc = IEDamageSources.causeDragonsbreathDamage(this, shootingEntity);
-			else if(bulletType==5)
-				damageSrc = IEDamageSources.causeHomingDamage(this, shootingEntity);
-			else if(bulletType==6)
-				damageSrc = IEDamageSources.causeWolfpackDamage(this, shootingEntity);
-			else if(bulletType==7)
-			{
-				damageSrc = IEDamageSources.causeSilverDamage(this, shootingEntity);
-				if(mop.entityHit instanceof EntityLivingBase && ((EntityLivingBase)mop.entityHit).isEntityUndead())
-					damage *= 1.75;
-			}
-			else if(bulletType==8)
-				damageSrc = IEDamageSources.causePotionDamage(this, shootingEntity);
+//			String dmgKey = bulletType==0?"Casull" :bulletType==1?"AP":
+//					bulletType==2?"Buck" :bulletType==4?"Dragon":
+//							bulletType==5?"Homing" :bulletType==6?"Wolfpack":
+//									bulletType==7?"Silver" :bulletType==8?"Potion": "";
+//			double damage = Config.getDouble("BulletDamage-"+dmgKey);
+//			DamageSource damageSrc = null;
+//			if(bulletType==0)
+//				damageSrc = IEDamageSources.causeCasullDamage(this, shootingEntity);
+//			else if(bulletType==1)
+//				damageSrc = IEDamageSources.causePiercingDamage(this, shootingEntity);
+//			else if(bulletType==2)
+//				damageSrc = IEDamageSources.causeBuckshotDamage(this, shootingEntity);
+//			else if(bulletType==4)
+//				damageSrc = IEDamageSources.causeDragonsbreathDamage(this, shootingEntity);
+//			else if(bulletType==5)
+//				damageSrc = IEDamageSources.causeHomingDamage(this, shootingEntity);
+//			else if(bulletType==6)
+//				damageSrc = IEDamageSources.causeWolfpackDamage(this, shootingEntity);
+//			else if(bulletType==7)
+//			{
+//				damageSrc = IEDamageSources.causeSilverDamage(this, shootingEntity);
+//				if(mop.entityHit instanceof EntityLivingBase && ((EntityLivingBase)mop.entityHit).isEntityUndead())
+//					damage *= 1.75;
+//			}
+//			else if(bulletType==8)
+//				damageSrc = IEDamageSources.causePotionDamage(this, shootingEntity);
 
-			if(damageSrc!=null)
-			{
-				if(headshot)
-				{
-					damage *= 1.5;
-					EntityLivingBase living = (EntityLivingBase)mop.entityHit;
-					if(living.isChild() && !living.isEntityInvulnerable(damageSrc) && (living.hurtResistantTime>0?living.getHealth()<=0:living.getHealth()<=damage))
-					{
-						if(this.worldObj.isRemote)
-						{
-							worldObj.makeFireworks(posX,posY,posZ, 0,0,0, Utils.getRandomFireworkExplosion(worldObj.rand, 4));
-							worldObj.playSound(posX,posY,posZ, IESounds.birthdayParty, SoundCategory.NEUTRAL, 1.5f,1, false);
-							mop.entityHit.getEntityData().setBoolean("headshot", true);
-						}
-						else if(this.shootingEntity instanceof EntityPlayer)
-							((EntityPlayer)this.shootingEntity).addStat(IEAchievements.secret_birthdayParty);
-					}
-				}
-
-				if(!this.worldObj.isRemote)
-				{
-					if(mop.entityHit.attackEntityFrom(damageSrc, (float)damage))
-					{
-						if(bulletType==2)
-							mop.entityHit.hurtResistantTime=0;
-						if(bulletType==4)
-							mop.entityHit.setFire(3);
-					}
-				}
-			}
+//			if(damageSrc!=null)
+//			{
+//				if(headshot)
+//				{
+//					EntityLivingBase living = (EntityLivingBase)mop.entityHit;
+//					if(living.isChild() && !living.isEntityInvulnerable(damageSrc) && (living.hurtResistantTime>0?living.getHealth()<=0:living.getHealth()<=damage))
+//					{
+//						if(this.worldObj.isRemote)
+//						{
+//							worldObj.makeFireworks(posX,posY,posZ, 0,0,0, Utils.getRandomFireworkExplosion(worldObj.rand, 4));
+//							worldObj.playSound(posX,posY,posZ, IESounds.birthdayParty, SoundCategory.NEUTRAL, 1.5f,1, false);
+//							mop.entityHit.getEntityData().setBoolean("headshot", true);
+//						}
+//						else if(this.shootingEntity instanceof EntityPlayer)
+//							((EntityPlayer)this.shootingEntity).addStat(IEAchievements.secret_birthdayParty);
+//					}
+//				}
+//
+//				if(!this.worldObj.isRemote)
+//				{
+//					if(mop.entityHit.attackEntityFrom(damageSrc, (float)damage))
+//					{
+//						if(bulletType==2)
+//							mop.entityHit.hurtResistantTime=0;
+//						if(bulletType==4)
+//							mop.entityHit.setFire(3);
+//					}
+//				}
+//			}
 		}
 		if(!this.worldObj.isRemote)
 		{
-			if(bulletType==3)
-				worldObj.createExplosion(shootingEntity, posX, posY, posZ, 2, false);
+//			if(bulletType==3)
+//				worldObj.createExplosion(shootingEntity, posX, posY, posZ, 2, false);
 			this.secondaryImpact(mop);
 		}
 		this.setDead();
@@ -351,81 +340,81 @@ public class EntityRevolvershot extends Entity
 			}
 		}
 
-		if(bulletType==6)
-		{
-			Vec3d v = new Vec3d(-motionX, -motionY, -motionZ);
-			int split = 6;
-			for(int i=0; i<split; i++)
-			{
-				float angle = i * (360f/split);
-				Matrix4 matrix = new Matrix4();
-				matrix.rotate(angle, v.xCoord,v.yCoord,v.zCoord);
-				Vec3d vecDir = new Vec3d(0, 1, 0);
-				vecDir = matrix.apply(vecDir);
-
-				EntityWolfpackShot bullet = new EntityWolfpackShot(worldObj, this.shootingEntity, vecDir.xCoord*1.5,vecDir.yCoord*1.5,vecDir.zCoord*1.5, this.bulletType, null);
-				if(mop.entityHit instanceof EntityLivingBase)
-					bullet.targetOverride = (EntityLivingBase)mop.entityHit;
-				bullet.setPosition(posX+vecDir.xCoord, posY+vecDir.yCoord, posZ+vecDir.zCoord);
-				bullet.motionX = vecDir.xCoord*.375;
-				bullet.motionY = vecDir.yCoord*.375;
-				bullet.motionZ = vecDir.zCoord*.375;
-				worldObj.spawnEntityInWorld(bullet);
-			}
-		}
-		if(bulletType==8 && bulletPotion!=null && bulletPotion.getItem() instanceof ItemPotion)
-		{
-			PotionType potionType = PotionUtils.getPotionFromItem(bulletPotion);
-			List<PotionEffect> effects = PotionUtils.getEffectsFromStack(bulletPotion);
-			if(effects!=null)
-				if(bulletPotion.getItem() instanceof ItemLingeringPotion)
-				{
-					EntityAreaEffectCloud entityareaeffectcloud = new EntityAreaEffectCloud(this.worldObj, this.posX, this.posY, this.posZ);
-					entityareaeffectcloud.setOwner(shootingEntity);
-					entityareaeffectcloud.setRadius(3.0F);
-					entityareaeffectcloud.setRadiusOnUse(-0.5F);
-					entityareaeffectcloud.setWaitTime(10);
-					entityareaeffectcloud.setRadiusPerTick(-entityareaeffectcloud.getRadius() / (float)entityareaeffectcloud.getDuration());
-					entityareaeffectcloud.setPotion(potionType);
-					for(PotionEffect potioneffect : effects)
-						entityareaeffectcloud.addEffect(new PotionEffect(potioneffect.getPotion(), potioneffect.getDuration(), potioneffect.getAmplifier()));
-					this.worldObj.spawnEntityInWorld(entityareaeffectcloud);
-				}
-				else if(bulletPotion.getItem() instanceof ItemSplashPotion)
-				{
-					List<EntityLivingBase> livingEntities = this.worldObj.getEntitiesWithinAABB(EntityLivingBase.class, this.getEntityBoundingBox().expand(4.0D, 2.0D, 4.0D));
-					if(livingEntities!=null && !livingEntities.isEmpty())
-						for(EntityLivingBase living : livingEntities)
-							if(living.canBeHitWithPotion())
-							{
-								double dist = this.getDistanceSqToEntity(living);
-								if(dist<16D)
-								{
-									double dist2 = 1-Math.sqrt(dist)/4D;
-									if(living == mop.entityHit)
-										dist2 = 1D;
-									for(PotionEffect p : effects)
-										if(p.getPotion().isInstant())
-											p.getPotion().affectEntity(this, this.shootingEntity, living,  p.getAmplifier(), dist2);
-										else
-										{
-											int j = (int)(dist2*p.getDuration()+.5D);
-											if(j>20)
-												living.addPotionEffect(new PotionEffect(p.getPotion(),j, p.getAmplifier()));
-										}
-								}
-							}
-
-				}
-				else if(mop.entityHit instanceof EntityLivingBase)
-					for(PotionEffect p : effects)
-					{
-						if(p.getDuration()<1)
-							p = new PotionEffect(p.getPotion(),1);
-						((EntityLivingBase)mop.entityHit).addPotionEffect(p);
-					}
-			worldObj.playEvent(2002, new BlockPos(this), PotionType.getID(potionType));
-		}
+//		if(bulletType==6)
+//		{
+//			Vec3d v = new Vec3d(-motionX, -motionY, -motionZ);
+//			int split = 6;
+//			for(int i=0; i<split; i++)
+//			{
+//				float angle = i * (360f/split);
+//				Matrix4 matrix = new Matrix4();
+//				matrix.rotate(angle, v.xCoord,v.yCoord,v.zCoord);
+//				Vec3d vecDir = new Vec3d(0, 1, 0);
+//				vecDir = matrix.apply(vecDir);
+//
+//				EntityWolfpackShot bullet = new EntityWolfpackShot(worldObj, this.shootingEntity, vecDir.xCoord*1.5,vecDir.yCoord*1.5,vecDir.zCoord*1.5, this.bulletType, null);
+//				if(mop.entityHit instanceof EntityLivingBase)
+//					bullet.targetOverride = (EntityLivingBase)mop.entityHit;
+//				bullet.setPosition(posX+vecDir.xCoord, posY+vecDir.yCoord, posZ+vecDir.zCoord);
+//				bullet.motionX = vecDir.xCoord*.375;
+//				bullet.motionY = vecDir.yCoord*.375;
+//				bullet.motionZ = vecDir.zCoord*.375;
+//				worldObj.spawnEntityInWorld(bullet);
+//			}
+//		}
+//		if(bulletType==8 && bulletPotion!=null && bulletPotion.getItem() instanceof ItemPotion)
+//		{
+//			PotionType potionType = PotionUtils.getPotionFromItem(bulletPotion);
+//			List<PotionEffect> effects = PotionUtils.getEffectsFromStack(bulletPotion);
+//			if(effects!=null)
+//				if(bulletPotion.getItem() instanceof ItemLingeringPotion)
+//				{
+//					EntityAreaEffectCloud entityareaeffectcloud = new EntityAreaEffectCloud(this.worldObj, this.posX, this.posY, this.posZ);
+//					entityareaeffectcloud.setOwner(shootingEntity);
+//					entityareaeffectcloud.setRadius(3.0F);
+//					entityareaeffectcloud.setRadiusOnUse(-0.5F);
+//					entityareaeffectcloud.setWaitTime(10);
+//					entityareaeffectcloud.setRadiusPerTick(-entityareaeffectcloud.getRadius() / (float)entityareaeffectcloud.getDuration());
+//					entityareaeffectcloud.setPotion(potionType);
+//					for(PotionEffect potioneffect : effects)
+//						entityareaeffectcloud.addEffect(new PotionEffect(potioneffect.getPotion(), potioneffect.getDuration(), potioneffect.getAmplifier()));
+//					this.worldObj.spawnEntityInWorld(entityareaeffectcloud);
+//				}
+//				else if(bulletPotion.getItem() instanceof ItemSplashPotion)
+//				{
+//					List<EntityLivingBase> livingEntities = this.worldObj.getEntitiesWithinAABB(EntityLivingBase.class, this.getEntityBoundingBox().expand(4.0D, 2.0D, 4.0D));
+//					if(livingEntities!=null && !livingEntities.isEmpty())
+//						for(EntityLivingBase living : livingEntities)
+//							if(living.canBeHitWithPotion())
+//							{
+//								double dist = this.getDistanceSqToEntity(living);
+//								if(dist<16D)
+//								{
+//									double dist2 = 1-Math.sqrt(dist)/4D;
+//									if(living == mop.entityHit)
+//										dist2 = 1D;
+//									for(PotionEffect p : effects)
+//										if(p.getPotion().isInstant())
+//											p.getPotion().affectEntity(this, this.shootingEntity, living,  p.getAmplifier(), dist2);
+//										else
+//										{
+//											int j = (int)(dist2*p.getDuration()+.5D);
+//											if(j>20)
+//												living.addPotionEffect(new PotionEffect(p.getPotion(),j, p.getAmplifier()));
+//										}
+//								}
+//							}
+//
+//				}
+//				else if(mop.entityHit instanceof EntityLivingBase)
+//					for(PotionEffect p : effects)
+//					{
+//						if(p.getDuration()<1)
+//							p = new PotionEffect(p.getPotion(),1);
+//						((EntityLivingBase)mop.entityHit).addPotionEffect(p);
+//					}
+//			worldObj.playEvent(2002, new BlockPos(this), PotionType.getID(potionType));
+//		}
 	}
 	public void onExpire()
 	{
@@ -449,7 +438,7 @@ public class EntityRevolvershot extends Entity
 		nbt.setInteger("inData", this.inData);
 		nbt.setByte("inGround", (byte)(this.inGround ? 1 : 0));
 		nbt.setTag("direction", this.newDoubleNBTList(this.motionX, this.motionY, this.motionZ));
-		nbt.setShort("bulletType", (short)this.bulletType);
+		nbt.setString("bulletType", this.bulletType);
 		if(bulletPotion!=null)
 			nbt.setTag("bulletPotion", bulletPotion.writeToNBT(new NBTTagCompound()));
 		if(this.shootingEntity!=null)
@@ -467,7 +456,7 @@ public class EntityRevolvershot extends Entity
 		this.inTile = Block.getBlockById(nbt.getByte("inTile") & 255);
 		this.inData = nbt.getInteger("inData");
 		this.inGround = nbt.getByte("inGround") == 1;
-		this.bulletType= nbt.getShort("bulletType");
+		this.bulletType = nbt.getString("bulletType");
 		if(nbt.hasKey("bulletPotion"))
 			this.bulletPotion= ItemStack.loadItemStackFromNBT(nbt.getCompoundTag("bulletPotion"));
 
