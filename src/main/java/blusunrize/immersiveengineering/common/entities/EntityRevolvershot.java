@@ -1,6 +1,8 @@
 package blusunrize.immersiveengineering.common.entities;
 
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxContainerItem;
+import blusunrize.immersiveengineering.api.tool.BulletHandler;
+import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -240,68 +242,14 @@ public class EntityRevolvershot extends Entity
 	protected void onImpact(RayTraceResult mop)
 	{
 		boolean headshot = false;
+		if(mop.entityHit instanceof EntityLivingBase)
+			headshot = Utils.isVecInEntityHead((EntityLivingBase) mop.entityHit, new Vec3d(posX, posY, posZ));
 
-		if(mop.entityHit != null)
+		if(this.bulletType != null)
 		{
-			if(mop.entityHit instanceof EntityLivingBase)
-				headshot = Utils.isVecInEntityHead((EntityLivingBase)mop.entityHit, new Vec3d(posX,posY,posZ));
-
-//			String dmgKey = bulletType==0?"Casull" :bulletType==1?"AP":
-//					bulletType==2?"Buck" :bulletType==4?"Dragon":
-//							bulletType==5?"Homing" :bulletType==6?"Wolfpack":
-//									bulletType==7?"Silver" :bulletType==8?"Potion": "";
-//			double damage = Config.getDouble("BulletDamage-"+dmgKey);
-//			DamageSource damageSrc = null;
-//			if(bulletType==0)
-//				damageSrc = IEDamageSources.causeCasullDamage(this, shootingEntity);
-//			else if(bulletType==1)
-//				damageSrc = IEDamageSources.causePiercingDamage(this, shootingEntity);
-//			else if(bulletType==2)
-//				damageSrc = IEDamageSources.causeBuckshotDamage(this, shootingEntity);
-//			else if(bulletType==4)
-//				damageSrc = IEDamageSources.causeDragonsbreathDamage(this, shootingEntity);
-//			else if(bulletType==5)
-//				damageSrc = IEDamageSources.causeHomingDamage(this, shootingEntity);
-//			else if(bulletType==6)
-//				damageSrc = IEDamageSources.causeWolfpackDamage(this, shootingEntity);
-//			else if(bulletType==7)
-//			{
-//				damageSrc = IEDamageSources.causeSilverDamage(this, shootingEntity);
-//				if(mop.entityHit instanceof EntityLivingBase && ((EntityLivingBase)mop.entityHit).isEntityUndead())
-//					damage *= 1.75;
-//			}
-//			else if(bulletType==8)
-//				damageSrc = IEDamageSources.causePotionDamage(this, shootingEntity);
-
-//			if(damageSrc!=null)
-//			{
-//				if(headshot)
-//				{
-//					EntityLivingBase living = (EntityLivingBase)mop.entityHit;
-//					if(living.isChild() && !living.isEntityInvulnerable(damageSrc) && (living.hurtResistantTime>0?living.getHealth()<=0:living.getHealth()<=damage))
-//					{
-//						if(this.worldObj.isRemote)
-//						{
-//							worldObj.makeFireworks(posX,posY,posZ, 0,0,0, Utils.getRandomFireworkExplosion(worldObj.rand, 4));
-//							worldObj.playSound(posX,posY,posZ, IESounds.birthdayParty, SoundCategory.NEUTRAL, 1.5f,1, false);
-//							mop.entityHit.getEntityData().setBoolean("headshot", true);
-//						}
-//						else if(this.shootingEntity instanceof EntityPlayer)
-//							((EntityPlayer)this.shootingEntity).addStat(IEAchievements.secret_birthdayParty);
-//					}
-//				}
-//
-//				if(!this.worldObj.isRemote)
-//				{
-//					if(mop.entityHit.attackEntityFrom(damageSrc, (float)damage))
-//					{
-//						if(bulletType==2)
-//							mop.entityHit.hurtResistantTime=0;
-//						if(bulletType==4)
-//							mop.entityHit.setFire(3);
-//					}
-//				}
-//			}
+			IBullet bullet = BulletHandler.getBullet(bulletType);
+			if(bullet != null)
+				bullet.onHitTarget(worldObj, mop, this.shootingEntity, this, headshot);
 		}
 		if(!this.worldObj.isRemote)
 		{

@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.api.tool;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
@@ -61,7 +62,7 @@ public class BulletHandler
 		/**
 		 * called when the bullet hits a target
 		 */
-		void onHitTarget(World world, RayTraceResult target, EntityPlayer shooter, Entity projectile, boolean headshot);
+		void onHitTarget(World world, RayTraceResult target, EntityLivingBase shooter, Entity projectile, boolean headshot);
 
 		/**
 		 * @return the casing left when fired. Can return the static ItemStacks in BulletHandler
@@ -112,9 +113,9 @@ public class BulletHandler
 		}
 
 		@Override
-		public void onHitTarget(World world, RayTraceResult target, EntityPlayer shooter, Entity projectile, boolean headshot)
+		public void onHitTarget(World world, RayTraceResult target, EntityLivingBase shooter, Entity projectile, boolean headshot)
 		{
-			if(!world.isRemote && target.entityHit != null)
+			if(!world.isRemote && target.entityHit != null && damageSourceGetter != null)
 				if(target.entityHit.attackEntityFrom(damageSourceGetter.apply(new Entity[]{projectile, shooter, target.entityHit}), getDamage(headshot)))
 				{
 					if(resetHurt)

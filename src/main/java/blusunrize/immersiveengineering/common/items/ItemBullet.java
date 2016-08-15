@@ -48,37 +48,41 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 		BulletHandler.emptyCasing = new ItemStack(this, 1, 0);
 		BulletHandler.emptyShell = new ItemStack(this, 1, 1);
 
-		BulletHandler.registerBullet("casull", new BulletHandler.DamagingBullet(new Function<Entity[], DamageSource>()
-		{
-			@Override
-			public DamageSource apply(Entity[] entities)
-			{
-				return IEDamageSources.causeCasullDamage((EntityRevolvershot) entities[0], entities[1]);
-			}
-		},
+		BulletHandler.registerBullet("casull", new BulletHandler.DamagingBullet(
+				new Function<Entity[], DamageSource>()
+				{
+					@Override
+					public DamageSource apply(Entity[] entities)
+					{
+						return IEDamageSources.causeCasullDamage((EntityRevolvershot) entities[0], entities[1]);
+					}
+				},
 				(float) Config.getDouble("BulletDamage-Casull"),
 				BulletHandler.emptyCasing,
 				new ResourceLocation("immersiveengineering:items/bullet_casull")));
-		BulletHandler.registerBullet("armorPiercing", new BulletHandler.DamagingBullet(new Function<Entity[], DamageSource>()
-		{
-			@Override
-			public DamageSource apply(Entity[] entities)
-			{
-				return IEDamageSources.causePiercingDamage((EntityRevolvershot) entities[0], entities[1]);
-			}
-		},
+
+		BulletHandler.registerBullet("armorPiercing", new BulletHandler.DamagingBullet(
+				new Function<Entity[], DamageSource>()
+				{
+					@Override
+					public DamageSource apply(Entity[] entities)
+					{
+						return IEDamageSources.causePiercingDamage((EntityRevolvershot) entities[0], entities[1]);
+					}
+				},
 				(float) Config.getDouble("BulletDamage-AP"),
 				BulletHandler.emptyCasing,
 				new ResourceLocation("immersiveengineering:items/bullet_armorPiercing")));
 
-		BulletHandler.registerBullet("buckshot", new BulletHandler.DamagingBullet(new Function<Entity[], DamageSource>()
-		{
-			@Override
-			public DamageSource apply(Entity[] entities)
-			{
-				return IEDamageSources.causeCasullDamage((EntityRevolvershot) entities[0], entities[1]);
-			}
-		},
+		BulletHandler.registerBullet("buckshot", new BulletHandler.DamagingBullet(
+				new Function<Entity[], DamageSource>()
+				{
+					@Override
+					public DamageSource apply(Entity[] entities)
+					{
+						return IEDamageSources.causeCasullDamage((EntityRevolvershot) entities[0], entities[1]);
+					}
+				},
 				(float) Config.getDouble("BulletDamage-Buck"),
 				BulletHandler.emptyCasing,
 				new ResourceLocation("immersiveengineering:items/bullet_buckshot"))
@@ -90,16 +94,24 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 			}
 		});
 
-//		HE, //, HE
-//		, ,
-		BulletHandler.registerBullet("dragonsbreath", new BulletHandler.DamagingBullet(new Function<Entity[], DamageSource>()
+		BulletHandler.registerBullet("HE", new BulletHandler.DamagingBullet(null, 0, BulletHandler.emptyCasing, new ResourceLocation("immersiveengineering:items/bullet_HE"))
 		{
 			@Override
-			public DamageSource apply(Entity[] entities)
+			public void onHitTarget(World world, RayTraceResult target, EntityLivingBase shooter, Entity projectile, boolean headshot)
 			{
-				return IEDamageSources.causeCasullDamage((EntityRevolvershot) entities[0], entities[1]);
+				world.createExplosion(shooter, projectile.posX, projectile.posY, projectile.posZ, 2, false);
 			}
-		},
+		});
+
+		BulletHandler.registerBullet("dragonsbreath", new BulletHandler.DamagingBullet(
+				new Function<Entity[], DamageSource>()
+				{
+					@Override
+					public DamageSource apply(Entity[] entities)
+					{
+						return IEDamageSources.causeCasullDamage((EntityRevolvershot) entities[0], entities[1]);
+					}
+				},
 				(float) Config.getDouble("BulletDamage-Dragon"),
 				BulletHandler.emptyCasing,
 				new ResourceLocation("immersiveengineering:items/bullet_dragonsbreath"))
@@ -122,14 +134,15 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 //		homing, Homing, homing
 //		wolfpack, Wolfpack, wolfpack
 
-		BulletHandler.registerBullet("silver", new BulletHandler.DamagingBullet(new Function<Entity[], DamageSource>()
-		{
-			@Override
-			public DamageSource apply(Entity[] entities)
-			{
-				return IEDamageSources.causeSilverDamage((EntityRevolvershot) entities[0], entities[1]);
-			}
-		},
+		BulletHandler.registerBullet("silver", new BulletHandler.DamagingBullet(
+				new Function<Entity[], DamageSource>()
+				{
+					@Override
+					public DamageSource apply(Entity[] entities)
+					{
+						return IEDamageSources.causeSilverDamage((EntityRevolvershot) entities[0], entities[1]);
+					}
+				},
 				(float) Config.getDouble("BulletDamage-Silver"),
 				BulletHandler.emptyCasing,
 				new ResourceLocation("immersiveengineering:items/bullet_silver")));
@@ -137,15 +150,6 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 		BulletHandler.registerBullet("potion", new PotionBullet());
 
 		BulletHandler.registerBullet("flare", new FlareBullet());
-		//				EntityRevolvershotFlare flare = new EntityRevolvershotFlare(player.worldObj, player, vec.xCoord*1.5,vec.yCoord*1.5,vec.zCoord*1.5, type, bulletStack);
-//				flare.motionX = vec.xCoord;
-//				flare.motionY = vec.yCoord;
-//				flare.motionZ = vec.zCoord;
-//				flare.bulletElectro = electro;
-//				flare.colour = this.getColourForIEItem(bulletStack, 1);
-//				flare.setColourSynced();
-//				player.worldObj.spawnEntityInWorld(flare);
-//		flare, //, flare flare_layer
 	}
 
 	public static ItemStack getBulletStack(String key)
@@ -424,7 +428,7 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 		}
 
 		@Override
-		public void onHitTarget(World world, RayTraceResult target, EntityPlayer shooter, Entity projectile, boolean headshot)
+		public void onHitTarget(World world, RayTraceResult target, EntityLivingBase shooter, Entity projectile, boolean headshot)
 		{
 			super.onHitTarget(world, target, shooter, projectile, headshot);
 			EntityRevolvershot bullet = (EntityRevolvershot) projectile;
@@ -514,7 +518,7 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 		}
 
 		@Override
-		public void onHitTarget(World world, RayTraceResult target, EntityPlayer shooter, Entity projectile, boolean headshot)
+		public void onHitTarget(World world, RayTraceResult target, EntityLivingBase shooter, Entity projectile, boolean headshot)
 		{
 		}
 
