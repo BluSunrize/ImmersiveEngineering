@@ -1,4 +1,4 @@
-#####Version 0.10-37
+#####Version 0.10-37 - BUILT
 - added the new IBullet system!
     - bullets are no longer based on metadata, but use NBT tags to differentiate types, their abilities are handled externally
     - updated manual accordingly
