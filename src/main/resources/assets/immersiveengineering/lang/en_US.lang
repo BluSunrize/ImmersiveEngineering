@@ -930,23 +930,25 @@ ie.manual.entry.blueprints1=To create the items detailed in the Blueprint, you i
 ie.manual.entry.squeezer.name=Squeezer
 ie.manual.entry.squeezer.subtext=Pressing matters
 ie.manual.entry.squeezer0=The Squeezer is a multiblock structure that presses juice or oil out of organic materials by use of a big piston. The structure is built as shown above and formed by using the Engineer's Hammer on the central wooden barrel, from the side that has the Engineering Blocks.
-ie.manual.entry.squeezer1=Items can be input into the Squeezer via the two hatches at the back that are marked with blue dots. The hatch with the orange dot serves as an item output and the block below it to output fluids.
+ie.manual.entry.squeezer1=Items can be input into the Squeezer via the two hatches at the back that are marked with blue dots. The hatch with the orange dot serves as an item output and the block below it to output fluids.<br>Applying a redstone signal to the control panel at the front will halt the machine's process, this behavior can be inverted by use of the Engineer's Hammer.
+ie.manual.entry.squeezer2T=The following list shows various items that can be squeezed into plant oil, and the amount they produce.
 
 ie.manual.entry.fermenter.name=Fermenter
 ie.manual.entry.fermenter.subtext=Skál!
 ie.manual.entry.fermenter0=The Fermenter is a multiblock structure that extracts ethanol from certain fruits, grans and vegetables through a fermenting process. The structure is built as shown above and formed by using the Engineer's Hammer on the central cauldron, from the side that has the Engineering Blocks.
-ie.manual.entry.fermenter1=Items can be input into the Fermenter via the two hatches at the back that are marked with blue dots. The hatch with the orange dot serves as an item output and the block below it to output fluids.
+ie.manual.entry.fermenter1=Items can be input into the Fermenter via the two hatches at the back that are marked with blue dots. The hatch with the orange dot serves as an item output and the block below it to output fluids.<br>Applying a redstone signal to the control panel at the front will halt the machine's process, this behavior can be inverted by use of the Engineer's Hammer.
+ie.manual.entry.fermenter2T=The following list shows various items that can be fermented into ethanol, and the amount they produce.
 
 ie.manual.entry.refinery.name=Refinery
 ie.manual.entry.refinery.subtext=Fluid mixing!
 ie.manual.entry.refinery0=The Refinery is a complex multiblock that can refine one or two fluids into another. The most common application of this is the refinement of <link;squeezer;Plant Oil> and <link;fermenter;Ethanol> into Biodiesel.
-ie.manual.entry.refinery1=To form the structure, rightclick the Heavy Engineering Block on the middle layer.<br>Fluids are input through the two ports on either side of the block and output through the orange marked port at the front.
+ie.manual.entry.refinery1=To form the structure, rightclick the Heavy Engineering Block on the middle layer.<br>Fluids are input through the two ports on either side of the block and output through the orange marked port at the front.<br>Applying a redstone signal to the control panel at the front will halt the machine's process, this behavior can be inverted by use of the Engineer's Hammer.
 
 ie.manual.entry.dieselgen.name=Diesel Generator
 ie.manual.entry.dieselgen.subtext=Better than volume: More volume.
 ie.manual.entry.dieselgen0=High-Voltage architecture might be fascinating, but it's not very useful unless you have a generator that can actually create the required output for it.<br>The Diesel Generator is one of the few ways of generating this sort of energy. It is created as a complex multiblock structure and will run off of <link;biodiesel;§o§nBiodiesel§r> or other types of combustible fuel. Due to its high output, it will work through fuel very quickly, so make sure you have a sufficient fuel production to run it.
 ie.manual.entry.dieselgen1=The structure is built from Engineering, Generator and Radiator blocks as well as Fluid Pipes and Scaffolding. Arrange them in the shape shown above and hit either the central generator with an Engineer's Hammer.
-ie.manual.entry.dieselgen2=Fuel is to be input at the bottom corners of the generator, whereas energy will be output to up to three connection on the top. The <config;i;dieselGen_output>Flux/t the generator outputs will be split between all connected points.<br>The small terminal on the side will turn off the generator if supplied with a redstone signal.
+ie.manual.entry.dieselgen2=Fuel is to be input at the bottom corners of the generator, whereas energy will be output to up to three connection on the top. The <config;i;dieselGen_output>Flux/t the generator outputs will be split between all connected points.<br>The small terminal on the side will turn off the generator if supplied with a redstone signal, this behavior can be inverted by use of the Engineer's Hammer.
 ie.manual.entry.dieselgen3=The following table lists all valid fuels for the Diesel Generator and for how long in seconds (ticks) they burn. 
 
 ie.manual.entry.biodiesel.name=Biodiesel
@@ -962,7 +964,7 @@ ie.manual.entry.biodiesel4=Engineer's Hammer.<br>The front of the refinery serve
 ie.manual.entry.conveyor.name=Conveyor Belts
 ie.manual.entry.conveyor.subtext=Who needs rails anyway?
 ie.manual.entry.conveyor0=Conveyor Belts are an easy way of transporting all sorts of things around your base. While they are strong enough to move living creatures like cows or sheep, their true strength lies in transporting items.<br>Throwing items atop them will have the items move along the belt. Should the belt lead into an inventory, the item will be inserted.
-ie.manual.entry.conveyor1=Blocks like hoppers will be able to drop items onto the belts. Use an Engineer's Hammer to rotate the belts (rightclick) or adjust whether they should run up- or downwards (sneak + rightclick).<br>By default, conveyors face the same way the player is facing. Sneaking while placing them will instead make them face towards the player.<br>Using a redstone signal on a conveyor will turn it off.
+ie.manual.entry.conveyor1=Blocks like hoppers will be able to drop items onto the belts. Use an Engineer's Hammer to rotate the belts (rightclick) or adjust whether they should run up- or downwards (sneak + rightclick).<br>Using a redstone signal on a conveyor will turn it off.
 ie.manual.entry.conveyor2=The Dropping Conveyor Belt is quite simply a conveyor with a hatch in the middle, allowing it to drop items that pass over it downwards.<br>Items will be inserted into inventories below or simply dropped if there is an empty space below the conveyor.
 ie.manual.entry.conveyor3=The Vertical Conveyor Belt is a belt meant to be mounted on walls. Using the buckets attached to it, it will lift entities straight up. Despite the use of the term "bucket", it will not lift fluids.<br>This belt can insert into inventories above it or simply expel items over the edge at the top onto more conveyors.
 
@@ -1014,15 +1016,16 @@ ie.manual.entry.bullets.name=Revolver Cartridges
 ie.manual.entry.bullets.subtext=
 ie.manual.entry.bullets0=Cartridges are created in the Engineer's Workbench, by the use of specific <link;blueprints;§o§nEngineer's §o§nBlueprints§r>. Blueprints for normal ammunition you can create yourself, but some more advanced types of ammunition will require you to buy adequate blueprints from someone else. 
 ie.manual.entry.bullets1=§lEmpty §lCasings§r and §lShells§r are the basis for every projectile. Empty Casings can also be crafted in the <link;metalPress;§o§nMetal §o§nPress§r>, using the appropriate mold, at a greatly reduced cost. 
-ie.manual.entry.bullets2=§lCasull §lCartridges§r are created with a "Common Projectiles" blueprint. They are a simple lead projectile inflicting medium damage.
-ie.manual.entry.bullets3=§lArmor-Piercing §lCartridges§r are created with the same blueprint. They do the same amount of damage but penetrate armor by sheer kinetic force.
-ie.manual.entry.bullets4=§lBuckshot §lCartridges§r, created with the aformentioned blueprint, are filled with multiple small projectiles that are fired out in a cone shape. This cartridge is highly effective at short range.
-ie.manual.entry.bullets5=§lHigh-Explosive §lCartridges§r are created with a "Common Projectiles" blueprint. They fire a projectile that explodes on impact, causing damage to living creatures and terrain.
-ie.manual.entry.bullets6=§lSilver §lCartridges§r consist of a lead core wrapped in silver, making them highly effective against undead.
-ie.manual.entry.bullets7=§lDragon's §lBreath Cartridges§r are created with a "Specialized Projectiles" blueprint. Similarly to Buckshot, they are effective at short range, but instead of small metal shots are filled with a flammable metal dust, creating a blast of flame.
-ie.manual.entry.bullets8=§lPhial §lCartridges§r are also created with the "Specialized" blueprint. They can be filled with any potion by crafting them together in a crafting grid and this potion will then be applied on impact. Normal potions require a direct hit, splash potions have an area of effect<config;b;etfuturumBullets; and Lingering Potions will create a temporary, lingering potion cloud.;.>
-ie.manual.entry.bulletsBotania0=§lHoming §lCartridges§r are created with a "Specialized Projectiles" blueprint and the magical metal "Terrasteel", which gives them the ability to home in on the closest target.
-ie.manual.entry.bulletsBotania1=§lWolfpack §lCartridges§r are a collection of multiple homing shots in a single shell. The initial projectile is unguided, but on impact, it splits into six target seeking shots that shred the enemies.
+ie.manual.entry.bullets_casull=§lCasull §lCartridges§r are created with a "Common Projectiles" blueprint. They are a simple lead projectile inflicting medium damage.
+ie.manual.entry.bullets_armorPiercing=§lArmor-Piercing §lCartridges§r are created with the same blueprint. They do the same amount of damage but penetrate armor by sheer kinetic force.
+ie.manual.entry.bullets_buckshot=§lBuckshot §lCartridges§r, created with the aformentioned blueprint, are filled with multiple small projectiles that are fired out in a cone shape. This cartridge is highly effective at short range.
+ie.manual.entry.bullets_HE=§lHigh-Explosive §lCartridges§r are created with a "Common Projectiles" blueprint. They fire a projectile that explodes on impact, causing damage to living creatures and terrain.
+ie.manual.entry.bullets_silver=§lSilver §lCartridges§r consist of a lead core wrapped in silver, making them highly effective against undead.
+ie.manual.entry.bullets_dragonsbreath=§lDragon's §lBreath Cartridges§r are created with a "Specialized Projectiles" blueprint. Similarly to Buckshot, they are effective at short range, but instead of small metal shots are filled with a flammable metal dust, creating a blast of flame.
+ie.manual.entry.bullets_potion=§lPhial §lCartridges§r are also created with the "Specialized" blueprint. They can be filled with any potion by crafting them together in a crafting grid and this potion will then be applied on impact. Normal potions require a direct hit, splash potions have an area of effect and Lingering Potions will create a temporary, lingering potion cloud.
+ie.manual.entry.bullets_flare=§lFlare §lCartridges§r are created with the "Specialized" blueprint. When fired, the flare explodes after a certain distance and then slowly sinks to the ground. You can combine the cartridge with dyes in a crafting table to change its colour.
+ie.manual.entry.bullets_homing=§lHoming §lCartridges§r are created with a "Specialized Projectiles" blueprint and the magical metal "Terrasteel", which gives them the ability to home in on the closest target.
+ie.manual.entry.bullets_wolfpack=§lWolfpack §lCartridges§r are a collection of multiple homing shots in a single shell. The initial projectile is unguided, but on impact, it splits into six target seeking shots that shred the enemies.
 
 ie.manual.entry.chemthrower.name=Chemical Thrower
 ie.manual.entry.chemthrower.subtext=

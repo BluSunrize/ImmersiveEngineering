@@ -103,6 +103,19 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 			}
 		});
 
+		BulletHandler.registerBullet("silver", new BulletHandler.DamagingBullet(
+				new Function<Entity[], DamageSource>()
+				{
+					@Override
+					public DamageSource apply(Entity[] entities)
+					{
+						return IEDamageSources.causeSilverDamage((EntityRevolvershot) entities[0], entities[1]);
+					}
+				},
+				(float) Config.getDouble("BulletDamage-Silver"),
+				BulletHandler.emptyCasing,
+				new ResourceLocation("immersiveengineering:items/bullet_silver")));
+
 		BulletHandler.registerBullet("dragonsbreath", new BulletHandler.DamagingBullet(
 				new Function<Entity[], DamageSource>()
 				{
@@ -133,19 +146,6 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 
 //		homing, Homing, homing
 //		wolfpack, Wolfpack, wolfpack
-
-		BulletHandler.registerBullet("silver", new BulletHandler.DamagingBullet(
-				new Function<Entity[], DamageSource>()
-				{
-					@Override
-					public DamageSource apply(Entity[] entities)
-					{
-						return IEDamageSources.causeSilverDamage((EntityRevolvershot) entities[0], entities[1]);
-					}
-				},
-				(float) Config.getDouble("BulletDamage-Silver"),
-				BulletHandler.emptyCasing,
-				new ResourceLocation("immersiveengineering:items/bullet_silver")));
 
 		BulletHandler.registerBullet("potion", new PotionBullet());
 

@@ -1,18 +1,18 @@
 package blusunrize.immersiveengineering.api.energy;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import blusunrize.immersiveengineering.api.ApiUtils;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author BluSunrize - 08.05.2015
  *
  * The temperature registry to allow additional blocks to work with the Thermoelectric Generator<br>
- * Register either OreDictionary names or 
+ * Registry uses OreDictionary names
  */
 public class ThermoelectricHandler
 {
@@ -36,7 +36,7 @@ public class ThermoelectricHandler
 	public static int getTemperature(Block block, int meta)
 	{
 		ItemStack stack = new ItemStack(block, 1, meta);
-		if (stack.getItem()!=null)
+		if(stack.getItem() != null)
 			for(int oreID : OreDictionary.getOreIDs(stack))
 				if(temperatureMap.containsKey(OreDictionary.getOreName(oreID)))
 					return temperatureMap.get(OreDictionary.getOreName(oreID));
@@ -46,6 +46,10 @@ public class ThermoelectricHandler
 	}
 	public static Map<String, Integer> getThermalValuesSorted(boolean inverse)
 	{
-		return ApiUtils.sortMap(temperatureMap, inverse);
+		HashMap<String, Integer> existingMap = new HashMap();
+		for(String s : temperatureMap.keySet())
+			if(ApiUtils.isExistingOreName(s))
+				existingMap.put(s, temperatureMap.get(s));
+		return ApiUtils.sortMap(existingMap, inverse);
 	}
 }

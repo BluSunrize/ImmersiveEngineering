@@ -674,18 +674,24 @@ public class ClientProxy extends CommonProxy
 		pages = new ArrayList<IManualPage>();
 		pages.add(new ManualPages.Crafting(ManualHelper.getManual(), "bullets0", ItemEngineersBlueprint.getTypedBlueprint("bullet")));
 		pages.add(new ManualPages.CraftingMulti(ManualHelper.getManual(), "bullets1", new ItemStack(IEContent.itemBullet,1,0),new ItemStack(IEContent.itemBullet,1,1), new ItemStack(IEContent.itemMold,1,3)));
-		pages.add(new ManualPages.ItemDisplay(ManualHelper.getManual(), "bullets2", new ItemStack(IEContent.itemBullet,1,2)));
-		pages.add(new ManualPages.ItemDisplay(ManualHelper.getManual(), "bullets3", new ItemStack(IEContent.itemBullet,1,3)));
-		pages.add(new ManualPages.ItemDisplay(ManualHelper.getManual(), "bullets4", new ItemStack(IEContent.itemBullet,1,4)));
-		pages.add(new ManualPages.ItemDisplay(ManualHelper.getManual(), "bullets5", new ItemStack(IEContent.itemBullet,1,5)));
-		pages.add(new ManualPages.ItemDisplay(ManualHelper.getManual(), "bullets6", new ItemStack(IEContent.itemBullet,1,9)));
-		pages.add(new ManualPages.ItemDisplay(ManualHelper.getManual(), "bullets7", new ItemStack(IEContent.itemBullet,1,6)));
-		pages.add(new ManualPages.ItemDisplay(ManualHelper.getManual(), "bullets8", new ItemStack(IEContent.itemBullet,1,10)));
-		if(Config.getBoolean("botaniaBullets"))
-		{
-			pages.add(new ManualPages.ItemDisplay(ManualHelper.getManual(), "bulletsBotania0", new ItemStack(IEContent.itemBullet,1,7)));
-			pages.add(new ManualPages.ItemDisplay(ManualHelper.getManual(), "bulletsBotania1", new ItemStack(IEContent.itemBullet,1,8)));
-		}
+		for(String key : BulletHandler.registry.keySet())
+			pages.add(new ManualPages.ItemDisplay(ManualHelper.getManual(), "bullets_" + key, ItemBullet.getBulletStack(key)));
+//		pages.add(new ManualPages.ItemDisplay(ManualHelper.getManual(), "bullets2", ItemBullet.getBulletStack("casull")));
+//		pages.add(new ManualPages.ItemDisplay(ManualHelper.getManual(), "bullets3", ItemBullet.getBulletStack("armorPiercing")));
+//		pages.add(new ManualPages.ItemDisplay(ManualHelper.getManual(), "bullets4", ItemBullet.getBulletStack("buckshot")));
+//		pages.add(new ManualPages.ItemDisplay(ManualHelper.getManual(), "bullets5", ItemBullet.getBulletStack("HE")));
+//		pages.add(new ManualPages.ItemDisplay(ManualHelper.getManual(), "bullets6", ItemBullet.getBulletStack("silver")));
+//		pages.add(new ManualPages.ItemDisplay(ManualHelper.getManual(), "bullets7", ItemBullet.getBulletStack("dragonsbreath")));
+//		pages.add(new ManualPages.ItemDisplay(ManualHelper.getManual(), "bullets8", ItemBullet.getBulletStack("potion")));
+//		pages.add(new ManualPages.ItemDisplay(ManualHelper.getManual(), "bullets8", ItemBullet.getBulletStack("potion")));
+//		ItemBullet.getBulletStack("flare")));
+//		ItemBullet.getBulletStack("homing")));
+//		ItemBullet.getBulletStack("wolfpack")));
+//		if(Config.getBoolean("botaniaBullets"))
+//		{
+//			pages.add(new ManualPages.ItemDisplay(ManualHelper.getManual(), "bulletsBotania0", new ItemStack(IEContent.itemBullet,1,7)));
+//			pages.add(new ManualPages.ItemDisplay(ManualHelper.getManual(), "bulletsBotania1", new ItemStack(IEContent.itemBullet,1,8)));
+//		}
 		ManualHelper.addEntry("bullets", ManualHelper.CAT_MACHINES, pages.toArray(new IManualPage[pages.size()]));
 		ManualHelper.addEntry("skyhook", ManualHelper.CAT_MACHINES,
 				new ManualPages.CraftingMulti(ManualHelper.getManual(), "skyhook0", new ItemStack(IEContent.itemSkyhook), new ItemStack(IEContent.itemMaterial, 1, 9)),
@@ -718,12 +724,18 @@ public class ClientProxy extends CommonProxy
 		ManualHelper.addEntry("crusher", ManualHelper.CAT_HEAVYMACHINES,
 				new ManualPageMultiblock(ManualHelper.getManual(), "crusher0", MultiblockCrusher.instance),
 				new ManualPages.Text(ManualHelper.getManual(), "crusher1"));
+		sortedMap = SqueezerRecipe.getFluidValuesSorted(IEContent.fluidPlantoil, true);
+		table = formatToTable_ItemIntHashmap(sortedMap, "mB");
 		ManualHelper.addEntry("squeezer", ManualHelper.CAT_HEAVYMACHINES,
 				new ManualPageMultiblock(ManualHelper.getManual(), "squeezer0", MultiblockSqueezer.instance),
-				new ManualPages.Text(ManualHelper.getManual(), "squeezer1"));
+				new ManualPages.Text(ManualHelper.getManual(), "squeezer1"),
+				new ManualPages.Table(ManualHelper.getManual(), "squeezer2T", table, false));
+		sortedMap = FermenterRecipe.getFluidValuesSorted(IEContent.fluidEthanol, true);
+		table = formatToTable_ItemIntHashmap(sortedMap, "mB");
 		ManualHelper.addEntry("fermenter", ManualHelper.CAT_HEAVYMACHINES,
 				new ManualPageMultiblock(ManualHelper.getManual(), "fermenter0", MultiblockFermenter.instance),
-				new ManualPages.Text(ManualHelper.getManual(), "fermenter1"));
+				new ManualPages.Text(ManualHelper.getManual(), "fermenter1"),
+				new ManualPages.Table(ManualHelper.getManual(), "fermenter2T", table, false));
 		ManualHelper.addEntry("refinery", ManualHelper.CAT_HEAVYMACHINES,
 				new ManualPageMultiblock(ManualHelper.getManual(), "refinery0", MultiblockRefinery.instance),
 				new ManualPages.Text(ManualHelper.getManual(), "refinery1"));
@@ -731,18 +743,16 @@ public class ClientProxy extends CommonProxy
 		//		ManualHelper.addEntry("bottlingMachine", ManualHelper.CAT_MACHINES,
 		//				new ManualPageMultiblock(ManualHelper.getManual(), "bottlingMachine0", MultiblockBottlingMachine.instance),
 		//				new ManualPages.Text(ManualHelper.getManual(), "bottlingMachine1"));
-		sortedMap = SqueezerRecipe.getFluidValuesSorted(IEContent.fluidPlantoil, true);
-		table = formatToTable_ItemIntHashmap(sortedMap,"mB");
 		sortedMap = FermenterRecipe.getFluidValuesSorted(IEContent.fluidEthanol, true);
 		String[][] table2 = formatToTable_ItemIntHashmap(sortedMap,"mB");
-		ManualHelper.addEntry("biodiesel", ManualHelper.CAT_HEAVYMACHINES,
-				new ManualPages.Text(ManualHelper.getManual(), "biodiesel0"),
-				new ManualPageMultiblock(ManualHelper.getManual(), "biodiesel1", MultiblockSqueezer.instance),
-				new ManualPages.Table(ManualHelper.getManual(), "biodiesel1T", table, false),
-				new ManualPageMultiblock(ManualHelper.getManual(), "biodiesel2", MultiblockFermenter.instance),
-				new ManualPages.Table(ManualHelper.getManual(), "biodiesel2T", table2, false),
-				new ManualPageMultiblock(ManualHelper.getManual(), "biodiesel3", MultiblockRefinery.instance),
-				new ManualPages.Text(ManualHelper.getManual(), "biodiesel4"));
+//		ManualHelper.addEntry("biodiesel", ManualHelper.CAT_HEAVYMACHINES,
+//				new ManualPages.Text(ManualHelper.getManual(), "biodiesel0"),
+//				new ManualPageMultiblock(ManualHelper.getManual(), "biodiesel1", MultiblockSqueezer.instance),
+//				new ManualPages.Table(ManualHelper.getManual(), "biodiesel1T", table, false),
+//				new ManualPageMultiblock(ManualHelper.getManual(), "biodiesel2", MultiblockFermenter.instance),
+//				new ManualPages.Table(ManualHelper.getManual(), "biodiesel2T", table2, false),
+//				new ManualPageMultiblock(ManualHelper.getManual(), "biodiesel3", MultiblockRefinery.instance),
+//				new ManualPages.Text(ManualHelper.getManual(), "biodiesel4"));
 		ManualHelper.addEntry("arcfurnace", ManualHelper.CAT_HEAVYMACHINES,
 				new ManualPageMultiblock(ManualHelper.getManual(), "arcfurnace0", MultiblockArcFurnace.instance),
 				new ManualPages.Text(ManualHelper.getManual(), "arcfurnace1"),
