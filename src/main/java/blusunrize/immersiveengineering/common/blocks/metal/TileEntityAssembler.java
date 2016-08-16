@@ -85,6 +85,20 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 		}
 	}
 	@Override
+	public void receiveMessageFromClient(NBTTagCompound message)
+	{
+		if (message.hasKey("buttonID"))
+		{
+			int id = message.getInteger("buttonID");
+			if (id >= 0 && id < patterns.length)
+			{
+				CrafterPatternInventory pattern = patterns[id];
+				for (int i = 0; i < pattern.inv.length; i++)
+					pattern.inv[i] = null;
+			}
+		}
+	}
+	@Override
 	public void update()
 	{
 		super.update();
@@ -96,7 +110,9 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 		for(int p=0; p<patterns.length; p++)
 		{
 			CrafterPatternInventory pattern = patterns[p];
-			if(computerOn[p]&&pattern.inv[9]!=null && canOutput(pattern.inv[9], p))
+			if((controllingComputers!=0)&&!computerOn[p])
+				return;
+			if(pattern.inv[9]!=null && canOutput(pattern.inv[9], p))
 			{
 				ItemStack output = pattern.inv[9].copy();
 				ArrayList<ItemStack> queryList = new ArrayList<>();//List of all available inputs in the inventory
