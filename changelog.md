@@ -1,3 +1,13 @@
+#####Version 0.10-37
+- added the new IBullet system!
+    - bullets are no longer based on metadata, but use NBT tags to differentiate types, their abilities are handled externally
+    - updated manual accordingly
+- added recipe for leaded concrete
+- changed Conveyors to have a better placement system
+- fixed crashes when shiftclicking in revolver gui
+- fixed slots not assignign properly in revolver gui
+- fixed a bunch of manual things
+
 #####Version 0.10-36 - BUILT
 - added Hemp Seeds to Forestry's bags
 - changed Windmill and Improved Windmill to have models with 90% less polys. PERFORMANCE!

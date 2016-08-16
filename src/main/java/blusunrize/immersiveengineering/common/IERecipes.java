@@ -204,6 +204,7 @@ public class IERecipes
 		addIngredientRecipe(new ItemStack(IEContent.blockStoneDecoration, 12, BlockTypes_StoneDecoration.CONCRETE.getMeta()), "SCS", "GBG", "SCS", 'C', Items.CLAY_BALL, 'S', "itemSlag", 'G', Blocks.GRAVEL, 'B', Items.WATER_BUCKET).allowQuarterTurn();
 		addShapelessOredictRecipe(new ItemStack(IEContent.blockStoneDecoration,1,BlockTypes_StoneDecoration.CONCRETE.getMeta()), new ItemStack(IEContent.blockStoneDecoration,1,BlockTypes_StoneDecoration.CONCRETE_TILE.getMeta()));
 		addOredictRecipe(new ItemStack(IEContent.blockStoneDecoration,4,BlockTypes_StoneDecoration.CONCRETE_TILE.getMeta()), "CC","CC", 'C',new ItemStack(IEContent.blockStoneDecoration,1,BlockTypes_StoneDecoration.CONCRETE.getMeta()));
+		addOredictRecipe(new ItemStack(IEContent.blockStoneDecoration, 1, BlockTypes_StoneDecoration.CONCRETE_LEADED.getMeta()), "P", "B", 'P', "plateLead", 'B', new ItemStack(IEContent.blockStoneDecoration, 1, BlockTypes_StoneDecoration.CONCRETE.getMeta()));
 		addIngredientRecipe(new ItemStack(IEContent.blockStoneDecoration, 2, BlockTypes_StoneDecoration.INSULATING_GLASS.getMeta()), " G ", "IDI", " G ", 'G', "blockGlass", 'I', "dustIron", 'D', "dyeGreen").allowQuarterTurn();
 		for(int i=0; i<=BlockTypes_StoneDecoration.values().length; i++)
 			if(!IEContent.blockStoneDecorationSlabs.isMetaHidden(i))
