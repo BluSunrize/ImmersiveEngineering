@@ -20,10 +20,12 @@ import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.SkylineHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.common.util.network.MessageRequestBlockUpdate;
 import blusunrize.immersiveengineering.common.util.sound.IEMuffledSound;
 import blusunrize.immersiveengineering.common.util.sound.IEMuffledTickableSound;
 import com.google.common.collect.ImmutableList;
+import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ITickableSound;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -36,6 +38,7 @@ import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.client.resources.IResourceManagerReloadListener;
@@ -43,6 +46,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -69,10 +74,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.oredict.OreDictionary;
 import org.lwjgl.opengl.GL11;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class ClientEventHandler implements IResourceManagerReloadListener
 {
@@ -687,12 +689,11 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 				List<AxisAlignedBB> boxes = iasb.getAdvancedSelectionBounds();
 				if(boxes!=null && !boxes.isEmpty())
 				{
-					GL11.glEnable(GL11.GL_BLEND);
-					OpenGlHelper.glBlendFunc(770, 771, 1, 0);
-					GL11.glColor4f(0.0F, 0.0F, 0.0F, 0.4F);
-					GL11.glLineWidth(2.0F);
-					GL11.glDisable(GL11.GL_TEXTURE_2D);
-					GL11.glDepthMask(false);
+					GlStateManager.enableBlend();
+					GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+					GlStateManager.glLineWidth(2.0F);
+					GlStateManager.disableTexture2D();
+					GlStateManager.depthMask(false);
 					ArrayList<AxisAlignedBB> additionalBoxes = new ArrayList<AxisAlignedBB>();
 					AxisAlignedBB overrideBox = null;
 					for(AxisAlignedBB aabb : boxes)
@@ -707,102 +708,137 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 					else
 						for(AxisAlignedBB aabb : additionalBoxes.isEmpty()?boxes:additionalBoxes)
 							RenderGlobal.func_189697_a(aabb.expand(f1, f1, f1).offset(px, py, pz), 0, 0, 0, 0.4f);
-					GL11.glDepthMask(true);
-					GL11.glEnable(GL11.GL_TEXTURE_2D);
-					GL11.glDisable(GL11.GL_BLEND);
+					GlStateManager.depthMask(true);
+					GlStateManager.enableTexture2D();
+					GlStateManager.disableBlend();
 					event.setCanceled(true);
 				}
 			}
 
 
-			ItemStack stack = event.getPlayer().getHeldItem(EnumHand.MAIN_HAND);
 			World world = event.getPlayer().worldObj;
+			ItemStack stack = event.getPlayer().getHeldItem(EnumHand.MAIN_HAND);
+			if(stack != null && IEContent.blockConveyor.equals(Block.getBlockFromItem(stack.getItem())) && event.getTarget().sideHit.getAxis() == Axis.Y)
+			{
+				EnumFacing side = event.getTarget().sideHit;
+				BlockPos pos = event.getTarget().getBlockPos();
+				AxisAlignedBB targetedBB = world.getBlockState(pos).getSelectedBoundingBox(world, pos);
+				if(targetedBB != null)
+					targetedBB = targetedBB.offset(-pos.getX(), -pos.getY(), -pos.getZ());
+				GlStateManager.enableBlend();
+				GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+				GlStateManager.glLineWidth(2.0F);
+				GlStateManager.disableTexture2D();
+				GlStateManager.depthMask(false);
+
+				Tessellator tessellator = Tessellator.getInstance();
+				VertexBuffer vertexbuffer = tessellator.getBuffer();
+				vertexbuffer.setTranslation(pos.getX() + px, pos.getY() + py, pos.getZ() + pz);
+				double[][] points = new double[4][];
+
+
+				if(side.getAxis() == Axis.Y)
+				{
+					points[0] = new double[]{0 - f1, side == EnumFacing.DOWN ? ((targetedBB != null ? targetedBB.minY : 0) - f1) : ((targetedBB != null ? targetedBB.maxY : 1) + f1), 0 - f1};
+					points[1] = new double[]{1 + f1, side == EnumFacing.DOWN ? ((targetedBB != null ? targetedBB.minY : 0) - f1) : ((targetedBB != null ? targetedBB.maxY : 1) + f1), 1 + f1};
+					points[2] = new double[]{0 - f1, side == EnumFacing.DOWN ? ((targetedBB != null ? targetedBB.minY : 0) - f1) : ((targetedBB != null ? targetedBB.maxY : 1) + f1), 1 + f1};
+					points[3] = new double[]{1 + f1, side == EnumFacing.DOWN ? ((targetedBB != null ? targetedBB.minY : 0) - f1) : ((targetedBB != null ? targetedBB.maxY : 1) + f1), 0 - f1};
+				} else if(side.getAxis() == Axis.Z)
+				{
+					points[0] = new double[]{1 + f1, 1 + f1, side == EnumFacing.NORTH ? ((targetedBB != null ? targetedBB.minZ : 0) - f1) : ((targetedBB != null ? targetedBB.maxZ : 1) + f1)};
+					points[1] = new double[]{0 - f1, 0 - f1, side == EnumFacing.NORTH ? ((targetedBB != null ? targetedBB.minZ : 0) - f1) : ((targetedBB != null ? targetedBB.maxZ : 1) + f1)};
+					points[2] = new double[]{0 - f1, 1 + f1, side == EnumFacing.NORTH ? ((targetedBB != null ? targetedBB.minZ : 0) - f1) : ((targetedBB != null ? targetedBB.maxZ : 1) + f1)};
+					points[3] = new double[]{1 + f1, 0 - f1, side == EnumFacing.NORTH ? ((targetedBB != null ? targetedBB.minZ : 0) - f1) : ((targetedBB != null ? targetedBB.maxZ : 1) + f1)};
+				} else
+				{
+					points[0] = new double[]{side == EnumFacing.WEST ? ((targetedBB != null ? targetedBB.minX : 0) - f1) : ((targetedBB != null ? targetedBB.maxX : 1) + f1), 1 + f1, 1 + f1};
+					points[1] = new double[]{side == EnumFacing.WEST ? ((targetedBB != null ? targetedBB.minX : 0) - f1) : ((targetedBB != null ? targetedBB.maxX : 1) + f1), 0 - f1, 0 - f1};
+					points[2] = new double[]{side == EnumFacing.WEST ? ((targetedBB != null ? targetedBB.minX : 0) - f1) : ((targetedBB != null ? targetedBB.maxX : 1) + f1), 1 + f1, 0 - f1};
+					points[3] = new double[]{side == EnumFacing.WEST ? ((targetedBB != null ? targetedBB.minX : 0) - f1) : ((targetedBB != null ? targetedBB.maxX : 1) + f1), 0 - f1, 1 + f1};
+				}
+				vertexbuffer.begin(1, DefaultVertexFormats.POSITION_COLOR);
+				for(double[] point : points)
+					vertexbuffer.pos(point[0], point[1], point[2]).color(0, 0, 0, 0.4F).endVertex();
+				tessellator.draw();
+
+				vertexbuffer.begin(2, DefaultVertexFormats.POSITION_COLOR);
+				vertexbuffer.pos(points[0][0], points[0][1], points[0][2]).color(0, 0, 0, 0.4F).endVertex();
+				vertexbuffer.pos(points[2][0], points[2][1], points[2][2]).color(0, 0, 0, 0.4F).endVertex();
+				vertexbuffer.pos(points[1][0], points[1][1], points[1][2]).color(0, 0, 0, 0.4F).endVertex();
+				vertexbuffer.pos(points[3][0], points[3][1], points[3][2]).color(0, 0, 0, 0.4F).endVertex();
+				tessellator.draw();
+
+				float xFromMid = side.getAxis() == Axis.X ? 0 : (float) event.getTarget().hitVec.xCoord - pos.getX() - .5f;
+				float yFromMid = side.getAxis() == Axis.Y ? 0 : (float) event.getTarget().hitVec.yCoord - pos.getY() - .5f;
+				float zFromMid = side.getAxis() == Axis.Z ? 0 : (float) event.getTarget().hitVec.zCoord - pos.getZ() - .5f;
+				float max = Math.max(Math.abs(yFromMid), Math.max(Math.abs(xFromMid), Math.abs(zFromMid)));
+				Vec3d dir = new Vec3d(max == Math.abs(xFromMid) ? Math.signum(xFromMid) : 0, max == Math.abs(yFromMid) ? Math.signum(yFromMid) : 0, max == Math.abs(zFromMid) ? Math.signum(zFromMid) : 0);
+				if(dir != null)
+					drawBlockOverlayArrow(tessellator, vertexbuffer, dir, side, targetedBB);
+				vertexbuffer.setTranslation(0, 0, 0);
+
+				GlStateManager.depthMask(true);
+				GlStateManager.enableTexture2D();
+				GlStateManager.disableBlend();
+			}
+
 			if(stack!=null && stack.getItem() instanceof ItemDrill && ((ItemDrill)stack.getItem()).isEffective(world.getBlockState(event.getTarget().getBlockPos()).getMaterial()))
 			{
 				ItemStack head = ((ItemDrill)stack.getItem()).getHead(stack);
 				if(head!=null)
 				{
 					ImmutableList<BlockPos> blocks = ((IDrillHead)head.getItem()).getExtraBlocksDug(head, world, event.getPlayer(), event.getTarget());
-					for(BlockPos pos : blocks)
-						event.getContext().drawSelectionBox(event.getPlayer(), new RayTraceResult(new Vec3d(0,0,0), null, pos), 0, event.getPartialTicks());
-
-					PlayerControllerMP controllerMP = ClientUtils.mc().playerController;
-					if(controllerMP.isHittingBlock)
-					{
-						//						if(controllerMP.currentItemHittingBlock != null &&
-						//								controllerMP.currentItemHittingBlock.getItem() instanceof IAoeTool &&
-						//								((IAoeTool) controllerMP.currentItemHittingBlock.getItem()).isAoeHarvestTool())
-						//						{
-						//							ItemStack stack = controllerMP.currentItemHittingBlock;
-						//							BlockPos pos = controllerMP.currentBlock;
-						ClientUtils.drawBlockDamageTexture(ClientUtils.tes(), ClientUtils.tes().getBuffer(), event.getPlayer(), event.getPartialTicks(), world, blocks);
-						//							drawBlockDamageTexture(Tessellator.getInstance(),
-						//									Tessellator.getInstance().getWorldRenderer(),
-						//									player,
-						//									event.partialTicks,
-						//									world,
-						//									((IAoeTool) stack.getItem()).getAOEBlocks(stack, world, player, pos));
-						//						}
-					}
-
-					//					int side = event.getTarget().sideHit;
-					//					int diameter = ((IDrillHead)head.getItem()).getMiningSize(head)+((ItemDrill)stack.getItem()).getUpgrades(stack).getInteger("size");
-					//					int depth = ((IDrillHead)head.getItem()).getMiningDepth(head)+((ItemDrill)stack.getItem()).getUpgrades(stack).getInteger("depth");
-					//
-					//					int startX=event.getTarget().blockX;
-					//					int startY=event.getTarget().blockY;
-					//					int startZ=event.getTarget().blockZ;
-					//					if(diameter%2==0)//even numbers
-					//					{
-					//						float hx = (float)event.getTarget().hitVec.xCoord-event.getTarget().blockX;
-					//						float hy = (float)event.getTarget().hitVec.yCoord-event.getTarget().blockY;
-					//						float hz = (float)event.getTarget().hitVec.zCoord-event.getTarget().blockZ;
-					//						if((side<2&&hx<.5)||(side<4&&hx<.5))
-					//							startX-= diameter/2;
-					//						if(side>1&&hy<.5)
-					//							startY-= diameter/2;
-					//						if((side<2&&hz<.5)||(side>3&&hz<.5))
-					//							startZ-= diameter/2;
-					//					}
-					//					else//odd numbers
-					//					{
-					//						startX-=(side==4||side==5?0: diameter/2);
-					//						startY-=(side==0||side==1?0: diameter/2);
-					//						startZ-=(side==2||side==3?0: diameter/2);
-					//					}
-
-					//					GL11.glColor4f(0.1F, 0.1F, 0.1F, 0.4F);
-					//					GL11.glLineWidth(1F);
-					//					GL11.glDisable(GL11.GL_TEXTURE_2D);
-
-					//					AxisAlignedBB aabb = AxisAlignedBB.getBoundingBox(startX,startY,startZ, startX+(side==4||side==5?1:diameter),startY+(side==0||side==1?1:diameter),startZ+(side==2||side==3?1: diameter));
-					//					RenderGlobal.drawOutlinedBoundingBox(aabb.expand((double)f1, (double)f1, (double)f1).getOffsetBoundingBox(-d0, -d1, -d2), -1);
-					//					for(int dd=0; dd<depth; dd++)
-					//						for(int dw=0; dw<diameter; dw++)
-					//							for(int dh=0; dh<diameter; dh++)
-					//							{
-					//								int x = startX+ (side==4||side==5?dd: dw);
-					//								int y = startY+ (side==0||side==1?dd: dh);
-					//								int z = startZ+ (side==0||side==1?dh: side==4||side==5?dw: dd);
-					//								Block block = event.getPlayer().worldObj.getBlockState(x,y,z);
-					//								if(block!=null && !block.isAir(world, x, y, z) && block.getPlayerRelativeBlockHardness(event.getPlayer(), world, x, y, z) != 0)
-					//								{
-					//									if(!((ItemDrill)stack.getItem()).canBreakExtraBlock(world, block, x, y, z, world.getBlockMetadata(x,y,z), event.getPlayer(), stack, head, false))
-					//										continue;
-					//									AxisAlignedBB aabb = block.getSelectedBoundingBoxFromPool(event.getPlayer().worldObj, x,y,z);
-					//									if(aabb!=null)
-					//									{
-					//										RenderGlobal.drawOutlinedBoundingBox(aabb.expand((double)f1, (double)f1, (double)f1).getOffsetBoundingBox(-d0, -d1, -d2), -1);
-					//									}
-					//								}
-					//							}
-					//					GL11.glDepthMask(true);
-					//					GL11.glEnable(GL11.GL_TEXTURE_2D);
-					//					GL11.glDisable(GL11.GL_BLEND);
+					drawAdditionalBlockbreak(event.getContext(), event.getPlayer(), event.getPartialTicks(), blocks);
 				}
 			}
 
 		}
+	}
+
+	private static float[][] arrowCoords = {{0, .375f}, {.3125f, .0625f}, {.125f, .0625f}, {.125f, -.375f}, {-.125f, -.375f}, {-.125f, .0625f}, {-.3125f, .0625f}};
+
+	public static void drawBlockOverlayArrow(Tessellator tessellator, VertexBuffer vertexbuffer, Vec3d directionVec, EnumFacing side, AxisAlignedBB targetedBB)
+	{
+		Vec3d[] translatedPositions = new Vec3d[arrowCoords.length];
+		Matrix4 mat = new Matrix4();
+		Vec3d defaultDir = side.getAxis() == Axis.Y ? new Vec3d(0, 0, 1) : new Vec3d(0, 1, 0);
+		directionVec = directionVec.normalize();
+		double angle = Math.acos(defaultDir.dotProduct(directionVec));
+		Vec3d axis = defaultDir.crossProduct(directionVec);
+		mat.rotate(angle, axis.xCoord, axis.yCoord, axis.zCoord);
+		if(side != null)
+		{
+			if(side.getAxis() == Axis.Z)
+				mat.rotate(Math.PI / 2, 1, 0, 0).rotate(Math.PI, 0, 1, 0);
+			else if(side.getAxis() == Axis.X)
+				mat.rotate(Math.PI / 2, 0, 0, 1).rotate(Math.PI / 2, 0, 1, 0);
+		}
+		for(int i = 0; i < translatedPositions.length; i++)
+		{
+			Vec3d vec = mat.apply(new Vec3d(arrowCoords[i][0], 0, arrowCoords[i][1])).addVector(.5, .5, .5);
+			if(side != null && targetedBB != null)
+				vec = new Vec3d(side == EnumFacing.WEST ? targetedBB.minX - .002 : side == EnumFacing.EAST ? targetedBB.maxX + .002 : vec.xCoord, side == EnumFacing.DOWN ? targetedBB.minY - .002 : side == EnumFacing.UP ? targetedBB.maxY + .002 : vec.yCoord, side == EnumFacing.NORTH ? targetedBB.minZ - .002 : side == EnumFacing.SOUTH ? targetedBB.maxZ + .002 : vec.zCoord);
+			translatedPositions[i] = vec;
+		}
+
+		vertexbuffer.begin(6, DefaultVertexFormats.POSITION_COLOR);
+		for(Vec3d point : translatedPositions)
+			vertexbuffer.pos(point.xCoord, point.yCoord, point.zCoord).color(Lib.COLOUR_F_ImmersiveOrange[0], Lib.COLOUR_F_ImmersiveOrange[1], Lib.COLOUR_F_ImmersiveOrange[2], 0.4F).endVertex();
+		tessellator.draw();
+		vertexbuffer.begin(2, DefaultVertexFormats.POSITION_COLOR);
+		for(Vec3d point : translatedPositions)
+			vertexbuffer.pos(point.xCoord, point.yCoord, point.zCoord).color(0, 0, 0, 0.4F).endVertex();
+		tessellator.draw();
+	}
+
+	public static void drawAdditionalBlockbreak(RenderGlobal context, EntityPlayer player, float partialTicks, Collection<BlockPos> blocks)
+	{
+		for(BlockPos pos : blocks)
+			context.drawSelectionBox(player, new RayTraceResult(new Vec3d(0, 0, 0), null, pos), 0, partialTicks);
+
+		PlayerControllerMP controllerMP = ClientUtils.mc().playerController;
+		if(controllerMP.isHittingBlock)
+			ClientUtils.drawBlockDamageTexture(ClientUtils.tes(), ClientUtils.tes().getBuffer(), player, partialTicks, player.worldObj, blocks);
 	}
 
 	//	static void renderBoundingBox(AxisAlignedBB aabb, double offsetX, double offsetY, double offsetZ, float expand)

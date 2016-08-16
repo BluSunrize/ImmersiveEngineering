@@ -13,10 +13,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -188,12 +188,12 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 	@Override
 	public int getFacingLimitation()
 	{
-		return 2;
+		return 5;
 	}
 	@Override
 	public boolean mirrorFacingOnPlacement(EntityLivingBase placer)
 	{
-		return placer.isSneaking();
+		return false;
 	}
 	@Override
 	public boolean canHammerRotate(EnumFacing side, float hitX, float hitY, float hitZ, EntityLivingBase entity)

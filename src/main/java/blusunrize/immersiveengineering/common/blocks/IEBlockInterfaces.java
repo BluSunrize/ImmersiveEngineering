@@ -94,7 +94,7 @@ public class IEBlockInterfaces
 		EnumFacing getFacing();
 		void setFacing(EnumFacing facing);
 		/**
-		 * @return 0 = side clicked, 1=piston behaviour,  2 = horizontal, 3 = vertical, 4 = x/z axis
+		 * @return 0 = side clicked, 1=piston behaviour,  2 = horizontal, 3 = vertical, 4 = x/z axis, 5 = horizontal based on quadrant
 		 */
 		int getFacingLimitation();
 		boolean mirrorFacingOnPlacement(EntityLivingBase placer);

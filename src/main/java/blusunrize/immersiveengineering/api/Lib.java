@@ -23,6 +23,10 @@ public class Lib
 	public static final String GUI = "gui."+ImmersiveEngineering.MODID+".";
 	public static final String GUI_CONFIG = "gui."+ImmersiveEngineering.MODID+".config.";
 
+	public static final int COLOUR_I_ImmersiveOrange = 0xf78034;
+	public static final float[] COLOUR_F_ImmersiveOrange = {247 / 255f, 128 / 255f, 52 / 255f};
+	public static final int COLOUR_I_ImmersiveOrangeShadow = 0x3e200d;
+
 	/**Gui IDs*/
 	//Tiles
 	public static final int GUIID_Base_Tile = 0;

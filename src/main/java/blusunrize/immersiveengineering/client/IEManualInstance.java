@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.client;
 
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.ManualHelper;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -22,8 +23,8 @@ public class IEManualInstance extends ManualInstance
 	{
 		super(new IEItemFontRender(), "immersiveengineering:textures/gui/manual.png");
 
-		this.fontRenderer.colorCode[0+6] = 0xf78034;
-		this.fontRenderer.colorCode[16+6] = 0x3e200d;
+		this.fontRenderer.colorCode[0 + 6] = Lib.COLOUR_I_ImmersiveOrange;
+		this.fontRenderer.colorCode[16 + 6] = Lib.COLOUR_I_ImmersiveOrangeShadow;
 		if (Minecraft.getMinecraft().gameSettings.language != null)
 		{
 			this.fontRenderer.setUnicodeFlag(ClientUtils.mc().getLanguageManager().isCurrentLocaleUnicode());

@@ -949,7 +949,7 @@ public class ClientUtils
 	//	}
 
 	//Cheers boni =P
-	public static void drawBlockDamageTexture(Tessellator tessellatorIn, VertexBuffer worldRendererIn, Entity entityIn, float partialTicks, World world, List<BlockPos> blocks)
+	public static void drawBlockDamageTexture(Tessellator tessellatorIn, VertexBuffer worldRendererIn, Entity entityIn, float partialTicks, World world, Collection<BlockPos> blocks)
 	{
 		double d0 = entityIn.lastTickPosX + (entityIn.posX - entityIn.lastTickPosX) * (double) partialTicks;
 		double d1 = entityIn.lastTickPosY + (entityIn.posY - entityIn.lastTickPosY) * (double) partialTicks;
@@ -1352,6 +1352,7 @@ public class ClientUtils
 	{
 		UnpackedBakedQuad.Builder builder = new UnpackedBakedQuad.Builder(format);
 		builder.setQuadOrientation(facing);
+		builder.setTexture(sprite);
 		Normal faceNormal = new Normal(facing.getDirectionVec().getX(), facing.getDirectionVec().getY(), facing.getDirectionVec().getZ());
 		putVertexData(format, builder, vertices[invert ? 3 : 0], faceNormal, 0, 0, sprite, colour);
 		putVertexData(format, builder, vertices[invert ? 2 : 1], faceNormal, 0, 16, sprite, colour);

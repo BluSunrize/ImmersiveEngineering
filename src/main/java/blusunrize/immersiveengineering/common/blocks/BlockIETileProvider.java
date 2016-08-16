@@ -23,6 +23,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -189,7 +190,6 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 		{
 			EnumFacing f = EnumFacing.DOWN;
 			int limit = ((IDirectionalTile)tile).getFacingLimitation();
-
 			if(limit==0)
 				f = side;
 			else if(limit==1)
@@ -203,9 +203,21 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 				f = EnumFacing.fromAngle(placer.rotationYaw);
 				if(f==EnumFacing.SOUTH || f==EnumFacing.WEST)
 					f = f.getOpposite();
+			} else if(limit == 5)
+			{
+				if(side.getAxis() != Axis.Y)
+					f = side.getOpposite();
+				else
+				{
+					float xFromMid = hitX - .5f;
+					float zFromMid = hitZ - .5f;
+					float max = Math.max(Math.abs(xFromMid), Math.abs(zFromMid));
+					if(max == Math.abs(xFromMid))
+						f = xFromMid < 0 ? EnumFacing.WEST : EnumFacing.EAST;
+					else
+						f = zFromMid < 0 ? EnumFacing.NORTH : EnumFacing.SOUTH;
+				}
 			}
-			else
-				f = EnumFacing.getFront(limit-5);
 			((IDirectionalTile)tile).setFacing( ((IDirectionalTile)tile).mirrorFacingOnPlacement(placer)?f.getOpposite():f );
 			if(tile instanceof IAdvancedDirectionalTile)
 				((IAdvancedDirectionalTile)tile).onDirectionalPlacement(side, hitX, hitY, hitZ, placer);
