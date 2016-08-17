@@ -84,13 +84,13 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 	@Override
 	public void receiveMessageFromClient(NBTTagCompound message)
 	{
-		if (message.hasKey("buttonID"))
+		if(message.hasKey("buttonID"))
 		{
 			int id = message.getInteger("buttonID");
-			if (id >= 0 && id < patterns.length)
+			if(id >= 0 && id < patterns.length)
 			{
 				CrafterPatternInventory pattern = patterns[id];
-				for (int i = 0; i < pattern.inv.length; i++)
+				for(int i = 0; i < pattern.inv.length; i++)
 					pattern.inv[i] = null;
 			}
 		}

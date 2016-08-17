@@ -480,6 +480,7 @@ public class IERecipes
 		addCrusherRecipe(new ItemStack(Items.BLAZE_POWDER,4), "rodBlaze", 3200, "dustSulfur",.5f);
 		addCrusherRecipe(new ItemStack(Items.DYE,6,15), Items.BONE, 3200);
 		addCrusherRecipe(new ItemStack(IEContent.itemMaterial,1,17), "fuelCoke", 2400);
+		addCrusherRecipe(new ItemStack(IEContent.itemMaterial, 9, 17), "blockFuelCoke", 4800);
 		addItemToOreDictCrusherRecipe("dustCoal",1, new ItemStack(Items.COAL), 2400);
 		addItemToOreDictCrusherRecipe("dustObsidian",4, Blocks.OBSIDIAN, 6000);
 		for(int i=0; i<16; i++)

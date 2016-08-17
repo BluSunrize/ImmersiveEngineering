@@ -33,7 +33,7 @@ public abstract class EntityIEProjectile extends EntityArrow//Yes I have to exte
 	public int ticksInAir;
 
 	private int tickLimit=40;
-	private static final DataParameter<String> dataMarker_shooter = EntityDataManager.<String>createKey(EntityIEProjectile.class, DataSerializers.STRING);
+	private static final DataParameter<String> dataMarker_shooter = EntityDataManager.createKey(EntityIEProjectile.class, DataSerializers.STRING);
 
 	public EntityIEProjectile(World world)
 	{
@@ -117,14 +117,12 @@ public abstract class EntityIEProjectile extends EntityArrow//Yes I have to exte
 		IBlockState iblockstate = this.worldObj.getBlockState(blockpos);
 		Block block = iblockstate.getBlock();
 
-		if (block.getMaterial(iblockstate) != Material.AIR)
+		if(iblockstate.getMaterial() != Material.AIR)
 		{
 			AxisAlignedBB axisalignedbb = block.getCollisionBoundingBox(iblockstate, this.worldObj, blockpos);
 			if(axisalignedbb != null && axisalignedbb.isVecInside(new Vec3d(this.posX, this.posY, this.posZ)))
 				this.inGround = true;
 		}
-
-		super.onUpdate();
 
 		if(this.inGround)
 		{
