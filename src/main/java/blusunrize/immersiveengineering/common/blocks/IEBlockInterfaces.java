@@ -32,6 +32,8 @@ public class IEBlockInterfaces
 		IBlockState getInventoryState(int meta);
 		boolean useCustomStateMapper();
 		String getCustomStateMapping(int meta, boolean itemBlock);
+
+		boolean appendPropertiesToState();
 	}
 
 	public interface IAttachedIntegerProperies
@@ -198,5 +200,9 @@ public class IEBlockInterfaces
 	public interface INeighbourChangeTile
 	{
 		void onNeighborBlockChange(BlockPos pos, BlockPos neightbour);
+	}
+
+	public interface IPropertyPassthrough
+	{
 	}
 }

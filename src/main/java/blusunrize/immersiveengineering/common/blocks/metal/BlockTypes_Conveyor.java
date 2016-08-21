@@ -5,9 +5,10 @@ import net.minecraft.util.IStringSerializable;
 
 public enum BlockTypes_Conveyor implements IStringSerializable, BlockIEBase.IBlockEnum
 {
-	CONVEYOR,
-	CONVEYOR_DROPPER,
-	CONVEYOR_VERTICAL;
+	//	CONVEYOR,
+//	CONVEYOR_DROPPER,
+//	CONVEYOR_VERTICAL;
+	CONVEYOR;
 
 	@Override
 	public String getName()

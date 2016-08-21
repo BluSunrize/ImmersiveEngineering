@@ -9,10 +9,12 @@ import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
+import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.client.fx.EntityFXSparks;
 import blusunrize.immersiveengineering.client.gui.*;
 import blusunrize.immersiveengineering.client.models.IESmartObjModel;
+import blusunrize.immersiveengineering.client.models.ModelConveyor;
 import blusunrize.immersiveengineering.client.models.ModelItemDynamicOverride;
 import blusunrize.immersiveengineering.client.models.ModelShaderMinecart;
 import blusunrize.immersiveengineering.client.models.obj.IEOBJLoader;
@@ -31,6 +33,8 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGuiTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IIEMetaBlock;
 import blusunrize.immersiveengineering.common.blocks.cloth.BlockTypes_ClothDevice;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
+import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorDrop;
+import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorVertical;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.*;
 import blusunrize.immersiveengineering.common.blocks.stone.BlockTypes_StoneDecoration;
 import blusunrize.immersiveengineering.common.blocks.stone.TileEntityBlastFurnace;
@@ -240,11 +244,18 @@ public class ClientProxy extends CommonProxy
 				IIEMetaBlock ieMetaBlock = (IIEMetaBlock) block;
 				if(ieMetaBlock.useCustomStateMapper())
 					ModelLoader.setCustomStateMapper(block, IECustomStateMapper.instance);
-
+				ModelLoader.setCustomMeshDefinition(blockItem, new ItemMeshDefinition()
+				{
+					@Override
+					public ModelResourceLocation getModelLocation(ItemStack stack)
+					{
+						return new ModelResourceLocation(loc, "inventory");
+					}
+				});
 				for(int meta = 0; meta < ieMetaBlock.getMetaEnums().length; meta++)
 				{
 					String location = loc.toString();
-					String prop = "inventory," + ieMetaBlock.getMetaProperty().getName() + "=" + ieMetaBlock.getMetaEnums()[meta].toString().toLowerCase(Locale.US);
+					String prop = ieMetaBlock.appendPropertiesToState() ? ("inventory," + ieMetaBlock.getMetaProperty().getName() + "=" + ieMetaBlock.getMetaEnums()[meta].toString().toLowerCase(Locale.US)) : null;
 					if(ieMetaBlock.useCustomStateMapper())
 					{
 						String custom = ieMetaBlock.getCustomStateMapping(meta, true);
@@ -622,10 +633,10 @@ public class ClientProxy extends CommonProxy
 		//				new ManualPages.Text(ManualHelper.getManual(), "lightningrod2"));
 		//
 		ManualHelper.addEntry("conveyor", ManualHelper.CAT_MACHINES,
-				new ManualPages.Crafting(ManualHelper.getManual(), "conveyor0", new ItemStack(IEContent.blockConveyor,1,BlockTypes_Conveyor.CONVEYOR.getMeta())),
+				new ManualPages.Crafting(ManualHelper.getManual(), "conveyor0", ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID + ":conveyor")),
 				new ManualPages.Text(ManualHelper.getManual(), "conveyor1"),
-				new ManualPages.Crafting(ManualHelper.getManual(), "conveyor2", new ItemStack(IEContent.blockConveyor,1,BlockTypes_Conveyor.CONVEYOR_DROPPER.getMeta())),
-				new ManualPages.Crafting(ManualHelper.getManual(), "conveyor3", new ItemStack(IEContent.blockConveyor,1,BlockTypes_Conveyor.CONVEYOR_VERTICAL.getMeta())));
+				new ManualPages.Crafting(ManualHelper.getManual(), "conveyor2", ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID + ":dropper")),
+				new ManualPages.Crafting(ManualHelper.getManual(), "conveyor3", ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID + ":vertical")));
 		ManualHelper.addEntry("furnaceHeater", ManualHelper.CAT_MACHINES,
 				new ManualPages.Crafting(ManualHelper.getManual(), "furnaceHeater0", new ItemStack(IEContent.blockMetalDevice1,1,BlockTypes_MetalDevice1.FURNACE_HEATER.getMeta())),
 				new ManualPages.Text(ManualHelper.getManual(), "furnaceHeater1"),
@@ -1005,9 +1016,17 @@ public class ClientProxy extends CommonProxy
 		for(DrillHeadPerm p : ((ItemDrillhead)IEContent.itemDrillhead).perms)
 			p.sprite = ApiUtils.getRegisterSprite(event.getMap(), p.texture);
 		WireType.iconDefaultWire = ApiUtils.getRegisterSprite(event.getMap(), "immersiveengineering:blocks/wire");
+
 		for(BulletHandler.IBullet bullet : BulletHandler.registry.values())
 			for(ResourceLocation rl : bullet.getTextures())
 				ApiUtils.getRegisterSprite(event.getMap(), rl);
+
+		for(ResourceLocation rl : ModelConveyor.rl_casing)
+			ApiUtils.getRegisterSprite(event.getMap(), rl);
+		ApiUtils.getRegisterSprite(event.getMap(), ConveyorDrop.texture_off);
+		ApiUtils.getRegisterSprite(event.getMap(), ConveyorDrop.texture_on);
+		ApiUtils.getRegisterSprite(event.getMap(), ConveyorVertical.texture_off);
+		ApiUtils.getRegisterSprite(event.getMap(), ConveyorVertical.texture_on);
 
 		ApiUtils.getRegisterSprite(event.getMap(), IEContent.fluidCreosote.getStill());
 		ApiUtils.getRegisterSprite(event.getMap(), IEContent.fluidCreosote.getFlowing());

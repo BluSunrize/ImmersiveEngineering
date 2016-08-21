@@ -1,19 +1,19 @@
 package blusunrize.immersiveengineering.api;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Set;
-
+import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableSet;
-
-import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.properties.PropertyHelper;
 import net.minecraft.block.properties.PropertyInteger;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.property.IUnlistedProperty;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Set;
 
 public class IEProperties
 {
@@ -161,4 +161,31 @@ public class IEProperties
 			return value.toString();
 		}
 	}
+
+	public static final IUnlistedProperty<TileEntity> TILEENTITY_PASSTHROUGH = new IUnlistedProperty<TileEntity>()
+	{
+		@Override
+		public String getName()
+		{
+			return "tileentity_passthrough";
+		}
+
+		@Override
+		public boolean isValid(TileEntity value)
+		{
+			return true;
+		}
+
+		@Override
+		public Class<TileEntity> getType()
+		{
+			return TileEntity.class;
+		}
+
+		@Override
+		public String valueToString(TileEntity value)
+		{
+			return value.toString();
+		}
+	};
 }

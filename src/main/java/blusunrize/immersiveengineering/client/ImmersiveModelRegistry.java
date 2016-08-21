@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.client;
 
 import blusunrize.immersiveengineering.client.models.IESmartObjModel;
+import blusunrize.immersiveengineering.client.models.ModelConveyor;
 import blusunrize.immersiveengineering.client.models.ModelCoresample;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.items.ItemIEBase;
@@ -58,6 +59,11 @@ public class ImmersiveModelRegistry
 		}
 		ModelResourceLocation mLoc = new ModelResourceLocation(new ResourceLocation("immersiveengineering", IEContent.itemCoresample.itemName), "inventory");
 		event.getModelRegistry().putObject(mLoc, new ModelCoresample());
+		ModelConveyor modelConveyor = new ModelConveyor();
+		mLoc = new ModelResourceLocation(new ResourceLocation("immersiveengineering", "conveyor"), "normal");
+		event.getModelRegistry().putObject(mLoc, modelConveyor);
+		mLoc = new ModelResourceLocation(new ResourceLocation("immersiveengineering", "conveyor"), "inventory");
+		event.getModelRegistry().putObject(mLoc, modelConveyor);
 	}
 
 	public void registerCustomItemModel(ItemStack stack, ItemModelReplacement replacement)

@@ -30,7 +30,7 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 minecraft {
-    version = "12.18.1.2046"
+    version = "12.18.1.2053"
     //"1.9.4-12.17.0.1976"
     runDir = "run"
     
@@ -65,7 +65,7 @@ dependencies {
 //    deobfCompile "mcp.mobius.waila:Waila:1.7.0-B3_1.9.4"
 //    deobfCompile "slimeknights.mantle:Mantle:1.9.4-0.10.+"
 //    deobfCompile "slimeknights:TConstruct:1.9.4-2.3.+"
-    deobfCompile "mezz.jei:jei_1.10.2:3.7.+"
+    deobfCompile "mezz.jei:jei_1.10.2:3.8.+"
     deobfCompile "mcp.mobius.waila:Waila:1.7.0-B3_1.9.4"
     deobfCompile "slimeknights.mantle:Mantle:1.10-0.10.+"
     deobfCompile "slimeknights:TConstruct:1.10-2.3.+"

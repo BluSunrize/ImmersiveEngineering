@@ -1,16 +1,16 @@
 package blusunrize.immersiveengineering.common.util.compat;
 
-import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.common.IERecipes;
-import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_Conveyor;
-import net.minecraft.item.ItemStack;
+import blusunrize.immersiveengineering.common.util.Utils;
 
 public class IC2Helper extends IECompatModule
 {
 	@Override
 	public void preInit()
 	{
-		IERecipes.addOredictRecipe(new ItemStack(IEContent.blockConveyor, 8, BlockTypes_Conveyor.CONVEYOR.getMeta()), "LLL", "IRI", 'I', "ingotIron", 'R', "dustRedstone", 'L', "itemRubber");
+		IERecipes.addOredictRecipe(Utils.copyStackWithAmount(ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID + ":conveyor"), 8), "LLL", "IRI", 'I', "ingotIron", 'R', "dustRedstone", 'L', "itemRubber");
 	}
 
 	@Override

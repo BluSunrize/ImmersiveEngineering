@@ -4,6 +4,7 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
+import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.common.util.sound.IETileSound;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
@@ -1348,20 +1349,33 @@ public class ClientUtils
 		faceData[i + 5] = Float.floatToRawIntBits(t.getInterpolatedV(v));
 	}
 
-	protected static BakedQuad createBakedQuad(VertexFormat format, Vector3f[] vertices, EnumFacing facing, TextureAtlasSprite sprite, float[] colour, boolean invert)
+	public static Vector3f[] applyMatrixToVertices(Matrix4 matrix, Vector3f... vertices)
+	{
+		Vector3f[] ret = new Vector3f[vertices.length];
+		for(int i = 0; i < ret.length; i++)
+			ret[i] = matrix.apply(vertices[i]);
+		return ret;
+	}
+
+	public static BakedQuad createBakedQuad(VertexFormat format, Vector3f[] vertices, EnumFacing facing, TextureAtlasSprite sprite, float[] colour, boolean invert)
+	{
+		return createBakedQuad(format, vertices, facing, sprite, new double[]{0, 0, 16, 16}, colour, invert);
+	}
+
+	public static BakedQuad createBakedQuad(VertexFormat format, Vector3f[] vertices, EnumFacing facing, TextureAtlasSprite sprite, double[] uvs, float[] colour, boolean invert)
 	{
 		UnpackedBakedQuad.Builder builder = new UnpackedBakedQuad.Builder(format);
 		builder.setQuadOrientation(facing);
 		builder.setTexture(sprite);
 		Normal faceNormal = new Normal(facing.getDirectionVec().getX(), facing.getDirectionVec().getY(), facing.getDirectionVec().getZ());
-		putVertexData(format, builder, vertices[invert ? 3 : 0], faceNormal, 0, 0, sprite, colour);
-		putVertexData(format, builder, vertices[invert ? 2 : 1], faceNormal, 0, 16, sprite, colour);
-		putVertexData(format, builder, vertices[invert ? 1 : 2], faceNormal, 16, 16, sprite, colour);
-		putVertexData(format, builder, vertices[invert ? 0 : 3], faceNormal, 16, 0, sprite, colour);
+		putVertexData(format, builder, vertices[invert ? 3 : 0], faceNormal, uvs[0], uvs[1], sprite, colour);
+		putVertexData(format, builder, vertices[invert ? 2 : 1], faceNormal, uvs[0], uvs[3], sprite, colour);
+		putVertexData(format, builder, vertices[invert ? 1 : 2], faceNormal, uvs[2], uvs[3], sprite, colour);
+		putVertexData(format, builder, vertices[invert ? 0 : 3], faceNormal, uvs[2], uvs[1], sprite, colour);
 		return builder.build();
 	}
 
-	protected static void putVertexData(VertexFormat format, UnpackedBakedQuad.Builder builder, Vector3f pos, Normal faceNormal, int u, int v, TextureAtlasSprite sprite, float[] colour)
+	protected static void putVertexData(VertexFormat format, UnpackedBakedQuad.Builder builder, Vector3f pos, Normal faceNormal, double u, double v, TextureAtlasSprite sprite, float[] colour)
 	{
 		for(int e = 0; e < format.getElementCount(); e++)
 			switch(format.getElement(e).getUsage())

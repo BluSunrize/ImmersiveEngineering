@@ -154,9 +154,9 @@ tile.immersiveengineering.metalDevice1.sample_drill.name=Core Sample Drill
 tile.immersiveengineering.metalDevice1.tesla_coil.name=Tesla Coil
 tile.immersiveengineering.metalDevice1.floodlight.name=Floodlight
 
-tile.immersiveengineering.conveyor.conveyor.name=Conveyor Belt
-tile.immersiveengineering.conveyor.conveyor_dropper.name=Dropping Conveyor Belt
-tile.immersiveengineering.conveyor.conveyor_vertical.name=Vertical Conveyor Belt
+tile.immersiveengineering.conveyor.immersiveengineering:conveyor.name=Conveyor Belt
+tile.immersiveengineering.conveyor.immersiveengineering:dropper.name=Dropping Conveyor Belt
+tile.immersiveengineering.conveyor.immersiveengineering:vertical.name=Vertical Conveyor Belt
 
 tile.immersiveengineering.metalMultiblock.metal_press.name=Metal Press
 tile.immersiveengineering.metalMultiblock.crusher.name=Crusher

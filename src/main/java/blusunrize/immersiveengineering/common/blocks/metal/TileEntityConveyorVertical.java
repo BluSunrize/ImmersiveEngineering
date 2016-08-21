@@ -15,11 +15,6 @@ import java.util.List;
 
 public class TileEntityConveyorVertical extends TileEntityConveyorBelt
 {
-	public TileEntityConveyorVertical()
-	{
-		super(false);
-	}
-
 	@Override
 	public void onEntityCollision(World world, Entity entity)
 	{
@@ -93,11 +88,6 @@ public class TileEntityConveyorVertical extends TileEntityConveyorBelt
 		}
 	}
 
-	@Override
-	public boolean renderWall(int i)
-	{
-		return false;
-	}
 	@Override
 	public boolean mirrorFacingOnPlacement(EntityLivingBase placer)
 	{

@@ -120,6 +120,18 @@ public class BlockIEBase<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 		return null;
 	}
 
+	@Override
+	public boolean appendPropertiesToState()
+	{
+		return true;
+	}
+
+	public String getUnlocalizedName(ItemStack stack)
+	{
+		String subName = getStateFromMeta(stack.getItemDamage()).getValue(property).toString().toLowerCase(Locale.US);
+		return super.getUnlocalizedName() + "." + subName;
+	}
+
 	protected static Material setTempProperties(Material material, PropertyEnum<?> property, Object... additionalProperties)
 	{
 		ArrayList<IProperty> propList = new ArrayList<IProperty>();

@@ -12,6 +12,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockPistonBase;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.IBlockState;
@@ -129,7 +130,7 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 				state = applyProperty(state, ((IAttachedIntegerProperies)tile).getIntProperty(s),  ((IAttachedIntegerProperies)tile).getIntPropertyValue(s));
 		}
 
-		if(tile instanceof IDirectionalTile)
+		if(tile instanceof IDirectionalTile && (state.getPropertyNames().contains(IEProperties.FACING_ALL) || state.getPropertyNames().contains(IEProperties.FACING_HORIZONTAL)))
 		{
 			PropertyDirection prop = state.getPropertyNames().contains(IEProperties.FACING_HORIZONTAL)?IEProperties.FACING_HORIZONTAL: state.getPropertyNames().contains(IEProperties.FACING_VERTICAL)?IEProperties.FACING_VERTICAL: IEProperties.FACING_ALL;
 			state = applyProperty(state, prop, ((IDirectionalTile)tile).getFacing());
@@ -145,10 +146,18 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 					state = state.withProperty(IEProperties.SIDECONFIG[i], ((IConfigurableSides)tile).getSideConfig(i));
 
 		if(tile instanceof IActiveState)
-			state = applyProperty(state, ((IActiveState)tile).getBoolProperty(IActiveState.class), ((IActiveState)tile).getIsActive());
+		{
+			IProperty boolProp = ((IActiveState) tile).getBoolProperty(IActiveState.class);
+			if(state.getPropertyNames().contains(boolProp))
+				state = applyProperty(state, boolProp, ((IActiveState) tile).getIsActive());
+		}
 
 		if(tile instanceof IDualState)
-			state = applyProperty(state, ((IDualState)tile).getBoolProperty(IDualState.class), ((IDualState)tile).getIsSecondState());
+		{
+			IProperty boolProp = ((IDualState) tile).getBoolProperty(IDualState.class);
+			if(state.getPropertyNames().contains(boolProp))
+				state = applyProperty(state, boolProp, ((IDualState) tile).getIsSecondState());
+		}
 
 		if(tile instanceof TileEntityMultiblockPart)
 			state = applyProperty(state, IEProperties.MULTIBLOCKSLAVE, ((TileEntityMultiblockPart)tile).isDummy());
@@ -176,6 +185,8 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 				state = ((IExtendedBlockState)state).withProperty(IEProperties.OBJ_TEXTURE_REMAP, ((IDynamicTexture)te).getTextureReplacements());
 			if(te instanceof IOBJModelCallback)
 				state = ((IExtendedBlockState)state).withProperty(IEProperties.OBJ_MODEL_CALLBACK, (IOBJModelCallback)te);
+			if(te instanceof IPropertyPassthrough && ((IExtendedBlockState) state).getUnlistedNames().contains(IEProperties.TILEENTITY_PASSTHROUGH))
+				state = ((IExtendedBlockState) state).withProperty(IEProperties.TILEENTITY_PASSTHROUGH, te);
 		}
 
 		return state;
@@ -251,7 +262,7 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 				f = player.isSneaking()?side.getOpposite():side;
 			else if(limit==1)
 				f = player.isSneaking()?f.rotateAround(side.getAxis()).getOpposite():f.rotateAround(side.getAxis());
-			else if(limit==2)
+			else if(limit == 2 || limit == 5)
 				f = player.isSneaking()?f.rotateYCCW():f.rotateY();
 			((IDirectionalTile)tile).setFacing(f);
 			tile.markDirty();

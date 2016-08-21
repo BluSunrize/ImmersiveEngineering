@@ -1,13 +1,14 @@
 package blusunrize.immersiveengineering.common.util.chickenbones;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
-import java.math.RoundingMode;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.common.model.TRSRTransformation;
 
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
-
-import net.minecraft.util.math.Vec3d;
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 
 /**
  * Copyright (C) 2013 Chicken-Bones
@@ -79,6 +80,11 @@ public class Matrix4
 		m31 = mat.m31;
 		m32 = mat.m32;
 		m33 = mat.m33;
+	}
+
+	public Matrix4(EnumFacing facing)
+	{
+		this(TRSRTransformation.getMatrix(facing));
 	}
 	public Matrix4 setIdentity()
 	{
@@ -380,6 +386,23 @@ public class Matrix4
 	public Vec3d apply(Vec3d vec)
 	{
 		return mult3x3(vec).addVector(m03, m13, m23);
+	}
+
+	private org.lwjgl.util.vector.Vector3f mult3x3(org.lwjgl.util.vector.Vector3f vec)
+	{
+		float x = (float) (m00 * vec.x + m01 * vec.y + m02 * vec.z);
+		float y = (float) (m10 * vec.x + m11 * vec.y + m12 * vec.z);
+		float z = (float) (m20 * vec.x + m21 * vec.y + m22 * vec.z);
+		return new org.lwjgl.util.vector.Vector3f(x, y, z);
+	}
+
+	public org.lwjgl.util.vector.Vector3f apply(org.lwjgl.util.vector.Vector3f vec)
+	{
+		org.lwjgl.util.vector.Vector3f vec2 = mult3x3(vec);
+		vec2.x += m03;
+		vec2.y += m13;
+		vec2.z += m23;
+		return vec2;
 	}
 
 	public Matrix4f toMatrix4f()

@@ -59,7 +59,7 @@ public class ModelCoresample implements IBakedModel, IPerspectiveAwareModel
 	@Override
 	public List<BakedQuad> getQuads(@Nullable IBlockState blockState, @Nullable EnumFacing side, long rand)
 	{
-//		if(bakedQuads==null)
+		if(bakedQuads == null)
 		{
 			try{
 				bakedQuads = Collections.synchronizedSet(new LinkedHashSet<BakedQuad>());

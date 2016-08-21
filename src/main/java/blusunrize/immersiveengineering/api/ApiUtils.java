@@ -14,6 +14,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -21,6 +22,9 @@ import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.*;
@@ -204,6 +208,40 @@ public class ApiUtils
 			}
 		}
 		return null;
+	}
+
+	public static boolean canInsertStackIntoInventory(TileEntity inventory, ItemStack stack, EnumFacing side)
+	{
+		if(stack != null && inventory != null && inventory.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side))
+		{
+			IItemHandler handler = inventory.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side);
+			ItemStack temp = ItemHandlerHelper.insertItem(handler, stack.copy(), true);
+			if(temp == null || temp.stackSize < stack.stackSize)
+				return true;
+		}
+		return false;
+	}
+
+	public static ItemStack insertStackIntoInventory(TileEntity inventory, ItemStack stack, EnumFacing side)
+	{
+		if(stack != null && inventory != null && inventory.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side))
+		{
+			IItemHandler handler = inventory.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side);
+			ItemStack temp = ItemHandlerHelper.insertItem(handler, stack.copy(), true);
+			if(temp == null || temp.stackSize < stack.stackSize)
+				return ItemHandlerHelper.insertItem(handler, stack, false);
+		}
+		return stack;
+	}
+
+	public static ItemStack insertStackIntoInventory(TileEntity inventory, ItemStack stack, EnumFacing side, boolean simulate)
+	{
+		if(inventory != null && stack != null && inventory.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side))
+		{
+			IItemHandler handler = inventory.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side);
+			return ItemHandlerHelper.insertItem(handler, stack.copy(), simulate);
+		}
+		return stack;
 	}
 
 	public static BlockPos toBlockPos(Object object)

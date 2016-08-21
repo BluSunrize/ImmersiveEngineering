@@ -1,8 +1,5 @@
 package blusunrize.immersiveengineering.common.blocks;
 
-import java.util.List;
-import java.util.Locale;
-
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.block.Block;
@@ -16,14 +13,17 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
+
+import java.util.List;
+import java.util.Locale;
 
 public class ItemBlockIEBase extends ItemBlock
 {
@@ -47,8 +47,7 @@ public class ItemBlockIEBase extends ItemBlock
 	@Override
 	public String getUnlocalizedName(ItemStack stack)
 	{
-		String subName = ((BlockIEBase)this.block).getStateFromMeta(stack.getItemDamage()).getValue(((BlockIEBase)this.block).property).toString().toLowerCase(Locale.US);
-		return super.getUnlocalizedName(stack)+"."+subName;
+		return ((BlockIEBase) this.block).getUnlocalizedName(stack);
 	}
 
 	@Override
