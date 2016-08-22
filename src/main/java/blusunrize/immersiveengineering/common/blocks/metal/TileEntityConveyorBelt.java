@@ -168,7 +168,7 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 	@Override
 	public ItemStack getTileDrop(EntityPlayer player, IBlockState state)
 	{
-		ItemStack stack = new ItemStack(this.getBlockType(), 1, this.getBlockMetadata());
+		ItemStack stack = new ItemStack(this.getBlockType());
 		if(conveyorBeltSubtype != null)
 			ItemNBTHelper.setString(stack, "conveyorType", ConveyorHandler.reverseClassRegistry.get(this.conveyorBeltSubtype.getClass()).toString());
 		return stack;

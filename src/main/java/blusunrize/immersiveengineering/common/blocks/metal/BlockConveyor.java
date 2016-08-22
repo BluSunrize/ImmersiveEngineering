@@ -4,6 +4,7 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.ConveyorDirection;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBelt;
+import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorTile;
 import blusunrize.immersiveengineering.common.blocks.BlockIETileProvider;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
@@ -168,18 +169,19 @@ public class BlockConveyor extends BlockIETileProvider<BlockTypes_Conveyor>
 		{
 			TileEntityConveyorBelt conveyor = (TileEntityConveyorBelt) tile;
 			EnumFacing f = conveyor.facing;
-			tile = world.getTileEntity(pos.offset(f).add(0,1,0));
-			//ToDo new Up/Down logic
-//			if(tile instanceof TileEntityConveyorBelt&&!(tile instanceof TileEntityConveyorVertical) && ((TileEntityConveyorBelt)tile).facing!=f.getOpposite())
-//				conveyor.transportUp = true;
+			ResourceLocation rl = new ResourceLocation(ItemNBTHelper.getString(stack, "conveyorType"));
+			IConveyorBelt subType = ConveyorHandler.getConveyor(rl, conveyor);
+			conveyor.setConveyorSubtype(subType);
+			tile = world.getTileEntity(pos.offset(f));
+			TileEntity tileUp = world.getTileEntity(pos.offset(f).add(0, 1, 0));
+			if(subType != null && (!(tile instanceof IConveyorTile) || ((IConveyorTile) tile).getFacing() == f.getOpposite()) && tileUp instanceof IConveyorTile && ((IConveyorTile) tileUp).getFacing() != f.getOpposite() && world.isAirBlock(pos.add(0, 1, 0)))
+				subType.setConveyorDirection(ConveyorDirection.UP);
 			tile = world.getTileEntity(pos.offset(f.getOpposite()).add(0,1,0));
 //			if(tile instanceof TileEntityConveyorBelt&&!(tile instanceof TileEntityConveyorVertical) && ((TileEntityConveyorBelt)tile).facing==f)
 //				conveyor.transportDown = true;
 //			if(conveyor.transportUp && conveyor.transportDown)
 //				conveyor.transportDown = false;
 
-			ResourceLocation rl = new ResourceLocation(ItemNBTHelper.getString(stack, "conveyorType"));
-			conveyor.setConveyorSubtype(ConveyorHandler.getConveyor(rl, conveyor));
 		}
 	}
 

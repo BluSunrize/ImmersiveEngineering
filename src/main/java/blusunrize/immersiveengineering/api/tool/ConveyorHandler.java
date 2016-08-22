@@ -21,10 +21,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import javax.vecmath.Matrix4f;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 
@@ -37,6 +35,8 @@ public class ConveyorHandler
 	public static HashMap<ResourceLocation, Class<? extends IConveyorBelt>> classRegistry = new LinkedHashMap<ResourceLocation, Class<? extends IConveyorBelt>>();
 	public static HashMap<ResourceLocation, Function<TileEntity, ? extends IConveyorBelt>> functionRegistry = new LinkedHashMap<ResourceLocation, Function<TileEntity, ? extends IConveyorBelt>>();
 	public static HashMap<Class<? extends IConveyorBelt>, ResourceLocation> reverseClassRegistry = new LinkedHashMap<Class<? extends IConveyorBelt>, ResourceLocation>();
+	public static Set<BiConsumer<Entity, IConveyorTile>> magnetSupressionFunctions = new HashSet<BiConsumer<Entity, IConveyorTile>>();
+	public static Set<BiConsumer<Entity, IConveyorTile>> magnetSupressionReverse = new HashSet<BiConsumer<Entity, IConveyorTile>>();
 
 	public static Block conveyorBlock;
 
@@ -55,6 +55,9 @@ public class ConveyorHandler
 		return true;
 	}
 
+	/**
+	 * @return a new instance of the given conveyor type
+	 */
 	public static IConveyorBelt getConveyor(ResourceLocation key, @Nullable TileEntity tile)
 	{
 		Function<TileEntity, ? extends IConveyorBelt> func = functionRegistry.get(key);
@@ -63,12 +66,47 @@ public class ConveyorHandler
 		return null;
 	}
 
+	/**
+	 * @return an ItemStack with the given key written to NBT
+	 */
 	public static ItemStack getConveyorStack(String key)
 	{
 		ItemStack stack = new ItemStack(conveyorBlock);
 		stack.setTagCompound(new NBTTagCompound());
 		stack.getTagCompound().setString("conveyorType", key);
 		return stack;
+	}
+
+	/**
+	 * registers a consumer/function to suppress magnets while they are on the conveyors
+	 * the reversal function is optional, to revert possible NBT changes
+	 * the tileentity parsed is an instanceof
+	 */
+	public static void registerMagnetSupression(BiConsumer<Entity, IConveyorTile> function, @Nullable BiConsumer<Entity, IConveyorTile> revert)
+	{
+		magnetSupressionFunctions.add(function);
+		if(revert != null)
+			magnetSupressionReverse.add(revert);
+	}
+
+	/**
+	 * applies all registered magnets supressors to the entity
+	 */
+	public static void applyMagnetSupression(Entity entity, IConveyorTile tile)
+	{
+		if(entity != null)
+			for(BiConsumer<Entity, IConveyorTile> func : magnetSupressionFunctions)
+				func.accept(entity, tile);
+	}
+
+	/**
+	 * applies all registered magnet supression removals
+	 */
+	public static void revertMagnetSupression(Entity entity, IConveyorTile tile)
+	{
+		if(entity != null)
+			for(BiConsumer<Entity, IConveyorTile> func : magnetSupressionReverse)
+				func.accept(entity, tile);
 	}
 
 	/**
@@ -101,10 +139,16 @@ public class ConveyorHandler
 
 		/**
 		 * Switch to the next possible ConveyorDirection
-		 *
 		 * @return true if renderupdate should happen
 		 */
 		boolean changeConveyorDirection();
+
+		/**
+		 * Set the ConveyorDirection to given
+		 *
+		 * @return false if the direction is not possible for this conveyor
+		 */
+		boolean setConveyorDirection(ConveyorDirection dir);
 
 		/**
 		 * @return false if the conveyor is deactivated (for instance by a redstone signal)
@@ -203,6 +247,11 @@ public class ConveyorHandler
 					double move = .4;
 					entity.setPosition(entity.posX + move * facing.getFrontOffsetX(), entity.posY + 1 * move, entity.posZ + move * facing.getFrontOffsetZ());
 				}
+				if(!contact)
+					ConveyorHandler.applyMagnetSupression(entity, (IConveyorTile) tile);
+				else if(!(tile.getWorld().getTileEntity(tile.getPos().offset(facing)) instanceof IConveyorTile))
+					ConveyorHandler.revertMagnetSupression(entity, (IConveyorTile) tile);
+
 				if(entity instanceof EntityItem)
 				{
 					((EntityItem) entity).setNoDespawn();

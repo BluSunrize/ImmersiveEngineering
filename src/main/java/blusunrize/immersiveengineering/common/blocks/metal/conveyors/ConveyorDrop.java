@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.common.blocks.metal.conveyors;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.ConveyorDirection;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorTile;
 import net.minecraft.entity.item.EntityItem;
@@ -35,11 +36,13 @@ public class ConveyorDrop extends ConveyorBasic
 						entity.setEntityItemStack(ret);
 				}
 			}
-		} else if(contact && tile.getWorld().isAirBlock(tile.getPos().add(0, -1, 0)))
+		} else if(contact && (tile.getWorld().isAirBlock(tile.getPos().add(0, -1, 0)) || inventoryTile instanceof IConveyorTile))
 		{
 			entity.motionX = 0;
 			entity.motionZ = 0;
 			entity.setPosition(tile.getPos().getX() + .5, tile.getPos().getY() - .5, tile.getPos().getZ() + .5);
+			if(!(tile.getWorld().getTileEntity(tile.getPos().add(0, -1, 0)) instanceof IConveyorTile))
+				ConveyorHandler.revertMagnetSupression(entity, (IConveyorTile) tile);
 		}
 	}
 

@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.common.util;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalDevice1;
@@ -72,8 +73,8 @@ public class IEAchievements
 		connectWire = new AchievementIE("connectWire", 0, -1, IEContent.itemWireCoil, openManual);
 		blastfurnace = new AchievementIE("blastfurnace", 2, 1, new ItemStack(IEContent.blockStoneDevice,1,BlockTypes_StoneDevices.BLAST_FURNACE.getMeta()), craftHammer);
 		makeSteel = new AchievementIE("makeSteel", 2, -1, new ItemStack(IEContent.itemMetal,1,8), blastfurnace);
-//Todo Readd this
-//		placeConveyor = new AchievementIE("placeConveyor", 1, 3, new ItemStack(IEContent.blockConveyor,1,BlockTypes_Conveyor.CONVEYOR.getMeta()), openManual).setPlacement(new ItemStack(IEContent.blockConveyor,1,BlockTypes_Conveyor.CONVEYOR.getMeta()),new ItemStack(IEContent.blockConveyor,1,BlockTypes_Conveyor.CONVEYOR_DROPPER.getMeta()));
+
+		placeConveyor = new AchievementIE("placeConveyor", 1, 3, ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID + ":conveyor"), openManual).setPlacement(new ItemStack(IEContent.blockConveyor));
 		placeWindmill = new AchievementIE("placeWindmill", -1, 3, new ItemStack(IEContent.blockWoodenDevice1,1,BlockTypes_WoodenDevice1.WINDMILL.getMeta()), openManual).setPlacement(new ItemStack(IEContent.blockWoodenDevice1,1,BlockTypes_WoodenDevice1.WINDMILL.getMeta()),new ItemStack(IEContent.blockWoodenDevice1,1,BlockTypes_WoodenDevice1.WINDMILL_ADVANCED.getMeta()));
 		craftHeater = new AchievementIE("craftHeater", -2, 4, new ItemStack(IEContent.blockMetalDevice1,1,BlockTypes_MetalDevice1.FURNACE_HEATER.getMeta()), openManual).setNormalCrafting();
 		//		craftPump = new AchievementIE("craftPump", 2, 3, new ItemStack(IEContent.blockMetalDevice2,1,6), openManual).setNormalCrafting();

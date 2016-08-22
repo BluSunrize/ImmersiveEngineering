@@ -40,7 +40,7 @@ public abstract class IECompatModule
 //		moduleClasses.put("Forestry", ForestryHelper.class);
 //		moduleClasses.put("Botania", BotaniaHelper.class);
 //		moduleClasses.put("etfuturum", EtFuturumHelper.class);
-//		moduleClasses.put("EnderIO", EnderIOHelper.class);
+		moduleClasses.put("EnderIO", EnderIOHelper.class);
 //		moduleClasses.put("steamcraft2", SteamCraftHelper.class);
 //		moduleClasses.put("ExtraUtilities", ExtraUtilsHelper.class);
 		moduleClasses.put("Thaumcraft", ThaumcraftHelper.class);

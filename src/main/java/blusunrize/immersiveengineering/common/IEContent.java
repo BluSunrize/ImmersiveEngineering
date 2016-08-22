@@ -2,6 +2,7 @@ package blusunrize.immersiveengineering.common;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ComparableItemStack;
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.MultiblockHandler;
 import blusunrize.immersiveengineering.api.crafting.*;
 import blusunrize.immersiveengineering.api.energy.DieselHandler;
@@ -10,6 +11,7 @@ import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.api.tool.*;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEffect_Extinguish;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEffect_Potion;
+import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorTile;
 import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler.DefaultFurnaceAdapter;
 import blusunrize.immersiveengineering.common.blocks.*;
 import blusunrize.immersiveengineering.common.blocks.BlockFakeLight.TileEntityFakeLight;
@@ -37,6 +39,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.passive.EntityVillager.ListItemForEmeralds;
 import net.minecraft.init.Blocks;
@@ -45,6 +48,7 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.tileentity.TileEntity;
@@ -65,6 +69,7 @@ import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 public class IEContent
@@ -472,6 +477,23 @@ public class IEContent
 		IEPotions.init();
 
 		/**CONVEYORS*/
+		ConveyorHandler.registerMagnetSupression(new BiConsumer<Entity, IConveyorTile>()
+		{
+			@Override
+			public void accept(Entity entity, IConveyorTile iConveyorTile)
+			{
+				NBTTagCompound data = entity.getEntityData();
+				if(!data.getBoolean(Lib.MAGNET_PREVENT_NBT))
+					data.setBoolean(Lib.MAGNET_PREVENT_NBT, true);
+			}
+		}, new BiConsumer<Entity, IConveyorTile>()
+		{
+			@Override
+			public void accept(Entity entity, IConveyorTile iConveyorTile)
+			{
+				entity.getEntityData().removeTag(Lib.MAGNET_PREVENT_NBT);
+			}
+		});
 		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "conveyor"), ConveyorBasic.class, new Function<TileEntity, ConveyorBasic>()
 		{
 			@Override

@@ -33,6 +33,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGuiTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IIEMetaBlock;
 import blusunrize.immersiveengineering.common.blocks.cloth.BlockTypes_ClothDevice;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
+import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorBasic;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorDrop;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorVertical;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.*;
@@ -1023,6 +1024,8 @@ public class ClientProxy extends CommonProxy
 
 		for(ResourceLocation rl : ModelConveyor.rl_casing)
 			ApiUtils.getRegisterSprite(event.getMap(), rl);
+		ApiUtils.getRegisterSprite(event.getMap(), ConveyorBasic.texture_off);
+		ApiUtils.getRegisterSprite(event.getMap(), ConveyorBasic.texture_on);
 		ApiUtils.getRegisterSprite(event.getMap(), ConveyorDrop.texture_off);
 		ApiUtils.getRegisterSprite(event.getMap(), ConveyorDrop.texture_on);
 		ApiUtils.getRegisterSprite(event.getMap(), ConveyorVertical.texture_off);

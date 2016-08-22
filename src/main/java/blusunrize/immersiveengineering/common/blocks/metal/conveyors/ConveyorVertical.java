@@ -47,6 +47,13 @@ public class ConveyorVertical extends ConveyorBasic
 	}
 
 	@Override
+	public boolean setConveyorDirection(ConveyorDirection dir)
+	{
+		return false;
+	}
+
+
+	@Override
 	public String getModelCacheKey(TileEntity tile, EnumFacing facing)
 	{
 		String key = ConveyorHandler.reverseClassRegistry.get(this.getClass()).toString();
@@ -150,6 +157,16 @@ public class ConveyorVertical extends ConveyorBasic
 			entity.motionX = vec.xCoord;
 			entity.motionY = vec.yCoord;
 			entity.motionZ = vec.zCoord;
+
+			if(!contact)
+				ConveyorHandler.applyMagnetSupression(entity, (IConveyorTile) tile);
+			else
+			{
+				BlockPos posTop = tile.getPos().add(0, 1, 0);
+				if(!((tile.getWorld().getTileEntity(posTop) instanceof IConveyorTile) || (tile.getWorld().isAirBlock(posTop) && (tile.getWorld().getTileEntity(posTop.offset(facing)) instanceof IConveyorTile))))
+					ConveyorHandler.revertMagnetSupression(entity, (IConveyorTile) tile);
+			}
+
 			if(entity instanceof EntityItem)
 			{
 				((EntityItem) entity).setNoDespawn();
@@ -174,7 +191,7 @@ public class ConveyorVertical extends ConveyorBasic
 		}
 	}
 
-	static AxisAlignedBB[] verticalBounds = {new AxisAlignedBB(0, 0, 0, 1, 1, .125f), new AxisAlignedBB(0, 0, 0, 1, 1, .875f), new AxisAlignedBB(0, 0, 0, .125f, 1, 1), new AxisAlignedBB(0, 0, 0, .875f, 1, 1)};
+	static AxisAlignedBB[] verticalBounds = {new AxisAlignedBB(0, 0, 0, 1, 1, .125f), new AxisAlignedBB(0, 0, .875f, 1, 1, 1), new AxisAlignedBB(0, 0, 0, .125f, 1, 1), new AxisAlignedBB(.875f, 0, 0, 1, 1, 1)};
 
 	@Override
 	public AxisAlignedBB getSelectionBox(TileEntity tile, EnumFacing facing)

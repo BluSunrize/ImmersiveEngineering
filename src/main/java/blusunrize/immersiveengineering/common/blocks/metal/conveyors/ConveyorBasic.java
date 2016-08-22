@@ -27,6 +27,13 @@ public class ConveyorBasic implements IConveyorBelt
 	}
 
 	@Override
+	public boolean setConveyorDirection(ConveyorDirection dir)
+	{
+		direction = dir;
+		return true;
+	}
+
+	@Override
 	public boolean isActive(TileEntity tile)
 	{
 		return tile.getWorld().isBlockIndirectlyGettingPowered(tile.getPos()) <= 0;
