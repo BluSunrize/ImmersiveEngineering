@@ -1,3 +1,15 @@
+#####Version 0.10-38
+- added the new IConveyorBelt system
+    - fully dynamic conveyor system, with custom models and all
+    - addon mods can easily add their own!
+    - features magnet prevention. Works on EIO, in future BM and Reliquary (?)
+- added Crusher recipe for coke blocks
+- re-added EIO compat, mostly Arc Recipes
+- fixed Assembler not assembling (thanks Alex)
+- fixed Chemthrower Projectiles making arrow noises
+- possible fix for the black rendering wires
+- fixed (finally, hopefully) the desync caused by forming Coke Oven and Blast Furnace
+
 #####Version 0.10-37 - BUILT
 - added the new IBullet system!
     - bullets are no longer based on metadata, but use NBT tags to differentiate types, their abilities are handled externally
