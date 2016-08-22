@@ -1,10 +1,15 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
+import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.BlockTypes_MetalsAll;
-import blusunrize.immersiveengineering.common.blocks.metal.*;
+import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalDecoration0;
+import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalDecoration1;
+import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalMultiblock;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityAssembler;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.GlStateManager;
@@ -45,7 +50,7 @@ public class MultiblockAssembler implements IMultiblock
 						else if(l==1)
 							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0,1,BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta());
 						else
-							structure[h][l][w] = new ItemStack(IEContent.blockConveyor,1,BlockTypes_Conveyor.CONVEYOR.getMeta());
+							structure[h][l][w] = ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID + ":conveyor");
 					}
 					else if(h==2)
 					{
@@ -110,7 +115,7 @@ public class MultiblockAssembler implements IMultiblock
 	@Override
 	public boolean isBlockTrigger(IBlockState state)
 	{
-		return state.getBlock()==IEContent.blockConveyor && (state.getBlock().getMetaFromState(state)==BlockTypes_Conveyor.CONVEYOR.getMeta());
+		return state.getBlock() == IEContent.blockConveyor;
 	}
 
 	@Override
@@ -161,7 +166,7 @@ public class MultiblockAssembler implements IMultiblock
 						}
 						else
 						{
-							if(!Utils.isBlockAt(world, pos2, IEContent.blockConveyor, BlockTypes_Conveyor.CONVEYOR.getMeta()))
+							if(!ConveyorHandler.isConveyor(world, pos2, ImmersiveEngineering.MODID + ":conveyor", null))
 								return false;
 						}
 					}
@@ -211,7 +216,7 @@ public class MultiblockAssembler implements IMultiblock
 			new ItemStack(IEContent.blockSheetmetalSlabs,6,BlockTypes_MetalsAll.IRON.getMeta()),
 			new ItemStack(IEContent.blockMetalDecoration0,2,BlockTypes_MetalDecoration0.RS_ENGINEERING.getMeta()),
 			new ItemStack(IEContent.blockMetalDecoration0,2,BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta()),
-			new ItemStack(IEContent.blockConveyor,2,BlockTypes_Conveyor.CONVEYOR.getMeta())};
+			Utils.copyStackWithAmount(ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID + ":conveyor"), 2)};
 	@Override
 	public ItemStack[] getTotalMaterials()
 	{

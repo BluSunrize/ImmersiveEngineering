@@ -18,6 +18,7 @@ import net.minecraftforge.client.model.obj.OBJModel.OBJState;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -123,7 +124,8 @@ public class IEBlockInterfaces
 	public interface ITileDrop
 	{
 		ItemStack getTileDrop(EntityPlayer player, IBlockState state);
-		void readOnPlacement(EntityLivingBase placer, ItemStack stack);
+
+		void readOnPlacement(@Nullable EntityLivingBase placer, ItemStack stack);
 	}
 	
 	public interface IPlayerInteraction

@@ -1,7 +1,5 @@
 package blusunrize.immersiveengineering.common.blocks.stone;
 
-import java.util.List;
-
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.blocks.BlockIEMultiblock;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
@@ -9,14 +7,12 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
+
+import java.util.List;
 
 public class BlockStoneDevice extends BlockIEMultiblock<BlockTypes_StoneDevices>
 {

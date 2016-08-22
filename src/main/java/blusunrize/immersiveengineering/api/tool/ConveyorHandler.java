@@ -16,6 +16,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -75,6 +76,23 @@ public class ConveyorHandler
 		stack.setTagCompound(new NBTTagCompound());
 		stack.getTagCompound().setString("conveyorType", key);
 		return stack;
+	}
+
+	/**
+	 * @return whether the given subtype key can be found at the location. Useful for multiblocks
+	 */
+	public static boolean isConveyor(World world, BlockPos pos, String key, @Nullable EnumFacing facing)
+	{
+		TileEntity tile = world.getTileEntity(pos);
+		if(!(tile instanceof IConveyorTile))
+			return false;
+		if(facing != null && !facing.equals(((IConveyorTile) tile).getFacing()))
+			return false;
+		IConveyorBelt conveyor = ((IConveyorTile) tile).getConveyorSubtype();
+		if(conveyor == null)
+			return false;
+		ResourceLocation rl = reverseClassRegistry.get(conveyor.getClass());
+		return !(rl == null || !key.equalsIgnoreCase(rl.toString()));
 	}
 
 	/**

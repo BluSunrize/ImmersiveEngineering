@@ -33,6 +33,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.relauncher.Side;
 
 import java.util.HashSet;
 import java.util.List;
@@ -114,7 +116,7 @@ public class ItemIETool extends ItemIEBase implements ITool, IGuiItem
 		TileEntity tileEntity = world.getTileEntity(pos);
 		if(stack.getItemDamage() == 0)
 		{
-			if(world.isRemote)
+			if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
 				return EnumActionResult.PASS;
 			String[] interdictedMultiblocks = null;
 			if(ItemNBTHelper.hasKey(stack, "multiblockInterdiction"))

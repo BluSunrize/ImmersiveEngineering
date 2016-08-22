@@ -11,6 +11,7 @@ import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorageAdvan
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IMirrorAble;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ITileDrop;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IUsesBooleanProperty;
 import blusunrize.immersiveengineering.common.blocks.TileEntityMultiblockPart;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
@@ -282,6 +283,9 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 								if(state.getBlock()==this.getBlockType())
 									worldObj.setBlockToAir(pos);
 								worldObj.setBlockState(pos, state);
+								TileEntity tile = worldObj.getTileEntity(pos);
+								if(tile instanceof ITileDrop)
+									((ITileDrop) tile).readOnPlacement(null, s);
 							}
 						}
 					}

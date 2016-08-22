@@ -1,6 +1,8 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
+import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
@@ -40,7 +42,7 @@ public class MultiblockMetalPress implements IMultiblock
 					if(l==1)
 						structure[h][l][0] = new ItemStack(Blocks.PISTON,1,0);
 					else
-						structure[h][l][0] = new ItemStack(IEContent.blockConveyor,1, BlockTypes_Conveyor.CONVEYOR.getMeta());
+						structure[h][l][0] = ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID + ":conveyor");
 				}
 				else if(h==2&&l==1)
 					structure[h][l][0] = new ItemStack(IEContent.blockMetalDecoration0,1,BlockTypes_MetalDecoration0.HEAVY_ENGINEERING.getMeta());
@@ -140,10 +142,11 @@ public class MultiblockMetalPress implements IMultiblock
 					}
 					else
 					{
-						if(!Utils.isBlockAt(world, pos2, IEContent.blockConveyor, BlockTypes_Conveyor.CONVEYOR.getMeta()))
+						if(!ConveyorHandler.isConveyor(world, pos2, ImmersiveEngineering.MODID + ":conveyor", dir))
+						{
+							System.out.println("Lack of Covneyor :V");
 							return false;
-						if( ((TileEntityConveyorBelt)world.getTileEntity(pos2)).facing!=dir )
-							return false;
+						}
 					}
 				}
 				else
@@ -179,7 +182,7 @@ public class MultiblockMetalPress implements IMultiblock
 			new ItemStack(IEContent.blockMetalDecoration1,2,BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_0.getMeta()),
 			new ItemStack(IEContent.blockMetalDecoration0,1,BlockTypes_MetalDecoration0.RS_ENGINEERING.getMeta()),
 			new ItemStack(Blocks.PISTON),
-			new ItemStack(IEContent.blockConveyor,2,BlockTypes_Conveyor.CONVEYOR.getMeta()),
+			Utils.copyStackWithAmount(ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID + ":conveyor"), 2),
 			new ItemStack(IEContent.blockMetalDecoration0,1,BlockTypes_MetalDecoration0.HEAVY_ENGINEERING.getMeta())};
 	@Override
 	public ItemStack[] getTotalMaterials()

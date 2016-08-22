@@ -177,6 +177,9 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 	@Override
 	public void readOnPlacement(EntityLivingBase placer, ItemStack stack)
 	{
+		String key = ItemNBTHelper.getString(stack, "conveyorType");
+		IConveyorBelt subType = ConveyorHandler.getConveyor(new ResourceLocation(key), this);
+		setConveyorSubtype(subType);
 	}
 
 	public static class ConveyorInventoryHandler implements IItemHandlerModifiable
