@@ -18,6 +18,8 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumWorldBlockLayer;
+import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.model.Attributes;
 import net.minecraftforge.client.model.IFlexibleBakedModel;
 import net.minecraftforge.client.model.ISmartBlockModel;
@@ -104,21 +106,21 @@ public class ConnModelReal implements IFlexibleBakedModel, ISmartBlockModel
 	public class AssembledBakedModel implements IBakedModel
 	{
 		IBakedModel basic;
-		List<BakedQuad> list;
+		List<BakedQuad>[] lists;
 
 		public AssembledBakedModel(IBakedModel b)
 		{
 			basic = b;
-			list = b.getGeneralQuads();
+			lists = new List[]{b.getGeneralQuads(), ImmutableList.of()};
 		}
 
 		public AssembledBakedModel(IExtendedBlockState iExtendedBlockState, TextureAtlasSprite tex, IBakedModel b)
 		{
-			list = ClientUtils.convertConnectionFromBlockstate(iExtendedBlockState, tex);
+			lists = ClientUtils.convertConnectionFromBlockstate(iExtendedBlockState, tex);
 			basic = b;
 			if(basic instanceof ISmartBlockModel)
 				basic = ((ISmartBlockModel)basic).handleBlockState(iExtendedBlockState);
-			list.addAll(basic.getGeneralQuads());
+			lists[0].addAll(basic.getGeneralQuads());
 		}
 
 		@Override
@@ -130,7 +132,10 @@ public class ConnModelReal implements IFlexibleBakedModel, ISmartBlockModel
 		@Override
 		public List<BakedQuad> getGeneralQuads()
 		{
-			List<BakedQuad> quadList = Collections.synchronizedList(Lists.newArrayList(list));
+			EnumWorldBlockLayer layer = MinecraftForgeClient.getRenderLayer();
+			if (layer != EnumWorldBlockLayer.SOLID&&layer!=EnumWorldBlockLayer.TRANSLUCENT)
+				return ImmutableList.of();
+			List<BakedQuad> quadList = Collections.synchronizedList(Lists.newArrayList(lists[layer==EnumWorldBlockLayer.SOLID?0:1]));
 			return quadList;
 		}
 

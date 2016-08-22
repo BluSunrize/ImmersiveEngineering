@@ -269,12 +269,10 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 		};
 		for (Connection c : conns)
 		{
-			// generate subvertices
-			if (c.end.compareTo(pos) >= 0)
-				continue;
 			IImmersiveConnectable end = ApiUtils.toIIC(c.end, worldObj, false);
 			if (end==null)
 				continue;
+			// generate subvertices
 			c.getSubVertices(worldObj);
 			ret.add(c);
 		}

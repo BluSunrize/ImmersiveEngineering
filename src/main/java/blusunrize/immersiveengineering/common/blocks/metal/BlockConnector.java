@@ -17,6 +17,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumWorldBlockLayer;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.property.ExtendedBlockState;
@@ -31,6 +32,7 @@ public class BlockConnector extends BlockIETileProvider<BlockTypes_Connector>
 		setHardness(3.0F);
 		setResistance(15.0F);
 		lightOpacity = 0;
+		setBlockLayer(EnumWorldBlockLayer.SOLID, EnumWorldBlockLayer.TRANSLUCENT);
 	}
 
 	@Override

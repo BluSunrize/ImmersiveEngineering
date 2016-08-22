@@ -35,6 +35,8 @@ public class BlockMetalDevice1 extends BlockIETileProvider<BlockTypes_MetalDevic
 		this.setMetaBlockLayer(BlockTypes_MetalDevice1.CHARGING_STATION.getMeta(), EnumWorldBlockLayer.SOLID,EnumWorldBlockLayer.TRANSLUCENT);
 		this.setMetaBlockLayer(BlockTypes_MetalDevice1.SAMPLE_DRILL.getMeta(), EnumWorldBlockLayer.CUTOUT);
 		this.setMetaBlockLayer(BlockTypes_MetalDevice1.FLOODLIGHT.getMeta(), EnumWorldBlockLayer.SOLID,EnumWorldBlockLayer.TRANSLUCENT);
+		this.setMetaBlockLayer(BlockTypes_MetalDevice1.ELECTRIC_LANTERN.getMeta(), EnumWorldBlockLayer.SOLID,EnumWorldBlockLayer.TRANSLUCENT);
+		lightOpacity = 0;
 	}
 
 	@Override

@@ -1264,9 +1264,11 @@ public class ClientUtils
 		return quat;
 	}
 
-	public static List<BakedQuad> convertConnectionFromBlockstate(IExtendedBlockState s, TextureAtlasSprite t)
+	public static List<BakedQuad>[] convertConnectionFromBlockstate(IExtendedBlockState s, TextureAtlasSprite t)
 	{
-		List<BakedQuad> ret = new ArrayList<>();
+		List<BakedQuad>[] ret = new List[2];
+		ret[0] = new ArrayList<>();
+		ret[1] = new ArrayList<>();
 		Set<Connection> conns = s.getValue(IEProperties.CONNECTIONS);
 		if (conns == null)
 			return ret;
@@ -1283,12 +1285,18 @@ public class ClientUtils
 			int color = conn.cableType.getColour(conn);
 			Vector3f start = new Vector3f(conn.start.getX(), conn.start.getY(), conn.start.getZ());
 			float radius = (float) (conn.cableType.getRenderDiameter() / 2);
-			for (int i = 1; i < f.length; i++)
+			int max = f.length/2+2;
+			if (f.length%2==1&&conn.start.compareTo(conn.end)>0) {
+				max++;
+			}
+			for (int i = 1; i < max; i++)
 			{
+				boolean fading = i==max-1;
+				List<BakedQuad> currList = ret[fading?1:0];
 				int j = i - 1;
-				Vector3f here = new Vector3f((float) f[i].xCoord, (float) f[i].yCoord, (float) f[i].zCoord);
+				Vector3f here = new Vector3f((float) f[i].xCoord+(fading?.0001F:0), (float) f[i].yCoord+(fading?.0001F:0), (float) f[i].zCoord+(fading?.0001F:0));
 				Vector3f.sub(here, start, here);
-				Vector3f there = new Vector3f((float) f[j].xCoord, (float) f[j].yCoord, (float) f[j].zCoord);
+				Vector3f there = new Vector3f((float) f[j].xCoord+(fading?.0001F:0), (float) f[j].yCoord+(fading?.0001F:0), (float) f[j].zCoord+(fading?.0001F:0));
 				Vector3f.sub(there, start, there);
 				boolean vertical = here.x == there.x && here.z == there.z;
 				int[] data;
@@ -1303,19 +1311,19 @@ public class ClientUtils
 				data = new int[28];
 				dataInv = new int[28];
 				Vector3f.add(here, cross, tmp);
-				storeVertexData(data, 0, tmp, t, 0, 0, color);
-				storeVertexData(dataInv, 3, tmp, t, 0, 0, color);
+				storeVertexData(data, 0, tmp, t, 0, 0, color, 0);
+				storeVertexData(dataInv, 3, tmp, t, 0, 0, color, 0);
 				Vector3f.sub(here, cross, tmp);
-				storeVertexData(data, 1, tmp, t, 0, 16, color);
-				storeVertexData(dataInv, 2, tmp, t, 0, 16, color);
+				storeVertexData(data, 1, tmp, t, 0, 16, color, 0);
+				storeVertexData(dataInv, 2, tmp, t, 0, 16, color, 0);
 				Vector3f.sub(there, cross, tmp);
-				storeVertexData(data, 2, tmp, t, 16, 16, color);
-				storeVertexData(dataInv, 1, tmp, t, 16, 16, color);
+				storeVertexData(data, 2, tmp, t, 16, 16, color, 255);
+				storeVertexData(dataInv, 1, tmp, t, 16, 16, color, 255);
 				Vector3f.add(there, cross, tmp);
-				storeVertexData(data, 3, tmp, t, 16, 0, color);
-				storeVertexData(dataInv, 0, tmp, t, 16, 0, color);
-				ret.add(new BakedQuad(data, -1, EnumFacing.DOWN));
-				ret.add(new BakedQuad(dataInv, -1, EnumFacing.UP));
+				storeVertexData(data, 3, tmp, t, 16, 0, color, 255);
+				storeVertexData(dataInv, 0, tmp, t, 16, 0, color, 255);
+				currList.add(new BakedQuad(data, -1, EnumFacing.DOWN));
+				currList.add(new BakedQuad(dataInv, -1, EnumFacing.UP));
 
 				data = new int[28];
 				dataInv = new int[28];
@@ -1323,22 +1331,23 @@ public class ClientUtils
 				{
 					Vector3f.cross(cross, dir, cross);
 					cross.scale(radius / cross.length());
-				} else
+				}
+				else
 					cross.set(0, 0, radius);
 				Vector3f.add(here, cross, tmp);
-				storeVertexData(data, 0, tmp, t, 0, 0, color);
-				storeVertexData(dataInv, 3, tmp, t, 0, 0, color);
+				storeVertexData(data, 0, tmp, t, 0, 0, color, 0);
+				storeVertexData(dataInv, 3, tmp, t, 0, 0, color, 0);
 				Vector3f.sub(here, cross, tmp);
-				storeVertexData(data, 1, tmp, t, 0, 16, color);
-				storeVertexData(dataInv, 2, tmp, t, 0, 16, color);
+				storeVertexData(data, 1, tmp, t, 0, 16, color, 0);
+				storeVertexData(dataInv, 2, tmp, t, 0, 16, color, 0);
 				Vector3f.sub(there, cross, tmp);
-				storeVertexData(data, 2, tmp, t, 16, 16, color);
-				storeVertexData(dataInv, 1, tmp, t, 16, 16, color);
+				storeVertexData(data, 2, tmp, t, 16, 16, color, 255);
+				storeVertexData(dataInv, 1, tmp, t, 16, 16, color, 255);
 				Vector3f.add(there, cross, tmp);
-				storeVertexData(data, 3, tmp, t, 16, 0, color);
-				storeVertexData(dataInv, 0, tmp, t, 16, 0, color);
-				ret.add(new BakedQuad(data, -1, EnumFacing.WEST));
-				ret.add(new BakedQuad(dataInv, -1, EnumFacing.EAST));
+				storeVertexData(data, 3, tmp, t, 16, 0, color, 255);
+				storeVertexData(dataInv, 0, tmp, t, 16, 0, color, 255);
+				currList.add(new BakedQuad(data, -1, EnumFacing.WEST));
+				currList.add(new BakedQuad(dataInv, -1, EnumFacing.EAST));
 
 			}
 		}
@@ -1346,22 +1355,23 @@ public class ClientUtils
 	}
 
 	private static void storeVertexData(int[] faceData, int storeIndex, Vector3f position, TextureAtlasSprite t, int u,
-			int v, int color)
+			int v, int color, int alpha)
 	{
 		int i = storeIndex * 7;
 		faceData[i] = Float.floatToRawIntBits(position.x);
 		faceData[i + 1] = Float.floatToRawIntBits(position.y);
 		faceData[i + 2] = Float.floatToRawIntBits(position.z);
-		faceData[i + 3] = invertRgb(color);
+		faceData[i + 3] = invertRgb(color, alpha);
 		faceData[i + 4] = Float.floatToRawIntBits(t.getInterpolatedU(u));
 		faceData[i + 5] = Float.floatToRawIntBits(t.getInterpolatedV(v));
 	}
 
-	private static int invertRgb(int in)
+	private static int invertRgb(int in, int alpha)
 	{
 		int ret = in & (255 << 8);
 		ret += (in >> 16) & 255;
 		ret += (in & 255) << 16;
+		ret += alpha<<24;
 		return ret;
 	}
 
