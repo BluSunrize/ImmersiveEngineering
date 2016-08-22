@@ -1317,8 +1317,8 @@ public class ClientUtils
 						Vector3f.sub(here, cross, null),
 						Vector3f.sub(there, cross, null),
 						Vector3f.add(there, cross, null)};
-				ret.add(createBakedQuad(DefaultVertexFormats.BLOCK, vertices, EnumFacing.DOWN, t, rgb, false));
-				ret.add(createBakedQuad(DefaultVertexFormats.BLOCK, vertices, EnumFacing.UP, t, rgb, true));
+				ret.add(createBakedQuad(DefaultVertexFormats.ITEM, vertices, EnumFacing.DOWN, t, rgb, false));
+				ret.add(createBakedQuad(DefaultVertexFormats.ITEM, vertices, EnumFacing.UP, t, rgb, true));
 
 				if(!vertical)
 				{
@@ -1330,8 +1330,8 @@ public class ClientUtils
 						Vector3f.sub(here, cross, null),
 						Vector3f.sub(there, cross, null),
 						Vector3f.add(there, cross, null)};
-				ret.add(createBakedQuad(DefaultVertexFormats.BLOCK, vertices, EnumFacing.WEST, t, rgb, false));
-				ret.add(createBakedQuad(DefaultVertexFormats.BLOCK, vertices, EnumFacing.EAST, t, rgb, true));
+				ret.add(createBakedQuad(DefaultVertexFormats.ITEM, vertices, EnumFacing.WEST, t, rgb, false));
+				ret.add(createBakedQuad(DefaultVertexFormats.ITEM, vertices, EnumFacing.EAST, t, rgb, true));
 			}
 		}
 		return ret;

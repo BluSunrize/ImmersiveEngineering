@@ -312,10 +312,13 @@ public class ModelConveyor implements IBakedModel, IPerspectiveAwareModel
 		return false;
 	}
 
+	TextureAtlasSprite tex_particle;
 	@Override
 	public TextureAtlasSprite getParticleTexture()
 	{
-		return null;
+		if(tex_particle == null)
+			tex_particle = ClientUtils.getSprite(conveyor != null ? conveyor.getInactiveTexture() : new ResourceLocation(ImmersiveEngineering.MODID, "blocks/conveyor_off"));
+		return tex_particle;
 	}
 
 	@Override

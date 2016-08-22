@@ -27,7 +27,7 @@ public class Lib
 	public static final float[] COLOUR_F_ImmersiveOrange = {247 / 255f, 128 / 255f, 52 / 255f};
 	public static final int COLOUR_I_ImmersiveOrangeShadow = 0x3e200d;
 
-	public static final String MAGNET_PREVENT_NBT = "PreventRemoveMovement";
+	public static final String MAGNET_PREVENT_NBT = "PreventRemoteMovement";
 
 	/**Gui IDs*/
 	//Tiles
