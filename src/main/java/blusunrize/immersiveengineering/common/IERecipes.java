@@ -87,13 +87,13 @@ public class IERecipes
 		addOredictRecipe(new ItemStack(IEContent.itemMaterial,1,16), "I  ","II "," II", 'I',"ingotSteel");
 
 		addShapelessOredictRecipe(new ItemStack(IEContent.itemMaterial,1,20), "plateCopper",new ItemStack(IEContent.itemTool,1,1));
-		GameRegistry.addRecipe(new RecipeToolDamage(new ItemStack(IEContent.itemMaterial,1,20),1, "plateCopper",Items.shears));
+		GameRegistry.addRecipe(new RecipeToolDamage(new ItemStack(IEContent.itemMaterial,1,20),1, "plateCopper",new ItemStack(Items.shears, 1, -1)));
 		addShapelessOredictRecipe(new ItemStack(IEContent.itemMaterial,1,21), "plateElectrum",new ItemStack(IEContent.itemTool,1,1));
-		GameRegistry.addRecipe(new RecipeToolDamage(new ItemStack(IEContent.itemMaterial,1,21),1, "plateElectrum",Items.shears));
+		GameRegistry.addRecipe(new RecipeToolDamage(new ItemStack(IEContent.itemMaterial,1,21),1, "plateElectrum",new ItemStack(Items.shears, 1, -1)));
 		addShapelessOredictRecipe(new ItemStack(IEContent.itemMaterial,1,22), "plateAluminum",new ItemStack(IEContent.itemTool,1,1));
-		GameRegistry.addRecipe(new RecipeToolDamage(new ItemStack(IEContent.itemMaterial,1,22),1, "plateAluminum",Items.shears));
+		GameRegistry.addRecipe(new RecipeToolDamage(new ItemStack(IEContent.itemMaterial,1,22),1, "plateAluminum",new ItemStack(Items.shears, 1, -1)));
 		addShapelessOredictRecipe(new ItemStack(IEContent.itemMaterial,1,23), "plateSteel",new ItemStack(IEContent.itemTool,1,1));
-		GameRegistry.addRecipe(new RecipeToolDamage(new ItemStack(IEContent.itemMaterial,1,23),1, "plateSteel",Items.shears));
+		GameRegistry.addRecipe(new RecipeToolDamage(new ItemStack(IEContent.itemMaterial,1,23),1, "plateSteel",new ItemStack(Items.shears, 1, -1)));
 		
 		//		addOredictRecipe(new ItemStack(IEContent.itemMaterial,4,14), "I","I", 'I',"ingotIron");
 		//		addOredrrictRecipe(new ItemStack(IEContent.itemMaterial,4,15), "I","I", 'I',"ingotSteel");
