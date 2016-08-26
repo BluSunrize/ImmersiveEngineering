@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
+import blusunrize.immersiveengineering.client.models.SmartLightingQuad;
 import blusunrize.immersiveengineering.common.util.sound.IETileSound;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockChest;
@@ -1276,20 +1277,30 @@ public class ClientUtils
 		Vector3f cross = new Vector3f();
 		Vector3f tmp = new Vector3f();
 
+		BlockPos pos = null;
 		Vector3f up = new Vector3f(0, 1, 0);
 		for (Connection conn : conns)
 		{
+			if (pos==null)
+				pos = conn.start;
 			Vec3[] f = conn.catenaryVertices;
 			if (f.length < 1)
 				continue;
 			int color = conn.cableType.getColour(conn);
 			Vector3f start = new Vector3f(conn.start.getX(), conn.start.getY(), conn.start.getZ());
 			float radius = (float) (conn.cableType.getRenderDiameter() / 2);
-			int max = f.length/2+2;
-			if (f.length%2==1&&conn.start.compareTo(conn.end)>0) {
-				max++;
-			}
-			for (int i = 1; i < max; i++)
+			List<Integer> crossings = new ArrayList<>();
+			for (int i = 1;i<f.length;i++)
+				if (crossesChunkBoundary(f[i], f[i-1]))
+					crossings.add(i);
+			int index = crossings.size()/2;
+			boolean greater = conn.start.compareTo(conn.end)>0;
+			if (crossings.size()%2==0&&greater)
+				index--;
+			int max = (crossings.size()>0?
+					(crossings.get(index)+(greater?1:2)):
+						(greater?f.length+1:0));
+			for (int i = 1; i < max&&i<f.length; i++)
 			{
 				boolean fading = i==max-1;
 				List<BakedQuad> currList = ret[fading?1:0];
@@ -1306,7 +1317,8 @@ public class ClientUtils
 					Vector3f.sub(here, there, dir);
 					Vector3f.cross(up, dir, cross);
 					cross.scale(radius / cross.length());
-				} else
+				}
+				else
 					cross.set(radius, 0, 0);
 				data = new int[28];
 				dataInv = new int[28];
@@ -1322,8 +1334,8 @@ public class ClientUtils
 				Vector3f.add(there, cross, tmp);
 				storeVertexData(data, 3, tmp, t, 16, 0, color, 255);
 				storeVertexData(dataInv, 0, tmp, t, 16, 0, color, 255);
-				currList.add(new BakedQuad(data, -1, EnumFacing.DOWN));
-				currList.add(new BakedQuad(dataInv, -1, EnumFacing.UP));
+				currList.add(new SmartLightingQuad(data, -1, EnumFacing.DOWN, pos, false));
+				currList.add(new SmartLightingQuad(dataInv, -1, EnumFacing.UP, pos, false));
 
 				data = new int[28];
 				dataInv = new int[28];
@@ -1346,12 +1358,23 @@ public class ClientUtils
 				Vector3f.add(there, cross, tmp);
 				storeVertexData(data, 3, tmp, t, 16, 0, color, 255);
 				storeVertexData(dataInv, 0, tmp, t, 16, 0, color, 255);
-				currList.add(new BakedQuad(data, -1, EnumFacing.WEST));
-				currList.add(new BakedQuad(dataInv, -1, EnumFacing.EAST));
+				currList.add(new SmartLightingQuad(data, -1, EnumFacing.WEST, pos, false));
+				currList.add(new SmartLightingQuad(dataInv, -1, EnumFacing.EAST, pos, false));
 
 			}
 		}
 		return ret;
+	}
+
+	public static boolean crossesChunkBoundary(Vec3 start, Vec3 end)
+	{
+		if (((int)Math.floor(start.xCoord/16))!=((int)Math.floor(end.xCoord/16)))
+			return true;
+		if (((int)Math.floor(start.yCoord/16))!=((int)Math.floor(end.yCoord/16)))
+			return true;
+		if (((int)Math.floor(start.zCoord/16))!=((int)Math.floor(end.zCoord/16)))
+			return true;
+		return false;
 	}
 
 	private static void storeVertexData(int[] faceData, int storeIndex, Vector3f position, TextureAtlasSprite t, int u,
@@ -1416,4 +1439,5 @@ public class ClientUtils
 		ret = (ret<<8)+(int)(255*rgb[2]);
 		return ret;
 	}
+
 }

@@ -3,11 +3,17 @@ package blusunrize.immersiveengineering.client.models.smart;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
+
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
@@ -17,6 +23,7 @@ import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.resources.model.IBakedModel;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumWorldBlockLayer;
 import net.minecraftforge.client.MinecraftForgeClient;
@@ -31,7 +38,8 @@ public class ConnModelReal implements IFlexibleBakedModel, ISmartBlockModel
 
 	TextureAtlasSprite textureAtlasSprite = Minecraft.getMinecraft().getTextureMapBlocks()
 			.getAtlasSprite(ImmersiveEngineering.MODID.toLowerCase() + ":blocks/wire");
-	public static final HashMap<ExtBlockstateAdapter, IBakedModel> cache = new HashMap<>();
+	//BlockPos has all coords mod 16 (for wiresplitting)
+	public static final HashMap<Pair<BlockPos, ExtBlockstateAdapter>, IBakedModel> cache = new HashMap<>();
 	IBakedModel base;
 
 	public ConnModelReal(IBakedModel basic)
@@ -94,10 +102,24 @@ public class ConnModelReal implements IFlexibleBakedModel, ISmartBlockModel
 		{
 			IExtendedBlockState iExtendedBlockState = (IExtendedBlockState) iBlockState;
 			ExtBlockstateAdapter ad = new ExtBlockstateAdapter(iExtendedBlockState);
-			if (cache.containsKey(ad))
-				return cache.get(ad);
+			int x = 0, y = 0, z = 0;
+			if (iExtendedBlockState.getProperties().containsKey(IEProperties.CONNECTIONS))
+			{
+				Set<Connection> conns = iExtendedBlockState.getValue(IEProperties.CONNECTIONS);
+				if (conns!=null&&conns.size()>0)
+				{
+					BlockPos tmp = conns.iterator().next().start;
+					x = (tmp.getX()%16+16)%16;
+					y = (tmp.getY()%16+16)%16;
+					z = (tmp.getZ()%16+16)%16;
+				}
+			}
+			BlockPos pos = new BlockPos(x, y, z);
+			Pair<BlockPos, ExtBlockstateAdapter> key = new ImmutablePair<>(pos, ad);
+			if (cache.containsKey(key))
+				return cache.get(key);
 			IBakedModel ret = new AssembledBakedModel(iExtendedBlockState, textureAtlasSprite, base);
-			cache.put(ad, ret);
+			cache.put(key, ret);
 			return ret;
 		}
 		return this;

@@ -2,13 +2,14 @@ package blusunrize.immersiveengineering.common.blocks.cloth;
 
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ILightValue;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorStructural;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Vec3;
 
-public class TileEntityBalloon extends TileEntityConnectorStructural
+public class TileEntityBalloon extends TileEntityConnectorStructural implements ILightValue
 {
 	public int style = 0;
 	public byte colour0 = 15;
@@ -89,5 +90,11 @@ public class TileEntityBalloon extends TileEntityConnectorStructural
 			return new Vec3(.5,.09375,zDif>0?.78125:.21875);
 		else
 			return new Vec3(xDif>0?.78125:.21875,.09375,.5);
+	}
+
+	@Override
+	public int getLightValue()
+	{
+		return 13;
 	}
 }
