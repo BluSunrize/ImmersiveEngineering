@@ -166,7 +166,7 @@ public class ConnLoader implements ICustomModelLoader
 					OBJModel obj = (OBJModel) model;
 					model = obj.process(ImmutableMap.of("flip-v", "true"));
 				}
-				return new ConnModelReal(model.bake(state, Attributes.DEFAULT_BAKED_FORMAT, bakedTextureGetter));
+				return new ConnModelReal(model.bake(state, format, bakedTextureGetter));
 			}
 			catch (Exception e)
 			{
