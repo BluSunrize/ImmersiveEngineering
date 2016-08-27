@@ -1,8 +1,21 @@
 package blusunrize.immersiveengineering.client.models.smart;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
+
+import javax.annotation.Nullable;
+
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import com.google.common.collect.Lists;
+import blusunrize.immersiveengineering.common.util.IELogger;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -11,21 +24,19 @@ import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
-
-import javax.annotation.Nullable;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
 
 public class ConnModelReal implements IBakedModel
 {
 
 	TextureAtlasSprite textureAtlasSprite = Minecraft.getMinecraft().getTextureMapBlocks()
 			.getAtlasSprite(ImmersiveEngineering.MODID.toLowerCase() + ":blocks/wire");
-	public static final HashMap<ExtBlockstateAdapter, IBakedModel> cache = new HashMap<>();
+	public static final HashMap<Pair<BlockPos, ExtBlockstateAdapter>, IBakedModel> cache = new HashMap<>();
 	IBakedModel base;
 
 	public ConnModelReal(IBakedModel basic)
@@ -40,10 +51,24 @@ public class ConnModelReal implements IBakedModel
 		{
 			IExtendedBlockState iExtendedBlockState = (IExtendedBlockState) state;
 			ExtBlockstateAdapter ad = new ExtBlockstateAdapter(iExtendedBlockState);
-			if (cache.containsKey(ad))
-				return cache.get(ad).getQuads(state, side, rand);
+			int x = 0, y = 0, z = 0;
+			if (iExtendedBlockState.getProperties().containsKey(IEProperties.CONNECTIONS))
+			{
+				Set<Connection> conns = iExtendedBlockState.getValue(IEProperties.CONNECTIONS);
+				if (conns!=null&&conns.size()>0)
+				{
+					BlockPos tmp = conns.iterator().next().start;
+					x = (tmp.getX()%16+16)%16;
+					y = (tmp.getY()%16+16)%16;
+					z = (tmp.getZ()%16+16)%16;
+				}
+			}
+			BlockPos pos = new BlockPos(x, y, z);
+			Pair<BlockPos, ExtBlockstateAdapter> key = new ImmutablePair<>(pos, ad);
+			if (cache.containsKey(key))
+				return cache.get(key).getQuads(state, side, rand);
 			IBakedModel ret = new AssembledBakedModel(iExtendedBlockState, textureAtlasSprite, base, rand);
-			cache.put(ad, ret);
+			cache.put(key, ret);
 			return ret.getQuads(state, side, rand);
 		}
 		return base.getQuads(state, side, rand);
@@ -89,14 +114,8 @@ public class ConnModelReal implements IBakedModel
 	{
 		IBakedModel basic;
 		IExtendedBlockState extendedState;
-		List<BakedQuad> list;
+		List<BakedQuad>[] lists;
 		TextureAtlasSprite texture;
-
-//		public AssembledBakedModel(IBakedModel b)
-//		{
-//			basic = b;
-//			list = b.getGeneralQuads();
-//		}
 
 		public AssembledBakedModel(IExtendedBlockState iExtendedBlockState, TextureAtlasSprite tex, IBakedModel b, long posRand)
 		{
@@ -108,12 +127,14 @@ public class ConnModelReal implements IBakedModel
 		@Override
 		public List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable EnumFacing side, long rand)
 		{
-			if(list==null)
-			{
-				list = ClientUtils.convertConnectionFromBlockstate(extendedState, texture);
-				list.addAll(basic.getQuads(extendedState, side, rand));
-			}
-			return Collections.synchronizedList(Lists.newArrayList(list));
+			BlockRenderLayer layer = MinecraftForgeClient.getRenderLayer();
+			if (layer != BlockRenderLayer.SOLID&&layer!=BlockRenderLayer.TRANSLUCENT)
+				return basic.getQuads(state, side, rand);
+			if(lists==null)
+				lists = ClientUtils.convertConnectionFromBlockstate(extendedState, texture);
+			List<BakedQuad> l = new ArrayList<>(lists[layer==BlockRenderLayer.SOLID?0:1]);
+			l.addAll(basic.getQuads(state, side, rand));
+			return Collections.synchronizedList(l);
 		}
 
 		@Override

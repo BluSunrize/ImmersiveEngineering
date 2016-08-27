@@ -10,6 +10,7 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -28,6 +29,7 @@ public class BlockClothDevice extends BlockIETileProvider<BlockTypes_ClothDevice
 		super("clothDevice", Material.CLOTH, PropertyEnum.create("type", BlockTypes_ClothDevice.class), ItemBlockClothDevice.class, IEProperties.FACING_ALL);
 		setHardness(0.8F);
 		setMetaLightOpacity(1, 0);
+		setMetaBlockLayer(1, BlockRenderLayer.SOLID, BlockRenderLayer.TRANSLUCENT);
 	}
 
 	@Override
