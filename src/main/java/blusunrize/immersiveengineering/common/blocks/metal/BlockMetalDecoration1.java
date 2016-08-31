@@ -30,6 +30,7 @@ public class BlockMetalDecoration1 extends IELadderBlock<BlockTypes_MetalDecorat
 		this.setHardness(3.0F);
 		this.setResistance(15.0F);
 		this.setBlockLayer(BlockRenderLayer.CUTOUT_MIPPED);
+		this.setAllNotNormalBlock();
 		lightOpacity = 0;
 	}
 
@@ -46,22 +47,6 @@ public class BlockMetalDecoration1 extends IELadderBlock<BlockTypes_MetalDecorat
 		else if(meta==4 && !itemBlock)
 			return "aluminumFence";
 		return null;
-	}
-
-	@Override
-	public boolean isFullBlock(IBlockState state)
-	{
-		return false;
-	}
-	@Override
-	public boolean isFullCube(IBlockState state)
-	{
-		return false;
-	}
-	@Override
-	public boolean isOpaqueCube(IBlockState state)
-	{
-		return false;
 	}
 
 	@Override

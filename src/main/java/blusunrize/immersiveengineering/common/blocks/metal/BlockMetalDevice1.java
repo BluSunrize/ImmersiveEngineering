@@ -40,22 +40,9 @@ public class BlockMetalDevice1 extends BlockIETileProvider<BlockTypes_MetalDevic
 		this.setMetaLightOpacity(BlockTypes_MetalDevice1.FURNACE_HEATER.getMeta(), 255);
 		this.setMetaLightOpacity(BlockTypes_MetalDevice1.DYNAMO.getMeta(), 255);
 		this.setMetaLightOpacity(BlockTypes_MetalDevice1.THERMOELECTRIC_GEN.getMeta(), 255);
-	}
-
-	@Override
-	public boolean isFullBlock(IBlockState state)
-	{
-		return false;
-	}
-	@Override
-	public boolean isFullCube(IBlockState state)
-	{
-		return false;
-	}
-	@Override
-	public boolean isOpaqueCube(IBlockState state)
-	{
-		return false;
+		this.setNotNormalBlock(BlockTypes_MetalDevice1.FURNACE_HEATER.getMeta());
+		this.setNotNormalBlock(BlockTypes_MetalDevice1.DYNAMO.getMeta());
+		this.setNotNormalBlock(BlockTypes_MetalDevice1.THERMOELECTRIC_GEN.getMeta());
 	}
 
 	@Override

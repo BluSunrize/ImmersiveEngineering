@@ -35,22 +35,7 @@ public class BlockWoodenDevice0 extends BlockIETileProvider<BlockTypes_WoodenDev
 		this.setHardness(2.0F);
 		this.setResistance(5.0F);
 		setMetaLightOpacity(BlockTypes_WoodenDevice0.WORKBENCH.getMeta(), 0);
-	}
-
-	@Override
-	public boolean isFullBlock(IBlockState state)
-	{
-		return false;
-	}
-	@Override
-	public boolean isFullCube(IBlockState state)
-	{
-		return false;
-	}
-	@Override
-	public boolean isOpaqueCube(IBlockState state)
-	{
-		return false;
+		setNotNormalBlock(BlockTypes_WoodenDevice0.WORKBENCH.getMeta());
 	}
 
 	public int getExplosivesType(IBlockState state)

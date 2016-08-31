@@ -1,21 +1,20 @@
 package blusunrize.immersiveengineering.common.blocks;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class BlockIESlab<E extends Enum<E>&BlockIEBase.IBlockEnum> extends BlockIETileProvider<E>
 {
@@ -24,6 +23,7 @@ public class BlockIESlab<E extends Enum<E>&BlockIEBase.IBlockEnum> extends Block
 	public BlockIESlab(String name, Material material, PropertyEnum<E> property)
 	{
 		super(name, material, property, ItemBlockIESlabs.class, prop_SlabType);
+		this.setAllNotNormalBlock();
 	}
 
 	//	@Override
@@ -112,21 +112,5 @@ public class BlockIESlab<E extends Enum<E>&BlockIEBase.IBlockEnum> extends Block
 		}
 		else
 			return new AxisAlignedBB(0,0,0,1,.5f,1);
-	}
-
-	@Override
-	public boolean isFullBlock(IBlockState state)
-	{
-		return false;
-	}
-	@Override
-	public boolean isFullCube(IBlockState state)
-	{
-		return false;
-	}
-	@Override
-	public boolean isOpaqueCube(IBlockState state)
-	{
-		return false;
 	}
 }

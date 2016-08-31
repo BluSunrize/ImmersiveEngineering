@@ -29,6 +29,7 @@ public class BlockWoodenDecoration extends IELadderBlock<BlockTypes_WoodenDecora
 		this.setHardness(2.0F);
 		this.setResistance(5.0F);
 		this.setBlockLayer(BlockRenderLayer.CUTOUT);
+		this.setAllNotNormalBlock();
 		lightOpacity = 0;
 	}
 
@@ -43,22 +44,6 @@ public class BlockWoodenDecoration extends IELadderBlock<BlockTypes_WoodenDecora
 		if(meta==0 && !itemBlock)
 			return "fence";
 		return null;
-	}
-
-	@Override
-	public boolean isFullBlock(IBlockState state)
-	{
-		return false;
-	}
-	@Override
-	public boolean isFullCube(IBlockState state)
-	{
-		return false;
-	}
-	@Override
-	public boolean isOpaqueCube(IBlockState state)
-	{
-		return false;
 	}
 
 	@Override

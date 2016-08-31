@@ -32,27 +32,7 @@ public class BlockConnector extends BlockIETileProvider<BlockTypes_Connector>
 		setHardness(3.0F);
 		setResistance(15.0F);
 		lightOpacity = 0;
-	}
-
-	@Override
-	public boolean isFullBlock(IBlockState state)
-	{
-		return false;
-	}
-	@Override
-	public boolean isFullCube(IBlockState state)
-	{
-		return false;
-	}
-	@Override
-	public boolean isOpaqueCube(IBlockState state)
-	{
-		return false;
-	}
-	@Override
-	public boolean isNormalCube(IBlockState state, IBlockAccess world, BlockPos pos)
-	{
-		return false;
+		setAllNotNormalBlock();
 	}
 
 	@Override

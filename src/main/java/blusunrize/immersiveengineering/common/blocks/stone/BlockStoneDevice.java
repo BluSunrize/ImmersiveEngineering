@@ -5,7 +5,6 @@ import blusunrize.immersiveengineering.common.blocks.BlockIEMultiblock;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -21,6 +20,8 @@ public class BlockStoneDevice extends BlockIEMultiblock<BlockTypes_StoneDevices>
 		super("stoneDevice",Material.ROCK, PropertyEnum.create("type", BlockTypes_StoneDevices.class), ItemBlockIEBase.class, IEProperties.BOOLEANS[0]);
 		setHardness(2.0F);
 		setResistance(20f);
+		this.setNotNormalBlock(BlockTypes_StoneDevices.COKE_OVEN.getMeta());
+		this.setNotNormalBlock(BlockTypes_StoneDevices.BLAST_FURNACE.getMeta());
 		lightOpacity = 0;
 	}
 
@@ -28,22 +29,6 @@ public class BlockStoneDevice extends BlockIEMultiblock<BlockTypes_StoneDevices>
 	public void getSubBlocks(Item item, CreativeTabs tab, List<ItemStack> list)
 	{
 		super.getSubBlocks(item, tab, list);
-	}
-
-	@Override
-	public boolean isFullBlock(IBlockState state)
-	{
-		return false;
-	}
-	@Override
-	public boolean isFullCube(IBlockState state)
-	{
-		return false;
-	}
-	@Override
-	public boolean isOpaqueCube(IBlockState state)
-	{
-		return false;
 	}
 
 	@Override

@@ -30,23 +30,8 @@ public class BlockMetalDecoration2 extends BlockIETileProvider<BlockTypes_MetalD
 		super("metalDecoration2", Material.IRON, PropertyEnum.create("type", BlockTypes_MetalDecoration2.class), ItemBlockIEBase.class, IEProperties.FACING_ALL,IEProperties.MULTIBLOCKSLAVE,IEProperties.INT_4, Properties.AnimationProperty);
 		this.setHardness(3.0F);
 		this.setResistance(15.0F);
+		this.setAllNotNormalBlock();
 		lightOpacity = 0;
-	}
-
-	@Override
-	public boolean isFullBlock(IBlockState state)
-	{
-		return false;
-	}
-	@Override
-	public boolean isFullCube(IBlockState state)
-	{
-		return false;
-	}
-	@Override
-	public boolean isOpaqueCube(IBlockState state)
-	{
-		return false;
 	}
 
 	@Override

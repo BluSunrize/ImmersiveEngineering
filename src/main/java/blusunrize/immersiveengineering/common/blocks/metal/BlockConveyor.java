@@ -81,6 +81,7 @@ public class BlockConveyor extends BlockIETileProvider<BlockTypes_Conveyor>
 		this.setHardness(3.0F);
 		this.setResistance(15.0F);
 		this.setBlockLayer(BlockRenderLayer.CUTOUT);
+		this.setAllNotNormalBlock();
 		lightOpacity = 0;
 		ConveyorHandler.conveyorBlock = this;
 	}
@@ -93,22 +94,6 @@ public class BlockConveyor extends BlockIETileProvider<BlockTypes_Conveyor>
 
 	@Override
 	public boolean appendPropertiesToState()
-	{
-		return false;
-	}
-
-	@Override
-	public boolean isFullBlock(IBlockState state)
-	{
-		return false;
-	}
-	@Override
-	public boolean isFullCube(IBlockState state)
-	{
-		return false;
-	}
-	@Override
-	public boolean isOpaqueCube(IBlockState state)
 	{
 		return false;
 	}

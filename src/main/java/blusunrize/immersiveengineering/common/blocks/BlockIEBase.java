@@ -48,7 +48,7 @@ public class BlockIEBase<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 	protected Set<BlockRenderLayer>[] metaRenderLayers;
 	protected Map<Integer, Integer> metaLightOpacities = new HashMap<>();
 	protected Map<Integer, Integer> metaResistances = new HashMap<>();
-	protected Set<Integer> metaNotNormalBlock = new TreeSet<>();
+	protected boolean[] metaNotNormalBlock;
 	private boolean opaqueCube = false;
 	public BlockIEBase(String name, Material material, PropertyEnum<E> mainProperty, Class<? extends ItemBlockIEBase> itemBlock, Object... additionalProperties)
 	{
@@ -250,33 +250,50 @@ public class BlockIEBase<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 
 	public BlockIEBase<E> setNotNormalBlock(int meta)
 	{
-		metaNotNormalBlock.add(meta);
+		if(metaNotNormalBlock == null)
+			metaNotNormalBlock = new boolean[this.enumValues.length];
+		metaNotNormalBlock[meta] = true;
 		return this;
 	}
 
+	public BlockIEBase<E> setAllNotNormalBlock()
+	{
+		if(metaNotNormalBlock == null)
+			metaNotNormalBlock = new boolean[this.enumValues.length];
+		for(int i = 0; i < metaNotNormalBlock.length; i++)
+			metaNotNormalBlock[i] = true;
+		return this;
+	}
+
+	protected boolean normalBlockCheck(IBlockState state)
+	{
+		if(metaNotNormalBlock == null)
+			return true;
+		int meta = getMetaFromState(state);
+		return (meta < 0 || meta >= metaNotNormalBlock.length) || !metaNotNormalBlock[meta];
+	}
 	@Override
 	public boolean isFullBlock(IBlockState state)
 	{
-		if(metaNotNormalBlock.contains(-1))
-			return false;
-		return !metaNotNormalBlock.contains(getMetaFromState(state));
+		return normalBlockCheck(state);
 	}
-
 	@Override
 	public boolean isFullCube(IBlockState state)
 	{
-		if(metaNotNormalBlock.contains(-1))
-			return false;
-		return !metaNotNormalBlock.contains(getMetaFromState(state));
+		return normalBlockCheck(state);
 	}
-
 	@Override
 	public boolean isOpaqueCube(IBlockState state)
 	{
-		if(metaNotNormalBlock.contains(-1))
-			return false;
-		return !metaNotNormalBlock.contains(getMetaFromState(state));
+		return normalBlockCheck(state);
 	}
+
+	@Override
+	public boolean isNormalCube(IBlockState state, IBlockAccess world, BlockPos pos)
+	{
+		return normalBlockCheck(state);
+	}
+
 
 	//This is a ridiculously hacky workaround, I would not recommend it to anyone.
 	protected static IBlockState cachedTileRequestState;
