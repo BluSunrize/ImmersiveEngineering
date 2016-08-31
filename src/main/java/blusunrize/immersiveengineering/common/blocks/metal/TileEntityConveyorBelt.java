@@ -205,7 +205,13 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 		public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
 		{
 			if(!simulate)
-				conveyor.getWorld().spawnEntityInWorld(new EntityItem(conveyor.getWorld(),conveyor.getPos().getX()+.5,conveyor.getPos().getY()+.25,conveyor.getPos().getZ()+.5, stack.copy()));
+			{
+				EntityItem entity = new EntityItem(conveyor.getWorld(), conveyor.getPos().getX() + .5, conveyor.getPos().getY() + .1875, conveyor.getPos().getZ() + .5, stack.copy());
+				entity.motionX = 0;
+				entity.motionY = 0;
+				entity.motionZ = 0;
+				conveyor.getWorld().spawnEntityInWorld(entity);
+			}
 			return null;
 		}
 
