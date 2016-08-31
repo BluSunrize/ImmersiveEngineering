@@ -378,11 +378,11 @@ public class ApiUtils
 			if(preferWildcard)
 				return new IngredientStack(new ItemStack((Block)input,1,OreDictionary.WILDCARD_VALUE));
 			return new IngredientStack(new ItemStack((Block)input));
-		} else if(input instanceof List && ((List) input).isEmpty())
+		} else if(input instanceof List && !((List)input).isEmpty())
 		{
-			if(((List) input).get(0) instanceof ItemStack)
+			if(((List)input).get(0) instanceof ItemStack)
 				return new IngredientStack(((List<ItemStack>) input));
-			else if(((List) input).get(0) instanceof String)
+			else if(((List)input).get(0) instanceof String)
 			{
 				ArrayList<ItemStack> itemList = new ArrayList();
 				for(String s : ((List<String>) input))
