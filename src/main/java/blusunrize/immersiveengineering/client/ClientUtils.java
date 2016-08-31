@@ -1,12 +1,29 @@
 package blusunrize.immersiveengineering.client;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
+import javax.vecmath.Quat4d;
+
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.util.vector.Vector3f;
+
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
+import blusunrize.immersiveengineering.client.models.SmartLightingQuad;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.common.util.sound.IETileSound;
-import net.minecraft.block.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockChest;
+import net.minecraft.block.BlockEnderChest;
+import net.minecraft.block.BlockSign;
+import net.minecraft.block.BlockSkull;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -15,7 +32,11 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.BlockRendererDispatcher;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
@@ -40,11 +61,6 @@ import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidTank;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.util.vector.Vector3f;
-
-import javax.vecmath.Quat4d;
-import java.util.*;
 
 public class ClientUtils
 {
@@ -1279,9 +1295,14 @@ public class ClientUtils
 		return quat;
 	}
 
-	public static List<BakedQuad> convertConnectionFromBlockstate(IExtendedBlockState s, TextureAtlasSprite t)
+	private static final Vector3f fadingOffset = new Vector3f(.0001F, .0001F, .0001F);
+	private static float[] alphaFirst2Fading = {0, 0, 1, 1};
+	private static float[] alphaNoFading = {1, 1, 1, 1};
+	public static List<BakedQuad>[] convertConnectionFromBlockstate(IExtendedBlockState s, TextureAtlasSprite t)
 	{
-		List<BakedQuad> ret = new ArrayList<>();
+		List<BakedQuad>[] ret = new List[2];
+		ret[0] = new ArrayList<>();
+		ret[1] = new ArrayList<>();
 		Set<Connection> conns = s.getValue(IEProperties.CONNECTIONS);
 		if(conns == null)
 			return ret;
@@ -1289,22 +1310,45 @@ public class ClientUtils
 		Vector3f cross = new Vector3f();
 
 		Vector3f up = new Vector3f(0, 1, 0);
+		BlockPos pos = null;
 		for(Connection conn : conns)
 		{
+			if (pos==null)
+				pos = conn.start;
 			Vec3d[] f = conn.catenaryVertices;
 			if(f.length < 1)
 				continue;
 			int color = conn.cableType.getColour(conn);
 			float[] rgb = {(color >> 16 & 255) / 255f, (color >> 8 & 255) / 255f, (color & 255) / 255f, (color >> 24 & 255) / 255f};
+			if (rgb[3]==0)
+				rgb[3] = 1;
 			Vector3f start = new Vector3f(conn.start.getX(), conn.start.getY(), conn.start.getZ());
 			float radius = (float) (conn.cableType.getRenderDiameter() / 2);
-			for(int i = 1; i < f.length; i++)
+			List<Integer> crossings = new ArrayList<>();
+			for (int i = 1;i<f.length;i++)
+				if (crossesChunkBoundary(f[i], f[i-1]))
+					crossings.add(i);
+			int index = crossings.size()/2;
+			boolean greater = conn.start.compareTo(conn.end)>0;
+			if (crossings.size()%2==0&&greater)
+				index--;
+			int max = (crossings.size()>0?
+					(crossings.get(index)+(greater?1:2)):
+						(greater?f.length+1:0));
+			for (int i = 1; i < max&&i<f.length; i++)
 			{
+				boolean fading = i==max-1;
+				List<BakedQuad> curr = ret[fading?1:0];
 				int j = i - 1;
 				Vector3f here = new Vector3f((float) f[i].xCoord, (float) f[i].yCoord, (float) f[i].zCoord);
 				Vector3f.sub(here, start, here);
 				Vector3f there = new Vector3f((float) f[j].xCoord, (float) f[j].yCoord, (float) f[j].zCoord);
 				Vector3f.sub(there, start, there);
+				if (fading)
+				{
+					Vector3f.add(here, fadingOffset, here);
+					Vector3f.add(there, fadingOffset, there);
+				}
 				boolean vertical = here.x == there.x && here.z == there.z;
 				if(!vertical)
 				{
@@ -1317,8 +1361,8 @@ public class ClientUtils
 						Vector3f.sub(here, cross, null),
 						Vector3f.sub(there, cross, null),
 						Vector3f.add(there, cross, null)};
-				ret.add(createBakedQuad(DefaultVertexFormats.ITEM, vertices, EnumFacing.DOWN, t, rgb, false));
-				ret.add(createBakedQuad(DefaultVertexFormats.ITEM, vertices, EnumFacing.UP, t, rgb, true));
+				curr.add(createSmartLightingBakedQuad(DefaultVertexFormats.ITEM, vertices, EnumFacing.DOWN, t, rgb, false, alphaFirst2Fading, pos));
+				curr.add(createSmartLightingBakedQuad(DefaultVertexFormats.ITEM, vertices, EnumFacing.UP, t, rgb, true, alphaFirst2Fading, pos));
 
 				if(!vertical)
 				{
@@ -1330,15 +1374,15 @@ public class ClientUtils
 						Vector3f.sub(here, cross, null),
 						Vector3f.sub(there, cross, null),
 						Vector3f.add(there, cross, null)};
-				ret.add(createBakedQuad(DefaultVertexFormats.ITEM, vertices, EnumFacing.WEST, t, rgb, false));
-				ret.add(createBakedQuad(DefaultVertexFormats.ITEM, vertices, EnumFacing.EAST, t, rgb, true));
+				curr.add(createSmartLightingBakedQuad(DefaultVertexFormats.ITEM, vertices, EnumFacing.WEST, t, rgb, false, alphaFirst2Fading, pos));
+				curr.add(createSmartLightingBakedQuad(DefaultVertexFormats.ITEM, vertices, EnumFacing.EAST, t, rgb, true, alphaFirst2Fading, pos));
 			}
 		}
 		return ret;
 	}
 
 	private static void storeVertexData(int[] faceData, int storeIndex, Vector3f position, TextureAtlasSprite t, int u,
-										int v, int color)
+			int v, int color)
 	{
 		int i = storeIndex * 7;
 		faceData[i] = Float.floatToRawIntBits(position.x);
@@ -1357,50 +1401,84 @@ public class ClientUtils
 		return ret;
 	}
 
-	public static BakedQuad createBakedQuad(VertexFormat format, Vector3f[] vertices, EnumFacing facing, TextureAtlasSprite sprite, float[] colour, boolean invert)
+	public static BakedQuad createBakedQuad(VertexFormat format, Vector3f[] vertices, EnumFacing facing, TextureAtlasSprite sprite, float[] colour, boolean invert, float[] alpha)
 	{
-		return createBakedQuad(format, vertices, facing, sprite, new double[]{0, 0, 16, 16}, colour, invert);
+		return createBakedQuad(format, vertices, facing, sprite, new double[]{0, 0, 16, 16}, colour, invert, alpha);
+	}
+
+	public static BakedQuad createSmartLightingBakedQuad(VertexFormat format, Vector3f[] vertices, EnumFacing facing, TextureAtlasSprite sprite, float[] colour, boolean invert, float[] alpha, BlockPos base)
+	{
+		return createBakedQuad(format, vertices, facing, sprite, new double[]{0, 0, 16, 16}, colour, invert, alpha, true, base);
 	}
 
 	public static BakedQuad createBakedQuad(VertexFormat format, Vector3f[] vertices, EnumFacing facing, TextureAtlasSprite sprite, double[] uvs, float[] colour, boolean invert)
+	{
+		return createBakedQuad(format, vertices, facing, sprite, uvs, colour, invert, alphaNoFading);
+	}
+	
+	public static BakedQuad createBakedQuad(VertexFormat format, Vector3f[] vertices, EnumFacing facing, TextureAtlasSprite sprite, double[] uvs, float[] colour, boolean invert, float[] alpha)
+	{
+		return createBakedQuad(format, vertices, facing, sprite, uvs, colour, invert, alpha, false, null);
+	}
+	
+	public static BakedQuad createBakedQuad(VertexFormat format, Vector3f[] vertices, EnumFacing facing, TextureAtlasSprite sprite, double[] uvs, float[] colour, boolean invert, float[] alpha, boolean smartLighting, BlockPos basePos)
 	{
 		UnpackedBakedQuad.Builder builder = new UnpackedBakedQuad.Builder(format);
 		builder.setQuadOrientation(facing);
 		builder.setTexture(sprite);
 		Normal faceNormal = new Normal(facing.getDirectionVec().getX(), facing.getDirectionVec().getY(), facing.getDirectionVec().getZ());
-		putVertexData(format, builder, vertices[invert ? 3 : 0], faceNormal, uvs[0], uvs[1], sprite, colour);
-		putVertexData(format, builder, vertices[invert ? 2 : 1], faceNormal, uvs[0], uvs[3], sprite, colour);
-		putVertexData(format, builder, vertices[invert ? 1 : 2], faceNormal, uvs[2], uvs[3], sprite, colour);
-		putVertexData(format, builder, vertices[invert ? 0 : 3], faceNormal, uvs[2], uvs[1], sprite, colour);
-		return builder.build();
+		int vId = invert ? 3 : 0;
+		int u = vId>1?2:0;
+ 		putVertexData(format, builder, vertices[vId], faceNormal, uvs[u], uvs[1], sprite, colour, alpha[invert ? 3 : 0]);
+		vId = invert ? 2 : 1;
+		u = vId>1?2:0;
+		putVertexData(format, builder, vertices[invert ? 2 : 1], faceNormal, uvs[u], uvs[3], sprite, colour, alpha[invert ? 2 : 1]);
+		vId = invert ? 1 : 2;
+		u = vId>1?2:0;
+		putVertexData(format, builder, vertices[invert ? 1 : 2], faceNormal, uvs[u], uvs[3], sprite, colour, alpha[invert ? 1 : 2]);
+		vId = invert ? 1 : 3;
+		u = vId>1?2:0;
+		putVertexData(format, builder, vertices[invert ? 0 : 3], faceNormal, uvs[u], uvs[1], sprite, colour, alpha[invert ? 0 : 3]);
+		BakedQuad tmp = builder.build();
+		return smartLighting?new SmartLightingQuad(tmp.getVertexData(), -1, facing, sprite, format, basePos, false):tmp;
 	}
 
-	protected static void putVertexData(VertexFormat format, UnpackedBakedQuad.Builder builder, Vector3f pos, Normal faceNormal, double u, double v, TextureAtlasSprite sprite, float[] colour)
+	protected static void putVertexData(VertexFormat format, UnpackedBakedQuad.Builder builder, Vector3f pos, Normal faceNormal, double u, double v, TextureAtlasSprite sprite, float[] colour, float alpha)
 	{
 		for(int e = 0; e < format.getElementCount(); e++)
 			switch(format.getElement(e).getUsage())
 			{
-				case POSITION:
-					builder.put(e, pos.getX(), pos.getY(), pos.getZ(), 0);
-					break;
-				case COLOR:
-					float d = 1;//LightUtil.diffuseLight(faceNormal.x, faceNormal.y, faceNormal.z);
-					builder.put(e, d * colour[0], d * colour[1], d * colour[2], 1 * colour[3]);
-					break;
-				case UV:
-					if(sprite == null)//Double Safety. I have no idea how it even happens, but it somehow did .-.
-						sprite = Minecraft.getMinecraft().getTextureMapBlocks().getMissingSprite();
-					builder.put(e,
-							sprite.getInterpolatedU(u),
-							sprite.getInterpolatedV((v)),
-							0, 1);
-					break;
-				case NORMAL:
-					builder.put(e, faceNormal.x, faceNormal.y, faceNormal.z, 0);
-					break;
-				default:
-					builder.put(e);
+			case POSITION:
+				builder.put(e, pos.getX(), pos.getY(), pos.getZ(), 0);
+				break;
+			case COLOR:
+				float d = 1;//LightUtil.diffuseLight(faceNormal.x, faceNormal.y, faceNormal.z);
+				builder.put(e, d * colour[0], d * colour[1], d * colour[2], 1 * colour[3]*alpha);
+				break;
+			case UV:
+				if(sprite == null)//Double Safety. I have no idea how it even happens, but it somehow did .-.
+					sprite = Minecraft.getMinecraft().getTextureMapBlocks().getMissingSprite();
+				builder.put(e,
+						sprite.getInterpolatedU(u),
+						sprite.getInterpolatedV((v)),
+						0, 1);
+				break;
+			case NORMAL:
+				builder.put(e, faceNormal.x, faceNormal.y, faceNormal.z, 0);
+				break;
+			default:
+				builder.put(e);
 			}
+	}
+	public static boolean crossesChunkBoundary(Vec3d start, Vec3d end)
+	{
+		if (((int)Math.floor(start.xCoord/16))!=((int)Math.floor(end.xCoord/16)))
+			return true;
+		if (((int)Math.floor(start.yCoord/16))!=((int)Math.floor(end.yCoord/16)))
+			return true;
+		if (((int)Math.floor(start.zCoord/16))!=((int)Math.floor(end.zCoord/16)))
+			return true;
+		return false;
 	}
 
 	private static int invertRgb(int in)
