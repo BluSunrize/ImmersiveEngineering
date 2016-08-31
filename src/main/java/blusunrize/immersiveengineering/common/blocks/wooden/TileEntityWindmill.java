@@ -26,11 +26,11 @@ public class TileEntityWindmill extends TileEntityIEBase implements ITickable, I
 
 	public boolean canTurn = false;
 
-	@Override
-	public boolean hasFastRenderer()
-	{
-		return true;
-	}
+//	@Override
+//	public boolean hasFastRenderer()
+//	{
+//		return true;
+//	}
 
 	@Override
 	public void update()

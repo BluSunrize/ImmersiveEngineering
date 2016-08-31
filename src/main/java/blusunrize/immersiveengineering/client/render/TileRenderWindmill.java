@@ -9,11 +9,10 @@ import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.EnumFacing.AxisDirection;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.client.model.obj.OBJModel;
+import net.minecraftforge.client.model.obj.OBJModel.Group;
 import net.minecraftforge.client.model.obj.OBJModel.OBJState;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.Properties;
@@ -29,11 +28,12 @@ public class TileRenderWindmill extends TileEntitySpecialRenderer<TileEntityWind
 		if (!tile.getWorld().isBlockLoaded(tile.getPos(), false))
 			return;
 		final BlockRendererDispatcher blockRenderer = Minecraft.getMinecraft().getBlockRendererDispatcher();
-		IBlockState state = tile.getWorld().getBlockState(tile.getPos());
 		BlockPos blockPos = tile.getPos();
-		IBakedModel model = blockRenderer.getModelForState(state);
+		IBlockState state = getWorld().getBlockState(blockPos);
+		state = state.getActualState(getWorld(), blockPos);
+		IBakedModel model = blockRenderer.getBlockModelShapes().getModelForState(state);
 		if(state instanceof IExtendedBlockState)
-			state = ((IExtendedBlockState)state).withProperty(Properties.AnimationProperty, new OBJState(Lists.newArrayList(OBJModel.Group.ALL), true));
+			state = ((IExtendedBlockState)state).withProperty(Properties.AnimationProperty, new OBJState(Lists.newArrayList(Group.ALL), true));
 
 		Tessellator tessellator = Tessellator.getInstance();
 		VertexBuffer worldRenderer = tessellator.getBuffer();
@@ -48,12 +48,23 @@ public class TileRenderWindmill extends TileEntitySpecialRenderer<TileEntityWind
 			GlStateManager.shadeModel(7424);
 		GlStateManager.pushMatrix();
 		GlStateManager.translate(x + .5, y + .5, z + .5);
-		GlStateManager.rotate(90, 1, 0, 0);
 
-		float dir = tile.facing == EnumFacing.NORTH ? 180 : tile.facing == EnumFacing.SOUTH ? 0 : tile.facing == EnumFacing.WEST ? 90 : -90;
+//		float dir = tile.facing == EnumFacing.SOUTH ? 180 : tile.facing == EnumFacing.NORTH ? 0 : tile.facing == EnumFacing.EAST ? 90 : 90;
 		float rot = 360 * tile.rotation - (!tile.canTurn || tile.rotation == 0 || tile.rotation - tile.prevRotation < 4 ? 0 : tile.facing.getAxis() == Axis.X ? -partialTicks : partialTicks);
 		if(tile.facing.getAxisDirection() == AxisDirection.POSITIVE)
 			rot *= -1;
+
+		GlStateManager.rotate(180, tile.facing.getAxis() == Axis.Z ? 1 : 0, 0, tile.facing.getAxis() == Axis.X ? 1 : 0);
+		GlStateManager.rotate(rot, tile.facing.getAxis() == Axis.X ? 1 : 0, 0, tile.facing.getAxis() == Axis.Z ? 1 : 0);
+
+		worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
+		worldRenderer.setTranslation(-.5 - blockPos.getX(), -.5 - blockPos.getY(), -.5 - blockPos.getZ());
+		worldRenderer.color(255, 255, 255, 255);
+		blockRenderer.getBlockModelRenderer().renderModel(tile.getWorld(), model, state, tile.getPos(), worldRenderer, true);
+		worldRenderer.setTranslation(0.0D, 0.0D, 0.0D);
+		tessellator.draw();
+		GlStateManager.popMatrix();
+		RenderHelper.enableStandardItemLighting();
 
 //		vertexBuffer.setTranslation(x - blockPos.getX(), y - blockPos.getY(), z - blockPos.getZ());
 //		final Matrix4 mat = new Matrix4();
@@ -74,18 +85,6 @@ public class TileRenderWindmill extends TileEntitySpecialRenderer<TileEntityWind
 //		};
 //		blockRenderer.getBlockModelRenderer().renderModel(tile.getWorld(), BakedModelTransformer.transform(model, transformer, state, 0), state, tile.getPos(), vertexBuffer, true);
 //		vertexBuffer.setTranslation(0, 0, 0);
-
-		GlStateManager.rotate(dir, 0, 0, 1);
-		GlStateManager.rotate(rot, 0, 1, 0);
-
-		worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
-		worldRenderer.setTranslation(-.5 - blockPos.getX(), -.5 - blockPos.getY(), -.5 - blockPos.getZ());
-		worldRenderer.color(255, 255, 255, 255);
-		blockRenderer.getBlockModelRenderer().renderModel(tile.getWorld(), model, state, tile.getPos(), worldRenderer, true);
-		worldRenderer.setTranslation(0.0D, 0.0D, 0.0D);
-		tessellator.draw();
-		GlStateManager.popMatrix();
-		RenderHelper.enableStandardItemLighting();
 	}
 
 }

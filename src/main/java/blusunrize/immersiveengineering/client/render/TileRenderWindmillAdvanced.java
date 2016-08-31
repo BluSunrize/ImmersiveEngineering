@@ -9,7 +9,6 @@ import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.EnumFacing.AxisDirection;
 import net.minecraft.util.math.BlockPos;
@@ -51,12 +50,22 @@ public class TileRenderWindmillAdvanced extends TileEntitySpecialRenderer<TileEn
 		GlStateManager.pushMatrix();
 		GlStateManager.translate(x + .5, y + .5, z + .5);
 
-		GlStateManager.rotate(90, 0, 0, 1);
-
-		float dir = tile.facing == EnumFacing.NORTH ? 180 : tile.facing == EnumFacing.SOUTH ? 0 : tile.facing == EnumFacing.WEST ? -90 : -90;
+//		float dir = tile.facing == EnumFacing.SOUTH ? 180 : tile.facing == EnumFacing.NORTH ? 0 : tile.facing == EnumFacing.EAST ? 90 : 90;
 		float rot = 360 * tile.rotation - (!tile.canTurn || tile.rotation == 0 || tile.rotation - tile.prevRotation < 4 ? 0 : tile.facing.getAxis() == Axis.X ? -partialTicks : partialTicks);
-		if(tile.facing.getAxisDirection() == AxisDirection.NEGATIVE)
+		if(tile.facing.getAxisDirection() == AxisDirection.POSITIVE)
 			rot *= -1;
+
+		GlStateManager.rotate(180, tile.facing.getAxis() == Axis.Z ? 1 : 0, 0, tile.facing.getAxis() == Axis.X ? 1 : 0);
+		GlStateManager.rotate(rot, tile.facing.getAxis() == Axis.X ? 1 : 0, 0, tile.facing.getAxis() == Axis.Z ? 1 : 0);
+
+		worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
+		worldRenderer.setTranslation(-.5 - blockPos.getX(), -.5 - blockPos.getY(), -.5 - blockPos.getZ());
+		worldRenderer.color(255, 255, 255, 255);
+		blockRenderer.getBlockModelRenderer().renderModel(tile.getWorld(), model, state, tile.getPos(), worldRenderer, true);
+		worldRenderer.setTranslation(0.0D, 0.0D, 0.0D);
+		tessellator.draw();
+		GlStateManager.popMatrix();
+		RenderHelper.enableStandardItemLighting();
 
 //		vertexBuffer.setTranslation(x - blockPos.getX(), y - blockPos.getY(), z - blockPos.getZ());
 //		final Matrix4 mat = new Matrix4();
@@ -77,17 +86,5 @@ public class TileRenderWindmillAdvanced extends TileEntitySpecialRenderer<TileEn
 //		};
 //		blockRenderer.getBlockModelRenderer().renderModel(tile.getWorld(), BakedModelTransformer.transform(model, transformer, state, 0), state, tile.getPos(), vertexBuffer, true);
 //		vertexBuffer.setTranslation(0, 0, 0);
-
-		GlStateManager.rotate(dir, 0, 0, 1);
-		GlStateManager.rotate(rot, tile.facing.getAxis() == Axis.X ? 1 : 0, 0, tile.facing.getAxis() == Axis.Z ? 1 : 0);
-
-		worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
-		worldRenderer.setTranslation(-.5 - blockPos.getX(), -.5 - blockPos.getY(), -.5 - blockPos.getZ());
-		worldRenderer.color(255, 255, 255, 255);
-		blockRenderer.getBlockModelRenderer().renderModel(tile.getWorld(), model, state, tile.getPos(), worldRenderer, true);
-		worldRenderer.setTranslation(0.0D, 0.0D, 0.0D);
-		tessellator.draw();
-		GlStateManager.popMatrix();
-		RenderHelper.enableStandardItemLighting();
 	}
 }
