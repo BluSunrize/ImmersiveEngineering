@@ -25,7 +25,6 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
@@ -54,13 +53,10 @@ public class TileEntityWoodenBarrel extends TileEntityIEBase implements ITickabl
 				if(te!=null && te.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, f.getOpposite()))
 				{
 					IFluidHandler handler = te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, f.getOpposite());
-					if(handler!=null)
-					{
-						int accepted = handler.fill(new FluidStack(tank.getFluid().getFluid(), out), false);
-						FluidStack drained = this.tank.drain(accepted, true);
-						handler.fill(drained, true);
-						update = true;
-					}
+					int accepted = handler.fill(new FluidStack(tank.getFluid().getFluid(), out), false);
+					FluidStack drained = this.tank.drain(accepted, true);
+					handler.fill(drained, true);
+					update = true;
 				}
 			}
 		if(update)

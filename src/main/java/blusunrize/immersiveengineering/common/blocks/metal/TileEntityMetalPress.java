@@ -1,6 +1,5 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.IMultiblockRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
@@ -11,11 +10,12 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.*;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
@@ -268,7 +268,12 @@ public class TileEntityMetalPress extends TileEntityMultiblockMetal<TileEntityMe
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
 	{
 		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-			return true;
+		{
+			TileEntityMetalPress master = master();
+			if(master == null)
+				return false;
+			return pos == 3 && facing == this.facing.getOpposite();
+		}
 		return super.hasCapability(capability, facing);
 	}
 	IItemHandler insertionHandler = new MultiblockInventoryHandler_DirectProcessing(this);

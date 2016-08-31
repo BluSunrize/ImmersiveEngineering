@@ -70,14 +70,11 @@ public class TileEntityFluidPump extends TileEntityIEBase implements ITickable, 
 					if(tile!=null && tile.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, f.getOpposite()))
 					{
 						IFluidHandler handler = tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, f.getOpposite());
-						if(handler!=null)
-						{
-							FluidStack drain = handler.drain(500, false);
-							if(drain==null || drain.amount<=0)
-								continue;
-							int out = this.outputFluid(drain, false);
-							handler.drain(out, true);
-						}
+						FluidStack drain = handler.drain(500, false);
+						if(drain == null || drain.amount <= 0)
+							continue;
+						int out = this.outputFluid(drain, false);
+						handler.drain(out, true);
 					}
 					else if(worldObj.getTotalWorldTime()%20==((getPos().getX()^getPos().getZ())&19) && worldObj.getBlockState(getPos().offset(f)).getBlock()==Blocks.WATER && Config.getBoolean("pump_infiniteWater") && tank.fill(new FluidStack(FluidRegistry.WATER,1000), false)==1000 && this.energyStorage.extractEnergy(Config.getInt("pump_consumption"), true)>=Config.getInt("pump_consumption"))
 					{
@@ -196,20 +193,17 @@ public class TileEntityFluidPump extends TileEntityIEBase implements ITickable, 
 				if(tile!=null && tile.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, f.getOpposite()))
 				{
 					IFluidHandler handler = tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, f.getOpposite());
-					if(handler != null)
+					FluidStack insertResource = new FluidStack(fs.getFluid(), fs.amount);
+					if(tile instanceof TileEntityFluidPipe && this.energyStorage.extractEnergy(accelPower, true) >= accelPower)
 					{
-						FluidStack insertResource = new FluidStack(fs.getFluid(), fs.amount);
-						if (tile instanceof TileEntityFluidPipe && this.energyStorage.extractEnergy(accelPower, true) >= accelPower)
-						{
-							insertResource.tag = new NBTTagCompound();
-							insertResource.tag.setBoolean("pressurized", true);
-						}
-						int temp = handler.fill(insertResource, false);
-						if (temp > 0)
-						{
-							sorting.put(new DirectionalFluidOutput(handler, tile, f), temp);
-							sum += temp;
-						}
+						insertResource.tag = new NBTTagCompound();
+						insertResource.tag.setBoolean("pressurized", true);
+					}
+					int temp = handler.fill(insertResource, false);
+					if(temp > 0)
+					{
+						sorting.put(new DirectionalFluidOutput(handler, tile, f), temp);
+						sum += temp;
 					}
 				}
 			}

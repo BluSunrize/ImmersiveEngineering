@@ -21,13 +21,11 @@ import net.minecraftforge.client.model.obj.OBJModel.OBJState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.FluidTankProperties;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 
 import javax.annotation.Nullable;
@@ -87,12 +85,9 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 									else if(adjacentTile.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, fd.getOpposite()))
 									{
 										IFluidHandler handler = adjacentTile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, fd.getOpposite());
-										if(handler!=null)
-										{
-											tankInfo = handler.getTankProperties();
-											if(tankInfo != null && tankInfo.length > 0)
-												fluidHandlers.add(new DirectionalFluidOutput(handler, adjacentTile, fd));
-										}
+										tankInfo = handler.getTankProperties();
+										if(tankInfo != null && tankInfo.length > 0)
+											fluidHandlers.add(new DirectionalFluidOutput(handler, adjacentTile, fd));
 									}
 							}
 						}
@@ -183,6 +178,8 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 		{
 //		if(resource==null || from==null || sideConfig[from.ordinal()]!=0 || worldObj.isRemote)
 //			return 0;
+			if(resource == null)
+				return 0;
 			int canAccept = resource.amount;
 			if(canAccept <= 0)
 				return 0;
@@ -272,7 +269,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 			if(sideConfig[i]==0 && con!=null && con.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, dir.getOpposite()))
 			{
 				IFluidHandler handler = con.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, dir.getOpposite());
-				tankInfo = handler!=null?handler.getTankProperties():null;
+				tankInfo = handler.getTankProperties();
 				if(tankInfo!=null && tankInfo.length>0)
 					connections |= 1;
 			}
@@ -292,7 +289,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 			if(con!=null && con.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, dir.getOpposite()))
 			{
 				IFluidHandler handler = con.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, dir.getOpposite());
-				tankInfo = handler!=null?handler.getTankProperties():null;
+				tankInfo = handler.getTankProperties();
 				if(tankInfo!=null && tankInfo.length>0)
 					connections |= 1;
 			}

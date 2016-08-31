@@ -9,9 +9,9 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.IItemHandler;
 
@@ -154,7 +154,16 @@ public class TileEntityBlastFurnaceAdvanced extends TileEntityBlastFurnace
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing)
 	{
 		if((pos==1||pos==7||pos==31)&&capability==net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-			return true;
+		{
+			TileEntityBlastFurnaceAdvanced master = (TileEntityBlastFurnaceAdvanced)master();
+			if(master == null)
+				return false;
+			if(pos == 31 && facing == EnumFacing.UP)
+				return true;
+			if(pos == 1 && facing == master.facing)
+				return true;
+			return pos == 7 && facing == master.facing.getOpposite();
+		}
 		return super.hasCapability(capability, facing);
 	}
 	IItemHandler inputHandler = new IEInventoryHandler(2,this,0, new boolean[]{true,true},new boolean[]{false,false});
