@@ -1,8 +1,5 @@
 package blusunrize.immersiveengineering.common.util.compat.jei.metalpress;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.util.compat.jei.MultiblockRecipeWrapper;
@@ -10,6 +7,9 @@ import mezz.jei.api.IJeiHelpers;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MetalPressRecipeWrapper extends MultiblockRecipeWrapper
 {
@@ -23,9 +23,7 @@ public class MetalPressRecipeWrapper extends MultiblockRecipeWrapper
 	{
 		GlStateManager.pushMatrix();
 		ClientUtils.bindAtlas();
-		GlStateManager.translate(70F, 30F, 16.5F);
-		GlStateManager.rotate(-30.0F, 1.0F, 0.0F, 0.0F);
-		GlStateManager.rotate(-20.0F, 0.0F, 1.0F, 0.0F);
+		GlStateManager.translate(60F, 20F, 16.5F);
 		GlStateManager.scale(50, -50, 50);
 		minecraft.getRenderItem().renderItem(MetalPressRecipeCategory.metalPressStack, ItemCameraTransforms.TransformType.GUI);
 		GlStateManager.popMatrix();

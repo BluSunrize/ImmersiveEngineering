@@ -28,7 +28,7 @@ public class MetalPressRecipeCategory extends IERecipeCategory
 	{
 		IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
 		guiItemStacks.init(0, true, 20, 3);
-		guiItemStacks.init(1, true, 61, 0);
+		guiItemStacks.init(1, true, 71, 0);
 		guiItemStacks.init(2, false, 102, 3);
 		if(recipeWrapper instanceof MetalPressRecipeWrapper)
 		{

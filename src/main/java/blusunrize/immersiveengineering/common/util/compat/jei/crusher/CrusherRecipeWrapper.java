@@ -1,10 +1,5 @@
 package blusunrize.immersiveengineering.common.util.compat.jei.crusher;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.google.common.collect.Lists;
-
 import blusunrize.immersiveengineering.api.crafting.CrusherRecipe;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.util.compat.jei.MultiblockRecipeWrapper;
@@ -12,7 +7,9 @@ import mezz.jei.api.IJeiHelpers;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.item.ItemStack;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CrusherRecipeWrapper extends MultiblockRecipeWrapper
 {
@@ -27,9 +24,7 @@ public class CrusherRecipeWrapper extends MultiblockRecipeWrapper
 		GlStateManager.pushMatrix();
 		ClientUtils.bindAtlas();
 		GlStateManager.translate(70F, 20F, 16.5F);
-		GlStateManager.rotate(-30.0F, 1.0F, 0.0F, 0.0F);
-		GlStateManager.rotate(80.0F, 0.0F, 1.0F, 0.0F);
-		GlStateManager.scale(60, -60, 60);
+		GlStateManager.scale(50, -50, 50);
 		minecraft.getRenderItem().renderItem(CrusherRecipeCategory.crusherStack, ItemCameraTransforms.TransformType.GUI);
 		GlStateManager.popMatrix();
 	}
