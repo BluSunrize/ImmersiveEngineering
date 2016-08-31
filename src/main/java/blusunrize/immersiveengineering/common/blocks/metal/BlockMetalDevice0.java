@@ -22,6 +22,7 @@ public class BlockMetalDevice0 extends BlockIETileProvider<BlockTypes_MetalDevic
 		super("metalDevice0",Material.IRON, PropertyEnum.create("type", BlockTypes_MetalDevice0.class), ItemBlockIEBase.class, IEProperties.MULTIBLOCKSLAVE,IEProperties.SIDECONFIG[0],IEProperties.SIDECONFIG[1],IEProperties.SIDECONFIG[2],IEProperties.SIDECONFIG[3],IEProperties.SIDECONFIG[4],IEProperties.SIDECONFIG[5]);
 		setHardness(3.0F);
 		setResistance(15.0F);
+		this.setNotNormalBlock(BlockTypes_MetalDevice0.FLUID_PUMP.getMeta());
 	}
 
 	@Override
@@ -90,22 +91,6 @@ public class BlockMetalDevice0 extends BlockIETileProvider<BlockTypes_MetalDevic
 	//			return new ArrayList();
 	//		ArrayList<ItemStack> ret = super.getDrops(world, x, y, z, metadata, fortune);
 	//		return ret;
-	//	}
-
-	//	@Override
-	//	public boolean isFullBlock()
-	//	{
-	//		return false;
-	//	}
-	//	@Override
-	//	public boolean isFullCube()
-	//	{
-	//		return false;
-	//	}
-	//	@Override
-	//	public boolean isOpaqueCube()
-	//	{
-	//		return false;
 	//	}
 
 	//	@Override

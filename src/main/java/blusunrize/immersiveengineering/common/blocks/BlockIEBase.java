@@ -48,6 +48,7 @@ public class BlockIEBase<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 	protected Set<BlockRenderLayer>[] metaRenderLayers;
 	protected Map<Integer, Integer> metaLightOpacities = new HashMap<>();
 	protected Map<Integer, Integer> metaResistances = new HashMap<>();
+	protected Set<Integer> metaNotNormalBlock = new TreeSet<>();
 	private boolean opaqueCube = false;
 	public BlockIEBase(String name, Material material, PropertyEnum<E> mainProperty, Class<? extends ItemBlockIEBase> itemBlock, Object... additionalProperties)
 	{
@@ -238,7 +239,6 @@ public class BlockIEBase<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 		metaResistances.put(meta, resistance);
 		return this;
 	}
-
 	@Override
 	public float getExplosionResistance(World world, BlockPos pos, Entity exploder, Explosion explosion)
 	{
@@ -246,6 +246,36 @@ public class BlockIEBase<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 		if(metaResistances.containsKey(meta))
 			return metaResistances.get(meta);
 		return super.getExplosionResistance(world, pos, exploder, explosion);
+	}
+
+	public BlockIEBase<E> setNotNormalBlock(int meta)
+	{
+		metaNotNormalBlock.add(meta);
+		return this;
+	}
+
+	@Override
+	public boolean isFullBlock(IBlockState state)
+	{
+		if(metaNotNormalBlock.contains(-1))
+			return false;
+		return !metaNotNormalBlock.contains(getMetaFromState(state));
+	}
+
+	@Override
+	public boolean isFullCube(IBlockState state)
+	{
+		if(metaNotNormalBlock.contains(-1))
+			return false;
+		return !metaNotNormalBlock.contains(getMetaFromState(state));
+	}
+
+	@Override
+	public boolean isOpaqueCube(IBlockState state)
+	{
+		if(metaNotNormalBlock.contains(-1))
+			return false;
+		return !metaNotNormalBlock.contains(getMetaFromState(state));
 	}
 
 	//This is a ridiculously hacky workaround, I would not recommend it to anyone.

@@ -13,20 +13,21 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 public class EntityFluorescentTube extends Entity implements ITeslaEntity
 {
-	private static final DataParameter<Boolean> dataMarker_active = EntityDataManager.<Boolean>createKey(EntityChemthrowerShot.class, DataSerializers.BOOLEAN);
-	private static final DataParameter<Float> dataMarker_r = EntityDataManager.<Float>createKey(EntityChemthrowerShot.class, DataSerializers.FLOAT);
-	private static final DataParameter<Float> dataMarker_g = EntityDataManager.<Float>createKey(EntityChemthrowerShot.class, DataSerializers.FLOAT);
-	private static final DataParameter<Float> dataMarker_b = EntityDataManager.<Float>createKey(EntityChemthrowerShot.class, DataSerializers.FLOAT);
-	private static final DataParameter<Float> dataMarker_angleHorizontal = EntityDataManager.<Float>createKey(EntityChemthrowerShot.class, DataSerializers.FLOAT);
+	private static final DataParameter<Boolean> dataMarker_active = EntityDataManager.createKey(EntityChemthrowerShot.class, DataSerializers.BOOLEAN);
+	private static final DataParameter<Float> dataMarker_r = EntityDataManager.createKey(EntityChemthrowerShot.class, DataSerializers.FLOAT);
+	private static final DataParameter<Float> dataMarker_g = EntityDataManager.createKey(EntityChemthrowerShot.class, DataSerializers.FLOAT);
+	private static final DataParameter<Float> dataMarker_b = EntityDataManager.createKey(EntityChemthrowerShot.class, DataSerializers.FLOAT);
+	private static final DataParameter<Float> dataMarker_angleHorizontal = EntityDataManager.createKey(EntityChemthrowerShot.class, DataSerializers.FLOAT);
 	
 	private int timer = 0;
 	public boolean active = false;
@@ -147,9 +148,9 @@ public class EntityFluorescentTube extends Entity implements ITeslaEntity
 		return super.getEntityBoundingBox();
 	}
 	@Override
-	public void onHit(TileEntityTeslaCoil te, boolean lowPower)
+	public void onHit(TileEntity te, boolean lowPower)
 	{
-		if (te.energyStorage.extractEnergy(1, false)>0)
+		if(te instanceof TileEntityTeslaCoil && ((TileEntityTeslaCoil)te).energyStorage.extractEnergy(1, false) > 0)
 		{
 			timer = 35;
 			dataManager.set(dataMarker_active, true);

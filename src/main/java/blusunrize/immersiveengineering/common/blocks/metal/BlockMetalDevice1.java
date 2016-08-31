@@ -2,6 +2,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConnectable;
+import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.blocks.BlockIETileProvider;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
 import net.minecraft.block.material.Material;
@@ -29,7 +30,7 @@ public class BlockMetalDevice1 extends BlockIETileProvider<BlockTypes_MetalDevic
 {
 	public BlockMetalDevice1()
 	{
-		super("metalDevice1",Material.IRON, PropertyEnum.create("type", BlockTypes_MetalDevice1.class), ItemBlockIEBase.class,  IEProperties.FACING_ALL,IEProperties.MULTIBLOCKSLAVE,IEProperties.BOOLEANS[0],Properties.AnimationProperty,IEProperties.OBJ_MODEL_CALLBACK);
+		super("metalDevice1", Material.IRON, PropertyEnum.create("type", BlockTypes_MetalDevice1.class), ItemBlockIEBase.class, IEProperties.FACING_ALL, IEProperties.MULTIBLOCKSLAVE, IEProperties.BOOLEANS[0], Properties.AnimationProperty, IOBJModelCallback.PROPERTY);
 		this.setHardness(3.0F);
 		this.setResistance(15.0F);
 		lightOpacity = 0;

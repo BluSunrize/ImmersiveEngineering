@@ -203,10 +203,9 @@ public class IESmartObjModel extends OBJBakedModel
 		{
 			callback = (IOBJModelCallback)tempStack.getItem();
 			callbackObject = this.tempStack;
-		}
-		else if(this.tempState!=null && this.tempState instanceof IExtendedBlockState && ((IExtendedBlockState)this.tempState).getUnlistedNames().contains(IEProperties.OBJ_MODEL_CALLBACK))
+		} else if(this.tempState != null && this.tempState instanceof IExtendedBlockState && ((IExtendedBlockState)this.tempState).getUnlistedNames().contains(IOBJModelCallback.PROPERTY))
 		{
-			callback = ((IExtendedBlockState)this.tempState).getValue(IEProperties.OBJ_MODEL_CALLBACK);
+			callback = ((IExtendedBlockState)this.tempState).getValue(IOBJModelCallback.PROPERTY);
 			callbackObject = this.tempState;
 		}
 

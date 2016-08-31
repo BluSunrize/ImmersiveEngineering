@@ -1,20 +1,18 @@
 package blusunrize.immersiveengineering.api.crafting;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Lists;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraftforge.oredict.OreDictionary;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
-
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Lists;
-
-import blusunrize.immersiveengineering.api.ApiUtils;
-import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraftforge.oredict.OreDictionary;
 
 /**
  * @author BluSunrize - 21.07.2015
@@ -166,7 +164,7 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 				else if(i.stackList!=null)
 					inputList.add(new IngredientStack(Lists.newArrayList(i.stackList), i.inputSize));
 				else if(i.stack!=null)
-					inputList.add(new IngredientStack(Utils.copyStackWithAmount(i.stack, i.inputSize)));
+					inputList.add(new IngredientStack(ApiUtils.copyStackWithAmount(i.stack, i.inputSize)));
 			}
 
 		Iterator<IngredientStack> inputIt = inputList.iterator();
@@ -225,7 +223,7 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 					else if(ingr.stackList!=null)
 						formattedInputs.add(new IngredientStack(Lists.newArrayList(ingr.stackList), ingr.inputSize));
 					else if(ingr.stack!=null)
-						formattedInputs.add(new IngredientStack(Utils.copyStackWithAmount(ingr.stack, ingr.inputSize)));
+						formattedInputs.add(new IngredientStack(ApiUtils.copyStackWithAmount(ingr.stack, ingr.inputSize)));
 				}
 			}
 		return formattedInputs;

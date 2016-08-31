@@ -1,6 +1,5 @@
 package blusunrize.immersiveengineering.api;
 
-import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.properties.PropertyDirection;
@@ -72,28 +71,6 @@ public class IEProperties
 		}
 		@Override
 		public String valueToString(HashMap value)
-		{
-			return value.toString();
-		}
-	};
-	public static final IUnlistedProperty<IOBJModelCallback> OBJ_MODEL_CALLBACK = new IUnlistedProperty<IOBJModelCallback>()
-	{
-		@Override
-		public String getName()
-		{
-			return "obj_model_callback";
-		}
-		@Override
-		public boolean isValid(IOBJModelCallback value)
-		{
-			return true;
-		}
-		@Override
-		public Class<IOBJModelCallback> getType() {
-			return IOBJModelCallback.class;
-		}
-		@Override
-		public String valueToString(IOBJModelCallback value)
 		{
 			return value.toString();
 		}

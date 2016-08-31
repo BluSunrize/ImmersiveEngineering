@@ -184,7 +184,7 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 			if(te instanceof IDynamicTexture)
 				state = ((IExtendedBlockState)state).withProperty(IEProperties.OBJ_TEXTURE_REMAP, ((IDynamicTexture)te).getTextureReplacements());
 			if(te instanceof IOBJModelCallback)
-				state = ((IExtendedBlockState)state).withProperty(IEProperties.OBJ_MODEL_CALLBACK, (IOBJModelCallback)te);
+				state = ((IExtendedBlockState)state).withProperty(IOBJModelCallback.PROPERTY, (IOBJModelCallback)te);
 			if(te instanceof IPropertyPassthrough && ((IExtendedBlockState) state).getUnlistedNames().contains(IEProperties.TILEENTITY_PASSTHROUGH))
 				state = ((IExtendedBlockState) state).withProperty(IEProperties.TILEENTITY_PASSTHROUGH, te);
 		}

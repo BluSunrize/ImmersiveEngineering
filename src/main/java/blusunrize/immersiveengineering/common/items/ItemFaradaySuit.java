@@ -1,7 +1,5 @@
 package blusunrize.immersiveengineering.common.items;
 
-import java.util.Map;
-
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.tool.ITeslaEquipment;
 import blusunrize.immersiveengineering.common.IEContent;
@@ -12,7 +10,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraft.util.DamageSource;
+
+import java.util.Map;
 
 public class ItemFaradaySuit extends ItemArmor implements ITeslaEquipment
 {
@@ -29,8 +29,11 @@ public class ItemFaradaySuit extends ItemArmor implements ITeslaEquipment
 	}
 	
 	@Override
-	public void onStrike(ItemStack s, EntityEquipmentSlot eqSlot, EntityLivingBase p, Map<String, Object> cache, TeslaDamageSource dmg)
+	public void onStrike(ItemStack s, EntityEquipmentSlot eqSlot, EntityLivingBase p, Map<String, Object> cache, DamageSource source)
 	{
+		if(!(source instanceof TeslaDamageSource))
+			return;
+		TeslaDamageSource dmg = (TeslaDamageSource)source;
 		if(dmg.isLowPower)
 		{
 			if (cache.containsKey("faraday"))
