@@ -44,6 +44,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
@@ -230,7 +231,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IShaderEquipabl
 				return new ActionResult(EnumActionResult.SUCCESS, revolver);
 			}
 			else if(this.getUpgrades(revolver).getBoolean("nerf"))
-				player.playSound(SoundEvents.ENTITY_ITEM_PICKUP, 1f, .6f);
+				world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 1f, 0.6f);
 			else
 			{
 				if(ItemNBTHelper.getInt(revolver, "cooldown")>0)
@@ -252,7 +253,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IShaderEquipabl
 									world.spawnEntityInWorld(new EntityItem(world, player.posX,player.posY,player.posZ, b ));
 									dc++;
 								}
-							player.playSound(SoundEvents.ITEM_FLINTANDSTEEL_USE, .5f, 3f);
+							world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ITEM_FLINTANDSTEEL_USE, SoundCategory.PLAYERS, .5f, 3f);
 							ItemNBTHelper.setDelayedSoundsForStack(revolver, "casings", "random.successful_hit",.05f,5, dc/2, 8,2);
 							setBullets(revolver, getBullets(loader));
 							setBullets(loader, new ItemStack[8]);
@@ -290,12 +291,12 @@ public class ItemRevolver extends ItemUpgradeableTool implements IShaderEquipabl
 									player.worldObj.spawnEntityInWorld(bullet.getProjectile(player, bullets[0], entBullet, electro));
 								}
 							bullets[0] = bullet.getCasing(bullets[0]);
-							player.playSound(IESounds.revolverFire, 1f, 1f);
+							world.playSound(null, player.posX, player.posY, player.posZ, IESounds.revolverFire, SoundCategory.PLAYERS, 1f, 1f);
 						} else
-							player.playSound(SoundEvents.BLOCK_NOTE_HAT, 1f, 1f);
+							world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.BLOCK_NOTE_HAT, SoundCategory.PLAYERS, 1f, 1f);
 					}
 					else
-						player.playSound(SoundEvents.BLOCK_NOTE_HAT, 1f, 1f);
+						world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.BLOCK_NOTE_HAT, SoundCategory.PLAYERS, 1f, 1f);
 
 					ItemStack[] cycled = new ItemStack[getBulletSlotAmount(revolver)];
 					for(int i=1; i<cycled.length; i++)

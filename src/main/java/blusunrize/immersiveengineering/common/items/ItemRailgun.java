@@ -1,6 +1,5 @@
 package blusunrize.immersiveengineering.common.items;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxContainerItem;
 import blusunrize.immersiveengineering.api.shader.IShaderEquipableItem;
@@ -29,7 +28,9 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.*;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
@@ -144,7 +145,7 @@ public class ItemRailgun extends ItemUpgradeableTool implements IShaderEquipable
 	@Override
 	public EnumAction getItemUseAction(ItemStack p_77661_1_)
 	{
-		return EnumAction.BOW;
+		return EnumAction.NONE;
 	}
 
 	@Override
@@ -176,8 +177,7 @@ public class ItemRailgun extends ItemUpgradeableTool implements IShaderEquipable
 		if(this.extractEnergy(stack, energy, true)==energy && findAmmo(player)!=null)
 		{
 			player.setActiveHand(hand);
-			player.playSound(getChargeTime(stack)<=20? IESounds.chargeFast:IESounds.chargeSlow, 1.5f, 1);
-			ItemNBTHelper.setBoolean(stack, "inUse", true);
+			player.playSound(getChargeTime(stack) <= 20 ? IESounds.chargeFast : IESounds.chargeSlow, 1.5f, 1);
 			return new ActionResult(EnumActionResult.SUCCESS, stack);
 		}
 		return new ActionResult(EnumActionResult.PASS, stack);
@@ -354,14 +354,14 @@ public class ItemRailgun extends ItemUpgradeableTool implements IShaderEquipable
 	public Matrix4 handlePerspective(ItemStack stack, TransformType cameraTransformType, Matrix4 perspective)
 	{
 		//		if(stack.)
-		if(ItemNBTHelper.getBoolean(stack, "inUse"))
-		{
-			//ToDo: Accoutn for hands
-			if (cameraTransformType==TransformType.FIRST_PERSON_RIGHT_HAND)
-				perspective = perspective.translate(-.75, -2, -.5).rotate(Math.toRadians(-78), 0, 0, 1);
-			else
-				perspective = perspective.translate(0, -.5, -.375).rotate(Math.toRadians(8), 0, 1, 0).rotate(Math.toRadians(-12), 1, 0, 0).rotate(Math.toRadians(8), 0, 0, 1);
-		}
+//		if(ItemNBTHelper.getBoolean(stack, "inUse"))
+//		{
+//			//ToDo: Accoutn for hands
+//			if (cameraTransformType==TransformType.FIRST_PERSON_RIGHT_HAND)
+//				perspective = perspective.translate(-.75, -2, -.5).rotate(Math.toRadians(-78), 0, 0, 1);
+//			else
+//				perspective = perspective.translate(0, -.5, -.375).rotate(Math.toRadians(8), 0, 1, 0).rotate(Math.toRadians(-12), 1, 0, 0).rotate(Math.toRadians(8), 0, 0, 1);
+//		}
 		return perspective;
 	}
 }
