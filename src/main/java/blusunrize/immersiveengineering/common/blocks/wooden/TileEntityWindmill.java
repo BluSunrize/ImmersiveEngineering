@@ -12,6 +12,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -95,11 +96,10 @@ public class TileEntityWindmill extends TileEntityIEBase implements ITickable, I
 			{
 				for(int dd=1;dd<8;dd++)
 				{
-					int xx = (facing.getAxis()==Axis.Z?ww:0)+(facing==EnumFacing.WEST?-dd: facing==EnumFacing.EAST?dd: 0);
-					int zz = (facing.getAxis()==Axis.Z?0:ww)+(facing==EnumFacing.NORTH?-dd: facing==EnumFacing.SOUTH?dd: 0);
-					if(worldObj.isAirBlock(getPos().add(xx,hh,zz)))
+					BlockPos pos = getPos().add(0, hh, 0).offset(facing.getOpposite(), dd).offset(facing.rotateY(), ww);
+					if(worldObj.isAirBlock(pos))
 						turnSpeed ++;
-					else if(worldObj.getTileEntity(getPos().add(xx,hh,zz)) instanceof TileEntityWindmill)
+					else if(worldObj.getTileEntity(pos) instanceof TileEntityWindmill)
 					{
 						blocked+=20;
 						turnSpeed-=179;
