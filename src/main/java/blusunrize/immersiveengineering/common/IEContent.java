@@ -146,10 +146,6 @@ public class IEContent
 
 	public static VillagerRegistry.VillagerProfession villagerProfession_engineer;
 
-	static{
-		FluidRegistry.enableUniversalBucket();
-	}
-
 	public static void preInit()
 	{
 		blockOre = (BlockIEBase)new BlockIEBase("ore",Material.ROCK, PropertyEnum.create("type", BlockTypes_Ore.class), ItemBlockIEBase.class).setOpaque(true).setHardness(3.0F).setResistance(5.0F);
