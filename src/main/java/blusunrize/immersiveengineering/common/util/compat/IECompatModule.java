@@ -34,7 +34,7 @@ public abstract class IECompatModule
 //		moduleClasses.put("ThermalFoundation", ThermalFoundationHelper.class);
 //		moduleClasses.put("ThermalDynamics", ThermalDynamicsHelper.class);
 		moduleClasses.put("IC2", IC2Helper.class);
-//		moduleClasses.put("chisel", ChiselHelper.class);
+		moduleClasses.put("chisel", ChiselHelper.class);
 //		moduleClasses.put("harvestcraft", HarvestCraftHelper.class);
 //		moduleClasses.put("CarpentersBlocks", CarpentersHelper.class);
 //		moduleClasses.put("Forestry", ForestryHelper.class);
