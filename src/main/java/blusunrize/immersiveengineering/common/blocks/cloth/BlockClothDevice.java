@@ -29,7 +29,7 @@ public class BlockClothDevice extends BlockIETileProvider<BlockTypes_ClothDevice
 		super("clothDevice", Material.CLOTH, PropertyEnum.create("type", BlockTypes_ClothDevice.class), ItemBlockClothDevice.class, IEProperties.FACING_ALL);
 		setHardness(0.8F);
 		setMetaLightOpacity(1, 0);
-		setBlockLayer(BlockRenderLayer.SOLID, BlockRenderLayer.TRANSLUCENT);
+		setMetaBlockLayer(1, BlockRenderLayer.SOLID, BlockRenderLayer.TRANSLUCENT);
 		setNotNormalBlock(BlockTypes_ClothDevice.BALLOON.getMeta());
 	}
 

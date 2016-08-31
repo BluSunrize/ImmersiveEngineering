@@ -1,3 +1,15 @@
+#####Version 0.10-39
+- re-added Chisel Compat. Won't work till Chisel actually brigns IMC integration back in
+- changed Water- and Windmills to use normal TESR again after all
+- fixed lighting on wires and connectors (thanks Malte)
+- fixed wire rendering accross chunks; they split into two renders to at least give indication now (thanks Malte)
+- fixed recipes for Faraday Armor
+- fixed incorrect checks for empty lists when creating ingredient stacks
+- fixed Universal Bucket being initialized too late
+- fixed crashes relating to missign Railgun ammo
+- fixed Wooden Posts not extending arms
+- fixed derpy looking railgun and missign sounds on the Revolver
+
 #####Version 0.10-38 - BUILT
 - added the new IConveyorBelt system
     - fully dynamic conveyor system, with custom models and all

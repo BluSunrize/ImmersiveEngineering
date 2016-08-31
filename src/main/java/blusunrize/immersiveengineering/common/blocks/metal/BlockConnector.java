@@ -33,6 +33,7 @@ public class BlockConnector extends BlockIETileProvider<BlockTypes_Connector>
 		setHardness(3.0F);
 		setResistance(15.0F);
 		lightOpacity = 0;
+		setBlockLayer(BlockRenderLayer.SOLID, BlockRenderLayer.TRANSLUCENT);
 		setAllNotNormalBlock();
 		setBlockLayer(BlockRenderLayer.SOLID, BlockRenderLayer.TRANSLUCENT);
 	}
