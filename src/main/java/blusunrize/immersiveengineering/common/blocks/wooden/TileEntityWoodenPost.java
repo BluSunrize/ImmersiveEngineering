@@ -1,25 +1,24 @@
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
-import java.util.ArrayList;
-
-import com.google.common.collect.Lists;
-
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasObjProperty;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalDecoration2;
+import com.google.common.collect.Lists;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import java.util.ArrayList;
 
 public class TileEntityWoodenPost extends TileEntityIEBase implements IHasDummyBlocks, IHasObjProperty, IBlockBounds, IHammerInteraction
 {
@@ -200,6 +199,7 @@ public class TileEntityWoodenPost extends TileEntityIEBase implements IHasDummyB
 
 			worldObj.setBlockState(offsetPos, worldObj.getBlockState(getPos()));
 			((TileEntityWoodenPost)worldObj.getTileEntity(offsetPos)).dummy = (byte)(3+side.ordinal());
+			this.markBlockForUpdate(offsetPos, null);
 			this.markBlockForUpdate(getPos().add(0,-3,0), null);
 		}
 		else if(this.dummy>3)

@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.common.CommonProxy;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.IESaveData;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IGuiItem;
 import blusunrize.immersiveengineering.common.util.*;
 import com.google.common.collect.ImmutableSet;
@@ -136,7 +137,8 @@ public class ItemIETool extends ItemIEBase implements ITool, IGuiItem
 					if(mb.createStructure(world, pos, side, player))
 						return EnumActionResult.SUCCESS;
 				}
-			if(!(world.getTileEntity(pos) instanceof IDirectionalTile))
+			TileEntity tile = world.getTileEntity(pos);
+			if(!(tile instanceof IDirectionalTile) && !(tile instanceof IHammerInteraction))
 				return RotationUtil.rotateBlock(world, pos, side, player) ? EnumActionResult.SUCCESS : EnumActionResult.PASS;
 		} else if(stack.getItemDamage() == 1 && tileEntity instanceof IImmersiveConnectable && !world.isRemote)
 		{
