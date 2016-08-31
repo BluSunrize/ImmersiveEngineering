@@ -66,8 +66,9 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 			return;
 		if(turnCooldown > 0)
 			turnCooldown--;
-		if(turnCooldown == 0)
-			notifyAll();
+		//ToDo: I don't even know what this is for. I need Malte to explain that .-.
+//		if(turnCooldown == 0)
+//			notifyAll();
 		boolean b = active;
 		boolean enabled;
 		if(shouldUpdate)
