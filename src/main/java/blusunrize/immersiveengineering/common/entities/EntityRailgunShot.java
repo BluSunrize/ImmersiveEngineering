@@ -5,7 +5,6 @@ import blusunrize.immersiveengineering.api.tool.RailgunHandler.RailgunProjectile
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import com.google.common.base.Optional;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
@@ -17,7 +16,7 @@ import net.minecraft.world.World;
 public class EntityRailgunShot extends EntityIEProjectile
 {
 	private ItemStack ammo;
-	private static final DataParameter<Optional<ItemStack>> dataMarker_ammo = EntityDataManager.<Optional<ItemStack>>createKey(EntityIEProjectile.class, DataSerializers.OPTIONAL_ITEM_STACK);
+	private static final DataParameter<Optional<ItemStack>> dataMarker_ammo = EntityDataManager.createKey(EntityIEProjectile.class, DataSerializers.OPTIONAL_ITEM_STACK);
 	private RailgunProjectileProperties ammoProperties;
 
 	public EntityRailgunShot(World world)
@@ -62,7 +61,7 @@ public class EntityRailgunShot extends EntityIEProjectile
 	}
 	public ItemStack getAmmoSynced()
 	{
-		return this.dataManager.get(dataMarker_ammo).get();
+		return this.dataManager.get(dataMarker_ammo).orNull();
 	}
 	public ItemStack getAmmo()
 	{

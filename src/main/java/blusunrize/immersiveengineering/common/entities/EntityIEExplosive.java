@@ -11,8 +11,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import net.minecraftforge.event.ForgeEventFactory;
@@ -26,8 +26,8 @@ public class EntityIEExplosive extends EntityTNTPrimed
 	public IBlockState block;
 	String name;
 
-	private static final DataParameter<Optional<IBlockState>> dataMarker_block = EntityDataManager.<Optional<IBlockState>>createKey(EntityIEProjectile.class, DataSerializers.OPTIONAL_BLOCK_STATE);
-	private static final DataParameter<Integer> dataMarker_fuse = EntityDataManager.<Integer>createKey(EntityIEProjectile.class, DataSerializers.VARINT);
+	private static final DataParameter<Optional<IBlockState>> dataMarker_block = EntityDataManager.createKey(EntityIEProjectile.class, DataSerializers.OPTIONAL_BLOCK_STATE);
+	private static final DataParameter<Integer> dataMarker_fuse = EntityDataManager.createKey(EntityIEProjectile.class, DataSerializers.VARINT);
 
 	public EntityIEExplosive(World world)
 	{
@@ -80,7 +80,7 @@ public class EntityIEExplosive extends EntityTNTPrimed
 	}
 	public void getBlockSynced()
 	{
-		this.block = this.dataManager.get(dataMarker_block).get();
+		this.block = this.dataManager.get(dataMarker_block).orNull();
 		this.setFuse(this.dataManager.get(dataMarker_fuse));
 	}
 
