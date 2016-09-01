@@ -8,9 +8,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
@@ -37,9 +37,14 @@ public class ItemBlockClothDevice extends ItemBlockIEBase
 			bPos = bPos.up(offset);
 			if (worldIn.isAirBlock(bPos))
 			{
-				if (!worldIn.isRemote)
+				if(!worldIn.isRemote)
+				{
 					worldIn.setBlockState(bPos, IEContent.blockClothDevice.getStateFromMeta(BlockTypes_ClothDevice.BALLOON.getMeta()));
-				return new ActionResult(EnumActionResult.SUCCESS, itemStackIn.splitStack(1));
+					itemStackIn.stackSize--;
+					if(itemStackIn.stackSize <= 0)
+						itemStackIn = null;
+				}
+				return new ActionResult(EnumActionResult.SUCCESS, itemStackIn);
 			}
 		}
 		return new ActionResult(EnumActionResult.PASS, itemStackIn);
