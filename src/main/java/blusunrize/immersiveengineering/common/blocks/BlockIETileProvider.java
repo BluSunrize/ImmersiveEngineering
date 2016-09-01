@@ -259,7 +259,7 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 			int limit = ((IDirectionalTile)tile).getFacingLimitation();
 
 			if(limit==0)
-				f = player.isSneaking()?side.getOpposite():side;
+				f = EnumFacing.VALUES[(f.ordinal() + 1) % EnumFacing.VALUES.length];
 			else if(limit==1)
 				f = player.isSneaking()?f.rotateAround(side.getAxis()).getOpposite():f.rotateAround(side.getAxis());
 			else if(limit == 2 || limit == 5)

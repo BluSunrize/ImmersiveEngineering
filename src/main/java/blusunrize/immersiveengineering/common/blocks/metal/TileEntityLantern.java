@@ -1,17 +1,16 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import java.util.ArrayList;
-
-import com.google.common.collect.Lists;
-
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasObjProperty;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ILightValue;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
+import com.google.common.collect.Lists;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+
+import java.util.ArrayList;
 
 public class TileEntityLantern extends TileEntityIEBase implements IDirectionalTile, IHasObjProperty, IBlockBounds, ILightValue
 {
@@ -52,7 +51,7 @@ public class TileEntityLantern extends TileEntityIEBase implements IDirectionalT
 	@Override
 	public boolean canHammerRotate(EnumFacing side, float hitX, float hitY, float hitZ, EntityLivingBase entity)
 	{
-		return false;
+		return true;
 	}
 
 	@Override
