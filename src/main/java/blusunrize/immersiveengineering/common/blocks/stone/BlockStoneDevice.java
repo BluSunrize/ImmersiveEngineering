@@ -20,7 +20,7 @@ public class BlockStoneDevice extends BlockIEMultiblock<BlockTypes_StoneDevices>
 		super("stoneDevice",Material.ROCK, PropertyEnum.create("type", BlockTypes_StoneDevices.class), ItemBlockIEBase.class, IEProperties.BOOLEANS[0]);
 		setHardness(2.0F);
 		setResistance(20f);
-		this.setNotNormalBlock(BlockTypes_StoneDevices.BLAST_FURNACE_ADVANCED.getMeta());
+		this.setAllNotNormalBlock();
 		lightOpacity = 0;
 	}
 
