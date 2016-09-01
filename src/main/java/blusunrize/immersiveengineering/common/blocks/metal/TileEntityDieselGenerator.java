@@ -1,10 +1,5 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.google.common.collect.Lists;
-
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.IMultiblockRecipe;
 import blusunrize.immersiveengineering.api.energy.DieselHandler;
@@ -16,21 +11,22 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGuiTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundTile;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockDieselGenerator;
 import cofh.api.energy.IEnergyReceiver;
+import com.google.common.collect.Lists;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
-import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.IFluidHandler;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TileEntityDieselGenerator extends TileEntityMultiblockMetal<TileEntityDieselGenerator,IMultiblockRecipe> implements IAdvancedSelectionBounds,IAdvancedCollisionBounds, IGuiTile, ISoundTile
 {
@@ -114,45 +110,47 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockMetal<TileEnt
 			if(!isRSDisabled() && tanks[0].getFluid()!=null && tanks[0].getFluid().getFluid()!=null)
 			{
 				int burnTime = DieselHandler.getBurnTime(tanks[0].getFluid().getFluid());
-				int fluidConsumed = 1000/burnTime;
-				int output = Config.getInt("dieselGen_output");
-				int connected = 0;
-				Object[] receivers = new Object[3];
-				for(int i=0; i<3; i++)
+				if(burnTime > 0)
 				{
-					receivers[i] = getEnergyOutput(i==1?-1:i==2?1:0);
-					if(receivers[i]!=null)
+					int fluidConsumed = 1000 / burnTime;
+					int output = Config.getInt("dieselGen_output");
+					int connected = 0;
+					Object[] receivers = new Object[3];
+					for(int i = 0; i < 3; i++)
 					{
-						if(receivers[i] instanceof IFluxReceiver && ((IFluxReceiver)receivers[i]).canConnectEnergy(EnumFacing.DOWN) && ((IFluxReceiver) receivers[i]).receiveEnergy(EnumFacing.DOWN,4096,true)>0)
-							connected++;
-						else if(receivers[i] instanceof IEnergyReceiver && ((IEnergyReceiver)receivers[i]).canConnectEnergy(EnumFacing.DOWN) && ((IEnergyReceiver) receivers[i]).receiveEnergy(EnumFacing.DOWN,4096,true)>0)
-							connected++;
-					}
-				}
-				if(connected>0 && tanks[0].getFluidAmount()>=fluidConsumed)
-				{
-					if(!active)
-					{
-						active=true;
-						animation_fanFadeIn = 80;
-					}
-					tanks[0].drain(fluidConsumed, true);
-					int splitOutput = output/connected;
-					int leftover = output%connected;
-					for(int i=0; i<3; i++)
-						if(receivers[i]!=null)
+						receivers[i] = getEnergyOutput(i == 1 ? -1 : i == 2 ? 1 : 0);
+						if(receivers[i] != null)
 						{
-							if(receivers[i] instanceof IFluxReceiver && ((IFluxReceiver)receivers[i]).canConnectEnergy(EnumFacing.DOWN))
-								((IFluxReceiver) receivers[i]).receiveEnergy(EnumFacing.DOWN,splitOutput+(leftover-->0?1:0),false);
-							else if(receivers[i] instanceof IEnergyReceiver && ((IEnergyReceiver)receivers[i]).canConnectEnergy(EnumFacing.DOWN))
-								((IEnergyReceiver) receivers[i]).receiveEnergy(EnumFacing.DOWN,splitOutput+(leftover-->0?1:0),false);
+							if(receivers[i] instanceof IFluxReceiver && ((IFluxReceiver)receivers[i]).canConnectEnergy(EnumFacing.DOWN) && ((IFluxReceiver)receivers[i]).receiveEnergy(EnumFacing.DOWN, 4096, true) > 0)
+								connected++;
+							else if(receivers[i] instanceof IEnergyReceiver && ((IEnergyReceiver)receivers[i]).canConnectEnergy(EnumFacing.DOWN) && ((IEnergyReceiver)receivers[i]).receiveEnergy(EnumFacing.DOWN, 4096, true) > 0)
+								connected++;
 						}
+					}
+					if(connected > 0 && tanks[0].getFluidAmount() >= fluidConsumed)
+					{
+						if(!active)
+						{
+							active = true;
+							animation_fanFadeIn = 80;
+						}
+						tanks[0].drain(fluidConsumed, true);
+						int splitOutput = output / connected;
+						int leftover = output % connected;
+						for(int i = 0; i < 3; i++)
+							if(receivers[i] != null)
+							{
+								if(receivers[i] instanceof IFluxReceiver && ((IFluxReceiver)receivers[i]).canConnectEnergy(EnumFacing.DOWN))
+									((IFluxReceiver)receivers[i]).receiveEnergy(EnumFacing.DOWN, splitOutput + (leftover-- > 0 ? 1 : 0), false);
+								else if(receivers[i] instanceof IEnergyReceiver && ((IEnergyReceiver)receivers[i]).canConnectEnergy(EnumFacing.DOWN))
+									((IEnergyReceiver)receivers[i]).receiveEnergy(EnumFacing.DOWN, splitOutput + (leftover-- > 0 ? 1 : 0), false);
+							}
 
-				}
-				else if(active)
-				{
-					active=false;
-					animation_fanFadeOut=80;
+					} else if(active)
+					{
+						active = false;
+						animation_fanFadeOut = 80;
+					}
 				}
 			}
 			else if(active)
@@ -410,7 +408,9 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockMetal<TileEnt
 	@Override
 	protected boolean canFillTankFrom(int iTank, EnumFacing side, FluidStack resources)
 	{
-		return true;
+		if(resources == null)
+			return false;
+		return DieselHandler.isValidFuel(resources.getFluid());
 	}
 	@Override
 	protected boolean canDrainTankFrom(int iTank, EnumFacing side)

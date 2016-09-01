@@ -1,14 +1,10 @@
 package blusunrize.immersiveengineering.api.energy;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
 import blusunrize.immersiveengineering.api.ApiUtils;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
+
+import java.util.*;
 
 /**
  * @author BluSunrize - 23.04.2015
@@ -17,9 +13,9 @@ import net.minecraftforge.fluids.FluidStack;
  */
 public class DieselHandler
 {
-	static HashMap<String, Integer> dieselGenBurnTime = new HashMap<String, Integer>();
-	static Set<Fluid> drillFuel = new HashSet<Fluid>();
-	
+	static final HashMap<String, Integer> dieselGenBurnTime = new HashMap<String, Integer>();
+	static final Set<Fluid> drillFuel = new HashSet<Fluid>();
+
 	/**
 	 * @param fuel the fluid to be used as fuel
 	 * @param time the total burn time gained from 1000 mB
@@ -32,7 +28,11 @@ public class DieselHandler
 	public static int getBurnTime(Fluid fuel)
 	{
 		if(fuel!=null)
-			return dieselGenBurnTime.get(fuel.getName());
+		{
+			String s = fuel.getName();
+			if(dieselGenBurnTime.containsKey(s))
+				return dieselGenBurnTime.get(s);
+		}
 		return 0;
 	}
 	public static boolean isValidFuel(Fluid fuel)
