@@ -86,39 +86,24 @@ public class ItemBlockIEBase extends ItemBlock
 	@Override
 	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
-		try
-		{
-			throw new RuntimeException("Coming from:");
-		} catch(Exception e)
-		{
-			e.printStackTrace();
-		}
-		System.out.println("debug -1");
 		IBlockState iblockstate = world.getBlockState(pos);
 		Block block = iblockstate.getBlock();
-
 		if (!block.isReplaceable(world, pos))
 		{
 			pos = pos.offset(side);
 			iblockstate = world.getBlockState(pos);
 			block = iblockstate.getBlock();
 		}
-		System.out.println("Stack=" + stack);
 		if (stack.stackSize>0&&player.canPlayerEdit(pos, side, stack))
 		{
-			System.out.println("debug0");
-			boolean b = canBlockBePlaced(world, pos, side, stack);
-			System.out.println("b = " + b);
-			if(!world.isRemote && b)
+			if(!world.isRemote && canBlockBePlaced(world, pos, side, stack))
 			{
-				System.out.println("debug1");
 				int i = this.getMetadata(stack.getMetadata());
 				IBlockState iblockstate1 = this.block.onBlockPlaced(world, pos, side, hitX, hitY, hitZ, i, player);
 
 				if (placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, iblockstate1))
 				{
-					System.out.println("debug2");
-					SoundType soundtype = this.block.getSoundType();
+					SoundType soundtype = world.getBlockState(pos).getBlock().getSoundType(world.getBlockState(pos), world, pos, player);
 					world.playSound(player, pos, soundtype.getPlaceSound(), SoundCategory.BLOCKS, (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F);
 					if(!player.capabilities.isCreativeMode)
 						--stack.stackSize;
