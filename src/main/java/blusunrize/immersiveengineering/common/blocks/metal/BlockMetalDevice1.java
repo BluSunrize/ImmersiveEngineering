@@ -40,9 +40,13 @@ public class BlockMetalDevice1 extends BlockIETileProvider<BlockTypes_MetalDevic
 		this.setMetaLightOpacity(BlockTypes_MetalDevice1.FURNACE_HEATER.getMeta(), 255);
 		this.setMetaLightOpacity(BlockTypes_MetalDevice1.DYNAMO.getMeta(), 255);
 		this.setMetaLightOpacity(BlockTypes_MetalDevice1.THERMOELECTRIC_GEN.getMeta(), 255);
-		this.setNotNormalBlock(BlockTypes_MetalDevice1.FURNACE_HEATER.getMeta());
-		this.setNotNormalBlock(BlockTypes_MetalDevice1.DYNAMO.getMeta());
-		this.setNotNormalBlock(BlockTypes_MetalDevice1.THERMOELECTRIC_GEN.getMeta());
+		this.setNotNormalBlock(BlockTypes_MetalDevice1.BLAST_FURNACE_PREHEATER.getMeta());
+		this.setNotNormalBlock(BlockTypes_MetalDevice1.ELECTRIC_LANTERN.getMeta());
+		this.setNotNormalBlock(BlockTypes_MetalDevice1.CHARGING_STATION.getMeta());
+		this.setNotNormalBlock(BlockTypes_MetalDevice1.FLUID_PIPE.getMeta());
+		this.setNotNormalBlock(BlockTypes_MetalDevice1.SAMPLE_DRILL.getMeta());
+		this.setNotNormalBlock(BlockTypes_MetalDevice1.TESLA_COIL.getMeta());
+		this.setNotNormalBlock(BlockTypes_MetalDevice1.FLOODLIGHT.getMeta());
 	}
 
 	@Override
