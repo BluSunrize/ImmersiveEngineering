@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.common.util;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
@@ -88,12 +89,17 @@ public class Utils
 			for(Object io : (ArrayList)o)
 				if(io instanceof ItemStack && OreDictionary.itemMatches((ItemStack)io, stack, false) && (!checkNBT || ((ItemStack)io).getItemDamage()==OreDictionary.WILDCARD_VALUE || ItemStack.areItemStackTagsEqual((ItemStack)io, stack)))
 					return true;
-		}
+		} else if(o instanceof IngredientStack)
+			return ((IngredientStack)o).matchesItemStack(stack);
 		else if(o instanceof ItemStack[])
 		{
 			for(ItemStack io : (ItemStack[])o)
 				if(OreDictionary.itemMatches(io, stack, false) && (!checkNBT || io.getItemDamage()==OreDictionary.WILDCARD_VALUE || ItemStack.areItemStackTagsEqual(io, stack)))
 					return true;
+		} else if(o instanceof FluidStack)
+		{
+			FluidStack fs = FluidUtil.getFluidContained(stack);
+			return fs != null && fs.containsFluid((FluidStack)o);
 		}
 		else if(o instanceof String)
 			return compareToOreName(stack, (String)o);
@@ -704,6 +710,15 @@ public class Utils
 		public InventoryCraftingFalse(int w, int h)
 		{
 			super(nullContainer, w, h);
+		}
+
+		public static InventoryCrafting createFilledCraftingInventory(int w, int h, ItemStack[] stacks)
+		{
+			InventoryCrafting invC = new Utils.InventoryCraftingFalse(w, h);
+			for(int j = 0; j < w * h; j++)
+				if(stacks[j] != null)
+					invC.setInventorySlotContents(j, stacks[j].copy());
+			return invC;
 		}
 	}
 

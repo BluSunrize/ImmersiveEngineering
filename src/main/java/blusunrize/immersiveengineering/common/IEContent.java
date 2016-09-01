@@ -9,6 +9,8 @@ import blusunrize.immersiveengineering.api.energy.DieselHandler;
 import blusunrize.immersiveengineering.api.energy.ThermoelectricHandler;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.api.tool.*;
+import blusunrize.immersiveengineering.api.tool.AssemblerHandler.IRecipeAdapter;
+import blusunrize.immersiveengineering.api.tool.AssemblerHandler.RecipeQuery;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEffect_Extinguish;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEffect_Potion;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorTile;
@@ -27,6 +29,8 @@ import blusunrize.immersiveengineering.common.blocks.plant.BlockTypes_Hemp;
 import blusunrize.immersiveengineering.common.blocks.stone.*;
 import blusunrize.immersiveengineering.common.blocks.wooden.*;
 import blusunrize.immersiveengineering.common.crafting.IEFuelHandler;
+import blusunrize.immersiveengineering.common.crafting.RecipeShapedIngredient;
+import blusunrize.immersiveengineering.common.crafting.RecipeShapelessIngredient;
 import blusunrize.immersiveengineering.common.entities.*;
 import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.util.IEAchievements;
@@ -48,6 +52,8 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.ShapedRecipes;
+import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
@@ -66,6 +72,8 @@ import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.common.registry.VillagerRegistry;
 import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.oredict.ShapedOreRecipe;
+import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -512,6 +520,80 @@ public class IEContent
 			public ConveyorVertical apply(TileEntity tileEntity)
 			{
 				return new ConveyorVertical();
+			}
+		});
+
+		/**ASSEMBLER RECIPE ADAPTERS*/
+		//Shaped
+		AssemblerHandler.registerRecipeAdapter(ShapedRecipes.class, new IRecipeAdapter<ShapedRecipes>()
+		{
+			@Override
+			public RecipeQuery[] getQueriedInputs(ShapedRecipes recipe)
+			{
+				AssemblerHandler.RecipeQuery[] query = new AssemblerHandler.RecipeQuery[recipe.recipeItems.length];
+				for(int i = 0; i < query.length; i++)
+					query[i] = AssemblerHandler.createQuery(recipe.recipeItems[i]);
+				return query;
+			}
+		});
+		//Shapeless
+		AssemblerHandler.registerRecipeAdapter(ShapelessRecipes.class, new IRecipeAdapter<ShapelessRecipes>()
+		{
+			@Override
+			public RecipeQuery[] getQueriedInputs(ShapelessRecipes recipe)
+			{
+				AssemblerHandler.RecipeQuery[] query = new AssemblerHandler.RecipeQuery[recipe.recipeItems.size()];
+				for(int i = 0; i < query.length; i++)
+					query[i] = AssemblerHandler.createQuery(recipe.recipeItems.get(i));
+				return query;
+			}
+		});
+		//ShapedOre
+		AssemblerHandler.registerRecipeAdapter(ShapedOreRecipe.class, new IRecipeAdapter<ShapedOreRecipe>()
+		{
+			@Override
+			public RecipeQuery[] getQueriedInputs(ShapedOreRecipe recipe)
+			{
+				AssemblerHandler.RecipeQuery[] query = new AssemblerHandler.RecipeQuery[recipe.getInput().length];
+				for(int i = 0; i < query.length; i++)
+					query[i] = AssemblerHandler.createQuery(recipe.getInput()[i]);
+				return query;
+			}
+		});
+		//ShapelessOre
+		AssemblerHandler.registerRecipeAdapter(ShapelessOreRecipe.class, new IRecipeAdapter<ShapelessOreRecipe>()
+		{
+			@Override
+			public RecipeQuery[] getQueriedInputs(ShapelessOreRecipe recipe)
+			{
+				AssemblerHandler.RecipeQuery[] query = new AssemblerHandler.RecipeQuery[recipe.getInput().size()];
+				for(int i = 0; i < query.length; i++)
+					query[i] = AssemblerHandler.createQuery(recipe.getInput().get(i));
+				return query;
+			}
+		});
+		//ShapedIngredient
+		AssemblerHandler.registerRecipeAdapter(RecipeShapedIngredient.class, new IRecipeAdapter<RecipeShapedIngredient>()
+		{
+			@Override
+			public RecipeQuery[] getQueriedInputs(RecipeShapedIngredient recipe)
+			{
+				AssemblerHandler.RecipeQuery[] query = new AssemblerHandler.RecipeQuery[recipe.getIngredients().length];
+				for(int i = 0; i < query.length; i++)
+					query[i] = AssemblerHandler.createQuery(recipe.getIngredients()[i]);
+				return query;
+			}
+		});
+		//ShapelessIngredient
+		AssemblerHandler.registerRecipeAdapter(RecipeShapelessIngredient.class, new IRecipeAdapter<RecipeShapelessIngredient>()
+		{
+			@Override
+			public RecipeQuery[] getQueriedInputs(RecipeShapelessIngredient recipe)
+			{
+				AssemblerHandler.RecipeQuery[] query = new AssemblerHandler.RecipeQuery[recipe.getIngredients().size()];
+				for(int i = 0; i < query.length; i++)
+					query[i] = AssemblerHandler.createQuery(recipe.getIngredients().get(i));
+				return query;
 			}
 		});
 

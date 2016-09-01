@@ -33,6 +33,11 @@ public class RecipeShapedIngredient extends ShapedOreRecipe
 		return this;
 	}
 
+	public IngredientStack[] getIngredients()
+	{
+		return ingredients;
+	}
+
 	public RecipeShapedIngredient allowQuarterTurn()
 	{
 		ingredientsQuarterTurn = new IngredientStack[ingredients.length];

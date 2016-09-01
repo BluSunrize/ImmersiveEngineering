@@ -44,7 +44,6 @@ public class IERecipes
 
 	public static void initCraftingRecipes()
 	{
-		RecipeSorter.register(ImmersiveEngineering.MODID+":shapedArrayList", RecipeShapedArrayList.class, Category.SHAPED, "after:forge:shapedore");
 		RecipeSorter.register(ImmersiveEngineering.MODID+":shapedIngredient", RecipeShapedIngredient.class, Category.SHAPED, "after:forge:shapedore");
 		RecipeSorter.register(ImmersiveEngineering.MODID + ":shapelessIngredient", RecipeShapelessIngredient.class, Category.SHAPELESS, "after:forge:shapedore");
 
@@ -596,13 +595,13 @@ public class IERecipes
 					}
 				}
 		if(registeredMoldBases.containsKey("plate"))
-			GameRegistry.addRecipe(new RecipeShapedArrayList(new ItemStack(IEContent.itemMold,1,0), " P ","PCP"," P ", 'P',"plateSteel",'C',registeredMoldBases.get("plate")));
+			GameRegistry.addRecipe(new RecipeShapedIngredient(new ItemStack(IEContent.itemMold, 1, 0), " P ", "PCP", " P ", 'P', "plateSteel", 'C', registeredMoldBases.get("plate")));
 		if(registeredMoldBases.containsKey("gear"))
-			GameRegistry.addRecipe(new RecipeShapedArrayList(new ItemStack(IEContent.itemMold,1,1), " P ","PCP"," P ", 'P',"plateSteel",'C',registeredMoldBases.get("gear")));
+			GameRegistry.addRecipe(new RecipeShapedIngredient(new ItemStack(IEContent.itemMold, 1, 1), " P ", "PCP", " P ", 'P', "plateSteel", 'C', registeredMoldBases.get("gear")));
 		if(registeredMoldBases.containsKey("rod"))
-			GameRegistry.addRecipe(new RecipeShapedArrayList(new ItemStack(IEContent.itemMold,1,2), " P ","PCP"," P ", 'P',"plateSteel",'C',registeredMoldBases.get("rod")));
+			GameRegistry.addRecipe(new RecipeShapedIngredient(new ItemStack(IEContent.itemMold, 1, 2), " P ", "PCP", " P ", 'P', "plateSteel", 'C', registeredMoldBases.get("rod")));
 		if(registeredMoldBases.containsKey("wire"))
-			GameRegistry.addRecipe(new RecipeShapedArrayList(new ItemStack(IEContent.itemMold,1,4), " P ","PCP"," P ", 'P',"plateSteel",'C',registeredMoldBases.get("wire")));
+			GameRegistry.addRecipe(new RecipeShapedIngredient(new ItemStack(IEContent.itemMold, 1, 4), " P ", "PCP", " P ", 'P', "plateSteel", 'C', registeredMoldBases.get("wire")));
 		Config.setBoolean("crushingOreRecipe", !hammerCrushingList.isEmpty());
 	}
 

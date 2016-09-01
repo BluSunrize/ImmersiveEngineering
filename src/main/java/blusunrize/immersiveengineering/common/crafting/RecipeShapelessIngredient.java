@@ -41,6 +41,11 @@ public class RecipeShapelessIngredient extends ShapelessOreRecipe
 		return this;
 	}
 
+	public List<IngredientStack> getIngredients()
+	{
+		return ingredients;
+	}
+
 	public RecipeShapelessIngredient setNBTCopyTargetRecipe(int slot)
 	{
 		this.nbtCopyTargetSlot = slot;

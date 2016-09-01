@@ -20,7 +20,7 @@ public class IngredientStack
 	public List<ItemStack> stackList;
 	public String oreName;
 	public FluidStack fluid;
-	public int inputSize;
+	public int inputSize = 1;
 	public boolean useNBT;
 
 	public IngredientStack(ItemStack stack)
@@ -122,6 +122,7 @@ public class IngredientStack
 			return false;
 		if(this.fluid!=null)
 		{
+			System.out.println("check if " + input + " contains fluid " + fluid);
 			FluidStack fs = FluidUtil.getFluidContained(input);
 			if(fs!=null && fs.containsFluid(fluid))
 				return true;
