@@ -77,9 +77,9 @@ public class ModelConveyor implements IBakedModel, IPerspectiveAwareModel
 			}
 		}
 		Set<BakedQuad> cachedQuads = modelCache.get(key);
-//		if(cachedQuads!=null)
-//			return Collections.synchronizedList(Lists.newArrayList(cachedQuads));
-//		else
+		if(cachedQuads != null)
+			return Collections.synchronizedList(Lists.newArrayList(cachedQuads));
+		else
 		{
 			cachedQuads = Collections.synchronizedSet(new LinkedHashSet<BakedQuad>());
 			Matrix4f facingMatrix = TRSRTransformation.getMatrix(facing);
