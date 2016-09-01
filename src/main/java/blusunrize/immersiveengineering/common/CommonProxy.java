@@ -18,6 +18,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.property.IExtendedBlockState;
@@ -140,6 +141,11 @@ public class CommonProxy implements IGuiHandler
 	}
 	public void drawSpecificFluidPipe(String configuration)
 	{
+	}
+
+	public boolean drawConveyorInGui(String conveyor, EnumFacing facing)
+	{
+		return false;
 	}
 	public String[] splitStringOnWidth(String s, int w)
 	{

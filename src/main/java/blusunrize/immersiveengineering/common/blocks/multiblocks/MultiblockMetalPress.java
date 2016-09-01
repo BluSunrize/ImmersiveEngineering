@@ -20,7 +20,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.opengl.GL11;
 
 public class MultiblockMetalPress implements IMultiblock
 {
@@ -58,11 +57,7 @@ public class MultiblockMetalPress implements IMultiblock
 	public boolean overwriteBlockRender(ItemStack stack, int iterator)
 	{
 		if(iterator==3||iterator==5)
-		{
-			GL11.glRotatef(-90, 0, 0, 1);
-			GL11.glRotatef(90, 1, 0, 0);
-			GL11.glTranslatef(-1, -1, 0);
-		}
+			return ImmersiveEngineering.proxy.drawConveyorInGui("immersiveengineering:conveyor", EnumFacing.SOUTH);
 		return false;
 	}
 	@Override

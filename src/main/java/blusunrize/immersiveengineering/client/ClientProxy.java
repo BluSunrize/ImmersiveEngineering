@@ -10,6 +10,8 @@ import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
+import blusunrize.immersiveengineering.api.tool.ConveyorHandler.ConveyorDirection;
+import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBelt;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.client.fx.EntityFXSparks;
 import blusunrize.immersiveengineering.client.gui.*;
@@ -70,6 +72,7 @@ import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.ItemMeshDefinition;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.block.model.ModelBakery;
@@ -88,6 +91,7 @@ import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
@@ -108,6 +112,7 @@ import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameData;
 import net.minecraftforge.oredict.OreDictionary;
+import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
@@ -1319,6 +1324,20 @@ public class ClientProxy extends CommonProxy
 //		if(model instanceof ISmartBlockModel)
 //			model = ((ISmartBlockModel) model).handleBlockState(state);
 		blockRenderer.getBlockModelRenderer().renderModelBrightness(model, state, .75f, false);
+	}
+
+	@Override
+	public boolean drawConveyorInGui(String conveyor, EnumFacing facing)
+	{
+		IConveyorBelt con = ConveyorHandler.getConveyor(new ResourceLocation(conveyor), null);
+		if(con != null)
+		{
+			Set<BakedQuad> quads = ModelConveyor.getBaseConveyor(facing, 1, new Matrix4(facing), ConveyorDirection.HORIZONTAL, ClientUtils.getSprite(con.getActiveTexture()), new boolean[]{true, true}, new boolean[]{true, true});
+			GL11.glTranslatef(0, 0, -1);
+			ClientUtils.renderQuads(quads, 1, 1, 1, 1);
+			return true;
+		}
+		return false;
 	}
 
 	static String[][] formatToTable_ItemIntHashmap(Map<String, Integer> map, String valueType)

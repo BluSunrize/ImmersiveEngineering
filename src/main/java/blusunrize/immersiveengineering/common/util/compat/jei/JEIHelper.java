@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.common.util.compat.jei;
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.util.IELogger;
+import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.compat.jei.arcfurnace.ArcFurnaceRecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.arcfurnace.ArcFurnaceRecipeWrapper;
 import blusunrize.immersiveengineering.common.util.compat.jei.blastfurnace.BlastFurnaceFuelCategory;
@@ -24,10 +25,14 @@ import blusunrize.immersiveengineering.common.util.compat.jei.squeezer.SqueezerR
 import blusunrize.immersiveengineering.common.util.compat.jei.workbench.WorkbenchRecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.workbench.WorkbenchRecipeWrapper;
 import com.google.common.collect.Lists;
+import li.cil.oc.common.block.Item;
 import mezz.jei.api.*;
+import mezz.jei.api.ISubtypeRegistry.ISubtypeInterpreter;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -48,8 +53,28 @@ public class JEIHelper implements IModPlugin
 		jeiHelpers.getItemBlacklist().addItemToBlacklist(new ItemStack(IEContent.blockMetalMultiblock,1,OreDictionary.WILDCARD_VALUE));
 
 		//NBT Ignorance
-		jeiHelpers.getNbtIgnoreList().ignoreNbtTagNames(IEContent.itemBullet, "potion","flareColour");
-		//		jeiHelpers.getNbtIgnoreList().ignoreNbtTagNames(IEContent., "potion","flareColour");
+		jeiHelpers.getSubtypeRegistry().registerNbtInterpreter(Item.getItemFromBlock(IEContent.blockConveyor), new ISubtypeInterpreter()
+		{
+			@Nullable
+			@Override
+			public String getSubtypeInfo(@Nonnull ItemStack itemStack)
+			{
+				if(itemStack != null && ItemNBTHelper.hasKey(itemStack, "conveyorType"))
+					return ItemNBTHelper.getString(itemStack, "conveyorType");
+				return null;
+			}
+		});
+		jeiHelpers.getSubtypeRegistry().registerNbtInterpreter(IEContent.itemBullet, new ISubtypeInterpreter()
+		{
+			@Nullable
+			@Override
+			public String getSubtypeInfo(@Nonnull ItemStack itemStack)
+			{
+				if(itemStack != null && itemStack.getMetadata() == 2 && ItemNBTHelper.hasKey(itemStack, "bullet"))
+					return ItemNBTHelper.getString(itemStack, "bullet");
+				return null;
+			}
+		});
 
 		//Recipes
 		IGuiHelper guiHelper = jeiHelpers.getGuiHelper();

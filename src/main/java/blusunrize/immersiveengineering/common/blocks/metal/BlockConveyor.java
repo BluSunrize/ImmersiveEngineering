@@ -8,7 +8,6 @@ import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorTile;
 import blusunrize.immersiveengineering.common.blocks.BlockIETileProvider;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.IBlockState;
@@ -57,27 +56,9 @@ public class BlockConveyor extends BlockIETileProvider<BlockTypes_Conveyor>
 		}
 	};
 
-	public static class ItemBlockConveyor extends ItemBlockIEBase
-	{
-		public ItemBlockConveyor(Block block)
-		{
-			super(block);
-			setHasSubtypes(true);
-		}
-
-		@Override
-		public int getMetadata(ItemStack stack)
-		{
-			String key = ItemNBTHelper.getString(stack, "conveyorType");
-			if(key != null && !key.isEmpty())
-				return key.hashCode();
-			return 0;
-		}
-	}
-
 	public BlockConveyor()
 	{
-		super("conveyor", Material.IRON, PropertyEnum.create("type", BlockTypes_Conveyor.class), ItemBlockConveyor.class, IEProperties.FACING_ALL, IEProperties.TILEENTITY_PASSTHROUGH, ICONEYOR_PASSTHROUGH);
+		super("conveyor", Material.IRON, PropertyEnum.create("type", BlockTypes_Conveyor.class), ItemBlockIEBase.class, IEProperties.FACING_ALL, IEProperties.TILEENTITY_PASSTHROUGH, ICONEYOR_PASSTHROUGH);
 		this.setHardness(3.0F);
 		this.setResistance(15.0F);
 		this.setBlockLayer(BlockRenderLayer.CUTOUT);
@@ -103,7 +84,7 @@ public class BlockConveyor extends BlockIETileProvider<BlockTypes_Conveyor>
 	{
 		for(ResourceLocation key : ConveyorHandler.classRegistry.keySet())
 		{
-			ItemStack stack = new ItemStack(itemIn);
+			ItemStack stack = new ItemStack(this);
 			ItemNBTHelper.setString(stack, "conveyorType", key.toString());
 			list.add(stack);
 		}
@@ -143,6 +124,12 @@ public class BlockConveyor extends BlockIETileProvider<BlockTypes_Conveyor>
 //			state = state.withProperty(IEProperties.CONVEYORUPDOWN, ((TileEntityConveyorBelt)tile).transportUp?1: ((TileEntityConveyorBelt)tile).transportDown?2: 0);
 //		}
 		return state;
+	}
+
+	@Override
+	public IBlockState getStateFromMeta(int meta)
+	{
+		return this.getDefaultState();
 	}
 
 	@Override

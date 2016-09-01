@@ -23,7 +23,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.opengl.GL11;
 
 public class MultiblockAssembler implements IMultiblock
 {
@@ -71,11 +70,7 @@ public class MultiblockAssembler implements IMultiblock
 	public boolean overwriteBlockRender(ItemStack stack, int iterator)
 	{
 		if(iterator==10||iterator==16)
-		{
-			GL11.glRotatef(-90, 0, 0, 1);
-			GL11.glRotatef(90, 1, 0, 0);
-			GL11.glTranslatef(-1, -1, 0);
-		}
+			return ImmersiveEngineering.proxy.drawConveyorInGui("immersiveengineering:conveyor", EnumFacing.SOUTH);
 		return false;
 	}
 	@Override
