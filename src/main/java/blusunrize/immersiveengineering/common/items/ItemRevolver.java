@@ -235,7 +235,10 @@ public class ItemRevolver extends ItemUpgradeableTool implements IShaderEquipabl
 			else
 			{
 				if(ItemNBTHelper.getInt(revolver, "cooldown")>0)
+				{
+					System.out.println("pass use for " + hand);
 					return new ActionResult(EnumActionResult.PASS, revolver);
+				}
 
 				ItemStack[] bullets = getBullets(revolver);
 
@@ -304,11 +307,13 @@ public class ItemRevolver extends ItemUpgradeableTool implements IShaderEquipabl
 					cycled[cycled.length-1] = bullets[0];
 					setBullets(revolver, cycled);
 					ItemNBTHelper.setInt(revolver, "cooldown", 10);
+					System.out.println("successful use for " + hand);
 					return new ActionResult(EnumActionResult.SUCCESS, revolver);
 				}
 			}
-		}
-		return new ActionResult(EnumActionResult.FAIL, revolver);
+		} else if(!player.isSneaking() && revolver.getItemDamage() == 0)
+			return new ActionResult(ItemNBTHelper.getInt(revolver, "cooldown") > 0 ? EnumActionResult.PASS : EnumActionResult.SUCCESS, revolver);
+		return new ActionResult(EnumActionResult.SUCCESS, revolver);
 	}
 
 	EntityRevolvershot getBullet(EntityPlayer player, Vec3d vecSpawn, Vec3d vecDir, String type, ItemStack stack, boolean electro)
