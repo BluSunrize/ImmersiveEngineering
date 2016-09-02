@@ -255,7 +255,6 @@ public class BlockIEBase<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 		metaNotNormalBlock[meta] = true;
 		return this;
 	}
-
 	public BlockIEBase<E> setAllNotNormalBlock()
 	{
 		if(metaNotNormalBlock == null)
@@ -264,7 +263,6 @@ public class BlockIEBase<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 			metaNotNormalBlock[i] = true;
 		return this;
 	}
-
 	protected boolean normalBlockCheck(IBlockState state)
 	{
 		if(metaNotNormalBlock == null)
@@ -288,6 +286,11 @@ public class BlockIEBase<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 		return normalBlockCheck(state);
 	}
 
+	@Override
+	public boolean isVisuallyOpaque()
+	{
+		return metaNotNormalBlock == null;
+	}
 	@Override
 	public boolean isNormalCube(IBlockState state, IBlockAccess world, BlockPos pos)
 	{
