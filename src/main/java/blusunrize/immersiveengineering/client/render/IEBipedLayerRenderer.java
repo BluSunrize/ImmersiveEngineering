@@ -1,16 +1,13 @@
 package blusunrize.immersiveengineering.client.render;
 
-import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.items.ItemIEBase;
+import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import blusunrize.immersiveengineering.common.util.compat.BaublesHelper;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 
@@ -37,14 +34,14 @@ public class IEBipedLayerRenderer implements LayerRenderer<EntityLivingBase>
 		if(living.getItemStackFromSlot(EntityEquipmentSlot.HEAD)!=null && ItemNBTHelper.hasKey(living.getItemStackFromSlot(EntityEquipmentSlot.HEAD), "IE:Earmuffs"))
 		{
 			ItemStack earmuffs = ItemNBTHelper.getItemStack(living.getItemStackFromSlot(EntityEquipmentSlot.HEAD), "IE:Earmuffs");
-			if(earmuffs!=null)
+			if(earmuffs != null)
 			{
 				GlStateManager.pushMatrix();
 				ModelBiped model = IEContent.itemEarmuffs.getArmorModel(living, earmuffs, EntityEquipmentSlot.HEAD, null);
 				ClientUtils.bindTexture(IEContent.itemEarmuffs.getArmorTexture(earmuffs, living, EntityEquipmentSlot.HEAD, "overlay"));
 				model.render(living, limbSwing, prevLimbSwing, rotation, yaw, pitch, scale);
-				int colour = ((ItemIEBase)earmuffs.getItem()).getColourForIEItem(earmuffs,0);
-				GlStateManager.color((colour>>16&255)/255f, (colour>>8&255)/255f, (colour&255)/255f);
+				int colour = ((IColouredItem)earmuffs.getItem()).getColourForIEItem(earmuffs, 0);
+				GlStateManager.color((colour >> 16 & 255) / 255f, (colour >> 8 & 255) / 255f, (colour & 255) / 255f);
 				ClientUtils.bindTexture(IEContent.itemEarmuffs.getArmorTexture(earmuffs, living, EntityEquipmentSlot.HEAD, null));
 				model.render(living, limbSwing, prevLimbSwing, rotation, yaw, pitch, scale);
 				GlStateManager.popMatrix();
