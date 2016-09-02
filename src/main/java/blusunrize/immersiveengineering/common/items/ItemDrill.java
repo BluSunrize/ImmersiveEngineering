@@ -94,9 +94,8 @@ public class ItemDrill extends ItemUpgradeableTool implements IShaderEquipableIt
 		}
 	}
 	@Override
-	public void clearUpgrades(ItemStack stack)
+	public void finishUpgradeRecalculation(ItemStack stack)
 	{
-		super.clearUpgrades(stack);
 		FluidStack fs = getFluid(stack);
 		if(fs!=null && fs.amount > getCapacity(stack,2000))
 		{
@@ -144,7 +143,7 @@ public class ItemDrill extends ItemUpgradeableTool implements IShaderEquipableIt
 			int dmg = maxDmg-getHeadDamage(stack);
 			float quote = dmg/(float)maxDmg;
 			String status = ""+(quote<.1? TextFormatting.RED: quote<.3? TextFormatting.GOLD: quote<.6? TextFormatting.YELLOW: TextFormatting.GREEN);
-			list.add(I18n.format(Lib.DESC_FLAVOUR+"headDamage")+" "+status+dmg+"/"+maxDmg);
+			list.add(I18n.format(Lib.DESC_FLAVOUR + "drill.headDamage") + " " + status + dmg + "/" + maxDmg);
 		}
 	}
 

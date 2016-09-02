@@ -1,8 +1,5 @@
 package blusunrize.immersiveengineering.common.items;
 
-import java.util.List;
-
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.shader.IShaderEquipableItem;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler;
@@ -24,14 +21,16 @@ import net.minecraft.item.EnumAction;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.*;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidContainerItem;
-import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
+
+import java.util.List;
 
 public class ItemChemthrower extends ItemUpgradeableTool implements IAdvancedFluidItem, IShaderEquipableItem, ITool
 {
@@ -151,9 +150,8 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IAdvancedFlu
 	}
 
 	@Override
-	public void clearUpgrades(ItemStack stack)
+	public void finishUpgradeRecalculation(ItemStack stack)
 	{
-		super.clearUpgrades(stack);
 		FluidStack fs = getFluid(stack);
 		if(fs!=null && fs.amount > getCapacity(stack,2000))
 		{

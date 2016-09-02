@@ -1,7 +1,8 @@
 package blusunrize.immersiveengineering.common.items;
 
-import java.util.HashMap;
-
+import blusunrize.immersiveengineering.api.tool.IUpgrade;
+import blusunrize.immersiveengineering.api.tool.IUpgradeableTool;
+import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
@@ -9,14 +10,13 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.oredict.OreDictionary;
-import blusunrize.immersiveengineering.api.tool.IUpgrade;
-import blusunrize.immersiveengineering.api.tool.IUpgradeableTool;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+
+import java.util.HashMap;
 
 public abstract class ItemUpgradeableTool extends ItemInternalStorage implements IUpgradeableTool
 {
 	String upgradeType;
-	
+
 	public ItemUpgradeableTool(String name, int stackSize, String upgradeType, String... subNames)
 	{
 		super(name, stackSize, subNames);
@@ -24,11 +24,11 @@ public abstract class ItemUpgradeableTool extends ItemInternalStorage implements
 	}
 
 	@Override
-    public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged)
-    {
-        return !OreDictionary.itemMatches(oldStack, newStack, true);
-    }
-    
+	public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged)
+	{
+		return !OreDictionary.itemMatches(oldStack, newStack, true);
+	}
+
 	@Override
 	public NBTTagCompound getUpgrades(ItemStack stack)
 	{
@@ -39,6 +39,11 @@ public abstract class ItemUpgradeableTool extends ItemInternalStorage implements
 	{
 		ItemNBTHelper.remove(stack, "upgrades");
 	}
+	@Override
+	public void finishUpgradeRecalculation(ItemStack stack)
+	{
+	}
+
 	@Override
 	public void recalculateUpgrades(ItemStack stack)
 	{
@@ -52,10 +57,10 @@ public abstract class ItemUpgradeableTool extends ItemInternalStorage implements
 			{
 				IUpgrade upg = (IUpgrade)u.getItem();
 				if(upg.getUpgradeTypes(u).contains(upgradeType) && upg.canApplyUpgrades(stack, u))
-					upg.applyUpgrades(stack, u, map);	
+					upg.applyUpgrades(stack, u, map);
 			}
 		}
-		NBTTagCompound upgradeTag = (NBTTagCompound)getUpgradeBase(stack).copy();
+		NBTTagCompound upgradeTag = getUpgradeBase(stack).copy();
 		for(String key : map.keySet())
 		{
 			Object o = map.get(key);
@@ -77,6 +82,7 @@ public abstract class ItemUpgradeableTool extends ItemInternalStorage implements
 				upgradeTag.setString(key, (String)o);
 		}
 		ItemNBTHelper.setTagCompound(stack, "upgrades", upgradeTag);
+		finishUpgradeRecalculation(stack);
 	}
 	public NBTTagCompound getUpgradeBase(ItemStack stack)
 	{

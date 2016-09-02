@@ -22,6 +22,8 @@ public interface IUpgradeableTool extends IInternalStorageItem
 	NBTTagCompound getUpgrades(ItemStack stack);
 	
 	void clearUpgrades(ItemStack stack);
+
+	void finishUpgradeRecalculation(ItemStack stack);
 	
 	/**
 	 * Iterate through the stored items and apply upgrades. For an example implementation, see ItemUpgradeableTool in the IE source
