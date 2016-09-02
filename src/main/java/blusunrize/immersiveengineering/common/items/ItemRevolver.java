@@ -235,10 +235,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IShaderEquipabl
 			else
 			{
 				if(ItemNBTHelper.getInt(revolver, "cooldown")>0)
-				{
-					System.out.println("pass use for " + hand);
 					return new ActionResult(EnumActionResult.PASS, revolver);
-				}
 
 				ItemStack[] bullets = getBullets(revolver);
 
@@ -307,7 +304,6 @@ public class ItemRevolver extends ItemUpgradeableTool implements IShaderEquipabl
 					cycled[cycled.length-1] = bullets[0];
 					setBullets(revolver, cycled);
 					ItemNBTHelper.setInt(revolver, "cooldown", 10);
-					System.out.println("successful use for " + hand);
 					return new ActionResult(EnumActionResult.SUCCESS, revolver);
 				}
 			}
