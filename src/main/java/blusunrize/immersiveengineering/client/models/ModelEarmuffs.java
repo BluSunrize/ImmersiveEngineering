@@ -53,6 +53,9 @@ public class ModelEarmuffs extends ModelIEArmorBase
 		this.colouredParts[2].addChild(colouredParts[3]);
 
 		this.bipedHeadwear.isHidden=true;
+		this.bipedBody.isHidden = true;
+		this.bipedLeftLeg.isHidden = true;
+		this.bipedRightLeg.isHidden = true;
 	}
 
 	static ModelEarmuffs modelInstance;
