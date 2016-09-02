@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.IMultiblockRecipe;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.common.Config;
@@ -8,6 +9,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvanced
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockExcavator;
 import blusunrize.immersiveengineering.common.util.FakePlayerUtil;
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.network.MessageTileSync;
 import com.google.common.collect.Lists;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -104,20 +106,21 @@ public class TileEntityExcavator extends TileEntityMultiblockMetal<TileEntityExc
 					{
 						energyStorage.extractEnergy(consumed, false);
 						active = true;
-						
+
 						if(target>=0 && target<8)
 						{
-							if(wheel.digStacks[(target+4)%8]==null)
+							int targetDown = (target + 4) % 8;
+							NBTTagCompound packet = new NBTTagCompound();
+							if(wheel.digStacks[targetDown] == null)
 							{
 								ItemStack blocking = this.digBlocksInTheWay(wheel);
 								BlockPos lowGroundPos = wheelPos.add(0,-5,0);
 								if(blocking!=null)
 								{
-									wheel.digStacks[(target+4)%8] = blocking;
+									wheel.digStacks[targetDown] = blocking;
 									wheel.markDirty();
 									this.markContainingBlockForUpdate(null);
-								}
-								else if(mineral!=null 
+								} else if(mineral != null
 										&& !worldObj.isAirBlock(lowGroundPos.offset(facing, -2))
 										&& !worldObj.isAirBlock(lowGroundPos.offset(facing, 2))
 										&& !worldObj.isAirBlock(lowGroundPos.offset(facing, -1))
@@ -129,11 +132,16 @@ public class TileEntityExcavator extends TileEntityMultiblockMetal<TileEntityExc
 									float failChance = worldObj.rand.nextFloat();
 									if(ore!=null && configChance>Config.getDouble("excavator_chance") && failChance>mineral.failChance)
 									{
-										wheel.digStacks[(target+4)%8] = ore;
+										wheel.digStacks[targetDown] = ore;
 										wheel.markDirty();
 										this.markContainingBlockForUpdate(null);
 									}
 									ExcavatorHandler.depleteMinerals(worldObj, wheelPos.getX()>>4, wheelPos.getZ()>>4);
+								}
+								if(wheel.digStacks[targetDown] != null)
+								{
+									packet.setInteger("fill", targetDown);
+									packet.setTag("fillStack", wheel.digStacks[targetDown].writeToNBT(new NBTTagCompound()));
 								}
 							}
 							if(wheel.digStacks[target]!=null)
@@ -145,7 +153,10 @@ public class TileEntityExcavator extends TileEntityMultiblockMetal<TileEntityExc
 								wheel.digStacks[target] = null;
 								wheel.markDirty();
 								this.markContainingBlockForUpdate(null);
+								packet.setInteger("empty", target);
 							}
+							if(!packet.hasNoTags())
+								ImmersiveEngineering.packetHandler.sendToAll(new MessageTileSync(wheel, packet));
 						}
 					}
 				}

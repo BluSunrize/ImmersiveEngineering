@@ -1,8 +1,5 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDynamicTexture;
@@ -19,14 +16,17 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class TileEntityBucketWheel extends TileEntityMultiblockPart<TileEntityBucketWheel> implements IHasObjProperty, IDynamicTexture
 {
@@ -158,7 +158,7 @@ public class TileEntityBucketWheel extends TileEntityMultiblockPart<TileEntityBu
 				if(model!=null && model.getParticleTexture()!=null)
 					texMap.put("dig"+i, model.getParticleTexture().getIconName());
 			}
-		
+
 		return texMap;
 	}
 	static ArrayList<String> emptyDisplayList = new ArrayList<>();
@@ -166,6 +166,15 @@ public class TileEntityBucketWheel extends TileEntityMultiblockPart<TileEntityBu
 	public ArrayList<String> compileDisplayList()
 	{
 		return emptyDisplayList;
+	}
+
+	@Override
+	public void receiveMessageFromServer(NBTTagCompound message)
+	{
+		if(message.hasKey("fill"))
+			this.digStacks[message.getInteger("fill")] = ItemStack.loadItemStackFromNBT(message.getCompoundTag("fillStack"));
+		if(message.hasKey("empty"))
+			this.digStacks[message.getInteger("empty")] = null;
 	}
 
 	@Override
@@ -184,7 +193,7 @@ public class TileEntityBucketWheel extends TileEntityMultiblockPart<TileEntityBu
 	{
 		if(renderAABB==null)
 //			if(pos==24)
-				renderAABB = new AxisAlignedBB(getPos().add(-(facing.getAxis()==Axis.Z?3:0),-3,-(facing.getAxis()==Axis.X?3:0)), getPos().add((facing.getAxis()==Axis.Z?4:1),4,(facing.getAxis()==Axis.X?4:1)));
+			renderAABB = new AxisAlignedBB(getPos().add(-(facing.getAxis() == Axis.Z ? 3 : 0), -3, -(facing.getAxis() == Axis.X ? 3 : 0)), getPos().add((facing.getAxis() == Axis.Z ? 4 : 1), 4, (facing.getAxis() == Axis.X ? 4 : 1)));
 //			else
 //				renderAABB = new AxisAlignedBB(getPos(), getPos());
 		return renderAABB;

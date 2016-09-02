@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.common.util.network;
 
+import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
@@ -42,7 +43,7 @@ public class MessageTileSync implements IMessage
 		buf.writeInt(this.pos.getX());
 		buf.writeInt(this.pos.getY());
 		buf.writeInt(this.pos.getZ());
-		ByteBufUtils.writeTag(buf,this.nbt); 
+		ByteBufUtils.writeTag(buf, this.nbt);
 	}
 
 	public static class HandlerServer implements IMessageHandler<MessageTileSync, IMessage>
@@ -65,13 +66,9 @@ public class MessageTileSync implements IMessage
 		@Override
 		public IMessage onMessage(MessageTileSync message, MessageContext ctx)
 		{
-			World world = DimensionManager.getWorld(message.dimension);
-			if(world!=null)
-			{
-				TileEntity tile = world.getTileEntity(message.pos);
-				if(tile instanceof TileEntityIEBase)
-					((TileEntityIEBase)tile).receiveMessageFromServer(message.nbt);
-			}
+			TileEntity tile = ClientUtils.mc().theWorld.getTileEntity(message.pos);
+			if(tile instanceof TileEntityIEBase)
+				((TileEntityIEBase)tile).receiveMessageFromServer(message.nbt);
 			return null;
 		}
 	}
