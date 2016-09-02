@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
 import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
+import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.BlockTypes_MetalsIE;
@@ -143,11 +144,11 @@ public class MultiblockBucketWheel implements IMultiblock
 		return true;
 	}
 
-	static final ItemStack[] materials = new ItemStack[]{
-			new ItemStack(IEContent.blockStorage,9,BlockTypes_MetalsIE.STEEL.getMeta()),
-			new ItemStack(IEContent.blockMetalDecoration1,20,BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_0.getMeta())};
+	static final IngredientStack[] materials = new IngredientStack[]{
+			new IngredientStack("blockSteel", 9),
+			new IngredientStack("scaffoldingSteel", 20)};
 	@Override
-	public ItemStack[] getTotalMaterials()
+	public IngredientStack[] getTotalMaterials()
 	{
 		return materials;
 	}

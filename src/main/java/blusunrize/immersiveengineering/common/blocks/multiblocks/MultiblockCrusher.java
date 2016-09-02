@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
 import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
+import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalDecoration0;
@@ -232,14 +233,14 @@ public class MultiblockCrusher implements IMultiblock
 		return true;
 	}
 
-	static final ItemStack[] materials = new ItemStack[]{
-			new ItemStack(IEContent.blockMetalDecoration1,10,BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_0.getMeta()),
-			new ItemStack(IEContent.blockMetalDecoration0,1,BlockTypes_MetalDecoration0.RS_ENGINEERING.getMeta()),
-			new ItemStack(IEContent.blockMetalDecoration0,10,BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta()),
-			new ItemStack(IEContent.blockMetalDecoration1,8,BlockTypes_MetalDecoration1.STEEL_FENCE.getMeta()),
-			new ItemStack(Blocks.HOPPER,9)};
+	static final IngredientStack[] materials = new IngredientStack[]{
+			new IngredientStack("scaffoldingSteel", 10),
+			new IngredientStack(new ItemStack(IEContent.blockMetalDecoration0, 1, BlockTypes_MetalDecoration0.RS_ENGINEERING.getMeta())),
+			new IngredientStack(new ItemStack(IEContent.blockMetalDecoration0, 10, BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta())),
+			new IngredientStack("fenceSteel", 8),
+			new IngredientStack(new ItemStack(Blocks.HOPPER, 9))};
 	@Override
-	public ItemStack[] getTotalMaterials()
+	public IngredientStack[] getTotalMaterials()
 	{
 		return materials;
 	}

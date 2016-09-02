@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
 import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
+import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.BlockTypes_MetalsAll;
@@ -158,9 +159,9 @@ public class MultiblockSheetmetalTank implements IMultiblock
 		return true;
 	}
 
-	static final ItemStack[] materials = new ItemStack[]{new ItemStack(IEContent.blockWoodenDecoration,4,BlockTypes_WoodenDecoration.FENCE.getMeta()),new ItemStack(IEContent.blockSheetmetal,34,BlockTypes_MetalsAll.IRON.getMeta())};
+	static final IngredientStack[] materials = new IngredientStack[]{new IngredientStack("fenceTreatedWood", 4), new IngredientStack("blockSheetmetalIron", 34)};
 	@Override
-	public ItemStack[] getTotalMaterials()
+	public IngredientStack[] getTotalMaterials()
 	{
 		return materials;
 	}

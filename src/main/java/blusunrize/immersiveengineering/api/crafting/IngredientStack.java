@@ -122,7 +122,6 @@ public class IngredientStack
 			return false;
 		if(this.fluid!=null)
 		{
-			System.out.println("check if " + input + " contains fluid " + fluid);
 			FluidStack fs = FluidUtil.getFluidContained(input);
 			if(fs!=null && fs.containsFluid(fluid))
 				return true;
@@ -151,6 +150,8 @@ public class IngredientStack
 
 	public boolean matchesItemStackIgnoringSize(ItemStack input)
 	{
+		if(input == null)
+			return false;
 		if(this.fluid!=null)
 		{
 			FluidStack fs = FluidUtil.getFluidContained(input);

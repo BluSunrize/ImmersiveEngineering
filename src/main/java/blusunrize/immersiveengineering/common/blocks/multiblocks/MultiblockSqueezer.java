@@ -2,6 +2,7 @@ package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
+import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
@@ -227,16 +228,16 @@ public class MultiblockSqueezer implements IMultiblock
 		return true;
 	}
 
-	static final ItemStack[] materials = new ItemStack[]{
-			new ItemStack(IEContent.blockMetalDecoration1,6,BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_0.getMeta()),
-			new ItemStack(IEContent.blockMetalDevice1,2,BlockTypes_MetalDevice1.FLUID_PIPE.getMeta()),
-			new ItemStack(IEContent.blockMetalDecoration0,1,BlockTypes_MetalDecoration0.RS_ENGINEERING.getMeta()),
-			new ItemStack(IEContent.blockMetalDecoration0,2,BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta()),
-			new ItemStack(IEContent.blockWoodenDevice0,4,BlockTypes_WoodenDevice0.BARREL.getMeta()),
-			new ItemStack(Blocks.PISTON),
-			new ItemStack(IEContent.blockMetalDecoration1,3,BlockTypes_MetalDecoration1.STEEL_FENCE.getMeta())};
+	static final IngredientStack[] materials = new IngredientStack[]{
+			new IngredientStack("scaffoldingSteel", 6),
+			new IngredientStack(new ItemStack(IEContent.blockMetalDevice1, 2, BlockTypes_MetalDevice1.FLUID_PIPE.getMeta())),
+			new IngredientStack(new ItemStack(IEContent.blockMetalDecoration0, 1, BlockTypes_MetalDecoration0.RS_ENGINEERING.getMeta())),
+			new IngredientStack(new ItemStack(IEContent.blockMetalDecoration0, 2, BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta())),
+			new IngredientStack(new ItemStack(IEContent.blockWoodenDevice0, 4, BlockTypes_WoodenDevice0.BARREL.getMeta())),
+			new IngredientStack(new ItemStack(Blocks.PISTON)),
+			new IngredientStack("fenceSteel", 3)};
 	@Override
-	public ItemStack[] getTotalMaterials()
+	public IngredientStack[] getTotalMaterials()
 	{
 		return materials;
 	}

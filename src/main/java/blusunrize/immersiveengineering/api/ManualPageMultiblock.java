@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.api;
 
 import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
+import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.lib.manual.ManualInstance;
 import blusunrize.lib.manual.ManualPages;
 import blusunrize.lib.manual.ManualUtils;
@@ -43,6 +44,7 @@ public class ManualPageMultiblock extends ManualPages
 	float rotX=0;
 	float rotY=0;
 	float rotZ=0;
+	List<String> componentTooltip;
 	@Override
 	public void initPage(GuiManual gui, int x, int y, List<GuiButton> pageButtons)
 	{
@@ -71,7 +73,7 @@ public class ManualPageMultiblock extends ManualPages
 							perLvl++;
 				}
 				countPerLevel[h] = perLvl;
-				blockCount += perLvl; 
+				blockCount += perLvl;
 			}
 			tick= (showLayer==-1?blockCount:countPerLevel[showLayer])*40;
 			boolean canRenderFormed = multiblock.canRenderFormedStructure();
@@ -91,6 +93,54 @@ public class ManualPageMultiblock extends ManualPages
 				pageButtons.add(new GuiButtonManualNavigation(gui, 102, x+4,y+yOff/2+(canRenderFormed?14:8), 10,16, 2));
 			}
 		}
+
+		IngredientStack[] totalMaterials = this.multiblock.getTotalMaterials();
+		if(totalMaterials != null)
+		{
+			componentTooltip = new ArrayList();
+			componentTooltip.add(I18n.format("desc.immersiveengineering.info.reqMaterial"));
+			int maxOff = 1;
+			boolean hasAnyItems = false;
+			boolean[] hasItems = new boolean[totalMaterials.length];
+			for(int ss = 0; ss < totalMaterials.length; ss++)
+				if(totalMaterials[ss] != null)
+				{
+					IngredientStack req = totalMaterials[ss];
+					int reqSize = req.inputSize;
+					for(int slot = 0; slot < ManualUtils.mc().thePlayer.inventory.getSizeInventory(); slot++)
+					{
+						ItemStack inSlot = ManualUtils.mc().thePlayer.inventory.getStackInSlot(slot);
+						if(inSlot != null && req.matchesItemStackIgnoringSize(inSlot))
+							if((reqSize -= inSlot.stackSize) <= 0)
+								break;
+					}
+					if(reqSize <= 0)
+					{
+						hasItems[ss] = true;
+						if(!hasAnyItems)
+							hasAnyItems = true;
+					}
+					maxOff = Math.max(maxOff, ("" + req.inputSize).length());
+				}
+			for(int ss = 0; ss < totalMaterials.length; ss++)
+				if(totalMaterials[ss] != null)
+				{
+					IngredientStack req = totalMaterials[ss];
+					int indent = maxOff - ("" + req.inputSize).length();
+					String sIndent = "";
+					if(indent > 0)
+						for(int ii = 0; ii < indent; ii++)
+							sIndent += "0";
+					String s = hasItems[ss] ? (TextFormatting.GREEN + TextFormatting.BOLD.toString() + "\u2713" + TextFormatting.RESET + " ") : hasAnyItems ? ("   ") : "";
+					s += TextFormatting.GRAY + sIndent + req.inputSize + "x " + TextFormatting.RESET;
+					ItemStack example = req.getExampleStack();
+					if(example != null)
+						s += example.getRarity().rarityColor + example.getDisplayName();
+					else
+						s += "???";
+					componentTooltip.add(s);
+				}
+		}
 		super.initPage(gui, x, y+yOff, pageButtons);
 	}
 
@@ -107,7 +157,7 @@ public class ManualPageMultiblock extends ManualPages
 			if(showLayer!=-1)
 				for(int ll=0; ll<showLayer; ll++)
 					prevLayers+=countPerLevel[ll];
-			int limiter = prevLayers+ (tick/40)% ((showLayer==-1?blockCount:countPerLevel[showLayer])+4);			
+			int limiter = prevLayers + (tick / 40) % ((showLayer == -1 ? blockCount : countPerLevel[showLayer]) + 4);
 
 			int xHalf = (structureWidth*5 - structureLength*5);
 			int yOffPartial = (structureHeight-1)*16+structureWidth*8+structureLength*8;
@@ -195,29 +245,11 @@ public class ManualPageMultiblock extends ManualPages
 				manual.fontRenderer.drawSplitString(localizedText, x,y+yOffTotal, 120, manual.getTextColour());
 
 			manual.fontRenderer.setUnicodeFlag(false);
-			if(this.multiblock.getTotalMaterials() != null)
-				manual.fontRenderer.drawString("?", x + 116, y + yOffTotal / 2 - 4, manual.getTextColour(), false);
-			if(this.multiblock.getTotalMaterials() != null && mx >= x + 116 && mx < x + 122 && my >= y + yOffTotal / 2 - 4 && my < y + yOffTotal / 2 + 4)
+			if(componentTooltip != null)
 			{
-				ArrayList<String> components = new ArrayList();
-				components.add(I18n.format("desc.immersiveengineering.info.reqMaterial"));
-				int maxOff = 1;
-				for(ItemStack ss : this.multiblock.getTotalMaterials())
-					if(("" + ss.stackSize).length() > maxOff)
-						maxOff = ("" + ss.stackSize).length();
-				for(ItemStack ss : this.multiblock.getTotalMaterials())
-					if(ss != null)
-					{
-						int indent = 0;
-						if(maxOff > ("" + ss.stackSize).length())
-							indent = maxOff - ("" + ss.stackSize).length();
-						String sIndent = "";
-						if(indent > 0)
-							for(int ii = 0; ii < indent; ii++)
-								sIndent += "0";
-						components.add("" + TextFormatting.GRAY + sIndent + ss.stackSize + "x " + TextFormatting.RESET + ss.getRarity().rarityColor + ss.getDisplayName());
-					}
-				gui.drawHoveringText(components, mx, my, manual.fontRenderer);
+				manual.fontRenderer.drawString("?", x + 116, y + yOffTotal / 2 - 4, manual.getTextColour(), false);
+				if(mx >= x + 116 && mx < x + 122 && my >= y + yOffTotal / 2 - 4 && my < y + yOffTotal / 2 + 4)
+					gui.drawHoveringText(componentTooltip, mx, my, manual.fontRenderer);
 			}
 		}
 	}
@@ -240,7 +272,7 @@ public class ManualPageMultiblock extends ManualPages
 		if(button.id==100)
 		{
 			canTick = !canTick;
-			((GuiButtonManualNavigation)button).type = ((GuiButtonManualNavigation)button).type==4?5:4; 
+			((GuiButtonManualNavigation)button).type = ((GuiButtonManualNavigation)button).type == 4 ? 5 : 4;
 		}
 		else if(button.id==101)
 		{

@@ -2,6 +2,7 @@ package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
+import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.BlockTypes_MetalsAll;
@@ -241,15 +242,16 @@ public class MultiblockRefinery implements IMultiblock
 		return true;
 	}
 
+	static final IngredientStack[] materials = new IngredientStack[]{
+			new IngredientStack("scaffoldingSteel", 8),
+			new IngredientStack(new ItemStack(IEContent.blockMetalDevice1, 5, BlockTypes_MetalDevice1.FLUID_PIPE.getMeta())),
+			new IngredientStack(new ItemStack(IEContent.blockMetalDecoration0, 1, BlockTypes_MetalDecoration0.RS_ENGINEERING.getMeta())),
+			new IngredientStack(new ItemStack(IEContent.blockMetalDecoration0, 2, BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta())),
+			new IngredientStack(new ItemStack(IEContent.blockMetalDecoration0, 2, BlockTypes_MetalDecoration0.HEAVY_ENGINEERING.getMeta())),
+			new IngredientStack("blockSheetmetalIron", 16)};
 	@Override
-	public ItemStack[] getTotalMaterials()
+	public IngredientStack[] getTotalMaterials()
 	{
-		return new ItemStack[]{
-				new ItemStack(IEContent.blockMetalDecoration1,8,BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_0.getMeta()),
-				new ItemStack(IEContent.blockMetalDevice1,5,BlockTypes_MetalDevice1.FLUID_PIPE.getMeta()),
-				new ItemStack(IEContent.blockMetalDecoration0,1,BlockTypes_MetalDecoration0.RS_ENGINEERING.getMeta()),
-				new ItemStack(IEContent.blockMetalDecoration0,2,BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta()),
-				new ItemStack(IEContent.blockMetalDecoration0,2,BlockTypes_MetalDecoration0.HEAVY_ENGINEERING.getMeta()),
-				new ItemStack(IEContent.blockSheetmetal,16,BlockTypes_MetalsAll.IRON.getMeta())};
+		return materials;
 	}
 }

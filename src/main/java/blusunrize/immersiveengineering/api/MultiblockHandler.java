@@ -1,15 +1,16 @@
 package blusunrize.immersiveengineering.api;
 
-import java.util.ArrayList;
-
+import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import java.util.ArrayList;
 
 /**
  * @author BluSunrize - 27.04.2015
@@ -57,7 +58,7 @@ public class MultiblockHandler
 		/**
 		 * An array of ItemStacks that summarizes the total amount of materials needed for the structure. Will be rendered in the Engineer's Manual
 		 */
-		ItemStack[] getTotalMaterials();
+		IngredientStack[] getTotalMaterials();
 		
 		/**
 		 * Use this to overwrite the rendering of a Multiblock's Component

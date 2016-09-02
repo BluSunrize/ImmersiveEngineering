@@ -1,6 +1,8 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
+import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.stone.BlockTypes_StoneDecoration;
@@ -136,9 +138,9 @@ public class MultiblockBlastFurnaceAdvanced implements IMultiblock
 		return true;
 	}
 
-	static final ItemStack[] materials = new ItemStack[]{new ItemStack(IEContent.blockStoneDecoration,27,BlockTypes_StoneDecoration.BLASTBRICK_REINFORCED.getMeta()),new ItemStack(Blocks.HOPPER)};
+	static final IngredientStack[] materials = new IngredientStack[]{new IngredientStack(new ItemStack(IEContent.blockStoneDecoration, 27, BlockTypes_StoneDecoration.BLASTBRICK_REINFORCED.getMeta())), ApiUtils.createIngredientStack(Blocks.HOPPER)};
 	@Override
-	public ItemStack[] getTotalMaterials()
+	public IngredientStack[] getTotalMaterials()
 	{
 		return materials;
 	}
