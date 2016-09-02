@@ -14,11 +14,8 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -116,8 +113,8 @@ public class ManualPageMultiblock extends ManualPages
 			int yOffPartial = (structureHeight-1)*16+structureWidth*8+structureLength*8;
 			int yOffTotal = Math.max(52, yOffPartial+16);
 
-			GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-			GL11.glPushMatrix();
+			GlStateManager.enableRescaleNormal();
+			GlStateManager.pushMatrix();
 			RenderHelper.disableStandardItemLighting();
 			//			GL11.glEnable(GL11.GL_DEPTH_TEST);
 			//			GL11.glDepthFunc(GL11.GL_ALWAYS);
@@ -130,10 +127,10 @@ public class ManualPageMultiblock extends ManualPages
 			float f = (float)Math.sqrt(structureHeight*structureHeight + structureWidth*structureWidth + structureLength*structureLength);
 			float scale = multiblock.getManualScale();
 			yOffTotal = 10+Math.max(10+(multiblock.canRenderFormedStructure()?12:0)+(structureHeight>1?36:0), (int) (f*scale));
-			GL11.glTranslatef(x+60,y+10+f/2*scale, Math.max(structureHeight, Math.max(structureWidth,structureLength)));
-			GL11.glScalef(scale,-scale,1);
-			GL11.glRotatef(rotX, 1, 0, 0);
-			GL11.glRotatef(rotY, 0, 1, 0);
+			GlStateManager.translate(x + 60, y + 10 + f / 2 * scale, Math.max(structureHeight, Math.max(structureWidth, structureLength)));
+			GlStateManager.scale(scale, -scale, 1);
+			GlStateManager.rotate(rotX, 1, 0, 0);
+			GlStateManager.rotate(rotY, 0, 1, 0);
 
 			if(showCompleted)
 				multiblock.renderFormedStructure();
@@ -141,7 +138,7 @@ public class ManualPageMultiblock extends ManualPages
 			{
 				GlStateManager.disableLighting();
 				if(structureWidth%2==1)
-					GL11.glTranslatef(-.5f,0,0);
+					GlStateManager.translate(-.5f, 0, 0);
 				int iterator = 0;
 				for(int h=0; h<structure.length; h++)
 					if(showLayer==-1 || h<=showLayer)
@@ -163,8 +160,8 @@ public class ManualPageMultiblock extends ManualPages
 
 									ManualUtils.mc().getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
 
-									GL11.glPushMatrix();
-									GL11.glTranslatef(w-structureWidth/2-.5f, h-structureHeight/2, l-structureLength/2+.5f);
+									GlStateManager.pushMatrix();
+									GlStateManager.translate(w - structureWidth / 2 - .5f, h - structureHeight / 2, l - structureLength / 2 + .5f);
 									if(!multiblock.overwriteBlockRender(row[w], iterator++) && b!=null)
 										blockRender.renderBlockBrightness(b.getStateFromMeta(row[w].getMetadata()), 1);
 //										blockRender.renderBlockBrightness(Blocks.DIRT.getDefaultState(), 1);
@@ -175,7 +172,7 @@ public class ManualPageMultiblock extends ManualPages
 //									}
 //										blockRender.getBlockModelRenderer().renderModelBrightness(model, state, 1.0F, false);
 
-									GL11.glPopMatrix();
+									GlStateManager.popMatrix();
 									//								RenderItem.getInstance().renderItemIntoGUI(manual.fontRenderer, ManualUtils.mc().renderEngine, row[w], x+xx, y+yy);
 									if(mx>=x+xx&&mx<x+xx+16 && my>=y+yy&&my<y+yy+16)
 										highlighted = row[w];
@@ -185,49 +182,43 @@ public class ManualPageMultiblock extends ManualPages
 					}
 			}
 			//			GL11.glTranslated(0, 0, -i);
-			GL11.glPopMatrix();
+			GlStateManager.popMatrix();
 
 			RenderHelper.disableStandardItemLighting();
-			GL11.glDisable(GL12.GL_RESCALE_NORMAL);
-			GlStateManager.enableBlend();
-			//			GL11.glEnable(GL11.GL_BLEND);
-			//			GL11.glEnable(GL11.GL_DEPTH_TEST);
+			GlStateManager.disableRescaleNormal();
 
-
-			manual.fontRenderer.setUnicodeFlag(false);
-			if(this.multiblock.getTotalMaterials()!=null)
-				manual.fontRenderer.drawString("?", x+116, y+yOffTotal/2-4, manual.getTextColour(), false);
-			//			if(highlighted!=null)
-			//				gui.renderToolTip(highlighted, mx, my);
-			//			else 
-			if(this.multiblock.getTotalMaterials()!=null && mx>=x+116&&mx<x+122 && my>=y+yOffTotal/2-4&&my<y+yOffTotal/2+4)
-			{
-				ArrayList<String> components = new ArrayList();
-				components.add(I18n.format("desc.immersiveengineering.info.reqMaterial"));
-				int maxOff = 1;
-				for(ItemStack ss : this.multiblock.getTotalMaterials())
-					if((""+ss.stackSize).length()>maxOff)
-						maxOff = (""+ss.stackSize).length();
-				for(ItemStack ss : this.multiblock.getTotalMaterials())
-					if(ss!=null)
-					{
-						int indent = 0;
-						if(maxOff>(""+ss.stackSize).length())
-							indent = maxOff-(""+ss.stackSize).length();
-						String sIndent = "";
-						if(indent>0)
-							for(int ii=0;ii<indent;ii++)
-								sIndent+="0";
-						components.add(""+ TextFormatting.GRAY+sIndent+ss.stackSize+"x "+ TextFormatting.RESET+ss.getRarity().rarityColor+ss.getDisplayName());
-					}
-				gui.drawHoveringText(components, mx, my, manual.fontRenderer);
-			}
 			GlStateManager.enableBlend();
 			RenderHelper.disableStandardItemLighting();
 
 			manual.fontRenderer.setUnicodeFlag(true);
 			if(localizedText!=null&&!localizedText.isEmpty())
 				manual.fontRenderer.drawSplitString(localizedText, x,y+yOffTotal, 120, manual.getTextColour());
+
+			manual.fontRenderer.setUnicodeFlag(false);
+			if(this.multiblock.getTotalMaterials() != null)
+				manual.fontRenderer.drawString("?", x + 116, y + yOffTotal / 2 - 4, manual.getTextColour(), false);
+			if(this.multiblock.getTotalMaterials() != null && mx >= x + 116 && mx < x + 122 && my >= y + yOffTotal / 2 - 4 && my < y + yOffTotal / 2 + 4)
+			{
+				ArrayList<String> components = new ArrayList();
+				components.add(I18n.format("desc.immersiveengineering.info.reqMaterial"));
+				int maxOff = 1;
+				for(ItemStack ss : this.multiblock.getTotalMaterials())
+					if(("" + ss.stackSize).length() > maxOff)
+						maxOff = ("" + ss.stackSize).length();
+				for(ItemStack ss : this.multiblock.getTotalMaterials())
+					if(ss != null)
+					{
+						int indent = 0;
+						if(maxOff > ("" + ss.stackSize).length())
+							indent = maxOff - ("" + ss.stackSize).length();
+						String sIndent = "";
+						if(indent > 0)
+							for(int ii = 0; ii < indent; ii++)
+								sIndent += "0";
+						components.add("" + TextFormatting.GRAY + sIndent + ss.stackSize + "x " + TextFormatting.RESET + ss.getRarity().rarityColor + ss.getDisplayName());
+					}
+				gui.drawHoveringText(components, mx, my, manual.fontRenderer);
+			}
 		}
 	}
 
