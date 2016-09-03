@@ -31,11 +31,10 @@ public abstract class ContainerInternalStorageItem extends Container
 		if (!world.isRemote)
 			try {
 				((InventoryStorageItem)this.input).stackList = ((IInternalStorageItem)this.heldItem.getItem()).getContainedItems(this.heldItem);
+			} catch(Exception e)
+			{
+				e.printStackTrace();
 			}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
 		this.onCraftMatrixChanged(this.input);
 	}
 
@@ -64,13 +63,20 @@ public abstract class ContainerInternalStorageItem extends Container
 				{
 					Slot s = inventorySlots.get(i);
 					if(s!=null && s.isItemValid(stackInSlot))
-						if(this.mergeItemStack(stackInSlot, i, i+1, true))
+					{
+						int space = Math.min(s.getItemStackLimit(stackInSlot), stackInSlot.getMaxStackSize());
+						if(s.getStack() != null)
+							space -= s.getStack().stackSize;
+						ItemStack insert = stackInSlot;
+						if(space < stackInSlot.stackSize)
+							insert = stackInSlot.splitStack(space);
+						if(this.mergeItemStack(insert, i, i + 1, true))
 						{
 							b = false;
 							break;
-						}
-						else
+						} else
 							continue;
+					}
 				}
 				if(b)
 					return null;
