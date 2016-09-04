@@ -145,7 +145,7 @@ public class ClientProxy extends CommonProxy
 			@Override
 			public IBakedModel createBakedModel(IBakedModel existingModel)
 			{
-				return new ModelItemDynamicOverride(existingModel);
+				return new ModelItemDynamicOverride(existingModel, null);
 			}
 		});
 		ImmersiveModelRegistry.instance.registerCustomItemModel(new ItemStack(IEContent.itemTool, 1, 2), new ImmersiveModelRegistry.ItemModelReplacement_OBJ("immersiveengineering:models/item/tool/voltmeter.obj")

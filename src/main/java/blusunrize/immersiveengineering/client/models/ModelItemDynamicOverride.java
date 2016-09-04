@@ -1,12 +1,15 @@
 package blusunrize.immersiveengineering.client.models;
 
+import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces;
-import com.google.common.base.Function;
+import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.model.*;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.IBakedModel;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
+import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.EntityLivingBase;
@@ -31,15 +34,26 @@ import java.util.List;
 public class ModelItemDynamicOverride implements IPerspectiveAwareModel
 {
 	IBakedModel itemModel;
+	ImmutableList<BakedQuad> quads;
 
-	public ModelItemDynamicOverride(IBakedModel itemModel)
+	public ModelItemDynamicOverride(IBakedModel itemModel, @Nullable List<ResourceLocation> textures)
 	{
 		this.itemModel = itemModel;
+		if(textures != null)
+		{
+			ImmutableList.Builder<BakedQuad> builder = ImmutableList.builder();
+			Optional<TRSRTransformation> transform = Optional.of(TRSRTransformation.identity());
+			for(int i = 0; i < textures.size(); i++)
+				builder.addAll(ItemLayerModel.getQuadsForSprite(i, ClientUtils.getSprite(textures.get(i)), DefaultVertexFormats.ITEM, transform));
+			quads = builder.build();
+		}
 	}
 
 	@Override
 	public List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable EnumFacing side, long rand)
 	{
+		if(quads != null)
+			return quads;
 		return itemModel.getQuads(state, side, rand);
 	}
 
@@ -83,7 +97,7 @@ public class ModelItemDynamicOverride implements IPerspectiveAwareModel
 	public Pair<? extends IBakedModel, Matrix4f> handlePerspective(TransformType cameraTransformType)
 	{
 		if(itemModel instanceof IPerspectiveAwareModel)
-			((IPerspectiveAwareModel) itemModel).handlePerspective(cameraTransformType);
+			return Pair.of(this, ((IPerspectiveAwareModel)itemModel).handlePerspective(cameraTransformType).getRight());
 		return Pair.of(this, TRSRTransformation.identity().getMatrix());
 	}
 
@@ -103,17 +117,7 @@ public class ModelItemDynamicOverride implements IPerspectiveAwareModel
 					IBakedModel model = modelCache.get(key);
 					if(model == null)
 					{
-						ItemLayerModel layerModel = new ItemLayerModel(ImmutableList.copyOf(texOverride.getTextures(stack, key)));
-
-						Function<ResourceLocation, TextureAtlasSprite> textureGetter = new Function<ResourceLocation, TextureAtlasSprite>()
-						{
-							@Override
-							public TextureAtlasSprite apply(ResourceLocation location)
-							{
-								return Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(location.toString());
-							}
-						};
-						model = layerModel.bake(ModelRotation.X0_Y0, DefaultVertexFormats.ITEM, textureGetter);
+						model = new ModelItemDynamicOverride(originalModel, texOverride.getTextures(stack, key));
 						modelCache.put(key, model);
 					}
 					return model;
