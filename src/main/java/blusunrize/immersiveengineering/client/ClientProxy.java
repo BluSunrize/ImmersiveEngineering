@@ -692,7 +692,8 @@ public class ClientProxy extends CommonProxy
 		pages.add(new ManualPages.Crafting(ManualHelper.getManual(), "bullets0", ItemEngineersBlueprint.getTypedBlueprint("bullet")));
 		pages.add(new ManualPages.CraftingMulti(ManualHelper.getManual(), "bullets1", new ItemStack(IEContent.itemBullet,1,0),new ItemStack(IEContent.itemBullet,1,1), new ItemStack(IEContent.itemMold,1,3)));
 		for(String key : BulletHandler.registry.keySet())
-			pages.add(new ManualPages.ItemDisplay(ManualHelper.getManual(), "bullets_" + key, BulletHandler.getBulletStack(key)));
+			if(BulletHandler.registry.get(key).isProperCartridge())
+				pages.add(new ManualPages.ItemDisplay(ManualHelper.getManual(), "bullets_" + key, BulletHandler.getBulletStack(key)));
 //		pages.add(new ManualPages.ItemDisplay(ManualHelper.getManual(), "bullets2", ItemBullet.getBulletStack("casull")));
 //		pages.add(new ManualPages.ItemDisplay(ManualHelper.getManual(), "bullets3", ItemBullet.getBulletStack("armorPiercing")));
 //		pages.add(new ManualPages.ItemDisplay(ManualHelper.getManual(), "bullets4", ItemBullet.getBulletStack("buckshot")));

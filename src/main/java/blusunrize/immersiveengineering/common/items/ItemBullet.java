@@ -482,8 +482,7 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 			if(layer == 1)
 			{
 				ItemStack pot = ItemNBTHelper.getItemStack(stack, "potion");
-				if(pot != null)
-					return PotionUtils.getPotionColorFromEffectList(PotionUtils.getEffectsFromStack(pot));
+				return pot == null ? 0xff385dc6 : PotionUtils.getPotionColorFromEffectList(PotionUtils.getEffectsFromStack(pot));
 			}
 			return 0xffffffff;
 		}
@@ -642,7 +641,7 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 				  },
 					(float)Config.getDouble("BulletDamage-WolfpackPart"),
 					BulletHandler.emptyCasing,
-					new ResourceLocation("immersiveengineering:items/bullet_terrasteel"));
+					new ResourceLocation("immersiveengineering:items/bullet_wolfpack"));
 		}
 
 		@Override
