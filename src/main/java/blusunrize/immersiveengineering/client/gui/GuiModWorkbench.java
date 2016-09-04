@@ -107,7 +107,7 @@ public class GuiModWorkbench extends GuiContainer
 						ArrayList<ItemStack> inputs = new ArrayList<ItemStack>();
 						for(IngredientStack stack : recipe.inputs)
 						{
-							ItemStack toAdd = Utils.copyStackWithAmount(stack.getExampleStack(), stack.inputSize);
+							ItemStack toAdd = Utils.copyStackWithAmount(stack.getRandomizedExampleStack(this.mc.thePlayer.ticksExisted), stack.inputSize);
 							if(toAdd==null)
 								continue;
 							boolean isNew = true;

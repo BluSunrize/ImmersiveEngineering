@@ -85,16 +85,19 @@ public class ItemEngineersBlueprint extends ItemUpgradeableTool
 	{
 		LinkedHashSet<Slot> slots = new LinkedHashSet<Slot>();
 
-		slots.add( new IESlot.BlueprintInput(container, invItem, 0, 80,21, stack));
-		slots.add( new IESlot.BlueprintInput(container, invItem, 1, 98,21, stack));
-		slots.add( new IESlot.BlueprintInput(container, invItem, 2, 80,39, stack));
-		slots.add( new IESlot.BlueprintInput(container, invItem, 3, 98,39, stack));
-		slots.add( new IESlot.BlueprintInput(container, invItem, 4, 80,57, stack));
-		slots.add( new IESlot.BlueprintInput(container, invItem, 5, 98,57, stack));
+		slots.add(new IESlot.BlueprintInput(container, invItem, 0, 74, 21, stack));
+		slots.add(new IESlot.BlueprintInput(container, invItem, 1, 92, 21, stack));
+		slots.add(new IESlot.BlueprintInput(container, invItem, 2, 74, 39, stack));
+		slots.add(new IESlot.BlueprintInput(container, invItem, 3, 92, 39, stack));
+		slots.add(new IESlot.BlueprintInput(container, invItem, 4, 74, 57, stack));
+		slots.add(new IESlot.BlueprintInput(container, invItem, 5, 92, 57, stack));
 
 		BlueprintCraftingRecipe[] recipes = BlueprintCraftingRecipe.findRecipes(ItemNBTHelper.getString(stack,"blueprint"));
 		for(int i=0; i<recipes.length; i++)
-			slots.add( new IESlot.BlueprintOutput(container, invItem, 6+i, 134+(i%2*18), 57-(i/2 *18), stack, recipes[i]));
+		{
+			int y = 21 + (i < 9 ? i / 3 : (-(i - 6) / 3)) * 18;
+			slots.add(new IESlot.BlueprintOutput(container, invItem, 6 + i, 118 + (i % 3 * 18), y, stack, recipes[i]));
+		}
 		return slots.toArray(new Slot[slots.size()]);
 	}
 

@@ -89,18 +89,34 @@ public class IngredientStack
 		return false;
 	}
 
-	public ItemStack getExampleStack()
+	public ItemStack getRandomizedExampleStack(long rand)
 	{
 		ItemStack ret = stack;
 		if(ret==null&&stackList!=null&&stackList.size()>0)
-			ret = stackList.get(0);
+			ret = stackList.get((int)(rand / 20 % stackList.size()));
 		if(ret==null&&oreName!=null)
 		{
 			List<ItemStack> ores = OreDictionary.getOres(oreName);
 			if(ores!=null&&ores.size()>0)
-				ret = ores.get(0);
+				ret = ores.get((int)(rand / 20 % ores.size()));
 		}
 		if(ret==null&&fluid!=null&&ForgeModContainer.getInstance().universalBucket!=null)
+			ret = UniversalBucket.getFilledBucket(ForgeModContainer.getInstance().universalBucket, fluid.getFluid());
+		return ret;
+	}
+
+	public ItemStack getExampleStack()
+	{
+		ItemStack ret = stack;
+		if(ret == null && stackList != null && stackList.size() > 0)
+			ret = stackList.get(0);
+		if(ret == null && oreName != null)
+		{
+			List<ItemStack> ores = OreDictionary.getOres(oreName);
+			if(ores != null && ores.size() > 0)
+				ret = ores.get(0);
+		}
+		if(ret == null && fluid != null && ForgeModContainer.getInstance().universalBucket != null)
 			ret = UniversalBucket.getFilledBucket(ForgeModContainer.getInstance().universalBucket, fluid.getFluid());
 		return ret;
 	}
