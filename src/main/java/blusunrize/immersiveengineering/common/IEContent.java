@@ -33,6 +33,8 @@ import blusunrize.immersiveengineering.common.crafting.RecipeShapedIngredient;
 import blusunrize.immersiveengineering.common.crafting.RecipeShapelessIngredient;
 import blusunrize.immersiveengineering.common.entities.*;
 import blusunrize.immersiveengineering.common.items.*;
+import blusunrize.immersiveengineering.common.items.ItemBullet.WolfpackBullet;
+import blusunrize.immersiveengineering.common.items.ItemBullet.WolfpackPartBullet;
 import blusunrize.immersiveengineering.common.util.IEAchievements;
 import blusunrize.immersiveengineering.common.util.IEPotions;
 import blusunrize.immersiveengineering.common.util.IEVillagerTrades;
@@ -468,6 +470,12 @@ public class IEContent
 		EntityRegistry.registerModEntity(EntityIEExplosive.class, "explosive", i++, ImmersiveEngineering.instance, 64, 1, true);
 		EntityRegistry.registerModEntity(EntityFluorescentTube.class, "fluorescentTube", i++, ImmersiveEngineering.instance, 64, 1, true);
 
+		/**WOLFPACK BULLETS*/
+		if(!BulletHandler.homingCartridges.isEmpty())
+		{
+			BulletHandler.registerBullet("wolfpack", new WolfpackBullet());
+			BulletHandler.registerBullet("wolfpackPart", new WolfpackPartBullet());
+		}
 		/**SMELTING*/
 		IERecipes.initFurnaceRecipes();
 

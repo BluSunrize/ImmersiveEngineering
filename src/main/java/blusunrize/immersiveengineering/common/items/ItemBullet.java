@@ -4,12 +4,14 @@ import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
 import blusunrize.immersiveengineering.client.ClientProxy;
 import blusunrize.immersiveengineering.common.Config;
-import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.entities.EntityRevolvershot;
 import blusunrize.immersiveengineering.common.entities.EntityRevolvershotFlare;
+import blusunrize.immersiveengineering.common.entities.EntityRevolvershotHoming;
+import blusunrize.immersiveengineering.common.entities.EntityWolfpackShot;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.ITextureOverride;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.creativetab.CreativeTabs;
@@ -47,6 +49,7 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 
 		BulletHandler.emptyCasing = new ItemStack(this, 1, 0);
 		BulletHandler.emptyShell = new ItemStack(this, 1, 1);
+		BulletHandler.basicCartridge = new ItemStack(this, 1, 2);
 
 		BulletHandler.registerBullet("casull", new BulletHandler.DamagingBullet(
 				new Function<Entity[], DamageSource>()
@@ -152,28 +155,19 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 		BulletHandler.registerBullet("flare", new FlareBullet());
 	}
 
-	public static ItemStack getBulletStack(String key)
-	{
-		ItemStack stack = new ItemStack(IEContent.itemBullet, 1, 2);
-		ItemNBTHelper.setString(stack, "bullet", key);
-		return stack;
-	}
-
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void getSubItems(Item item, CreativeTabs tab, List list)
 	{
-//		for(int i=0;i<getSubNames().length;i++)
-//			if((i!=7&&i!=8) || (Loader.isModLoaded("Botania")&&Config.getBoolean("compat_Botania")))
-//				list.add(new ItemStack(this,1,i));
 		list.add(new ItemStack(this, 1, 0));
 		list.add(new ItemStack(this, 1, 1));
 		for(Map.Entry<String, IBullet> entry : BulletHandler.registry.entrySet())
-		{
-			ItemStack s = new ItemStack(this, 1, 2);
-			ItemNBTHelper.setString(s, "bullet", entry.getKey());
-			list.add(s);
-		}
+			if(entry.getValue().isProperCartridge())
+			{
+				ItemStack s = new ItemStack(this, 1, 2);
+				ItemNBTHelper.setString(s, "bullet", entry.getKey());
+				list.add(s);
+			}
 	}
 
 	@Override
@@ -543,4 +537,124 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 		}
 	}
 
+	public static class HomingBullet extends BulletHandler.DamagingBullet
+	{
+		public HomingBullet(float damage, ResourceLocation... textures)
+		{
+			super(new Function<Entity[], DamageSource>()
+				  {
+					  @Override
+					  public DamageSource apply(Entity[] entities)
+					  {
+						  return IEDamageSources.causeHomingDamage((EntityRevolvershot)entities[0], entities[1]);
+					  }
+				  },
+					damage,
+					BulletHandler.emptyCasing,
+					textures);
+		}
+
+		@Override
+		public Entity getProjectile(EntityPlayer shooter, ItemStack cartridge, Entity protetile, boolean electro)
+		{
+			Vec3d vec = shooter.getLookVec();
+			EntityRevolvershotHoming shot = new EntityRevolvershotHoming(shooter.worldObj, shooter, vec.xCoord * 1.5, vec.yCoord * 1.5, vec.zCoord * 1.5, "homing", cartridge);
+			shot.motionX = vec.xCoord;
+			shot.motionY = vec.yCoord;
+			shot.motionZ = vec.zCoord;
+			shot.bulletElectro = electro;
+			return shot;
+		}
+
+		@Override
+		public void onHitTarget(World world, RayTraceResult target, EntityLivingBase shooter, Entity projectile, boolean headshot)
+		{
+			super.onHitTarget(world, target, shooter, projectile, headshot);
+		}
+
+		@Override
+		public int getColour(ItemStack stack, int layer)
+		{
+			return 0xffffffff;
+		}
+	}
+
+	public static class WolfpackBullet extends BulletHandler.DamagingBullet
+	{
+		public WolfpackBullet()
+		{
+			super(new Function<Entity[], DamageSource>()
+				  {
+					  @Override
+					  public DamageSource apply(Entity[] entities)
+					  {
+						  return IEDamageSources.causeWolfpackDamage((EntityRevolvershot)entities[0], entities[1]);
+					  }
+				  },
+					(float)Config.getDouble("BulletDamage-Wolfpack"),
+					BulletHandler.emptyShell,
+					new ResourceLocation("immersiveengineering:items/bullet_wolfpack"));
+		}
+
+		@Override
+		public void onHitTarget(World world, RayTraceResult target, EntityLivingBase shooter, Entity projectile, boolean headshot)
+		{
+			super.onHitTarget(world, target, shooter, projectile, headshot);
+			Vec3d v = new Vec3d(-projectile.motionX, -projectile.motionY, -projectile.motionZ);
+			int split = 6;
+			for(int i = 0; i < split; i++)
+			{
+				float angle = i * (360f / split);
+				Matrix4 matrix = new Matrix4();
+				matrix.rotate(angle, v.xCoord, v.yCoord, v.zCoord);
+				Vec3d vecDir = new Vec3d(0, 1, 0);
+				vecDir = matrix.apply(vecDir);
+
+				EntityWolfpackShot bullet = new EntityWolfpackShot(world, shooter, vecDir.xCoord * 1.5, vecDir.yCoord * 1.5, vecDir.zCoord * 1.5, "wolfpackPart", null);
+				if(target.entityHit instanceof EntityLivingBase)
+					bullet.targetOverride = (EntityLivingBase)target.entityHit;
+				bullet.setPosition(target.hitVec.xCoord + vecDir.xCoord, target.hitVec.yCoord + vecDir.yCoord, target.hitVec.zCoord + vecDir.zCoord);
+				bullet.motionX = vecDir.xCoord * .375;
+				bullet.motionY = vecDir.yCoord * .375;
+				bullet.motionZ = vecDir.zCoord * .375;
+				world.spawnEntityInWorld(bullet);
+			}
+		}
+
+		@Override
+		public int getColour(ItemStack stack, int layer)
+		{
+			return 0xffffffff;
+		}
+	}
+
+	public static class WolfpackPartBullet extends BulletHandler.DamagingBullet
+	{
+		public WolfpackPartBullet()
+		{
+			super(new Function<Entity[], DamageSource>()
+				  {
+					  @Override
+					  public DamageSource apply(Entity[] entities)
+					  {
+						  return IEDamageSources.causeWolfpackDamage((EntityRevolvershot)entities[0], entities[1]);
+					  }
+				  },
+					(float)Config.getDouble("BulletDamage-WolfpackPart"),
+					BulletHandler.emptyCasing,
+					new ResourceLocation("immersiveengineering:items/bullet_terrasteel"));
+		}
+
+		@Override
+		public boolean isProperCartridge()
+		{
+			return false;
+		}
+
+		@Override
+		public int getColour(ItemStack stack, int layer)
+		{
+			return 0xffffffff;
+		}
+	}
 }

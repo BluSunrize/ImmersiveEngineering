@@ -365,7 +365,9 @@ public class ApiUtils
 
 	public static IngredientStack createIngredientStack(Object input, boolean preferWildcard)
 	{
-		if(input instanceof ItemStack)
+		if(input instanceof IngredientStack)
+			return (IngredientStack)input;
+		else if(input instanceof ItemStack)
 			return new IngredientStack((ItemStack)input);
 		else if(input instanceof Item)
 		{

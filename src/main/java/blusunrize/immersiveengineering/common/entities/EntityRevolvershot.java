@@ -65,6 +65,7 @@ public class EntityRevolvershot extends Entity
 	{
 		super(world);
 		this.shootingEntity = living;
+		setShooterSynced();
 		this.setSize(0.125F, 0.125F);
 		this.setLocationAndAngles(living.posX+ax, living.posY+living.getEyeHeight()+ay, living.posZ+az, living.rotationYaw, living.rotationPitch);
 		this.setPosition(this.posX, this.posY, this.posZ);

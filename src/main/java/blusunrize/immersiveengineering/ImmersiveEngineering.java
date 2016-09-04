@@ -40,7 +40,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Arrays;
 
-@Mod(modid=ImmersiveEngineering.MODID,name=ImmersiveEngineering.MODNAME,version = ImmersiveEngineering.VERSION, dependencies="after:Railcraft;after:tconstruct;before:JEI;after:ThermalFoundation;after:Avaritia")
+@Mod(modid = ImmersiveEngineering.MODID, name = ImmersiveEngineering.MODNAME, version = ImmersiveEngineering.VERSION, dependencies = "after:Railcraft;after:tconstruct;before:JEI")
 public class ImmersiveEngineering
 {
 	public static final String MODID = "immersiveengineering";

@@ -1,7 +1,7 @@
 package blusunrize.immersiveengineering.common.crafting;
 
+import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.items.ItemBullet;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.inventory.InventoryCrafting;
@@ -59,7 +59,7 @@ public class RecipePotionBullets implements IRecipe
 	@Override
 	public ItemStack getRecipeOutput()
 	{
-		return ItemBullet.getBulletStack("potion");
+		return BulletHandler.getBulletStack("potion");
 	}
 
     @Override

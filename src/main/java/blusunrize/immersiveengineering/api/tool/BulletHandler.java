@@ -4,13 +4,16 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.function.Function;
 
 /**
@@ -22,6 +25,11 @@ public class BulletHandler
 {
 	public static ItemStack emptyCasing;
 	public static ItemStack emptyShell;
+	public static ItemStack basicCartridge;
+	/**
+	 * A list of all cartridges that shoot a homing bullet. Used to add Wolfpack Cartridges
+	 */
+	public static List<String> homingCartridges = new ArrayList<String>();
 
 	public static HashMap<String, IBullet> registry = new LinkedHashMap<String, IBullet>();
 
@@ -29,14 +37,29 @@ public class BulletHandler
 	{
 		registry.put(name, bullet);
 	}
-
 	public static IBullet getBullet(String name)
 	{
 		return registry.get(name);
 	}
 
+	public static ItemStack getBulletStack(String key)
+	{
+		ItemStack stack = basicCartridge.copy();
+		stack.setTagCompound(new NBTTagCompound());
+		stack.getTagCompound().setString("bullet", key);
+		return stack;
+	}
+
 	public interface IBullet
 	{
+		/**
+		 * @return whether this cartridge should appear as an item and should be fired from revolver. Return false if this is a bullet hte player can't get access to
+		 */
+		default boolean isProperCartridge()
+		{
+			return true;
+		}
+
 		default String getUnlocalizedName(ItemStack cartridge, String baseName)
 		{
 			return baseName;

@@ -1,8 +1,8 @@
 package blusunrize.immersiveengineering.common.crafting;
 
+import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
-import blusunrize.immersiveengineering.common.items.ItemBullet;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.Lists;
@@ -105,7 +105,7 @@ public class RecipeFlareBullets implements IRecipe
 	@Override
 	public ItemStack getRecipeOutput()
 	{
-		return ItemBullet.getBulletStack("flare");
+		return BulletHandler.getBulletStack("flare");
 	}
 
 	@Override

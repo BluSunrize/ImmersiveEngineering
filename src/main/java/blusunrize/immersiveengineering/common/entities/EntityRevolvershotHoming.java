@@ -10,7 +10,7 @@ public class EntityRevolvershotHoming extends EntityRevolvershot
 {
 	public int trackCountdown = 5;
 	public double redirectionSpeed = .25;
-	EntityLivingBase targetOverride;
+	public EntityLivingBase targetOverride;
 	public EntityRevolvershotHoming(World world)
 	{
 		super(world);

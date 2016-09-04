@@ -8,6 +8,7 @@ import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.crafting.CrusherRecipe;
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
+import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.common.blocks.cloth.BlockTypes_ClothDevice;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
@@ -16,7 +17,6 @@ import blusunrize.immersiveengineering.common.blocks.wooden.BlockTypes_WoodenDec
 import blusunrize.immersiveengineering.common.blocks.wooden.BlockTypes_WoodenDevice0;
 import blusunrize.immersiveengineering.common.blocks.wooden.BlockTypes_WoodenDevice1;
 import blusunrize.immersiveengineering.common.crafting.*;
-import blusunrize.immersiveengineering.common.items.ItemBullet;
 import blusunrize.immersiveengineering.common.items.ItemEngineersBlueprint;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -357,10 +357,10 @@ public class IERecipes
 		//
 //"homing","wolfpack"
 		//Casull
-		ItemStack bullet = ItemBullet.getBulletStack("casull");
+		ItemStack bullet = BulletHandler.getBulletStack("casull");
 		BlueprintCraftingRecipe.addRecipe("bullet", bullet, new ItemStack(IEContent.itemBullet, 1, 0), Items.GUNPOWDER, "nuggetLead", "nuggetLead");
 		//Piercing
-		bullet = ItemBullet.getBulletStack("armorPiercing");
+		bullet = BulletHandler.getBulletStack("armorPiercing");
 		BlueprintCraftingRecipe.addRecipe("bullet", bullet, new ItemStack(IEContent.itemBullet, 1, 0), Items.GUNPOWDER, "nuggetSteel", "nuggetSteel", "nuggetConstantan", "nuggetConstantan");
 		if(ApiUtils.isExistingOreName("nuggetTungsten"))
 			BlueprintCraftingRecipe.addRecipe("bullet", bullet, new ItemStack(IEContent.itemBullet, 1, 0), Items.GUNPOWDER, "nuggetTungsten", "nuggetTungsten");
@@ -370,24 +370,24 @@ public class IERecipes
 		//		else if(ApiUtils.isExistingOreName("ingotCyanite"))
 		//			BlueprintCraftingRecipe.addRecipe("bullet", new ItemStack(IEContent.itemBullet,3,3), new ItemStack(IEContent.itemBullet,3,0),new ItemStack(Items.gunpowder,3),"ingotCyanite");
 		//Silver
-		bullet = ItemBullet.getBulletStack("silver");
+		bullet = BulletHandler.getBulletStack("silver");
 		BlueprintCraftingRecipe.addRecipe("bullet", bullet, new ItemStack(IEContent.itemBullet, 1, 0), Items.GUNPOWDER, "nuggetLead", "nuggetLead", "nuggetSilver");
 		//Buckshot
-		bullet = ItemBullet.getBulletStack("buckshot");
+		bullet = BulletHandler.getBulletStack("buckshot");
 		BlueprintCraftingRecipe.addRecipe("bullet", bullet, new ItemStack(IEContent.itemBullet, 1, 1), Items.GUNPOWDER, "dustIron");
 		//HE
-		bullet = ItemBullet.getBulletStack("HE");
+		bullet = BulletHandler.getBulletStack("HE");
 		BlueprintCraftingRecipe.addRecipe("bullet", bullet, new ItemStack(IEContent.itemBullet, 1, 0), Items.GUNPOWDER, Blocks.TNT);
 		//Dragonsbreath
-		bullet = ItemBullet.getBulletStack("dragonsbreath");
+		bullet = BulletHandler.getBulletStack("dragonsbreath");
 		BlueprintCraftingRecipe.addRecipe("specialBullet", bullet, new ItemStack(IEContent.itemBullet, 1, 1), Items.GUNPOWDER, "dustAluminum", "dustAluminum");
 		//Potion
-		bullet = ItemBullet.getBulletStack("potion");
+		bullet = BulletHandler.getBulletStack("potion");
 		BlueprintCraftingRecipe.addRecipe("specialBullet", bullet, new ItemStack(IEContent.itemBullet, 1, 0), Items.GUNPOWDER, Items.GLASS_BOTTLE);
 		GameRegistry.addRecipe(new RecipePotionBullets());
 		RecipeSorter.register(ImmersiveEngineering.MODID+":potionBullet", RecipePotionBullets.class, Category.SHAPELESS, "after:forge:shapelessore");
 		//Flare
-		bullet = ItemBullet.getBulletStack("flare");
+		bullet = BulletHandler.getBulletStack("flare");
 		ItemNBTHelper.setInt(bullet, "flareColour", 0xcc2e06);
 		BlueprintCraftingRecipe.addRecipe("specialBullet", bullet.copy(), new ItemStack(IEContent.itemBullet, 1, 1), Items.GUNPOWDER, "dustAluminum", "dyeRed");
 		ItemNBTHelper.setInt(bullet, "flareColour", 0x2ca30b);
@@ -396,6 +396,16 @@ public class IERecipes
 		BlueprintCraftingRecipe.addRecipe("specialBullet", bullet.copy(), new ItemStack(IEContent.itemBullet, 1, 1), Items.GUNPOWDER, "dustAluminum", "dyeYellow");
 		GameRegistry.addRecipe(new RecipeFlareBullets());
 		RecipeSorter.register(ImmersiveEngineering.MODID+":flareBullet", RecipeFlareBullets.class, Category.SHAPELESS, "after:forge:shapelessore");
+
+		//Wolfpack
+		if(!BulletHandler.homingCartridges.isEmpty())
+		{
+			bullet = BulletHandler.getBulletStack("wolfpack");
+			ArrayList<ItemStack> homingCartridges = new ArrayList();
+			for(String s : BulletHandler.homingCartridges)
+				homingCartridges.add(BulletHandler.getBulletStack(s));
+			BlueprintCraftingRecipe.addRecipe("specialBullet", bullet.copy(), new ItemStack(IEContent.itemBullet, 1, 1), Items.GUNPOWDER, homingCartridges, homingCartridges, homingCartridges, homingCartridges);
+		}
 
 		BlueprintCraftingRecipe.addVillagerTrade("bullet", new ItemStack(Items.EMERALD,1,2));
 		BlueprintCraftingRecipe.addVillagerTrade("specialBullet", new ItemStack(Items.EMERALD,1,7));
