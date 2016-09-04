@@ -1,9 +1,13 @@
 package blusunrize.immersiveengineering.common.util.compat;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
+import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.items.ItemBullet.HomingBullet;
 import blusunrize.immersiveengineering.common.items.ItemRevolver;
 import blusunrize.immersiveengineering.common.items.ItemRevolver.SpecialRevolver;
 import blusunrize.immersiveengineering.common.util.IELogger;
@@ -12,9 +16,11 @@ import com.google.common.collect.ArrayListMultimap;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.init.Items;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -32,11 +38,15 @@ public class BotaniaHelper extends IECompatModule
 	@Override
 	public void preInit()
 	{
+		BulletHandler.registerBullet("terrasteel", new HomingBullet((float)Config.getDouble("BulletDamage-Homing"), new ResourceLocation("immersiveengineering:items/bullet_terrasteel")));
+		BulletHandler.homingCartridges.add("terrasteel");
 	}
 
 	@Override
 	public void init()
 	{
+		BlueprintCraftingRecipe.addRecipe("specialBullet", BulletHandler.getBulletStack("terrasteel"), new ItemStack(IEContent.itemBullet, 1, 0), Items.GUNPOWDER, "nuggetTerrasteel", "nuggetTerrasteel");
+
 		try
 		{
 			Class c_BotaniaAPI = Class.forName("vazkii.botania.api.BotaniaAPI");
@@ -47,7 +57,6 @@ public class BotaniaHelper extends IECompatModule
 			IELogger.error("[Botania] Failed to protect IE conveyors against Botania's magnets");
 			e.printStackTrace();
 		}
-
 		ShaderRegistry.rarityWeightMap.put(EnumRarity.valueOf("RELIC"), 2);
 		ShaderRegistry.registerShader("Spectral", "5", EnumRarity.EPIC, new int[]{26, 26, 40, 220}, new int[]{0, 70, 49, 220}, new int[]{40, 40, 50, 220}, new int[]{5, 10, 8, 180}, null, false, true);
 		if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)

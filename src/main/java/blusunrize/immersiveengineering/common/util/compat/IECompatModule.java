@@ -20,10 +20,21 @@ public abstract class IECompatModule
 
 	static
 	{
+		moduleClasses.put("Baubles", BaublesHelper.class);
+		moduleClasses.put("Botania", BotaniaHelper.class);
+		moduleClasses.put("BloodMagic", BloodMagicHelper.class);
+		moduleClasses.put("chisel", ChiselHelper.class);
+		moduleClasses.put("chiselsandbits", ChiselsAndBitsHelper.class);
+		moduleClasses.put("denseores", DenseOresHelper.class);
+		moduleClasses.put("EnderIO", EnderIOHelper.class);
+		moduleClasses.put("foundry", FoundryHelper.class);
+		moduleClasses.put("IC2", IC2Helper.class);
+		moduleClasses.put("OpenComputers", OCHelper.class);
+		moduleClasses.put("Thaumcraft", ThaumcraftHelper.class);
+		moduleClasses.put("tconstruct", TConstructHelper.class);
 		moduleClasses.put("Waila", WailaHelper.class);
 //		moduleClasses.put("MineFactoryReloaded", MFRHelper.class);
 //		moduleClasses.put("MineTweaker3", MTHelper.class);
-		moduleClasses.put("denseores", DenseOresHelper.class);
 //		moduleClasses.put("EE3", EE3Helper.class);
 //		moduleClasses.put("ForgeMicroblock", FMPHelper.class);
 //		moduleClasses.put("Forestry", ForestryHelper.class);
@@ -33,27 +44,17 @@ public abstract class IECompatModule
 //		moduleClasses.put("ThermalExpansion", ThermalExpansionHelper.class);
 //		moduleClasses.put("ThermalFoundation", ThermalFoundationHelper.class);
 //		moduleClasses.put("ThermalDynamics", ThermalDynamicsHelper.class);
-		moduleClasses.put("IC2", IC2Helper.class);
-		moduleClasses.put("chisel", ChiselHelper.class);
 //		moduleClasses.put("harvestcraft", HarvestCraftHelper.class);
 //		moduleClasses.put("CarpentersBlocks", CarpentersHelper.class);
 //		moduleClasses.put("Forestry", ForestryHelper.class);
-		moduleClasses.put("Botania", BotaniaHelper.class);
 //		moduleClasses.put("etfuturum", EtFuturumHelper.class);
-		moduleClasses.put("EnderIO", EnderIOHelper.class);
 //		moduleClasses.put("steamcraft2", SteamCraftHelper.class);
 //		moduleClasses.put("ExtraUtilities", ExtraUtilsHelper.class);
-		moduleClasses.put("Thaumcraft", ThaumcraftHelper.class);
-		moduleClasses.put("tconstruct", TConstructHelper.class);
-		moduleClasses.put("Baubles", BaublesHelper.class);
-		moduleClasses.put("chiselsandbits", ChiselsAndBitsHelper.class);
-		moduleClasses.put("foundry", FoundryHelper.class);
 
 //		moduleClasses.put("Mekanism", MekanismHelper.class);
 //		moduleClasses.put("cuttingedge", CuttingEdgeHelper.class);
 //		moduleClasses.put("Railcraft", RailcraftHelper.class);
 //		moduleClasses.put("Avaritia", AvaritiaHelper.class);
-		moduleClasses.put("OpenComputers", OCHelper.class);
 	}
 
 	public static void doModulesPreInit()

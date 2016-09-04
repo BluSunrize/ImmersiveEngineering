@@ -309,7 +309,6 @@ item.immersiveengineering.bullet.armorPiercing.name=Armor-Piercing Cartridge
 item.immersiveengineering.bullet.buckshot.name=Buckshot Cartridge
 item.immersiveengineering.bullet.HE.name=High-Explosive Cartridge
 item.immersiveengineering.bullet.dragonsbreath.name=Dragon's Breath Cartridge
-item.immersiveengineering.bullet.homing.name=Homing Cartridge
 item.immersiveengineering.bullet.wolfpack.name=Wolfpack Cartridge
 item.immersiveengineering.bullet.silver.name=Silver Cartridge
 item.immersiveengineering.bullet.potion.name=Phial Cartridge
@@ -361,6 +360,7 @@ itemGroup.immersiveengineering=Immersive Engineering
 #ENTITIES
 entity.immersiveengineering.explosive.name=Explosive
 
+#COMPAT THINGS
 #TINKERS CONSTRUCT COMPAT
 fluid.uranium=Molten Uranium
 fluid.constantan=Molten Constantan
@@ -368,6 +368,12 @@ material.treatedwood.name=Treated Wood
 material.constantan.name=Constantan
 modifier.thermalinversion.name=Thermal Inversion
 modifier.thermalinversion.desc=§oHot & Cold!§r\nHitting an enemy in a hot or cold environment will chill or burn them.
+#BOTANIA COMPAT
+item.immersiveengineering.bullet.terrasteel.name=Homing Cartridge
+ie.manual.entry.bullets_terrasteel=§lHoming §lCartridges§r are created with a "Specialized Projectiles" blueprint. They are formed from the magical metal "Terrasteel", which gives them the intrinsic ability to seek out and chase the closest target.
+#BLOODMAGIC COMPAT
+item.immersiveengineering.bullet.crystalwill.name=Crystalized Will Cartridge
+ie.manual.entry.bullets_crystalwill=§lCrystalized §lWill §lCartridges§r are created with the "Specialized Projectiles" blueprint and using pieces of Demon Will Crystal. The small quantities of demonic will contained within force the projectiles to seek out neaby targets and chase them relentlessly.
 
 #DESCRIPTIONS
 description.villager.profession.immersiveengineering.villager_engineer=Engineer
@@ -577,7 +583,6 @@ chat.immersiveengineering.info.coreDrill.infinite=Infinite
 
 chat.immersiveengineering.info.pump.placeCobble.true=This pump will now replace fluids with cobblestone.
 chat.immersiveengineering.info.pump.placeCobble.false=This pump will no longer replace fluid blocks with cobblestone. §6WARNING:§f This can cause lag and is not adviseable when dealing with large amounts of fluid!
-	immersiveengineeeing
 chat.immersiveengineering.info.energyTransfered=Average energy transferred over the last %1$s ticks: %2$s Flux/t
 
 chat.immersiveengineering.command.available=§6Available commands:§r %1$s
@@ -1024,7 +1029,6 @@ ie.manual.entry.bullets_silver=§lSilver §lCartridges§r consist of a lead core
 ie.manual.entry.bullets_dragonsbreath=§lDragon's §lBreath Cartridges§r are created with a "Specialized Projectiles" blueprint. Similarly to Buckshot, they are effective at short range, but instead of small metal shots are filled with a flammable metal dust, creating a blast of flame.
 ie.manual.entry.bullets_potion=§lPhial §lCartridges§r are also created with the "Specialized" blueprint. They can be filled with any potion by crafting them together in a crafting grid and this potion will then be applied on impact. Normal potions require a direct hit, splash potions have an area of effect and Lingering Potions will create a temporary, lingering potion cloud.
 ie.manual.entry.bullets_flare=§lFlare §lCartridges§r are created with the "Specialized" blueprint. When fired, the flare explodes after a certain distance and then slowly sinks to the ground. You can combine the cartridge with dyes in a crafting table to change its colour.
-ie.manual.entry.bullets_homing=§lHoming §lCartridges§r are created with a "Specialized Projectiles" blueprint and the magical metal "Terrasteel", which gives them the ability to home in on the closest target.
 ie.manual.entry.bullets_wolfpack=§lWolfpack §lCartridges§r are a collection of multiple homing shots in a single shell. The initial projectile is unguided, but on impact, it splits into six target seeking shots that shred the enemies.
 
 ie.manual.entry.chemthrower.name=Chemical Thrower
