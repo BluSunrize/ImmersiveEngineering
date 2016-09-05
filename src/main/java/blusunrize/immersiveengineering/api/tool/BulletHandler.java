@@ -65,6 +65,10 @@ public class BulletHandler
 			return baseName;
 		}
 
+		default void addTooltip(ItemStack stack, EntityPlayer player, List<String> list, boolean advanced)
+		{
+		}
+
 		default int getProjectileCount(EntityPlayer shooter, ItemStack cartridge)
 		{
 			return 1;

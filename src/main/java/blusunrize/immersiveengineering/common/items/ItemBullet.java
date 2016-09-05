@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.common.items;
 
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
 import blusunrize.immersiveengineering.client.ClientProxy;
@@ -8,6 +9,7 @@ import blusunrize.immersiveengineering.common.entities.EntityRevolvershot;
 import blusunrize.immersiveengineering.common.entities.EntityRevolvershotFlare;
 import blusunrize.immersiveengineering.common.entities.EntityRevolvershotHoming;
 import blusunrize.immersiveengineering.common.entities.EntityWolfpackShot;
+import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.ITextureOverride;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
@@ -18,10 +20,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAreaEffectCloud;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemLingeringPotion;
-import net.minecraft.item.ItemSplashPotion;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.*;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.potion.PotionType;
 import net.minecraft.potion.PotionUtils;
@@ -147,9 +146,6 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 			}
 		});
 
-//		homing, Homing, homing
-//		wolfpack, Wolfpack, wolfpack
-
 		BulletHandler.registerBullet("potion", new PotionBullet());
 
 		BulletHandler.registerBullet("flare", new FlareBullet());
@@ -181,85 +177,13 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 	@Override
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean advanced)
 	{
-//		if(stack.getItemDamage()==10)
-//		{
-//			ItemStack pot = ItemNBTHelper.getItemStack(stack, "potion");
-//			if(pot!=null && pot.getItem() instanceof ItemPotion)
-//			{
-//				List effects = PotionUtils.getEffectsFromStack(pot);
-//				HashMultimap hashmultimap = HashMultimap.create();
-//				Iterator iterator1;
-//				if(effects != null && !effects.isEmpty())
-//				{
-//					iterator1 = effects.iterator();
-//					while(iterator1.hasNext())
-//					{
-//						PotionEffect potioneffect = (PotionEffect)iterator1.next();
-//						String s1 = I18n.format(potioneffect.getEffectName()).trim();
-//						Potion potion = potioneffect.getPotion();
-//						Map<IAttribute, AttributeModifier> map = potion.getAttributeModifierMap();
-//
-//						if(map!=null && map.size()>0)
-//						{
-//							Iterator<Entry<IAttribute, AttributeModifier>> iterator = map.entrySet().iterator();
-//							while (iterator.hasNext())
-//							{
-//								Entry<IAttribute, AttributeModifier> entry = iterator.next();
-//								AttributeModifier attributemodifier = entry.getValue();
-//								AttributeModifier attributemodifier1 = new AttributeModifier(attributemodifier.getName(), potion.getAttributeModifierAmount(potioneffect.getAmplifier(), attributemodifier), attributemodifier.getOperation());
-//								hashmultimap.put((entry.getKey()).getAttributeUnlocalizedName(), attributemodifier1);
-//							}
-//						}
-//
-//						if (potioneffect.getAmplifier()>0)
-//							s1 = s1 + " " + I18n.format("potion.potency." + potioneffect.getAmplifier()).trim();
-//						if (potioneffect.getDuration()>20)
-//							s1 = s1 + " (" + Potion.getPotionDurationString(potioneffect,1) + ")";
-//						if (potion.isBadEffect())
-//							list.add(TextFormatting.RED + s1);
-//						else
-//							list.add(TextFormatting.GRAY + s1);
-//					}
-//				}
-//				else
-//				{
-//					String s = I18n.format("potion.empty").trim();
-//					list.add(TextFormatting.GRAY + s);
-//				}
-//				if(!hashmultimap.isEmpty())
-//				{
-//					list.add("");
-//					list.add(TextFormatting.DARK_PURPLE + I18n.format("potion.effects.whenDrank"));
-//					iterator1 = hashmultimap.entries().iterator();
-//
-//					while(iterator1.hasNext())
-//					{
-//						Entry entry1 = (Entry)iterator1.next();
-//						AttributeModifier attributemodifier2 = (AttributeModifier)entry1.getValue();
-//						double d0 = attributemodifier2.getAmount();
-//						double d1;
-//
-//						if(attributemodifier2.getOperation()!=1 && attributemodifier2.getOperation()!=2)
-//							d1 = attributemodifier2.getAmount();
-//						else
-//							d1 = attributemodifier2.getAmount() * 100.0D;
-//
-//						if (d0>0.0D)
-//							list.add(TextFormatting.BLUE + I18n.format("attribute.modifier.plus." + attributemodifier2.getOperation(), ItemStack.DECIMALFORMAT.format(d1), I18n.format("attribute.name." + entry1.getKey())));
-//						else if(d0<0.0D)
-//						{
-//							d1 *= -1.0D;
-//							list.add(TextFormatting.RED + I18n.format("attribute.modifier.take." + attributemodifier2.getOperation(), ItemStack.DECIMALFORMAT.format(d1), I18n.format("attribute.name." + entry1.getKey())));
-//						}
-//					}
-//				}
-//			}
-//		}
-//		else if(stack.getItemDamage()==11)
-//		{
-//			String hexCol = Integer.toHexString(this.getColourForIEItem(stack, 1));
-//			list.add(I18n.format(Lib.DESC_INFO+"bullet.flareColour", "<hexcol="+hexCol+":#"+hexCol+">"));
-//		}
+		if(stack.getItemDamage() == 2)
+		{
+			String key = ItemNBTHelper.getString(stack, "bullet");
+			IBullet bullet = BulletHandler.getBullet(key);
+			if(bullet != null)
+				bullet.addTooltip(stack, player, list, advanced);
+		}
 	}
 	@Override
 	public String getItemStackDisplayName(ItemStack stack)
@@ -476,6 +400,15 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 			world.playEvent(2002, new BlockPos(bullet), PotionType.getID(potionType));
 		}
 
+
+		@Override
+		public void addTooltip(ItemStack stack, EntityPlayer player, List<String> list, boolean advanced)
+		{
+			ItemStack pot = ItemNBTHelper.getItemStack(stack, "potion");
+			if(pot != null && pot.getItem() instanceof ItemPotion)
+				PotionUtils.addPotionTooltip(pot, list, 1f);
+		}
+
 		@Override
 		public int getColour(ItemStack stack, int layer)
 		{
@@ -525,6 +458,16 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 		public ResourceLocation[] getTextures()
 		{
 			return textures;
+		}
+
+		@Override
+		public void addTooltip(ItemStack stack, EntityPlayer player, List<String> list, boolean advanced)
+		{
+			if(stack.getItem() instanceof IColouredItem)
+			{
+				String hexCol = Integer.toHexString(((IColouredItem)stack.getItem()).getColourForIEItem(stack, 1));
+				list.add(I18n.translateToLocalFormatted(Lib.DESC_INFO + "bullet.flareColour", "<hexcol=" + hexCol + ":#" + hexCol + ">"));
+			}
 		}
 
 		@Override
