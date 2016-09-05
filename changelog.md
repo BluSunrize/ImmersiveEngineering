@@ -1,4 +1,4 @@
-#####Version 0.10-39
+#####Version 0.10-39 - BUILT
 - added Bloodmagic compat:
     - demon will bullets. 'nuff said.
 - re-added Chisel Compat. Won't work till Chisel actually brigns IMC integration back in
