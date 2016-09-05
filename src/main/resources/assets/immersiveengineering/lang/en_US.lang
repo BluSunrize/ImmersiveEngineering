@@ -888,7 +888,7 @@ ie.manual.entry.metalconstruction2=Structural Connectors work similarly to norma
 
 ie.manual.entry.lighting.name=Engineered Lighting
 ie.manual.entry.lighting.subtext=Lighting up the Wasteland
-ie.manual.entry.lighting0=Deep in the halls of the factories, it can be quite dark. In order to still find your way around the machines, you should probably light up the place with some Lanterns. These Lanterns provide as much light as a glowstone block would.
+ie.manual.entry.lighting0=Deep in the halls of the factories, it can be quite dark. In order to still find your way around the machines, you should probably light up the place with some Lanterns. These Lanterns provide almost as much light as a glowstone block would.
 ie.manual.entry.lighting1=Powered Lanterns are one of the first ever invented uses for electric power. To run these, you need to connect them directly to your power grid using wires. They will allow power to be transferred through them, so you can link them in a row.
 ie.manual.entry.lighting2=As long as they are supplied with a little bit of power, they will light up the surrounding area like a normal Lantern, but additionally, they will also prevent hostile mobs to spawn in a 32 block radius!
 ie.manual.entry.lighting3=Floodlights are strong lightsources. While they require more power than a simple Powered Lantern, they will create a cone of light up to 32 blocks long. Use an Engineer's Hammer on the top or bottom faces of the block to rotate the light or click its sides to change its pitch.
