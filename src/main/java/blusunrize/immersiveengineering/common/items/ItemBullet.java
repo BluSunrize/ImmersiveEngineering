@@ -13,7 +13,6 @@ import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAreaEffectCloud;
@@ -31,6 +30,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -272,7 +272,7 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 			IBullet bullet = BulletHandler.getBullet(key);
 			if(bullet != null)
 				s = bullet.getUnlocalizedName(stack, s);
-			return I18n.format(s+".name").trim();
+			return I18n.translateToLocal(s + ".name").trim();
 		}
 		return super.getItemStackDisplayName(stack);
 	}
