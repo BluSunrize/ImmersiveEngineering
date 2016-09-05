@@ -14,6 +14,7 @@ import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockRenderLayer;
@@ -22,6 +23,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.EnumPlantType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -109,7 +111,7 @@ public class BlockIECrop<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 		IBlockState state = this.blockState.getBaseState().withProperty(this.property, enumValues[0]);
 		return state;
 	}
-	
+
 	public void onIEBlockPlacedBy(World world, BlockPos pos, IBlockState state, EnumFacing side, float hitX, float hitY, float hitZ, EntityLivingBase placer, ItemStack stack)
 	{
 	}
@@ -167,6 +169,18 @@ public class BlockIECrop<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 		return b;
 	}
 
+	@Override
+	protected boolean canSustainBush(IBlockState state)
+	{
+		return state.getBlock() == Blocks.FARMLAND;
+	}
+
+	@Override
+	public EnumPlantType getPlantType(net.minecraft.world.IBlockAccess world, BlockPos pos)
+	{
+		return EnumPlantType.Crop;
+	}
+
 	static final AxisAlignedBB box0 = new AxisAlignedBB(0,0,0, 1,.375f,1);
 	static final AxisAlignedBB box1 = new AxisAlignedBB(0,0,0, 1,.625f,1);
 	static final AxisAlignedBB box2 = new AxisAlignedBB(0,0,0, 1,.875f,1);
@@ -183,7 +197,7 @@ public class BlockIECrop<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 		int meta = this.getMetaFromState(state);
 		if(meta>=4)
 		{
-	        Random rand = world instanceof World ? ((World)world).rand : RANDOM;
+			Random rand = world instanceof World ? ((World)world).rand : RANDOM;
 			for (int i=0; i<3+fortune; ++i)
 				if(rand.nextInt(8) <= meta)
 					ret.add(new ItemStack(IEContent.itemMaterial,1,4));
@@ -249,7 +263,7 @@ public class BlockIECrop<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 		int meta = this.getMetaFromState(state);
 		if(meta<getMaxMeta(meta))
 			return true;
-		else 
+		else
 			return meta==4 && !world.getBlockState(pos.add(0,1,0)).getBlock().equals(this);
 	}
 	//canBonemeal
@@ -259,7 +273,7 @@ public class BlockIECrop<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 		int meta = this.getMetaFromState(state);
 		if(meta<getMaxMeta(meta))
 			return true;
-		else 
+		else
 			return meta==4 && !world.getBlockState(pos.add(0,1,0)).getBlock().equals(this);
 	}
 	@Override
