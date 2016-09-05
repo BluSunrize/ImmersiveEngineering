@@ -510,12 +510,12 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 							{
 								ItemStack s = multiblock.getInventory()[iOutputSlot];
 								if(s==null)
-								{	
+								{
 									multiblock.getInventory()[iOutputSlot] = output.copy();
 									break;
 								}
 								else if(ItemHandlerHelper.canItemStacksStack(s, output) && s.stackSize+output.stackSize<= multiblock.getSlotLimit(iOutputSlot))
-								{	
+								{
 									multiblock.getInventory()[iOutputSlot].stackSize += output.stackSize;
 									break;
 								}
@@ -613,32 +613,39 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 			ItemStack[] inv = multiblock.getInventory();
 			if(inv!=null && this.inputSlots!=null)
 			{
-				for(int slot : this.inputSlots)
-					if(inv[slot]!=null)
-					{
-						for(IngredientStack ingr : this.recipe.getItemInputs())
-							if(ingr.matchesItemStack(inv[slot]))
-							{
-								inv[slot].stackSize -= ingr.inputSize;
-								if(inv[slot].stackSize<=0)
-									inv[slot] = null;
+				Iterator<IngredientStack> iterator = new ArrayList(this.recipe.getItemInputs()).iterator();
+				while(iterator.hasNext())
+				{
+					IngredientStack ingr = iterator.next();
+					int ingrSize = ingr.inputSize;
+					for(int slot : this.inputSlots)
+						if(inv[slot] != null && ingr.matchesItemStackIgnoringSize(inv[slot]))
+						{
+							int taken = Math.min(inv[slot].stackSize, ingrSize);
+							if((inv[slot].stackSize -= taken) <= 0)
+								inv[slot] = null;
+							if((ingrSize -= taken) <= 0)
 								break;
-							}
-					}
+						}
+				}
 			}
 			FluidTank[] tanks = multiblock.getInternalTanks();
 			if(tanks!=null && this.inputTanks!=null)
 			{
-				for(int tank : this.inputTanks)
-					if(tanks[tank]!=null && tanks[tank].getFluid()!=null)
-					{
-						for(FluidStack ingr : this.recipe.getFluidInputs())
-							if(tanks[tank].getFluid().containsFluid(ingr))
-							{
-								tanks[tank].drain(ingr.amount, true);
+				Iterator<FluidStack> iterator = new ArrayList(this.recipe.getFluidInputs()).iterator();
+				while(iterator.hasNext())
+				{
+					FluidStack ingr = iterator.next();
+					int ingrSize = ingr.amount;
+					for(int tank : this.inputTanks)
+						if(tanks[tank] != null && tanks[tank].getFluid() != null && tanks[tank].getFluid().isFluidEqual(ingr))
+						{
+							int taken = Math.min(tanks[tank].getFluidAmount(), ingrSize);
+							tanks[tank].drain(taken, true);
+							if((ingrSize -= taken) <= 0)
 								break;
-							}
-					}
+						}
+				}
 			}
 		}
 		@Override
@@ -664,7 +671,7 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 
 		public ItemStack getDisplayItem()
 		{
-			if(processTick/(float)maxTicks > transformationPoint) 
+			if(processTick / (float)maxTicks > transformationPoint)
 			{
 				List<ItemStack> list = this.recipe.getItemOutputs();
 				if(!list.isEmpty())

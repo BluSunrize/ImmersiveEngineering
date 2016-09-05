@@ -56,7 +56,7 @@ public class TileRenderArcFurnace extends TileEntitySpecialRenderer<TileEntityAr
 		GlStateManager.pushMatrix();
 		GlStateManager.translate(x, y, z);
 		GlStateManager.translate(.5, .5, .5);
-		GlStateManager.rotate(te.facing==EnumFacing.NORTH?0: te.facing==EnumFacing.EAST?-90: te.facing==EnumFacing.WEST?90: 180, 0, 1, 0);
+		GlStateManager.rotate(te.facing == EnumFacing.NORTH ? 180 : te.facing == EnumFacing.EAST ? -90 : te.facing == EnumFacing.WEST ? 90 : 0, 0, 1, 0);
 
 		RenderHelper.disableStandardItemLighting();
 		GlStateManager.blendFunc(770, 771);
