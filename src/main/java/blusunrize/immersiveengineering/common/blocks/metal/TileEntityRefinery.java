@@ -382,7 +382,7 @@ public class TileEntityRefinery extends TileEntityMultiblockMetal<TileEntityRefi
 	@Override
 	protected boolean canFillTankFrom(int iTank, EnumFacing side, FluidStack resource)
 	{
-		if((pos==5&&(side==null||side==facing.rotateY())) || (pos==9&&(side==null||side==facing.rotateYCCW())))
+		if((pos == 5 || pos == 9) && (side == null || side.getAxis() == facing.rotateYCCW().getAxis()))
 		{
 			TileEntityRefinery master = this.master();
 			if(master==null || master.tanks[iTank].getFluidAmount()>=master.tanks[iTank].getCapacity())

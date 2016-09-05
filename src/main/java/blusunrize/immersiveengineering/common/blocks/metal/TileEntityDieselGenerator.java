@@ -401,7 +401,7 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockMetal<TileEnt
 	protected FluidTank[] getAccessibleFluidTanks(EnumFacing side)
 	{
 		TileEntityDieselGenerator master = master();
-		if(master!=null && ((pos==0&&(side==null||side==facing.rotateY())) || (pos==2&&(side==null||side==facing.rotateYCCW()))))
+		if(master != null && (pos == 0 || pos == 2) && (side == null || side.getAxis() == facing.rotateYCCW().getAxis()))
 			return master.tanks;
 		return new FluidTank[0];
 	}
