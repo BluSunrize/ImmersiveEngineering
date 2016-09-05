@@ -11,9 +11,10 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
@@ -114,7 +115,13 @@ public class TileEntitySilo extends TileEntityMultiblockPart<TileEntitySilo> //i
 	public float[] getBlockBounds()
 	{
 		if(pos==0||pos==2||pos==6||pos==8)
-			return new float[]{pos<6?0:.75f,0,pos==0||pos==6?0:.75f, pos>2?1:.25f,1,pos==2||pos==8?1f:.25f};
+		{
+			float xMin = (facing.getAxis() == Axis.X ? (pos > 2 ^ facing == EnumFacing.EAST) : (pos % 3 == 2 ^ facing == EnumFacing.SOUTH)) ? .75f : 0;
+			float xMax = (facing.getAxis() == Axis.X ? (pos < 3 ^ facing == EnumFacing.EAST) : (pos % 3 == 0 ^ facing == EnumFacing.SOUTH)) ? .25f : 1;
+			float zMin = (facing.getAxis() == Axis.X ? (pos % 3 == 2 ^ facing == EnumFacing.EAST) : (pos < 3 ^ facing == EnumFacing.SOUTH)) ? .75f : 0;
+			float zMax = (facing.getAxis() == Axis.X ? (pos % 3 == 0 ^ facing == EnumFacing.EAST) : (pos > 2 ^ facing == EnumFacing.SOUTH)) ? .25f : 1;
+			return new float[]{xMin, 0, zMin, xMax, 1, zMax};
+		}
 		return new float[]{0,0,0,1,1,1};
 	}
 
