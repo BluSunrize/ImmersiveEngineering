@@ -129,9 +129,8 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 							ItemStack stack = Utils.copyStackWithAmount(inventory[j],1);
 							stack = Utils.insertStackIntoInventory(outputTile, stack, facing.getOpposite());
 							if(stack==null)
-								this.inventory[j].stackSize--;
-							if(this.inventory[j].stackSize<=0)
-								this.inventory[j] = null;
+								if((this.inventory[j].stackSize--) <= 0)
+									this.inventory[j] = null;
 						}
 
 				outputPos = this.getBlockPosForPos(22).offset(facing);
@@ -139,11 +138,12 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 				if(outputTile!=null)
 					if(inventory[22]!=null)
 					{
-						ItemStack stack = Utils.copyStackWithAmount(inventory[22],1);
+						int out = Math.min(inventory[22].stackSize, 16);
+						ItemStack stack = Utils.copyStackWithAmount(inventory[22], out);
 						stack = Utils.insertStackIntoInventory(outputTile, stack, facing);
-						if(stack==null)
-							this.inventory[22].stackSize--;
-						if(this.inventory[22].stackSize<=0)
+						if(stack != null)
+							out -= stack.stackSize;
+						if((this.inventory[22].stackSize -= out) <= 0)
 							this.inventory[22] = null;
 					}
 			}
