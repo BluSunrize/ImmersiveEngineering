@@ -1399,13 +1399,18 @@ public class ClientProxy extends CommonProxy
 	{
 		IESmartObjModel.modelCache.remove(new ExtBlockstateAdapter(state));
 	}
-
 	@Override
 	public void removeStateFromConnectionModelCache(IExtendedBlockState state)
 	{
 		ConnModelReal.cache.remove(new ExtBlockstateAdapter(state));
 	}
 
+	@Override
+	public void clearRenderCaches()
+	{
+		IESmartObjModel.modelCache.clear();
+		ConnModelReal.cache.clear();
+	}
 	private static void mapFluidState(Block block, Fluid fluid)
 	{
 		Item item = Item.getItemFromBlock(block);

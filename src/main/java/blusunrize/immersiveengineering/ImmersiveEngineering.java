@@ -24,6 +24,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -144,6 +145,8 @@ public class ImmersiveEngineering
 	{
 		proxy.serverStarting();
 		event.registerServerCommand(new CommandHandler());
+		if(event.getSide().isClient())
+			ClientCommandHandler.instance.registerCommand(new CommandHandler());
 	}
 	@Mod.EventHandler
 	public void serverStarted(FMLServerStartedEvent event)

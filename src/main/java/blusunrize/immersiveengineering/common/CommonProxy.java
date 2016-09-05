@@ -166,8 +166,11 @@ public class CommonProxy implements IGuiHandler
 	public void removeStateFromSmartModelCache(IExtendedBlockState state)
 	{
 	}
-
 	public void removeStateFromConnectionModelCache(IExtendedBlockState state)
+	{
+	}
+
+	public void clearRenderCaches()
 	{
 	}
 }
