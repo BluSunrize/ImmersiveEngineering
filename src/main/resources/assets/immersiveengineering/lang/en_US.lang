@@ -373,7 +373,7 @@ item.immersiveengineering.bullet.terrasteel.name=Homing Cartridge
 ie.manual.entry.bullets_terrasteel=§lHoming §lCartridges§r are created with a "Specialized Projectiles" blueprint. They are formed from the magical metal "Terrasteel", which gives them the intrinsic ability to seek out and chase the closest target.
 #BLOODMAGIC COMPAT
 item.immersiveengineering.bullet.crystalwill.name=Crystalized Will Cartridge
-ie.manual.entry.bullets_crystalwill=§lCrystalized §lWill §lCartridges§r are created with the "Specialized Projectiles" blueprint and using pieces of Demon Will Crystal. The small quantities of demonic will contained within force the projectiles to seek out neaby targets and chase them relentlessly.
+ie.manual.entry.bullets_crystalwill=§lCrystalized §lWill §lCartridges§r are created with the "Specialized Projectiles" blueprint and using pieces of Demon Will Crystal. The small quantities of demonic will contained within force the projectiles to seek out nearby targets and chase them relentlessly.
 
 #DESCRIPTIONS
 description.villager.profession.immersiveengineering.villager_engineer=Engineer
@@ -601,6 +601,21 @@ chat.immersiveengineering.command.mineral.setDepletion.sucess=Mineral depletion 
 chat.immersiveengineering.command.shaders.help=§6Usage: /ie shaders <clear>§r
 chat.immersiveengineering.command.shaders.clear.help=§6Usage: /ie shaders clear [player]§r<br> Clear the received shaders for the given player. Clear for yourself if no player is specified.
 chat.immersiveengineering.command.shaders.clear.sucess=Received Shaders for '%1$s' where cleared
+
+#SUBTITLES
+subtitle.immersiveengineering.dieselGenerator=Diesel Generator is being loud and obnoxious
+subtitle.immersiveengineering.crusher=Crusher is decimating ore
+subtitle.immersiveengineering.metalPressPiston=Metal Press Piston
+subtitle.immersiveengineering.metalPressSmash=Metal Press Clunk
+subtitle.immersiveengineering.birthdayParty=Yaaay, party!
+subtitle.immersiveengineering.revolverFire=Gunshot
+subtitle.immersiveengineering.spray=Fluid spray
+subtitle.immersiveengineering.spray_fire=Flaming fluid spray
+subtitle.immersiveengineering.chargeFast=Charging capacitors
+subtitle.immersiveengineering.chargeSlow=Charging capacitors
+subtitle.immersiveengineering.spark=Electrical sparks
+subtitle.immersiveengineering.railgunFire=Railgun fire
+subtitle.immersiveengineering.tesla=Tesla Coil zapping
 
 #RECIPES
 recipe.immersiveengineering.hammerCrushing=Crushing

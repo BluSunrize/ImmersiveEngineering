@@ -1,15 +1,95 @@
 {
-	"dieselGenerator": { "category": "block", "sounds":["immersiveengineering:dieselGenerator"] },
-	"crusher": { "category": "block", "sounds":["immersiveengineering:crusher"] },
-	"metalPressPiston": { "category": "block", "sounds":["immersiveengineering:metalPressPiston"] },
-	"metalPressSmash": { "category": "block", "sounds":["immersiveengineering:metalPressSmash"] },
-	"birthdayParty": { "category": "neutral", "sounds":["immersiveengineering:birthdayParty"] },
-	"revolverFire": { "category": "neutral", "sounds":["immersiveengineering:revolverFire"] },
-	"spray": { "category": "player", "sounds":["immersiveengineering:spray"] },
-	"spray_fire": { "category": "player", "sounds":["immersiveengineering:spray_fire"] },
-	"chargeFast": { "category": "neutral", "sounds":["immersiveengineering:chargeFast"] },
-	"chargeSlow": { "category": "neutral", "sounds":["immersiveengineering:chargeSlow"] },
-	"spark": { "category": "neutral", "sounds":["immersiveengineering:spark0","immersiveengineering:spark1","immersiveengineering:spark2"] },
-	"railgunFire": { "category": "neutral", "sounds":["immersiveengineering:railgunFire"] },
-	"tesla": { "category": "block", "sounds":["immersiveengineering:tesla"] }
+	"dieselGenerator": {
+		"category": "block",
+		"sounds": [
+			"immersiveengineering:dieselGenerator"
+		],
+		"subtitle": "subtitle.immersiveengineering.dieselGenerator"
+	},
+	"crusher": {
+		"category": "block",
+		"sounds": [
+			"immersiveengineering:crusher"
+		],
+		"subtitle": "subtitle.immersiveengineering.crusher"
+	},
+	"metalPressPiston": {
+		"category": "block",
+		"sounds": [
+			"immersiveengineering:metalPressPiston"
+		],
+		"subtitle": "subtitle.immersiveengineering.metalPressPiston"
+	},
+	"metalPressSmash": {
+		"category": "block",
+		"sounds": [
+			"immersiveengineering:metalPressSmash"
+		],
+		"subtitle": "subtitle.immersiveengineering.metalPressSmash"
+	},
+	"birthdayParty": {
+		"category": "neutral",
+		"sounds": [
+			"immersiveengineering:birthdayParty"
+		],
+		"subtitle": "subtitle.immersiveengineering.birthdayParty"
+	},
+	"revolverFire": {
+		"category": "neutral",
+		"sounds": [
+			"immersiveengineering:revolverFire"
+		],
+		"subtitle": "subtitle.immersiveengineering.revolverFire"
+	},
+	"spray": {
+		"category": "player",
+		"sounds": [
+			"immersiveengineering:spray"
+		],
+		"subtitle": "subtitle.immersiveengineering.spray"
+	},
+	"spray_fire": {
+		"category": "player",
+		"sounds": [
+			"immersiveengineering:spray_fire"
+		],
+		"subtitle": "subtitle.immersiveengineering.spray_fire"
+	},
+	"chargeFast": {
+		"category": "neutral",
+		"sounds": [
+			"immersiveengineering:chargeFast"
+		],
+		"subtitle": "subtitle.immersiveengineering.chargeFast"
+	},
+	"chargeSlow": {
+		"category": "neutral",
+		"sounds": [
+			"immersiveengineering:chargeSlow"
+		],
+		"subtitle": "subtitle.immersiveengineering.chargeSlow"
+	},
+	"spark": {
+		"category": "neutral",
+		"sounds": [
+			"immersiveengineering:spark0",
+			"immersiveengineering:spark1",
+			"immersiveengineering:spark2"
+		],
+		"subtitle": "subtitle.immersiveengineering.spark"
+	},
+	"railgunFire": {
+		"category": "neutral",
+		"sounds": [
+			"immersiveengineering:railgunFire"
+		],
+		"subtitle": "subtitle.immersiveengineering.railgunFire"
+	},
+	"tesla": {
+		"category": "block",
+		"sounds": [
+			"immersiveengineering:tesla"
+		],
+		"subtitle": "subtitle.immersiveengineering.tesla"
+	}
 }
