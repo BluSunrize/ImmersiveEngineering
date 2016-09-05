@@ -1,6 +1,17 @@
 #####Version 0.10-39
+- added Bloodmagic compat:
+    - demon will bullets. 'nuff said.
 - re-added Chisel Compat. Won't work till Chisel actually brigns IMC integration back in
+- re-added Botania compat:
+    - conveyor belts are immune to magnets
+    - terrasteel bullets are back
+    - armed the potatoes
+- re-added Wolfpack Cartridges!
 - changed Water- and Windmills to use normal TESR again after all
+- changed Lanterns to be rotateable with the hammer
+- changed a load of Assembler functionality. Fixed fluid crafting and container items
+- changed multiblocks in the manual to indicate whether the components are in your inventory
+- changed arcfurnace to output slag faster
 - fixed lighting on wires and connectors (thanks Malte)
 - fixed wire rendering accross chunks; they split into two renders to at least give indication now (thanks Malte)
 - fixed recipes for Faraday Armor
@@ -8,7 +19,23 @@
 - fixed Universal Bucket being initialized too late
 - fixed crashes relating to missign Railgun ammo
 - fixed Wooden Posts not extending arms
-- fixed derpy looking railgun and missign sounds on the Revolver
+- fixed derpy looking railgun and missing sounds on the Revolver
+- fixed windmills not recognizing walls properly
+- fixed JEI rendering for Metal Press and Crusher
+- fixed multiple capability issues on IE tiles
+- fixed conveyors shooting items out to the sides when inserted into
+- fixed floodlights crashing on placement
+- fixed balloons not being consumed when placed in the air and suffocating players
+- fixed conveyors from the creative menu being unplaceable
+- fixed dieselgen crashing for invalid fuel
+- fixed rotations on the bucket wheel
+- fixed broken renderign on the ear defenders
+- fixed drill and chemthrower losing fluid when modifying
+- fixed shiftclicking bullets into the revolver
+- fixed dieselgen and refinery not accepting fluids when mirrored
+- fixed hemp being plantable on non-farmland
+- fixed arcfurnace consuming too many additives
+- various other small fixes!
 
 #####Version 0.10-38 - BUILT
 - added the new IConveyorBelt system
