@@ -224,7 +224,6 @@ public class TConstructHelper extends IECompatModule
 //	@Override
 //	public void clientPreInit()
 //	{
-//		System.out.println("TCON MODEL MAPPING");
 //		mapFluidState(blockMoltenUranium, fluidUranium);
 //		mapFluidState(blockMoltenConstantan, fluidConstantan);
 //	}

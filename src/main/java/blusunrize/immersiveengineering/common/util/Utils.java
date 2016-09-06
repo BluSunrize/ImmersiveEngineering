@@ -84,9 +84,9 @@ public class Utils
 	{
 		if(o instanceof ItemStack)
 			return OreDictionary.itemMatches((ItemStack)o, stack, false) && (!checkNBT || ((ItemStack)o).getItemDamage()==OreDictionary.WILDCARD_VALUE || ItemStack.areItemStackTagsEqual((ItemStack)o, stack));
-		else if(o instanceof ArrayList)
+		else if(o instanceof Collection)
 		{
-			for(Object io : (ArrayList)o)
+			for(Object io : (Collection)o)
 				if(io instanceof ItemStack && OreDictionary.itemMatches((ItemStack)io, stack, false) && (!checkNBT || ((ItemStack)io).getItemDamage()==OreDictionary.WILDCARD_VALUE || ItemStack.areItemStackTagsEqual((ItemStack)io, stack)))
 					return true;
 		} else if(o instanceof IngredientStack)

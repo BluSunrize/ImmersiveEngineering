@@ -129,20 +129,21 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 					AssemblerHandler.RecipeQuery[] queries = adapter.getQueriedInputs(pattern.recipe);
 					ItemStack[] gridItems = new ItemStack[9];
 					for(int i = 0; i < queries.length; i++)
-					{
-						AssemblerHandler.RecipeQuery recipeQuery = queries[i];
-						Optional<ItemStack> taken = null;
-						for(int j = 0; j < outputBuffer.length; j++)
+						if(queries[i] != null)
 						{
-							taken = consumeItem(recipeQuery.query, recipeQuery.querySize, outputBuffer[j], outputList);
+							AssemblerHandler.RecipeQuery recipeQuery = queries[i];
+							Optional<ItemStack> taken = null;
+							for(int j = 0; j < outputBuffer.length; j++)
+							{
+								taken = consumeItem(recipeQuery.query, recipeQuery.querySize, outputBuffer[j], outputList);
+								if(taken != null)
+									break;
+							}
+							if(taken == null)
+								taken = this.consumeItem(recipeQuery.query, recipeQuery.querySize, inventory, outputList);
 							if(taken != null)
-								break;
+								gridItems[i] = taken.orNull();
 						}
-						if(taken == null)
-							taken = this.consumeItem(recipeQuery.query, recipeQuery.querySize, inventory, outputList);
-						if(taken != null)
-							gridItems[i] = taken.orNull();
-					}
 					ItemStack[] remainingItems = pattern.recipe.getRemainingItems(Utils.InventoryCraftingFalse.createFilledCraftingInventory(3, 3, gridItems));
 					for(ItemStack rem : remainingItems)
 						if(rem != null)
@@ -241,41 +242,42 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 		AssemblerHandler.IRecipeAdapter adapter = AssemblerHandler.findAdapter(pattern.recipe);
 		AssemblerHandler.RecipeQuery[] queries = adapter.getQueriedInputs(pattern.recipe);
 		for(AssemblerHandler.RecipeQuery recipeQuery : queries)
-		{
-			if(recipeQuery.query instanceof FluidStack)
+			if(recipeQuery != null && recipeQuery.query != null)
 			{
-				boolean hasFluid = false;
-				for(FluidTank tank : tanks)
-					if(tank.getFluid() != null && tank.getFluid().containsFluid((FluidStack)recipeQuery.query))
-					{
-						hasFluid = true;
-						break;
-					}
-				if(hasFluid)
-					continue;
-			}
-			int querySize = recipeQuery.querySize;
-			Iterator<ItemStack> it = queryList.iterator();
-			while(it.hasNext())
-			{
-				ItemStack next = it.next();
-				if(Utils.stackMatchesObject(next, recipeQuery.query, true))
+				if(recipeQuery.query instanceof FluidStack)
 				{
-					int taken = Math.min(querySize, next.stackSize);
-					next.stackSize -= taken;
-					if(next.stackSize <= 0)
-						it.remove();
-					querySize -= taken;
-					if(querySize <= 0)
-						break;
+					boolean hasFluid = false;
+					for(FluidTank tank : tanks)
+						if(tank.getFluid() != null && tank.getFluid().containsFluid((FluidStack)recipeQuery.query))
+						{
+							hasFluid = true;
+							break;
+						}
+					if(hasFluid)
+						continue;
+				}
+				int querySize = recipeQuery.querySize;
+				Iterator<ItemStack> it = queryList.iterator();
+				while(it.hasNext())
+				{
+					ItemStack next = it.next();
+					if(next != null && Utils.stackMatchesObject(next, recipeQuery.query, true))
+					{
+						int taken = Math.min(querySize, next.stackSize);
+						next.stackSize -= taken;
+						if(next.stackSize <= 0)
+							it.remove();
+						querySize -= taken;
+						if(querySize <= 0)
+							break;
+					}
+				}
+				if(querySize > 0)
+				{
+					match = false;
+					break;
 				}
 			}
-			if(querySize > 0)
-			{
-				match = false;
-				break;
-			}
-		}
 		return match;
 	}
 	public boolean canOutput(ItemStack output, int iPattern)
