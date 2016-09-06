@@ -25,7 +25,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -74,16 +74,20 @@ public class TileEntitySheetmetalTank extends TileEntityMultiblockPart<TileEntit
 				if(i!=1 && tank.getFluidAmount()>0)
 				{
 					EnumFacing f = EnumFacing.getFront(i);
-					int out = Math.min(144,tank.getFluidAmount());
-					TileEntity te = this.worldObj.getTileEntity(getPos().offset(f));
-					if(te!=null && te instanceof IFluidHandler && ((IFluidHandler)te).canFill(f.getOpposite(), tank.getFluid().getFluid()))
+					int outSize = Math.min(144, tank.getFluidAmount());
+					FluidStack out = new FluidStack(tank.getFluid().getFluid(), outSize);
+					BlockPos outputPos = getPos().offset(f);
+					IFluidHandler output = FluidUtil.getFluidHandler(worldObj, outputPos, f.getOpposite());
+					if(output != null)
 					{
-						updateComparatorValuesPart1();
-						int accepted = ((IFluidHandler)te).fill(f.getOpposite(), new FluidStack(tank.getFluid().getFluid(),out), false);
-						FluidStack drained = this.tank.drain(accepted, true);
-						((IFluidHandler)te).fill(f.getOpposite(), drained, true);
-						this.markContainingBlockForUpdate(null);
-						updateComparatorValuesPart2();
+						int accepted = output.fill(out, false);
+						if(accepted > 0)
+						{
+							int drained = output.fill(Utils.copyFluidStackWithAmount(out, Math.min(out.amount, accepted), false), true);
+							this.tank.drain(drained, true);
+							this.markContainingBlockForUpdate(null);
+							updateComparatorValuesPart2();
+						}
 					}
 				}
 	}
