@@ -60,6 +60,7 @@ public class ConveyorVertical extends ConveyorBasic
 		key += "f" + facing.ordinal();
 		key += "a" + (isActive(tile) ? 1 : 0);
 		key += "b" + (renderBottomBelt(tile, facing) ? 1 : 0);
+		key += "c" + getDyeColour();
 		return key;
 	}
 
@@ -241,8 +242,9 @@ public class ConveyorVertical extends ConveyorBasic
 		if(this.renderBottomBelt(tile, facing))
 		{
 			TextureAtlasSprite sprite = ClientUtils.getSprite(isActive(tile) ? ConveyorBasic.texture_on : ConveyorBasic.texture_off);
+			TextureAtlasSprite spriteColour = ClientUtils.getSprite(getColouredStripesTexture());
 			boolean[] walls = {super.renderWall(tile, facing, 0), super.renderWall(tile, facing, 1)};
-			baseModel.addAll(ModelConveyor.getBaseConveyor(facing, .875f, new Matrix4(facing), ConveyorDirection.HORIZONTAL, sprite, walls, new boolean[]{true, false}));
+			baseModel.addAll(ModelConveyor.getBaseConveyor(facing, .875f, new Matrix4(facing), ConveyorDirection.HORIZONTAL, sprite, walls, new boolean[]{true, false}, spriteColour, getDyeColour()));
 		}
 		return baseModel;
 	}

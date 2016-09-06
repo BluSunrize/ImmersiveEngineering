@@ -40,6 +40,7 @@ public class ConveyorHandler
 	public static Set<BiConsumer<Entity, IConveyorTile>> magnetSupressionReverse = new HashSet<BiConsumer<Entity, IConveyorTile>>();
 
 	public static Block conveyorBlock;
+	public static ResourceLocation textureConveyorColour = new ResourceLocation("immersiveengineering:blocks/conveyor_colour");
 
 	/**
 	 * @param key           A unique ResourceLocation to identify the conveyor by
@@ -144,6 +145,7 @@ public class ConveyorHandler
 			key += "a" + (isActive(tile) ? 1 : 0);
 			key += "w0" + (renderWall(tile, facing, 0) ? 1 : 0);
 			key += "w1" + (renderWall(tile, facing, 1) ? 1 : 0);
+			key += "c" + getDyeColour();
 			return key;
 		}
 
@@ -172,6 +174,24 @@ public class ConveyorHandler
 		 * @return false if the conveyor is deactivated (for instance by a redstone signal)
 		 */
 		boolean isActive(TileEntity tile);
+
+		/**
+		 * @return true if the conveyor can be dyed
+		 */
+		boolean canBeDyed();
+
+		/**
+		 * sets the colour of the conveyor when rightclicked with a dye
+		 * parsed value is a hex RGB
+		 *
+		 * @return true if renderupdate should happen
+		 */
+		boolean setDyeColour(int colour);
+
+		/**
+		 * @return the dyed colour as a hex RGB
+		 */
+		int getDyeColour();
 
 		/**
 		 * @param wall 0 is left, 1 is right
@@ -327,6 +347,9 @@ public class ConveyorHandler
 
 		@SideOnly(Side.CLIENT)
 		ResourceLocation getInactiveTexture();
+
+		@SideOnly(Side.CLIENT)
+		default ResourceLocation getColouredStripesTexture(){ return textureConveyorColour; }
 
 		@SideOnly(Side.CLIENT)
 		default Set<BakedQuad> modifyQuads(Set<BakedQuad> baseModel, TileEntity tile, EnumFacing facing)

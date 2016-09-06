@@ -1030,6 +1030,7 @@ public class ClientProxy extends CommonProxy
 
 		for(ResourceLocation rl : ModelConveyor.rl_casing)
 			ApiUtils.getRegisterSprite(event.getMap(), rl);
+		ApiUtils.getRegisterSprite(event.getMap(), ConveyorHandler.textureConveyorColour);
 		ApiUtils.getRegisterSprite(event.getMap(), ConveyorBasic.texture_off);
 		ApiUtils.getRegisterSprite(event.getMap(), ConveyorBasic.texture_on);
 		ApiUtils.getRegisterSprite(event.getMap(), ConveyorDrop.texture_off);
@@ -1333,7 +1334,7 @@ public class ClientProxy extends CommonProxy
 		IConveyorBelt con = ConveyorHandler.getConveyor(new ResourceLocation(conveyor), null);
 		if(con != null)
 		{
-			Set<BakedQuad> quads = ModelConveyor.getBaseConveyor(facing, 1, new Matrix4(facing), ConveyorDirection.HORIZONTAL, ClientUtils.getSprite(con.getActiveTexture()), new boolean[]{true, true}, new boolean[]{true, true});
+			Set<BakedQuad> quads = ModelConveyor.getBaseConveyor(facing, 1, new Matrix4(facing), ConveyorDirection.HORIZONTAL, ClientUtils.getSprite(con.getActiveTexture()), new boolean[]{true, true}, new boolean[]{true, true}, null, 0);
 			GL11.glTranslatef(0, 0, -1);
 			ClientUtils.renderQuads(quads, 1, 1, 1, 1);
 			return true;

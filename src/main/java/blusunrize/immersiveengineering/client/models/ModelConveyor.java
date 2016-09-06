@@ -76,7 +76,7 @@ public class ModelConveyor implements IBakedModel, IPerspectiveAwareModel
 					key = conveyor.getModelCacheKey(tile, facing);
 			}
 		}
-		Set<BakedQuad> cachedQuads = modelCache.get(key);
+		Set<BakedQuad> cachedQuads = null;//modelCache.get(key);
 		if(cachedQuads != null)
 			return Collections.synchronizedList(Lists.newArrayList(cachedQuads));
 		else
@@ -89,9 +89,15 @@ public class ModelConveyor implements IBakedModel, IPerspectiveAwareModel
 			ConveyorDirection conDir = conveyor != null ? conveyor.getConveyorDirection() : ConveyorDirection.HORIZONTAL;
 			boolean[] walls = conveyor != null && tile != null ? new boolean[]{conveyor.renderWall(tile, facing, 0), conveyor.renderWall(tile, facing, 1)} : new boolean[]{true, true};
 			TextureAtlasSprite tex_conveyor = ClientUtils.mc().getTextureMapBlocks().getMissingSprite();
+			TextureAtlasSprite tex_conveyor_colour = null;
+			int colourStripes = -1;
 			if(conveyor != null)
+			{
 				tex_conveyor = ClientUtils.getSprite(tile != null ? (conveyor.isActive(tile) ? conveyor.getActiveTexture() : conveyor.getInactiveTexture()) : conveyor.getActiveTexture());
-			cachedQuads.addAll(getBaseConveyor(facing, 1, matrix, conDir, tex_conveyor, walls, new boolean[]{true, true}));
+				if((colourStripes = conveyor.getDyeColour()) >= 0)
+					tex_conveyor_colour = ClientUtils.getSprite(conveyor.getColouredStripesTexture());
+			}
+			cachedQuads.addAll(getBaseConveyor(facing, 1, matrix, conDir, tex_conveyor, walls, new boolean[]{true, true}, tex_conveyor_colour, colourStripes));
 			if(conveyor != null && tile != null)
 				cachedQuads = conveyor.modifyQuads(cachedQuads, tile, facing);
 			modelCache.put(key, cachedQuads);
@@ -99,7 +105,7 @@ public class ModelConveyor implements IBakedModel, IPerspectiveAwareModel
 		}
 	}
 
-	public static Set<BakedQuad> getBaseConveyor(EnumFacing facing, float length, Matrix4 matrix, ConveyorDirection conDir, TextureAtlasSprite tex_conveyor, boolean[] walls, boolean[] corners)
+	public static Set<BakedQuad> getBaseConveyor(EnumFacing facing, float length, Matrix4 matrix, ConveyorDirection conDir, TextureAtlasSprite tex_conveyor, boolean[] walls, boolean[] corners, TextureAtlasSprite tex_conveyor_colour, int stripeColour)
 	{
 		Set<BakedQuad> quads = new LinkedHashSet<BakedQuad>();
 
@@ -108,6 +114,7 @@ public class ModelConveyor implements IBakedModel, IPerspectiveAwareModel
 		TextureAtlasSprite tex_casing1 = ClientUtils.getSprite(rl_casing[1]);
 		TextureAtlasSprite tex_casing2 = ClientUtils.getSprite(rl_casing[2]);
 		float[] colour = {1, 1, 1, 1};
+		float[] colourStripes = {(stripeColour >> 16 & 255) / 255f, (stripeColour >> 8 & 255) / 255f, (stripeColour & 255) / 255f, 1};
 
 		/**
 		 * Bottom & Top
@@ -230,7 +237,7 @@ public class ModelConveyor implements IBakedModel, IPerspectiveAwareModel
 		//Draw front casing
 		quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), facing, tex_casing2, new double[]{0, 3, 16, 0}, colour, false));
 		for(Vector3f v : vertices)
-			v.translate(0, conDir == ConveyorDirection.UP ? -.0625f : conDir == ConveyorDirection.DOWN ? .0625f : 0, .0625f);
+			v.translate(0, (conDir == ConveyorDirection.UP ? -.0625f : conDir == ConveyorDirection.DOWN ? .0625f : 0), .0625f);
 		quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), facing, tex_casing2, new double[]{0, 3, 16, 0}, colour, true));
 		//Undo expand, shift if up/down, shift to back
 		for(int i = 0; i < 4; i++)
@@ -262,6 +269,7 @@ public class ModelConveyor implements IBakedModel, IPerspectiveAwareModel
 		vertices = new Vector3f[]{new Vector3f(0, .1875f, .9375f - wallLength), new Vector3f(0, .1875f, .9375f), new Vector3f(.0625f, .1875f, .9375f), new Vector3f(.0625f, .1875f, .9375f - wallLength)};
 		Vector3f[] vertices2 = new Vector3f[]{new Vector3f(0, .125f, .9375f - wallLength), new Vector3f(0, .125f, .9375f), new Vector3f(0, .1875f, .9375f), new Vector3f(0, .1875f, .9375f - wallLength)};
 		Vector3f[] vertices3 = new Vector3f[]{new Vector3f(.0625f, .125f, .9375f - wallLength), new Vector3f(.0625f, .125f, .9375f), new Vector3f(.0625f, .1875f, .9375f), new Vector3f(.0625f, .1875f, .9375f - wallLength)};
+		Vector3f[] verticesColour = new Vector3f[]{new Vector3f(0, .1876f, corners[1] ? (1 - length) : (.9375f - wallLength)), new Vector3f(0, .1876f, corners[0] ? 1 : .9375f), new Vector3f(.0625f, .1876f, corners[0] ? 1 : .9375f), new Vector3f(.0625f, .1876f, corners[1] ? (1 - length) : (.9375f - wallLength))};
 		for(int i = 0; i < 4; i++)
 			if(conDir != ConveyorDirection.HORIZONTAL)
 			{
@@ -269,11 +277,14 @@ public class ModelConveyor implements IBakedModel, IPerspectiveAwareModel
 				vertices[i].translate(0, f, 0);
 				vertices2[i].translate(0, f, 0);
 				vertices3[i].translate(0, f, 0);
+				verticesColour[i].translate(0, f, 0);
 			}
 		//Draw left walls
 		if(walls[0])
 		{
 			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), EnumFacing.UP, tex_casing2, new double[]{0, wallLength * 16, 1, 1}, colour, false));
+			if(tex_conveyor_colour != null && stripeColour >= 0)
+				quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, verticesColour), EnumFacing.UP, tex_conveyor_colour, new double[]{0, wallLength * 16, 1, 1}, colourStripes, false));
 			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices2), EnumFacing.WEST, tex_casing1, new double[]{2, wallLength * 16, 3, 1}, colour, false));
 			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices3), EnumFacing.EAST, tex_casing1, new double[]{2, wallLength * 16, 3, 1}, colour, true));
 		}
@@ -282,11 +293,14 @@ public class ModelConveyor implements IBakedModel, IPerspectiveAwareModel
 			vertices[i].translate(.9375f, 0, 0);
 			vertices2[i].translate(.9375f, 0, 0);
 			vertices3[i].translate(.9375f, 0, 0);
+			verticesColour[i].translate(.9375f, 0, 0);
 		}
 		//Draw right walls
 		if(walls[1])
 		{
 			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices), EnumFacing.UP, tex_casing2, new double[]{15, wallLength * 16, 16, 1}, colour, false));
+			if(tex_conveyor_colour != null && stripeColour >= 0)
+				quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, verticesColour), EnumFacing.UP, tex_conveyor_colour, new double[]{15, wallLength * 16, 16, 1}, colourStripes, false));
 			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices2), EnumFacing.WEST, tex_casing1, new double[]{2, wallLength * 16, 3, 1}, colour, false));
 			quads.add(ClientUtils.createBakedQuad(DefaultVertexFormats.ITEM, ClientUtils.applyMatrixToVertices(matrix, vertices3), EnumFacing.EAST, tex_casing1, new double[]{2, wallLength * 16, 3, 1}, colour, true));
 		}
@@ -341,7 +355,7 @@ public class ModelConveyor implements IBakedModel, IPerspectiveAwareModel
 		{
 			String key = ItemNBTHelper.getString(stack, "conveyorType");
 			IBakedModel model = itemModelCache.get(key);
-			if(model == null)
+//			if(model == null)
 			{
 				model = new ModelConveyor(ConveyorHandler.getConveyor(new ResourceLocation(key), null));
 				itemModelCache.put(key, model);
