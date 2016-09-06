@@ -611,9 +611,10 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 		{
 			super.processFinish(multiblock);
 			ItemStack[] inv = multiblock.getInventory();
-			if(inv!=null && this.inputSlots!=null)
+			List<IngredientStack> itemInputList = this.recipe.getItemInputs();
+			if(inv != null && this.inputSlots != null && itemInputList != null)
 			{
-				Iterator<IngredientStack> iterator = new ArrayList(this.recipe.getItemInputs()).iterator();
+				Iterator<IngredientStack> iterator = new ArrayList(itemInputList).iterator();
 				while(iterator.hasNext())
 				{
 					IngredientStack ingr = iterator.next();
@@ -630,9 +631,10 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 				}
 			}
 			FluidTank[] tanks = multiblock.getInternalTanks();
-			if(tanks!=null && this.inputTanks!=null)
+			List<FluidStack> fluidInputList = this.recipe.getFluidInputs();
+			if(tanks != null && this.inputTanks != null && fluidInputList != null)
 			{
-				Iterator<FluidStack> iterator = new ArrayList(this.recipe.getFluidInputs()).iterator();
+				Iterator<FluidStack> iterator = new ArrayList(fluidInputList).iterator();
 				while(iterator.hasNext())
 				{
 					FluidStack ingr = iterator.next();
