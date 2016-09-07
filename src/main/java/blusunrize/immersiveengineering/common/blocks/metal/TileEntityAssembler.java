@@ -2,6 +2,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.IMultiblockRecipe;
+import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.api.tool.AssemblerHandler;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGuiTile;
@@ -206,11 +207,12 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 
 	public Optional<ItemStack> consumeItem(Object query, int querySize, ItemStack[] inventory, ArrayList<ItemStack> containerItems)
 	{
-		if(query instanceof FluidStack)
+		FluidStack fs = query instanceof FluidStack ? (FluidStack)query : (query instanceof IngredientStack && ((IngredientStack)query).fluid != null) ? ((IngredientStack)query).fluid : null;
+		if(fs != null)
 			for(FluidTank tank : tanks)
-				if(tank.getFluid()!=null && tank.getFluid().containsFluid((FluidStack)query))
+				if(tank.getFluid() != null && tank.getFluid().containsFluid(fs))
 				{
-					tank.drain(((FluidStack)query).amount, true);
+					tank.drain(fs.amount, true);
 					markDirty();
 					this.markContainingBlockForUpdate(null);
 					return Optional.absent();
@@ -244,11 +246,12 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 		for(AssemblerHandler.RecipeQuery recipeQuery : queries)
 			if(recipeQuery != null && recipeQuery.query != null)
 			{
-				if(recipeQuery.query instanceof FluidStack)
+				FluidStack fs = recipeQuery.query instanceof FluidStack ? (FluidStack)recipeQuery.query : (recipeQuery.query instanceof IngredientStack && ((IngredientStack)recipeQuery.query).fluid != null) ? ((IngredientStack)recipeQuery.query).fluid : null;
+				if(fs != null)
 				{
 					boolean hasFluid = false;
 					for(FluidTank tank : tanks)
-						if(tank.getFluid() != null && tank.getFluid().containsFluid((FluidStack)recipeQuery.query))
+						if(tank.getFluid() != null && tank.getFluid().containsFluid(fs))
 						{
 							hasFluid = true;
 							break;
