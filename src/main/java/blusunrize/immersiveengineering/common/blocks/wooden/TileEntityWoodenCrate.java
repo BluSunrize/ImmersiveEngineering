@@ -20,13 +20,14 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.WorldServer;
-import net.minecraft.world.storage.loot.*;
+import net.minecraft.world.storage.loot.ILootContainer;
+import net.minecraft.world.storage.loot.LootContext;
+import net.minecraft.world.storage.loot.LootTable;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.oredict.OreDictionary;
 
-import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
@@ -116,7 +117,7 @@ public class TileEntityWoodenCrate extends TileEntityIEBase implements IIEInvent
 			Utils.shuffleLootItems(list, listSlots.size(), rand);
 			for(ItemStack itemstack : list)
 			{
-				int slot = ((Integer)listSlots.remove(listSlots.size() - 1)).intValue();
+				int slot = listSlots.remove(listSlots.size() - 1).intValue();
 				inventory[slot] = itemstack;
 			}
 		}
@@ -140,6 +141,7 @@ public class TileEntityWoodenCrate extends TileEntityIEBase implements IIEInvent
 	@Override
 	public void doGraphicalUpdates(int slot)
 	{
+		this.markDirty();
 	}
 
 	@Override
