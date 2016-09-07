@@ -33,7 +33,8 @@ minecraft {
     version = "12.18.1.2053"
     //"1.9.4-12.17.0.1976"
     runDir = "run"
-    
+
+    replace '${version}', project.version
     // the mappings can be changed at any time, and must be in the following format.
     // snapshot_YYYYMMDD   snapshot are built nightly.
     // stable_#            stables are built at the discretion of the MCP team.
