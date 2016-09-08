@@ -24,10 +24,10 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nullable;
 import javax.vecmath.Matrix4f;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author BluSunrize - 20.08.2016
@@ -63,26 +63,29 @@ public class ConveyorVertical extends ConveyorBasic
 		key += "c" + getDyeColour();
 		return key;
 	}
-
 	boolean renderBottomBelt(TileEntity tile, EnumFacing facing)
 	{
 		TileEntity te = tile.getWorld().getTileEntity(tile.getPos().add(0, -1, 0));
-		if(te instanceof IConveyorTile && ((IConveyorTile) te).getConveyorSubtype() != null && ((IConveyorTile) te).getConveyorSubtype().sigTransportDirection(te, ((IConveyorTile) te).getFacing()).yCoord > 0)
-			return false;
+		if(te instanceof IConveyorTile && ((IConveyorTile)te).getConveyorSubtype() != null)
+			for(EnumFacing f : ((IConveyorTile)te).getConveyorSubtype().sigTransportDirections(te, ((IConveyorTile)te).getFacing()))
+				if(f == EnumFacing.UP)
+					return false;
 		for(EnumFacing f : EnumFacing.HORIZONTALS)
 			if(f != facing)
 			{
 				te = tile.getWorld().getTileEntity(tile.getPos().offset(f));
-				if(te instanceof IConveyorTile && ((IConveyorTile) te).getFacing() == f.getOpposite())
-					return true;
+				if(te instanceof IConveyorTile)
+					for(EnumFacing f2 : ((IConveyorTile)te).getConveyorSubtype().sigTransportDirections(te, ((IConveyorTile)te).getFacing()))
+						if(f == f2.getOpposite())
+							return true;
 			}
 		return false;
 	}
 
 	@Override
-	public Vec3d sigTransportDirection(TileEntity conveyorTile, EnumFacing facing)
+	public EnumFacing[] sigTransportDirections(TileEntity conveyorTile, EnumFacing facing)
 	{
-		return new Vec3d(0, 1, 0);
+		return new EnumFacing[]{EnumFacing.UP, facing};
 	}
 
 	@Override
@@ -237,9 +240,9 @@ public class ConveyorVertical extends ConveyorBasic
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public Set<BakedQuad> modifyQuads(Set<BakedQuad> baseModel, TileEntity tile, EnumFacing facing)
+	public List<BakedQuad> modifyQuads(List<BakedQuad> baseModel, @Nullable TileEntity tile, EnumFacing facing)
 	{
-		if(this.renderBottomBelt(tile, facing))
+		if(tile != null && this.renderBottomBelt(tile, facing))
 		{
 			TextureAtlasSprite sprite = ClientUtils.getSprite(isActive(tile) ? ConveyorBasic.texture_on : ConveyorBasic.texture_off);
 			TextureAtlasSprite spriteColour = ClientUtils.getSprite(getColouredStripesTexture());

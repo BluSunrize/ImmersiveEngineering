@@ -38,7 +38,7 @@ import java.util.*;
 public class ModelConveyor implements IBakedModel, IPerspectiveAwareModel
 {
 	static List<BakedQuad> emptyQuads = Lists.newArrayList();
-	static HashMap<String, Set<BakedQuad>> modelCache = new HashMap();
+	static HashMap<String, List<BakedQuad>> modelCache = new HashMap();
 	public static ResourceLocation[] rl_casing = {new ResourceLocation(ImmersiveEngineering.MODID, "blocks/conveyor_casing_top"), new ResourceLocation(ImmersiveEngineering.MODID, "blocks/conveyor_casing_side"), new ResourceLocation(ImmersiveEngineering.MODID, "blocks/conveyor_casing_walls")};
 
 	Set<BakedQuad> quads;
@@ -76,12 +76,12 @@ public class ModelConveyor implements IBakedModel, IPerspectiveAwareModel
 					key = conveyor.getModelCacheKey(tile, facing);
 			}
 		}
-		Set<BakedQuad> cachedQuads = null;//modelCache.get(key);
+		List<BakedQuad> cachedQuads = null;//modelCache.get(key);
 		if(cachedQuads != null)
 			return Collections.synchronizedList(Lists.newArrayList(cachedQuads));
 		else
 		{
-			cachedQuads = Collections.synchronizedSet(new LinkedHashSet<BakedQuad>());
+			cachedQuads = Collections.synchronizedList(Lists.newArrayList());
 			Matrix4f facingMatrix = TRSRTransformation.getMatrix(facing);
 			if(conveyor != null)
 				facingMatrix = conveyor.modifyBaseRotationMatrix(facingMatrix, tile, facing);
@@ -98,7 +98,7 @@ public class ModelConveyor implements IBakedModel, IPerspectiveAwareModel
 					tex_conveyor_colour = ClientUtils.getSprite(conveyor.getColouredStripesTexture());
 			}
 			cachedQuads.addAll(getBaseConveyor(facing, 1, matrix, conDir, tex_conveyor, walls, new boolean[]{true, true}, tex_conveyor_colour, colourStripes));
-			if(conveyor != null && tile != null)
+			if(conveyor != null)
 				cachedQuads = conveyor.modifyQuads(cachedQuads, tile, facing);
 			modelCache.put(key, cachedQuads);
 			return Collections.synchronizedList(Lists.newArrayList(cachedQuads));

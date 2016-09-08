@@ -37,6 +37,7 @@ import blusunrize.immersiveengineering.common.blocks.cloth.BlockTypes_ClothDevic
 import blusunrize.immersiveengineering.common.blocks.metal.*;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorBasic;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorDrop;
+import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorSplit;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorVertical;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.*;
 import blusunrize.immersiveengineering.common.blocks.stone.BlockTypes_StoneDecoration;
@@ -1037,6 +1038,9 @@ public class ClientProxy extends CommonProxy
 		ApiUtils.getRegisterSprite(event.getMap(), ConveyorDrop.texture_on);
 		ApiUtils.getRegisterSprite(event.getMap(), ConveyorVertical.texture_off);
 		ApiUtils.getRegisterSprite(event.getMap(), ConveyorVertical.texture_on);
+		ApiUtils.getRegisterSprite(event.getMap(), ConveyorSplit.texture_off);
+		ApiUtils.getRegisterSprite(event.getMap(), ConveyorSplit.texture_on);
+		ApiUtils.getRegisterSprite(event.getMap(), ConveyorSplit.texture_casing);
 
 		ApiUtils.getRegisterSprite(event.getMap(), IEContent.fluidCreosote.getStill());
 		ApiUtils.getRegisterSprite(event.getMap(), IEContent.fluidCreosote.getFlowing());

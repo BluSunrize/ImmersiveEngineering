@@ -157,6 +157,7 @@ tile.immersiveengineering.metalDevice1.floodlight.name=Floodlight
 tile.immersiveengineering.conveyor.immersiveengineering:conveyor.name=Conveyor Belt
 tile.immersiveengineering.conveyor.immersiveengineering:dropper.name=Dropping Conveyor Belt
 tile.immersiveengineering.conveyor.immersiveengineering:vertical.name=Vertical Conveyor Belt
+tile.immersiveengineering.conveyor.immersiveengineering:splitter.name=Splitting Conveyor Belt
 
 tile.immersiveengineering.metalMultiblock.metal_press.name=Metal Press
 tile.immersiveengineering.metalMultiblock.crusher.name=Crusher
@@ -376,7 +377,9 @@ item.immersiveengineering.bullet.crystalwill.name=Crystalized Will Cartridge
 ie.manual.entry.bullets_crystalwill=§lCrystalized §lWill §lCartridges§r are created with the "Specialized Projectiles" blueprint and using pieces of Demon Will Crystal. The small quantities of demonic will contained within force the projectiles to seek out nearby targets and chase them relentlessly.
 
 #DESCRIPTIONS
-description.villager.profession.immersiveengineering.villager_engineer=Engineer
+entity.Villager.immersiveengineering.engineer=Structural Engineer
+entity.Villager.immersiveengineering.machinist=Machinist
+entity.Villager.immersiveengineering.electrician=Electrician
 
 desc.immersiveengineering.info.attachedTo=Linking from %1$s, %2$s, %3$s
 desc.immersiveengineering.info.attachedToDim=Linking from %1$s, %2$s, %3$s in Dimension %4$s
