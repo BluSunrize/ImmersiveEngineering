@@ -151,8 +151,9 @@ tile.ImmersiveEngineering.metalDevice1.charging_station.name=充电站
 tile.ImmersiveEngineering.metalDevice1.fluid_pipe.name=输液管
 tile.ImmersiveEngineering.metalDevice1.sample_drill.name=岩芯钻井
 
-tile.ImmersiveEngineering.conveyor.conveyor.name=传送带
-tile.ImmersiveEngineering.conveyor.conveyor_dropper.name=卸货传送带
+tile.immersiveengineering.conveyor.immersiveengineering:conveyor.name=传送带
+tile.immersiveengineering.conveyor.immersiveengineering:dropper.name=卸货传送带
+tile.immersiveengineering.conveyor.immersiveengineering:vertical.name=垂直传送带
 
 tile.ImmersiveEngineering.metalMultiblock.metal_press.name=金属冲压机
 tile.ImmersiveEngineering.metalMultiblock.crusher.name=粉碎机
