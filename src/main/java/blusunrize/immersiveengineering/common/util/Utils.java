@@ -646,7 +646,7 @@ public class Utils
 		ItemStack full = FluidUtil.tryFillContainer(containerIn, handler, Integer.MAX_VALUE, player, false);
 		if(full!=null && (containerOut==null || OreDictionary.itemMatches(containerOut,full,true)))
 		{
-			if(containerOut != null && containerOut.stackSize + full.stackSize <= containerOut.getMaxStackSize())
+			if(containerOut != null && containerOut.stackSize + full.stackSize > containerOut.getMaxStackSize())
 				return null;
 			return FluidUtil.tryFillContainer(containerIn, handler, Integer.MAX_VALUE, player, true);
 		}
@@ -659,7 +659,7 @@ public class Utils
 		ItemStack empty = FluidUtil.tryEmptyContainer(containerIn, handler, Integer.MAX_VALUE, player, false);
 		if(empty!=null && (containerOut==null || OreDictionary.itemMatches(containerOut,empty,true)))
 		{
-			if(containerOut != null && containerOut.stackSize + empty.stackSize <= containerOut.getMaxStackSize())
+			if(containerOut != null && containerOut.stackSize + empty.stackSize > containerOut.getMaxStackSize())
 				return null;
 			return FluidUtil.tryEmptyContainer(containerIn, handler, Integer.MAX_VALUE, player, true);
 		}

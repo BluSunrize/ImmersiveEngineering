@@ -111,7 +111,7 @@ public class TileEntityRefinery extends TileEntityMultiblockMetal<TileEntityRefi
 			}
 		}
 
-		ItemStack emptyContainer = Utils.drainFluidContainer(tanks[2], inventory[0], inventory[1], null);
+		ItemStack emptyContainer = Utils.drainFluidContainer(tanks[0], inventory[0], inventory[1], null);
 		if(emptyContainer!=null)
 		{
 			if(inventory[1]!=null && OreDictionary.itemMatches(inventory[1], emptyContainer, true))
