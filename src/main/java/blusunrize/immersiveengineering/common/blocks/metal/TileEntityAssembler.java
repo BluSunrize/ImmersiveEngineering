@@ -93,6 +93,16 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 				for(int i = 0; i < pattern.inv.length; i++)
 					pattern.inv[i] = null;
 			}
+		} else if(message.hasKey("patternSync"))
+		{
+			int r = message.getInteger("recipe");
+			NBTTagList list = message.getTagList("patternSync", 10);
+			CrafterPatternInventory pattern = patterns[r];
+			for(int i = 0; i < list.tagCount(); i++)
+			{
+				NBTTagCompound itemTag = list.getCompoundTagAt(i);
+				pattern.inv[itemTag.getInteger("slot")] = ItemStack.loadItemStackFromNBT(itemTag);
+			}
 		}
 	}
 	@Override
