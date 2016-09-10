@@ -11,6 +11,8 @@ import javax.annotation.Nullable;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
+import com.google.common.collect.ImmutableList;
+
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
@@ -47,28 +49,29 @@ public class ConnModelReal implements IBakedModel
 	@Override
 	public List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable EnumFacing side, long rand)
 	{
-		if(state instanceof IExtendedBlockState)
+		if(side==null&&state instanceof IExtendedBlockState)
 		{
 			IExtendedBlockState iExtendedBlockState = (IExtendedBlockState) state;
 			ExtBlockstateAdapter ad = new ExtBlockstateAdapter(iExtendedBlockState);
-			int x = 0, y = 0, z = 0;
-			if (iExtendedBlockState.getProperties().containsKey(IEProperties.CONNECTIONS))
+			int x = 0, z = 0;
+			if (iExtendedBlockState.getUnlistedProperties().containsKey(IEProperties.CONNECTIONS))
 			{
 				Set<Connection> conns = iExtendedBlockState.getValue(IEProperties.CONNECTIONS);
 				if (conns!=null&&conns.size()>0)
 				{
 					BlockPos tmp = conns.iterator().next().start;
 					x = (tmp.getX()%16+16)%16;
-					y = (tmp.getY()%16+16)%16;
 					z = (tmp.getZ()%16+16)%16;
 				}
 			}
-			BlockPos pos = new BlockPos(x, y, z);
+			BlockPos pos = new BlockPos(x, 0, z);
 			Pair<BlockPos, ExtBlockstateAdapter> key = new ImmutablePair<>(pos, ad);
-			if (cache.containsKey(key))
-				return cache.get(key).getQuads(state, side, rand);
-			IBakedModel ret = new AssembledBakedModel(iExtendedBlockState, textureAtlasSprite, base, rand);
-			cache.put(key, ret);
+			IBakedModel ret = cache.get(key);
+			if (ret==null)
+			{
+				ret = new AssembledBakedModel(iExtendedBlockState, textureAtlasSprite, base, rand);
+				cache.put(key, ret);
+			}
 			return ret.getQuads(state, side, rand);
 		}
 		return base.getQuads(state, side, rand);
