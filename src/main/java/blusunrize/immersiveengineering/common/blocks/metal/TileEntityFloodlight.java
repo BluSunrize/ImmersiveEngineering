@@ -114,7 +114,7 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 				worldObj.setBlockState(cc, IEContent.blockFakeLight.getStateFromMeta(0), 2);
 				TileEntity te = worldObj.getTileEntity(cc);
 				if (te instanceof TileEntityFakeLight)
-					((TileEntityFakeLight)te).floodlightCoords = new int[]{getPos().getX(),getPos().getX(),getPos().getX()};
+					((TileEntityFakeLight)te).floodlightCoords = new int[]{getPos().getX(),getPos().getY(),getPos().getZ()};
 				fakeLights.add(cc);
 				it.remove();
 			}

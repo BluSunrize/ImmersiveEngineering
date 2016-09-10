@@ -1,5 +1,8 @@
 package blusunrize.immersiveengineering.common.blocks;
 
+import java.util.List;
+import java.util.Locale;
+
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.block.Block;
@@ -21,9 +24,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
-
-import java.util.List;
-import java.util.Locale;
 
 public class ItemBlockIEBase extends ItemBlock
 {
@@ -134,7 +134,7 @@ public class ItemBlockIEBase extends ItemBlock
 		BlockIEBase blockIn = (BlockIEBase) this.block;
 		Block block = w.getBlockState(pos).getBlock();
 		AxisAlignedBB axisalignedbb = blockIn.getCollisionBoundingBox( blockIn.getStateFromMeta(stack.getItemDamage()), w, pos);
-		if (axisalignedbb != null && !w.checkNoEntityCollision(axisalignedbb, null)) return false;
+		if (axisalignedbb != null && !w.checkNoEntityCollision(axisalignedbb.offset(pos), null)) return false;
 		return block.isReplaceable(w, pos) && blockIn.canReplace(w, pos, side, stack);
 	}
 }
