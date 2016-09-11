@@ -25,9 +25,9 @@ import blusunrize.immersiveengineering.common.util.compat.jei.squeezer.SqueezerR
 import blusunrize.immersiveengineering.common.util.compat.jei.workbench.WorkbenchRecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.workbench.WorkbenchRecipeWrapper;
 import com.google.common.collect.Lists;
-import li.cil.oc.common.block.Item;
 import mezz.jei.api.*;
 import mezz.jei.api.ISubtypeRegistry.ISubtypeInterpreter;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
