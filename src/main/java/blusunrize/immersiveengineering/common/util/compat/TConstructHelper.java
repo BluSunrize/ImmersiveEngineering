@@ -28,14 +28,11 @@ import net.minecraftforge.oredict.OreDictionary;
 import slimeknights.tconstruct.TinkerIntegration;
 import slimeknights.tconstruct.library.TinkerRegistry;
 import slimeknights.tconstruct.library.client.MaterialRenderInfo;
-import slimeknights.tconstruct.library.materials.ExtraMaterialStats;
-import slimeknights.tconstruct.library.materials.HandleMaterialStats;
-import slimeknights.tconstruct.library.materials.HeadMaterialStats;
-import slimeknights.tconstruct.library.materials.Material;
+import slimeknights.tconstruct.library.materials.*;
 import slimeknights.tconstruct.library.tinkering.TinkersItem;
 import slimeknights.tconstruct.library.traits.AbstractTrait;
 import slimeknights.tconstruct.library.utils.HarvestLevels;
-import slimeknights.tconstruct.tools.TinkerMaterials;
+import slimeknights.tconstruct.tools.TinkerTraits;
 
 public class TConstructHelper extends IECompatModule
 {
@@ -74,8 +71,8 @@ public class TConstructHelper extends IECompatModule
 		treatedWood.setCraftable(true);
 		treatedWood.addItem("stickTreatedWood", 1, Material.VALUE_Shard);
 		treatedWood.addItem("plankTreatedWood", 1, Material.VALUE_Ingot);
-		treatedWood.addTrait(TinkerMaterials.ecological, HeadMaterialStats.TYPE);
-		treatedWood.addTrait(TinkerMaterials.ecological);
+		treatedWood.addTrait(TinkerTraits.ecological, MaterialTypes.HEAD);
+		treatedWood.addTrait(TinkerTraits.ecological);
 		TinkerRegistry.addMaterialStats(treatedWood,
 				new HeadMaterialStats(25, 2.00f, 2.00f, HarvestLevels.STONE),
 				new HandleMaterialStats(1.0f, 35),
