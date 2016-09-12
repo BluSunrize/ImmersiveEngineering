@@ -213,29 +213,6 @@ public class IEContent
 		).setMetaHidden(33,34,35,40);
 		itemTool = new ItemIETool();
 		itemToolbox = new ItemToolbox();
-		itemFluidContainers = new ItemIEBase("fluidContainers", 64, "bottleCreosote","bucketCreosote",  "bottlePlantoil","bucketPlantoil",  "bottleEthanol","bucketEthanol", "bottleBiodiesel","bucketBiodiesel")
-		{
-			@Override
-			public boolean hasContainerItem(ItemStack stack)
-			{
-				return true;
-			}
-			@Override
-			public ItemStack getContainerItem(ItemStack stack)
-			{
-				return stack.getItemDamage()%2==0?new ItemStack(Items.GLASS_BOTTLE): new ItemStack(Items.BUCKET);
-			}
-			@Override
-			public int getItemStackLimit(ItemStack stack)
-			{
-				return stack.getItemDamage()%2==0?16:1;
-			}
-			@Override
-			public boolean isMetaHidden(int meta)
-			{
-				return meta%2==1;
-			}
-		};
 		itemWireCoil = new ItemWireCoil();
 		WireType.ieWireCoil = itemWireCoil;
 		itemSeeds = new ItemIESeed(blockCrop,"hemp");
