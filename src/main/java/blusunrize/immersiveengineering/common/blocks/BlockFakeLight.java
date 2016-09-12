@@ -14,26 +14,22 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockFakeLight extends BlockIETileProvider
+public class BlockFakeLight extends BlockIETileProvider<BlockTypes_FakeLight>
 {
 	public BlockFakeLight()
 	{
 		super("fakeLight", Material.AIR, PropertyEnum.create("type", BlockTypes_FakeLight.class), ItemBlockIEBase.class);
+		setAllNotNormalBlock();
 	}
-
-	@Override
-	public boolean isOpaqueCube()
-	{
-		return false;
-	}
+	
 	@Override
 	public boolean isAir(IBlockState state, IBlockAccess world, BlockPos pos)
 	{

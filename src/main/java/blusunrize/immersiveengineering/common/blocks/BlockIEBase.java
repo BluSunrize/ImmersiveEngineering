@@ -78,10 +78,11 @@ public class BlockIEBase<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 		this.additionalProperties = propList.toArray(new IProperty[propList.size()]);
 		this.additionalUnlistedProperties = unlistedPropList.toArray(new IUnlistedProperty[unlistedPropList.size()]);
 		this.setDefaultState(getInitDefaultState());
-		this.setUnlocalizedName(ImmersiveEngineering.MODID+"."+name);
+		String registryName = createRegistryName();
+		this.setUnlocalizedName(registryName.replace(':', '.'));
 		this.setCreativeTab(ImmersiveEngineering.creativeTab);
 		this.adjustSound();
-		ImmersiveEngineering.registerBlock(this, itemBlock, name);
+		ImmersiveEngineering.registerBlockByFullName(this, itemBlock, registryName);
 		IEContent.registeredIEBlocks.add(this);
 		lightOpacity = 255;
 	}
@@ -456,11 +457,13 @@ public class BlockIEBase<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 			return true;
 		return super.isToolEffective(type, state);
 	}
+	public String createRegistryName()
+	{
+		return ImmersiveEngineering.MODID+":"+name;
+	}
 
 	public interface IBlockEnum extends IStringSerializable
 	{
-		@Override
-		String getName();
 		int getMeta();
 		boolean listForCreative();
 	}

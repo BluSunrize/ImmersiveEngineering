@@ -322,6 +322,13 @@ public class BlockMetalDevice1 extends BlockIETileProvider<BlockTypes_MetalDevic
 	//		}
 	//	}
 	@Override
+	public void onNeighborChange(IBlockAccess world, BlockPos pos, BlockPos neighbor)
+	{
+		super.onNeighborChange(world, pos, neighbor);
+		if (world.getBlockState(pos).getValue(property)==BlockTypes_MetalDevice1.FLUID_PIPE)
+			TileEntityFluidPipe.indirectConnections.clear();
+	}
+	@Override
 	public IBlockState onBlockPlaced(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer)
 	{
 		TileEntityFluidPipe.indirectConnections.clear();
