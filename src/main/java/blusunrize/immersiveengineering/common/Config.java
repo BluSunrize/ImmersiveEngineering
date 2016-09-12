@@ -121,7 +121,11 @@ public class Config
 		
 		//Lights
 		setBoolean("lantern_spawnPrevent", config.get("machines", "Powered Lantern: Spawn Prevention", true, "Set this to false to disable the mob-spawn prevention of the Powered Lantern").getBoolean());
+		setInt("lantern_energyDraw", config.get("machines", "Powered Lantern: Energy Draw", 1, "How much Flux the powered lantern draws per tick").getInt());
+		setInt("lantern_maximumStorage", config.get("machines", "Powered Lantern: Maximum Storage", 10, "How much Flux the powered lantern can hold (should be greater than the power draw)").getInt());
 		setBoolean("floodlight_spawnPrevent", config.get("machines", "Floodlight: Spawn Prevention", true, "Set this to false to disable the mob-spawn prevention of the Floodlight").getBoolean());
+		setInt("floodlight_energyDraw", config.get("machines", "Floodlight: Energy Draw", 5, "How much Flux the floodlight draws per tick").getInt());
+		setInt("floodlight_maximumStorage", config.get("machines", "Floodlight: Maximum Storage", 80, "How much Flux the floodlight can hold (must be at least 10x the power draw)").getInt());
 
 
 		//Multiblock Recipes

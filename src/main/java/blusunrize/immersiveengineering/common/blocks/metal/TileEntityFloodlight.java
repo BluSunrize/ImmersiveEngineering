@@ -7,6 +7,7 @@ import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Conn
 import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConnectable;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
+import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.EventHandler;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.BlockFakeLight.TileEntityFakeLight;
@@ -44,6 +45,8 @@ import java.util.List;
 public class TileEntityFloodlight extends TileEntityImmersiveConnectable implements ITickable, IAdvancedDirectionalTile, IHammerInteraction, ISpawnInterdiction, IBlockBounds, IActiveState, ILightValue, IOBJModelCallback<IBlockState>
 {
 	public int energyStorage = 0;
+	private int energyDraw = Config.getInt("floodlight_energyDraw");
+	private int maximumStorage = Config.getInt("floodlight_maximumStorage");
 	public boolean active = false;
 	public EnumFacing facing = EnumFacing.NORTH;
 	public EnumFacing side = EnumFacing.UP;
@@ -80,9 +83,9 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 		}
 
 		enabled = (controllingComputers > 0 && computerOn) || worldObj.isBlockIndirectlyGettingPowered(getPos()) > 0;
-		if(energyStorage >= (!active ? 50 : 5) && enabled && switchCooldown <= 0)
+		if(energyStorage >= (!active ? energyDraw*10 : energyDraw) && enabled && switchCooldown <= 0)
 		{
-			energyStorage-=5;
+			energyStorage -= energyDraw;
 			if(!active)
 				active=true;
 		}
@@ -331,15 +334,15 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 	@Override
 	public int outputEnergy(int amount, boolean simulate, int energyType)
 	{
-		if(amount>0 && energyStorage<80)
+		if(amount > 0 && energyStorage < maximumStorage)
 		{
 			if(!simulate)
 			{
-				int rec = Math.min(80-energyStorage, amount);
+				int rec = Math.min(maximumStorage - energyStorage, amount);
 				energyStorage+=rec;
 				return rec;
 			}
-			return Math.min(80-energyStorage, amount);
+			return Math.min(maximumStorage - energyStorage, amount);
 		}
 		return 0;
 	}
