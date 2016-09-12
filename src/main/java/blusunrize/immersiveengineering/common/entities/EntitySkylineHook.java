@@ -11,7 +11,6 @@ import blusunrize.immersiveengineering.common.util.SkylineHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.network.MessageSkyhookSync;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -19,12 +18,15 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import javax.annotation.Nullable;
+import java.util.List;
 
 public class EntitySkylineHook extends Entity
 {
@@ -79,8 +81,12 @@ public class EntitySkylineHook extends Entity
 	public void onUpdate()
 	{
 		EntityPlayer player = null;
-		if(this.getControllingPassenger() instanceof EntityPlayer)
-			player = ((EntityPlayer)this.getControllingPassenger());
+//		if(this.getControllingPassenger() instanceof EntityPlayer)
+//			player = ((EntityPlayer)this.getControllingPassenger());
+		List<Entity> list = this.getPassengers();
+		if(!list.isEmpty() && list.get(0) instanceof EntityPlayer)
+			player = (EntityPlayer)list.get(0);
+
 		if(this.ticksExisted==1&&!worldObj.isRemote)
 		{
 			IELogger.debug("init tick at "+System.currentTimeMillis());
@@ -179,8 +185,8 @@ public class EntitySkylineHook extends Entity
 				player.addStat(IEAchievements.statDistanceSkyhook, distTrvl);
 			if (!worldObj.isRemote&&SkylineHelper.isInBlock(player, worldObj))
 			{
-				setDead();
-				player.setPosition(posX-3*dx, posY-3*dy+getMountedYOffset(),posZ-3*dz);
+//				setDead();
+//				player.setPosition(posX-3*dx, posY-3*dy+getMountedYOffset(),posZ-3*dz);
 			}
 
 			//TODO
@@ -196,14 +202,18 @@ public class EntitySkylineHook extends Entity
 	{
 		this.setDead();
 		IELogger.debug("last tick at "+System.currentTimeMillis());
-		if(!(this.getControllingPassenger() instanceof EntityPlayer))
+		List<Entity> list = this.getPassengers();
+		if(list.isEmpty() || !(list.get(0) instanceof EntityPlayer))
 			return;
-		EntityPlayer player = (EntityPlayer)this.getControllingPassenger();
+//		if(!(this.getControllingPassenger() instanceof EntityPlayer))
+//			return;
+//		EntityPlayer player = (EntityPlayer)this.getControllingPassenger();
+		EntityPlayer player = (EntityPlayer)list.get(0);
 		ItemStack hook = player.getActiveItemStack();
 		if(hook==null || !(hook.getItem() instanceof ItemSkyhook))
 			return;
 		Connection line = SkylineHelper.getTargetConnection(worldObj, target, player, connection);
-
+		System.out.println("New Connection to go down: " + line);
 		if(line!=null)
 		{
 			player.setActiveHand(player.getActiveHand());
@@ -261,6 +271,14 @@ public class EntitySkylineHook extends Entity
 		//		}
 	}
 
+	@Override
+	@Nullable
+	public Entity getControllingPassenger()
+	{
+		return null;
+//		List<Entity> list = this.getPassengers();
+//		return list.isEmpty() ? null : (Entity)list.get(0);
+	}
 	@Override
 	public boolean shouldRiderSit()
 	{
