@@ -51,7 +51,7 @@ public class BlockIECrop<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 		this.setHardness(0.0F);
 		this.setSoundType(SoundType.PLANT);
 		this.disableStats();
-		ImmersiveEngineering.registerBlock(this, new ItemBlock(this), name);
+		ImmersiveEngineering.registerBlockByFullName(this, new ItemBlock(this), ImmersiveEngineering.MODID+":"+name);
 		IEContent.registeredIEBlocks.add(this);
 	}
 

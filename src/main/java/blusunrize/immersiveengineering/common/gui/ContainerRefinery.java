@@ -10,6 +10,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidContainerItem;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 
 public class ContainerRefinery extends ContainerIEBase<TileEntityRefinery>
 {
@@ -23,7 +25,10 @@ public class ContainerRefinery extends ContainerIEBase<TileEntityRefinery>
 			@Override
 			public boolean isItemValid(ItemStack itemStack)
 			{
-				FluidStack fs = FluidContainerRegistry.getFluidForFilledItem(itemStack);
+				IFluidHandler h = itemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
+				if (h==null||h.getTankProperties().length==0)
+					return false;
+				FluidStack fs = h.getTankProperties()[0].getContents();
 				if(fs==null)
 					return false;
 				if(RefineryRecipe.findIncompleteRefineryRecipe(fs, null)==null)
@@ -32,7 +37,7 @@ public class ContainerRefinery extends ContainerIEBase<TileEntityRefinery>
 					return false;
 				if(tileF.tanks[1].getFluidAmount()<=0)
 					return true;
-				List incomplete = RefineryRecipe.findIncompleteRefineryRecipe(fs, tileF.tanks[1].getFluid());
+				List<RefineryRecipe> incomplete = RefineryRecipe.findIncompleteRefineryRecipe(fs, tileF.tanks[1].getFluid());
 				return incomplete!=null && !incomplete.isEmpty();
 			}
 		});
@@ -43,7 +48,10 @@ public class ContainerRefinery extends ContainerIEBase<TileEntityRefinery>
 			@Override
 			public boolean isItemValid(ItemStack itemStack)
 			{
-				FluidStack fs = FluidContainerRegistry.getFluidForFilledItem(itemStack);
+				IFluidHandler h = itemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
+				if (h==null||h.getTankProperties().length==0)
+					return false;
+				FluidStack fs = h.getTankProperties()[0].getContents();
 				if(fs==null)
 					return false;
 				if(RefineryRecipe.findIncompleteRefineryRecipe(fs, null)==null)
@@ -52,7 +60,7 @@ public class ContainerRefinery extends ContainerIEBase<TileEntityRefinery>
 					return false;
 				if(tileF.tanks[0].getFluidAmount()<=0)
 					return true;
-				List incomplete = RefineryRecipe.findIncompleteRefineryRecipe(fs, tileF.tanks[0].getFluid());
+				List<RefineryRecipe> incomplete = RefineryRecipe.findIncompleteRefineryRecipe(fs, tileF.tanks[0].getFluid());
 				return incomplete!=null && !incomplete.isEmpty();
 			}
 		});
@@ -63,7 +71,7 @@ public class ContainerRefinery extends ContainerIEBase<TileEntityRefinery>
 			@Override
 			public boolean isItemValid(ItemStack itemStack)
 			{
-				return super.isItemValid(itemStack) || (itemStack!=null && itemStack.getItem() instanceof IFluidContainerItem);
+				return super.isItemValid(itemStack) || (itemStack!=null && itemStack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null));
 			}
 		});
 		this.addSlotToContainer(new IESlot.Output(this, this.inv, 5, 133,54));

@@ -19,7 +19,7 @@ public class IESounds
 	static Set<SoundEvent> registeredEvents = new HashSet();
 	public static SoundEvent metalpress_piston = registerSound("metalPressPiston");
 	public static SoundEvent metalpress_smash = registerSound("metalPressSmash");
-	public static SoundEvent birthdayParty = ImmersiveEngineering.register(new SoundEvent(new ResourceLocation("immersiveengineering:birthdayParty")),"birthdayParty");
+	public static SoundEvent birthdayParty = ImmersiveEngineering.register(new SoundEvent(new ResourceLocation(ImmersiveEngineering.MODID, "birthdayParty")),"birthdayParty");
 	public static SoundEvent revolverFire = registerSound("revolverFire");
 	public static SoundEvent spray= registerSound("spray");
 	public static SoundEvent sprayFire = registerSound("spray_fire");

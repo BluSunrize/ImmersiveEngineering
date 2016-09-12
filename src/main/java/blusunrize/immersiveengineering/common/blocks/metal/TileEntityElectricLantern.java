@@ -21,8 +21,10 @@ import net.minecraft.world.EnumSkyBlock;
 public class TileEntityElectricLantern extends TileEntityImmersiveConnectable implements ISpawnInterdiction, ITickable, IBlockBounds, IActiveState, ILightValue
 {
 	public int energyStorage = 0;
+	private int energyDraw = Config.getInt("lantern_energyDraw");
+	private int maximumStorage = Config.getInt("lantern_maximumStorage");
 	public boolean active = false;
-	private boolean interdictionList=false; 
+	private boolean interdictionList=false;
 
 	@Override
 	public void update()
@@ -38,9 +40,9 @@ public class TileEntityElectricLantern extends TileEntityImmersiveConnectable im
 			interdictionList=true;
 		}
 		boolean b = active;
-		if(energyStorage>0)
+		if(energyStorage >= energyDraw)
 		{
-			energyStorage--;
+			energyStorage -= energyDraw;
 			if(!active)
 				active=true;
 		}
@@ -105,15 +107,15 @@ public class TileEntityElectricLantern extends TileEntityImmersiveConnectable im
 	@Override
 	public int outputEnergy(int amount, boolean simulate, int energyType)
 	{
-		if(amount>0 && energyStorage<10)
+		if(amount > 0 && energyStorage < maximumStorage)
 		{
 			if(!simulate)
 			{
-				int rec = Math.min(10-energyStorage, 2);
+				int rec = Math.min(maximumStorage - energyStorage, energyDraw);
 				energyStorage+=rec;
 				return rec;
 			}
-			return Math.min(10-energyStorage, 2);
+			return Math.min(maximumStorage - energyStorage, energyDraw);
 		}
 		return 0;
 	}
