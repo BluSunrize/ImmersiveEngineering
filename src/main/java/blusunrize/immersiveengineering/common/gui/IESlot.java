@@ -19,7 +19,9 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -70,10 +72,16 @@ public abstract class IESlot extends Slot
 		@Override
 		public boolean isItemValid(ItemStack itemStack)
 		{
+			IFluidHandler handler = FluidUtil.getFluidHandler(itemStack);
+			if(handler == null || handler.getTankProperties() == null)
+				return false;
+			IFluidTankProperties[] tank = handler.getTankProperties();
+			if(tank == null || tank.length < 1 || tank[0] == null)
+				return false;
 			if(empty)
-				return FluidContainerRegistry.isEmptyContainer(itemStack);
+				return tank[0].getContents() == null;
 			else
-				return FluidContainerRegistry.isFilledContainer(itemStack);
+				return tank[0].getContents() != null;
 		}
 	}
 	public static class BlastFuel extends IESlot

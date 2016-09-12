@@ -40,6 +40,7 @@ public class ConveyorHandler
 	public static Set<BiConsumer<Entity, IConveyorTile>> magnetSupressionReverse = new HashSet<BiConsumer<Entity, IConveyorTile>>();
 
 	public static Block conveyorBlock;
+	public static ResourceLocation textureConveyorColour = new ResourceLocation("immersiveengineering:blocks/conveyor_colour");
 
 	/**
 	 * @param key           A unique ResourceLocation to identify the conveyor by
@@ -144,6 +145,7 @@ public class ConveyorHandler
 			key += "a" + (isActive(tile) ? 1 : 0);
 			key += "w0" + (renderWall(tile, facing, 0) ? 1 : 0);
 			key += "w1" + (renderWall(tile, facing, 1) ? 1 : 0);
+			key += "c" + getDyeColour();
 			return key;
 		}
 
@@ -174,6 +176,24 @@ public class ConveyorHandler
 		boolean isActive(TileEntity tile);
 
 		/**
+		 * @return true if the conveyor can be dyed
+		 */
+		boolean canBeDyed();
+
+		/**
+		 * sets the colour of the conveyor when rightclicked with a dye
+		 * parsed value is a hex RGB
+		 *
+		 * @return true if renderupdate should happen
+		 */
+		boolean setDyeColour(int colour);
+
+		/**
+		 * @return the dyed colour as a hex RGB
+		 */
+		int getDyeColour();
+
+		/**
 		 * @param wall 0 is left, 1 is right
 		 * @return whether the wall should be drawn on the model. Also used for they cache key
 		 */
@@ -184,13 +204,29 @@ public class ConveyorHandler
 			EnumFacing side = wall == 0 ? facing.rotateYCCW() : facing.rotateY();
 			BlockPos pos = tile.getPos().offset(side);
 			TileEntity te = tile.getWorld().getTileEntity(pos);
-			if(te instanceof IConveyorTile && ((IConveyorTile) te).getFacing() == side.getOpposite())
-				return false;
+			if(te instanceof IConveyorTile && ((IConveyorTile)te).getConveyorSubtype() != null)
+			{
+				boolean b = false;
+				for(EnumFacing f : ((IConveyorTile)te).getConveyorSubtype().sigTransportDirections(te, ((IConveyorTile)te).getFacing()))
+					if(f == side.getOpposite())
+						b = true;
+					else if(f == EnumFacing.UP)
+						b = false;
+				return !b;
+			}
 			else
 			{
 				te = tile.getWorld().getTileEntity(pos.add(0, -1, 0));
-				if(te instanceof IConveyorTile && ((IConveyorTile) te).getFacing() == side.getOpposite() && ((IConveyorTile) te).getConveyorSubtype() != null && ((IConveyorTile) te).getConveyorSubtype().getConveyorDirection() == ConveyorDirection.UP)
-					return false;
+				if(te instanceof IConveyorTile && ((IConveyorTile)te).getConveyorSubtype() != null)
+				{
+					int b = 0;
+					for(EnumFacing f : ((IConveyorTile)te).getConveyorSubtype().sigTransportDirections(te, ((IConveyorTile)te).getFacing()))
+						if(f == side.getOpposite())
+							b++;
+						else if(f == EnumFacing.UP)
+							b++;
+					return b < 2;
+				}
 			}
 			return true;
 		}
@@ -198,9 +234,13 @@ public class ConveyorHandler
 		/**
 		 * a rough indication of where this conveyor will transport things. Relevant for vertical conveyors, to see if they need to render the groundpiece below them.
 		 */
-		default Vec3d sigTransportDirection(TileEntity conveyorTile, EnumFacing facing)
+		default EnumFacing[] sigTransportDirections(TileEntity conveyorTile, EnumFacing facing)
 		{
-			return new Vec3d(facing.getDirectionVec()).addVector(0, getConveyorDirection() == ConveyorDirection.UP ? 1 : getConveyorDirection() == ConveyorDirection.DOWN ? -1 : 0, 0);
+			if(getConveyorDirection() == ConveyorDirection.UP)
+				return new EnumFacing[]{facing, EnumFacing.UP};
+			else if(getConveyorDirection() == ConveyorDirection.DOWN)
+				return new EnumFacing[]{facing, EnumFacing.DOWN};
+			return new EnumFacing[]{facing};
 		}
 
 		/**
@@ -226,15 +266,15 @@ public class ConveyorHandler
 
 			if(facing == EnumFacing.WEST || facing == EnumFacing.EAST)
 			{
-				if(entity.posZ > pos.getZ() + 0.65D)
+				if(entity.posZ > pos.getZ() + 0.55D)
 					vZ = -0.1D * vBase;
-				else if(entity.posZ < pos.getZ() + 0.35D)
+				else if(entity.posZ < pos.getZ() + 0.45D)
 					vZ = 0.1D * vBase;
 			} else if(facing == EnumFacing.NORTH || facing == EnumFacing.SOUTH)
 			{
-				if(entity.posX > pos.getX() + 0.65D)
+				if(entity.posX > pos.getX() + 0.55D)
 					vX = -0.1D * vBase;
-				else if(entity.posX < pos.getX() + 0.35D)
+				else if(entity.posX < pos.getX() + 0.45D)
 					vX = 0.1D * vBase;
 			}
 
@@ -329,7 +369,10 @@ public class ConveyorHandler
 		ResourceLocation getInactiveTexture();
 
 		@SideOnly(Side.CLIENT)
-		default Set<BakedQuad> modifyQuads(Set<BakedQuad> baseModel, TileEntity tile, EnumFacing facing)
+		default ResourceLocation getColouredStripesTexture(){ return textureConveyorColour; }
+
+		@SideOnly(Side.CLIENT)
+		default List<BakedQuad> modifyQuads(List<BakedQuad> baseModel, @Nullable TileEntity tile, EnumFacing facing)
 		{
 			return baseModel;
 		}

@@ -628,6 +628,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 						}
 						else if(straightY)
 						{
+							rotationMatrix.rotate(Math.PI / 2, 1, 0, 0);
 							//default y+- z- x+
 							if((connections&8)!=0)//z+
 							{
@@ -675,6 +676,13 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 					}
 					break;
 				case 6://Full Crossing
+					parts.add("con_yMin");
+					parts.add("con_yMax");
+					parts.add("con_zMin");
+					parts.add("con_zMax");
+					parts.add("con_xMin");
+					parts.add("con_xMax");
+
 					break;
 			}
 			//			connetionParts

@@ -30,7 +30,6 @@ public class EnderIOHelper extends IECompatModule
 	@Override
 	public void init()
 	{
-		System.out.println("init EIO");
 		IERecipes.addOreDictAlloyingRecipe("ingotElectricalSteel", 1, "Iron", 400, 512, "dustCoal", "itemSilicon");
 		IERecipes.addOreDictAlloyingRecipe("ingotEnergeticAlloy", 1, "Gold", 200, 512, "dustRedstone", "dustGlowstone");
 		IERecipes.addOreDictAlloyingRecipe("ingotPhaseGold", 1, "EnergeticAlloy", 200, 512, Items.ENDER_PEARL);

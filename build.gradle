@@ -1,5 +1,5 @@
 def mainVersion = "0.10"
-def buildNumber = "39"
+def buildNumber = "40"
 
 // For those who want the bleeding edge
 buildscript {
@@ -30,10 +30,11 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 minecraft {
-    version = "12.18.1.2053"
+    version = "12.18.1.2077"
     //"1.9.4-12.17.0.1976"
     runDir = "run"
-    
+
+    replace '${version}', project.version
     // the mappings can be changed at any time, and must be in the following format.
     // snapshot_YYYYMMDD   snapshot are built nightly.
     // stable_#            stables are built at the discretion of the MCP team.
@@ -67,8 +68,8 @@ dependencies {
 //    deobfCompile "slimeknights:TConstruct:1.9.4-2.3.+"
     deobfCompile "mezz.jei:jei_1.10.2:3.8.+"
     deobfCompile "mcp.mobius.waila:Waila:1.7.0-B3_1.9.4"
-    deobfCompile "slimeknights.mantle:Mantle:1.10-0.10.+"
-    deobfCompile "slimeknights:TConstruct:1.10-2.3.+"
+    deobfCompile "slimeknights.mantle:Mantle:1.10.2-1.+"
+    deobfCompile "slimeknights:TConstruct:1.10.2-2.5.+"
     deobfCompile "li.cil.oc:OpenComputers:MC1.10.2-1.6.0.+"
 }
 

@@ -12,6 +12,7 @@ import net.minecraft.util.ResourceLocation;
 public class ConveyorBasic implements IConveyorBelt
 {
 	ConveyorDirection direction = ConveyorDirection.HORIZONTAL;
+	int dyeColour = -1;
 
 	@Override
 	public ConveyorDirection getConveyorDirection()
@@ -40,10 +41,32 @@ public class ConveyorBasic implements IConveyorBelt
 	}
 
 	@Override
+	public boolean canBeDyed()
+	{
+		return true;
+	}
+
+	@Override
+	public boolean setDyeColour(int colour)
+	{
+		if(colour == this.dyeColour)
+			return false;
+		this.dyeColour = colour;
+		return true;
+	}
+
+	@Override
+	public int getDyeColour()
+	{
+		return this.dyeColour;
+	}
+
+	@Override
 	public NBTTagCompound writeConveyorNBT()
 	{
 		NBTTagCompound nbt = new NBTTagCompound();
 		nbt.setInteger("direction", direction.ordinal());
+		nbt.setInteger("dyeColour", dyeColour);
 		return nbt;
 	}
 
@@ -51,6 +74,7 @@ public class ConveyorBasic implements IConveyorBelt
 	public void readConveyorNBT(NBTTagCompound nbt)
 	{
 		direction = ConveyorDirection.values()[nbt.getInteger("direction")];
+		dyeColour = nbt.hasKey("dyeColour") ? nbt.getInteger("dyeColour") : -1;
 	}
 
 	public static ResourceLocation texture_on = new ResourceLocation("immersiveengineering:blocks/conveyor");

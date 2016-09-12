@@ -92,7 +92,10 @@ public abstract class EntityIEProjectile extends EntityArrow//Yes I have to exte
 	}
 	public EntityLivingBase getShooterSynced()
 	{
-		return this.worldObj.getPlayerEntityByName(this.dataManager.get(dataMarker_shooter));
+		String s = this.dataManager.get(dataMarker_shooter);
+		if(s != null)
+			return this.worldObj.getPlayerEntityByName(s);
+		return null;
 	}
 	public Entity getShooter()
 	{

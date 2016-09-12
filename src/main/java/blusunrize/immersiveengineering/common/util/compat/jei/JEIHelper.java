@@ -83,6 +83,8 @@ public class JEIHelper implements IModPlugin
 			}
 		});
 
+		registryIn.getRecipeTransferRegistry().addRecipeTransferHandler(new AssemblerRecipeTransferHandler());
+
 		//Recipes
 		IGuiHelper guiHelper = jeiHelpers.getGuiHelper();
 		IERecipeCategory[] categories = {

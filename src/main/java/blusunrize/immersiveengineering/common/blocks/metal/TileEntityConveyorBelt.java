@@ -6,15 +6,18 @@ import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.Lists;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
@@ -26,7 +29,7 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirectionalTile, IAdvancedCollisionBounds, IHammerInteraction, IConveyorTile, IPropertyPassthrough, ITileDrop
+public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirectionalTile, IAdvancedCollisionBounds, IHammerInteraction, IPlayerInteraction, IConveyorTile, IPropertyPassthrough, ITileDrop
 {
 	public EnumFacing facing = EnumFacing.NORTH;
 	private IConveyorBelt conveyorBeltSubtype;
@@ -120,6 +123,24 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 			this.markContainingBlockForUpdate(null);
 			worldObj.addBlockEvent(getPos(), this.getBlockType(), 0, 0);
 			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public boolean interact(EnumFacing side, EntityPlayer player, EnumHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
+	{
+		if(conveyorBeltSubtype != null && conveyorBeltSubtype.canBeDyed() && Utils.isDye(heldItem))
+		{
+			EnumDyeColor dye = EnumDyeColor.byDyeDamage(Utils.getDye(heldItem));
+			System.out.println("Setting dye to " + dye);
+			if(dye != null && conveyorBeltSubtype.setDyeColour(dye.getMapColor().colorValue))
+			{
+				this.markDirty();
+				this.markContainingBlockForUpdate(null);
+				worldObj.addBlockEvent(getPos(), this.getBlockType(), 0, 0);
+				return true;
+			}
 		}
 		return false;
 	}

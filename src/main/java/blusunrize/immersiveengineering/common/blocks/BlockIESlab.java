@@ -24,6 +24,7 @@ public class BlockIESlab<E extends Enum<E>&BlockIEBase.IBlockEnum> extends Block
 	{
 		super(name, material, property, ItemBlockIESlabs.class, prop_SlabType);
 		this.setAllNotNormalBlock();
+		this.useNeighborBrightness = true;
 	}
 
 	//	@Override

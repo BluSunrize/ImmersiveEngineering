@@ -1,3 +1,7 @@
+#####Version 0.10-40 - BUILT
+- fixed machines crashing
+- fixed sheetmetal tank not outputting
+
 #####Version 0.10-39 - BUILT
 - added Bloodmagic compat:
     - demon will bullets. 'nuff said.

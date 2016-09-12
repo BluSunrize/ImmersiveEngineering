@@ -37,6 +37,7 @@ import blusunrize.immersiveengineering.common.blocks.cloth.BlockTypes_ClothDevic
 import blusunrize.immersiveengineering.common.blocks.metal.*;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorBasic;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorDrop;
+import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorSplit;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorVertical;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.*;
 import blusunrize.immersiveengineering.common.blocks.stone.BlockTypes_StoneDecoration;
@@ -642,7 +643,8 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.Crafting(ManualHelper.getManual(), "conveyor0", ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID + ":conveyor")),
 				new ManualPages.Text(ManualHelper.getManual(), "conveyor1"),
 				new ManualPages.Crafting(ManualHelper.getManual(), "conveyor2", ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID + ":dropper")),
-				new ManualPages.Crafting(ManualHelper.getManual(), "conveyor3", ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID + ":vertical")));
+				new ManualPages.Crafting(ManualHelper.getManual(), "conveyor3", ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID + ":vertical")),
+				new ManualPages.Crafting(ManualHelper.getManual(), "conveyor4", ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID + ":splitter")));
 		ManualHelper.addEntry("furnaceHeater", ManualHelper.CAT_MACHINES,
 				new ManualPages.Crafting(ManualHelper.getManual(), "furnaceHeater0", new ItemStack(IEContent.blockMetalDevice1,1,BlockTypes_MetalDevice1.FURNACE_HEATER.getMeta())),
 				new ManualPages.Text(ManualHelper.getManual(), "furnaceHeater1"),
@@ -1030,12 +1032,16 @@ public class ClientProxy extends CommonProxy
 
 		for(ResourceLocation rl : ModelConveyor.rl_casing)
 			ApiUtils.getRegisterSprite(event.getMap(), rl);
+		ApiUtils.getRegisterSprite(event.getMap(), ConveyorHandler.textureConveyorColour);
 		ApiUtils.getRegisterSprite(event.getMap(), ConveyorBasic.texture_off);
 		ApiUtils.getRegisterSprite(event.getMap(), ConveyorBasic.texture_on);
 		ApiUtils.getRegisterSprite(event.getMap(), ConveyorDrop.texture_off);
 		ApiUtils.getRegisterSprite(event.getMap(), ConveyorDrop.texture_on);
 		ApiUtils.getRegisterSprite(event.getMap(), ConveyorVertical.texture_off);
 		ApiUtils.getRegisterSprite(event.getMap(), ConveyorVertical.texture_on);
+		ApiUtils.getRegisterSprite(event.getMap(), ConveyorSplit.texture_off);
+		ApiUtils.getRegisterSprite(event.getMap(), ConveyorSplit.texture_on);
+		ApiUtils.getRegisterSprite(event.getMap(), ConveyorSplit.texture_casing);
 
 		ApiUtils.getRegisterSprite(event.getMap(), IEContent.fluidCreosote.getStill());
 		ApiUtils.getRegisterSprite(event.getMap(), IEContent.fluidCreosote.getFlowing());
@@ -1333,7 +1339,7 @@ public class ClientProxy extends CommonProxy
 		IConveyorBelt con = ConveyorHandler.getConveyor(new ResourceLocation(conveyor), null);
 		if(con != null)
 		{
-			Set<BakedQuad> quads = ModelConveyor.getBaseConveyor(facing, 1, new Matrix4(facing), ConveyorDirection.HORIZONTAL, ClientUtils.getSprite(con.getActiveTexture()), new boolean[]{true, true}, new boolean[]{true, true});
+			Set<BakedQuad> quads = ModelConveyor.getBaseConveyor(facing, 1, new Matrix4(facing), ConveyorDirection.HORIZONTAL, ClientUtils.getSprite(con.getActiveTexture()), new boolean[]{true, true}, new boolean[]{true, true}, null, 0);
 			GL11.glTranslatef(0, 0, -1);
 			ClientUtils.renderQuads(quads, 1, 1, 1, 1);
 			return true;
