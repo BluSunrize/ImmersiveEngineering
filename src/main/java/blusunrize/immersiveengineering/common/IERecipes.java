@@ -306,7 +306,7 @@ public class IERecipes
 		addOredictRecipe(Utils.copyStackWithAmount(baseConveyor, 8), "LLL", "IRI", 'I', "ingotIron", 'R', "dustRedstone", 'L', Items.LEATHER);
 		addOredictRecipe(Utils.copyStackWithAmount(ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID + ":dropper"), 1), "C", "H", 'C', baseConveyor, 'H', Blocks.HOPPER);
 		addOredictRecipe(Utils.copyStackWithAmount(ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID + ":vertical"), 3), "CI", "C ", "CI", 'C', baseConveyor, 'I', "ingotIron");
-
+		addOredictRecipe(Utils.copyStackWithAmount(ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID + ":splitter"), 3), "CIC", " C ", 'C', baseConveyor, 'I', "ingotIron");
 
 		
 		//		addOredictRecipe(new ItemStack(IEContent.blockMetalMultiblocks, 1,BlockMetalMultiblocks.META_lightningRod), "IFI","CBC","IHI", 'I',"ingotSteel",'F',new ItemStack(IEContent.blockMetalDecoration,1,BlockMetalDecoration.META_fence),'B',new ItemStack(IEContent.blockMetalDevice,1,BlockMetalDevice.META_capacitorHV),'C',electrumCoil,'H',hvCoil);

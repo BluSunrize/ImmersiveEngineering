@@ -643,7 +643,8 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.Crafting(ManualHelper.getManual(), "conveyor0", ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID + ":conveyor")),
 				new ManualPages.Text(ManualHelper.getManual(), "conveyor1"),
 				new ManualPages.Crafting(ManualHelper.getManual(), "conveyor2", ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID + ":dropper")),
-				new ManualPages.Crafting(ManualHelper.getManual(), "conveyor3", ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID + ":vertical")));
+				new ManualPages.Crafting(ManualHelper.getManual(), "conveyor3", ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID + ":vertical")),
+				new ManualPages.Crafting(ManualHelper.getManual(), "conveyor4", ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID + ":splitter")));
 		ManualHelper.addEntry("furnaceHeater", ManualHelper.CAT_MACHINES,
 				new ManualPages.Crafting(ManualHelper.getManual(), "furnaceHeater0", new ItemStack(IEContent.blockMetalDevice1,1,BlockTypes_MetalDevice1.FURNACE_HEATER.getMeta())),
 				new ManualPages.Text(ManualHelper.getManual(), "furnaceHeater1"),

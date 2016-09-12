@@ -1,25 +1,19 @@
 package blusunrize.lib.manual;
 
-import java.nio.FloatBuffer;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-
-import net.minecraft.client.renderer.VertexBuffer;
-import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GL11;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.RenderItem;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.oredict.OreDictionary;
+import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.GL11;
+
+import java.nio.FloatBuffer;
+import java.util.*;
 
 public class ManualUtils
 {
@@ -28,7 +22,14 @@ public class ManualUtils
 		if(o instanceof String)
 			return compareToOreName(stack, (String)o);
 		if(o instanceof ItemStack)
-			return OreDictionary.itemMatches((ItemStack)o, stack, false);
+		{
+			if(!OreDictionary.itemMatches((ItemStack)o, stack, false))
+				return false;
+			if(stack.getItemDamage() == OreDictionary.WILDCARD_VALUE)
+				return true;
+			if(((ItemStack)o).hasTagCompound())
+				return ((ItemStack)o).getTagCompound().equals(stack.getTagCompound());
+		}
 		return false;
 	}
 	public static boolean compareToOreName(ItemStack stack, String oreName)
