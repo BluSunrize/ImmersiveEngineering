@@ -4,7 +4,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 
 /**
- * Implemented on blocks that can have a transformer 'attached' to them (for example, wooden post).
+ * Implemented on blocks or TileEntities that can have a transformer 'attached' to them (for example, wooden post).
  */
 public interface IPostBlock
 {

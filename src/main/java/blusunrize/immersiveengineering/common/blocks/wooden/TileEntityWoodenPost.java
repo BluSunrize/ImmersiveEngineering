@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
+import blusunrize.immersiveengineering.api.IPostBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
@@ -15,12 +16,13 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.ArrayList;
 
-public class TileEntityWoodenPost extends TileEntityIEBase implements IHasDummyBlocks, IHasObjProperty, IBlockBounds, IHammerInteraction
+public class TileEntityWoodenPost extends TileEntityIEBase implements IPostBlock, IHasDummyBlocks, IHasObjProperty, IBlockBounds, IHammerInteraction
 {
 	public static ArrayList<? extends Enum> postMetaProperties = Lists.newArrayList(BlockTypes_WoodenDevice1.POST, BlockTypes_MetalDecoration2.ALUMINUM_POST, BlockTypes_MetalDecoration2.STEEL_POST);
 
@@ -209,5 +211,11 @@ public class TileEntityWoodenPost extends TileEntityIEBase implements IHasDummyB
 			this.markBlockForUpdate(getPos().offset(f).add(0,-3,0), null);
 		}
 		return false;
+	}
+
+	@Override
+	public boolean canConnectTransformer(IBlockAccess world, BlockPos pos)
+	{
+		return this.dummy > 0 && this.dummy <= 3;
 	}
 }

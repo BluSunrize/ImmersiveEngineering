@@ -160,6 +160,9 @@ public class BlockConnector extends BlockIETileProvider<BlockTypes_Connector>
 			Block block = placedAgainst.getBlock();
 			if (block instanceof IPostBlock&&((IPostBlock)block).canConnectTransformer(world, pos2))
 				ret = ret.withProperty(IEProperties.BOOLEANS[1], true);
+			TileEntity tile = world.getTileEntity(pos2);
+			if(tile instanceof IPostBlock && ((IPostBlock)tile).canConnectTransformer(world, pos2))
+				ret = ret.withProperty(IEProperties.BOOLEANS[1], true);
 		}
 		return ret;
 	}
