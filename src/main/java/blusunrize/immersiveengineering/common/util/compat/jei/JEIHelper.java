@@ -1,5 +1,14 @@
 package blusunrize.immersiveengineering.common.util.compat.jei;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import com.google.common.collect.Lists;
+
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.util.IELogger;
@@ -24,18 +33,16 @@ import blusunrize.immersiveengineering.common.util.compat.jei.squeezer.SqueezerR
 import blusunrize.immersiveengineering.common.util.compat.jei.squeezer.SqueezerRecipeWrapper;
 import blusunrize.immersiveengineering.common.util.compat.jei.workbench.WorkbenchRecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.workbench.WorkbenchRecipeWrapper;
-import com.google.common.collect.Lists;
-import li.cil.oc.common.block.Item;
-import mezz.jei.api.*;
+import mezz.jei.api.IGuiHelper;
+import mezz.jei.api.IJeiHelpers;
+import mezz.jei.api.IJeiRuntime;
+import mezz.jei.api.IModPlugin;
+import mezz.jei.api.IModRegistry;
 import mezz.jei.api.ISubtypeRegistry.ISubtypeInterpreter;
+import mezz.jei.api.JEIPlugin;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 @JEIPlugin
 public class JEIHelper implements IModPlugin
