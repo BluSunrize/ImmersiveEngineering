@@ -342,9 +342,9 @@ public class ConveyorHandler
 		AxisAlignedBB conveyorBounds = new AxisAlignedBB(0, 0, 0, 1, .125f, 1);
 		AxisAlignedBB highConveyorBounds = new AxisAlignedBB(0, 0, 0, 1, 1.125f, 1);
 
-		default AxisAlignedBB getSelectionBox(TileEntity tile, EnumFacing facing)
+		default List<AxisAlignedBB> getSelectionBoxes(TileEntity tile, EnumFacing facing)
 		{
-			return getConveyorDirection() == ConveyorDirection.HORIZONTAL ? conveyorBounds : highConveyorBounds;
+			return getConveyorDirection() == ConveyorDirection.HORIZONTAL ? Lists.newArrayList(conveyorBounds) : Lists.newArrayList(highConveyorBounds);
 		}
 
 		default List<AxisAlignedBB> getColisionBoxes(TileEntity tile, EnumFacing facing)

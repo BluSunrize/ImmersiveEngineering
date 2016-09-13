@@ -213,11 +213,14 @@ public class ConveyorVertical extends ConveyorBasic
 	static AxisAlignedBB[] verticalBounds = {new AxisAlignedBB(0, 0, 0, 1, 1, .125f), new AxisAlignedBB(0, 0, .875f, 1, 1, 1), new AxisAlignedBB(0, 0, 0, .125f, 1, 1), new AxisAlignedBB(.875f, 0, 0, 1, 1, 1)};
 
 	@Override
-	public AxisAlignedBB getSelectionBox(TileEntity tile, EnumFacing facing)
+	public List<AxisAlignedBB> getSelectionBoxes(TileEntity tile, EnumFacing facing)
 	{
+		ArrayList list = new ArrayList();
 		if(facing.ordinal() > 1)
-			return verticalBounds[facing.ordinal() - 2];
-		return conveyorBounds;
+			list.add(verticalBounds[facing.ordinal() - 2]);
+		if(renderBottomBelt(tile, facing) || list.isEmpty())
+			list.add(conveyorBounds);
+		return list;
 	}
 
 	@Override
