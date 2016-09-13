@@ -1,8 +1,5 @@
 package blusunrize.immersiveengineering.common.blocks;
 
-import java.util.List;
-import java.util.Locale;
-
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.block.Block;
@@ -24,6 +21,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
+
+import java.util.List;
+import java.util.Locale;
 
 public class ItemBlockIEBase extends ItemBlock
 {
@@ -89,25 +89,17 @@ public class ItemBlockIEBase extends ItemBlock
 		IBlockState iblockstate = world.getBlockState(pos);
 		Block block = iblockstate.getBlock();
 		if (!block.isReplaceable(world, pos))
-		{
 			pos = pos.offset(side);
-			iblockstate = world.getBlockState(pos);
-			block = iblockstate.getBlock();
-		}
-		if (stack.stackSize>0&&player.canPlayerEdit(pos, side, stack))
+		if(stack.stackSize > 0 && player.canPlayerEdit(pos, side, stack) && canBlockBePlaced(world, pos, side, stack))
 		{
-			if(!world.isRemote && canBlockBePlaced(world, pos, side, stack))
+			int i = this.getMetadata(stack.getMetadata());
+			IBlockState iblockstate1 = this.block.onBlockPlaced(world, pos, side, hitX, hitY, hitZ, i, player);
+			if(placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, iblockstate1))
 			{
-				int i = this.getMetadata(stack.getMetadata());
-				IBlockState iblockstate1 = this.block.onBlockPlaced(world, pos, side, hitX, hitY, hitZ, i, player);
-
-				if (placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, iblockstate1))
-				{
-					SoundType soundtype = world.getBlockState(pos).getBlock().getSoundType(world.getBlockState(pos), world, pos, player);
-					world.playSound(player, pos, soundtype.getPlaceSound(), SoundCategory.BLOCKS, (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F);
-					if(!player.capabilities.isCreativeMode)
-						--stack.stackSize;
-				}
+				SoundType soundtype = world.getBlockState(pos).getBlock().getSoundType(world.getBlockState(pos), world, pos, player);
+				world.playSound(player, pos, soundtype.getPlaceSound(), SoundCategory.BLOCKS, (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F);
+				if(!player.capabilities.isCreativeMode)
+					--stack.stackSize;
 			}
 			return EnumActionResult.SUCCESS;
 		}
@@ -116,18 +108,17 @@ public class ItemBlockIEBase extends ItemBlock
 	@Override
 	public boolean canPlaceBlockOnSide(World worldIn, BlockPos pos, EnumFacing side, EntityPlayer player, ItemStack stack)
 	{
-        Block block = worldIn.getBlockState(pos).getBlock();
+		Block block = worldIn.getBlockState(pos).getBlock();
 
-        if (block == Blocks.SNOW_LAYER && block.isReplaceable(worldIn, pos))
-        {
-            side = EnumFacing.UP;
-        }
-        else if (!block.isReplaceable(worldIn, pos))
-        {
-            pos = pos.offset(side);
-        }
+		if(block == Blocks.SNOW_LAYER && block.isReplaceable(worldIn, pos))
+		{
+			side = EnumFacing.UP;
+		} else if(!block.isReplaceable(worldIn, pos))
+		{
+			pos = pos.offset(side);
+		}
 
-        return canBlockBePlaced(worldIn, pos, side, stack);
+		return canBlockBePlaced(worldIn, pos, side, stack);
 	}
 	private boolean canBlockBePlaced(World w, BlockPos pos, EnumFacing side, ItemStack stack)
 	{
