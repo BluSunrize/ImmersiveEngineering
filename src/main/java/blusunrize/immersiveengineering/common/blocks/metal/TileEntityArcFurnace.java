@@ -217,7 +217,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 		else if(pos==51||pos==53 || pos==96||pos==98||pos==121||pos==123)
 		{
 			EnumFacing fw = facing.rotateY();
-			if(mirrored|pos%5==3)
+			if(mirrored ^ pos % 5 == 3)
 				fw = fw.getOpposite();
 			return new float[]{fw==EnumFacing.EAST?.5f:0,0,fw==EnumFacing.SOUTH?.5f:0, fw==EnumFacing.WEST?.5f:1,1,fw==EnumFacing.NORTH?.5f:1};
 		}
