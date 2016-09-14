@@ -425,6 +425,18 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 						RenderHelper.disableStandardItemLighting();
 						GlStateManager.disableBlend();
 						GlStateManager.popMatrix();
+					} else if(equipped.getItem() instanceof ItemRailgun)
+					{
+						int duration = 72000 - player.getItemInUseCount();
+						int chargeTime = ((ItemRailgun)equipped.getItem()).getChargeTime(equipped);
+						int chargeLevel = duration < 72000 ? Math.min(99, (int)(duration / (float)chargeTime * 100)) : 0;
+						float scale = 2f;
+						GlStateManager.pushMatrix();
+						GlStateManager.translate(event.getResolution().getScaledWidth() - 80, event.getResolution().getScaledHeight() - 30, 0);
+						GlStateManager.scale(scale, scale, 1);
+						ClientProxy.nixieFont.drawString((chargeLevel < 10 ? "0" : "") + chargeLevel, 0, 0, Lib.colour_nixieTubeText, false);
+						GlStateManager.scale(1 / scale, 1 / scale, 1);
+						GlStateManager.popMatrix();
 					}
 					else if((equipped.getItem() instanceof ItemDrill && equipped.getItemDamage()==0)
 							||equipped.getItem() instanceof ItemChemthrower)

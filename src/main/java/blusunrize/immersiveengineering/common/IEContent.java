@@ -279,8 +279,7 @@ public class IEContent
 		registerToOreDict("blockSheetmetal", blockSheetmetal);
 		registerToOreDict("slabSheetmetal", blockSheetmetalSlabs);
 		registerToOreDict("", itemMetal);
-		//		registerOre("Cupronickel",	null,new ItemStack(itemMetal,1,5),new ItemStack(itemMetal,1,15),new ItemStack(blockStorage,1,5),new ItemStack(itemMetal,1,27));
-		//
+//		registerOre("Cupronickel",	null,new ItemStack(itemMetal,1,6),new ItemStack(itemMetal,1,15),new ItemStack(itemMetal,1,26),new ItemStack(itemMetal,1,36), new ItemStack(blockStorage,1,6),new ItemStack(blockStorageSlabs,1,6), new ItemStack(blockSheetmetal,1,6),new ItemStack(blockSheetmetalSlabs,1,6));
 		//		OreDictionary.registerOre("seedIndustrialHemp", new ItemStack(itemSeeds));
 		OreDictionary.registerOre("stickTreatedWood", new ItemStack(itemMaterial,1,0));
 		OreDictionary.registerOre("stickIron", new ItemStack(itemMaterial,1,1));
@@ -855,18 +854,27 @@ public class IEContent
 				}
 		}
 	}
-	public static void registerOre(String type, ItemStack ore, ItemStack ingot, ItemStack dust, ItemStack block, ItemStack nugget)
+
+	public static void registerOre(String type, ItemStack ore, ItemStack ingot, ItemStack dust, ItemStack nugget, ItemStack plate, ItemStack block, ItemStack slab, ItemStack sheet, ItemStack slabSheet)
 	{
-		//		if(ore!=null)
-		//			OreDictionary.registerOre("ore"+type, ore);
-		//		if(ingot!=null)
-		//			OreDictionary.registerOre("ingot"+type, ingot);
-		//		if(dust!=null)
-		//			OreDictionary.registerOre("dust"+type, dust);
-		//		if(block!=null)
-		//			OreDictionary.registerOre("block"+type, block);
-		//		if(nugget!=null)
-		//			OreDictionary.registerOre("nugget"+type, nugget);
+		if(ore != null)
+			OreDictionary.registerOre("ore" + type, ore);
+		if(ingot != null)
+			OreDictionary.registerOre("ingot" + type, ingot);
+		if(dust != null)
+			OreDictionary.registerOre("dust" + type, dust);
+		if(nugget != null)
+			OreDictionary.registerOre("nugget" + type, nugget);
+		if(plate != null)
+			OreDictionary.registerOre("plate" + type, plate);
+		if(block != null)
+			OreDictionary.registerOre("block" + type, block);
+		if(slab != null)
+			OreDictionary.registerOre("slab" + type, slab);
+		if(sheet != null)
+			OreDictionary.registerOre("blockSheetmetal" + type, sheet);
+		if(slabSheet != null)
+			OreDictionary.registerOre("slabSheetmetal" + type, slabSheet);
 	}
 
 	public static void registerTile(Class<? extends TileEntity> tile)
