@@ -53,6 +53,7 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -157,7 +158,7 @@ public class EventHandler
 						{
 							if(f_lootEntries==null)
 							{
-								f_lootEntries = LootPool.class.getDeclaredField("lootEntries");
+								f_lootEntries = LootPool.class.getDeclaredField(ObfuscationReflectionHelper.remapFieldNames(LootPool.class.getName(), "lootEntries")[0]);
 								f_lootEntries.setAccessible(true);
 							}
 							if(f_lootEntries!=null)
