@@ -63,10 +63,10 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 	{
 		super.update();
 
-		if(!worldObj.isRemote && !isDummy() && !isRSDisabled() && energyStorage.getEnergyStored()>0 && this.processQueue.size()<this.getProcessQueueMaxLength())
+		if(!worldObj.isRemote && !isDummy() && !isRSDisabled() && energyStorage.getEnergyStored() > 0)
 		{
-			if(this.tickedProcesses>0)
-				for(int i=23; i<26; i++)
+			if(this.tickedProcesses > 0)
+				for(int i = 23; i < 26; i++)
 					if(this.inventory[i].attemptDamageItem(1, worldObj.rand))
 					{
 						this.inventory[i] = null;
@@ -74,49 +74,51 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 						//						update = true;
 					}
 
-			Set<Integer> usedInvSlots = new HashSet<Integer>();
-			//			final int[] usedInvSlots = new int[8];
-			for(MultiblockProcess<ArcFurnaceRecipe> process : processQueue)
-				if(process instanceof MultiblockProcessInMachine)
-					for(int i : ((MultiblockProcessInMachine<ArcFurnaceRecipe>) process).inputSlots)
-						usedInvSlots.add(i);
+			if(this.processQueue.size() < this.getProcessQueueMaxLength())
+			{
+				Set<Integer> usedInvSlots = new HashSet<Integer>();
+				//			final int[] usedInvSlots = new int[8];
+				for(MultiblockProcess<ArcFurnaceRecipe> process : processQueue)
+					if(process instanceof MultiblockProcessInMachine)
+						for(int i : ((MultiblockProcessInMachine<ArcFurnaceRecipe>)process).inputSlots)
+							usedInvSlots.add(i);
 
-			//			Integer[] preferredSlots = new Integer[]{0,1,2,3,4,5,6,7};
-			//			Arrays.sort(preferredSlots, 0,8, new Comparator<Integer>(){
-			//				@Override
-			//				public int compare(Integer arg0, Integer arg1)
-			//				{
-			//					return Integer.compare(usedInvSlots[arg0],usedInvSlots[arg1]);
-			//				}});
-			ItemStack[] additives = new ItemStack[4];
-			for(int i=0; i<4; i++)
-				additives[i] = (inventory[12+i]!=null?inventory[12+i].copy():null);
-			for(int slot=0; slot<12; slot++)
-				if(!usedInvSlots.contains(slot))
-				{
-					ItemStack stack = this.getInventory()[slot];
-					//				if(stack!=null)
-					//				{
-					//					stack = stack.copy();
-					////					stack.stackSize-=usedInvSlots[slot];
-					//				}
-					if(stack!=null && stack.stackSize>0)
+				//			Integer[] preferredSlots = new Integer[]{0,1,2,3,4,5,6,7};
+				//			Arrays.sort(preferredSlots, 0,8, new Comparator<Integer>(){
+				//				@Override
+				//				public int compare(Integer arg0, Integer arg1)
+				//				{
+				//					return Integer.compare(usedInvSlots[arg0],usedInvSlots[arg1]);
+				//				}});
+				ItemStack[] additives = new ItemStack[4];
+				for(int i = 0; i < 4; i++)
+					additives[i] = (inventory[12 + i] != null ? inventory[12 + i].copy() : null);
+				for(int slot = 0; slot < 12; slot++)
+					if(!usedInvSlots.contains(slot))
 					{
-						ArcFurnaceRecipe recipe = ArcFurnaceRecipe.findRecipe(stack, additives);
-
-						if(recipe!=null)
+						ItemStack stack = this.getInventory()[slot];
+						//				if(stack!=null)
+						//				{
+						//					stack = stack.copy();
+						////					stack.stackSize-=usedInvSlots[slot];
+						//				}
+						if(stack != null && stack.stackSize > 0)
 						{
-							MultiblockProcessArcFurnace process = new MultiblockProcessArcFurnace(recipe, slot,12,13,14,15);
-							if(this.addProcessToQueue(process, true))
+							ArcFurnaceRecipe recipe = ArcFurnaceRecipe.findRecipe(stack, additives);
+
+							if(recipe != null)
 							{
-								this.addProcessToQueue(process, false);
-								usedInvSlots.add(slot);
-								//							update = true;
+								MultiblockProcessArcFurnace process = new MultiblockProcessArcFurnace(recipe, slot, 12, 13, 14, 15);
+								if(this.addProcessToQueue(process, true))
+								{
+									this.addProcessToQueue(process, false);
+									usedInvSlots.add(slot);
+									//							update = true;
+								}
 							}
 						}
 					}
-				}
-
+			}
 
 			if(worldObj.getTotalWorldTime()%8==0)
 			{
@@ -129,7 +131,7 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 							ItemStack stack = Utils.copyStackWithAmount(inventory[j],1);
 							stack = Utils.insertStackIntoInventory(outputTile, stack, facing.getOpposite());
 							if(stack==null)
-								if((this.inventory[j].stackSize--) <= 0)
+								if((--this.inventory[j].stackSize) <= 0)
 									this.inventory[j] = null;
 						}
 
