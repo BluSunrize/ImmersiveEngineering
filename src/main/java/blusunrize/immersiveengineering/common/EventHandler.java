@@ -157,7 +157,7 @@ public class EventHandler
 						{
 							if(f_lootEntries==null)
 							{
-								f_lootEntries = LootPool.class.getDeclaredField("lootEntries");
+								f_lootEntries = LootPool.class.getDeclaredFields()[0];
 								f_lootEntries.setAccessible(true);
 							}
 							if(f_lootEntries!=null)
