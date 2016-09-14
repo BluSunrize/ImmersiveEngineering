@@ -66,7 +66,7 @@ public class TConstructHelper extends IECompatModule
 		//		TinkerRegistry.registerAlloy(new FluidStack(fluidCons, 2), new FluidStack[]{new FluidStack(fluidCons, 2)});
 
 		FMLInterModComms.sendMessage("tconstruct", "blacklistMelting", new ItemStack(IEContent.itemBullet, 1, OreDictionary.WILDCARD_VALUE));
-
+		FMLInterModComms.sendMessage("tconstruct", "blacklistMelting", new ItemStack(IEContent.itemDrillhead, 1, OreDictionary.WILDCARD_VALUE));
 
 		treatedWood.setCraftable(true);
 		treatedWood.addItem("stickTreatedWood", 1, Material.VALUE_Shard);
