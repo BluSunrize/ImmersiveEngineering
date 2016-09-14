@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.common.util.compat.opencomputers;
 import blusunrize.immersiveengineering.api.crafting.CrusherRecipe;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMultiblockMetal.MultiblockProcess;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMultiblockMetal.MultiblockProcessInWorld;
 import blusunrize.immersiveengineering.common.util.Utils;
 import li.cil.oc.api.machine.Arguments;
@@ -16,6 +17,8 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class CrusherDriver extends DriverSidedTileEntity
@@ -74,18 +77,27 @@ public class CrusherDriver extends DriverSidedTileEntity
 			return new Object[]{getTileEntity().shouldRenderAsActive()};
 		}
 
-		//TODO document changes in the manual
-		@Callback(doc = "function(n:int):table -- get the n'th stack in the input queue with additional information as described in the manual")
-		public Object[] getInputStack(Context context, Arguments args)
+		@Callback(doc = "function():table -- returns the entire input queue of the crusher")
+		public Object[] getInputQueue(Context context, Arguments args)
 		{
-			int slot = args.checkInteger(0);
 			TileEntityCrusher master = getTileEntity();
-			if(slot < 1 || slot > master.processQueue.size())
-				throw new IllegalArgumentException("The requested place in the queue does not exist");
-			MultiblockProcessInWorld<CrusherRecipe> process = ((MultiblockProcessInWorld<CrusherRecipe>) master.processQueue.get(slot - 1));
-			Map<String, Object> ret = Utils.saveStack(process.inputItem);
-			ret.put("progress", process.processTick);
-			ret.put("maxProgress", process.maxTicks);
+			Map<Integer, Object> ret = new HashMap<>();
+			List<MultiblockProcess<CrusherRecipe>> queue = master.processQueue;
+			for (int i = 0;i<queue.size();i++)
+			{
+				MultiblockProcess<CrusherRecipe> currTmp = queue.get(i);
+				if (currTmp instanceof MultiblockProcessInWorld)
+				{
+					MultiblockProcessInWorld<CrusherRecipe> curr = (MultiblockProcessInWorld<CrusherRecipe>) currTmp;
+					Map<String, Object> recipe = new HashMap<>();
+					recipe.put("progress", curr.processTick);
+					recipe.put("maxProgress", curr.maxTicks);
+					Map<String, Object> input = Utils.saveStack(curr.inputItem);
+					recipe.put("input", input);
+					recipe.put("output", Utils.saveStack(curr.recipe.output));
+					ret.put(i+1, recipe);
+				}
+			}
 			return new Object[]{ret};
 		}
 
