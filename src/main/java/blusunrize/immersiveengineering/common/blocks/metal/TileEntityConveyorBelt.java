@@ -20,6 +20,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -29,7 +30,7 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirectionalTile, IAdvancedCollisionBounds, IHammerInteraction, IPlayerInteraction, IConveyorTile, IPropertyPassthrough, ITileDrop
+public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirectionalTile, IAdvancedCollisionBounds, IAdvancedSelectionBounds, IHammerInteraction, IPlayerInteraction, IConveyorTile, IPropertyPassthrough, ITileDrop
 {
 	public EnumFacing facing = EnumFacing.NORTH;
 	private IConveyorBelt conveyorBeltSubtype;
@@ -148,11 +149,11 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 	@Override
 	public float[] getBlockBounds()
 	{
-		if(conveyorBeltSubtype != null)
-		{
-			AxisAlignedBB aabb = conveyorBeltSubtype.getSelectionBox(this, facing);
-			return new float[]{(float) aabb.minX, (float) aabb.minY, (float) aabb.minZ, (float) aabb.maxX, (float) aabb.maxY, (float) aabb.maxZ};
-		}
+//		if(conveyorBeltSubtype != null)
+//		{
+//			AxisAlignedBB aabb = conveyorBeltSubtype.getSelectionBox(this, facing);
+//			return new float[]{(float) aabb.minX, (float) aabb.minY, (float) aabb.minZ, (float) aabb.maxX, (float) aabb.maxY, (float) aabb.maxZ};
+//		}
 		return new float[]{0, 0, 0, 1, .125f, 1};
 	}
 
@@ -168,6 +169,25 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 			return boxes;
 		}
 		return Lists.newArrayList(COLISIONBB.offset(getPos()));
+	}
+
+	@Override
+	public List<AxisAlignedBB> getAdvancedSelectionBounds()
+	{
+		if(conveyorBeltSubtype != null)
+		{
+			List<AxisAlignedBB> boxes = new ArrayList();
+			for(AxisAlignedBB aabb : conveyorBeltSubtype.getSelectionBoxes(this, facing))
+				boxes.add(aabb.offset(getPos()));
+			return boxes;
+		}
+		return Lists.newArrayList(COLISIONBB.offset(getPos()));
+	}
+
+	@Override
+	public boolean isOverrideBox(AxisAlignedBB box, EntityPlayer player, RayTraceResult mop, ArrayList<AxisAlignedBB> list)
+	{
+		return false;
 	}
 
 	@Override

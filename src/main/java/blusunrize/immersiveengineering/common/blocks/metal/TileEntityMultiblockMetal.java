@@ -403,14 +403,14 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 
 		protected List<ItemStack> getRecipeItemOutputs(TileEntityMultiblockMetal multiblock)
 		{
-			return recipe.getItemOutputs();
+			return recipe.getActualItemOutputs(multiblock);
 		}
 
 		public boolean canProcess(TileEntityMultiblockMetal multiblock)
 		{
 			if(multiblock.energyStorage.extractEnergy(energyPerTick, true)==energyPerTick)
 			{
-				List<ItemStack> outputs = getRecipeItemOutputs(multiblock);
+				List<ItemStack> outputs = recipe.getItemOutputs();
 				if(outputs!=null && !outputs.isEmpty())
 				{
 					int[] outputSlots = multiblock.getOutputSlots();
@@ -522,7 +522,7 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 							}
 						}
 			}
-			List<FluidStack> fluidOutputs = recipe.getFluidOutputs();
+			List<FluidStack> fluidOutputs = recipe.getActualFluidOutputs(multiblock);
 			if(fluidOutputs!=null && !fluidOutputs.isEmpty())
 			{
 				FluidTank[] tanks = multiblock.getInternalTanks();

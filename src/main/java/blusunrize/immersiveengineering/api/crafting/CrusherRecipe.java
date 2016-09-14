@@ -1,16 +1,16 @@
 package blusunrize.immersiveengineering.api.crafting;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.IEApi;
+import com.google.common.collect.Lists;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.oredict.OreDictionary;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import com.google.common.collect.Lists;
-
-import blusunrize.immersiveengineering.api.ApiUtils;
-import blusunrize.immersiveengineering.api.IEApi;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.oredict.OreDictionary;
 
 /**
  * @author BluSunrize - 01.05.2015
@@ -21,7 +21,7 @@ public class CrusherRecipe extends MultiblockRecipe
 {
 	public static float energyModifier = 1;
 	public static float timeModifier = 1;
-	
+
 	public final String oreInputString;
 	public final IngredientStack input;
 	public final ItemStack output;
@@ -39,6 +39,18 @@ public class CrusherRecipe extends MultiblockRecipe
 		this.inputList = Lists.newArrayList(this.input);
 		this.outputList = Lists.newArrayList(this.output);
 	}
+
+	@Override
+	public List<ItemStack> getActualItemOutputs(TileEntity tile)
+	{
+		ArrayList<ItemStack> list = new ArrayList<>();
+		list.add(output);
+		for(int i = 0; i < secondaryOutput.length; i++)
+			if(tile.getWorld().rand.nextFloat() < secondaryChance[i])
+				list.add(secondaryOutput[i]);
+		return list;
+	}
+
 	/**
 	 * Adds secondary outputs to the recipe. Should the recipe have secondary outputs, these will be added /in addition/<br>
 	 * The array should be alternating between Item/Block/ItemStack/ArrayList and a float for the chance

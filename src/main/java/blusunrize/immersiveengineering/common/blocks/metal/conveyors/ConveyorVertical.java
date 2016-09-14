@@ -78,6 +78,20 @@ public class ConveyorVertical extends ConveyorBasic
 					for(EnumFacing f2 : ((IConveyorTile)te).getConveyorSubtype().sigTransportDirections(te, ((IConveyorTile)te).getFacing()))
 						if(f == f2.getOpposite())
 							return true;
+				te = tile.getWorld().getTileEntity(tile.getPos().add(0, -1, 0).offset(f));
+				if(te instanceof IConveyorTile)
+				{
+					int b = 0;
+					for(EnumFacing f2 : ((IConveyorTile)te).getConveyorSubtype().sigTransportDirections(te, ((IConveyorTile)te).getFacing()))
+					{
+						if(f == f2.getOpposite())
+							b++;
+						else if(EnumFacing.UP == f2)
+							b++;
+						if(b == 2)
+							return true;
+					}
+				}
 			}
 		return false;
 	}
@@ -92,8 +106,9 @@ public class ConveyorVertical extends ConveyorBasic
 	public Vec3d getDirection(TileEntity conveyorTile, Entity entity, EnumFacing facing)
 	{
 		BlockPos posWall = conveyorTile.getPos().offset(facing);
+		double d = .625 + entity.width;
 		double distToWall = Math.abs((facing.getAxis() == Axis.Z ? posWall.getZ() : posWall.getX()) + .5 - (facing.getAxis() == Axis.Z ? entity.posZ : entity.posX));
-		if(distToWall > .8f)
+		if(distToWall > d)
 			return super.getDirection(conveyorTile, entity, facing);
 
 		double vBase = entity instanceof EntityLivingBase ? 1.5 : 1.15;
@@ -138,15 +153,15 @@ public class ConveyorVertical extends ConveyorBasic
 			return;
 
 		BlockPos posWall = tile.getPos().offset(facing);
+		double d = .625 + entity.width;
 		double distToWall = Math.abs((facing.getAxis() == Axis.Z ? posWall.getZ() : posWall.getX()) + .5 - (facing.getAxis() == Axis.Z ? entity.posZ : entity.posX));
-		if(distToWall > .8f)
+		if(distToWall > d)
 		{
 			super.onEntityCollision(tile, entity, facing);
 			return;
 		}
 
-		BlockPos pos = tile.getPos();
-		if(entity != null && !entity.isDead)
+		if(entity != null && !entity.isDead && !(entity instanceof EntityPlayer && entity.isSneaking()))
 		{
 			double distY = Math.abs(tile.getPos().add(0, 1, 0).getY() + .5 - entity.posY);
 			double treshold = .9;
@@ -198,11 +213,14 @@ public class ConveyorVertical extends ConveyorBasic
 	static AxisAlignedBB[] verticalBounds = {new AxisAlignedBB(0, 0, 0, 1, 1, .125f), new AxisAlignedBB(0, 0, .875f, 1, 1, 1), new AxisAlignedBB(0, 0, 0, .125f, 1, 1), new AxisAlignedBB(.875f, 0, 0, 1, 1, 1)};
 
 	@Override
-	public AxisAlignedBB getSelectionBox(TileEntity tile, EnumFacing facing)
+	public List<AxisAlignedBB> getSelectionBoxes(TileEntity tile, EnumFacing facing)
 	{
+		ArrayList list = new ArrayList();
 		if(facing.ordinal() > 1)
-			return verticalBounds[facing.ordinal() - 2];
-		return conveyorBounds;
+			list.add(verticalBounds[facing.ordinal() - 2]);
+		if(renderBottomBelt(tile, facing) || list.isEmpty())
+			list.add(conveyorBounds);
+		return list;
 	}
 
 	@Override
