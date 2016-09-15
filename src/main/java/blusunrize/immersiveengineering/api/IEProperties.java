@@ -49,10 +49,6 @@ public class IEProperties
 	};
 	public static final PropertyInteger INT_4 = PropertyInteger.create("int_4", 0,3);
 
-	public static final PropertyBoolInverted[] CONVEYORWALLS = {PropertyBoolInverted.create("conveyorwall_left"), PropertyBoolInverted.create("conveyorwall_right")};
-	public static final PropertyInteger CONVEYORUPDOWN = PropertyInteger.create("conveyorupdown", 0,2);
-//	public static final Property
-
 	public static final IUnlistedProperty<HashMap> OBJ_TEXTURE_REMAP = new IUnlistedProperty<HashMap>()
 	{
 		@Override

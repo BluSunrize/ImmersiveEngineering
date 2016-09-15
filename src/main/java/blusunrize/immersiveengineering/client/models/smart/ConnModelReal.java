@@ -1,23 +1,10 @@
 package blusunrize.immersiveengineering.client.models.smart;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
-
-import javax.annotation.Nullable;
-
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
-
-import com.google.common.collect.ImmutableList;
-
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.common.util.IELogger;
+import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -32,6 +19,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+
+import javax.annotation.Nullable;
+import java.util.*;
 
 public class ConnModelReal implements IBakedModel
 {
@@ -195,6 +187,18 @@ public class ConnModelReal implements IBakedModel
 			if (!(obj instanceof ExtBlockstateAdapter))
 				return false;
 			ExtBlockstateAdapter o = (ExtBlockstateAdapter) obj;
+			if(state.getUnlistedNames().contains(IOBJModelCallback.PROPERTY) && o.state.getUnlistedNames().contains(IOBJModelCallback.PROPERTY))
+			{
+				IOBJModelCallback callbackThis = state.getValue(IOBJModelCallback.PROPERTY);
+				IOBJModelCallback callbackOther = o.state.getValue(IOBJModelCallback.PROPERTY);
+				if(callbackThis != null && callbackOther != null)
+				{
+					String keyThis = callbackThis.getCacheKey(state);
+					String keyOther = callbackOther.getCacheKey(o.state);
+					if(keyThis != null && keyOther != null)
+						return keyThis.equals(keyOther);
+				}
+			}
 			for(IProperty<?> i : state.getPropertyNames())
 			{
 				if(!o.state.getProperties().containsKey(i))
@@ -223,6 +227,16 @@ public class ConnModelReal implements IBakedModel
 		@Override
 		public int hashCode()
 		{
+			if(state.getUnlistedNames().contains(IOBJModelCallback.PROPERTY))
+			{
+				IOBJModelCallback callback = state.getValue(IOBJModelCallback.PROPERTY);
+				if(callback != null)
+				{
+					String key = callback.getCacheKey(state);
+					if(key != null)
+						return key.hashCode();
+				}
+			}
 			int val = 0;
 			final int prime = 31;
 			for (Object o : state.getProperties().values())

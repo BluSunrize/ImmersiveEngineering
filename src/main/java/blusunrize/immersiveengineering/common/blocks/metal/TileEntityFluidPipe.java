@@ -2,16 +2,30 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.AdvancedAABB;
 import blusunrize.immersiveengineering.api.fluid.IFluidPipe;
+import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
+import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
+import blusunrize.immersiveengineering.common.blocks.wooden.BlockTypes_WoodenDecoration;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
+import com.google.common.base.Function;
 import com.google.common.collect.Lists;
+import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.IBakedModel;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -27,6 +41,8 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.oredict.OreDictionary;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -34,20 +50,38 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static java.util.Collections.newSetFromMap;
 
-public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe, IAdvancedHasObjProperty, IColouredTile, IHammerInteraction, IAdvancedSelectionBounds,IAdvancedCollisionBounds
+public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe, IAdvancedHasObjProperty, IOBJModelCallback<IBlockState>, IColouredTile, IPlayerInteraction, IHammerInteraction, IAdvancedSelectionBounds, IAdvancedCollisionBounds
 {
 	static ConcurrentHashMap<BlockPos, Set<DirectionalFluidOutput>> indirectConnections = new ConcurrentHashMap<BlockPos, Set<DirectionalFluidOutput>>();
-	public static ArrayList<ItemStack> validScaffoldCoverings = new ArrayList<ItemStack>();
+	public static ArrayList<Function<ItemStack, Boolean>> validPipeCovers = new ArrayList();
 	static{
-		//		TileEntityFluidPipe.validScaffoldCoverings.add(new ItemStack(IEContent.blockMetalDecoration0,1,BlockMetalDecoration1.META_scaffolding));
-		//		TileEntityFluidPipe.validScaffoldCoverings.add(new ItemStack(IEContent.blockMetalDecoration0,1,BlockMetalDecoration1.META_scaffolding2));
-		//		TileEntityFluidPipe.validScaffoldCoverings.add(new ItemStack(IEContent.blockMetalDecoration0,1,BlockMetalDecoration1.META_aluminiumScaffolding));
-		//		TileEntityFluidPipe.validScaffoldCoverings.add(new ItemStack(IEContent.blockMetalDecoration0,1,BlockMetalDecoration1.META_aluminiumScaffolding2));
-		//		TileEntityFluidPipe.validScaffoldCoverings.add(new ItemStack(IEContent.blockWoodenDecoration,1,5));
+		TileEntityFluidPipe.validPipeCovers.add(new Function<ItemStack, Boolean>()
+		{
+			ArrayList<ItemStack> scaffolds = Lists.newArrayList(
+					new ItemStack(IEContent.blockWoodenDecoration, 1, BlockTypes_WoodenDecoration.SCAFFOLDING.getMeta()),
+					new ItemStack(IEContent.blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_0.getMeta()),
+					new ItemStack(IEContent.blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_1.getMeta()),
+					new ItemStack(IEContent.blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_2.getMeta()),
+					new ItemStack(IEContent.blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.ALUMINUM_SCAFFOLDING_0.getMeta()),
+					new ItemStack(IEContent.blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.ALUMINUM_SCAFFOLDING_1.getMeta()),
+					new ItemStack(IEContent.blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.ALUMINUM_SCAFFOLDING_2.getMeta()));
+
+			@Nullable
+			@Override
+			public Boolean apply(@Nullable ItemStack input)
+			{
+				if(input == null)
+					return Boolean.FALSE;
+				for(ItemStack stack : scaffolds)
+					if(OreDictionary.itemMatches(stack, input, false))
+						return Boolean.TRUE;
+				return Boolean.FALSE;
+			}
+		});
 	}
 
 	public int[] sideConfig = new int[] {0,0,0,0,0,0};
-	public ItemStack scaffoldCovering = null;
+	public ItemStack pipeCover = null;
 
 	public static Set<DirectionalFluidOutput> getConnectedFluidHandlers(BlockPos node, World world)
 	{
@@ -122,15 +156,15 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 		sideConfig = nbt.getIntArray("sideConfig");
 		if(sideConfig==null || sideConfig.length!=6)
 			sideConfig = new int[]{0,0,0,0,0,0};
-		scaffoldCovering = ItemStack.loadItemStackFromNBT(nbt.getCompoundTag("scaffold"));
+		pipeCover = ItemStack.loadItemStackFromNBT(nbt.getCompoundTag("pipeCover"));
 	}
 
 	@Override
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		nbt.setIntArray("sideConfig", sideConfig);
-		if(scaffoldCovering!=null)
-			nbt.setTag("scaffold", (scaffoldCovering.writeToNBT(new NBTTagCompound())));
+		if(pipeCover != null)
+			nbt.setTag("pipeCover", (pipeCover.writeToNBT(new NBTTagCompound())));
 	}
 
 
@@ -155,6 +189,60 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 		if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && facing!=null&&sideConfig[facing.ordinal()]==0)
 			return (T)sidedHandlers[facing.ordinal()];
 		return super.getCapability(capability, facing);
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public TextureAtlasSprite getTextureReplacement(IBlockState object, String material)
+	{
+		return null;
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public boolean shouldRenderGroup(IBlockState object, String group)
+	{
+		return true;
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public Matrix4 handlePerspective(IBlockState Object, TransformType cameraTransformType, Matrix4 perspective)
+	{
+		return perspective;
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public List<BakedQuad> modifyQuads(IBlockState object, List<BakedQuad> quads)
+	{
+		if(pipeCover != null)
+		{
+			Block b = Block.getBlockFromItem(pipeCover.getItem());
+			IBlockState state = b != null ? b.getStateFromMeta(pipeCover.getMetadata()) : Blocks.STONE.getDefaultState();
+			IBakedModel model = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getModelForState(state);
+			if(model != null)
+			{
+				for(EnumFacing facing : EnumFacing.VALUES)
+					quads.addAll(model.getQuads(state, facing, 0));
+				quads.addAll(model.getQuads(state, null, 0));
+			}
+		}
+		return quads;
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public String getCacheKey(IBlockState object)
+	{
+		return getRenderCacheKey();
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public com.google.common.base.Optional<TRSRTransformation> applyTransformations(IBlockState object, String group, com.google.common.base.Optional<TRSRTransformation> transform)
+	{
+		return transform;
 	}
 
 	static class PipeFluidHandler implements IFluidHandler
@@ -354,38 +442,43 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 	public List<AxisAlignedBB> getAdvancedColisionBounds()
 	{
 		List<AxisAlignedBB> list = Lists.newArrayList();
+		if(pipeCover != null)
+		{
+			list.add(new AxisAlignedBB(0, 0, 0, 1, 1, 1).offset(getPos()));
+			return list;
+		}
 		byte connections = getConnectionByte();
 		if(/*connections==16||connections==32||*/connections==48)
 		{
-			list.add(new AxisAlignedBB(0,.25f,.25f, 1,.75f,.75f).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+			list.add(new AxisAlignedBB(0, .25f, .25f, 1, .75f, .75f).offset(getPos()));
 			if((connections&16) == 0)
-				list.add(new AxisAlignedBB(0,.125f,.125f, .125f,.875f,.875f).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+				list.add(new AxisAlignedBB(0, .125f, .125f, .125f, .875f, .875f).offset(getPos()));
 			if((connections&32) == 0)
-				list.add(new AxisAlignedBB(.875f,.125f,.125f, 1,.875f,.875f).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+				list.add(new AxisAlignedBB(.875f, .125f, .125f, 1, .875f, .875f).offset(getPos()));
 		}
 		else if(/*connections==4||connections==8||*/connections==12)
 		{
-			list.add(new AxisAlignedBB(.25f,.25f,0, .75f,.75f,1).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+			list.add(new AxisAlignedBB(.25f, .25f, 0, .75f, .75f, 1).offset(getPos()));
 			if((connections&4) == 0)
-				list.add(new AxisAlignedBB(.125f,.125f,0, .875f,.875f,.125f).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+				list.add(new AxisAlignedBB(.125f, .125f, 0, .875f, .875f, .125f).offset(getPos()));
 			if((connections&8) == 0)
-				list.add(new AxisAlignedBB(.125f,.125f,.875f, .875f,.875f,1).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+				list.add(new AxisAlignedBB(.125f, .125f, .875f, .875f, .875f, 1).offset(getPos()));
 		}
 		else if(/*connections==1||connections==2||*/connections==3)
 		{
-			list.add(new AxisAlignedBB(.25f,0,.25f, .75f,1,.75f).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+			list.add(new AxisAlignedBB(.25f, 0, .25f, .75f, 1, .75f).offset(getPos()));
 			if((connections&1) == 0)
-				list.add(new AxisAlignedBB(.125f,0,.125f, .875f,.125f,.875f).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+				list.add(new AxisAlignedBB(.125f, 0, .125f, .875f, .125f, .875f).offset(getPos()));
 			if((connections&2) == 0)
-				list.add(new AxisAlignedBB(.125f,.875f,.125f, .875f,1,.875f).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+				list.add(new AxisAlignedBB(.125f, .875f, .125f, .875f, 1, .875f).offset(getPos()));
 		}
 		else
 		{
-			list.add(new AxisAlignedBB(.25f,.25f,.25f, .75f,.75f,.75f).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+			list.add(new AxisAlignedBB(.25f, .25f, .25f, .75f, .75f, .75f).offset(getPos()));
 			for(int i=0; i<6; i++)
 			{
 				if((connections & 0x1)==1)
-					list.add(new AxisAlignedBB(i==4?0:i==5?.875f:.125f, i==0?0:i==1?.875f:.125f, i==2?0:i==3?.875f:.125f, i==4?.125f:i==5?1:.875f, i==0?.125f:i==1?1:.875f, i==2?.125f:i==3?1:.875f).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+					list.add(new AxisAlignedBB(i == 4 ? 0 : i == 5 ? .875f : .125f, i == 0 ? 0 : i == 1 ? .875f : .125f, i == 2 ? 0 : i == 3 ? .875f : .125f, i == 4 ? .125f : i == 5 ? 1 : .875f, i == 0 ? .125f : i == 1 ? 1 : .875f, i == 2 ? .125f : i == 3 ? 1 : .875f).offset(getPos()));
 				connections >>= 1;
 			}
 		}
@@ -397,22 +490,22 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 		List<AxisAlignedBB> list = Lists.newArrayList();
 		byte connections = getAvailableConnectionByte();
 		byte availableConnections = getConnectionByte();
-		double[] baseAABB = scaffoldCovering!=null? new double[]{.002,.998, .002,.998, .002,.998}: new double[]{.25,.75, .25,.75, .25,.75};
+		double[] baseAABB = pipeCover != null ? new double[]{.002, .998, .002, .998, .002, .998} : new double[]{.25, .75, .25, .75, .25, .75};
 		for(int i=0; i<6; i++)
 		{
 			double depth = getConnectionStyle(i)==0?.25:.125;
 			double size = getConnectionStyle(i)==0?.25:.125;
-			//			if(scaffoldCovering!=null)
+			//			if(pipeCover!=null)
 			//				size = 0;
 			if((connections & 0x1)==1)
-				list.add(new AdvancedAABB( new AxisAlignedBB(i==4?0:i==5?1-depth:size, i==0?0:i==1?1-depth:size, i==2?0:i==3?1-depth:size, i==4?depth:i==5?1:1-size, i==0?depth:i==1?1:1-size, i==2?depth:i==3?1:1-size).offset(getPos().getX(),getPos().getY(),getPos().getZ()), EnumFacing.getFront(i)) );
+				list.add(new AdvancedAABB(new AxisAlignedBB(i == 4 ? 0 : i == 5 ? 1 - depth : size, i == 0 ? 0 : i == 1 ? 1 - depth : size, i == 2 ? 0 : i == 3 ? 1 - depth : size, i == 4 ? depth : i == 5 ? 1 : 1 - size, i == 0 ? depth : i == 1 ? 1 : 1 - size, i == 2 ? depth : i == 3 ? 1 : 1 - size).offset(getPos()), EnumFacing.getFront(i)));
 			if((availableConnections & 0x1)==1)
 				baseAABB[i] += i%2==1?.125: -.125;
 			baseAABB[i] = Math.min(Math.max(baseAABB[i], 0), 1);
 			availableConnections = (byte)(availableConnections>>1);
 			connections = (byte)(connections>>1);
 		}
-		list.add(new AdvancedAABB(new AxisAlignedBB(baseAABB[4],baseAABB[0],baseAABB[2], baseAABB[5],baseAABB[1],baseAABB[3]).offset(getPos().getX(),getPos().getY(),getPos().getZ()),null));
+		list.add(new AdvancedAABB(new AxisAlignedBB(baseAABB[4], baseAABB[0], baseAABB[2], baseAABB[5], baseAABB[1], baseAABB[3]).offset(getPos()), null));
 		return list;
 	}
 
@@ -435,8 +528,8 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 	static String[] CONNECTIONS = new String[]{
 			"con_yMin", "con_yMax", "con_zMin", "con_zMax", "con_xMin", "con_xMax"
 	};
-	@Override
-	public OBJState getOBJState()
+
+	String getRenderCacheKey()
 	{
 		byte connections = getConnectionByte();
 		String key = "";
@@ -447,11 +540,23 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 			else
 				key += "0";
 		}
+		if(pipeCover != null)
+			key += "scaf:" + pipeCover.getItem().getRegistryName();
+		return key;
+	}
+
+	@Override
+	public OBJState getOBJState()
+	{
+		byte connections = getConnectionByte();
+		String key = getRenderCacheKey();
 		if(!cachedOBJStates.containsKey(key))
 		{
 			ArrayList<String> parts = new ArrayList();
 			Matrix4 rotationMatrix = new Matrix4(TRSRTransformation.identity().getMatrix());//new Matrix4();
 
+//			if(pipeCover!=null)
+//				parts.add("cover");
 			int totalConnections = Integer.bitCount(connections);
 			boolean straightY = (connections&3)==3;
 			boolean straightZ = (connections&12)==12;
@@ -701,6 +806,23 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 		return cachedOBJStates.get(key);
 	}
 
+	//	@Override
+//	public HashMap<String, String> getTextureReplacements()
+//	{
+//		if(pipeCover!=null)
+//		{
+//			HashMap<String,String> map = new HashMap<String,String>();
+////			map.put("cover","minecraft:blocks/stone");
+//			Block b = Block.getBlockFromItem(pipeCover.getItem());
+//			IBlockState state = b!=null?b.getStateFromMeta(pipeCover.getMetadata()): Blocks.STONE.getDefaultState();
+//			IBakedModel model = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getModelForState(state);
+//			if(model!=null && model.getParticleTexture()!=null)
+//				map.put("cover", model.getParticleTexture().getIconName());
+//
+//			return map;
+//		}
+//		return null;
+//	}
 	public static OBJState getStateFromKey(String key)
 	{
 		if(!cachedOBJStates.containsKey(key))
@@ -956,6 +1078,43 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 		return 0xff00ff;
 	}
 
+	@Override
+	public boolean interact(EnumFacing side, EntityPlayer player, EnumHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
+	{
+		if(heldItem == null && player.isSneaking() && pipeCover != null)
+		{
+			if(!worldObj.isRemote && worldObj.getGameRules().getBoolean("doTileDrops"))
+			{
+				EntityItem entityitem = player.dropItem(pipeCover.copy(), false);
+				if(entityitem != null)
+					entityitem.setNoPickupDelay();
+			}
+			pipeCover = null;
+			this.markContainingBlockForUpdate(null);
+			worldObj.addBlockEvent(getPos(), getBlockType(), 255, 0);
+			return true;
+		} else if(heldItem != null && !player.isSneaking())
+			for(Function<ItemStack, Boolean> func : validPipeCovers)
+				if(func.apply(heldItem) == Boolean.TRUE)
+				{
+					if(!OreDictionary.itemMatches(pipeCover, heldItem, true))
+					{
+						if(!worldObj.isRemote && pipeCover != null && worldObj.getGameRules().getBoolean("doTileDrops"))
+						{
+							EntityItem entityitem = player.dropItem(pipeCover.copy(), false);
+							if(entityitem != null)
+								entityitem.setNoPickupDelay();
+						}
+						pipeCover = Utils.copyStackWithAmount(heldItem, 1);
+						if((--heldItem.stackSize) <= 0)
+							heldItem = null;
+						this.markContainingBlockForUpdate(null);
+						worldObj.addBlockEvent(getPos(), getBlockType(), 255, 0);
+						return true;
+					}
+				}
+		return false;
+	}
 	@Override
 	public boolean hammerUseSide(EnumFacing side, EntityPlayer player, float hitX, float hitY, float hitZ)
 	{

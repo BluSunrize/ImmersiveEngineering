@@ -231,7 +231,7 @@ public class IESmartObjModel extends OBJBakedModel
 			} else
 			{
 				transform = getState().apply(Optional.absent());
-				if (callback != null)
+				if(callback != null)
 					transform = callback.applyTransformations(callbackObject, g.getName(), transform);
 				faces.addAll(g.applyTransform(transform));
 			}
@@ -258,26 +258,26 @@ public class IESmartObjModel extends OBJBakedModel
 				for (Face f : faces)
 				{
 					tempSprite = null;
-					if (this.getModel().getMatLib().getMaterial(f.getMaterialName()).isWhite())
+					if(this.getModel().getMatLib().getMaterial(f.getMaterialName()).isWhite() && !"null".equals(f.getMaterialName()))
 					{
-						for (Vertex v : f.getVertices())
-							if (!v.getMaterial().equals(this.getModel().getMatLib().getMaterial(v.getMaterial().getName())))
+						for(Vertex v : f.getVertices())
+							if(!v.getMaterial().equals(this.getModel().getMatLib().getMaterial(v.getMaterial().getName())))
 								v.setMaterial(this.getModel().getMatLib().getMaterial(v.getMaterial().getName()));
 						tempSprite = ModelLoader.White.INSTANCE;
 					} else
 					{
-						if (sCase != null)
+						if(sCase != null)
 							tempSprite = sCase.getReplacementSprite(shader, tempStack, g.getName(), pass);
-						if (tempSprite == null && callback != null)
+						if(tempSprite == null && callback != null)
 							tempSprite = callback.getTextureReplacement(callbackObject, f.getMaterialName());
-						if (tempSprite == null && this.tempState != null && this.tempState instanceof IExtendedBlockState && ((IExtendedBlockState) this.tempState).getUnlistedNames().contains(IEProperties.OBJ_TEXTURE_REMAP))
+						if(tempSprite == null && this.tempState != null && this.tempState instanceof IExtendedBlockState && ((IExtendedBlockState)this.tempState).getUnlistedNames().contains(IEProperties.OBJ_TEXTURE_REMAP))
 						{
 							HashMap<String, String> map = ((IExtendedBlockState) this.tempState).getValue(IEProperties.OBJ_TEXTURE_REMAP);
 							String s = map != null ? map.get(g.getName()) : null;
-							if (s != null)
+							if(s != null)
 								tempSprite = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(s);
 						}
-						if (tempSprite == null)
+						if(tempSprite == null && !"null".equals(f.getMaterialName()))
 							tempSprite = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(this.getModel().getMatLib().getMaterial(f.getMaterialName()).getTexture().getTextureLocation().toString());
 					}
 					if (tempSprite != null)
@@ -296,6 +296,8 @@ public class IESmartObjModel extends OBJBakedModel
 				}
 			}
 		}
+		if(callback != null)
+			quads = callback.modifyQuads(callbackObject, quads);
 		return ImmutableList.copyOf(quads);
 	}
 

@@ -2,12 +2,15 @@ package blusunrize.immersiveengineering.client.models;
 
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.base.Optional;
+import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import java.util.List;
 
 @SuppressWarnings("deprecation")
 //T must be ItemStack for Items or IBlockState for TileEntities implementing this
@@ -53,5 +56,17 @@ public interface IOBJModelCallback<T>
 	default int getRenderColour(T object, String group)
 	{
 		return 0xffffffff;
+	}
+
+	@SideOnly(Side.CLIENT)
+	default List<BakedQuad> modifyQuads(T object, List<BakedQuad> quads)
+	{
+		return quads;
+	}
+
+	@SideOnly(Side.CLIENT)
+	default String getCacheKey(T object)
+	{
+		return null;
 	}
 }

@@ -6,6 +6,7 @@ import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.common.*;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFluidPipe;
 import blusunrize.immersiveengineering.common.crafting.ArcRecyclingThreadHandler;
 import blusunrize.immersiveengineering.common.items.ItemRevolver;
 import blusunrize.immersiveengineering.common.util.IELogger;
@@ -14,6 +15,8 @@ import blusunrize.immersiveengineering.common.util.commands.CommandHandler;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
 import blusunrize.immersiveengineering.common.util.network.*;
 import blusunrize.immersiveengineering.common.world.IEWorldGen;
+import com.google.common.base.Function;
+import com.google.common.base.Optional;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonStreamParser;
@@ -116,6 +119,16 @@ public class ImmersiveEngineering
 		packetHandler.registerMessage(MessageMinecartShaderSync.HandlerClient.class, MessageMinecartShaderSync.class, messageId++, Side.CLIENT);
 		packetHandler.registerMessage(MessageRequestBlockUpdate.Handler.class, MessageRequestBlockUpdate.class, messageId++, Side.SERVER);
 		packetHandler.registerMessage(MessageNoSpamChatComponents.Handler.class, MessageNoSpamChatComponents.class, messageId++, Side.CLIENT);
+
+		for(FMLInterModComms.IMCMessage message : FMLInterModComms.fetchRuntimeMessages(instance))
+		{
+			if(message.key.equals("fluidpipeCover") && message.isFunctionMessage())
+			{
+				Optional<Function<ItemStack, Boolean>> opFunc = message.getFunctionValue(ItemStack.class, Boolean.class);
+				if(opFunc.isPresent())
+					TileEntityFluidPipe.validPipeCovers.add(opFunc.get());
+			}
+		}
 	}
 	@Mod.EventHandler
 	public void postInit(FMLPostInitializationEvent event)
