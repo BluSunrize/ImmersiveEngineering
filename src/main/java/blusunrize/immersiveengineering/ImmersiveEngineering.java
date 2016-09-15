@@ -158,8 +158,6 @@ public class ImmersiveEngineering
 	{
 		proxy.serverStarting();
 		event.registerServerCommand(new CommandHandler());
-		if(event.getSide().isClient())
-			ClientCommandHandler.instance.registerCommand(new CommandHandler());
 	}
 	@Mod.EventHandler
 	public void serverStarted(FMLServerStartedEvent event)

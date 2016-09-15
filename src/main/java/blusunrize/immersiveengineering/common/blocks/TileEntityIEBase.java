@@ -40,7 +40,9 @@ public abstract class TileEntityIEBase extends TileEntity
 	@Override
 	public NBTTagCompound getUpdateTag()
 	{
-		return this.writeToNBT(new NBTTagCompound());
+		NBTTagCompound nbt = super.writeToNBT(new NBTTagCompound());
+		writeCustomNBT(nbt, true);
+		return nbt;
 	}
 	@Override
 	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt)
