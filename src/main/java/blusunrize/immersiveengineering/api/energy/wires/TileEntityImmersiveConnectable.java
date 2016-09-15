@@ -120,15 +120,7 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 	{
 		NBTTagCompound nbttagcompound = new NBTTagCompound();
 		this.writeToNBT(nbttagcompound);
-		if(worldObj!=null && !worldObj.isRemote)
-		{
-			NBTTagList connectionList = new NBTTagList();
-			Set<Connection> conL = ImmersiveNetHandler.INSTANCE.getConnections(worldObj, Utils.toCC(this));
-			if(conL!=null)
-				for(Connection con : conL)
-					connectionList.appendTag(con.writeToNBT());
-			nbttagcompound.setTag("connectionList", connectionList);
-		}
+		writeConnsToNBT(nbttagcompound);
 		return new SPacketUpdateTileEntity(this.pos, 3, nbttagcompound);
 	}
 	@Override
@@ -136,22 +128,7 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 	{
 		NBTTagCompound nbt = pkt.getNbtCompound();
 		this.readFromNBT(nbt);
-		if(worldObj!=null && worldObj.isRemote && !Minecraft.getMinecraft().isSingleplayer())
-		{
-			NBTTagList connectionList = nbt.getTagList("connectionList", 10);
-			ImmersiveNetHandler.INSTANCE.clearConnectionsOriginatingFrom(Utils.toCC(this), worldObj);
-			for(int i=0; i<connectionList.tagCount(); i++)
-			{
-				NBTTagCompound conTag = connectionList.getCompoundTagAt(i);
-				Connection con = Connection.readFromNBT(conTag);
-				if(con!=null)
-				{
-					ImmersiveNetHandler.INSTANCE.addConnection(worldObj, Utils.toCC(this), con);
-				}
-				else
-					IELogger.error("CLIENT read connection as null");
-			}
-		}
+		loadConnsFromNBT(nbt);
 	}
 
 	@Override
@@ -186,59 +163,8 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 				limitType = ApiUtils.getWireTypeFromNBT(nbt, "limitType");
 			else
 				limitType = null;
-
-			//			int[] prevPos = nbt.getIntArray("prevPos");
-			//			if(prevPos!=null && prevPos.length>3 && FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER)
-			//			{
-			//				//				if(worldObj.provider.dimensionId!=prevPos[0])
-			//				//				{
-			//				//					ImmersiveNetHandler.clearAllConnectionsFor(Utils.toCC(this),worldObj);
-			//				//				}
-			//				//				else
-			//				World worldTest = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(prevPos[0]);
-			//				if(xCoord!=prevPos[1] || yCoord!=prevPos[2] || zCoord!=prevPos[3])
-			//				{
-			//					IELogger.info("Tile was moved! Attmpting to update connections...");
-			//					
-			//					if(worldTest.getTileEntity(prevPos[1],prevPos[2],prevPos[3]) instanceof IImmersiveConnectable)
-			//					{
-			//						IELogger.info("Someone else has taken my place");
-			//					}
-			//					
-			//					Iterator<Connection> it = ImmersiveNetHandler.getAllConnections(worldTest).iterator();
-			//					ChunkCoordinates node = new ChunkCoordinates(prevPos[1],prevPos[2],prevPos[3]);
-			//					while(it.hasNext())
-			//					{
-			//						Connection con = it.next();
-			//						if(node.equals(con.start))
-			//							con.start = Utils.toCC(this);
-			//						if(node.equals(con.end))
-			//							con.end = Utils.toCC(this);
-			//						//						if(node.equals(con.start) || node.equals(con.end))
-			//						//						{
-			//						////							it.remove();
-			//						//							//if(node.equals(con.start) && toIIC(con.end, world)!=null && getConnections(world,con.end).isEmpty())
-			//						////							iic = toIIC(con.end, worldObj);
-			//						////							if(iic!=null)
-			//						////								iic.removeCable(con.cableType);
-			//						//							//if(node.equals(con.end) && toIIC(con.start, world)!=null && getConnections(world,con.start).isEmpty())
-			//						////							iic = toIIC(con.start, worldObj);
-			//						////							if(iic!=null)
-			//						////								iic.removeCable(con.cableType);
-			//						//
-			//						//							if(node.equals(con.end))
-			//						//							{
-			//						//								double dx = node.posX+.5+Math.signum(con.start.posX-con.end.posX);
-			//						//								double dy = node.posY+.5+Math.signum(con.start.posY-con.end.posY);
-			//						//								double dz = node.posZ+.5+Math.signum(con.start.posZ-con.end.posZ);
-			//						//								worldObj.spawnEntityInWorld(new EntityItem(worldObj, dx,dy,dz, new ItemStack(IEContent.itemWireCoil,1,con.cableType.ordinal())));
-			//						//							}
-			//						//						}
-			//					}
-			//					IESaveData.setDirty(worldTest.provider.dimensionId);
-			//					//					ImmersiveNetHandler.indirectConnections.clear();
-			//				}
-			//			}
+			if (nbt.hasKey("connectionList"))
+				loadConnsFromNBT(nbt);
 		}catch(Exception e)
 		{
 			IELogger.error("TileEntityImmersiveConenctable encountered MASSIVE error reading NBT. You shoudl probably report this.");
@@ -250,6 +176,8 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 		try{
 			if(limitType!=null)
 				nbt.setString("limitType", limitType.getUniqueName());
+			if (descPacket)
+				writeConnsToNBT(nbt);
 
 			//			if(this.worldObj!=null)
 			//			{
@@ -258,6 +186,37 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 		}catch(Exception e)
 		{
 			IELogger.error("TileEntityImmersiveConenctable encountered MASSIVE error writing NBT. You should probably report this.");
+		}
+	}
+	private void loadConnsFromNBT(NBTTagCompound nbt)
+	{
+		if(worldObj!=null && worldObj.isRemote && !Minecraft.getMinecraft().isSingleplayer() && nbt!=null)
+		{
+			NBTTagList connectionList = nbt.getTagList("connectionList", 10);
+			ImmersiveNetHandler.INSTANCE.clearConnectionsOriginatingFrom(Utils.toCC(this), worldObj);
+			for(int i=0; i<connectionList.tagCount(); i++)
+			{
+				NBTTagCompound conTag = connectionList.getCompoundTagAt(i);
+				Connection con = Connection.readFromNBT(conTag);
+				if(con!=null)
+				{
+					ImmersiveNetHandler.INSTANCE.addConnection(worldObj, Utils.toCC(this), con);
+				}
+				else
+					IELogger.error("CLIENT read connection as null");
+			}
+		}
+	}
+	private void writeConnsToNBT(NBTTagCompound nbt)
+	{
+		if(worldObj!=null && !worldObj.isRemote && nbt!=null)
+		{
+			NBTTagList connectionList = new NBTTagList();
+			Set<Connection> conL = ImmersiveNetHandler.INSTANCE.getConnections(worldObj, Utils.toCC(this));
+			if(conL!=null)
+				for(Connection con : conL)
+					connectionList.appendTag(con.writeToNBT());
+			nbt.setTag("connectionList", connectionList);
 		}
 	}
 
