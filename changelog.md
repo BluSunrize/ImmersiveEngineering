@@ -1,4 +1,4 @@
-#####Version 0.10-41
+#####Version 0.10-41 - BUILT
 - added the function to dye conveyor belts!
 - added the splitting conveyor belt, it alternates left and right!
 - re-added the ability to pull recipes from JEI into the assembler
@@ -22,7 +22,7 @@
 - fixed OC comapt on the crusher being borked (thanks Malte)
 - fixed lootentry access error (thanks Malte)
 - fixed wires sometimes not rendering on servers
-- Fixed a manual derp (thanks Malte)
+- fixed a manual derp (thanks Malte)
 
 #####Version 0.10-40 - BUILT
 - fixed machines crashing
