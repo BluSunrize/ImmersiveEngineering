@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.common;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.DimensionBlockPos;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.wires.IICProxy;
@@ -436,13 +437,12 @@ public class EventHandler
 				if(achievement.triggerItems!=null && achievement.triggerItems.length>0)
 				{
 					for(ItemStack trigger : achievement.triggerItems)
-						if(OreDictionary.itemMatches(trigger, event.crafting, true))
+						if(ApiUtils.stackMatchesObject(event.crafting, trigger, trigger.hasTagCompound()))
 						{
 							event.player.addStat(achievement);
 							break;
 						}
-				}
-				else if(OreDictionary.itemMatches(achievement.theItemStack, event.crafting, true))
+				} else if(ApiUtils.stackMatchesObject(event.crafting, achievement.theItemStack, achievement.theItemStack.hasTagCompound()))
 					event.player.addStat(achievement);
 			}
 

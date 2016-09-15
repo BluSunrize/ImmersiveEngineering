@@ -1,9 +1,10 @@
 package blusunrize.immersiveengineering.common.util;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
-import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalDevice0;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalDevice1;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalMultiblock;
 import blusunrize.immersiveengineering.common.blocks.stone.BlockTypes_StoneDevices;
@@ -20,7 +21,6 @@ import net.minecraft.stats.StatBase;
 import net.minecraft.stats.StatList;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.AchievementPage;
-import net.minecraftforge.fml.common.Loader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,8 +77,8 @@ public class IEAchievements
 		placeConveyor = new AchievementIE("placeConveyor", 1, 3, ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID + ":conveyor"), openManual).setPlacement(new ItemStack(IEContent.blockConveyor));
 		placeWindmill = new AchievementIE("placeWindmill", -1, 3, new ItemStack(IEContent.blockWoodenDevice1,1,BlockTypes_WoodenDevice1.WINDMILL.getMeta()), openManual).setPlacement(new ItemStack(IEContent.blockWoodenDevice1,1,BlockTypes_WoodenDevice1.WINDMILL.getMeta()),new ItemStack(IEContent.blockWoodenDevice1,1,BlockTypes_WoodenDevice1.WINDMILL_ADVANCED.getMeta()));
 		craftHeater = new AchievementIE("craftHeater", -2, 4, new ItemStack(IEContent.blockMetalDevice1,1,BlockTypes_MetalDevice1.FURNACE_HEATER.getMeta()), openManual).setNormalCrafting();
-		//		craftPump = new AchievementIE("craftPump", 2, 3, new ItemStack(IEContent.blockMetalDevice2,1,6), openManual).setNormalCrafting();
-		//		placeFloodlight = new AchievementIE("placeFloodlight", -2, 4, new ItemStack(IEContent.blockMetalDevice2,1,4), openManual).setPlacement();
+		craftPump = new AchievementIE("craftPump", 2, 4, new ItemStack(IEContent.blockMetalDevice0, 1, BlockTypes_MetalDevice0.FLUID_PUMP.getMeta()), openManual).setNormalCrafting();
+		placeFloodlight = new AchievementIE("placeFloodlight", -1, 5, new ItemStack(IEContent.blockMetalDevice1, 1, BlockTypes_MetalDevice1.FLOODLIGHT.getMeta()), openManual).setPlacement();
 
 		mbImprovedBlastFurnace = new AchievementIE("mbImprovedBlastFurnace", 6, -3, new ItemStack(IEContent.blockStoneDevice,1,BlockTypes_StoneDevices.BLAST_FURNACE_ADVANCED.getMeta()), makeSteel).setSpecial();
 		mbMetalPress = new AchievementIE("mbMetalPress", 6, -2, new ItemStack(IEContent.blockMetalMultiblock,1,BlockTypes_MetalMultiblock.METAL_PRESS.getMeta()), makeSteel).setSpecial();
@@ -98,8 +98,8 @@ public class IEAchievements
 		((ItemRevolver)IEContent.itemRevolver).setContainedItems(revolver, upgrades);
 		((ItemRevolver)IEContent.itemRevolver).recalculateUpgrades(revolver);
 		upgradeRevolver = new AchievementIE("upgradeRevolver", 4, -6, revolver, craftRevolver);
-		if(Loader.isModLoaded("Botania")&&Config.getBoolean("compat_Botania"))
-			craftWolfPack = new AchievementIE("craftWolfPack", 4, -7, new ItemStack(IEContent.itemBullet,1,8), craftRevolver).setNormalCrafting().setSpecial();
+		if(!BulletHandler.homingCartridges.isEmpty())
+			craftWolfPack = new AchievementIE("craftWolfPack", 4, -7, BulletHandler.getBulletStack("wolfpack"), craftRevolver).setBlueprintCrafting().setSpecial();
 
 		ItemStack drill = new ItemStack(IEContent.itemDrill);
 		((ItemDrill)IEContent.itemDrill).setHead(drill, new ItemStack(IEContent.itemDrillhead));
@@ -114,15 +114,15 @@ public class IEAchievements
 		((ItemDrill)IEContent.itemDrill).recalculateUpgrades(drill2);
 		upgradeDrill = new AchievementIE("upgradeDrill", 0, -6, drill2, craftDrill);
 
-		//craftSkyhook = new AchievementIE("craftSkyhook", 1, -6, IEContent.itemSkyhook, craftWorkbench).setNormalCrafting();
+		craftSkyhook = new AchievementIE("craftSkyhook", 1, -5, IEContent.itemSkyhook, craftWorkbench).setNormalCrafting();
 		ItemStack hook = new ItemStack(IEContent.itemSkyhook);
 		hook.addEnchantment(Enchantments.UNBREAKING, 1);
-		//skyhookPro = new AchievementIE("skyhookPro", 0, -6, hook, craftSkyhook);
+		//skyhookPro = new AchievementIE("skyhookPro", 0, -5, hook, craftSkyhook);
 
-		
+
 		craftChemthrower = new AchievementIE("craftChemthrower", 3, -5, IEContent.itemChemthrower, craftWorkbench).setNormalCrafting();
 
-		//craftRailgun = new AchievementIE("craftRailgun", 1, -8, IEContent.itemRailgun, craftWorkbench).setNormalCrafting();
+		craftRailgun = new AchievementIE("craftRailgun", 1, -7, IEContent.itemRailgun, craftWorkbench).setNormalCrafting();
 
 		secret_birthdayParty = new AchievementIE("secret_birthdayParty", -4,-1, new ItemStack(IEContent.itemFakeIcons,1,0), null).setSpecial();
 		secret_luckOfTheDraw = new AchievementIE("secret_luckOfTheDraw", -4, 1, new ItemStack(IEContent.itemFakeIcons,1,1), null).setSpecial();
