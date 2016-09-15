@@ -2,6 +2,7 @@ package blusunrize.immersiveengineering.common.util.compat;
 
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.util.IELogger;
+import blusunrize.immersiveengineering.common.util.compat.crafttweaker.CraftTweakerHelper;
 import blusunrize.immersiveengineering.common.util.compat.opencomputers.OCHelper;
 import blusunrize.immersiveengineering.common.util.compat.waila.WailaHelper;
 import net.minecraftforge.fml.common.Loader;
@@ -33,8 +34,8 @@ public abstract class IECompatModule
 		moduleClasses.put("Thaumcraft", ThaumcraftHelper.class);
 		moduleClasses.put("tconstruct", TConstructHelper.class);
 		moduleClasses.put("Waila", WailaHelper.class);
+		moduleClasses.put("MineTweaker3", CraftTweakerHelper.class);
 //		moduleClasses.put("MineFactoryReloaded", MFRHelper.class);
-//		moduleClasses.put("MineTweaker3", MTHelper.class);
 //		moduleClasses.put("EE3", EE3Helper.class);
 //		moduleClasses.put("ForgeMicroblock", FMPHelper.class);
 //		moduleClasses.put("Forestry", ForestryHelper.class);

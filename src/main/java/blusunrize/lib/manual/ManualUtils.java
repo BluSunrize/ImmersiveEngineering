@@ -29,6 +29,7 @@ public class ManualUtils
 				return true;
 			if(((ItemStack)o).hasTagCompound())
 				return ((ItemStack)o).getTagCompound().equals(stack.getTagCompound());
+			return true;
 		}
 		return false;
 	}

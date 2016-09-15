@@ -1,3 +1,29 @@
+#####Version 0.10-41
+- added the function to dye conveyor belts!
+- added the splitting conveyor belt, it alternates left and right!
+- re-added the ability to pull recipes from JEI into the assembler
+- re-added charge counter to railgun
+- re-added some missing achievements
+- re-added the ability to cover pipes in scaffold. IMC messages an define additional whitelisted blocks
+- re-added Crafttweaker/Minetweaker integration
+- updated TCon compat to latest TCon
+- removed Fluid Bottles. People can shut up about those now >_>
+- fixed Assembler not crafting and occasionally crashing
+- fixed Arc Furnace rendering, output rates and dupebugs
+- fixed slab rendering
+- fixed wooden crates not updating comparators
+- fixed floodlight being terrible (thanks Malte)
+- fixed lots of bugs with wire models (thanks Malte)
+- fixed crashes with projectiles
+- fixed SkyHook being derpy
+- fixed Transformers not attaching on posts
+- fixed IE blocks not having placement sounds
+- fixed selection and colision bounds on multiple blocks
+- fixed OC comapt on the crusher being borked (thanks Malte)
+- fixed lootentry access error (thanks Malte)
+- fixed wires sometimes not rendering on servers
+- Fixed a manual derp (thanks Malte)
+
 #####Version 0.10-40 - BUILT
 - fixed machines crashing
 - fixed sheetmetal tank not outputting
