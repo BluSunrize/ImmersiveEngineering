@@ -45,9 +45,10 @@ public class CrusherRecipe extends MultiblockRecipe
 	{
 		ArrayList<ItemStack> list = new ArrayList<>();
 		list.add(output);
-		for(int i = 0; i < secondaryOutput.length; i++)
-			if(tile.getWorld().rand.nextFloat() < secondaryChance[i])
-				list.add(secondaryOutput[i]);
+		if(secondaryOutput != null && secondaryChance != null)
+			for(int i = 0; i < secondaryOutput.length; i++)
+				if(tile.getWorld().rand.nextFloat() < secondaryChance[i])
+					list.add(secondaryOutput[i]);
 		return list;
 	}
 
