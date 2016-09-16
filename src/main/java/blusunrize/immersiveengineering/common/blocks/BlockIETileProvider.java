@@ -250,7 +250,7 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 		if(tile instanceof IConfigurableSides && Utils.isHammer(heldItem) && !world.isRemote)
 		{
 			int iSide = player.isSneaking()?side.getOpposite().ordinal():side.ordinal();
-			if(!world.isRemote&&((IConfigurableSides)tile).toggleSide(iSide, player))
+			if(((IConfigurableSides)tile).toggleSide(iSide, player))
 				return true;
 		}
 		if(tile instanceof IDirectionalTile && Utils.isHammer(heldItem) && ((IDirectionalTile)tile).canHammerRotate(side, hitX, hitY, hitZ, player) && !world.isRemote)
