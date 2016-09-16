@@ -937,7 +937,7 @@ public class ClientProxy extends CommonProxy
 			URL url = new URL("https://raw.githubusercontent.com/BluSunrize/ImmersiveEngineering/master/changelog.md");
 			Scanner s = new Scanner(url.openStream());
 			//sorted map to keep the chronological order
-			Map<String, String> entries = new TreeMap<>();
+			Map<String, String> entries = new LinkedHashMap<>();
 			String readVersion = null;
 			String readLog = "";
 			String currVersion = ImmersiveEngineering.VERSION;
@@ -963,9 +963,7 @@ public class ClientProxy extends CommonProxy
 			s.close();
 			addToMap(readVersion, currVersion, readVersion, readLog, readVersionBuilt, entries);
 			//add to manual
-			List<Entry<String, String>> entrySet = new ArrayList(entries.entrySet());
-			Collections.reverse(entrySet); //Iterate backwards to ahve newest version at the top
-			for(Entry<String, String> e : entrySet)
+			for(Entry<String, String> e : entries.entrySet())
 			{
 				List<String> l = ManualHelper.getManual().fontRenderer.listFormattedStringToWidth(e.getValue().replace("\t", "  "), 120);
 				final int LINES_PER_PAGE = 16;
