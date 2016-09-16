@@ -1,3 +1,7 @@
+#####Version 0.10-42 - BUILT
+- fixed NPE when throwign items into the crusher
+- attempted fix for render crashes with TESRs and their blockstates
+
 #####Version 0.10-41 - BUILT
 - added the function to dye conveyor belts!
 - added the splitting conveyor belt, it alternates left and right!

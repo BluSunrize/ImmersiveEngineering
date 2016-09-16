@@ -1,5 +1,5 @@
 def mainVersion = "0.10"
-def buildNumber = "41"
+def buildNumber = "42"
 
 // For those who want the bleeding edge
 buildscript {
