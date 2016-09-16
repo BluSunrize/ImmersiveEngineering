@@ -2,6 +2,7 @@ package blusunrize.immersiveengineering.client.render;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.Config;
+import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBucketWheel;
 import com.google.common.collect.Lists;
 import net.minecraft.block.Block;
@@ -32,6 +33,8 @@ public class TileRenderBucketWheel extends TileEntitySpecialRenderer<TileEntityB
 			return;
 		final BlockRendererDispatcher blockRenderer = Minecraft.getMinecraft().getBlockRendererDispatcher();
 		IBlockState state = tile.getWorld().getBlockState(tile.getPos());
+		if(state.getBlock() != IEContent.blockMetalMultiblock)
+			return;
 		BlockPos blockPos = tile.getPos();
 		state = state.withProperty(IEProperties.DYNAMICRENDER, true);
 		IBakedModel model = blockRenderer.getModelForState(state);
