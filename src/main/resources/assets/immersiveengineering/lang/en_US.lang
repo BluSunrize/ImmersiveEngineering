@@ -361,6 +361,7 @@ itemGroup.immersiveengineering=Immersive Engineering
 
 #ENTITIES
 entity.immersiveengineering.explosive.name=Explosive
+entity.Villager.immersiveengineering.machinist=Machinist
 
 #COMPAT THINGS
 #TINKERS CONSTRUCT COMPAT
