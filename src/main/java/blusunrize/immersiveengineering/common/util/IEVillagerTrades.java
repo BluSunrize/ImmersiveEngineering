@@ -61,7 +61,7 @@ public class IEVillagerTrades
 			if(i < 0)
 			{
 				itemstack = new ItemStack(Items.EMERALD);
-				itemstack1 = Utils.copyStackWithAmount(sellingItem, -1);
+				itemstack1 = Utils.copyStackWithAmount(sellingItem, -i);
 			} else
 			{
 				itemstack = new ItemStack(Items.EMERALD, i, 0);
