@@ -129,14 +129,14 @@ public class TileEntityWoodenBarrel extends TileEntityIEBase implements ITickabl
 	@Override
 	public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing)
 	{
-		if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && facing!=null && facing.getAxis()==Axis.Y)
+		if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && (facing == null || facing.getAxis() == Axis.Y))
 			return true;
 		return super.hasCapability(capability, facing);
 	}
 	@Override
 	public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing)
 	{
-		if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && (facing==null || facing.getAxis()==Axis.Y))
+		if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && (facing == null || facing.getAxis() == Axis.Y))
 			return (T)(facing==null?nullsideFluidHandler:sidedFluidHandler[facing.ordinal()]);
 		return super.getCapability(capability, facing);
 	}

@@ -23,7 +23,6 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraftforge.items.wrapper.InvWrapper;
 
 import java.util.List;
 
@@ -55,7 +54,11 @@ public class ItemJerrycan extends ItemIEBase
 		{
 			TileEntity tileEntity = world.getTileEntity(pos);
 			if(tileEntity!=null && tileEntity.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY,null))
-				return FluidUtil.tryEmptyContainerAndStow(stack,tileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY,null),new InvWrapper(player.inventory),FluidUtil.getFluidContained(stack).amount,player)?EnumActionResult.SUCCESS:EnumActionResult.FAIL;
+			{
+				if(FluidUtil.interactWithFluidHandler(stack, tileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null), player))
+					return EnumActionResult.SUCCESS;
+				return EnumActionResult.FAIL;
+			}
 			else
 			{
 				FluidStack fs = FluidUtil.getFluidContained(stack);
@@ -68,7 +71,7 @@ public class ItemJerrycan extends ItemIEBase
 				}
 			}
 		}
-		return EnumActionResult.FAIL;
+		return EnumActionResult.PASS;
 	}
 
 	@Override
