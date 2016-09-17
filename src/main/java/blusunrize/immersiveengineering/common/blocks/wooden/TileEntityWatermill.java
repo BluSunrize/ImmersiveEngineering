@@ -1,5 +1,7 @@
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
+import java.util.ArrayList;
+
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
@@ -20,8 +22,6 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import java.util.ArrayList;
-
 public class TileEntityWatermill extends TileEntityIEBase implements ITickable, IDirectionalTile, IHasDummyBlocks, IHasObjProperty
 {
 	public EnumFacing facing = EnumFacing.NORTH;
@@ -32,6 +32,7 @@ public class TileEntityWatermill extends TileEntityIEBase implements ITickable, 
 	public boolean multiblock = false;
 	public float prevRotation = 0;
 	private boolean formed = true;
+	public double perTick;
 
 //	@Override
 //	public boolean hasFastRenderer()
@@ -98,7 +99,7 @@ public class TileEntityWatermill extends TileEntityIEBase implements ITickable, 
 		}
 		else if(!multiblock)
 		{
-			double perTick = 1f/1440 * getPower();
+			perTick = 1f/1440 * getPower();
 			canTurn = perTick!=0;
 			rotation += perTick;
 			rotation %= 1;
