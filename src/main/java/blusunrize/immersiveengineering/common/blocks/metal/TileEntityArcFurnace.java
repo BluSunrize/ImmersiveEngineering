@@ -641,11 +641,11 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 	@Override
 	public int[] getAccessibleSlotsFromSide(int side)
 	{
+		final TileEntityArcFurnace master = master();
 		if(!formed)
 			return new int[0];
-		if((pos==86||pos==88) && side==1)//Input hatches on top
+		if(pos==86 && side==1)//Input hatch on top left
 		{
-			final TileEntityArcFurnace master = master();
 			ArrayList<Integer> slotsMain = new ArrayList<>(12);
 			boolean allOccupied = true;
 			for(int i=0; i<=11; i++)
@@ -665,7 +665,17 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 					return Integer.compare((stack0!=null?stack0.stackSize:0),(stack1!=null?stack1.stackSize:0));
 				}
 			});
-
+			
+			int[] ret = new int[slotsMain.size()];
+			for(int i=0; i<ret.length; i++)
+			{
+				int slot = slotsMain.get(i);
+				ret[i] = slot;
+			}
+			return ret;
+		}
+		if(pos==88 && side==1)//Input hatch on top right
+		{	
 			ArrayList<Integer> slotsAdditives = new ArrayList<>(4);
 			allOccupied = true;
 			for(int i=12; i<=15; i++)
@@ -686,10 +696,10 @@ public class TileEntityArcFurnace extends TileEntityMultiblockPart implements IE
 				}
 			});
 
-			int[] ret = new int[slotsMain.size()+slotsAdditives.size()];
+			int[] ret = new int[slotsAdditives.size()];
 			for(int i=0; i<ret.length; i++)
 			{
-				int slot = i<slotsMain.size()?slotsMain.get(i): slotsAdditives.get(i-slotsMain.size());
+				int slot = slotsAdditives.get(i);
 				ret[i] = slot;
 			}
 			return ret;
