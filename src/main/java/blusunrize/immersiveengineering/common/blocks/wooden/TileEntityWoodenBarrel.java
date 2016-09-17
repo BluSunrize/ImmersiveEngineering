@@ -234,9 +234,15 @@ public class TileEntityWoodenBarrel extends TileEntityIEBase implements ITickabl
 		boolean metal = this instanceof TileEntityMetalBarrel;
 		if(f!=null)
 			if(!metal && f.getFluid().isGaseous(f))
+			{
 				ChatUtils.sendServerNoSpamMessages(player, new TextComponentTranslation(Lib.CHAT_INFO+"noGasAllowed"));
+				return true;
+			}
 			else if(!metal && f.getFluid().getTemperature(f)>=TileEntityWoodenBarrel.IGNITION_TEMPERATURE)
+			{
 				ChatUtils.sendServerNoSpamMessages(player, new TextComponentTranslation(Lib.CHAT_INFO+"tooHot"));
+				return true;
+			}
 
 		if(FluidUtil.interactWithFluidHandler(heldItem, tank, player))
 		{
