@@ -67,6 +67,8 @@ public abstract class ContainerInternalStorageItem extends Container
 						int space = Math.min(s.getItemStackLimit(stackInSlot), stackInSlot.getMaxStackSize());
 						if(s.getStack() != null)
 							space -= s.getStack().stackSize;
+						if(space <= 0)
+							continue;
 						ItemStack insert = stackInSlot;
 						if(space < stackInSlot.stackSize)
 							insert = stackInSlot.splitStack(space);
