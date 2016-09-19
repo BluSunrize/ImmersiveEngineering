@@ -24,7 +24,7 @@ public class AssemblerHandler
 	public static IRecipeAdapter findAdapterForClass(Class<? extends IRecipe> recipeClass)
 	{
 		IRecipeAdapter adapter = registry.get(recipeClass);
-		if(adapter == null && recipeClass != IRecipe.class)
+		if(adapter == null && recipeClass != IRecipe.class && recipeClass!=Object.class)
 		{
 			adapter = findAdapterForClass((Class<? extends IRecipe>)recipeClass.getSuperclass());
 			registry.put(recipeClass, adapter);

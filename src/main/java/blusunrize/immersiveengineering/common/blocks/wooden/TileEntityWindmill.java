@@ -24,6 +24,7 @@ public class TileEntityWindmill extends TileEntityIEBase implements ITickable, I
 	public float prevRotation=0;
 	public float rotation=0;
 	public float turnSpeed=0;
+	public float perTick = 0;
 
 	public boolean canTurn = false;
 
@@ -60,6 +61,7 @@ public class TileEntityWindmill extends TileEntityIEBase implements ITickable, I
 		prevRotation = (float) (turnSpeed*mod);
 		rotation += turnSpeed*mod;
 		rotation %= 1;
+		perTick = (float) (turnSpeed*mod);
 
 		if(!worldObj.isRemote)
 		{
