@@ -24,7 +24,7 @@ public class AssemblerHandler
 	public static IRecipeAdapter findAdapterForClass(Class<? extends IRecipe> recipeClass)
 	{
 		IRecipeAdapter adapter = registry.get(recipeClass);
-		if(adapter == null && recipeClass != IRecipe.class && recipeClass!=Object.class)
+		if(adapter == null && recipeClass != IRecipe.class && recipeClass.getSuperclass()!=Object.class)
 		{
 			adapter = findAdapterForClass((Class<? extends IRecipe>)recipeClass.getSuperclass());
 			registry.put(recipeClass, adapter);
@@ -40,6 +40,10 @@ public class AssemblerHandler
 	public interface IRecipeAdapter<R extends IRecipe>
 	{
 		RecipeQuery[] getQueriedInputs(R recipe);
+		default RecipeQuery[] getQueriedInputs(R recipe, ItemStack[] input)
+		{
+			return getQueriedInputs(recipe);
+		}
 	}
 
 	public static RecipeQuery createQuery(Object o)
