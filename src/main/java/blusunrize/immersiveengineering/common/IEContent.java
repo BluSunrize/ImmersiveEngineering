@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.common;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.ComparableItemStack;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.MultiblockHandler;
@@ -30,6 +31,7 @@ import blusunrize.immersiveengineering.common.blocks.plant.BlockTypes_Hemp;
 import blusunrize.immersiveengineering.common.blocks.stone.*;
 import blusunrize.immersiveengineering.common.blocks.wooden.*;
 import blusunrize.immersiveengineering.common.crafting.IEFuelHandler;
+import blusunrize.immersiveengineering.common.crafting.RecipeBannerAdvanced;
 import blusunrize.immersiveengineering.common.crafting.RecipeShapedIngredient;
 import blusunrize.immersiveengineering.common.crafting.RecipeShapelessIngredient;
 import blusunrize.immersiveengineering.common.entities.*;
@@ -60,6 +62,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityBanner;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
@@ -464,6 +467,20 @@ public class IEContent
 
 		/**POTIONS*/
 		IEPotions.init();
+
+		/**BANNERS*/
+		addBanner("hammer", "hmr", new ItemStack(itemTool,1,0));
+		addBanner("bevels", "bvl", "plateIron");
+		addBanner("ornate", "orn", "dustSilver");
+		addBanner("treatedwood", "twd", "plankTreatedWood");
+		addBanner("windmill", "wnd", new ItemStack[]{new ItemStack(blockWoodenDevice1,1,BlockTypes_WoodenDevice1.WINDMILL.getMeta()),new ItemStack(blockWoodenDevice1,1,BlockTypes_WoodenDevice1.WINDMILL_ADVANCED.getMeta())});
+		if(!BulletHandler.homingCartridges.isEmpty())
+		{
+			ItemStack wolfpackCartridge = BulletHandler.getBulletStack("wolfpack");
+			addBanner("wolf_r", "wlfr", wolfpackCartridge, 1);
+			addBanner("wolf_l", "wlfl", wolfpackCartridge, -1);
+			addBanner("wolf", "wlf", wolfpackCartridge, 0,0);
+		}
 
 		/**CONVEYORS*/
 		ConveyorHandler.registerMagnetSupression(new BiConsumer<Entity, IConveyorTile>()
@@ -889,5 +906,17 @@ public class IEContent
 		int[] values = Config.getIntArray("ore_"+config);
 		if(values!=null && values.length>=5 && values[0]>0)
 			IEWorldGen.addOreGen(config, state, values[0],values[1],values[2], values[3],values[4]);
+	}
+
+	public static void addBanner(String name, String id, Object item, int... offset)
+	{
+		name = ImmersiveEngineering.MODID+"_"+name;
+		id = "ie_"+id;
+		ItemStack craftingStack = null;
+		if(item instanceof ItemStack && (offset==null||offset.length<1))
+			craftingStack = (ItemStack)item;
+		TileEntityBanner.EnumBannerPattern e = EnumHelper.addEnum(TileEntityBanner.EnumBannerPattern.class, name.toUpperCase(), new Class[]{String.class, String.class, ItemStack.class}, name, id, craftingStack);
+		if(craftingStack==null)
+			RecipeBannerAdvanced.addAdvancedPatternRecipe(e, ApiUtils.createIngredientStack(item), offset);
 	}
 }
