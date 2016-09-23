@@ -18,6 +18,8 @@ import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -54,18 +56,32 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 {
 	static ConcurrentHashMap<BlockPos, Set<DirectionalFluidOutput>> indirectConnections = new ConcurrentHashMap<BlockPos, Set<DirectionalFluidOutput>>();
 	public static ArrayList<Function<ItemStack, Boolean>> validPipeCovers = new ArrayList();
+	public static ArrayList<Function<ItemStack, Boolean>> climbablePipeCovers = new ArrayList();
 	static{
+		final ArrayList<ItemStack> scaffolds = Lists.newArrayList(
+				new ItemStack(IEContent.blockWoodenDecoration, 1, BlockTypes_WoodenDecoration.SCAFFOLDING.getMeta()),
+				new ItemStack(IEContent.blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_0.getMeta()),
+				new ItemStack(IEContent.blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_1.getMeta()),
+				new ItemStack(IEContent.blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_2.getMeta()),
+				new ItemStack(IEContent.blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.ALUMINUM_SCAFFOLDING_0.getMeta()),
+				new ItemStack(IEContent.blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.ALUMINUM_SCAFFOLDING_1.getMeta()),
+				new ItemStack(IEContent.blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.ALUMINUM_SCAFFOLDING_2.getMeta()));
 		TileEntityFluidPipe.validPipeCovers.add(new Function<ItemStack, Boolean>()
 		{
-			ArrayList<ItemStack> scaffolds = Lists.newArrayList(
-					new ItemStack(IEContent.blockWoodenDecoration, 1, BlockTypes_WoodenDecoration.SCAFFOLDING.getMeta()),
-					new ItemStack(IEContent.blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_0.getMeta()),
-					new ItemStack(IEContent.blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_1.getMeta()),
-					new ItemStack(IEContent.blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_2.getMeta()),
-					new ItemStack(IEContent.blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.ALUMINUM_SCAFFOLDING_0.getMeta()),
-					new ItemStack(IEContent.blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.ALUMINUM_SCAFFOLDING_1.getMeta()),
-					new ItemStack(IEContent.blockMetalDecoration1, 1, BlockTypes_MetalDecoration1.ALUMINUM_SCAFFOLDING_2.getMeta()));
-
+			@Nullable
+			@Override
+			public Boolean apply(@Nullable ItemStack input)
+			{
+				if(input == null)
+					return Boolean.FALSE;
+				for(ItemStack stack : scaffolds)
+					if(OreDictionary.itemMatches(stack, input, false))
+						return Boolean.TRUE;
+				return Boolean.FALSE;
+			}
+		});
+		TileEntityFluidPipe.climbablePipeCovers.add(new Function<ItemStack, Boolean>()
+		{
 			@Nullable
 			@Override
 			public Boolean apply(@Nullable ItemStack input)
@@ -149,6 +165,46 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 			indirectConnections.clear();
 	}
 
+
+	@Override
+	public void onEntityCollision(World world, Entity entity)
+	{
+		if(!(entity instanceof EntityLivingBase) || ((EntityLivingBase)entity).isOnLadder() || pipeCover==null)
+			return;
+		else
+		{
+//			boolean climb = false;
+//			for(Function<ItemStack,Boolean> f : climbablePipeCovers)
+//				if(f!=null && f.apply(pipeCover)==Boolean.TRUE)
+//				{
+//					climb = true;
+//					break;
+//				}
+//			if(!climb)
+//				return;
+			float f5 = 0.15F;
+			if(entity.motionX<-f5)
+				entity.motionX=-f5;
+			if(entity.motionX>f5)
+				entity.motionX=f5;
+			if(entity.motionZ<-f5)
+				entity.motionZ=-f5;
+			if(entity.motionZ>f5)
+				entity.motionZ=f5;
+
+			entity.fallDistance=0f;
+			if(entity.motionY<-.15)
+				entity.motionY = -0.15D;
+
+			if(entity.motionY<0 && entity instanceof EntityPlayer && entity.isSneaking())
+			{
+				entity.motionY=.05;
+				return;
+			}
+			if(entity.isCollidedHorizontally)
+				entity.motionY=.2;
+		}
+	}
 
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
@@ -444,7 +500,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 		List<AxisAlignedBB> list = Lists.newArrayList();
 		if(pipeCover != null)
 		{
-			list.add(new AxisAlignedBB(0, 0, 0, 1, 1, 1).offset(getPos()));
+			list.add(new AxisAlignedBB(0, 0, 0, 1, 1, 1).expandXyz(-.03125f).offset(getPos()));
 			return list;
 		}
 		byte connections = getConnectionByte();

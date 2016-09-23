@@ -127,6 +127,12 @@ public class ImmersiveEngineering
 				if(opFunc.isPresent())
 					TileEntityFluidPipe.validPipeCovers.add(opFunc.get());
 			}
+			else if(message.key.equals("fluidpipeCoverClimb") && message.isFunctionMessage())
+			{
+				Optional<Function<ItemStack, Boolean>> opFunc = message.getFunctionValue(ItemStack.class, Boolean.class);
+				if(opFunc.isPresent())
+					TileEntityFluidPipe.climbablePipeCovers.add(opFunc.get());
+			}
 		}
 	}
 	@Mod.EventHandler

@@ -484,7 +484,7 @@ public class BlockIEBase<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 				float f5 = 0.15F;
 				if (entityIn.motionX < -f5)
 					entityIn.motionX = -f5;
-				if (entityIn.motionX > 5)
+				if (entityIn.motionX > f5)
 					entityIn.motionX = f5;
 				if (entityIn.motionZ < -f5)
 					entityIn.motionZ = -f5;
