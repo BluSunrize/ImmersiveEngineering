@@ -39,18 +39,8 @@
 }
 
 {
-  "uuid": [
-    "4ad51bb6-9612-457a-a143-a7ca01ed7107"
-  ],
-  "tag": "rose",
-  "flavour": "",
-  "baseUpgrades": {
-    "melee": 10.0
-  },
-  "renderAdditions": [
-    "bayonet_attachment",
-    "dev_bayonet"
-  ]
+  "uuid":["4ad51bb6-9612-457a-a143-a7ca01ed7107"],
+  "tag":"rose","flavour":"","baseUpgrades":{"melee":10.0},"renderAdditions":["bayonet_attachment","dev_bayonet"]
 }
 
 {
