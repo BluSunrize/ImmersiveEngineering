@@ -12,8 +12,6 @@ import javax.vecmath.Quat4d;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector3f;
 
-import com.google.common.collect.ImmutableList;
-
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
@@ -40,9 +38,6 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -1552,77 +1547,4 @@ public class ClientUtils
 		ret = (ret<<8)+(int)(255*rgb[2]);
 		return ret;
 	}
-	public static IBakedModel makeStaticBakedModel(IBakedModel base, IBlockState state)
-	{
-		try
-		{
-			List<BakedQuad> b = base.getQuads(state, null, 0);
-			List<BakedQuad> newQuads = new ArrayList<>();
-			for (BakedQuad quad:b)
-				newQuads.add(new SmartLightingQuad(quad.getVertexData(), -1, quad.getFace(), quad.getSprite(), quad.getFormat()));
-			return new ModelWrapper(ImmutableList.copyOf(newQuads), base.getParticleTexture(), base.getItemCameraTransforms(), base.getOverrides());
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-		return null;
-	}
-	private static class ModelWrapper implements IBakedModel
-	{
-		List<BakedQuad> quads;
-		TextureAtlasSprite particle;
-		ItemCameraTransforms transform;
-		ItemOverrideList overrides;
-		public ModelWrapper(List<BakedQuad> q, TextureAtlasSprite p, ItemCameraTransforms t, ItemOverrideList o)
-		{
-			quads = q;
-			particle = p;
-			transform = t;
-			overrides = o;
-		}
-		@Override
-		public List<BakedQuad> getQuads(IBlockState state, EnumFacing side, long rand)
-		{
-			return quads;
-		}
-
-		@Override
-		public boolean isAmbientOcclusion()
-		{
-			return false;
-		}
-
-		@Override
-		public boolean isGui3d()
-		{
-			return false;
-		}
-
-		@Override
-		public boolean isBuiltInRenderer()
-		{
-			return false;
-		}
-
-		@Override
-		public TextureAtlasSprite getParticleTexture()
-		{
-			return particle;
-		}
-
-		@Override
-		public ItemCameraTransforms getItemCameraTransforms()
-		{
-			return transform;
-		}
-
-		@Override
-		public ItemOverrideList getOverrides()
-		{
-			return overrides;
-		}
-		
-	}
-
 }

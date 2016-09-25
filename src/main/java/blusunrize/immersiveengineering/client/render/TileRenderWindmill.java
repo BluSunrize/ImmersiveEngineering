@@ -2,8 +2,6 @@ package blusunrize.immersiveengineering.client.render;
 
 import org.lwjgl.opengl.GL11;
 
-import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.client.models.SmartLightingQuad;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWindmill;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -12,18 +10,17 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
-import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.EnumFacing.AxisDirection;
 import net.minecraft.util.math.BlockPos;
 
 public class TileRenderWindmill extends TileEntitySpecialRenderer<TileEntityWindmill>
-//public class TileRenderWindmill extends FastTESR<TileEntityWindmill>
 {
-	static IBakedModel staticModel;
+	BakedModelTESRWrapper tesrWrapper;
 	@Override
 	public void renderTileEntityAt(TileEntityWindmill tile, double x, double y, double z, float partialTicks, int destroyStage)
 	//	public void renderTileEntityFast(TileEntityWindmill tile, double x, double y, double z, float partialTicks, int destroyStage, VertexBuffer vertexBuffer)
@@ -32,62 +29,38 @@ public class TileRenderWindmill extends TileEntitySpecialRenderer<TileEntityWind
 			return;
 		final BlockRendererDispatcher blockRenderer = Minecraft.getMinecraft().getBlockRendererDispatcher();
 		BlockPos blockPos = tile.getPos();
-		IBlockState state = getWorld().getBlockState(blockPos);
-		state = state.getActualState(getWorld(), blockPos);
-		if (staticModel==null)
-			staticModel = ClientUtils.makeStaticBakedModel(blockRenderer.getBlockModelShapes().getModelForState(state), state);
-
+		if (tesrWrapper==null)
+		{
+			IBlockState state = getWorld().getBlockState(blockPos);
+			state = state.getActualState(getWorld(), blockPos);
+			tesrWrapper = new BakedModelTESRWrapper(blockRenderer.getBlockModelShapes().getModelForState(state), state);
+		}
 		Tessellator tessellator = Tessellator.getInstance();
-		VertexBuffer worldRenderer = tessellator.getBuffer();
-		bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-		RenderHelper.disableStandardItemLighting();
 		GlStateManager.blendFunc(770, 771);
 		GlStateManager.enableBlend();
 		GlStateManager.disableCull();
-		if(Minecraft.isAmbientOcclusionEnabled())
-			GlStateManager.shadeModel(7425);
-		else
-			GlStateManager.shadeModel(7424);
 		GlStateManager.pushMatrix();
 		GlStateManager.translate(x + .5, y + .5, z + .5);
 
-		//		float dir = tile.facing == EnumFacing.SOUTH ? 180 : tile.facing == EnumFacing.NORTH ? 0 : tile.facing == EnumFacing.EAST ? 90 : 90;
-		float rot = 360 * (tile.rotation - (!tile.canTurn || tile.rotation == 0 ? 0 : tile.facing.getAxis() == Axis.X ? -partialTicks : partialTicks)*tile.perTick);
+				float dir = tile.facing == EnumFacing.SOUTH ? 180 : tile.facing == EnumFacing.NORTH ? 0 : tile.facing == EnumFacing.EAST ? 90 : 90;
+		float rot = 360 * (tile.rotation + (!tile.canTurn || tile.rotation == 0 ? 0 : partialTicks)*tile.perTick);
 		if(tile.facing.getAxisDirection() == AxisDirection.POSITIVE)
 			rot *= -1;
 
-		GlStateManager.rotate(180, tile.facing.getAxis() == Axis.Z ? 1 : 0, 0, tile.facing.getAxis() == Axis.X ? 1 : 0);
 		GlStateManager.rotate(rot, tile.facing.getAxis() == Axis.X ? 1 : 0, 0, tile.facing.getAxis() == Axis.Z ? 1 : 0);
-
+		GlStateManager.rotate(dir-90, 0, 1, 0);
+		
+		RenderHelper.disableStandardItemLighting();
+		Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+		VertexBuffer worldRenderer = tessellator.getBuffer();
 		worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
-		worldRenderer.setTranslation(-.5 - blockPos.getX(), -.5 - blockPos.getY(), -.5 - blockPos.getZ());
-		worldRenderer.color(255, 255, 255, 255);
-		SmartLightingQuad.staticBrightness = tile.getWorld().getCombinedLight(blockPos, 0);
-		blockRenderer.getBlockModelRenderer().renderModel(tile.getWorld(), staticModel, state, tile.getPos(), worldRenderer, true);
-		worldRenderer.setTranslation(0.0D, 0.0D, 0.0D);
+		worldRenderer.setTranslation(-.5, -.5, -.5);
+		tesrWrapper.render(worldRenderer, tile.getWorld().getCombinedLight(tile.getPos(), 0));
+		worldRenderer.setTranslation(0, 0, 0);
 		tessellator.draw();
 		GlStateManager.popMatrix();
-		RenderHelper.enableStandardItemLighting();
-
-		//		vertexBuffer.setTranslation(x - blockPos.getX(), y - blockPos.getY(), z - blockPos.getZ());
-		//		final Matrix4 mat = new Matrix4();
-		//		mat.rotate(Math.toRadians(90), 1, 0, 0);
-		//		mat.rotate(Math.toRadians(dir), 0, 0, 1);
-		//		mat.rotate(Math.toRadians(rot), 0, 1, 0);
-		//		IVertexTransformer transformer = (quad, type, usage, data) ->
-		//		{
-		//			if(usage == EnumUsage.POSITION)
-		//			{
-		//				Vector3f pos = new Vector3f(data);
-		//				pos.sub(new Vector3f(0.5F, 0.5F, 0.5F));
-		//				mat.apply(pos);
-		//				pos.add(new Vector3f(0.5F, 0.5F, 0.5F));
-		//				pos.get(data);
-		//			}
-		//			return data;
-		//		};
-		//		blockRenderer.getBlockModelRenderer().renderModel(tile.getWorld(), BakedModelTransformer.transform(model, transformer, state, 0), state, tile.getPos(), vertexBuffer, true);
-		//		vertexBuffer.setTranslation(0, 0, 0);
+	    RenderHelper.enableStandardItemLighting();
+		GlStateManager.disableBlend();
+		GlStateManager.enableCull();
 	}
-
 }
