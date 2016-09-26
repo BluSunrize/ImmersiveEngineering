@@ -148,7 +148,7 @@ public class Squeezer
 	}
 
 	@ZenMethod
-	public static void removeItemStack(IItemStack stack)
+	public static void removeItemRecipe(IItemStack stack)
 	{
 		if(CraftTweakerHelper.toStack(stack) != null)
 			MineTweakerAPI.apply(new RemoveStack(CraftTweakerHelper.toStack(stack)));

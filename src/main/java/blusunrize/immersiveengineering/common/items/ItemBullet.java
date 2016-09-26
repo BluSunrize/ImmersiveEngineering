@@ -349,55 +349,60 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 		public void onHitTarget(World world, RayTraceResult target, EntityLivingBase shooter, Entity projectile, boolean headshot)
 		{
 			super.onHitTarget(world, target, shooter, projectile, headshot);
-			EntityRevolvershot bullet = (EntityRevolvershot) projectile;
-			PotionType potionType = PotionUtils.getPotionFromItem(bullet.bulletPotion);
-			List<PotionEffect> effects = PotionUtils.getEffectsFromStack(bullet.bulletPotion);
-			if(effects != null)
-				if(bullet.bulletPotion.getItem() instanceof ItemLingeringPotion)
-				{
-					EntityAreaEffectCloud entityareaeffectcloud = new EntityAreaEffectCloud(bullet.worldObj, bullet.posX, bullet.posY, bullet.posZ);
-					entityareaeffectcloud.setOwner(shooter);
-					entityareaeffectcloud.setRadius(3.0F);
-					entityareaeffectcloud.setRadiusOnUse(-0.5F);
-					entityareaeffectcloud.setWaitTime(10);
-					entityareaeffectcloud.setRadiusPerTick(-entityareaeffectcloud.getRadius() / (float) entityareaeffectcloud.getDuration());
-					entityareaeffectcloud.setPotion(potionType);
-					for(PotionEffect potioneffect : effects)
-						entityareaeffectcloud.addEffect(new PotionEffect(potioneffect.getPotion(), potioneffect.getDuration(), potioneffect.getAmplifier()));
-					bullet.worldObj.spawnEntityInWorld(entityareaeffectcloud);
-				} else if(bullet.bulletPotion.getItem() instanceof ItemSplashPotion)
-				{
-					List<EntityLivingBase> livingEntities = bullet.worldObj.getEntitiesWithinAABB(EntityLivingBase.class, bullet.getEntityBoundingBox().expand(4.0D, 2.0D, 4.0D));
-					if(livingEntities != null && !livingEntities.isEmpty())
-						for(EntityLivingBase living : livingEntities)
-							if(living.canBeHitWithPotion())
-							{
-								double dist = bullet.getDistanceSqToEntity(living);
-								if(dist < 16D)
-								{
-									double dist2 = 1 - Math.sqrt(dist) / 4D;
-									if(living == target.entityHit)
-										dist2 = 1D;
-									for(PotionEffect p : effects)
-										if(p.getPotion().isInstant())
-											p.getPotion().affectEntity(bullet, shooter, living, p.getAmplifier(), dist2);
-										else
-										{
-											int j = (int) (dist2 * p.getDuration() + .5D);
-											if(j > 20)
-												living.addPotionEffect(new PotionEffect(p.getPotion(), j, p.getAmplifier()));
-										}
-								}
-							}
-
-				} else if(target.entityHit instanceof EntityLivingBase)
-					for(PotionEffect p : effects)
+			EntityRevolvershot bullet = (EntityRevolvershot)projectile;
+			if(bullet.bulletPotion != null && bullet.bulletPotion.hasTagCompound())
+			{
+				PotionType potionType = PotionUtils.getPotionFromItem(bullet.bulletPotion);
+				List<PotionEffect> effects = PotionUtils.getEffectsFromStack(bullet.bulletPotion);
+				if(effects != null)
+					if(bullet.bulletPotion.getItem() instanceof ItemLingeringPotion)
 					{
-						if(p.getDuration() < 1)
-							p = new PotionEffect(p.getPotion(), 1);
-						((EntityLivingBase) target.entityHit).addPotionEffect(p);
+						EntityAreaEffectCloud entityareaeffectcloud = new EntityAreaEffectCloud(bullet.worldObj, bullet.posX, bullet.posY, bullet.posZ);
+						entityareaeffectcloud.setOwner(shooter);
+						entityareaeffectcloud.setRadius(3.0F);
+						entityareaeffectcloud.setRadiusOnUse(-0.5F);
+						entityareaeffectcloud.setWaitTime(10);
+						entityareaeffectcloud.setRadiusPerTick(-entityareaeffectcloud.getRadius() / (float)entityareaeffectcloud.getDuration());
+						entityareaeffectcloud.setPotion(potionType);
+						for(PotionEffect potioneffect : effects)
+							entityareaeffectcloud.addEffect(new PotionEffect(potioneffect.getPotion(), potioneffect.getDuration(), potioneffect.getAmplifier()));
+						bullet.worldObj.spawnEntityInWorld(entityareaeffectcloud);
 					}
-			world.playEvent(2002, new BlockPos(bullet), PotionType.getID(potionType));
+					else if(bullet.bulletPotion.getItem() instanceof ItemSplashPotion)
+					{
+						List<EntityLivingBase> livingEntities = bullet.worldObj.getEntitiesWithinAABB(EntityLivingBase.class, bullet.getEntityBoundingBox().expand(4.0D, 2.0D, 4.0D));
+						if(livingEntities != null && !livingEntities.isEmpty())
+							for(EntityLivingBase living : livingEntities)
+								if(living.canBeHitWithPotion())
+								{
+									double dist = bullet.getDistanceSqToEntity(living);
+									if(dist < 16D)
+									{
+										double dist2 = 1 - Math.sqrt(dist) / 4D;
+										if(living == target.entityHit)
+											dist2 = 1D;
+										for(PotionEffect p : effects)
+											if(p.getPotion().isInstant())
+												p.getPotion().affectEntity(bullet, shooter, living, p.getAmplifier(), dist2);
+											else
+											{
+												int j = (int)(dist2 * p.getDuration() + .5D);
+												if(j > 20)
+													living.addPotionEffect(new PotionEffect(p.getPotion(), j, p.getAmplifier()));
+											}
+									}
+								}
+
+					}
+					else if(target.entityHit instanceof EntityLivingBase)
+						for(PotionEffect p : effects)
+						{
+							if(p.getDuration() < 1)
+								p = new PotionEffect(p.getPotion(), 1);
+							((EntityLivingBase)target.entityHit).addPotionEffect(p);
+						}
+				world.playEvent(2002, new BlockPos(bullet), PotionType.getID(potionType));
+			}
 		}
 
 
