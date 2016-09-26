@@ -111,7 +111,7 @@ public class IEItemFontRender extends FontRenderer
 			return customSpaceWidth;
 		return super.renderDefaultChar(ch, italic)+spacingModifier;
 	}
-	public float getCharWidthFloat(char character)
+	public float getCharWidthIEFloat(char character)
 	{
 		if(character==32)
 			return customSpaceWidth;
@@ -120,7 +120,7 @@ public class IEItemFontRender extends FontRenderer
 	@Override
 	public int getCharWidth(char character)
 	{
-		return (int)this.getCharWidthFloat(character);
+		return (int)this.getCharWidthIEFloat(character);
 	}
 	@Override
 	public int getStringWidth(String text)
@@ -134,7 +134,7 @@ public class IEItemFontRender extends FontRenderer
 			for(int j=0; j<text.length(); ++j)
 			{
 				char c0 = text.charAt(j);
-				float k = this.getCharWidthFloat(c0);
+				float k = this.getCharWidthIEFloat(c0);
 				if(k<0 && j<text.length()-1)
 				{
 					++j;
@@ -176,7 +176,7 @@ public class IEItemFontRender extends FontRenderer
 				case ' ':
 					l = k;
 				default:
-					j += this.getCharWidthFloat(c0);
+					j += this.getCharWidthIEFloat(c0);
 					if(flag)
 						++j;
 					break;
