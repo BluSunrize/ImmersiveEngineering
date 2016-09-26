@@ -1,7 +1,10 @@
 package blusunrize.immersiveengineering.client.render;
 
+import java.util.List;
+
 import org.lwjgl.opengl.GL11;
 
+import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWatermill;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -10,6 +13,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -18,17 +22,17 @@ import net.minecraft.util.EnumFacing.AxisDirection;
 
 public class TileRenderWatermill extends TileEntitySpecialRenderer<TileEntityWatermill>
 {
-	private static BakedModelTESRWrapper tesrWrapper;
+	private static List<BakedQuad> quads;
 	@Override
 	public void renderTileEntityAt(TileEntityWatermill tile, double x, double y, double z, float partialTicks, int destroyStage)
 	{
 		if (tile.isDummy()||!tile.getWorld().isBlockLoaded(tile.getPos(), false))
 			return;
-		if (tesrWrapper==null)
+		if (quads==null)
 		{
 			final BlockRendererDispatcher blockRenderer = Minecraft.getMinecraft().getBlockRendererDispatcher();
 			IBlockState state = tile.getWorld().getBlockState(tile.getPos());
-			tesrWrapper = new BakedModelTESRWrapper(blockRenderer.getModelForState(state), state);
+			quads = blockRenderer.getModelForState(state).getQuads(state, null, 0);
 		}
 		Tessellator tessellator = Tessellator.getInstance();
 		GlStateManager.pushMatrix();
@@ -50,7 +54,7 @@ public class TileRenderWatermill extends TileEntitySpecialRenderer<TileEntityWat
 		VertexBuffer worldRenderer = tessellator.getBuffer();
 		worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
 		worldRenderer.setTranslation(-.5, -.5, -.5);
-		tesrWrapper.render(worldRenderer, tile.getWorld().getCombinedLight(tile.getPos(), 0));
+		ClientUtils.renderModelTESR(quads, worldRenderer, tile.getWorld().getCombinedLight(tile.getPos(), 0));
 		worldRenderer.setTranslation(0, 0, 0);
 		tessellator.draw();
 		GlStateManager.popMatrix();

@@ -32,6 +32,8 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.model.PositionTextureVertex;
+import net.minecraft.client.model.TexturedQuad;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
@@ -1546,5 +1548,29 @@ public class ClientUtils
 		ret = (ret<<8)+(int)(255*rgb[1]);
 		ret = (ret<<8)+(int)(255*rgb[2]);
 		return ret;
+	}
+	public static void renderModelTESR(List<BakedQuad> quads, VertexBuffer renderer, int brightness)
+	{
+		int l1 = (brightness >> 0x10) & 0xFFFF;
+		int l2 = brightness & 0xFFFF;
+		for (BakedQuad quad : quads)
+		{
+			int[] vData = quad.getVertexData();
+			VertexFormat format = quad.getFormat();
+			int size = format.getIntegerSize();
+			int uv = format.getUvOffsetById(0)/4;
+			for (int i = 0; i < 4; ++i)
+			{
+				renderer
+				.pos(Float.intBitsToFloat(vData[size*i]),
+						Float.intBitsToFloat(vData[size*i+1]),
+						Float.intBitsToFloat(vData[size*i+2]))
+				.color(255, 255, 255, 255)
+				.tex(Float.intBitsToFloat(vData[size*i+uv]), Float.intBitsToFloat(vData[size*i+uv+1]))
+				.lightmap(l1, l2)
+				.endVertex();
+			}
+
+		}
 	}
 }

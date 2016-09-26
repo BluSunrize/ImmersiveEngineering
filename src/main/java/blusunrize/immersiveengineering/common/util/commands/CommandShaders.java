@@ -19,7 +19,7 @@ public class CommandShaders extends IESubCommand
 	}
 
 	@Override
-	public void perform(MinecraftServer server, ICommandSender sender, String[] args)
+	public void perform(CommandHandler h, MinecraftServer server, ICommandSender sender, String[] args)
 	{
 		if(args.length>1)
 		{
@@ -43,7 +43,7 @@ public class CommandShaders extends IESubCommand
 	}
 
 	@Override
-	public ArrayList<String> getSubCommands(MinecraftServer server, String[] args)
+	public ArrayList<String> getSubCommands(CommandHandler h, MinecraftServer server, String[] args)
 	{
 		ArrayList<String> list = new ArrayList<String>();
 		if(args.length>1)

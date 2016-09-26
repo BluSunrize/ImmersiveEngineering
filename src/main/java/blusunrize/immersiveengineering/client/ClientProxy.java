@@ -789,7 +789,7 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.Text(ManualHelper.getManual(), "excavator1"));
 		
 
-		ClientCommandHandler.instance.registerCommand(new CommandHandler());
+		ClientCommandHandler.instance.registerCommand(new CommandHandler(true));
 	}
 	@Override
 	public void postInitEnd()
