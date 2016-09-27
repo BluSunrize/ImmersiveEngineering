@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.common.entities;
 
+import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import net.minecraft.entity.EntityLivingBase;
@@ -16,14 +17,14 @@ public class EntityWolfpackShot extends EntityRevolvershotHoming
 		redirectionSpeed = .1875;
 	}
 
-	public EntityWolfpackShot(World world, double x, double y, double z, double ax, double ay, double az, String type)
+	public EntityWolfpackShot(World world, double x, double y, double z, double ax, double ay, double az, IBullet type)
 	{
 		super(world, x, y, z, ax, ay, az, type);
 		trackCountdown = 15;
 		redirectionSpeed = .1875;
 	}
 
-	public EntityWolfpackShot(World world, EntityLivingBase living, double ax, double ay, double az, String type, ItemStack stack)
+	public EntityWolfpackShot(World world, EntityLivingBase living, double ax, double ay, double az, IBullet type, ItemStack stack)
 	{
 		super(world, living, ax, ay, az, type, stack);
 		trackCountdown = 15;

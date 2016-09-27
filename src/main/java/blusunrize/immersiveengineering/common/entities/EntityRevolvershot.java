@@ -52,15 +52,19 @@ public class EntityRevolvershot extends Entity
 		this.setSize(.125f,.125f);
 	}
 
-	public EntityRevolvershot(World world, double x, double y, double z, double ax, double ay, double az, String type)
+	public EntityRevolvershot(World world, double x, double y, double z, double ax, double ay, double az, IBullet type)
 	{
 		super(world);
 		this.setSize(0.125F, 0.125F);
 		this.setLocationAndAngles(x, y, z, this.rotationYaw, this.rotationPitch);
 		this.setPosition(x, y, z);
-		this.bulletType = type;
+		this.bulletType = BulletHandler.findRegistryName(type);
 	}
 
+	public EntityRevolvershot(World world, EntityLivingBase living, double ax, double ay, double az, IBullet type, ItemStack stack)
+	{
+		this(world, living, ax, ay, az, BulletHandler.findRegistryName(type),stack);
+	}
 	public EntityRevolvershot(World world, EntityLivingBase living, double ax, double ay, double az, String type, ItemStack stack)
 	{
 		super(world);
@@ -249,6 +253,7 @@ public class EntityRevolvershot extends Entity
 		if(this.bulletType != null)
 		{
 			IBullet bullet = BulletHandler.getBullet(bulletType);
+			System.out.println("IBullet for "+bulletType+" is "+bullet);
 			if(bullet != null)
 				bullet.onHitTarget(worldObj, mop, this.shootingEntity, this, headshot);
 		}

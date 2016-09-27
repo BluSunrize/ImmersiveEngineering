@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.common.entities;
 
+import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -16,12 +17,12 @@ public class EntityRevolvershotHoming extends EntityRevolvershot
 		super(world);
 	}
 
-	public EntityRevolvershotHoming(World world, double x, double y, double z, double ax, double ay, double az, String type)
+	public EntityRevolvershotHoming(World world, double x, double y, double z, double ax, double ay, double az, IBullet type)
 	{
 		super(world, x, y, z, ax, ay, az, type);
 	}
 
-	public EntityRevolvershotHoming(World world, EntityLivingBase living, double ax, double ay, double az, String type, ItemStack stack)
+	public EntityRevolvershotHoming(World world, EntityLivingBase living, double ax, double ay, double az, IBullet type, ItemStack stack)
 	{
 		super(world, living, ax, ay, az, type, stack);
 	}

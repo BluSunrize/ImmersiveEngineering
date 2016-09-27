@@ -10,10 +10,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.*;
 import java.util.function.Function;
 
 /**
@@ -40,6 +37,14 @@ public class BulletHandler
 	public static IBullet getBullet(String name)
 	{
 		return registry.get(name);
+	}
+	public static String findRegistryName(IBullet bullet)
+	{
+		if(bullet!=null)
+			for(Map.Entry<String, IBullet> entry : registry.entrySet())
+				if(bullet.equals(entry.getValue()))
+					return entry.getKey();
+		return null;
 	}
 
 	public static ItemStack getBulletStack(String key)
@@ -142,6 +147,7 @@ public class BulletHandler
 		@Override
 		public void onHitTarget(World world, RayTraceResult target, EntityLivingBase shooter, Entity projectile, boolean headshot)
 		{
+			System.out.println("Hit "+target.entityHit+" with "+damageSourceGetter+" for "+damage);
 			if(!world.isRemote && target.entityHit != null && damageSourceGetter != null)
 				if(target.entityHit.attackEntityFrom(damageSourceGetter.apply(new Entity[]{projectile, shooter, target.entityHit}), getDamage(headshot)))
 				{
