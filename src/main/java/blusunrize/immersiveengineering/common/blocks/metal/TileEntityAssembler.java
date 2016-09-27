@@ -137,7 +137,7 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 					ArrayList<ItemStack> outputList = new ArrayList<ItemStack>();//List of all outputs for the current recipe. This includes discarded containers
 					outputList.add(output);
 					AssemblerHandler.IRecipeAdapter adapter = AssemblerHandler.findAdapter(pattern.recipe);
-					AssemblerHandler.RecipeQuery[] queries = adapter.getQueriedInputs(pattern.recipe);
+					AssemblerHandler.RecipeQuery[] queries = adapter.getQueriedInputs(pattern.recipe, pattern.inv);
 					ItemStack[] gridItems = new ItemStack[9];
 					for(int i = 0; i < queries.length; i++)
 						if(queries[i] != null)
@@ -252,7 +252,7 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 		boolean match = true;
 
 		AssemblerHandler.IRecipeAdapter adapter = AssemblerHandler.findAdapter(pattern.recipe);
-		AssemblerHandler.RecipeQuery[] queries = adapter.getQueriedInputs(pattern.recipe);
+		AssemblerHandler.RecipeQuery[] queries = adapter.getQueriedInputs(pattern.recipe, pattern.inv);
 		for(AssemblerHandler.RecipeQuery recipeQuery : queries)
 			if(recipeQuery != null && recipeQuery.query != null)
 			{

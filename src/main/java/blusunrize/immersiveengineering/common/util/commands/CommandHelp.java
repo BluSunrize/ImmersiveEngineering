@@ -19,14 +19,14 @@ public class CommandHelp extends IESubCommand
 	}
 
 	@Override
-	public void perform(MinecraftServer server, ICommandSender sender, String[] args)
+	public void perform(CommandHandler handler, MinecraftServer server, ICommandSender sender, String[] args)
 	{
 		if(args.length>1)
 		{
 			String sub = "";
 			for(int i=2;i<args.length;i++)
 				sub += "."+args[i];
-			for(IESubCommand com : CommandHandler.commands)
+			for(IESubCommand com : handler.commands)
 			{
 				if(com.getIdent().equalsIgnoreCase(args[1]))
 				{
@@ -43,17 +43,17 @@ public class CommandHelp extends IESubCommand
 				sender.addChatMessage(new TextComponentString(s));
 			String sub = "";
 			int i=0;
-			for(IESubCommand com : CommandHandler.commands)
+			for(IESubCommand com : handler.commands)
 				sub += ((i++)>0?", ":"")+com.getIdent();
 			sender.addChatMessage(new TextComponentTranslation(Lib.CHAT_COMMAND+"available",sub));
 		}
 	}
 
 	@Override
-	public ArrayList<String> getSubCommands(MinecraftServer server, String[] args)
+	public ArrayList<String> getSubCommands(CommandHandler h, MinecraftServer server, String[] args)
 	{
 		ArrayList<String> list = new ArrayList<>();
-		for(IESubCommand sub : CommandHandler.commands)
+		for(IESubCommand sub : h.commands)
 			if(sub!=this)
 			{
 				if(args.length==1)
@@ -65,7 +65,7 @@ public class CommandHelp extends IESubCommand
 				{
 					String[] redArgs = new String[args.length-1];
 					System.arraycopy(args, 1, redArgs, 0, redArgs.length);
-					ArrayList<String> subCommands = sub.getSubCommands(server, redArgs);
+					ArrayList<String> subCommands = sub.getSubCommands(h, server, redArgs);
 					if(subCommands!=null)
 						list.addAll(subCommands);
 				}

@@ -162,7 +162,7 @@ public class ImmersiveEngineering
 	public void serverStarting(FMLServerStartingEvent event)
 	{
 		proxy.serverStarting();
-		event.registerServerCommand(new CommandHandler());
+		event.registerServerCommand(new CommandHandler(false));
 	}
 	@Mod.EventHandler
 	public void serverStarted(FMLServerStartedEvent event)

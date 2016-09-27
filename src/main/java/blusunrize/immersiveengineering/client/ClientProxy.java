@@ -208,32 +208,32 @@ public class ClientProxy extends CommonProxy
 				.setTransformations(TransformType.GROUND, new Matrix4().translate(.125,.125,.0625).scale(.125,.125,.125)));
 
 
-		RenderingRegistry.registerEntityRenderingHandler(EntityRevolvershot.class, new IRenderFactory(){
+		RenderingRegistry.registerEntityRenderingHandler(EntityRevolvershot.class, new IRenderFactory<EntityRevolvershot>(){
 			@Override
 			public Render createRenderFor(RenderManager manager){
 				return new EntityRenderRevolvershot(manager);
 			}});
-		RenderingRegistry.registerEntityRenderingHandler(EntitySkylineHook.class, new IRenderFactory(){
+		RenderingRegistry.registerEntityRenderingHandler(EntitySkylineHook.class, new IRenderFactory<EntitySkylineHook>(){
 			@Override
 			public Render createRenderFor(RenderManager manager){
 				return new EntityRenderNone(manager);
 			}});
-		RenderingRegistry.registerEntityRenderingHandler(EntityChemthrowerShot.class, new IRenderFactory(){
+		RenderingRegistry.registerEntityRenderingHandler(EntityChemthrowerShot.class, new IRenderFactory<EntityChemthrowerShot>(){
 			@Override
 			public Render createRenderFor(RenderManager manager){
 				return new EntityRenderChemthrowerShot(manager);
 			}});
-		RenderingRegistry.registerEntityRenderingHandler(EntityRailgunShot.class, new IRenderFactory(){
+		RenderingRegistry.registerEntityRenderingHandler(EntityRailgunShot.class, new IRenderFactory<EntityRailgunShot>(){
 			@Override
 			public Render createRenderFor(RenderManager manager){
 				return new EntityRenderRailgunShot(manager);
 			}});
-		RenderingRegistry.registerEntityRenderingHandler(EntityIEExplosive.class, new IRenderFactory(){
+		RenderingRegistry.registerEntityRenderingHandler(EntityIEExplosive.class, new IRenderFactory<EntityIEExplosive>(){
 			@Override
 			public Render createRenderFor(RenderManager manager){
 				return new EntityRenderIEExplosive(manager);
 			}});
-		RenderingRegistry.registerEntityRenderingHandler(EntityFluorescentTube.class, new IRenderFactory(){
+		RenderingRegistry.registerEntityRenderingHandler(EntityFluorescentTube.class, new IRenderFactory<EntityFluorescentTube>(){
 			@Override
 			public Render createRenderFor(RenderManager manager){
 				return new EntityRenderFluorescentTube(manager);
@@ -394,7 +394,7 @@ public class ClientProxy extends CommonProxy
 		//WOOD
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityWatermill.class, new TileRenderWatermill());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityWindmill.class, new TileRenderWindmill());
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityWindmillAdvanced.class, new TileRenderWindmillAdvanced());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityWindmillAdvanced.class, new TileRenderWindmill());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityModWorkbench.class, new TileRenderWorkbench());
 		//		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityWallmount.class, new TileRenderWallmount());
 		//
@@ -789,7 +789,7 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.Text(ManualHelper.getManual(), "excavator1"));
 		
 
-		ClientCommandHandler.instance.registerCommand(new CommandHandler());
+		ClientCommandHandler.instance.registerCommand(new CommandHandler(true));
 	}
 	@Override
 	public void postInitEnd()

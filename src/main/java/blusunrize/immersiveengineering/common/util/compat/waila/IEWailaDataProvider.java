@@ -29,6 +29,7 @@ public class IEWailaDataProvider implements IWailaDataProvider
 		IEWailaDataProvider dataProvider = new IEWailaDataProvider();
 		registrar.registerBodyProvider(dataProvider, BlockIECrop.class);
 		registrar.registerBodyProvider(dataProvider, TileEntityWoodenBarrel.class);
+		registrar.registerNBTProvider(dataProvider, TileEntityWoodenBarrel.class);
 		registrar.registerStackProvider(dataProvider, TileEntityMultiblockPart.class);
 		
 		registrar.registerBodyProvider(dataProvider, IFluxReceiver.class);
@@ -75,7 +76,7 @@ public class IEWailaDataProvider implements IWailaDataProvider
 		if(tile instanceof TileEntityWoodenBarrel)
 		{
 			NBTTagCompound tank = accessor.getNBTData().getCompoundTag("tank");
-			if(!tank.hasKey("Empty"))
+			if(!tank.hasKey("Empty")&&!tank.hasNoTags())
 			{
 				FluidStack fluid = FluidStack.loadFluidStackFromNBT(tank);
 				currenttip.add(String.format("%s: %d / %d mB", fluid.getLocalizedName(), Integer.valueOf(fluid.amount), 12000));
@@ -115,6 +116,8 @@ public class IEWailaDataProvider implements IWailaDataProvider
 		}
 		tag.setInteger("Energy", cur);
 		tag.setInteger("MaxStorage", max);
+		if (te instanceof TileEntityWoodenBarrel)
+			tag.setTag("tank", ((TileEntityWoodenBarrel) te).tank.writeToNBT(new NBTTagCompound()));
 		return tag;
 	}
 }

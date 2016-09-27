@@ -39,18 +39,25 @@ public class SmartLightingQuad extends BakedQuad
 	BlockPos blockPos;
 	int[][] relativePos;
 	boolean ignoreLight;
-	public SmartLightingQuad(int[] vertexDataIn, int tintIndexIn, EnumFacing faceIn, TextureAtlasSprite spriteIn, VertexFormat format, BlockPos p, boolean noLight)
+	public static int staticBrightness;
+	public SmartLightingQuad(int[] vertexDataIn, int tintIndexIn, EnumFacing faceIn, TextureAtlasSprite spriteIn, VertexFormat format, BlockPos p)
 	{
 		super(vertexDataIn, tintIndexIn, faceIn, spriteIn, false, format);
-		ignoreLight = noLight;
 		blockPos = p;
 		relativePos = new int[4][];
+		ignoreLight = false;
 		for (int i = 0;i<4;i++)
 			relativePos[i] = new int[]{(int)Math.floor(Float.intBitsToFloat(vertexDataIn[7*i])),
 					(int)Math.floor(Float.intBitsToFloat(vertexDataIn[7*i+1])),
 					(int)Math.floor(Float.intBitsToFloat(vertexDataIn[7*i+2]))
 		};
 	}
+	public SmartLightingQuad(int[] vertexDataIn, int tintIndexIn, EnumFacing faceIn, TextureAtlasSprite spriteIn, VertexFormat format)
+	{
+		super(vertexDataIn, tintIndexIn, faceIn, spriteIn, false, format);
+		ignoreLight = true;
+	}
+
 	@Override
 	public void pipe(IVertexConsumer consumer)
 	{
@@ -84,19 +91,18 @@ public class SmartLightingQuad extends BakedQuad
 			for(int e = 0; e < count; e++)
 				if(eMap[e] != itemCount)
 				{
-					if (world!=null&&!(world instanceof ChunkCache)&&format.getElement(e).getUsage()==EnumUsage.UV&&format.getElement(e).getType()==EnumType.SHORT)//lightmap is UV with 2 shorts
+					if (format.getElement(e).getUsage()==EnumUsage.UV&&format.getElement(e).getType()==EnumType.SHORT)//lightmap is UV with 2 shorts
 					{
-						BlockPos here = blockPos.add(relativePos[v][0], relativePos[v][1], relativePos[v][2]);
-						int brightness = world.getCombinedLight(here, 0);
-						if (ignoreLight) {
-							data[0] = ((float)(15*0x20))/0xFFFF;
-							data[1] = ((float)(15*0x20))/0xFFFF;
+						int brightness;
+						if (!ignoreLight&&world!=null&&!(world instanceof ChunkCache))
+						{
+							BlockPos here = blockPos.add(relativePos[v][0], relativePos[v][1], relativePos[v][2]);
+							brightness = world.getCombinedLight(here, 0);
 						}
 						else
-						{
-							data[0] = ((float)((brightness >> 0x04) & 0xF) * 0x20) / 0xFFFF;
-							data[1] = ((float)((brightness >> 0x14) & 0xF) * 0x20) / 0xFFFF;
-						}
+							brightness = staticBrightness;
+						data[0] = ((float)((brightness >> 0x04) & 0xF) * 0x20) / 0xFFFF;
+						data[1] = ((float)((brightness >> 0x14) & 0xF) * 0x20) / 0xFFFF;
 					}
 					else
 						LightUtil.unpack(this.getVertexData(), data, DefaultVertexFormats.ITEM, v, eMap[e]);

@@ -1,5 +1,17 @@
 package blusunrize.immersiveengineering.client;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
+import javax.vecmath.Quat4d;
+
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.util.vector.Vector3f;
+
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
@@ -7,7 +19,11 @@ import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Conn
 import blusunrize.immersiveengineering.client.models.SmartLightingQuad;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.common.util.sound.IETileSound;
-import net.minecraft.block.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockChest;
+import net.minecraft.block.BlockEnderChest;
+import net.minecraft.block.BlockSign;
+import net.minecraft.block.BlockSkull;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -16,7 +32,13 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.renderer.*;
+import net.minecraft.client.model.PositionTextureVertex;
+import net.minecraft.client.model.TexturedQuad;
+import net.minecraft.client.renderer.BlockRendererDispatcher;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
@@ -42,11 +64,6 @@ import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidTank;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.util.vector.Vector3f;
-
-import javax.vecmath.Quat4d;
-import java.util.*;
 
 public class ClientUtils
 {
@@ -1426,7 +1443,7 @@ public class ClientUtils
 		u = vId>1?2:0;
 		putVertexData(format, builder, vertices[invert ? 0 : 3], faceNormal, uvs[u], uvs[1], sprite, colour, alpha[invert ? 0 : 3]);
 		BakedQuad tmp = builder.build();
-		return smartLighting?new SmartLightingQuad(tmp.getVertexData(), -1, facing, sprite, format, basePos, false):tmp;
+		return smartLighting?new SmartLightingQuad(tmp.getVertexData(), -1, facing, sprite, format, basePos):tmp;
 	}
 
 	protected static void putVertexData(VertexFormat format, UnpackedBakedQuad.Builder builder, Vector3f pos, Normal faceNormal, double u, double v, TextureAtlasSprite sprite, float[] colour, float alpha)
@@ -1531,5 +1548,29 @@ public class ClientUtils
 		ret = (ret<<8)+(int)(255*rgb[1]);
 		ret = (ret<<8)+(int)(255*rgb[2]);
 		return ret;
+	}
+	public static void renderModelTESR(List<BakedQuad> quads, VertexBuffer renderer, int brightness)
+	{
+		int l1 = (brightness >> 0x10) & 0xFFFF;
+		int l2 = brightness & 0xFFFF;
+		for (BakedQuad quad : quads)
+		{
+			int[] vData = quad.getVertexData();
+			VertexFormat format = quad.getFormat();
+			int size = format.getIntegerSize();
+			int uv = format.getUvOffsetById(0)/4;
+			for (int i = 0; i < 4; ++i)
+			{
+				renderer
+				.pos(Float.intBitsToFloat(vData[size*i]),
+						Float.intBitsToFloat(vData[size*i+1]),
+						Float.intBitsToFloat(vData[size*i+2]))
+				.color(255, 255, 255, 255)
+				.tex(Float.intBitsToFloat(vData[size*i+uv]), Float.intBitsToFloat(vData[size*i+uv+1]))
+				.lightmap(l1, l2)
+				.endVertex();
+			}
+
+		}
 	}
 }

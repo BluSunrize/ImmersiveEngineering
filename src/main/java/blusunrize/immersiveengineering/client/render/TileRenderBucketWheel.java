@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.client.render;
 
 import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBucketWheel;
@@ -26,6 +27,7 @@ import java.util.HashMap;
 
 public class TileRenderBucketWheel extends TileEntitySpecialRenderer<TileEntityBucketWheel>
 {
+	private static IBakedModel model = null;
 	@Override
 	public void renderTileEntityAt(TileEntityBucketWheel tile, double x, double y, double z, float f, int destroyStage)
 	{
@@ -35,9 +37,11 @@ public class TileRenderBucketWheel extends TileEntitySpecialRenderer<TileEntityB
 		IBlockState state = tile.getWorld().getBlockState(tile.getPos());
 		if(state.getBlock() != IEContent.blockMetalMultiblock)
 			return;
-		BlockPos blockPos = tile.getPos();
-		state = state.withProperty(IEProperties.DYNAMICRENDER, true);
-		IBakedModel model = blockRenderer.getModelForState(state);
+		if (model==null)
+		{
+			state = state.withProperty(IEProperties.DYNAMICRENDER, true);
+			model = blockRenderer.getModelForState(state);
+		}
 		if(state instanceof IExtendedBlockState)
 		{
 			ArrayList<String> list = Lists.newArrayList("bucketWheel");
@@ -57,19 +61,13 @@ public class TileRenderBucketWheel extends TileEntitySpecialRenderer<TileEntityB
 		}
 
 		Tessellator tessellator = Tessellator.getInstance();
-		VertexBuffer worldRenderer = tessellator.getBuffer();
-		bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-		RenderHelper.disableStandardItemLighting();
+		GlStateManager.pushMatrix();
+
+		GlStateManager.translate(x + .5, y + .5, z + .5);
+		GlStateManager.rotate(90, 1, 0, 0);
 		GlStateManager.blendFunc(770, 771);
 		GlStateManager.enableBlend();
 		GlStateManager.disableCull();
-		if(Minecraft.isAmbientOcclusionEnabled())
-			GlStateManager.shadeModel(7425);
-		else
-			GlStateManager.shadeModel(7424);
-		GlStateManager.pushMatrix();
-		GlStateManager.translate(x+.5, y+.5, z+.5);
-
 		EnumFacing facing = tile.facing;
 		GlStateManager.rotate(facing == EnumFacing.NORTH ? 90 : facing == EnumFacing.SOUTH ? -90 : facing == EnumFacing.WEST ? 180 : 0, 0, 1, 0);
 
@@ -82,15 +80,18 @@ public class TileRenderBucketWheel extends TileEntitySpecialRenderer<TileEntityB
 		float rot = tile.rotation + (float)(tile.active ? Config.getDouble("excavator_speed") * f : 0);
 		GlStateManager.rotate(rot, 1, 0, 0);
 
+		RenderHelper.disableStandardItemLighting();
+		Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+		VertexBuffer worldRenderer = tessellator.getBuffer();
 		worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
-		worldRenderer.setTranslation( -.5-blockPos.getX(), -.5- blockPos.getY(),  -.5-blockPos.getZ());
-		worldRenderer.color(255, 255, 255, 255);
-		blockRenderer.getBlockModelRenderer().renderModel(tile.getWorld(), model, state, tile.getPos(), worldRenderer, true);
-		worldRenderer.setTranslation(0.0D, 0.0D, 0.0D);
+		worldRenderer.setTranslation(-.5, -.5, -.5);
+		ClientUtils.renderModelTESR(model.getQuads(state, null, 0), worldRenderer, tile.getWorld().getCombinedLight(tile.getPos(), 0));
+		worldRenderer.setTranslation(0, 0, 0);
 		tessellator.draw();
 		GlStateManager.popMatrix();
 		RenderHelper.enableStandardItemLighting();
-
+		GlStateManager.disableBlend();
+		GlStateManager.enableCull();
 		if(tile.mirrored)
 		{
 			GlStateManager.enableCull();

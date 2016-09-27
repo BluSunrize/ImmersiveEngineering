@@ -12,23 +12,32 @@ import java.util.List;
 
 public class CommandHandler extends CommandBase
 {
-	static ArrayList<IESubCommand> commands = new ArrayList();
-	static
+	ArrayList<IESubCommand> commands = new ArrayList<>();
+	final String name;
+	public CommandHandler(boolean client)
 	{
 		commands.add(new CommandHelp());
-		commands.add(new CommandMineral());
-		commands.add(new CommandShaders());
-		commands.add(new CommandResetRenders());
+		if (client)
+		{
+			commands.add(new CommandResetRenders());
+			name = "cie";
+		}
+		else
+		{
+			commands.add(new CommandMineral());
+			commands.add(new CommandShaders());
+			name = "ie";
+		}
 	}
 
 	@Override
 	public String getCommandName()
 	{
-		return "ie";
+		return name;
 	}
 
 	@Override
-	public List getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
+	public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
 	{
 		ArrayList<String> list = new ArrayList<String>();
 		if(args.length>0)
@@ -43,7 +52,7 @@ public class CommandHandler extends CommandBase
 				{
 					String[] redArgs = new String[args.length-1];
 					System.arraycopy(args,1, redArgs,0, redArgs.length);
-					ArrayList<String> subCommands = sub.getSubCommands(server, redArgs);
+					ArrayList<String> subCommands = sub.getSubCommands(this, server, redArgs);
 					if(subCommands!=null)
 						list.addAll(subCommands);
 				}
@@ -56,9 +65,9 @@ public class CommandHandler extends CommandBase
 	{
 		String sub = "";
 		int i=0;
-		for(IESubCommand com : CommandHandler.commands)
+		for(IESubCommand com : commands)
 			sub += ((i++)>0?"|":"")+com.getIdent();
-		return "/ie <"+sub+">";
+		return "/"+name+" <"+sub+">";
 	}
 
 	@Override
@@ -68,13 +77,13 @@ public class CommandHandler extends CommandBase
 			for(IESubCommand com : commands)
 			{
 				if(com.getIdent().equalsIgnoreCase(args[0]))
-					com.perform(server, sender, args);
+					com.perform(this, server, sender, args);
 			}
 		else
 		{
 			String sub = "";
 			int i=0;
-			for(IESubCommand com : CommandHandler.commands)
+			for(IESubCommand com : commands)
 				sub += ((i++)>0?", ":"")+com.getIdent();
 			sender.addChatMessage(new TextComponentTranslation(Lib.CHAT_COMMAND+"available",sub));
 		}
@@ -83,11 +92,11 @@ public class CommandHandler extends CommandBase
 	public abstract static class IESubCommand
 	{
 		public abstract String getIdent();
-		public abstract void perform(MinecraftServer server, ICommandSender sender, String[] args);
+		public abstract void perform(CommandHandler h, MinecraftServer server, ICommandSender sender, String[] args);
 		public String getHelp(String subIdent)
 		{
 			return Lib.CHAT_COMMAND+getIdent()+subIdent+".help";
 		}
-		public abstract ArrayList<String> getSubCommands(MinecraftServer server, String[] args);
+		public abstract ArrayList<String> getSubCommands(CommandHandler h, MinecraftServer server, String[] args);
 	}
 }

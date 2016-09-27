@@ -19,13 +19,13 @@ public class CommandResetRenders extends IESubCommand
 	}
 
 	@Override
-	public void perform(MinecraftServer server, ICommandSender sender, String[] args)
+	public void perform(CommandHandler h, MinecraftServer server, ICommandSender sender, String[] args)
 	{
 		ImmersiveEngineering.proxy.clearRenderCaches();
 	}
 
 	@Override
-	public ArrayList<String> getSubCommands(MinecraftServer server, String[] args)
+	public ArrayList<String> getSubCommands(CommandHandler h, MinecraftServer server, String[] args)
 	{
 		return null;
 	}

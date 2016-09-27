@@ -46,6 +46,10 @@ public abstract class WireType
 	public abstract TextureAtlasSprite getIcon(Connection connection);
 	public abstract int getMaxLength();
 	public abstract ItemStack getWireCoil();
+	public ItemStack getWireCoil(Connection c)
+	{
+		return getWireCoil();
+	}
 	public abstract double getRenderDiameter();
 	public abstract boolean isEnergyWire();
 
