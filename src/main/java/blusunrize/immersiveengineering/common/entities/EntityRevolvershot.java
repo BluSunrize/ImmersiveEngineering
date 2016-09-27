@@ -253,7 +253,6 @@ public class EntityRevolvershot extends Entity
 		if(this.bulletType != null)
 		{
 			IBullet bullet = BulletHandler.getBullet(bulletType);
-			System.out.println("IBullet for "+bulletType+" is "+bullet);
 			if(bullet != null)
 				bullet.onHitTarget(worldObj, mop, this.shootingEntity, this, headshot);
 		}

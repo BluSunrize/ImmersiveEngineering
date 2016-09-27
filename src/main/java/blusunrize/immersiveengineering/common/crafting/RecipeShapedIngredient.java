@@ -6,7 +6,8 @@ import net.minecraft.init.Blocks;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.fluids.UniversalBucket;
+import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
 public class RecipeShapedIngredient extends ShapedOreRecipe
@@ -17,6 +18,7 @@ public class RecipeShapedIngredient extends ShapedOreRecipe
 	IngredientStack[] ingredientsQuarterTurn;
 	IngredientStack[] ingredientsEighthTurn;
 	int nbtCopyTargetSlot = -1;
+	int lastMatch = 0;
 	public RecipeShapedIngredient(ItemStack result, Object... recipe)
 	{
 		super(result, saveIngredients(recipe));
@@ -120,7 +122,8 @@ public class RecipeShapedIngredient extends ShapedOreRecipe
 			if(matrix.getStackInSlot(nbtCopyTargetSlot) != null && matrix.getStackInSlot(nbtCopyTargetSlot).hasTagCompound())
 				out.setTagCompound(matrix.getStackInSlot(nbtCopyTargetSlot).getTagCompound().copy());
 			return out;
-		} else
+		}
+		else
 			return super.getCraftingResult(matrix);
 	}
 
@@ -131,11 +134,14 @@ public class RecipeShapedIngredient extends ShapedOreRecipe
 		for(int i = 0; i < inv.getSizeInventory(); i++)
 		{
 			ItemStack s = inv.getStackInSlot(i);
-			if(s != null && remains[i] == null && s.getItem() instanceof UniversalBucket)
+			IngredientStack[] matchedIngr = lastMatch==1?ingredientsQuarterTurn: lastMatch==2?ingredientsEighthTurn: ingredients;
+			if(s!=null && remains[i]==null && matchedIngr[i]!=null && matchedIngr[i].fluid!=null)
 			{
-				ItemStack empty = ((UniversalBucket) s.getItem()).getEmpty();
-				if(empty != null)
-					remains[i] = empty.copy();
+				remains[i] = s.copy();
+				IFluidHandler handler = FluidUtil.getFluidHandler(remains[i]);
+				if(handler!=null)
+					handler.drain(matchedIngr[i].fluid.amount, true);
+
 			}
 		}
 		return remains;
@@ -145,11 +151,20 @@ public class RecipeShapedIngredient extends ShapedOreRecipe
 	protected boolean checkMatch(InventoryCrafting inv, int startX, int startY, boolean mirror)
 	{
 		if(checkMatchDo(inv, ingredients, startX, startY, mirror, false))
+		{
+			lastMatch = 0;
 			return true;
+		}
 		else if(ingredientsQuarterTurn != null && checkMatchDo(inv, ingredientsQuarterTurn, startX, startY, mirror, true))
+		{
+			lastMatch = 1;
 			return true;
+		}
 		else if(ingredientsEighthTurn != null && checkMatchDo(inv, ingredientsEighthTurn, startX, startY, mirror, false))
+		{
+			lastMatch = 2;
 			return true;
+		}
 		return false;
 	}
 

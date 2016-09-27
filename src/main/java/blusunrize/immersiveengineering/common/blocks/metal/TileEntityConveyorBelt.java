@@ -134,7 +134,6 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 		if(conveyorBeltSubtype != null && conveyorBeltSubtype.canBeDyed() && Utils.isDye(heldItem))
 		{
 			EnumDyeColor dye = EnumDyeColor.byDyeDamage(Utils.getDye(heldItem));
-			System.out.println("Setting dye to " + dye);
 			if(dye != null && conveyorBeltSubtype.setDyeColour(dye.getMapColor().colorValue))
 			{
 				this.markDirty();

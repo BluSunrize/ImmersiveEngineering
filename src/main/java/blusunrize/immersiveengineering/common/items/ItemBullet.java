@@ -514,13 +514,6 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 		}
 
 		@Override
-		public void onHitTarget(World world, RayTraceResult target, EntityLivingBase shooter, Entity projectile, boolean headshot)
-		{
-			System.out.println("hit dat.");
-			super.onHitTarget(world, target, shooter, projectile, headshot);
-		}
-
-		@Override
 		public int getColour(ItemStack stack, int layer)
 		{
 			return 0xffffffff;

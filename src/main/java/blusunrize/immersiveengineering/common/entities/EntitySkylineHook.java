@@ -213,7 +213,6 @@ public class EntitySkylineHook extends Entity
 		if(hook==null || !(hook.getItem() instanceof ItemSkyhook))
 			return;
 		Connection line = SkylineHelper.getTargetConnection(worldObj, target, player, connection);
-		System.out.println("New Connection to go down: " + line);
 		if(line!=null)
 		{
 			player.setActiveHand(player.getActiveHand());

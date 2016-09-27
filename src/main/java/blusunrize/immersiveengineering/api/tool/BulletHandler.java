@@ -147,7 +147,6 @@ public class BulletHandler
 		@Override
 		public void onHitTarget(World world, RayTraceResult target, EntityLivingBase shooter, Entity projectile, boolean headshot)
 		{
-			System.out.println("Hit "+target.entityHit+" with "+damageSourceGetter+" for "+damage);
 			if(!world.isRemote && target.entityHit != null && damageSourceGetter != null)
 				if(target.entityHit.attackEntityFrom(damageSourceGetter.apply(new Entity[]{projectile, shooter, target.entityHit}), getDamage(headshot)))
 				{
