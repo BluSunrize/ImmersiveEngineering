@@ -7,6 +7,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.fml.common.eventhandler.Cancelable;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -81,5 +84,44 @@ public class MultiblockHandler
 		 */
 		@SideOnly(Side.CLIENT)
 		void renderFormedStructure();
+	}
+
+	public static MultiblockFormEvent postMultiblockFormationEvent(EntityPlayer player, IMultiblock multiblock, BlockPos clickedBlock, ItemStack hammer)
+	{
+		MultiblockFormEvent event = new MultiblockFormEvent(player, multiblock, clickedBlock, hammer);
+		MinecraftForge.EVENT_BUS.post(event);
+		return event;
+	}
+
+	/**
+	 * This event is fired BEFORE the multiblock is attempted to be formed.<br>
+	 * No checks of the structure have been made. The event simply exists to cancel the formation of the multiblock before it ever happens.
+	 */
+	@Cancelable
+	public static class MultiblockFormEvent extends PlayerEvent
+	{
+		private final IMultiblock multiblock;
+		private final BlockPos clickedBlock;
+		private final ItemStack hammer;
+		public MultiblockFormEvent(EntityPlayer player, IMultiblock multiblock, BlockPos clickedBlock, ItemStack hammer)
+		{
+			super(player);
+			this.multiblock = multiblock;
+			this.clickedBlock = clickedBlock;
+			this.hammer = hammer;
+		}
+
+		public IMultiblock getMultiblock()
+		{
+			return multiblock;
+		}
+		public BlockPos getClickedBlock()
+		{
+			return clickedBlock;
+		}
+		public ItemStack getHammer()
+		{
+			return hammer;
+		}
 	}
 }

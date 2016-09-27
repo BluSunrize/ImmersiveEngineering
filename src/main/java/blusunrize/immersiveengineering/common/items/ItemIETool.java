@@ -20,6 +20,7 @@ import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IGuiItem;
 import blusunrize.immersiveengineering.common.util.*;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -33,6 +34,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -67,6 +69,35 @@ public class ItemIETool extends ItemIEBase implements ITool, IGuiItem
 			int[] link = ItemNBTHelper.getIntArray(stack, "linkingPos");
 			if(link!=null&&link.length>3)
 				list.add(I18n.format(Lib.DESC_INFO+"attachedToDim", link[1],link[2],link[3],link[0]));
+		}
+		if(stack.getItemDamage()==0)
+		{
+			if(ItemNBTHelper.hasKey(stack, "multiblockPermission"))
+			{
+				NBTTagList tagList = stack.getTagCompound().getTagList("multiblockPermission", 8);
+				String s = I18n.format(Lib.DESC_INFO+"multiblocksAllowed");
+				if(!GuiScreen.isShiftKeyDown())
+					list.add(s+" "+I18n.format(Lib.DESC_INFO+"holdShift"));
+				else
+				{
+					list.add(s);
+					for(int i=0; i<tagList.tagCount(); i++)
+						list.add(TextFormatting.DARK_GRAY+" "+I18n.format(Lib.DESC_INFO+"multiblock."+tagList.getStringTagAt(i)));
+				}
+			}
+			if(ItemNBTHelper.hasKey(stack, "multiblockInterdiction"))
+			{
+				NBTTagList tagList = stack.getTagCompound().getTagList("multiblockInterdiction", 8);
+				String s = I18n.format(Lib.DESC_INFO+"multiblockForbidden");
+				if(!GuiScreen.isShiftKeyDown())
+					list.add(s+" "+I18n.format(Lib.DESC_INFO+"holdShift"));
+				else
+				{
+					list.add(s);
+					for(int i=0; i<tagList.tagCount(); i++)
+						list.add(TextFormatting.DARK_GRAY+" "+I18n.format(Lib.DESC_INFO+"multiblock."+tagList.getStringTagAt(i)));
+				}
+			}
 		}
 		if(adv && stack.getItemDamage()<2)
 		{
@@ -120,7 +151,15 @@ public class ItemIETool extends ItemIEBase implements ITool, IGuiItem
 		{
 			if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
 				return EnumActionResult.PASS;
+			String[] permittedMultiblocks = null;
 			String[] interdictedMultiblocks = null;
+			if(ItemNBTHelper.hasKey(stack, "multiblockPermission"))
+			{
+				NBTTagList list = stack.getTagCompound().getTagList("multiblockPermission", 8);
+				permittedMultiblocks = new String[list.tagCount()];
+				for(int i = 0; i < permittedMultiblocks.length; i++)
+					permittedMultiblocks[i] = list.getStringTagAt(i);
+			}
 			if(ItemNBTHelper.hasKey(stack, "multiblockInterdiction"))
 			{
 				NBTTagList list = stack.getTagCompound().getTagList("multiblockInterdiction", 8);
@@ -131,17 +170,35 @@ public class ItemIETool extends ItemIEBase implements ITool, IGuiItem
 			for(IMultiblock mb : MultiblockHandler.getMultiblocks())
 				if(mb.isBlockTrigger(world.getBlockState(pos)))
 				{
+					boolean b = permittedMultiblocks==null;
+					if(permittedMultiblocks != null)
+						for(String s : permittedMultiblocks)
+							if(mb.getUniqueName().equalsIgnoreCase(s))
+							{
+								b = true;
+								continue;
+							}
+					if(!b)
+						break;
 					if(interdictedMultiblocks != null)
 						for(String s : interdictedMultiblocks)
 							if(mb.getUniqueName().equalsIgnoreCase(s))
-								return EnumActionResult.FAIL;
+							{
+								b = false;
+								continue;
+							}
+					if(!b)
+						break;
+					if(MultiblockHandler.postMultiblockFormationEvent(player, mb, pos, stack).isCanceled())
+						continue;
 					if(mb.createStructure(world, pos, side, player))
 						return EnumActionResult.SUCCESS;
 				}
 			TileEntity tile = world.getTileEntity(pos);
 			if(!(tile instanceof IDirectionalTile) && !(tile instanceof IHammerInteraction) && !(tile instanceof IConfigurableSides))
 				return RotationUtil.rotateBlock(world, pos, side, player) ? EnumActionResult.SUCCESS : EnumActionResult.PASS;
-		} else if(stack.getItemDamage() == 1 && tileEntity instanceof IImmersiveConnectable && !world.isRemote)
+		}
+		else if(stack.getItemDamage() == 1 && tileEntity instanceof IImmersiveConnectable && !world.isRemote)
 		{
 			IImmersiveConnectable nodeHere = (IImmersiveConnectable) tileEntity;
 			ImmersiveNetHandler.INSTANCE.clearAllConnectionsFor(Utils.toCC(nodeHere), world, new TargetingInfo(side, hitX, hitY, hitZ));
@@ -156,7 +213,8 @@ public class ItemIETool extends ItemIEBase implements ITool, IGuiItem
 				player.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, null);
 			}
 			return EnumActionResult.SUCCESS;
-		} else if(stack.getItemDamage() == 2 && !world.isRemote)
+		}
+		else if(stack.getItemDamage() == 2 && !world.isRemote)
 		{
 			if(!player.isSneaking() && (tileEntity instanceof IFluxReceiver || tileEntity instanceof IFluxProvider))
 			{
