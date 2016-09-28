@@ -173,15 +173,15 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 			return;
 		else
 		{
-//			boolean climb = false;
-//			for(Function<ItemStack,Boolean> f : climbablePipeCovers)
-//				if(f!=null && f.apply(pipeCover)==Boolean.TRUE)
-//				{
-//					climb = true;
-//					break;
-//				}
-//			if(!climb)
-//				return;
+			boolean climb = false;
+			for(Function<ItemStack,Boolean> f : climbablePipeCovers)
+				if(f!=null && f.apply(pipeCover)==Boolean.TRUE)
+				{
+					climb = true;
+					break;
+				}
+			if(!climb)
+				return;
 			float f5 = 0.15F;
 			if(entity.motionX<-f5)
 				entity.motionX=-f5;
