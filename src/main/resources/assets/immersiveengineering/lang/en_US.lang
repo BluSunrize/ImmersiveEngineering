@@ -173,6 +173,7 @@ tile.immersiveengineering.metalMultiblock.diesel_generator.name=Diesel Generator
 tile.immersiveengineering.metalMultiblock.excavator.name=Excavator
 tile.immersiveengineering.metalMultiblock.bucket_wheel.name=Bucket Wheel
 tile.immersiveengineering.metalMultiblock.arc_furnace.name=Arc Furnace
+tile.immersiveengineering.metalMultiblock.lightningrod.name=Lightning Rod
 
 tile.immersiveengineering.metalDecoration.structuralArm.name=Structural Arm
 
@@ -635,6 +636,7 @@ desc.immersiveengineering.info.multiblock.IE:Crusher=Crusher
 desc.immersiveengineering.info.multiblock.IE:DieselGenerator=Diesel Generator
 desc.immersiveengineering.info.multiblock.IE:Excavator=Excavator
 desc.immersiveengineering.info.multiblock.IE:Fermenter=Fermenter
+desc.immersiveengineering.info.multiblock.IE:Lightningrod=Lightning Rod
 desc.immersiveengineering.info.multiblock.IE:MetalPress=Metal Press
 desc.immersiveengineering.info.multiblock.IE:Refinery=Refinery
 desc.immersiveengineering.info.multiblock.IE:SheetmetalTank=Tank
@@ -1245,8 +1247,7 @@ ie.manual.entry.crusher1=Applying a redstone signal to the control panel at the 
 ie.manual.entry.lightningrod.name=Lightning Rod
 ie.manual.entry.lightningrod.subtext=Thunderstruck!
 ie.manual.entry.lightningrod0=Lightning is a phenomenon of nature. It contains a huge amount of raw power, and this lightning rod is able to harness that power.<br>By stacking a lot of steel fences on this multiblock, you increase the chance of a lightning bolt striking it during rain or thunderstorms.
-ie.manual.entry.lightningrod1=When the steel pole is struck, the huge amounts of energy created are stored in the base of the lightning rod and is then slowly distributed to energy connections at the sides.<br><br>The structure is created as shown above, and formed by clicking the central block with an Engineer's Hammer.
-ie.manual.entry.lightningrod2=You can improve the chances of the Lightning Rod getting struck by creating a "net" of steel fences connected to the topmost fence.
+ie.manual.entry.lightningrod1=When the steel pole is struck, the huge amounts of energy created are stored in the base of the lightning rod and then slowly distributed to the energy connections at the sides.<br><br>You can improve the chances of the Lightning Rod getting struck by creating a "net" of steel fences connected to the topmost fence.
 
 ie.manual.entry.minerals.name=Mineral Deposits
 ie.manual.entry.minerals.subtext=Oresome

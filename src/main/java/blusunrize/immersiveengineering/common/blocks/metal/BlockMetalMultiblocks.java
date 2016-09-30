@@ -59,34 +59,36 @@ public class BlockMetalMultiblocks extends BlockIEMultiblock<BlockTypes_MetalMul
 	{
 		switch(BlockTypes_MetalMultiblock.values()[meta])
 		{
-		case METAL_PRESS:
-			return new TileEntityMetalPress();
-		case CRUSHER:
-			return new TileEntityCrusher();
-		case TANK:
-			return new TileEntitySheetmetalTank();
-		case SILO:
-			return new TileEntitySilo();
-		case ASSEMBLER:
-			return new TileEntityAssembler();
+			case METAL_PRESS:
+				return new TileEntityMetalPress();
+			case CRUSHER:
+				return new TileEntityCrusher();
+			case TANK:
+				return new TileEntitySheetmetalTank();
+			case SILO:
+				return new TileEntitySilo();
+			case ASSEMBLER:
+				return new TileEntityAssembler();
 			//		case AUTO_WORKBENCH:
 			//			return new TileEntityAssembler();
 			//		case BOTTLING_MACHINE:
 			//			return new TileEntityAssembler();
-		case SQUEEZER:
-			return new TileEntitySqueezer();
-		case FERMENTER:
-			return new TileEntityFermenter();
-		case REFINERY:
-			return new TileEntityRefinery();
-		case DIESEL_GENERATOR:
-			return new TileEntityDieselGenerator();
-		case EXCAVATOR:
-			return new TileEntityExcavator();
-		case BUCKET_WHEEL:
-			return new TileEntityBucketWheel();
-		case ARC_FURNACE:
-			return new TileEntityArcFurnace();
+			case SQUEEZER:
+				return new TileEntitySqueezer();
+			case FERMENTER:
+				return new TileEntityFermenter();
+			case REFINERY:
+				return new TileEntityRefinery();
+			case DIESEL_GENERATOR:
+				return new TileEntityDieselGenerator();
+			case EXCAVATOR:
+				return new TileEntityExcavator();
+			case BUCKET_WHEEL:
+				return new TileEntityBucketWheel();
+			case ARC_FURNACE:
+				return new TileEntityArcFurnace();
+			case LIGHTNINGROD:
+				return new TileEntityLightningrod();
 
 			//		case META_lightningRod:
 			//			return new TileEntityLightningRod();

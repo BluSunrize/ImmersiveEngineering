@@ -636,11 +636,10 @@ public class ClientProxy extends CommonProxy
 				//,
 				//				new ManualPages.Table(ManualHelper.getManual(), "dieselgen3", table, false)
 		);
-		//		ManualHelper.addEntry("lightningrod", ManualHelper.CAT_ENERGY,
-		//				new ManualPages.Crafting(ManualHelper.getManual(), "lightningrod0",  new ItemStack(IEContent.blockMetalMultiblocks,1,BlockMetalMultiblocks.META_lightningRod)),
-		//				new ManualPageMultiblock(ManualHelper.getManual(), "lightningrod1", MultiblockLightningRod.instance),
-		//				new ManualPages.Text(ManualHelper.getManual(), "lightningrod2"));
-		//
+		ManualHelper.addEntry("lightningrod", ManualHelper.CAT_ENERGY,
+				new ManualPageMultiblock(ManualHelper.getManual(), "lightningrod0", MultiblockLightningrod.instance),
+				new ManualPages.Text(ManualHelper.getManual(), "lightningrod1"));
+
 		ManualHelper.addEntry("conveyor", ManualHelper.CAT_MACHINES,
 				new ManualPages.Crafting(ManualHelper.getManual(), "conveyor0", ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID + ":conveyor")),
 				new ManualPages.Text(ManualHelper.getManual(), "conveyor1"),
@@ -787,7 +786,7 @@ public class ClientProxy extends CommonProxy
 				new ManualPageMultiblock(ManualHelper.getManual(), "", MultiblockBucketWheel.instance),
 				new ManualPageMultiblock(ManualHelper.getManual(), "", MultiblockExcavatorDemo.instance),
 				new ManualPages.Text(ManualHelper.getManual(), "excavator1"));
-		
+
 
 		ClientCommandHandler.instance.registerCommand(new CommandHandler(true));
 	}

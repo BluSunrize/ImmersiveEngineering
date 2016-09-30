@@ -63,6 +63,21 @@
 				"translation": [ 0, 0, 0 ]
 			}
 		}],
+		"inventory,type=lightningrod": [{
+			"model": "immersiveengineering:metalMultiblock/lightningrod.obj",
+			"transform": {
+				"scale": 0.25,
+				"rotation": [
+					{
+						"x": 20
+					},
+					{
+						"y": -45
+					}
+				],
+				"translation": [ 0, 0, 0 ]
+			}
+		}],
 		"type":
 		{
 			"tank": {
@@ -79,6 +94,9 @@
 			"refinery": {
 			},
 			"arc_furnace": {
+			},
+			"lightningrod": {
+				"model": "immersiveengineering:metalMultiblock/lightningrod.obj"
 			}
 		},
 		"facing":

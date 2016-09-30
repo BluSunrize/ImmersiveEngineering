@@ -288,6 +288,7 @@ public class IEContent
 		OreDictionary.registerOre("stickIron", new ItemStack(itemMaterial,1,1));
 		OreDictionary.registerOre("stickSteel", new ItemStack(itemMaterial,1,2));
 		OreDictionary.registerOre("stickAluminum", new ItemStack(itemMaterial,1,3));
+		OreDictionary.registerOre("fiberHemp", new ItemStack(itemMaterial,1,4));
 		OreDictionary.registerOre("fabricHemp", new ItemStack(itemMaterial,1,5));
 		OreDictionary.registerOre("fuelCoke", new ItemStack(itemMaterial,1,6));
 		OreDictionary.registerOre("itemSlag", new ItemStack(itemMaterial,1,7));
@@ -421,7 +422,6 @@ public class IEContent
 		registerTile(TileEntityAssembler.class);
 		//		registerTile(TileEntityAutoWorkbench.class);
 		//		registerTile(TileEntityBottlingMachine.class);
-		//		registerTile(TileEntityLightningRod.class);
 		registerTile(TileEntitySqueezer.class);
 		registerTile(TileEntityFermenter.class);
 		registerTile(TileEntityRefinery.class);
@@ -429,6 +429,7 @@ public class IEContent
 		registerTile(TileEntityBucketWheel.class);
 		registerTile(TileEntityExcavator.class);
 		registerTile(TileEntityArcFurnace.class);
+		registerTile(TileEntityLightningrod.class);
 		//
 		//		registerTile(TileEntitySkycrateDispenser.class);
 		//		registerTile(TileEntityFloodlight.class);
@@ -720,10 +721,10 @@ public class IEContent
 		MultiblockHandler.registerMultiblock(MultiblockFermenter.instance);
 		MultiblockHandler.registerMultiblock(MultiblockRefinery.instance);
 		MultiblockHandler.registerMultiblock(MultiblockDieselGenerator.instance);
-		//		MultiblockHandler.registerMultiblock(MultiblockLightningRod.instance);
-		MultiblockHandler.registerMultiblock(MultiblockExcavator.instance);
+			MultiblockHandler.registerMultiblock(MultiblockExcavator.instance);
 		MultiblockHandler.registerMultiblock(MultiblockBucketWheel.instance);
 		MultiblockHandler.registerMultiblock(MultiblockArcFurnace.instance);
+		MultiblockHandler.registerMultiblock(MultiblockLightningrod.instance);
 
 		/**ACHIEVEMENTS*/
 		IEAchievements.init();

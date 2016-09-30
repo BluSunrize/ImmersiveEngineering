@@ -101,7 +101,7 @@ public class Config
 		//Generators
 		setDouble("dynamo_output", config.get("machines", "Dynamo: Output", 3d, "The base Flux that is output by the dynamo. This will be modified by the rotation modifier of the attached water- or windmill").getDouble());
 		setDouble("thermoelectric_output", config.get("machines", "Thermoelectric: Output", 1d, "Output modifier for the energy created by the Thermoelectric Generator").getDouble());
-		//setInt("lightning_output", config.get("machines", "Lightning Rod: Output", 4*4000000, "The Flux that will be output by the lightning rod when it is struck").getInt());
+		setInt("lightning_output", config.get("machines", "Lightning Rod: Output", 4*4000000, "The Flux that will be output by the lightning rod when it is struck").getInt());
 		setInt("dieselGen_output", config.get("machines", "Diesel Generator: Output", 4096, "The Flux per tick that the Diesel Generator will output. The burn time of the fuel determines the total output").getInt());
 
 		//Simple Machines

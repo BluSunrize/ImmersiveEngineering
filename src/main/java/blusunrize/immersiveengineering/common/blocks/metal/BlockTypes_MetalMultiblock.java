@@ -1,9 +1,9 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import java.util.Locale;
-
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
 import net.minecraft.util.IStringSerializable;
+
+import java.util.Locale;
 
 public enum BlockTypes_MetalMultiblock implements IStringSerializable, BlockIEBase.IBlockEnum
 {
@@ -20,7 +20,8 @@ public enum BlockTypes_MetalMultiblock implements IStringSerializable, BlockIEBa
 	DIESEL_GENERATOR(true),
 	EXCAVATOR(true),
 	BUCKET_WHEEL(true),
-	ARC_FURNACE(true);
+	ARC_FURNACE(true),
+	LIGHTNINGROD(false);
 
 	private boolean needsCustomState;
 	BlockTypes_MetalMultiblock(boolean needsCustomState)
