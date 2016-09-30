@@ -43,7 +43,7 @@ public class TileRenderWindmill extends TileEntitySpecialRenderer<TileEntityWind
 		GlStateManager.pushMatrix();
 		GlStateManager.translate(x + .5, y + .5, z + .5);
 
-		float dir = tile.facing == EnumFacing.SOUTH ? 180 : tile.facing == EnumFacing.NORTH ? 0 : tile.facing == EnumFacing.EAST ? -90 : 90;
+		float dir = tile.facing == EnumFacing.SOUTH ? 0 : tile.facing == EnumFacing.NORTH ? 180 : tile.facing == EnumFacing.EAST ? 90 : -90;
 		float rot = 360 * (tile.rotation + (!tile.canTurn || tile.rotation == 0 ? 0 : partialTicks)*tile.perTick);
 		if(tile.facing.getAxisDirection() == AxisDirection.NEGATIVE)
 			rot *= -1;
