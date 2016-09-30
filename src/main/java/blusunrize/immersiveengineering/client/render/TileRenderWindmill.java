@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.client.render;
 
+import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWindmill;
 import net.minecraft.block.state.IBlockState;
@@ -32,6 +33,7 @@ public class TileRenderWindmill extends TileEntitySpecialRenderer<TileEntityWind
 		{
 			IBlockState state = getWorld().getBlockState(blockPos);
 			state = state.getActualState(getWorld(), blockPos);
+			state = state.withProperty(IEProperties.FACING_ALL, EnumFacing.NORTH);
 			quads = blockRenderer.getBlockModelShapes().getModelForState(state).getQuads(state, null, 0);
 		}
 		Tessellator tessellator = Tessellator.getInstance();
