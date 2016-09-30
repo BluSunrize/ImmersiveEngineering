@@ -1,26 +1,13 @@
 package blusunrize.immersiveengineering.common.crafting;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Sets;
-
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemArmor;
-import net.minecraft.item.ItemHoe;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemSword;
-import net.minecraft.item.ItemTool;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Sets;
+import net.minecraft.item.*;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapedRecipes;
@@ -28,6 +15,8 @@ import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
+
+import java.util.*;
 
 public class ArcRecyclingThreadHandler
 {
@@ -43,12 +32,10 @@ public class ArcRecyclingThreadHandler
 					prevRecipeIt.remove();
 					r++;
 				}
-		IELogger.info("Removed "+r+" old recipes");
-
 		long timestamp = System.currentTimeMillis();
 		int threadAmount = Runtime.getRuntime().availableProcessors();
 		RegistryIterationThread[] threads = new RegistryIterationThread[threadAmount];
-		IELogger.info("Starting recipe profiler for Arc Recycling, using "+threadAmount+" Threads");
+		IELogger.info("Starting recipe profiler for Arc Recycling, using "+threadAmount+" Threads, removed "+r+" old recipes");
 
 
 		final List<IRecipe> recipeList = CraftingManager.getInstance().getRecipeList();
@@ -113,7 +100,7 @@ public class ArcRecyclingThreadHandler
 		for(RecyclingCalculation invalid :  Sets.newHashSet(nonValidated.values()))
 			if(finishedRecycles.add(invalid.stack.toString()))
 			{
-				IELogger.info("Couldn't fully analyze "+invalid.stack+", missing knowledge for "+invalid.queriedSubcomponents);
+//				IELogger.info("Couldn't fully analyze "+invalid.stack+", missing knowledge for "+invalid.queriedSubcomponents);
 				ArcFurnaceRecipe.recipeList.add(new ArcRecyclingRecipe(invalid.outputs, invalid.stack, 100, 512));
 			}
 		IELogger.info("Finished recipe profiler for Arc Recycling, took "+(System.currentTimeMillis()-timestamp)+" milliseconds");

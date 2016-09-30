@@ -1,3 +1,24 @@
+#####Version 0.10-43
+- added version dependency for TCon to prevent further reports of that
+- added Banners! They look awesome! Shoutouts to Tris for making all the textures!
+- re-added the ability to climb scaffolding on pipes
+- re-added the Lightning Rod!
+- expanded the "allow" and "interdict" functions on the Hammer in regards to multiblocks
+- expended the API on wires for an addon
+- greatly improved renderperformance on waterwheels and windmills (thanks Malte)
+- fixed wooden barrels not being toggleable
+- fixed wooden barrels acceptign invalid fluids
+- fixed side-solidity on pumps
+- fixed changelog display in the Engineer's Manual
+- fixed jerrycans not getting filled properly and beign lost in crafting
+- fixed broken villager trades
+- fixed glitches in the toolbox (hopefully)
+- fixed <ERROR> overlays when WAWLA is installed (thanks Malte)
+- fixed WAILA display for EnergyProviders
+- fixed crash with Phial Cartridges
+- fixed Homign Cartridges not doing damage
+- fixed CraftTweaker method name
+
 #####Version 0.10-42 - BUILT
 - fixed NPE when throwign items into the crusher
 - attempted fix for render crashes with TESRs and their blockstates
