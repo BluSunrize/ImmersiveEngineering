@@ -1,17 +1,11 @@
 package blusunrize.immersiveengineering.common.util.compat.waila;
 
-import java.util.List;
-
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxProvider;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
 import blusunrize.immersiveengineering.common.blocks.TileEntityMultiblockPart;
 import blusunrize.immersiveengineering.common.blocks.plant.BlockIECrop;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenBarrel;
-import mcp.mobius.waila.api.ITaggedList;
-import mcp.mobius.waila.api.IWailaConfigHandler;
-import mcp.mobius.waila.api.IWailaDataAccessor;
-import mcp.mobius.waila.api.IWailaDataProvider;
-import mcp.mobius.waila.api.IWailaRegistrar;
+import mcp.mobius.waila.api.*;
 import net.minecraft.block.Block;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -21,6 +15,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
+
+import java.util.List;
 
 public class IEWailaDataProvider implements IWailaDataProvider
 {
@@ -109,7 +105,7 @@ public class IEWailaDataProvider implements IWailaDataProvider
 			cur = ((IFluxReceiver)te).getEnergyStored(null);
 			max = ((IFluxReceiver)te).getMaxEnergyStored(null);
 		}
-		else if(te instanceof IFluxReceiver)
+		else if(te instanceof IFluxProvider)
 		{
 			cur = ((IFluxProvider)te).getEnergyStored(null);
 			max = ((IFluxProvider)te).getMaxEnergyStored(null);
