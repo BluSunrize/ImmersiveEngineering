@@ -38,7 +38,7 @@ import java.util.*;
 public class ModelConveyor implements IBakedModel, IPerspectiveAwareModel
 {
 	static List<BakedQuad> emptyQuads = Lists.newArrayList();
-	static HashMap<String, List<BakedQuad>> modelCache = new HashMap();
+	static HashMap<String, List<BakedQuad>> modelCache = new HashMap<>();
 	public static ResourceLocation[] rl_casing = {new ResourceLocation(ImmersiveEngineering.MODID, "blocks/conveyor_casing_top"), new ResourceLocation(ImmersiveEngineering.MODID, "blocks/conveyor_casing_side"), new ResourceLocation(ImmersiveEngineering.MODID, "blocks/conveyor_casing_walls")};
 
 	Set<BakedQuad> quads;
@@ -76,7 +76,7 @@ public class ModelConveyor implements IBakedModel, IPerspectiveAwareModel
 					key = conveyor.getModelCacheKey(tile, facing);
 			}
 		}
-		List<BakedQuad> cachedQuads = null;//modelCache.get(key);
+		List<BakedQuad> cachedQuads = modelCache.get(key);
 		if(cachedQuads != null)
 			return Collections.synchronizedList(Lists.newArrayList(cachedQuads));
 		else
