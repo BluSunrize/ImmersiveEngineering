@@ -21,7 +21,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -81,20 +80,22 @@ public class TileEntityExcavator extends TileEntityMultiblockMetal<TileEntityExc
 						target = Math.round(rot/360f*8)%8;
 				}
 
-				//Fix the wheel if necessary
 				if(wheel.facing!=fRot || wheel.mirrored!=this.mirrored)
-					for(int h=-3;h<=3;h++)
-						for(int w=-3;w<=3;w++)
+				{
+					for(int h = -3; h <= 3; h++)
+						for(int w = -3; w <= 3; w++)
 						{
-							TileEntity te = worldObj.getTileEntity(wheelPos.add((facing.getAxis()==Axis.X?w:0), h, (facing.getAxis()==Axis.Z?w:0)));
+							TileEntity te = worldObj.getTileEntity(wheelPos.add(0, h, 0).offset(facing, w));
 							if(te instanceof TileEntityBucketWheel)
 							{
 								((TileEntityBucketWheel)te).facing = fRot;
 								((TileEntityBucketWheel)te).mirrored = this.mirrored;
 								te.markDirty();
-								this.markContainingBlockForUpdate(null);
+								((TileEntityBucketWheel)te).markContainingBlockForUpdate(null);
+								worldObj.addBlockEvent(te.getPos(), te.getBlockType(), 255, 0);
 							}
 						}
+					}
 
 				if(!isRSDisabled())
 				{
@@ -159,6 +160,8 @@ public class TileEntityExcavator extends TileEntityMultiblockMetal<TileEntityExc
 								ImmersiveEngineering.packetHandler.sendToAll(new MessageTileSync(wheel, packet));
 						}
 					}
+					else if(active)
+						active=false;
 				}
 				else if(active)
 				{
