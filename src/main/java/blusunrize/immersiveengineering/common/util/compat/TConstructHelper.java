@@ -38,6 +38,7 @@ public class TConstructHelper extends IECompatModule
 {
 	public static final Material treatedWood = new Material("treatedwood", 0x653522);
 	public static final Material constantan = new Material("constantan", 0xf0816a);
+	public static final Material hemp = new Material("hemp", 0xa68b78);
 	public static final AbstractTrait thermalInversion = new TraitThermalInversion();
 
 	public static Fluid fluidUranium;
@@ -76,7 +77,8 @@ public class TConstructHelper extends IECompatModule
 		TinkerRegistry.addMaterialStats(treatedWood,
 				new HeadMaterialStats(25, 2.00f, 2.00f, HarvestLevels.STONE),
 				new HandleMaterialStats(1.0f, 35),
-				new ExtraMaterialStats(20));
+				new ExtraMaterialStats(20),
+				new BowMaterialStats(1f, 1.125f));
 		TinkerIntegration.integrate(treatedWood, "plankTreatedWood").integrate();
 
 		constantan.setCastable(true);
@@ -86,8 +88,14 @@ public class TConstructHelper extends IECompatModule
 		TinkerRegistry.addMaterialStats(constantan,
 				new HeadMaterialStats(25, 4.70f, 4.00f, HarvestLevels.DIAMOND),
 				new HandleMaterialStats(0.8f, 60),
-				new ExtraMaterialStats(60));
+				new ExtraMaterialStats(60),
+				new BowMaterialStats(.55f, 1.5f));
 		TinkerIntegration.integrate(constantan, fluidConstantan, "Constantan").toolforge().integrate();
+
+		hemp.addItemIngot("hempFiber");
+		TinkerRegistry.addMaterialStats(hemp, new BowStringMaterialStats(1f));
+		TinkerIntegration.integrate(hemp).integrate();
+
 		ToolboxHandler.addToolType((s)->(s.getItem() instanceof TinkersItem));
 	}
 
