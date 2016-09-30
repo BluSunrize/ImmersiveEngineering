@@ -163,6 +163,8 @@ public class ImmersiveEngineering
 	{
 		proxy.serverStarting();
 		event.registerServerCommand(new CommandHandler(false));
+		if(Config.getBoolean("arcfurnace_recycle"))
+			ArcRecyclingThreadHandler.doRecipeProfiling();
 	}
 	@Mod.EventHandler
 	public void serverStarted(FMLServerStartedEvent event)
@@ -187,8 +189,6 @@ public class ImmersiveEngineering
 				IESaveData.setInstance(world.provider.getDimension(), worldData);
 			}
 		}
-		if(Config.getBoolean("arcfurnace_recycle"))
-			ArcRecyclingThreadHandler.doRecipeProfiling();
 	}
 
 	public static <T extends IForgeRegistryEntry<?>> T register(T object, String name)

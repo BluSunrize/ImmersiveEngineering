@@ -475,4 +475,12 @@ public class TileEntityExcavator extends TileEntityMultiblockMetal<TileEntityExc
 	{
 		return null;
 	}
+	@Override
+	public void disassemble() {
+		super.disassemble();
+		BlockPos wheelPos = this.getBlockPosForPos(31);
+		TileEntity center = worldObj.getTileEntity(wheelPos);
+		if (center instanceof TileEntityBucketWheel)
+			worldObj.addBlockEvent(center.getPos(), center.getBlockType(), 0, 0);
+	}
 }
