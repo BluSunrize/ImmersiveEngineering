@@ -69,7 +69,7 @@ dependencies {
     deobfCompile "mezz.jei:jei_1.10.2:3.8.+"
     deobfCompile "mcp.mobius.waila:Waila:1.7.0-B3_1.9.4"
     deobfCompile "slimeknights.mantle:Mantle:1.10.2-1.+"
-    deobfCompile "slimeknights:TConstruct:1.10.2-2.5.+"
+    deobfCompile "slimeknights:TConstruct:1.10.2-2.5.3.jenkins384"
     deobfCompile "li.cil.oc:OpenComputers:MC1.10.2-1.6.0.+"
 }
 

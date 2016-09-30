@@ -126,6 +126,7 @@ public class TConstructHelper extends IECompatModule
 	{
 		treatedWood.setRenderInfo(new MaterialRenderInfo.BlockTexture("immersiveengineering:blocks/treatedWood_horizontal"));
 		constantan.setRenderInfo(new MaterialRenderInfo.Metal(0xae5d4c, 0.1f, 0.2f, 0f));
+		hemp.setRenderInfo(0xa68b78);
 	}
 
 	public static Fluid sendFluidForMelting(String ore, int colour, int temp)
