@@ -2,18 +2,25 @@ package blusunrize.immersiveengineering.common.blocks.cloth;
 
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ILightValue;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorStructural;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.Vec3d;
 
-public class TileEntityBalloon extends TileEntityConnectorStructural
+public class TileEntityBalloon extends TileEntityConnectorStructural implements ILightValue
 {
 	public int style = 0;
 	public byte colour0 = 15;
 	public byte colour1 = 15;
 	public ItemStack shader;
+
+	@Override
+	public int getLightValue()
+	{
+		return 13;
+	}
 
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
