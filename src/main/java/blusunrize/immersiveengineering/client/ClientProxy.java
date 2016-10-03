@@ -31,6 +31,7 @@ import blusunrize.immersiveengineering.common.IERecipes;
 import blusunrize.immersiveengineering.common.blocks.BlockIEFluid;
 import blusunrize.immersiveengineering.common.blocks.BlockTypes_MetalsAll;
 import blusunrize.immersiveengineering.common.blocks.BlockTypes_MetalsIE;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IColouredBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGuiTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IIEMetaBlock;
 import blusunrize.immersiveengineering.common.blocks.cloth.BlockTypes_ClothDevice;
@@ -80,7 +81,6 @@ import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformT
 import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.StateMapperBase;
-import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.client.renderer.entity.*;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.resources.I18n;
@@ -429,14 +429,10 @@ public class ClientProxy extends CommonProxy
 		/**Colours*/
 		for(Item item : IEContent.registeredIEItems)
 			if(item instanceof IColouredItem && ((IColouredItem)item).hasCustomItemColours())
-				ClientUtils.mc().getItemColors().registerItemColorHandler(new IItemColor()
-				{
-					@Override
-					public int getColorFromItemstack(ItemStack stack, int tintIndex)
-					{
-						return ((IColouredItem)item).getColourForIEItem(stack, tintIndex);
-					}
-				}, item);
+				ClientUtils.mc().getItemColors().registerItemColorHandler(IEDefaultColourHandlers.INSTANCE, item);
+		for(Block block : IEContent.registeredIEBlocks)
+			if(block instanceof IColouredBlock && ((IColouredBlock)block).hasCustomBlockColours())
+				ClientUtils.mc().getBlockColors().registerBlockColorHandler(IEDefaultColourHandlers.INSTANCE, block);
 
 		/**Render Layers*/
 		Map<String, RenderPlayer> skinMap = Minecraft.getMinecraft().getRenderManager().getSkinMap();
@@ -510,7 +506,8 @@ public class ClientProxy extends CommonProxy
 		ManualHelper.addEntry("hemp", ManualHelper.CAT_GENERAL,
 				new ManualPages.ItemDisplay(ManualHelper.getManual(), "hemp0", new ItemStack(IEContent.blockCrop,1,5),new ItemStack(IEContent.itemSeeds)),
 				new ManualPages.Crafting(ManualHelper.getManual(), "hemp1", new ItemStack(IEContent.itemMaterial,1,5)),
-				new ManualPages.Crafting(ManualHelper.getManual(), "hemp2", new ItemStack(IEContent.blockClothDevice,1,BlockTypes_ClothDevice.CUSHION.getMeta())));
+				new ManualPages.Crafting(ManualHelper.getManual(), "hemp2", new ItemStack(IEContent.blockClothDevice,1,BlockTypes_ClothDevice.CUSHION.getMeta())),
+				new ManualPages.Crafting(ManualHelper.getManual(), "hemp3", new ItemStack(IEContent.blockClothDevice,1,BlockTypes_ClothDevice.STRIPCURTAIN.getMeta())));
 		ManualHelper.addEntry("cokeoven", ManualHelper.CAT_GENERAL,
 				new ManualPages.Text(ManualHelper.getManual(), "cokeoven0"),
 				new ManualPages.Crafting(ManualHelper.getManual(), "cokeovenBlock", new ItemStack(IEContent.blockStoneDecoration,1,BlockTypes_StoneDecoration.COKEBRICK.getMeta())),

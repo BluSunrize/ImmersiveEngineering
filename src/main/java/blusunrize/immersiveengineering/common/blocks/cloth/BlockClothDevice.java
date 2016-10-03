@@ -1,17 +1,22 @@
 package blusunrize.immersiveengineering.common.blocks.cloth;
 
 import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConnectable;
 import blusunrize.immersiveengineering.common.blocks.BlockIETileProvider;
+import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.property.ExtendedBlockState;
@@ -21,16 +26,20 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class BlockClothDevice extends BlockIETileProvider<BlockTypes_ClothDevice>
 {
 	public BlockClothDevice()
 	{
-		super("clothDevice", Material.CLOTH, PropertyEnum.create("type", BlockTypes_ClothDevice.class), ItemBlockClothDevice.class, IEProperties.FACING_ALL);
+		super("clothDevice", Material.CLOTH, PropertyEnum.create("type", BlockTypes_ClothDevice.class), ItemBlockClothDevice.class, IEProperties.FACING_ALL, IEProperties.BOOLEANS[0]);
 		setHardness(0.8F);
+		setHasColours();
 		setMetaLightOpacity(1, 0);
+		setMetaLightOpacity(2, 0);
 		setMetaBlockLayer(1, BlockRenderLayer.SOLID, BlockRenderLayer.TRANSLUCENT);
 		setNotNormalBlock(BlockTypes_ClothDevice.BALLOON.getMeta());
+		setNotNormalBlock(BlockTypes_ClothDevice.STRIPCURTAIN.getMeta());
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -39,12 +48,34 @@ public class BlockClothDevice extends BlockIETileProvider<BlockTypes_ClothDevice
 		return 16777215;
 	}
 
-//    @Override
+	//    @Override
 //	@SideOnly(Side.CLIENT)
 //    public int colorMultiplier(IBlockAccess worldIn, BlockPos pos, int renderPass)
 //    {
 //        return 16777215;
 //    }
+	@Override
+	public void addInformation(ItemStack stack, EntityPlayer player, List<String> tooltip, boolean advanced)
+	{
+		if(ItemNBTHelper.hasKey(stack, "colour"))
+		{
+			String hexCol = Integer.toHexString(ItemNBTHelper.getInt(stack, "colour"));
+			tooltip.add(I18n.translateToLocalFormatted(Lib.DESC_INFO + "colour", "<hexcol=" + hexCol + ":#" + hexCol + ">"));
+		}
+	}
+
+	@Override
+	public boolean useCustomStateMapper()
+	{
+		return true;
+	}
+	@Override
+	public String getCustomStateMapping(int meta, boolean itemBlock)
+	{
+		if(meta==2)
+			return "stripcurtain";
+		return null;
+	}
 
 	@Override
 	public void onFallenUpon(World worldIn, BlockPos pos, Entity entityIn, float fallDistance)
@@ -59,7 +90,8 @@ public class BlockClothDevice extends BlockIETileProvider<BlockTypes_ClothDevice
 //        }
 	}
 	@Override
-	protected BlockStateContainer createBlockState() {
+	protected BlockStateContainer createBlockState()
+	{
 		BlockStateContainer base = super.createBlockState();
 		IUnlistedProperty[] unlisted = (IUnlistedProperty[]) ((base instanceof ExtendedBlockState)?((ExtendedBlockState)base).getUnlistedProperties().toArray():new IUnlistedProperty[0]);
 		unlisted = Arrays.copyOf(unlisted, unlisted.length+1);
@@ -67,7 +99,8 @@ public class BlockClothDevice extends BlockIETileProvider<BlockTypes_ClothDevice
 		return new ExtendedBlockState(this, base.getProperties().toArray(new IProperty[0]), unlisted);
 	}
 	@Override
-	public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos) {
+	public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos)
+	{
 		if (state instanceof IExtendedBlockState)
 		{
 			IExtendedBlockState ext = (IExtendedBlockState) state;
@@ -155,6 +188,8 @@ public class BlockClothDevice extends BlockIETileProvider<BlockTypes_ClothDevice
 				return null;
 			case BALLOON:
 				return new TileEntityBalloon();
+			case STRIPCURTAIN:
+				return new TileEntityStripCurtain();
 		}
 		return null;
 	}

@@ -26,6 +26,11 @@
 			"south": {},
 			"west": {},
 			"east": {}
+		},
+		"boolean0":
+		{
+			"true":{},
+			"false":{}
 		}
 	}
 }
