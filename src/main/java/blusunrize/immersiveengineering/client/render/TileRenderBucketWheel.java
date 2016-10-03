@@ -46,16 +46,19 @@ public class TileRenderBucketWheel extends TileEntitySpecialRenderer<TileEntityB
 		{
 			ArrayList<String> list = Lists.newArrayList("bucketWheel");
 			HashMap<String,String> texMap = new HashMap();
-			for(int i=0; i<tile.digStacks.length; i++)
-				if(tile.digStacks[i]!=null)
-				{
-					list.add("dig"+i);
-					Block b = Block.getBlockFromItem(tile.digStacks[i].getItem());
-					IBlockState digState = b!=null?b.getStateFromMeta(tile.digStacks[i].getMetadata()): Blocks.STONE.getDefaultState();
-					IBakedModel digModel = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getModelForState(digState);
-					if(digModel!=null && digModel.getParticleTexture()!=null)
-						texMap.put("dig"+i, digModel.getParticleTexture().getIconName());
-				}
+			synchronized (tile.digStacks)
+			{
+				for(int i=0; i<tile.digStacks.length; i++)
+					if(tile.digStacks[i]!=null)
+					{
+						list.add("dig"+i);
+						Block b = Block.getBlockFromItem(tile.digStacks[i].getItem());
+						IBlockState digState = b!=null?b.getStateFromMeta(tile.digStacks[i].getMetadata()): Blocks.STONE.getDefaultState();
+						IBakedModel digModel = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getModelForState(digState);
+						if(digModel!=null && digModel.getParticleTexture()!=null)
+							texMap.put("dig"+i, digModel.getParticleTexture().getIconName());
+					}
+			}
 			state = ((IExtendedBlockState)state).withProperty(Properties.AnimationProperty, new OBJState(list, true));
 			state = ((IExtendedBlockState)state).withProperty(IEProperties.OBJ_TEXTURE_REMAP, texMap);
 		}
