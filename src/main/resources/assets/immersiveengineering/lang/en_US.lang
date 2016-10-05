@@ -362,6 +362,7 @@ itemGroup.immersiveengineering=Immersive Engineering
 
 #ENTITIES
 entity.immersiveengineering.explosive.name=Explosive
+entity.Villager.immersiveengineering.machinist=Machinist
 
 #BANNERS
 #Whoever at Mojang came up with this formatting system needs to be slapped.
