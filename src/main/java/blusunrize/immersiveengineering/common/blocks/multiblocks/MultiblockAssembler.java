@@ -71,7 +71,7 @@ public class MultiblockAssembler implements IMultiblock
 	public boolean overwriteBlockRender(ItemStack stack, int iterator)
 	{
 		if(iterator==10||iterator==16)
-			return ImmersiveEngineering.proxy.drawConveyorInGui("immersiveengineering:conveyor", EnumFacing.SOUTH);
+			return ImmersiveEngineering.proxy.drawConveyorInGui("immersiveengineering:conveyor", EnumFacing.EAST);
 		return false;
 	}
 	@Override
@@ -88,10 +88,10 @@ public class MultiblockAssembler implements IMultiblock
 	{
 		if(renderStack==null)
 			renderStack = new ItemStack(IEContent.blockMetalMultiblock,1,BlockTypes_MetalMultiblock.ASSEMBLER.getMeta());
-		GlStateManager.scale(4, 4, 4);
-		GlStateManager.translate(0, .125, 0);
-		GlStateManager.rotate(45, 0, 1, 0);
+		GlStateManager.translate(1.5, 1.5, 1.5);
+		GlStateManager.rotate(-45, 0, 1, 0);
 		GlStateManager.rotate(-20, 1, 0, 0);
+		GlStateManager.scale(4, 4, 4);
 		GlStateManager.disableCull();
 		ClientUtils.mc().getRenderItem().renderItem(renderStack, ItemCameraTransforms.TransformType.GUI);
 		GlStateManager.enableCull();

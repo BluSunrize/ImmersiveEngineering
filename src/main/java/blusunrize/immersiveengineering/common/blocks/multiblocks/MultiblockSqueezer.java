@@ -66,17 +66,16 @@ public class MultiblockSqueezer implements IMultiblock
 	@SideOnly(Side.CLIENT)
 	public boolean overwriteBlockRender(ItemStack stack, int iterator)
 	{
-		if(iterator==3)
-		{
-			ImmersiveEngineering.proxy.drawSpecificFluidPipe("002200");
-			return true;
-		}
 		if(iterator==4)
 		{
-			ImmersiveEngineering.proxy.drawSpecificFluidPipe("001010");
+			ImmersiveEngineering.proxy.drawSpecificFluidPipe("010010");
 			return true;
 		}
-
+		if(iterator==5)
+		{
+			ImmersiveEngineering.proxy.drawSpecificFluidPipe("000022");
+			return true;
+		}
 		return false;
 	}
 	@Override
@@ -98,10 +97,10 @@ public class MultiblockSqueezer implements IMultiblock
 	{
 		if(renderStack==null)
 			renderStack = new ItemStack(IEContent.blockMetalMultiblock,1,BlockTypes_MetalMultiblock.SQUEEZER.getMeta());
-		GlStateManager.scale(-4, 4, 4);
-		GlStateManager.translate(0, .125, 0);
-		GlStateManager.rotate(225, 0, 1, 0);
+		GlStateManager.translate(1.5, 1.5, 1.5);
+		GlStateManager.rotate(-45, 0, 1, 0);
 		GlStateManager.rotate(-20, 1, 0, 0);
+		GlStateManager.scale(4, 4, 4);
 		GlStateManager.disableCull();
 		ClientUtils.mc().getRenderItem().renderItem(renderStack, ItemCameraTransforms.TransformType.GUI);
 		GlStateManager.enableCull();

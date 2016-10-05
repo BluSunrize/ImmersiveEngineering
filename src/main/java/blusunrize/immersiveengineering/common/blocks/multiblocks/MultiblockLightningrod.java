@@ -76,10 +76,10 @@ public class MultiblockLightningrod implements IMultiblock
 	{
 		if(renderStack==null)
 			renderStack = new ItemStack(IEContent.blockMetalMultiblock,1,BlockTypes_MetalMultiblock.LIGHTNINGROD.getMeta());
-		GlStateManager.scale(4, 4, 4);
-		GlStateManager.translate(0, .125, 0);
-		GlStateManager.rotate(45, 0, 1, 0);
+		GlStateManager.translate(1.5, 1.5, 1.5);
+		GlStateManager.rotate(-45, 0, 1, 0);
 		GlStateManager.rotate(-20, 1, 0, 0);
+		GlStateManager.scale(4, 4, 4);
 		GlStateManager.disableCull();
 		ClientUtils.mc().getRenderItem().renderItem(renderStack, ItemCameraTransforms.TransformType.GUI);
 		GlStateManager.enableCull();

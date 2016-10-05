@@ -71,21 +71,22 @@ public class MultiblockDieselGenerator implements IMultiblock
 		}
 		if(iterator==4)
 		{
-			ImmersiveEngineering.proxy.drawSpecificFluidPipe("020000");
+			ImmersiveEngineering.proxy.drawSpecificFluidPipe("000200");
 			return true;
 		}
 		if(iterator==7)
 		{
-			ImmersiveEngineering.proxy.drawSpecificFluidPipe("220000");
+			ImmersiveEngineering.proxy.drawSpecificFluidPipe("002200");
 			return true;
 		}
 		if(iterator==10)
 		{
-			ImmersiveEngineering.proxy.drawSpecificFluidPipe("200000");
+			ImmersiveEngineering.proxy.drawSpecificFluidPipe("002000");
 			return true;
 		}
 		return false;
 	}
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public boolean canRenderFormedStructure()
@@ -100,10 +101,10 @@ public class MultiblockDieselGenerator implements IMultiblock
 	{
 		if(renderStack==null)
 			renderStack = new ItemStack(IEContent.blockMetalMultiblock,1,BlockTypes_MetalMultiblock.DIESEL_GENERATOR.getMeta());
-		GlStateManager.scale(-5.5, 5.5, 5.5);
-		GlStateManager.translate(0, .09375, 0);
-		GlStateManager.rotate(225, 0, 1, 0);
+		GlStateManager.translate(2.5, 1.5, 1.5);
+		GlStateManager.rotate(-45, 0, 1, 0);
 		GlStateManager.rotate(-20, 1, 0, 0);
+		GlStateManager.scale(5.5, 5.5, 5.5);
 
 		GlStateManager.disableCull();
 		ClientUtils.mc().getRenderItem().renderItem(renderStack, ItemCameraTransforms.TransformType.GUI);

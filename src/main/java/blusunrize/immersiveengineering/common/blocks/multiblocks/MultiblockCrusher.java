@@ -89,10 +89,10 @@ public class MultiblockCrusher implements IMultiblock
 	{
 		if(renderStack==null)
 			 renderStack = new ItemStack(IEContent.blockMetalMultiblock,1,BlockTypes_MetalMultiblock.CRUSHER.getMeta());
-		GlStateManager.scale(-5.5, 5.5, 5.5);
-		GlStateManager.translate(0, .09375, 0);
-		GlStateManager.rotate(225, 0, 1, 0);
+		GlStateManager.translate(1.5, 1.5, 2.5);
+		GlStateManager.rotate(-45, 0, 1, 0);
 		GlStateManager.rotate(-20, 1, 0, 0);
+		GlStateManager.scale(5.5, 5.5, 5.5);
 
 		GlStateManager.disableCull();
 		ClientUtils.mc().getRenderItem().renderItem(renderStack, ItemCameraTransforms.TransformType.GUI);

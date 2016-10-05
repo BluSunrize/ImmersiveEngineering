@@ -1,6 +1,5 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.client.ClientUtils;
@@ -21,6 +20,7 @@ import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -105,12 +105,19 @@ public class MultiblockArcFurnace implements IMultiblock
 	@SideOnly(Side.CLIENT)
 	public boolean overwriteBlockRender(ItemStack stack, int iterator)
 	{
-		if(iterator==2)
-		{
-			ImmersiveEngineering.proxy.draw3DBlockCauldron();
-			return true;
-		}
 		return false;
+	}
+	@Override
+	public IBlockState getBlockstateFromStack(int index, ItemStack stack)
+	{
+		if(stack!=null)
+		{
+			if(stack.getItem() == Items.CAULDRON)
+				return Blocks.CAULDRON.getDefaultState();
+			else if(stack.getItem() instanceof ItemBlock)
+				return ((ItemBlock)stack.getItem()).getBlock().getStateFromMeta(stack.getItemDamage());
+		}
+		return null;
 	}
 	@Override
 	@SideOnly(Side.CLIENT)
@@ -127,10 +134,10 @@ public class MultiblockArcFurnace implements IMultiblock
 		if(renderStack==null)
 			renderStack = new ItemStack(IEContent.blockMetalMultiblock,1,BlockTypes_MetalMultiblock.ARC_FURNACE.getMeta());
 
-		GlStateManager.scale(-6.5, 6.5, 6.5);
-		GlStateManager.translate(.03125, .03125, .03125);
-		GlStateManager.rotate(225, 0, 1, 0);
+		GlStateManager.translate(2.5, 2.25, 2.25);
+		GlStateManager.rotate(-45, 0, 1, 0);
 		GlStateManager.rotate(-20, 1, 0, 0);
+		GlStateManager.scale(6.5, 6.5, 6.5);
 
 		GlStateManager.disableCull();
 		ClientUtils.mc().getRenderItem().renderItem(renderStack, ItemCameraTransforms.TransformType.GUI);

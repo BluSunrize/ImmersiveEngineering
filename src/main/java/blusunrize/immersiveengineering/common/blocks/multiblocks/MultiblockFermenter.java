@@ -14,6 +14,7 @@ import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -66,22 +67,29 @@ public class MultiblockFermenter implements IMultiblock
 	@SideOnly(Side.CLIENT)
 	public boolean overwriteBlockRender(ItemStack stack, int iterator)
 	{
-		if(iterator>=11&&iterator<=14)
-		{
-			ImmersiveEngineering.proxy.draw3DBlockCauldron();
-			return true;
-		}
-		if(iterator==3)
-		{
-			ImmersiveEngineering.proxy.drawSpecificFluidPipe("002200");
-			return true;
-		}
 		if(iterator==4)
 		{
-			ImmersiveEngineering.proxy.drawSpecificFluidPipe("001010");
+			ImmersiveEngineering.proxy.drawSpecificFluidPipe("010010");
+			return true;
+		}
+		if(iterator==5)
+		{
+			ImmersiveEngineering.proxy.drawSpecificFluidPipe("000022");
 			return true;
 		}
 		return false;
+	}
+	@Override
+	public IBlockState getBlockstateFromStack(int index, ItemStack stack)
+	{
+		if(stack!=null)
+		{
+			if(stack.getItem() == Items.CAULDRON)
+				return Blocks.CAULDRON.getDefaultState();
+			else if(stack.getItem() instanceof ItemBlock)
+				return ((ItemBlock)stack.getItem()).getBlock().getStateFromMeta(stack.getItemDamage());
+		}
+		return null;
 	}
 	@Override
 	public float getManualScale()
@@ -102,10 +110,10 @@ public class MultiblockFermenter implements IMultiblock
 	{
 		if(renderStack==null)
 			renderStack = new ItemStack(IEContent.blockMetalMultiblock,1,BlockTypes_MetalMultiblock.FERMENTER.getMeta());
-		GlStateManager.scale(-4, 4, 4);
-		GlStateManager.translate(0, .125, 0);
-		GlStateManager.rotate(225, 0, 1, 0);
+		GlStateManager.translate(1.5, 1.5, 1.5);
+		GlStateManager.rotate(-45, 0, 1, 0);
 		GlStateManager.rotate(-20, 1, 0, 0);
+		GlStateManager.scale(4, 4, 4);
 		GlStateManager.disableCull();
 		ClientUtils.mc().getRenderItem().renderItem(renderStack, ItemCameraTransforms.TransformType.GUI);
 		GlStateManager.enableCull();

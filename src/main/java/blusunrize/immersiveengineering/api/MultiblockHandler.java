@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.api;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -57,6 +58,13 @@ public class MultiblockHandler
 		 * A three-dimensional array (height, length, width) of the structure to be rendered in the Engineers Manual
 		 */
 		ItemStack[][][] getStructureManual();
+
+		default IBlockState getBlockstateFromStack(int index, ItemStack stack)
+		{
+			if(stack != null && stack.getItem() instanceof ItemBlock)
+				return ((ItemBlock)stack.getItem()).getBlock().getStateFromMeta(stack.getItemDamage());
+			return null;
+		}
 		
 		/**
 		 * An array of ItemStacks that summarizes the total amount of materials needed for the structure. Will be rendered in the Engineer's Manual

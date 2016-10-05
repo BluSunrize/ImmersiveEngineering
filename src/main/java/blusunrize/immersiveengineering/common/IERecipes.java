@@ -197,7 +197,7 @@ public class IERecipes
 		addOredictRecipe(new ItemStack(IEContent.blockClothDevice,2,BlockTypes_ClothDevice.BALLOON.getMeta()), " F ","FTF"," S ", 'F',"fabricHemp", 'T',"torch", 'S',"slabTreatedWood");
 		addIngredientRecipe(new ItemStack(IEContent.blockClothDevice,3,BlockTypes_ClothDevice.STRIPCURTAIN.getMeta()), "SSS","FFF","FFF", 'S',metalSticks, 'F',"fabricHemp");
 		final ItemStack stripCurtain = new ItemStack(IEContent.blockClothDevice,1,BlockTypes_ClothDevice.STRIPCURTAIN.getMeta());
-		GameRegistry.addRecipe(new RecipeRGBColouration((s)->(OreDictionary.itemMatches(stripCurtain,s,true)), (s)->(ItemNBTHelper.getInt(s,"colour")), (s, i)->ItemNBTHelper.setInt(s, "colour", i) ));
+		GameRegistry.addRecipe(new RecipeRGBColouration((s)->(OreDictionary.itemMatches(stripCurtain,s,true)), (s)->(ItemNBTHelper.hasKey(s,"colour")?ItemNBTHelper.getInt(s,"colour"):0xffffff), (s, i)->ItemNBTHelper.setInt(s, "colour", i) ));
 
 		//
 		//STONE DECORACTION

@@ -115,7 +115,6 @@ import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameData;
 import net.minecraftforge.oredict.OreDictionary;
-import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
@@ -1319,6 +1318,8 @@ public class ClientProxy extends CommonProxy
 		if(state instanceof IExtendedBlockState)
 			state = ((IExtendedBlockState)state).withProperty(Properties.AnimationProperty, TileEntityFluidPipe.getStateFromKey(configuration));
 
+		GlStateManager.pushMatrix();
+		GlStateManager.translate(0,0,1);
 		RenderHelper.disableStandardItemLighting();
 		GlStateManager.blendFunc(770, 771);
 		GlStateManager.enableBlend();
@@ -1330,6 +1331,7 @@ public class ClientProxy extends CommonProxy
 //		if(model instanceof ISmartBlockModel)
 //			model = ((ISmartBlockModel) model).handleBlockState(state);
 		blockRenderer.getBlockModelRenderer().renderModelBrightness(model, state, .75f, false);
+		GlStateManager.popMatrix();
 	}
 
 	@Override
@@ -1338,9 +1340,11 @@ public class ClientProxy extends CommonProxy
 		IConveyorBelt con = ConveyorHandler.getConveyor(new ResourceLocation(conveyor), null);
 		if(con != null)
 		{
+			GlStateManager.pushMatrix();
 			Set<BakedQuad> quads = ModelConveyor.getBaseConveyor(facing, 1, new Matrix4(facing), ConveyorDirection.HORIZONTAL, ClientUtils.getSprite(con.getActiveTexture()), new boolean[]{true, true}, new boolean[]{true, true}, null, 0);
-			GL11.glTranslatef(0, 0, -1);
+//			GL11.glTranslatef(0, 0, 1);
 			ClientUtils.renderQuads(quads, 1, 1, 1, 1);
+			GlStateManager.popMatrix();
 			return true;
 		}
 		return false;

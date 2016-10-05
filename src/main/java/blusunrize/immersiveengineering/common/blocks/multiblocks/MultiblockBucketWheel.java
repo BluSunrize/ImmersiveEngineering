@@ -69,10 +69,10 @@ public class MultiblockBucketWheel implements IMultiblock
 	{
 		if(renderStack==null)
 			renderStack = new ItemStack(IEContent.blockMetalMultiblock,1,BlockTypes_MetalMultiblock.BUCKET_WHEEL.getMeta());
-		GlStateManager.scale(6.875, 6.875, 6.875);
-		GlStateManager.translate(0, .0625, -.0);
-		GlStateManager.rotate(45, 0, 1, 0);
+		GlStateManager.translate(3.5, 3.5, 0.5);
+		GlStateManager.rotate(-45, 0, 1, 0);
 		GlStateManager.rotate(-20, 1, 0, 0);
+		GlStateManager.scale(6.875, 6.875, 6.875);
 		GlStateManager.disableCull();
 		ClientUtils.mc().getRenderItem().renderItem(renderStack, ItemCameraTransforms.TransformType.GUI);
 		GlStateManager.enableCull();

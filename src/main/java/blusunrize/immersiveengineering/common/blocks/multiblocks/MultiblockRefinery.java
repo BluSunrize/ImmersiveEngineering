@@ -12,6 +12,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -70,10 +71,17 @@ public class MultiblockRefinery implements IMultiblock
 	{
 		if(iterator>=5&&iterator<10)
 		{
-			ImmersiveEngineering.proxy.drawSpecificFluidPipe("002200");
+			ImmersiveEngineering.proxy.drawSpecificFluidPipe("220000");
 			return true;
 		}
 		return false;
+	}
+	@Override
+	public IBlockState getBlockstateFromStack(int index, ItemStack stack)
+	{
+		if(stack!=null && stack.getItem() instanceof ItemBlock)
+			return ((ItemBlock)stack.getItem()).getBlock().getStateFromMeta(stack.getItemDamage());
+		return null;
 	}
 	@Override
 	public float getManualScale()
@@ -94,12 +102,10 @@ public class MultiblockRefinery implements IMultiblock
 	{
 		if(renderStack==null)
 			renderStack = new ItemStack(IEContent.blockMetalMultiblock,1,BlockTypes_MetalMultiblock.REFINERY.getMeta());
-
-		GlStateManager.scale(-5.5, 5.5, 5.5);
-		GlStateManager.translate(-.09375, .09375, -.09375);
-		GlStateManager.rotate(225, 0, 1, 0);
+		GlStateManager.translate(1, 1.5, 3);
+		GlStateManager.rotate(-45, 0, 1, 0);
 		GlStateManager.rotate(-20, 1, 0, 0);
-
+		GlStateManager.scale(5.5, 5.5, 5.5);
 		GlStateManager.disableCull();
 		ClientUtils.mc().getRenderItem().renderItem(renderStack, ItemCameraTransforms.TransformType.GUI);
 		GlStateManager.enableCull();

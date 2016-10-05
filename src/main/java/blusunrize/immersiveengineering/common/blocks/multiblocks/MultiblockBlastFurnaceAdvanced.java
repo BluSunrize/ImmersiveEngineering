@@ -21,7 +21,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.opengl.GL11;
 
 public class MultiblockBlastFurnaceAdvanced implements IMultiblock
 {
@@ -53,7 +52,6 @@ public class MultiblockBlastFurnaceAdvanced implements IMultiblock
 	@SideOnly(Side.CLIENT)
 	public boolean overwriteBlockRender(ItemStack stack, int iterator)
 	{
-		GL11.glTranslated(0, .5, 0);
 		return false;
 	}
 	@Override
@@ -70,9 +68,10 @@ public class MultiblockBlastFurnaceAdvanced implements IMultiblock
 	{
 		if(renderStack==null)
 			renderStack = new ItemStack(IEContent.blockStoneDevice,1,BlockTypes_StoneDecoration.BLASTBRICK_REINFORCED.getMeta());
-		GlStateManager.scale(4, 4, 4);
-		GlStateManager.rotate(45, 0, 1, 0);
+		GlStateManager.translate(1.5,1.5,1.5);
+		GlStateManager.rotate(-45, 0, 1, 0);
 		GlStateManager.rotate(-20, 1, 0, 0);
+		GlStateManager.scale(4, 4, 4);
 		ClientUtils.mc().getRenderItem().renderItem(renderStack, ItemCameraTransforms.TransformType.GUI);
 	}
 
