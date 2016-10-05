@@ -1,10 +1,13 @@
 #####Version 0.10-43
 - added version dependency for TCon to prevent further reports of that
 - added Banners! They look awesome! Shoutouts to Tris for making all the textures!
+- added support for TConstructs resourcepack based materials
+- added Strip Curtains. Purely decorative, dyeable, pretty nice for factories!
 - re-added the ability to climb scaffolding on pipes
 - re-added the Lightning Rod!
 - expanded the "allow" and "interdict" functions on the Hammer in regards to multiblocks
-- expended the API on wires for an addon
+- expanded the API on wires for an addon
+- changed manualpages for Multiblocks to be better at everything (thanks boni)
 - greatly improved renderperformance on waterwheels and windmills (thanks Malte)
 - fixed wooden barrels not being toggleable
 - fixed wooden barrels acceptign invalid fluids
@@ -16,8 +19,11 @@
 - fixed <ERROR> overlays when WAWLA is installed (thanks Malte)
 - fixed WAILA display for EnergyProviders
 - fixed crash with Phial Cartridges
-- fixed Homign Cartridges not doing damage
+- fixed Homing Cartridges not doing damage
 - fixed CraftTweaker method name
+- fixed Balloons not emitting light
+- fixed crash during Arc Furnace recycling calculations (thanks Malte)
+- fixed Bucket Wheel continuing to rotate when the Excavator is broken (thanks Malte)
 
 #####Version 0.10-42 - BUILT
 - fixed NPE when throwign items into the crusher
