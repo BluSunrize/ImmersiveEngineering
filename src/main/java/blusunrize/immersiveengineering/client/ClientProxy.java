@@ -943,7 +943,7 @@ public class ClientProxy extends CommonProxy
 				if(line.startsWith("#####"))
 				{
 					//add read log to map
-					addToMap(readVersion, currVersion, readVersion, readLog, readVersionBuilt, entries);
+					addToMap(readVersion, currVersion, readLog, readVersionBuilt, entries);
 					//parse new version
 					readVersion = "";
 					readLog = "";
@@ -956,7 +956,7 @@ public class ClientProxy extends CommonProxy
 				}
 			}
 			s.close();
-			addToMap(readVersion, currVersion, readVersion, readLog, readVersionBuilt, entries);
+			addToMap(readVersion, currVersion, readLog, readVersionBuilt, entries);
 			//add to manual
 			for(Entry<String, String> e : entries.entrySet())
 			{
@@ -989,14 +989,16 @@ public class ClientProxy extends CommonProxy
 		return Integer.compare(n1, n2);
 	}
 
-	private void addToMap(String readVersion, String currVersion, String readversion, String readLog, boolean readVersionBuilt, Map<String, String> entries)
+	private void addToMap(String readVersion, String currVersion, String readLog, boolean readVersionBuilt, Map<String, String> entries)
 	{
 		if(readVersion != null)
 		{
 			int compare = compareVersions(readVersion, currVersion);
 			if(readVersionBuilt || compare >= 0)
 			{
-				if(compare > 0)
+				if(!readVersionBuilt)
+					readVersion += " - UNRELEASED";
+				else if(compare > 0)
 					readVersion += " - NEW";
 				else if(compare == 0)
 					readVersion += " - CURRENT";

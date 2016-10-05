@@ -118,7 +118,7 @@ public class TileEntityStripCurtain extends TileEntityIEBase implements IAdvance
 	@Override
 	public ItemStack getTileDrop(EntityPlayer player, IBlockState state)
 	{
-		ItemStack stack = new ItemStack(state.getBlock());
+		ItemStack stack = new ItemStack(state.getBlock(),1,state.getBlock().getMetaFromState(state));
 		if(colour!=0xffffff)
 			ItemNBTHelper.setInt(stack, "colour", colour);
 		return stack;

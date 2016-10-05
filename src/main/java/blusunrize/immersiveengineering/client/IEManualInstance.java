@@ -22,9 +22,9 @@ public class IEManualInstance extends ManualInstance
 	public IEManualInstance()
 	{
 		super(new IEItemFontRender(), "immersiveengineering:textures/gui/manual.png");
-
 		this.fontRenderer.colorCode[0 + 6] = Lib.COLOUR_I_ImmersiveOrange;
 		this.fontRenderer.colorCode[16 + 6] = Lib.COLOUR_I_ImmersiveOrangeShadow;
+		((IEItemFontRender)this.fontRenderer).createColourBackup();
 		if (Minecraft.getMinecraft().gameSettings.language != null)
 		{
 			this.fontRenderer.setUnicodeFlag(ClientUtils.mc().getLanguageManager().isCurrentLocaleUnicode());

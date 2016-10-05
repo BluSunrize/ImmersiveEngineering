@@ -36,6 +36,12 @@ public class IEItemFontRender extends FontRenderer
 			this.setBidiFlag(ClientUtils.mc().getLanguageManager().isCurrentLanguageBidirectional());
 		}
 		((IReloadableResourceManager)ClientUtils.mc().getResourceManager()).registerReloadListener(this);
+		createColourBackup();
+	}
+
+	/** This should be called again if the colour array was modified after instantiation*/
+	public void createColourBackup()
+	{
 		this.backupColours = Arrays.copyOf(this.colorCode, 32);
 	}
 
