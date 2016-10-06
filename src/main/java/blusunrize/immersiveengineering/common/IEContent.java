@@ -452,6 +452,7 @@ public class IEContent
 		EntityRegistry.registerModEntity(EntityRevolvershotFlare.class, "revolverShotFlare", i++, ImmersiveEngineering.instance, 64, 1, true);
 		EntityRegistry.registerModEntity(EntityIEExplosive.class, "explosive", i++, ImmersiveEngineering.instance, 64, 1, true);
 		EntityRegistry.registerModEntity(EntityFluorescentTube.class, "fluorescentTube", i++, ImmersiveEngineering.instance, 64, 1, true);
+		CapabilityHandler_CartShaders.init();
 
 		/**WOLFPACK BULLETS*/
 		if(!BulletHandler.homingCartridges.isEmpty())
