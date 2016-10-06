@@ -362,7 +362,9 @@ item.immersiveengineering.fluorescentTube.name=Fluorescent Tube
 itemGroup.immersiveengineering=Immersive Engineering
 
 #ENTITIES
+entity.immersiveengineering.skylineHook.name=Skyhook
 entity.immersiveengineering.explosive.name=Explosive
+entity.immersiveengineering.fluorescentTube.name=Fluorescent Tube
 
 #BANNERS
 #Whoever at Mojang came up with this formatting system needs to be slapped.

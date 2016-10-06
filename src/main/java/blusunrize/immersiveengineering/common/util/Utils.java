@@ -176,7 +176,10 @@ public class Utils
 
 	public static boolean isBlockAt(World world, BlockPos pos, Block b, int meta)
 	{
-		IBlockState state = world.getBlockState(pos);
+		return blockstateMatches(world.getBlockState(pos), b, meta);
+	}
+	public static boolean blockstateMatches(IBlockState state, Block b, int meta)
+	{
 		if(state.getBlock().equals(b))
 			return meta<0||meta==OreDictionary.WILDCARD_VALUE || state.getBlock().getMetaFromState(state)==meta;
 		return false;

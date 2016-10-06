@@ -1,4 +1,4 @@
-#####Version 0.10-43
+#####Version 0.10-43 - BUILT
 - added version dependency for TCon to prevent further reports of that
 - added Banners! They look awesome! Shoutouts to Tris for making all the textures!
 - added support for TConstructs resourcepack based materials
@@ -23,7 +23,9 @@
 - fixed CraftTweaker method name
 - fixed Balloons not emitting light
 - fixed crash during Arc Furnace recycling calculations (thanks Malte)
-- fixed Bucket Wheel continuing to rotate when the Excavator is broken (thanks Malte)
+- fixed Bucket Wheel continuing to rotate when the Excavator is broken and desyncing (thanks Malte)
+- fixed LootEntry manipulation (3rd time's the charm?) (thanks Malte)
+- fixed crash with Railcraft (thanks Malte)
 
 #####Version 0.10-42 - BUILT
 - fixed NPE when throwign items into the crusher

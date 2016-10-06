@@ -1,5 +1,5 @@
 def mainVersion = "0.10"
-def buildNumber = "42"
+def buildNumber = "43"
 
 // For those who want the bleeding edge
 buildscript {
@@ -97,4 +97,24 @@ processResources
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
     }
+}
+
+task deobfJar(type: Jar) {
+    from sourceSets.main.output
+    classifier = 'deobf'
+    manifest {
+        attributes 'FMLAT': 'ImmersiveEngineering_at.cfg'
+    }
+}
+
+task apiZip(type: Zip) {
+    from(sourceSets.main.java) {
+        include "blusunrize/immersiveengineering/api/**"
+    }
+    classifier = 'api'
+}
+
+artifacts {
+    archives deobfJar
+    archives apiZip
 }
