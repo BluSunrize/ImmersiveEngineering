@@ -1,13 +1,14 @@
 package blusunrize.immersiveengineering.common.util.network;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
-import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.entities.EntitySkylineHook;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -51,7 +52,7 @@ public class MessageSkyhookSync implements IMessage
 	public void toBytes(ByteBuf buf)
 	{
 		buf.writeInt(entityID);
-		ByteBufUtils.writeTag(buf,connection.writeToNBT()); 
+		ByteBufUtils.writeTag(buf,connection.writeToNBT());
 		buf.writeInt(target.getX());
 		buf.writeInt(target.getY());
 		buf.writeInt(target.getZ());
@@ -70,13 +71,17 @@ public class MessageSkyhookSync implements IMessage
 		@Override
 		public IMessage onMessage(MessageSkyhookSync message, MessageContext ctx)
 		{
-			Entity ent = ClientUtils.mc().theWorld.getEntityByID(message.entityID);
-			if(ent instanceof EntitySkylineHook)
+			World world = ImmersiveEngineering.proxy.getClientWorld();
+			if(world!=null)
 			{
-				((EntitySkylineHook)ent).connection = message.connection;
-				((EntitySkylineHook)ent).target = message.target;
-				((EntitySkylineHook)ent).subPoints = message.subPoints;
-				((EntitySkylineHook)ent).targetPoint = message.targetPoint;
+				Entity ent = world.getEntityByID(message.entityID);
+				if(ent instanceof EntitySkylineHook)
+				{
+					((EntitySkylineHook)ent).connection = message.connection;
+					((EntitySkylineHook)ent).target = message.target;
+					((EntitySkylineHook)ent).subPoints = message.subPoints;
+					((EntitySkylineHook)ent).targetPoint = message.targetPoint;
+				}
 			}
 			return null;
 		}
