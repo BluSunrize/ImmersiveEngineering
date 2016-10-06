@@ -161,7 +161,7 @@ public class EventHandler
 						{
 							if(f_lootEntries==null)
 							{
-								f_lootEntries = LootPool.class.getDeclaredField(ObfuscationReflectionHelper.remapFieldNames(LootPool.class.getName(), "lootEntries")[0]);
+								f_lootEntries = LootPool.class.getDeclaredField(ObfuscationReflectionHelper.remapFieldNames(LootPool.class.getName(), "field_186453_a")[0]);//field_186453_a is srg for lootEntries
 								f_lootEntries.setAccessible(true);
 							}
 							if(f_lootEntries!=null)
