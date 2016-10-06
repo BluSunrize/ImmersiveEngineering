@@ -58,7 +58,7 @@ public class MultiblockMetalPress implements IMultiblock
 	public boolean overwriteBlockRender(ItemStack stack, int iterator)
 	{
 		if(iterator==3||iterator==5)
-			return ImmersiveEngineering.proxy.drawConveyorInGui("immersiveengineering:conveyor", EnumFacing.SOUTH);
+			return ImmersiveEngineering.proxy.drawConveyorInGui("immersiveengineering:conveyor", EnumFacing.EAST);
 		return false;
 	}
 	@Override
@@ -81,8 +81,8 @@ public class MultiblockMetalPress implements IMultiblock
 		if(renderStack==null)
 			renderStack = new ItemStack(IEContent.blockMetalMultiblock,1,BlockTypes_MetalMultiblock.METAL_PRESS.getMeta());
 		GlStateManager.scale(4, 4, 4);
-		GlStateManager.translate(0, .125, 0);
-		GlStateManager.rotate(45, 0, 1, 0);
+		GlStateManager.translate(.375, .375, .125f);
+		GlStateManager.rotate(-45, 0, 1, 0);
 		GlStateManager.rotate(-20, 1, 0, 0);
 		ClientUtils.mc().getRenderItem().renderItem(renderStack, ItemCameraTransforms.TransformType.GUI);
 	}

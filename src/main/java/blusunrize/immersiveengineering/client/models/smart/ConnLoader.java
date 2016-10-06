@@ -9,7 +9,6 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.model.Attributes;
 import net.minecraftforge.client.model.ICustomModelLoader;
 import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
@@ -40,7 +39,7 @@ public class ConnLoader implements ICustomModelLoader
 		baseModels.put("rel_hv", new ResourceLocation("immersiveengineering:block/connector/relayHV.obj"));
 
 		baseModels.put("conn_struct",
-				new ResourceLocation("immersiveengineering:block/connector/connectorStructural.obj"));
+				new ResourceLocation("immersiveengineering:block/connector/connectorStructural.obj.ie"));
 
 		baseModels.put("conn_redstone", new ResourceLocation("immersiveengineering:block/connector/connectorRedstone.obj.ie"));
 

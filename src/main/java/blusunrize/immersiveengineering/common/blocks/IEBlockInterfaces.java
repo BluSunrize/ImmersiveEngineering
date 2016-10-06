@@ -2,6 +2,7 @@ package blusunrize.immersiveengineering.common.blocks;
 
 import blusunrize.immersiveengineering.api.IEEnums;
 import blusunrize.immersiveengineering.api.IEProperties.PropertyBoolInverted;
+import net.minecraft.block.BlockPistonBase;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.IBlockState;
@@ -10,10 +11,12 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.model.obj.OBJModel.OBJState;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -86,10 +89,15 @@ public class IEBlockInterfaces
 	{
 		int getLightValue();
 	}
-	
+
+	public interface IColouredBlock
+	{
+		boolean hasCustomBlockColours();
+		int getRenderColour(IBlockState state, @Nullable IBlockAccess worldIn, @Nullable BlockPos pos, int tintIndex);
+	}
 	public interface IColouredTile
 	{
-		int getRenderColour();
+		int getRenderColour(int tintIndex);
 	}
 
 	public interface IDirectionalTile
@@ -100,6 +108,40 @@ public class IEBlockInterfaces
 		 * @return 0 = side clicked, 1=piston behaviour,  2 = horizontal, 3 = vertical, 4 = x/z axis, 5 = horizontal based on quadrant
 		 */
 		int getFacingLimitation();
+		default EnumFacing getFacingForPlacement(EntityLivingBase placer, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ)
+		{
+			EnumFacing f = EnumFacing.DOWN;
+			int limit = getFacingLimitation();
+			if(limit==0)
+				f = side;
+			else if(limit==1)
+				f = BlockPistonBase.getFacingFromEntity(pos, placer);
+			else if(limit==2)
+				f = EnumFacing.fromAngle(placer.rotationYaw);
+			else if(limit==3)
+				f = (side!=EnumFacing.DOWN&&(side==EnumFacing.UP||hitY<=.5))?EnumFacing.UP : EnumFacing.DOWN;
+			else if(limit==4)
+			{
+				f = EnumFacing.fromAngle(placer.rotationYaw);
+				if(f==EnumFacing.SOUTH || f==EnumFacing.WEST)
+					f = f.getOpposite();
+			} else if(limit == 5)
+			{
+				if(side.getAxis() != Axis.Y)
+					f = side.getOpposite();
+				else
+				{
+					float xFromMid = hitX - .5f;
+					float zFromMid = hitZ - .5f;
+					float max = Math.max(Math.abs(xFromMid), Math.abs(zFromMid));
+					if(max == Math.abs(xFromMid))
+						f = xFromMid < 0 ? EnumFacing.WEST : EnumFacing.EAST;
+					else
+						f = zFromMid < 0 ? EnumFacing.NORTH : EnumFacing.SOUTH;
+				}
+			}
+			return mirrorFacingOnPlacement(placer)?f.getOpposite():f;
+		}
 		boolean mirrorFacingOnPlacement(EntityLivingBase placer);
 		boolean canHammerRotate(EnumFacing side, float hitX, float hitY, float hitZ, EntityLivingBase entity);
 	}

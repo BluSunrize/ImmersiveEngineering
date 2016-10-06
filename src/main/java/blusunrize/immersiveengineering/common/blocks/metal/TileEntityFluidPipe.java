@@ -1128,10 +1128,11 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 		return cachedOBJStates.get(key);
 	}
 
+
 	@Override
-	public int getRenderColour()
+	public int getRenderColour(int tintIndex)
 	{
-		return 0xff00ff;
+		return 0xffffff;
 	}
 
 	@Override

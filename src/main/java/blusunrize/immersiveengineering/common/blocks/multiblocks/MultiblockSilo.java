@@ -73,12 +73,10 @@ public class MultiblockSilo implements IMultiblock
 	{
 		if(renderStack==null)
 			renderStack = new ItemStack(IEContent.blockMetalMultiblock,1,BlockTypes_MetalMultiblock.SILO.getMeta());
-		GlStateManager.scale(8, 8, 8);
-		GlStateManager.translate(-.0625, -.0625, -.0625);
-		GlStateManager.rotate(45, 0, 1, 0);
+		GlStateManager.translate(2, 2.5, 1);
+		GlStateManager.rotate(-45, 0, 1, 0);
 		GlStateManager.rotate(-20, 1, 0, 0);
-
-
+		GlStateManager.scale(8,8,8);
 		ClientUtils.mc().getRenderItem().renderItem(renderStack, ItemCameraTransforms.TransformType.GUI);
 	}
 

@@ -20,6 +20,7 @@ import blusunrize.immersiveengineering.common.blocks.*;
 import blusunrize.immersiveengineering.common.blocks.BlockFakeLight.TileEntityFakeLight;
 import blusunrize.immersiveengineering.common.blocks.cloth.BlockClothDevice;
 import blusunrize.immersiveengineering.common.blocks.cloth.TileEntityBalloon;
+import blusunrize.immersiveengineering.common.blocks.cloth.TileEntityStripCurtain;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorBasic;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorDrop;
@@ -363,6 +364,7 @@ public class IEContent
 		registerTile(TileEntityIESlab.class);
 
 		registerTile(TileEntityBalloon.class);
+		registerTile(TileEntityStripCurtain.class);
 
 		registerTile(TileEntityCokeOven.class);
 		registerTile(TileEntityBlastFurnace.class);
@@ -450,6 +452,7 @@ public class IEContent
 		EntityRegistry.registerModEntity(EntityRevolvershotFlare.class, "revolverShotFlare", i++, ImmersiveEngineering.instance, 64, 1, true);
 		EntityRegistry.registerModEntity(EntityIEExplosive.class, "explosive", i++, ImmersiveEngineering.instance, 64, 1, true);
 		EntityRegistry.registerModEntity(EntityFluorescentTube.class, "fluorescentTube", i++, ImmersiveEngineering.instance, 64, 1, true);
+		CapabilityHandler_CartShaders.init();
 
 		/**WOLFPACK BULLETS*/
 		if(!BulletHandler.homingCartridges.isEmpty())
@@ -668,6 +671,10 @@ public class IEContent
 		SqueezerRecipe.addRecipe(new FluidStack(fluidPlantoil, 80), null, Items.MELON_SEEDS, 6400);
 		SqueezerRecipe.addRecipe(new FluidStack(fluidPlantoil, 120), null, itemSeeds, 6400);
 		SqueezerRecipe.addRecipe(null, new ItemStack(itemMaterial,1,18), new ItemStack(itemMaterial,8,17), 19200);
+		Fluid fluidBlood = FluidRegistry.getFluid("blood");
+		if(fluidBlood!=null)
+			SqueezerRecipe.addRecipe(new FluidStack(fluidBlood,5), new ItemStack(Items.LEATHER), new ItemStack(Items.ROTTEN_FLESH), 6400);
+
 
 		FermenterRecipe.addRecipe(new FluidStack(fluidEthanol,80), null, Items.REEDS, 6400);
 		FermenterRecipe.addRecipe(new FluidStack(fluidEthanol,80), null, Items.MELON, 6400);
@@ -721,7 +728,7 @@ public class IEContent
 		MultiblockHandler.registerMultiblock(MultiblockFermenter.instance);
 		MultiblockHandler.registerMultiblock(MultiblockRefinery.instance);
 		MultiblockHandler.registerMultiblock(MultiblockDieselGenerator.instance);
-			MultiblockHandler.registerMultiblock(MultiblockExcavator.instance);
+		MultiblockHandler.registerMultiblock(MultiblockExcavator.instance);
 		MultiblockHandler.registerMultiblock(MultiblockBucketWheel.instance);
 		MultiblockHandler.registerMultiblock(MultiblockArcFurnace.instance);
 		MultiblockHandler.registerMultiblock(MultiblockLightningrod.instance);

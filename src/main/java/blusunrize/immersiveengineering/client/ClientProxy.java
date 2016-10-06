@@ -31,6 +31,7 @@ import blusunrize.immersiveengineering.common.IERecipes;
 import blusunrize.immersiveengineering.common.blocks.BlockIEFluid;
 import blusunrize.immersiveengineering.common.blocks.BlockTypes_MetalsAll;
 import blusunrize.immersiveengineering.common.blocks.BlockTypes_MetalsIE;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IColouredBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGuiTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IIEMetaBlock;
 import blusunrize.immersiveengineering.common.blocks.cloth.BlockTypes_ClothDevice;
@@ -80,7 +81,6 @@ import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformT
 import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.StateMapperBase;
-import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.client.renderer.entity.*;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.resources.I18n;
@@ -115,7 +115,6 @@ import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameData;
 import net.minecraftforge.oredict.OreDictionary;
-import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
@@ -429,14 +428,10 @@ public class ClientProxy extends CommonProxy
 		/**Colours*/
 		for(Item item : IEContent.registeredIEItems)
 			if(item instanceof IColouredItem && ((IColouredItem)item).hasCustomItemColours())
-				ClientUtils.mc().getItemColors().registerItemColorHandler(new IItemColor()
-				{
-					@Override
-					public int getColorFromItemstack(ItemStack stack, int tintIndex)
-					{
-						return ((IColouredItem)item).getColourForIEItem(stack, tintIndex);
-					}
-				}, item);
+				ClientUtils.mc().getItemColors().registerItemColorHandler(IEDefaultColourHandlers.INSTANCE, item);
+		for(Block block : IEContent.registeredIEBlocks)
+			if(block instanceof IColouredBlock && ((IColouredBlock)block).hasCustomBlockColours())
+				ClientUtils.mc().getBlockColors().registerBlockColorHandler(IEDefaultColourHandlers.INSTANCE, block);
 
 		/**Render Layers*/
 		Map<String, RenderPlayer> skinMap = Minecraft.getMinecraft().getRenderManager().getSkinMap();
@@ -510,7 +505,8 @@ public class ClientProxy extends CommonProxy
 		ManualHelper.addEntry("hemp", ManualHelper.CAT_GENERAL,
 				new ManualPages.ItemDisplay(ManualHelper.getManual(), "hemp0", new ItemStack(IEContent.blockCrop,1,5),new ItemStack(IEContent.itemSeeds)),
 				new ManualPages.Crafting(ManualHelper.getManual(), "hemp1", new ItemStack(IEContent.itemMaterial,1,5)),
-				new ManualPages.Crafting(ManualHelper.getManual(), "hemp2", new ItemStack(IEContent.blockClothDevice,1,BlockTypes_ClothDevice.CUSHION.getMeta())));
+				new ManualPages.Crafting(ManualHelper.getManual(), "hemp2", new ItemStack(IEContent.blockClothDevice,1,BlockTypes_ClothDevice.CUSHION.getMeta())),
+				new ManualPages.Crafting(ManualHelper.getManual(), "hemp3", new ItemStack(IEContent.blockClothDevice,1,BlockTypes_ClothDevice.STRIPCURTAIN.getMeta())));
 		ManualHelper.addEntry("cokeoven", ManualHelper.CAT_GENERAL,
 				new ManualPages.Text(ManualHelper.getManual(), "cokeoven0"),
 				new ManualPages.Crafting(ManualHelper.getManual(), "cokeovenBlock", new ItemStack(IEContent.blockStoneDecoration,1,BlockTypes_StoneDecoration.COKEBRICK.getMeta())),
@@ -948,7 +944,7 @@ public class ClientProxy extends CommonProxy
 				if(line.startsWith("#####"))
 				{
 					//add read log to map
-					addToMap(readVersion, currVersion, readVersion, readLog, readVersionBuilt, entries);
+					addToMap(readVersion, currVersion, readLog, readVersionBuilt, entries);
 					//parse new version
 					readVersion = "";
 					readLog = "";
@@ -961,7 +957,7 @@ public class ClientProxy extends CommonProxy
 				}
 			}
 			s.close();
-			addToMap(readVersion, currVersion, readVersion, readLog, readVersionBuilt, entries);
+			addToMap(readVersion, currVersion, readLog, readVersionBuilt, entries);
 			//add to manual
 			for(Entry<String, String> e : entries.entrySet())
 			{
@@ -994,14 +990,16 @@ public class ClientProxy extends CommonProxy
 		return Integer.compare(n1, n2);
 	}
 
-	private void addToMap(String readVersion, String currVersion, String readversion, String readLog, boolean readVersionBuilt, Map<String, String> entries)
+	private void addToMap(String readVersion, String currVersion, String readLog, boolean readVersionBuilt, Map<String, String> entries)
 	{
 		if(readVersion != null)
 		{
 			int compare = compareVersions(readVersion, currVersion);
 			if(readVersionBuilt || compare >= 0)
 			{
-				if(compare > 0)
+				if(!readVersionBuilt)
+					readVersion += " - UNRELEASED";
+				else if(compare > 0)
 					readVersion += " - NEW";
 				else if(compare == 0)
 					readVersion += " - CURRENT";
@@ -1323,6 +1321,8 @@ public class ClientProxy extends CommonProxy
 		if(state instanceof IExtendedBlockState)
 			state = ((IExtendedBlockState)state).withProperty(Properties.AnimationProperty, TileEntityFluidPipe.getStateFromKey(configuration));
 
+		GlStateManager.pushMatrix();
+		GlStateManager.translate(0,0,1);
 		RenderHelper.disableStandardItemLighting();
 		GlStateManager.blendFunc(770, 771);
 		GlStateManager.enableBlend();
@@ -1334,6 +1334,7 @@ public class ClientProxy extends CommonProxy
 //		if(model instanceof ISmartBlockModel)
 //			model = ((ISmartBlockModel) model).handleBlockState(state);
 		blockRenderer.getBlockModelRenderer().renderModelBrightness(model, state, .75f, false);
+		GlStateManager.popMatrix();
 	}
 
 	@Override
@@ -1342,9 +1343,11 @@ public class ClientProxy extends CommonProxy
 		IConveyorBelt con = ConveyorHandler.getConveyor(new ResourceLocation(conveyor), null);
 		if(con != null)
 		{
+			GlStateManager.pushMatrix();
 			Set<BakedQuad> quads = ModelConveyor.getBaseConveyor(facing, 1, new Matrix4(facing), ConveyorDirection.HORIZONTAL, ClientUtils.getSprite(con.getActiveTexture()), new boolean[]{true, true}, new boolean[]{true, true}, null, 0);
-			GL11.glTranslatef(0, 0, -1);
+//			GL11.glTranslatef(0, 0, 1);
 			ClientUtils.renderQuads(quads, 1, 1, 1, 1);
+			GlStateManager.popMatrix();
 			return true;
 		}
 		return false;

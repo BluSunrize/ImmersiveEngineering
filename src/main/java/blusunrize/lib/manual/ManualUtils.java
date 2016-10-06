@@ -120,18 +120,32 @@ public class ManualUtils
 	{
 		fontRenderer.resetStyles();
 		fontRenderer.textColor = colour;
-		List list = fontRenderer.listFormattedStringToWidth(string, width);
+		List<String> list = fontRenderer.listFormattedStringToWidth(string, width);
 		FloatBuffer currentGLColor = BufferUtils.createFloatBuffer(16);
-		for(Iterator iterator = list.iterator(); iterator.hasNext(); y += fontRenderer.FONT_HEIGHT)
+		int line = 0;
+		for(Iterator<String> iterator = list.iterator(); iterator.hasNext(); y += fontRenderer.FONT_HEIGHT)
 		{
-			String next = (String)iterator.next();
-			int currentColour = fontRenderer.textColor;
-			GL11.glGetFloat(GL11.GL_CURRENT_COLOR, currentGLColor);
-			//Resetting colour if GL colour differs from textColor
-			//that case happens because the formatting reset does not reset textColor
-			if(!(currentGLColor.get(0)==(currentColour>>16&255)/255f && currentGLColor.get(1)==(currentColour>>8&255)/255f && currentGLColor.get(2)==(currentColour&255)/255f))
-				fontRenderer.textColor = colour;
-			fontRenderer.drawString(next, x, y, fontRenderer.textColor, false);
+			String next = iterator.next();
+			if(line>0)
+			{
+				int currentColour = fontRenderer.textColor;
+				GL11.glGetFloat(GL11.GL_CURRENT_COLOR, currentGLColor);
+				//Resetting colour if GL colour differs from textColor
+				//that case happens because the formatting reset does not reset textColor
+				int glColourRGBA = ((int)(currentGLColor.get(0) * 255) << 16) + ((int)(currentGLColor.get(1) * 255) << 8) + ((int)(currentGLColor.get(2) * 255));
+				if(glColourRGBA != currentColour)
+				{
+					int j = 0;
+					for(; j < fontRenderer.colorCode.length; j++)
+						if(fontRenderer.colorCode[j] == glColourRGBA)
+						{
+							String code = Integer.toHexString(j % 16);
+							next = '\u00a7' + code + next;
+							break;
+						}
+				}
+			}
+			fontRenderer.drawString(next, x, y, colour, false);
 		}
 	}
 

@@ -109,18 +109,20 @@ public class MultiblockExcavatorDemo implements IMultiblock
 			renderStack = new ItemStack(IEContent.blockMetalMultiblock,1,BlockTypes_MetalMultiblock.EXCAVATOR.getMeta());
 		if(renderStack2==null)
 			renderStack2 = new ItemStack(IEContent.blockMetalMultiblock,1,BlockTypes_MetalMultiblock.BUCKET_WHEEL.getMeta());
-		GlStateManager.scale(-5.5, 5.5, 5.5);
-		GlStateManager.translate(-.25, .09375, -.28125);
-		GlStateManager.rotate(45, 0, 1, 0);
+		GlStateManager.translate(2, 3.5, 2.875);
+		GlStateManager.rotate(-225, 0, 1, 0);
 		GlStateManager.rotate(-20, 1, 0, 0);
+		double s = 5.25;
+		GlStateManager.scale(s,s,s);
 		GlStateManager.disableCull();
 		ClientUtils.mc().getRenderItem().renderItem(renderStack, ItemCameraTransforms.TransformType.GUI);
+		GlStateManager.scale(1/s,1/s,1/s);
 		GlStateManager.rotate(20, 1, 0, 0);
-		GlStateManager.rotate(-45, 0, 1, 0);
-		GlStateManager.scale(1.25, 1.25, 1.25);
-		GlStateManager.translate(.22, 0, .3875);
 		GlStateManager.rotate(225, 0, 1, 0);
+		GlStateManager.translate(2.5,0,-1.375);
+		GlStateManager.rotate(-45, 0, 1, 0);
 		GlStateManager.rotate(-20, 1, 0, 0);
+		GlStateManager.scale(6.875, 6.875, 6.875);
 		ClientUtils.mc().getRenderItem().renderItem(renderStack2, ItemCameraTransforms.TransformType.GUI);
 		GlStateManager.enableCull();
 	}

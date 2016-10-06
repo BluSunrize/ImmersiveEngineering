@@ -1,15 +1,24 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.TargetingInfo;
-import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
+import blusunrize.immersiveengineering.api.energy.wires.WireType;
+import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
+import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
+import com.google.common.base.Optional;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 
-public class TileEntityConnectorStructural extends TileEntityConnectorLV
+public class TileEntityConnectorStructural extends TileEntityConnectorLV implements IHammerInteraction, IOBJModelCallback<IBlockState>
 {
 	public float rotation = 0;
 
@@ -28,6 +37,16 @@ public class TileEntityConnectorStructural extends TileEntityConnectorLV
 //	{
 //		return false;
 //	}
+
+	@Override
+	public boolean hammerUseSide(EnumFacing side, EntityPlayer player, float hitX, float hitY, float hitZ)
+	{
+		rotation += player.isSneaking()?-22.5f:22.5f;
+		rotation %= 360;
+		markDirty();
+		worldObj.addBlockEvent(getPos(), this.getBlockType(), 254, 0);
+		return true;
+	}
 
 	@Override
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
@@ -81,6 +100,31 @@ public class TileEntityConnectorStructural extends TileEntityConnectorLV
 	{
 		return false;
 	}
+
+	@Override
+	public TextureAtlasSprite getTextureReplacement(IBlockState object, String material)
+	{
+		return null;
+	}
+	@Override
+	public boolean shouldRenderGroup(IBlockState object, String group)
+	{
+		return true;
+	}
+	@Override
+	public Optional<TRSRTransformation> applyTransformations(IBlockState object, String group, Optional<TRSRTransformation> transform)
+	{
+		Matrix4 mat = transform.isPresent()?new Matrix4(transform.get().getMatrix()):new Matrix4();
+		mat = mat.translate(.5,0,.5).rotate(Math.toRadians(rotation),0,1,0).translate(-.5,0,-.5);
+		transform = Optional.of( new TRSRTransformation(mat.toMatrix4f()));
+		return transform;
+	}
+	@Override
+	public Matrix4 handlePerspective(IBlockState Object, TransformType cameraTransformType, Matrix4 perspective)
+	{
+		return perspective;
+	}
+
 //	@Override
 //	public boolean canConnectEnergy(ForgeDirection from)
 //	{

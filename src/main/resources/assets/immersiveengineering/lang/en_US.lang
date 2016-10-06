@@ -181,6 +181,7 @@ tile.immersiveengineering.hemp.name=Industrial Hemp
 
 tile.immersiveengineering.clothDevice.cushion.name=Jump Cushion
 tile.immersiveengineering.clothDevice.balloon.name=Balloon
+tile.immersiveengineering.clothDevice.stripcurtain.name=Strip Curtain
 
 tile.immersiveengineering.molten_uranium.name=Molten Uranium
 tile.immersiveengineering.molten_constantan.name=Molten Constantan
@@ -937,6 +938,7 @@ ie.manual.entry.hemp.subtext=530 fabric it
 ie.manual.entry.hemp0=Industrial Hemp is a remarkable plant! Not only are its seeds useful for the the creation of <link;biodiesel;§o§nBiodiesel§r>, the hemp fibers are also useful for the creation of Tough Fabric. The seeds can be gathered by breaking tall grass.
 ie.manual.entry.hemp1=Tough Fabric is a resilient weave made from hemp fiber. It's used to create <link;generator;§o§nImproved §o§nWindmills§r;3> as well as <link;balloon;§o§nBalloons§r> and §o§nJump §o§nCushions§r (detailed on the next page).
 ie.manual.entry.hemp2=Jump Cushions are simple blocks created from tough fabric and inflated with air. They are capable of absorbing impacts and prevent falldamage when landed upon, but, unlike slime blocks, will not bounce you back up.
+ie.manual.entry.hemp3=Strip Curtains are pieces of fabric that are mounted to doorframes or other openings to serve in blocking the view.<br>They can be dyed in the same way leather armor can.
 
 ie.manual.entry.cokeoven.name=Coke Oven
 ie.manual.entry.cokeoven.subtext=Hot topic!
@@ -1280,7 +1282,7 @@ ie.manual.category.computers.name=Computer support
 ie.manual.entry.computer.general.name=General information ☎
 ie.manual.entry.computer.general.subtext=Technology from the future
 ie.manual.entry.computer.general0=Many of the machines described in this manual can be controlled using computers from OpenComputers or ComputerCraft. When using OpenComputers, an Adapter has to be used to connect the machine to the network. If the machine is a multiblock that has a redstone port, that is where you can attach your computer. Otherwise please check the machine-specific entry in this chapter. The following pages describe some commonly used return types.
-ie.manual.entry.computer.general1=§lItem stacks§r are a very common return type. They consist of a table containing these entries:<br>§lname§r: the internal name of the item, i.e. "minecraft:cobblestone" for cobblestone<br>§lsize§r: the size of the item stack<br>§lnameUnlocalized§r: the unlocalized name of the item, i.e. "tile.stonebrick" for cobblestone. Only available on ComputerCraft<br>§llabel§r: The name of the stack. Changes when the stack is renamed in an anvil.
+ie.manual.entry.computer.general1=§lItem stacks§r are a very common return type. They consist of a table containing these entries:<br>§lname§r: the internal name of the item, e.g. "minecraft:cobblestone" for cobblestone<br>§lsize§r: the size of the item stack<br>§lnameUnlocalized§r: the unlocalized name of the item, e.g. "tile.stonebrick" for cobblestone. Only available on ComputerCraft<br>§llabel§r: The name of the stack. Changes when the stack is renamed in an anvil.
 ie.manual.entry.computer.general2=§ldamage§r: The damage (or, in most cases, metadata) of the item stack<br>§lmaxDamage§r: The maximum amount of damage the item can have before breaking<br>§lmaxSize§r: the maximum stack size for this item. 64 in most cases<br>§lhasTag§r: whether the stack has a nbt tag
 ie.manual.entry.computer.general3=§lFluid stacks§r: A fluid stack represents some amount of a specific fluid that isn't necessarily in a tank. These entries are available in the returned table:<br>§lname§r: the unlocalized name of the fluid<br>§lamount§r: the amount of fluid, in millibuckets<br>§lhasTag§r: whether the fluid has a nbt tag
 ie.manual.entry.computer.general4=§lFluid tanks§r are similar to fluid stacks, with the difference that this fluid is inside a tank. The returned table has the same entries as the table for a fluid stack. Additionally the capacity of the tank the fluid is in is stored in the entry §lcapacity§r

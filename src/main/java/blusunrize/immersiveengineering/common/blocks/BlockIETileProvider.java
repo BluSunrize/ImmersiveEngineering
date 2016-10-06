@@ -9,7 +9,6 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockPistonBase;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
@@ -24,7 +23,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -38,10 +36,13 @@ import net.minecraftforge.common.property.Properties;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
-public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlockEnum> extends BlockIEBase<E> implements ITileEntityProvider
+public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlockEnum> extends BlockIEBase<E> implements ITileEntityProvider, IColouredBlock
 {
+	private boolean hasColours = false;
+
 	public BlockIETileProvider(String name, Material material, PropertyEnum<E> mainProperty, Class<? extends ItemBlockIEBase> itemBlock, Object... additionalProperties)
 	{
 		super(name, material, mainProperty, itemBlock, additionalProperties);
@@ -199,37 +200,8 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 
 		if(tile instanceof IDirectionalTile)
 		{
-			EnumFacing f = EnumFacing.DOWN;
-			int limit = ((IDirectionalTile)tile).getFacingLimitation();
-			if(limit==0)
-				f = side;
-			else if(limit==1)
-				f = BlockPistonBase.getFacingFromEntity(pos, placer);
-			else if(limit==2)
-				f = EnumFacing.fromAngle(placer.rotationYaw);
-			else if(limit==3)
-				f = (side!=EnumFacing.DOWN&&(side==EnumFacing.UP||hitY<=.5))?EnumFacing.UP : EnumFacing.DOWN;
-			else if(limit==4)
-			{
-				f = EnumFacing.fromAngle(placer.rotationYaw);
-				if(f==EnumFacing.SOUTH || f==EnumFacing.WEST)
-					f = f.getOpposite();
-			} else if(limit == 5)
-			{
-				if(side.getAxis() != Axis.Y)
-					f = side.getOpposite();
-				else
-				{
-					float xFromMid = hitX - .5f;
-					float zFromMid = hitZ - .5f;
-					float max = Math.max(Math.abs(xFromMid), Math.abs(zFromMid));
-					if(max == Math.abs(xFromMid))
-						f = xFromMid < 0 ? EnumFacing.WEST : EnumFacing.EAST;
-					else
-						f = zFromMid < 0 ? EnumFacing.NORTH : EnumFacing.SOUTH;
-				}
-			}
-			((IDirectionalTile)tile).setFacing( ((IDirectionalTile)tile).mirrorFacingOnPlacement(placer)?f.getOpposite():f );
+			EnumFacing f = ((IDirectionalTile)tile).getFacingForPlacement(placer, pos, side, hitX, hitY, hitZ);
+			((IDirectionalTile)tile).setFacing(f);
 			if(tile instanceof IAdvancedDirectionalTile)
 				((IAdvancedDirectionalTile)tile).onDirectionalPlacement(side, hitX, hitY, hitZ, placer);
 		}
@@ -309,15 +281,27 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 		return 0;
 	}
 
-//	@Override
-//	public int colorMultiplier(IBlockAccess world, BlockPos pos, int renderPass)
-//	{
-//		super.recolorBlock()
-//		TileEntity te = world.getTileEntity(pos);
-//		if(te instanceof IColouredTile)
-//			((IColouredTile)te).getRenderColour();
-//		return 16777215;
-//	}
+	public BlockIETileProvider setHasColours()
+	{
+		this.hasColours = true;
+		return this;
+	}
+	@Override
+	public boolean hasCustomBlockColours()
+	{
+		return hasColours;
+	}
+	@Override
+	public int getRenderColour(IBlockState state, @Nullable IBlockAccess worldIn, @Nullable BlockPos pos, int tintIndex)
+	{
+		if(worldIn!=null && pos!=null)
+		{
+			TileEntity tile = worldIn.getTileEntity(pos);
+			if(tile instanceof IColouredTile)
+				return ((IColouredTile)tile).getRenderColour(tintIndex);
+		}
+		return 0xffffff;
+	}
 
 	@Override
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos)

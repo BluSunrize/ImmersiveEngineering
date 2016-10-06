@@ -13,7 +13,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import java.util.Calendar;
 import java.util.HashMap;
 
-public class Config
+public class 	Config
 {
 	public static HashMap<String, Boolean> config_boolean = new HashMap();
 	public static HashMap<String, Integer> config_int = new HashMap();

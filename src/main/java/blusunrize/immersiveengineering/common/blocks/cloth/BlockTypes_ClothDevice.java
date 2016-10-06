@@ -6,7 +6,8 @@ import net.minecraft.util.IStringSerializable;
 public enum BlockTypes_ClothDevice implements IStringSerializable, BlockIEBase.IBlockEnum
 {
 	CUSHION,
-	BALLOON;
+	BALLOON,
+	STRIPCURTAIN;
 
 	@Override
 	public String getName()
