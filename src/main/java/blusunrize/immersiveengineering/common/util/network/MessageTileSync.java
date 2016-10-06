@@ -66,9 +66,13 @@ public class MessageTileSync implements IMessage
 		@Override
 		public IMessage onMessage(MessageTileSync message, MessageContext ctx)
 		{
-			TileEntity tile = ClientUtils.mc().theWorld.getTileEntity(message.pos);
-			if(tile instanceof TileEntityIEBase)
-				((TileEntityIEBase)tile).receiveMessageFromServer(message.nbt);
+			World w = ClientUtils.mc().theWorld;
+			if (w!=null)
+			{
+				TileEntity tile = w.getTileEntity(message.pos);
+				if(tile instanceof TileEntityIEBase)
+					((TileEntityIEBase)tile).receiveMessageFromServer(message.nbt);
+			}
 			return null;
 		}
 	}

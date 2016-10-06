@@ -7,6 +7,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasObjPr
 import blusunrize.immersiveengineering.common.blocks.TileEntityMultiblockPart;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockBucketWheel;
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.network.MessageTileSync;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -22,6 +23,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -93,12 +95,21 @@ public class TileEntityBucketWheel extends TileEntityMultiblockPart<TileEntityBu
 			rotation%=360;
 		}
 
-		if(worldObj.isRemote){
+		if(worldObj.isRemote)
+		{
 			if(particleStack!=null)
 			{
 				ImmersiveEngineering.proxy.spawnBucketWheelFX(this, particleStack);
 				particleStack = null;
 			}
+		}
+		else if (active&&worldObj.getTotalWorldTime()%20==0)
+		{
+			NBTTagCompound nbt = new NBTTagCompound();
+			nbt.setFloat("rotation", rotation);
+			MessageTileSync sync = new MessageTileSync(this, nbt);
+			ImmersiveEngineering.packetHandler.sendToAllAround(sync, new TargetPoint(worldObj.provider.getDimension(),
+					getPos().getX(), getPos().getY(), getPos().getZ(), 100));
 		}
 	}
 
@@ -148,18 +159,20 @@ public class TileEntityBucketWheel extends TileEntityMultiblockPart<TileEntityBu
 	@SideOnly(Side.CLIENT)
 	public HashMap<String,String> getTextureReplacements()
 	{
-		HashMap<String,String> texMap = new HashMap<String,String>();
-		for(int i=0; i<this.digStacks.length; i++)
-			if(this.digStacks[i]!=null)
-			{
-				Block b = Block.getBlockFromItem(this.digStacks[i].getItem());
-				IBlockState state = b!=null?b.getStateFromMeta(this.digStacks[i].getMetadata()): Blocks.STONE.getDefaultState();
-				IBakedModel model = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getModelForState(state);
-				if(model!=null && model.getParticleTexture()!=null)
-					texMap.put("dig"+i, model.getParticleTexture().getIconName());
-			}
-
-		return texMap;
+		synchronized (digStacks)
+		{
+			HashMap<String,String> texMap = new HashMap<String,String>();
+			for(int i=0; i<this.digStacks.length; i++)
+				if(this.digStacks[i]!=null)
+				{
+					Block b = Block.getBlockFromItem(this.digStacks[i].getItem());
+					IBlockState state = b!=null?b.getStateFromMeta(this.digStacks[i].getMetadata()): Blocks.STONE.getDefaultState();
+					IBakedModel model = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getModelForState(state);
+					if(model!=null && model.getParticleTexture()!=null)
+						texMap.put("dig"+i, model.getParticleTexture().getIconName());
+				}
+			return texMap;
+		}
 	}
 	static ArrayList<String> emptyDisplayList = new ArrayList<>();
 	@Override
@@ -171,10 +184,20 @@ public class TileEntityBucketWheel extends TileEntityMultiblockPart<TileEntityBu
 	@Override
 	public void receiveMessageFromServer(NBTTagCompound message)
 	{
-		if(message.hasKey("fill"))
-			this.digStacks[message.getInteger("fill")] = ItemStack.loadItemStackFromNBT(message.getCompoundTag("fillStack"));
-		if(message.hasKey("empty"))
-			this.digStacks[message.getInteger("empty")] = null;
+		synchronized (digStacks)
+		{
+			if (message.hasKey("fill"))
+				this.digStacks[message.getInteger("fill")] = ItemStack
+				.loadItemStackFromNBT(message.getCompoundTag("fillStack"));
+			if (message.hasKey("empty"))
+				this.digStacks[message.getInteger("empty")] = null;
+			if (message.hasKey("rotation"))
+			{
+				int packetRotation = message.getInteger("rotation");
+				if (Math.abs(packetRotation-rotation)>5*(float)Config.getDouble("excavator_speed"))
+					rotation = packetRotation;
+			}
+		}
 	}
 
 	@Override
