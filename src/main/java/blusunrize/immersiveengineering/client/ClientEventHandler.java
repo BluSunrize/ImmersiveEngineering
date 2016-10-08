@@ -10,7 +10,6 @@ import blusunrize.immersiveengineering.api.tool.IDrillHead;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler.IZoomTool;
 import blusunrize.immersiveengineering.client.gui.GuiBlastFurnace;
-import blusunrize.immersiveengineering.client.models.IESmartObjModel;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedSelectionBounds;
@@ -85,8 +84,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 		for(int i=0; i<ClientUtils.destroyBlockIcons.length; i++)
 			ClientUtils.destroyBlockIcons[i] = texturemap.getAtlasSprite("minecraft:blocks/destroy_stage_" + i);
 
-		IESmartObjModel.cachedBakedItemModels.clear();
-		IESmartObjModel.modelCache.clear();
+		ImmersiveEngineering.proxy.clearRenderCaches();
 	}
 
 	public static Set<Connection> skyhookGrabableConnections = new HashSet();

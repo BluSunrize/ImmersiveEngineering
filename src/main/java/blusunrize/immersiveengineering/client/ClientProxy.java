@@ -15,10 +15,7 @@ import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBelt;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.client.fx.EntityFXSparks;
 import blusunrize.immersiveengineering.client.gui.*;
-import blusunrize.immersiveengineering.client.models.IESmartObjModel;
-import blusunrize.immersiveengineering.client.models.ModelConveyor;
-import blusunrize.immersiveengineering.client.models.ModelItemDynamicOverride;
-import blusunrize.immersiveengineering.client.models.ModelShaderMinecart;
+import blusunrize.immersiveengineering.client.models.*;
 import blusunrize.immersiveengineering.client.models.obj.IEOBJLoader;
 import blusunrize.immersiveengineering.client.models.smart.ConnLoader;
 import blusunrize.immersiveengineering.client.models.smart.ConnModelReal;
@@ -238,6 +235,7 @@ public class ClientProxy extends CommonProxy
 				return new EntityRenderFluorescentTube(manager);
 			}});
 		ModelLoaderRegistry.registerLoader(new ConnLoader());
+		ModelLoaderRegistry.registerLoader(new ModelConfigurableSides.Loader());
 	}
 	@Override
 	public void preInitEnd()
@@ -1421,7 +1419,10 @@ public class ClientProxy extends CommonProxy
 	public void clearRenderCaches()
 	{
 		IESmartObjModel.modelCache.clear();
+		IESmartObjModel.cachedBakedItemModels.clear();
 		ConnModelReal.cache.clear();
+		ModelConveyor.modelCache.clear();
+		ModelConfigurableSides.modelCache.clear();
 	}
 	private static void mapFluidState(Block block, Fluid fluid)
 	{

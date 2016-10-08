@@ -141,10 +141,10 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 		else if(state.getPropertyNames().contains(IEProperties.FACING_ALL))
 			state = state.withProperty(IEProperties.FACING_ALL, EnumFacing.NORTH);
 
-		if(tile instanceof IConfigurableSides)
-			for(int i=0; i<6; i++)
-				if(state.getPropertyNames().contains(IEProperties.SIDECONFIG[i]))
-					state = state.withProperty(IEProperties.SIDECONFIG[i], ((IConfigurableSides)tile).getSideConfig(i));
+//		if(tile instanceof IConfigurableSides)
+//			for(int i=0; i<6; i++)
+//				if(state.getPropertyNames().contains(IEProperties.SIDECONFIG[i]))
+//					state = state.withProperty(IEProperties.SIDECONFIG[i], ((IConfigurableSides)tile).getSideConfig(i));
 
 		if(tile instanceof IActiveState)
 		{
@@ -177,17 +177,23 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 		state = super.getExtendedState(state, world, pos);
 		if(state instanceof IExtendedBlockState)
 		{
+			IExtendedBlockState extended = (IExtendedBlockState)state;
 			TileEntity te = world.getTileEntity(pos);
+			if(te instanceof IConfigurableSides)
+				for(int i=0; i<6; i++)
+					if(extended.getUnlistedNames().contains(IEProperties.SIDECONFIG[i]))
+						extended = extended.withProperty(IEProperties.SIDECONFIG[i], ((IConfigurableSides)te).getSideConfig(i));
 			if(te instanceof IAdvancedHasObjProperty)
-				state = ((IExtendedBlockState)state).withProperty(Properties.AnimationProperty, ((IAdvancedHasObjProperty)te).getOBJState());
+				extended = extended.withProperty(Properties.AnimationProperty, ((IAdvancedHasObjProperty)te).getOBJState());
 			else if(te instanceof IHasObjProperty)
-				state = ((IExtendedBlockState)state).withProperty(Properties.AnimationProperty, new OBJState(((IHasObjProperty)te).compileDisplayList(), true));
+				extended = extended.withProperty(Properties.AnimationProperty, new OBJState(((IHasObjProperty)te).compileDisplayList(), true));
 			if(te instanceof IDynamicTexture)
-				state = ((IExtendedBlockState)state).withProperty(IEProperties.OBJ_TEXTURE_REMAP, ((IDynamicTexture)te).getTextureReplacements());
+				extended = extended.withProperty(IEProperties.OBJ_TEXTURE_REMAP, ((IDynamicTexture)te).getTextureReplacements());
 			if(te instanceof IOBJModelCallback)
-				state = ((IExtendedBlockState)state).withProperty(IOBJModelCallback.PROPERTY, (IOBJModelCallback)te);
+				extended = extended.withProperty(IOBJModelCallback.PROPERTY, (IOBJModelCallback)te);
 			if(te instanceof IPropertyPassthrough && ((IExtendedBlockState) state).getUnlistedNames().contains(IEProperties.TILEENTITY_PASSTHROUGH))
-				state = ((IExtendedBlockState) state).withProperty(IEProperties.TILEENTITY_PASSTHROUGH, te);
+				extended = extended.withProperty(IEProperties.TILEENTITY_PASSTHROUGH, te);
+			state = extended;
 		}
 
 		return state;
