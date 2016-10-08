@@ -1414,6 +1414,11 @@ public class ClientProxy extends CommonProxy
 	{
 		ConnModelReal.cache.remove(new ExtBlockstateAdapter(state));
 	}
+	@Override
+	public void clearConnectionModelCache()
+	{
+		ConnModelReal.cache.clear();
+	}
 
 	@Override
 	public void clearRenderCaches()

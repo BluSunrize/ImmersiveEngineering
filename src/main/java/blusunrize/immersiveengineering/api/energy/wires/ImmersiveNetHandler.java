@@ -1,9 +1,9 @@
 package blusunrize.immersiveengineering.api.energy.wires;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.DimensionBlockPos;
 import blusunrize.immersiveengineering.api.TargetingInfo;
-import blusunrize.immersiveengineering.client.models.smart.ConnModelReal;
 import blusunrize.immersiveengineering.common.IESaveData;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.nbt.NBTTagCompound;
@@ -145,7 +145,7 @@ public class ImmersiveNetHandler
 		if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
 			indirectConnections.clear();
 		else
-			ConnModelReal.cache.clear();
+			ImmersiveEngineering.proxy.clearConnectionModelCache();
 	}
 
 	/**
