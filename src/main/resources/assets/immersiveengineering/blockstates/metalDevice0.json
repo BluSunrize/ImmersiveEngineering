@@ -8,36 +8,16 @@
 	"variants":
 	{
 		"inventory,type=capacitor_lv": [{"textures": {
-			"down": "immersiveengineering:blocks/metalDevice0_capacitorLV_down",
-			"up": "immersiveengineering:blocks/metalDevice0_capacitorLV_up",
-			"north": "immersiveengineering:blocks/metalDevice0_capacitorLV_side",
-			"south": "immersiveengineering:blocks/metalDevice0_capacitorLV_side",
-			"west": "immersiveengineering:blocks/metalDevice0_capacitorLV_side",
-			"east": "immersiveengineering:blocks/metalDevice0_capacitorLV_side"}
+			"name": "immersiveengineering:blocks/metalDevice0_capacitorLV"}
 		}],
 		"inventory,type=capacitor_mv": [{"textures": {
-			"down": "immersiveengineering:blocks/metalDevice0_capacitorMV_down",
-			"up": "immersiveengineering:blocks/metalDevice0_capacitorMV_up",
-			"north": "immersiveengineering:blocks/metalDevice0_capacitorMV_side",
-			"south": "immersiveengineering:blocks/metalDevice0_capacitorMV_side",
-			"west": "immersiveengineering:blocks/metalDevice0_capacitorMV_side",
-			"east": "immersiveengineering:blocks/metalDevice0_capacitorMV_side"}
+			"name": "immersiveengineering:blocks/metalDevice0_capacitorMV"}
 		}],
 		"inventory,type=capacitor_hv": [{"textures": {
-			"down": "immersiveengineering:blocks/metalDevice0_capacitorHV_down",
-			"up": "immersiveengineering:blocks/metalDevice0_capacitorHV_up",
-			"north": "immersiveengineering:blocks/metalDevice0_capacitorHV_side",
-			"south": "immersiveengineering:blocks/metalDevice0_capacitorHV_side",
-			"west": "immersiveengineering:blocks/metalDevice0_capacitorHV_side",
-			"east": "immersiveengineering:blocks/metalDevice0_capacitorHV_side"}
+			"name": "immersiveengineering:blocks/metalDevice0_capacitorHV"}
 		}],
 		"inventory,type=capacitor_creative": [{"textures": {
-			"down": "immersiveengineering:blocks/metalDevice0_capacitorCreative_down",
-			"up": "immersiveengineering:blocks/metalDevice0_capacitorCreative_up",
-			"north": "immersiveengineering:blocks/metalDevice0_capacitorCreative_side",
-			"south": "immersiveengineering:blocks/metalDevice0_capacitorCreative_side",
-			"west": "immersiveengineering:blocks/metalDevice0_capacitorCreative_side",
-			"east": "immersiveengineering:blocks/metalDevice0_capacitorCreative_side"}
+			"name": "immersiveengineering:blocks/metalDevice0_capacitorCreative"}
 		}],
 		"inventory,type=barrel": [{
 			"model": "immersiveengineering:smartmodel/confSides_v_metalDevice0_barrel"
@@ -45,31 +25,16 @@
 		"type":
 		{
 			"capacitor_lv": {"textures": {
-				"down": "immersiveengineering:blocks/metalDevice0_capacitorLV_down",
-				"up": "immersiveengineering:blocks/metalDevice0_capacitorLV_up",
-				"north": "immersiveengineering:blocks/metalDevice0_capacitorLV_side",
-				"south": "immersiveengineering:blocks/metalDevice0_capacitorLV_side",
-				"west": "immersiveengineering:blocks/metalDevice0_capacitorLV_side",
-				"east": "immersiveengineering:blocks/metalDevice0_capacitorLV_side"
+				"name": "immersiveengineering:blocks/metalDevice0_capacitorLV"
 			}},
 			"capacitor_mv": {"textures": {
-				"down": "immersiveengineering:blocks/metalDevice0_capacitorMV_down",
-				"up": "immersiveengineering:blocks/metalDevice0_capacitorMV_up",
-				"north": "immersiveengineering:blocks/metalDevice0_capacitorMV_side",
-				"south": "immersiveengineering:blocks/metalDevice0_capacitorMV_side",
-				"west": "immersiveengineering:blocks/metalDevice0_capacitorMV_side",
-				"east": "immersiveengineering:blocks/metalDevice0_capacitorMV_side"
+				"name": "immersiveengineering:blocks/metalDevice0_capacitorMV"
 			}},
 			"capacitor_hv": {"textures": {
 				"name": "immersiveengineering:blocks/metalDevice0_capacitorHV"
 			}},
 			"capacitor_creative": {"textures": {
-				"down": "immersiveengineering:blocks/metalDevice0_capacitorCreative_down",
-				"up": "immersiveengineering:blocks/metalDevice0_capacitorCreative_up",
-				"north": "immersiveengineering:blocks/metalDevice0_capacitorCreative_side",
-				"south": "immersiveengineering:blocks/metalDevice0_capacitorCreative_side",
-				"west": "immersiveengineering:blocks/metalDevice0_capacitorCreative_side",
-				"east": "immersiveengineering:blocks/metalDevice0_capacitorCreative_side"
+				"name": "immersiveengineering:blocks/metalDevice0_capacitorCreative"
 			}},
 			"barrel": {
 				"model": "immersiveengineering:smartmodel/confSides_v_metalDevice0_barrel"

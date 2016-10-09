@@ -95,6 +95,7 @@ public class ModelConfigurableSides implements IBakedModel
 	@Override
 	public List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable EnumFacing side, long rand)
 	{
+//		System.out.println("gettingQuads for "+name);
 		TextureAtlasSprite[] tex = new TextureAtlasSprite[6];
 		for(int i=0; i<tex.length; i++)
 			tex[i] = this.textures[i][0];
@@ -277,6 +278,7 @@ public class ModelConfigurableSides implements IBakedModel
 		@Override
 		public IModel retexture(ImmutableMap<String, String> textures)
 		{
+			String newName = this.name;
 			ImmutableMap.Builder<String, ResourceLocation> builder = ImmutableMap.builder();
 			for(EnumFacing f : EnumFacing.VALUES)
 				for(SideConfig cfg : SideConfig.values())
@@ -299,12 +301,13 @@ public class ModelConfigurableSides implements IBakedModel
 					else if(textures.containsKey("name"))
 					{
 						ITextureNamer namer = TYPES.get(type);
+						newName = textures.get("name");
 						if(namer!=null)
-							rl = new ResourceLocation(textures.get("name")+"_"+namer.getTextureName(f,cfg));
+							rl = new ResourceLocation(newName+"_"+namer.getTextureName(f,cfg));
 					}
 					builder.put(key, rl);
 				}
-			return new ConfigSidesModelBase(name, type, builder.build());
+			return new ConfigSidesModelBase(newName, type, builder.build());
 		}
 	}
 
