@@ -1364,8 +1364,8 @@ public class ClientUtils
 						Vector3f.sub(here, cross, null),
 						Vector3f.sub(there, cross, null),
 						Vector3f.add(there, cross, null)};
-				curr.add(createSmartLightingBakedQuad(DefaultVertexFormats.ITEM, vertices, EnumFacing.DOWN, t, rgb, false, alphaFirst2Fading, pos));
-				curr.add(createSmartLightingBakedQuad(DefaultVertexFormats.ITEM, vertices, EnumFacing.UP, t, rgb, true, alphaFirst2Fading, pos));
+				curr.add(createSmartLightingBakedQuad(DefaultVertexFormats.ITEM, vertices, EnumFacing.DOWN, t, rgb, false, fading?alphaFirst2Fading:alphaNoFading, pos));
+				curr.add(createSmartLightingBakedQuad(DefaultVertexFormats.ITEM, vertices, EnumFacing.UP, t, rgb, true, fading?alphaFirst2Fading:alphaNoFading, pos));
 
 				if(!vertical)
 				{
@@ -1377,8 +1377,8 @@ public class ClientUtils
 						Vector3f.sub(here, cross, null),
 						Vector3f.sub(there, cross, null),
 						Vector3f.add(there, cross, null)};
-				curr.add(createSmartLightingBakedQuad(DefaultVertexFormats.ITEM, vertices, EnumFacing.WEST, t, rgb, false, alphaFirst2Fading, pos));
-				curr.add(createSmartLightingBakedQuad(DefaultVertexFormats.ITEM, vertices, EnumFacing.EAST, t, rgb, true, alphaFirst2Fading, pos));
+				curr.add(createSmartLightingBakedQuad(DefaultVertexFormats.ITEM, vertices, EnumFacing.WEST, t, rgb, false, fading?alphaFirst2Fading:alphaNoFading, pos));
+				curr.add(createSmartLightingBakedQuad(DefaultVertexFormats.ITEM, vertices, EnumFacing.EAST, t, rgb, true, fading?alphaFirst2Fading:alphaNoFading, pos));
 			}
 		}
 		return ret;
