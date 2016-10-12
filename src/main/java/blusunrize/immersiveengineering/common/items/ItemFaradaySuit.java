@@ -37,9 +37,9 @@ public class ItemFaradaySuit extends ItemArmor implements ITeslaEquipment
 		if(dmg.isLowPower)
 		{
 			if (cache.containsKey("faraday"))
-				cache.put("faraday", (1<<armorType.ordinal())|((Integer)cache.get("faraday")));
+				cache.put("faraday", (1<<armorType.getIndex())|((Integer)cache.get("faraday")));
 			else
-				cache.put("faraday", 1<<armorType.ordinal());
+				cache.put("faraday", 1<<armorType.getIndex());
 			if(cache.containsKey("faraday")&&(Integer)cache.get("faraday")==(1<<4)-1)
 				dmg.dmg = 0;
 		}

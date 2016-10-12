@@ -86,7 +86,6 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
-import java.util.function.Function;
 
 public class IEContent
 {
@@ -505,38 +504,10 @@ public class IEContent
 				entity.getEntityData().removeTag(Lib.MAGNET_PREVENT_NBT);
 			}
 		});
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "conveyor"), ConveyorBasic.class, new Function<TileEntity, ConveyorBasic>()
-		{
-			@Override
-			public ConveyorBasic apply(TileEntity tileEntity)
-			{
-				return new ConveyorBasic();
-			}
-		});
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "dropper"), ConveyorDrop.class, new Function<TileEntity, ConveyorDrop>()
-		{
-			@Override
-			public ConveyorDrop apply(TileEntity tileEntity)
-			{
-				return new ConveyorDrop();
-			}
-		});
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "vertical"), ConveyorVertical.class, new Function<TileEntity, ConveyorVertical>()
-		{
-			@Override
-			public ConveyorVertical apply(TileEntity tileEntity)
-			{
-				return new ConveyorVertical();
-			}
-		});
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "splitter"), ConveyorSplit.class, new Function<TileEntity, ConveyorSplit>()
-		{
-			@Override
-			public ConveyorSplit apply(TileEntity tileEntity)
-			{
-				return new ConveyorSplit(tileEntity instanceof IConveyorTile ? ((IConveyorTile)tileEntity).getFacing() : EnumFacing.NORTH);
-			}
-		});
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "conveyor"), ConveyorBasic.class, (tileEntity) -> new ConveyorBasic());
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "dropper"), ConveyorDrop.class, (tileEntity) -> new ConveyorDrop());
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "vertical"), ConveyorVertical.class, (tileEntity) -> new ConveyorVertical());
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "splitter"), ConveyorSplit.class, (tileEntity) -> new ConveyorSplit(tileEntity instanceof IConveyorTile ? ((IConveyorTile)tileEntity).getFacing() : EnumFacing.NORTH));
 
 		/**ASSEMBLER RECIPE ADAPTERS*/
 		//Shaped
