@@ -286,6 +286,8 @@ public class Config
 			public static int chemthrower_consumption = 10;
 			@Comment({"The base amount of Flux consumed per shot by the Railgun"})
 			public static int railgun_consumption = 800;
+			@Comment({"A modifier for the damage of all projectiles fired by the Railgun"})
+			public static float railgun_damage  = 1f;
 		}
 	}
 //	public static HashMap<String, Boolean> config_boolean = new HashMap();
