@@ -240,6 +240,12 @@ public class IEBlockInterfaces
 		{
 		}
 	}
+
+	public interface IProcessTile
+	{
+		int[] getCurrentProcessesStep();
+		int[] getCurrentProcessesMax();
+	}
 	
 	public interface INeighbourChangeTile
 	{

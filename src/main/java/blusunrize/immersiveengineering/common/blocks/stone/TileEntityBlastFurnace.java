@@ -7,6 +7,7 @@ import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IActiveState;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGuiTile;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IProcessTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IUsesBooleanProperty;
 import blusunrize.immersiveengineering.common.blocks.TileEntityMultiblockPart;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -23,7 +24,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.oredict.OreDictionary;
 
-public class TileEntityBlastFurnace extends TileEntityMultiblockPart<TileEntityBlastFurnace> implements IIEInventory, IActiveState, IGuiTile
+public class TileEntityBlastFurnace extends TileEntityMultiblockPart<TileEntityBlastFurnace> implements IIEInventory, IActiveState, IGuiTile, IProcessTile
 {
 	ItemStack[] inventory = new ItemStack[4];
 	public int process = 0;
@@ -185,6 +186,23 @@ public class TileEntityBlastFurnace extends TileEntityMultiblockPart<TileEntityB
 	protected int getProcessSpeed()
 	{
 		return 1;
+	}
+
+	@Override
+	public int[] getCurrentProcessesStep()
+	{
+		TileEntityBlastFurnace master = master();
+		if(master!=this && master!=null)
+			return master.getCurrentProcessesStep();
+		return new int[]{processMax-process};
+	}
+	@Override
+	public int[] getCurrentProcessesMax()
+	{
+		TileEntityBlastFurnace master = master();
+		if(master!=this && master!=null)
+			return master.getCurrentProcessesMax();
+		return new int[]{processMax};
 	}
 
 	@Override

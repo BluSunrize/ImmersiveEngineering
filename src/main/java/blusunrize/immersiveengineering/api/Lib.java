@@ -23,9 +23,9 @@ public class Lib
 	public static final String GUI = "gui." + MODID + ".";
 	public static final String GUI_CONFIG = "gui." + MODID + ".config.";
 
-	public static final int COLOUR_I_ImmersiveOrange = 0xf78034;
+	public static final int COLOUR_I_ImmersiveOrange = 0xfff78034;
 	public static final float[] COLOUR_F_ImmersiveOrange = {247 / 255f, 128 / 255f, 52 / 255f};
-	public static final int COLOUR_I_ImmersiveOrangeShadow = 0x3e200d;
+	public static final int COLOUR_I_ImmersiveOrangeShadow = 0xff3e200d;
 
 	public static final String MAGNET_PREVENT_NBT = "PreventRemoteMovement";
 

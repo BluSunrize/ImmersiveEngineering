@@ -36,6 +36,7 @@ public abstract class IECompatModule
 		moduleClasses.put("Waila", WailaHelper.class);
 		moduleClasses.put("MineTweaker3", CraftTweakerHelper.class);
 		moduleClasses.put("railcraft", RailcraftHelper.class);
+		moduleClasses.put("theoneprobe", OneProbeHelper.class);
 //		moduleClasses.put("MineFactoryReloaded", MFRHelper.class);
 //		moduleClasses.put("EE3", EE3Helper.class);
 //		moduleClasses.put("ForgeMicroblock", FMPHelper.class);

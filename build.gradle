@@ -58,6 +58,10 @@ repositories {
         name "OpenComputers"
         url "http://maven.cil.li/"
     }
+    maven { // TOP
+        name 'tterrag maven'
+        url "http://maven.tterrag.com/"
+    }
 }
 
 dependencies {
@@ -71,6 +75,7 @@ dependencies {
     deobfCompile "slimeknights.mantle:Mantle:1.10.2-1.+"
     deobfCompile "slimeknights:TConstruct:1.10.2-2.5.3.jenkins384"
     deobfCompile "li.cil.oc:OpenComputers:MC1.10.2-1.6.0.+"
+    deobfCompile "mcjty.theoneprobe:TheOneProbe:1.10-1.0.13-26"
 }
 
 jar {
