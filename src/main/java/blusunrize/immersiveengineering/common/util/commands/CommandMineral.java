@@ -1,13 +1,5 @@
 package blusunrize.immersiveengineering.common.util.commands;
 
-import java.util.ArrayList;
-
-import net.minecraft.client.resources.I18n;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextFormatting;
 import blusunrize.immersiveengineering.api.DimensionChunkCoords;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
@@ -15,6 +7,14 @@ import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralMix;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralWorldInfo;
 import blusunrize.immersiveengineering.common.IESaveData;
 import blusunrize.immersiveengineering.common.util.commands.CommandHandler.IESubCommand;
+import net.minecraft.client.resources.I18n;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextFormatting;
+
+import java.util.ArrayList;
 
 public class CommandMineral extends IESubCommand
 {

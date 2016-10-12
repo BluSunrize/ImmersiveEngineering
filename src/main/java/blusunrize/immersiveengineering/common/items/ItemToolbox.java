@@ -1,6 +1,5 @@
 package blusunrize.immersiveengineering.common.items;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.CommonProxy;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IGuiItem;

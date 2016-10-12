@@ -1,14 +1,13 @@
 package blusunrize.immersiveengineering.common.util.compat.jei.workbench;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.common.util.compat.jei.MultiblockRecipeWrapper;
 import mezz.jei.api.IJeiHelpers;
 import net.minecraft.client.Minecraft;
+
+import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.List;
 
 public class WorkbenchRecipeWrapper extends MultiblockRecipeWrapper
 {

@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.shader.IShaderItem;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralMix;
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
+import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISpawnInterdiction;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
@@ -196,7 +197,7 @@ public class EventHandler
 	{
 		if (event.phase==TickEvent.Phase.START && validateConnsNextTick && FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER)
 		{
-			boolean validateConnections = Config.getBoolean("validateConnections");
+			boolean validateConnections = IEConfig.validateConnections;
 			int invalidConnectionsDropped = 0;
 			for (int dim:ImmersiveNetHandler.INSTANCE.getRelevantDimensions())
 			{

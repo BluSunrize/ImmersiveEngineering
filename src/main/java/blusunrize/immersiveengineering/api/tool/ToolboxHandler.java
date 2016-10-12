@@ -1,10 +1,5 @@
 package blusunrize.immersiveengineering.api.tool;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.BiPredicate;
-import java.util.function.Predicate;
-
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.IWireCoil;
 import net.minecraft.block.Block;
@@ -13,6 +8,11 @@ import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
 import net.minecraft.world.World;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.BiPredicate;
+import java.util.function.Predicate;
 
 public class ToolboxHandler {
 	private static final List<Predicate<ItemStack>> tools = new ArrayList<>();

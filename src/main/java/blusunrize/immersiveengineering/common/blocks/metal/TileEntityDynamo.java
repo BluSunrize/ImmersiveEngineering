@@ -2,7 +2,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxConnection;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
-import blusunrize.immersiveengineering.common.Config;
+import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import cofh.api.energy.IEnergyConnection;
@@ -19,7 +19,7 @@ public class TileEntityDynamo extends TileEntityIEBase implements IFluxConnectio
 	{
 		if(side!=this.facing.getOpposite())
 			return;
-		int output = (int) (Config.getDouble("dynamo_output") * rotation);
+		int output = (int) (IEConfig.Machines.dynamo_output * rotation);
 		for(EnumFacing fd : EnumFacing.VALUES)
 		{
 			TileEntity te = worldObj.getTileEntity(getPos().offset(fd));

@@ -1,11 +1,8 @@
 package blusunrize.immersiveengineering.common.util.compat.jei.workbench;
 
 import blusunrize.immersiveengineering.common.items.ItemEngineersBlueprint;
-import com.google.common.collect.Lists;
-
-import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
-import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
+import com.google.common.collect.Lists;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.gui.IGuiItemStackGroup;
@@ -13,7 +10,6 @@ import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import mezz.jei.util.Log;
 import net.minecraft.client.Minecraft;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 public class WorkbenchRecipeCategory extends IERecipeCategory

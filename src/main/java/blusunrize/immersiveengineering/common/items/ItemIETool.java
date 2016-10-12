@@ -11,7 +11,7 @@ import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.AbstractConnection;
 import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.common.CommonProxy;
-import blusunrize.immersiveengineering.common.Config;
+import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.IESaveData;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IConfigurableSides;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
@@ -51,8 +51,8 @@ public class ItemIETool extends ItemIEBase implements ITool, IGuiItem
 	public ItemIETool()
 	{
 		super("tool", 1, "hammer","wirecutter","voltmeter","manual");
-		hammerMaxDamage = Config.getInt("hammerDurabiliy");
-		cutterMaxDamage = Config.getInt("cutterDurabiliy");
+		hammerMaxDamage = IEConfig.Tools.hammerDurabiliy;
+		cutterMaxDamage = IEConfig.Tools.cutterDurabiliy;
 	}
 
 	@Override

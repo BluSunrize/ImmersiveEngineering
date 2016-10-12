@@ -1,9 +1,8 @@
 package blusunrize.immersiveengineering.common.util;
 
-import org.apache.logging.log4j.Level;
-
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import net.minecraftforge.fml.common.FMLLog;
+import org.apache.logging.log4j.Level;
 
 public class IELogger
 {

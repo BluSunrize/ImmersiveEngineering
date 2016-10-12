@@ -1,17 +1,5 @@
 package blusunrize.immersiveengineering.client;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
-import javax.vecmath.Quat4d;
-
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.util.vector.Vector3f;
-
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
@@ -19,11 +7,7 @@ import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Conn
 import blusunrize.immersiveengineering.client.models.SmartLightingQuad;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.common.util.sound.IETileSound;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockChest;
-import net.minecraft.block.BlockEnderChest;
-import net.minecraft.block.BlockSign;
-import net.minecraft.block.BlockSkull;
+import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -32,13 +16,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.model.PositionTextureVertex;
-import net.minecraft.client.model.TexturedQuad;
-import net.minecraft.client.renderer.BlockRendererDispatcher;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
@@ -64,6 +42,11 @@ import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidTank;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.util.vector.Vector3f;
+
+import javax.vecmath.Quat4d;
+import java.util.*;
 
 public class ClientUtils
 {

@@ -1,15 +1,14 @@
 package blusunrize.immersiveengineering.client.render;
 
 import blusunrize.immersiveengineering.common.entities.EntityIEExplosive;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MathHelper;
 
 public class EntityRenderIEExplosive extends Render<EntityIEExplosive>
 {

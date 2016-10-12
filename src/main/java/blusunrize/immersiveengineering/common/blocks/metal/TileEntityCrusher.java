@@ -2,7 +2,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.crafting.CrusherRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
-import blusunrize.immersiveengineering.common.Config;
+import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.EventHandler;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedCollisionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedSelectionBounds;
@@ -110,7 +110,7 @@ public class TileEntityCrusher extends TileEntityMultiblockMetal<TileEntityCrush
 	@SideOnly(Side.CLIENT)
 	public double getMaxRenderDistanceSquared()
 	{
-		return super.getMaxRenderDistanceSquared()*Config.getDouble("increasedTileRenderdistance");
+		return super.getMaxRenderDistanceSquared()* IEConfig.increasedTileRenderdistance;
 	}
 	@Override
 	public float[] getBlockBounds()

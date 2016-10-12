@@ -1,12 +1,12 @@
 package blusunrize.immersiveengineering.api.shader;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.item.ItemStack;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class ShaderCaseMinecart extends ShaderCase
 {

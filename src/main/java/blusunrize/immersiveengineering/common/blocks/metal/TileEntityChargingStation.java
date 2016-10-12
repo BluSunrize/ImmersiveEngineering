@@ -4,7 +4,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorageAdvanced;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxContainerItem;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
-import blusunrize.immersiveengineering.common.Config;
+import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparatorOverride;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
@@ -93,7 +93,7 @@ public class TileEntityChargingStation extends TileEntityIEBase implements ITick
 					if(max>0 && space>0)
 					{
 						int energyDec = (10*container.getEnergyStored(inventory[0]))/max;
-						int insert = Math.min(space, Math.max(energyStorage.getAverageInsertion(), Config.getInt("charger_consumption")));
+						int insert = Math.min(space, Math.max(energyStorage.getAverageInsertion(), IEConfig.Machines.charger_consumption));
 						int accepted = Math.min(container.receiveEnergy(inventory[0], insert, true), this.energyStorage.extractEnergy(insert, true));
 						if((accepted=this.energyStorage.extractEnergy(accepted, false))>0)
 							container.receiveEnergy(inventory[0], accepted, false);
@@ -110,7 +110,7 @@ public class TileEntityChargingStation extends TileEntityIEBase implements ITick
 					if(max>0 && space>0)
 					{
 						int energyDec = (10*container.getEnergyStored(inventory[0]))/max;
-						int insert = Math.min(space, Math.max(energyStorage.getAverageInsertion(), Config.getInt("charger_consumption")));
+						int insert = Math.min(space, Math.max(energyStorage.getAverageInsertion(), IEConfig.Machines.charger_consumption));
 						int accepted = Math.min(container.receiveEnergy(inventory[0], insert, true), this.energyStorage.extractEnergy(insert, true));
 						if((accepted=this.energyStorage.extractEnergy(accepted, false))>0)
 							container.receiveEnergy(inventory[0], accepted, false);

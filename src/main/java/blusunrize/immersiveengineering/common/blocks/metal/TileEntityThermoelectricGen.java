@@ -3,7 +3,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.energy.ThermoelectricHandler;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxConnection;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
-import blusunrize.immersiveengineering.common.Config;
+import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import cofh.api.energy.IEnergyConnection;
 import net.minecraft.block.Block;
@@ -13,9 +13,9 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.IFluidBlock;
@@ -36,7 +36,7 @@ public class TileEntityThermoelectricGen extends TileEntityIEBase implements ITi
 					if(temp0>-1&&temp1>-1)
 					{
 						int diff = Math.abs(temp0-temp1);
-						energy += (int) (Math.sqrt(diff)/2 *Config.getDouble("thermoelectric_output"));
+						energy += (int) (Math.sqrt(diff)/2 * IEConfig.Machines.thermoelectric_output);
 					}
 				}
 			outputEnergy(energy);

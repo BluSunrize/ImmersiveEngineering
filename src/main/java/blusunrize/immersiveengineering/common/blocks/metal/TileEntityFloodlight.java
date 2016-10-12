@@ -7,7 +7,7 @@ import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Conn
 import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConnectable;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
-import blusunrize.immersiveengineering.common.Config;
+import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.EventHandler;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.BlockFakeLight.TileEntityFakeLight;
@@ -45,8 +45,8 @@ import java.util.List;
 public class TileEntityFloodlight extends TileEntityImmersiveConnectable implements ITickable, IAdvancedDirectionalTile, IHammerInteraction, ISpawnInterdiction, IBlockBounds, IActiveState, ILightValue, IOBJModelCallback<IBlockState>
 {
 	public int energyStorage = 0;
-	private int energyDraw = Config.getInt("floodlight_energyDraw");
-	private int maximumStorage = Config.getInt("floodlight_maximumStorage");
+	private int energyDraw = IEConfig.Machines.floodlight_energyDraw;
+	private int maximumStorage = IEConfig.Machines.floodlight_maximumStorage;
 	public boolean active = false;
 	public EnumFacing facing = EnumFacing.NORTH;
 	public EnumFacing side = EnumFacing.UP;

@@ -7,7 +7,7 @@ import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.api.tool.RailgunHandler;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler.IZoomTool;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
-import blusunrize.immersiveengineering.common.Config;
+import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.entities.EntityRailgunShot;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.util.IESounds;
@@ -171,7 +171,7 @@ public class ItemRailgun extends ItemUpgradeableTool implements IShaderEquipable
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand)
 	{
-		int energy = Config.getInt("railgun_consumption");
+		int energy = IEConfig.Tools.railgun_consumption;
 		float energyMod = 1 + this.getUpgrades(stack).getFloat("consumption");
 		energy = (int)(energy*energyMod);
 		if(this.extractEnergy(stack, energy, true)==energy && findAmmo(player)!=null)
@@ -198,7 +198,7 @@ public class ItemRailgun extends ItemUpgradeableTool implements IShaderEquipable
 			ItemNBTHelper.remove(stack, "inUse");
 			if (inUse < getChargeTime(stack))
 				return;
-			int energy = Config.getInt("railgun_consumption");
+			int energy = IEConfig.Tools.railgun_consumption;
 			float energyMod = 1 + this.getUpgrades(stack).getFloat("consumption");
 			energy = (int) (energy * energyMod);
 			if (this.extractEnergy(stack, energy, true) == energy)

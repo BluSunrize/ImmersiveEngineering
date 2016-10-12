@@ -2,7 +2,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
-import blusunrize.immersiveengineering.common.Config;
+import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
@@ -11,8 +11,8 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 
 public class TileEntityBlastFurnacePreheater extends TileEntityIEBase implements IFluxReceiver,IEnergyReceiver, IDirectionalTile, IHasDummyBlocks
 {
@@ -25,7 +25,7 @@ public class TileEntityBlastFurnacePreheater extends TileEntityIEBase implements
 
 	public int doSpeedup()
 	{
-		int consumed = Config.getInt("preheater_consumption"); 
+		int consumed = IEConfig.Machines.preheater_consumption;
 		if(this.energyStorage.extractEnergy(consumed, true)==consumed)
 		{
 			if (!active)

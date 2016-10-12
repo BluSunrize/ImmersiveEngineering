@@ -4,7 +4,7 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
 import blusunrize.immersiveengineering.client.ClientProxy;
-import blusunrize.immersiveengineering.common.Config;
+import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.entities.EntityRevolvershot;
 import blusunrize.immersiveengineering.common.entities.EntityRevolvershotFlare;
 import blusunrize.immersiveengineering.common.entities.EntityRevolvershotHoming;
@@ -51,41 +51,20 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 		BulletHandler.basicCartridge = new ItemStack(this, 1, 2);
 
 		BulletHandler.registerBullet("casull", new BulletHandler.DamagingBullet(
-				new Function<Entity[], DamageSource>()
-				{
-					@Override
-					public DamageSource apply(Entity[] entities)
-					{
-						return IEDamageSources.causeCasullDamage((EntityRevolvershot) entities[0], entities[1]);
-					}
-				},
-				(float) Config.getDouble("BulletDamage-Casull"),
+				entities -> IEDamageSources.causeCasullDamage((EntityRevolvershot) entities[0], entities[1]),
+				IEConfig.Tools.bulletDamage_Casull,
 				BulletHandler.emptyCasing,
 				new ResourceLocation("immersiveengineering:items/bullet_casull")));
 
 		BulletHandler.registerBullet("armorPiercing", new BulletHandler.DamagingBullet(
-				new Function<Entity[], DamageSource>()
-				{
-					@Override
-					public DamageSource apply(Entity[] entities)
-					{
-						return IEDamageSources.causePiercingDamage((EntityRevolvershot) entities[0], entities[1]);
-					}
-				},
-				(float) Config.getDouble("BulletDamage-AP"),
+				entities -> IEDamageSources.causePiercingDamage((EntityRevolvershot) entities[0], entities[1]),
+				IEConfig.Tools.bulletDamage_AP,
 				BulletHandler.emptyCasing,
 				new ResourceLocation("immersiveengineering:items/bullet_armorPiercing")));
 
 		BulletHandler.registerBullet("buckshot", new BulletHandler.DamagingBullet(
-				new Function<Entity[], DamageSource>()
-				{
-					@Override
-					public DamageSource apply(Entity[] entities)
-					{
-						return IEDamageSources.causeCasullDamage((EntityRevolvershot) entities[0], entities[1]);
-					}
-				},
-				(float) Config.getDouble("BulletDamage-Buck"),
+				entities -> IEDamageSources.causeCasullDamage((EntityRevolvershot) entities[0], entities[1]),
+				IEConfig.Tools.bulletDamage_Buck,
 				BulletHandler.emptyCasing,
 				new ResourceLocation("immersiveengineering:items/bullet_buckshot"))
 		{
@@ -106,28 +85,14 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 		});
 
 		BulletHandler.registerBullet("silver", new BulletHandler.DamagingBullet(
-				new Function<Entity[], DamageSource>()
-				{
-					@Override
-					public DamageSource apply(Entity[] entities)
-					{
-						return IEDamageSources.causeSilverDamage((EntityRevolvershot) entities[0], entities[1]);
-					}
-				},
-				(float) Config.getDouble("BulletDamage-Silver"),
+				entities -> IEDamageSources.causeSilverDamage((EntityRevolvershot) entities[0], entities[1]),
+				IEConfig.Tools.bulletDamage_Silver,
 				BulletHandler.emptyCasing,
 				new ResourceLocation("immersiveengineering:items/bullet_silver")));
 
 		BulletHandler.registerBullet("dragonsbreath", new BulletHandler.DamagingBullet(
-				new Function<Entity[], DamageSource>()
-				{
-					@Override
-					public DamageSource apply(Entity[] entities)
-					{
-						return IEDamageSources.causeCasullDamage((EntityRevolvershot) entities[0], entities[1]);
-					}
-				},
-				(float) Config.getDouble("BulletDamage-Dragon"),
+				entities -> IEDamageSources.causeCasullDamage((EntityRevolvershot) entities[0], entities[1]),
+				IEConfig.Tools.bulletDamage_Dragon,
 				BulletHandler.emptyCasing,
 				new ResourceLocation("immersiveengineering:items/bullet_dragonsbreath"))
 		{
@@ -313,15 +278,8 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 	{
 		public PotionBullet()
 		{
-			super(new Function<Entity[], DamageSource>()
-				  {
-					  @Override
-					  public DamageSource apply(Entity[] entities)
-					  {
-						  return IEDamageSources.causePotionDamage((EntityRevolvershot) entities[0], entities[1]);
-					  }
-				  },
-					(float) Config.getDouble("BulletDamage-Potion"),
+			super(entities -> IEDamageSources.causePotionDamage((EntityRevolvershot) entities[0], entities[1]),
+					IEConfig.Tools.bulletDamage_Potion,
 					BulletHandler.emptyCasing,
 					new ResourceLocation("immersiveengineering:items/bullet_potion"), new ResourceLocation("immersiveengineering:items/bullet_potion_layer"));
 		}
@@ -524,15 +482,8 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 	{
 		public WolfpackBullet()
 		{
-			super(new Function<Entity[], DamageSource>()
-				  {
-					  @Override
-					  public DamageSource apply(Entity[] entities)
-					  {
-						  return IEDamageSources.causeWolfpackDamage((EntityRevolvershot)entities[0], entities[1]);
-					  }
-				  },
-					(float)Config.getDouble("BulletDamage-Wolfpack"),
+			super(entities -> IEDamageSources.causeWolfpackDamage((EntityRevolvershot)entities[0], entities[1]),
+					IEConfig.Tools.bulletDamage_Wolfpack,
 					BulletHandler.emptyShell,
 					new ResourceLocation("immersiveengineering:items/bullet_wolfpack"));
 		}
@@ -573,15 +524,8 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 	{
 		public WolfpackPartBullet()
 		{
-			super(new Function<Entity[], DamageSource>()
-				  {
-					  @Override
-					  public DamageSource apply(Entity[] entities)
-					  {
-						  return IEDamageSources.causeWolfpackDamage((EntityRevolvershot)entities[0], entities[1]);
-					  }
-				  },
-					(float)Config.getDouble("BulletDamage-WolfpackPart"),
+			super(entities -> IEDamageSources.causeWolfpackDamage((EntityRevolvershot)entities[0], entities[1]),
+					IEConfig.Tools.bulletDamage_WolfpackPart,
 					BulletHandler.emptyCasing,
 					new ResourceLocation("immersiveengineering:items/bullet_wolfpack"));
 		}

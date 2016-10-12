@@ -1,21 +1,12 @@
 package blusunrize.immersiveengineering.common.util;
 
-import net.minecraft.block.BlockChest;
-import net.minecraft.block.BlockDirectional;
-import net.minecraft.block.BlockRail;
-import net.minecraft.block.BlockRailBase.EnumRailDirection;
-import net.minecraft.block.BlockStairs;
-import net.minecraft.block.BlockStandingSign;
-import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.AxisDirection;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class RotationUtil

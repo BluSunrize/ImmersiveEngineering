@@ -1,7 +1,5 @@
 package blusunrize.immersiveengineering.client.render;
 
-import org.lwjgl.opengl.GL11;
-
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySheetmetalTank;
 import net.minecraft.client.renderer.GlStateManager;
@@ -10,6 +8,7 @@ import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraftforge.fluids.FluidStack;
+import org.lwjgl.opengl.GL11;
 
 public class TileRenderSheetmetalTank extends TileEntitySpecialRenderer<TileEntitySheetmetalTank>
 {

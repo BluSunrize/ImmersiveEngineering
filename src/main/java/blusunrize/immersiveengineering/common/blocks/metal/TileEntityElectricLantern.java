@@ -5,13 +5,9 @@ import blusunrize.immersiveengineering.api.IEProperties.PropertyBoolInverted;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConnectable;
-import blusunrize.immersiveengineering.common.Config;
+import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.EventHandler;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IActiveState;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ILightValue;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISpawnInterdiction;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IUsesBooleanProperty;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
@@ -21,8 +17,8 @@ import net.minecraft.world.EnumSkyBlock;
 public class TileEntityElectricLantern extends TileEntityImmersiveConnectable implements ISpawnInterdiction, ITickable, IBlockBounds, IActiveState, ILightValue
 {
 	public int energyStorage = 0;
-	private int energyDraw = Config.getInt("lantern_energyDraw");
-	private int maximumStorage = Config.getInt("lantern_maximumStorage");
+	private int energyDraw = IEConfig.Machines.lantern_energyDraw;
+	private int maximumStorage = IEConfig.Machines.lantern_maximumStorage;
 	public boolean active = false;
 	private boolean interdictionList=false;
 
@@ -31,7 +27,7 @@ public class TileEntityElectricLantern extends TileEntityImmersiveConnectable im
 	{
 		if(worldObj.isRemote)
 			return;
-		if(!interdictionList && Config.getBoolean("lantern_spawnPrevent"))
+		if(!interdictionList && IEConfig.Machines.lantern_spawnPrevent)
 		{
 			synchronized (EventHandler.interdictionTiles) {
 				if (!EventHandler.interdictionTiles.contains(this))

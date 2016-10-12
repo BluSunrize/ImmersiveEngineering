@@ -1,13 +1,13 @@
 package blusunrize.immersiveengineering.api;
 
-import java.util.HashMap;
-import java.util.List;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.GameData;
 import net.minecraftforge.oredict.OreDictionary;
+
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * @author BluSunrize - 13.08.2015

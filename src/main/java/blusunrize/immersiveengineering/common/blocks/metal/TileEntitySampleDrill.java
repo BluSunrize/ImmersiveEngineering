@@ -3,7 +3,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralWorldInfo;
-import blusunrize.immersiveengineering.common.Config;
+import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasObjProperty;
@@ -51,15 +51,15 @@ public class TileEntitySampleDrill extends TileEntityIEBase implements ITickable
 		boolean powered = worldObj.isBlockIndirectlyGettingPowered(getPos())>0;
 		if(!active && powered)
 			active = true;
-		else if(active && !powered && process>=Config.getInt("coredrill_time"))
+		else if(active && !powered && process>= IEConfig.Machines.coredrill_time)
 			active = false;
 
 
-		if(active && process<Config.getInt("coredrill_time"))
-			if(energyStorage.extractEnergy(Config.getInt("coredrill_consumption"), false)==Config.getInt("coredrill_consumption"))
+		if(active && process< IEConfig.Machines.coredrill_time)
+			if(energyStorage.extractEnergy(IEConfig.Machines.coredrill_consumption, false)== IEConfig.Machines.coredrill_consumption)
 			{
 				process++;
-				if(process>=Config.getInt("coredrill_time"))
+				if(process>= IEConfig.Machines.coredrill_time)
 				{
 					int cx = getPos().getX()>>4;
 					int cz = getPos().getZ()>>4;
@@ -73,11 +73,11 @@ public class TileEntitySampleDrill extends TileEntityIEBase implements ITickable
 
 	public float getSampleProgress()
 	{
-		return process/(float)Config.getInt("coredrill_time");
+		return process/(float)IEConfig.Machines.coredrill_time;
 	}
 	public boolean isSamplingFinished()
 	{
-		return process>=Config.getInt("coredrill_time");
+		return process>= IEConfig.Machines.coredrill_time;
 	}
 	public String getVein()
 	{

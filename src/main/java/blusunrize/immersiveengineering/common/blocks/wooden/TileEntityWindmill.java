@@ -1,6 +1,6 @@
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
-import blusunrize.immersiveengineering.common.Config;
+import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasObjProperty;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
@@ -147,7 +147,7 @@ public class TileEntityWindmill extends TileEntityIEBase implements ITickable, I
 	@Override
 	public double getMaxRenderDistanceSquared()
 	{
-		return super.getMaxRenderDistanceSquared()*Config.getDouble("increasedTileRenderdistance");
+		return super.getMaxRenderDistanceSquared()* IEConfig.increasedTileRenderdistance;
 	}
 	
 	@Override

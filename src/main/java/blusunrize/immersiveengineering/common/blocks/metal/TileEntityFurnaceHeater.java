@@ -6,7 +6,7 @@ import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
 import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler;
 import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler.IExternalHeatable;
-import blusunrize.immersiveengineering.common.Config;
+import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IActiveState;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IUsesBooleanProperty;
@@ -19,7 +19,7 @@ import net.minecraft.util.ITickable;
 
 public class TileEntityFurnaceHeater extends TileEntityIEBase implements ITickable, IFluxReceiver, IActiveState, IDirectionalTile
 {
-	public FluxStorage energyStorage = new FluxStorage(32000,Math.max(256, Math.max(Config.getInt("heater_consumption"),Config.getInt("heater_speedupConsumption"))));
+	public FluxStorage energyStorage = new FluxStorage(32000,Math.max(256, Math.max(IEConfig.Machines.heater_consumption, IEConfig.Machines.heater_speedupConsumption)));
 	//public int[] sockets = new int[6];
 	public boolean active = false;
 	public EnumFacing facing = EnumFacing.NORTH;

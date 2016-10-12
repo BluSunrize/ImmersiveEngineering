@@ -1,5 +1,8 @@
 package blusunrize.immersiveengineering.common.crafting;
 
+import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
@@ -7,9 +10,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidContainerItem;
-import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import blusunrize.immersiveengineering.common.util.Utils;
 
 public class RecipeJerrycan implements IRecipe
 {

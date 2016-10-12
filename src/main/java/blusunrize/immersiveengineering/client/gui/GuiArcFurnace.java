@@ -1,7 +1,5 @@
 package blusunrize.immersiveengineering.client.gui;
 
-import java.util.ArrayList;
-
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityArcFurnace;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMultiblockMetal.MultiblockProcess;
@@ -11,6 +9,8 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.InventoryPlayer;
+
+import java.util.ArrayList;
 
 public class GuiArcFurnace extends GuiContainer
 {

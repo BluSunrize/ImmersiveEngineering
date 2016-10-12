@@ -2,7 +2,7 @@ package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.common.Config;
+import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMetalBarrel;
@@ -78,7 +78,7 @@ public class TileEntityWoodenBarrel extends TileEntityIEBase implements ITickabl
 				s = I18n.format(Lib.GUI+"empty");
 			return new String[]{s};
 		}
-		if(hammer && Config.getBoolean("colourblindSupport") && mop.sideHit.getAxis()==Axis.Y)
+		if(hammer && IEConfig.colourblindSupport && mop.sideHit.getAxis()==Axis.Y)
 		{
 			int i = sideConfig[Math.min(sideConfig.length-1, mop.sideHit.ordinal())];
 			int j = sideConfig[Math.min(sideConfig.length-1, mop.sideHit.getOpposite().ordinal())];

@@ -22,7 +22,7 @@ import blusunrize.immersiveengineering.client.models.smart.ConnModelReal;
 import blusunrize.immersiveengineering.client.models.smart.ConnModelReal.ExtBlockstateAdapter;
 import blusunrize.immersiveengineering.client.render.*;
 import blusunrize.immersiveengineering.common.CommonProxy;
-import blusunrize.immersiveengineering.common.Config;
+import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.IERecipes;
 import blusunrize.immersiveengineering.common.blocks.BlockIEFluid;
@@ -348,7 +348,7 @@ public class ClientProxy extends CommonProxy
 		//		revolverTextureMap.setBlurMipmapDirect(false, Minecraft.getMinecraft().gameSettings.mipmapLevels > 0);
 		//		ClientUtils.mc().renderEngine.loadTextureMap(revolverTextureResource, revolverTextureMap);
 
-		nixieFontOptional = Config.getBoolean("nixietubeFont")?new IENixieFontRender():ClientUtils.font();
+		nixieFontOptional = IEConfig.nixietubeFont?new IENixieFontRender():ClientUtils.font();
 		nixieFont = new IENixieFontRender();
 		itemFont = new IEItemFontRender();
 		TileEntityTeslaCoil.effectMap = ArrayListMultimap.create();
@@ -653,7 +653,7 @@ public class ClientProxy extends CommonProxy
 		pages.add(new ManualPages.Text(ManualHelper.getManual(), "fluidPipes1"));
 		pages.add(new ManualPages.Crafting(ManualHelper.getManual(), "fluidPipes2", new ItemStack(IEContent.blockMetalDevice0,1,BlockTypes_MetalDevice0.FLUID_PUMP.getMeta())));
 		pages.add(new ManualPages.Text(ManualHelper.getManual(), "fluidPipes3"));
-		if(Config.getBoolean("pump_infiniteWater")||Config.getBoolean("pump_placeCobble"))
+		if(IEConfig.Machines.pump_infiniteWater || IEConfig.Machines.pump_placeCobble)
 			pages.add(new ManualPages.Text(ManualHelper.getManual(), "fluidPipes4"));
 		ManualHelper.addEntry("fluidPipes", ManualHelper.CAT_MACHINES,pages.toArray(new IManualPage[pages.size()]));
 		ManualHelper.addEntry("chargingStation", ManualHelper.CAT_MACHINES, new ManualPages.Crafting(ManualHelper.getManual(), "chargingStation0", new ItemStack(IEContent.blockMetalDevice1,1,BlockTypes_MetalDevice1.CHARGING_STATION.getMeta())),new ManualPages.Text(ManualHelper.getManual(), "chargingStation1"));

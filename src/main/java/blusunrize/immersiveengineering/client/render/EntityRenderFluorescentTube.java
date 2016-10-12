@@ -1,9 +1,5 @@
 package blusunrize.immersiveengineering.client.render;
 
-import java.util.Random;
-
-import org.lwjgl.opengl.GL11;
-
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.entities.EntityFluorescentTube;
 import net.minecraft.client.Minecraft;
@@ -15,6 +11,9 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
+import org.lwjgl.opengl.GL11;
+
+import java.util.Random;
 
 public class EntityRenderFluorescentTube extends Render<EntityFluorescentTube>
 {

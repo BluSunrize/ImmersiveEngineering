@@ -1,7 +1,5 @@
 package blusunrize.immersiveengineering.common.items;
 
-import java.util.List;
-
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.IEContent;
@@ -18,7 +16,8 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.omg.PortableInterceptor.SUCCESSFUL;
+
+import java.util.List;
 
 public class ItemShaderBag extends ItemIEBase
 {

@@ -1,7 +1,5 @@
 package blusunrize.immersiveengineering.common.util.compat.jei.refinery;
 
-import java.util.List;
-
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IDrawable;
@@ -10,6 +8,8 @@ import mezz.jei.api.recipe.IRecipeWrapper;
 import mezz.jei.util.Log;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
+
+import java.util.List;
 
 public class RefineryRecipeCategory extends IERecipeCategory
 {

@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEf
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEffect_Potion;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorTile;
 import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler.DefaultFurnaceAdapter;
+import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.*;
 import blusunrize.immersiveengineering.common.blocks.BlockFakeLight.TileEntityFakeLight;
 import blusunrize.immersiveengineering.common.blocks.cloth.BlockClothDevice;
@@ -350,12 +351,12 @@ public class IEContent
 		blockStorage.setHarvestLevel("pickaxe", 2, blockStorage.getStateFromMeta(BlockTypes_MetalsIE.ELECTRUM.getMeta()));
 		blockStorage.setHarvestLevel("pickaxe", 2, blockStorage.getStateFromMeta(BlockTypes_MetalsIE.STEEL.getMeta()));
 
-		addConfiguredWorldgen(blockOre.getStateFromMeta(0), "copper");
-		addConfiguredWorldgen(blockOre.getStateFromMeta(1), "bauxite");
-		addConfiguredWorldgen(blockOre.getStateFromMeta(2), "lead");
-		addConfiguredWorldgen(blockOre.getStateFromMeta(3), "silver");
-		addConfiguredWorldgen(blockOre.getStateFromMeta(4), "nickel");
-		addConfiguredWorldgen(blockOre.getStateFromMeta(5), "uranium");
+		addConfiguredWorldgen(blockOre.getStateFromMeta(0), "copper", IEConfig.Ores.ore_copper);
+		addConfiguredWorldgen(blockOre.getStateFromMeta(1), "bauxite", IEConfig.Ores.ore_bauxite);
+		addConfiguredWorldgen(blockOre.getStateFromMeta(2), "lead", IEConfig.Ores.ore_lead);
+		addConfiguredWorldgen(blockOre.getStateFromMeta(3), "silver", IEConfig.Ores.ore_silver);
+		addConfiguredWorldgen(blockOre.getStateFromMeta(4), "nickel", IEConfig.Ores.ore_nickel);
+		addConfiguredWorldgen(blockOre.getStateFromMeta(5), "uranium", IEConfig.Ores.ore_uranium);
 	}
 
 	public static void init()
@@ -662,8 +663,8 @@ public class IEContent
 		RailgunHandler.registerProjectileProperties(new ComparableItemStack("stickSteel"), 12, 1.25).setColourMap(new int[][]{{0xb4b4b4,0xb4b4b4,0xb4b4b4,0x7a7a7a,0x555555,0x555555}});
 		RailgunHandler.registerProjectileProperties(new ComparableItemStack(new ItemStack(itemGraphiteElectrode)), 16, .9).setColourMap(new int[][]{{0x242424,0x242424,0x242424,0x171717,0x171717,0x0a0a0a}});
 
-		ExternalHeaterHandler.defaultFurnaceEnergyCost = Config.getInt("heater_consumption");
-		ExternalHeaterHandler.defaultFurnaceSpeedupCost= Config.getInt("heater_speedupConsumption");
+		ExternalHeaterHandler.defaultFurnaceEnergyCost = IEConfig.Machines.heater_consumption;
+		ExternalHeaterHandler.defaultFurnaceSpeedupCost= IEConfig.Machines.heater_speedupConsumption;
 		ExternalHeaterHandler.registerHeatableAdapter(TileEntityFurnace.class, new DefaultFurnaceAdapter());
 
 		SqueezerRecipe.addRecipe(new FluidStack(fluidPlantoil, 80), null, Items.WHEAT_SEEDS, 6400);
@@ -690,9 +691,9 @@ public class IEContent
 		ThermoelectricHandler.registerSourceInKelvin("blockPlutonium", 4000);
 		ThermoelectricHandler.registerSourceInKelvin("blockBlutonium", 4000);
 
-		ExcavatorHandler.mineralVeinCapacity = Config.getInt("excavator_depletion");
-		ExcavatorHandler.mineralChance = Config.getDouble("excavator_chance");
-		ExcavatorHandler.defaultDimensionBlacklist = Config.getIntArray("excavator_dimBlacklist");
+		ExcavatorHandler.mineralVeinCapacity = IEConfig.Machines.excavator_depletion;
+		ExcavatorHandler.mineralChance = IEConfig.Machines.excavator_chance;
+		ExcavatorHandler.defaultDimensionBlacklist = IEConfig.Machines.excavator_dimBlacklist;
 		ExcavatorHandler.addMineral("Iron", 25, .1f, new String[]{"oreIron","oreNickel","oreTin","denseoreIron"}, new float[]{.5f,.25f,.20f,.05f});
 		ExcavatorHandler.addMineral("Magnetite", 25, .1f, new String[]{"oreIron","oreGold"}, new float[]{.85f,.15f});
 		if(OreDictionary.doesOreNameExist("oreSulfur"))
@@ -909,11 +910,10 @@ public class IEContent
 		GameRegistry.registerTileEntity(tile, ImmersiveEngineering.MODID+":"+ s);
 	}
 
-	public static void addConfiguredWorldgen(IBlockState state, String config)
+	public static void addConfiguredWorldgen(IBlockState state, String name, int[] config)
 	{
-		int[] values = Config.getIntArray("ore_"+config);
-		if(values!=null && values.length>=5 && values[0]>0)
-			IEWorldGen.addOreGen(config, state, values[0],values[1],values[2], values[3],values[4]);
+		if(config!=null && config.length>=5 && config[0]>0)
+			IEWorldGen.addOreGen(name, state, config[0],config[1],config[2], config[3],config[4]);
 	}
 
 	public static void addBanner(String name, String id, Object item, int... offset)

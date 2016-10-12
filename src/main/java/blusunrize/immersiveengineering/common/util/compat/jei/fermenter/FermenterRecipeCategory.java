@@ -9,8 +9,6 @@ import mezz.jei.api.recipe.IRecipeWrapper;
 import mezz.jei.util.Log;
 import net.minecraft.util.ResourceLocation;
 
-import javax.annotation.Nonnull;
-
 public class FermenterRecipeCategory extends IERecipeCategory
 {
 	public static ResourceLocation background = new ResourceLocation("immersiveengineering:textures/gui/fermenter.png");

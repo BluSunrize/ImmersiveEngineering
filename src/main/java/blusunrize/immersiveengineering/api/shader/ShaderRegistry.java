@@ -1,24 +1,16 @@
 package blusunrize.immersiveengineering.api.shader;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-
-import com.google.common.collect.ArrayListMultimap;
-
 import blusunrize.immersiveengineering.api.ManualHelper;
 import blusunrize.lib.manual.ManualInstance.ManualEntry;
 import blusunrize.lib.manual.ManualPages;
 import blusunrize.lib.manual.ManualPages.PositionedItemStack;
+import com.google.common.collect.ArrayListMultimap;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+
+import java.util.*;
 
 public class ShaderRegistry
 {

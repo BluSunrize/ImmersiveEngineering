@@ -3,7 +3,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxProvider;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
-import blusunrize.immersiveengineering.common.Config;
+import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.TileEntityMultiblockPart;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockLightningrod;
@@ -29,7 +29,7 @@ import java.util.ArrayList;
 
 public class TileEntityLightningrod extends TileEntityMultiblockPart<TileEntityLightningrod> implements IFluxProvider,IEnergyProvider
 {
-	FluxStorage energyStorage = new FluxStorage(Config.getInt("lightning_output"));
+	FluxStorage energyStorage = new FluxStorage(IEConfig.Machines.lightning_output);
 
 	ArrayList<BlockPos> fenceNet = null;
 	int height;
@@ -64,7 +64,7 @@ public class TileEntityLightningrod extends TileEntityMultiblockPart<TileEntityL
 				int i = this.height + this.fenceNet.size();
 				if(worldObj.rand.nextInt(4096*worldObj.getHeight())<i*(getPos().getY()+i))
 				{
-					this.energyStorage.setEnergy(Config.getInt("lightning_output"));
+					this.energyStorage.setEnergy(IEConfig.Machines.lightning_output);
 					BlockPos pos = fenceNet.get(worldObj.rand.nextInt(fenceNet.size()));
 					EntityLightningBolt entityLightningBolt = new EntityLightningBolt(worldObj, pos.getX(),pos.getY(),pos.getZ(), true);
 					worldObj.addWeatherEffect(entityLightningBolt);
@@ -261,7 +261,7 @@ public class TileEntityLightningrod extends TileEntityMultiblockPart<TileEntityL
 	@SideOnly(Side.CLIENT)
 	public double getMaxRenderDistanceSquared()
 	{
-		return super.getMaxRenderDistanceSquared()*Config.getDouble("increasedTileRenderdistance");
+		return super.getMaxRenderDistanceSquared()* IEConfig.increasedTileRenderdistance;
 	}
 
 	@Override

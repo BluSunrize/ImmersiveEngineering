@@ -1,8 +1,5 @@
 package blusunrize.immersiveengineering.common.util;
 
-import java.lang.reflect.Field;
-import java.util.UUID;
-
 import blusunrize.immersiveengineering.api.IEApi;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;

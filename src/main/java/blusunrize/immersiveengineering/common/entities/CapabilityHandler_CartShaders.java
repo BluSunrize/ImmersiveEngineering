@@ -1,8 +1,4 @@
 package blusunrize.immersiveengineering.common.entities;
-	
-import java.util.concurrent.Callable;
-
-import javax.annotation.Nullable;
 
 import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.item.ItemStack;
@@ -14,6 +10,9 @@ import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.INBTSerializable;
+
+import javax.annotation.Nullable;
+import java.util.concurrent.Callable;
 
 public class CapabilityHandler_CartShaders implements ICapabilityProvider, INBTSerializable<NBTTagCompound>
 {

@@ -1,16 +1,15 @@
 package blusunrize.immersiveengineering.common.util.compat.jei.blastfurnace;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
 import mezz.jei.api.IJeiHelpers;
 import mezz.jei.api.recipe.BlankRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
+
+import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class BlastFurnaceRecipeWrapper extends BlankRecipeWrapper
 {

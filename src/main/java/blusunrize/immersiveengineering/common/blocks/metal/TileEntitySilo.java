@@ -1,6 +1,6 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.common.Config;
+import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.BlockTypes_MetalsAll;
 import blusunrize.immersiveengineering.common.blocks.TileEntityMultiblockPart;
@@ -378,7 +378,7 @@ public class TileEntitySilo extends TileEntityMultiblockPart<TileEntitySilo> //i
 	@SideOnly(Side.CLIENT)
 	public double getMaxRenderDistanceSquared()
 	{
-		return super.getMaxRenderDistanceSquared()*Config.getDouble("increasedTileRenderdistance");
+		return super.getMaxRenderDistanceSquared()* IEConfig.increasedTileRenderdistance;
 	}
 
 	/*

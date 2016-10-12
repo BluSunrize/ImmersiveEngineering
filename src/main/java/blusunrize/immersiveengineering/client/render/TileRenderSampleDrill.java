@@ -1,6 +1,6 @@
 package blusunrize.immersiveengineering.client.render;
 
-import blusunrize.immersiveengineering.common.Config;
+import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySampleDrill;
 import com.google.common.collect.Lists;
 import net.minecraft.block.state.IBlockState;
@@ -11,7 +11,6 @@ import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.client.model.obj.OBJModel.OBJProperty;
 import net.minecraftforge.client.model.obj.OBJModel.OBJState;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.Properties;
@@ -50,7 +49,7 @@ public class TileRenderSampleDrill extends TileEntitySpecialRenderer<TileEntityS
 		//		float rot = 360*tile.rotation-(!tile.canTurn||tile.rotation==0||tile.rotation-tile.prevRotation<4?0:tile.facing.getAxis()==Axis.X?-f:f);
 		//		GlStateManager.rotate(rot, 0,0,1);
 
-		int max = Config.getInt("coredrill_time");
+		int max = IEConfig.Machines.coredrill_time;
 		if(tile.process>0 && tile.process<max)
 		{
 			GL11.glRotatef( ((tile.process+partialTicks)*22.5f)%360f, 0,1,0);

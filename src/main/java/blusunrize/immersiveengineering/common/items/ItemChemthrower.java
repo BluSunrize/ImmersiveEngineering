@@ -4,7 +4,7 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.shader.IShaderEquipableItem;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler;
 import blusunrize.immersiveengineering.api.tool.ITool;
-import blusunrize.immersiveengineering.common.Config;
+import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.entities.EntityChemthrowerShot;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IAdvancedFluidItem;
@@ -86,7 +86,7 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IAdvancedFlu
 		if(fs!=null && fs.getFluid()!=null)
 		{
 			int duration = getMaxItemUseDuration(stack)-count;
-			int consumed = Config.getInt("chemthrower_consumption");
+			int consumed = IEConfig.Tools.chemthrower_consumption;
 			if(consumed*duration<=fs.amount)
 			{
 				Vec3d v = player.getLookVec();
@@ -135,7 +135,7 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IAdvancedFlu
 		if(fs!=null)
 		{
 			int duration = getMaxItemUseDuration(stack)-timeLeft;
-			fs.amount -=  Config.getInt("chemthrower_consumption")*duration;
+			fs.amount -=  IEConfig.Tools.chemthrower_consumption*duration;
 			if(fs.amount <= 0)
 				ItemNBTHelper.remove(stack, "Fluid");
 			else

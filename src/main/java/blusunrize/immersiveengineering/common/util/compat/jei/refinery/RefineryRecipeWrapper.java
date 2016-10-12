@@ -1,11 +1,11 @@
 package blusunrize.immersiveengineering.common.util.compat.jei.refinery;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import blusunrize.immersiveengineering.api.crafting.RefineryRecipe;
 import blusunrize.immersiveengineering.common.util.compat.jei.MultiblockRecipeWrapper;
 import mezz.jei.api.IJeiHelpers;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class RefineryRecipeWrapper extends MultiblockRecipeWrapper
 {
