@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.common.world;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenCrate;
 import net.minecraft.block.BlockDoor;
@@ -192,8 +193,8 @@ public class VillageEngineersHouse extends Village
 		{
 			e.printStackTrace();
 		}
-
-		this.spawnVillagers(world, box, 4, 1, 2, 1);
+		if(IEConfig.enableVillagers)
+			this.spawnVillagers(world, box, 4, 1, 2, 1);
 		return true;
 	}
 

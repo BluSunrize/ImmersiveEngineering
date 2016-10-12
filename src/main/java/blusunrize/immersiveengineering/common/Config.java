@@ -53,6 +53,10 @@ public class Config
 		public static String[] preferredOres = new String[]{ImmersiveEngineering.MODID};
 		@Comment({"Set this to false to hide the update news in the manual"})
 		public static boolean showUpdateNews = true;
+		@Comment({"Set this to false to stop the IE villager house from spawning"})
+		public static boolean villagerHouse = true;
+		@Comment({"Set this to false to remove IE villagers from the game"})
+		public static boolean enableVillagers = true;
 
 		public static Machines machines = new Machines();
 		public static Ores ores = new Ores();
