@@ -35,6 +35,7 @@ public abstract class IECompatModule
 		moduleClasses.put("tconstruct", TConstructHelper.class);
 		moduleClasses.put("Waila", WailaHelper.class);
 		moduleClasses.put("MineTweaker3", CraftTweakerHelper.class);
+		moduleClasses.put("railcraft", RailcraftHelper.class);
 //		moduleClasses.put("MineFactoryReloaded", MFRHelper.class);
 //		moduleClasses.put("EE3", EE3Helper.class);
 //		moduleClasses.put("ForgeMicroblock", FMPHelper.class);
@@ -54,7 +55,6 @@ public abstract class IECompatModule
 
 //		moduleClasses.put("Mekanism", MekanismHelper.class);
 //		moduleClasses.put("cuttingedge", CuttingEdgeHelper.class);
-//		moduleClasses.put("Railcraft", RailcraftHelper.class);
 //		moduleClasses.put("Avaritia", AvaritiaHelper.class);
 	}
 

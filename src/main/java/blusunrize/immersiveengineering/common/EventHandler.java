@@ -132,7 +132,6 @@ public class EventHandler
 	public void onMinecartInteraction(MinecartInteractEvent event)
 	{
 		if(!event.getPlayer().worldObj.isRemote && event.getItem()!=null && event.getItem().getItem() instanceof IShaderItem)
-		{
 			if(event.getMinecart().hasCapability(CapabilityHandler_CartShaders.SHADER_CAPABILITY, null))
 			{
 				CapabilityHandler_CartShaders handler = event.getMinecart().getCapability(CapabilityHandler_CartShaders.SHADER_CAPABILITY, null);
@@ -143,7 +142,6 @@ public class EventHandler
 					event.setCanceled(true);
 				}
 			}
-		}
 	}
 
 	public static List<ResourceLocation> lootInjections = Arrays.asList(new ResourceLocation(ImmersiveEngineering.MODID, "chests/stronghold_library"),new ResourceLocation(ImmersiveEngineering.MODID, "chests/village_blacksmith"));
