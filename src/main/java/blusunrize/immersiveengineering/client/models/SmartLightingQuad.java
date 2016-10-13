@@ -1,7 +1,5 @@
 package blusunrize.immersiveengineering.client.models;
 
-import java.lang.reflect.Field;
-
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -12,11 +10,9 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ChunkCache;
 import net.minecraft.world.IBlockAccess;
-import net.minecraftforge.client.model.pipeline.BlockInfo;
-import net.minecraftforge.client.model.pipeline.IVertexConsumer;
-import net.minecraftforge.client.model.pipeline.LightUtil;
-import net.minecraftforge.client.model.pipeline.QuadGatheringTransformer;
-import net.minecraftforge.client.model.pipeline.VertexLighterFlat;
+import net.minecraftforge.client.model.pipeline.*;
+
+import java.lang.reflect.Field;
 
 public class SmartLightingQuad extends BakedQuad
 {

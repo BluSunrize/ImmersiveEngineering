@@ -1,19 +1,16 @@
 package blusunrize.immersiveengineering.common.util.compat.jei.arcfurnace;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
+import blusunrize.immersiveengineering.common.util.compat.jei.MultiblockRecipeWrapper;
+import mezz.jei.api.IJeiHelpers;
+import net.minecraft.client.Minecraft;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
-import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
-import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.common.util.compat.jei.MultiblockRecipeWrapper;
-import mezz.jei.api.IJeiHelpers;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ArcFurnaceRecipeWrapper extends MultiblockRecipeWrapper
 {

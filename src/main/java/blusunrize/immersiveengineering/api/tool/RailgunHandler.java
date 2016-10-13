@@ -1,11 +1,11 @@
 package blusunrize.immersiveengineering.api.tool;
 
-import java.util.HashMap;
-
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.ComparableItemStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
+
+import java.util.HashMap;
 
 public class RailgunHandler
 {

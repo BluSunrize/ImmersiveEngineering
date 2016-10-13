@@ -15,17 +15,14 @@ import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBelt;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.client.fx.EntityFXSparks;
 import blusunrize.immersiveengineering.client.gui.*;
-import blusunrize.immersiveengineering.client.models.IESmartObjModel;
-import blusunrize.immersiveengineering.client.models.ModelConveyor;
-import blusunrize.immersiveengineering.client.models.ModelItemDynamicOverride;
-import blusunrize.immersiveengineering.client.models.ModelShaderMinecart;
+import blusunrize.immersiveengineering.client.models.*;
 import blusunrize.immersiveengineering.client.models.obj.IEOBJLoader;
 import blusunrize.immersiveengineering.client.models.smart.ConnLoader;
 import blusunrize.immersiveengineering.client.models.smart.ConnModelReal;
 import blusunrize.immersiveengineering.client.models.smart.ConnModelReal.ExtBlockstateAdapter;
 import blusunrize.immersiveengineering.client.render.*;
 import blusunrize.immersiveengineering.common.CommonProxy;
-import blusunrize.immersiveengineering.common.Config;
+import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.IERecipes;
 import blusunrize.immersiveengineering.common.blocks.BlockIEFluid;
@@ -238,6 +235,7 @@ public class ClientProxy extends CommonProxy
 				return new EntityRenderFluorescentTube(manager);
 			}});
 		ModelLoaderRegistry.registerLoader(new ConnLoader());
+		ModelLoaderRegistry.registerLoader(new ModelConfigurableSides.Loader());
 	}
 	@Override
 	public void preInitEnd()
@@ -350,7 +348,7 @@ public class ClientProxy extends CommonProxy
 		//		revolverTextureMap.setBlurMipmapDirect(false, Minecraft.getMinecraft().gameSettings.mipmapLevels > 0);
 		//		ClientUtils.mc().renderEngine.loadTextureMap(revolverTextureResource, revolverTextureMap);
 
-		nixieFontOptional = Config.getBoolean("nixietubeFont")?new IENixieFontRender():ClientUtils.font();
+		nixieFontOptional = IEConfig.nixietubeFont?new IENixieFontRender():ClientUtils.font();
 		nixieFont = new IENixieFontRender();
 		itemFont = new IEItemFontRender();
 		TileEntityTeslaCoil.effectMap = ArrayListMultimap.create();
@@ -655,7 +653,7 @@ public class ClientProxy extends CommonProxy
 		pages.add(new ManualPages.Text(ManualHelper.getManual(), "fluidPipes1"));
 		pages.add(new ManualPages.Crafting(ManualHelper.getManual(), "fluidPipes2", new ItemStack(IEContent.blockMetalDevice0,1,BlockTypes_MetalDevice0.FLUID_PUMP.getMeta())));
 		pages.add(new ManualPages.Text(ManualHelper.getManual(), "fluidPipes3"));
-		if(Config.getBoolean("pump_infiniteWater")||Config.getBoolean("pump_placeCobble"))
+		if(IEConfig.Machines.pump_infiniteWater || IEConfig.Machines.pump_placeCobble)
 			pages.add(new ManualPages.Text(ManualHelper.getManual(), "fluidPipes4"));
 		ManualHelper.addEntry("fluidPipes", ManualHelper.CAT_MACHINES,pages.toArray(new IManualPage[pages.size()]));
 		ManualHelper.addEntry("chargingStation", ManualHelper.CAT_MACHINES, new ManualPages.Crafting(ManualHelper.getManual(), "chargingStation0", new ItemStack(IEContent.blockMetalDevice1,1,BlockTypes_MetalDevice1.CHARGING_STATION.getMeta())),new ManualPages.Text(ManualHelper.getManual(), "chargingStation1"));
@@ -1416,12 +1414,20 @@ public class ClientProxy extends CommonProxy
 	{
 		ConnModelReal.cache.remove(new ExtBlockstateAdapter(state));
 	}
+	@Override
+	public void clearConnectionModelCache()
+	{
+		ConnModelReal.cache.clear();
+	}
 
 	@Override
 	public void clearRenderCaches()
 	{
 		IESmartObjModel.modelCache.clear();
+		IESmartObjModel.cachedBakedItemModels.clear();
 		ConnModelReal.cache.clear();
+		ModelConveyor.modelCache.clear();
+		ModelConfigurableSides.modelCache.clear();
 	}
 	private static void mapFluidState(Block block, Fluid fluid)
 	{

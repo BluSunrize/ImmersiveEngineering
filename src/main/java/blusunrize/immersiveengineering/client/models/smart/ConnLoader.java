@@ -20,7 +20,7 @@ import java.util.*;
 
 public class ConnLoader implements ICustomModelLoader
 {
-	public static final String RESOURCE_LOCATION = "models/block/smartmodel/";
+	public static final String RESOURCE_LOCATION = "models/block/smartmodel/conn_";
 	public static Map<String, ImmutableMap<String, String>> textureReplacements = new HashMap<>();
 	public static Map<String, ResourceLocation> baseModels = new HashMap<>();
 	static

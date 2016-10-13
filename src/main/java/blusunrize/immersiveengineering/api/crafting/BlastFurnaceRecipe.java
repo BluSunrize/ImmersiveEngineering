@@ -1,14 +1,10 @@
 package blusunrize.immersiveengineering.api.crafting;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import blusunrize.immersiveengineering.api.ApiUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
+
+import java.util.*;
 
 /**
  * @author BluSunrize - 23.03.2015

@@ -1,9 +1,9 @@
 package blusunrize.immersiveengineering.api.tool;
 
+import net.minecraft.item.ItemStack;
+
 import java.util.HashMap;
 import java.util.Set;
-
-import net.minecraft.item.ItemStack;
 
 /**
  * @author BluSunrize - 29.05.2015

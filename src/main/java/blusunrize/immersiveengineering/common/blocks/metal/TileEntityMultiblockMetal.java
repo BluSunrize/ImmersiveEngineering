@@ -9,10 +9,7 @@ import blusunrize.immersiveengineering.api.crafting.IMultiblockRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorageAdvanced;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IMirrorAble;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ITileDrop;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IUsesBooleanProperty;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.TileEntityMultiblockPart;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -37,7 +34,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMetal<T, R>, R extends IMultiblockRecipe> extends TileEntityMultiblockPart<T> implements IIEInventory, IFluxReceiver,IEnergyReceiver, IHammerInteraction, IMirrorAble
+public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMetal<T, R>, R extends IMultiblockRecipe> extends TileEntityMultiblockPart<T> implements IIEInventory, IFluxReceiver,IEnergyReceiver, IHammerInteraction, IMirrorAble, IProcessTile
 {
 	/**H L W*/
 	protected final int[] structureDimensions;
@@ -378,6 +375,28 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 			return true;
 		}
 		return false;
+	}
+	@Override
+	public int[] getCurrentProcessesStep()
+	{
+		T master = master();
+		if(master!=this && master!=null)
+			return master.getCurrentProcessesStep();
+		int[] ia = new int[processQueue.size()];
+		for(int i=0; i<ia.length; i++)
+			ia[i] = processQueue.get(i).processTick;
+		return ia;
+	}
+	@Override
+	public int[] getCurrentProcessesMax()
+	{
+		T master = master();
+		if(master!=this && master!=null)
+			return master.getCurrentProcessesMax();
+		int[] ia = new int[processQueue.size()];
+		for(int i=0; i<ia.length; i++)
+			ia[i] = processQueue.get(i).maxTicks;
+		return ia;
 	}
 
 	public boolean shouldRenderAsActive()

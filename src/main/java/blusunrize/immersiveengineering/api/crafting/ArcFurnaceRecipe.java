@@ -1,16 +1,15 @@
 package blusunrize.immersiveengineering.api.crafting;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import com.google.common.collect.Lists;
-
 import blusunrize.immersiveengineering.api.ApiUtils;
+import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.oredict.OreDictionary;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * @author BluSunrize - 23.03.2015

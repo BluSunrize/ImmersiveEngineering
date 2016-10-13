@@ -1,11 +1,9 @@
 package blusunrize.immersiveengineering.client.fx;
 
-import net.minecraft.profiler.Profiler;
-
-import org.lwjgl.opengl.GL11;
-
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.client.ClientUtils;
+import net.minecraft.profiler.Profiler;
+import org.lwjgl.opengl.GL11;
 
 public class ParticleRenderer
 {

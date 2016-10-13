@@ -1,7 +1,7 @@
 package blusunrize.immersiveengineering.api;
 
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
 
 /**

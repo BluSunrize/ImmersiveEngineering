@@ -1,10 +1,9 @@
 package blusunrize.immersiveengineering.api;
 
 import com.google.common.base.Objects;
-
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class DirectionalBlockPos extends BlockPos

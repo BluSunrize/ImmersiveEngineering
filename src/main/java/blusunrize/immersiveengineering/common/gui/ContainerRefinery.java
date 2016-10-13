@@ -1,17 +1,15 @@
 package blusunrize.immersiveengineering.common.gui;
 
-import java.util.List;
-
 import blusunrize.immersiveengineering.api.crafting.RefineryRecipe;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityRefinery;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+
+import java.util.List;
 
 public class ContainerRefinery extends ContainerIEBase<TileEntityRefinery>
 {

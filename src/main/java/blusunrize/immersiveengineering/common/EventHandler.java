@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.shader.IShaderItem;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralMix;
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
+import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISpawnInterdiction;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
@@ -129,7 +130,6 @@ public class EventHandler
 	public void onMinecartInteraction(MinecartInteractEvent event)
 	{
 		if(!event.getPlayer().worldObj.isRemote && event.getItem()!=null && event.getItem().getItem() instanceof IShaderItem)
-		{
 			if(event.getMinecart().hasCapability(CapabilityHandler_CartShaders.SHADER_CAPABILITY, null))
 			{
 				CapabilityHandler_CartShaders handler = event.getMinecart().getCapability(CapabilityHandler_CartShaders.SHADER_CAPABILITY, null);
@@ -140,7 +140,6 @@ public class EventHandler
 					event.setCanceled(true);
 				}
 			}
-		}
 	}
 
 	public static List<ResourceLocation> lootInjections = Arrays.asList(new ResourceLocation(ImmersiveEngineering.MODID, "chests/stronghold_library"),new ResourceLocation(ImmersiveEngineering.MODID, "chests/village_blacksmith"));
@@ -194,7 +193,7 @@ public class EventHandler
 	{
 		if (event.phase==TickEvent.Phase.START && validateConnsNextTick && FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER)
 		{
-			boolean validateConnections = Config.getBoolean("validateConnections");
+			boolean validateConnections = IEConfig.validateConnections;
 			int invalidConnectionsDropped = 0;
 			for (int dim:ImmersiveNetHandler.INSTANCE.getRelevantDimensions())
 			{

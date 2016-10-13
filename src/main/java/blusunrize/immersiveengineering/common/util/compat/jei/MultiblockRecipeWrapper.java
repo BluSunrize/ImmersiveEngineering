@@ -1,11 +1,11 @@
 package blusunrize.immersiveengineering.common.util.compat.jei;
 
-import java.util.List;
-
 import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
 import mezz.jei.api.recipe.BlankRecipeWrapper;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
+
+import java.util.List;
 
 public class MultiblockRecipeWrapper extends BlankRecipeWrapper
 {

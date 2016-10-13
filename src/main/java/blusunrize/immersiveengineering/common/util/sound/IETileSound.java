@@ -1,7 +1,5 @@
 package blusunrize.immersiveengineering.common.util.sound;
 
-import java.util.Iterator;
-
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundTile;
@@ -14,11 +12,12 @@ import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nullable;
+import java.util.Iterator;
 
 public class IETileSound implements ITickableSound
 {

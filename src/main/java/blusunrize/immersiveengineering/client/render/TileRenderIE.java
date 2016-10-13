@@ -1,9 +1,9 @@
 package blusunrize.immersiveengineering.client.render;
 
+import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
-import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 
 public abstract class TileRenderIE<T extends TileEntity> extends TileEntitySpecialRenderer<T>
 {

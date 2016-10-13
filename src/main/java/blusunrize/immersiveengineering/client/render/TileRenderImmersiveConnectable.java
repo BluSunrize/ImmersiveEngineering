@@ -1,10 +1,5 @@
 package blusunrize.immersiveengineering.client.render;
 
-import java.util.Iterator;
-import java.util.Set;
-
-import org.lwjgl.opengl.GL11;
-
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
@@ -16,6 +11,10 @@ import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.tileentity.TileEntity;
+import org.lwjgl.opengl.GL11;
+
+import java.util.Iterator;
+import java.util.Set;
 // not used any more
 public class TileRenderImmersiveConnectable extends TileEntitySpecialRenderer
 {

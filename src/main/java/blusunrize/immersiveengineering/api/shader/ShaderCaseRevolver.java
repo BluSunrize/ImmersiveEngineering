@@ -1,11 +1,10 @@
 package blusunrize.immersiveengineering.api.shader;
 
-import org.lwjgl.opengl.GL11;
-
 import blusunrize.immersiveengineering.api.ApiUtils;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.item.ItemStack;
+import org.lwjgl.opengl.GL11;
 
 public class ShaderCaseRevolver extends ShaderCase
 {

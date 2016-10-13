@@ -1,7 +1,6 @@
 package blusunrize.immersiveengineering.common.util.compat;
 
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.common.Config;
 
 public class BaublesHelper extends IECompatModule
 {
@@ -9,7 +8,6 @@ public class BaublesHelper extends IECompatModule
 	public void preInit()
 	{
 		Lib.BAUBLES = true;
-		Config.setBoolean("baubles", true);
 	}
 
 	@Override

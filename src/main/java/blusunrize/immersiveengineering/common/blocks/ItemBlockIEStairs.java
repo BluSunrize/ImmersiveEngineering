@@ -1,7 +1,5 @@
 package blusunrize.immersiveengineering.common.blocks;
 
-import java.util.List;
-
 import blusunrize.immersiveengineering.api.Lib;
 import net.minecraft.block.Block;
 import net.minecraft.client.resources.I18n;
@@ -10,6 +8,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+
+import java.util.List;
 
 public class ItemBlockIEStairs extends ItemBlock
 {

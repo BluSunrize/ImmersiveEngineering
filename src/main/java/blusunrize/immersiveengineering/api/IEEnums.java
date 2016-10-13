@@ -6,14 +6,26 @@ public class IEEnums
 {
 	public enum SideConfig implements IStringSerializable
 	{
-		NONE,
-		INPUT,
-		OUTPUT;
+		NONE("none"),
+		INPUT("in"),
+		OUTPUT("out");
+
+		final String texture;
+
+		SideConfig(String texture)
+		{
+			this.texture = texture;
+		}
 
 		@Override
 		public String getName()
 		{
 			return this.toString().toLowerCase();
+		}
+
+		public String getTextureName()
+		{
+			return texture;
 		}
 	}
 }

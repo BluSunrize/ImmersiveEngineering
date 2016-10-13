@@ -1,8 +1,5 @@
 package blusunrize.immersiveengineering.common.util.network;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralMix;
 import blusunrize.immersiveengineering.client.ClientProxy;
@@ -12,6 +9,9 @@ import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class MessageMineralListSync implements IMessage
 {

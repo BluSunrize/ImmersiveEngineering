@@ -5,7 +5,7 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxProvider;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
-import blusunrize.immersiveengineering.common.Config;
+import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparatorOverride;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IConfigurableSides;
@@ -116,15 +116,15 @@ public class TileEntityCapacitorLV extends TileEntityIEBase implements ITickable
 
 	public int getMaxStorage()
 	{
-		return Config.getInt("capacitorLV_storage");
+		return IEConfig.Machines.capacitorLV_storage;
 	}
 	public int getMaxInput()
 	{
-		return Config.getInt("capacitorLV_input");
+		return IEConfig.Machines.capacitorLV_input;
 	}
 	public int getMaxOutput()
 	{
-		return Config.getInt("capacitorLV_output");
+		return IEConfig.Machines.capacitorLV_output;
 	}
 
 	@Override
@@ -177,7 +177,7 @@ public class TileEntityCapacitorLV extends TileEntityIEBase implements ITickable
 	@Override
 	public String[] getOverlayText(EntityPlayer player, RayTraceResult mop, boolean hammer)
 	{
-		if(hammer && Config.getBoolean("colourblindSupport"))
+		if(hammer && IEConfig.colourblindSupport)
 		{
 			int i = sideConfig[Math.min(sideConfig.length-1, mop.sideHit.ordinal())];
 			int j = sideConfig[Math.min(sideConfig.length-1, mop.sideHit.getOpposite().ordinal())];

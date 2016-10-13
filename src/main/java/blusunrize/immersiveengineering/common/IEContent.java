@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEf
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEffect_Potion;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorTile;
 import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler.DefaultFurnaceAdapter;
+import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.*;
 import blusunrize.immersiveengineering.common.blocks.BlockFakeLight.TileEntityFakeLight;
 import blusunrize.immersiveengineering.common.blocks.cloth.BlockClothDevice;
@@ -85,7 +86,6 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
-import java.util.function.Function;
 
 public class IEContent
 {
@@ -350,12 +350,12 @@ public class IEContent
 		blockStorage.setHarvestLevel("pickaxe", 2, blockStorage.getStateFromMeta(BlockTypes_MetalsIE.ELECTRUM.getMeta()));
 		blockStorage.setHarvestLevel("pickaxe", 2, blockStorage.getStateFromMeta(BlockTypes_MetalsIE.STEEL.getMeta()));
 
-		addConfiguredWorldgen(blockOre.getStateFromMeta(0), "copper");
-		addConfiguredWorldgen(blockOre.getStateFromMeta(1), "bauxite");
-		addConfiguredWorldgen(blockOre.getStateFromMeta(2), "lead");
-		addConfiguredWorldgen(blockOre.getStateFromMeta(3), "silver");
-		addConfiguredWorldgen(blockOre.getStateFromMeta(4), "nickel");
-		addConfiguredWorldgen(blockOre.getStateFromMeta(5), "uranium");
+		addConfiguredWorldgen(blockOre.getStateFromMeta(0), "copper", IEConfig.Ores.ore_copper);
+		addConfiguredWorldgen(blockOre.getStateFromMeta(1), "bauxite", IEConfig.Ores.ore_bauxite);
+		addConfiguredWorldgen(blockOre.getStateFromMeta(2), "lead", IEConfig.Ores.ore_lead);
+		addConfiguredWorldgen(blockOre.getStateFromMeta(3), "silver", IEConfig.Ores.ore_silver);
+		addConfiguredWorldgen(blockOre.getStateFromMeta(4), "nickel", IEConfig.Ores.ore_nickel);
+		addConfiguredWorldgen(blockOre.getStateFromMeta(5), "uranium", IEConfig.Ores.ore_uranium);
 	}
 
 	public static void init()
@@ -504,38 +504,10 @@ public class IEContent
 				entity.getEntityData().removeTag(Lib.MAGNET_PREVENT_NBT);
 			}
 		});
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "conveyor"), ConveyorBasic.class, new Function<TileEntity, ConveyorBasic>()
-		{
-			@Override
-			public ConveyorBasic apply(TileEntity tileEntity)
-			{
-				return new ConveyorBasic();
-			}
-		});
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "dropper"), ConveyorDrop.class, new Function<TileEntity, ConveyorDrop>()
-		{
-			@Override
-			public ConveyorDrop apply(TileEntity tileEntity)
-			{
-				return new ConveyorDrop();
-			}
-		});
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "vertical"), ConveyorVertical.class, new Function<TileEntity, ConveyorVertical>()
-		{
-			@Override
-			public ConveyorVertical apply(TileEntity tileEntity)
-			{
-				return new ConveyorVertical();
-			}
-		});
-		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "splitter"), ConveyorSplit.class, new Function<TileEntity, ConveyorSplit>()
-		{
-			@Override
-			public ConveyorSplit apply(TileEntity tileEntity)
-			{
-				return new ConveyorSplit(tileEntity instanceof IConveyorTile ? ((IConveyorTile)tileEntity).getFacing() : EnumFacing.NORTH);
-			}
-		});
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "conveyor"), ConveyorBasic.class, (tileEntity) -> new ConveyorBasic());
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "dropper"), ConveyorDrop.class, (tileEntity) -> new ConveyorDrop());
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "vertical"), ConveyorVertical.class, (tileEntity) -> new ConveyorVertical());
+		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "splitter"), ConveyorSplit.class, (tileEntity) -> new ConveyorSplit(tileEntity instanceof IConveyorTile ? ((IConveyorTile)tileEntity).getFacing() : EnumFacing.NORTH));
 
 		/**ASSEMBLER RECIPE ADAPTERS*/
 		//Shaped
@@ -662,8 +634,8 @@ public class IEContent
 		RailgunHandler.registerProjectileProperties(new ComparableItemStack("stickSteel"), 12, 1.25).setColourMap(new int[][]{{0xb4b4b4,0xb4b4b4,0xb4b4b4,0x7a7a7a,0x555555,0x555555}});
 		RailgunHandler.registerProjectileProperties(new ComparableItemStack(new ItemStack(itemGraphiteElectrode)), 16, .9).setColourMap(new int[][]{{0x242424,0x242424,0x242424,0x171717,0x171717,0x0a0a0a}});
 
-		ExternalHeaterHandler.defaultFurnaceEnergyCost = Config.getInt("heater_consumption");
-		ExternalHeaterHandler.defaultFurnaceSpeedupCost= Config.getInt("heater_speedupConsumption");
+		ExternalHeaterHandler.defaultFurnaceEnergyCost = IEConfig.Machines.heater_consumption;
+		ExternalHeaterHandler.defaultFurnaceSpeedupCost= IEConfig.Machines.heater_speedupConsumption;
 		ExternalHeaterHandler.registerHeatableAdapter(TileEntityFurnace.class, new DefaultFurnaceAdapter());
 
 		SqueezerRecipe.addRecipe(new FluidStack(fluidPlantoil, 80), null, Items.WHEAT_SEEDS, 6400);
@@ -690,9 +662,9 @@ public class IEContent
 		ThermoelectricHandler.registerSourceInKelvin("blockPlutonium", 4000);
 		ThermoelectricHandler.registerSourceInKelvin("blockBlutonium", 4000);
 
-		ExcavatorHandler.mineralVeinCapacity = Config.getInt("excavator_depletion");
-		ExcavatorHandler.mineralChance = Config.getDouble("excavator_chance");
-		ExcavatorHandler.defaultDimensionBlacklist = Config.getIntArray("excavator_dimBlacklist");
+		ExcavatorHandler.mineralVeinCapacity = IEConfig.Machines.excavator_depletion;
+		ExcavatorHandler.mineralChance = IEConfig.Machines.excavator_chance;
+		ExcavatorHandler.defaultDimensionBlacklist = IEConfig.Machines.excavator_dimBlacklist;
 		ExcavatorHandler.addMineral("Iron", 25, .1f, new String[]{"oreIron","oreNickel","oreTin","denseoreIron"}, new float[]{.5f,.25f,.20f,.05f});
 		ExcavatorHandler.addMineral("Magnetite", 25, .1f, new String[]{"oreIron","oreGold"}, new float[]{.85f,.15f});
 		if(OreDictionary.doesOreNameExist("oreSulfur"))
@@ -738,80 +710,86 @@ public class IEContent
 
 		/**VILLAGE*/
 		VillagerRegistry villageRegistry = VillagerRegistry.instance();
-		villageRegistry.registerVillageCreationHandler(new VillageEngineersHouse.VillageManager());
-		MapGenStructureIO.registerStructureComponent(VillageEngineersHouse.class, ImmersiveEngineering.MODID+":EngineersHouse");
-		villagerProfession_engineer = new VillagerRegistry.VillagerProfession(ImmersiveEngineering.MODID+":engineer", "immersiveengineering:textures/models/villager_engineer.png","immersiveengineering:textures/models/villager_engineer_zombie.png");
-		villageRegistry.register(villagerProfession_engineer);
+		if(IEConfig.villagerHouse)
+		{
+			villageRegistry.registerVillageCreationHandler(new VillageEngineersHouse.VillageManager());
+			MapGenStructureIO.registerStructureComponent(VillageEngineersHouse.class, ImmersiveEngineering.MODID + ":EngineersHouse");
+		}
+		if(IEConfig.enableVillagers)
+		{
+			villagerProfession_engineer = new VillagerRegistry.VillagerProfession(ImmersiveEngineering.MODID + ":engineer", "immersiveengineering:textures/models/villager_engineer.png", "immersiveengineering:textures/models/villager_engineer_zombie.png");
+			villageRegistry.register(villagerProfession_engineer);
 
-		VillagerRegistry.VillagerCareer career_engineer = new VillagerRegistry.VillagerCareer(villagerProfession_engineer, ImmersiveEngineering.MODID+".engineer");
-		career_engineer.addTrade(1,
-				new IEVillagerTrades.EmeraldForItemstack(new ItemStack(itemMaterial,1,0), new EntityVillager.PriceInfo(8, 16)),
-				new IEVillagerTrades.ItemstackForEmerald(new ItemStack(blockWoodenDecoration, 1, 1), new EntityVillager.PriceInfo(-10, -6)),
-				new IEVillagerTrades.ItemstackForEmerald(new ItemStack(blockClothDevice, 1, 1), new EntityVillager.PriceInfo(-3, -1))
-		);
-		career_engineer.addTrade(2,
-				new IEVillagerTrades.EmeraldForItemstack(new ItemStack(itemMaterial,1,1), new EntityVillager.PriceInfo(2, 6)),
-				new IEVillagerTrades.ItemstackForEmerald(new ItemStack(blockMetalDecoration1, 1, 1), new EntityVillager.PriceInfo(-8, -4)),
-				new IEVillagerTrades.ItemstackForEmerald(new ItemStack(blockMetalDecoration1, 1, 5), new EntityVillager.PriceInfo(-8, -4))
-		);
-		career_engineer.addTrade(3,
-				new IEVillagerTrades.EmeraldForItemstack(new ItemStack(itemMaterial,1,2), new EntityVillager.PriceInfo(2, 6)),
-				new IEVillagerTrades.EmeraldForItemstack(new ItemStack(itemMaterial,1,7), new EntityVillager.PriceInfo(4, 8)),
-				new IEVillagerTrades.ItemstackForEmerald(new ItemStack(blockStoneDecoration, 1, 5), new EntityVillager.PriceInfo(-6, -2))
-		);
+			VillagerRegistry.VillagerCareer career_engineer = new VillagerRegistry.VillagerCareer(villagerProfession_engineer, ImmersiveEngineering.MODID + ".engineer");
+			career_engineer.addTrade(1,
+					new IEVillagerTrades.EmeraldForItemstack(new ItemStack(itemMaterial, 1, 0), new EntityVillager.PriceInfo(8, 16)),
+					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(blockWoodenDecoration, 1, 1), new EntityVillager.PriceInfo(-10, -6)),
+					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(blockClothDevice, 1, 1), new EntityVillager.PriceInfo(-3, -1))
+			);
+			career_engineer.addTrade(2,
+					new IEVillagerTrades.EmeraldForItemstack(new ItemStack(itemMaterial, 1, 1), new EntityVillager.PriceInfo(2, 6)),
+					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(blockMetalDecoration1, 1, 1), new EntityVillager.PriceInfo(-8, -4)),
+					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(blockMetalDecoration1, 1, 5), new EntityVillager.PriceInfo(-8, -4))
+			);
+			career_engineer.addTrade(3,
+					new IEVillagerTrades.EmeraldForItemstack(new ItemStack(itemMaterial, 1, 2), new EntityVillager.PriceInfo(2, 6)),
+					new IEVillagerTrades.EmeraldForItemstack(new ItemStack(itemMaterial, 1, 7), new EntityVillager.PriceInfo(4, 8)),
+					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(blockStoneDecoration, 1, 5), new EntityVillager.PriceInfo(-6, -2))
+			);
 
-		VillagerRegistry.VillagerCareer career_machinist = new VillagerRegistry.VillagerCareer(villagerProfession_engineer, ImmersiveEngineering.MODID+".machinist");
-		career_machinist.addTrade(1,
-				new IEVillagerTrades.EmeraldForItemstack(new ItemStack(itemMaterial,1,6), new EntityVillager.PriceInfo(8, 16)),
-				new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemTool, 1, 0), new EntityVillager.PriceInfo(4, 7))
-		);
-		career_machinist.addTrade(2,
-				new IEVillagerTrades.EmeraldForItemstack(new ItemStack(itemMetal,1,0), new EntityVillager.PriceInfo(4, 6)),
-				new IEVillagerTrades.EmeraldForItemstack(new ItemStack(itemMetal,1,1), new EntityVillager.PriceInfo(4, 6)),
-				new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemMaterial, 1, 9), new EntityVillager.PriceInfo(1, 3))
-		);
-		career_machinist.addTrade(3,
-				new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemToolbox, 1, 0), new EntityVillager.PriceInfo(6, 8)),
-				new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemMaterial, 1, 10), new EntityVillager.PriceInfo(1, 3)),
-				new IEVillagerTrades.ItemstackForEmerald(ItemEngineersBlueprint.getTypedBlueprint("specialBullet"), new EntityVillager.PriceInfo(5, 9))
-		);
-		career_machinist.addTrade(4,
-				new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemDrillhead, 1, 0), new EntityVillager.PriceInfo(28, 40)),
-				new IEVillagerTrades.ItemstackForEmerald(itemEarmuffs, new EntityVillager.PriceInfo(4, 9))
-		);
-		career_machinist.addTrade(5,
-				new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemDrillhead, 1, 1), new EntityVillager.PriceInfo(32, 48)),
-				new IEVillagerTrades.ItemstackForEmerald(ItemEngineersBlueprint.getTypedBlueprint("electrode"), new EntityVillager.PriceInfo(12, 24))
-		);
+			VillagerRegistry.VillagerCareer career_machinist = new VillagerRegistry.VillagerCareer(villagerProfession_engineer, ImmersiveEngineering.MODID + ".machinist");
+			career_machinist.addTrade(1,
+					new IEVillagerTrades.EmeraldForItemstack(new ItemStack(itemMaterial, 1, 6), new EntityVillager.PriceInfo(8, 16)),
+					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemTool, 1, 0), new EntityVillager.PriceInfo(4, 7))
+			);
+			career_machinist.addTrade(2,
+					new IEVillagerTrades.EmeraldForItemstack(new ItemStack(itemMetal, 1, 0), new EntityVillager.PriceInfo(4, 6)),
+					new IEVillagerTrades.EmeraldForItemstack(new ItemStack(itemMetal, 1, 1), new EntityVillager.PriceInfo(4, 6)),
+					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemMaterial, 1, 9), new EntityVillager.PriceInfo(1, 3))
+			);
+			career_machinist.addTrade(3,
+					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemToolbox, 1, 0), new EntityVillager.PriceInfo(6, 8)),
+					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemMaterial, 1, 10), new EntityVillager.PriceInfo(1, 3)),
+					new IEVillagerTrades.ItemstackForEmerald(ItemEngineersBlueprint.getTypedBlueprint("specialBullet"), new EntityVillager.PriceInfo(5, 9))
+			);
+			career_machinist.addTrade(4,
+					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemDrillhead, 1, 0), new EntityVillager.PriceInfo(28, 40)),
+					new IEVillagerTrades.ItemstackForEmerald(itemEarmuffs, new EntityVillager.PriceInfo(4, 9))
+			);
+			career_machinist.addTrade(5,
+					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemDrillhead, 1, 1), new EntityVillager.PriceInfo(32, 48)),
+					new IEVillagerTrades.ItemstackForEmerald(ItemEngineersBlueprint.getTypedBlueprint("electrode"), new EntityVillager.PriceInfo(12, 24))
+			);
 
-		VillagerRegistry.VillagerCareer career_electrician = new VillagerRegistry.VillagerCareer(villagerProfession_engineer, ImmersiveEngineering.MODID+".electrician");
-		career_electrician.addTrade(1,
-				new IEVillagerTrades.EmeraldForItemstack(new ItemStack(itemMaterial,1,20), new EntityVillager.PriceInfo(8, 16)),
-				new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemTool, 1, 1), new EntityVillager.PriceInfo(4, 7)),
-				new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemWireCoil, 1, 0), new EntityVillager.PriceInfo(-4, -2))
-		);
-		career_electrician.addTrade(2,
-				new IEVillagerTrades.EmeraldForItemstack(new ItemStack(itemMaterial,1,21), new EntityVillager.PriceInfo(6, 12)),
-				new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemTool, 1, 2), new EntityVillager.PriceInfo(4, 7)),
-				new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemWireCoil, 1, 1), new EntityVillager.PriceInfo(-4, -1))
-		);
-		career_electrician.addTrade(3,
-				new IEVillagerTrades.EmeraldForItemstack(new ItemStack(itemMaterial,1,22), new EntityVillager.PriceInfo(4, 8)),
-				new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemWireCoil, 1, 1), new EntityVillager.PriceInfo(-2, -1)),
-				new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemToolUpgrades, 1, 6), new EntityVillager.PriceInfo(8, 12))
-		);
-		career_electrician.addTrade(4,
-				new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemToolUpgrades, 1, 9), new EntityVillager.PriceInfo(8, 12)),
-				new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemFluorescentTube), new EntityVillager.PriceInfo(8, 12)),
-				new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemsFaradaySuit[0]), new EntityVillager.PriceInfo(5, 7)),
-				new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemsFaradaySuit[1]), new EntityVillager.PriceInfo(9, 11)),
-				new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemsFaradaySuit[2]), new EntityVillager.PriceInfo(5, 7)),
-				new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemsFaradaySuit[3]), new EntityVillager.PriceInfo(11, 15))
-		);
-
+			VillagerRegistry.VillagerCareer career_electrician = new VillagerRegistry.VillagerCareer(villagerProfession_engineer, ImmersiveEngineering.MODID + ".electrician");
+			career_electrician.addTrade(1,
+					new IEVillagerTrades.EmeraldForItemstack(new ItemStack(itemMaterial, 1, 20), new EntityVillager.PriceInfo(8, 16)),
+					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemTool, 1, 1), new EntityVillager.PriceInfo(4, 7)),
+					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemWireCoil, 1, 0), new EntityVillager.PriceInfo(-4, -2))
+			);
+			career_electrician.addTrade(2,
+					new IEVillagerTrades.EmeraldForItemstack(new ItemStack(itemMaterial, 1, 21), new EntityVillager.PriceInfo(6, 12)),
+					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemTool, 1, 2), new EntityVillager.PriceInfo(4, 7)),
+					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemWireCoil, 1, 1), new EntityVillager.PriceInfo(-4, -1))
+			);
+			career_electrician.addTrade(3,
+					new IEVillagerTrades.EmeraldForItemstack(new ItemStack(itemMaterial, 1, 22), new EntityVillager.PriceInfo(4, 8)),
+					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemWireCoil, 1, 1), new EntityVillager.PriceInfo(-2, -1)),
+					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemToolUpgrades, 1, 6), new EntityVillager.PriceInfo(8, 12))
+			);
+			career_electrician.addTrade(4,
+					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemToolUpgrades, 1, 9), new EntityVillager.PriceInfo(8, 12)),
+					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemFluorescentTube), new EntityVillager.PriceInfo(8, 12)),
+					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemsFaradaySuit[0]), new EntityVillager.PriceInfo(5, 7)),
+					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemsFaradaySuit[1]), new EntityVillager.PriceInfo(9, 11)),
+					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemsFaradaySuit[2]), new EntityVillager.PriceInfo(5, 7)),
+					new IEVillagerTrades.ItemstackForEmerald(new ItemStack(itemsFaradaySuit[3]), new EntityVillager.PriceInfo(11, 15))
+			);
+		}
 
 		/**LOOT*/
-		LootTableList.register(VillageEngineersHouse.woodenCrateLoot);
+		if(IEConfig.villagerHouse)
+			LootTableList.register(VillageEngineersHouse.woodenCrateLoot);
 		for(ResourceLocation rl : EventHandler.lootInjections)
 			LootTableList.register(rl);
 
@@ -909,11 +887,10 @@ public class IEContent
 		GameRegistry.registerTileEntity(tile, ImmersiveEngineering.MODID+":"+ s);
 	}
 
-	public static void addConfiguredWorldgen(IBlockState state, String config)
+	public static void addConfiguredWorldgen(IBlockState state, String name, int[] config)
 	{
-		int[] values = Config.getIntArray("ore_"+config);
-		if(values!=null && values.length>=5 && values[0]>0)
-			IEWorldGen.addOreGen(config, state, values[0],values[1],values[2], values[3],values[4]);
+		if(config!=null && config.length>=5 && config[0]>0)
+			IEWorldGen.addOreGen(name, state, config[0],config[1],config[2], config[3],config[4]);
 	}
 
 	public static void addBanner(String name, String id, Object item, int... offset)

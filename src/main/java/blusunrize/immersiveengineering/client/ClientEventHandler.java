@@ -10,8 +10,7 @@ import blusunrize.immersiveengineering.api.tool.IDrillHead;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler.IZoomTool;
 import blusunrize.immersiveengineering.client.gui.GuiBlastFurnace;
-import blusunrize.immersiveengineering.client.models.IESmartObjModel;
-import blusunrize.immersiveengineering.common.Config;
+import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedSelectionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
@@ -85,8 +84,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 		for(int i=0; i<ClientUtils.destroyBlockIcons.length; i++)
 			ClientUtils.destroyBlockIcons[i] = texturemap.getAtlasSprite("minecraft:blocks/destroy_stage_" + i);
 
-		IESmartObjModel.cachedBakedItemModels.clear();
-		IESmartObjModel.modelCache.clear();
+		ImmersiveEngineering.proxy.clearRenderCaches();
 	}
 
 	public static Set<Connection> skyhookGrabableConnections = new HashSet();
@@ -182,7 +180,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 				earmuffs = ItemNBTHelper.getItemStack(earmuffs, "IE:Earmuffs");
 			if(earmuffs!=null && IEContent.itemEarmuffs.equals(earmuffs.getItem()) && !ItemNBTHelper.getBoolean(earmuffs,"IE:Earmuffs:Cat_"+event.getSound().getCategory().getName()))
 			{
-				for(String blacklist : Config.getStringArray("EarDefenders_SoundBlacklist"))
+				for(String blacklist : IEConfig.Tools.earDefenders_SoundBlacklist)
 					if(blacklist!=null && blacklist.equalsIgnoreCase(event.getSound().getSoundLocation().toString()))
 						return;
 				if(event.getSound() instanceof ITickableSound)
@@ -472,7 +470,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 							if(!drill && player.isHandActive())
 							{
 								int use = player.getItemInUseMaxCount();
-								amount -= use * Config.getInt("chemthrower_consumption");
+								amount -= use * IEConfig.Tools.chemthrower_consumption;
 							}
 							float cap = (float) capacity;
 							float angle = 83 - (166 * amount / cap);
@@ -538,7 +536,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 						TileEntity tileEntity = player.worldObj.getTileEntity(mop.getBlockPos());
 						if(OreDictionary.itemMatches(new ItemStack(IEContent.itemTool,1,2), equipped, true))
 						{
-							int col = Config.getBoolean("nixietubeFont")?Lib.colour_nixieTubeText:0xffffff;
+							int col = IEConfig.nixietubeFont?Lib.colour_nixieTubeText:0xffffff;
 							String[] text = null;
 							if(tileEntity instanceof IFluxReceiver)
 							{
@@ -592,7 +590,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 						if(text!=null && text.length>0)
 						{
 							FontRenderer font = useNixie?ClientProxy.nixieFontOptional:ClientUtils.font();
-							int col = (useNixie&&Config.getBoolean("nixietubeFont"))?Lib.colour_nixieTubeText:0xffffff;
+							int col = (useNixie&& IEConfig.nixietubeFont)?Lib.colour_nixieTubeText:0xffffff;
 							int i = 0;
 							for(String s : text)
 								if(s!=null)

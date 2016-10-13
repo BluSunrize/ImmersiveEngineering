@@ -1,7 +1,7 @@
 package blusunrize.immersiveengineering.common.entities;
 
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
-import blusunrize.immersiveengineering.common.Config;
+import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
@@ -38,7 +38,7 @@ public class EntityWolfpackShot extends EntityRevolvershotHoming
 		{
 			if(mop.entityHit.hurtResistantTime>0)
 				mop.entityHit.hurtResistantTime=0;
-			mop.entityHit.attackEntityFrom(IEDamageSources.causeWolfpackDamage(this, shootingEntity), (float)Config.getDouble("BulletDamage-WolfpackPart"));
+			mop.entityHit.attackEntityFrom(IEDamageSources.causeWolfpackDamage(this, shootingEntity), IEConfig.Tools.bulletDamage_WolfpackPart);
 		}
 		this.setDead();
 	}

@@ -1,9 +1,9 @@
 package blusunrize.immersiveengineering.common.items;
 
+import blusunrize.immersiveengineering.api.tool.IInternalStorageItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import blusunrize.immersiveengineering.api.tool.IInternalStorageItem;
 
 public abstract class ItemInternalStorage extends ItemIEBase implements IInternalStorageItem 
 {

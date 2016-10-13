@@ -4,7 +4,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.IMultiblockRecipe;
 import blusunrize.immersiveengineering.api.energy.DieselHandler;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
-import blusunrize.immersiveengineering.common.Config;
+import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedCollisionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedSelectionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGuiTile;
@@ -113,7 +113,7 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockMetal<TileEnt
 				if(burnTime > 0)
 				{
 					int fluidConsumed = 1000 / burnTime;
-					int output = Config.getInt("dieselGen_output");
+					int output = IEConfig.Machines.dieselGen_output;
 					int connected = 0;
 					Object[] receivers = new Object[3];
 					for(int i = 0; i < 3; i++)

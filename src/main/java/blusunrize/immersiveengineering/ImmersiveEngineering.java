@@ -6,6 +6,7 @@ import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.common.*;
+import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFluidPipe;
 import blusunrize.immersiveengineering.common.crafting.ArcRecyclingThreadHandler;
 import blusunrize.immersiveengineering.common.items.ItemRevolver;
@@ -70,14 +71,14 @@ public class ImmersiveEngineering
 		IEContent.preInit();
 		proxy.preInit();
 
-		WireType.wireLossRatio=Config.getDoubleArray("wireLossRatio");
-		WireType.wireTransferRate=Config.getIntArray("wireTransferRate");
-		WireType.wireColouration=Config.getIntArray("wireColouration");
-		WireType.wireLength=Config.getIntArray("wireLength");
+		WireType.wireLossRatio = IEConfig.wireLossRatio;
+		WireType.wireTransferRate = IEConfig.wireTransferRate;
+		WireType.wireColouration = IEConfig.wireColouration;
+		WireType.wireLength = IEConfig.wireLength;
 
-		for(int b : Config.getIntArray("oreDimBlacklist"))
+		for(int b : IEConfig.Ores.oreDimBlacklist)
 			IEWorldGen.oreDimBlacklist.add(b);
-		IEApi.modPreference = Arrays.asList(Config.getStringArray("preferredOres"));
+		IEApi.modPreference = Arrays.asList(IEConfig.preferredOres);
 		IEApi.prefixToIngotMap.put("ingot", new Integer[]{1,1});
 		IEApi.prefixToIngotMap.put("nugget", new Integer[]{1,9});
 		IEApi.prefixToIngotMap.put("block", new Integer[]{9,1});
@@ -163,7 +164,7 @@ public class ImmersiveEngineering
 	{
 		proxy.serverStarting();
 		event.registerServerCommand(new CommandHandler(false));
-		if(Config.getBoolean("arcfurnace_recycle"))
+		if(IEConfig.Machines.arcfurnace_recycle)
 			ArcRecyclingThreadHandler.doRecipeProfiling();
 	}
 	@Mod.EventHandler

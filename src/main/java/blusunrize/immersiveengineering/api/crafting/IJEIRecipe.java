@@ -1,9 +1,9 @@
 package blusunrize.immersiveengineering.api.crafting;
 
-import java.util.List;
-
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
+
+import java.util.List;
 
 public interface IJEIRecipe
 {

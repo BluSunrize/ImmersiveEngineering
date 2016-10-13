@@ -8,6 +8,7 @@ import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.BlockIEMultiblock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IActiveState;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGuiTile;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IProcessTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IUsesBooleanProperty;
 import blusunrize.immersiveengineering.common.blocks.TileEntityMultiblockPart;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -26,7 +27,7 @@ import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.oredict.OreDictionary;
 
-public class TileEntityCokeOven extends TileEntityMultiblockPart<TileEntityCokeOven> implements IIEInventory, IActiveState, IGuiTile
+public class TileEntityCokeOven extends TileEntityMultiblockPart<TileEntityCokeOven> implements IIEInventory, IActiveState, IGuiTile, IProcessTile
 {
 	public FluidTank tank = new FluidTank(12000);
 	ItemStack[] inventory = new ItemStack[4];
@@ -173,6 +174,23 @@ public class TileEntityCokeOven extends TileEntityMultiblockPart<TileEntityCokeO
 			if(tank.getFluidAmount()+recipe.creosoteOutput<=tank.getCapacity())
 				return recipe;
 		return null;
+	}
+
+	@Override
+	public int[] getCurrentProcessesStep()
+	{
+		TileEntityCokeOven master = master();
+		if(master!=this && master!=null)
+			return master.getCurrentProcessesStep();
+		return new int[]{processMax-process};
+	}
+	@Override
+	public int[] getCurrentProcessesMax()
+	{
+		TileEntityCokeOven master = master();
+		if(master!=this && master!=null)
+			return master.getCurrentProcessesMax();
+		return new int[]{processMax};
 	}
 
 	@Override

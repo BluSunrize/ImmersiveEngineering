@@ -10,6 +10,8 @@ import blusunrize.immersiveengineering.api.crafting.CrusherRecipe;
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
+import blusunrize.immersiveengineering.client.IEManualInstance;
+import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.cloth.BlockTypes_ClothDevice;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
 import blusunrize.immersiveengineering.common.blocks.stone.BlockTypes_StoneDecoration;
@@ -421,7 +423,7 @@ public class IERecipes
 		BlueprintCraftingRecipe.addRecipe("electrode", new ItemStack(IEContent.itemGraphiteElectrode), "ingotHOPGraphite","ingotHOPGraphite","ingotHOPGraphite","ingotHOPGraphite");
 		BlueprintCraftingRecipe.addVillagerTrade("electrode", new ItemStack(Items.EMERALD,1,18));
 
-		if(Config.getBoolean("arcfurnace_electrodeCrafting"))
+		if(IEConfig.Machines.arcfurnace_electrodeCrafting)
 			addOredictRecipe(ItemEngineersBlueprint.getTypedBlueprint("electrode"), "GGG","GDG","GPG", 'G',"ingotHOPGraphite", 'D',"dyeBlue",'P',Items.PAPER);
 	}
 
@@ -511,7 +513,7 @@ public class IERecipes
 	}
 	public static void postInitOreDictRecipes()
 	{
-		boolean allowHammerCrushing = !Config.getBoolean("disableHammerCrushing");
+		boolean allowHammerCrushing = !IEConfig.Tools.disableHammerCrushing;
 		ArrayListMultimap<String, ItemStack> registeredMoldBases = ArrayListMultimap.create();
 		for(String name : OreDictionary.getOreNames())
 			if(ApiUtils.isExistingOreName(name))
@@ -620,7 +622,7 @@ public class IERecipes
 			GameRegistry.addRecipe(new RecipeShapedIngredient(new ItemStack(IEContent.itemMold, 1, 2), " P ", "PCP", " P ", 'P', "plateSteel", 'C', registeredMoldBases.get("rod")));
 		if(registeredMoldBases.containsKey("wire"))
 			GameRegistry.addRecipe(new RecipeShapedIngredient(new ItemStack(IEContent.itemMold, 1, 4), " P ", "PCP", " P ", 'P', "plateSteel", 'C', registeredMoldBases.get("wire")));
-		Config.setBoolean("crushingOreRecipe", !hammerCrushingList.isEmpty());
+		IEManualInstance.config_bool.put("crushingOreRecipe", !hammerCrushingList.isEmpty());
 	}
 
 	public static CrusherRecipe addCrusherRecipe(ItemStack output, Object input, int energy, Object... secondary)

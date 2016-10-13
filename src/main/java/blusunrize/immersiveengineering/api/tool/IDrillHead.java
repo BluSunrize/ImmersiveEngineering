@@ -1,7 +1,6 @@
 package blusunrize.immersiveengineering.api.tool;
 
 import com.google.common.collect.ImmutableList;
-
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;

@@ -1,6 +1,6 @@
 package blusunrize.immersiveengineering.common.util.compat.opencomputers;
 
-import blusunrize.immersiveengineering.common.Config;
+import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTeslaCoil;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
@@ -68,7 +68,7 @@ public class TeslaCoilDriver extends DriverSidedTileEntity
 		public Object[] isActive(Context context, Arguments args)
 		{
 			TileEntityTeslaCoil te = getTileEntity();
-			int energyDrain = Config.getInt("teslacoil_consumption");
+			int energyDrain = IEConfig.Machines.teslacoil_consumption;
 			if(te.lowPower)
 				energyDrain /= 2;
 			return new Object[]{te.canRun(energyDrain)};
@@ -85,7 +85,7 @@ public class TeslaCoilDriver extends DriverSidedTileEntity
 		public Object[] setPowerMode(Context context, Arguments args)
 		{
 			TileEntityTeslaCoil te = getTileEntity();
-			int energyDrain = Config.getInt("teslacoil_consumption");
+			int energyDrain = IEConfig.Machines.teslacoil_consumption;
 			if(te.lowPower)
 				energyDrain /= 2;
 			if(te.canRun(energyDrain))

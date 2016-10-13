@@ -1,8 +1,6 @@
 package blusunrize.immersiveengineering.common.blocks;
 
-import java.util.ArrayList;
-
-import blusunrize.immersiveengineering.common.Config;
+import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.EventHandler;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ILightValue;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISpawnInterdiction;
@@ -21,6 +19,8 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+
+import java.util.ArrayList;
 
 public class BlockFakeLight extends BlockIETileProvider<BlockTypes_FakeLight>
 {
@@ -91,7 +91,7 @@ public class BlockFakeLight extends BlockIETileProvider<BlockTypes_FakeLight>
 		public int[] floodlightCoords = {-1,-1,-1};
 		public TileEntityFakeLight()
 		{
-			if(Config.getBoolean("floodlight_spawnPrevent"))
+			if(IEConfig.Machines.floodlight_spawnPrevent)
 				synchronized (EventHandler.interdictionTiles) {
 					if (!EventHandler.interdictionTiles.contains(this))
 						EventHandler.interdictionTiles.add(this);

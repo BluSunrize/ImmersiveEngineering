@@ -1,7 +1,7 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.common.Config;
+import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDynamicTexture;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasObjProperty;
 import blusunrize.immersiveengineering.common.blocks.TileEntityMultiblockPart;
@@ -51,7 +51,7 @@ public class TileEntityBucketWheel extends TileEntityMultiblockPart<TileEntityBu
 	{
 		super.readCustomNBT(nbt, descPacket);
 		float nbtRot = nbt.getFloat("rotation");
-		rotation = (Math.abs(nbtRot-rotation)>5*(float)Config.getDouble("excavator_speed"))?nbtRot:rotation; // avoid stuttering due to packet delays
+		rotation = (Math.abs(nbtRot-rotation)>5*IEConfig.Machines.excavator_speed)?nbtRot:rotation; // avoid stuttering due to packet delays
 		digStacks = Utils.readInventory(nbt.getTagList("digStacks", 10), 8);
 		active = nbt.getBoolean("active");
 		particleStack = nbt.hasKey("particleStack")?ItemStack.loadItemStackFromNBT(nbt.getCompoundTag("particleStack")):null;
@@ -91,7 +91,7 @@ public class TileEntityBucketWheel extends TileEntityMultiblockPart<TileEntityBu
 
 		if(active)
 		{
-			rotation+=(float)Config.getDouble("excavator_speed");
+			rotation+=IEConfig.Machines.excavator_speed;
 			rotation%=360;
 		}
 
@@ -194,7 +194,7 @@ public class TileEntityBucketWheel extends TileEntityMultiblockPart<TileEntityBu
 			if (message.hasKey("rotation"))
 			{
 				int packetRotation = message.getInteger("rotation");
-				if (Math.abs(packetRotation-rotation)>5*(float)Config.getDouble("excavator_speed"))
+				if (Math.abs(packetRotation-rotation)>5*IEConfig.Machines.excavator_speed)
 					rotation = packetRotation;
 			}
 		}
@@ -225,7 +225,7 @@ public class TileEntityBucketWheel extends TileEntityMultiblockPart<TileEntityBu
 	@SideOnly(Side.CLIENT)
 	public double getMaxRenderDistanceSquared()
 	{
-		return super.getMaxRenderDistanceSquared()*Config.getDouble("increasedTileRenderdistance");
+		return super.getMaxRenderDistanceSquared()* IEConfig.increasedTileRenderdistance;
 	}
 	@Override
 	public float[] getBlockBounds()

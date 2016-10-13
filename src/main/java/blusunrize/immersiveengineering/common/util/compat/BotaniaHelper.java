@@ -5,7 +5,7 @@ import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.common.Config;
+import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.items.ItemBullet.HomingBullet;
 import blusunrize.immersiveengineering.common.items.ItemRevolver;
@@ -38,7 +38,7 @@ public class BotaniaHelper extends IECompatModule
 	@Override
 	public void preInit()
 	{
-		BulletHandler.registerBullet("terrasteel", new HomingBullet((float)Config.getDouble("BulletDamage-Homing"), new ResourceLocation("immersiveengineering:items/bullet_terrasteel")));
+		BulletHandler.registerBullet("terrasteel", new HomingBullet(IEConfig.Tools.bulletDamage_Homing, new ResourceLocation("immersiveengineering:items/bullet_terrasteel")));
 		BulletHandler.homingCartridges.add("terrasteel");
 	}
 

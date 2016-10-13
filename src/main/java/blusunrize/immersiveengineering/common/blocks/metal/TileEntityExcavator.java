@@ -3,7 +3,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.IMultiblockRecipe;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
-import blusunrize.immersiveengineering.common.Config;
+import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedCollisionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedSelectionBounds;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockExcavator;
@@ -101,7 +101,7 @@ public class TileEntityExcavator extends TileEntityMultiblockMetal<TileEntityExc
 				{
 					ExcavatorHandler.MineralMix mineral = ExcavatorHandler.getRandomMineral(worldObj, wheelPos.getX()>>4, wheelPos.getZ()>>4);
 
-					int consumed = Config.getInt("excavator_consumption");
+					int consumed = IEConfig.Machines.excavator_consumption;
 					int extracted = energyStorage.extractEnergy(consumed, true);
 					if(extracted>=consumed)
 					{
@@ -131,7 +131,7 @@ public class TileEntityExcavator extends TileEntityMultiblockMetal<TileEntityExc
 									ItemStack ore = mineral.getRandomOre(worldObj.rand);
 									float configChance = worldObj.rand.nextFloat();
 									float failChance = worldObj.rand.nextFloat();
-									if(ore!=null && configChance>Config.getDouble("excavator_chance") && failChance>mineral.failChance)
+									if(ore!=null && configChance> IEConfig.Machines.excavator_chance && failChance>mineral.failChance)
 									{
 										wheel.digStacks[targetDown] = ore;
 										wheel.markDirty();

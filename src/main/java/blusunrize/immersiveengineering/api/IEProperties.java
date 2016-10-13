@@ -1,9 +1,9 @@
 package blusunrize.immersiveengineering.api;
 
+import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.properties.PropertyDirection;
-import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.properties.PropertyHelper;
 import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.tileentity.TileEntity;
@@ -24,13 +24,21 @@ public class IEProperties
 	public static final PropertyBoolInverted DYNAMICRENDER = PropertyBoolInverted.create("_1dynamicrender");//Name starts with '_1' to ensure priority over anything but the multiblockslave property
 	public static final PropertySet CONNECTIONS = new PropertySet("conns");
 	
-	public static final PropertyEnum[] SIDECONFIG = {
-			PropertyEnum.create("sideconfig_down", IEEnums.SideConfig.class),
-			PropertyEnum.create("sideconfig_up", IEEnums.SideConfig.class),
-			PropertyEnum.create("sideconfig_north", IEEnums.SideConfig.class),
-			PropertyEnum.create("sideconfig_south", IEEnums.SideConfig.class),
-			PropertyEnum.create("sideconfig_west", IEEnums.SideConfig.class),
-			PropertyEnum.create("sideconfig_east", IEEnums.SideConfig.class)
+//	public static final PropertyEnum[] SIDECONFIG = {
+//			PropertyEnum.create("sideconfig_down", IEEnums.SideConfig.class),
+//			PropertyEnum.create("sideconfig_up", IEEnums.SideConfig.class),
+//			PropertyEnum.create("sideconfig_north", IEEnums.SideConfig.class),
+//			PropertyEnum.create("sideconfig_south", IEEnums.SideConfig.class),
+//			PropertyEnum.create("sideconfig_west", IEEnums.SideConfig.class),
+//			PropertyEnum.create("sideconfig_east", IEEnums.SideConfig.class)
+//	};
+	public static final ProperySideConfig[] SIDECONFIG = {
+			new ProperySideConfig("sideconfig_down"),
+			new ProperySideConfig("sideconfig_up"),
+			new ProperySideConfig("sideconfig_north"),
+			new ProperySideConfig("sideconfig_south"),
+			new ProperySideConfig("sideconfig_west"),
+			new ProperySideConfig("sideconfig_east")
 	};
 	public static final PropertyBoolInverted[] SIDECONNECTION = {
 			PropertyBoolInverted.create("sideconnection_down"),
@@ -48,6 +56,35 @@ public class IEProperties
 			PropertyBoolInverted.create("boolean2")
 	};
 	public static final PropertyInteger INT_4 = PropertyInteger.create("int_4", 0,3);
+
+	public static class ProperySideConfig implements IUnlistedProperty<SideConfig>
+	{
+		final String name;
+		public ProperySideConfig(String name)
+		{
+			this.name = name;
+		}
+		@Override
+		public String getName()
+		{
+			return name;
+		}
+		@Override
+		public boolean isValid(SideConfig value)
+		{
+			return true;
+		}
+		@Override
+		public Class<SideConfig> getType()
+		{
+			return IEEnums.SideConfig.class;
+		}
+		@Override
+		public String valueToString(SideConfig value)
+		{
+			return value.toString();
+		}
+	}
 
 	public static final IUnlistedProperty<HashMap> OBJ_TEXTURE_REMAP = new IUnlistedProperty<HashMap>()
 	{

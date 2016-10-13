@@ -374,7 +374,7 @@ public class TileEntityRefinery extends TileEntityMultiblockMetal<TileEntityRefi
 		{
 			if(pos == 2 && (side == null || side == facing))
 				return new FluidTank[]{master.tanks[2]};
-			if((pos == 5 && (side == null || side == facing.rotateY())) || (pos == 9 && (side == null || side == facing.rotateYCCW())))
+			if((pos == 5 || pos == 9) && (side == null || side.getAxis() == facing.rotateYCCW().getAxis()))
 				return new FluidTank[]{master.tanks[0],master.tanks[1]};
 		}
 		return tanks;

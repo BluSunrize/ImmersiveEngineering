@@ -2,7 +2,7 @@ package blusunrize.immersiveengineering.common.util.compat;
 
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
-import blusunrize.immersiveengineering.common.Config;
+import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.items.ItemBullet.HomingBullet;
 import net.minecraft.init.Items;
@@ -15,7 +15,7 @@ public class BloodMagicHelper extends IECompatModule
 	@Override
 	public void preInit()
 	{
-		BulletHandler.registerBullet("crystalwill", new HomingBullet((float)Config.getDouble("BulletDamage-Homing"), new ResourceLocation("immersiveengineering:items/bullet_crystalwill")));
+		BulletHandler.registerBullet("crystalwill", new HomingBullet(IEConfig.Tools.bulletDamage_Homing, new ResourceLocation("immersiveengineering:items/bullet_crystalwill")));
 		BulletHandler.homingCartridges.add("crystalwill");
 	}
 

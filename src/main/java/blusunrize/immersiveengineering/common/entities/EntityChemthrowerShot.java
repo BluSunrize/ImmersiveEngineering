@@ -11,9 +11,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.world.World;
@@ -23,7 +23,7 @@ import net.minecraftforge.fluids.FluidRegistry;
 public class EntityChemthrowerShot extends EntityIEProjectile
 {
 	private Fluid fluid;
-	private static final DataParameter<String> dataMarker_fluid = EntityDataManager.<String>createKey(EntityChemthrowerShot.class, DataSerializers.STRING);
+	private static final DataParameter<String> dataMarker_fluid = EntityDataManager.createKey(EntityChemthrowerShot.class, DataSerializers.STRING);
 
 	public EntityChemthrowerShot(World world)
 	{

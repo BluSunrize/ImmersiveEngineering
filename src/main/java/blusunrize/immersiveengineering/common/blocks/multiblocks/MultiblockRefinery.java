@@ -71,7 +71,7 @@ public class MultiblockRefinery implements IMultiblock
 	{
 		if(iterator>=5&&iterator<10)
 		{
-			ImmersiveEngineering.proxy.drawSpecificFluidPipe("220000");
+			ImmersiveEngineering.proxy.drawSpecificFluidPipe("000022");
 			return true;
 		}
 		return false;

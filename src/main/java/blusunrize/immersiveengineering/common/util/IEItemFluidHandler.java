@@ -1,6 +1,5 @@
 package blusunrize.immersiveengineering.common.util;
 
-import blusunrize.immersiveengineering.common.items.IEItemInterfaces;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IAdvancedFluidItem;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;

@@ -1,8 +1,8 @@
 package blusunrize.immersiveengineering.api.energy.immersiveflux;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.util.EnumFacing;
+
+import javax.annotation.Nullable;
 
 /**
  * An interface to be implemented by TileEntities that can receive IF.

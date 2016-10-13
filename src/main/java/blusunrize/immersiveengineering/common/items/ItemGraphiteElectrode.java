@@ -1,7 +1,8 @@
 package blusunrize.immersiveengineering.common.items;
 
-import java.util.List;
-
+import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.common.Config.IEConfig;
+import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
@@ -9,9 +10,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
-import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.common.Config;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+
+import java.util.List;
 
 public class ItemGraphiteElectrode extends ItemIEBase
 {
@@ -19,7 +19,7 @@ public class ItemGraphiteElectrode extends ItemIEBase
 	public ItemGraphiteElectrode()
 	{
 		super("graphiteElectrode", 1);
-		electrodeMaxDamage = Config.getInt("arcfurnace_electrodeDamage");
+		electrodeMaxDamage = IEConfig.Machines.arcfurnace_electrodeDamage;
 	}
 	@Override
 	public void getSubItems(Item item, CreativeTabs tab, List list)

@@ -3,160 +3,42 @@
 	"defaults":
 	{
 		"transform": "forge:default-block",
-		"model": "immersiveengineering:ieSixSides",
-		"textures": {
-			"particle": "#top",
-			"bottom": "#bottomNone",
-			"top": "#topNone",
-			"north": "#sideNone",
-			"south": "#sideNone",
-			"west": "#sideNone",
-			"east": "#sideNone",
-			
-			"bottomIn": "immersiveengineering:blocks/metalDevice0_capacitorCreative_bottom_in",
-			"bottomOut": "immersiveengineering:blocks/metalDevice0_capacitorCreative_bottom_out",
-			"bottomNone": "immersiveengineering:blocks/metalDevice0_capacitorCreative_bottom_none",
-			"topIn": "immersiveengineering:blocks/metalDevice0_capacitorCreative_top_in",
-			"topOut": "immersiveengineering:blocks/metalDevice0_capacitorCreative_top_out",
-			"topNone": "immersiveengineering:blocks/metalDevice0_capacitorCreative_top_none",
-			"sideIn": "immersiveengineering:blocks/metalDevice0_capacitorCreative_side_in",
-			"sideOut": "immersiveengineering:blocks/metalDevice0_capacitorCreative_side_out",
-			"sideNone": "immersiveengineering:blocks/metalDevice0_capacitorCreative_side_none"
-		}
+		"model": "immersiveengineering:smartmodel/confSides_hud_metalDevice0_capacitorCreative"
 	},
 	"variants":
 	{
 		"inventory,type=capacitor_lv": [{"textures": {
-			"bottom": "immersiveengineering:blocks/metalDevice0_capacitorLV_bottom_none",
-			"top": "immersiveengineering:blocks/metalDevice0_capacitorLV_top_none",
-			"north": "immersiveengineering:blocks/metalDevice0_capacitorLV_side_none",
-			"south": "immersiveengineering:blocks/metalDevice0_capacitorLV_side_none",
-			"west": "immersiveengineering:blocks/metalDevice0_capacitorLV_side_none",
-			"east": "immersiveengineering:blocks/metalDevice0_capacitorLV_side_none"}
+			"name": "immersiveengineering:blocks/metalDevice0_capacitorLV"}
 		}],
 		"inventory,type=capacitor_mv": [{"textures": {
-			"bottom": "immersiveengineering:blocks/metalDevice0_capacitorMV_bottom_none",
-			"top": "immersiveengineering:blocks/metalDevice0_capacitorMV_top_none",
-			"north": "immersiveengineering:blocks/metalDevice0_capacitorMV_side_none",
-			"south": "immersiveengineering:blocks/metalDevice0_capacitorMV_side_none",
-			"west": "immersiveengineering:blocks/metalDevice0_capacitorMV_side_none",
-			"east": "immersiveengineering:blocks/metalDevice0_capacitorMV_side_none"}
+			"name": "immersiveengineering:blocks/metalDevice0_capacitorMV"}
 		}],
 		"inventory,type=capacitor_hv": [{"textures": {
-			"bottom": "immersiveengineering:blocks/metalDevice0_capacitorHV_bottom_none",
-			"top": "immersiveengineering:blocks/metalDevice0_capacitorHV_top_none",
-			"north": "immersiveengineering:blocks/metalDevice0_capacitorHV_side_none",
-			"south": "immersiveengineering:blocks/metalDevice0_capacitorHV_side_none",
-			"west": "immersiveengineering:blocks/metalDevice0_capacitorHV_side_none",
-			"east": "immersiveengineering:blocks/metalDevice0_capacitorHV_side_none"}
+			"name": "immersiveengineering:blocks/metalDevice0_capacitorHV"}
 		}],
 		"inventory,type=capacitor_creative": [{"textures": {
-			"bottom": "immersiveengineering:blocks/metalDevice0_capacitorCreative_bottom_none",
-			"top": "immersiveengineering:blocks/metalDevice0_capacitorCreative_top_none",
-			"north": "immersiveengineering:blocks/metalDevice0_capacitorCreative_side_none",
-			"south": "immersiveengineering:blocks/metalDevice0_capacitorCreative_side_none",
-			"west": "immersiveengineering:blocks/metalDevice0_capacitorCreative_side_none",
-			"east": "immersiveengineering:blocks/metalDevice0_capacitorCreative_side_none"}
+			"name": "immersiveengineering:blocks/metalDevice0_capacitorCreative"}
 		}],
-		"inventory,type=barrel": [{ "textures": {
-				"bottom": "immersiveengineering:blocks/metalDevice0_barrel_top_none",
-				"top": "immersiveengineering:blocks/metalDevice0_barrel_top_none",
-				"north": "immersiveengineering:blocks/metalDevice0_barrel",
-				"south": "immersiveengineering:blocks/metalDevice0_barrel",
-				"west": "immersiveengineering:blocks/metalDevice0_barrel",
-				"east": "immersiveengineering:blocks/metalDevice0_barrel"}
+		"inventory,type=barrel": [{
+			"model": "immersiveengineering:smartmodel/confSides_v_metalDevice0_barrel"
 		}],
 		"type":
 		{
 			"capacitor_lv": {"textures": {
-				"bottomIn": "immersiveengineering:blocks/metalDevice0_capacitorLV_bottom_in",
-				"bottomOut": "immersiveengineering:blocks/metalDevice0_capacitorLV_bottom_out",
-				"bottomNone": "immersiveengineering:blocks/metalDevice0_capacitorLV_bottom_none",
-				"topIn": "immersiveengineering:blocks/metalDevice0_capacitorLV_top_in",
-				"topOut": "immersiveengineering:blocks/metalDevice0_capacitorLV_top_out",
-				"topNone": "immersiveengineering:blocks/metalDevice0_capacitorLV_top_none",
-				"sideIn": "immersiveengineering:blocks/metalDevice0_capacitorLV_side_in",
-				"sideOut": "immersiveengineering:blocks/metalDevice0_capacitorLV_side_out",
-				"sideNone": "immersiveengineering:blocks/metalDevice0_capacitorLV_side_none"
+				"name": "immersiveengineering:blocks/metalDevice0_capacitorLV"
 			}},
 			"capacitor_mv": {"textures": {
-				"bottomIn": "immersiveengineering:blocks/metalDevice0_capacitorMV_bottom_in",
-				"bottomOut": "immersiveengineering:blocks/metalDevice0_capacitorMV_bottom_out",
-				"bottomNone": "immersiveengineering:blocks/metalDevice0_capacitorMV_bottom_none",
-				"topIn": "immersiveengineering:blocks/metalDevice0_capacitorMV_top_in",
-				"topOut": "immersiveengineering:blocks/metalDevice0_capacitorMV_top_out",
-				"topNone": "immersiveengineering:blocks/metalDevice0_capacitorMV_top_none",
-				"sideIn": "immersiveengineering:blocks/metalDevice0_capacitorMV_side_in",
-				"sideOut": "immersiveengineering:blocks/metalDevice0_capacitorMV_side_out",
-				"sideNone": "immersiveengineering:blocks/metalDevice0_capacitorMV_side_none"
+				"name": "immersiveengineering:blocks/metalDevice0_capacitorMV"
 			}},
 			"capacitor_hv": {"textures": {
-				"bottomIn": "immersiveengineering:blocks/metalDevice0_capacitorHV_bottom_in",
-				"bottomOut": "immersiveengineering:blocks/metalDevice0_capacitorHV_bottom_out",
-				"bottomNone": "immersiveengineering:blocks/metalDevice0_capacitorHV_bottom_none",
-				"topIn": "immersiveengineering:blocks/metalDevice0_capacitorHV_top_in",
-				"topOut": "immersiveengineering:blocks/metalDevice0_capacitorHV_top_out",
-				"topNone": "immersiveengineering:blocks/metalDevice0_capacitorHV_top_none",
-				"sideIn": "immersiveengineering:blocks/metalDevice0_capacitorHV_side_in",
-				"sideOut": "immersiveengineering:blocks/metalDevice0_capacitorHV_side_out",
-				"sideNone": "immersiveengineering:blocks/metalDevice0_capacitorHV_side_none"
+				"name": "immersiveengineering:blocks/metalDevice0_capacitorHV"
 			}},
 			"capacitor_creative": {"textures": {
-				"bottomIn": "immersiveengineering:blocks/metalDevice0_capacitorCreative_bottom_in",
-				"bottomOut": "immersiveengineering:blocks/metalDevice0_capacitorCreative_bottom_out",
-				"bottomNone": "immersiveengineering:blocks/metalDevice0_capacitorCreative_bottom_none",
-				"topIn": "immersiveengineering:blocks/metalDevice0_capacitorCreative_top_in",
-				"topOut": "immersiveengineering:blocks/metalDevice0_capacitorCreative_top_out",
-				"topNone": "immersiveengineering:blocks/metalDevice0_capacitorCreative_top_none",
-				"sideIn": "immersiveengineering:blocks/metalDevice0_capacitorCreative_side_in",
-				"sideOut": "immersiveengineering:blocks/metalDevice0_capacitorCreative_side_out",
-				"sideNone": "immersiveengineering:blocks/metalDevice0_capacitorCreative_side_none"
+				"name": "immersiveengineering:blocks/metalDevice0_capacitorCreative"
 			}},
-			"barrel": {"textures": {
-				"bottomOut": "immersiveengineering:blocks/metalDevice0_barrel_top_out",
-				"bottomNone": "immersiveengineering:blocks/metalDevice0_barrel_top_none",
-				"bottomIn": "immersiveengineering:blocks/metalDevice0_barrel_top_in",
-				"topNone": "immersiveengineering:blocks/metalDevice0_barrel_top_none",
-				"topIn": "immersiveengineering:blocks/metalDevice0_barrel_top_in",
-				"topOut": "immersiveengineering:blocks/metalDevice0_barrel_top_out",
-				"sideNone": "immersiveengineering:blocks/metalDevice0_barrel"
-			}}
-		},
-		"sideconfig_down":
-		{
-			"none":{},
-			"input":{"textures": {"bottom": "#bottomIn"}},
-			"output":{"textures": {"bottom": "#bottomOut"}}
-		},
-		"sideconfig_up":
-		{
-			"none":{},
-			"input":{"textures": {"top": "#topIn"}},
-			"output":{"textures": {"top": "#topOut"}}
-		},
-		"sideconfig_north":
-		{
-			"none":{},
-			"input":{"textures": {"north": "#sideIn"}},
-			"output":{"textures": {"north": "#sideOut"}}
-		},
-		"sideconfig_south":
-		{
-			"none":{},
-			"input":{"textures": {"south": "#sideIn"}},
-			"output":{"textures": {"south": "#sideOut"}}
-		},
-		"sideconfig_east":
-		{
-			"none":{},
-			"input":{"textures": {"east": "#sideIn"}},
-			"output":{"textures": {"east": "#sideOut"}}
-		},
-		"sideconfig_west":
-		{
-			"none":{},
-			"input":{"textures": {"west": "#sideIn"}},
-			"output":{"textures": {"west": "#sideOut"}}
+			"barrel": {
+				"model": "immersiveengineering:smartmodel/confSides_v_metalDevice0_barrel"
+			}
 		},
 		"_0multiblockslave":
 		{

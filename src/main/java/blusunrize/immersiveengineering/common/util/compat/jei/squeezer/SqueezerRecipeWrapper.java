@@ -1,11 +1,11 @@
 package blusunrize.immersiveengineering.common.util.compat.jei.squeezer;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import blusunrize.immersiveengineering.api.crafting.SqueezerRecipe;
 import blusunrize.immersiveengineering.common.util.compat.jei.MultiblockRecipeWrapper;
 import mezz.jei.api.IJeiHelpers;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SqueezerRecipeWrapper extends MultiblockRecipeWrapper
 {

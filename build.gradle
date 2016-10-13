@@ -1,5 +1,5 @@
 def mainVersion = "0.10"
-def buildNumber = "44"
+def buildNumber = "44.5"
 
 // For those who want the bleeding edge
 buildscript {
@@ -30,7 +30,7 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 minecraft {
-    version = "12.18.1.2095"
+    version = "12.18.2.2104"
     //"1.9.4-12.17.0.1976"
     runDir = "run"
 
@@ -58,6 +58,10 @@ repositories {
         name "OpenComputers"
         url "http://maven.cil.li/"
     }
+    maven { // TOP
+        name 'tterrag maven'
+        url "http://maven.tterrag.com/"
+    }
 }
 
 dependencies {
@@ -71,6 +75,7 @@ dependencies {
     deobfCompile "slimeknights.mantle:Mantle:1.10.2-1.+"
     deobfCompile "slimeknights:TConstruct:1.10.2-2.5.3.jenkins384"
     deobfCompile "li.cil.oc:OpenComputers:MC1.10.2-1.6.0.+"
+    deobfCompile "mcjty.theoneprobe:TheOneProbe:1.10-1.0.13-26"
 }
 
 jar {

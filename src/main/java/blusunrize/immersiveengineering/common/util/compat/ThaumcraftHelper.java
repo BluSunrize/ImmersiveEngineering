@@ -1,8 +1,5 @@
 package blusunrize.immersiveengineering.common.util.compat;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-
 import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler;
 import blusunrize.immersiveengineering.common.IEContent;
 import net.minecraft.block.state.IBlockState;
@@ -11,6 +8,9 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.event.FMLInterModComms;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 public class ThaumcraftHelper extends IECompatModule
 {

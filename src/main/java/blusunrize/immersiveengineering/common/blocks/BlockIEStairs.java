@@ -4,7 +4,6 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.IEContent;
 import net.minecraft.block.BlockStairs;
 import net.minecraft.block.state.IBlockState;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 
 public class BlockIEStairs extends BlockStairs
 {

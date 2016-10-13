@@ -76,7 +76,7 @@ tile.immersiveengineering.woodenDevice1.watermill.name=Water Wheel
 tile.immersiveengineering.woodenDevice1.windmill.name=Windmill
 tile.immersiveengineering.woodenDevice1.windmill_advanced.name=Improved Windmill
 tile.immersiveengineering.woodenDevice1.post.name=Wooden Post
-tile.immersiveengineering.woodenDevice1.wallmount.name=Wooden Wall Mount
+tile.immersiveengineering.woodenDevice1.wallmount.name=Wooden Wallmount
 
 tile.immersiveengineering.sheetmetal.copper.name=Copper Sheetmetal
 tile.immersiveengineering.sheetmetal.aluminum.name=Aluminium Sheetmetal
@@ -1092,7 +1092,7 @@ ie.manual.entry.bottlingMachine1=Fluid is input through the central port on the 
 
 ie.manual.entry.chargingStation.name=Charging Station
 ie.manual.entry.chargingStation.subtext=
-ie.manual.entry.chargingStation0=The Charging Station is a device that allows you to charge tools and other items. Energy can be input through the bottom or the back and items can be placed in manually or inserted automatically.<config;b;ic2Manual; The Charging Station will work for EU-powered items as well.;>
+ie.manual.entry.chargingStation0=The Charging Station is a device that allows you to charge tools and other items. Energy can be input through the bottom or the back and items can be placed in manually or inserted automatically.
 ie.manual.entry.chargingStation1=The electron tubes at the front give a feedback about the current charge of the item, but the block will also output a comparator signal for the same purposes.
 
 ie.manual.entry.highvoltage.name=High-Voltage
@@ -1257,7 +1257,6 @@ ie.manual.entry.lightningrod1=When the steel pole is struck, the huge amounts of
 ie.manual.entry.minerals.name=Mineral Deposits
 ie.manual.entry.minerals.subtext=Oresome
 ie.manual.entry.minerals0=The deposits of Ore found around your world are nothing new to you. What you have so far left out of consideration though are mineral veins, which contain a mix of different ores. Due to their wide and thin spread, the average miner can't find them, but a <link;excavator;§o§nspecial §o§nmachine§r> might be able to assist with that.
-#ie.manual.entry.minerals1=To find and determine minerals in the world, you will want to craft a Core Sample Drill. This machine, when powered, will drill into the chunk and determine which mineral can be found there. The Drill consumes <config;i;coredrill_consumption> Flux/t and takes <config;i;coredrill_time> ticks to fully retrieve and analyse a sample.
 ie.manual.entry.minerals1=To find and determine minerals in the world, you will want to craft a Core Sample Drill. Supply the machine with power and rightclick it or use redstone to activate it. It drill into the chunk and extract a core sample which shows if and what mineral was found and its yield. The Drill consumes <config;i;coredrill_consumption> Flux/t and takes <config;i;coredrill_time> ticks to fully retrieve and analyse a sample.
 ie.manual.entry.minerals2=The following pages list every type of vein and the ores that can be retrieved from them.
 ie.manual.entry.minerals3=%1$s<br>It consists of %2$s.

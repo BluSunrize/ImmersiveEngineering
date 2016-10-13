@@ -1,8 +1,6 @@
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
-import java.util.ArrayList;
-
-import blusunrize.immersiveengineering.common.Config;
+import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasObjProperty;
@@ -21,6 +19,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import java.util.ArrayList;
 
 public class TileEntityWatermill extends TileEntityIEBase implements ITickable, IDirectionalTile, IHasDummyBlocks, IHasObjProperty
 {
@@ -247,7 +247,7 @@ public class TileEntityWatermill extends TileEntityIEBase implements ITickable, 
 	@Override
 	public double getMaxRenderDistanceSquared()
 	{
-		return super.getMaxRenderDistanceSquared()*Config.getDouble("increasedTileRenderdistance");
+		return super.getMaxRenderDistanceSquared()* IEConfig.increasedTileRenderdistance;
 		//		if(Config.getBoolean("increasedTileRenderdistance"))
 		//			return super.getMaxRenderDistanceSquared()*1.5;
 		//		return super.getMaxRenderDistanceSquared();

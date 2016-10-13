@@ -4,7 +4,7 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.IMultiblockRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.api.tool.AssemblerHandler;
-import blusunrize.immersiveengineering.common.Config;
+import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGuiTile;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockAssembler;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -130,7 +130,7 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 				for(ItemStack stack : this.inventory)
 					if(stack!=null)
 						queryList.add(stack.copy());
-				int consumed = Config.getInt("assembler_consumption");
+				int consumed = IEConfig.Machines.assembler_consumption;
 				if(this.hasIngredients(pattern, queryList) && this.energyStorage.extractEnergy(consumed, true)==consumed)
 				{
 					this.energyStorage.extractEnergy(consumed, false);
