@@ -65,6 +65,8 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 		BulletHandler.registerBullet("buckshot", new BulletHandler.DamagingBullet(
 				entities -> IEDamageSources.causeCasullDamage((EntityRevolvershot) entities[0], entities[1]),
 				IEConfig.Tools.bulletDamage_Buck,
+				true,
+				false,
 				BulletHandler.emptyCasing,
 				new ResourceLocation("immersiveengineering:items/bullet_buckshot"))
 		{
@@ -93,6 +95,8 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 		BulletHandler.registerBullet("dragonsbreath", new BulletHandler.DamagingBullet(
 				entities -> IEDamageSources.causeCasullDamage((EntityRevolvershot) entities[0], entities[1]),
 				IEConfig.Tools.bulletDamage_Dragon,
+				true,
+				true,
 				BulletHandler.emptyCasing,
 				new ResourceLocation("immersiveengineering:items/bullet_dragonsbreath"))
 		{
