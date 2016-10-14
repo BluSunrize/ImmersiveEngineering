@@ -11,6 +11,7 @@ import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConne
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -22,7 +23,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextComponentTranslation;
 
-public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable implements IBlockBounds, IDirectionalTile, IActiveState, IHammerInteraction, IPlayerInteraction
+public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable implements IBlockBounds, IDirectionalTile, IActiveState, IHammerInteraction, IPlayerInteraction, IRedstoneOutput
 {
 	public int sideAttached=0;
 	public EnumFacing facing=EnumFacing.NORTH;
@@ -211,5 +212,21 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 			return new float[]{.25f,.5f,.1875f, .75f,1,.8125f};
 
 		return new float[]{facing==EnumFacing.WEST?0:facing==EnumFacing.EAST?.5f:.25f,.1875f,facing==EnumFacing.NORTH?0:facing==EnumFacing.SOUTH?.5f:.25f, facing==EnumFacing.WEST?.5f:facing==EnumFacing.EAST?1:.75f,.8125f,facing==EnumFacing.NORTH?.5f:facing==EnumFacing.SOUTH?1:.75f};
+	}
+
+	@Override
+	public int getWeakRSOutput(IBlockState state, EnumFacing side)
+	{
+		return (active^inverted)?15:0;
+	}
+	@Override
+	public int getStrongRSOutput(IBlockState state, EnumFacing side)
+	{
+		return side.getOpposite()==facing && (active^inverted)?15:0;
+	}
+	@Override
+	public boolean canConnectRedstone(IBlockState state, EnumFacing side)
+	{
+		return true;
 	}
 }

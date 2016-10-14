@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.ITickable;
@@ -79,5 +80,16 @@ public class TileEntityRedstoneBreaker extends TileEntityBreakerSwitch implement
 				return new Vec3d(facing==EnumFacing.WEST?1.03125:facing==EnumFacing.EAST?-.03125:.125, .5, facing==EnumFacing.NORTH?1.03125:facing==EnumFacing.SOUTH?-.03125:.125);
 			return new Vec3d(facing==EnumFacing.WEST?1.03125:facing==EnumFacing.EAST?-.03125:.875, .5, facing==EnumFacing.NORTH?1.03125:facing==EnumFacing.SOUTH?-.03125:.875);
 		}
+	}
+
+	@Override
+	public int getWeakRSOutput(IBlockState state, EnumFacing side)
+	{
+		return 0;
+	}
+	@Override
+	public int getStrongRSOutput(IBlockState state, EnumFacing side)
+	{
+		return 0;
 	}
 }
