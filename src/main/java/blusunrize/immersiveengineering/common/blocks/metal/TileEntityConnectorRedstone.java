@@ -396,8 +396,11 @@ public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable 
 
 		public void notifyOfChange(TileEntityConnectorRedstone tile)
 		{
-			tile.markContainingBlockForUpdate(null);
-			tile.markBlockForUpdate(tile.getPos().offset(tile.facing), null);
+			if(tile.getWorld().isBlockLoaded(tile.getPos()))
+			{
+				tile.markContainingBlockForUpdate(null);
+				tile.markBlockForUpdate(tile.getPos().offset(tile.facing), null);
+			}
 		}
 
 		public byte[] getByteValues()
