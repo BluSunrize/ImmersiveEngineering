@@ -5,14 +5,21 @@ import net.minecraft.util.IStringSerializable;
 
 public enum BlockTypes_MetalDecoration1 implements IStringSerializable, BlockIEBase.IBlockEnum
 {
-	STEEL_FENCE,
-	STEEL_SCAFFOLDING_0,
-	STEEL_SCAFFOLDING_1,
-	STEEL_SCAFFOLDING_2,
-	ALUMINUM_FENCE,
-	ALUMINUM_SCAFFOLDING_0,
-	ALUMINUM_SCAFFOLDING_1,
-	ALUMINUM_SCAFFOLDING_2;
+	STEEL_FENCE(false),
+	STEEL_SCAFFOLDING_0(true),
+	STEEL_SCAFFOLDING_1(true),
+	STEEL_SCAFFOLDING_2(true),
+	ALUMINUM_FENCE(false),
+	ALUMINUM_SCAFFOLDING_0(true),
+	ALUMINUM_SCAFFOLDING_1(true),
+	ALUMINUM_SCAFFOLDING_2(true);
+
+	private boolean isScaffold;
+
+	BlockTypes_MetalDecoration1(boolean isScaffold)
+	{
+		this.isScaffold = isScaffold;
+	}
 
 	@Override
 	public String getName()
@@ -28,5 +35,10 @@ public enum BlockTypes_MetalDecoration1 implements IStringSerializable, BlockIEB
 	public boolean listForCreative()
 	{
 		return true;
+	}
+
+	public boolean isScaffold()
+	{
+		return isScaffold;
 	}
 }

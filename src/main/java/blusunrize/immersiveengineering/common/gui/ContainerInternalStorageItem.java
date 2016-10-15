@@ -64,6 +64,8 @@ public abstract class ContainerInternalStorageItem extends Container
 					Slot s = inventorySlots.get(i);
 					if(s!=null && s.isItemValid(stackInSlot))
 					{
+						if(s.getStack()!=null && (!ItemStack.areItemsEqual(stackInSlot,s.getStack()) || !ItemStack.areItemStackTagsEqual(stackInSlot,s.getStack())) )
+							continue;
 						int space = Math.min(s.getItemStackLimit(stackInSlot), stackInSlot.getMaxStackSize());
 						if(s.getStack() != null)
 							space -= s.getStack().stackSize;

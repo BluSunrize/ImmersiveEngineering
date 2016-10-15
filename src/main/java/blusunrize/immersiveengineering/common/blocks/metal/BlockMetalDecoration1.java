@@ -2,7 +2,6 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase.IELadderBlock;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
-import blusunrize.immersiveengineering.common.blocks.wooden.BlockTypes_WoodenDecoration;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFence;
 import net.minecraft.block.BlockFenceGate;
@@ -55,8 +54,7 @@ public class BlockMetalDecoration1 extends IELadderBlock<BlockTypes_MetalDecorat
 		int meta = this.getMetaFromState(state);
 		if(meta==BlockTypes_MetalDecoration1.STEEL_FENCE.getMeta() || meta==BlockTypes_MetalDecoration1.ALUMINUM_FENCE.getMeta())
 			return side==EnumFacing.UP;
-		if(meta==BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_0.getMeta()||meta==BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_1.getMeta()||meta==BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_2.getMeta()
-				||meta==BlockTypes_MetalDecoration1.ALUMINUM_SCAFFOLDING_0.getMeta()||meta==BlockTypes_MetalDecoration1.ALUMINUM_SCAFFOLDING_1.getMeta()||meta==BlockTypes_MetalDecoration1.ALUMINUM_SCAFFOLDING_2.getMeta())
+		if(state.getValue(this.property).isScaffold())
 			return true;
 		return super.isSideSolid(state, world, pos, side);
 	}
@@ -65,15 +63,11 @@ public class BlockMetalDecoration1 extends IELadderBlock<BlockTypes_MetalDecorat
 	public boolean shouldSideBeRendered(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side)
 	{
 		int meta = this.getMetaFromState(state);
-		if(meta==BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_0.getMeta()||meta==BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_1.getMeta()||meta==BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_2.getMeta()
-				||meta==BlockTypes_MetalDecoration1.ALUMINUM_SCAFFOLDING_0.getMeta()||meta==BlockTypes_MetalDecoration1.ALUMINUM_SCAFFOLDING_1.getMeta()||meta==BlockTypes_MetalDecoration1.ALUMINUM_SCAFFOLDING_2.getMeta())
+		if(state.getValue(this.property).isScaffold())
 		{
 			IBlockState state2 = world.getBlockState(pos.offset(side));
 			if(this.equals(state2.getBlock()))
-			{
-				int meta2 = this.getMetaFromState(state2);
-				return meta2!=BlockTypes_WoodenDecoration.SCAFFOLDING.getMeta();
-			}
+				return this.getMetaFromState(state2)!=meta;
 		}
 		return super.shouldSideBeRendered(state, world, pos, side);
 	}
