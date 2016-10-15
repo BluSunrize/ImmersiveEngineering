@@ -343,4 +343,25 @@ public class BlockMetalDevice1 extends BlockIETileProvider<BlockTypes_MetalDevic
 	{
 		return true;
 	}
+	@Override
+	public void breakBlock(World world, BlockPos pos, IBlockState state)
+	{
+		if (state.getValue(property)==BlockTypes_MetalDevice1.FLUID_PIPE)
+		{
+			TileEntity te = world.getTileEntity(pos);
+			if (te instanceof TileEntityFluidPipe)
+			{
+				TileEntityFluidPipe here = (TileEntityFluidPipe) te;
+				for (int i = 0;i<6;i++)
+					if (here.sideConfig[i]==-1)
+					{
+						EnumFacing f = EnumFacing.VALUES[i];
+						TileEntity there = world.getTileEntity(pos.offset(f));
+						if (there instanceof TileEntityFluidPipe)
+							((TileEntityFluidPipe) there).toggleSide(f.getOpposite().ordinal());
+					}
+			}
+		}
+		super.breakBlock(world, pos, state);
+	}
 }
