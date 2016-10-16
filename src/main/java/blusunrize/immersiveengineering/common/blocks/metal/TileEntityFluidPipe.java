@@ -52,7 +52,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static java.util.Collections.newSetFromMap;
 
-public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe, IAdvancedHasObjProperty, IOBJModelCallback<IBlockState>, IColouredTile, IPlayerInteraction, IHammerInteraction, IAdvancedSelectionBounds, IAdvancedCollisionBounds
+public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe, IAdvancedHasObjProperty, IOBJModelCallback<IBlockState>, IColouredTile, IPlayerInteraction, IHammerInteraction, IAdvancedSelectionBounds, IAdvancedCollisionBounds, IAdditionalDrops
 {
 	static ConcurrentHashMap<BlockPos, Set<DirectionalFluidOutput>> indirectConnections = new ConcurrentHashMap<BlockPos, Set<DirectionalFluidOutput>>();
 	public static ArrayList<Function<ItemStack, Boolean>> validPipeCovers = new ArrayList();
@@ -299,6 +299,14 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 	public com.google.common.base.Optional<TRSRTransformation> applyTransformations(IBlockState object, String group, com.google.common.base.Optional<TRSRTransformation> transform)
 	{
 		return transform;
+	}
+
+	@Override
+	public Collection<ItemStack> getExtraDrops(EntityPlayer player, IBlockState state)
+	{
+		if(pipeCover!=null)
+			return Lists.newArrayList(pipeCover);
+		return null;
 	}
 
 	static class PipeFluidHandler implements IFluidHandler

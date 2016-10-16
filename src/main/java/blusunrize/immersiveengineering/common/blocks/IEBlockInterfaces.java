@@ -23,6 +23,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -169,7 +170,11 @@ public class IEBlockInterfaces
 
 		void readOnPlacement(@Nullable EntityLivingBase placer, ItemStack stack);
 	}
-	
+	public interface IAdditionalDrops
+	{
+		Collection<ItemStack> getExtraDrops(EntityPlayer player, IBlockState state);
+	}
+
 	public interface IPlayerInteraction
 	{
 		boolean interact(EnumFacing side, EntityPlayer player, EnumHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ);

@@ -37,6 +37,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nullable;
+import java.util.Collection;
 import java.util.List;
 
 public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlockEnum> extends BlockIEBase<E> implements ITileEntityProvider, IColouredBlock
@@ -93,6 +94,14 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 				spawnAsEntity(world, pos, s);
 				return;
 			}
+		}
+		if(tile instanceof IAdditionalDrops)
+		{
+			Collection<ItemStack> stacks = ((IAdditionalDrops)tile).getExtraDrops(player, state);
+			if(stacks!=null && !stacks.isEmpty())
+				for(ItemStack s : stacks)
+					if(s!=null)
+						spawnAsEntity(world, pos, s);
 		}
 		super.harvestBlock(world, player, pos, state, tile, stack);
 	}
