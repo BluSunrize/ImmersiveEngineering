@@ -1,3 +1,38 @@
+#####Version 0.10-45
+- change over to Forge's new config system:
+    - DELETE YOUR IE CONFIG
+    - Or don't, but you'll get a load of duplicate and unnecessary options.
+    - If an old config breaks anything, you were warned.
+- added WAILA support for Tesla Coils
+- added The One Probe Compat for machines and energy storage
+- added a config option to disable villagers and their houses
+- re-added config option for Railgun damage
+- re-added support for Railcrafts rails and rebar to be used as projectiles
+- re-added shader support for Railcraft carts
+- changed blocks with configurable sides (capacitors, barrels) to use unlisted properties and lazy loading. Reduces IE's model count at startup by >75%
+- change Refinery model to have a big power input like Fermenter and Squeezer
+- fixed Refinery not properly accepting fluids
+- fixed crash when crafting cetain items (thanks Malte)
+- fixed Conveyors dropping invalid items (thanks Malte)
+- fixed Pumps not working due to miscalculated XORs (thanks Malte)
+- fixed Watermills having too small models
+- fixed wonky wire rendering (thanks Malte)
+- fixed material list for the Lightning Rod
+- fixed Faraday suit not blocking Tesla damage
+- fixed Floodlight having broken rendering and expanded computer support (thanks Malte)
+- fixed Buckshot projectiles not applying full damage
+- fixed Scaffolding not rendering properly on the inside
+- fixed breakerswitch not emitting redstone
+- fixed force chunkloading through redstone connectors
+- fixed Toolbox voiding items
+- fixed Pipes resetting connection configs (thanks Malte)
+- fixed Silo voiding items and not having Comparator output
+- fixed Pipes not dropping their covers
+- fixed multiple minor issues
+
+#####Version 0.10-44 - BUILT
+- fixed clientside exception
+
 #####Version 0.10-43 - BUILT
 - added version dependency for TCon to prevent further reports of that
 - added Banners! They look awesome! Shoutouts to Tris for making all the textures!
