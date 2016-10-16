@@ -92,7 +92,7 @@ public class TileEntityFluidPump extends TileEntityIEBase implements ITickable, 
 						}
 					}
 				}
-			if(worldObj.getTotalWorldTime()%40==((getPos().getX()^getPos().getZ()))%40)
+			if(worldObj.getTotalWorldTime()%40==(((getPos().getX()^getPos().getZ()))%40+40)%40)
 			{
 				if(closedList.isEmpty())
 					prepareAreaCheck();

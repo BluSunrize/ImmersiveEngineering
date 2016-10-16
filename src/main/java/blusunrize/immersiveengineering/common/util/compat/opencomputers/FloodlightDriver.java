@@ -115,5 +115,16 @@ public class FloodlightDriver extends DriverSidedTileEntity
 		{
 			return new Object[]{getTileEntity().active};
 		}
+		
+		@Callback(direct = false, doc = "function():nil -- waits until the floodlightn can turn again")
+		public Object[] waitForCooldown(Context context, Arguments args)
+		{
+			TileEntityFloodlight te = getTileEntity();
+			if (te.turnCooldown>0)
+				context.pause(te.turnCooldown/20F);
+			return null;
+		}
+		
+		
 	}
 }

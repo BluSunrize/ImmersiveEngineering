@@ -38,6 +38,8 @@ public class BlockMetalDevice1 extends BlockIETileProvider<BlockTypes_MetalDevic
 		this.setMetaBlockLayer(BlockTypes_MetalDevice1.FLUID_PIPE.getMeta(), BlockRenderLayer.CUTOUT);
 		this.setMetaBlockLayer(BlockTypes_MetalDevice1.SAMPLE_DRILL.getMeta(), BlockRenderLayer.CUTOUT);
 		this.setMetaBlockLayer(BlockTypes_MetalDevice1.FLOODLIGHT.getMeta(), BlockRenderLayer.SOLID, BlockRenderLayer.TRANSLUCENT);
+		this.setMetaBlockLayer(BlockTypes_MetalDevice1.ELECTRIC_LANTERN.getMeta(), BlockRenderLayer.SOLID, BlockRenderLayer.TRANSLUCENT);
+		
 		this.setMetaLightOpacity(BlockTypes_MetalDevice1.FURNACE_HEATER.getMeta(), 255);
 		this.setMetaLightOpacity(BlockTypes_MetalDevice1.DYNAMO.getMeta(), 255);
 		this.setMetaLightOpacity(BlockTypes_MetalDevice1.THERMOELECTRIC_GEN.getMeta(), 255);
@@ -340,5 +342,26 @@ public class BlockMetalDevice1 extends BlockIETileProvider<BlockTypes_MetalDevic
 	public boolean allowHammerHarvest(IBlockState state)
 	{
 		return true;
+	}
+	@Override
+	public void breakBlock(World world, BlockPos pos, IBlockState state)
+	{
+		if (state.getValue(property)==BlockTypes_MetalDevice1.FLUID_PIPE)
+		{
+			TileEntity te = world.getTileEntity(pos);
+			if (te instanceof TileEntityFluidPipe)
+			{
+				TileEntityFluidPipe here = (TileEntityFluidPipe) te;
+				for (int i = 0;i<6;i++)
+					if (here.sideConfig[i]==-1)
+					{
+						EnumFacing f = EnumFacing.VALUES[i];
+						TileEntity there = world.getTileEntity(pos.offset(f));
+						if (there instanceof TileEntityFluidPipe)
+							((TileEntityFluidPipe) there).toggleSide(f.getOpposite().ordinal());
+					}
+			}
+		}
+		super.breakBlock(world, pos, state);
 	}
 }

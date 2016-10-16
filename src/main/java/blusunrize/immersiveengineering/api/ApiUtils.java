@@ -328,7 +328,7 @@ public class ApiUtils
 		double p = (0+dw-a*Math.log((k+dy)/(k-dy)))*0.5;
 		double q = (dy+0-k*Math.cosh(l)/Math.sinh(l))*0.5;
 
-		Vec3d[] vex = new Vec3d[vertices];
+		Vec3d[] vex = new Vec3d[vertices+1];
 
 		vex[0] = new Vec3d(start.xCoord, start.yCoord, start.zCoord);
 		for(int i=1; i<vertices; i++)
@@ -339,7 +339,7 @@ public class ApiUtils
 			double y1 = a * Math.cosh((( Math.sqrt(x1*x1+z1*z1) )-p)/a)+q;
 			vex[i] = new Vec3d(start.xCoord+x1, start.yCoord+y1, start.zCoord+z1);
 		}
-		vex[vertices-1] = new Vec3d(end.xCoord, end.yCoord, end.zCoord);
+		vex[vertices] = new Vec3d(end.xCoord, end.yCoord, end.zCoord);
 
 		return vex;
 	}

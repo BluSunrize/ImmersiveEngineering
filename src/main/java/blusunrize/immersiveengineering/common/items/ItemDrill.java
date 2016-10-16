@@ -35,6 +35,7 @@ import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.play.server.SPacketBlockChange;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.TextFormatting;
@@ -463,10 +464,11 @@ public class ItemDrill extends ItemUpgradeableTool implements IShaderEquipableIt
 				else
 				{
 					block.onBlockHarvested(world, pos, state, player);
+					TileEntity te = world.getTileEntity(pos);
 					if(block.removedByPlayer(state, world, pos, player, true))
 					{
 						block.onBlockDestroyedByPlayer( world, pos, state);
-						block.harvestBlock(world, player, pos, state, world.getTileEntity(pos), stack);
+						block.harvestBlock(world, player, pos, state, te, stack);
 						block.dropXpOnBlockBreak(world, pos, xpDropEvent);
 					}
 					stack.onBlockDestroyed(world, state, pos, player);

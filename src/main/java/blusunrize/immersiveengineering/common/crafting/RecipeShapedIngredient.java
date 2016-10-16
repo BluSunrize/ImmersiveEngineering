@@ -131,7 +131,7 @@ public class RecipeShapedIngredient extends ShapedOreRecipe
 	public ItemStack[] getRemainingItems(InventoryCrafting inv) //getRecipeLeftovers
 	{
 		ItemStack[] remains = ForgeHooks.defaultRecipeGetRemainingItems(inv);
-		for(int i = 0; i < inv.getSizeInventory(); i++)
+		for(int i = 0; i < height*width; i++)
 		{
 			ItemStack s = inv.getStackInSlot(i);
 			IngredientStack[] matchedIngr = lastMatch==1?ingredientsQuarterTurn: lastMatch==2?ingredientsEighthTurn: ingredients;

@@ -21,7 +21,7 @@ import static java.util.Collections.newSetFromMap;
 
 public class ImmersiveNetHandler
 {
-	public static ImmersiveNetHandler INSTANCE;
+	public static final ImmersiveNetHandler INSTANCE = new ImmersiveNetHandler();
 	public Map<Integer, ConcurrentHashMap<BlockPos, Set<Connection>>> directConnections = new ConcurrentHashMap<>();
 	public Map<BlockPos, Set<AbstractConnection>> indirectConnections = new ConcurrentHashMap<>();
 	public Map<Integer, HashMap<Connection, Integer>> transferPerTick = new HashMap<>();
