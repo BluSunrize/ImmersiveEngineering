@@ -44,12 +44,12 @@ public class ConnLoader implements ICustomModelLoader
 		baseModels.put("conn_redstone", new ResourceLocation("immersiveengineering:block/connector/connectorRedstone.obj.ie"));
 
 		baseModels.put("breaker_off",
-				new ResourceLocation("immersiveengineering:block/connector/breakerSwitch_off.obj"));
-		baseModels.put("breaker_on", new ResourceLocation("immersiveengineering:block/connector/breakerSwitch_on.obj"));
+				new ResourceLocation("immersiveengineering:block/connector/breakerSwitch_off.obj.ie"));
+		baseModels.put("breaker_on", new ResourceLocation("immersiveengineering:block/connector/breakerSwitch_on.obj.ie"));
 
 		baseModels.put("eMeter", new ResourceLocation("immersiveengineering:block/connector/eMeter.obj"));
 		baseModels.put("redstoneBreaker",
-				new ResourceLocation("immersiveengineering:block/connector/redstoneBreaker.obj"));
+				new ResourceLocation("immersiveengineering:block/connector/redstoneBreaker.obj.ie"));
 
 		baseModels.put("transformer_hv_left",
 				new ResourceLocation("immersiveengineering:block/connector/transformer_hv_left.obj"));

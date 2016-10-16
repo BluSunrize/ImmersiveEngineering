@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
+import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
@@ -11,7 +12,6 @@ import net.minecraft.util.math.Vec3d;
 
 public class TileEntityRedstoneBreaker extends TileEntityBreakerSwitch implements ITickable
 {
-	Connection primaryConnection;
 	@Override
 	public void update()
 	{
@@ -36,50 +36,34 @@ public class TileEntityRedstoneBreaker extends TileEntityBreakerSwitch implement
 	@Override
 	public float[] getBlockBounds()
 	{
-		if(facing==EnumFacing.DOWN)
-			return new float[]{0,0,.125f, 1,1,.875f};
-		if(facing==EnumFacing.UP)
-			return new float[]{0,0,.125f, 1,1,.875f};
-		return new float[]{0,.125f,0, 1,.875f,1};
+		Vec3d start = new Vec3d(0,.125f,0);
+		Vec3d end = new Vec3d(1,.875f,1);
+		Matrix4 mat = new Matrix4(facing);
+		mat.translate(.5, .5, 0).rotate(Math.PI/2*rotation, 0, 0, 1).translate(-.5, -.5, 0);
+		start = mat.apply(start);
+		end = mat.apply(end);
+		return new float[]{(float) start.xCoord, (float) start.yCoord, (float) start.zCoord,
+				(float) end.xCoord, (float) end.yCoord, (float) end.zCoord};
 	}
 
 	@Override
 	public Vec3d getRaytraceOffset(IImmersiveConnectable link)
 	{
-		if(sideAttached==0)
-			return new Vec3d(facing==EnumFacing.WEST?1:facing==EnumFacing.EAST?0:.5, .5, facing==EnumFacing.NORTH?1:facing==EnumFacing.SOUTH?0:.5);
-		return new Vec3d(.5,facing==EnumFacing.DOWN?1:0,.5);
+		Matrix4 mat = new Matrix4(facing);
+		mat.translate(.5, .5, 0).rotate(Math.PI/2*rotation, 0, 0, 1).translate(-.5, -.5, 0);
+		Vec3d ret = mat.apply(new Vec3d(.5, .5, .99));
+		return ret;
 	}
 	@Override
 	public Vec3d getConnectionOffset(Connection con)
 	{
-		int lowestDif=100;
-		Connection lowestCon=null;
-		for(Connection otherCon : ImmersiveNetHandler.INSTANCE.getConnections(worldObj, getPos()))
-		{
-			int xDif = (otherCon==null||otherCon.start==null||otherCon.end==null)?0: (otherCon.start.equals(getPos())&&otherCon.end!=null)? otherCon.end.getX()-getPos().getX(): (otherCon.end.equals(getPos())&& otherCon.start!=null)?otherCon.start.getX()-getPos().getX(): 0;
-			int zDif = (otherCon==null||otherCon.start==null||otherCon.end==null)?0: (otherCon.start.equals(getPos())&&otherCon.end!=null)? otherCon.end.getZ()-getPos().getZ(): (otherCon.end.equals(getPos())&& otherCon.start!=null)?otherCon.start.getZ()-getPos().getZ(): 0;
-			int dif = facing.getAxis()==Axis.X?zDif:xDif;
-			if(lowestCon==null || dif<lowestDif)
-			{
-				lowestDif = dif;
-				lowestCon = otherCon;
-			}
-			con.catenaryVertices=null;
-		}
-		if(facing.getAxis()==Axis.Y)
-		{
-			double h = facing==EnumFacing.DOWN?1.03125:-.03125;
-			return new Vec3d(con.hasSameConnectors(lowestCon)?.125:.875,h,.5);
-			//	return new Vec3(facing.getAxis()==Axis.X?.5:.125,h,facing.getAxis()==Axis.X?.125:.5);
-			//	return new Vec3(facing.getAxis()==Axis.X?.5:.875,h,facing.getAxis()==Axis.X?.875:.5);
-		}
-		else
-		{
-			if(con.hasSameConnectors(lowestCon))
-				return new Vec3d(facing==EnumFacing.WEST?1.03125:facing==EnumFacing.EAST?-.03125:.125, .5, facing==EnumFacing.NORTH?1.03125:facing==EnumFacing.SOUTH?-.03125:.125);
-			return new Vec3d(facing==EnumFacing.WEST?1.03125:facing==EnumFacing.EAST?-.03125:.875, .5, facing==EnumFacing.NORTH?1.03125:facing==EnumFacing.SOUTH?-.03125:.875);
-		}
+		Matrix4 mat = new Matrix4(facing);
+		mat.translate(.5, .5, 0).rotate(Math.PI/2*rotation, 0, 0, 1).translate(-.5, -.5, 0);
+		if (endOfLeftConnection==null)
+			calculateLeftConn(mat);
+		boolean isLeft = con.end==endOfLeftConnection||con.start==endOfLeftConnection;
+		Vec3d ret = mat.apply(isLeft?new Vec3d(.125, .5, 1.03125):new Vec3d(.875, .5, 1.03125));
+		return ret;
 	}
 
 	@Override
