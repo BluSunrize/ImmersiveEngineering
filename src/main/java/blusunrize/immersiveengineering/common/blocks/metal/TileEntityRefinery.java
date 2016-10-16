@@ -148,8 +148,6 @@ public class TileEntityRefinery extends TileEntityMultiblockMetal<TileEntityRefi
 			return new float[]{0,0,0, 1,.5f,1};
 		if(pos==19)
 			return new float[]{facing==EnumFacing.WEST?.5f:0,0,facing==EnumFacing.NORTH?.5f:0, facing==EnumFacing.EAST?.5f:1,1,facing==EnumFacing.SOUTH?.5f:1};
-		if(pos==27)
-			return new float[]{facing==EnumFacing.EAST?.5f:0,0,facing==EnumFacing.SOUTH?.5f:0, facing==EnumFacing.WEST?.5f:1,1,facing==EnumFacing.NORTH?.5f:1};
 		if(pos==17)
 			return new float[]{.0625f,0,.0625f, .9375f,1,.9375f};
 
@@ -162,22 +160,6 @@ public class TileEntityRefinery extends TileEntityMultiblockMetal<TileEntityRefi
 		EnumFacing fw = facing.rotateY();
 		if(mirrored)
 			fw = fw.getOpposite();
-		if(pos==12)
-		{
-			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(0,0,0, 1,.5f,1).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
-			float minX = fl==EnumFacing.EAST?.625f: fl==EnumFacing.WEST?.125f: .125f;
-			float maxX = fl==EnumFacing.WEST?.375f: fl==EnumFacing.EAST?.875f: .25f;
-			float minZ = fl==EnumFacing.SOUTH?.625f: fl==EnumFacing.NORTH?.125f: .125f;
-			float maxZ = fl==EnumFacing.NORTH?.375f: fl==EnumFacing.SOUTH?.875f: .25f;
-			list.add(new AxisAlignedBB(minX,.5f,minZ, maxX,1,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
-
-			minX = fl==EnumFacing.EAST?.625f: fl==EnumFacing.WEST?.125f: .75f;
-			maxX = fl==EnumFacing.WEST?.375f: fl==EnumFacing.EAST?.875f: .875f;
-			minZ = fl==EnumFacing.SOUTH?.625f: fl==EnumFacing.NORTH?.125f: .75f;
-			maxZ = fl==EnumFacing.NORTH?.375f: fl==EnumFacing.SOUTH?.875f: .875f;
-			list.add(new AxisAlignedBB(minX,.5f,minZ, maxX,1,maxZ).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
-			return list;
-		}
 		if(pos==0||pos==4||pos==10||pos==14)
 		{
 			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(0,0,0, 1,.5f,1).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
@@ -211,7 +193,7 @@ public class TileEntityRefinery extends TileEntityMultiblockMetal<TileEntityRefi
 		}
 		if(pos==1||pos==3||pos==11||pos==13)
 		{
-			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(0,0,0, 1,.5f,1).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(0,0,0, 1,.0f,1).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
 			if(pos>=10)
 				fl = fl.getOpposite();
 			if(pos%10==1)
