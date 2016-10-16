@@ -25,6 +25,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.obj.OBJModel;
 import net.minecraftforge.client.model.obj.OBJModel.*;
@@ -155,7 +156,7 @@ public class IESmartObjModel extends OBJBakedModel
 		if(blockState instanceof IExtendedBlockState)
 		{
 			IExtendedBlockState exState = (IExtendedBlockState) blockState;
-			ExtBlockstateAdapter adapter = new ExtBlockstateAdapter(exState);
+			ExtBlockstateAdapter adapter = new ExtBlockstateAdapter(exState, MinecraftForgeClient.getRenderLayer());
 			if(!modelCache.containsKey(adapter))
 			{
 				IESmartObjModel model = null;

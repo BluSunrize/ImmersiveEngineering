@@ -60,7 +60,7 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 	private boolean shouldUpdate = true;
 	public boolean computerOn = true;
 	public int controllingComputers = 0;
-	private int turnCooldown = 0;
+	public int turnCooldown = 0;
 
 	@Override
 	public void update()
@@ -577,6 +577,12 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 	public Matrix4 handlePerspective(IBlockState Object, TransformType cameraTransformType, Matrix4 perspective)
 	{
 		return perspective;
+	}
+	
+	@SideOnly(Side.CLIENT)
+	@Override
+	public String getCacheKey(IBlockState object) {
+		return rotX+":"+rotY+":"+active;
 	}
 
 	//computer stuff

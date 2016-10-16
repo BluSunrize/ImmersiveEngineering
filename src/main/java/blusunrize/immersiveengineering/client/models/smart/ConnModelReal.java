@@ -44,7 +44,7 @@ public class ConnModelReal implements IBakedModel
 		if(side==null&&state instanceof IExtendedBlockState)
 		{
 			IExtendedBlockState iExtendedBlockState = (IExtendedBlockState) state;
-			ExtBlockstateAdapter ad = new ExtBlockstateAdapter(iExtendedBlockState);
+			ExtBlockstateAdapter ad = new ExtBlockstateAdapter(iExtendedBlockState, null);
 			int x = 0, z = 0;
 			if (iExtendedBlockState.getUnlistedProperties().containsKey(IEProperties.CONNECTIONS))
 			{
@@ -173,10 +173,11 @@ public class ConnModelReal implements IBakedModel
 	public static class ExtBlockstateAdapter
 	{
 		final IExtendedBlockState state;
-
-		public ExtBlockstateAdapter(IExtendedBlockState s)
+		final BlockRenderLayer layer;
+		public ExtBlockstateAdapter(IExtendedBlockState s, BlockRenderLayer l)
 		{
 			state = s;
+			layer = l;
 		}
 
 		@Override
@@ -187,6 +188,8 @@ public class ConnModelReal implements IBakedModel
 			if (!(obj instanceof ExtBlockstateAdapter))
 				return false;
 			ExtBlockstateAdapter o = (ExtBlockstateAdapter) obj;
+			if (o.layer!=layer)
+				return false;
 			if(state.getUnlistedNames().contains(IOBJModelCallback.PROPERTY) && o.state.getUnlistedNames().contains(IOBJModelCallback.PROPERTY))
 			{
 				IOBJModelCallback callbackThis = state.getValue(IOBJModelCallback.PROPERTY);
@@ -195,8 +198,8 @@ public class ConnModelReal implements IBakedModel
 				{
 					String keyThis = callbackThis.getCacheKey(state);
 					String keyOther = callbackOther.getCacheKey(o.state);
-					if(keyThis != null && keyOther != null)
-						return keyThis.equals(keyOther);
+					if(keyThis != null && keyOther != null && !keyThis.equals(keyOther))
+						return false;
 				}
 			}
 			for(IProperty<?> i : state.getPropertyNames())
@@ -237,7 +240,7 @@ public class ConnModelReal implements IBakedModel
 						return key.hashCode();
 				}
 			}
-			int val = 0;
+			int val = layer==null?0:layer.ordinal();
 			final int prime = 31;
 			for (Object o : state.getProperties().values())
 				val = prime * val + (o == null ? 0 : o.hashCode());

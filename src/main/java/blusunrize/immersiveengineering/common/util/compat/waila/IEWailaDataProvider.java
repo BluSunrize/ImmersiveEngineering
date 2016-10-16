@@ -1,8 +1,10 @@
 package blusunrize.immersiveengineering.common.util.compat.waila;
 
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxProvider;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
 import blusunrize.immersiveengineering.common.blocks.TileEntityMultiblockPart;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTeslaCoil;
 import blusunrize.immersiveengineering.common.blocks.plant.BlockIECrop;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenBarrel;
 import mcp.mobius.waila.api.*;
@@ -69,7 +71,7 @@ public class IEWailaDataProvider implements IWailaDataProvider
 			}
 			return currenttip;
 		}
-		if(tile instanceof TileEntityWoodenBarrel)
+		else if(tile instanceof TileEntityWoodenBarrel)
 		{
 			NBTTagCompound tank = accessor.getNBTData().getCompoundTag("tank");
 			if(!tank.hasKey("Empty")&&!tank.hasNoTags())
@@ -85,7 +87,14 @@ public class IEWailaDataProvider implements IWailaDataProvider
 			int cur = accessor.getNBTInteger(accessor.getNBTData(), "Energy");
 			int max = accessor.getNBTInteger(accessor.getNBTData(), "MaxStorage");
 			if(max>0 && ((ITaggedList)currenttip).getEntries("IFEnergyStorage").size()==0)
-		        ((ITaggedList)currenttip).add(String.format("%d / %d IF", new Object[] {cur,max}), "IFEnergyStorage");
+				((ITaggedList)currenttip).add(String.format("%d / %d IF", new Object[] {cur,max}), "IFEnergyStorage");
+			if (tile instanceof TileEntityTeslaCoil)
+			{
+				boolean rsInv = accessor.getNBTData().getBoolean("redstoneInverted");
+				boolean lowPower = accessor.getNBTData().getBoolean("lowPower");
+				currenttip.add(I18n.format(Lib.CHAT_INFO+"rsControl."+(rsInv?"invertedOn":"invertedOff")));
+				currenttip.add(I18n.format(Lib.CHAT_INFO+"tesla."+(lowPower?"lowPower":"highPower")));
+			}
 		}
 		return currenttip;
 	}
@@ -110,9 +119,19 @@ public class IEWailaDataProvider implements IWailaDataProvider
 			cur = ((IFluxProvider)te).getEnergyStored(null);
 			max = ((IFluxProvider)te).getMaxEnergyStored(null);
 		}
-		tag.setInteger("Energy", cur);
-		tag.setInteger("MaxStorage", max);
-		if (te instanceof TileEntityWoodenBarrel)
+		if (cur!=-1)
+		{
+			tag.setInteger("Energy", cur);
+			tag.setInteger("MaxStorage", max);
+		}
+		if (te instanceof TileEntityTeslaCoil)
+		{
+			if (((TileEntityTeslaCoil) te).dummy)
+				te = te.getWorld().getTileEntity(te.getPos().offset(((TileEntityTeslaCoil) te).facing, -1));
+			tag.setBoolean("redstoneInverted", ((TileEntityTeslaCoil) te).redstoneControlInverted);
+			tag.setBoolean("lowPower", ((TileEntityTeslaCoil) te).lowPower);
+		}
+		else if (te instanceof TileEntityWoodenBarrel)
 			tag.setTag("tank", ((TileEntityWoodenBarrel) te).tank.writeToNBT(new NBTTagCompound()));
 		return tag;
 	}

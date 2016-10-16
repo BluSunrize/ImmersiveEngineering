@@ -5,9 +5,12 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxProvider;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTeslaCoil;
+
 import com.google.common.base.Function;
 import mcjty.theoneprobe.api.*;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
@@ -47,6 +50,7 @@ public class OneProbeHelper extends IECompatModule implements Function<ITheOnePr
 		input.registerProvider(energyInfo);
 		input.registerProbeConfigProvider(energyInfo);
 		input.registerProvider(new ProcessProvider());
+		input.registerProvider(new TeslaCoilProvider());
 		return null;
 	}
 
@@ -126,5 +130,39 @@ public class OneProbeHelper extends IECompatModule implements Function<ITheOnePr
 					}
 			}
 		}
+	}
+	public static class TeslaCoilProvider implements IProbeInfoProvider
+	{
+
+		@Override
+		public String getID()
+		{
+			return ImmersiveEngineering.MODID+":"+"TeslaCoilInfo";
+		}
+
+		@Override
+		public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, EntityPlayer player, World world, IBlockState blockState, IProbeHitData data)
+		{
+			TileEntity te = world.getTileEntity(data.getPos());
+			if (te instanceof TileEntityTeslaCoil)
+			{
+				TileEntityTeslaCoil tc = (TileEntityTeslaCoil) te;
+				if (tc.dummy)
+				{
+					te = world.getTileEntity(data.getPos().offset(tc.facing, -1));
+					if (te instanceof TileEntityTeslaCoil)
+						tc = (TileEntityTeslaCoil) te;
+					else
+					{
+						probeInfo.text("<ERROR>");
+						return;
+					}
+				}
+				probeInfo.text(I18n.format(Lib.CHAT_INFO+"rsControl."+(tc.redstoneControlInverted?"invertedOn":"invertedOff")));
+				probeInfo.text(I18n.format(Lib.CHAT_INFO+"tesla."+(tc.lowPower?"lowPower":"highPower")));
+				
+			}
+		}
+		
 	}
 }

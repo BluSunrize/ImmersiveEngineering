@@ -90,6 +90,7 @@ import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
@@ -1407,12 +1408,14 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void removeStateFromSmartModelCache(IExtendedBlockState state)
 	{
-		IESmartObjModel.modelCache.remove(new ExtBlockstateAdapter(state));
+		for (BlockRenderLayer r:BlockRenderLayer.values())
+			IESmartObjModel.modelCache.remove(new ExtBlockstateAdapter(state, r));
 	}
 	@Override
 	public void removeStateFromConnectionModelCache(IExtendedBlockState state)
 	{
-		ConnModelReal.cache.remove(new ExtBlockstateAdapter(state));
+		for (BlockRenderLayer r:BlockRenderLayer.values())
+			ConnModelReal.cache.remove(new ExtBlockstateAdapter(state, r));
 	}
 	@Override
 	public void clearConnectionModelCache()

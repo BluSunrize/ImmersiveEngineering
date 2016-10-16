@@ -1177,13 +1177,13 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 	{
 		if(worldObj.isRemote)
 			return true;
-		EnumFacing fd = null;
+		EnumFacing fd = side;
 		List<AxisAlignedBB> boxes = this.getAdvancedSelectionBounds();
 		for(AxisAlignedBB box : boxes)
 			if(box instanceof AdvancedAABB)
 			{
 				if(box.expand(.002,.002,.002).isVecInside(new Vec3d(getPos().getX()+hitX, getPos().getY()+hitY, getPos().getZ()+hitZ)))
-					if(box instanceof AdvancedAABB)
+					if(box instanceof AdvancedAABB && ((AdvancedAABB)box).fd != null)
 						fd = ((AdvancedAABB)box).fd;
 			}
 		if(fd!=null)
