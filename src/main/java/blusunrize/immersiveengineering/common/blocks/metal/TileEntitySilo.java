@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.BlockTypes_MetalsAll;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparatorOverride;
 import blusunrize.immersiveengineering.common.blocks.TileEntityMultiblockPart;
 import blusunrize.immersiveengineering.common.blocks.wooden.BlockTypes_WoodenDecoration;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -25,15 +26,15 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-public class TileEntitySilo extends TileEntityMultiblockPart<TileEntitySilo> //implements IDeepStorageUnit
+public class TileEntitySilo extends TileEntityMultiblockPart<TileEntitySilo> implements IComparatorOverride //IDeepStorageUnit
 {
 	public ItemStack identStack;
 	public int storageAmount = 0;
 	static int maxStorage = 41472;
-	ItemStack inputStack;
-	ItemStack outputStack;
-	ItemStack prevInputStack;
-	ItemStack prevOutputStack;
+//	ItemStack inputStack;
+//	ItemStack outputStack;
+//	ItemStack prevInputStack;
+//	ItemStack prevOutputStack;
 	boolean lockItem = false;
 	private int[] oldComps = new int[6];
 	private int masterCompOld;
@@ -42,27 +43,27 @@ public class TileEntitySilo extends TileEntityMultiblockPart<TileEntitySilo> //i
 	@Override
 	public void update()
 	{
-		if(pos==4 && !worldObj.isRemote && this.outputStack==null && storageAmount>0 && identStack!=null)
-			this.markDirty();
+//		if(pos==4 && !worldObj.isRemote && this.outputStack==null && storageAmount>0 && identStack!=null)
+//			this.markDirty();
 
-		if(pos==4 && !worldObj.isRemote && this.outputStack!=null && worldObj.isBlockIndirectlyGettingPowered(getPos())>0 && worldObj.getTotalWorldTime()%8==0)
+		if(pos==4 && !worldObj.isRemote && this.identStack!=null && worldObj.isBlockIndirectlyGettingPowered(getPos())>0 && worldObj.getTotalWorldTime()%8==0)
 		{
 			updateComparatorValuesPart1();
-			for(int i=0; i<6; i++)
-				if(i!=1 && outputStack!=null)
-				{
-					EnumFacing f = EnumFacing.getFront(i);
-					TileEntity inventory = this.worldObj.getTileEntity(getPos().offset(f));
-					ItemStack stack = Utils.copyStackWithAmount(identStack,1);
-					stack = Utils.insertStackIntoInventory(inventory, stack, f.getOpposite());
-					if(stack==null)
-					{
-						outputStack.stackSize--;
-						this.markDirty();
-						if(outputStack==null)
-							break;
-					}
-				}
+//			for(int i=0; i<6; i++)
+//				if(i!=1 && outputStack!=null)
+//				{
+//					EnumFacing f = EnumFacing.getFront(i);
+//					TileEntity inventory = this.worldObj.getTileEntity(getPos().offset(f));
+//					ItemStack stack = Utils.copyStackWithAmount(identStack,1);
+//					stack = Utils.insertStackIntoInventory(inventory, stack, f.getOpposite());
+//					if(stack==null)
+//					{
+//						outputStack.stackSize--;
+//						this.markDirty();
+//						if(outputStack==null)
+//							break;
+//					}
+//				}
 			updateComparatorValuesPart2();
 		}
 	}
@@ -169,198 +170,6 @@ public class TileEntitySilo extends TileEntityMultiblockPart<TileEntitySilo> //i
 		}
 	}
 
-
-	//	@Override
-	//	public int getSizeInventory()
-	//	{
-	//		if(!formed || !(pos==4||pos==58))
-	//			return 0;
-	//		return 2;
-	//	}
-	//	@Override
-	//	public ItemStack getStackInSlot(int slot)
-	//	{
-	//		if(!formed)
-	//			return null;
-	//		TileEntitySilo master = master();
-	//		if(master!=null)
-	//			return master.getStackInSlot(slot);
-	//		return slot==0?inputStack: outputStack;
-	//	}
-	//	@Override
-	//	public ItemStack decrStackSize(int slot, int amount)
-	//	{
-	//		updateComparatorValuesPart1();
-	//		if(!formed)
-	//			return null;
-	//		TileEntitySilo master = master();
-	//		if(master!=null)
-	//			return master.decrStackSize(slot,amount);
-	//
-	//		if(this.outputStack==null)
-	//			return null;
-	//
-	//		int rem = Math.min(amount, outputStack.stackSize);
-	//		ItemStack ret = Utils.copyStackWithAmount(outputStack, rem);
-	//		outputStack.stackSize-=rem;
-	//		if(outputStack.stackSize<=0)
-	//			outputStack=null;
-	//		this.markDirty();
-	//		updateComparatorValuesPart2();
-	//		return ret;
-	//	}
-	//	@Override
-	//	public ItemStack getStackInSlotOnClosing(int slot)
-	//	{
-	//		return null;
-	//	}
-	//	@Override
-	//	public void setInventorySlotContents(int slot, ItemStack stack)
-	//	{
-	//		updateComparatorValuesPart1();
-	//		if(!formed)
-	//			return;
-	//		TileEntitySilo master = master();
-	//		if(master!=null)
-	//		{
-	//			master.setInventorySlotContents(slot,stack);
-	//			return;
-	//		}
-	//		if(slot==0)
-	//			this.inputStack = stack;
-	//		else
-	//			this.outputStack = stack;
-	//		this.markDirty();
-	//		updateComparatorValuesPart2();
-	//	}
-	//	@Override
-	//	public String getInventoryName()
-	//	{
-	//		return "IESilo";
-	//	}
-	//	@Override
-	//	public boolean hasCustomInventoryName()
-	//	{
-	//		return false;
-	//	}
-	//	@Override
-	//	public int getInventoryStackLimit()
-	//	{
-	//		return maxStorage;
-	//	}
-	//	@Override
-	//	public boolean isUseableByPlayer(EntityPlayer player)
-	//	{
-	//		return true;
-	//	}
-	//	@Override
-	//	public void openInventory() {}
-	//	@Override
-	//	public void closeInventory(){}
-	//	@Override
-	//	public boolean isItemValidForSlot(int slot, ItemStack stack)
-	//	{
-	//		TileEntitySilo master = master();
-	//		if(master!=null)
-	//			return master.isItemValidForSlot(slot,stack);
-	//		return this.identStack==null || OreDictionary.itemMatches(identStack, stack, true);
-	//	}
-	//	@Override
-	//	public int[] getAccessibleSlotsFromSide(int side)
-	//	{
-	//		if(pos==4||pos==58)
-	//			return new int[]{0,1};
-	//		return new int[0];
-	//	}
-	//	@Override
-	//	public boolean canInsertItem(int slot, ItemStack stack, int side)
-	//	{
-	//		if(!formed || pos!=58 || slot!=0 || stack==null)
-	//			return false;
-	//		TileEntitySilo master = master();
-	//		if(master!=null)
-	//			return master.identStack==null || (OreDictionary.itemMatches(master.identStack, stack, true)&&master.storageAmount<maxStorage); 
-	//		return false; 
-	//	}
-	//	@Override
-	//	public boolean canExtractItem(int slot, ItemStack stack, int side)
-	//	{
-	//		if(!formed || pos!=4 || slot!=1 || stack==null)
-	//			return false;
-	//		TileEntitySilo master = master();
-	//		if(master!=null)
-	//			return master.outputStack!=null && OreDictionary.itemMatches(master.identStack, stack, true); 
-	//		else
-	//			return this.outputStack!=null && OreDictionary.itemMatches(identStack, stack, true);
-	//	}
-
-	@Override
-	public void markDirty()
-	{
-		super.markDirty();
-
-		int oldStorage = storageAmount;
-		if(inputStack != null)
-		{
-			if(this.identStack==null)
-				identStack = inputStack;
-
-			if((maxStorage-storageAmount)>0)
-			{
-				if(prevInputStack==null)//inputStack is new
-					storageAmount += inputStack.stackSize;
-				else
-					storageAmount += inputStack.stackSize - prevInputStack.stackSize;
-
-				if(storageAmount>maxStorage)
-					storageAmount = maxStorage;
-			}
-			//Set new fake inputs
-			if((maxStorage-storageAmount)>=identStack.getMaxStackSize())
-			{
-				inputStack = null;
-				prevInputStack = null;
-			}
-			else
-			{
-				inputStack = Utils.copyStackWithAmount(identStack, identStack.getMaxStackSize()-(maxStorage-storageAmount));
-				prevInputStack = inputStack.copy();
-			}
-		}
-
-		if(prevOutputStack != null)//Had fake output
-		{
-			if(outputStack == null)//fully depleted
-				storageAmount -= prevOutputStack.stackSize;
-			else
-				storageAmount -= (prevOutputStack.stackSize-outputStack.stackSize);
-
-			if(storageAmount<0)
-				storageAmount = 0;
-		}
-
-		// Handle emptying of the barrel
-		if(storageAmount==0 && !lockItem)
-		{
-			identStack = null;
-			outputStack = null;
-			prevOutputStack = null;
-			inputStack = null;
-			prevInputStack = null;
-			forceUpdate=true;
-		}
-		else if(identStack!=null)
-		{
-			if(outputStack==null)
-				outputStack = identStack.copy();
-			outputStack.stackSize = Math.min(outputStack.getMaxStackSize(), storageAmount);
-			prevOutputStack = outputStack.copy();
-		}
-		if(storageAmount!=oldStorage||forceUpdate)
-			this.markContainingBlockForUpdate(null);
-		forceUpdate = false;
-	}
-
 	@SideOnly(Side.CLIENT)
 	private AxisAlignedBB renderAABB;
 	@Override
@@ -456,6 +265,7 @@ public class TileEntitySilo extends TileEntityMultiblockPart<TileEntitySilo> //i
 			return (T)insertionHandler;
 		return super.getCapability(capability, facing);
 	}
+
 	public static class SiloInventoryHandler implements IItemHandlerModifiable
 	{
 		TileEntitySilo silo;
@@ -472,7 +282,7 @@ public class TileEntitySilo extends TileEntityMultiblockPart<TileEntitySilo> //i
 		@Override
 		public ItemStack getStackInSlot(int slot)
 		{
-			return slot==0?silo.inputStack:silo.outputStack;
+			return slot==0?Utils.copyStackWithAmount(silo.identStack,Math.min(silo.storageAmount,1)):Utils.copyStackWithAmount(silo.identStack,Math.min(silo.storageAmount,64));
 		}
 
 		@Override
@@ -487,12 +297,11 @@ public class TileEntitySilo extends TileEntityMultiblockPart<TileEntitySilo> //i
 			if(!simulate)
 			{
 				silo.updateComparatorValuesPart1();
-				//TODO Adds double?!
-				//				silo.storageAmount += accepted;
-				//				if(silo.identStack==null)
-				//					silo.identStack = stack.copy();
-				silo.inputStack = stack.copy();
+				silo.storageAmount += accepted;
+				if(silo.identStack==null)
+					silo.identStack = stack.copy();
 				silo.markDirty();
+				silo.markContainingBlockForUpdate(null);
 				silo.updateComparatorValuesPart2();
 			}
 			stack.stackSize -= accepted;
@@ -505,18 +314,21 @@ public class TileEntitySilo extends TileEntityMultiblockPart<TileEntitySilo> //i
 		public ItemStack extractItem(int slot, int amount, boolean simulate)
 		{
 			TileEntitySilo silo = this.silo.master();
-			if(slot!=1 || silo.storageAmount<1 || amount<1 || silo.outputStack==null)
+			if(slot!=1 || silo.storageAmount<1 || amount<1 || silo.identStack==null)
 				return null;
 			ItemStack out;
-			if(silo.outputStack.stackSize>amount)
-				out = Utils.copyStackWithAmount(silo.outputStack, amount);
+			if(silo.identStack.stackSize>amount)
+				out = Utils.copyStackWithAmount(silo.identStack, amount);
 			else
-				out = silo.outputStack;
+				out = silo.identStack.copy();
 			if(!simulate)
 			{
 				silo.updateComparatorValuesPart1();
 				silo.storageAmount -= out.stackSize;
+				if(silo.storageAmount<=0 && !silo.lockItem)
+					silo.identStack = null;
 				silo.markDirty();
+				silo.markContainingBlockForUpdate(null);
 				silo.updateComparatorValuesPart2();
 			}
 			return out;
@@ -527,7 +339,8 @@ public class TileEntitySilo extends TileEntityMultiblockPart<TileEntitySilo> //i
 		}
 	}
 
-	public int getComparatorOutput()
+	@Override
+	public int getComparatorInputOverride()
 	{
 		if(pos==4)
 			return (15*storageAmount)/maxStorage;
