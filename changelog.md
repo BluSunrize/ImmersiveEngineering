@@ -34,6 +34,7 @@
 - fixed CraftTweaker integration for the Refinery
 - fixed stair rendering
 - fixed explosion resistance for leaded concrete stairs and slabs
+- fixed Crusher overloading its process queue
 - fixed multiple minor issues
 
 #####Version 0.10-44 - BUILT
