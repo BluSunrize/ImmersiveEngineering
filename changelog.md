@@ -1,4 +1,4 @@
-#####Version 0.10-45
+#####Version 0.10-45 - BUILT
 - change over to Forge's new config system:
     - DELETE YOUR IE CONFIG
     - Or don't, but you'll get a load of duplicate and unnecessary options.
