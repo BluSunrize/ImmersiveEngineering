@@ -1213,7 +1213,7 @@ ie.manual.entry.bullets_flare=§lFlare §lCartridges§r are created with the "Sp
 ie.manual.entry.bullets_wolfpack=§lWolfpack §lCartridges§r are a collection of multiple homing shots in a single shell. The initial projectile is unguided, but on impact, it splits into six target seeking shots that shred the enemies.
 
 ie.manual.entry.chemthrower.name=Chemical Thrower
-ie.manual.entry.chemthrower.subtext=
+ie.manual.entry.chemthrower.subtext=BURN ALL THE THINGS!
 ie.manual.entry.chemthrower0=The Chemical Thrower is a device that propels fluids from its internal tank. The device can be loaded with any fluid, liquid or gas, and, on right click, will spray it out.<br>It also features a function to ignite the fluid, if it is flammable. To toggle the pilot light, sneak and rightclick.
 ie.manual.entry.chemthrower1=Like some other tools, the chemical thrower can be modified in the <link;workbench;§o§nEngineer's §o§nWorkbench§r>. These upgrades affect the size of the tank, range and spread.<br><br>The §6Large Tank§r increases the fluid capacity of the Chemical Thrower by 2000 mb. 
 ie.manual.entry.chemthrower2=The §6Focused Nozzle§r decreases the spread of fluids sprayed out and also slightly increases their range, allowing you to hit further targets with more precision.
