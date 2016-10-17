@@ -11,6 +11,7 @@ import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -62,6 +63,18 @@ public class BlockMetalDecoration2 extends BlockIETileProvider<BlockTypes_MetalD
 			return ((TileEntityWoodenPost)te).dummy==0?side==EnumFacing.DOWN: ((TileEntityWoodenPost)te).dummy==3?side==EnumFacing.UP: ((TileEntityWoodenPost)te).dummy>3?side.getAxis()==Axis.Y: side.getAxis()!=Axis.Y;
 		}
 		return super.isSideSolid(state, world, pos, side);
+	}
+
+	@Override
+	public boolean canIEBlockBePlaced(World world, BlockPos pos, IBlockState newState, EnumFacing side, float hitX, float hitY, float hitZ, EntityPlayer player, ItemStack stack)
+	{
+		if(stack.getItemDamage()== BlockTypes_MetalDecoration2.STEEL_POST.getMeta() || stack.getItemDamage()== BlockTypes_MetalDecoration2.ALUMINUM_POST.getMeta())
+		{
+			for(int hh=1; hh<=3; hh++)
+				if(!world.getBlockState(pos.add(0,hh,0)).getBlock().isReplaceable(world, pos.add(0,hh,0)))
+					return false;
+		}
+		return true;
 	}
 
 	@Override

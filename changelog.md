@@ -9,6 +9,7 @@
 - re-added config option for Railgun damage
 - re-added support for Railcrafts rails and rebar to be used as projectiles
 - re-added shader support for Railcraft carts
+- re-added the placement options for Redstone Breakers (thanks Malte)
 - changed blocks with configurable sides (capacitors, barrels) to use unlisted properties and lazy loading. Reduces IE's model count at startup by >75%
 - change Refinery model to have a big power input like Fermenter and Squeezer
 - fixed Refinery not properly accepting fluids
@@ -28,6 +29,8 @@
 - fixed Pipes resetting connection configs (thanks Malte)
 - fixed Silo voiding items and not having Comparator output
 - fixed Pipes not dropping their covers
+- fixed placement logic for multiblock placements (posts, transformers, drill, teslacoil)
+- fixed CraftTweaker integration for the Refinery
 - fixed multiple minor issues
 
 #####Version 0.10-44 - BUILT

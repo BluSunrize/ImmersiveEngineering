@@ -39,7 +39,7 @@ public class BlockMetalDevice1 extends BlockIETileProvider<BlockTypes_MetalDevic
 		this.setMetaBlockLayer(BlockTypes_MetalDevice1.SAMPLE_DRILL.getMeta(), BlockRenderLayer.CUTOUT);
 		this.setMetaBlockLayer(BlockTypes_MetalDevice1.FLOODLIGHT.getMeta(), BlockRenderLayer.SOLID, BlockRenderLayer.TRANSLUCENT);
 		this.setMetaBlockLayer(BlockTypes_MetalDevice1.ELECTRIC_LANTERN.getMeta(), BlockRenderLayer.SOLID, BlockRenderLayer.TRANSLUCENT);
-		
+
 		this.setMetaLightOpacity(BlockTypes_MetalDevice1.FURNACE_HEATER.getMeta(), 255);
 		this.setMetaLightOpacity(BlockTypes_MetalDevice1.DYNAMO.getMeta(), 255);
 		this.setMetaLightOpacity(BlockTypes_MetalDevice1.THERMOELECTRIC_GEN.getMeta(), 255);
@@ -101,8 +101,17 @@ public class BlockMetalDevice1 extends BlockIETileProvider<BlockTypes_MetalDevic
 	@Override
 	public boolean canIEBlockBePlaced(World world, BlockPos pos, IBlockState newState, EnumFacing side, float hitX, float hitY, float hitZ, EntityPlayer player, ItemStack stack)
 	{
-		if(stack.getItemDamage()==BlockTypes_MetalDevice1.BLAST_FURNACE_PREHEATER.getMeta())
-			return world.isAirBlock(pos.add(0,1,0)) && world.isAirBlock(pos.add(0,2,0));
+		if(stack.getItemDamage()==BlockTypes_MetalDevice1.BLAST_FURNACE_PREHEATER.getMeta() || stack.getItemDamage()==BlockTypes_MetalDevice1.SAMPLE_DRILL.getMeta())
+		{
+			for(int hh=1; hh<=2; hh++)
+				if(!world.getBlockState(pos.add(0,hh,0)).getBlock().isReplaceable(world, pos.add(0,hh,0)))
+					return false;
+		}
+		else if(stack.getItemDamage()== BlockTypes_MetalDevice1.TESLA_COIL.getMeta())
+		{
+			if(!world.getBlockState(pos.add(0,1,0)).getBlock().isReplaceable(world, pos.add(0,1,0)))
+				return false;
+		}
 		return true;
 	}
 
@@ -114,6 +123,8 @@ public class BlockMetalDevice1 extends BlockIETileProvider<BlockTypes_MetalDevic
 			return !((TileEntityTeslaCoil)tile).dummy;
 		return !(tile instanceof TileEntityElectricLantern || tile instanceof TileEntityChargingStation);
 	}
+
+
 
 	@Override
 	public TileEntity createNewTileEntity(World world, int meta)

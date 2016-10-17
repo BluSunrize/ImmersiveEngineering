@@ -13,6 +13,8 @@ import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
@@ -85,6 +87,23 @@ public class BlockConnector extends BlockIETileProvider<BlockTypes_Connector>
 	{
 		IBlockState s = world.getBlockState(pos);
 		return s.getValue(property) == BlockTypes_Connector.ENERGY_METER;
+	}
+
+	@Override
+	public boolean canIEBlockBePlaced(World world, BlockPos pos, IBlockState newState, EnumFacing side, float hitX, float hitY, float hitZ, EntityPlayer player, ItemStack stack)
+	{
+		if(stack.getItemDamage()== BlockTypes_Connector.TRANSFORMER.getMeta() || stack.getItemDamage()== BlockTypes_Connector.TRANSFORMER_HV.getMeta())
+		{
+			for(int hh=1; hh<=2; hh++)
+				if(!world.getBlockState(pos.add(0,hh,0)).getBlock().isReplaceable(world, pos.add(0,hh,0)))
+					return false;
+		}
+		else if(stack.getItemDamage()== BlockTypes_Connector.ENERGY_METER.getMeta())
+		{
+			if(!world.getBlockState(pos.add(0,1,0)).getBlock().isReplaceable(world, pos.add(0,1,0)))
+				return false;
+		}
+		return true;
 	}
 
 	@Override

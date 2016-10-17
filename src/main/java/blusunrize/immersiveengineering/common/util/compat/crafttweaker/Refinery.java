@@ -1,7 +1,6 @@
 package blusunrize.immersiveengineering.common.util.compat.crafttweaker;
 
-import blusunrize.immersiveengineering.api.energy.DieselHandler;
-import blusunrize.immersiveengineering.api.energy.DieselHandler.RefineryRecipe;
+import blusunrize.immersiveengineering.api.crafting.RefineryRecipe;
 import minetweaker.IUndoableAction;
 import minetweaker.MineTweakerAPI;
 import minetweaker.api.liquid.ILiquidStack;
@@ -16,16 +15,16 @@ import java.util.Iterator;
 public class Refinery
 {
 	@ZenMethod
-	public static void addRecipe(ILiquidStack output, ILiquidStack input0, ILiquidStack input1)
+	public static void addRecipe(ILiquidStack output, ILiquidStack input0, ILiquidStack input1, int energy)
 	{
-		if(CraftTweakerHelper.toFluidStack(input0) == null || CraftTweakerHelper.toFluidStack(input0).getFluid() == null)
-			return;
-		if(CraftTweakerHelper.toFluidStack(input1) == null || CraftTweakerHelper.toFluidStack(input1).getFluid() == null)
-			return;
-		if(CraftTweakerHelper.toFluidStack(output) == null || CraftTweakerHelper.toFluidStack(output).getFluid() == null)
+		FluidStack fOut = CraftTweakerHelper.toFluidStack(output);
+		FluidStack fIn0 = CraftTweakerHelper.toFluidStack(input0);
+		FluidStack fIn1 = CraftTweakerHelper.toFluidStack(input1);
+
+		if(fOut==null||fIn0==null||fIn1==null)
 			return;
 
-		RefineryRecipe r = new RefineryRecipe(CraftTweakerHelper.toFluidStack(input0), CraftTweakerHelper.toFluidStack(input1), CraftTweakerHelper.toFluidStack(output));
+		RefineryRecipe r = new RefineryRecipe(fOut, fIn0, fIn1, energy);
 		MineTweakerAPI.apply(new Add(r));
 	}
 
@@ -41,7 +40,7 @@ public class Refinery
 		@Override
 		public void apply()
 		{
-			DieselHandler.refineryList.add(recipe);
+			RefineryRecipe.recipeList.add(recipe);
 		}
 
 		@Override
@@ -53,7 +52,7 @@ public class Refinery
 		@Override
 		public void undo()
 		{
-			DieselHandler.refineryList.remove(recipe);
+			RefineryRecipe.recipeList.remove(recipe);
 		}
 
 		@Override
@@ -95,7 +94,7 @@ public class Refinery
 		@Override
 		public void apply()
 		{
-			Iterator<RefineryRecipe> it = DieselHandler.refineryList.iterator();
+			Iterator<RefineryRecipe> it = RefineryRecipe.recipeList.iterator();
 			while(it.hasNext())
 			{
 				RefineryRecipe r = it.next();
@@ -113,7 +112,7 @@ public class Refinery
 			if(removedRecipes != null)
 				for(RefineryRecipe recipe : removedRecipes)
 					if(recipe != null)
-						DieselHandler.refineryList.add(recipe);
+						RefineryRecipe.recipeList.add(recipe);
 		}
 
 		@Override

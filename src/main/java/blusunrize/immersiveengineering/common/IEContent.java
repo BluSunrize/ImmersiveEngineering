@@ -653,7 +653,7 @@ public class IEContent
 		FermenterRecipe.addRecipe(new FluidStack(fluidEthanol,80), null, Items.APPLE, 6400);
 		FermenterRecipe.addRecipe(new FluidStack(fluidEthanol,80), null, "cropPotato", 6400);
 
-		RefineryRecipe.addRecipe(new FluidStack(fluidBiodiesel,16), new FluidStack(fluidPlantoil,8),new FluidStack(fluidEthanol,8),80);
+		RefineryRecipe.addRecipe(new FluidStack(fluidBiodiesel,16), new FluidStack(fluidPlantoil,8),new FluidStack(fluidEthanol,8), 80);
 
 		ThermoelectricHandler.registerSourceInKelvin("blockIce", 273);
 		ThermoelectricHandler.registerSourceInKelvin("blockPackedIce", 200);
