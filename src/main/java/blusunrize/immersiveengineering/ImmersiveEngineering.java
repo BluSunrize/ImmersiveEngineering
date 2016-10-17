@@ -1,7 +1,6 @@
 package blusunrize.immersiveengineering;
 
 import blusunrize.immersiveengineering.api.IEApi;
-import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
@@ -44,7 +43,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Arrays;
 
-@Mod(modid = ImmersiveEngineering.MODID, name = ImmersiveEngineering.MODNAME, version = ImmersiveEngineering.VERSION, dependencies = "after:Railcraft;after:tconstruct@[1.10.2-2.5,);before:JEI")
+@Mod(modid = ImmersiveEngineering.MODID, name = ImmersiveEngineering.MODNAME, version = ImmersiveEngineering.VERSION, dependencies = "required-after:Forge@[12.18.2.2104,];after:Railcraft;after:tconstruct@[1.10.2-2.5,);before:JEI")
 public class ImmersiveEngineering
 {
 	public static final String MODID = "immersiveengineering";

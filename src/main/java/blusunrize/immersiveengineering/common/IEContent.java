@@ -129,7 +129,6 @@ public class IEContent
 	public static ItemIEBase itemMetal;
 	public static ItemIEBase itemTool;
 	public static ItemIEBase itemToolbox;
-	public static ItemIEBase itemFluidContainers;
 	public static ItemIEBase itemWireCoil;
 	public static ItemIEBase itemSeeds;
 	public static ItemIEBase itemDrill;
@@ -168,11 +167,11 @@ public class IEContent
 		blockStorageSlabs = (BlockIESlab)new BlockIESlab("storageSlab",Material.IRON, PropertyEnum.create("type", BlockTypes_MetalsIE.class)).setHardness(5.0F).setResistance(10.0F);
 		int insGlassMeta = BlockTypes_StoneDecoration.INSULATING_GLASS.getMeta();
 		blockStoneDecoration = (BlockIEBase)new BlockIEBase("stoneDecoration", Material.ROCK, PropertyEnum.create("type", BlockTypes_StoneDecoration.class), ItemBlockIEBase.class).setMetaBlockLayer(insGlassMeta, BlockRenderLayer.TRANSLUCENT).setMetaLightOpacity(insGlassMeta, 0).setNotNormalBlock(insGlassMeta).setMetaExplosionResistance(BlockTypes_StoneDecoration.CONCRETE_LEADED.getMeta(), 180).setHardness(2.0F).setResistance(10.0F);
-		blockStoneDecorationSlabs = (BlockIEBase)new BlockIESlab("stoneDecorationSlab",Material.ROCK, PropertyEnum.create("type", BlockTypes_StoneDecoration.class)).setMetaHidden(3,8).setHardness(2.0F).setResistance(10.0F);
+		blockStoneDecorationSlabs = (BlockIEBase)new BlockIESlab("stoneDecorationSlab",Material.ROCK, PropertyEnum.create("type", BlockTypes_StoneDecoration.class)).setMetaHidden(3,8).setMetaExplosionResistance(BlockTypes_StoneDecoration.CONCRETE_LEADED.getMeta(), 180).setHardness(2.0F).setResistance(10.0F);
 		blockStoneStair_hempcrete = new BlockIEStairs("stoneDecorationStairs_hempcrete",blockStoneDecoration.getStateFromMeta(BlockTypes_StoneDecoration.HEMPCRETE.getMeta()));
 		blockStoneStair_concrete0 = new BlockIEStairs("stoneDecorationStairs_concrete",blockStoneDecoration.getStateFromMeta(BlockTypes_StoneDecoration.CONCRETE.getMeta()));
 		blockStoneStair_concrete1 = new BlockIEStairs("stoneDecorationStairs_concrete_tile",blockStoneDecoration.getStateFromMeta(BlockTypes_StoneDecoration.CONCRETE_TILE.getMeta()));
-		blockStoneStair_concrete2 = new BlockIEStairs("stoneDecorationStairs_concrete_leaded",blockStoneDecoration.getStateFromMeta(BlockTypes_StoneDecoration.CONCRETE_LEADED.getMeta()));
+		blockStoneStair_concrete2 = new BlockIEStairs("stoneDecorationStairs_concrete_leaded",blockStoneDecoration.getStateFromMeta(BlockTypes_StoneDecoration.CONCRETE_LEADED.getMeta())).setExplosionResistance(180f);
 
 		blockStoneDevice = new BlockStoneDevice();
 
