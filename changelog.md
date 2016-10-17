@@ -6,6 +6,7 @@
 - added WAILA support for Tesla Coils
 - added The One Probe Compat for machines and energy storage
 - added a config option to disable villagers and their houses
+- added a config option to disable OreDict names in Advanced Tooltips
 - re-added config option for Railgun damage
 - re-added support for Railcrafts rails and rebar to be used as projectiles
 - re-added shader support for Railcraft carts
@@ -31,6 +32,8 @@
 - fixed Pipes not dropping their covers
 - fixed placement logic for multiblock placements (posts, transformers, drill, teslacoil)
 - fixed CraftTweaker integration for the Refinery
+- fixed stair rendering
+- fixed explosion resistance for leaded concrete stairs and slabs
 - fixed multiple minor issues
 
 #####Version 0.10-44 - BUILT

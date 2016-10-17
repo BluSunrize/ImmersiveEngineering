@@ -47,6 +47,8 @@ public class Config
 		public static boolean adjustManualScale = false;
 		@Comment({"Set this to true if you suffer from bad eyesight. The Engineer's manual will be switched to a bold and darker text to improve readability.", "Note that this may lead to a break of formatting and have text go off the page in some instances. This is unavoidable."})
 		public static boolean badEyesight = false;
+		@Comment({"Controls if item tooltips should contain the OreDictionary names of items. These tooltips are only visible in advanced tooltip mod (F3+H)"})
+		public static boolean oreTooltips = true;
 		@Comment({"Increase the distance at which certain TileEntities (specifically windmills) are still visible. This is a modifier, so set it to 1 for default render distance, to 2 for doubled distance and so on."})
 		public static double increasedTileRenderdistance = 1.5;
 		@Comment({"A list of preferred Mod IDs that results of IE processes should stem from, aka which mod you want the copper to come from.", "This affects the ores dug by the excavator, as well as those crushing recipes that don't have associated IE items. This list is in oreder of priority."})

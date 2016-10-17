@@ -158,7 +158,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 				&& ClientUtils.mc().currentScreen instanceof GuiBlastFurnace
 				&& BlastFurnaceRecipe.isValidBlastFuel(event.getItemStack()))
 			event.getToolTip().add(TextFormatting.GRAY+ I18n.format("desc.ImmersiveEngineering.info.blastFuelTime", BlastFurnaceRecipe.getBlastFuelTime(event.getItemStack())));
-		if(event.isShowAdvancedItemTooltips())
+		if(IEConfig.oreTooltips && event.isShowAdvancedItemTooltips())
 		{
 			for(int oid : OreDictionary.getOreIDs(event.getItemStack()))
 				event.getToolTip().add(TextFormatting.GRAY + OreDictionary.getOreName(oid));
