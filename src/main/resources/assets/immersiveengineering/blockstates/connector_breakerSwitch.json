@@ -9,7 +9,7 @@
 	"variants":
 	{
 		"inventory,type=breakerswitch": [{
-			"model": "immersiveengineering:connector/breakerSwitch_off.obj",
+			"model": "immersiveengineering:connector/breakerSwitch_off.obj.ie",
 			"transform": {
 				"scale": [ 0.5, 0.5, 0.5 ],
 				"firstperson_righthand": { "translation": [ 0, 0.125, 0 ], "scale": [ 0.75, 0.75, 0.75 ], "rotation": [{ "y": 180 }] },

@@ -9,7 +9,7 @@
 	"variants":
 	{
 		"inventory,type=redstone_breaker": [{
-			"model": "immersiveengineering:connector/redstoneBreaker.obj",
+			"model": "immersiveengineering:connector/redstoneBreaker.obj.ie",
 			"transform": {
 				"scale": [ 0.375, 0.375, 0.375 ],
 				"firstperson_righthand": { "translation": [ 0, 0.125, 0 ], "scale": [ 0.75, 0.75, 0.75 ], "rotation": [{ "y": 180 }] },

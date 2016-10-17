@@ -35,7 +35,6 @@ public class BlockConnector extends BlockIETileProvider<BlockTypes_Connector>
 		lightOpacity = 0;
 		setBlockLayer(BlockRenderLayer.SOLID, BlockRenderLayer.TRANSLUCENT);
 		setAllNotNormalBlock();
-		setBlockLayer(BlockRenderLayer.SOLID, BlockRenderLayer.TRANSLUCENT);
 	}
 
 	@Override
