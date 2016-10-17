@@ -712,13 +712,13 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 		{
 			super.processFinish(multiblock);
 			int size = -1;
-			for (IngredientStack s:recipe.getItemInputs())
-				if (s.matchesItemStackIgnoringSize(inputItem))
+			for(IngredientStack s:recipe.getItemInputs())
+				if(s.matchesItemStackIgnoringSize(inputItem))
 				{
 					size = s.inputSize;
 					break;
 				}
-			if (size>0&&inputItem.stackSize>size)
+			if(size>0&&inputItem.stackSize>size)
 			{
 				inputItem.splitStack(size);
 				processTick = 0;
@@ -731,9 +731,21 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 	{
 		TileEntityMultiblockMetal multiblock;
 		float transformationPoint = .5f;
+		boolean doProcessStacking = false;
 		public MultiblockInventoryHandler_DirectProcessing(TileEntityMultiblockMetal multiblock)
 		{
 			this.multiblock = multiblock;
+		}
+
+		public MultiblockInventoryHandler_DirectProcessing setTransformationPoint(float point)
+		{
+			this.transformationPoint = point;
+			return this;
+		}
+		public MultiblockInventoryHandler_DirectProcessing setProcessStacking(boolean stacking)
+		{
+			this.doProcessStacking = stacking;
+			return this;
 		}
 
 		@Override
@@ -761,7 +773,7 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 					displayStack = Utils.copyStackWithAmount(stack, ingr.inputSize);
 					break;
 				}
-			if(multiblock.addProcessToQueue(new MultiblockProcessInWorld(recipe, displayStack, transformationPoint), simulate))
+			if(multiblock.addProcessToQueue(new MultiblockProcessInWorld(recipe, displayStack, transformationPoint), simulate, doProcessStacking))
 			{
 				multiblock.markDirty();
 				multiblock.markContainingBlockForUpdate(null);

@@ -447,7 +447,7 @@ public class TileEntityCrusher extends TileEntityMultiblockMetal<TileEntityCrush
 			return true;
 		return super.hasCapability(capability, facing);
 	}
-	IItemHandler insertionHandler = new MultiblockInventoryHandler_DirectProcessing(this);
+	IItemHandler insertionHandler = new MultiblockInventoryHandler_DirectProcessing(this).setProcessStacking(true);
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing)
 	{
