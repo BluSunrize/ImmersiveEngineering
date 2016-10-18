@@ -1,3 +1,6 @@
+#####Version 0.10-47 - BUILT
+- moved all clientside references from the config
+
 #####Version 0.10-46 - BUILT
 - fixed serverside crash due to abstract proxy
 - fixed mcmod.info file
