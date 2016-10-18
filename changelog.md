@@ -1,3 +1,7 @@
+#####Version 0.10-46 - BUILT
+- fixed serverside crash due to abstract proxy
+- fixed mcmod.info file
+
 #####Version 0.10-45 - BUILT
 - change over to Forge's new config system:
     - DELETE YOUR IE CONFIG
