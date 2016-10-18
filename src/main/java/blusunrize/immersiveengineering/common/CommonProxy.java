@@ -28,7 +28,7 @@ import net.minecraftforge.fml.common.network.IGuiHandler;
 import javax.annotation.Nonnull;
 import java.util.UUID;
 
-public abstract class CommonProxy implements IGuiHandler
+public class CommonProxy implements IGuiHandler
 {
 	public void preInit(){}
 
