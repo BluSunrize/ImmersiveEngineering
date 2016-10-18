@@ -1,14 +1,14 @@
 [
 {
-  "modid": "ImmersiveEngineering",
+  "modid": "immersiveengineering",
   "name": "Immersive Engineering",
   "description": "",
   "version": "${version}",
   "mcversion": "${mcversion}",
-  "url": "",
+  "url": "https://github.com/BluSunrize/ImmersiveEngineering",
   "updateUrl": "",
   "authorList": ["BluSunrize","Damien A.W. Hazard"],
-  "credits": "TTFTCUTS for the catenary rendering code",
+  "credits": "All the great other Git Contributors, and the nerds on IRC!",
   "logoFile": "assets/immersiveengineering/logo.png",
   "screenshots": [],
   "dependencies": []
