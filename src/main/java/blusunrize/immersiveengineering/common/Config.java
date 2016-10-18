@@ -2,7 +2,6 @@ package blusunrize.immersiveengineering.common;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.*;
-import blusunrize.immersiveengineering.client.IEManualInstance;
 import blusunrize.immersiveengineering.common.Config.IEConfig.Machines;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorLV;
 import blusunrize.immersiveengineering.common.util.IELogger;
@@ -17,10 +16,17 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Field;
+import java.util.HashMap;
 import java.util.Map;
 
 public class Config
 {
+	public static HashMap<String, Boolean> manual_bool = new HashMap<String, Boolean>();
+	public static HashMap<String, Integer> manual_int = new HashMap<String, Integer>();
+	public static HashMap<String, int[]> manual_intA = new HashMap<String, int[]>();
+	public static HashMap<String, Double> manual_double = new HashMap<String, Double>();
+	public static HashMap<String, double[]> manual_doubleA = new HashMap<String, double[]>();
+
 	@net.minecraftforge.common.config.Config(modid=ImmersiveEngineering.MODID)
 	public static class IEConfig
 	{
@@ -28,7 +34,7 @@ public class Config
 		@Comment({"Drop connections with non-existing endpoints when loading the world. Use with care and backups and only when suspecting corrupted data.", "This option will check and load all connection endpoints and may slow down the world loading process."})
 		public static boolean validateConnections = false;
 		@Comment({"The transfer rates in Flux/t for the wire tiers (copper, electrum, HV, Structural Rope, Cable & Redstone(no transfer) )"})
-		@Mapped(mapClass=IEManualInstance.class, mapName="config_intA")
+		@Mapped(mapClass=Config.class, mapName="manual_intA")
 		public static int[] wireTransferRate = new int[]{2048, 8192, 32768, 0, 0, 0};
 		@Comment({"The percentage of power lost every 16 blocks of distance for the wire tiers (copper, electrum, HV, Structural Rope, Cable & Redstone(no transfer) )"})
 		public static double[] wireLossRatio = new double[]{.05, .025, .025, 1, 1, 1};
@@ -69,7 +75,7 @@ public class Config
 		{
 			//Connectors
 			@Comment({"In- and output rates of LV,MV and HV Wire Conenctors. This is independant of the transferrate of the wires."})
-			@Mapped(mapClass=IEManualInstance.class, mapName="config_intA")
+			@Mapped(mapClass=Config.class, mapName="manual_intA")
 			public static int[] wireConnectorInput = new int[]{256, 1024, 4096};
 			//Capacitors
 			@Comment({"The maximum amount of Flux that can be stored in a low-voltage capacitor"})
@@ -99,42 +105,42 @@ public class Config
 			@Comment({"The Flux that will be output by the lightning rod when it is struck"})
 			public static int lightning_output = 4 * 4000000;
 			@Comment({"The Flux per tick that the Diesel Generator will output. The burn time of the fuel determines the total output"})
-			@Mapped(mapClass=IEManualInstance.class, mapName="config_int")
+			@Mapped(mapClass=Config.class, mapName="manual_int")
 			public static int dieselGen_output = 4096;
 
 			//Simple Machines
 			@Comment({"The Flux per tick consumed to add one heat to a furnace. Creates up to 4 heat in the startup time and then 1 heat per tick to keep it running"})
-			@Mapped(mapClass=IEManualInstance.class, mapName="config_int")
+			@Mapped(mapClass=Config.class, mapName="manual_int")
 			public static int heater_consumption = 8;
 			@Comment({"The Flux per tick consumed to double the speed of the furnace. Only happens if furnace is at maximum heat."})
-			@Mapped(mapClass=IEManualInstance.class, mapName="config_int")
+			@Mapped(mapClass=Config.class, mapName="manual_int")
 			public static int heater_speedupConsumption = 24;
 			@Comment({"The Flux per tick the Blast Furnace Preheater will consume to speed up the Blast Furnace"})
-			@Mapped(mapClass=IEManualInstance.class, mapName="config_int")
+			@Mapped(mapClass=Config.class, mapName="manual_int")
 			public static int preheater_consumption = 32;
 			@Comment({"The length in ticks it takes for the Core Sample Drill to figure out which mineral is found in a chunk"})
-			@Mapped(mapClass=IEManualInstance.class, mapName="config_int")
+			@Mapped(mapClass=Config.class, mapName="manual_int")
 			public static int coredrill_time = 200;
 			@Comment({"The Flux per tick consumed by the Core Sample Drill"})
-			@Mapped(mapClass=IEManualInstance.class, mapName="config_int")
+			@Mapped(mapClass=Config.class, mapName="manual_int")
 			public static int coredrill_consumption = 40;
 			@Comment({"The Flux the Fluid Pump will consume to pick up a fluid block in the world"})
 			public static int pump_consumption = 250;
 			@Comment({"The Flux the Fluid Pump will consume pressurize+accellerate fluids, increasing the transferrate"})
 			public static int pump_consumption_accelerate = 5;
 			@Comment({"Set this to false to disable the fluid pump being able to draw infinite water from sources"})
-			@Mapped(mapClass=IEManualInstance.class, mapName="config_bool")
+			@Mapped(mapClass=Config.class, mapName="manual_bool")
 			public static boolean pump_infiniteWater = true;
 			@Comment({"If this is set to true (default) the pump will replace fluids it picks up with cobblestone in order to reduce lag caused by flowing fluids."})
-			@Mapped(mapClass=IEManualInstance.class, mapName="config_bool")
+			@Mapped(mapClass=Config.class, mapName="manual_bool")
 			public static boolean pump_placeCobble = true;
 			@Comment({"The Flux per tick the Charging Station can insert into an item"})
 			public static int charger_consumption = 256;
 			@Comment({"The Flux per tick the Tesla Coil will consume, simply by being active"})
-			@Mapped(mapClass=IEManualInstance.class, mapName="config_int")
+			@Mapped(mapClass=Config.class, mapName="manual_int")
 			public static int teslacoil_consumption = 256;
 			@Comment({"The amount of Flux the Tesla Coil will consume when shocking an entity"})
-			@Mapped(mapClass=IEManualInstance.class, mapName="config_int")
+			@Mapped(mapClass=Config.class, mapName="manual_int")
 			public static int teslacoil_consumption_active = 512;
 			@Comment({"The amount of damage the Tesla Coil will do when shocking an entity"})
 			public static float teslacoil_damage = 6;
@@ -182,7 +188,7 @@ public class Config
 			@Comment({"The maximum amount of damage Graphite Electrodes can take. While the furnace is working, electrodes sustain 1 damage per tick, so this is effectively the lifetime in ticks. The default value of 96000 makes them last for 8 consecutive ingame days"})
 			public static int arcfurnace_electrodeDamage = 96000;
 			@Comment({"Set this to true to make the blueprint for graphite electrodes craftable in addition to villager/dungeon loot"})
-			@Mapped(mapClass=IEManualInstance.class, mapName="config_bool")
+			@Mapped(mapClass=Config.class, mapName="manual_bool")
 			public static boolean arcfurnace_electrodeCrafting = false;
 			@Comment({"Set this to false to disable the Arc Furnace's recycling of armors and tools"})
 			public static boolean arcfurnace_recycle = true;
@@ -193,7 +199,7 @@ public class Config
 			//@Comment({"The Flux the Bottling Machine will consume per tick, when filling items"})
 			//public static int bottlingMachine_consumption = 8;
 			@Comment({"The Flux per tick the Excavator will consume to dig"})
-			@Mapped(mapClass=IEManualInstance.class, mapName="config_int")
+			@Mapped(mapClass=Config.class, mapName="manual_int")
 			public static int excavator_consumption = 4096;
 			@Comment({"The speed of the Excavator. Basically translates to how many degrees per tick it will turn."})
 			public static double excavator_speed = 1d;
@@ -211,22 +217,22 @@ public class Config
 		public static class Ores
 		{
 			@Comment({"Generation config for Copper Ore.", "Parameters: Vein size, lowest possible Y, highest possible Y, veins per chunk, chance for vein to spawn (out of 100). Set vein size to 0 to disable the generation"})
-			@Mapped(mapClass=IEManualInstance.class, mapName="config_intA")
+			@Mapped(mapClass=Config.class, mapName="manual_intA")
 			public static int[] ore_copper = new int[]{8, 40, 72, 8, 100};
 			@Comment({"Generation config for Bauxite Ore.", "Parameters: Vein size, lowest possible Y, highest possible Y, veins per chunk, chance for vein to spawn (out of 100). Set vein size to 0 to disable the generation"})
-			@Mapped(mapClass=IEManualInstance.class, mapName="config_intA")
+			@Mapped(mapClass=Config.class, mapName="manual_intA")
 			public static int[] ore_bauxite = new int[]{4, 40, 85, 8, 100};
 			@Comment({"Generation config for Lead Ore.", "Parameters: Vein size, lowest possible Y, highest possible Y, veins per chunk, chance for vein to spawn (out of 100). Set vein size to 0 to disable the generation"})
-			@Mapped(mapClass=IEManualInstance.class, mapName="config_intA")
+			@Mapped(mapClass=Config.class, mapName="manual_intA")
 			public static int[] ore_lead = new int[]{6, 8, 36, 4, 100};
 			@Comment({"Generation config for Silver Ore.", "Parameters: Vein size, lowest possible Y, highest possible Y, veins per chunk, chance for vein to spawn (out of 100). Set vein size to 0 to disable the generation"})
-			@Mapped(mapClass=IEManualInstance.class, mapName="config_intA")
+			@Mapped(mapClass=Config.class, mapName="manual_intA")
 			public static int[] ore_silver = new int[]{8, 8, 40, 4, 80};
 			@Comment({"Generation config for Nickel Ore.", "Parameters: Vein size, lowest possible Y, highest possible Y, veins per chunk, chance for vein to spawn (out of 100). Set vein size to 0 to disable the generation"})
-			@Mapped(mapClass=IEManualInstance.class, mapName="config_intA")
+			@Mapped(mapClass=Config.class, mapName="manual_intA")
 			public static int[] ore_nickel = new int[]{6, 8, 24, 2, 100};
 			@Comment({"Generation config for Uranium Ore.", "Parameters: Vein size, lowest possible Y, highest possible Y, veins per chunk, chance for vein to spawn (out of 100). Set vein size to 0 to disable the generation"})
-			@Mapped(mapClass=IEManualInstance.class, mapName="config_intA")
+			@Mapped(mapClass=Config.class, mapName="manual_intA")
 			public static int[] ore_uranium = new int[]{4, 8, 24, 2, 60};
 			@Comment({"A blacklist of dimensions in which IE ores won't spawn. By default this is Nether (-1) and End (1)"})
 			public static int[] oreDimBlacklist = new int[]{-1, 1};
@@ -297,8 +303,8 @@ public class Config
 		}
 	}
 //	public static HashMap<String, Boolean> config_boolean = new HashMap();
-//	public static HashMap<String, Integer> config_int = new HashMap();
-//	public static HashMap<String, Double> config_double = new HashMap();
+//	public static HashMap<String, Integer> manual_int = new HashMap();
+//	public static HashMap<String, Double> manual_double = new HashMap();
 //	public static HashMap<String, String> config_string = new HashMap();
 //	public static HashMap<String, double[]> config_doubleArray = new HashMap();
 //	public static HashMap<String, int[]> config_intArray = new HashMap();
@@ -330,7 +336,7 @@ public class Config
 		ArcFurnaceRecipe.energyModifier = IEConfig.Machines.arcFurnace_energyModifier;
 		ArcFurnaceRecipe.timeModifier = IEConfig.Machines.arcFurnace_timeModifier;
 
-		IEManualInstance.config_int.put("excavator_depletion_days", Machines.excavator_depletion*45/24000);
+		Config.manual_int.put("excavator_depletion_days", Machines.excavator_depletion*45/24000);
 
 		checkMappedValues(IEConfig.class);
 
@@ -391,22 +397,22 @@ public class Config
 //
 //	public static void setInt(String key, int i)
 //	{
-////		config_int.put(key, i);
+////		manual_int.put(key, i);
 //	}
 //	public static int getInt(String key)
 //	{
-////		Integer i = config_int.get(key);
+////		Integer i = manual_int.get(key);
 ////		return i!=null?i.intValue():0;
 //		return 0;
 //	}
 //
 //	public static void setDouble(String key, double d)
 //	{
-////		config_double.put(key, d);
+////		manual_double.put(key, d);
 //	}
 //	public static double getDouble(String key)
 //	{
-////		Double d = config_double.get(key);
+////		Double d = manual_double.get(key);
 ////		return d!=null?d.floatValue():0;
 //		return 0;
 //	}

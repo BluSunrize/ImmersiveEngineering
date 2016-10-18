@@ -2,6 +2,7 @@ package blusunrize.immersiveengineering.client;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.ManualHelper;
+import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.lib.manual.IManualPage;
@@ -15,17 +16,10 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import org.lwjgl.input.Keyboard;
 
-import java.util.HashMap;
 import java.util.LinkedHashSet;
 
 public class IEManualInstance extends ManualInstance
 {
-	public static HashMap<String, Boolean> config_bool = new HashMap<String, Boolean>();
-	public static HashMap<String, Integer> config_int = new HashMap<String, Integer>();
-	public static HashMap<String, int[]> config_intA = new HashMap<String, int[]>();
-	public static HashMap<String, Double> config_double = new HashMap<String, Double>();
-	public static HashMap<String, double[]> config_doubleA = new HashMap<String, double[]>();
-
 	public IEManualInstance()
 	{
 		super(new IEItemFontRender(), "immersiveengineering:textures/gui/manual.png");
@@ -67,15 +61,15 @@ public class IEManualInstance extends ManualInstance
 			if(segment[1].equalsIgnoreCase("b"))
 			{
 				if(segment.length>3)
-					result = (config_bool.get(segment[2])?segment[3]: segment.length>4?segment[4]:"");
+					result = (Config.manual_bool.get(segment[2])?segment[3]: segment.length>4?segment[4]:"");
 				else
-					result = ""+ config_bool.get(segment[2]);
+					result = ""+ Config.manual_bool.get(segment[2]);
 			}
 			else if(segment[1].equalsIgnoreCase("i"))
-				result = ""+ config_int.get(segment[2]);
+				result = ""+ Config.manual_int.get(segment[2]);
 			else if(segment[1].equalsIgnoreCase("iA"))
 			{
-				int[] iA = config_intA.get(segment[2]);
+				int[] iA = Config.manual_intA.get(segment[2]);
 				if(segment.length>3)
 					try{
 						if(segment[3].startsWith("l"))
@@ -97,10 +91,10 @@ public class IEManualInstance extends ManualInstance
 						result += (i>0?", ":"")+iA[i];
 			}
 			else if(segment[1].equalsIgnoreCase("d"))
-				result = ""+ config_double.get(segment[2]);
+				result = ""+ Config.manual_double.get(segment[2]);
 			else if(segment[1].equalsIgnoreCase("dA"))
 			{
-				double[] iD = config_doubleA.get(segment[2]);
+				double[] iD = Config.manual_doubleA.get(segment[2]);
 				if(segment.length>3)
 					try{
 						int idx = Integer.parseInt(segment[3]);

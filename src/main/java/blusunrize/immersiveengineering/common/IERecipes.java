@@ -10,7 +10,6 @@ import blusunrize.immersiveengineering.api.crafting.CrusherRecipe;
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
-import blusunrize.immersiveengineering.client.IEManualInstance;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.cloth.BlockTypes_ClothDevice;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
@@ -622,7 +621,7 @@ public class IERecipes
 			GameRegistry.addRecipe(new RecipeShapedIngredient(new ItemStack(IEContent.itemMold, 1, 2), " P ", "PCP", " P ", 'P', "plateSteel", 'C', registeredMoldBases.get("rod")));
 		if(registeredMoldBases.containsKey("wire"))
 			GameRegistry.addRecipe(new RecipeShapedIngredient(new ItemStack(IEContent.itemMold, 1, 4), " P ", "PCP", " P ", 'P', "plateSteel", 'C', registeredMoldBases.get("wire")));
-		IEManualInstance.config_bool.put("crushingOreRecipe", !hammerCrushingList.isEmpty());
+		Config.manual_bool.put("crushingOreRecipe", !hammerCrushingList.isEmpty());
 	}
 
 	public static CrusherRecipe addCrusherRecipe(ItemStack output, Object input, int energy, Object... secondary)

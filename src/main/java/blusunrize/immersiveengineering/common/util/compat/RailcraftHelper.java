@@ -2,8 +2,8 @@ package blusunrize.immersiveengineering.common.util.compat;
 
 import blusunrize.immersiveengineering.api.shader.ShaderCaseMinecart;
 import blusunrize.immersiveengineering.api.tool.RailgunHandler;
-import blusunrize.immersiveengineering.client.IEManualInstance;
 import blusunrize.immersiveengineering.client.models.ModelShaderMinecart;
+import blusunrize.immersiveengineering.common.Config;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelMinecart;
 import net.minecraft.client.model.ModelRenderer;
@@ -47,7 +47,7 @@ public class RailcraftHelper extends IECompatModule
 			rebarColourMap[1+ i*3+2] = rebarColourMap[0];
 		}
 		RailgunHandler.registerProjectileProperties(new ItemStack(itemRebar), 7,1.25).setColourMap(rebarColourMap);
-		IEManualInstance.config_bool.put("literalRailGun", true);
+		Config.manual_bool.put("literalRailGun", true);
 	}
 
 	@Override
