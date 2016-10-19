@@ -2,7 +2,6 @@ package blusunrize.immersiveengineering.common.util.chickenbones;
 
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.Vec3d;
-import net.minecraftforge.common.model.TRSRTransformation;
 
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
@@ -84,7 +83,29 @@ public class Matrix4
 
 	public Matrix4(EnumFacing facing)
 	{
-		this(TRSRTransformation.getMatrix(facing));
+		this();
+		setIdentity();
+		translate(.5, .5, .5);
+		switch(facing)
+		{
+		case UP:
+			rotate(Math.PI/2, 1, 0, 0);
+			break;
+		case DOWN:
+			rotate(-Math.PI/2, 1, 0, 0);
+			break;
+		case SOUTH:
+			rotate(Math.PI, 0, 1, 0);
+			break;
+		case EAST:
+			rotate(-Math.PI/2, 0, 1, 0);
+			break;
+		case WEST:
+			rotate(Math.PI/2, 0, 1, 0);
+			break;
+		case NORTH:
+		}
+		translate(-.5, -.5, -.5);
 	}
 	public Matrix4 setIdentity()
 	{
@@ -416,14 +437,13 @@ public class Matrix4
 		m20 = mat.m20;	m21 = mat.m21;	m22 = mat.m22;	m23 = mat.m23;
 		m30 = mat.m30;	m31 = mat.m31;	m32 = mat.m32;	m33 = mat.m33;
 	}
-	
+
 	public final void invert()
 	{
 		Matrix4f temp = toMatrix4f();
 		temp.invert();
 		this.fromMatrix4f(temp);
 	}
-
 
 	@Override
 	public String toString()

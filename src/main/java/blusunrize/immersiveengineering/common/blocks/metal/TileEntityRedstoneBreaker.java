@@ -5,7 +5,10 @@ import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.Vec3d;
@@ -75,5 +78,10 @@ public class TileEntityRedstoneBreaker extends TileEntityBreakerSwitch implement
 	public int getStrongRSOutput(IBlockState state, EnumFacing side)
 	{
 		return 0;
+	}
+	@Override
+	public boolean interact(EnumFacing side, EntityPlayer player, EnumHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
+	{
+		return false;
 	}
 }

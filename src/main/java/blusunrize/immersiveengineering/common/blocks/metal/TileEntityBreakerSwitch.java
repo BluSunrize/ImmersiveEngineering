@@ -17,7 +17,6 @@ import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
-import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
@@ -317,7 +316,6 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 			if ((side==EnumFacing.UP&&f.getAxis()==Axis.Z)||side==EnumFacing.DOWN)
 				f = f.getOpposite();
 		}
-		IELogger.info(f+"__"+side);
 		rotation = f.getHorizontalIndex();
 	}
 	protected void onConnectionChange()
