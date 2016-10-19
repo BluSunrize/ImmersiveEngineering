@@ -22,21 +22,22 @@ public abstract class IECompatModule
 	static
 	{
 		moduleClasses.put("Baubles", BaublesHelper.class);
-		moduleClasses.put("Botania", BotaniaHelper.class);
 		moduleClasses.put("BloodMagic", BloodMagicHelper.class);
+		moduleClasses.put("Botania", BotaniaHelper.class);
 		moduleClasses.put("chisel", ChiselHelper.class);
 		moduleClasses.put("chiselsandbits", ChiselsAndBitsHelper.class);
+		moduleClasses.put("MineTweaker3", CraftTweakerHelper.class);
 		moduleClasses.put("denseores", DenseOresHelper.class);
 		moduleClasses.put("EnderIO", EnderIOHelper.class);
+		moduleClasses.put("Forestry", ForestryHelper.class);
 		moduleClasses.put("foundry", FoundryHelper.class);
 		moduleClasses.put("IC2", IC2Helper.class);
 		moduleClasses.put("OpenComputers", OCHelper.class);
-		moduleClasses.put("Thaumcraft", ThaumcraftHelper.class);
-		moduleClasses.put("tconstruct", TConstructHelper.class);
-		moduleClasses.put("Waila", WailaHelper.class);
-		moduleClasses.put("MineTweaker3", CraftTweakerHelper.class);
-		moduleClasses.put("railcraft", RailcraftHelper.class);
 		moduleClasses.put("theoneprobe", OneProbeHelper.class);
+		moduleClasses.put("tconstruct", TConstructHelper.class);
+		moduleClasses.put("Thaumcraft", ThaumcraftHelper.class);
+		moduleClasses.put("railcraft", RailcraftHelper.class);
+		moduleClasses.put("Waila", WailaHelper.class);
 //		moduleClasses.put("MineFactoryReloaded", MFRHelper.class);
 //		moduleClasses.put("EE3", EE3Helper.class);
 //		moduleClasses.put("ForgeMicroblock", FMPHelper.class);
@@ -49,7 +50,6 @@ public abstract class IECompatModule
 //		moduleClasses.put("ThermalDynamics", ThermalDynamicsHelper.class);
 //		moduleClasses.put("harvestcraft", HarvestCraftHelper.class);
 //		moduleClasses.put("CarpentersBlocks", CarpentersHelper.class);
-//		moduleClasses.put("Forestry", ForestryHelper.class);
 //		moduleClasses.put("etfuturum", EtFuturumHelper.class);
 //		moduleClasses.put("steamcraft2", SteamCraftHelper.class);
 //		moduleClasses.put("ExtraUtilities", ExtraUtilsHelper.class);
