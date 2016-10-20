@@ -4,7 +4,7 @@
 	{
 		"transform": "forge:default-block",
 		"model": "cube_all",
-		"__textures": { "texture": "immersiveengineering:blocks/storage_steel" }
+		"textures": { "texture": "immersiveengineering:blocks/storage_steel" }
 	},
 	"variants":
 	{
