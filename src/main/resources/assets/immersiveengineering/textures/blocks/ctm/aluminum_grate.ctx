@@ -1,6 +1,6 @@
 {
 	"type":"V",
-	"layer":"CUTOUT",
+	"__layer":"CUTOUT",
 	"info":{
 		"size":3
 	}

@@ -18,7 +18,7 @@
 		"inventory,type=steel": [{"textures": { "all": "immersiveengineering:blocks/storage_steel" }}],
 		"type":
 		{
-			"copper": { "model": "immersiveengineering:ieScaffoldingAluminumGrate" },
+			"copper": { "model": "minecraft:glass" },
 			"aluminum": {"textures": { "all": "immersiveengineering:blocks/storage_aluminum" }},
 			"lead": {"textures": { "all": "immersiveengineering:blocks/storage_lead" }},
 			"silver": {"textures": { "all": "immersiveengineering:blocks/storage_silver" }},

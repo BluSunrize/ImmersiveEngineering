@@ -1,6 +1,6 @@
 {
 	"type":"CTM",
-	"layer":"CUTOUT",
+	"__layer":"CUTOUT",
 	"textures":[
 		"./aluminum_scaffold_frame",
 		"./aluminum_scaffold_frame_ctm"
