@@ -1,0 +1,6 @@
+{
+    "textures":[
+        "immersiveengineering:blocks/ctm/aluminum_grate.ctx",
+        "immersiveengineering:blocks/ctm/aluminum_scaffold_frame.ctx"
+    ]
+}

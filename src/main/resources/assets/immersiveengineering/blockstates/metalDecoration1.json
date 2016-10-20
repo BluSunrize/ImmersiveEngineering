@@ -4,7 +4,7 @@
 	{
 		"transform": "forge:default-block",
 		"model": "cube_all",
-		"textures": { "texture": "immersiveengineering:blocks/storage_steel" }
+		"__textures": { "texture": "immersiveengineering:blocks/storage_steel" }
 	},
 	"variants":
 	{
@@ -47,8 +47,7 @@
 				"textures": { "side": "immersiveengineering:blocks/metalDecoration1_aluminumScaffolding", "top": "immersiveengineering:blocks/metalDecoration1_aluminumScaffolding_top", "bottom": "immersiveengineering:blocks/metalDecoration1_aluminumScaffolding_top"}
 			},
 			"aluminum_scaffolding_1": {
-				"model": "immersiveengineering:ieScaffolding",
-				"textures": { "side": "immersiveengineering:blocks/metalDecoration1_aluminumScaffolding", "top": "immersiveengineering:blocks/metalDecoration1_aluminumScaffolding_top1", "bottom": "immersiveengineering:blocks/metalDecoration1_aluminumScaffolding_top"}
+				"model": "immersiveengineering:ieScaffoldingAluminumGrate"
 			},
 			"aluminum_scaffolding_2": {
 				"model": "immersiveengineering:ieScaffolding",

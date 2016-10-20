@@ -1,0 +1,7 @@
+{
+	"type":"CTM",
+	"textures":[
+		"./aluminum_scaffold_frame",
+		"./aluminum_scaffold_frame_ctm"
+	]
+}
