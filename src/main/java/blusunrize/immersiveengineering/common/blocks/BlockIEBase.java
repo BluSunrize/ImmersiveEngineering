@@ -201,9 +201,10 @@ public class BlockIEBase<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 		return this.hasFlavour[Math.max(0, Math.min(stack.getItemDamage(), this.hasFlavour.length-1))];
 	}
 
-	protected void setBlockLayer(BlockRenderLayer... layer)
+	public BlockIEBase<E> setBlockLayer(BlockRenderLayer... layer)
 	{
 		this.renderLayers = Sets.newHashSet(layer);
+		return this;
 	}
 	public BlockIEBase<E> setMetaBlockLayer(int meta, BlockRenderLayer... layer)
 	{

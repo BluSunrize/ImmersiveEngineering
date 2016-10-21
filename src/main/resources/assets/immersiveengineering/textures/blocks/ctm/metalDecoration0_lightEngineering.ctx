@@ -1,0 +1,9 @@
+{
+	"type":"R",
+	"textures":[
+    		"./metalDecoration0_lightEngineering_ctm"
+    ],
+    "info":{
+        "size":3
+    }
+}

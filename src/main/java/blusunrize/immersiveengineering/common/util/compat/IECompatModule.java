@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.common.util.compat;
 
+import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.CraftTweakerHelper;
 import blusunrize.immersiveengineering.common.util.compat.opencomputers.OCHelper;
@@ -17,7 +18,6 @@ public abstract class IECompatModule
 {
 	public static HashMap<String, Class<? extends IECompatModule>> moduleClasses = new HashMap<String, Class<? extends IECompatModule>>();
 	public static Set<IECompatModule> modules = new HashSet<IECompatModule>();
-	public static HashMap<String, Boolean> compatEnabled = new HashMap<String, Boolean>();
 
 	static
 	{
@@ -65,7 +65,7 @@ public abstract class IECompatModule
 			if(Loader.isModLoaded(e.getKey()))
 				try
 				{
-					Boolean enabled = compatEnabled.get(e.getKey());
+					Boolean enabled = Config.IEConfig.compat.get(e.getKey());
 					if(enabled==null || !enabled.booleanValue())
 						continue;
 					IECompatModule m = e.getValue().newInstance();
