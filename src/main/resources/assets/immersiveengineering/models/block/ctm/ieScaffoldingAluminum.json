@@ -1,12 +1,12 @@
 {
-	"parent": "block/ieScaffolding",
+	"parent": "immersiveengineering:block/ieScaffolding",
 	"textures": {
 		"side": "immersiveengineering:blocks/metalDecoration1_aluminumScaffolding",
 		"top": "immersiveengineering:blocks/metalDecoration1_aluminumScaffolding_top1",
 		"bottom": "immersiveengineering:blocks/metalDecoration1_aluminumScaffolding_top"
 	},
 	"ctm": {
-		"model": { "model": "cube" },
+		"model": { "model": "immersiveengineering:ieScaffolding" },
 		"face": "immersiveengineering:ctm/aluminum_scaffold_side.cf",
 		"overrides":{
 			"UP":"immersiveengineering:ctm/aluminum_scaffold.cf",
