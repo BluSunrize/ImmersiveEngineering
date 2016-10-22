@@ -47,7 +47,7 @@
 				"textures": { "side": "immersiveengineering:blocks/metalDecoration1_aluminumScaffolding", "top": "immersiveengineering:blocks/metalDecoration1_aluminumScaffolding_top", "bottom": "immersiveengineering:blocks/metalDecoration1_aluminumScaffolding_top"}
 			},
 			"aluminum_scaffolding_1": {
-				"model": "immersiveengineering:ieScaffoldingAluminumGrate"
+				"model": "immersiveengineering:ctm/ieScaffoldingAluminumGrate"
 			},
 			"aluminum_scaffolding_2": {
 				"model": "immersiveengineering:ieScaffolding",
