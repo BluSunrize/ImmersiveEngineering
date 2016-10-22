@@ -156,7 +156,7 @@ public class IESmartObjModel extends OBJBakedModel
 		if(blockState instanceof IExtendedBlockState)
 		{
 			IExtendedBlockState exState = (IExtendedBlockState) blockState;
-			ExtBlockstateAdapter adapter = new ExtBlockstateAdapter(exState, MinecraftForgeClient.getRenderLayer());
+			ExtBlockstateAdapter adapter = new ExtBlockstateAdapter(exState, MinecraftForgeClient.getRenderLayer(), ExtBlockstateAdapter.CONNS_OBJ_CALLBACK);
 			if(!modelCache.containsKey(adapter))
 			{
 				IESmartObjModel model = null;

@@ -17,6 +17,7 @@ import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
+import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
@@ -83,7 +84,6 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 			this.limitType = cableType;
 		wires++;
 		onConnectionChange();
-		ImmersiveEngineering.proxy.clearConnectionModelCache();
 	}
 	@Override
 	public WireType getCableLimiter(TargetingInfo target)
@@ -101,7 +101,6 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 		if(wires<=0)
 			limitType=null;
 		onConnectionChange();
-		this.markContainingBlockForUpdate(null);
 	}
 
 	@Override
@@ -138,7 +137,7 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 		mat.translate(.5, .5, 0).rotate(Math.PI/2*rotation, 0, 0, 1).translate(-.5, -.5, 0);
 		if (endOfLeftConnection==null)
 			calculateLeftConn(mat);
-		boolean isLeft = con.end==endOfLeftConnection||con.start==endOfLeftConnection;
+		boolean isLeft = con.end.equals(endOfLeftConnection)||con.start.equals(endOfLeftConnection);
 		Vec3d ret = mat.apply(new Vec3d(isLeft?.25:.75, .5, .125));
 		return ret;
 	}
@@ -149,45 +148,57 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 		EnumFacing dir = EnumFacing.getFacingFromVector((float) leftVec.xCoord, (float) leftVec.yCoord, (float) leftVec.zCoord);
 		int maxDiff = Integer.MIN_VALUE;
 		Set<Connection> conns = ImmersiveNetHandler.INSTANCE.getConnections(worldObj, pos);
-		for (Connection c:conns)
-		{
-			Vec3i diff = pos.equals(c.start)?c.end.subtract(pos):c.start.subtract(pos);
-			int val = 0;
-			switch (dir.getAxis())
+		if (conns!=null)
+			for (Connection c:conns)
 			{
-			case X:
-				val = diff.getX();
-				break;
-			case Y:
-				val = diff.getY();
-				break;
-			case Z:
-				val = diff.getZ();
+				Vec3i diff = pos.equals(c.start)?c.end.subtract(pos):c.start.subtract(pos);
+				int val = 0;
+				switch (dir.getAxis())
+				{
+				case X:
+					val = diff.getX();
+					break;
+				case Y:
+					val = diff.getY();
+					break;
+				case Z:
+					val = diff.getZ();
+				}
+				val *= dir.getAxisDirection().getOffset();
+				if (val>maxDiff)
+				{
+					maxDiff = val;
+					endOfLeftConnection = pos==c.end?c.start:c.end;
+				}
 			}
-			val *= dir.getAxisDirection().getOffset();
-			if (val>maxDiff)
-			{
-				maxDiff = val;
-				endOfLeftConnection = pos==c.end?c.start:c.end;
-			}
-		}
 	}
 
 	@Override
 	public boolean hammerUseSide(EnumFacing side, EntityPlayer player, float hitX, float hitY, float hitZ)
 	{
-		inverted = !inverted;
-		ChatUtils.sendServerNoSpamMessages(player, new TextComponentTranslation(Lib.CHAT_INFO+"rsSignal."+(inverted?"invertedOn":"invertedOff")));
-		notifyNeighbours();
+		if (player.isSneaking())
+		{
+			inverted = !inverted;
+			ChatUtils.sendServerNoSpamMessages(player, new TextComponentTranslation(Lib.CHAT_INFO+"rsSignal."+(inverted?"invertedOn":"invertedOff")));
+			notifyNeighbours();
+		}
+		else
+		{
+			rotation = (rotation+3)%4;
+			onConnectionChange();
+		}
 		return true;
 	}
 	@Override
 	public boolean interact(EnumFacing side, EntityPlayer player, EnumHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
-		active = !active;
-		ImmersiveNetHandler.INSTANCE.resetCachedIndirectConnections();
-		worldObj.addBlockEvent(getPos(), getBlockType(), active?1:0, 0);
-		notifyNeighbours();
+		if (!Utils.isHammer(heldItem))
+		{
+			active = !active;
+			ImmersiveNetHandler.INSTANCE.resetCachedIndirectConnections();
+			worldObj.addBlockEvent(getPos(), getBlockType(), active?1:0, 0);
+			notifyNeighbours();
+		}
 		return true;
 	}
 	public void notifyNeighbours()
@@ -215,7 +226,7 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 	@Override
 	public boolean getIsActive()
 	{
-		return inverted != active;
+		return inverted^active;
 	}
 	@Override
 	public EnumFacing getFacing()
@@ -298,7 +309,7 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 	@Override
 	public String getCacheKey(IBlockState object)
 	{
-		return Integer.toString(rotation);
+		return rotation+","+facing.getIndex()+","+active;
 	}
 	@Override
 	public void onDirectionalPlacement(EnumFacing side, float hitX, float hitY, float hitZ, EntityLivingBase placer)
@@ -328,10 +339,13 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 			for (Connection c:conns)
 			{
 				c.catenaryVertices = null;
+				worldObj.markBlockRangeForRenderUpdate(c.end, c.end);
 				Set<Connection> connsThere = ImmersiveNetHandler.INSTANCE.getConnections(worldObj, c.end);
 				for (Connection c2:connsThere)
 					if (c2.end.equals(pos))
 						c2.catenaryVertices = null;
 			}
+		if (worldObj!=null)
+			markContainingBlockForUpdate(null);
 	}
 }
