@@ -7,10 +7,10 @@
 	},
 	"ctm": {
 		"model": { "model": "cube" },
-		"face": "immersiveengineering:metalDecoration1_aluminumScaffolding.cf",
+		"face": "immersiveengineering:ctm/aluminum_scaffold_side.cf",
 		"overrides":{
 			"UP":"immersiveengineering:ctm/aluminum_grate.cf",
-			"DOWN":"immersiveengineering:metalDecoration1_aluminumScaffolding_top.cf"
+			"DOWN":"immersiveengineering:ctm/aluminum_scaffold.cf"
 		}
 	}
 }
