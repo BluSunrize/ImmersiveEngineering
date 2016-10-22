@@ -1,0 +1,8 @@
+{
+	"type": "CTM",
+	"layer": "CUTOUT",
+	"textures":[
+		"./aluminum_scaffold_frame",
+		"./aluminum_scaffold_frame_ctm_cross"
+	]
+}

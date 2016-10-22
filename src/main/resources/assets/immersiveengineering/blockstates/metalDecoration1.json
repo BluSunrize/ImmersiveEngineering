@@ -43,15 +43,13 @@
 				"textures": { "texture": "immersiveengineering:blocks/storage_aluminum" }
 			},
 			"aluminum_scaffolding_0": {
-				"model": "immersiveengineering:ieScaffolding",
-				"textures": { "side": "immersiveengineering:blocks/metalDecoration1_aluminumScaffolding", "top": "immersiveengineering:blocks/metalDecoration1_aluminumScaffolding_top", "bottom": "immersiveengineering:blocks/metalDecoration1_aluminumScaffolding_top"}
+				"model": "immersiveengineering:ctm/ieScaffoldingAluminum"
 			},
 			"aluminum_scaffolding_1": {
 				"model": "immersiveengineering:ctm/ieScaffoldingAluminumGrate"
 			},
 			"aluminum_scaffolding_2": {
-				"model": "immersiveengineering:ieScaffolding",
-				"textures": { "side": "immersiveengineering:blocks/metalDecoration1_aluminumScaffolding", "top": "immersiveengineering:blocks/metalDecoration1_aluminumScaffolding_top2", "bottom": "immersiveengineering:blocks/metalDecoration1_aluminumScaffolding_top"}
+				"model": "immersiveengineering:ctm/ieScaffoldingAluminumPlanks"
 			}
 		}
 		,
