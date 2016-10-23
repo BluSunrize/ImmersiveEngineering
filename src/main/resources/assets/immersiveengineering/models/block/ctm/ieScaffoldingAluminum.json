@@ -2,7 +2,7 @@
 	"parent": "immersiveengineering:block/ieScaffolding",
 	"textures": {
 		"side": "immersiveengineering:blocks/metalDecoration1_aluminumScaffolding",
-		"top": "immersiveengineering:blocks/metalDecoration1_aluminumScaffolding_top1",
+		"top": "immersiveengineering:blocks/metalDecoration1_aluminumScaffolding_top",
 		"bottom": "immersiveengineering:blocks/metalDecoration1_aluminumScaffolding_top"
 	},
 	"ctm": {
