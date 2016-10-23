@@ -1,0 +1,16 @@
+{
+	"parent": "immersiveengineering:block/ieScaffolding",
+	"textures": {
+		"side": "immersiveengineering:blocks/metalDecoration1_steelScaffolding",
+		"top": "immersiveengineering:blocks/metalDecoration1_steelScaffolding_top1",
+		"bottom": "immersiveengineering:blocks/metalDecoration1_steelScaffolding_top"
+	},
+	"ctm": {
+		"model": { "model": "immersiveengineering:ieScaffolding" },
+		"face": "immersiveengineering:ctm/steel_scaffold_side.cf",
+		"overrides":{
+			"UP":"immersiveengineering:ctm/steel_planks.cf",
+			"DOWN":"immersiveengineering:ctm/steel_scaffold.cf"
+		}
+	}
+}

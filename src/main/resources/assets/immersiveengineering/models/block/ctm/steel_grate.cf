@@ -1,0 +1,6 @@
+{
+    "textures":[
+        "immersiveengineering:ctm/steel_grate.ctx",
+        "immersiveengineering:ctm/steel_scaffold_frame.ctx"
+    ]
+}
