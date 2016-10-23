@@ -180,6 +180,8 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 		{
 			inverted = !inverted;
 			ChatUtils.sendServerNoSpamMessages(player, new TextComponentTranslation(Lib.CHAT_INFO+"rsSignal."+(inverted?"invertedOn":"invertedOff")));
+			if (this instanceof TileEntityBreakerSwitch && wires>1)
+				ImmersiveNetHandler.INSTANCE.resetCachedIndirectConnections();
 			notifyNeighbours();
 		}
 		else
@@ -195,7 +197,8 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 		if (!Utils.isHammer(heldItem))
 		{
 			active = !active;
-			ImmersiveNetHandler.INSTANCE.resetCachedIndirectConnections();
+			if (wires>1)
+				ImmersiveNetHandler.INSTANCE.resetCachedIndirectConnections();
 			worldObj.addBlockEvent(getPos(), getBlockType(), active?1:0, 0);
 			notifyNeighbours();
 		}
@@ -226,7 +229,7 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 	@Override
 	public boolean getIsActive()
 	{
-		return inverted^active;
+		return active;
 	}
 	@Override
 	public EnumFacing getFacing()

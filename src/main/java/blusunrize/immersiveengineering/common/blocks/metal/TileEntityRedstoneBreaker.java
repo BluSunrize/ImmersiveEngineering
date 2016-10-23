@@ -32,7 +32,7 @@ public class TileEntityRedstoneBreaker extends TileEntityBreakerSwitch implement
 	@Override
 	public boolean allowEnergyToPass(Connection con)
 	{
-		return active;
+		return active^inverted;
 	}
 
 	@Override
