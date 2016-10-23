@@ -1,7 +1,7 @@
 {
 	"parent": "block/cube_all",
 	"textures": {
-		"all": "immersiveengineering:metalDecoration0_lightEngineering"
+		"all": "immersiveengineering:blocks/metalDecoration0_lightEngineering"
 	},
 
 	"ctm" : {
