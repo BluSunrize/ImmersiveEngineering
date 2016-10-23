@@ -5,8 +5,10 @@ import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.Vec3d;
 
@@ -30,7 +32,7 @@ public class TileEntityRedstoneBreaker extends TileEntityBreakerSwitch implement
 	@Override
 	public boolean allowEnergyToPass(Connection con)
 	{
-		return active;
+		return active^inverted;
 	}
 
 	@Override
@@ -61,7 +63,7 @@ public class TileEntityRedstoneBreaker extends TileEntityBreakerSwitch implement
 		mat.translate(.5, .5, 0).rotate(Math.PI/2*rotation, 0, 0, 1).translate(-.5, -.5, 0);
 		if (endOfLeftConnection==null)
 			calculateLeftConn(mat);
-		boolean isLeft = con.end==endOfLeftConnection||con.start==endOfLeftConnection;
+		boolean isLeft = con.end.equals(endOfLeftConnection)||con.start.equals(endOfLeftConnection);
 		Vec3d ret = mat.apply(isLeft?new Vec3d(.125, .5, 1.03125):new Vec3d(.875, .5, 1.03125));
 		return ret;
 	}
@@ -75,5 +77,10 @@ public class TileEntityRedstoneBreaker extends TileEntityBreakerSwitch implement
 	public int getStrongRSOutput(IBlockState state, EnumFacing side)
 	{
 		return 0;
+	}
+	@Override
+	public boolean interact(EnumFacing side, EntityPlayer player, EnumHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
+	{
+		return false;
 	}
 }

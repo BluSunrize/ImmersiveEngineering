@@ -501,7 +501,7 @@ public class ImmersiveNetHandler
 		@Override
 		public int compareTo(Connection o)
 		{
-			if(equals(o))
+			if(this==o)
 				return 0;
 			int distComp = Integer.compare(length, o.length);
 			int cableComp = -1*Integer.compare(cableType.getTransferRate(), o.cableType.getTransferRate());
@@ -522,6 +522,13 @@ public class ImmersiveNetHandler
 								if (end.getZ()!=o.end.getZ())
 									return end.getZ()>o.end.getZ()?1:-1;
 									return 0;
+		}
+		@Override
+		public boolean equals(Object obj)
+		{
+			if (!(obj instanceof Connection))
+				return false;
+			return compareTo((Connection)obj)==0;
 		}
 	}
 
