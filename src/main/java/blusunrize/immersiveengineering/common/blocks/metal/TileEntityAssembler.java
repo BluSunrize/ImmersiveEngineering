@@ -4,6 +4,7 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.IMultiblockRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.api.tool.AssemblerHandler;
+import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorAttachable;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGuiTile;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockAssembler;
@@ -33,7 +34,7 @@ import net.minecraftforge.oredict.OreDictionary;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAssembler,IMultiblockRecipe> implements IGuiTile// IAdvancedSelectionBounds,IAdvancedCollisionBounds
+public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAssembler,IMultiblockRecipe> implements IGuiTile, IConveyorAttachable// IAdvancedSelectionBounds,IAdvancedCollisionBounds
 {
 	public boolean[] computerOn = new boolean[3];
 	public TileEntityAssembler()
@@ -514,6 +515,14 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 	protected boolean canDrainTankFrom(int iTank, EnumFacing side)
 	{
 		return true;
+	}
+
+	@Override
+	public EnumFacing[] sigOutputDirections()
+	{
+		if(pos==16)
+			return new EnumFacing[]{this.facing};
+		return new EnumFacing[0];
 	}
 
 	public static class CrafterPatternInventory implements IInventory

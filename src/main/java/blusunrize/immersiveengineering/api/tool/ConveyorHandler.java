@@ -204,10 +204,10 @@ public class ConveyorHandler
 			EnumFacing side = wall == 0 ? facing.rotateYCCW() : facing.rotateY();
 			BlockPos pos = tile.getPos().offset(side);
 			TileEntity te = tile.getWorld().getTileEntity(pos);
-			if(te instanceof IConveyorTile && ((IConveyorTile)te).getConveyorSubtype() != null)
+			if(te instanceof IConveyorAttachable)
 			{
 				boolean b = false;
-				for(EnumFacing f : ((IConveyorTile)te).getConveyorSubtype().sigTransportDirections(te, ((IConveyorTile)te).getFacing()))
+				for(EnumFacing f : ((IConveyorAttachable)te).sigOutputDirections())
 					if(f == side.getOpposite())
 						b = true;
 					else if(f == EnumFacing.UP)
@@ -217,10 +217,10 @@ public class ConveyorHandler
 			else
 			{
 				te = tile.getWorld().getTileEntity(pos.add(0, -1, 0));
-				if(te instanceof IConveyorTile && ((IConveyorTile)te).getConveyorSubtype() != null)
+				if(te instanceof IConveyorAttachable)
 				{
 					int b = 0;
-					for(EnumFacing f : ((IConveyorTile)te).getConveyorSubtype().sigTransportDirections(te, ((IConveyorTile)te).getFacing()))
+					for(EnumFacing f : ((IConveyorAttachable)te).sigOutputDirections())
 						if(f == side.getOpposite())
 							b++;
 						else if(f == EnumFacing.UP)
@@ -386,14 +386,33 @@ public class ConveyorHandler
 	}
 
 	/**
-	 * This interface solely exists to mark a tile as conveyor, and have it ignored for insertion
+	 * An interface to prevent conveyors from rendering a wall in the direction of this tile
 	 */
-	public interface IConveyorTile
+	public interface IConveyorAttachable
 	{
 		EnumFacing getFacing();
 
+		/**
+		 * @return a rough indication of where this block will output things. Will determine if attached conveyors render a wall in the opposite direction
+		 */
+		EnumFacing[] sigOutputDirections();
+	}
+	/**
+	 * This interface solely exists to mark a tile as conveyor, and have it ignored for insertion
+	 */
+	public interface IConveyorTile extends IConveyorAttachable
+	{
 		IConveyorBelt getConveyorSubtype();
 
 		void setConveyorSubtype(IConveyorBelt conveyor);
+
+		@Override
+		default EnumFacing[] sigOutputDirections()
+		{
+			IConveyorBelt subtype = getConveyorSubtype();
+			if(subtype!=null)
+				return subtype.sigTransportDirections((TileEntity)this, this.getFacing());
+			return new EnumFacing[0];
+		}
 	}
 }

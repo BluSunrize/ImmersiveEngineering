@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.crafting.IMultiblockRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
+import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorAttachable;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockMetalPress;
 import blusunrize.immersiveengineering.common.util.IESounds;
@@ -24,7 +25,7 @@ import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
-public class TileEntityMetalPress extends TileEntityMultiblockMetal<TileEntityMetalPress,MetalPressRecipe> implements IPlayerInteraction
+public class TileEntityMetalPress extends TileEntityMultiblockMetal<TileEntityMetalPress,MetalPressRecipe> implements IPlayerInteraction, IConveyorAttachable
 {
 	public TileEntityMetalPress()
 	{
@@ -301,6 +302,14 @@ public class TileEntityMetalPress extends TileEntityMultiblockMetal<TileEntityMe
 	protected MetalPressRecipe readRecipeFromNBT(NBTTagCompound tag)
 	{
 		return MetalPressRecipe.loadFromNBT(tag);
+	}
+
+	@Override
+	public EnumFacing[] sigOutputDirections()
+	{
+		if(pos==5)
+			return new EnumFacing[]{this.facing};
+		return new EnumFacing[0];
 	}
 	//	@Override
 	//	public void updateEntity()
