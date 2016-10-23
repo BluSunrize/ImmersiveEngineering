@@ -1,0 +1,10 @@
+{
+	"type": "V",
+	"layer": "CUTOUT",
+	"info":{
+		"size":3
+	},
+	"textures":[
+		"./aluminum_grate_v3"
+	]
+}

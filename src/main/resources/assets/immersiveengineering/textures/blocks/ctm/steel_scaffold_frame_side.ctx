@@ -1,0 +1,8 @@
+{
+	"type": "CTM",
+	"layer": "CUTOUT",
+	"textures":[
+		"./steel_scaffold_frame_side",
+		"./steel_scaffold_frame_ctm_side"
+	]
+}
