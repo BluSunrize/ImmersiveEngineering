@@ -11,6 +11,7 @@ public class ChiselHelper extends IECompatModule
 	{
 		//Activate the transparency layer because of CTM
 		IEContent.blockMetalDecoration0.setBlockLayer(BlockRenderLayer.SOLID,BlockRenderLayer.TRANSLUCENT);
+		IEContent.blockMetalDecoration1.setBlockLayer(BlockRenderLayer.CUTOUT,BlockRenderLayer.CUTOUT);
 	}
 
 	@Override

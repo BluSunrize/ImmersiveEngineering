@@ -58,6 +58,7 @@ import blusunrize.lib.manual.ManualInstance.ManualEntry;
 import blusunrize.lib.manual.ManualPages;
 import blusunrize.lib.manual.ManualPages.PositionedItemStack;
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.block.Block;
@@ -115,6 +116,10 @@ import net.minecraftforge.fml.common.registry.GameData;
 import net.minecraftforge.oredict.OreDictionary;
 
 import javax.annotation.Nonnull;
+
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+
 import java.io.IOException;
 import java.net.URL;
 import java.text.DecimalFormat;
@@ -1409,13 +1414,15 @@ public class ClientProxy extends CommonProxy
 	public void removeStateFromSmartModelCache(IExtendedBlockState state)
 	{
 		for (BlockRenderLayer r:BlockRenderLayer.values())
-			IESmartObjModel.modelCache.remove(new ExtBlockstateAdapter(state, r));
+			IESmartObjModel.modelCache.remove(new ExtBlockstateAdapter(state, r, ImmutableSet.of()));
+		IESmartObjModel.modelCache.remove(new ExtBlockstateAdapter(state, null, ImmutableSet.of()));
 	}
 	@Override
 	public void removeStateFromConnectionModelCache(IExtendedBlockState state)
 	{
 		for (BlockRenderLayer r:BlockRenderLayer.values())
-			ConnModelReal.cache.remove(new ExtBlockstateAdapter(state, r));
+			ConnModelReal.cache.remove(new ExtBlockstateAdapter(state, r, ImmutableSet.of()));
+		ConnModelReal.cache.remove(new ExtBlockstateAdapter(state, null, ImmutableSet.of()));
 	}
 	@Override
 	public void clearConnectionModelCache()

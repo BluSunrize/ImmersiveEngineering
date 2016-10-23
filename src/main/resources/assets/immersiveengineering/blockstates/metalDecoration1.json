@@ -27,32 +27,26 @@
 				"textures": { "texture": "immersiveengineering:blocks/storage_steel" }
 			},
 			"steel_scaffolding_0": {
-				"model": "immersiveengineering:ieScaffolding",
-				"textures": { "side": "immersiveengineering:blocks/metalDecoration1_steelScaffolding", "top": "immersiveengineering:blocks/metalDecoration1_steelScaffolding_top", "bottom": "immersiveengineering:blocks/metalDecoration1_steelScaffolding_top"}
+				"model": "immersiveengineering:ctm/ieScaffoldingSteel"
 			},
 			"steel_scaffolding_1": {
-				"model": "immersiveengineering:ieScaffolding",
-				"textures": { "side": "immersiveengineering:blocks/metalDecoration1_steelScaffolding", "top": "immersiveengineering:blocks/metalDecoration1_steelScaffolding_top1", "bottom": "immersiveengineering:blocks/metalDecoration1_steelScaffolding_top"}
+				"model": "immersiveengineering:ctm/ieScaffoldingSteelGrate"
 			},
 			"steel_scaffolding_2": {
-				"model": "immersiveengineering:ieScaffolding",
-				"textures": { "side": "immersiveengineering:blocks/metalDecoration1_steelScaffolding", "top": "immersiveengineering:blocks/metalDecoration1_steelScaffolding_top2", "bottom": "immersiveengineering:blocks/metalDecoration1_steelScaffolding_top"}
+				"model": "immersiveengineering:ctm/ieScaffoldingSteelPlanks"
 			},
 			"aluminum_fence": {
 				"model": "fence_post",
 				"textures": { "texture": "immersiveengineering:blocks/storage_aluminum" }
 			},
 			"aluminum_scaffolding_0": {
-				"model": "immersiveengineering:ieScaffolding",
-				"textures": { "side": "immersiveengineering:blocks/metalDecoration1_aluminumScaffolding", "top": "immersiveengineering:blocks/metalDecoration1_aluminumScaffolding_top", "bottom": "immersiveengineering:blocks/metalDecoration1_aluminumScaffolding_top"}
+				"model": "immersiveengineering:ctm/ieScaffoldingAluminum"
 			},
 			"aluminum_scaffolding_1": {
-				"model": "immersiveengineering:ieScaffolding",
-				"textures": { "side": "immersiveengineering:blocks/metalDecoration1_aluminumScaffolding", "top": "immersiveengineering:blocks/metalDecoration1_aluminumScaffolding_top1", "bottom": "immersiveengineering:blocks/metalDecoration1_aluminumScaffolding_top"}
+				"model": "immersiveengineering:ctm/ieScaffoldingAluminumGrate"
 			},
 			"aluminum_scaffolding_2": {
-				"model": "immersiveengineering:ieScaffolding",
-				"textures": { "side": "immersiveengineering:blocks/metalDecoration1_aluminumScaffolding", "top": "immersiveengineering:blocks/metalDecoration1_aluminumScaffolding_top2", "bottom": "immersiveengineering:blocks/metalDecoration1_aluminumScaffolding_top"}
+				"model": "immersiveengineering:ctm/ieScaffoldingAluminumPlanks"
 			}
 		}
 		,
