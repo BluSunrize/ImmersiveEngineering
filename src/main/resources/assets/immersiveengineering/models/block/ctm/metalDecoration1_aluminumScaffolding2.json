@@ -5,12 +5,13 @@
 		"top": "immersiveengineering:blocks/metalDecoration1_aluminumScaffolding_top2",
 		"bottom": "immersiveengineering:blocks/metalDecoration1_aluminumScaffolding_top"
 	},
-	"ctm": {
+
+	"ctm" : {
 		"model": { "model": "immersiveengineering:ieScaffolding" },
-		"face": "immersiveengineering:ctm/aluminum_scaffold_side.cf",
+		"face": "immersiveengineering:ctm/metalDecoration1_aluminumScaffolding.cf",
 		"overrides":{
-			"UP":"immersiveengineering:ctm/aluminum_planks.cf",
-			"DOWN":"immersiveengineering:ctm/aluminum_scaffold.cf"
+			"UP":"immersiveengineering:ctm/metalDecoration1_aluminumScaffolding_top2.cf",
+			"DOWN":"immersiveengineering:ctm/metalDecoration1_aluminumScaffolding_top.cf"
 		}
 	}
 }

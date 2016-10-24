@@ -1,7 +1,0 @@
-{
-	"type": "NORMAL",
-	"layer": "CUTOUT",
-	"textures":[
-		"blocks/treatedWood"
-	]
-}

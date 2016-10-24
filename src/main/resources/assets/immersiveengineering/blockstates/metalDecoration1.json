@@ -27,26 +27,26 @@
 				"textures": { "texture": "immersiveengineering:blocks/storage_steel" }
 			},
 			"steel_scaffolding_0": {
-				"model": "immersiveengineering:ctm/ieScaffoldingSteel"
+				"model": "immersiveengineering:ctm/metalDecoration1_steelScaffolding"
 			},
 			"steel_scaffolding_1": {
-				"model": "immersiveengineering:ctm/ieScaffoldingSteelGrate"
+				"model": "immersiveengineering:ctm/metalDecoration1_steelScaffolding1"
 			},
 			"steel_scaffolding_2": {
-				"model": "immersiveengineering:ctm/ieScaffoldingSteelPlanks"
+				"model": "immersiveengineering:ctm/metalDecoration1_steelScaffolding2"
 			},
 			"aluminum_fence": {
 				"model": "fence_post",
 				"textures": { "texture": "immersiveengineering:blocks/storage_aluminum" }
 			},
 			"aluminum_scaffolding_0": {
-				"model": "immersiveengineering:ctm/ieScaffoldingAluminum"
+				"model": "immersiveengineering:ctm/metalDecoration1_aluminumScaffolding"
 			},
 			"aluminum_scaffolding_1": {
-				"model": "immersiveengineering:ctm/ieScaffoldingAluminumGrate"
+				"model": "immersiveengineering:ctm/metalDecoration1_aluminumScaffolding1"
 			},
 			"aluminum_scaffolding_2": {
-				"model": "immersiveengineering:ctm/ieScaffoldingAluminumPlanks"
+				"model": "immersiveengineering:ctm/metalDecoration1_aluminumScaffolding2"
 			}
 		}
 		,

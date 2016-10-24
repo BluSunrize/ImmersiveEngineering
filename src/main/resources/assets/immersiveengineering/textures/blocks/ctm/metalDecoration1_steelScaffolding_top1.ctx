@@ -1,0 +1,8 @@
+{
+	"type": "CTM",
+	"layer": "CUTOUT",
+	"textures":[
+    	"blocks/metalDecoration1_steelScaffolding_top1",
+    	"./metalDecoration1_steelScaffolding_top1_ctm"
+	]
+}
