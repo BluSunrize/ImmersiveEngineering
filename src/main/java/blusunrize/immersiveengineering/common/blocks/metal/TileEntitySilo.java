@@ -31,7 +31,7 @@ public class TileEntitySilo extends TileEntityMultiblockPart<TileEntitySilo> imp
 	public ItemStack identStack;
 	public int storageAmount = 0;
 	static int maxStorage = 41472;
-//	ItemStack inputStack;
+	//	ItemStack inputStack;
 //	ItemStack outputStack;
 //	ItemStack prevInputStack;
 //	ItemStack prevOutputStack;
@@ -46,24 +46,26 @@ public class TileEntitySilo extends TileEntityMultiblockPart<TileEntitySilo> imp
 //		if(pos==4 && !worldObj.isRemote && this.outputStack==null && storageAmount>0 && identStack!=null)
 //			this.markDirty();
 
-		if(pos==4 && !worldObj.isRemote && this.identStack!=null && worldObj.isBlockIndirectlyGettingPowered(getPos())>0 && worldObj.getTotalWorldTime()%8==0)
+		if(pos==4 && !worldObj.isRemote && this.identStack!=null && storageAmount>0 && worldObj.isBlockIndirectlyGettingPowered(getPos())>0 && worldObj.getTotalWorldTime()%8==0)
 		{
 			updateComparatorValuesPart1();
-//			for(int i=0; i<6; i++)
-//				if(i!=1 && outputStack!=null)
-//				{
-//					EnumFacing f = EnumFacing.getFront(i);
-//					TileEntity inventory = this.worldObj.getTileEntity(getPos().offset(f));
-//					ItemStack stack = Utils.copyStackWithAmount(identStack,1);
-//					stack = Utils.insertStackIntoInventory(inventory, stack, f.getOpposite());
-//					if(stack==null)
-//					{
-//						outputStack.stackSize--;
-//						this.markDirty();
-//						if(outputStack==null)
-//							break;
-//					}
-//				}
+			for(EnumFacing f : EnumFacing.values())
+				if(f!=EnumFacing.UP)
+				{
+					TileEntity inventory = this.worldObj.getTileEntity(getPos().offset(f));
+					ItemStack stack = Utils.copyStackWithAmount(identStack,1);
+					stack = Utils.insertStackIntoInventory(inventory, stack, f.getOpposite());
+					if(stack==null)
+					{
+						storageAmount--;
+						if(storageAmount<=0)
+							identStack = null;
+						this.markDirty();
+						markContainingBlockForUpdate(null);
+						if(storageAmount<=0)
+							break;
+					}
+				}
 			updateComparatorValuesPart2();
 		}
 	}
