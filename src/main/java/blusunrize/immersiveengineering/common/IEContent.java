@@ -50,7 +50,6 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -85,7 +84,6 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BiConsumer;
 
 public class IEContent
 {
@@ -486,22 +484,12 @@ public class IEContent
 		}
 
 		/**CONVEYORS*/
-		ConveyorHandler.registerMagnetSupression(new BiConsumer<Entity, IConveyorTile>()
-		{
-			@Override
-			public void accept(Entity entity, IConveyorTile iConveyorTile)
-			{
-				NBTTagCompound data = entity.getEntityData();
-				if(!data.getBoolean(Lib.MAGNET_PREVENT_NBT))
-					data.setBoolean(Lib.MAGNET_PREVENT_NBT, true);
-			}
-		}, new BiConsumer<Entity, IConveyorTile>()
-		{
-			@Override
-			public void accept(Entity entity, IConveyorTile iConveyorTile)
-			{
-				entity.getEntityData().removeTag(Lib.MAGNET_PREVENT_NBT);
-			}
+		ConveyorHandler.registerMagnetSupression((entity, iConveyorTile) -> {
+			NBTTagCompound data = entity.getEntityData();
+			if(!data.getBoolean(Lib.MAGNET_PREVENT_NBT))
+				data.setBoolean(Lib.MAGNET_PREVENT_NBT, true);
+		}, (entity, iConveyorTile) -> {
+			entity.getEntityData().removeTag(Lib.MAGNET_PREVENT_NBT);
 		});
 		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "conveyor"), ConveyorBasic.class, (tileEntity) -> new ConveyorBasic());
 		ConveyorHandler.registerConveyorHandler(new ResourceLocation(ImmersiveEngineering.MODID, "dropper"), ConveyorDrop.class, (tileEntity) -> new ConveyorDrop());

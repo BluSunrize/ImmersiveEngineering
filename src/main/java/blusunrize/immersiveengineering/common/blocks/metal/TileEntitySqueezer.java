@@ -125,9 +125,9 @@ public class TileEntitySqueezer extends TileEntityMultiblockMetal<TileEntitySque
 				}
 			}
 
+			EnumFacing fw = mirrored?facing.rotateYCCW():facing.rotateY();
 			if(this.tanks[0].getFluidAmount()>0)
 			{
-				EnumFacing fw = mirrored?facing.rotateYCCW():facing.rotateY();
 				FluidStack out = Utils.copyFluidStackWithAmount(this.tanks[0].getFluid(), Math.min(this.tanks[0].getFluidAmount(), 80), false);
 				BlockPos outputPos = this.getPos().add(0,-1,0).offset(fw,2);
 				IFluidHandler output = FluidUtil.getFluidHandler(worldObj, outputPos, fw.getOpposite());
@@ -154,6 +154,19 @@ public class TileEntitySqueezer extends TileEntityMultiblockMetal<TileEntitySque
 						if(--inventory[9].stackSize<=0)
 							inventory[9]=null;
 					}
+				}
+			}
+			if(inventory[8]!=null && worldObj.getTotalWorldTime()%8==0)
+			{
+				BlockPos outputPos = this.getPos().offset(fw);
+				TileEntity outputTile = this.worldObj.getTileEntity(outputPos);
+				if(outputTile != null)
+				{
+					ItemStack stack = Utils.copyStackWithAmount(inventory[8], 1);
+					stack = Utils.insertStackIntoInventory(outputTile, stack, fw.getOpposite());
+					if(stack == null)
+						if((--this.inventory[8].stackSize) <= 0)
+							this.inventory[8] = null;
 				}
 			}
 
