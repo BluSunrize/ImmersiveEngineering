@@ -1,29 +1,33 @@
 package blusunrize.immersiveengineering.api.tool;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
-import blusunrize.immersiveengineering.api.ComparableItemStack;
+import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
+import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 
 public class RailgunHandler
 {
-	public static HashMap<ComparableItemStack, RailgunProjectileProperties> projectilePropertyMap = new HashMap<ComparableItemStack, RailgunProjectileProperties>();
+	public static ArrayList<Pair<IngredientStack, RailgunProjectileProperties>> projectilePropertyMap = new ArrayList<>();
 
-	public static RailgunProjectileProperties registerProjectileProperties(ComparableItemStack stack, double damage, double gravity)
+	public static RailgunProjectileProperties registerProjectileProperties(IngredientStack stack, double damage, double gravity)
 	{
 		RailgunProjectileProperties properties = new RailgunProjectileProperties(damage, gravity);
-		projectilePropertyMap.put(stack, properties);
+		projectilePropertyMap.add(Pair.of(stack, properties));
 		return properties;
 	}
 	public static RailgunProjectileProperties registerProjectileProperties(ItemStack stack, double damage, double gravity)
 	{
-		return registerProjectileProperties(ApiUtils.createComparableItemStack(stack), damage, gravity);
+		return registerProjectileProperties(ApiUtils.createIngredientStack(stack), damage, gravity);
 	}
 	public static RailgunProjectileProperties getProjectileProperties(ItemStack stack)
 	{
-		return projectilePropertyMap.get(ApiUtils.createComparableItemStack(stack));
+		for(Pair<IngredientStack, RailgunProjectileProperties> pair : projectilePropertyMap)
+		if(pair.getLeft().matchesItemStack(stack))
+			return pair.getRight();
+		return null;
 	}
 
 	public static class RailgunProjectileProperties
