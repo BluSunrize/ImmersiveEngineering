@@ -288,6 +288,14 @@ public class IESmartObjModel extends OBJBakedModel
 						builder.setTexture(tempSprite);
 						builder.setQuadTint(pass);
 						Normal faceNormal = f.getNormal();
+						TextureCoordinate[] uvs = new TextureCoordinate[4];
+
+						for(int i=0; i<4; i++)
+						{
+							Vertex v = f.getVertices()[i];
+							uvs[i] = v.hasTextureCoordinate()?v.getTextureCoordinate():TextureCoordinate.getDefaultUVs()[i];
+						}
+
 						putVertexData(builder, f.getVertices()[0], faceNormal, TextureCoordinate.getDefaultUVs()[0], tempSprite, colour);
 						putVertexData(builder, f.getVertices()[1], faceNormal, TextureCoordinate.getDefaultUVs()[1], tempSprite, colour);
 						putVertexData(builder, f.getVertices()[2], faceNormal, TextureCoordinate.getDefaultUVs()[2], tempSprite, colour);
@@ -302,7 +310,8 @@ public class IESmartObjModel extends OBJBakedModel
 		return ImmutableList.copyOf(quads);
 	}
 
-	protected final void putVertexData(UnpackedBakedQuad.Builder builder, Vertex v, Normal faceNormal, TextureCoordinate defUV, TextureAtlasSprite sprite, float[] colour)
+
+	protected final void putVertexData(UnpackedBakedQuad.Builder builder, Vertex v, Normal faceNormal, TextureCoordinate texCoord, TextureAtlasSprite sprite, float[] colour)
 	{
 		for(int e = 0; e < getFormat().getElementCount(); e++)
 		{
@@ -330,16 +339,10 @@ public class IESmartObjModel extends OBJBakedModel
 				case UV:
 					if(sprite==null)//Double Safety. I have no idea how it even happens, but it somehow did .-.
 						sprite = Minecraft.getMinecraft().getTextureMapBlocks().getMissingSprite();
-					if(!v.hasTextureCoordinate())
-						builder.put(e,
-								sprite.getInterpolatedU(defUV.u * 16),
-								sprite.getInterpolatedV((1-defUV.v) * 16),//Can't access v-flip in customdata. Might change in future Forge versions
-								0, 1);
-					else
-						builder.put(e,
-								sprite.getInterpolatedU(v.getTextureCoordinate().u * 16),
-								sprite.getInterpolatedV((1-v.getTextureCoordinate().v) * 16),
-								0, 1);
+					builder.put(e,
+							sprite.getInterpolatedU(texCoord.u * 16),
+							sprite.getInterpolatedV((1-texCoord.v) * 16),//Can't access v-flip in customdata. Might change in future Forge versions
+							0, 1);
 					break;
 				case NORMAL:
 					if(!v.hasNormal())
