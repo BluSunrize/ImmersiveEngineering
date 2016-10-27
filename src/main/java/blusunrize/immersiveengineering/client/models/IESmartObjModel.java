@@ -288,18 +288,13 @@ public class IESmartObjModel extends OBJBakedModel
 						builder.setTexture(tempSprite);
 						builder.setQuadTint(pass);
 						Normal faceNormal = f.getNormal();
-						TextureCoordinate[] uvs = new TextureCoordinate[4];
-
+						//TextureCoordinate[] uvs = new TextureCoordinate[4]; For the upcoming offset system in shaders
 						for(int i=0; i<4; i++)
 						{
 							Vertex v = f.getVertices()[i];
-							uvs[i] = v.hasTextureCoordinate()?v.getTextureCoordinate():TextureCoordinate.getDefaultUVs()[i];
+							TextureCoordinate uvs = v.hasTextureCoordinate()?v.getTextureCoordinate():TextureCoordinate.getDefaultUVs()[i];
+							putVertexData(builder, v, faceNormal, uvs, tempSprite, colour);
 						}
-
-						putVertexData(builder, f.getVertices()[0], faceNormal, TextureCoordinate.getDefaultUVs()[0], tempSprite, colour);
-						putVertexData(builder, f.getVertices()[1], faceNormal, TextureCoordinate.getDefaultUVs()[1], tempSprite, colour);
-						putVertexData(builder, f.getVertices()[2], faceNormal, TextureCoordinate.getDefaultUVs()[2], tempSprite, colour);
-						putVertexData(builder, f.getVertices()[3], faceNormal, TextureCoordinate.getDefaultUVs()[3], tempSprite, colour);
 						quads.add(builder.build());
 					}
 				}

@@ -1,3 +1,18 @@
+#####Version 0.10-48
+- added CTM support to Engineering Blocks and Scaffolds when Chisel is installed (in cooperation with Drullkus)
+- changed Breakers to be rotatable (thanks Malte)
+- changed Conveyor Belts showing walls when having their sides towards a metal press or assembler
+- fixed missing comments in the config file
+- fixed breaker switches crashing on servers (thanks Malte)
+- fixed IE models causing lag on chunk updates (thanks Malte)
+- fixed Breaker Switches not outputting redstone signals (thanks Malte)
+- fixed Redstone Breakers ignoring their inversion (thanks Malte)
+- fixed Ear Defenders being broken (thanks Malte)
+- fixed Squeezers and Fermenters not outputting Items automatically
+- fixed Silo not auto-outputting when supplied with a redstone signal
+- fixed Railgun not shooting alu, iron and steel sticks from other mods
+- fixed Manual on Railguns crashing without Railcraft installed (thanks Malte)
+
 #####Version 0.10-47 - BUILT
 - moved all clientside references from the config
 
