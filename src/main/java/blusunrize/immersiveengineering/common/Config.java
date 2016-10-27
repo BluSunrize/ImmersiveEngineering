@@ -331,7 +331,7 @@ public class Config
 		ArcFurnaceRecipe.timeModifier = IEConfig.Machines.arcFurnace_timeModifier;
 
 		Config.manual_int.put("excavator_depletion_days", Machines.excavator_depletion*45/24000);
-
+		Config.manual_bool.put("literalRailGun", false);//preventive measure for Railcraft
 		checkMappedValues(IEConfig.class);
 	}
 

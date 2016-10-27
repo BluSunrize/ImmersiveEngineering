@@ -91,11 +91,7 @@ import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.client.ClientCommandHandler;
@@ -116,10 +112,6 @@ import net.minecraftforge.fml.common.registry.GameData;
 import net.minecraftforge.oredict.OreDictionary;
 
 import javax.annotation.Nonnull;
-
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
-
 import java.io.IOException;
 import java.net.URL;
 import java.text.DecimalFormat;
@@ -837,7 +829,7 @@ public class ClientProxy extends CommonProxy
 			{
 				String name = Lib.DESC_INFO+"mineral."+minerals[i].name;
 				String localizedName = I18n.format(name);
-				if(localizedName==name)
+				if(localizedName.equalsIgnoreCase(name))
 					localizedName = minerals[i].name;
 
 				String s0 = "";
