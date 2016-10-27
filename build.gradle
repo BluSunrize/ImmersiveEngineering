@@ -1,5 +1,5 @@
 def mainVersion = "0.10"
-def buildNumber = "47"
+def buildNumber = "48"
 
 // For those who want the bleeding edge
 buildscript {
@@ -118,8 +118,15 @@ task apiZip(type: Zip) {
     }
     classifier = 'api'
 }
+task apiJar(type: Jar) {
+    from(sourceSets.main.java) {
+        include "blusunrize/immersiveengineering/api/**"
+    }
+    classifier = 'api'
+}
 
 artifacts {
     archives deobfJar
     archives apiZip
+    archives apiJar
 }

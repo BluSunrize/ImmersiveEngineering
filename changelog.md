@@ -1,4 +1,4 @@
-#####Version 0.10-48
+#####Version 0.10-48 - BUILT
 - added CTM support to Engineering Blocks and Scaffolds when Chisel is installed (in cooperation with Drullkus)
 - changed Breakers to be rotatable (thanks Malte)
 - changed Conveyor Belts showing walls when having their sides towards a metal press or assembler
