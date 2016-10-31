@@ -29,7 +29,7 @@ import cpw.mods.fml.relauncher.Side;
 
 public class ImmersiveNetHandler
 {
-	public static ImmersiveNetHandler INSTANCE;
+	public static ImmersiveNetHandler INSTANCE = new ImmersiveNetHandler();
 	public ConcurrentHashMap<Integer, ConcurrentHashMap<ChunkCoordinates, Set<Connection>>> directConnections = new ConcurrentHashMap<Integer, ConcurrentHashMap<ChunkCoordinates, Set<Connection>>>();
 	public ConcurrentHashMap<ChunkCoordinates, Set<AbstractConnection>> indirectConnections = new ConcurrentHashMap<ChunkCoordinates, Set<AbstractConnection>>();
 	public ConcurrentHashMap<Integer, ConcurrentHashMap<Connection, Integer>> transferPerTick = new ConcurrentHashMap<Integer, ConcurrentHashMap<Connection,Integer>>();
