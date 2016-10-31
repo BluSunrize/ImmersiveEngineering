@@ -96,8 +96,6 @@ public class EventHandler
 	@SubscribeEvent
 	public void onLoad(WorldEvent.Load event)
 	{
-		if(ImmersiveNetHandler.INSTANCE==null)
-			ImmersiveNetHandler.INSTANCE = new ImmersiveNetHandler();
 		TileEntityCrusher.recipeCache.clear();
 		//		if(event.world.provider.dimensionId==0)
 		//		{
