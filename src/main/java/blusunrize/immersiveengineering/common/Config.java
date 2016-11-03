@@ -211,6 +211,8 @@ public class Config
 			public static boolean excavator_particles = true;
 			@Comment({"The chance that a given chunk will contain a mineral vein."})
 			public static double excavator_chance = .2d;
+			@Comment({"The chance that the Excavator will not dig up an ore with the currently downward-facing bucket."})
+			public static double excavator_fail_chance = .05d;
 			@Comment({"The maximum amount of yield one can get out of a chunk with the excavator. Set a number smaller than zero to make it infinite"})
 			public static int excavator_depletion = 38400;
 			@Comment({"List of dimensions that can't contain minerals. Default: The End."})

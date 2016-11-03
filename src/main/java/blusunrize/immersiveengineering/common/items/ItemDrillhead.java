@@ -189,7 +189,7 @@ public class ItemDrillhead extends ItemIEBase implements IDrillHead
 		Block block = state.getBlock();
 		float maxHardness = 1;
 		if(block!=null&&!block.isAir(state,world,startPos))
-			maxHardness = state.getPlayerRelativeBlockHardness(player, world, startPos)*0.8F;
+			maxHardness = state.getPlayerRelativeBlockHardness(player, world, startPos)*0.6F;
 		if(maxHardness<0)
 			maxHardness = 0;
 		
@@ -223,7 +223,7 @@ public class ItemDrillhead extends ItemIEBase implements IDrillHead
 					boolean canHarvest = block.canHarvestBlock(world, pos, player);
 					boolean drillMat = ((ItemDrill)IEContent.itemDrill).isEffective(state.getMaterial());
 					boolean hardness =  h>maxHardness;
-					if(block.canHarvestBlock(world, pos, player) && ((ItemDrill)IEContent.itemDrill).isEffective(state.getMaterial()) && h>maxHardness)
+					if(canHarvest && drillMat && hardness)
 						b.add(pos);
 				}
 		return b.build();
