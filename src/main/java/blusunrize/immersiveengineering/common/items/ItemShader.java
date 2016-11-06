@@ -5,6 +5,7 @@ import blusunrize.immersiveengineering.api.shader.IShaderItem;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderCaseMinecart;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
+import blusunrize.immersiveengineering.api.shader.ShaderRegistry.ShaderRegistryEntry;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.lib.manual.ManualUtils;
@@ -29,48 +30,51 @@ public class ItemShader extends ItemIEBase implements IShaderItem
 	{
 		super("shader", 1);
 
-		addShader("Rosequartz", 0, EnumRarity.COMMON, new int[]{65,35,35,255}, new int[]{230,180,180,255}, new int[]{240,205,205,255},new int[]{230,180,180,255});
-		addShader("Argo", 2, EnumRarity.COMMON, new int[]{45,45,45,255}, new int[]{220,220,220,255}, new int[]{220,120,35,255},new int[]{200,200,200,255});
-		addShader("Sunstrike", 5, EnumRarity.RARE, new int[]{115,115,115,255}, new int[]{205,105,0,255}, new int[]{215,58,0,185},new int[]{215,58,0,185});
-		addShader("Locus", 2, EnumRarity.COMMON, new int[]{10,10,10,255}, new int[]{74,74,74,255}, new int[]{132,150,76,255},new int[]{74,74,74,255});
-		addShader("Felix", 1, EnumRarity.COMMON, new int[]{10,10,10,255}, new int[]{74,74,74,255}, new int[]{240,136,3,255},new int[]{74,74,74,255});
-		addShader("Sharkface", 2, EnumRarity.UNCOMMON, new int[]{10,10,10,255}, new int[]{74,74,74,255}, new int[]{145,0,8,255},new int[]{74,74,74,255}, "shark",true,null);
-		addShader("Dragon's Breath", 1, EnumRarity.UNCOMMON, new int[]{25,25,25,255}, new int[]{51,63,43,255}, new int[]{138,138,138,255},new int[]{138,138,138,255}, "shark",true,null);
-		addShader("Hawk", 3, EnumRarity.COMMON, new int[]{103,99,107,255}, new int[]{244,238,235,255}, new int[]{45,45,45,255},new int[]{244,238,235,255});
-		addShader("Eyas", 3, EnumRarity.COMMON, new int[]{82,83,78,255}, new int[]{122,42,8,255}, new int[]{45,45,45,255},new int[]{244,238,235,255});
-		addShader("Magnum", 1, EnumRarity.COMMON, new int[]{86,56,44,255},new int[]{220,220,220,255},new int[]{160,160,160,255},new int[]{220,220,220,255});
-		addShader("Fox", 2, EnumRarity.UNCOMMON, new int[]{45,45,45,255}, new int[]{212,126,49,255}, new int[]{234,234,234,255},new int[]{234,234,234,255});
-		addShader("Vault-Tec", 0, EnumRarity.COMMON, new int[]{86,56,44,255},new int[]{26,71,133,255},new int[]{192,170,80,255},new int[]{170,170,170,255});
-		addShader("Sponsor", 0, EnumRarity.EPIC, new int[]{25,25,25,255}, new int[]{247,27,36,255}, new int[]{255,255,255,255},new int[]{170,170,170,255}, "sponsor",false,null);
-		((ShaderCaseMinecart)ShaderRegistry.getShader("Sponsor", "minecart")).mirrorSideForPass[2]=false;
-		addShader("Mass Fusion", 3, EnumRarity.RARE, new int[]{110,90,55,255}, new int[]{57,71,48,255}, new int[]{84,84,84,255}, new int[]{170,170,170,255}, "fusion",true,null);
-		
-		addShader("StormFlower", 1, EnumRarity.COMMON, new int[]{39,52,39,255},new int[]{40,111,48,255},new int[]{75,146,85,255},new int[]{40,111,48,255});
-		addShader("Mil\u00f3", 2, EnumRarity.UNCOMMON, new int[]{59,27,16,255},new int[]{103,0,4,255},new int[]{206,126,16,255},new int[]{103,0,4,255});
-		addShader("Trident", 2, EnumRarity.UNCOMMON, new int[]{81,81,81,255},new int[]{168,168,168,255},new int[]{41,211,255,255},new int[]{175,175,175,255});
-		addShader("Chloris", 4, EnumRarity.RARE, new int[]{56,50,42,255},new int[]{56,50,42,255},new int[]{136,250,190,255},new int[]{200,200,200,255});
-		addShader("Crescent Rose", 2, EnumRarity.COMMON, new int[]{20,20,20,255},new int[]{145,0,8,255},new int[]{8,8,8,255},new int[]{164,164,164,255});
-		addShader("Qrow", 2, EnumRarity.UNCOMMON, new int[]{109,28,17,255},new int[]{216,215,208,255},new int[]{49,54,64,255},new int[]{115,0,8,255});
+		addShader("Rosequartz", 0, EnumRarity.COMMON, 0xff412323, 0xffe6b4b4, 0xfff0cdcd,0xffe6b4b4);
+		addShader("Argo", 2, EnumRarity.COMMON, 0xff2d2d2d, 0xffdcdcdc, 0xffdc7823,0xffc8c8c8);
+		addShader("Sunstrike", 5, EnumRarity.RARE, 0xff737373, 0xffcd6900, 0xb9d73a00,0xb9d73a00);
+		addShader("Locus", 2, EnumRarity.COMMON, 0xff0a0a0a, 0xff4a4a4a, 0xff84964c,0xff4a4a4a);
+		addShader("Felix", 1, EnumRarity.COMMON, 0xff0a0a0a, 0xff4a4a4a, 0xfff08803,0xff4a4a4a);
+		addShader("Sharkface", 2, EnumRarity.UNCOMMON, 0xff0a0a0a, 0xff4a4a4a, 0xff910008,0xff4a4a4a, "shark",true,0xffffffff);
+		addShader("Dragon's Breath", 1, EnumRarity.UNCOMMON, 0xff191919, 0xff333f2b, 0xff8a8a8a,0xff8a8a8a, "shark",true,0xffffffff);
+		addShader("Hawk", 3, EnumRarity.COMMON, 0xff67636b, 0xfff4eeeb, 0xff2d2d2d,0xfff4eeeb);
+		addShader("Eyas", 3, EnumRarity.COMMON, 0xff52534e, 0xff7a2a08, 0xff2d2d2d,0xfff4eeeb);
+		addShader("Magnum", 1, EnumRarity.COMMON, 0xff56382c,0xffdcdcdc,0xffa0a0a0,0xffdcdcdc);
+		addShader("Fox", 2, EnumRarity.UNCOMMON, 0xff2d2d2d, 0xffd47e31, 0xffeaeaea,0xffeaeaea);
+		addShader("Vault-Tec", 0, EnumRarity.COMMON, 0xff56382c,0xff1a4785,0xffc0aa50,0xffaaaaaa);
 
-		addShader("Vanguard", 3, EnumRarity.UNCOMMON, new int[]{55,55,55,255},new int[]{19,27,66,255},new int[]{184,108,20,255},new int[]{220,220,220,255});
-		addShader("Regal", 4, EnumRarity.UNCOMMON, new int[]{216,212,209,255},new int[]{67,28,29,255},new int[]{216,212,209,255},new int[]{216,212,209,255});
-		addShader("Harrowed", 4, EnumRarity.RARE, new int[]{22,19,33,255},new int[]{67,28,29,255},new int[]{22,19,33,255},new int[]{22,19,33,255});
-		addShader("Taken", 5, EnumRarity.EPIC, new int[]{17,28,38,255},new int[]{17,28,38,255},new int[]{186,215,221,255},new int[]{17,28,38,255}, null,false,null);
+		ShaderRegistryEntry entry = addShader("Sponsor", 0, EnumRarity.EPIC, 0xff191919, 0xfff71b24, 0xffffffff,0xffaaaaaa, "sponsor",false,0xffffffff);
+		((ShaderCaseMinecart)entry.getCase("immersiveengineering:minecart")).mirrorSideForPass[2]=false;
+		entry.getCase("immersiveengineering:revolver").getLayers()[4].setTextureBounds(0,0,.25,.25);
+		entry.getCase("immersiveengineering:drill").getLayers()[3].setTextureBounds(10/64d,34/64d, 26/64d,50/64d);
+		entry.getCase("immersiveengineering:chemthrower").getLayers()[3].setTextureBounds(6/64d,16/64d, 22/64d,32/64d);
 
-		addShader("Angel's Thesis", 2, EnumRarity.EPIC, new int[]{30,30,30,255},new int[]{117,70,151,255},new int[]{119,185,61,255},new int[]{80,80,80,255}, null,false,null);
+		addShader("Mass Fusion", 3, EnumRarity.RARE, 0xff6e5a37, 0xff394730, 0xff545454, 0xffaaaaaa, "fusion",true,0xffffffff);
 
-		addShader("Warbird", 7, EnumRarity.UNCOMMON, new int[]{49,54,64,255},new int[]{216,215,208,255},new int[]{235,172,0,255},new int[]{216,215,208,255});
-		addShader("Matrix", 7, EnumRarity.RARE, new int[]{5,63,60,255},new int[]{225,225,255,255},new int[]{212,255,255,255},new int[]{255,255,255,255}, "pipes",true,new int[]{132,221,216,255});
-		addShader("Twili", 5, EnumRarity.EPIC, new int[]{85,93,112,255},new int[]{26,30,43,255},new int[]{34,39,57,255},new int[]{29,181,142,255}, "circuit",false,new int[]{29,181,142,255});
-		addShader("Usurper", 3, EnumRarity.EPIC, new int[]{62,30,30,255},new int[]{92,97,86,255},new int[]{17,16,16,255},new int[]{115,122,108,255}, "circuit",false,new int[]{202,47,56,255});
+		addShader("StormFlower", 1, EnumRarity.COMMON, 0xff273427,0xff286f30,0xff4b9255,0xff286f30);
+		addShader("Miló", 2, EnumRarity.UNCOMMON, 0xff3b1b10,0xff670004,0xffce7e10,0xff670004);
+		addShader("Trident", 2, EnumRarity.UNCOMMON, 0xff515151,0xffa8a8a8,0xff29d3ff,0xffafafaf);
+		addShader("Chloris", 4, EnumRarity.RARE, 0xff38322a,0xff38322a,0xff88fabe,0xffc8c8c8);
+		addShader("Crescent Rose", 2, EnumRarity.COMMON, 0xff141414,0xff910008,0xff080808,0xffa4a4a4);
+		addShader("Qrow", 2, EnumRarity.UNCOMMON, 0xff6d1c11,0xffd8d7d0,0xff313640,0xff730008);
 
-		addShader("Glacis", 6, EnumRarity.RARE, new int[]{73,155,194,255}, new int[]{118,208,249,200}, new int[]{189,255,253,200}, new int[]{189,255,253,200});
-		addShader("Solum", 3, EnumRarity.RARE, new int[]{104,90,72,255}, new int[]{208,161,111,200}, new int[]{148,116,96,180}, new int[]{148,116,96,180});
-		addShader("Aero", 1, EnumRarity.RARE, new int[]{99,159,98,255}, new int[]{120,233,128,220}, new int[]{232,255,220,160}, new int[]{120,233,128,220});
-		addShader("Phoenix", 5, EnumRarity.RARE, new int[]{117,0,0,255}, new int[]{208,0,0,255}, new int[]{255,127,0,255}, new int[]{255,127,0,255});
+		addShader("Vanguard", 3, EnumRarity.UNCOMMON, 0xff373737,0xff131b42,0xffb86c14,0xffdcdcdc);
+		addShader("Regal", 4, EnumRarity.UNCOMMON, 0xffd8d4d1,0xff431c1d,0xffd8d4d1,0xffd8d4d1);
+		addShader("Harrowed", 4, EnumRarity.RARE, 0xff161321,0xff431c1d,0xff161321,0xff161321);
+		addShader("Taken", 5, EnumRarity.EPIC, 0xff111c26,0xff111c26,0xffbad7dd,0xff111c26, null,false,0xffffffff);
 
-		addShader("Radiant", 3, EnumRarity.UNCOMMON, new int[]{163,110,171,255},new int[]{248,219,188,255},new int[]{199,154,177,255},new int[]{216,216,227,255}, "pipes",true,new int[]{241,201,30,255});
-		addShader("Hollow", 4, EnumRarity.UNCOMMON, new int[]{84,45,28,255},new int[]{238,197,229,255},new int[]{204,137,128,255},new int[]{196,161,170,255}, "pipes",true,new int[]{196,152,56,255});
+		addShader("Angel's Thesis", 2, EnumRarity.EPIC, 0xff1e1e1e,0xff754697,0xff77b93d,0xff505050, null,false,0xffffffff);
+
+		addShader("Warbird", 7, EnumRarity.UNCOMMON, 0xff313640,0xffd8d7d0,0xffebac00,0xffd8d7d0);
+		addShader("Matrix", 7, EnumRarity.RARE, 0xff053f3c,0xffe1e1ff,0xffd4ffff,0xffffffff, "pipes",true,0xff84ddd8);
+		addShader("Twili", 5, EnumRarity.EPIC, 0xff555d70,0xff1a1e2b,0xff222739,0xff1db58e, "circuit",false,0xff1db58e);
+		addShader("Usurper", 3, EnumRarity.EPIC, 0xff3e1e1e,0xff5c6156,0xff111010,0xff737a6c, "circuit",false,0xffca2f38);
+
+		addShader("Glacis", 6, EnumRarity.RARE, 0xff499bc2, 0x3376d0f9, 0x33bdfffd, 0x33bdfffd);
+		addShader("Phoenix", 5, EnumRarity.RARE, 0xff750000, 0xffd00000, 0xffff7f00, 0xffff7f00);
+
+		addShader("Radiant", 3, EnumRarity.UNCOMMON, 0xffa36eab,0xfff8dbbc,0xffc79ab1,0xffd8d8e3, "pipes",true,0xfff1c91e);
+		addShader("Hollow", 4, EnumRarity.UNCOMMON, 0xff542d1c,0xffeec5e5,0xffcc8980,0xffc4a1aa, "pipes",true,0xffc49838);
 	}
 
 	@Override
@@ -80,17 +84,14 @@ public class ItemShader extends ItemIEBase implements IShaderItem
 		return ShaderRegistry.getShader(name, shaderType);
 	}
 
-	public void addShader(String name, int overlayType, EnumRarity rarity, int[] colourBackground, int[] colourPrimary, int[] colourSecondary, int[] colourBlade)
+	public void addShader(String name, int overlayType, EnumRarity rarity, int colourBackground, int colourPrimary, int colourSecondary, int colourBlade)
 	{
-		this.addShader(name, overlayType, rarity, colourBackground, colourPrimary, colourSecondary, colourBlade, null,true,null);
+		this.addShader(name, overlayType, rarity, colourBackground, colourPrimary, colourSecondary, colourBlade, null,true,0xffffffff);
 	}
 
-	public void addShader(String name, int overlayType, EnumRarity rarity, int[] colourBackground, int[] colourPrimary, int[] colourSecondary, int[] colourBlade, String additionalTexture, boolean loot, int[] colourOverlay)
+	public ShaderRegistryEntry addShader(String name, int overlayType, EnumRarity rarity, int colourBackground, int colourPrimary, int colourSecondary, int colourBlade, String additionalTexture, boolean loot, int colourOverlay)
 	{
-		ShaderRegistry.ShaderRegistryEntry entry = ShaderRegistry.registerShader(name, Integer.toString(overlayType), rarity, colourPrimary, colourSecondary, colourBackground, colourBlade, additionalTexture, loot,true);
-		if(colourOverlay!=null)
-			for(ShaderCase sCase : entry.cases.values())
-				sCase.setOverlayColour(colourOverlay);
+		return ShaderRegistry.registerShader(name, Integer.toString(overlayType), rarity, colourPrimary, colourSecondary, colourBackground, colourBlade, additionalTexture, colourOverlay, loot,true);
 		//		ShaderCaseRevolver revolver = IEApi.registerShader_Revolver(name, overlayType, colour0, colour1, colour2, colour3, additionalTexture);
 		//		revolver.glowLayer = revolver_glow;
 		//		IEApi.registerShader_Chemthrower(name, overlayType, colour0, colour1, colour2, true,false, additionalTexture);
@@ -157,7 +158,7 @@ public class ItemShader extends ItemIEBase implements IShaderItem
 	@SideOnly(Side.CLIENT)
 	public void getSubItems(Item item, CreativeTabs tab, List list)
 	{
-		for(String key : ShaderRegistry.shaderList)
+		for(String key : ShaderRegistry.shaderRegistry.keySet())
 		{
 			ItemStack s = new ItemStack(item);
 			ItemNBTHelper.setString(s, "shader_name", key);
@@ -176,14 +177,14 @@ public class ItemShader extends ItemIEBase implements IShaderItem
 		String name = getShaderName(stack);
 		if(ShaderRegistry.shaderRegistry.containsKey(name))
 		{
-			List<ShaderCase> array = ShaderRegistry.shaderRegistry.get(name).getCases();
-			ShaderCase sCase = array.size()>0?array.get(0):null;
-			if(sCase!=null)
-			{
-				int[] col = pass==0?sCase.getUnderlyingColour(): pass==1?sCase.getPrimaryColour(): sCase.getSecondaryColour();
-				if(col!=null&&col.length>3)
-					return (col[3]<<24)+(col[0]<<16)+(col[1]<<8)+col[2];
-			}
+//			List<ShaderCase> array = ShaderRegistry.shaderRegistry.get(name).getCases();
+//			ShaderCase sCase = array.size()>0?array.get(0):null;
+//			if(sCase!=null)
+//			{
+//				int[] col = pass==0?sCase.getUnderlyingColour(): pass==1?sCase.getPrimaryColour(): sCase.getSecondaryColour();
+//				if(col!=null&&col.length>3)
+//					return (col[3]<<24)+(col[0]<<16)+(col[1]<<8)+col[2];
+//			}
 		}
 		return super.getColourForIEItem(stack, pass);
 	}

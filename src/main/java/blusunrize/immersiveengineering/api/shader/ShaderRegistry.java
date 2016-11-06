@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.api.shader;
 
 import blusunrize.immersiveengineering.api.ManualHelper;
+import blusunrize.immersiveengineering.api.shader.ShaderCase.ShaderLayer;
 import blusunrize.lib.manual.ManualInstance.ManualEntry;
 import blusunrize.lib.manual.ManualPages;
 import blusunrize.lib.manual.ManualPages.PositionedItemStack;
@@ -9,15 +10,14 @@ import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 
 import java.util.*;
 
 public class ShaderRegistry
 {
-	/**A list of shader names */
-	public static ArrayList<String> shaderList = new ArrayList<String>();
 	/**A map of shader name to ShaderRegistryEntry, which contains ShaderCases, rarity, weight and loot specifics */
-	public static HashMap<String,ShaderRegistryEntry> shaderRegistry = new HashMap<String, ShaderRegistryEntry>();
+	public static LinkedHashMap<String,ShaderRegistryEntry> shaderRegistry = new LinkedHashMap<String, ShaderRegistryEntry>();
 
 	/**A list of shader names that can generate in chests/crates. Names are added multiple times depending on their weight */
 	public static ArrayList<String> chestLootShaders = new ArrayList<String>();
@@ -48,76 +48,164 @@ public class ShaderRegistry
 		return null;
 	}
 
-	public static ShaderRegistryEntry registerShader(String name, String overlayType, EnumRarity rarity, int[] colourPrimary, int[] colourSecondary, int[] colourBackground, int[] colourBlade, String additionalTexture, boolean loot, boolean bags)
+	public static ShaderRegistryEntry registerShader(String name, String overlayType, EnumRarity rarity, int colourPrimary, int colourSecondary, int colourBackground, int colourBlade, String additionalTexture, int colourAdditional, boolean loot, boolean bags)
 	{
-		registerShader_Revolver(name, overlayType, rarity, colourBackground, colourPrimary, colourSecondary, colourBlade, additionalTexture);
-		registerShader_Chemthrower(name, overlayType, rarity, colourBackground, colourPrimary, colourSecondary, true,false, additionalTexture);
-		registerShader_Drill(name, overlayType, rarity, colourBackground, colourPrimary, colourSecondary, additionalTexture);
-		registerShader_Railgun(name, overlayType, rarity, colourBackground, colourPrimary, colourSecondary, additionalTexture);
-		registerShader_Minecart(name, overlayType, rarity, colourBackground, colourPrimary, colourSecondary, additionalTexture);
+		registerShader_Revolver(name, overlayType, rarity, colourBackground, colourPrimary, colourSecondary, colourBlade, additionalTexture, colourAdditional);
+		registerShader_Chemthrower(name, overlayType, rarity, colourBackground, colourPrimary, colourSecondary, additionalTexture, colourAdditional);
+		registerShader_Drill(name, overlayType, rarity, colourBackground, colourPrimary, colourSecondary, additionalTexture, colourAdditional);
+		registerShader_Railgun(name, overlayType, rarity, colourBackground, colourPrimary, colourSecondary, additionalTexture, colourAdditional);
+		registerShader_Minecart(name, overlayType, rarity, colourPrimary, colourSecondary, additionalTexture, colourAdditional);
 		//registerShader_Balloon(name, overlayType, rarity, colourPrimary, colourSecondary, additionalTexture);
 		return shaderRegistry.get(name).setCrateLoot(loot).setBagLoot(bags);
 	}
 
-	public static ShaderCaseRevolver registerShader_Revolver(String name, String overlayType, EnumRarity rarity, int[] colourGrip, int[] colourPrimary, int[] colourSecondary, int[] colourBlade, String additionalTexture)
+	public static <T extends ShaderCase> T registerShaderCase(String name, T shader, EnumRarity rarity)
 	{
-		if(!shaderList.contains(name))
-			shaderList.add(name);
-		ShaderCaseRevolver shader = new ShaderCaseRevolver(overlayType, colourGrip, colourPrimary, colourSecondary, colourBlade, additionalTexture);
 		if(!shaderRegistry.containsKey(name))
 			shaderRegistry.put(name, new ShaderRegistryEntry(name, rarity, shader));
 		else
 			shaderRegistry.get(name).addCase(shader);
 		return shader;
 	}
-	public static ShaderCaseChemthrower registerShader_Chemthrower(String name, String overlayType, EnumRarity rarity, int[] colourGrip, int[] colourPrimary, int[] colourSecondary, boolean cageOnBase, boolean tanksUncoloured, String additionalTexture)
-	{
-		if(!shaderList.contains(name))
-			shaderList.add(name);
-		ShaderCaseChemthrower shader = new ShaderCaseChemthrower(overlayType, colourGrip, colourPrimary, colourSecondary, cageOnBase, tanksUncoloured, additionalTexture);
-		if(!shaderRegistry.containsKey(name))
-			shaderRegistry.put(name, new ShaderRegistryEntry(name, rarity, shader));
-		else
-			shaderRegistry.get(name).addCase(shader);
 
-		return shader;
+	/**
+	 * Method to register a default implementation of Chemthrower Shaders<br>
+	 * @param name name of the shader
+	 * @param overlayType uses IE's existing overlays. To use custom ones, you'll need your own method.
+	 * @param rarity Rarity of the shader item
+	 * @param colour0 grip colour
+	 * @param colour1 base colour
+	 * @param colour2 design colour
+	 * @param colourBlade colour of the bayonet blade
+	 * @param colourAddtional colour for the additional texture, if present
+	 * @param additionalTexture additional overlay texture. Null if not needed.
+	 * @return the registered ShaderCase
+	 */
+	public static ShaderCaseRevolver registerShader_Revolver(String name, String overlayType, EnumRarity rarity, int colour0, int colour1, int colour2, int colourBlade, String additionalTexture, int colourAddtional)
+	{
+		ArrayList<ShaderLayer> list = new ArrayList();
+		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:revolvers/shaders/revolver_grip"),colour0));
+		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:revolvers/shaders/revolver_0"),colour1));
+		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:revolvers/shaders/revolver_0"),colourBlade));
+		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:revolvers/shaders/revolver_1_"+overlayType),colour2));
+		if(additionalTexture!=null)
+			list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:revolvers/shaders/revolver_"+additionalTexture),colourAddtional));
+		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:revolvers/shaders/revolver_uncoloured"),0xffffffff));
+		ShaderCaseRevolver shader = new ShaderCaseRevolver(list);
+		return registerShaderCase(name, shader, rarity);
 	}
-	public static ShaderCaseDrill registerShader_Drill(String name, String overlayType, EnumRarity rarity, int[] colourGrip, int[] colourPrimary, int[] colourSecondary, String additionalTexture)
-	{
-		if(!shaderList.contains(name))
-			shaderList.add(name);
-		ShaderCaseDrill shader = new ShaderCaseDrill(overlayType, colourGrip, colourPrimary, colourSecondary, additionalTexture);
-		if(!shaderRegistry.containsKey(name))
-			shaderRegistry.put(name, new ShaderRegistryEntry(name, rarity, shader));
-		else
-			shaderRegistry.get(name).addCase(shader);
 
-		return shader;
+	/**
+	 * Method to register a default implementation of Chemthrower Shaders<br>
+	 * @param name name of the shader
+	 * @param overlayType uses IE's existing overlays. To use custom ones, you'll need your own method.
+	 * @param rarity Rarity of the shader item
+	 * @param colour0 grip colour
+	 * @param colour1 base colour
+	 * @param colour2 design colour
+	 * @param colourAddtional colour for the additional texture, if present
+	 * @param additionalTexture additional overlay texture. Null if not needed.
+	 * @return the registered ShaderCase
+	 */
+	public static ShaderCaseChemthrower registerShader_Chemthrower(String name, String overlayType, EnumRarity rarity, int colour0, int colour1, int colour2, String additionalTexture, int colourAddtional)
+	{
+		ArrayList<ShaderLayer> list = new ArrayList();
+		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:items/shaders/chemthrower_0"),colour0));
+		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:items/shaders/chemthrower_0"),colour1));
+		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:items/shaders/chemthrower_1_"+overlayType),colour2));
+		if(additionalTexture!=null)
+			list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:items/shaders/chemthrower_"+additionalTexture),colourAddtional));
+		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:items/shaders/chemthrower_uncoloured"),0xffffffff));
+		ShaderCaseChemthrower shader = new ShaderCaseChemthrower(list);
+		return registerShaderCase(name, shader, rarity);
 	}
-	public static ShaderCaseRailgun registerShader_Railgun(String name, String overlayType, EnumRarity rarity, int[] colourGrip, int[] colourPrimary, int[] colourSecondary, String additionalTexture)
-	{
-		if(!shaderList.contains(name))
-			shaderList.add(name);
-		ShaderCaseRailgun shader = new ShaderCaseRailgun(overlayType, colourGrip, colourPrimary, colourSecondary, additionalTexture);
-		if(!shaderRegistry.containsKey(name))
-			shaderRegistry.put(name, new ShaderRegistryEntry(name, rarity, shader));
-		else
-			shaderRegistry.get(name).addCase(shader);
 
-		return shader;
+	/**
+	 * Method to register a default implementation of Drill Shaders<br>
+	 * Note that they have an extra layer with null for the ResourceLocation, for the drill head and augers
+	 * @param name name of the shader
+	 * @param overlayType uses IE's existing overlays. To use custom ones, you'll need your own method.
+	 * @param rarity Rarity of the shader item
+	 * @param colour0 grip colour
+	 * @param colour1 base colour
+	 * @param colour2 design colour
+	 * @param colourAddtional colour for the additional texture, if present
+	 * @param additionalTexture additional overlay texture. Null if not needed.
+	 * @return the registered ShaderCase
+	 */
+	public static ShaderCaseDrill registerShader_Drill(String name, String overlayType, EnumRarity rarity, int colour0, int colour1, int colour2, String additionalTexture, int colourAddtional)
+	{
+		ArrayList<ShaderLayer> list = new ArrayList();
+		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:items/shaders/drill_diesel_0"),colour0));
+		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:items/shaders/drill_diesel_0"),colour1));
+		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:items/shaders/drill_diesel_1_"+overlayType),colour2));
+		if(additionalTexture!=null)
+			list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:items/shaders/drill_diesel_"+additionalTexture),colourAddtional));
+		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:items/shaders/drill_diesel_uncoloured"),0xffffffff));
+		list.add(new ShaderLayer(null,0xffffffff));//final pass is for drill head and augers
+		ShaderCaseDrill shader = new ShaderCaseDrill(list);
+		return registerShaderCase(name, shader, rarity);
 	}
-	/**@param colourUnderlying is never used but is needed to colour the shader item*/
-	public static ShaderCaseMinecart registerShader_Minecart(String name, String overlayType, EnumRarity rarity, int[] colourUnderlying, int[] colourPrimary, int[] colourSecondary, String additionalTexture)
-	{
-		if(!shaderList.contains(name))
-			shaderList.add(name);
-		ShaderCaseMinecart shader = new ShaderCaseMinecart(overlayType, colourUnderlying, colourPrimary, colourSecondary, additionalTexture);
-		if(!shaderRegistry.containsKey(name))
-			shaderRegistry.put(name, new ShaderRegistryEntry(name, rarity, shader));
-		else
-			shaderRegistry.get(name).addCase(shader);
 
-		return shader;
+	/**
+	 * Method to register a default implementation of Railgun Shaders
+	 * @param name name of the shader
+	 * @param overlayType uses IE's existing overlays. To use custom ones, you'll need your own method.
+	 * @param rarity Rarity of the shader item
+	 * @param colour0 grip colour
+	 * @param colour1 base colour
+	 * @param colour2 design colour
+	 * @param colourAddtional colour for the additional texture, if present
+	 * @param additionalTexture additional overlay texture. Null if not needed.
+	 * @return the registered ShaderCase
+	 */
+	public static ShaderCaseRailgun registerShader_Railgun(String name, String overlayType, EnumRarity rarity, int colour0, int colour1, int colour2, String additionalTexture, int colourAddtional)
+	{
+		ArrayList<ShaderLayer> list = new ArrayList();
+		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:items/shaders/railgun_0"),colour0));
+		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:items/shaders/railgun_0"),colour1));
+		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:items/shaders/railgun_1_"+overlayType),colour2));
+		if(additionalTexture!=null)
+			list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:items/shaders/railgun_"+additionalTexture),colourAddtional));
+		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:items/shaders/railgun_uncoloured"),0xffffffff));
+
+		ShaderCaseRailgun shader = new ShaderCaseRailgun(list);
+		return registerShaderCase(name, shader, rarity);
+	}
+
+	/**
+	 * Method to register a default implementation of Minecart Shaders
+	 * @param name name of the shader
+	 * @param overlayType uses IE's existing overlays. To use custom ones, you'll need your own method.
+	 * @param rarity Rarity of the shader item
+	 * @param colour0 base colour
+	 * @param colour1 design colour
+	 * @param colourAddtional colour for the additional texture, if present
+	 * @param additionalTexture additional overlay texture. Null if not needed.
+	 * @return the registered ShaderCase
+	 */
+	public static ShaderCaseMinecart registerShader_Minecart(String name, String overlayType, EnumRarity rarity, int colour0, int colour1, String additionalTexture, int colourAddtional)
+	{
+		ArrayList<ShaderLayer> list = new ArrayList();
+		//Minecart textures need .png behind them, since they are used for direct binding, not stitching >_>
+		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:textures/models/shaders/minecart_0.png"),colour0));
+		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:textures/models/shaders/minecart_1_"+overlayType+".png"),colour1));
+		if(additionalTexture!=null)
+			list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:textures/models/shaders/minecart_"+additionalTexture+".png"),colourAddtional));
+		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:textures/models/shaders/minecart_uncoloured.png"),0xffffffff));
+
+		ShaderCaseMinecart shader = new ShaderCaseMinecart(list);
+		if(overlayType.equals("1") || overlayType.equals("2") || overlayType.equals("7"))
+		{
+			shader.renderSides[1][1] = false;
+			shader.renderSides[1][2] = false;
+		}
+		if(additionalTexture!=null)
+		{
+			shader.renderSides[2][1] = false;
+			shader.renderSides[2][2] = false;
+		}
+		return registerShaderCase(name, shader, rarity);
 	}
 	/*
 	 * Balloon Shaders are disabled for now, it'S too much work to get it running with OBJ models

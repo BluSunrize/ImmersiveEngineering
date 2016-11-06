@@ -187,7 +187,7 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IAdvancedFlu
 	@Override
 	public String getShaderType()
 	{
-		return "chemthrower";
+		return "immersiveengineering:chemthrower";
 	}
 
 	@Override

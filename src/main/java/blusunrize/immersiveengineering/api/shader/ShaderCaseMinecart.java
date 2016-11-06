@@ -1,68 +1,58 @@
 package blusunrize.immersiveengineering.api.shader;
 
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.item.ItemStack;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
 public class ShaderCaseMinecart extends ShaderCase
 {
 	public static Set<Class<? extends EntityMinecart>> invalidMinecartClasses = new HashSet();
-	public String additionalTexture = null;
-	public boolean[] overlaySides = {true, true,true,true,true, true,true};
-	public boolean[] mirrorSideForPass = {true,true,true,true};
+	public boolean[][] renderSides;
+	public boolean[] mirrorSideForPass;
 
-	/**
-	 * @param colourUnderlying is never used but is needed to colour the shader item
-	 */
-	public ShaderCaseMinecart(String overlayType, int colourUnderlying[], int[] colourPrimary, int[] colourSecondary, String additionalTexture)
+	public ShaderCaseMinecart(ShaderLayer... layers)
 	{
-		super(overlayType, colourUnderlying,colourPrimary,colourSecondary, "immersiveengineering:textures/models/shaders/minecart_");
-		this.additionalTexture = additionalTexture;
-		if(overlayType.equals("1") || overlayType.equals("2") || overlayType.equals("7"))
+		super(layers);
+		mirrorSideForPass = new boolean[getLayers().length];
+		renderSides = new boolean[getLayers().length][7];
+		for(int i=0; i<mirrorSideForPass.length; i++)
 		{
-			overlaySides[1] = false;
-			overlaySides[2] = false;
+			mirrorSideForPass[i] = true;
+			for(int j=0; j<7; j++)
+				renderSides[i][j] = true;
+		}
+	}
+	public ShaderCaseMinecart(Collection<ShaderLayer> layers)
+	{
+		super(layers);
+		mirrorSideForPass = new boolean[getLayers().length];
+		renderSides = new boolean[getLayers().length][7];
+		for(int i=0; i<mirrorSideForPass.length; i++)
+		{
+			mirrorSideForPass[i] = true;
+			for(int j=0; j<7; j++)
+				renderSides[i][j] = true;
 		}
 	}
 
 	@Override
 	public String getShaderType()
 	{
-		return "minecart";
+		return "immersiveengineering:minecart";
 	}
 
 	@Override
-	public int getPasses(ItemStack shader, ItemStack item, String modelPart)
+	public boolean stitchIntoSheet()
 	{
-		return additionalTexture!=null?4:3;
+		return false;
 	}
-
 	@Override
-	public TextureAtlasSprite getReplacementSprite(ItemStack shader, ItemStack item, String modelPart, int pass)
+	public boolean renderModelPartForPass(ItemStack shader, ItemStack item, String modelPart, int pass)
 	{
-		return null;
-	}
-
-	@Override
-	public int[] getRGBAColourModifier(ItemStack shader, ItemStack item, String modelPart, int pass)
-	{
-		if(pass==2 && additionalTexture!=null)
-			return colourOverlay;
-
-		if(pass==0)
-			return colourPrimary;
-		if(pass==1)
-			return colourSecondary;
-		return defaultWhite;
-	}
-
-	@Override
-	public void stichTextures(TextureMap map, int sheetID)
-	{
+		return renderSides[pass][Integer.parseInt(modelPart)];
 	}
 
 	@Override

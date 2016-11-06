@@ -6,6 +6,8 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.shader.IShaderEquipableItem;
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
+import blusunrize.immersiveengineering.api.shader.ShaderCase.ShaderLayer;
+import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.smart.ConnModelReal.ExtBlockstateAdapter;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.base.Optional;
@@ -129,8 +131,11 @@ public class IESmartObjModel extends OBJBakedModel
 					if (shader != null && shader.getItem() instanceof IShaderItem)
 					{
 						ShaderCase sCase = ((IShaderItem) shader.getItem()).getShaderCase(shader, stack, ((IShaderEquipableItem) stack.getItem()).getShaderType());
-						if (sCase != null)
-							sprite = sCase.getReplacementSprite(shader, stack, s, 0);
+						if(sCase!=null)
+						{
+							ResourceLocation rl = sCase.getReplacementSprite(shader, stack, s, 0);
+							sprite = ClientUtils.getSprite(rl);
+						}
 					}
 				}
 				if (sprite == null && stack.getItem() instanceof IOBJModelCallback)
@@ -210,53 +215,49 @@ public class IESmartObjModel extends OBJBakedModel
 			callbackObject = this.tempState;
 		}
 
-		for(Group g : getModel().getMatLib().getGroups().values())
+		int maxPasses = 1;
+		if(sCase!=null)
+			maxPasses = sCase.getLayers().length;
+		for(int pass=0; pass<maxPasses; pass++)
 		{
-			if (callback != null)
-				if (!callback.shouldRenderGroup(callbackObject, g.getName()))
-					continue;
-			int maxPasses = 1;
-			if (sCase != null)
-				maxPasses = sCase.getPasses(shader, tempStack, g.getName());
-			Set<Face> faces = Collections.synchronizedSet(new LinkedHashSet<Face>());
-			Optional<TRSRTransformation> transform = Optional.absent();
-			if (this.getState() instanceof OBJState)
+			ShaderLayer shaderLayer = sCase!=null?sCase.getLayers()[pass]:null;
+			for(Group g : getModel().getMatLib().getGroups().values())
 			{
-				OBJState state = (OBJState) this.getState();
-				if (state.parent != null)
-					transform = state.parent.apply(Optional.absent());
-				if (callback != null)
-					transform = callback.applyTransformations(callbackObject, g.getName(), transform);
-				if (state.getGroupsWithVisibility(true).contains(g.getName()))
-					faces.addAll(g.applyTransform(transform));
-			} else
-			{
-				transform = getState().apply(Optional.absent());
 				if(callback != null)
-					transform = callback.applyTransformations(callbackObject, g.getName(), transform);
-				faces.addAll(g.applyTransform(transform));
-			}
-
-			for (int pass = 0; pass < maxPasses; pass++)
-			{
-				float[] colour = {1, 1, 1, 1};
-				if (sCase != null)
+					if(!callback.shouldRenderGroup(callbackObject, g.getName()))
+						continue;
+				if(sCase != null)
+					if(!sCase.renderModelPartForPass(shader, tempStack, g.getName(), pass))
+						continue;
+//				System.out.println("pass: "+pass+", renders: "+g.getName());
+				Set<Face> faces = Collections.synchronizedSet(new LinkedHashSet<Face>());
+				Optional<TRSRTransformation> transform = Optional.absent();
+				if(this.getState() instanceof OBJState)
 				{
-					int[] iCol = sCase.getRGBAColourModifier(shader, tempStack, g.getName(), pass);
-					for (int i = 0; i < iCol.length; i++)
-						colour[i] = iCol[i] / 255f;
-				} else if(callback != null)
+					OBJState state = (OBJState)this.getState();
+					if(state.parent != null)
+						transform = state.parent.apply(Optional.absent());
+					if(callback != null)
+						transform = callback.applyTransformations(callbackObject, g.getName(), transform);
+					if(state.getGroupsWithVisibility(true).contains(g.getName()))
+						faces.addAll(g.applyTransform(transform));
+				} else
 				{
-					int iCol = callback.getRenderColour(callbackObject, g.getName());
-					//						int iCol = tempState.getBlock().colorMultiplier(ClientUtils.mc().theWorld, tempState, MinecraftForgeClient.getRenderPass());
-					colour[0] = (iCol >> 16 & 255) / 255f;
-					colour[1] = (iCol >> 8 & 255) / 255f;
-					colour[2] = (iCol & 255) / 255f;
-					colour[3] = (iCol >> 24 & 255) / 255f;
+					transform = getState().apply(Optional.absent());
+					if(callback != null)
+						transform = callback.applyTransformations(callbackObject, g.getName(), transform);
+					faces.addAll(g.applyTransform(transform));
 				}
 
+				int argb = 0xffffffff;
+				if(sCase != null)
+					argb = sCase.getARGBColourModifier(shader, tempStack, g.getName(), pass);
+				else if(callback != null)
+					argb = callback.getRenderColour(callbackObject, g.getName());
 
-				for (Face f : faces)
+				float[] colour = {(argb >> 16 & 255) / 255f, (argb >> 8 & 255) / 255f, (argb & 255) / 255f, (argb >> 24 & 255) / 255f};
+
+				for(Face f : faces)
 				{
 					tempSprite = null;
 					if(this.getModel().getMatLib().getMaterial(f.getMaterialName()).isWhite() && !"null".equals(f.getMaterialName()))
@@ -265,37 +266,75 @@ public class IESmartObjModel extends OBJBakedModel
 							if(!v.getMaterial().equals(this.getModel().getMatLib().getMaterial(v.getMaterial().getName())))
 								v.setMaterial(this.getModel().getMatLib().getMaterial(v.getMaterial().getName()));
 						tempSprite = ModelLoader.White.INSTANCE;
-					} else
+					}
+					else
 					{
-						if(sCase != null)
-							tempSprite = sCase.getReplacementSprite(shader, tempStack, g.getName(), pass);
-						if(tempSprite == null && callback != null)
-							tempSprite = callback.getTextureReplacement(callbackObject, f.getMaterialName());
-						if(tempSprite == null && this.tempState != null && this.tempState instanceof IExtendedBlockState && ((IExtendedBlockState)this.tempState).getUnlistedNames().contains(IEProperties.OBJ_TEXTURE_REMAP))
+						if(sCase!=null)
 						{
-							HashMap<String, String> map = ((IExtendedBlockState) this.tempState).getValue(IEProperties.OBJ_TEXTURE_REMAP);
+							ResourceLocation rl = sCase.getReplacementSprite(shader, tempStack, g.getName(), pass);
+							if(rl!=null)
+								tempSprite = ClientUtils.getSprite(rl);
+						}
+						if(tempSprite==null && callback!=null)
+							tempSprite = callback.getTextureReplacement(callbackObject, f.getMaterialName());
+						if(tempSprite==null && this.tempState!=null && this.tempState instanceof IExtendedBlockState && ((IExtendedBlockState)this.tempState).getUnlistedNames().contains(IEProperties.OBJ_TEXTURE_REMAP))
+						{
+							HashMap<String, String> map = ((IExtendedBlockState)this.tempState).getValue(IEProperties.OBJ_TEXTURE_REMAP);
 							String s = map != null ? map.get(g.getName()) : null;
 							if(s != null)
 								tempSprite = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(s);
 						}
-						if(tempSprite == null && !"null".equals(f.getMaterialName()))
+						if(tempSprite==null && !"null".equals(f.getMaterialName()))
 							tempSprite = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(this.getModel().getMatLib().getMaterial(f.getMaterialName()).getTexture().getTextureLocation().toString());
 					}
-					if (tempSprite != null)
+					if(tempSprite != null)
 					{
 						UnpackedBakedQuad.Builder builder = new UnpackedBakedQuad.Builder(getFormat());
 						builder.setQuadOrientation(EnumFacing.getFacingFromVector(f.getNormal().x, f.getNormal().y, f.getNormal().z));
 						builder.setTexture(tempSprite);
 						builder.setQuadTint(pass);
 						Normal faceNormal = f.getNormal();
-						//TextureCoordinate[] uvs = new TextureCoordinate[4]; For the upcoming offset system in shaders
+						TextureCoordinate[] uvs = new TextureCoordinate[4];
+						boolean renderFace = true;
 						for(int i=0; i<4; i++)
 						{
-							Vertex v = f.getVertices()[i];
-							TextureCoordinate uvs = v.hasTextureCoordinate()?v.getTextureCoordinate():TextureCoordinate.getDefaultUVs()[i];
-							putVertexData(builder, v, faceNormal, uvs, tempSprite, colour);
+							Vertex vertex = f.getVertices()[i];
+							//V-Flip is processed here already, rather than in the later method, since it's needed for easy UV comparissons on the Shader Layers
+							uvs[i] = vertex.hasTextureCoordinate() ? new TextureCoordinate(vertex.getTextureCoordinate().u,1-vertex.getTextureCoordinate().v,vertex.getTextureCoordinate().w) : TextureCoordinate.getDefaultUVs()[i];
+
+							if(shaderLayer!=null)
+							{
+								double[] texBounds = shaderLayer.getTextureBounds();
+								if(texBounds!=null)
+								{
+									if(texBounds[0]>uvs[i].u || uvs[i].u>texBounds[2] || texBounds[1]>uvs[i].v || uvs[i].v>texBounds[3])//if any uvs are outside the layers bounds
+									{
+										renderFace = false;
+										break;
+									}
+									double dU = texBounds[2] - texBounds[0];
+									double dV = texBounds[3] - texBounds[1];
+									//Rescaling to the partial bounds that the texture represents
+									uvs[i].u = (float)((uvs[i].u-texBounds[0])/dU);
+									uvs[i].v = (float)((uvs[i].v-texBounds[1])/dV);
+								}
+								//Rescaling to the selective area of the texture that is used
+								double[] cutBounds = shaderLayer.getCutoutBounds();
+								if(cutBounds!=null)
+								{
+									double dU = cutBounds[2] - cutBounds[0];
+									double dV = cutBounds[3] - cutBounds[1];
+									uvs[i].u = (float)(cutBounds[0] + dU*uvs[i].u);
+									uvs[i].v = (float)(cutBounds[1] + dV*uvs[i].v);
+								}
+							}
 						}
-						quads.add(builder.build());
+						if(renderFace)
+						{
+							for(int i=0; i<4; i++)
+								putVertexData(builder, f.getVertices()[i], faceNormal, uvs[i], tempSprite, colour);
+							quads.add(builder.build());
+						}
 					}
 				}
 			}
@@ -321,7 +360,6 @@ public class IESmartObjModel extends OBJBakedModel
 						d = LightUtil.diffuseLight(v.getNormal().x, v.getNormal().y, v.getNormal().z);
 					else
 						d = LightUtil.diffuseLight(faceNormal.x, faceNormal.y, faceNormal.z);
-
 					if(v.getMaterial() != null)
 						builder.put(e,
 								d * v.getMaterial().getColor().x*colour[0],
@@ -336,7 +374,7 @@ public class IESmartObjModel extends OBJBakedModel
 						sprite = Minecraft.getMinecraft().getTextureMapBlocks().getMissingSprite();
 					builder.put(e,
 							sprite.getInterpolatedU(texCoord.u * 16),
-							sprite.getInterpolatedV((1-texCoord.v) * 16),//Can't access v-flip in customdata. Might change in future Forge versions
+							sprite.getInterpolatedV((texCoord.v) * 16),//v-flip used to be processed here but was moved because of shader layers
 							0, 1);
 					break;
 				case NORMAL:

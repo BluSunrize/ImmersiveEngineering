@@ -2,6 +2,7 @@ package blusunrize.immersiveengineering.client.models;
 
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
+import blusunrize.immersiveengineering.api.shader.ShaderCase.ShaderLayer;
 import blusunrize.immersiveengineering.api.shader.ShaderCaseMinecart;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import net.minecraft.client.model.ModelBox;
@@ -44,9 +45,9 @@ public class ModelShaderMinecart extends ModelMinecart
 		{
 			shader = shadedCarts.get(entity.getEntityId());
 			if(shader!=null && shader.getItem() instanceof IShaderItem)
-				sCase = ((IShaderItem)shader.getItem()).getShaderCase(shader,null,"minecart");
+				sCase = ((IShaderItem)shader.getItem()).getShaderCase(shader,null,"immersiveengineering:minecart");
 		}
-		if(sCase instanceof ShaderCaseMinecart)
+		if(sCase!=null)
 		{
 			GL11.glEnable(GL11.GL_BLEND);
 			OpenGlHelper.glBlendFunc(770, 771, 0, 1);
@@ -57,45 +58,37 @@ public class ModelShaderMinecart extends ModelMinecart
 				if(sideModels[part]!=null)
 				{
 					float scale = 1;
-					int maxPasses = sCase.getPasses(shader,null,""+part);
-					for(int pass=0; pass<maxPasses; pass++)
-						if( (((ShaderCaseMinecart)sCase).additionalTexture!=null&&pass==2)?(part!=1&&part!=2): (pass!=1 || ((ShaderCaseMinecart)sCase).overlaySides[part]))
-						{
-							int[] col = sCase.getRGBAColourModifier(shader, null, ""+part, pass);
-							boolean upScale = true;
-							GL11.glScalef(scale,scale,scale);
-							GL11.glColor4f(col[0]/255f,col[1]/255f,col[2]/255f,col.length>3?(col[3]/255f):1f);
+					ShaderLayer[] layers = sCase.getLayers();
 
-							if(pass==maxPasses-1)
-								ClientUtils.bindTexture("immersiveengineering:textures/models/shaders/minecart_uncoloured.png");
-							else if(pass==maxPasses-2 && ((ShaderCaseMinecart)sCase).additionalTexture!=null)
-								ClientUtils.bindTexture(sCase.getBaseTexturePath()+((ShaderCaseMinecart)sCase).additionalTexture+".png");
-							else if(pass==0)
-								ClientUtils.bindTexture("immersiveengineering:textures/models/shaders/minecart_0.png");
-							else
-							{
-								ClientUtils.bindTexture(sCase.getBaseTexturePath()+"1_"+sCase.getOverlayType()+".png");
-								upScale = false;
-							}
+					//identify part 1+2, they shouldn'T render with additional?!
+
+					for(int pass=0; pass<layers.length; pass++)
+						if(sCase.renderModelPartForPass(shader, null, ""+part, pass))
+						{
+							int col = sCase.getARGBColourModifier(shader, null, ""+part, pass);
+							boolean upScale = pass!=layers.length-2;
+							GL11.glScalef(scale,scale,scale);
+							GL11.glColor4f((col>>16&255)/255f,(col>>8&255)/255f,(col&255)/255f,(col>>24&255)/255f);
+
+//							if(pass==maxPasses-1)
+//								ClientUtils.bindTexture("immersiveengineering:textures/models/shaders/minecart_uncoloured.png");
+//							else if(pass==maxPasses-2 && ((ShaderCaseMinecart)sCase).additionalTexture!=null)
+//								ClientUtils.bindTexture(sCase.getBaseTexturePath()+((ShaderCaseMinecart)sCase).additionalTexture+".png");
+//							else if(pass==0)
+//								ClientUtils.bindTexture("immersiveengineering:textures/models/shaders/minecart_0.png");
+//							else
+//							{
+//								ClientUtils.bindTexture(sCase.getBaseTexturePath()+"1_"+sCase.getOverlayType()+".png");
+//								upScale = false;
+//							}
+
+							ClientUtils.mc().getTextureManager().bindTexture(sCase.getReplacementSprite(shader, null, ""+part, pass));
 
 							sCase.modifyRender(shader, null, ""+part, pass, true, false);
-							//							IIcon icon = sCase.getReplacementSprite(shader, null, ""+part, pass);
-							//							if(icon!=null)
-							//							{
-							//								ModelShaderMinecart modelRemapped = getRemappedModel(icon);
-							//								if(modelRemapped!=null)
-							//									if(((ShaderCaseMinecart)sCase).mirrorSideForPass[pass])
-							//										modelRemapped.sideModelsMirrored[part].render(f5);
-							//									else
-							//										modelRemapped.sideModels[part].render(f5);
-							//							}
-							//							else
-							{
 								if(((ShaderCaseMinecart)sCase).mirrorSideForPass[pass])
 									sideModelsMirrored[part].render(f5);
 								else
 									sideModels[part].render(f5);
-							}
 							sCase.modifyRender(shader, null, ""+part, pass, false, false);
 
 							GL11.glColor4f(1,1,1,1);

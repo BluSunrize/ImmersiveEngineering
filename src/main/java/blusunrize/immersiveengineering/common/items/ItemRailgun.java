@@ -100,7 +100,7 @@ public class ItemRailgun extends ItemUpgradeableTool implements IShaderEquipable
 	@Override
 	public String getShaderType()
 	{
-		return "railgun";
+		return "immersiveengineering:railgun";
 	}
 
 	@Override

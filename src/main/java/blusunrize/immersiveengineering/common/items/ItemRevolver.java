@@ -4,9 +4,13 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.shader.IShaderEquipableItem;
+import blusunrize.immersiveengineering.api.shader.IShaderItem;
+import blusunrize.immersiveengineering.api.shader.ShaderCase;
+import blusunrize.immersiveengineering.api.shader.ShaderCase.ShaderLayer;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
 import blusunrize.immersiveengineering.api.tool.ITool;
+import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.CommonProxy;
 import blusunrize.immersiveengineering.common.entities.EntityRevolvershot;
@@ -119,7 +123,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IShaderEquipabl
 	@Override
 	public String getShaderType()
 	{
-		return "revolver";
+		return "immersiveengineering:revolver";
 	}
 
 	@Override
@@ -151,7 +155,15 @@ public class ItemRevolver extends ItemUpgradeableTool implements IShaderEquipabl
 
 			ItemStack shader = getShaderItem(stack);
 			if(shader!=null)
+			{
 				list.add(TextFormatting.DARK_GRAY+shader.getDisplayName());
+				ShaderCase sCase = ((IShaderItem)shader.getItem()).getShaderCase(shader, shader, getShaderType());
+				for(ShaderLayer layer : sCase.getLayers())
+				{
+					TextureAtlasSprite sprite = ClientUtils.getSprite(layer.getTexture());
+					list.add("  " + layer.getTexture().getResourcePath() + " ~ " +(sprite.getIconName()));
+				}
+			}
 		}
 	}
 	@Override

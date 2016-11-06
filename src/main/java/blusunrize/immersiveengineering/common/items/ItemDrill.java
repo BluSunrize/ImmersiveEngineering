@@ -121,7 +121,7 @@ public class ItemDrill extends ItemUpgradeableTool implements IShaderEquipableIt
 	@Override
 	public String getShaderType()
 	{
-		return "drill";
+		return "immersiveengineering:drill";
 	}
 
 	@Override

@@ -7,6 +7,7 @@ import blusunrize.immersiveengineering.api.crafting.SqueezerRecipe;
 import blusunrize.immersiveengineering.api.energy.ThermoelectricHandler;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
+import blusunrize.immersiveengineering.api.shader.ShaderCase.ShaderLayer;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
@@ -1018,7 +1019,11 @@ public class ClientProxy extends CommonProxy
 		((ItemRevolver)IEContent.itemRevolver).stichRevolverTextures(event.getMap());
 		for(ShaderRegistry.ShaderRegistryEntry entry : ShaderRegistry.shaderRegistry.values())
 			for(ShaderCase sCase : entry.getCases())
-				sCase.stichTextures(event.getMap(), 0);
+				if(sCase.stitchIntoSheet())
+					for(ShaderLayer layer : sCase.getLayers())
+						if(layer.getTexture()!=null)
+							ApiUtils.getRegisterSprite(event.getMap(), layer.getTexture());
+
 		for(DrillHeadPerm p : ((ItemDrillhead)IEContent.itemDrillhead).perms)
 			p.sprite = ApiUtils.getRegisterSprite(event.getMap(), p.texture);
 		WireType.iconDefaultWire = ApiUtils.getRegisterSprite(event.getMap(), "immersiveengineering:blocks/wire");
