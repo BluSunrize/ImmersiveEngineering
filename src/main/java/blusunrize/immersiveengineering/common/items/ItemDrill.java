@@ -2,7 +2,9 @@ package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.DieselHandler;
-import blusunrize.immersiveengineering.api.shader.IShaderEquipableItem;
+import blusunrize.immersiveengineering.api.shader.CapabilityShader;
+import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
+import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Item;
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
 import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
@@ -36,15 +38,18 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.play.server.SPacketBlockChange;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -53,7 +58,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
-public class ItemDrill extends ItemUpgradeableTool implements IShaderEquipableItem, IAdvancedFluidItem, IOBJModelCallback<ItemStack>, ITool
+public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem, IOBJModelCallback<ItemStack>, ITool
 {
 	public static Material[] validMaterials = {Material.ANVIL,Material.CLAY,Material.GLASS,Material.GRASS,Material.GROUND,Material.ICE,Material.IRON,Material.PACKED_ICE,Material.PISTON,Material.ROCK,Material.SAND, Material.SNOW};
 
@@ -74,8 +79,7 @@ public class ItemDrill extends ItemUpgradeableTool implements IShaderEquipableIt
 						new IESlot.DrillHead(container, invItem,0, 98,22),
 						new IESlot.Upgrades(container, invItem,1,  78,42, "DRILL", stack, true),
 						new IESlot.Upgrades(container, invItem,2,  98,52, "DRILL", stack, true),
-						new IESlot.Upgrades(container, invItem,3, 118,42, "DRILL", stack, true),
-						new IESlot.Shader(container, invItem,4,150,32, stack)
+						new IESlot.Upgrades(container, invItem,3, 118,42, "DRILL", stack, true)
 				};
 	}
 	@Override
@@ -105,32 +109,8 @@ public class ItemDrill extends ItemUpgradeableTool implements IShaderEquipableIt
 		}
 	}
 	@Override
-	public void setShaderItem(ItemStack stack, ItemStack shader)
-	{
-		ItemStack[] contained = this.getContainedItems(stack);
-		contained[4] =  shader;
-		this.setContainedItems(stack, contained);
-	}
-
-	@Override
-	public ItemStack getShaderItem(ItemStack stack)
-	{
-		ItemStack[] contained = this.getContainedItems(stack);
-		return contained[4];
-	}
-	@Override
-	public String getShaderType()
-	{
-		return "immersiveengineering:drill";
-	}
-
-	@Override
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean adv)
 	{
-		ItemStack shader = getShaderItem(stack);
-		if(shader!=null)
-			list.add(TextFormatting.DARK_GRAY+shader.getDisplayName());
-
 		FluidStack fs = getFluid(stack);
 		if(fs!=null)
 			list.add(I18n.format(Lib.DESC_FLAVOUR+"drill.fuel")+" "+fs.amount+"/"+getCapacity(stack,2000)+"mB");
@@ -481,9 +461,42 @@ public class ItemDrill extends ItemUpgradeableTool implements IShaderEquipableIt
 	}
 
 	@Override
+	public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged)
+	{
+		if(slotChanged)
+			return true;
+		if(oldStack.hasCapability(CapabilityShader.SHADER_CAPABILITY,null) && newStack.hasCapability(CapabilityShader.SHADER_CAPABILITY,null))
+		{
+			ShaderWrapper wrapperOld = oldStack.getCapability(CapabilityShader.SHADER_CAPABILITY,null);
+			ShaderWrapper wrapperNew = newStack.getCapability(CapabilityShader.SHADER_CAPABILITY,null);
+			if(!ItemStack.areItemStacksEqual(wrapperOld.getShaderItem(), wrapperNew.getShaderItem()))
+				return true;
+		}
+		return super.shouldCauseReequipAnimation(oldStack,newStack,slotChanged);
+	}
+
+	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt)
 	{
-		return new IEItemFluidHandler(stack, 2000);
+		return new ICapabilityProvider()
+		{
+			IEItemFluidHandler fluids = new IEItemFluidHandler(stack, 2000);
+			ShaderWrapper_Item shaders = new ShaderWrapper_Item("immersiveengineering:drill", stack);
+			@Override
+			public boolean hasCapability(Capability<?> capability, EnumFacing facing)
+			{
+				return capability== CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || capability== CapabilityShader.SHADER_CAPABILITY;
+			}
+			@Override
+			public <T> T getCapability(Capability<T> capability, EnumFacing facing)
+			{
+				if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+					return (T)fluids;
+				if(capability==CapabilityShader.SHADER_CAPABILITY)
+					return (T)shaders;
+				return null;
+			}
+		};
 	}
 	@Override
 	public int getCapacity(ItemStack container, int baseCapacity)

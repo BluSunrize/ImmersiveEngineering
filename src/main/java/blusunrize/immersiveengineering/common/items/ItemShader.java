@@ -1,11 +1,10 @@
 package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.api.shader.IShaderItem;
-import blusunrize.immersiveengineering.api.shader.ShaderCase;
-import blusunrize.immersiveengineering.api.shader.ShaderCaseMinecart;
-import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
+import blusunrize.immersiveengineering.api.shader.*;
+import blusunrize.immersiveengineering.api.shader.ShaderCase.ShaderLayer;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry.ShaderRegistryEntry;
+import blusunrize.immersiveengineering.common.items.IEItemInterfaces.ITextureOverride;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.lib.manual.ManualUtils;
@@ -16,15 +15,17 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-public class ItemShader extends ItemIEBase implements IShaderItem
+public class ItemShader extends ItemIEBase implements IShaderItem, ITextureOverride
 {
 	public ItemShader()
 	{
@@ -137,7 +138,8 @@ public class ItemShader extends ItemIEBase implements IShaderItem
 			{
 				List<ShaderCase> array = ShaderRegistry.shaderRegistry.get(name).getCases();
 				for(ShaderCase sCase : array)
-					list.add(TextFormatting.DARK_GRAY+" "+ I18n.format(Lib.DESC_INFO+"shader."+sCase.getShaderType()));
+					if(!(sCase instanceof ShaderCaseItem))
+						list.add(TextFormatting.DARK_GRAY+" "+ I18n.format(Lib.DESC_INFO+"shader."+sCase.getShaderType()));
 			}
 		}
 	}
@@ -177,15 +179,41 @@ public class ItemShader extends ItemIEBase implements IShaderItem
 		String name = getShaderName(stack);
 		if(ShaderRegistry.shaderRegistry.containsKey(name))
 		{
-//			List<ShaderCase> array = ShaderRegistry.shaderRegistry.get(name).getCases();
-//			ShaderCase sCase = array.size()>0?array.get(0):null;
-//			if(sCase!=null)
-//			{
-//				int[] col = pass==0?sCase.getUnderlyingColour(): pass==1?sCase.getPrimaryColour(): sCase.getSecondaryColour();
-//				if(col!=null&&col.length>3)
-//					return (col[3]<<24)+(col[0]<<16)+(col[1]<<8)+col[2];
-//			}
+			ShaderCase sCase = ShaderRegistry.shaderRegistry.get(name).getCase("immersiveengineering:item");
+			if(sCase!=null)
+			{
+				ShaderLayer[] layers = sCase.getLayers();
+				if(pass<layers.length && layers[pass]!=null)
+					return layers[pass].getColour();
+				return 0xffffffff;
+			}
 		}
 		return super.getColourForIEItem(stack, pass);
+	}
+
+	@Override
+	public String getModelCacheKey(ItemStack stack)
+	{
+		if(ItemNBTHelper.hasKey(stack, "shader_name"))
+			return ItemNBTHelper.getString(stack, "shader_name");
+		return null;
+	}
+	@Override
+	public List<ResourceLocation> getTextures(ItemStack stack, String key)
+	{
+		String name = getShaderName(stack);
+		if(ShaderRegistry.shaderRegistry.containsKey(name))
+		{
+			ShaderCase sCase = ShaderRegistry.shaderRegistry.get(name).getCase("immersiveengineering:item");
+			if(sCase!=null)
+			{
+				ShaderLayer[] layers = sCase.getLayers();
+				ArrayList<ResourceLocation> list = new ArrayList<>(layers.length);
+				for(ShaderLayer layer : layers)
+					list.add(layer.getTexture());
+				return list;
+			}
+		}
+		return Arrays.asList(new ResourceLocation("immersiveengieering:items/shader_0"),new ResourceLocation("immersiveengieering:items/shader_1"),new ResourceLocation("immersiveengieering:items/shader_2"));
 	}
 }

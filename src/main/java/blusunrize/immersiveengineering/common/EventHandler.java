@@ -9,6 +9,9 @@ import blusunrize.immersiveengineering.api.energy.wires.IICProxy;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
+import blusunrize.immersiveengineering.api.shader.CapabilityShader;
+import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
+import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Direct;
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralMix;
@@ -18,7 +21,6 @@ import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISpawnInterdiction;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
 import blusunrize.immersiveengineering.common.crafting.ArcRecyclingThreadHandler;
-import blusunrize.immersiveengineering.common.entities.CapabilityHandler_CartShaders;
 import blusunrize.immersiveengineering.common.items.ItemDrill;
 import blusunrize.immersiveengineering.common.util.*;
 import blusunrize.immersiveengineering.common.util.network.MessageMinecartShaderSync;
@@ -123,19 +125,20 @@ public class EventHandler
 		if(event.getEntity() instanceof EntityMinecart)
 		{
 			EntityMinecart entityMinecart = (EntityMinecart) event.getEntity();
-			event.addCapability(new ResourceLocation("immersiveengineering:shader"), new CapabilityHandler_CartShaders(entityMinecart));
+			event.addCapability(new ResourceLocation("immersiveengineering:shader"), new ShaderWrapper_Direct("immersiveengineering:minecart"));
 		}
 	}
 	@SubscribeEvent
 	public void onMinecartInteraction(MinecartInteractEvent event)
 	{
 		if(!event.getPlayer().worldObj.isRemote && event.getItem()!=null && event.getItem().getItem() instanceof IShaderItem)
-			if(event.getMinecart().hasCapability(CapabilityHandler_CartShaders.SHADER_CAPABILITY, null))
+			if(event.getMinecart().hasCapability(CapabilityShader.SHADER_CAPABILITY, null))
+//				if(event.getMinecart().hasCapability(CapabilityHandler_CartShaders.SHADER_CAPABILITY, null))
 			{
-				CapabilityHandler_CartShaders handler = event.getMinecart().getCapability(CapabilityHandler_CartShaders.SHADER_CAPABILITY, null);
-				if (handler != null)
+				ShaderWrapper handler = event.getMinecart().getCapability(CapabilityShader.SHADER_CAPABILITY, null);
+				if(handler != null)
 				{
-					handler.setShader(Utils.copyStackWithAmount(event.getItem(), 1));
+					handler.setShaderItem(Utils.copyStackWithAmount(event.getItem(), 1));
 					ImmersiveEngineering.packetHandler.sendTo(new MessageMinecartShaderSync(event.getMinecart(), handler), (EntityPlayerMP) event.getPlayer());
 					event.setCanceled(true);
 				}
@@ -176,7 +179,7 @@ public class EventHandler
 	@SubscribeEvent
 	public void onEntityJoiningWorld(EntityJoinWorldEvent event)
 	{
-		if(event.getEntity().worldObj.isRemote && event.getEntity() instanceof EntityMinecart && event.getEntity().hasCapability(CapabilityHandler_CartShaders.SHADER_CAPABILITY,null))
+		if(event.getEntity().worldObj.isRemote && event.getEntity() instanceof EntityMinecart && event.getEntity().hasCapability(CapabilityShader.SHADER_CAPABILITY,null))
 			ImmersiveEngineering.packetHandler.sendToServer(new MessageMinecartShaderSync(event.getEntity(),null));
 	}
 //	@SubscribeEvent

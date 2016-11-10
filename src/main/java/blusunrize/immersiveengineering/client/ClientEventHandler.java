@@ -6,6 +6,8 @@ import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
+import blusunrize.immersiveengineering.api.shader.CapabilityShader;
+import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler.IZoomTool;
@@ -147,6 +149,13 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 	@SubscribeEvent
 	public void onItemTooltip(ItemTooltipEvent event)
 	{
+		if(event.getItemStack().hasCapability(CapabilityShader.SHADER_CAPABILITY, null))
+		{
+			ShaderWrapper wrapper = event.getItemStack().getCapability(CapabilityShader.SHADER_CAPABILITY, null);
+			ItemStack shader = wrapper != null ? wrapper.getShaderItem() : null;
+			if(shader != null)
+				event.getToolTip().add(TextFormatting.DARK_GRAY + shader.getDisplayName());
+		}
 		if(ItemNBTHelper.hasKey(event.getItemStack(),"IE:Earmuffs"))
 		{
 			ItemStack earmuffs = ItemNBTHelper.getItemStack(event.getItemStack(), "IE:Earmuffs");

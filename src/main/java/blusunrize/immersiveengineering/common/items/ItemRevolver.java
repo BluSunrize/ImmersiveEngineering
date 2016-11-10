@@ -3,14 +3,12 @@ package blusunrize.immersiveengineering.common.items;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.api.shader.IShaderEquipableItem;
-import blusunrize.immersiveengineering.api.shader.IShaderItem;
-import blusunrize.immersiveengineering.api.shader.ShaderCase;
-import blusunrize.immersiveengineering.api.shader.ShaderCase.ShaderLayer;
+import blusunrize.immersiveengineering.api.shader.CapabilityShader;
+import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
+import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Item;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
 import blusunrize.immersiveengineering.api.tool.ITool;
-import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.CommonProxy;
 import blusunrize.immersiveengineering.common.entities.EntityRevolvershot;
@@ -45,20 +43,18 @@ import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.SoundCategory;
+import net.minecraft.util.*;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.*;
 
-public class ItemRevolver extends ItemUpgradeableTool implements IShaderEquipableItem, IOBJModelCallback<ItemStack>, ITool, IGuiItem
+public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallback<ItemStack>, ITool, IGuiItem
 {
 	public ItemRevolver()
 	{
@@ -91,8 +87,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IShaderEquipabl
 		return new Slot[]
 				{
 						new IESlot.Upgrades(container, invItem,18+0, 80,32, "REVOLVER", stack, true),
-						new IESlot.Upgrades(container, invItem,18+1,100,32, "REVOLVER", stack, true),
-						new IESlot.Shader(container, invItem,20,130,32, stack)
+						new IESlot.Upgrades(container, invItem,18+1,100,32, "REVOLVER", stack, true)
 				};
 	}
 	@Override
@@ -104,26 +99,37 @@ public class ItemRevolver extends ItemUpgradeableTool implements IShaderEquipabl
 	@Override
 	public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged)
 	{
-		return slotChanged|!ItemStack.areItemStacksEqual(getShaderItem(oldStack),getShaderItem(newStack))|super.shouldCauseReequipAnimation(oldStack,newStack,slotChanged);
+		if(slotChanged)
+			return true;
+		if(oldStack.hasCapability(CapabilityShader.SHADER_CAPABILITY,null) && newStack.hasCapability(CapabilityShader.SHADER_CAPABILITY,null))
+		{
+			ShaderWrapper wrapperOld = oldStack.getCapability(CapabilityShader.SHADER_CAPABILITY,null);
+			ShaderWrapper wrapperNew = newStack.getCapability(CapabilityShader.SHADER_CAPABILITY,null);
+			if(!ItemStack.areItemStacksEqual(wrapperOld.getShaderItem(), wrapperNew.getShaderItem()))
+				return true;
+		}
+		return super.shouldCauseReequipAnimation(oldStack,newStack,slotChanged);
 	}
 
 	@Override
-	public void setShaderItem(ItemStack stack, ItemStack shader)
+	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt)
 	{
-		ItemStack[] contained = this.getContainedItems(stack);
-		contained[20] =  shader;
-		this.setContainedItems(stack, contained);
-	}
-	@Override
-	public ItemStack getShaderItem(ItemStack stack)
-	{
-		ItemStack[] contained = this.getContainedItems(stack);
-		return contained[20];
-	}
-	@Override
-	public String getShaderType()
-	{
-		return "immersiveengineering:revolver";
+		return new ICapabilityProvider()
+		{
+			ShaderWrapper_Item shaders = new ShaderWrapper_Item("immersiveengineering:revolver", stack);
+			@Override
+			public boolean hasCapability(Capability<?> capability, EnumFacing facing)
+			{
+				return capability== CapabilityShader.SHADER_CAPABILITY;
+			}
+			@Override
+			public <T> T getCapability(Capability<T> capability, EnumFacing facing)
+			{
+				if(capability==CapabilityShader.SHADER_CAPABILITY)
+					return (T)shaders;
+				return null;
+			}
+		};
 	}
 
 	@Override
@@ -153,17 +159,12 @@ public class ItemRevolver extends ItemUpgradeableTool implements IShaderEquipabl
 			else if(stack.getItemDamage()==0)
 				list.add(I18n.format(Lib.DESC_FLAVOUR+"revolver"));
 
-			ItemStack shader = getShaderItem(stack);
-			if(shader!=null)
-			{
-				list.add(TextFormatting.DARK_GRAY+shader.getDisplayName());
-				ShaderCase sCase = ((IShaderItem)shader.getItem()).getShaderCase(shader, shader, getShaderType());
-				for(ShaderLayer layer : sCase.getLayers())
-				{
-					TextureAtlasSprite sprite = ClientUtils.getSprite(layer.getTexture());
-					list.add("  " + layer.getTexture().getResourcePath() + " ~ " +(sprite.getIconName()));
-				}
-			}
+//			ItemStack shader = getShaderItem(stack);
+//			if(shader!=null)
+//			{
+//				list.add(TextFormatting.DARK_GRAY+shader.getDisplayName());
+//				ShaderCase sCase = ((IShaderItem)shader.getItem()).getShaderCase(shader, shader, getShaderType());
+//			}
 		}
 	}
 	@Override

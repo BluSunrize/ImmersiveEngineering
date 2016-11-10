@@ -2,7 +2,9 @@ package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxContainerItem;
-import blusunrize.immersiveengineering.api.shader.IShaderEquipableItem;
+import blusunrize.immersiveengineering.api.shader.CapabilityShader;
+import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
+import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Item;
 import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.api.tool.RailgunHandler;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler.IZoomTool;
@@ -30,10 +32,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -41,7 +45,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import java.util.HashSet;
 import java.util.List;
 
-public class ItemRailgun extends ItemUpgradeableTool implements IShaderEquipableItem, IFluxContainerItem,IEnergyContainerItem, IZoomTool, ITool, IOBJModelCallback<ItemStack>
+public class ItemRailgun extends ItemUpgradeableTool implements IFluxContainerItem,IEnergyContainerItem, IZoomTool, ITool, IOBJModelCallback<ItemStack>
 {
 	public ItemRailgun()
 	{
@@ -59,8 +63,7 @@ public class ItemRailgun extends ItemUpgradeableTool implements IShaderEquipable
 		return new Slot[]
 				{
 						new IESlot.Upgrades(container, invItem,0, 80,32, "RAILGUN", stack, true),
-						new IESlot.Upgrades(container, invItem,1,100,32, "RAILGUN", stack, true),
-						new IESlot.Shader(container, invItem,2,130,32, stack)
+						new IESlot.Upgrades(container, invItem,1,100,32, "RAILGUN", stack, true)
 				};
 	}
 	@Override
@@ -83,32 +86,45 @@ public class ItemRailgun extends ItemUpgradeableTool implements IShaderEquipable
 			ItemNBTHelper.setInt(stack, "energy", this.getMaxEnergyStored(stack));
 	}
 
+	@Override
+	public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged)
+	{
+		if(slotChanged)
+			return true;
+		if(oldStack.hasCapability(CapabilityShader.SHADER_CAPABILITY,null) && newStack.hasCapability(CapabilityShader.SHADER_CAPABILITY,null))
+		{
+			ShaderWrapper wrapperOld = oldStack.getCapability(CapabilityShader.SHADER_CAPABILITY,null);
+			ShaderWrapper wrapperNew = newStack.getCapability(CapabilityShader.SHADER_CAPABILITY,null);
+			if(!ItemStack.areItemStacksEqual(wrapperOld.getShaderItem(), wrapperNew.getShaderItem()))
+				return true;
+		}
+		return super.shouldCauseReequipAnimation(oldStack,newStack,slotChanged);
+	}
 
 	@Override
-	public void setShaderItem(ItemStack stack, ItemStack shader)
+	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt)
 	{
-		ItemStack[] contained = this.getContainedItems(stack);
-		contained[2] = shader;
-		this.setContainedItems(stack, contained);
-	}
-	@Override
-	public ItemStack getShaderItem(ItemStack stack)
-	{
-		ItemStack[] contained = this.getContainedItems(stack);
-		return contained[2];
-	}
-	@Override
-	public String getShaderType()
-	{
-		return "immersiveengineering:railgun";
+		return new ICapabilityProvider()
+		{
+			ShaderWrapper_Item shaders = new ShaderWrapper_Item("immersiveengineering:railgun", stack);
+			@Override
+			public boolean hasCapability(Capability<?> capability, EnumFacing facing)
+			{
+				return capability== CapabilityShader.SHADER_CAPABILITY;
+			}
+			@Override
+			public <T> T getCapability(Capability<T> capability, EnumFacing facing)
+			{
+				if(capability==CapabilityShader.SHADER_CAPABILITY)
+					return (T)shaders;
+				return null;
+			}
+		};
 	}
 
 	@Override
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean adv)
 	{
-		ItemStack shader = getShaderItem(stack);
-		if(shader!=null)
-			list.add(TextFormatting.DARK_GRAY+shader.getDisplayName());
 		String stored = this.getEnergyStored(stack)+"/"+this.getMaxEnergyStored(stack);
 		list.add(I18n.format(Lib.DESC+"info.energyStored", stored));
 	}

@@ -56,14 +56,14 @@ public abstract class ShaderCase
 	 */
 	public ResourceLocation getReplacementSprite(ItemStack shader, ItemStack item, String modelPart, int pass)
 	{
-		return getLayers()[pass].texture;
+		return getLayers()[pass].getTexture();
 	}
 	/**
 	 * @return the ARGB values to be appleid to the given part in the given pass
 	 */
 	public int getARGBColourModifier(ItemStack shader, ItemStack item, String modelPart, int pass)
 	{
-		return getLayers()[pass].colour;
+		return getLayers()[pass].getColour();
 	}
 
 	/**
@@ -121,6 +121,11 @@ public abstract class ShaderCase
 		public ResourceLocation getTexture()
 		{
 			return texture;
+		}
+
+		public int getColour()
+		{
+			return colour;
 		}
 	}
 }

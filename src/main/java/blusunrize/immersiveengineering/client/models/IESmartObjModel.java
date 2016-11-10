@@ -3,7 +3,8 @@ package blusunrize.immersiveengineering.client.models;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.ComparableItemStack;
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.api.shader.IShaderEquipableItem;
+import blusunrize.immersiveengineering.api.shader.CapabilityShader;
+import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderCase.ShaderLayer;
@@ -125,12 +126,13 @@ public class IESmartObjModel extends OBJBakedModel
 			for (String s : model.getModel().getMatLib().getMaterialNames())
 			{
 				TextureAtlasSprite sprite = null;
-				if (stack.getItem() instanceof IShaderEquipableItem)
+				if(stack.hasCapability(CapabilityShader.SHADER_CAPABILITY, null))
 				{
-					ItemStack shader = ((IShaderEquipableItem) stack.getItem()).getShaderItem(stack);
+					ShaderWrapper wrapper = stack.getCapability(CapabilityShader.SHADER_CAPABILITY, null);
+					ItemStack shader = wrapper.getShaderItem();
 					if (shader != null && shader.getItem() instanceof IShaderItem)
 					{
-						ShaderCase sCase = ((IShaderItem) shader.getItem()).getShaderCase(shader, stack, ((IShaderEquipableItem) stack.getItem()).getShaderType());
+						ShaderCase sCase = ((IShaderItem) shader.getItem()).getShaderCase(shader, stack, wrapper.getShaderType());
 						if(sCase!=null)
 						{
 							ResourceLocation rl = sCase.getReplacementSprite(shader, stack, s, 0);
@@ -199,11 +201,12 @@ public class IESmartObjModel extends OBJBakedModel
 		ShaderCase sCase = null;
 		IOBJModelCallback callback = null;
 		Object callbackObject = null;
-		if(this.tempStack!=null && tempStack.getItem() instanceof IShaderEquipableItem)
+		if(this.tempStack!=null && tempStack.hasCapability(CapabilityShader.SHADER_CAPABILITY, null))
 		{
-			shader = ((IShaderEquipableItem)tempStack.getItem()).getShaderItem(tempStack);
+			ShaderWrapper wrapper = tempStack.getCapability(CapabilityShader.SHADER_CAPABILITY, null);
+			shader = wrapper.getShaderItem();
 			if(shader!=null && shader.getItem() instanceof IShaderItem)
-				sCase = ((IShaderItem)shader.getItem()).getShaderCase(shader, tempStack, ((IShaderEquipableItem)tempStack.getItem()).getShaderType());
+				sCase = ((IShaderItem)shader.getItem()).getShaderCase(shader, tempStack, wrapper.getShaderType());
 		}
 		if(this.tempStack!=null && tempStack.getItem() instanceof IOBJModelCallback)
 		{

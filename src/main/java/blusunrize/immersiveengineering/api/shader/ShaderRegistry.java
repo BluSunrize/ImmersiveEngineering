@@ -50,6 +50,7 @@ public class ShaderRegistry
 
 	public static ShaderRegistryEntry registerShader(String name, String overlayType, EnumRarity rarity, int colourPrimary, int colourSecondary, int colourBackground, int colourBlade, String additionalTexture, int colourAdditional, boolean loot, boolean bags)
 	{
+		registerShader_Item(name, rarity, colourBackground, colourPrimary, colourSecondary);
 		registerShader_Revolver(name, overlayType, rarity, colourBackground, colourPrimary, colourSecondary, colourBlade, additionalTexture, colourAdditional);
 		registerShader_Chemthrower(name, overlayType, rarity, colourBackground, colourPrimary, colourSecondary, additionalTexture, colourAdditional);
 		registerShader_Drill(name, overlayType, rarity, colourBackground, colourPrimary, colourSecondary, additionalTexture, colourAdditional);
@@ -68,6 +69,25 @@ public class ShaderRegistry
 		return shader;
 	}
 
+	/**
+	 * Method to register a default implementation of Item Shaders<br>
+	 * It is used for the colour and layers of the base shader item
+	 * @param name name of the shader
+	 * @param rarity Rarity of the shader item
+	 * @param colour0 grip colour
+	 * @param colour1 base colour
+	 * @param colour2 design colour
+	 * @return the registered ShaderCase
+	 */
+	public static ShaderCaseItem registerShader_Item(String name, EnumRarity rarity, int colour0, int colour1, int colour2)
+	{
+		ArrayList<ShaderLayer> list = new ArrayList();
+		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:items/shader_0"),colour0));
+		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:items/shader_1"),colour1));
+		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:items/shader_2"),colour2));
+		ShaderCaseItem shader = new ShaderCaseItem(list);
+		return registerShaderCase(name, shader, rarity);
+	}
 	/**
 	 * Method to register a default implementation of Chemthrower Shaders<br>
 	 * @param name name of the shader

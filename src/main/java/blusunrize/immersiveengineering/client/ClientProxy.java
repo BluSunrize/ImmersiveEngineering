@@ -128,9 +128,6 @@ public class ClientProxy extends CommonProxy
 	public static IENixieFontRender nixieFont;
 	public static IEItemFontRender itemFont;
 
-	public static long[] timestamp_3DGear_Mouse={-1,-1};
-	public static long timestamp_3DGear=-1;
-
 	@Override
 	public void preInit()
 	{
@@ -146,6 +143,15 @@ public class ClientProxy extends CommonProxy
 				return new ModelItemDynamicOverride(existingModel, null);
 			}
 		});
+		ImmersiveModelRegistry.instance.registerCustomItemModel(new ItemStack(IEContent.itemShader), new ImmersiveModelRegistry.ItemModelReplacement()
+		{
+			@Override
+			public IBakedModel createBakedModel(IBakedModel existingModel)
+			{
+				return new ModelItemDynamicOverride(existingModel, null);
+			}
+		});
+
 		ImmersiveModelRegistry.instance.registerCustomItemModel(new ItemStack(IEContent.itemTool, 1, 2), new ImmersiveModelRegistry.ItemModelReplacement_OBJ("immersiveengineering:models/item/tool/voltmeter.obj")
 				.setTransformations(TransformType.FIRST_PERSON_RIGHT_HAND, new Matrix4().translate(-.25, .375, .3125).rotate(-Math.PI*.5, 0, 1, 0))
 				.setTransformations(TransformType.FIRST_PERSON_LEFT_HAND, new Matrix4().translate(-.25, .375, -.625).rotate(-Math.PI*.5, 0, 1, 0))
