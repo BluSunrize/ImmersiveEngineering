@@ -57,6 +57,8 @@ public class ShaderRegistry
 		registerShader_Railgun(name, overlayType, rarity, colourBackground, colourPrimary, colourSecondary, additionalTexture, colourAdditional);
 		registerShader_Minecart(name, overlayType, rarity, colourPrimary, colourSecondary, additionalTexture, colourAdditional);
 		//registerShader_Balloon(name, overlayType, rarity, colourPrimary, colourSecondary, additionalTexture);
+		for(IShaderRegistryMethod method : shaderRegistrationMethods)
+			method.apply(name, overlayType, rarity, colourBackground, colourPrimary, colourSecondary, colourBlade, additionalTexture, colourAdditional);
 		return shaderRegistry.get(name).setCrateLoot(loot).setBagLoot(bags);
 	}
 
@@ -226,6 +228,30 @@ public class ShaderRegistry
 			shader.renderSides[2][2] = false;
 		}
 		return registerShaderCase(name, shader, rarity);
+	}
+
+	/**A map of shader name to ShaderRegistryEntry, which contains ShaderCases, rarity, weight and loot specifics */
+	public static Set<IShaderRegistryMethod> shaderRegistrationMethods = new HashSet<IShaderRegistryMethod>();
+	public static void addRegistrationMethod(IShaderRegistryMethod method)
+	{
+		shaderRegistrationMethods.add(method);
+	}
+	public interface IShaderRegistryMethod<T extends ShaderCase>
+	{
+		/**
+		 * Method to register shaders for new item types<br>
+		 * When adding a new shader-accepting item, use this to automatically register all of IE's default shaders for it
+		 * @param name name of the shader
+		 * @param overlayType overlay name
+		 * @param colour0 grip colour
+		 * @param colour1 base colour
+		 * @param colour2 design colour
+		 * @param colour3 colour used for bayonet blade
+		 * @param colourAddtional colour for the additional texture, if present
+		 * @param additionalTexture additional overlay texture. Null if not needed.
+		 * @return the registered ShaderCase
+		 */
+		T apply(String name, String overlayType, EnumRarity rarity, int colour0, int colour1, int colour2, int colour3, String additionalTexture, int colourAddtional);
 	}
 	/*
 	 * Balloon Shaders are disabled for now, it'S too much work to get it running with OBJ models
