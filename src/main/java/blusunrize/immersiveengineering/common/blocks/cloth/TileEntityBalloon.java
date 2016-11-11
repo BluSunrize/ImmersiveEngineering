@@ -35,9 +35,14 @@ public class TileEntityBalloon extends TileEntityConnectorStructural implements 
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt,descPacket);
-		style = nbt.getInteger("style");
-		colour0 = nbt.getInteger("colour0");
-		colour1 = nbt.getInteger("colour1");
+		//to prevent old ballons from going black
+		int nbtVersion = nbt.getInteger("nbtVersion");
+		if (nbtVersion>=1)
+		{
+			style = nbt.getInteger("style");
+			colour0 = nbt.getInteger("colour0");
+			colour1 = nbt.getInteger("colour1");
+		}
 		shader = ItemStack.loadItemStackFromNBT(nbt.getCompoundTag("shader"));
 	}
 
@@ -45,6 +50,7 @@ public class TileEntityBalloon extends TileEntityConnectorStructural implements 
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt,descPacket);
+		nbt.setInteger("nbtVersion", 1);
 		nbt.setInteger("style",style);
 		nbt.setInteger("colour0",colour0);
 		nbt.setInteger("colour1",colour1);

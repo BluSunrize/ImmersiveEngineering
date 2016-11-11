@@ -346,9 +346,10 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 					c.catenaryVertices = null;
 					worldObj.markBlockRangeForRenderUpdate(c.end, c.end);
 					Set<Connection> connsThere = ImmersiveNetHandler.INSTANCE.getConnections(worldObj, c.end);
-					for (Connection c2:connsThere)
-						if (c2.end.equals(pos))
-							c2.catenaryVertices = null;
+					if (connsThere!=null)
+						for (Connection c2:connsThere)
+							if (c2.end.equals(pos))
+								c2.catenaryVertices = null;
 				}
 		}
 		if (worldObj!=null)
