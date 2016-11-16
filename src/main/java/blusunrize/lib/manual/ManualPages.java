@@ -54,10 +54,10 @@ public abstract class ManualPages implements IManualPage
 		if(button instanceof GuiButtonManualLink && GuiManual.activeManual!=null && manual.showEntryInList(manual.getEntry(((GuiButtonManualLink)button).key)))
 		{
 			if(GuiManual.previousSelectedEntry.size()>0)
-				GuiManual.previousSelectedEntry.add(0,GuiManual.selectedEntry);
+				GuiManual.previousSelectedEntry.add(0,GuiManual.getSelectedEntry());
 			else
-				GuiManual.previousSelectedEntry.add(GuiManual.selectedEntry);
-			GuiManual.selectedEntry = ((GuiButtonManualLink)button).key;
+				GuiManual.previousSelectedEntry.add(GuiManual.getSelectedEntry());
+			GuiManual.setSelectedEntry(((GuiButtonManualLink)button).key);
 			GuiManual.page = ((GuiButtonManualLink)button).pageLinked;
 			GuiManual.activeManual.initGui();
 		}

@@ -289,6 +289,12 @@ public class IEManualInstance extends ManualInstance
 	}
 
 	@Override
+	public void openEntry(String entry)
+	{
+
+	}
+
+	@Override
 	public int getTitleColour()
 	{
 		return 0xf78034;
