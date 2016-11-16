@@ -12,6 +12,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 public class ShaderRegistry
@@ -271,6 +272,8 @@ public class ShaderRegistry
 	public static ManualEntry manualEntry;
 	public static Item itemShader;
 	public static Item itemShaderBag;
+	/**List of example items for shader manual entries*/
+	public static List<ItemStack> itemExamples = new ArrayList();
 	public static void compileWeight()
 	{
 		totalWeight.clear();
@@ -474,6 +477,10 @@ public class ShaderRegistry
 		public boolean isBagLoot;
 		public boolean isInLowerBags = true;
 
+		public String info_set;
+		public String info_reference;
+		public String info_details;
+
 		public ShaderRegistryEntry(String name, EnumRarity rarity, List<ShaderCase> cases)
 		{
 			this.name = name;
@@ -548,6 +555,14 @@ public class ShaderRegistry
 		public boolean getIsInLowerBags()
 		{
 			return this.isInLowerBags;
+		}
+
+		public ShaderRegistryEntry setInfo(@Nullable String set,@Nullable String reference,@Nullable String details)
+		{
+			this.info_set = set;
+			this.info_reference = reference;
+			this.info_details = details;
+			return this;
 		}
 	}
 }

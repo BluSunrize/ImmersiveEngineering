@@ -9,6 +9,7 @@ import blusunrize.immersiveengineering.api.energy.DieselHandler;
 import blusunrize.immersiveengineering.api.energy.ThermoelectricHandler;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
+import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.tool.*;
 import blusunrize.immersiveengineering.api.tool.AssemblerHandler.IRecipeAdapter;
 import blusunrize.immersiveengineering.api.tool.AssemblerHandler.RecipeQuery;
@@ -450,6 +451,12 @@ public class IEContent
 		EntityRegistry.registerModEntity(EntityIEExplosive.class, "explosive", i++, ImmersiveEngineering.instance, 64, 1, true);
 		EntityRegistry.registerModEntity(EntityFluorescentTube.class, "fluorescentTube", i++, ImmersiveEngineering.instance, 64, 1, true);
 		CapabilityShader.register();
+		ShaderRegistry.itemShader = IEContent.itemShader;
+		ShaderRegistry.itemShaderBag = IEContent.itemShaderBag;
+		ShaderRegistry.itemExamples.add(new ItemStack(IEContent.itemRevolver));
+		ShaderRegistry.itemExamples.add(new ItemStack(IEContent.itemDrill));
+		ShaderRegistry.itemExamples.add(new ItemStack(IEContent.itemChemthrower));
+		ShaderRegistry.itemExamples.add(new ItemStack(IEContent.itemRailgun));
 
 		/**WOLFPACK BULLETS*/
 		if(!BulletHandler.homingCartridges.isEmpty())

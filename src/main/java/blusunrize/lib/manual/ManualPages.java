@@ -387,7 +387,6 @@ public abstract class ManualPages implements IManualPage
 			GlStateManager.enableBlend();
 			if(localizedText!=null&&!localizedText.isEmpty())
 				ManualUtils.drawSplitString(manual.fontRenderer, localizedText, x,y+yOffset, 120, manual.getTextColour());
-			//			manual.fontRenderer.drawSplitString(localizedText, x,y+yOffset, 120, manual.getTextColour());
 
 			manual.fontRenderer.setUnicodeFlag(false);
 			if(highlighted!=null)
