@@ -71,6 +71,10 @@ public class GuiManual extends GuiScreen
 		if(string!=null)
 			activeManual.manual.openEntry(string);
 	}
+	public ManualInstance getManual()
+	{
+		return this.manual;
+	}
 
 	@Override
 	public void initGui()
