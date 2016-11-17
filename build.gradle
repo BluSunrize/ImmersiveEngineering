@@ -62,6 +62,10 @@ repositories {
         name 'tterrag maven'
         url "http://maven.tterrag.com/"
     }
+    maven { // CraftTweaker (aka MineTweaker3)
+        name 'jared maven'
+        url "http://blamejared.com/maven"
+    }
 }
 
 dependencies {
@@ -76,6 +80,7 @@ dependencies {
     deobfCompile "slimeknights:TConstruct:1.10.2-2.5.6.+"
     deobfCompile "li.cil.oc:OpenComputers:MC1.10.2-1.6.0.+"
     deobfCompile "mcjty.theoneprobe:TheOneProbe:1.10-1.0.13-26"
+    deobfCompile "MineTweaker3:MineTweaker3-API:3.0.14.59"
 }
 
 jar {
