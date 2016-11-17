@@ -28,7 +28,7 @@ public class GuiManual extends GuiScreen
 	List<GuiButton> pageButtons = new ArrayList();
 
 	public static String selectedCategory;
-	public static String selectedEntry;
+	private static String selectedEntry;
 	public static ArrayList<String> previousSelectedEntry = new ArrayList();
 	public static int page;
 	public static GuiManual activeManual;
@@ -59,6 +59,21 @@ public class GuiManual extends GuiScreen
 	public boolean doesGuiPauseGame()
 	{
 		return false;
+	}
+
+	public static String getSelectedEntry()
+	{
+		return selectedEntry;
+	}
+	public static void setSelectedEntry(String string)
+	{
+		selectedEntry = string;
+		if(string!=null)
+			activeManual.manual.openEntry(string);
+	}
+	public ManualInstance getManual()
+	{
+		return this.manual;
 	}
 
 	@Override
@@ -254,7 +269,7 @@ public class GuiManual extends GuiScreen
 				else
 				{
 					previousSelectedEntry.clear();
-					selectedEntry = headers[sel];
+					setSelectedEntry(headers[sel]);
 				}
 			}
 			((GuiClickableList)button).selectedOption=-1;
@@ -264,7 +279,7 @@ public class GuiManual extends GuiScreen
 		{
 			int sel = ((GuiClickableList)button).selectedOption;
 			if(sel>=0&&sel<suggestionHeaders.length)
-				selectedEntry = suggestionHeaders[sel];
+				setSelectedEntry(suggestionHeaders[sel]);
 			((GuiClickableList)button).selectedOption=-1;
 			this.initGui();
 		}
@@ -274,11 +289,11 @@ public class GuiManual extends GuiScreen
 			{
 				if(previousSelectedEntry.size()>0)
 				{
-					selectedEntry = previousSelectedEntry.get(0);
+					setSelectedEntry(previousSelectedEntry.get(0));
 					previousSelectedEntry.remove(0);
 				}
 				else
-					selectedEntry = null;
+					setSelectedEntry(null);
 			}
 			else if(selectedCategory!=null)
 				selectedCategory=null;
@@ -375,11 +390,11 @@ public class GuiManual extends GuiScreen
 			{
 				if(previousSelectedEntry.size()>0)
 				{
-					selectedEntry = previousSelectedEntry.get(0);
+					setSelectedEntry(previousSelectedEntry.get(0));
 					previousSelectedEntry.remove(0);
 				}
 				else
-					selectedEntry = null;
+					setSelectedEntry(null);
 			}
 			else if(selectedCategory!=null)
 				selectedCategory=null;

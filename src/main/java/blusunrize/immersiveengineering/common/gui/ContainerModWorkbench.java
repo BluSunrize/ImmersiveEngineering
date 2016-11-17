@@ -1,6 +1,8 @@
 package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.shader.CapabilityShader;
+import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool;
 import blusunrize.immersiveengineering.api.tool.IUpgradeableTool;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityModWorkbench;
@@ -14,12 +16,13 @@ import net.minecraft.item.ItemStack;
 public class ContainerModWorkbench extends ContainerIEBase<TileEntityModWorkbench>
 {
 	public InventoryStorageItem toolInv;
+	public InventoryShader shaderInv;
 	public InventoryPlayer inventoryPlayer;
 
 	public ContainerModWorkbench(InventoryPlayer inventoryPlayer, TileEntityModWorkbench tile)
 	{
 		super(inventoryPlayer, tile);
-		
+
 		this.inventoryPlayer = inventoryPlayer;
 		rebindSlots();
 	}
@@ -40,24 +43,37 @@ public class ContainerModWorkbench extends ContainerIEBase<TileEntityModWorkbenc
 		slotCount=1;
 
 		ItemStack tool = this.getSlot(0).getStack();
-		if(tool!=null && tool.getItem() instanceof IUpgradeableTool)
+		if(tool!=null)
 		{
-			if(tool.getItem() instanceof ItemEngineersBlueprint)
-				((ItemEngineersBlueprint)tool.getItem()).updateOutputs(tool);
-			
-			this.toolInv = new InventoryStorageItem(this, tool);
-			Slot[] slots =  ((IUpgradeableTool)tool.getItem()).getWorkbenchSlots(this, tool, toolInv);
-			if(slots!=null)
-				for(Slot s : slots)
+			if(tool.getItem() instanceof IUpgradeableTool)
+			{
+				if(tool.getItem() instanceof ItemEngineersBlueprint)
+					((ItemEngineersBlueprint)tool.getItem()).updateOutputs(tool);
+
+				this.toolInv = new InventoryStorageItem(this, tool);
+				Slot[] slots = ((IUpgradeableTool)tool.getItem()).getWorkbenchSlots(this, tool, toolInv);
+				if(slots != null)
+					for(Slot s : slots)
+					{
+						this.addSlotToContainer(s);
+						slotCount++;
+					}
+
+				ItemStack[] cont = ((IUpgradeableTool)tool.getItem()).getContainedItems(tool);
+				this.toolInv.stackList = cont;
+			}
+			if(tool.hasCapability(CapabilityShader.SHADER_CAPABILITY, null))
+			{
+				ShaderWrapper wrapper = tool.getCapability(CapabilityShader.SHADER_CAPABILITY, null);
+				if(wrapper!=null)
 				{
-					this.addSlotToContainer(s);
+					this.shaderInv = new InventoryShader(this, wrapper);
+					this.addSlotToContainer(new IESlot.Shader(this, shaderInv, 0, 130, 32, tool));
 					slotCount++;
+					this.shaderInv.shader = wrapper.getShaderItem();
 				}
-
-			ItemStack[] cont = ((IUpgradeableTool)tool.getItem()).getContainedItems(tool);
-			this.toolInv.stackList = cont;
+			}
 		}
-
 		bindPlayerInv(inventoryPlayer);
 		ImmersiveEngineering.proxy.reInitGui();
 	}

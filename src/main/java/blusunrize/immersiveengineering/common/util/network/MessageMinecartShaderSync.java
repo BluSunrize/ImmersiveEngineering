@@ -1,8 +1,9 @@
 package blusunrize.immersiveengineering.common.util.network;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.shader.CapabilityShader;
+import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
 import blusunrize.immersiveengineering.client.models.ModelShaderMinecart;
-import blusunrize.immersiveengineering.common.entities.CapabilityHandler_CartShaders;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityMinecart;
@@ -24,8 +25,8 @@ public class MessageMinecartShaderSync implements IMessage
 	{
 		this.dimension = entity.worldObj.provider.getDimension();
 		this.entityID = entity.getEntityId();
-		if(o instanceof CapabilityHandler_CartShaders)
-			shader = ((CapabilityHandler_CartShaders)o).getShader();
+		if(o instanceof ShaderWrapper)
+			shader = ((ShaderWrapper)o).getShaderItem();
 		else
 			request = true;
 	}
@@ -62,9 +63,9 @@ public class MessageMinecartShaderSync implements IMessage
 			if(world!=null)
 			{
 				Entity entity = world.getEntityByID(message.entityID);
-				if(entity!=null && entity.hasCapability(CapabilityHandler_CartShaders.SHADER_CAPABILITY, null))
+				if(entity!=null && entity.hasCapability(CapabilityShader.SHADER_CAPABILITY, null))
 				{
-					CapabilityHandler_CartShaders handler = entity.getCapability(CapabilityHandler_CartShaders.SHADER_CAPABILITY, null);
+					ShaderWrapper handler = entity.getCapability(CapabilityShader.SHADER_CAPABILITY, null);
 					if(handler!=null)
 						ImmersiveEngineering.packetHandler.sendToAll(new MessageMinecartShaderSync(entity, handler));
 				}

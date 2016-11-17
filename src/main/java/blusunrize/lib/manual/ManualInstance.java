@@ -1,9 +1,8 @@
 package blusunrize.lib.manual;
 
-import net.minecraft.client.gui.FontRenderer;
 import blusunrize.lib.manual.gui.GuiManual;
-
 import com.google.common.collect.ArrayListMultimap;
+import net.minecraft.client.gui.FontRenderer;
 
 public abstract class ManualInstance
 {
@@ -35,6 +34,7 @@ public abstract class ManualInstance
 
 	public void openManual(){}
 	public void closeManual(){}
+	public void openEntry(String entry){}
 	public void titleRenderPre(){}
 	public void titleRenderPost(){}
 	public void entryRenderPre(){}

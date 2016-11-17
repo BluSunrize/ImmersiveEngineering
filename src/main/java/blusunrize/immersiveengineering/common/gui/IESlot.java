@@ -4,7 +4,8 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
-import blusunrize.immersiveengineering.api.shader.IShaderEquipableItem;
+import blusunrize.immersiveengineering.api.shader.CapabilityShader;
+import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool;
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
@@ -172,9 +173,12 @@ public abstract class IESlot extends Slot
 		@Override
 		public boolean isItemValid(ItemStack itemStack)
 		{
-			if(itemStack==null || !(itemStack.getItem() instanceof IShaderItem) || tool==null || !(tool.getItem() instanceof IShaderEquipableItem))
+			if(itemStack==null || !(itemStack.getItem() instanceof IShaderItem) || tool==null || !tool.hasCapability(CapabilityShader.SHADER_CAPABILITY,null))
 				return false;
-			return ((IShaderItem)itemStack.getItem()).getShaderCase(itemStack, tool, ((IShaderEquipableItem)tool.getItem()).getShaderType())!=null;
+			ShaderWrapper wrapper = tool.getCapability(CapabilityShader.SHADER_CAPABILITY,null);
+			if(wrapper==null)
+				return false;
+			return ((IShaderItem)itemStack.getItem()).getShaderCase(itemStack, tool, wrapper.getShaderType())!=null;
 		}
 		@Override
 		public int getSlotStackLimit()

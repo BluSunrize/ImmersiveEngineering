@@ -9,12 +9,14 @@ import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -449,6 +451,66 @@ public class ApiUtils
 				return null;
 		}
 		return null;
+	}
+
+	public static boolean hasPlayerIngredient(EntityPlayer player, IngredientStack ingredient)
+	{
+		int amount = ingredient.inputSize;
+		ItemStack itemstack;
+		for(EnumHand hand : EnumHand.values())
+		{
+			itemstack = player.getHeldItem(hand);
+			if(ingredient.matchesItemStackIgnoringSize(itemstack))
+			{
+				amount -= itemstack.stackSize;
+				if(amount <= 0)
+					return true;
+			}
+		}
+		for(int i=0; i<player.inventory.getSizeInventory(); i++)
+		{
+			itemstack = player.inventory.getStackInSlot(i);
+			if(ingredient.matchesItemStackIgnoringSize(itemstack))
+			{
+				amount-=itemstack.stackSize;
+				if(amount<=0)
+					return true;
+			}
+		}
+		return amount <=0;
+	}
+	public static void consumePlayerIngredient(EntityPlayer player, IngredientStack ingredient)
+	{
+		int amount = ingredient.inputSize;
+		ItemStack itemstack;
+		for(EnumHand hand : EnumHand.values())
+		{
+			itemstack = player.getHeldItem(hand);
+			if(ingredient.matchesItemStackIgnoringSize(itemstack))
+			{
+				int taken = Math.min(amount, itemstack.stackSize);
+				amount -= taken;
+				itemstack.stackSize -= taken;
+				if(itemstack.stackSize<=0)
+					player.setHeldItem(hand, null);
+				if(amount<=0)
+					return;
+			}
+		}
+		for(int i=0; i<player.inventory.getSizeInventory(); i++)
+		{
+			itemstack = player.inventory.getStackInSlot(i);
+			if(ingredient.matchesItemStackIgnoringSize(itemstack))
+			{
+				int taken = Math.min(amount, itemstack.stackSize);
+				amount -= taken;
+				itemstack.stackSize -= taken;
+				if(itemstack.stackSize<=0)
+					player.inventory.setInventorySlotContents(i, null);
+				if(amount<=0)
+					return;
+			}
+		}
 	}
 
 	public static Map<String, Integer> sortMap(Map<String, Integer> map, boolean inverse)

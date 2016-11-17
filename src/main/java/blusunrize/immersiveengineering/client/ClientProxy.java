@@ -7,6 +7,7 @@ import blusunrize.immersiveengineering.api.crafting.SqueezerRecipe;
 import blusunrize.immersiveengineering.api.energy.ThermoelectricHandler;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
+import blusunrize.immersiveengineering.api.shader.ShaderCase.ShaderLayer;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
@@ -15,6 +16,8 @@ import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBelt;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.client.fx.EntityFXSparks;
 import blusunrize.immersiveengineering.client.gui.*;
+import blusunrize.immersiveengineering.client.manual.IEManualInstance;
+import blusunrize.immersiveengineering.client.manual.ManualPageShader;
 import blusunrize.immersiveengineering.client.models.*;
 import blusunrize.immersiveengineering.client.models.obj.IEOBJLoader;
 import blusunrize.immersiveengineering.client.models.smart.ConnLoader;
@@ -127,9 +130,6 @@ public class ClientProxy extends CommonProxy
 	public static IENixieFontRender nixieFont;
 	public static IEItemFontRender itemFont;
 
-	public static long[] timestamp_3DGear_Mouse={-1,-1};
-	public static long timestamp_3DGear=-1;
-
 	@Override
 	public void preInit()
 	{
@@ -145,6 +145,15 @@ public class ClientProxy extends CommonProxy
 				return new ModelItemDynamicOverride(existingModel, null);
 			}
 		});
+		ImmersiveModelRegistry.instance.registerCustomItemModel(new ItemStack(IEContent.itemShader), new ImmersiveModelRegistry.ItemModelReplacement()
+		{
+			@Override
+			public IBakedModel createBakedModel(IBakedModel existingModel)
+			{
+				return new ModelItemDynamicOverride(existingModel, null);
+			}
+		});
+
 		ImmersiveModelRegistry.instance.registerCustomItemModel(new ItemStack(IEContent.itemTool, 1, 2), new ImmersiveModelRegistry.ItemModelReplacement_OBJ("immersiveengineering:models/item/tool/voltmeter.obj")
 				.setTransformations(TransformType.FIRST_PERSON_RIGHT_HAND, new Matrix4().translate(-.25, .375, .3125).rotate(-Math.PI*.5, 0, 1, 0))
 				.setTransformations(TransformType.FIRST_PERSON_LEFT_HAND, new Matrix4().translate(-.25, .375, -.625).rotate(-Math.PI*.5, 0, 1, 0))
@@ -467,6 +476,7 @@ public class ClientProxy extends CommonProxy
 		//		}
 		List<ItemStack> tempItemList;
 		List<PositionedItemStack[]> tempRecipeList;
+		List<IManualPage> pages;
 
 		addChangelogToManual();
 
@@ -515,8 +525,10 @@ public class ClientProxy extends CommonProxy
 		ManualHelper.addEntry("graphite", ManualHelper.CAT_GENERAL, new ManualPages.Text(ManualHelper.getManual(), "graphite0"),new ManualPages.Crafting(ManualHelper.getManual(), "graphite1", ItemEngineersBlueprint.getTypedBlueprint("electrode")));
 		ManualHelper.addEntry("shader", ManualHelper.CAT_GENERAL, new ManualPages.Text(ManualHelper.getManual(), "shader0"), new ManualPages.ItemDisplay(ManualHelper.getManual(), "shader1"), new ManualPages.CraftingMulti(ManualHelper.getManual(), "shader2"));
 		ShaderRegistry.manualEntry = ManualHelper.getManual().getEntry("shader");
-		ShaderRegistry.itemShader = IEContent.itemShader;
-		ShaderRegistry.itemShaderBag = IEContent.itemShaderBag;
+		pages = new ArrayList<IManualPage>();
+		for(ShaderRegistry.ShaderRegistryEntry entry : ShaderRegistry.shaderRegistry.values())
+			pages.add(new ManualPageShader(ManualHelper.getManual(), entry));
+		ManualHelper.addEntry("shaderList", ManualHelper.CAT_GENERAL, pages.toArray(new IManualPage[pages.size()]));
 
 		ManualHelper.addEntry("treatedwood", ManualHelper.CAT_CONSTRUCTION,
 				new ManualPages.Crafting(ManualHelper.getManual(), "treatedwood0",  new ItemStack(IEContent.blockTreatedWood,1,0)),
@@ -646,7 +658,7 @@ public class ClientProxy extends CommonProxy
 		ManualHelper.addEntry("sorter", ManualHelper.CAT_MACHINES,
 				new ManualPages.Crafting(ManualHelper.getManual(), "sorter0", new ItemStack(IEContent.blockWoodenDevice0,1,BlockTypes_WoodenDevice0.SORTER.getMeta())),
 				new ManualPages.Text(ManualHelper.getManual(), "sorter1"));
-		ArrayList<IManualPage> pages = new ArrayList<IManualPage>();
+		pages = new ArrayList<IManualPage>();
 		pages.add(new ManualPages.Crafting(ManualHelper.getManual(), "fluidPipes0", new ItemStack(IEContent.blockMetalDevice1,1,BlockTypes_MetalDevice1.FLUID_PIPE.getMeta())));
 		pages.add(new ManualPages.Text(ManualHelper.getManual(), "fluidPipes1"));
 		pages.add(new ManualPages.Crafting(ManualHelper.getManual(), "fluidPipes2", new ItemStack(IEContent.blockMetalDevice0,1,BlockTypes_MetalDevice0.FLUID_PUMP.getMeta())));
@@ -1018,7 +1030,11 @@ public class ClientProxy extends CommonProxy
 		((ItemRevolver)IEContent.itemRevolver).stichRevolverTextures(event.getMap());
 		for(ShaderRegistry.ShaderRegistryEntry entry : ShaderRegistry.shaderRegistry.values())
 			for(ShaderCase sCase : entry.getCases())
-				sCase.stichTextures(event.getMap(), 0);
+				if(sCase.stitchIntoSheet())
+					for(ShaderLayer layer : sCase.getLayers())
+						if(layer.getTexture()!=null)
+							ApiUtils.getRegisterSprite(event.getMap(), layer.getTexture());
+
 		for(DrillHeadPerm p : ((ItemDrillhead)IEContent.itemDrillhead).perms)
 			p.sprite = ApiUtils.getRegisterSprite(event.getMap(), p.texture);
 		WireType.iconDefaultWire = ApiUtils.getRegisterSprite(event.getMap(), "immersiveengineering:blocks/wire");

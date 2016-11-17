@@ -6,6 +6,7 @@ import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.oredict.OreDictionary;
@@ -147,6 +148,15 @@ public class ManualUtils
 			}
 			fontRenderer.drawString(next, x, y, colour, false);
 		}
+	}
+
+	public static String attemptStringTranslation(String tranlationKey, String arg)
+	{
+		String untranslated = String.format(tranlationKey, arg);
+		String translated = I18n.format(untranslated);
+		if(!untranslated.equals(translated))
+			return translated;
+		return arg;
 	}
 
 	static HashMap<String, ResourceLocation> resourceMap = new HashMap<String, ResourceLocation>();

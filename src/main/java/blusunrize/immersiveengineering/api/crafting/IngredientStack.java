@@ -50,6 +50,15 @@ public class IngredientStack
 	{
 		this.fluid = fluid;
 	}
+	public IngredientStack(IngredientStack ingr)
+	{
+		this.stack = ingr.stack;
+		this.stackList = ingr.stackList;
+		this.oreName = ingr.oreName;
+		this.fluid = ingr.fluid;
+		this.inputSize = ingr.inputSize;
+		this.useNBT = ingr.useNBT;
+	}
 
 
 	public IngredientStack setUseNBT(boolean useNBT)
@@ -87,6 +96,17 @@ public class IngredientStack
 			return ApiUtils.compareToOreName(stack, (String)input);
 		}
 		return false;
+	}
+
+	public IngredientStack copyWithSize(int size)
+	{
+		IngredientStack is = new IngredientStack(this);
+		is.inputSize = size;
+		return is;
+	}
+	public IngredientStack copyWithMultipliedSize(double multiplier)
+	{
+		return copyWithSize((int)Math.floor(this.inputSize*multiplier));
 	}
 
 	public ItemStack getRandomizedExampleStack(long rand)
