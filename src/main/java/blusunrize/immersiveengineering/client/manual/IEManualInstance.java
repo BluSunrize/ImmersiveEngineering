@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.client.manual;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.ManualHelper;
 import blusunrize.immersiveengineering.client.ClientUtils;
@@ -7,6 +8,8 @@ import blusunrize.immersiveengineering.client.IEItemFontRender;
 import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.network.MessageShaderManual;
+import blusunrize.immersiveengineering.common.util.network.MessageShaderManual.MessageType;
 import blusunrize.lib.manual.IManualPage;
 import blusunrize.lib.manual.ManualInstance;
 import blusunrize.lib.manual.ManualUtils;
@@ -291,7 +294,8 @@ public class IEManualInstance extends ManualInstance
 	@Override
 	public void openEntry(String entry)
 	{
-
+		if("shaderList".equalsIgnoreCase(entry))
+			ImmersiveEngineering.packetHandler.sendToServer(new MessageShaderManual(MessageType.SYNC,ClientUtils.mc().thePlayer.getName()));
 	}
 
 	@Override

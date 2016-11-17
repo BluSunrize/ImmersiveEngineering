@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.api.shader;
 
 import blusunrize.immersiveengineering.api.ManualHelper;
+import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.api.shader.ShaderCase.ShaderLayer;
 import blusunrize.lib.manual.ManualInstance.ManualEntry;
 import blusunrize.lib.manual.ManualPages;
@@ -12,6 +13,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 
@@ -41,6 +43,8 @@ public class ShaderRegistry
 	public static HashMap<EnumRarity,Integer> totalWeight = new HashMap<EnumRarity,Integer>();
 	/**The total weight in relation to the player. This takes into account shaders the player has gotten, which then result in less weight*/
 	public static HashMap<String, HashMap<EnumRarity,Integer>> playerTotalWeight = new HashMap<String, HashMap<EnumRarity,Integer>>();
+	/**The deafault cost for replicating a shader. Prices are multiplied with 10-rarity level. Prices can be adjusted for every registry entry*/
+	public static IngredientStack defaultReplicationCost = new IngredientStack("dustSilver");
 
 	public static ShaderCase getShader(String name, String shaderType)
 	{
@@ -60,7 +64,7 @@ public class ShaderRegistry
 		//registerShader_Balloon(name, overlayType, rarity, colourPrimary, colourSecondary, additionalTexture);
 		for(IShaderRegistryMethod method : shaderRegistrationMethods)
 			method.apply(name, overlayType, rarity, colourBackground, colourPrimary, colourSecondary, colourBlade, additionalTexture, colourAdditional);
-		return shaderRegistry.get(name).setCrateLoot(loot).setBagLoot(bags);
+		return shaderRegistry.get(name).setCrateLoot(loot).setBagLoot(bags).setReplicationCost(defaultReplicationCost.copyWithMultipliedSize(10-rarityWeightMap.get(rarity)));
 	}
 
 	public static <T extends ShaderCase> T registerShaderCase(String name, T shader, EnumRarity rarity)
@@ -480,6 +484,7 @@ public class ShaderRegistry
 		public String info_set;
 		public String info_reference;
 		public String info_details;
+		public IngredientStack replicationCost;
 
 		public ShaderRegistryEntry(String name, EnumRarity rarity, List<ShaderCase> cases)
 		{
@@ -562,6 +567,11 @@ public class ShaderRegistry
 			this.info_set = set;
 			this.info_reference = reference;
 			this.info_details = details;
+			return this;
+		}
+		public ShaderRegistryEntry setReplicationCost(@Nonnull IngredientStack replicationCost)
+		{
+			this.replicationCost = replicationCost;
 			return this;
 		}
 	}
