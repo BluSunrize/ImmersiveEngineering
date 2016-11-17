@@ -5,6 +5,7 @@ import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.gui.IGuiItemStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
+import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import mezz.jei.util.Log;
 import net.minecraft.client.Minecraft;
@@ -27,7 +28,13 @@ public class ArcFurnaceRecipeCategory extends IERecipeCategory
 	}
 
 	@Override
+	@Deprecated
 	public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper)
+	{
+		//Deprecated
+	}
+	@Override
+	public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper, IIngredients ingredients)
 	{
 		IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
 		int i = 0;
@@ -43,7 +50,7 @@ public class ArcFurnaceRecipeCategory extends IERecipeCategory
 					guiItemStacks.set(i, recipe.recipeInputs[i++]);
 				}
 			int outputSize = recipe.recipeOutputs.length;
-			boolean hasSlag = recipe.getOutputs().size()>outputSize;
+			boolean hasSlag = recipe.getItemOut().size()>outputSize;
 			for(int j=0; j<outputSize; j++)
 			{
 				int x = 122-(Math.min(outputSize-1,2)*18)+j%3*18;
@@ -54,7 +61,7 @@ public class ArcFurnaceRecipeCategory extends IERecipeCategory
 			if(hasSlag)
 			{
 				guiItemStacks.init(i, false,  122, 36);
-				guiItemStacks.set(i++, recipe.getOutputs().get(recipe.getOutputs().size()-1));
+				guiItemStacks.set(i++, recipe.getItemOut().get(recipe.getItemOut().size()-1));
 			}
 			//			guiItemStacks.set(1, recipe.recipeInputs[1]);
 			//			guiItemStacks.set(2, recipe.getOutputs());

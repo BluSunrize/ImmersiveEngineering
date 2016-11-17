@@ -2,6 +2,7 @@ package blusunrize.immersiveengineering.common.util.compat.jei.blastfurnace;
 
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
 import mezz.jei.api.IJeiHelpers;
+import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.BlankRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
@@ -22,15 +23,13 @@ public class BlastFurnaceRecipeWrapper extends BlankRecipeWrapper
 		this.output = recipe.output;
 		this.slag = recipe.slag;
 	}
+
+
 	@Override
-	public List<ItemStack> getInputs()
+	public void getIngredients(IIngredients ingredients)
 	{
-		return inputs;
-	}
-	@Override
-	public List<ItemStack> getOutputs()
-	{
-		return Arrays.asList(output, slag);
+		ingredients.setInputs(ItemStack.class, inputs);
+		ingredients.setOutputs(ItemStack.class, Arrays.asList(output, slag));
 	}
 
 	public ItemStack getSmeltingOutput()

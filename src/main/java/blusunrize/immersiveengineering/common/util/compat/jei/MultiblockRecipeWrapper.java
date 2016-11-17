@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.common.util.compat.jei;
 
 import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
+import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.BlankRecipeWrapper;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
@@ -25,23 +26,33 @@ public class MultiblockRecipeWrapper extends BlankRecipeWrapper
 		this.fluidInputs = recipe.getJEITotalFluidInputs();
 		this.fluidOutputs = recipe.getJEITotalFluidOutputs();
 	}
+
 	@Override
-	public List<ItemStack> getInputs()
+	public void getIngredients(IIngredients ingredients)
+	{
+		if(!inputs.isEmpty())
+			ingredients.setInputs(ItemStack.class, inputs);
+		if(!outputs.isEmpty())
+			ingredients.setOutputs(ItemStack.class, outputs);
+		if(!fluidInputs.isEmpty())
+			ingredients.setInputs(FluidStack.class, fluidInputs);
+		if(!fluidOutputs.isEmpty())
+			ingredients.setOutputs(FluidStack.class, fluidOutputs);
+	}
+
+	public List<ItemStack> getItemIn()
 	{
 		return inputs;
 	}
-	@Override
-	public List<ItemStack> getOutputs()
+	public List<ItemStack> getItemOut()
 	{
 		return outputs;
 	}
-	@Override
-	public List<FluidStack> getFluidInputs()
+	public List<FluidStack> getFluidIn()
 	{
 		return fluidInputs;
 	}
-	@Override
-	public List<FluidStack> getFluidOutputs()
+	public List<FluidStack> getFluidOut()
 	{
 		return fluidOutputs;
 	}

@@ -4,6 +4,7 @@ import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.gui.IRecipeLayout;
+import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import mezz.jei.util.Log;
 import net.minecraft.util.ResourceLocation;
@@ -23,7 +24,13 @@ public class RefineryRecipeCategory extends IERecipeCategory
 	}
 
 	@Override
+	@Deprecated
 	public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper)
+	{
+		//Deprecated
+	}
+	@Override
+	public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper, IIngredients ingredients)
 	{
 		if(recipeWrapper instanceof RefineryRecipeWrapper)
 		{

@@ -70,10 +70,10 @@ dependencies {
 //    deobfCompile "mcp.mobius.waila:Waila:1.7.0-B3_1.9.4"
 //    deobfCompile "slimeknights.mantle:Mantle:1.9.4-0.10.+"
 //    deobfCompile "slimeknights:TConstruct:1.9.4-2.3.+"
-    deobfCompile "mezz.jei:jei_1.10.2:3.9.+"
+    deobfCompile "mezz.jei:jei_1.10.2:3.13.+"
     deobfCompile "mcp.mobius.waila:Waila:1.7.0-B3_1.9.4"
     deobfCompile "slimeknights.mantle:Mantle:1.10.2-1.+"
-    deobfCompile "slimeknights:TConstruct:1.10.2-2.5.3.jenkins384"
+    deobfCompile "slimeknights:TConstruct:1.10.2-2.5.6.+"
     deobfCompile "li.cil.oc:OpenComputers:MC1.10.2-1.6.0.+"
     deobfCompile "mcjty.theoneprobe:TheOneProbe:1.10-1.0.13-26"
 }

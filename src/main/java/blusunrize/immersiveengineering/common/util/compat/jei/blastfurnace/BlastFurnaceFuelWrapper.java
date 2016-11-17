@@ -4,6 +4,7 @@ import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IDrawableAnimated;
 import mezz.jei.api.gui.IDrawableStatic;
+import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.BlankRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
@@ -33,10 +34,11 @@ public class BlastFurnaceFuelWrapper extends BlankRecipeWrapper
 		this.flame = guiHelper.createAnimatedDrawable(flameDrawable, burnTime, IDrawableAnimated.StartDirection.TOP, true);
 	}
 
+
 	@Override
-	public List<ItemStack> getInputs()
+	public void getIngredients(IIngredients ingredients)
 	{
-		return fuel;
+		ingredients.setInputs(ItemStack.class, fuel);
 	}
 
 	@Override

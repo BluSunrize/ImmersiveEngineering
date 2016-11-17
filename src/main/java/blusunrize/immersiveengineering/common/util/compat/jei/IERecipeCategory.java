@@ -51,7 +51,7 @@ public abstract class IERecipeCategory<T> implements IRecipeCategory, IRecipeHan
 	public void drawAnimations(Minecraft minecraft)
 	{
 	}
-	
+
 	@Override
 	public Class<T> getRecipeClass()
 	{

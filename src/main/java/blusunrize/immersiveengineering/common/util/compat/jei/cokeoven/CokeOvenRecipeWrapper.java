@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.common.util.compat.jei.cokeoven;
 import blusunrize.immersiveengineering.api.crafting.CokeOvenRecipe;
 import blusunrize.immersiveengineering.common.IEContent;
 import mezz.jei.api.IJeiHelpers;
+import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.BlankRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
@@ -11,7 +12,6 @@ import net.minecraftforge.fluids.FluidStack;
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public class CokeOvenRecipeWrapper extends BlankRecipeWrapper
@@ -25,20 +25,13 @@ public class CokeOvenRecipeWrapper extends BlankRecipeWrapper
 		this.output = recipe.output;
 		this.creosote = new FluidStack(IEContent.fluidCreosote,recipe.creosoteOutput);
 	}
+
 	@Override
-	public List<ItemStack> getInputs()
+	public void getIngredients(IIngredients ingredients)
 	{
-		return inputs;
-	}
-	@Override
-	public List<ItemStack> getOutputs()
-	{
-		return Collections.singletonList(output);
-	}
-	@Override
-	public List<FluidStack> getFluidOutputs()
-	{
-		return Arrays.asList(creosote);
+		ingredients.setInputs(ItemStack.class, inputs);
+		ingredients.setOutput(ItemStack.class, output);
+		ingredients.setOutput(FluidStack.class, creosote);
 	}
 
 	@Override

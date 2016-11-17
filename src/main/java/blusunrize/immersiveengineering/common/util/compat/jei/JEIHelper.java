@@ -27,6 +27,7 @@ import blusunrize.immersiveengineering.common.util.compat.jei.workbench.Workbenc
 import com.google.common.collect.Lists;
 import mezz.jei.api.*;
 import mezz.jei.api.ISubtypeRegistry.ISubtypeInterpreter;
+import mezz.jei.api.ingredients.IModIngredientRegistration;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
@@ -41,6 +42,11 @@ import java.util.List;
 public class JEIHelper implements IModPlugin
 {
 	public static IJeiHelpers jeiHelpers;
+
+	@Override
+	public void registerIngredients(IModIngredientRegistration registry)
+	{
+	}
 
 	@Override
 	public void register(IModRegistry registryIn)

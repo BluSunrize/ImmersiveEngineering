@@ -78,7 +78,8 @@ public class TConstructHelper extends IECompatModule
 				new HeadMaterialStats(25, 2.00f, 2.00f, HarvestLevels.STONE),
 				new HandleMaterialStats(1.0f, 35),
 				new ExtraMaterialStats(20),
-				new BowMaterialStats(1f, 1.125f));
+				new BowMaterialStats(1f, 1.125f, 0),
+				new ArrowShaftMaterialStats(1.2f, 0));
 		TinkerIntegration.integrate(treatedWood, "plankTreatedWood").integrate();
 
 		constantan.setCastable(true);
@@ -89,7 +90,7 @@ public class TConstructHelper extends IECompatModule
 				new HeadMaterialStats(25, 4.70f, 4.00f, HarvestLevels.DIAMOND),
 				new HandleMaterialStats(0.8f, 60),
 				new ExtraMaterialStats(60),
-				new BowMaterialStats(.55f, 1.5f));
+				new BowMaterialStats(.55f, 1.5f, 5f));
 		TinkerIntegration.integrate(constantan, fluidConstantan, "Constantan").toolforge().integrate();
 
 		hemp.addItemIngot("hempFiber");
