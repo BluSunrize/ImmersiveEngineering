@@ -493,7 +493,7 @@ public class IERecipes
 		oreOutputSecondaries.put("Nikolite", new Object[]{Items.DIAMOND,.025f});
 
 		addCrusherRecipe(new ItemStack(Blocks.GRAVEL), "cobblestone", 1600);
-		addCrusherRecipe(new ItemStack(Blocks.SAND), Blocks.GRASS, 1600);
+		addCrusherRecipe(new ItemStack(Blocks.SAND), Blocks.GRAVEL, 1600);
 		addCrusherRecipe(new ItemStack(Blocks.SAND), "blockGlass", 3200);
 		addCrusherRecipe(new ItemStack(Items.QUARTZ,4), "blockQuartz", 3200);
 		addCrusherRecipe(new ItemStack(Items.GLOWSTONE_DUST,4), "glowstone", 3200);
