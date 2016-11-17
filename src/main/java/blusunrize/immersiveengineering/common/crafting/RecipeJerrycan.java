@@ -9,7 +9,8 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidContainerItem;
+import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 
 public class RecipeJerrycan implements IRecipe
 {
@@ -22,14 +23,21 @@ public class RecipeJerrycan implements IRecipe
 		{
 			ItemStack stackInSlot = inv.getStackInSlot(i);
 			if(stackInSlot!=null)
-				if(jerrycan==null && IEContent.itemJerrycan.equals(stackInSlot.getItem()) && ItemNBTHelper.hasKey(stackInSlot, "fluid"))
+				if(jerrycan==null && IEContent.itemJerrycan.equals(stackInSlot.getItem()) && FluidUtil.getFluidContained(stackInSlot)!=null)
 					jerrycan = stackInSlot;
-				else if(container==null && stackInSlot.getItem() instanceof IFluidContainerItem && ((IFluidContainerItem)stackInSlot.getItem()).getFluid(stackInSlot)==null)
+				else if(container==null && FluidUtil.getFluidHandler(stackInSlot)!=null)
 					container = stackInSlot;
 				else
 					return false;
 		}
-		return jerrycan!=null&&container!=null;
+		if(jerrycan!=null&&container!=null)
+		{
+			IFluidHandler handler = FluidUtil.getFluidHandler(container);
+			FluidStack fs = handler.drain(Integer.MAX_VALUE, false);
+			if(fs==null || (fs.amount<handler.getTankProperties()[0].getCapacity() && fs.isFluidEqual(FluidUtil.getFluidContained(jerrycan))))
+				return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -42,22 +50,24 @@ public class RecipeJerrycan implements IRecipe
 		{
 			ItemStack stackInSlot = inv.getStackInSlot(i);
 			if(stackInSlot!=null)
-				if(jerrycan==null && IEContent.itemJerrycan.equals(stackInSlot.getItem()) && ItemNBTHelper.hasKey(stackInSlot, "fluid"))
+				if(jerrycan==null && IEContent.itemJerrycan.equals(stackInSlot.getItem()) && FluidUtil.getFluidContained(stackInSlot)!=null)
 				{
 					jerrycan = stackInSlot;
-					fs = ((IFluidContainerItem)IEContent.itemJerrycan).getFluid(jerrycan);
+					fs = FluidUtil.getFluidContained(jerrycan);
 				}
-				else if(container==null && stackInSlot.getItem() instanceof IFluidContainerItem)
+				else if(container==null && FluidUtil.getFluidHandler(stackInSlot)!=null)
 					container = stackInSlot;
 		}
 		if(fs!=null && container!=null)
 		{
 			ItemStack newContainer = Utils.copyStackWithAmount(container, 1);
-			int accepted = ((IFluidContainerItem)newContainer.getItem()).fill(newContainer, fs, false);
+			IFluidHandler handler = FluidUtil.getFluidHandler(newContainer);
+			int accepted = handler.fill(fs, false);
 			if(accepted>0)
 			{
-				((IFluidContainerItem)newContainer.getItem()).fill(newContainer, fs, true);
-				ItemNBTHelper.setInt(newContainer, "jerrycanFilling", accepted);
+				handler.fill(fs, true);
+//				FluidUtil.getFluidHandler(jerrycan).drain(accepted,true);
+				ItemNBTHelper.setInt(jerrycan, "jerrycanDrain", accepted);
 			}
 			return newContainer;
 		}
@@ -75,9 +85,16 @@ public class RecipeJerrycan implements IRecipe
 		return null;
 	}
 
-    @Override
-    public ItemStack[] getRemainingItems(InventoryCrafting inv)
-    {
-        return ForgeHooks.defaultRecipeGetRemainingItems(inv);
-    }
+	@Override
+	public ItemStack[] getRemainingItems(InventoryCrafting inv)
+	{
+		return ForgeHooks.defaultRecipeGetRemainingItems(inv);
+//		for(int i=0;i<inv.getSizeInventory();i++)
+//		{
+//			ItemStack stackInSlot = inv.getStackInSlot(i);
+//			if(stackInSlot!=null)
+//				if(jerrycan==null && IEContent.itemJerrycan.equals(stackInSlot.getItem()) && ItemNBTHelper.hasKey(stackInSlot, "fluid"))
+//
+//		return new ItemStack[]
+	}
 }

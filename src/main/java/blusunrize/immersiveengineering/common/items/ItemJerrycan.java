@@ -77,7 +77,7 @@ public class ItemJerrycan extends ItemIEBase
 	@Override
 	public boolean hasContainerItem(ItemStack stack)
 	{
-		return ItemNBTHelper.hasKey(stack, "jerrycanDrain");
+		return ItemNBTHelper.hasKey(stack, "jerrycanDrain") || FluidUtil.getFluidContained(stack)!=null;
 	}
 	@Override
 	public ItemStack getContainerItem(ItemStack stack)
@@ -85,9 +85,16 @@ public class ItemJerrycan extends ItemIEBase
 		if(ItemNBTHelper.hasKey(stack, "jerrycanDrain"))
 		{
 			ItemStack ret = stack.copy();
-			IFluidHandler handler = FluidUtil.getFluidHandler(stack);
-			handler.drain(ItemNBTHelper.getInt(stack, "jerrycanDrain"), true);
+			IFluidHandler handler = FluidUtil.getFluidHandler(ret);
+			handler.drain(ItemNBTHelper.getInt(ret, "jerrycanDrain"), true);
 			ItemNBTHelper.remove(ret, "jerrycanDrain");
+			return ret;
+		}
+		else if(FluidUtil.getFluidContained(stack)!=null)
+		{
+			ItemStack ret = stack.copy();
+			IFluidHandler handler = FluidUtil.getFluidHandler(ret);
+			handler.drain(1000, true);
 			return ret;
 		}
 		return stack;

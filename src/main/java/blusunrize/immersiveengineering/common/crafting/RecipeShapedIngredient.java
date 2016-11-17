@@ -6,8 +6,6 @@ import net.minecraft.init.Blocks;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
 public class RecipeShapedIngredient extends ShapedOreRecipe
@@ -131,19 +129,23 @@ public class RecipeShapedIngredient extends ShapedOreRecipe
 	public ItemStack[] getRemainingItems(InventoryCrafting inv) //getRecipeLeftovers
 	{
 		ItemStack[] remains = ForgeHooks.defaultRecipeGetRemainingItems(inv);
-		for(int i = 0; i < height*width; i++)
-		{
-			ItemStack s = inv.getStackInSlot(i);
-			IngredientStack[] matchedIngr = lastMatch==1?ingredientsQuarterTurn: lastMatch==2?ingredientsEighthTurn: ingredients;
-			if(s!=null && remains[i]==null && matchedIngr[i]!=null && matchedIngr[i].fluid!=null)
-			{
-				remains[i] = s.copy();
-				IFluidHandler handler = FluidUtil.getFluidHandler(remains[i]);
-				if(handler!=null)
-					handler.drain(matchedIngr[i].fluid.amount, true);
-
-			}
-		}
+//		Commented out, apparently fluids handle this reasonably well themselves .-.
+//		for(int i = 0; i < height*width; i++)
+//		{
+//			ItemStack s = inv.getStackInSlot(i);
+//			IngredientStack[] matchedIngr = lastMatch==1?ingredientsQuarterTurn: lastMatch==2?ingredientsEighthTurn: ingredients;
+//			if((remains[i]!=null || s!=null) && matchedIngr[i]!=null && matchedIngr[i].fluid!=null)
+//			{
+//				if(remains[i]==null && s!=null)
+//					remains[i] = s.copy();
+//				IFluidHandler handler = FluidUtil.getFluidHandler(remains[i]);
+//				System.out.println("draing from "+handler+" in "+remains[i]);
+//				if(handler!=null)
+//					handler.drain(matchedIngr[i].fluid.amount, true);
+//				if(remains[i].stackSize<=0)
+//					remains[i] = null;
+//			}
+//		}
 		return remains;
 	}
 

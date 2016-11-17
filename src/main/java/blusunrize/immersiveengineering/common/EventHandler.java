@@ -452,22 +452,6 @@ public class EventHandler
 				} else if(ApiUtils.stackMatchesObject(event.crafting, achievement.theItemStack, achievement.theItemStack.hasTagCompound()))
 					event.player.addStat(achievement);
 			}
-
-		if(event.crafting!=null && ItemNBTHelper.hasKey(event.crafting, "jerrycanFilling"))
-		{
-			int drain = ItemNBTHelper.getInt(event.crafting, "jerrycanFilling");
-			for(int i=0;i<event.craftMatrix.getSizeInventory();i++)
-			{
-				ItemStack stackInSlot = event.craftMatrix.getStackInSlot(i);
-				if(stackInSlot!=null)
-					if(IEContent.itemJerrycan.equals(stackInSlot.getItem()) && ItemNBTHelper.hasKey(stackInSlot, "fluid"))
-					{
-						ItemNBTHelper.setInt(stackInSlot, "jerrycanDrain", drain);
-						break;
-					}
-			}
-			ItemNBTHelper.remove(event.crafting, "jerrycanFilling");
-		}
 	}
 
 	@SubscribeEvent(priority=EventPriority.LOWEST)
