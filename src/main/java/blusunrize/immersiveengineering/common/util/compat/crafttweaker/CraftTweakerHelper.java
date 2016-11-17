@@ -17,9 +17,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
-import static minetweaker.api.minecraft.MineTweakerMC.getItemStack;
-import static minetweaker.api.minecraft.MineTweakerMC.getLiquidStack;
-
 public class CraftTweakerHelper extends IECompatModule
 {
 	@Override
@@ -65,7 +62,7 @@ public class CraftTweakerHelper extends IECompatModule
 	{
 		if(iStack == null)
 			return null;
-		return getItemStack(iStack);
+		return (ItemStack) iStack.getInternal();
 	}
 
 	public static Object toObject(IIngredient iStack)
@@ -77,7 +74,7 @@ public class CraftTweakerHelper extends IECompatModule
 			if(iStack instanceof IOreDictEntry)
 				return ((IOreDictEntry)iStack).getName();
 			else if(iStack instanceof IItemStack)
-				return getItemStack((IItemStack)iStack);
+				return toStack((IItemStack)iStack);
 			else if(iStack instanceof IngredientStack)
 			{
 				IIngredient ingr = ReflectionHelper.getPrivateValue(IngredientStack.class, (IngredientStack)iStack, "ingredient");
@@ -97,7 +94,10 @@ public class CraftTweakerHelper extends IECompatModule
 
 	public static FluidStack toFluidStack(ILiquidStack iStack)
 	{
-		return getLiquidStack(iStack);
+		if (iStack == null) {
+			return null;
+		}
+		return (FluidStack) iStack.getInternal();
 	}
 
 	public static class ExcavatorEventHandler implements IEventHandler<ReloadEvent>
