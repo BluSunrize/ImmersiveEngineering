@@ -336,24 +336,24 @@ public class ShaderRegistry
 					s0.getTagCompound().setString("rarity", outputRarity.toString());
 					if(!inputList.isEmpty())
 						recipes.add(new PositionedItemStack[]{ new PositionedItemStack(inputList, 33, 0), new PositionedItemStack(s0, 69, 0)});
-					inputList = new ArrayList();
-					for(ShaderRegistryEntry entry : ShaderRegistry.shaderRegistry.values())
-						if(upperRarities.contains(entry.getRarity()))
-						{
-							ItemStack shader = new ItemStack(itemShader);
-							shader.setTagCompound(new NBTTagCompound());
-							shader.getTagCompound().setString("shader_name",  entry.getName());
-							inputList.add(shader);
-						}
-					ItemStack s1 = new ItemStack(itemShaderBag);
-					s1.setTagCompound(new NBTTagCompound());
-					s1.getTagCompound().setString("rarity", outputRarity.toString());
-					if(!inputList.isEmpty())
-						recipes.add(new PositionedItemStack[]{ new PositionedItemStack(inputList, 33, 0), new PositionedItemStack(s1, 69, 0)});
+//					inputList = new ArrayList();
+//					for(ShaderRegistryEntry entry : ShaderRegistry.shaderRegistry.values())
+//						if(upperRarities.contains(entry.getRarity()))
+//						{
+//							ItemStack shader = new ItemStack(itemShader);
+//							shader.setTagCompound(new NBTTagCompound());
+//							shader.getTagCompound().setString("shader_name",  entry.getName());
+//							inputList.add(shader);
+//						}
+//					ItemStack s1 = new ItemStack(itemShaderBag);
+//					s1.setTagCompound(new NBTTagCompound());
+//					s1.getTagCompound().setString("rarity", outputRarity.toString());
+//					if(!inputList.isEmpty())
+//						recipes.add(new PositionedItemStack[]{ new PositionedItemStack(inputList, 33, 0), new PositionedItemStack(s1, 69, 0)});
 				}
 			}
-			manualEntry.getPages()[1] = new ManualPages.ItemDisplay(ManualHelper.getManual(), "shader1", shaderBags);
-			manualEntry.getPages()[2] = new ManualPages.CraftingMulti(ManualHelper.getManual(), "shader2", (Object[])recipes.toArray(new PositionedItemStack[recipes.size()][3]));
+			manualEntry.getPages()[2] = new ManualPages.ItemDisplay(ManualHelper.getManual(), "shader2", shaderBags);
+			manualEntry.getPages()[3] = new ManualPages.CraftingMulti(ManualHelper.getManual(), "shader3", (Object[])recipes.toArray(new PositionedItemStack[recipes.size()][3]));
 		}
 	}
 	public static void recalculatePlayerTotalWeight(String player)

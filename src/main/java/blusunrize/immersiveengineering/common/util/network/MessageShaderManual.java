@@ -80,7 +80,8 @@ public class MessageShaderManual implements IMessage
 			else if(message.key==MessageType.SPAWN && message.args.length>1)
 			{
 				EntityPlayer player = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUsername(message.args[0]);
-				ApiUtils.consumePlayerIngredient(player, ShaderRegistry.shaderRegistry.get(message.args[1]).replicationCost);
+				if(!player.capabilities.isCreativeMode)
+					ApiUtils.consumePlayerIngredient(player, ShaderRegistry.shaderRegistry.get(message.args[1]).replicationCost);
 				ItemStack shaderStack = new ItemStack(ShaderRegistry.itemShader);
 				ItemNBTHelper.setString(shaderStack, "shader_name", message.args[1]);
 				EntityItem entityitem = player.dropItem(shaderStack, false);

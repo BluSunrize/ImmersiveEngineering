@@ -523,7 +523,7 @@ public class ClientProxy extends CommonProxy
 				new ManualPageMultiblock(ManualHelper.getManual(), "blastfurnace1", MultiblockBlastFurnace.instance));
 		handleMineralManual();
 		ManualHelper.addEntry("graphite", ManualHelper.CAT_GENERAL, new ManualPages.Text(ManualHelper.getManual(), "graphite0"),new ManualPages.Crafting(ManualHelper.getManual(), "graphite1", ItemEngineersBlueprint.getTypedBlueprint("electrode")));
-		ManualHelper.addEntry("shader", ManualHelper.CAT_GENERAL, new ManualPages.Text(ManualHelper.getManual(), "shader0"), new ManualPages.ItemDisplay(ManualHelper.getManual(), "shader1"), new ManualPages.CraftingMulti(ManualHelper.getManual(), "shader2"));
+		ManualHelper.addEntry("shader", ManualHelper.CAT_GENERAL, new ManualPages.Text(ManualHelper.getManual(), "shader0"), new ManualPages.Text(ManualHelper.getManual(), "shader1"), new ManualPages.ItemDisplay(ManualHelper.getManual(), "shader2"), new ManualPages.CraftingMulti(ManualHelper.getManual(), "shader2"));
 		ShaderRegistry.manualEntry = ManualHelper.getManual().getEntry("shader");
 		pages = new ArrayList<IManualPage>();
 		for(ShaderRegistry.ShaderRegistryEntry entry : ShaderRegistry.shaderRegistry.values())

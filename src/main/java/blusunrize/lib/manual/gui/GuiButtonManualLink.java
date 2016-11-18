@@ -1,12 +1,12 @@
 package blusunrize.lib.manual.gui;
 
-import java.util.Arrays;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.text.TextFormatting;
+
+import java.util.Arrays;
 
 public class GuiButtonManualLink extends GuiButton
 {
@@ -28,14 +28,12 @@ public class GuiButtonManualLink extends GuiButton
 	@Override
     public boolean mousePressed(Minecraft mc, int mx, int my)
     {
-        return super.mousePressed(mc, mx, my) && gui.manual.showEntryInList(gui.manual.getEntry(key));
+        return super.mousePressed(mc, mx, my);
     }
 
 	@Override
 	public void drawButton(Minecraft mc, int mx, int my)
 	{
-		if(!gui.manual.showEntryInList(gui.manual.getEntry(key)))
-			return;
 		this.hovered = mx >= this.xPosition && my >= this.yPosition && mx < this.xPosition + this.width && my < this.yPosition + this.height;
 		if(hovered)
 		{

@@ -77,8 +77,8 @@ public class ManualPageShader extends ManualPages
 			example = 0;
 			if(exampleItems.length>1)
 			{
-				pageButtons.add(new GuiButtonManualNavigation(gui, 100, x+50, y-7, 10,16, 0));
-				pageButtons.add(new GuiButtonManualNavigation(gui, 101, x+100, y-8, 10,16, 1));
+				pageButtons.add(new GuiButtonManualNavigation(gui, 100, x+50, y, 10,16, 0));
+				pageButtons.add(new GuiButtonManualNavigation(gui, 101, x+100, y, 10,16, 1));
 			}
 		}
 		else
@@ -99,15 +99,15 @@ public class ManualPageShader extends ManualPages
 				this.text += "<br><br>" + I18n.format("desc.immersiveengineering.info.shader.details") + "<br>" + details;
 
 			String cost = Integer.toString(replicationCost.inputSize);
-			if(!ApiUtils.hasPlayerIngredient(gui.mc.thePlayer,replicationCost))
+			if(!ApiUtils.hasPlayerIngredient(gui.mc.thePlayer,replicationCost) && !gui.mc.thePlayer.capabilities.isCreativeMode)
 				cost = TextFormatting.RED+cost;
-			pageButtons.add(new GuiButtonManual(gui, 102, x+50, y+136, 70,12, TextFormatting.BOLD+I18n.format("ie.manual.entry.shaderList.order")+" "+cost+"x   ").setTextColour(gui.getManual().getTextColour(),gui.getManual().getHighlightColour()));
+			pageButtons.add(new GuiButtonManual(gui, 102, x+50, y+138, 70,12, TextFormatting.BOLD+I18n.format("ie.manual.entry.shaderList.order")+" "+cost+"x   ").setTextColour(gui.getManual().getTextColour(),gui.getManual().getHighlightColour()));
 		}
 		else
 		{
 			this.text += "<br><br>" + I18n.format("ie.manual.entry.shaderList.noInfo");
 			if(player.capabilities.isCreativeMode)
-				pageButtons.add(new GuiButtonManual(gui, 103, x+10, y+72, 100,16, I18n.format("ie.manual.entry.shaderList.unlock")).setTextColour(gui.getManual().getTextColour(),gui.getManual().getHighlightColour()));
+				pageButtons.add(new GuiButtonManual(gui, 103, x+10, y+80, 100,16, I18n.format("ie.manual.entry.shaderList.unlock")).setTextColour(gui.getManual().getTextColour(),gui.getManual().getHighlightColour()));
 		}
 		super.initPage(gui, x, y, pageButtons);
 	}
@@ -121,14 +121,14 @@ public class ManualPageShader extends ManualPages
 		GL11.glScalef(scale,scale,scale);
 		boolean examples = exampleItems!=null && exampleItems.length>0;
 
-		ManualUtils.renderItem().renderItemAndEffectIntoGUI(shaderItem, (int)((x+10+(examples?0:34))/scale),(int)((y-16)/scale));
+		ManualUtils.renderItem().renderItemAndEffectIntoGUI(shaderItem, (int)((x+10+(examples?0:34))/scale),(int)((y-8)/scale));
 		if(examples && example>=0&&example<exampleItems.length)
-			ManualUtils.renderItem().renderItemAndEffectIntoGUI(exampleItems[example], (int)((x+63)/scale),(int)((y-16)/scale));
+			ManualUtils.renderItem().renderItemAndEffectIntoGUI(exampleItems[example], (int)((x+63)/scale),(int)((y-8)/scale));
 
 		GL11.glScalef(1/scale,1/scale,1/scale);
 
 		if(unlocked)
-			ManualUtils.renderItem().renderItemAndEffectIntoGUI(replicationCost.getRandomizedExampleStack(gui.mc.thePlayer.ticksExisted), x+102, y + 134);
+			ManualUtils.renderItem().renderItemAndEffectIntoGUI(replicationCost.getRandomizedExampleStack(gui.mc.thePlayer.ticksExisted), x+102, y + 136);
 
 		RenderHelper.disableStandardItemLighting();
 		GL11.glDisable(GL12.GL_RESCALE_NORMAL);
@@ -136,9 +136,9 @@ public class ManualPageShader extends ManualPages
 		manual.fontRenderer.setUnicodeFlag(true);
 		String name = "§l"+shader.getName();
 		int w = manual.fontRenderer.getStringWidth(name);
-		manual.fontRenderer.drawString(name,x+60-w/2,y+16,manual.getTextColour(),false);
+		manual.fontRenderer.drawString(name,x+60-w/2,y+24,manual.getTextColour(),false);
 		if(localizedText != null && !localizedText.isEmpty())
-			manual.fontRenderer.drawSplitString(localizedText, x, y+30, 120, manual.getTextColour());
+			manual.fontRenderer.drawSplitString(localizedText, x, y+38, 120, manual.getTextColour());
 
 	}
 
@@ -160,7 +160,7 @@ public class ManualPageShader extends ManualPages
 			example = (example+1)%exampleItems.length;
 		else if(button.id==102)
 		{
-			if(ApiUtils.hasPlayerIngredient(gui.mc.thePlayer,replicationCost))
+			if(ApiUtils.hasPlayerIngredient(gui.mc.thePlayer,replicationCost) || gui.mc.thePlayer.capabilities.isCreativeMode)
 				ImmersiveEngineering.packetHandler.sendToServer(new MessageShaderManual(MessageType.SPAWN,gui.mc.thePlayer.getName(),shader.getName()));
 			gui.initGui();
 		}
