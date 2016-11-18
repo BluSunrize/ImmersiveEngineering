@@ -12,7 +12,7 @@
 	"variants":
 	{
 		"inventory,type=cushion": [{"textures": {"all": "immersiveengineering:blocks/clothDevice_cushion"}}],
-		"inventory,type=balloon":	[{"model": "immersiveengineering:balloon.obj"}],
+		"inventory,type=balloon":	[{"model": "immersiveengineering:balloon.obj.ie"}],
 		"type":
 		{
 			"cushion": {"textures": {"all": "immersiveengineering:blocks/clothDevice_cushion"}},

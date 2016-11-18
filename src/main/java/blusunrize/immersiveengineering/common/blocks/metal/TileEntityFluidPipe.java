@@ -588,7 +588,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 		return false;
 	}
 
-	static HashMap<String, OBJState> cachedOBJStates = new HashMap<String, OBJState>();
+	public static HashMap<String, OBJState> cachedOBJStates = new HashMap<String, OBJState>();
 	static String[] CONNECTIONS = new String[]{
 			"con_yMin", "con_yMax", "con_zMin", "con_zMax", "con_xMin", "con_xMax"
 	};

@@ -2,6 +2,7 @@ package blusunrize.immersiveengineering.common.blocks.metal.conveyors;
 
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.ConveyorDirection;
+import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBelt;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorTile;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.ModelConveyor;
@@ -75,21 +76,29 @@ public class ConveyorVertical extends ConveyorBasic
 			{
 				te = tile.getWorld().getTileEntity(tile.getPos().offset(f));
 				if(te instanceof IConveyorTile)
-					for(EnumFacing f2 : ((IConveyorTile)te).getConveyorSubtype().sigTransportDirections(te, ((IConveyorTile)te).getFacing()))
-						if(f == f2.getOpposite())
-							return true;
+				{
+					IConveyorBelt sub = ((IConveyorTile)te).getConveyorSubtype();
+					if (sub!=null)
+						for(EnumFacing f2 : sub.sigTransportDirections(te, ((IConveyorTile)te).getFacing()))
+							if(f == f2.getOpposite())
+								return true;
+				}
 				te = tile.getWorld().getTileEntity(tile.getPos().add(0, -1, 0).offset(f));
 				if(te instanceof IConveyorTile)
 				{
-					int b = 0;
-					for(EnumFacing f2 : ((IConveyorTile)te).getConveyorSubtype().sigTransportDirections(te, ((IConveyorTile)te).getFacing()))
+					IConveyorBelt sub = ((IConveyorTile)te).getConveyorSubtype();
+					if (sub!=null)
 					{
-						if(f == f2.getOpposite())
-							b++;
-						else if(EnumFacing.UP == f2)
-							b++;
-						if(b == 2)
-							return true;
+						int b = 0;
+						for(EnumFacing f2 : sub.sigTransportDirections(te, ((IConveyorTile)te).getFacing()))
+						{
+							if(f == f2.getOpposite())
+								b++;
+							else if(EnumFacing.UP == f2)
+								b++;
+							if(b == 2)
+								return true;
+						}
 					}
 				}
 			}
