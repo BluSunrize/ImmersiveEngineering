@@ -16,7 +16,6 @@ import cofh.api.energy.IEnergyContainerItem;
 import cofh.api.energy.IEnergyReceiver;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -305,7 +304,7 @@ public class TileEntityChargingStation extends TileEntityIEBase implements ITick
 		{
 			ItemStack stored = inventory[0]!=null?inventory[0].copy():null;
 			inventory[0] = heldItem.copy();
-			player.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, stored);
+			player.setHeldItem(hand, stored);
 			markDirty();
 			this.markContainingBlockForUpdate(null);
 			return true;
