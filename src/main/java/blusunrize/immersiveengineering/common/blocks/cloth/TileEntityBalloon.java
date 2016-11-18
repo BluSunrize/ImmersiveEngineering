@@ -2,18 +2,27 @@ package blusunrize.immersiveengineering.common.blocks.cloth;
 
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ILightValue;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityConnectorStructural;
+import blusunrize.immersiveengineering.common.util.Utils;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.Vec3d;
 
-public class TileEntityBalloon extends TileEntityConnectorStructural implements ILightValue
+public class TileEntityBalloon extends TileEntityConnectorStructural implements ILightValue, IPlayerInteraction, IHammerInteraction
 {
 	public int style = 0;
-	public byte colour0 = 15;
-	public byte colour1 = 15;
+	public int colour0 = 0xffffff;
+	public int colour1 = 0xffffff;
 	public ItemStack shader;
 
 	@Override
@@ -26,9 +35,14 @@ public class TileEntityBalloon extends TileEntityConnectorStructural implements 
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt,descPacket);
-		style = nbt.getInteger("style");
-		colour0 = nbt.getByte("colour0");
-		colour1 = nbt.getByte("colour1");
+		//to prevent old ballons from going black
+		int nbtVersion = nbt.getInteger("nbtVersion");
+		if (nbtVersion>=1)
+		{
+			style = nbt.getInteger("style");
+			colour0 = nbt.getInteger("colour0");
+			colour1 = nbt.getInteger("colour1");
+		}
 		shader = ItemStack.loadItemStackFromNBT(nbt.getCompoundTag("shader"));
 	}
 
@@ -36,9 +50,10 @@ public class TileEntityBalloon extends TileEntityConnectorStructural implements 
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt,descPacket);
+		nbt.setInteger("nbtVersion", 1);
 		nbt.setInteger("style",style);
-		nbt.setByte("colour0",colour0);
-		nbt.setByte("colour1",colour1);
+		nbt.setInteger("colour0",colour0);
+		nbt.setInteger("colour1",colour1);
 		if(shader!=null)
 		{
 			NBTTagCompound shaderTag = shader.writeToNBT(new NBTTagCompound());
@@ -61,6 +76,31 @@ public class TileEntityBalloon extends TileEntityConnectorStructural implements 
 			return true;
 		}
 		return super.receiveClientEvent(id, arg);
+	}
+
+	@Override
+	public String getCacheKey(IBlockState object) {
+		return colour0+":"+colour1+":"+style;
+	}
+
+	@Override
+	public int getRenderColour(IBlockState object, String group)
+	{
+		if (style==0)
+		{
+			if (group.startsWith("balloon1_"))
+				return colour1;
+			if (group.startsWith("balloon0_"))
+				return colour0;
+		}
+		else
+		{
+			if (group.endsWith("_1"))
+				return colour1;
+			if (group.endsWith("_0"))
+				return colour0;
+		}
+		return 0xffffff;
 	}
 
 	@Override
@@ -96,5 +136,51 @@ public class TileEntityBalloon extends TileEntityConnectorStructural implements 
 			return new Vec3d(.5,.09375,zDif>0?.78125:.21875);
 		else
 			return new Vec3d(xDif>0?.78125:.21875,.09375,.5);
+	}
+	@Override
+	public boolean interact(EnumFacing side, EntityPlayer player, EnumHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
+	{
+		int target = 0;
+		if(side.getAxis()==Axis.Y && style==0)
+			target = (hitX<.375||hitX>.625)&&(hitZ<.375||hitZ>.625)?1:0;
+		else if(side.getAxis()==Axis.Z)
+		{
+			if(style==0)
+				target = (hitX<.375||hitX>.625)?1:0;
+			else
+				target =(hitY>.5625&&hitY<.75)?1:0;
+		}
+		else if(side.getAxis()==Axis.X)
+		{
+			if(style==0)
+				target = (hitZ<.375||hitZ>.625)?1:0;
+			else
+				target =(hitY>.5625&&hitY<.75)?1:0;
+		}
+		int heldDye = Utils.getDye(heldItem);
+		if(heldDye==-1)
+			return false;
+		heldDye = EnumDyeColor.byMetadata(15-heldDye).getMapColor().colorValue;
+		if(target==0)
+		{
+			if(colour0==heldDye)
+				return false;
+			colour0 = heldDye;
+		}
+		else
+		{
+			if(colour1==heldDye)
+				return false;
+			colour1 = heldDye;
+		}
+		markContainingBlockForUpdate(null);
+		return true;
+	}
+	@Override
+	public boolean hammerUseSide(EnumFacing side, EntityPlayer player, float hitX, float hitY, float hitZ)
+	{
+		style = 1-style;
+		markContainingBlockForUpdate(null);
+		return true;
 	}
 }

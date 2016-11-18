@@ -1,5 +1,8 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import javax.annotation.Nonnull;
+
+import blusunrize.immersiveengineering.api.energy.IRotationAcceptor;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxConnection;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
@@ -11,11 +14,12 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 
-public class TileEntityDynamo extends TileEntityIEBase implements IFluxConnection,IEnergyConnection, IDirectionalTile
+public class TileEntityDynamo extends TileEntityIEBase implements IFluxConnection,IEnergyConnection, IDirectionalTile, IRotationAcceptor
 {
 	public EnumFacing facing = EnumFacing.NORTH;
 	
-	public void inputRotation(double rotation, EnumFacing side)
+	@Override
+	public void inputRotation(double rotation, @Nonnull EnumFacing side)
 	{
 		if(side!=this.facing.getOpposite())
 			return;

@@ -334,20 +334,24 @@ public class TileEntityBreakerSwitch extends TileEntityImmersiveConnectable impl
 	}
 	protected void onConnectionChange()
 	{
-		endOfLeftConnection = null;
-		ImmersiveEngineering.proxy.clearConnectionModelCache();
-		// reset cached connection vertices
-		Set<Connection> conns = ImmersiveNetHandler.INSTANCE.getConnections(worldObj, pos);
-		if (conns!=null)
-			for (Connection c:conns)
-			{
-				c.catenaryVertices = null;
-				worldObj.markBlockRangeForRenderUpdate(c.end, c.end);
-				Set<Connection> connsThere = ImmersiveNetHandler.INSTANCE.getConnections(worldObj, c.end);
-				for (Connection c2:connsThere)
-					if (c2.end.equals(pos))
-						c2.catenaryVertices = null;
-			}
+		if (worldObj!=null&&worldObj.isRemote)
+		{
+			endOfLeftConnection = null;
+			ImmersiveEngineering.proxy.clearConnectionModelCache();
+			// reset cached connection vertices
+			Set<Connection> conns = ImmersiveNetHandler.INSTANCE.getConnections(worldObj, pos);
+			if (conns!=null)
+				for (Connection c:conns)
+				{
+					c.catenaryVertices = null;
+					worldObj.markBlockRangeForRenderUpdate(c.end, c.end);
+					Set<Connection> connsThere = ImmersiveNetHandler.INSTANCE.getConnections(worldObj, c.end);
+					if (connsThere!=null)
+						for (Connection c2:connsThere)
+							if (c2.end.equals(pos))
+								c2.catenaryVertices = null;
+				}
+		}
 		if (worldObj!=null)
 			markContainingBlockForUpdate(null);
 	}

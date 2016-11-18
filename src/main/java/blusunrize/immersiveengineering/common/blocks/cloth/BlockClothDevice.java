@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.common.blocks.cloth;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConnectable;
+import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.blocks.BlockIETileProvider;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.block.material.Material;
@@ -32,7 +33,7 @@ public class BlockClothDevice extends BlockIETileProvider<BlockTypes_ClothDevice
 {
 	public BlockClothDevice()
 	{
-		super("clothDevice", Material.CLOTH, PropertyEnum.create("type", BlockTypes_ClothDevice.class), ItemBlockClothDevice.class, IEProperties.FACING_ALL, IEProperties.BOOLEANS[0]);
+		super("clothDevice", Material.CLOTH, PropertyEnum.create("type", BlockTypes_ClothDevice.class), ItemBlockClothDevice.class, IEProperties.FACING_ALL, IEProperties.BOOLEANS[0], IOBJModelCallback.PROPERTY, IEProperties.CONNECTIONS);
 		setHardness(0.8F);
 		setHasColours();
 		setMetaLightOpacity(1, 0);
@@ -90,24 +91,16 @@ public class BlockClothDevice extends BlockIETileProvider<BlockTypes_ClothDevice
 //        }
 	}
 	@Override
-	protected BlockStateContainer createBlockState()
-	{
-		BlockStateContainer base = super.createBlockState();
-		IUnlistedProperty[] unlisted = (IUnlistedProperty[]) ((base instanceof ExtendedBlockState)?((ExtendedBlockState)base).getUnlistedProperties().toArray():new IUnlistedProperty[0]);
-		unlisted = Arrays.copyOf(unlisted, unlisted.length+1);
-		unlisted[unlisted.length-1] = IEProperties.CONNECTIONS;
-		return new ExtendedBlockState(this, base.getProperties().toArray(new IProperty[0]), unlisted);
-	}
-	@Override
 	public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos)
 	{
+		state = super.getExtendedState(state, world, pos);
 		if (state instanceof IExtendedBlockState)
 		{
 			IExtendedBlockState ext = (IExtendedBlockState) state;
 			TileEntity te = world.getTileEntity(pos);
-			if (!(te instanceof TileEntityImmersiveConnectable))
-				return state;
-			state = ext.withProperty(IEProperties.CONNECTIONS, ((TileEntityImmersiveConnectable)te).genConnBlockstate());
+			if (te instanceof TileEntityImmersiveConnectable)
+				ext = ext.withProperty(IEProperties.CONNECTIONS, ((TileEntityImmersiveConnectable)te).genConnBlockstate());
+			state = ext;
 		}
 		return state;
 	}
