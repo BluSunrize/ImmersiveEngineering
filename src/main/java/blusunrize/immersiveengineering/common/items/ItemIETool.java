@@ -207,16 +207,18 @@ public class ItemIETool extends ItemIEBase implements ITool, IGuiItem
 				return EnumActionResult.PASS;
 
 			IImmersiveConnectable nodeHere = (IImmersiveConnectable)tileEntity;
-			ImmersiveNetHandler.INSTANCE.clearAllConnectionsFor(Utils.toCC(nodeHere), world, target);
+			boolean cut = ImmersiveNetHandler.INSTANCE.clearAllConnectionsFor(Utils.toCC(nodeHere), world, target);
 			IESaveData.setDirty(world.provider.getDimension());
-
-			int nbtDamage = ItemNBTHelper.getInt(stack, "cutterDmg") + 1;
-			if(nbtDamage < cutterMaxDamage)
-				ItemNBTHelper.setInt(stack, "cutterDmg", nbtDamage);
-			else
+			if(cut)
 			{
-				player.renderBrokenItemStack(stack);
-				player.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, null);
+				int nbtDamage = ItemNBTHelper.getInt(stack, "cutterDmg") + 1;
+				if(nbtDamage < cutterMaxDamage)
+					ItemNBTHelper.setInt(stack, "cutterDmg", nbtDamage);
+				else
+				{
+					player.renderBrokenItemStack(stack);
+					player.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, null);
+				}
 			}
 			return EnumActionResult.SUCCESS;
 		}
