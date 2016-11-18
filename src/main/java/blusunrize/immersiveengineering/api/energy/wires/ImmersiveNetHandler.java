@@ -222,12 +222,13 @@ public class ImmersiveNetHandler
 	 * Clears all connections to and from this node.
 	 * The TargetingInfo must not be null!
 	 */
-	public void clearAllConnectionsFor(BlockPos node, World world, TargetingInfo target)
+	public boolean clearAllConnectionsFor(BlockPos node, World world, TargetingInfo target)
 	{
 		IImmersiveConnectable iic = toIIC(node, world);
 		WireType type = target==null?null : iic.getCableLimiter(target);
 		if(type==null)
-			return;
+			return false;
+		boolean ret = false;
 		for(Set<Connection> conl : getMultimap(world.provider.getDimension()).values())
 		{
 			Iterator<Connection> it = conl.iterator();
@@ -260,6 +261,7 @@ public class ImmersiveNetHandler
 						else
 							if(world.isBlockLoaded(con.end))
 								world.addBlockEvent(con.end, world.getBlockState(con.end).getBlock(),-1,0);
+						ret = true;
 					}
 			}
 		}
@@ -268,6 +270,7 @@ public class ImmersiveNetHandler
 
 		IESaveData.setDirty(world.provider.getDimension());
 		resetCachedIndirectConnections();
+		return ret;
 	}
 
 	/*
