@@ -16,10 +16,16 @@ public class GuiCrate extends GuiContainer
 	}
 
 	@Override
+	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
+	{
+		this.fontRendererObj.drawString(((ContainerCrate)this.inventorySlots).tile.getDisplayName().getUnformattedText(), 8, 6, 0x0a0a0a);
+	}
+
+	@Override
 	protected void drawGuiContainerBackgroundLayer(float f, int mx, int my)
 	{
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		ClientUtils.bindTexture("immersiveengineering:textures/gui/crate.png");
-		this.drawTexturedModalRect(guiLeft,guiTop, 0, 0, xSize, ySize);
+		this.drawTexturedModalRect(guiLeft,guiTop, 0, 	0, xSize, ySize);
 	}
 }

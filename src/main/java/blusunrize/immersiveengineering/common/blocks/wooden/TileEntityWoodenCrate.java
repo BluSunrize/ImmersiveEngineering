@@ -19,6 +19,9 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.storage.loot.ILootContainer;
 import net.minecraft.world.storage.loot.LootContext;
@@ -28,6 +31,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.oredict.OreDictionary;
 
+import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
@@ -36,10 +40,13 @@ public class TileEntityWoodenCrate extends TileEntityIEBase implements IIEInvent
 {
 	ItemStack[] inventory = new ItemStack[27];
 	public ResourceLocation lootTable;
+	public String name;
 
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
+		if(nbt.hasKey("name"))
+			this.name = nbt.getString("name");
 		if(!descPacket)
 		{
 			if(nbt.hasKey("lootTable", 8))
@@ -51,6 +58,8 @@ public class TileEntityWoodenCrate extends TileEntityIEBase implements IIEInvent
 	@Override
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
+		if(this.name!=null)
+			nbt.setString("name", this.name);
 		if(!descPacket)
 		{
 			if(lootTable!=null)
@@ -75,6 +84,13 @@ public class TileEntityWoodenCrate extends TileEntityIEBase implements IIEInvent
 			}
 		if(!toItem || write)
 			nbt.setTag("inventory", invList);
+	}
+
+	@Override
+	@Nullable
+	public ITextComponent getDisplayName()
+	{
+		return name!=null?new TextComponentString(name) : new TextComponentTranslation(getBlockMetadata()==0?"tile.immersiveengineering.woodenDevice0.crate.name":"tile.immersiveengineering.woodenDevice0.reinforced_crate.name");
 	}
 
 	@Override
@@ -131,7 +147,14 @@ public class TileEntityWoodenCrate extends TileEntityIEBase implements IIEInvent
 	@Override
 	public boolean isStackValid(int slot, ItemStack stack)
 	{
-		return stack!=null && !OreDictionary.itemMatches(new ItemStack(IEContent.blockWoodenDevice0,1,BlockTypes_WoodenDevice0.CRATE.getMeta()), stack, true);
+		if(stack!=null)
+		{
+			if(OreDictionary.itemMatches(new ItemStack(IEContent.blockWoodenDevice0, 1, 0), stack, true))
+				return false;
+			if(OreDictionary.itemMatches(new ItemStack(IEContent.blockWoodenDevice0, 1, 5), stack, true))
+				return false;
+		}
+		return true;
 	}
 	@Override
 	public int getSlotLimit(int slot)
@@ -152,13 +175,19 @@ public class TileEntityWoodenCrate extends TileEntityIEBase implements IIEInvent
 		writeInv(tag, true);
 		if(!tag.hasNoTags())
 			stack.setTagCompound(tag);
+		if(this.name!=null)
+			stack.setStackDisplayName(this.name);
 		return stack;
 	}
 	@Override
 	public void readOnPlacement(EntityLivingBase placer, ItemStack stack)
 	{
 		if(stack.hasTagCompound())
+		{
 			readCustomNBT(stack.getTagCompound(), false);
+			if(stack.hasDisplayName())
+				this.name = stack.getDisplayName();
+		}
 	}
 	@Override
 	public int getComparatorInputOverride()
