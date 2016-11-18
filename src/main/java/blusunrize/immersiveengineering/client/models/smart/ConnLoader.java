@@ -78,7 +78,7 @@ public class ConnLoader implements ICustomModelLoader
 						"immersiveengineering:blocks/metalDevice1_floodlight_on"));
 		
 		baseModels.put("balloon",
-				new ResourceLocation("immersiveengineering:block/balloon.obj"));
+				new ResourceLocation("immersiveengineering:block/balloon.obj.ie"));
 	}
 
 	@Override

@@ -124,6 +124,12 @@ public class TileEntityConnectorStructural extends TileEntityConnectorLV impleme
 	{
 		return perspective;
 	}
+	
+	@Override
+	public String getCacheKey(IBlockState object)
+	{
+		return Float.toString(rotation);
+	}
 
 //	@Override
 //	public boolean canConnectEnergy(ForgeDirection from)

@@ -271,6 +271,12 @@ public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable 
 			return EnumDyeColor.byMetadata(this.redstoneChannel).getMapColor().colorValue;
 		return 0xffffff;
 	}
+	
+	@Override
+	public String getCacheKey(IBlockState object)
+	{
+		return redstoneChannel+";"+ioMode;
+	}
 
 	@Override
 	public String[] getOverlayText(EntityPlayer player, RayTraceResult mop, boolean hammer)

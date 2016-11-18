@@ -1446,6 +1446,7 @@ public class ClientProxy extends CommonProxy
 		ConnModelReal.cache.clear();
 		ModelConveyor.modelCache.clear();
 		ModelConfigurableSides.modelCache.clear();
+		TileEntityFluidPipe.cachedOBJStates.clear();
 	}
 	private static void mapFluidState(Block block, Fluid fluid)
 	{

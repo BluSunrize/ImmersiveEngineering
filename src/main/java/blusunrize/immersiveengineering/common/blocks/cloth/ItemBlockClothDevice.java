@@ -42,7 +42,7 @@ public class ItemBlockClothDevice extends ItemBlockIEBase
 					worldIn.setBlockState(bPos, IEContent.blockClothDevice.getStateFromMeta(BlockTypes_ClothDevice.BALLOON.getMeta()));
 					itemStackIn.stackSize--;
 					if(itemStackIn.stackSize <= 0)
-						itemStackIn = null;
+						playerIn.setHeldItem(hand, null);
 				}
 				return new ActionResult(EnumActionResult.SUCCESS, itemStackIn);
 			}

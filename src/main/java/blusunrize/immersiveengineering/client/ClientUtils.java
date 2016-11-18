@@ -1302,7 +1302,7 @@ public class ClientUtils
 			if (pos==null)
 				pos = conn.start;
 			Vec3d[] f = conn.catenaryVertices;
-			if(f.length < 1)
+			if(f==null||f.length < 1)
 				continue;
 			int color = conn.cableType.getColour(conn);
 			float[] rgb = {(color >> 16 & 255) / 255f, (color >> 8 & 255) / 255f, (color & 255) / 255f, (color >> 24 & 255) / 255f};
