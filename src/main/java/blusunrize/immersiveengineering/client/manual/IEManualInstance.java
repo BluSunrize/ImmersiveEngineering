@@ -283,7 +283,7 @@ public class IEManualInstance extends ManualInstance
 	{
 		if(entry!=null && ManualHelper.CAT_UPDATE.equalsIgnoreCase(entry.getCategory()))
 			return IEConfig.showUpdateNews;
-		return true;
+		return !(entry != null && "shaderList".equalsIgnoreCase(entry.getName()));
 	}
 	@Override
 	public boolean showCategoryInList(String category)

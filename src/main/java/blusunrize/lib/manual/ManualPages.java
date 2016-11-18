@@ -51,7 +51,7 @@ public abstract class ManualPages implements IManualPage
 	@Override
 	public void buttonPressed(GuiManual gui, GuiButton button)
 	{
-		if(button instanceof GuiButtonManualLink && GuiManual.activeManual!=null && manual.showEntryInList(manual.getEntry(((GuiButtonManualLink)button).key)))
+		if(button instanceof GuiButtonManualLink && GuiManual.activeManual!=null)
 		{
 			if(GuiManual.previousSelectedEntry.size()>0)
 				GuiManual.previousSelectedEntry.add(0,GuiManual.getSelectedEntry());
