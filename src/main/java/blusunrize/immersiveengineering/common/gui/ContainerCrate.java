@@ -11,7 +11,6 @@ import net.minecraftforge.oredict.OreDictionary;
 @ChestContainer
 public class ContainerCrate extends ContainerIEBase
 {
-	TileEntityWoodenCrate tile;
 	public ContainerCrate(InventoryPlayer inventoryPlayer, TileEntityWoodenCrate tile)
 	{
 		super(inventoryPlayer, tile);
@@ -22,9 +21,7 @@ public class ContainerCrate extends ContainerIEBase
 				{
 					if(OreDictionary.itemMatches(new ItemStack(IEContent.blockWoodenDevice0,1,0), stack, true))
 						return false;
-					if(OreDictionary.itemMatches(new ItemStack(IEContent.blockWoodenDevice0,1,5), stack, true))
-						return false;
-					return true;
+					return !OreDictionary.itemMatches(new ItemStack(IEContent.blockWoodenDevice0, 1, 5), stack, true);
 				}
 			});
 		this.slotCount=tile.getInventory().length;
