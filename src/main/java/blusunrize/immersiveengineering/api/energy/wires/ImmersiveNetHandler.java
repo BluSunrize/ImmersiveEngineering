@@ -228,7 +228,7 @@ public class ImmersiveNetHandler
 		WireType type = target==null?null : iic.getCableLimiter(target);
 		if(type==null)
 			return;
-		for (Set<Connection> conl : getMultimap(world.provider.getDimension()).values())
+		for(Set<Connection> conl : getMultimap(world.provider.getDimension()).values())
 		{
 			Iterator<Connection> it = conl.iterator();
 			while(it.hasNext())
@@ -243,9 +243,9 @@ public class ImmersiveNetHandler
 							other = toIIC(con.end, world);
 						else
 							other = toIIC(con.start, world);
-						if (iic!=null)
+						if(iic!=null)
 							iic.removeCable(con);
-						if (other!=null)
+						if(other!=null)
 							other.removeCable(con);
 						if(node.equals(con.end))
 						{

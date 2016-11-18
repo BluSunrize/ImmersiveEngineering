@@ -200,8 +200,14 @@ public class ItemIETool extends ItemIEBase implements ITool, IGuiItem
 		}
 		else if(stack.getItemDamage() == 1 && tileEntity instanceof IImmersiveConnectable && !world.isRemote)
 		{
-			IImmersiveConnectable nodeHere = (IImmersiveConnectable) tileEntity;
-			ImmersiveNetHandler.INSTANCE.clearAllConnectionsFor(Utils.toCC(nodeHere), world, new TargetingInfo(side, hitX, hitY, hitZ));
+			TargetingInfo target = new TargetingInfo(side, hitX, hitY, hitZ);
+			BlockPos masterPos = ((IImmersiveConnectable)tileEntity).getConnectionMaster(null, target);
+			tileEntity = world.getTileEntity(masterPos);
+			if(!(tileEntity instanceof IImmersiveConnectable))
+				return EnumActionResult.PASS;
+
+			IImmersiveConnectable nodeHere = (IImmersiveConnectable)tileEntity;
+			ImmersiveNetHandler.INSTANCE.clearAllConnectionsFor(Utils.toCC(nodeHere), world, target);
 			IESaveData.setDirty(world.provider.getDimension());
 
 			int nbtDamage = ItemNBTHelper.getInt(stack, "cutterDmg") + 1;
