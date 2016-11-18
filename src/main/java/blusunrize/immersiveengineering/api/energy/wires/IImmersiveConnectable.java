@@ -7,6 +7,7 @@ import com.google.common.collect.ImmutableSet;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
+import javax.annotation.Nullable;
 import java.util.Set;
 
 /**
@@ -37,7 +38,7 @@ public interface IImmersiveConnectable
 	/**
 	 * @return a blockPos to do the connection check for.<br>For multiblocks like transformers
 	 */
-	BlockPos getConnectionMaster(WireType cableType, TargetingInfo target);
+	BlockPos getConnectionMaster(@Nullable WireType cableType, TargetingInfo target);
 	
 	/**
 	 * @return whether you can connect the given CableType to the tile
