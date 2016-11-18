@@ -1,3 +1,23 @@
+#####Version 0.10-49
+- rewrote the shader system
+    - improved texture performance
+    - changed API integration
+    - added listing in the manual, including re-ordering
+- added the ability to rename wooden crates
+- added IRotationAcceptor interface for dynamos and the things that drive them (thanks Malte)
+- re-added the config for Excavator fail chance (thanks Malte)
+- re-added the ability to dye balloons (thanks Malte)
+- changed the drill's hardness checks to easier dig ores (thanks Malte)
+- fixed duped fluidcontainers on treated wood recipes
+- fixed incompat issue with new versions of TConstruct
+- fixed CraftTweaker compat (thanks mezz)
+- fixed Crusher recipe for sand requiring grass rather than gravel (thanks MalkContent)
+- fixed NPE on inserting items
+- fixed Wirecutters consuming durability and not working properly on transformers
+- fixed various client issues (thanks Malte)
+- fixed Structural Connectors and Redstone Connectors not displaying properly (thanks Malte)
+- fixed Conveyors throwing NPEs on Servers (thanks Malte)
+
 #####Version 0.10-48 - BUILT
 - added CTM support to Engineering Blocks and Scaffolds when Chisel is installed (in cooperation with Drullkus)
 - changed Breakers to be rotatable (thanks Malte)
