@@ -267,4 +267,11 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 		super.validate();
 		ImmersiveNetHandler.INSTANCE.resetCachedIndirectConnections();
 	}
+	@Override
+	public void invalidate()
+	{
+		super.invalidate();
+		if (worldObj.isRemote)
+			ImmersiveNetHandler.INSTANCE.clearConnectionsOriginatingFrom(pos, worldObj);
+	}
 }

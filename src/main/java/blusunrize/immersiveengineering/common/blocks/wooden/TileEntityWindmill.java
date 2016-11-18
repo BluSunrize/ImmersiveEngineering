@@ -1,10 +1,10 @@
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
+import blusunrize.immersiveengineering.api.energy.IRotationAcceptor;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasObjProperty;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityDynamo;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -66,9 +66,9 @@ public class TileEntityWindmill extends TileEntityIEBase implements ITickable, I
 		if(!worldObj.isRemote)
 		{
 			TileEntity tileEntity = worldObj.getTileEntity(pos.offset(facing));
-			if(tileEntity instanceof TileEntityDynamo)
+			if(tileEntity instanceof IRotationAcceptor)
 			{
-				TileEntityDynamo dynamo = (TileEntityDynamo)tileEntity;
+				IRotationAcceptor dynamo = (IRotationAcceptor)tileEntity;
 				double power = turnSpeed*mod * 400;
 				dynamo.inputRotation(Math.abs(power), facing);
 			}

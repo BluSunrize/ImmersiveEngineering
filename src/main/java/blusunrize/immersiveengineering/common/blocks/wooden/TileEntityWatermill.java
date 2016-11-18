@@ -1,11 +1,11 @@
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
+import blusunrize.immersiveengineering.api.energy.IRotationAcceptor;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasObjProperty;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
-import blusunrize.immersiveengineering.common.blocks.metal.TileEntityDynamo;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
@@ -59,7 +59,8 @@ public class TileEntityWatermill extends TileEntityIEBase implements ITickable, 
 		}
 		prevRotation = rotation;
 
-		if(!multiblock&&worldObj.getTileEntity(getPos().offset(facing.getOpposite())) instanceof TileEntityDynamo)
+		TileEntity acc = worldObj.getTileEntity(getPos().offset(facing.getOpposite()));
+		if(!multiblock&&acc instanceof IRotationAcceptor)
 		{
 			double power = getPower();
 			int l=1;
@@ -89,7 +90,7 @@ public class TileEntityWatermill extends TileEntityIEBase implements ITickable, 
 
 			if(!worldObj.isRemote)
 			{
-				TileEntityDynamo dynamo = (TileEntityDynamo)worldObj.getTileEntity(getPos().offset(facing.getOpposite()));
+				IRotationAcceptor dynamo = (IRotationAcceptor)acc;
 				//				if((facing.getAxis()==Axis.Z)&&dynamo.facing!=2&&dynamo.facing!=3)
 				//					return;
 				//				else if((facing.getAxis()==Axis.X)&&dynamo.facing!=4&&dynamo.facing!=5)
