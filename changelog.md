@@ -3,10 +3,12 @@
     - improved texture performance
     - changed API integration
     - added listing in the manual, including re-ordering
+    - removed the recipe to turn shaders back into bags
 - added the ability to rename wooden crates
 - added IRotationAcceptor interface for dynamos and the things that drive them (thanks Malte)
 - re-added the config for Excavator fail chance (thanks Malte)
 - re-added the ability to dye balloons (thanks Malte)
+- re-added the ability to add shaders to balloons
 - changed the drill's hardness checks to easier dig ores (thanks Malte)
 - fixed duped fluidcontainers on treated wood recipes
 - fixed incompat issue with new versions of TConstruct
@@ -17,6 +19,7 @@
 - fixed various client issues (thanks Malte)
 - fixed Structural Connectors and Redstone Connectors not displaying properly (thanks Malte)
 - fixed Conveyors throwing NPEs on Servers (thanks Malte)
+- fixed dupebug with Charging Station
 
 #####Version 0.10-48 - BUILT
 - added CTM support to Engineering Blocks and Scaffolds when Chisel is installed (in cooperation with Drullkus)
