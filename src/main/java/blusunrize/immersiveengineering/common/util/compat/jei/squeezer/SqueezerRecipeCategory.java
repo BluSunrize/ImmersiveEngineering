@@ -20,7 +20,7 @@ public class SqueezerRecipeCategory extends IERecipeCategory
 		super("squeezer","tile.immersiveengineering.metalMultiblock.squeezer.name", helper.createDrawable(background, 6,12, 164,59), SqueezerRecipeWrapper.class);
 		tankOverlay = helper.createDrawable(background, 177,31, 16,47, -2,2,-2,2);
 	}
-	
+
 	@Override
 	@Deprecated
 	public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper)

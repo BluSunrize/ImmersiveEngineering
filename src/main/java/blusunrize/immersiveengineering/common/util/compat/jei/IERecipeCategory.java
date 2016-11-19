@@ -8,6 +8,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public abstract class IERecipeCategory<T> implements IRecipeCategory, IRecipeHandler<T>
 {
@@ -23,7 +24,14 @@ public abstract class IERecipeCategory<T> implements IRecipeCategory, IRecipeHan
 		this.background = background;
 		this.wrapperClass = wrapperClass;
 	}
-	
+
+	@Nullable
+	@Override
+	public IDrawable getIcon()
+	{
+		return null;
+	}
+
 	@Override
 	public String getUid()
 	{
