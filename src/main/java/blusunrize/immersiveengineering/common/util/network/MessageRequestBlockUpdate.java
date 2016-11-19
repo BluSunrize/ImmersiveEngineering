@@ -1,14 +1,13 @@
 package blusunrize.immersiveengineering.common.util.network;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
+
+import blusunrize.immersiveengineering.common.EventHandler;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import net.minecraftforge.fml.relauncher.Side;
 
 public class MessageRequestBlockUpdate implements IMessage
 {
@@ -41,14 +40,9 @@ public class MessageRequestBlockUpdate implements IMessage
 		@Override
 		public IMessage onMessage(MessageRequestBlockUpdate message, MessageContext ctx)
 		{
-			if(FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER)
+			synchronized (EventHandler.requestedBlockUpdates)
 			{
-				World w = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(message.dim);
-				if(w!=null)
-				{
-					IBlockState state = w.getBlockState(message.pos);
-					w.notifyBlockUpdate(message.pos, state,state, 3);
-				}
+				EventHandler.requestedBlockUpdates.offer(new ImmutablePair<Integer, BlockPos>(message.dim, message.pos));
 			}
 			return null;
 		}
