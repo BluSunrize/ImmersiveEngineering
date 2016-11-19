@@ -8,6 +8,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.common.util.INBTSerializable;
 
 import javax.annotation.Nullable;
@@ -162,4 +163,31 @@ public class CapabilityShader
 			}
 		});
 	}
+
+	public static IUnlistedProperty<ShaderWrapper> BLOCKSTATE_PROPERTY = new IUnlistedProperty<ShaderWrapper>()
+	{
+		@Override
+		public String getName()
+		{
+			return "shaderwrapper";
+		}
+
+		@Override
+		public boolean isValid(ShaderWrapper value)
+		{
+			return true;
+		}
+
+		@Override
+		public Class<ShaderWrapper> getType()
+		{
+			return ShaderWrapper.class;
+		}
+
+		@Override
+		public String valueToString(ShaderWrapper value)
+		{
+			return value.toString();
+		}
+	};
 }

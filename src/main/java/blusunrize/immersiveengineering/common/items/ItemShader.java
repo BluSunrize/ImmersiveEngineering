@@ -100,6 +100,7 @@ public class ItemShader extends ItemIEBase implements IShaderItem, ITextureOverr
 		//		IEApi.registerShader_Balloon(name, overlayType, colour1, colour2, additionalTexture);
 	}
 
+	@Override
 	public String getShaderName(ItemStack stack)
 	{
 		if(ItemNBTHelper.hasKey(stack, "shader_name"))

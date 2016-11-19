@@ -2,6 +2,9 @@ package blusunrize.immersiveengineering.common.blocks.cloth;
 
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
+import blusunrize.immersiveengineering.api.shader.CapabilityShader;
+import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Direct;
+import blusunrize.immersiveengineering.api.shader.IShaderItem;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ILightValue;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
@@ -17,13 +20,16 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.common.capabilities.Capability;
+
+import javax.annotation.Nullable;
 
 public class TileEntityBalloon extends TileEntityConnectorStructural implements ILightValue, IPlayerInteraction, IHammerInteraction
 {
 	public int style = 0;
 	public int colour0 = 0xffffff;
 	public int colour1 = 0xffffff;
-	public ItemStack shader;
+	public ShaderWrapper_Direct shader = new ShaderWrapper_Direct("immersiveengineering:balloon");
 
 	@Override
 	public int getLightValue()
@@ -37,13 +43,17 @@ public class TileEntityBalloon extends TileEntityConnectorStructural implements 
 		super.readCustomNBT(nbt,descPacket);
 		//to prevent old ballons from going black
 		int nbtVersion = nbt.getInteger("nbtVersion");
-		if (nbtVersion>=1)
+		if(nbtVersion>=1)
 		{
 			style = nbt.getInteger("style");
 			colour0 = nbt.getInteger("colour0");
 			colour1 = nbt.getInteger("colour1");
 		}
-		shader = ItemStack.loadItemStackFromNBT(nbt.getCompoundTag("shader"));
+		if(nbt.hasKey("shader"))
+		{
+			shader = new ShaderWrapper_Direct("immersiveengineering:balloon");
+			shader.deserializeNBT(nbt.getCompoundTag("shader"));
+		}
 	}
 
 	@Override
@@ -54,11 +64,7 @@ public class TileEntityBalloon extends TileEntityConnectorStructural implements 
 		nbt.setInteger("style",style);
 		nbt.setInteger("colour0",colour0);
 		nbt.setInteger("colour1",colour1);
-		if(shader!=null)
-		{
-			NBTTagCompound shaderTag = shader.writeToNBT(new NBTTagCompound());
-			nbt.setTag("shader", shaderTag);
-		}
+		nbt.setTag("shader", shader.serializeNBT());
 	}
 
 	@Override
@@ -79,7 +85,24 @@ public class TileEntityBalloon extends TileEntityConnectorStructural implements 
 	}
 
 	@Override
+	public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing)
+	{
+		if(capability == CapabilityShader.SHADER_CAPABILITY)
+			return true;
+		return super.hasCapability(capability, facing);
+	}
+	@Override
+	public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing)
+	{
+		if(capability == CapabilityShader.SHADER_CAPABILITY)
+			return (T)shader;
+		return super.getCapability(capability, facing);
+	}
+
+	@Override
 	public String getCacheKey(IBlockState object) {
+		if(shader!=null && shader.getShaderItem()!=null && shader.getShaderItem().getItem() instanceof IShaderItem)
+			return ((IShaderItem)shader.getShaderItem().getItem()).getShaderName(shader.getShaderItem());
 		return colour0+":"+colour1+":"+style;
 	}
 
@@ -140,6 +163,14 @@ public class TileEntityBalloon extends TileEntityConnectorStructural implements 
 	@Override
 	public boolean interact(EnumFacing side, EntityPlayer player, EnumHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
+		if(heldItem!=null && heldItem.getItem() instanceof IShaderItem)
+		{
+			if(this.shader==null)
+				this.shader = new ShaderWrapper_Direct("immersiveengineering:balloon");
+			this.shader.setShaderItem(Utils.copyStackWithAmount(heldItem,1));
+			markContainingBlockForUpdate(null);
+			return true;
+		}
 		int target = 0;
 		if(side.getAxis()==Axis.Y && style==0)
 			target = (hitX<.375||hitX>.625)&&(hitZ<.375||hitZ>.625)?1:0;

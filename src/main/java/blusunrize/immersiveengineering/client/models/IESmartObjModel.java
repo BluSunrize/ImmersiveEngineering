@@ -207,7 +207,14 @@ public class IESmartObjModel extends OBJBakedModel
 			shader = wrapper.getShaderItem();
 			if(shader!=null && shader.getItem() instanceof IShaderItem)
 				sCase = ((IShaderItem)shader.getItem()).getShaderCase(shader, tempStack, wrapper.getShaderType());
+		} else if(this.tempState != null && this.tempState instanceof IExtendedBlockState && ((IExtendedBlockState)this.tempState).getUnlistedNames().contains(CapabilityShader.BLOCKSTATE_PROPERTY))
+		{
+			ShaderWrapper wrapper = ((IExtendedBlockState)this.tempState).getValue(CapabilityShader.BLOCKSTATE_PROPERTY);
+			shader = wrapper.getShaderItem();
+			if(shader!=null && shader.getItem() instanceof IShaderItem)
+				sCase = ((IShaderItem)shader.getItem()).getShaderCase(shader, null, wrapper.getShaderType());
 		}
+
 		if(this.tempStack!=null && tempStack.getItem() instanceof IOBJModelCallback)
 		{
 			callback = (IOBJModelCallback)tempStack.getItem();
