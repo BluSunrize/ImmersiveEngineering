@@ -14,6 +14,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nullable;
@@ -36,6 +37,11 @@ public class IETileSound implements ITickableSound
 	public int repeatDelay;
 	public float volumeAjustment=1;
 
+
+	public IETileSound(SoundEvent event, float volume, float pitch, boolean repeat, int repeatDelay, int x, int y, int z, AttenuationType attenuation, SoundCategory category)
+	{
+		this(event.getSoundName(), volume, pitch, repeat, repeatDelay, x, y, z, attenuation, category);
+	}
 	public IETileSound(ResourceLocation sound, float volume, float pitch, boolean repeat, int repeatDelay, int x, int y, int z, AttenuationType attenuation, SoundCategory category)
 	{
 		this.attenuation = attenuation;
@@ -49,6 +55,10 @@ public class IETileSound implements ITickableSound
 		this.repeatDelay = repeatDelay;
 		origPos = new float[]{(float)x,(float)y,(float)z};
 		this.category = category;
+	}
+	public IETileSound(SoundEvent event, float volume, float pitch, boolean repeat, int repeatDelay, BlockPos pos, AttenuationType attenuation, SoundCategory category)
+	{
+		this(event.getSoundName(), volume, pitch, repeat, repeatDelay, pos.getX(),pos.getY(),pos.getZ(), attenuation, category);
 	}
 	public IETileSound(ResourceLocation sound, float volume, float pitch, boolean repeat, int repeatDelay, BlockPos pos, AttenuationType attenuation, SoundCategory category)
 	{
@@ -72,7 +82,7 @@ public class IETileSound implements ITickableSound
 	@Override
 	public SoundEventAccessor createAccessor(SoundHandler handler)
 	{
-		this.soundEvent = handler.getAccessor(resource);
+		this.soundEvent = handler.getAccessor(this.resource);
 		if(this.soundEvent == null)
 			this.sound = SoundHandler.MISSING_SOUND;
 		else

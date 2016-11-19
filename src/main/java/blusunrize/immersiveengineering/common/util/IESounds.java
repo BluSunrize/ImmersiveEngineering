@@ -28,6 +28,8 @@ public class IESounds
 	public static SoundEvent spark = registerSound("spark");
 	public static SoundEvent railgunFire = registerSound("railgunFire");
 	public static SoundEvent tesla = registerSound("tesla");
+	public static SoundEvent crusher = registerSound("crusher");
+	public static SoundEvent dieselGenerator = registerSound("dieselGenerator");
 
 	private static SoundEvent registerSound(String name)
 	{
