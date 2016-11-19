@@ -112,7 +112,7 @@ public class TileEntityRefinery extends TileEntityMultiblockMetal<TileEntityRefi
 		}
 
 		ItemStack emptyContainer = Utils.drainFluidContainer(tanks[0], inventory[0], inventory[1], null);
-		if(emptyContainer!=null)
+		if(emptyContainer!=null && emptyContainer.stackSize>0)
 		{
 			if(inventory[1]!=null && OreDictionary.itemMatches(inventory[1], emptyContainer, true))
 				inventory[1].stackSize+=emptyContainer.stackSize;
@@ -123,7 +123,7 @@ public class TileEntityRefinery extends TileEntityMultiblockMetal<TileEntityRefi
 			update = true;
 		}
 		emptyContainer = Utils.drainFluidContainer(tanks[1], inventory[2], inventory[3], null);
-		if(emptyContainer!=null)
+		if(emptyContainer!=null && emptyContainer.stackSize>0)
 		{
 			if(inventory[3]!=null && OreDictionary.itemMatches(inventory[3], emptyContainer, true))
 				inventory[3].stackSize+=emptyContainer.stackSize;
