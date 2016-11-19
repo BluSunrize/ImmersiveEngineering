@@ -109,6 +109,8 @@ public class TileEntityBalloon extends TileEntityConnectorStructural implements 
 	@Override
 	public int getRenderColour(IBlockState object, String group)
 	{
+		if(shader!=null && shader.getShaderItem()!=null && shader.getShaderItem().getItem() instanceof IShaderItem)
+			return 0xffffff;
 		if (style==0)
 		{
 			if (group.startsWith("balloon1_"))
