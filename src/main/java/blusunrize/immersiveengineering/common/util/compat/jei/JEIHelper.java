@@ -44,6 +44,34 @@ public class JEIHelper implements IModPlugin
 	public static IJeiHelpers jeiHelpers;
 
 	@Override
+	public void registerItemSubtypes(ISubtypeRegistry subtypeRegistry)
+	{
+		//NBT Ignorance
+		subtypeRegistry.registerNbtInterpreter(Item.getItemFromBlock(IEContent.blockConveyor), new ISubtypeInterpreter()
+		{
+			@Nullable
+			@Override
+			public String getSubtypeInfo(@Nonnull ItemStack itemStack)
+			{
+				if(itemStack != null && ItemNBTHelper.hasKey(itemStack, "conveyorType"))
+					return ItemNBTHelper.getString(itemStack, "conveyorType");
+				return null;
+			}
+		});
+		subtypeRegistry.registerNbtInterpreter(IEContent.itemBullet, new ISubtypeInterpreter()
+		{
+			@Nullable
+			@Override
+			public String getSubtypeInfo(@Nonnull ItemStack itemStack)
+			{
+				if(itemStack != null && itemStack.getMetadata() == 2 && ItemNBTHelper.hasKey(itemStack, "bullet"))
+					return ItemNBTHelper.getString(itemStack, "bullet");
+				return null;
+			}
+		});
+	}
+
+	@Override
 	public void registerIngredients(IModIngredientRegistration registry)
 	{
 	}
@@ -58,31 +86,7 @@ public class JEIHelper implements IModPlugin
 		jeiHelpers.getItemBlacklist().addItemToBlacklist(new ItemStack(IEContent.blockStoneDevice,1,OreDictionary.WILDCARD_VALUE));
 		jeiHelpers.getItemBlacklist().addItemToBlacklist(new ItemStack(IEContent.blockMetalMultiblock,1,OreDictionary.WILDCARD_VALUE));
 
-		//NBT Ignorance
-		jeiHelpers.getSubtypeRegistry().registerNbtInterpreter(Item.getItemFromBlock(IEContent.blockConveyor), new ISubtypeInterpreter()
-		{
-			@Nullable
-			@Override
-			public String getSubtypeInfo(@Nonnull ItemStack itemStack)
-			{
-				if(itemStack != null && ItemNBTHelper.hasKey(itemStack, "conveyorType"))
-					return ItemNBTHelper.getString(itemStack, "conveyorType");
-				return null;
-			}
-		});
-		jeiHelpers.getSubtypeRegistry().registerNbtInterpreter(IEContent.itemBullet, new ISubtypeInterpreter()
-		{
-			@Nullable
-			@Override
-			public String getSubtypeInfo(@Nonnull ItemStack itemStack)
-			{
-				if(itemStack != null && itemStack.getMetadata() == 2 && ItemNBTHelper.hasKey(itemStack, "bullet"))
-					return ItemNBTHelper.getString(itemStack, "bullet");
-				return null;
-			}
-		});
-
-		registryIn.getRecipeTransferRegistry().addRecipeTransferHandler(new AssemblerRecipeTransferHandler());
+		registryIn.getRecipeTransferRegistry().addRecipeTransferHandler(new AssemblerRecipeTransferHandler(), "immersiveengineering:assembler");
 
 		//Recipes
 		IGuiHelper guiHelper = jeiHelpers.getGuiHelper();
