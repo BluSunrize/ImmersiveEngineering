@@ -26,6 +26,7 @@ import blusunrize.immersiveengineering.common.util.*;
 import blusunrize.immersiveengineering.common.util.network.MessageMinecartShaderSync;
 import blusunrize.immersiveengineering.common.util.network.MessageMineralListSync;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EnumCreatureType;
@@ -39,6 +40,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -74,11 +76,14 @@ import java.lang.reflect.Field;
 import java.util.*;
 import java.util.Map.Entry;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 public class EventHandler
 {
 	public static ArrayList<ISpawnInterdiction> interdictionTiles = new ArrayList<ISpawnInterdiction>();
 	public static boolean validateConnsNextTick = false;
 	public static HashSet<IEExplosion> currentExplosions = new HashSet<IEExplosion>();
+	public static final Queue<Pair<Integer, BlockPos>> requestedBlockUpdates = new LinkedList<>();
 	@SubscribeEvent
 	public void onLoad(WorldEvent.Load event)
 	{
@@ -271,6 +276,22 @@ public class EventHandler
 					ex.doExplosionTick();
 					if(ex.isExplosionFinished)
 						itExplosion.remove();
+				}
+			}
+			synchronized (requestedBlockUpdates)
+			{
+				while (!requestedBlockUpdates.isEmpty())
+				{
+					Pair<Integer, BlockPos> curr = requestedBlockUpdates.poll();
+					if(FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER)
+					{
+						World w = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(curr.getLeft());
+						if(w!=null)
+						{
+							IBlockState state = w.getBlockState(curr.getRight());
+							w.notifyBlockUpdate(curr.getRight(), state,state, 3);
+						}
+					}
 				}
 			}
 		}

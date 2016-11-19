@@ -49,6 +49,7 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 	public boolean redstoneControlInverted = false;
 	public EnumFacing facing = EnumFacing.UP;
 	public boolean lowPower = false;
+	private Vec3d soundPos = null;
 	@SideOnly(Side.CLIENT)
 	public static ArrayListMultimap<BlockPos,LightningAnimation> effectMap;
 
@@ -57,6 +58,14 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 	{
 		if(dummy)
 			return;
+		synchronized (this)
+		{
+			if (worldObj.isRemote && soundPos!=null)
+			{
+				worldObj.playSound(soundPos.xCoord,soundPos.yCoord,soundPos.zCoord, IESounds.tesla, SoundCategory.BLOCKS, 2.5F,0.5F+worldObj.rand.nextFloat(), true);
+				soundPos = null;
+			}
+		}
 		int timeKey = getPos().getX()^getPos().getZ();
 		int energyDrain = IEConfig.Machines.teslacoil_consumption;
 		if (lowPower)
@@ -277,7 +286,10 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 				}
 
 				effectMap.put(getPos(), new LightningAnimation(coilPos,(EntityLivingBase)target));
-				worldObj.playSound(coilPos.xCoord,coilPos.yCoord,coilPos.zCoord, IESounds.tesla, SoundCategory.BLOCKS, 2.5F,0.5F+worldObj.rand.nextFloat(), true);
+				synchronized (this)
+				{
+					soundPos = coilPos;
+				}
 			}
 		}
 	}
