@@ -21,8 +21,7 @@ import net.minecraft.world.biome.Biome;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.ModMetadata;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.event.FMLInterModComms;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -48,9 +47,6 @@ public class TConstructHelper extends IECompatModule
 	public static Fluid fluidConstantan;
 	public static Block blockMoltenConstantan;
 
-	@Mod.Metadata("tconstruct")
-	ModMetadata tconMeta;
-
 	@Override
 	public void preInit()
 	{
@@ -75,14 +71,13 @@ public class TConstructHelper extends IECompatModule
 		FMLInterModComms.sendMessage("tconstruct", "blacklistMelting", new ItemStack(IEContent.itemDrillhead, 1, OreDictionary.WILDCARD_VALUE));
 
 		boolean bows = false;
-		if(tconMeta!=null)
+		try
 		{
-			try
-			{
-				String version = tconMeta.version.substring(7);//TCon version format: 1.10.2-[major].[minor].[sub].[jenkins]
-				bows = version.compareTo("2.6.0") >= 0;
-			}catch(Exception e){}
-		}
+			String tConVersion = Loader.instance().getIndexedModList().get("tconstruct").getVersion();
+			String version = tConVersion.substring(7);//TCon version format: 1.10.2-[major].[minor].[sub].[jenkins]
+			version = version.replaceAll("[^\\d.]", "");//reduce to raw version numbers by removing "jenkins"
+			bows = version.compareTo("2.5.6.441") >= 0;
+		}catch(Exception e){}
 
 		treatedWood.setCraftable(true);
 		treatedWood.addItem("stickTreatedWood", 1, Material.VALUE_Shard);
