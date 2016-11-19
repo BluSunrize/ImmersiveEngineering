@@ -8,7 +8,6 @@ import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Conn
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
-import blusunrize.immersiveengineering.api.shader.IShaderItem;
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler.IZoomTool;
@@ -154,8 +153,8 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 		{
 			ShaderWrapper wrapper = event.getItemStack().getCapability(CapabilityShader.SHADER_CAPABILITY, null);
 			ItemStack shader = wrapper != null ? wrapper.getShaderItem() : null;
-			if(shader!=null && shader.getItem() instanceof IShaderItem)
-				event.getToolTip().add(TextFormatting.DARK_GRAY + ((IShaderItem)shader.getItem()).getShaderName(shader));
+			if(shader != null)
+				event.getToolTip().add(TextFormatting.DARK_GRAY + shader.getDisplayName());
 		}
 		if(ItemNBTHelper.hasKey(event.getItemStack(),"IE:Earmuffs"))
 		{
