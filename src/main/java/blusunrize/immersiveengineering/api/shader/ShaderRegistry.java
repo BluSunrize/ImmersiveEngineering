@@ -61,7 +61,7 @@ public class ShaderRegistry
 		registerShader_Drill(name, overlayType, rarity, colourBackground, colourPrimary, colourSecondary, additionalTexture, colourAdditional);
 		registerShader_Railgun(name, overlayType, rarity, colourBackground, colourPrimary, colourSecondary, additionalTexture, colourAdditional);
 		registerShader_Minecart(name, overlayType, rarity, colourPrimary, colourSecondary, additionalTexture, colourAdditional);
-		//registerShader_Balloon(name, overlayType, rarity, colourPrimary, colourSecondary, additionalTexture);
+		registerShader_Balloon(name, overlayType, rarity, colourPrimary, colourSecondary, additionalTexture, colourAdditional);
 		for(IShaderRegistryMethod method : shaderRegistrationMethods)
 			method.apply(name, overlayType, rarity, colourBackground, colourPrimary, colourSecondary, colourBlade, additionalTexture, colourAdditional);
 		return shaderRegistry.get(name).setCrateLoot(loot).setBagLoot(bags).setReplicationCost(defaultReplicationCost.copyWithMultipliedSize(10-rarityWeightMap.get(rarity)));
@@ -104,8 +104,8 @@ public class ShaderRegistry
 	 * @param colour1 base colour
 	 * @param colour2 design colour
 	 * @param colourBlade colour of the bayonet blade
-	 * @param colourAddtional colour for the additional texture, if present
 	 * @param additionalTexture additional overlay texture. Null if not needed.
+	 * @param colourAddtional colour for the additional texture, if present
 	 * @return the registered ShaderCase
 	 */
 	public static ShaderCaseRevolver registerShader_Revolver(String name, String overlayType, EnumRarity rarity, int colour0, int colour1, int colour2, int colourBlade, String additionalTexture, int colourAddtional)
@@ -130,8 +130,8 @@ public class ShaderRegistry
 	 * @param colour0 grip colour
 	 * @param colour1 base colour
 	 * @param colour2 design colour
-	 * @param colourAddtional colour for the additional texture, if present
 	 * @param additionalTexture additional overlay texture. Null if not needed.
+	 * @param colourAddtional colour for the additional texture, if present
 	 * @return the registered ShaderCase
 	 */
 	public static ShaderCaseChemthrower registerShader_Chemthrower(String name, String overlayType, EnumRarity rarity, int colour0, int colour1, int colour2, String additionalTexture, int colourAddtional)
@@ -156,8 +156,8 @@ public class ShaderRegistry
 	 * @param colour0 grip colour
 	 * @param colour1 base colour
 	 * @param colour2 design colour
-	 * @param colourAddtional colour for the additional texture, if present
 	 * @param additionalTexture additional overlay texture. Null if not needed.
+	 * @param colourAddtional colour for the additional texture, if present
 	 * @return the registered ShaderCase
 	 */
 	public static ShaderCaseDrill registerShader_Drill(String name, String overlayType, EnumRarity rarity, int colour0, int colour1, int colour2, String additionalTexture, int colourAddtional)
@@ -182,8 +182,8 @@ public class ShaderRegistry
 	 * @param colour0 grip colour
 	 * @param colour1 base colour
 	 * @param colour2 design colour
-	 * @param colourAddtional colour for the additional texture, if present
 	 * @param additionalTexture additional overlay texture. Null if not needed.
+	 * @param colourAddtional colour for the additional texture, if present
 	 * @return the registered ShaderCase
 	 */
 	public static ShaderCaseRailgun registerShader_Railgun(String name, String overlayType, EnumRarity rarity, int colour0, int colour1, int colour2, String additionalTexture, int colourAddtional)
@@ -207,8 +207,8 @@ public class ShaderRegistry
 	 * @param rarity Rarity of the shader item
 	 * @param colour0 base colour
 	 * @param colour1 design colour
-	 * @param colourAddtional colour for the additional texture, if present
 	 * @param additionalTexture additional overlay texture. Null if not needed.
+	 * @param colourAddtional colour for the additional texture, if present
 	 * @return the registered ShaderCase
 	 */
 	public static ShaderCaseMinecart registerShader_Minecart(String name, String overlayType, EnumRarity rarity, int colour0, int colour1, String additionalTexture, int colourAddtional)
@@ -235,6 +235,30 @@ public class ShaderRegistry
 		return registerShaderCase(name, shader, rarity);
 	}
 
+	/**
+	 * Method to register a default implementation of Balloon Shaders
+	 * @param name name of the shader
+	 * @param overlayType uses IE's existing overlays. To use custom ones, you'll need your own method.
+	 * @param rarity Rarity of the shader item
+	 * @param colour0 base colour
+	 * @param colour1 design colour
+	 * @param additionalTexture additional overlay texture. Null if not needed.
+	 * @param colourAddtional colour for the additional texture, if present
+	 * @return the registered ShaderCase
+	 */
+	public static ShaderCaseBalloon registerShader_Balloon(String name, String overlayType, EnumRarity rarity, int colour0, int colour1, String additionalTexture, int colourAddtional)
+	{
+		ArrayList<ShaderLayer> list = new ArrayList();
+		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:blocks/shaders/balloon_0"),colour0));
+		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:blocks/shaders/balloon_1_"+overlayType),colour1));
+		if(additionalTexture!=null)
+			list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:blocks/shaders/balloon_"+additionalTexture),colourAddtional));
+		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:blocks/shaders/balloon_uncoloured"),0xffffffff));
+
+		ShaderCaseBalloon shader = new ShaderCaseBalloon(list);
+		return registerShaderCase(name, shader, rarity);
+	}
+
 	/**A map of shader name to ShaderRegistryEntry, which contains ShaderCases, rarity, weight and loot specifics */
 	public static Set<IShaderRegistryMethod> shaderRegistrationMethods = new HashSet<IShaderRegistryMethod>();
 	public static void addRegistrationMethod(IShaderRegistryMethod method)
@@ -252,8 +276,8 @@ public class ShaderRegistry
 		 * @param colour1 base colour
 		 * @param colour2 design colour
 		 * @param colour3 colour used for bayonet blade
-		 * @param colourAddtional colour for the additional texture, if present
 		 * @param additionalTexture additional overlay texture. Null if not needed.
+		 * @param colourAddtional colour for the additional texture, if present
 		 * @return the registered ShaderCase
 		 */
 		T apply(String name, String overlayType, EnumRarity rarity, int colour0, int colour1, int colour2, int colour3, String additionalTexture, int colourAddtional);
@@ -273,6 +297,7 @@ public class ShaderRegistry
 		return shader;
 	}
 	*/
+
 	public static ManualEntry manualEntry;
 	public static Item itemShader;
 	public static Item itemShaderBag;

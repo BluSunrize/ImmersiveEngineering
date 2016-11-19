@@ -3,13 +3,12 @@ package blusunrize.immersiveengineering.common.blocks.cloth;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConnectable;
+import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.blocks.BlockIETileProvider;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyEnum;
-import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -20,20 +19,17 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IExtendedBlockState;
-import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class BlockClothDevice extends BlockIETileProvider<BlockTypes_ClothDevice>
 {
 	public BlockClothDevice()
 	{
-		super("clothDevice", Material.CLOTH, PropertyEnum.create("type", BlockTypes_ClothDevice.class), ItemBlockClothDevice.class, IEProperties.FACING_ALL, IEProperties.BOOLEANS[0], IOBJModelCallback.PROPERTY, IEProperties.CONNECTIONS);
+		super("clothDevice", Material.CLOTH, PropertyEnum.create("type", BlockTypes_ClothDevice.class), ItemBlockClothDevice.class, IEProperties.FACING_ALL, IEProperties.BOOLEANS[0], IOBJModelCallback.PROPERTY, CapabilityShader.BLOCKSTATE_PROPERTY, IEProperties.CONNECTIONS);
 		setHardness(0.8F);
 		setHasColours();
 		setMetaLightOpacity(1, 0);

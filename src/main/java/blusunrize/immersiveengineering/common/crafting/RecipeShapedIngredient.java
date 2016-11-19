@@ -139,7 +139,6 @@ public class RecipeShapedIngredient extends ShapedOreRecipe
 //				if(remains[i]==null && s!=null)
 //					remains[i] = s.copy();
 //				IFluidHandler handler = FluidUtil.getFluidHandler(remains[i]);
-//				System.out.println("draing from "+handler+" in "+remains[i]);
 //				if(handler!=null)
 //					handler.drain(matchedIngr[i].fluid.amount, true);
 //				if(remains[i].stackSize<=0)

@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.common.blocks;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
+import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.CommonProxy;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
@@ -200,6 +201,8 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 				extended = extended.withProperty(IEProperties.OBJ_TEXTURE_REMAP, ((IDynamicTexture)te).getTextureReplacements());
 			if(te instanceof IOBJModelCallback)
 				extended = extended.withProperty(IOBJModelCallback.PROPERTY, (IOBJModelCallback)te);
+			if(te.hasCapability(CapabilityShader.SHADER_CAPABILITY,null))
+				extended = extended.withProperty(CapabilityShader.BLOCKSTATE_PROPERTY, te.getCapability(CapabilityShader.SHADER_CAPABILITY,null));
 			if(te instanceof IPropertyPassthrough && ((IExtendedBlockState) state).getUnlistedNames().contains(IEProperties.TILEENTITY_PASSTHROUGH))
 				extended = extended.withProperty(IEProperties.TILEENTITY_PASSTHROUGH, te);
 			state = extended;
