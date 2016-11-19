@@ -10,6 +10,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvanced
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGuiTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundTile;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockDieselGenerator;
+import blusunrize.immersiveengineering.common.util.IESounds;
 import cofh.api.energy.IEnergyReceiver;
 import com.google.common.collect.Lists;
 import net.minecraft.entity.player.EntityPlayer;
@@ -92,7 +93,7 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockMetal<TileEnt
 
 		if(worldObj.isRemote)
 		{
-			ImmersiveEngineering.proxy.handleTileSound("dieselGenerator", this, active, .5f,1);
+			ImmersiveEngineering.proxy.handleTileSound(IESounds.dieselGenerator, this, active, .5f,1);
 			if(active && worldObj.getTotalWorldTime()%4==0)
 			{
 				BlockPos exhaust = this.getBlockPosForPos(38);

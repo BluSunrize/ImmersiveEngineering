@@ -1160,18 +1160,18 @@ public class ClientProxy extends CommonProxy
 	HashMap<String, IETileSound> soundMap = new HashMap<String, IETileSound>();
 	HashMap<BlockPos, IETileSound> tileSoundMap = new HashMap<BlockPos, IETileSound>();
 	@Override
-	public void handleTileSound(String soundName, TileEntity tile, boolean tileActive, float volume, float pitch)
+	public void handleTileSound(SoundEvent soundEvent, TileEntity tile, boolean tileActive, float volume, float pitch)
 	{
 		BlockPos pos = tile.getPos();
 		IETileSound sound = tileSoundMap.get(pos);
 		if(sound==null && tileActive)
 		{
-			sound = ClientUtils.generatePositionedIESound("immersiveengineering:"+soundName, volume, pitch, true, 0, pos);
+			sound = ClientUtils.generatePositionedIESound(soundEvent, volume, pitch, true, 0, pos);
 			tileSoundMap.put(pos, sound);
 		}
 		else if(sound!=null && !tileActive)
 		{
-			sound.isDonePlaying();
+			sound.donePlaying=true;
 			ClientUtils.mc().getSoundHandler().stopSound(sound);
 			tileSoundMap.remove(pos);
 		}
