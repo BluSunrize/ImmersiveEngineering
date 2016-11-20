@@ -1,5 +1,7 @@
 package blusunrize.immersiveengineering.common.util.compat.jei.blastfurnace;
 
+import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.blocks.stone.BlockTypes_StoneDevices;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IGuiItemStackGroup;
@@ -7,6 +9,7 @@ import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import mezz.jei.util.Log;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 public class BlastFurnaceRecipeCategory extends IERecipeCategory
@@ -15,7 +18,7 @@ public class BlastFurnaceRecipeCategory extends IERecipeCategory
 
 	public BlastFurnaceRecipeCategory(IGuiHelper helper)
 	{
-		super("blastfurnace","gui.immersiveengineering.blastFurnace", helper.createDrawable(background, 8,8, 142, 65), BlastFurnaceRecipeWrapper.class);
+		super("blastfurnace","gui.immersiveengineering.blastFurnace", helper.createDrawable(background, 8,8, 142, 65), BlastFurnaceRecipeWrapper.class, new ItemStack(IEContent.blockStoneDevice,1,BlockTypes_StoneDevices.BLAST_FURNACE.getMeta()), new ItemStack(IEContent.blockStoneDevice,1,BlockTypes_StoneDevices.BLAST_FURNACE_ADVANCED.getMeta()));
 	}
 
 	@Override
@@ -34,7 +37,7 @@ public class BlastFurnaceRecipeCategory extends IERecipeCategory
 		if(recipeWrapper instanceof BlastFurnaceRecipeWrapper)
 		{
 			BlastFurnaceRecipeWrapper recipe = (BlastFurnaceRecipeWrapper) recipeWrapper;
-			guiItemStacks.set(0, recipe.getInputs());
+			guiItemStacks.set(0, ingredients.getInputs(ItemStack.class).get(0));
 			guiItemStacks.set(1, recipe.getSmeltingOutput());
 			guiItemStacks.set(2, recipe.getSlagOutput());
 		}

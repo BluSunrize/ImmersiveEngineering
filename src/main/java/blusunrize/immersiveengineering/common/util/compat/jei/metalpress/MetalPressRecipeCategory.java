@@ -19,7 +19,7 @@ public class MetalPressRecipeCategory extends IERecipeCategory
 	static ItemStack metalPressStack;
 	public MetalPressRecipeCategory(IGuiHelper helper)
 	{
-		super("metalPress","tile.immersiveengineering.metalMultiblock.metal_press.name", helper.createBlankDrawable(140,50), MetalPressRecipeWrapper.class);
+		super("metalPress","tile.immersiveengineering.metalMultiblock.metal_press.name", helper.createBlankDrawable(140,50), MetalPressRecipeWrapper.class, new ItemStack(IEContent.blockMetalMultiblock,1,BlockTypes_MetalMultiblock.METAL_PRESS.getMeta()));
 		slotDrawable = helper.getSlotDrawable();
 		metalPressStack = new ItemStack(IEContent.blockMetalMultiblock,1, BlockTypes_MetalMultiblock.METAL_PRESS.getMeta());
 	}
@@ -42,7 +42,7 @@ public class MetalPressRecipeCategory extends IERecipeCategory
 			MetalPressRecipeWrapper recipe = (MetalPressRecipeWrapper) recipeWrapper;
 			guiItemStacks.set(0, recipe.recipeInputs[0]);
 			guiItemStacks.set(1, recipe.recipeInputs[1]);
-			guiItemStacks.set(2, recipe.getOutputs());
+			guiItemStacks.set(2, ingredients.getOutputs(ItemStack.class));
 		}
 		else
 			Log.error("Unknown recipe wrapper type: {}", recipeWrapper);
