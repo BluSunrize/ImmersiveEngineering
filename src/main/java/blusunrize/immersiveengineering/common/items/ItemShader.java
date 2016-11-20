@@ -76,6 +76,8 @@ public class ItemShader extends ItemIEBase implements IShaderItem, ITextureOverr
 
 		addShader("Radiant", 3, EnumRarity.UNCOMMON, 0xffa36eab,0xfff8dbbc,0xffc79ab1,0xffd8d8e3, "pipes",true,0xfff1c91e).setInfo(null,"Kingdom Hearts","radiant");
 		addShader("Hollow", 4, EnumRarity.UNCOMMON, 0xff542d1c,0xffeec5e5,0xffcc8980,0xffc4a1aa, "pipes",true,0xffc49838).setInfo(null,"Kingdom Hearts","hollow");
+
+		addShader("Microshark", 8, EnumRarity.RARE, 0xff775054, 0xfff7f6cf, 0xff936267, 0xff936267, "shark",true,0xffffffff).setInfo(null,"Terraria","microshark");
 	}
 
 	@Override
