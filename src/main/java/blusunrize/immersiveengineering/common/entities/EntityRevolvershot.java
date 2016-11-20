@@ -3,12 +3,16 @@ package blusunrize.immersiveengineering.common.entities;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxContainerItem;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
+import blusunrize.immersiveengineering.common.util.IEAchievements;
+import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -255,6 +259,12 @@ public class EntityRevolvershot extends Entity
 			IBullet bullet = BulletHandler.getBullet(bulletType);
 			if(bullet != null)
 				bullet.onHitTarget(worldObj, mop, this.shootingEntity, this, headshot);
+			if(headshot && mop.entityHit instanceof EntityAgeable && ((EntityAgeable)mop.entityHit).isChild())
+			{
+				if(this.shootingEntity instanceof EntityPlayer)
+					((EntityPlayer)this.shootingEntity).addStat(IEAchievements.secret_birthdayParty);
+				this.playSound(IESounds.birthdayParty, 1.0F, 1.2F / (this.rand.nextFloat() * 0.2F + 0.9F));
+			}
 		}
 		if(!this.worldObj.isRemote)
 		{

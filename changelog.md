@@ -1,4 +1,4 @@
-#####Version 0.10-49
+#####Version 0.10-49 - BUILT
 - rewrote the shader system
     - improved texture performance
     - changed API integration
@@ -20,6 +20,8 @@
 - fixed Structural Connectors and Redstone Connectors not displaying properly (thanks Malte)
 - fixed Conveyors throwing NPEs on Servers (thanks Malte)
 - fixed dupebug with Charging Station
+- fixed a few missing sounds
+- fixed a concurrent modification in Tesla Coil sounds (thanks Malte)
 
 #####Version 0.10-48 - BUILT
 - added CTM support to Engineering Blocks and Scaffolds when Chisel is installed (in cooperation with Drullkus)

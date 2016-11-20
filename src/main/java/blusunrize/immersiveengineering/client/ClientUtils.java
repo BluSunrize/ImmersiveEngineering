@@ -27,9 +27,7 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundCategory;
+import net.minecraft.util.*;
 import net.minecraft.util.Timer;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -410,10 +408,10 @@ public class ClientUtils
 		return r << 16 | g << 8 | b;
 	}
 
-	public static IETileSound generatePositionedIESound(String soundName, float volume, float pitch, boolean repeat, int delay, BlockPos pos)
+	public static IETileSound generatePositionedIESound(SoundEvent soundEvent, float volume, float pitch, boolean repeat, int delay, BlockPos pos)
 	{
-		IETileSound sound = new IETileSound(new ResourceLocation(soundName), volume, pitch, repeat, delay, pos, AttenuationType.LINEAR, SoundCategory.BLOCKS);
-		sound.evaluateVolume();
+		IETileSound sound = new IETileSound(soundEvent, volume, pitch, repeat, delay, pos, AttenuationType.LINEAR, SoundCategory.BLOCKS);
+//		sound.evaluateVolume();
 		ClientUtils.mc().getSoundHandler().playSound(sound);
 		return sound;
 	}

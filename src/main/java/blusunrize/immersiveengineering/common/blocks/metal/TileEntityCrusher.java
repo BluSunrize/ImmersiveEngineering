@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.CrusherRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
@@ -9,6 +10,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvanced
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundTile;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockCrusher;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
+import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.Lists;
 import net.minecraft.entity.Entity;
@@ -84,11 +86,15 @@ public class TileEntityCrusher extends TileEntityMultiblockMetal<TileEntityCrush
 	public void update()
 	{
 		super.update();
-
-		if(worldObj.isRemote && !isDummy() && shouldRenderAsActive())
+		if(worldObj.isRemote && !isDummy())
 		{
-			animation_barrelRotation += 18f;
-			animation_barrelRotation %= 360f;
+			boolean active = shouldRenderAsActive();
+			ImmersiveEngineering.proxy.handleTileSound(IESounds.crusher, this, active, .5f, 1);
+			if(active)
+			{
+				animation_barrelRotation += 18f;
+				animation_barrelRotation %= 360f;
+			}
 		}
 	}
 
@@ -475,6 +481,6 @@ public class TileEntityCrusher extends TileEntityMultiblockMetal<TileEntityCrush
 	@Override
 	public boolean shoudlPlaySound(String sound)
 	{
-		return false;
+		return shouldRenderAsActive();
 	}
 }
