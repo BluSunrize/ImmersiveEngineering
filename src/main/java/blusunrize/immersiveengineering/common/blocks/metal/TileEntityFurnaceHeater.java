@@ -30,7 +30,8 @@ public class TileEntityFurnaceHeater extends TileEntityIEBase implements ITickab
 		if(!worldObj.isRemote)
 		{
 			boolean a = active;
-			if(active)
+			boolean redstonePower = worldObj.isBlockIndirectlyGettingPowered(getPos())>0;
+			if(active && !redstonePower)
 				active=false;
 			for(EnumFacing fd : EnumFacing.VALUES)
 			{
@@ -38,12 +39,12 @@ public class TileEntityFurnaceHeater extends TileEntityIEBase implements ITickab
 				int consumed = 0;
 				if(tileEntity!=null)
 					if(tileEntity instanceof IExternalHeatable)
-						consumed = ((IExternalHeatable)tileEntity).doHeatTick(energyStorage.getEnergyStored(), worldObj.isBlockIndirectlyGettingPowered(getPos())>0);
+						consumed = ((IExternalHeatable)tileEntity).doHeatTick(energyStorage.getEnergyStored(), redstonePower);
 					else
 					{
 						ExternalHeaterHandler.HeatableAdapter adapter = ExternalHeaterHandler.getHeatableAdapter(tileEntity.getClass());
 						if(adapter!=null)
-							consumed = adapter.doHeatTick(tileEntity, energyStorage.getEnergyStored(), worldObj.isBlockIndirectlyGettingPowered(getPos())>0);
+							consumed = adapter.doHeatTick(tileEntity, energyStorage.getEnergyStored(), redstonePower);
 					}
 				if(consumed>0)
 				{
