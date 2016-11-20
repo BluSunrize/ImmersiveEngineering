@@ -26,7 +26,7 @@ public class ShaderCaseRevolver extends ShaderCase
 	public boolean renderModelPartForPass(ItemStack shader, ItemStack item, String modelPart, int pass)
 	{
 		if(pass==0)//first pass is just for the grip
-			return "revolver_frame".equals(modelPart);
+			return "revolver_frame".equals(modelPart)||"bayonet_attachment".equals(modelPart);
 		if(pass==2)//third pass is just for the blade of the bayonet
 			return "player_bayonet".equals(modelPart)||"dev_bayonet".equals(modelPart);
 		return true;
