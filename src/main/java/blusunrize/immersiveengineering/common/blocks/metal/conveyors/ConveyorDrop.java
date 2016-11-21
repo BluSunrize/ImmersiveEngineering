@@ -36,7 +36,8 @@ public class ConveyorDrop extends ConveyorBasic
 						entity.setEntityItemStack(ret);
 				}
 			}
-		} else if(contact && (tile.getWorld().isAirBlock(tile.getPos().add(0, -1, 0)) || inventoryTile instanceof IConveyorTile))
+		}
+		else if(contact && (tile.getWorld().isAirBlock(tile.getPos().add(0, -1, 0)) || inventoryTile instanceof IConveyorTile))
 		{
 			entity.motionX = 0;
 			entity.motionZ = 0;
@@ -44,6 +45,8 @@ public class ConveyorDrop extends ConveyorBasic
 			if(!(tile.getWorld().getTileEntity(tile.getPos().add(0, -1, 0)) instanceof IConveyorTile))
 				ConveyorHandler.revertMagnetSupression(entity, (IConveyorTile) tile);
 		}
+		else
+			super.handleInsertion(tile,entity,facing,conDir,distX,distZ);
 	}
 
 	public static ResourceLocation texture_on = new ResourceLocation("immersiveengineering:blocks/conveyor_dropper");

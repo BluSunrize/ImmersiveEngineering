@@ -57,7 +57,14 @@ public class ConveyorSplit extends ConveyorBasic
 	@Override
 	public void handleInsertion(TileEntity tile, EntityItem entity, EnumFacing facing, ConveyorDirection conDir, double distX, double distZ)
 	{
-		super.handleInsertion(tile, entity, facing, conDir, distX, distZ);
+		if(entity.getEntityData().hasKey("immersiveengineering:conveyorDir"))
+		{
+			EnumFacing redirect = EnumFacing.values()[entity.getEntityData().getInteger("immersiveengineering:conveyorDir")];
+			BlockPos nextPos = tile.getPos().offset(redirect);
+			double distNext = Math.abs((redirect.getAxis() == Axis.Z ? nextPos.getZ() : nextPos.getX()) + .5 - (redirect.getAxis() == Axis.Z ? entity.posZ : entity.posX));
+			if(distNext<.7)
+				super.handleInsertion(tile, entity, redirect, conDir, distX, distZ);
+		}
 	}
 
 	@Override
