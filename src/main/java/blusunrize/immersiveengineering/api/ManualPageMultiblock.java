@@ -151,6 +151,7 @@ public class ManualPageMultiblock extends ManualPages
 	@Override
 	public void renderPage(GuiManual gui, int x, int y, int mx, int my)
 	{
+		boolean openBuffer = false;
 		try
 		{
 			if(multiblock.getStructureManual() != null)
@@ -217,8 +218,10 @@ public class ManualPageMultiblock extends ManualPages
 										Tessellator tessellator = Tessellator.getInstance();
 										VertexBuffer buffer = tessellator.getBuffer();
 										buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
+										openBuffer = true;
 										blockRender.renderBlock(state, pos, blockAccess, buffer);
 										tessellator.draw();
+										openBuffer = false;
 									}
 								}
 							}
@@ -248,6 +251,10 @@ public class ManualPageMultiblock extends ManualPages
 		{
 			e.printStackTrace();
 		}
+		if(openBuffer)
+			try{
+				Tessellator.getInstance().draw();
+			}catch(Exception e){}
 	}
 
 	@Override
