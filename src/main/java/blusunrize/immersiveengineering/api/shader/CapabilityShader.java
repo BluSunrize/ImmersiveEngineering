@@ -59,8 +59,13 @@ public class CapabilityShader
 		{
 			if(!container.hasTagCompound())
 				container.setTagCompound(new NBTTagCompound());
-			NBTTagCompound shaderTag = shader.writeToNBT( new NBTTagCompound());
-			container.getTagCompound().setTag(SHADER_NBT_KEY, shaderTag);
+			if(shader!=null)
+			{
+				NBTTagCompound shaderTag = shader.writeToNBT(new NBTTagCompound());
+				container.getTagCompound().setTag(SHADER_NBT_KEY, shaderTag);
+			}
+			else
+				container.getTagCompound().removeTag(SHADER_NBT_KEY);
 		}
 		@Override
 		@Nullable

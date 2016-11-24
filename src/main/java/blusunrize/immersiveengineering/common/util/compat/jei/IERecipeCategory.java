@@ -6,6 +6,7 @@ import mezz.jei.api.recipe.IRecipeHandler;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -16,13 +17,15 @@ public abstract class IERecipeCategory<T> implements IRecipeCategory, IRecipeHan
 	public String localizedName;
 	private final IDrawable background;
 	private final Class<T> wrapperClass;
-	
-	public IERecipeCategory(String uniqueName, String localKey, IDrawable background, Class<T> wrapperClass)
+
+	public IERecipeCategory(String uniqueName, String localKey, IDrawable background, Class<T> wrapperClass, ItemStack... displayStacks)
 	{
 		this.uniqueName = uniqueName;
 		this.localizedName = I18n.format(localKey);
 		this.background = background;
 		this.wrapperClass = wrapperClass;
+		for(ItemStack stack : displayStacks)
+			JEIHelper.modRegistry.addRecipeCategoryCraftingItem(stack, getRecipeCategoryUid());
 	}
 
 	@Nullable

@@ -189,22 +189,25 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 		{
 			IExtendedBlockState extended = (IExtendedBlockState)state;
 			TileEntity te = world.getTileEntity(pos);
-			if(te instanceof IConfigurableSides)
-				for(int i=0; i<6; i++)
-					if(extended.getUnlistedNames().contains(IEProperties.SIDECONFIG[i]))
-						extended = extended.withProperty(IEProperties.SIDECONFIG[i], ((IConfigurableSides)te).getSideConfig(i));
-			if(te instanceof IAdvancedHasObjProperty)
-				extended = extended.withProperty(Properties.AnimationProperty, ((IAdvancedHasObjProperty)te).getOBJState());
-			else if(te instanceof IHasObjProperty)
-				extended = extended.withProperty(Properties.AnimationProperty, new OBJState(((IHasObjProperty)te).compileDisplayList(), true));
-			if(te instanceof IDynamicTexture)
-				extended = extended.withProperty(IEProperties.OBJ_TEXTURE_REMAP, ((IDynamicTexture)te).getTextureReplacements());
-			if(te instanceof IOBJModelCallback)
-				extended = extended.withProperty(IOBJModelCallback.PROPERTY, (IOBJModelCallback)te);
-			if(te.hasCapability(CapabilityShader.SHADER_CAPABILITY,null))
-				extended = extended.withProperty(CapabilityShader.BLOCKSTATE_PROPERTY, te.getCapability(CapabilityShader.SHADER_CAPABILITY,null));
-			if(te instanceof IPropertyPassthrough && ((IExtendedBlockState) state).getUnlistedNames().contains(IEProperties.TILEENTITY_PASSTHROUGH))
-				extended = extended.withProperty(IEProperties.TILEENTITY_PASSTHROUGH, te);
+			if(te!=null)
+			{
+				if(te instanceof IConfigurableSides)
+					for(int i = 0; i < 6; i++)
+						if(extended.getUnlistedNames().contains(IEProperties.SIDECONFIG[i]))
+							extended = extended.withProperty(IEProperties.SIDECONFIG[i], ((IConfigurableSides)te).getSideConfig(i));
+				if(te instanceof IAdvancedHasObjProperty)
+					extended = extended.withProperty(Properties.AnimationProperty, ((IAdvancedHasObjProperty)te).getOBJState());
+				else if(te instanceof IHasObjProperty)
+					extended = extended.withProperty(Properties.AnimationProperty, new OBJState(((IHasObjProperty)te).compileDisplayList(), true));
+				if(te instanceof IDynamicTexture)
+					extended = extended.withProperty(IEProperties.OBJ_TEXTURE_REMAP, ((IDynamicTexture)te).getTextureReplacements());
+				if(te instanceof IOBJModelCallback)
+					extended = extended.withProperty(IOBJModelCallback.PROPERTY, (IOBJModelCallback)te);
+				if(te.hasCapability(CapabilityShader.SHADER_CAPABILITY, null))
+					extended = extended.withProperty(CapabilityShader.BLOCKSTATE_PROPERTY, te.getCapability(CapabilityShader.SHADER_CAPABILITY, null));
+				if(te instanceof IPropertyPassthrough && ((IExtendedBlockState)state).getUnlistedNames().contains(IEProperties.TILEENTITY_PASSTHROUGH))
+					extended = extended.withProperty(IEProperties.TILEENTITY_PASSTHROUGH, te);
+			}
 			state = extended;
 		}
 

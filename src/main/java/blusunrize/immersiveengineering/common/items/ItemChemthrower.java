@@ -216,8 +216,7 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IAdvancedFlu
 		return new Slot[]
 				{
 						new IESlot.Upgrades(container, invItem,0, 80,32, "CHEMTHROWER", stack, true),
-						new IESlot.Upgrades(container, invItem,1,100,32, "CHEMTHROWER", stack, true),
-						new IESlot.Upgrades(container, invItem,2,120,32, "CHEMTHROWER", stack, true)
+						new IESlot.Upgrades(container, invItem,1,100,32, "CHEMTHROWER", stack, true)
 				};
 	}
 	@Override

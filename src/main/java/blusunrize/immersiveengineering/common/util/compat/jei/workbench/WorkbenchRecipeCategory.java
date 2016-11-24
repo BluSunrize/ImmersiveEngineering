@@ -1,5 +1,7 @@
 package blusunrize.immersiveengineering.common.util.compat.jei.workbench;
 
+import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.blocks.wooden.BlockTypes_WoodenDevice0;
 import blusunrize.immersiveengineering.common.items.ItemEngineersBlueprint;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
 import com.google.common.collect.Lists;
@@ -11,6 +13,7 @@ import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import mezz.jei.util.Log;
 import net.minecraft.client.Minecraft;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 public class WorkbenchRecipeCategory extends IERecipeCategory
@@ -19,7 +22,7 @@ public class WorkbenchRecipeCategory extends IERecipeCategory
 	private final IDrawable slotDrawable;
 	public WorkbenchRecipeCategory(IGuiHelper helper)
 	{
-		super("workbench","tile.immersiveengineering.woodenDevice0.workbench.name", helper.createDrawable(background, 0,0, 176,74), WorkbenchRecipeWrapper.class);
+		super("workbench","tile.immersiveengineering.woodenDevice0.workbench.name", helper.createDrawable(background, 0,0, 176,74), WorkbenchRecipeWrapper.class, new ItemStack(IEContent.blockWoodenDevice0,1,BlockTypes_WoodenDevice0.WORKBENCH.getMeta()));
 		slotDrawable = helper.getSlotDrawable();
 	}
 

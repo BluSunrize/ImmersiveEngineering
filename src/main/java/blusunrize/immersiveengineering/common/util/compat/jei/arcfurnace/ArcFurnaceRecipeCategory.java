@@ -1,5 +1,7 @@
 package blusunrize.immersiveengineering.common.util.compat.jei.arcfurnace;
 
+import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalMultiblock;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IDrawable;
@@ -9,6 +11,7 @@ import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import mezz.jei.util.Log;
 import net.minecraft.client.Minecraft;
+import net.minecraft.item.ItemStack;
 
 public class ArcFurnaceRecipeCategory extends IERecipeCategory
 {
@@ -16,7 +19,7 @@ public class ArcFurnaceRecipeCategory extends IERecipeCategory
 	//	static ItemStack arcFurnaceStack;
 	public ArcFurnaceRecipeCategory(IGuiHelper helper, String recipeType, Class wrapperClass)
 	{
-		super("arcFurnace"+(recipeType!=null?"."+recipeType:""),"tile.immersiveengineering.metalMultiblock.arc_furnace.name", helper.createBlankDrawable(140,50), wrapperClass);
+		super("arcFurnace"+(recipeType!=null?"."+recipeType:""),"tile.immersiveengineering.metalMultiblock.arc_furnace.name", helper.createBlankDrawable(140,50), wrapperClass, new ItemStack(IEContent.blockMetalMultiblock,1,BlockTypes_MetalMultiblock.ARC_FURNACE.getMeta()));
 		slotDrawable = helper.getSlotDrawable();
 		if(recipeType!=null)
 			this.localizedName+=" - "+recipeType;

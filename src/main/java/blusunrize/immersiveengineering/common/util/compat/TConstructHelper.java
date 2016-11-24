@@ -21,6 +21,7 @@ import net.minecraft.world.biome.Biome;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.event.FMLInterModComms;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -69,6 +70,15 @@ public class TConstructHelper extends IECompatModule
 		FMLInterModComms.sendMessage("tconstruct", "blacklistMelting", new ItemStack(IEContent.itemBullet, 1, OreDictionary.WILDCARD_VALUE));
 		FMLInterModComms.sendMessage("tconstruct", "blacklistMelting", new ItemStack(IEContent.itemDrillhead, 1, OreDictionary.WILDCARD_VALUE));
 
+		boolean bows = false;
+		try
+		{
+			String tConVersion = Loader.instance().getIndexedModList().get("tconstruct").getVersion();
+			String version = tConVersion.substring(7);//TCon version format: 1.10.2-[major].[minor].[sub].[jenkins]
+			version = version.replaceAll("[^\\d.]", "");//reduce to raw version numbers by removing "jenkins"
+			bows = version.compareTo("2.5.6.441") >= 0;
+		}catch(Exception e){}
+
 		treatedWood.setCraftable(true);
 		treatedWood.addItem("stickTreatedWood", 1, Material.VALUE_Shard);
 		treatedWood.addItem("plankTreatedWood", 1, Material.VALUE_Ingot);
@@ -77,9 +87,9 @@ public class TConstructHelper extends IECompatModule
 		TinkerRegistry.addMaterialStats(treatedWood,
 				new HeadMaterialStats(25, 2.00f, 2.00f, HarvestLevels.STONE),
 				new HandleMaterialStats(1.0f, 35),
-				new ExtraMaterialStats(20),
-				new BowMaterialStats(1f, 1.125f, 0),
-				new ArrowShaftMaterialStats(1.2f, 0));
+				new ExtraMaterialStats(20));
+		if(bows)
+			TinkerRegistry.addMaterialStats(treatedWood, new BowMaterialStats(1f, 1.125f, 0), new ArrowShaftMaterialStats(1.2f, 0));
 		TinkerIntegration.integrate(treatedWood, "plankTreatedWood").integrate();
 
 		constantan.setCastable(true);
@@ -89,8 +99,9 @@ public class TConstructHelper extends IECompatModule
 		TinkerRegistry.addMaterialStats(constantan,
 				new HeadMaterialStats(25, 4.70f, 4.00f, HarvestLevels.DIAMOND),
 				new HandleMaterialStats(0.8f, 60),
-				new ExtraMaterialStats(60),
-				new BowMaterialStats(.55f, 1.5f, 5f));
+				new ExtraMaterialStats(60));
+		if(bows)
+			TinkerRegistry.addMaterialStats(constantan, new BowMaterialStats(.55f, 1.5f, 5f));
 		TinkerIntegration.integrate(constantan, fluidConstantan, "Constantan").toolforge().integrate();
 
 		hemp.addItemIngot("hempFiber");

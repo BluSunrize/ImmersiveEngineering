@@ -19,7 +19,7 @@ public class CrusherRecipeCategory extends IERecipeCategory
 	static ItemStack crusherStack;
 	public CrusherRecipeCategory(IGuiHelper helper)
 	{
-		super("crusher","tile.immersiveengineering.metalMultiblock.crusher.name", helper.createBlankDrawable(140,50), CrusherRecipeWrapper.class);
+		super("crusher","tile.immersiveengineering.metalMultiblock.crusher.name", helper.createBlankDrawable(140,50), CrusherRecipeWrapper.class, new ItemStack(IEContent.blockMetalMultiblock,1,BlockTypes_MetalMultiblock.CRUSHER.getMeta()));
 		slotDrawable = helper.getSlotDrawable();
 		crusherStack = new ItemStack(IEContent.blockMetalMultiblock,1, BlockTypes_MetalMultiblock.CRUSHER.getMeta());
 	}
@@ -41,7 +41,7 @@ public class CrusherRecipeCategory extends IERecipeCategory
 		{
 			CrusherRecipeWrapper recipe = (CrusherRecipeWrapper) recipeWrapper;
 			outputSlots = new int[recipe.recipeOutputs.length][];
-			guiItemStacks.set(0, recipe.getInputs());
+			guiItemStacks.set(0, recipe.getItemIn());
 			guiItemStacks.set(1, recipe.recipeOutputs[0]);
 			outputSlots[0] = new int[]{102,3};
 			for(int i=1; i<recipe.recipeOutputs.length; i++)

@@ -1,3 +1,9 @@
+#####Version 0.10-50 - BUILT
+- added versioncheck for TConstruct to prevent crashes with ranged weapons
+- added Icons for all IE machines to JEI and fixed recipe displays
+- fixed furnace heater constantly updating chunks
+- improved UV maps on the revolver, added a new shader
+
 #####Version 0.10-49 - BUILT
 - rewrote the shader system
     - improved texture performance
