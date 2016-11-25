@@ -176,6 +176,7 @@ uploadArchives {
 String getVersion() {
     String version = "${mainVersion}-${buildNumber}"
     String buildNumber = getBuildNumber()
+    println(buildNumber);
     if(!buildNumber.equals("")) {
         version =+ "-" + buildNumber
     }
