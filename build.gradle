@@ -140,7 +140,7 @@ apply plugin: 'maven'
 uploadArchives {
     repositories {
         mavenDeployer {
-            repository(url: "file://" + System.getenv("local_maven") != null ? System.getenv("local_maven") : System.getenv("bamboo_local_maven"))
+            repository(url: "file://" + (System.getenv("local_maven") != null ? System.getenv("local_maven") : System.getenv("bamboo_local_maven")))
             pom {
                 groupId = project.group
                 version = project.version
@@ -175,15 +175,9 @@ uploadArchives {
 
 String getVersion() {
     String version = "${mainVersion}-${buildNumber}"
-    String branch = System.getenv("BRANCH") != null ? System.getenv("BRANCH") : ""
-
-    if(!branch.equals("")) {
-        version += "-" + branch
-
-        String buildNumber = getBuildNumber()
-        if(!buildNumber.equals("")) {
-            version += "." + buildNumber;
-        }
+    String buildNumber = getBuildNumber()
+    if(!buildNumber.equals("")) {
+        version =+ "-" + buildNumber
     }
 
     return version;
