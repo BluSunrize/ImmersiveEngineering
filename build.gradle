@@ -22,7 +22,7 @@ plugins {
     id "net.minecraftforge.gradle.forge" version "2.0.2"
 }
 */
-version = getVersion()
+version = "${mainVersion}-${buildNumber}" + getVersion();
 group= "blusunrize"
 archivesBaseName = "ImmersiveEngineering"
 
@@ -173,21 +173,13 @@ uploadArchives {
     }
 }
 
-String getVersion() {
-    String version = "${mainVersion}-${buildNumber}"
-    String buildNumber = getBuildNumber()
-    println(buildNumber);
-    if(!buildNumber.equals("")) {
-        version += "-" + buildNumber
-    }
-
-    return version;
-}
-
 String getBuildNumber() {
     String buildNumber = System.getenv("BUILD_NUMBER") != null ? System.getenv("BUILD_NUMBER") : ""
     if(buildNumber.equals("")) {
         buildNumber = System.getenv("bamboo_buildNumber") != null ? "." + System.getenv("bamboo_buildNumber") : ""
+    }
+    if(!buildNumber.equals("")) {
+        buildNumber = "-" + buildNumber
     }
     return buildNumber;
 }
