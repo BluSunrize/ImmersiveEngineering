@@ -175,11 +175,14 @@ uploadArchives {
 
 String getBuildNumber() {
     String buildNumber = System.getenv("BUILD_NUMBER") != null ? System.getenv("BUILD_NUMBER") : ""
+    println(buildNumber);
     if(buildNumber.equals("")) {
         buildNumber = System.getenv("bamboo_buildNumber") != null ? "." + System.getenv("bamboo_buildNumber") : ""
     }
     if(!buildNumber.equals("")) {
         buildNumber = "-" + buildNumber
+        println(buildNumber);
     }
+    println(buildNumber);
     return buildNumber;
 }
