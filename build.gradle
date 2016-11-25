@@ -153,7 +153,7 @@ uploadArchives {
                     scm {
                         url 'https://github.com/BluSunrize/ImmersiveEngineering'
                         connection 'scm:git:git@github.com/BluSunrize/ImmersiveEngineering.git'
-                        developerConnection 'scm:git:git@github.com/BluSunrize/ImmersiveEngineering.git''
+                        developerConnection 'scm:git:git@github.com/BluSunrize/ImmersiveEngineering.git'
                     }
                     issueManagement {
                         system 'github'
