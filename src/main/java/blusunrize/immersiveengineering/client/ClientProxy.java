@@ -256,7 +256,7 @@ public class ClientProxy extends CommonProxy
 			{
 				IIEMetaBlock ieMetaBlock = (IIEMetaBlock) block;
 				if(ieMetaBlock.useCustomStateMapper())
-					ModelLoader.setCustomStateMapper(block, IECustomStateMapper.instance);
+					ModelLoader.setCustomStateMapper(block, IECustomStateMapper.getStateMapper(ieMetaBlock));
 				ModelLoader.setCustomMeshDefinition(blockItem, new ItemMeshDefinition()
 				{
 					@Override
