@@ -12,6 +12,7 @@ import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -118,6 +119,11 @@ public class BlockIEBase<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 	}
 	@Override
 	public String getCustomStateMapping(int meta, boolean itemBlock)
+	{
+		return null;
+	}
+	@Override
+	public StateMapperBase getCustomMapper()
 	{
 		return null;
 	}

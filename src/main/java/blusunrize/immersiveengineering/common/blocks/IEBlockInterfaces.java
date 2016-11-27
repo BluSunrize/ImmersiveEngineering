@@ -6,6 +6,7 @@ import net.minecraft.block.BlockPistonBase;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -37,6 +38,7 @@ public class IEBlockInterfaces
 		IBlockState getInventoryState(int meta);
 		boolean useCustomStateMapper();
 		String getCustomStateMapping(int meta, boolean itemBlock);
+		StateMapperBase getCustomMapper();
 
 		boolean appendPropertiesToState();
 	}

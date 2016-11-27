@@ -17,6 +17,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Field;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,6 +28,8 @@ public class Config
 	public static HashMap<String, int[]> manual_intA = new HashMap<String, int[]>();
 	public static HashMap<String, Double> manual_double = new HashMap<String, Double>();
 	public static HashMap<String, double[]> manual_doubleA = new HashMap<String, double[]>();
+
+	public static boolean seaonal_festive = false;
 
 	@net.minecraftforge.common.config.Config(modid=ImmersiveEngineering.MODID)
 	public static class IEConfig
@@ -316,8 +319,9 @@ public class Config
 			IELogger.warn("Connection validation enabled");
 
 		TileEntityConnectorLV.connectorInputValues = IEConfig.Machines.wireConnectorInput;
-//		Calendar calendar = Calendar.getInstance();
-//		public static boolean christmas", calendar.get(2)+1==12);
+
+		Calendar calendar = Calendar.getInstance();
+		seaonal_festive = calendar.get(Calendar.MONTH)+1==12;//December
 
 		MetalPressRecipe.energyModifier = IEConfig.Machines.metalPress_energyModifier;
 		MetalPressRecipe.timeModifier = IEConfig.Machines.metalPress_timeModifier;

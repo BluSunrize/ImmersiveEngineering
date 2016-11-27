@@ -37,10 +37,6 @@ public class ImmersiveModelRegistry
 	@SubscribeEvent
 	public void onModelBakeEvent(ModelBakeEvent event)
 	{
-		//		if(true)
-		//			return;
-		//		ResourceLocation loc = new ResourceLocation("immersiveengineering","tool/voltmeter");
-		//		ModelResourceLocation mrl = new ModelResourceLocation(loc, "inventory");
 		for(Map.Entry<ModelResourceLocation, ItemModelReplacement> entry : itemModelReplacements.entrySet())
 		{
 			Object object = event.getModelRegistry().getObject(entry.getKey());
@@ -50,13 +46,13 @@ public class ImmersiveModelRegistry
 				{
 					IBakedModel existingModel = (IBakedModel) object;
 					event.getModelRegistry().putObject(entry.getKey(), entry.getValue().createBakedModel(existingModel));
-//					event.getModelRegistry().putObject(entry.getKey(), createBakedObjItemModel(existingModel, entry.getValue(), n));
 				} catch(Exception e)
 				{
 					e.printStackTrace();
 				}
 			}
 		}
+
 		ModelResourceLocation mLoc = new ModelResourceLocation(new ResourceLocation("immersiveengineering", IEContent.itemCoresample.itemName), "inventory");
 		event.getModelRegistry().putObject(mLoc, new ModelCoresample());
 		ModelConveyor modelConveyor = new ModelConveyor();
