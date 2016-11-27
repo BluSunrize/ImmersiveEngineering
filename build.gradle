@@ -22,7 +22,7 @@ plugins {
     id "net.minecraftforge.gradle.forge" version "2.0.2"
 }
 */
-version = "${mainVersion}-${buildNumber}"
+version = "${mainVersion}-${buildNumber}" + getBuildNumber();
 group= "blusunrize"
 archivesBaseName = "ImmersiveEngineering"
 
@@ -134,4 +134,52 @@ artifacts {
     archives deobfJar
     archives apiZip
     archives apiJar
+}
+
+apply plugin: 'maven'
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: "file://" + (System.getenv("local_maven") != null ? System.getenv("local_maven") : System.getenv("bamboo_local_maven")))
+            pom {
+                groupId = project.group
+                version = project.version
+                artifactId = project.archivesBaseName
+                project {
+                    name project.archivesBaseName
+                    packaging 'jar'
+                    description project.archivesBaseName
+                    url ''
+                    scm {
+                        url 'https://github.com/BluSunrize/ImmersiveEngineering'
+                        connection 'scm:git:git@github.com/BluSunrize/ImmersiveEngineering.git'
+                        developerConnection 'scm:git:git@github.com/BluSunrize/ImmersiveEngineering.git'
+                    }
+                    issueManagement {
+                        system 'github'
+                        url 'https://github.com/BluSunrize/ImmersiveEngineering/issues'
+                    }
+
+                    developers {
+                        developer {
+                            id 'BluSunrize'
+                            name 'BluSunrize'
+                            roles { role 'developer' }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+String getBuildNumber() {
+    String buildNumber = System.getenv("BUILD_NUMBER") != null ? System.getenv("BUILD_NUMBER") : ""
+    if(buildNumber.equals("")) {
+        buildNumber = System.getenv("bamboo_buildNumber") != null ? "." + System.getenv("bamboo_buildNumber") : ""
+    }
+    if(!buildNumber.equals("")) {
+        buildNumber = "-" + buildNumber
+    }
+    return buildNumber
 }
