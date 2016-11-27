@@ -1,12 +1,10 @@
 package blusunrize.lib.manual.gui;
 
+import blusunrize.lib.manual.ManualUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.OpenGlHelper;
-
 import org.lwjgl.opengl.GL11;
-
-import blusunrize.lib.manual.ManualUtils;
 
 public class GuiButtonManualNavigation extends GuiButton
 {
@@ -34,7 +32,7 @@ public class GuiButtonManualNavigation extends GuiButton
 			int v = 216+( type==0?0: type==1?10: type==2?(16-height): type==3?0: type==4||type==5?10:  0 );
 			if(hovered)
 				v+=20;
-			this.drawTexturedModalRect(this.xPosition, this.yPosition, u,v, width,height);
+			this.drawTexturedModalRect(this.xPosition, this.yPosition, u, v, width, height);
 			this.mouseDragged(mc, mx, my);
 		}
 	}
