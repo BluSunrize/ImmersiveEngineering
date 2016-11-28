@@ -7,24 +7,92 @@ import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.google.common.collect.Lists;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.world.World;
 
 import java.util.List;
 
 /**
  * @author BluSunrize - 01.10.2016
  */
-public class TileEntityStripCurtain extends TileEntityIEBase implements IAdvancedCollisionBounds, IAdvancedDirectionalTile, IDualState, IColouredTile, ITileDrop
+public class TileEntityStripCurtain extends TileEntityIEBase implements ITickable, IRedstoneOutput, IAdvancedCollisionBounds, IAdvancedDirectionalTile, IDualState, IColouredTile, ITileDrop
 {
 	public EnumFacing facing = EnumFacing.NORTH;
 	public boolean ceilingAttached = false;
 	public int colour = 0xffffff;
+	private int redstoneSignal = 0;
+
+	@Override
+	public void update()
+	{
+		if(!worldObj.isRemote &&worldObj.getTotalWorldTime()%4==((getPos().getX()^getPos().getZ())&3))
+		{
+			List<Entity> entities = null;
+			AxisAlignedBB aabb = bounds[ceilingAttached?(facing.getAxis()== Axis.Z?4:5):((facing.ordinal()-2)%4)];
+			aabb = new AxisAlignedBB(aabb.minX,aabb.minY-.8125,aabb.minZ, aabb.maxX,aabb.maxY,aabb.maxZ).offset(getPos());
+			entities = worldObj.getEntitiesWithinAABB(Entity.class, aabb);
+			if(!ceilingAttached && !entities.isEmpty() && redstoneSignal==0)
+			{
+				redstoneSignal = 15;
+				markDirty();
+				worldObj.notifyNeighborsOfStateChange(getPos(), getBlockType());
+				worldObj.notifyNeighborsOfStateChange(getPos().offset(facing), getBlockType());
+			}
+			if(entities.isEmpty() && redstoneSignal!=0)
+			{
+				redstoneSignal = 0;
+				worldObj.notifyNeighborsOfStateChange(getPos(), getBlockType());
+			}
+		}
+	}
+	@Override
+	public void onEntityCollision(World world, Entity entity)
+	{
+		if(ceilingAttached && !entity.isDead && redstoneSignal ==0)
+		{
+			AxisAlignedBB aabb = bounds[ceilingAttached ? (facing.getAxis() == Axis.Z ? 4 : 5) : ((facing.ordinal() - 2) % 4)];
+			aabb = new AxisAlignedBB(aabb.minX, aabb.minY - .8125, aabb.minZ, aabb.maxX, aabb.maxY, aabb.maxZ).offset(getPos());
+			if(entity.getEntityBoundingBox().intersectsWith(aabb))
+			{
+				redstoneSignal = 15;
+				markDirty();
+				worldObj.notifyNeighborsOfStateChange(getPos(), getBlockType());
+				worldObj.notifyNeighborsOfStateChange(getPos().offset(EnumFacing.UP), getBlockType());
+			}
+		}
+	}
+	@Override
+	public int getStrongRSOutput(IBlockState state, EnumFacing side)
+	{
+//		if(ceilingAttached && side!=EnumFacing.DOWN)
+//			return 0;
+//		if(!ceilingAttached && side.getOpposite()!=facing)
+//			return 0;
+//		return redstoneSignal;
+		return 0;
+	}
+	@Override
+	public int getWeakRSOutput(IBlockState state, EnumFacing side)
+	{
+		if(ceilingAttached && side!=EnumFacing.DOWN)
+			return 0;
+		if(!ceilingAttached && side.getOpposite()!=facing)
+			return 0;
+		return redstoneSignal;
+	}
+	@Override
+	public boolean canConnectRedstone(IBlockState state, EnumFacing side)
+	{
+		return false;
+	}
 
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
@@ -62,7 +130,6 @@ public class TileEntityStripCurtain extends TileEntityIEBase implements IAdvance
 	{
 		return Lists.newArrayList(bounds[ceilingAttached?(facing.getAxis()== Axis.Z?4:5):((facing.ordinal()-2)%4)]);
 	}
-
 
 	@Override
 	public EnumFacing getFacing()
