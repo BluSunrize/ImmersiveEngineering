@@ -36,7 +36,7 @@ public class IECustomStateMapper extends StateMapperBase
 			if(custom!=null)
 				rl = new ResourceLocation(rl.toString()+"_"+custom);
 			String prop = metaBlock.appendPropertiesToState()?this.getPropertyString(state.getProperties()):null;
-			return new ModelResourceLocation(rl, null);
+			return new ModelResourceLocation(rl, prop);
 		}catch(Exception e)
 		{
 			e.printStackTrace();

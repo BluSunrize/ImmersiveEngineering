@@ -23,6 +23,12 @@ public class ShaderCaseRevolver extends ShaderCase
 	}
 
 	@Override
+	public int getLayerInsertionIndex()
+	{
+		return layers.length-1;
+	}
+
+	@Override
 	public boolean renderModelPartForPass(ItemStack shader, ItemStack item, String modelPart, int pass)
 	{
 		if(pass==0)//first pass is just for the grip
@@ -31,7 +37,6 @@ public class ShaderCaseRevolver extends ShaderCase
 			return "player_bayonet".equals(modelPart)||"dev_bayonet".equals(modelPart);
 		return true;
 	}
-
 
 //	@Override
 //	public int getPasses(ItemStack shader, ItemStack item, String modelPart)
