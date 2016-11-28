@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.common.util.compat;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
+import blusunrize.immersiveengineering.api.shader.ShaderRegistry.ShaderRegistryEntry;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
@@ -57,7 +58,14 @@ public class BotaniaHelper extends IECompatModule
 			IELogger.error("[Botania] Failed to protect IE conveyors against Botania's magnets");
 			e.printStackTrace();
 		}
-		ShaderRegistry.rarityWeightMap.put(EnumRarity.valueOf("RELIC"), 2);
+		EnumRarity relic = EnumRarity.valueOf("RELIC");
+		if(relic!=null)
+		{
+			ShaderRegistry.rarityWeightMap.put(relic, 2);
+			ShaderRegistryEntry entry = ShaderRegistry.shaderRegistry.get("The Kindled");
+			entry.rarity = relic;
+			entry.setReplicationCost(ShaderRegistry.defaultReplicationCost.copyWithMultipliedSize(10-2));
+		}
 //		ShaderRegistry.registerShader("Spectral", "5", EnumRarity.EPIC, new int[]{26, 26, 40, 220}, new int[]{0, 70, 49, 220}, new int[]{40, 40, 50, 220}, new int[]{5, 10, 8, 180}, null, false, true);
 		if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
 			MinecraftForge.EVENT_BUS.register(this);
