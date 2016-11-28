@@ -22,6 +22,12 @@ public class ShaderCaseDrill extends ShaderCase
 	}
 
 	@Override
+	public int getLayerInsertionIndex()
+	{
+		return layers.length-1;
+	}
+
+	@Override
 	public boolean renderModelPartForPass(ItemStack shader, ItemStack item, String modelPart, int pass)
 	{
 		if("drill_head".equals(modelPart) || "upgrade_damage0".equals(modelPart) || "upgrade_damage1".equals(modelPart) || "upgrade_damage2".equals(modelPart) || "upgrade_damage3".equals(modelPart) || "upgrade_damage4".equals(modelPart))
@@ -36,6 +42,7 @@ public class ShaderCaseDrill extends ShaderCase
 		return pass != 0;
 
 	}
+
 
 //	@Override
 //	public int getPasses(ItemStack shader, ItemStack item, String modelPart)

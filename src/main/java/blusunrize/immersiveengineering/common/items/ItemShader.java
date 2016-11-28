@@ -30,7 +30,12 @@ public class ItemShader extends ItemIEBase implements IShaderItem, ITextureOverr
 	public ItemShader()
 	{
 		super("shader", 1);
+		//DEFAULT CUTOUTS
+		//whitestripe
+		setDefaultTextureBounds(new ResourceLocation("immersiveengineering:revolvers/shaders/revolver_whitestripe"), 0,0,.25,.25);
+		setDefaultTextureBounds(new ResourceLocation("immersiveengineering:items/shaders/drill_diesel_whitestripe"), 0,22/64d,.5,54/64d);
 
+		//REGISTER SHADERS
 		addShader("Rosequartz", 0, EnumRarity.COMMON, 0xff412323, 0xffe6b4b4, 0xfff0cdcd,0xffe6b4b4).setInfo(null,null,"rosequartz");
 		addShader("Argo", 2, EnumRarity.COMMON, 0xff2d2d2d, 0xffdcdcdc, 0xffdc7823,0xffc8c8c8).setInfo(null,null,"argo");
 		addShader("Sunstrike", 5, EnumRarity.RARE, 0xff737373, 0xffcd6900, 0xb9d73a00,0xb9d73a00).setInfo(null,null,"sunstrike");
@@ -78,6 +83,16 @@ public class ItemShader extends ItemIEBase implements IShaderItem, ITextureOverr
 		addShader("Hollow", 4, EnumRarity.UNCOMMON, 0xff542d1c,0xffeec5e5,0xffcc8980,0xffc4a1aa, "pipes",true,0xffc49838).setInfo(null,"Kingdom Hearts","hollow");
 
 		addShader("Microshark", 8, EnumRarity.RARE, 0xff775054, 0xfff7f6cf, 0xff936267, 0xff936267, "shark",true,0xffffffff).setInfo(null,"Terraria","microshark");
+
+		addShader("N7", 2, EnumRarity.EPIC, 0xff13171b, 0xff524d4a, 0xffe01919, 0xff8a8684, "whitestripe",true,0xffffffff).setInfo(null,"Mass Effect","n7");
+		addShader("Normandy", 8, EnumRarity.RARE, 0xffffffff, 0xff1a1a1a, 0xffffffff, 0xffffffff, "whitestripe",true,0xff35447e).setInfo(null,"Mass Effect","normandy");
+
+		entry = addShader("The Kindled", 5, EnumRarity.EPIC, 0xff2b160b, 0xff3a3a3a, 0x80bf541f, 0xff286f30).setInfo(null,"Dark Souls","kindled");
+		entry.getCase("immersiveengineering:revolver").addLayers(new ShaderLayer(new ResourceLocation("minecraft:blocks/fire_layer_0"),0x80ffffff).setTextureBounds(0,0,.25,.1875));
+		entry.getCase("immersiveengineering:drill").addLayers(new ShaderLayer(new ResourceLocation("minecraft:blocks/fire_layer_0"),0x80ffffff).setTextureBounds(10/64d,34/64d, 26/64d,50/64d).setCutoutBounds(.1875f,0,.8125,.75f));
+		entry.getCase("immersiveengineering:chemthrower").addLayers(new ShaderLayer(new ResourceLocation("minecraft:blocks/fire_layer_0"),0x80ffffff).setTextureBounds(6/64d,16/64d,22/64d,24/64d).setCutoutBounds(0,0,1,.5));
+		entry.getCase("immersiveengineering:railgun").addLayers(new ShaderLayer(new ResourceLocation("minecraft:blocks/fire_layer_0"),0x80ffffff).setTextureBounds(55/64d,48/64d,1,58/64d).setCutoutBounds(.25,.125,.75,.6875));
+		entry.getCase("immersiveengineering:balloon").addLayers(new ShaderLayer(new ResourceLocation("minecraft:blocks/fire_layer_0"),0x80ffffff).setTextureBounds(0,.375,.75,.875).setCutoutBounds(.125,0,.875,.5));
 	}
 
 	@Override
@@ -100,6 +115,11 @@ public class ItemShader extends ItemIEBase implements IShaderItem, ITextureOverr
 		//		IEApi.registerShader_Chemthrower(name, overlayType, colour0, colour1, colour2, true,false, additionalTexture);
 		//		IEApi.registerShader_Minecart(name, overlayType, colour1, colour2, additionalTexture);
 		//		IEApi.registerShader_Balloon(name, overlayType, colour1, colour2, additionalTexture);
+	}
+
+	public void setDefaultTextureBounds(ResourceLocation rl, double... bounds)
+	{
+		ShaderRegistry.defaultLayerBounds.put(rl,bounds);
 	}
 
 	@Override
@@ -217,6 +237,7 @@ public class ItemShader extends ItemIEBase implements IShaderItem, ITextureOverr
 				return list;
 			}
 		}
-		return Arrays.asList(new ResourceLocation("immersiveengieering:items/shader_0"),new ResourceLocation("immersiveengieering:items/shader_1"),new ResourceLocation("immersiveengieering:items/shader_2"));
+//		return Arrays.asList(new ResourceLocation("immersiveengineering:items/shader_0"));
+		return Arrays.asList(new ResourceLocation("immersiveengineering:items/shader_0"),new ResourceLocation("immersiveengineering:items/shader_1"),new ResourceLocation("immersiveengineering:items/shader_2"));
 	}
 }

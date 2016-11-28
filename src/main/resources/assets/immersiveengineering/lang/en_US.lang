@@ -504,6 +504,7 @@ fluid.uranium=Molten Uranium
 fluid.constantan=Molten Constantan
 material.treatedwood.name=Treated Wood
 material.constantan.name=Constantan
+material.hemp.name=Hemp Fiber
 modifier.thermalinversion.name=Thermal Inversion
 modifier.thermalinversion.desc=§oHot & Cold!§r\nHitting an enemy in a hot or cold environment will chill or burn them.
 #BOTANIA COMPAT
@@ -1395,3 +1396,6 @@ desc.immersiveengineering.info.shader.details.phoenix=No particular inspiration,
 desc.immersiveengineering.info.shader.details.radiant=Named and designed after world 'Radiant Garden'.
 desc.immersiveengineering.info.shader.details.hollow=Named and designed after world 'Hollow Bastion'.
 desc.immersiveengineering.info.shader.details.microshark=Named in reference to and designed after the Minishark and Megashark machineguns.
+desc.immersiveengineering.info.shader.details.n7=Named and designed after the highest designation of the Alliance special forces.
+desc.immersiveengineering.info.shader.details.normandy=Named and designed after Normandy SR2 in its Alliance colour scheme.
+desc.immersiveengineering.info.shader.details.kindled=Named in obvious reference. Designed in an attempt to incorporate vanilla textures and animations into shaders.

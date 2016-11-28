@@ -45,6 +45,12 @@ public class ShaderCaseMinecart extends ShaderCase
 	}
 
 	@Override
+	public int getLayerInsertionIndex()
+	{
+		return layers.length-1;
+	}
+
+	@Override
 	public boolean stitchIntoSheet()
 	{
 		return false;
