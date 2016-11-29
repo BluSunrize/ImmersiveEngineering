@@ -21,31 +21,41 @@ public class IEPotions
 
 	public static void init()
 	{
-		int l = 4;
-		extendPotionArray(l);
 		long potionUUIDBase = 109406000905L;
 
-		int potionID = Config.getPotionID(24, "Flammable");
+		int potionID = getPotionID(24, "Flammable");
 		flammable = new IEPotion(potionID, true,0x8f3f1f,0, false,0).setPotionName("immersiveengineering.potion.flammable");
 
-		potionID = Config.getPotionID(potionID, "Slippery");
+		potionID = getPotionID(potionID, "Slippery");
 		slippery = new IEPotion(potionID, true,0x171003,0, false,1).setPotionName("immersiveengineering.potion.slippery");
 
-		potionID = Config.getPotionID(potionID, "Conductive");
+		potionID = getPotionID(potionID, "Conductive");
 		conductive = new IEPotion(potionID, true,0x690000,0, false,2).setPotionName("immersiveengineering.potion.conductive");
 
-		potionID = Config.getPotionID(potionID, "Sticky");
+		potionID = getPotionID(potionID, "Sticky");
 		sticky = new IEPotion(potionID, true,0x9c6800,0, false,3).setPotionName("immersiveengineering.potion.sticky").func_111184_a(SharedMonsterAttributes.movementSpeed, new UUID(potionUUIDBase,01L).toString(), -0.50000000298023224D, 2);
 
 		IEApi.potions = new Potion[]{flammable,slippery,conductive,sticky};
 	}
 
-	public static void extendPotionArray(int extendBy)
+	public static int getPotionID(int id, String name)
 	{
-		IELogger.info("Attempting to extend PotionArray by "+extendBy);
-		Potion[] potions = new Potion[Potion.potionTypes.length + extendBy];
+		int potionID = Config.getPotionID(id, name);
+
+		/* if the potion type array is full we need to extend it */
+		if (Potion.potionTypes.length <= potionID)
+			setPotionArrayLength(potionID + 1);
+
+		return id;
+	}
+
+	public static void setPotionArrayLength(int length)
+	{
+		IELogger.info("Attempting to set PotionArray length to " + length);
+		Potion[] potions = new Potion[length];
 		for (int i = 0; i < Potion.potionTypes.length; i++)
 			potions[i] = Potion.potionTypes[i];
+
 		try
 		{
 			Field field = null;
