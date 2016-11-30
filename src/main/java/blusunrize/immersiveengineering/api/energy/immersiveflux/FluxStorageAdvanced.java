@@ -1,7 +1,7 @@
 package blusunrize.immersiveengineering.api.energy.immersiveflux;
 
 /**
- * An advanced implementation of {@link IFluxStorage}, keeps track of the last 20 in- and outputs to allow transfer evaluation.
+ * An advanced implementation of {@link IFluxStorage}, keeps track of the average in/output to allow transfer evaluation.
  * 
  * @author BluSunrize - 02.02.2016
  * 
@@ -10,6 +10,7 @@ public class FluxStorageAdvanced extends FluxStorage
 {
 	int averageInsertion=0;
 	int averageExtraction=0;
+	double averageDecayFactor = .5;
 	
 	public FluxStorageAdvanced(int capacity, int limitReceive, int limitExtract)
 	{
@@ -29,7 +30,7 @@ public class FluxStorageAdvanced extends FluxStorage
 	{
 		int received = super.receiveEnergy(energy,simulate);
 		if(!simulate)
-			averageInsertion = averageInsertion/2 + received/2;
+			averageInsertion = (int)Math.round(averageInsertion*averageDecayFactor + received*(1-averageDecayFactor));
 		return received;
 	}
 
@@ -38,7 +39,7 @@ public class FluxStorageAdvanced extends FluxStorage
 	{
 		int extracted = super.extractEnergy(energy, simulate);
 		if(!simulate)
-			averageExtraction = averageInsertion/2 + extracted/2;
+			averageExtraction = (int)Math.round(averageExtraction*averageDecayFactor + extracted*(1-averageDecayFactor));
 		return extracted;
 	}
 
@@ -49,5 +50,10 @@ public class FluxStorageAdvanced extends FluxStorage
 	public int getAverageExtraction()
 	{
 		return averageExtraction;
+	}
+	public FluxStorageAdvanced setDecayFactor(double factor)
+	{
+		this.averageDecayFactor = factor;
+		return this;
 	}
 }
