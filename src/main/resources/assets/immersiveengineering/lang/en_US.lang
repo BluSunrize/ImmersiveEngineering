@@ -1399,3 +1399,6 @@ desc.immersiveengineering.info.shader.details.microshark=Named in reference to a
 desc.immersiveengineering.info.shader.details.n7=Named and designed after the highest designation of the Alliance special forces.
 desc.immersiveengineering.info.shader.details.normandy=Named and designed after Normandy SR2 in its Alliance colour scheme.
 desc.immersiveengineering.info.shader.details.kindled=Named in obvious reference. Designed in an attempt to incorporate vanilla textures and animations into shaders.
+desc.immersiveengineering.info.shader.details.darkfire=Named and designed after the Dark Fire magic employed by Riku and Terra.
+desc.immersiveengineering.info.shader.details.erruption=No particular reference, just another use of vanilla textures, specificially the block breaking overlay.
+desc.immersiveengineering.info.shader.details.terra=Heavily inspired by Livingwood and Terrasteel materials, and incoporating some of Botania's textures.
