@@ -1,3 +1,16 @@
+#####Version 0.10-51
+- re-added Festive Crates! Happy Holidays!
+- re-added Botania compat for shaders, Relic rarity lootbags + shaders
+- added the ability for Strip Curtains to emit redstone when an entity passes through
+- added compatability for Forge Energy / Forge Units. End of an era, I guess.
+- fixed a nullpointer on JumpCushions
+- fixed Splitting and Dropping Conveyor not inserting into inventories
+- fixed crashes in the manual due to incomplete tesselation
+- fixed load-cycle with TCon
+- fixed HarvestCraft recipes usign water/milk not working in the assembler
+- fixed Furnace Heater constantly updating the block when insufficiently powered
+- IE now has a Maven (thanks SkySom)
+
 #####Version 0.10-50 - BUILT
 - added versioncheck for TConstruct to prevent crashes with ranged weapons
 - added Icons for all IE machines to JEI and fixed recipe displays
