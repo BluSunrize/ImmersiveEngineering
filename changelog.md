@@ -1,4 +1,4 @@
-#####Version 0.10-51
+#####Version 0.10-51 - BUILT
 - re-added Festive Crates! Happy Holidays!
 - re-added Botania compat for shaders, Relic rarity lootbags + shaders
 - added the ability for Strip Curtains to emit redstone when an entity passes through
