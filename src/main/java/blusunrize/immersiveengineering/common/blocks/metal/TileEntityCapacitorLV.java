@@ -1,19 +1,19 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEEnums;
+import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
-import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxProvider;
-import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparatorOverride;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IConfigurableSides;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ITileDrop;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
+import blusunrize.immersiveengineering.common.util.EnergyHelper;
+import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
+import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import cofh.api.energy.IEnergyProvider;
-import cofh.api.energy.IEnergyReceiver;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityLivingBase;
@@ -25,9 +25,11 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.RayTraceResult;
 
-public class TileEntityCapacitorLV extends TileEntityIEBase implements ITickable, IFluxProvider,IFluxReceiver,IEnergyProvider,IEnergyReceiver, IBlockOverlayText, IConfigurableSides, IComparatorOverride, ITileDrop
+import javax.annotation.Nonnull;
+
+public class TileEntityCapacitorLV extends TileEntityIEBase implements ITickable, IIEInternalFluxHandler, IBlockOverlayText, IConfigurableSides, IComparatorOverride, ITileDrop
 {
-	public int[] sideConfig={-1,0,-1,-1,-1,-1};
+	public SideConfig[] sideConfig={SideConfig.NONE,SideConfig.INPUT,SideConfig.NONE,SideConfig.NONE,SideConfig.NONE,SideConfig.NONE};
 	FluxStorage energyStorage = new FluxStorage(getMaxStorage(),getMaxInput(),getMaxOutput());
 
 	public int comparatorOutput=0;
@@ -58,50 +60,26 @@ public class TileEntityCapacitorLV extends TileEntityIEBase implements ITickable
 
 	protected void transferEnergy(int side)
 	{
-		if(this.sideConfig[side] != 1)
+		if(this.sideConfig[side] != SideConfig.OUTPUT)
 			return;
 		EnumFacing fd = EnumFacing.getFront(side);
 		TileEntity tileEntity = worldObj.getTileEntity(getPos().offset(fd));
-		if(tileEntity instanceof IFluxReceiver)
-			this.energyStorage.modifyEnergyStored(-((IFluxReceiver)tileEntity).receiveEnergy(fd.getOpposite(), Math.min(getMaxOutput(), this.energyStorage.getEnergyStored()), false));
-		else if(tileEntity instanceof IEnergyReceiver)
-			this.energyStorage.modifyEnergyStored(-((IEnergyReceiver)tileEntity).receiveEnergy(fd.getOpposite(), Math.min(getMaxOutput(), this.energyStorage.getEnergyStored()), false));
-		//		else if(worldObj.getTileEntity(xCoord+fd.offsetX,yCoord+fd.offsetY,zCoord+fd.offsetZ) instanceof TileEntityConnectorLV)
-		//		{
-		//			IImmersiveConnectable node = (IImmersiveConnectable) worldObj.getTileEntity(xCoord+fd.offsetX,yCoord+fd.offsetY,zCoord+fd.offsetZ);
-		//			if(!node.isEnergyOutput())
-		//				return;
-		//			List<AbstractConnection> outputs = ImmersiveNetHandler.INSTANCE.getIndirectEnergyConnections(Utils.toCC(node), worldObj);
-		//			int received = 0;
-		//			int powerLeft = Math.min(getMaxOutput(), this.energyStorage.getEnergyStored());
-		//			for(AbstractConnection con : outputs)
-		//				if(con!=null && toIIC(con.end, worldObj)!=null)
-		//				{
-		//					int tempR = toIIC(con.end,worldObj).outputEnergy(Math.min(powerLeft,con.cableType.getTransferRate()), true, 0);
-		//					tempR -= (int) Math.floor(tempR*con.getAverageLossRate());
-		//					int r = toIIC(con.end, worldObj).outputEnergy(tempR, false, 0);
-		//					received += r;
-		//					powerLeft -= r;
-		//					if(powerLeft<=0)
-		//						break;
-		//				}
-		//			this.energyStorage.modifyEnergyStored(-received);
-		//		}
+		int out = Math.min(getMaxOutput(), this.energyStorage.getEnergyStored());
+		this.energyStorage.modifyEnergyStored(-EnergyHelper.insertFlux(tileEntity, fd.getOpposite(), out, false));
 	}
 	@Override
 	public IEEnums.SideConfig getSideConfig(int side)
 	{
-		return IEEnums.SideConfig.values()[this.sideConfig[side]+1];
+		return this.sideConfig[side];
 	}
 	@Override
-	public void toggleSide(int side)
+	public boolean toggleSide(int side, EntityPlayer player)
 	{
-		sideConfig[side]++;
-		if(sideConfig[side]>1)
-			sideConfig[side]=-1;
+		sideConfig[side] = SideConfig.next(sideConfig[side]);
 		this.markDirty();
 		this.markContainingBlockForUpdate(null);
 		worldObj.addBlockEvent(getPos(), this.getBlockType(), 0, 0);
+		return true;
 	}
 	@Override
 	public boolean receiveClientEvent(int id, int arg)
@@ -130,62 +108,61 @@ public class TileEntityCapacitorLV extends TileEntityIEBase implements ITickable
 	@Override
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
-		nbt.setIntArray("sideConfig", sideConfig);
+		for(int i=0; i<6; i++)
+			nbt.setInteger("sideConfig_"+i, sideConfig[i].ordinal());
 		energyStorage.writeToNBT(nbt);
 	}
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
 	{
-		sideConfig = nbt.getIntArray("sideConfig");
-		if(sideConfig==null || sideConfig.length<6)
-			sideConfig = new int[6];
+		if(nbt.hasKey("sideConfig"))//old NBT style
+		{
+			int[] old = nbt.getIntArray("sideConfig");
+			for(int i=0; i<old.length; i++)
+				sideConfig[i] = SideConfig.values()[old[i]+1];
+		}
+		else
+			for(int i=0; i<6; i++)
+				sideConfig[i] = SideConfig.values()[nbt.getInteger("sideConfig_"+i)];
 		energyStorage.readFromNBT(nbt);
 	}
 
+
+	IEForgeEnergyWrapper[] wrappers = IEForgeEnergyWrapper.getDefaultWrapperArray(this);
+	@Nonnull
 	@Override
-	public boolean canConnectEnergy(EnumFacing fd)
+	public FluxStorage getFluxStorage()
 	{
-		return !(fd.ordinal() >= sideConfig.length || sideConfig[fd.ordinal()] < 0);
+		return this.energyStorage;
+	}
+	@Nonnull
+	@Override
+	public SideConfig getEnergySideConfig(EnumFacing facing)
+	{
+		if(facing==null)
+			return SideConfig.NONE;
+		return this.sideConfig[facing.ordinal()];
 	}
 	@Override
-	public int extractEnergy(EnumFacing fd, int amount, boolean simulate)
+	public IEForgeEnergyWrapper getCapabilityWrapper(EnumFacing facing)
 	{
-		if(worldObj.isRemote || fd.ordinal()>=sideConfig.length || sideConfig[fd.ordinal()]!=1)
-			return 0;
-		int r = energyStorage.extractEnergy(amount, simulate);
-		this.markContainingBlockForUpdate(null);
-		return r;
+		if(facing==null)
+			return null;
+		return wrappers[facing.ordinal()];
 	}
-	@Override
-	public int getEnergyStored(EnumFacing fd)
-	{
-		return energyStorage.getEnergyStored();
-	}
-	@Override
-	public int getMaxEnergyStored(EnumFacing fd)
-	{
-		return energyStorage.getMaxEnergyStored();
-	}
-	@Override
-	public int receiveEnergy(EnumFacing fd, int amount, boolean simulate)
-	{
-		if(worldObj.isRemote || fd.ordinal()>=sideConfig.length || sideConfig[fd.ordinal()]!=0)
-			return 0;
-		int r = energyStorage.receiveEnergy(amount, simulate);
-		return r;
-	}
+
 	@Override
 	public String[] getOverlayText(EntityPlayer player, RayTraceResult mop, boolean hammer)
 	{
 		if(hammer && IEConfig.colourblindSupport)
 		{
-			int i = sideConfig[Math.min(sideConfig.length-1, mop.sideHit.ordinal())];
-			int j = sideConfig[Math.min(sideConfig.length-1, mop.sideHit.getOpposite().ordinal())];
+			SideConfig i = sideConfig[Math.min(sideConfig.length-1, mop.sideHit.ordinal())];
+			SideConfig j = sideConfig[Math.min(sideConfig.length-1, mop.sideHit.getOpposite().ordinal())];
 			return new String[]{
 					I18n.format(Lib.DESC_INFO+"blockSide.facing")
-					+": "+ I18n.format(Lib.DESC_INFO+"blockSide.connectEnergy."+i),
+							+": "+ I18n.format(Lib.DESC_INFO+"blockSide.connectEnergy."+i),
 					I18n.format(Lib.DESC_INFO+"blockSide.opposite")
-					+": "+ I18n.format(Lib.DESC_INFO+"blockSide.connectEnergy."+j)
+							+": "+ I18n.format(Lib.DESC_INFO+"blockSide.connectEnergy."+j)
 			};
 		}
 		return null;
@@ -208,7 +185,8 @@ public class TileEntityCapacitorLV extends TileEntityIEBase implements ITickable
 		ItemStack stack = new ItemStack(state.getBlock(), 1, state.getBlock().getMetaFromState(state));
 		if(energyStorage.getEnergyStored()>0)
 			ItemNBTHelper.setInt(stack, "energyStorage", energyStorage.getEnergyStored());
-		ItemNBTHelper.setIntArray(stack, "sideConfig", sideConfig);
+		for(int i=0; i<6; i++)
+			ItemNBTHelper.setInt(stack, "sideConfig_"+i, sideConfig[i].ordinal());
 		return stack;
 	}
 	@Override
@@ -216,7 +194,8 @@ public class TileEntityCapacitorLV extends TileEntityIEBase implements ITickable
 	{
 		if(ItemNBTHelper.hasKey(stack, "energyStorage"))
 			energyStorage.setEnergy(ItemNBTHelper.getInt(stack, "energyStorage"));
-		if(ItemNBTHelper.hasKey(stack, "sideConfig"))
-			sideConfig = ItemNBTHelper.getIntArray(stack, "sideConfig");
+		for(int i=0; i<6; i++)
+			if(ItemNBTHelper.hasKey(stack, "sideConfig_"+i))
+				sideConfig[i] = SideConfig.values()[ItemNBTHelper.getInt(stack, "sideConfig_"+i)];
 	}
 }

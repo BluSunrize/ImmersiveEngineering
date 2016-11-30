@@ -1,20 +1,22 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IEProperties.PropertyBoolInverted;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.api.crafting.IMultiblockRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientStack;
+import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorageAdvanced;
-import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.TileEntityMultiblockPart;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
+import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
+import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
-import cofh.api.energy.IEnergyReceiver;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -30,11 +32,12 @@ import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMetal<T, R>, R extends IMultiblockRecipe> extends TileEntityMultiblockPart<T> implements IIEInventory, IFluxReceiver,IEnergyReceiver, IHammerInteraction, IMirrorAble, IProcessTile
+public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMetal<T, R>, R extends IMultiblockRecipe> extends TileEntityMultiblockPart<T> implements IIEInventory, IIEInternalFluxHandler, IHammerInteraction, IMirrorAble, IProcessTile
 {
 	/**H L W*/
 	protected final int[] structureDimensions;
@@ -131,36 +134,34 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 				return true;
 		return false;
 	}
-	@Override
-	public boolean canConnectEnergy(EnumFacing from)
-	{
-		return this.formed&&this.isEnergyPos();
-	}
-	@Override
-	public int receiveEnergy(EnumFacing from, int energy, boolean simulate)
-	{
-		if(canConnectEnergy(from))
-		{
-			TileEntityMultiblockMetal master = this.master();
-			if(master==null)
-				return 0;
-			int rec = master.energyStorage.receiveEnergy(energy, simulate);
-			this.updateMasterBlock(null, rec>0);
-			return rec;
-		}
-		return 0;
-	}
-	@Override
-	public int getEnergyStored(EnumFacing from)
-	{
-		return this.master().energyStorage.getEnergyStored();
-	}
-	@Override
-	public int getMaxEnergyStored(EnumFacing from)
-	{
-		return this.master().energyStorage.getMaxEnergyStored();
-	}
 
+
+	@Nonnull
+	@Override
+	public FluxStorage getFluxStorage()
+	{
+		return this.master().energyStorage;
+	}
+	@Nonnull
+	@Override
+	public SideConfig getEnergySideConfig(EnumFacing facing)
+	{
+		return this.formed&&this.isEnergyPos()?SideConfig.INPUT:SideConfig.NONE;
+	}
+	IEForgeEnergyWrapper wrapper = new IEForgeEnergyWrapper(this, null);
+	@Override
+	public IEForgeEnergyWrapper getCapabilityWrapper(EnumFacing facing)
+	{
+		if(this.formed&&this.isEnergyPos())
+			return wrapper;
+		return null;
+	}
+	@Override
+	public void postEnergyTransferUpdate(int energy, boolean simulate)
+	{
+		if(!simulate)
+			this.updateMasterBlock(null, energy!=0);
+	}
 
 	//	=================================
 	//		REDSTONE CONTROL
