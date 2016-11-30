@@ -93,6 +93,20 @@ public class ItemShader extends ItemIEBase implements IShaderItem, ITextureOverr
 		entry.getCase("immersiveengineering:chemthrower").addLayers(new ShaderLayer(new ResourceLocation("minecraft:blocks/fire_layer_0"),0x80ffffff).setTextureBounds(6/64d,16/64d,22/64d,24/64d).setCutoutBounds(0,0,1,.5));
 		entry.getCase("immersiveengineering:railgun").addLayers(new ShaderLayer(new ResourceLocation("minecraft:blocks/fire_layer_0"),0x80ffffff).setTextureBounds(55/64d,48/64d,1,58/64d).setCutoutBounds(.25,.125,.75,.6875));
 		entry.getCase("immersiveengineering:balloon").addLayers(new ShaderLayer(new ResourceLocation("minecraft:blocks/fire_layer_0"),0x80ffffff).setTextureBounds(0,.375,.75,.875).setCutoutBounds(.125,0,.875,.5));
+
+		entry = addShader("Dark Fire", 5, EnumRarity.EPIC, 0xff1e131b, 0xff211633, 0xff330812, 0xff412965).setInfo(null,"Kingdom Hearts","darkfire");
+		entry.getCase("immersiveengineering:revolver").addLayers(new ShaderLayer(new ResourceLocation("immersiveengineering:blocks/shaders/greyscaleFire"),0xff9e83eb).setTextureBounds(0,0,.25,.1875));
+		entry.getCase("immersiveengineering:drill").addLayers(new ShaderLayer(new ResourceLocation("immersiveengineering:blocks/shaders/greyscaleFire"),0xff9e83eb).setTextureBounds(10/64d,34/64d, 26/64d,50/64d).setCutoutBounds(.1875f,0,.8125,.75f));
+		entry.getCase("immersiveengineering:chemthrower").addLayers(new ShaderLayer(new ResourceLocation("immersiveengineering:blocks/shaders/greyscaleFire"),0xff9e83eb).setTextureBounds(6/64d,16/64d,22/64d,24/64d).setCutoutBounds(0,0,1,.5));
+		entry.getCase("immersiveengineering:railgun").addLayers(new ShaderLayer(new ResourceLocation("immersiveengineering:blocks/shaders/greyscaleFire"),0xff9e83eb).setTextureBounds(55/64d,48/64d,1,58/64d).setCutoutBounds(.25,.125,.75,.6875));
+		entry.getCase("immersiveengineering:balloon").addLayers(new ShaderLayer(new ResourceLocation("immersiveengineering:blocks/shaders/greyscaleFire"),0xff9e83eb).setTextureBounds(0,.375,.75,.875).setCutoutBounds(.125,0,.875,.5));
+
+		entry = addShader("Erruption", 5, EnumRarity.EPIC, 0xff2b160b, 0xff58432f, 0x80bf301f, 0xff58432f).setInfo(null,null,"erruption");
+		entry.getCase("immersiveengineering:revolver").addLayers(new ShaderLayer(new ResourceLocation("minecraft:blocks/destroy_stage_8"),0xffff6314).setTextureBounds(0,0,.25,.1875));
+		entry.getCase("immersiveengineering:drill").addLayers(new ShaderLayer(new ResourceLocation("minecraft:blocks/destroy_stage_8"),0xffff6314).setTextureBounds(10/64d,34/64d, 26/64d,50/64d).setCutoutBounds(.1875f,0,.8125,.75f));
+		entry.getCase("immersiveengineering:chemthrower").addLayers(new ShaderLayer(new ResourceLocation("minecraft:blocks/destroy_stage_8"),0xffff6314).setTextureBounds(6/64d,16/64d,22/64d,24/64d).setCutoutBounds(0,0,1,.5));
+		entry.getCase("immersiveengineering:railgun").addLayers(new ShaderLayer(new ResourceLocation("minecraft:blocks/destroy_stage_8"),0xffff6314).setTextureBounds(55/64d,48/64d,1,58/64d).setCutoutBounds(.25,.125,.75,.6875));
+		entry.getCase("immersiveengineering:balloon").addLayers(new ShaderLayer(new ResourceLocation("minecraft:blocks/destroy_stage_8"),0xffff6314).setTextureBounds(0,.375,.75,.875).setCutoutBounds(.125,0,.875,.5));
 	}
 
 	@Override
@@ -102,12 +116,12 @@ public class ItemShader extends ItemIEBase implements IShaderItem, ITextureOverr
 		return ShaderRegistry.getShader(name, shaderType);
 	}
 
-	public ShaderRegistryEntry addShader(String name, int overlayType, EnumRarity rarity, int colourBackground, int colourPrimary, int colourSecondary, int colourBlade)
+	public static ShaderRegistryEntry addShader(String name, int overlayType, EnumRarity rarity, int colourBackground, int colourPrimary, int colourSecondary, int colourBlade)
 	{
-		return this.addShader(name, overlayType, rarity, colourBackground, colourPrimary, colourSecondary, colourBlade, null,true,0xffffffff);
+		return addShader(name, overlayType, rarity, colourBackground, colourPrimary, colourSecondary, colourBlade, null,true,0xffffffff);
 	}
 
-	public ShaderRegistryEntry addShader(String name, int overlayType, EnumRarity rarity, int colourBackground, int colourPrimary, int colourSecondary, int colourBlade, String additionalTexture, boolean loot, int colourOverlay)
+	public static ShaderRegistryEntry addShader(String name, int overlayType, EnumRarity rarity, int colourBackground, int colourPrimary, int colourSecondary, int colourBlade, String additionalTexture, boolean loot, int colourOverlay)
 	{
 		return ShaderRegistry.registerShader(name, Integer.toString(overlayType), rarity, colourPrimary, colourSecondary, colourBackground, colourBlade, additionalTexture, colourOverlay, loot,true);
 		//		ShaderCaseRevolver revolver = IEApi.registerShader_Revolver(name, overlayType, colour0, colour1, colour2, colour3, additionalTexture);

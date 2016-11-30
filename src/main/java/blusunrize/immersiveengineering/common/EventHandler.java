@@ -71,12 +71,11 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.oredict.OreDictionary;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.Map.Entry;
-
-import org.apache.commons.lang3.tuple.Pair;
 
 public class EventHandler
 {
@@ -362,10 +361,7 @@ public class EventHandler
 			EnumRarity r = EnumRarity.EPIC;
 			for(Class<? extends EntityLiving> boring : listOfBoringBosses)
 				if(boring.isAssignableFrom(event.getEntityLiving().getClass()))
-				{
-					r = EnumRarity.RARE;
 					break;
-				}
 			ItemStack bag = new ItemStack(IEContent.itemShaderBag);
 			ItemNBTHelper.setString(bag, "rarity", r.toString());
 			event.getDrops().add(new EntityItem(event.getEntityLiving().worldObj, event.getEntityLiving().posX, event.getEntityLiving().posY, event.getEntityLiving().posZ, bag));
