@@ -27,5 +27,10 @@ public class IEEnums
 		{
 			return texture;
 		}
+
+		public static SideConfig next(SideConfig current)
+		{
+			return current==INPUT?OUTPUT: current==OUTPUT?NONE: INPUT;
+		}
 	}
 }

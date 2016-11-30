@@ -1,19 +1,21 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
+import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorageAdvanced;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxContainerItem;
-import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparatorOverride;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
+import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
+import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import cofh.api.energy.IEnergyContainerItem;
-import cofh.api.energy.IEnergyReceiver;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -26,7 +28,9 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
-public class TileEntityChargingStation extends TileEntityIEBase implements ITickable, IFluxReceiver,IEnergyReceiver, IIEInventory, IDirectionalTile, IBlockBounds, IComparatorOverride, IPlayerInteraction
+import javax.annotation.Nonnull;
+
+public class TileEntityChargingStation extends TileEntityIEBase implements ITickable, IIEInternalFluxHandler, IIEInventory, IDirectionalTile, IBlockBounds, IComparatorOverride, IPlayerInteraction
 {
 	public FluxStorageAdvanced energyStorage = new FluxStorageAdvanced(32000);
 	public EnumFacing facing = EnumFacing.NORTH;
@@ -198,25 +202,32 @@ public class TileEntityChargingStation extends TileEntityIEBase implements ITick
 		return false;
 	}
 
+	@Nonnull
 	@Override
-	public boolean canConnectEnergy(EnumFacing from)
+	public FluxStorage getFluxStorage()
 	{
-		return from==null || from==EnumFacing.DOWN || (from!=null&&from.getOpposite()==facing);
+		return energyStorage;
 	}
+	@Nonnull
 	@Override
-	public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate)
+	public SideConfig getEnergySideConfig(EnumFacing facing)
 	{
-		return energyStorage.receiveEnergy(maxReceive, simulate);
+		return facing==EnumFacing.DOWN||facing==this.facing.getOpposite()?SideConfig.INPUT:SideConfig.NONE;
 	}
+	IEForgeEnergyWrapper wrapperDown = new IEForgeEnergyWrapper(this, EnumFacing.DOWN);
+	IEForgeEnergyWrapper wrapperDir = new IEForgeEnergyWrapper(this, facing.getOpposite());
 	@Override
-	public int getEnergyStored(EnumFacing from)
+	public IEForgeEnergyWrapper getCapabilityWrapper(EnumFacing facing)
 	{
-		return energyStorage.getEnergyStored();
-	}
-	@Override
-	public int getMaxEnergyStored(EnumFacing from)
-	{
-		return energyStorage.getMaxEnergyStored();
+		if(facing==EnumFacing.DOWN)
+			return wrapperDown;
+		else if(facing==this.facing.getOpposite())
+		{
+			if(wrapperDir.side!=this.facing.getOpposite())
+				wrapperDir = new IEForgeEnergyWrapper(this, this.facing.getOpposite());
+			return wrapperDir;
+		}
+		return null;
 	}
 
 	@Override

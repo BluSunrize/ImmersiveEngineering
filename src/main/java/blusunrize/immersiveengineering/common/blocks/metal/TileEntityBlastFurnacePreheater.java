@@ -1,12 +1,13 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
-import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
-import cofh.api.energy.IEnergyReceiver;
+import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
+import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -14,7 +15,9 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 
-public class TileEntityBlastFurnacePreheater extends TileEntityIEBase implements IFluxReceiver,IEnergyReceiver, IDirectionalTile, IHasDummyBlocks
+import javax.annotation.Nonnull;
+
+public class TileEntityBlastFurnacePreheater extends TileEntityIEBase implements IIEInternalFluxHandler, IDirectionalTile, IHasDummyBlocks
 {
 	public boolean active;
 	public int dummy = 0;
@@ -87,49 +90,31 @@ public class TileEntityBlastFurnacePreheater extends TileEntityIEBase implements
 		energyStorage.writeToNBT(nbt);
 	}
 
+	@Nonnull
 	@Override
-	public boolean canConnectEnergy(EnumFacing from)
-	{
-		return from==EnumFacing.UP&&dummy==2;
-	}
-
-	@Override
-	public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate)
+	public FluxStorage getFluxStorage()
 	{
 		if(dummy>0)
 		{
 			TileEntity te = worldObj.getTileEntity(getPos().add(0,-dummy,0));
-			if(te instanceof TileEntityBlastFurnacePreheater)	
-				return ((TileEntityBlastFurnacePreheater)te).receiveEnergy(from, maxReceive, simulate);
-			return 0;
+			if(te instanceof TileEntityBlastFurnacePreheater)
+				return ((TileEntityBlastFurnacePreheater)te).getFluxStorage();
 		}
-		return energyStorage.receiveEnergy(maxReceive, simulate);
+		return energyStorage;
 	}
-
+	@Nonnull
 	@Override
-	public int getEnergyStored(EnumFacing from)
+	public SideConfig getEnergySideConfig(EnumFacing facing)
 	{
-		if(dummy>0)
-		{
-			TileEntity te = worldObj.getTileEntity(getPos().add(0,-dummy,0));
-			if(te instanceof TileEntityBlastFurnacePreheater)	
-				return ((TileEntityBlastFurnacePreheater)te).getEnergyStored(from);
-			return 0;
-		}
-		return energyStorage.getEnergyStored();
+		return dummy==2&&facing==EnumFacing.UP?SideConfig.INPUT:SideConfig.NONE;
 	}
-
+	IEForgeEnergyWrapper wrapper = new IEForgeEnergyWrapper(this, EnumFacing.UP);
 	@Override
-	public int getMaxEnergyStored(EnumFacing from)
+	public IEForgeEnergyWrapper getCapabilityWrapper(EnumFacing facing)
 	{
-		if(dummy>0)
-		{
-			TileEntity te = worldObj.getTileEntity(getPos().add(0,-dummy,0));
-			if(te instanceof TileEntityBlastFurnacePreheater)	
-				return ((TileEntityBlastFurnacePreheater)te).getMaxEnergyStored(from);
-			return 0;
-		}
-		return energyStorage.getMaxEnergyStored();
+		if(dummy==2&&facing==EnumFacing.UP)
+			return wrapper;
+		return null;
 	}
 
 	@Override

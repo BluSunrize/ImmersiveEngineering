@@ -1,9 +1,9 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IEProperties.PropertyBoolInverted;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
-import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
 import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler;
 import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler.IExternalHeatable;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
@@ -11,13 +11,17 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IActiveSt
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IUsesBooleanProperty;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
+import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
+import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 
-public class TileEntityFurnaceHeater extends TileEntityIEBase implements ITickable, IFluxReceiver, IActiveState, IDirectionalTile
+import javax.annotation.Nonnull;
+
+public class TileEntityFurnaceHeater extends TileEntityIEBase implements ITickable, IIEInternalFluxHandler, IActiveState, IDirectionalTile
 {
 	public FluxStorage energyStorage = new FluxStorage(32000,Math.max(256, Math.max(IEConfig.Machines.heater_consumption, IEConfig.Machines.heater_speedupConsumption)));
 	//public int[] sockets = new int[6];
@@ -90,7 +94,7 @@ public class TileEntityFurnaceHeater extends TileEntityIEBase implements ITickab
 		return active || worldObj.isBlockIndirectlyGettingPowered(getPos())>0;
 	}
 	//	@Override
-	//	public SideConfig getSideConfig(int side)
+	//	public SideConfig getEnergySideConfig(int side)
 	//	{
 	//		return IEEnums.SideConfig.values()[this.sockets[side]];
 	//	}
@@ -130,32 +134,29 @@ public class TileEntityFurnaceHeater extends TileEntityIEBase implements ITickab
 		nbt.setBoolean("active", active);
 	}
 
+	@Nonnull
 	@Override
-	public boolean canConnectEnergy(EnumFacing from)
+	public FluxStorage getFluxStorage()
 	{
-		return from==facing;
-		//		return sockets[from.ordinal()]==1;
+		return energyStorage;
 	}
+	@Nonnull
 	@Override
-	public int receiveEnergy(EnumFacing from, int energy, boolean simulate)
+	public SideConfig getEnergySideConfig(EnumFacing facing)
 	{
-		//		if(sockets[from.ordinal()]==0)
-		//			return 0;
-		if(from!=facing)
-			return 0;
-		return energyStorage.receiveEnergy(energy, simulate);
+		return facing==this.facing?SideConfig.INPUT:SideConfig.NONE;
 	}
-
+	IEForgeEnergyWrapper wrapper = new IEForgeEnergyWrapper(this, facing);
 	@Override
-	public int getEnergyStored(EnumFacing from)
+	public IEForgeEnergyWrapper getCapabilityWrapper(EnumFacing facing)
 	{
-		return energyStorage.getEnergyStored();
-	}
-
-	@Override
-	public int getMaxEnergyStored(EnumFacing from)
-	{
-		return energyStorage.getMaxEnergyStored();
+		if(facing==this.facing)
+		{
+			if(wrapper.side!=this.facing)
+				wrapper = new IEForgeEnergyWrapper(this, this.facing);
+			return wrapper;
+		}
+		return null;
 	}
 
 	@Override

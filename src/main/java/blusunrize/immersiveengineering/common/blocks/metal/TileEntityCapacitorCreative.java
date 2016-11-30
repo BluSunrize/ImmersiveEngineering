@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
+import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
+import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 
@@ -10,13 +11,13 @@ public class TileEntityCapacitorCreative extends TileEntityCapacitorLV
 	{
 		super();
 		for(int i=0; i<sideConfig.length; i++)
-			sideConfig[i] = 1;
+			sideConfig[i] = SideConfig.OUTPUT;
 	}
 
 	@Override
 	public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate)
 	{
-		if(worldObj.isRemote || from.ordinal()>=sideConfig.length || sideConfig[from.ordinal()]!=0)
+		if(worldObj.isRemote || from.ordinal()>=sideConfig.length || sideConfig[from.ordinal()]!=SideConfig.INPUT)
 			return 0;
 		return maxReceive;
 	}
@@ -24,7 +25,7 @@ public class TileEntityCapacitorCreative extends TileEntityCapacitorLV
 	@Override
 	public int extractEnergy(EnumFacing from, int maxExtract, boolean simulate)
 	{
-		if(worldObj.isRemote || from.ordinal()>=sideConfig.length || sideConfig[from.ordinal()]!=1)
+		if(worldObj.isRemote || from.ordinal()>=sideConfig.length || sideConfig[from.ordinal()]!=SideConfig.OUTPUT)
 			return 0;
 		return maxExtract;
 	}
@@ -43,14 +44,13 @@ public class TileEntityCapacitorCreative extends TileEntityCapacitorLV
 	@Override
 	protected void transferEnergy(int side)
 	{
-		if (sideConfig[side]!=1)
+		if(sideConfig[side]!=SideConfig.OUTPUT)
 			return;
 		EnumFacing to = EnumFacing.getFront(side);
 		if (worldObj.isBlockLoaded(pos.offset(to)));
 		{
 			TileEntity te = worldObj.getTileEntity(pos.offset(to));
-			if (te instanceof IFluxReceiver)
-				((IFluxReceiver)te).receiveEnergy(to.getOpposite(), Integer.MAX_VALUE, false);
+			EnergyHelper.insertFlux(te, to.getOpposite(), Integer.MAX_VALUE, false);
 		}
 	}
 }
