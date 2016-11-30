@@ -6,8 +6,11 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.function.Function;
 
 /**
  * @author BluSunrize - 01.09.2016
@@ -15,6 +18,7 @@ import java.util.LinkedHashMap;
 public class AssemblerHandler
 {
 	private static final HashMap<Class<? extends IRecipe>, IRecipeAdapter> registry = new LinkedHashMap<Class<? extends IRecipe>, IRecipeAdapter>();
+	private static final List<Function<Object,RecipeQuery>> specialQueryConverters = new ArrayList<>();
 
 	public static void registerRecipeAdapter(Class<? extends IRecipe> recipeClass, IRecipeAdapter adapter)
 	{
@@ -37,6 +41,11 @@ public class AssemblerHandler
 		return findAdapterForClass(recipe.getClass());
 	}
 
+	public static void registerSpecialQueryConverters(Function<Object,RecipeQuery> func)
+	{
+		specialQueryConverters.add(func);
+	}
+
 	public interface IRecipeAdapter<R extends IRecipe>
 	{
 		RecipeQuery[] getQueriedInputs(R recipe);
@@ -50,6 +59,12 @@ public class AssemblerHandler
 	{
 		if(o == null)
 			return null;
+		for(Function<Object,RecipeQuery> func : specialQueryConverters)
+		{
+			RecipeQuery q = func.apply(o);
+			if(q!=null)
+				return q;
+		}
 		if(o instanceof ItemStack)
 		{
 			ItemStack stack = (ItemStack)o;
