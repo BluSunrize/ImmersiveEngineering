@@ -576,6 +576,28 @@ public class IEContent
 				return query;
 			}
 		});
+		//Pams Harvest Craft uses fluids with OreDict entries, so this is my workaround >_>
+		final List listWater = OreDictionary.getOres("listAllwater");
+		AssemblerHandler.registerSpecialQueryConverters(o -> {
+			if(!(o instanceof List))
+				return null;
+				if(listWater==o)
+					return new RecipeQuery(new FluidStack(FluidRegistry.WATER,1000), 1000);
+			return null;
+		});
+		final Fluid milk = FluidRegistry.getFluid("milk");
+		if(milk!=null)
+		{
+			final List listMilk = OreDictionary.getOres("listAllmilk");
+			AssemblerHandler.registerSpecialQueryConverters(o -> {
+				if(!(o instanceof List))
+					return null;
+				if(listMilk == o)
+					return new RecipeQuery(new FluidStack(milk, 1000), 1000);
+				return null;
+			});
+		}
+
 
 		CokeOvenRecipe.addRecipe(new ItemStack(itemMaterial,1,6), new ItemStack(Items.COAL), 1800, 500);
 		CokeOvenRecipe.addRecipe(new ItemStack(blockStoneDecoration,1,3), "blockCoal", 1800*9, 5000);
