@@ -258,7 +258,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 	@Override
 	public FluxStorage getFluxStorage()
 	{
-		return null;
+		return energyStorage;
 	}
 	@Override
 	public SideConfig getEnergySideConfig(EnumFacing facing)

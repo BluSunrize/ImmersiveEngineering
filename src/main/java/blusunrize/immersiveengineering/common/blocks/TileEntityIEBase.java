@@ -111,15 +111,15 @@ public abstract class TileEntityIEBase extends TileEntity
 	@Override
 	public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing)
 	{
-		if(capability==CapabilityEnergy.ENERGY && this instanceof EnergyHelper.IIEInternalFluxHandler)
-			return ((EnergyHelper.IIEInternalFluxHandler)this).getCapabilityWrapper(facing)!=null;
+		if(capability==CapabilityEnergy.ENERGY && this instanceof EnergyHelper.IIEInternalFluxConnector)
+			return ((EnergyHelper.IIEInternalFluxConnector)this).getCapabilityWrapper(facing)!=null;
 		return super.hasCapability(capability, facing);
 	}
 	@Override
 	public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing)
 	{
-		if(capability==CapabilityEnergy.ENERGY && this instanceof EnergyHelper.IIEInternalFluxHandler)
-			return (T)((EnergyHelper.IIEInternalFluxHandler)this).getCapabilityWrapper(facing);
+		if(capability==CapabilityEnergy.ENERGY && this instanceof EnergyHelper.IIEInternalFluxConnector)
+			return (T)((EnergyHelper.IIEInternalFluxConnector)this).getCapabilityWrapper(facing);
 		return super.getCapability(capability, facing);
 	}
 }
