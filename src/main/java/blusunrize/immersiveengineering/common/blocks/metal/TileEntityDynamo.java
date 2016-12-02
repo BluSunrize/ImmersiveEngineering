@@ -1,20 +1,22 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import javax.annotation.Nonnull;
-
+import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
 import blusunrize.immersiveengineering.api.energy.IRotationAcceptor;
-import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxConnection;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
-import cofh.api.energy.IEnergyConnection;
+import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
+import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxConnector;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 
-public class TileEntityDynamo extends TileEntityIEBase implements IFluxConnection,IEnergyConnection, IDirectionalTile, IRotationAcceptor
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+public class TileEntityDynamo extends TileEntityIEBase implements IIEInternalFluxConnector, IDirectionalTile, IRotationAcceptor
 {
 	public EnumFacing facing = EnumFacing.NORTH;
 	
@@ -72,9 +74,21 @@ public class TileEntityDynamo extends TileEntityIEBase implements IFluxConnectio
 		nbt.setInteger("facing", facing.ordinal());
 	}
 
+	@Nonnull
+	@Override
+	public SideConfig getEnergySideConfig(@Nullable EnumFacing facing)
+	{
+		return SideConfig.INPUT;
+	}
 	@Override
 	public boolean canConnectEnergy(EnumFacing from)
 	{
 		return true;
+	}
+	IEForgeEnergyWrapper wrapper = new IEForgeEnergyWrapper(this,null);
+	@Override
+	public IEForgeEnergyWrapper getCapabilityWrapper(EnumFacing facing)
+	{
+		return wrapper;
 	}
 }

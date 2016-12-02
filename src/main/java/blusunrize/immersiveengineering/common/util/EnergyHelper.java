@@ -2,8 +2,10 @@ package blusunrize.immersiveengineering.common.util;
 
 import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
+import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxConnection;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxProvider;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
+import cofh.api.energy.IEnergyConnection;
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
 import net.minecraft.tileentity.TileEntity;
@@ -45,16 +47,9 @@ public class EnergyHelper
 		return 0;
 	}
 
-	public interface IIEInternalFluxHandler extends IFluxReceiver, IEnergyReceiver, IFluxProvider, IEnergyProvider
+	public interface IIEInternalFluxHandler extends IIEInternalFluxConnector, IFluxReceiver, IEnergyReceiver, IFluxProvider, IEnergyProvider
 	{
 		@Nonnull FluxStorage getFluxStorage();
-		@Nonnull SideConfig getEnergySideConfig(@Nullable EnumFacing facing);
-
-		@Override
-		default boolean canConnectEnergy(EnumFacing fd)
-		{
-			return getEnergySideConfig(fd) != SideConfig.NONE;
-		}
 
 		default void postEnergyTransferUpdate(int energy, boolean simulate)
 		{
@@ -62,7 +57,7 @@ public class EnergyHelper
 		}
 
 		@Override
-		default int extractEnergy(EnumFacing fd, int amount, boolean simulate)
+		default int extractEnergy(@Nullable EnumFacing fd, int amount, boolean simulate)
 		{
 			if(((TileEntity)this).getWorld().isRemote || getEnergySideConfig(fd) != SideConfig.OUTPUT)
 				return 0;
@@ -72,19 +67,19 @@ public class EnergyHelper
 		}
 
 		@Override
-		default int getEnergyStored(EnumFacing fd)
+		default int getEnergyStored(@Nullable EnumFacing fd)
 		{
 			return getFluxStorage().getEnergyStored();
 		}
 
 		@Override
-		default int getMaxEnergyStored(EnumFacing fd)
+		default int getMaxEnergyStored(@Nullable EnumFacing fd)
 		{
 			return getFluxStorage().getMaxEnergyStored();
 		}
 
 		@Override
-		default int receiveEnergy(EnumFacing fd, int amount, boolean simulate)
+		default int receiveEnergy(@Nullable EnumFacing fd, int amount, boolean simulate)
 		{
 			if(((TileEntity)this).getWorld().isRemote || getEnergySideConfig(fd) != SideConfig.INPUT)
 				return 0;
@@ -92,16 +87,27 @@ public class EnergyHelper
 			postEnergyTransferUpdate(r, simulate);
 			return r;
 		}
+	}
+
+	public interface IIEInternalFluxConnector extends IFluxConnection, IEnergyConnection
+	{
+		@Nonnull SideConfig getEnergySideConfig(@Nullable EnumFacing facing);
+
+		@Override
+		default boolean canConnectEnergy(@Nullable EnumFacing fd)
+		{
+			return getEnergySideConfig(fd) != SideConfig.NONE;
+		}
 
 		IEForgeEnergyWrapper getCapabilityWrapper(EnumFacing facing);
 	}
 
 	public static class IEForgeEnergyWrapper implements IEnergyStorage
 	{
-		final IIEInternalFluxHandler fluxHandler;
+		final IIEInternalFluxConnector fluxHandler;
 		public final EnumFacing side;
 
-		public IEForgeEnergyWrapper(IIEInternalFluxHandler fluxHandler, EnumFacing side)
+		public IEForgeEnergyWrapper(IIEInternalFluxConnector fluxHandler, EnumFacing side)
 		{
 			this.fluxHandler = fluxHandler;
 			this.side = side;
@@ -110,40 +116,52 @@ public class EnergyHelper
 		@Override
 		public int receiveEnergy(int maxReceive, boolean simulate)
 		{
-			return fluxHandler.receiveEnergy(side, maxReceive, simulate);
+			if(fluxHandler instanceof IIEInternalFluxHandler)
+				return ((IIEInternalFluxHandler)fluxHandler).receiveEnergy(side, maxReceive, simulate);
+			return 0;
 		}
 
 		@Override
 		public int extractEnergy(int maxExtract, boolean simulate)
 		{
-			return fluxHandler.extractEnergy(side, maxExtract, simulate);
+			if(fluxHandler instanceof IIEInternalFluxHandler)
+				return ((IIEInternalFluxHandler)fluxHandler).extractEnergy(side, maxExtract, simulate);
+			return 0;
 		}
 
 		@Override
 		public int getEnergyStored()
 		{
-			return fluxHandler.getEnergyStored(side);
+			if(fluxHandler instanceof IIEInternalFluxHandler)
+				return ((IIEInternalFluxHandler)fluxHandler).getEnergyStored(side);
+			return 0;
 		}
 
 		@Override
 		public int getMaxEnergyStored()
 		{
-			return fluxHandler.getMaxEnergyStored(side);
+			if(fluxHandler instanceof IIEInternalFluxHandler)
+				return ((IIEInternalFluxHandler)fluxHandler).getMaxEnergyStored(side);
+			return 0;
 		}
 
 		@Override
 		public boolean canExtract()
 		{
-			return fluxHandler.getFluxStorage().getLimitExtract() > 0;
+			if(fluxHandler instanceof IIEInternalFluxHandler)
+				return ((IIEInternalFluxHandler)fluxHandler).getFluxStorage().getLimitExtract() > 0;
+			return false;
 		}
 
 		@Override
 		public boolean canReceive()
 		{
-			return fluxHandler.getFluxStorage().getLimitReceive() > 0;
+			if(fluxHandler instanceof IIEInternalFluxHandler)
+				return ((IIEInternalFluxHandler)fluxHandler).getFluxStorage().getLimitReceive() > 0;
+			return false;
 		}
 
-		public static IEForgeEnergyWrapper[] getDefaultWrapperArray(IIEInternalFluxHandler handler)
+		public static IEForgeEnergyWrapper[] getDefaultWrapperArray(IIEInternalFluxConnector handler)
 		{
 			return new IEForgeEnergyWrapper[]{
 					new IEForgeEnergyWrapper(handler, EnumFacing.DOWN),
