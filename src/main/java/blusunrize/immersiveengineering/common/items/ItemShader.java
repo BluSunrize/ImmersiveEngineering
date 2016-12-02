@@ -86,6 +86,7 @@ public class ItemShader extends ItemIEBase implements IShaderItem, ITextureOverr
 
 		addShader("N7", 2, EnumRarity.EPIC, 0xff13171b, 0xff524d4a, 0xffe01919, 0xff8a8684, "whitestripe",true,0xffffffff).setInfo(null,"Mass Effect","n7");
 		addShader("Normandy", 8, EnumRarity.RARE, 0xffffffff, 0xff1a1a1a, 0xffffffff, 0xffffffff, "whitestripe",true,0xff35447e).setInfo(null,"Mass Effect","normandy");
+		addShader("OmniTool", 2, EnumRarity.RARE, 0x40ff952c, 0x30ff952c, 0x40ff952c, 0x20ff952c).setInfo(null,"Mass Effect","omnitool");
 
 		entry = addShader("The Kindled", 5, EnumRarity.EPIC, 0xff2b160b, 0xff3a3a3a, 0x80bf541f, 0xff286f30).setInfo(null,"Dark Souls","kindled");
 		entry.getCase("immersiveengineering:revolver").addLayers(new ShaderLayer(new ResourceLocation("minecraft:blocks/fire_layer_0"),0x80ffffff).setTextureBounds(0,0,.25,.1875));
