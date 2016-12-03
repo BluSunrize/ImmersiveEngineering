@@ -1,3 +1,8 @@
+#####Version 0.10-52 - BUILT
+- added the ability for Dropping Conveyors to drop through trapdoors
+- added a new shader
+- fixed Nullpointer for Connectors accepting FUs
+
 #####Version 0.10-51 - BUILT
 - re-added Festive Crates! Happy Holidays!
 - re-added Botania compat for shaders, Relic rarity lootbags + shaders
