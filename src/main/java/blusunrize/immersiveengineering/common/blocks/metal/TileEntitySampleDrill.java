@@ -178,7 +178,7 @@ public class TileEntitySampleDrill extends TileEntityIEBase implements ITickable
 	@Override
 	public IEForgeEnergyWrapper getCapabilityWrapper(EnumFacing facing)
 	{
-		if(dummy==0&&facing!=null&&facing.getAxis()==Axis.Y)
+		if(dummy==0&&facing!=null&&facing.getAxis()!=Axis.Y)
 			return wrappers[facing.ordinal()-2];
 		return null;
 	}
