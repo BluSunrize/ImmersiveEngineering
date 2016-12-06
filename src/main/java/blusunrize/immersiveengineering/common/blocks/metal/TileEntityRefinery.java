@@ -354,7 +354,7 @@ public class TileEntityRefinery extends TileEntityMultiblockMetal<TileEntityRefi
 		TileEntityRefinery master = this.master();
 		if(master!=null)
 		{
-			if(pos == 2 && (side == null || side == facing))
+			if(pos == 2 && (side == null || side == facing.getOpposite()))
 				return new FluidTank[]{master.tanks[2]};
 			if((pos == 5 || pos == 9) && (side == null || side.getAxis() == facing.rotateYCCW().getAxis()))
 				return new FluidTank[]{master.tanks[0],master.tanks[1]};
@@ -385,7 +385,7 @@ public class TileEntityRefinery extends TileEntityMultiblockMetal<TileEntityRefi
 	@Override
 	protected boolean canDrainTankFrom(int iTank, EnumFacing side)
 	{
-		return pos==2 && (side==null||side==facing);
+		return pos==2 && (side==null||side==facing.getOpposite());
 	}
 	@Override
 	public void doGraphicalUpdates(int slot)
