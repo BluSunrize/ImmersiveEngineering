@@ -548,6 +548,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 	public void removeFromWorkbench(EntityPlayer player, ItemStack stack)
 	{
 		ItemStack[] contents = this.getContainedItems(stack);
+		player.addStat(IEAchievements.craftRevolver);
 		if(contents[18]!=null&&contents[19]!=null)
 			player.addStat(IEAchievements.upgradeRevolver);
 	}

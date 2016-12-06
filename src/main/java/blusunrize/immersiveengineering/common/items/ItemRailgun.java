@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.entities.EntityRailgunShot;
 import blusunrize.immersiveengineering.common.gui.IESlot;
+import blusunrize.immersiveengineering.common.util.IEAchievements;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -275,6 +276,7 @@ public class ItemRailgun extends ItemUpgradeableTool implements IFluxContainerIt
 	public void removeFromWorkbench(EntityPlayer player, ItemStack stack)
 	{
 		ItemStack[] contents = this.getContainedItems(stack);
+		player.addStat(IEAchievements.craftRailgun);
 		//		if(contents[18]!=null&&contents[19]!=null)
 		//			player.triggerAchievement(IEAchievements.upgradeRailgun);
 	}

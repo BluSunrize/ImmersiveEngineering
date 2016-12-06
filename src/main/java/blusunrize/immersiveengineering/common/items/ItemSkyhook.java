@@ -5,6 +5,7 @@ import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Conn
 import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.common.entities.EntitySkylineHook;
 import blusunrize.immersiveengineering.common.gui.IESlot;
+import blusunrize.immersiveengineering.common.util.IEAchievements;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.SkylineHelper;
 import com.google.common.collect.Multimap;
@@ -141,6 +142,13 @@ public class ItemSkyhook extends ItemUpgradeableTool implements ITool
 						new IESlot.Upgrades(container, invItem, 0, 102, 42, "SKYHOOK", stack, true),
 						new IESlot.Upgrades(container, invItem, 1, 102, 22, "SKYHOOK", stack, true),
 				};
+	}
+
+	@Override
+	public void removeFromWorkbench(EntityPlayer player, ItemStack stack)
+	{
+		ItemStack[] contents = this.getContainedItems(stack);
+		player.addStat(IEAchievements.craftSkyhook);
 	}
 
 	@Override
