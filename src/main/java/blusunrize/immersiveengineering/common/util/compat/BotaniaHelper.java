@@ -171,7 +171,7 @@ public class BotaniaHelper extends IECompatModule
 			{
 				GlStateManager.pushMatrix();
 				((ItemRevolver)IEContent.itemRevolver).applySpecialCrafting(revolverEntity.getEntityItem(), special);
-				GlStateManager.translate(-.16, -1.45, -.2);
+				GlStateManager.translate(-.16, 1.45, -.2);
 				GlStateManager.rotate(-90, 0, 1, 0);
 				GlStateManager.rotate(15, 0, 0, 1);
 				GlStateManager.rotate(180, 1, 0, 0);
