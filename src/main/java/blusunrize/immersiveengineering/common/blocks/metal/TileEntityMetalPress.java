@@ -145,7 +145,7 @@ public class TileEntityMetalPress extends TileEntityMultiblockMetal<TileEntityMe
 					break;
 				}
 			float transformationPoint = 56.25f/(float)recipe.getTotalProcessTime();
-			MultiblockProcess process = new MultiblockProcessInWorld(recipe, displayStack, transformationPoint);
+			MultiblockProcess process = new MultiblockProcessInWorld(recipe, transformationPoint, displayStack);
 			if(master.addProcessToQueue(process, true))
 			{
 				master.addProcessToQueue(process, false);
