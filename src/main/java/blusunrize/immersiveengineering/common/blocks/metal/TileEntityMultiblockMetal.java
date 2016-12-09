@@ -31,6 +31,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
+import net.minecraftforge.oredict.OreDictionary;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -110,7 +111,7 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 		IMultiblockRecipe recipe = readRecipeFromNBT(tag);
 		if(recipe!=null)
 			if(isInWorldProcessingMachine())
-				return new MultiblockProcessInWorld(recipe, ItemStack.loadItemStackFromNBT(tag.getCompoundTag("process_inputItem")), tag.getFloat("process_transformationPoint"));
+				return new MultiblockProcessInWorld(recipe, tag.getFloat("process_transformationPoint"), Utils.loadItemStacksFromNBT(tag.getTag("process_inputItem")));
 			else
 				return new MultiblockProcessInMachine(recipe, tag.getIntArray("process_inputSlots")).setInputTanks(tag.getIntArray("process_inputTanks"));
 		return null;
@@ -346,17 +347,40 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 	}
 	public boolean addProcessToQueue(MultiblockProcess<R> process, boolean simulate, boolean addToPrevious)
 	{
-		if (addToPrevious&&process instanceof MultiblockProcessInWorld)
+		if(addToPrevious&&process instanceof MultiblockProcessInWorld)
 		{
-			ItemStack input = ((MultiblockProcessInWorld<R>)process).inputItem;
-			for (MultiblockProcess<R> curr:processQueue)
-				if (curr instanceof MultiblockProcessInWorld&&Utils.stackMatchesObject(input, ((MultiblockProcessInWorld) curr).inputItem))
-					if (input.stackSize+((MultiblockProcessInWorld) curr).inputItem.stackSize<=input.getMaxStackSize())
+			for(MultiblockProcess<R> curr:processQueue)
+				if(curr instanceof MultiblockProcessInWorld && process.recipe.equals(curr.recipe))
+				{
+					MultiblockProcessInWorld p = (MultiblockProcessInWorld)curr;
+					boolean canStack = true;
+					for(ItemStack old : (List<ItemStack>)p.inputItems)
 					{
-						if (!simulate)
-							((MultiblockProcessInWorld) curr).inputItem.stackSize+=input.stackSize;
+						for(ItemStack in : (List<ItemStack>)((MultiblockProcessInWorld)process).inputItems)
+							if(OreDictionary.itemMatches(old, in, true) && ItemStack.areItemStackTagsEqual(old, in))
+								if(old.stackSize+in.stackSize>old.getMaxStackSize())
+								{
+									canStack = false;
+									break;
+								}
+						if(!canStack)
+							break;
+					}
+					if(canStack)
+					{
+						if(!simulate)
+							for(ItemStack old : (List<ItemStack>)p.inputItems)
+							{
+								for(ItemStack in : (List<ItemStack>)((MultiblockProcessInWorld)process).inputItems)
+									if(OreDictionary.itemMatches(old, in, true) && ItemStack.areItemStackTagsEqual(old, in))
+									{
+										old.stackSize+=in.stackSize;
+										break;
+									}
+							}
 						return true;
 					}
+				}
 		}
 		if(getProcessQueueMaxLength()<0 || processQueue.size() < getProcessQueueMaxLength())
 		{
@@ -682,30 +706,32 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 
 	public static class MultiblockProcessInWorld<R extends IMultiblockRecipe> extends MultiblockProcess<R>
 	{
-		public ItemStack inputItem;
+		public List<ItemStack> inputItems;
 		protected float transformationPoint;
-		public MultiblockProcessInWorld(R recipe, ItemStack inputItem, float transformationPoint)
+		public MultiblockProcessInWorld(R recipe, float transformationPoint, ItemStack... inputItem)
 		{
 			super(recipe);
-			this.inputItem = inputItem;
+			this.inputItems = new ArrayList<>(inputItem.length);
+			for(ItemStack s : inputItem)
+				this.inputItems.add(s);
 			this.transformationPoint = transformationPoint;
 		}
 
-		public ItemStack getDisplayItem()
+		public List<ItemStack> getDisplayItem()
 		{
 			if(processTick / (float)maxTicks > transformationPoint)
 			{
 				List<ItemStack> list = this.recipe.getItemOutputs();
 				if(!list.isEmpty())
-					return list.get(0);
+					return list;
 			}
-			return inputItem;
+			return inputItems;
 		}
 
 		@Override
 		protected void writeExtraDataToNBT(NBTTagCompound nbt)
 		{
-			nbt.setTag("process_inputItem", inputItem.writeToNBT(new NBTTagCompound()));
+			nbt.setTag("process_inputItem", Utils.writeInventory(inputItems));
 			nbt.setFloat("process_transformationPoint", transformationPoint);
 		}
 		@Override
@@ -713,17 +739,21 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 		{
 			super.processFinish(multiblock);
 			int size = -1;
-			for(IngredientStack s:recipe.getItemInputs())
-				if(s.matchesItemStackIgnoringSize(inputItem))
-				{
-					size = s.inputSize;
-					break;
-				}
-			if(size>0&&inputItem.stackSize>size)
+
+			for(ItemStack inputItem : this.inputItems)
 			{
-				inputItem.splitStack(size);
-				processTick = 0;
-				clearProcess = false;
+				for(IngredientStack s : recipe.getItemInputs())
+					if(s.matchesItemStackIgnoringSize(inputItem))
+					{
+						size = s.inputSize;
+						break;
+					}
+				if(size>0 && inputItem.stackSize>size)
+				{
+					inputItem.splitStack(size);
+					processTick = 0;
+					clearProcess = false;
+				}
 			}
 		}
 	}
@@ -774,7 +804,7 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 					displayStack = Utils.copyStackWithAmount(stack, ingr.inputSize);
 					break;
 				}
-			if(multiblock.addProcessToQueue(new MultiblockProcessInWorld(recipe, displayStack, transformationPoint), simulate, doProcessStacking))
+			if(multiblock.addProcessToQueue(new MultiblockProcessInWorld(recipe, transformationPoint, displayStack), simulate, doProcessStacking))
 			{
 				multiblock.markDirty();
 				multiblock.markContainingBlockForUpdate(null);

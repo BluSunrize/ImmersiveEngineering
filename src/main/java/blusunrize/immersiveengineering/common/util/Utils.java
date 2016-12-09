@@ -30,6 +30,7 @@ import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
@@ -71,8 +72,8 @@ public class Utils
 			return false;
 		ItemStack comp = copyStackWithAmount(stack, 1);
 		List<ItemStack> s = OreDictionary.getOres(oreName);
-		for (ItemStack st:s)
-			if (ItemStack.areItemStacksEqual(comp, st))
+		for(ItemStack st:s)
+			if(OreDictionary.itemMatches(st, comp, false))
 				return true;
 		return false;
 	}
@@ -104,6 +105,34 @@ public class Utils
 		else if(o instanceof String)
 			return compareToOreName(stack, (String)o);
 		return false;
+	}
+	public static boolean canCombineArrays(ItemStack[] stacks, ItemStack[] target)
+	{
+		HashSet<IngredientStack> inputSet = new HashSet();
+		for(ItemStack s : stacks)
+			inputSet.add(new IngredientStack(s));
+		for(ItemStack t : target)
+		{
+			int size = t.stackSize;
+			Iterator<IngredientStack> it = inputSet.iterator();
+			while(it.hasNext())
+			{
+				IngredientStack in = it.next();
+				if(in.matchesItemStackIgnoringSize(t))
+				{
+					int taken = Math.min(size, in.inputSize);
+					size -= taken;
+					in.inputSize -= taken;
+					if(in.inputSize<=0)
+						it.remove();
+					if(size<=0)
+						break;
+				}
+			}
+			if(size>0)
+				return false;
+		}
+		return true;
 	}
 	public static ItemStack copyStackWithAmount(ItemStack stack, int amount)
 	{
@@ -901,6 +930,37 @@ public class Utils
 				invList.appendTag(itemTag);
 			}
 		return invList;
+	}
+	public static NBTTagList writeInventory(Collection<ItemStack> inv)
+	{
+		NBTTagList invList = new NBTTagList();
+		byte slot = 0;
+		for(ItemStack s : inv)
+		{
+			if(s!=null)
+			{
+				NBTTagCompound itemTag = new NBTTagCompound();
+				itemTag.setByte("Slot", slot);
+				s.writeToNBT(itemTag);
+				invList.appendTag(itemTag);
+			}
+			slot++;
+		}
+		return invList;
+	}
+	public static ItemStack[] loadItemStacksFromNBT(NBTBase nbt)
+	{
+		if(nbt instanceof NBTTagCompound)
+		{
+			ItemStack stack = ItemStack.loadItemStackFromNBT((NBTTagCompound)nbt);
+			return new ItemStack[]{stack};
+		}
+		else if(nbt instanceof NBTTagList)
+		{
+			NBTTagList list = (NBTTagList)nbt;
+			return readInventory(list, list.tagCount());
+		}
+		return new ItemStack[0];
 	}
 
 	public static void modifyInvStackSize(ItemStack[] inv, int slot, int amount)
