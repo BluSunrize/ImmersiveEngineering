@@ -22,6 +22,9 @@ import java.util.Map.Entry;
  */
 public class BlueprintCraftingRecipe extends MultiblockRecipe
 {
+	public static float energyModifier = 1;
+	public static float timeModifier = 1;
+
 	public static ArrayList<String> blueprintCategories = new ArrayList<String>();
 	public static ArrayListMultimap<String, BlueprintCraftingRecipe> recipeList = ArrayListMultimap.create();
 	public static HashMap<String, ItemStack> villagerPrices = new HashMap<String, ItemStack>();
@@ -40,6 +43,10 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 
 		this.inputList = Lists.newArrayList(this.inputs);
 		this.outputList = Lists.newArrayList(this.output);
+
+		//Time and energy values are for the automatic workbench
+		this.totalProcessEnergy = (int)Math.floor(23040*energyModifier);
+		this.totalProcessTime = (int)Math.floor(180*timeModifier);
 	}
 
 	public boolean matchesRecipe(ItemStack[] query)
