@@ -1312,7 +1312,7 @@ ie.manual.entry.computer.sampleDrill1=§lgetVeinLocalizedName()§r: returns the 
 ie.manual.entry.computer.crusher.name=Crusher ☎
 ie.manual.entry.computer.crusher.subtext=Keep your hands out!
 ie.manual.entry.computer.crusher0=§lsetEnabled(boolean active)§r: allows or disallows the crusher to operate, as if a redstone signal was applied to the control panel<br>§lisActive()§r: returns whether the crusher is currently crushing items<br>§lgetInputQueue()§r: returns the input queue of the crusher as a table. The table contains the places in the input queue as keys (starting at 1). Each place in the queue is saved as a table with the following keys:<br>"progress": the current progress
-ie.manual.entry.computer.crusher1="maxProgress": the progress the crusher has to reach to finish the recipe<br>"input": the input item stack<br>"output": the main output stack.<br>§lgetMaxEnergyStored()§r: returns the maximum amount of energy stored in this crusher<br>§lgetEnergyStored()§r: returns the amount of energy that is stored in this crusher
+ie.manual.entry.computer.crusher1="maxProgress": the progress the crusher has to reach to finish the recipe<br>"input": the input item stacks<br>"output": the main output stack.<br>§lgetMaxEnergyStored()§r: returns the maximum amount of energy stored in this crusher<br>§lgetEnergyStored()§r: returns the amount of energy that is stored in this crusher
 
 ie.manual.entry.computer.dieselgen.name=Diesel Generator ☎
 ie.manual.entry.computer.dieselgen.subtext=Better than volume: More volume.
