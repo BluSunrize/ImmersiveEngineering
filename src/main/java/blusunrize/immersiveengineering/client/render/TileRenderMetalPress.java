@@ -18,6 +18,8 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import org.lwjgl.opengl.GL11;
 
+import java.util.List;
+
 public class TileRenderMetalPress extends TileEntitySpecialRenderer<TileEntityMetalPress>
 {
 	@Override
@@ -107,12 +109,16 @@ public class TileRenderMetalPress extends TileEntitySpecialRenderer<TileEntityMe
 				continue;
 			GlStateManager.pushMatrix();
 			GlStateManager.translate(0,0,-2.5*shift[i]);
-			ItemStack stack = ((MultiblockProcessInWorld)process).getDisplayItem();
-			GlStateManager.rotate(-90, 1,0,0);
-			float scale = .625f;
-			GlStateManager.scale(scale,scale,1);
-			ClientUtils.mc().getRenderItem().renderItem(stack, ItemCameraTransforms.TransformType.FIXED);
-			GlStateManager.popMatrix();
+
+			List<ItemStack> displays = ((MultiblockProcessInWorld)process).getDisplayItem();
+			if(!displays.isEmpty())
+			{
+				GlStateManager.rotate(-90, 1, 0, 0);
+				float scale = .625f;
+				GlStateManager.scale(scale, scale, 1);
+				ClientUtils.mc().getRenderItem().renderItem(displays.get(0), ItemCameraTransforms.TransformType.FIXED);
+				GlStateManager.popMatrix();
+			}
 		}
 		GlStateManager.popMatrix();
 	}
