@@ -140,7 +140,7 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 			{
 				Entry<ItemStack, Integer> e = queryIt.next();
 				ItemStack compStack = e.getKey();
-				if(ingr.matchesItemStack(compStack))
+				if(ingr.matchesItemStackIgnoringSize(compStack))
 				{
 					int taken = e.getValue()/req;
 					if(taken>0)
