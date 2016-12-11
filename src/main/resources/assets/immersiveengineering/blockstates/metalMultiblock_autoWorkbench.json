@@ -11,6 +11,19 @@
 	"variants":
 	{
 		"inventory,type=auto_workbench": [{
+			"model": "immersiveengineering:metalMultiblock/autoWorkbench.obj",
+			"transform": {
+				"scale": 0.25,
+				"rotation": [
+					{
+						"x": 20
+					},
+					{
+						"y": -45
+					}
+				],
+				"translation": [ 0, 0, 0 ]
+			}
 		}],
 		"type":
 		{
@@ -41,8 +54,12 @@
 		},
 		"_1dynamicrender":
 		{
-			"false":{},
-			"true":{}
+			"false":{
+				"model": "immersiveengineering:metalMultiblock/autoWorkbench.obj"
+			},
+			"true":{
+				"model": "immersiveengineering:metalMultiblock/autoWorkbench_animated.obj.ie"
+			}
 		},
 		"boolean0": //Mirror
 		{
