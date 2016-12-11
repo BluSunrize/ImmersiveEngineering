@@ -393,7 +393,7 @@ public class ClientProxy extends CommonProxy
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityDieselGenerator.class, new TileRenderDieselGenerator());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityBucketWheel.class, new TileRenderBucketWheel());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityArcFurnace.class, new TileRenderArcFurnace());
-		//		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityAssembler.class, new TileRenderAssembler());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityAutoWorkbench.class, new TileRenderAutoWorkbench());
 		//		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityBottlingMachine.class, new TileRenderBottlingMachine());
 		//WOOD
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityWatermill.class, new TileRenderWatermill());
@@ -747,6 +747,10 @@ public class ClientProxy extends CommonProxy
 				new ManualPageMultiblock(ManualHelper.getManual(), "assembler0", MultiblockAssembler.instance),
 				new ManualPages.Text(ManualHelper.getManual(), "assembler1"),
 				new ManualPages.Text(ManualHelper.getManual(), "assembler2"));
+		ManualHelper.addEntry("autoworkbench", ManualHelper.CAT_MACHINES,
+				new ManualPageMultiblock(ManualHelper.getManual(), "autoworkbench0", MultiblockAutoWorkbench.instance),
+				new ManualPages.Text(ManualHelper.getManual(), "autoworkbench1"),
+				new ManualPages.Text(ManualHelper.getManual(), "autoworkbench2"));
 		ManualHelper.addEntry("crusher", ManualHelper.CAT_HEAVYMACHINES,
 				new ManualPageMultiblock(ManualHelper.getManual(), "crusher0", MultiblockCrusher.instance),
 				new ManualPages.Text(ManualHelper.getManual(), "crusher1"));
@@ -1127,6 +1131,8 @@ public class ClientProxy extends CommonProxy
 					gui = new GuiArcFurnace(player.inventory, (TileEntityArcFurnace) te);
 				if(ID==Lib.GUIID_Assembler && te instanceof TileEntityAssembler)
 					gui = new GuiAssembler(player.inventory, (TileEntityAssembler) te);
+				if(ID==Lib.GUIID_AutoWorkbench && te instanceof TileEntityAutoWorkbench)
+					gui = new GuiAutoWorkbench(player.inventory, (TileEntityAutoWorkbench) te);
 				if(gui!=null)
 					((IGuiTile)te).onGuiOpened(player, true);
 				return gui;

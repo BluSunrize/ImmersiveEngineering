@@ -160,20 +160,14 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 		return maxCrafted;
 	}
 
-	public void consumeInputs(ItemStack[] query, int crafted)
+	public ItemStack[] consumeInputs(ItemStack[] query, int crafted)
 	{
-		ArrayList<IngredientStack> inputList = new ArrayList();
+		ArrayList<IngredientStack> inputList = new ArrayList(inputs.length);
 		for(IngredientStack i : inputs)
 			if(i!=null)
-			{
-				if(i.oreName!=null)
-					inputList.add(new IngredientStack(i.oreName, i.inputSize));
-				else if(i.stackList!=null)
-					inputList.add(new IngredientStack(Lists.newArrayList(i.stackList), i.inputSize));
-				else if(i.stack!=null)
-					inputList.add(new IngredientStack(ApiUtils.copyStackWithAmount(i.stack, i.inputSize)));
-			}
+				inputList.add(i);
 
+		ArrayList<ItemStack> consumed = new ArrayList(inputList.size());
 		Iterator<IngredientStack> inputIt = inputList.iterator();
 		while(inputIt.hasNext())
 		{
@@ -182,9 +176,10 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 
 			for(int i=0; i<query.length; i++)
 				if(query[i]!=null)
-					if(ingr.matchesItemStack(query[i]))
+					if(ingr.matchesItemStackIgnoringSize(query[i]))
 					{
 						int taken = Math.min(query[i].stackSize, inputSize);
+						consumed.add(ApiUtils.copyStackWithAmount(query[i],taken));
 						query[i].stackSize-=taken;
 						if(query[i].stackSize<=0)
 							query[i] = null;
@@ -196,10 +191,11 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 						}
 					}
 		}
+		return consumed.toArray(new ItemStack[consumed.size()]);
 	}
 	public ArrayList<IngredientStack> getFormattedInputs()
 	{
-		ArrayList<IngredientStack> formattedInputs = new ArrayList<IngredientStack>();  
+		ArrayList<IngredientStack> formattedInputs = new ArrayList<IngredientStack>();
 		for(IngredientStack ingr : this.inputs)
 			if(ingr!=null)
 			{
@@ -282,7 +278,7 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 		for(int i=0; i<inputs.length; i++)
 			inputs[i] = IngredientStack.readFromNBT(list.getCompoundTagAt(i));
 
-		List<BlueprintCraftingRecipe> recipeList = BlueprintCraftingRecipe.recipeList.get("blueprintCategory");
+		List<BlueprintCraftingRecipe> recipeList = BlueprintCraftingRecipe.recipeList.get(nbt.getString("blueprintCategory"));
 		for(BlueprintCraftingRecipe recipe : recipeList)
 		{
 			boolean b = false;

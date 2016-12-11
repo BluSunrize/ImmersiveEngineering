@@ -420,7 +420,7 @@ public class IEContent
 		registerTile(TileEntitySheetmetalTank.class);
 		registerTile(TileEntitySilo.class);
 		registerTile(TileEntityAssembler.class);
-		//		registerTile(TileEntityAutoWorkbench.class);
+		registerTile(TileEntityAutoWorkbench.class);
 		//		registerTile(TileEntityBottlingMachine.class);
 		registerTile(TileEntitySqueezer.class);
 		registerTile(TileEntityFermenter.class);
@@ -711,6 +711,7 @@ public class IEContent
 		MultiblockHandler.registerMultiblock(MultiblockSheetmetalTank.instance);
 		MultiblockHandler.registerMultiblock(MultiblockSilo.instance);
 		MultiblockHandler.registerMultiblock(MultiblockAssembler.instance);
+		MultiblockHandler.registerMultiblock(MultiblockAutoWorkbench.instance);
 		//		MultiblockHandler.registerMultiblock(MultiblockBottlingMachine.instance);
 		MultiblockHandler.registerMultiblock(MultiblockSqueezer.instance);
 		MultiblockHandler.registerMultiblock(MultiblockFermenter.instance);
