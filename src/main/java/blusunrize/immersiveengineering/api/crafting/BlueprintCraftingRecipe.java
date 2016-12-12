@@ -175,7 +175,7 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 
 			for(int i=0; i<query.length; i++)
 				if(query[i]!=null)
-					if(ingr.matchesItemStack(query[i]))
+					if(ingr.matchesItemStackIgnoringSize(query[i]))
 					{
 						int taken = Math.min(query[i].stackSize, inputSize);
 						query[i].stackSize-=taken;
