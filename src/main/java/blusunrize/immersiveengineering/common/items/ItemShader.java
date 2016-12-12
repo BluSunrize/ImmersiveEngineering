@@ -69,7 +69,10 @@ public class ItemShader extends ItemIEBase implements IShaderItem, ITextureOverr
 		addShader("Harrowed", 4, EnumRarity.RARE, 0xff161321,0xff431c1d,0xff161321,0xff161321).setInfo(null,"Destiny","harrowed");
 		addShader("Taken", 5, EnumRarity.EPIC, 0xff111c26,0xff111c26,0xffbad7dd,0xff111c26, null,false,0xffffffff).setInfo(null,"Destiny","taken");
 
-		addShader("Angel's Thesis", 2, EnumRarity.EPIC, 0xff1e1e1e,0xff754697,0xff77b93d,0xff505050, null,false,0xffffffff).setInfo(null,"Neon Genesis Evangelion","angelsthesis");
+		addShader("Angel's Thesis", 2, EnumRarity.EPIC, 0xff1e1e1e,0xff754697,0xff77b93d,0xff505050, null,false,0xffffffff).setInfo("Mecha","Neon Genesis Evangelion","angelsthesis");
+		addShader("Sutherland", 0, EnumRarity.RARE, 0xff44404f,0xff6b5eae,0xff702739,0xff44404f, "whitestripe",true,0xff702034).setInfo("Mecha","Code Geass","sutherland");
+		addShader("Exia", 8, EnumRarity.RARE, 0xffb2220c,0xff5571d2,0xffece7e1,0xffc0fdc7, "whitestripe",true,0xffc09032).setInfo("Mecha","Gundam 00","exia");
+		addShader("Crimson Lotus", 3, EnumRarity.EPIC, 0xffd83239,0xffd83239,0xff4e4f53,0xff2ff177, "whitestripe",true,0xfff4b951).setInfo("Mecha","Gurren Lagann","gurrenlagann");
 
 		addShader("Warbird", 7, EnumRarity.UNCOMMON, 0xff313640,0xffd8d7d0,0xffebac00,0xffd8d7d0).setInfo(null,null,"warbird");
 		addShader("Matrix", 7, EnumRarity.RARE, 0xff053f3c,0xffe1e1ff,0xffd4ffff,0xffffffff, "pipes",true,0xff84ddd8).setInfo(null,null,"matrix");
@@ -84,7 +87,7 @@ public class ItemShader extends ItemIEBase implements IShaderItem, ITextureOverr
 
 		addShader("Microshark", 8, EnumRarity.RARE, 0xff775054, 0xfff7f6cf, 0xff936267, 0xff936267, "shark",true,0xffffffff).setInfo(null,"Terraria","microshark");
 
-		addShader("N7", 2, EnumRarity.EPIC, 0xff13171b, 0xff524d4a, 0xffe01919, 0xff8a8684, "whitestripe",true,0xffffffff).setInfo(null,"Mass Effect","n7");
+		addShader("N7", 2, EnumRarity.EPIC, 0xff13171b, 0xff524d4a, 0xffe01919, 0xff8a8684, "whitestripe",false,0xffffffff).setInfo(null,"Mass Effect","n7");
 		addShader("Normandy", 8, EnumRarity.RARE, 0xffffffff, 0xff1a1a1a, 0xffffffff, 0xffffffff, "whitestripe",true,0xff35447e).setInfo(null,"Mass Effect","normandy");
 		addShader("OmniTool", 2, EnumRarity.RARE, 0x40ff952c, 0x30ff952c, 0x40ff952c, 0x20ff952c).setInfo(null,"Mass Effect","omnitool");
 
