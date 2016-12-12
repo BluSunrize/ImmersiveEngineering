@@ -2,55 +2,15 @@
 	"forge_marker": 1,
 	"defaults":
 	{
-		"transform": "forge:default-block",
-		"model": "immersiveengineering:metalDevice/ieConveyor",
-		"submodel": {},
-		"textures": {
-			"conveyor": "immersiveengineering:blocks/conveyor",
-			"conveyorOff": "immersiveengineering:blocks/conveyor_off",
-			"wall": "immersiveengineering:blocks/metalDevice1_dynamo_bottom"
-		}
+		"model": "immersiveengineering:ieEmpty"
 	},
 	"variants":
 	{
-		"inventory,type=conveyor": [{
-			"submodel": {
-				"wallLeft": { "model": "immersiveengineering:metalDevice/ieConveyorWallLeft"  },
-				"wallRight": { "model": "immersiveengineering:metalDevice/ieConveyorWallRight"  }
-			}
-		}],
-		"inventory,type=conveyor_dropper": [{
-			"submodel": {
-				"wallLeft": { "model": "immersiveengineering:metalDevice/ieConveyorWallLeft"  },
-				"wallRight": { "model": "immersiveengineering:metalDevice/ieConveyorWallRight"  }
-			},
-			"textures": {"conveyor": "immersiveengineering:blocks/conveyor_dropper"}
-		}],
-		"inventory,type=conveyor_extract": [{
-			"submodel": {
-				"wallLeft": { "model": "immersiveengineering:metalDevice/ieConveyorWallLeft"  },
-				"wallRight": { "model": "immersiveengineering:metalDevice/ieConveyorWallRight"  }
-			},
-			"textures": {"conveyor": "immersiveengineering:blocks/conveyor_dropper"}
-		}],
-		"inventory,type=conveyor_vertical": [{
-			"model": "immersiveengineering:metalDevice/ieConveyorVertical",
-			"textures": {"conveyor": "immersiveengineering:blocks/conveyor_vertical"}
-		}],
+		"normal": [{}],
+		"inventory,type=conveyor": [{}],
 		"type":
 		{
-			"conveyor": {},
-			"conveyor_dropper": {
-				"textures": {
-					"conveyor": "immersiveengineering:blocks/conveyor_dropper",
-					"conveyorOff": "immersiveengineering:blocks/conveyor_dropper_off"}
-			},
-			"conveyor_vertical": {
-				"model": "immersiveengineering:metalDevice/ieConveyorVertical",
-				"textures": {
-					"conveyor": "immersiveengineering:blocks/conveyor_vertical",
-					"conveyorOff": "immersiveengineering:blocks/conveyor_vertical_off"}
-			}
+			"conveyor": {}
 		},
 		"facing":
 		{
@@ -72,36 +32,6 @@
 			"east": { "transform": {
 				"rotation": {"y": -90 }
 			}}
-		},
-		"conveyorwall_left":
-		{
-			"false":{},
-			"true":{
-				"submodel": {
-					"wallLeft": { "model": "immersiveengineering:metalDevice/ieConveyorWallLeft"  }
-				}
-			}
-		},
-		"conveyorwall_right":
-		{
-			"false":{},
-			"true":{
-				"submodel": {
-					"wallRight": { "model": "immersiveengineering:metalDevice/ieConveyorWallRight"  }
-				}
-			}
-		},
-		"conveyorupdown":
-		{
-			0:{},
-			1:{"model": "immersiveengineering:metalDevice/ieConveyorUp"},
-			2:{"model": "immersiveengineering:metalDevice/ieConveyorDown"}
-		},
-		//active texture
-		"boolean0":
-		{
-			"false":{"textures": {"conveyor": "#conveyorOff"}},
-			"true":{}
 		}
 	}
 }
