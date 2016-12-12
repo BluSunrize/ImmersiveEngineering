@@ -80,7 +80,7 @@ public class TileEntityLightningrod extends TileEntityMultiblockPart<TileEntityL
 		boolean broken = false;
 		for(int i=getPos().getY()+2; i<worldObj.getHeight()-1; i++)
 		{
-			BlockPos pos = getPos().add(0,i,0);
+			BlockPos pos = new BlockPos(getPos().getX(),i,getPos().getZ());
 			if(!broken && isFence(pos))
 				this.height++;
 			else if(!worldObj.isAirBlock(pos))
