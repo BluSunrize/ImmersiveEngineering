@@ -57,9 +57,10 @@ public class ConveyorSplit extends ConveyorBasic
 	@Override
 	public void handleInsertion(TileEntity tile, EntityItem entity, EnumFacing facing, ConveyorDirection conDir, double distX, double distZ)
 	{
-		if(entity.getEntityData().hasKey("immersiveengineering:conveyorDir"))
+		String nbtKey = "immersiveengineering:conveyorDir"+Integer.toHexString(tile.getPos().hashCode());
+		if(entity.getEntityData().hasKey(nbtKey))
 		{
-			EnumFacing redirect = EnumFacing.values()[entity.getEntityData().getInteger("immersiveengineering:conveyorDir")];
+			EnumFacing redirect = EnumFacing.values()[entity.getEntityData().getInteger(nbtKey)];
 			BlockPos nextPos = tile.getPos().offset(redirect);
 			double distNext = Math.abs((redirect.getAxis() == Axis.Z ? nextPos.getZ() : nextPos.getX()) + .5 - (redirect.getAxis() == Axis.Z ? entity.posZ : entity.posX));
 			if(distNext<.7)
@@ -75,12 +76,13 @@ public class ConveyorSplit extends ConveyorBasic
 		EnumFacing redirect = null;
 		if(entity != null && !entity.isDead)
 		{
-			if(entity.getEntityData().hasKey("immersiveengineering:conveyorDir"))
-				redirect = EnumFacing.values()[entity.getEntityData().getInteger("immersiveengineering:conveyorDir")];
+			String nbtKey = "immersiveengineering:conveyorDir"+Integer.toHexString(tile.getPos().hashCode());
+			if(entity.getEntityData().hasKey(nbtKey))
+				redirect = EnumFacing.values()[entity.getEntityData().getInteger(nbtKey)];
 			else
 			{
 				redirect = this.outputFace;
-				entity.getEntityData().setInteger("immersiveengineering:conveyorDir", redirect.ordinal());
+				entity.getEntityData().setInteger(nbtKey, redirect.ordinal());
 				BlockPos nextPos = tile.getPos().offset(this.outputFace.getOpposite());
 				if(tile.getWorld().isBlockLoaded(nextPos))
 				{
@@ -95,12 +97,13 @@ public class ConveyorSplit extends ConveyorBasic
 		super.onEntityCollision(tile, entity, facing);
 		if(redirect != null)
 		{
+			String nbtKey = "immersiveengineering:conveyorDir"+Integer.toHexString(tile.getPos().hashCode());
 			BlockPos nextPos = tile.getPos().offset(redirect);
 			double distNext = Math.abs((redirect.getAxis() == Axis.Z ? nextPos.getZ() : nextPos.getX()) + .5 - (redirect.getAxis() == Axis.Z ? entity.posZ : entity.posX));
 			double treshold = .44;
 			boolean contact = distNext < treshold;
 			if(contact)
-				entity.getEntityData().removeTag("immersiveengineering:conveyorDir");
+				entity.getEntityData().removeTag(nbtKey);
 		}
 	}
 
@@ -120,9 +123,10 @@ public class ConveyorSplit extends ConveyorBasic
 	public Vec3d getDirection(TileEntity conveyorTile, Entity entity, EnumFacing facing)
 	{
 		Vec3d vec = super.getDirection(conveyorTile, entity, facing);
-		if(!entity.getEntityData().hasKey("immersiveengineering:conveyorDir"))
+		String nbtKey = "immersiveengineering:conveyorDir"+Integer.toHexString(conveyorTile.getPos().hashCode());
+		if(!entity.getEntityData().hasKey(nbtKey))
 			return vec;
-		EnumFacing redirect = EnumFacing.getFront(entity.getEntityData().getInteger("immersiveengineering:conveyorDir"));
+		EnumFacing redirect = EnumFacing.getFront(entity.getEntityData().getInteger(nbtKey));
 		BlockPos wallPos = conveyorTile.getPos().offset(facing);
 		double distNext = Math.abs((facing.getAxis() == Axis.Z ? wallPos.getZ() : wallPos.getX()) + .5 - (facing.getAxis() == Axis.Z ? entity.posZ : entity.posX));
 		if(distNext < 1.33)
