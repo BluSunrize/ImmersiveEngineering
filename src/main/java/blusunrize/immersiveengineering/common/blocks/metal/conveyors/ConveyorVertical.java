@@ -60,7 +60,7 @@ public class ConveyorVertical extends ConveyorBasic
 		String key = ConveyorHandler.reverseClassRegistry.get(this.getClass()).toString();
 		key += "f" + facing.ordinal();
 		key += "a" + (isActive(tile) ? 1 : 0);
-		key += "b" + (renderBottomBelt(tile, facing) ? 1 : 0);
+		key += "b" + (renderBottomBelt(tile, facing)?("1"+(super.renderWall(tile,facing,0)?"1":"0")+(super.renderWall(tile,facing,1)?"1":"0")):"000");
 		key += "c" + getDyeColour();
 		return key;
 	}
