@@ -453,7 +453,7 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 	public IEForgeEnergyWrapper getCapabilityWrapper(EnumFacing facing)
 	{
 		if(!dummy)
-			return wrappers[facing.ordinal()];
+			return wrappers[facing==null?0:facing.ordinal()];
 		return null;
 	}
 
