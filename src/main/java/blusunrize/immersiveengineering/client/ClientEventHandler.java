@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.tool.IDrillHead;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler.IZoomTool;
 import blusunrize.immersiveengineering.client.gui.GuiBlastFurnace;
+import blusunrize.immersiveengineering.client.gui.GuiToolbox;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedSelectionBounds;
@@ -73,6 +74,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.oredict.OreDictionary;
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 import java.util.*;
@@ -688,6 +690,14 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 				}
 			}
 		}
+	}
+
+	@SubscribeEvent(priority = EventPriority.LOW)
+	public void onKey(GuiScreenEvent.MouseInputEvent.Pre event)
+	{
+		//Stopping cpw's inventory sorter till I can get him to make it better
+		if(event.getGui() instanceof GuiToolbox && Mouse.getEventButton()==2)
+			event.setCanceled(true);
 	}
 
 	@SubscribeEvent()
