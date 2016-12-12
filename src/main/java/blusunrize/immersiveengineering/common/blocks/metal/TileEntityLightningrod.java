@@ -151,19 +151,19 @@ public class TileEntityLightningrod extends TileEntityMultiblockPart<TileEntityL
 			{
 				yMin = -.5f;
 				yMax = 1.25f;
-				xMin = (facing.getAxis() == Axis.X ? (pos%9 > 2 ^ facing == EnumFacing.EAST) : (pos % 3 == 2 ^ facing == EnumFacing.SOUTH)) ? .8125f : .4375f;
-				xMax = (facing.getAxis() == Axis.X ? (pos%9 < 3 ^ facing == EnumFacing.EAST) : (pos % 3 == 0 ^ facing == EnumFacing.SOUTH)) ? .1875f : .5625f;
-				zMin = (facing.getAxis() == Axis.X ? (pos % 3 == 2 ^ facing == EnumFacing.EAST) : (pos%9 < 3 ^ facing == EnumFacing.SOUTH)) ? .8125f : .4375f;
-				zMax = (facing.getAxis() == Axis.X ? (pos % 3 == 0 ^ facing == EnumFacing.EAST) : (pos%9 > 2 ^ facing == EnumFacing.SOUTH)) ? .1875f : .5625f;
+				xMin = (facing.getAxis() == Axis.X ? (pos%9 > 2 ^ facing == EnumFacing.EAST) : (pos % 3 == 2 ^ facing == EnumFacing.NORTH)) ? .8125f : .4375f;
+				xMax = (facing.getAxis() == Axis.X ? (pos%9 < 3 ^ facing == EnumFacing.EAST) : (pos % 3 == 0 ^ facing == EnumFacing.NORTH)) ? .1875f : .5625f;
+				zMin = (facing.getAxis() == Axis.X ? (pos % 3 == 2 ^ facing == EnumFacing.EAST) : (pos%9 < 3 ^ facing == EnumFacing.NORTH)) ? .8125f : .4375f;
+				zMax = (facing.getAxis() == Axis.X ? (pos % 3 == 0 ^ facing == EnumFacing.EAST) : (pos%9 > 2 ^ facing == EnumFacing.NORTH)) ? .1875f : .5625f;
 			}
 			else
 			{
 				yMin = .25f;
 				yMax = .75f;
-				xMin = (facing.getAxis() == Axis.X ? (pos%9 > 2 ^ facing == EnumFacing.EAST) : (pos % 3 == 2 ^ facing == EnumFacing.SOUTH)) ? 1 : .625f;
-				xMax = (facing.getAxis() == Axis.X ? (pos%9 < 3 ^ facing == EnumFacing.EAST) : (pos % 3 == 0 ^ facing == EnumFacing.SOUTH)) ? 0 : .375f;
-				zMin = (facing.getAxis() == Axis.X ? (pos % 3 == 2 ^ facing == EnumFacing.EAST) : (pos%9 < 3 ^ facing == EnumFacing.SOUTH)) ? 1 : .625f;
-				zMax = (facing.getAxis() == Axis.X ? (pos % 3 == 0 ^ facing == EnumFacing.EAST) : (pos%9 > 2 ^ facing == EnumFacing.SOUTH)) ? 0 : .375f;
+				xMin = (facing.getAxis() == Axis.X ? (pos%9 > 2 ^ facing == EnumFacing.EAST) : (pos % 3 == 2 ^ facing == EnumFacing.NORTH)) ? 1 : .625f;
+				xMax = (facing.getAxis() == Axis.X ? (pos%9 < 3 ^ facing == EnumFacing.EAST) : (pos % 3 == 0 ^ facing == EnumFacing.NORTH)) ? 0 : .375f;
+				zMin = (facing.getAxis() == Axis.X ? (pos % 3 == 2 ^ facing == EnumFacing.EAST) : (pos%9 < 3 ^ facing == EnumFacing.NORTH)) ? 1 : .625f;
+				zMax = (facing.getAxis() == Axis.X ? (pos % 3 == 0 ^ facing == EnumFacing.EAST) : (pos%9 > 2 ^ facing == EnumFacing.NORTH)) ? 0 : .375f;
 			}
 		}
 		else if(pos>17)
@@ -200,7 +200,7 @@ public class TileEntityLightningrod extends TileEntityMultiblockPart<TileEntityL
 			if(!(offset[0]==0&&offset[1]==0&&offset[2]==0) && !(worldObj.getTileEntity(startPos) instanceof TileEntityLightningrod))
 				return;
 
-			for(int yy=0;yy<=3;yy++)
+			for(int yy=-1;yy<=1;yy++)
 				for(int xx=-1;xx<=1;xx++)
 					for(int zz=-1;zz<=1;zz++)
 					{
