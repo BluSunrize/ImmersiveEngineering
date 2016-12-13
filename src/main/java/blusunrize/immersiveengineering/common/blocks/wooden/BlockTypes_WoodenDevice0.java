@@ -3,6 +3,8 @@ package blusunrize.immersiveengineering.common.blocks.wooden;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
 import net.minecraft.util.IStringSerializable;
 
+import java.util.Locale;
+
 public enum BlockTypes_WoodenDevice0 implements IStringSerializable, BlockIEBase.IBlockEnum
 {
 	CRATE,
@@ -15,7 +17,7 @@ public enum BlockTypes_WoodenDevice0 implements IStringSerializable, BlockIEBase
 	@Override
 	public String getName()
 	{
-		return this.toString().toLowerCase();
+		return this.toString().toLowerCase(Locale.ENGLISH);
 	}
 	@Override
 	public int getMeta()

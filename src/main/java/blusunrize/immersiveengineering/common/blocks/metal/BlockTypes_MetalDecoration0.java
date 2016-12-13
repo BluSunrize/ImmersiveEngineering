@@ -3,6 +3,8 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
 import net.minecraft.util.IStringSerializable;
 
+import java.util.Locale;
+
 public enum BlockTypes_MetalDecoration0 implements IStringSerializable, BlockIEBase.IBlockEnum
 {
 	COIL_LV,
@@ -17,7 +19,7 @@ public enum BlockTypes_MetalDecoration0 implements IStringSerializable, BlockIEB
 	@Override
 	public String getName()
 	{
-		return this.toString().toLowerCase();
+		return this.toString().toLowerCase(Locale.ENGLISH);
 	}
 	@Override
 	public int getMeta()

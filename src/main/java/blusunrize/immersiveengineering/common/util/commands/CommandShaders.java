@@ -9,6 +9,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentTranslation;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class CommandShaders extends IESubCommand
 {
@@ -63,7 +64,7 @@ public class CommandShaders extends IESubCommand
 		{
 			if(args.length==0)
 				list.add(s);
-			else if(s.toLowerCase().startsWith(args[0].toLowerCase()))
+			else if(s.toLowerCase(Locale.ENGLISH).startsWith(args[0].toLowerCase(Locale.ENGLISH)))
 				list.add(s);
 		}
 		return list;

@@ -23,6 +23,7 @@ import org.lwjgl.opengl.GL12;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 public abstract class ManualPages implements IManualPage
 {
@@ -398,7 +399,7 @@ public abstract class ManualPages implements IManualPage
 		public boolean listForSearch(String searchTag)
 		{
 			for(ItemStack stack : stacks)
-				if(stack.getDisplayName().toLowerCase().contains(searchTag))
+				if(stack.getDisplayName().toLowerCase(Locale.ENGLISH).contains(searchTag))
 					return true;
 			return false;
 		}
@@ -621,19 +622,19 @@ public abstract class ManualPages implements IManualPage
 				if(stack instanceof ItemStack[])
 				{
 					for(ItemStack subStack: (ItemStack[])stack)
-						if(subStack.getDisplayName().toLowerCase().contains(searchTag))
+						if(subStack.getDisplayName().toLowerCase(Locale.ENGLISH).contains(searchTag))
 							return true;
 				}
 				else if(stack instanceof ItemStack)
 				{
-					if(((ItemStack)stack).getDisplayName().toLowerCase().contains(searchTag))
+					if(((ItemStack)stack).getDisplayName().toLowerCase(Locale.ENGLISH).contains(searchTag))
 						return true;
 				}
 				else if(stack instanceof String)
 				{
 					if(ManualUtils.isExistingOreName((String)stack))
 						for(ItemStack subStack: OreDictionary.getOres((String)stack))
-							if(subStack.getDisplayName().toLowerCase().contains(searchTag))
+							if(subStack.getDisplayName().toLowerCase(Locale.ENGLISH).contains(searchTag))
 								return true;
 				}
 			}
@@ -841,25 +842,25 @@ public abstract class ManualPages implements IManualPage
 					if(stack.stack instanceof ItemStack[])
 					{
 						for(ItemStack subStack: (ItemStack[])stack.stack)
-							if(subStack.getDisplayName().toLowerCase().contains(searchTag))
+							if(subStack.getDisplayName().toLowerCase(Locale.ENGLISH).contains(searchTag))
 								return true;
 					}
 					else if(stack.stack instanceof List)
 						for(ItemStack subStack: (List<ItemStack>)stack.stack)
 						{
-							if(subStack.getDisplayName().toLowerCase().contains(searchTag))
+							if(subStack.getDisplayName().toLowerCase(Locale.ENGLISH).contains(searchTag))
 								return true;
 						}
 					else if(stack.stack instanceof ItemStack)
 					{
-						if(((ItemStack)stack.stack).getDisplayName().toLowerCase().contains(searchTag))
+						if(((ItemStack)stack.stack).getDisplayName().toLowerCase(Locale.ENGLISH).contains(searchTag))
 							return true;
 					}
 					else if(stack.stack instanceof String)
 					{
 						if(ManualUtils.isExistingOreName((String)stack.stack))
 							for(ItemStack subStack: OreDictionary.getOres((String)stack.stack))
-								if(subStack.getDisplayName().toLowerCase().contains(searchTag))
+								if(subStack.getDisplayName().toLowerCase(Locale.ENGLISH).contains(searchTag))
 									return true;
 					}
 				}
