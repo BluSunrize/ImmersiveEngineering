@@ -3,6 +3,8 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
 import net.minecraft.util.IStringSerializable;
 
+import java.util.Locale;
+
 public enum BlockTypes_MetalDevice1 implements IStringSerializable, BlockIEBase.IBlockEnum
 {
 	BLAST_FURNACE_PREHEATER,
@@ -19,7 +21,7 @@ public enum BlockTypes_MetalDevice1 implements IStringSerializable, BlockIEBase.
 	@Override
 	public String getName()
 	{
-		return this.toString().toLowerCase();
+		return this.toString().toLowerCase(Locale.ENGLISH);
 	}
 	@Override
 	public int getMeta()

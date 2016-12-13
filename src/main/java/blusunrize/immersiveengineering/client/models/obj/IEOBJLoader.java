@@ -9,10 +9,7 @@ import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.client.model.obj.OBJModel;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class IEOBJLoader implements ICustomModelLoader
 {
@@ -24,8 +21,8 @@ public class IEOBJLoader implements ICustomModelLoader
 
 	public void addDomain(String domain)
 	{
-		enabledDomains.add(domain.toLowerCase());
-		IELogger.info("Custom OBJLoader: Domain has been added: "+domain.toLowerCase());
+		enabledDomains.add(domain.toLowerCase(Locale.ENGLISH));
+		IELogger.info("Custom OBJLoader: Domain has been added: "+domain.toLowerCase(Locale.ENGLISH));
 	}
 
 	@Override

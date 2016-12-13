@@ -144,7 +144,7 @@ public class ConnLoader implements ICustomModelLoader
 				List<ResourceLocation> ret = new ArrayList<>(ModelLoaderRegistry.getModel(base).getTextures());
 				for (String tex:texReplace.values())
 					ret.add(new ResourceLocation(tex));
-				ret.add(new ResourceLocation(ImmersiveEngineering.MODID.toLowerCase() + ":blocks/wire"));
+				ret.add(new ResourceLocation(ImmersiveEngineering.MODID.toLowerCase(Locale.ENGLISH) + ":blocks/wire"));
 				return ret;
 			}
 			catch (Exception e)

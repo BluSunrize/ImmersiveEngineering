@@ -85,6 +85,7 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class IEContent
 {
@@ -861,7 +862,7 @@ public class IEContent
 				{
 					String name = item.getMetaEnums()[meta].toString();
 					if(type!=null&&!type.isEmpty())
-						name = name.substring(0,1).toUpperCase()+name.substring(1).toLowerCase();
+						name = name.substring(0,1).toUpperCase(Locale.ENGLISH)+name.substring(1).toLowerCase(Locale.ENGLISH);
 					OreDictionary.registerOre(type+name, new ItemStack(item,1,meta));
 				}
 		}
@@ -872,7 +873,7 @@ public class IEContent
 				{
 					String name = item.getMetaEnums()[meta].toString();
 					if(type!=null&&!type.isEmpty())
-						name = name.substring(0,1).toUpperCase()+name.substring(1).toLowerCase();
+						name = name.substring(0,1).toUpperCase(Locale.ENGLISH)+name.substring(1).toLowerCase(Locale.ENGLISH);
 					OreDictionary.registerOre(type+name, new ItemStack(item,1,meta));
 				}
 		}
