@@ -2,6 +2,7 @@ package blusunrize.immersiveengineering.client.render;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.client.models.IESmartObjModel;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityBucketWheel;
@@ -10,6 +11,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -19,12 +21,13 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraftforge.client.model.obj.OBJModel.OBJState;
 import net.minecraftforge.common.property.IExtendedBlockState;
-import net.minecraftforge.common.property.Properties;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
+@SuppressWarnings("deprecation")
 public class TileRenderBucketWheel extends TileEntitySpecialRenderer<TileEntityBucketWheel>
 {
 	private static IBakedModel model = null;
@@ -42,10 +45,11 @@ public class TileRenderBucketWheel extends TileEntitySpecialRenderer<TileEntityB
 			state = state.withProperty(IEProperties.DYNAMICRENDER, true);
 			model = blockRenderer.getModelForState(state);
 		}
+		OBJState objState = null;
+		HashMap<String,String> texMap = new HashMap<>();
 		if(state instanceof IExtendedBlockState)
 		{
 			ArrayList<String> list = Lists.newArrayList("bucketWheel");
-			HashMap<String,String> texMap = new HashMap();
 			synchronized (tile.digStacks)
 			{
 				for(int i=0; i<tile.digStacks.length; i++)
@@ -59,8 +63,7 @@ public class TileRenderBucketWheel extends TileEntitySpecialRenderer<TileEntityB
 							texMap.put("dig"+i, digModel.getParticleTexture().getIconName());
 					}
 			}
-			state = ((IExtendedBlockState)state).withProperty(Properties.AnimationProperty, new OBJState(list, true));
-			state = ((IExtendedBlockState)state).withProperty(IEProperties.OBJ_TEXTURE_REMAP, texMap);
+			objState = new OBJState(list, true);
 		}
 
 		Tessellator tessellator = Tessellator.getInstance();
@@ -86,7 +89,12 @@ public class TileRenderBucketWheel extends TileEntitySpecialRenderer<TileEntityB
 		VertexBuffer worldRenderer = tessellator.getBuffer();
 		worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
 		worldRenderer.setTranslation(-.5, -.5, -.5);
-		ClientUtils.renderModelTESR(model.getQuads(state, null, 0), worldRenderer, tile.getWorld().getCombinedLight(tile.getPos(), 0));
+		List<BakedQuad> quads;
+		if (model instanceof IESmartObjModel)
+			quads = ((IESmartObjModel) model).getQuads(state, null, 0, objState, texMap, true);
+		else
+			quads = model.getQuads(state, null, 0);
+		ClientUtils.renderModelTESR(quads, worldRenderer, tile.getWorld().getCombinedLight(tile.getPos(), 0));
 		worldRenderer.setTranslation(0, 0, 0);
 		tessellator.draw();
 		GlStateManager.popMatrix();
