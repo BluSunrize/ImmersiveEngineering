@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.blocks.BlockIETileProvider;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
 import blusunrize.immersiveengineering.common.entities.EntityIEExplosive;
@@ -36,6 +37,19 @@ public class BlockWoodenDevice0 extends BlockIETileProvider<BlockTypes_WoodenDev
 		this.setResistance(5.0F);
 		setMetaLightOpacity(BlockTypes_WoodenDevice0.WORKBENCH.getMeta(), 0);
 		setNotNormalBlock(BlockTypes_WoodenDevice0.WORKBENCH.getMeta());
+	}
+
+	@Override
+	public boolean useCustomStateMapper()
+	{
+		return Config.seaonal_festive;
+	}
+	@Override
+	public String getCustomStateMapping(int meta, boolean itemBlock)
+	{
+		if(Config.seaonal_festive && (meta==BlockTypes_WoodenDevice0.CRATE.getMeta()||meta==BlockTypes_WoodenDevice0.REINFORCED_CRATE.getMeta()||meta==BlockTypes_WoodenDevice0.GUNPOWDER_BARREL.getMeta()))
+			return "festive";
+		return null;
 	}
 
 	public int getExplosivesType(IBlockState state)

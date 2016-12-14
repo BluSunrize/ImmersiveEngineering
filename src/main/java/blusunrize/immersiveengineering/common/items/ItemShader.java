@@ -30,7 +30,12 @@ public class ItemShader extends ItemIEBase implements IShaderItem, ITextureOverr
 	public ItemShader()
 	{
 		super("shader", 1);
+		//DEFAULT CUTOUTS
+		//whitestripe
+		setDefaultTextureBounds(new ResourceLocation("immersiveengineering:revolvers/shaders/revolver_whitestripe"), 0,0,.25,.25);
+		setDefaultTextureBounds(new ResourceLocation("immersiveengineering:items/shaders/drill_diesel_whitestripe"), 0,22/64d,.5,54/64d);
 
+		//REGISTER SHADERS
 		addShader("Rosequartz", 0, EnumRarity.COMMON, 0xff412323, 0xffe6b4b4, 0xfff0cdcd,0xffe6b4b4).setInfo(null,null,"rosequartz");
 		addShader("Argo", 2, EnumRarity.COMMON, 0xff2d2d2d, 0xffdcdcdc, 0xffdc7823,0xffc8c8c8).setInfo(null,null,"argo");
 		addShader("Sunstrike", 5, EnumRarity.RARE, 0xff737373, 0xffcd6900, 0xb9d73a00,0xb9d73a00).setInfo(null,null,"sunstrike");
@@ -64,7 +69,10 @@ public class ItemShader extends ItemIEBase implements IShaderItem, ITextureOverr
 		addShader("Harrowed", 4, EnumRarity.RARE, 0xff161321,0xff431c1d,0xff161321,0xff161321).setInfo(null,"Destiny","harrowed");
 		addShader("Taken", 5, EnumRarity.EPIC, 0xff111c26,0xff111c26,0xffbad7dd,0xff111c26, null,false,0xffffffff).setInfo(null,"Destiny","taken");
 
-		addShader("Angel's Thesis", 2, EnumRarity.EPIC, 0xff1e1e1e,0xff754697,0xff77b93d,0xff505050, null,false,0xffffffff).setInfo(null,"Neon Genesis Evangelion","angelsthesis");
+		addShader("Angel's Thesis", 2, EnumRarity.EPIC, 0xff1e1e1e,0xff754697,0xff77b93d,0xff505050, null,false,0xffffffff).setInfo("Mecha","Neon Genesis Evangelion","angelsthesis");
+		addShader("Sutherland", 0, EnumRarity.RARE, 0xff44404f,0xff6b5eae,0xff702739,0xff44404f, "whitestripe",true,0xff702034).setInfo("Mecha","Code Geass","sutherland");
+		addShader("Exia", 8, EnumRarity.RARE, 0xffb2220c,0xff5571d2,0xffece7e1,0xffc0fdc7, "whitestripe",true,0xffc09032).setInfo("Mecha","Gundam 00","exia");
+		addShader("Crimson Lotus", 3, EnumRarity.EPIC, 0xffd83239,0xffd83239,0xff4e4f53,0xff2ff177, "whitestripe",true,0xfff4b951).setInfo("Mecha","Gurren Lagann","gurrenlagann");
 
 		addShader("Warbird", 7, EnumRarity.UNCOMMON, 0xff313640,0xffd8d7d0,0xffebac00,0xffd8d7d0).setInfo(null,null,"warbird");
 		addShader("Matrix", 7, EnumRarity.RARE, 0xff053f3c,0xffe1e1ff,0xffd4ffff,0xffffffff, "pipes",true,0xff84ddd8).setInfo(null,null,"matrix");
@@ -78,6 +86,31 @@ public class ItemShader extends ItemIEBase implements IShaderItem, ITextureOverr
 		addShader("Hollow", 4, EnumRarity.UNCOMMON, 0xff542d1c,0xffeec5e5,0xffcc8980,0xffc4a1aa, "pipes",true,0xffc49838).setInfo(null,"Kingdom Hearts","hollow");
 
 		addShader("Microshark", 8, EnumRarity.RARE, 0xff775054, 0xfff7f6cf, 0xff936267, 0xff936267, "shark",true,0xffffffff).setInfo(null,"Terraria","microshark");
+
+		addShader("N7", 2, EnumRarity.EPIC, 0xff13171b, 0xff524d4a, 0xffe01919, 0xff8a8684, "whitestripe",false,0xffffffff).setInfo(null,"Mass Effect","n7");
+		addShader("Normandy", 8, EnumRarity.RARE, 0xffffffff, 0xff1a1a1a, 0xffffffff, 0xffffffff, "whitestripe",true,0xff35447e).setInfo(null,"Mass Effect","normandy");
+		addShader("OmniTool", 2, EnumRarity.RARE, 0x40ff952c, 0x30ff952c, 0x40ff952c, 0x20ff952c).setInfo(null,"Mass Effect","omnitool");
+
+		entry = addShader("The Kindled", 5, EnumRarity.EPIC, 0xff2b160b, 0xff3a3a3a, 0x80bf541f, 0xff286f30).setInfo(null,"Dark Souls","kindled");
+		entry.getCase("immersiveengineering:revolver").addLayers(new ShaderLayer(new ResourceLocation("minecraft:blocks/fire_layer_0"),0x80ffffff).setTextureBounds(0,0,.25,.1875));
+		entry.getCase("immersiveengineering:drill").addLayers(new ShaderLayer(new ResourceLocation("minecraft:blocks/fire_layer_0"),0x80ffffff).setTextureBounds(10/64d,34/64d, 26/64d,50/64d).setCutoutBounds(.1875f,0,.8125,.75f));
+		entry.getCase("immersiveengineering:chemthrower").addLayers(new ShaderLayer(new ResourceLocation("minecraft:blocks/fire_layer_0"),0x80ffffff).setTextureBounds(6/64d,16/64d,22/64d,24/64d).setCutoutBounds(0,0,1,.5));
+		entry.getCase("immersiveengineering:railgun").addLayers(new ShaderLayer(new ResourceLocation("minecraft:blocks/fire_layer_0"),0x80ffffff).setTextureBounds(55/64d,48/64d,1,58/64d).setCutoutBounds(.25,.125,.75,.6875));
+		entry.getCase("immersiveengineering:balloon").addLayers(new ShaderLayer(new ResourceLocation("minecraft:blocks/fire_layer_0"),0x80ffffff).setTextureBounds(0,.375,.75,.875).setCutoutBounds(.125,0,.875,.5));
+
+		entry = addShader("Dark Fire", 5, EnumRarity.EPIC, 0xff1e131b, 0xff211633, 0xff330812, 0xff412965).setInfo(null,"Kingdom Hearts","darkfire");
+		entry.getCase("immersiveengineering:revolver").addLayers(new ShaderLayer(new ResourceLocation("immersiveengineering:blocks/shaders/greyscaleFire"),0xff9e83eb).setTextureBounds(0,0,.25,.1875));
+		entry.getCase("immersiveengineering:drill").addLayers(new ShaderLayer(new ResourceLocation("immersiveengineering:blocks/shaders/greyscaleFire"),0xff9e83eb).setTextureBounds(10/64d,34/64d, 26/64d,50/64d).setCutoutBounds(.1875f,0,.8125,.75f));
+		entry.getCase("immersiveengineering:chemthrower").addLayers(new ShaderLayer(new ResourceLocation("immersiveengineering:blocks/shaders/greyscaleFire"),0xff9e83eb).setTextureBounds(6/64d,16/64d,22/64d,24/64d).setCutoutBounds(0,0,1,.5));
+		entry.getCase("immersiveengineering:railgun").addLayers(new ShaderLayer(new ResourceLocation("immersiveengineering:blocks/shaders/greyscaleFire"),0xff9e83eb).setTextureBounds(55/64d,48/64d,1,58/64d).setCutoutBounds(.25,.125,.75,.6875));
+		entry.getCase("immersiveengineering:balloon").addLayers(new ShaderLayer(new ResourceLocation("immersiveengineering:blocks/shaders/greyscaleFire"),0xff9e83eb).setTextureBounds(0,.375,.75,.875).setCutoutBounds(.125,0,.875,.5));
+
+		entry = addShader("Erruption", 5, EnumRarity.EPIC, 0xff2b160b, 0xff58432f, 0x80bf301f, 0xff58432f).setInfo(null,null,"erruption");
+		entry.getCase("immersiveengineering:revolver").addLayers(new ShaderLayer(new ResourceLocation("minecraft:blocks/destroy_stage_8"),0xffff6314).setTextureBounds(0,0,.25,.1875));
+		entry.getCase("immersiveengineering:drill").addLayers(new ShaderLayer(new ResourceLocation("minecraft:blocks/destroy_stage_8"),0xffff6314).setTextureBounds(10/64d,34/64d, 26/64d,50/64d).setCutoutBounds(.1875f,0,.8125,.75f));
+		entry.getCase("immersiveengineering:chemthrower").addLayers(new ShaderLayer(new ResourceLocation("minecraft:blocks/destroy_stage_8"),0xffff6314).setTextureBounds(6/64d,16/64d,22/64d,24/64d).setCutoutBounds(0,0,1,.5));
+		entry.getCase("immersiveengineering:railgun").addLayers(new ShaderLayer(new ResourceLocation("minecraft:blocks/destroy_stage_8"),0xffff6314).setTextureBounds(55/64d,48/64d,1,58/64d).setCutoutBounds(.25,.125,.75,.6875));
+		entry.getCase("immersiveengineering:balloon").addLayers(new ShaderLayer(new ResourceLocation("minecraft:blocks/destroy_stage_8"),0xffff6314).setTextureBounds(0,.375,.75,.875).setCutoutBounds(.125,0,.875,.5));
 	}
 
 	@Override
@@ -87,12 +120,12 @@ public class ItemShader extends ItemIEBase implements IShaderItem, ITextureOverr
 		return ShaderRegistry.getShader(name, shaderType);
 	}
 
-	public ShaderRegistryEntry addShader(String name, int overlayType, EnumRarity rarity, int colourBackground, int colourPrimary, int colourSecondary, int colourBlade)
+	public static ShaderRegistryEntry addShader(String name, int overlayType, EnumRarity rarity, int colourBackground, int colourPrimary, int colourSecondary, int colourBlade)
 	{
-		return this.addShader(name, overlayType, rarity, colourBackground, colourPrimary, colourSecondary, colourBlade, null,true,0xffffffff);
+		return addShader(name, overlayType, rarity, colourBackground, colourPrimary, colourSecondary, colourBlade, null,true,0xffffffff);
 	}
 
-	public ShaderRegistryEntry addShader(String name, int overlayType, EnumRarity rarity, int colourBackground, int colourPrimary, int colourSecondary, int colourBlade, String additionalTexture, boolean loot, int colourOverlay)
+	public static ShaderRegistryEntry addShader(String name, int overlayType, EnumRarity rarity, int colourBackground, int colourPrimary, int colourSecondary, int colourBlade, String additionalTexture, boolean loot, int colourOverlay)
 	{
 		return ShaderRegistry.registerShader(name, Integer.toString(overlayType), rarity, colourPrimary, colourSecondary, colourBackground, colourBlade, additionalTexture, colourOverlay, loot,true);
 		//		ShaderCaseRevolver revolver = IEApi.registerShader_Revolver(name, overlayType, colour0, colour1, colour2, colour3, additionalTexture);
@@ -100,6 +133,11 @@ public class ItemShader extends ItemIEBase implements IShaderItem, ITextureOverr
 		//		IEApi.registerShader_Chemthrower(name, overlayType, colour0, colour1, colour2, true,false, additionalTexture);
 		//		IEApi.registerShader_Minecart(name, overlayType, colour1, colour2, additionalTexture);
 		//		IEApi.registerShader_Balloon(name, overlayType, colour1, colour2, additionalTexture);
+	}
+
+	public void setDefaultTextureBounds(ResourceLocation rl, double... bounds)
+	{
+		ShaderRegistry.defaultLayerBounds.put(rl,bounds);
 	}
 
 	@Override
@@ -217,6 +255,7 @@ public class ItemShader extends ItemIEBase implements IShaderItem, ITextureOverr
 				return list;
 			}
 		}
-		return Arrays.asList(new ResourceLocation("immersiveengieering:items/shader_0"),new ResourceLocation("immersiveengieering:items/shader_1"),new ResourceLocation("immersiveengieering:items/shader_2"));
+//		return Arrays.asList(new ResourceLocation("immersiveengineering:items/shader_0"));
+		return Arrays.asList(new ResourceLocation("immersiveengineering:items/shader_0"),new ResourceLocation("immersiveengineering:items/shader_1"),new ResourceLocation("immersiveengineering:items/shader_2"));
 	}
 }

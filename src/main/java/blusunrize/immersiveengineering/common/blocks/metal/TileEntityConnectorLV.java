@@ -1,7 +1,8 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
-import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxProvider;
+import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
+import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
@@ -11,8 +12,9 @@ import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConne
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
+import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
+import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import blusunrize.immersiveengineering.common.util.Utils;
-import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -22,22 +24,26 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
 //@Optional.Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "IC2")
-public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implements ITickable, IDirectionalTile, IFluxProvider,IFluxReceiver,IEnergyProvider,IEnergyReceiver, IBlockBounds//, ic2.api.energy.tile.IEnergySink
+public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implements ITickable, IDirectionalTile, IIEInternalFluxHandler, IBlockBounds//, ic2.api.energy.tile.IEnergySink
 {
 	boolean inICNet=false;
 	public EnumFacing facing = EnumFacing.DOWN;
 	private long lastTransfer = -1;
 	public int currentTickAccepted=0;
 	public static int[] connectorInputValues = {};
-	public int energyStored=0;
+	private FluxStorage energyStorage = new FluxStorage(getMaxInput(),getMaxInput(),0);
+
 	boolean firstTick = true;
 
 	@Override
@@ -50,12 +56,12 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 			//					IC2Helper.loadIC2Tile(this);
 			//					this.inICNet = true;
 			//				}
-			if(energyStored>0)
+			if(energyStorage.getEnergyStored()>0)
 			{
-				int temp = this.transferEnergy(energyStored, true, 0);
+				int temp = this.transferEnergy(energyStorage.getEnergyStored(), true, 0);
 				if(temp>0)
 				{
-					energyStored -= this.transferEnergy(temp, false, 0);
+					energyStorage.modifyEnergyStored(-this.transferEnergy(temp, false, 0));
 					markDirty();
 				}
 			}
@@ -175,7 +181,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 		super.writeCustomNBT(nbt, descPacket);
 		nbt.setInteger("facing", facing.ordinal());
 		nbt.setLong("lastTransfer", lastTransfer);
-		nbt.setInteger("stored", energyStored);
+		energyStorage.writeToNBT(nbt);
 	}
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
@@ -183,7 +189,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 		super.readCustomNBT(nbt, descPacket);
 		facing = EnumFacing.getFront(nbt.getInteger("facing"));
 		lastTransfer = nbt.getLong("lastTransfer");
-		energyStored = nbt.getInteger("stored");
+		energyStorage.readFromNBT(nbt);
 	}
 
 	@Override
@@ -224,6 +230,42 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 		return WireType.COPPER.getMaxLength();
 	}
 
+	IEForgeEnergyWrapper energyWrapper;
+	@Override
+	public IEForgeEnergyWrapper getCapabilityWrapper(EnumFacing facing)
+	{
+		if(facing!=this.facing)
+			return null;
+		if(energyWrapper==null || energyWrapper.side!=this.facing)
+			energyWrapper = new IEForgeEnergyWrapper(this, this.facing);
+		return energyWrapper;
+	}
+	@Override
+	public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing)
+	{
+		if(capability == CapabilityEnergy.ENERGY && facing==this.facing)
+			return true;
+		return super.hasCapability(capability, facing);
+	}
+	@Override
+	public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing)
+	{
+		if(capability == CapabilityEnergy.ENERGY && facing==this.facing)
+			return (T)getCapabilityWrapper(this.facing);
+		return super.getCapability(capability, facing);
+	}
+
+	@Override
+	public FluxStorage getFluxStorage()
+	{
+		return energyStorage;
+	}
+	@Override
+	public SideConfig getEnergySideConfig(EnumFacing facing)
+	{
+		return (!isRelay()&&facing==this.facing)?SideConfig.INPUT:SideConfig.NONE;
+	}
+
 	@Override
 	public boolean canConnectEnergy(EnumFacing from)
 	{
@@ -240,25 +282,26 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 			return 0;
 
 		int accepted = Math.min(Math.min(getMaxOutput(),getMaxInput()), energy);
-		accepted = Math.min(getMaxOutput()-energyStored, accepted);
+		accepted = Math.min(getMaxOutput()-energyStorage.getEnergyStored(), accepted);
 		if(accepted<=0)
 			return 0;
 
 		if(!simulate)
 		{
-			energyStored += accepted;
+			energyStorage.modifyEnergyStored(accepted);
 			lastTransfer = worldObj.getTotalWorldTime();
 			markDirty();
 		}
 
 		return accepted;
 	}
+
 	@Override
 	public int getEnergyStored(EnumFacing from)
 	{
 		if(isRelay())
 			return 0;
-		return energyStored;
+		return energyStorage.getEnergyStored();
 	}
 	@Override
 	public int getMaxEnergyStored(EnumFacing from)
@@ -366,18 +409,18 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 		float wMax = this instanceof TileEntityConnectorStructural?.75f:.6875f;
 		switch(facing.getOpposite() )
 		{
-		case UP:
-			return new float[]{wMin,0,wMin,  wMax,length,wMax};
-		case DOWN:
-			return new float[]{wMin,1-length,wMin,  wMax,1,wMax};
-		case SOUTH:
-			return new float[]{wMin,wMin,0,  wMax,wMax,length};
-		case NORTH:
-			return new float[]{wMin,wMin,1-length,  wMax,wMax,1};
-		case EAST:
-			return new float[]{0,wMin,wMin,  length,wMax,wMax};
-		case WEST:
-			return new float[]{1-length,wMin,wMin,  1,wMax,wMax};
+			case UP:
+				return new float[]{wMin,0,wMin,  wMax,length,wMax};
+			case DOWN:
+				return new float[]{wMin,1-length,wMin,  wMax,1,wMax};
+			case SOUTH:
+				return new float[]{wMin,wMin,0,  wMax,wMax,length};
+			case NORTH:
+				return new float[]{wMin,wMin,1-length,  wMax,wMax,1};
+			case EAST:
+				return new float[]{0,wMin,wMin,  length,wMax,wMax};
+			case WEST:
+				return new float[]{1-length,wMin,wMin,  1,wMax,wMax};
 		}
 		return new float[]{0,0,0,1,1,1};
 	}

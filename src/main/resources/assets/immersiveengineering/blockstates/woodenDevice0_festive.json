@@ -1,0 +1,55 @@
+{
+	"forge_marker": 1,
+	"defaults":
+	{
+		"transform": "forge:default-block",
+		"model": "immersiveengineering:iePillar",
+		"textures": {
+			"particle": "#side",
+			"side": "immersiveengineering:blocks/woodenDevice_crateFestive",
+			"top": "immersiveengineering:blocks/woodenDevice_crateFestive_top",
+			"bottom": "immersiveengineering:blocks/woodenDevice_crateFestive_top"
+		}
+	},
+	"variants":
+	{
+		"inventory,type=crate": [{ "textures": { "side": "immersiveengineering:blocks/woodenDevice_crateFestive", "top": "immersiveengineering:blocks/woodenDevice_crateFestive_top", "bottom": "immersiveengineering:blocks/woodenDevice_crateFestive_top"} }],
+		"inventory,type=gunpowder_barrel": [{ "textures": { "side": "immersiveengineering:blocks/woodenDevice_gunpowderBarrelFestive", "bottom": "immersiveengineering:blocks/woodenDevice_gunpowderBarrelFestive_bottom", "top": "immersiveengineering:blocks/woodenDevice_gunpowderBarrelFestive_top"} }],
+		"inventory,type=reinforced_crate": [{ "textures": { "side": "immersiveengineering:blocks/woodenDevice_reinforcedCrateFestive", "top": "immersiveengineering:blocks/woodenDevice_reinforcedCrateFestive_top", "bottom": "immersiveengineering:blocks/woodenDevice_reinforcedCrateFestive_top"} }],
+		"type":
+		{
+			"crate": {
+			},
+			"gunpowder_barrel": {
+				"textures": {
+					"particle": "immersiveengineering:blocks/woodenDevice_gunpowderBarrelFestive",
+					"side": "immersiveengineering:blocks/woodenDevice_gunpowderBarrelFestive",
+					"top": "immersiveengineering:blocks/woodenDevice_gunpowderBarrelFestive_top",
+					"bottom": "immersiveengineering:blocks/woodenDevice_gunpowderBarrelFestive_bottom"
+				}
+			},
+			"reinforced_crate": {
+				"textures": {
+					"particle": "immersiveengineering:blocks/woodenDevice_reinforcedCrateFestive",
+					"side": "immersiveengineering:blocks/woodenDevice_reinforcedCrateFestive",
+					"top": "immersiveengineering:blocks/woodenDevice_reinforcedCrateFestive_top",
+					"bottom": "immersiveengineering:blocks/woodenDevice_reinforcedCrateFestive_top"
+				}
+			}
+		},
+		"facing":
+		{
+			"down": {},
+			"up": {},
+			"north": {},
+			"south": {},
+			"west": {},
+			"east": {}
+		},
+		"_0multiblockslave":
+		{
+			"false":{},
+			"true":{}
+		}
+	}
+}

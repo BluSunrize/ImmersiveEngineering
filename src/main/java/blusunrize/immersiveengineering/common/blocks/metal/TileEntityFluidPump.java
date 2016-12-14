@@ -2,19 +2,21 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
+import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.api.fluid.IFluidPipe;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IConfigurableSides;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityFluidPipe.DirectionalFluidOutput;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
+import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
+import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import blusunrize.immersiveengineering.common.util.Utils;
-import cofh.api.energy.EnergyStorage;
-import cofh.api.energy.IEnergyReceiver;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
@@ -22,6 +24,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
@@ -32,16 +35,17 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class TileEntityFluidPump extends TileEntityIEBase implements ITickable, IBlockBounds, IHasDummyBlocks, IConfigurableSides, IFluidPipe, IFluxReceiver,IEnergyReceiver
+public class TileEntityFluidPump extends TileEntityIEBase implements ITickable, IBlockBounds, IHasDummyBlocks, IConfigurableSides, IFluidPipe, IIEInternalFluxHandler, IBlockOverlayText
 {
 	public int[] sideConfig = new int[] {0,-1,-1,-1,-1,-1};
 	public boolean dummy = false;
 	public FluidTank tank = new FluidTank(4000);
-	public EnergyStorage energyStorage = new EnergyStorage(8000);
+	public FluxStorage energyStorage = new FluxStorage(8000);
 	public boolean placeCobble = true;
 
 	boolean checkingArea = false;
@@ -315,6 +319,28 @@ public class TileEntityFluidPump extends TileEntityIEBase implements ITickable, 
 		return super.getCapability(capability, facing);
 	}
 
+	@Override
+	public String[] getOverlayText(EntityPlayer player, RayTraceResult mop, boolean hammer)
+	{
+		if(hammer && IEConfig.colourblindSupport && !dummy)
+		{
+			int i = sideConfig[Math.min(sideConfig.length-1, mop.sideHit.ordinal())];
+			int j = sideConfig[Math.min(sideConfig.length-1, mop.sideHit.getOpposite().ordinal())];
+			return new String[]{
+					I18n.format(Lib.DESC_INFO+"blockSide.facing")
+							+": "+ I18n.format(Lib.DESC_INFO+"blockSide.connectFluid."+i),
+					I18n.format(Lib.DESC_INFO+"blockSide.opposite")
+							+": "+ I18n.format(Lib.DESC_INFO+"blockSide.connectFluid."+j)
+			};
+		}
+		return null;
+	}
+	@Override
+	public boolean useNixieFont(EntityPlayer player, RayTraceResult mop)
+	{
+		return false;
+	}
+
 	static class SidedFluidHandler implements IFluidHandler
 	{
 		TileEntityFluidPump pump;
@@ -353,51 +379,32 @@ public class TileEntityFluidPump extends TileEntityIEBase implements ITickable, 
 		}
 	}
 
+	@Nonnull
 	@Override
-	public boolean canConnectEnergy(EnumFacing from)
-	{
-		return from==EnumFacing.UP || (!dummy&& (from==null || this.sideConfig[from.ordinal()]==-1));
-	}
-
-	@Override
-	public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate)
+	public FluxStorage getFluxStorage()
 	{
 		if(dummy)
 		{
 			TileEntity te = worldObj.getTileEntity(getPos().add(0,-1,0));
 			if(te instanceof TileEntityFluidPump)
-				return ((TileEntityFluidPump)te).receiveEnergy(from, maxReceive, simulate);
-			return 0;
+				return ((TileEntityFluidPump)te).getFluxStorage();
 		}
-		return energyStorage.receiveEnergy(maxReceive, simulate);
+		return energyStorage;
 	}
-
+	@Nonnull
 	@Override
-	public int getEnergyStored(EnumFacing from)
+	public SideConfig getEnergySideConfig(EnumFacing facing)
 	{
-		if(dummy)
-		{
-			TileEntity te = worldObj.getTileEntity(getPos().add(0,-1,0));
-			if(te instanceof TileEntityFluidPump)
-				return ((TileEntityFluidPump)te).getEnergyStored(from);
-			return 0;
-		}
-		return energyStorage.getEnergyStored();
+		return dummy&&facing==EnumFacing.UP?SideConfig.INPUT:SideConfig.NONE;
 	}
-
+	IEForgeEnergyWrapper wrapper = new IEForgeEnergyWrapper(this, EnumFacing.UP);
 	@Override
-	public int getMaxEnergyStored(EnumFacing from)
+	public IEForgeEnergyWrapper getCapabilityWrapper(EnumFacing facing)
 	{
-		if(dummy)
-		{
-			TileEntity te = worldObj.getTileEntity(getPos().add(0,-1,0));
-			if(te instanceof TileEntityFluidPump)
-				return ((TileEntityFluidPump)te).getMaxEnergyStored(from);
-			return 0;
-		}
-		return energyStorage.getMaxEnergyStored();
+		if(!dummy&&facing==EnumFacing.UP)
+			return null;
+		return wrapper;
 	}
-
 
 	@Override
 	public boolean isDummy()

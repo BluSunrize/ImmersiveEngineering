@@ -154,7 +154,7 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 //		if(tile instanceof IConfigurableSides)
 //			for(int i=0; i<6; i++)
 //				if(state.getPropertyNames().contains(IEProperties.SIDECONFIG[i]))
-//					state = state.withProperty(IEProperties.SIDECONFIG[i], ((IConfigurableSides)tile).getSideConfig(i));
+//					state = state.withProperty(IEProperties.SIDECONFIG[i], ((IConfigurableSides)tile).getEnergySideConfig(i));
 
 		if(tile instanceof IActiveState)
 		{

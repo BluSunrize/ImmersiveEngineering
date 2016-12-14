@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
+import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
+import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralWorldInfo;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
@@ -9,9 +10,9 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummy
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasObjProperty;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
+import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
+import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import cofh.api.energy.EnergyStorage;
-import cofh.api.energy.IEnergyReceiver;
 import com.google.common.collect.Lists;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -19,6 +20,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -27,11 +29,12 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 
-public class TileEntitySampleDrill extends TileEntityIEBase implements ITickable, IFluxReceiver, IEnergyReceiver, IHasDummyBlocks, IPlayerInteraction, IHasObjProperty
+public class TileEntitySampleDrill extends TileEntityIEBase implements ITickable, IIEInternalFluxHandler, IHasDummyBlocks, IPlayerInteraction, IHasObjProperty
 {
-	public EnergyStorage energyStorage = new EnergyStorage(8000);
+	public FluxStorage energyStorage = new FluxStorage(8000);
 	public int dummy=0;
 	public int process=0;
 	public boolean active = false;
@@ -147,46 +150,37 @@ public class TileEntitySampleDrill extends TileEntityIEBase implements ITickable
 		return renderAABB;
 	}
 
-	@Override
-	public boolean canConnectEnergy(EnumFacing from)
-	{
-		return dummy==0;
-	}
 
+	@Nonnull
 	@Override
-	public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate)
+	public FluxStorage getFluxStorage()
 	{
-		if(dummy!=0)
+		if(dummy>0)
 		{
 			TileEntity te = worldObj.getTileEntity(getPos().add(0,-dummy,0));
 			if(te instanceof TileEntitySampleDrill)
-				return ((TileEntitySampleDrill)te).receiveEnergy(from, maxReceive, simulate);
+				return ((TileEntitySampleDrill)te).getFluxStorage();
 		}
-		return energyStorage.receiveEnergy(maxReceive, simulate);
+		return energyStorage;
 	}
-
+	@Nonnull
 	@Override
-	public int getEnergyStored(EnumFacing from)
+	public SideConfig getEnergySideConfig(EnumFacing facing)
 	{
-		if(dummy!=0)
-		{
-			TileEntity te = worldObj.getTileEntity(getPos().add(0,-dummy,0));
-			if(te instanceof TileEntitySampleDrill)
-				return ((TileEntitySampleDrill)te).getEnergyStored(from);
-		}
-		return energyStorage.getEnergyStored();
+		return dummy==0&&facing!=null&&facing.getAxis()!=Axis.Y?SideConfig.INPUT:SideConfig.NONE;
 	}
-
+	IEForgeEnergyWrapper[] wrappers = {
+			new IEForgeEnergyWrapper(this, EnumFacing.NORTH),
+			new IEForgeEnergyWrapper(this, EnumFacing.SOUTH),
+			new IEForgeEnergyWrapper(this, EnumFacing.WEST),
+			new IEForgeEnergyWrapper(this, EnumFacing.EAST)
+	};
 	@Override
-	public int getMaxEnergyStored(EnumFacing from)
+	public IEForgeEnergyWrapper getCapabilityWrapper(EnumFacing facing)
 	{
-		if(dummy!=0)
-		{
-			TileEntity te = worldObj.getTileEntity(getPos().add(0,-dummy,0));
-			if(te instanceof TileEntitySampleDrill)
-				return ((TileEntitySampleDrill)te).getMaxEnergyStored(from);
-		}
-		return energyStorage.getMaxEnergyStored();
+		if(dummy==0&&facing!=null&&facing.getAxis()!=Axis.Y)
+			return wrappers[facing.ordinal()-2];
+		return null;
 	}
 
 	@Override

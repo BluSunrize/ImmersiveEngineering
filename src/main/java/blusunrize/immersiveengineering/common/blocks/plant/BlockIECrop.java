@@ -13,6 +13,7 @@ import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemBlock;
@@ -86,7 +87,11 @@ public class BlockIECrop<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 	{
 		return null;
 	}
-
+	@Override
+	public StateMapperBase getCustomMapper()
+	{
+		return null;
+	}
 	@Override
 	public boolean appendPropertiesToState()
 	{

@@ -45,6 +45,8 @@ public class ShaderRegistry
 	public static HashMap<String, HashMap<EnumRarity,Integer>> playerTotalWeight = new HashMap<String, HashMap<EnumRarity,Integer>>();
 	/**The deafault cost for replicating a shader. Prices are multiplied with 10-rarity level. Prices can be adjusted for every registry entry*/
 	public static IngredientStack defaultReplicationCost = new IngredientStack("dustSilver");
+	/**A HashMap to set default texture bounds for the additional layers of a shadercase. Saves you the trouble of redfining them for every shader. See {@link ShaderLayer#setTextureBounds(double... bounds)}.*/
+	public static HashMap<ResourceLocation,double[]> defaultLayerBounds = new HashMap<ResourceLocation,double[]>();
 
 	public static ShaderCase getShader(String name, String shaderType)
 	{
@@ -116,7 +118,10 @@ public class ShaderRegistry
 		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:revolvers/shaders/revolver_0"),colourBlade));
 		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:revolvers/shaders/revolver_1_"+overlayType),colour2));
 		if(additionalTexture!=null)
-			list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:revolvers/shaders/revolver_"+additionalTexture),colourAddtional));
+		{
+			ResourceLocation rl = new ResourceLocation("immersiveengineering:revolvers/shaders/revolver_"+additionalTexture);
+			list.add(new ShaderLayer(rl,colourAddtional).setTextureBounds(defaultLayerBounds.get(rl)));
+		}
 		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:revolvers/shaders/revolver_uncoloured"),0xffffffff));
 		ShaderCaseRevolver shader = new ShaderCaseRevolver(list);
 		return registerShaderCase(name, shader, rarity);
@@ -141,7 +146,10 @@ public class ShaderRegistry
 		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:items/shaders/chemthrower_0"),colour1));
 		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:items/shaders/chemthrower_1_"+overlayType),colour2));
 		if(additionalTexture!=null)
-			list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:items/shaders/chemthrower_"+additionalTexture),colourAddtional));
+		{
+			ResourceLocation rl = new ResourceLocation("immersiveengineering:items/shaders/chemthrower_"+additionalTexture);
+			list.add(new ShaderLayer(rl,colourAddtional).setTextureBounds(defaultLayerBounds.get(rl)));
+		}
 		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:items/shaders/chemthrower_uncoloured"),0xffffffff));
 		ShaderCaseChemthrower shader = new ShaderCaseChemthrower(list);
 		return registerShaderCase(name, shader, rarity);
@@ -167,7 +175,10 @@ public class ShaderRegistry
 		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:items/shaders/drill_diesel_0"),colour1));
 		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:items/shaders/drill_diesel_1_"+overlayType),colour2));
 		if(additionalTexture!=null)
-			list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:items/shaders/drill_diesel_"+additionalTexture),colourAddtional));
+		{
+			ResourceLocation rl = new ResourceLocation("immersiveengineering:items/shaders/drill_diesel_"+additionalTexture);
+			list.add(new ShaderLayer(rl,colourAddtional).setTextureBounds(defaultLayerBounds.get(rl)));
+		}
 		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:items/shaders/drill_diesel_uncoloured"),0xffffffff));
 		list.add(new ShaderLayer(null,0xffffffff));//final pass is for drill head and augers
 		ShaderCaseDrill shader = new ShaderCaseDrill(list);
@@ -193,7 +204,10 @@ public class ShaderRegistry
 		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:items/shaders/railgun_0"),colour1));
 		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:items/shaders/railgun_1_"+overlayType),colour2));
 		if(additionalTexture!=null)
-			list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:items/shaders/railgun_"+additionalTexture),colourAddtional));
+		{
+			ResourceLocation rl = new ResourceLocation("immersiveengineering:items/shaders/railgun_"+additionalTexture);
+			list.add(new ShaderLayer(rl,colourAddtional).setTextureBounds(defaultLayerBounds.get(rl)));
+		}
 		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:items/shaders/railgun_uncoloured"),0xffffffff));
 
 		ShaderCaseRailgun shader = new ShaderCaseRailgun(list);
@@ -252,7 +266,10 @@ public class ShaderRegistry
 		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:blocks/shaders/balloon_0"),colour0));
 		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:blocks/shaders/balloon_1_"+overlayType),colour1));
 		if(additionalTexture!=null)
-			list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:blocks/shaders/balloon_"+additionalTexture),colourAddtional));
+		{
+			ResourceLocation rl = new ResourceLocation("immersiveengineering:blocks/shaders/balloon_"+additionalTexture);
+			list.add(new ShaderLayer(rl,colourAddtional).setTextureBounds(defaultLayerBounds.get(rl)));
+		}
 		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:blocks/shaders/balloon_uncoloured"),0xffffffff));
 
 		ShaderCaseBalloon shader = new ShaderCaseBalloon(list);

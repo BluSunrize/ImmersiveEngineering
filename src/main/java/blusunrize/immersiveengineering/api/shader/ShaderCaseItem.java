@@ -22,6 +22,12 @@ public class ShaderCaseItem extends ShaderCase
 	}
 
 	@Override
+	public int getLayerInsertionIndex()
+	{
+		return layers.length-1;
+	}
+
+	@Override
 	public boolean renderModelPartForPass(ItemStack shader, ItemStack item, String modelPart, int pass)
 	{
 		return true;

@@ -2,7 +2,9 @@ package blusunrize.immersiveengineering.common.util.compat;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
+import blusunrize.immersiveengineering.api.shader.ShaderCase.ShaderLayer;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
+import blusunrize.immersiveengineering.api.shader.ShaderRegistry.ShaderRegistryEntry;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
@@ -10,6 +12,7 @@ import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.items.ItemBullet.HomingBullet;
 import blusunrize.immersiveengineering.common.items.ItemRevolver;
 import blusunrize.immersiveengineering.common.items.ItemRevolver.SpecialRevolver;
+import blusunrize.immersiveengineering.common.items.ItemShader;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.google.common.collect.ArrayListMultimap;
@@ -35,6 +38,8 @@ import java.util.List;
 
 public class BotaniaHelper extends IECompatModule
 {
+	EnumRarity rariryRelic;
+
 	@Override
 	public void preInit()
 	{
@@ -57,10 +62,27 @@ public class BotaniaHelper extends IECompatModule
 			IELogger.error("[Botania] Failed to protect IE conveyors against Botania's magnets");
 			e.printStackTrace();
 		}
-		ShaderRegistry.rarityWeightMap.put(EnumRarity.valueOf("RELIC"), 2);
-//		ShaderRegistry.registerShader("Spectral", "5", EnumRarity.EPIC, new int[]{26, 26, 40, 220}, new int[]{0, 70, 49, 220}, new int[]{40, 40, 50, 220}, new int[]{5, 10, 8, 180}, null, false, true);
+		rariryRelic = EnumRarity.valueOf("RELIC");
+		if(rariryRelic!=null)
+		{
+			ShaderRegistry.rarityWeightMap.put(rariryRelic, 2);
+			makeShaderRelic("The Kindled");
+			makeShaderRelic("Dark Fire");
+
+			ShaderRegistryEntry entry = ItemShader.addShader("Terra", 1, rariryRelic, 0xff3e2d14, 0xff2b1108, 0xff41bd1a, 0xff2e120a).setInfo(null,"Botania","terra");
+			entry.getCase("immersiveengineering:revolver").addLayers(new ShaderLayer(new ResourceLocation("botania:blocks/livingwood5"),0xffffffff).setTextureBounds(17/128d,24/128d,33/128d,40/128d));
+			entry.getCase("immersiveengineering:drill").addLayers(new ShaderLayer(new ResourceLocation("botania:blocks/alfheimPortalInside"),0xffffffff).setTextureBounds(14/64d,10/64d, 26/64d,22/64d));
+			entry.getCase("immersiveengineering:railgun").addLayers(new ShaderLayer(new ResourceLocation("botania:blocks/storage1"),0xff9e83eb).setTextureBounds(55/64d,42/64d,1,58/64d).setCutoutBounds(.1875,0,.75,1));
+		}
 		if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
 			MinecraftForge.EVENT_BUS.register(this);
+	}
+
+	void makeShaderRelic(String shader)
+	{
+		ShaderRegistryEntry entry = ShaderRegistry.shaderRegistry.get(shader);
+		entry.rarity = rariryRelic;
+		entry.setReplicationCost(ShaderRegistry.defaultReplicationCost.copyWithMultipliedSize(10-2));
 	}
 
 	@Override
@@ -149,7 +171,7 @@ public class BotaniaHelper extends IECompatModule
 			{
 				GlStateManager.pushMatrix();
 				((ItemRevolver)IEContent.itemRevolver).applySpecialCrafting(revolverEntity.getEntityItem(), special);
-				GlStateManager.translate(-.16, -1.45, -.2);
+				GlStateManager.translate(-.16, 1.45, -.2);
 				GlStateManager.rotate(-90, 0, 1, 0);
 				GlStateManager.rotate(15, 0, 0, 1);
 				GlStateManager.rotate(180, 1, 0, 0);

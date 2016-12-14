@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.common.blocks;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -8,9 +9,14 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.property.IExtendedBlockState;
+import net.minecraftforge.energy.CapabilityEnergy;
+
+import javax.annotation.Nullable;
 
 public abstract class TileEntityIEBase extends TileEntity
 {
@@ -99,5 +105,21 @@ public abstract class TileEntityIEBase extends TileEntity
 			newState = state;
 		worldObj.notifyBlockUpdate(pos,state,newState,3);
 		worldObj.notifyNeighborsOfStateChange(pos, newState.getBlock());
+	}
+
+
+	@Override
+	public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing)
+	{
+		if(capability==CapabilityEnergy.ENERGY && this instanceof EnergyHelper.IIEInternalFluxConnector)
+			return ((EnergyHelper.IIEInternalFluxConnector)this).getCapabilityWrapper(facing)!=null;
+		return super.hasCapability(capability, facing);
+	}
+	@Override
+	public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing)
+	{
+		if(capability==CapabilityEnergy.ENERGY && this instanceof EnergyHelper.IIEInternalFluxConnector)
+			return (T)((EnergyHelper.IIEInternalFluxConnector)this).getCapabilityWrapper(facing);
+		return super.getCapability(capability, facing);
 	}
 }

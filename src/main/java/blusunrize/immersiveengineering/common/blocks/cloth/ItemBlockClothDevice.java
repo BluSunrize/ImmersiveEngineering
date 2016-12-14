@@ -24,9 +24,9 @@ public class ItemBlockClothDevice extends ItemBlockIEBase
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(ItemStack itemStackIn, World worldIn, EntityPlayer playerIn, EnumHand hand)
 	{
-		if (itemStackIn.getItemDamage()!=BlockTypes_ClothDevice.BALLOON.getMeta())
+		if(itemStackIn.getMetadata()!=BlockTypes_ClothDevice.BALLOON.getMeta())
 			return super.onItemRightClick(itemStackIn, worldIn, playerIn, hand);
-		if (playerIn.isSneaking())
+		if(playerIn.isSneaking())
 			increaseOffset(itemStackIn);
 		else
 		{
@@ -52,7 +52,7 @@ public class ItemBlockClothDevice extends ItemBlockIEBase
 	@Override
 	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
-		if (playerIn.isSneaking())
+		if(stack.getMetadata()==BlockTypes_ClothDevice.BALLOON.getMeta() && playerIn.isSneaking())
 		{
 			increaseOffset(stack);
 			return EnumActionResult.SUCCESS;

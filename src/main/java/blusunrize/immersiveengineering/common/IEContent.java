@@ -262,16 +262,20 @@ public class IEContent
 		//
 
 		fluidCreosote = new Fluid("creosote", new ResourceLocation("immersiveengineering:blocks/fluid/creosote_still"), new ResourceLocation("immersiveengineering:blocks/fluid/creosote_flow")).setDensity(800).setViscosity(3000);
-		FluidRegistry.registerFluid(fluidCreosote);
+		if(!FluidRegistry.registerFluid(fluidCreosote))
+			fluidCreosote = FluidRegistry.getFluid("creosote");
 		FluidRegistry.addBucketForFluid(fluidCreosote);
 		fluidPlantoil = new Fluid("plantoil", new ResourceLocation("immersiveengineering:blocks/fluid/plantoil_still"), new ResourceLocation("immersiveengineering:blocks/fluid/plantoil_flow")).setDensity(925).setViscosity(2000);
-		FluidRegistry.registerFluid(fluidPlantoil);
+		if(!FluidRegistry.registerFluid(fluidPlantoil))
+			fluidPlantoil = FluidRegistry.getFluid("plantoil");
 		FluidRegistry.addBucketForFluid(fluidPlantoil);
 		fluidEthanol = new Fluid("ethanol", new ResourceLocation("immersiveengineering:blocks/fluid/ethanol_still"), new ResourceLocation("immersiveengineering:blocks/fluid/ethanol_flow")).setDensity(789).setViscosity(1000);
-		FluidRegistry.registerFluid(fluidEthanol);
+		if(!FluidRegistry.registerFluid(fluidEthanol))
+			fluidEthanol = FluidRegistry.getFluid("ethanol");
 		FluidRegistry.addBucketForFluid(fluidEthanol);
 		fluidBiodiesel = new Fluid("biodiesel", new ResourceLocation("immersiveengineering:blocks/fluid/biodiesel_still"), new ResourceLocation("immersiveengineering:blocks/fluid/biodiesel_flow")).setDensity(789).setViscosity(1000);
-		FluidRegistry.registerFluid(fluidBiodiesel);
+		if(!FluidRegistry.registerFluid(fluidBiodiesel))
+			fluidBiodiesel = FluidRegistry.getFluid("biodiesel");
 		FluidRegistry.addBucketForFluid(fluidBiodiesel);
 
 		//Ore Dict
@@ -576,6 +580,28 @@ public class IEContent
 				return query;
 			}
 		});
+		//Pams Harvest Craft uses fluids with OreDict entries, so this is my workaround >_>
+		final List listWater = OreDictionary.getOres("listAllwater");
+		AssemblerHandler.registerSpecialQueryConverters(o -> {
+			if(!(o instanceof List))
+				return null;
+				if(listWater==o)
+					return new RecipeQuery(new FluidStack(FluidRegistry.WATER,1000), 1000);
+			return null;
+		});
+		final Fluid milk = FluidRegistry.getFluid("milk");
+		if(milk!=null)
+		{
+			final List listMilk = OreDictionary.getOres("listAllmilk");
+			AssemblerHandler.registerSpecialQueryConverters(o -> {
+				if(!(o instanceof List))
+					return null;
+				if(listMilk == o)
+					return new RecipeQuery(new FluidStack(milk, 1000), 1000);
+				return null;
+			});
+		}
+
 
 		CokeOvenRecipe.addRecipe(new ItemStack(itemMaterial,1,6), new ItemStack(Items.COAL), 1800, 500);
 		CokeOvenRecipe.addRecipe(new ItemStack(blockStoneDecoration,1,3), "blockCoal", 1800*9, 5000);

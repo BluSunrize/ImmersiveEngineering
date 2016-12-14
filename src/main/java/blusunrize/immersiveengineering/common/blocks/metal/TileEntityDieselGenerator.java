@@ -3,15 +3,14 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.IMultiblockRecipe;
 import blusunrize.immersiveengineering.api.energy.DieselHandler;
-import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedCollisionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedSelectionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGuiTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundTile;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockDieselGenerator;
+import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.IESounds;
-import cofh.api.energy.IEnergyReceiver;
 import com.google.common.collect.Lists;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -116,15 +115,13 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockMetal<TileEnt
 					int fluidConsumed = 1000 / burnTime;
 					int output = IEConfig.Machines.dieselGen_output;
 					int connected = 0;
-					Object[] receivers = new Object[3];
+					TileEntity[] receivers = new TileEntity[3];
 					for(int i = 0; i < 3; i++)
 					{
 						receivers[i] = getEnergyOutput(i == 1 ? -1 : i == 2 ? 1 : 0);
 						if(receivers[i] != null)
 						{
-							if(receivers[i] instanceof IFluxReceiver && ((IFluxReceiver)receivers[i]).canConnectEnergy(EnumFacing.DOWN) && ((IFluxReceiver)receivers[i]).receiveEnergy(EnumFacing.DOWN, 4096, true) > 0)
-								connected++;
-							else if(receivers[i] instanceof IEnergyReceiver && ((IEnergyReceiver)receivers[i]).canConnectEnergy(EnumFacing.DOWN) && ((IEnergyReceiver)receivers[i]).receiveEnergy(EnumFacing.DOWN, 4096, true) > 0)
+							if(EnergyHelper.insertFlux(receivers[i], EnumFacing.DOWN, 4096, true)>0)
 								connected++;
 						}
 					}
@@ -140,13 +137,7 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockMetal<TileEnt
 						int leftover = output % connected;
 						for(int i = 0; i < 3; i++)
 							if(receivers[i] != null)
-							{
-								if(receivers[i] instanceof IFluxReceiver && ((IFluxReceiver)receivers[i]).canConnectEnergy(EnumFacing.DOWN))
-									((IFluxReceiver)receivers[i]).receiveEnergy(EnumFacing.DOWN, splitOutput + (leftover-- > 0 ? 1 : 0), false);
-								else if(receivers[i] instanceof IEnergyReceiver && ((IEnergyReceiver)receivers[i]).canConnectEnergy(EnumFacing.DOWN))
-									((IEnergyReceiver)receivers[i]).receiveEnergy(EnumFacing.DOWN, splitOutput + (leftover-- > 0 ? 1 : 0), false);
-							}
-
+								EnergyHelper.insertFlux(receivers[i], EnumFacing.DOWN, splitOutput + (leftover-- > 0 ? 1 : 0), false);
 					} else if(active)
 					{
 						active = false;
@@ -167,12 +158,10 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockMetal<TileEnt
 			}
 		}
 	}
-	Object getEnergyOutput(int w)
+	TileEntity getEnergyOutput(int w)
 	{
 		TileEntity eTile = worldObj.getTileEntity(this.getBlockPosForPos(16+w).add(0,1,0));
-		if(eTile instanceof IFluxReceiver)
-			return eTile;
-		else if(eTile instanceof IEnergyReceiver)
+		if(EnergyHelper.isFluxReceiver(eTile, EnumFacing.DOWN))
 			return eTile;
 		return null;
 	}
@@ -321,7 +310,7 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockMetal<TileEnt
 	@Override
 	public int[] getEnergyPos()
 	{
-		return new int[0];
+		return new int[]{15,16,17};
 	}
 	@Override
 	public int[] getRedstonePos()

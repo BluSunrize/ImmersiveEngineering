@@ -15,7 +15,7 @@ import java.util.Collection;
 public abstract class ShaderCase
 {
 	/**An array of layers that this shader is comprised of.*/
-	protected final ShaderLayer[] layers;
+	protected ShaderLayer[] layers;
 
 	protected ShaderCase(ShaderLayer... layers)
 	{
@@ -30,6 +30,18 @@ public abstract class ShaderCase
 	{
 		return this.layers;
 	}
+	public ShaderCase addLayers(ShaderLayer... addedLayers)
+	{
+		ShaderLayer[] newLayers = new ShaderLayer[layers.length+addedLayers.length];
+		int insert = getLayerInsertionIndex();
+		System.arraycopy(this.layers,0, newLayers,0, insert);
+		System.arraycopy(addedLayers,0, newLayers,insert, addedLayers.length);
+		System.arraycopy(this.layers,insert, newLayers,insert+addedLayers.length, this.layers.length-insert);
+		this.layers = newLayers;
+		return this;
+	}
+
+	public abstract int getLayerInsertionIndex();
 
 	/**
 	 * @return if the given part of the model renders on the pass
@@ -94,6 +106,8 @@ public abstract class ShaderCase
 
 		public ShaderLayer setTextureBounds(double... bounds)
 		{
+			if(bounds==null)
+				return this;
 			assert(bounds.length==4);
 			this.textureBounds = bounds;
 			return this;
@@ -105,8 +119,11 @@ public abstract class ShaderCase
 		{
 			return this.textureBounds;
 		}
+
 		public ShaderLayer setCutoutBounds(double... bounds)
 		{
+			if(bounds==null)
+				return this;
 			assert(bounds.length==4);
 			this.cutoutBounds = bounds;
 			return this;

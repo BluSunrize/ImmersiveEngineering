@@ -1,9 +1,9 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
-import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
 import blusunrize.immersiveengineering.api.tool.ITeslaEntity;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
@@ -12,12 +12,13 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerIn
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
+import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
+import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import blusunrize.immersiveengineering.common.util.IEDamageSources.TeslaDamageSource;
 import blusunrize.immersiveengineering.common.util.IEPotions;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.network.MessageTileSync;
-import cofh.api.energy.IEnergyReceiver;
 import com.google.common.collect.ArrayListMultimap;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -37,12 +38,13 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, IFluxReceiver,IEnergyReceiver, IHasDummyBlocks, IDirectionalTile, IBlockBounds, IHammerInteraction
+public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, IIEInternalFluxHandler, IHasDummyBlocks, IDirectionalTile, IBlockBounds, IHammerInteraction
 {
 	public boolean dummy = false;
 	public FluxStorage energyStorage = new FluxStorage(48000);
@@ -428,46 +430,31 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 				worldObj.setBlockToAir(getPos().offset(facing, dummy?-1:0).offset(facing, i));
 	}
 
+	@Nonnull
 	@Override
-	public boolean canConnectEnergy(EnumFacing from)
-	{
-		return !dummy;
-	}
-	@Override
-	public int receiveEnergy(EnumFacing from, int energy, boolean simulate)
-	{
-		if(dummy)
-			return 0;
-
-		int rec = energyStorage.receiveEnergy(energy, simulate);
-		markDirty();
-		if(rec>0)
-			this.markContainingBlockForUpdate(null);
-		return rec;
-	}
-	@Override
-	public int getEnergyStored(EnumFacing from)
+	public FluxStorage getFluxStorage()
 	{
 		if(dummy)
 		{
 			TileEntity te = worldObj.getTileEntity(getPos().offset(facing,-1));
-			if(te instanceof TileEntityTeslaCoil)	
-				return ((TileEntityTeslaCoil)te).getEnergyStored(from);
-			return 0;
+			if(te instanceof TileEntityTeslaCoil)
+				return ((TileEntityTeslaCoil)te).getFluxStorage();
 		}
-		return energyStorage.getEnergyStored();
+		return energyStorage;
 	}
+	@Nonnull
 	@Override
-	public int getMaxEnergyStored(EnumFacing from)
+	public SideConfig getEnergySideConfig(EnumFacing facing)
 	{
-		if(dummy)
-		{
-			TileEntity te = worldObj.getTileEntity(getPos().offset(facing,-1));
-			if(te instanceof TileEntityTeslaCoil)	
-				return ((TileEntityTeslaCoil)te).getMaxEnergyStored(from);
-			return 0;
-		}
-		return energyStorage.getMaxEnergyStored();
+		return !dummy?SideConfig.INPUT:SideConfig.NONE;
+	}
+	IEForgeEnergyWrapper[] wrappers = IEForgeEnergyWrapper.getDefaultWrapperArray(this);
+	@Override
+	public IEForgeEnergyWrapper getCapabilityWrapper(EnumFacing facing)
+	{
+		if(!dummy)
+			return wrappers[facing==null?0:facing.ordinal()];
+		return null;
 	}
 
 	public boolean canRun(int energyDrain)

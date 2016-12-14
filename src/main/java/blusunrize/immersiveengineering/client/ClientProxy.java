@@ -256,7 +256,7 @@ public class ClientProxy extends CommonProxy
 			{
 				IIEMetaBlock ieMetaBlock = (IIEMetaBlock) block;
 				if(ieMetaBlock.useCustomStateMapper())
-					ModelLoader.setCustomStateMapper(block, IECustomStateMapper.instance);
+					ModelLoader.setCustomStateMapper(block, IECustomStateMapper.getStateMapper(ieMetaBlock));
 				ModelLoader.setCustomMeshDefinition(blockItem, new ItemMeshDefinition()
 				{
 					@Override
@@ -1038,6 +1038,7 @@ public class ClientProxy extends CommonProxy
 		for(DrillHeadPerm p : ((ItemDrillhead)IEContent.itemDrillhead).perms)
 			p.sprite = ApiUtils.getRegisterSprite(event.getMap(), p.texture);
 		WireType.iconDefaultWire = ApiUtils.getRegisterSprite(event.getMap(), "immersiveengineering:blocks/wire");
+		ApiUtils.getRegisterSprite(event.getMap(), "immersiveengineering:blocks/shaders/greyscaleFire");
 
 		for(BulletHandler.IBullet bullet : BulletHandler.registry.values())
 			for(ResourceLocation rl : bullet.getTextures())
