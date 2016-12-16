@@ -38,13 +38,19 @@ public class MultiblockAutoWorkbench implements IMultiblock
 					{
 						if(l==0&&w==1)
 							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0,1,BlockTypes_MetalDecoration0.RS_ENGINEERING.getMeta());
+						else if(w==0 && l<2)
+							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0,1,BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta());
+						else if(w==2&&l==2)
+							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0,1,BlockTypes_MetalDecoration0.HEAVY_ENGINEERING.getMeta());
 						else
 							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration1,1,BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_0.getMeta());
 					}
 					else if(h==1)
 					{
-						if((w==0&&l<2)||(w==2&&l==2))
+						if(w==0&&l<2)
 							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0,1,BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta());
+						else if(w==2&&l==2)
+							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0,1,BlockTypes_MetalDecoration0.HEAVY_ENGINEERING.getMeta());
 						else if(l==0)
 							structure[h][l][w] = new ItemStack(IEContent.blockTreatedWoodSlabs,1,BlockTypes_TreatedWood.HORIZONTAL.getMeta());
 						else
@@ -182,10 +188,11 @@ public class MultiblockAutoWorkbench implements IMultiblock
 	}
 
 	static final IngredientStack[] materials = new IngredientStack[]{
-			new IngredientStack("scaffoldingSteel", 8),
+			new IngredientStack("scaffoldingSteel", 5),
 			new IngredientStack("slabTreatedWood", 2),
 			new IngredientStack(new ItemStack(IEContent.blockMetalDecoration0, 1, BlockTypes_MetalDecoration0.RS_ENGINEERING.getMeta())),
-			new IngredientStack(new ItemStack(IEContent.blockMetalDecoration0, 3, BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta())),
+			new IngredientStack(new ItemStack(IEContent.blockMetalDecoration0, 4, BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta())),
+			new IngredientStack(new ItemStack(IEContent.blockMetalDecoration0, 2, BlockTypes_MetalDecoration0.HEAVY_ENGINEERING.getMeta())),
 			new IngredientStack(Utils.copyStackWithAmount(ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID + ":conveyor"), 4))};
 	@Override
 	public IngredientStack[] getTotalMaterials()
