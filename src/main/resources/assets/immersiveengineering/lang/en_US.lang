@@ -164,7 +164,7 @@ tile.immersiveengineering.metalMultiblock.crusher.name=Crusher
 tile.immersiveengineering.metalMultiblock.tank.name=Fluid Tank
 tile.immersiveengineering.metalMultiblock.silo.name=Item Silo
 tile.immersiveengineering.metalMultiblock.assembler.name=Assembler
-tile.immersiveengineering.metalMultiblock.auto_workbench.name=Automaton Engineers Workbench
+tile.immersiveengineering.metalMultiblock.auto_workbench.name=Automated Engineers Workbench
 tile.immersiveengineering.metalMultiblock.bottling_machine.name=Bottling Machine
 tile.immersiveengineering.metalMultiblock.squeezer.name=Industrial Squeezer
 tile.immersiveengineering.metalMultiblock.fermenter.name=Industrial Fermenter
@@ -1088,6 +1088,11 @@ ie.manual.entry.assembler.subtext=Some assembly required
 ie.manual.entry.assembler0=The Assembler is a complex machine capable of crafting items, similar to how a player would.<br>To form the structure, build it like demonstrated above and use the hammer on one of the conveyors.
 ie.manual.entry.assembler1=The conveyor you clicked will be the input side, indicated by the blue marker above it and the arrow on the side of the machine.<br>The Assembler allows for up to 3 recipes to be stored inside it that will be performed in order. The outputs of previous recipes can be used as inputs for the following.<br>The 3 crafting grids store the recipes, and the 18 slots below them are the inventory for materials.
 ie.manual.entry.assembler2=The input side, in addition to an item input also features a fluid input to fill the three internal tanks of the machine. Fluid in these tanks can be used to replace fluid containers like water buckets in recipes.<br>Power for the machine is input through the top center block.
+
+ie.manual.entry.autoworkbench.name=Automated Workbench
+ie.manual.entry.autoworkbench.subtext=For those who can't drive stick
+ie.manual.entry.autoworkbench0=The Automatic Workbench is one of the first major successes of small-scale engineering.<br>The machine is able to follow a set of instructions described by a <link;blueprints;§o§nBlueprint§r> to assemble the items detailed by it.
+ie.manual.entry.autoworkbench1=Upon assembling the multiblocks, a Blueprint can be placed on its drawing table. After selecting the item that should be created, it will begin the assembly process. In order for the machine to work, it will need to be supplied with materials and power of course.<br>Item inputs are the two hatches marked with blue dots, the power input lies above them. Finished items are dropped at the end of the conveyorbelt.<br>A redstone signal below the drawing table can be used for control.
 
 ie.manual.entry.bottlingMachine.name=Bottling Machine
 ie.manual.entry.bottlingMachine.subtext=Fill 'er up!
