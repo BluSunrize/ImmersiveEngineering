@@ -81,8 +81,8 @@ public class ManualUtils
 	}
 	public static int getSpellingDistanceBetweenStrings(String query, String target)
 	{
-		query = query.toLowerCase();
-		target = target.toLowerCase();
+		query = query.toLowerCase(Locale.ENGLISH);
+		target = target.toLowerCase(Locale.ENGLISH);
 
 		String[] queryWords = query.split(" ");
 		String[] targetWords = target.split(" ");

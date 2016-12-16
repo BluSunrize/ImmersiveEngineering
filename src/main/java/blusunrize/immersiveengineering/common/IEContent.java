@@ -85,6 +85,7 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class IEContent
 {
@@ -262,16 +263,20 @@ public class IEContent
 		//
 
 		fluidCreosote = new Fluid("creosote", new ResourceLocation("immersiveengineering:blocks/fluid/creosote_still"), new ResourceLocation("immersiveengineering:blocks/fluid/creosote_flow")).setDensity(800).setViscosity(3000);
-		FluidRegistry.registerFluid(fluidCreosote);
+		if(!FluidRegistry.registerFluid(fluidCreosote))
+			fluidCreosote = FluidRegistry.getFluid("creosote");
 		FluidRegistry.addBucketForFluid(fluidCreosote);
 		fluidPlantoil = new Fluid("plantoil", new ResourceLocation("immersiveengineering:blocks/fluid/plantoil_still"), new ResourceLocation("immersiveengineering:blocks/fluid/plantoil_flow")).setDensity(925).setViscosity(2000);
-		FluidRegistry.registerFluid(fluidPlantoil);
+		if(!FluidRegistry.registerFluid(fluidPlantoil))
+			fluidPlantoil = FluidRegistry.getFluid("plantoil");
 		FluidRegistry.addBucketForFluid(fluidPlantoil);
 		fluidEthanol = new Fluid("ethanol", new ResourceLocation("immersiveengineering:blocks/fluid/ethanol_still"), new ResourceLocation("immersiveengineering:blocks/fluid/ethanol_flow")).setDensity(789).setViscosity(1000);
-		FluidRegistry.registerFluid(fluidEthanol);
+		if(!FluidRegistry.registerFluid(fluidEthanol))
+			fluidEthanol = FluidRegistry.getFluid("ethanol");
 		FluidRegistry.addBucketForFluid(fluidEthanol);
 		fluidBiodiesel = new Fluid("biodiesel", new ResourceLocation("immersiveengineering:blocks/fluid/biodiesel_still"), new ResourceLocation("immersiveengineering:blocks/fluid/biodiesel_flow")).setDensity(789).setViscosity(1000);
-		FluidRegistry.registerFluid(fluidBiodiesel);
+		if(!FluidRegistry.registerFluid(fluidBiodiesel))
+			fluidBiodiesel = FluidRegistry.getFluid("biodiesel");
 		FluidRegistry.addBucketForFluid(fluidBiodiesel);
 
 		//Ore Dict
@@ -858,7 +863,7 @@ public class IEContent
 				{
 					String name = item.getMetaEnums()[meta].toString();
 					if(type!=null&&!type.isEmpty())
-						name = name.substring(0,1).toUpperCase()+name.substring(1).toLowerCase();
+						name = name.substring(0,1).toUpperCase(Locale.ENGLISH)+name.substring(1).toLowerCase(Locale.ENGLISH);
 					OreDictionary.registerOre(type+name, new ItemStack(item,1,meta));
 				}
 		}
@@ -869,7 +874,7 @@ public class IEContent
 				{
 					String name = item.getMetaEnums()[meta].toString();
 					if(type!=null&&!type.isEmpty())
-						name = name.substring(0,1).toUpperCase()+name.substring(1).toLowerCase();
+						name = name.substring(0,1).toUpperCase(Locale.ENGLISH)+name.substring(1).toLowerCase(Locale.ENGLISH);
 					OreDictionary.registerOre(type+name, new ItemStack(item,1,meta));
 				}
 		}

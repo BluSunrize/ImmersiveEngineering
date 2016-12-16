@@ -359,12 +359,12 @@ public abstract class IESlot extends Slot
 				if(achievement.triggerItems!=null && achievement.triggerItems.length>0)
 				{
 					for(ItemStack trigger : achievement.triggerItems)
-						if(ApiUtils.stackMatchesObject(stack, trigger, trigger.hasTagCompound()))
+						if(ApiUtils.stackMatchesObject(stack, trigger, achievement.checkNBT&&trigger.hasTagCompound()))
 						{
 							player.addStat(achievement);
 							break;
 						}
-				} else if(ApiUtils.stackMatchesObject(stack, achievement.theItemStack, achievement.theItemStack.hasTagCompound()))
+				} else if(ApiUtils.stackMatchesObject(stack, achievement.theItemStack, achievement.checkNBT&&achievement.theItemStack.hasTagCompound()))
 					player.addStat(achievement);
 			}
 			this.inventory.markDirty();

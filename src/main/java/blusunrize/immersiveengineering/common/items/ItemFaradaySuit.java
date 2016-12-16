@@ -12,6 +12,7 @@ import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 
+import java.util.Locale;
 import java.util.Map;
 
 public class ItemFaradaySuit extends ItemArmor implements ITeslaEquipment
@@ -20,7 +21,7 @@ public class ItemFaradaySuit extends ItemArmor implements ITeslaEquipment
 	public ItemFaradaySuit(EntityEquipmentSlot type)
 	{
 		super(mat, 0, type);
-		String name = "faradaySuit_"+type.getName().toLowerCase();
+		String name = "faradaySuit_"+type.getName().toLowerCase(Locale.ENGLISH);
 		this.setUnlocalizedName(ImmersiveEngineering.MODID+"."+name);
 		this.setCreativeTab(ImmersiveEngineering.creativeTab);
 		this.setMaxStackSize(1);

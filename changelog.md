@@ -1,3 +1,25 @@
+#####Version 0.10-53 - BUILT
+- added new shaders
+- fixed Sample Drill crashing upon energy insertion
+- fixed Tesla Coil crashing upon energy insertion
+- fixed Revolver rendering on Tiny Potatoes
+- fixed Refinery not allowing extraction
+- fixed achievement for crafting the Mining Drill not firing
+    - retro-actively firing crafting achievements when modifying them in the workbench
+- fixed Lightning Rod not building its fence-net properly
+- fixed bounds and disassembly of the Lightning Rod
+- fixed Splitting Conveyors sometimes not clearing temporary NBT data from entities
+- fixed a bit of log spam by invalid/missing models
+- fixed Blueprints not taking unstacked resources
+- fixed Vertical Conveyors not rendering walls on their base properly
+- fixed a dupebug with InventorySorter
+- fixed Fluids not updating to existing entries when failing to register
+
+#####Version 0.10-52 - BUILT
+- added the ability for Dropping Conveyors to drop through trapdoors
+- added a new shader
+- fixed Nullpointer for Connectors accepting FUs
+
 #####Version 0.10-51 - BUILT
 - re-added Festive Crates! Happy Holidays!
 - re-added Botania compat for shaders, Relic rarity lootbags + shaders

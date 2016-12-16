@@ -32,7 +32,7 @@ public enum BlockTypes_MetalMultiblock implements IStringSerializable, BlockIEBa
 	@Override
 	public String getName()
 	{
-		return this.toString().toLowerCase();
+		return this.toString().toLowerCase(Locale.ENGLISH);
 	}
 	@Override
 	public int getMeta()

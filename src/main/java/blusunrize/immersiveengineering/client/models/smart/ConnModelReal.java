@@ -5,6 +5,7 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
+import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -19,11 +20,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
-
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-
-import com.google.common.collect.ImmutableSet;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -32,7 +30,7 @@ public class ConnModelReal implements IBakedModel
 {
 
 	TextureAtlasSprite textureAtlasSprite = Minecraft.getMinecraft().getTextureMapBlocks()
-			.getAtlasSprite(ImmersiveEngineering.MODID.toLowerCase() + ":blocks/wire");
+			.getAtlasSprite(ImmersiveEngineering.MODID.toLowerCase(Locale.ENGLISH) + ":blocks/wire");
 	public static final HashMap<Pair<Byte, ExtBlockstateAdapter>, IBakedModel> cache = new HashMap<>();
 	IBakedModel base;
 

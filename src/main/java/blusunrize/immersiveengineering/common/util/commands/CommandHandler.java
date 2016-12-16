@@ -9,6 +9,7 @@ import net.minecraft.util.text.TextComponentTranslation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class CommandHandler extends CommandBase
 {
@@ -45,7 +46,7 @@ public class CommandHandler extends CommandBase
 			{
 				if(args.length==1)
 				{
-					if(args[0].isEmpty() || sub.getIdent().startsWith(args[0].toLowerCase()))
+					if(args[0].isEmpty() || sub.getIdent().startsWith(args[0].toLowerCase(Locale.ENGLISH)))
 						list.add(sub.getIdent());
 				}
 				else if(sub.getIdent().equalsIgnoreCase(args[0]))

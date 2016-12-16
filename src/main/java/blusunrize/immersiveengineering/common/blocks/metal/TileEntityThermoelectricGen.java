@@ -1,11 +1,12 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
 import blusunrize.immersiveengineering.api.energy.ThermoelectricHandler;
-import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxConnection;
-import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
-import cofh.api.energy.IEnergyConnection;
+import blusunrize.immersiveengineering.common.util.EnergyHelper;
+import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
+import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxConnector;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDynamicLiquid;
 import net.minecraft.block.BlockStaticLiquid;
@@ -20,7 +21,10 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.IFluidBlock;
 
-public class TileEntityThermoelectricGen extends TileEntityIEBase implements ITickable, IFluxConnection,IEnergyConnection
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+public class TileEntityThermoelectricGen extends TileEntityIEBase implements ITickable, IIEInternalFluxConnector
 {
 	@Override
 	public void update()
@@ -48,8 +52,7 @@ public class TileEntityThermoelectricGen extends TileEntityIEBase implements ITi
 		for(EnumFacing fd : EnumFacing.VALUES)
 		{
 			TileEntity te = worldObj.getTileEntity(getPos().offset(fd));
-			if(te instanceof IFluxReceiver)
-				amount -= ((IFluxReceiver)te).receiveEnergy(fd.getOpposite(), amount, false);
+			amount -= EnergyHelper.insertFlux(te, fd.getOpposite(), amount, false);
 		}
 	}
 
@@ -90,9 +93,22 @@ public class TileEntityThermoelectricGen extends TileEntityIEBase implements ITi
 	{
 	}
 
+
+	@Nonnull
+	@Override
+	public SideConfig getEnergySideConfig(@Nullable EnumFacing facing)
+	{
+		return SideConfig.OUTPUT;
+	}
 	@Override
 	public boolean canConnectEnergy(EnumFacing from)
 	{
 		return true;
+	}
+	IEForgeEnergyWrapper wrapper = new IEForgeEnergyWrapper(this,null);
+	@Override
+	public IEForgeEnergyWrapper getCapabilityWrapper(EnumFacing facing)
+	{
+		return wrapper;
 	}
 }
