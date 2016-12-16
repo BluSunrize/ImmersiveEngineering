@@ -233,7 +233,7 @@ public class Utils
 	}
 	public static String toCamelCase(String s)
 	{
-		return s.substring(0,1).toUpperCase() + s.substring(1).toLowerCase();
+		return s.substring(0,1).toUpperCase(Locale.ENGLISH) + s.substring(1).toLowerCase(Locale.ENGLISH);
 	}
 	static Method m_getHarvestLevel = null;
 	public static String getHarvestLevelName(int lvl)

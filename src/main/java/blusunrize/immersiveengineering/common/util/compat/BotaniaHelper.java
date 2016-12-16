@@ -35,6 +35,7 @@ import vazkii.botania.api.item.TinyPotatoRenderEvent;
 
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Locale;
 
 public class BotaniaHelper extends IECompatModule
 {
@@ -115,7 +116,7 @@ public class BotaniaHelper extends IECompatModule
 				e.printStackTrace();
 			}
 			for(String uuid : ItemRevolver.specialRevolvers.keySet())
-				nameToSpecial.putAll(ImmersiveEngineering.proxy.getNameFromUUID(uuid).toLowerCase(), ItemRevolver.specialRevolvers.get(uuid));
+				nameToSpecial.putAll(ImmersiveEngineering.proxy.getNameFromUUID(uuid).toLowerCase(Locale.ENGLISH), ItemRevolver.specialRevolvers.get(uuid));
 		}
 	}
 
@@ -156,9 +157,9 @@ public class BotaniaHelper extends IECompatModule
 				special = ItemRevolver.specialRevolversByTag.get("fenrir");
 			else
 			{
-				if(nameToSpecial.containsKey(event.name.toLowerCase()))
+				if(nameToSpecial.containsKey(event.name.toLowerCase(Locale.ENGLISH)))
 				{
-					List<SpecialRevolver> list = nameToSpecial.get(event.name.toLowerCase());
+					List<SpecialRevolver> list = nameToSpecial.get(event.name.toLowerCase(Locale.ENGLISH));
 					if(list != null && list.size() > 0)
 					{
 						long ticks = event.tile.getWorld() != null ? event.tile.getWorld().getTotalWorldTime() / 100 : 0;
@@ -171,7 +172,7 @@ public class BotaniaHelper extends IECompatModule
 			{
 				GlStateManager.pushMatrix();
 				((ItemRevolver)IEContent.itemRevolver).applySpecialCrafting(revolverEntity.getEntityItem(), special);
-				GlStateManager.translate(-.16, -1.45, -.2);
+				GlStateManager.translate(-.16, 1.45, -.2);
 				GlStateManager.rotate(-90, 0, 1, 0);
 				GlStateManager.rotate(15, 0, 0, 1);
 				GlStateManager.rotate(180, 1, 0, 0);

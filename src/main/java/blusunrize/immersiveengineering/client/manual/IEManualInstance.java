@@ -23,6 +23,7 @@ import net.minecraftforge.common.DimensionManager;
 import org.lwjgl.input.Keyboard;
 
 import java.util.LinkedHashSet;
+import java.util.Locale;
 
 public class IEManualInstance extends ManualInstance
 {
@@ -132,7 +133,7 @@ public class IEManualInstance extends ManualInstance
 				if(world!=null && world.provider!=null)
 				{
 					String name = world.provider.getDimensionType().getName();
-					if(name.toLowerCase().startsWith("the "))
+					if(name.toLowerCase(Locale.ENGLISH).startsWith("the "))
 						name = name.substring(4);
 					result = name;
 				}

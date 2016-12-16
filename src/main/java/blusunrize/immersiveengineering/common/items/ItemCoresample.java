@@ -15,6 +15,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
+import java.util.Locale;
 
 public class ItemCoresample extends ItemIEBase
 {
@@ -51,7 +52,7 @@ public class ItemCoresample extends ItemIEBase
 			if(world!=null && world.provider!=null)
 			{
 				String name = world.provider.getDimensionType().getName();
-				if(name.toLowerCase().startsWith("the "))
+				if(name.toLowerCase(Locale.ENGLISH).startsWith("the "))
 					name = name.substring(4);
 				s2 = name;
 			}

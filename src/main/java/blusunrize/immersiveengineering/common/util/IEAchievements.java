@@ -99,7 +99,7 @@ public class IEAchievements
 		((ItemRevolver)IEContent.itemRevolver).recalculateUpgrades(revolver);
 		upgradeRevolver = new AchievementIE("upgradeRevolver", 4, -6, revolver, craftRevolver);
 		if(!BulletHandler.homingCartridges.isEmpty())
-			craftWolfPack = new AchievementIE("craftWolfPack", 4, -7, BulletHandler.getBulletStack("wolfpack"), craftRevolver).setBlueprintCrafting().setSpecial();
+			craftWolfPack = new AchievementIE("craftWolfPack", 4, -7, BulletHandler.getBulletStack("wolfpack"), craftRevolver).setCheckNBT(true).setBlueprintCrafting().setSpecial();
 
 		ItemStack drill = new ItemStack(IEContent.itemDrill);
 		((ItemDrill)IEContent.itemDrill).setHead(drill, new ItemStack(IEContent.itemDrillhead));
@@ -162,6 +162,12 @@ public class IEAchievements
 		}
 
 		public ItemStack[] triggerItems;
+		public boolean checkNBT = false;
+		public AchievementIE setCheckNBT(boolean checkNBT)
+		{
+			this.checkNBT = checkNBT;
+			return this;
+		}
 		public AchievementIE setNormalCrafting(ItemStack... triggerItems)
 		{
 			this.triggerItems = triggerItems;

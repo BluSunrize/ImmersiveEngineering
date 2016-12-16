@@ -15,6 +15,7 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class CommandMineral extends IESubCommand
 {
@@ -109,7 +110,7 @@ public class CommandMineral extends IESubCommand
 					if(args.length>2)
 						break;
 					for(MineralMix mineralMix : ExcavatorHandler.mineralList.keySet())
-						if(args[1].isEmpty()||mineralMix.name.toLowerCase().startsWith(args[1].toLowerCase()))
+						if(args[1].isEmpty()||mineralMix.name.toLowerCase(Locale.ENGLISH).startsWith(args[1].toLowerCase(Locale.ENGLISH)))
 							list.add(mineralMix.name);
 					break;
 			}
@@ -120,7 +121,7 @@ public class CommandMineral extends IESubCommand
 		{
 			if(args.length==0)
 				list.add(s);
-			else if(s.toLowerCase().startsWith(args[0].toLowerCase()))
+			else if(s.toLowerCase(Locale.ENGLISH).startsWith(args[0].toLowerCase(Locale.ENGLISH)))
 				list.add(s);
 		}
 		return list;

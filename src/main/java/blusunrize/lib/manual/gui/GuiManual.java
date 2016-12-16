@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 public class GuiManual extends GuiScreen
 {
@@ -439,14 +440,14 @@ public class GuiManual extends GuiScreen
 			}
 			else
 			{
-				search = search.toLowerCase();
+				search = search.toLowerCase(Locale.ENGLISH);
 				ArrayList<String> lHeaders = new ArrayList<String>();
 				HashMap<String, String> lSpellcheck = new HashMap<String, String>();
 				for(ManualEntry e : manual.manualContents.values())
 				{
 					if(manual.showEntryInList(e))
 					{
-						if(manual.formatEntryName(e.getName()).toLowerCase().contains(search))
+						if(manual.formatEntryName(e.getName()).toLowerCase(Locale.ENGLISH).contains(search))
 							lHeaders.add(e.getName());
 						else
 							lSpellcheck.put(manual.formatEntryName(e.getName()), e.getName());

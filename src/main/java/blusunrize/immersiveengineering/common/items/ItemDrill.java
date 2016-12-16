@@ -233,6 +233,7 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 	public void removeFromWorkbench(EntityPlayer player, ItemStack stack)
 	{
 		ItemStack[] contents = this.getContainedItems(stack);
+		player.addStat(IEAchievements.craftDrill);
 		if(contents[0]!=null&&contents[1]!=null&&contents[2]!=null&&contents[3]!=null)
 			player.addStat(IEAchievements.upgradeDrill);
 	}

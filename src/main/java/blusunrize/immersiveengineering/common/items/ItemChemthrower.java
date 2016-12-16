@@ -10,6 +10,7 @@ import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.entities.EntityChemthrowerShot;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IAdvancedFluidItem;
+import blusunrize.immersiveengineering.common.util.IEAchievements;
 import blusunrize.immersiveengineering.common.util.IEItemFluidHandler;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
@@ -65,6 +66,16 @@ public class ItemChemthrower extends ItemUpgradeableTool implements IAdvancedFlu
 	public EnumAction getItemUseAction(ItemStack p_77661_1_)
 	{
 		return EnumAction.NONE;
+	}
+
+	@Override
+	public void removeFromWorkbench(EntityPlayer player, ItemStack stack)
+	{
+		ItemStack[] contents = this.getContainedItems(stack);
+		player.addStat(IEAchievements.craftChemthrower);
+		//No upgrade achievement yet
+//		if(contents[0]!=null&&contents[1]!=null&&contents[2]!=null&&contents[3]!=null)
+//			player.addStat(IEAchievements.upgradeChemthrower);
 	}
 
 	@Override

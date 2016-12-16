@@ -2,10 +2,10 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
 import blusunrize.immersiveengineering.api.energy.IRotationAcceptor;
-import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
+import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxConnector;
 import net.minecraft.entity.EntityLivingBase;
@@ -29,8 +29,7 @@ public class TileEntityDynamo extends TileEntityIEBase implements IIEInternalFlu
 		for(EnumFacing fd : EnumFacing.VALUES)
 		{
 			TileEntity te = worldObj.getTileEntity(getPos().offset(fd));
-			if(te instanceof IFluxReceiver)
-				output -= ((IFluxReceiver)te).receiveEnergy(fd.getOpposite(), output, false);
+			output -= EnergyHelper.insertFlux(te, fd.getOpposite(), output, false);
 		}
 	}
 
@@ -78,7 +77,7 @@ public class TileEntityDynamo extends TileEntityIEBase implements IIEInternalFlu
 	@Override
 	public SideConfig getEnergySideConfig(@Nullable EnumFacing facing)
 	{
-		return SideConfig.INPUT;
+		return SideConfig.OUTPUT;
 	}
 	@Override
 	public boolean canConnectEnergy(EnumFacing from)

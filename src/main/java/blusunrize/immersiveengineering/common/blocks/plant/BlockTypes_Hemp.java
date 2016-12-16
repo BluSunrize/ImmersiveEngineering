@@ -3,6 +3,8 @@ package blusunrize.immersiveengineering.common.blocks.plant;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase.IBlockEnum;
 import net.minecraft.util.IStringSerializable;
 
+import java.util.Locale;
+
 public enum BlockTypes_Hemp implements IStringSerializable, IBlockEnum
 {
 	BOTTOM0,
@@ -15,7 +17,7 @@ public enum BlockTypes_Hemp implements IStringSerializable, IBlockEnum
 	@Override
 	public String getName()
 	{
-		return this.toString().toLowerCase();
+		return this.toString().toLowerCase(Locale.ENGLISH);
 	}
 	@Override
 	public int getMeta()

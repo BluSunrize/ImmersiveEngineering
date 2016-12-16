@@ -461,12 +461,12 @@ public class EventHandler
 				if(achievement.triggerItems!=null && achievement.triggerItems.length>0)
 				{
 					for(ItemStack trigger : achievement.triggerItems)
-						if(ApiUtils.stackMatchesObject(event.crafting, trigger, trigger.hasTagCompound()))
+						if(ApiUtils.stackMatchesObject(event.crafting, trigger, achievement.checkNBT&&trigger.hasTagCompound()))
 						{
 							event.player.addStat(achievement);
 							break;
 						}
-				} else if(ApiUtils.stackMatchesObject(event.crafting, achievement.theItemStack, achievement.theItemStack.hasTagCompound()))
+				} else if(ApiUtils.stackMatchesObject(event.crafting, achievement.theItemStack, achievement.checkNBT&&achievement.theItemStack.hasTagCompound()))
 					event.player.addStat(achievement);
 			}
 	}
@@ -480,13 +480,13 @@ public class EventHandler
 				if(achievement.triggerItems!=null && achievement.triggerItems.length>0)
 				{
 					for(ItemStack trigger : achievement.triggerItems)
-						if(OreDictionary.itemMatches(trigger, event.getItemInHand(), true))
+						if(OreDictionary.itemMatches(trigger, event.getItemInHand(), achievement.checkNBT))
 						{
 							event.getPlayer().addStat(achievement);
 							break;
 						}
 				}
-				else if(OreDictionary.itemMatches(achievement.theItemStack, event.getItemInHand(), true))
+				else if(OreDictionary.itemMatches(achievement.theItemStack, event.getItemInHand(), achievement.checkNBT))
 					event.getPlayer().addStat(achievement);
 			}
 	}
