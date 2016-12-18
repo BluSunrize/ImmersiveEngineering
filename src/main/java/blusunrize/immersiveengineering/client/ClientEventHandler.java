@@ -4,6 +4,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
+import blusunrize.immersiveengineering.api.energy.wires.IWireCoil;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
@@ -366,7 +367,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 				if(player.getHeldItem(hand)!=null)
 				{
 					ItemStack equipped = player.getHeldItem(hand);
-					if(OreDictionary.itemMatches(new ItemStack(IEContent.itemTool,1,2), equipped, false) || OreDictionary.itemMatches(new ItemStack(IEContent.itemWireCoil,1,OreDictionary.WILDCARD_VALUE), equipped, false) )
+					if(OreDictionary.itemMatches(new ItemStack(IEContent.itemTool,1,2), equipped, false) || equipped.getItem() instanceof IWireCoil)
 					{
 						if(ItemNBTHelper.hasKey(equipped, "linkingPos"))
 						{
@@ -374,7 +375,16 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 							if(link!=null&&link.length>3)
 							{
 								String s = I18n.format(Lib.DESC_INFO+"attachedTo", link[1],link[2],link[3]);
-								ClientUtils.font().drawString(s, event.getResolution().getScaledWidth()/2 - ClientUtils.font().getStringWidth(s)/2, event.getResolution().getScaledHeight()-GuiIngameForge.left_height-20, WireType.ELECTRUM.getColour(null), true);
+								int col = WireType.ELECTRUM.getColour(null);
+								if(equipped.getItem() instanceof IWireCoil)
+								{
+									RayTraceResult rtr = ClientUtils.mc().objectMouseOver;
+									double d = rtr!=null&&rtr.getBlockPos()!=null?rtr.getBlockPos().distanceSq(link[1],link[2],link[3]):player.getDistanceSq(link[1],link[2],link[3]);
+									int max = ((IWireCoil)equipped.getItem()).getWireType(equipped).getMaxLength();
+									if(d>max*max)
+										col = 0xdd3333;
+								}
+								ClientUtils.font().drawString(s, event.getResolution().getScaledWidth()/2 - ClientUtils.font().getStringWidth(s)/2, event.getResolution().getScaledHeight()-GuiIngameForge.left_height-20, col, true);
 							}
 						}
 					}
