@@ -24,6 +24,8 @@ public class RecipeShaderBags implements IRecipe
 				{
 					if(IEContent.itemShaderBag.equals(stackInSlot.getItem()) && ItemNBTHelper.hasKey(stackInSlot, "rarity"))
 						stack = stackInSlot;
+					else
+						return false;
 //					if(IEContent.itemShader.equals(stackInSlot.getItem()) && ItemNBTHelper.hasKey(stackInSlot, "shader_name"))
 //						stack = stackInSlot;
 				}
