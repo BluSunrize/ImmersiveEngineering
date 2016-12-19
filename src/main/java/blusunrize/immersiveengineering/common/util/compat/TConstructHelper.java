@@ -107,6 +107,7 @@ public class TConstructHelper extends IECompatModule
 		TinkerIntegration.integrate(constantan, fluidConstantan, "Constantan").toolforge().integrate();
 
 		hemp.addItemIngot("fiberHemp");
+		hemp.setRepresentativeItem(new ItemStack(IEContent.itemMaterial,1,4));
 		TinkerRegistry.addMaterialStats(hemp, new BowStringMaterialStats(1f));
 		TinkerIntegration.integrate(hemp).integrate();
 
