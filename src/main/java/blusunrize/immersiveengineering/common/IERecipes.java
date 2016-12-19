@@ -598,7 +598,8 @@ public class IERecipes
 				else if(name.startsWith("stick")||name.startsWith("rod"))
 				{
 					String ore = name.startsWith("stick")?name.substring("stick".length()):name.substring("rod".length());
-					if(ApiUtils.isExistingOreName("ingot"+ore))
+					boolean priorityStick = !name.startsWith("rod")||!ApiUtils.isExistingOreName("stick"+ore);
+					if(priorityStick && ApiUtils.isExistingOreName("ingot"+ore))
 					{
 						registeredMoldBases.putAll("rod",OreDictionary.getOres(name));
 						MetalPressRecipe.addRecipe(Utils.copyStackWithAmount(IEApi.getPreferredOreStack(name),2), "ingot"+ore, new ItemStack(IEContent.itemMold,1,2), 2400);
