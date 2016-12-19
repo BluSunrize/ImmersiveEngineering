@@ -18,7 +18,7 @@ public class ItemGraphiteElectrode extends ItemIEBase
 	public static int electrodeMaxDamage;
 	public ItemGraphiteElectrode()
 	{
-		super("graphiteElectrode", 1);
+		super("graphiteElectrode", 16);
 		electrodeMaxDamage = IEConfig.Machines.arcfurnace_electrodeDamage;
 	}
 	@Override

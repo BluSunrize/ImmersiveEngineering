@@ -378,6 +378,12 @@ public abstract class IESlot extends Slot
 		{
 			super(container, inv, id, x, y);
 		}
+
+		@Override
+		public int getSlotStackLimit()
+		{
+			return 1;
+		}
 		@Override
 		public boolean isItemValid(ItemStack itemStack)
 		{
