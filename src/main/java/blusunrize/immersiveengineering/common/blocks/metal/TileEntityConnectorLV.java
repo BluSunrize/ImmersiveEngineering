@@ -123,6 +123,11 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 	{
 		return false;
 	}
+	@Override
+	public boolean canRotate(EnumFacing axis)
+	{
+		return false;
+	}
 
 	@Override
 	protected boolean canTakeLV()

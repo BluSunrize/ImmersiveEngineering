@@ -107,6 +107,11 @@ public class TileEntityModWorkbench extends TileEntityIEBase implements IIEInven
 	{
 		return false;
 	}
+	@Override
+	public boolean canRotate(EnumFacing axis)
+	{
+		return false;
+	}
 
 	@Override
 	public void receiveMessageFromClient(NBTTagCompound message)

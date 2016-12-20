@@ -260,6 +260,11 @@ public class TileEntityEnergyMeter extends TileEntityImmersiveConnectable implem
 	{
 		return false;
 	}
+	@Override
+	public boolean canRotate(EnumFacing axis)
+	{
+		return false;
+	}
 	private void updateComparatorValues()
 	{
 		int oldVal = compVal;

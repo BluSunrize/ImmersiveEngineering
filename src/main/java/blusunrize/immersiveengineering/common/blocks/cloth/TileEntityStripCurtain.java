@@ -157,6 +157,11 @@ public class TileEntityStripCurtain extends TileEntityIEBase implements ITickabl
 		return false;
 	}
 	@Override
+	public boolean canRotate(EnumFacing axis)
+	{
+		return false;
+	}
+	@Override
 	public void onDirectionalPlacement(EnumFacing side, float hitX, float hitY, float hitZ, EntityLivingBase placer)
 	{
 		if(side==EnumFacing.DOWN)

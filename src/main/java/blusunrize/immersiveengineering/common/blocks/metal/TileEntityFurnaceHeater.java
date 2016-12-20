@@ -186,4 +186,9 @@ public class TileEntityFurnaceHeater extends TileEntityIEBase implements ITickab
 	{
 		return true;
 	}
+	@Override
+	public boolean canRotate(EnumFacing axis)
+	{
+		return true;
+	}
 }

@@ -32,7 +32,7 @@ public class BlockWoodenDevice0 extends BlockIETileProvider<BlockTypes_WoodenDev
 
 	public BlockWoodenDevice0()
 	{
-		super("woodenDevice0",Material.WOOD, PropertyEnum.create("type", BlockTypes_WoodenDevice0.class), ItemBlockIEBase.class, IEProperties.FACING_HORIZONTAL, IEProperties.SIDECONFIG[0], IEProperties.SIDECONFIG[1], IEProperties.MULTIBLOCKSLAVE);
+		super("woodenDevice0",Material.WOOD, PropertyEnum.create("type", BlockTypes_WoodenDevice0.class), ItemBlockIEBase.class, IEProperties.FACING_ALL, IEProperties.SIDECONFIG[0], IEProperties.SIDECONFIG[1], IEProperties.MULTIBLOCKSLAVE);
 		this.setHardness(2.0F);
 		this.setResistance(5.0F);
 		setMetaLightOpacity(BlockTypes_WoodenDevice0.WORKBENCH.getMeta(), 0);
@@ -42,11 +42,13 @@ public class BlockWoodenDevice0 extends BlockIETileProvider<BlockTypes_WoodenDev
 	@Override
 	public boolean useCustomStateMapper()
 	{
-		return Config.seaonal_festive;
+		return true;
 	}
 	@Override
 	public String getCustomStateMapping(int meta, boolean itemBlock)
 	{
+		if(meta==BlockTypes_WoodenDevice0.WORKBENCH.getMeta())
+			return "workbench";
 		if(Config.seaonal_festive && (meta==BlockTypes_WoodenDevice0.CRATE.getMeta()||meta==BlockTypes_WoodenDevice0.REINFORCED_CRATE.getMeta()||meta==BlockTypes_WoodenDevice0.GUNPOWDER_BARREL.getMeta()))
 			return "festive";
 		return null;
@@ -365,6 +367,8 @@ public class BlockWoodenDevice0 extends BlockIETileProvider<BlockTypes_WoodenDev
 				return new TileEntitySorter();
 			case REINFORCED_CRATE:
 				return new TileEntityWoodenCrate();
+			case TURNTABLE:
+				return new TileEntityTurntable();
 		}
 		return null;
 	}

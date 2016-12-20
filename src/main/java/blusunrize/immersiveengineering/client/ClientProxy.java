@@ -658,6 +658,8 @@ public class ClientProxy extends CommonProxy
 		ManualHelper.addEntry("sorter", ManualHelper.CAT_MACHINES,
 				new ManualPages.Crafting(ManualHelper.getManual(), "sorter0", new ItemStack(IEContent.blockWoodenDevice0,1,BlockTypes_WoodenDevice0.SORTER.getMeta())),
 				new ManualPages.Text(ManualHelper.getManual(), "sorter1"));
+		ManualHelper.addEntry("turntable", ManualHelper.CAT_MACHINES,
+				new ManualPages.Crafting(ManualHelper.getManual(), "turntable0", new ItemStack(IEContent.blockWoodenDevice0,1,BlockTypes_WoodenDevice0.TURNTABLE.getMeta())));
 		pages = new ArrayList<IManualPage>();
 		pages.add(new ManualPages.Crafting(ManualHelper.getManual(), "fluidPipes0", new ItemStack(IEContent.blockMetalDevice1,1,BlockTypes_MetalDevice1.FLUID_PIPE.getMeta())));
 		pages.add(new ManualPages.Text(ManualHelper.getManual(), "fluidPipes1"));

@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedSelectionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
+import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityTurntable;
 import blusunrize.immersiveengineering.common.gui.ContainerRevolver;
 import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
@@ -720,6 +721,7 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 			double py = -TileEntityRendererDispatcher.staticPlayerY;
 			double pz = -TileEntityRendererDispatcher.staticPlayerZ;
 			TileEntity tile = event.getPlayer().worldObj.getTileEntity(event.getTarget().getBlockPos());
+			ItemStack stack = event.getPlayer().getHeldItem(EnumHand.MAIN_HAND);
 			//			if(event.getPlayer().worldObj.getBlockState(event.getTarget().getBlockPos()).getBlock() instanceof IEBlockInterfaces.ICustomBoundingboxes)
 			if(tile instanceof IAdvancedSelectionBounds)
 			{
@@ -754,9 +756,42 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 				}
 			}
 
+			if(Utils.isHammer(stack) && tile instanceof TileEntityTurntable)
+			{
+				BlockPos pos = event.getTarget().getBlockPos();
+
+				GlStateManager.enableBlend();
+				GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+				GlStateManager.glLineWidth(2.0F);
+				GlStateManager.disableTexture2D();
+				GlStateManager.depthMask(false);
+
+				Tessellator tessellator = Tessellator.getInstance();
+				VertexBuffer vertexbuffer = tessellator.getBuffer();
+
+				EnumFacing f = ((TileEntityTurntable)tile).getFacing();
+				double tx = pos.getX()+.5;
+				double ty = pos.getY()+.5;
+				double tz = pos.getZ()+.5;
+				if(!event.getPlayer().worldObj.isAirBlock(pos.offset(f)))
+				{
+					tx += f.getFrontOffsetX();
+					ty += f.getFrontOffsetY();
+					tz += f.getFrontOffsetZ();
+				}
+				vertexbuffer.setTranslation(tx+px,ty+py,tz+pz);
+
+				double angle = -event.getPlayer().ticksExisted%80/40d*Math.PI;
+				drawRotationArrows(tessellator, vertexbuffer, f, angle, ((TileEntityTurntable)tile).invert);
+
+				vertexbuffer.setTranslation(0, 0, 0);
+
+				GlStateManager.depthMask(true);
+				GlStateManager.enableTexture2D();
+				GlStateManager.disableBlend();
+			}
 
 			World world = event.getPlayer().worldObj;
-			ItemStack stack = event.getPlayer().getHeldItem(EnumHand.MAIN_HAND);
 			if(stack != null && IEContent.blockConveyor.equals(Block.getBlockFromItem(stack.getItem())) && event.getTarget().sideHit.getAxis() == Axis.Y)
 			{
 				EnumFacing side = event.getTarget().sideHit;
@@ -832,6 +867,59 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 			}
 
 		}
+	}
+
+	private static double[][] rotationArrowCoords = {{.375, 0},{.5, -.125},{.4375, -.125},{.4375, -.25},{.25, -.4375},{-.25, -.4375},{-.4375, -.25},{-.4375, -.0625},{-.3125, -.0625},{-.3125, -.1875},{-.1875, -.3125},{.1875, -.3125},{.3125, -.1875},{.3125, -.125},{.25, -.125}};
+	private static double[][] rotationArrowQuads = {rotationArrowCoords[7], rotationArrowCoords[8], rotationArrowCoords[6], rotationArrowCoords[9], rotationArrowCoords[5], rotationArrowCoords[10], rotationArrowCoords[4], rotationArrowCoords[11], rotationArrowCoords[3], rotationArrowCoords[12], rotationArrowCoords[2], rotationArrowCoords[13], rotationArrowCoords[1], rotationArrowCoords[14], rotationArrowCoords[0], rotationArrowCoords[0]};
+	public static void drawRotationArrows(Tessellator tessellator, VertexBuffer vertexbuffer, EnumFacing facing, double rotation, boolean flip)
+	{
+		double cos = Math.cos(rotation);
+		double sin = Math.sin(rotation);
+		vertexbuffer.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION_COLOR);
+		for(double[] p : rotationArrowCoords)
+		{
+			double w = (cos*p[0]+sin*p[1]);
+			double h = (-sin*p[0]+cos*p[1]);
+			double xx = facing.getFrontOffsetX()<0?-(.5+.002): facing.getFrontOffsetX()>0?(.5+.002): (facing.getAxis()==Axis.Y^flip?-1:1)*facing.getAxisDirection().getOffset()*h;
+			double yy = facing.getFrontOffsetY()<0?-(.5+.002): facing.getFrontOffsetY()>0?(.5+.002): w;
+			double zz = facing.getFrontOffsetZ()<0?-(.5+.002): facing.getFrontOffsetZ()>0?(.5+.002): facing.getAxis()==Axis.X?(flip?1:-1)*facing.getAxisDirection().getOffset()*h: w;
+			vertexbuffer.pos(xx, yy, zz).color(0, 0, 0, 0.4F).endVertex();
+		}
+		tessellator.draw();
+		vertexbuffer.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION_COLOR);
+		for(double[] p : rotationArrowCoords)
+		{
+			double w = (cos*p[0]+sin*p[1]);
+			double h = (-sin*p[0]+cos*p[1]);
+			double xx = facing.getFrontOffsetX()<0?-(.5+.002): facing.getFrontOffsetX()>0?(.5+.002): (facing.getAxis()==Axis.Y^flip?1:-1)*facing.getAxisDirection().getOffset()*h;
+			double yy = facing.getFrontOffsetY()<0?-(.5+.002): facing.getFrontOffsetY()>0?(.5+.002): -w;
+			double zz = facing.getFrontOffsetZ()<0?-(.5+.002): facing.getFrontOffsetZ()>0?(.5+.002): facing.getAxis()==Axis.X?(flip?-1:1)*facing.getAxisDirection().getOffset()*h: -w;
+			vertexbuffer.pos(xx, yy, zz).color(0, 0, 0, 0.4F).endVertex();
+		}
+		tessellator.draw();
+
+		vertexbuffer.begin(GL11.GL_QUAD_STRIP, DefaultVertexFormats.POSITION_COLOR);
+		for(double[] p : rotationArrowQuads)
+		{
+			double w = (cos*p[0]+sin*p[1]);
+			double h = (-sin*p[0]+cos*p[1]);
+			double xx = facing.getFrontOffsetX()<0?-(.5+.002): facing.getFrontOffsetX()>0?(.5+.002): (facing.getAxis()==Axis.Y^flip?-1:1)*facing.getAxisDirection().getOffset()*h;
+			double yy = facing.getFrontOffsetY()<0?-(.5+.002): facing.getFrontOffsetY()>0?(.5+.002): w;
+			double zz = facing.getFrontOffsetZ()<0?-(.5+.002): facing.getFrontOffsetZ()>0?(.5+.002): facing.getAxis()==Axis.X?(flip?1:-1)*facing.getAxisDirection().getOffset()*h: w;
+			vertexbuffer.pos(xx, yy, zz).color(Lib.COLOUR_F_ImmersiveOrange[0],Lib.COLOUR_F_ImmersiveOrange[1],Lib.COLOUR_F_ImmersiveOrange[2], 0.4F).endVertex();
+		}
+		tessellator.draw();
+		vertexbuffer.begin(GL11.GL_QUAD_STRIP, DefaultVertexFormats.POSITION_COLOR);
+		for(double[] p : rotationArrowQuads)
+		{
+			double w = (cos*p[0]+sin*p[1]);
+			double h = (-sin*p[0]+cos*p[1]);
+			double xx = facing.getFrontOffsetX()<0?-(.5+.002): facing.getFrontOffsetX()>0?(.5+.002): (facing.getAxis()==Axis.Y^flip?1:-1)*facing.getAxisDirection().getOffset()*h;
+			double yy = facing.getFrontOffsetY()<0?-(.5+.002): facing.getFrontOffsetY()>0?(.5+.002): -w;
+			double zz = facing.getFrontOffsetZ()<0?-(.5+.002): facing.getFrontOffsetZ()>0?(.5+.002): facing.getAxis()==Axis.X?(flip?-1:1)*facing.getAxisDirection().getOffset()*h: -w;
+			vertexbuffer.pos(xx, yy, zz).color(Lib.COLOUR_F_ImmersiveOrange[0],Lib.COLOUR_F_ImmersiveOrange[1],Lib.COLOUR_F_ImmersiveOrange[2], 0.4F).endVertex();
+		}
+		tessellator.draw();
 	}
 
 	private static float[][] arrowCoords = {{0, .375f}, {.3125f, .0625f}, {.125f, .0625f}, {.125f, -.375f}, {-.125f, -.375f}, {-.125f, .0625f}, {-.3125f, .0625f}};

@@ -50,4 +50,9 @@ public class TileEntityStructuralArm extends TileEntityIEBase implements IDirect
 	{
 		return true;
 	}
+	@Override
+	public boolean canRotate(EnumFacing axis)
+	{
+		return true;
+	}
 }

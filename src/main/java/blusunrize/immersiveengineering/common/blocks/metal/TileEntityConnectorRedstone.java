@@ -156,6 +156,11 @@ public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable 
 	{
 		return false;
 	}
+	@Override
+	public boolean canRotate(EnumFacing axis)
+	{
+		return false;
+	}
 
 
 	@Override

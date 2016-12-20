@@ -104,6 +104,11 @@ public class TileEntityConveyorBelt extends TileEntityIEBase implements IDirecti
 	{
 		return !entity.isSneaking();
 	}
+	@Override
+	public boolean canRotate(EnumFacing axis)
+	{
+		return true;
+	}
 
 	@Override
 	public boolean hammerUseSide(EnumFacing side, EntityPlayer player, float hitX, float hitY, float hitZ)
