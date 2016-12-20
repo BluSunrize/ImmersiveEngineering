@@ -24,6 +24,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumFacing.AxisDirection;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -143,18 +144,13 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 
 		if(tile instanceof IDirectionalTile && (state.getPropertyNames().contains(IEProperties.FACING_ALL) || state.getPropertyNames().contains(IEProperties.FACING_HORIZONTAL)))
 		{
-			PropertyDirection prop = state.getPropertyNames().contains(IEProperties.FACING_HORIZONTAL)?IEProperties.FACING_HORIZONTAL: state.getPropertyNames().contains(IEProperties.FACING_VERTICAL)?IEProperties.FACING_VERTICAL: IEProperties.FACING_ALL;
+			PropertyDirection prop = state.getPropertyNames().contains(IEProperties.FACING_HORIZONTAL)?IEProperties.FACING_HORIZONTAL: IEProperties.FACING_ALL;
 			state = applyProperty(state, prop, ((IDirectionalTile)tile).getFacing());
 		}
 		else if(state.getPropertyNames().contains(IEProperties.FACING_HORIZONTAL))
 			state = state.withProperty(IEProperties.FACING_HORIZONTAL, EnumFacing.NORTH);
 		else if(state.getPropertyNames().contains(IEProperties.FACING_ALL))
 			state = state.withProperty(IEProperties.FACING_ALL, EnumFacing.NORTH);
-
-//		if(tile instanceof IConfigurableSides)
-//			for(int i=0; i<6; i++)
-//				if(state.getPropertyNames().contains(IEProperties.SIDECONFIG[i]))
-//					state = state.withProperty(IEProperties.SIDECONFIG[i], ((IConfigurableSides)tile).getEnergySideConfig(i));
 
 		if(tile instanceof IActiveState)
 		{
@@ -179,6 +175,40 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 			state = applyProperty(state, ((IMirrorAble)tile).getBoolProperty(IMirrorAble.class), ((IMirrorAble)tile).getIsMirrored());
 
 		return state;
+	}
+
+	@Override
+	public boolean rotateBlock(World world, BlockPos pos, EnumFacing axis)
+	{
+		TileEntity tile = world.getTileEntity(pos);
+		if(tile instanceof IDirectionalTile)
+		{
+			if(!((IDirectionalTile)tile).canRotate(axis))
+				return false;
+			IBlockState state = world.getBlockState(pos);
+			if(state.getPropertyNames().contains(IEProperties.FACING_ALL) || state.getPropertyNames().contains(IEProperties.FACING_HORIZONTAL))
+			{
+				PropertyDirection prop = state.getPropertyNames().contains(IEProperties.FACING_HORIZONTAL)?IEProperties.FACING_HORIZONTAL: IEProperties.FACING_ALL;
+				EnumFacing f = ((IDirectionalTile)tile).getFacing();
+				int limit = ((IDirectionalTile)tile).getFacingLimitation();
+
+				if(limit==0)
+					f = EnumFacing.VALUES[(f.ordinal() + 1) % EnumFacing.VALUES.length];
+				else if(limit==1)
+					f = axis.getAxisDirection()==AxisDirection.POSITIVE?f.rotateAround(axis.getAxis()).getOpposite():f.rotateAround(axis.getAxis());
+				else if(limit == 2 || limit == 5)
+					f = axis.getAxisDirection()==AxisDirection.POSITIVE?f.rotateY():f.rotateYCCW();
+				if(f != ((IDirectionalTile)tile).getFacing())
+				{
+					EnumFacing old = ((IDirectionalTile)tile).getFacing();
+					((IDirectionalTile)tile).setFacing(f);
+					((IDirectionalTile)tile).afterRotation(old,f);
+					state = applyProperty(state, prop, ((IDirectionalTile)tile).getFacing());
+					world.setBlockState(pos, state.cycleProperty(prop));
+				}
+			}
+		}
+		return false;
 	}
 
 	@Override
@@ -289,8 +319,8 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block blockIn)
 	{
 		TileEntity tile = world.getTileEntity(pos);
-//		if(tile instanceof INeighbourChangeTile && !tile.getWorld().isRemote)
-//			((INeighbourChangeTile)tile).onNeighborBlockChange(pos, neighbour);
+		if(tile instanceof INeighbourChangeTile && !tile.getWorld().isRemote)
+			((INeighbourChangeTile)tile).onNeighborBlockChange(pos);
 	}
 
 	@Override

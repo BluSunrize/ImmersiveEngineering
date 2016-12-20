@@ -142,4 +142,23 @@ public class TileEntityBlastFurnacePreheater extends TileEntityIEBase implements
 	{
 		return true;
 	}
+	@Override
+	public boolean canRotate(EnumFacing axis)
+	{
+		return true;
+	}
+	@Override
+	public  void afterRotation(EnumFacing oldDir, EnumFacing newDir)
+	{
+		for(int i=0; i<=2; i++)
+		{
+			TileEntity te = worldObj.getTileEntity(getPos().add(0,-dummy+i,0));
+			if(te instanceof TileEntityBlastFurnacePreheater)
+			{
+				((TileEntityBlastFurnacePreheater)te).setFacing(newDir);
+				te.markDirty();
+				((TileEntityBlastFurnacePreheater)te).markContainingBlockForUpdate(null);
+			}
+		}
+	}
 }

@@ -487,6 +487,11 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 		return false;
 	}
 	@Override
+	public boolean canRotate(EnumFacing axis)
+	{
+		return false;
+	}
+	@Override
 	public void onDirectionalPlacement(EnumFacing side, float hitX, float hitY, float hitZ, EntityLivingBase placer)
 	{
 		EnumFacing f = EnumFacing.fromAngle(placer.rotationYaw);

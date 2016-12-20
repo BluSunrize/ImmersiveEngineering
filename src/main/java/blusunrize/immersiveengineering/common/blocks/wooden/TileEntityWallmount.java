@@ -72,6 +72,11 @@ public class TileEntityWallmount extends TileEntityIEBase implements IBlockBound
 	{
 		return !entity.isSneaking();
 	}
+	@Override
+	public boolean canRotate(EnumFacing axis)
+	{
+		return true;
+	}
 	
 	@Override
 	public boolean hammerUseSide(EnumFacing side, EntityPlayer player, float hitX, float hitY, float hitZ)

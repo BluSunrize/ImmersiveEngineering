@@ -409,6 +409,11 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 	{
 		return false;
 	}
+	@Override
+	public boolean canRotate(EnumFacing axis)
+	{
+		return false;
+	}
 
 	@Override
 	public boolean isDummy()

@@ -59,6 +59,11 @@ public class TileEntityDynamo extends TileEntityIEBase implements IIEInternalFlu
 	{
 		return true;
 	}
+	@Override
+	public boolean canRotate(EnumFacing axis)
+	{
+		return true;
+	}
 
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)

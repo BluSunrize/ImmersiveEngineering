@@ -53,6 +53,11 @@ public abstract class TileEntityMultiblockPart<T extends TileEntityMultiblockPar
 	{
 		return false;
 	}
+	@Override
+	public boolean canRotate(EnumFacing axis)
+	{
+		return false;
+	}
 
 
 	//	=================================

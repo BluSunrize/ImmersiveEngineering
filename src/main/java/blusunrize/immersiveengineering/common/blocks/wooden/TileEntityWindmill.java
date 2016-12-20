@@ -175,6 +175,11 @@ public class TileEntityWindmill extends TileEntityIEBase implements ITickable, I
 	{
 		return false;
 	}
+	@Override
+	public boolean canRotate(EnumFacing axis)
+	{
+		return false;
+	}
 
 	static ArrayList<String> emptyDisplayList = new ArrayList();
 	@Override

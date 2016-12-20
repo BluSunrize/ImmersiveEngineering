@@ -377,6 +377,7 @@ public class IEContent
 		registerTile(TileEntityWoodenBarrel.class);
 		registerTile(TileEntityModWorkbench.class);
 		registerTile(TileEntitySorter.class);
+		registerTile(TileEntityTurntable.class);
 		registerTile(TileEntityWatermill.class);
 		registerTile(TileEntityWindmill.class);
 		registerTile(TileEntityWindmillAdvanced.class);

@@ -307,6 +307,11 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 	{
 		return false;
 	}
+	@Override
+	public boolean canRotate(EnumFacing axis)
+	{
+		return false;
+	}
 
 	@Override
 	public boolean isDummy()

@@ -53,6 +53,11 @@ public class TileEntityLantern extends TileEntityIEBase implements IDirectionalT
 	{
 		return true;
 	}
+	@Override
+	public boolean canRotate(EnumFacing axis)
+	{
+		return true;
+	}
 
 	@Override
 	public float[] getBlockBounds()

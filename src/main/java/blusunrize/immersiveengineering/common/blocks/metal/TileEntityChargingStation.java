@@ -263,6 +263,11 @@ public class TileEntityChargingStation extends TileEntityIEBase implements ITick
 	{
 		return true;
 	}
+	@Override
+	public boolean canRotate(EnumFacing axis)
+	{
+		return true;
+	}
 
 	@Override
 	public float[] getBlockBounds()

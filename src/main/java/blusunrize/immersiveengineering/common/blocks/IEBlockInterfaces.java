@@ -49,7 +49,7 @@ public class IEBlockInterfaces
 		PropertyInteger getIntProperty(String name);
 		int getIntPropertyValue(String name);
 	}
-	
+
 	public interface IUsesBooleanProperty
 	{
 		PropertyBoolInverted getBoolProperty(Class<? extends IUsesBooleanProperty> inf);
@@ -147,12 +147,14 @@ public class IEBlockInterfaces
 		}
 		boolean mirrorFacingOnPlacement(EntityLivingBase placer);
 		boolean canHammerRotate(EnumFacing side, float hitX, float hitY, float hitZ, EntityLivingBase entity);
+		boolean canRotate(EnumFacing axis);
+		default void afterRotation(EnumFacing oldDir, EnumFacing newDir){}
 	}
 	public interface IAdvancedDirectionalTile extends IDirectionalTile
 	{
 		void onDirectionalPlacement(EnumFacing side, float hitX, float hitY, float hitZ, EntityLivingBase placer);
 	}
-	
+
 	public interface IConfigurableSides
 	{
 		IEEnums.SideConfig getSideConfig(int side);
@@ -181,7 +183,7 @@ public class IEBlockInterfaces
 	{
 		boolean interact(EnumFacing side, EntityPlayer player, EnumHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ);
 	}
-	
+
 	public interface IHammerInteraction
 	{
 		boolean hammerUseSide(EnumFacing side, EntityPlayer player, float hitX, float hitY, float hitZ);
@@ -191,12 +193,12 @@ public class IEBlockInterfaces
 	{
 		boolean getIsActive();
 	}
-	
+
 	public interface IDualState extends IUsesBooleanProperty
 	{
 		boolean getIsSecondState();
 	}
-	
+
 	public interface IMirrorAble extends IUsesBooleanProperty
 	{
 		boolean getIsMirrored();
@@ -222,7 +224,7 @@ public class IEBlockInterfaces
 		void placeDummies(BlockPos pos, IBlockState state, EnumFacing side, float hitX, float hitY, float hitZ);
 		void breakDummies(BlockPos pos, IBlockState state);
 	}
-	
+
 	public interface IHasObjProperty
 	{
 		ArrayList<String> compileDisplayList();
@@ -236,7 +238,7 @@ public class IEBlockInterfaces
 		@SideOnly(Side.CLIENT)
 		HashMap<String,String> getTextureReplacements();
 	}
-	
+
 	public interface IGuiTile
 	{
 		boolean canOpenGui();
@@ -253,10 +255,10 @@ public class IEBlockInterfaces
 		int[] getCurrentProcessesStep();
 		int[] getCurrentProcessesMax();
 	}
-	
+
 	public interface INeighbourChangeTile
 	{
-		void onNeighborBlockChange(BlockPos pos, BlockPos neightbour);
+		void onNeighborBlockChange(BlockPos pos);
 	}
 
 	public interface IPropertyPassthrough
