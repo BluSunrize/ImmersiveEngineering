@@ -105,6 +105,8 @@ public class CommonProxy implements IGuiHandler
 					gui = new ContainerArcFurnace(player.inventory, (TileEntityArcFurnace) te);
 				if(ID==Lib.GUIID_Assembler && te instanceof TileEntityAssembler)
 					gui = new ContainerAssembler(player.inventory, (TileEntityAssembler) te);
+				if(ID==Lib.GUIID_AutoWorkbench && te instanceof TileEntityAutoWorkbench)
+					gui = new ContainerAutoWorkbench(player.inventory, (TileEntityAutoWorkbench) te);
 				if(gui!=null)
 					((IGuiTile)te).onGuiOpened(player, false);
 				return gui;

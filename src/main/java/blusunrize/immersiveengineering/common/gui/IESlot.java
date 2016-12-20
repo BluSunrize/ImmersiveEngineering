@@ -231,6 +231,30 @@ public abstract class IESlot extends Slot
 
 		}
 	}
+	public static class AutoBlueprint extends IESlot
+	{
+		public AutoBlueprint(Container container, IInventory inv, int id, int x, int y)
+		{
+			super(container, inv, id, x, y);
+		}
+		@Override
+		public boolean isItemValid(ItemStack itemStack)
+		{
+			return itemStack!=null && itemStack.getItem() instanceof ItemEngineersBlueprint;
+		}
+		@Override
+		public int getSlotStackLimit()
+		{
+			return 1;
+		}
+		@Override
+		public void onSlotChanged()
+		{
+			super.onSlotChanged();
+//			if(container instanceof ContainerAutoWorkbench)
+//				((ContainerAutoWorkbench)container).rebindSlots();
+		}
+	}
 	public static class Ghost extends IESlot
 	{
 		public Ghost(Container container, IInventory inv, int id, int x, int y)

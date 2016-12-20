@@ -69,8 +69,8 @@ public class BlockMetalMultiblocks extends BlockIEMultiblock<BlockTypes_MetalMul
 				return new TileEntitySilo();
 			case ASSEMBLER:
 				return new TileEntityAssembler();
-			//		case AUTO_WORKBENCH:
-			//			return new TileEntityAssembler();
+			case AUTO_WORKBENCH:
+				return new TileEntityAutoWorkbench();
 			//		case BOTTLING_MACHINE:
 			//			return new TileEntityAssembler();
 			case SQUEEZER:
