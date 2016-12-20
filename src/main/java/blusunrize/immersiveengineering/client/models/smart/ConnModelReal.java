@@ -178,6 +178,7 @@ public class ConnModelReal implements IBakedModel
 		final BlockRenderLayer layer;
 		final String extraCacheKey;
 		final Set<Object> ignoredProperties;
+		Object[] additionalProperties = null;
 		public ExtBlockstateAdapter(IExtendedBlockState s, BlockRenderLayer l, Set<Object> ignored)
 		{
 			state = s;
@@ -194,6 +195,11 @@ public class ConnModelReal implements IBakedModel
 			else
 				extraCacheKey = null;
 		}
+		public ExtBlockstateAdapter(IExtendedBlockState s, BlockRenderLayer l, Set<Object> ignored, Object[] additional)
+		{
+			this(s, l, ignored);
+			additionalProperties = additional;
+		}
 
 		@Override
 		public boolean equals(Object obj)
@@ -208,6 +214,8 @@ public class ConnModelReal implements IBakedModel
 			if (extraCacheKey==null^o.extraCacheKey==null)
 				return false;
 			if (extraCacheKey!=null&&!extraCacheKey.equals(o.extraCacheKey))
+				return false;
+			if (!Arrays.equals(additionalProperties, o.additionalProperties))
 				return false;
 			for(IProperty<?> i : state.getPropertyNames())
 			{
@@ -257,6 +265,7 @@ public class ConnModelReal implements IBakedModel
 					Object o = state.getValue(n);
 					val = prime * val + (o == null ? 0 : o.hashCode());
 				}
+			val = prime*val+Arrays.hashCode(additionalProperties);
 			return val;
 		}
 	}
