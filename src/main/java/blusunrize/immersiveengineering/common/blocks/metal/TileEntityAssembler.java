@@ -132,7 +132,7 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 					if(stack!=null)
 						queryList.add(stack.copy());
 				int consumed = IEConfig.Machines.assembler_consumption;
-				if(this.hasIngredients(pattern, queryList) && this.energyStorage.extractEnergy(consumed, true)==consumed)
+				if(this.energyStorage.extractEnergy(consumed, true)==consumed && this.hasIngredients(pattern, queryList))
 				{
 					this.energyStorage.extractEnergy(consumed, false);
 					ArrayList<ItemStack> outputList = new ArrayList<ItemStack>();//List of all outputs for the current recipe. This includes discarded containers
@@ -253,6 +253,9 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 		boolean match = true;
 
 		AssemblerHandler.IRecipeAdapter adapter = AssemblerHandler.findAdapter(pattern.recipe);
+		if (adapter==null)
+			//We don't know how to handle the recipe
+			return false;
 		AssemblerHandler.RecipeQuery[] queries = adapter.getQueriedInputs(pattern.recipe, pattern.inv);
 		for(AssemblerHandler.RecipeQuery recipeQuery : queries)
 			if(recipeQuery != null && recipeQuery.query != null)

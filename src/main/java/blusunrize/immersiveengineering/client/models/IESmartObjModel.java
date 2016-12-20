@@ -57,6 +57,7 @@ public class IESmartObjModel extends OBJBakedModel
 	ItemStack tempStack;
 	IBlockState tempState;
 	VertexFormat format;
+	Map<String, String> texReplace = null;
 
 	public IESmartObjModel(IBakedModel baseModel, OBJModel model, IModelState state, VertexFormat format, ImmutableMap<String, TextureAtlasSprite> textures, HashMap<TransformType, Matrix4> transformationMap)
 	{
@@ -159,30 +160,53 @@ public class IESmartObjModel extends OBJBakedModel
 	@Override
 	public List<BakedQuad> getQuads(IBlockState blockState, EnumFacing side, long rand)
 	{
+		OBJState objState = null;
+		Map<String, String> tex = null;
+		if (blockState instanceof IExtendedBlockState)
+		{
+			IExtendedBlockState ext = (IExtendedBlockState) blockState;
+			if (ext.getUnlistedNames().contains(Properties.AnimationProperty))
+			{
+				IModelState modState = ext.getValue(Properties.AnimationProperty);
+				if (modState instanceof OBJState)
+					objState = (OBJState) modState;
+			}
+			if (ext.getUnlistedNames().contains(IEProperties.OBJ_TEXTURE_REMAP))
+				tex = ext.getValue(IEProperties.OBJ_TEXTURE_REMAP);
+		}
+		return getQuads(blockState, side, rand, objState, tex, false);
+	}
+	public List<BakedQuad> getQuads(IBlockState blockState, EnumFacing side, long rand, OBJState objstate, Map<String, String> tex,
+			boolean addAnimationAndTex)
+	{
+		texReplace = tex;
 		this.tempState = blockState;
 		if(blockState instanceof IExtendedBlockState)
 		{
 			IExtendedBlockState exState = (IExtendedBlockState) blockState;
-			ExtBlockstateAdapter adapter = new ExtBlockstateAdapter(exState, MinecraftForgeClient.getRenderLayer(), ExtBlockstateAdapter.CONNS_OBJ_CALLBACK);
+			ExtBlockstateAdapter adapter;
+			if (objstate!=null)
+			{
+				if(objstate.parent==null || objstate.parent==TRSRTransformation.identity())
+					objstate.parent = this.getState();
+				if(objstate.getVisibilityMap().containsKey(Group.ALL) || objstate.getVisibilityMap().containsKey(Group.ALL_EXCEPT))
+					this.updateStateVisibilityMap(objstate);
+			}
+			if (addAnimationAndTex)
+				adapter = new ExtBlockstateAdapter(exState, MinecraftForgeClient.getRenderLayer(),
+						ExtBlockstateAdapter.CONNS_OBJ_CALLBACK, new Object[]{objstate, tex});
+			else
+				adapter = new ExtBlockstateAdapter(exState, MinecraftForgeClient.getRenderLayer(),
+						ExtBlockstateAdapter.CONNS_OBJ_CALLBACK);
 			if(!modelCache.containsKey(adapter))
 			{
 				IESmartObjModel model = null;
-				if(exState.getUnlistedNames().contains(Properties.AnimationProperty))
-				{
-					IModelState s = exState.getValue(Properties.AnimationProperty);
-					if(s instanceof OBJState)
-					{
-						OBJState objstate = (OBJState)s;
-						if(objstate.parent==null || objstate.parent==TRSRTransformation.identity())
-							objstate.parent = this.getState();
-						if(objstate.getVisibilityMap().containsKey(Group.ALL) || objstate.getVisibilityMap().containsKey(Group.ALL_EXCEPT))
-							this.updateStateVisibilityMap(objstate);
-						model = new IESmartObjModel(baseModel, getModel(), objstate, getFormat(), getTextures(), transformationMap);
-					}
-				}
+				if(objstate!=null)
+					model = new IESmartObjModel(baseModel, getModel(), objstate, getFormat(), getTextures(), transformationMap);
 				if(model==null)
 					model = new IESmartObjModel(baseModel, getModel(), this.getState(), getFormat(), getTextures(), transformationMap);
 				model.tempState = blockState;
+				model.texReplace = tex;
 				modelCache.put(adapter, model.buildQuads());
 			}
 			return Collections.synchronizedList(Lists.newArrayList(modelCache.get(adapter)));
@@ -287,11 +311,10 @@ public class IESmartObjModel extends OBJBakedModel
 						}
 						if(tempSprite==null && callback!=null)
 							tempSprite = callback.getTextureReplacement(callbackObject, f.getMaterialName());
-						if(tempSprite==null && this.tempState!=null && this.tempState instanceof IExtendedBlockState && ((IExtendedBlockState)this.tempState).getUnlistedNames().contains(IEProperties.OBJ_TEXTURE_REMAP))
+						if(tempSprite==null&&tempState!=null&&texReplace!=null)
 						{
-							HashMap<String, String> map = ((IExtendedBlockState)this.tempState).getValue(IEProperties.OBJ_TEXTURE_REMAP);
-							String s = map != null ? map.get(g.getName()) : null;
-							if(s != null)
+							String s = texReplace.get(g.getName());
+							if (s!=null)
 								tempSprite = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(s);
 						}
 						if(tempSprite==null && !"null".equals(f.getMaterialName()))
