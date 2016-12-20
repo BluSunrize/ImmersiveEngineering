@@ -183,7 +183,7 @@ public class ManualPageMultiblock extends ManualPages
 				GlStateManager.translate(transX, transY, Math.max(structureHeight, Math.max(structureWidth, structureLength)));
 				GlStateManager.scale(scale, -scale, 1);
 				GlStateManager.rotate(rotX, 1, 0, 0);
-				GlStateManager.rotate(180+rotY, 0, 1, 0);
+				GlStateManager.rotate(90+rotY, 0, 1, 0);
 
 				GlStateManager.translate((float)structureLength / -2f, (float)structureHeight / -2f, (float)structureWidth / -2f);
 

@@ -1,11 +1,10 @@
 package blusunrize.lib.manual.gui;
 
-import org.lwjgl.input.Mouse;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
+import org.lwjgl.input.Mouse;
 
 public class GuiClickableList extends GuiButton
 {
@@ -89,9 +88,9 @@ public class GuiClickableList extends GuiButton
 		if(b)
 		{
 			int mmY = my-this.yPosition;
-			for(int i=offset; i<Math.min(perPage, entries.length); i++)
+			for(int i=0; i<Math.min(perPage, entries.length); i++)
 				if(mmY>=i*getFontHeight() && mmY<(i+1)*getFontHeight())
-					selectedOption=i;
+					selectedOption=offset+i;
 		}
 		return selectedOption!=-1;
 	}
