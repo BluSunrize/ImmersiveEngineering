@@ -317,7 +317,7 @@ public class TileEntityCrusher extends TileEntityMultiblockMetal<TileEntityCrush
 						displayStack = Utils.copyStackWithAmount(stack, ingr.inputSize);
 						break;
 					}
-				MultiblockProcess<CrusherRecipe> process = new MultiblockProcessInWorld<CrusherRecipe>(recipe, displayStack, .5f);
+				MultiblockProcess<CrusherRecipe> process = new MultiblockProcessInWorld<CrusherRecipe>(recipe, .5f, displayStack);
 				if(master.addProcessToQueue(process, true, true))
 				{
 					master.addProcessToQueue(process, false, true);

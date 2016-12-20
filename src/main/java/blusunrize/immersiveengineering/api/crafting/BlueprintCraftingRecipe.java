@@ -22,6 +22,9 @@ import java.util.Map.Entry;
  */
 public class BlueprintCraftingRecipe extends MultiblockRecipe
 {
+	public static float energyModifier = 1;
+	public static float timeModifier = 1;
+
 	public static ArrayList<String> blueprintCategories = new ArrayList<String>();
 	public static ArrayListMultimap<String, BlueprintCraftingRecipe> recipeList = ArrayListMultimap.create();
 	public static HashMap<String, ItemStack> villagerPrices = new HashMap<String, ItemStack>();
@@ -40,6 +43,10 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 
 		this.inputList = Lists.newArrayList(this.inputs);
 		this.outputList = Lists.newArrayList(this.output);
+
+		//Time and energy values are for the automatic workbench
+		this.totalProcessEnergy = (int)Math.floor(23040*energyModifier);
+		this.totalProcessTime = (int)Math.floor(180*timeModifier);
 	}
 
 	public boolean matchesRecipe(ItemStack[] query)
@@ -133,7 +140,7 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 			{
 				Entry<ItemStack, Integer> e = queryIt.next();
 				ItemStack compStack = e.getKey();
-				if(ingr.matchesItemStack(compStack))
+				if(ingr.matchesItemStackIgnoringSize(compStack))
 				{
 					int taken = e.getValue()/req;
 					if(taken>0)
@@ -153,20 +160,14 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 		return maxCrafted;
 	}
 
-	public void consumeInputs(ItemStack[] query, int crafted)
+	public ItemStack[] consumeInputs(ItemStack[] query, int crafted)
 	{
-		ArrayList<IngredientStack> inputList = new ArrayList();
+		ArrayList<IngredientStack> inputList = new ArrayList(inputs.length);
 		for(IngredientStack i : inputs)
 			if(i!=null)
-			{
-				if(i.oreName!=null)
-					inputList.add(new IngredientStack(i.oreName, i.inputSize));
-				else if(i.stackList!=null)
-					inputList.add(new IngredientStack(Lists.newArrayList(i.stackList), i.inputSize));
-				else if(i.stack!=null)
-					inputList.add(new IngredientStack(ApiUtils.copyStackWithAmount(i.stack, i.inputSize)));
-			}
+				inputList.add(i);
 
+		ArrayList<ItemStack> consumed = new ArrayList(inputList.size());
 		Iterator<IngredientStack> inputIt = inputList.iterator();
 		while(inputIt.hasNext())
 		{
@@ -178,6 +179,7 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 					if(ingr.matchesItemStackIgnoringSize(query[i]))
 					{
 						int taken = Math.min(query[i].stackSize, inputSize);
+						consumed.add(ApiUtils.copyStackWithAmount(query[i],taken));
 						query[i].stackSize-=taken;
 						if(query[i].stackSize<=0)
 							query[i] = null;
@@ -189,10 +191,11 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 						}
 					}
 		}
+		return consumed.toArray(new ItemStack[consumed.size()]);
 	}
 	public ArrayList<IngredientStack> getFormattedInputs()
 	{
-		ArrayList<IngredientStack> formattedInputs = new ArrayList<IngredientStack>();  
+		ArrayList<IngredientStack> formattedInputs = new ArrayList<IngredientStack>();
 		for(IngredientStack ingr : this.inputs)
 			if(ingr!=null)
 			{
@@ -275,7 +278,7 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 		for(int i=0; i<inputs.length; i++)
 			inputs[i] = IngredientStack.readFromNBT(list.getCompoundTagAt(i));
 
-		List<BlueprintCraftingRecipe> recipeList = BlueprintCraftingRecipe.recipeList.get("blueprintCategory");
+		List<BlueprintCraftingRecipe> recipeList = BlueprintCraftingRecipe.recipeList.get(nbt.getString("blueprintCategory"));
 		for(BlueprintCraftingRecipe recipe : recipeList)
 		{
 			boolean b = false;

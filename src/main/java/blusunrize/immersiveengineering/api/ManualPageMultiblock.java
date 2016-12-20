@@ -42,11 +42,8 @@ public class ManualPageMultiblock extends ManualPages
 	float scale = 50f;
 	float transX = 0;
 	float transY = 0;
-	float width = 0;
-	float height = 0;
 	float rotX=0;
 	float rotY=0;
-	float rotZ=0;
 	List<String> componentTooltip;
 	MultiblockRenderInfo renderInfo;
 	MultiblockBlockAccess blockAccess;
@@ -186,7 +183,7 @@ public class ManualPageMultiblock extends ManualPages
 				GlStateManager.translate(transX, transY, Math.max(structureHeight, Math.max(structureWidth, structureLength)));
 				GlStateManager.scale(scale, -scale, 1);
 				GlStateManager.rotate(rotX, 1, 0, 0);
-				GlStateManager.rotate(rotY, 0, 1, 0);
+				GlStateManager.rotate(180+rotY, 0, 1, 0);
 
 				GlStateManager.translate((float)structureLength / -2f, (float)structureHeight / -2f, (float)structureWidth / -2f);
 

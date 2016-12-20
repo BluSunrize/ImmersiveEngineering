@@ -199,6 +199,10 @@ public class Config
 			public static boolean arcfurnace_electrodeCrafting = false;
 			@Comment({"Set this to false to disable the Arc Furnace's recycling of armors and tools"})
 			public static boolean arcfurnace_recycle = true;
+			@Comment({"A modifier to apply to the energy costs of every Automatic Workbench recipe"})
+			public static float autoWorkbench_energyModifier = 1;
+			@Comment({"A modifier to apply to the time of every Automatic Workbench recipe"})
+			public static float autoWorkbench_timeModifier = 1;
 
 			//Other Multiblock machines
 			@Comment({"The Flux the Assembler will consume to craft an item from a recipe"})
@@ -335,6 +339,8 @@ public class Config
 		RefineryRecipe.timeModifier = IEConfig.Machines.refinery_timeModifier;
 		ArcFurnaceRecipe.energyModifier = IEConfig.Machines.arcFurnace_energyModifier;
 		ArcFurnaceRecipe.timeModifier = IEConfig.Machines.arcFurnace_timeModifier;
+		BlueprintCraftingRecipe.energyModifier = IEConfig.Machines.autoWorkbench_energyModifier;
+		BlueprintCraftingRecipe.timeModifier = IEConfig.Machines.autoWorkbench_timeModifier;
 
 		Config.manual_int.put("excavator_depletion_days", Machines.excavator_depletion*45/24000);
 		Config.manual_bool.put("literalRailGun", false);//preventive measure for Railcraft
