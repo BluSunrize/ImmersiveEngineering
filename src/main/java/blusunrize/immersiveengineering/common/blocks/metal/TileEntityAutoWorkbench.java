@@ -45,7 +45,7 @@ public class TileEntityAutoWorkbench extends TileEntityMultiblockMetal<TileEntit
 	{
 		super.writeCustomNBT(nbt, descPacket);
 		nbt.setInteger("selectedRecipe",selectedRecipe);
-//		if(!descPacket)
+//		if(!descPacket) Disabled because blueprint. Have yet to see issue because of this
 		{
 			nbt.setTag("inventory", Utils.writeInventory(inventory));
 		}
@@ -57,17 +57,6 @@ public class TileEntityAutoWorkbench extends TileEntityMultiblockMetal<TileEntit
 		{
 			this.selectedRecipe = message.getInteger("recipe");
 		}
-//		} else if(message.hasKey("patternSync"))
-//		{
-//			int r = message.getInteger("recipe");
-//			NBTTagList list = message.getTagList("patternSync", 10);
-//			CrafterPatternInventory pattern = patterns[r];
-//			for(int i = 0; i < list.tagCount(); i++)
-//			{
-//				NBTTagCompound itemTag = list.getCompoundTagAt(i);
-//				pattern.inv[itemTag.getInteger("slot")] = ItemStack.loadItemStackFromNBT(itemTag);
-//			}
-//		}
 	}
 	@Override
 	public void update()

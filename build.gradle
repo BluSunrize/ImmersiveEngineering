@@ -66,6 +66,10 @@ repositories {
         name 'jared maven'
         url "http://blamejared.com/maven"
     }
+    maven { //IC2
+        name = "ic2"
+        url = "http://maven.ic2.player.to/"
+    }
 }
 
 dependencies {
@@ -81,6 +85,7 @@ dependencies {
     deobfCompile "li.cil.oc:OpenComputers:MC1.10.2-1.6.0.+"
     deobfCompile "mcjty.theoneprobe:TheOneProbe:1.10-1.0.13-26"
     deobfCompile "MineTweaker3:MineTweaker3-API:3.0.14.59"
+    deobfCompile 'net.industrial-craft:industrialcraft-2:2.6.+:dev'
 }
 
 jar {
