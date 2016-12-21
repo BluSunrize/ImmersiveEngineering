@@ -10,6 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EntityDamageSource;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
@@ -175,6 +176,10 @@ public class ChemthrowerHandler
 	}
 	public static class ChemthrowerEffect_Extinguish extends ChemthrowerEffect
 	{
+		private static DamageSource getPlayerDrownDamage(EntityPlayer player)
+		{
+			return new EntityDamageSource(DamageSource.drown.getDamageType(),player).setDamageBypassesArmor();
+		}
 		@Override
 		public void applyToEntity(EntityLivingBase target, EntityPlayer shooter, ItemStack thrower, Fluid fluid)
 		{
@@ -182,7 +187,7 @@ public class ChemthrowerHandler
 				target.extinguish();
 
 			if(target instanceof EntityBlaze || target instanceof EntityEnderman)
-				if(target.attackEntityFrom(DamageSource.drown, 3))
+				if(target.attackEntityFrom(getPlayerDrownDamage(shooter), 3))
 					target.hurtResistantTime = (int)(target.hurtResistantTime*.75);
 		}
 		@Override
