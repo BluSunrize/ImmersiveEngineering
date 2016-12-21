@@ -48,7 +48,6 @@ public class TileRenderSheetmetalTank extends TileEntitySpecialRenderer<TileEnti
 			worldrenderer.pos(20, 20, 0).color(0x22,0x22,0x22,0xff).endVertex();
 			worldrenderer.pos(20, -4, 0).color(0x22,0x22,0x22,0xff).endVertex();
 			ClientUtils.tes().draw();
-			GlStateManager.enableLighting();
 			GlStateManager.shadeModel(GL11.GL_FLAT);
 			GlStateManager.disableBlend();
 			GlStateManager.enableAlpha();
@@ -56,6 +55,8 @@ public class TileRenderSheetmetalTank extends TileEntitySpecialRenderer<TileEnti
 
 			if(fs!=null)
 			{
+				int col = fs.getFluid().getColor();
+				GlStateManager.color((col>>16&255)/255.0f,(col>>8&255)/255.0f,(col&255)/255.0f, 1);
 				float h = fs.amount/(float)tile.tank.getCapacity();
 				GlStateManager.depthMask(false);
 				GlStateManager.translate(0,0,.004f);
