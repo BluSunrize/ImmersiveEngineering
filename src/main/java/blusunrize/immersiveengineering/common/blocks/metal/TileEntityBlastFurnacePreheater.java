@@ -39,7 +39,7 @@ public class TileEntityBlastFurnacePreheater extends TileEntityIEBase implements
 			this.energyStorage.extractEnergy(consumed, false);
 			return 1;
 		}
-		if (active)
+		else if(active)
 		{
 			active = false;
 			this.markContainingBlockForUpdate(null);
