@@ -100,7 +100,7 @@ public class ConveyorSplit extends ConveyorBasic
 			String nbtKey = "immersiveengineering:conveyorDir"+Integer.toHexString(tile.getPos().hashCode());
 			BlockPos nextPos = tile.getPos().offset(redirect);
 			double distNext = Math.abs((redirect.getAxis() == Axis.Z ? nextPos.getZ() : nextPos.getX()) + .5 - (redirect.getAxis() == Axis.Z ? entity.posZ : entity.posX));
-			double treshold = .44;
+			double treshold = .4;
 			boolean contact = distNext < treshold;
 			if(contact)
 				entity.getEntityData().removeTag(nbtKey);
