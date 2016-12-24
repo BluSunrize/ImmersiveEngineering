@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.common.gui;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
@@ -251,7 +252,8 @@ public abstract class IESlot extends Slot
 		public void onSlotChanged()
 		{
 			super.onSlotChanged();
-//			if(container instanceof ContainerAutoWorkbench)
+			if(container instanceof ContainerAutoWorkbench)
+				ImmersiveEngineering.proxy.reInitGui();
 //				((ContainerAutoWorkbench)container).rebindSlots();
 		}
 	}
