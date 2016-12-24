@@ -54,17 +54,19 @@
 		},
 		"_1dynamicrender":
 		{
-			"false":{
-				"model": "immersiveengineering:metalMultiblock/autoWorkbench.obj"
-			},
+			"false":{},
 			"true":{
 				"model": "immersiveengineering:metalMultiblock/autoWorkbench_animated.obj.ie"
 			}
 		},
 		"boolean0": //Mirror
 		{
-			"false":{},
-			"true":{}
+			"false":{
+				"model": "immersiveengineering:metalMultiblock/autoWorkbench.obj"
+			},
+			"true":{
+				"model": "immersiveengineering:metalMultiblock/autoWorkbench_mirrored.obj"
+			}
 		}
 	}
 }

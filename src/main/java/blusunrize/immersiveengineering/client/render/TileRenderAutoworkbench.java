@@ -60,8 +60,9 @@ public class TileRenderAutoWorkbench extends TileEntitySpecialRenderer<TileEntit
 		VertexBuffer worldRenderer = tessellator.getBuffer();
 		//Outer GL Wrapping, initial translation
 		GlStateManager.pushMatrix();
-		GlStateManager.translate(x, y, z);
-		GlStateManager.translate(.5, .5, .5);
+		GlStateManager.translate(x+.5, y+.5, z+.5);
+		if(te.mirrored)
+			GlStateManager.scale(te.facing.getFrontOffsetX()==0?-1:1,1,te.facing.getFrontOffsetZ()==0?-1:1);
 
 		//Item Displacement
 		float[][] itemDisplays = new float[te.processQueue.size()][];

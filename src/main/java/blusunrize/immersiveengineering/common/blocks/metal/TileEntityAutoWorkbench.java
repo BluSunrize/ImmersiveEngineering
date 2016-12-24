@@ -181,12 +181,13 @@ public class TileEntityAutoWorkbench extends TileEntityMultiblockMetal<TileEntit
 	@Override
 	public void doProcessOutput(ItemStack output)
 	{
-		BlockPos pos = getPos().offset(facing.rotateY(),2);
+		EnumFacing outDir = mirrored?facing.rotateYCCW():facing.rotateY();
+		BlockPos pos = getPos().offset(outDir,2);
 		TileEntity inventoryTile = this.worldObj.getTileEntity(pos);
 		if(inventoryTile!=null)
-			output = Utils.insertStackIntoInventory(inventoryTile, output, facing.getOpposite());
+			output = Utils.insertStackIntoInventory(inventoryTile, output, outDir.getOpposite());
 		if(output!=null)
-			Utils.dropStackAtPos(worldObj, pos, output, facing);
+			Utils.dropStackAtPos(worldObj, pos, output, outDir);
 	}
 	@Override
 	public void doProcessFluidOutput(FluidStack output)
@@ -209,7 +210,7 @@ public class TileEntityAutoWorkbench extends TileEntityMultiblockMetal<TileEntit
 	@Override
 	public float getMinProcessDistance(MultiblockProcess<IMultiblockRecipe> process)
 	{
-		return .33f;
+		return .4375f;
 	}
 
 

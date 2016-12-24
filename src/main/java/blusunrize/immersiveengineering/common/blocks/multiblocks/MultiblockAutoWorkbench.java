@@ -121,53 +121,22 @@ public class MultiblockAutoWorkbench implements IMultiblock
 		else
 			side = side.getOpposite();
 
-		boolean mirror = false;
-		for(int l=0;l<3;l++)
-			for(int h=-1;h<=0;h++)
-				for(int w=-1;w<=1;w++)
+
+		boolean mirrored = false;
+		boolean b = structureCheck(world,pos, side, mirrored);
+		if(!b)
+		{
+			mirrored = true;
+			b = structureCheck(world,pos, side, mirrored);
+		}
+
+		if(!b)
+			return false;
+		for(int l = 0; l < 3; l++)
+			for(int w = -1; w <= 1; w++)
+				for(int h = -1; h <= 0; h++)
 				{
-					int ww = mirror?-w:w;
-					BlockPos pos2 = pos.offset(side, l).offset(side.rotateY(), ww).add(0, h, 0);
-
-					if(h==-1)
-					{
-						if(l==0&&w==0)
-						{
-							if(!Utils.isBlockAt(world, pos2, IEContent.blockMetalDecoration0, BlockTypes_MetalDecoration0.RS_ENGINEERING.getMeta()))
-								return false;
-						}
-						else
-						{
-							if(!Utils.isOreBlockAt(world, pos2, "scaffoldingSteel"))
-								return false;
-						}
-					}
-					else if(h==0)
-					{
-						if((w==-1&&l<2)||(w==1&&l==2))
-						{
-							if(!Utils.isBlockAt(world, pos2, IEContent.blockMetalDecoration0, BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta()))
-								return false;
-						}
-						else if(l==0)
-						{
-							if(!Utils.isOreBlockAt(world, pos2, "slabTreatedWood"))
-								return false;
-						}
-						else
-						{
-							if(!ConveyorHandler.isConveyor(world, pos2, ImmersiveEngineering.MODID + ":conveyor", null))
-								return false;
-						}
-					}
-				}
-
-
-		for(int l=0;l<3;l++)
-			for(int w=-1;w<=1;w++)
-				for(int h=-1;h<=0;h++)
-				{
-					int ww = mirror?-w:w;
+					int ww = mirrored?-w: w;
 					BlockPos pos2 = pos.offset(side, l).offset(side.rotateY(), ww).add(0, h, 0);
 
 					world.setBlockState(pos2, IEContent.blockMetalMultiblock.getStateFromMeta(BlockTypes_MetalMultiblock.AUTO_WORKBENCH.getMeta()));
@@ -175,13 +144,65 @@ public class MultiblockAutoWorkbench implements IMultiblock
 					if(curr instanceof TileEntityAutoWorkbench)
 					{
 						TileEntityAutoWorkbench tile = (TileEntityAutoWorkbench)curr;
-						tile.facing=side;
-						tile.formed=true;
-						tile.pos = (h+1)*9 + l*3 + (w+1);
-						tile.offset = new int[]{(side==EnumFacing.WEST?1-l: side==EnumFacing.EAST?l-1: side==EnumFacing.NORTH?ww: -ww),h,(side==EnumFacing.NORTH?1-l: side==EnumFacing.SOUTH?l-1: side==EnumFacing.EAST?ww : -ww)};
-						tile.mirrored=mirror;
+						tile.facing = side;
+						tile.formed = true;
+						tile.pos = (h+1)*9+l*3+(w+1);
+						tile.offset = new int[]{(side==EnumFacing.WEST?1-l: side==EnumFacing.EAST?l-1: side==EnumFacing.NORTH?ww: -ww), h, (side==EnumFacing.NORTH?1-l: side==EnumFacing.SOUTH?l-1: side==EnumFacing.EAST?ww: -ww)};
+						tile.mirrored = mirrored;
 						tile.markDirty();
 						world.addBlockEvent(pos2, IEContent.blockMetalMultiblock, 255, 0);
+					}
+				}
+		return true;
+	}
+
+	boolean structureCheck(World world, BlockPos startPos, EnumFacing dir, boolean mirror)
+	{
+		for(int l = 0; l < 3; l++)
+			for(int h = -1; h <= 0; h++)
+				for(int w = -1; w <= 1; w++)
+				{
+					int ww = mirror?-w: w;
+					BlockPos pos2 = startPos.offset(dir, l).offset(dir.rotateY(), ww).add(0, h, 0);
+
+					if(h==-1)
+					{
+						if(l==0&&w==0)
+						{
+							if(!Utils.isBlockAt(world, pos2, IEContent.blockMetalDecoration0, BlockTypes_MetalDecoration0.RS_ENGINEERING.getMeta()))
+								return false;
+						} else if(w==-1&&l < 2)
+						{
+							if(!Utils.isBlockAt(world, pos2, IEContent.blockMetalDecoration0, BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta()))
+								return false;
+						} else if(w==1&&l==2)
+						{
+							if(!Utils.isBlockAt(world, pos2, IEContent.blockMetalDecoration0, BlockTypes_MetalDecoration0.HEAVY_ENGINEERING.getMeta()))
+								return false;
+						} else
+						{
+							if(!Utils.isOreBlockAt(world, pos2, "scaffoldingSteel"))
+								return false;
+						}
+					} else if(h==0)
+					{
+						if(w==-1&&l < 2)
+						{
+							if(!Utils.isBlockAt(world, pos2, IEContent.blockMetalDecoration0, BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta()))
+								return false;
+						} else if(w==1&&l==2)
+						{
+							if(!Utils.isBlockAt(world, pos2, IEContent.blockMetalDecoration0, BlockTypes_MetalDecoration0.HEAVY_ENGINEERING.getMeta()))
+								return false;
+						} else if(l==0)
+						{
+							if(!Utils.isOreBlockAt(world, pos2, "slabTreatedWood"))
+								return false;
+						} else
+						{
+							if(!ConveyorHandler.isConveyor(world, pos2, ImmersiveEngineering.MODID+":conveyor", null))
+								return false;
+						}
 					}
 				}
 		return true;
