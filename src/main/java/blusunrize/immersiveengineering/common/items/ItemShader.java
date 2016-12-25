@@ -111,6 +111,8 @@ public class ItemShader extends ItemIEBase implements IShaderItem, ITextureOverr
 		entry.getCase("immersiveengineering:chemthrower").addLayers(new ShaderLayer(new ResourceLocation("minecraft:blocks/destroy_stage_8"),0xffff6314).setTextureBounds(6/64d,16/64d,22/64d,24/64d).setCutoutBounds(0,0,1,.5));
 		entry.getCase("immersiveengineering:railgun").addLayers(new ShaderLayer(new ResourceLocation("minecraft:blocks/destroy_stage_8"),0xffff6314).setTextureBounds(55/64d,48/64d,1,58/64d).setCutoutBounds(.25,.125,.75,.6875));
 		entry.getCase("immersiveengineering:balloon").addLayers(new ShaderLayer(new ResourceLocation("minecraft:blocks/destroy_stage_8"),0xffff6314).setTextureBounds(0,.375,.75,.875).setCutoutBounds(.125,0,.875,.5));
+
+		addShader("Dominator", 1, EnumRarity.UNCOMMON, 0xff4c311f,0xff2a2c36,0xff5bfffb,0xff2a2c36, "1_3",true,0xff2a2c36).setInfo(null,"Psycho-Pass","dominator");
 	}
 
 	@Override
