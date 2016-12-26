@@ -3,7 +3,6 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
-import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.AbstractConnection;
@@ -12,10 +11,10 @@ import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConne
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
+import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import blusunrize.immersiveengineering.common.util.Utils;
-import cofh.api.energy.IEnergyReceiver;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -141,7 +140,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 		if(isRelay())
 			return false;
 		TileEntity tile = worldObj.getTileEntity(getPos().offset(facing));
-		return (tile instanceof IFluxReceiver||tile instanceof IEnergyReceiver);// || (Lib.IC2 && IC2Helper.isEnergySink(tile)) || (Lib.GREG && GregTechHelper.gregtech_isValidEnergyOutput(tile)));
+		return EnergyHelper.isFluxReceiver(tile, facing.getOpposite());
 	}
 	@Override
 	public int outputEnergy(int amount, boolean simulate, int energyType)
@@ -155,14 +154,15 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 
 		TileEntity capacitor = worldObj.getTileEntity(getPos().offset(facing));
 		int ret = 0;
-		if(capacitor instanceof IFluxReceiver && ((IFluxReceiver)capacitor).canConnectEnergy(facing.getOpposite()))
-		{
-			ret = ((IFluxReceiver)capacitor).receiveEnergy(facing.getOpposite(), toAccept, simulate);
-		}
-		else if(capacitor instanceof IEnergyReceiver && ((IEnergyReceiver)capacitor).canConnectEnergy(facing.getOpposite()))
-		{
-			ret = ((IEnergyReceiver)capacitor).receiveEnergy(facing.getOpposite(), toAccept, simulate);
-		}
+		ret = EnergyHelper.insertFlux(capacitor, facing.getOpposite(), toAccept, simulate);
+		//		if(capacitor instanceof IFluxReceiver && ((IFluxReceiver)capacitor).canConnectEnergy(facing.getOpposite()))
+		//		{
+		//			ret = ((IFluxReceiver)capacitor).receiveEnergy(facing.getOpposite(), toAccept, simulate);
+		//		}
+		//		else if(capacitor instanceof IEnergyReceiver && ((IEnergyReceiver)capacitor).canConnectEnergy(facing.getOpposite()))
+		//		{
+		//			ret = ((IEnergyReceiver)capacitor).receiveEnergy(facing.getOpposite(), toAccept, simulate);
+		//		}
 		//		else if(Lib.IC2 && IC2Helper.isAcceptingEnergySink(capacitor, this, fd.getOpposite()))
 		//		{
 		//			double left = IC2Helper.injectEnergy(capacitor, fd.getOpposite(), ModCompatability.convertRFtoEU(toAccept, getIC2Tier()), canTakeHV()?(256*256): canTakeMV()?(128*128) : (32*32), simulate);
