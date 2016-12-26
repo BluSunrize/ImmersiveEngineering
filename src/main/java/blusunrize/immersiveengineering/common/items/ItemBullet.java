@@ -67,7 +67,7 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 				IEConfig.Tools.bulletDamage_Buck,
 				true,
 				false,
-				BulletHandler.emptyCasing,
+				BulletHandler.emptyShell,
 				new ResourceLocation("immersiveengineering:items/bullet_buckshot"))
 		{
 			@Override
@@ -97,7 +97,7 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 				IEConfig.Tools.bulletDamage_Dragon,
 				true,
 				true,
-				BulletHandler.emptyCasing,
+				BulletHandler.emptyShell,
 				new ResourceLocation("immersiveengineering:items/bullet_dragonsbreath"))
 		{
 			@Override
