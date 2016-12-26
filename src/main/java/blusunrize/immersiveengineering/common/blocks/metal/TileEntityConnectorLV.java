@@ -153,8 +153,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 		int toAccept = Math.min(acceptanceLeft, amount);
 
 		TileEntity capacitor = worldObj.getTileEntity(getPos().offset(facing));
-		int ret = 0;
-		ret = EnergyHelper.insertFlux(capacitor, facing.getOpposite(), toAccept, simulate);
+		int ret = EnergyHelper.insertFlux(capacitor, facing.getOpposite(), toAccept, simulate);
 		//		if(capacitor instanceof IFluxReceiver && ((IFluxReceiver)capacitor).canConnectEnergy(facing.getOpposite()))
 		//		{
 		//			ret = ((IFluxReceiver)capacitor).receiveEnergy(facing.getOpposite(), toAccept, simulate);
