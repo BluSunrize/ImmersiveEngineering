@@ -1,3 +1,25 @@
+#####Version 0.10-54
+- added the Automated Engineer's Workbench, allowing automated handling of Blueprint Recipes
+- added the Turntable, a block that allows spinning of other blocks
+- added the "Dominator" shader
+- changed Wirecoils to change their distance display to red when too far from their linking point
+- changed Graphite Electrodes to stack to 16 to make them more viable as Railgun ammo
+- changed Assembler to allow crafting IC2 recipes (thanks Malte)
+- fixed issues with lowercasing without locale
+- fixed ThermoElectric Gens, Dynamos and Wire Connectors not handling Forge Energy
+- fixed Shaderbags having their conversion recipes crash
+- fixed duplicate rod recipes in the Metal Press
+- fixed TConstruct book not showing Hemp item
+- fixed multithreading issues (thanks Malte)
+- fixed crash with unknown recipes in the Assembler (thanks Malte)
+- fixed resource overhead with Bucket Wheel rendering (thanks Malte)
+- fixed Manual not handling scrolling lists properly
+- fixed Sheetmetal Tanks not rendering fluids with colour
+- fixed Chemthrower not dropping player-only items (Blazerods)
+- fixed Buckshot and Dragonsbreath having the wrong return cartridges and the wrong DamageSource
+- fixed needless chunkupdates caused by Blastfurnace Preheaters
+- fixed Splitting Conveyors flipping directions too early
+
 #####Version 0.10-53 - BUILT
 - added new shaders
 - fixed Sample Drill crashing upon energy insertion
