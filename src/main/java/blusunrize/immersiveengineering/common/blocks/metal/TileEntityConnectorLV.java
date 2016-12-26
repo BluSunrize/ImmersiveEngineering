@@ -26,10 +26,12 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -141,7 +143,7 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 		if(isRelay())
 			return false;
 		TileEntity tile = worldObj.getTileEntity(getPos().offset(facing));
-		return (tile instanceof IFluxReceiver||tile instanceof IEnergyReceiver);// || (Lib.IC2 && IC2Helper.isEnergySink(tile)) || (Lib.GREG && GregTechHelper.gregtech_isValidEnergyOutput(tile)));
+		return (tile instanceof IFluxReceiver||tile instanceof IEnergyReceiver ||(tile != null && tile.hasCapability(CapabilityEnergy.ENERGY, facing.getOpposite())));// || (Lib.IC2 && IC2Helper.isEnergySink(tile)) || (Lib.GREG && GregTechHelper.gregtech_isValidEnergyOutput(tile)));
 	}
 	@Override
 	public int outputEnergy(int amount, boolean simulate, int energyType)
@@ -162,6 +164,10 @@ public class TileEntityConnectorLV extends TileEntityImmersiveConnectable implem
 		else if(capacitor instanceof IEnergyReceiver && ((IEnergyReceiver)capacitor).canConnectEnergy(facing.getOpposite()))
 		{
 			ret = ((IEnergyReceiver)capacitor).receiveEnergy(facing.getOpposite(), toAccept, simulate);
+		}
+		else if(capacitor != null && capacitor.hasCapability(CapabilityEnergy.ENERGY, facing.getOpposite())) 
+		{
+			ret = ((IEnergyStorage)capacitor.getCapability(CapabilityEnergy.ENERGY, facing.getOpposite())).receiveEnergy(toAccept, simulate);
 		}
 		//		else if(Lib.IC2 && IC2Helper.isAcceptingEnergySink(capacitor, this, fd.getOpposite()))
 		//		{
