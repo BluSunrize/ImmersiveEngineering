@@ -1,6 +1,6 @@
-#####Version 0.10-54
+#####Version 0.10-54 - BUILT
 - added the Automated Engineer's Workbench, allowing automated handling of Blueprint Recipes
-- added the Turntable, a block that allows spinning of other blocks
+- added the Turntable, a block that allows rotating of other blocks
 - added the "Dominator" shader
 - changed Wirecoils to change their distance display to red when too far from their linking point
 - changed Graphite Electrodes to stack to 16 to make them more viable as Railgun ammo
