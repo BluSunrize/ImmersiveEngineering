@@ -10,7 +10,6 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMultiblockM
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMultiblockMetal.MultiblockProcessInWorld;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.google.common.collect.HashMultimap;
-import javafx.util.Pair;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
@@ -30,6 +29,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.model.obj.OBJModel.OBJState;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.Properties;
+import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
@@ -458,7 +458,7 @@ public class TileRenderAutoWorkbench extends TileEntitySpecialRenderer<TileEntit
 							}
 							if(delta > 0)
 							{
-								Pair<TexturePoint,TexturePoint> l = new Pair(new TexturePoint(ww+(i==0?0:i==1?1:0), hh+(i==2?0:i==3?1:0), w), new TexturePoint(ww+(i==0?0:i==1?1:1), hh+(i==2?0:i==3?1:1), w));
+								Pair<TexturePoint,TexturePoint> l = Pair.of(new TexturePoint(ww+(i==0?0:i==1?1:0), hh+(i==2?0:i==3?1:0), w), new TexturePoint(ww+(i==0?0:i==1?1:1), hh+(i==2?0:i==3?1:1), w));
 								temp_lines.add(l);
 							}
 						}
@@ -486,7 +486,7 @@ public class TileRenderAutoWorkbench extends TileEntitySpecialRenderer<TileEntit
 		{
 			TexturePoint p1 = line.getKey();
 			TexturePoint p2 = line.getValue();
-			complete_lines.add(new Pair<>(new Point((int)(p1.x/(float)p1.scale*wMax), (int)(p1.y/(float)p1.scale*wMax)), new Point((int)(p2.x/(float)p2.scale*wMax), (int)(p2.y/(float)p2.scale*wMax))));
+			complete_lines.add(Pair.of(new Point((int)(p1.x/(float)p1.scale*wMax), (int)(p1.y/(float)p1.scale*wMax)), new Point((int)(p2.x/(float)p2.scale*wMax), (int)(p2.y/(float)p2.scale*wMax))));
 		}
 		return new BlueprintLines(wMax, complete_lines, complete_areaMap);
 	}
