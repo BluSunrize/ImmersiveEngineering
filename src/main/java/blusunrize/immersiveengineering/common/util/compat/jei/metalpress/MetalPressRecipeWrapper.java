@@ -9,11 +9,9 @@ import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 
 public class MetalPressRecipeWrapper extends MultiblockRecipeWrapper
 {
-	int testHash = 0;
 	public MetalPressRecipeWrapper(MetalPressRecipe recipe)
 	{
 		super(recipe);
-		testHash = recipe.testHash;
 	}
 
 	@Override
@@ -25,18 +23,5 @@ public class MetalPressRecipeWrapper extends MultiblockRecipeWrapper
 		GlStateManager.scale(50, -50, 50);
 		minecraft.getRenderItem().renderItem(MetalPressRecipeCategory.metalPressStack, ItemCameraTransforms.TransformType.GUI);
 		GlStateManager.popMatrix();
-	}
-
-	@Override
-	public int hashCode()
-	{
-		return testHash;
-	}
-	@Override
-	public boolean equals(Object other)
-	{
-		if(other instanceof MetalPressRecipeWrapper)
-			return other.hashCode()==this.hashCode();
-		return false;
 	}
 }
