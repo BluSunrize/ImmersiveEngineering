@@ -1,14 +1,12 @@
 package blusunrize.immersiveengineering.common.util.compat.jei.blastfurnace;
 
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
-import mezz.jei.api.IJeiHelpers;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.BlankRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -44,13 +42,5 @@ public class BlastFurnaceRecipeWrapper extends BlankRecipeWrapper
 	@Override
 	public void drawInfo(@Nonnull Minecraft minecraft, int recipeWidth, int recipeHeight, int mouseX, int mouseY)
 	{
-	}
-
-	public static List<BlastFurnaceRecipeWrapper> getRecipes(IJeiHelpers jeiHelpers)
-	{
-		List<BlastFurnaceRecipeWrapper> recipes = new ArrayList<>();
-		for(BlastFurnaceRecipe r : BlastFurnaceRecipe.recipeList)
-			recipes.add(new BlastFurnaceRecipeWrapper(r));
-		return recipes;
 	}
 }

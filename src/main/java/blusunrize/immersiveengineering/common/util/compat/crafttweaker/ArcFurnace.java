@@ -47,6 +47,7 @@ public class ArcFurnace
 		public void apply()
 		{
 			ArcFurnaceRecipe.recipeList.add(recipe);
+			MineTweakerAPI.getIjeiRecipeRegistry().addRecipe(recipe);
 		}
 
 		@Override
@@ -59,6 +60,7 @@ public class ArcFurnace
 		public void undo()
 		{
 			ArcFurnaceRecipe.recipeList.remove(recipe);
+			MineTweakerAPI.getIjeiRecipeRegistry().removeRecipe(recipe);
 		}
 
 		@Override
@@ -100,6 +102,8 @@ public class ArcFurnace
 		public void apply()
 		{
 			removedRecipes = ArcFurnaceRecipe.removeRecipes(output);
+			for(ArcFurnaceRecipe recipe : removedRecipes)
+				MineTweakerAPI.getIjeiRecipeRegistry().removeRecipe(recipe);
 		}
 
 		@Override
@@ -108,7 +112,10 @@ public class ArcFurnace
 			if(removedRecipes != null)
 				for(ArcFurnaceRecipe recipe : removedRecipes)
 					if(recipe != null)
+					{
 						ArcFurnaceRecipe.recipeList.add(recipe);
+						MineTweakerAPI.getIjeiRecipeRegistry().addRecipe(recipe);
+					}
 		}
 
 		@Override

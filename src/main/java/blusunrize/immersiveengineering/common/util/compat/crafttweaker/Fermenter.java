@@ -44,6 +44,7 @@ public class Fermenter
 		public void apply()
 		{
 			FermenterRecipe.recipeList.add(recipe);
+			MineTweakerAPI.getIjeiRecipeRegistry().addRecipe(recipe);
 		}
 
 		@Override
@@ -56,6 +57,7 @@ public class Fermenter
 		public void undo()
 		{
 			FermenterRecipe.recipeList.remove(recipe);
+			MineTweakerAPI.getIjeiRecipeRegistry().removeRecipe(recipe);
 		}
 
 		@Override
@@ -108,6 +110,7 @@ public class Fermenter
 				if(r != null && r.fluidOutput != null && r.fluidOutput.isFluidEqual(output))
 				{
 					removedRecipes.add(r);
+					MineTweakerAPI.getIjeiRecipeRegistry().removeRecipe(r);
 					it.remove();
 				}
 			}
@@ -119,7 +122,10 @@ public class Fermenter
 			if(removedRecipes != null)
 				for(FermenterRecipe recipe : removedRecipes)
 					if(recipe != null)
+					{
 						FermenterRecipe.recipeList.add(recipe);
+						MineTweakerAPI.getIjeiRecipeRegistry().addRecipe(recipe);
+					}
 		}
 
 		@Override
@@ -174,6 +180,7 @@ public class Fermenter
 				if(r != null && OreDictionary.itemMatches(output, r.itemOutput, false))
 				{
 					removedRecipes.add(r);
+					MineTweakerAPI.getIjeiRecipeRegistry().removeRecipe(r);
 					it.remove();
 				}
 			}
@@ -185,7 +192,10 @@ public class Fermenter
 			if(removedRecipes != null)
 				for(FermenterRecipe recipe : removedRecipes)
 					if(recipe != null)
+					{
 						FermenterRecipe.recipeList.add(recipe);
+						MineTweakerAPI.getIjeiRecipeRegistry().addRecipe(recipe);
+					}
 		}
 
 		@Override

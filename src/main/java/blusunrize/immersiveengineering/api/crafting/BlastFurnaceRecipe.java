@@ -59,11 +59,12 @@ public class BlastFurnaceRecipe
 	}
 
 	public static HashMap<Object, Integer> blastFuels = new HashMap<Object, Integer>();
-	public static void addBlastFuel(Object fuel, int burnTime)
+	public static Object addBlastFuel(Object fuel, int burnTime)
 	{
 		Object key = ApiUtils.convertToValidRecipeInput(fuel);
 		if(key!=null)
 			blastFuels.put(key, burnTime);
+		return key;
 	}
 	public static int getBlastFuelTime(ItemStack stack)
 	{

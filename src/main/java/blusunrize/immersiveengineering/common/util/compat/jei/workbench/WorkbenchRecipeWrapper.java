@@ -2,12 +2,9 @@ package blusunrize.immersiveengineering.common.util.compat.jei.workbench;
 
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.common.util.compat.jei.MultiblockRecipeWrapper;
-import mezz.jei.api.IJeiHelpers;
 import net.minecraft.client.Minecraft;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.List;
 
 public class WorkbenchRecipeWrapper extends MultiblockRecipeWrapper
 {
@@ -35,15 +32,5 @@ public class WorkbenchRecipeWrapper extends MultiblockRecipeWrapper
 	public boolean handleClick(@Nonnull Minecraft minecraft, int mouseX, int mouseY, int mouseButton)
 	{
 		return false;
-	}
-
-	public static List<WorkbenchRecipeWrapper> getRecipes(IJeiHelpers jeiHelpers)
-	{
-		List<WorkbenchRecipeWrapper> recipes = new ArrayList<>();
-		for(BlueprintCraftingRecipe r : BlueprintCraftingRecipe.recipeList.values())
-			
-//			if(r.input!=null&&(r.input.stack!=null||(r.input.stackList!=null&&!r.input.stackList.isEmpty())||r.input.oreName!=null) && r.output!=null)
-				recipes.add(new WorkbenchRecipeWrapper(r));
-		return recipes;
 	}
 }

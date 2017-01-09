@@ -3,19 +3,17 @@ package blusunrize.immersiveengineering.common.util.compat.jei.metalpress;
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.util.compat.jei.MultiblockRecipeWrapper;
-import mezz.jei.api.IJeiHelpers;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class MetalPressRecipeWrapper extends MultiblockRecipeWrapper
 {
+	int testHash = 0;
 	public MetalPressRecipeWrapper(MetalPressRecipe recipe)
 	{
 		super(recipe);
+		testHash = recipe.testHash;
 	}
 
 	@Override
@@ -29,11 +27,16 @@ public class MetalPressRecipeWrapper extends MultiblockRecipeWrapper
 		GlStateManager.popMatrix();
 	}
 
-	public static List<MetalPressRecipeWrapper> getRecipes(IJeiHelpers jeiHelpers)
+	@Override
+	public int hashCode()
 	{
-		List<MetalPressRecipeWrapper> recipes = new ArrayList<>();
-		for(MetalPressRecipe r : MetalPressRecipe.recipeList.values())
-			recipes.add(new MetalPressRecipeWrapper(r));
-		return recipes;
+		return testHash;
+	}
+	@Override
+	public boolean equals(Object other)
+	{
+		if(other instanceof MetalPressRecipeWrapper)
+			return other.hashCode()==this.hashCode();
+		return false;
 	}
 }

@@ -11,19 +11,19 @@ import net.minecraft.item.ItemStack;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public abstract class IERecipeCategory<T> implements IRecipeCategory, IRecipeHandler<T>
+public abstract class IERecipeCategory<T, W extends IRecipeWrapper> implements IRecipeCategory<W>, IRecipeHandler<T>
 {
 	public String uniqueName;
 	public String localizedName;
 	private final IDrawable background;
-	private final Class<T> wrapperClass;
+	private final Class<T> recipeClass;
 
-	public IERecipeCategory(String uniqueName, String localKey, IDrawable background, Class<T> wrapperClass, ItemStack... displayStacks)
+	public IERecipeCategory(String uniqueName, String localKey, IDrawable background, Class<T> recipeClass, ItemStack... displayStacks)
 	{
 		this.uniqueName = uniqueName;
 		this.localizedName = I18n.format(localKey);
 		this.background = background;
-		this.wrapperClass = wrapperClass;
+		this.recipeClass = recipeClass;
 		for(ItemStack stack : displayStacks)
 			JEIHelper.modRegistry.addRecipeCategoryCraftingItem(stack, getRecipeCategoryUid());
 	}
@@ -66,7 +66,7 @@ public abstract class IERecipeCategory<T> implements IRecipeCategory, IRecipeHan
 	@Override
 	public Class<T> getRecipeClass()
 	{
-		return this.wrapperClass;
+		return this.recipeClass;
 	}
 
 	@Override
@@ -75,15 +75,9 @@ public abstract class IERecipeCategory<T> implements IRecipeCategory, IRecipeHan
 		return "ie."+uniqueName;
 	}
 	@Override
-	public String getRecipeCategoryUid(@Nonnull Object recipe)
+	public String getRecipeCategoryUid(@Nonnull T recipe)
 	{
 		return "ie."+uniqueName;
-	}
-
-	@Override
-	public IRecipeWrapper getRecipeWrapper(T recipe)
-	{
-		return (IRecipeWrapper)recipe;
 	}
 
 	@Override
