@@ -64,7 +64,7 @@ repositories {
     }
     maven { // CraftTweaker (aka MineTweaker3)
         name 'jared maven'
-        url "http://blamejared.com/maven"
+        url "http://maven.blamejared.com/"
     }
     maven { //IC2
         name = "ic2"
@@ -78,13 +78,13 @@ dependencies {
 //    deobfCompile "mcp.mobius.waila:Waila:1.7.0-B3_1.9.4"
 //    deobfCompile "slimeknights.mantle:Mantle:1.9.4-0.10.+"
 //    deobfCompile "slimeknights:TConstruct:1.9.4-2.3.+"
-    deobfCompile "mezz.jei:jei_1.10.2:3.13.+"
+    deobfCompile "mezz.jei:jei_1.10.2:3.14.+"
     deobfCompile "mcp.mobius.waila:Waila:1.7.0-B3_1.9.4"
     deobfCompile "slimeknights.mantle:Mantle:1.10.2-1.+"
     deobfCompile "slimeknights:TConstruct:1.10.2-2.5.6.+"
     deobfCompile "li.cil.oc:OpenComputers:MC1.10.2-1.6.0.+"
     deobfCompile "mcjty.theoneprobe:TheOneProbe:1.10-1.0.13-26"
-    deobfCompile "MineTweaker3:MineTweaker3-API:3.0.14.59"
+    deobfCompile "MineTweaker3:MineTweaker3-MC1102-Main:1.10.2-3.0.17.68"
     deobfCompile 'net.industrial-craft:industrialcraft-2:2.6.+:dev'
 }
 
