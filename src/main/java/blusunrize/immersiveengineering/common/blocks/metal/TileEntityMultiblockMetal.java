@@ -141,7 +141,10 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 	@Override
 	public FluxStorage getFluxStorage()
 	{
-		return this.master().energyStorage;
+		T master = this.master();
+		if(master!=null)
+			return master.energyStorage;
+		return energyStorage;
 	}
 	@Nonnull
 	@Override
