@@ -130,6 +130,11 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 		return tileentity != null && tileentity.receiveClientEvent(eventID, eventParam);
 	}
 
+	protected EnumFacing getDefaultFacing()
+	{
+		return EnumFacing.NORTH;
+	}
+
 	@Override
 	public IBlockState getActualState(IBlockState state, IBlockAccess world, BlockPos pos)
 	{
@@ -148,9 +153,9 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 			state = applyProperty(state, prop, ((IDirectionalTile)tile).getFacing());
 		}
 		else if(state.getPropertyNames().contains(IEProperties.FACING_HORIZONTAL))
-			state = state.withProperty(IEProperties.FACING_HORIZONTAL, EnumFacing.NORTH);
+			state = state.withProperty(IEProperties.FACING_HORIZONTAL, getDefaultFacing());
 		else if(state.getPropertyNames().contains(IEProperties.FACING_ALL))
-			state = state.withProperty(IEProperties.FACING_ALL, EnumFacing.NORTH);
+			state = state.withProperty(IEProperties.FACING_ALL, getDefaultFacing());
 
 		if(tile instanceof IActiveState)
 		{

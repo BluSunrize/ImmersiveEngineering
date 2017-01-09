@@ -40,6 +40,12 @@ public class BlockWoodenDevice0 extends BlockIETileProvider<BlockTypes_WoodenDev
 	}
 
 	@Override
+	protected EnumFacing getDefaultFacing()
+	{
+		return EnumFacing.UP;
+	}
+
+	@Override
 	public boolean useCustomStateMapper()
 	{
 		return true;
