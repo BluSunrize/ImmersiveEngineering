@@ -2,7 +2,6 @@ package blusunrize.immersiveengineering.common.util.compat.jei.cokeoven;
 
 import blusunrize.immersiveengineering.api.crafting.CokeOvenRecipe;
 import blusunrize.immersiveengineering.common.IEContent;
-import mezz.jei.api.IJeiHelpers;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.BlankRecipeWrapper;
 import net.minecraft.client.Minecraft;
@@ -10,7 +9,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -37,13 +35,5 @@ public class CokeOvenRecipeWrapper extends BlankRecipeWrapper
 	@Override
 	public void drawInfo(@Nonnull Minecraft minecraft, int recipeWidth, int recipeHeight, int mouseX, int mouseY)
 	{
-	}
-
-	public static List<CokeOvenRecipeWrapper> getRecipes(IJeiHelpers jeiHelpers)
-	{
-		List<CokeOvenRecipeWrapper> recipes = new ArrayList<>();
-		for(CokeOvenRecipe r : CokeOvenRecipe.recipeList)
-			recipes.add(new CokeOvenRecipeWrapper(r));
-		return recipes;
 	}
 }

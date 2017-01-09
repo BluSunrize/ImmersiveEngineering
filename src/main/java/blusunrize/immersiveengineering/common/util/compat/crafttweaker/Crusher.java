@@ -49,6 +49,7 @@ public class Crusher
 		public void apply()
 		{
 			CrusherRecipe.recipeList.add(recipe);
+			MineTweakerAPI.getIjeiRecipeRegistry().addRecipe(recipe);
 		}
 
 		@Override
@@ -61,6 +62,7 @@ public class Crusher
 		public void undo()
 		{
 			CrusherRecipe.recipeList.remove(recipe);
+			MineTweakerAPI.getIjeiRecipeRegistry().removeRecipe(recipe);
 		}
 
 		@Override
@@ -102,6 +104,8 @@ public class Crusher
 		public void apply()
 		{
 			removedRecipes = CrusherRecipe.removeRecipes(output);
+			for(CrusherRecipe recipe : removedRecipes)
+				MineTweakerAPI.getIjeiRecipeRegistry().removeRecipe(recipe);
 		}
 
 		@Override
@@ -110,7 +114,10 @@ public class Crusher
 			if(removedRecipes != null)
 				for(CrusherRecipe recipe : removedRecipes)
 					if(recipe != null)
+					{
 						CrusherRecipe.recipeList.add(recipe);
+						MineTweakerAPI.getIjeiRecipeRegistry().addRecipe(recipe);
+					}
 		}
 
 		@Override

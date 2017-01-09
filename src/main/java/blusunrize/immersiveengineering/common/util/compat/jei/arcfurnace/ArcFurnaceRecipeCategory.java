@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.common.util.compat.jei.arcfurnace;
 
+import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalMultiblock;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
@@ -9,78 +10,79 @@ import mezz.jei.api.gui.IGuiItemStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeWrapper;
-import mezz.jei.util.Log;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 
-public class ArcFurnaceRecipeCategory extends IERecipeCategory
+public class ArcFurnaceRecipeCategory extends IERecipeCategory<ArcFurnaceRecipe, ArcFurnaceRecipeWrapper>
 {
 	private final IDrawable slotDrawable;
+	private final String subType;
 	//	static ItemStack arcFurnaceStack;
-	public ArcFurnaceRecipeCategory(IGuiHelper helper, String recipeType, Class wrapperClass)
+	public ArcFurnaceRecipeCategory(IGuiHelper helper, String recipeType, Class recipeClass)
 	{
-		super("arcFurnace"+(recipeType!=null?"."+recipeType:""),"tile.immersiveengineering.metalMultiblock.arc_furnace.name", helper.createBlankDrawable(140,50), wrapperClass, new ItemStack(IEContent.blockMetalMultiblock,1,BlockTypes_MetalMultiblock.ARC_FURNACE.getMeta()));
+		super("arcFurnace"+(recipeType!=null?"."+recipeType: ""), "tile.immersiveengineering.metalMultiblock.arc_furnace.name", helper.createBlankDrawable(140, 50), recipeClass, new ItemStack(IEContent.blockMetalMultiblock, 1, BlockTypes_MetalMultiblock.ARC_FURNACE.getMeta()));
 		slotDrawable = helper.getSlotDrawable();
+		subType = recipeType;
 		if(recipeType!=null)
-			this.localizedName+=" - "+recipeType;
+			this.localizedName += " - "+recipeType;
 		//		arcFurnaceStack = new ItemStack(IEContent.blockMetalMultiblock,1, BlockTypes_MetalMultiblock.ARC_FURNACE.getMeta());
 	}
+
 	public ArcFurnaceRecipeCategory(IGuiHelper helper)
 	{
-		this(helper,null,ArcFurnaceRecipeWrapper.class);
+		this(helper, null, ArcFurnaceRecipe.class);
 	}
 
 	@Override
 	@Deprecated
-	public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper)
+	public void setRecipe(IRecipeLayout recipeLayout, ArcFurnaceRecipeWrapper recipeWrapper)
 	{
 		//Deprecated
 	}
+
 	@Override
-	public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper, IIngredients ingredients)
+	public void setRecipe(IRecipeLayout recipeLayout, ArcFurnaceRecipeWrapper recipeWrapper, IIngredients ingredients)
 	{
 		IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
 		int i = 0;
 		guiItemStacks.init(i++, true, 20, 0);
-		if(recipeWrapper instanceof ArcFurnaceRecipeWrapper)
+		guiItemStacks.set(0, recipeWrapper.recipeInputs[0]);
+		for(int j = 0; j < recipeWrapper.recipeInputs.length-1; j++)
+			if(recipeWrapper.recipeInputs[i]!=null)
+			{
+				guiItemStacks.init(i, true, 12+j%2*18, 18+j/2*18);
+				guiItemStacks.set(i, recipeWrapper.recipeInputs[i++]);
+			}
+		int outputSize = recipeWrapper.recipeOutputs.length;
+		boolean hasSlag = recipeWrapper.getItemOut().size() > outputSize;
+		for(int j = 0; j < outputSize; j++)
 		{
-			ArcFurnaceRecipeWrapper recipe = (ArcFurnaceRecipeWrapper) recipeWrapper;
-			guiItemStacks.set(0, recipe.recipeInputs[0]);
-			for(int j=0; j<recipe.recipeInputs.length-1; j++)
-				if(recipe.recipeInputs[i]!=null)
-				{
-					guiItemStacks.init(i, true, 12+j%2*18, 18+j/2*18);
-					guiItemStacks.set(i, recipe.recipeInputs[i++]);
-				}
-			int outputSize = recipe.recipeOutputs.length;
-			boolean hasSlag = recipe.getItemOut().size()>outputSize;
-			for(int j=0; j<outputSize; j++)
-			{
-				int x = 122-(Math.min(outputSize-1,2)*18)+j%3*18;
-				int y = (outputSize>3?0:18)+(j/3*18);
-				guiItemStacks.init(i, false,  x, y);
-				guiItemStacks.set(i++, recipe.recipeOutputs[j]);
-			}
-			if(hasSlag)
-			{
-				guiItemStacks.init(i, false,  122, 36);
-				guiItemStacks.set(i++, recipe.getItemOut().get(recipe.getItemOut().size()-1));
-			}
-			//			guiItemStacks.set(1, recipe.recipeInputs[1]);
-			//			guiItemStacks.set(2, recipe.getOutputs());
+			int x = 122-(Math.min(outputSize-1, 2)*18)+j%3*18;
+			int y = (outputSize > 3?0: 18)+(j/3*18);
+			guiItemStacks.init(i, false, x, y);
+			guiItemStacks.set(i++, recipeWrapper.recipeOutputs[j]);
 		}
-		else
-			Log.error("Unknown recipe wrapper type: {}", recipeWrapper);
+		if(hasSlag)
+		{
+			guiItemStacks.init(i, false, 122, 36);
+			guiItemStacks.set(i++, recipeWrapper.getItemOut().get(recipeWrapper.getItemOut().size()-1));
+		}
 	}
 
 	@Override
 	public void drawExtras(Minecraft minecraft)
 	{
 		slotDrawable.draw(minecraft, 20, 0);
-		for(int j=0; j<4; j++)
+		for(int j = 0; j < 4; j++)
 			slotDrawable.draw(minecraft, 12+j%2*18, 18+j/2*18);
-		for(int j=0; j<6; j++)
+		for(int j = 0; j < 6; j++)
 			slotDrawable.draw(minecraft, 86+j%3*18, 0+j/3*18);
 		slotDrawable.draw(minecraft, 122, 36);
+	}
+
+	@Override
+	public IRecipeWrapper getRecipeWrapper(ArcFurnaceRecipe recipe)
+	{
+		return ArcFurnaceRecipeWrapper.getWrapper(recipe);
 	}
 }

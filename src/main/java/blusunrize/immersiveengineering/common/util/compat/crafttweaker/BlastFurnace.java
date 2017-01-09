@@ -43,6 +43,7 @@ public class BlastFurnace
 		public void apply()
 		{
 			BlastFurnaceRecipe.recipeList.add(recipe);
+			MineTweakerAPI.getIjeiRecipeRegistry().addRecipe(recipe);
 		}
 
 		@Override
@@ -55,6 +56,7 @@ public class BlastFurnace
 		public void undo()
 		{
 			BlastFurnaceRecipe.recipeList.remove(recipe);
+			MineTweakerAPI.getIjeiRecipeRegistry().removeRecipe(recipe);
 		}
 
 		@Override
@@ -96,6 +98,8 @@ public class BlastFurnace
 		public void apply()
 		{
 			removedRecipes = BlastFurnaceRecipe.removeRecipes(output);
+			for(BlastFurnaceRecipe recipe : removedRecipes)
+				MineTweakerAPI.getIjeiRecipeRegistry().removeRecipe(recipe);
 		}
 
 		@Override
@@ -104,7 +108,10 @@ public class BlastFurnace
 			if(removedRecipes != null)
 				for(BlastFurnaceRecipe recipe : removedRecipes)
 					if(recipe != null)
+					{
 						BlastFurnaceRecipe.recipeList.add(recipe);
+						MineTweakerAPI.getIjeiRecipeRegistry().addRecipe(recipe);
+					}
 		}
 
 		@Override
@@ -146,6 +153,7 @@ public class BlastFurnace
 	private static class AddFuel implements IUndoableAction
 	{
 		private final Object fuel;
+		private Object fuelRecipeKey;
 		private final int burnTime;
 
 		public AddFuel(Object fuel, int burnTime)
@@ -157,7 +165,8 @@ public class BlastFurnace
 		@Override
 		public void apply()
 		{
-			BlastFurnaceRecipe.addBlastFuel(fuel, burnTime);
+			fuelRecipeKey = BlastFurnaceRecipe.addBlastFuel(fuel, burnTime);
+			MineTweakerAPI.getIjeiRecipeRegistry().addRecipe(fuelRecipeKey);
 		}
 
 		@Override
@@ -169,7 +178,8 @@ public class BlastFurnace
 		@Override
 		public void undo()
 		{
-			BlastFurnaceRecipe.blastFuels.remove(ApiUtils.convertToValidRecipeInput(fuel));
+			BlastFurnaceRecipe.blastFuels.remove(fuelRecipeKey);
+			MineTweakerAPI.getIjeiRecipeRegistry().removeRecipe(fuelRecipeKey);
 		}
 
 		@Override
@@ -220,6 +230,7 @@ public class BlastFurnace
 				{
 					removedTime = e.getValue();
 					ident = e.getKey();
+					MineTweakerAPI.getIjeiRecipeRegistry().removeRecipe(ident);
 					it.remove();
 					break;
 				}
@@ -230,7 +241,10 @@ public class BlastFurnace
 		public void undo()
 		{
 			if(ident != null)
+			{
 				BlastFurnaceRecipe.blastFuels.put(ident, removedTime);
+				MineTweakerAPI.getIjeiRecipeRegistry().addRecipe(ident);
+			}
 		}
 
 		@Override

@@ -1,16 +1,16 @@
 package blusunrize.immersiveengineering.common.util.compat.jei.arcfurnace;
 
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
+import blusunrize.immersiveengineering.common.util.IELogger;
+import blusunrize.immersiveengineering.common.util.compat.jei.JEIHelper;
 import blusunrize.immersiveengineering.common.util.compat.jei.MultiblockRecipeWrapper;
-import mezz.jei.api.IJeiHelpers;
 import net.minecraft.client.Minecraft;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 
 public class ArcFurnaceRecipeWrapper extends MultiblockRecipeWrapper
 {
@@ -37,15 +37,50 @@ public class ArcFurnaceRecipeWrapper extends MultiblockRecipeWrapper
 		minecraft.fontRendererObj.drawString(s, 54,48, 0x777777);
 	}
 
-	public List<ArcFurnaceRecipeWrapper> getRecipes(IJeiHelpers jeiHelpers)
+	public static ArcFurnaceRecipeWrapper getWrapper(ArcFurnaceRecipe recipe)
 	{
-		List<ArcFurnaceRecipeWrapper> recipes = new ArrayList<>();
-//		for(ArcFurnaceRecipe r : ArcFurnaceRecipe.recipeList)
-//			recipes.add(new this(r));
-		return recipes;
+		if(recipe.specialRecipeType==null)
+			return new ArcFurnaceRecipeWrapper(recipe);
+		else
+		{
+			try {
+				return getWrapperClass(recipe.specialRecipeType).getConstructor(ArcFurnaceRecipe.class).newInstance(recipe);
+			} catch (Exception e) {
+				IELogger.error("Adding an ArcFurnaceRecipe: "+recipe.specialRecipeType+", threw an error! Report this!");
+				e.printStackTrace();
+			}
+		}
+		return new ArcFurnaceRecipeWrapper(recipe);
 	}
 
-	public static Class<? extends ArcFurnaceRecipeWrapper> createSubWrapper(String subtype) throws Exception
+	private static HashMap<String, Class<? extends ArcFurnaceRecipeWrapper>> dynamicSubclasses = new HashMap();
+	public static Class<? extends ArcFurnaceRecipeWrapper> getWrapperClass(String subtype)
+	{
+		if(subtype==null)
+			return ArcFurnaceRecipeWrapper.class;
+		if(dynamicSubclasses.containsKey(subtype))
+			return dynamicSubclasses.get(subtype);
+		try
+		{
+			Class<? extends ArcFurnaceRecipeWrapper> subWrapper = createSubWrapper(subtype);
+			if(subWrapper!=null)
+			{
+				dynamicSubclasses.put(subtype, subWrapper);
+				ArcFurnaceRecipeCategory cat = new ArcFurnaceRecipeCategory(JEIHelper.jeiHelpers.getGuiHelper(), subtype, subWrapper);
+				//Can't add Categories dynamically anymore =c
+				//JEIHelper.modRegistry.addRecipeCategories(cat);
+				//JEIHelper.modRegistry.addRecipeHandlers(cat);
+				return subWrapper;
+			}
+		} catch(Exception e)
+		{
+			IELogger.error("The dynamic JEI recipe handler for the ArcFurnace - "+subtype+", threw an error! Report this!");
+			e.printStackTrace();
+		}
+		return ArcFurnaceRecipeWrapper.class;
+	}
+
+	private static Class<? extends ArcFurnaceRecipeWrapper> createSubWrapper(String subtype) throws Exception
 	{
 		String entitySuperClassName = Type.getInternalName(ArcFurnaceRecipeWrapper.class);
 		String entityProxySubClassName = ArcFurnaceRecipeWrapper.class.getSimpleName().concat(subtype);

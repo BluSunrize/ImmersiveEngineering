@@ -1,6 +1,5 @@
 package blusunrize.immersiveengineering.common.util.compat.jei.blastfurnace;
 
-import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IDrawableAnimated;
 import mezz.jei.api.gui.IDrawableStatic;
@@ -13,10 +12,7 @@ import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 public class BlastFurnaceFuelWrapper extends BlankRecipeWrapper
 {
@@ -51,21 +47,5 @@ public class BlastFurnaceFuelWrapper extends BlankRecipeWrapper
 	public void drawAnimations(@Nonnull Minecraft minecraft, int recipeWidth, int recipeHeight)
 	{
 		flame.draw(minecraft, 2, 0);
-	}
-
-	public static List<BlastFurnaceFuelWrapper> getRecipes(IGuiHelper guiHelper)
-	{
-		List<BlastFurnaceFuelWrapper> recipes = new ArrayList<>();
-		for(Map.Entry<Object, Integer> e : BlastFurnaceRecipe.blastFuels.entrySet())
-		{
-			Object o = e.getKey();
-			List<ItemStack> list;
-			if(o instanceof ItemStack)
-				list = Arrays.asList((ItemStack)o);
-			else
-				list = (List<ItemStack>)o;
-			recipes.add(new BlastFurnaceFuelWrapper(guiHelper, list, e.getValue()));
-		}
-		return recipes;
 	}
 }

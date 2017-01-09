@@ -12,6 +12,7 @@ import stanhebben.zenscript.annotations.Optional;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @ZenClass("mods.immersiveengineering.MetalPress")
@@ -47,6 +48,7 @@ public class MetalPress
 		public void apply()
 		{
 			MetalPressRecipe.recipeList.put(recipe.mold, recipe);
+			MineTweakerAPI.getIjeiRecipeRegistry().addRecipe(recipe);
 		}
 
 		@Override
@@ -59,6 +61,7 @@ public class MetalPress
 		public void undo()
 		{
 			MetalPressRecipe.recipeList.remove(recipe.mold, recipe);
+			MineTweakerAPI.getIjeiRecipeRegistry().removeRecipe(recipe);
 		}
 
 		@Override
@@ -100,6 +103,8 @@ public class MetalPress
 		public void apply()
 		{
 			removedRecipes = MetalPressRecipe.removeRecipes(output);
+			for(MetalPressRecipe recipe : removedRecipes)
+				MineTweakerAPI.getIjeiRecipeRegistry().removeRecipe(recipe);
 		}
 
 		@Override
@@ -108,7 +113,10 @@ public class MetalPress
 			if(removedRecipes != null)
 				for(MetalPressRecipe recipe : removedRecipes)
 					if(recipe != null)
+					{
 						MetalPressRecipe.recipeList.put(recipe.mold, recipe);
+						MineTweakerAPI.getIjeiRecipeRegistry().addRecipe(recipe);
+					}
 		}
 
 		@Override
@@ -155,15 +163,21 @@ public class MetalPress
 		@Override
 		public void apply()
 		{
-			removedRecipes = MetalPressRecipe.recipeList.get(mold);
+			removedRecipes = new ArrayList(MetalPressRecipe.recipeList.get(mold));
 			MetalPressRecipe.recipeList.removeAll(mold);
+			for(MetalPressRecipe recipe : removedRecipes)
+				MineTweakerAPI.getIjeiRecipeRegistry().removeRecipe(recipe);
 		}
 
 		@Override
 		public void undo()
 		{
 			if(removedRecipes != null)
+			{
 				MetalPressRecipe.recipeList.putAll(mold, removedRecipes);
+				for(MetalPressRecipe recipe : removedRecipes)
+					MineTweakerAPI.getIjeiRecipeRegistry().addRecipe(recipe);
+			}
 		}
 
 		@Override

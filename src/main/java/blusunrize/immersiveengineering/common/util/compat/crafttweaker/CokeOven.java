@@ -38,6 +38,7 @@ public class CokeOven
 		public void apply()
 		{
 			CokeOvenRecipe.recipeList.add(recipe);
+			MineTweakerAPI.getIjeiRecipeRegistry().addRecipe(recipe);
 		}
 
 		@Override
@@ -50,6 +51,7 @@ public class CokeOven
 		public void undo()
 		{
 			CokeOvenRecipe.recipeList.remove(recipe);
+			MineTweakerAPI.getIjeiRecipeRegistry().removeRecipe(recipe);
 		}
 
 		@Override
@@ -91,6 +93,8 @@ public class CokeOven
 		public void apply()
 		{
 			removedRecipes = CokeOvenRecipe.removeRecipes(output);
+			for(CokeOvenRecipe recipe : removedRecipes)
+				MineTweakerAPI.getIjeiRecipeRegistry().removeRecipe(recipe);
 		}
 
 		@Override
@@ -99,7 +103,10 @@ public class CokeOven
 			if(removedRecipes != null)
 				for(CokeOvenRecipe recipe : removedRecipes)
 					if(recipe != null)
+					{
 						CokeOvenRecipe.recipeList.add(recipe);
+						MineTweakerAPI.getIjeiRecipeRegistry().addRecipe(recipe);
+					}
 		}
 
 		@Override

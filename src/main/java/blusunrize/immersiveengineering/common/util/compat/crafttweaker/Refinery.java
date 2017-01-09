@@ -41,6 +41,7 @@ public class Refinery
 		public void apply()
 		{
 			RefineryRecipe.recipeList.add(recipe);
+			MineTweakerAPI.getIjeiRecipeRegistry().addRecipe(recipe);
 		}
 
 		@Override
@@ -53,6 +54,7 @@ public class Refinery
 		public void undo()
 		{
 			RefineryRecipe.recipeList.remove(recipe);
+			MineTweakerAPI.getIjeiRecipeRegistry().removeRecipe(recipe);
 		}
 
 		@Override
@@ -101,6 +103,7 @@ public class Refinery
 				if(r != null && r.output.isFluidEqual(output))
 				{
 					removedRecipes.add(r);
+					MineTweakerAPI.getIjeiRecipeRegistry().removeRecipe(r);
 					it.remove();
 				}
 			}
@@ -112,7 +115,10 @@ public class Refinery
 			if(removedRecipes != null)
 				for(RefineryRecipe recipe : removedRecipes)
 					if(recipe != null)
+					{
 						RefineryRecipe.recipeList.add(recipe);
+						MineTweakerAPI.getIjeiRecipeRegistry().addRecipe(recipe);
+					}
 		}
 
 		@Override
