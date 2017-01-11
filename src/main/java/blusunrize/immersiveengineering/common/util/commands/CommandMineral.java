@@ -98,7 +98,7 @@ public class CommandMineral extends IESubCommand
 	}
 
 	@Override
-	public ArrayList<String> getSubCommands(CommandHandler h, MinecraftServer server, String[]args)
+	public ArrayList<String> getSubCommands(CommandHandler h, MinecraftServer server, ICommandSender sender, String[]args)
 	{
 		ArrayList<String> list = new ArrayList<String>();
 		// subcommand argument autocomplete
@@ -125,5 +125,11 @@ public class CommandMineral extends IESubCommand
 				list.add(s);
 		}
 		return list;
+	}
+
+	@Override
+	public int getPermissionLevel()
+	{
+		return 4;
 	}
 }

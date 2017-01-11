@@ -108,7 +108,7 @@ public class BlockIEBase<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 		return state;
 	}
 	@Override
-	public IProperty getMetaProperty()
+	public PropertyEnum<E> getMetaProperty()
 	{
 		return this.property;
 	}
