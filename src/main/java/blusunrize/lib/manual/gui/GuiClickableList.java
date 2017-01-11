@@ -61,9 +61,22 @@ public class GuiClickableList extends GuiButton
 			String s = translationType==-1?entries[j]: translationType==0?gui.manual.formatCategoryName(entries[j]):gui.manual.formatEntryName(entries[j]);
 			fr.drawString(s, 0,0, col, false);
 		}
-
 		GlStateManager.scale(1/textScale,1/textScale,1/textScale);
 		GlStateManager.popMatrix();
+		if(maxOffset>0)
+		{
+			int h1 = offset*getFontHeight();
+			int h2 = height-8-maxOffset*getFontHeight();
+			this.drawGradientRect(xPosition+width, yPosition+h1, xPosition+width+8, yPosition+h1+h2, 0x0a000000, 0x0a000000);
+			this.drawGradientRect(xPosition+width+1, yPosition+h1, xPosition+width+6, yPosition+h1+h2, 0x28000000, 0x28000000);
+			if(offset > 0)
+				this.drawGradientRect(xPosition+width, yPosition, xPosition+width+8, yPosition+h1, 0x0a000000, 0x0a000000);
+			if(offset < maxOffset)
+			{
+				int h3 = (maxOffset-offset)*getFontHeight();
+				this.drawGradientRect(xPosition+width, yPosition+height-8-h3, xPosition+width+8, yPosition+height-8, 0x0a000000, 0x11000000);
+			}
+		}
 
 		fr.setUnicodeFlag(uni);
 
