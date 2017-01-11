@@ -184,6 +184,8 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 	@SubscribeEvent
 	public void onPlaySound(PlaySoundEvent event)
 	{
+		if(event.getSound()==null || event.getSound().getCategory()==null)
+			return;
 		if(!ItemEarmuffs.affectedSoundCategories.contains(event.getSound().getCategory().getName()))
 			return;
 		if(ClientUtils.mc().thePlayer!=null && ClientUtils.mc().thePlayer.getItemStackFromSlot(EntityEquipmentSlot.HEAD)!=null)
