@@ -123,6 +123,7 @@ public class BlockIEBase<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 		return null;
 	}
 	@Override
+	@SideOnly(Side.CLIENT)
 	public StateMapperBase getCustomMapper()
 	{
 		return null;
