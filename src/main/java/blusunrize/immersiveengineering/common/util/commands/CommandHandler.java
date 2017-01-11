@@ -6,8 +6,10 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextFormatting;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -38,6 +40,25 @@ public class CommandHandler extends CommandBase
 	}
 
 	@Override
+	public int getRequiredPermissionLevel()
+	{
+		return 4;
+	}
+
+	@Override
+	public List<String> getCommandAliases()
+	{
+		return Collections.emptyList();
+	}
+
+//	/**
+//	 * Check if the given ICommandSender has permission to execute this command
+//	 */
+//	public boolean checkPermission(MinecraftServer server, ICommandSender sender)
+//	{
+//	}
+
+	@Override
 	public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
 	{
 		ArrayList<String> list = new ArrayList<String>();
@@ -53,7 +74,7 @@ public class CommandHandler extends CommandBase
 				{
 					String[] redArgs = new String[args.length-1];
 					System.arraycopy(args,1, redArgs,0, redArgs.length);
-					ArrayList<String> subCommands = sub.getSubCommands(this, server, redArgs);
+					ArrayList<String> subCommands = sub.getSubCommands(this, server, sender, redArgs);
 					if(subCommands!=null)
 						list.addAll(subCommands);
 				}
@@ -78,7 +99,16 @@ public class CommandHandler extends CommandBase
 			for(IESubCommand com : commands)
 			{
 				if(com.getIdent().equalsIgnoreCase(args[0]))
-					com.perform(this, server, sender, args);
+				{
+					if(!sender.canCommandSenderUseCommand(com.getPermissionLevel(), this.getCommandName()))
+					{
+						TextComponentTranslation msg = new TextComponentTranslation("commands.generic.permission");
+						msg.getStyle().setColor(TextFormatting.RED);
+						sender.addChatMessage(msg);
+					}
+					else
+						com.perform(this, server, sender, args);
+				}
 			}
 		else
 		{
@@ -98,6 +128,7 @@ public class CommandHandler extends CommandBase
 		{
 			return Lib.CHAT_COMMAND+getIdent()+subIdent+".help";
 		}
-		public abstract ArrayList<String> getSubCommands(CommandHandler h, MinecraftServer server, String[] args);
+		public abstract ArrayList<String> getSubCommands(CommandHandler h, MinecraftServer server,  ICommandSender sender, String[] args);
+		public abstract int getPermissionLevel();
 	}
 }

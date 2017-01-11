@@ -51,11 +51,11 @@ public class CommandHelp extends IESubCommand
 	}
 
 	@Override
-	public ArrayList<String> getSubCommands(CommandHandler h, MinecraftServer server, String[] args)
+	public ArrayList<String> getSubCommands(CommandHandler h, MinecraftServer server, ICommandSender sender, String[] args)
 	{
 		ArrayList<String> list = new ArrayList<>();
 		for(IESubCommand sub : h.commands)
-			if(sub!=this)
+			if(sub!=this && sender.canCommandSenderUseCommand(sub.getPermissionLevel(),h.getCommandName()))
 			{
 				if(args.length==1)
 				{
@@ -66,11 +66,17 @@ public class CommandHelp extends IESubCommand
 				{
 					String[] redArgs = new String[args.length-1];
 					System.arraycopy(args, 1, redArgs, 0, redArgs.length);
-					ArrayList<String> subCommands = sub.getSubCommands(h, server, redArgs);
+					ArrayList<String> subCommands = sub.getSubCommands(h, server, sender, redArgs);
 					if(subCommands!=null)
 						list.addAll(subCommands);
 				}
 			}
 		return list;
+	}
+
+	@Override
+	public int getPermissionLevel()
+	{
+		return 0;
 	}
 }

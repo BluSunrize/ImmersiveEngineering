@@ -44,7 +44,7 @@ public class CommandShaders extends IESubCommand
 	}
 
 	@Override
-	public ArrayList<String> getSubCommands(CommandHandler h, MinecraftServer server, String[] args)
+	public ArrayList<String> getSubCommands(CommandHandler h, MinecraftServer server, ICommandSender sender, String[] args)
 	{
 		ArrayList<String> list = new ArrayList<String>();
 		if(args.length>1)
@@ -68,5 +68,11 @@ public class CommandShaders extends IESubCommand
 				list.add(s);
 		}
 		return list;
+	}
+
+	@Override
+	public int getPermissionLevel()
+	{
+		return 4;
 	}
 }

@@ -25,8 +25,14 @@ public class CommandResetRenders extends IESubCommand
 	}
 
 	@Override
-	public ArrayList<String> getSubCommands(CommandHandler h, MinecraftServer server, String[] args)
+	public ArrayList<String> getSubCommands(CommandHandler h, MinecraftServer server, ICommandSender sender, String[] args)
 	{
 		return null;
+	}
+
+	@Override
+	public int getPermissionLevel()
+	{
+		return 0;
 	}
 }
