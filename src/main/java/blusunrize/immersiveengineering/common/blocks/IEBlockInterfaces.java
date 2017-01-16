@@ -38,6 +38,7 @@ public class IEBlockInterfaces
 		IBlockState getInventoryState(int meta);
 		boolean useCustomStateMapper();
 		String getCustomStateMapping(int meta, boolean itemBlock);
+		@SideOnly(Side.CLIENT)
 		StateMapperBase getCustomMapper();
 
 		boolean appendPropertiesToState();

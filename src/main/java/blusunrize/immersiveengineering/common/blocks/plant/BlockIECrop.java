@@ -25,6 +25,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.EnumPlantType;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,6 +90,7 @@ public class BlockIECrop<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 		return null;
 	}
 	@Override
+	@SideOnly(Side.CLIENT)
 	public StateMapperBase getCustomMapper()
 	{
 		return null;
