@@ -71,7 +71,7 @@ public class AssemblerHandler
 			if(stack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null))
 				return new RecipeQuery(FluidUtil.getFluidContained(stack), stack.stackSize);
 			else
-				return new RecipeQuery(stack, stack.stackSize);
+				return new RecipeQuery(stack, 1);
 		} else if(o instanceof IngredientStack)
 			return new RecipeQuery(o, ((IngredientStack)o).inputSize);
 		return new RecipeQuery(o, 1);
