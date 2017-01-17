@@ -204,29 +204,34 @@ public class EventHandler
 			int invalidConnectionsDropped = 0;
 			for (int dim:ImmersiveNetHandler.INSTANCE.getRelevantDimensions())
 			{
+				if (!validateConnections)
+				{
+					continue;
+				}
 				World world = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(dim);
 				if (world==null) {
 					ImmersiveNetHandler.INSTANCE.directConnections.remove(dim);
 					continue;
 				}
-				if (validateConnections)
+				for (Connection con:ImmersiveNetHandler.INSTANCE.getAllConnections(world))
 				{
-					for (Connection con:ImmersiveNetHandler.INSTANCE.getAllConnections(world))
+					if (!(world.getTileEntity(con.start) instanceof IImmersiveConnectable
+							&& world.getTileEntity(con.end) instanceof IImmersiveConnectable))
 					{
-						if (!(world.getTileEntity(con.start) instanceof IImmersiveConnectable
-								&& world.getTileEntity(con.end) instanceof IImmersiveConnectable))
-						{
-							ImmersiveNetHandler.INSTANCE.removeConnection(world, con);
-							invalidConnectionsDropped++;
-						}
+						ImmersiveNetHandler.INSTANCE.removeConnection(world, con);
+						invalidConnectionsDropped++;
 					}
-					IELogger.info("removed "+invalidConnectionsDropped+" invalid connections from world");
 				}
+				IELogger.info("removed "+invalidConnectionsDropped+" invalid connections from world");
 			}
 			int invalidProxies = 0;
 			Set<DimensionBlockPos> toRemove = new HashSet<>();
 			for (Entry<DimensionBlockPos, IICProxy> e:ImmersiveNetHandler.INSTANCE.proxies.entrySet())
 			{
+				if (!validateConnections)
+				{
+					continue;
+				}
 				DimensionBlockPos p = e.getKey();
 				World w = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(p.dimension);
 				if (w!=null&&w.isBlockLoaded(p))
