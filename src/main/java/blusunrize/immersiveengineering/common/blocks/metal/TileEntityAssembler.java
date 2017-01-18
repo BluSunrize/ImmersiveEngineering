@@ -11,6 +11,7 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockAssem
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import com.google.common.base.Optional;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
@@ -359,6 +360,18 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 	public int[] getRedstonePos()
 	{
 		return new int[]{3, 5};
+	}
+
+	@Override
+	public void replaceStructureBlock(BlockPos pos, IBlockState state, ItemStack stack, int h, int l, int w)
+	{
+		super.replaceStructureBlock(pos, state, stack, h, l, w);
+		if(h==1&&w==1&&l!=1)
+		{
+			TileEntity tile = worldObj.getTileEntity(pos);
+			if(tile instanceof TileEntityConveyorBelt)
+				((TileEntityConveyorBelt)tile).setFacing(this.facing);
+		}
 	}
 
 	@Override

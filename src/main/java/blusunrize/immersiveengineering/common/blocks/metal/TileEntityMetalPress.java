@@ -8,6 +8,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerIn
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockMetalPress;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.Utils;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -121,6 +122,18 @@ public class TileEntityMetalPress extends TileEntityMultiblockMetal<TileEntityMe
 		if(pos==3||pos==5)
 			return new float[]{0,0,0, 1,.125f,1};
 		return new float[]{0,0,0, 1,1,1};
+	}
+
+	@Override
+	public void replaceStructureBlock(BlockPos pos, IBlockState state, ItemStack stack, int h, int l, int w)
+	{
+		super.replaceStructureBlock(pos, state, stack, h, l, w);
+		if(h==1&&l!=1)
+		{
+			TileEntity tile = worldObj.getTileEntity(pos);
+			if(tile instanceof TileEntityConveyorBelt)
+				((TileEntityConveyorBelt)tile).setFacing(this.facing);
+		}
 	}
 
 	@Override
