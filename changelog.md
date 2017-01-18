@@ -3,6 +3,7 @@
 - added indicative scrollbars to the manual
 - added nullcheck to guard against malformed sound events
 - added a login check to synchronizing Excavator data
+- added a config option for hte drop weight of Hemp Seeds
 - changed IC2 compat to no longer load with IC2 classic
 - changed permission levels on comamnds to allow "/cie resetrenders" for everyone
 - fixed Minetweaker and JEI integration. Arc Furnace reduced to a single categroy, I'm afraid.
