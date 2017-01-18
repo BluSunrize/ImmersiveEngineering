@@ -1,3 +1,21 @@
+#####Version 0.10-55
+- re-added the Bottling Machine! It bottles things up, like fluids and emotions!
+- added indicative scrollbars to the manual
+- added nullcheck to guard against malformed sound events
+- added a login check to synchronizing Excavator data
+- changed IC2 compat to no longer load with IC2 classic
+- changed permission levels on comamnds to allow "/cie resetrenders" for everyone
+- fixed Minetweaker and JEI integration. Arc Furnace reduced to a single categroy, I'm afraid.
+- fixed Automatic Workbench using Pair from JavaFX
+- fixed null-master exceptions for Multiblocks
+- fixed rotations of wooden blocks (Gunpowder Barrel, Item Router)
+- fixed GUI of the Item Router
+- fixed SideOnly exceptions triggered by Chisel&Bits
+- fixed Withers dropping Lootbags. They really shouldn't anymore.
+- fixed world loading caused by connection persistence and validation (thanks Dogboy21)
+- fixed Crusher not collecting drops from low-health entities
+- fixed Assembler and Metal Press not reorienting conveyors when broken
+
 #####Version 0.10-54 - BUILT
 - added the Automated Engineer's Workbench, allowing automated handling of Blueprint Recipes
 - added the Turntable, a block that allows rotating of other blocks
