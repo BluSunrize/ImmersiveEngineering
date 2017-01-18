@@ -675,6 +675,8 @@ public class Utils
 	{
 		if(containerIn==null)
 			return null;
+		if(containerIn.hasTagCompound() && containerIn.getTagCompound().hasNoTags())
+			containerIn.setTagCompound(null);
 		ItemStack full = FluidUtil.tryFillContainer(containerIn, handler, Integer.MAX_VALUE, player, false);
 		if(full!=null && (containerOut==null || OreDictionary.itemMatches(containerOut,full,true)))
 		{
@@ -688,6 +690,8 @@ public class Utils
 	{
 		if(containerIn==null)
 			return null;
+		if(containerIn.hasTagCompound() && containerIn.getTagCompound().hasNoTags())
+			containerIn.setTagCompound(null);
 		ItemStack empty = FluidUtil.tryEmptyContainer(containerIn, handler, Integer.MAX_VALUE, player, false);
 		if(empty!=null && (containerOut==null || OreDictionary.itemMatches(containerOut,empty,true)))
 		{
