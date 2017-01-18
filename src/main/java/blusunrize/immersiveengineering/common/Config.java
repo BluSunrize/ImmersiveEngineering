@@ -69,6 +69,9 @@ public class Config
 		public static boolean villagerHouse = true;
 		@Comment({"Set this to false to remove IE villagers from the game"})
 		public static boolean enableVillagers = true;
+		@Comment({"The weight that hempseeds have when breaking tall grass. 5 by default, set to 0 to disable drops"})
+		public static int hempSeedWeight = 5;
+
 
 		@Comment({"A list of all mods that IE has integrated compatability for","Setting any of these to false disables the respective compat"})
 		public static Map<String,Boolean> compat = Maps.toMap(IECompatModule.moduleClasses.keySet(), (s)->Boolean.TRUE);

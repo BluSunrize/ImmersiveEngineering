@@ -219,7 +219,8 @@ public class IEContent
 		itemWireCoil = new ItemWireCoil();
 		WireType.ieWireCoil = itemWireCoil;
 		itemSeeds = new ItemIESeed(blockCrop,"hemp");
-		MinecraftForge.addGrassSeed(new ItemStack(itemSeeds), 5);
+		if(Config.IEConfig.hempSeedWeight>0)
+			MinecraftForge.addGrassSeed(new ItemStack(itemSeeds), Config.IEConfig.hempSeedWeight);
 		itemDrill = new ItemDrill();
 		itemDrillhead = new ItemDrillhead();
 		itemJerrycan = new ItemJerrycan();
