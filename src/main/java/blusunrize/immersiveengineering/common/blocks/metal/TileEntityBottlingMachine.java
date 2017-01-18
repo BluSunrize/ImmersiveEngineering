@@ -204,6 +204,12 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockMetal<TileEnt
 			if(tile instanceof TileEntityFluidPump)
 				((TileEntityFluidPump)tile).dummy = true;
 		}
+		else if(h==1&&l==0)
+		{
+			TileEntity tile = worldObj.getTileEntity(pos);
+			if(tile instanceof TileEntityConveyorBelt)
+				((TileEntityConveyorBelt)tile).setFacing(this.mirrored?this.facing.rotateYCCW():this.facing.rotateY());
+		}
 	}
 
 	@Override
