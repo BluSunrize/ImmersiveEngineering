@@ -1,4 +1,4 @@
-#####Version 0.10-55
+#####Version 0.10-55 - BUILT
 - re-added the Bottling Machine! It bottles things up, like fluids and emotions!
 - added indicative scrollbars to the manual
 - added nullcheck to guard against malformed sound events
