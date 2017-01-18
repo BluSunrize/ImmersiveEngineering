@@ -427,7 +427,7 @@ public class IEContent
 		registerTile(TileEntitySilo.class);
 		registerTile(TileEntityAssembler.class);
 		registerTile(TileEntityAutoWorkbench.class);
-		//		registerTile(TileEntityBottlingMachine.class);
+		registerTile(TileEntityBottlingMachine.class);
 		registerTile(TileEntitySqueezer.class);
 		registerTile(TileEntityFermenter.class);
 		registerTile(TileEntityRefinery.class);
@@ -587,8 +587,8 @@ public class IEContent
 		AssemblerHandler.registerSpecialQueryConverters(o -> {
 			if(!(o instanceof List))
 				return null;
-				if(listWater==o)
-					return new RecipeQuery(new FluidStack(FluidRegistry.WATER,1000), 1000);
+			if(listWater==o)
+				return new RecipeQuery(new FluidStack(FluidRegistry.WATER,1000), 1000);
 			return null;
 		});
 		final Fluid milk = FluidRegistry.getFluid("milk");
@@ -603,7 +603,6 @@ public class IEContent
 				return null;
 			});
 		}
-
 
 		CokeOvenRecipe.addRecipe(new ItemStack(itemMaterial,1,6), new ItemStack(Items.COAL), 1800, 500);
 		CokeOvenRecipe.addRecipe(new ItemStack(blockStoneDecoration,1,3), "blockCoal", 1800*9, 5000);
@@ -677,6 +676,8 @@ public class IEContent
 
 		RefineryRecipe.addRecipe(new FluidStack(fluidBiodiesel,16), new FluidStack(fluidPlantoil,8),new FluidStack(fluidEthanol,8), 80);
 
+		BottlingMachineRecipe.addRecipe(new ItemStack(Blocks.SPONGE,1,1), new ItemStack(Blocks.SPONGE,1,0), new FluidStack(FluidRegistry.WATER,1000));
+
 		ThermoelectricHandler.registerSourceInKelvin("blockIce", 273);
 		ThermoelectricHandler.registerSourceInKelvin("blockPackedIce", 200);
 		ThermoelectricHandler.registerSourceInKelvin("blockUranium", 2000);
@@ -718,7 +719,7 @@ public class IEContent
 		MultiblockHandler.registerMultiblock(MultiblockSilo.instance);
 		MultiblockHandler.registerMultiblock(MultiblockAssembler.instance);
 		MultiblockHandler.registerMultiblock(MultiblockAutoWorkbench.instance);
-		//		MultiblockHandler.registerMultiblock(MultiblockBottlingMachine.instance);
+		MultiblockHandler.registerMultiblock(MultiblockBottlingMachine.instance);
 		MultiblockHandler.registerMultiblock(MultiblockSqueezer.instance);
 		MultiblockHandler.registerMultiblock(MultiblockFermenter.instance);
 		MultiblockHandler.registerMultiblock(MultiblockRefinery.instance);

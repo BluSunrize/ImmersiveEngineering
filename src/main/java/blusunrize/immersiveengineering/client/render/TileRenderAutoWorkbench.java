@@ -379,11 +379,9 @@ public class TileRenderAutoWorkbench extends TileEntitySpecialRenderer<TileEntit
 		HashSet testSet = new HashSet();
 		HashMultimap<Integer, TexturePoint> area = HashMultimap.create();
 		int wMax = 0;
-//		System.out.println("images: "+images.size());
 		for(BufferedImage bufferedImage : images)
 		{
 			Set<Pair<TexturePoint, TexturePoint>> temp_lines = new HashSet<>();
-//			HashMultimap<Integer, TexturePoint> area = HashMultimap.create();
 
 			int w = bufferedImage.getWidth();
 			int h = bufferedImage.getHeight();

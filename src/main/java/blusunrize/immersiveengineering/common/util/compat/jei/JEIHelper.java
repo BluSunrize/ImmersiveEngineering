@@ -7,6 +7,7 @@ import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.compat.jei.arcfurnace.ArcFurnaceRecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.blastfurnace.BlastFurnaceFuelCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.blastfurnace.BlastFurnaceRecipeCategory;
+import blusunrize.immersiveengineering.common.util.compat.jei.bottlingmachine.BottlingMachineRecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.cokeoven.CokeOvenRecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.crusher.CrusherRecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.fermenter.FermenterRecipeCategory;
@@ -91,7 +92,8 @@ public class JEIHelper implements IModPlugin
 				new SqueezerRecipeCategory(guiHelper),
 				new FermenterRecipeCategory(guiHelper),
 				new RefineryRecipeCategory(guiHelper),
-				new ArcFurnaceRecipeCategory(guiHelper)
+				new ArcFurnaceRecipeCategory(guiHelper),
+				new BottlingMachineRecipeCategory(guiHelper)
 		};
 		modRegistry.addRecipeCategories(categories);
 		modRegistry.addRecipeHandlers(categories);
@@ -106,6 +108,7 @@ public class JEIHelper implements IModPlugin
 		modRegistry.addRecipes(new ArrayList(FermenterRecipe.recipeList));
 		modRegistry.addRecipes(new ArrayList(RefineryRecipe.recipeList));
 		modRegistry.addRecipes(new ArrayList(ArcFurnaceRecipe.recipeList));
+		modRegistry.addRecipes(new ArrayList(BottlingMachineRecipe.recipeList));
 	}
 
 	@Override

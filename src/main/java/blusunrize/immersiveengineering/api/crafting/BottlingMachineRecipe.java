@@ -1,7 +1,9 @@
 package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
+import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -10,21 +12,24 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * @author BluSunrize - 27.10.2015
+ * @author BluSunrize - 14.01.2016
  * <br>
  * The recipe for the bottling machine
  */
-public class BottlingMachineRecipe
+public class BottlingMachineRecipe extends MultiblockRecipe
 {
-	public final Object input;
+	public final IngredientStack input;
 	public final FluidStack fluidInput;
 	public final ItemStack output;
-
 	public BottlingMachineRecipe(ItemStack output, Object input, FluidStack fluidInput)
 	{
-		this.output=output;
-		this.input=ApiUtils.convertToValidRecipeInput(input);
-		this.fluidInput=fluidInput;
+		this.output = output;
+		this.input = ApiUtils.createIngredientStack(input);
+		this.fluidInput = fluidInput;
+
+		this.inputList = Lists.newArrayList(this.input);
+		this.fluidInputList = Lists.newArrayList(this.fluidInput);
+		this.outputList = Lists.newArrayList(this.output);
 	}
 
 	public static ArrayList<BottlingMachineRecipe> recipeList = new ArrayList<BottlingMachineRecipe>();
@@ -56,5 +61,26 @@ public class BottlingMachineRecipe
 			}
 		}
 		return list;
+	}
+
+	@Override
+	public int getMultipleProcessTicks()
+	{
+		return 0;
+	}
+
+	@Override
+	public NBTTagCompound writeToNBT(NBTTagCompound nbt)
+	{
+		nbt.setTag("input", input.writeToNBT(new NBTTagCompound()));
+		return nbt;
+	}
+	public static BottlingMachineRecipe loadFromNBT(NBTTagCompound nbt)
+	{
+		IngredientStack input = IngredientStack.readFromNBT(nbt.getCompoundTag("input"));
+		for(BottlingMachineRecipe recipe : recipeList)
+			if(recipe.input.equals(input))
+				return recipe;
+		return null;
 	}
 }

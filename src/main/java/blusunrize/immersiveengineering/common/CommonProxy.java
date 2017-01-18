@@ -150,6 +150,11 @@ public class CommonProxy implements IGuiHandler
 	{
 		return false;
 	}
+
+	public void drawFluidPumpTop()
+	{
+	}
+
 	public String[] splitStringOnWidth(String s, int w)
 	{
 		return new String[]{s};

@@ -39,6 +39,7 @@ public class BottlingMachine
 		public void apply()
 		{
 			BottlingMachineRecipe.recipeList.add(recipe);
+			MineTweakerAPI.getIjeiRecipeRegistry().addRecipe(recipe);
 		}
 
 		@Override
@@ -51,6 +52,7 @@ public class BottlingMachine
 		public void undo()
 		{
 			BottlingMachineRecipe.recipeList.remove(recipe);
+			MineTweakerAPI.getIjeiRecipeRegistry().removeRecipe(recipe);
 		}
 
 		@Override
@@ -91,8 +93,9 @@ public class BottlingMachine
 		@Override
 		public void apply()
 		{
-
 			removedRecipes = BottlingMachineRecipe.removeRecipes(output);
+			for(BottlingMachineRecipe recipe : removedRecipes)
+				MineTweakerAPI.getIjeiRecipeRegistry().removeRecipe(recipe);
 		}
 
 		@Override
@@ -101,7 +104,10 @@ public class BottlingMachine
 			if(removedRecipes != null)
 				for(BottlingMachineRecipe recipe : removedRecipes)
 					if(recipe != null)
+					{
 						BottlingMachineRecipe.recipeList.add(recipe);
+						MineTweakerAPI.getIjeiRecipeRegistry().addRecipe(recipe);
+					}
 		}
 
 		@Override

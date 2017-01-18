@@ -277,22 +277,23 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 						if(state!=null)
 						{
 							if(pos.equals(getPos()))
-							{
 								worldObj.spawnEntityInWorld(new EntityItem(worldObj, pos.getX()+.5,pos.getY()+.5,pos.getZ()+.5, s));
-							}
 							else
-							{
-								if(state.getBlock()==this.getBlockType())
-									worldObj.setBlockToAir(pos);
-								worldObj.setBlockState(pos, state);
-								TileEntity tile = worldObj.getTileEntity(pos);
-								if(tile instanceof ITileDrop)
-									((ITileDrop) tile).readOnPlacement(null, s);
-							}
+								replaceStructureBlock(pos, state, s, yy,ll,ww);
 						}
 					}
 		}
 	}
+	public void replaceStructureBlock(BlockPos pos, IBlockState state, ItemStack stack, int h, int l, int w)
+	{
+		if(state.getBlock()==this.getBlockType())
+			worldObj.setBlockToAir(pos);
+		worldObj.setBlockState(pos, state);
+		TileEntity tile = worldObj.getTileEntity(pos);
+		if(tile instanceof ITileDrop)
+			((ITileDrop)tile).readOnPlacement(null, stack);
+	}
+
 	@Override
 	public boolean getIsMirrored()
 	{

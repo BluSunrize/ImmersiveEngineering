@@ -1110,18 +1110,19 @@ public class ClientUtils
 			drawTexturedRect(x + iterMaxW * iconWidth, y + iterMaxH * iconHeight, leftoverW, leftoverH, uMin, (uMin + iconUDif * leftoverWf), vMin, (vMin + iconVDif * leftoverHf));
 		}
 	}
-	//	public static void drawSlot(int x, int y, int w, int h)
-	//	{
-	//		drawSlot(x,y, w,h, 0xff);
-	//	}
-	//	public static void drawSlot(int x, int y, int w, int h, int alpha)
-	//	{
-	//		GuiDraw.drawRect(x+8-w/2  , y+8-h/2-1, w,1, (alpha<<24)+0x373737);
-	//		GuiDraw.drawRect(x+8-w/2-1, y+8-h/2-1, 1,h+1, (alpha<<24)+0x373737);
-	//		GuiDraw.drawRect(x+8-w/2  , y+8-h/2  , w,h, (alpha<<24)+0x8b8b8b);
-	//		GuiDraw.drawRect(x+8-w/2  , y+8+h/2  , w+1,1, (alpha<<24)+0xffffff);
-	//		GuiDraw.drawRect(x+8+w/2  , y+8-h/2  , 1,h, (alpha<<24)+0xffffff);
-	//	}
+
+	public static void drawSlot(int x, int y, int w, int h)
+	{
+		drawSlot(x,y, w,h, 0xff);
+	}
+	public static void drawSlot(int x, int y, int w, int h, int alpha)
+	{
+		drawColouredRect(x+8-w/2  , y+8-h/2-1, w,1, (alpha<<24)+0x373737);
+		drawColouredRect(x+8-w/2-1, y+8-h/2-1, 1,h+1, (alpha<<24)+0x373737);
+		drawColouredRect(x+8-w/2  , y+8-h/2  , w,h, (alpha<<24)+0x8b8b8b);
+		drawColouredRect(x+8-w/2  , y+8+h/2  , w+1,1, (alpha<<24)+0xffffff);
+		drawColouredRect(x+8+w/2  , y+8-h/2  , 1,h, (alpha<<24)+0xffffff);
+	}
 
 
 	public static void renderToolTip(ItemStack stack, int x, int y)
@@ -1489,7 +1490,40 @@ public class ClientUtils
 		return ret;
 	}
 
-	public static void renderBox(VertexBuffer wr, double x0, double y0, double z0, double x1, double y1, double z1, double u0, double v0, double u1, double v1)
+	public static void renderBox(VertexBuffer wr, double x0, double y0, double z0, double x1, double y1, double z1)
+	{
+		wr.pos(x0, y0, z1).endVertex();
+		wr.pos(x1, y0, z1).endVertex();
+		wr.pos(x1, y1, z1).endVertex();
+		wr.pos(x0, y1, z1).endVertex();
+
+		wr.pos(x0, y1, z0).endVertex();
+		wr.pos(x1, y1, z0).endVertex();
+		wr.pos(x1, y0, z0).endVertex();
+		wr.pos(x0, y0, z0).endVertex();
+
+		wr.pos(x0, y0, z0).endVertex();
+		wr.pos(x1, y0, z0).endVertex();
+		wr.pos(x1, y0, z1).endVertex();
+		wr.pos(x0, y0, z1).endVertex();
+
+		wr.pos(x0, y1, z1).endVertex();
+		wr.pos(x1, y1, z1).endVertex();
+		wr.pos(x1, y1, z0).endVertex();
+		wr.pos(x0, y1, z0).endVertex();
+
+		wr.pos(x0, y0, z0).endVertex();
+		wr.pos(x0, y0, z1).endVertex();
+		wr.pos(x0, y1, z1).endVertex();
+		wr.pos(x0, y1, z0).endVertex();
+
+		wr.pos(x1, y1, z0).endVertex();
+		wr.pos(x1, y1, z1).endVertex();
+		wr.pos(x1, y0, z1).endVertex();
+		wr.pos(x1, y0, z0).endVertex();
+	}
+
+	public static void renderTexturedBox(VertexBuffer wr, double x0, double y0, double z0, double x1, double y1, double z1, double u0, double v0, double u1, double v1)
 	{
 		wr.pos(x0, y0, z1).tex(u0, v0).endVertex();
 		wr.pos(x1, y0, z1).tex(u1, v0).endVertex();
