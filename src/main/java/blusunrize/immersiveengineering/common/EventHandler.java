@@ -304,6 +304,7 @@ public class EventHandler
 	@SubscribeEvent
 	public void onLogin(PlayerLoggedInEvent event)
 	{
+		ExcavatorHandler.allowPackets = true;
 		if(!event.player.worldObj.isRemote)
 		{
 			HashMap<MineralMix,Integer> packetMap = new HashMap<MineralMix,Integer>();
