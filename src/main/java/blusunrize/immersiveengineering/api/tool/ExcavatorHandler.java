@@ -33,6 +33,7 @@ public class ExcavatorHandler
 	public static int mineralVeinCapacity = 0;
 	public static double mineralChance = 0;
 	public static int[] defaultDimensionBlacklist = new int[0];
+	public static boolean allowPackets = false;
 
 	public static MineralMix addMineral(String name, int mineralWeight, float failChance, String[] ores, float[] chances)
 	{
@@ -46,14 +47,13 @@ public class ExcavatorHandler
 		for(Map.Entry<MineralMix, Integer> e : mineralList.entrySet())
 			e.getKey().recalculateChances();
 		dimensionBasedTotalWeight.clear();
-		if(FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER)
+		if(FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER && allowPackets && !mutePackets)
 		{
-			HashMap<MineralMix,Integer> packetMap = new HashMap<MineralMix,Integer>(); 
+			HashMap<MineralMix,Integer> packetMap = new HashMap<MineralMix,Integer>();
 			for(Map.Entry<MineralMix,Integer> e: ExcavatorHandler.mineralList.entrySet())
 				if(e.getKey()!=null && e.getValue()!=null)
 					packetMap.put(e.getKey(), e.getValue());
-			if(!mutePackets)
-				ImmersiveEngineering.packetHandler.sendToAll(new MessageMineralListSync(packetMap));
+			ImmersiveEngineering.packetHandler.sendToAll(new MessageMineralListSync(packetMap));
 		}
 	}
 	public static int getDimensionTotalWeight(int dim)
@@ -98,7 +98,7 @@ public class ExcavatorHandler
 			Random r = world.getChunkFromChunkCoords(chunkX, chunkZ).getRandomWithSeed(940610);
 			double dd = r.nextDouble();
 			boolean empty = dd>mineralChance;
-			int query = r.nextInt(); 
+			int query = r.nextInt();
 			if(!empty)
 			{
 				int weight = Math.abs(query%getDimensionTotalWeight(dim));
