@@ -109,12 +109,16 @@ public class ImmersiveNetHandler
 	{
 		return directConnections.keySet();
 	}
-	public Collection<Connection> getAllConnections(World world)
+	public Collection<Connection> getAllConnections(int dimensionId)
 	{
 		Set<Connection> ret = newSetFromMap(new ConcurrentHashMap<Connection, Boolean>());
-		for (Set<Connection> conlist : getMultimap(world.provider.getDimension()).values())
+		for (Set<Connection> conlist : getMultimap(dimensionId).values())
 			ret.addAll(conlist);
 		return ret;
+	}
+	public Collection<Connection> getAllConnections(World world)
+	{
+		return getAllConnections(world.provider.getDimension());
 	}
 	public synchronized Set<Connection> getConnections(World world, BlockPos node)
 	{
