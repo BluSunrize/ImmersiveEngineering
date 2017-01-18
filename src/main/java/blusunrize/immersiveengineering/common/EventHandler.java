@@ -361,7 +361,7 @@ public class EventHandler
 			EnumRarity r = EnumRarity.EPIC;
 			for(Class<? extends EntityLiving> boring : listOfBoringBosses)
 				if(boring.isAssignableFrom(event.getEntityLiving().getClass()))
-					break;
+					return;
 			ItemStack bag = new ItemStack(IEContent.itemShaderBag);
 			ItemNBTHelper.setString(bag, "rarity", r.toString());
 			event.getDrops().add(new EntityItem(event.getEntityLiving().worldObj, event.getEntityLiving().posX, event.getEntityLiving().posY, event.getEntityLiving().posZ, bag));
