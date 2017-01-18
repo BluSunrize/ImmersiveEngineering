@@ -263,7 +263,6 @@ public class IESmartObjModel extends OBJBakedModel
 				if(sCase != null)
 					if(!sCase.renderModelPartForPass(shader, tempStack, g.getName(), pass))
 						continue;
-//				System.out.println("pass: "+pass+", renders: "+g.getName());
 				Set<Face> faces = Collections.synchronizedSet(new LinkedHashSet<Face>());
 				Optional<TRSRTransformation> transform = Optional.absent();
 				if(this.getState() instanceof OBJState)

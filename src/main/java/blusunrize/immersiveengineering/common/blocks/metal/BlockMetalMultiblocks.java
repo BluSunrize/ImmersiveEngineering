@@ -37,6 +37,7 @@ public class BlockMetalMultiblocks extends BlockIEMultiblock<BlockTypes_MetalMul
 		setResistance(15.0F);
 		this.setMetaBlockLayer(BlockTypes_MetalMultiblock.TANK.getMeta(), BlockRenderLayer.CUTOUT);
 		this.setMetaBlockLayer(BlockTypes_MetalMultiblock.DIESEL_GENERATOR.getMeta(), BlockRenderLayer.CUTOUT);
+		this.setMetaBlockLayer(BlockTypes_MetalMultiblock.BOTTLING_MACHINE.getMeta(), BlockRenderLayer.SOLID,BlockRenderLayer.TRANSLUCENT);
 		this.setAllNotNormalBlock();
 		lightOpacity = 0;
 	}
@@ -71,8 +72,8 @@ public class BlockMetalMultiblocks extends BlockIEMultiblock<BlockTypes_MetalMul
 				return new TileEntityAssembler();
 			case AUTO_WORKBENCH:
 				return new TileEntityAutoWorkbench();
-			//		case BOTTLING_MACHINE:
-			//			return new TileEntityAssembler();
+			case BOTTLING_MACHINE:
+				return new TileEntityBottlingMachine();
 			case SQUEEZER:
 				return new TileEntitySqueezer();
 			case FERMENTER:

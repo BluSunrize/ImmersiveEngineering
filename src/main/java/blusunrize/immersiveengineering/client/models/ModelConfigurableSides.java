@@ -95,7 +95,6 @@ public class ModelConfigurableSides implements IBakedModel
 	@Override
 	public List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable EnumFacing side, long rand)
 	{
-//		System.out.println("gettingQuads for "+name);
 		TextureAtlasSprite[] tex = new TextureAtlasSprite[6];
 		for(int i=0; i<tex.length; i++)
 			tex[i] = this.textures[i][0];

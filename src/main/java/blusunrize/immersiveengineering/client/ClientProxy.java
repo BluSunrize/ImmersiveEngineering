@@ -133,6 +133,7 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void preInit()
 	{
+		ClientUtils.mc().getFramebuffer().enableStencil();//Enabling FBO stencils
 		ModelLoaderRegistry.registerLoader(IEOBJLoader.instance);
 		OBJLoader.INSTANCE.addDomain("immersiveengineering");
 		IEOBJLoader.instance.addDomain("immersiveengineering");
@@ -394,7 +395,7 @@ public class ClientProxy extends CommonProxy
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityBucketWheel.class, new TileRenderBucketWheel());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityArcFurnace.class, new TileRenderArcFurnace());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityAutoWorkbench.class, new TileRenderAutoWorkbench());
-		//		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityBottlingMachine.class, new TileRenderBottlingMachine());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityBottlingMachine.class, new TileRenderBottlingMachine());
 		//WOOD
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityWatermill.class, new TileRenderWatermill());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityWindmill.class, new TileRenderWindmill());
@@ -749,6 +750,9 @@ public class ClientProxy extends CommonProxy
 				new ManualPageMultiblock(ManualHelper.getManual(), "assembler0", MultiblockAssembler.instance),
 				new ManualPages.Text(ManualHelper.getManual(), "assembler1"),
 				new ManualPages.Text(ManualHelper.getManual(), "assembler2"));
+		ManualHelper.addEntry("bottlingMachine", ManualHelper.CAT_MACHINES,
+				new ManualPageMultiblock(ManualHelper.getManual(), "bottlingMachine0", MultiblockBottlingMachine.instance),
+				new ManualPages.Text(ManualHelper.getManual(), "bottlingMachine1"));
 		ManualHelper.addEntry("autoworkbench", ManualHelper.CAT_MACHINES,
 				new ManualPageMultiblock(ManualHelper.getManual(), "autoworkbench0", MultiblockAutoWorkbench.instance),
 				new ManualPages.Text(ManualHelper.getManual(), "autoworkbench1"));
@@ -1371,6 +1375,28 @@ public class ClientProxy extends CommonProxy
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public void drawFluidPumpTop()
+	{
+		final BlockRendererDispatcher blockRenderer = Minecraft.getMinecraft().getBlockRendererDispatcher();
+		IBlockState state = IEContent.blockMetalDevice0.getStateFromMeta(BlockTypes_MetalDevice0.FLUID_PUMP.getMeta());
+		state = state.withProperty(IEProperties.MULTIBLOCKSLAVE, true);
+		IBakedModel model = blockRenderer.getBlockModelShapes().getModelForState(state);
+
+		GlStateManager.pushMatrix();
+		GlStateManager.translate(0,0,1);
+		RenderHelper.disableStandardItemLighting();
+		GlStateManager.blendFunc(770, 771);
+		GlStateManager.enableBlend();
+		GlStateManager.disableCull();
+		if(Minecraft.isAmbientOcclusionEnabled())
+			GlStateManager.shadeModel(7425);
+		else
+			GlStateManager.shadeModel(7424);
+		blockRenderer.getBlockModelRenderer().renderModelBrightness(model, state, .75f, false);
+		GlStateManager.popMatrix();
 	}
 
 	static String[][] formatToTable_ItemIntHashmap(Map<String, Integer> map, String valueType)

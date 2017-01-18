@@ -5,6 +5,7 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.api.fluid.IFluidPipe;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
+import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IConfigurableSides;
@@ -421,8 +422,8 @@ public class TileEntityFluidPump extends TileEntityIEBase implements ITickable, 
 	public void breakDummies(BlockPos pos, IBlockState state)
 	{
 		for(int i=0; i<=1; i++)
-			if(worldObj.getTileEntity(getPos().add(0,dummy?-1:0,0).add(0,i,0)) instanceof TileEntityFluidPump)
-				worldObj.setBlockToAir(getPos().add(0,dummy?-1:0,0).add(0,i,0));
+			if(Utils.isBlockAt(worldObj, getPos().add(0, dummy ? -1 : 0, 0).add(0, i, 0), IEContent.blockMetalDevice0, BlockTypes_MetalDevice0.FLUID_PUMP.getMeta()))
+				worldObj.setBlockToAir(getPos().add(0, dummy ? -1 : 0, 0).add(0, i, 0));
 	}
 
 	@Override
