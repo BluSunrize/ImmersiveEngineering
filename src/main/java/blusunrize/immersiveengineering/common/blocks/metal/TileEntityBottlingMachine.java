@@ -7,6 +7,8 @@ import blusunrize.immersiveengineering.common.Config;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockBottlingMachine;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -14,6 +16,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
@@ -149,6 +152,62 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockMetal<TileEnt
 		return new int[]{1};
 	}
 
+
+	@Override
+	public void replaceStructureBlock(BlockPos pos, IBlockState state, ItemStack stack, int h, int l, int w)
+	{
+		super.replaceStructureBlock(pos, state, stack, h, l, w);
+		if(h==2&&l==1&&w==1)
+		{
+			TileEntity tile = worldObj.getTileEntity(pos);
+			if(tile instanceof TileEntityFluidPump)
+				((TileEntityFluidPump)tile).dummy = true;
+		}
+		else if(h==1&&l==0)
+		{
+			TileEntity tile = worldObj.getTileEntity(pos);
+			if(tile instanceof TileEntityConveyorBelt)
+				((TileEntityConveyorBelt)tile).setFacing(this.mirrored?this.facing.rotateYCCW():this.facing.rotateY());
+		}
+	}
+
+	@Override
+	public void onEntityCollision(World world, Entity entity)
+	{
+		if(pos==6 && !world.isRemote && entity!=null && !entity.isDead && entity instanceof EntityItem&& ((EntityItem)entity).getEntityItem()!=null)
+		{
+			TileEntityBottlingMachine master = master();
+			if(master==null)
+				return;
+			ItemStack stack = ((EntityItem)entity).getEntityItem();
+			if(stack==null)
+				return;
+
+			if(master.bottlingProcessQueue.size() < master.getProcessQueueMaxLength())
+			{
+				stack = stack.copy();
+				float dist = 1;
+				BottlingProcess p = null;
+				if(master.bottlingProcessQueue.size() > 0)
+				{
+					p = master.bottlingProcessQueue.get(master.bottlingProcessQueue.size()-1);
+					if(p!=null)
+						dist = p.processTick/(float)p.maxProcessTick;
+				}
+				if(p!=null&&dist < master.getMinProcessDistance(null))
+					return;
+
+				p = new BottlingProcess(stack.copy());
+				master.bottlingProcessQueue.add(p);
+				master.markDirty();
+				master.markContainingBlockForUpdate(null);
+				stack.stackSize -= 1;
+				if(stack.stackSize <= 0)
+					entity.setDead();
+			}
+		}
+	}
+
 	@Override
 	public boolean isInWorldProcessingMachine()
 	{
@@ -192,24 +251,6 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockMetal<TileEnt
 	public float getMinProcessDistance(MultiblockProcess<IMultiblockRecipe> process)
 	{
 		return .5f;
-	}
-
-	@Override
-	public void replaceStructureBlock(BlockPos pos, IBlockState state, ItemStack stack, int h, int l, int w)
-	{
-		super.replaceStructureBlock(pos, state, stack, h, l, w);
-		if(h==2&&l==1&&w==1)
-		{
-			TileEntity tile = worldObj.getTileEntity(pos);
-			if(tile instanceof TileEntityFluidPump)
-				((TileEntityFluidPump)tile).dummy = true;
-		}
-		else if(h==1&&l==0)
-		{
-			TileEntity tile = worldObj.getTileEntity(pos);
-			if(tile instanceof TileEntityConveyorBelt)
-				((TileEntityConveyorBelt)tile).setFacing(this.mirrored?this.facing.rotateYCCW():this.facing.rotateY());
-		}
 	}
 
 	@Override
