@@ -67,6 +67,7 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.ItemCraftedEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -301,7 +302,7 @@ public class EventHandler
 		}
 	}
 
-	@SubscribeEvent
+	@SubscribeEvent(priority = EventPriority.HIGH)
 	public void onLogin(PlayerLoggedInEvent event)
 	{
 		ExcavatorHandler.allowPackets = true;
@@ -313,6 +314,11 @@ public class EventHandler
 					packetMap.put(e.getKey(), e.getValue());
 			ImmersiveEngineering.packetHandler.sendToAll(new MessageMineralListSync(packetMap));
 		}
+	}
+	@SubscribeEvent(priority = EventPriority.HIGH)
+	public void onLogout(PlayerLoggedOutEvent event)
+	{
+		ExcavatorHandler.allowPackets = false;
 	}
 
 	@SubscribeEvent
