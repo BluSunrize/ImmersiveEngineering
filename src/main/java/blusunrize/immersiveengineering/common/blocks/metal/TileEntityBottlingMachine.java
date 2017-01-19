@@ -185,7 +185,6 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockMetal<TileEnt
 
 			if(master.bottlingProcessQueue.size() < master.getProcessQueueMaxLength())
 			{
-				stack = stack.copy();
 				float dist = 1;
 				BottlingProcess p = null;
 				if(master.bottlingProcessQueue.size() > 0)
