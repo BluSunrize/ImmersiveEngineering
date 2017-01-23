@@ -386,6 +386,7 @@ public class IEContent
 		registerTile(TileEntityWallmount.class);
 
 		registerTile(TileEntityLantern.class);
+		registerTile(TileEntityRazorWire.class);
 
 		registerTile(TileEntityConnectorLV.class);
 		registerTile(TileEntityRelayLV.class);

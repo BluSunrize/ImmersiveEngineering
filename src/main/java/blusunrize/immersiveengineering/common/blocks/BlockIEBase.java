@@ -447,6 +447,10 @@ public class BlockIEBase<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 	{
 		return false;
 	}
+	public boolean allowWirecutterHarvest(IBlockState blockState)
+	{
+		return false;
+	}
 	public boolean isOpaqueCube()
 	{
 		return opaqueCube;
@@ -462,6 +466,8 @@ public class BlockIEBase<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 	public boolean isToolEffective(String type, IBlockState state)
 	{
 		if(allowHammerHarvest(state) && type.equals(Lib.TOOL_HAMMER))
+			return true;
+		if(allowWirecutterHarvest(state) && type.equals(Lib.TOOL_WIRECUTTER))
 			return true;
 		return super.isToolEffective(type, state);
 	}

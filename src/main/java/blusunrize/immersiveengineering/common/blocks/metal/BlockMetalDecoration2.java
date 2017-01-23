@@ -2,6 +2,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IPostBlock;
+import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.blocks.BlockIETileProvider;
 import blusunrize.immersiveengineering.common.blocks.ItemBlockIEBase;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWallmount;
@@ -14,6 +15,7 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.math.BlockPos;
@@ -28,10 +30,11 @@ public class BlockMetalDecoration2 extends BlockIETileProvider<BlockTypes_MetalD
 {
 	public BlockMetalDecoration2()
 	{
-		super("metalDecoration2", Material.IRON, PropertyEnum.create("type", BlockTypes_MetalDecoration2.class), ItemBlockIEBase.class, IEProperties.FACING_ALL,IEProperties.MULTIBLOCKSLAVE,IEProperties.INT_4, Properties.AnimationProperty);
+		super("metalDecoration2", Material.IRON, PropertyEnum.create("type", BlockTypes_MetalDecoration2.class), ItemBlockIEBase.class, IEProperties.FACING_ALL,IEProperties.MULTIBLOCKSLAVE,IEProperties.INT_4, Properties.AnimationProperty, IOBJModelCallback.PROPERTY, IEProperties.CONNECTIONS);
 		this.setHardness(3.0F);
 		this.setResistance(15.0F);
 		this.setAllNotNormalBlock();
+		this.setMetaBlockLayer(BlockTypes_MetalDecoration2.RAZOR_WIRE.getMeta(), BlockRenderLayer.SOLID,BlockRenderLayer.CUTOUT);
 		lightOpacity = 0;
 	}
 
@@ -53,7 +56,7 @@ public class BlockMetalDecoration2 extends BlockIETileProvider<BlockTypes_MetalD
 		}
 		super.breakBlock(world, pos, state);
 	}
-	
+
 	@Override
 	public boolean isSideSolid(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side)
 	{
@@ -88,16 +91,18 @@ public class BlockMetalDecoration2 extends BlockIETileProvider<BlockTypes_MetalD
 	{
 		switch(BlockTypes_MetalDecoration2.values()[meta])
 		{
-		case STEEL_POST:
-			return new TileEntityWoodenPost();
-		case STEEL_WALLMOUNT:
-			return new TileEntityWallmount();
-		case ALUMINUM_POST:
-			return new TileEntityWoodenPost();
-		case ALUMINUM_WALLMOUNT:
-			return new TileEntityWallmount();
-		case LANTERN:
-			return new TileEntityLantern();
+			case STEEL_POST:
+				return new TileEntityWoodenPost();
+			case STEEL_WALLMOUNT:
+				return new TileEntityWallmount();
+			case ALUMINUM_POST:
+				return new TileEntityWoodenPost();
+			case ALUMINUM_WALLMOUNT:
+				return new TileEntityWallmount();
+			case LANTERN:
+				return new TileEntityLantern();
+			case RAZOR_WIRE:
+				return new TileEntityRazorWire();
 		}
 		return null;
 	}
@@ -115,5 +120,11 @@ public class BlockMetalDecoration2 extends BlockIETileProvider<BlockTypes_MetalD
 	public boolean allowHammerHarvest(IBlockState state)
 	{
 		return true;
+	}
+
+	@Override
+	public boolean allowWirecutterHarvest(IBlockState state)
+	{
+		return getMetaFromState(state)==BlockTypes_MetalDecoration2.RAZOR_WIRE.getMeta();
 	}
 }
