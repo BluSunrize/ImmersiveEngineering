@@ -123,6 +123,7 @@ tile.immersiveengineering.metalDecoration2.steel_wallmount.name=Steel Wallmount
 tile.immersiveengineering.metalDecoration2.aluminum_post.name=Aluminium Post
 tile.immersiveengineering.metalDecoration2.aluminum_wallmount.name=Aluminium Wallmount
 tile.immersiveengineering.metalDecoration2.lantern.name=Lantern
+tile.immersiveengineering.metalDecoration2.razor_wire.name=Razor Wire
 
 tile.immersiveengineering.connector.connector_lv.name=LV Wire Connector
 tile.immersiveengineering.connector.relay_lv.name=LV Wire Relay
@@ -799,6 +800,8 @@ death.attack.ieRevolver_silver=%1$s was purified by %2$s's silver bullet
 death.attack.ieRevolver_potion=%1$s was doused by %2$s's phial shot
 death.attack.ieCrushed=%1$s was crushed
 death.attack.ieAcid=%1$s was dissolved in acid
+death.attack.ieRazorWire=%1$s was diced by razorwire
+death.attack.ieRazorShock=%1$s was electrocuted by razorwire
 death.attack.ieTesla=%1$s was fried by a Tesla Coil
 death.attack.ieTeslaPrimary=%1$s touched the primary circuit of a running Tesla coil
 death.attack.ieRailgun=%1$s was pierced by %2$s's Railgun

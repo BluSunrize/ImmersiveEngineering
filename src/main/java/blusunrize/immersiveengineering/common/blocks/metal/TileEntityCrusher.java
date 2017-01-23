@@ -333,7 +333,7 @@ public class TileEntityCrusher extends TileEntityMultiblockMetal<TileEntityCrush
 				{
 					master.energyStorage.extractEnergy(consumed, false);
 					EventHandler.crusherMap.put(entity.getUniqueID(), master);
-					entity.attackEntityFrom(IEDamageSources.causeCrusherDamage(), consumed/20f);
+					entity.attackEntityFrom(IEDamageSources.crusher, consumed/20f);
 				}
 			}
 		}

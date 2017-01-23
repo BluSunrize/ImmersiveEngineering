@@ -275,6 +275,7 @@ public class IERecipes
 		addOredictRecipe(new ItemStack(IEContent.blockMetalDecoration2,1,BlockTypes_MetalDecoration2.ALUMINUM_POST.getMeta()), "F","F","S", 'F',"fenceAluminum",'S',"bricksStone");
 		addOredictRecipe(new ItemStack(IEContent.blockMetalDecoration2,4,BlockTypes_MetalDecoration2.ALUMINUM_WALLMOUNT.getMeta()), "II","IS", 'I',"ingotAluminum",'S',"stickAluminum");
 		addOredictRecipe(new ItemStack(IEContent.blockMetalDecoration2,3,BlockTypes_MetalDecoration2.LANTERN.getMeta()), " I ","PGP"," I ", 'G',"glowstone",'I',"plateIron",'P',"paneGlass");
+		addOredictRecipe(new ItemStack(IEContent.blockMetalDecoration2,3,BlockTypes_MetalDecoration2.RAZOR_WIRE.getMeta()), "PWP","WWW","PWP", 'W',"wireSteel",'P',"plateSteel");
 
 		//
 		//CONNECTOR

@@ -105,21 +105,19 @@ public class IEDamageSources
 		return new IEDamageSource_Indirect(Lib.DMG_RevolverPotion, shot, shooter);
 	}
 
-	public static DamageSource causeAcidDamage()
-	{
-		return new IEDamageSource(Lib.DMG_Acid);
-	}
+	public static DamageSource acid = new IEDamageSource(Lib.DMG_Acid);
 
-	public static DamageSource causeCrusherDamage()
-	{
-		return new IEDamageSource(Lib.DMG_Crusher);
-	}
-	
+	public static DamageSource crusher = new IEDamageSource(Lib.DMG_Crusher);
+
+	public static DamageSource razorWire = new IEDamageSource(Lib.DMG_RazorWire);
+
+	public static DamageSource razorShock = new IEDamageSource(Lib.DMG_RazorShock);
+
 	public static TeslaDamageSource causeTeslaDamage(float amount, boolean lowPower)
 	{
 		return new TeslaDamageSource(Lib.DMG_Tesla, lowPower, amount);
 	}
-	
+
 	public static DamageSource causeRailgunDamage(EntityRailgunShot shot, Entity shooter)
 	{
 		return new IEDamageSource_Indirect(Lib.DMG_Railgun, shot, shooter).setDamageBypassesArmor();

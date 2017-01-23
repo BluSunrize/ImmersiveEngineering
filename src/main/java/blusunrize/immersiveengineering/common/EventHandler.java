@@ -19,6 +19,7 @@ import blusunrize.immersiveengineering.api.tool.IDrillHead;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISpawnInterdiction;
+import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalDecoration2;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
 import blusunrize.immersiveengineering.common.crafting.ArcRecyclingThreadHandler;
 import blusunrize.immersiveengineering.common.items.ItemDrill;
@@ -324,14 +325,23 @@ public class EventHandler
 	@SubscribeEvent
 	public void harvestCheck(PlayerEvent.HarvestCheck event)
 	{
-		if(event.getTargetBlock().getBlock() instanceof BlockIEBase && event.getEntityPlayer().getHeldItem(EnumHand.MAIN_HAND)!=null && event.getEntityPlayer().getHeldItem(EnumHand.MAIN_HAND).getItem().getToolClasses(event.getEntityPlayer().getHeldItem(EnumHand.MAIN_HAND)).contains(Lib.TOOL_HAMMER))
+		if(event.getTargetBlock().getBlock() instanceof BlockIEBase)
 		{
-			RayTraceResult mop = Utils.getMovingObjectPositionFromPlayer(event.getEntityPlayer().worldObj, event.getEntityPlayer(), true);
-			if(mop!=null && mop.typeOfHit== RayTraceResult.Type.BLOCK)
-				if(((BlockIEBase)event.getTargetBlock().getBlock()).allowHammerHarvest(event.getTargetBlock()))
-					event.setCanHarvest(true);
+			if(event.getEntityPlayer().getHeldItem(EnumHand.MAIN_HAND)!=null&&event.getEntityPlayer().getHeldItem(EnumHand.MAIN_HAND).getItem().getToolClasses(event.getEntityPlayer().getHeldItem(EnumHand.MAIN_HAND)).contains(Lib.TOOL_HAMMER))
+			{
+				RayTraceResult mop = Utils.getMovingObjectPositionFromPlayer(event.getEntityPlayer().worldObj, event.getEntityPlayer(), true);
+				if(mop!=null&&mop.typeOfHit==RayTraceResult.Type.BLOCK)
+					if(((BlockIEBase)event.getTargetBlock().getBlock()).allowHammerHarvest(event.getTargetBlock()))
+						event.setCanHarvest(true);
+			}
+			if(event.getEntityPlayer().getHeldItem(EnumHand.MAIN_HAND)!=null&&event.getEntityPlayer().getHeldItem(EnumHand.MAIN_HAND).getItem().getToolClasses(event.getEntityPlayer().getHeldItem(EnumHand.MAIN_HAND)).contains(Lib.TOOL_WIRECUTTER))
+			{
+				RayTraceResult mop = Utils.getMovingObjectPositionFromPlayer(event.getEntityPlayer().worldObj, event.getEntityPlayer(), true);
+				if(mop!=null&&mop.typeOfHit==RayTraceResult.Type.BLOCK)
+					if(((BlockIEBase)event.getTargetBlock().getBlock()).allowWirecutterHarvest(event.getTargetBlock()))
+						event.setCanHarvest(true);
+			}
 		}
-
 	}
 	//	@SubscribeEvent
 	//	public void bloodMagicTeleposer(TeleposeEvent event)
@@ -512,6 +522,9 @@ public class EventHandler
 			if( ((ItemDrill)IEContent.itemDrill).getUpgrades(current).getBoolean("waterproof"))
 				event.setNewSpeed(event.getOriginalSpeed()*5);
 			else
+				event.setCanceled(true);
+		if(event.getState().getBlock()==IEContent.blockMetalDecoration2 && IEContent.blockMetalDecoration2.getMetaFromState(event.getState())==BlockTypes_MetalDecoration2.RAZOR_WIRE.getMeta())
+			if(!OreDictionary.itemMatches(new ItemStack(IEContent.itemTool,1,1), current, false))
 				event.setCanceled(true);
 	}
 	@SubscribeEvent

@@ -11,7 +11,8 @@ public enum BlockTypes_MetalDecoration2 implements IStringSerializable, BlockIEB
 	STEEL_WALLMOUNT,
 	ALUMINUM_POST,
 	ALUMINUM_WALLMOUNT,
-	LANTERN;
+	LANTERN,
+	RAZOR_WIRE;
 
 	@Override
 	public String getName()

@@ -64,6 +64,8 @@ public class Lib
 	public static String DMG_Acid="ieAcid";
 	public static String DMG_Railgun = "ieRailgun";
 	public static String DMG_Tesla_prim = "ieTeslaPrimary";
+	public static String DMG_RazorWire = "ieRazorWire";
+	public static String DMG_RazorShock = "ieRazorShock";
 
 	public static boolean BAUBLES = false;
 	public static boolean IC2 = false;

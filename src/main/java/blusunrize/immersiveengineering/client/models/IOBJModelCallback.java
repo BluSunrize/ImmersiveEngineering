@@ -48,9 +48,9 @@ public interface IOBJModelCallback<T>
 	@SideOnly(Side.CLIENT)
 	boolean shouldRenderGroup(T object, String group);
 	@SideOnly(Side.CLIENT)
-	Optional<TRSRTransformation> applyTransformations(T object, String group, Optional<TRSRTransformation> transform);
+	default Optional<TRSRTransformation> applyTransformations(T object, String group, Optional<TRSRTransformation> transform) { return transform; }
 	@SideOnly(Side.CLIENT)
-	Matrix4 handlePerspective(T Object, TransformType cameraTransformType, Matrix4 perspective);
+	default Matrix4 handlePerspective(T Object, TransformType cameraTransformType, Matrix4 perspective) { return perspective; }
 
 	@SideOnly(Side.CLIENT)
 	default int getRenderColour(T object, String group)

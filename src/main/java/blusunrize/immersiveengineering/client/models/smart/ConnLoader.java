@@ -79,6 +79,9 @@ public class ConnLoader implements ICustomModelLoader
 		
 		baseModels.put("balloon",
 				new ResourceLocation("immersiveengineering:block/balloon.obj.ie"));
+
+		baseModels.put("razorWire",
+				new ResourceLocation("immersiveengineering:block/razorWire.obj.ie"));
 	}
 
 	@Override
