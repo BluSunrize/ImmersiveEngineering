@@ -55,6 +55,7 @@ public class IEProperties
 			PropertyBoolInverted.create("boolean2")
 	};
 	public static final PropertyInteger INT_4 = PropertyInteger.create("int_4", 0,3);
+	public static final PropertyInteger INT_16 = PropertyInteger.create("int_16", 0,15);
 
 	public static class ProperySideConfig implements IUnlistedProperty<SideConfig>
 	{

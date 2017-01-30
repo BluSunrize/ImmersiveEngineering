@@ -55,6 +55,7 @@ import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.EnderTeleportEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingJumpEvent;
+import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraftforge.event.entity.minecart.MinecartInteractEvent;
@@ -411,7 +412,18 @@ public class EventHandler
 	{
 		if(event.getEntityLiving().getActivePotionEffect(IEPotions.sticky)!=null)
 			event.getEntityLiving().motionY -= (event.getEntityLiving().getActivePotionEffect(IEPotions.sticky).getAmplifier()+1)*0.3F;
+		else if(event.getEntityLiving().getActivePotionEffect(IEPotions.concreteFeet)!=null)
+		{
+			event.getEntityLiving().motionX = 0;
+			event.getEntityLiving().motionY = 0;
+			event.getEntityLiving().motionZ = 0;
+		}
 	}
+	@SubscribeEvent
+	public void onLivingUpdate(LivingUpdateEvent event)
+	{
+	}
+
 
 	@SubscribeEvent
 	public void onEnderTeleport(EnderTeleportEvent event)

@@ -21,6 +21,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOve
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityTurntable;
 import blusunrize.immersiveengineering.common.gui.ContainerRevolver;
 import blusunrize.immersiveengineering.common.items.*;
+import blusunrize.immersiveengineering.common.util.IEPotions;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.SkylineHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -668,6 +669,9 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 		}
 		else if(ZoomHandler.isZooming)
 			ZoomHandler.isZooming = false;
+		if(player.getActivePotionEffect(IEPotions.concreteFeet)!=null)
+			event.setNewfov(1);
+
 	}
 	@SubscribeEvent
 	public void onMouseEvent(MouseEvent event)

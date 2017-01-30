@@ -5,6 +5,21 @@
 		"transform": "forge:default-item"
 	},
 	"variants": {
+		"creosote": [{
+			"custom": { "fluid": "creosote" }
+		}],
+		"plantoil": [{
+			"custom": { "fluid": "plantoil" }
+		}],
+		"ethanol": [{
+			"custom": { "fluid": "ethanol" }
+		}],
+		"biodiesel": [{
+			"custom": { "fluid": "biodiesel" }
+		}],
+		"concrete": [{
+			"custom": { "fluid": "concrete" }
+		}],
 		"uranium": [{
 			"custom": { "fluid": "uranium" }
 		}],
