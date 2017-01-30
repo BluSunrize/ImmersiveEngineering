@@ -1,6 +1,8 @@
 package blusunrize.immersiveengineering.common.util;
 
 import blusunrize.immersiveengineering.api.IEApi;
+import blusunrize.immersiveengineering.common.IEContent;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -17,6 +19,7 @@ public class IEPotions
 	public static Potion conductive;
 	public static Potion sticky;
 	public static Potion stunned;
+	public static Potion concreteFeet;
 
 	public static void init()
 	{
@@ -25,8 +28,9 @@ public class IEPotions
 		conductive = new IEPotion(new ResourceLocation("ie.conductive"), true,0x690000,0, false,2, true,true).setPotionName("immersiveengineering.potion.conductive");
 		sticky = new IEPotion(new ResourceLocation("ie.sticky"), true,0x9c6800,0, false,3, true,true).setPotionName("immersiveengineering.potion.sticky").registerPotionAttributeModifier(SharedMonsterAttributes.MOVEMENT_SPEED, Utils.generateNewUUID().toString(), -0.50000000298023224D, 2);
 		stunned = new IEPotion(new ResourceLocation("ie.stunned"), true,0x624a98,0, false,4, true,true).setPotionName("immersiveengineering.potion.stunned");
-		
-		IEApi.potions = new Potion[]{flammable,slippery,conductive,sticky,stunned};
+		concreteFeet = new IEPotion(new ResourceLocation("ie.concreteFeet"), true,0x624a98,0, false,5, true,true).setPotionName("immersiveengineering.potion.concreteFeet").registerPotionAttributeModifier(SharedMonsterAttributes.MOVEMENT_SPEED, Utils.generateNewUUID().toString(), -2D, 2);
+
+		IEApi.potions = new Potion[]{flammable,slippery,conductive,sticky,stunned,concreteFeet};
 	}
 
 	public static class IEPotion extends Potion
@@ -92,6 +96,16 @@ public class IEPotions
 					EntityItem dropped = living.entityDropItem(living.getItemStackFromSlot(hand).copy(), 1);
 					dropped.setPickupDelay(20);
 					living.setItemStackToSlot(hand, null);
+				}
+			}
+			else if(this==IEPotions.concreteFeet && !living.worldObj.isRemote)
+			{
+				IBlockState state = living.worldObj.getBlockState(living.getPosition());
+				if(state.getBlock()!=IEContent.blockStoneDecoration && state.getBlock()!=IEContent.blockStoneDecorationSlabs)
+				{
+					PotionEffect effect = living.getActivePotionEffect(this);
+					if(effect!=null)
+						effect.duration = 0;
 				}
 			}
 		}

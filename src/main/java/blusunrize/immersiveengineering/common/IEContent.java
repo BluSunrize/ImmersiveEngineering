@@ -123,6 +123,11 @@ public class IEContent
 	public static BlockIEBase blockMetalDevice1;
 	public static BlockIEBase blockConveyor;
 	public static BlockIEBase blockMetalMultiblock;
+	public static BlockIEFluid blockFluidCreosote;
+	public static BlockIEFluid blockFluidPlantoil;
+	public static BlockIEFluid blockFluidEthanol;
+	public static BlockIEFluid blockFluidBiodiesel;
+	public static BlockIEFluid blockFluidConcrete;
 
 	public static ArrayList<Item> registeredIEItems = new ArrayList<Item>();
 	public static ItemIEBase itemMaterial;
@@ -157,29 +162,51 @@ public class IEContent
 	public static Fluid fluidPlantoil;
 	public static Fluid fluidEthanol;
 	public static Fluid fluidBiodiesel;
+	public static Fluid fluidConcrete;
 
 	public static VillagerRegistry.VillagerProfession villagerProfession_engineer;
 
 	public static void preInit()
 	{
-		blockOre = (BlockIEBase)new BlockIEBase("ore",Material.ROCK, PropertyEnum.create("type", BlockTypes_Ore.class), ItemBlockIEBase.class).setOpaque(true).setHardness(3.0F).setResistance(5.0F);
-		blockStorage = (BlockIEBase)new BlockIEBase("storage",Material.IRON, PropertyEnum.create("type", BlockTypes_MetalsIE.class), ItemBlockIEBase.class).setOpaque(true).setHardness(5.0F).setResistance(10.0F);
-		blockStorageSlabs = (BlockIESlab)new BlockIESlab("storageSlab",Material.IRON, PropertyEnum.create("type", BlockTypes_MetalsIE.class)).setHardness(5.0F).setResistance(10.0F);
+		fluidCreosote = new Fluid("creosote", new ResourceLocation("immersiveengineering:blocks/fluid/creosote_still"), new ResourceLocation("immersiveengineering:blocks/fluid/creosote_flow")).setDensity(800).setViscosity(3000);
+		if(!FluidRegistry.registerFluid(fluidCreosote))
+			fluidCreosote = FluidRegistry.getFluid("creosote");
+		FluidRegistry.addBucketForFluid(fluidCreosote);
+		fluidPlantoil = new Fluid("plantoil", new ResourceLocation("immersiveengineering:blocks/fluid/plantoil_still"), new ResourceLocation("immersiveengineering:blocks/fluid/plantoil_flow")).setDensity(925).setViscosity(2000);
+		if(!FluidRegistry.registerFluid(fluidPlantoil))
+			fluidPlantoil = FluidRegistry.getFluid("plantoil");
+		FluidRegistry.addBucketForFluid(fluidPlantoil);
+		fluidEthanol = new Fluid("ethanol", new ResourceLocation("immersiveengineering:blocks/fluid/ethanol_still"), new ResourceLocation("immersiveengineering:blocks/fluid/ethanol_flow")).setDensity(789).setViscosity(1000);
+		if(!FluidRegistry.registerFluid(fluidEthanol))
+			fluidEthanol = FluidRegistry.getFluid("ethanol");
+		FluidRegistry.addBucketForFluid(fluidEthanol);
+		fluidBiodiesel = new Fluid("biodiesel", new ResourceLocation("immersiveengineering:blocks/fluid/biodiesel_still"), new ResourceLocation("immersiveengineering:blocks/fluid/biodiesel_flow")).setDensity(789).setViscosity(1000);
+		if(!FluidRegistry.registerFluid(fluidBiodiesel))
+			fluidBiodiesel = FluidRegistry.getFluid("biodiesel");
+		FluidRegistry.addBucketForFluid(fluidBiodiesel);
+		fluidConcrete = new Fluid("concrete", new ResourceLocation("immersiveengineering:blocks/fluid/concrete_still"), new ResourceLocation("immersiveengineering:blocks/fluid/concrete_flow")).setDensity(2400).setViscosity(4000);
+		if(!FluidRegistry.registerFluid(fluidConcrete))
+			fluidConcrete = FluidRegistry.getFluid("concrete");
+		FluidRegistry.addBucketForFluid(fluidConcrete);
+
+		blockOre = (BlockIEBase)new BlockIEBase("ore", Material.ROCK, PropertyEnum.create("type", BlockTypes_Ore.class), ItemBlockIEBase.class).setOpaque(true).setHardness(3.0F).setResistance(5.0F);
+		blockStorage = (BlockIEBase)new BlockIEBase("storage", Material.IRON, PropertyEnum.create("type", BlockTypes_MetalsIE.class), ItemBlockIEBase.class).setOpaque(true).setHardness(5.0F).setResistance(10.0F);
+		blockStorageSlabs = (BlockIESlab)new BlockIESlab("storageSlab", Material.IRON, PropertyEnum.create("type", BlockTypes_MetalsIE.class)).setHardness(5.0F).setResistance(10.0F);
 		int insGlassMeta = BlockTypes_StoneDecoration.INSULATING_GLASS.getMeta();
 		blockStoneDecoration = (BlockIEBase)new BlockIEBase("stoneDecoration", Material.ROCK, PropertyEnum.create("type", BlockTypes_StoneDecoration.class), ItemBlockIEBase.class).setMetaBlockLayer(insGlassMeta, BlockRenderLayer.TRANSLUCENT).setMetaLightOpacity(insGlassMeta, 0).setNotNormalBlock(insGlassMeta).setMetaExplosionResistance(BlockTypes_StoneDecoration.CONCRETE_LEADED.getMeta(), 180).setHardness(2.0F).setResistance(10.0F);
-		blockStoneDecorationSlabs = (BlockIEBase)new BlockIESlab("stoneDecorationSlab",Material.ROCK, PropertyEnum.create("type", BlockTypes_StoneDecoration.class)).setMetaHidden(3,8).setMetaExplosionResistance(BlockTypes_StoneDecoration.CONCRETE_LEADED.getMeta(), 180).setHardness(2.0F).setResistance(10.0F);
-		blockStoneStair_hempcrete = new BlockIEStairs("stoneDecorationStairs_hempcrete",blockStoneDecoration.getStateFromMeta(BlockTypes_StoneDecoration.HEMPCRETE.getMeta()));
-		blockStoneStair_concrete0 = new BlockIEStairs("stoneDecorationStairs_concrete",blockStoneDecoration.getStateFromMeta(BlockTypes_StoneDecoration.CONCRETE.getMeta()));
-		blockStoneStair_concrete1 = new BlockIEStairs("stoneDecorationStairs_concrete_tile",blockStoneDecoration.getStateFromMeta(BlockTypes_StoneDecoration.CONCRETE_TILE.getMeta()));
-		blockStoneStair_concrete2 = new BlockIEStairs("stoneDecorationStairs_concrete_leaded",blockStoneDecoration.getStateFromMeta(BlockTypes_StoneDecoration.CONCRETE_LEADED.getMeta())).setExplosionResistance(180f);
+		blockStoneDecorationSlabs = (BlockIEBase)new BlockIESlab("stoneDecorationSlab", Material.ROCK, PropertyEnum.create("type", BlockTypes_StoneDecoration.class)).setMetaHidden(3, 8).setMetaExplosionResistance(BlockTypes_StoneDecoration.CONCRETE_LEADED.getMeta(), 180).setHardness(2.0F).setResistance(10.0F);
+		blockStoneStair_hempcrete = new BlockIEStairs("stoneDecorationStairs_hempcrete", blockStoneDecoration.getStateFromMeta(BlockTypes_StoneDecoration.HEMPCRETE.getMeta()));
+		blockStoneStair_concrete0 = new BlockIEStairs("stoneDecorationStairs_concrete", blockStoneDecoration.getStateFromMeta(BlockTypes_StoneDecoration.CONCRETE.getMeta()));
+		blockStoneStair_concrete1 = new BlockIEStairs("stoneDecorationStairs_concrete_tile", blockStoneDecoration.getStateFromMeta(BlockTypes_StoneDecoration.CONCRETE_TILE.getMeta()));
+		blockStoneStair_concrete2 = new BlockIEStairs("stoneDecorationStairs_concrete_leaded", blockStoneDecoration.getStateFromMeta(BlockTypes_StoneDecoration.CONCRETE_LEADED.getMeta())).setExplosionResistance(180f);
 
 		blockStoneDevice = new BlockStoneDevice();
 
-		blockTreatedWood = (BlockIEBase)new BlockIEBase("treatedWood",Material.WOOD, PropertyEnum.create("type", BlockTypes_TreatedWood.class), ItemBlockIEBase.class).setOpaque(true).setHasFlavour().setHardness(2.0F).setResistance(5.0F);
-		blockTreatedWoodSlabs = (BlockIESlab)new BlockIESlab("treatedWoodSlab",Material.WOOD, PropertyEnum.create("type", BlockTypes_TreatedWood.class)).setHasFlavour().setHardness(2.0F).setResistance(5.0F);
-		blockWoodenStair = new BlockIEStairs("treatedWoodStairs0",blockTreatedWood.getStateFromMeta(0)).setHasFlavour(true);
-		blockWoodenStair1 = new BlockIEStairs("treatedWoodStairs1",blockTreatedWood.getStateFromMeta(1)).setHasFlavour(true);
-		blockWoodenStair2 = new BlockIEStairs("treatedWoodStairs2",blockTreatedWood.getStateFromMeta(2)).setHasFlavour(true);
+		blockTreatedWood = (BlockIEBase)new BlockIEBase("treatedWood", Material.WOOD, PropertyEnum.create("type", BlockTypes_TreatedWood.class), ItemBlockIEBase.class).setOpaque(true).setHasFlavour().setHardness(2.0F).setResistance(5.0F);
+		blockTreatedWoodSlabs = (BlockIESlab)new BlockIESlab("treatedWoodSlab", Material.WOOD, PropertyEnum.create("type", BlockTypes_TreatedWood.class)).setHasFlavour().setHardness(2.0F).setResistance(5.0F);
+		blockWoodenStair = new BlockIEStairs("treatedWoodStairs0", blockTreatedWood.getStateFromMeta(0)).setHasFlavour(true);
+		blockWoodenStair1 = new BlockIEStairs("treatedWoodStairs1", blockTreatedWood.getStateFromMeta(1)).setHasFlavour(true);
+		blockWoodenStair2 = new BlockIEStairs("treatedWoodStairs2", blockTreatedWood.getStateFromMeta(2)).setHasFlavour(true);
 
 		blockWoodenDecoration = new BlockWoodenDecoration();
 		blockWoodenDevice0 = new BlockWoodenDevice0();
@@ -188,9 +215,9 @@ public class IEContent
 		blockClothDevice = new BlockClothDevice();
 		blockFakeLight = new BlockFakeLight();
 
-		blockSheetmetal = (BlockIEBase)new BlockIEBase("sheetmetal",Material.IRON, PropertyEnum.create("type", BlockTypes_MetalsAll.class), ItemBlockIEBase.class).setOpaque(true).setMetaHidden(0,3,4,5,7,10).setHardness(3.0F).setResistance(10.0F);
-		blockSheetmetalSlabs = (BlockIESlab)new BlockIESlab("sheetmetalSlab",Material.IRON, PropertyEnum.create("type", BlockTypes_MetalsAll.class)).setMetaHidden(0,3,4,5,7,10).setHardness(3.0F).setResistance(10.0F);
-		blockMetalDecoration0 = (BlockIEBase)new BlockIEBase("metalDecoration0",Material.IRON, PropertyEnum.create("type", BlockTypes_MetalDecoration0.class), ItemBlockIEBase.class).setHardness(3.0F).setResistance(15.0F);
+		blockSheetmetal = (BlockIEBase)new BlockIEBase("sheetmetal", Material.IRON, PropertyEnum.create("type", BlockTypes_MetalsAll.class), ItemBlockIEBase.class).setOpaque(true).setMetaHidden(0, 3, 4, 5, 7, 10).setHardness(3.0F).setResistance(10.0F);
+		blockSheetmetalSlabs = (BlockIESlab)new BlockIESlab("sheetmetalSlab", Material.IRON, PropertyEnum.create("type", BlockTypes_MetalsAll.class)).setMetaHidden(0, 3, 4, 5, 7, 10).setHardness(3.0F).setResistance(10.0F);
+		blockMetalDecoration0 = (BlockIEBase)new BlockIEBase("metalDecoration0", Material.IRON, PropertyEnum.create("type", BlockTypes_MetalDecoration0.class), ItemBlockIEBase.class).setHardness(3.0F).setResistance(15.0F);
 		blockMetalDecoration1 = new BlockMetalDecoration1();
 		blockMetalDecoration2 = new BlockMetalDecoration2();
 		blockConnectors = new BlockConnector();
@@ -199,32 +226,39 @@ public class IEContent
 		blockConveyor = new BlockConveyor();
 		blockMetalMultiblock = new BlockMetalMultiblocks();
 
-		itemMaterial = new ItemIEBase("material",64,
-				"stickTreated","stickIron","stickSteel","stickAluminum",
-				"hempFiber","hempFabric",
-				"coalCoke","slag",
-				"componentIron","componentSteel",
-				"waterwheelSegment","windmillBlade","windmillBladeAdvanced",
-				"woodenGrip","gunpartBarrel","gunpartDrum","gunpartHammer",
-				"dustCoke","dustHOPGraphite","ingotHOPGraphite",
-				"wireCopper","wireElectrum","wireAluminum","wireSteel");
-		itemMetal = new ItemIEBase("metal",64,
-				"ingotCopper","ingotAluminum","ingotLead","ingotSilver","ingotNickel","ingotUranium","ingotConstantan","ingotElectrum","ingotSteel",
-				"dustCopper","dustAluminum","dustLead","dustSilver","dustNickel","dustUranium","dustConstantan","dustElectrum","dustSteel","dustIron","dustGold",
-				"nuggetCopper","nuggetAluminum","nuggetLead","nuggetSilver","nuggetNickel","nuggetUranium","nuggetConstantan","nuggetElectrum","nuggetSteel","nuggetIron",
-				"plateCopper","plateAluminum","plateLead","plateSilver","plateNickel","plateUranium","plateConstantan","plateElectrum","plateSteel","plateIron","plateGold"
-		).setMetaHidden(33,34,35,40);
+		blockFluidCreosote = new BlockIEFluid("fluidCreosote", fluidCreosote, Material.WATER).setFlammability(40, 400);
+		blockFluidPlantoil = new BlockIEFluid("fluidPlantoil", fluidPlantoil, Material.WATER);
+		blockFluidEthanol = new BlockIEFluid("fluidEthanol", fluidEthanol, Material.WATER).setFlammability(60, 600);
+		blockFluidBiodiesel = new BlockIEFluid("fluidBiodiesel", fluidBiodiesel, Material.WATER).setFlammability(60, 200);
+		blockFluidConcrete = new BlockIEFluidConcrete("fluidConcrete", fluidConcrete, Material.WATER);
+
+
+		itemMaterial = new ItemIEBase("material", 64,
+				"stickTreated", "stickIron", "stickSteel", "stickAluminum",
+				"hempFiber", "hempFabric",
+				"coalCoke", "slag",
+				"componentIron", "componentSteel",
+				"waterwheelSegment", "windmillBlade", "windmillBladeAdvanced",
+				"woodenGrip", "gunpartBarrel", "gunpartDrum", "gunpartHammer",
+				"dustCoke", "dustHOPGraphite", "ingotHOPGraphite",
+				"wireCopper", "wireElectrum", "wireAluminum", "wireSteel");
+		itemMetal = new ItemIEBase("metal", 64,
+				"ingotCopper", "ingotAluminum", "ingotLead", "ingotSilver", "ingotNickel", "ingotUranium", "ingotConstantan", "ingotElectrum", "ingotSteel",
+				"dustCopper", "dustAluminum", "dustLead", "dustSilver", "dustNickel", "dustUranium", "dustConstantan", "dustElectrum", "dustSteel", "dustIron", "dustGold",
+				"nuggetCopper", "nuggetAluminum", "nuggetLead", "nuggetSilver", "nuggetNickel", "nuggetUranium", "nuggetConstantan", "nuggetElectrum", "nuggetSteel", "nuggetIron",
+				"plateCopper", "plateAluminum", "plateLead", "plateSilver", "plateNickel", "plateUranium", "plateConstantan", "plateElectrum", "plateSteel", "plateIron", "plateGold"
+		).setMetaHidden(33, 34, 35, 40);
 		itemTool = new ItemIETool();
 		itemToolbox = new ItemToolbox();
 		itemWireCoil = new ItemWireCoil();
 		WireType.ieWireCoil = itemWireCoil;
-		itemSeeds = new ItemIESeed(blockCrop,"hemp");
-		if(Config.IEConfig.hempSeedWeight>0)
+		itemSeeds = new ItemIESeed(blockCrop, "hemp");
+		if(Config.IEConfig.hempSeedWeight > 0)
 			MinecraftForge.addGrassSeed(new ItemStack(itemSeeds), Config.IEConfig.hempSeedWeight);
 		itemDrill = new ItemDrill();
 		itemDrillhead = new ItemDrillhead();
 		itemJerrycan = new ItemJerrycan();
-		itemMold = new ItemIEBase("mold", 1, "plate","gear","rod","bulletCasing","wire").setMetaHidden(1);
+		itemMold = new ItemIEBase("mold", 1, "plate", "gear", "rod", "bulletCasing", "wire").setMetaHidden(1);
 		itemBlueprint = new ItemEngineersBlueprint().setRegisterSubModels(false);
 		itemRevolver = new ItemRevolver();
 		itemBullet = new ItemBullet();
@@ -238,11 +272,11 @@ public class IEContent
 		itemCoresample = new ItemCoresample();
 		itemGraphiteElectrode = new ItemGraphiteElectrode();
 		ItemFaradaySuit.mat = EnumHelper.addArmorMaterial("faradayChains", "immersiveEngineering:faradaySuit", 1, new int[]{1, 3, 2, 1}, 0, SoundEvents.ITEM_ARMOR_EQUIP_CHAIN, 0);
-		for(int i = 0;i<itemsFaradaySuit.length;i++)
+		for(int i = 0; i < itemsFaradaySuit.length; i++)
 			itemsFaradaySuit[i] = new ItemFaradaySuit(EntityEquipmentSlot.values()[2+i]);
 		itemFluorescentTube = new ItemFluorescentTube();
 
-		itemFakeIcons = new ItemIEBase("fakeIcon", 1, "birthday","lucky")
+		itemFakeIcons = new ItemIEBase("fakeIcon", 1, "birthday", "lucky")
 		{
 			@Override
 			public void getSubItems(Item item, CreativeTabs tab, List list)
@@ -262,23 +296,6 @@ public class IEContent
 		//		blockConcreteTileStair = new BlockIEStairs("concreteTileStairs",blockStoneDecoration,5);
 		//		blockClothDevice = new BlockClothDevices();
 		//
-
-		fluidCreosote = new Fluid("creosote", new ResourceLocation("immersiveengineering:blocks/fluid/creosote_still"), new ResourceLocation("immersiveengineering:blocks/fluid/creosote_flow")).setDensity(800).setViscosity(3000);
-		if(!FluidRegistry.registerFluid(fluidCreosote))
-			fluidCreosote = FluidRegistry.getFluid("creosote");
-		FluidRegistry.addBucketForFluid(fluidCreosote);
-		fluidPlantoil = new Fluid("plantoil", new ResourceLocation("immersiveengineering:blocks/fluid/plantoil_still"), new ResourceLocation("immersiveengineering:blocks/fluid/plantoil_flow")).setDensity(925).setViscosity(2000);
-		if(!FluidRegistry.registerFluid(fluidPlantoil))
-			fluidPlantoil = FluidRegistry.getFluid("plantoil");
-		FluidRegistry.addBucketForFluid(fluidPlantoil);
-		fluidEthanol = new Fluid("ethanol", new ResourceLocation("immersiveengineering:blocks/fluid/ethanol_still"), new ResourceLocation("immersiveengineering:blocks/fluid/ethanol_flow")).setDensity(789).setViscosity(1000);
-		if(!FluidRegistry.registerFluid(fluidEthanol))
-			fluidEthanol = FluidRegistry.getFluid("ethanol");
-		FluidRegistry.addBucketForFluid(fluidEthanol);
-		fluidBiodiesel = new Fluid("biodiesel", new ResourceLocation("immersiveengineering:blocks/fluid/biodiesel_still"), new ResourceLocation("immersiveengineering:blocks/fluid/biodiesel_flow")).setDensity(789).setViscosity(1000);
-		if(!FluidRegistry.registerFluid(fluidBiodiesel))
-			fluidBiodiesel = FluidRegistry.getFluid("biodiesel");
-		FluidRegistry.addBucketForFluid(fluidBiodiesel);
 
 		//Ore Dict
 		registerToOreDict("ore", blockOre);
@@ -632,6 +649,11 @@ public class IEContent
 		DieselHandler.registerDrillFuel(fluidBiodiesel);
 		DieselHandler.registerDrillFuel(FluidRegistry.getFluid("fuel"));
 		DieselHandler.registerDrillFuel(FluidRegistry.getFluid("diesel"));
+
+		blockFluidCreosote.setPotionEffects(new PotionEffect(IEPotions.flammable,100,0));
+		blockFluidEthanol.setPotionEffects(new PotionEffect(Potion.getPotionFromResourceLocation("nausea"),20,0));
+		blockFluidBiodiesel.setPotionEffects(new PotionEffect(IEPotions.flammable,100,1));
+		blockFluidConcrete.setPotionEffects(new PotionEffect(Potion.getPotionFromResourceLocation("slowness"),20,3, false,false));
 
 		ChemthrowerHandler.registerEffect(FluidRegistry.WATER, new ChemthrowerEffect_Extinguish());
 		ChemthrowerHandler.registerEffect(fluidCreosote, new ChemthrowerEffect_Potion(null,0, IEPotions.flammable,140,0));

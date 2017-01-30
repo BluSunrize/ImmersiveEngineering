@@ -195,6 +195,7 @@ fluid.creosote=Creosote Oil
 fluid.plantoil=Plant Oil
 fluid.ethanol=Ethanol
 fluid.biodiesel=Biodiesel
+fluid.concrete=Liquid Concrete
 
 # ITEMS
 item.immersiveengineering.metal.ingotCopper.name=Copper Ingot
@@ -878,6 +879,7 @@ immersiveengineering.potion.slippery=Slippery
 immersiveengineering.potion.conductive=Conductive
 immersiveengineering.potion.sticky=Sticky
 immersiveengineering.potion.stunned=Stunned
+immersiveengineering.potion.concreteFeet=Concrete Feet
 
 #MANUAL
 #ie.manual.entry..name=
