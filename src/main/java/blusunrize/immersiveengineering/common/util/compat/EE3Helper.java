@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.common.util.compat;
 
+import com.pahimar.ee3.init.Abilities;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 import blusunrize.immersiveengineering.common.Config;
@@ -59,10 +60,10 @@ public class EE3Helper extends IECompatModule
 		addValue(new ItemStack(IEContent.itemBullet,1,9), 213+192 +getBulletMetal(512)+(int)(silverNugget*(Config.getBoolean("hardmodeBulletRecipes")?3:1)));
 		addValue(new ItemStack(IEContent.itemBullet,1,10),213+192 +256+1);//Quartz+Glass
 
-		addValue(IEContent.fluidCreosote, 128);
-		addValue(IEContent.fluidEthanol, 400);
-		addValue(IEContent.fluidPlantoil, 200);
-		addValue(IEContent.fluidBiodiesel, 600);
+		addValue(IEContent.fluidCreosote, 0.128f);
+		addValue(IEContent.fluidEthanol, 0.4f);
+		addValue(IEContent.fluidPlantoil, 0.2f);
+		addValue(IEContent.fluidBiodiesel, 0.6f);
 
 	}
 
@@ -75,7 +76,7 @@ public class EE3Helper extends IECompatModule
 			return (int)((ingot/9f)*2);
 	}
 
-	static void addValue(Object o, int val)
+	static void addValue(Object o, float val)
 	{
 		EnergyValueRegistryProxy.addPreAssignedEnergyValue(o,val);
 	}
