@@ -146,8 +146,6 @@ public class ImmersiveEngineering
 	@Mod.EventHandler
 	public void serverStarted(FMLServerStartedEvent event)
 	{
-		if(ImmersiveNetHandler.INSTANCE==null)
-			ImmersiveNetHandler.INSTANCE = new ImmersiveNetHandler();
 		if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
 		{
 			World world = MinecraftServer.getServer().getEntityWorld();
