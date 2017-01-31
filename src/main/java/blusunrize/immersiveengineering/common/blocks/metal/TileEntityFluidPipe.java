@@ -184,7 +184,7 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidHandl
 			int f = 0;
 			for(DirectionalFluidOutput output : sorting.keySet())
 			{
-				int amount = sorting.get(output);
+				int amount = Math.min(sorting.get(output), canAccept); //fixes issue #1236 on BluSunrize/ImmersiveEngineering
 				int r = output.output.fill(output.direction.getOpposite(), Utils.copyFluidStackWithAmount(resource, amount, true), doFill);
 				if(r>50)
 					canOutputPressurized(output.output, true);
