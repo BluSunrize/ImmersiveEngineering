@@ -154,6 +154,12 @@ public class Config
 			public static int teslacoil_consumption_active = 512;
 			@Comment({"The amount of damage the Tesla Coil will do when shocking an entity"})
 			public static float teslacoil_damage = 6;
+			@Comment({"The Flux per tick any turret consumes to monitor the area"})
+			@Mapped(mapClass = Config.class, mapName = "manual_int")
+			public static int turret_consumption = 64;
+			@Comment({"The Flux per tick the chemthrower turret consumes to shoot"})
+			@Mapped(mapClass = Config.class, mapName = "manual_int")
+			public static int turret_chem_consumption = 32;
 
 			//Lights
 			@Comment({"Set this to false to disable the mob-spawn prevention of the Powered Lantern"})

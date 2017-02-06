@@ -11,6 +11,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.tileentity.TileEntity;
 
 import java.util.function.BiConsumer;
@@ -39,7 +40,9 @@ public class EnderIOHelper extends IECompatModule
 		IERecipes.addOreDictAlloyingRecipe("ingotSoularium", 1, "Gold", 200, 512, Blocks.SOUL_SAND);
 
 		ChemthrowerHandler.registerEffect("nutrient_distillation", new ChemthrowerEffect_Potion(null, 0, Potion.getPotionFromResourceLocation("nausea"), 80, 1));
-		ChemthrowerHandler.registerEffect("liquid_sunshine", new ChemthrowerEffect_Potion(null, 0, Potion.getPotionFromResourceLocation("glowing"), 200, 0));
+		ChemthrowerHandler.registerEffect("liquid_sunshine", new ChemthrowerEffect_Potion(null, 0, new PotionEffect(Potion.getPotionFromResourceLocation("glowing"), 200, 0),new PotionEffect(Potion.getPotionFromResourceLocation("levitation"), 40, 0)));
+		ChemthrowerHandler.registerEffect("cloud_seed_concentrated", new ChemthrowerEffect_Potion(null, 0, Potion.getPotionFromResourceLocation("blindness"), 40, 0));
+		ChemthrowerHandler.registerEffect("vapor_of_levity", new ChemthrowerEffect_Potion(null, 0, Potion.getPotionFromResourceLocation("levitation"), 80, 2));
 
 		ConveyorHandler.registerMagnetSupression(new BiConsumer<Entity, IConveyorTile>()
 		{

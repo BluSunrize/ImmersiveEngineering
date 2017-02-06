@@ -107,6 +107,8 @@ public class CommonProxy implements IGuiHandler
 					gui = new ContainerAssembler(player.inventory, (TileEntityAssembler) te);
 				if(ID==Lib.GUIID_AutoWorkbench && te instanceof TileEntityAutoWorkbench)
 					gui = new ContainerAutoWorkbench(player.inventory, (TileEntityAutoWorkbench) te);
+				if(ID==Lib.GUIID_Turret && te instanceof TileEntityTurret)
+					gui = new ContainerTurret(player.inventory, (TileEntityTurret) te);
 				if(gui!=null)
 					((IGuiTile)te).onGuiOpened(player, false);
 				return gui;

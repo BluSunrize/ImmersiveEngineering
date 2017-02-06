@@ -316,7 +316,7 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 		if(tile instanceof IGuiTile && hand == EnumHand.MAIN_HAND && !player.isSneaking() && ((IGuiTile) tile).canOpenGui())
 		{
 			TileEntity master = ((IGuiTile)tile).getGuiMaster();
-			if(!world.isRemote)
+			if(!world.isRemote && master!=null)
 				CommonProxy.openGuiForTile(player,(TileEntity & IGuiTile)master);
 			return true;
 		}

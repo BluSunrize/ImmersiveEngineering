@@ -436,6 +436,7 @@ public class IEContent
 		registerTile(TileEntitySampleDrill.class);
 		registerTile(TileEntityTeslaCoil.class);
 		registerTile(TileEntityFloodlight.class);
+		registerTile(TileEntityTurretChem.class);
 
 		registerTile(TileEntityConveyorBelt.class);
 		registerTile(TileEntityConveyorVertical.class);
