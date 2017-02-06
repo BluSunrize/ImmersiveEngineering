@@ -107,9 +107,9 @@ public class BlockMetalDevice1 extends BlockIETileProvider<BlockTypes_MetalDevic
 				if(!world.getBlockState(pos.add(0,hh,0)).getBlock().isReplaceable(world, pos.add(0,hh,0)))
 					return false;
 		}
-		else if(stack.getItemDamage()== BlockTypes_MetalDevice1.TESLA_COIL.getMeta())
+		else if(stack.getItemDamage()== BlockTypes_MetalDevice1.TESLA_COIL.getMeta() || stack.getItemDamage()== BlockTypes_MetalDevice1.TURRET_CHEM.getMeta())
 		{
-			if(!world.getBlockState(pos.add(0,1,0)).getBlock().isReplaceable(world, pos.add(0,1,0)))
+			if(!world.getBlockState(pos.up()).getBlock().isReplaceable(world, pos.up()))
 				return false;
 		}
 		return true;
@@ -151,6 +151,8 @@ public class BlockMetalDevice1 extends BlockIETileProvider<BlockTypes_MetalDevic
 				return new TileEntityTeslaCoil();
 			case FLOODLIGHT:
 				return new TileEntityFloodlight();
+			case TURRET_CHEM:
+				return new TileEntityTurretChem();
 
 			//		case 0://CONNECTOR_LV
 			//		case 1://CONNECTOR_MV

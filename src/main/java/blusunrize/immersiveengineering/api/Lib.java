@@ -43,6 +43,7 @@ public class Lib
 	public static final int GUIID_Refinery = GUIID_Base_Tile +8;
 	public static final int GUIID_ArcFurnace = GUIID_Base_Tile +9;
 	public static final int GUIID_AutoWorkbench = GUIID_Base_Tile +10;
+	public static final int GUIID_Turret = GUIID_Base_Tile +11;
 	//Items
 	public static final int GUIID_Base_Item = 64;
 	public static final int GUIID_Manual = GUIID_Base_Item +0;

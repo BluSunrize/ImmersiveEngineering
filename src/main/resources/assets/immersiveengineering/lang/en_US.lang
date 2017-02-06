@@ -155,6 +155,7 @@ tile.immersiveengineering.metalDevice1.fluid_pipe.name=Fluid Pipe
 tile.immersiveengineering.metalDevice1.sample_drill.name=Core Sample Drill
 tile.immersiveengineering.metalDevice1.tesla_coil.name=Tesla Coil
 tile.immersiveengineering.metalDevice1.floodlight.name=Floodlight
+tile.immersiveengineering.metalDevice1.turret_chem.name=Chemthrower Turret
 
 tile.immersiveengineering.conveyor.immersiveengineering:conveyor.name=Conveyor Belt
 tile.immersiveengineering.conveyor.immersiveengineering:dropper.name=Dropping Conveyor Belt

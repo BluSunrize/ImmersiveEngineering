@@ -15,6 +15,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -105,9 +106,9 @@ public class ChemthrowerHandler
 
 	public abstract static class ChemthrowerEffect
 	{
-		public abstract void applyToEntity(EntityLivingBase target, EntityPlayer shooter, ItemStack thrower, Fluid fluid);
+		public abstract void applyToEntity(EntityLivingBase target, @Nullable EntityPlayer shooter, ItemStack thrower, Fluid fluid);
 
-		public abstract void applyToBlock(World worldObj, RayTraceResult mop, EntityPlayer shooter, ItemStack thrower, Fluid fluid);
+		public abstract void applyToBlock(World worldObj, RayTraceResult mop, @Nullable EntityPlayer shooter, ItemStack thrower, Fluid fluid);
 	}
 	public static class ChemthrowerEffect_Damage extends ChemthrowerEffect
 	{
@@ -119,7 +120,7 @@ public class ChemthrowerHandler
 			this.damage = damage;
 		}
 		@Override
-		public void applyToEntity(EntityLivingBase target, EntityPlayer shooter, ItemStack thrower, Fluid fluid)
+		public void applyToEntity(EntityLivingBase target, @Nullable EntityPlayer shooter, ItemStack thrower, Fluid fluid)
 		{
 			if(this.source!=null)
 			{
@@ -132,7 +133,7 @@ public class ChemthrowerHandler
 			}
 		}
 		@Override
-		public void applyToBlock(World worldObj, RayTraceResult mop, EntityPlayer shooter, ItemStack thrower, Fluid fluid)
+		public void applyToBlock(World worldObj, RayTraceResult mop, @Nullable EntityPlayer shooter, ItemStack thrower, Fluid fluid)
 		{
 		}
 	}
@@ -160,7 +161,7 @@ public class ChemthrowerHandler
 		}
 
 		@Override
-		public void applyToEntity(EntityLivingBase target, EntityPlayer shooter, ItemStack thrower, Fluid fluid)
+		public void applyToEntity(EntityLivingBase target, @Nullable EntityPlayer shooter, ItemStack thrower, Fluid fluid)
 		{
 			super.applyToEntity(target, shooter, thrower, fluid);
 			if(this.potionEffects!=null && this.potionEffects.length>0)
@@ -178,10 +179,12 @@ public class ChemthrowerHandler
 	{
 		private static DamageSource getPlayerDrownDamage(EntityPlayer player)
 		{
+			if(player==null)
+				return DamageSource.drown;
 			return new EntityDamageSource(DamageSource.drown.getDamageType(),player).setDamageBypassesArmor();
 		}
 		@Override
-		public void applyToEntity(EntityLivingBase target, EntityPlayer shooter, ItemStack thrower, Fluid fluid)
+		public void applyToEntity(EntityLivingBase target, @Nullable EntityPlayer shooter, ItemStack thrower, Fluid fluid)
 		{
 			if(target.isBurning())
 				target.extinguish();
@@ -191,7 +194,7 @@ public class ChemthrowerHandler
 					target.hurtResistantTime = (int)(target.hurtResistantTime*.75);
 		}
 		@Override
-		public void applyToBlock(World worldObj, RayTraceResult mop, EntityPlayer shooter, ItemStack thrower, Fluid fluid)
+		public void applyToBlock(World worldObj, RayTraceResult mop, @Nullable EntityPlayer shooter, ItemStack thrower, Fluid fluid)
 		{
 			Block b = worldObj.getBlockState(mop.getBlockPos().offset(mop.sideHit)).getBlock();
 			if(b instanceof BlockFire)
