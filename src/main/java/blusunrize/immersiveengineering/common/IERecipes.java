@@ -312,6 +312,8 @@ public class IERecipes
 		addOredictRecipe(new ItemStack(IEContent.blockMetalDevice1,1, BlockTypes_MetalDevice1.SAMPLE_DRILL.getMeta()), "SFS","SFS","BFB", 'F',"fenceSteel",'S',"scaffoldingSteel",'B',new ItemStack(IEContent.blockMetalDecoration0,1,BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta()));
 		addOredictRecipe(new ItemStack(IEContent.blockMetalDevice1,1, BlockTypes_MetalDevice1.TESLA_COIL.getMeta()), "III"," C ","MCM", 'I',"ingotAluminum",'C',copperCoil,'M',new ItemStack(IEContent.blockMetalDevice0,1,BlockTypes_MetalDevice0.CAPACITOR_MV.getMeta()));
 		addOredictRecipe(new ItemStack(IEContent.blockMetalDevice1,1, BlockTypes_MetalDevice1.FLOODLIGHT.getMeta()), "III","PGC","ILI", 'I',"ingotIron",'P',"paneGlass",'G',"glowstone",'C',copperCoil,'L',componentIron);
+		addOredictRecipe(new ItemStack(IEContent.blockMetalDevice1,1, BlockTypes_MetalDevice1.TURRET_CHEM.getMeta()), " C ","WMW","IHI", 'C',new ItemStack(IEContent.itemChemthrower),'M',componentIron,'W',"plankTreatedWood",'I',"ingotIron",'H',new ItemStack(IEContent.blockMetalDecoration0,1,BlockTypes_MetalDecoration0.HEAVY_ENGINEERING.getMeta()));
+		addOredictRecipe(new ItemStack(IEContent.blockMetalDevice1,1, BlockTypes_MetalDevice1.TURRET_GUN.getMeta()), " R ","WMW","IHI", 'R',new ItemStack(IEContent.itemRevolver),'M',componentIron,'W',"plankTreatedWood",'I',"ingotIron",'H',new ItemStack(IEContent.blockMetalDecoration0,1,BlockTypes_MetalDecoration0.HEAVY_ENGINEERING.getMeta()));
 
 		ItemStack baseConveyor = ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID + ":conveyor");
 		addOredictRecipe(Utils.copyStackWithAmount(baseConveyor, 8), "LLL", "IRI", 'I', "ingotIron", 'R', "dustRedstone", 'L', Items.LEATHER);
