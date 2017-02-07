@@ -17,7 +17,7 @@ public class EntityRevolvershotFlare extends EntityRevolvershot
 {
 	boolean shootUp = false;
 	public int colour = -1;
-	private static final DataParameter<Integer> dataMarker_colour = EntityDataManager.createKey(EntityIEProjectile.class, DataSerializers.VARINT);
+	private static final DataParameter<Integer> dataMarker_colour = EntityDataManager.createKey(EntityRevolvershotFlare.class, DataSerializers.VARINT);
 
 	public EntityRevolvershotFlare(World world)
 	{

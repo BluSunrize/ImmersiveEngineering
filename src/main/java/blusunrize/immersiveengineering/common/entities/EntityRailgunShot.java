@@ -17,7 +17,7 @@ import net.minecraft.world.World;
 public class EntityRailgunShot extends EntityIEProjectile
 {
 	private ItemStack ammo;
-	private static final DataParameter<Optional<ItemStack>> dataMarker_ammo = EntityDataManager.createKey(EntityIEProjectile.class, DataSerializers.OPTIONAL_ITEM_STACK);
+	private static final DataParameter<Optional<ItemStack>> dataMarker_ammo = EntityDataManager.createKey(EntityRailgunShot.class, DataSerializers.OPTIONAL_ITEM_STACK);
 	private RailgunProjectileProperties ammoProperties;
 
 	public EntityRailgunShot(World world)
