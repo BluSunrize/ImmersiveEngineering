@@ -706,22 +706,6 @@ public class ClientProxy extends CommonProxy
 		for(String key : BulletHandler.registry.keySet())
 			if(BulletHandler.registry.get(key).isProperCartridge())
 				pages.add(new ManualPages.ItemDisplay(ManualHelper.getManual(), "bullets_" + key, BulletHandler.getBulletStack(key)));
-//		pages.add(new ManualPages.ItemDisplay(ManualHelper.getManual(), "bullets2", ItemBullet.getBulletStack("casull")));
-//		pages.add(new ManualPages.ItemDisplay(ManualHelper.getManual(), "bullets3", ItemBullet.getBulletStack("armorPiercing")));
-//		pages.add(new ManualPages.ItemDisplay(ManualHelper.getManual(), "bullets4", ItemBullet.getBulletStack("buckshot")));
-//		pages.add(new ManualPages.ItemDisplay(ManualHelper.getManual(), "bullets5", ItemBullet.getBulletStack("HE")));
-//		pages.add(new ManualPages.ItemDisplay(ManualHelper.getManual(), "bullets6", ItemBullet.getBulletStack("silver")));
-//		pages.add(new ManualPages.ItemDisplay(ManualHelper.getManual(), "bullets7", ItemBullet.getBulletStack("dragonsbreath")));
-//		pages.add(new ManualPages.ItemDisplay(ManualHelper.getManual(), "bullets8", ItemBullet.getBulletStack("potion")));
-//		pages.add(new ManualPages.ItemDisplay(ManualHelper.getManual(), "bullets8", ItemBullet.getBulletStack("potion")));
-//		ItemBullet.getBulletStack("flare")));
-//		ItemBullet.getBulletStack("homing")));
-//		ItemBullet.getBulletStack("wolfpack")));
-//		if(Config.getBoolean("botaniaBullets"))
-//		{
-//			pages.add(new ManualPages.ItemDisplay(ManualHelper.getManual(), "bulletsBotania0", new ItemStack(IEContent.itemBullet,1,7)));
-//			pages.add(new ManualPages.ItemDisplay(ManualHelper.getManual(), "bulletsBotania1", new ItemStack(IEContent.itemBullet,1,8)));
-//		}
 		ManualHelper.addEntry("bullets", ManualHelper.CAT_MACHINES, pages.toArray(new IManualPage[pages.size()]));
 		ManualHelper.addEntry("skyhook", ManualHelper.CAT_MACHINES,
 				new ManualPages.CraftingMulti(ManualHelper.getManual(), "skyhook0", new ItemStack(IEContent.itemSkyhook), new ItemStack(IEContent.itemMaterial, 1, 9)),
@@ -735,6 +719,8 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.Text(ManualHelper.getManual(), "railgun1"),
 				new ManualPages.Crafting(ManualHelper.getManual(), "railgun2", new ItemStack(IEContent.itemToolUpgrades,1,9)),
 				new ManualPages.Crafting(ManualHelper.getManual(), "railgun3", new ItemStack(IEContent.itemToolUpgrades,1,8)));
+		ManualHelper.addEntry("razorwire", ManualHelper.CAT_MACHINES,
+				new ManualPages.CraftingMulti(ManualHelper.getManual(), "razorwire0", new ItemStack(IEContent.blockMetalDecoration2,1,BlockTypes_MetalDecoration2.RAZOR_WIRE.getMeta())));
 
 		ManualHelper.addEntry("improvedBlastfurnace", ManualHelper.CAT_HEAVYMACHINES,
 				new ManualPages.Crafting(ManualHelper.getManual(), "improvedBlastfurnace0", new ItemStack(IEContent.blockStoneDecoration,1,BlockTypes_StoneDecoration.BLASTBRICK_REINFORCED.getMeta())),
