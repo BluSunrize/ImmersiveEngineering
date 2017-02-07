@@ -190,6 +190,12 @@ public class TileEntityWoodenCrate extends TileEntityIEBase implements IIEInvent
 		}
 	}
 	@Override
+	public boolean preventInventoryDrop()
+	{
+		return true;
+	}
+
+	@Override
 	public int getComparatorInputOverride()
 	{
 		return Utils.calcRedstoneFromInventory(this);

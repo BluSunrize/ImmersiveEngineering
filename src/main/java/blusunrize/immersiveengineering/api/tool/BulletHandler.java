@@ -10,6 +10,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 
+import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Function;
 
@@ -58,7 +59,7 @@ public class BulletHandler
 	public interface IBullet
 	{
 		/**
-		 * @return whether this cartridge should appear as an item and should be fired from revolver. Return false if this is a bullet hte player can't get access to
+		 * @return whether this cartridge should appear as an item and should be fired from revolver. Return false if this is a bullet the player can't get access to
 		 */
 		default boolean isProperCartridge()
 		{
@@ -70,11 +71,11 @@ public class BulletHandler
 			return baseName;
 		}
 
-		default void addTooltip(ItemStack stack, EntityPlayer player, List<String> list, boolean advanced)
+		default void addTooltip(ItemStack stack, @Nullable EntityPlayer player, List<String> list, boolean advanced)
 		{
 		}
 
-		default int getProjectileCount(EntityPlayer shooter, ItemStack cartridge)
+		default int getProjectileCount(@Nullable EntityPlayer shooter, ItemStack cartridge)
 		{
 			return 1;
 		}
@@ -82,19 +83,19 @@ public class BulletHandler
 		/**
 		 * @param shooter
 		 * @param cartridge
-		 * @param protetile
+		 * @param projectile
 		 * @param charged   whether the revolver has the electron tube upgrade
 		 * @return the given or a custom entity
 		 */
-		default Entity getProjectile(EntityPlayer shooter, ItemStack cartridge, Entity protetile, boolean charged)
+		default Entity getProjectile(@Nullable EntityPlayer shooter, ItemStack cartridge, Entity projectile, boolean charged)
 		{
-			return protetile;
+			return projectile;
 		}
 
 		/**
 		 * called when the bullet hits a target
 		 */
-		void onHitTarget(World world, RayTraceResult target, EntityLivingBase shooter, Entity projectile, boolean headshot);
+		void onHitTarget(World world, RayTraceResult target, @Nullable EntityLivingBase shooter, Entity projectile, boolean headshot);
 
 		/**
 		 * @return the casing left when fired. Can return the static ItemStacks in BulletHandler
@@ -110,6 +111,15 @@ public class BulletHandler
 		 * @return the colour applied to the given layer
 		 */
 		int getColour(ItemStack stack, int layer);
+
+		/**
+		 * @return whether this cartridge should be allowed to be placed in, and used from a turret.<br>
+		 * Bullets that rely on a player using them should return false, since turrets parse null for a player
+		 */
+		default boolean isValidForTurret()
+		{
+			return true;
+		}
 	}
 
 	public static class DamagingBullet implements IBullet
@@ -145,7 +155,7 @@ public class BulletHandler
 		}
 
 		@Override
-		public void onHitTarget(World world, RayTraceResult target, EntityLivingBase shooter, Entity projectile, boolean headshot)
+		public void onHitTarget(World world, RayTraceResult target, @Nullable EntityLivingBase shooter, Entity projectile, boolean headshot)
 		{
 			if(!world.isRemote && target.entityHit != null && damageSourceGetter != null)
 				if(target.entityHit.attackEntityFrom(damageSourceGetter.apply(new Entity[]{projectile, shooter, target.entityHit}), getDamage(headshot)))
@@ -173,6 +183,12 @@ public class BulletHandler
 		public int getColour(ItemStack stack, int layer)
 		{
 			return 0xffffffff;
+		}
+
+		@Override
+		public boolean isValidForTurret()
+		{
+			return true;
 		}
 	}
 }

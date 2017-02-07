@@ -8,6 +8,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
+import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import com.google.common.collect.Lists;
 import net.minecraft.block.state.IBlockState;
@@ -27,12 +28,14 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public abstract class TileEntityTurret extends TileEntityIEBase implements ITickable, IIEInternalFluxHandler, IIEInventory, IHasDummyBlocks, ITileDrop, IDirectionalTile, IBlockBounds, IGuiTile, IHammerInteraction, IHasObjProperty
@@ -46,7 +49,7 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 	public List<String> targetList = new ArrayList<>();
 	public boolean whitelist = false;
 	public boolean attackAnimals = false;
-	public boolean attackPlayers = true;
+	public boolean attackPlayers = false;
 	public boolean attackNeutrals = false;
 
 	protected int tick = 0;
@@ -98,36 +101,47 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 			markContainingBlockForUpdate(null);
 
 		int energy = IEConfig.Machines.turret_consumption;
-		if(energyStorage.extractEnergy(energy, true)==energy)
+		if(worldObj.isBlockIndirectlyGettingPowered(getPos())==0^redstoneControlInverted)
 		{
-			energyStorage.extractEnergy(energy, false);
-			if(target==null||target.isDead||worldObj.getEntityByID(target.getEntityId())==null||target.getHealth() <= 0)
+			if(energyStorage.extractEnergy(energy, true)==energy)
 			{
-				target = getTarget();
-				if(target!=null)
+				energyStorage.extractEnergy(energy, false);
+				if(target==null||target.isDead||worldObj.getEntityByID(target.getEntityId())==null||target.getHealth() <= 0||!canSeeEntity(target))
 				{
-					this.markDirty();
-					markContainingBlockForUpdate(null);
+					target = getTarget();
+					if(target!=null)
+					{
+						this.markDirty();
+						markContainingBlockForUpdate(null);
+					}
 				}
-			}
 
-			//has target, Redstone control check and has power+ammo
-			if(target!=null && (worldObj.isBlockIndirectlyGettingPowered(getPos())>0^redstoneControlInverted) && canActivate())
-			{
-				tick++;
-				int chargeup = getChargeupTicks();
-				if(tick==chargeup)
-					this.activate();
-				else if(tick > chargeup)
+				//has target, Redstone control check and has power+ammo
+				if(target!=null&&canActivate())
 				{
-					if(loopActivation())
+					tick++;
+					int chargeup = getChargeupTicks();
+					if(tick==chargeup)
 						this.activate();
-					else if(tick==chargeup+getActiveTicks())
-						tick = 0;
-				}
-			} else
-				tick = 0;
+					else if(tick > chargeup)
+					{
+						if(loopActivation())
+							this.activate();
+						else if(tick==chargeup+getActiveTicks())
+							tick = 0;
+					}
+				} else
+					tick = 0;
+			}
 		}
+		else if(target!=null)
+			target=null;
+	}
+
+	private boolean canSeeEntity(EntityLivingBase entity)
+	{
+		return Utils.rayTraceForFirst(new Vec3d(getPos().getX()+.5, getPos().getY()+1.375, getPos().getZ()+.5), new Vec3d(entity.posX, entity.posY+entity.getEyeHeight(), entity.posZ), worldObj, Collections.singleton(getPos().up()))==null;
+//		return this.worldObj.rayTraceBlocks(, false, true, false)==null;
 	}
 
 	private EntityLivingBase getTarget()
@@ -139,7 +153,7 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 		EntityLivingBase target = null;
 		for(EntityLivingBase entity : list)
 		{
-			if(entity==null || entity.isDead)
+			if(entity==null || entity.isDead || entity.getHealth()<=0 || !canSeeEntity(entity))
 				continue;
 			//Continue if blacklist and name is in list, or whitelist and name is not in list
 			if(whitelist ^ isListedName(targetList, entity.getName()))
@@ -153,7 +167,7 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 				continue;
 			if(entity instanceof EntityPlayer && !attackPlayers)
 				continue;
-			if(!entity.isCreatureType(EnumCreatureType.MONSTER, false) && !attackNeutrals)
+			if(!(entity instanceof EntityPlayer) && !entity.isCreatureType(EnumCreatureType.MONSTER, false) && !attackNeutrals)
 				continue;
 
 			if(target==null || entity.getDistanceSq(getPos())<target.getDistanceSq(getPos()))
@@ -314,7 +328,6 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 	@Override
 	public void doGraphicalUpdates(int slot)
 	{
-
 	}
 
 	@Override
@@ -332,7 +345,7 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 	{
 		if(!dummy)
 			return this;
-		TileEntity te = worldObj.getTileEntity(getPos().up());
+		TileEntity te = worldObj.getTileEntity(getPos().down());
 		if(te instanceof TileEntityTurret)
 			return te;
 		return null;
@@ -404,7 +417,7 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 
 		NBTTagCompound tag = new NBTTagCompound();
 		//Only writing values when they are different from defaults
-		if(player==null || !player.getName().equalsIgnoreCase(turret.owner))
+		if(turret.owner!=null && (player==null || !player.getName().equalsIgnoreCase(turret.owner)))
 			tag.setString("owner", turret.owner);
 		if(turret.targetList.size()!=1 || !isListedName(turret.targetList, turret.owner))
 		{

@@ -11,6 +11,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSource;
 import net.minecraft.util.EntityDamageSourceIndirect;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -66,42 +68,67 @@ public class IEDamageSources
 			return dmg>0;
 		}
 	}
+	public static class TurretDamageSource extends IEDamageSource
+	{
+		public TurretDamageSource(String damageTypeIn)
+		{
+			super(damageTypeIn);
+		}
+		@Override
+		public ITextComponent getDeathMessage(EntityLivingBase entityLivingBaseIn)
+		{
+			String s = "death.attack."+this.damageType+".turret";
+			return new TextComponentTranslation(s, entityLivingBaseIn.getDisplayName());
+		}
+	}
 
 	public static DamageSource causeCasullDamage(EntityRevolvershot shot, Entity shooter)
 	{
+		if(shooter==null)
+			return new TurretDamageSource(Lib.DMG_RevolverCasull);
 		return new IEDamageSource_Indirect(Lib.DMG_RevolverCasull, shot, shooter);
 	}
 	public static DamageSource causePiercingDamage(EntityRevolvershot shot, Entity shooter)
 	{
+		if(shooter==null)
+			return new TurretDamageSource(Lib.DMG_RevolverAP).setDamageBypassesArmor();
 		return new IEDamageSource_Indirect(Lib.DMG_RevolverAP, shot, shooter).setDamageBypassesArmor();
 	}
 	public static DamageSource causeBuckshotDamage(EntityRevolvershot shot, Entity shooter)
 	{
+		if(shooter==null)
+			return new TurretDamageSource(Lib.DMG_RevolverBuck);
 		return new IEDamageSource_Indirect(Lib.DMG_RevolverBuck, shot, shooter);
 	}
 	public static DamageSource causeDragonsbreathDamage(EntityRevolvershot shot, Entity shooter)
 	{
+		if(shooter==null)
+			return new TurretDamageSource(Lib.DMG_RevolverDragon).setFireDamage();
 		return new IEDamageSource_Indirect(Lib.DMG_RevolverDragon, shot, shooter).setFireDamage();
 	}
 	public static DamageSource causeHomingDamage(EntityRevolvershot shot, Entity shooter)
 	{
+		if(shooter==null)
+			return new TurretDamageSource(Lib.DMG_RevolverHoming);
 		return new IEDamageSource_Indirect(Lib.DMG_RevolverHoming, shot, shooter);
 	}
 	public static DamageSource causeWolfpackDamage(EntityRevolvershot shot, Entity shooter)
 	{
+		if(shooter==null)
+			return new TurretDamageSource(Lib.DMG_RevolverWolfpack);
 		return new IEDamageSource_Indirect(Lib.DMG_RevolverWolfpack, shot, shooter);
 	}
 	public static DamageSource causeSilverDamage(EntityRevolvershot shot, Entity shooter)
 	{
-//		EntityDamageSourceIndirectSilver silver = new EntityDamageSourceIndirectSilver(shot, shooter);
-//		silver.setProjectile();
-//		silver.damageType = Lib.DMG_RevolverSilver;
-//		return silver;
+		if(shooter==null)
+			return new TurretDamageSource(Lib.DMG_RevolverSilver);
 		return new IEDamageSource_Indirect(Lib.DMG_RevolverSilver, shot, shooter);
 	}
 
 	public static DamageSource causePotionDamage(EntityRevolvershot shot, Entity shooter)
 	{
+		if(shooter==null)
+			return new TurretDamageSource(Lib.DMG_RevolverPotion);
 		return new IEDamageSource_Indirect(Lib.DMG_RevolverPotion, shot, shooter);
 	}
 

@@ -1123,7 +1123,14 @@ public class ClientUtils
 		drawColouredRect(x+8-w/2  , y+8+h/2  , w+1,1, (alpha<<24)+0xffffff);
 		drawColouredRect(x+8+w/2  , y+8-h/2  , 1,h, (alpha<<24)+0xffffff);
 	}
-
+	public static void drawDarkSlot(int x, int y, int w, int h)
+	{
+		drawColouredRect(x+8-w/2  , y+8-h/2-1, w,1, 0x77222222);
+		drawColouredRect(x+8-w/2-1, y+8-h/2-1, 1,h+1, 0x77222222);
+		drawColouredRect(x+8-w/2  , y+8-h/2  , w,h, 0x77111111);
+		drawColouredRect(x+8-w/2  , y+8+h/2  , w+1,1, 0x77999999);
+		drawColouredRect(x+8+w/2  , y+8-h/2  , 1,h, 0x77999999);
+	}
 
 	public static void renderToolTip(ItemStack stack, int x, int y)
 	{
