@@ -26,8 +26,8 @@ public class EntityIEExplosive extends EntityTNTPrimed
 	public IBlockState block;
 	String name;
 
-	private static final DataParameter<Optional<IBlockState>> dataMarker_block = EntityDataManager.createKey(EntityIEProjectile.class, DataSerializers.OPTIONAL_BLOCK_STATE);
-	private static final DataParameter<Integer> dataMarker_fuse = EntityDataManager.createKey(EntityIEProjectile.class, DataSerializers.VARINT);
+	private static final DataParameter<Optional<IBlockState>> dataMarker_block = EntityDataManager.createKey(EntityIEExplosive.class, DataSerializers.OPTIONAL_BLOCK_STATE);
+	private static final DataParameter<Integer> dataMarker_fuse = EntityDataManager.createKey(EntityIEExplosive.class, DataSerializers.VARINT);
 
 	public EntityIEExplosive(World world)
 	{

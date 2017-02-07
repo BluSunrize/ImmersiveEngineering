@@ -48,7 +48,7 @@ public class EntityRevolvershot extends Entity
 	public boolean bulletElectro = false;
 	public ItemStack bulletPotion = null;
 
-	private static final DataParameter<String> dataMarker_shooter = EntityDataManager.createKey(EntityIEProjectile.class, DataSerializers.STRING);
+	private static final DataParameter<String> dataMarker_shooter = EntityDataManager.createKey(EntityRevolvershot.class, DataSerializers.STRING);
 
 	public EntityRevolvershot(World world)
 	{

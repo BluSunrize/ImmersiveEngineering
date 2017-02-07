@@ -23,11 +23,11 @@ import net.minecraft.world.World;
 
 public class EntityFluorescentTube extends Entity implements ITeslaEntity
 {
-	private static final DataParameter<Boolean> dataMarker_active = EntityDataManager.createKey(EntityChemthrowerShot.class, DataSerializers.BOOLEAN);
-	private static final DataParameter<Float> dataMarker_r = EntityDataManager.createKey(EntityChemthrowerShot.class, DataSerializers.FLOAT);
-	private static final DataParameter<Float> dataMarker_g = EntityDataManager.createKey(EntityChemthrowerShot.class, DataSerializers.FLOAT);
-	private static final DataParameter<Float> dataMarker_b = EntityDataManager.createKey(EntityChemthrowerShot.class, DataSerializers.FLOAT);
-	private static final DataParameter<Float> dataMarker_angleHorizontal = EntityDataManager.createKey(EntityChemthrowerShot.class, DataSerializers.FLOAT);
+	private static final DataParameter<Boolean> dataMarker_active = EntityDataManager.createKey(EntityFluorescentTube.class, DataSerializers.BOOLEAN);
+	private static final DataParameter<Float> dataMarker_r = EntityDataManager.createKey(EntityFluorescentTube.class, DataSerializers.FLOAT);
+	private static final DataParameter<Float> dataMarker_g = EntityDataManager.createKey(EntityFluorescentTube.class, DataSerializers.FLOAT);
+	private static final DataParameter<Float> dataMarker_b = EntityDataManager.createKey(EntityFluorescentTube.class, DataSerializers.FLOAT);
+	private static final DataParameter<Float> dataMarker_angleHorizontal = EntityDataManager.createKey(EntityFluorescentTube.class, DataSerializers.FLOAT);
 	
 	private int timer = 0;
 	public boolean active = false;
