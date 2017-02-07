@@ -1,3 +1,9 @@
+#####Version 0.10-56
+- fixed duplication of stacks of items dropped onto the bottling machine
+- fixed EntityDataManager registration (thanks mconwa01)
+- fixed manual entry of the fluidpump citing the use of "wirecutters" instead of "hammer"
+- fixed manual typo in the fermenter entry
+
 #####Version 0.10-55 - BUILT
 - re-added the Bottling Machine! It bottles things up, like fluids and emotions!
 - added indicative scrollbars to the manual
