@@ -1,4 +1,4 @@
-#####Version 0.10-56
+#####Version 0.10-56 - BUILT
 - fixed duplication of stacks of items dropped onto the bottling machine
 - fixed EntityDataManager registration (thanks mconwa01)
 - fixed manual entry of the fluidpump citing the use of "wirecutters" instead of "hammer"
