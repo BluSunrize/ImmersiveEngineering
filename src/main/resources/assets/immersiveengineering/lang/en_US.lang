@@ -156,6 +156,7 @@ tile.immersiveengineering.metalDevice1.sample_drill.name=Core Sample Drill
 tile.immersiveengineering.metalDevice1.tesla_coil.name=Tesla Coil
 tile.immersiveengineering.metalDevice1.floodlight.name=Floodlight
 tile.immersiveengineering.metalDevice1.turret_chem.name=Chemthrower Turret
+tile.immersiveengineering.metalDevice1.turret_gun.name=Gun Turret
 
 tile.immersiveengineering.conveyor.immersiveengineering:conveyor.name=Conveyor Belt
 tile.immersiveengineering.conveyor.immersiveengineering:dropper.name=Dropping Conveyor Belt
@@ -726,6 +727,14 @@ gui.immersiveengineering.config.earmuffs.soundcategory.player=Players
 gui.immersiveengineering.config.earmuffs.soundcategory.ambient=Ambient
 gui.immersiveengineering.config.earmuffs.noisegate=Noisegate
 
+gui.immersiveengineering.config.turret.add=Add
+gui.immersiveengineering.config.turret.blacklist=Blacklist
+gui.immersiveengineering.config.turret.animals=Animals
+gui.immersiveengineering.config.turret.players=Players
+gui.immersiveengineering.config.turret.neutrals=Neutrals
+gui.immersiveengineering.config.turret.ignite_fluid=Ignite Fluid
+gui.immersiveengineering.config.turret.expel_casings_on=Expel Casings
+gui.immersiveengineering.config.turret.expel_casings_off=Keep Casings
 
 #CHAT
 chat.immersiveengineering.warning.wrongCable=You cannot attach this wire here
@@ -793,13 +802,30 @@ recipe.immersiveengineering.hammerCrushing=Crushing
 
 #DEATH
 death.attack.ieRevolver_casull=%1$s was shot by %2$s
+death.attack.ieRevolver_casull.item=%1$s was shot by %2$s using %3$s
+death.attack.ieRevolver_casull.turret=%1$s was shot by a turret
 death.attack.ieRevolver_armorPiercing=%1$s was shot by %2$s
+death.attack.ieRevolver_armorPiercing.item=%1$s was shot by %2$s using %3$s
+death.attack.ieRevolver_armorPiercing.item=%1$s was shot by a turret
 death.attack.ieRevolver_buckshot=%1$s was shotgunned by %2$s
+death.attack.ieRevolver_buckshot.item=%1$s was shotgunned by %2$s using %3$s
+death.attack.ieRevolver_buckshot.item=%1$s was shotgunned by a turret
 death.attack.ieRevolver_dragonsbreath=%1$s was incinerated by %2$s
+death.attack.ieRevolver_dragonsbreath.item=%1$s was incinerated by %2$s using %3$s
+death.attack.ieRevolver_dragonsbreath.item=%1$s was incinerated by a turret
 death.attack.ieRevolver_homing=%1$s was shot by %2$s's homing bullet
+death.attack.ieRevolver_homing.item=%1$s was shot by %2$s's homing bullet fired from %3$s
+death.attack.ieRevolver_homing.item=%1$s was shot by a turret's homing bullet
 death.attack.ieRevolver_wolfpack=%1$s was shredded by %2$s's Wolfpack Rounds
+death.attack.ieRevolver_wolfpack.item=%1$s was shredded by %2$s's Wolfpack Rounds fired from %3$s
+death.attack.ieRevolver_wolfpack.item=%1$s was shredded by a turret's Wolfpack Rounds
 death.attack.ieRevolver_silver=%1$s was purified by %2$s's silver bullet
+death.attack.ieRevolver_silver.item=%1$s was purified by %2$s's silver bullet fired from %3$s
+death.attack.ieRevolver_silver.turret=%1$s was purified by a turret's silver bullet
 death.attack.ieRevolver_potion=%1$s was doused by %2$s's phial shot
+death.attack.ieRevolver_potion.item=%1$s was doused by %2$s's phial shot fired from %3$s
+death.attack.ieRevolver_potion.turret=%1$s was doused by a turret's phial shot
+
 death.attack.ieCrushed=%1$s was crushed
 death.attack.ieAcid=%1$s was dissolved in acid
 death.attack.ieRazorWire=%1$s was diced by razorwire

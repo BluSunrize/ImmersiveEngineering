@@ -50,6 +50,8 @@ public class BlockMetalDevice1 extends BlockIETileProvider<BlockTypes_MetalDevic
 		this.setNotNormalBlock(BlockTypes_MetalDevice1.SAMPLE_DRILL.getMeta());
 		this.setNotNormalBlock(BlockTypes_MetalDevice1.TESLA_COIL.getMeta());
 		this.setNotNormalBlock(BlockTypes_MetalDevice1.FLOODLIGHT.getMeta());
+		this.setNotNormalBlock(BlockTypes_MetalDevice1.TURRET_CHEM.getMeta());
+		this.setNotNormalBlock(BlockTypes_MetalDevice1.TURRET_GUN.getMeta());
 	}
 
 	@Override
@@ -121,6 +123,8 @@ public class BlockMetalDevice1 extends BlockIETileProvider<BlockTypes_MetalDevic
 		TileEntity tile = world.getTileEntity(pos);
 		if(tile instanceof TileEntityTeslaCoil)
 			return !((TileEntityTeslaCoil)tile).dummy;
+		else if(tile instanceof TileEntityTurret)
+			return !((TileEntityTurret)tile).dummy;
 		return !(tile instanceof TileEntityElectricLantern || tile instanceof TileEntityChargingStation);
 	}
 
@@ -153,6 +157,8 @@ public class BlockMetalDevice1 extends BlockIETileProvider<BlockTypes_MetalDevic
 				return new TileEntityFloodlight();
 			case TURRET_CHEM:
 				return new TileEntityTurretChem();
+			case TURRET_GUN:
+				return new TileEntityTurretGun();
 
 			//		case 0://CONNECTOR_LV
 			//		case 1://CONNECTOR_MV

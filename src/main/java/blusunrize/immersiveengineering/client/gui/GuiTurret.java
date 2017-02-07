@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonCheckbox;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE;
@@ -8,12 +9,14 @@ import blusunrize.immersiveengineering.client.gui.elements.GuiButtonState;
 import blusunrize.immersiveengineering.client.gui.elements.GuiReactiveList;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTurret;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTurretChem;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTurretGun;
 import blusunrize.immersiveengineering.common.gui.ContainerTurret;
 import blusunrize.immersiveengineering.common.util.network.MessageTileSync;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import org.lwjgl.input.Keyboard;
@@ -47,14 +50,17 @@ public class GuiTurret extends GuiContainer
 
 		this.buttonList.clear();
 		this.buttonList.add(new GuiReactiveList(this, 0, guiLeft+10,guiTop+10, 60,72, tile.targetList.toArray(new String[tile.targetList.size()])).setPadding(0,0,2,2).setFormatting(1,false));
-		this.buttonList.add(new GuiButtonIE(1, guiLeft+74,guiTop+84, 24,16, "Add", "immersiveengineering:textures/gui/turret.png", 176,65));
-		this.buttonList.add(new GuiButtonCheckbox(2, guiLeft+74,guiTop+10, "Blacklist", !tile.whitelist));
-		this.buttonList.add(new GuiButtonCheckbox(3, guiLeft+74,guiTop+26, "Animals", tile.attackAnimals));
-		this.buttonList.add(new GuiButtonCheckbox(4, guiLeft+74,guiTop+42, "Players", tile.attackPlayers));
-		this.buttonList.add(new GuiButtonCheckbox(5, guiLeft+74,guiTop+58, "Neutrals", tile.attackNeutrals));
+		this.buttonList.add(new GuiButtonIE(1, guiLeft+74,guiTop+84, 24,16, I18n.format(Lib.GUI_CONFIG+"turret.add"), "immersiveengineering:textures/gui/turret.png", 176,65));
+		this.buttonList.add(new GuiButtonCheckbox(2, guiLeft+74,guiTop+10, I18n.format(Lib.GUI_CONFIG+"turret.blacklist"), !tile.whitelist));
+		this.buttonList.add(new GuiButtonCheckbox(3, guiLeft+74,guiTop+26, I18n.format(Lib.GUI_CONFIG+"turret.animals"), tile.attackAnimals));
+		this.buttonList.add(new GuiButtonCheckbox(4, guiLeft+74,guiTop+42, I18n.format(Lib.GUI_CONFIG+"turret.players"), tile.attackPlayers));
+		this.buttonList.add(new GuiButtonCheckbox(5, guiLeft+74,guiTop+58, I18n.format(Lib.GUI_CONFIG+"turret.neutrals"), tile.attackNeutrals));
 
 		if(tile instanceof TileEntityTurretChem)
 			this.buttonList.add(new GuiButtonState(6, guiLeft+135,guiTop+68, 14,14, null, ((TileEntityTurretChem)tile).ignite, "immersiveengineering:textures/gui/turret.png",176,51, 0));
+		else if(tile instanceof TileEntityTurretGun)
+			this.buttonList.add(new GuiButtonState(6, guiLeft+134,guiTop+31, 16,16, null, ((TileEntityTurretGun)tile).expelCasings, "immersiveengineering:textures/gui/turret.png",176,81, 0));
+
 	}
 	@Override
 	protected void actionPerformed(GuiButton button)
@@ -104,6 +110,11 @@ public class GuiTurret extends GuiContainer
 			((TileEntityTurretChem)tile).ignite = ((GuiButtonState)button).state;
 			tag.setBoolean("ignite", ((TileEntityTurretChem)tile).ignite);
 		}
+		else if(button.id==6 && tile instanceof TileEntityTurretGun)
+		{
+			((TileEntityTurretGun)tile).expelCasings = ((GuiButtonState)button).state;
+			tag.setBoolean("expelCasings", ((TileEntityTurretGun)tile).expelCasings);
+		}
 		if(!tag.hasNoTags())
 		{
 			ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(tile, tag));
@@ -127,7 +138,12 @@ public class GuiTurret extends GuiContainer
 		{
 			ClientUtils.handleGuiTank(((TileEntityTurretChem)tile).tank, guiLeft+134,guiTop+16,16,47, 196,0,20,51, mx,my, "immersiveengineering:textures/gui/turret.png", tooltip);
 			if(mx>=guiLeft+135&&mx<guiLeft+149 && my>=guiTop+68&&my<guiTop+82)
-				tooltip.add("Ignite Fluid");
+				tooltip.add(I18n.format(Lib.GUI_CONFIG+"turret.ignite_fluid"));
+		}
+		else if(tile instanceof TileEntityTurretGun)
+		{
+			if(mx>=guiLeft+134&&mx<guiLeft+150 && my>=guiTop+31&&my<guiTop+47)
+				tooltip.add(I18n.format(Lib.GUI_CONFIG+"turret.expel_casings_"+(((TileEntityTurretGun)tile).expelCasings?"on":"off")));
 		}
 		if(!tooltip.isEmpty())
 		{
@@ -145,43 +161,18 @@ public class GuiTurret extends GuiContainer
 		this.drawTexturedModalRect(guiLeft,guiTop, 0, 0, xSize, ySize);
 
 		int stored = (int)(46*(tile.getEnergyStored(null)/(float)tile.getMaxEnergyStored(null)));
-		ClientUtils.drawGradientRect(guiLeft+158,guiTop+22+(46-stored), guiLeft+165,guiTop+68, 0xffb51500, 0xff600b00);
+		ClientUtils.drawGradientRect(guiLeft+158,guiTop+16+(46-stored), guiLeft+165,guiTop+62, 0xffb51500, 0xff600b00);
 
 		if(tile instanceof TileEntityTurretChem)
 		{
 			this.drawTexturedModalRect(guiLeft+132,guiTop+14, 176,0, 20,51);
 			ClientUtils.handleGuiTank(((TileEntityTurretChem)tile).tank, guiLeft+134,guiTop+16,16,47, 196,0,20,51, mx,my, "immersiveengineering:textures/gui/turret.png",null);
 		}
-
-//		for(int i=0; i<tile.patterns.length; i++)
-//			if(tile.inventory[18+i]==null && tile.patterns[i].inv[9]!=null)
-//			{
-//				ItemStack stack = tile.patterns[i].inv[9];
-//				GL11.glPushMatrix();
-//				GL11.glTranslatef(0.0F, 0.0F, 32.0F);
-//				GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-//				RenderHelper.disableStandardItemLighting();
-//				this.zLevel = 200.0F;
-//				itemRender.zLevel = 200.0F;
-//				FontRenderer font = null;
-//				if(stack!=null)
-//					font = stack.getItem().getFontRenderer(stack);
-//				if(font==null)
-//					font = fontRendererObj;
-//				itemRender.renderItemAndEffectIntoGUI(stack, guiLeft+27+i*58, guiTop+64);
-//				itemRender.renderItemOverlayIntoGUI(font, stack, guiLeft+27+i*58, guiTop+64, TextFormatting.GRAY.toString()+stack.stackSize);
-//				this.zLevel = 0.0F;
-//				itemRender.zLevel = 0.0F;
-//
-//
-//				GL11.glDisable(GL11.GL_LIGHTING);
-//				GL11.glDisable(GL11.GL_DEPTH_TEST);
-//				ClientUtils.drawColouredRect(guiLeft+27+i*58, guiTop+64, 16,16, 0x77444444);
-//				GL11.glEnable(GL11.GL_LIGHTING);
-//				GL11.glEnable(GL11.GL_DEPTH_TEST);
-//
-//				GL11.glPopMatrix();
-//			}
+		else if(tile instanceof TileEntityTurretGun)
+		{
+			ClientUtils.drawDarkSlot(guiLeft+134,guiTop+13, 16,16);
+			ClientUtils.drawDarkSlot(guiLeft+134,guiTop+49, 16,16);
+		}
 	}
 
 	@Override

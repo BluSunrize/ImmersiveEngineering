@@ -174,6 +174,8 @@ public class IEBlockInterfaces
 		ItemStack getTileDrop(EntityPlayer player, IBlockState state);
 
 		void readOnPlacement(@Nullable EntityLivingBase placer, ItemStack stack);
+
+		default boolean preventInventoryDrop() { return false; }
 	}
 	public interface IAdditionalDrops
 	{

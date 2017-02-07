@@ -107,11 +107,11 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 			}
 
 			@Override
-			public Entity getProjectile(EntityPlayer shooter, ItemStack cartridge, Entity protetile, boolean electro)
+			public Entity getProjectile(EntityPlayer shooter, ItemStack cartridge, Entity projectile, boolean electro)
 			{
-				((EntityRevolvershot) protetile).setTickLimit(10);
-				protetile.setFire(3);
-				return protetile;
+				((EntityRevolvershot) projectile).setTickLimit(10);
+				projectile.setFire(3);
+				return projectile;
 			}
 		});
 
@@ -301,10 +301,10 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 		}
 
 		@Override
-		public Entity getProjectile(EntityPlayer shooter, ItemStack cartridge, Entity protetile, boolean electro)
+		public Entity getProjectile(EntityPlayer shooter, ItemStack cartridge, Entity projectile, boolean electro)
 		{
-			((EntityRevolvershot) protetile).bulletPotion = ItemNBTHelper.getItemStack(cartridge, "potion");
-			return protetile;
+			((EntityRevolvershot) projectile).bulletPotion = ItemNBTHelper.getItemStack(cartridge, "potion");
+			return projectile;
 		}
 
 		@Override
@@ -397,13 +397,12 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 		}
 
 		@Override
-		public Entity getProjectile(EntityPlayer shooter, ItemStack cartridge, Entity protetile, boolean electro)
+		public Entity getProjectile(EntityPlayer shooter, ItemStack cartridge, Entity projectile, boolean electro)
 		{
-			Vec3d vec = shooter.getLookVec();
-			EntityRevolvershotFlare flare = new EntityRevolvershotFlare(shooter.worldObj, shooter, vec.xCoord * 1.5, vec.yCoord * 1.5, vec.zCoord * 1.5, this, cartridge);
-			flare.motionX = vec.xCoord;
-			flare.motionY = vec.yCoord;
-			flare.motionZ = vec.zCoord;
+			EntityRevolvershotFlare flare =  shooter!=null?new EntityRevolvershotFlare(projectile.worldObj, shooter, projectile.motionX*1.5,projectile.motionY*1.5,projectile.motionZ*1.5, this, cartridge): new EntityRevolvershotFlare(projectile.worldObj, projectile.posX,projectile.posY,projectile.posZ, 0,0,0, this);
+			flare.motionX = projectile.motionX;
+			flare.motionY = projectile.motionY;
+			flare.motionZ = projectile.motionZ;
 			flare.bulletElectro = electro;
 			flare.colour = this.getColour(cartridge, 1);
 			flare.setColourSynced();
@@ -464,13 +463,12 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 		}
 
 		@Override
-		public Entity getProjectile(EntityPlayer shooter, ItemStack cartridge, Entity protetile, boolean electro)
+		public Entity getProjectile(EntityPlayer shooter, ItemStack cartridge, Entity projectile, boolean electro)
 		{
-			Vec3d vec = shooter.getLookVec();
-			EntityRevolvershotHoming shot = new EntityRevolvershotHoming(shooter.worldObj, shooter, vec.xCoord * 1.5, vec.yCoord * 1.5, vec.zCoord * 1.5, this, cartridge);
-			shot.motionX = vec.xCoord;
-			shot.motionY = vec.yCoord;
-			shot.motionZ = vec.zCoord;
+			EntityRevolvershotHoming shot = shooter!=null?new EntityRevolvershotHoming(projectile.worldObj, shooter, projectile.motionX*1.5,projectile.motionY*1.5,projectile.motionZ*1.5, this, cartridge): new EntityRevolvershotHoming(projectile.worldObj, projectile.posX,projectile.posY,projectile.posZ, 0,0,0, this);
+			shot.motionX = projectile.motionX;
+			shot.motionY = projectile.motionY;
+			shot.motionZ = projectile.motionZ;
 			shot.bulletElectro = electro;
 			return shot;
 		}
@@ -506,7 +504,7 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 				Vec3d vecDir = new Vec3d(0, 1, 0);
 				vecDir = matrix.apply(vecDir);
 
-				EntityWolfpackShot bullet = new EntityWolfpackShot(world, shooter, vecDir.xCoord * 1.5, vecDir.yCoord * 1.5, vecDir.zCoord * 1.5, this, null);
+				EntityWolfpackShot bullet = shooter!=null?new EntityWolfpackShot(world, shooter, vecDir.xCoord * 1.5, vecDir.yCoord * 1.5, vecDir.zCoord * 1.5, this, null) : new EntityWolfpackShot(world, 0,0,0, 0,0,0, this);
 				if(target.entityHit instanceof EntityLivingBase)
 					bullet.targetOverride = (EntityLivingBase)target.entityHit;
 				bullet.setPosition(target.hitVec.xCoord + vecDir.xCoord, target.hitVec.yCoord + vecDir.yCoord, target.hitVec.zCoord + vecDir.zCoord);

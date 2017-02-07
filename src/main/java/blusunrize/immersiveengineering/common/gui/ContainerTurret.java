@@ -1,8 +1,13 @@
 package blusunrize.immersiveengineering.common.gui;
 
+import blusunrize.immersiveengineering.api.tool.BulletHandler;
+import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTurret;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTurretGun;
+import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemStack;
 
 public class ContainerTurret extends ContainerIEBase<TileEntityTurret>
 {
@@ -10,10 +15,25 @@ public class ContainerTurret extends ContainerIEBase<TileEntityTurret>
 	{
 		super(inventoryPlayer, tile);
 		this.tile=tile;
-//		for(int i=0; i<18; i++)
-//			this.addSlotToContainer(new Slot(this.inv, i, 13+(i%9)*18, 87+(i/9)*18));
-//		slotCount=21;
-//
+
+		if(tile instanceof TileEntityTurretGun)
+		{
+			this.addSlotToContainer(new IESlot.Bullet(this, this.inv, 0, 134, 13, 64)
+			{
+				@Override
+				public boolean isItemValid(ItemStack itemStack)
+				{
+					if(!super.isItemValid(itemStack))
+						return false;
+					String key = ItemNBTHelper.getString(itemStack, "bullet");
+					IBullet bullet = BulletHandler.getBullet(key);
+					return bullet!=null && bullet.isValidForTurret();
+				}
+			});
+			this.addSlotToContainer(new IESlot.Output(this, this.inv, 1, 134, 49));
+			slotCount=2;
+		}
+
 		for(int i=0; i<3; i++)
 			for(int j=0; j<9; j++)
 				addSlotToContainer(new Slot(inventoryPlayer, j+i*9+9, 8+j*18, 109+i*18));
