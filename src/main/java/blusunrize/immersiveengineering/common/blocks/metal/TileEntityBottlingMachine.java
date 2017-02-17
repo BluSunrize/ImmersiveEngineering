@@ -172,7 +172,7 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockMetal<TileEnt
 	@Override
 	public void onEntityCollision(World world, Entity entity)
 	{
-		if(pos==6 && !world.isRemote && entity!=null && !entity.isDead && entity instanceof EntityItem&& ((EntityItem)entity).getEntityItem()!=null)
+		if(pos==6 && !world.isRemote && entity!=null && !entity.isDead && entity instanceof EntityItem)
 		{
 			TileEntityBottlingMachine master = master();
 			if(master==null)
@@ -194,7 +194,7 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockMetal<TileEnt
 				if(p!=null&&dist < master.getMinProcessDistance(null))
 					return;
 
-				p = new BottlingProcess(stack.copy());
+				p = new BottlingProcess(Utils.copyStackWithAmount(stack, 1));
 				master.bottlingProcessQueue.add(p);
 				master.markDirty();
 				master.markContainingBlockForUpdate(null);
@@ -469,7 +469,7 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockMetal<TileEnt
 					return stack;
 				if(!simulate)
 				{
-					p = new BottlingProcess(stack.copy());
+					p = new BottlingProcess(Utils.copyStackWithAmount(stack, 1));
 					multiblock.bottlingProcessQueue.add(p);
 					multiblock.markDirty();
 					multiblock.markContainingBlockForUpdate(null);
