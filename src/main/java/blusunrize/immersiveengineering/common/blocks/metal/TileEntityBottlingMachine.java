@@ -75,8 +75,6 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockMetal<TileEnt
 			return;
 
 		tickedProcesses = 0;
-		if(worldObj.isRemote || isDummy() || isRSDisabled())
-			return;
 
 		int max = getMaxProcessPerTick();
 		int i = 0;
@@ -389,7 +387,13 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockMetal<TileEnt
 					{
 						BottlingMachineRecipe recipe = BottlingMachineRecipe.findRecipe(items[0], fs);
 						if(recipe!=null)
-							items[1] = recipe.getActualItemOutputs(tile).get(0);
+						{
+							if (tile.tanks[0].drainInternal(recipe.fluidInput, false).amount==recipe.fluidInput.amount)
+							{
+								items[1] = recipe.getActualItemOutputs(tile).get(0);
+								tile.tanks[0].drainInternal(recipe.fluidInput, true);
+							}
+						}
 						else
 						{
 							ItemStack ret = Utils.fillFluidContainer(tile.tanks[0], items[0], null, null);
