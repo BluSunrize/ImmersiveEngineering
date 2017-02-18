@@ -4,7 +4,9 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * @author BluSunrize - 23.03.2015
@@ -58,19 +60,29 @@ public class BlastFurnaceRecipe
 		return list;
 	}
 
-	public static HashMap<Object, Integer> blastFuels = new HashMap<Object, Integer>();
-	public static Object addBlastFuel(Object fuel, int burnTime)
+	public static ArrayList<BlastFurnaceFuel> blastFuels = new ArrayList();
+	public static class BlastFurnaceFuel
 	{
-		Object key = ApiUtils.convertToValidRecipeInput(fuel);
-		if(key!=null)
-			blastFuels.put(key, burnTime);
-		return key;
+		public final IngredientStack input;
+		public final int burnTime;
+
+		public BlastFurnaceFuel(IngredientStack input, int burnTime)
+		{
+			this.input = input;
+			this.burnTime = burnTime;
+		}
+	}
+	public static BlastFurnaceFuel addBlastFuel(Object fuel, int burnTime)
+	{
+		BlastFurnaceFuel entry = new BlastFurnaceFuel(ApiUtils.createIngredientStack(fuel), burnTime);
+		blastFuels.add(entry);
+		return entry;
 	}
 	public static int getBlastFuelTime(ItemStack stack)
 	{
-		for(Map.Entry<Object,Integer> e : blastFuels.entrySet())
-			if(ApiUtils.stackMatchesObject(stack, e.getKey()))
-				return e.getValue();
+		for(BlastFurnaceFuel e : blastFuels)
+			if(e.input.matchesItemStack(stack))
+				return e.burnTime;
 		return 0;
 	}
 	public static boolean isValidBlastFuel(ItemStack stack)
