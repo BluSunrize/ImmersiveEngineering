@@ -83,8 +83,8 @@ dependencies {
     deobfCompile "slimeknights.mantle:Mantle:1.10.2-1.+"
     deobfCompile "slimeknights:TConstruct:1.10.2-2.5.6.+"
     deobfCompile "li.cil.oc:OpenComputers:MC1.10.2-1.6.0.+"
-    deobfCompile "mcjty.theoneprobe:TheOneProbe:1.10-1.0.13-26"
-    deobfCompile "MineTweaker3:MineTweaker3-MC1102-Main:1.10.2-3.0.17.68"
+    deobfCompile "mcjty.theoneprobe:TheOneProbe:1.10-1.+"//0.13-26
+    deobfCompile "MineTweaker3:MineTweaker3-MC1102-Main:1.10.2-3.0.+"//17.68
     deobfCompile 'net.industrial-craft:industrialcraft-2:2.6.+:dev'
 }
 
