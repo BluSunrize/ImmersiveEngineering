@@ -12,6 +12,7 @@ import net.minecraftforge.fluids.UniversalBucket;
 import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class IngredientStack
@@ -107,6 +108,17 @@ public class IngredientStack
 	public IngredientStack copyWithMultipliedSize(double multiplier)
 	{
 		return copyWithSize((int)Math.floor(this.inputSize*multiplier));
+	}
+
+	public List<ItemStack> getStackList()
+	{
+		if(stackList!=null)
+			return stackList;
+		if(oreName!=null)
+			return OreDictionary.getOres(oreName);
+		if(fluid!=null&&ForgeModContainer.getInstance().universalBucket!=null)
+			return Collections.singletonList(UniversalBucket.getFilledBucket(ForgeModContainer.getInstance().universalBucket, fluid.getFluid()));
+		return Collections.singletonList(stack);
 	}
 
 	public ItemStack getRandomizedExampleStack(long rand)
