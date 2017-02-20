@@ -1,6 +1,6 @@
 package blusunrize.immersiveengineering.common.util.compat.jei.blastfurnace;
 
-import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
+import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe.BlastFurnaceFuel;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIHelper;
 import mezz.jei.api.IGuiHelper;
@@ -13,17 +13,15 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nullable;
-import java.util.Arrays;
-import java.util.List;
 
-public class BlastFurnaceFuelCategory extends IERecipeCategory<Object, BlastFurnaceFuelWrapper>
+public class BlastFurnaceFuelCategory extends IERecipeCategory<BlastFurnaceFuel, BlastFurnaceFuelWrapper>
 {
 	public static ResourceLocation background = new ResourceLocation("minecraft:textures/gui/container/furnace.png");
 	IDrawable flame;
 
 	public BlastFurnaceFuelCategory(IGuiHelper helper)
 	{
-		super("blastfurnace.fuel","gui.immersiveengineering.blastFurnace.fuel", helper.createDrawable(background, 55, 38, 18, 32, 0, 0, 0, 80), Object.class);
+		super("blastfurnace.fuel","gui.immersiveengineering.blastFurnace.fuel", helper.createDrawable(background, 55, 38, 18, 32, 0, 0, 0, 80), BlastFurnaceFuel.class);
 
 		flame = helper.createDrawable(BlastFurnaceRecipeCategory.background, 176, 0, 14, 14);
 	}
@@ -50,24 +48,16 @@ public class BlastFurnaceFuelCategory extends IERecipeCategory<Object, BlastFurn
 	}
 
 	@Override
-	public boolean isRecipeValid(Object recipe)
+	public boolean isRecipeValid(BlastFurnaceFuel recipe)
 	{
-		return BlastFurnaceRecipe.blastFuels.containsKey(recipe);
+		return true;
 	}
 
 	@Override
-	public IRecipeWrapper getRecipeWrapper(Object recipe)
+	public IRecipeWrapper getRecipeWrapper(BlastFurnaceFuel recipe)
 	{
-		Integer value = BlastFurnaceRecipe.blastFuels.get(recipe);
-		if(value!=null && value!=0)
-		{
-			List<ItemStack> list;
-			if(recipe instanceof ItemStack)
-				list = Arrays.asList((ItemStack)recipe);
-			else
-				list = (List<ItemStack>)recipe;
-			return new BlastFurnaceFuelWrapper(JEIHelper.jeiHelpers.getGuiHelper(), list, value);
-		}
+		if(recipe!=null && recipe.input!=null)
+			return new BlastFurnaceFuelWrapper(JEIHelper.jeiHelpers.getGuiHelper(), recipe.input.getStackList(), recipe.burnTime);
 		return null;
 	}
 }

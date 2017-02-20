@@ -1,7 +1,7 @@
 package blusunrize.immersiveengineering.common.util.compat.crafttweaker;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
+import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe.BlastFurnaceFuel;
 import minetweaker.IUndoableAction;
 import minetweaker.MineTweakerAPI;
 import minetweaker.api.item.IIngredient;
@@ -13,8 +13,6 @@ import stanhebben.zenscript.annotations.ZenMethod;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 @ZenClass("mods.immersiveengineering.BlastFurnace")
 public class BlastFurnace
@@ -210,8 +208,7 @@ public class BlastFurnace
 	private static class RemoveFuel implements IUndoableAction
 	{
 		private final ItemStack stack;
-		Object ident;
-		int removedTime;
+		BlastFurnaceFuel removed;
 
 		public RemoveFuel(ItemStack fuel)
 		{
@@ -221,16 +218,14 @@ public class BlastFurnace
 		@Override
 		public void apply()
 		{
-			Set<Map.Entry<Object, Integer>> set = BlastFurnaceRecipe.blastFuels.entrySet();
-			Iterator<Map.Entry<Object, Integer>> it = set.iterator();
+			Iterator<BlastFurnaceFuel> it = BlastFurnaceRecipe.blastFuels.iterator();
 			while(it.hasNext())
 			{
-				Map.Entry<Object, Integer> e = it.next();
-				if(ApiUtils.stackMatchesObject(stack, e.getKey()))
+				BlastFurnaceFuel e = it.next();
+				if(e.input.matchesItemStack(stack))
 				{
-					removedTime = e.getValue();
-					ident = e.getKey();
-					MineTweakerAPI.getIjeiRecipeRegistry().removeRecipe(ident);
+					removed = e;
+					MineTweakerAPI.getIjeiRecipeRegistry().removeRecipe(removed);
 					it.remove();
 					break;
 				}
@@ -240,10 +235,10 @@ public class BlastFurnace
 		@Override
 		public void undo()
 		{
-			if(ident != null)
+			if(removed != null)
 			{
-				BlastFurnaceRecipe.blastFuels.put(ident, removedTime);
-				MineTweakerAPI.getIjeiRecipeRegistry().addRecipe(ident);
+				BlastFurnaceRecipe.blastFuels.add(removed);
+				MineTweakerAPI.getIjeiRecipeRegistry().addRecipe(removed);
 			}
 		}
 
