@@ -100,7 +100,7 @@ public class JEIHelper implements IModPlugin
 
 		modRegistry.addRecipes(new ArrayList(CokeOvenRecipe.recipeList));
 		modRegistry.addRecipes(new ArrayList(BlastFurnaceRecipe.recipeList));
-//		modRegistry.addRecipes(new ArrayList(BlastFurnaceRecipe.blastFuels.keySet()));
+		modRegistry.addRecipes(new ArrayList(BlastFurnaceRecipe.blastFuels));
 		modRegistry.addRecipes(new ArrayList(MetalPressRecipe.recipeList.values()));
 		modRegistry.addRecipes(new ArrayList(CrusherRecipe.recipeList));
 		modRegistry.addRecipes(new ArrayList(BlueprintCraftingRecipe.recipeList.values()));

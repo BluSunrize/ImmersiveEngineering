@@ -49,7 +49,7 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 		}
 
 		this.inputList = Lists.newArrayList(this.input);
-		if(additives.length>0)
+		if(this.additives.length>0)
 			this.inputList.addAll(Lists.newArrayList(this.additives));
 		this.outputList = Lists.newArrayList(this.output);
 	}

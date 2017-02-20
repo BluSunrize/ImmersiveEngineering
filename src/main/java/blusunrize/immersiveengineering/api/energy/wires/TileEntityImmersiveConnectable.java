@@ -85,6 +85,8 @@ public abstract class TileEntityImmersiveConnectable extends TileEntityIEBase im
 			return false;
 		if(cableType==WireType.STRUCTURE_STEEL)
 			return false;
+		if(cableType==WireType.REDSTONE)
+			return false;
 		return limitType==null||(this.isRelay() && limitType==cableType);
 	}
 	@Override

@@ -10,6 +10,8 @@ import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Collections;
+import java.util.List;
 
 public abstract class IERecipeCategory<T, W extends IRecipeWrapper> implements IRecipeCategory<W>, IRecipeHandler<T>
 {
@@ -61,6 +63,12 @@ public abstract class IERecipeCategory<T, W extends IRecipeWrapper> implements I
 	@Override
 	public void drawAnimations(Minecraft minecraft)
 	{
+	}
+
+	@Override
+	public List<String> getTooltipStrings(int mouseX, int mouseY)
+	{
+		return Collections.emptyList();
 	}
 
 	@Override
