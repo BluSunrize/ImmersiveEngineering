@@ -21,7 +21,8 @@ public enum BlockTypes_MetalMultiblock implements IStringSerializable, BlockIEBa
 	EXCAVATOR(true),
 	BUCKET_WHEEL(true),
 	ARC_FURNACE(true),
-	LIGHTNINGROD(false);
+	LIGHTNINGROD(false),
+	MIXER(true);
 
 	private boolean needsCustomState;
 	BlockTypes_MetalMultiblock(boolean needsCustomState)

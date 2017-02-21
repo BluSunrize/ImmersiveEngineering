@@ -39,7 +39,8 @@ import net.minecraftforge.client.model.obj.OBJModel.Normal;
 import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.IFluidTank;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector3f;
 
@@ -1246,14 +1247,18 @@ public class ClientUtils
 		}
 	}
 
-	public static void handleGuiTank(FluidTank tank, int x, int y, int w, int h, int oX, int oY, int oW, int oH, int mX, int mY, String originalTexture, ArrayList<String> tooltip)
+	public static void handleGuiTank(IFluidTank tank, int x, int y, int w, int h, int oX, int oY, int oW, int oH, int mX, int mY, String originalTexture, ArrayList<String> tooltip)
+	{
+		handleGuiTank(tank.getFluid(), tank.getCapacity(), x,y,w,h, oX,oY,oW,oH, mX,mY, originalTexture, tooltip);
+	}
+	public static void handleGuiTank(FluidStack fluid, int capacity, int x, int y, int w, int h, int oX, int oY, int oW, int oH, int mX, int mY, String originalTexture, ArrayList<String> tooltip)
 	{
 		if(tooltip == null)
 		{
-			if(tank.getFluid() != null && tank.getFluid().getFluid() != null)
+			if(fluid!=null && fluid.getFluid()!=null)
 			{
-				int fluidHeight = (int) (h * (tank.getFluid().amount / (float) tank.getCapacity()));
-				drawRepeatedFluidSprite(tank.getFluid().getFluid(), x, y + h - fluidHeight, w, fluidHeight);
+				int fluidHeight = (int) (h * (fluid.amount / (float) capacity));
+				drawRepeatedFluidSprite(fluid.getFluid(), x, y + h - fluidHeight, w, fluidHeight);
 				bindTexture(originalTexture);
 			}
 			int xOff = (w - oW) / 2;
@@ -1263,11 +1268,11 @@ public class ClientUtils
 		{
 			if(mX >= x && mX < x + w && mY >= y && mY < y + h)
 			{
-				if(tank.getFluid() != null && tank.getFluid().getFluid() != null)
-					tooltip.add(tank.getFluid().getLocalizedName());
+				if(fluid != null && fluid.getFluid() != null)
+					tooltip.add(fluid.getLocalizedName());
 				else
 					tooltip.add(I18n.format("gui.immersiveengineering.empty"));
-				tooltip.add(tank.getFluidAmount() + "/" + tank.getCapacity() + "mB");
+				tooltip.add((fluid!=null?fluid.amount:0) + "/" + capacity + "mB");
 			}
 		}
 	}
