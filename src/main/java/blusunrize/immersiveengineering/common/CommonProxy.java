@@ -23,6 +23,7 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.property.IExtendedBlockState;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 
@@ -107,6 +108,8 @@ public class CommonProxy implements IGuiHandler
 					gui = new ContainerAssembler(player.inventory, (TileEntityAssembler) te);
 				if(ID==Lib.GUIID_AutoWorkbench && te instanceof TileEntityAutoWorkbench)
 					gui = new ContainerAutoWorkbench(player.inventory, (TileEntityAutoWorkbench) te);
+				if(ID==Lib.GUIID_Mixer && te instanceof TileEntityMixer)
+					gui = new ContainerMixer(player.inventory, (TileEntityMixer) te);
 				if(ID==Lib.GUIID_Turret && te instanceof TileEntityTurret)
 					gui = new ContainerTurret(player.inventory, (TileEntityTurret) te);
 				if(gui!=null)
@@ -139,6 +142,12 @@ public class CommonProxy implements IGuiHandler
 	{
 	}
 	public void spawnRedstoneFX(World world, double x, double y, double z, double mx, double my, double mz, float size, float r, float g, float b)
+	{
+	}
+	public void spawnFluidSplashFX(World world, FluidStack fs, double x, double y, double z, double mx, double my, double mz)
+	{
+	}
+	public void spawnBubbleFX(World world, FluidStack fs, double x, double y, double z, double mx, double my, double mz)
 	{
 	}
 	public void draw3DBlockCauldron()

@@ -458,6 +458,7 @@ public class IEContent
 		registerTile(TileEntityExcavator.class);
 		registerTile(TileEntityArcFurnace.class);
 		registerTile(TileEntityLightningrod.class);
+		registerTile(TileEntityMixer.class);
 		//
 		//		registerTile(TileEntitySkycrateDispenser.class);
 		//		registerTile(TileEntityFloodlight.class);
@@ -695,13 +696,14 @@ public class IEContent
 		if(fluidBlood!=null)
 			SqueezerRecipe.addRecipe(new FluidStack(fluidBlood,5), new ItemStack(Items.LEATHER), new ItemStack(Items.ROTTEN_FLESH), 6400);
 
-
 		FermenterRecipe.addRecipe(new FluidStack(fluidEthanol,80), null, Items.REEDS, 6400);
 		FermenterRecipe.addRecipe(new FluidStack(fluidEthanol,80), null, Items.MELON, 6400);
 		FermenterRecipe.addRecipe(new FluidStack(fluidEthanol,80), null, Items.APPLE, 6400);
 		FermenterRecipe.addRecipe(new FluidStack(fluidEthanol,80), null, "cropPotato", 6400);
 
 		RefineryRecipe.addRecipe(new FluidStack(fluidBiodiesel,16), new FluidStack(fluidPlantoil,8),new FluidStack(fluidEthanol,8), 80);
+
+		MixerRecipe.addRecipe(new FluidStack(fluidConcrete,500), new FluidStack(FluidRegistry.WATER,500),new Object[]{"sand","sand",Items.CLAY_BALL,"gravel"}, 3200);
 
 		BottlingMachineRecipe.addRecipe(new ItemStack(Blocks.SPONGE,1,1), new ItemStack(Blocks.SPONGE,1,0), new FluidStack(FluidRegistry.WATER,1000));
 
@@ -755,6 +757,7 @@ public class IEContent
 		MultiblockHandler.registerMultiblock(MultiblockBucketWheel.instance);
 		MultiblockHandler.registerMultiblock(MultiblockArcFurnace.instance);
 		MultiblockHandler.registerMultiblock(MultiblockLightningrod.instance);
+		MultiblockHandler.registerMultiblock(MultiblockMixer.instance);
 
 		/**ACHIEVEMENTS*/
 		IEAchievements.init();

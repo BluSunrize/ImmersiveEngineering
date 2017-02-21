@@ -15,6 +15,8 @@ import blusunrize.immersiveengineering.api.tool.ConveyorHandler.ConveyorDirectio
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBelt;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.client.fx.EntityFXSparks;
+import blusunrize.immersiveengineering.client.fx.ParticleFluidSplash;
+import blusunrize.immersiveengineering.client.fx.ParticleIEBubble;
 import blusunrize.immersiveengineering.client.gui.*;
 import blusunrize.immersiveengineering.client.manual.IEManualInstance;
 import blusunrize.immersiveengineering.client.manual.ManualPageShader;
@@ -106,6 +108,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.Properties;
 import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
@@ -397,6 +400,7 @@ public class ClientProxy extends CommonProxy
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityArcFurnace.class, new TileRenderArcFurnace());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityAutoWorkbench.class, new TileRenderAutoWorkbench());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityBottlingMachine.class, new TileRenderBottlingMachine());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityMixer.class, new TileRenderMixer());
 		//WOOD
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityWatermill.class, new TileRenderWatermill());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityWindmill.class, new TileRenderWindmill());
@@ -746,6 +750,9 @@ public class ClientProxy extends CommonProxy
 		ManualHelper.addEntry("crusher", ManualHelper.CAT_HEAVYMACHINES,
 				new ManualPageMultiblock(ManualHelper.getManual(), "crusher0", MultiblockCrusher.instance),
 				new ManualPages.Text(ManualHelper.getManual(), "crusher1"));
+		ManualHelper.addEntry("mixer", ManualHelper.CAT_HEAVYMACHINES,
+				new ManualPageMultiblock(ManualHelper.getManual(), "mixer0", MultiblockMixer.instance),
+				new ManualPages.Text(ManualHelper.getManual(), "mixer1"));
 		sortedMap = SqueezerRecipe.getFluidValuesSorted(IEContent.fluidPlantoil, true);
 		table = formatToTable_ItemIntHashmap(sortedMap, "mB");
 		ManualHelper.addEntry("squeezer", ManualHelper.CAT_HEAVYMACHINES,
@@ -1125,6 +1132,8 @@ public class ClientProxy extends CommonProxy
 					gui = new GuiAssembler(player.inventory, (TileEntityAssembler) te);
 				if(ID==Lib.GUIID_AutoWorkbench && te instanceof TileEntityAutoWorkbench)
 					gui = new GuiAutoWorkbench(player.inventory, (TileEntityAutoWorkbench) te);
+				if(ID==Lib.GUIID_Mixer && te instanceof TileEntityMixer)
+					gui = new GuiMixer(player.inventory, (TileEntityMixer) te);
 				if(ID==Lib.GUIID_Turret && te instanceof TileEntityTurret)
 					gui = new GuiTurret(player.inventory, (TileEntityTurret) te);
 				if(gui!=null)
@@ -1307,6 +1316,21 @@ public class ClientProxy extends CommonProxy
 		particle.setRBGColorF(r,g,b);
 		particle.reddustParticleScale = size;
 	}
+	@Override
+	public void spawnFluidSplashFX(World world, FluidStack fs, double x, double y, double z, double mx, double my, double mz)
+	{
+		ParticleFluidSplash particle = new ParticleFluidSplash(world, x,y,z, mx,my,mz);
+		particle.setFluidTexture(fs);
+		ClientUtils.mc().effectRenderer.addEffect(particle);
+	}
+	@Override
+	public void spawnBubbleFX(World world, FluidStack fs, double x, double y, double z, double mx, double my, double mz)
+	{
+		ParticleIEBubble particle = new ParticleIEBubble(world, x,y,z, mx,my,mz);
+		ClientUtils.mc().effectRenderer.addEffect(particle);
+	}
+
+
 
 	@Override
 	public void draw3DBlockCauldron()

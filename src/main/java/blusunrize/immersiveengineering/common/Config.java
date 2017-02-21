@@ -219,6 +219,10 @@ public class Config
 			public static float bottlingMachine_energyModifier = 1;
 			@Comment({"A modifier to apply to the time of every Bottling Machine's process"})
 			public static float bottlingMachine_timeModifier = 1;
+			@Comment({"A modifier to apply to the energy costs of every Mixer's process"})
+			public static float mixer_energyModifier = 1;
+			@Comment({"A modifier to apply to the time of every Mixer's process"})
+			public static float mixer_timeModifier = 1;
 
 			//Other Multiblock machines
 			@Comment({"The Flux the Assembler will consume to craft an item from a recipe"})
@@ -357,6 +361,8 @@ public class Config
 		ArcFurnaceRecipe.timeModifier = IEConfig.Machines.arcFurnace_timeModifier;
 		BlueprintCraftingRecipe.energyModifier = IEConfig.Machines.autoWorkbench_energyModifier;
 		BlueprintCraftingRecipe.timeModifier = IEConfig.Machines.autoWorkbench_timeModifier;
+		MixerRecipe.energyModifier = IEConfig.Machines.mixer_energyModifier;
+		MixerRecipe.timeModifier = IEConfig.Machines.mixer_timeModifier;
 
 
 		Config.manual_int.put("excavator_depletion_days", Machines.excavator_depletion*45/24000);

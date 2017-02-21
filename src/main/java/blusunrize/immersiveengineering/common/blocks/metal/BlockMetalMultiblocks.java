@@ -90,33 +90,8 @@ public class BlockMetalMultiblocks extends BlockIEMultiblock<BlockTypes_MetalMul
 				return new TileEntityArcFurnace();
 			case LIGHTNINGROD:
 				return new TileEntityLightningrod();
-
-			//		case META_lightningRod:
-			//			return new TileEntityLightningRod();
-			//		case META_dieselGenerator:
-			//			return new TileEntityDieselGenerator();
-			//		case META_squeezer:
-			//			return new TileEntitySqueezer();
-			//		case META_fermenter:
-			//			return new TileEntityFermenter();
-			//		case META_refinery:
-			//			return new TileEntityRefinery();
-			//		case META_crusher:
-			//			return new TileEntityCrusher();
-			//		case META_bucketWheel:
-			//			return new TileEntityBucketWheel();
-			//		case META_excavator:
-			//			return new TileEntityExcavator();
-			//		case META_arcFurnace:
-			//			return new TileEntityArcFurnace();
-			//		case META_tank:
-			//			return new TileEntitySheetmetalTank();
-			//		case META_silo:
-			//			return new TileEntitySilo();
-			//		case META_assembler:
-			//			return new TileEntityAssembler();
-			//		case META_bottlingMachine:
-			//			return new TileEntityBottlingMachine();
+			case MIXER:
+				return new TileEntityMixer();
 		}
 		return null;
 	}
