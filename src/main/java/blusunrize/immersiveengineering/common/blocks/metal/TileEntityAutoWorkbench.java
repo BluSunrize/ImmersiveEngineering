@@ -17,6 +17,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
@@ -240,7 +241,7 @@ public class TileEntityAutoWorkbench extends TileEntityMultiblockMetal<TileEntit
 		return new int[0];
 	}
 	@Override
-	public FluidTank[] getInternalTanks()
+	public IFluidTank[] getInternalTanks()
 	{
 		return null;
 	}
@@ -304,7 +305,7 @@ public class TileEntityAutoWorkbench extends TileEntityMultiblockMetal<TileEntit
 
 
 	@Override
-	protected FluidTank[] getAccessibleFluidTanks(EnumFacing side)
+	protected IFluidTank[] getAccessibleFluidTanks(EnumFacing side)
 	{
 		return new FluidTank[0];
 	}

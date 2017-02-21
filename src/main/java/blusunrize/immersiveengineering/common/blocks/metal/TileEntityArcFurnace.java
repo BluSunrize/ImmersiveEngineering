@@ -23,7 +23,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -467,14 +467,14 @@ public class TileEntityArcFurnace extends TileEntityMultiblockMetal<TileEntityAr
 		return null;
 	}
 	@Override
-	public FluidTank[] getInternalTanks()
+	public IFluidTank[] getInternalTanks()
 	{
 		return null;
 	}
 	@Override
-	protected FluidTank[] getAccessibleFluidTanks(EnumFacing side)
+	protected IFluidTank[] getAccessibleFluidTanks(EnumFacing side)
 	{
-		return new FluidTank[0];
+		return new IFluidTank[0];
 	}
 	@Override
 	protected boolean canFillTankFrom(int iTank, EnumFacing side, FluidStack resources)

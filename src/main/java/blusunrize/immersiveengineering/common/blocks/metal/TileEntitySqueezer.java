@@ -21,6 +21,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
@@ -415,12 +416,12 @@ public class TileEntitySqueezer extends TileEntityMultiblockMetal<TileEntitySque
 		return new int[]{0};
 	}
 	@Override
-	public FluidTank[] getInternalTanks()
+	public IFluidTank[] getInternalTanks()
 	{
 		return tanks;
 	}
 	@Override
-	protected FluidTank[] getAccessibleFluidTanks(EnumFacing side)
+	protected IFluidTank[] getAccessibleFluidTanks(EnumFacing side)
 	{
 		TileEntitySqueezer master = master();
 		if(master!=null && pos==5 && (side==null||side==(mirrored?facing.rotateYCCW():facing.rotateY())))

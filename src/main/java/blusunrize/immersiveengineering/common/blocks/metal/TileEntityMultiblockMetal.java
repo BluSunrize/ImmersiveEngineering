@@ -25,10 +25,14 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.IFluidTank;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.oredict.OreDictionary;
@@ -165,6 +169,18 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 	{
 		if(!simulate)
 			this.updateMasterBlock(null, energy!=0);
+	}
+
+	@SideOnly(Side.CLIENT)
+	@Override
+	public AxisAlignedBB getRenderBoundingBox()
+	{
+		if(!isDummy())
+		{
+			BlockPos nullPos = this.getBlockPosForPos(0);
+			return new AxisAlignedBB(nullPos, nullPos.offset(facing,structureDimensions[1]).offset(mirrored?facing.rotateYCCW():facing.rotateY(),structureDimensions[2]).up(structureDimensions[0]));
+		}
+		return super.getRenderBoundingBox();
 	}
 
 	//	=================================
@@ -333,7 +349,7 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 				processIterator.remove();
 		}
 	}
-	public abstract FluidTank[] getInternalTanks();
+	public abstract IFluidTank[] getInternalTanks();
 	public abstract R findRecipeForInsertion(ItemStack inserting);
 	public abstract int[] getOutputSlots();
 	public abstract int[] getOutputTanks();
@@ -453,6 +469,10 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 		{
 			return recipe.getActualItemOutputs(multiblock);
 		}
+		protected List<FluidStack> getRecipeFluidOutputs(TileEntityMultiblockMetal multiblock)
+		{
+			return recipe.getActualFluidOutputs(multiblock);
+		}
 
 		public boolean canProcess(TileEntityMultiblockMetal multiblock)
 		{
@@ -487,7 +507,7 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 				List<FluidStack> fluidOutputs = recipe.getFluidOutputs();
 				if(fluidOutputs!=null && !fluidOutputs.isEmpty())
 				{
-					FluidTank[] tanks = multiblock.getInternalTanks();
+					IFluidTank[] tanks = multiblock.getInternalTanks();
 					int[] outputTanks = multiblock.getOutputTanks();
 					for(FluidStack output : fluidOutputs)
 						if(output!=null && output.amount>0)
@@ -570,10 +590,10 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 							}
 						}
 			}
-			List<FluidStack> fluidOutputs = recipe.getActualFluidOutputs(multiblock);
+			List<FluidStack> fluidOutputs = getRecipeFluidOutputs(multiblock);
 			if(fluidOutputs!=null && !fluidOutputs.isEmpty())
 			{
-				FluidTank[] tanks = multiblock.getInternalTanks();
+				IFluidTank[] tanks = multiblock.getInternalTanks();
 				int[] outputTanks = multiblock.getOutputTanks();
 				for(FluidStack output : fluidOutputs)
 					if(output!=null && output.amount>0)
@@ -583,7 +603,7 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 						else
 						{
 							for(int iOutputTank : outputTanks)
-								if(iOutputTank>=0&&iOutputTank<tanks.length && tanks[iOutputTank]!=null && tanks[iOutputTank].fill(output,false)==output.amount)
+								if(iOutputTank >= 0&&iOutputTank < tanks.length&&tanks[iOutputTank]!=null&&tanks[iOutputTank].fill(output, false)==output.amount)
 								{
 									tanks[iOutputTank].fill(output, true);
 									break;
@@ -623,6 +643,15 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 			return this.inputTanks;
 		}
 
+		protected List<IngredientStack> getRecipeItemInputs(TileEntityMultiblockMetal multiblock)
+		{
+			return recipe.getItemInputs();
+		}
+		protected List<FluidStack> getRecipeFluidInputs(TileEntityMultiblockMetal multiblock)
+		{
+			return recipe.getFluidInputs();
+		}
+
 		@Override
 		public void doProcessTick(TileEntityMultiblockMetal multiblock)
 		{
@@ -659,7 +688,7 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 		{
 			super.processFinish(multiblock);
 			ItemStack[] inv = multiblock.getInventory();
-			List<IngredientStack> itemInputList = this.recipe.getItemInputs();
+			List<IngredientStack> itemInputList = this.getRecipeItemInputs(multiblock);
 			if(inv != null && this.inputSlots != null && itemInputList != null)
 			{
 				Iterator<IngredientStack> iterator = new ArrayList(itemInputList).iterator();
@@ -678,8 +707,8 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 						}
 				}
 			}
-			FluidTank[] tanks = multiblock.getInternalTanks();
-			List<FluidStack> fluidInputList = this.recipe.getFluidInputs();
+			IFluidTank[] tanks = multiblock.getInternalTanks();
+			List<FluidStack> fluidInputList = this.getRecipeFluidInputs(multiblock);
 			if(tanks != null && this.inputTanks != null && fluidInputList != null)
 			{
 				Iterator<FluidStack> iterator = new ArrayList(fluidInputList).iterator();
@@ -688,12 +717,21 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 					FluidStack ingr = iterator.next();
 					int ingrSize = ingr.amount;
 					for(int tank : this.inputTanks)
-						if(tanks[tank] != null && tanks[tank].getFluid() != null && tanks[tank].getFluid().isFluidEqual(ingr))
+						if(tanks[tank]!=null)
 						{
-							int taken = Math.min(tanks[tank].getFluidAmount(), ingrSize);
-							tanks[tank].drain(taken, true);
-							if((ingrSize -= taken) <= 0)
-								break;
+							if(tanks[tank] instanceof IFluidHandler && ((IFluidHandler)tanks[tank]).drain(ingr, false)!=null)
+							{
+								FluidStack taken = ((IFluidHandler)tanks[tank]).drain(ingr, true);
+								if((ingrSize -= taken.amount) <= 0)
+									break;
+							}
+							else if(tanks[tank].getFluid()!=null&&tanks[tank].getFluid().isFluidEqual(ingr))
+							{
+								int taken = Math.min(tanks[tank].getFluidAmount(), ingrSize);
+								tanks[tank].drain(taken, true);
+								if((ingrSize -= taken) <= 0)
+									break;
+							}
 						}
 				}
 			}

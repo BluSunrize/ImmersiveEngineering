@@ -28,6 +28,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.oredict.OreDictionary;
@@ -445,7 +446,7 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 		return new int[0];
 	}
 	@Override
-	public FluidTank[] getInternalTanks()
+	public IFluidTank[] getInternalTanks()
 	{
 		return this.tanks;
 	}
@@ -515,7 +516,7 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 
 
 	@Override
-	protected FluidTank[] getAccessibleFluidTanks(EnumFacing side)
+	protected IFluidTank[] getAccessibleFluidTanks(EnumFacing side)
 	{
 		TileEntityAssembler master = master();
 		if(master!=null && pos==1&&(side==null||side==facing.getOpposite()))

@@ -28,7 +28,7 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.IFluidTank;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -438,14 +438,14 @@ public class TileEntityExcavator extends TileEntityMultiblockMetal<TileEntityExc
 		return new int[0];
 	}
 	@Override
-	public FluidTank[] getInternalTanks()
+	public IFluidTank[] getInternalTanks()
 	{
 		return null;
 	}
 	@Override
-	protected FluidTank[] getAccessibleFluidTanks(EnumFacing side)
+	protected IFluidTank[] getAccessibleFluidTanks(EnumFacing side)
 	{
-		return new FluidTank[0];
+		return new IFluidTank[0];
 	}
 	@Override
 	protected boolean canFillTankFrom(int iTank, EnumFacing side, FluidStack resources)
