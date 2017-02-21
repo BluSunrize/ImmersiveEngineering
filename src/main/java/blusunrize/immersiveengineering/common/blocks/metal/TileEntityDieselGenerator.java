@@ -24,6 +24,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.IFluidTank;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -383,12 +384,12 @@ public class TileEntityDieselGenerator extends TileEntityMultiblockMetal<TileEnt
 		return new int[0];
 	}
 	@Override
-	public FluidTank[] getInternalTanks()
+	public IFluidTank[] getInternalTanks()
 	{
 		return tanks;
 	}
 	@Override
-	protected FluidTank[] getAccessibleFluidTanks(EnumFacing side)
+	protected IFluidTank[] getAccessibleFluidTanks(EnumFacing side)
 	{
 		TileEntityDieselGenerator master = master();
 		if(master != null && (pos == 0 || pos == 2) && (side == null || side.getAxis() == facing.rotateYCCW().getAxis()))

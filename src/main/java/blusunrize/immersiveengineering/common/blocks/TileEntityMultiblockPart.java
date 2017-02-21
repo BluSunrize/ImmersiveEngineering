@@ -11,9 +11,9 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.FluidTankPropertiesWrapper;
+import net.minecraftforge.fluids.capability.FluidTankProperties;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
 
@@ -101,7 +101,7 @@ public abstract class TileEntityMultiblockPart<T extends TileEntityMultiblockPar
 	//		FLUID MANAGEMENT
 	//	=================================
 	@Nonnull
-	protected abstract FluidTank[] getAccessibleFluidTanks(EnumFacing side);
+	protected abstract IFluidTank[] getAccessibleFluidTanks(EnumFacing side);
 	protected abstract boolean canFillTankFrom(int iTank, EnumFacing side, FluidStack resource);
 	protected abstract boolean canDrainTankFrom(int iTank, EnumFacing side);
 
@@ -120,10 +120,10 @@ public abstract class TileEntityMultiblockPart<T extends TileEntityMultiblockPar
 		{
 			if(!this.multiblock.formed)
 				return new IFluidTankProperties[0];
-			FluidTank[] tanks = this.multiblock.getAccessibleFluidTanks(side);
+			IFluidTank[] tanks = this.multiblock.getAccessibleFluidTanks(side);
 			IFluidTankProperties[] array = new IFluidTankProperties[tanks.length];
 			for(int i=0; i<tanks.length; i++)
-				array[i] = new FluidTankPropertiesWrapper(tanks[i]);
+				array[i] = new FluidTankProperties(tanks[i].getFluid(), tanks[i].getCapacity());
 			return array;
 		}
 		@Override
@@ -131,11 +131,11 @@ public abstract class TileEntityMultiblockPart<T extends TileEntityMultiblockPar
 		{
 			if(!this.multiblock.formed || resource==null)
 				return 0;
-			FluidTank[] tanks = this.multiblock.getAccessibleFluidTanks(side);
+			IFluidTank[] tanks = this.multiblock.getAccessibleFluidTanks(side);
 			int fill = -1;
 			for(int i=0; i<tanks.length; i++)
 			{
-				FluidTank tank = tanks[i];
+				IFluidTank tank = tanks[i];
 				if(tank != null && this.multiblock.canFillTankFrom(i, side, resource) && tank.getFluid()!= null && tank.getFluid().isFluidEqual(resource))
 				{
 					fill = tank.fill(resource, doFill);
@@ -146,7 +146,7 @@ public abstract class TileEntityMultiblockPart<T extends TileEntityMultiblockPar
 			if(fill==-1)
 				for(int i=0; i<tanks.length; i++)
 				{
-					FluidTank tank = tanks[i];
+					IFluidTank tank = tanks[i];
 					if(tank != null && this.multiblock.canFillTankFrom(i, side, resource))
 					{
 						fill = tank.fill(resource, doFill);
@@ -164,14 +164,17 @@ public abstract class TileEntityMultiblockPart<T extends TileEntityMultiblockPar
 		{
 			if(!this.multiblock.formed || resource==null)
 				return null;
-			FluidTank[] tanks = this.multiblock.getAccessibleFluidTanks(side);
+			IFluidTank[] tanks = this.multiblock.getAccessibleFluidTanks(side);
 			FluidStack drain = null;
 			for(int i=0; i<tanks.length; i++)
 			{
-				FluidTank tank = tanks[i];
+				IFluidTank tank = tanks[i];
 				if(tank != null && this.multiblock.canDrainTankFrom(i, side))
 				{
-					drain = tank.drain(resource, doDrain);
+					if(tank instanceof IFluidHandler)
+						drain = ((IFluidHandler)tank).drain(resource, doDrain);
+					else
+						drain = tank.drain(resource.amount, doDrain);
 					if(drain!=null)
 						break;
 				}
@@ -186,11 +189,11 @@ public abstract class TileEntityMultiblockPart<T extends TileEntityMultiblockPar
 		{
 			if(!this.multiblock.formed || maxDrain==0)
 				return null;
-			FluidTank[] tanks = this.multiblock.getAccessibleFluidTanks(side);
+			IFluidTank[] tanks = this.multiblock.getAccessibleFluidTanks(side);
 			FluidStack drain = null;
 			for(int i=0; i<tanks.length; i++)
 			{
-				FluidTank tank = tanks[i];
+				IFluidTank tank = tanks[i];
 				if(tank!=null && this.multiblock.canDrainTankFrom(i, side))
 				{
 					drain = tank.drain(maxDrain, doDrain);

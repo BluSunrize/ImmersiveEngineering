@@ -20,6 +20,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -276,7 +277,7 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockMetal<TileEnt
 		return new int[0];
 	}
 	@Override
-	public FluidTank[] getInternalTanks()
+	public IFluidTank[] getInternalTanks()
 	{
 		return tanks;
 	}
@@ -328,7 +329,7 @@ public class TileEntityBottlingMachine extends TileEntityMultiblockMetal<TileEnt
 	}
 
 	@Override
-	protected FluidTank[] getAccessibleFluidTanks(EnumFacing side)
+	protected IFluidTank[] getAccessibleFluidTanks(EnumFacing side)
 	{
 		TileEntityBottlingMachine master = this.master();
 		if(master!=null)
