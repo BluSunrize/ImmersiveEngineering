@@ -5,6 +5,7 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.client.models.SmartLightingQuad;
+import blusunrize.immersiveengineering.common.util.IEFluid;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.common.util.sound.IETileSound;
 import net.minecraft.block.*;
@@ -13,6 +14,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound.AttenuationType;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
@@ -38,7 +40,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.model.obj.OBJModel.Normal;
 import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
 import net.minecraftforge.common.property.IExtendedBlockState;
-import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import org.lwjgl.opengl.GL11;
@@ -1075,12 +1077,14 @@ public class ClientUtils
 		drawTexturedRect(x, y, w, h, d_uv);
 	}
 
-	public static void drawRepeatedFluidSprite(Fluid fluid, float x, float y, float w, float h)
+	public static void drawRepeatedFluidSprite(FluidStack fluid, float x, float y, float w, float h)
 	{
 		bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE.toString());
-		TextureAtlasSprite sprite = mc().getTextureMapBlocks().getAtlasSprite(fluid.getStill().toString());
+		TextureAtlasSprite sprite = mc().getTextureMapBlocks().getAtlasSprite(fluid.getFluid().getStill(fluid).toString());
 		if(sprite != null)
 		{
+			int col = fluid.getFluid().getColor(fluid);
+			GlStateManager.color((col>>16&255)/255.0f,(col>>8&255)/255.0f,(col&255)/255.0f, 1);
 			int iW = sprite.getIconWidth();
 			int iH = sprite.getIconHeight();
 			if(iW > 0 && iH > 0)
@@ -1258,8 +1262,9 @@ public class ClientUtils
 			if(fluid!=null && fluid.getFluid()!=null)
 			{
 				int fluidHeight = (int) (h * (fluid.amount / (float) capacity));
-				drawRepeatedFluidSprite(fluid.getFluid(), x, y + h - fluidHeight, w, fluidHeight);
+				drawRepeatedFluidSprite(fluid, x, y + h - fluidHeight, w, fluidHeight);
 				bindTexture(originalTexture);
+				GlStateManager.color(1,1,1,1);
 			}
 			int xOff = (w - oW) / 2;
 			int yOff = (h - oH) / 2;
@@ -1267,14 +1272,34 @@ public class ClientUtils
 		} else
 		{
 			if(mX >= x && mX < x + w && mY >= y && mY < y + h)
-			{
-				if(fluid != null && fluid.getFluid() != null)
-					tooltip.add(fluid.getLocalizedName());
-				else
-					tooltip.add(I18n.format("gui.immersiveengineering.empty"));
-				tooltip.add((fluid!=null?fluid.amount:0) + "/" + capacity + "mB");
-			}
+				addFluidTooltip(fluid, tooltip, capacity);
 		}
+	}
+	public static void addFluidTooltip(FluidStack fluid, List<String> tooltip, int tankCapacity)
+	{
+		if(fluid!=null && fluid.getFluid()!=null)
+			tooltip.add(fluid.getFluid().getRarity(fluid).rarityColor+fluid.getLocalizedName());
+		else
+			tooltip.add(I18n.format("gui.immersiveengineering.empty"));
+		if(fluid!=null && fluid.getFluid() instanceof IEFluid)
+			((IEFluid)fluid.getFluid()).addTooltipInfo(fluid, null, tooltip);
+
+		if(mc().gameSettings.advancedItemTooltips && fluid!=null)
+			if(!GuiScreen.isShiftKeyDown())
+				tooltip.add(I18n.format(Lib.DESC_INFO+"holdShiftForInfo"));
+			else
+			{
+				tooltip.add(TextFormatting.DARK_GRAY+"Fluid Registry: "+FluidRegistry.getFluidName(fluid));
+				tooltip.add(TextFormatting.DARK_GRAY+"Density: "+fluid.getFluid().getDensity(fluid));
+				tooltip.add(TextFormatting.DARK_GRAY+"Temperature: "+fluid.getFluid().getTemperature(fluid));
+				tooltip.add(TextFormatting.DARK_GRAY+"Viscosity: "+fluid.getFluid().getViscosity(fluid));
+				tooltip.add(TextFormatting.DARK_GRAY+"NBT Data: "+fluid.tag);
+			}
+
+		if(tankCapacity>0)
+			tooltip.add(TextFormatting.GRAY.toString()+(fluid!=null?fluid.amount:0)+"/"+tankCapacity+"mB");
+		else
+			tooltip.add(TextFormatting.GRAY.toString()+(fluid!=null?fluid.amount:0)+"mB");
 	}
 
 	public static Quat4d degreeToQuaterion(double x, double y, double z)
@@ -1331,7 +1356,7 @@ public class ClientUtils
 				index--;
 			int max = (crossings.size()>0?
 					(crossings.get(index)+(greater?1:2)):
-						(greater?f.length+1:0));
+					(greater?f.length+1:0));
 			for (int i = 1; i < max&&i<f.length; i++)
 			{
 				boolean fading = i==max-1;
@@ -1379,7 +1404,7 @@ public class ClientUtils
 	}
 
 	private static void storeVertexData(int[] faceData, int storeIndex, Vector3f position, TextureAtlasSprite t, int u,
-			int v, int color)
+										int v, int color)
 	{
 		int i = storeIndex * 7;
 		faceData[i] = Float.floatToRawIntBits(position.x);
@@ -1412,12 +1437,12 @@ public class ClientUtils
 	{
 		return createBakedQuad(format, vertices, facing, sprite, uvs, colour, invert, alphaNoFading);
 	}
-	
+
 	public static BakedQuad createBakedQuad(VertexFormat format, Vector3f[] vertices, EnumFacing facing, TextureAtlasSprite sprite, double[] uvs, float[] colour, boolean invert, float[] alpha)
 	{
 		return createBakedQuad(format, vertices, facing, sprite, uvs, colour, invert, alpha, false, null);
 	}
-	
+
 	public static BakedQuad createBakedQuad(VertexFormat format, Vector3f[] vertices, EnumFacing facing, TextureAtlasSprite sprite, double[] uvs, float[] colour, boolean invert, float[] alpha, boolean smartLighting, BlockPos basePos)
 	{
 		UnpackedBakedQuad.Builder builder = new UnpackedBakedQuad.Builder(format);
@@ -1426,7 +1451,7 @@ public class ClientUtils
 		Normal faceNormal = new Normal(facing.getDirectionVec().getX(), facing.getDirectionVec().getY(), facing.getDirectionVec().getZ());
 		int vId = invert ? 3 : 0;
 		int u = vId>1?2:0;
- 		putVertexData(format, builder, vertices[vId], faceNormal, uvs[u], uvs[1], sprite, colour, alpha[invert ? 3 : 0]);
+		putVertexData(format, builder, vertices[vId], faceNormal, uvs[u], uvs[1], sprite, colour, alpha[invert ? 3 : 0]);
 		vId = invert ? 2 : 1;
 		u = vId>1?2:0;
 		putVertexData(format, builder, vertices[invert ? 2 : 1], faceNormal, uvs[u], uvs[3], sprite, colour, alpha[invert ? 2 : 1]);
@@ -1445,26 +1470,26 @@ public class ClientUtils
 		for(int e = 0; e < format.getElementCount(); e++)
 			switch(format.getElement(e).getUsage())
 			{
-			case POSITION:
-				builder.put(e, pos.getX(), pos.getY(), pos.getZ(), 0);
-				break;
-			case COLOR:
-				float d = 1;//LightUtil.diffuseLight(faceNormal.x, faceNormal.y, faceNormal.z);
-				builder.put(e, d * colour[0], d * colour[1], d * colour[2], 1 * colour[3]*alpha);
-				break;
-			case UV:
-				if(sprite == null)//Double Safety. I have no idea how it even happens, but it somehow did .-.
-					sprite = Minecraft.getMinecraft().getTextureMapBlocks().getMissingSprite();
-				builder.put(e,
-						sprite.getInterpolatedU(u),
-						sprite.getInterpolatedV((v)),
-						0, 1);
-				break;
-			case NORMAL:
-				builder.put(e, faceNormal.x, faceNormal.y, faceNormal.z, 0);
-				break;
-			default:
-				builder.put(e);
+				case POSITION:
+					builder.put(e, pos.getX(), pos.getY(), pos.getZ(), 0);
+					break;
+				case COLOR:
+					float d = 1;//LightUtil.diffuseLight(faceNormal.x, faceNormal.y, faceNormal.z);
+					builder.put(e, d * colour[0], d * colour[1], d * colour[2], 1 * colour[3]*alpha);
+					break;
+				case UV:
+					if(sprite == null)//Double Safety. I have no idea how it even happens, but it somehow did .-.
+						sprite = Minecraft.getMinecraft().getTextureMapBlocks().getMissingSprite();
+					builder.put(e,
+							sprite.getInterpolatedU(u),
+							sprite.getInterpolatedV((v)),
+							0, 1);
+					break;
+				case NORMAL:
+					builder.put(e, faceNormal.x, faceNormal.y, faceNormal.z, 0);
+					break;
+				default:
+					builder.put(e);
 			}
 	}
 	public static boolean crossesChunkBoundary(Vec3d start, Vec3d end)
@@ -1589,13 +1614,13 @@ public class ClientUtils
 			for (int i = 0; i < 4; ++i)
 			{
 				renderer
-				.pos(Float.intBitsToFloat(vData[size*i]),
-						Float.intBitsToFloat(vData[size*i+1]),
-						Float.intBitsToFloat(vData[size*i+2]))
-				.color(255, 255, 255, 255)
-				.tex(Float.intBitsToFloat(vData[size*i+uv]), Float.intBitsToFloat(vData[size*i+uv+1]))
-				.lightmap(l1, l2)
-				.endVertex();
+						.pos(Float.intBitsToFloat(vData[size*i]),
+								Float.intBitsToFloat(vData[size*i+1]),
+								Float.intBitsToFloat(vData[size*i+2]))
+						.color(255, 255, 255, 255)
+						.tex(Float.intBitsToFloat(vData[size*i+uv]), Float.intBitsToFloat(vData[size*i+uv+1]))
+						.lightmap(l1, l2)
+						.endVertex();
 			}
 
 		}
