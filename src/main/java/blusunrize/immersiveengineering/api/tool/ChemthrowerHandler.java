@@ -14,6 +14,7 @@ import net.minecraft.util.EntityDamageSource;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidStack;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -106,8 +107,16 @@ public class ChemthrowerHandler
 
 	public abstract static class ChemthrowerEffect
 	{
+		public void applyToEntity(EntityLivingBase target, @Nullable EntityPlayer shooter, ItemStack thrower, FluidStack fluid)
+		{
+			applyToEntity(target, shooter, thrower, fluid.getFluid());
+		}
 		public abstract void applyToEntity(EntityLivingBase target, @Nullable EntityPlayer shooter, ItemStack thrower, Fluid fluid);
 
+		public void applyToBlock(World worldObj, RayTraceResult mop, @Nullable EntityPlayer shooter, ItemStack thrower, FluidStack fluid)
+		{
+			applyToBlock(worldObj, mop, shooter, thrower, fluid.getFluid());
+		}
 		public abstract void applyToBlock(World worldObj, RayTraceResult mop, @Nullable EntityPlayer shooter, ItemStack thrower, Fluid fluid);
 	}
 	public static class ChemthrowerEffect_Damage extends ChemthrowerEffect
