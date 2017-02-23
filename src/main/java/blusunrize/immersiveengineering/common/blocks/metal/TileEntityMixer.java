@@ -3,12 +3,12 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.IMultiblockRecipe;
-import blusunrize.immersiveengineering.api.crafting.IngredientStack;
 import blusunrize.immersiveengineering.api.crafting.MixerRecipe;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedCollisionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedSelectionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGuiTile;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.MultiblockMixer;
+import blusunrize.immersiveengineering.common.crafting.MixerRecipePotion;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.MultiFluidTank;
@@ -16,6 +16,7 @@ import com.google.common.collect.Lists;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.potion.PotionHelper;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -116,22 +117,7 @@ public class TileEntityMixer extends TileEntityMultiblockMetal<TileEntityMixer,M
 						if(recipe!=null)
 						{
 							foundRecipe = true;
-							Set<Integer> processSlotSet = new HashSet<Integer>();
-							for(int i=0; i<recipe.itemInputs.length; i++)
-							{
-								IngredientStack ingr = recipe.itemInputs[i];
-								for(int j=0; j<components.length; j++)
-									if(!processSlotSet.contains(j) && components[j]!=null && ingr.matchesItemStack(components[j]))
-									{
-										processSlotSet.add(j);
-										break;
-									}
-							}
-							int it = 0;
-							int[] processSlots = new int[processSlotSet.size()];
-							for(Integer slot : processSlotSet)
-								processSlots[it++] = slot;
-							MultiblockProcessInMachine process = new MultiblockProcessMixer(recipe, processSlots).setInputTanks(0);
+							MultiblockProcessInMachine process = new MultiblockProcessMixer(recipe, recipe.getUsedSlots(fs, components)).setInputTanks(0);
 							if(this.addProcessToQueue(process, true))
 							{
 								this.addProcessToQueue(process, false);
@@ -507,22 +493,43 @@ public class TileEntityMixer extends TileEntityMultiblockMetal<TileEntityMixer,M
 		}
 
 		@Override
+		public boolean canProcess(TileEntityMultiblockMetal multiblock)
+		{
+			if(!super.canProcess(multiblock))
+				return false;
+			return ((TileEntityMixer)multiblock).tank.drain(Utils.copyFluidStackWithAmount(recipe.fluidInput,1,false),false)!=null;
+		}
+
+		@Override
 		public void doProcessTick(TileEntityMultiblockMetal multiblock)
 		{
-			int timerStep = this.maxTicks/this.recipe.fluidOutput.amount;
+			int timerStep = this.maxTicks/this.recipe.fluidAmount;
 			if(this.processTick%timerStep==0)
 			{
-				((TileEntityMixer)multiblock).tank.drain(Utils.copyFluidStackWithAmount(recipe.fluidInput,1,false), true);
-				FluidStack fs = Utils.copyFluidStackWithAmount(this.recipe.fluidOutput,1,false);
+				FluidStack drained = ((TileEntityMixer)multiblock).tank.drain(Utils.copyFluidStackWithAmount(recipe.fluidInput,1,false), true);
+				ItemStack[] components = new ItemStack[this.inputSlots.length];
+				for(int i=0; i<components.length; i++)
+					components[i] = multiblock.getInventory()[this.inputSlots[i]];
+				FluidStack output = this.recipe.getFluidOutput(drained, components);
+
+				FluidStack fs = Utils.copyFluidStackWithAmount(output,1,false);
 				((TileEntityMixer)multiblock).tank.fill(fs, true);
 			}
 			super.doProcessTick(multiblock);
 		}
 
 		@Override
-		protected void writeExtraDataToNBT(NBTTagCompound nbt)
+		protected void processFinish(TileEntityMultiblockMetal multiblock)
 		{
-			super.writeExtraDataToNBT(nbt);
+			super.processFinish(multiblock);
+			if(this.recipe instanceof MixerRecipePotion)
+				for(int i : this.inputSlots)
+					if(multiblock.getInventory()[i]!=null && PotionHelper.isReagent(multiblock.getInventory()[i]))
+					{
+						multiblock.getInventory()[i].stackSize--;
+						if(multiblock.getInventory()[i].stackSize<=0)
+							multiblock.getInventory()[i] = null;
+					}
 		}
 	}
 

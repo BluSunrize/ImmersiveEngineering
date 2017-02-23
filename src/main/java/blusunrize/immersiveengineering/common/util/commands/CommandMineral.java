@@ -7,12 +7,12 @@ import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralMix;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralWorldInfo;
 import blusunrize.immersiveengineering.common.IESaveData;
 import blusunrize.immersiveengineering.common.util.commands.CommandHandler.IESubCommand;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.translation.I18n;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -70,7 +70,7 @@ public class CommandMineral extends IESubCommand
 				info = ExcavatorHandler.getMineralWorldInfo(sender.getEntityWorld(),coords.chunkXPos,coords.chunkZPos);
 				if(args.length<3)
 				{
-					String h = I18n.format(getHelp(".setDepletion"));
+					String h = I18n.translateToLocal(getHelp(".setDepletion"));
 					for(String str : h.split("<br>"))
 						sender.addChatMessage(new TextComponentString(str));
 					return;
@@ -84,7 +84,7 @@ public class CommandMineral extends IESubCommand
 					return;
 				}
 				info.depletion = depl;
-				sender.addChatMessage(new TextComponentTranslation(Lib.CHAT_COMMAND+getIdent()+".setDepletion.sucess",(depl<0? I18n.format(Lib.CHAT_INFO+"coreDrill.infinite"):Integer.toString(depl))));
+				sender.addChatMessage(new TextComponentTranslation(Lib.CHAT_COMMAND+getIdent()+".setDepletion.sucess",(depl<0? I18n.translateToLocal(Lib.CHAT_INFO+"coreDrill.infinite"):Integer.toString(depl))));
 				IESaveData.setDirty(sender.getEntityWorld().provider.getDimension());
 				break;
 			default:

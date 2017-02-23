@@ -10,12 +10,12 @@ import java.util.List;
 
 public class MultiblockRecipeWrapper extends BlankRecipeWrapper
 {
-	public final List<ItemStack>[] recipeInputs;
-	private final List<ItemStack> inputs;
-	public final List<ItemStack>[] recipeOutputs;
-	private final List<ItemStack> outputs;
-	private final List<FluidStack> fluidInputs;
-	private final List<FluidStack> fluidOutputs;
+	public List<ItemStack>[] recipeInputs;
+	protected List<ItemStack> inputs;
+	public List<ItemStack>[] recipeOutputs;
+	protected List<ItemStack> outputs;
+	protected List<FluidStack> fluidInputs;
+	protected List<FluidStack> fluidOutputs;
 	public MultiblockRecipeWrapper(MultiblockRecipe recipe)
 	{
 		recipe.setupJEI();

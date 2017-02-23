@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.common.util.compat;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.crafting.MixerRecipe;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEffect_Potion;
 import blusunrize.immersiveengineering.api.tool.ToolboxHandler;
@@ -128,6 +129,9 @@ public class TConstructHelper extends IECompatModule
 		//		RailgunHandler.registerProjectileProperties(new ComparableItemStack("rodSteel"), 9, 1.25).setColourMap(new int[][]{{0xb4b4b4,0xb4b4b4,0xb4b4b4,0x7a7a7a,0x555555,0x555555}});
 		//		RailgunHandler.registerProjectileProperties(new ComparableItemStack("ironRod"), 7, 1.25).setColourMap(new int[][]{{0xd8d8d8,0xd8d8d8,0xd8d8d8,0xa8a8a8,0x686868,0x686868}});
 		//		RailgunHandler.registerProjectileProperties(new ComparableItemStack("steelRod"), 9, 1.25).setColourMap(new int[][]{{0xb4b4b4,0xb4b4b4,0xb4b4b4,0x7a7a7a,0x555555,0x555555}});
+		Fluid fluidClay = FluidRegistry.getFluid("clay");
+		if(fluidClay!=null)
+			MixerRecipe.addRecipe(new FluidStack(IEContent.fluidConcrete,500), new FluidStack(fluidClay,500),new Object[]{"sand","sand","gravel"}, 3200);
 	}
 
 	@Override

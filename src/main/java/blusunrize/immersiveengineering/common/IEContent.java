@@ -33,15 +33,13 @@ import blusunrize.immersiveengineering.common.blocks.plant.BlockIECrop;
 import blusunrize.immersiveengineering.common.blocks.plant.BlockTypes_Hemp;
 import blusunrize.immersiveengineering.common.blocks.stone.*;
 import blusunrize.immersiveengineering.common.blocks.wooden.*;
-import blusunrize.immersiveengineering.common.crafting.IEFuelHandler;
-import blusunrize.immersiveengineering.common.crafting.RecipeBannerAdvanced;
-import blusunrize.immersiveengineering.common.crafting.RecipeShapedIngredient;
-import blusunrize.immersiveengineering.common.crafting.RecipeShapelessIngredient;
+import blusunrize.immersiveengineering.common.crafting.*;
 import blusunrize.immersiveengineering.common.entities.*;
 import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.items.ItemBullet.WolfpackBullet;
 import blusunrize.immersiveengineering.common.items.ItemBullet.WolfpackPartBullet;
 import blusunrize.immersiveengineering.common.util.IEAchievements;
+import blusunrize.immersiveengineering.common.util.IEFluid.FluidPotion;
 import blusunrize.immersiveengineering.common.util.IEPotions;
 import blusunrize.immersiveengineering.common.util.IEVillagerTrades;
 import blusunrize.immersiveengineering.common.world.IEWorldGen;
@@ -63,6 +61,9 @@ import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.potion.PotionHelper;
+import net.minecraft.potion.PotionHelper.MixPredicate;
+import net.minecraft.potion.PotionType;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityBanner;
 import net.minecraft.tileentity.TileEntityFurnace;
@@ -84,6 +85,7 @@ import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 
@@ -164,6 +166,8 @@ public class IEContent
 	public static Fluid fluidBiodiesel;
 	public static Fluid fluidConcrete;
 
+	public static Fluid fluidPotion;
+
 	public static VillagerRegistry.VillagerProfession villagerProfession_engineer;
 
 	public static void preInit()
@@ -188,6 +192,11 @@ public class IEContent
 		if(!FluidRegistry.registerFluid(fluidConcrete))
 			fluidConcrete = FluidRegistry.getFluid("concrete");
 		FluidRegistry.addBucketForFluid(fluidConcrete);
+
+		fluidPotion = new FluidPotion("potion", new ResourceLocation("immersiveengineering:blocks/fluid/potion_still"), new ResourceLocation("immersiveengineering:blocks/fluid/potion_flow"));
+		if(!FluidRegistry.registerFluid(fluidPotion))
+			fluidPotion = FluidRegistry.getFluid("potion");
+		FluidRegistry.addBucketForFluid(fluidPotion);
 
 		blockOre = (BlockIEBase)new BlockIEBase("ore", Material.ROCK, PropertyEnum.create("type", BlockTypes_Ore.class), ItemBlockIEBase.class).setOpaque(true).setHardness(3.0F).setResistance(5.0F);
 		blockStorage = (BlockIEBase)new BlockIEBase("storage", Material.IRON, PropertyEnum.create("type", BlockTypes_MetalsIE.class), ItemBlockIEBase.class).setOpaque(true).setHardness(5.0F).setResistance(10.0F);
@@ -859,6 +868,11 @@ public class IEContent
 	public static void postInit()
 	{
 		IERecipes.postInitOreDictRecipes();
+
+		HashSet<PotionType> registered = new HashSet<>();
+		for(MixPredicate<PotionType> mixPredicate : PotionHelper.POTION_TYPE_CONVERSIONS)
+			if(registered.add(mixPredicate.input))
+				MixerRecipe.recipeList.add(new MixerRecipePotion(mixPredicate.input));
 	}
 
 	public static void registerToOreDict(String type, ItemIEBase item, int... metas)

@@ -45,10 +45,7 @@ public class GuiMixer extends GuiContainer
 						int fluidHeight = (int)(47*(fs.amount/capacity));
 						yy -= fluidHeight;
 						if(my >= yy&&my < yy+fluidHeight)
-						{
-							tooltip.add(fs.getLocalizedName());
-							tooltip.add(fs.amount+"/"+(int)capacity+"mB");
-						}
+							ClientUtils.addFluidTooltip(fs, tooltip, (int)capacity);
 					}
 				}
 		}
@@ -91,7 +88,7 @@ public class GuiMixer extends GuiContainer
 			{
 				int fluidHeight = (int)(47*(fs.amount/capacity));
 				yy -= fluidHeight;
-				ClientUtils.drawRepeatedFluidSprite(fs.getFluid(), guiLeft+76,yy, 58,fluidHeight);
+				ClientUtils.drawRepeatedFluidSprite(fs, guiLeft+76,yy, 58,fluidHeight);
 			}
 		}
 	}
