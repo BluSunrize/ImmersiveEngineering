@@ -55,12 +55,10 @@ public class TileRenderSheetmetalTank extends TileEntitySpecialRenderer<TileEnti
 
 			if(fs!=null)
 			{
-				int col = fs.getFluid().getColor();
-				GlStateManager.color((col>>16&255)/255.0f,(col>>8&255)/255.0f,(col&255)/255.0f, 1);
 				float h = fs.amount/(float)tile.tank.getCapacity();
 				GlStateManager.depthMask(false);
 				GlStateManager.translate(0,0,.004f);
-				ClientUtils.drawRepeatedFluidSprite(fs.getFluid(), 0,0+(1-h)*16, 16,h*16);
+				ClientUtils.drawRepeatedFluidSprite(fs, 0,0+(1-h)*16, 16,h*16);
 				GlStateManager.translate(0,0,-.004f);
 				GlStateManager.depthMask(true);
 			}

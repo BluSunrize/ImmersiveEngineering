@@ -130,25 +130,23 @@ public class TileRenderBottlingMachine extends TileEntitySpecialRenderer<TileEnt
 		if(fs!=null)
 		{
 			GlStateManager.pushMatrix();
-			int col = fs.getFluid().getColor();
-			GlStateManager.color((col>>16&255)/255.0f,(col>>8&255)/255.0f,(col&255)/255.0f, 1);
 			float level = fs.amount/(float)te.tanks[0].getCapacity();
 			GlStateManager.translate(-.21875,.376,1.21875);
 			GlStateManager.scale(scale, scale, scale);
 			float h = level*9;
-			ClientUtils.drawRepeatedFluidSprite(fs.getFluid(), 0,0, 7,h);
+			ClientUtils.drawRepeatedFluidSprite(fs, 0,0, 7,h);
 			GlStateManager.rotate(90,0,1,0);
-			ClientUtils.drawRepeatedFluidSprite(fs.getFluid(), 0,0, 7,h);
+			ClientUtils.drawRepeatedFluidSprite(fs, 0,0, 7,h);
 			GlStateManager.rotate(90,0,1,0);
 			GlStateManager.translate(-7,0,7);
-			ClientUtils.drawRepeatedFluidSprite(fs.getFluid(), 0,0, 7,h);
+			ClientUtils.drawRepeatedFluidSprite(fs, 0,0, 7,h);
 			GlStateManager.rotate(90,0,1,0);
-			ClientUtils.drawRepeatedFluidSprite(fs.getFluid(), 0,0, 7,h);
+			ClientUtils.drawRepeatedFluidSprite(fs, 0,0, 7,h);
 
 			GlStateManager.rotate(90,1,0,0);
-			ClientUtils.drawRepeatedFluidSprite(fs.getFluid(), 0,0, 7,7);
+			ClientUtils.drawRepeatedFluidSprite(fs, 0,0, 7,7);
 			GlStateManager.translate(0,0,-h);
-			ClientUtils.drawRepeatedFluidSprite(fs.getFluid(), 0,0, 7,7);
+			ClientUtils.drawRepeatedFluidSprite(fs, 0,0, 7,7);
 
 			GlStateManager.scale(1/scale, 1/scale, 1/scale);
 			GlStateManager.translate(0,-1,-1);

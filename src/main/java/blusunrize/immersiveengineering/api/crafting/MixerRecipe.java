@@ -8,7 +8,9 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 /**
  * @author BluSunrize - 20.02.2016
@@ -22,10 +24,12 @@ public class MixerRecipe extends MultiblockRecipe
 
 	public final IngredientStack[] itemInputs;
 	public final FluidStack fluidInput;
-	public final FluidStack fluidOutput;
+	protected final FluidStack fluidOutput;
+	public final int fluidAmount;
 	public MixerRecipe(FluidStack fluidOutput, FluidStack fluidInput, Object[] itemInputs, int energy)
 	{
 		this.fluidOutput = fluidOutput;
+		this.fluidAmount = fluidOutput.amount;
 		this.fluidInput = fluidInput;
 		this.itemInputs = new IngredientStack[itemInputs==null?0:itemInputs.length];
 		if(itemInputs!=null)
@@ -56,24 +60,11 @@ public class MixerRecipe extends MultiblockRecipe
 				return recipe;
 		return null;
 	}
-//	public static List<SqueezerRecipe> removeRecipes(ItemStack output)
-//	{
-//		List<SqueezerRecipe> list = new ArrayList();
-//		for(ComparableItemStack mold : recipeList.keySet())
-//		{
-//			Iterator<SqueezerRecipe> it = recipeList.get(mold).iterator();
-//			while(it.hasNext())
-//			{
-//				SqueezerRecipe ir = it.next();
-//				if(OreDictionary.itemMatches(ir.output, output, true))
-//				{
-//					list.add(ir);
-//					it.remove();
-//				}
-//			}
-//		}
-//		return list;
-//	}
+
+	public FluidStack getFluidOutput(FluidStack input, ItemStack... components)
+	{
+		return this.fluidOutput;
+	}
 
 	public boolean matches(FluidStack fluid, ItemStack... components)
 	{
@@ -118,6 +109,26 @@ public class MixerRecipe extends MultiblockRecipe
 			return true;
 		}
 		return false;
+	}
+
+	public int[] getUsedSlots(FluidStack input, ItemStack... components)
+	{
+		Set<Integer> usedSlotSet = new HashSet<Integer>();
+		for(int i=0; i<itemInputs.length; i++)
+		{
+			IngredientStack ingr = itemInputs[i];
+			for(int j=0; j<components.length; j++)
+				if(!usedSlotSet.contains(j) && components[j]!=null && ingr.matchesItemStack(components[j]))
+				{
+					usedSlotSet.add(j);
+					break;
+				}
+		}
+		int it = 0;
+		int[] processSlots = new int[usedSlotSet.size()];
+		for(Integer slot : usedSlotSet)
+			processSlots[it++] = slot;
+		return processSlots;
 	}
 
 	@Override

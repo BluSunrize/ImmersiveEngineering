@@ -2,11 +2,11 @@ package blusunrize.immersiveengineering.common.util.commands;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.util.commands.CommandHandler.IESubCommand;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.translation.I18n;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -31,7 +31,7 @@ public class CommandHelp extends IESubCommand
 			{
 				if(com.getIdent().equalsIgnoreCase(args[1]))
 				{
-					String h = I18n.format(com.getHelp(sub));
+					String h = I18n.translateToLocal(com.getHelp(sub));
 					for(String s : h.split("<br>"))
 						sender.addChatMessage(new TextComponentString(s));
 				}
@@ -39,7 +39,7 @@ public class CommandHelp extends IESubCommand
 		}
 		else
 		{
-			String h = I18n.format(getHelp(""));
+			String h = I18n.translateToLocal(getHelp(""));
 			for(String s : h.split("<br>"))
 				sender.addChatMessage(new TextComponentString(s));
 			String sub = "";

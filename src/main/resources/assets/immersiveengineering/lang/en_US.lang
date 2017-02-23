@@ -178,6 +178,7 @@ tile.immersiveengineering.metalMultiblock.excavator.name=Excavator
 tile.immersiveengineering.metalMultiblock.bucket_wheel.name=Bucket Wheel
 tile.immersiveengineering.metalMultiblock.arc_furnace.name=Arc Furnace
 tile.immersiveengineering.metalMultiblock.lightningrod.name=Lightning Rod
+tile.immersiveengineering.metalMultiblock.mixer.name=Mixer
 
 tile.immersiveengineering.metalDecoration.structuralArm.name=Structural Arm
 
@@ -193,11 +194,18 @@ tile.immersiveengineering.molten_constantan.name=Molten Constantan
 #Hydraulicraft Compat
 tile.harvesterTrolley.ieCrop.name=Industrial Hemp Harvester Trolley 
 
+tile.immersiveengineering.fluidCreosote.name=Creosote Oil
+tile.immersiveengineering.fluidPlantoil.name=Plant Oil
+tile.immersiveengineering.fluidEthanol.name=Ethanol
+tile.immersiveengineering.fluidBiodiesel.name=Biodiesel
+tile.immersiveengineering.fluidConcrete.name=Liquid Concrete
+
 fluid.creosote=Creosote Oil
 fluid.plantoil=Plant Oil
 fluid.ethanol=Ethanol
 fluid.biodiesel=Biodiesel
 fluid.concrete=Liquid Concrete
+fluid.potion=Potion
 
 # ITEMS
 item.immersiveengineering.metal.ingotCopper.name=Copper Ingot
@@ -580,6 +588,7 @@ desc.immersiveengineering.info.mininglvl.6=§5Manyullyn§d+
 desc.immersiveengineering.info.durability=Durability: %1$s
 
 desc.immersiveengineering.info.holdShift=§6Hold Shift§r
+desc.immersiveengineering.info.holdShiftForInfo=§8Hold Shift for more info§r
 
 desc.immersiveengineering.info.mineral.Iron=Iron
 desc.immersiveengineering.info.mineral.Magnetite=Magnetite
