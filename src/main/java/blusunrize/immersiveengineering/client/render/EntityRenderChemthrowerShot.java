@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidStack;
 import org.lwjgl.opengl.GL11;
 
 public class EntityRenderChemthrowerShot extends Render
@@ -24,9 +24,13 @@ public class EntityRenderChemthrowerShot extends Render
 	@Override
 	public void doRender(Entity entity, double x, double y, double z, float f0, float f1)
 	{
-		Fluid f = ((EntityChemthrowerShot)entity).getFluid();
+		FluidStack f = ((EntityChemthrowerShot)entity).getFluid();
 		if(f==null)
-			return;
+		{
+			f = ((EntityChemthrowerShot)entity).getFluidSynced();
+			if(f==null)
+				return;
+		}
 
 		GlStateManager.pushMatrix();
 		GlStateManager.translate(x, y, z);
@@ -37,10 +41,10 @@ public class EntityRenderChemthrowerShot extends Render
 		GlStateManager.rotate(180.0F - this.renderManager.playerViewY, 0.0F, 1.0F, 0.0F);
 		GlStateManager.rotate(-this.renderManager.playerViewX, 1.0F, 0.0F, 0.0F);
 
-		TextureAtlasSprite sprite = ClientUtils.mc().getTextureMapBlocks().getAtlasSprite(f.getStill().toString());
+		TextureAtlasSprite sprite = ClientUtils.mc().getTextureMapBlocks().getAtlasSprite(f.getFluid().getStill(f).toString());
 		if(sprite!=null)
 		{
-			int colour = f.getColor();
+			int colour = f.getFluid().getColor(f);
 			float a = (colour>>24&255)/255f;
 			float r = (colour>>16&255)/255f;
 			float g = (colour>>8&255)/255f;

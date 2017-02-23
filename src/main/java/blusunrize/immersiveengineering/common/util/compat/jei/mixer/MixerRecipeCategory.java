@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.common.util.compat.jei.mixer;
 
 import blusunrize.immersiveengineering.api.crafting.MixerRecipe;
+import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IDrawable;
@@ -39,14 +40,6 @@ public class MixerRecipeCategory extends IERecipeCategory<MixerRecipe, MixerReci
 	@Override
 	public void setRecipe(IRecipeLayout recipeLayout, MixerRecipeWrapper recipeWrapper, IIngredients ingredients)
 	{
-		String outputFluids ="";
-		String inputFluids ="";
-		for(FluidStack stack : recipeWrapper.getFluidOut())
-			outputFluids+=(stack!=null?(stack.getLocalizedName()+"~"+stack.tag):"null")+" || ";
-		for(FluidStack stack : recipeWrapper.getFluidIn())
-			inputFluids+=(stack!=null?(stack.getLocalizedName()+"~"+stack.tag):"null")+" || ";
-		System.out.println("Set recipe: "+outputFluids+" - made from "+inputFluids);
-
 		IGuiFluidStackGroup guiFluidStacks = recipeLayout.getFluidStacks();
 		guiFluidStacks.init(0, true, 8,3, 58,47, 4000, false, null);
 		guiFluidStacks.set(0, recipeWrapper.getFluidIn());
@@ -69,10 +62,10 @@ public class MixerRecipeCategory extends IERecipeCategory<MixerRecipe, MixerReci
 	@Override
 	public void drawExtras(Minecraft minecraft)
 	{
-//		for(int[] ia : inputSlots)
-//			slotDrawable.draw(minecraft, ia[0],ia[1]);
-//		arrowDrawable.draw(minecraft, 77,19);
-//		ClientUtils.drawSlot(100,17,16,47);
+		for(int[] ia : inputSlots)
+			slotDrawable.draw(minecraft, ia[0],ia[1]);
+		arrowDrawable.draw(minecraft, 77,19);
+		ClientUtils.drawSlot(100,17,16,47);
 	}
 
 

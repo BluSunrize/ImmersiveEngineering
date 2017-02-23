@@ -63,10 +63,7 @@ public class BlockIEFluidConcrete extends BlockIEFluid
 			else
 				world.setBlockState(pos, IEContent.blockStoneDecoration.getStateFromMeta(BlockTypes_StoneDecoration.CONCRETE.getMeta()));
 			for(EntityLivingBase living : world.getEntitiesWithinAABB(EntityLivingBase.class, new AxisAlignedBB(pos,pos.add(1,1,1))))
-			{
-				System.out.println("appply concrete feet");
 				living.addPotionEffect(new PotionEffect(IEPotions.concreteFeet,Integer.MAX_VALUE));
-			}
 			return;
 		}
 		else

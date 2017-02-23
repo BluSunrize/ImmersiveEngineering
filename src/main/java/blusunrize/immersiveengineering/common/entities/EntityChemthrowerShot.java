@@ -2,6 +2,8 @@ package blusunrize.immersiveengineering.common.entities;
 
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEffect;
+import blusunrize.immersiveengineering.common.util.IEFluid;
+import com.google.common.base.Optional;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -9,7 +11,6 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
@@ -18,24 +19,24 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
 
 public class EntityChemthrowerShot extends EntityIEProjectile
 {
-	private Fluid fluid;
-	private static final DataParameter<String> dataMarker_fluid = EntityDataManager.createKey(EntityChemthrowerShot.class, DataSerializers.STRING);
+	private FluidStack fluid;
+	private static final DataParameter<Optional<FluidStack>> dataMarker_fluid = EntityDataManager.createKey(EntityChemthrowerShot.class, IEFluid.OPTIONAL_FLUID_STACK);
 
 	public EntityChemthrowerShot(World world)
 	{
 		super(world);
 	}
-	public EntityChemthrowerShot(World world, double x, double y, double z, double ax, double ay, double az, Fluid fluid)
+	public EntityChemthrowerShot(World world, double x, double y, double z, double ax, double ay, double az, FluidStack fluid)
 	{
 		super(world, x,y,z, ax,ay,az);
 		this.fluid = fluid;
 		this.setFluidSynced();
 	}
-	public EntityChemthrowerShot(World world, EntityLivingBase living, double ax, double ay, double az, Fluid fluid)
+	public EntityChemthrowerShot(World world, EntityLivingBase living, double ax, double ay, double az, FluidStack fluid)
 	{
 		super(world, living, ax, ay, az);
 		this.fluid = fluid;
@@ -45,19 +46,19 @@ public class EntityChemthrowerShot extends EntityIEProjectile
 	protected void entityInit()
 	{
 		super.entityInit();
-		this.dataManager.register(dataMarker_fluid, "");
+		this.dataManager.register(dataMarker_fluid, Optional.absent());
 	}
 
 	public void setFluidSynced()
 	{
 		if(this.getFluid()!=null)
-			this.dataManager.set(dataMarker_fluid, this.getFluid().getName());
+			this.dataManager.set(dataMarker_fluid, Optional.of(this.getFluid()));
 	}
-	public Fluid getFluidSynced()
+	public FluidStack getFluidSynced()
 	{
-		return FluidRegistry.getFluid(this.dataManager.get(dataMarker_fluid));
+		return this.dataManager.get(dataMarker_fluid).orNull();
 	}
-	public Fluid getFluid()
+	public FluidStack getFluid()
 	{
 		return fluid;
 	}
@@ -67,8 +68,9 @@ public class EntityChemthrowerShot extends EntityIEProjectile
 	{
 		if(getFluid()!=null)
 		{
-			boolean isGas = getFluid().isGaseous()||ChemthrowerHandler.isGas(getFluid());
-			return (isGas?.025f:.05F) * (getFluid().getDensity()<0?-1:1);
+			FluidStack fluidStack = getFluid();
+			boolean isGas = fluidStack.getFluid().isGaseous(fluidStack)||ChemthrowerHandler.isGas(fluidStack.getFluid());
+			return (isGas?.025f:.05F) * (fluidStack.getFluid().getDensity(fluidStack)<0?-1:1);
 		}
 		return super.getGravity();
 	}
@@ -76,7 +78,7 @@ public class EntityChemthrowerShot extends EntityIEProjectile
 	@Override
 	public boolean canIgnite()
 	{
-		return ChemthrowerHandler.isFlammable(getFluid());
+		return ChemthrowerHandler.isFlammable(getFluid()==null?null:getFluid().getFluid());
 	}
 
 	@Override
@@ -96,8 +98,10 @@ public class EntityChemthrowerShot extends EntityIEProjectile
 	{
 		if(!this.worldObj.isRemote && getFluid()!=null)
 		{
-			ChemthrowerEffect effect = ChemthrowerHandler.getEffect(getFluid());
-			boolean fire = getFluid().getTemperature()>1000;
+			FluidStack fluidStack = getFluid();
+			Fluid fluid = fluidStack.getFluid();
+			ChemthrowerEffect effect = ChemthrowerHandler.getEffect(fluid);
+			boolean fire = fluid.getTemperature(fluidStack)>1000;
 			if(effect!=null)
 			{
 				ItemStack thrower = null;
@@ -106,13 +110,13 @@ public class EntityChemthrowerShot extends EntityIEProjectile
 					thrower = shooter.getHeldItem(EnumHand.MAIN_HAND);
 
 				if(mop.typeOfHit== Type.ENTITY)
-					effect.applyToEntity((EntityLivingBase)mop.entityHit, shooter, thrower, fluid);
+					effect.applyToEntity((EntityLivingBase)mop.entityHit, shooter, thrower, fluidStack);
 				else if(mop.typeOfHit== Type.BLOCK)
-					effect.applyToBlock(worldObj, mop, shooter, thrower, fluid);
+					effect.applyToBlock(worldObj, mop, shooter, thrower, fluidStack);
 			}
-			else if(mop.entityHit!=null && getFluid().getTemperature()>500)
+			else if(mop.entityHit!=null && fluid.getTemperature(fluidStack)>500)
 			{
-				int tempDiff = getFluid().getTemperature()-300;
+				int tempDiff = fluid.getTemperature(fluidStack)-300;
 				int damage = Math.abs(tempDiff)/500;
 				if(mop.entityHit.attackEntityFrom(DamageSource.lava, damage))
 					mop.entityHit.hurtResistantTime = (int)(mop.entityHit.hurtResistantTime*.75);

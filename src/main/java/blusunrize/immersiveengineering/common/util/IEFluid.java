@@ -6,7 +6,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializer;
-import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.potion.PotionUtils;
@@ -86,8 +85,8 @@ public class IEFluid extends Fluid
 		public int getColor(FluidStack stack)
 		{
 			if(stack.tag!=null)
-				return PotionUtils.getPotionColorFromEffectList(PotionUtils.getEffectsFromTag(stack.tag));
-			return 0x0000ff;
+				return 0xff000000 | PotionUtils.getPotionColorFromEffectList(PotionUtils.getEffectsFromTag(stack.tag));
+			return 0xff0000ff;
 		}
 	}
 
@@ -96,16 +95,15 @@ public class IEFluid extends Fluid
 		@Override
 		public void write(PacketBuffer buf, Optional<FluidStack> value)
 		{
+			buf.writeBoolean(value.isPresent());
 			FluidStack fs = value.orNull();
-			if(fs==null)
-				buf.writeShort(-1);
-			else
+			if(fs!=null)
 				buf.writeNBTTagCompoundToBuffer(fs.writeToNBT(new NBTTagCompound()));
 		}
 		@Override
 		public Optional<FluidStack> read(PacketBuffer buf) throws java.io.IOException
 		{
-			FluidStack fs = buf.readShort()<0?null : FluidStack.loadFluidStackFromNBT(buf.readNBTTagCompoundFromBuffer());
+			FluidStack fs = !buf.readBoolean()?null : FluidStack.loadFluidStackFromNBT(buf.readNBTTagCompoundFromBuffer());
 			return Optional.fromNullable(fs);
 		}
 		@Override
@@ -114,8 +112,4 @@ public class IEFluid extends Fluid
 			return new DataParameter(id, this);
 		}
 	};
-	static
-	{
-		DataSerializers.registerSerializer(OPTIONAL_FLUID_STACK);
-	}
 }

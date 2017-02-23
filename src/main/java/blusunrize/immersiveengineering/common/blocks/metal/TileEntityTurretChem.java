@@ -74,7 +74,7 @@ public class TileEntityTurretChem extends TileEntityTurret
 				for(int i = 0; i < split; i++)
 				{
 					Vec3d vecDir = v.addVector(worldObj.rand.nextGaussian()*scatter, worldObj.rand.nextGaussian()*scatter, worldObj.rand.nextGaussian()*scatter);
-					EntityChemthrowerShot chem = new EntityChemthrowerShot(worldObj, getPos().getX()+.5+v.xCoord*0.875,getPos().getY()+1.5+v.yCoord*0.875,getPos().getZ()+.5+v.zCoord*0.875, 0,0,0, fs.getFluid());
+					EntityChemthrowerShot chem = new EntityChemthrowerShot(worldObj, getPos().getX()+.5+v.xCoord*0.875,getPos().getY()+1.5+v.yCoord*0.875,getPos().getZ()+.5+v.zCoord*0.875, 0,0,0, fs);
 					chem.motionX = vecDir.xCoord*range;
 					chem.motionY = vecDir.yCoord*range;
 					chem.motionZ = vecDir.zCoord*range;
