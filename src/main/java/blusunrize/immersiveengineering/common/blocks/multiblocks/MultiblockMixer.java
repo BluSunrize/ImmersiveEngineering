@@ -33,7 +33,7 @@ public class MultiblockMixer implements IMultiblock
 					{
 						if(l==0&&w==0)
 							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration0,1,BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta());
-						else if(l<2 && w==1)
+						else if((l<2&&w==1) || (l==1&&w==0))
 							structure[h][l][w] = new ItemStack(IEContent.blockMetalDevice1,1,BlockTypes_MetalDevice1.FLUID_PIPE.getMeta());
 						else
 							structure[h][l][w] = new ItemStack(IEContent.blockMetalDecoration1,1,BlockTypes_MetalDecoration1.STEEL_SCAFFOLDING_0.getMeta());
@@ -70,9 +70,14 @@ public class MultiblockMixer implements IMultiblock
 			ImmersiveEngineering.proxy.drawSpecificFluidPipe("002200");
 			return true;
 		}
+		if(iterator==3)
+		{
+			ImmersiveEngineering.proxy.drawSpecificFluidPipe("220000");
+			return true;
+		}
 		if(iterator==4)
 		{
-			ImmersiveEngineering.proxy.drawSpecificFluidPipe("000110");
+			ImmersiveEngineering.proxy.drawSpecificFluidPipe("100110");
 			return true;
 		}
 		return false;
@@ -180,7 +185,7 @@ public class MultiblockMixer implements IMultiblock
 							if(!Utils.isBlockAt(world, pos, IEContent.blockMetalDecoration0, BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta()))
 								return false;
 						}
-						else if(l<1 && w==0)
+						else if((l<1&&w==0)||(l==0&&w==-1))
 						{
 							if(!Utils.isBlockAt(world, pos, IEContent.blockMetalDevice1, BlockTypes_MetalDevice1.FLUID_PIPE.getMeta()))
 								return false;
@@ -227,8 +232,8 @@ public class MultiblockMixer implements IMultiblock
 	}
 
 	static final IngredientStack[] materials = new IngredientStack[]{
-			new IngredientStack("scaffoldingSteel", 6),
-			new IngredientStack(new ItemStack(IEContent.blockMetalDevice1, 2, BlockTypes_MetalDevice1.FLUID_PIPE.getMeta())),
+			new IngredientStack("scaffoldingSteel", 5),
+			new IngredientStack(new ItemStack(IEContent.blockMetalDevice1, 3, BlockTypes_MetalDevice1.FLUID_PIPE.getMeta())),
 			new IngredientStack(new ItemStack(IEContent.blockMetalDecoration0, 1, BlockTypes_MetalDecoration0.RS_ENGINEERING.getMeta())),
 			new IngredientStack(new ItemStack(IEContent.blockMetalDecoration0, 4, BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta())),
 			new IngredientStack("blockSheetmetalIron", 4),

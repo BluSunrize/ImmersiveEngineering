@@ -17,19 +17,6 @@ import net.minecraftforge.common.property.Properties;
 
 public class BlockMetalMultiblocks extends BlockIEMultiblock<BlockTypes_MetalMultiblock>
 {
-	public static final int META_lightningRod=0;
-	public static final int META_dieselGenerator=1;
-	public static final int META_squeezer=2;
-	public static final int META_fermenter=3;
-	public static final int META_refinery=4;
-	public static final int META_crusher=5;
-	public static final int META_bucketWheel=6;
-	public static final int META_excavator=7;
-	public static final int META_arcFurnace=8;
-	public static final int META_tank=9;
-	public static final int META_silo=10;
-	public static final int META_assembler=11;
-	public static final int META_bottlingMachine=12;
 	public BlockMetalMultiblocks()
 	{
 		super("metalMultiblock",Material.IRON, PropertyEnum.create("type", BlockTypes_MetalMultiblock.class), ItemBlockIEBase.class, IEProperties.DYNAMICRENDER,IEProperties.BOOLEANS[0],Properties.AnimationProperty,IEProperties.OBJ_TEXTURE_REMAP);
