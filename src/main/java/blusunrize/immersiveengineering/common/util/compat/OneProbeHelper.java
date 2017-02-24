@@ -5,14 +5,17 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxProvider;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces;
+import blusunrize.immersiveengineering.common.blocks.TileEntityMultiblockPart;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityTeslaCoil;
-
 import com.google.common.base.Function;
+import mcjty.theoneprobe.Tools;
 import mcjty.theoneprobe.api.*;
+import mcjty.theoneprobe.config.Config;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.event.FMLInterModComms;
@@ -51,6 +54,7 @@ public class OneProbeHelper extends IECompatModule implements Function<ITheOnePr
 		input.registerProbeConfigProvider(energyInfo);
 		input.registerProvider(new ProcessProvider());
 		input.registerProvider(new TeslaCoilProvider());
+		input.registerBlockDisplayOverride(new MultiblockDisplayOverride());
 		return null;
 	}
 
@@ -164,5 +168,32 @@ public class OneProbeHelper extends IECompatModule implements Function<ITheOnePr
 			}
 		}
 		
+	}
+	public static class MultiblockDisplayOverride implements IBlockDisplayOverride
+	{
+		@Override
+		public boolean overrideStandardInfo(ProbeMode mode, IProbeInfo probeInfo, EntityPlayer player, World world, IBlockState blockState, IProbeHitData data)
+		{
+			TileEntity te = world.getTileEntity(data.getPos());
+			if (te instanceof TileEntityMultiblockPart)
+			{
+				ItemStack stack = new ItemStack(blockState.getBlock(), 1, blockState.getBlock().getMetaFromState(blockState));
+				if(Tools.show(mode, Config.getRealConfig().getShowModName()))
+				{
+					probeInfo.horizontal()
+							.item(stack)
+							.vertical()
+							.itemLabel(stack)
+							.text(TextStyleClass.MODNAME+ImmersiveEngineering.MODNAME);
+				} else
+				{
+					probeInfo.horizontal(probeInfo.defaultLayoutStyle().alignment(ElementAlignment.ALIGN_CENTER))
+							.item(stack)
+							.itemLabel(stack);
+				}
+				return true;
+			}
+			return false;
+		}
 	}
 }
