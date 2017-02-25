@@ -108,6 +108,16 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 		}
 		super.harvestBlock(world, player, pos, state, tile, stack);
 	}
+
+	@Override
+	public boolean canEntityDestroy(IBlockState state, IBlockAccess world, BlockPos pos, Entity entity)
+	{
+		TileEntity tile = world.getTileEntity(pos);
+		if(tile instanceof IEntityProof)
+			return ((IEntityProof)tile).canEntityDestroy(entity);
+		return super.canEntityDestroy(state, world, pos, entity);
+	}
+
 	@Override
 	public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player)
 	{
@@ -313,10 +323,10 @@ public abstract class BlockIETileProvider<E extends Enum<E> & BlockIEBase.IBlock
 			if(b)
 				return b;
 		}
-		if(tile instanceof IGuiTile && hand == EnumHand.MAIN_HAND && !player.isSneaking() && ((IGuiTile) tile).canOpenGui())
+		if(tile instanceof IGuiTile && hand == EnumHand.MAIN_HAND && !player.isSneaking())
 		{
 			TileEntity master = ((IGuiTile)tile).getGuiMaster();
-			if(!world.isRemote && master!=null)
+			if(!world.isRemote && master!=null && ((IGuiTile)master).canOpenGui(player))
 				CommonProxy.openGuiForTile(player,(TileEntity & IGuiTile)master);
 			return true;
 		}

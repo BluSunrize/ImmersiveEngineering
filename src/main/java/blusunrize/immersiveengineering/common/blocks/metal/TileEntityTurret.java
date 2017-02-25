@@ -6,6 +6,7 @@ import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
+import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -29,6 +30,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -38,7 +40,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public abstract class TileEntityTurret extends TileEntityIEBase implements ITickable, IIEInternalFluxHandler, IIEInventory, IHasDummyBlocks, ITileDrop, IDirectionalTile, IBlockBounds, IGuiTile, IHammerInteraction, IHasObjProperty
+public abstract class TileEntityTurret extends TileEntityIEBase implements ITickable, IIEInternalFluxHandler, IIEInventory, IHasDummyBlocks, ITileDrop, IDirectionalTile, IBlockBounds, IGuiTile, IEntityProof, IHammerInteraction, IHasObjProperty
 {
 	public boolean dummy = false;
 	public FluxStorage energyStorage = new FluxStorage(16000);
@@ -101,7 +103,7 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 			markContainingBlockForUpdate(null);
 
 		int energy = IEConfig.Machines.turret_consumption;
-		if(worldObj.isBlockIndirectlyGettingPowered(getPos())==0^redstoneControlInverted)
+		if(worldObj.isBlockIndirectlyGettingPowered(getPos())>0^redstoneControlInverted)
 		{
 			if(energyStorage.extractEnergy(energy, true)==energy)
 			{
@@ -167,7 +169,7 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 				continue;
 			if(entity instanceof EntityPlayer && !attackPlayers)
 				continue;
-			if(!(entity instanceof EntityPlayer) && !entity.isCreatureType(EnumCreatureType.MONSTER, false) && !attackNeutrals)
+			if(!(entity instanceof EntityPlayer) && !(entity instanceof EntityAnimal) && !entity.isCreatureType(EnumCreatureType.MONSTER, false) && !attackNeutrals)
 				continue;
 
 			if(target==null || entity.getDistanceSq(getPos())<target.getDistanceSq(getPos()))
@@ -189,6 +191,13 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 	protected abstract int getActiveTicks();
 	protected abstract boolean loopActivation();
 	protected abstract void activate();
+
+	protected boolean hasOwnerRights(EntityPlayer player)
+	{
+		if(player.capabilities.isCreativeMode || owner==null || owner.isEmpty())
+			return true;
+		return owner.equalsIgnoreCase(player.getName());
+	}
 
 	@Override
 	public void receiveMessageFromClient(NBTTagCompound message)
@@ -293,20 +302,20 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 	@Override
 	public boolean hammerUseSide(EnumFacing side, EntityPlayer player, float hitX, float hitY, float hitZ)
 	{
-//		if(dummy)
-//		{
-//			TileEntity te = worldObj.getTileEntity(getPos().offset(facing,-1));
-//			if(te instanceof TileEntityTurret)
-//				return ((TileEntityTurret)te).hammerUseSide(side, player, hitX, hitY, hitZ);
-//			return false;
-//		}
-//		if(!player.isSneaking())
-//		{
-//			redstoneControlInverted = !redstoneControlInverted;
-//			ChatUtils.sendServerNoSpamMessages(player, new TextComponentTranslation(Lib.CHAT_INFO+"rsControl."+(redstoneControlInverted?"invertedOn":"invertedOff")));
-//			markDirty();
-//			this.markContainingBlockForUpdate(null);
-//		}
+		if(dummy)
+		{
+			TileEntity te = worldObj.getTileEntity(getPos().offset(facing,-1));
+			if(te instanceof TileEntityTurret)
+				return ((TileEntityTurret)te).hammerUseSide(side, player, hitX, hitY, hitZ);
+			return false;
+		}
+		if(player.isSneaking())
+		{
+			redstoneControlInverted = !redstoneControlInverted;
+			ChatUtils.sendServerNoSpamMessages(player, new TextComponentTranslation(Lib.CHAT_INFO+"rsControl."+(redstoneControlInverted?"invertedOn":"invertedOff")));
+			markDirty();
+			this.markContainingBlockForUpdate(null);
+		}
 		return true;
 	}
 
@@ -331,9 +340,17 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 	}
 
 	@Override
+	public boolean canOpenGui(EntityPlayer player)
+	{
+		if(hasOwnerRights(player))
+			return true;
+		ChatUtils.sendServerNoSpamMessages(player, new TextComponentTranslation(Lib.CHAT_INFO+"notOwner", owner));
+		return false;
+	}
+	@Override
 	public boolean canOpenGui()
 	{
-		return true;
+		return false;
 	}
 	@Override
 	public int getGuiID()
@@ -380,6 +397,14 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 	public boolean canRotate(EnumFacing axis)
 	{
 		return false;
+	}
+
+	@Override
+	public boolean canEntityDestroy(Entity entity)
+	{
+		if(entity instanceof EntityPlayer)
+			hasOwnerRights((EntityPlayer)entity);
+		return true;
 	}
 
 	@Override

@@ -7,6 +7,7 @@ import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.statemap.StateMapperBase;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -182,6 +183,11 @@ public class IEBlockInterfaces
 		Collection<ItemStack> getExtraDrops(EntityPlayer player, IBlockState state);
 	}
 
+	public interface IEntityProof
+	{
+		boolean canEntityDestroy(Entity entity);
+	}
+
 	public interface IPlayerInteraction
 	{
 		boolean interact(EnumFacing side, EntityPlayer player, EnumHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ);
@@ -244,6 +250,10 @@ public class IEBlockInterfaces
 
 	public interface IGuiTile
 	{
+		default boolean canOpenGui(EntityPlayer player)
+		{
+			return canOpenGui();
+		}
 		boolean canOpenGui();
 		int getGuiID();
 		TileEntity getGuiMaster();
