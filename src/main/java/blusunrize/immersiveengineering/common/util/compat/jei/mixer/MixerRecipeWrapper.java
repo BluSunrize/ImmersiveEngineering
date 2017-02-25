@@ -13,11 +13,13 @@ import java.util.List;
 
 public class MixerRecipeWrapper extends MultiblockRecipeWrapper
 {
+	public boolean potionWrapper = false;
 	public MixerRecipeWrapper(MixerRecipe recipe)
 	{
 		super(recipe);
 		if(recipe instanceof MixerRecipePotion)
 		{
+			potionWrapper = true;
 			recipeInputs = new List[]{new ArrayList()};
 			fluidOutputs.clear();
 			for(PotionHelper.MixPredicate<PotionType> mixPredicate : PotionHelper.POTION_TYPE_CONVERSIONS)
