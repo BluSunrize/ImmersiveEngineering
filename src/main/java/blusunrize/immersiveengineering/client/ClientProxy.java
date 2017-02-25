@@ -724,7 +724,14 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.Crafting(ManualHelper.getManual(), "railgun2", new ItemStack(IEContent.itemToolUpgrades,1,9)),
 				new ManualPages.Crafting(ManualHelper.getManual(), "railgun3", new ItemStack(IEContent.itemToolUpgrades,1,8)));
 		ManualHelper.addEntry("razorwire", ManualHelper.CAT_MACHINES,
-				new ManualPages.CraftingMulti(ManualHelper.getManual(), "razorwire0", new ItemStack(IEContent.blockMetalDecoration2,1,BlockTypes_MetalDecoration2.RAZOR_WIRE.getMeta())));
+				new ManualPages.Crafting(ManualHelper.getManual(), "razorwire0", new ItemStack(IEContent.blockMetalDecoration2,1,BlockTypes_MetalDecoration2.RAZOR_WIRE.getMeta())));
+		ManualHelper.addEntry("turret", ManualHelper.CAT_MACHINES,
+				new ManualPages.Crafting(ManualHelper.getManual(), "turret0"),
+				new ManualPages.Crafting(ManualHelper.getManual(), "turret1"),
+				new ManualPages.Crafting(ManualHelper.getManual(), "turret2", new ItemStack(IEContent.blockMetalDevice1,1,BlockTypes_MetalDevice1.TURRET_CHEM.getMeta())),
+				new ManualPages.Crafting(ManualHelper.getManual(), "turret3"),
+				new ManualPages.Crafting(ManualHelper.getManual(), "turret4", new ItemStack(IEContent.blockMetalDevice1,1,BlockTypes_MetalDevice1.TURRET_GUN.getMeta())),
+				new ManualPages.Crafting(ManualHelper.getManual(), "turret5"));
 
 		ManualHelper.addEntry("improvedBlastfurnace", ManualHelper.CAT_HEAVYMACHINES,
 				new ManualPages.Crafting(ManualHelper.getManual(), "improvedBlastfurnace0", new ItemStack(IEContent.blockStoneDecoration,1,BlockTypes_StoneDecoration.BLASTBRICK_REINFORCED.getMeta())),
@@ -752,7 +759,8 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.Text(ManualHelper.getManual(), "crusher1"));
 		ManualHelper.addEntry("mixer", ManualHelper.CAT_HEAVYMACHINES,
 				new ManualPageMultiblock(ManualHelper.getManual(), "mixer0", MultiblockMixer.instance),
-				new ManualPages.Text(ManualHelper.getManual(), "mixer1"));
+				new ManualPages.Text(ManualHelper.getManual(), "mixer1"),
+				new ManualPages.Text(ManualHelper.getManual(), "mixer2"));
 		sortedMap = SqueezerRecipe.getFluidValuesSorted(IEContent.fluidPlantoil, true);
 		table = formatToTable_ItemIntHashmap(sortedMap, "mB");
 		ManualHelper.addEntry("squeezer", ManualHelper.CAT_HEAVYMACHINES,

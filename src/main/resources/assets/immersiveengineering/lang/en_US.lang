@@ -651,6 +651,7 @@ desc.immersiveengineering.info.multiblock.IE:ArcFurnace=Arc Furnace
 desc.immersiveengineering.info.multiblock.IE:Assembler=Assembler
 desc.immersiveengineering.info.multiblock.IE:BlastFurnace=Crude Blast Furnace
 desc.immersiveengineering.info.multiblock.IE:BlastFurnaceAdvanced=Improved Blast Furnace
+desc.immersiveengineering.info.multiblock.IE:BottlingMachine=Bottling Machine
 desc.immersiveengineering.info.multiblock.IE:BucketWheel=Bucket Wheel
 desc.immersiveengineering.info.multiblock.IE:CokeOven=Coke Oven
 desc.immersiveengineering.info.multiblock.IE:Crusher=Crusher
@@ -659,6 +660,7 @@ desc.immersiveengineering.info.multiblock.IE:Excavator=Excavator
 desc.immersiveengineering.info.multiblock.IE:Fermenter=Fermenter
 desc.immersiveengineering.info.multiblock.IE:Lightningrod=Lightning Rod
 desc.immersiveengineering.info.multiblock.IE:MetalPress=Metal Press
+desc.immersiveengineering.info.multiblock.IE:Mixer=Mixer
 desc.immersiveengineering.info.multiblock.IE:Refinery=Refinery
 desc.immersiveengineering.info.multiblock.IE:SheetmetalTank=Tank
 desc.immersiveengineering.info.multiblock.IE:Silo=Silo
@@ -763,6 +765,7 @@ chat.immersiveengineering.info.rsControl.invertedOn=Redstone control: Inverted
 chat.immersiveengineering.info.rsControl.invertedOff=Redstone control: Not inverted
 chat.immersiveengineering.info.tesla.highPower=Power mode: High
 chat.immersiveengineering.info.tesla.lowPower=Power mode: Low
+chat.immersiveengineering.info.notOwner=Only the owner ''%1$s' may access this block
 
 chat.immersiveengineering.info.coreDrill.progress=Core Sample in progress: %1$s
 chat.immersiveengineering.info.coreDrill.result.mineral=§7Core Sample evaluated, %1$s§7 vein found
@@ -1163,6 +1166,12 @@ ie.manual.entry.blueprints.subtext=RTFM
 ie.manual.entry.blueprints0=There are certain items which are very complex in their construction and require more than just a simple block of wood with a grid on it. These items will need to be created under the instructions of precise Blueprints on an <link;workbench;§o§nEngineer's §o§nWorkbench§r>.<br><br>Should you come across an Engineer's Blueprint (or maybe even create one yourself), you can place it in the slot of the Engineer's Workbench.
 ie.manual.entry.blueprints1=To create the items detailed in the Blueprint, you insert the required materials into the 6 slots in the middle, and retrieve the assembled results from the output slots to the right. Hovering your mouse over these output slots will inform you exactly which materials are needed for each item. 
 
+ie.manual.entry.mixer.name=Mixer
+ie.manual.entry.mixer.subtext=
+ie.manual.entry.mixer0=The Mixer is a multiblock structure that dissolves solids in fluids, mixing them together. The structure is built as shown above and formed by using the Engineer's Hammer on the central sheetmetal block.
+ie.manual.entry.mixer1=The most common uses for this machine area the mixing of concrete from water, 2 parts sand 1 part gravel and 1 part clay, or the creation of potions from water and their various ingredients.
+ie.manual.entry.mixer2=Fluids are input into the squeezer through the port at the bottom of its powersupply. Items can be input via the two hatches at the back. The fluid port at the front serves as the fluid output.<br>Applying a redstone signal to the control panel at the front will halt the machine's process, this behavior can be inverted by use of the Engineer's Hammer.
+
 ie.manual.entry.squeezer.name=Squeezer
 ie.manual.entry.squeezer.subtext=Pressing matters
 ie.manual.entry.squeezer0=The Squeezer is a multiblock structure that presses juice or oil out of organic materials by use of a big piston. The structure is built as shown above and formed by using the Engineer's Hammer on the central wooden barrel, from the side that has the Engineering Blocks.
@@ -1301,6 +1310,15 @@ ie.manual.entry.railgun3=The §6Precision Scope§r allows you to zoom in with th
 ie.manual.entry.razorwire.name=Razorwire
 ie.manual.entry.razorwire.subtext=Oversized eggslicer
 ie.manual.entry.razorwire0=Razorwire is a wire with sharpened pieces of metal attached. It will slow and cut any entity that tries to move through it.<br>Razorwire can only be removed with Wirecutters, any other attempts will damage the player.<br>Additionally, a powerwire can be connected to electrify the razorwire for extra damage.
+
+ie.manual.entry.turret.name=Turrets
+ie.manual.entry.turret.subtext=Are you still there?
+ie.manual.entry.turret0=Turrets are the next step in automated defense of your factory. They feature a complex optical system combined with mechanical "brain" to effectively distinguish and acquire targets and use the inbuilt weaponry to neutralize them.<br>All turrets feature energy ports at their base, and require a redstone signal to be active, although this behaviour can be inverted by sneaking and rightclicking it with an Engineer's Hammer.
+ie.manual.entry.turret1=Upon being placed, Turrets will remember their owner and will not allow other users to break or modify them. Rightclicking the turret brings up the GUI which features a list of names with an entry field, as well as multiple targeting options.<br>By the default the list is a blacklist of targets that may not be attacked. This list utilizes creatures names, so whitelisting animals is possible.
+ie.manual.entry.turret2=The Chemthrower Turret utilizes the fluid propelling capabilities of the <link;chemthrower;§o§neponymous §o§ntool§r> to cover targets in anything, ranging from water to douse flames, to diesel oil to start them.
+ie.manual.entry.turret3=The turret features a fluid port in the bottom and back of the base to allow pipes to connect to it. Additionally, the GUI has a button on the left which dis- or enables the pilot flame, igniting the dispensed fluid, provided that it is flammable.<br><br>§oThe providers of this blueprint are not liable for any damage to user, neighbours or various farm animals that may incur.§r
+ie.manual.entry.turret4=The Gun Turret features a heavily modified version of the <link;revolver;§o§nRevolver's§r> internals in a far bigger and more imposing casing. The construction also involves an extended magazine to allow for increased internal storage of ammunition.
+ie.manual.entry.turret5=A port for the automatic insertion of ammo and extraction of spent casing is located within the back and bottom of the base. The turret can store up to a full stack of cartridges and the GUI features a button to toggle the automatic expulsion of spent casings.<br><br>§oNote that certain ammunitions may cause colateral damage to the user or their property.§r
 
 ie.manual.entry.maneuverGear.name=3D Maneuver Gear
 ie.manual.entry.maneuverGear.subtext=Attack on upscaled zombies
