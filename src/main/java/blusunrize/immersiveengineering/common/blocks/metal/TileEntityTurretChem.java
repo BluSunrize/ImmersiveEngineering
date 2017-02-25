@@ -3,8 +3,10 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.entities.EntityChemthrowerShot;
+import blusunrize.immersiveengineering.common.util.IESounds;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
@@ -83,6 +85,11 @@ public class TileEntityTurretChem extends TileEntityTurret
 					if(!worldObj.isRemote)
 						worldObj.spawnEntityInWorld(chem);
 				}
+				if(tick%4==0)
+					if(ignite)
+						worldObj.playSound(null, getPos(), IESounds.sprayFire, SoundCategory.BLOCKS, .5F,1.5F);
+					else
+						worldObj.playSound(null, getPos(), IESounds.spray, SoundCategory.BLOCKS, .5F,.75F);
 			}
 		}
 	}

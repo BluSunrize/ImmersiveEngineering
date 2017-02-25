@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralMix;
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.BlockIEBase;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IEntityProof;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISpawnInterdiction;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalDecoration2;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
@@ -538,6 +539,9 @@ public class EventHandler
 		if(event.getState().getBlock()==IEContent.blockMetalDecoration2 && IEContent.blockMetalDecoration2.getMetaFromState(event.getState())==BlockTypes_MetalDecoration2.RAZOR_WIRE.getMeta())
 			if(!OreDictionary.itemMatches(new ItemStack(IEContent.itemTool,1,1), current, false))
 				event.setCanceled(true);
+		TileEntity te = event.getEntityPlayer().getEntityWorld().getTileEntity(event.getPos());
+		if(te instanceof IEntityProof && !((IEntityProof)te).canEntityDestroy(event.getEntityPlayer()))
+			event.setCanceled(true);
 	}
 	@SubscribeEvent
 	public void onAnvilChange(AnvilUpdateEvent event)

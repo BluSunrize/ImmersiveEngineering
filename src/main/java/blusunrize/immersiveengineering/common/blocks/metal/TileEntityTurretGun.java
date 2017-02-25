@@ -114,7 +114,7 @@ public class TileEntityTurretGun extends TileEntityTurret
 								inventory[1].stackSize += casing.stackSize;
 						}
 					}
-					worldObj.playSound(getPos().getX(), getPos().getY(), getPos().getZ(), IESounds.revolverFire, SoundCategory.BLOCKS, 1f, 1f, true);
+					worldObj.playSound(null, getPos(), IESounds.revolverFire, SoundCategory.BLOCKS, 1,1);
 				}
 			}
 		}

@@ -402,8 +402,14 @@ public abstract class TileEntityTurret extends TileEntityIEBase implements ITick
 	@Override
 	public boolean canEntityDestroy(Entity entity)
 	{
+		if(dummy)
+		{
+			TileEntity te = worldObj.getTileEntity(getPos().down());
+			if(te instanceof TileEntityTurret)
+				return ((TileEntityTurret)te).canEntityDestroy(entity);
+		}
 		if(entity instanceof EntityPlayer)
-			hasOwnerRights((EntityPlayer)entity);
+			return hasOwnerRights((EntityPlayer)entity);
 		return true;
 	}
 
