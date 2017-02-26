@@ -2,6 +2,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IEProperties.PropertyBoolInverted;
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConnectable;
@@ -12,6 +13,7 @@ import blusunrize.immersiveengineering.common.EventHandler;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.BlockFakeLight.TileEntityFakeLight;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
+import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.base.Optional;
@@ -28,6 +30,7 @@ import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.model.TRSRTransformation;
@@ -48,6 +51,7 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 	private int energyDraw = IEConfig.Machines.floodlight_energyDraw;
 	private int maximumStorage = IEConfig.Machines.floodlight_maximumStorage;
 	public boolean active = false;
+	public boolean redstoneControlInverted = false;
 	public EnumFacing facing = EnumFacing.NORTH;
 	public EnumFacing side = EnumFacing.UP;
 	public float rotY=0;
@@ -82,7 +86,7 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 			shouldUpdate = false;
 		}
 
-		enabled = (controllingComputers > 0 && computerOn) || worldObj.isBlockIndirectlyGettingPowered(getPos()) > 0;
+		enabled = (controllingComputers > 0 && computerOn) || (worldObj.isBlockIndirectlyGettingPowered(getPos())>0^redstoneControlInverted);
 		if(energyStorage >= (!active ? energyDraw*10 : energyDraw) && enabled && switchCooldown <= 0)
 		{
 			energyStorage -= energyDraw;
@@ -273,6 +277,7 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 		super.readCustomNBT(nbt, descPacket);
 		active = nbt.getBoolean("active");
 		energyStorage = nbt.getInteger("energy");
+		redstoneControlInverted = nbt.getBoolean("redstoneControlInverted");
 		facing = EnumFacing.getFront(nbt.getInteger("facing"));
 		side = EnumFacing.getFront(nbt.getInteger("side"));
 		rotY = nbt.getFloat("rotY");
@@ -299,6 +304,7 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 		super.writeCustomNBT(nbt, descPacket);
 		nbt.setBoolean("active",active);
 		nbt.setInteger("energyStorage",energyStorage);
+		nbt.setBoolean("redstoneControlInverted",redstoneControlInverted);
 		nbt.setInteger("facing",facing.ordinal());
 		nbt.setInteger("side",side.ordinal());
 		nbt.setFloat("rotY",rotY);
@@ -454,6 +460,18 @@ public class TileEntityFloodlight extends TileEntityImmersiveConnectable impleme
 	@Override
 	public boolean hammerUseSide(EnumFacing side, EntityPlayer player, float hitX, float hitY, float hitZ)
 	{
+		if(player.isSneaking() && side!=this.side)
+		{
+			boolean base = this.side==EnumFacing.DOWN?hitY>=.8125: this.side==EnumFacing.UP?hitY<=.1875: this.side==EnumFacing.NORTH?hitZ>=.8125: this.side==EnumFacing.UP?hitZ<=.1875: this.side==EnumFacing.WEST?hitX>=.8125: hitX<=.1875;
+			if(base)
+			{
+				redstoneControlInverted = !redstoneControlInverted;
+				ChatUtils.sendServerNoSpamMessages(player, new TextComponentTranslation(Lib.CHAT_INFO+"rsControl."+(redstoneControlInverted?"invertedOn":"invertedOff")));
+				markDirty();
+				this.markContainingBlockForUpdate(null);
+				return true;
+			}
+		}
 		if(side.getAxis()==this.side.getAxis())
 			turnY(player.isSneaking(), false);
 		else

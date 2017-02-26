@@ -1105,7 +1105,8 @@ ie.manual.entry.lighting.subtext=Lighting up the Wasteland
 ie.manual.entry.lighting0=Deep in the halls of the factories, it can be quite dark. In order to still find your way around the machines, you should probably light up the place with some Lanterns. These Lanterns provide almost as much light as a glowstone block would.
 ie.manual.entry.lighting1=Powered Lanterns are one of the first ever invented uses for electric power. To run these, you need to connect them directly to your power grid using wires. They will allow power to be transferred through them, so you can link them in a row.
 ie.manual.entry.lighting2=As long as they are supplied with a little bit of power, they will light up the surrounding area like a normal Lantern, but additionally, they will also prevent hostile mobs to spawn in a 32 block radius!
-ie.manual.entry.lighting3=Floodlights are strong lightsources. While they require more power than a simple Powered Lantern, they will create a cone of light up to 32 blocks long. Use an Engineer's Hammer on the top or bottom faces of the block to rotate the light or click its sides to change its pitch. They require a redstone signal to run.
+ie.manual.entry.lighting3=Floodlights are strong lightsources. While they require more power than a simple Powered Lantern, they will create a cone of light up to 32 blocks long. Use an Engineer's Hammer on the top or bottom faces of the block to rotate the light or click its sides to change its pitch.
+ie.manual.entry.lighting4=Generally, Floodlights require a redstone signal to run, however their control-behavior can be inverted by sneaking and right-clicking their base with an Engineer's Hammer.
 
 ie.manual.entry.metalPress.name=Metal Press
 ie.manual.entry.metalPress.subtext=Under Pressure!
@@ -1169,7 +1170,7 @@ ie.manual.entry.blueprints1=To create the items detailed in the Blueprint, you i
 ie.manual.entry.mixer.name=Mixer
 ie.manual.entry.mixer.subtext=
 ie.manual.entry.mixer0=The Mixer is a multiblock structure that dissolves solids in fluids, mixing them together. The structure is built as shown above and formed by using the Engineer's Hammer on the central sheetmetal block.
-ie.manual.entry.mixer1=The most common uses for this machine area the mixing of concrete from water, 2 parts sand 1 part gravel and 1 part clay, or the creation of potions from water and their various ingredients.
+ie.manual.entry.mixer1=The most common uses for this machine are the mixing of fluid concrete from water, 2 parts sand 1 part gravel and 1 part clay, or the creation of potions from water and their various ingredients.<br>
 ie.manual.entry.mixer2=Fluids are input into the squeezer through the port at the bottom of its powersupply. Items can be input via the two hatches at the back. The fluid port at the front serves as the fluid output.<br>Applying a redstone signal to the control panel at the front will halt the machine's process, this behavior can be inverted by use of the Engineer's Hammer.
 
 ie.manual.entry.squeezer.name=Squeezer
