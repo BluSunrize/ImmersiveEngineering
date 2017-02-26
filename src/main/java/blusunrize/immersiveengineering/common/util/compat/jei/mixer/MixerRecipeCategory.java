@@ -5,6 +5,7 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalMultiblock;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
+import blusunrize.immersiveengineering.common.util.compat.jei.JEIHelper;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.gui.IGuiFluidStackGroup;
@@ -44,6 +45,7 @@ public class MixerRecipeCategory extends IERecipeCategory<MixerRecipe, MixerReci
 		guiFluidStacks.set(0, recipeWrapper.getFluidIn());
 		guiFluidStacks.init(1, false, 100,2, 16,47, 4000, false, tankOverlay);
 		guiFluidStacks.set(1, ingredients.getOutputs(FluidStack.class));
+		guiFluidStacks.addTooltipCallback(JEIHelper.fluidTooltipCallback);
 
 		IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
 		for(int i=0; i<recipeWrapper.recipeInputs.length; i++)

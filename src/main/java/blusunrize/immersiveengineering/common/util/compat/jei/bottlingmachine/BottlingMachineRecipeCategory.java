@@ -4,8 +4,10 @@ import blusunrize.immersiveengineering.api.crafting.BottlingMachineRecipe;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalMultiblock;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
+import blusunrize.immersiveengineering.common.util.compat.jei.JEIHelper;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IDrawable;
+import mezz.jei.api.gui.IGuiFluidStackGroup;
 import mezz.jei.api.gui.IGuiItemStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.ingredients.IIngredients;
@@ -42,8 +44,10 @@ public class BottlingMachineRecipeCategory extends IERecipeCategory<BottlingMach
 		guiItemStacks.set(0, ingredients.getInputs(ItemStack.class).get(0));
 		guiItemStacks.set(1, ingredients.getOutputs(ItemStack.class));
 
-		recipeLayout.getFluidStacks().init(0, true, 75,0, 16,47, 4000, false, tankOverlay);
-		recipeLayout.getFluidStacks().set(0, ingredients.getInputs(FluidStack.class).get(0));
+		IGuiFluidStackGroup guiFluidStacks = recipeLayout.getFluidStacks();
+		guiFluidStacks.init(0, true, 75,0, 16,47, 4000, false, tankOverlay);
+		guiFluidStacks.set(0, ingredients.getInputs(FluidStack.class).get(0));
+		guiFluidStacks.addTooltipCallback(JEIHelper.fluidTooltipCallback);
 	}
 
 	@Override
