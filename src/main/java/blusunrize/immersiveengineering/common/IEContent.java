@@ -177,7 +177,7 @@ public class IEContent
 
 	public static void preInit()
 	{
-		fluidCreosote = new Fluid("creosote", new ResourceLocation("immersiveengineering:blocks/fluid/creosote_still"), new ResourceLocation("immersiveengineering:blocks/fluid/creosote_flow")).setDensity(800).setViscosity(3000);
+		fluidCreosote = new Fluid("creosote", new ResourceLocation("immersiveengineering:blocks/fluid/creosote_still"), new ResourceLocation("immersiveengineering:blocks/fluid/creosote_flow")).setDensity(1100).setViscosity(3000);
 		if(!FluidRegistry.registerFluid(fluidCreosote))
 			fluidCreosote = FluidRegistry.getFluid("creosote");
 		FluidRegistry.addBucketForFluid(fluidCreosote);
