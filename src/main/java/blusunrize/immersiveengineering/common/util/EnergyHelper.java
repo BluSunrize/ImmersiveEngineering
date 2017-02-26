@@ -1,13 +1,12 @@
 package blusunrize.immersiveengineering.common.util;
 
 import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
-import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
-import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxConnection;
-import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxProvider;
-import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
+import blusunrize.immersiveengineering.api.energy.immersiveflux.*;
 import cofh.api.energy.IEnergyConnection;
+import cofh.api.energy.IEnergyContainerItem;
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.energy.CapabilityEnergy;
@@ -21,6 +20,53 @@ import javax.annotation.Nullable;
  */
 public class EnergyHelper
 {
+	public static boolean isFluxItem(ItemStack stack)
+	{
+		if(stack==null || stack.getItem()==null)
+			return false;
+		if(stack.getItem() instanceof IFluxContainerItem)
+			return true;
+		if(stack.getItem() instanceof IEnergyContainerItem)
+			return true;
+		return stack.hasCapability(CapabilityEnergy.ENERGY, null);
+	}
+	public static int getEnergyStored(ItemStack stack)
+	{
+		if(stack==null || stack.getItem()==null)
+			return 0;
+		if(stack.getItem() instanceof IFluxContainerItem)
+			return ((IFluxContainerItem)stack.getItem()).getEnergyStored(stack);
+		if(stack.getItem() instanceof IEnergyContainerItem)
+			return ((IEnergyContainerItem)stack.getItem()).getEnergyStored(stack);
+		if(stack.hasCapability(CapabilityEnergy.ENERGY, null))
+			return stack.getCapability(CapabilityEnergy.ENERGY, null).getEnergyStored();
+		return 0;
+	}
+	public static int getMaxEnergyStored(ItemStack stack)
+	{
+		if(stack==null || stack.getItem()==null)
+			return 0;
+		if(stack.getItem() instanceof IFluxContainerItem)
+			return ((IFluxContainerItem)stack.getItem()).getMaxEnergyStored(stack);
+		if(stack.getItem() instanceof IEnergyContainerItem)
+			return ((IEnergyContainerItem)stack.getItem()).getMaxEnergyStored(stack);
+		if(stack.hasCapability(CapabilityEnergy.ENERGY, null))
+			return stack.getCapability(CapabilityEnergy.ENERGY, null).getMaxEnergyStored();
+		return 0;
+	}
+	public static int insertFlux(ItemStack stack, int energy, boolean simulate)
+	{
+		if(stack==null || stack.getItem()==null)
+			return 0;
+		if(stack.getItem() instanceof IFluxContainerItem)
+			return ((IFluxContainerItem)stack.getItem()).receiveEnergy(stack, energy, simulate);
+		if(stack.getItem() instanceof IEnergyContainerItem)
+			return ((IEnergyContainerItem)stack.getItem()).receiveEnergy(stack, energy, simulate);
+		if(stack.hasCapability(CapabilityEnergy.ENERGY, null))
+			return stack.getCapability(CapabilityEnergy.ENERGY, null).receiveEnergy(energy, simulate);
+		return 0;
+	}
+
 	public static boolean isFluxReceiver(TileEntity tile, EnumFacing facing)
 	{
 		if(tile == null)
