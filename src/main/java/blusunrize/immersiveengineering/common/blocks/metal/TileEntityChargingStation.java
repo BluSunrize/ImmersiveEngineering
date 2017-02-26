@@ -4,18 +4,17 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEEnums.SideConfig;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorageAdvanced;
-import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxContainerItem;
 import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparatorOverride;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
+import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
-import cofh.api.energy.IEnergyContainerItem;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -41,33 +40,16 @@ public class TileEntityChargingStation extends TileEntityIEBase implements ITick
 	@Override
 	public void update()
 	{
-		if(inventory[0]!=null && (inventory[0].getItem() instanceof IFluxContainerItem || inventory[0].getItem() instanceof IEnergyContainerItem /*|| Lib.IC2 && IC2Helper.isElectricItem(inventory))*/))
+		if(EnergyHelper.isFluxItem(inventory[0]))
 		{
 			if(worldObj.isRemote&&charging)
 			{
 				float charge = 0;
-				if(inventory[0].getItem() instanceof IFluxContainerItem)
-				{
-					IFluxContainerItem container = (IFluxContainerItem)inventory[0].getItem();
-					int max = container.getMaxEnergyStored(inventory[0]);
-					if(max>0)
-						charge = container.getEnergyStored(inventory[0])/(float)max;
-				}
-				else if(inventory[0].getItem() instanceof IEnergyContainerItem)
-				{
-					IEnergyContainerItem container = (IEnergyContainerItem)inventory[0].getItem();
-					int max = container.getMaxEnergyStored(inventory[0]);
-					if(max>0)
-						charge = container.getEnergyStored(inventory[0])/(float)max;
-				}
-				else
-				{
-					//					double max = IC2Helper.getMaxItemCharge(inventory);
-					//					if(max>0)
-					//						charge = (float)(IC2Helper.getCurrentItemCharge(inventory)/max);
-				}
-				int max = 3;//charge>.66?3: charge>.33?2: 1;
-				for(int i=0; i<max; i++)
+				float max = EnergyHelper.getMaxEnergyStored(inventory[0]);
+				if(max>0)
+					charge = EnergyHelper.getEnergyStored(inventory[0])/max;
+
+				for(int i=0; i<3; i++)
 				{
 					long time = worldObj.getTotalWorldTime();
 					if(charge>=1 || (time%12>=i*4&&time%12<=i*4+2))
@@ -88,56 +70,22 @@ public class TileEntityChargingStation extends TileEntityIEBase implements ITick
 					this.markContainingBlockForUpdate(null);
 					return;
 				}
-				if(inventory[0].getItem() instanceof IFluxContainerItem)
+				if(EnergyHelper.isFluxItem(inventory[0]))
 				{
-					IFluxContainerItem container = (IFluxContainerItem)inventory[0].getItem();
-					int max = container.getMaxEnergyStored(inventory[0]);
-					int space = max-container.getEnergyStored(inventory[0]);
-					if(max>0 && space>0)
+					int stored = EnergyHelper.getEnergyStored(inventory[0]);
+					int max = EnergyHelper.getMaxEnergyStored(inventory[0]);
+					int space = max - stored;
+					if(space>0)
 					{
-						int energyDec = (10*container.getEnergyStored(inventory[0]))/max;
+						int energyDec = (10*stored)/max;
 						int insert = Math.min(space, Math.max(energyStorage.getAverageInsertion(), IEConfig.Machines.charger_consumption));
-						int accepted = Math.min(container.receiveEnergy(inventory[0], insert, true), this.energyStorage.extractEnergy(insert, true));
+						int accepted = Math.min(EnergyHelper.insertFlux(inventory[0], insert, true), this.energyStorage.extractEnergy(insert, true));
 						if((accepted=this.energyStorage.extractEnergy(accepted, false))>0)
-							container.receiveEnergy(inventory[0], accepted, false);
-						int energyDecNew = (10*container.getEnergyStored(inventory[0]))/max;
-						if (energyDec!=energyDecNew)
+							stored += EnergyHelper.insertFlux(inventory[0], accepted, false);
+						int energyDecNew = (10*stored)/max;
+						if(energyDec!=energyDecNew)
 							this.markContainingBlockForUpdate(null);
 					}
-				}
-				else if(inventory[0].getItem() instanceof IEnergyContainerItem)
-				{
-					IEnergyContainerItem container = (IEnergyContainerItem)inventory[0].getItem();
-					int max = container.getMaxEnergyStored(inventory[0]);
-					int space = max-container.getEnergyStored(inventory[0]);
-					if(max>0 && space>0)
-					{
-						int energyDec = (10*container.getEnergyStored(inventory[0]))/max;
-						int insert = Math.min(space, Math.max(energyStorage.getAverageInsertion(), IEConfig.Machines.charger_consumption));
-						int accepted = Math.min(container.receiveEnergy(inventory[0], insert, true), this.energyStorage.extractEnergy(insert, true));
-						if((accepted=this.energyStorage.extractEnergy(accepted, false))>0)
-							container.receiveEnergy(inventory[0], accepted, false);
-						int energyDecNew = (10*container.getEnergyStored(inventory[0]))/max;
-						if (energyDec!=energyDecNew)
-							this.markContainingBlockForUpdate(null);
-					}
-				}
-				else
-				{
-					//					double max = IC2Helper.getMaxItemCharge(inventory);
-					//					double space = max-IC2Helper.getCurrentItemCharge(inventory);
-					//					if(max>0 && space>0)
-					//					{
-					//						int energyDec = (int) ((10*IC2Helper.getCurrentItemCharge(inventory))/max);
-					//						double insert = Math.min(space, ModCompatability.convertRFtoEU(Config.getInt("charger_consumption"),5));
-					//						double accepted = IC2Helper.chargeItem(inventory, insert, true);
-					//						int rfAccepted = this.energyStorage.extractEnergy(ModCompatability.convertEUtoRF(accepted), false);
-					//						if(rfAccepted>0)
-					//							IC2Helper.chargeItem(inventory, ModCompatability.convertRFtoEU(rfAccepted,5), false);
-					//						int energyDecNew = (int) ((10*IC2Helper.getCurrentItemCharge(inventory))/max);
-					//						if (energyDec!=energyDecNew)
-					//							worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-					//					}
 				}
 			}
 			else if (energyStorage.getEnergyStored()>=energyStorage.getMaxEnergyStored()*.95)
@@ -151,17 +99,12 @@ public class TileEntityChargingStation extends TileEntityIEBase implements ITick
 		if(!worldObj.isRemote && worldObj.getTotalWorldTime()%32==((getPos().getX()^getPos().getZ())&31))
 		{
 			float charge = 0;
-			if(inventory[0]!=null && (inventory[0].getItem() instanceof IFluxContainerItem || inventory[0].getItem() instanceof IEnergyContainerItem /*|| (Lib.IC2 && IC2Helper.isElectricItem(inventory))*/))
-				if(inventory[0].getItem() instanceof IFluxContainerItem)
-				{
-					IFluxContainerItem container = (IFluxContainerItem)inventory[0].getItem();
-					charge = container.getEnergyStored(inventory[0])/(float)container.getMaxEnergyStored(inventory[0]);
-				}
-				else if(inventory[0].getItem() instanceof IEnergyContainerItem)
-				{
-					IEnergyContainerItem container = (IEnergyContainerItem)inventory[0].getItem();
-					charge = container.getEnergyStored(inventory[0])/(float)container.getMaxEnergyStored(inventory[0]);
-				}
+			if(EnergyHelper.isFluxItem(inventory[0]))
+			{
+				float max = EnergyHelper.getMaxEnergyStored(inventory[0]);
+				if(max>0)
+					charge = EnergyHelper.getEnergyStored(inventory[0])/max;
+			}
 			//				else
 			//					charge = (float)(IC2Helper.getCurrentItemCharge(inventory)/IC2Helper.getMaxItemCharge(inventory));
 			int i = (int)(15*charge);
@@ -283,7 +226,7 @@ public class TileEntityChargingStation extends TileEntityIEBase implements ITick
 	@Override
 	public boolean isStackValid(int slot, ItemStack stack)
 	{
-		return stack!=null && (stack.getItem() instanceof IFluxContainerItem || stack.getItem() instanceof IEnergyContainerItem);
+		return EnergyHelper.isFluxItem(stack);
 	}
 	@Override
 	public int getSlotLimit(int slot)
@@ -316,7 +259,7 @@ public class TileEntityChargingStation extends TileEntityIEBase implements ITick
 	@Override
 	public boolean interact(EnumFacing side, EntityPlayer player, EnumHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
-		if(heldItem!=null && (heldItem.getItem() instanceof IFluxContainerItem || heldItem.getItem() instanceof IEnergyContainerItem /*|| (Lib.IC2 && IC2Helper.isElectricItem(equipped))*/))
+		if(EnergyHelper.isFluxItem(heldItem))
 		{
 			ItemStack stored = inventory[0]!=null?inventory[0].copy():null;
 			inventory[0] = heldItem.copy();
