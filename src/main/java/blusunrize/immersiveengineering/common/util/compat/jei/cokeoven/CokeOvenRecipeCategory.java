@@ -4,8 +4,10 @@ import blusunrize.immersiveengineering.api.crafting.CokeOvenRecipe;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.stone.BlockTypes_StoneDevices;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
+import blusunrize.immersiveengineering.common.util.compat.jei.JEIHelper;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IDrawable;
+import mezz.jei.api.gui.IGuiFluidStackGroup;
 import mezz.jei.api.gui.IGuiItemStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.ingredients.IIngredients;
@@ -40,8 +42,10 @@ public class CokeOvenRecipeCategory extends IERecipeCategory<CokeOvenRecipe, Cok
 		guiItemStacks.set(0, ingredients.getInputs(ItemStack.class).get(0));
 		guiItemStacks.set(1, ingredients.getOutputs(ItemStack.class));
 
-		recipeLayout.getFluidStacks().init(0, false, 121,7, 16,47, 12000, false, tankOverlay);
-		recipeLayout.getFluidStacks().set(0, ingredients.getOutputs(FluidStack.class));
+		IGuiFluidStackGroup guiFluidStacks = recipeLayout.getFluidStacks();
+		guiFluidStacks.init(0, false, 121,7, 16,47, 12000, false, tankOverlay);
+		guiFluidStacks.set(0, ingredients.getOutputs(FluidStack.class));
+		guiFluidStacks.addTooltipCallback(JEIHelper.fluidTooltipCallback);
 	}
 
 	@Override

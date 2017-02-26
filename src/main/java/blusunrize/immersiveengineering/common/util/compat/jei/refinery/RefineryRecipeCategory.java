@@ -4,8 +4,10 @@ import blusunrize.immersiveengineering.api.crafting.RefineryRecipe;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalMultiblock;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
+import blusunrize.immersiveengineering.common.util.compat.jei.JEIHelper;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IDrawable;
+import mezz.jei.api.gui.IGuiFluidStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeWrapper;
@@ -36,19 +38,22 @@ public class RefineryRecipeCategory extends IERecipeCategory<RefineryRecipe, Ref
 	public void setRecipe(IRecipeLayout recipeLayout, RefineryRecipeWrapper recipeWrapper, IIngredients ingredients)
 	{
 		List<List<FluidStack>> inputs = ingredients.getInputs(FluidStack.class);
+		IGuiFluidStackGroup guiFluidStacks = recipeLayout.getFluidStacks();
 		if(inputs.size()>0)
 		{
-			recipeLayout.getFluidStacks().init(0, true, 7,10, 16,47, 6000, false, tankOverlay);
-			recipeLayout.getFluidStacks().set(0, inputs.get(0));
+			guiFluidStacks.init(0, true, 7,10, 16,47, 6000, false, tankOverlay);
+			guiFluidStacks.set(0, inputs.get(0));
 
 			if(inputs.size()>1)
 			{
-				recipeLayout.getFluidStacks().init(1, true, 55,10, 16,47, 6000, false, tankOverlay);
-				recipeLayout.getFluidStacks().set(1, inputs.get(1));
+				guiFluidStacks.init(1, true, 55,10, 16,47, 6000, false, tankOverlay);
+				guiFluidStacks.set(1, inputs.get(1));
 			}
 		}
-		recipeLayout.getFluidStacks().init(2, false, 103,10, 16,47, 6000, false, tankOverlay);
-		recipeLayout.getFluidStacks().set(2, ingredients.getOutputs(FluidStack.class));
+		guiFluidStacks.init(2, false, 103,10, 16,47, 6000, false, tankOverlay);
+		guiFluidStacks.set(2, ingredients.getOutputs(FluidStack.class));
+
+		guiFluidStacks.addTooltipCallback(JEIHelper.fluidTooltipCallback);
 	}
 
 	@Override

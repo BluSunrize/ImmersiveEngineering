@@ -684,12 +684,12 @@ public class IEContent
 				if(fluid.tag!=null)
 				{
 					List<PotionEffect> effects = PotionUtils.getEffectsFromTag(fluid.tag);
-						for(PotionEffect e : effects)
-						{
-							PotionEffect newEffect = new PotionEffect(e.getPotion(),e.getDuration(),e.getAmplifier());
-							newEffect.setCurativeItems(new ArrayList(e.getCurativeItems()));
-							target.addPotionEffect(newEffect);
-						}
+					for(PotionEffect e : effects)
+					{
+						PotionEffect newEffect = new PotionEffect(e.getPotion(),e.getDuration(),e.getAmplifier());
+						newEffect.setCurativeItems(new ArrayList(e.getCurativeItems()));
+						target.addPotionEffect(newEffect);
+					}
 				}
 			}
 			@Override
@@ -902,10 +902,15 @@ public class IEContent
 	{
 		IERecipes.postInitOreDictRecipes();
 
-		HashSet<PotionType> registered = new HashSet<>();
+		HashSet<PotionType> mixerRegistered = new HashSet<>();
+		HashSet<PotionType> bottlingRegistered = new HashSet<>();
 		for(MixPredicate<PotionType> mixPredicate : PotionHelper.POTION_TYPE_CONVERSIONS)
-			if(registered.add(mixPredicate.input))
+		{
+			if(mixerRegistered.add(mixPredicate.input))
 				MixerRecipe.recipeList.add(new MixerRecipePotion(mixPredicate.input));
+			if(bottlingRegistered.add(mixPredicate.output))
+				BottlingMachineRecipe.addRecipe(PotionUtils.addPotionToItemStack(new ItemStack(Items.POTIONITEM), mixPredicate.output), new ItemStack(Items.GLASS_BOTTLE), MixerRecipePotion.getFluidStackForType(mixPredicate.output,333));
+		}
 	}
 
 	public static void registerToOreDict(String type, ItemIEBase item, int... metas)

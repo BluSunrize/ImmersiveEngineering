@@ -19,6 +19,7 @@ import blusunrize.immersiveengineering.common.util.compat.jei.workbench.Workbenc
 import mezz.jei.api.*;
 import mezz.jei.api.ISubtypeRegistry.ISubtypeInterpreter;
 import mezz.jei.api.gui.IDrawable;
+import mezz.jei.api.gui.ITooltipCallback;
 import mezz.jei.api.ingredients.IModIngredientRegistration;
 import mezz.jei.api.recipe.VanillaRecipeCategoryUid;
 import net.minecraft.item.Item;
@@ -35,6 +36,7 @@ public class JEIHelper implements IModPlugin
 	public static IJeiHelpers jeiHelpers;
 	public static IModRegistry modRegistry;
 	public static IDrawable slotDrawable;
+	public static ITooltipCallback fluidTooltipCallback = new IEFluidTooltipCallback();
 
 	@Override
 	public void registerItemSubtypes(ISubtypeRegistry subtypeRegistry)
