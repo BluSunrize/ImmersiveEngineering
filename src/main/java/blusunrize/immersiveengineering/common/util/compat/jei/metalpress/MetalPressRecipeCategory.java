@@ -4,8 +4,8 @@ import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalMultiblock;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
+import blusunrize.immersiveengineering.common.util.compat.jei.JEIHelper;
 import mezz.jei.api.IGuiHelper;
-import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.gui.IGuiItemStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.ingredients.IIngredients;
@@ -15,20 +15,18 @@ import net.minecraft.item.ItemStack;
 
 public class MetalPressRecipeCategory extends IERecipeCategory<MetalPressRecipe, MetalPressRecipeWrapper>
 {
-	private final IDrawable slotDrawable;
 	static ItemStack metalPressStack;
 	public MetalPressRecipeCategory(IGuiHelper helper)
 	{
 		super("metalPress","tile.immersiveengineering.metalMultiblock.metal_press.name", helper.createBlankDrawable(140,50), MetalPressRecipe.class, new ItemStack(IEContent.blockMetalMultiblock,1,BlockTypes_MetalMultiblock.METAL_PRESS.getMeta()));
-		slotDrawable = helper.getSlotDrawable();
 		metalPressStack = new ItemStack(IEContent.blockMetalMultiblock,1, BlockTypes_MetalMultiblock.METAL_PRESS.getMeta());
 	}
 
 	@Override
 	public void drawExtras(Minecraft minecraft)
 	{
-		slotDrawable.draw(minecraft, 20, 3);
-		slotDrawable.draw(minecraft, 102, 3);
+		JEIHelper.slotDrawable.draw(minecraft, 20, 3);
+		JEIHelper.slotDrawable.draw(minecraft, 102, 3);
 	}
 
 	@Override

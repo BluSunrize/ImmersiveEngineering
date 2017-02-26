@@ -4,8 +4,8 @@ import blusunrize.immersiveengineering.api.crafting.CrusherRecipe;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalMultiblock;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
+import blusunrize.immersiveengineering.common.util.compat.jei.JEIHelper;
 import mezz.jei.api.IGuiHelper;
-import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.gui.IGuiItemStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.ingredients.IIngredients;
@@ -15,12 +15,10 @@ import net.minecraft.item.ItemStack;
 
 public class CrusherRecipeCategory extends IERecipeCategory<CrusherRecipe, CrusherRecipeWrapper>
 {
-	private final IDrawable slotDrawable;
 	static ItemStack crusherStack;
 	public CrusherRecipeCategory(IGuiHelper helper)
 	{
 		super("crusher","tile.immersiveengineering.metalMultiblock.crusher.name", helper.createBlankDrawable(140,50), CrusherRecipe.class, new ItemStack(IEContent.blockMetalMultiblock,1,BlockTypes_MetalMultiblock.CRUSHER.getMeta()));
-		slotDrawable = helper.getSlotDrawable();
 		crusherStack = new ItemStack(IEContent.blockMetalMultiblock,1, BlockTypes_MetalMultiblock.CRUSHER.getMeta());
 	}
 
@@ -52,9 +50,8 @@ public class CrusherRecipeCategory extends IERecipeCategory<CrusherRecipe, Crush
 	@Override
 	public void drawExtras(Minecraft minecraft)
 	{
-		slotDrawable.draw(minecraft, 20, 3);
-		for(int[] ia : outputSlots)
-			slotDrawable.draw(minecraft, ia[0],ia[1]);
+		JEIHelper.slotDrawable.draw(minecraft, 102,3);
+		JEIHelper.slotDrawable.draw(minecraft, 20, 3);
 	}
 
 	@Override
