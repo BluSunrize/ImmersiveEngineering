@@ -18,18 +18,15 @@ import blusunrize.immersiveengineering.common.util.compat.jei.squeezer.SqueezerR
 import blusunrize.immersiveengineering.common.util.compat.jei.workbench.WorkbenchRecipeCategory;
 import mezz.jei.api.*;
 import mezz.jei.api.ISubtypeRegistry.ISubtypeInterpreter;
-import mezz.jei.api.gui.IGuiIngredientGroup;
+import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.ingredients.IModIngredientRegistration;
 import mezz.jei.api.recipe.VanillaRecipeCategoryUid;
-import mezz.jei.gui.ingredients.GuiIngredientGroup;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 
 @JEIPlugin
@@ -37,6 +34,7 @@ public class JEIHelper implements IModPlugin
 {
 	public static IJeiHelpers jeiHelpers;
 	public static IModRegistry modRegistry;
+	public static IDrawable slotDrawable;
 
 	@Override
 	public void registerItemSubtypes(ISubtypeRegistry subtypeRegistry)
@@ -87,6 +85,7 @@ public class JEIHelper implements IModPlugin
 
 		//Recipes
 		IGuiHelper guiHelper = jeiHelpers.getGuiHelper();
+		slotDrawable = guiHelper.getSlotDrawable();
 		IERecipeCategory[] categories = {
 				new CokeOvenRecipeCategory(guiHelper),
 				new BlastFurnaceRecipeCategory(guiHelper),
@@ -121,22 +120,5 @@ public class JEIHelper implements IModPlugin
 	@Override
 	public void onRuntimeAvailable(IJeiRuntime jeiRuntime)
 	{
-	}
-
-	static Field f_itemCycleOffset;
-	//I'm sorry Mezz <3
-	public static void resetCycleTimer(IGuiIngredientGroup ingredientGroup)
-	{
-		try{
-			if(f_itemCycleOffset==null)
-			{
-				f_itemCycleOffset = GuiIngredientGroup.class.getDeclaredField("itemCycleOffset");
-				f_itemCycleOffset.setAccessible(true);
-				Field modifiersField = Field.class.getDeclaredField("modifiers");
-				modifiersField.setAccessible(true);
-				modifiersField.setInt(f_itemCycleOffset, f_itemCycleOffset.getModifiers()&~Modifier.FINAL);
-			}
-			f_itemCycleOffset.set(ingredientGroup, 0);
-		}catch(Exception e){}
 	}
 }

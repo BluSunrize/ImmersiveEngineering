@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.common.util.compat.jei.workbench;
 
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
+import blusunrize.immersiveengineering.common.util.compat.jei.JEIHelper;
 import blusunrize.immersiveengineering.common.util.compat.jei.MultiblockRecipeWrapper;
 import net.minecraft.client.Minecraft;
 
@@ -18,6 +19,8 @@ public class WorkbenchRecipeWrapper extends MultiblockRecipeWrapper
 	@Override
 	public void drawInfo(Minecraft minecraft, int recipeWidth, int recipeHeight, int mouseX, int mouseY)
 	{
+		for(int i=0; i<recipeInputs.length; i++)
+			JEIHelper.slotDrawable.draw(minecraft, 80+i%2*18, 20+i/2*18);
 //		GlStateManager.pushMatrix();
 //		ClientUtils.bindAtlas();
 //		GlStateManager.translate(70F, 20F, 16.5F);

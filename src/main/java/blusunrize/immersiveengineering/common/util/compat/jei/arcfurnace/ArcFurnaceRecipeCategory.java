@@ -4,8 +4,8 @@ import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalMultiblock;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
+import blusunrize.immersiveengineering.common.util.compat.jei.JEIHelper;
 import mezz.jei.api.IGuiHelper;
-import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.gui.IGuiItemStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.ingredients.IIngredients;
@@ -15,13 +15,11 @@ import net.minecraft.item.ItemStack;
 
 public class ArcFurnaceRecipeCategory extends IERecipeCategory<ArcFurnaceRecipe, ArcFurnaceRecipeWrapper>
 {
-	private final IDrawable slotDrawable;
 	private final String subType;
 	//	static ItemStack arcFurnaceStack;
 	public ArcFurnaceRecipeCategory(IGuiHelper helper, String recipeType, Class recipeClass)
 	{
 		super("arcFurnace"+(recipeType!=null?"."+recipeType: ""), "tile.immersiveengineering.metalMultiblock.arc_furnace.name", helper.createBlankDrawable(140, 50), recipeClass, new ItemStack(IEContent.blockMetalMultiblock, 1, BlockTypes_MetalMultiblock.ARC_FURNACE.getMeta()));
-		slotDrawable = helper.getSlotDrawable();
 		subType = recipeType;
 		if(recipeType!=null)
 			this.localizedName += " - "+recipeType;
@@ -72,12 +70,12 @@ public class ArcFurnaceRecipeCategory extends IERecipeCategory<ArcFurnaceRecipe,
 	@Override
 	public void drawExtras(Minecraft minecraft)
 	{
-		slotDrawable.draw(minecraft, 20, 0);
+		JEIHelper.slotDrawable.draw(minecraft, 20, 0);
 		for(int j = 0; j < 4; j++)
-			slotDrawable.draw(minecraft, 12+j%2*18, 18+j/2*18);
+			JEIHelper.slotDrawable.draw(minecraft, 12+j%2*18, 18+j/2*18);
 		for(int j = 0; j < 6; j++)
-			slotDrawable.draw(minecraft, 86+j%3*18, 0+j/3*18);
-		slotDrawable.draw(minecraft, 122, 36);
+			JEIHelper.slotDrawable.draw(minecraft, 86+j%3*18, 0+j/3*18);
+		JEIHelper.slotDrawable.draw(minecraft, 122, 36);
 	}
 
 	@Override
