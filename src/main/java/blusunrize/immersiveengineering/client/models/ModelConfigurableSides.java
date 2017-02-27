@@ -320,7 +320,7 @@ public class ModelConfigurableSides implements IBakedModel
 				return s+"_"+c;
 			else if(s!=null)
 				return s;
-			else if(s!=null)
+			else if(c!=null)
 				return c;
 			return "";
 		}

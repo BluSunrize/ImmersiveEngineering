@@ -69,9 +69,7 @@ public class TileEntityTurretGun extends TileEntityTurret
 				if(expelCasings||casing==null||inventory[1]==null||(OreDictionary.itemMatches(casing, inventory[1], false)&&inventory[1].stackSize+casing.stackSize <= inventory[1].getMaxStackSize()))
 				{
 					this.energyStorage.extractEnergy(energy,false);
-					NBTTagCompound tag = new NBTTagCompound();
-					tag.setBoolean("cycle", true);
-					ImmersiveEngineering.packetHandler.sendToAll(new MessageTileSync(this, tag));
+					this.sendRenderPacket();
 
 					double dX = target.posX-(getPos().getX()+.5);
 					double dY = target.posY-(getPos().getY()+.5);
@@ -118,6 +116,13 @@ public class TileEntityTurretGun extends TileEntityTurret
 				}
 			}
 		}
+	}
+
+	protected void sendRenderPacket()
+	{
+		NBTTagCompound tag = new NBTTagCompound();
+		tag.setBoolean("cycle", true);
+		ImmersiveEngineering.packetHandler.sendToAll(new MessageTileSync(this, tag));
 	}
 
 	EntityRevolvershot getBulletEntity(World world, Vec3d vecDir, IBullet type)
