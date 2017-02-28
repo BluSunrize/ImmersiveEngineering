@@ -1,3 +1,22 @@
+#####Version 0.10-57
+- added RazorWire! It pricks and slows, and you can electrify it.
+- added Fluid Concrete. Slows entities down and immobilizes them when it dries
+- added a Potion fluid. Effects vary on NBT data. Works in the Chemthrower, can be bottled in Bottling Machine.
+- added blocks for (almost) all IE Fluids
+- added the Mixer! It mixes solid components into fluids to make concrete or various potions!
+- added Turrets! Configurable targeting, currently allowing for fluids (Chemthrower) or bullets (revolver) as ammo
+- changed Floodlights to allow inversion of redstone control
+- changed Charging Station to allow charging Forge Energy items as well
+- fixed Bottling Machine recipes not consuming fluid and duping items (thanks Malte)
+- fixed Redstone Wires illegally connecting to relays
+- fixed ArcFurnace recipes causing NPEs when added through Minetweaker
+- fixed JEI handler preventing Draconic Evolution for loading theirs
+- fixed OneProbe showing components of Multiblocks rather than the MB itself
+- fixed derped texture on Metal Press
+- fixed side-solidity for Stone Multiblocks
+- fixed the density of Creosote Oil. A certain Lemming notified me that it's in fact, denser than water.
+- Translations Added/Updated: ru_RU (lex1975)
+
 #####Version 0.10-56 - BUILT
 - fixed duplication of stacks of items dropped onto the bottling machine
 - fixed EntityDataManager registration (thanks mconwa01)
