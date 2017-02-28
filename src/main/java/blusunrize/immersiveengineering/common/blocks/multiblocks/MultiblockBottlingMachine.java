@@ -229,7 +229,7 @@ public class MultiblockBottlingMachine implements IMultiblock
 			new IngredientStack(new ItemStack(IEContent.blockMetalDecoration0, 2, BlockTypes_MetalDecoration0.LIGHT_ENGINEERING.getMeta())),
 			new IngredientStack(Utils.copyStackWithAmount(ConveyorHandler.getConveyorStack(ImmersiveEngineering.MODID + ":conveyor"), 3)),
 			new IngredientStack(new ItemStack(IEContent.blockMetalDevice0, 1, BlockTypes_MetalDevice0.FLUID_PUMP.getMeta())),
-			new IngredientStack("blockGlass", 2)};
+			new IngredientStack("blockGlass", 1)};
 	@Override
 	public IngredientStack[] getTotalMaterials()
 	{
