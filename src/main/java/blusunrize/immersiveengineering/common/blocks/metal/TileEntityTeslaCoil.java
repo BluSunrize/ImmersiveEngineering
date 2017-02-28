@@ -110,9 +110,7 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 								target.addPotionEffect(new PotionEffect(IEPotions.stunned,128));
 								target.fire = prevFire;
 							}
-							NBTTagCompound tag = new NBTTagCompound();
-							tag.setInteger("targetEntity", target.getEntityId());
-							ImmersiveEngineering.packetHandler.sendToAll(new MessageTileSync(this, tag));
+							this.sendRenderPacket(target);
 						}
 					}
 				}
@@ -237,6 +235,13 @@ public class TileEntityTeslaCoil extends TileEntityIEBase implements ITickable, 
 			}
 			this.markDirty();
 		}
+	}
+
+	protected void sendRenderPacket(Entity target)
+	{
+		NBTTagCompound tag = new NBTTagCompound();
+		tag.setInteger("targetEntity", target.getEntityId());
+		ImmersiveEngineering.packetHandler.sendToAll(new MessageTileSync(this, tag));
 	}
 
 	@Override
