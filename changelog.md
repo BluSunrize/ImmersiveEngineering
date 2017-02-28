@@ -1,10 +1,10 @@
-#####Version 0.10-57
+#####Version 0.10-57 - BUILT
 - added RazorWire! It pricks and slows, and you can electrify it.
 - added Fluid Concrete. Slows entities down and immobilizes them when it dries
 - added a Potion fluid. Effects vary on NBT data. Works in the Chemthrower, can be bottled in Bottling Machine.
 - added blocks for (almost) all IE Fluids
 - added the Mixer! It mixes solid components into fluids to make concrete or various potions!
-- added Turrets! Configurable targeting, currently allowing for fluids (Chemthrower) or bullets (revolver) as ammo
+- added Turrets! Configurable targeting, currently allowing for fluids (Chemthrower) or bullets (Revolver) as ammo
 - changed Floodlights to allow inversion of redstone control
 - changed Charging Station to allow charging Forge Energy items as well
 - fixed Bottling Machine recipes not consuming fluid and duping items (thanks Malte)
