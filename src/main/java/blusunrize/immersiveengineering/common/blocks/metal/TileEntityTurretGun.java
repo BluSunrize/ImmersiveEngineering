@@ -8,6 +8,7 @@ import blusunrize.immersiveengineering.common.entities.EntityRevolvershot;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.network.MessageTileSync;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
@@ -19,6 +20,8 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.oredict.OreDictionary;
 
 import javax.annotation.Nullable;
@@ -185,18 +188,19 @@ public class TileEntityTurretGun extends TileEntityTurret
 			Utils.writeInventory(inventory);
 	}
 
+	IItemHandler itemHandler = new IEInventoryHandler(2,this, 0, new boolean[]{true,false},new boolean[]{false,true});
 	@Override
 	public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing)
 	{
-//		if(!dummy && capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && (facing==null||facing==EnumFacing.DOWN||facing==this.facing.getOpposite()))
-//			return true;
+		if(!dummy && capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && (facing==null||facing==EnumFacing.DOWN||facing==this.facing.getOpposite()))
+			return true;
 		return super.hasCapability(capability, facing);
 	}
 	@Override
 	public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing)
 	{
-//		if(!dummy && capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && (facing==null||facing==EnumFacing.DOWN||facing==this.facing.getOpposite()))
-//			return (T)tank;
+		if(!dummy && capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && (facing==null||facing==EnumFacing.DOWN||facing==this.facing.getOpposite()))
+			return (T)itemHandler;
 		return super.getCapability(capability, facing);
 	}
 }
