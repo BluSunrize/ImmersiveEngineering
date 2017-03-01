@@ -298,7 +298,13 @@ public class BlockIEBase<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 	@Override
 	public boolean isVisuallyOpaque()
 	{
-		return metaNotNormalBlock == null;
+		if(metaNotNormalBlock == null)
+			return true;
+		int majority = 0;
+		for(boolean b : metaNotNormalBlock)
+			if(b)
+				majority++;
+		return majority<=metaNotNormalBlock.length;
 	}
 	@Override
 	public boolean isNormalCube(IBlockState state, IBlockAccess world, BlockPos pos)
