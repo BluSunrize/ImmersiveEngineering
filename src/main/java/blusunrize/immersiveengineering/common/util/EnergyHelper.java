@@ -6,6 +6,7 @@ import cofh.api.energy.IEnergyConnection;
 import cofh.api.energy.IEnergyContainerItem;
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -14,6 +15,7 @@ import net.minecraftforge.energy.IEnergyStorage;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.HashMap;
 
 /**
  * @author BluSunrize - 29.11.2016
@@ -65,6 +67,44 @@ public class EnergyHelper
 		if(stack.hasCapability(CapabilityEnergy.ENERGY, null))
 			return stack.getCapability(CapabilityEnergy.ENERGY, null).receiveEnergy(energy, simulate);
 		return 0;
+	}
+	public static int extractFlux(ItemStack stack, int energy, boolean simulate)
+	{
+		if(stack==null || stack.getItem()==null)
+			return 0;
+		if(stack.getItem() instanceof IFluxContainerItem)
+			return ((IFluxContainerItem)stack.getItem()).extractEnergy(stack, energy, simulate);
+		if(stack.getItem() instanceof IEnergyContainerItem)
+			return ((IEnergyContainerItem)stack.getItem()).extractEnergy(stack, energy, simulate);
+		if(stack.hasCapability(CapabilityEnergy.ENERGY, null))
+			return stack.getCapability(CapabilityEnergy.ENERGY, null).extractEnergy(energy, simulate);
+		return 0;
+	}
+	static HashMap<Item,Boolean> reverseInsertion = new HashMap<Item,Boolean>();
+	public static int forceExtractFlux(ItemStack stack, int energy, boolean simulate)
+	{
+		if(stack==null || stack.getItem()==null)
+			return 0;
+		Boolean b = reverseInsertion.get(stack.getItem());
+		if(b==Boolean.TRUE)
+		{
+			int stored = getEnergyStored(stack);
+			insertFlux(stack, -energy, simulate);
+			return stored-getEnergyStored(stack);
+		}
+		else
+		{
+			int drawn = extractFlux(stack, energy, simulate);
+			if(b==null)
+			{
+				int stored = getEnergyStored(stack);
+				insertFlux(stack, -energy, simulate);
+				drawn = stored-getEnergyStored(stack);
+				//if reverse insertion was succesful, it'll be the default approach in future
+				reverseInsertion.put(stack.getItem(),drawn>0?Boolean.TRUE:Boolean.FALSE);
+			}
+			return drawn;
+		}
 	}
 
 	public static boolean isFluxReceiver(TileEntity tile, EnumFacing facing)
