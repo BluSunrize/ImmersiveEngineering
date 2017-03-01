@@ -75,7 +75,7 @@ public class BulletHandler
 		{
 		}
 
-		default int getProjectileCount(@Nullable EntityPlayer shooter, ItemStack cartridge)
+		default int getProjectileCount(@Nullable EntityPlayer shooter)
 		{
 			return 1;
 		}
@@ -118,7 +118,7 @@ public class BulletHandler
 		 */
 		default boolean isValidForTurret()
 		{
-			return true;
+			return false;
 		}
 	}
 
