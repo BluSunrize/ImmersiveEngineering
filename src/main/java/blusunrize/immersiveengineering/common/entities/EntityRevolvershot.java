@@ -1,8 +1,8 @@
 package blusunrize.immersiveengineering.common.entities;
 
-import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxContainerItem;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
+import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.IEAchievements;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -274,32 +274,30 @@ public class EntityRevolvershot extends Entity
 		}
 		this.setDead();
 	}
+
+
 	public void secondaryImpact(RayTraceResult mop)
 	{
 		if(bulletElectro && mop.entityHit instanceof EntityLivingBase)
 		{
+			IBullet bullet = BulletHandler.getBullet(bulletType);
+			float percentualDrain = .15f/(bullet==null?1:bullet.getProjectileCount(shootingEntity instanceof EntityPlayer?(EntityPlayer)this.shootingEntity:null));
 			((EntityLivingBase)mop.entityHit).addPotionEffect(new PotionEffect(Potion.getPotionFromResourceLocation("slowness"),15,4));
 			for(EntityEquipmentSlot slot : EntityEquipmentSlot.values())
 			{
 				ItemStack stack = ((EntityLivingBase)mop.entityHit).getItemStackFromSlot(slot);
-				if(stack!=null && stack.getItem() instanceof IFluxContainerItem)
+				if(EnergyHelper.isFluxItem(stack) && EnergyHelper.getEnergyStored(stack)>0)
 				{
-					int maxStore = ((IFluxContainerItem)stack.getItem()).getMaxEnergyStored(stack);
-					int drain = Math.min((int)(maxStore*.15f), ((IFluxContainerItem)stack.getItem()).getEnergyStored(stack));
+					int drain = (int)Math.max(EnergyHelper.getEnergyStored(stack),EnergyHelper.getMaxEnergyStored(stack)*percentualDrain);
 					int hasDrained = 0;
 					while(hasDrained<drain)
 					{
-						int actualDrain = ((IFluxContainerItem)stack.getItem()).extractEnergy(stack, drain, false);
+						int actualDrain = EnergyHelper.forceExtractFlux(stack, drain, false);
 						if(actualDrain<=0)
 							break;
 						hasDrained += actualDrain;
 					}
 				}
-//				if(stack!=null && Lib.IC2)
-//				{
-//					double charge = IC2Helper.getMaxItemCharge(stack);
-//					IC2Helper.dischargeItem(stack, charge*.15f);
-//				}
 			}
 		}
 
