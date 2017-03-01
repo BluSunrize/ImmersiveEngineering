@@ -76,7 +76,7 @@ public class TileEntityTurretGun extends TileEntityTurret
 					double dZ = target.posZ-(getPos().getZ()+.5);
 					Vec3d vec = new Vec3d(dX, dY, dZ).normalize();
 
-					int count = bullet.getProjectileCount(null, bulletStack);
+					int count = bullet.getProjectileCount(null);
 					if(count==1)
 					{
 						Entity entBullet = getBulletEntity(worldObj, vec, bullet);
