@@ -1310,7 +1310,7 @@ ie.manual.entry.railgun3=The §6Precision Scope§r allows you to zoom in with th
 
 ie.manual.entry.razorwire.name=Razorwire
 ie.manual.entry.razorwire.subtext=Oversized eggslicer
-ie.manual.entry.razorwire0=Razorwire is a wire with sharpened pieces of metal attached. It will slow and cut any entity that tries to move through it.<br>Razorwire can only be removed with Wirecutters, any other attempts will damage the player.<br>Additionally, a powerwire can be connected to electrify the razorwire for extra damage.
+ie.manual.entry.razorwire0=Razorwire is a wire with sharpened pieces of metal attached. It will slow and cut any entity that tries to move through it.<br>Razorwire can only be removed with Wirecutters, any other attempts will damage the player.<br>Additionally, a LV wire can be connected to electrify the razorwire for extra damage.
 
 ie.manual.entry.turret.name=Turrets
 ie.manual.entry.turret.subtext=Are you still there?
