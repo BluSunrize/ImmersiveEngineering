@@ -291,7 +291,7 @@ public class ItemRevolver extends ItemUpgradeableTool implements IOBJModelCallba
 						{
 							Vec3d vec = player.getLookVec();
 							boolean electro = getUpgrades(revolver).getBoolean("electro");
-							int count = bullet.getProjectileCount(player, bullets[0]);
+							int count = bullet.getProjectileCount(player);
 							if(count == 1)
 							{
 								Entity entBullet = getBullet(player, vec, vec, key, bullets[0], electro);
