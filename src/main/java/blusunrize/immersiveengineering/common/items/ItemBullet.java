@@ -71,7 +71,7 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 				new ResourceLocation("immersiveengineering:items/bullet_buckshot"))
 		{
 			@Override
-			public int getProjectileCount(EntityPlayer shooter, ItemStack cartridge)
+			public int getProjectileCount(EntityPlayer shooter)
 			{
 				return 10;
 			}
@@ -101,7 +101,7 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 				new ResourceLocation("immersiveengineering:items/bullet_dragonsbreath"))
 		{
 			@Override
-			public int getProjectileCount(EntityPlayer shooter, ItemStack cartridge)
+			public int getProjectileCount(EntityPlayer shooter)
 			{
 				return 30;
 			}
@@ -442,6 +442,12 @@ public class ItemBullet extends ItemIEBase implements ITextureOverride//IBullet
 			if(layer != 1)
 				return 0xffffffff;
 			return ItemNBTHelper.hasKey(stack, "flareColour") ? ItemNBTHelper.getInt(stack, "flareColour") : 0xcc2e06;
+		}
+
+		@Override
+		public boolean isValidForTurret()
+		{
+			return true;
 		}
 	}
 
