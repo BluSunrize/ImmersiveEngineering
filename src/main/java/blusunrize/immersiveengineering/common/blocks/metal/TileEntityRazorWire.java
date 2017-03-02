@@ -14,7 +14,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.EnumFacing.AxisDirection;
@@ -22,7 +22,6 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -129,6 +128,14 @@ public class TileEntityRazorWire extends TileEntityImmersiveConnectable implemen
 		BlockPos down = getPos().down();
 		return worldObj.getBlockState(down).isSideSolid(worldObj,down,EnumFacing.UP);
 	}
+	private boolean isStacked()
+	{
+		BlockPos down = getPos().down();
+		TileEntity te = worldObj.getTileEntity(down);
+		if(te instanceof TileEntityRazorWire)
+			return ((TileEntityRazorWire)te).isOnGround();
+		return false;
+	}
 
 	@SideOnly(Side.CLIENT)
 	@Override
@@ -140,15 +147,18 @@ public class TileEntityRazorWire extends TileEntityImmersiveConnectable implemen
 	@Override
 	public boolean shouldRenderGroup(IBlockState object, String group)
 	{
-		if((group!=null&&group.startsWith("barbs"))==(MinecraftForgeClient.getRenderLayer()==BlockRenderLayer.SOLID))
+		if(group==null)
 			return false;
-		if(!isOnGround())
-			return group!=null&&!group.startsWith("wood");
-		if("wood_left".equals(group))
+		boolean stack = isStacked();
+		if(!stack && !isOnGround())
+			return !group.startsWith("wood");
+		if(group.startsWith("wood") && !(group.endsWith("inverted")==stack))
+			return false;
+		if(group.startsWith("wood_left"))
 			return renderWall(true);
 		else if("wire_left".equals(group)||"barbs_left".equals(group))
 			return !renderWall(true);
-		else if("wood_right".equals(group))
+		else if(group.startsWith("wood_right"))
 			return renderWall(false);
 		else if("wire_right".equals(group)||"barbs_right".equals(group))
 			return !renderWall(false);
@@ -158,9 +168,10 @@ public class TileEntityRazorWire extends TileEntityImmersiveConnectable implemen
 	@Override
 	public String getCacheKey(IBlockState object)
 	{
-		if(!isOnGround())
-			return (MinecraftForgeClient.getRenderLayer()==BlockRenderLayer.CUTOUT?"C":"S")+"default";
-		return (MinecraftForgeClient.getRenderLayer()==BlockRenderLayer.CUTOUT?"C":"S")+(renderWall(true)?"L":" ")+(renderWall(false)?"R":" ");
+		boolean stack = isStacked();
+		if(!stack && !isOnGround())
+			return "default";
+		return (renderWall(true)?"L":" ")+(renderWall(false)?"R":" ")+(stack?"_stack":"");
 	}
 
 	@Override

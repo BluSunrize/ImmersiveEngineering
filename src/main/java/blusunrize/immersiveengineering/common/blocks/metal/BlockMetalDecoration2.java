@@ -34,7 +34,7 @@ public class BlockMetalDecoration2 extends BlockIETileProvider<BlockTypes_MetalD
 		this.setHardness(3.0F);
 		this.setResistance(15.0F);
 		this.setAllNotNormalBlock();
-		this.setMetaBlockLayer(BlockTypes_MetalDecoration2.RAZOR_WIRE.getMeta(), BlockRenderLayer.SOLID,BlockRenderLayer.CUTOUT);
+		this.setMetaBlockLayer(BlockTypes_MetalDecoration2.RAZOR_WIRE.getMeta(), BlockRenderLayer.CUTOUT);
 		lightOpacity = 0;
 	}
 
