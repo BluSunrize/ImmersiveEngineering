@@ -304,7 +304,7 @@ public class BlockIEBase<E extends Enum<E> & BlockIEBase.IBlockEnum> extends Blo
 		for(boolean b : metaNotNormalBlock)
 			if(b)
 				majority++;
-		return majority<=metaNotNormalBlock.length;
+		return majority<metaNotNormalBlock.length/2;
 	}
 	@Override
 	public boolean isNormalCube(IBlockState state, IBlockAccess world, BlockPos pos)
