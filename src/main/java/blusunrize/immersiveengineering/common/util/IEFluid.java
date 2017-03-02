@@ -76,7 +76,7 @@ public class IEFluid extends Fluid
 		@Override
 		public String getLocalizedName(FluidStack stack)
 		{
-			if(stack.tag==null)
+			if(stack==null || stack.tag==null)
 				return super.getLocalizedName(stack);
 			return net.minecraft.util.text.translation.I18n.translateToLocal(PotionUtils.getPotionTypeFromNBT(stack.tag).getNamePrefixed("potion.effect."));
 		}
@@ -84,7 +84,7 @@ public class IEFluid extends Fluid
 		@Override
 		public int getColor(FluidStack stack)
 		{
-			if(stack.tag!=null)
+			if(stack==null || stack.tag!=null)
 				return 0xff000000 | PotionUtils.getPotionColorFromEffectList(PotionUtils.getEffectsFromTag(stack.tag));
 			return 0xff0000ff;
 		}
