@@ -375,6 +375,8 @@ public class BlockWoodenDevice0 extends BlockIETileProvider<BlockTypes_WoodenDev
 				return new TileEntityWoodenCrate();
 			case TURNTABLE:
 				return new TileEntityTurntable();
+			case FLUID_SORTER:
+				return new TileEntityFluidSorter();
 		}
 		return null;
 	}

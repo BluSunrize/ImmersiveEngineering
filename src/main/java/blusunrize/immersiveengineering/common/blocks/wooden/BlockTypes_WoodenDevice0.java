@@ -13,7 +13,8 @@ public enum BlockTypes_WoodenDevice0 implements IStringSerializable, BlockIEBase
 	SORTER,
 	GUNPOWDER_BARREL,
 	REINFORCED_CRATE,
-	TURNTABLE;
+	TURNTABLE,
+	FLUID_SORTER;
 
 	@Override
 	public String getName()

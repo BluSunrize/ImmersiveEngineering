@@ -45,6 +45,18 @@
 		"inventory,type=gunpowder_barrel": [{ "textures": { "side": "immersiveengineering:blocks/woodenDevice_gunpowderBarrel", "bottom": "immersiveengineering:blocks/woodenDevice_barrel_up_none", "top": "immersiveengineering:blocks/woodenDevice_gunpowderBarrel_top"} }],
 		"inventory,type=reinforced_crate": [{ "textures": { "side": "immersiveengineering:blocks/woodenDevice_reinforcedCrate", "top": "immersiveengineering:blocks/woodenDevice_reinforcedCrate", "bottom": "immersiveengineering:blocks/woodenDevice_reinforcedCrate"} }],
 		"inventory,type=turntable": [{ "textures": { "side": "immersiveengineering:blocks/woodenDevice_turntable", "top": "immersiveengineering:blocks/woodenDevice_turntable_top", "bottom": "immersiveengineering:blocks/woodenDevice_turntable_bottom"} }],
+		"inventory,type=fluid_sorter": [{
+			"model": "immersiveengineering:ieSixSides",
+			"textures": {
+				"particle": "immersiveengineering:blocks/woodenDevice_fluidSorter_0",
+				"bottom": "immersiveengineering:blocks/woodenDevice_fluidSorter_0",
+				"top": "immersiveengineering:blocks/woodenDevice_fluidSorter_1",
+				"north": "immersiveengineering:blocks/woodenDevice_fluidSorter_2",
+				"south": "immersiveengineering:blocks/woodenDevice_fluidSorter_3",
+				"west": "immersiveengineering:blocks/woodenDevice_fluidSorter_4",
+				"east": "immersiveengineering:blocks/woodenDevice_fluidSorter_5"
+			}
+		}],
 
 		"type":
 		{
@@ -95,6 +107,18 @@
 					"side": "immersiveengineering:blocks/woodenDevice_turntable",
 					"top": "immersiveengineering:blocks/woodenDevice_turntable_top",
 					"bottom": "immersiveengineering:blocks/woodenDevice_turntable_bottom"
+				}
+			},
+			"fluid_sorter": {
+				"model": "immersiveengineering:ieSixSides",
+				"textures": {
+					"particle": "immersiveengineering:blocks/woodenDevice_fluidSorter_0",
+					"bottom": "immersiveengineering:blocks/woodenDevice_fluidSorter_0",
+					"top": "immersiveengineering:blocks/woodenDevice_fluidSorter_1",
+					"north": "immersiveengineering:blocks/woodenDevice_fluidSorter_2",
+					"south": "immersiveengineering:blocks/woodenDevice_fluidSorter_3",
+					"west": "immersiveengineering:blocks/woodenDevice_fluidSorter_4",
+					"east": "immersiveengineering:blocks/woodenDevice_fluidSorter_5"
 				}
 			}
 		},

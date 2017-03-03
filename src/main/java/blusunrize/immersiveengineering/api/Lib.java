@@ -45,6 +45,7 @@ public class Lib
 	public static final int GUIID_AutoWorkbench = GUIID_Base_Tile +10;
 	public static final int GUIID_Mixer = GUIID_Base_Tile +11;
 	public static final int GUIID_Turret = GUIID_Base_Tile +12;
+	public static final int GUIID_FluidSorter = GUIID_Base_Tile +13;
 	//Items
 	public static final int GUIID_Base_Item = 64;
 	public static final int GUIID_Manual = GUIID_Base_Item +0;
