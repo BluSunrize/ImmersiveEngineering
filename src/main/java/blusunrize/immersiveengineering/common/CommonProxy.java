@@ -6,6 +6,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGuiTile;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
 import blusunrize.immersiveengineering.common.blocks.stone.TileEntityBlastFurnace;
 import blusunrize.immersiveengineering.common.blocks.stone.TileEntityCokeOven;
+import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityFluidSorter;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityModWorkbench;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntitySorter;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityWoodenCrate;
@@ -112,6 +113,8 @@ public class CommonProxy implements IGuiHandler
 					gui = new ContainerMixer(player.inventory, (TileEntityMixer) te);
 				if(ID==Lib.GUIID_Turret && te instanceof TileEntityTurret)
 					gui = new ContainerTurret(player.inventory, (TileEntityTurret) te);
+				if(ID==Lib.GUIID_FluidSorter && te instanceof TileEntityFluidSorter)
+					gui = new ContainerFluidSorter(player.inventory, (TileEntityFluidSorter) te);
 				if(gui!=null)
 					((IGuiTile)te).onGuiOpened(player, false);
 				return gui;

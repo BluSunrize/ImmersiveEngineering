@@ -73,6 +73,7 @@ tile.immersiveengineering.woodenDevice0.sorter.name=Item Router
 tile.immersiveengineering.woodenDevice0.gunpowder_barrel.name=Gunpowder Barrel
 tile.immersiveengineering.woodenDevice0.reinforced_crate.name=Reinforced Storage Crate
 tile.immersiveengineering.woodenDevice0.turntable.name=Turntable
+tile.immersiveengineering.woodenDevice0.fluid_sorter.name=Fluid Router
 tile.immersiveengineering.woodenDevice1.watermill.name=Water Wheel
 tile.immersiveengineering.woodenDevice1.windmill.name=Windmill
 tile.immersiveengineering.woodenDevice1.windmill_advanced.name=Improved Windmill
@@ -1240,7 +1241,12 @@ ie.manual.entry.fluidPipes4=<config;b;pump_infiniteWater;Water blocks will serve
 ie.manual.entry.sorter.name=Item Router
 ie.manual.entry.sorter.subtext=Left foot yellow, right hand green
 ie.manual.entry.sorter0=The Item Router is a block which will accept and redistribute items down filtered paths. Place it down and rightclick it to open the interface, which shows six different, colour and direction coordinated filters.
-ie.manual.entry.sorter1=When an item enters the router, it will be routed to an output whose filter matches the item, or, if no matching filter is found, it routes to an unfiltered output. If the router cannot route the item in the first place, it will not allow the item to enter the router. Items also can not be output to the side it was inserted from.<br>Sneak and rightclick a side to switch its routing to respect the OreDictionary. Note that this routing is a bit more taxing on the game performance.
+ie.manual.entry.sorter1=When an item enters the router, it will be routed to an output whose filter matches the item, or, if no matching filter is found, it routes to an unfiltered output. If the router cannot route the item in the first place, it will not allow the item to enter the router. Items also can not be output to the side it was inserted from.<br>The buttons above each filter can be used to have the router respect or ignore OreDictionary, NBT and Metadata.
+
+ie.manual.entry.fluidSorter.name=Fluid Router
+ie.manual.entry.fluidSorter.subtext=Milk goes left, acid goes right
+ie.manual.entry.fluidSorter0=The Fluid Router works much akin to the <link;sorter;§o§nItem §o§nRouter§r>. Fluids input through any side will be redistributed based on how the six side filters are set up. Clicking a bucket or any other type of fluid container into the slots of the GUI will configure the filter to that fluid.
+ie.manual.entry.fluidSorter1=When any fluids is piped into the router, it will be routed to an output whose filter matches the fluid, or, if no matching filter is found, it routes to an unfiltered output. If there is not available or valid route, no fluid will be accepted.<br>The buttons above each filter can be used to have the router respect or ignore the fluid's NBT data.
 
 ie.manual.entry.turntable.name=Turntable
 ie.manual.entry.turntable.subtext=I can't keep up

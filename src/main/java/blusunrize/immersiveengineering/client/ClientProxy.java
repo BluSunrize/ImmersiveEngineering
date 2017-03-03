@@ -665,6 +665,9 @@ public class ClientProxy extends CommonProxy
 		ManualHelper.addEntry("sorter", ManualHelper.CAT_MACHINES,
 				new ManualPages.Crafting(ManualHelper.getManual(), "sorter0", new ItemStack(IEContent.blockWoodenDevice0,1,BlockTypes_WoodenDevice0.SORTER.getMeta())),
 				new ManualPages.Text(ManualHelper.getManual(), "sorter1"));
+		ManualHelper.addEntry("fluidSorter", ManualHelper.CAT_MACHINES,
+				new ManualPages.Crafting(ManualHelper.getManual(), "fluidSorter0", new ItemStack(IEContent.blockWoodenDevice0,1,BlockTypes_WoodenDevice0.FLUID_SORTER.getMeta())),
+				new ManualPages.Text(ManualHelper.getManual(), "fluidSorter1"));
 		ManualHelper.addEntry("turntable", ManualHelper.CAT_MACHINES,
 				new ManualPages.Crafting(ManualHelper.getManual(), "turntable0", new ItemStack(IEContent.blockWoodenDevice0,1,BlockTypes_WoodenDevice0.TURNTABLE.getMeta())));
 		pages = new ArrayList<IManualPage>();
@@ -1145,6 +1148,8 @@ public class ClientProxy extends CommonProxy
 					gui = new GuiMixer(player.inventory, (TileEntityMixer) te);
 				if(ID==Lib.GUIID_Turret && te instanceof TileEntityTurret)
 					gui = new GuiTurret(player.inventory, (TileEntityTurret) te);
+				if(ID==Lib.GUIID_FluidSorter && te instanceof TileEntityFluidSorter)
+					gui = new GuiFluidSorter(player.inventory, (TileEntityFluidSorter) te);
 				if(gui!=null)
 					((IGuiTile)te).onGuiOpened(player, true);
 				return gui;
