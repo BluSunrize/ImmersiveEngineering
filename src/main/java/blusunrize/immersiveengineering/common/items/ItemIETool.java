@@ -196,7 +196,7 @@ public class ItemIETool extends ItemIEBase implements ITool, IGuiItem
 				}
 			TileEntity tile = world.getTileEntity(pos);
 			if(!(tile instanceof IDirectionalTile) && !(tile instanceof IHammerInteraction) && !(tile instanceof IConfigurableSides))
-				return RotationUtil.rotateBlock(world, pos, side, player) ? EnumActionResult.SUCCESS : EnumActionResult.PASS;
+				return RotationUtil.rotateBlock(world, pos, side) ? EnumActionResult.SUCCESS : EnumActionResult.PASS;
 		}
 		else if(stack.getItemDamage() == 1 && tileEntity instanceof IImmersiveConnectable && !world.isRemote)
 		{
