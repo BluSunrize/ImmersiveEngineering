@@ -4,27 +4,15 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectio
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.INeighbourChangeTile;
 import blusunrize.immersiveengineering.common.blocks.TileEntityIEBase;
-import net.minecraft.block.BlockPistonBase;
-import net.minecraft.block.state.IBlockState;
+import blusunrize.immersiveengineering.common.util.RotationUtil;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 
-import java.util.HashSet;
-import java.util.function.Predicate;
-
 public class TileEntityTurntable extends TileEntityIEBase implements IDirectionalTile, INeighbourChangeTile, IHammerInteraction
 {
-	public static HashSet<Predicate<IBlockState>> permittedRotation = new HashSet<>();
-	static{
-		permittedRotation.add(state -> {
-			//preventing extended pistons from rotating
-			return !((state.getBlock()==Blocks.PISTON||state.getBlock()==Blocks.STICKY_PISTON)&&state.getValue(BlockPistonBase.EXTENDED));
-		});
-	}
 
 	private EnumFacing facing = EnumFacing.UP;
 	private boolean redstone = false;
@@ -55,11 +43,7 @@ public class TileEntityTurntable extends TileEntityIEBase implements IDirectiona
 			if(this.redstone)
 			{
 				BlockPos target = pos.offset(facing);
-				IBlockState state = this.worldObj.getBlockState(target);
-				for(Predicate<IBlockState> pred : permittedRotation)
-					if(!pred.test(state))
-						return;
-				state.getBlock().rotateBlock(this.worldObj, target, invert?facing:facing.getOpposite());
+				RotationUtil.rotateBlock(this.worldObj, target, invert?facing:facing.getOpposite());
 			}
 		}
 	}
