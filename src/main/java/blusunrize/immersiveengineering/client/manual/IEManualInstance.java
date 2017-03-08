@@ -106,13 +106,13 @@ public class IEManualInstance extends ManualInstance
 				if(segment.length>3)
 					try{
 						int idx = Integer.parseInt(segment[3]);
-						result = ""+Utils.formatDouble(iD[idx], "#.***");
+						result = ""+Utils.formatDouble(iD[idx], "##0.0##");
 					}catch(Exception ex){
 						break;
 					}
 				else
 					for(int i=0; i<iD.length; i++)
-						result += (i>0?", ":"")+Utils.formatDouble(iD[i], "#.***");
+						result += (i>0?", ":"")+Utils.formatDouble(iD[i], "##0.0##");
 			}
 
 			s = s.replaceFirst(rep, result);
