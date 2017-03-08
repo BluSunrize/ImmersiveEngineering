@@ -43,6 +43,7 @@ public class CraftTweakerHelper extends IECompatModule
 		MineTweakerAPI.registerClass(Excavator.MTMineralMix.class);
 		MineTweakerAPI.registerClass(BottlingMachine.class);
 		MineTweakerAPI.registerClass(MetalPress.class);
+		MineTweakerAPI.registerClass(Mixer.class);
 		try
 		{
 			MineTweakerImplementationAPI.onPostReload(new ExcavatorEventHandler());
