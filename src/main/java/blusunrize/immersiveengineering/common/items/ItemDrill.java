@@ -446,13 +446,14 @@ public class ItemDrill extends ItemUpgradeableTool implements IAdvancedFluidItem
 				{
 					block.onBlockHarvested(world, pos, state, player);
 					TileEntity te = world.getTileEntity(pos);
+					//implicitly damages head
+					stack.onBlockDestroyed(world, state, pos, player);
 					if(block.removedByPlayer(state, world, pos, player, true))
 					{
 						block.onBlockDestroyedByPlayer( world, pos, state);
 						block.harvestBlock(world, player, pos, state, te, stack);
 						block.dropXpOnBlockBreak(world, pos, xpDropEvent);
 					}
-					stack.onBlockDestroyed(world, state, pos, player);
 				}
 				world.playEvent(2001, pos, Block.getStateId(state));
 				((EntityPlayerMP)player).connection.sendPacket(new SPacketBlockChange(world, pos));
