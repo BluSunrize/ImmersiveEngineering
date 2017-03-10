@@ -39,6 +39,7 @@ public class BlockMetalDevice1 extends BlockIETileProvider<BlockTypes_MetalDevic
 		this.setMetaBlockLayer(BlockTypes_MetalDevice1.SAMPLE_DRILL.getMeta(), BlockRenderLayer.CUTOUT);
 		this.setMetaBlockLayer(BlockTypes_MetalDevice1.FLOODLIGHT.getMeta(), BlockRenderLayer.SOLID, BlockRenderLayer.TRANSLUCENT);
 		this.setMetaBlockLayer(BlockTypes_MetalDevice1.ELECTRIC_LANTERN.getMeta(), BlockRenderLayer.SOLID, BlockRenderLayer.TRANSLUCENT);
+		this.setMetaBlockLayer(BlockTypes_MetalDevice1.BELLJAR.getMeta(), BlockRenderLayer.SOLID, BlockRenderLayer.TRANSLUCENT);
 
 		this.setMetaLightOpacity(BlockTypes_MetalDevice1.FURNACE_HEATER.getMeta(), 255);
 		this.setMetaLightOpacity(BlockTypes_MetalDevice1.DYNAMO.getMeta(), 255);
@@ -52,6 +53,7 @@ public class BlockMetalDevice1 extends BlockIETileProvider<BlockTypes_MetalDevic
 		this.setNotNormalBlock(BlockTypes_MetalDevice1.FLOODLIGHT.getMeta());
 		this.setNotNormalBlock(BlockTypes_MetalDevice1.TURRET_CHEM.getMeta());
 		this.setNotNormalBlock(BlockTypes_MetalDevice1.TURRET_GUN.getMeta());
+		this.setNotNormalBlock(BlockTypes_MetalDevice1.BELLJAR.getMeta());
 	}
 
 	@Override
@@ -72,6 +74,8 @@ public class BlockMetalDevice1 extends BlockIETileProvider<BlockTypes_MetalDevic
 			return "coreDrill";
 		else if(BlockTypes_MetalDevice1.values()[meta]==BlockTypes_MetalDevice1.FLOODLIGHT)
 			return "floodlight";
+		else if(BlockTypes_MetalDevice1.values()[meta]==BlockTypes_MetalDevice1.BELLJAR)
+			return "belljar";
 		//		else if(BlockTypes_MetalDevice1.values()[meta]==BlockTypes_MetalDevice1.TESLA_COIL)
 		//			return "teslaCoil";
 		return null;
@@ -159,6 +163,8 @@ public class BlockMetalDevice1 extends BlockIETileProvider<BlockTypes_MetalDevic
 				return new TileEntityTurretChem();
 			case TURRET_GUN:
 				return new TileEntityTurretGun();
+			case BELLJAR:
+				return new TileEntityBelljar();
 
 			//		case 0://CONNECTOR_LV
 			//		case 1://CONNECTOR_MV

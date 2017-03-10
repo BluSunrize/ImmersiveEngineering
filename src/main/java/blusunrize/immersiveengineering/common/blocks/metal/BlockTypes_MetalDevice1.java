@@ -18,7 +18,9 @@ public enum BlockTypes_MetalDevice1 implements IStringSerializable, BlockIEBase.
 	TESLA_COIL,
 	FLOODLIGHT,
 	TURRET_CHEM,
-	TURRET_GUN;
+	TURRET_GUN,
+	TURRET_RAIL,
+	BELLJAR;
 
 	@Override
 	public String getName()
@@ -33,6 +35,6 @@ public enum BlockTypes_MetalDevice1 implements IStringSerializable, BlockIEBase.
 	@Override
 	public boolean listForCreative()
 	{
-		return true;
+		return ordinal()!=12;
 	}
 }

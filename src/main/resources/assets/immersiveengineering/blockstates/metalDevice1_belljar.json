@@ -1,0 +1,64 @@
+{
+	"forge_marker": 1,
+	"defaults":
+	{
+		"transform": "forge:default-block",
+		"model": "forge:multi-layer",
+		"custom": {
+			"base": "immersiveengineering:metalDevice1_belljar#normal",
+			"Solid": "immersiveengineering:metalDevice1_belljar#normal",
+			"Translucent": "immersiveengineering:metalDevice1_belljar#glass"
+		}
+	},
+	"variants":
+	{
+		"normal":[{
+		 	"model": "immersiveengineering:metalDevice/belljar.obj.ie",
+			"custom": {"flip-v": true}
+		}],
+		"glass":[{
+		 	"model": "immersiveengineering:metalDevice/belljar_glass.obj.ie",
+			"custom": {"flip-v": true}
+		}],
+		"inventory,type=belljar": [{
+		}],
+		"type":
+		{
+			"belljar": {
+			}
+		},
+		"facing":
+		{
+			"down": { "transform": {
+				"rotation": {"x": -90 }
+			}},
+			"up": { "transform": {
+				"rotation": {"x": 90 }
+			}},
+			"north": { "transform": {
+				"rotation": {"y": 0 }
+			}},
+			"south": { "transform": {
+				"rotation": {"y": 180 }
+			}},
+			"west": { "transform": {
+				"rotation": {"y": 90 }
+			}},
+			"east": { "transform": {
+				"rotation": {"y": -90 }
+			}}
+		},
+		"_0multiblockslave":
+		{
+			"false":{},
+			"true":{
+				"model": "builtin/generated"
+			}
+		},
+		"boolean0":
+		{
+			"false":{},
+			"true":{}
+		}
+	}
+}

@@ -20,6 +20,7 @@ import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -46,6 +47,7 @@ import net.minecraftforge.fluids.IFluidTank;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector3f;
 
+import javax.annotation.Nonnull;
 import javax.vecmath.Quat4d;
 import java.util.*;
 
@@ -1517,6 +1519,27 @@ public class ClientUtils
 			vertexbuffer.putNormal((float)vec3i.getX(), (float)vec3i.getY(), (float)vec3i.getZ());
 			tessellator.draw();
 		}
+	}
+
+	public static ResourceLocation getSideTexture(@Nonnull ItemStack stack, EnumFacing side)
+	{
+		IBakedModel model = mc().getRenderItem().getItemModelWithOverrides(stack, null,null);
+		List<BakedQuad> quads = model.getQuads(null, side, 0);
+		if(quads==null || quads.isEmpty())//no quads for the specified side D:
+			quads = model.getQuads(null, null, 0);
+		if(quads==null || quads.isEmpty())//no quads at all D:
+			return null;
+		return new ResourceLocation(quads.get(0).getSprite().getIconName());
+	}
+	public static ResourceLocation getSideTexture(@Nonnull IBlockState state, EnumFacing side)
+	{
+		IBakedModel model = mc().getBlockRendererDispatcher().getModelForState(state);
+		List<BakedQuad> quads = model.getQuads(state, side, 0);
+		if(quads==null || quads.isEmpty())//no quads for the specified side D:
+			quads = model.getQuads(state, null, 0);
+		if(quads==null || quads.isEmpty())//no quads at all D:
+			return null;
+		return new ResourceLocation(quads.get(0).getSprite().getIconName());
 	}
 
 	private static int invertRgb(int in)
