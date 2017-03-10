@@ -3,3 +3,6 @@
 
 A retro-futuristic tech mod!
 Wires, transformers, capacitors!
+
+# Downloads
+[CurseForge](https://minecraft.curseforge.com/projects/immersive-engineering/files) 
