@@ -115,6 +115,8 @@ public class CommonProxy implements IGuiHandler
 					gui = new ContainerTurret(player.inventory, (TileEntityTurret) te);
 				if(ID==Lib.GUIID_FluidSorter && te instanceof TileEntityFluidSorter)
 					gui = new ContainerFluidSorter(player.inventory, (TileEntityFluidSorter) te);
+				if(ID==Lib.GUIID_Belljar && te instanceof TileEntityBelljar)
+					gui = new ContainerBelljar(player.inventory, (TileEntityBelljar) te);
 				if(gui!=null)
 					((IGuiTile)te).onGuiOpened(player, false);
 				return gui;

@@ -2,6 +2,7 @@ package blusunrize.immersiveengineering.common;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.ComparableItemStack;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.MultiblockHandler;
 import blusunrize.immersiveengineering.api.crafting.*;
@@ -84,6 +85,8 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.common.registry.VillagerRegistry;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
@@ -456,6 +459,7 @@ public class IEContent
 		registerTile(TileEntityTurret.class);
 		registerTile(TileEntityTurretChem.class);
 		registerTile(TileEntityTurretGun.class);
+		registerTile(TileEntityBelljar.class);
 
 		registerTile(TileEntityConveyorBelt.class);
 		registerTile(TileEntityConveyorVertical.class);
@@ -749,6 +753,33 @@ public class IEContent
 		MixerRecipe.addRecipe(new FluidStack(fluidConcrete,500), new FluidStack(FluidRegistry.WATER,500),new Object[]{"sand","sand",Items.CLAY_BALL,"gravel"}, 3200);
 
 		BottlingMachineRecipe.addRecipe(new ItemStack(Blocks.SPONGE,1,1), new ItemStack(Blocks.SPONGE,1,0), new FluidStack(FluidRegistry.WATER,1000));
+
+		BelljarHandler.DefaultPlantHandler hempBelljarHandler = new BelljarHandler.DefaultPlantHandler()
+		{
+			private HashSet<ComparableItemStack> validSeeds = new HashSet<>();
+			@Override
+			protected HashSet<ComparableItemStack> getSeedSet()
+			{
+				return validSeeds;
+			}
+			@Override
+			@SideOnly(Side.CLIENT)
+			public IBlockState[] getRenderedPlant(ItemStack seed, ItemStack soil, float growth, TileEntity tile)
+			{
+				int age = Math.min(4, Math.round(growth*4));
+				if(age==4)
+					return new IBlockState[]{blockCrop.getStateFromMeta(age),blockCrop.getStateFromMeta(age+1)};
+				return new IBlockState[]{blockCrop.getStateFromMeta(age)};
+			}
+			@Override
+			@SideOnly(Side.CLIENT)
+			public float getRenderSize(ItemStack seed, ItemStack soil, float growth, TileEntity tile)
+			{
+				return .6875f;
+			}
+		};
+		BelljarHandler.registerHandler(hempBelljarHandler);
+		hempBelljarHandler.register(new ItemStack(itemSeeds), new ItemStack[]{new ItemStack(itemMaterial,4,4),new ItemStack(itemSeeds,2)},new ItemStack(Blocks.DIRT), blockCrop.getDefaultState());
 
 		ThermoelectricHandler.registerSourceInKelvin("blockIce", 273);
 		ThermoelectricHandler.registerSourceInKelvin("blockPackedIce", 200);

@@ -73,7 +73,7 @@ public class ContainerIEBase<T extends TileEntity> extends Container
 		}
 		return stack;
 	}
-	
+
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slot)
 	{
@@ -114,5 +114,12 @@ public class ContainerIEBase<T extends TileEntity> extends Container
 			slotObject.onPickupFromSlot(player, stackInSlot);
 		}
 		return stack;
+	}
+
+	@Override
+	public void onContainerClosed(EntityPlayer playerIn)
+	{
+		super.onContainerClosed(playerIn);
+		this.inv.closeInventory(playerIn);
 	}
 }

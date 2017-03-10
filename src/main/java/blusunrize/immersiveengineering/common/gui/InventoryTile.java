@@ -107,6 +107,8 @@ public class InventoryTile implements IInventory
 	@Override
 	public void closeInventory(EntityPlayer player)
 	{
+		for(int i=0; i<getSizeInventory(); i++)
+			inv.doGraphicalUpdates(i);
 	}
 
 	@Override
