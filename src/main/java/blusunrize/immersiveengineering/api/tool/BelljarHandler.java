@@ -134,7 +134,7 @@ public class BelljarHandler
 		}
 	}
 
-	private static DefaultPlantHandler cropHandler = new DefaultPlantHandler()
+	public static DefaultPlantHandler cropHandler = new DefaultPlantHandler()
 	{
 		private HashSet<ComparableItemStack> validSeeds = new HashSet<>();
 		@Override
@@ -170,7 +170,7 @@ public class BelljarHandler
 			return null;
 		}
 	};
-	private static DefaultPlantHandler stemHandler = new DefaultPlantHandler()
+	public static DefaultPlantHandler stemHandler = new DefaultPlantHandler()
 	{
 		private HashSet<ComparableItemStack> validSeeds = new HashSet<>();
 
@@ -243,7 +243,7 @@ public class BelljarHandler
 			return true;
 		}
 	};
-	private static DefaultPlantHandler stackingHandler = new DefaultPlantHandler()
+	public static DefaultPlantHandler stackingHandler = new DefaultPlantHandler()
 	{
 		private HashSet<ComparableItemStack> validSeeds = new HashSet<>();
 		@Override
