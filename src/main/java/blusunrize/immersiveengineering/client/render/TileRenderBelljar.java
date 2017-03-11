@@ -30,12 +30,12 @@ public class TileRenderBelljar extends TileEntitySpecialRenderer<TileEntityBellj
 		GlStateManager.translate(x, y+.125, z);
 		GlStateManager.rotate(-90,0,1,0);
 		GlStateManager.color(1,1,1,1);
-		float scale = plantHandler.getRenderSize(tile.getInventory()[1], tile.getInventory()[0], tile.growth, tile);
+		float scale = plantHandler.getRenderSize(tile.getInventory()[1], tile.getInventory()[0], tile.renderGrowth, tile);
 		GlStateManager.translate((1-scale)/2, 0, -(1-scale)/2);
 		GlStateManager.scale(scale,scale,scale);
-		if(!plantHandler.overrideRender(tile.getInventory()[1], tile.getInventory()[0], tile.growth, tile, blockRenderer))
+		if(!plantHandler.overrideRender(tile.getInventory()[1], tile.getInventory()[0], tile.renderGrowth, tile, blockRenderer))
 		{
-			IBlockState[] states = plantHandler.getRenderedPlant(tile.getInventory()[1], tile.getInventory()[0], tile.growth, tile);
+			IBlockState[] states = plantHandler.getRenderedPlant(tile.getInventory()[1], tile.getInventory()[0], tile.renderGrowth, tile);
 			if(states==null || states.length<1)
 				return;
 			for(IBlockState s : states)
