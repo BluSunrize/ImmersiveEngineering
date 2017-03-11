@@ -50,7 +50,8 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 	public FluxStorage energyStorage = new FluxStorage(16000,Math.max(256,IEConfig.Machines.belljar_consumption));
 
 	private IPlantHandler curPlantHandler;
-	public float growth = 0;
+	private float growth = 0;
+	public float renderGrowth = 0;
 
 	@Override
 	public void update()
@@ -59,12 +60,23 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 			return;
 		if(getWorld().isRemote)
 		{
-			if(energyStorage.getEnergyStored()>0 && getWorld().rand.nextInt(8)==0)
+			if(energyStorage.getEnergyStored()>IEConfig.Machines.belljar_consumption)
 			{
-				double partX = getPos().getX()+.5;
-				double partY = getPos().getY()+1.6875;
-				double partZ = getPos().getZ()+.5;
-				ImmersiveEngineering.proxy.spawnRedstoneFX(getWorld(), partX, partY, partZ, .25, .25, .25, 1f, .55f, .1f, .1f);
+				IPlantHandler handler = getCurrentPlantHandler();
+				if(handler!=null&&handler.isCorrectSoil(inventory[1], inventory[0]))
+				{
+					if(renderGrowth<1)
+						renderGrowth += handler.getGrowthStep(inventory[1], inventory[0], renderGrowth, this, true);
+					else
+						renderGrowth = handler.resetGrowth(inventory[1], inventory[0], renderGrowth, this, true);
+					if(getWorld().rand.nextInt(8)==0)
+					{
+						double partX = getPos().getX()+.5;
+						double partY = getPos().getY()+1.6875;
+						double partZ = getPos().getZ()+.5;
+						ImmersiveEngineering.proxy.spawnRedstoneFX(getWorld(), partX, partY, partZ, .25, .25, .25, 1f, .55f, .1f, .1f);
+					}
+				}
 			}
 		}
 		else
@@ -100,13 +112,11 @@ public class TileEntityBelljar extends TileEntityIEBase implements ITickable, ID
 										break;
 									}
 								}
-							growth = handler.resetGrowth(inventory[1], inventory[0], growth, this);
+							growth = handler.resetGrowth(inventory[1], inventory[0], growth, this, false);
 						}
 					}
 					else if(growth < 1)
-						growth += handler.getGrowthStep(inventory[1], inventory[0], growth, this);
-					markDirty();
-					this.markContainingBlockForUpdate(null);
+						growth += handler.getGrowthStep(inventory[1], inventory[0], growth, this, false);
 				}
 				else
 					growth = 0;
