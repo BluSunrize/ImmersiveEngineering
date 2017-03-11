@@ -24,6 +24,7 @@ public abstract class IECompatModule
 		moduleClasses.put("actuallyadditions", ActuallyAdditionsHelper.class);
 		moduleClasses.put("attaineddrops", AttainedDropsHelper.class);
 		moduleClasses.put("Baubles", BaublesHelper.class);
+		moduleClasses.put("betterwithmods", BetterWithModsHelper.class);
 		moduleClasses.put("BloodMagic", BloodMagicHelper.class);
 		moduleClasses.put("Botania", BotaniaHelper.class);
 		moduleClasses.put("chisel", ChiselHelper.class);

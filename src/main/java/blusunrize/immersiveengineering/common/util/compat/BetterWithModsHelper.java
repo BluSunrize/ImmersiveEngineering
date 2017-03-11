@@ -1,0 +1,31 @@
+package blusunrize.immersiveengineering.common.util.compat;
+
+import blusunrize.immersiveengineering.api.tool.BelljarHandler;
+import net.minecraft.block.Block;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
+
+public class BetterWithModsHelper extends IECompatModule
+{
+	@Override
+	public void preInit()
+	{
+	}
+
+	@Override
+	public void init()
+	{
+		Item hempSeeds = Item.REGISTRY.getObject(new ResourceLocation("betterwithmods:hemp"));
+		Item material = Item.REGISTRY.getObject(new ResourceLocation("betterwithmods:material"));
+		Block hempBlock = Block.REGISTRY.getObject(new ResourceLocation("betterwithmods:hemp"));
+		if(hempSeeds!=null && material!=null && hempBlock!=null)
+			BelljarHandler.cropHandler.register(new ItemStack(hempSeeds), new ItemStack[]{new ItemStack(material,1,2),new ItemStack(hempSeeds,1)}, new ItemStack(Blocks.DIRT), hempBlock.getDefaultState());
+	}
+
+	@Override
+	public void postInit()
+	{
+	}
+}
