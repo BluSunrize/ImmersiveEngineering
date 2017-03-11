@@ -33,6 +33,7 @@ public abstract class IECompatModule
 		moduleClasses.put("EnderIO", EnderIOHelper.class);
 		moduleClasses.put("Forestry", ForestryHelper.class);
 		moduleClasses.put("foundry", FoundryHelper.class);
+		moduleClasses.put("harvestcraft", HarvestcraftHelper.class);
 		moduleClasses.put("IC2", IC2Helper.class);
 		moduleClasses.put("mysticalagriculture", MysticalAgricultureHelper.class);
 		moduleClasses.put("OpenComputers", OCHelper.class);
