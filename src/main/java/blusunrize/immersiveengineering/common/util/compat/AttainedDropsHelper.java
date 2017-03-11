@@ -10,7 +10,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -54,7 +53,7 @@ public class AttainedDropsHelper extends IECompatModule
 		addType("prismarine", new ItemStack(Items.PRISMARINE_SHARD));
 		addType("blaze", new ItemStack(Items.BLAZE_ROD));
 		addType("gunpowder", new ItemStack(Items.GUNPOWDER));
-		addType("witherskull", new ItemStack(Blocks.SKULL,1,1));
+		addType("witherskull", new ItemStack(Items.SKULL,1,1));
 		addType("enderpearl", new ItemStack(Items.ENDER_PEARL));
 		BelljarHandler.registerHandler(new IPlantHandler()
 		{
@@ -66,7 +65,7 @@ public class AttainedDropsHelper extends IECompatModule
 			@Override
 			public float getGrowthStep(ItemStack seed, ItemStack soil, float growth, TileEntity tile)
 			{
-				return .003125f;
+				return growth<.5?.003125f:.0015625f;
 			}
 			@Override
 			public float resetGrowth(ItemStack seed, ItemStack soil, float growth, TileEntity tile)
