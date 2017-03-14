@@ -55,9 +55,9 @@ public class BelljarHandler
 	public interface IPlantHandler extends IPlantRenderer
 	{
 		boolean isCorrectSoil(ItemStack seed, ItemStack soil);
-		float getGrowthStep(ItemStack seed, ItemStack soil, float growth, TileEntity tile);
+		float getGrowthStep(ItemStack seed, ItemStack soil, float growth, TileEntity tile, boolean render);
 		ItemStack[] getOutput(ItemStack seed, ItemStack soil, TileEntity tile);
-		default float resetGrowth(ItemStack seed, ItemStack soil, float growth, TileEntity tile)
+		default float resetGrowth(ItemStack seed, ItemStack soil, float growth, TileEntity tile, boolean render)
 		{
 			return 0;
 		}
@@ -104,7 +104,7 @@ public class BelljarHandler
 			return OreDictionary.itemMatches(reqSoil, soil, false);
 		}
 		@Override
-		public float getGrowthStep(ItemStack seed, ItemStack soil, float growth, TileEntity tile)
+		public float getGrowthStep(ItemStack seed, ItemStack soil, float growth, TileEntity tile, boolean render)
 		{
 			return .00625f;
 		}
@@ -181,12 +181,12 @@ public class BelljarHandler
 		}
 
 		@Override
-		public float getGrowthStep(ItemStack seed, ItemStack soil, float growth, TileEntity tile)
+		public float getGrowthStep(ItemStack seed, ItemStack soil, float growth, TileEntity tile, boolean render)
 		{
 			return growth<.5?.00625f:.003125f;
 		}
 		@Override
-		public float resetGrowth(ItemStack seed, ItemStack soil, float growth, TileEntity tile)
+		public float resetGrowth(ItemStack seed, ItemStack soil, float growth, TileEntity tile, boolean render)
 		{
 			return .5f;
 		}
