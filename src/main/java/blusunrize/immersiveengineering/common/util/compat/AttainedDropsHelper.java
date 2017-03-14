@@ -63,12 +63,12 @@ public class AttainedDropsHelper extends IECompatModule
 				return soil!=null&&soilOutputMap.containsKey(new ComparableItemStack(soil));
 			}
 			@Override
-			public float getGrowthStep(ItemStack seed, ItemStack soil, float growth, TileEntity tile)
+			public float getGrowthStep(ItemStack seed, ItemStack soil, float growth, TileEntity tile, boolean render)
 			{
 				return growth<.5?.003125f:.0015625f;
 			}
 			@Override
-			public float resetGrowth(ItemStack seed, ItemStack soil, float growth, TileEntity tile)
+			public float resetGrowth(ItemStack seed, ItemStack soil, float growth, TileEntity tile, boolean render)
 			{
 				return .5f;
 			}
