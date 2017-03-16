@@ -25,6 +25,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.TileEntityCrusher;
 import blusunrize.immersiveengineering.common.crafting.ArcRecyclingThreadHandler;
 import blusunrize.immersiveengineering.common.items.ItemDrill;
 import blusunrize.immersiveengineering.common.util.*;
+import blusunrize.immersiveengineering.common.util.IEDamageSources.TeslaDamageSource;
 import blusunrize.immersiveengineering.common.util.network.MessageMinecartShaderSync;
 import blusunrize.immersiveengineering.common.util.network.MessageMineralListSync;
 import net.minecraft.block.material.Material;
@@ -401,7 +402,7 @@ public class EventHandler
 			float mod = 1.5f + ((amp*amp)*.5f);
 			event.setAmount(event.getAmount()*mod);
 		}
-		if(event.getSource().getDamageType().equals("flux") && event.getEntityLiving().getActivePotionEffect(IEPotions.conductive)!=null)
+		if(("flux".equals(event.getSource().getDamageType())||IEDamageSources.razorShock.equals(event.getSource())||event.getSource() instanceof TeslaDamageSource) && event.getEntityLiving().getActivePotionEffect(IEPotions.conductive)!=null)
 		{
 			int amp = event.getEntityLiving().getActivePotionEffect(IEPotions.conductive).getAmplifier();
 			float mod = 1.5f + ((amp*amp)*.5f);
