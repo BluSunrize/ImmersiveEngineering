@@ -57,6 +57,7 @@ import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.init.MobEffects;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
@@ -65,8 +66,11 @@ import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.potion.*;
+import net.minecraft.potion.PotionEffect;
+import net.minecraft.potion.PotionHelper;
 import net.minecraft.potion.PotionHelper.MixPredicate;
+import net.minecraft.potion.PotionType;
+import net.minecraft.potion.PotionUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityBanner;
 import net.minecraft.tileentity.TileEntityFurnace;
@@ -655,9 +659,9 @@ public class IEContent
 		DieselHandler.registerDrillFuel(FluidRegistry.getFluid("diesel"));
 
 		blockFluidCreosote.setPotionEffects(new PotionEffect(IEPotions.flammable,100,0));
-		blockFluidEthanol.setPotionEffects(new PotionEffect(Potion.getPotionFromResourceLocation("nausea"),20,0));
+		blockFluidEthanol.setPotionEffects(new PotionEffect(MobEffects.NAUSEA,20,0));
 		blockFluidBiodiesel.setPotionEffects(new PotionEffect(IEPotions.flammable,100,1));
-		blockFluidConcrete.setPotionEffects(new PotionEffect(Potion.getPotionFromResourceLocation("slowness"),20,3, false,false));
+		blockFluidConcrete.setPotionEffects(new PotionEffect(MobEffects.SLOWNESS,20,3, false,false));
 
 		ChemthrowerHandler.registerEffect(FluidRegistry.WATER, new ChemthrowerEffect_Extinguish());
 
@@ -691,7 +695,7 @@ public class IEContent
 		ChemthrowerHandler.registerEffect(fluidBiodiesel, new ChemthrowerEffect_Potion(null,0, IEPotions.flammable,140,1));
 		ChemthrowerHandler.registerFlammable(fluidBiodiesel);
 		ChemthrowerHandler.registerFlammable(fluidEthanol);
-		ChemthrowerHandler.registerEffect("oil", new ChemthrowerEffect_Potion(null,0, new PotionEffect(IEPotions.flammable,140,0),new PotionEffect(Potion.getPotionFromResourceLocation("blindness"),80,1)));
+		ChemthrowerHandler.registerEffect("oil", new ChemthrowerEffect_Potion(null,0, new PotionEffect(IEPotions.flammable,140,0),new PotionEffect(MobEffects.BLINDNESS,80,1)));
 		ChemthrowerHandler.registerFlammable("oil");
 		ChemthrowerHandler.registerEffect("fuel", new ChemthrowerEffect_Potion(null,0, IEPotions.flammable,100,1));
 		ChemthrowerHandler.registerFlammable("fuel");

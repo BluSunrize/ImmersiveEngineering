@@ -13,6 +13,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.MobEffects;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -20,7 +21,6 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
@@ -282,7 +282,7 @@ public class EntityRevolvershot extends Entity
 		{
 			IBullet bullet = BulletHandler.getBullet(bulletType);
 			float percentualDrain = .15f/(bullet==null?1:bullet.getProjectileCount(shootingEntity instanceof EntityPlayer?(EntityPlayer)this.shootingEntity:null));
-			((EntityLivingBase)mop.entityHit).addPotionEffect(new PotionEffect(Potion.getPotionFromResourceLocation("slowness"),15,4));
+			((EntityLivingBase)mop.entityHit).addPotionEffect(new PotionEffect(MobEffects.SLOWNESS,15,4));
 			for(EntityEquipmentSlot slot : EntityEquipmentSlot.values())
 			{
 				ItemStack stack = ((EntityLivingBase)mop.entityHit).getItemStackFromSlot(slot);
