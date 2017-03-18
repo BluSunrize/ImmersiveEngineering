@@ -16,10 +16,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -30,19 +33,50 @@ import java.util.HashSet;
  */
 public class BelljarHandler
 {
-	private static HashSet<IPlantHandler> handlers = new HashSet<>();
+	private static HashSet<IPlantHandler> plantHandlers = new HashSet<>();
 	private static HashMap<ComparableItemStack, ResourceLocation> soilTextureMap = new HashMap<>();
+	private static HashSet<FluidFertilizerHandler> fluidFertilizers = new HashSet<>();
+	private static HashSet<ItemFertilizerHandler> itemFertilizers = new HashSet<>();
 
 	public static void registerHandler(IPlantHandler handler)
 	{
-		handlers.add(handler);
+		plantHandlers.add(handler);
 	}
 	public static IPlantHandler getHandler(ItemStack seed)
 	{
 		if(seed==null)
 			return null;
-		for(IPlantHandler handler : handlers)
+		for(IPlantHandler handler : plantHandlers)
 			if(handler.isValid(seed))
+				return handler;
+		return null;
+	}
+
+	public static void registerFluidFertilizer(FluidFertilizerHandler handler)
+	{
+		fluidFertilizers.add(handler);
+	}
+	public static FluidFertilizerHandler getFluidFertilizerHandler(FluidStack fluid)
+	{
+		if(fluid==null)
+			return null;
+		for(FluidFertilizerHandler handler : fluidFertilizers)
+			if(handler.isValid(fluid))
+				return handler;
+		return null;
+	}
+
+
+	public static void registerItemFertilizer(ItemFertilizerHandler handler)
+	{
+		itemFertilizers.add(handler);
+	}
+	public static ItemFertilizerHandler getItemFertilizerHandler(ItemStack itemStack)
+	{
+		if(itemStack==null)
+			return null;
+		for(ItemFertilizerHandler handler : itemFertilizers)
+			if(handler.isValid(itemStack))
 				return handler;
 		return null;
 	}
@@ -55,7 +89,7 @@ public class BelljarHandler
 	public interface IPlantHandler extends IPlantRenderer
 	{
 		boolean isCorrectSoil(ItemStack seed, ItemStack soil);
-		float getGrowthStep(ItemStack seed, ItemStack soil, float growth, TileEntity tile, boolean render);
+		float getGrowthStep(ItemStack seed, ItemStack soil, float growth, TileEntity tile, float fertilizer, boolean render);
 		ItemStack[] getOutput(ItemStack seed, ItemStack soil, TileEntity tile);
 		default float resetGrowth(ItemStack seed, ItemStack soil, float growth, TileEntity tile, boolean render)
 		{
@@ -83,6 +117,16 @@ public class BelljarHandler
 		}
 	}
 
+	public interface FluidFertilizerHandler
+	{
+		boolean isValid(@Nullable FluidStack fertilizer);
+		float getGrowthMultiplier(FluidStack fertilizer, ItemStack seed, ItemStack soil, TileEntity tile);
+	}
+	public interface ItemFertilizerHandler
+	{
+		boolean isValid(@Nullable ItemStack fertilizer);
+		float getGrowthMultiplier(ItemStack fertilizer, ItemStack seed, ItemStack soil, TileEntity tile);
+	}
 
 	private static HashMap<ComparableItemStack, ItemStack> seedSoilMap = new HashMap<>();
 	private static HashMap<ComparableItemStack, ItemStack[]> seedOutputMap = new HashMap<>();
@@ -104,9 +148,9 @@ public class BelljarHandler
 			return OreDictionary.itemMatches(reqSoil, soil, false);
 		}
 		@Override
-		public float getGrowthStep(ItemStack seed, ItemStack soil, float growth, TileEntity tile, boolean render)
+		public float getGrowthStep(ItemStack seed, ItemStack soil, float growth, TileEntity tile, float fertilizer, boolean render)
 		{
-			return .00625f;
+			return .00625f * fertilizer;
 		}
 		@Override
 		public ItemStack[] getOutput(ItemStack seed, ItemStack soil, TileEntity tile)
@@ -181,9 +225,9 @@ public class BelljarHandler
 		}
 
 		@Override
-		public float getGrowthStep(ItemStack seed, ItemStack soil, float growth, TileEntity tile, boolean render)
+		public float getGrowthStep(ItemStack seed, ItemStack soil, float growth, TileEntity tile, float fertilizer, boolean render)
 		{
-			return growth<.5?.00625f:.003125f;
+			return (growth<.5?.00625f:.003125f) * fertilizer;
 		}
 		@Override
 		public float resetGrowth(ItemStack seed, ItemStack soil, float growth, TileEntity tile, boolean render)
@@ -291,5 +335,32 @@ public class BelljarHandler
 		cropHandler.register(new ItemStack(Blocks.RED_MUSHROOM), new ItemStack[]{new ItemStack(Blocks.RED_MUSHROOM,2)}, new ItemStack(Blocks.MYCELIUM), Blocks.RED_MUSHROOM.getDefaultState());
 		cropHandler.register(new ItemStack(Blocks.BROWN_MUSHROOM), new ItemStack[]{new ItemStack(Blocks.BROWN_MUSHROOM,2)}, new ItemStack(Blocks.MYCELIUM), Blocks.BROWN_MUSHROOM.getDefaultState());
 
+		registerFluidFertilizer(new FluidFertilizerHandler()
+		{
+			@Override
+			public boolean isValid(@Nullable FluidStack fertilizer)
+			{
+				return fertilizer!=null&&fertilizer.getFluid()==FluidRegistry.WATER;
+			}
+			@Override
+			public float getGrowthMultiplier(FluidStack fertilizer, ItemStack seed, ItemStack soil, TileEntity tile)
+			{
+				return 1f;
+			}
+		});
+		registerItemFertilizer(new ItemFertilizerHandler()
+		{
+			final ItemStack bonemeal = new ItemStack(Items.DYE,1,15);
+			@Override
+			public boolean isValid(@Nullable ItemStack fertilizer)
+			{
+				return fertilizer!=null&&OreDictionary.itemMatches(bonemeal,fertilizer,true);
+			}
+			@Override
+			public float getGrowthMultiplier(ItemStack fertilizer, ItemStack seed, ItemStack soil, TileEntity tile)
+			{
+				return 1.25f;
+			}
+		});
 	}
 }

@@ -16,7 +16,7 @@ public class TileRenderBelljar extends TileEntitySpecialRenderer<TileEntityBellj
 	@Override
 	public void renderTileEntityAt(TileEntityBelljar tile, double x, double y, double z, float partialTicks, int destroyStage)
 	{
-		if(tile.dummy || !tile.getWorld().isBlockLoaded(tile.getPos(), false))
+		if(tile.dummy!=0 || !tile.getWorld().isBlockLoaded(tile.getPos(), false))
 			return;
 		IPlantHandler plantHandler = tile.getCurrentPlantHandler();
 		if(plantHandler==null)
@@ -27,7 +27,7 @@ public class TileRenderBelljar extends TileEntitySpecialRenderer<TileEntityBellj
 		ClientUtils.bindAtlas();
 		GlStateManager.enableCull();
 		GlStateManager.pushMatrix();
-		GlStateManager.translate(x, y+.125, z);
+		GlStateManager.translate(x, y+1.0625, z);
 		GlStateManager.rotate(-90,0,1,0);
 		GlStateManager.color(1,1,1,1);
 		float scale = plantHandler.getRenderSize(tile.getInventory()[1], tile.getInventory()[0], tile.renderGrowth, tile);
