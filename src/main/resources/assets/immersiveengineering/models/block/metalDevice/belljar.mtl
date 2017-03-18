@@ -1,0 +1,4 @@
+newmtl belljar
+map_Ka immersiveengineering:blocks/metalDevice1_glassbell
+newmtl farmland
+map_Ka immersiveengineering:blocks/treatedWood_vertical

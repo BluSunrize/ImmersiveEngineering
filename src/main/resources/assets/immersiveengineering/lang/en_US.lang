@@ -158,6 +158,7 @@ tile.immersiveengineering.metalDevice1.tesla_coil.name=Tesla Coil
 tile.immersiveengineering.metalDevice1.floodlight.name=Floodlight
 tile.immersiveengineering.metalDevice1.turret_chem.name=Chemthrower Turret
 tile.immersiveengineering.metalDevice1.turret_gun.name=Gun Turret
+tile.immersiveengineering.metalDevice1.belljar.name=Garden Cloche
 
 tile.immersiveengineering.conveyor.immersiveengineering:conveyor.name=Conveyor Belt
 tile.immersiveengineering.conveyor.immersiveengineering:dropper.name=Dropping Conveyor Belt
