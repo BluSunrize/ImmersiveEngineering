@@ -6,6 +6,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -16,10 +18,20 @@ import java.util.function.Predicate;
 public class RotationUtil
 {
 	public static HashSet<Predicate<IBlockState>> permittedRotation = new HashSet<>();
+	public static HashSet<Predicate<TileEntity>> permittedTileRotation = new HashSet<>();
 	static{
 		permittedRotation.add(state -> {
 			//preventing extended pistons from rotating
 			return !((state.getBlock()==Blocks.PISTON||state.getBlock()==Blocks.STICKY_PISTON)&&state.getValue(BlockPistonBase.EXTENDED));
+		});
+		permittedTileRotation.add(tile -> {
+			//preventing double chests from rotating
+			if(tile instanceof TileEntityChest)
+			{
+				TileEntityChest chest = (TileEntityChest)tile;
+				return chest.adjacentChestXNeg!=null || chest.adjacentChestXPos!=null || chest.adjacentChestZNeg!=null || chest.adjacentChestZPos!=null;
+			}
+			return true;
 		});
 	}
 
@@ -29,6 +41,14 @@ public class RotationUtil
 		for(Predicate<IBlockState> pred : permittedRotation)
 			if(!pred.test(state))
 				return false;
+		if(state.getBlock().hasTileEntity(state))
+		{
+			TileEntity tile = world.getTileEntity(pos);
+			if(tile!=null)
+				for(Predicate<TileEntity> pred : permittedTileRotation)
+					if(!pred.test(tile))
+						return false;
+		}
 		return state.getBlock().rotateBlock(world, pos, axis);
 	}
 	
