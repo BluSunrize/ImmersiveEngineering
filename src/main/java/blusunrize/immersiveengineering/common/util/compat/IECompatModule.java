@@ -32,6 +32,7 @@ public abstract class IECompatModule
 		moduleClasses.put("MineTweaker3", CraftTweakerHelper.class);
 		moduleClasses.put("denseores", DenseOresHelper.class);
 		moduleClasses.put("EnderIO", EnderIOHelper.class);
+		moduleClasses.put("extrautils2", ExtraUtilsHelper.class);
 		moduleClasses.put("Forestry", ForestryHelper.class);
 		moduleClasses.put("foundry", FoundryHelper.class);
 		moduleClasses.put("harvestcraft", HarvestcraftHelper.class);
@@ -40,6 +41,7 @@ public abstract class IECompatModule
 		moduleClasses.put("OpenComputers", OCHelper.class);
 		moduleClasses.put("theoneprobe", OneProbeHelper.class);
 		moduleClasses.put("tconstruct", TConstructHelper.class);
+		moduleClasses.put("thermalfoundation", ThermalFoundationHelper.class);
 		moduleClasses.put("Thaumcraft", ThaumcraftHelper.class);
 		moduleClasses.put("railcraft", RailcraftHelper.class);
 		moduleClasses.put("Waila", WailaHelper.class);
@@ -51,7 +53,6 @@ public abstract class IECompatModule
 //		moduleClasses.put("gregtech", GregTechHelper.class);
 //		moduleClasses.put("HydCraft", HydCraftHelper.class);
 //		moduleClasses.put("ThermalExpansion", ThermalExpansionHelper.class);
-//		moduleClasses.put("ThermalFoundation", ThermalFoundationHelper.class);
 //		moduleClasses.put("ThermalDynamics", ThermalDynamicsHelper.class);
 //		moduleClasses.put("harvestcraft", HarvestCraftHelper.class);
 //		moduleClasses.put("CarpentersBlocks", CarpentersHelper.class);
