@@ -255,8 +255,8 @@ public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable 
 	public int getRenderColour(IBlockState object, String group)
 	{
 		if("coloured".equals(group))
-			return EnumDyeColor.byMetadata(this.redstoneChannel).getMapColor().colorValue;
-		return 0xffffff;
+			return 0xff000000|EnumDyeColor.byMetadata(this.redstoneChannel).getMapColor().colorValue;
+		return 0xffffffff;
 	}
 	
 	@Override
