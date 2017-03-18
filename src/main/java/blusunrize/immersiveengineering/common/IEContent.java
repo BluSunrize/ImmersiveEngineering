@@ -236,8 +236,8 @@ public class IEContent
 		blockClothDevice = new BlockClothDevice();
 		blockFakeLight = new BlockFakeLight();
 
-		blockSheetmetal = (BlockIEBase)new BlockIEBase("sheetmetal", Material.IRON, PropertyEnum.create("type", BlockTypes_MetalsAll.class), ItemBlockIEBase.class).setOpaque(true).setMetaHidden(0, 3, 4, 5, 7, 10).setHardness(3.0F).setResistance(10.0F);
-		blockSheetmetalSlabs = (BlockIESlab)new BlockIESlab("sheetmetalSlab", Material.IRON, PropertyEnum.create("type", BlockTypes_MetalsAll.class)).setMetaHidden(0, 3, 4, 5, 7, 10).setHardness(3.0F).setResistance(10.0F);
+		blockSheetmetal = (BlockIEBase)new BlockIEBase("sheetmetal", Material.IRON, PropertyEnum.create("type", BlockTypes_MetalsAll.class), ItemBlockIEBase.class).setOpaque(true).setHardness(3.0F).setResistance(10.0F);
+		blockSheetmetalSlabs = (BlockIESlab)new BlockIESlab("sheetmetalSlab", Material.IRON, PropertyEnum.create("type", BlockTypes_MetalsAll.class)).setHardness(3.0F).setResistance(10.0F);
 		blockMetalDecoration0 = (BlockIEBase)new BlockIEBase("metalDecoration0", Material.IRON, PropertyEnum.create("type", BlockTypes_MetalDecoration0.class), ItemBlockIEBase.class).setHardness(3.0F).setResistance(15.0F);
 		blockMetalDecoration1 = new BlockMetalDecoration1();
 		blockMetalDecoration2 = new BlockMetalDecoration2();
@@ -267,8 +267,7 @@ public class IEContent
 				"ingotCopper", "ingotAluminum", "ingotLead", "ingotSilver", "ingotNickel", "ingotUranium", "ingotConstantan", "ingotElectrum", "ingotSteel",
 				"dustCopper", "dustAluminum", "dustLead", "dustSilver", "dustNickel", "dustUranium", "dustConstantan", "dustElectrum", "dustSteel", "dustIron", "dustGold",
 				"nuggetCopper", "nuggetAluminum", "nuggetLead", "nuggetSilver", "nuggetNickel", "nuggetUranium", "nuggetConstantan", "nuggetElectrum", "nuggetSteel", "nuggetIron",
-				"plateCopper", "plateAluminum", "plateLead", "plateSilver", "plateNickel", "plateUranium", "plateConstantan", "plateElectrum", "plateSteel", "plateIron", "plateGold"
-		).setMetaHidden(33, 34, 35, 40);
+				"plateCopper", "plateAluminum", "plateLead", "plateSilver", "plateNickel", "plateUranium", "plateConstantan", "plateElectrum", "plateSteel", "plateIron", "plateGold");
 		itemTool = new ItemIETool();
 		itemToolbox = new ItemToolbox();
 		itemWireCoil = new ItemWireCoil();
