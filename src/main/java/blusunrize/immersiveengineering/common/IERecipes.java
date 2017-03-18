@@ -241,7 +241,7 @@ public class IERecipes
 		//
 		//SHEETMETAL
 		//
-		for(int i=0; i<=Lib.METALS_ALL.length; i++)
+		for(int i=0; i<Lib.METALS_ALL.length; i++)
 			if(!IEContent.itemMetal.isMetaHidden(30+i))
 			{
 				addShapelessOredictRecipe(new ItemStack(IEContent.itemMetal,1,30+i), "ingot"+Lib.METALS_ALL[i],new ItemStack(IEContent.itemTool,1,0));
