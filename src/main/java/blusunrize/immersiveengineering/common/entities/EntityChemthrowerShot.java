@@ -92,6 +92,13 @@ public class EntityChemthrowerShot extends EntityIEProjectile
 			this.setFire(6);
 		super.onEntityUpdate();
 	}
+	@Override
+	public void setFire(int seconds)
+	{
+		if(!canIgnite())
+			return;
+		super.setFire(seconds);
+	}
 
 	@Override
 	public void onImpact(RayTraceResult mop)
