@@ -8,10 +8,7 @@ import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
-import blusunrize.immersiveengineering.api.tool.IConfigurableTool;
-import blusunrize.immersiveengineering.api.tool.IDrillHead;
-import blusunrize.immersiveengineering.api.tool.IUpgrade;
-import blusunrize.immersiveengineering.api.tool.IUpgradeableTool;
+import blusunrize.immersiveengineering.api.tool.*;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.items.ItemBullet;
 import blusunrize.immersiveengineering.common.items.ItemEngineersBlueprint;
@@ -414,6 +411,27 @@ public abstract class IESlot extends Slot
 		public boolean isItemValid(ItemStack itemStack)
 		{
 			return itemStack!=null && IEContent.itemGraphiteElectrode.equals(itemStack.getItem());
+		}
+	}
+
+	public static class Belljar extends IESlot
+	{
+		int type = 0;
+		public Belljar(int type, Container container, IInventory inv, int id, int x, int y)
+		{
+			super(container, inv, id, x, y);
+			this.type = type;
+		}
+
+		@Override
+		public int getSlotStackLimit()
+		{
+			return type<2?1:64;
+		}
+		@Override
+		public boolean isItemValid(ItemStack itemStack)
+		{
+			return itemStack!=null && (type==1?BelljarHandler.getHandler(itemStack)!=null: type!=2||BelljarHandler.getItemFertilizerHandler(itemStack)!=null);
 		}
 	}
 

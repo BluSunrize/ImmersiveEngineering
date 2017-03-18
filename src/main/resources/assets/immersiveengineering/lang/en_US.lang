@@ -646,6 +646,9 @@ desc.immersiveengineering.info.toolbox.tool=Tools
 desc.immersiveengineering.info.toolbox.wire=Wiring
 desc.immersiveengineering.info.toolbox.any=Anything
 
+desc.immersiveengineering.info.fertFill=Fertilizer Amount: %1$s
+desc.immersiveengineering.info.fertMod=Growth Modifier: %1$s
+
 desc.immersiveengineering.info.redstoneChannel=Channel: %1$s
 
 desc.immersiveengineering.info.multiblock.IE:ArcFurnace=Arc Furnace
@@ -978,7 +981,7 @@ ie.manual.entry.oreProcessing.subtext=Crush crush crush
 ie.manual.entry.oreProcessing0=Crafting ores with an Engineer's Hammer allows you to crush them into dusts. This dust can be smelted into ingots, but more importantly, is used to <link;alloys;§o§ncreate §o§nmetallic §o§nalloys§r>.
 
 ie.manual.entry.alloys.name=Alloys
-ie.manual.entry.alloys.subtext=
+ie.manual.entry.alloys.subtext=Mixed Metal Arts
 ie.manual.entry.alloys0=Mixing dusts creates an alloy blend that can then be smelted into alloyed ingots. Constantan has thermo-electric properties and is used in creating the <link;generator;§o§nthermoelectric §o§ngenerator§r;1> and electrum is an excellent electric conductor used in <link;wiring;§o§nmedium-voltage §o§narchitecture§r>.
 
 ie.manual.entry.plates.name=Metal Plates
@@ -1004,7 +1007,7 @@ ie.manual.entry.treatedwoodPost0=Posts made from treated wood make for excellent
 ie.manual.entry.treatedwoodPost1=You can also place <link;wiring;§o§ntransformers§r;4> on the pole, which makes it less obtrusive.<br>Placing blocks below the arms of the wooden post will flip the arms upside down.
 
 ie.manual.entry.concrete.name=Concrete
-ie.manual.entry.concrete.subtext=Fortess Material
+ie.manual.entry.concrete.subtext=Fortress Material
 ie.manual.entry.concrete0=Concrete is a very hard and resistant composite material. It's cheap to craft and makes for an excellent use for the excess slag produced by the <link;blastfurnace;§n§oBlast §n§oFurnace§r>. 
 
 ie.manual.entry.balloon.name=Balloon
@@ -1147,7 +1150,7 @@ ie.manual.entry.bottlingMachine0=The Bottling Machine fills fluids into containe
 ie.manual.entry.bottlingMachine1=Fluid is input through the ports on the lower block of the metal tank. Energy is input through the port at the top of the opposing side.<br>Generally, the Bottling Machine will be able to fill any container that has a filled version available (bucket, glass bottle). It will also accept other items that can store fluids, like the <link;drill;§o§nMining §o§nDrill§r> or a <link;jerrycan;§o§nJerrycan§r>.<br>Additionally, special recipes may be available.
 
 ie.manual.entry.chargingStation.name=Charging Station
-ie.manual.entry.chargingStation.subtext=
+ie.manual.entry.chargingStation.subtext=Charge your glasses!
 ie.manual.entry.chargingStation0=The Charging Station is a device that allows you to charge tools and other items. Energy can be input through the bottom or the back and items can be placed in manually or inserted automatically.
 ie.manual.entry.chargingStation1=The electron tubes at the front give a feedback about the current charge of the item, but the block will also output a comparator signal for the same purposes.
 
