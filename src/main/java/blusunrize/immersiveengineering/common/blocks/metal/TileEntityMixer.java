@@ -31,6 +31,7 @@ import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 import java.util.*;
 
@@ -99,7 +100,7 @@ public class TileEntityMixer extends TileEntityMultiblockMetal<TileEntityMixer,M
 			if(energyStorage.getEnergyStored()>0 && processQueue.size()<this.getProcessQueueMaxLength())
 			{
 				int tankAmount = tank.getFluidAmount();
-				if(tankAmount>0 && tankAmount<tank.getCapacity())
+				if(tankAmount>0)
 				{
 					Set<Integer> usedInvSlots = new HashSet<Integer>();
 					for(MultiblockProcess<MixerRecipe> process : processQueue)
@@ -493,11 +494,12 @@ public class TileEntityMixer extends TileEntityMultiblockMetal<TileEntityMixer,M
 		}
 
 		@Override
-		public boolean canProcess(TileEntityMultiblockMetal multiblock)
-		{
-			if(!super.canProcess(multiblock))
+		public boolean canProcess(TileEntityMultiblockMetal multiblock) {
+			if (!(multiblock instanceof TileEntityMixer))
 				return false;
-			return ((TileEntityMixer)multiblock).tank.drain(Utils.copyFluidStackWithAmount(recipe.fluidInput,1,false),false)!=null;
+			TileEntityMixer mixer = (TileEntityMixer) multiblock;
+			// we don't need to check filling since after draining 1 mB of input fluid there will be space for 1 mB of output fluid
+			return mixer.energyStorage.extractEnergy(energyPerTick, true) == energyPerTick && mixer.tank.drain(Utils.copyFluidStackWithAmount(recipe.fluidInput, 1, false), false) != null;
 		}
 
 		@Override
