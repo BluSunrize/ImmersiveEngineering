@@ -4,6 +4,7 @@ import blusunrize.immersiveengineering.api.tool.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.tool.ExcavatorHandler.MineralMix;
 import blusunrize.immersiveengineering.client.ClientProxy;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -55,11 +56,15 @@ public class MessageMineralListSync implements IMessage
 		@Override
 		public IMessage onMessage(MessageMineralListSync message, MessageContext ctx)
 		{
+			Minecraft.getMinecraft().addScheduledTask(()->onMessageMain(message));
+			return null;
+		}
+		private void onMessageMain(MessageMineralListSync message)
+		{
 			ExcavatorHandler.mineralList.clear();
 			for(MineralMix min : message.map.keySet())
 				ExcavatorHandler.mineralList.put(min, message.map.get(min));
 			ClientProxy.handleMineralManual();
-			return null;
 		}
 	}
 }
