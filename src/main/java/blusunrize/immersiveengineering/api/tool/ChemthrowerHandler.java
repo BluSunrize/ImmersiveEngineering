@@ -6,13 +6,18 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntityBlaze;
 import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSource;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.living.EnderTeleportEvent;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -208,6 +213,34 @@ public class ChemthrowerHandler
 			Block b = worldObj.getBlockState(mop.getBlockPos().offset(mop.sideHit)).getBlock();
 			if(b instanceof BlockFire)
 				worldObj.setBlockToAir(mop.getBlockPos().offset(mop.sideHit));
+		}
+	}
+	public static class ChemthrowerEffect_RandomTeleport extends ChemthrowerEffect_Damage
+	{
+		float chance;
+		public ChemthrowerEffect_RandomTeleport(DamageSource source, float damage, float chance)
+		{
+			super(source, damage);
+			this.chance = chance;
+		}
+		@Override
+		public void applyToEntity(EntityLivingBase target, EntityPlayer shooter, ItemStack thrower, Fluid fluid)
+		{
+			super.applyToEntity(target, shooter, thrower, fluid);
+			if(target.worldObj.rand.nextFloat()<chance)
+			{
+				double x = target.posX - 8 + target.worldObj.rand.nextInt(17);
+				double y = target.posY + target.worldObj.rand.nextInt(8);
+				double z = target.posZ - 8 + target.worldObj.rand.nextInt(17);
+				if(!target.worldObj.getBlockState(new BlockPos(x,y,z)).getMaterial().isSolid())
+				{
+					EnderTeleportEvent event = new EnderTeleportEvent(target, x, y, z, 0);
+					if(MinecraftForge.EVENT_BUS.post(event))
+						return;
+					target.setPositionAndUpdate(event.getTargetX(), event.getTargetY()	, event.getTargetZ());
+					target.worldObj.playSound(target.posX,target.posY,target.posZ, SoundEvents.ENTITY_ENDERMEN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F, false);
+				}
+			}
 		}
 	}
 }

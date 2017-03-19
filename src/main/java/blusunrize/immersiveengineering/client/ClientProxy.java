@@ -389,6 +389,7 @@ public class ClientProxy extends CommonProxy
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntitySampleDrill.class, new TileRenderSampleDrill());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTeslaCoil.class, new TileRenderTeslaCoil());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTurret.class, new TileRenderTurret());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityBelljar.class, new TileRenderBelljar());
 		// MULTIBLOCKS
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityMetalPress.class, new TileRenderMetalPress());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityCrusher.class, new TileRenderCrusher());
@@ -1144,6 +1145,8 @@ public class ClientProxy extends CommonProxy
 					gui = new GuiTurret(player.inventory, (TileEntityTurret) te);
 				if(ID==Lib.GUIID_FluidSorter && te instanceof TileEntityFluidSorter)
 					gui = new GuiFluidSorter(player.inventory, (TileEntityFluidSorter) te);
+				if(ID==Lib.GUIID_Belljar && te instanceof TileEntityBelljar)
+					gui = new GuiBelljar(player.inventory, (TileEntityBelljar) te);
 				if(gui!=null)
 					((IGuiTile)te).onGuiOpened(player, true);
 				return gui;

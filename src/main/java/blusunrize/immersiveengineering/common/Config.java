@@ -163,6 +163,13 @@ public class Config
 			@Comment({"The Flux per tick the gun turret consumes to shoot"})
 			@Mapped(mapClass = Config.class, mapName = "manual_int")
 			public static int turret_gun_consumption = 32;
+			@Comment({"The Flux per tick the belljar consumes to grow plants"})
+			@Mapped(mapClass = Config.class, mapName = "manual_int")
+			public static int belljar_consumption = 8;
+			@Comment({"The amount of ticks one dose of fertilizer lasts in the belljar"})
+			public static int belljar_fertilizer = 6000;
+			@Comment({"The amount of fluid the belljar uses per dose of fertilizer"})
+			public static int belljar_fluid = 250;
 
 			//Lights
 			@Comment({"Set this to false to disable the mob-spawn prevention of the Powered Lantern"})

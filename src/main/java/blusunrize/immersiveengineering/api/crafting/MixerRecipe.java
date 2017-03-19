@@ -24,7 +24,7 @@ public class MixerRecipe extends MultiblockRecipe
 
 	public final IngredientStack[] itemInputs;
 	public final FluidStack fluidInput;
-	protected final FluidStack fluidOutput;
+	public final FluidStack fluidOutput;
 	public final int fluidAmount;
 	public MixerRecipe(FluidStack fluidOutput, FluidStack fluidInput, Object[] itemInputs, int energy)
 	{

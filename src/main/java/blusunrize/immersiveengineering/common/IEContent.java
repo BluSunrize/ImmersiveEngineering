@@ -2,6 +2,7 @@ package blusunrize.immersiveengineering.common;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.ComparableItemStack;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.MultiblockHandler;
 import blusunrize.immersiveengineering.api.crafting.*;
@@ -56,6 +57,7 @@ import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.init.MobEffects;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
@@ -64,8 +66,11 @@ import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.potion.*;
+import net.minecraft.potion.PotionEffect;
+import net.minecraft.potion.PotionHelper;
 import net.minecraft.potion.PotionHelper.MixPredicate;
+import net.minecraft.potion.PotionType;
+import net.minecraft.potion.PotionUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityBanner;
 import net.minecraft.tileentity.TileEntityFurnace;
@@ -84,6 +89,8 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.common.registry.VillagerRegistry;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
@@ -229,8 +236,8 @@ public class IEContent
 		blockClothDevice = new BlockClothDevice();
 		blockFakeLight = new BlockFakeLight();
 
-		blockSheetmetal = (BlockIEBase)new BlockIEBase("sheetmetal", Material.IRON, PropertyEnum.create("type", BlockTypes_MetalsAll.class), ItemBlockIEBase.class).setOpaque(true).setMetaHidden(0, 3, 4, 5, 7, 10).setHardness(3.0F).setResistance(10.0F);
-		blockSheetmetalSlabs = (BlockIESlab)new BlockIESlab("sheetmetalSlab", Material.IRON, PropertyEnum.create("type", BlockTypes_MetalsAll.class)).setMetaHidden(0, 3, 4, 5, 7, 10).setHardness(3.0F).setResistance(10.0F);
+		blockSheetmetal = (BlockIEBase)new BlockIEBase("sheetmetal", Material.IRON, PropertyEnum.create("type", BlockTypes_MetalsAll.class), ItemBlockIEBase.class).setOpaque(true).setHardness(3.0F).setResistance(10.0F);
+		blockSheetmetalSlabs = (BlockIESlab)new BlockIESlab("sheetmetalSlab", Material.IRON, PropertyEnum.create("type", BlockTypes_MetalsAll.class)).setHardness(3.0F).setResistance(10.0F);
 		blockMetalDecoration0 = (BlockIEBase)new BlockIEBase("metalDecoration0", Material.IRON, PropertyEnum.create("type", BlockTypes_MetalDecoration0.class), ItemBlockIEBase.class).setHardness(3.0F).setResistance(15.0F);
 		blockMetalDecoration1 = new BlockMetalDecoration1();
 		blockMetalDecoration2 = new BlockMetalDecoration2();
@@ -260,8 +267,7 @@ public class IEContent
 				"ingotCopper", "ingotAluminum", "ingotLead", "ingotSilver", "ingotNickel", "ingotUranium", "ingotConstantan", "ingotElectrum", "ingotSteel",
 				"dustCopper", "dustAluminum", "dustLead", "dustSilver", "dustNickel", "dustUranium", "dustConstantan", "dustElectrum", "dustSteel", "dustIron", "dustGold",
 				"nuggetCopper", "nuggetAluminum", "nuggetLead", "nuggetSilver", "nuggetNickel", "nuggetUranium", "nuggetConstantan", "nuggetElectrum", "nuggetSteel", "nuggetIron",
-				"plateCopper", "plateAluminum", "plateLead", "plateSilver", "plateNickel", "plateUranium", "plateConstantan", "plateElectrum", "plateSteel", "plateIron", "plateGold"
-		).setMetaHidden(33, 34, 35, 40);
+				"plateCopper", "plateAluminum", "plateLead", "plateSilver", "plateNickel", "plateUranium", "plateConstantan", "plateElectrum", "plateSteel", "plateIron", "plateGold");
 		itemTool = new ItemIETool();
 		itemToolbox = new ItemToolbox();
 		itemWireCoil = new ItemWireCoil();
@@ -456,6 +462,7 @@ public class IEContent
 		registerTile(TileEntityTurret.class);
 		registerTile(TileEntityTurretChem.class);
 		registerTile(TileEntityTurretGun.class);
+		registerTile(TileEntityBelljar.class);
 
 		registerTile(TileEntityConveyorBelt.class);
 		registerTile(TileEntityConveyorVertical.class);
@@ -622,27 +629,6 @@ public class IEContent
 				return query;
 			}
 		});
-		//Pams Harvest Craft uses fluids with OreDict entries, so this is my workaround >_>
-		final List listWater = OreDictionary.getOres("listAllwater");
-		AssemblerHandler.registerSpecialQueryConverters(o -> {
-			if(!(o instanceof List))
-				return null;
-			if(listWater==o)
-				return new RecipeQuery(new FluidStack(FluidRegistry.WATER,1000), 1000);
-			return null;
-		});
-		final Fluid milk = FluidRegistry.getFluid("milk");
-		if(milk!=null)
-		{
-			final List listMilk = OreDictionary.getOres("listAllmilk");
-			AssemblerHandler.registerSpecialQueryConverters(o -> {
-				if(!(o instanceof List))
-					return null;
-				if(listMilk == o)
-					return new RecipeQuery(new FluidStack(milk, 1000), 1000);
-				return null;
-			});
-		}
 
 		CokeOvenRecipe.addRecipe(new ItemStack(itemMaterial,1,6), new ItemStack(Items.COAL), 1800, 500);
 		CokeOvenRecipe.addRecipe(new ItemStack(blockStoneDecoration,1,3), "blockCoal", 1800*9, 5000);
@@ -672,9 +658,9 @@ public class IEContent
 		DieselHandler.registerDrillFuel(FluidRegistry.getFluid("diesel"));
 
 		blockFluidCreosote.setPotionEffects(new PotionEffect(IEPotions.flammable,100,0));
-		blockFluidEthanol.setPotionEffects(new PotionEffect(Potion.getPotionFromResourceLocation("nausea"),20,0));
+		blockFluidEthanol.setPotionEffects(new PotionEffect(MobEffects.NAUSEA,20,0));
 		blockFluidBiodiesel.setPotionEffects(new PotionEffect(IEPotions.flammable,100,1));
-		blockFluidConcrete.setPotionEffects(new PotionEffect(Potion.getPotionFromResourceLocation("slowness"),20,3, false,false));
+		blockFluidConcrete.setPotionEffects(new PotionEffect(MobEffects.SLOWNESS,20,3, false,false));
 
 		ChemthrowerHandler.registerEffect(FluidRegistry.WATER, new ChemthrowerEffect_Extinguish());
 
@@ -708,7 +694,7 @@ public class IEContent
 		ChemthrowerHandler.registerEffect(fluidBiodiesel, new ChemthrowerEffect_Potion(null,0, IEPotions.flammable,140,1));
 		ChemthrowerHandler.registerFlammable(fluidBiodiesel);
 		ChemthrowerHandler.registerFlammable(fluidEthanol);
-		ChemthrowerHandler.registerEffect("oil", new ChemthrowerEffect_Potion(null,0, new PotionEffect(IEPotions.flammable,140,0),new PotionEffect(Potion.getPotionFromResourceLocation("blindness"),80,1)));
+		ChemthrowerHandler.registerEffect("oil", new ChemthrowerEffect_Potion(null,0, new PotionEffect(IEPotions.flammable,140,0),new PotionEffect(MobEffects.BLINDNESS,80,1)));
 		ChemthrowerHandler.registerFlammable("oil");
 		ChemthrowerHandler.registerEffect("fuel", new ChemthrowerEffect_Potion(null,0, IEPotions.flammable,100,1));
 		ChemthrowerHandler.registerFlammable("fuel");
@@ -749,6 +735,33 @@ public class IEContent
 		MixerRecipe.addRecipe(new FluidStack(fluidConcrete,500), new FluidStack(FluidRegistry.WATER,500),new Object[]{"sand","sand",Items.CLAY_BALL,"gravel"}, 3200);
 
 		BottlingMachineRecipe.addRecipe(new ItemStack(Blocks.SPONGE,1,1), new ItemStack(Blocks.SPONGE,1,0), new FluidStack(FluidRegistry.WATER,1000));
+
+		BelljarHandler.DefaultPlantHandler hempBelljarHandler = new BelljarHandler.DefaultPlantHandler()
+		{
+			private HashSet<ComparableItemStack> validSeeds = new HashSet<>();
+			@Override
+			protected HashSet<ComparableItemStack> getSeedSet()
+			{
+				return validSeeds;
+			}
+			@Override
+			@SideOnly(Side.CLIENT)
+			public IBlockState[] getRenderedPlant(ItemStack seed, ItemStack soil, float growth, TileEntity tile)
+			{
+				int age = Math.min(4, Math.round(growth*4));
+				if(age==4)
+					return new IBlockState[]{blockCrop.getStateFromMeta(age),blockCrop.getStateFromMeta(age+1)};
+				return new IBlockState[]{blockCrop.getStateFromMeta(age)};
+			}
+			@Override
+			@SideOnly(Side.CLIENT)
+			public float getRenderSize(ItemStack seed, ItemStack soil, float growth, TileEntity tile)
+			{
+				return .6875f;
+			}
+		};
+		BelljarHandler.registerHandler(hempBelljarHandler);
+		hempBelljarHandler.register(new ItemStack(itemSeeds), new ItemStack[]{new ItemStack(itemMaterial,4,4),new ItemStack(itemSeeds,2)},new ItemStack(Blocks.DIRT), blockCrop.getDefaultState());
 
 		ThermoelectricHandler.registerSourceInKelvin("blockIce", 273);
 		ThermoelectricHandler.registerSourceInKelvin("blockPackedIce", 200);

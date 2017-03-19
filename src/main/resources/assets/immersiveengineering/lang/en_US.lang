@@ -158,6 +158,7 @@ tile.immersiveengineering.metalDevice1.tesla_coil.name=Tesla Coil
 tile.immersiveengineering.metalDevice1.floodlight.name=Floodlight
 tile.immersiveengineering.metalDevice1.turret_chem.name=Chemthrower Turret
 tile.immersiveengineering.metalDevice1.turret_gun.name=Gun Turret
+tile.immersiveengineering.metalDevice1.belljar.name=Garden Cloche
 
 tile.immersiveengineering.conveyor.immersiveengineering:conveyor.name=Conveyor Belt
 tile.immersiveengineering.conveyor.immersiveengineering:dropper.name=Dropping Conveyor Belt
@@ -646,6 +647,9 @@ desc.immersiveengineering.info.toolbox.tool=Tools
 desc.immersiveengineering.info.toolbox.wire=Wiring
 desc.immersiveengineering.info.toolbox.any=Anything
 
+desc.immersiveengineering.info.fertFill=Fertilizer Amount: %1$s
+desc.immersiveengineering.info.fertMod=Growth Modifier: %1$s
+
 desc.immersiveengineering.info.redstoneChannel=Channel: %1$s
 
 desc.immersiveengineering.info.multiblock.IE:ArcFurnace=Arc Furnace
@@ -978,7 +982,7 @@ ie.manual.entry.oreProcessing.subtext=Crush crush crush
 ie.manual.entry.oreProcessing0=Crafting ores with an Engineer's Hammer allows you to crush them into dusts. This dust can be smelted into ingots, but more importantly, is used to <link;alloys;§o§ncreate §o§nmetallic §o§nalloys§r>.
 
 ie.manual.entry.alloys.name=Alloys
-ie.manual.entry.alloys.subtext=
+ie.manual.entry.alloys.subtext=Mixed Metal Arts
 ie.manual.entry.alloys0=Mixing dusts creates an alloy blend that can then be smelted into alloyed ingots. Constantan has thermo-electric properties and is used in creating the <link;generator;§o§nthermoelectric §o§ngenerator§r;1> and electrum is an excellent electric conductor used in <link;wiring;§o§nmedium-voltage §o§narchitecture§r>.
 
 ie.manual.entry.plates.name=Metal Plates
@@ -1001,10 +1005,10 @@ ie.manual.entry.treatedwood.name=Treated Wood
 ie.manual.entry.treatedwood.subtext=Highly Durable
 ie.manual.entry.treatedwood0=Treated Wood is, quite simply, wooden planks covered in creosote oil. It is however, one of the most important materials you will be using in Immersive Engineering, so you'd better be prepared to create a lot of it.
 ie.manual.entry.treatedwoodPost0=Posts made from treated wood make for excellent attachment points for your Wire Connectors. They are 4 blocks high, so you won't be able to place them without the proper clearance.<br>Using the hammer on the sides of the topmost block will attach an arm to the post. 
-ie.manual.entry.treatedwoodPost1=You can also place <link;wiring;§o§ntransformers§r;4> on the pole, which makes it less obtrusive.<br>Placing blocks below the arms of the wooden post will flip the arms upside down.
+ie.manual.entry.treatedwoodPost1=You can also place <link;wiring;§o§ntransformers§r;8> on the pole, which makes it less obtrusive.<br>Placing blocks below the arms of the wooden post will flip the arms upside down.
 
 ie.manual.entry.concrete.name=Concrete
-ie.manual.entry.concrete.subtext=Fortess Material
+ie.manual.entry.concrete.subtext=Fortress Material
 ie.manual.entry.concrete0=Concrete is a very hard and resistant composite material. It's cheap to craft and makes for an excellent use for the excess slag produced by the <link;blastfurnace;§n§oBlast §n§oFurnace§r>. 
 
 ie.manual.entry.balloon.name=Balloon
@@ -1037,7 +1041,7 @@ ie.manual.entry.toolbox0=The toolbox is a simple, carried container, used to sto
 
 ie.manual.entry.graphite.name=Graphite
 ie.manual.entry.graphite.subtext=Coal stuff
-ie.manual.entry.graphite0=Highly Ordered Pyrolytic Graphite (HOP) is a complex, highly compressed, carbon material used in special engineering constructs.<br>HOP Graphite Dust is created by compressing eight pieces of Coke Dust in the <link;biodiesel;§o§nIndustrial §o§nSqueezer§r;1>. That dust can then be smelted into an ingot.
+ie.manual.entry.graphite0=Highly Ordered Pyrolytic Graphite (HOP) is a complex, highly compressed, carbon material used in special engineering constructs.<br>HOP Graphite Dust is created by compressing eight pieces of Coke Dust in the <link;squeezer;§o§nIndustrial §o§nSqueezer§r>. That dust can then be smelted into an ingot.
 ie.manual.entry.graphite1=The most common use for HOP Graphite is the creation of electrodes to be used in the <link;arcfurnace;§o§nArc §o§nFurnace§r>. These electrodes are created with an <link;blueprints;§o§nEngineer's §o§nBlueprint§r>, which you can<config;b;arcfurnace_electrodeCrafting; craft,> find in certain chests or trade with a villager. You can also create electrodes in the metal press, using the rod mold on 4 ingots, but the electrodes crafted this way have less durability. 
 
 ie.manual.entry.wiring.name=Basic Wiring
@@ -1048,10 +1052,10 @@ ie.manual.entry.wiring2=Note that restrictions apply based on blocks: Connectors
 ie.manual.entry.wiring3=and wires can only connect to blocks that match the voltage.
 ie.manual.entry.wiring4=There are two important values to note about wiring:<br>Each connector has an input value (§o<config;iA;wireConnectorInput>§r) and each wire has a maximum transfer rate (§o<config;iA;wireTransferRate;l3>§r).<br>The connector limits how much power can be in- and output, but multiple connectors can §ounify§r into a single wire, allowing you to combine the transfer over longer ranges. Note however that the §omaximum transfer rate of the wire must not be exceeded, or else the wire will §oburn up§r.
 ie.manual.entry.wiring5=Wires will transfer energy even through §ounloaded chunks§r as long as the input and output chunks are loaded.
-ie.manual.entry.wiringConnector=§lConnectors§r serve as in- and outputs to the IE Energy-Net. You can place them on capacitors or other Flux handlers and they will transfer power through connected wires. $lRelays§r will still accept wires but can't in- or output, they serve as connection points between wires.
+ie.manual.entry.wiringConnector=§lConnectors§r serve as in- and outputs to the IE Energy-Net. You can place them on capacitors or other Flux handlers and they will transfer power through connected wires. §lRelays§r will still accept wires but can't in- or output, they serve as connection points between wires.
 ie.manual.entry.wiringCapacitor=§lCapacitors§r serve as energy storage units. You can use the hammer to adjust the configuration of each side, with blue designating an input, orange an output and no colour marking preventing any connection at all. Sneak while using the hammer to configure the side opposite of the one you clicked.
 ie.manual.entry.wiringTransformer0=§lTransformers§r allow you to transition between different types of wire. The weakest wire restricts the transfer rate. Note that HV Transformers can step down to LV or MV, so you do not need to chain two transformers.
-ie.manual.entry.wiringTransformer1=You can attach <link;wiring;§o§ntransformers §o§nto §o§nwooden §o§npoles§r;4> as shown on the second image on page 4, however only non-HV Transformers can be placed like this.
+ie.manual.entry.wiringTransformer1=You can attach <link;wiring;§o§ntransformers §o§nto §o§nwooden §o§npoles§r;3> as shown on the second image on page 4, however only non-HV Transformers can be placed like this.
 ie.manual.entry.wiringCutters=The §lWire Cutters§r are used to removed all the wires connected to a block by simply rightclicking it.
 ie.manual.entry.wiringVoltmeter=The §lVoltmeter§r is used to measure connections. Aiming it at any energy storage or rightclicking it will read its current storage. Sneak+rightclick two connectors to calculate the average loss between them.
 
@@ -1060,7 +1064,7 @@ ie.manual.entry.generator.subtext=
 ie.manual.entry.generator0=Transferring power is quite helpful provided you have power. To actually generate Flux, you can use the kinetic forces of windmills and waterwheels. Connecting these to a dynamo will generate power based on how fast they turn.
 ie.manual.entry.generatorWindmill=The Windmill is a free and easy way of generating power, albeit not a very powerful one. Its speed depends greatly on how high it is placed in the world and how obscured the space in front of it is. It will also run faster when it's raining or storming.
 ie.manual.entry.generatorWatermill=The Water Wheel is a fairly easy way of powering a dynamo. It's turning speed is based on the water flowing around it, so for optimal results, you'll want to direct the water in a semi-circle from the top down one side and along the bottom. Up to three water wheels can be placed against each other.
-ie.manual.entry.generatorWindmillImproved=The improved Windmill is an upgrade to the windmills. While it has twice the output it's also more pricey to create, requiring tough fabric made from industrial hemp. Break tall grass to acquire hemp seeds.
+ie.manual.entry.generatorWindmillImproved=The improved Windmill is an upgrade to the windmills. While it has twice the output it's also more pricey to create, requiring tough fabric made from <link;hemp;§o§nindustrial §o§nhemp§r>. Break tall grass to acquire hemp seeds.
 
 ie.manual.entry.breaker.name=Breaker Switch
 ie.manual.entry.breaker.subtext=Clap on - Clap off
@@ -1117,8 +1121,8 @@ ie.manual.entry.metalPress2=To actually work, the metal press requires a mold to
 
 ie.manual.entry.tank.name=Tank
 ie.manual.entry.tank.subtext=Full to the brim!
-ie.manual.entry.tank0=The Tank is a multiblock that provides space for large amounts of fluid. It will store up to 512 buckets of any fluid, which can be piped in through the top or bottom block. Fluids can only be extracted throguh the bottom center block. Applying a redstone signal to that block will make the tank output automatically.
-ie.manual.entry.tank1=A comparator attached to the bottom center block will it emit a redstone signal proportional to how full the tank is. Attaching the comparator to one of the top 4 layers results in a signal proportional to the height of the comparator. For example, a comparator attached to the second layer of a tank would not emit any signal until the tank is 1/4 full and have a signal strength of 15 if the tank is half full or more.
+ie.manual.entry.tank0=The Tank is a multiblock that provides space for large amounts of fluid. It will store up to 512 buckets of any fluid, which can be piped in through the top or bottom block. Fluids can only be extracted from the bottom center block.
+ie.manual.entry.tank1=Applying a redstone signal to the bottom center block will make the tank output automatically, a comparator placed there will emit a redstone signal proportional to how full the tank is. Attaching the comparator to one of the top 4 layers results in a signal proportional to the height of the comparator. For example, a comparator attached to the second layer of a tank would not emit any signal until the tank is 1/4 full and have a signal strength of 15 if the tank is half full or more.
 
 ie.manual.entry.silo.name=Silo
 ie.manual.entry.silo.subtext=Full to the brim!
@@ -1139,7 +1143,7 @@ ie.manual.entry.assembler2=The input side, in addition to an item input also fea
 ie.manual.entry.autoworkbench.name=Automated Workbench
 ie.manual.entry.autoworkbench.subtext=For those who can't drive stick
 ie.manual.entry.autoworkbench0=The Automatic Workbench is one of the first major successes of small-scale engineering.<br>The machine is able to follow a set of instructions described by a <link;blueprints;§o§nBlueprint§r> to assemble the items detailed by it.
-ie.manual.entry.autoworkbench1=Upon assembling the multiblocks, a Blueprint can be placed on its drawing table. After selecting the item that should be created, it will begin the assembly process. In order for the machine to work, it will need to be supplied with materials and power of course.<br>Item inputs are the two hatches marked with blue dots, the power input lies above them. Finished items are dropped at the end of the conveyorbelt.<br>A redstone signal below the drawing table can be used for control.
+ie.manual.entry.autoworkbench1=Upon assembling the multiblocks, a Blueprint can be placed on its drawing table. After selecting the item that should be created, it will begin the assembly process. In order for the machine to work, it will need to be supplied with materials and power of course.<br>Item inputs are the two hatches marked with blue dots, the power input lies above them. Finished items are dropped at the end of the conveyor belt.<br>A redstone signal below the drawing table can be used for control.
 
 ie.manual.entry.bottlingMachine.name=Bottling Machine
 ie.manual.entry.bottlingMachine.subtext=Fill 'er up!
@@ -1147,7 +1151,7 @@ ie.manual.entry.bottlingMachine0=The Bottling Machine fills fluids into containe
 ie.manual.entry.bottlingMachine1=Fluid is input through the ports on the lower block of the metal tank. Energy is input through the port at the top of the opposing side.<br>Generally, the Bottling Machine will be able to fill any container that has a filled version available (bucket, glass bottle). It will also accept other items that can store fluids, like the <link;drill;§o§nMining §o§nDrill§r> or a <link;jerrycan;§o§nJerrycan§r>.<br>Additionally, special recipes may be available.
 
 ie.manual.entry.chargingStation.name=Charging Station
-ie.manual.entry.chargingStation.subtext=
+ie.manual.entry.chargingStation.subtext=Charge your glasses!
 ie.manual.entry.chargingStation0=The Charging Station is a device that allows you to charge tools and other items. Energy can be input through the bottom or the back and items can be placed in manually or inserted automatically.
 ie.manual.entry.chargingStation1=The electron tubes at the front give a feedback about the current charge of the item, but the block will also output a comparator signal for the same purposes.
 
@@ -1194,8 +1198,8 @@ ie.manual.entry.refinery1=To form the structure, rightclick the Heavy Engineerin
 ie.manual.entry.dieselgen.name=Diesel Generator
 ie.manual.entry.dieselgen.subtext=Better than volume: More volume.
 ie.manual.entry.dieselgen0=High-Voltage architecture might be fascinating, but it's not very useful unless you have a generator that can actually create the required output for it.<br>The Diesel Generator is one of the few ways of generating this sort of energy. It is created as a complex multiblock structure and will run off of <link;biodiesel;§o§nBiodiesel§r> or other types of combustible fuel. Due to its high output, it will work through fuel very quickly, so make sure you have a sufficient fuel production to run it.
-ie.manual.entry.dieselgen1=The structure is built from Engineering, Generator and Radiator blocks as well as Fluid Pipes and Scaffolding. Arrange them in the shape shown above and hit either the central generator with an Engineer's Hammer.
-ie.manual.entry.dieselgen2=Fuel is to be input at the bottom corners of the generator, whereas energy will be output to up to three connection on the top. The <config;i;dieselGen_output>Flux/t the generator outputs will be split between all connected points.<br>The small terminal on the side will turn off the generator if supplied with a redstone signal, this behavior can be inverted by use of the Engineer's Hammer.
+ie.manual.entry.dieselgen1=The structure is built from Engineering, Generator and Radiator blocks as well as Fluid Pipes and Scaffolding. Arrange them in the shape shown above and rightclick the central generator with an Engineer's Hammer.
+ie.manual.entry.dieselgen2=Fuel is to be input at the bottom corners of the generator, whereas energy will be output to up to three connections on the top. The <config;i;dieselGen_output>Flux/t the generator outputs will be split between all connected points.<br>The small terminal on the side will turn off the generator if supplied with a redstone signal, this behavior can be inverted by use of the Engineer's Hammer.
 ie.manual.entry.dieselgen3=The following table lists all valid fuels for the Diesel Generator and for how long in seconds (ticks) they burn. 
 
 ie.manual.entry.biodiesel.name=Biodiesel
@@ -1226,9 +1230,9 @@ ie.manual.entry.teslaCoil.name=Tesla Coil
 ie.manual.entry.teslaCoil.subtext=This one goes up to 11
 ie.manual.entry.teslaCoil0=The Tesla Coil started as a concept of wireless energy transfer. However, due to its potentially high loss rates and it's rather interesting property of frying every living being in a 6 meter radius, it was quickly converted into an Engineer's dream of home defense.
 ie.manual.entry.teslaCoil1=The upkeep cost of this machine is high, clocking in at a regular <config;i;teslacoil_consumption> Flux in passive consumption plus an additional <config;i;teslacoil_consumption_active> every time it applies damage.<br>The coil is disabled unless supplied with a redstone signal. Rightclicking it with an Engineer's Hammer will invert this behaviour.<br>In addition to damage, the shocks will also apply a lingering debuff, "Stunned", preventing the entity from teleporting.
-ie.manual.entry.teslaCoil2=Rightclicking the coil with an engineer's hammer while sneaking will toggle the coil between high- and low-power mode. To be able to do so safely the coil has to be turned off. It is in high-power mode by default. When the coil is in low-power mode it will use half the usual energy and have
+ie.manual.entry.teslaCoil2=Rightclicking the coil with an Engineer's Hammer while sneaking will toggle the coil between high- and low-power mode. To be able to do so safely the coil has to be turned off. It is in high-power mode by default. When the coil is in low-power mode it will use half the usual energy and have
 ie.manual.entry.teslaCoil3=half the range. If you are wearing a full Faraday suit, a coil in low-power mode won't harm you, but still shoot lightning at you. Coils in high-power mode will cause the suit to melt, thereby increasing the damage done to you and additionally damaging the suit.<br>Fluorescent tubes glow when placed inside a strong high-frequency electric field. Such a field is generated by any tesla coil, so placing a tube near an active tesla coil will cause it to glow. The range is about 1.5 times the range in
-ie.manual.entry.teslaCoil4=which you will be hit by lightning. They can be colored in the engineer's workbench and rotated by (shift) rightclicking them with an engineer's hammer
+ie.manual.entry.teslaCoil4=which you will be hit by lightning. They can be colored in the engineer's workbench and rotated by (shift) rightclicking them with an Engineer's Hammer
 
 ie.manual.entry.fluidPipes.name=Fluid Transport
 ie.manual.entry.fluidPipes.subtext=Professional Plumber
@@ -1236,7 +1240,7 @@ ie.manual.entry.fluidPipes0=Transporting fluids has become quite essential in th
 ie.manual.entry.fluidPipes1=You can rightclick the connection piece of a pipe with an Engineer's Hammer to prevent it from connecting to that side.<br>Fluid Pipes can be covered with wooden or steel scaffolding. Simply rightclick a piece of scaffolding onto a pipe to cover it. Break the pipe to retrieve the scaffolding.
 ie.manual.entry.fluidPipes2=Fluid Pumps have three essential functions. They can be used to insert into pipes at high pressure, to transfer fluids much faster, or they can pick up fluids from the world. Using your hammer on the base of the pump will switch the sides between in- and output.
 ie.manual.entry.fluidPipes3=In order for the pump to pick up fluid blocks, it will need a power input at the top and a redstone signal. Pumps can also be used to extract from tanks and other fluid containers that do not have an automatic output. This will also require a redstone signal, but won't consume power.
-ie.manual.entry.fluidPipes4=<config;b;pump_infiniteWater;Water blocks will serve as an infinite fluid source for the pump, as long as more than 3 blocks are connected.<br><br>;><config;b;pump_placeCobble;Fluid blocks that were picked up will be replaced with cobblestone to reduce the lag of flowing fluids. This behaviour can be toggled off and on by using an engineer's hammer on the pump.;>
+ie.manual.entry.fluidPipes4=<config;b;pump_infiniteWater;Water blocks will serve as an infinite fluid source for the pump, as long as more than 3 blocks are connected.<br><br>;><config;b;pump_placeCobble;Fluid blocks that were picked up will be replaced with cobblestone to reduce the lag of flowing fluids. This behaviour can be toggled off and on by using an Engineer's Hammer on the pump.;>
 
 ie.manual.entry.sorter.name=Item Router
 ie.manual.entry.sorter.subtext=Left foot yellow, right hand green
@@ -1258,7 +1262,7 @@ ie.manual.entry.drill0=The handheld, diesel-powered drill is a big advancement i
 ie.manual.entry.drill1=The §6Drill Head§r determines the base §6mining level§r, §6speed§r, and §6size§r, as well as the §6attack damage§r. As you dig blocks, the drill head takes damage, but it can be repaired in an anvil.
 ie.manual.entry.drill2=As the drill is powered by a combustion engine, it will not run underwater unless you equip it with the Pressurized Air Tank Upgrade. However, with this upgrade equipped, it will not only run while submerged, but also ignore the slowdown usually experienced when digging in water.
 ie.manual.entry.drill3=The §6Advanced Lubrication System§r applies additional lubricant to the drill at a regular basis, allowing it to run and dig faster.
-ie.manual.entry.drill4=By adding §6Additional Augers§r to the drill, it's destructive potential against living creatures is increased. The upgrade stacks up to three and each will add an additional point of attack damage.
+ie.manual.entry.drill4=By adding §6Additional Augers§r to the drill, its destructive potential against living creatures is increased. The upgrade stacks up to three and each will add an additional point of attack damage.
 ie.manual.entry.drill5=The §6Large Fuel Tank§r allows the drill to store more fuel internally, extending the time you can use it before refilling.
 
 ie.manual.entry.revolver.name=Revolver
@@ -1278,7 +1282,7 @@ ie.manual.entry.bullets_armorPiercing=§lArmor-Piercing §lCartridges§r are cre
 ie.manual.entry.bullets_buckshot=§lBuckshot §lCartridges§r, created with the aformentioned blueprint, are filled with multiple small projectiles that are fired out in a cone shape. This cartridge is highly effective at short range.
 ie.manual.entry.bullets_HE=§lHigh-Explosive §lCartridges§r are created with a "Common Projectiles" blueprint. They fire a projectile that explodes on impact, causing damage to living creatures and terrain.
 ie.manual.entry.bullets_silver=§lSilver §lCartridges§r consist of a lead core wrapped in silver, making them highly effective against undead.
-ie.manual.entry.bullets_dragonsbreath=§lDragon's §lBreath Cartridges§r are created with a "Specialized Projectiles" blueprint. Similarly to Buckshot, they are effective at short range, but instead of small metal shots are filled with a flammable metal dust, creating a blast of flame.
+ie.manual.entry.bullets_dragonsbreath=§lDragon's §lBreath Cartridges§r are created with a "Specialized Projectiles" blueprint. Similarly to Buckshot, they are effective at short range, but instead of small metal shots, they are filled with a flammable metal dust, creating a blast of flame.
 ie.manual.entry.bullets_potion=§lPhial §lCartridges§r are also created with the "Specialized" blueprint. They can be filled with any potion by crafting them together in a crafting grid and this potion will then be applied on impact. Normal potions require a direct hit, splash potions have an area of effect and Lingering Potions will create a temporary, lingering potion cloud.
 ie.manual.entry.bullets_flare=§lFlare §lCartridges§r are created with the "Specialized" blueprint. When fired, the flare explodes after a certain distance and then slowly sinks to the ground. You can combine the cartridge with dyes in a crafting table to change its colour.
 ie.manual.entry.bullets_wolfpack=§lWolfpack §lCartridges§r are a collection of multiple homing shots in a single shell. The initial projectile is unguided, but on impact, it splits into six target seeking shots that shred the enemies.
@@ -1292,7 +1296,7 @@ ie.manual.entry.chemthrower2=The §6Focused Nozzle§r decreases the spread of fl
 ie.manual.entry.skyhook.name=Engineer's Skyhook
 ie.manual.entry.skyhook.subtext=Booker, catch!
 ie.manual.entry.skyhook0=The Engineer's Skyhook is a motorized grabber system designed to hook onto wires, hemp ropes or steel cables.<br>With it, engineers can quickly traverse the length of a powerline to move between substations or other installations.
-ie.manual.entry.skyhook1=Simply hold the right mousebutton while close to a connector and you will be attached to the wire.<br>Releasing the button at any time or sneaking will cause you to dismount.<br>You can not start in the middle of a wire, you must attach at a connector.
+ie.manual.entry.skyhook1=Simply hold the right mousebutton while close to a connector and you will be attached to the wire.<br>Releasing the button at any time or sneaking will cause you to dismount.<br>You cannot start in the middle of a wire, you must attach at a connector.
 
 ie.manual.entry.shader.name=Shaders
 ie.manual.entry.shader.subtext=Blue! No, yellow!
@@ -1325,7 +1329,7 @@ ie.manual.entry.turret1=Upon being placed, Turrets will remember their owner and
 ie.manual.entry.turret2=The Chemthrower Turret utilizes the fluid propelling capabilities of the <link;chemthrower;§o§neponymous §o§ntool§r> to cover targets in anything, ranging from water to douse flames, to diesel oil to start them.
 ie.manual.entry.turret3=The turret features a fluid port in the bottom and back of the base to allow pipes to connect to it. Additionally, the GUI has a button on the left which dis- or enables the pilot flame, igniting the dispensed fluid, provided that it is flammable.<br><br>§oThe providers of this blueprint are not liable for any damage to user, neighbours or various farm animals that may incur.§r
 ie.manual.entry.turret4=The Gun Turret features a heavily modified version of the <link;revolver;§o§nRevolver's§r> internals in a far bigger and more imposing casing. The construction also involves an extended magazine to allow for increased internal storage of ammunition.
-ie.manual.entry.turret5=A port for the automatic insertion of ammo and extraction of spent casing is located within the back and bottom of the base. The turret can store up to a full stack of cartridges and the GUI features a button to toggle the automatic expulsion of spent casings.<br><br>§oNote that certain ammunitions may cause colateral damage to the user or their property.§r
+ie.manual.entry.turret5=A port for the automatic insertion of ammo and extraction of spent casing is located within the back and bottom of the base. The turret can store up to a full stack of cartridges and the GUI features a button to toggle the automatic expulsion of spent casings.<br><br>§oNote that certain ammunitions may cause collateral damage to the user or their property.§r
 
 ie.manual.entry.maneuverGear.name=3D Maneuver Gear
 ie.manual.entry.maneuverGear.subtext=Attack on upscaled zombies

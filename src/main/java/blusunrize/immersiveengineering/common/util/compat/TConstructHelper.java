@@ -11,10 +11,10 @@ import blusunrize.immersiveengineering.common.blocks.BlockIEFluid;
 import blusunrize.immersiveengineering.common.util.IEPotions;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.init.MobEffects;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -238,7 +238,7 @@ public class TConstructHelper extends IECompatModule
 					if(tempDif<0 && !target.isImmuneToFire())
 						target.setFire((int)Math.floor(tempDif*3));
 					else if(tempDif>0)
-						target.addPotionEffect(new PotionEffect(Potion.getPotionFromResourceLocation("slowness"),4,(int)Math.floor(tempDif*2)));
+						target.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS,4,(int)Math.floor(tempDif*2)));
 				}
 			}
 		}
