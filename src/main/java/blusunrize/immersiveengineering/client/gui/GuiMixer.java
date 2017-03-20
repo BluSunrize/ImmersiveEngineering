@@ -1,14 +1,20 @@
 package blusunrize.immersiveengineering.client.gui;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.client.gui.elements.GuiButtonState;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMixer;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMultiblockMetal.MultiblockProcess;
 import blusunrize.immersiveengineering.common.blocks.metal.TileEntityMultiblockMetal.MultiblockProcessInMachine;
 import blusunrize.immersiveengineering.common.gui.ContainerMixer;
+import blusunrize.immersiveengineering.common.util.network.MessageTileSync;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.FluidStack;
 import org.lwjgl.opengl.GL11;
 
@@ -22,6 +28,26 @@ public class GuiMixer extends GuiContainer
 		super(new ContainerMixer(inventoryPlayer, tile));
 		this.tile=tile;
 		this.ySize = 167;
+	}
+
+	@Override
+	public void initGui()
+	{
+		super.initGui();
+		this.buttonList.clear();
+		this.buttonList.add(new GuiButtonState(0, guiLeft+106,guiTop+61, 30,16, null, tile.outputAll, "immersiveengineering:textures/gui/mixer.png",176,82, 1));
+	}
+	@Override
+	protected void actionPerformed(GuiButton button)
+	{
+		if(button.id==0)
+		{
+			NBTTagCompound tag = new NBTTagCompound();
+			tile.outputAll = ((GuiButtonState)button).state;
+			tag.setBoolean("outputAll", tile.outputAll);
+			ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(tile, tag));
+			this.initGui();
+		}
 	}
 
 	@Override
@@ -49,8 +75,10 @@ public class GuiMixer extends GuiContainer
 					}
 				}
 		}
-		if(mx > guiLeft+158&&mx < guiLeft+165&&my > guiTop+22&&my < guiTop+68)
+		if(mx >= guiLeft+158&&mx < guiLeft+165&&my > guiTop+22&&my < guiTop+68)
 			tooltip.add(tile.getEnergyStored(null)+"/"+tile.getMaxEnergyStored(null)+" RF");
+		if(mx >= guiLeft+106&&mx <= guiLeft+136&&my >= guiTop+61&&my <= guiTop+77)
+			tooltip.add(I18n.format(Lib.GUI_CONFIG+"mixer.output"+(tile.outputAll?"All":"Single")));
 		if(!tooltip.isEmpty())
 		{
 			ClientUtils.drawHoveringText(tooltip, mx, my, fontRendererObj, guiLeft+xSize, -1);
