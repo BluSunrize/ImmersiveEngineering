@@ -1073,14 +1073,8 @@ public class ClientProxy extends CommonProxy
 		ApiUtils.getRegisterSprite(event.getMap(), ConveyorSplit.texture_on);
 		ApiUtils.getRegisterSprite(event.getMap(), ConveyorSplit.texture_casing);
 
-		ApiUtils.getRegisterSprite(event.getMap(), IEContent.fluidCreosote.getStill());
-		ApiUtils.getRegisterSprite(event.getMap(), IEContent.fluidCreosote.getFlowing());
-		ApiUtils.getRegisterSprite(event.getMap(), IEContent.fluidPlantoil.getStill());
-		ApiUtils.getRegisterSprite(event.getMap(), IEContent.fluidPlantoil.getFlowing());
-		ApiUtils.getRegisterSprite(event.getMap(), IEContent.fluidEthanol.getStill());
-		ApiUtils.getRegisterSprite(event.getMap(), IEContent.fluidEthanol.getFlowing());
-		ApiUtils.getRegisterSprite(event.getMap(), IEContent.fluidBiodiesel.getStill());
-		ApiUtils.getRegisterSprite(event.getMap(), IEContent.fluidBiodiesel.getFlowing());
+		ApiUtils.getRegisterSprite(event.getMap(), IEContent.fluidPotion.getStill());
+		ApiUtils.getRegisterSprite(event.getMap(), IEContent.fluidPotion.getFlowing());
 		ApiUtils.getRegisterSprite(event.getMap(), "immersiveengineering:items/shader_slot");
 	}
 

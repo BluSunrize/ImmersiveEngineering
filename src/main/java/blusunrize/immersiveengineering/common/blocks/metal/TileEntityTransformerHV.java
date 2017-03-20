@@ -12,4 +12,14 @@ public class TileEntityTransformerHV extends TileEntityTransformer
 	{
 		return false;
 	}
+
+	@Override
+	protected float getLowerOffset() {
+		return super.getHigherOffset();
+	}
+
+	@Override
+	protected float getHigherOffset() {
+		return .75F;
+	}
 }

@@ -22,8 +22,6 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -106,22 +104,27 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 	{
 		if(cableType==WireType.STEEL&&!canTakeHV())
 			return false;
-		if(dummy!=0)
-		{
-			TileEntity master = worldObj.getTileEntity(getPos().add(0,-dummy,0));
-			if(master instanceof TileEntityTransformer)
-				return ((TileEntityTransformer)master).canConnectCable(cableType, target);
-			return false;
+		if(dummy!=0) {
+			TileEntity master = worldObj.getTileEntity(getPos().add(0, -dummy, 0));
+			return master instanceof TileEntityTransformer && ((TileEntityTransformer) master).canConnectCable(cableType, target);
 		}
 		int tc = getTargetedConnector(target);
 		switch(tc)
 		{
 		case 0:
-			return limitType==null && secondCable!=cableType;
+			return canAttach(cableType, limitType, secondCable);
 		case 1:
-			return secondCable==null && limitType!=cableType;
+			return canAttach(cableType, secondCable, limitType);
 		}
 		return false;
+	}
+	private boolean canAttach(WireType toAttach, WireType atConn, WireType other) {
+		if (atConn!=null)
+			return false;
+		if (other==null)
+			return true;
+		WireType higher = this instanceof TileEntityTransformerHV?WireType.STEEL:WireType.ELECTRUM;
+		return toAttach==higher||other==higher;
 	}
 	@Override
 	public void connectCable(WireType cableType, TargetingInfo target, IImmersiveConnectable other)
@@ -194,15 +197,15 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 		else
 		{
 			double conRadius = con.cableType.getRenderDiameter()/2;
-			double offset = con.cableType==WireType.COPPER?-.0625: con.cableType==WireType.ELECTRUM?.0625: .25; 
+			double offset = getIsMirrored()^b?getLowerOffset():getHigherOffset();
 			if(facing==EnumFacing.NORTH)
-				return new Vec3d(b?.8125:.1875, 2.5+offset-conRadius, .5);
+				return new Vec3d(b?.8125:.1875, 2+offset-conRadius, .5);
 			if(facing==EnumFacing.SOUTH)
-				return new Vec3d(b?.1875:.8125, 2.5+offset-conRadius, .5);
+				return new Vec3d(b?.1875:.8125, 2+offset-conRadius, .5);
 			if(facing==EnumFacing.WEST)
-				return new Vec3d(.5, 2.5+offset-conRadius, b?.1875:.8125);
+				return new Vec3d(.5, 2+offset-conRadius, b?.1875:.8125);
 			if(facing==EnumFacing.EAST)
-				return new Vec3d(.5, 2.5+offset-conRadius, b?.8125:.1875);
+				return new Vec3d(.5, 2+offset-conRadius, b?.8125:.1875);
 		}
 		return new Vec3d(.5,.5,.5);
 	}
@@ -249,24 +252,6 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 		return secondCable;
 	}
 
-	@SideOnly(Side.CLIENT)
-	private AxisAlignedBB renderAABB;
-	@SideOnly(Side.CLIENT)
-	@Override
-	public AxisAlignedBB getRenderBoundingBox()
-	{
-		//		if(renderAABB==null)
-		//		{
-		//			if(Config.getBoolean("increasedRenderboxes"))
-		//				renderAABB = AxisAlignedBB.getBoundingBox(xCoord-16, yCoord-16, zCoord-16, xCoord+17, yCoord+17, zCoord+17);
-		//			else if(!dummy)
-		//				renderAABB = AxisAlignedBB.getBoundingBox(xCoord, yCoord-1, zCoord, xCoord+1, yCoord+1.5, zCoord+1);
-		//			else
-		//				renderAABB = AxisAlignedBB.getBoundingBox(xCoord, yCoord, zCoord, xCoord, yCoord, zCoord);
-		//		}
-		return new AxisAlignedBB(getPos().getX()-16,getPos().getY()-16,getPos().getZ()-16, getPos().getX()+16,getPos().getY()+16,getPos().getZ()+16);
-	}
-
 	@Override
 	public PropertyBoolInverted getBoolProperty(Class<? extends IUsesBooleanProperty> inf)
 	{
@@ -277,9 +262,18 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 	{
 		if (onPost)
 			return false;
-		WireType lower = this instanceof TileEntityTransformerHV?WireType.ELECTRUM:WireType.COPPER;
-		boolean b = (limitType!=null&&lower.equals(limitType))||(secondCable!=null&&!lower.equals(secondCable));
-		return !b;
+		if (dummy!=0) {
+			TileEntity master = worldObj.getTileEntity(pos.down(dummy));
+			return master instanceof TileEntityTransformer && ((TileEntityTransformer) master).getIsMirrored();
+		}
+		else
+		{
+			if (limitType==null&&secondCable==null)
+				return true;
+			WireType higher = this instanceof TileEntityTransformerHV ? WireType.STEEL : WireType.ELECTRUM;
+			boolean b = (limitType != null && higher.equals(limitType)) || (secondCable != null && !higher.equals(secondCable));
+			return b;
+		}
 	}
 
 	@Override
@@ -362,27 +356,29 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 					facing.getAxis()==Axis.X?.75F:facing==EnumFacing.SOUTH?1.375F:.3125F};
 		return null;
 	}
-
+	boolean cachedMirrored = false;
+	private List<AxisAlignedBB> advSelectionBoxes = null;
 	@Override
 	public List<AxisAlignedBB> getAdvancedSelectionBounds()
 	{
-		if(dummy==2)
+		boolean mirrored = getIsMirrored();
+		if(dummy==2&&(advSelectionBoxes==null||cachedMirrored!=mirrored))
 		{
-			WireType lower = this instanceof TileEntityTransformerHV?WireType.ELECTRUM:WireType.COPPER;
-			WireType higher = this instanceof TileEntityTransformerHV?WireType.STEEL:WireType.ELECTRUM;
-			boolean b = (limitType!=null&&lower.equals(limitType))||(secondCable!=null&&!lower.equals(secondCable));
-			double offsetL = lower==WireType.COPPER?0: lower==WireType.ELECTRUM?.0625: .25; 
-			double offsetH = higher==WireType.COPPER?0: higher==WireType.ELECTRUM?.0625: .25; 
+			double offsetA = mirrored?getHigherOffset():getLowerOffset();
+			double offsetB = mirrored?getLowerOffset():getHigherOffset();
 			if(facing==EnumFacing.NORTH)
-				return Lists.newArrayList(new AxisAlignedBB(0,0,.3125, .375,.5+(b?offsetH:offsetL),.6875).offset(getPos().getX(),getPos().getY(),getPos().getZ()), new AxisAlignedBB(.625,0,.3125, 1,.5+(b?offsetL:offsetH),.6875).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+				advSelectionBoxes = Lists.newArrayList(new AxisAlignedBB(0,0,.3125, .375, offsetB,.6875).offset(getPos().getX(),getPos().getY(),getPos().getZ()), new AxisAlignedBB(.625,0,.3125, 1, offsetA,.6875).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
 			if(facing==EnumFacing.SOUTH)
-				return Lists.newArrayList(new AxisAlignedBB(0,0,.3125, .375,.5+(b?offsetL:offsetH),.6875).offset(getPos().getX(),getPos().getY(),getPos().getZ()), new AxisAlignedBB(.625,0,.3125, 1,.5+(b?offsetH:offsetL),.6875).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+				advSelectionBoxes = Lists.newArrayList(new AxisAlignedBB(0,0,.3125, .375, offsetA,.6875).offset(getPos().getX(),getPos().getY(),getPos().getZ()), new AxisAlignedBB(.625,0,.3125, 1, offsetB,.6875).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
 			if(facing==EnumFacing.WEST)
-				return Lists.newArrayList(new AxisAlignedBB(.3125,0,0, .6875,.5+(b?offsetL:offsetH),.375).offset(getPos().getX(),getPos().getY(),getPos().getZ()), new AxisAlignedBB(.3125,0,.625, .6875,.5+(b?offsetH:offsetL),1).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+				advSelectionBoxes = Lists.newArrayList(new AxisAlignedBB(.3125,0,0, .6875, offsetA,.375).offset(getPos().getX(),getPos().getY(),getPos().getZ()), new AxisAlignedBB(.3125,0,.625, .6875, offsetB,1).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
 			if(facing==EnumFacing.EAST)
-				return Lists.newArrayList(new AxisAlignedBB(.3125,0,0, .6875,.5+(b?offsetH:offsetL),.375).offset(getPos().getX(),getPos().getY(),getPos().getZ()), new AxisAlignedBB(.3125,0,.625, .6875,.5+(b?offsetL:offsetH),1).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+				advSelectionBoxes = Lists.newArrayList(new AxisAlignedBB(.3125,0,0, .6875, offsetB,.375).offset(getPos().getX(),getPos().getY(),getPos().getZ()), new AxisAlignedBB(.3125,0,.625, .6875, offsetA,1).offset(getPos().getX(),getPos().getY(),getPos().getZ()));
+			cachedMirrored = mirrored;
+		} else if (dummy!=2) {
+			advSelectionBoxes = null;
 		}
-		return null;
+		return advSelectionBoxes;
 	}
 
 	@Override
@@ -402,5 +398,13 @@ public class TileEntityTransformer extends TileEntityImmersiveConnectable implem
 	public boolean getIsSecondState()
 	{
 		return onPost;
+	}
+
+	protected float getLowerOffset() {
+		return .5F;
+	}
+
+	protected float getHigherOffset() {
+		return .5625F;
 	}
 }
