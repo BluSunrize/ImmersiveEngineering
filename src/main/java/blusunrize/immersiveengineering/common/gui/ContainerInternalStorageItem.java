@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.api.tool.IInternalStorageItem;
+import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.*;
@@ -64,7 +65,7 @@ public abstract class ContainerInternalStorageItem extends Container
 					Slot s = inventorySlots.get(i);
 					if(s!=null && s.isItemValid(stackInSlot))
 					{
-						if(s.getStack()!=null && (!ItemStack.areItemsEqual(stackInSlot,s.getStack()) || !ItemStack.areItemStackTagsEqual(stackInSlot,s.getStack())) )
+						if(s.getStack()!=null && (!ItemStack.areItemsEqual(stackInSlot,s.getStack()) || !Utils.compareItemNBT(stackInSlot,s.getStack())) )
 							continue;
 						int space = Math.min(s.getItemStackLimit(stackInSlot), stackInSlot.getMaxStackSize());
 						if(s.getStack() != null)

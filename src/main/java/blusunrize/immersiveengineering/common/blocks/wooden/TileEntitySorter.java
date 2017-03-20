@@ -179,7 +179,7 @@ public class TileEntitySorter extends TileEntityIEBase implements IGuiTile
 										}
 
 								if(doNBT(side.ordinal()))
-									b &= ItemStack.areItemStackTagsEqual(filterStack, stack);
+									b &= Utils.compareItemNBT(filterStack, stack);
 								if(b)
 								{
 									allowed=true;

@@ -84,18 +84,18 @@ public class Utils
 	public static boolean stackMatchesObject(ItemStack stack, Object o, boolean checkNBT)
 	{
 		if(o instanceof ItemStack)
-			return OreDictionary.itemMatches((ItemStack)o, stack, false) && (!checkNBT || ((ItemStack)o).getItemDamage()==OreDictionary.WILDCARD_VALUE || ItemStack.areItemStackTagsEqual((ItemStack)o, stack));
+			return OreDictionary.itemMatches((ItemStack)o, stack, false) && (!checkNBT || ((ItemStack)o).getItemDamage()==OreDictionary.WILDCARD_VALUE || Utils.compareItemNBT((ItemStack)o, stack));
 		else if(o instanceof Collection)
 		{
 			for(Object io : (Collection)o)
-				if(io instanceof ItemStack && OreDictionary.itemMatches((ItemStack)io, stack, false) && (!checkNBT || ((ItemStack)io).getItemDamage()==OreDictionary.WILDCARD_VALUE || ItemStack.areItemStackTagsEqual((ItemStack)io, stack)))
+				if(io instanceof ItemStack && OreDictionary.itemMatches((ItemStack)io, stack, false) && (!checkNBT || ((ItemStack)io).getItemDamage()==OreDictionary.WILDCARD_VALUE || Utils.compareItemNBT((ItemStack)io, stack)))
 					return true;
 		} else if(o instanceof IngredientStack)
 			return ((IngredientStack)o).matchesItemStack(stack);
 		else if(o instanceof ItemStack[])
 		{
 			for(ItemStack io : (ItemStack[])o)
-				if(OreDictionary.itemMatches(io, stack, false) && (!checkNBT || io.getItemDamage()==OreDictionary.WILDCARD_VALUE || ItemStack.areItemStackTagsEqual(io, stack)))
+				if(OreDictionary.itemMatches(io, stack, false) && (!checkNBT || io.getItemDamage()==OreDictionary.WILDCARD_VALUE || Utils.compareItemNBT(io, stack)))
 					return true;
 		} else if(o instanceof FluidStack)
 		{
@@ -106,6 +106,19 @@ public class Utils
 			return compareToOreName(stack, (String)o);
 		return false;
 	}
+	public static boolean compareItemNBT(ItemStack stack1, ItemStack stack2)
+	{
+		if((stack1==null) != (stack2==null))
+			return false;
+		boolean empty1 = (stack1.getTagCompound()==null||stack1.getTagCompound().hasNoTags());
+		boolean empty2 = (stack2.getTagCompound()==null||stack2.getTagCompound().hasNoTags());
+		if(empty1!=empty2)
+			return false;
+		if(!empty1 && !stack1.getTagCompound().equals(stack2.getTagCompound()))
+			return false;
+		return stack1.areCapsCompatible(stack2);
+	}
+
 	public static boolean canCombineArrays(ItemStack[] stacks, ItemStack[] target)
 	{
 		HashSet<IngredientStack> inputSet = new HashSet();
@@ -578,7 +591,7 @@ public class Utils
 	//				if (sidedInv.canInsertItem(slots[i], stack, side))
 	//				{
 	//					ItemStack existingStack = inventory.getStackInSlot(slots[i]);
-	//					if(OreDictionary.itemMatches(existingStack, stack, true)&&ItemStack.areItemStackTagsEqual(stack, existingStack))
+	//					if(OreDictionary.itemMatches(existingStack, stack, true)&&Utils.compareItemNBT(stack, existingStack))
 	//						stack = addToOccupiedSlot(sidedInv, slots[i], stack, existingStack);
 	//				}
 	//			}
@@ -592,7 +605,7 @@ public class Utils
 	//			for (int i=0; i<invSize && stack!=null; i++)
 	//			{
 	//				ItemStack existingStack = inventory.getStackInSlot(i);
-	//				if (OreDictionary.itemMatches(existingStack, stack, true)&&ItemStack.areItemStackTagsEqual(stack, existingStack))
+	//				if (OreDictionary.itemMatches(existingStack, stack, true)&&Utils.compareItemNBT(stack, existingStack))
 	//					stack = addToOccupiedSlot(inventory, i, stack, existingStack);
 	//			}
 	//			for (int i=0; i<invSize && stack!=null; i++)
@@ -647,7 +660,7 @@ public class Utils
 	//					if(existingStack==null)
 	//						return true;
 	//					else
-	//						if(OreDictionary.itemMatches(existingStack, stack, true)&&ItemStack.areItemStackTagsEqual(stack, existingStack))
+	//						if(OreDictionary.itemMatches(existingStack, stack, true)&&Utils.compareItemNBT(stack, existingStack))
 	//							if(existingStack.stackSize+stack.stackSize<inventory.getInventoryStackLimit() && existingStack.stackSize+stack.stackSize<existingStack.getMaxStackSize())
 	//								return true;
 	//				}
@@ -663,7 +676,7 @@ public class Utils
 	//					if(existingStack==null)
 	//						return true;
 	//					else
-	//						if(OreDictionary.itemMatches(existingStack, stack, true)&&ItemStack.areItemStackTagsEqual(stack, existingStack))
+	//						if(OreDictionary.itemMatches(existingStack, stack, true)&&Utils.compareItemNBT(stack, existingStack))
 	//							if(existingStack.stackSize+stack.stackSize<inventory.getInventoryStackLimit() && existingStack.stackSize+stack.stackSize<existingStack.getMaxStackSize())
 	//								return true;
 	//				}
