@@ -9,7 +9,10 @@ public enum BlockTypes_StoneDevices implements IStringSerializable, BlockIEBase.
 {
 	COKE_OVEN,
 	BLAST_FURNACE,
-	BLAST_FURNACE_ADVANCED;
+	BLAST_FURNACE_ADVANCED,
+	CONCRETE_SHEET,
+	CONCRETE_QUARTER,
+	CONCRETE_THREEQUARTER;
 
 	@Override
 	public String getName()
@@ -24,6 +27,6 @@ public enum BlockTypes_StoneDevices implements IStringSerializable, BlockIEBase.
 	@Override
 	public boolean listForCreative()
 	{
-		return false;
+		return ordinal()>2;
 	}
 }
