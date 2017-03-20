@@ -35,6 +35,15 @@
 				]
 			}
 		}],
+		"inventory,type=concrete_sheet": [{
+			"model": "carpet",
+			"textures": { "wool": "immersiveengineering:blocks/stoneDecoration_concrete","particle": "immersiveengineering:blocks/stoneDecoration_concrete" }}],
+		"inventory,type=concrete_quarter": [{
+			"model": "immersiveengineering:ieQuarterBlock",
+			"textures": { "texture": "immersiveengineering:blocks/stoneDecoration_concrete", "particle": "immersiveengineering:blocks/stoneDecoration_concrete" }}],
+		"inventory,type=concrete_threequarter": [{
+			"model": "immersiveengineering:ieThreeQuarterBlock",
+			"textures": { "texture": "immersiveengineering:blocks/stoneDecoration_concrete", "particle": "immersiveengineering:blocks/stoneDecoration_concrete" }}],
 		"type":
 		{
 			"coke_oven": {"textures": {
@@ -53,6 +62,18 @@
 				"model": "immersiveengineering:blastfurnace_advanced.obj",
 				"custom": { "flip-v": true },
 				"particle": "immersiveengineering:blocks/stoneDevice_blastFurnace"
+			},
+			"concrete_sheet": {
+				"model": "carpet",
+				"textures": { "wool": "immersiveengineering:blocks/stoneDecoration_concrete" }
+			},
+			"concrete_quarter": {
+				"model": "immersiveengineering:ieQuarterBlock",
+				"textures": { "texture": "immersiveengineering:blocks/stoneDecoration_concrete" }
+			},
+			"concrete_threequarter": {
+				"model": "immersiveengineering:ieThreeQuarterBlock",
+				"textures": { "texture": "immersiveengineering:blocks/stoneDecoration_concrete" }
 			}
 		},
 		"facing":

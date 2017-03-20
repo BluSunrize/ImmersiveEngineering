@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.common.blocks;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.stone.BlockTypes_StoneDecoration;
+import blusunrize.immersiveengineering.common.blocks.stone.BlockTypes_StoneDevices;
 import blusunrize.immersiveengineering.common.util.IEPotions;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
@@ -58,10 +59,18 @@ public class BlockIEFluidConcrete extends BlockIEFluid
 		int expQuanta = -101;
 		if(timer>=Math.min(14,quantaRemaining))
 		{
-			if(level>=6)
-				world.setBlockState(pos, IEContent.blockStoneDecorationSlabs.getStateFromMeta(BlockTypes_StoneDecoration.CONCRETE.getMeta()));
+			IBlockState solidState;
+			if(level>=14)
+				solidState = IEContent.blockStoneDevice.getStateFromMeta(BlockTypes_StoneDevices.CONCRETE_SHEET.getMeta());
+			else if(level>=10)
+				solidState = IEContent.blockStoneDevice.getStateFromMeta(BlockTypes_StoneDevices.CONCRETE_QUARTER.getMeta());
+			else if(level>=6)
+				solidState = IEContent.blockStoneDecorationSlabs.getStateFromMeta(BlockTypes_StoneDecoration.CONCRETE.getMeta());
+			else if(level>=2)
+				solidState = IEContent.blockStoneDevice.getStateFromMeta(BlockTypes_StoneDevices.CONCRETE_THREEQUARTER.getMeta());
 			else
-				world.setBlockState(pos, IEContent.blockStoneDecoration.getStateFromMeta(BlockTypes_StoneDecoration.CONCRETE.getMeta()));
+				solidState = IEContent.blockStoneDecoration.getStateFromMeta(BlockTypes_StoneDecoration.CONCRETE.getMeta());
+			world.setBlockState(pos, solidState);
 			for(EntityLivingBase living : world.getEntitiesWithinAABB(EntityLivingBase.class, new AxisAlignedBB(pos,pos.add(1,1,1))))
 				living.addPotionEffect(new PotionEffect(IEPotions.concreteFeet,Integer.MAX_VALUE));
 			return;

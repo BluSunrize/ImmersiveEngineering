@@ -52,6 +52,9 @@ tile.immersiveengineering.stoneDecorationStairs_concrete_leaded.name=Leaded Conc
 tile.immersiveengineering.stoneDevice.coke_oven.name=Coke Oven
 tile.immersiveengineering.stoneDevice.blast_furnace.name=Crude Blast Furnace
 tile.immersiveengineering.stoneDevice.blast_furnace_advanced.name=Improved Blast Furnace
+tile.immersiveengineering.stoneDevice.concrete_sheet.name=Concrete Sheet
+tile.immersiveengineering.stoneDevice.concrete_quarter.name=Concrete Panel
+tile.immersiveengineering.stoneDevice.concrete_threequarter.name=Concrete Chunk
 
 tile.immersiveengineering.treatedWood.horizontal.name=Treated Wood Planks
 tile.immersiveengineering.treatedWood.vertical.name=Treated Wood Planks
