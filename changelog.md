@@ -1,3 +1,40 @@
+#####Version 0.10-58
+- added the Fluid Router. It does exactly what the Item Router does, but for fluids.
+- added Crafttweaker integration for the Mixer
+- added the Garden Cloche! It grows a variety of crops!
+- added farming compatability for Actually Additions
+- added farming compatability for Attained Drops
+- added farming compatability for Mystical Agriculture
+- added farming compatability for Harvestcraft
+- added farming compatability for Better With Mods
+- added farming compatability for Extra Utils
+- added Chemthrower compatability for ThermalFoundation fluids
+- added carpet, quarter and threequarter thicknesses for Concrete to make the fluid dry to more reasonable levels
+- added a toggleable option to the Mixer to output all fluids instead of just the bottom one
+- changed Razorwire to render extended wooden boards when stacked
+- changed the Conductive debuff to apply to Teslacoil and Electro-Razorwire damage
+- changed metal plates and Sheetmetal to be craftable for any IE-used metal
+- fixed Concrete blocks not applying suffocation damage
+- fixed some cartridges being allowed in turrets, fixes crash with Immersive Floofs
+- fixed energy drain on eletrified bullets, reduced drain for multii-projectile cartridges
+- fixed ownerless, tameable entities causing crashes in Turret targeting
+- fixed item in- and outputs on Turrets being unavailable
+- fixed manual entry for Razorwire
+- fixed NullPointer on FluidStacks
+- fixed Turntables and Hammers being able to rotate extended pistons and chests
+- fixed the Drill taking more damage than intended (thanks Malte)
+- fixed the display of double arrays in the manual (thanks Malte)
+- fixed lang file as per suggestions on github
+- fixed Balloons and Redstone Connectors being invisible in the End
+- fixed Chemthrower projectiles being set on fire even when the fluid isn't flammable
+- fixed invalid connections being made possible due to splitting stacks (thanks Malte)
+- fixed bounding boxes and wire offsets for transformers (thanks Malte)
+- fixed transformers mistakenly having TESRs and accepting LV+MV wires in combination (thanks Malte)
+- fixed the Potion fluid not having textures (thanks Malte)
+- fixed ConcurrentModificationException on Crafttweaker reloads (thanks Malte)
+- fixed the Mixer not working when its internal tank is filled (thanks Malte)
+- Translations Added/Updated: ru_RU (lex1975) (this time for real, since I forgot it last time)
+
 #####Version 0.10-57 - BUILT
 - added RazorWire! It pricks and slows, and you can electrify it.
 - added Fluid Concrete. Slows entities down and immobilizes them when it dries
