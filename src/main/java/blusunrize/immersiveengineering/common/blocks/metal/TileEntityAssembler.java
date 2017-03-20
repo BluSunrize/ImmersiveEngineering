@@ -255,7 +255,7 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 		boolean match = true;
 
 		AssemblerHandler.IRecipeAdapter adapter = AssemblerHandler.findAdapter(pattern.recipe);
-		if (adapter==null)
+		if(adapter==null)
 			//We don't know how to handle the recipe
 			return false;
 		AssemblerHandler.RecipeQuery[] queries = adapter.getQueriedInputs(pattern.recipe, pattern.inv);
@@ -303,7 +303,7 @@ public class TileEntityAssembler extends TileEntityMultiblockMetal<TileEntityAss
 	{
 		if(this.inventory[18+iPattern]==null)
 			return true;
-		else if(OreDictionary.itemMatches(output, this.inventory[18+iPattern], true) && ItemStack.areItemStackTagsEqual(output, this.inventory[18+iPattern]) && this.inventory[18+iPattern].stackSize+output.stackSize<=this.inventory[18+iPattern].getMaxStackSize())
+		else if(OreDictionary.itemMatches(output, this.inventory[18+iPattern], true) && Utils.compareItemNBT(output, this.inventory[18+iPattern]) && this.inventory[18+iPattern].stackSize+output.stackSize<=this.inventory[18+iPattern].getMaxStackSize())
 			return true;
 		return false;
 	}

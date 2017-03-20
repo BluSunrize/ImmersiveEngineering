@@ -377,7 +377,7 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 					for(ItemStack old : (List<ItemStack>)p.inputItems)
 					{
 						for(ItemStack in : (List<ItemStack>)((MultiblockProcessInWorld)process).inputItems)
-							if(OreDictionary.itemMatches(old, in, true) && ItemStack.areItemStackTagsEqual(old, in))
+							if(OreDictionary.itemMatches(old, in, true) && Utils.compareItemNBT(old, in))
 								if(old.stackSize+in.stackSize>old.getMaxStackSize())
 								{
 									canStack = false;
@@ -392,7 +392,7 @@ public abstract class TileEntityMultiblockMetal<T extends TileEntityMultiblockMe
 							for(ItemStack old : (List<ItemStack>)p.inputItems)
 							{
 								for(ItemStack in : (List<ItemStack>)((MultiblockProcessInWorld)process).inputItems)
-									if(OreDictionary.itemMatches(old, in, true) && ItemStack.areItemStackTagsEqual(old, in))
+									if(OreDictionary.itemMatches(old, in, true) && Utils.compareItemNBT(old, in))
 									{
 										old.stackSize+=in.stackSize;
 										break;

@@ -18,6 +18,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -78,7 +79,7 @@ public class IEFluid extends Fluid
 		{
 			if(stack==null || stack.tag==null)
 				return super.getLocalizedName(stack);
-			return net.minecraft.util.text.translation.I18n.translateToLocal(PotionUtils.getPotionTypeFromNBT(stack.tag).getNamePrefixed("potion.effect."));
+			return I18n.translateToLocal(PotionUtils.getPotionTypeFromNBT(stack.tag).getNamePrefixed("potion.effect."));
 		}
 
 		@Override
@@ -101,7 +102,7 @@ public class IEFluid extends Fluid
 				buf.writeNBTTagCompoundToBuffer(fs.writeToNBT(new NBTTagCompound()));
 		}
 		@Override
-		public Optional<FluidStack> read(PacketBuffer buf) throws java.io.IOException
+		public Optional<FluidStack> read(PacketBuffer buf) throws IOException
 		{
 			FluidStack fs = !buf.readBoolean()?null : FluidStack.loadFluidStackFromNBT(buf.readNBTTagCompoundFromBuffer());
 			return Optional.fromNullable(fs);
