@@ -128,6 +128,7 @@ tile.immersiveengineering.metalDecoration2.aluminum_post.name=Aluminium Post
 tile.immersiveengineering.metalDecoration2.aluminum_wallmount.name=Aluminium Wallmount
 tile.immersiveengineering.metalDecoration2.lantern.name=Lantern
 tile.immersiveengineering.metalDecoration2.razor_wire.name=Razor Wire
+tile.immersiveengineering.metalDecoration2.toolbox.name=Engineer's Toolbox
 
 tile.immersiveengineering.connector.connector_lv.name=LV Wire Connector
 tile.immersiveengineering.connector.relay_lv.name=LV Wire Relay

@@ -427,6 +427,7 @@ public class IEContent
 
 		registerTile(TileEntityLantern.class);
 		registerTile(TileEntityRazorWire.class);
+		registerTile(TileEntityToolbox.class);
 
 		registerTile(TileEntityConnectorLV.class);
 		registerTile(TileEntityRelayLV.class);
@@ -448,6 +449,7 @@ public class IEContent
 		registerTile(TileEntityCapacitorCreative.class);
 		registerTile(TileEntityMetalBarrel.class);
 		registerTile(TileEntityFluidPump.class);
+		registerTile(TileEntityFluidPlacer.class);
 
 		registerTile(TileEntityBlastFurnacePreheater.class);
 		registerTile(TileEntityFurnaceHeater.class);

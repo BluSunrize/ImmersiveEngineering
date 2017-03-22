@@ -11,6 +11,7 @@
 - added Chemthrower compatability for ThermalFoundation fluids
 - added carpet, quarter and threequarter thicknesses for Concrete to make the fluid dry to more reasonable levels
 - added a toggleable option to the Mixer to output all fluids instead of just the bottom one
+- added placeable Toolboxes
 - changed Razorwire to render extended wooden boards when stacked
 - changed the Conductive debuff to apply to Teslacoil and Electro-Razorwire damage
 - changed metal plates and Sheetmetal to be craftable for any IE-used metal
@@ -33,7 +34,7 @@
 - fixed the Potion fluid not having textures (thanks Malte)
 - fixed ConcurrentModificationException on Crafttweaker reloads (thanks Malte)
 - fixed the Mixer not working when its internal tank is filled (thanks Malte)
-- Translations Added/Updated: ru_RU (lex1975) (this time for real, since I forgot it last time)
+- Translations Added/Updated: ru_RU (lex1975) (this time for real, since I forgot it last time), zh_TW (xaxa123)
 
 #####Version 0.10-57 - BUILT
 - added RazorWire! It pricks and slows, and you can electrify it.
