@@ -115,6 +115,9 @@
 			},
 			"razor_wire": {
 				"model": "immersiveengineering:smartmodel/conn_razorWire"
+			},
+			"toolbox": {
+				"model": "immersiveengineering:toolbox.obj"
 			}
 		},
 		"facing":
