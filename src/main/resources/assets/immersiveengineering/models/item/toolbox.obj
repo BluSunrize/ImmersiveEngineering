@@ -1,5 +1,6 @@
 # Model created by BluSunrize
 mtllib toolbox.mtl
+usemtl toolbox
 
 o cube
 v -0.343750 -0.250000 -0.281250
@@ -281,7 +282,6 @@ vt 0.421875 0.734375
 vt 0.078125 0.734375
 vt 0.437500 0.703125
 vt 0.062500 0.703125
-usemtl toolbox
 f 38/1 44/2 4/3 12/4
 f 6/5 7/6 31/7 30/8
 f 12/4 4/9 3/10 13/11

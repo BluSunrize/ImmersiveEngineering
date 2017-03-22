@@ -1147,6 +1147,8 @@ public class ClientProxy extends CommonProxy
 					gui = new GuiFluidSorter(player.inventory, (TileEntityFluidSorter) te);
 				if(ID==Lib.GUIID_Belljar && te instanceof TileEntityBelljar)
 					gui = new GuiBelljar(player.inventory, (TileEntityBelljar) te);
+				if(ID==Lib.GUIID_ToolboxBlock && te instanceof TileEntityToolbox)
+					gui = new GuiToolboxBlock(player.inventory, (TileEntityToolbox) te);
 				if(gui!=null)
 					((IGuiTile)te).onGuiOpened(player, true);
 				return gui;
