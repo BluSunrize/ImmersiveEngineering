@@ -160,25 +160,29 @@ public class TileEntityMixer extends TileEntityMultiblockMetal<TileEntityMixer,M
 							}
 						}
 					}
-				}
-				else
-				{
-					int totalOut = 0;
-					for(FluidStack fs : this.tank.fluids)
-						if(fs!=null)
+					else
+					{
+						int totalOut = 0;
+						Iterator<FluidStack> it = this.tank.fluids.iterator();
+						while (it.hasNext())
 						{
-							FluidStack out = Utils.copyFluidStackWithAmount(fs, Math.min(fs.amount, 80-totalOut), false);
-							int accepted = output.fill(out, false);
-							if(accepted > 0)
+							FluidStack fs = it.next();
+							if(fs!=null)
 							{
-								int drained = output.fill(Utils.copyFluidStackWithAmount(out, Math.min(out.amount, accepted), false), true);
-								this.tank.drain(drained, true);
-								totalOut += accepted;
-								update = true;
+								FluidStack out = Utils.copyFluidStackWithAmount(fs, Math.min(fs.amount, 80-totalOut), false);
+								int accepted = output.fill(out, false);
+								if(accepted > 0)
+								{
+									int drained = output.fill(Utils.copyFluidStackWithAmount(out, Math.min(out.amount, accepted), false), true);
+									MultiFluidTank.drain(drained, fs, it, true);
+									totalOut += drained;
+									update = true;
+								}
+								if(totalOut>=80)
+									break;
 							}
-							if(totalOut>=80)
-								break;
 						}
+					}
 				}
 			}
 			if(update)

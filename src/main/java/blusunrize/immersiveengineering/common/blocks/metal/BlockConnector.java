@@ -129,7 +129,7 @@ public class BlockConnector extends BlockIETileProvider<BlockTypes_Connector>
 				connector.getWorld().setBlockToAir(pos);
 				return;
 			}
-			connector.wireNetwork.updateValues();
+			connector.getNetwork().updateValues();
 		}
 	}
 
