@@ -7,9 +7,10 @@ import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler;
 import blusunrize.immersiveengineering.api.energy.wires.ImmersiveNetHandler.Connection;
 import blusunrize.immersiveengineering.api.energy.wires.TileEntityImmersiveConnectable;
 import blusunrize.immersiveengineering.api.energy.wires.WireType;
+import blusunrize.immersiveengineering.api.energy.wires.redstone.IRedstoneConnector;
+import blusunrize.immersiveengineering.api.energy.wires.redstone.RedstoneWireNetwork;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
-import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.I18n;
@@ -17,29 +18,21 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
-
-public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable implements ITickable, IDirectionalTile, IRedstoneOutput, IHammerInteraction, IBlockBounds, IBlockOverlayText, IOBJModelCallback<IBlockState>
+public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable implements ITickable, IDirectionalTile, IRedstoneOutput, IHammerInteraction, IBlockBounds, IBlockOverlayText, IOBJModelCallback<IBlockState>, IRedstoneConnector
 {
 	public EnumFacing facing = EnumFacing.DOWN;
 	public int ioMode = 0; // 0 - input, 1 -output
 	public int redstoneChannel = 0;
 
-	public RedstoneWireNetwork wireNetwork = new RedstoneWireNetwork().add(this);
+	private RedstoneWireNetwork wireNetwork = new RedstoneWireNetwork().add(this);
 	private boolean loaded = false;
 
 	@Override
@@ -74,9 +67,41 @@ public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable 
 		return false;
 	}
 
+	@Override
+	public void setNetwork(RedstoneWireNetwork net)
+	{
+		wireNetwork = net;
+	}
+
+	@Override
+	public RedstoneWireNetwork getNetwork()
+	{
+		return wireNetwork;
+	}
+
+	@Override
+	public void onChange()
+	{
+		if (!isInvalid())
+		{
+			markContainingBlockForUpdate(null);
+			markBlockForUpdate(pos.offset(facing), null);
+		}
+	}
+
 	public boolean isRSInput()
 	{
 		return ioMode == 0;
+	}
+
+	@Override
+	public void updateInput(byte[] signals)
+	{
+		if (isRSInput())
+		{
+			int val = worldObj.isBlockIndirectlyGettingPowered(pos);
+			signals[redstoneChannel] = (byte) Math.max(val, signals[redstoneChannel]);
+		}
 	}
 
 	public boolean isRSOutput()
@@ -94,7 +119,7 @@ public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable 
 			ioMode = ioMode == 0 ? 1 : 0;
 		markDirty();
 		wireNetwork.updateValues();
-		wireNetwork.notifyOfChange(this);
+		onChange();
 		worldObj.addBlockEvent(getPos(), this.getBlockType(), 254, 0);
 		return true;
 	}
@@ -282,126 +307,4 @@ public class TileEntityConnectorRedstone extends TileEntityImmersiveConnectable 
 		return false;
 	}
 
-	static class RedstoneWireNetwork
-	{
-		public byte[] channelValues = new byte[16];
-		public List<WeakReference<TileEntityConnectorRedstone>> connectors = new ArrayList();
-
-		public RedstoneWireNetwork add(TileEntityConnectorRedstone connector)
-		{
-			connectors.add(new WeakReference<>(connector));
-			return this;
-		}
-
-		public void mergeNetwork(RedstoneWireNetwork wireNetwork)
-		{
-			for(WeakReference<TileEntityConnectorRedstone> connectorRef : wireNetwork.connectors)
-			{
-				TileEntityConnectorRedstone connector = connectorRef.get();
-				if(connector != null)
-					connector.wireNetwork = add(connector);
-			}
-			for(WeakReference<TileEntityConnectorRedstone> connectorRef : wireNetwork.connectors)
-			{
-				TileEntityConnectorRedstone connector = connectorRef.get();
-				if(connector != null)
-					notifyOfChange(connector);
-			}
-		}
-
-		public void removeFromNetwork(TileEntityConnectorRedstone removedConnector)
-		{
-			BlockPos removedCC = Utils.toCC(removedConnector);
-			for(WeakReference<TileEntityConnectorRedstone> connectorRef : connectors)
-			{
-				TileEntityConnectorRedstone connector = connectorRef.get();
-				if(connector != null)
-					connector.wireNetwork = new RedstoneWireNetwork().add(connector);
-			}
-			for(WeakReference<TileEntityConnectorRedstone> connectorRef : connectors)
-			{
-				TileEntityConnectorRedstone connector = connectorRef.get();
-				if(connector != null)
-				{
-					BlockPos conCC = Utils.toCC(connector);
-					Set<ImmersiveNetHandler.Connection> connections = ImmersiveNetHandler.INSTANCE.getConnections(connector.getWorld(), conCC);
-					if(connections != null)
-						for(ImmersiveNetHandler.Connection connection : connections)
-						{
-							BlockPos node = connection.start;
-							if(node.equals(conCC))
-								node = connection.end;
-							if(!node.equals(removedCC))
-							{
-								TileEntity nodeTile = connector.getWorld().getTileEntity(node);
-								if(nodeTile instanceof TileEntityConnectorRedstone)
-									if(connector.wireNetwork != ((TileEntityConnectorRedstone) nodeTile).wireNetwork)
-										connector.wireNetwork.mergeNetwork(((TileEntityConnectorRedstone) nodeTile).wireNetwork);
-							}
-						}
-					if(!connector.isInvalid())
-						notifyOfChange(connector);
-				}
-			}
-		}
-
-		public void updateValues()
-		{
-			byte[] oldValues = channelValues;
-			channelValues = new byte[16];
-			for(WeakReference<TileEntityConnectorRedstone> connectorRef : connectors)
-			{
-				TileEntityConnectorRedstone connector = connectorRef.get();
-				if(connector != null && connector.isRSInput())
-				{
-//						if (ProjectRedAPI.transmissionAPI != null)
-//						{
-//							for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
-//							{
-//								byte[] values = ProjectRedAPI.transmissionAPI.getBundledInput(connector.getWorldObj(), connector.xCoord, connector.yCoord, connector.zCoord, direction.getOpposite().ordinal());
-//								if (values != null)
-//								{
-//									for (int i = 0; i < values.length; i++)
-//									{
-//										channelValues[i] = (byte) Math.max((values[i] & 255) / 16f, channelValues[i]);
-//									}
-//								}
-//							}
-//						}
-//						if (Loader.isModLoaded("ComputerCraft")) CCCompat.updateRedstoneValues(this, connector);
-					int val = connector.getWorld().isBlockIndirectlyGettingPowered(connector.getPos());
-					channelValues[connector.redstoneChannel] = (byte) Math.max(val, channelValues[connector.redstoneChannel]);
-				}
-			}
-			if(!Arrays.equals(oldValues, channelValues))
-				for(WeakReference<TileEntityConnectorRedstone> connectorRef : connectors)
-				{
-					TileEntityConnectorRedstone connector = connectorRef.get();
-					if(connector != null)
-						notifyOfChange(connector);
-				}
-		}
-
-		public int getPowerOutput(int redstoneChannel)
-		{
-			return channelValues[redstoneChannel];
-		}
-
-		public void notifyOfChange(TileEntityConnectorRedstone tile)
-		{
-			if(tile.getWorld().isBlockLoaded(tile.getPos()))
-			{
-				tile.markContainingBlockForUpdate(null);
-				tile.markBlockForUpdate(tile.getPos().offset(tile.facing), null);
-			}
-		}
-
-		public byte[] getByteValues()
-		{
-			byte[] values = new byte[16];
-			for(int i = 0; i < values.length; i++)
-				values[i] = (byte) (channelValues[i] * 16);
-			return values;
-		}
 	}
-}
