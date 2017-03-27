@@ -60,11 +60,9 @@ tile.immersiveengineering.stoneDevice.blast_furnace_advanced.name=強化高爐
 tile.immersiveengineering.treatedWood.horizontal.name=防腐木板
 tile.immersiveengineering.treatedWood.vertical.name=防腐木板
 tile.immersiveengineering.treatedWood.packaged.name=防腐木板
-
 tile.immersiveengineering.treatedWoodSlab.horizontal.name=防腐木台階
 tile.immersiveengineering.treatedWoodSlab.vertical.name=防腐木台階
 tile.immersiveengineering.treatedWoodSlab.packaged.name=防腐木台階
-
 tile.immersiveengineering.treatedWoodStairs0.name=防腐木樓梯
 tile.immersiveengineering.treatedWoodStairs1.name=防腐木樓梯
 tile.immersiveengineering.treatedWoodStairs2.name=防腐木樓梯
@@ -1352,7 +1350,6 @@ ie.manual.entry.excavator.name=斗輪式挖掘機
 ie.manual.entry.excavator.subtext=比矮人更為高效
 ie.manual.entry.excavator0=斗輪式挖掘機可謂是現代機械的巔峰之作.它能夠將正常挖礦採集不到的<link;minerals;§o§n礦物§r;0>從礦脈中挖掘出來.作為代價,鬥輪式挖掘機擁有極為複雜的結構,並且需要消耗<config;i;excavator_consumption>Flux/t來維持運作.
 ie.manual.entry.excavator1=結構由兩部分組成：第一頁中的機器和前一頁展示的鬥輪,它正好能夠嵌入機器的“吊帶”位置.能量輸入端在機器的側面,後面添加了紅石控制面板以及物品輸出口.<br>當挖掘機開採礦物時,礦脈的範圍會緩慢減小,不過一個礦脈能夠支撐<config;i;excavator_depletion_days>天的連續開採.
-
 
 ie.manual.category.computers.name=電腦控制支持
 
