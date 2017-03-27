@@ -523,7 +523,6 @@ material.hemp.name=大麻纖維
 modifier.thermalinversion.name=熱力反轉
 modifier.thermalinversion.desc=§o冰與火！§r\n在熱的環境中攻擊會凍傷敵人；在冷的環境中攻擊會灼傷敵人。
 #BOTANIA COMPAT
-
 item.immersiveengineering.bullet.terrasteel.name=葉綠彈
 ie.manual.entry.bullets_terrasteel=§l葉綠§l彈§r使用“特種子彈”藍圖和魔力金屬“泰拉鋼”製作,這讓它們能夠自動尋找並跟踪目標.
 #BLOODMAGIC COMPAT
