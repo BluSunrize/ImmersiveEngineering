@@ -12,7 +12,8 @@ public enum BlockTypes_MetalDecoration2 implements IStringSerializable, BlockIEB
 	ALUMINUM_POST,
 	ALUMINUM_WALLMOUNT,
 	LANTERN,
-	RAZOR_WIRE;
+	RAZOR_WIRE,
+	TOOLBOX;
 
 	@Override
 	public String getName()
@@ -27,6 +28,6 @@ public enum BlockTypes_MetalDecoration2 implements IStringSerializable, BlockIEB
 	@Override
 	public boolean listForCreative()
 	{
-		return true;
+		return this!=TOOLBOX;
 	}
 }

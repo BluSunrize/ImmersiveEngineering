@@ -138,6 +138,18 @@ public class MultiFluidTank implements IFluidTank, IFluidHandler
 		return null;
 	}
 
+	public static FluidStack drain(int remove, FluidStack removeFrom, Iterator<FluidStack> removeIt, boolean doDrain)
+	{
+		int amount = Math.min(remove, removeFrom.amount);
+		if(doDrain)
+		{
+			removeFrom.amount-=amount;
+			if(removeFrom.amount<=0)
+			removeIt.remove();
+		}
+		return Utils.copyFluidStackWithAmount(removeFrom, amount, true);
+	}
+
 	@Nullable
 	@Override
 	public FluidStack drain(int maxDrain, boolean doDrain)

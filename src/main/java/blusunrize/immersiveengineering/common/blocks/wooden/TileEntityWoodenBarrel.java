@@ -53,7 +53,7 @@ public class TileEntityWoodenBarrel extends TileEntityIEBase implements ITickabl
 				if(te!=null && te.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, f.getOpposite()))
 				{
 					IFluidHandler handler = te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, f.getOpposite());
-					int accepted = handler.fill(new FluidStack(tank.getFluid().getFluid(), out), false);
+					int accepted = handler.fill(Utils.copyFluidStackWithAmount(tank.getFluid(), out, false), false);
 					FluidStack drained = this.tank.drain(accepted, true);
 					handler.fill(drained, true);
 					update = true;

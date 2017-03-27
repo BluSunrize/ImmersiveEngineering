@@ -31,7 +31,6 @@ import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemHandlerHelper;
 
 import java.util.*;
 
@@ -44,6 +43,7 @@ public class TileEntityMixer extends TileEntityMultiblockMetal<TileEntityMixer,M
 	public MultiFluidTank tank = new MultiFluidTank(8000);
 	public ItemStack[] inventory = new ItemStack[8];
 	public float animation_agitator = 0;
+	public boolean outputAll;
 
 	@Override
 	public void readCustomNBT(NBTTagCompound nbt, boolean descPacket)
@@ -52,6 +52,7 @@ public class TileEntityMixer extends TileEntityMultiblockMetal<TileEntityMixer,M
 		tank.readFromNBT(nbt.getCompoundTag("tank"));
 		if(!descPacket)
 			inventory = Utils.readInventory(nbt.getTagList("inventory", 10), 8);
+		outputAll = nbt.getBoolean("outputAll");
 	}
 	@Override
 	public void writeCustomNBT(NBTTagCompound nbt, boolean descPacket)
@@ -61,6 +62,15 @@ public class TileEntityMixer extends TileEntityMultiblockMetal<TileEntityMixer,M
 		nbt.setTag("tank", tankTag);
 		if(!descPacket)
 			nbt.setTag("inventory", Utils.writeInventory(inventory));
+		nbt.setBoolean("outputAll", outputAll);
+	}
+
+	@Override
+	public void receiveMessageFromClient(NBTTagCompound message)
+	{
+		super.receiveMessageFromClient(message);
+		if(message.hasKey("outputAll"))
+			outputAll = message.getBoolean("outputAll");
 	}
 
 	@Override
@@ -129,27 +139,52 @@ public class TileEntityMixer extends TileEntityMultiblockMetal<TileEntityMixer,M
 				}
 			}
 
-			if(this.tank.getFluidTypes()>1 || !foundRecipe)
+			if(this.tank.getFluidTypes()>1 || !foundRecipe || outputAll)
 			{
-				FluidStack inTank = this.tank.getFluid();
-				if(inTank!=null)
+				BlockPos outputPos = this.getPos().down().offset(facing.getOpposite(), 2);
+				IFluidHandler output = FluidUtil.getFluidHandler(worldObj, outputPos, facing);
+				if(output!=null)
 				{
-					FluidStack out = Utils.copyFluidStackWithAmount(inTank, Math.min(inTank.amount, 80), false);
-					BlockPos outputPos = this.getPos().down().offset(facing.getOpposite(), 2);
-					IFluidHandler output = FluidUtil.getFluidHandler(worldObj, outputPos, facing);
-					if(output!=null)
+					if(!outputAll)
 					{
-						int accepted = output.fill(out, false);
-						if(accepted > 0)
+						FluidStack inTank = this.tank.getFluid();
+						if(inTank!=null)
 						{
-							int drained = output.fill(Utils.copyFluidStackWithAmount(out, Math.min(out.amount, accepted), false), true);
-							this.tank.drain(drained, true);
-							update = true;
+							FluidStack out = Utils.copyFluidStackWithAmount(inTank, Math.min(inTank.amount, 80), false);
+							int accepted = output.fill(out, false);
+							if(accepted > 0)
+							{
+								int drained = output.fill(Utils.copyFluidStackWithAmount(out, Math.min(out.amount, accepted), false), true);
+								this.tank.drain(drained, true);
+								update = true;
+							}
+						}
+					}
+					else
+					{
+						int totalOut = 0;
+						Iterator<FluidStack> it = this.tank.fluids.iterator();
+						while (it.hasNext())
+						{
+							FluidStack fs = it.next();
+							if(fs!=null)
+							{
+								FluidStack out = Utils.copyFluidStackWithAmount(fs, Math.min(fs.amount, 80-totalOut), false);
+								int accepted = output.fill(out, false);
+								if(accepted > 0)
+								{
+									int drained = output.fill(Utils.copyFluidStackWithAmount(out, Math.min(out.amount, accepted), false), true);
+									MultiFluidTank.drain(drained, fs, it, true);
+									totalOut += drained;
+									update = true;
+								}
+								if(totalOut>=80)
+									break;
+							}
 						}
 					}
 				}
 			}
-
 			if(update)
 			{
 				this.markDirty();

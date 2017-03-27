@@ -103,6 +103,8 @@ public class BlockMetalDecoration2 extends BlockIETileProvider<BlockTypes_MetalD
 				return new TileEntityLantern();
 			case RAZOR_WIRE:
 				return new TileEntityRazorWire();
+			case TOOLBOX:
+				return new TileEntityToolbox();
 		}
 		return null;
 	}
