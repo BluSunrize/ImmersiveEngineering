@@ -11,6 +11,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
@@ -41,6 +42,8 @@ public class BlockStoneDevice extends BlockIEMultiblock<BlockTypes_StoneDevices>
 	private static final AxisAlignedBB AABB_CARPET = new AxisAlignedBB(0,0,0, 1,.0625,1);
 	private static final AxisAlignedBB AABB_QUARTER = new AxisAlignedBB(0,0,0, 1,.25,1);
 	private static final AxisAlignedBB AABB_THREEQUARTER = new AxisAlignedBB(0,0,0, 1,.75,1);
+	private static final AxisAlignedBB AABB_CORESAMPLE_X = new AxisAlignedBB(0,0,.28125f, 1,1,.71875f);
+	private static final AxisAlignedBB AABB_CORESAMPLE_Z = new AxisAlignedBB(.28125f,0,0, .71875f,1,1);
 	@Override
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos)
 	{
@@ -51,6 +54,12 @@ public class BlockStoneDevice extends BlockIEMultiblock<BlockTypes_StoneDevices>
 			return AABB_QUARTER;
 		else if(meta==BlockTypes_StoneDevices.CONCRETE_THREEQUARTER)
 			return AABB_THREEQUARTER;
+		else if(meta==BlockTypes_StoneDevices.CORESAMPLE)
+		{
+			TileEntity te = world.getTileEntity(pos);
+			if(te!=null && te instanceof TileEntityCoresample)
+				return ((TileEntityCoresample)te).facing.getAxis()==Axis.Z?AABB_CORESAMPLE_Z:AABB_CORESAMPLE_X;
+		}
 		return super.getBoundingBox(state, world, pos);
 	}
 
@@ -71,6 +80,8 @@ public class BlockStoneDevice extends BlockIEMultiblock<BlockTypes_StoneDevices>
 				return new TileEntityBlastFurnace();
 			case 2:
 				return new TileEntityBlastFurnaceAdvanced();
+			case 6:
+				return new TileEntityCoresample();
 		}
 		return null;
 	}

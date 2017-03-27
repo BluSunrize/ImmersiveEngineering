@@ -18,6 +18,8 @@ import blusunrize.immersiveengineering.common.Config.IEConfig;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedSelectionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
+import blusunrize.immersiveengineering.common.blocks.metal.BlockTypes_MetalDevice1;
+import blusunrize.immersiveengineering.common.blocks.metal.TileEntitySampleDrill;
 import blusunrize.immersiveengineering.common.blocks.wooden.TileEntityTurntable;
 import blusunrize.immersiveengineering.common.gui.ContainerRevolver;
 import blusunrize.immersiveengineering.common.items.*;
@@ -58,6 +60,7 @@ import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
@@ -871,7 +874,6 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 					drawAdditionalBlockbreak(event.getContext(), event.getPlayer(), event.getPartialTicks(), blocks);
 				}
 			}
-
 		}
 	}
 
@@ -972,6 +974,70 @@ public class ClientEventHandler implements IResourceManagerReloadListener
 		PlayerControllerMP controllerMP = ClientUtils.mc().playerController;
 		if(controllerMP.isHittingBlock)
 			ClientUtils.drawBlockDamageTexture(ClientUtils.tes(), ClientUtils.tes().getBuffer(), player, partialTicks, player.worldObj, blocks);
+	}
+
+	@SubscribeEvent
+	public void onRenderWorldLastEvent(RenderWorldLastEvent event)
+	{
+		//Overlay renderer for the sample drill
+		boolean chunkBorders = false;
+		for(EnumHand hand : EnumHand.values())
+			if(OreDictionary.itemMatches(new ItemStack(IEContent.blockMetalDevice1,1, BlockTypes_MetalDevice1.SAMPLE_DRILL.getMeta()), ClientUtils.mc().thePlayer.getHeldItem(hand),true))
+			{
+				chunkBorders = true;
+				break;
+			}
+		if(!chunkBorders && ClientUtils.mc().objectMouseOver.typeOfHit==Type.BLOCK && ClientUtils.mc().theWorld.getTileEntity(ClientUtils.mc().objectMouseOver.getBlockPos()) instanceof TileEntitySampleDrill)
+			chunkBorders = true;
+
+		if(chunkBorders)
+		{
+			EntityPlayer player = ClientUtils.mc().thePlayer;
+			double px = TileEntityRendererDispatcher.staticPlayerX;
+			double py = TileEntityRendererDispatcher.staticPlayerY;
+			double pz = TileEntityRendererDispatcher.staticPlayerZ;
+			int chunkX = (int)player.posX>>4<<4;
+			int chunkZ = (int)player.posZ>>4<<4;
+			int y = Math.min((int)player.posY-2,player.getEntityWorld().getChunkFromBlockCoords(new BlockPos(player.posX,0,player.posZ)).getLowestHeight());
+			float h = (float)Math.max(32, player.posY-y+4);
+			Tessellator tessellator = Tessellator.getInstance();
+			VertexBuffer vertexbuffer = tessellator.getBuffer();
+
+			GlStateManager.disableTexture2D();
+			GlStateManager.enableBlend();
+			GlStateManager.disableCull();
+			GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+			GlStateManager.shadeModel(GL11.GL_SMOOTH);
+			float r = Lib.COLOUR_F_ImmersiveOrange[0];
+			float g = Lib.COLOUR_F_ImmersiveOrange[1];
+			float b = Lib.COLOUR_F_ImmersiveOrange[2];
+			vertexbuffer.setTranslation(chunkX-px, y+2-py, chunkZ-pz);
+			GlStateManager.glLineWidth(5f);
+			vertexbuffer.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
+			vertexbuffer.pos( 0,0, 0).color(r,g,b,.375f).endVertex();
+			vertexbuffer.pos( 0,h, 0).color(r,g,b,.375f).endVertex();
+			vertexbuffer.pos(16,0, 0).color(r,g,b,.375f).endVertex();
+			vertexbuffer.pos(16,h, 0).color(r,g,b,.375f).endVertex();
+			vertexbuffer.pos(16,0,16).color(r,g,b,.375f).endVertex();
+			vertexbuffer.pos(16,h,16).color(r,g,b,.375f).endVertex();
+			vertexbuffer.pos( 0,0,16).color(r,g,b,.375f).endVertex();
+			vertexbuffer.pos( 0,h,16).color(r,g,b,.375f).endVertex();
+
+			vertexbuffer.pos( 0,2, 0).color(r,g,b,.375f).endVertex();
+			vertexbuffer.pos(16,2, 0).color(r,g,b,.375f).endVertex();
+			vertexbuffer.pos( 0,2, 0).color(r,g,b,.375f).endVertex();
+			vertexbuffer.pos( 0,2,16).color(r,g,b,.375f).endVertex();
+			vertexbuffer.pos( 0,2,16).color(r,g,b,.375f).endVertex();
+			vertexbuffer.pos(16,2,16).color(r,g,b,.375f).endVertex();
+			vertexbuffer.pos(16,2, 0).color(r,g,b,.375f).endVertex();
+			vertexbuffer.pos(16,2,16).color(r,g,b,.375f).endVertex();
+			tessellator.draw();
+			vertexbuffer.setTranslation(0, 0, 0);
+			GlStateManager.shadeModel(GL11.GL_FLAT);
+			GlStateManager.enableCull();
+			GlStateManager.disableBlend();
+			GlStateManager.enableTexture2D();
+		}
 	}
 
 	//	static void renderBoundingBox(AxisAlignedBB aabb, double offsetX, double offsetY, double offsetZ, float expand)

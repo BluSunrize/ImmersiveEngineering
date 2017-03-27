@@ -412,6 +412,7 @@ public class IEContent
 		registerTile(TileEntityCokeOven.class);
 		registerTile(TileEntityBlastFurnace.class);
 		registerTile(TileEntityBlastFurnaceAdvanced.class);
+		registerTile(TileEntityCoresample.class);
 
 		registerTile(TileEntityWoodenCrate.class);
 		registerTile(TileEntityWoodenBarrel.class);

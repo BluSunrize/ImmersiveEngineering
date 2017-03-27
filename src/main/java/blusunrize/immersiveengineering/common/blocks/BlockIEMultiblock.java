@@ -56,13 +56,16 @@ public abstract class BlockIEMultiblock<E extends Enum<E> & BlockIEBase.IBlockEn
 	@Override
 	public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player)
 	{
-		return getOriginalBlock(world, pos);
+		ItemStack stack = getOriginalBlock(world, pos);
+		if(stack!=null)
+			return stack;
+		return super.getPickBlock(state, target, world, pos, player);
 	}
 	public ItemStack getOriginalBlock(World world, BlockPos pos)
 	{
 		TileEntity te = world.getTileEntity(pos);
 		if(te instanceof TileEntityMultiblockPart)
 			return ((TileEntityMultiblockPart)te).getOriginalBlock();
-		return new ItemStack(this, 1, this.getMetaFromState(world.getBlockState(pos)));
+		return null;
 	}
 }

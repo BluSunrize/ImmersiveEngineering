@@ -55,6 +55,7 @@ tile.immersiveengineering.stoneDevice.blast_furnace_advanced.name=Improved Blast
 tile.immersiveengineering.stoneDevice.concrete_sheet.name=Concrete Sheet
 tile.immersiveengineering.stoneDevice.concrete_quarter.name=Concrete Panel
 tile.immersiveengineering.stoneDevice.concrete_threequarter.name=Concrete Chunk
+tile.immersiveengineering.stoneDevice.coresample.name=Core Sample
 
 tile.immersiveengineering.treatedWood.horizontal.name=Treated Wood Planks
 tile.immersiveengineering.treatedWood.vertical.name=Treated Wood Planks
@@ -621,6 +622,7 @@ chat.immersiveengineering.info.coresample.yield=Expected Yield: %1$s Ores
 chat.immersiveengineering.info.coresample.infinite=Unlimited Yield
 chat.immersiveengineering.info.coresample.timestamp=Sample Taken: %1$s
 chat.immersiveengineering.info.coresample.noTimestamp=Sample Taken: %1$s ago
+chat.immersiveengineering.info.coresample.mapFail=The sample is not within the borders of this map
 
 desc.immersiveengineering.info.reqMaterial=Required Materials:
 desc.immersiveengineering.info.chance=Chance:
@@ -1045,6 +1047,7 @@ ie.manual.entry.earmuffs1=Placing the Ear Defenders in the <link;workbench;§o§
 ie.manual.entry.toolbox.name=Engineer's Toolbox
 ie.manual.entry.toolbox.subtext=The Engineer's Handbag
 ie.manual.entry.toolbox0=The toolbox is a simple, carried container, used to store all the essentials of an engineer! Hovering over the relevant slots tells you what they will accept.<br>'Food' and 'Anything' are quite self-explanatory, 'Wiring' slots are for coils, connectors and similar items, and 'Tools' will store any IE tool as well as picks, shovels and axes!
+ie.manual.entry.toolbox1=Sneaking and right-clicking allows the toolbox to be placed as a block. While placed, it's inventory can still be accessed with a rightclick. Sneaking and right-clicking again will pick the toolbox up.
 
 ie.manual.entry.graphite.name=Graphite
 ie.manual.entry.graphite.subtext=Coal stuff
@@ -1359,7 +1362,7 @@ ie.manual.entry.minerals.name=Mineral Deposits
 ie.manual.entry.minerals.subtext=Oresome
 ie.manual.entry.minerals0=The deposits of Ore found around your world are nothing new to you. What you have so far left out of consideration though are mineral veins, which contain a mix of different ores. Due to their wide and thin spread, the average miner can't find them, but a <link;excavator;§o§nspecial §o§nmachine§r> might be able to assist with that.
 ie.manual.entry.minerals1=To find and determine minerals in the world, you will want to craft a Core Sample Drill. Supply the machine with power and rightclick it or use redstone to activate it. It drills into the chunk and extracts a core sample which shows if and what mineral was found and its yield.
-ie.manual.entry.minerals2=The Drill consumes <config;i;coredrill_consumption> Flux/t and takes <config;i;coredrill_time> ticks to fully retrieve and analyse a sample.<br>The following pages list every type of vein and the ores that can be retrieved from them.
+ie.manual.entry.minerals2=The Drill consumes <config;i;coredrill_consumption> Flux/t and takes <config;i;coredrill_time> ticks to fully retrieve and analyse a sample.<br>The sample can also be placed as a block by sneaking and rightclicking. Using a map on the sample block will set a marker for the chunk.<br><br>The following pages list every type of vein and the ores that can be retrieved from them.
 ie.manual.entry.minerals3=%1$s<br>It consists of %2$s.
 ie.manual.entry.mineralsDimValid=§l%1$s§r is a mineral vein that can be found in the %2$s.
 ie.manual.entry.mineralsDimInvalid=§l%1$s§r is a mineral vein that can be found anywhere but in the %2$s.
