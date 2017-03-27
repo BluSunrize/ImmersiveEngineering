@@ -46,6 +46,7 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.*;
 import blusunrize.immersiveengineering.common.blocks.stone.BlockTypes_StoneDecoration;
 import blusunrize.immersiveengineering.common.blocks.stone.TileEntityBlastFurnace;
 import blusunrize.immersiveengineering.common.blocks.stone.TileEntityCokeOven;
+import blusunrize.immersiveengineering.common.blocks.stone.TileEntityCoresample;
 import blusunrize.immersiveengineering.common.blocks.wooden.*;
 import blusunrize.immersiveengineering.common.entities.*;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
@@ -407,6 +408,9 @@ public class ClientProxy extends CommonProxy
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityWindmill.class, new TileRenderWindmill());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityWindmillAdvanced.class, new TileRenderWindmill());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityModWorkbench.class, new TileRenderWorkbench());
+		//STONE
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityCoresample.class, new TileRenderCoresample());
+
 		//		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityWallmount.class, new TileRenderWallmount());
 		//
 		//		RenderingRegistry.registerBlockHandler(new BlockRenderWoodenDecoration());
@@ -695,7 +699,7 @@ public class ClientProxy extends CommonProxy
 				new ManualPages.CraftingMulti(ManualHelper.getManual(), "earmuffs1",(Object[])new PositionedItemStack[][]{
 						new PositionedItemStack[]{new PositionedItemStack(new ItemStack(IEContent.itemEarmuffs),24,0), new PositionedItemStack(new ItemStack(Items.DYE,1,OreDictionary.WILDCARD_VALUE), 42, 0), new PositionedItemStack(tempItemList,78,0)},
 						new PositionedItemStack[]{new PositionedItemStack(new ItemStack(IEContent.itemEarmuffs),24,0), new PositionedItemStack(Lists.newArrayList(new ItemStack(Items.LEATHER_HELMET),new ItemStack(Items.IRON_HELMET)), 42, 0), new PositionedItemStack(Lists.newArrayList(ItemNBTHelper.stackWithData(new ItemStack(Items.LEATHER_HELMET),"IE:Earmuffs",true),ItemNBTHelper.stackWithData(new ItemStack(Items.IRON_HELMET),"IE:Earmuffs",true)),78,0)}}));
-		ManualHelper.addEntry("toolbox", ManualHelper.CAT_MACHINES, new ManualPages.Crafting(ManualHelper.getManual(), "toolbox0", new ItemStack(IEContent.itemToolbox)));
+		ManualHelper.addEntry("toolbox", ManualHelper.CAT_MACHINES, new ManualPages.Crafting(ManualHelper.getManual(), "toolbox0", new ItemStack(IEContent.itemToolbox)), new ManualPages.Text(ManualHelper.getManual(), "toolbox1"));
 		ManualHelper.addEntry("drill", ManualHelper.CAT_MACHINES,
 				new ManualPages.CraftingMulti(ManualHelper.getManual(), "drill0", new ItemStack(IEContent.itemDrill,1,0), new ItemStack(IEContent.itemMaterial,1,9)),
 				new ManualPages.Crafting(ManualHelper.getManual(), "drill1", new ItemStack(IEContent.itemDrillhead,1,0)),

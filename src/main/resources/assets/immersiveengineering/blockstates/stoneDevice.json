@@ -44,6 +44,7 @@
 		"inventory,type=concrete_threequarter": [{
 			"model": "immersiveengineering:ieThreeQuarterBlock",
 			"textures": { "texture": "immersiveengineering:blocks/stoneDecoration_concrete", "particle": "immersiveengineering:blocks/stoneDecoration_concrete" }}],
+		"inventory,type=coresample": [{"model": "immersiveengineering:coresample.obj"}],
 		"type":
 		{
 			"coke_oven": {"textures": {
@@ -74,6 +75,9 @@
 			"concrete_threequarter": {
 				"model": "immersiveengineering:ieThreeQuarterBlock",
 				"textures": { "texture": "immersiveengineering:blocks/stoneDecoration_concrete" }
+			},
+			"coresample": {
+				"model": "immersiveengineering:coresample.obj"
 			}
 		},
 		"facing":

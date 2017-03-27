@@ -86,8 +86,6 @@ public class ModelCoresample implements IBakedModel, IPerspectiveAwareModel
 				}
 				else
 					pixelLength=16;
-				float length = pixelLength/16f;
-
 				TextureAtlasSprite textureStone = ClientUtils.getSprite(new ResourceLocation("blocks/stone"));
 
 				Vector2f[] stoneUVs = {
@@ -97,7 +95,7 @@ public class ModelCoresample implements IBakedModel, IPerspectiveAwareModel
 						new Vector2f(textureStone.getInterpolatedU(16*(wOff+width)),textureStone.getInterpolatedV(16*dOff))};
 
 				putVertexData(new Vector3f(0, -1, 0), new Vector3f[]{new Vector3f(wOff, 0, dOff), new Vector3f(wOff + width, 0, dOff), new Vector3f(wOff + width, 0, dOff + depth), new Vector3f(wOff, 0, dOff + depth)}, stoneUVs, textureStone);
-				putVertexData(new Vector3f(0, 1, 0), new Vector3f[]{new Vector3f(wOff, length, dOff), new Vector3f(wOff, length, dOff + depth), new Vector3f(wOff + width, length, dOff + depth), new Vector3f(wOff + width, length, dOff)}, stoneUVs, textureStone);
+				putVertexData(new Vector3f(0, 1, 0), new Vector3f[]{new Vector3f(wOff, 1, dOff), new Vector3f(wOff, 1, dOff + depth), new Vector3f(wOff + width, 1, dOff + depth), new Vector3f(wOff + width, 1, dOff)}, stoneUVs, textureStone);
 				if(textureOre.isEmpty())
 				{
 					Vector2f[][] uvs = new Vector2f[4][];
@@ -108,10 +106,10 @@ public class ModelCoresample implements IBakedModel, IPerspectiveAwareModel
 								new Vector2f(textureStone.getInterpolatedU((j+1)*4),textureStone.getInterpolatedV(16)),
 								new Vector2f(textureStone.getInterpolatedU((j+1)*4),textureStone.getInterpolatedV(0))};
 
-					putVertexData(new Vector3f(0, 0, -1), new Vector3f[]{new Vector3f(wOff, 0, dOff), new Vector3f(wOff, length, dOff), new Vector3f(wOff + width, length, dOff), new Vector3f(wOff + width, 0, dOff)}, uvs[0], textureStone);
-					putVertexData(new Vector3f(0, 0, 1), new Vector3f[]{new Vector3f(wOff + width, 0, dOff + depth), new Vector3f(wOff + width, length, dOff + depth), new Vector3f(wOff, length, dOff + depth), new Vector3f(wOff, 0, dOff + depth)}, uvs[2], textureStone);
-					putVertexData(new Vector3f(-1, 0, 0), new Vector3f[]{new Vector3f(wOff, 0, dOff + depth), new Vector3f(wOff, length, dOff + depth), new Vector3f(wOff, length, dOff), new Vector3f(wOff, 0, dOff)}, uvs[3], textureStone);
-					putVertexData(new Vector3f(1, 0, 0), new Vector3f[]{new Vector3f(wOff + width, 0, dOff), new Vector3f(wOff + width, length, dOff), new Vector3f(wOff + width, length, dOff + depth), new Vector3f(wOff + width, 0, dOff + depth)}, uvs[1], textureStone);
+					putVertexData(new Vector3f(0, 0, -1), new Vector3f[]{new Vector3f(wOff, 0, dOff), new Vector3f(wOff, 1, dOff), new Vector3f(wOff + width, 1, dOff), new Vector3f(wOff + width, 0, dOff)}, uvs[0], textureStone);
+					putVertexData(new Vector3f(0, 0, 1), new Vector3f[]{new Vector3f(wOff + width, 0, dOff + depth), new Vector3f(wOff + width, 1, dOff + depth), new Vector3f(wOff, 1, dOff + depth), new Vector3f(wOff, 0, dOff + depth)}, uvs[2], textureStone);
+					putVertexData(new Vector3f(-1, 0, 0), new Vector3f[]{new Vector3f(wOff, 0, dOff + depth), new Vector3f(wOff, 1, dOff + depth), new Vector3f(wOff, 1, dOff), new Vector3f(wOff, 0, dOff)}, uvs[3], textureStone);
+					putVertexData(new Vector3f(1, 0, 0), new Vector3f[]{new Vector3f(wOff + width, 0, dOff), new Vector3f(wOff + width, 1, dOff), new Vector3f(wOff + width, 1, dOff + depth), new Vector3f(wOff + width, 0, dOff + depth)}, uvs[1], textureStone);
 				}
 				else
 				{
@@ -249,7 +247,7 @@ public class ModelCoresample implements IBakedModel, IPerspectiveAwareModel
 	public Pair<? extends IBakedModel, Matrix4f> handlePerspective(TransformType cameraTransformType)
 	{
 //		if(transformationMap==null)
-			return  Pair.of(this, TRSRTransformation.identity().getMatrix());
+		return  Pair.of(this, TRSRTransformation.identity().getMatrix());
 //		Matrix4 matrix = transformationMap.containsKey(cameraTransformType)?transformationMap.get(cameraTransformType):new Matrix4();
 //		return Pair.of(this, matrix.toMatrix4f());
 	}
