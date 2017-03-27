@@ -185,7 +185,7 @@ public class TileEntityTurretGun extends TileEntityTurret
 		super.writeCustomNBT(nbt, descPacket);
 		nbt.setBoolean("expelCasings", expelCasings);
 		if(!descPacket)
-			Utils.writeInventory(inventory);
+			nbt.setTag("inventory", Utils.writeInventory(inventory));
 	}
 
 	IItemHandler itemHandler = new IEInventoryHandler(2,this, 0, new boolean[]{true,false},new boolean[]{false,true});
