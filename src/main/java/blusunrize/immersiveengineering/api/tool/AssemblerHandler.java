@@ -68,7 +68,7 @@ public class AssemblerHandler
 		if(o instanceof ItemStack)
 		{
 			ItemStack stack = (ItemStack)o;
-			if(stack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null))
+			if(stack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null) && FluidUtil.getFluidContained(stack)!=null)
 				return new RecipeQuery(FluidUtil.getFluidContained(stack), stack.stackSize);
 			else
 				return new RecipeQuery(stack, stack.stackSize);
