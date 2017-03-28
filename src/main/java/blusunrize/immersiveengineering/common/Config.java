@@ -205,7 +205,7 @@ public class Config
 			public static float fermenter_timeModifier = 1;
 			@Comment({"A modifier to apply to the energy costs of every Refinery recipe"})
 			public static float refinery_energyModifier = 1;
-			@Comment({"A modifier to apply to the time of every Refinery recipe"})
+			@Comment({"A modifier to apply to the time of every Refinery recipe. Can't be lower than 1"})
 			public static float refinery_timeModifier = 1;
 			@Comment({"A modifier to apply to the energy costs of every Arc Furnace recipe"})
 			public static float arcFurnace_energyModifier = 1;
@@ -363,7 +363,7 @@ public class Config
 		FermenterRecipe.energyModifier = IEConfig.Machines.fermenter_energyModifier;
 		FermenterRecipe.timeModifier = IEConfig.Machines.fermenter_timeModifier;
 		RefineryRecipe.energyModifier = IEConfig.Machines.refinery_energyModifier;
-		RefineryRecipe.timeModifier = IEConfig.Machines.refinery_timeModifier;
+		RefineryRecipe.timeModifier = Math.max(1, IEConfig.Machines.refinery_timeModifier);
 		ArcFurnaceRecipe.energyModifier = IEConfig.Machines.arcFurnace_energyModifier;
 		ArcFurnaceRecipe.timeModifier = IEConfig.Machines.arcFurnace_timeModifier;
 		BlueprintCraftingRecipe.energyModifier = IEConfig.Machines.autoWorkbench_energyModifier;
